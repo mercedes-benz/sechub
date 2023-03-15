@@ -1,0 +1,159 @@
+// SPDX-License-Identifier: MIT
+package com.mercedesbenz.sechub.domain.scan.product.sereco;
+
+import static com.mercedesbenz.sechub.sereco.ImportParameter.*;
+
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.UUID;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+
+import com.mercedesbenz.sechub.commons.model.ScanType;
+import com.mercedesbenz.sechub.commons.model.SecHubMessage;
+import com.mercedesbenz.sechub.commons.model.SecHubMessagesList;
+import com.mercedesbenz.sechub.commons.model.SecHubRuntimeException;
+import com.mercedesbenz.sechub.domain.scan.product.ProductExecutor;
+import com.mercedesbenz.sechub.domain.scan.product.ProductExecutorContext;
+import com.mercedesbenz.sechub.domain.scan.product.ProductIdentifier;
+import com.mercedesbenz.sechub.domain.scan.product.ProductResult;
+import com.mercedesbenz.sechub.domain.scan.product.ProductResultRepository;
+import com.mercedesbenz.sechub.sereco.Sereco;
+import com.mercedesbenz.sechub.sereco.Workspace;
+import com.mercedesbenz.sechub.sharedkernel.UUIDTraceLogID;
+import com.mercedesbenz.sechub.sharedkernel.execution.SecHubExecutionContext;
+import com.mercedesbenz.sechub.sharedkernel.execution.SecHubExecutionException;
+
+@Component
+public class SerecoReportProductExecutor implements ProductExecutor {
+
+    private static final Logger LOG = LoggerFactory.getLogger(SerecoReportProductExecutor.class);
+
+    @Autowired
+    ProductResultRepository productResultRepository;
+
+    @Autowired
+    Sereco sechubReportCollector;
+
+    private final static ScanType SCAN_TYPE = ScanType.REPORT;
+
+    private final static int VERSION = 1;
+
+    private static final ProductIdentifier PRODUCT_IDENTIFIER = ProductIdentifier.SERECO;
+
+    /* @formatter:off */
+    private static ProductIdentifier[] supportedProductIdentifiers = new ProductIdentifier[] {
+            ProductIdentifier.NESSUS,
+            ProductIdentifier.NETSPARKER,
+            ProductIdentifier.CHECKMARX,
+
+            ProductIdentifier.PDS_CODESCAN,
+            ProductIdentifier.PDS_WEBSCAN,
+            ProductIdentifier.PDS_INFRASCAN,
+            ProductIdentifier.PDS_LICENSESCAN};
+    /* @formatter:on */
+
+    @Override
+    public ProductIdentifier getIdentifier() {
+        return PRODUCT_IDENTIFIER;
+    }
+
+    @Override
+    public List<ProductResult> execute(SecHubExecutionContext context, ProductExecutorContext executorContext) throws SecHubExecutionException {
+        return Collections.singletonList(createReport(context, executorContext));
+    }
+
+    private ProductResult createReport(SecHubExecutionContext context, ProductExecutorContext executorContext) {
+        if (context == null) {
+            throw new IllegalArgumentException("context may not be null!");
+        }
+        String projectId = context.getConfiguration().getProjectId();
+
+        UUID secHubJobUUID = context.getSechubJobUUID();
+        UUIDTraceLogID traceLogId = UUIDTraceLogID.traceLogID(secHubJobUUID);
+
+        LOG.debug("{} start sereco execution", traceLogId);
+
+        /* load the results by job uuid */
+        ProductIdentifier[] supportedProducts = getSupportedProducts();
+        List<ProductResult> foundProductResults = productResultRepository.findAllProductResults(secHubJobUUID, supportedProducts);
+
+        if (foundProductResults.isEmpty()) {
+            LOG.warn("{} no product results for {} found, will return an empty sereco JSON as result! ", traceLogId, getSupportedProducts());
+            return new ProductResult(secHubJobUUID, projectId, executorContext.getExecutorConfig(), "{}");
+        }
+
+        return createReport(projectId, secHubJobUUID, traceLogId, executorContext, foundProductResults);
+    }
+
+    private ProductResult createReport(String projectId, UUID secHubJobUUID, UUIDTraceLogID traceLogId, ProductExecutorContext executorContext,
+            List<ProductResult> foundProductResults) {
+        Workspace workspace = sechubReportCollector.createWorkspace(projectId);
+
+        for (ProductResult productResult : foundProductResults) {
+            importProductResult(traceLogId, workspace, productResult);
+        }
+        String json = workspace.createReport();
+        /* fetch + return all vulnerabilities as JSON */
+        return new ProductResult(secHubJobUUID, projectId, executorContext.getExecutorConfig(), json);
+    }
+
+    private void importProductResult(UUIDTraceLogID traceLogId, Workspace workspace, ProductResult productResult) {
+        String importData = productResult.getResult();
+        String productId = productResult.getProductIdentifier().name();
+
+        List<SecHubMessage> productMessages = new ArrayList<>();
+        String messagesJson = productResult.getMessages();
+        if (messagesJson != null) {
+            SecHubMessagesList messagesList = SecHubMessagesList.fromJSONString(messagesJson);
+            List<SecHubMessage> messages = messagesList.getSecHubMessages();
+            if (messages != null) {
+                productMessages.addAll(messages);
+            }
+        }
+
+        LOG.debug("{} found product result for '{}'", traceLogId, productId);
+
+        UUID uuid = productResult.getUUID();
+        String docId = uuid.toString();
+        LOG.debug("{} start to import result '{}' from product '{}' , config:{}", traceLogId, docId, productId, productResult.getProductExecutorConfigUUID());
+
+        /* @formatter:off */
+		try {
+			workspace.doImport(builder().
+						productId(productId).
+						importData(importData).
+						importProductMessages(productMessages).
+						importId(docId)
+					.build());
+		} catch (IOException e) {
+			throw new SecHubRuntimeException("Import into workspace failed:" + docId, e);
+		}
+		/* @formatter:on */
+    }
+
+    private ProductIdentifier[] getSupportedProducts() {
+        return supportedProductIdentifiers;
+    }
+
+    @Override
+    public int getVersion() {
+        return VERSION;
+    }
+
+    @Override
+    public ScanType getScanType() {
+        return SCAN_TYPE;
+    }
+
+    @Override
+    public String toString() {
+        return "AbstractProductExecutor [" + (PRODUCT_IDENTIFIER != null ? "PRODUCT_IDENTIFIER=" + PRODUCT_IDENTIFIER + ", " : "") + "VERSION=" + VERSION + ", "
+                + (SCAN_TYPE != null ? "SCAN_TYPE=" + SCAN_TYPE : "") + "]";
+    }
+}

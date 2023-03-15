@@ -6,7 +6,54 @@
 
 TIP: You must only setup those products you have listed inside your
      profiles. See <<section-initial-profile-and-executors,execution profiles and executor configurations>> 
+
+=== {pds}
+==== General
+The {pds} adapters can communicate with the {pds} instances which delegates to the underlying 
+security products. 
+
+Via {pds} every security product, even simple CLI tools, can be easily integrated
+into {sechub}.
+
+Please look into `Product delegation server` documentation for more information about the {pds} in common.
+
   
+==== PDS solutions  
+There are already ready to use {pds} implementations available - we call them "{pds} solutions". 
+
+Every {pds} solution does work out of the box and provide the possibility to start in following three flavors:
+
+- docker (single instance) 
+- docker compose (cluster) 
+- helm charts (k8s cluster)
+
+The next sub chapters list the current implementations:
+
+===== GoSec
+The PDS integration of https://securego.io[GoSec] (SAST) can be found at
+https://github.com/mercedes-benz/sechub/tree/develop/sechub-pds-solutions/gosec
+  
+===== Multi
+This solution does integrate multiple SAST tools:
+
+- https://github.com/PyCQA/bandit[Bandit]
+- https://dwheeler.com/flawfinder/[FlawFinder] 
+- https://github.com/MobSF/mobsfscan[mobsfscan] 
+- https://github.com/ajinabraham/njsscan[njsscan]
+
+It can be found at https://github.com/mercedes-benz/sechub/tree/develop/sechub-pds-solutions/multi
+
+===== Owasp-Zap
+This solution does integrate the https://www.zaproxy.org/ (web application scanner) - please look at 
+https://github.com/mercedes-benz/sechub/blob/develop/sechub-pds-solutions/owasp-zap/
+  
+===== PMD
+https://pmd.github.io/ stand normally for quality checks, but it does also provide some security check mechanism. The integration can be found at
+https://github.com/mercedes-benz/sechub/tree/develop/sechub-pds-solutions/pmd
+
+===== ScanCode
+Implements https://github.com/nexB/scancode-toolkit as a license scan tool:
+https://github.com/mercedes-benz/sechub/tree/develop/sechub-pds-solutions/scancode
 
 === {checkmarx}
 
@@ -48,7 +95,7 @@ WARNING: Standard properties (like base URL, user id etc.) are currently NOT use
 . Projects are initially created and reused automatically
 . Old scans are *NOT* automatically deleted
 . Multi tenancy is currently problematic: Same Team ID is always used
-  _(will be changed with https://github.com/Daimler/sechub/issues/58[Issue 58])_
+  _(will be changed with https://github.com/mercedes-benz/sechub/issues/58[Issue 58])_
 
 // TODO 2019-10-02, Albert Tregnaghi: change here and text block before when team id handling is improved
 IMPORTANT: Fix team ID will change in future to provide grouping of results in
@@ -68,7 +115,7 @@ include::../shared/adapter/netsparker_adapter_flow.adoc[]
 - Users must be manual created at {netsparker} UI
 - Users must be added to the {netsparker} team used by {sechub}
 - If you want to have multi tenancy you have to define website groups
-  (see https://github.com/Daimler/sechub/issues/59 for details)
+  (see https://github.com/mercedes-benz/sechub/issues/59 for details)
 
 ==== Summary
 . Websites are initially created and reused automatically

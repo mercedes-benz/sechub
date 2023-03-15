@@ -1,0 +1,657 @@
+// SPDX-License-Identifier: MIT
+
+:toc:
+:numbered:
+
+= Scancode + PDS
+
+https://github.com/nexB/scancode-toolkit[Scancode-Toolkit] is a free and open source license scanning tool. Scancode is a command line interface (CLI) tool. By combining Scancode with the SecHub https://mercedes-benz.github.io/sechub/latest/sechub-product-delegation-server.html[Product Delegation Server (PDS)] in a container, Scancode can be used with SecHub. Another scenario is to use PDS + Scancode standalone.
+
+Furthermore, the combination of Scancode and PDS makes it possible to run both inside a Kubernetes cluser or virtual machines.
+
+This folder contains the necessary scripts to run PDS + Scancode inside a container locally. Additionally, it contains scripts to build and push the PDS + Scancode container to your container registry and a Helm chart to install and run PDS + Scancode in a Kubernetes cluster.
+
+== Run Locally
+
+This is the easiest way to get started.
+
+=== Requirements
+
+Docker and Docker-Compose need to be installed:
+
+. https://docs.docker.com/engine/install/[Install Docker]
+
+. Linux: https://docs.docker.com/engine/install/linux-postinstall/#manage-docker-as-a-non-root-user[Use Docker as non Root user]
+
+. https://docs.docker.com/compose/install/[Install Docker-Compose]
+
+=== Single Instance
+
+Start a single instance either by using the Bash wrapper script which does setup everything <<_automatic,automatically>> or follow the steps <<_manually, manual>>.
+
+==== Automatic
+
+The folder contains a start script which does the <<_manually, manual>> steps for you:
+
+----
+./01-start-docker-compose.sh
+----
+
+==== Manually
+
+. Copy `env-initial` file to `.env`
+
+. Set values in `.env` file. The values are described in the `env-example` file.
++
+[NOTE]
+It is recommended to change the default passwords in the `.env` file to improve security. It is possible to change other values in the `.env` file as well. Any change requires a restart of the PDS+Scancode container.
+
+. Start the PDS+Scancode container using https://docs.docker.com/compose/[Docker Compose]:
++
+----
+docker-compose --file docker-compose_pds_scancode.yaml up --build
+----
+
+==== Together with SecHub
+
+The container will be started and attached to the `sechub` Network.
+
+WARNING: Make sure the SecHub container is running.
+
+. Start PDS+Scancode container:
++
+----
+./05-start-single-sechub-network-docker-compose.sh
+----
+
+=== Scan
+
+The steps required to scan with the PDS. Scan manually if you are new to the PDS. Use the script, if you are tired of typing the same commands over and over again.
+
+==== Scan Manually
+
+. Go to PDS Bash command line (CLI) script
++
+----
+cd ../../sechub-developertools/scripts
+----
++
+The folder contains a `pds-api.sh` script.
+
+. Set variables of your PDS instance.
++
+----
+export PDS_SERVER=https://<pds-host>:<pds-port>
+export PDS_USERID=admin
+export PDS_APITOKEN="<pds-admin-apitoken>"
+----
++
+The default values for the PDS-Scancode `docker-compose` examples are:
++
+----
+export PDS_SERVER=https://localhost:8444
+export PDS_USERID=admin
+export PDS_APITOKEN="pds-apitoken"
+----
++
+[TIP]
+Those values are the default values from `env-initial` and `env-cluster-initial` files. 
+
+. Check if server is alive and running
++
+----
+./pds-api.sh check_alive
+HTTP/1.1 200 <1>
+X-Content-Type-Options: nosniff
+X-XSS-Protection: 1; mode=block
+Cache-Control: no-cache, no-store, max-age=0, must-revalidate
+Pragma: no-cache
+Expires: 0
+Strict-Transport-Security: max-age=31536000 ; includeSubDomains
+X-Frame-Options: DENY
+Content-Length: 0
+Date: Tue, 08 Jun 2021 16:38:02 GMT
+----
++
+<1> The `HTTP/1.1 200` tells you the server is alive and running.
+
+. Create a new job to get the PDS JobUUID
++
+----
+./pds-api.sh create_job PDS_SCANCODE "288607bf-ac81-4088-842c-005d5702a9e9"
+{
+  "jobUUID": "8d4236cf-b512-40bc-bb70-c247fa4c9c37"
+}
+----
+
+. Upload a ZIP file with Go code
++
+----
+./pds-api.sh upload_zip "8d4236cf-b512-40bc-bb70-c247fa4c9c37" /home/<myuser>/go_code.zip
+----
++
+[TIP]
+Scancode provides samples: https://github.com/nexB/scancode-toolkit/tree/develop/samples. Simply, download them. Afterwards, ZIP the folder and upload it.
+
+. Mark the job ready to start
++
+----
+./pds-api.sh mark_job_ready_to_start "8d4236cf-b512-40bc-bb70-c247fa4c9c37"
+----
+
+. Check if the job is `DONE`
++
+----
+./pds-api.sh job_status "8d4236cf-b512-40bc-bb70-c247fa4c9c37"
+{
+  "jobUUID": "8d4236cf-b512-40bc-bb70-c247fa4c9c37",
+  "owner": "pds-dev-admin",
+  "created": "2021-06-08T16:45:00.111031",
+  "started": "2021-06-08T16:52:42.407752",
+  "ended": "2021-06-08T16:52:43.663005",
+  "state": "DONE" <1>
+}
+----
++
+<1> Job is `DONE`.
+
+. Download the job result
++
+----
+./pds-api.sh job_result "8d4236cf-b512-40bc-bb70-c247fa4c9c37"
+----
++
+Output
++
+[source,json]
+----
+{
+  "SPDXID" : "SPDXRef-DOCUMENT",
+  "spdxVersion" : "SPDX-2.2",
+  "creationInfo" : {
+    "created" : "2022-02-21T16:04:58Z",
+    "creators" : [ "Tool: scancode-toolkit 30.1.0" ],
+    "licenseListVersion" : "3.14"
+  },
+  "name" : "SPDX Document created by Scancode Toolkit",
+  "dataLicense" : "CC0-1.0",
+  "comment" : "Generated with Scancode and provided on an \"AS IS\" BASIS, WITHOUT WARRANTIES\nOR CONDITIONS OF ANY KIND, either express or implied. No content created from\nScancode should be considered or used as legal advice. Consult an Attorney\nfor any legal advice.\nScancode is a free software code scanning tool from nexB Inc. and others.\nVisit https://github.com/nexB/scancode-toolkit/ for support and download.",
+  "hasExtractedLicensingInfos" : [ {
+    "licenseId" : "LicenseRef-scancode-ada-linking-exception",
+    "comment" : "See details at https://github.com/nexB/scancode-toolkit/blob/develop/src/licensedcode/data/licenses/ada-linking-exception.yml",
+    "extractedText" : "See details at https://github.com/nexB/scancode-toolkit/blob/develop/src/licensedcode/data/licenses/ada-linking-exception.yml",
+    "name" : "Ada linking exception to GPL 2.0 or later"
+  }, {
+    "licenseId" : "LicenseRef-scancode-jboss-eula",
+    "comment" : "See details at https://github.com/nexB/scancode-toolkit/blob/develop/src/licensedcode/data/licenses/jboss-eula.yml",
+    "extractedText" : "See details at https://github.com/nexB/scancode-toolkit/blob/develop/src/licensedcode/data/licenses/jboss-eula.yml",
+    "name" : "JBoss EULA"
+  }, {
+    "licenseId" : "LicenseRef-scancode-mit-old-style",
+    "comment" : "See details at https://github.com/nexB/scancode-toolkit/blob/develop/src/licensedcode/data/licenses/mit-old-style.yml",
+    "extractedText" : "See details at https://github.com/nexB/scancode-toolkit/blob/develop/src/licensedcode/data/licenses/mit-old-style.yml",
+    "name" : "MIT Old Style"
+  }, {
+    "licenseId" : "LicenseRef-scancode-public-domain",
+    "comment" : "See details at https://github.com/nexB/scancode-toolkit/blob/develop/src/licensedcode/data/licenses/public-domain.yml",
+    "extractedText" : "See details at https://github.com/nexB/scancode-toolkit/blob/develop/src/licensedcode/data/licenses/public-domain.yml",
+    "name" : "Public Domain"
+  }, {
+    "licenseId" : "LicenseRef-scancode-unknown-license-reference",
+    "comment" : "See details at https://github.com/nexB/scancode-toolkit/blob/develop/src/licensedcode/data/licenses/unknown-license-reference.yml",
+    "extractedText" : "See details at https://github.com/nexB/scancode-toolkit/blob/develop/src/licensedcode/data/licenses/unknown-license-reference.yml",
+    "name" : "Unknown License file reference"
+  } ],
+  "documentNamespace" : "http://spdx.org/spdxdocs/sourcecode-9006581e-263a-4c8f-b7bc-6bdb705f088c",
+  "documentDescribes" : [ "SPDXRef-001" ],
+  "packages" : [ {
+    "SPDXID" : "SPDXRef-001",
+    "copyrightText" : "(c) Copyright Henrik Ravn 2004\nCopyright (c) 1991, 1999 Free Software Foundation, Inc.\nCopyright (c) 1995-2005, 2010, 2011, 2012 Jean-loup Gailly\nCopyright (c) 1995-2008 Mark Adler\nCopyright (c) 1995-2010 Jean-loup Gailly, Brian Raiter and Gilles Vollant\nCopyright (c) 1995-2011 Mark Adler\nCopyright (c) 1995-2012 Jean-loup Gailly\nCopyright (c) 1995-2013 Jean-loup Gailly\nCopyright (c) 1995-2013 Jean-loup Gailly and Mark Adler\nCopyright (c) 1997 Christian Michelsen Research AS Advanced Computing\nCopyright (c) 2000 - 2006 The Legion Of The Bouncy Castle (http://www.bouncycastle.org)\nCopyright (c) 2000 The Apache Software Foundation\nCopyright (c) 2002-2004 Dmitriy Anisimkov\nCopyright (c) 2003 Mark Adler\nCopyright (c) 2004 by Henrik Ravn\nCopyright (c) 2005 Brian Goetz and Tim Peierls\nCopyright (c) Henrik Ravn 2004\nCopyright 1995-2013 Jean-loup Gailly and Mark Adler\nCopyright 2005, JBoss Inc., and individual contributors\nCopyright 2006 Red Hat, Inc.\nCopyright 2009, Red Hat Middleware LLC, and individual contributors\nCopyright 2010, Red Hat, Inc. and individual contributors\ncopyrighted by the Free Software Foundation",
+    "downloadLocation" : "NOASSERTION",
+    "filesAnalyzed" : true,
+    "hasFiles" : [ "SPDXRef-8", "SPDXRef-9", "SPDXRef-11", "SPDXRef-12", "SPDXRef-13", "SPDXRef-14", "SPDXRef-15", "SPDXRef-17", "SPDXRef-18", "SPDXRef-19", "SPDXRef-20", "SPDXRef-21", "SPDXRef-22", "SPDXRef-23", "SPDXRef-3", "SPDXRef-6", "SPDXRef-4", "SPDXRef-32", "SPDXRef-25", "SPDXRef-26", "SPDXRef-27", "SPDXRef-34", "SPDXRef-35", "SPDXRef-36", "SPDXRef-37", "SPDXRef-39", "SPDXRef-41", "SPDXRef-42", "SPDXRef-44", "SPDXRef-45", "SPDXRef-28", "SPDXRef-29", "SPDXRef-30" ],
+    "licenseConcluded" : "NOASSERTION",
+    "licenseDeclared" : "NOASSERTION",
+    "licenseInfoFromFiles" : [ "Apache-1.1", "Apache-2.0", "BSL-1.0", "CC-BY-2.5", "CPL-1.0", "GPL-2.0-or-later", "LGPL-2.1-only", "LGPL-2.1-or-later", "MIT", "Zlib", "LicenseRef-scancode-ada-linking-exception", "LicenseRef-scancode-jboss-eula", "LicenseRef-scancode-mit-old-style", "LicenseRef-scancode-public-domain", "LicenseRef-scancode-unknown-license-reference" ],
+    "name" : "sourcecode",
+    "packageVerificationCode" : {
+      "packageVerificationCodeValue" : "a16cc075835fbc3a0474c60b4c4314dc37a7dee1"
+    }
+  } ],
+  "files" : [ {
+    "SPDXID" : "SPDXRef-8",
+    "checksums" : [ {
+      "algorithm" : "SHA1",
+      "checksumValue" : "eb232aa0424eca9c4136904e6143b72aaa9cf4de"
+    } ],
+    "copyrightText" : "Copyright 2006 Red Hat, Inc.",
+    "fileName" : "./sourcecode/samples/JGroups/EULA",
+    "licenseConcluded" : "NOASSERTION",
+    "licenseInfoInFiles" : [ "LicenseRef-scancode-jboss-eula" ]
+  }, {
+    "SPDXID" : "SPDXRef-9",
+    "checksums" : [ {
+      "algorithm" : "SHA1",
+      "checksumValue" : "e60c2e780886f95df9c9ee36992b8edabec00bcc"
+    } ],
+    "copyrightText" : "Copyright (c) 1991, 1999 Free Software Foundation, Inc.\ncopyrighted by the Free Software Foundation",
+    "fileName" : "./sourcecode/samples/JGroups/LICENSE",
+    "licenseConcluded" : "NOASSERTION",
+    "licenseInfoInFiles" : [ "LGPL-2.1-only" ]
+  }, 
+  …
+  {
+    "SPDXID" : "SPDXRef-42",
+    "checksums" : [ {
+      "algorithm" : "SHA1",
+      "checksumValue" : "d0486a32b558dcaceded5f0746fad62e680a4734"
+    } ],
+    "copyrightText" : "Copyright (c) 2003 Mark Adler",
+    "fileName" : "./sourcecode/samples/zlib/infback9/infback9.h",
+    "licenseConcluded" : "NOASSERTION",
+    "licenseInfoInFiles" : [ "Zlib" ]
+  } ],
+  "relationships" : [ {
+    "spdxElementId" : "SPDXRef-DOCUMENT",
+    "relatedSpdxElement" : "SPDXRef-001",
+    "relationshipType" : "DESCRIBES"
+  } ]
+}
+----
++
+[NOTE]
+This is a shortend example output. The output can be very different depending on the files you scanned. The output depends on the uploaded `ZIP` file.
+
+==== Scan Script 
+
+It is recommended to start with a manual <<_scan>> the first time using the PDS. However, after some time typing in the commands becomes very tedious. To improve on the experience you can scan using this script.
+
+. Set the environment variables
++
+----
+export PDS_SERVER=https://<pds-host>:<port>
+export PDS_USERID=admin
+export PDS_APITOKEN="<pds-admin-apitoken>"
+export PDS_PRODUCT_IDENTFIER=PDS_SCANCODE
+----
++
+For example:
++
+----
+export PDS_SERVER=https://localhost:8444
+export PDS_USERID=admin
+export PDS_APITOKEN="pds-apitoken"
+export PDS_PRODUCT_IDENTFIER=PDS_SCANCODE
+----
++
+[NOTE]
+Those values are the default values from `env-initial` and `env-cluster-initial` files. In case you run PDS+Scancode in Kubernetes or other environments those values will be different.
+
+. Scan by providing a `ZIP` folder with Go source code.
++
+----
+./70-test.sh <path-to-zip-file>
+----
++
+For example:
++
+----
+./70-test.sh ~/myproject.zip
+----
+
+=== Cluster
+
+The cluster is created locally via `docker-compose`.
+
+==== Shared Volume
+
+The cluster uses a shared volume defined in `docker-compose`. Docker allows to create volumes which can be used by multiple instances to upload files to. Reading, extracting and analysing the files is done in the PDS + Scancode container.
+
+The cluster consists of a PostgreSQL database, a Nginx loadbalancer and one or more PDS server.
+
+image::../shared/media/cluster_shared_volume.svg[Components of cluster with shared volume]
+
+===== Automatic
+
+Starting several PDS + Scancode instances:
+
+----
+./50-start-multiple-docker-compose.sh <replicas>
+----
+
+Example of starting 3 PDS + Scancode instances:
+
+----
+./50-start-multiple-docker-compose.sh 3
+----
+
+===== Manually
+
+. Copy `env-cluster-initial` file to `.env-cluster`
++
+NOTE: It is recommended to change the passwords in `.env-cluster`. Other values can be changed as well. Be aware, that a change of values requires a restart of all containers in the cluster.
+
+. Start cluster using https://docs.docker.com/compose/[Docker Compose]:
++
+----
+./50-start-multiple-docker-compose.sh <replicas>
+----
+
+==== Object Storage
+
+The cluster uses an object storage to store files. The cluster uses https://github.com/chrislusf/seaweedfs[SeaweedFS] (S3 compatible) to store files. The PDS instance(s) use the object storage to upload files to. Reading, extracting and analysing the files is done in the PDS + Scancode container.
+
+The cluster consists of a PostgreSQL database, a Nginx loadbalancer, a SeaweedFS object storage and one or more PDS server.
+
+image::../shared/media/cluster_object_storage.svg[Components of cluster with object storage]
+
+===== Automatic
+
+Starting several PDS + Scancode instances
+
+----
+./51-start-multiple-object-storage-docker-compose.sh <replicas>
+----
+
+Example of starting 3 PDS + Scancode instances
+
+----
+./51-start-multiple-object-storage-docker-compose.sh 3
+----
+
+===== Manually
+
+. Copy `env-cluster-initial` file to `.env-cluster-object-storage`
++
+NOTE: It is recommended to change the passwords in `.env-cluster-object-storage`. Other values can be changed as well. Be aware, that a change of values requires a restart of all containers in the cluster.
+
+. Set `S3_ENABLED` to `true`.
++
+----
+S3_ENABLED=true
+----
+
+. Start cluster using https://docs.docker.com/compose/[Docker Compose]:
++
+----
+./51-start-multiple-object-storage-docker-compose.sh <replicas>
+----
+
+=== Change the Configuration
+
+There are several configuration options available for the PDS + Scancode `docker-compose` files. Have a look at `env-example` for more details.
+
+=== Troubleshooting
+
+This section contains information about how to troubleshoot PDS + Scancode if something goes wrong.
+
+==== Access the PDS+Scancode container
+
+----
+docker exec -it pds-scancode bash
+----
+
+==== Java Application Remote Debugging of PDS
+
+. Set `JAVA_ENABLE_DEBUG=true` in the `.env` file
+
+. Connect via remote debugging to the `pds`
++
+connect via CLI
+(see: )
++
+----
+jdb -attach localhost:15024
+----
++
+TIP: https://www.baeldung.com/java-application-remote-debugging[Java Application Remote Debugging] and https://www.tutorialspoint.com/jdb/jdb_basic_commands.htm[JDB - Basic Commands]
++
+or connect via IDE (e. g. Eclipse IDE, VSCodium, Eclipse Theia, IntelliJ etc.).
++
+TIP: https://www.eclipse.org/community/eclipse_newsletter/2017/june/article1.php[Debugging the Eclipse IDE for Java Developers]
+
+== Build Image and Push to Registry
+
+Build container images and push them to registry to run PDS + Scancode on virtual machines, Kubernetes or any other distributed system.
+
+=== Build Image
+
+Build the container image.
+
+==== Debian
+
+. Using the default image: 
++
+----
+./10-create-image.sh my.registry.example.org/sechub/pds_scancode v0.1
+----
+
+. Using your own base image:
++
+----
+./10-create-image.sh my.registry.example.org/sechub/pds_scancode v0.1 "my.registry.example.org/debian:11-slim"
+----
+
+=== Push Image to Registry
+
+Push the container image to a registry.
+
+* Push the version tag only
++
+----
+./20-push-image.sh my.registry.example.org/sechub/pds_scancode v0.1
+----
+
+* Push the version and `latest` tags
++
+----
+./20-push-image.sh my.registry.example.org/sechub/pds_scancode v0.1 yes
+----
+
+== Kubernetes
+
+https://kubernetes.io/[Kubernetes] is an open-source container-orchestration system. This sections explains how to deploy and run PDS + Scancode in Kubernetes.
+
+=== Helm
+
+https://helm.sh/[Helm] is a package manager for Kubernetes.
+
+==== Requirements
+
+* https://helm.sh/docs/intro/install/[Helm] installed
+* `pds_scancode` image pushed to registry
+
+==== Installation
+
+. Create a `myvalues.yaml` configuration file
++
+A minimal example configuration file with one instance:
++
+[source,yaml]
+----
+replicaCount: 1
+
+image:
+   registry: registry.app.corpintra.net/sechub/pds_scancode
+   tag: latest
+
+pds:
+   startMode: localserver
+
+users:
+   admin:
+      id: "admin"
+      apiToken: "{noop}<my-admin-password>"
+   technical:
+      id: "techuser"
+      apiToken: "{noop}<my-technical-password>"
+
+storage:
+    local:
+        enabled: true
+
+networkPolicy:
+    enabled: true
+    ingress:
+    - from:
+        - podSelector:
+            matchLabels:
+                name: sechub-server
+        - podSelector:
+            matchLabels:
+                name: sechub-adminserver
+----
++
+An example configuration file with 3 replicas, postgresql and object storage:
++
+[source,yaml]
+----
+replicaCount: 3
+
+image:
+   registry: my.registry.example.org/pds_scancode
+   tag: latest
+
+pds:
+   startMode: localserver
+   keepContainerAliveAfterPDSCrashed: true
+
+users:
+   admin:
+      id: "admin"
+      apiToken: "{noop}<my-admin-password>"
+   technical:
+      id: "techuser"
+      apiToken: "{noop}<my-technical-password>"
+      
+
+database:
+    postgres:
+        enabled: true
+        connection: "jdbc:postgresql://<my-database-host>:<port>/<my-database>"
+        username: "<username-for-my-database>"
+        password: "<password-for-my-database>"
+
+storage:
+    local:
+        enabled: false
+    s3:
+        enabled: true
+        endpoint: "https://<my-s3-object-storage>:443"
+        bucketname: "<my-bucket>"
+        accesskey: "<my-accesskey>"
+        secretkey: "<my-secretkey>"
+
+networkPolicy:
+    enabled: true
+    ingress:
+    - from:
+        - podSelector:
+            matchLabels:
+                name: sechub-server
+        - podSelector:
+            matchLabels:
+                name: sechub-adminserver
+----
++
+[TIP]
+To generate passwords use `tr -dc A-Za-z0-9 </dev/urandom | head -c 18 ; echo ''`, `openssl rand -base64 15`, `apg -MSNCL -m 15 -x 20` or `shuf -zer -n20  {A..Z} {a..z} {0..9}`.
+
+. Install helm package from file system
++
+----
+helm install --values myvalues.yaml pds-scancode helm/pds-scancode/
+----
++
+[TIP]
+Use `helm --namespace <my-namespace> install…` to install the helm chart into another namespace in the Kubernetes cluster.
+
+. List pods
++
+----
+kubectl get pods
+NAME                             READY   STATUS    RESTARTS   AGE
+pds-scancode-545f5bc8-7s6rh         1/1     Running   0          1m43s
+pds-scancode-545f5bc8-px9cs         1/1     Running   0          1m43s
+pds-scancode-545f5bc8-t52p6         1/1     Running   0          3m
+
+----
+
+. Forward port of one of the pods to own machine
++
+----
+kubectl port-forward pds-scancode-545f5bc8-7s6rh  8444:8444
+----
+
+. Scan as explained in <<_scan>>.
+
+==== Upgrade
+
+In case, `my-values.yaml` was changed. Simply, use `helm upgrade` to update the deployment. `helm` will handle scaling up and down as well as changing the configuration.
+
+----
+helm upgrade --values my-values.yaml pds-scancode helm/pds-scancode/
+----
+
+==== Uninstall 
+
+. Helm list
++
+----
+helm list
+NAME     	NAMESPACE 	REVISION	UPDATED                                 	STATUS  	CHART                          	APP VERSION
+pds-scancode	my-namespace	1       	2022-03-01 19:54:37.668489822 +0200 CEST	deployed	pds-scancode-0.1.0                	0.25.0 
+----
+
+. Helm uninstall
++
+----
+helm uninstall pds-scancode
+----
+
+=== Troubleshooting
+
+* Access deployment events.
++
+----
+kubectl describe pod pds-scancode-545f5bc8-7s6rh
+…
+Events:
+  Type    Reason     Age   From               Message
+  ----    ------     ----  ----               -------
+  Normal  Scheduled  1m    default-scheduler  Successfully assigned sechub-dev/pds-scancode-749fcb8d7f-jjqwn to kube-node01
+  Normal  Pulling    54s   kubelet            Pulling image "my.registry.example.org/sechub/pds_scancode:v0.1"
+  Normal  Pulled     40s   kubelet            Successfully pulled image "my.registry.example.org/sechub/pds_scancode:v0.1" in 13.815348799s
+  Normal  Created    15s   kubelet            Created container pds-scancode
+  Normal  Started    10s   kubelet            Started container pds-scancode
+----
+
+* Access container logs.
++
+----
+kubectl logs pds-scancode-545f5bc8-7s6rh
+
+  .   ____          _            __ _ _
+ /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
+( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
+ \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
+  '  |____| .__|_| |_|_| |_\__, | / / / /
+ =========|_|==============|___/=/_/_/_/
+ :: Spring Boot ::                (v2.5.8)
+
+2022-03-01 18:56:52.820  INFO 6 --- [           main] d.s.p.ProductDelegationServerApplication : Starting ProductDelegationServerApplication using Java 11.0.13 on pds-scancode-865495cb96-jmt69 with PID 6 (/pds/sechub-pds-0.25.0.jar started by pds in /workspace)
+2022-03-01 18:56:52.822  INFO 6 --- [           main] d.s.p.ProductDelegationServerApplication : The following profiles are active: pds_localserver,pds_postgres
+2022-03-01 18:56:54.252  WARN 6 --- [           main] o.apache.tomcat.util.net.SSLHostConfig   : The protocol [TLSv1.3] was added to the list of protocols on the SSLHostConfig named [_default_]. Check if a +/- prefix is missing.
+2022-03-01 18:56:54.292  INFO 6 --- [           main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2022-03-01 18:56:54.292  INFO 6 --- [           main] org.apache.catalina.core.StandardEngine  : Starting Servlet engine: [Apache Tomcat/9.0.56]
+2022-03-01 18:56:54.335  INFO 6 --- [           main] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
+2022-03-01 18:56:54.513  INFO 6 --- [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2022-03-01 18:56:54.756  INFO 6 --- [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2022-03-01 18:56:57.278  INFO 6 --- [           main] c.d.s.p.storage.PDSMultiStorageService   : Created storage factory: AwsS3JobStorageFactory
+2022-03-01 18:56:57.297  INFO 6 --- [           main] c.d.s.p.m.PDSHeartBeatTriggerService     : Heartbeat service created with 1000 millisecondss initial delay and 60000 millisecondss as fixed delay
+2022-03-01 18:56:57.491  INFO 6 --- [           main] c.d.s.pds.batch.PDSBatchTriggerService   : Scheduler service created with 100 millisecondss initial delay and 500 millisecondss as fixed delay
+2022-03-01 18:56:58.556  INFO 6 --- [           main] d.s.p.ProductDelegationServerApplication : Started ProductDelegationServerApplication in 6.737 seconds (JVM running for 7.231)
+2022-03-01 18:56:59.573  INFO 6 --- [   scheduling-1] c.d.s.p.m.PDSHeartBeatTriggerService     : Heartbeat will be initialized
+2022-03-01 18:56:59.573  INFO 6 --- [   scheduling-1] c.d.s.p.m.PDSHeartBeatTriggerService     : Create new server hearbeat
+2022-03-01 18:56:59.616  INFO 6 --- [   scheduling-1] c.d.s.p.m.PDSHeartBeatTriggerService     : heartbeat update - serverid:SCANCODE_TOOL_CLUSTER, heartbeatuuid:29496a24-66dc-48e9-8356-59cd482b9e0f, cluster-member-data:{"hostname":"pds-scancode-865495cb96-jmt69","ip":"192.168.129.8","port":8444,"heartBeatTimestamp":"2022-03-01T18:56:59.575232","executionState":{"queueMax":50,"jobsInQueue":0,"entries":[]}}
+----

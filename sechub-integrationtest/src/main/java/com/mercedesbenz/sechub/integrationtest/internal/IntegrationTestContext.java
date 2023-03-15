@@ -1,0 +1,118 @@
+// SPDX-License-Identifier: MIT
+package com.mercedesbenz.sechub.integrationtest.internal;
+
+import java.util.HashMap;
+import java.util.Map;
+
+import com.mercedesbenz.sechub.integrationtest.api.TestAPI;
+import com.mercedesbenz.sechub.integrationtest.api.TestUser;
+import com.mercedesbenz.sechub.integrationtest.internal.TestRestHelper.RestHelperTarget;
+import com.mercedesbenz.sechub.test.PDSTestURLBuilder;
+import com.mercedesbenz.sechub.test.SecHubTestURLBuilder;
+import com.mercedesbenz.sechub.test.TestPortProvider;
+
+/**
+ * Test context class. Contains initial data like port, hostname etc.
+ *
+ * @author Albert Tregnaghi
+ *
+ */
+public class IntegrationTestContext {
+
+    static IntegrationTestContext testContext = new IntegrationTestContext();
+
+    private MockEmailAccess mailAccess = MockEmailAccess.mailAccess();
+
+    private Map<TestUser, TestRestHelper> restHelperMap = new HashMap<>();
+    private Map<TestUser, TestRestHelper> pdsRestHelperMap = new HashMap<>();
+    private String hostname = "localhost";
+    private int port = TestPortProvider.DEFAULT_INSTANCE.getIntegrationTestServerPort();
+    private int pdsPort = TestPortProvider.DEFAULT_INSTANCE.getIntegrationTestPDSPort();
+
+    private SecHubTestURLBuilder urlBuilder;
+
+    private PDSTestURLBuilder pdsUrlBuilder;
+
+    private TestUser superAdminUser = TestAPI.SUPER_ADMIN;
+
+    public static IntegrationTestContext get() {
+        return testContext;
+    }
+
+    public void rebuild() {
+        /* force recreation of builders */
+        urlBuilder = null;
+        pdsUrlBuilder = null;
+        restHelperMap.clear();
+    }
+
+    public void setSuperAdminUser(TestUser superAdminUser) {
+        this.superAdminUser = superAdminUser;
+    }
+
+    public void setHostname(String hostname) {
+        this.hostname = hostname;
+    }
+
+    public void setPort(int port) {
+        this.port = port;
+    }
+
+    public void setPdsPort(int pdsPort) {
+        this.pdsPort = pdsPort;
+    }
+
+    public SecHubTestURLBuilder getUrlBuilder() {
+        if (urlBuilder == null) {
+            urlBuilder = new SecHubTestURLBuilder("https", port, hostname);
+        }
+        return urlBuilder;
+    }
+
+    public PDSTestURLBuilder getPDSUrlBuilder() {
+        if (pdsUrlBuilder == null) {
+            pdsUrlBuilder = new PDSTestURLBuilder("https", pdsPort, hostname);
+        }
+        return pdsUrlBuilder;
+    }
+
+    /**
+     * @return template for super admin
+     */
+    public TestRestHelper getTemplateForSuperAdmin() {
+        return getRestHelper(getSuperAdminUser());
+    }
+
+    private TestUser getSuperAdminUser() {
+        return superAdminUser;
+    }
+
+    private IntegrationTestContext() {
+
+    }
+
+    public TestRestHelper getSuperAdminRestHelper() {
+        return getRestHelper(getSuperAdminUser());
+    }
+
+    public TestRestHelper getRestHelper(TestUser user) {
+        return restHelperMap.computeIfAbsent(user, this::createRestHelper);
+    }
+
+    public TestRestHelper getPDSRestHelper(TestUser user) {
+        return pdsRestHelperMap.computeIfAbsent(user, this::createPDSRestHelper);
+    }
+
+    private TestRestHelper createRestHelper(TestUser user) {
+        return new TestRestHelper(user, RestHelperTarget.SECHUB_SERVER);
+    }
+
+    private TestRestHelper createPDSRestHelper(TestUser user) {
+        return new TestRestHelper(user, RestHelperTarget.SECHUB_PDS);
+    }
+
+    public MockEmailAccess emailAccess() {
+        return mailAccess;
+    }
+
+}

@@ -28,8 +28,12 @@ func HandleHTTPError(err error, exitCode int) {
 // HandleHTTPResponse - handler method for http response. when not 200 an error log entry will be created and sechub client does exit
 func HandleHTTPResponse(response *http.Response, exitCode int) {
 	if response.StatusCode >= 400 { // StatusCode is 4xx or 5xx
-		b, _ := ioutil.ReadAll(response.Body)
-		LogError(fmt.Sprintf("The HTTP request failed with status code '%s'\nbody=%s\n", response.Status, string(b)))
+		bodytext, _ := ioutil.ReadAll(response.Body)
+		LogError(fmt.Sprintf("The SecHub server responded with HTTP status code '%d'\nbody=%s", response.StatusCode, string(bodytext)))
+		switch response.StatusCode {
+		case 401:
+			fmt.Println("Hint: Unauthorized - Please check if your SecHub credentials (userID and API-token) are valid.")
+		}
 		os.Exit(exitCode)
 	}
 }

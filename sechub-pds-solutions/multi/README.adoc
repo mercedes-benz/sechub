@@ -7,7 +7,7 @@
 
 WARNING: As of 14th of January 2022, SecHub SERECO is not able to process any of the resulting reports.
 
-Run multiple free and open source static application security testing tools together with the https://daimler.github.io/sechub/latest/sechub-product-delegation-server.html[Product Delegation Server (PDS)]. A list of the included tools can be found below.
+Run multiple free and open source static application security testing tools together with the https://mercedes-benz.github.io/sechub/latest/sechub-product-delegation-server.html[Product Delegation Server (PDS)]. A list of the included tools can be found below.
 
 [[multiple-tools]]
 |===

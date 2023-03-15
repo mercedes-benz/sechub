@@ -1,0 +1,11 @@
+// SPDX-License-Identifier: MIT
+A `ScanProjectConfigService` provides access to `ScanProjectConfig` entities for a given 
+`ScanProjectConfigID` key for a dedicated project. 
+
+We currently store the following types of data through this mechanism:
+
+- Mock configuration
+- <<section-concept-false-positive-technical-details,False positive configuration>> false positive configuration
+- Project access level
+
+TIP: You can look into `ScanProjectConfigID` and check call hierarchy to get more details.

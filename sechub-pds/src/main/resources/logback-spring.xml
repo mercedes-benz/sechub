@@ -17,7 +17,7 @@
     <logger name="org.springframework" level="${SYSTEM_LOG_LEVEL:-WARN}"/>
     <logger name="org.flywaydb" level="${SYSTEM_LOG_LEVEL:-WARN}"/>
 
-    <logger name="com.daimler" level="${APP_LOG_LEVEL:-INFO}"/>
+    <logger name="com.mercedesbenz" level="${APP_LOG_LEVEL:-INFO}"/>
 
     <root level="${DEFAULT_LOG_LEVEL:-INFO}">
         <appender-ref ref="${LOGGING_TYPE:-CONSOLE}" />

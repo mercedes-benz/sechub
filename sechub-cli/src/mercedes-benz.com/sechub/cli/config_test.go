@@ -4,8 +4,13 @@ package cli
 
 import (
 	"fmt"
+	"io/ioutil"
 	"os"
+	"path/filepath"
 	"testing"
+	"time"
+
+	sechubTestUtil "mercedes-benz.com/sechub/testutil"
 )
 
 func TestConfigByFlagsThrowsNoError(t *testing.T) {
@@ -38,6 +43,8 @@ func Example_parseConfigFromEnvironmentVerification() {
 	os.Setenv(SechubUserIDEnvVar, "user-from-environment")
 	config.waitSeconds = 0
 	os.Setenv(SechubWaittimeDefaultEnvVar, "777")
+	config.whitelistAll = false
+	os.Setenv(SechubWhitelistAllEnvVar, "true")
 	// EXECUTE
 	parseConfigFromEnvironment(config)
 	// TEST
@@ -51,6 +58,7 @@ func Example_parseConfigFromEnvironmentVerification() {
 	fmt.Println(config.trustAll)
 	fmt.Println(config.user)
 	fmt.Println(config.waitSeconds)
+	fmt.Println(config.whitelistAll)
 	// Output:
 	// apitoken-from-environment
 	// true
@@ -62,6 +70,7 @@ func Example_parseConfigFromEnvironmentVerification() {
 	// true
 	// user-from-environment
 	// 777
+	// true
 }
 
 func Example_isConfigFieldFilledVerification() {
@@ -94,4 +103,374 @@ func Example_willTrailingSlashBeRemovedFromUrl() {
 	// TEST
 	fmt.Println(config.server)
 	// Output: https://test.example.org
+}
+
+func TestValidateRequestedReportFormat(t *testing.T) {
+	// PREPARE
+	config := NewConfigByFlags()
+	config.reportFormat = "written-on-paper"
+	// EXECUTE
+	validateRequestedReportFormat(config)
+	// TEST
+	if config.reportFormat != "json" {
+		t.Errorf("Reportformat was not changed to 'json'. Got '%s'.", config.reportFormat)
+	}
+}
+
+func Example_validateRequestedReportFormatMakesLowercase1() {
+	// PREPARE
+	config := NewConfigByFlags()
+	config.reportFormat = "HTML"
+	// EXECUTE
+	validateRequestedReportFormat(config)
+	// TEST
+	fmt.Println(config.reportFormat)
+	// Output:
+	// NOTICE: Converted requested report format 'HTML' to lowercase. Because it contained uppercase characters, which are not accepted by SecHub server.
+	// html
+}
+
+func Example_validateRequestedReportFormatMakesLowercase2() {
+	// PREPARE
+	config := NewConfigByFlags()
+	config.reportFormat = "Json"
+	// EXECUTE
+	validateRequestedReportFormat(config)
+	// TEST
+	fmt.Println(config.reportFormat)
+	// Output:
+	// NOTICE: Converted requested report format 'Json' to lowercase. Because it contained uppercase characters, which are not accepted by SecHub server.
+	// json
+}
+
+func Example_normalizeCMDLineArgs() {
+	// PREPARE
+	argList0 := []string{"./sechub"}
+	argList1 := []string{"./sechub", "scan"}
+	argList2 := []string{"./sechub", "-jobUUID", "3bdcc5c5-c2b6-4599-be84-f74380680808", "getReport"}
+	argList3 := []string{"./sechub", "getReport", "-jobUUID", "3bdcc5c5-c2b6-4599-be84-f74380680808"}
+	argList4 := []string{"./sechub", "-configfile", "my-sechub.json", "scan", "-stop-on-yellow"}
+	argList5 := []string{"./sechub", "-configfile", "my-sechub.json", "scan", "-wait", "30"}
+	argList6 := []string{"./sechub", "-version"}
+	// EXECUTE
+	fmt.Println(normalizeCMDLineArgs(argList0))
+	fmt.Println(normalizeCMDLineArgs(argList1))
+	fmt.Println(normalizeCMDLineArgs(argList2))
+	fmt.Println(normalizeCMDLineArgs(argList3))
+	fmt.Println(normalizeCMDLineArgs(argList4))
+	fmt.Println(normalizeCMDLineArgs(argList5))
+	fmt.Println(normalizeCMDLineArgs(argList6))
+	// Output:
+	// [./sechub]
+	// [./sechub scan]
+	// [./sechub -jobUUID 3bdcc5c5-c2b6-4599-be84-f74380680808 getReport]
+	// [./sechub -jobUUID 3bdcc5c5-c2b6-4599-be84-f74380680808 getReport]
+	// [./sechub -configfile my-sechub.json -stop-on-yellow scan]
+	// [./sechub -configfile my-sechub.json -wait 30 scan]
+	// [./sechub -version]
+}
+
+func Example_tempFile_current_dir() {
+	// PREPARE
+	var config Config
+	config.tempDir = "."
+	context := NewContext(&config)
+
+	// EXECUTE
+	result := tempFile(context, "sources.zip")
+
+	// TEST
+	fmt.Println(result)
+	// Output:
+	// sources.zip
+}
+
+func Example_tempFile_absolute_path() {
+	// PREPARE
+	var config Config
+	config.tempDir = "/tmp/my_dir"
+	context := NewContext(&config)
+
+	// EXECUTE
+	result := tempFile(context, "sources.zip")
+
+	// TEST
+	fmt.Println(result)
+	// Output:
+	// /tmp/my_dir/sources.zip
+}
+
+func Test_validateTempDir(t *testing.T) {
+	// PREPARE
+	tempDir := sechubTestUtil.InitializeTestTempDir(t)
+	defer os.RemoveAll(tempDir)
+
+	regularFile := filepath.Join(tempDir, "regular_file")
+	sechubTestUtil.CreateTestFile(regularFile, 0644, []byte(""), t)
+
+	var config1 Config
+	var config2 Config
+	var config3 Config
+	var config4 Config
+	config1.tempDir = "."
+	config2.tempDir = "/this/really/does/not/exist"
+	config3.tempDir = tempDir
+	config4.tempDir = regularFile
+
+	// EXECUTE
+	result1 := validateTempDir(&config1)
+	result2 := validateTempDir(&config2)
+	result3 := validateTempDir(&config3)
+	result4 := validateTempDir(&config4)
+
+	// TEST
+	sechubTestUtil.AssertTrue(result1, t)
+	sechubTestUtil.AssertFalse(result2, t)
+	sechubTestUtil.AssertTrue(result3, t)
+	sechubTestUtil.AssertFalse(result4, t)
+}
+
+func Test_validateOutputLocation_current_dir(t *testing.T) {
+	// PREPARE
+	var config Config
+	config.outputLocation = "."
+
+	// EXECUTE
+	result := validateOutputLocation(&config)
+
+	// TEST
+	sechubTestUtil.AssertTrue(result, t)
+	sechubTestUtil.AssertEquals(".", config.outputFolder, t)
+	sechubTestUtil.AssertEquals("", config.outputFileName, t)
+}
+
+func Test_validateOutputLocation_relative_dir(t *testing.T) {
+	// PREPARE
+	tempDir := "Test_validateOutputLocation_relative_dir"
+	sechubTestUtil.CreateTestDirectory(tempDir, 0755, t)
+	defer os.RemoveAll(tempDir)
+
+	var config Config
+	config.outputLocation = tempDir
+
+	// EXECUTE
+	result := validateOutputLocation(&config)
+
+	// TEST
+	sechubTestUtil.AssertTrue(result, t)
+	sechubTestUtil.AssertStringContains(config.outputFolder, tempDir, t)
+	sechubTestUtil.AssertEquals("", config.outputFileName, t)
+}
+
+func Test_validateOutputLocation_absolute_dir(t *testing.T) {
+	// PREPARE
+	tempDir := sechubTestUtil.InitializeTestTempDir(t)
+	sechubTestUtil.CreateTestDirectory(tempDir, 0755, t)
+	defer os.RemoveAll(tempDir)
+
+	var config Config
+	config.outputLocation = tempDir
+
+	// EXECUTE
+	result := validateOutputLocation(&config)
+
+	// TEST
+	sechubTestUtil.AssertTrue(result, t)
+	sechubTestUtil.AssertStringContains(config.outputFolder, tempDir, t)
+	sechubTestUtil.AssertEquals("", config.outputFileName, t)
+}
+
+func Test_validateOutputLocation_non_existing_dir(t *testing.T) {
+	// PREPARE
+	tempDir := "/this/really/does/not/exist"
+	var config Config
+	config.outputLocation = tempDir
+
+	// EXECUTE
+	result := validateOutputLocation(&config)
+
+	// TEST
+	sechubTestUtil.AssertFalse(result, t)
+}
+
+func Test_validateOutputLocation_absolute_filepath(t *testing.T) {
+	// PREPARE
+	tempFile := "testfile.json"
+	tempDir := sechubTestUtil.InitializeTestTempDir(t)
+	sechubTestUtil.CreateTestDirectory(tempDir, 0755, t)
+	defer os.RemoveAll(tempDir)
+
+	var config Config
+	config.outputLocation = filepath.Join(tempDir, tempFile)
+
+	// EXECUTE
+	result := validateOutputLocation(&config)
+
+	// TEST
+	sechubTestUtil.AssertTrue(result, t)
+	sechubTestUtil.AssertEquals(tempDir, config.outputFolder, t)
+	sechubTestUtil.AssertEquals(tempFile, config.outputFileName, t)
+}
+
+func Test_validateOutputLocation_invalid_filepath(t *testing.T) {
+	// PREPARE
+	tempFile := "testfile.json"
+	tempDir := "/this/really/does/not/exist"
+
+	var config Config
+	config.outputLocation = filepath.Join(tempDir, tempFile)
+
+	// EXECUTE
+	result := validateOutputLocation(&config)
+
+	// TEST
+	sechubTestUtil.AssertFalse(result, t)
+}
+
+func Test_validateOutputLocation_filename_only(t *testing.T) {
+	// PREPARE
+	tempFile := "Test_validateOutputLocation_filename_only.json"
+
+	var config Config
+	config.outputLocation = tempFile
+
+	// EXECUTE
+	result := validateOutputLocation(&config)
+
+	// TEST
+	sechubTestUtil.AssertTrue(result, t)
+	sechubTestUtil.AssertEquals(".", config.outputFolder, t)
+	sechubTestUtil.AssertEquals(tempFile, config.outputFileName, t)
+}
+
+func Test_validateOutputLocation_empty(t *testing.T) {
+	// PREPARE
+	var config Config
+
+	// EXECUTE
+	result := validateOutputLocation(&config)
+
+	// TEST
+	sechubTestUtil.AssertTrue(result, t)
+	sechubTestUtil.AssertEquals(".", config.outputFolder, t)
+	sechubTestUtil.AssertEquals("", config.outputFileName, t)
+}
+
+func Test_validateWaitTimeOrWarning(t *testing.T) {
+	// PREPARE
+	bigValue := 10000000
+
+	// EXECUTE
+	result1 := validateWaitTimeOrWarning(0)
+	result2 := validateWaitTimeOrWarning(bigValue)
+
+	// TEST
+	sechubTestUtil.AssertEquals(MinimalWaitTimeSeconds, result1, t)
+	sechubTestUtil.AssertEquals(bigValue, result2, t)
+}
+
+func Test_validateTimeoutOrWarning(t *testing.T) {
+	// PREPARE
+	bigValue := 10000000
+
+	// EXECUTE
+	result1 := validateTimeoutOrWarning(0)
+	result2 := validateTimeoutOrWarning(bigValue)
+
+	// TEST
+	sechubTestUtil.AssertEquals(MinimalTimeoutInSeconds, result1, t)
+	sechubTestUtil.AssertEquals(bigValue, result2, t)
+}
+
+func Test_validateInitialWaitIntervalOrWarning(t *testing.T) {
+	// PREPARE
+	var okay int64 = 60 * int64(time.Second)                // 60s
+	var tooSmall int64 = int64(0.01 * float64(time.Second)) // 0.01s
+
+	// EXECUTE
+	result1 := validateInitialWaitIntervalOrWarning(okay)
+	result2 := validateInitialWaitIntervalOrWarning(tooSmall)
+
+	// TEST
+	sechubTestUtil.AssertEquals(okay, result1, t)
+	sechubTestUtil.AssertEquals(int64(MinimalInitialWaitIntervalSeconds*float64(time.Second)), result2, t)
+}
+
+func Example_will_reportfile_be_found_in_current_dir() {
+	// PREPARE
+	var config Config
+	config.action = interactiveMarkFalsePositivesAction
+	config.projectID = "testproject"
+
+	config.user = "testuser"
+	config.apiToken = "not empty"
+	config.server = "https://test.example.org"
+	config.reportFormat = "json"
+	config.timeOutSeconds = 10
+	config.initialWaitIntervalNanoseconds = int64(2 * float64(time.Second))
+	config.waitSeconds = 60
+
+	// Create report file: sechub_report_testproject_45cd4f59-4be7-4a86-9bc7-47528ced16c2.json
+	reportFileName := "./sechub_report_" + config.projectID + "_45cd4f59-4be7-4a86-9bc7-47528ced16c2.json"
+	ioutil.WriteFile(reportFileName, []byte(""), 0644)
+	defer os.Remove(reportFileName)
+
+	// EXECUTE
+	assertValidConfig(&config)
+
+	// TEST
+
+	// Output:
+	// Using latest report file "sechub_report_testproject_45cd4f59-4be7-4a86-9bc7-47528ced16c2.json".
+}
+
+func Test_check_if_too_many_cmdline_args_get_capped(t *testing.T) {
+	// PREPARE
+	originalArgs := os.Args
+	os.Args = []string{"sechub"}
+
+	for i := 0; i < MaximumNumberOfCMDLineArguments/2; i++ {
+		os.Args = append(os.Args, "-tempdir")
+		os.Args = append(os.Args, fmt.Sprintf("%d", i))
+	}
+	fmt.Print("os.Args=")
+	fmt.Println(os.Args)
+	before := len(os.Args)
+
+	// EXECUTE
+	validateMaximumNumberOfCMDLineArgumentsOrCapAndWarning()
+
+	// TEST
+	fmt.Print("os.Args=")
+	fmt.Println(os.Args)
+	after := len(os.Args)
+	sechubTestUtil.AssertEquals(MaximumNumberOfCMDLineArguments+1, before, t)
+	sechubTestUtil.AssertEquals(MaximumNumberOfCMDLineArguments, after, t)
+
+	// Restore original arguments
+	os.Args = originalArgs
+}
+
+func Test_check_max_cmdline_args_are_accepted(t *testing.T) {
+	// PREPARE
+	originalArgs := os.Args
+	os.Args = []string{"sechub"}
+
+	for i := 1; i < MaximumNumberOfCMDLineArguments; i++ {
+		os.Args = append(os.Args, "-help")
+	}
+	fmt.Print("os.Args=")
+	fmt.Println(os.Args)
+
+	// EXECUTE
+	validateMaximumNumberOfCMDLineArgumentsOrCapAndWarning()
+
+	// TEST
+	fmt.Print("os.Args=")
+	fmt.Println(os.Args)
+
+	sechubTestUtil.AssertEquals(MaximumNumberOfCMDLineArguments, len(os.Args), t)
+
+	// Restore original arguments
+	os.Args = originalArgs
 }

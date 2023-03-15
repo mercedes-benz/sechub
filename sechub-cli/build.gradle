@@ -18,6 +18,7 @@ task genGo(type: Exec) {
         commandLine "${projectDir}/gen_go.sh"
     }
 }
+apply plugin: 'base' // necessary to have assenble parts working without maven-publish
 
 assemble.dependsOn(tasks.genGo)
 tasks.eclipse.dependsOn(tasks.genGo)
@@ -53,9 +54,9 @@ task testGo(type:Exec) {
 
   //on windows:
     if (OSUtil.isWindows()){
-        commandLine 'cmd', '/c', 'go', 'test', 'mercedes-benz.com/sechub/cli', 'mercedes-benz.com/sechub/util', '-v'
+        commandLine 'cmd', '/c', 'go', 'test', 'mercedes-benz.com/sechub/cli', 'mercedes-benz.com/sechub/util'
     }else{
-        commandLine 'go', 'test', 'mercedes-benz.com/sechub/cli', 'mercedes-benz.com/sechub/util', '-v'
+        commandLine 'go', 'test', 'mercedes-benz.com/sechub/cli', 'mercedes-benz.com/sechub/util'
     }
 
 }
@@ -75,11 +76,11 @@ task linterGo(type:Exec) {
 }
 
 task assembleArtifact(type: Zip, group: 'client') {
-    archiveName "sechub-client-${project.version}.zip"
-    destinationDir file("$buildDir/zip/")
+    archiveFileName= "sechub-client-${project.version}.zip"
+    destinationDirectory=file("$buildDir/zip/")
     from "${projectDir}/build/go/"
     from "${rootProject.projectDir}/sechub-doc/build/asciidoc/sechub-client.pdf" // we add the documentation into zip
-    description "Assemble archive $archiveName into ${relativePath(destinationDir)}"
+    description "Assemble archive $archiveFileName into ${relativePath(destinationDirectory)}"
 }
 
 version =   VersionData.getClientVersion()
@@ -106,13 +107,13 @@ publishing {
                 description = 'SecHub Clients for all supported plattforms as one single zip file'
 
                 scm {
-                    url = 'https://github.com/daimler/sechub'
+                    url = 'https://github.com/mercedes-benz/sechub'
                 }
 
                 licenses {
                     license {
                         name = 'MIT License'
-                        url = 'https://github.com/daimler/sechub/blob/master/LICENSE'
+                        url = 'https://github.com/mercedes-benz/sechub/blob/master/LICENSE'
                     }
                 }
             }

@@ -1,8 +1,8 @@
 // SPDX-License-Identifier: MIT
 [[section-concepts-product-execution]]
 === Product execution profiles and executor configuration
-// see https://github.com/Daimler/sechub/issues/148 for issue details about executor config
-// see https://github.com/Daimler/sechub/issues/391 for issue details about execution profiles
+// see https://github.com/mercedes-benz/sechub/issues/148 for issue details about executor config
+// see https://github.com/mercedes-benz/sechub/issues/391 for issue details about execution profiles
 
 To have the possibility of using dedicated security products for different projects, to 
 disable/enable products on demand without server restart or just to test new products in one evaluation project but

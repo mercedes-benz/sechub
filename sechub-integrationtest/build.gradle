@@ -11,13 +11,20 @@ plugins {
 }
 dependencies {
 
+    /* why as API? because to provide all parts here to developer tools */
     api project(':sechub-testframework')
-    api project(':sechub-adapter') // we reuse trustall approach from adapters
     api project(':sechub-shared-kernel') 
     api project(':sechub-scan-product-pds') // we want configuration entries available
+    api project(':sechub-commons-pds')
     api library.springboot_starter_mail // to have easier access to email parts
     
-    api project(':sechub-commons-pds')
+    api project(':sechub-adapter') // we reuse trustall approach from adapters
+    api project(':sechub-adapter-pds')
+    api project(':sechub-administration') 
+    api project(':sechub-scan') // we add this to have access to FullScanData
+    
+    api library.junit4
+    
 }
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -29,10 +36,11 @@ def integrationTestPDSPortValue = 8444;
 def pdsVersion = VersionData.getPdsVersion()
 def serverVersion = VersionData.getServerVersion()
 
-// define dummy path (not existing, will be changed later in integrationTest task! 
-def tempDirPath = new File(System.getProperty("user.home"),"sechub-inttest").toPath();
+// initialize shared volume path (but not force directory creation, will be done later)
+long nanoTime = System.nanoTime()
 
-def intTestFolderPath = tempDirPath.toString();
+File tempFolder = new File("${project.projectDir}/build/tmp/sharedvolume-${nanoTime}")
+def tempDirPath = tempFolder.toPath()
 
 task copyIntegrationTestResults(type: Copy) {
         with{
@@ -60,9 +68,9 @@ tasks.clean.dependsOn(tasks.cleanLogFiles)
 // configures integration test shared volume
 task configureIntTestSharedVolume {
     doFirst {
-            // at this point we create a new temp directory for integration tests
-            tempDirPath = Files.createTempDirectory("sechub-inttest")
+            // at this point we create the temp directory structure for our integration tests
             println (">> CREATE temp dir: $tempDirPath")
+            Files.createDirectories(tempDirPath)
    }
 }
 
@@ -132,11 +140,14 @@ task startIntegrationTestPDS(dependsOn: stopOldIntegrationTestPDS){
 
 }
 
-task startIntegrationTestInstances(dependsOn: [startIntegrationTestServer, startIntegrationTestPDS]){
-   
+task cleanIntegrationTestData(type: Delete) {
+    group 'sechub'
+    delete "${project.buildDir}/sechub/integrationtest"
 }
 
-
+task startIntegrationTestInstances(dependsOn: [startIntegrationTestServer, startIntegrationTestPDS, cleanIntegrationTestData]){
+   
+}
 
 task stopIntegrationTestServer(dependsOn: configureIntegrationTestServer){
     doLast{
@@ -186,8 +197,6 @@ task integrationtest(type: Test, dependsOn: startIntegrationTestInstances) {
    
 
 }
-
-
 
 /**
  * Special groovy class for executing external script. This is because exec task of groovy does ALWAYS wait until process has executed.
@@ -243,8 +252,6 @@ class IntegrationTestScriptAccess extends CmdExecutor{
               exec.getCommand().add("$sharedVolumeBaseDir");
               
           }
-          
-
           exec.execute(workingDir)
         }
 

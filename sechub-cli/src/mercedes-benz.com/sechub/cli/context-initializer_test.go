@@ -39,18 +39,18 @@ func TestLoadConfigFile(t *testing.T) {
 	AssertEquals("user-from-file", config.user, t)
 }
 
-func Example_lowercaseOrWarning() {
+func Example_lowercaseOrNotice() {
 	// PREPARE
 	lowercaseString := "teststring1"
 	noLowercaseString := "TESTStrinG2"
 	// EXECUTE
-	result1 := lowercaseOrWarning(lowercaseString, "text1")
-	result2 := lowercaseOrWarning(noLowercaseString, "text2")
+	result1 := lowercaseOrNotice(lowercaseString, "text1")
+	result2 := lowercaseOrNotice(noLowercaseString, "text2")
 	// TEST
 	fmt.Println(result1)
 	fmt.Println(result2)
 	// Output:
-	// WARNING: Given text2 did contain uppercase characters which are not accepted by SecHub server - so changed to lowercase before sending
+	// NOTICE: Converted text2 'TESTStrinG2' to lowercase. Because it contained uppercase characters, which are not accepted by SecHub server.
 	// teststring1
 	// teststring2
 }

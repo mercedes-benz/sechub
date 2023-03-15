@@ -1,0 +1,21 @@
+{
+  "data" : {//<1>
+    "sources" : [ { //<2>
+      "name" : "reference-name-sources-1",//<3>
+      "fileSystem" : { //<4>
+        "files" : [ "somewhere/file1.txt", "somewhere/file2.txt" ], //<5>
+        "folders" : [ "somewhere/subfolder1", "somewhere/subfolder2" ] //<6>
+      },
+      "excludes": ["**/mytestcode/**","**/documentation/**"], //<7>
+      "additionalFilenameExtensions": [".cplusplus",".py9"] //<8>
+    } ],
+    "binaries" : [ { //<9>
+      "name" : "reference-name-binaries-1",//<3>
+      "fileSystem" : {
+        "files" : [ "somewhere/file1.dll", "somewhere/file2.a" ], //<5>
+        "folders" : [ "somewhere/bin/subfolder1", "somewhere/bin/subfolder2" ] //<6>
+      }
+    }
+   ]
+  }
+}

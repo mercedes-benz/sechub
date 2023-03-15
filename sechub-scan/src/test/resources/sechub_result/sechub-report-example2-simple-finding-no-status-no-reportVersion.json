@@ -14,7 +14,7 @@
                 "severity": "MEDIUM",
                 "cweId": 4711,
                 "code": {
-                    "location": "com/daimler/sechub/adapter/support/TrustAllSupport.java",
+                    "location": "com/mercedesbenz/sechub/adapter/support/TrustAllSupport.java",
                     "line": 90,
                     "column": 45,
                     "source": "\t\t\tclientBuilder.setSSLHostnameVerifier(new HostnameVerifier() {",

@@ -5,6 +5,6 @@
     "project"   : "__projectname__",
 
     "webScan"   : {
-        "uris": ["__acceptedUri1__"]
+        "uri": "__acceptedUri1__"
     }
 }

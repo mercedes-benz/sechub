@@ -40,96 +40,106 @@ func approveSecHubJob(context *Context) {
 	sechubUtil.HandleError(err, ExitCodeFailed)
 }
 
-func waitForSecHubJobDoneAndFailOnTrafficLight(context *Context) string {
-	return getSecHubJobState(context, false, true, true)
-}
+func waitForSecHubJobDone(context *Context) (status jobStatusResult) {
+	var cursor uint8 = 0
+	waitNanoseconds := context.config.initialWaitIntervalNanoseconds
 
-func getSecHubJobState(context *Context, checkOnlyOnce bool, checkTrafficLight bool, downloadReport bool) string {
-	//    {
-	//    "jobUUID": "e21b13fc-591e-4abd-b119-755d473c5625",
-	//    "owner": "developer",
-	//    "created": "2018-03-06T12:59:59.691",
-	//    "started": "2018-03-06T13:00:00.007",
-	//    "ended": "2018-03-06T13:00:04.562",
-	//    "state": "ENDED",
-	//    "result": "OK",
-	//    "trafficLight": "GREEN"
-	//    }
-
-	//	{
-	//    "jobUUID": "a52e0695-5789-4902-9643-72d2ce138942",
-	//    "owner": "developer",
-	//    "created": "2018-03-08T23:08:54.014",
-	//    "started": "2018-03-08T23:08:55.013",
-	//    "ended": "2018-03-08T23:08:57.324",
-	//    "state": "ENDED",
-	//    "result": "FAILED",
-	//    "trafficLight": ""
-	//}
-
-	done := false
-	var status jobStatusResult
-
-	newLine := true
-	cursor := 0
-
-	if checkOnlyOnce {
-		done = true
-	} else {
-		sechubUtil.Log(fmt.Sprintf("Waiting for job %s to be done", context.config.secHubJobUUID), context.config.quiet)
-	}
+	sechubUtil.Log(fmt.Sprintf("Waiting for job %s to be done", context.config.secHubJobUUID), context.config.quiet)
 
 	for {
-		// request SecHub job state from server
-		response := sendWithDefaultHeader("GET", buildGetSecHubJobStatusAPICall(context), context)
+		getSecHubJobStatus(context)
 
-		data, err := ioutil.ReadAll(response.Body)
-		sechubUtil.HandleHTTPError(err, ExitCodeHTTPError)
-		if context.config.debug {
-			sechubUtil.LogDebug(context.config.debug, fmt.Sprintf("get job status :%s", string(data)))
-		}
-
-		/* transform text to json */
-		err = json.Unmarshal(data, &status)
-		sechubUtil.HandleHTTPError(err, ExitCodeHTTPError)
-
-		if status.State == ExecutionStateEnded {
-			done = true
-		}
-		if done {
-			if !checkTrafficLight {
-				return string(data)
-			}
+		if context.jobStatus.State == ExecutionStateEnded {
 			break
-		} else {
-			// PROGRESS bar ... 50 chars with dot, then next line...
-			if newLine {
-				sechubUtil.PrintIfNotSilent(strings.Repeat(" ", 29), context.config.quiet)
-				newLine = false
-			}
-			sechubUtil.PrintIfNotSilent(".", context.config.quiet)
-			if cursor++; cursor == 50 {
-				sechubUtil.PrintIfNotSilent("\n", context.config.quiet)
-				cursor = 0
-				newLine = true
-			}
-			time.Sleep(time.Duration(context.config.waitNanoseconds))
 		}
+
+		if !context.config.quiet {
+			// Progress dots
+			cursor = printProgressDot(cursor)
+		}
+
+		time.Sleep(time.Duration(waitNanoseconds))
+		waitNanoseconds = computeNextWaitInterval(waitNanoseconds, context.config.waitNanoseconds)
 	}
 	sechubUtil.PrintIfNotSilent("\n", context.config.quiet)
 
-	if downloadReport {
-		downloadSechubReport(context)
+	return status
+}
+
+// Print progress dots ... 50 dots, then next line...
+func printProgressDot(cursor uint8) uint8 {
+	if cursor == 0 {
+		// initial identation
+		fmt.Print(strings.Repeat(" ", 29))
 	}
 
-	/* Evaluate traffic light */
-	switch status.TrafficLight {
+	fmt.Print(".")
+
+	cursor++
+	if cursor == 50 {
+		fmt.Print("\n")
+		cursor = 0
+	}
+
+	return cursor
+}
+
+func computeNextWaitInterval(current int64, max int64) int64 {
+	next := int64(float64(current) * WaitIntervalIncreaseFactor)
+	if next > max {
+		return max
+	}
+	return next
+}
+
+func getSecHubJobStatus(context *Context) (jsonData string) {
+	// request SecHub job state from server
+	response := sendWithDefaultHeader("GET", buildGetSecHubJobStatusAPICall(context), context)
+
+	data, err := ioutil.ReadAll(response.Body)
+	sechubUtil.HandleHTTPError(err, ExitCodeHTTPError)
+	if context.config.debug {
+		sechubUtil.LogDebug(context.config.debug, fmt.Sprintf("Get job status :%s", string(data)))
+	}
+
+	/* transform text to json */
+	err = json.Unmarshal(data, context.jobStatus)
+	sechubUtil.HandleHTTPError(err, ExitCodeHTTPError)
+
+	return string(data)
+}
+
+func printSecHubJobSummaryAndFailOnTrafficLight(context *Context) {
+	// Handle messages from server
+	errorInJobMessage := false
+	numberOfMessages := len(context.jobStatus.Messages)
+
+	if numberOfMessages > 0 {
+		fmt.Print("Message")
+		if numberOfMessages > 1 {
+			fmt.Print("s")
+		}
+		fmt.Println(" from SecHub server:")
+		for _, message := range context.jobStatus.Messages {
+			fmt.Printf("  -> %s: %s\n", message.Type, message.Text)
+			if message.Type == "ERROR" {
+				errorInJobMessage = true
+			}
+		}
+	}
+
+	// Evaluate traffic light
+	switch context.jobStatus.TrafficLight {
 	case "RED":
-		fmt.Fprintln(os.Stderr, "  RED alert - security vulnerabilities identified (critical or high)")
+		if errorInJobMessage {
+			fmt.Fprintln(os.Stderr, "  RED alert - server error while job execution")
+		} else {
+			fmt.Fprintln(os.Stderr, "  RED alert - security vulnerabilities identified (critical or high)")
+		}
 		os.Exit(ExitCodeFailed)
 	case "YELLOW":
 		yellowMessage := "  YELLOW alert - security vulnerabilities identified (but not critical or high)"
-		if context.config.stopOnYellow == true {
+		if context.config.stopOnYellow {
 			fmt.Fprintln(os.Stderr, yellowMessage)
 			os.Exit(ExitCodeFailed)
 		} else {
@@ -137,12 +147,11 @@ func getSecHubJobState(context *Context, checkOnlyOnce bool, checkTrafficLight b
 		}
 	case "GREEN":
 		fmt.Println("  GREEN - no severe security vulnerabilities identified")
-	case "":
-		sechubUtil.LogError("No traffic light available! Please check server logs.")
+	case "OFF", "":
+		sechubUtil.LogError("No traffic light available! Please check messages and server logs.")
 		os.Exit(ExitCodeFailed)
 	default:
-		sechubUtil.LogError(fmt.Sprintln("UNKNOWN traffic light:", status.TrafficLight, "- Expected one of: RED, YELLOW, GREEN."))
+		sechubUtil.LogError(fmt.Sprintln("UNKNOWN traffic light:", context.jobStatus.TrafficLight, "- Expected one of: RED, YELLOW, GREEN."))
 		os.Exit(ExitCodeFailed)
 	}
-	return ""
 }

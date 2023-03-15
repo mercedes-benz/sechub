@@ -24,6 +24,9 @@ include::documents/pds/about_pds.adoc[]
 :numbered:
 
 <<<<
+== Download
+include::documents/pds/pds_download.adoc[]
+
 == Concept
 include::documents/shared/concepts/concept_pds.adoc[]
 

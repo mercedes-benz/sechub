@@ -27,8 +27,10 @@ function applySPDXline {
     local line="$3"
 
     echo -e "  ${LIGHT_GREEN}Scanning '*.$fileEnding' files${NC}"
-    # Loop over all files matching pattern and ignore .git subdirectory
-    find . -type f -iname \*.$fileEnding | grep -v '^./.git\|gradlew.bat' | while read file ; do
+    # Loop over all files matching the pattern, but skip some patterns like generated files
+    find . -type f -iname \*.$fileEnding \
+    | grep -v '^./.git\|/build/\|/\.gradle/\|gradlew.bat' \
+    | while read file ; do
         if ! grep -q "$SPDX_TEXT" $file ; then
             sed -i "${line}i $spdxMessage" "$file"
             echo -e "${BROWN}$file${NC} - ${LIGHT_GREEN}copyright appended.${NC}"
@@ -42,29 +44,6 @@ function applySPDXonFirstLine {
 
 function applySPDXonSecondLine {
     applySPDXline "$1" "$2" 2
-}
-
-function startAutoApply {
-    applySPDXonFirstLine "adoc" "// $SPDX_TEXT"
-    applySPDXonFirstLine "bat" ":: $SPDX_TEXT"
-    applySPDXonFirstLine "c" "// $SPDX_TEXT"
-    applySPDXonFirstLine "dockerfile" "# $SPDX_TEXT"
-    applySPDXonFirstLine "go" "// $SPDX_TEXT"
-    applySPDXonFirstLine "groovy" "// $SPDX_TEXT"
-    applySPDXonFirstLine "gradle" "// $SPDX_TEXT"
-    applySPDXonFirstLine "jenkins" "// $SPDX_TEXT"
-    applySPDXonFirstLine "java" "// $SPDX_TEXT"
-    applySPDXonFirstLine "md" "<!-- $SPDX_TEXT --->"
-    applySPDXonFirstLine "properties" "# $SPDX_TEXT"
-    applySPDXonSecondLine "py" "# $SPDX_TEXT"
-    applySPDXonFirstLine "rb" "# $SPDX_TEXT"
-    applySPDXonSecondLine "sh" "# $SPDX_TEXT"
-    applySPDXonFirstLine "sql" "-- $SPDX_TEXT"
-    applySPDXonFirstLine "yaml" "# $SPDX_TEXT"
-    applySPDXonFirstLine "yml" "# $SPDX_TEXT"
-
-    # for plantuml we do no longer apply automatically, because a comment before
-    # a @startUml is problematic
 }
 
 #####################################################
@@ -97,4 +76,31 @@ echo -e "  --------------------------------------------"
 echo -e "  Start applying missing copyright information"
 echo -e "  --------------------------------------------"
 
-startAutoApply
+##########################################################
+# Apply SPDX license headers:
+applySPDXonFirstLine "adoc" "// $SPDX_TEXT"
+applySPDXonFirstLine "puml" "' $SPDX_TEXT"
+applySPDXonFirstLine "plantuml" "' $SPDX_TEXT"
+applySPDXonFirstLine "bat" ":: $SPDX_TEXT"
+applySPDXonFirstLine "c" "// $SPDX_TEXT"
+applySPDXonFirstLine "dockerfile" "# $SPDX_TEXT"
+applySPDXonFirstLine "go" "// $SPDX_TEXT"
+applySPDXonFirstLine "groovy" "// $SPDX_TEXT"
+applySPDXonFirstLine "gradle" "// $SPDX_TEXT"
+applySPDXonFirstLine "jenkins" "// $SPDX_TEXT"
+applySPDXonFirstLine "java" "// $SPDX_TEXT"
+applySPDXonFirstLine "md" "<!-- $SPDX_TEXT --->"
+applySPDXonFirstLine "properties" "# $SPDX_TEXT"
+applySPDXonSecondLine "py" "# $SPDX_TEXT"
+applySPDXonFirstLine "rb" "# $SPDX_TEXT"
+applySPDXonSecondLine "sh" "# $SPDX_TEXT"
+applySPDXonFirstLine "sql" "-- $SPDX_TEXT"
+applySPDXonFirstLine "yaml" "# $SPDX_TEXT"
+applySPDXonFirstLine "yml" "# $SPDX_TEXT"
+
+# for plantuml we do no longer apply automatically, because a comment before
+# a @startUml is problematic
+
+##########################################################
+
+exit 0

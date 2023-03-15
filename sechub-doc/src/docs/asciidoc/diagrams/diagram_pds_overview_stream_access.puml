@@ -1,3 +1,4 @@
+' SPDX-License-Identifier: MIT
 @startuml
 'see https://plantuml.com/sequence-diagram
 queue "PDS Job Queue" as pdsJobQueue

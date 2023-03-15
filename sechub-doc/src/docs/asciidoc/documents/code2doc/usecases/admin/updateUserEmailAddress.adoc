@@ -1,0 +1,11 @@
+// SPDX-License-Identifier: MIT
+An administrator update the email address of an user. After the change an email will be 
+sent to the old email-address to inform the user about the change. In addition, a new mail to
+the new email address will be sent as well.
+
+[NOTE]
+====
+When the new email address is the same as before, the action will be rejected.
+
+====
+

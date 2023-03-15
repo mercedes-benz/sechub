@@ -1,8 +1,8 @@
 // SPDX-License-Identifier: MIT
 buildscript{
 
-	apply from: "${rootProject.projectDir}/libraries.gradle"
-	apply from: "${rootProject.projectDir}/projects.gradle"
+	apply from: "${rootProject.projectDir}/gradle/libraries.gradle"
+	apply from: "${rootProject.projectDir}/gradle/projects.gradle"
 
     def customMavenRepoURL4plugins = System.getenv('CUST_MVN_URL_PLUGINS')
     if (customMavenRepoURL4plugins!=null){
@@ -17,17 +17,38 @@ buildscript{
 
 	dependencies{
 		classpath gradleApi()
-		classpath "org.ajoberstar.grgit:grgit-gradle:4.0.1" // necessary for version calculation
+		classpath "org.ajoberstar.grgit:grgit-gradle:${libraryVersion.grgit}" // necessary for version calculation
 		classpath "com.epages:restdocs-api-spec-gradle-plugin:${libraryVersion.restDocsApiSpec}"
-
+        classpath "org.owasp:dependency-check-gradle:${libraryVersion.dependency_check}"
 	}
 }
+
 plugins {
+    // asciidoc
     id 'org.asciidoctor.jvm.convert' version '3.3.2'
     id 'org.asciidoctor.jvm.pdf' version '3.3.2'
-    id 'org.openapi.generator' version '5.2.0'
-    id 'org.springframework.boot' version '2.6.2' apply false
+    
+    // open api
+    id 'org.openapi.generator' version '6.0.0'
+    
+    // spring
+    id 'org.springframework.boot' version '2.7.1' apply false
+    
+    // spotless code formatter
+    // (see https://github.com/diffplug/spotless)
+    id 'com.diffplug.spotless' version '6.8.0'
+    
+    // versions plugin for checking new available library versions etc. 
+    // (see https://github.com/ben-manes/gradle-versions-plugin)
+    id 'com.github.ben-manes.versions' version '0.42.0'
+    
+    // Details about every gradle plugin can be found at 
+    // https://plugins.gradle.org/plugin/${pluginId}
 }
+
+// old style apply necessary here - to have same version as in classpath dependency
+apply plugin: 'org.owasp.dependencycheck'
+
 /* check buildsystem */
 def githubActor = System.getenv('GITHUB_ACTOR')
 
@@ -63,7 +84,10 @@ task internalCleanRootBuildFolder(type: Delete){
 
 tasks.clean.dependsOn.internalCleanRootBuildFolder
 
+apply from: rootProject.file('gradle/gradle_version_plugin.gradle')
+
 allprojects {
+    apply from: rootProject.file('gradle/spotless.gradle')
 
     def customMavenRepoURL = System.getenv('CUST_MVN_URL')
     if (customMavenRepoURL!=null){
@@ -76,10 +100,29 @@ allprojects {
         }
     }
 
+    /* every project has got this additional task */
+    task prepareGitPush(dependsOn: spotlessApply){
+    
+    }
 }
-apply from: "${rootProject.projectDir}/build-versioning.gradle"
-apply from: "${rootProject.projectDir}/build-java.gradle"
-apply from: "${rootProject.projectDir}/build-spring.gradle"
-apply from: "${rootProject.projectDir}/build-maven.gradle"
-apply from: "${rootProject.projectDir}/build-eclipse.gradle"
-apply from: "${rootProject.projectDir}/build-report.gradle"
+
+
+
+spotless {
+	groovyGradle {
+		target '*.gradle', 'gradle/*.gradle'
+	}
+	format 'dotfiles', {
+		target '.gitignore', '.gitattributes', '.editorconfig'
+		indentWithSpaces(2)
+		trimTrailingWhitespace()
+		endWithNewline()
+	}
+}
+
+apply from: "${rootProject.projectDir}/gradle/build-versioning.gradle"
+apply from: "${rootProject.projectDir}/gradle/build-java.gradle"
+apply from: "${rootProject.projectDir}/gradle/build-spring.gradle"
+apply from: "${rootProject.projectDir}/gradle/build-maven.gradle"
+apply from: "${rootProject.projectDir}/gradle/build-eclipse.gradle"
+apply from: "${rootProject.projectDir}/gradle/build-report.gradle"

@@ -7,20 +7,21 @@ FROM ${BASE_IMAGE}
 # The remaining arguments need to be placed after the `FROM`
 # See: https://ryandaniels.ca/blog/docker-dockerfile-arg-from-arg-trouble/
 
-# Folders
+LABEL maintainer="SecHub FOSS Team"
+
+# Build args
 ARG PDS_FOLDER="/pds"
+ARG PDS_VERSION="0.27.0"
 ARG SCRIPT_FOLDER="/scripts"
-ENV TOOL_FOLDER="/tools"
 ARG WORKSPACE="/workspace"
+
+# Environment variables in container
 ENV DOWNLOAD_FOLDER="/downloads"
 ENV MOCK_FOLDER="$SCRIPT_FOLDER/mocks"
-
-# PDS
-ENV PDS_VERSION=0.25.0
-
-# Shared volumes
+ENV PDS_VERSION="${PDS_VERSION}"
 ENV SHARED_VOLUMES="/shared_volumes"
 ENV SHARED_VOLUME_UPLOAD_DIR="$SHARED_VOLUMES/uploads"
+ENV TOOL_FOLDER="/tools"
 
 # non-root user
 # using fixed group and user ids
@@ -34,12 +35,11 @@ RUN  mkdir --parents "$TOOL_FOLDER" "$DOWNLOAD_FOLDER" "$PDS_FOLDER" "$SHARED_VO
     chown --recursive pds:pds "$WORKSPACE" "$SHARED_VOLUMES"
 
 # Update image and install dependencies
-ENV DEBIAN_FRONTEND noninteractive
-
-RUN apt-get update && \
-    apt-get --assume-yes upgrade  && \
-    apt-get --assume-yes install wget openjdk-11-jre-headless pip && \
-    apt-get --assume-yes clean
+RUN export DEBIAN_FRONTEND=noninteractive && \
+    apt-get -qq update && \
+    apt-get -qq --assume-yes upgrade  && \
+    apt-get -qq --assume-yes install sed wget openjdk-11-jre-headless pip && \
+    apt-get -qq --assume-yes clean
 
 # Copy scripts
 COPY scripts $SCRIPT_FOLDER
@@ -55,9 +55,9 @@ RUN pip install -r $TOOL_FOLDER/packages.txt
 # Install the SecHub Product Delegation Server (PDS)
 RUN cd "$PDS_FOLDER" && \
     # download checksum file
-    wget --no-verbose "https://github.com/Daimler/sechub/releases/download/v$PDS_VERSION-pds/sechub-pds-$PDS_VERSION.jar.sha256sum" && \
+    wget --no-verbose "https://github.com/mercedes-benz/sechub/releases/download/v$PDS_VERSION-pds/sechub-pds-$PDS_VERSION.jar.sha256sum" && \
     # download pds
-    wget --no-verbose "https://github.com/Daimler/sechub/releases/download/v$PDS_VERSION-pds/sechub-pds-$PDS_VERSION.jar" && \
+    wget --no-verbose "https://github.com/mercedes-benz/sechub/releases/download/v$PDS_VERSION-pds/sechub-pds-$PDS_VERSION.jar" && \
     # verify that the checksum and the checksum of the file are same
     sha256sum --check sechub-pds-$PDS_VERSION.jar.sha256sum
 

@@ -1,0 +1,41 @@
+' SPDX-License-Identifier: MIT
+@startuml
+skinparam linetype ortho
+hide empty methods
+hide empty fields
+package com.mercedesbenz.sechub.domain.scan.product.sereco{
+'com.mercedesbenz.sechub.domain.scan.product.sereco.SerecoFalsePositiveMarker
+   class SerecoFalsePositiveMarker ##[bold]black {
+    ~SerecoFalsePositiveFinder : falsePositiveCodeFinder
+    ~ScanProjectConfigService : scanProjectConfigService
+  }
+  SerecoFalsePositiveMarker *-- SerecoFalsePositiveFinder
+  SerecoFalsePositiveMarker -[#blue]- com.mercedesbenz.sechub.domain.scan.project.FalsePositiveEntry
+  SerecoFalsePositiveMarker *-- com.mercedesbenz.sechub.domain.scan.project.ScanProjectConfigService
+  SerecoFalsePositiveMarker -[#blue]- com.mercedesbenz.sechub.sereco.metadata.SerecoVulnerability
+'com.mercedesbenz.sechub.domain.scan.product.sereco.SerecoFalsePositiveFinder
+   class SerecoFalsePositiveFinder{
+    ~SerecoFalsePositiveCodeScanStrategy : codeSCanStrategy
+  }
+  SerecoFalsePositiveFinder *-- SerecoFalsePositiveCodeScanStrategy
+  SerecoFalsePositiveFinder *-- SerecoFalsePositiveWebScanStrategy
+  SerecoFalsePositiveFinder -[#blue]- com.mercedesbenz.sechub.domain.scan.project.FalsePositiveMetaData
+  SerecoFalsePositiveFinder -[#blue]- com.mercedesbenz.sechub.sereco.metadata.SerecoVulnerability
+'com.mercedesbenz.sechub.domain.scan.product.sereco.SerecoFalsePositiveCodeScanStrategy
+   class SerecoFalsePositiveCodeScanStrategy{
+    ~SerecoSourceRelevantPartResolver : relevantPartResolver
+  }
+  SerecoFalsePositiveCodeScanStrategy *-- SerecoSourceRelevantPartResolver
+  SerecoFalsePositiveCodeScanStrategy -[#blue]- com.mercedesbenz.sechub.domain.scan.project.FalsePositiveCodePartMetaData
+  SerecoFalsePositiveCodeScanStrategy .[#green]. com.mercedesbenz.sechub.domain.scan.project.FalsePositiveMetaData
+  SerecoFalsePositiveCodeScanStrategy -[#blue]- com.mercedesbenz.sechub.sereco.metadata.SerecoCodeCallStackElement
+  SerecoFalsePositiveCodeScanStrategy .[#green]. com.mercedesbenz.sechub.sereco.metadata.SerecoVulnerability
+'com.mercedesbenz.sechub.domain.scan.product.sereco.SerecoSourceRelevantPartResolver
+   class SerecoSourceRelevantPartResolver{
+  }
+   class SerecoFalsePositiveWebScanStrategy{
+    
+  }
+}
+
+@enduml

@@ -7,9 +7,9 @@
  */
 dependencies {
 
-    compile project(':sechub-scan')
-    compile project(':sechub-adapter-checkmarx')
+    implementation project(':sechub-scan')
+    implementation project(':sechub-adapter-checkmarx')
 
-    testCompile project(':sechub-testframework')
+    testImplementation project(':sechub-testframework')
 }
 

@@ -1,0 +1,265 @@
+{
+	"@version": "2.11.0",
+	"@generated": "Mon, 11 Oct 2021 14:07:06",
+	"site":[ 
+		{
+			"@name": "http://127.0.0.1:3000",
+			"@host": "127.0.0.1",
+			"@port": "3000",
+			"@ssl": "false",
+			"alerts": [ 
+				{
+					"pluginid": "10098",
+					"alertRef": "10098",
+					"alert": "Cross-Domain Misconfiguration",
+					"name": "Cross-Domain Misconfiguration",
+					"riskcode": "2",
+					"confidence": "2",
+					"riskdesc": "Medium (Medium)",
+					"desc": "<p>Web browser data loading may be possible, due to a Cross Origin Resource Sharing (CORS) misconfiguration on the web server</p>",
+					"instances":[ 
+						{
+							"uri": "http://127.0.0.1:3000/",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "Access-Control-Allow-Origin: *"
+						},
+						{
+							"uri": "http://127.0.0.1:3000/assets/public/favicon_js.ico",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "Access-Control-Allow-Origin: *"
+						},
+						{
+							"uri": "http://127.0.0.1:3000/polyfills-es5.js",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "Access-Control-Allow-Origin: *"
+						},
+						{
+							"uri": "http://127.0.0.1:3000/robots.txt",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "Access-Control-Allow-Origin: *"
+						},
+						{
+							"uri": "http://127.0.0.1:3000/runtime-es2018.js",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "Access-Control-Allow-Origin: *"
+						},
+						{
+							"uri": "http://127.0.0.1:3000/runtime-es5.js",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "Access-Control-Allow-Origin: *"
+						},
+						{
+							"uri": "http://127.0.0.1:3000/sitemap.xml",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "Access-Control-Allow-Origin: *"
+						},
+						{
+							"uri": "http://127.0.0.1:3000/styles.css",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "Access-Control-Allow-Origin: *"
+						},
+						{
+							"uri": "http://127.0.0.1:3000/vendor-es2018.js",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "Access-Control-Allow-Origin: *"
+						}
+					],
+					"count": "9",
+					"solution": "<p>Ensure that sensitive data is not available in an unauthenticated manner (using IP address white-listing, for instance).</p><p>Configure the \"Access-Control-Allow-Origin\" HTTP header to a more restrictive set of domains, or remove all CORS headers entirely, to allow the web browser to enforce the Same Origin Policy (SOP) in a more restrictive manner.</p>",
+					"otherinfo": "<p>The CORS misconfiguration on the web server permits cross-domain read requests from arbitrary third party domains, using unauthenticated APIs on this domain. Web browser implementations do not permit arbitrary third parties to read the response from authenticated APIs, however. This reduces the risk somewhat. This misconfiguration could be used by an attacker to access data that is available in an unauthenticated manner, but which uses some other form of security, such as IP address white-listing.</p>",
+					"reference": "<p>https://vulncat.fortify.com/en/detail?id=desc.config.dotnet.html5_overly_permissive_cors_policy</p>",
+					"cweid": "264",
+					"wascid": "14",
+					"sourceid": "6"
+				},
+				{
+					"pluginid": "10017",
+					"alertRef": "10017",
+					"alert": "Cross-Domain JavaScript Source File Inclusion",
+					"name": "Cross-Domain JavaScript Source File Inclusion",
+					"riskcode": "1",
+					"confidence": "2",
+					"riskdesc": "Low (Medium)",
+					"desc": "<p>The page includes one or more script files from a third-party domain.</p>",
+					"instances":[ 
+						{
+							"uri": "http://127.0.0.1:3000/",
+							"method": "GET",
+							"param": "//cdnjs.cloudflare.com/ajax/libs/cookieconsent2/3.1.0/cookieconsent.min.js",
+							"attack": "",
+							"evidence": "<script src=\"//cdnjs.cloudflare.com/ajax/libs/cookieconsent2/3.1.0/cookieconsent.min.js\"></script>"
+						},
+						{
+							"uri": "http://127.0.0.1:3000/",
+							"method": "GET",
+							"param": "//cdnjs.cloudflare.com/ajax/libs/jquery/2.2.4/jquery.min.js",
+							"attack": "",
+							"evidence": "<script src=\"//cdnjs.cloudflare.com/ajax/libs/jquery/2.2.4/jquery.min.js\"></script>"
+						},
+						{
+							"uri": "http://127.0.0.1:3000/sitemap.xml",
+							"method": "GET",
+							"param": "//cdnjs.cloudflare.com/ajax/libs/cookieconsent2/3.1.0/cookieconsent.min.js",
+							"attack": "",
+							"evidence": "<script src=\"//cdnjs.cloudflare.com/ajax/libs/cookieconsent2/3.1.0/cookieconsent.min.js\"></script>"
+						},
+						{
+							"uri": "http://127.0.0.1:3000/sitemap.xml",
+							"method": "GET",
+							"param": "//cdnjs.cloudflare.com/ajax/libs/jquery/2.2.4/jquery.min.js",
+							"attack": "",
+							"evidence": "<script src=\"//cdnjs.cloudflare.com/ajax/libs/jquery/2.2.4/jquery.min.js\"></script>"
+						}
+					],
+					"count": "4",
+					"solution": "<p>Ensure JavaScript source files are loaded from only trusted sources, and the sources can't be controlled by end users of the application.</p>",
+					"otherinfo": "",
+					"reference": "",
+					"cweid": "829",
+					"wascid": "15",
+					"sourceid": "6"
+				},
+				{
+					"pluginid": "10096",
+					"alertRef": "10096",
+					"alert": "Timestamp Disclosure - Unix",
+					"name": "Timestamp Disclosure - Unix",
+					"riskcode": "1",
+					"confidence": "1",
+					"riskdesc": "Low (Low)",
+					"desc": "<p>A timestamp was disclosed by the application/web server - Unix</p>",
+					"instances":[ 
+						{
+							"uri": "http://127.0.0.1:3000/polyfills-es5.js",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "62425156"
+						},
+						{
+							"uri": "http://127.0.0.1:3000/polyfills-es5.js",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "94906265"
+						},
+						{
+							"uri": "http://127.0.0.1:3000/vendor-es2018.js",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "0000000004"
+						},
+						{
+							"uri": "http://127.0.0.1:3000/vendor-es2018.js",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "0000000005"
+						},
+						{
+							"uri": "http://127.0.0.1:3000/vendor-es2018.js",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "0000039834"
+						},
+						{
+							"uri": "http://127.0.0.1:3000/vendor-es2018.js",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "0000051215"
+						},
+						{
+							"uri": "http://127.0.0.1:3000/vendor-es2018.js",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "179464974"
+						},
+						{
+							"uri": "http://127.0.0.1:3000/vendor-es2018.js",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "1801948466"
+						},
+						{
+							"uri": "http://127.0.0.1:3000/vendor-es2018.js",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "1801949248"
+						},
+						{
+							"uri": "http://127.0.0.1:3000/vendor-es2018.js",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "1803700518"
+						}
+					],
+					"count": "10",
+					"solution": "<p>Manually confirm that the timestamp data is not sensitive, and that the data cannot be aggregated to disclose exploitable patterns.</p>",
+					"otherinfo": "<p>62425156, which evaluates to: 1971-12-24 13:19:16</p>",
+					"reference": "<p>http://projects.webappsec.org/w/page/13246936/Information%20Leakage</p>",
+					"cweid": "200",
+					"wascid": "13",
+					"sourceid": "25"
+				},
+				{
+					"pluginid": "10027",
+					"alertRef": "10027",
+					"alert": "Information Disclosure - Suspicious Comments",
+					"name": "Information Disclosure - Suspicious Comments",
+					"riskcode": "0",
+					"confidence": "1",
+					"riskdesc": "Informational (Low)",
+					"desc": "<p>The response appears to contain suspicious comments which may help an attacker. Note: Matches made within script blocks or files are against the entire content not only comments.</p>",
+					"instances":[ 
+						{
+							"uri": "http://127.0.0.1:3000/polyfills-es5.js",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "Select"
+						},
+						{
+							"uri": "http://127.0.0.1:3000/vendor-es2018.js",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "query"
+						}
+					],
+					"count": "2",
+					"solution": "<p>Remove all comments that return information that may help an attacker and fix any underlying problems they refer to.</p>",
+					"otherinfo": "<p>The following pattern was used: \\bSELECT\\b and was detected in the element starting with: \"!function(){function t(t,n){var r=\"undefined\"!=typeof Symbol&&t[Symbol.iterator]||t[\"@@iterator\"];if(!r){if(Array.isArray(t)||(r\", see evidence field for the suspicious comment/snippet.</p>",
+					"reference": "",
+					"cweid": "200",
+					"wascid": "13",
+					"sourceid": "25"
+				}
+			]
+		}
+	]
+}

@@ -13,31 +13,31 @@
                 ],
                 "severity": "MEDIUM",//<4>
                 "code": {
-                    "location": "java/com/daimler/sechub/docgen/AsciidocGenerator.java",//<5>
+                    "location": "java/com/mercedesbenz/sechub/docgen/AsciidocGenerator.java",//<5>
                     "line": 28,//<6>
                     "column": 35,
                     "source": "\tpublic static void main(String[] args) throws Exception {",
                     "relevantPart": "args",
                     "calls": {//<7>
-                        "location": "java/com/daimler/sechub/docgen/AsciidocGenerator.java",
+                        "location": "java/com/mercedesbenz/sechub/docgen/AsciidocGenerator.java",
                         "line": 33,
                         "column": 17,
                         "source": "\t\tString path = args[0];",
                         "relevantPart": "args",
                         "calls": {
-                            "location": "java/com/daimler/sechub/docgen/AsciidocGenerator.java",
+                            "location": "java/com/mercedesbenz/sechub/docgen/AsciidocGenerator.java",
                             "line": 33,
                             "column": 10,
                             "source": "\t\tString path = args[0];",
                             "relevantPart": "path",
                             "calls": {
-                                "location": "java/com/daimler/sechub/docgen/AsciidocGenerator.java",
+                                "location": "java/com/mercedesbenz/sechub/docgen/AsciidocGenerator.java",
                                 "line": 34,
                                 "column": 38,
                                 "source": "\t\tFile documentsGenFolder = new File(path);",
                                 "relevantPart": "path",
                                 "calls": {
-                                    "location": "java/com/daimler/sechub/docgen/AsciidocGenerator.java",//<8>
+                                    "location": "java/com/mercedesbenz/sechub/docgen/AsciidocGenerator.java",//<8>
                                     "line": 34,//<9>
                                     "column": 29,
                                     "source": "\t\tFile documentsGenFolder = new File(path);",//<10>
@@ -59,7 +59,7 @@
                 ],
                 "severity": "INFO",
                 "code": {
-                    "location": "java/com/daimler/sechub/docgen/usecase/UseCaseRestDocModelDataCollector.java",
+                    "location": "java/com/mercedesbenz/sechub/docgen/usecase/UseCaseRestDocModelDataCollector.java",
                     "line": 137,
                     "column": 5,
                     "source": "\t\t} catch (IOException e) {",

@@ -1,1919 +1,1903 @@
 {
-    "runs": [
-        {
-            "tool": {
-                "driver": {
-                    "name": "mobsfscan",
-                    "rules": [
-                        {
-                            "id": "ios_log",
-                            "name": "IosLog",
-                            "helpUri": "https://github.com/MobSF/owasp-mstg/blob/master/Document/0x06i-Testing-Code-Quality-and-Build-Settings.md#finding-debugging-code-and-verbose-error-logging-mstg-code-4"
-                        },
-                        {
-                            "id": "ios_hardcoded_secret",
-                            "name": "IosHardcodedSecret",
-                            "helpUri": "https://github.com/MobSF/owasp-mstg/blob/master/Document/0x05d-Testing-Data-Storage.md#checking-memory-for-sensitive-data-mstg-storage-10"
-                        },
-                        {
-                            "id": "ios_sha1_collision",
-                            "name": "IosSha1Collision",
-                            "helpUri": "https://github.com/MobSF/owasp-mstg/blob/master/Document/0x04g-Testing-Cryptography.md#identifying-insecure-andor-deprecated-cryptographic-algorithms-mstg-crypto-4"
-                        },
-                        {
-                            "id": "ios_weak_hash",
-                            "name": "IosWeakHash",
-                            "helpUri": "https://github.com/MobSF/owasp-mstg/blob/master/Document/0x04g-Testing-Cryptography.md#identifying-insecure-andor-deprecated-cryptographic-algorithms-mstg-crypto-4"
-                        },
-                        {
-                            "id": "ios_detect_reversing",
-                            "name": "IosDetectReversing",
-                            "helpUri": "https://github.com/MobSF/owasp-mstg/blob/master/Document/0x06j-Testing-Resiliency-Against-Reverse-Engineering.md#ios-anti-reversing-defenses"
-                        },
-                        {
-                            "id": "ios_cert_pinning",
-                            "name": "IosCertPinning",
-                            "helpUri": "https://github.com/MobSF/owasp-mstg/blob/master/Document/0x05g-Testing-Network-Communication.md#testing-custom-certificate-stores-and-certificate-pinning-mstg-network-4"
-                        },
-                        {
-                            "id": "ios_keyboard_cache",
-                            "name": "IosKeyboardCache",
-                            "helpUri": "https://github.com/MobSF/owasp-mstg/blob/master/Document/0x06d-Testing-Data-Storage.md#finding-sensitive-data-in-the-keyboard-cache-mstg-storage-5"
-                        },
-                        {
-                            "id": "ios_custom_keyboard_disabled",
-                            "name": "IosCustomKeyboardDisabled",
-                            "helpUri": "https://github.com/MobSF/owasp-mstg/blob/master/Document/0x06h-Testing-Platform-Interaction.md#app-extensions"
-                        }
-                    ],
-                    "version": "0.0.8",
-                    "informationUri": "https://github.com/MobSF/mobsfscan",
-                    "semanticVersion": "0.0.8"
-                }
+  "runs": [
+    {
+      "tool": {
+        "driver": {
+          "name": "mobsfscan",
+          "rules": [
+            {
+              "id": "ios_sha1_collision",
+              "name": "IosSha1Collision",
+              "helpUri": "https://github.com/MobSF/owasp-mstg/blob/master/Document/0x04g-Testing-Cryptography.md#identifying-insecure-andor-deprecated-cryptographic-algorithms-mstg-crypto-4"
             },
-            "invocations": [
-                {
-                    "executionSuccessful": true,
-                    "endTimeUtc": "2022-01-12T20:32:10Z"
-                }
-            ],
-            "results": [
-                {
-                    "message": {
-                        "text": "The App logs information. Sensitive information should never be logged."
-                    },
-                    "level": "note",
-                    "locations": [
-                        {
-                            "physicalLocation": {
-                                "region": {
-                                    "snippet": {
-                                        "text": "print(string)"
-                                    },
-                                    "endColumn": 979,
-                                    "endLine": 47,
-                                    "startColumn": 966,
-                                    "startLine": 47
-                                },
-                                "artifactLocation": {
-                                    "uri": "file:///workspace/workspace/8132bda2-7059-4fa3-8dda-24b103964b03/upload/unzipped/sourcecode/UnSAFE_Bank/iOS/Source%20Code/Pods/lottie-ios/lottie-swift/src/Private/Utility/Debugging/LayerDebugging.swift"
-                                }
-                            }
-                        },
-                        {
-                            "physicalLocation": {
-                                "region": {
-                                    "snippet": {
-                                        "text": "print(receivedJSON)"
-                                    },
-                                    "endColumn": 3729,
-                                    "endLine": 103,
-                                    "startColumn": 3710,
-                                    "startLine": 103
-                                },
-                                "artifactLocation": {
-                                    "uri": "file:///workspace/workspace/8132bda2-7059-4fa3-8dda-24b103964b03/upload/unzipped/sourcecode/UnSAFE_Bank/iOS/Source%20Code/damnVIA/ViewControllers/Bank%20Transfer/BankTransferVC4.swift"
-                                }
-                            }
-                        },
-                        {
-                            "physicalLocation": {
-                                "region": {
-                                    "snippet": {
-                                        "text": "print(receivedJSON)"
-                                    },
-                                    "endColumn": 7306,
-                                    "endLine": 167,
-                                    "startColumn": 7287,
-                                    "startLine": 167
-                                },
-                                "artifactLocation": {
-                                    "uri": "file:///workspace/workspace/8132bda2-7059-4fa3-8dda-24b103964b03/upload/unzipped/sourcecode/UnSAFE_Bank/iOS/Source%20Code/damnVIA/ViewControllers/Pre-Login/SignUpController.swift"
-                                }
-                            }
-                        },
-                        {
-                            "physicalLocation": {
-                                "region": {
-                                    "snippet": {
-                                        "text": "print(receivedJSON)"
-                                    },
-                                    "endColumn": 11760,
-                                    "endLine": 262,
-                                    "startColumn": 11741,
-                                    "startLine": 262
-                                },
-                                "artifactLocation": {
-                                    "uri": "file:///workspace/workspace/8132bda2-7059-4fa3-8dda-24b103964b03/upload/unzipped/sourcecode/UnSAFE_Bank/iOS/Source%20Code/damnVIA/ViewControllers/Pre-Login/SignUpController.swift"
-                                }
-                            }
-                        },
-                        {
-                            "physicalLocation": {
-                                "region": {
-                                    "snippet": {
-                                        "text": "print(receivedJSON)"
-                                    },
-                                    "endColumn": 1527,
-                                    "endLine": 44,
-                                    "startColumn": 1508,
-                                    "startLine": 44
-                                },
-                                "artifactLocation": {
-                                    "uri": "file:///workspace/workspace/8132bda2-7059-4fa3-8dda-24b103964b03/upload/unzipped/sourcecode/UnSAFE_Bank/iOS/Source%20Code/damnVIA/ViewControllers/Bank%20Transfer/BankTransferVC6.swift"
-                                }
-                            }
-                        },
-                        {
-                            "physicalLocation": {
-                                "region": {
-                                    "snippet": {
-                                        "text": "print(receivedJSON)"
-                                    },
-                                    "endColumn": 5783,
-                                    "endLine": 147,
-                                    "startColumn": 5764,
-                                    "startLine": 147
-                                },
-                                "artifactLocation": {
-                                    "uri": "file:///workspace/workspace/8132bda2-7059-4fa3-8dda-24b103964b03/upload/unzipped/sourcecode/UnSAFE_Bank/iOS/Source%20Code/damnVIA/Helpers/ViewController%2BExtensions.swift"
-                                }
-                            }
-                        },
-                        {
-                            "physicalLocation": {
-                                "region": {
-                                    "snippet": {
-                                        "text": "print(\"Settings opened: \\(success)\")"
-                                    },
-                                    "endColumn": 4067,
-                                    "endLine": 100,
-                                    "startColumn": 4031,
-                                    "startLine": 100
-                                },
-                                "artifactLocation": {
-                                    "uri": "file:///workspace/workspace/8132bda2-7059-4fa3-8dda-24b103964b03/upload/unzipped/sourcecode/UnSAFE_Bank/iOS/Source%20Code/damnVIA/Helpers/ViewController%2BExtensions.swift"
-                                }
-                            }
-                        },
-                        {
-                            "physicalLocation": {
-                                "region": {
-                                    "snippet": {
-                                        "text": "print(\"\\(text) \\(executionTime)\")"
-                                    },
-                                    "endColumn": 1180,
-                                    "endLine": 26,
-                                    "startColumn": 1147,
-                                    "startLine": 26
-                                },
-                                "artifactLocation": {
-                                    "uri": "file:///workspace/workspace/8132bda2-7059-4fa3-8dda-24b103964b03/upload/unzipped/sourcecode/UnSAFE_Bank/iOS/Source%20Code/Pods/CryptoSwift/Sources/CryptoSwift/Foundation/Utils%2BFoundation.swift"
-                                }
-                            }
-                        },
-                        {
-                            "physicalLocation": {
-                                "region": {
-                                    "snippet": {
-                                        "text": "print(newKeypath.appendingKey(key).fullPath)"
-                                    },
-                                    "endColumn": 1987,
-                                    "endLine": 75,
-                                    "startColumn": 1943,
-                                    "startLine": 75
-                                },
-                                "artifactLocation": {
-                                    "uri": "file:///workspace/workspace/8132bda2-7059-4fa3-8dda-24b103964b03/upload/unzipped/sourcecode/UnSAFE_Bank/iOS/Source%20Code/Pods/lottie-ios/lottie-swift/src/Private/Utility/Extensions/AnimationKeypathExtension.swift"
-                                }
-                            }
-                        },
-                        {
-                            "physicalLocation": {
-                                "region": {
-                                    "snippet": {
-                                        "text": "print(newKeypath.fullPath)"
-                                    },
-                                    "endColumn": 1896,
-                                    "endLine": 73,
-                                    "startColumn": 1870,
-                                    "startLine": 73
-                                },
-                                "artifactLocation": {
-                                    "uri": "file:///workspace/workspace/8132bda2-7059-4fa3-8dda-24b103964b03/upload/unzipped/sourcecode/UnSAFE_Bank/iOS/Source%20Code/Pods/lottie-ios/lottie-swift/src/Private/Utility/Extensions/AnimationKeypathExtension.swift"
-                                }
-                            }
-                        },
-                        {
-                            "physicalLocation": {
-                                "region": {
-                                    "snippet": {
-                                        "text": "print(noString.unwrap())"
-                                    },
-                                    "endColumn": 4743,
-                                    "endLine": 140,
-                                    "startColumn": 4719,
-                                    "startLine": 140
-                                },
-                                "artifactLocation": {
-                                    "uri": "file:///workspace/workspace/8132bda2-7059-4fa3-8dda-24b103964b03/upload/unzipped/sourcecode/UnSAFE_Bank/iOS/Source%20Code/Pods/Alamofire/Source/Result.swift"
-                                }
-                            }
-                        },
-                        {
-                            "physicalLocation": {
-                                "region": {
-                                    "snippet": {
-                                        "text": "print(possibleInt.unwrap())"
-                                    },
-                                    "endColumn": 5346,
-                                    "endLine": 157,
-                                    "startColumn": 5319,
-                                    "startLine": 157
-                                },
-                                "artifactLocation": {
-                                    "uri": "file:///workspace/workspace/8132bda2-7059-4fa3-8dda-24b103964b03/upload/unzipped/sourcecode/UnSAFE_Bank/iOS/Source%20Code/Pods/Alamofire/Source/Result.swift"
-                                }
-                            }
-                        },
-                        {
-                            "physicalLocation": {
-                                "region": {
-                                    "snippet": {
-                                        "text": "print(possibleString.unwrap())"
-                                    },
-                                    "endColumn": 4603,
-                                    "endLine": 136,
-                                    "startColumn": 4573,
-                                    "startLine": 136
-                                },
-                                "artifactLocation": {
-                                    "uri": "file:///workspace/workspace/8132bda2-7059-4fa3-8dda-24b103964b03/upload/unzipped/sourcecode/UnSAFE_Bank/iOS/Source%20Code/Pods/Alamofire/Source/Result.swift"
-                                }
-                            }
-                        },
-                        {
-                            "physicalLocation": {
-                                "region": {
-                                    "snippet": {
-                                        "text": "print(\"Lottie: Logging Animation Keypaths\")"
-                                    },
-                                    "endColumn": 1092,
-                                    "endLine": 49,
-                                    "startColumn": 1049,
-                                    "startLine": 49
-                                },
-                                "artifactLocation": {
-                                    "uri": "file:///workspace/workspace/8132bda2-7059-4fa3-8dda-24b103964b03/upload/unzipped/sourcecode/UnSAFE_Bank/iOS/Source%20Code/Pods/lottie-ios/lottie-swift/src/Private/LayerContainers/AnimationContainer.swift"
-                                }
-                            }
-                        },
-                        {
-                            "physicalLocation": {
-                                "region": {
-                                    "snippet": {
-                                        "text": "print(\"* |Children\")"
-                                    },
-                                    "endColumn": 323,
-                                    "endLine": 17,
-                                    "startColumn": 303,
-                                    "startLine": 17
-                                },
-                                "artifactLocation": {
-                                    "uri": "file:///workspace/workspace/8132bda2-7059-4fa3-8dda-24b103964b03/upload/unzipped/sourcecode/UnSAFE_Bank/iOS/Source%20Code/Pods/lottie-ios/lottie-swift/src/Private/Utility/Debugging/AnimatorNodeDebugging.swift"
-                                }
-                            }
-                        },
-                        {
-                            "physicalLocation": {
-                                "region": {
-                                    "snippet": {
-                                        "text": "print(\"|\")"
-                                    },
-                                    "endColumn": 408,
-                                    "endLine": 21,
-                                    "startColumn": 398,
-                                    "startLine": 21
-                                },
-                                "artifactLocation": {
-                                    "uri": "file:///workspace/workspace/8132bda2-7059-4fa3-8dda-24b103964b03/upload/unzipped/sourcecode/UnSAFE_Bank/iOS/Source%20Code/Pods/lottie-ios/lottie-swift/src/Private/Utility/Debugging/AnimatorNodeDebugging.swift"
-                                }
-                            }
-                        },
-                        {
-                            "physicalLocation": {
-                                "region": {
-                                    "snippet": {
-                                        "text": "print(String(describing: type(of: self)))"
-                                    },
-                                    "endColumn": 251,
-                                    "endLine": 14,
-                                    "startColumn": 210,
-                                    "startLine": 14
-                                },
-                                "artifactLocation": {
-                                    "uri": "file:///workspace/workspace/8132bda2-7059-4fa3-8dda-24b103964b03/upload/unzipped/sourcecode/UnSAFE_Bank/iOS/Source%20Code/Pods/lottie-ios/lottie-swift/src/Private/Utility/Debugging/AnimatorNodeDebugging.swift"
-                                }
-                            }
-                        },
-                        {
-                            "physicalLocation": {
-                                "region": {
-                                    "snippet": {
-                                        "text": "print(\"*\")"
-                                    },
-                                    "endColumn": 378,
-                                    "endLine": 19,
-                                    "startColumn": 368,
-                                    "startLine": 19
-                                },
-                                "artifactLocation": {
-                                    "uri": "file:///workspace/workspace/8132bda2-7059-4fa3-8dda-24b103964b03/upload/unzipped/sourcecode/UnSAFE_Bank/iOS/Source%20Code/Pods/lottie-ios/lottie-swift/src/Private/Utility/Debugging/AnimatorNodeDebugging.swift"
-                                }
-                            }
-                        },
-                        {
-                            "physicalLocation": {
-                                "region": {
-                                    "snippet": {
-                                        "text": "print(receivedJSON)"
-                                    },
-                                    "endColumn": 2812,
-                                    "endLine": 68,
-                                    "startColumn": 2793,
-                                    "startLine": 68
-                                },
-                                "artifactLocation": {
-                                    "uri": "file:///workspace/workspace/8132bda2-7059-4fa3-8dda-24b103964b03/upload/unzipped/sourcecode/UnSAFE_Bank/iOS/Source%20Code/damnVIA/ViewControllers/Post-Login/DashboardVC.swift"
-                                }
-                            }
-                        },
-                        {
-                            "physicalLocation": {
-                                "region": {
-                                    "snippet": {
-                                        "text": "print(\"from date is : \\(self.fromdate ?? \"not found\")\")"
-                                    },
-                                    "endColumn": 2460,
-                                    "endLine": 65,
-                                    "startColumn": 2405,
-                                    "startLine": 65
-                                },
-                                "artifactLocation": {
-                                    "uri": "file:///workspace/workspace/8132bda2-7059-4fa3-8dda-24b103964b03/upload/unzipped/sourcecode/UnSAFE_Bank/iOS/Source%20Code/damnVIA/ViewControllers/Account%20Statement/ShowAccountStatementVC.swift"
-                                }
-                            }
-                        },
-                        {
-                            "physicalLocation": {
-                                "region": {
-                                    "snippet": {
-                                        "text": "print(\"from date is : \\(self.toDate ?? \"not found\")\")"
-                                    },
-                                    "endColumn": 2963,
-                                    "endLine": 76,
-                                    "startColumn": 2910,
-                                    "startLine": 76
-                                },
-                                "artifactLocation": {
-                                    "uri": "file:///workspace/workspace/8132bda2-7059-4fa3-8dda-24b103964b03/upload/unzipped/sourcecode/UnSAFE_Bank/iOS/Source%20Code/damnVIA/ViewControllers/Account%20Statement/ShowAccountStatementVC.swift"
-                                }
-                            }
-                        },
-                        {
-                            "physicalLocation": {
-                                "region": {
-                                    "snippet": {
-                                        "text": "print(error.localizedDescription)"
-                                    },
-                                    "endColumn": 7705,
-                                    "endLine": 181,
-                                    "startColumn": 7672,
-                                    "startLine": 181
-                                },
-                                "artifactLocation": {
-                                    "uri": "file:///workspace/workspace/8132bda2-7059-4fa3-8dda-24b103964b03/upload/unzipped/sourcecode/UnSAFE_Bank/iOS/Source%20Code/damnVIA/ViewControllers/Account%20Statement/ShowAccountStatementVC.swift"
-                                }
-                            }
-                        },
-                        {
-                            "physicalLocation": {
-                                "region": {
-                                    "snippet": {
-                                        "text": "print(json!)"
-                                    },
-                                    "endColumn": 1612,
-                                    "endLine": 50,
-                                    "startColumn": 1600,
-                                    "startLine": 50
-                                },
-                                "artifactLocation": {
-                                    "uri": "file:///workspace/workspace/8132bda2-7059-4fa3-8dda-24b103964b03/upload/unzipped/sourcecode/UnSAFE_Bank/iOS/Source%20Code/damnVIA/ViewControllers/Beneficiary/FetchBeneficiaryDetails.swift"
-                                }
-                            }
-                        },
-                        {
-                            "physicalLocation": {
-                                "region": {
-                                    "snippet": {
-                                        "text": "print(receivedJSON)"
-                                    },
-                                    "endColumn": 1743,
-                                    "endLine": 52,
-                                    "startColumn": 1724,
-                                    "startLine": 52
-                                },
-                                "artifactLocation": {
-                                    "uri": "file:///workspace/workspace/8132bda2-7059-4fa3-8dda-24b103964b03/upload/unzipped/sourcecode/UnSAFE_Bank/iOS/Source%20Code/damnVIA/ViewControllers/Beneficiary/FetchBeneficiaryDetails.swift"
-                                }
-                            }
-                        },
-                        {
-                            "physicalLocation": {
-                                "region": {
-                                    "snippet": {
-                                        "text": "print(response)"
-                                    },
-                                    "endColumn": 9383,
-                                    "endLine": 202,
-                                    "startColumn": 9368,
-                                    "startLine": 202
-                                },
-                                "artifactLocation": {
-                                    "uri": "file:///workspace/workspace/8132bda2-7059-4fa3-8dda-24b103964b03/upload/unzipped/sourcecode/UnSAFE_Bank/iOS/Source%20Code/damnVIA/Helpers/APIHelpers.swift"
-                                }
-                            }
-                        },
-                        {
-                            "physicalLocation": {
-                                "region": {
-                                    "snippet": {
-                                        "text": "print(error.localizedDescription)"
-                                    },
-                                    "endColumn": 11875,
-                                    "endLine": 252,
-                                    "startColumn": 11842,
-                                    "startLine": 252
-                                },
-                                "artifactLocation": {
-                                    "uri": "file:///workspace/workspace/8132bda2-7059-4fa3-8dda-24b103964b03/upload/unzipped/sourcecode/UnSAFE_Bank/iOS/Source%20Code/damnVIA/Helpers/APIHelpers.swift"
-                                }
-                            }
-                        },
-                        {
-                            "physicalLocation": {
-                                "region": {
-                                    "snippet": {
-                                        "text": "print(error.localizedDescription)"
-                                    },
-                                    "endColumn": 13936,
-                                    "endLine": 292,
-                                    "startColumn": 13903,
-                                    "startLine": 292
-                                },
-                                "artifactLocation": {
-                                    "uri": "file:///workspace/workspace/8132bda2-7059-4fa3-8dda-24b103964b03/upload/unzipped/sourcecode/UnSAFE_Bank/iOS/Source%20Code/damnVIA/Helpers/APIHelpers.swift"
-                                }
-                            }
-                        },
-                        {
-                            "physicalLocation": {
-                                "region": {
-                                    "snippet": {
-                                        "text": "print(error.localizedDescription)"
-                                    },
-                                    "endColumn": 12963,
-                                    "endLine": 273,
-                                    "startColumn": 12930,
-                                    "startLine": 273
-                                },
-                                "artifactLocation": {
-                                    "uri": "file:///workspace/workspace/8132bda2-7059-4fa3-8dda-24b103964b03/upload/unzipped/sourcecode/UnSAFE_Bank/iOS/Source%20Code/damnVIA/Helpers/APIHelpers.swift"
-                                }
-                            }
-                        },
-                        {
-                            "physicalLocation": {
-                                "region": {
-                                    "snippet": {
-                                        "text": "print(error.localizedDescription)"
-                                    },
-                                    "endColumn": 7900,
-                                    "endLine": 169,
-                                    "startColumn": 7867,
-                                    "startLine": 169
-                                },
-                                "artifactLocation": {
-                                    "uri": "file:///workspace/workspace/8132bda2-7059-4fa3-8dda-24b103964b03/upload/unzipped/sourcecode/UnSAFE_Bank/iOS/Source%20Code/damnVIA/Helpers/APIHelpers.swift"
-                                }
-                            }
-                        },
-                        {
-                            "physicalLocation": {
-                                "region": {
-                                    "snippet": {
-                                        "text": "print(error.localizedDescription)"
-                                    },
-                                    "endColumn": 17227,
-                                    "endLine": 349,
-                                    "startColumn": 17194,
-                                    "startLine": 349
-                                },
-                                "artifactLocation": {
-                                    "uri": "file:///workspace/workspace/8132bda2-7059-4fa3-8dda-24b103964b03/upload/unzipped/sourcecode/UnSAFE_Bank/iOS/Source%20Code/damnVIA/Helpers/APIHelpers.swift"
-                                }
-                            }
-                        },
-                        {
-                            "physicalLocation": {
-                                "region": {
-                                    "snippet": {
-                                        "text": "print(error.localizedDescription)"
-                                    },
-                                    "endColumn": 22491,
-                                    "endLine": 447,
-                                    "startColumn": 22458,
-                                    "startLine": 447
-                                },
-                                "artifactLocation": {
-                                    "uri": "file:///workspace/workspace/8132bda2-7059-4fa3-8dda-24b103964b03/upload/unzipped/sourcecode/UnSAFE_Bank/iOS/Source%20Code/damnVIA/Helpers/APIHelpers.swift"
-                                }
-                            }
-                        },
-                        {
-                            "physicalLocation": {
-                                "region": {
-                                    "snippet": {
-                                        "text": "print(error.localizedDescription)"
-                                    },
-                                    "endColumn": 21382,
-                                    "endLine": 427,
-                                    "startColumn": 21349,
-                                    "startLine": 427
-                                },
-                                "artifactLocation": {
-                                    "uri": "file:///workspace/workspace/8132bda2-7059-4fa3-8dda-24b103964b03/upload/unzipped/sourcecode/UnSAFE_Bank/iOS/Source%20Code/damnVIA/Helpers/APIHelpers.swift"
-                                }
-                            }
-                        },
-                        {
-                            "physicalLocation": {
-                                "region": {
-                                    "snippet": {
-                                        "text": "print(error.localizedDescription)"
-                                    },
-                                    "endColumn": 19336,
-                                    "endLine": 389,
-                                    "startColumn": 19303,
-                                    "startLine": 389
-                                },
-                                "artifactLocation": {
-                                    "uri": "file:///workspace/workspace/8132bda2-7059-4fa3-8dda-24b103964b03/upload/unzipped/sourcecode/UnSAFE_Bank/iOS/Source%20Code/damnVIA/Helpers/APIHelpers.swift"
-                                }
-                            }
-                        },
-                        {
-                            "physicalLocation": {
-                                "region": {
-                                    "snippet": {
-                                        "text": "print(error.localizedDescription)"
-                                    },
-                                    "endColumn": 18297,
-                                    "endLine": 370,
-                                    "startColumn": 18264,
-                                    "startLine": 370
-                                },
-                                "artifactLocation": {
-                                    "uri": "file:///workspace/workspace/8132bda2-7059-4fa3-8dda-24b103964b03/upload/unzipped/sourcecode/UnSAFE_Bank/iOS/Source%20Code/damnVIA/Helpers/APIHelpers.swift"
-                                }
-                            }
-                        },
-                        {
-                            "physicalLocation": {
-                                "region": {
-                                    "snippet": {
-                                        "text": "print(params)"
-                                    },
-                                    "endColumn": 11282,
-                                    "endLine": 240,
-                                    "startColumn": 11269,
-                                    "startLine": 240
-                                },
-                                "artifactLocation": {
-                                    "uri": "file:///workspace/workspace/8132bda2-7059-4fa3-8dda-24b103964b03/upload/unzipped/sourcecode/UnSAFE_Bank/iOS/Source%20Code/damnVIA/Helpers/APIHelpers.swift"
-                                }
-                            }
-                        },
-                        {
-                            "physicalLocation": {
-                                "region": {
-                                    "snippet": {
-                                        "text": "print(response)"
-                                    },
-                                    "endColumn": 22782,
-                                    "endLine": 454,
-                                    "startColumn": 22767,
-                                    "startLine": 454
-                                },
-                                "artifactLocation": {
-                                    "uri": "file:///workspace/workspace/8132bda2-7059-4fa3-8dda-24b103964b03/upload/unzipped/sourcecode/UnSAFE_Bank/iOS/Source%20Code/damnVIA/Helpers/APIHelpers.swift"
-                                }
-                            }
-                        },
-                        {
-                            "physicalLocation": {
-                                "region": {
-                                    "snippet": {
-                                        "text": "print(error.localizedDescription)"
-                                    },
-                                    "endColumn": 6897,
-                                    "endLine": 149,
-                                    "startColumn": 6864,
-                                    "startLine": 149
-                                },
-                                "artifactLocation": {
-                                    "uri": "file:///workspace/workspace/8132bda2-7059-4fa3-8dda-24b103964b03/upload/unzipped/sourcecode/UnSAFE_Bank/iOS/Source%20Code/damnVIA/Helpers/APIHelpers.swift"
-                                }
-                            }
-                        },
-                        {
-                            "physicalLocation": {
-                                "region": {
-                                    "snippet": {
-                                        "text": "print(params)"
-                                    },
-                                    "endColumn": 12193,
-                                    "endLine": 261,
-                                    "startColumn": 12180,
-                                    "startLine": 261
-                                },
-                                "artifactLocation": {
-                                    "uri": "file:///workspace/workspace/8132bda2-7059-4fa3-8dda-24b103964b03/upload/unzipped/sourcecode/UnSAFE_Bank/iOS/Source%20Code/damnVIA/Helpers/APIHelpers.swift"
-                                }
-                            }
-                        },
-                        {
-                            "physicalLocation": {
-                                "region": {
-                                    "snippet": {
-                                        "text": "print(params)"
-                                    },
-                                    "endColumn": 9965,
-                                    "endLine": 212,
-                                    "startColumn": 9952,
-                                    "startLine": 212
-                                },
-                                "artifactLocation": {
-                                    "uri": "file:///workspace/workspace/8132bda2-7059-4fa3-8dda-24b103964b03/upload/unzipped/sourcecode/UnSAFE_Bank/iOS/Source%20Code/damnVIA/Helpers/APIHelpers.swift"
-                                }
-                            }
-                        },
-                        {
-                            "physicalLocation": {
-                                "region": {
-                                    "snippet": {
-                                        "text": "print(error.localizedDescription)"
-                                    },
-                                    "endColumn": 20364,
-                                    "endLine": 408,
-                                    "startColumn": 20331,
-                                    "startLine": 408
-                                },
-                                "artifactLocation": {
-                                    "uri": "file:///workspace/workspace/8132bda2-7059-4fa3-8dda-24b103964b03/upload/unzipped/sourcecode/UnSAFE_Bank/iOS/Source%20Code/damnVIA/Helpers/APIHelpers.swift"
-                                }
-                            }
-                        },
-                        {
-                            "physicalLocation": {
-                                "region": {
-                                    "snippet": {
-                                        "text": "print(error.localizedDescription)"
-                                    },
-                                    "endColumn": 4053,
-                                    "endLine": 97,
-                                    "startColumn": 4020,
-                                    "startLine": 97
-                                },
-                                "artifactLocation": {
-                                    "uri": "file:///workspace/workspace/8132bda2-7059-4fa3-8dda-24b103964b03/upload/unzipped/sourcecode/UnSAFE_Bank/iOS/Source%20Code/damnVIA/Helpers/APIHelpers.swift"
-                                }
-                            }
-                        },
-                        {
-                            "physicalLocation": {
-                                "region": {
-                                    "snippet": {
-                                        "text": "print(error.localizedDescription)"
-                                    },
-                                    "endColumn": 2955,
-                                    "endLine": 77,
-                                    "startColumn": 2922,
-                                    "startLine": 77
-                                },
-                                "artifactLocation": {
-                                    "uri": "file:///workspace/workspace/8132bda2-7059-4fa3-8dda-24b103964b03/upload/unzipped/sourcecode/UnSAFE_Bank/iOS/Source%20Code/damnVIA/Helpers/APIHelpers.swift"
-                                }
-                            }
-                        },
-                        {
-                            "physicalLocation": {
-                                "region": {
-                                    "snippet": {
-                                        "text": "print(params)"
-                                    },
-                                    "endColumn": 17944,
-                                    "endLine": 363,
-                                    "startColumn": 17931,
-                                    "startLine": 363
-                                },
-                                "artifactLocation": {
-                                    "uri": "file:///workspace/workspace/8132bda2-7059-4fa3-8dda-24b103964b03/upload/unzipped/sourcecode/UnSAFE_Bank/iOS/Source%20Code/damnVIA/Helpers/APIHelpers.swift"
-                                }
-                            }
-                        },
-                        {
-                            "physicalLocation": {
-                                "region": {
-                                    "snippet": {
-                                        "text": "print(error.localizedDescription)"
-                                    },
-                                    "endColumn": 9096,
-                                    "endLine": 195,
-                                    "startColumn": 9063,
-                                    "startLine": 195
-                                },
-                                "artifactLocation": {
-                                    "uri": "file:///workspace/workspace/8132bda2-7059-4fa3-8dda-24b103964b03/upload/unzipped/sourcecode/UnSAFE_Bank/iOS/Source%20Code/damnVIA/Helpers/APIHelpers.swift"
-                                }
-                            }
-                        },
-                        {
-                            "physicalLocation": {
-                                "region": {
-                                    "snippet": {
-                                        "text": "print(error.localizedDescription)"
-                                    },
-                                    "endColumn": 5054,
-                                    "endLine": 116,
-                                    "startColumn": 5021,
-                                    "startLine": 116
-                                },
-                                "artifactLocation": {
-                                    "uri": "file:///workspace/workspace/8132bda2-7059-4fa3-8dda-24b103964b03/upload/unzipped/sourcecode/UnSAFE_Bank/iOS/Source%20Code/damnVIA/Helpers/APIHelpers.swift"
-                                }
-                            }
-                        },
-                        {
-                            "physicalLocation": {
-                                "region": {
-                                    "snippet": {
-                                        "text": "print(\"connecting to url : \\(urlPathsEnum.connectionCheck.path)\")"
-                                    },
-                                    "endColumn": 1288,
-                                    "endLine": 41,
-                                    "startColumn": 1223,
-                                    "startLine": 41
-                                },
-                                "artifactLocation": {
-                                    "uri": "file:///workspace/workspace/8132bda2-7059-4fa3-8dda-24b103964b03/upload/unzipped/sourcecode/UnSAFE_Bank/iOS/Source%20Code/damnVIA/Helpers/APIHelpers.swift"
-                                }
-                            }
-                        },
-                        {
-                            "physicalLocation": {
-                                "region": {
-                                    "snippet": {
-                                        "text": "print(response)"
-                                    },
-                                    "endColumn": 10841,
-                                    "endLine": 231,
-                                    "startColumn": 10826,
-                                    "startLine": 231
-                                },
-                                "artifactLocation": {
-                                    "uri": "file:///workspace/workspace/8132bda2-7059-4fa3-8dda-24b103964b03/upload/unzipped/sourcecode/UnSAFE_Bank/iOS/Source%20Code/damnVIA/Helpers/APIHelpers.swift"
-                                }
-                            }
-                        },
-                        {
-                            "physicalLocation": {
-                                "region": {
-                                    "snippet": {
-                                        "text": "print(error.localizedDescription)"
-                                    },
-                                    "endColumn": 1883,
-                                    "endLine": 55,
-                                    "startColumn": 1850,
-                                    "startLine": 55
-                                },
-                                "artifactLocation": {
-                                    "uri": "file:///workspace/workspace/8132bda2-7059-4fa3-8dda-24b103964b03/upload/unzipped/sourcecode/UnSAFE_Bank/iOS/Source%20Code/damnVIA/Helpers/APIHelpers.swift"
-                                }
-                            }
-                        },
-                        {
-                            "physicalLocation": {
-                                "region": {
-                                    "snippet": {
-                                        "text": "print(error.localizedDescription)"
-                                    },
-                                    "endColumn": 16158,
-                                    "endLine": 330,
-                                    "startColumn": 16125,
-                                    "startLine": 330
-                                },
-                                "artifactLocation": {
-                                    "uri": "file:///workspace/workspace/8132bda2-7059-4fa3-8dda-24b103964b03/upload/unzipped/sourcecode/UnSAFE_Bank/iOS/Source%20Code/damnVIA/Helpers/APIHelpers.swift"
-                                }
-                            }
-                        },
-                        {
-                            "physicalLocation": {
-                                "region": {
-                                    "snippet": {
-                                        "text": "print(response)"
-                                    },
-                                    "endColumn": 11670,
-                                    "endLine": 247,
-                                    "startColumn": 11655,
-                                    "startLine": 247
-                                },
-                                "artifactLocation": {
-                                    "uri": "file:///workspace/workspace/8132bda2-7059-4fa3-8dda-24b103964b03/upload/unzipped/sourcecode/UnSAFE_Bank/iOS/Source%20Code/damnVIA/Helpers/APIHelpers.swift"
-                                }
-                            }
-                        },
-                        {
-                            "physicalLocation": {
-                                "region": {
-                                    "snippet": {
-                                        "text": "print(params)"
-                                    },
-                                    "endColumn": 8508,
-                                    "endLine": 183,
-                                    "startColumn": 8495,
-                                    "startLine": 183
-                                },
-                                "artifactLocation": {
-                                    "uri": "file:///workspace/workspace/8132bda2-7059-4fa3-8dda-24b103964b03/upload/unzipped/sourcecode/UnSAFE_Bank/iOS/Source%20Code/damnVIA/Helpers/APIHelpers.swift"
-                                }
-                            }
-                        },
-                        {
-                            "physicalLocation": {
-                                "region": {
-                                    "snippet": {
-                                        "text": "print(error.localizedDescription)"
-                                    },
-                                    "endColumn": 15116,
-                                    "endLine": 311,
-                                    "startColumn": 15083,
-                                    "startLine": 311
-                                },
-                                "artifactLocation": {
-                                    "uri": "file:///workspace/workspace/8132bda2-7059-4fa3-8dda-24b103964b03/upload/unzipped/sourcecode/UnSAFE_Bank/iOS/Source%20Code/damnVIA/Helpers/APIHelpers.swift"
-                                }
-                            }
-                        },
-                        {
-                            "physicalLocation": {
-                                "region": {
-                                    "snippet": {
-                                        "text": "print(error.localizedDescription)"
-                                    },
-                                    "endColumn": 10554,
-                                    "endLine": 224,
-                                    "startColumn": 10521,
-                                    "startLine": 224
-                                },
-                                "artifactLocation": {
-                                    "uri": "file:///workspace/workspace/8132bda2-7059-4fa3-8dda-24b103964b03/upload/unzipped/sourcecode/UnSAFE_Bank/iOS/Source%20Code/damnVIA/Helpers/APIHelpers.swift"
-                                }
-                            }
-                        },
-                        {
-                            "physicalLocation": {
-                                "region": {
-                                    "snippet": {
-                                        "text": "print(response)"
-                                    },
-                                    "endColumn": 1492,
-                                    "endLine": 45,
-                                    "startColumn": 1477,
-                                    "startLine": 45
-                                },
-                                "artifactLocation": {
-                                    "uri": "file:///workspace/workspace/8132bda2-7059-4fa3-8dda-24b103964b03/upload/unzipped/sourcecode/UnSAFE_Bank/iOS/Source%20Code/damnVIA/Helpers/APIHelpers.swift"
-                                }
-                            }
-                        },
-                        {
-                            "physicalLocation": {
-                                "region": {
-                                    "snippet": {
-                                        "text": "print(receivedJSON)"
-                                    },
-                                    "endColumn": 2379,
-                                    "endLine": 62,
-                                    "startColumn": 2360,
-                                    "startLine": 62
-                                },
-                                "artifactLocation": {
-                                    "uri": "file:///workspace/workspace/8132bda2-7059-4fa3-8dda-24b103964b03/upload/unzipped/sourcecode/UnSAFE_Bank/iOS/Source%20Code/damnVIA/ViewControllers/Post-Login/AccountDetails.swift"
-                                }
-                            }
-                        },
-                        {
-                            "physicalLocation": {
-                                "region": {
-                                    "snippet": {
-                                        "text": "print(receivedJSON)"
-                                    },
-                                    "endColumn": 4497,
-                                    "endLine": 108,
-                                    "startColumn": 4478,
-                                    "startLine": 108
-                                },
-                                "artifactLocation": {
-                                    "uri": "file:///workspace/workspace/8132bda2-7059-4fa3-8dda-24b103964b03/upload/unzipped/sourcecode/UnSAFE_Bank/iOS/Source%20Code/damnVIA/ViewControllers/Beneficiary/VerifyOtpVC.swift"
-                                }
-                            }
-                        },
-                        {
-                            "physicalLocation": {
-                                "region": {
-                                    "snippet": {
-                                        "text": "print(receivedJSON)"
-                                    },
-                                    "endColumn": 1674,
-                                    "endLine": 50,
-                                    "startColumn": 1655,
-                                    "startLine": 50
-                                },
-                                "artifactLocation": {
-                                    "uri": "file:///workspace/workspace/8132bda2-7059-4fa3-8dda-24b103964b03/upload/unzipped/sourcecode/UnSAFE_Bank/iOS/Source%20Code/damnVIA/ViewControllers/Beneficiary/VerifyOtpVC.swift"
-                                }
-                            }
-                        },
-                        {
-                            "physicalLocation": {
-                                "region": {
-                                    "snippet": {
-                                        "text": "print(receivedJSON)"
-                                    },
-                                    "endColumn": 7133,
-                                    "endLine": 163,
-                                    "startColumn": 7114,
-                                    "startLine": 163
-                                },
-                                "artifactLocation": {
-                                    "uri": "file:///workspace/workspace/8132bda2-7059-4fa3-8dda-24b103964b03/upload/unzipped/sourcecode/UnSAFE_Bank/iOS/Source%20Code/damnVIA/ViewControllers/Beneficiary/VerifyOtpVC.swift"
-                                }
-                            }
-                        },
-                        {
-                            "physicalLocation": {
-                                "region": {
-                                    "snippet": {
-                                        "text": "print(\"failed to convert string to data\")"
-                                    },
-                                    "endColumn": 17793,
-                                    "endLine": 584,
-                                    "startColumn": 17752,
-                                    "startLine": 584
-                                },
-                                "artifactLocation": {
-                                    "uri": "file:///workspace/workspace/8132bda2-7059-4fa3-8dda-24b103964b03/upload/unzipped/sourcecode/UnSAFE_Bank/iOS/Source%20Code/Pods/KeychainAccess/Lib/KeychainAccess/Keychain.swift"
-                                }
-                            }
-                        },
-                        {
-                            "physicalLocation": {
-                                "region": {
-                                    "snippet": {
-                                        "text": "print(error.localizedDescription)"
-                                    },
-                                    "endColumn": 18815,
-                                    "endLine": 614,
-                                    "startColumn": 18782,
-                                    "startLine": 614
-                                },
-                                "artifactLocation": {
-                                    "uri": "file:///workspace/workspace/8132bda2-7059-4fa3-8dda-24b103964b03/upload/unzipped/sourcecode/UnSAFE_Bank/iOS/Source%20Code/Pods/KeychainAccess/Lib/KeychainAccess/Keychain.swift"
-                                }
-                            }
-                        },
-                        {
-                            "physicalLocation": {
-                                "region": {
-                                    "snippet": {
-                                        "text": "print(\"OSStatus error:[\\(error.errorCode)] \\(error.description)\")"
-                                    },
-                                    "endColumn": 34089,
-                                    "endLine": 1049,
-                                    "startColumn": 34024,
-                                    "startLine": 1049
-                                },
-                                "artifactLocation": {
-                                    "uri": "file:///workspace/workspace/8132bda2-7059-4fa3-8dda-24b103964b03/upload/unzipped/sourcecode/UnSAFE_Bank/iOS/Source%20Code/Pods/KeychainAccess/Lib/KeychainAccess/Keychain.swift"
-                                }
-                            }
-                        },
-                        {
-                            "physicalLocation": {
-                                "region": {
-                                    "snippet": {
-                                        "text": "print(error.localizedDescription)"
-                                    },
-                                    "endColumn": 19846,
-                                    "endLine": 639,
-                                    "startColumn": 19813,
-                                    "startLine": 639
-                                },
-                                "artifactLocation": {
-                                    "uri": "file:///workspace/workspace/8132bda2-7059-4fa3-8dda-24b103964b03/upload/unzipped/sourcecode/UnSAFE_Bank/iOS/Source%20Code/Pods/KeychainAccess/Lib/KeychainAccess/Keychain.swift"
-                                }
-                            }
-                        },
-                        {
-                            "physicalLocation": {
-                                "region": {
-                                    "snippet": {
-                                        "text": "print(\"failed to convert data to string\")"
-                                    },
-                                    "endColumn": 15971,
-                                    "endLine": 522,
-                                    "startColumn": 15930,
-                                    "startLine": 522
-                                },
-                                "artifactLocation": {
-                                    "uri": "file:///workspace/workspace/8132bda2-7059-4fa3-8dda-24b103964b03/upload/unzipped/sourcecode/UnSAFE_Bank/iOS/Source%20Code/Pods/KeychainAccess/Lib/KeychainAccess/Keychain.swift"
-                                }
-                            }
-                        },
-                        {
-                            "physicalLocation": {
-                                "region": {
-                                    "snippet": {
-                                        "text": "print(\"Unavailable 'Touch ID integration' on OS X versions prior to 10.10.\")"
-                                    },
-                                    "endColumn": 41128,
-                                    "endLine": 1258,
-                                    "startColumn": 41052,
-                                    "startLine": 1258
-                                },
-                                "artifactLocation": {
-                                    "uri": "file:///workspace/workspace/8132bda2-7059-4fa3-8dda-24b103964b03/upload/unzipped/sourcecode/UnSAFE_Bank/iOS/Source%20Code/Pods/KeychainAccess/Lib/KeychainAccess/Keychain.swift"
-                                }
-                            }
-                        },
-                        {
-                            "physicalLocation": {
-                                "region": {
-                                    "snippet": {
-                                        "text": "print(\"error:[\\(remoteError!.code)] \\(remoteError!.localizedDescription)\")"
-                                    },
-                                    "endColumn": 29457,
-                                    "endLine": 924,
-                                    "startColumn": 29383,
-                                    "startLine": 924
-                                },
-                                "artifactLocation": {
-                                    "uri": "file:///workspace/workspace/8132bda2-7059-4fa3-8dda-24b103964b03/upload/unzipped/sourcecode/UnSAFE_Bank/iOS/Source%20Code/Pods/KeychainAccess/Lib/KeychainAccess/Keychain.swift"
-                                }
-                            }
-                        },
-                        {
-                            "physicalLocation": {
-                                "region": {
-                                    "snippet": {
-                                        "text": "print(receivedJSON)"
-                                    },
-                                    "endColumn": 2874,
-                                    "endLine": 70,
-                                    "startColumn": 2855,
-                                    "startLine": 70
-                                },
-                                "artifactLocation": {
-                                    "uri": "file:///workspace/workspace/8132bda2-7059-4fa3-8dda-24b103964b03/upload/unzipped/sourcecode/UnSAFE_Bank/iOS/Source%20Code/damnVIA/ViewControllers/Pre-Login/ViewController.swift"
-                                }
-                            }
-                        },
-                        {
-                            "physicalLocation": {
-                                "region": {
-                                    "snippet": {
-                                        "text": "print(receivedJSON)"
-                                    },
-                                    "endColumn": 1857,
-                                    "endLine": 60,
-                                    "startColumn": 1838,
-                                    "startLine": 60
-                                },
-                                "artifactLocation": {
-                                    "uri": "file:///workspace/workspace/8132bda2-7059-4fa3-8dda-24b103964b03/upload/unzipped/sourcecode/UnSAFE_Bank/iOS/Source%20Code/damnVIA/ViewControllers/Beneficiary/ListBeneficiary.swift"
-                                }
-                            }
-                        },
-                        {
-                            "physicalLocation": {
-                                "region": {
-                                    "snippet": {
-                                        "text": "print(\"Something went wrong\")"
-                                    },
-                                    "endColumn": 1058,
-                                    "endLine": 33,
-                                    "startColumn": 1029,
-                                    "startLine": 33
-                                },
-                                "artifactLocation": {
-                                    "uri": "file:///workspace/workspace/8132bda2-7059-4fa3-8dda-24b103964b03/upload/unzipped/sourcecode/UnSAFE_Bank/iOS/Source%20Code/damnVIA/AppDelegate.swift"
-                                }
-                            }
-                        },
-                        {
-                            "physicalLocation": {
-                                "region": {
-                                    "snippet": {
-                                        "text": "print(amount)"
-                                    },
-                                    "endColumn": 3201,
-                                    "endLine": 95,
-                                    "startColumn": 3188,
-                                    "startLine": 95
-                                },
-                                "artifactLocation": {
-                                    "uri": "file:///workspace/workspace/8132bda2-7059-4fa3-8dda-24b103964b03/upload/unzipped/sourcecode/UnSAFE_Bank/iOS/Source%20Code/damnVIA/ViewControllers/Bank%20Transfer/BankTransferVC2.swift"
-                                }
-                            }
-                        }
-                    ],
-                    "properties": {
-                        "owasp-mobile": "M1: Improper Platform Usage",
-                        "masvs": "MSTG-STORAGE-3",
-                        "cwe": "CWE-532 Insertion of Sensitive Information into Log File",
-                        "reference": "https://github.com/MobSF/owasp-mstg/blob/master/Document/0x06i-Testing-Code-Quality-and-Build-Settings.md#finding-debugging-code-and-verbose-error-logging-mstg-code-4"
-                    },
-                    "ruleId": "ios_log",
-                    "ruleIndex": 0
-                },
-                {
-                    "message": {
-                        "text": "Files may contain hardcoded sensitive information like usernames, passwords, keys etc."
-                    },
-                    "locations": [
-                        {
-                            "physicalLocation": {
-                                "region": {
-                                    "snippet": {
-                                        "text": "key = \"urlsession.servertrustpolicymanager\"\n    "
-                                    },
-                                    "endColumn": 2958,
-                                    "endLine": 64,
-                                    "startColumn": 2910,
-                                    "startLine": 63
-                                },
-                                "artifactLocation": {
-                                    "uri": "file:///workspace/workspace/8132bda2-7059-4fa3-8dda-24b103964b03/upload/unzipped/sourcecode/UnSAFE_Bank/iOS/Source%20Code/Pods/Alamofire/Source/ServerTrustPolicy.swift"
-                                }
-                            }
-                        },
-                        {
-                            "physicalLocation": {
-                                "region": {
-                                    "snippet": {
-                                        "text": "key = \"urlsession.servertrustpolicymanager\"\n    "
-                                    },
-                                    "endColumn": 2958,
-                                    "endLine": 64,
-                                    "startColumn": 2910,
-                                    "startLine": 63
-                                },
-                                "artifactLocation": {
-                                    "uri": "file:///workspace/workspace/8132bda2-7059-4fa3-8dda-24b103964b03/upload/unzipped/sourcecode/UnSAFE_Bank/iOS/Source%20Code/Pods/Alamofire/Source/ServerTrustPolicy.swift"
-                                }
-                            }
-                        },
-                        {
-                            "physicalLocation": {
-                                "region": {
-                                    "snippet": {
-                                        "text": "pass = \"new_pass\"\n"
-                                    },
-                                    "endColumn": 1344,
-                                    "endLine": 46,
-                                    "startColumn": 1326,
-                                    "startLine": 46
-                                },
-                                "artifactLocation": {
-                                    "uri": "file:///workspace/workspace/8132bda2-7059-4fa3-8dda-24b103964b03/upload/unzipped/sourcecode/UnSAFE_Bank/iOS/Source%20Code/damnVIA/Helpers/JSONHelpers.swift"
-                                }
-                            }
-                        },
-                        {
-                            "physicalLocation": {
-                                "region": {
-                                    "snippet": {
-                                        "text": "pass = \"old_pass\"\n    "
-                                    },
-                                    "endColumn": 1311,
-                                    "endLine": 46,
-                                    "startColumn": 1289,
-                                    "startLine": 45
-                                },
-                                "artifactLocation": {
-                                    "uri": "file:///workspace/workspace/8132bda2-7059-4fa3-8dda-24b103964b03/upload/unzipped/sourcecode/UnSAFE_Bank/iOS/Source%20Code/damnVIA/Helpers/JSONHelpers.swift"
-                                }
-                            }
-                        },
-                        {
-                            "physicalLocation": {
-                                "region": {
-                                    "snippet": {
-                                        "text": "password = \"passwd\"\n    "
-                                    },
-                                    "endColumn": 777,
-                                    "endLine": 31,
-                                    "startColumn": 753,
-                                    "startLine": 30
-                                },
-                                "artifactLocation": {
-                                    "uri": "file:///workspace/workspace/8132bda2-7059-4fa3-8dda-24b103964b03/upload/unzipped/sourcecode/UnSAFE_Bank/iOS/Source%20Code/damnVIA/Helpers/JSONHelpers.swift"
-                                }
-                            }
-                        },
-                        {
-                            "physicalLocation": {
-                                "region": {
-                                    "snippet": {
-                                        "text": "password = \"new_pass\"\n    "
-                                    },
-                                    "endColumn": 1159,
-                                    "endLine": 42,
-                                    "startColumn": 1133,
-                                    "startLine": 41
-                                },
-                                "artifactLocation": {
-                                    "uri": "file:///workspace/workspace/8132bda2-7059-4fa3-8dda-24b103964b03/upload/unzipped/sourcecode/UnSAFE_Bank/iOS/Source%20Code/damnVIA/Helpers/JSONHelpers.swift"
-                                }
-                            }
-                        },
-                        {
-                            "physicalLocation": {
-                                "region": {
-                                    "snippet": {
-                                        "text": "pass = \"new_pass\"\n"
-                                    },
-                                    "endColumn": 1344,
-                                    "endLine": 46,
-                                    "startColumn": 1326,
-                                    "startLine": 46
-                                },
-                                "artifactLocation": {
-                                    "uri": "file:///workspace/workspace/8132bda2-7059-4fa3-8dda-24b103964b03/upload/unzipped/sourcecode/UnSAFE_Bank/iOS/Source%20Code/damnVIA/Helpers/JSONHelpers.swift"
-                                }
-                            }
-                        },
-                        {
-                            "physicalLocation": {
-                                "region": {
-                                    "snippet": {
-                                        "text": "pass = \"old_pass\"\n    "
-                                    },
-                                    "endColumn": 1311,
-                                    "endLine": 46,
-                                    "startColumn": 1289,
-                                    "startLine": 45
-                                },
-                                "artifactLocation": {
-                                    "uri": "file:///workspace/workspace/8132bda2-7059-4fa3-8dda-24b103964b03/upload/unzipped/sourcecode/UnSAFE_Bank/iOS/Source%20Code/damnVIA/Helpers/JSONHelpers.swift"
-                                }
-                            }
-                        },
-                        {
-                            "physicalLocation": {
-                                "region": {
-                                    "snippet": {
-                                        "text": "password = \"passwd\"\n    "
-                                    },
-                                    "endColumn": 777,
-                                    "endLine": 31,
-                                    "startColumn": 753,
-                                    "startLine": 30
-                                },
-                                "artifactLocation": {
-                                    "uri": "file:///workspace/workspace/8132bda2-7059-4fa3-8dda-24b103964b03/upload/unzipped/sourcecode/UnSAFE_Bank/iOS/Source%20Code/damnVIA/Helpers/JSONHelpers.swift"
-                                }
-                            }
-                        },
-                        {
-                            "physicalLocation": {
-                                "region": {
-                                    "snippet": {
-                                        "text": "password = \"new_pass\"\n    "
-                                    },
-                                    "endColumn": 1159,
-                                    "endLine": 42,
-                                    "startColumn": 1133,
-                                    "startLine": 41
-                                },
-                                "artifactLocation": {
-                                    "uri": "file:///workspace/workspace/8132bda2-7059-4fa3-8dda-24b103964b03/upload/unzipped/sourcecode/UnSAFE_Bank/iOS/Source%20Code/damnVIA/Helpers/JSONHelpers.swift"
-                                }
-                            }
-                        },
-                        {
-                            "physicalLocation": {
-                                "region": {
-                                    "snippet": {
-                                        "text": "password = \"4\"\n"
-                                    },
-                                    "endColumn": 1780,
-                                    "endLine": 57,
-                                    "startColumn": 1765,
-                                    "startLine": 57
-                                },
-                                "artifactLocation": {
-                                    "uri": "file:///workspace/workspace/8132bda2-7059-4fa3-8dda-24b103964b03/upload/unzipped/sourcecode/UnSAFE_Bank/iOS/Source%20Code/damnVIA/Strings.swift"
-                                }
-                            }
-                        },
-                        {
-                            "physicalLocation": {
-                                "region": {
-                                    "snippet": {
-                                        "text": "password = \"password/change\"\n    "
-                                    },
-                                    "endColumn": 2784,
-                                    "endLine": 85,
-                                    "startColumn": 2751,
-                                    "startLine": 84
-                                },
-                                "artifactLocation": {
-                                    "uri": "file:///workspace/workspace/8132bda2-7059-4fa3-8dda-24b103964b03/upload/unzipped/sourcecode/UnSAFE_Bank/iOS/Source%20Code/damnVIA/Strings.swift"
-                                }
-                            }
-                        },
-                        {
-                            "physicalLocation": {
-                                "region": {
-                                    "snippet": {
-                                        "text": "password = \"4\"\n"
-                                    },
-                                    "endColumn": 1780,
-                                    "endLine": 57,
-                                    "startColumn": 1765,
-                                    "startLine": 57
-                                },
-                                "artifactLocation": {
-                                    "uri": "file:///workspace/workspace/8132bda2-7059-4fa3-8dda-24b103964b03/upload/unzipped/sourcecode/UnSAFE_Bank/iOS/Source%20Code/damnVIA/Strings.swift"
-                                }
-                            }
-                        },
-                        {
-                            "physicalLocation": {
-                                "region": {
-                                    "snippet": {
-                                        "text": "password = \"password/change\"\n    "
-                                    },
-                                    "endColumn": 2784,
-                                    "endLine": 85,
-                                    "startColumn": 2751,
-                                    "startLine": 84
-                                },
-                                "artifactLocation": {
-                                    "uri": "file:///workspace/workspace/8132bda2-7059-4fa3-8dda-24b103964b03/upload/unzipped/sourcecode/UnSAFE_Bank/iOS/Source%20Code/damnVIA/Strings.swift"
-                                }
-                            }
-                        }
-                    ],
-                    "properties": {
-                        "owasp-mobile": "M9: Reverse Engineering",
-                        "masvs": "MSTG-STORAGE-14",
-                        "cwe": "CWE-312 Cleartext Storage of Sensitive Information",
-                        "reference": "https://github.com/MobSF/owasp-mstg/blob/master/Document/0x05d-Testing-Data-Storage.md#checking-memory-for-sensitive-data-mstg-storage-10"
-                    },
-                    "ruleId": "ios_hardcoded_secret",
-                    "ruleIndex": 1
-                },
-                {
-                    "message": {
-                        "text": "SHA1 is a weak hash known to have hash collisions."
-                    },
-                    "locations": [
-                        {
-                            "physicalLocation": {
-                                "region": {
-                                    "snippet": {
-                                        "text": "sha1("
-                                    },
-                                    "endColumn": 1741,
-                                    "endLine": 43,
-                                    "startColumn": 1736,
-                                    "startLine": 43
-                                },
-                                "artifactLocation": {
-                                    "uri": "file:///workspace/workspace/8132bda2-7059-4fa3-8dda-24b103964b03/upload/unzipped/sourcecode/UnSAFE_Bank/iOS/Source%20Code/Pods/CryptoSwift/Sources/CryptoSwift/HMAC.swift"
-                                }
-                            }
-                        },
-                        {
-                            "physicalLocation": {
-                                "region": {
-                                    "snippet": {
-                                        "text": "sha1("
-                                    },
-                                    "endColumn": 1204,
-                                    "endLine": 26,
-                                    "startColumn": 1199,
-                                    "startLine": 26
-                                },
-                                "artifactLocation": {
-                                    "uri": "file:///workspace/workspace/8132bda2-7059-4fa3-8dda-24b103964b03/upload/unzipped/sourcecode/UnSAFE_Bank/iOS/Source%20Code/Pods/CryptoSwift/Sources/CryptoSwift/String%2BExtension.swift"
-                                }
-                            }
-                        },
-                        {
-                            "physicalLocation": {
-                                "region": {
-                                    "snippet": {
-                                        "text": "sha1("
-                                    },
-                                    "endColumn": 1244,
-                                    "endLine": 27,
-                                    "startColumn": 1239,
-                                    "startLine": 27
-                                },
-                                "artifactLocation": {
-                                    "uri": "file:///workspace/workspace/8132bda2-7059-4fa3-8dda-24b103964b03/upload/unzipped/sourcecode/UnSAFE_Bank/iOS/Source%20Code/Pods/CryptoSwift/Sources/CryptoSwift/String%2BExtension.swift"
-                                }
-                            }
-                        },
-                        {
-                            "physicalLocation": {
-                                "region": {
-                                    "snippet": {
-                                        "text": "sha1("
-                                    },
-                                    "endColumn": 1375,
-                                    "endLine": 34,
-                                    "startColumn": 1370,
-                                    "startLine": 34
-                                },
-                                "artifactLocation": {
-                                    "uri": "file:///workspace/workspace/8132bda2-7059-4fa3-8dda-24b103964b03/upload/unzipped/sourcecode/UnSAFE_Bank/iOS/Source%20Code/Pods/CryptoSwift/Sources/CryptoSwift/Foundation/Data%2BExtension.swift"
-                                }
-                            }
-                        },
-                        {
-                            "physicalLocation": {
-                                "region": {
-                                    "snippet": {
-                                        "text": "sha1("
-                                    },
-                                    "endColumn": 1420,
-                                    "endLine": 35,
-                                    "startColumn": 1415,
-                                    "startLine": 35
-                                },
-                                "artifactLocation": {
-                                    "uri": "file:///workspace/workspace/8132bda2-7059-4fa3-8dda-24b103964b03/upload/unzipped/sourcecode/UnSAFE_Bank/iOS/Source%20Code/Pods/CryptoSwift/Sources/CryptoSwift/Foundation/Data%2BExtension.swift"
-                                }
-                            }
-                        },
-                        {
-                            "physicalLocation": {
-                                "region": {
-                                    "snippet": {
-                                        "text": "sha1("
-                                    },
-                                    "endColumn": 1764,
-                                    "endLine": 43,
-                                    "startColumn": 1759,
-                                    "startLine": 43
-                                },
-                                "artifactLocation": {
-                                    "uri": "file:///workspace/workspace/8132bda2-7059-4fa3-8dda-24b103964b03/upload/unzipped/sourcecode/UnSAFE_Bank/iOS/Source%20Code/Pods/CryptoSwift/Sources/CryptoSwift/PKCS/PBKDF1.swift"
-                                }
-                            }
-                        },
-                        {
-                            "physicalLocation": {
-                                "region": {
-                                    "snippet": {
-                                        "text": "SHA1("
-                                    },
-                                    "endColumn": 1455,
-                                    "endLine": 32,
-                                    "startColumn": 1450,
-                                    "startLine": 32
-                                },
-                                "artifactLocation": {
-                                    "uri": "file:///workspace/workspace/8132bda2-7059-4fa3-8dda-24b103964b03/upload/unzipped/sourcecode/UnSAFE_Bank/iOS/Source%20Code/Pods/CryptoSwift/Sources/CryptoSwift/Digest.swift"
-                                }
-                            }
-                        },
-                        {
-                            "physicalLocation": {
-                                "region": {
-                                    "snippet": {
-                                        "text": "sha1("
-                                    },
-                                    "endColumn": 1394,
-                                    "endLine": 31,
-                                    "startColumn": 1389,
-                                    "startLine": 31
-                                },
-                                "artifactLocation": {
-                                    "uri": "file:///workspace/workspace/8132bda2-7059-4fa3-8dda-24b103964b03/upload/unzipped/sourcecode/UnSAFE_Bank/iOS/Source%20Code/Pods/CryptoSwift/Sources/CryptoSwift/Digest.swift"
-                                }
-                            }
-                        },
-                        {
-                            "physicalLocation": {
-                                "region": {
-                                    "snippet": {
-                                        "text": "sha1("
-                                    },
-                                    "endColumn": 3229,
-                                    "endLine": 97,
-                                    "startColumn": 3224,
-                                    "startLine": 97
-                                },
-                                "artifactLocation": {
-                                    "uri": "file:///workspace/workspace/8132bda2-7059-4fa3-8dda-24b103964b03/upload/unzipped/sourcecode/UnSAFE_Bank/iOS/Source%20Code/Pods/CryptoSwift/Sources/CryptoSwift/Array%2BExtension.swift"
-                                }
-                            }
-                        },
-                        {
-                            "physicalLocation": {
-                                "region": {
-                                    "snippet": {
-                                        "text": "sha1("
-                                    },
-                                    "endColumn": 3273,
-                                    "endLine": 98,
-                                    "startColumn": 3268,
-                                    "startLine": 98
-                                },
-                                "artifactLocation": {
-                                    "uri": "file:///workspace/workspace/8132bda2-7059-4fa3-8dda-24b103964b03/upload/unzipped/sourcecode/UnSAFE_Bank/iOS/Source%20Code/Pods/CryptoSwift/Sources/CryptoSwift/Array%2BExtension.swift"
-                                }
-                            }
-                        }
-                    ],
-                    "properties": {
-                        "owasp-mobile": "M5: Insufficient Cryptography",
-                        "masvs": "MSTG-CRYPTO-4",
-                        "cwe": "CWE-327 Use of a Broken or Risky Cryptographic Algorithm",
-                        "reference": "https://github.com/MobSF/owasp-mstg/blob/master/Document/0x04g-Testing-Cryptography.md#identifying-insecure-andor-deprecated-cryptographic-algorithms-mstg-crypto-4"
-                    },
-                    "ruleId": "ios_sha1_collision",
-                    "ruleIndex": 2
-                },
-                {
-                    "message": {
-                        "text": "Weak Hash algorithm used. The hash algorithm is known to have hash collisions."
-                    },
-                    "locations": [
-                        {
-                            "physicalLocation": {
-                                "region": {
-                                    "snippet": {
-                                        "text": "md5("
-                                    },
-                                    "endColumn": 2015,
-                                    "endLine": 51,
-                                    "startColumn": 2011,
-                                    "startLine": 51
-                                },
-                                "artifactLocation": {
-                                    "uri": "file:///workspace/workspace/8132bda2-7059-4fa3-8dda-24b103964b03/upload/unzipped/sourcecode/UnSAFE_Bank/iOS/Source%20Code/Pods/CryptoSwift/Sources/CryptoSwift/HMAC.swift"
-                                }
-                            }
-                        },
-                        {
-                            "physicalLocation": {
-                                "region": {
-                                    "snippet": {
-                                        "text": "md5("
-                                    },
-                                    "endColumn": 1121,
-                                    "endLine": 22,
-                                    "startColumn": 1117,
-                                    "startLine": 22
-                                },
-                                "artifactLocation": {
-                                    "uri": "file:///workspace/workspace/8132bda2-7059-4fa3-8dda-24b103964b03/upload/unzipped/sourcecode/UnSAFE_Bank/iOS/Source%20Code/Pods/CryptoSwift/Sources/CryptoSwift/String%2BExtension.swift"
-                                }
-                            }
-                        },
-                        {
-                            "physicalLocation": {
-                                "region": {
-                                    "snippet": {
-                                        "text": "md5("
-                                    },
-                                    "endColumn": 1160,
-                                    "endLine": 23,
-                                    "startColumn": 1156,
-                                    "startLine": 23
-                                },
-                                "artifactLocation": {
-                                    "uri": "file:///workspace/workspace/8132bda2-7059-4fa3-8dda-24b103964b03/upload/unzipped/sourcecode/UnSAFE_Bank/iOS/Source%20Code/Pods/CryptoSwift/Sources/CryptoSwift/String%2BExtension.swift"
-                                }
-                            }
-                        },
-                        {
-                            "physicalLocation": {
-                                "region": {
-                                    "snippet": {
-                                        "text": "md5("
-                                    },
-                                    "endColumn": 1339,
-                                    "endLine": 31,
-                                    "startColumn": 1335,
-                                    "startLine": 31
-                                },
-                                "artifactLocation": {
-                                    "uri": "file:///workspace/workspace/8132bda2-7059-4fa3-8dda-24b103964b03/upload/unzipped/sourcecode/UnSAFE_Bank/iOS/Source%20Code/Pods/CryptoSwift/Sources/CryptoSwift/Foundation/Data%2BExtension.swift"
-                                }
-                            }
-                        },
-                        {
-                            "physicalLocation": {
-                                "region": {
-                                    "snippet": {
-                                        "text": "md5("
-                                    },
-                                    "endColumn": 1295,
-                                    "endLine": 30,
-                                    "startColumn": 1291,
-                                    "startLine": 30
-                                },
-                                "artifactLocation": {
-                                    "uri": "file:///workspace/workspace/8132bda2-7059-4fa3-8dda-24b103964b03/upload/unzipped/sourcecode/UnSAFE_Bank/iOS/Source%20Code/Pods/CryptoSwift/Sources/CryptoSwift/Foundation/Data%2BExtension.swift"
-                                }
-                            }
-                        },
-                        {
-                            "physicalLocation": {
-                                "region": {
-                                    "snippet": {
-                                        "text": "md5("
-                                    },
-                                    "endColumn": 1836,
-                                    "endLine": 45,
-                                    "startColumn": 1832,
-                                    "startLine": 45
-                                },
-                                "artifactLocation": {
-                                    "uri": "file:///workspace/workspace/8132bda2-7059-4fa3-8dda-24b103964b03/upload/unzipped/sourcecode/UnSAFE_Bank/iOS/Source%20Code/Pods/CryptoSwift/Sources/CryptoSwift/PKCS/PBKDF1.swift"
-                                }
-                            }
-                        },
-                        {
-                            "physicalLocation": {
-                                "region": {
-                                    "snippet": {
-                                        "text": "md5("
-                                    },
-                                    "endColumn": 1172,
-                                    "endLine": 24,
-                                    "startColumn": 1168,
-                                    "startLine": 24
-                                },
-                                "artifactLocation": {
-                                    "uri": "file:///workspace/workspace/8132bda2-7059-4fa3-8dda-24b103964b03/upload/unzipped/sourcecode/UnSAFE_Bank/iOS/Source%20Code/Pods/CryptoSwift/Sources/CryptoSwift/Digest.swift"
-                                }
-                            }
-                        },
-                        {
-                            "physicalLocation": {
-                                "region": {
-                                    "snippet": {
-                                        "text": "MD5("
-                                    },
-                                    "endColumn": 1232,
-                                    "endLine": 25,
-                                    "startColumn": 1228,
-                                    "startLine": 25
-                                },
-                                "artifactLocation": {
-                                    "uri": "file:///workspace/workspace/8132bda2-7059-4fa3-8dda-24b103964b03/upload/unzipped/sourcecode/UnSAFE_Bank/iOS/Source%20Code/Pods/CryptoSwift/Sources/CryptoSwift/Digest.swift"
-                                }
-                            }
-                        },
-                        {
-                            "physicalLocation": {
-                                "region": {
-                                    "snippet": {
-                                        "text": "MD5("
-                                    },
-                                    "endColumn": 1232,
-                                    "endLine": 25,
-                                    "startColumn": 1228,
-                                    "startLine": 25
-                                },
-                                "artifactLocation": {
-                                    "uri": "file:///workspace/workspace/8132bda2-7059-4fa3-8dda-24b103964b03/upload/unzipped/sourcecode/UnSAFE_Bank/iOS/Source%20Code/Pods/CryptoSwift/Sources/CryptoSwift/Digest.swift"
-                                }
-                            }
-                        },
-                        {
-                            "physicalLocation": {
-                                "region": {
-                                    "snippet": {
-                                        "text": "md5("
-                                    },
-                                    "endColumn": 3195,
-                                    "endLine": 94,
-                                    "startColumn": 3191,
-                                    "startLine": 94
-                                },
-                                "artifactLocation": {
-                                    "uri": "file:///workspace/workspace/8132bda2-7059-4fa3-8dda-24b103964b03/upload/unzipped/sourcecode/UnSAFE_Bank/iOS/Source%20Code/Pods/CryptoSwift/Sources/CryptoSwift/Array%2BExtension.swift"
-                                }
-                            }
-                        },
-                        {
-                            "physicalLocation": {
-                                "region": {
-                                    "snippet": {
-                                        "text": "md5("
-                                    },
-                                    "endColumn": 3152,
-                                    "endLine": 93,
-                                    "startColumn": 3148,
-                                    "startLine": 93
-                                },
-                                "artifactLocation": {
-                                    "uri": "file:///workspace/workspace/8132bda2-7059-4fa3-8dda-24b103964b03/upload/unzipped/sourcecode/UnSAFE_Bank/iOS/Source%20Code/Pods/CryptoSwift/Sources/CryptoSwift/Array%2BExtension.swift"
-                                }
-                            }
-                        }
-                    ],
-                    "properties": {
-                        "owasp-mobile": "M5: Insufficient Cryptography",
-                        "masvs": "MSTG-CRYPTO-4",
-                        "cwe": "CWE-327 Use of a Broken or Risky Cryptographic Algorithm",
-                        "reference": "https://github.com/MobSF/owasp-mstg/blob/master/Document/0x04g-Testing-Cryptography.md#identifying-insecure-andor-deprecated-cryptographic-algorithms-mstg-crypto-4"
-                    },
-                    "ruleId": "ios_weak_hash",
-                    "ruleIndex": 3
-                },
-                {
-                    "message": {
-                        "text": "This app does not have Reverse engineering detection capabilities."
-                    },
-                    "level": "note",
-                    "locations": [
-                        {
-                            "physicalLocation": {
-                                "region": {
-                                    "snippet": {
-                                        "text": "Missing Best Practice"
-                                    },
-                                    "endColumn": 1,
-                                    "endLine": 1,
-                                    "startColumn": 1,
-                                    "startLine": 1
-                                },
-                                "artifactLocation": {
-                                    "uri": "/workspace/workspace/8132bda2-7059-4fa3-8dda-24b103964b03/upload/unzipped/sourcecode/"
-                                }
-                            }
-                        }
-                    ],
-                    "properties": {
-                        "owasp-mobile": "M9: Reverse Engineering",
-                        "masvs": "MSTG-RESILIENCE-4",
-                        "cwe": "CWE-919 - Weaknesses in Mobile Applications",
-                        "reference": "https://github.com/MobSF/owasp-mstg/blob/master/Document/0x06j-Testing-Resiliency-Against-Reverse-Engineering.md#ios-anti-reversing-defenses"
-                    },
-                    "ruleId": "ios_detect_reversing",
-                    "ruleIndex": 4
-                },
-                {
-                    "message": {
-                        "text": "This app does not have Certificate Pinning implemented in code."
-                    },
-                    "level": "note",
-                    "locations": [
-                        {
-                            "physicalLocation": {
-                                "region": {
-                                    "snippet": {
-                                        "text": "Missing Best Practice"
-                                    },
-                                    "endColumn": 1,
-                                    "endLine": 1,
-                                    "startColumn": 1,
-                                    "startLine": 1
-                                },
-                                "artifactLocation": {
-                                    "uri": "/workspace/workspace/8132bda2-7059-4fa3-8dda-24b103964b03/upload/unzipped/sourcecode/"
-                                }
-                            }
-                        }
-                    ],
-                    "properties": {
-                        "owasp-mobile": "M3: Insecure Communication",
-                        "masvs": "MSTG-NETWORK-4",
-                        "cwe": "CWE-295 Improper Certificate Validation",
-                        "reference": "https://github.com/MobSF/owasp-mstg/blob/master/Document/0x05g-Testing-Network-Communication.md#testing-custom-certificate-stores-and-certificate-pinning-mstg-network-4"
-                    },
-                    "ruleId": "ios_cert_pinning",
-                    "ruleIndex": 5
-                },
-                {
-                    "message": {
-                        "text": "This app does not disable Keyboard cache. It must be disabled for all sensitive data inputs."
-                    },
-                    "level": "note",
-                    "locations": [
-                        {
-                            "physicalLocation": {
-                                "region": {
-                                    "snippet": {
-                                        "text": "Missing Best Practice"
-                                    },
-                                    "endColumn": 1,
-                                    "endLine": 1,
-                                    "startColumn": 1,
-                                    "startLine": 1
-                                },
-                                "artifactLocation": {
-                                    "uri": "/workspace/workspace/8132bda2-7059-4fa3-8dda-24b103964b03/upload/unzipped/sourcecode/"
-                                }
-                            }
-                        }
-                    ],
-                    "properties": {
-                        "owasp-mobile": "M2: Insecure Data Storage",
-                        "masvs": "MSTG-STORAGE-5",
-                        "cwe": "CWE-919 - Weaknesses in Mobile Applications",
-                        "reference": "https://github.com/MobSF/owasp-mstg/blob/master/Document/0x06d-Testing-Data-Storage.md#finding-sensitive-data-in-the-keyboard-cache-mstg-storage-5"
-                    },
-                    "ruleId": "ios_keyboard_cache",
-                    "ruleIndex": 6
-                },
-                {
-                    "message": {
-                        "text": "This app does not have custom keyboards disabled."
-                    },
-                    "level": "note",
-                    "locations": [
-                        {
-                            "physicalLocation": {
-                                "region": {
-                                    "snippet": {
-                                        "text": "Missing Best Practice"
-                                    },
-                                    "endColumn": 1,
-                                    "endLine": 1,
-                                    "startColumn": 1,
-                                    "startLine": 1
-                                },
-                                "artifactLocation": {
-                                    "uri": "/workspace/workspace/8132bda2-7059-4fa3-8dda-24b103964b03/upload/unzipped/sourcecode/"
-                                }
-                            }
-                        }
-                    ],
-                    "properties": {
-                        "owasp-mobile": "M1: Improper Platform Usage",
-                        "masvs": "MSTG-PLATFORM-11",
-                        "cwe": "CWE-919 - Weaknesses in Mobile Applications",
-                        "reference": "https://github.com/MobSF/owasp-mstg/blob/master/Document/0x06h-Testing-Platform-Interaction.md#app-extensions"
-                    },
-                    "ruleId": "ios_custom_keyboard_disabled",
-                    "ruleIndex": 7
-                }
-            ]
+            {
+              "id": "ios_weak_hash",
+              "name": "IosWeakHash",
+              "helpUri": "https://github.com/MobSF/owasp-mstg/blob/master/Document/0x04g-Testing-Cryptography.md#identifying-insecure-andor-deprecated-cryptographic-algorithms-mstg-crypto-4"
+            },
+            {
+              "id": "ios_log",
+              "name": "IosLog",
+              "helpUri": "https://github.com/MobSF/owasp-mstg/blob/master/Document/0x06i-Testing-Code-Quality-and-Build-Settings.md#finding-debugging-code-and-verbose-error-logging-mstg-code-4"
+            },
+            {
+              "id": "ios_hardcoded_secret",
+              "name": "IosHardcodedSecret",
+              "helpUri": "https://github.com/MobSF/owasp-mstg/blob/master/Document/0x05d-Testing-Data-Storage.md#checking-memory-for-sensitive-data-mstg-storage-10"
+            },
+            {
+              "id": "ios_keyboard_cache",
+              "name": "IosKeyboardCache",
+              "helpUri": "https://github.com/MobSF/owasp-mstg/blob/master/Document/0x06d-Testing-Data-Storage.md#finding-sensitive-data-in-the-keyboard-cache-mstg-storage-5"
+            },
+            {
+              "id": "ios_cert_pinning",
+              "name": "IosCertPinning",
+              "helpUri": "https://github.com/MobSF/owasp-mstg/blob/master/Document/0x05g-Testing-Network-Communication.md#testing-custom-certificate-stores-and-certificate-pinning-mstg-network-4"
+            },
+            {
+              "id": "ios_custom_keyboard_disabled",
+              "name": "IosCustomKeyboardDisabled",
+              "helpUri": "https://github.com/MobSF/owasp-mstg/blob/master/Document/0x06h-Testing-Platform-Interaction.md#app-extensions"
+            },
+            {
+              "id": "ios_detect_reversing",
+              "name": "IosDetectReversing",
+              "helpUri": "https://github.com/MobSF/owasp-mstg/blob/master/Document/0x06j-Testing-Resiliency-Against-Reverse-Engineering.md#ios-anti-reversing-defenses"
+            }
+          ],
+          "version": "0.1.0",
+          "informationUri": "https://github.com/MobSF/mobsfscan",
+          "semanticVersion": "0.1.0"
         }
-    ],
-    "version": "2.1.0",
-    "$schema": "https://raw.githubusercontent.com/oasis-tcs/sarif-spec/master/Schemata/sarif-schema-2.1.0.json"
+      },
+      "invocations": [
+        {
+          "executionSuccessful": true,
+          "endTimeUtc": "2022-02-18T18:35:54Z"
+        }
+      ],
+      "results": [
+        {
+          "message": {
+            "text": "SHA1 is a weak hash known to have hash collisions."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "region": {
+                  "snippet": {
+                    "text": "sha1("
+                  },
+                  "endColumn": 3273,
+                  "endLine": 98,
+                  "startColumn": 3268,
+                  "startLine": 98
+                },
+                "artifactLocation": {
+                  "uri": "UnSAFE_Bank/iOS/Source%20Code/Pods/CryptoSwift/Sources/CryptoSwift/Array%2BExtension.swift"
+                }
+              }
+            },
+            {
+              "physicalLocation": {
+                "region": {
+                  "snippet": {
+                    "text": "sha1("
+                  },
+                  "endColumn": 3229,
+                  "endLine": 97,
+                  "startColumn": 3224,
+                  "startLine": 97
+                },
+                "artifactLocation": {
+                  "uri": "UnSAFE_Bank/iOS/Source%20Code/Pods/CryptoSwift/Sources/CryptoSwift/Array%2BExtension.swift"
+                }
+              }
+            },
+            {
+              "physicalLocation": {
+                "region": {
+                  "snippet": {
+                    "text": "SHA1("
+                  },
+                  "endColumn": 1455,
+                  "endLine": 32,
+                  "startColumn": 1450,
+                  "startLine": 32
+                },
+                "artifactLocation": {
+                  "uri": "UnSAFE_Bank/iOS/Source%20Code/Pods/CryptoSwift/Sources/CryptoSwift/Digest.swift"
+                }
+              }
+            },
+            {
+              "physicalLocation": {
+                "region": {
+                  "snippet": {
+                    "text": "sha1("
+                  },
+                  "endColumn": 1394,
+                  "endLine": 31,
+                  "startColumn": 1389,
+                  "startLine": 31
+                },
+                "artifactLocation": {
+                  "uri": "UnSAFE_Bank/iOS/Source%20Code/Pods/CryptoSwift/Sources/CryptoSwift/Digest.swift"
+                }
+              }
+            },
+            {
+              "physicalLocation": {
+                "region": {
+                  "snippet": {
+                    "text": "sha1("
+                  },
+                  "endColumn": 1764,
+                  "endLine": 43,
+                  "startColumn": 1759,
+                  "startLine": 43
+                },
+                "artifactLocation": {
+                  "uri": "UnSAFE_Bank/iOS/Source%20Code/Pods/CryptoSwift/Sources/CryptoSwift/PKCS/PBKDF1.swift"
+                }
+              }
+            },
+            {
+              "physicalLocation": {
+                "region": {
+                  "snippet": {
+                    "text": "sha1("
+                  },
+                  "endColumn": 1741,
+                  "endLine": 43,
+                  "startColumn": 1736,
+                  "startLine": 43
+                },
+                "artifactLocation": {
+                  "uri": "UnSAFE_Bank/iOS/Source%20Code/Pods/CryptoSwift/Sources/CryptoSwift/HMAC.swift"
+                }
+              }
+            },
+            {
+              "physicalLocation": {
+                "region": {
+                  "snippet": {
+                    "text": "sha1("
+                  },
+                  "endColumn": 1204,
+                  "endLine": 26,
+                  "startColumn": 1199,
+                  "startLine": 26
+                },
+                "artifactLocation": {
+                  "uri": "UnSAFE_Bank/iOS/Source%20Code/Pods/CryptoSwift/Sources/CryptoSwift/String%2BExtension.swift"
+                }
+              }
+            },
+            {
+              "physicalLocation": {
+                "region": {
+                  "snippet": {
+                    "text": "sha1("
+                  },
+                  "endColumn": 1244,
+                  "endLine": 27,
+                  "startColumn": 1239,
+                  "startLine": 27
+                },
+                "artifactLocation": {
+                  "uri": "UnSAFE_Bank/iOS/Source%20Code/Pods/CryptoSwift/Sources/CryptoSwift/String%2BExtension.swift"
+                }
+              }
+            },
+            {
+              "physicalLocation": {
+                "region": {
+                  "snippet": {
+                    "text": "sha1("
+                  },
+                  "endColumn": 1375,
+                  "endLine": 34,
+                  "startColumn": 1370,
+                  "startLine": 34
+                },
+                "artifactLocation": {
+                  "uri": "UnSAFE_Bank/iOS/Source%20Code/Pods/CryptoSwift/Sources/CryptoSwift/Foundation/Data%2BExtension.swift"
+                }
+              }
+            },
+            {
+              "physicalLocation": {
+                "region": {
+                  "snippet": {
+                    "text": "sha1("
+                  },
+                  "endColumn": 1420,
+                  "endLine": 35,
+                  "startColumn": 1415,
+                  "startLine": 35
+                },
+                "artifactLocation": {
+                  "uri": "UnSAFE_Bank/iOS/Source%20Code/Pods/CryptoSwift/Sources/CryptoSwift/Foundation/Data%2BExtension.swift"
+                }
+              }
+            }
+          ],
+          "properties": {
+            "owasp-mobile": "M5: Insufficient Cryptography",
+            "masvs": "MSTG-CRYPTO-4",
+            "cwe": "CWE-327: Use of a Broken or Risky Cryptographic Algorithm",
+            "reference": "https://github.com/MobSF/owasp-mstg/blob/master/Document/0x04g-Testing-Cryptography.md#identifying-insecure-andor-deprecated-cryptographic-algorithms-mstg-crypto-4"
+          },
+          "ruleId": "ios_sha1_collision",
+          "ruleIndex": 0
+        },
+        {
+          "message": {
+            "text": "Weak Hash algorithm used. The hash algorithm is known to have hash collisions."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "region": {
+                  "snippet": {
+                    "text": "md5("
+                  },
+                  "endColumn": 3195,
+                  "endLine": 94,
+                  "startColumn": 3191,
+                  "startLine": 94
+                },
+                "artifactLocation": {
+                  "uri": "UnSAFE_Bank/iOS/Source%20Code/Pods/CryptoSwift/Sources/CryptoSwift/Array%2BExtension.swift"
+                }
+              }
+            },
+            {
+              "physicalLocation": {
+                "region": {
+                  "snippet": {
+                    "text": "md5("
+                  },
+                  "endColumn": 3152,
+                  "endLine": 93,
+                  "startColumn": 3148,
+                  "startLine": 93
+                },
+                "artifactLocation": {
+                  "uri": "UnSAFE_Bank/iOS/Source%20Code/Pods/CryptoSwift/Sources/CryptoSwift/Array%2BExtension.swift"
+                }
+              }
+            },
+            {
+              "physicalLocation": {
+                "region": {
+                  "snippet": {
+                    "text": "MD5("
+                  },
+                  "endColumn": 1232,
+                  "endLine": 25,
+                  "startColumn": 1228,
+                  "startLine": 25
+                },
+                "artifactLocation": {
+                  "uri": "UnSAFE_Bank/iOS/Source%20Code/Pods/CryptoSwift/Sources/CryptoSwift/Digest.swift"
+                }
+              }
+            },
+            {
+              "physicalLocation": {
+                "region": {
+                  "snippet": {
+                    "text": "md5("
+                  },
+                  "endColumn": 1172,
+                  "endLine": 24,
+                  "startColumn": 1168,
+                  "startLine": 24
+                },
+                "artifactLocation": {
+                  "uri": "UnSAFE_Bank/iOS/Source%20Code/Pods/CryptoSwift/Sources/CryptoSwift/Digest.swift"
+                }
+              }
+            },
+            {
+              "physicalLocation": {
+                "region": {
+                  "snippet": {
+                    "text": "MD5("
+                  },
+                  "endColumn": 1232,
+                  "endLine": 25,
+                  "startColumn": 1228,
+                  "startLine": 25
+                },
+                "artifactLocation": {
+                  "uri": "UnSAFE_Bank/iOS/Source%20Code/Pods/CryptoSwift/Sources/CryptoSwift/Digest.swift"
+                }
+              }
+            },
+            {
+              "physicalLocation": {
+                "region": {
+                  "snippet": {
+                    "text": "md5("
+                  },
+                  "endColumn": 1836,
+                  "endLine": 45,
+                  "startColumn": 1832,
+                  "startLine": 45
+                },
+                "artifactLocation": {
+                  "uri": "UnSAFE_Bank/iOS/Source%20Code/Pods/CryptoSwift/Sources/CryptoSwift/PKCS/PBKDF1.swift"
+                }
+              }
+            },
+            {
+              "physicalLocation": {
+                "region": {
+                  "snippet": {
+                    "text": "md5("
+                  },
+                  "endColumn": 2015,
+                  "endLine": 51,
+                  "startColumn": 2011,
+                  "startLine": 51
+                },
+                "artifactLocation": {
+                  "uri": "UnSAFE_Bank/iOS/Source%20Code/Pods/CryptoSwift/Sources/CryptoSwift/HMAC.swift"
+                }
+              }
+            },
+            {
+              "physicalLocation": {
+                "region": {
+                  "snippet": {
+                    "text": "md5("
+                  },
+                  "endColumn": 1121,
+                  "endLine": 22,
+                  "startColumn": 1117,
+                  "startLine": 22
+                },
+                "artifactLocation": {
+                  "uri": "UnSAFE_Bank/iOS/Source%20Code/Pods/CryptoSwift/Sources/CryptoSwift/String%2BExtension.swift"
+                }
+              }
+            },
+            {
+              "physicalLocation": {
+                "region": {
+                  "snippet": {
+                    "text": "md5("
+                  },
+                  "endColumn": 1160,
+                  "endLine": 23,
+                  "startColumn": 1156,
+                  "startLine": 23
+                },
+                "artifactLocation": {
+                  "uri": "UnSAFE_Bank/iOS/Source%20Code/Pods/CryptoSwift/Sources/CryptoSwift/String%2BExtension.swift"
+                }
+              }
+            },
+            {
+              "physicalLocation": {
+                "region": {
+                  "snippet": {
+                    "text": "md5("
+                  },
+                  "endColumn": 1339,
+                  "endLine": 31,
+                  "startColumn": 1335,
+                  "startLine": 31
+                },
+                "artifactLocation": {
+                  "uri": "UnSAFE_Bank/iOS/Source%20Code/Pods/CryptoSwift/Sources/CryptoSwift/Foundation/Data%2BExtension.swift"
+                }
+              }
+            },
+            {
+              "physicalLocation": {
+                "region": {
+                  "snippet": {
+                    "text": "md5("
+                  },
+                  "endColumn": 1295,
+                  "endLine": 30,
+                  "startColumn": 1291,
+                  "startLine": 30
+                },
+                "artifactLocation": {
+                  "uri": "UnSAFE_Bank/iOS/Source%20Code/Pods/CryptoSwift/Sources/CryptoSwift/Foundation/Data%2BExtension.swift"
+                }
+              }
+            }
+          ],
+          "properties": {
+            "owasp-mobile": "M5: Insufficient Cryptography",
+            "masvs": "MSTG-CRYPTO-4",
+            "cwe": "CWE-327: Use of a Broken or Risky Cryptographic Algorithm",
+            "reference": "https://github.com/MobSF/owasp-mstg/blob/master/Document/0x04g-Testing-Cryptography.md#identifying-insecure-andor-deprecated-cryptographic-algorithms-mstg-crypto-4"
+          },
+          "ruleId": "ios_weak_hash",
+          "ruleIndex": 1
+        },
+        {
+          "message": {
+            "text": "The App logs information. Sensitive information should never be logged."
+          },
+          "level": "note",
+          "locations": [
+            {
+              "physicalLocation": {
+                "region": {
+                  "snippet": {
+                    "text": "print(error.localizedDescription)"
+                  },
+                  "endColumn": 19846,
+                  "endLine": 639,
+                  "startColumn": 19813,
+                  "startLine": 639
+                },
+                "artifactLocation": {
+                  "uri": "UnSAFE_Bank/iOS/Source%20Code/Pods/KeychainAccess/Lib/KeychainAccess/Keychain.swift"
+                }
+              }
+            },
+            {
+              "physicalLocation": {
+                "region": {
+                  "snippet": {
+                    "text": "print(\"failed to convert data to string\")"
+                  },
+                  "endColumn": 15971,
+                  "endLine": 522,
+                  "startColumn": 15930,
+                  "startLine": 522
+                },
+                "artifactLocation": {
+                  "uri": "UnSAFE_Bank/iOS/Source%20Code/Pods/KeychainAccess/Lib/KeychainAccess/Keychain.swift"
+                }
+              }
+            },
+            {
+              "physicalLocation": {
+                "region": {
+                  "snippet": {
+                    "text": "print(\"failed to convert string to data\")"
+                  },
+                  "endColumn": 17793,
+                  "endLine": 584,
+                  "startColumn": 17752,
+                  "startLine": 584
+                },
+                "artifactLocation": {
+                  "uri": "UnSAFE_Bank/iOS/Source%20Code/Pods/KeychainAccess/Lib/KeychainAccess/Keychain.swift"
+                }
+              }
+            },
+            {
+              "physicalLocation": {
+                "region": {
+                  "snippet": {
+                    "text": "print(\"Unavailable 'Touch ID integration' on OS X versions prior to 10.10.\")"
+                  },
+                  "endColumn": 41128,
+                  "endLine": 1258,
+                  "startColumn": 41052,
+                  "startLine": 1258
+                },
+                "artifactLocation": {
+                  "uri": "UnSAFE_Bank/iOS/Source%20Code/Pods/KeychainAccess/Lib/KeychainAccess/Keychain.swift"
+                }
+              }
+            },
+            {
+              "physicalLocation": {
+                "region": {
+                  "snippet": {
+                    "text": "print(error.localizedDescription)"
+                  },
+                  "endColumn": 18815,
+                  "endLine": 614,
+                  "startColumn": 18782,
+                  "startLine": 614
+                },
+                "artifactLocation": {
+                  "uri": "UnSAFE_Bank/iOS/Source%20Code/Pods/KeychainAccess/Lib/KeychainAccess/Keychain.swift"
+                }
+              }
+            },
+            {
+              "physicalLocation": {
+                "region": {
+                  "snippet": {
+                    "text": "print(\"OSStatus error:[\\(error.errorCode)] \\(error.description)\")"
+                  },
+                  "endColumn": 34089,
+                  "endLine": 1049,
+                  "startColumn": 34024,
+                  "startLine": 1049
+                },
+                "artifactLocation": {
+                  "uri": "UnSAFE_Bank/iOS/Source%20Code/Pods/KeychainAccess/Lib/KeychainAccess/Keychain.swift"
+                }
+              }
+            },
+            {
+              "physicalLocation": {
+                "region": {
+                  "snippet": {
+                    "text": "print(\"error:[\\(remoteError!.code)] \\(remoteError!.localizedDescription)\")"
+                  },
+                  "endColumn": 29457,
+                  "endLine": 924,
+                  "startColumn": 29383,
+                  "startLine": 924
+                },
+                "artifactLocation": {
+                  "uri": "UnSAFE_Bank/iOS/Source%20Code/Pods/KeychainAccess/Lib/KeychainAccess/Keychain.swift"
+                }
+              }
+            },
+            {
+              "physicalLocation": {
+                "region": {
+                  "snippet": {
+                    "text": "print(receivedJSON)"
+                  },
+                  "endColumn": 1857,
+                  "endLine": 60,
+                  "startColumn": 1838,
+                  "startLine": 60
+                },
+                "artifactLocation": {
+                  "uri": "UnSAFE_Bank/iOS/Source%20Code/damnVIA/ViewControllers/Beneficiary/ListBeneficiary.swift"
+                }
+              }
+            },
+            {
+              "physicalLocation": {
+                "region": {
+                  "snippet": {
+                    "text": "print(json!)"
+                  },
+                  "endColumn": 1612,
+                  "endLine": 50,
+                  "startColumn": 1600,
+                  "startLine": 50
+                },
+                "artifactLocation": {
+                  "uri": "UnSAFE_Bank/iOS/Source%20Code/damnVIA/ViewControllers/Beneficiary/FetchBeneficiaryDetails.swift"
+                }
+              }
+            },
+            {
+              "physicalLocation": {
+                "region": {
+                  "snippet": {
+                    "text": "print(receivedJSON)"
+                  },
+                  "endColumn": 1743,
+                  "endLine": 52,
+                  "startColumn": 1724,
+                  "startLine": 52
+                },
+                "artifactLocation": {
+                  "uri": "UnSAFE_Bank/iOS/Source%20Code/damnVIA/ViewControllers/Beneficiary/FetchBeneficiaryDetails.swift"
+                }
+              }
+            },
+            {
+              "physicalLocation": {
+                "region": {
+                  "snippet": {
+                    "text": "print(receivedJSON)"
+                  },
+                  "endColumn": 1527,
+                  "endLine": 44,
+                  "startColumn": 1508,
+                  "startLine": 44
+                },
+                "artifactLocation": {
+                  "uri": "UnSAFE_Bank/iOS/Source%20Code/damnVIA/ViewControllers/Bank%20Transfer/BankTransferVC6.swift"
+                }
+              }
+            },
+            {
+              "physicalLocation": {
+                "region": {
+                  "snippet": {
+                    "text": "print(receivedJSON)"
+                  },
+                  "endColumn": 2812,
+                  "endLine": 68,
+                  "startColumn": 2793,
+                  "startLine": 68
+                },
+                "artifactLocation": {
+                  "uri": "UnSAFE_Bank/iOS/Source%20Code/damnVIA/ViewControllers/Post-Login/DashboardVC.swift"
+                }
+              }
+            },
+            {
+              "physicalLocation": {
+                "region": {
+                  "snippet": {
+                    "text": "print(receivedJSON)"
+                  },
+                  "endColumn": 2379,
+                  "endLine": 62,
+                  "startColumn": 2360,
+                  "startLine": 62
+                },
+                "artifactLocation": {
+                  "uri": "UnSAFE_Bank/iOS/Source%20Code/damnVIA/ViewControllers/Post-Login/AccountDetails.swift"
+                }
+              }
+            },
+            {
+              "physicalLocation": {
+                "region": {
+                  "snippet": {
+                    "text": "print(receivedJSON)"
+                  },
+                  "endColumn": 5783,
+                  "endLine": 147,
+                  "startColumn": 5764,
+                  "startLine": 147
+                },
+                "artifactLocation": {
+                  "uri": "UnSAFE_Bank/iOS/Source%20Code/damnVIA/Helpers/ViewController%2BExtensions.swift"
+                }
+              }
+            },
+            {
+              "physicalLocation": {
+                "region": {
+                  "snippet": {
+                    "text": "print(\"Settings opened: \\(success)\")"
+                  },
+                  "endColumn": 4067,
+                  "endLine": 100,
+                  "startColumn": 4031,
+                  "startLine": 100
+                },
+                "artifactLocation": {
+                  "uri": "UnSAFE_Bank/iOS/Source%20Code/damnVIA/Helpers/ViewController%2BExtensions.swift"
+                }
+              }
+            },
+            {
+              "physicalLocation": {
+                "region": {
+                  "snippet": {
+                    "text": "print(\"Something went wrong\")"
+                  },
+                  "endColumn": 1058,
+                  "endLine": 33,
+                  "startColumn": 1029,
+                  "startLine": 33
+                },
+                "artifactLocation": {
+                  "uri": "UnSAFE_Bank/iOS/Source%20Code/damnVIA/AppDelegate.swift"
+                }
+              }
+            },
+            {
+              "physicalLocation": {
+                "region": {
+                  "snippet": {
+                    "text": "print(receivedJSON)"
+                  },
+                  "endColumn": 7133,
+                  "endLine": 163,
+                  "startColumn": 7114,
+                  "startLine": 163
+                },
+                "artifactLocation": {
+                  "uri": "UnSAFE_Bank/iOS/Source%20Code/damnVIA/ViewControllers/Beneficiary/VerifyOtpVC.swift"
+                }
+              }
+            },
+            {
+              "physicalLocation": {
+                "region": {
+                  "snippet": {
+                    "text": "print(receivedJSON)"
+                  },
+                  "endColumn": 4497,
+                  "endLine": 108,
+                  "startColumn": 4478,
+                  "startLine": 108
+                },
+                "artifactLocation": {
+                  "uri": "UnSAFE_Bank/iOS/Source%20Code/damnVIA/ViewControllers/Beneficiary/VerifyOtpVC.swift"
+                }
+              }
+            },
+            {
+              "physicalLocation": {
+                "region": {
+                  "snippet": {
+                    "text": "print(receivedJSON)"
+                  },
+                  "endColumn": 1674,
+                  "endLine": 50,
+                  "startColumn": 1655,
+                  "startLine": 50
+                },
+                "artifactLocation": {
+                  "uri": "UnSAFE_Bank/iOS/Source%20Code/damnVIA/ViewControllers/Beneficiary/VerifyOtpVC.swift"
+                }
+              }
+            },
+            {
+              "physicalLocation": {
+                "region": {
+                  "snippet": {
+                    "text": "print(newKeypath.appendingKey(key).fullPath)"
+                  },
+                  "endColumn": 1987,
+                  "endLine": 75,
+                  "startColumn": 1943,
+                  "startLine": 75
+                },
+                "artifactLocation": {
+                  "uri": "UnSAFE_Bank/iOS/Source%20Code/Pods/lottie-ios/lottie-swift/src/Private/Utility/Extensions/AnimationKeypathExtension.swift"
+                }
+              }
+            },
+            {
+              "physicalLocation": {
+                "region": {
+                  "snippet": {
+                    "text": "print(newKeypath.fullPath)"
+                  },
+                  "endColumn": 1896,
+                  "endLine": 73,
+                  "startColumn": 1870,
+                  "startLine": 73
+                },
+                "artifactLocation": {
+                  "uri": "UnSAFE_Bank/iOS/Source%20Code/Pods/lottie-ios/lottie-swift/src/Private/Utility/Extensions/AnimationKeypathExtension.swift"
+                }
+              }
+            },
+            {
+              "physicalLocation": {
+                "region": {
+                  "snippet": {
+                    "text": "print(\"from date is : \\(self.fromdate ?? \"not found\")\")"
+                  },
+                  "endColumn": 2460,
+                  "endLine": 65,
+                  "startColumn": 2405,
+                  "startLine": 65
+                },
+                "artifactLocation": {
+                  "uri": "UnSAFE_Bank/iOS/Source%20Code/damnVIA/ViewControllers/Account%20Statement/ShowAccountStatementVC.swift"
+                }
+              }
+            },
+            {
+              "physicalLocation": {
+                "region": {
+                  "snippet": {
+                    "text": "print(\"from date is : \\(self.toDate ?? \"not found\")\")"
+                  },
+                  "endColumn": 2963,
+                  "endLine": 76,
+                  "startColumn": 2910,
+                  "startLine": 76
+                },
+                "artifactLocation": {
+                  "uri": "UnSAFE_Bank/iOS/Source%20Code/damnVIA/ViewControllers/Account%20Statement/ShowAccountStatementVC.swift"
+                }
+              }
+            },
+            {
+              "physicalLocation": {
+                "region": {
+                  "snippet": {
+                    "text": "print(error.localizedDescription)"
+                  },
+                  "endColumn": 7705,
+                  "endLine": 181,
+                  "startColumn": 7672,
+                  "startLine": 181
+                },
+                "artifactLocation": {
+                  "uri": "UnSAFE_Bank/iOS/Source%20Code/damnVIA/ViewControllers/Account%20Statement/ShowAccountStatementVC.swift"
+                }
+              }
+            },
+            {
+              "physicalLocation": {
+                "region": {
+                  "snippet": {
+                    "text": "print(receivedJSON)"
+                  },
+                  "endColumn": 11760,
+                  "endLine": 262,
+                  "startColumn": 11741,
+                  "startLine": 262
+                },
+                "artifactLocation": {
+                  "uri": "UnSAFE_Bank/iOS/Source%20Code/damnVIA/ViewControllers/Pre-Login/SignUpController.swift"
+                }
+              }
+            },
+            {
+              "physicalLocation": {
+                "region": {
+                  "snippet": {
+                    "text": "print(receivedJSON)"
+                  },
+                  "endColumn": 7306,
+                  "endLine": 167,
+                  "startColumn": 7287,
+                  "startLine": 167
+                },
+                "artifactLocation": {
+                  "uri": "UnSAFE_Bank/iOS/Source%20Code/damnVIA/ViewControllers/Pre-Login/SignUpController.swift"
+                }
+              }
+            },
+            {
+              "physicalLocation": {
+                "region": {
+                  "snippet": {
+                    "text": "print(possibleInt.unwrap())"
+                  },
+                  "endColumn": 5346,
+                  "endLine": 157,
+                  "startColumn": 5319,
+                  "startLine": 157
+                },
+                "artifactLocation": {
+                  "uri": "UnSAFE_Bank/iOS/Source%20Code/Pods/Alamofire/Source/Result.swift"
+                }
+              }
+            },
+            {
+              "physicalLocation": {
+                "region": {
+                  "snippet": {
+                    "text": "print(noString.unwrap())"
+                  },
+                  "endColumn": 4743,
+                  "endLine": 140,
+                  "startColumn": 4719,
+                  "startLine": 140
+                },
+                "artifactLocation": {
+                  "uri": "UnSAFE_Bank/iOS/Source%20Code/Pods/Alamofire/Source/Result.swift"
+                }
+              }
+            },
+            {
+              "physicalLocation": {
+                "region": {
+                  "snippet": {
+                    "text": "print(\"|\")"
+                  },
+                  "endColumn": 408,
+                  "endLine": 21,
+                  "startColumn": 398,
+                  "startLine": 21
+                },
+                "artifactLocation": {
+                  "uri": "UnSAFE_Bank/iOS/Source%20Code/Pods/lottie-ios/lottie-swift/src/Private/Utility/Debugging/AnimatorNodeDebugging.swift"
+                }
+              }
+            },
+            {
+              "physicalLocation": {
+                "region": {
+                  "snippet": {
+                    "text": "print(String(describing: type(of: self)))"
+                  },
+                  "endColumn": 251,
+                  "endLine": 14,
+                  "startColumn": 210,
+                  "startLine": 14
+                },
+                "artifactLocation": {
+                  "uri": "UnSAFE_Bank/iOS/Source%20Code/Pods/lottie-ios/lottie-swift/src/Private/Utility/Debugging/AnimatorNodeDebugging.swift"
+                }
+              }
+            },
+            {
+              "physicalLocation": {
+                "region": {
+                  "snippet": {
+                    "text": "print(\"* |Children\")"
+                  },
+                  "endColumn": 323,
+                  "endLine": 17,
+                  "startColumn": 303,
+                  "startLine": 17
+                },
+                "artifactLocation": {
+                  "uri": "UnSAFE_Bank/iOS/Source%20Code/Pods/lottie-ios/lottie-swift/src/Private/Utility/Debugging/AnimatorNodeDebugging.swift"
+                }
+              }
+            },
+            {
+              "physicalLocation": {
+                "region": {
+                  "snippet": {
+                    "text": "print(\"*\")"
+                  },
+                  "endColumn": 378,
+                  "endLine": 19,
+                  "startColumn": 368,
+                  "startLine": 19
+                },
+                "artifactLocation": {
+                  "uri": "UnSAFE_Bank/iOS/Source%20Code/Pods/lottie-ios/lottie-swift/src/Private/Utility/Debugging/AnimatorNodeDebugging.swift"
+                }
+              }
+            },
+            {
+              "physicalLocation": {
+                "region": {
+                  "snippet": {
+                    "text": "print(amount)"
+                  },
+                  "endColumn": 3201,
+                  "endLine": 95,
+                  "startColumn": 3188,
+                  "startLine": 95
+                },
+                "artifactLocation": {
+                  "uri": "UnSAFE_Bank/iOS/Source%20Code/damnVIA/ViewControllers/Bank%20Transfer/BankTransferVC2.swift"
+                }
+              }
+            },
+            {
+              "physicalLocation": {
+                "region": {
+                  "snippet": {
+                    "text": "print(receivedJSON)"
+                  },
+                  "endColumn": 3729,
+                  "endLine": 103,
+                  "startColumn": 3710,
+                  "startLine": 103
+                },
+                "artifactLocation": {
+                  "uri": "UnSAFE_Bank/iOS/Source%20Code/damnVIA/ViewControllers/Bank%20Transfer/BankTransferVC4.swift"
+                }
+              }
+            },
+            {
+              "physicalLocation": {
+                "region": {
+                  "snippet": {
+                    "text": "print(\"Lottie: Logging Animation Keypaths\")"
+                  },
+                  "endColumn": 1092,
+                  "endLine": 49,
+                  "startColumn": 1049,
+                  "startLine": 49
+                },
+                "artifactLocation": {
+                  "uri": "UnSAFE_Bank/iOS/Source%20Code/Pods/lottie-ios/lottie-swift/src/Private/LayerContainers/AnimationContainer.swift"
+                }
+              }
+            },
+            {
+              "physicalLocation": {
+                "region": {
+                  "snippet": {
+                    "text": "print(receivedJSON)"
+                  },
+                  "endColumn": 2874,
+                  "endLine": 70,
+                  "startColumn": 2855,
+                  "startLine": 70
+                },
+                "artifactLocation": {
+                  "uri": "UnSAFE_Bank/iOS/Source%20Code/damnVIA/ViewControllers/Pre-Login/ViewController.swift"
+                }
+              }
+            },
+            {
+              "physicalLocation": {
+                "region": {
+                  "snippet": {
+                    "text": "print(params)"
+                  },
+                  "endColumn": 9965,
+                  "endLine": 212,
+                  "startColumn": 9952,
+                  "startLine": 212
+                },
+                "artifactLocation": {
+                  "uri": "UnSAFE_Bank/iOS/Source%20Code/damnVIA/Helpers/APIHelpers.swift"
+                }
+              }
+            },
+            {
+              "physicalLocation": {
+                "region": {
+                  "snippet": {
+                    "text": "print(params)"
+                  },
+                  "endColumn": 12193,
+                  "endLine": 261,
+                  "startColumn": 12180,
+                  "startLine": 261
+                },
+                "artifactLocation": {
+                  "uri": "UnSAFE_Bank/iOS/Source%20Code/damnVIA/Helpers/APIHelpers.swift"
+                }
+              }
+            },
+            {
+              "physicalLocation": {
+                "region": {
+                  "snippet": {
+                    "text": "print(error.localizedDescription)"
+                  },
+                  "endColumn": 6897,
+                  "endLine": 149,
+                  "startColumn": 6864,
+                  "startLine": 149
+                },
+                "artifactLocation": {
+                  "uri": "UnSAFE_Bank/iOS/Source%20Code/damnVIA/Helpers/APIHelpers.swift"
+                }
+              }
+            },
+            {
+              "physicalLocation": {
+                "region": {
+                  "snippet": {
+                    "text": "print(response)"
+                  },
+                  "endColumn": 10841,
+                  "endLine": 231,
+                  "startColumn": 10826,
+                  "startLine": 231
+                },
+                "artifactLocation": {
+                  "uri": "UnSAFE_Bank/iOS/Source%20Code/damnVIA/Helpers/APIHelpers.swift"
+                }
+              }
+            },
+            {
+              "physicalLocation": {
+                "region": {
+                  "snippet": {
+                    "text": "print(params)"
+                  },
+                  "endColumn": 17944,
+                  "endLine": 363,
+                  "startColumn": 17931,
+                  "startLine": 363
+                },
+                "artifactLocation": {
+                  "uri": "UnSAFE_Bank/iOS/Source%20Code/damnVIA/Helpers/APIHelpers.swift"
+                }
+              }
+            },
+            {
+              "physicalLocation": {
+                "region": {
+                  "snippet": {
+                    "text": "print(error.localizedDescription)"
+                  },
+                  "endColumn": 5054,
+                  "endLine": 116,
+                  "startColumn": 5021,
+                  "startLine": 116
+                },
+                "artifactLocation": {
+                  "uri": "UnSAFE_Bank/iOS/Source%20Code/damnVIA/Helpers/APIHelpers.swift"
+                }
+              }
+            },
+            {
+              "physicalLocation": {
+                "region": {
+                  "snippet": {
+                    "text": "print(error.localizedDescription)"
+                  },
+                  "endColumn": 4053,
+                  "endLine": 97,
+                  "startColumn": 4020,
+                  "startLine": 97
+                },
+                "artifactLocation": {
+                  "uri": "UnSAFE_Bank/iOS/Source%20Code/damnVIA/Helpers/APIHelpers.swift"
+                }
+              }
+            },
+            {
+              "physicalLocation": {
+                "region": {
+                  "snippet": {
+                    "text": "print(error.localizedDescription)"
+                  },
+                  "endColumn": 20364,
+                  "endLine": 408,
+                  "startColumn": 20331,
+                  "startLine": 408
+                },
+                "artifactLocation": {
+                  "uri": "UnSAFE_Bank/iOS/Source%20Code/damnVIA/Helpers/APIHelpers.swift"
+                }
+              }
+            },
+            {
+              "physicalLocation": {
+                "region": {
+                  "snippet": {
+                    "text": "print(error.localizedDescription)"
+                  },
+                  "endColumn": 2955,
+                  "endLine": 77,
+                  "startColumn": 2922,
+                  "startLine": 77
+                },
+                "artifactLocation": {
+                  "uri": "UnSAFE_Bank/iOS/Source%20Code/damnVIA/Helpers/APIHelpers.swift"
+                }
+              }
+            },
+            {
+              "physicalLocation": {
+                "region": {
+                  "snippet": {
+                    "text": "print(error.localizedDescription)"
+                  },
+                  "endColumn": 10554,
+                  "endLine": 224,
+                  "startColumn": 10521,
+                  "startLine": 224
+                },
+                "artifactLocation": {
+                  "uri": "UnSAFE_Bank/iOS/Source%20Code/damnVIA/Helpers/APIHelpers.swift"
+                }
+              }
+            },
+            {
+              "physicalLocation": {
+                "region": {
+                  "snippet": {
+                    "text": "print(error.localizedDescription)"
+                  },
+                  "endColumn": 15116,
+                  "endLine": 311,
+                  "startColumn": 15083,
+                  "startLine": 311
+                },
+                "artifactLocation": {
+                  "uri": "UnSAFE_Bank/iOS/Source%20Code/damnVIA/Helpers/APIHelpers.swift"
+                }
+              }
+            },
+            {
+              "physicalLocation": {
+                "region": {
+                  "snippet": {
+                    "text": "print(error.localizedDescription)"
+                  },
+                  "endColumn": 9096,
+                  "endLine": 195,
+                  "startColumn": 9063,
+                  "startLine": 195
+                },
+                "artifactLocation": {
+                  "uri": "UnSAFE_Bank/iOS/Source%20Code/damnVIA/Helpers/APIHelpers.swift"
+                }
+              }
+            },
+            {
+              "physicalLocation": {
+                "region": {
+                  "snippet": {
+                    "text": "print(params)"
+                  },
+                  "endColumn": 8508,
+                  "endLine": 183,
+                  "startColumn": 8495,
+                  "startLine": 183
+                },
+                "artifactLocation": {
+                  "uri": "UnSAFE_Bank/iOS/Source%20Code/damnVIA/Helpers/APIHelpers.swift"
+                }
+              }
+            },
+            {
+              "physicalLocation": {
+                "region": {
+                  "snippet": {
+                    "text": "print(error.localizedDescription)"
+                  },
+                  "endColumn": 1883,
+                  "endLine": 55,
+                  "startColumn": 1850,
+                  "startLine": 55
+                },
+                "artifactLocation": {
+                  "uri": "UnSAFE_Bank/iOS/Source%20Code/damnVIA/Helpers/APIHelpers.swift"
+                }
+              }
+            },
+            {
+              "physicalLocation": {
+                "region": {
+                  "snippet": {
+                    "text": "print(response)"
+                  },
+                  "endColumn": 11670,
+                  "endLine": 247,
+                  "startColumn": 11655,
+                  "startLine": 247
+                },
+                "artifactLocation": {
+                  "uri": "UnSAFE_Bank/iOS/Source%20Code/damnVIA/Helpers/APIHelpers.swift"
+                }
+              }
+            },
+            {
+              "physicalLocation": {
+                "region": {
+                  "snippet": {
+                    "text": "print(error.localizedDescription)"
+                  },
+                  "endColumn": 16158,
+                  "endLine": 330,
+                  "startColumn": 16125,
+                  "startLine": 330
+                },
+                "artifactLocation": {
+                  "uri": "UnSAFE_Bank/iOS/Source%20Code/damnVIA/Helpers/APIHelpers.swift"
+                }
+              }
+            },
+            {
+              "physicalLocation": {
+                "region": {
+                  "snippet": {
+                    "text": "print(\"connecting to url : \\(urlPathsEnum.connectionCheck.path)\")"
+                  },
+                  "endColumn": 1288,
+                  "endLine": 41,
+                  "startColumn": 1223,
+                  "startLine": 41
+                },
+                "artifactLocation": {
+                  "uri": "UnSAFE_Bank/iOS/Source%20Code/damnVIA/Helpers/APIHelpers.swift"
+                }
+              }
+            },
+            {
+              "physicalLocation": {
+                "region": {
+                  "snippet": {
+                    "text": "print(response)"
+                  },
+                  "endColumn": 1492,
+                  "endLine": 45,
+                  "startColumn": 1477,
+                  "startLine": 45
+                },
+                "artifactLocation": {
+                  "uri": "UnSAFE_Bank/iOS/Source%20Code/damnVIA/Helpers/APIHelpers.swift"
+                }
+              }
+            },
+            {
+              "physicalLocation": {
+                "region": {
+                  "snippet": {
+                    "text": "print(error.localizedDescription)"
+                  },
+                  "endColumn": 11875,
+                  "endLine": 252,
+                  "startColumn": 11842,
+                  "startLine": 252
+                },
+                "artifactLocation": {
+                  "uri": "UnSAFE_Bank/iOS/Source%20Code/damnVIA/Helpers/APIHelpers.swift"
+                }
+              }
+            },
+            {
+              "physicalLocation": {
+                "region": {
+                  "snippet": {
+                    "text": "print(response)"
+                  },
+                  "endColumn": 9383,
+                  "endLine": 202,
+                  "startColumn": 9368,
+                  "startLine": 202
+                },
+                "artifactLocation": {
+                  "uri": "UnSAFE_Bank/iOS/Source%20Code/damnVIA/Helpers/APIHelpers.swift"
+                }
+              }
+            },
+            {
+              "physicalLocation": {
+                "region": {
+                  "snippet": {
+                    "text": "print(error.localizedDescription)"
+                  },
+                  "endColumn": 13936,
+                  "endLine": 292,
+                  "startColumn": 13903,
+                  "startLine": 292
+                },
+                "artifactLocation": {
+                  "uri": "UnSAFE_Bank/iOS/Source%20Code/damnVIA/Helpers/APIHelpers.swift"
+                }
+              }
+            },
+            {
+              "physicalLocation": {
+                "region": {
+                  "snippet": {
+                    "text": "print(error.localizedDescription)"
+                  },
+                  "endColumn": 22491,
+                  "endLine": 447,
+                  "startColumn": 22458,
+                  "startLine": 447
+                },
+                "artifactLocation": {
+                  "uri": "UnSAFE_Bank/iOS/Source%20Code/damnVIA/Helpers/APIHelpers.swift"
+                }
+              }
+            },
+            {
+              "physicalLocation": {
+                "region": {
+                  "snippet": {
+                    "text": "print(error.localizedDescription)"
+                  },
+                  "endColumn": 12963,
+                  "endLine": 273,
+                  "startColumn": 12930,
+                  "startLine": 273
+                },
+                "artifactLocation": {
+                  "uri": "UnSAFE_Bank/iOS/Source%20Code/damnVIA/Helpers/APIHelpers.swift"
+                }
+              }
+            },
+            {
+              "physicalLocation": {
+                "region": {
+                  "snippet": {
+                    "text": "print(error.localizedDescription)"
+                  },
+                  "endColumn": 7900,
+                  "endLine": 169,
+                  "startColumn": 7867,
+                  "startLine": 169
+                },
+                "artifactLocation": {
+                  "uri": "UnSAFE_Bank/iOS/Source%20Code/damnVIA/Helpers/APIHelpers.swift"
+                }
+              }
+            },
+            {
+              "physicalLocation": {
+                "region": {
+                  "snippet": {
+                    "text": "print(error.localizedDescription)"
+                  },
+                  "endColumn": 21382,
+                  "endLine": 427,
+                  "startColumn": 21349,
+                  "startLine": 427
+                },
+                "artifactLocation": {
+                  "uri": "UnSAFE_Bank/iOS/Source%20Code/damnVIA/Helpers/APIHelpers.swift"
+                }
+              }
+            },
+            {
+              "physicalLocation": {
+                "region": {
+                  "snippet": {
+                    "text": "print(error.localizedDescription)"
+                  },
+                  "endColumn": 17227,
+                  "endLine": 349,
+                  "startColumn": 17194,
+                  "startLine": 349
+                },
+                "artifactLocation": {
+                  "uri": "UnSAFE_Bank/iOS/Source%20Code/damnVIA/Helpers/APIHelpers.swift"
+                }
+              }
+            },
+            {
+              "physicalLocation": {
+                "region": {
+                  "snippet": {
+                    "text": "print(error.localizedDescription)"
+                  },
+                  "endColumn": 18297,
+                  "endLine": 370,
+                  "startColumn": 18264,
+                  "startLine": 370
+                },
+                "artifactLocation": {
+                  "uri": "UnSAFE_Bank/iOS/Source%20Code/damnVIA/Helpers/APIHelpers.swift"
+                }
+              }
+            },
+            {
+              "physicalLocation": {
+                "region": {
+                  "snippet": {
+                    "text": "print(response)"
+                  },
+                  "endColumn": 22782,
+                  "endLine": 454,
+                  "startColumn": 22767,
+                  "startLine": 454
+                },
+                "artifactLocation": {
+                  "uri": "UnSAFE_Bank/iOS/Source%20Code/damnVIA/Helpers/APIHelpers.swift"
+                }
+              }
+            },
+            {
+              "physicalLocation": {
+                "region": {
+                  "snippet": {
+                    "text": "print(params)"
+                  },
+                  "endColumn": 11282,
+                  "endLine": 240,
+                  "startColumn": 11269,
+                  "startLine": 240
+                },
+                "artifactLocation": {
+                  "uri": "UnSAFE_Bank/iOS/Source%20Code/damnVIA/Helpers/APIHelpers.swift"
+                }
+              }
+            },
+            {
+              "physicalLocation": {
+                "region": {
+                  "snippet": {
+                    "text": "print(error.localizedDescription)"
+                  },
+                  "endColumn": 19336,
+                  "endLine": 389,
+                  "startColumn": 19303,
+                  "startLine": 389
+                },
+                "artifactLocation": {
+                  "uri": "UnSAFE_Bank/iOS/Source%20Code/damnVIA/Helpers/APIHelpers.swift"
+                }
+              }
+            },
+            {
+              "physicalLocation": {
+                "region": {
+                  "snippet": {
+                    "text": "print(string)"
+                  },
+                  "endColumn": 979,
+                  "endLine": 47,
+                  "startColumn": 966,
+                  "startLine": 47
+                },
+                "artifactLocation": {
+                  "uri": "UnSAFE_Bank/iOS/Source%20Code/Pods/lottie-ios/lottie-swift/src/Private/Utility/Debugging/LayerDebugging.swift"
+                }
+              }
+            },
+            {
+              "physicalLocation": {
+                "region": {
+                  "snippet": {
+                    "text": "print(\"\\(text) \\(executionTime)\")"
+                  },
+                  "endColumn": 1180,
+                  "endLine": 26,
+                  "startColumn": 1147,
+                  "startLine": 26
+                },
+                "artifactLocation": {
+                  "uri": "UnSAFE_Bank/iOS/Source%20Code/Pods/CryptoSwift/Sources/CryptoSwift/Foundation/Utils%2BFoundation.swift"
+                }
+              }
+            }
+          ],
+          "properties": {
+            "owasp-mobile": "M1: Improper Platform Usage",
+            "masvs": "MSTG-STORAGE-3",
+            "cwe": "CWE-532: Insertion of Sensitive Information into Log File",
+            "reference": "https://github.com/MobSF/owasp-mstg/blob/master/Document/0x06i-Testing-Code-Quality-and-Build-Settings.md#finding-debugging-code-and-verbose-error-logging-mstg-code-4"
+          },
+          "ruleId": "ios_log",
+          "ruleIndex": 2
+        },
+        {
+          "message": {
+            "text": "Files may contain hardcoded sensitive information like usernames, passwords, keys etc."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "region": {
+                  "snippet": {
+                    "text": "password = \"4\"\n"
+                  },
+                  "endColumn": 1780,
+                  "endLine": 57,
+                  "startColumn": 1765,
+                  "startLine": 57
+                },
+                "artifactLocation": {
+                  "uri": "UnSAFE_Bank/iOS/Source%20Code/damnVIA/Strings.swift"
+                }
+              }
+            },
+            {
+              "physicalLocation": {
+                "region": {
+                  "snippet": {
+                    "text": "password = \"password/change\"\n    "
+                  },
+                  "endColumn": 2784,
+                  "endLine": 85,
+                  "startColumn": 2751,
+                  "startLine": 84
+                },
+                "artifactLocation": {
+                  "uri": "UnSAFE_Bank/iOS/Source%20Code/damnVIA/Strings.swift"
+                }
+              }
+            },
+            {
+              "physicalLocation": {
+                "region": {
+                  "snippet": {
+                    "text": "password = \"4\"\n"
+                  },
+                  "endColumn": 1780,
+                  "endLine": 57,
+                  "startColumn": 1765,
+                  "startLine": 57
+                },
+                "artifactLocation": {
+                  "uri": "UnSAFE_Bank/iOS/Source%20Code/damnVIA/Strings.swift"
+                }
+              }
+            },
+            {
+              "physicalLocation": {
+                "region": {
+                  "snippet": {
+                    "text": "password = \"password/change\"\n    "
+                  },
+                  "endColumn": 2784,
+                  "endLine": 85,
+                  "startColumn": 2751,
+                  "startLine": 84
+                },
+                "artifactLocation": {
+                  "uri": "UnSAFE_Bank/iOS/Source%20Code/damnVIA/Strings.swift"
+                }
+              }
+            },
+            {
+              "physicalLocation": {
+                "region": {
+                  "snippet": {
+                    "text": "key = \"urlsession.servertrustpolicymanager\"\n    "
+                  },
+                  "endColumn": 2958,
+                  "endLine": 64,
+                  "startColumn": 2910,
+                  "startLine": 63
+                },
+                "artifactLocation": {
+                  "uri": "UnSAFE_Bank/iOS/Source%20Code/Pods/Alamofire/Source/ServerTrustPolicy.swift"
+                }
+              }
+            },
+            {
+              "physicalLocation": {
+                "region": {
+                  "snippet": {
+                    "text": "key = \"urlsession.servertrustpolicymanager\"\n    "
+                  },
+                  "endColumn": 2958,
+                  "endLine": 64,
+                  "startColumn": 2910,
+                  "startLine": 63
+                },
+                "artifactLocation": {
+                  "uri": "UnSAFE_Bank/iOS/Source%20Code/Pods/Alamofire/Source/ServerTrustPolicy.swift"
+                }
+              }
+            },
+            {
+              "physicalLocation": {
+                "region": {
+                  "snippet": {
+                    "text": "pass = \"old_pass\"\n    "
+                  },
+                  "endColumn": 1311,
+                  "endLine": 46,
+                  "startColumn": 1289,
+                  "startLine": 45
+                },
+                "artifactLocation": {
+                  "uri": "UnSAFE_Bank/iOS/Source%20Code/damnVIA/Helpers/JSONHelpers.swift"
+                }
+              }
+            },
+            {
+              "physicalLocation": {
+                "region": {
+                  "snippet": {
+                    "text": "pass = \"new_pass\"\n"
+                  },
+                  "endColumn": 1344,
+                  "endLine": 46,
+                  "startColumn": 1326,
+                  "startLine": 46
+                },
+                "artifactLocation": {
+                  "uri": "UnSAFE_Bank/iOS/Source%20Code/damnVIA/Helpers/JSONHelpers.swift"
+                }
+              }
+            },
+            {
+              "physicalLocation": {
+                "region": {
+                  "snippet": {
+                    "text": "password = \"passwd\"\n    "
+                  },
+                  "endColumn": 777,
+                  "endLine": 31,
+                  "startColumn": 753,
+                  "startLine": 30
+                },
+                "artifactLocation": {
+                  "uri": "UnSAFE_Bank/iOS/Source%20Code/damnVIA/Helpers/JSONHelpers.swift"
+                }
+              }
+            },
+            {
+              "physicalLocation": {
+                "region": {
+                  "snippet": {
+                    "text": "password = \"new_pass\"\n    "
+                  },
+                  "endColumn": 1159,
+                  "endLine": 42,
+                  "startColumn": 1133,
+                  "startLine": 41
+                },
+                "artifactLocation": {
+                  "uri": "UnSAFE_Bank/iOS/Source%20Code/damnVIA/Helpers/JSONHelpers.swift"
+                }
+              }
+            },
+            {
+              "physicalLocation": {
+                "region": {
+                  "snippet": {
+                    "text": "pass = \"old_pass\"\n    "
+                  },
+                  "endColumn": 1311,
+                  "endLine": 46,
+                  "startColumn": 1289,
+                  "startLine": 45
+                },
+                "artifactLocation": {
+                  "uri": "UnSAFE_Bank/iOS/Source%20Code/damnVIA/Helpers/JSONHelpers.swift"
+                }
+              }
+            },
+            {
+              "physicalLocation": {
+                "region": {
+                  "snippet": {
+                    "text": "pass = \"new_pass\"\n"
+                  },
+                  "endColumn": 1344,
+                  "endLine": 46,
+                  "startColumn": 1326,
+                  "startLine": 46
+                },
+                "artifactLocation": {
+                  "uri": "UnSAFE_Bank/iOS/Source%20Code/damnVIA/Helpers/JSONHelpers.swift"
+                }
+              }
+            },
+            {
+              "physicalLocation": {
+                "region": {
+                  "snippet": {
+                    "text": "password = \"passwd\"\n    "
+                  },
+                  "endColumn": 777,
+                  "endLine": 31,
+                  "startColumn": 753,
+                  "startLine": 30
+                },
+                "artifactLocation": {
+                  "uri": "UnSAFE_Bank/iOS/Source%20Code/damnVIA/Helpers/JSONHelpers.swift"
+                }
+              }
+            },
+            {
+              "physicalLocation": {
+                "region": {
+                  "snippet": {
+                    "text": "password = \"new_pass\"\n    "
+                  },
+                  "endColumn": 1159,
+                  "endLine": 42,
+                  "startColumn": 1133,
+                  "startLine": 41
+                },
+                "artifactLocation": {
+                  "uri": "UnSAFE_Bank/iOS/Source%20Code/damnVIA/Helpers/JSONHelpers.swift"
+                }
+              }
+            }
+          ],
+          "properties": {
+            "owasp-mobile": "M9: Reverse Engineering",
+            "masvs": "MSTG-STORAGE-14",
+            "cwe": "CWE-312: Cleartext Storage of Sensitive Information",
+            "reference": "https://github.com/MobSF/owasp-mstg/blob/master/Document/0x05d-Testing-Data-Storage.md#checking-memory-for-sensitive-data-mstg-storage-10"
+          },
+          "ruleId": "ios_hardcoded_secret",
+          "ruleIndex": 3
+        },
+        {
+          "message": {
+            "text": "This app does not disable Keyboard cache. It must be disabled for all sensitive data inputs."
+          },
+          "level": "note",
+          "locations": [
+            {
+              "physicalLocation": {
+                "region": {
+                  "snippet": {
+                    "text": "Missing Best Practice"
+                  },
+                  "endColumn": 1,
+                  "endLine": 1,
+                  "startColumn": 1,
+                  "startLine": 1
+                },
+                "artifactLocation": {
+                  "uri": "."
+                }
+              }
+            }
+          ],
+          "properties": {
+            "owasp-mobile": "M2: Insecure Data Storage",
+            "masvs": "MSTG-STORAGE-5",
+            "cwe": "CWE-919: Weaknesses in Mobile Applications",
+            "reference": "https://github.com/MobSF/owasp-mstg/blob/master/Document/0x06d-Testing-Data-Storage.md#finding-sensitive-data-in-the-keyboard-cache-mstg-storage-5"
+          },
+          "ruleId": "ios_keyboard_cache",
+          "ruleIndex": 4
+        },
+        {
+          "message": {
+            "text": "This app does not have Certificate Pinning implemented in code."
+          },
+          "level": "note",
+          "locations": [
+            {
+              "physicalLocation": {
+                "region": {
+                  "snippet": {
+                    "text": "Missing Best Practice"
+                  },
+                  "endColumn": 1,
+                  "endLine": 1,
+                  "startColumn": 1,
+                  "startLine": 1
+                },
+                "artifactLocation": {
+                  "uri": "."
+                }
+              }
+            }
+          ],
+          "properties": {
+            "owasp-mobile": "M3: Insecure Communication",
+            "masvs": "MSTG-NETWORK-4",
+            "cwe": "CWE-295: Improper Certificate Validation",
+            "reference": "https://github.com/MobSF/owasp-mstg/blob/master/Document/0x05g-Testing-Network-Communication.md#testing-custom-certificate-stores-and-certificate-pinning-mstg-network-4"
+          },
+          "ruleId": "ios_cert_pinning",
+          "ruleIndex": 5
+        },
+        {
+          "message": {
+            "text": "This app does not have custom keyboards disabled."
+          },
+          "level": "note",
+          "locations": [
+            {
+              "physicalLocation": {
+                "region": {
+                  "snippet": {
+                    "text": "Missing Best Practice"
+                  },
+                  "endColumn": 1,
+                  "endLine": 1,
+                  "startColumn": 1,
+                  "startLine": 1
+                },
+                "artifactLocation": {
+                  "uri": "."
+                }
+              }
+            }
+          ],
+          "properties": {
+            "owasp-mobile": "M1: Improper Platform Usage",
+            "masvs": "MSTG-PLATFORM-11",
+            "cwe": "CWE-919: Weaknesses in Mobile Applications",
+            "reference": "https://github.com/MobSF/owasp-mstg/blob/master/Document/0x06h-Testing-Platform-Interaction.md#app-extensions"
+          },
+          "ruleId": "ios_custom_keyboard_disabled",
+          "ruleIndex": 6
+        },
+        {
+          "message": {
+            "text": "This app does not have Reverse engineering detection capabilities."
+          },
+          "level": "note",
+          "locations": [
+            {
+              "physicalLocation": {
+                "region": {
+                  "snippet": {
+                    "text": "Missing Best Practice"
+                  },
+                  "endColumn": 1,
+                  "endLine": 1,
+                  "startColumn": 1,
+                  "startLine": 1
+                },
+                "artifactLocation": {
+                  "uri": "."
+                }
+              }
+            }
+          ],
+          "properties": {
+            "owasp-mobile": "M9: Reverse Engineering",
+            "masvs": "MSTG-RESILIENCE-4",
+            "cwe": "CWE-919: Weaknesses in Mobile Applications",
+            "reference": "https://github.com/MobSF/owasp-mstg/blob/master/Document/0x06j-Testing-Resiliency-Against-Reverse-Engineering.md#ios-anti-reversing-defenses"
+          },
+          "ruleId": "ios_detect_reversing",
+          "ruleIndex": 7
+        }
+      ]
+    }
+  ],
+  "version": "2.1.0",
+  "$schema": "https://raw.githubusercontent.com/oasis-tcs/sarif-spec/master/Schemata/sarif-schema-2.1.0.json"
 }

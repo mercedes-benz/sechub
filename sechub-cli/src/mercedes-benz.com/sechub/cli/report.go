@@ -84,18 +84,21 @@ func getSecHubJobReport(context *Context) []byte {
 	header := make(map[string]string)
 	header["Content-Type"] = "application/json"
 
-	if context.config.reportFormat == "html" {
+	switch context.config.reportFormat {
+	case ReportFormatHTML:
 		header["Accept"] = "text/html"
-	} else {
+	case ReportFormatJSON:
+		header["Accept"] = "application/json"
+	case ReportFormatSPDXJSON:
 		header["Accept"] = "application/json"
 	}
+
 	sechubUtil.LogDebug(context.config.debug, fmt.Sprintf("getSecHubJobReport: header=%q", header))
 	response := sendWithHeader("GET", buildGetSecHubJobReportAPICall(context), context, header)
 
 	data, err := ioutil.ReadAll(response.Body)
 	sechubUtil.HandleHTTPError(err, ExitCodeHTTPError)
 
-	sechubUtil.LogDebug(context.config.debug, fmt.Sprintf("SecHub job report: %s", string(data)))
 	return data
 }
 
@@ -104,12 +107,11 @@ func newSecHubReportFromFile(context *Context) SecHubReport {
 
 	/* open file and check exists */
 	jsonFile, err := os.Open(context.config.file)
-	defer jsonFile.Close()
-
 	if sechubUtil.HandleIOError(err) {
 		showHelpHint()
-		os.Exit(ExitCodeIOError)
+		os.Exit(ExitCodeIOError) // exiting from go implicitely closes all open files
 	}
+	defer jsonFile.Close()
 
 	var filecontent []byte
 	filecontent, err = ioutil.ReadAll(jsonFile)
@@ -128,7 +130,7 @@ func newSecHubReportFromBytes(bytes []byte) SecHubReport {
 	/* transform text to json */
 	err := json.Unmarshal(bytes, &report)
 	if err != nil {
-		sechubUtil.LogError("SecHub configuration json is not valid json")
+		sechubUtil.LogError("Report data is not valid json")
 		showHelpHint()
 		os.Exit(ExitCodeMissingConfigFile)
 	}

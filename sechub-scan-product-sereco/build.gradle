@@ -7,11 +7,11 @@
  */
 dependencies {
 
-    compile project(':sechub-scan')
-    compile project(':sechub-sereco')
+    implementation project(':sechub-scan')
+    implementation project(':sechub-sereco')
     
-    testCompile project(':sechub-testframework')
-    testCompile project(':sechub-scan-testframework')
+    testImplementation project(':sechub-testframework')
+    testImplementation project(':sechub-scan-testframework')
 
 }
 

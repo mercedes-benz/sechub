@@ -46,7 +46,9 @@ func HandleIOError(err error) bool {
 }
 
 // FindNewestMatchingFileInDir - used e.g. for finding the latest report file
-func FindNewestMatchingFileInDir(filePattern string, dir string) string {
+func FindNewestMatchingFileInDir(filePattern string, dir string, debug bool) string {
+	LogDebug(debug, fmt.Sprintf("FindNewestMatchingFileInDir: Pattern='%s' ; dir='%s'", filePattern, dir))
+
 	var newestFile string = ""
 	var newestTime int64 = 0
 
@@ -69,4 +71,25 @@ func FindNewestMatchingFileInDir(filePattern string, dir string) string {
 		}
 	}
 	return newestFile
+}
+
+// VerifyDirectoryExists - verify that directory exists on the file system
+func VerifyDirectoryExists(directory string) bool {
+	fileinfo, err := os.Stat(directory)
+	if os.IsNotExist(err) {
+		return false
+	}
+	if !fileinfo.IsDir() {
+		return false
+	}
+
+	return true
+}
+
+// GetFileSize - return file size in bytes
+func GetFileSize(filepath string) int64 {
+	fileinfo, err := os.Stat(filepath)
+	HandleIOError(err)
+
+	return fileinfo.Size()
 }

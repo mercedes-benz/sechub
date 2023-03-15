@@ -6,9 +6,9 @@
 Leading entry point/technology is always `gradle`. So if you want to build something, please look at the
 corresponding gradle tasks.
 
-We will use `travis` for a simple continous integration and quick response at
-`github.com` but for automated deployment etc. Jenkins is in use with a ready
-to use pipeline script (and two custom jobs).
+We use `github-actions` for CI which gives us a quick response at
+`github.com`. For automated deployment or S3 storage testing etc. Jenkins can
+ be used by defined pipeline scripts. 
 
 include::./../buildserver/jenkins-pipeline.adoc[]
 
