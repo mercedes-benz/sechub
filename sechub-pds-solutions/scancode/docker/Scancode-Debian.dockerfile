@@ -10,8 +10,8 @@ LABEL maintainer="SecHub FOSS Team"
 
 # Build args
 ARG SCANCODE_VERSION
-ARG SPDX_TOOL_VERSION="1.1.3"
-ARG SPDX_TOOL_CHECKSUM="766a1ddc23e70644c115e0e68d487c5ab586a58a67a7889c7e181ace23a45abe  tools-java-1.1.3-jar-with-dependencies.jar"
+ARG SPDX_TOOL_VERSION
+ARG SPDX_TOOL_CHECKSUM
 
 # Environment variables in container
 ENV SCANCODE_VERSION="${SCANCODE_VERSION}"

@@ -3,6 +3,23 @@
 
 source "${HELPER_FOLDER}/message.sh"
 
+function convert() {
+	echo "Converting to SPDX JSON"
+
+    cat "$spdx_file"
+    spdx_json_file="$PDS_JOB_RESULT_FILE.spdx.json"
+
+    # use the SPDX tool converter to convert the SPDX tag-value to SPDX JSON
+    java -jar "$TOOL_FOLDER/tools-java-${SPDX_TOOL_VERSION}-jar-with-dependencies.jar" Convert "$spdx_file" "$spdx_json_file" TAG JSON
+        
+    if [[ -f "$spdx_json_file" ]]
+    then
+    	mv "$spdx_json_file" "$PDS_JOB_RESULT_FILE"
+    else
+    	errorMessage "Product error. Unable to convert result to SPDX JSON."
+    fi
+}
+
 # IMPORTANT: Keep the space in front and back of the list
 output_formats=" json json-pp spdx-tv spdx-rdf spdx-json "
 output_format="--spdx-tv"
@@ -32,11 +49,15 @@ python_version=$( python3 --version 2>&1 )
 
 scancode_version=$( scancode --version )
 
+spdx_tool_version=$( java -jar "$TOOL_FOLDER/tools-java-$SPDX_TOOL_VERSION-jar-with-dependencies.jar" Version )
+
 printf "%-26s %s\n" "Python:" "$python_version"
 printf "%-26s %s\n" "PDS version:" "$PDS_VERSION"
 printf "Scancode-Toolkit version:\n\n" 
 echo "$scancode_version"
 printf "\n\n%-26s %s\n" "Extractcode version:" "$extractcode_version"
+printf "SPDX Tools version:\n\n"
+echo "$spdx_tool_version"
 
 echo ""
 echo "---------"
@@ -197,20 +218,10 @@ then
     mv "$diagnostics_file" "${PDS_JOB_USER_MESSAGES_FOLDER}/INFO_message_$(date +%Y-%m-%d_%H.%M.%S_%N).txt"
 fi
 
-if [[ -f "$spdx_file" ]]
+if $convert_output_to_spdx_json
 then
-    if $convert_output_to_spdx_json
-    then
-        echo "Converting to SPDX JSON"
-        spdx_json_file="$PDS_JOB_RESULT_FILE.spdx.json"
-
-        # use the SPDX tool converter to convert the SPDX tag-value to SPDX JSON
-        java -jar "$TOOL_FOLDER/tools-java-$SPDX_TOOL_VERISON-jar-with-dependencies.jar" Convert "$spdx_file" "$spdx_json_file"
-        mv "$spdx_json_file" "$PDS_JOB_RESULT_FILE"
-    else
-        echo "Moving file"
-        mv "$PDS_JOB_RESULT_FILE.spdx" "$PDS_JOB_RESULT_FILE"
-    fi
+	convert
 else
-    warnMessage "No findings"
+    echo "Moving file"
+    mv "$PDS_JOB_RESULT_FILE.spdx" "$PDS_JOB_RESULT_FILE"
 fi

@@ -7,6 +7,8 @@ services:
             args:
                 - BASE_IMAGE=${BASE_IMAGE}
                 - SCANCODE_VERSION=${SCANCODE_VERSION}
+                - SPDX_TOOL_VERSION=${SPDX_TOOL_VERSION}
+                - SPDX_TOOL_CHECKSUM=${SPDX_TOOL_CHECKSUM}
             context: docker/
             dockerfile: Scancode-Debian.dockerfile
         container_name: pds-scancode

@@ -16,7 +16,7 @@ for <docker registry> with tag <version tag>.
 Required: <base image> ; for example ghcr.io/mercedes-benz/sechub/pds-base:v0.32.1
 
 Additionally these environment variables can be defined:
-- SCANCODE_VERSION - Scancode version to use. E.g. 31.2.1
+- SCANCODE_VERSION - Scancode version to use. E.g. 31.2.4
 EOF
 }
 
@@ -47,6 +47,16 @@ echo ">> Base image: $BASE_IMAGE"
 if [[ ! -z "$SCANCODE_VERSION" ]] ; then
     echo ">> Scancode version: $SCANCODE_VERSION"
     BUILD_ARGS+=" --build-arg SCANCODE_VERSION=$SCANCODE_VERSION"
+fi
+
+if [[ ! -z "$SPDX_TOOL_VERSION" ]] ; then
+    echo ">> SPDX Tool version: $SPDX_TOOL_VERSION"
+    BUILD_ARGS+=" --build-arg SPDX_TOOL_VERSION=$SPDX_TOOL_VERSION"
+fi
+
+if [[ ! -z "$SPDX_TOOL_CHECKSUM" ]] ; then
+    echo ">> SPDX Tool checksum: $SPDX_TOOL_CHECKSUM"
+    BUILD_ARGS+=" --build-arg SPDX_TOOL_CHECKSUM=$SPDX_TOOL_CHECKSUM"
 fi
 
 docker build --pull --no-cache $BUILD_ARGS \
