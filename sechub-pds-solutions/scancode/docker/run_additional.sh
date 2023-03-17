@@ -17,7 +17,7 @@ if [ "$?" -ne 0 ] ; then
 	has_install_problems="yes"
 fi
 
-if [ $has_install_problems == "yes" ] ; then
+if [ "$has_install_problems" = "yes" ] ; then
   echo "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
   echo "! Problems occured when calling tools. Please fix !"
   echo "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"

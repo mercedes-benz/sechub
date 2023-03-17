@@ -15,8 +15,9 @@ Builds a docker image of SecHub PDS with Scancode
 for <docker registry> with tag <version tag>.
 Required: <base image> ; for example ghcr.io/mercedes-benz/sechub/pds-base:v0.32.1
 
-Additionally these environment variables can be defined:
-- SCANCODE_VERSION - Scancode version to use. E.g. 31.2.4
+These environment variables need to be defined:
+Required: SCANCODE_VERSION - Scancode version to use. E.g. 31.2.4. The version number can be found at: https://pypi.org/project/scancode-toolkit/.
+Required: SPDX_TOOL_VERSION - SPDX tool version. E.g. 1.1.5. Releases can be found at: https://mvnrepository.com/artifact/org.spdx/tools-java.
 EOF
 }
 
@@ -36,6 +37,16 @@ if [[ -z "$BASE_IMAGE" ]]; then
   FAILED=true
 fi
 
+if [[ -z "$SCANCODE_VERSION" ]] ; then
+	echo "Please set the environment variable for the Scancode version."
+    FAILED=true
+fi
+
+if [[ -z "$SPDX_TOOL_VERSION" ]] ; then
+	echo "Please set the environment variable for the SPDX tool version."
+    FAILED=true
+fi
+
 if $FAILED ; then
   usage
   exit 1
@@ -44,20 +55,11 @@ fi
 BUILD_ARGS="--build-arg BASE_IMAGE=$BASE_IMAGE"
 echo ">> Base image: $BASE_IMAGE"
 
-if [[ ! -z "$SCANCODE_VERSION" ]] ; then
-    echo ">> Scancode version: $SCANCODE_VERSION"
-    BUILD_ARGS+=" --build-arg SCANCODE_VERSION=$SCANCODE_VERSION"
-fi
+BUILD_ARGS+=" --build-arg SPDX_TOOL_VERSION=$SPDX_TOOL_VERSION"
+echo ">> SPDX Tool version: $SPDX_TOOL_VERSION"
 
-if [[ ! -z "$SPDX_TOOL_VERSION" ]] ; then
-    echo ">> SPDX Tool version: $SPDX_TOOL_VERSION"
-    BUILD_ARGS+=" --build-arg SPDX_TOOL_VERSION=$SPDX_TOOL_VERSION"
-fi
-
-if [[ ! -z "$SPDX_TOOL_CHECKSUM" ]] ; then
-    echo ">> SPDX Tool checksum: $SPDX_TOOL_CHECKSUM"
-    BUILD_ARGS+=" --build-arg SPDX_TOOL_CHECKSUM=$SPDX_TOOL_CHECKSUM"
-fi
+BUILD_ARGS+=" --build-arg SCANCODE_VERSION=$SCANCODE_VERSION"
+echo ">> Scancode version: $SCANCODE_VERSION"
 
 docker build --pull --no-cache $BUILD_ARGS \
        --tag "$REGISTRY:$VERSION" \

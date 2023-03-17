@@ -4,10 +4,16 @@
 source "${HELPER_FOLDER}/message.sh"
 
 function convert() {
-	echo "Converting to SPDX JSON"
-
-    cat "$spdx_file"
-    spdx_json_file="$PDS_JOB_RESULT_FILE.spdx.json"
+    local spdx_file="$1"
+    local spdx_json_file="$PDS_JOB_RESULT_FILE.spdx.json"
+    
+    echo "Converting to SPDX JSON"
+    	
+	if [[ ! -f "$spdx_file" ]]
+	then
+		echo "Error file $spdx_file does not exist."
+		return 1
+	fi
 
     # use the SPDX tool converter to convert the SPDX tag-value to SPDX JSON
     java -jar "$TOOL_FOLDER/tools-java-${SPDX_TOOL_VERSION}-jar-with-dependencies.jar" Convert "$spdx_file" "$spdx_json_file" TAG JSON
@@ -46,18 +52,13 @@ extractcode_version=$( extractcode --version 2>&1 )
 # redirect from stderr to stdout. Python writes its version number to stderr.
 python_version=$( python3 --version 2>&1 )
 
-
-scancode_version=$( scancode --version )
-
-spdx_tool_version=$( java -jar "$TOOL_FOLDER/tools-java-$SPDX_TOOL_VERSION-jar-with-dependencies.jar" Version )
-
 printf "%-26s %s\n" "Python:" "$python_version"
 printf "%-26s %s\n" "PDS version:" "$PDS_VERSION"
 printf "Scancode-Toolkit version:\n\n" 
-echo "$scancode_version"
+scancode --version
 printf "\n\n%-26s %s\n" "Extractcode version:" "$extractcode_version"
 printf "SPDX Tools version:\n\n"
-echo "$spdx_tool_version"
+java -jar "$TOOL_FOLDER/tools-java-$SPDX_TOOL_VERSION-jar-with-dependencies.jar" Version
 
 echo ""
 echo "---------"
@@ -220,7 +221,7 @@ fi
 
 if $convert_output_to_spdx_json
 then
-	convert
+	convert "$spdx_file"
 else
     echo "Moving file"
     mv "$PDS_JOB_RESULT_FILE.spdx" "$PDS_JOB_RESULT_FILE"
