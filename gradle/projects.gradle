@@ -9,7 +9,6 @@ projectType = [
                project(':sechub-testframework'),
                project(':sechub-analyzer-cli'),
                project(':sechub-api-java'),
-               project(':sechub-sarif'),
                project(':sechub-commons-core'),
                project(':sechub-commons-model'),
                project(':sechub-commons-model-testframework'),
