@@ -48,7 +48,7 @@ public class PDSSecretScanJobScenario20IntTest {
             hasStatus(SecHubStatus.SUCCESS).
             hasMessages(0).
             hasJobUUID(jobUUID).
-            hasTrafficLight(GREEN).
+            hasTrafficLight(YELLOW). // It is yellow because the SARIF default level is "warning" when not explicitly defined
             hasFindings(6).
     	        finding(0).
     	          hasScanType(ScanType.SECRET_SCAN).
