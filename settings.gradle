@@ -26,6 +26,9 @@ include 'sechub-cli',
 /* integration test*/
 'sechub-integrationtest',
 
+/* system test*/
+'sechub-systemtest',
+
 /* server parts */
 'sechub-schedule',
 'sechub-scan',

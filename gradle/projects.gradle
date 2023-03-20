@@ -18,6 +18,7 @@ projectType = [
                project(':sechub-storage-core'),
                project(':sechub-wrapper-owasp-zap'),
                project(':sechub-pds-tools'),
+               project(':sechub-systemtest'),
                
             ],
             

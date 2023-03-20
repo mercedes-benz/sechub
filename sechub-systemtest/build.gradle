@@ -1,0 +1,23 @@
+// SPDX-License-Identifier: MIT
+ /*============================================================================
+ * Build file for subproject
+ *
+ * Root build file: "${rootProject.projectDir}/build.gradle"
+ * ============================================================================
+ */
+plugins {
+    id 'java-library'
+}
+
+version =   VersionData.getServerVersion()
+
+dependencies {
+
+    implementation project(':sechub-commons-model')
+    
+    testImplementation spring_boot_dependency.junit_jupiter
+    testImplementation spring_boot_dependency.mockito_core
+    
+    implementation spring_boot_dependency.logback_classic
+
+}
