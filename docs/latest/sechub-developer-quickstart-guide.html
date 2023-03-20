@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="generator" content="Asciidoctor 2.0.16">
-<title>SecHub Quickstart Guide</title>
+<title>SecHub Developer Quickstart Guide</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,300italic,400,400italic,600,600italic%7CNoto+Serif:400,400italic,700,700italic%7CDroid+Sans+Mono:400,700">
 <style>
 /*! Asciidoctor default stylesheet | MIT License | https://asciidoctor.org */
@@ -529,27 +529,28 @@ table.CodeRay td.code{padding:0 0 0 .75em}
 </head>
 <body class="article toc2 toc-left">
 <div id="header">
-<h1><span class="image"><a class="image" href="https://mercedes-benz.github.io/sechub"><img src="images/sechub-logo.png" alt="sechub logo"></a></span> SecHub Quickstart Guide</h1>
+<h1><span class="image"><a class="image" href="https://mercedes-benz.github.io/sechub"><img src="images/sechub-logo.png" alt="sechub logo"></a></span> SecHub Developer Quickstart Guide</h1>
 <div class="details">
-<span id="revnumber"> Server 0.39.0</span>
+<span id="revnumber"> Server 0.40.0</span>
 </div>
 <div id="toc" class="toc2">
 <div id="toctitle">Table of contents</div>
 <ul class="sectlevel1">
-<li><a href="#guide">1. Guide</a>
+<li><a href="#target-audience">1. Target audience</a></li>
+<li><a href="#guide">2. Guide</a>
 <ul class="sectlevel2">
-<li><a href="#requirements">1.1. Requirements</a>
+<li><a href="#requirements">2.1. Requirements</a>
 <ul class="sectlevel3">
-<li><a href="#alpine-linux">1.1.1. Alpine Linux</a></li>
-<li><a href="#debianubuntu">1.1.2. Debian/Ubuntu</a></li>
-<li><a href="#fedora-and-centos">1.1.3. Fedora and CentOS</a></li>
+<li><a href="#alpine-linux">2.1.1. Alpine Linux</a></li>
+<li><a href="#debianubuntu">2.1.2. Debian/Ubuntu</a></li>
+<li><a href="#fedora-and-centos">2.1.3. Fedora and CentOS</a></li>
 </ul>
 </li>
-<li><a href="#instructions">1.2. Instructions</a>
+<li><a href="#instructions">2.2. Instructions</a>
 <ul class="sectlevel3">
-<li><a href="#troubleshooting">1.2.1. Troubleshooting</a>
+<li><a href="#troubleshooting">2.2.1. Troubleshooting</a>
 <ul class="sectlevel4">
-<li><a href="#log-files">1.2.1.1. Log files</a></li>
+<li><a href="#log-files">2.2.1.1. Log files</a></li>
 </ul>
 </li>
 </ul>
@@ -639,12 +640,20 @@ build pipeline / contionus integration (CI) and helps to provide
 </tbody>
 </table>
 <div class="paragraph">
-<p>Documentation version: <code>Server 0.39.0-20230307172659</code></p>
+<p>Documentation version: <code>Server 0.40.0-20230315154234</code></p>
 </div>
 </div>
 </div>
 <div class="sect1">
-<h2 id="guide">1. Guide</h2>
+<h2 id="target-audience">1. Target audience</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>This guide is designed to help you if your are a developer or administrator and want to build, start and use the SecHub server either to help you with testing when writing new features or to test the integration into your own environment. If you are a enduser and want to use the SecHub client please have a look at our <a href="https://mercedes-benz.github.io/sechub/latest/sechub-client.html">client documentation</a>.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="guide">2. Guide</h2>
 <div class="sectionbody">
 <div class="paragraph">
 <p>This guide describes how to get started with SecHub.</p>
@@ -681,7 +690,7 @@ build pipeline / contionus integration (CI) and helps to provide
 </ul>
 </div>
 <div class="sect2">
-<h3 id="requirements">1.1. Requirements</h3>
+<h3 id="requirements">2.1. Requirements</h3>
 <div class="ulist">
 <ul>
 <li>
@@ -719,7 +728,7 @@ build pipeline / contionus integration (CI) and helps to provide
 </table>
 </div>
 <div class="sect3">
-<h4 id="alpine-linux">1.1.1. Alpine Linux</h4>
+<h4 id="alpine-linux">2.1.1. Alpine Linux</h4>
 <div class="listingblock">
 <div class="content">
 <pre>apk add openjdk11 go curl git bash jq</pre>
@@ -751,7 +760,7 @@ Cross-compiling the SecHub client on Alpine Linux 3.11 does not work (Go version
 </div>
 </div>
 <div class="sect3">
-<h4 id="debianubuntu">1.1.2. Debian/Ubuntu</h4>
+<h4 id="debianubuntu">2.1.2. Debian/Ubuntu</h4>
 <div class="listingblock">
 <div class="content">
 <pre>sudo apt install openjdk-11-jdk-headless golang git curl jq</pre>
@@ -783,7 +792,7 @@ If the version of your GoLang is below 1.15, please install a more recent versio
 </div>
 </div>
 <div class="sect3">
-<h4 id="fedora-and-centos">1.1.3. Fedora and CentOS</h4>
+<h4 id="fedora-and-centos">2.1.3. Fedora and CentOS</h4>
 <div class="listingblock">
 <div class="content">
 <pre>sudo dnf install java-11-openjdk-devel golang git curl jq</pre>
@@ -804,7 +813,7 @@ Tested with Fedora 34 and CentOS 8.
 </div>
 </div>
 <div class="sect2">
-<h3 id="instructions">1.2. Instructions</h3>
+<h3 id="instructions">2.2. Instructions</h3>
 <div class="paragraph">
 <p>Let&#8217;s start with:</p>
 </div>
@@ -1022,9 +1031,9 @@ For real results, you have to define an 'execution profile' with a scanner (via 
 </ol>
 </div>
 <div class="sect3">
-<h4 id="troubleshooting">1.2.1. Troubleshooting</h4>
+<h4 id="troubleshooting">2.2.1. Troubleshooting</h4>
 <div class="sect4">
-<h5 id="log-files">1.2.1.1. Log files</h5>
+<h5 id="log-files">2.2.1.1. Log files</h5>
 <div class="paragraph">
 <p>Open the log file <code>./sechub-integrationtest/integrationtest-server.log</code> to get more details about the problem.</p>
 </div>
@@ -1036,7 +1045,7 @@ For real results, you have to define an 'execution profile' with a scanner (via 
 </div>
 <div id="footer">
 <div id="footer-text">
- Server 0.39.0<br>
+ Server 0.40.0<br>
 </div>
 </div>
 </body>

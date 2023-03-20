@@ -12,6 +12,10 @@ include::documents/shared/about_documentation_all.adoc[]
 
 //--
 
+== Target audience
+
+This guide is designed to help you if your are a developer or administrator and want to build, start and use the SecHub server either to help you with testing when writing new features or to test the integration into your own environment. If you are a enduser and want to use the SecHub client please have a look at our https://mercedes-benz.github.io/sechub/latest/sechub-client.html[client documentation].
+
 == Guide
 
 This guide describes how to get started with SecHub.
@@ -50,7 +54,7 @@ apk add openjdk11 go curl git bash jq
 
 NOTE: Tested with Alpine Linux 3.12, 3.13 and 3.14.
 
-WARNING: Cross-compiling the SecHub client on Alpine Linux 3.11 does not work (Go version go1.13.13 linux/amd64). 
+WARNING: Cross-compiling the SecHub client on Alpine Linux 3.11 does not work (Go version go1.13.13 linux/amd64).
 
 ==== Debian/Ubuntu
 
