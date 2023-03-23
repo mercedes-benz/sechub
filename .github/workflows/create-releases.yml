@@ -140,7 +140,7 @@ jobs:
       # SecHub Server + PDS
       # ----------------------
       - name: Build Server and PDS artifacts
-        run: ./gradlew ensureLocalhostCertificate build buildWrapperOwaspZap generateOpenapi buildDeveloperAdminUI -x :sechub-integrationtest:test -x :sechub-cli:build
+        run: ./gradlew ensureLocalhostCertificate build generateOpenapi buildDeveloperAdminUI -x :sechub-integrationtest:test -x :sechub-cli:build
 
       # ----------------------
       # API Java publish
@@ -550,33 +550,6 @@ jobs:
           upload_url: ${{ steps.create_pds_release.outputs.upload_url }}
           asset_path: sechub-pds/build/libs/sechub-pds-${{ github.event.inputs.pds-version }}.jar.sha256sum
           asset_name: sechub-pds-${{ github.event.inputs.pds-version }}.jar.sha256sum
-          asset_content_type: text/plain
-
-      # sechub-pds-wrapperowaspzap
-      - name: Create files and sha256 checksum for PDS OWASP ZAP wrapper
-        if: github.event.inputs.pds-version != ''
-        run: |
-          cd sechub-wrapper-owasp-zap/build/libs/
-          sha256sum sechub-pds-wrapperowaspzap-${{ github.event.inputs.pds-version }}.jar > sechub-pds-wrapperowaspzap-${{ github.event.inputs.pds-version }}.jar.sha256sum
-      - name: Upload PDS release asset sechub-pds-wrapperowaspzap-${{ github.event.inputs.pds-version }}.jar
-        if: github.event.inputs.pds-version != ''
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ steps.create_pds_release.outputs.upload_url }}
-          asset_path: sechub-wrapper-owasp-zap/build/libs/sechub-pds-wrapperowaspzap-${{ github.event.inputs.pds-version }}.jar
-          asset_name: sechub-pds-wrapperowaspzap-${{ github.event.inputs.pds-version }}.jar
-          asset_content_type: application/zip
-      - name: Upload PDS release asset sechub-pds-wrapperowaspzap-${{ github.event.inputs.pds-version }}.jar.sha256sum
-        if: github.event.inputs.pds-version != ''
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ steps.create_pds_release.outputs.upload_url }}
-          asset_path: sechub-wrapper-owasp-zap/build/libs/sechub-pds-wrapperowaspzap-${{ github.event.inputs.pds-version }}.jar.sha256sum
-          asset_name: sechub-pds-wrapperowaspzap-${{ github.event.inputs.pds-version }}.jar.sha256sum
           asset_content_type: text/plain
 
       # sechub-wrapper-checkmarx
