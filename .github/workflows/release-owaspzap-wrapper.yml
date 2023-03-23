@@ -20,12 +20,6 @@ jobs:
         run: |
           echo "OWASP-ZAP Wrapper '${{ github.event.inputs.owaspzap-wrapper-version }}' - Milestone '${{ github.event.inputs.owaspzap-wrapper-milestone-number }}'"
 
-      - name: Verify Inputs
-        if: (github.event.inputs.owaspzap-wrapper-version == '') || (github.event.inputs.owaspzap-wrapper-milestone-number == '')
-        run: |
-          echo "Please provide a version of OWASP-ZAP Wrapper release and the corresponding Milestone number"
-          exit 1
-
       - name: Checkout branch master
         uses: actions/checkout@v3
         with:
@@ -120,8 +114,8 @@ jobs:
       # Assert releaseable, so no dirty flags on releases
       # even when all artifact creation parts are done!
       # -----------------------------------------
-      # - name: Assert releasable
-      #   run: ./gradlew assertReleaseable
+      - name: Assert releasable
+        run: ./gradlew assertReleaseable
 
       - name: Create OWASP-ZAP Wrapper release
         id: create_owaspzap-wrapper_release
