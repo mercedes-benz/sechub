@@ -1,5 +1,5 @@
 # SPDX-License-Identifier: MIT
-name: PDS-Tools-Release
+name: Release PDS-Tools
 
 on:
   workflow_dispatch:
@@ -44,7 +44,7 @@ jobs:
           java-version: 11
           distribution: temurin
           cache: gradle
-          
+
       # ----------------------
       # Create pull request if license headers are missing
       # ----------------------

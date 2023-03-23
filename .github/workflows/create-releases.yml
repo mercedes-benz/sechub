@@ -149,7 +149,7 @@ jobs:
         run: ./gradlew :sechub-api-java:buildAPIJava
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # This token is provided by Actions, you do not need to create your own token
-      
+
       # ----------------------
       # Integration test
       # ----------------------
@@ -551,7 +551,7 @@ jobs:
           asset_path: sechub-pds/build/libs/sechub-pds-${{ github.event.inputs.pds-version }}.jar.sha256sum
           asset_name: sechub-pds-${{ github.event.inputs.pds-version }}.jar.sha256sum
           asset_content_type: text/plain
-          
+
       # sechub-pds-wrapperowaspzap
       - name: Create files and sha256 checksum for PDS OWASP ZAP wrapper
         if: github.event.inputs.pds-version != ''
@@ -578,7 +578,7 @@ jobs:
           asset_path: sechub-wrapper-owasp-zap/build/libs/sechub-pds-wrapperowaspzap-${{ github.event.inputs.pds-version }}.jar.sha256sum
           asset_name: sechub-pds-wrapperowaspzap-${{ github.event.inputs.pds-version }}.jar.sha256sum
           asset_content_type: text/plain
-      
+
       # sechub-wrapper-checkmarx
       - name: Create files and sha256 checksum for PDS Checkmarx wrapper
         if: github.event.inputs.pds-version != ''
@@ -605,7 +605,7 @@ jobs:
           asset_path: sechub-wrapper-checkmarx/build/libs/sechub-wrapper-checkmarx-${{ github.event.inputs.pds-version }}.jar.sha256sum
           asset_name: sechub-wrapper-checkmarx-${{ github.event.inputs.pds-version }}.jar.sha256sum
           asset_content_type: text/plain
-      
+
       # sechub-product-delegation-server.pdf
       - name: Upload PDS release asset sechub-product-delegation-server-${{ github.event.inputs.pds-version }}.pdf
         if: github.event.inputs.pds-version != ''

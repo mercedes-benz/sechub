@@ -1,0 +1,20 @@
+# SPDX-License-Identifier: MIT
+name: Release OWASP-ZAP wrapper
+
+on:
+  workflow_dispatch:
+    inputs:
+      owaspzap-wrapper-version:
+        description: OWASP-ZAP-wrapper Version (e.g. 1.0.0)
+        required: true
+      owaspzap-wrapper-milestone-number:
+        description: OWASP-ZAP-wrapper Milestone number (e.g. 90)
+        required: true
+jobs:
+  release-version:
+    name: Create OWASP-ZAP-wrapper release
+    runs-on: ubuntu-latest
+    steps:
+      - name: "Show Inputs"
+        run: |
+          echo "OWASP-ZAP-wrapper '${{ github.event.inputs.owaspzap-wrapper-version }}' - Milestone '${{ github.event.inputs.owaspzap-wrapper-milestone-number }}'"
