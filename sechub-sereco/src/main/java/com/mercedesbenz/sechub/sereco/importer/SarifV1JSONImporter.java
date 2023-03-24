@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
@@ -14,26 +15,6 @@ import org.springframework.stereotype.Component;
 
 import com.mercedesbenz.sechub.commons.core.util.SimpleStringUtils;
 import com.mercedesbenz.sechub.commons.model.ScanType;
-import com.mercedesbenz.sechub.sarif.SarifReportSupport;
-import com.mercedesbenz.sechub.sarif.model.ArtifactContent;
-import com.mercedesbenz.sechub.sarif.model.ArtifactLocation;
-import com.mercedesbenz.sechub.sarif.model.CodeFlow;
-import com.mercedesbenz.sechub.sarif.model.Level;
-import com.mercedesbenz.sechub.sarif.model.Location;
-import com.mercedesbenz.sechub.sarif.model.Message;
-import com.mercedesbenz.sechub.sarif.model.PhysicalLocation;
-import com.mercedesbenz.sechub.sarif.model.PropertyBag;
-import com.mercedesbenz.sechub.sarif.model.Region;
-import com.mercedesbenz.sechub.sarif.model.Report;
-import com.mercedesbenz.sechub.sarif.model.ReportingDescriptorReference;
-import com.mercedesbenz.sechub.sarif.model.ReportingDescriptorRelationship;
-import com.mercedesbenz.sechub.sarif.model.Result;
-import com.mercedesbenz.sechub.sarif.model.Rule;
-import com.mercedesbenz.sechub.sarif.model.Run;
-import com.mercedesbenz.sechub.sarif.model.ThreadFlow;
-import com.mercedesbenz.sechub.sarif.model.ToolComponentReference;
-import com.mercedesbenz.sechub.sarif.model.WebRequest;
-import com.mercedesbenz.sechub.sarif.model.WebResponse;
 import com.mercedesbenz.sechub.sereco.ImportParameter;
 import com.mercedesbenz.sechub.sereco.metadata.SerecoCodeCallStackElement;
 import com.mercedesbenz.sechub.sereco.metadata.SerecoMetaData;
@@ -47,6 +28,29 @@ import com.mercedesbenz.sechub.sereco.metadata.SerecoWebEvidence;
 import com.mercedesbenz.sechub.sereco.metadata.SerecoWebRequest;
 import com.mercedesbenz.sechub.sereco.metadata.SerecoWebResponse;
 
+import de.jcup.sarif_2_1_0.SarifSchema210ImportExportSupport;
+import de.jcup.sarif_2_1_0.SarifSchema210LogicSupport;
+import de.jcup.sarif_2_1_0.model.ArtifactContent;
+import de.jcup.sarif_2_1_0.model.ArtifactLocation;
+import de.jcup.sarif_2_1_0.model.CodeFlow;
+import de.jcup.sarif_2_1_0.model.Location;
+import de.jcup.sarif_2_1_0.model.Message;
+import de.jcup.sarif_2_1_0.model.MultiformatMessageString;
+import de.jcup.sarif_2_1_0.model.PhysicalLocation;
+import de.jcup.sarif_2_1_0.model.PropertyBag;
+import de.jcup.sarif_2_1_0.model.Region;
+import de.jcup.sarif_2_1_0.model.ReportingDescriptor;
+import de.jcup.sarif_2_1_0.model.ReportingDescriptorReference;
+import de.jcup.sarif_2_1_0.model.ReportingDescriptorRelationship;
+import de.jcup.sarif_2_1_0.model.Result;
+import de.jcup.sarif_2_1_0.model.Result.Level;
+import de.jcup.sarif_2_1_0.model.Run;
+import de.jcup.sarif_2_1_0.model.SarifSchema210;
+import de.jcup.sarif_2_1_0.model.ThreadFlow;
+import de.jcup.sarif_2_1_0.model.ToolComponentReference;
+import de.jcup.sarif_2_1_0.model.WebRequest;
+import de.jcup.sarif_2_1_0.model.WebResponse;
+
 /**
  * This Importer supports SARIF
  * https://docs.oasis-open.org/sarif/sarif/v2.1.0/sarif-v2.1.0.html
@@ -58,10 +62,12 @@ public class SarifV1JSONImporter extends AbstractProductResultImporter {
 
     private static final Logger LOG = LoggerFactory.getLogger(SarifV1JSONImporter.class);
 
-    SarifReportSupport sarifSupport;
+    SarifSchema210ImportExportSupport sarifSchema210ImportExportSupport;
+    SarifSchema210LogicSupport sarifSchema210LogicSupport;
 
     public SarifV1JSONImporter() {
-        sarifSupport = new SarifReportSupport();
+        sarifSchema210ImportExportSupport = new SarifSchema210ImportExportSupport();
+        sarifSchema210LogicSupport = new SarifSchema210LogicSupport();
     }
 
     public SerecoMetaData importResult(String data, ScanType scanType) throws IOException {
@@ -70,10 +76,10 @@ public class SarifV1JSONImporter extends AbstractProductResultImporter {
             data = "";
         }
 
-        Report report = null;
+        SarifSchema210 report = null;
 
         try {
-            report = sarifSupport.loadReport(data);
+            report = sarifSchema210ImportExportSupport.fromJSON(data);
         } catch (Exception e) {
             /*
              * here we can throw the exception - should never happen, because with
@@ -108,7 +114,7 @@ public class SarifV1JSONImporter extends AbstractProductResultImporter {
         }
         SerecoVulnerability vulnerability = new SerecoVulnerability();
 
-        Rule ruleFound = sarifSupport.fetchRuleForResult(result, run);
+        ReportingDescriptor ruleFound = sarifSchema210LogicSupport.fetchRuleForResult(result, run);
 
         ResultData resultData = resolveData(ruleFound, run, result);
         vulnerability.setType(resultData.identifiedType);
@@ -178,7 +184,7 @@ public class SarifV1JSONImporter extends AbstractProductResultImporter {
 
         PropertyBag locationProperties = sarifLocation.getProperties();
         if (locationProperties != null) {
-            Object attack = locationProperties.get("attack");
+            Object attack = locationProperties.getAdditionalProperties().get("attack");
             if (SimpleStringUtils.isNotEmpty(attack)) {
                 serecoAttack.setVector(attack.toString());
             }
@@ -196,13 +202,13 @@ public class SarifV1JSONImporter extends AbstractProductResultImporter {
         serecoReponse.setVersion(sarifWebResponse.getVersion());
         serecoReponse.setReasonPhrase(sarifWebResponse.getReasonPhrase());
         serecoReponse.setStatusCode(sarifWebResponse.getStatusCode());
-        serecoReponse.setNoResponseReceived(sarifWebResponse.isNoResponseReceived());
+        serecoReponse.setNoResponseReceived(sarifWebResponse.getNoResponseReceived());
 
-        serecoReponse.getHeaders().putAll(sarifWebResponse.getHeaders());
+        serecoReponse.getHeaders().putAll(sarifWebResponse.getHeaders().getAdditionalProperties());
 
         /* body */
         SerecoWebBody serecoWebResponseBody = serecoReponse.getBody();
-        com.mercedesbenz.sechub.sarif.model.Body sarifWebResponseBody = sarifWebResponse.getBody();
+        ArtifactContent sarifWebResponseBody = sarifWebResponse.getBody();
 
         serecoWebResponseBody.setText(sarifWebResponseBody.getText());
         serecoWebResponseBody.setBinary(sarifWebResponseBody.getBinary());
@@ -216,18 +222,18 @@ public class SarifV1JSONImporter extends AbstractProductResultImporter {
         serecoWebRequest.setVersion(sarifWebRequest.getVersion());
         serecoWebRequest.setMethod(sarifWebRequest.getMethod());
         serecoWebRequest.setTarget(sarifWebRequest.getTarget());
-        serecoWebRequest.getHeaders().putAll(sarifWebRequest.getHeaders());
+        serecoWebRequest.getHeaders().putAll(sarifWebRequest.getHeaders().getAdditionalProperties());
 
         /* body */
         SerecoWebBody serecoWebRequestBody = serecoWebRequest.getBody();
-        com.mercedesbenz.sechub.sarif.model.Body sarifWebRequestBody = sarifWebRequest.getBody();
+        ArtifactContent sarifWebRequestBody = sarifWebRequest.getBody();
 
         serecoWebRequestBody.setText(sarifWebRequestBody.getText());
         serecoWebRequestBody.setBinary(sarifWebRequestBody.getBinary());
     }
 
     private SerecoSeverity resolveSeverity(Result result, Run run) {
-        Level level = sarifSupport.resolveLevel(result, run);
+        Level level = sarifSchema210LogicSupport.resolveLevel(result, run);
         return mapToSeverity(level);
     }
 
@@ -238,7 +244,7 @@ public class SarifV1JSONImporter extends AbstractProductResultImporter {
         String solution;
     }
 
-    private ResultData resolveData(Rule rule, Run run, Result result) {
+    private ResultData resolveData(ReportingDescriptor rule, Run run, Result result) {
 
         ResultData data = new ResultData();
         data.description = resolveMessageTextOrNull(result);
@@ -272,12 +278,12 @@ public class SarifV1JSONImporter extends AbstractProductResultImporter {
         return message.getText();
     }
 
-    private void resolveSolution(Rule rule, ResultData data, Run run) {
+    private void resolveSolution(ReportingDescriptor rule, ResultData data, Run run) {
         PropertyBag ruleProperties = rule.getProperties();
         if (ruleProperties == null) {
             return;
         }
-        Object solution = ruleProperties.get("solution");
+        Object solution = ruleProperties.getAdditionalProperties().get("solution");
         if (!(solution instanceof Map)) {
             return;
         }
@@ -289,8 +295,8 @@ public class SarifV1JSONImporter extends AbstractProductResultImporter {
         data.solution = solutionText.toString();
     }
 
-    private void resolveTargetInformation(Rule rule, ResultData data, Run run) {
-        List<ReportingDescriptorRelationship> relationShips = rule.getRelationships();
+    private void resolveTargetInformation(ReportingDescriptor rule, ResultData data, Run run) {
+        Set<ReportingDescriptorRelationship> relationShips = rule.getRelationships();
         for (ReportingDescriptorRelationship relationShip : relationShips) {
             ReportingDescriptorReference target = relationShip.getTarget();
             if (target == null) {
@@ -316,16 +322,16 @@ public class SarifV1JSONImporter extends AbstractProductResultImporter {
         }
     }
 
-    private String resolveDescription(Rule rule) {
+    private String resolveDescription(ReportingDescriptor rule) {
         return rule.getFullDescription().getText();
     }
 
-    private String resolveType(Rule rule, Run run) {
+    private String resolveType(ReportingDescriptor rule, Run run) {
         if (rule == null) {
             return "error:rule==null!";
         }
         String type = null;
-        Message shortDescription = rule.getShortDescription();
+        MultiformatMessageString shortDescription = rule.getShortDescription();
         if (shortDescription != null) {
             type = shortDescription.getText();
         }
@@ -469,7 +475,7 @@ public class SarifV1JSONImporter extends AbstractProductResultImporter {
             return ability;
         }
         /* okay, now test if its valid SARIF */
-        if (sarifSupport.isValidSarif(param.getImportData())) {
+        if (isValidSarif(param.getImportData())) {
             return ProductImportAbility.ABLE_TO_IMPORT;
         }
         LOG.debug("Simple check accepted data, but was not valid SARIF");
@@ -479,6 +485,17 @@ public class SarifV1JSONImporter extends AbstractProductResultImporter {
     @Override
     protected ImportSupport createImportSupport() {
         return ImportSupport.builder().mustBeJSON().contentIdentifiedBy("\"runs\"").build();
+    }
+
+    private boolean isValidSarif(String json) {
+        try {
+            sarifSchema210ImportExportSupport.fromJSON(json);
+            return true;
+        } catch (Exception e) {
+            /* ignore error - except for tracing */
+            LOG.trace("Not accepted as JSON - " + e.getMessage());
+        }
+        return false;
     }
 
 }
