@@ -11,7 +11,7 @@ To be able to use this action you need a SecHub project. Check the https://merce
 
 ```yaml
 
-- uses: mercedes-benz/sechub/github-actions/scan@bb7d276
+- uses: mercedes-benz/sechub/github-actions/scan@ffc232775
   with:
     # OPTIONAL: Path to sechub.json for manual configuration. If no value is set the input parameters will be used to create it for the scan.'
     config-path: 'sechub.json'
