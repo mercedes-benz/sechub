@@ -163,6 +163,20 @@ jobs:
           asset_content_type: text/plain
 
       # -----------------------------------------
+      # Create release issue
+      # -----------------------------------------
+      - name: Create OWASP-ZAP Wrapper ${{ github.event.inputs.owaspzap-wrapper-version }} release issue
+        uses: dacbd/create-issue-action@main
+        with:
+          token: ${{ github.token }}
+          title: Release OWASP-ZAP Wrapper ${{ github.event.inputs.owaspzap-wrapper-version }}
+          body: |
+            See [Milestone ${{github.event.inputs.owaspzap-wrapper-milestone-number}}]( https://github.com/mercedes-benz/sechub/milestone/${{github.event.inputs.owaspzap-wrapper-milestone-number}}?closed=1) for details.
+
+            Please close this issue after the release.
+          milestone: ${{ github.event.inputs.server-milestone-number }}
+
+      # -----------------------------------------
       # Create a pull request for merging back `master` into `develop`
       # -----------------------------------------
       - name: pull-request master to develop
