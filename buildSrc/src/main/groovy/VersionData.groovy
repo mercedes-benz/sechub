@@ -7,6 +7,7 @@ class VersionData{
     private static final String ID_PDS_TOOLS = "pds-tools"
     private static final String ID_SERVER = "server"
     private static final String ID_WEBSITE = "website"
+    private static final String ID_WRAPPER_CHECKMARX = "checkmarx wrapper"
     private static final String ID_WRAPPER_OWASPZAP = "owasp-zap wrapper"
 
     private static Map<String,VersionInfo> map = new HashMap<>();
@@ -32,6 +33,7 @@ class VersionData{
         initialize(ID_PDS_TOOLS,"PDS-Tools")
         initialize(ID_SERVER,   "Server ")
         initialize(ID_WEBSITE,  "Website")
+        initialize(ID_WRAPPER_CHECKMARX, "Checkmarx Wrapper")
         initialize(ID_WRAPPER_OWASPZAP, "OWASP-ZAP Wrapper")
     }
 
@@ -75,6 +77,10 @@ class VersionData{
 
     public static String getClientVersion(){
         return map.get(ID_CLIENT).getShortVersion()
+    }
+
+    public static String getCheckmarxWrapperVersion(){
+        return map.get(ID_WRAPPER_CHECKMARX).getShortVersion()
     }
 
     public static String getOwaspzapWrapperVersion(){

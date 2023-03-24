@@ -38,6 +38,7 @@ def buildVersionFiles(){
     // We use "v${major}.${minor}.${hotfix}-${type}" pattern for tag names
     def clientVersionCommitTag = versionCommitTags.find{ it.name.endsWith("-client") }
     def librariesVersionCommitTag = versionCommitTags.find{ it.name.endsWith("-libraries") }
+    def checkmarxWrapperVersionCommitTag = versionCommitTags.find{ it.name.endsWith("-checkmarx-wrapper") }
     def owaspzapWrapperVersionCommitTag = versionCommitTags.find{ it.name.endsWith("-owaspzap-wrapper") }
     def pdsVersionCommitTag = versionCommitTags.find{ it.name.endsWith("-pds") }
     def pdsToolsVersionCommitTag = versionCommitTags.find{ it.name.endsWith("-pds-tools") }
@@ -96,6 +97,11 @@ def buildVersionFiles(){
     def librariesVersionInfo =  VersionData.defineVersion("Libraries",buildVersionString(librariesVersionCommitTag, hasChanged,buildNumber))
 
     // ------------------------
+    // - Checkmarx wrapper
+    // ------------------------
+    def checkmarxWrapperVersionInfo = VersionData.defineVersion("Checkmarx Wrapper",buildVersionString(checkmarxWrapperVersionCommitTag, hasChanged, buildNumber))
+
+    // ------------------------
     // - OWASP-ZAP wrapper
     // ------------------------
     def owaspzapWrapperVersionInfo = VersionData.defineVersion("OWASP-ZAP Wrapper",buildVersionString(owaspzapWrapperVersionCommitTag, hasChanged, buildNumber))
@@ -108,6 +114,7 @@ def buildVersionFiles(){
     println(pdsVersionInfo.describe())
     println(pdsToolsVersionInfo.describe())
     println(librariesVersionInfo.describe())
+    println(checkmarxWrapperVersionInfo.describe())
     println(owaspzapWrapperVersionInfo.describe())
 
     TimeDuration td = TimeCategory.minus( stop, start )
@@ -157,6 +164,7 @@ def buildVersionString(commitTag, boolean hasChanged, buildNumber){
         calcversion=calcversion-"-pds-tools"
         calcversion=calcversion-"-pds"
         calcversion=calcversion-"-server"
+        calcversion=calcversion-"-checkmarx-wrapper"
         calcversion=calcversion-"-owaspzap-wrapper"
 
     }
