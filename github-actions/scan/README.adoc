@@ -2,7 +2,7 @@
 
 == GitHub Action for SecHub scan
 
-This GitHub action uses version 0.34.0 of the SecHub cli to scan the repository for security issues.
+This GitHub action uses the SecHub cli to scan the repository for security issues.
 
 
 === Usage
@@ -11,7 +11,7 @@ To be able to use this action you need a SecHub project. Check the https://merce
 
 ```yaml
 
-- uses: mercedes-benz/github-actions/scan@main
+- uses: mercedes-benz/sechub/github-actions/scan@ffc232775
   with:
     # OPTIONAL: Path to sechub.json for manual configuration. If no value is set the input parameters will be used to create it for the scan.'
     config-path: 'sechub.json'
@@ -28,7 +28,7 @@ To be able to use this action you need a SecHub project. Check the https://merce
     # OPTIONAL: the name of the project registered in SecHub (required if config-path not set)
     project-name: ${{ secrets.SECHUB_PROJECT }}
 
-    # OPTIONAL: Which version of the SecHub
+    # OPTIONAL: Which version of the SecHub cli to use
     # DEFAULT: 0.34.0
     version: '0.34.0'
 
@@ -43,7 +43,7 @@ To be able to use this action you need a SecHub project. Check the https://merce
     # DEFAULT: json,html
     report-formats: 'json,html'
 
-    # OPTIONAL: SecHub debub output on/off.
+    # OPTIONAL: SecHub debug output on/off.
     # DEFAULT: false
     debug: false
 

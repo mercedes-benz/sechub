@@ -27,7 +27,7 @@ jobs:
 
       # Create temporary local tags, so we build documentation for this tag...
       # The final tag on git server side will be done automatically by the release when the draft is saved as "real" release
-      - name: Tag server version v${{ github.event.inputs.owaspzap-wrapper-version }}-owaspzap-wrapper (temporarily)
+      - name: Tag OWASP-ZAP Wrapper version v${{ github.event.inputs.owaspzap-wrapper-version }}-owaspzap-wrapper (temporarily)
         run: git tag v${{ github.event.inputs.owaspzap-wrapper-version }}-owaspzap-wrapper
 
       # ----------------------
@@ -161,6 +161,20 @@ jobs:
           asset_path: sechub-wrapper-owasp-zap/build/libs/sechub-pds-wrapperowaspzap-${{ github.event.inputs.owaspzap-wrapper-version }}.jar.sha256sum
           asset_name: sechub-pds-wrapperowaspzap-${{ github.event.inputs.owaspzap-wrapper-version }}.jar.sha256sum
           asset_content_type: text/plain
+
+      # -----------------------------------------
+      # Create release issue
+      # -----------------------------------------
+      - name: Create OWASP-ZAP Wrapper ${{ github.event.inputs.owaspzap-wrapper-version }} release issue
+        uses: dacbd/create-issue-action@main
+        with:
+          token: ${{ github.token }}
+          title: Release OWASP-ZAP Wrapper ${{ github.event.inputs.owaspzap-wrapper-version }}
+          body: |
+            See [Milestone ${{github.event.inputs.owaspzap-wrapper-milestone-number}}]( https://github.com/mercedes-benz/sechub/milestone/${{github.event.inputs.owaspzap-wrapper-milestone-number}}?closed=1) for details.
+
+            Please close this issue after the release.
+          milestone: ${{ github.event.inputs.server-milestone-number }}
 
       # -----------------------------------------
       # Create a pull request for merging back `master` into `develop`
