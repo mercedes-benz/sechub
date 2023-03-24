@@ -1,0 +1,20 @@
+# SPDX-License-Identifier: MIT
+name: Release Checkmarx wrapper
+
+on:
+  workflow_dispatch:
+    inputs:
+      checkmarx-wrapper-version:
+        description: Checkmarx-wrapper Version (e.g. 1.0.0)
+        required: true
+      checkmarx-wrapper-milestone-number:
+        description: Checkmarx-wrapper Milestone number (e.g. 91)
+        required: true
+jobs:
+  release-version:
+    name: Create Checkmarx-wrapper release
+    runs-on: ubuntu-latest
+    steps:
+      - name: "Show Inputs"
+        run: |
+          echo "Checkmarx-wrapper '${{ github.event.inputs.checkmarx-wrapper-version }}' - Milestone '${{ github.event.inputs.checkmarx-wrapper-milestone-number }}'"
