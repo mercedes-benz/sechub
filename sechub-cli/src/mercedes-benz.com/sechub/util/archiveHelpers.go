@@ -14,11 +14,11 @@ func normalizeArchivePath(file string, currentWorkingDirectory string) (string, 
 		return fmt.Sprintf("Could not get absolute filepath of %s", file), err
 	}
 
+	// Change to a Unix-Style path if on Windows
+	fileAbs = ConvertToUnixStylePath(fileAbs)
+
 	// Make zip path relative to current working directory (the usual case)
 	zipPath := strings.TrimPrefix(fileAbs, currentWorkingDirectory)
-
-	// Change to a Unix-Style path if on Windows
-	zipPath = ConvertToUnixStylePath(zipPath)
 
 	// If we still have an absolute path: use the non-absolute file path stripped from "./" and "../"
 	if strings.HasPrefix(zipPath, "/") {
