@@ -91,11 +91,11 @@ public class SecHubConfigurationModel {
     public void setSecretScan(SecHubSecretScanConfiguration secretScan) {
         this.secretScan = Optional.ofNullable(secretScan);
     }
-    
+
     public Optional<SecHubConfigurationMetaData> getMetaData() {
         return metaData;
     }
-    
+
     public void setMetaData(SecHubConfigurationMetaData metaData) {
         this.metaData = Optional.ofNullable(metaData);
     }

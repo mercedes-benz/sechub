@@ -8,5 +8,18 @@
         "fileSystem": {
             "folders": ["__folder__"]
         }
+     },
+     
+     "metaData" : {
+        "labels" : {
+        
+            "quality-level" : "high",
+            
+            "test-label1" : "Something special",
+            
+            "test-label2" : "",
+            
+            "test-label3_with_html" : "<html>\n\nIt is allowed,\t but must be always escaped in reports!</html>"
+        } 
      }
 }

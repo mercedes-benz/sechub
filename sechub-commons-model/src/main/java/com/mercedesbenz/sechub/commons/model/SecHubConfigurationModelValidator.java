@@ -21,12 +21,12 @@ public class SecHubConfigurationModelValidator {
 
     private static int MIN_NAME_LENGTH = 1;
     private static final int MAX_NAME_LENGTH = 80;
-    
+
     private static final int MIN_METADATA_LABEL_KEY_LENGTH = 1;
     private static final int MAX_METADATA_LABEL_KEY_LENGTH = 30;
-    
+
     private static final int MAX_METADATA_LABEL_VALUE_LENGTH = 150;
-    
+
     private static final int MAX_METADATA_LABEL_AMOUNT = 20;
 
     SecHubConfigurationModelSupport modelSupport = new SecHubConfigurationModelSupport();
@@ -86,24 +86,24 @@ public class SecHubConfigurationModelValidator {
         SecHubConfigurationMetaData metaData = metaDataOpt.get();
         Map<String, String> labels = metaData.getLabels();
         handleMetaDataLabels(labels, context);
-        
+
     }
 
     private void handleMetaDataLabels(Map<String, String> labels, InternalValidationContext context) {
         Set<String> keySet = labels.keySet();
         /* validate max amount of labels */
-        if (keySet.size()>MAX_METADATA_LABEL_AMOUNT) {
+        if (keySet.size() > MAX_METADATA_LABEL_AMOUNT) {
             context.result.addError(METADATA_TOO_MANY_LABELS);
             return;
         }
-        
+
         /* validate keys */
-        for (String key: keySet) {
-            if (key==null || key.length()<MIN_METADATA_LABEL_KEY_LENGTH) {
+        for (String key : keySet) {
+            if (key == null || key.length() < MIN_METADATA_LABEL_KEY_LENGTH) {
                 context.result.addError(METADATA_LABEL_KEY_TOO_SHORT);
                 return;
             }
-            if (key.length()> MAX_METADATA_LABEL_KEY_LENGTH) {
+            if (key.length() > MAX_METADATA_LABEL_KEY_LENGTH) {
                 context.result.addError(METADATA_LABEL_KEY_TOO_BIG);
                 return;
             }
@@ -113,10 +113,13 @@ public class SecHubConfigurationModelValidator {
                 continue;
             }
         }
-        
+
         /* validate values */
-        for (String value: labels.values()) {
-            if (value.length()> MAX_METADATA_LABEL_VALUE_LENGTH) {
+        for (String value : labels.values()) {
+            if (value == null) {
+                continue;// we accept even null values
+            }
+            if (value.length() > MAX_METADATA_LABEL_VALUE_LENGTH) {
                 context.result.addError(METADATA_LABEL_VALUE_TOO_BIG);
                 return;
             }

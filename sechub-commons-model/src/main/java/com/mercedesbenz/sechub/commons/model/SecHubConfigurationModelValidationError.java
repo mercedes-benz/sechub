@@ -36,17 +36,17 @@ public enum SecHubConfigurationModelValidationError {
     NO_MODULE_GROUP_DETECTED("No module group detected."),
 
     MULTIPLE_MODULE_GROUPS_DETECTED("Multiple module groups detected."),
-    
+
     METADATA_LABEL_KEY_TOO_SHORT("Metadata label key length is too small."),
-    
+
     METADATA_LABEL_KEY_TOO_BIG("Meta data label key length is too big."),
-    
+
     METADATA_LABEL_VALUE_TOO_BIG("Meta data label key length is too big."),
-    
+
     METADATA_TOO_MANY_LABELS("Too many meta data labels defined"),
-    
+
     METADATA_LABEL_KEY_CONTAINS_ILLEGAL_CHARACTERS("Meta data label key contains illegal characters"),
-    
+
     ;
 
     private String defaultMessage;

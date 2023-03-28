@@ -12,7 +12,7 @@ class SecHubConfigurationModelTest {
     @Test
     void deserialization_of_a_configuration_with_metadata_having_labels_results_in_configuration_with_those_metadata_labels() {
         /* @formatter:off */
-        
+
         /* prepare */
         String json ="{\n"
                 + "  \"apiVersion\" : \"1.0\",\n"
@@ -34,29 +34,29 @@ class SecHubConfigurationModelTest {
                 + "    \"use\" : [\"myproject\"]\n"
                 + "  }\n"
                 + "}";
-        
+
         /* execute */
         SecHubConfigurationModel model = JSONConverter.get().fromJSON(SecHubConfigurationModel.class, json);
-        
-        
+
+
         /* test */
         Optional<SecHubConfigurationMetaData> metaDataOpt = model.getMetaData();
         assertTrue(metaDataOpt.isPresent());
-        
+
         Map<String, String> labels = metaDataOpt.get().getLabels();
         assertEquals(2,labels.keySet().size());
         assertEquals("testing", labels.get("stage"));
         assertEquals("quality assurance", labels.get("purpose"));
-        
-        
+
+
         /* @formatter:on */
-        
-        
+
     }
+
     @Test
     void deserialization_of_a_configuration_without_metadata_has_no_metadata() {
         /* @formatter:off */
-        
+
         /* prepare */
         String json ="{\n"
                 + "  \"apiVersion\" : \"1.0\",\n"
@@ -75,15 +75,14 @@ class SecHubConfigurationModelTest {
 
         /* execute */
         SecHubConfigurationModel model = JSONConverter.get().fromJSON(SecHubConfigurationModel.class, json);
-        
-        
+
+
         /* test */
         Optional<SecHubConfigurationMetaData> metaDataOpt = model.getMetaData();
         assertFalse(metaDataOpt.isPresent());
-        
+
         /* @formatter:on */
-        
-        
+
     }
 
 }

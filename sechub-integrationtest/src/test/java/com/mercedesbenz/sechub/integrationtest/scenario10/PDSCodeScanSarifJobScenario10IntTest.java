@@ -67,10 +67,15 @@ public class PDSCodeScanSarifJobScenario10IntTest {
 
         // test content as expected
         String report = as(USER_1).getJobReport(project, jobUUID);
+
         assertReport(report).
             hasStatus(SecHubStatus.SUCCESS).
             hasMessages(0).
             hasJobUUID(jobUUID).
+            hasMetaDataLabel("quality-level", "high").
+            hasMetaDataLabel("test-label1", "Something special").
+            hasMetaDataLabel("test-label2", "").
+            hasMetaDataLabel("test-label3_with_html", "<html>\n\nIt is allowed,\t but must be always escaped in reports!</html>").
             hasTrafficLight(RED).
                finding(0).
                    hasSeverity(Severity.HIGH).

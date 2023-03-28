@@ -737,66 +737,66 @@ class SecHubConfigurationModelValidatorTest {
     }
 
     @ParameterizedTest
-    @ValueSource(ints = {0,1,2,20})
+    @ValueSource(ints = { 0, 1, 2, 20 })
     void model_with_given_amount_of__valid_metadata_labels_has_no_error(int amount) {
         /* prepare */
         SecHubConfigurationModel model = createDefaultValidModel();
         SecHubDataConfiguration data = new SecHubDataConfiguration();
-        
+
         // define at least one data config (valid here)
         SecHubSourceDataConfiguration config1 = new SecHubSourceDataConfiguration();
         config1.setUniqueName("i-am-unique");
         data.getSources().add(config1);
-        
+
         model.setData(data);
-        
+
         SecHubConfigurationMetaData metaData = new SecHubConfigurationMetaData();
         model.setMetaData(metaData);
-        for (int i=0;i<amount;i++) {
-            metaData.getLabels().put("long-but-valid"+i, "valid value:"+i);
+        for (int i = 0; i < amount; i++) {
+            metaData.getLabels().put("long-but-valid" + i, "valid value:" + i);
         }
-        
+
         modelSupportCollectedScanTypes.add(ScanType.CODE_SCAN); // simulate correct module group found
-        
+
         /* execute */
         SecHubConfigurationModelValidationResult result = validatorToTest.validate(model);
-        
+
         /* test */
         assertFalse(result.hasErrors());
         assertEquals(0, result.getErrors().size());
     }
-    
+
     @ParameterizedTest
-    @ValueSource(ints = {21,100})
+    @ValueSource(ints = { 21, 100 })
     void model_with_given_amount_of__valid_metadata_labels_has_error(int amount) {
         /* prepare */
         SecHubConfigurationModel model = createDefaultValidModel();
         SecHubDataConfiguration data = new SecHubDataConfiguration();
-        
+
         // define at least one data config (valid here)
         SecHubSourceDataConfiguration config1 = new SecHubSourceDataConfiguration();
         config1.setUniqueName("i-am-unique");
         data.getSources().add(config1);
-        
+
         model.setData(data);
-        
+
         SecHubConfigurationMetaData metaData = new SecHubConfigurationMetaData();
         model.setMetaData(metaData);
-        for (int i=0;i<amount;i++) {
-            metaData.getLabels().put("long-but-valid"+i, "valid value:"+i);
+        for (int i = 0; i < amount; i++) {
+            metaData.getLabels().put("long-but-valid" + i, "valid value:" + i);
         }
-        
+
         modelSupportCollectedScanTypes.add(ScanType.CODE_SCAN); // simulate correct module group found
-        
+
         /* execute */
         SecHubConfigurationModelValidationResult result = validatorToTest.validate(model);
-        
+
         /* test */
         assertTrue(result.hasErrors());
         assertHasError(result, SecHubConfigurationModelValidationError.METADATA_TOO_MANY_LABELS);
         assertEquals(1, result.getErrors().size());
     }
-    
+
     @Test
     void model_with_metadata_label_key_length0_has_error() {
         /* prepare */
@@ -809,7 +809,7 @@ class SecHubConfigurationModelValidatorTest {
         data.getSources().add(config1);
 
         model.setData(data);
-        
+
         SecHubConfigurationMetaData metaData = new SecHubConfigurationMetaData();
         metaData.getLabels().put("123456789-123456789-123456789-1", "valid value");
         model.setMetaData(metaData);
@@ -823,180 +823,178 @@ class SecHubConfigurationModelValidatorTest {
         assertHasError(result, SecHubConfigurationModelValidationError.METADATA_LABEL_KEY_TOO_BIG);
         assertEquals(1, result.getErrors().size());
     }
-    
+
     @Test
     void model_with_metadata_label_key_length31_has_error() {
         /* prepare */
         SecHubConfigurationModel model = createDefaultValidModel();
         SecHubDataConfiguration data = new SecHubDataConfiguration();
-        
+
         // define at least one data config (valid here)
         SecHubSourceDataConfiguration config1 = new SecHubSourceDataConfiguration();
         config1.setUniqueName("i-am-unique");
         data.getSources().add(config1);
-        
+
         model.setData(data);
-        
+
         SecHubConfigurationMetaData metaData = new SecHubConfigurationMetaData();
         metaData.getLabels().put("123456789-123456789-123456789-1", "valid value");
         model.setMetaData(metaData);
-        
+
         modelSupportCollectedScanTypes.add(ScanType.CODE_SCAN); // simulate correct module group found
-        
+
         /* execute */
         SecHubConfigurationModelValidationResult result = validatorToTest.validate(model);
-        
+
         /* test */
         assertHasError(result, SecHubConfigurationModelValidationError.METADATA_LABEL_KEY_TOO_BIG);
         assertEquals(1, result.getErrors().size());
     }
-    
+
     @Test
     void model_with_metadata_label_key_length30_has_no_error() {
         /* prepare */
         SecHubConfigurationModel model = createDefaultValidModel();
         SecHubDataConfiguration data = new SecHubDataConfiguration();
-        
+
         // define at least one data config (valid here)
         SecHubSourceDataConfiguration config1 = new SecHubSourceDataConfiguration();
         config1.setUniqueName("i-am-unique");
         data.getSources().add(config1);
-        
+
         model.setData(data);
-        
+
         SecHubConfigurationMetaData metaData = new SecHubConfigurationMetaData();
         metaData.getLabels().put("123456789-123456789-123456789-", "valid value");
         model.setMetaData(metaData);
-        
+
         modelSupportCollectedScanTypes.add(ScanType.CODE_SCAN); // simulate correct module group found
-        
+
         /* execute */
         SecHubConfigurationModelValidationResult result = validatorToTest.validate(model);
-        
+
         /* test */
         assertHasNoErrors(result);
     }
-    
-    
+
     @ParameterizedTest
-    @ValueSource(ints= {151,250})
+    @ValueSource(ints = { 151, 250 })
     void model_with_metadata_label_value_length_has_error(int length) {
         /* prepare */
         SecHubConfigurationModel model = createDefaultValidModel();
         SecHubDataConfiguration data = new SecHubDataConfiguration();
-        
+
         // define at least one data config (valid here)
         SecHubSourceDataConfiguration config1 = new SecHubSourceDataConfiguration();
         config1.setUniqueName("i-am-unique");
         data.getSources().add(config1);
-        
+
         model.setData(data);
-        
+
         SecHubConfigurationMetaData metaData = new SecHubConfigurationMetaData();
         StringBuilder sb = new StringBuilder();
-        for (int i=0;i<length;i++) {
+        for (int i = 0; i < length; i++) {
             sb.append("a");
         }
         metaData.getLabels().put("valid-key", sb.toString());
         model.setMetaData(metaData);
-        
+
         modelSupportCollectedScanTypes.add(ScanType.CODE_SCAN); // simulate correct module group found
-        
+
         /* execute */
         SecHubConfigurationModelValidationResult result = validatorToTest.validate(model);
-        
+
         /* test */
         assertHasError(result, SecHubConfigurationModelValidationError.METADATA_LABEL_VALUE_TOO_BIG);
         assertEquals(1, result.getErrors().size());
     }
-    
-    
+
     @ParameterizedTest
-    @ValueSource(strings= {"$variable1","!something","<html>"})
+    @ValueSource(strings = { "$variable1", "!something", "<html>" })
     void model_with_metadata_label_key_not_allowed_character_inside_has_error(String key) {
         /* prepare */
         SecHubConfigurationModel model = createDefaultValidModel();
         SecHubDataConfiguration data = new SecHubDataConfiguration();
-        
+
         // define at least one data config (valid here)
         SecHubSourceDataConfiguration config1 = new SecHubSourceDataConfiguration();
         config1.setUniqueName("i-am-unique");
         data.getSources().add(config1);
-        
+
         model.setData(data);
-        
+
         SecHubConfigurationMetaData metaData = new SecHubConfigurationMetaData();
-        metaData.getLabels().put(key,"valid value");
+        metaData.getLabels().put(key, "valid value");
         model.setMetaData(metaData);
-        
+
         modelSupportCollectedScanTypes.add(ScanType.CODE_SCAN); // simulate correct module group found
-        
+
         /* execute */
         SecHubConfigurationModelValidationResult result = validatorToTest.validate(model);
-        
+
         /* test */
         assertHasError(result, SecHubConfigurationModelValidationError.METADATA_LABEL_KEY_CONTAINS_ILLEGAL_CHARACTERS);
         assertEquals(1, result.getErrors().size());
     }
-    
+
     @ParameterizedTest
-    @ValueSource(strings= {"variable1","Variable","UPPERCASED_ONLY", "something", "var-with-slash", "underscore_is_possible"})
+    @ValueSource(strings = { "variable1", "Variable", "UPPERCASED_ONLY", "something", "var-with-slash", "underscore_is_possible" })
     void model_with_metadata_label_key_allowed_character_inside_has_no_error(String key) {
         /* prepare */
         SecHubConfigurationModel model = createDefaultValidModel();
         SecHubDataConfiguration data = new SecHubDataConfiguration();
-        
+
         // define at least one data config (valid here)
         SecHubSourceDataConfiguration config1 = new SecHubSourceDataConfiguration();
         config1.setUniqueName("i-am-unique");
         data.getSources().add(config1);
-        
+
         model.setData(data);
-        
+
         SecHubConfigurationMetaData metaData = new SecHubConfigurationMetaData();
-        metaData.getLabels().put(key,"valid value");
+        metaData.getLabels().put(key, "valid value");
         model.setMetaData(metaData);
-        
+
         modelSupportCollectedScanTypes.add(ScanType.CODE_SCAN); // simulate correct module group found
-        
+
         /* execute */
         SecHubConfigurationModelValidationResult result = validatorToTest.validate(model);
-        
+
         /* test */
         assertHasNoErrors(result);
     }
-    
+
     @ParameterizedTest
-    @ValueSource(ints= {0,1,150})
+    @ValueSource(ints = { 0, 1, 150 })
     void model_with_metadata_label_value_length_has_no_error(int length) {
         /* prepare */
         SecHubConfigurationModel model = createDefaultValidModel();
         SecHubDataConfiguration data = new SecHubDataConfiguration();
-        
+
         // define at least one data config (valid here)
         SecHubSourceDataConfiguration config1 = new SecHubSourceDataConfiguration();
         config1.setUniqueName("i-am-unique");
         data.getSources().add(config1);
-        
+
         model.setData(data);
-        
+
         SecHubConfigurationMetaData metaData = new SecHubConfigurationMetaData();
         StringBuilder sb = new StringBuilder();
-        for (int i=0;i<length;i++) {
+        for (int i = 0; i < length; i++) {
             sb.append("a");
         }
         metaData.getLabels().put("valid-key", sb.toString());
         model.setMetaData(metaData);
-        
+
         modelSupportCollectedScanTypes.add(ScanType.CODE_SCAN); // simulate correct module group found
-        
+
         /* execute */
         SecHubConfigurationModelValidationResult result = validatorToTest.validate(model);
-        
+
         /* test */
         assertHasNoErrors(result);
     }
-    
+
     private URI createURIforSchema(String schema) {
         // why mocking a URI? Because of name look ups and more
         // this slows tests - using a mock increases performance here
