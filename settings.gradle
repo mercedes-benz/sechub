@@ -22,6 +22,8 @@ include 'sechub-cli',
 'sechub-pds-solutions', // our pds ready-to-use solutions / blue prints
 'sechub-pds-tools', // some pds tools
 
+/* PDS commons */
+'sechub-pds-commons-core',
 
 /* integration test*/
 'sechub-integrationtest',

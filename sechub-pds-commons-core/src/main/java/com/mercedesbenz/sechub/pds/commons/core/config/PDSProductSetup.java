@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-package com.mercedesbenz.sechub.pds.config;
+package com.mercedesbenz.sechub.pds.commons.core.config;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.mercedesbenz.sechub.commons.model.ScanType;

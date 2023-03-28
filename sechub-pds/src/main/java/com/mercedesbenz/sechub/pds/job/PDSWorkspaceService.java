@@ -40,7 +40,7 @@ import com.mercedesbenz.sechub.commons.pds.execution.ExecutionEventDetailIdentif
 import com.mercedesbenz.sechub.commons.pds.execution.ExecutionEventType;
 import com.mercedesbenz.sechub.pds.PDSMustBeDocumented;
 import com.mercedesbenz.sechub.pds.PDSNotFoundException;
-import com.mercedesbenz.sechub.pds.config.PDSProductSetup;
+import com.mercedesbenz.sechub.pds.commons.core.config.PDSProductSetup;
 import com.mercedesbenz.sechub.pds.config.PDSServerConfigurationService;
 import com.mercedesbenz.sechub.pds.storage.PDSMultiStorageService;
 import com.mercedesbenz.sechub.pds.storage.PDSStorageInfoCollector;

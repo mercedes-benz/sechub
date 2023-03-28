@@ -19,9 +19,13 @@ import org.springframework.stereotype.Service;
 
 import com.mercedesbenz.sechub.commons.pds.PDSDefaultParameterKeyConstants;
 import com.mercedesbenz.sechub.commons.pds.PDSDefaultParameterValueConstants;
-import com.mercedesbenz.sechub.pds.PDSJSONConverterException;
 import com.mercedesbenz.sechub.pds.PDSMustBeDocumented;
 import com.mercedesbenz.sechub.pds.PDSShutdownService;
+import com.mercedesbenz.sechub.pds.commons.core.PDSJSONConverterException;
+import com.mercedesbenz.sechub.pds.commons.core.config.PDSProductParameterDefinition;
+import com.mercedesbenz.sechub.pds.commons.core.config.PDSProductParameterSetup;
+import com.mercedesbenz.sechub.pds.commons.core.config.PDSProductSetup;
+import com.mercedesbenz.sechub.pds.commons.core.config.PDSServerConfiguration;
 
 @Service
 public class PDSServerConfigurationService {

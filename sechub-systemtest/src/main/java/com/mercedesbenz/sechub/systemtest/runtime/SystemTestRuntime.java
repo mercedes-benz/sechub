@@ -99,9 +99,11 @@ public class SystemTestRuntime {
         Path secHubWorkingDirectory = resolveSecHubWorkingDirectory(localSecHub);
 
         /*
-         * FIXME Albert Tregnaghi, 2023-03-24:we must introduce "SechubDefaultsDefinition" + "PDSDefaultsDefinition". Here 
-         * we will have only a variant field (e.g "alpine") and at runtime, the model will be altered and the start and stop objects are 
-         * generated automatically by the default object. So the default class must have the logic for the changes inside 
+         * FIXME Albert Tregnaghi, 2023-03-24:we must introduce
+         * "SechubDefaultsDefinition" + "PDSDefaultsDefinition". Here we will have only
+         * a variant field (e.g "alpine") and at runtime, the model will be altered and
+         * the start and stop objects are generated automatically by the default object.
+         * So the default class must have the logic for the changes inside
          */
 
         /* start sechub */

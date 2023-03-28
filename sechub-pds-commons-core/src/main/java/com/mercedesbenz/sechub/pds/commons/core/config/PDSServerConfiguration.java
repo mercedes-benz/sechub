@@ -1,12 +1,12 @@
 // SPDX-License-Identifier: MIT
-package com.mercedesbenz.sechub.pds.config;
+package com.mercedesbenz.sechub.pds.commons.core.config;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.mercedesbenz.sechub.pds.PDSJSONConverter;
-import com.mercedesbenz.sechub.pds.PDSJSONConverterException;
+import com.mercedesbenz.sechub.pds.commons.core.PDSJSONConverter;
+import com.mercedesbenz.sechub.pds.commons.core.PDSJSONConverterException;
 
 /**
  * Configuration of PDS (product delegation server) - will be read at startup

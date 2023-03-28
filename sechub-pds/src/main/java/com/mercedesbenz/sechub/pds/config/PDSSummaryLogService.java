@@ -11,6 +11,8 @@ import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Service;
 
 import com.mercedesbenz.sechub.commons.pds.PDSDefaultParameterKeyConstants;
+import com.mercedesbenz.sechub.pds.commons.core.config.PDSProductSetup;
+import com.mercedesbenz.sechub.pds.commons.core.config.PDSServerConfiguration;
 
 @Service
 public class PDSSummaryLogService {

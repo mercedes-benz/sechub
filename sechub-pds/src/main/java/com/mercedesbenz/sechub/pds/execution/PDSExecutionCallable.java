@@ -23,8 +23,8 @@ import org.springframework.dao.OptimisticLockingFailureException;
 
 import com.mercedesbenz.sechub.commons.model.SecHubMessage;
 import com.mercedesbenz.sechub.commons.model.SecHubMessagesList;
-import com.mercedesbenz.sechub.pds.PDSJSONConverterException;
 import com.mercedesbenz.sechub.pds.PDSLogConstants;
+import com.mercedesbenz.sechub.pds.commons.core.PDSJSONConverterException;
 import com.mercedesbenz.sechub.pds.job.JobConfigurationData;
 import com.mercedesbenz.sechub.pds.job.PDSCheckJobStatusService;
 import com.mercedesbenz.sechub.pds.job.PDSGetJobStreamService;
