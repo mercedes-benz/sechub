@@ -7,6 +7,9 @@ import java.io.File;
 import java.io.IOException;
 import java.util.UUID;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.mercedesbenz.sechub.commons.model.JSONConverter;
 import com.mercedesbenz.sechub.commons.model.ScanType;
 import com.mercedesbenz.sechub.domain.scan.ReportTransformationResult;
@@ -16,12 +19,14 @@ import com.mercedesbenz.sechub.domain.scan.product.config.ProductExecutorConfigI
 import com.mercedesbenz.sechub.domain.scan.product.sereco.SerecoProductResultTransformer;
 import com.mercedesbenz.sechub.domain.scan.product.sereco.TestSerecoProductResultTransformer;
 import com.mercedesbenz.sechub.domain.scan.report.ScanReport;
+import com.mercedesbenz.sechub.domain.scan.report.ScanReportResultType;
 import com.mercedesbenz.sechub.sereco.importer.CheckmarxV1XMLImporter;
 import com.mercedesbenz.sechub.sereco.importer.ProductResultImporter;
 import com.mercedesbenz.sechub.sereco.importer.SarifV1JSONImporter;
 import com.mercedesbenz.sechub.sereco.metadata.SerecoMetaData;
 import com.mercedesbenz.sechub.sharedkernel.ProductIdentifier;
 import com.mercedesbenz.sechub.test.TestFileReader;
+import com.mercedesbenz.sechub.test.TestUtil;
 
 public class ReportTestHelper {
 
@@ -30,6 +35,8 @@ public class ReportTestHelper {
     private static final SarifV1JSONImporter sarifImporter = new SarifV1JSONImporter();
     private static final CheckmarxV1XMLImporter checkmarxImporter = new CheckmarxV1XMLImporter();
     private static final SerecoProductResultTransformer serecoProductResultTransformer = new TestSerecoProductResultTransformer();
+
+    private static final Logger LOG = LoggerFactory.getLogger(ReportTestHelper.class);
 
     public static String load3rdPartyReportAsString(String fullName) {
         return TestFileReader.loadTextFile(new File(REPORT_PATH + "input/" + fullName));
@@ -49,22 +56,31 @@ public class ReportTestHelper {
 
     public static String transformSarifToSecHubReportJSON(String sarifJson, ProductIdentifier productIdentifier, String sechubJobUUID)
             throws IOException, SecHubExecutionException {
-        ScanReport scanReport = transformSarifToScanReport(sarifJson, productIdentifier, sechubJobUUID);
+        ScanReport scanReport = transformToScanReport(sarifJson, productIdentifier, sechubJobUUID);
 
         return scanReport.getResult();
     }
 
     public static String transformCheckmarxToSecHubReportJSON(String checkmarxXML, String sechubJobUUID) throws IOException, SecHubExecutionException {
-        ScanReport scanReport = transformSarifToScanReport(checkmarxXML, ProductIdentifier.CHECKMARX, sechubJobUUID);
+        ScanReport scanReport = transformToScanReport(checkmarxXML, ProductIdentifier.CHECKMARX, sechubJobUUID);
 
         return scanReport.getResult();
+    }
+
+    public static ScanReport transformSecHubReportTemplateToResult(String sechubReportJsonTemplate, String sechubJobUUID) {
+        ScanReport report = new ScanReport(null, null);
+        report.setResultType(ScanReportResultType.MODEL);
+        String sechubReport = sechubReportJsonTemplate.replace("__SECHUB_JOB_UUID__", sechubJobUUID);
+        report.setResult(sechubReport);
+
+        return report;
     }
 
     public static ScanReport transformCheckmarxToSecHubReportResult(String xml, String sechubJobUUID) throws IOException, SecHubExecutionException {
         return simulateCreateScanReportService(xml, ProductIdentifier.CHECKMARX, sechubJobUUID, checkmarxImporter, ScanType.CODE_SCAN, true);
     }
 
-    public static ScanReport transformSarifToScanReport(String sarifJson, ProductIdentifier productIdentifier, String sechubJobUUID)
+    public static ScanReport transformToScanReport(String sarifJson, ProductIdentifier productIdentifier, String sechubJobUUID)
             throws IOException, SecHubExecutionException {
 
         ScanType scanType = ScanType.WEB_SCAN;
@@ -92,7 +108,11 @@ public class ReportTestHelper {
         result.setAtLeastOneRealProductResultContained(hasProductResults);
 
         String transformationResultAsJson = result.toJSON();
+        if (TestUtil.isTraceEnabled()) {
+            LOG.info("Transformed sechub report is:\n{}", result.toFormattedJSON());
+        }
         ScanReport scanReport = new ScanReport(UUID.fromString(sechubJobUUID), "project1");
+        scanReport.setResultType(ScanReportResultType.MODEL);
         scanReport.setResult(transformationResultAsJson);
 
         return scanReport;

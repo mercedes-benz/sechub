@@ -25,6 +25,7 @@ public class TestUtil {
     private static final Logger LOG = LoggerFactory.getLogger(TestUtil.class);
 
     private static final String SECHUB_KEEP_TEMPFILES = "SECHUB_KEEP_TEMPFILES";
+    private static final String SECHUB_TEST_TRACEMODE = "SECHUB_TEST_TRACEMODE";
 
     public static String createRAndomString(int wantedLength) {
         if (wantedLength < 0) {
@@ -92,6 +93,19 @@ public class TestUtil {
             throw new IllegalStateException("Testcase szenario corrupt / should not happen", e);
         }
 
+    }
+
+    /**
+     * In some situations a developer wants to enable special tracing (without
+     * changing any log levels etc.). Dedicated points in test code can use this
+     * method to log more information in this case.
+     *
+     * @return true when environment variable
+     *         {@value TestUtil#SECHUB_TEST_TRACEMODE} is set to `true` otherwise
+     *         false
+     */
+    public static boolean isTraceEnabled() {
+        return Boolean.parseBoolean(System.getenv(SECHUB_TEST_TRACEMODE));
     }
 
     /**

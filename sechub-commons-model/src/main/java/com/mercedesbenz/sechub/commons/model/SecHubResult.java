@@ -11,10 +11,7 @@ import com.fasterxml.jackson.annotation.JsonInclude.Include;
 /**
  * This class represents the final resulting report data. If there will be
  * another result transformer in future, there must be a wrapper service
- * established to transform to this data <br>
- * <br>
- * We do not ignore properties like in SecHubConfiguration because here we are
- * the only writing instance
+ * established to transform to this data.
  *
  * @author Albert Tregnaghi
  */
