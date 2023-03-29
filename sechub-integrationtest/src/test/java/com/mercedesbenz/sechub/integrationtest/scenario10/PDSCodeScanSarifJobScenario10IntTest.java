@@ -75,7 +75,8 @@ public class PDSCodeScanSarifJobScenario10IntTest {
             hasMetaDataLabel("quality-level", "high").
             hasMetaDataLabel("test-label1", "Something special").
             hasMetaDataLabel("test-label2", "").
-            hasMetaDataLabel("test-label3_with_html", "<html>\n\nIt is allowed,\t but must be always escaped in reports!</html>").
+            hasMetaDataLabel("test-label3_with_html", "<html>HTML is allowed, but must be always escaped in reports!</html>").
+            hasMetaDataLabel("test-label4_with_special_chars", "Line1\nLine2\tLine3").
             hasTrafficLight(RED).
                finding(0).
                    hasSeverity(Severity.HIGH).
@@ -96,7 +97,12 @@ public class PDSCodeScanSarifJobScenario10IntTest {
                 getHTMLJobReport(project, jobUUID);
 
         assertHTMLReport(htmlReport).
-            containsAtLeastOneOpenDetailsBlock();
+            containsAtLeastOneOpenDetailsBlock().
+            hasMetaDataLabel("quality-level", "high").
+            hasMetaDataLabel("test-label1", "Something special").
+            hasMetaDataLabel("test-label2", "").
+            hasMetaDataLabel("test-label3_with_html", "&lt;html&gt;HTML is allowed, but must be always escaped in reports!&lt;/html&gt;").
+            hasMetaDataLabel("test-label4_with_special_chars", "Line1\nLine2\tLine3");
 
         // try to restart SecHub (will reuse existing PDS job because already done )
         assertSecHubRestartWillNotStartNewJobButReusesExistingBecausePDSJobWasAlreadyDone(project,jobUUID);

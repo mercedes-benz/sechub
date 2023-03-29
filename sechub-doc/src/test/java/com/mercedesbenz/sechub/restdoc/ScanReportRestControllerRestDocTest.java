@@ -5,10 +5,10 @@ import static com.mercedesbenz.sechub.restdoc.RestDocumentation.*;
 import static com.mercedesbenz.sechub.test.RestDocPathParameter.*;
 import static com.mercedesbenz.sechub.test.SecHubTestURLBuilder.*;
 import static org.hamcrest.CoreMatchers.*;
+import static org.junit.Assert.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
-import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
-import static org.springframework.restdocs.headers.HeaderDocumentation.requestHeaders;
+import static org.springframework.restdocs.headers.HeaderDocumentation.*;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.*;
 import static org.springframework.restdocs.request.RequestDocumentation.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -17,6 +17,7 @@ import java.lang.annotation.Annotation;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 import java.util.UUID;
 
 import org.junit.Before;
@@ -142,6 +143,7 @@ public class ScanReportRestControllerRestDocTest implements TestIsNecessaryForDo
         report.setTrafficLight(TrafficLight.YELLOW);
 
         ScanSecHubReport scanSecHubReport = new ScanSecHubReport(report);
+        assertNotNull(scanSecHubReport.getMetaData());
         when(downloadReportService.getScanSecHubReport(PROJECT1_ID, jobUUID)).thenReturn(scanSecHubReport);
 
         /* execute + test @formatter:off */
@@ -239,6 +241,7 @@ public class ScanReportRestControllerRestDocTest implements TestIsNecessaryForDo
         map.put("yellowList", new ArrayList<>());
         map.put("greenList", new ArrayList<>());
         map.put("isWebDesignMode", false);
+        map.put("metaData", Optional.ofNullable(null));
         when(modelBuilder.build(any())).thenReturn(map);
     }
 

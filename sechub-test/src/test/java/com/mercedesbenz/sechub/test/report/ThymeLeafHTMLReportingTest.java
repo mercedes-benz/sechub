@@ -4,10 +4,13 @@ package com.mercedesbenz.sechub.test.report;
 import static com.mercedesbenz.sechub.test.report.ReportTestHelper.*;
 import static org.junit.jupiter.api.Assertions.*;
 
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
+import java.time.LocalDateTime;
 import java.util.Locale;
 import java.util.Map;
+import java.util.TreeMap;
 
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -20,6 +23,7 @@ import org.thymeleaf.spring5.dialect.SpringStandardDialect;
 import org.thymeleaf.templateresolver.FileTemplateResolver;
 
 import com.mercedesbenz.sechub.commons.model.JSONConverter;
+import com.mercedesbenz.sechub.commons.model.SecHubReportMetaData;
 import com.mercedesbenz.sechub.commons.model.SecHubReportModel;
 import com.mercedesbenz.sechub.commons.model.TrafficLightSupport;
 import com.mercedesbenz.sechub.docgen.util.TextFileWriter;
@@ -28,6 +32,7 @@ import com.mercedesbenz.sechub.domain.scan.TestHTMLScanResultReportModelBuilder;
 import com.mercedesbenz.sechub.domain.scan.report.ScanReport;
 import com.mercedesbenz.sechub.domain.scan.report.ScanSecHubReport;
 import com.mercedesbenz.sechub.sharedkernel.ProductIdentifier;
+import com.mercedesbenz.sechub.test.CSSFileToFragementMerger;
 import com.mercedesbenz.sechub.test.TestUtil;
 
 /**
@@ -39,8 +44,10 @@ import com.mercedesbenz.sechub.test.TestUtil;
  * "src/test/resources/report/input". Also able to store temporary JSON and HTML
  * output files to build when {@link TestUtil#isDeletingTempFiles()} returns
  * <code>true</code> (this is interesting when designing or debugging
- * reporting). For information about CSS changed please read more in
- * `HTMLReportCSSFragementGenerator`.
+ * reporting).
+ *
+ * When {@link TestUtil#isDeletingTempFiles()} returns <code>true</code> the
+ * fragements file will be automatically updated by data from "scanresult.css"
  *
  * @author Albert Tregnaghi
  *
@@ -51,7 +58,7 @@ public class ThymeLeafHTMLReportingTest {
     private static final Logger LOG = LoggerFactory.getLogger(ThymeLeafHTMLReportingTest.class);
 
     @BeforeAll
-    private static void beforAll() {
+    private static void beforAll() throws IOException {
         thymeleafTemplateEngine = new TemplateEngine();
         thymeleafTemplateEngine.setDialect(new SpringStandardDialect());
 
@@ -66,13 +73,29 @@ public class ThymeLeafHTMLReportingTest {
         templateResolver.setCheckExistence(true);
 
         thymeleafTemplateEngine.setTemplateResolver(templateResolver);
+
+        if (TestUtil.isAutoCSSFragementGenerationEnabled()) {
+
+            File scanHTMLFolder = new File("./../sechub-scan/src/main/resources/templates/report/html");
+
+            File cssFile = new File(scanHTMLFolder, "scanresult.css");
+            File fragmentsFile = new File(scanHTMLFolder, "fragments.html");
+
+            CSSFileToFragementMerger merger = new CSSFileToFragementMerger();
+            merger.merge(cssFile, fragmentsFile);
+        } else {
+            LOG.info("Skipping CSS auto generation/merging");
+        }
     }
 
     @Test
-    void example1_owasp_zap_sarif_report_is_transformed_to_expected_sechub_report_HTML_with_web_data() throws Exception {
+    void example1_owasp_zap_sarif_report_is_transformed_to_expected_sechub_report_HTML_with_web_data_and_user_labels() throws Exception {
         /* prepare */
         TestReportContext context = new TestReportContext(1, ProductIdentifier.PDS_WEBSCAN, ReportInputFormat.SARIF, "owasp_zap_report");
         context.sechubJobUUID = "f5fdccc6-45d1-4b41-972c-08ff9ee0dddb";
+        context.getMetaData().getLabels().put("Typ", "OWASP Zap report example");
+        context.getMetaData().getLabels().put("Info statement", "The labels are alphabetical sorted!");
+        context.getMetaData().getLabels().put("Timestamp", LocalDateTime.now().toString());
 
         /* execute */
         String htmlResult = processThymeLeafTemplates(context);
@@ -87,6 +110,8 @@ public class ThymeLeafHTMLReportingTest {
         assertTrue(htmlResult.contains("Red findings"));
         assertTrue(htmlResult.contains("Yellow findings"));
         assertTrue(htmlResult.contains("Green findings"));
+
+        assertTrue(htmlResult.contains("OWASP Zap report example"));
 
     }
 
@@ -230,6 +255,22 @@ public class ThymeLeafHTMLReportingTest {
         SARIF, CHECKMARX, SECHUB_REPORT
     }
 
+    /**
+     * Contains information about report meta data
+     */
+    private class ReportMetaDataInfo {
+        private Map<String, String> labels = new TreeMap<>();
+
+        public boolean isMetaDataNecessaryForReport() {
+            return !labels.isEmpty();
+        }
+
+        public Map<String, String> getLabels() {
+            return labels;
+        }
+
+    }
+
     private class TestReportContext {
 
         private String variant;
@@ -238,13 +279,13 @@ public class ThymeLeafHTMLReportingTest {
         private String sourceReportAsString;
         private ReportInputFormat inputFormat;
         private ProductIdentifier productIdentifier;
+        private ReportMetaDataInfo metaData = new ReportMetaDataInfo();
 
         private TestReportContext(int exampleNumber, ProductIdentifier productIdentifier, ReportInputFormat inputFormat, String variant) {
             this.variant = variant;
             this.exampleName = "example" + exampleNumber;
             this.productIdentifier = productIdentifier;
             this.inputFormat = inputFormat;
-
             initReport();
         }
 
@@ -263,6 +304,10 @@ public class ThymeLeafHTMLReportingTest {
                 throw new IllegalStateException("input format not supported:" + inputFormat);
 
             }
+        }
+
+        public ReportMetaDataInfo getMetaData() {
+            return metaData;
         }
 
         public IContext convertToThymeLeafContext() throws IOException, SecHubExecutionException {
@@ -297,6 +342,12 @@ public class ThymeLeafHTMLReportingTest {
             report.setTrafficLight(trafficLightSupport.calculateTrafficLight(reportModel.getResult()));
 
             ScanSecHubReport scanReport = new ScanSecHubReport(report);
+            if (getMetaData().isMetaDataNecessaryForReport()) {
+
+                SecHubReportMetaData reportMetaData = new SecHubReportMetaData();
+                reportMetaData.getLabels().putAll(getMetaData().labels);
+                scanReport.setMetaData(reportMetaData);
+            }
             storeAsJSONFileForDebuggingWhenTempFilesAreKept(JSONConverter.get().toJSON(scanReport, true), this);
             Map<String, Object> tyhmeleafMap = reportModelBuilder.build(scanReport);
             return tyhmeleafMap;

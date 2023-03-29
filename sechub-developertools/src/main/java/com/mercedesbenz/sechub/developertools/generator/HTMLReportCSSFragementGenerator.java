@@ -2,9 +2,9 @@
 package com.mercedesbenz.sechub.developertools.generator;
 
 import java.io.File;
+import java.io.IOException;
 
-import com.mercedesbenz.sechub.commons.TextFileReader;
-import com.mercedesbenz.sechub.test.TestFileWriter;
+import com.mercedesbenz.sechub.test.CSSFileToFragementMerger;
 
 /**
  * How to use ? Why this generator?
@@ -36,33 +36,18 @@ import com.mercedesbenz.sechub.test.TestFileWriter;
  */
 public class HTMLReportCSSFragementGenerator {
 
-    private static String CSS_FRAGMENT_START = "<style type=\"text/css\" th:fragment=\"styles\">";
-
-    private static final TextFileReader reader = new TextFileReader();
-    private static final TestFileWriter writer = new TestFileWriter();
-
     public static void main(String[] args) throws Exception {
+        new HTMLReportCSSFragementGenerator().generate();
+    }
+
+    public void generate() throws IOException {
         File scanHTMLFolder = new File("./../sechub-scan/src/main/resources/templates/report/html");
 
         File cssFile = new File(scanHTMLFolder, "scanresult.css");
         File fragmentsFile = new File(scanHTMLFolder, "fragments.html");
 
-        String cssContent = reader.loadTextFile(cssFile);
-        String fragmentsContent = reader.loadTextFile(fragmentsFile);
-
-        int fragmentIndex = fragmentsContent.indexOf(CSS_FRAGMENT_START);
-
-        if (fragmentIndex == -1) {
-            throw new IllegalStateException("Fragment start not found!");
-        }
-        fragmentIndex = fragmentIndex + CSS_FRAGMENT_START.length();
-        int closeStyleIndex = fragmentsContent.indexOf("</style", fragmentIndex);
-        if (closeStyleIndex == -1) {
-            throw new IllegalStateException("Fragment end not found!");
-        }
-
-        String newFragmentContent = fragmentsContent.substring(0, fragmentIndex) + "\n" + cssContent + "\n" + fragmentsContent.substring(closeStyleIndex);
-        writer.save(fragmentsFile, newFragmentContent, true);
+        CSSFileToFragementMerger merger = new CSSFileToFragementMerger();
+        merger.merge(cssFile, fragmentsFile);
 
     }
 
