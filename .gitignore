@@ -34,6 +34,7 @@ build/
 *.jar
 *.log
 *.bak
+*.tar
 *.zip
 go.sum
 sechub_report*.json
