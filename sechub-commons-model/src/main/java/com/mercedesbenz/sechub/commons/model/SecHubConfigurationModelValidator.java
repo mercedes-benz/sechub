@@ -107,9 +107,9 @@ public class SecHubConfigurationModelValidator {
                 context.result.addError(METADATA_LABEL_KEY_TOO_BIG);
                 return;
             }
-            if (!hasOnlyAlphabeticDigitOrAdditionalAllowedCharacters(key, '-', '_')) {
+            if (!hasOnlyAlphabeticDigitOrAdditionalAllowedCharacters(key, '-', '_', '.')) {
                 context.result.addError(METADATA_LABEL_KEY_CONTAINS_ILLEGAL_CHARACTERS,
-                        "Label key '" + key + "' may only contain 'a-z','0-9', '-' or '_' characters");
+                        "Label key '" + key + "' may only contain 'a-z','0-9', '-', '_' or '.' characters");
                 continue;
             }
         }

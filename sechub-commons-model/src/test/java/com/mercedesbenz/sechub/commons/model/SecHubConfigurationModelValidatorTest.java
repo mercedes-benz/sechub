@@ -910,7 +910,7 @@ class SecHubConfigurationModelValidatorTest {
     }
 
     @ParameterizedTest
-    @ValueSource(strings = { "$variable1", "!something", "<html>" })
+    @ValueSource(strings = { "$variable1", "!something", "<html>", "label:with:colon" })
     void model_with_metadata_label_key_not_allowed_character_inside_has_error(String key) {
         /* prepare */
         SecHubConfigurationModel model = createDefaultValidModel();
@@ -938,7 +938,8 @@ class SecHubConfigurationModelValidatorTest {
     }
 
     @ParameterizedTest
-    @ValueSource(strings = { "variable1", "Variable", "UPPERCASED_ONLY", "something", "var-with-slash", "underscore_is_possible" })
+    @ValueSource(strings = { "variable1", "Variable", "UPPERCASED_ONLY", "something", "var-with-slash", "underscore_is_possible",
+            "label.extra.with.dot.inside" })
     void model_with_metadata_label_key_allowed_character_inside_has_no_error(String key) {
         /* prepare */
         SecHubConfigurationModel model = createDefaultValidModel();
