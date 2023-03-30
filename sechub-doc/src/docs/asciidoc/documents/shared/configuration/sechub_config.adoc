@@ -381,3 +381,35 @@ for details. The excludes work for sources and binaries the same way.
 for details about default behaviour for sources.
 <9> `sources`: Inside this array multiple binary data definitions can be listed.
 
+
+[[sechub-config-metadata-section]]
+==== MetaData
+The {sechub} configuration file can have optional meta data.
+
+===== Labels
+With labels a user is able to add additional information to the 
+scan configuration which end up in the report as key value pairs.
+
+===== General JSON syntax
+The next figure shows an example which presents all possibilities _(for simplicity other configuration
+elements are removed)_.
+
+
+[source, json, title="General JSON syntax"]
+----
+include::sechub_config_metadata_example1.json[]
+----
+
+<1> `metaData`: The main element for meta data configuration. It is optional.
+<2> `labels`: Inside this element the user can define labels as key value pairs.
+- maximum allowed entries per configuration file: 20
+<3> represents the label key.
+- allowed are characters `A-Za-z`, digits and the special characters `_` , `-` and `.`
+- minimum length: 1 character
+- maximum length: 30 characters
+<4> represents the label value.
+- can contain any text (content will be escaped accordingly in reports)
+- minimum length: 0 characters
+- maximum length: 150 characters
+ 
+

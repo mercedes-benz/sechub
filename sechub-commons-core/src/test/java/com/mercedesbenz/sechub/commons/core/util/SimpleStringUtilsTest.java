@@ -18,6 +18,37 @@ import org.junit.jupiter.params.provider.ValueSource;
 
 public class SimpleStringUtilsTest {
 
+    @ValueSource(strings = { "abcdefghijklmnopqrstuvwxyz", "ABCDEFGHIJKLMNOPQRSTUVWXYZ" })
+    @ParameterizedTest
+    void isLatinLetter_valid_values(String value) {
+        for (char c : value.toCharArray()) {
+            assertTrue(SimpleStringUtils.isStandardAsciiLetter(c));
+        }
+    }
+
+    @Test
+    void isLatinLetter_valid_values_use_ordinal_numbers_to_check() {
+        for (int i = 65; i <= 90; i++) {
+            assertTrue(SimpleStringUtils.isStandardAsciiLetter((char) i), "Char with:" + i + " = " + ((char) i));
+        }
+        for (int i = 97; i <= 122; i++) {
+            assertTrue(SimpleStringUtils.isStandardAsciiLetter((char) i));
+        }
+    }
+
+    @Test
+    void isLatinLetter_invvalid_values_use_ordinal_numbers_to_check() {
+        for (int i = 0; i <= 64; i++) {
+            assertFalse(SimpleStringUtils.isStandardAsciiLetter((char) i), "Char with:" + i + " = " + ((char) i));
+        }
+        for (int i = 91; i <= 96; i++) {
+            assertFalse(SimpleStringUtils.isStandardAsciiLetter((char) i), "Char with:" + i + " = " + ((char) i));
+        }
+        for (int i = 123; i <= 65535; i++) {
+            assertFalse(SimpleStringUtils.isStandardAsciiLetter((char) i), "Char with:" + i + " = " + ((char) i));
+        }
+    }
+
     @ParameterizedTest
     @ValueSource(ints = { 1, 200, 300, 400, -1, -20 })
     void stringsContainingValidIntegersCanBeConvertedToIntWithoutDefault(int value) {
@@ -98,27 +129,27 @@ public class SimpleStringUtilsTest {
     }
 
     @ParameterizedTest
-    @CsvSource({ "name", "age", "test" })
+    @CsvSource({ "name", "age", "test", "UPPERCASED" })
     void validNames_hasOnlyAlphabeticDigitOrAdditionalAllowedCharacters_no_additional_is_true(String string) {
-        assertThat(SimpleStringUtils.hasOnlyAlphabeticDigitOrAdditionalAllowedCharacters(string), is(true));
+        assertThat(SimpleStringUtils.hasStandardAsciiLettersDigitsOrAdditionalAllowedCharacters(string), is(true));
     }
 
     @ParameterizedTest
-    @CsvSource({ "name-", "age_", "test-1" })
+    @CsvSource({ "name-", "age_", "test-1", "äpfel", "🦊", "Señor" })
     void invalidNames_hasOnlyAlphabeticDigitOrAdditionalAllowedCharacters_no_additional_is_false(String string) {
-        assertThat(SimpleStringUtils.hasOnlyAlphabeticDigitOrAdditionalAllowedCharacters(string), is(false));
+        assertThat(SimpleStringUtils.hasStandardAsciiLettersDigitsOrAdditionalAllowedCharacters(string), is(false));
     }
 
     @ParameterizedTest
     @CsvSource({ "name-", "age_", "test-1" })
     void validNames_hasOnlyAlphabeticDigitOrAdditionalAllowedCharacters_with_additional_is_true(String string) {
-        assertThat(SimpleStringUtils.hasOnlyAlphabeticDigitOrAdditionalAllowedCharacters(string, '-', '_'), is(true));
+        assertThat(SimpleStringUtils.hasStandardAsciiLettersDigitsOrAdditionalAllowedCharacters(string, '-', '_'), is(true));
     }
 
     @ParameterizedTest
     @CsvSource({ "n$me-", "a@e_", "t§st-1" })
     void invalidNames_hasOnlyAlphabeticDigitOrAdditionalAllowedCharacters_with_additional_is_false(String string) {
-        assertThat(SimpleStringUtils.hasOnlyAlphabeticDigitOrAdditionalAllowedCharacters(string, '-', '_'), is(false));
+        assertThat(SimpleStringUtils.hasStandardAsciiLettersDigitsOrAdditionalAllowedCharacters(string, '-', '_'), is(false));
     }
 
     @Test

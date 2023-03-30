@@ -111,6 +111,26 @@ public class SimpleStringUtils {
     }
 
     /**
+     * Checks if given character is a standard ascii letter (A-Z) or (a-z) (no
+     * umlauts etc.)
+     *
+     * @param c character to check
+     * @return <code>true</code> when simple latin letter <code>false</code> when
+     *         not
+     */
+    public static boolean isStandardAsciiLetter(char c) {
+        if (c >= 65 && c <= 90) {
+            /* latin capital letter */
+            return true;
+        }
+        if (c >= 97 && c <= 122) {
+            /* latin lower letter */
+            return true;
+        }
+        return false;
+    }
+
+    /**
      * Will test if given string does contain only alphabetic characters (a-z,A-Z),
      * digits (0-9) or additionally allowed characters.
      *
@@ -120,7 +140,7 @@ public class SimpleStringUtils {
      *         given string is <code>null</code> or empty. <code>false</code>
      *         otherwise.
      */
-    public static boolean hasOnlyAlphabeticDigitOrAdditionalAllowedCharacters(String string, char... additionalAllowed) {
+    public static boolean hasStandardAsciiLettersDigitsOrAdditionalAllowedCharacters(String string, char... additionalAllowed) {
         if (string == null) {
             return true;
         }
@@ -131,7 +151,7 @@ public class SimpleStringUtils {
             if (Character.isDigit(c)) {
                 continue;
             }
-            if (Character.isAlphabetic(c)) {
+            if (isStandardAsciiLetter(c)) {
                 continue;
             }
             boolean ok = false;

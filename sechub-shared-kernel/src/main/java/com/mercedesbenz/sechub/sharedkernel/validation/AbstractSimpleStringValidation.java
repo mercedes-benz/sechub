@@ -39,7 +39,7 @@ public abstract class AbstractSimpleStringValidation extends AbstractValidation<
 
     protected void validateOnlyAlphabeticDigitOrAllowedParts(ValidationContext<String> context, char... alsoAllowed) {
         String string = context.objectToValidate;
-        if (hasOnlyAlphabeticDigitOrAdditionalAllowedCharacters(string, alsoAllowed)) {
+        if (hasStandardAsciiLettersDigitsOrAdditionalAllowedCharacters(string, alsoAllowed)) {
             return;
         }
         StringBuilder sb = new StringBuilder();

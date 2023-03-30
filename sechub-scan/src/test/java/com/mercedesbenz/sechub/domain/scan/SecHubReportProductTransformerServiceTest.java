@@ -20,6 +20,7 @@ import com.mercedesbenz.sechub.domain.scan.product.ProductResultRepository;
 import com.mercedesbenz.sechub.domain.scan.product.config.WithoutProductExecutorConfigInfo;
 import com.mercedesbenz.sechub.domain.scan.report.ReportProductResultTransformer;
 import com.mercedesbenz.sechub.sharedkernel.ProductIdentifier;
+import com.mercedesbenz.sechub.sharedkernel.configuration.SecHubConfiguration;
 import com.mercedesbenz.sechub.test.junit4.ExpectedExceptionFactory;
 
 public class SecHubReportProductTransformerServiceTest {
@@ -39,6 +40,7 @@ public class SecHubReportProductTransformerServiceTest {
         secHubJobUUID = UUID.randomUUID();
         context = mock(SecHubExecutionContext.class);
         when(context.getSechubJobUUID()).thenReturn(secHubJobUUID);
+        when(context.getConfiguration()).thenReturn(new SecHubConfiguration());
 
         reportTransformer = mock(ReportProductResultTransformer.class);
         productResultRepository = mock(ProductResultRepository.class);
