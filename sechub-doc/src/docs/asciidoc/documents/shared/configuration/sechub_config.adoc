@@ -390,10 +390,10 @@ include::sechub_config_metadata_example1.json[]
 ----
 
 <1> `metaData`: The main element for meta data configuration. It is optional.
-<2> `labels`: Inside this element the user can define labels as a map (key value).
+<2> `labels`: Inside this element the user can define labels as key value pairs.
 - maximum allowed entries per configuration file: 20
 <3> represents the label key.
-- allowed are characters `A-Za-Z`, numbers and the special characters `_` , `-` and `.`
+- allowed are characters `A-Za-z`, digits and the special characters `_` , `-` and `.`
 - minimum length: 1 character
 - maximum length: 30 characters
 <4> represents the label value.

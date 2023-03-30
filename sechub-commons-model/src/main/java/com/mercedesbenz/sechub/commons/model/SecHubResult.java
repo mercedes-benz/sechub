@@ -11,7 +11,7 @@ import com.fasterxml.jackson.annotation.JsonInclude.Include;
 /**
  * This class represents the final resulting report data. If there will be
  * another result transformer in future, there must be a wrapper service
- * established to transform to this data.
+ * established to transform to this data format.
  *
  * @author Albert Tregnaghi
  */

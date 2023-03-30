@@ -104,10 +104,10 @@ public class SecHubConfigurationModelValidator {
                 return;
             }
             if (key.length() > MAX_METADATA_LABEL_KEY_LENGTH) {
-                context.result.addError(METADATA_LABEL_KEY_TOO_BIG);
+                context.result.addError(METADATA_LABEL_KEY_TOO_LONG);
                 return;
             }
-            if (!hasOnlyAlphabeticDigitOrAdditionalAllowedCharacters(key, '-', '_', '.')) {
+            if (!hasStandardAsciiLettersDigitsOrAdditionalAllowedCharacters(key, '-', '_', '.')) {
                 context.result.addError(METADATA_LABEL_KEY_CONTAINS_ILLEGAL_CHARACTERS,
                         "Label key '" + key + "' may only contain 'a-z','0-9', '-', '_' or '.' characters");
                 continue;
@@ -120,7 +120,7 @@ public class SecHubConfigurationModelValidator {
                 continue;// we accept even null values
             }
             if (value.length() > MAX_METADATA_LABEL_VALUE_LENGTH) {
-                context.result.addError(METADATA_LABEL_VALUE_TOO_BIG);
+                context.result.addError(METADATA_LABEL_VALUE_TOO_LONG);
                 return;
             }
         }
@@ -293,7 +293,7 @@ public class SecHubConfigurationModelValidator {
                 result.addError(DATA_CONFIG_OBJECT_NAME_IS_NULL);
                 continue;
             }
-            if (!hasOnlyAlphabeticDigitOrAdditionalAllowedCharacters(uniqueName, '-', '_')) {
+            if (!hasStandardAsciiLettersDigitsOrAdditionalAllowedCharacters(uniqueName, '-', '_')) {
                 result.addError(DATA_CONFIG_OBJECT_NAME_CONTAINS_ILLEGAL_CHARACTERS,
                         "Name '" + uniqueName + "' may only contain 'a-z','0-9', '-' or '_' characters");
                 continue;

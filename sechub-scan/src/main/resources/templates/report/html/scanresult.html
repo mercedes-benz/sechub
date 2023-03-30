@@ -73,7 +73,6 @@
                         <table class='reportMetaDataTable' >
                            <tr th:each="entry : ${metaData.get().getLabels()}">
                                 <td class="metaDataLabelKey" th:text="${entry.key}">key</td>
-                                <td>:</td>
                                 <td class="metaDataLabelValue" th:text="${entry.value}">value</td>
                         </tr>
                         </table>
