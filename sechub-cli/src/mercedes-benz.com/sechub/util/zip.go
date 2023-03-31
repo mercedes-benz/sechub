@@ -100,13 +100,10 @@ func zipOneFolderRecursively(folder string, config *ZipConfig) error {
 			return err
 		}
 
-		// Add prefix to zipPath
-		zipPath = config.PrefixInZip + zipPath
-
 		// Only accept source code files
 		isSourceCode := false
 		for _, srcPattern := range config.SourceCodePatterns {
-			if strings.HasSuffix(zipPath, srcPattern) {
+			if strings.HasSuffix(file, srcPattern) {
 				isSourceCode = true
 				break
 			}
@@ -119,7 +116,14 @@ func zipOneFolderRecursively(folder string, config *ZipConfig) error {
 
 		// Filter excludes
 		for _, excludePattern := range config.Excludes {
-			if FilePathMatch(zipPath, excludePattern) {
+			path := ""
+			if strings.HasPrefix(excludePattern, "/") {
+				path = file
+			} else {
+				path = zipPath
+			}
+
+			if FilePathMatch(path, excludePattern) {
 				LogDebug(config.Debug, fmt.Sprintf("%q matches exclude pattern %q -> skip", file, excludePattern))
 				return nil
 			}
@@ -129,6 +133,9 @@ func zipOneFolderRecursively(folder string, config *ZipConfig) error {
 			// Cannot add zip file to itself
 			return errors.New(TargetZipFileLoop)
 		}
+
+		// Add prefix to zipPath
+		zipPath = config.PrefixInZip + zipPath
 
 		return zipOneFile(file, zipPath, config)
 	})

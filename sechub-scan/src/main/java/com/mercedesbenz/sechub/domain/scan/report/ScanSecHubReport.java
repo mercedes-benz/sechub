@@ -3,6 +3,7 @@ package com.mercedesbenz.sechub.domain.scan.report;
 
 import static com.mercedesbenz.sechub.sharedkernel.util.Assert.*;
 
+import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 
@@ -16,6 +17,7 @@ import com.mercedesbenz.sechub.commons.model.JSONable;
 import com.mercedesbenz.sechub.commons.model.SecHubMessage;
 import com.mercedesbenz.sechub.commons.model.SecHubMessageType;
 import com.mercedesbenz.sechub.commons.model.SecHubReportData;
+import com.mercedesbenz.sechub.commons.model.SecHubReportMetaData;
 import com.mercedesbenz.sechub.commons.model.SecHubReportModel;
 import com.mercedesbenz.sechub.commons.model.SecHubResult;
 import com.mercedesbenz.sechub.commons.model.SecHubStatus;
@@ -175,6 +177,16 @@ public class ScanSecHubReport implements SecHubReportData, JSONable<ScanSecHubRe
     @Override
     public void setReportVersion(String version) {
         model.setReportVersion(version);
+    }
+
+    @Override
+    public Optional<SecHubReportMetaData> getMetaData() {
+        return model.getMetaData();
+    }
+
+    @Override
+    public void setMetaData(SecHubReportMetaData metaData) {
+        model.setMetaData(metaData);
     }
 
 }

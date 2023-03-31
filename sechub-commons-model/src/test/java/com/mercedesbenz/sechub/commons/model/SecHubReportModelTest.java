@@ -13,6 +13,18 @@ import com.mercedesbenz.sechub.test.TestFileReader;
 class SecHubReportModelTest {
 
     @Test
+    void sechub_example_result_4_can_be_loaded_and_transformed_from_json() {
+        /* prepare */
+        String json = TestFileReader.loadTextFile("src/test/resources/report/sechub-testreport4-multiple-web-findings.json");
+
+        /* execute */
+        SecHubReportModel result = SecHubReportModel.fromJSONString(json);
+
+        /* test */
+        assertEquals(14, result.getResult().getFindings().size());
+    }
+
+    @Test
     void a_report_without_status_and_messages_can_be_read_and_when_traffic_light_is_red_status_is_failed() {
         /* prepare */
         String jsonNoStatusOrMessages = TestFileReader.loadTextFile(new File("./src/test/resources/report/sechub-testreport3.json"), "\n");

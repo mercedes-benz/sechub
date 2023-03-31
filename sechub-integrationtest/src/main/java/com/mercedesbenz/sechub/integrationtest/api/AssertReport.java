@@ -4,7 +4,9 @@ package com.mercedesbenz.sechub.integrationtest.api;
 import static org.junit.Assert.*;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.UUID;
 
 import org.slf4j.Logger;
@@ -16,6 +18,7 @@ import com.mercedesbenz.sechub.commons.model.SecHubFinding;
 import com.mercedesbenz.sechub.commons.model.SecHubMessage;
 import com.mercedesbenz.sechub.commons.model.SecHubMessageType;
 import com.mercedesbenz.sechub.commons.model.SecHubReportData;
+import com.mercedesbenz.sechub.commons.model.SecHubReportMetaData;
 import com.mercedesbenz.sechub.commons.model.SecHubReportModel;
 import com.mercedesbenz.sechub.commons.model.SecHubReportVersion;
 import com.mercedesbenz.sechub.commons.model.SecHubResult;
@@ -296,6 +299,23 @@ public class AssertReport {
 
     public AssertReport hasJobUUID(String uuidAsString) {
         return hasJobUUID(UUID.fromString(uuidAsString));
+    }
+
+    public AssertReport hasMetaDataLabel(String key, String value) {
+        Optional<SecHubReportMetaData> metaDataOpt = report.getMetaData();
+        if (metaDataOpt.isEmpty()) {
+            fail("Meta data not found inside report!");
+        }
+        SecHubReportMetaData metaData = metaDataOpt.get();
+        Map<String, String> labels = metaData.getLabels();
+        if (!labels.containsKey(key)) {
+            fail("Meta data labels do not contain key:" + key + "\nKeys found:" + labels.keySet());
+        }
+        String foundValue = labels.get(key);
+
+        assertEquals(value, foundValue);
+
+        return this;
     }
 
     public AssertReport dump() {

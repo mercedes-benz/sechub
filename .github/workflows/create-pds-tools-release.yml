@@ -175,7 +175,7 @@ jobs:
             See [Milestone ${{github.event.inputs.pds-tools-milestone-number}}]( https://github.com/mercedes-benz/sechub/milestone/${{github.event.inputs.pds-tools-milestone-number}}?closed=1) for details.
 
             Please close this issue after the release.
-          milestone: ${{ github.event.inputs.server-milestone-number }}
+          milestone: ${{ github.event.inputs.pds-tools-milestone-number }}
 
       # -----------------------------------------
       # Create a pull request for merging back `master` into `develop`

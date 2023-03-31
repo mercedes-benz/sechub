@@ -39,4 +39,17 @@ public class AssertHTMLReport {
         fail(message + "\n" + html);
     }
 
+    public AssertHTMLReport hasMetaDataLabel(String key, String value) {
+        String keyPart = "<td class=\"metaDataLabelKey\">" + key + "</td>";
+        if (!html.contains(keyPart)) {
+            failWithDump("The report does not contain expected key part:" + keyPart);
+        }
+
+        String valuePart = "<td class=\"metaDataLabelValue\">" + value + "</td>";
+        if (!html.contains(valuePart)) {
+            failWithDump("The report does not contain expected value part:" + valuePart);
+        }
+        return this;
+    }
+
 }
