@@ -531,7 +531,7 @@ table.CodeRay td.code{padding:0 0 0 .75em}
 <div id="header">
 <h1><span class="image"><a class="image" href="https://mercedes-benz.github.io/sechub"><img src="images/sechub-logo.png" alt="sechub logo"></a></span> SecHub Client Documentation</h1>
 <div class="details">
-<span id="revnumber"> Client 0.34.0</span>
+<span id="revnumber"> Client 0.35.0</span>
 </div>
 <div id="toc" class="toc2">
 <div id="toctitle">Table of contents</div>
@@ -589,45 +589,58 @@ table.CodeRay td.code{padding:0 0 0 .75em}
 <li><a href="#sechub-config-example-licensescan-combined-with-codescan">2.5.5.3. Example source licence scan with sources code scan combined</a></li>
 </ul>
 </li>
-<li><a href="#web-scan">2.5.6. Web scan</a>
+<li><a href="#secret-scan">2.5.6. Secret scan</a>
 <ul class="sectlevel4">
-<li><a href="#url">2.5.6.1. URL</a>
-<ul class="sectlevel5">
-<li><a href="#example-anonymous">2.5.6.1.1. Example anonymous</a></li>
+<li><a href="#sechub-config-example-secretscan-sources">2.5.6.1. Example source secret scan</a></li>
+<li><a href="#sechub-config-example-secretscan-binary">2.5.6.2. Example binary secret scan</a></li>
+<li><a href="#sechub-config-example-secretscan-combined-with-codescan-sources">2.5.6.3. Example source secret scan combined with code scan</a></li>
 </ul>
 </li>
-<li><a href="#login">2.5.6.2. Login</a>
-<ul class="sectlevel5">
-<li><a href="#options">2.5.6.2.1. Options</a></li>
-<li><a href="#example-no-authentication">2.5.6.2.2. Example no authentication</a></li>
-<li><a href="#example-basic-authentication">2.5.6.2.3. Example basic authentication</a></li>
-<li><a href="#example-form-based-login-by-script">2.5.6.2.4. Example form based login by script</a></li>
-<li><a href="#sechub-config-example-webscan-openapi">2.5.6.2.5. Example OpenAPI scan</a></li>
-</ul>
-</li>
-</ul>
-</li>
-<li><a href="#infrastructure-scan">2.5.7. Infrastructure scan</a>
+<li><a href="#web-scan">2.5.7. Web scan</a>
 <ul class="sectlevel4">
-<li><a href="#uris">2.5.7.1. URIs</a>
+<li><a href="#url">2.5.7.1. URL</a>
 <ul class="sectlevel5">
-<li><a href="#example-infrascan-one-uri">2.5.7.1.1. Example infrascan one URI</a></li>
+<li><a href="#example-anonymous">2.5.7.1.1. Example anonymous</a></li>
 </ul>
 </li>
-<li><a href="#ips">2.5.7.2. IPs</a>
+<li><a href="#login">2.5.7.2. Login</a>
 <ul class="sectlevel5">
-<li><a href="#example-infrascan-one-ip">2.5.7.2.1. Example infrascan one IP</a></li>
+<li><a href="#options">2.5.7.2.1. Options</a></li>
+<li><a href="#example-no-authentication">2.5.7.2.2. Example no authentication</a></li>
+<li><a href="#example-basic-authentication">2.5.7.2.3. Example basic authentication</a></li>
+<li><a href="#example-form-based-login-by-script">2.5.7.2.4. Example form based login by script</a></li>
+<li><a href="#sechub-config-example-webscan-openapi">2.5.7.2.5. Example OpenAPI scan</a></li>
 </ul>
 </li>
 </ul>
 </li>
-<li><a href="#sechub-config-data-section">2.5.8. Data</a>
+<li><a href="#infrastructure-scan">2.5.8. Infrastructure scan</a>
 <ul class="sectlevel4">
-<li><a href="#general-json-syntax">2.5.8.1. General JSON syntax</a></li>
+<li><a href="#uris">2.5.8.1. URIs</a>
+<ul class="sectlevel5">
+<li><a href="#example-infrascan-one-uri">2.5.8.1.1. Example infrascan one URI</a></li>
 </ul>
 </li>
-<li><a href="#code-scan-accepted-source-code-files">2.5.9. Code scan: accepted source code files</a></li>
-<li><a href="#inject-variables-into-configuration-files-for-advanced-users">2.5.10. Inject variables into configuration files (For advanced users)</a></li>
+<li><a href="#ips">2.5.8.2. IPs</a>
+<ul class="sectlevel5">
+<li><a href="#example-infrascan-one-ip">2.5.8.2.1. Example infrascan one IP</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="#sechub-config-data-section">2.5.9. Data</a>
+<ul class="sectlevel4">
+<li><a href="#general-json-syntax">2.5.9.1. General JSON syntax</a></li>
+</ul>
+</li>
+<li><a href="#sechub-config-metadata-section">2.5.10. MetaData</a>
+<ul class="sectlevel4">
+<li><a href="#labels">2.5.10.1. Labels</a></li>
+<li><a href="#general-json-syntax-2">2.5.10.2. General JSON syntax</a></li>
+</ul>
+</li>
+<li><a href="#code-scan-accepted-source-code-files">2.5.11. Code scan: accepted source code files</a></li>
+<li><a href="#inject-variables-into-configuration-files-for-advanced-users">2.5.12. Inject variables into configuration files (For advanced users)</a></li>
 </ul>
 </li>
 <li><a href="#examples">2.6. Examples</a>
@@ -749,7 +762,7 @@ build pipeline / contionus integration (CI) and helps to provide
 </tbody>
 </table>
 <div class="paragraph">
-<p>Documentation version: <code>Client 0.34.0-20230223091243</code></p>
+<p>Documentation version: <code>Client 0.35.0-20230331085021</code></p>
 </div>
 <hr>
 <div style="page-break-after: always;"></div>
@@ -2021,7 +2034,7 @@ Here we also add ".cplusplus" and ".py9" as additional accepted source file exte
   <span class="key"><span class="delimiter">&quot;</span><span class="content">data</span><span class="delimiter">&quot;</span></span> : {
     <span class="key"><span class="delimiter">&quot;</span><span class="content">binaries</span><span class="delimiter">&quot;</span></span> : [ { 
       <span class="key"><span class="delimiter">&quot;</span><span class="content">name</span><span class="delimiter">&quot;</span></span> : <span class="string"><span class="delimiter">&quot;</span><span class="content">firmware-images</span><span class="delimiter">&quot;</span></span>,<i class="conum" data-value="1"></i><b>(1)</b>
-      <span class="key"><span class="delimiter">&quot;</span><span class="content">fileystem</span><span class="delimiter">&quot;</span></span> : {
+      <span class="key"><span class="delimiter">&quot;</span><span class="content">fileSystem</span><span class="delimiter">&quot;</span></span> : {
         <span class="key"><span class="delimiter">&quot;</span><span class="content">folders</span><span class="delimiter">&quot;</span></span> : [ <span class="string"><span class="delimiter">&quot;</span><span class="content">gamechanger-firmware/images</span><span class="delimiter">&quot;</span></span> ]
       }
     } ]
@@ -2055,7 +2068,7 @@ Here we also add ".cplusplus" and ".py9" as additional accepted source file exte
   <span class="key"><span class="delimiter">&quot;</span><span class="content">data</span><span class="delimiter">&quot;</span></span> : {
     <span class="key"><span class="delimiter">&quot;</span><span class="content">sources</span><span class="delimiter">&quot;</span></span> : [ {
       <span class="key"><span class="delimiter">&quot;</span><span class="content">name</span><span class="delimiter">&quot;</span></span> : <span class="string"><span class="delimiter">&quot;</span><span class="content">firmware-sources</span><span class="delimiter">&quot;</span></span>, <i class="conum" data-value="1"></i><b>(1)</b>
-      <span class="key"><span class="delimiter">&quot;</span><span class="content">fileystem</span><span class="delimiter">&quot;</span></span> : {
+      <span class="key"><span class="delimiter">&quot;</span><span class="content">fileSystem</span><span class="delimiter">&quot;</span></span> : {
         <span class="key"><span class="delimiter">&quot;</span><span class="content">folders</span><span class="delimiter">&quot;</span></span> : [ <span class="string"><span class="delimiter">&quot;</span><span class="content">gamechanger-firmware/src</span><span class="delimiter">&quot;</span></span> ]
       }
     } ]
@@ -2089,7 +2102,7 @@ Here we also add ".cplusplus" and ".py9" as additional accepted source file exte
   <span class="key"><span class="delimiter">&quot;</span><span class="content">data</span><span class="delimiter">&quot;</span></span> : {
     <span class="key"><span class="delimiter">&quot;</span><span class="content">sources</span><span class="delimiter">&quot;</span></span> : [ {
       <span class="key"><span class="delimiter">&quot;</span><span class="content">name</span><span class="delimiter">&quot;</span></span> : <span class="string"><span class="delimiter">&quot;</span><span class="content">firmware-sources</span><span class="delimiter">&quot;</span></span>, <i class="conum" data-value="1"></i><b>(1)</b>
-      <span class="key"><span class="delimiter">&quot;</span><span class="content">fileystem</span><span class="delimiter">&quot;</span></span> : {
+      <span class="key"><span class="delimiter">&quot;</span><span class="content">fileSystem</span><span class="delimiter">&quot;</span></span> : {
         <span class="key"><span class="delimiter">&quot;</span><span class="content">folders</span><span class="delimiter">&quot;</span></span> : [ <span class="string"><span class="delimiter">&quot;</span><span class="content">gamechanger-firmware/src</span><span class="delimiter">&quot;</span></span> ] 
       }
     } ]
@@ -2123,12 +2136,135 @@ Here we also add ".cplusplus" and ".py9" as additional accepted source file exte
 </div>
 </div>
 <div class="sect3">
-<h4 id="web-scan">2.5.6. Web scan</h4>
+<h4 id="secret-scan">2.5.6. Secret scan</h4>
+<div class="paragraph">
+<p><code>secretScan</code>(optional) defines the secret scan settings.</p>
+</div>
+<div class="sect4">
+<h5 id="sechub-config-example-secretscan-sources">2.5.6.1. Example source secret scan</h5>
+<div class="listingblock">
+<div class="title">Secret scan configuration for sources</div>
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="json">{
+  <span class="key"><span class="delimiter">&quot;</span><span class="content">apiVersion</span><span class="delimiter">&quot;</span></span> : <span class="string"><span class="delimiter">&quot;</span><span class="content">1.0</span><span class="delimiter">&quot;</span></span>,
+  <span class="key"><span class="delimiter">&quot;</span><span class="content">data</span><span class="delimiter">&quot;</span></span> : {
+    <span class="key"><span class="delimiter">&quot;</span><span class="content">sources</span><span class="delimiter">&quot;</span></span> : [ {
+      <span class="key"><span class="delimiter">&quot;</span><span class="content">name</span><span class="delimiter">&quot;</span></span> : <span class="string"><span class="delimiter">&quot;</span><span class="content">gamechanger-source</span><span class="delimiter">&quot;</span></span>, <i class="conum" data-value="1"></i><b>(1)</b>
+      <span class="key"><span class="delimiter">&quot;</span><span class="content">fileSystem</span><span class="delimiter">&quot;</span></span> : {
+        <span class="key"><span class="delimiter">&quot;</span><span class="content">folders</span><span class="delimiter">&quot;</span></span> : [ <span class="string"><span class="delimiter">&quot;</span><span class="content">gamechanger-configuration/src</span><span class="delimiter">&quot;</span></span>, <span class="string"><span class="delimiter">&quot;</span><span class="content">gamechanger-app/src</span><span class="delimiter">&quot;</span></span>  ] <i class="conum" data-value="2"></i><b>(2)</b>
+      }
+    } ]
+  },
+  <span class="key"><span class="delimiter">&quot;</span><span class="content">secretScan</span><span class="delimiter">&quot;</span></span> : { 
+    <span class="key"><span class="delimiter">&quot;</span><span class="content">use</span><span class="delimiter">&quot;</span></span> : [ <span class="string"><span class="delimiter">&quot;</span><span class="content">gamechanger-source</span><span class="delimiter">&quot;</span></span>] <i class="conum" data-value="3"></i><b>(3)</b>
+  }
+}</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>name of the source <a href="#sechub-config-data-section">data</a> configuration: "gamechanger-source"</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>source code folders to scan.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td>secret scan uses the referenced <a href="#sechub-config-data-section">data</a> configuration "gamechanger-source"</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect4">
+<h5 id="sechub-config-example-secretscan-binary">2.5.6.2. Example binary secret scan</h5>
+<div class="listingblock">
+<div class="title">Secret scan scan configuration for binaries</div>
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="json">{
+  <span class="key"><span class="delimiter">&quot;</span><span class="content">apiVersion</span><span class="delimiter">&quot;</span></span> : <span class="string"><span class="delimiter">&quot;</span><span class="content">1.0</span><span class="delimiter">&quot;</span></span>,
+  <span class="key"><span class="delimiter">&quot;</span><span class="content">data</span><span class="delimiter">&quot;</span></span> : {
+    <span class="key"><span class="delimiter">&quot;</span><span class="content">binaries</span><span class="delimiter">&quot;</span></span> : [ { 
+      <span class="key"><span class="delimiter">&quot;</span><span class="content">name</span><span class="delimiter">&quot;</span></span> : <span class="string"><span class="delimiter">&quot;</span><span class="content">firmware-images</span><span class="delimiter">&quot;</span></span>,<i class="conum" data-value="1"></i><b>(1)</b>
+      <span class="key"><span class="delimiter">&quot;</span><span class="content">fileSystem</span><span class="delimiter">&quot;</span></span> : {
+        <span class="key"><span class="delimiter">&quot;</span><span class="content">folders</span><span class="delimiter">&quot;</span></span> : [ <span class="string"><span class="delimiter">&quot;</span><span class="content">gamechanger-firmware/images</span><span class="delimiter">&quot;</span></span> ]
+      }
+    } ]
+  },
+  <span class="key"><span class="delimiter">&quot;</span><span class="content">secretScan</span><span class="delimiter">&quot;</span></span> : { 
+    <span class="key"><span class="delimiter">&quot;</span><span class="content">use</span><span class="delimiter">&quot;</span></span> : [ <span class="string"><span class="delimiter">&quot;</span><span class="content">firmware-images</span><span class="delimiter">&quot;</span></span>] <i class="conum" data-value="2"></i><b>(2)</b>
+  }
+}</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>name of the source <a href="#sechub-config-data-section">data</a> configuration: "firmware-images"</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>secret scan uses the referenced <a href="#sechub-config-data-section">data</a> configuration "firmware-images"</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect4">
+<h5 id="sechub-config-example-secretscan-combined-with-codescan-sources">2.5.6.3. Example source secret scan combined with code scan</h5>
+<div class="listingblock">
+<div class="title">Secret scan and code scan configuration for sources</div>
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="json">{
+  <span class="key"><span class="delimiter">&quot;</span><span class="content">apiVersion</span><span class="delimiter">&quot;</span></span> : <span class="string"><span class="delimiter">&quot;</span><span class="content">1.0</span><span class="delimiter">&quot;</span></span>,
+  <span class="key"><span class="delimiter">&quot;</span><span class="content">data</span><span class="delimiter">&quot;</span></span> : {
+    <span class="key"><span class="delimiter">&quot;</span><span class="content">sources</span><span class="delimiter">&quot;</span></span> : [ {
+      <span class="key"><span class="delimiter">&quot;</span><span class="content">name</span><span class="delimiter">&quot;</span></span> : <span class="string"><span class="delimiter">&quot;</span><span class="content">gamechanger-source</span><span class="delimiter">&quot;</span></span>, <i class="conum" data-value="1"></i><b>(1)</b>
+      <span class="key"><span class="delimiter">&quot;</span><span class="content">fileSystem</span><span class="delimiter">&quot;</span></span> : {
+        <span class="key"><span class="delimiter">&quot;</span><span class="content">folders</span><span class="delimiter">&quot;</span></span> : [ <span class="string"><span class="delimiter">&quot;</span><span class="content">gamechanger-configuration/src</span><span class="delimiter">&quot;</span></span>, <span class="string"><span class="delimiter">&quot;</span><span class="content">gamechanger-app/src</span><span class="delimiter">&quot;</span></span>  ] <i class="conum" data-value="2"></i><b>(2)</b>
+      }
+    } ]
+  },
+  <span class="key"><span class="delimiter">&quot;</span><span class="content">secretScan</span><span class="delimiter">&quot;</span></span> : { 
+    <span class="key"><span class="delimiter">&quot;</span><span class="content">use</span><span class="delimiter">&quot;</span></span> : [ <span class="string"><span class="delimiter">&quot;</span><span class="content">gamechanger-source</span><span class="delimiter">&quot;</span></span>] <i class="conum" data-value="3"></i><b>(3)</b>
+  },
+  <span class="key"><span class="delimiter">&quot;</span><span class="content">codeScan</span><span class="delimiter">&quot;</span></span> : { 
+    <span class="key"><span class="delimiter">&quot;</span><span class="content">use</span><span class="delimiter">&quot;</span></span> : [ <span class="string"><span class="delimiter">&quot;</span><span class="content">gamechanger-source</span><span class="delimiter">&quot;</span></span>] <i class="conum" data-value="4"></i><b>(4)</b>
+  }
+}</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>name of the source <a href="#sechub-config-data-section">data</a> configuration: "gamechanger-source"</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>source code folders to scan.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td>secret scan uses the referenced <a href="#sechub-config-data-section">data</a> configuration "gamechanger-source"</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="4"></i><b>4</b></td>
+<td>code scan uses the referenced <a href="#sechub-config-data-section">data</a> configuration "gamechanger-source"</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="web-scan">2.5.7. Web scan</h4>
 <div class="paragraph">
 <p><code>webScan</code> (optional) defines the web scan settings.</p>
 </div>
 <div class="sect4">
-<h5 id="url">2.5.6.1. URL</h5>
+<h5 id="url">2.5.7.1. URL</h5>
 <div class="paragraph">
 <p>Use the <code>url</code> element to define a URL you want to scan.</p>
 </div>
@@ -2146,7 +2282,7 @@ The URL must be whitelisted in your project. Otherwise it will be rejected.
 </table>
 </div>
 <div class="sect5">
-<h6 id="example-anonymous">2.5.6.1.1. Example anonymous</h6>
+<h6 id="example-anonymous">2.5.7.1.1. Example anonymous</h6>
 <div id="sechub-config-example-webscan-anonymous" class="listingblock">
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="json">{
@@ -2207,7 +2343,7 @@ The unit can be: <code>millisecond</code>, <code>second</code>, <code>minute</co
 </div>
 </div>
 <div class="sect4">
-<h5 id="login">2.5.6.2. Login</h5>
+<h5 id="login">2.5.7.2. Login</h5>
 <div class="paragraph">
 <p>A web scan does work much better if it has got access to all content
  - so a login is necessary most time. If you do not define a login configuration
@@ -2238,7 +2374,7 @@ SMS provider - <strong>so be careful!</strong></p>
 </table>
 </div>
 <div class="sect5">
-<h6 id="options">2.5.6.2.1. Options</h6>
+<h6 id="options">2.5.7.2.1. Options</h6>
 <div class="paragraph">
 <p>SecHub provides you with 2 options for login:</p>
 </div>
@@ -2276,7 +2412,7 @@ will have a failure at execution time!</p>
 </div>
 </div>
 <div class="sect5">
-<h6 id="example-no-authentication">2.5.6.2.2. Example no authentication</h6>
+<h6 id="example-no-authentication">2.5.7.2.2. Example no authentication</h6>
 <div class="listingblock">
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="json">{
@@ -2314,7 +2450,7 @@ this is not necessary.</td>
 </div>
 </div>
 <div class="sect5">
-<h6 id="example-basic-authentication">2.5.6.2.3. Example basic authentication</h6>
+<h6 id="example-basic-authentication">2.5.7.2.3. Example basic authentication</h6>
 <div class="listingblock">
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="json">{
@@ -2352,7 +2488,7 @@ this is not necessary and you can use an empty string.</td>
 </div>
 </div>
 <div class="sect5">
-<h6 id="example-form-based-login-by-script">2.5.6.2.4. Example form based login by script</h6>
+<h6 id="example-form-based-login-by-script">2.5.7.2.4. Example form based login by script</h6>
 <div class="listingblock">
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="json">{
@@ -2501,7 +2637,7 @@ The unit can be: <code>millisecond</code>, <code>second</code>, <code>minute</co
 </div>
 </div>
 <div class="sect5">
-<h6 id="sechub-config-example-webscan-openapi">2.5.6.2.5. Example OpenAPI scan</h6>
+<h6 id="sechub-config-example-webscan-openapi">2.5.7.2.5. Example OpenAPI scan</h6>
 <div class="listingblock">
 <div class="title">Open API scan</div>
 <div class="content">
@@ -2510,7 +2646,7 @@ The unit can be: <code>millisecond</code>, <code>second</code>, <code>minute</co
   <span class="key"><span class="delimiter">&quot;</span><span class="content">data</span><span class="delimiter">&quot;</span></span> : { 
     <span class="key"><span class="delimiter">&quot;</span><span class="content">sources</span><span class="delimiter">&quot;</span></span> : [ {
       <span class="key"><span class="delimiter">&quot;</span><span class="content">name</span><span class="delimiter">&quot;</span></span> : <span class="string"><span class="delimiter">&quot;</span><span class="content">open-api-file-reference</span><span class="delimiter">&quot;</span></span>, <i class="conum" data-value="1"></i><b>(1)</b>
-      <span class="key"><span class="delimiter">&quot;</span><span class="content">fileystem</span><span class="delimiter">&quot;</span></span> : {
+      <span class="key"><span class="delimiter">&quot;</span><span class="content">fileSystem</span><span class="delimiter">&quot;</span></span> : {
         <span class="key"><span class="delimiter">&quot;</span><span class="content">files</span><span class="delimiter">&quot;</span></span> : [ <span class="string"><span class="delimiter">&quot;</span><span class="content">gamechanger-webapp/src/main/resources/openapi3.json</span><span class="delimiter">&quot;</span></span> ]
       }
     } ]
@@ -2546,17 +2682,17 @@ to obtain the open api configuration file</td>
 </div>
 </div>
 <div class="sect3">
-<h4 id="infrastructure-scan">2.5.7. Infrastructure scan</h4>
+<h4 id="infrastructure-scan">2.5.8. Infrastructure scan</h4>
 <div class="paragraph">
 <p><code>infraScan</code> (optional) defines the infrastructure scan settings.</p>
 </div>
 <div class="sect4">
-<h5 id="uris">2.5.7.1. URIs</h5>
+<h5 id="uris">2.5.8.1. URIs</h5>
 <div class="paragraph">
 <p>Use <code>uris</code> element to define a string array containing <code>URIs</code> you want to scan.</p>
 </div>
 <div class="sect5">
-<h6 id="example-infrascan-one-uri">2.5.7.1.1. Example infrascan one URI</h6>
+<h6 id="example-infrascan-one-uri">2.5.8.1.1. Example infrascan one URI</h6>
 <div id="sechub-config-example-infrascan-with-uri" class="listingblock">
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="json">{
@@ -2588,12 +2724,12 @@ to obtain the open api configuration file</td>
 </div>
 </div>
 <div class="sect4">
-<h5 id="ips">2.5.7.2. IPs</h5>
+<h5 id="ips">2.5.8.2. IPs</h5>
 <div class="paragraph">
 <p>Use <code>ips</code> element to define a string array containing <code>IPs</code> you want to scan.</p>
 </div>
 <div class="sect5">
-<h6 id="example-infrascan-one-ip">2.5.7.2.1. Example infrascan one IP</h6>
+<h6 id="example-infrascan-one-ip">2.5.8.2.1. Example infrascan one IP</h6>
 <div id="sechub-config-example-infrascan-with-ip" class="listingblock">
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="json">{
@@ -2628,7 +2764,7 @@ because scanners do not scan them self.</td>
 </div>
 </div>
 <div class="sect3">
-<h4 id="sechub-config-data-section">2.5.8. Data</h4>
+<h4 id="sechub-config-data-section">2.5.9. Data</h4>
 <div class="paragraph">
 <p>The <a href="#sechub-config-code-scan">codeScan</a> element provides a way to define
 source code uploads for code scans only.</p>
@@ -2698,7 +2834,7 @@ If you want to upload binaries, you MUST use the data section, there is no other
 </table>
 </div>
 <div class="sect4">
-<h5 id="general-json-syntax">2.5.8.1. General JSON syntax</h5>
+<h5 id="general-json-syntax">2.5.9.1. General JSON syntax</h5>
 <div class="paragraph">
 <p>The next figure shows an example which presents all possibilities <em>(for simplicity the source and
 binary configuration arrays do contain only just one entry)</em>.</p>
@@ -2791,7 +2927,96 @@ for details about default behaviour for sources.</td>
 </div>
 </div>
 <div class="sect3">
-<h4 id="code-scan-accepted-source-code-files">2.5.9. Code scan: accepted source code files</h4>
+<h4 id="sechub-config-metadata-section">2.5.10. MetaData</h4>
+<div class="paragraph">
+<p>The SecHub configuration file can have optional meta data.</p>
+</div>
+<div class="sect4">
+<h5 id="labels">2.5.10.1. Labels</h5>
+<div class="paragraph">
+<p>With labels a user is able to add additional information to the
+scan configuration which end up in the report as key value pairs.</p>
+</div>
+</div>
+<div class="sect4">
+<h5 id="general-json-syntax-2">2.5.10.2. General JSON syntax</h5>
+<div class="paragraph">
+<p>The next figure shows an example which presents all possibilities <em>(for simplicity other configuration
+elements are removed)</em>.</p>
+</div>
+<div class="listingblock">
+<div class="title">General JSON syntax</div>
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="json">{
+  <span class="key"><span class="delimiter">&quot;</span><span class="content">metaData</span><span class="delimiter">&quot;</span></span> : {<span class="error">/</span><span class="error">/</span><span class="error">&lt;</span><span class="integer">1</span><span class="error">&gt;</span> 
+    <span class="key"><span class="delimiter">&quot;</span><span class="content">labels</span><span class="delimiter">&quot;</span></span> : {<span class="error">/</span><span class="error">/</span><span class="error">&lt;</span><span class="integer">2</span><span class="error">&gt;</span> 
+      <span class="string"><span class="delimiter">&quot;</span><span class="content">Example 1</span><span class="delimiter">&quot;</span></span> <span class="error">/</span><span class="error">/</span><span class="error">&lt;</span><span class="integer">3</span><span class="error">&gt;</span> 
+        : 
+      <span class="string"><span class="delimiter">&quot;</span><span class="content">The labels are alphabetically sorted!</span><span class="delimiter">&quot;</span></span> <span class="error">/</span><span class="error">/</span><span class="error">&lt;</span><span class="integer">4</span><span class="error">&gt;</span> 
+      ,
+      <span class="key"><span class="delimiter">&quot;</span><span class="content">Example 1.1</span><span class="delimiter">&quot;</span></span> : <span class="string"><span class="delimiter">&quot;</span><span class="content">Values can be any text.</span><span class="delimiter">&quot;</span></span>
+    }
+  }
+}</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td><code>metaData</code>: The main element for meta data configuration. It is optional.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td><code>labels</code>: Inside this element the user can define labels as key value pairs.
+<div class="ulist">
+<ul>
+<li>
+<p>maximum allowed entries per configuration file: 20</p>
+</li>
+</ul>
+</div></td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td>represents the label key.
+<div class="ulist">
+<ul>
+<li>
+<p>allowed are characters <code>A-Za-z</code>, digits and the special characters <code>_</code> , <code>-</code> and <code>.</code></p>
+</li>
+<li>
+<p>minimum length: 1 character</p>
+</li>
+<li>
+<p>maximum length: 30 characters</p>
+</li>
+</ul>
+</div></td>
+</tr>
+<tr>
+<td><i class="conum" data-value="4"></i><b>4</b></td>
+<td>represents the label value.
+<div class="ulist">
+<ul>
+<li>
+<p>can contain any text (content will be escaped accordingly in reports)</p>
+</li>
+<li>
+<p>minimum length: 0 characters</p>
+</li>
+<li>
+<p>maximum length: 150 characters</p>
+</li>
+</ul>
+</div></td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="code-scan-accepted-source-code-files">2.5.11. Code scan: accepted source code files</h4>
 <div class="paragraph">
 <p>The client will per default only include "wellknown" source files.
 This is done by inspecting the filename ending. The accepted defaults are shown in next table.</p>
@@ -3055,7 +3280,7 @@ But of course you can also define additional source file endings - see <a href="
 </table>
 </div>
 <div class="sect3">
-<h4 id="inject-variables-into-configuration-files-for-advanced-users">2.5.10. Inject variables into configuration files (For advanced users)</h4>
+<h4 id="inject-variables-into-configuration-files-for-advanced-users">2.5.12. Inject variables into configuration files (For advanced users)</h4>
 <div class="paragraph">
 <p>All environment variables are available inside your configuration file in Go
 template syntax:</p>
@@ -3511,7 +3736,7 @@ configure the client to do this also on color YELLOW. Only Green is always accep
 </div>
 <div id="footer">
 <div id="footer-text">
- Client 0.34.0<br>
+ Client 0.35.0<br>
 </div>
 </div>
 </body>
