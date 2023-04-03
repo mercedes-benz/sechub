@@ -50,11 +50,12 @@ public class PDSSolutionDefinition extends AbstractDefinition {
     }
 
     /**
-     * Set the base directory for the solution. This is optional. If not defined,
-     * the test runtime will try to resolve it automatically (by name and defined
-     * folder location of "sechub-pds-solutions". The PDS base directory is
-     * important, because the PDS configuration file must be loaded to determine the
-     * provided products inside the PDS.
+     * Set the base directory for the solution. Can contain variables which will be
+     * resolved. This is optional. If not defined, the test runtime will try to
+     * resolve it automatically (by name and defined folder location of
+     * "sechub-pds-solutions". The PDS base directory is important, because the PDS
+     * configuration file must be loaded to determine the provided products inside
+     * the PDS.
      *
      * @param baseDir
      */

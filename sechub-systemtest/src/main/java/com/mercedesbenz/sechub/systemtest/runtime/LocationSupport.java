@@ -6,31 +6,31 @@ import java.nio.file.Paths;
 
 public class LocationSupport {
 
-    private Path pdsSolutionRootPath;
-    private Path sechubSolutionRootFolderPath;
+    private Path pdsSolutionsRoot;
+    private Path sechubSolutionRoot;
 
     public LocationSupport(String pdsSolutionsRootFolder, String sechubSolutionRootFolder) {
         try {
-            pdsSolutionRootPath = Paths.get(pdsSolutionsRootFolder).toAbsolutePath().toRealPath();
+            pdsSolutionsRoot = Paths.get(pdsSolutionsRootFolder).toAbsolutePath().toRealPath();
         } catch (IOException e) {
             throw new IllegalStateException("Cannot determine real path for " + pdsSolutionsRootFolder, e);
         }
         if (sechubSolutionRootFolder != null) {
             try {
-                sechubSolutionRootFolderPath = Paths.get(pdsSolutionsRootFolder).toAbsolutePath().toRealPath();
+                sechubSolutionRoot = Paths.get(pdsSolutionsRootFolder).toAbsolutePath().toRealPath();
             } catch (IOException e) {
-                throw new IllegalStateException("Cannot determine real path for " + sechubSolutionRootFolderPath, e);
+                throw new IllegalStateException("Cannot determine real path for " + sechubSolutionRoot, e);
             }
         } else {
-            sechubSolutionRootFolderPath = pdsSolutionRootPath.getParent().resolve("sechub-solution");
+            sechubSolutionRoot = pdsSolutionsRoot.getParent().resolve("sechub-solution");
         }
     }
 
-    public Path getPDSSolutionRootFolder() {
-        return pdsSolutionRootPath;
+    public Path getPDSSolutionRoot() {
+        return pdsSolutionsRoot;
     }
 
-    public Path getSecHubSolutionRootFolder() {
-        return sechubSolutionRootFolderPath;
+    public Path getSecHubSolutionRoot() {
+        return sechubSolutionRoot;
     }
 }

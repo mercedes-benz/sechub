@@ -13,7 +13,7 @@ version =   VersionData.getServerVersion()
 
 dependencies {
 
-    implementation project(':sechub-commons-model')
+    implementation project(':sechub-pds-commons-core')
     
     testImplementation spring_boot_dependency.junit_jupiter
     testImplementation spring_boot_dependency.mockito_core

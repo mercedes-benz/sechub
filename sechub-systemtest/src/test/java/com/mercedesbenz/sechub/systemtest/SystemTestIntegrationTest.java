@@ -59,7 +59,7 @@ class SystemTestIntegrationTest {
 
                         configure().
                             addExecutor().
-                                pdsProductId("GOSEC").
+                                pdsProductId("PDS_GOSEC").
                             endExecutor().
                         endConfigure().
 
@@ -94,8 +94,6 @@ class SystemTestIntegrationTest {
         SystemTestResult results = runSystemTests(configuration, "./src/test/resources/fake-root/sechub-pds-solutions");
 
         /* test */
-        LOG.info("altered config=\n{}", JSONConverter.get().toJSON(configuration,true));
-
         SystemTestRunResult result1 = results.getRuns().iterator().next();
         assertEquals("default",result1.getRunIdentifier());
 

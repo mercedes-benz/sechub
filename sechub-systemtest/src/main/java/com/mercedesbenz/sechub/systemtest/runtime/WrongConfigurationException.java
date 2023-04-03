@@ -6,24 +6,37 @@ import com.mercedesbenz.sechub.systemtest.config.SystemTestConfiguration;
 public class WrongConfigurationException extends RuntimeException {
 
     private static final long serialVersionUID = 1L;
+    private SystemTestRuntimeContext context;
 
-    public static WrongConfigurationException buildException(String message) {
-        return buildException(message, null);
-    }
+    private static final String buildMessage(String message, SystemTestRuntimeContext context) {
+        String fullmessage = message;
+        if (context != null) {
+            SystemTestConfiguration originConfig = context.getOriginConfiguration();
+            if (originConfig != null) {
+                String json = JSONConverter.get().toJSON(originConfig, true);
+                fullmessage = fullmessage + "\nOrigin config as JSON:\n" + json;
+            }
 
-    public static WrongConfigurationException buildException(String message, SystemTestConfiguration config) {
-        if (config == null) {
-            return new WrongConfigurationException(message);
+            SystemTestConfiguration runtimeConfig = context.getConfiguration();
+            if (runtimeConfig != null) {
+                String json = JSONConverter.get().toJSON(runtimeConfig, true);
+                fullmessage = fullmessage + "\nRuntime config as JSON:\n" + json;
+            }
         }
-        String json = JSONConverter.get().toJSON(config, true);
-
-        WrongConfigurationException exception = new WrongConfigurationException(message + "\nConfig as JSON:\n" + json);
-        return exception;
+        return fullmessage;
     }
 
-    private WrongConfigurationException(String message) {
-        super(message);
+    public String createDetails() {
+        return buildMessage(getLocalizedMessage(), context);
+    }
 
+    public WrongConfigurationException(String message, SystemTestRuntimeContext context) {
+        this(message, context, null);
+    }
+
+    public WrongConfigurationException(String message, SystemTestRuntimeContext context, Exception cause) {
+        super(message, cause);
+        this.context = context;
     }
 
 }

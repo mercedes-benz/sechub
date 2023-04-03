@@ -12,32 +12,65 @@ import com.mercedesbenz.sechub.systemtest.config.PDSSolutionDefinition;
 import com.mercedesbenz.sechub.systemtest.config.SecHubConfigurationDefinition;
 import com.mercedesbenz.sechub.systemtest.config.SystemTestConfiguration;
 
-public class SystemTestRuntimeContext {
+class SystemTestRuntimeContext {
+
+    SystemTestConfiguration originConfiguration;
+    boolean localRun;
+    EnvironmentProvider environmentProvider;
+    LocationSupport locationSupport;
 
     private SystemTestConfiguration configuration;
     private SystemTestRunResult currentResult;
     private Set<SystemTestRunResult> results = new LinkedHashSet<>();
-
+    private SystemTestRuntimeMetaData runtimeMetaData = new SystemTestRuntimeMetaData();
     private Map<PDSSolutionDefinition, PDSSolutionRuntimeData> pdsSolutionRuntimeDataMap = new LinkedHashMap<>();
-    private boolean localRun;
 
-    public void setCurrentResult(SystemTestRunResult currentResult) {
-        this.currentResult = currentResult;
+    void alterConfguration(SystemTestConfiguration configuration) {
+        this.configuration = configuration;
+    }
+
+    public EnvironmentProvider getEnvironmentProvider() {
+        return environmentProvider;
+    }
+
+    public LocationSupport getLocationSupport() {
+        return locationSupport;
     }
 
     public SystemTestRunResult getCurrentResult() {
         return currentResult;
     }
 
-    public SystemTestRuntimeContext(SystemTestConfiguration configuration, boolean localRun) {
-        this.configuration = configuration;
+    /* only for tests */
+    SystemTestRuntimeContext() {
+    }
+
+    public SystemTestRuntimeContext(SystemTestConfiguration originConfiguration, boolean localRun) {
+        this.originConfiguration = originConfiguration;
+        this.configuration = originConfiguration;
+
         this.localRun = localRun;
+    }
+
+    /**
+     * Returns the original configuration without any changes.
+     *
+     * @return origin configuration (not altered)
+     */
+    public SystemTestConfiguration getOriginConfiguration() {
+        return originConfiguration;
     }
 
     public boolean isLocalRun() {
         return localRun;
     }
 
+    /**
+     * Returns the configuration used by runtime. Is enhanced automatically in
+     * preparation phase.
+     *
+     * @return configuration (altered by runtime)
+     */
     public SystemTestConfiguration getConfiguration() {
         return configuration;
     }
@@ -58,7 +91,7 @@ public class SystemTestRuntimeContext {
     public LocalSetupDefinition getLocalSetupOrFail() {
         Optional<LocalSetupDefinition> localOpt = configuration.getSetup().getLocal();
         if (localOpt.isEmpty()) {
-            throw WrongConfigurationException.buildException("To run a local system tests the local setpu must be configured!", configuration);
+            throw new WrongConfigurationException("To run a local system tests the local setpu must be configured!", this);
         }
 
         return localOpt.get();
@@ -69,6 +102,10 @@ public class SystemTestRuntimeContext {
         LocalSecHubDefinition sechub = localSetup.getSecHub();
         SecHubConfigurationDefinition sechubConfig = sechub.getConfigure();
         return sechubConfig;
+    }
+
+    public SystemTestRuntimeMetaData getRuntimeMetaData() {
+        return runtimeMetaData;
     }
 
 }

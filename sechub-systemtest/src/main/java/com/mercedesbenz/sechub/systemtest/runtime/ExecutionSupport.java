@@ -15,10 +15,14 @@ public class ExecutionSupport {
     private static final Logger LOG = LoggerFactory.getLogger(ExecutionSupport.class);
     private static final boolean DRY_RUN = Boolean.getBoolean("sechub.systemtest.dryrun");
 
-    private VariableSupport variableSupport;
+    private EnvironmentProvider environmentProvider;
 
-    public ExecutionSupport(VariableSupport support) {
-        this.variableSupport = support;
+    public ExecutionSupport(EnvironmentProvider provider) {
+        this.environmentProvider = provider;
+    }
+
+    public EnvironmentProvider getEnvironmentProvider() {
+        return environmentProvider;
     }
 
     public ExecutionResult execute(ScriptDefinition scriptDefinition) throws IOException {
