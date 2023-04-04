@@ -1,8 +1,6 @@
 package com.mercedesbenz.sechub.systemtest.runtime;
 
 import java.io.IOException;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -34,33 +32,35 @@ public class SystemTestRuntimeProductLauncher {
     }
 
     public void startSecHub(SystemTestRuntimeContext context) throws SystemTestErrorException {
-        if (context.isLocalRun()) {
+        if (!context.isLocalRun()) {
             LOG.debug("Skip sechub start - run is not local");
             return;
         }
         LocalSetupDefinition localSetup = context.getLocalSetupOrFail();
         LocalSecHubDefinition localSecHub = localSetup.getSecHub();
 
-        executeInWorkingDirectory("sechub", localSecHub.getBaseDir(), localSecHub.getStart(), context, SystemTestExecutionScope.SECHUB,
-                SystemTestExecutionState.START);
+        executeSteps("sechub", localSecHub.getStart(), context, SystemTestExecutionScope.SECHUB, SystemTestExecutionState.START);
 
+        context.markSecHubStarted();
     }
 
     public void stopSecHub(SystemTestRuntimeContext context) throws SystemTestErrorException {
-        if (context.isLocalRun()) {
+        if (!context.isLocalRun()) {
             LOG.debug("Skip sechub stop - run is not local");
             return;
+        }
+        if (!context.isSecHubStarted()) {
+            LOG.debug("Skip sechub stop - no local sechub was started");
         }
         LocalSetupDefinition localSetup = context.getLocalSetupOrFail();
         LocalSecHubDefinition localSecHub = localSetup.getSecHub();
 
-        executeInWorkingDirectory("sechub", localSecHub.getBaseDir(), localSecHub.getStop(), context, SystemTestExecutionScope.SECHUB,
-                SystemTestExecutionState.STOP);
+        executeSteps("sechub", localSecHub.getStop(), context, SystemTestExecutionScope.SECHUB, SystemTestExecutionState.STOP);
 
     }
 
     public void startPDSSolutions(SystemTestRuntimeContext context) throws SystemTestErrorException {
-        if (context.isLocalRun()) {
+        if (!context.isLocalRun()) {
             LOG.debug("Skip PDS solutions start - run is not local");
             return;
         }
@@ -69,51 +69,51 @@ public class SystemTestRuntimeProductLauncher {
         List<PDSSolutionDefinition> solutions = localSetup.getPdsSolutions();
 
         for (PDSSolutionDefinition solution : solutions) {
-            executeInWorkingDirectory(solution.getName(), solution.getBaseDir(), solution.getStart(), context, SystemTestExecutionScope.PDS_SOLUTION,
-                    SystemTestExecutionState.START);
+            executeSteps(solution.getName(), solution.getStart(), context, SystemTestExecutionScope.PDS_SOLUTION, SystemTestExecutionState.START);
         }
-
+        context.markAtLeastOnePDSSolutionStarted();
     }
 
     public void stopPDSSolutions(SystemTestRuntimeContext context) throws SystemTestErrorException {
-        if (context.isLocalRun()) {
+        if (!context.isLocalRun()) {
             LOG.debug("Skip PDS solutions stop - run is not local");
             return;
+        }
+        if (!context.isAtLeastOnePDSStarted()) {
+            LOG.debug("Skip PDS solutions stop - no local PDS solution was started");
         }
         LocalSetupDefinition localSetup = context.getLocalSetupOrFail();
         List<PDSSolutionDefinition> solutions = localSetup.getPdsSolutions();
 
         for (PDSSolutionDefinition solution : solutions) {
 
-            executeInWorkingDirectory(solution.getName(), solution.getBaseDir(), solution.getStop(), context, SystemTestExecutionScope.PDS_SOLUTION,
-                    SystemTestExecutionState.STOP);
+            executeSteps(solution.getName(), solution.getStop(), context, SystemTestExecutionScope.PDS_SOLUTION, SystemTestExecutionState.STOP);
         }
 
     }
 
-    private void executeInWorkingDirectory(String name, String workingDirectoryAsString, List<ExecutionStepDefinition> startSteps,
-            SystemTestRuntimeContext context, SystemTestExecutionScope scope, SystemTestExecutionState state) throws SystemTestScriptExecutionException {
+    private void executeSteps(String name, List<ExecutionStepDefinition> steps, SystemTestRuntimeContext context, SystemTestExecutionScope scope,
+            SystemTestExecutionState state) throws SystemTestScriptExecutionException {
+        if (steps.isEmpty()) {
+            LOG.debug("{} {}: {} - [Skipped because no steps defined]", state, scope, name);
+            return;
+        }
         LOG.debug("{} {}: {}", state, scope, name);
 
-        Path workingDirectory = Paths.get(workingDirectoryAsString);
-
-        for (ExecutionStepDefinition startStep : startSteps) {
-            LOG.trace("Enter: {} - step: {}", name, startStep.getComment());
-            if (startStep.getScript().isPresent()) {
-                ScriptDefinition scriptDefinition = startStep.getScript().get();
-                executeScript(context, scriptDefinition, workingDirectory, scope, state);
+        for (ExecutionStepDefinition step : steps) {
+            LOG.trace("Enter: {} - step: {}", name, step.getComment());
+            if (step.getScript().isPresent()) {
+                ScriptDefinition scriptDefinition = step.getScript().get();
+                executeScript(context, scriptDefinition, scope, state);
             }
         }
     }
 
-    private ExecutionResult executeScript(SystemTestRuntimeContext context, ScriptDefinition scriptDefinition, Path workingFolder,
-            SystemTestExecutionScope scope, SystemTestExecutionState state) throws SystemTestScriptExecutionException {
+    private ExecutionResult executeScript(SystemTestRuntimeContext context, ScriptDefinition scriptDefinition, SystemTestExecutionScope scope,
+            SystemTestExecutionState state) throws SystemTestScriptExecutionException {
         ExecutionResult executionResult;
 
         try {
-            // we now set always the calculated working directory back into model
-            // means we have now absolute pathes- easier to debug
-            scriptDefinition.setWorkingDir(workingFolder.toString());
             executionResult = execSupport.execute(scriptDefinition);
 
         } catch (IOException e) {

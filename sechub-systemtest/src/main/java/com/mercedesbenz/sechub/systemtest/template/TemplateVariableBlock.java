@@ -2,7 +2,7 @@ package com.mercedesbenz.sechub.systemtest.template;
 
 import java.util.Objects;
 
-public class TemplateVariable {
+public class TemplateVariableBlock {
 
     String name;
     String complete;
@@ -42,7 +42,7 @@ public class TemplateVariable {
         if (getClass() != obj.getClass()) {
             return false;
         }
-        TemplateVariable other = (TemplateVariable) obj;
+        TemplateVariableBlock other = (TemplateVariableBlock) obj;
         return Objects.equals(complete, other.complete) && endIndex == other.endIndex && Objects.equals(name, other.name) && startIndex == other.startIndex;
     }
 

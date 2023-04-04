@@ -35,14 +35,14 @@ public class SystemTestTemplateEngine {
     public String replaceUserVariablesWithValues(String string, Map<String, String> variables) {
         StringBuilder sb = new StringBuilder();
         sb.append(string);
-        List<TemplateVariable> templateVariables = parseVariables(string);
+        List<TemplateVariableBlock> templateVariables = parseVariableBlocks(string);
         /*
          * we reverse order to last one on top - means we can change content without
          * affecting the indexes of the other template variables!
          */
         Collections.reverse(templateVariables);
 
-        for (TemplateVariable templateVariable : templateVariables) {
+        for (TemplateVariableBlock templateVariable : templateVariables) {
             String variableName = templateVariable.getName();
             if (variableName.startsWith(USER_VARIABLES_PREFIX)) {
                 String key = variableName.substring(USER_VARIABLES_PREFIX.length());
@@ -60,14 +60,14 @@ public class SystemTestTemplateEngine {
     public String replaceEnvironmentVariablesWithValues(String string, EnvironmentProvider environmentProvider) {
         StringBuilder sb = new StringBuilder();
         sb.append(string);
-        List<TemplateVariable> templateVariables = parseVariables(string);
+        List<TemplateVariableBlock> templateVariables = parseVariableBlocks(string);
         /*
          * we reverse order to last one on top - means we can change content without
          * affecting the indexes of the other template variables!
          */
         Collections.reverse(templateVariables);
 
-        for (TemplateVariable templateVariable : templateVariables) {
+        for (TemplateVariableBlock templateVariable : templateVariables) {
             String variableName = templateVariable.getName();
             if (variableName.startsWith(ENV_PREFIX)) {
                 String envName = variableName.substring(ENV_PREFIX.length());
@@ -83,15 +83,15 @@ public class SystemTestTemplateEngine {
     }
 
     /**
-     * Parses given string and extracts variable names. Whitespaces are kept inside
-     * complete name of variable, but will be removed in name.
+     * Parses given string and extracts template variable blocks. Whitespaces are
+     * kept inside complete part of variable block, but will be removed in name.
      *
      * @param content content to parse
      * @return a ordered list of template variables, never <code>null</code>. The
      *         last parsed variable will be at the end of the list.
      */
-    public List<TemplateVariable> parseVariables(String content) {
-        List<TemplateVariable> result = new ArrayList<>();
+    public List<TemplateVariableBlock> parseVariableBlocks(String content) {
+        List<TemplateVariableBlock> result = new ArrayList<>();
 
         parseVariables(content, result);
 
@@ -128,7 +128,7 @@ public class SystemTestTemplateEngine {
         }
     }
 
-    private void parseVariables(String content, List<TemplateVariable> result) {
+    private void parseVariables(String content, List<TemplateVariableBlock> result) {
         char[] charArray = content.toCharArray();
 
         ParseContext context = new ParseContext();
@@ -163,7 +163,7 @@ public class SystemTestTemplateEngine {
                 if (context.state == ParseState.VAR_OPEND) {
                     context.endIndex = index + 1;
 
-                    TemplateVariable variable = new TemplateVariable();
+                    TemplateVariableBlock variable = new TemplateVariableBlock();
                     variable.name = context.nameSb.toString();
                     variable.complete = context.fullSb.toString();
                     variable.startIndex = context.startIndex;
@@ -180,10 +180,15 @@ public class SystemTestTemplateEngine {
                 break;
 
             default:
-                if (context.state == ParseState.VAR_OPEND) {
+                if (context.state == ParseState.DOLLAR_DETECTED) {
+                    /* means we hgave not "${" but only $other */
+                    context.state = ParseState.NONE;
+                } else if (context.state == ParseState.VAR_OPEND) {
                     if (!Character.isWhitespace(c)) {
                         context.addToVariableName(c);
                     }
+                } else {
+                    /* just ignore */
                 }
                 break;
             }

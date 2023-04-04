@@ -3,7 +3,7 @@ package com.mercedesbenz.sechub.systemtest.runtime;
 import com.mercedesbenz.sechub.commons.model.JSONConverter;
 import com.mercedesbenz.sechub.systemtest.config.SystemTestConfiguration;
 
-public class WrongConfigurationException extends RuntimeException {
+public class WrongConfigurationException extends SystemTestRuntimeException {
 
     private static final long serialVersionUID = 1L;
     private SystemTestRuntimeContext context;

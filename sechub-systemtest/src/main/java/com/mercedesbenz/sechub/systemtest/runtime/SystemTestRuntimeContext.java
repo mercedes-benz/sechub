@@ -16,6 +16,9 @@ class SystemTestRuntimeContext {
 
     SystemTestConfiguration originConfiguration;
     boolean localRun;
+    boolean secHubStarted;
+    boolean atLeastOnePDSStarted;
+
     EnvironmentProvider environmentProvider;
     LocationSupport locationSupport;
 
@@ -63,6 +66,22 @@ class SystemTestRuntimeContext {
 
     public boolean isLocalRun() {
         return localRun;
+    }
+
+    public void markSecHubStarted() {
+        this.secHubStarted = true;
+    }
+
+    public boolean isSecHubStarted() {
+        return secHubStarted;
+    }
+
+    public void markAtLeastOnePDSSolutionStarted() {
+        this.atLeastOnePDSStarted = true;
+    }
+
+    public boolean isAtLeastOnePDSStarted() {
+        return atLeastOnePDSStarted;
     }
 
     /**

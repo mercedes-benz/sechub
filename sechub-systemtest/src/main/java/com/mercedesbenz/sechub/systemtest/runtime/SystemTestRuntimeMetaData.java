@@ -33,7 +33,7 @@ class SystemTestRuntimeMetaData {
         Path pdsServerConfigFilePath = Paths.get(solution.getPathToPdsServerConfigFile());
         if (!Files.exists(pdsServerConfigFilePath)) {
             throw new WrongConfigurationException(
-                    "The calculated PDS server config file for solution:" + solution.getName() + " does not exist!\n" + "Calculated was: "
+                    "The calculated PDS server config file does not exist for solution:" + solution.getName() + "!\n" + "Calculated was: "
                             + pdsServerConfigFilePath + "\nYou can set this manually by using 'pathToPdsServerConfigFile' at solution definition level.",
                     context);
         }

@@ -1,6 +1,8 @@
 package com.mercedesbenz.sechub.systemtest.config;
 
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 
 public class ScriptDefinition extends AbstractDefinition {
@@ -8,6 +10,7 @@ public class ScriptDefinition extends AbstractDefinition {
     private Map<String, String> envVariables = new LinkedHashMap<>();
     private String path;
     private String workingDirectory;
+    private List<String> arguments = new ArrayList<>();;
 
     public Map<String, String> getEnvVariables() {
         return envVariables;
@@ -27,5 +30,13 @@ public class ScriptDefinition extends AbstractDefinition {
 
     public String getWorkingDirectory() {
         return workingDirectory;
+    }
+
+    public void setArguments(List<String> arguments) {
+        this.arguments = arguments;
+    }
+
+    public List<String> getArguments() {
+        return arguments;
     }
 }

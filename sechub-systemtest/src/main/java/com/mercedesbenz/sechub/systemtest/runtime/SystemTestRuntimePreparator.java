@@ -54,19 +54,21 @@ public class SystemTestRuntimePreparator {
          * data
          */
         if (templateEngine.hasEnvironmentVariables(alteredJson)) {
-            throw new WrongConfigurationException("We do not allow environment variables which are nesting environment variables again!", context);
+            throw new WrongConfigurationException("Cycle detected!\nWe do not allow environment variables which are nesting environment variables again!",
+                    context);
         }
 
         int loopCount = 0;
         while (templateEngine.hasUserVariables(alteredJson)) {
             loopCount++;
 
-            if (loopCount > MAX_VARIABLE_REPLACEMENT_LOOP_COUNT) {
-                throw new WrongConfigurationException("Lopp inside variable detection occurred. Please fix cyclic dependency", context);
-            }
-            /* the next configuration (intermediate) contains only variables */
             SystemTestConfiguration intermediateConfiguration = JSONConverter.get().fromJSON(SystemTestConfiguration.class, alteredJson);
             Map<String, String> variables = intermediateConfiguration.getVariables();
+
+            if (loopCount > MAX_VARIABLE_REPLACEMENT_LOOP_COUNT) {
+                throw new WrongConfigurationException("Cycle detected!\nA Lopp inside variable replacement has occurred.\nVariables currently:" + variables,
+                        context);
+            }
 
             alteredJson = templateEngine.replaceUserVariablesWithValues(alteredJson, variables);
         }

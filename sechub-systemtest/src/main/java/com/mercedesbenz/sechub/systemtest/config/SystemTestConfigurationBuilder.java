@@ -1,5 +1,6 @@
 package com.mercedesbenz.sechub.systemtest.config;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -45,6 +46,11 @@ public class SystemTestConfigurationBuilder {
 
             public ScriptBuilder path(String path) {
                 scriptCallDefinition.setPath(path);
+                return this;
+            }
+
+            public ScriptBuilder arguments(String... args) {
+                scriptCallDefinition.setArguments(Arrays.asList(args));
                 return this;
             }
 

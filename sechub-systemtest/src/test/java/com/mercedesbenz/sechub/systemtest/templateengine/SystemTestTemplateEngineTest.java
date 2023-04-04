@@ -14,7 +14,7 @@ import org.junit.jupiter.params.provider.ValueSource;
 
 import com.mercedesbenz.sechub.systemtest.runtime.EnvironmentProvider;
 import com.mercedesbenz.sechub.systemtest.template.SystemTestTemplateEngine;
-import com.mercedesbenz.sechub.systemtest.template.TemplateVariable;
+import com.mercedesbenz.sechub.systemtest.template.TemplateVariableBlock;
 
 class SystemTestTemplateEngineTest {
 
@@ -47,6 +47,10 @@ class SystemTestTemplateEngineTest {
         }
 
     }
+
+    // "var1"="${secrets.my_password}"
+
+    // script: env={$var1} -->env={${secrets.my_password}}
 
     @Test
     void replaceEnvironmentVariablesWithValues_simple_text_with_two_env_variable() {
@@ -94,16 +98,31 @@ class SystemTestTemplateEngineTest {
         String content = "This is ${env.USER_NAME}";
 
         /* execute */
-        List<TemplateVariable> vars = engineToTest.parseVariables(content);
+        List<TemplateVariableBlock> vars = engineToTest.parseVariableBlocks(content);
 
         /* test */
         assertNotNull(vars);
         assertEquals(1, vars.size());
-        TemplateVariable var1 = vars.get(0);
+        TemplateVariableBlock var1 = vars.get(0);
         assertEquals("${env.USER_NAME}", var1.getComplete());
         assertEquals("env.USER_NAME", var1.getName());
 
         assertEquals("${env.USER_NAME}", content.subSequence(var1.getStartIndex(), var1.getEndIndex()));
+
+    }
+
+    @Test
+    void parse_variable_json_example() {
+        /* prepare */
+        String content = "{\"variables\":{\"var1\":\"value1\"},\"setup\":{\"comment\":\"This is a comment - even this is replaceable - because we just change the complete JSON... var1=${variables.var1}\"},\"tests\":[]}";
+
+        /* execute */
+        List<TemplateVariableBlock> variables = engineToTest.parseVariableBlocks(content);
+
+        /* test */
+        assertEquals(1, variables.size());
+        TemplateVariableBlock variable = variables.get(0);
+        assertEquals("variables.var1", variable.getName());
 
     }
 
@@ -113,12 +132,12 @@ class SystemTestTemplateEngineTest {
         String content = "This is ${env.USER_NAME} and ${env.USER_PWD";
 
         /* execute */
-        List<TemplateVariable> vars = engineToTest.parseVariables(content);
+        List<TemplateVariableBlock> vars = engineToTest.parseVariableBlocks(content);
 
         /* test */
         assertNotNull(vars);
         assertEquals(1, vars.size());
-        TemplateVariable var1 = vars.get(0);
+        TemplateVariableBlock var1 = vars.get(0);
         assertEquals("${env.USER_NAME}", var1.getComplete());
         assertEquals("env.USER_NAME", var1.getName());
 
@@ -132,12 +151,12 @@ class SystemTestTemplateEngineTest {
         String content = "This is ${env.USER_NAME and ${env.USER_PWD}";
 
         /* execute */
-        List<TemplateVariable> vars = engineToTest.parseVariables(content);
+        List<TemplateVariableBlock> vars = engineToTest.parseVariableBlocks(content);
 
         /* test */
         assertNotNull(vars);
         assertEquals(1, vars.size());
-        TemplateVariable var1 = vars.get(0);
+        TemplateVariableBlock var1 = vars.get(0);
         assertEquals("${env.USER_NAME and ${env.USER_PWD}", var1.getComplete());
         // in name, white spaces are removed:
         assertEquals("env.USER_NAMEand${env.USER_PWD", var1.getName());
@@ -152,7 +171,7 @@ class SystemTestTemplateEngineTest {
         String content = "This is ${env.USER_NAME";
 
         /* execute */
-        List<TemplateVariable> vars = engineToTest.parseVariables(content);
+        List<TemplateVariableBlock> vars = engineToTest.parseVariableBlocks(content);
 
         /* test */
         assertNotNull(vars);
@@ -165,18 +184,18 @@ class SystemTestTemplateEngineTest {
         String content = "This is ${env.USER_NAME} and a ${  variables.var1 }";
 
         /* execute */
-        List<TemplateVariable> vars = engineToTest.parseVariables(content);
+        List<TemplateVariableBlock> vars = engineToTest.parseVariableBlocks(content);
 
         /* test */
         assertNotNull(vars);
         assertEquals(2, vars.size());
-        TemplateVariable var1 = vars.get(0);
+        TemplateVariableBlock var1 = vars.get(0);
         assertEquals("${env.USER_NAME}", var1.getComplete());
         assertEquals("env.USER_NAME", var1.getName());
 
         assertEquals("${env.USER_NAME}", content.subSequence(var1.getStartIndex(), var1.getEndIndex()));
 
-        TemplateVariable var2 = vars.get(1);
+        TemplateVariableBlock var2 = vars.get(1);
         assertEquals("${  variables.var1 }", var2.getComplete());
         assertEquals("variables.var1", var2.getName());
         assertEquals("${  variables.var1 }", content.subSequence(var2.getStartIndex(), var2.getEndIndex()));

@@ -6,6 +6,10 @@ public class SystemTestErrorException extends Exception {
 
     private SystemTestError error;
 
+    public SystemTestErrorException(String message) {
+        super(message);
+    }
+
     protected void defineError(String message, String details) {
         error = new SystemTestError();
         error.setMessage(message);

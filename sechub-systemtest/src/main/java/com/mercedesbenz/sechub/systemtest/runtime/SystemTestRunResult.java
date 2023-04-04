@@ -4,15 +4,15 @@ import com.mercedesbenz.sechub.systemtest.runtime.error.SystemTestError;
 
 public class SystemTestRunResult {
 
-    private String runIdentifier;
+    private String testName;
     private SystemTestError error;
 
-    SystemTestRunResult(String id) {
-        this.runIdentifier = id;
+    SystemTestRunResult(String testName) {
+        this.testName = testName;
     }
 
-    public String getRunIdentifier() {
-        return runIdentifier;
+    public String getTestName() {
+        return testName;
     }
 
     public SystemTestError getError() {
@@ -23,7 +23,7 @@ public class SystemTestRunResult {
         this.error = error;
     }
 
-    public boolean hasError() {
+    public boolean isFailed() {
         return error != null;
     }
 

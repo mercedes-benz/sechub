@@ -36,10 +36,6 @@ public class SystemTestRuntime {
         this.environmentSupport = execSupport.getEnvironmentProvider();
     }
 
-    public SystemTestResult run(SystemTestConfiguration configuration) {
-        return run(configuration, true);
-    }
-
     public SystemTestResult run(SystemTestConfiguration configuration, boolean localRun) {
 
         LOG.info("Starting - local run:{}", localRun);
@@ -81,11 +77,11 @@ public class SystemTestRuntime {
         } catch (WrongConfigurationException e) {
             String problem = identifier + " failed!\nReason:" + e.createDetails();
             LOG.error(problem);
-            throw new RuntimeException(identifier + " failed: " + e.getMessage() + "\n(Look into log ouptput for more details)", e);
+            throw new SystemTestRuntimeException(identifier + " failed!\nReason: " + e.getMessage() + "\n(Look into log ouptput for more details)", e);
         } catch (Exception e) {
             String problem = identifier + " failed!\nReason:" + e.getMessage();
             LOG.error(problem);
-            throw new RuntimeException(identifier + " failed: " + e.getMessage(), e);
+            throw new SystemTestRuntimeException(identifier + " failed!\nReason: " + e.getMessage(), e);
         }
     }
 

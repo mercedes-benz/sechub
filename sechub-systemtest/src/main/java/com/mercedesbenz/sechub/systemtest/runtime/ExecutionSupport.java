@@ -41,6 +41,7 @@ public class ExecutionSupport {
         pb.inheritIO();
         pb.directory(Paths.get(workingDirectory).toFile());
         pb.environment().putAll(scriptDefinition.getEnvVariables());
+        pb.command().addAll(scriptDefinition.getArguments());
 
         try {
             Process process = pb.start();

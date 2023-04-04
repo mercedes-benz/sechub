@@ -21,7 +21,15 @@ public class SystemTestAPI {
         return SystemTestConfiguration.builder();
     }
 
-    public static SystemTestResult runSystemTests(SystemTestConfiguration configuration, String pathToPdsSolution) {
+    public static SystemTestResult runSystemTestsLocal(SystemTestConfiguration configuration, String pathToPdsSolution) {
+        return runSystemTests(configuration, pathToPdsSolution, true);
+    }
+
+    public static SystemTestResult runSystemTestsRemote(SystemTestConfiguration configuration, String pathToPdsSolution) {
+        return runSystemTests(configuration, pathToPdsSolution, false);
+    }
+
+    private static SystemTestResult runSystemTests(SystemTestConfiguration configuration, String pathToPdsSolution, boolean localRun) {
         LocationSupport locationSupport = new LocationSupport(pathToPdsSolution, null);
 
         EnvironmentProvider variableSupport = new SystemEnvironmentProvider();
@@ -29,7 +37,7 @@ public class SystemTestAPI {
 
         SystemTestRuntime runtime = new SystemTestRuntime(locationSupport, execSupport);
 
-        return runtime.run(configuration);
+        return runtime.run(configuration, localRun);
     }
 
 }
