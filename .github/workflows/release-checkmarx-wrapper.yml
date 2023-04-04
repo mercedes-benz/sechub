@@ -22,7 +22,7 @@ jobs:
       - name: Checkout branch master
         uses: actions/checkout@v3
         with:
-          ref: master
+          ref: feature-1837-update-github-actions-workflows
 
       # Create temporary local tags, so we build documentation for this tag...
       # The final tag on git server side will be done automatically by the release when the draft is saved as "real" release
@@ -50,7 +50,8 @@ jobs:
           ./apply-headers.sh
           git commit -am "SPDX headers added by SecHub release job @github-actions" || true
           COMMITS=`git log --oneline --branches --not --remotes`
-          echo "::set-output name=commits::$COMMITS"
+          echo "Debug: commits=\"$COMMITS\""
+          echo "commits=$COMMITS" >> $GITHUB_OUTPUT
 
       - name: Create a pull request for SPDX license headers
         id: pr_spdx_headers
