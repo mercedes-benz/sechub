@@ -105,7 +105,7 @@ jobs:
           ./apply-headers.sh
           git commit -am "SPDX headers added by SecHub release job @github-actions" || true
           COMMITS=`git log --oneline --branches --not --remotes`
-          echo "::set-output name=commits::$COMMITS"
+          echo "commits=$COMMITS" >> $GITHUB_OUTPUT
 
       - name: Create pull request for SPDX license headers
         id: pr_spdx_headers
