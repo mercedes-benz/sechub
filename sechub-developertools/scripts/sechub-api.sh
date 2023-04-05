@@ -29,10 +29,10 @@ alive_check - alive check (No user needed)
 autocleanup_get - Get autocleanup setting
 autocleanup_set <value> <time unit> - Update autocleanup setting. <time unit> is one of days, weeks, months, years
 executor_create <json-file> - Create executor configuration from JSON file
-executor_delete <executor-uuid> - Delete executor <executor-uuid>
-executor_details <executor-uuid> - Show definition of executor <executor-uuid>
+executor_delete <executor uuid or name> - Delete executor <executor uuid or name>
+executor_details <executor uuid or name> - Show definition of executor <executor uuid or name>
 executor_list - List all existing executors (json format)
-executor_update <executor-uuid> <json-file> - Update executor <executor-uuid> with <json-file> contents
+executor_update <executor-uuid uuid or name> <json-file> - Update executor <executor-uuid uuid or name> with <json-file> contents
 job_approve <project-id> <job-uuid> - Approve a job <job-uuid> and mark it as ready to start
 job_cancel <job-uuid> - Cancel job <job-uuid>
 job_create <project-id> <json-file> - Create a new job for a project <project-id> from a SecHub configuration file <json-file> (JSON format)
@@ -226,6 +226,33 @@ function generate_short_description {
 }
 
 
+function is_uuid {
+  # Example: 806b1f9a-f31c-4238-8201-ce9e9fc06b28
+  if [[ $1 =~ ^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$ ]]; then
+    return 0
+  else
+    return 1
+  fi
+}
+
+
+function get_executor_uuid_from_name {
+  local uuid
+  curl_with_sechub_auth -X GET -H 'Content-Type: application/json' "$SECHUB_SERVER/api/admin/config/executors" | jq --arg executorname "$1" '. | select(.executorConfigurations[].name == $executorname)' | jq -r '.executorConfigurations[].uuid'
+}
+
+
+function get_executor {
+  local uuid
+  if is_uuid "$1" ; then
+    uuid="$1"
+  else
+    uuid="$(get_executor_uuid_from_name $1)"
+  fi
+  echo $uuid
+}
+
+
 #######################################
 # SecHub api functions
 
@@ -267,7 +294,9 @@ function sechub_executor_create {
 
 
 function sechub_executor_details {
-  curl_with_sechub_auth -i -X GET -H 'Content-Type: application/json' "$SECHUB_SERVER/api/admin/config/executor/$1" | $RESULT_FILTER | $JSON_FORMATTER
+  local uuid
+  uuid="$(get_executor $1)"
+  curl_with_sechub_auth -i -X GET -H 'Content-Type: application/json' "$SECHUB_SERVER/api/admin/config/executor/$uuid" | $RESULT_FILTER | $JSON_FORMATTER
 }
 
 
@@ -834,18 +863,18 @@ case "$action" in
     $failed || sechub_executor_create "$EXECUTOR_JSONFILE"
     ;;
   executor_delete)
-    EXECUTOR_UUID="$1" ; check_parameter EXECUTOR_UUID '<executor-uuid>'
+    EXECUTOR_UUID="$1" ; check_parameter EXECUTOR_UUID '<executor uuid or name>'
     $failed || sechub_executor_delete "$EXECUTOR_UUID"
     ;;
   executor_details)
-    EXECUTOR_UUID="$1" ; check_parameter EXECUTOR_UUID '<executor-uuid>'
+    EXECUTOR_UUID="$1" ; check_parameter EXECUTOR_UUID '<executor uuid or name>'
     $failed || sechub_executor_details "$EXECUTOR_UUID"
     ;;
   executor_list)
     $failed || sechub_executor_list
     ;;
   executor_update)
-    EXECUTOR_UUID="$1" ; check_parameter EXECUTOR_UUID '<executor-uuid>'
+    EXECUTOR_UUID="$1" ; check_parameter EXECUTOR_UUID '<executor uuid or name>'
     EXECUTOR_JSONFILE="$2" ; check_file "$EXECUTOR_JSONFILE" '<json-file>'
     $failed || sechub_executor_update "$EXECUTOR_UUID" "$EXECUTOR_JSONFILE"
     ;;
