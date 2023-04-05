@@ -6,11 +6,9 @@ import java.util.List;
 import java.util.Map;
 
 import com.mercedesbenz.sechub.systemtest.runtime.EnvironmentProvider;
+import com.mercedesbenz.sechub.systemtest.runtime.SystemTestRuntimeException;
 
 public class SystemTestTemplateEngine {
-
-    private static final String ENV_PREFIX = "env.";
-    private static final String USER_VARIABLES_PREFIX = "variables.";
 
     private enum ParseState {
 
@@ -25,39 +23,42 @@ public class SystemTestTemplateEngine {
     }
 
     public boolean hasEnvironmentVariables(String string) {
-        return string.contains("${" + ENV_PREFIX);
+        return hasVariablesOfType(string, TemplateVariableType.ENV);
+    }
+
+    public boolean hasSecretEnvironmentVariables(String string) {
+        return hasVariablesOfType(string, TemplateVariableType.SECRET_ENV);
     }
 
     public boolean hasUserVariables(String string) {
-        return string.contains("${" + USER_VARIABLES_PREFIX);
+        return hasVariablesOfType(string, TemplateVariableType.USER_VARIABLES);
+    }
+
+    public boolean hasRuntimeVariables(String string) {
+        return hasVariablesOfType(string, TemplateVariableType.RUNTIME_VARIABLES);
+    }
+
+    public boolean hasVariablesOfType(String string, TemplateVariableType prefix) {
+        return string.contains("${" + prefix.getFullPrefix());
     }
 
     public String replaceUserVariablesWithValues(String string, Map<String, String> variables) {
-        StringBuilder sb = new StringBuilder();
-        sb.append(string);
-        List<TemplateVariableBlock> templateVariables = parseVariableBlocks(string);
-        /*
-         * we reverse order to last one on top - means we can change content without
-         * affecting the indexes of the other template variables!
-         */
-        Collections.reverse(templateVariables);
+        return replaceVariables(string, new GenericMapVariableResolver(variables, TemplateVariableType.USER_VARIABLES));
+    }
 
-        for (TemplateVariableBlock templateVariable : templateVariables) {
-            String variableName = templateVariable.getName();
-            if (variableName.startsWith(USER_VARIABLES_PREFIX)) {
-                String key = variableName.substring(USER_VARIABLES_PREFIX.length());
-                String value = variables.get(key);
-                if (value == null) {
-                    value = "";
-                }
-                sb.replace(templateVariable.getStartIndex(), templateVariable.getEndIndex(), value);
-            }
-        }
-
-        return sb.toString();
+    public String replaceRuntimeVariablesWithValues(String string, Map<String, String> runtimeVariables) {
+        return replaceVariables(string, new GenericMapVariableResolver(runtimeVariables, TemplateVariableType.RUNTIME_VARIABLES));
     }
 
     public String replaceEnvironmentVariablesWithValues(String string, EnvironmentProvider environmentProvider) {
+        return replaceVariables(string, new GenericEnvironentVariableResolver(environmentProvider, TemplateVariableType.ENV));
+    }
+
+    public String replaceSecretEnvironmentVariablesWithValues(String string, EnvironmentProvider environmentProvider) {
+        return replaceVariables(string, new GenericEnvironentVariableResolver(environmentProvider, TemplateVariableType.SECRET_ENV));
+    }
+
+    private String replaceVariables(String string, VariableValueResolver resolver) {
         StringBuilder sb = new StringBuilder();
         sb.append(string);
         List<TemplateVariableBlock> templateVariables = parseVariableBlocks(string);
@@ -68,14 +69,24 @@ public class SystemTestTemplateEngine {
         Collections.reverse(templateVariables);
 
         for (TemplateVariableBlock templateVariable : templateVariables) {
-            String variableName = templateVariable.getName();
-            if (variableName.startsWith(ENV_PREFIX)) {
-                String envName = variableName.substring(ENV_PREFIX.length());
-                String envValue = environmentProvider.getEnv(envName);
-                if (envValue == null) {
-                    envValue = "";
+            String fullVariableName = templateVariable.getName();
+            TemplateVariableType variableType = resolver.getType();
+
+            String variablePrefix = variableType.getFullPrefix();
+
+            if (fullVariableName.startsWith(variablePrefix)) {
+                String variableName = fullVariableName.substring(variablePrefix.length());
+                String variableValue = resolver.resolveValueFor(variableName);
+                if (variableValue == null) {
+                    String undefinedVariableMessage = "'" + fullVariableName + "' is not defined!\n\n" + "Allowed variables for type " + variableType + " are:";
+                    List<String> proposals = resolver.createProposals();
+
+                    for (String proposal : proposals) {
+                        undefinedVariableMessage += "\n- " + proposal;
+                    }
+                    throw new SystemTestRuntimeException(undefinedVariableMessage);
                 }
-                sb.replace(templateVariable.getStartIndex(), templateVariable.getEndIndex(), envValue);
+                sb.replace(templateVariable.getStartIndex(), templateVariable.getEndIndex(), variableValue);
             }
         }
 

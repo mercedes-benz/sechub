@@ -1,0 +1,144 @@
+// SPDX-License-Identifier: MIT
+[[section-systemtests]]
+
+== System tests
+This chapter describes the system test framework.
+
+=== Execution
+System tests can be executed in two ways:
+
+1. Writing a JSON file and execute it with `pds-tools`.
+2. Write a Junit test with `SystemTestAPI`
+
+==== With PDS tools
+As a first step, download the latest release of `pds-tools` from https://github.com/mercedes-benz/sechub/releases.
+
+Execute: 
+`java -jar pds-tools.jar --systemTest=${pathToJson}`
+
+==== With JUnit tests
+Write a unit test and use `SystemTestAPI` class which provides a builder to configure the test configuration
+and also to execute the configuration.
+
+=== Write a test
+This chapter describes the different parts inside the test configuration model.
+It does not matter if you write the test directly in JSON or with the java builders - the underlying
+model is the same. 
+
+==== Variables
+
+===== Environment variables
+You can use environment variables inside the test configuration.
+The prefix for those variables is `env`. 
+
+For example, when you want to use the environment variable `USER_NAME` inside the 
+configuration you reference it by `${env.USER_NAME}`.
+
+[WARNING]
+====
+It is forbidden to use environment variables which have `${env.*` as content!
+====
+
+===== Secret environment variables
+When an error appears, the altered configuration model will be logged as JSON to make it
+easier to understand the problem. 
+
+But inside this output, all standard variables (environment, runtime, user variables) are 
+revealed and will be shown in plain text.
+
+If you have any secret information which shall not be revealed inside log output this is no option
+from a security perspective.
+
+To hide such sensitive information you can use secret environment variables.
+
+[WARNING]
+====
+It is forbidden to use secret environment variables which have `${env.*` or `${secretEnv.*` as content!
+====
+The prefix for those variables is `secretEnv`. 
+
+For example, when you want to use the environment variable `USER_PASSWORD` inside the 
+configuration you reference it by `${secretEnv.USER_PASSWORD}`.
+
+[IMPORTANT]
+====
+When you are using secret environment variables but they are not defined at runtime,
+the system test framework will fail with an error about the missing variables.
+====
+
+
+But those variables can only be used at some locations:
+
+====== Inside script environments 
+[source,json]
+----
+"script" : {
+            "envVariables" : {
+              "D_RESOLVED_SECRET" : "${secretEnv.USER_PASSWORD}" //<1>
+            },
+            "path" : "./05-start-single-sechub-network-docker-compose.sh",
+            "arguments" : [ "will-not-be-revealed-as-argument:${secretEnv.USER_PASSWORD}" ] //<2>
+          }
+----
+<1> This works, at runtime the environment entry for the script will contain `USER_PASSWORD` inside 
+    variable `D_RESOLVED_SECRET`.
+<2> The secret will not be sent as an argument (for security reasons we only allowe env entries)
+
+====== Inside credentials
+// FIXME 2023-04-05, albert: not implemented
+TBD: Not implemented at the moment
+
+===== User variables
+You can define your own variables inside the test configuration.
+The prefix for those variables is `variables`. 
+
+For example, if you have defined the variable `uploadFolder` inside the 
+configuration you can reference it by `${variables.uploadFolder}`.
+
+===== Runtime variables
+Some variables are created by the test framework and are available at runtime.
+You can use such variables inside the test configuration with the prefix `runtime`. 
+
+====== Workspace root
+On startup a temporary workspace folder will be created and can be used inside the configuration.
+The variable can be referenced with `${runtime.workspaceRoot}`.
+
+*An example:*
+
+- write a bash script which downloads some test source code from a git repository.
+- the bash script uses `$1` to determine the target folder
+- inside our test configuration we set the first argument of a test prepare script to 
+  `${runtime.workspaceRoot}/sources1`.
+- inside the test itself we reference it again with `${runtime.workspaceRoot}/sources1`
+  as working directory for the client upload.
+
+==== Setup
+Inside the setup we define things necessary to setup our system test environment.
+
+It is possible to run system tests on local side and just automatically start SecHub, 
+PDS solutions and configure all automatically.
+
+But it is also possible to use an existing real {sechub} platform and run the defined
+tests there. The configuration is not tampered here - executor configurations, users, projects
+and profiles must be configured here. Also the usage of <<section-systemtests-local-defaults,local defaults>>   is not possible - except those parts are defined on remote site with such names!  
+
+
+===== Local
+
+====== Defaults
+[[section-systemtests-local-defaults]]
+Following parts will be automatically defined when not inside configuration explicit defined
+
+include::../../gen/gen_systemtests_default_fallbacks_table.adoc[]
+
+===== Remote
+It is also possible to use an existing real {sechub} platform and run the defined
+tests there. The configuration is not tampered here - executor configurations, users, projects
+and profiles must be configured here. Also the usage of <<section-systemtests-local-defaults,local defaults>>   is not possible - except those parts are defined on remote site with such names!  
+
+==== Example
+
+
+
+
+

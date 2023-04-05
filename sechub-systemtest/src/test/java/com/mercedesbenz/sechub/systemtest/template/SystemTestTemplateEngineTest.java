@@ -1,4 +1,4 @@
-package com.mercedesbenz.sechub.systemtest.templateengine;
+package com.mercedesbenz.sechub.systemtest.template;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
@@ -13,8 +13,6 @@ import org.junit.jupiter.params.provider.NullSource;
 import org.junit.jupiter.params.provider.ValueSource;
 
 import com.mercedesbenz.sechub.systemtest.runtime.EnvironmentProvider;
-import com.mercedesbenz.sechub.systemtest.template.SystemTestTemplateEngine;
-import com.mercedesbenz.sechub.systemtest.template.TemplateVariableBlock;
 
 class SystemTestTemplateEngineTest {
 

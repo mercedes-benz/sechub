@@ -3,10 +3,13 @@ package com.mercedesbenz.sechub.systemtest.runtime;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
+import java.io.IOException;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import com.mercedesbenz.sechub.systemtest.config.SystemTestConfiguration;
+import com.mercedesbenz.sechub.test.TestUtil;
 
 class SystemTestRuntimePreparatorTest {
 
@@ -16,13 +19,14 @@ class SystemTestRuntimePreparatorTest {
     private SystemTestRuntimeContext context;
 
     @BeforeEach
-    void beforeEach() {
+    void beforeEach() throws IOException {
         locationSupport = mock(LocationSupport.class);
         environmentProvider = mock(EnvironmentProvider.class);
 
         context = new SystemTestRuntimeContext();
         context.environmentProvider = environmentProvider;
         context.locationSupport = locationSupport;
+        context.workspaceRoot = TestUtil.createTempDirectoryInBuildFolder("systemtest_prep_workspaceroot");
 
         preparatorToTest = new SystemTestRuntimePreparator();
 

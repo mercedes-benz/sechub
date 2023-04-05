@@ -1,5 +1,7 @@
 package com.mercedesbenz.sechub.systemtest.config;
 
+import static com.mercedesbenz.sechub.systemtest.TestConfigConstants.*;
+import static com.mercedesbenz.sechub.systemtest.config.DefaultFallback.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 import java.net.MalformedURLException;
@@ -100,8 +102,8 @@ class SystemTestConfigurationTest {
 
         List<ProjectDefinition> projects = new ArrayList<>();
         ProjectDefinition project1 = new ProjectDefinition();
-        project1.setName(ConfigConstants.DEFAULT_PROJECT_NAME);
-        project1.getProfiles().add(ConfigConstants.DEFAULT_PROFILE_ID);
+        project1.setName(FALLBACK_PROJECT_NAME.getValue());
+        project1.getProfiles().add(FALLBACK_PROFILE_ID.getValue());
 
         projects.add(project1);
         Optional<List<ProjectDefinition>> projectsOpt = Optional.of(projects);
@@ -189,7 +191,7 @@ class SystemTestConfigurationTest {
 
         ScriptDefinition testPrepareScript1 = new ScriptDefinition();
         testPrepareScript1.setComment("The script call here would call the script inside the 'tests' subfoler of the solution");
-        testPrepareScript1.setPath("./../tests/checkout-simple-go-project-withouth-sechub-json.sh ${" + ConfigConstants.RUNTIME_WORKSPACE_ROOT + "}/checkout");
+        testPrepareScript1.setPath("./../tests/checkout-simple-go-project-withouth-sechub-json.sh ${" + RUNTIME_WORKSPACE_ROOT + "}/checkout");
 
         ExecutionStepDefinition test1Step1 = new ExecutionStepDefinition();
 
@@ -211,13 +213,13 @@ class SystemTestConfigurationTest {
         test1.setExecute(test1execute1);
         test1execute1.setComment("This part can be defined only once. It describes what is executed");
         RunSecHubJobDefinition runSecHubJob1 = new RunSecHubJobDefinition();
-        runSecHubJob1.setComment("If no project is defined, " + ConfigConstants.DEFAULT_PROJECT_NAME + " is used with default profile etc.");
-        runSecHubJob1.setProject(ConfigConstants.DEFAULT_PROJECT_NAME);
+        runSecHubJob1.setComment("If no project is defined, " + FALLBACK_PROJECT_NAME + " is used with default profile etc.");
+        runSecHubJob1.setProject(FALLBACK_PROJECT_NAME.getValue());
 
         UploadDefinition upload = runSecHubJob1.getUpload();
         upload.setComment("Here we can define either binaries or sources to upload - we define the folders, framework will create tars/zips automatically");
-        upload.setSourceFolder("${" + ConfigConstants.RUNTIME_WORKSPACE_ROOT + "}/checkout/sources");
-        upload.setBinariesFolder("${" + ConfigConstants.RUNTIME_WORKSPACE_ROOT + "}/checkout/binaries");
+        upload.setSourceFolder("${" + RUNTIME_WORKSPACE_ROOT + "}/checkout/sources");
+        upload.setBinariesFolder("${" + RUNTIME_WORKSPACE_ROOT + "}/checkout/binaries");
 
         test1execute1.setRunSecHubJob(Optional.of(runSecHubJob1));
 

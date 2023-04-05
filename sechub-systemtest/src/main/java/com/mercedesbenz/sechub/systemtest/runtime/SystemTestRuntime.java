@@ -40,7 +40,7 @@ public class SystemTestRuntime {
 
         LOG.info("Starting - local run:{}", localRun);
 
-        SystemTestRuntimeContext context = new SystemTestRuntimeContext(configuration, localRun);
+        SystemTestRuntimeContext context = new SystemTestRuntimeContext(configuration, locationSupport.getWorkspaceRoot(), localRun);
         context.locationSupport = locationSupport;
         context.environmentProvider = environmentSupport;
 

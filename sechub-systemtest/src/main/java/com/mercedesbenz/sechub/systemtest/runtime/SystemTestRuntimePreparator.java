@@ -1,8 +1,11 @@
 package com.mercedesbenz.sechub.systemtest.runtime;
 
+import static com.mercedesbenz.sechub.systemtest.config.DefaultFallback.*;
+
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -11,7 +14,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.mercedesbenz.sechub.commons.model.JSONConverter;
-import com.mercedesbenz.sechub.systemtest.config.ConfigConstants;
 import com.mercedesbenz.sechub.systemtest.config.ExecutionStepDefinition;
 import com.mercedesbenz.sechub.systemtest.config.LocalSecHubDefinition;
 import com.mercedesbenz.sechub.systemtest.config.LocalSetupDefinition;
@@ -21,6 +23,7 @@ import com.mercedesbenz.sechub.systemtest.config.ScriptDefinition;
 import com.mercedesbenz.sechub.systemtest.config.SecHubConfigurationDefinition;
 import com.mercedesbenz.sechub.systemtest.config.SecHubExecutorConfigDefinition;
 import com.mercedesbenz.sechub.systemtest.config.SystemTestConfiguration;
+import com.mercedesbenz.sechub.systemtest.config.VariableConstants;
 import com.mercedesbenz.sechub.systemtest.template.SystemTestTemplateEngine;
 
 public class SystemTestRuntimePreparator {
@@ -45,9 +48,18 @@ public class SystemTestRuntimePreparator {
     }
 
     private void initializeAlteredConfiguration(SystemTestRuntimeContext context) {
+        SystemTestConfiguration newConfiguration = createAlternativeConfigurationWithVariablesReplaced(context);
+
+        context.alterConfguration(newConfiguration);
+    }
+
+    private SystemTestConfiguration createAlternativeConfigurationWithVariablesReplaced(SystemTestRuntimeContext context) {
         SystemTestConfiguration originConfiguration = context.getOriginConfiguration();
         String orgJson = JSONConverter.get().toJSON(originConfiguration);
 
+        /* --------------------- */
+        /* Environment variables */
+        /* --------------------- */
         String alteredJson = templateEngine.replaceEnvironmentVariablesWithValues(orgJson, context.getEnvironmentProvider());
         /*
          * at this point we have no longer any data with ${env.XYZ} but only dedicated
@@ -58,6 +70,9 @@ public class SystemTestRuntimePreparator {
                     context);
         }
 
+        /* -------------- */
+        /* User variables */
+        /* -------------- */
         int loopCount = 0;
         while (templateEngine.hasUserVariables(alteredJson)) {
             loopCount++;
@@ -73,8 +88,20 @@ public class SystemTestRuntimePreparator {
             alteredJson = templateEngine.replaceUserVariablesWithValues(alteredJson, variables);
         }
 
+        /* ----------------- */
+        /* Runtime variables */
+        /* ----------------- */
+        Map<String, String> runtimeVariables = createRuntimeVariables(context);
+        alteredJson = templateEngine.replaceRuntimeVariablesWithValues(alteredJson, runtimeVariables);
+
         SystemTestConfiguration newConfiguration = JSONConverter.get().fromJSON(SystemTestConfiguration.class, alteredJson);
-        context.alterConfguration(newConfiguration);
+        return newConfiguration;
+    }
+
+    private Map<String, String> createRuntimeVariables(SystemTestRuntimeContext context) {
+        Map<String, String> runtimeVariables = new LinkedHashMap<>();
+        runtimeVariables.put(VariableConstants.VAR_WORKSPACE_ROOT, context.getWorkspaceRoot().toString());
+        return runtimeVariables;
     }
 
     private void prepareLocal(SystemTestRuntimeContext context) {
@@ -90,7 +117,7 @@ public class SystemTestRuntimePreparator {
         for (SecHubExecutorConfigDefinition executor : executors) {
             String profile = executor.getProfile();
             if (profile == null || profile.isEmpty()) {
-                executor.setProfile(ConfigConstants.DEFAULT_PROFILE_ID);
+                executor.setProfile(FALLBACK_PROFILE_ID.getValue());
             }
         }
     }
@@ -103,9 +130,9 @@ public class SystemTestRuntimePreparator {
         List<ProjectDefinition> projectsX = sechubConfig.getProjects().get();
         if (projectsX.isEmpty()) {
             ProjectDefinition fallback = new ProjectDefinition();
-            fallback.setName(ConfigConstants.DEFAULT_PROJECT_NAME);
+            fallback.setName(FALLBACK_PROJECT_NAME.getValue());
             fallback.setComment("Auto created fallback default project");
-            fallback.getProfiles().add(ConfigConstants.DEFAULT_PROFILE_ID);
+            fallback.getProfiles().add(FALLBACK_PROFILE_ID.getValue());
             projectsX.add(fallback);
         }
     }

@@ -63,6 +63,9 @@ public class AsciidocGenerator implements Generator {
     PDSExecutorConfigurationParameterDescriptionGenerator pdsExecutorConfigParameterGenerator = new PDSExecutorConfigurationParameterDescriptionGenerator();
     CheckmarxWrapperDocumentationGenerator checkmarxWrapperEnvGenerator = new CheckmarxWrapperDocumentationGenerator();
 
+    /* system tests */
+    SystemTestDocGenerator systemTestDocGenerator = new SystemTestDocGenerator();
+
     public static void main(String[] args) throws Exception {
         output(">AsciidocGenerator starting");
 
@@ -131,6 +134,15 @@ public class AsciidocGenerator implements Generator {
         /* Parts necessary to have special integration tests run */
         generateMessagingFiles(context);
         generateUseCaseFiles(context);
+
+        generateSystemTestsDocFiles(context);
+    }
+
+    private void generateSystemTestsDocFiles(GenContext context) throws IOException {
+        String asciidoc = systemTestDocGenerator.generateDefaultFallbackTable();
+
+        File tableGenFile = new File(context.documentsGenFolder, "gen_systemtests_default_fallbacks_table.adoc");
+        writer.save(tableGenFile, asciidoc);
     }
 
     private void generateModuleAndModuleGroupFiles(GenContext context) throws IOException {

@@ -29,6 +29,7 @@ import com.mercedesbenz.sechub.test.TestUtil;
  */
 class SystemTestIntegrationTest {
 
+    private static final String TEST_PDS_SOLUTIONS_PATH = "./src/test/resources/fake-root/sechub-pds-solutions";
     private static final Logger LOG = LoggerFactory.getLogger(SystemTestIntegrationTest.class);
 
     @BeforeEach
@@ -56,7 +57,7 @@ class SystemTestIntegrationTest {
                 addVariable("var_number","2").
                 addVariable("test_var_number","${variables.var_number}_should_be_2").
                 addVariable("test_env_path","${env.PATH}").
-                addVariable("a-secret-example","${secretEnv.MY_PASSWORD}").
+                addVariable("a-secret-example","${secretEnv.PATH}").
 
                 localSetup().
                     secHub().
@@ -90,9 +91,9 @@ class SystemTestIntegrationTest {
                                 envVariable("A_TEST1", "value1").
                                 envVariable("B_TEST2", "value2").
                                 envVariable("C_test_var_number_added", "${variables.test_var_number}").
-
+                                envVariable("D_RESOLVED_SECRET","${variables.a-secret-example}").
                                 path("./05-start-single-sechub-network-docker-compose.sh").
-                                arguments(goSecStartOutputFile.toString(),"secondCallIsForPDS").
+                                arguments(goSecStartOutputFile.toString(),"secondCallIsForPDS","third-as:${secretEnv.PATH}_may_not_be_resolved_because_only_script_env_can_contain_this").
 
                             endScript().
                         endStep().
@@ -114,7 +115,7 @@ class SystemTestIntegrationTest {
         LOG.info("config=\n{}", JSONConverter.get().toJSON(configuration,true));
 
         /* execute */
-        SystemTestResult result = runSystemTestsLocal(configuration, "./src/test/resources/fake-root/sechub-pds-solutions");
+        SystemTestResult result = runSystemTestsLocal(configuration, TEST_PDS_SOLUTIONS_PATH);
 
         /* test */
         if (result.hasFailedTests()) {
@@ -125,7 +126,7 @@ class SystemTestIntegrationTest {
         assertEquals("sechub-started and TEST_NUMBER_LIST=2_should_be_2", sechubStartOutputData);
 
         String gosecStartOutputData = TestFileReader.loadTextFile(goSecStartOutputFile);
-        assertEquals("gosec-started with param2=secondCallIsForPDS and C_test_var_number_added=2_should_be_2, B_TEST2=value2", gosecStartOutputData);
+        assertEquals("gosec-started with param2=secondCallIsForPDS and C_test_var_number_added=2_should_be_2, B_TEST2=value2, D_RESOLVED_SECRET is like path=true, parameter3 is still a secret=true", gosecStartOutputData);
 
         String sechubStopOutputData = TestFileReader.loadTextFile(secHubStopOutputFile);
         assertEquals("sechub-stopped with param2=second and parm3=third-as:"+var_Text+" and Y_TEST=testy", sechubStopOutputData);
@@ -137,11 +138,43 @@ class SystemTestIntegrationTest {
     }
 
     @Test
+    void fail_because_unknown_runtime_variable() {
+        /* @formatter:off */
+
+        /* prepare */
+        SystemTestConfiguration configuration = configure().
+                localSetup().
+                    addSolution("faked-fail_on_start").
+                        addStartStep().script().path("./05-start-single-sechub-network-docker-compose.sh").arguments("${runtime.unknown_must_fail}").endScript().endStep().
+                        addStopStep().script().path("./05-stop-single-sechub-network-docker-compose.sh").endScript().endStep().
+                    endSolution().
+                endLocalSetup().
+                build();
+
+        LOG.info("loaded config=\n{}", JSONConverter.get().toJSON(configuration,true));
+
+        /* execute */
+        SystemTestRuntimeException exception = assertThrows(SystemTestRuntimeException.class, ()->runSystemTestsLocal(configuration, TEST_PDS_SOLUTIONS_PATH));
+
+        /* test */
+        String message = exception.getMessage();
+        assertTrue(message.contains("'runtime.unknown_must_fail' is not defined!"));
+        // test proposals are inside error message:
+        assertTrue(message.contains("Allowed variables for type RUNTIME_VARIABLES are:"));
+        assertTrue(message.contains("- runtime.workspaceRoot"));
+
+
+        /* @formatter:on */
+    }
+
+    @Test
     void fail_on_start() {
         /* @formatter:off */
 
         /* prepare */
         SystemTestConfiguration configuration = configure().
+                addVariable("a-env-variable","WILL_BE_REPLACED:${env.PATH}").
+                addVariable("a-secret-variable","WILL_NOT_BE_REPLACED:${secretEnv.PATH}").
                 localSetup().
                     addSolution("faked-fail_on_start").
                         addStartStep().script().path("./05-start-single-sechub-network-docker-compose.sh").endScript().endStep().
@@ -153,11 +186,11 @@ class SystemTestIntegrationTest {
         LOG.info("loaded config=\n{}", JSONConverter.get().toJSON(configuration,true));
 
         /* execute */
-        SystemTestRuntimeException exception = assertThrows(SystemTestRuntimeException.class, ()->runSystemTestsLocal(configuration, "./src/test/resources/fake-root/sechub-pds-solutions"));
+        SystemTestRuntimeException exception = assertThrows(SystemTestRuntimeException.class, ()->runSystemTestsLocal(configuration, TEST_PDS_SOLUTIONS_PATH));
 
         /* test */
-        assertTrue(exception.getMessage().contains("Script ./05-start-single-sechub-network-docker-compose.sh failed with exit code:33"));
-
+        String message = exception.getMessage();
+        assertTrue(message.contains("Script ./05-start-single-sechub-network-docker-compose.sh failed with exit code:33"));
 
         /* @formatter:on */
     }
@@ -180,7 +213,7 @@ class SystemTestIntegrationTest {
 
         /* execute */
         SystemTestRuntimeException exception = assertThrows(SystemTestRuntimeException.class, ()->
-            runSystemTestsLocal(configuration, "./src/test/resources/fake-root/sechub-pds-solutions"));
+            runSystemTestsLocal(configuration, TEST_PDS_SOLUTIONS_PATH));
 
         String message = exception.getMessage();
         assertTrue(message.contains("PDS server config file does not exist"));

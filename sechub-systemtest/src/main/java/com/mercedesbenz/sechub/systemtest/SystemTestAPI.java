@@ -30,7 +30,7 @@ public class SystemTestAPI {
     }
 
     private static SystemTestResult runSystemTests(SystemTestConfiguration configuration, String pathToPdsSolution, boolean localRun) {
-        LocationSupport locationSupport = new LocationSupport(pathToPdsSolution, null);
+        LocationSupport locationSupport = new LocationSupport(pathToPdsSolution, null, null);
 
         EnvironmentProvider variableSupport = new SystemEnvironmentProvider();
         ExecutionSupport execSupport = new ExecutionSupport(variableSupport);

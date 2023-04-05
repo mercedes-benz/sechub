@@ -2,7 +2,7 @@ package com.mercedesbenz.sechub.systemtest.template;
 
 import java.util.Objects;
 
-public class TemplateVariableBlock {
+class TemplateVariableBlock {
 
     String name;
     String complete;

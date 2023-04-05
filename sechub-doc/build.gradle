@@ -26,8 +26,8 @@ dependencies {
             continue
         }
         def projectName = inspectedProject.name
-        if (projectName.endsWith('test')){
-            // test projects are always not wanted 
+        if (projectName.endsWith('test') && !projectName.endsWith('systemtest') ){
+            // test projects are always not wanted, except systemtest (we generate doc here as well)
             continue
         }
         if (projectName.endsWith('testframework')){

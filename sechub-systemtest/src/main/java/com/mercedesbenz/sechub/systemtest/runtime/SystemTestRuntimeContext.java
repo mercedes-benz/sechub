@@ -1,5 +1,6 @@
 package com.mercedesbenz.sechub.systemtest.runtime;
 
+import java.nio.file.Path;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.Map;
@@ -21,6 +22,7 @@ class SystemTestRuntimeContext {
 
     EnvironmentProvider environmentProvider;
     LocationSupport locationSupport;
+    Path workspaceRoot;
 
     private SystemTestConfiguration configuration;
     private SystemTestRunResult currentResult;
@@ -48,11 +50,22 @@ class SystemTestRuntimeContext {
     SystemTestRuntimeContext() {
     }
 
-    public SystemTestRuntimeContext(SystemTestConfiguration originConfiguration, boolean localRun) {
+    public SystemTestRuntimeContext(SystemTestConfiguration originConfiguration, Path workspaceRoot, boolean localRun) {
+        if (originConfiguration == null) {
+            throw new IllegalArgumentException("Origin configuration may never be null!");
+        }
+        if (workspaceRoot == null) {
+            throw new IllegalArgumentException("Workspace root may never be null!");
+        }
         this.originConfiguration = originConfiguration;
         this.configuration = originConfiguration;
 
         this.localRun = localRun;
+        this.workspaceRoot = workspaceRoot;
+    }
+
+    public Path getWorkspaceRoot() {
+        return workspaceRoot;
     }
 
     /**

@@ -29,6 +29,7 @@ public class SystemTestRuntimeHealthCheck {
     private static final Logger LOG = LoggerFactory.getLogger(SystemTestRuntimeHealthCheck.class);
 
     public void check(SystemTestRuntimeContext context) {
+
         if (!context.isLocalRun()) {
             LOG.debug("Skip local health check parts - run is not local");
         }
