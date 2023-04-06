@@ -238,7 +238,7 @@ function is_uuid {
 
 function get_executor_uuid_from_name {
   local uuid
-  curl_with_sechub_auth -X GET -H 'Content-Type: application/json' "$SECHUB_SERVER/api/admin/config/executors" | jq --arg executorname "$1" '. | select(.executorConfigurations[].name == $executorname)' | jq -r '.executorConfigurations[].uuid'
+  curl_with_sechub_auth -X GET -H 'Content-Type: application/json' "$SECHUB_SERVER/api/admin/config/executors" | jq -r --arg executorname "$1" '.executorConfigurations | map(select(.name == $executorname)) | .[].uuid'
 }
 
 
@@ -248,6 +248,10 @@ function get_executor {
     uuid="$1"
   else
     uuid="$(get_executor_uuid_from_name $1)"
+    if ! is_uuid "$uuid" ; then
+      echo "Executor with name \"$1\" not found or not unique." >&2
+      exit 1
+    fi
   fi
   echo $uuid
 }
@@ -296,19 +300,26 @@ function sechub_executor_create {
 function sechub_executor_details {
   local uuid
   uuid="$(get_executor $1)"
-  curl_with_sechub_auth -i -X GET -H 'Content-Type: application/json' "$SECHUB_SERVER/api/admin/config/executor/$uuid" | $RESULT_FILTER | $JSON_FORMATTER
+  is_uuid "$uuid" && curl_with_sechub_auth -i -X GET -H 'Content-Type: application/json' "$SECHUB_SERVER/api/admin/config/executor/$uuid" | $RESULT_FILTER | $JSON_FORMATTER
 }
 
 
 function sechub_executor_delete {
-  echo "Executor \"$1\" will be deleted. This cannot be undone."
+  local uuid
+  uuid="$(get_executor $1)"
+  if ! is_uuid "$uuid" ; then
+    exit 1
+  fi
+  echo "Executor \"$uuid\" will be deleted. This cannot be undone."
   are_you_sure
-  curl_with_sechub_auth -i -X DELETE -H 'Content-Type: application/json' "$SECHUB_SERVER/api/admin/config/executor/$1" | $CURL_FILTER
+  curl_with_sechub_auth -i -X DELETE -H 'Content-Type: application/json' "$SECHUB_SERVER/api/admin/config/executor/$uuid" | $CURL_FILTER
 }
 
 
 function sechub_executor_update {
-  curl_with_sechub_auth -i -X PUT -H 'Content-Type: application/json' -d "@$2" "$SECHUB_SERVER/api/admin/config/executor/$1" | $CURL_FILTER
+  local uuid
+  uuid="$(get_executor $1)"
+  is_uuid "$uuid" && curl_with_sechub_auth -i -X PUT -H 'Content-Type: application/json' -d "@$2" "$SECHUB_SERVER/api/admin/config/executor/$uuid" | $CURL_FILTER
 }
 
 
@@ -863,20 +874,20 @@ case "$action" in
     $failed || sechub_executor_create "$EXECUTOR_JSONFILE"
     ;;
   executor_delete)
-    EXECUTOR_UUID="$1" ; check_parameter EXECUTOR_UUID '<executor uuid or name>'
-    $failed || sechub_executor_delete "$EXECUTOR_UUID"
+    EXECUTOR="$1" ; check_parameter EXECUTOR '<executor uuid or name>'
+    $failed || sechub_executor_delete "$EXECUTOR"
     ;;
   executor_details)
-    EXECUTOR_UUID="$1" ; check_parameter EXECUTOR_UUID '<executor uuid or name>'
-    $failed || sechub_executor_details "$EXECUTOR_UUID"
+    EXECUTOR="$1" ; check_parameter EXECUTOR '<executor uuid or name>'
+    $failed || sechub_executor_details "$EXECUTOR"
     ;;
   executor_list)
     $failed || sechub_executor_list
     ;;
   executor_update)
-    EXECUTOR_UUID="$1" ; check_parameter EXECUTOR_UUID '<executor uuid or name>'
+    EXECUTOR="$1" ; check_parameter EXECUTOR '<executor uuid or name>'
     EXECUTOR_JSONFILE="$2" ; check_file "$EXECUTOR_JSONFILE" '<json-file>'
-    $failed || sechub_executor_update "$EXECUTOR_UUID" "$EXECUTOR_JSONFILE"
+    $failed || sechub_executor_update "$EXECUTOR" "$EXECUTOR_JSONFILE"
     ;;
   job_approve)
     PROJECT_ID="$1" ; check_parameter PROJECT_ID '<project-id>'
