@@ -310,7 +310,7 @@ function sechub_executor_delete {
   if ! is_uuid "$uuid" ; then
     exit 1
   fi
-  echo "Executor \"$uuid\" will be deleted. This cannot be undone."
+  echo "Executor \"$1\" will be deleted. This cannot be undone."
   are_you_sure
   curl_with_sechub_auth -i -X DELETE -H 'Content-Type: application/json' "$SECHUB_SERVER/api/admin/config/executor/$uuid" | $CURL_FILTER
 }
