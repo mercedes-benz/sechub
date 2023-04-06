@@ -1,8 +1,11 @@
 package com.mercedesbenz.sechub.systemtest.runtime;
 
 import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
@@ -29,6 +32,8 @@ class SystemTestRuntimeContext {
     private Set<SystemTestRunResult> results = new LinkedHashSet<>();
     private SystemTestRuntimeMetaData runtimeMetaData = new SystemTestRuntimeMetaData();
     private Map<PDSSolutionDefinition, PDSSolutionRuntimeData> pdsSolutionRuntimeDataMap = new LinkedHashMap<>();
+    private SystemTestRuntimeStage currentStage;
+    private List<SystemTestRuntimeStage> stages = new ArrayList<>();
 
     void alterConfguration(SystemTestConfiguration configuration) {
         this.configuration = configuration;
@@ -138,6 +143,19 @@ class SystemTestRuntimeContext {
 
     public SystemTestRuntimeMetaData getRuntimeMetaData() {
         return runtimeMetaData;
+    }
+
+    public SystemTestRuntimeStage getCurrentStage() {
+        return currentStage;
+    }
+
+    public void setCurrentStage(SystemTestRuntimeStage stage) {
+        this.currentStage = stage;
+        this.stages.add(stage);
+    }
+
+    public List<SystemTestRuntimeStage> getStages() {
+        return Collections.unmodifiableList(stages);
     }
 
 }

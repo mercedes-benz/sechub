@@ -5,6 +5,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 import java.io.IOException;
 import java.nio.file.Path;
+import java.util.concurrent.TimeUnit;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -14,6 +15,7 @@ import org.slf4j.LoggerFactory;
 
 import com.mercedesbenz.sechub.commons.model.JSONConverter;
 import com.mercedesbenz.sechub.systemtest.config.SystemTestConfiguration;
+import com.mercedesbenz.sechub.systemtest.runtime.ProcessContainerFailedException;
 import com.mercedesbenz.sechub.systemtest.runtime.SystemTestResult;
 import com.mercedesbenz.sechub.systemtest.runtime.SystemTestRuntimeException;
 import com.mercedesbenz.sechub.test.TestFileReader;
@@ -88,6 +90,11 @@ class SystemTestIntegrationTest {
                     addSolution("faked-gosec").
                         addStartStep().
                             script().
+                                process().
+                                    waitForStage(). // we use this to ensure output can be done by script at setup stage
+                                    withTimeOut(3, TimeUnit.SECONDS).
+                                endProcess().
+
                                 envVariable("A_TEST1", "value1").
                                 envVariable("B_TEST2", "value2").
                                 envVariable("C_test_var_number_added", "${variables.test_var_number}").
@@ -99,6 +106,10 @@ class SystemTestIntegrationTest {
                         endStep().
                         addStopStep().
                             script().
+                                process().
+                                    waitForStage(). // we use this to ensure output can be done by script at setup stage
+                                    withTimeOut(3, TimeUnit.SECONDS).
+                                endProcess().
                                 envVariable("X_TEST", "testx").
                                 path("./05-stop-single-sechub-network-docker-compose.sh").
                                 arguments(goSecStopOutputFile.toString(),"second","third-as:${variables.var_text}").
@@ -121,10 +132,12 @@ class SystemTestIntegrationTest {
         if (result.hasFailedTests()) {
             fail("The execution failed?!?!");
         }
-
+        // we now check that all test output was written by our test scripts to files
         String sechubStartOutputData = TestFileReader.loadTextFile(secHubStartOutputFile);
         assertEquals("sechub-started and TEST_NUMBER_LIST=2_should_be_2", sechubStartOutputData);
 
+        // special case: inside this script we wait some time before the output is done
+        // means: we can test if waitForStage information is correct handled by framework
         String gosecStartOutputData = TestFileReader.loadTextFile(goSecStartOutputFile);
         assertEquals("gosec-started with param2=secondCallIsForPDS and C_test_var_number_added=2_should_be_2, B_TEST2=value2, D_RESOLVED_SECRET is like path=true, parameter3 is still a secret=true", gosecStartOutputData);
 
@@ -186,7 +199,7 @@ class SystemTestIntegrationTest {
         LOG.info("loaded config=\n{}", JSONConverter.get().toJSON(configuration,true));
 
         /* execute */
-        SystemTestRuntimeException exception = assertThrows(SystemTestRuntimeException.class, ()->runSystemTestsLocal(configuration, TEST_PDS_SOLUTIONS_PATH));
+        ProcessContainerFailedException exception = assertThrows(ProcessContainerFailedException.class, ()->runSystemTestsLocal(configuration, TEST_PDS_SOLUTIONS_PATH));
 
         /* test */
         String message = exception.getMessage();

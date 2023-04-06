@@ -4,26 +4,27 @@
 == System tests
 This chapter describes the system test framework.
 
-=== Execution
-System tests can be executed in two ways:
+[TIP]
+====
+The system test framework is designed, to make things easier for developers
+when testing SecHub / PDS. It provides as many defaults as possible.
+So it is normally not necessary to define much to have a running system test!
 
-1. Writing a JSON file and execute it with `pds-tools`.
-2. Write a Junit test with `SystemTestAPI`
-
-==== With PDS tools
-As a first step, download the latest release of `pds-tools` from https://github.com/mercedes-benz/sechub/releases.
-
-Execute: 
-`java -jar pds-tools.jar --systemTest=${pathToJson}`
-
-==== With JUnit tests
-Write a unit test and use `SystemTestAPI` class which provides a builder to configure the test configuration
-and also to execute the configuration.
+Do not try to configure every possible part, but instead try to define only 
+necessary things and let the framework do the rest.
+====
 
 === Write a test
 This chapter describes the different parts inside the test configuration model.
-It does not matter if you write the test directly in JSON or with the java builders - the underlying
-model is the same. 
+
+System tests can be written in two ways:
+
+2. Write a Junit test and use methods provided by `SystemTestAPI`
+1. Writing a JSON file and execute it with `pds-tools`.
+
+It does not matter if you write the configuration directly in JSON or with the java test API - 
+the underlying model is the same. 
+
 
 ==== Variables
 
@@ -137,8 +138,69 @@ tests there. The configuration is not tampered here - executor configurations, u
 and profiles must be configured here. Also the usage of <<section-systemtests-local-defaults,local defaults>>   is not possible - except those parts are defined on remote site with such names!  
 
 ==== Example
+// FIXME 2023-04-05, albert: not implemented
+TBD: Not implemented at the moment
 
+=== Execution
 
+==== With PDS tools
+As a first step, download the latest release of `pds-tools` from https://github.com/mercedes-benz/sechub/releases.
+
+Execute: 
+`java -jar pds-tools.jar --systemTest=${pathToJson}`
+
+==== JUnit tests
+Just execute the Junit test from your IDE. 
+
+=== Behavior
+
+==== Stages
+We have different stages:
+
+- Setup
+- Test preparation
+- Shutdown
+
+Every stage can contain different steps inside.
+For example: The setup phase contains start scripts from SecHub and/or PDS solutions. 
+
+Before a stage can be left and another is started, a check is done, if there is a need to wait for any processes
+to be finished. When a script of the stage times out in mean time, the framework will stop with a failure message.
+
+If not explicit defined, the test framework automatically uses dedicated defaults for script steps
+inside the stage, but it is possible to alter this inside the configuration. Here an example:
+
+[source,json]
+----
+{
+  "script" : {
+    "path" : "./01-start-single-docker-compose.sh",
+    "process" : {
+        "timeOut" : { <1>
+           "amount" : 2,  <2>
+           "unit" : "minutes", <3>
+        }
+        "stageWaits" : true <4>
+    }
+  }   
+}
+----
+<1> Defines the timeout before the process will be forcibly terminated. The default is 5 Minutes
+    When a timeout happens, the system test will fail!
+<2> Accepted amount of time before timeout happens
+<3> Time unit, can be `milliseconds`, `seconds`, `minutes`, `hours` 
+<4> When `stageWaits` is `true` the stage will wait for the process to be done. The default is `false`. +
++
+[NOTE]
+====
+The test preparation stage will automatically wait for defined PDS solutions and SecHub server to 
+be up and running - means: 
+
+You only need to setup `stageWaits` to `true` if you have written a special 
+script which must be done (and does automatically end) before a stage shall be left. 
+
+In this case the stage will wait until the script has finished or times out.
+====
 
 
 

@@ -13,7 +13,7 @@ public class PDSSolutionDefinition extends AbstractDefinition {
 
     private List<ExecutionStepDefinition> start = new ArrayList<>();
 
-    private boolean waitForPDSAvailable = true;
+    private boolean waitForAvailable = true;
 
     private List<ExecutionStepDefinition> stop = new ArrayList<>();
 
@@ -33,12 +33,12 @@ public class PDSSolutionDefinition extends AbstractDefinition {
         this.name = name;
     }
 
-    public boolean isWaitForPDSAvailable() {
-        return waitForPDSAvailable;
+    public boolean isWaitForAvailable() {
+        return waitForAvailable;
     }
 
-    public void setWaitForPDSAvailable(boolean waitForAvailable) {
-        this.waitForPDSAvailable = waitForAvailable;
+    public void setWaitForAvailable(boolean waitForAvailable) {
+        this.waitForAvailable = waitForAvailable;
     }
 
     public List<ExecutionStepDefinition> getStart() {

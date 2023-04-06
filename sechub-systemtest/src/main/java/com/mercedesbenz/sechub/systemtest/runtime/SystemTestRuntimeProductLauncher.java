@@ -1,6 +1,5 @@
 package com.mercedesbenz.sechub.systemtest.runtime;
 
-import java.io.IOException;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -104,34 +103,13 @@ public class SystemTestRuntimeProductLauncher {
             LOG.trace("Enter: {} - step: {}", name, step.getComment());
             if (step.getScript().isPresent()) {
                 ScriptDefinition scriptDefinition = step.getScript().get();
-                executeScript(context, scriptDefinition, scope, state);
+
+                ProcessContainer processContainer = execSupport.execute(scriptDefinition);
+
+                context.getCurrentStage().add(processContainer);
+
             }
         }
-    }
-
-    private ExecutionResult executeScript(SystemTestRuntimeContext context, ScriptDefinition scriptDefinition, SystemTestExecutionScope scope,
-            SystemTestExecutionState state) throws SystemTestScriptExecutionException {
-        ExecutionResult executionResult;
-
-        try {
-            executionResult = execSupport.execute(scriptDefinition);
-
-        } catch (IOException e) {
-            String scriptPath = scriptDefinition.getPath();
-            executionResult = new ExecutionResult();
-
-            executionResult.exitValue = -1;
-            executionResult.errorMessage = e.getMessage();
-
-            LOG.warn("Script execution failed: {}", e.getMessage());
-
-            throw new SystemTestScriptExecutionException(scriptPath, executionResult, scope, state);
-        }
-        if (executionResult.getExitValue() != 0) {
-            String scriptPath = scriptDefinition.getPath();
-            throw new SystemTestScriptExecutionException(scriptPath, executionResult, scope, state);
-        }
-        return executionResult;
     }
 
 }

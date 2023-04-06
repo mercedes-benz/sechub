@@ -116,7 +116,7 @@ class SystemTestConfigurationTest {
         // start
         PDSSolutionDefinition solution1 = new PDSSolutionDefinition();
         solution1.setName("gosec");
-        solution1.setWaitForPDSAvailable(true);
+        solution1.setWaitForAvailable(true);
         solution1.setComment(
                 "Test solution1, the scan types etc. cannot be defined, because runtime loads all meta information from config file. Basedir is optional, normally calculated automatically by name");
         solution1.setBaseDirectory("${env.base_dir}/pds-solutions/gosec");

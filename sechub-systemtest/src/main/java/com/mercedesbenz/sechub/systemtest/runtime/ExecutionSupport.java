@@ -1,16 +1,15 @@
 package com.mercedesbenz.sechub.systemtest.runtime;
 
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
 import java.nio.file.Paths;
 import java.util.Map;
-import java.util.concurrent.TimeUnit;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.mercedesbenz.sechub.commons.model.JSONConverter;
 import com.mercedesbenz.sechub.systemtest.config.ScriptDefinition;
+import com.mercedesbenz.sechub.systemtest.config.TimeUnitDefinition;
 import com.mercedesbenz.sechub.systemtest.template.SystemTestTemplateEngine;
 
 public class ExecutionSupport {
@@ -30,49 +29,73 @@ public class ExecutionSupport {
         return environmentProvider;
     }
 
-    public ExecutionResult execute(ScriptDefinition scriptDefinitionWithSecrets) throws IOException {
+    public ProcessContainer execute(ScriptDefinition scriptDefinition) {
 
-        ScriptDefinition secretsRevealedScriptDefinition = revealSecretsForScript(scriptDefinitionWithSecrets);
+        Map<String, String> envVariablesWithSecretsRevealed = revealSecretsForScript(scriptDefinition);
 
-        String scriptPath = secretsRevealedScriptDefinition.getPath();
-        String workingDirectory = secretsRevealedScriptDefinition.getWorkingDirectory();
+        String scriptPath = scriptDefinition.getPath();
+        String workingDirectory = scriptDefinition.getWorkingDirectory();
 
         LOG.trace("Start:{} inside {}", scriptPath, workingDirectory);
 
-        ExecutionResult result = new ExecutionResult();
+        ProcessContainer processContainer = new ProcessContainer(scriptDefinition);
 
         if (DRY_RUN) {
-            return result;
+            return processContainer;
         }
 
         ProcessBuilder pb = new ProcessBuilder(scriptPath);
         pb.inheritIO();
         pb.directory(Paths.get(workingDirectory).toFile());
-        pb.environment().putAll(secretsRevealedScriptDefinition.getEnvVariables());
-        pb.command().addAll(secretsRevealedScriptDefinition.getArguments());
+        pb.environment().putAll(envVariablesWithSecretsRevealed);
+        pb.command().addAll(scriptDefinition.getArguments());
 
+        Process process;
         try {
-            Process process = pb.start();
-            boolean exited = process.waitFor(30, TimeUnit.MINUTES);
-            if (!exited) {
-                throw new IOException("Time out for execution of command:" + secretsRevealedScriptDefinition);
-            }
-            result.exitValue = process.exitValue();
+            process = pb.start();
 
-            /* FIXME Albert Tregnaghi, 2023-03-22: does not work */
-            result.errorMessage = new String(process.getErrorStream().readAllBytes(), StandardCharsets.UTF_8);
-            result.outputMessage = new String(process.getInputStream().readAllBytes(), StandardCharsets.UTF_8);
+            Runnable runnable = new Runnable() {
 
-            LOG.trace("Ended:{} - exit code: {}", secretsRevealedScriptDefinition, result.exitValue);
+                @Override
+                public void run() {
+                    try {
+                        TimeUnitDefinition timeOut = scriptDefinition.getProcess().getTimeOut();
+                        boolean exited = process.waitFor(timeOut.getAmount(), timeOut.getUnit());
+                        if (!exited) {
+                            LOG.error("Container time out : {} {}", timeOut.getAmount(), timeOut.getUnit());
+//                            throw new IOException("Time out for execution of command:" + secretsRevealedScriptDefinition);
+                            processContainer.errorMessage = "Time out for execution of command:" + scriptDefinition.getPath();
+                            processContainer.exitValue = -1;
+                            processContainer.markTimedOut();
+                        } else {
+                            processContainer.exitValue = process.exitValue();
+                            /* FIXME Albert Tregnaghi, 2023-03-22: does not work */
+//                            result.errorMessage = new String(process.getErrorStream().readAllBytes(), StandardCharsets.UTF_8);
+//                            result.outputMessage = new String(process.getInputStream().readAllBytes(), StandardCharsets.UTF_8);
+                        }
 
-            return result;
-        } catch (InterruptedException e) {
-            // timed out...
-            throw new IOException("Time out for execution of command:" + secretsRevealedScriptDefinition);
+                        LOG.trace("Ended:{} - exit code: {}", scriptDefinition, processContainer.exitValue);
+
+                    } catch (InterruptedException e) {
+                        // timed out...
+                        processContainer.exitValue = -1;
+                        processContainer.errorMessage = "Time out for execution of command:" + scriptDefinition;
+                    }
+                    processContainer.markNoLongerRunning();
+                }
+            };
+            Thread thread = new Thread(runnable, "exec-" + scriptPath);
+            thread.start();
+
+        } catch (IOException e) {
+            LOG.warn("Script execution failed: {}", e.getMessage());
+            processContainer.markProcessNotStartable(e);
         }
+
+        return processContainer;
     }
 
-    private ScriptDefinition revealSecretsForScript(ScriptDefinition scriptDefinitionWithSecrets) {
+    private Map<String, String> revealSecretsForScript(ScriptDefinition scriptDefinitionWithSecrets) {
         String withSecretsJson = JSONConverter.get().toJSON(scriptDefinitionWithSecrets);
         ScriptDefinition alterableScriptDefinition = JSONConverter.get().fromJSON(ScriptDefinition.class, withSecretsJson);
         /*
@@ -99,7 +122,8 @@ public class ExecutionSupport {
             scriptEnvVariables.put(key, newValue);
         }
 
-        return alterableScriptDefinition;
+        return alterableScriptDefinition.getEnvVariables();
+
     }
 
 }

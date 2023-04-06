@@ -10,7 +10,8 @@ public class ScriptDefinition extends AbstractDefinition {
     private Map<String, String> envVariables = new LinkedHashMap<>();
     private String path;
     private String workingDirectory;
-    private List<String> arguments = new ArrayList<>();;
+    private List<String> arguments = new ArrayList<>();
+    private ProcessDefinition process = new ProcessDefinition();
 
     public Map<String, String> getEnvVariables() {
         return envVariables;
@@ -38,5 +39,13 @@ public class ScriptDefinition extends AbstractDefinition {
 
     public List<String> getArguments() {
         return arguments;
+    }
+
+    public ProcessDefinition getProcess() {
+        return process;
+    }
+
+    public void setProcess(ProcessDefinition process) {
+        this.process = process;
     }
 }

@@ -3,6 +3,7 @@ package com.mercedesbenz.sechub.systemtest.config;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.TimeUnit;
 
 public class SystemTestConfigurationBuilder {
 
@@ -67,8 +68,38 @@ public class SystemTestConfigurationBuilder {
                 scriptCallDefinition.setWorkingDir(workingDirectory);
                 return this;
             }
+
+            public ProcessDefinitionBuilder process() {
+                return new ProcessDefinitionBuilder(this);
+            }
         }
 
+        public class ProcessDefinitionBuilder {
+
+            private StepBuilder<T>.ScriptBuilder scriptBuilder;
+            private ProcessDefinition process;
+
+            public ProcessDefinitionBuilder(StepBuilder<T>.ScriptBuilder scriptBuilder) {
+                this.scriptBuilder = scriptBuilder;
+                this.process = scriptBuilder.scriptCallDefinition.getProcess();
+            }
+
+            public ProcessDefinitionBuilder waitForStage() {
+                process.setStageWaits(true);
+                return this;
+            }
+
+            public ProcessDefinitionBuilder withTimeOut(int amount, TimeUnit unit) {
+                TimeUnitDefinition unitDef = new TimeUnitDefinition(amount, unit);
+                process.setTimeOut(unitDef);
+                return this;
+            }
+
+            public ScriptBuilder endProcess() {
+                return scriptBuilder;
+            }
+
+        }
     }
 
     public class LocalSetupBuilder {
@@ -185,7 +216,7 @@ public class SystemTestConfigurationBuilder {
             }
 
             public SolutionSetupBuilder waitForAVailable(boolean waitForAVailable) {
-                setup.setWaitForPDSAvailable(waitForAVailable);
+                setup.setWaitForAvailable(waitForAVailable);
                 return this;
             }
 

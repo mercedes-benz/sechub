@@ -9,7 +9,9 @@ package com.mercedesbenz.sechub.systemtest.config;
  */
 public enum DefaultFallback {
 
-    FALLBACK_PROJECT_NAME("Project name", "default-test-project"), FALLBACK_PROFILE_ID("Profile id", "default-test-profile"),;
+    FALLBACK_PROJECT_NAME("Project name", "default-test-project"),
+
+    FALLBACK_PROFILE_ID("Profile id", "default-test-profile"),;
 
     private String scope;
     private String value;

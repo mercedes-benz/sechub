@@ -1,0 +1,19 @@
+package com.mercedesbenz.sechub.systemtest.runtime;
+
+import com.mercedesbenz.sechub.systemtest.config.ScriptDefinition;
+
+public class ProcessContainerFailedException extends SystemTestRuntimeException {
+    private static final long serialVersionUID = 1L;
+
+    public ProcessContainerFailedException(ProcessContainer container) {
+        super(createMessage(container), null);
+    }
+
+    private static String createMessage(ProcessContainer container) {
+        ScriptDefinition script = container.getScriptDefinition();
+//        String path = script.getPath();
+
+        return "Container failed with: " + container.getErrorMessage();
+    }
+
+}
