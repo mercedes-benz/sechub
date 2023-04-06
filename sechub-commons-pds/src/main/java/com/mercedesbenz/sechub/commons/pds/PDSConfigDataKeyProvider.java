@@ -27,7 +27,7 @@ public enum PDSConfigDataKeyProvider implements PDSKeyProvider<ExecutionPDSKey> 
      */
     PDS_SCAN_TARGET_TYPE(new ExecutionPDSKey(PDSDefaultParameterKeyConstants.PARAM_KEY_PDS_SCAN_TARGET_TYPE,
             "Contains the target type (depending on scan type) and will be just an additional information for PDS from SecHub.").markGenerated()
-                    .markAsAvailableInsideScript()),
+            .markAsAvailableInsideScript()),
 
     /**
      * Special key inside executor configuration which will be used to define if PDS
@@ -38,7 +38,8 @@ public enum PDSConfigDataKeyProvider implements PDSKeyProvider<ExecutionPDSKey> 
     PDS_CONFIG_USE_SECHUB_STORAGE(new ExecutionPDSKey(PDSDefaultParameterKeyConstants.PARAM_KEY_PDS_CONFIG_USE_SECHUB_STORAGE,
             "When 'true' the SecHub storage will be reused by the PDS server. In this case SecHub will not upload job data to PDS.\n"
                     + "But it's crucial to have the same root storage setup on the PDS server side (e.g. same s3 bucket for S3 storage, or same NFS base for shared volumes).\n"
-                    + "When not 'true' or not defined, PDS will use its own storage locations").markSendToPDS().markDefaultRecommended().withDefault(true))
+                    + "When not 'true' or not defined, PDS will use its own storage locations")
+            .markSendToPDS().markDefaultRecommended().withDefault(true))
 
     ,
     /**
@@ -49,7 +50,7 @@ public enum PDSConfigDataKeyProvider implements PDSKeyProvider<ExecutionPDSKey> 
     PDS_CONFIG_USE_SECHUB_MAPPINGS(
             new ExecutionPDSKey(PDSDefaultParameterKeyConstants.PARAM_KEY_PDS_CONFIG_USE_SECHUB_MAPPINGS, "Contains a comma separated list of mappping ids. "
                     + "Each defined mapping will be fetched from SecHub DB as JSON and sent as job parameter with " + "the mapping id as name to the PDS.")
-                            .markSendToPDS().withDefault(true))
+                    .markSendToPDS().withDefault(true))
 
     ,
 
@@ -58,7 +59,7 @@ public enum PDSConfigDataKeyProvider implements PDSKeyProvider<ExecutionPDSKey> 
      */
     PDS_CONFIG_SECHUB_STORAGE_PATH(new ExecutionPDSKey(PDSDefaultParameterKeyConstants.PARAM_KEY_PDS_CONFIG_SECHUB_STORAGE_PATH,
             "This contains the sechub storage location when sechub storage shall be used. So PDS knows location - in combination with sechub job UUID reuse is possible")
-                    .markGenerated()),
+            .markGenerated()),
 
     /**
      * Contains file filter include information
@@ -67,7 +68,8 @@ public enum PDSConfigDataKeyProvider implements PDSKeyProvider<ExecutionPDSKey> 
             "This contains a comma separated list of path patterns for file includes. These patterns can contain wildcards. Matching will be done case insensitive!\n"
                     + "Every file which is matched by one of the patterns will be included - except those which are explicitly excluded.\n"
                     + "When nothing is defined, then every content is accepted for include.\n\n"
-                    + "For example: '*.go,*.html, test1.txt' would include every Go file, every HTML file and files named 'test1.txt'.").markSendToPDS()),
+                    + "For example: '*.go,*.html, test1.txt' would include every Go file, every HTML file and files named 'test1.txt'.")
+            .markSendToPDS()),
 
     /**
      * Contains trust all certificates information
@@ -75,12 +77,13 @@ public enum PDSConfigDataKeyProvider implements PDSKeyProvider<ExecutionPDSKey> 
     PDS_CONFIG_SCRIPT_TRUSTALL_CERTIFICATES_ENABLED(new ExecutionPDSKey(
             PDSDefaultParameterKeyConstants.PARAM_KEY_PDS_CONFIG_SCRIPT_TRUSTALL_CERTIFICATES_ENABLED,
             "When 'true' the PDS adapter script used by the job will have the information and can use this information when it comes to remote operations.")
-                    .markSendToPDS().markAsAvailableInsideScript().markDefaultRecommended().withDefault(false)),
+            .markSendToPDS().markAsAvailableInsideScript().markDefaultRecommended().withDefault(false)),
 
     PDS_CONFIG_SUPPORTED_DATATYPES(new ExecutionPDSKey(PDSDefaultParameterKeyConstants.PARAM_KEY_PDS_CONFIG_SUPPORTED_DATATYPES,
             "Can be " + SecHubDataConfigurationType.SOURCE + ", " + SecHubDataConfigurationType.BINARY + ", " + SecHubDataConfigurationType.NONE
                     + " or a combination as a comma separated list. This data should"
-                    + " normally not be defined via a default value of an optional PDS configuration parameter.").markSendToPDS()),
+                    + " normally not be defined via a default value of an optional PDS configuration parameter.")
+            .markSendToPDS()),
 
     PDS_CONFIG_JOBSTORAGE_READ_RESILIENCE_RETRIES_MAX(
             new ExecutionPDSKey(PDSDefaultParameterKeyConstants.PARAM_KEY_PDS_CONFIG_JOBSTORAGE_READ_RESILIENCE_RETRIES_MAX,
@@ -95,7 +98,7 @@ public enum PDSConfigDataKeyProvider implements PDSKeyProvider<ExecutionPDSKey> 
      */
     PDS_CONFIG_TIMEOUT_PRODUCT_MINUTES(new ExecutionPDSKey(PDSDefaultParameterKeyConstants.PARAM_KEY_PDS_CONFIG_PRODUCT_TIMEOUT_MINUTES,
             "Maximum allowed time in minutes, before a product will time out - this means that the launcher script is automatically canceled by PDS")
-                    .markSendToPDS()),
+            .markSendToPDS()),
 
     /**
      * Contains file filter exclude information
@@ -103,7 +106,8 @@ public enum PDSConfigDataKeyProvider implements PDSKeyProvider<ExecutionPDSKey> 
     PDS_CONFIG_FILEFILTER_EXCLUDES(new ExecutionPDSKey(PDSDefaultParameterKeyConstants.PARAM_KEY_PDS_CONFIG_FILEFILTER_EXCLUDES,
             "This contains a comma separated list of path patterns for file excludes. These patterns can contain wildcards. Matching will be done case insensitive!\n"
                     + "When empty, then nothing will be excluded. The exclude operation will be done AFTER the include file filtering.\n\n"
-                    + "For example: '*.go,*.html, test1.txt' would exclude every Go file, every HTML file and files named 'test1.txt'.").markSendToPDS()),
+                    + "For example: '*.go,*.html, test1.txt' would exclude every Go file, every HTML file and files named 'test1.txt'.")
+            .markSendToPDS()),
 
     /**
      * This is automatically given to PDS by SecHub - depending on the scan type.
@@ -112,7 +116,7 @@ public enum PDSConfigDataKeyProvider implements PDSKeyProvider<ExecutionPDSKey> 
      */
     PDS_SCAN_TARGET_URL(new ExecutionPDSKey(PDSDefaultParameterKeyConstants.PARAM_KEY_PDS_SCAN_TARGET_URL,
             "This contains the target URL for the current scan (i.e. webscan). Will not be set in all scan types. E.g. for a code scan this environment variable will not be available")
-                    .markGenerated().markAsAvailableInsideScript()),
+            .markGenerated().markAsAvailableInsideScript()),
 
     /**
      * A debug flag for PDS which can be used in executor configurations to increase
@@ -120,7 +124,7 @@ public enum PDSConfigDataKeyProvider implements PDSKeyProvider<ExecutionPDSKey> 
      */
     PDS_DEBUG_ENABLED(new ExecutionPDSKey(PDSDefaultParameterKeyConstants.PARAM_KEY_PDS_DEBUG_ENABLED,
             "When 'true', the PDS instance will show up some debug information on scan time. The output level of debugging information differs on PDS solutions/launcher scripts.")
-                    .markDefaultRecommended().withDefault(false).markSendToPDS().markAsAvailableInsideScript())
+            .markDefaultRecommended().withDefault(false).markSendToPDS().markAsAvailableInsideScript())
 
     ,
     /**
@@ -131,19 +135,19 @@ public enum PDSConfigDataKeyProvider implements PDSKeyProvider<ExecutionPDSKey> 
      */
     PDS_SCAN_CONFIGURATION(new ExecutionPDSKey(PDSDefaultParameterKeyConstants.PARAM_KEY_PDS_SCAN_CONFIGURATION,
             "This contains the SecHub configuration as JSON object (but reduced to current scan type, so e.g. a web scan will have no code scan configuration data available")
-                    .markGenerated().markAsAvailableInsideScript()),
+            .markGenerated().markAsAvailableInsideScript()),
 
     PDS_CONFIG_CANCEL_EVENT_CHECKINTERVAL_MILLISECONDS(new ExecutionPDSKey(
             PDSDefaultParameterKeyConstants.PARAM_KEY_PDS_CONFIG_CANCEL_EVENT_CHECKINTERVAL_MILLISECONDS,
             "This is the maximum time the launcher script process will be kept alive after a cancellation event is sent. "
                     + "This gives the launcher script process a chance to recognize the cancel event and do some final cancel parts and exit gracefully.")
-                            .markSendToPDS()),
+            .markSendToPDS()),
 
     PDS_CONFIG_CANCEL_MAXIMUM_WAITTIME_SECOND(new ExecutionPDSKey(PDSDefaultParameterKeyConstants.PARAM_KEY_PDS_CONFIG_CANCEL_MAXIMUM_WAITTIME_SECONDS,
             "The time in seconds PDS will check again if the launcher script process is alive or not when the process shall be canceled. When nothing defined, the default value is:"
                     + PDSDefaultParameterValueConstants.DEFAULT_TIME_TO_WAIT_IN_SECONDS_FOR_SCRIPT_CANCELLATION + ". If the value is "
                     + PDSDefaultParameterValueConstants.NO_TIME_TO_WAIT_IN_SECONDS_FOR_SCRIPT_CANCELLATION + " the process will be terminated without waiting.")
-                            .markSendToPDS()),
+            .markSendToPDS()),
 
     /**
      * A special runtime configuration configuration for PDS servers started with
@@ -154,7 +158,7 @@ public enum PDSConfigDataKeyProvider implements PDSKeyProvider<ExecutionPDSKey> 
      */
     PDS_MOCKING_DISABLED(new ExecutionPDSKey(PDSDefaultParameterKeyConstants.PARAM_KEY_PDS_MOCKING_DISABLED,
             "When 'true' any PDS adapter call will use real PDS adapter and not a mocked variant.").markForTestingOnly().markSendToPDS()
-                    .markDefaultRecommended().withDefault(true));
+            .markDefaultRecommended().withDefault(true));
 
     private ExecutionPDSKey key;
 
