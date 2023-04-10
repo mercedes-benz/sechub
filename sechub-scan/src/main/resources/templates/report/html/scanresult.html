@@ -93,30 +93,39 @@
 					</thead>
 					<tbody>
 						<tr>
-							<td>Total</td>
-							<td><span th:text="*{#lists.size(redList) + #lists.size(yellowList) + #lists.size(greenList)}">[Total number of Elements]</span></td>
-							<td></td>
+							<td><strong>Total</strong></td>
+							<td><strong><span th:text="*{#lists.size(redList) + #lists.size(yellowList) + #lists.size(greenList)}">[Total number of Elements]</span></strong></td>
+							<td><strong></strong></td>
 						</tr>
 						<tr>
 							<td>Red</td>
-							<td><span th:text="${#lists.size(redList)}">[Number red of Elements]</span></td>
+							<td>
+								<span th:if="!${redList.isEmpty()}"><a href="#redFindingsBlock" th:text="${#lists.size(redList)}"></a></span>
+								<span th:unless="!${redList.isEmpty()}" th:text="0"></span>
+							</td>
 							<td></td>
 						</tr>
 						<tr>
 							<td>Yellow</td>
-							<td><span th:text="${#lists.size(yellowList)}">[Number of yellow Elements]</span></td>
+							<td>
+								<span th:if="!${yellowList.isEmpty()}"><a href="#yellowFindingsBlock" th:text="${#lists.size(yellowList)}"></a></span>
+								<span th:unless="!${yellowList.isEmpty()}" th:text="0"></span>
+							</td>
 							<td></td>
 						</tr>
 						<tr>
 							<td>Green</td>
-							<td><span th:text="${#lists.size(greenList)}">[Number of green Elements]</span></td>
+							<td>
+								<span th:if="!${greenList.isEmpty()}"><a href="#greenFindingsBlock" th:text="${#lists.size(greenList)}"></a></span>
+								<span th:unless="!${greenList.isEmpty()}" th:text="0"></span>
+							</td>
 							<td></td>
 						</tr>
 					</tbody>
 				</table>
 			</div>
 			<div th:if="!${redList.isEmpty()}">
-				<h2 class='redFindingHeadline'>Red findings</h2>
+				<h2 class='redFindingHeadline' id="redFindingsBlock">Red findings</h2>
 				<table class='findingsTable redFindingsTable'>
 					<thead>
 						<tr>
@@ -155,7 +164,7 @@
 				</table>
 			</div>
 			<div th:if="!${yellowList.isEmpty()}">
-				<h2 class='yellowFindingHeadline'>Yellow findings</h2>
+				<h2 class='yellowFindingHeadline' id="yellowFindingsBlock">Yellow findings</h2>
 				<table class='findingsTable yellowFindingsTable'>
 					<thead>
 						<tr>
@@ -182,7 +191,7 @@
 				</table>
 			</div>
 			<div th:if="!${greenList.isEmpty()}">
-				<h2 class='greenFindingHeadline'>Green findings</h2>
+				<h2 class='greenFindingHeadline' id="greenFindingsBlock">Green findings</h2>
 				<table class='findingsTable greenFindingsTable'>
 					<thead>
 						<tr>
