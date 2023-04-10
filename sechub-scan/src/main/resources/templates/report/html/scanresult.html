@@ -81,6 +81,40 @@
 			</table>
 		</div>
 		<div class="content">
+			<div>
+				<h2 class='summaryHeadline'>Summary</h2>
+				<table class='summaryTable'>
+					<thead>
+						<tr>
+							<th></th>
+							<th>Code Scan</th>
+							<th>Secret Scan</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr>
+							<td>Total</td>
+							<td><span th:text="*{#lists.size(redList) + #lists.size(yellowList) + #lists.size(greenList)}">[Total number of Elements]</span></td>
+							<td></td>
+						</tr>
+						<tr>
+							<td>Red</td>
+							<td><span th:text="${#lists.size(redList)}">[Number red of Elements]</span></td>
+							<td></td>
+						</tr>
+						<tr>
+							<td>Yellow</td>
+							<td><span th:text="${#lists.size(yellowList)}">[Number of yellow Elements]</span></td>
+							<td></td>
+						</tr>
+						<tr>
+							<td>Green</td>
+							<td><span th:text="${#lists.size(greenList)}">[Number of green Elements]</span></td>
+							<td></td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
 			<div th:if="!${redList.isEmpty()}">
 				<h2 class='redFindingHeadline'>Red findings</h2>
 				<table class='findingsTable redFindingsTable'>

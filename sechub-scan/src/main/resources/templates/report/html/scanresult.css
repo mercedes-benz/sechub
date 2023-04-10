@@ -385,3 +385,38 @@ rTableSourceHead,
    display:flex;
 }
 
+.summaryHeadline {
+    /*color: #248f24;*/
+    font-family: monospace;
+}
+
+.summaryTable {
+    width: 20%;
+    padding-bottom: 16px;
+    padding-top: 10px;
+    border-collapse: separate;
+    border: solid #cccccc 1px;
+    border-radius: 16px;
+    border-spacing: 0px;
+}
+
+.summaryTable th {
+    padding: 8px;
+    vertical-align: center;
+    text-align: center;
+}
+
+.summaryTable td {
+    padding: 8px;
+    font-family: monospace;
+    vertical-align: center;
+    text-align: center;
+}
+
+.summaryTable td:nth-child(2) {
+    border-left: 1px solid #cccccc;
+}
+
+.summaryTable td:nth-child(3) {
+    border-left: 1px solid #cccccc;
+}
