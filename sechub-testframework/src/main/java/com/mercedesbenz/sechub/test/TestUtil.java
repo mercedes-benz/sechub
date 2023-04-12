@@ -148,7 +148,7 @@ public class TestUtil {
 
         Path dirAsPath = tmpPath.toRealPath().resolve(dirName + "tmp_" + System.nanoTime());
         if (Files.notExists(dirAsPath)) {
-            Files.createDirectory(dirAsPath, attributes);
+            Files.createDirectories(dirAsPath, attributes); // create all missing directories
 
             if (isDeletingTempFiles()) {
                 dirAsPath.toFile().deleteOnExit();

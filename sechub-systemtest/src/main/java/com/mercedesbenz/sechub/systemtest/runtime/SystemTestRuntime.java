@@ -42,41 +42,62 @@ public class SystemTestRuntime {
 
     public SystemTestResult run(SystemTestConfiguration configuration, boolean localRun) {
 
-        LOG.info("Starting - local run:{}", localRun);
-
         SystemTestRuntimeContext context = new SystemTestRuntimeContext(configuration, locationSupport.getWorkspaceRoot(), localRun);
-        context.locationSupport = locationSupport;
-        context.environmentProvider = environmentSupport;
+        try {
+            LOG.info("Starting - local run:{}", localRun);
 
-        switchToStage("Setup", context);
+            context.locationSupport = locationSupport;
+            context.environmentProvider = environmentSupport;
 
-        /* before tests */
-        execOrFail(() -> preparator.prepare(context), "Preparation");
+            switchToStage("Setup", context);
 
-        if (LOG.isDebugEnabled()) {
-            LOG.debug("Configuration after prepare phase:\n{}", JSONConverter.get().toJSON(context.getConfiguration(), true));
+            /* before tests */
+            execOrFail(() -> preparator.prepare(context), "Preparation");
+
+            if (LOG.isDebugEnabled()) {
+                LOG.debug("Configuration after prepare phase:\n{}", JSONConverter.get().toJSON(context.getConfiguration(), true));
+            }
+
+            execOrFail(() -> healthCheck.check(context), "Health check");
+
+            execOrFail(() -> productLauncher.startSecHub(context), "Start SecHub");
+            execOrFail(() -> productLauncher.startPDSSolutions(context), "Start PDS solutions");
+
+            /* execute tests */
+            switchToStage("Test", context);
+
+            execOrFail(() -> prepareAndExecuteTests(context), "Start tests");
+
+            execOrFail(() -> productLauncher.stopPDSSolutions(context), "Stop PDS solutions");
+            execOrFail(() -> productLauncher.stopSecHub(context), "Stop SecHub");
+
+            /* fetch results from context and publish only this */
+            SystemTestResult result = new SystemTestResult();
+            result.getRuns().addAll(context.getResults());
+
+            endCurrentStage(context);
+
+            finalCheckForFailedContainers(context);
+
+            return result;
+        } finally {
+            for (SystemTestRuntimeStage stage : context.getStages()) {
+                List<ProcessContainer> stillRunningProcessContainers = stage.getStillRunningContainers();
+                for (ProcessContainer processContainer : stillRunningProcessContainers) {
+                    processContainer.terminateProcess();
+                }
+            }
         }
 
-        execOrFail(() -> healthCheck.check(context), "Health check");
+    }
 
-        execOrFail(() -> productLauncher.startSecHub(context), "Start SecHub");
-        execOrFail(() -> productLauncher.startPDSSolutions(context), "Start PDS solutions");
-
-        /* execute tests */
-        switchToStage("Test", context);
-
-        execOrFail(() -> prepareAndExecuteTests(context), "Start tests");
-
-        execOrFail(() -> productLauncher.stopPDSSolutions(context), "Stop PDS solutions");
-        execOrFail(() -> productLauncher.stopSecHub(context), "Stop SecHub");
-
-        /* fetch results from context and publish only this */
-        SystemTestResult result = new SystemTestResult();
-        result.getRuns().addAll(context.getResults());
-
-        endCurrentStage(context);
-
-        return result;
+    private void finalCheckForFailedContainers(SystemTestRuntimeContext context) {
+        for (SystemTestRuntimeStage stage : context.getStages()) {
+            List<ProcessContainer> failedContainers = stage.getFailedContainers();
+            if (!failedContainers.isEmpty()) {
+                throw new ProcessContainerFailedException(failedContainers.iterator().next());
+            }
+        }
 
     }
 

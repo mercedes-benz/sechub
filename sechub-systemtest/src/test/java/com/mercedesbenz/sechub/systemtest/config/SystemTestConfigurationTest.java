@@ -31,7 +31,7 @@ class SystemTestConfigurationTest {
         /* execute 1 */
         String json = JSONConverter.get().toJSON(configuration, true);
         LOG.info(
-                "A full blown test configuration. Not really runnable (e.g. remote and local setup at once), but can be used for documentation/explaation... JSON =\n{}",
+                "A full blown test configuration. Not really runnable (e.g. remote and local setup at once), but can be used for documentation/explanation... JSON =\n{}",
                 json);
 
         /* test 1 */

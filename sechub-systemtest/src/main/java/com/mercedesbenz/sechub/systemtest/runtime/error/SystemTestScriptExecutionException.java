@@ -21,7 +21,7 @@ public class SystemTestScriptExecutionException extends SystemTestErrorException
     }
 
     private static String createDetails(String scriptName, ProcessContainer executionResult) {
-        return "Script " + scriptName + " failed with exit code:" + executionResult.getExitValue() + "\nError message:" + executionResult.getErrorMessage();
+        return "Script " + scriptName + " failed with exit code:" + executionResult.getExitValue() + "\nError message:" + executionResult.waitForErrorMessage();
     }
 
     private static String createExceptionMessage(String scriptName, ProcessContainer executionResult, SystemTestExecutionScope scope,

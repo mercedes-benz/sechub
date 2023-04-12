@@ -14,6 +14,7 @@ version =   VersionData.getServerVersion()
 dependencies {
 
     implementation project(':sechub-pds-commons-core')
+    implementation library.apache_commons_io
     implementation spring_boot_dependency.logback_classic
     
     testImplementation spring_boot_dependency.junit_jupiter

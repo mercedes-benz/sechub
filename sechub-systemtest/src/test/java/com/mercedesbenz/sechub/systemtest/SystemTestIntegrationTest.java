@@ -1,6 +1,7 @@
 package com.mercedesbenz.sechub.systemtest;
 
 import static com.mercedesbenz.sechub.systemtest.SystemTestAPI.*;
+import static com.mercedesbenz.sechub.test.TestUtil.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 import java.io.IOException;
@@ -19,7 +20,6 @@ import com.mercedesbenz.sechub.systemtest.runtime.ProcessContainerFailedExceptio
 import com.mercedesbenz.sechub.systemtest.runtime.SystemTestResult;
 import com.mercedesbenz.sechub.systemtest.runtime.SystemTestRuntimeException;
 import com.mercedesbenz.sechub.test.TestFileReader;
-import com.mercedesbenz.sechub.test.TestUtil;
 
 /**
  * An integration test if the system test API and the involved runtime +
@@ -45,10 +45,10 @@ class SystemTestIntegrationTest {
     void faked_gosec_can_be_executed_without_errors() throws IOException {
         /* @formatter:off */
 
-        Path secHubStartOutputFile = TestUtil.createTempFileInBuildFolder("faked_gosec_sechub_start_output_file.txt");
-        Path goSecStartOutputFile = TestUtil.createTempFileInBuildFolder("faked_gosec_pds_start_output_file.txt");
-        Path goSecStopOutputFile = TestUtil.createTempFileInBuildFolder("faked_gosec_pds_stop_output_file.txt");
-        Path secHubStopOutputFile = TestUtil.createTempFileInBuildFolder("faked_gosec_sechub_stop_output_file.txt");
+        Path secHubStartOutputFile = createTempFileInBuildFolder("faked_gosec_sechub_start_output_file.txt");
+        Path goSecStartOutputFile = createTempFileInBuildFolder("faked_gosec_pds_start_output_file.txt");
+        Path goSecStopOutputFile = createTempFileInBuildFolder("faked_gosec_pds_stop_output_file.txt");
+        Path secHubStopOutputFile = createTempFileInBuildFolder("faked_gosec_sechub_stop_output_file.txt");
 
         String var_Text = "nano_"+System.nanoTime();
 
@@ -64,10 +64,14 @@ class SystemTestIntegrationTest {
                 localSetup().
                     secHub().
                         addStartStep().
+
                             script().
                                 envVariable("TEST_NUMBER_LIST", "${variables.test_var_number}").
                                 path("./01-start-single-docker-compose.sh").
                                 arguments(secHubStartOutputFile.toString()).
+                                process().
+                                    markStageWaits(). // we use this to ensure output can be done by script at setup stage
+                                endProcess().
                             endScript().
                         endStep().
 
@@ -76,6 +80,9 @@ class SystemTestIntegrationTest {
                                 envVariable("Y_TEST", "testy").
                                 path("./01-stop-single-docker-compose.sh").
                                 arguments(secHubStopOutputFile.toString(),"second","third-as:${variables.var_text}").
+                                process().
+                                    markStageWaits(). // we use this to ensure output can be done by script at setup stage
+                                endProcess().
                             endScript().
                         endStep().
 
@@ -91,7 +98,7 @@ class SystemTestIntegrationTest {
                         addStartStep().
                             script().
                                 process().
-                                    waitForStage(). // we use this to ensure output can be done by script at setup stage
+                                    markStageWaits(). // we use this to ensure output can be done by script at setup stage
                                     withTimeOut(3, TimeUnit.SECONDS).
                                 endProcess().
 
@@ -107,7 +114,7 @@ class SystemTestIntegrationTest {
                         addStopStep().
                             script().
                                 process().
-                                    waitForStage(). // we use this to ensure output can be done by script at setup stage
+                                    markStageWaits(). // we use this to ensure output can be done by script at setup stage
                                     withTimeOut(3, TimeUnit.SECONDS).
                                 endProcess().
                                 envVariable("X_TEST", "testx").
@@ -126,7 +133,13 @@ class SystemTestIntegrationTest {
         LOG.info("config=\n{}", JSONConverter.get().toJSON(configuration,true));
 
         /* execute */
-        SystemTestResult result = runSystemTestsLocal(configuration, TEST_PDS_SOLUTIONS_PATH);
+        SystemTestResult result = runSystemTests(
+                params().
+                    localRun().
+                    workspacePath(createTempDirectoryInBuildFolder("systemtest_inttest/faked_gosec_can_be_executed_without_errors").toString()).
+                    testConfiguration(configuration).
+                    pdsSolutionPath(TEST_PDS_SOLUTIONS_PATH).
+                build());
 
         /* test */
         if (result.hasFailedTests()) {
@@ -167,7 +180,13 @@ class SystemTestIntegrationTest {
         LOG.info("loaded config=\n{}", JSONConverter.get().toJSON(configuration,true));
 
         /* execute */
-        SystemTestRuntimeException exception = assertThrows(SystemTestRuntimeException.class, ()->runSystemTestsLocal(configuration, TEST_PDS_SOLUTIONS_PATH));
+        SystemTestRuntimeException exception = assertThrows(SystemTestRuntimeException.class, ()->runSystemTests(
+            params().
+                localRun().
+                workspacePath(createTempDirectoryInBuildFolder("systemtest_inttest/fail_because_unknown_runtime_variable").toString()).
+                testConfiguration(configuration).
+                pdsSolutionPath(TEST_PDS_SOLUTIONS_PATH).
+            build()));
 
         /* test */
         String message = exception.getMessage();
@@ -199,11 +218,23 @@ class SystemTestIntegrationTest {
         LOG.info("loaded config=\n{}", JSONConverter.get().toJSON(configuration,true));
 
         /* execute */
-        ProcessContainerFailedException exception = assertThrows(ProcessContainerFailedException.class, ()->runSystemTestsLocal(configuration, TEST_PDS_SOLUTIONS_PATH));
+        ProcessContainerFailedException exception = assertThrows(ProcessContainerFailedException.class,()->runSystemTests(
+            params().
+                localRun().
+                workspacePath(createTempDirectoryInBuildFolder("systemtest_inttest/fail_on_start").toString()).
+                testConfiguration(configuration).
+                pdsSolutionPath(TEST_PDS_SOLUTIONS_PATH).
+            build()));
 
         /* test */
         String message = exception.getMessage();
-        assertTrue(message.contains("Script ./05-start-single-sechub-network-docker-compose.sh failed with exit code:33"));
+
+        if(!message.contains("Script: ./05-start-single-sechub-network-docker-compose.sh\n"
+                + "Exit code: 33\n"
+                + "Error message: This shall be the last fail message")) {
+            exception.printStackTrace();
+            fail("Unexpected message:"+message);
+        }
 
         /* @formatter:on */
     }
@@ -225,8 +256,13 @@ class SystemTestIntegrationTest {
         LOG.info("loaded config=\n{}", JSONConverter.get().toJSON(configuration,true));
 
         /* execute */
-        SystemTestRuntimeException exception = assertThrows(SystemTestRuntimeException.class, ()->
-            runSystemTestsLocal(configuration, TEST_PDS_SOLUTIONS_PATH));
+        SystemTestRuntimeException exception = assertThrows(SystemTestRuntimeException.class, ()->runSystemTests(
+           params().
+                localRun().
+                workspacePath(createTempDirectoryInBuildFolder("systemtest_inttest/fail_because_no_pds_config").toString()).
+                testConfiguration(configuration).
+                pdsSolutionPath(TEST_PDS_SOLUTIONS_PATH).
+            build()));
 
         String message = exception.getMessage();
         assertTrue(message.contains("PDS server config file does not exist"));

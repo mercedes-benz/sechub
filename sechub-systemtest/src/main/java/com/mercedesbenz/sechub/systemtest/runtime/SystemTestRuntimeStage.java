@@ -36,7 +36,7 @@ public class SystemTestRuntimeStage {
      */
     public boolean isReadyToLeave() {
         for (ProcessContainer container : processContainers) {
-            if (container.hasTimedOut()) {
+            if (container.isTimedOut()) {
                 throw new ProcessContainerTimeOutException(container);
             }
             if (container.hasFailed()) {
@@ -66,5 +66,28 @@ public class SystemTestRuntimeStage {
     public String toString() {
         return "SystemTestRuntimeStage [" + (name != null ? "name=" + name + ", " : "")
                 + (processContainers != null ? "processContainers=" + processContainers : "") + "]";
+    }
+
+    public List<ProcessContainer> getFailedContainers() {
+
+        List<ProcessContainer> failedContainers = new ArrayList<>();
+
+        for (ProcessContainer container : processContainers) {
+            if (container.hasFailed()) {
+                failedContainers.add(container);
+            }
+        }
+        return failedContainers;
+    }
+
+    public List<ProcessContainer> getStillRunningContainers() {
+        List<ProcessContainer> stillRunningContainers = new ArrayList<>();
+
+        for (ProcessContainer container : processContainers) {
+            if (container.isStillRunning()) {
+                stillRunningContainers.add(container);
+            }
+        }
+        return stillRunningContainers;
     }
 }

@@ -1,12 +1,17 @@
 package com.mercedesbenz.sechub.systemtest.runtime;
 
+import static java.util.Objects.*;
+
 import java.io.IOException;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.mercedesbenz.sechub.commons.TextFileReader;
+import com.mercedesbenz.sechub.commons.TextFileWriter;
 import com.mercedesbenz.sechub.commons.model.JSONConverter;
 import com.mercedesbenz.sechub.systemtest.config.ScriptDefinition;
 import com.mercedesbenz.sechub.systemtest.config.TimeUnitDefinition;
@@ -15,14 +20,22 @@ import com.mercedesbenz.sechub.systemtest.template.SystemTestTemplateEngine;
 public class ExecutionSupport {
 
     private static final Logger LOG = LoggerFactory.getLogger(ExecutionSupport.class);
-    private static final boolean DRY_RUN = Boolean.getBoolean("sechub.systemtest.dryrun");
 
     private EnvironmentProvider environmentProvider;
     private SystemTestTemplateEngine templateEngine;
+    private LocationSupport locationSupport;
+    private TextFileWriter textFileWriter;
+    private TextFileReader textFileReader;
 
-    public ExecutionSupport(EnvironmentProvider provider) {
+    public ExecutionSupport(EnvironmentProvider provider, LocationSupport locationSupport) {
+        requireNonNull(locationSupport);
+        requireNonNull(provider);
+
         this.environmentProvider = provider;
+        this.locationSupport = locationSupport;
         this.templateEngine = new SystemTestTemplateEngine();
+        this.textFileWriter = new TextFileWriter();
+        this.textFileReader = new TextFileReader();
     }
 
     public EnvironmentProvider getEnvironmentProvider() {
@@ -40,19 +53,25 @@ public class ExecutionSupport {
 
         ProcessContainer processContainer = new ProcessContainer(scriptDefinition);
 
-        if (DRY_RUN) {
-            return processContainer;
-        }
+        Path outputFile = locationSupport.ensureOutputFile(processContainer);
+        Path errorFile = locationSupport.ensureErrorFile(processContainer);
+
+        writeToFile(processContainer);
 
         ProcessBuilder pb = new ProcessBuilder(scriptPath);
-        pb.inheritIO();
         pb.directory(Paths.get(workingDirectory).toFile());
         pb.environment().putAll(envVariablesWithSecretsRevealed);
         pb.command().addAll(scriptDefinition.getArguments());
 
+        pb.redirectOutput(outputFile.toFile());
+        pb.redirectError(errorFile.toFile());
+
         Process process;
         try {
             process = pb.start();
+            processContainer.markProcessStarted(process);
+
+            writeToFile(processContainer);
 
             Runnable runnable = new Runnable() {
 
@@ -63,36 +82,63 @@ public class ExecutionSupport {
                         boolean exited = process.waitFor(timeOut.getAmount(), timeOut.getUnit());
                         if (!exited) {
                             LOG.error("Container time out : {} {}", timeOut.getAmount(), timeOut.getUnit());
-//                            throw new IOException("Time out for execution of command:" + secretsRevealedScriptDefinition);
-                            processContainer.errorMessage = "Time out for execution of command:" + scriptDefinition.getPath();
-                            processContainer.exitValue = -1;
                             processContainer.markTimedOut();
+
                         } else {
                             processContainer.exitValue = process.exitValue();
-                            /* FIXME Albert Tregnaghi, 2023-03-22: does not work */
-//                            result.errorMessage = new String(process.getErrorStream().readAllBytes(), StandardCharsets.UTF_8);
-//                            result.outputMessage = new String(process.getInputStream().readAllBytes(), StandardCharsets.UTF_8);
                         }
 
                         LOG.trace("Ended:{} - exit code: {}", scriptDefinition, processContainer.exitValue);
 
                     } catch (InterruptedException e) {
-                        // timed out...
-                        processContainer.exitValue = -1;
-                        processContainer.errorMessage = "Time out for execution of command:" + scriptDefinition;
+                        LOG.error("Runable interrupted", e);
+                        processContainer.markFailed();
+                    } finally {
+                        processContainer.markNoLongerRunning();
+                        fetchStreamsAndWriteProcessFile(processContainer);
                     }
-                    processContainer.markNoLongerRunning();
                 }
+
             };
             Thread thread = new Thread(runnable, "exec-" + scriptPath);
             thread.start();
 
         } catch (IOException e) {
             LOG.warn("Script execution failed: {}", e.getMessage());
-            processContainer.markProcessNotStartable(e);
+            processContainer.markFailed();
+            fetchStreamsAndWriteProcessFile(processContainer);
         }
 
         return processContainer;
+    }
+
+    private void fetchStreamsAndWriteProcessFile(ProcessContainer processContainer) {
+        Path outputFile = locationSupport.ensureOutputFile(processContainer);
+        Path errorFile = locationSupport.ensureErrorFile(processContainer);
+
+        try {
+            String outputTextLine = textFileReader.loadTextFile(outputFile.toFile(), "\n", 1);
+            processContainer.outputMessage = outputTextLine;
+        } catch (IOException e) {
+            LOG.error("Was not able to read output for process container:{}", processContainer.getUuid(), e);
+        }
+
+        try {
+            String errorTextLine = textFileReader.loadTextFile(errorFile.toFile(), "\n", 1);
+            processContainer.errorMessage = errorTextLine;
+        } catch (IOException e) {
+            LOG.error("Was not able to read error for process container:{}", processContainer.getUuid(), e);
+        }
+        writeToFile(processContainer);
+    }
+
+    private void writeToFile(ProcessContainer processContainer) {
+        Path metaDataFile = locationSupport.ensureProcessContainerFile(processContainer);
+        try {
+            textFileWriter.save(metaDataFile.toFile(), JSONConverter.get().toJSON(processContainer, true), true);
+        } catch (IOException e) {
+            throw new SystemTestRuntimeException("Was not able to write file:" + metaDataFile, e);
+        }
     }
 
     private Map<String, String> revealSecretsForScript(ScriptDefinition scriptDefinitionWithSecrets) {

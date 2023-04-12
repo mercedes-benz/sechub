@@ -84,7 +84,7 @@ public class SystemTestConfigurationBuilder {
                 this.process = scriptBuilder.scriptCallDefinition.getProcess();
             }
 
-            public ProcessDefinitionBuilder waitForStage() {
+            public ProcessDefinitionBuilder markStageWaits() {
                 process.setStageWaits(true);
                 return this;
             }
