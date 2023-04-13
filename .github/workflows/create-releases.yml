@@ -105,12 +105,12 @@ jobs:
           ./apply-headers.sh
           git commit -am "SPDX headers added by SecHub release job @github-actions" || true
           COMMITS=`git log --oneline --branches --not --remotes`
-          echo "::set-output name=commits::$COMMITS"
+          echo "commits=$COMMITS" >> $GITHUB_OUTPUT
 
       - name: Create pull request for SPDX license headers
         id: pr_spdx_headers
         if: steps.apply-headers.outputs.commits != ''
-        uses: peter-evans/create-pull-request@v4.2.4
+        uses: peter-evans/create-pull-request@v5.0.0
         with:
           branch: release-spdx-headers
           branch-suffix: short-commit-hash
@@ -262,7 +262,7 @@ jobs:
       # -----------------------------------------
       - name: Create pull request for release documentation
         id: pr_release_documentation
-        uses: peter-evans/create-pull-request@v4.2.4
+        uses: peter-evans/create-pull-request@v5.0.0
         with:
           branch: release-documentation
           branch-suffix: short-commit-hash

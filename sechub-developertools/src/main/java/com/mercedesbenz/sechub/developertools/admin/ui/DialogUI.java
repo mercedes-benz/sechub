@@ -182,7 +182,7 @@ public class DialogUI {
         dialog.setVisible(true);
 
         if (!dialog.isOkPressed()) {
-            return Optional.empty();/* NOSONAR */
+            return Optional.empty();
         }
         return Optional.ofNullable(dialog.getText());
     }
@@ -209,7 +209,7 @@ public class DialogUI {
         dialog.setVisible(true);
 
         if (!dialog.isOkPressed()) {
-            return null;/* NOSONAR */
+            return null;
         }
 
         String[] splittedLines = dialog.getText().split("\n");
@@ -235,13 +235,13 @@ public class DialogUI {
         dialog.setVisible(true);
 
         if (!dialog.isOkPressed()) {
-            return null;/* NOSONAR */
+            return null;
         }
 
         return dialog.getText();
     }
 
-    private class SimpleTextDialog /* NOSONAR */extends JDialog {
+    private class SimpleTextDialog extends JDialog {
 
         private static final long serialVersionUID = 1L;
         private JTextArea textArea;
