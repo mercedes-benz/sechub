@@ -16,7 +16,7 @@ function usage {
 Usage: `basename $0` [-p] [-y] [-s <sechub server url> [-u <sechub user>] [-a <sechub api token>] action [<action's parameters>]
 
 Shell front end to selected SecHub API calls (https://mercedes-benz.github.io/sechub/latest/sechub-restapi.html).
-Output will be beautified/colorized by piping json output through jq command (https://github.com/stedolan/jq)
+Output will be improved by piping json output through jq command (https://github.com/stedolan/jq)
 unless you specify -p or -plain option. Option -y or -yes skips confirmation dialog when deleting items.
 
 You are encouraged to set SECHUB_SERVER, SECHUB_USERID and SECHUB_APITOKEN as environment variables
@@ -324,7 +324,11 @@ function sechub_executor_update {
 
 
 function sechub_executor_list {
-  curl_with_sechub_auth -i -X GET -H 'Content-Type: application/json' "$SECHUB_SERVER/api/admin/config/executors" | $RESULT_FILTER | jq '.executorConfigurations'
+  if [ "$JQ_INSTALLED" == "true" ] ; then
+    curl_with_sechub_auth -i -X GET -H 'Content-Type: application/json' "$SECHUB_SERVER/api/admin/config/executors" | $RESULT_FILTER | jq '.executorConfigurations | sort_by(.name)'
+  else
+    curl_with_sechub_auth -i -X GET -H 'Content-Type: application/json' "$SECHUB_SERVER/api/admin/config/executors" | $RESULT_FILTER
+  fi
 }
 
 
@@ -479,7 +483,11 @@ function sechub_profile_details {
 
 
 function sechub_profile_list {
-  curl_with_sechub_auth -i -X GET -H 'Content-Type: application/json' "$SECHUB_SERVER/api/admin/config/execution/profiles" | $RESULT_FILTER | jq '.executionProfiles'
+  if [ "$JQ_INSTALLED" == "true" ] ; then
+    curl_with_sechub_auth -i -X GET -H 'Content-Type: application/json' "$SECHUB_SERVER/api/admin/config/execution/profiles" | $RESULT_FILTER | jq '.executionProfiles | sort_by(.id)'
+  else
+    curl_with_sechub_auth -i -X GET -H 'Content-Type: application/json' "$SECHUB_SERVER/api/admin/config/execution/profiles" | $RESULT_FILTER
+  fi
 }
 
 
@@ -813,7 +821,7 @@ if which jq >/dev/null 2>&1 ; then
   JSON_FORMATTER="jq ."   # . is needed or pipeing the result is not possible
   JSON_FORMAT_SORT="jq sort"
 else
-  echo "### Hint: Install jq (https://github.com/stedolan/jq) to improve output." >&2  # appears only on stderr
+  echo "### Hint: Install jq (https://github.com/stedolan/jq). Now executor access by name will not work." >&2  # appears only on stderr
   JQ_INSTALLED="false"
   JSON_FORMATTER="$NOFORMAT_PIPE"
   JSON_FORMAT_SORT="$NOFORMAT_PIPE"
