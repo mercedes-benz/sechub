@@ -1,6 +1,6 @@
 package com.mercedesbenz.sechub.docgen;
 
-import com.mercedesbenz.sechub.systemtest.config.DefaultFallback;
+import com.mercedesbenz.sechub.docgen.adopt.AdoptedSystemTestDefaultFallbacks;
 
 public class SystemTestDocGenerator {
 
@@ -11,7 +11,7 @@ public class SystemTestDocGenerator {
                 + "|Scope   |Default   \n"
                 + "//-------------\n";
 
-        for (DefaultFallback fallback: DefaultFallback.values()) {
+        for (AdoptedSystemTestDefaultFallbacks fallback: AdoptedSystemTestDefaultFallbacks.values()) {
             data = data+ "|"+fallback.getScope()+" | `"+ fallback.getValue()+"`   \n";
         }
 

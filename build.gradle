@@ -1,6 +1,5 @@
 // SPDX-License-Identifier: MIT
 buildscript{
-
 	apply from: "${rootProject.projectDir}/gradle/libraries.gradle"
 	apply from: "${rootProject.projectDir}/gradle/projects.gradle"
 
@@ -31,7 +30,7 @@ plugins {
     id 'org.asciidoctor.jvm.pdf' version '3.3.2'
     
     // open api
-    id 'org.openapi.generator' version '6.4.0'
+    id 'org.openapi.generator' version '6.5.0'
     
     // spring
     id 'org.springframework.boot' version '2.7.8' apply false

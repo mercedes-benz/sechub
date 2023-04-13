@@ -61,14 +61,18 @@ public class SecHubClientConfigurationFactory {
     }
 
     private boolean isServerUriValid(URI serverUri) {
-        if (serverUri == null)
+        if (serverUri == null) {
             return false;
-        if (!serverUri.getScheme().equals("https"))
+        }
+        if (!serverUri.getScheme().equals("https")) {
             return false;
-        if (!serverUri.getPath().isEmpty())
+        }
+        if (!serverUri.getPath().isEmpty()) {
             return false;
-        if (serverUri.getPort() <= 0 || serverUri.getPort() > 65535)
+        }
+        if (serverUri.getPort() <= 0 || serverUri.getPort() > 65535) {
             return false;
+        }
         return true;
     }
 

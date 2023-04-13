@@ -1,4 +1,5 @@
 // SPDX-License-Identifier: MIT
+
 include 'sechub-cli',
 /* documentation */
 'sechub-doc',
@@ -20,16 +21,12 @@ include 'sechub-cli',
 'sechub-pds', // pds=product delegation server, executable spring boot jar
 'sechub-pds-core', // core project for test compile dependencies and more
 'sechub-pds-solutions', // our pds ready-to-use solutions / blue prints
-'sechub-pds-tools', // some pds tools
 
 /* PDS commons */
 'sechub-pds-commons-core',
 
 /* integration test*/
 'sechub-integrationtest',
-
-/* system test*/
-'sechub-systemtest',
 
 /* server parts */
 'sechub-schedule',
@@ -77,17 +74,33 @@ include 'sechub-cli',
 // Analyzer CLI
 'sechub-analyzer-cli',
 
-// java API library
- 'sechub-api-java',
-
 // Wrapper OWASP ZAP
 'sechub-wrapper-owasp-zap',
 
 // Wrapper checkmarx
-'sechub-wrapper-checkmarx'
+'sechub-wrapper-checkmarx',
 
 // WebUI
-include 'sechub-webui'
+'sechub-webui'
+
+String buildStageProperty = System.getProperty("sechub.build.stage");
+
+if (buildStageProperty==null || buildStageProperty.equals("api-necessary")){
+    
+    include 'sechub-api-java', /* needs open api file to generate */ 
+    
+        /* system test - needs java api*/
+        'sechub-systemtest',
+        
+        /* pds tools - needs java api */
+        'sechub-pds-tools', 
+        
+        // Examples (are below 'sechub-examples' folder)
+        'sechub-examples:example-sechub-api-java' 
+    
+}
+
+
 
 buildCache {
     def useTempCache = System.getenv('SECHUB_BUILD_USE_TMP_CACHE')

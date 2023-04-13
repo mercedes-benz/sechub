@@ -1,17 +1,24 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.api.java.demo.cli;
 
+import java.net.http.HttpClient;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.mercedesbenz.sechub.api.java.*;
-import com.mercedesbenz.sechub.api.java.auth.Authentication;
-import com.mercedesbenz.sechub.api.java.auth.HttpBasicAuth;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import com.mercedesbenz.sechub.api.java.AdminApi;
+import com.mercedesbenz.sechub.api.java.AnonymousApi;
+import com.mercedesbenz.sechub.api.java.ApiClient;
+import com.mercedesbenz.sechub.api.java.ApiException;
+import com.mercedesbenz.sechub.api.java.Configuration;
+import com.mercedesbenz.sechub.api.java.SecHubClient;
 import com.mercedesbenz.sechub.api.java.demo.cli.exceptions.OpenAPITestToolRuntimeException;
 
 public class SechubServerTest {
@@ -24,7 +31,7 @@ public class SechubServerTest {
         this.secHubClient = secHubClient;
     }
 
-    public void runAllTests() {
+    void runAllTests() {
         if (!isServerAlive())
             throw new OpenAPITestToolRuntimeException("Sechub server is not alive.");
 
@@ -52,19 +59,25 @@ public class SechubServerTest {
     private boolean isListOfUsersFetched() {
         LOG.info("*** Trying to fetch list of users.");
 
-        HttpBasicAuth basicAuthentication = new HttpBasicAuth();
-        basicAuthentication.setUsername(secHubClient.getUsername());
-        basicAuthentication.setPassword(secHubClient.getSealedApiToken());
-        Map<String, Authentication> authMap = new HashMap<>();
-        authMap.put("basic", basicAuthentication);
-
-        apiClient = new ApiClient(authMap);
-        apiClient.setBasePath(secHubClient.getHostUri().toString());
+        ObjectMapper mapper = new ObjectMapper();
+        mapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
+        mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+        mapper.configure(DeserializationFeature.FAIL_ON_INVALID_SUBTYPE, false);
+        mapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+        mapper.enable(SerializationFeature.WRITE_ENUMS_USING_TO_STRING);
+        mapper.enable(DeserializationFeature.READ_ENUMS_USING_TO_STRING);
+        mapper.disable(DeserializationFeature.ADJUST_DATES_TO_CONTEXT_TIME_ZONE);
+        mapper.registerModule(new JavaTimeModule());
+//        mapper.registerModule(new JsonNullableModule());
+        
+        HttpClient.Builder builder =  HttpClient.newBuilder();
+       
+        apiClient = new ApiClient(builder, mapper,secHubClient.getHostUri().toString());
 
         AdminApi apiInstance = new AdminApi(apiClient);
         try {
             List<String> usersList = new ArrayList<>();
-            usersList = apiInstance.adminListsAllUsers(basicAuthentication.toString());
+            usersList = apiInstance.adminListsAllUsers();
             LOG.info("*** List of users: " + usersList);
             if (usersList.size() > 0) {
                 LOG.info("*** List of users successfully fetched.");

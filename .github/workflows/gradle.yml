@@ -44,10 +44,10 @@ jobs:
         run: ./gradlew :sechub-cli:buildGo :sechub-cli:testGo
 
       - name: Build Server, DAUI and generate OpenAPI file
-        run: ./gradlew ensureLocalhostCertificate build generateOpenapi buildDeveloperAdminUI buildPDSToolsCLI -x :sechub-integrationtest:test -x :sechub-cli:build
+        run: ./gradlew ensureLocalhostCertificate build generateOpenapi buildDeveloperAdminUI -x :sechub-integrationtest:test -x :sechub-cli:build -Dsechub.build.stage=without-api
 
-      - name: Generate and build API Java
-        run: ./gradlew :sechub-api-java:buildAPIJava
+      - name: Generate and build Java parts with API dependencies
+        run: ./gradlew :sechub-api-java:build :sechub-systemtest:build :sechub-pds-tools:buildPDSToolsCLI -Dsechub.build.stage=api-necessary
 
       # Integration test
       - name: Integration test

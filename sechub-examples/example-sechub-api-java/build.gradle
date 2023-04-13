@@ -5,7 +5,6 @@
  * Root build file: "${rootProject.projectDir}/build.gradle"
  * ============================================================================
  */
-
 ext {
     jersey_version = "2.35"
     jackson_version = "2.13.2"
@@ -31,18 +30,9 @@ dependencies {
 
     implementation library.jcommander
     implementation spring_boot_dependency.logback_classic
-    implementation "org.glassfish.jersey.inject:jersey-hk2:$jersey_version"
-    implementation "org.glassfish.jersey.media:jersey-media-multipart:$jersey_version"
-    implementation "org.glassfish.jersey.media:jersey-media-json-jackson:$jersey_version"
-    implementation "org.glassfish.jersey.connectors:jersey-apache-connector:$jersey_version"
-    implementation "com.fasterxml.jackson.core:jackson-core:$jackson_version"
-    implementation "com.fasterxml.jackson.core:jackson-annotations:$jackson_version"
-    implementation "com.fasterxml.jackson.core:jackson-databind:$jackson_databind_version"
-    implementation "com.fasterxml.jackson.datatype:jackson-datatype-jsr310:$jackson_version"
-    implementation "org.openapitools:jackson-databind-nullable:$jackson_databind_nullable_version"
     
-    // single dependency use sechub client in the future
-	implementation files('gen/build/libs/sechub-api-java-0.0.0.jar')
+    // later we can use here jitpack or other maven dependency (when published)
+	implementation project(':sechub-api-java') 
 }
 
 task buildOpenAPITestTool(type: Jar, dependsOn: build) {

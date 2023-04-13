@@ -10,8 +10,7 @@ It must be configured by using the command line parameters or the environment va
 
 Ennvironment variables:
 ----
-SECHUB_SERVER_URI=https://localhost
-SECHUB_SERVER_PORT=8443
+SECHUB_SERVER=https://localhost:8443
 SECHUB_USERID=int-test_superadmin
 SECHUB_APITOKEN=int-test_superadmin-pwd
 ----
@@ -37,23 +36,29 @@ Usage: OpenAPITestTool [options]
       environment variable SECHUB_USERID, instead of using this parameter.
 ----
 
+
 === Build
 
-Open API library must be in the following folder:
-----
-gen/build/libs/sechub-api-java-0.0.0.jar
-----
+==== IDE
+If not already imported, import the example project as a project/module into your IDE.
+
+After this, call the main class `OpenAPITestTool` with the mentioned environment entries or 
+parameters. 
+
+==== Gradle
 
 When you want to build the OpenAPI Test Tool, do next:
 
 - generate Open API json file
 ----
-sechub$ ./gradlew generateOpenapi -x:sechub-api-java:compileJava
+sechub$ ./gradlew generateOpenapi
 ----
+
 - build Open API library
 ----
-sechub$ ./gradlew :sechub-api-java:buildAPIJava
+sechub$ ./gradlew :sechub-api-java:build
 ----
+
 - build OpenAPI Test Tool
 ----
 sechub$ ./gradlew buildOpenAPITestTool

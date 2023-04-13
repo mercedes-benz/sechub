@@ -1,18 +1,29 @@
 // SPDX-License-Identifier: MIT
-apply plugin: 'com.diffplug.spotless'
-spotless {
 
-    if (projectType.javaProjects.contains(project)){
-        java {
-            bumpThisNumberIfACustomStepChanges(1)
-            // currently we do not use spotless here, but our own bash solution - but spotless would be:
-            //licenseHeaderFile rootProject.file('gradle/spotless.license')
-            importOrderFile   rootProject.file('gradle/spotless.importorder')
-            eclipse().configFile rootProject.file('gradle/spotless.eclipseformat.xml')
-            trimTrailingWhitespace()
-            removeUnusedImports()
+subprojects {
+    
+        if (projectType.noSpotless.contains(project)){
+            return
         }
-    }
-
+        
+        apply plugin: 'com.diffplug.spotless'
+        
+        spotless {
+        
+            if (projectType.javaProjects.contains(project)){
+        
+                java {
+                    bumpThisNumberIfACustomStepChanges(1)
+                    // currently we do not use spotless here, but our own bash solution - but spotless would be:
+                    //licenseHeaderFile rootProject.file('gradle/spotless.license')
+                    importOrderFile   rootProject.file('gradle/spotless.importorder')
+                    eclipse().configFile rootProject.file('gradle/spotless.eclipseformat.xml')
+                    trimTrailingWhitespace()
+                    removeUnusedImports()
+                }
+            }
+        
+        }
 }
+
 
