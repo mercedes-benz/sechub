@@ -112,27 +112,29 @@ public abstract class AbstractAuthScan extends AbstractScan implements AuthScan 
     }
 
     private void scanUnsafe() throws ClientApiException {
+        /* OWASP ZAP setup on local machine */
         setupBasicConfiguration();
         deactivateRules();
         setupAdditonalProxyConfiguration();
-
         createContext();
+
+        /* OWASP ZAP setup with access to target */
         addIncludedAndExcludedUrlsToContext();
         init();
         loadApiDefinitions();
+
+        /* OWASP ZAP scan */
         if (scanContext.isAjaxSpiderEnabled()) {
             runAjaxSpider();
         }
-
         runSpider();
-
         passiveScan();
-
         if (scanContext.isActiveScanEnabled()) {
             runActiveScan();
         }
-        generateOwaspZapReport();
 
+        /* After scan */
+        generateOwaspZapReport();
         cleanUp();
     }
 
