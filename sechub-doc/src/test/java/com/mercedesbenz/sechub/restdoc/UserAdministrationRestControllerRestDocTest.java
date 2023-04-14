@@ -123,7 +123,7 @@ public class UserAdministrationRestControllerRestDocTest implements TestIsNecess
                 and().
                 document(
 	                		requestHeaders(
-	                				headerWithName(AuthenticationHelper.HEADER_NAME).description(AuthenticationHelper.HEADER_DESCRIPTION)
+
 	                		),
                             pathParameters(
                                     parameterWithName(USER_ID.paramName()).description("The userId of the user whose email adress will be changed"),
@@ -155,7 +155,7 @@ public class UserAdministrationRestControllerRestDocTest implements TestIsNecess
                 and().
                 document(
 	                		requestHeaders(
-	                				headerWithName(AuthenticationHelper.HEADER_NAME).description(AuthenticationHelper.HEADER_DESCRIPTION)
+
 	                		),
                          	pathParameters(
                                     parameterWithName(USER_ID.paramName()).description("The userId of the user who becomes admin")
@@ -184,7 +184,7 @@ public class UserAdministrationRestControllerRestDocTest implements TestIsNecess
                 and().
                 document(
 	                		requestHeaders(
-	                				headerWithName(AuthenticationHelper.HEADER_NAME).description(AuthenticationHelper.HEADER_DESCRIPTION)
+
 	                		),
                             pathParameters(
                                     parameterWithName(USER_ID.paramName()).description("The userId of the user who becomes admin")
@@ -214,7 +214,7 @@ public class UserAdministrationRestControllerRestDocTest implements TestIsNecess
                 and().
                 document(
                 		requestHeaders(
-                				headerWithName(AuthenticationHelper.HEADER_NAME).description(AuthenticationHelper.HEADER_DESCRIPTION)
+
                 		),
                         pathParameters(
                                 parameterWithName(USER_ID.paramName()).description("The userId of the user who shall be deleted")
@@ -244,7 +244,7 @@ public class UserAdministrationRestControllerRestDocTest implements TestIsNecess
                             and().
                             document(
                             		requestHeaders(
-                            				headerWithName(AuthenticationHelper.HEADER_NAME).description(AuthenticationHelper.HEADER_DESCRIPTION)
+
                             		),
         	                        pathParameters(
         	                                 parameterWithName(USER_ID.paramName()).description("The userId of the signup which shall be accepted")
@@ -283,7 +283,7 @@ public class UserAdministrationRestControllerRestDocTest implements TestIsNecess
                 document(
                         /* FIXME Albert Tregnaghi, 2023-04-13: temporory removed for api generation */
 //                		requestHeaders(
-//                				headerWithName(AuthenticationHelper.HEADER_NAME).description(AuthenticationHelper.HEADER_DESCRIPTION)
+//
 //                		),
                             responseFields(
                                     fieldWithPath("[]").description("List of user Ids").optional()
@@ -320,7 +320,7 @@ public class UserAdministrationRestControllerRestDocTest implements TestIsNecess
                 and().
                 document(
 	                		requestHeaders(
-	                				headerWithName(AuthenticationHelper.HEADER_NAME).description(AuthenticationHelper.HEADER_DESCRIPTION)
+
 	                		),
                             responseFields(
                                     fieldWithPath("[]").description("List of admin Ids").optional()
@@ -364,7 +364,7 @@ public class UserAdministrationRestControllerRestDocTest implements TestIsNecess
                             and().
                             document(
 	                            		requestHeaders(
-	                            				headerWithName(AuthenticationHelper.HEADER_NAME).description(AuthenticationHelper.HEADER_DESCRIPTION)
+
 	                            		),
         	                            pathParameters(
         	                                    parameterWithName(USER_ID.paramName()).description("The user id of user to show details for")

@@ -175,7 +175,7 @@ public class SchedulerRestControllerRestDocTest implements TestIsNecessaryForDoc
 	    	                and().
 	    	                document(
 				    	                		requestHeaders(
-				    	                				headerWithName(AuthenticationHelper.HEADER_NAME).description(AuthenticationHelper.HEADER_DESCRIPTION)
+
 				    	                		),
 	    			                            pathParameters(
 	    			                                    parameterWithName(PROJECT_ID.paramName()).description("The unique id of the project id where a new sechub job shall be created")
@@ -232,7 +232,7 @@ public class SchedulerRestControllerRestDocTest implements TestIsNecessaryForDoc
 	    	                and().
 	    	                document(
 		    	                		requestHeaders(
-		    	                				headerWithName(AuthenticationHelper.HEADER_NAME).description(AuthenticationHelper.HEADER_DESCRIPTION)
+
 		    	                		),
                                         pathParameters(
                                                 parameterWithName(PROJECT_ID.paramName()).description("The unique id of the project id where a new sechub job shall be created")
@@ -298,7 +298,7 @@ public class SchedulerRestControllerRestDocTest implements TestIsNecessaryForDoc
                             and().
                             document(
 	                            		requestHeaders(
-	                            				headerWithName(AuthenticationHelper.HEADER_NAME).description(AuthenticationHelper.HEADER_DESCRIPTION)
+
 	                            		),
                                         pathParameters(
                                                 parameterWithName(PROJECT_ID.paramName()).description("The unique id of the project id where a new sechub job shall be created")
@@ -357,7 +357,7 @@ public class SchedulerRestControllerRestDocTest implements TestIsNecessaryForDoc
                             and().
                             document(
 	                            		requestHeaders(
-	                            				headerWithName(AuthenticationHelper.HEADER_NAME).description(AuthenticationHelper.HEADER_DESCRIPTION)
+
 	                            		),
                                         pathParameters(
                                                 parameterWithName(PROJECT_ID.paramName()).description("The unique id of the project id where a new sechub job shall be created")
@@ -449,7 +449,7 @@ public class SchedulerRestControllerRestDocTest implements TestIsNecessaryForDoc
                         and().
                         document(
 		                        		requestHeaders(
-		                        				headerWithName(AuthenticationHelper.HEADER_NAME).description(AuthenticationHelper.HEADER_DESCRIPTION)
+
 		                        		),
                                         pathParameters(
                                                 parameterWithName(PROJECT_ID.paramName()).description("The unique id of the project id where a new sechub job shall be created")
@@ -515,7 +515,7 @@ public class SchedulerRestControllerRestDocTest implements TestIsNecessaryForDoc
                             and().
                             document(
                             		requestHeaders(
-                            				headerWithName(AuthenticationHelper.HEADER_NAME).description(AuthenticationHelper.HEADER_DESCRIPTION)
+
                             		),
                                     pathParameters(
                                             parameterWithName("projectId").description("The id of the project where sourcecode shall be uploaded for"),
@@ -575,7 +575,7 @@ public class SchedulerRestControllerRestDocTest implements TestIsNecessaryForDoc
                             and().
                             document(
                             		requestHeaders(
-                            				headerWithName(AuthenticationHelper.HEADER_NAME).description(AuthenticationHelper.HEADER_DESCRIPTION)
+
                             		),
                                     pathParameters(
                                             parameterWithName("projectId").description("The id of the project for which the binaries are uploaded for"),
@@ -632,7 +632,7 @@ public class SchedulerRestControllerRestDocTest implements TestIsNecessaryForDoc
                             and().
                             document(
                             		requestHeaders(
-                            				headerWithName(AuthenticationHelper.HEADER_NAME).description(AuthenticationHelper.HEADER_DESCRIPTION)
+
                             		),
 	                                pathParameters(
 	                                         parameterWithName("projectId").description("The id of the project where sechub job shall be approved"),
@@ -682,7 +682,7 @@ public class SchedulerRestControllerRestDocTest implements TestIsNecessaryForDoc
                             and().
                             document(
 	                            		 requestHeaders(
-	                            			headerWithName(AuthenticationHelper.HEADER_NAME).description(AuthenticationHelper.HEADER_DESCRIPTION)
+
 	                            		 ),
                                           pathParameters(
                                             parameterWithName("projectId").description("The id of the project where sechub job was started for"),
@@ -746,7 +746,7 @@ public class SchedulerRestControllerRestDocTest implements TestIsNecessaryForDoc
                             and().
                             document(
                                          requestHeaders(
-                                            headerWithName(AuthenticationHelper.HEADER_NAME).description(AuthenticationHelper.HEADER_DESCRIPTION)
+
                                          ),
                                           pathParameters(
                                             parameterWithName(PROJECT_ID.paramName()).description("The id of the project where job information shall be fetched for")

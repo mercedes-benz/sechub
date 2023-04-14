@@ -6,7 +6,6 @@ import static com.mercedesbenz.sechub.test.RestDocPathParameter.*;
 import static com.mercedesbenz.sechub.test.SecHubTestURLBuilder.*;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
-import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
 import static org.springframework.restdocs.headers.HeaderDocumentation.requestHeaders;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.*;
 import static org.springframework.restdocs.payload.PayloadDocumentation.*;
@@ -161,7 +160,7 @@ public class ProjectAdministrationRestControllerRestDocTest implements TestIsNec
                 and().
                 document(
 	                		requestHeaders(
-	                				headerWithName(AuthenticationHelper.HEADER_NAME).description(AuthenticationHelper.HEADER_DESCRIPTION)
+
 	                		),
                             requestFields(
                                     fieldWithPath(ProjectJsonInput.PROPERTY_API_VERSION).description("The api version, currently only 1.0 is supported"),
@@ -205,7 +204,7 @@ public class ProjectAdministrationRestControllerRestDocTest implements TestIsNec
 						and().
 						document(
 								requestHeaders(
-										headerWithName(AuthenticationHelper.HEADER_NAME).description(AuthenticationHelper.HEADER_DESCRIPTION)
+
 								),
 								responseFields(
 										fieldWithPath("[]").description("List of project Ids").optional()
@@ -236,7 +235,7 @@ public class ProjectAdministrationRestControllerRestDocTest implements TestIsNec
                 and().
                 document(
 	                		requestHeaders(
-	                				headerWithName(AuthenticationHelper.HEADER_NAME).description(AuthenticationHelper.HEADER_DESCRIPTION)
+
 	                		),
                             pathParameters(
                                     parameterWithName(PROJECT_ID.paramName()).description("The id for project to delete")
@@ -266,7 +265,7 @@ public class ProjectAdministrationRestControllerRestDocTest implements TestIsNec
                 and().
                 document(
 	                		requestHeaders(
-	                				headerWithName(AuthenticationHelper.HEADER_NAME).description(AuthenticationHelper.HEADER_DESCRIPTION)
+
 	                		),
                             pathParameters(
                                     parameterWithName(PROJECT_ID.paramName()).description("The id for project"),
@@ -314,7 +313,7 @@ public class ProjectAdministrationRestControllerRestDocTest implements TestIsNec
                 and().
                 document(
                 		requestHeaders(
-                				headerWithName(AuthenticationHelper.HEADER_NAME).description(AuthenticationHelper.HEADER_DESCRIPTION)
+
                 		),
 		                pathParameters(
 		                        parameterWithName(PROJECT_ID.paramName()).description("The id for project"),
@@ -346,7 +345,7 @@ public class ProjectAdministrationRestControllerRestDocTest implements TestIsNec
                 and().
                 document(
 	                		requestHeaders(
-	                				headerWithName(AuthenticationHelper.HEADER_NAME).description(AuthenticationHelper.HEADER_DESCRIPTION)
+
 	                		),
                             pathParameters(
                                     parameterWithName(PROJECT_ID.paramName()).description("The id for project"),
@@ -378,7 +377,7 @@ public class ProjectAdministrationRestControllerRestDocTest implements TestIsNec
                 and().
                 document(
 	                		requestHeaders(
-	                				headerWithName(AuthenticationHelper.HEADER_NAME).description(AuthenticationHelper.HEADER_DESCRIPTION)
+
 	                		),
                             pathParameters(
                                     parameterWithName(PROJECT_ID.paramName()).description("The id for project"),
@@ -446,7 +445,7 @@ public class ProjectAdministrationRestControllerRestDocTest implements TestIsNec
                 and().
                 document(
                 		requestHeaders(
-                			headerWithName(AuthenticationHelper.HEADER_NAME).description(AuthenticationHelper.HEADER_DESCRIPTION)
+
                 		),
                         pathParameters(
 							parameterWithName(PROJECT_ID.paramName()).description("The id for project to show details for")
@@ -525,7 +524,7 @@ public class ProjectAdministrationRestControllerRestDocTest implements TestIsNec
                 and().
                 document(
                 		requestHeaders(
-                				headerWithName(AuthenticationHelper.HEADER_NAME).description(AuthenticationHelper.HEADER_DESCRIPTION)
+
                 		),
                         pathParameters(
                             parameterWithName(PROJECT_ID.paramName()).description("The id for project to change details for")

@@ -115,6 +115,8 @@ task callOpenAPIJavaGenerator(type: org.openapitools.generator.gradle.plugin.tas
     		groupId 					: "com.mercedesbenz.sechub",
     		version                     : "${project.version}",
             performBeanValidation		: "false",
+            generateModelTests          : "false", 
+            generateApiTests            : "false",
             useBeanValidation    		: "false",
             dateLibrary          		: "java8",
             serializableModel    		: "true",
@@ -161,9 +163,12 @@ tasks.named("assemble") {
 }
 
 tasks.named("compileJava") {
-    dependsOn generateAPIJava // define this task NEEDS THE OUTPUT (avoid build warnings/errors)   
+    dependsOn generateAPIJava, spotlessApply  // define this task NEEDS THE OUTPUT (avoid build warnings/errors) + spotless   
 }
 
+tasks.named("spotlessJava"){
+    dependsOn callOpenAPIJavaGenerator // define this task NEEDS THE OUTPUT
+}
 /*
 * If the gradle task eclipse is used, the assemble task shall be used as well
 * to avoid compile errors. 

@@ -7,7 +7,6 @@ import static com.mercedesbenz.sechub.test.SecHubTestURLBuilder.*;
 import static org.hamcrest.CoreMatchers.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
-import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
 import static org.springframework.restdocs.headers.HeaderDocumentation.requestHeaders;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.*;
 import static org.springframework.restdocs.request.RequestDocumentation.*;
@@ -112,7 +111,7 @@ public class ScanReportRestControllerRestDocTest implements TestIsNecessaryForDo
                             and().
                             document(
 	                            		requestHeaders(
-	                            				headerWithName(AuthenticationHelper.HEADER_NAME).description(AuthenticationHelper.HEADER_DESCRIPTION)
+
 	                            		),
                                     	pathParameters(
                                                 parameterWithName(PROJECT_ID.paramName()).description("The project Id"),
@@ -164,7 +163,7 @@ public class ScanReportRestControllerRestDocTest implements TestIsNecessaryForDo
                             and().
                             document(
 	                            		requestHeaders(
-	                            				headerWithName(AuthenticationHelper.HEADER_NAME).description(AuthenticationHelper.HEADER_DESCRIPTION)
+
 	                            		),
                                         pathParameters(
                                                 parameterWithName(PROJECT_ID.paramName()).description("The project Id"),
@@ -210,7 +209,7 @@ public class ScanReportRestControllerRestDocTest implements TestIsNecessaryForDo
                             and().
                             document(
 	                            		requestHeaders(
-	                            				headerWithName(AuthenticationHelper.HEADER_NAME).description(AuthenticationHelper.HEADER_DESCRIPTION)
+
 	                            		),
                                         pathParameters(
                                                 parameterWithName(PROJECT_ID.paramName()).description("The project Id"),
