@@ -2,16 +2,17 @@
 package com.mercedesbenz.sechub.api.java;
 
 import static com.mercedesbenz.sechub.api.java.AssertJavaClientAPI.*;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
 
 import java.io.File;
 
-import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.Test;
 
 import com.mercedesbenz.sechub.commons.model.Severity;
 import com.mercedesbenz.sechub.commons.model.TrafficLight;
 
-public class SecHubClientTest {
+public class SecHubAccessTest {
+    
 
     @Test
     public void client_reads_scan_code_green_no_findings() throws Exception {
@@ -19,7 +20,7 @@ public class SecHubClientTest {
         File file = new File("src/test/resources/scan_code_green_no_findings.json");
 
         /* execute */
-        SecHubReport report = SecHubClient.importSecHubJsonReport(file);
+        SecHubReport report = SecHubAccess.readSecHubReport(file);
 
         /* test */
         /* @formatter:off */
@@ -37,7 +38,7 @@ public class SecHubClientTest {
         File file = new File("src/test/resources/scan_code_red_product_error.json");
 
         /* execute */
-        SecHubReport report = SecHubClient.importSecHubJsonReport(file);
+        SecHubReport report = SecHubAccess.readSecHubReport(file);
 
         /* test */
         /* @formatter:off */
@@ -62,7 +63,7 @@ public class SecHubClientTest {
         File file = new File("src/test/resources/test_sechub_report-1.json");
 
         /* execute */
-        SecHubReport report = SecHubClient.importSecHubJsonReport(file);
+        SecHubReport report = SecHubAccess.readSecHubReport(file);
 
         /* test */
         /* @formatter:off */
@@ -85,7 +86,7 @@ public class SecHubClientTest {
         File file = new File("src/test/resources/scan_code_yellow_with_findings.json");
 
         /* execute */
-        SecHubReport report = SecHubClient.importSecHubJsonReport(file);
+        SecHubReport report = SecHubAccess.readSecHubReport(file);
 
         /* test */
         assertReport(report).hasJobUUID("6cf02ccf-da13-4dee-b529-0225ed9661bd").hasFindings(2).hasTrafficLight(TrafficLight.YELLOW).finding(0).hasId(1)
@@ -108,7 +109,7 @@ public class SecHubClientTest {
         /* execute + test */
         /* @formatter:off */
         assertThrows(SecHubReportException.class,
-                () -> SecHubClient.importSecHubJsonReport(file),
+                () -> SecHubAccess.readSecHubReport(file),
                 "The report is not a SecHub report and cannot be read. It should throw an exception.");
         /* @formatter:on */
     }

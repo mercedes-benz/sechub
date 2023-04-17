@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-package com.mercedesbenz.sechub.api.java.demo.cli;
+package com.mercedesbenz.sechub.api.java.demo.config;
 
 import com.beust.jcommander.Parameter;
 
@@ -38,9 +38,9 @@ public class CommandLineSettings {
     @Parameter(names = {
             "--trustAll" }, description = "When set to true, then HTTPS certificate checking will be disabled. May be useful when using self-signed certificates. Please try to avoid this setting for security reasons. You can also set the environment variable "
                     + EnvironmentVariableConstants.SECHUB_TRUSTALL + ", instead of using this parameter.", required = false)
-    private String trustAll;
+    private Boolean trustAll;
 
-    public String getTrustAll() {
+    public Boolean getTrustAll() {
         return trustAll;
     }
 

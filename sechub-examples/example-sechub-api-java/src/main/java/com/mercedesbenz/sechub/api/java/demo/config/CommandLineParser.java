@@ -1,10 +1,8 @@
 // SPDX-License-Identifier: MIT
-package com.mercedesbenz.sechub.api.java.demo.cli;
+package com.mercedesbenz.sechub.api.java.demo.config;
 
 import com.beust.jcommander.JCommander;
 import com.beust.jcommander.ParameterException;
-import com.mercedesbenz.sechub.api.java.SecHubClient;
-import com.mercedesbenz.sechub.api.java.demo.cli.exceptions.SecHubClientConfigurationRuntimeException;
 
 public class CommandLineParser {
 
@@ -17,17 +15,17 @@ public class CommandLineParser {
      * @return configuration or <code>null</code> when only help wanted
      * @throws SecHubClientConfigurationRuntimeException
      */
-    public SecHubClient parse(String... args) throws SecHubClientConfigurationRuntimeException {
+    public CommandLineSettings parse(String... args) {
         CommandLineSettings settings = parseCommandLineParameters(args);
         if (settings.isHelpRequired()) {
             showHelp();
             return null;
         }
-        SecHubClientConfigurationFactory configFactory = new SecHubClientConfigurationFactory();
-        return configFactory.create(settings);
+        return settings;
     }
+    
 
-    private CommandLineSettings parseCommandLineParameters(String... args) throws SecHubClientConfigurationRuntimeException {
+    private CommandLineSettings parseCommandLineParameters(String... args) {
         CommandLineSettings settings = new CommandLineSettings();
         /* @formatter:off */
         commander = JCommander.newBuilder()
@@ -40,7 +38,7 @@ public class CommandLineParser {
             commander.parse(args);
             return settings;
         } catch (ParameterException e) {
-            throw new SecHubClientConfigurationRuntimeException("Parsing command line parameters failed!", e);
+            throw new IllegalStateException("Parsing command line parameters failed!", e);
         }
     }
 

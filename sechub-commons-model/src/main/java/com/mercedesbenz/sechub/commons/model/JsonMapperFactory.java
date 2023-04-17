@@ -36,6 +36,9 @@ public class JsonMapperFactory {
              */
             enable(MapperFeature.ACCEPT_CASE_INSENSITIVE_ENUMS).
 
+            /* we always ignore unknown properties*/
+            disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES).
+
         build();
         /* @formatter:on */
 

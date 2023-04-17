@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-package com.mercedesbenz.sechub.api.java.demo.cli;
+package com.mercedesbenz.sechub.api.java.demo.config;
 
 public class EnvironmentVariableConstants {
 
