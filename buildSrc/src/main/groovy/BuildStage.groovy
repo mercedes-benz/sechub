@@ -19,7 +19,9 @@ class BuildStage{
     BuildStage(){
         stage = System.getProperty("sechub.build.stage");
         if(stage==null|| stage.isEmpty()){
-            stage = STAGE_ALL;
+            // per default we do not support API parts (to avoid life cycle problems
+            // - we need java compile to generate the open api file
+            stage = STAGE_WITHOUT_API;
         }
 
         switch(stage){

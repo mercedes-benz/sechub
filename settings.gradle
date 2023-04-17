@@ -80,11 +80,14 @@ include 'sechub-cli',
 // WebUI
 'sechub-webui'
 
-String buildStageProperty = System.getProperty("sechub.build.stage");
+String buildStage = System.getProperty("sechub.build.stage");
 
-if (buildStageProperty==null || buildStageProperty.equals("api-necessary")){
+if (buildStage!=null) {
+
+   /* build stage properrty is set */
+   if (buildStage.equals("api-necessary") || buildStage.equals("all") ){
     
-    include 'sechub-api-java', /* needs open api file to generate */ 
+      include 'sechub-api-java', /* needs open api file to generate */ 
     
         /* system test - needs java api*/
         'sechub-systemtest',
@@ -95,9 +98,8 @@ if (buildStageProperty==null || buildStageProperty.equals("api-necessary")){
         // Examples (are below 'sechub-examples' folder)
         'sechub-examples:example-sechub-api-java' 
     
+    }
 }
-
-
 
 buildCache {
     def useTempCache = System.getenv('SECHUB_BUILD_USE_TMP_CACHE')

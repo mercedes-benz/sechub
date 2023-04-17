@@ -44,9 +44,9 @@ jobs:
         run: ./gradlew :sechub-cli:buildGo :sechub-cli:testGo
 
       - name: Build Server, DAUI and generate OpenAPI file
-        run: ./gradlew ensureLocalhostCertificate build generateOpenapi buildDeveloperAdminUI -x :sechub-integrationtest:test -x :sechub-cli:build -Dsechub.build.stage=without-api
+        run: ./gradlew ensureLocalhostCertificate build generateOpenapi buildDeveloperAdminUI -x :sechub-integrationtest:test -x :sechub-cli:build
 
-      - name: Generate and build Java parts with API dependencies
+      - name: Generate and build Java projects related to SecHub Java API
         run: ./gradlew :sechub-api-java:build :sechub-systemtest:build :sechub-pds-tools:buildPDSToolsCLI -Dsechub.build.stage=api-necessary
 
       # Integration test
