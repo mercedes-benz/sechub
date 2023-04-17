@@ -10,8 +10,7 @@ LABEL maintainer="SecHub FOSS Team"
 
 # Build args
 ARG SCANCODE_VERSION
-ARG SPDX_TOOL_VERSION="1.1.3"
-ARG SPDX_TOOL_CHECKSUM="766a1ddc23e70644c115e0e68d487c5ab586a58a67a7889c7e181ace23a45abe  tools-java-1.1.3-jar-with-dependencies.jar"
+ARG SPDX_TOOL_VERSION
 
 # Environment variables in container
 ENV SCANCODE_VERSION="${SCANCODE_VERSION}"
@@ -48,12 +47,12 @@ RUN pip install --constraint "https://raw.githubusercontent.com/nexB/scancode-to
 RUN cd "$TOOL_FOLDER" && \
     # download SPDX Tools Java
     wget --no-verbose "https://repo1.maven.org/maven2/org/spdx/tools-java/${SPDX_TOOL_VERSION}/tools-java-${SPDX_TOOL_VERSION}-jar-with-dependencies.jar" && \
-    # create checksum file
-    echo "$SPDX_TOOL_CHECKSUM" > checksum-spdx-tool.sha256sum && \
-    # check against checksum file
-    sha256sum -c checksum-spdx-tool.sha256sum
+    # download SHA1 checksum for SPDX Tools Java
+    spdx_tool_sha1sum=$( wget --quiet --output-document=- https://repo1.maven.org/maven2/org/spdx/tools-java/1.1.5/tools-java-1.1.5-jar-with-dependencies.jar.sha1 ) && \
+    # check against checksum
+    echo "${spdx_tool_sha1sum} tools-java-${SPDX_TOOL_VERSION}-jar-with-dependencies.jar" | sha1sum -c
 
-# Patch
+# Patch Scancode to avoid timeout bug: https://github.com/nexB/scancode-toolkit/issues/2908
 COPY pool.py /usr/local/lib/python3.9/dist-packages/scancode/pool.py
 
 # Set workspace

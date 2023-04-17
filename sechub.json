@@ -1,32 +1,42 @@
 {
   "apiVersion": "1.0",
   "codeScan": {
-    "fileSystem": {
-      "folders": [
-        "."
-      ]
-    },
-    "excludes": [
-      "**/.project",
-      "**/bin/**",
-      "**/build/**",
-      "**/examples/**",
-      "**/gen/**",
-      "**/tests/**",
-      "*_test.go",
-      "*.gradle",
-      "*.json",
-      "*-testframework/**",
-      ".gradle/**",
-      "buildSrc/**",
-      "docs/**",
-      "gradle/**",
-      "sechub-cli/pkg/mod/**",
-      "sechub-developertools/**",
-      "sechub-doc/**",
-      "sechub-integrationtest/**",
-      "sechub-other/**",
-      "sechub-test/**"
+    "use": [
+      "sechub-sources"
+    ]
+  },
+  "data": {
+    "sources": [
+      {
+        "name": "sechub-sources",
+        "fileSystem": {
+          "folders": [
+            "."
+          ]
+        },
+        "excludes": [
+          "**/.project",
+          "**/bin/**",
+          "**/build/**",
+          "**/examples/**",
+          "**/gen/**",
+          "**/tests/**",
+          "*_test.go",
+          "*.gradle",
+          "*.json",
+          "*-testframework/**",
+          ".gradle/**",
+          "buildSrc/**",
+          "docs/**",
+          "gradle/**",
+          "sechub-cli/pkg/mod/**",
+          "sechub-developertools/**",
+          "sechub-doc/**",
+          "sechub-integrationtest/**",
+          "sechub-other/**",
+          "sechub-test/**"
+        ]
+      }
     ]
   }
 }

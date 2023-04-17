@@ -3,7 +3,7 @@
   "data" : {
     "sources" : [ {
       "name" : "firmware-sources", //<1>
-      "fileystem" : {
+      "fileSystem" : {
         "folders" : [ "gamechanger-firmware/src" ]
       }
     } ]

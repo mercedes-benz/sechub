@@ -11,7 +11,6 @@ projectType = [
             javaProjects: [
                project(':sechub-testframework'),
                project(':sechub-analyzer-cli'),
-               project(':sechub-sarif'),
                project(':sechub-commons-core'),
                project(':sechub-commons-model'),
                project(':sechub-commons-model-testframework'),
@@ -133,11 +132,6 @@ if (secHubBuildStage.providesGeneratedOpenApiFile()){
 
     projectType.javaProjects.add(project(':sechub-examples:example-sechub-api-java'))
     
-//    /* for API project we deactivated spotless
-//     * because of generation and build cycle problems 
-//     * (open api generation needs compiled and running sechub-doc tests) */
-//    projectType.noSpotless.add(project(':sechub-api-java'))
-                   
     /* avoid spotless duplication problem in gradle build */
     projectType.noSpotless.add(project(':sechub-examples:example-sechub-api-java'))
 }

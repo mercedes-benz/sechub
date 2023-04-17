@@ -9,7 +9,7 @@ function isColoredTerminal(){
 
         # see if it supports colors...
         ncolors=$(tput colors)
-    
+
         if test -n "$ncolors" && test $ncolors -ge 8; then
             return 0
         fi
@@ -29,7 +29,7 @@ function applySPDXline {
     echo -e "  ${LIGHT_GREEN}Scanning '*.$fileEnding' files${NC}"
     # Loop over all files matching the pattern, but skip some patterns like generated files
     find . -type f -iname \*.$fileEnding \
-    | grep -v '^./.git\|/build/\|/\.gradle/\|gradlew.bat' \
+    | grep -v '^./.git\|/build/\|/\.gradle/\|gradlew.bat\|sechub-cli/pkg/mod\|sechub-cli/src/mercedes-benz.com/sechub/pkg/mod/' \
     | while read file ; do
         if ! grep -q "$SPDX_TEXT" $file ; then
             sed -i "${line}i $spdxMessage" "$file"

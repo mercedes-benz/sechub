@@ -13,11 +13,12 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 import java.util.UUID;
 
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -26,7 +27,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 
 import com.mercedesbenz.sechub.commons.model.SecHubFinding;
@@ -42,10 +43,10 @@ import com.mercedesbenz.sechub.domain.scan.report.ScanReportRestController;
 import com.mercedesbenz.sechub.domain.scan.report.ScanSecHubReport;
 import com.mercedesbenz.sechub.test.TestPortProvider;
 
-@RunWith(SpringRunner.class)
+@ExtendWith(SpringExtension.class)
 @WebMvcTest(ScanReportRestController.class)
 @ContextConfiguration(classes = { ScanReportRestController.class, ScanReportRestControllerMockTest.SimpleTestConfiguration.class })
-public class ScanReportRestControllerMockTest {
+class ScanReportRestControllerMockTest {
 
     private static final String PROJECT1_ID = "project1";
 
@@ -64,31 +65,33 @@ public class ScanReportRestControllerMockTest {
     private DownloadSpdxScanReportService serecoSpdaxDownloadService;
 
     @MockBean
-    SecHubReportProductTransformerService secHubResultService;
+    private SecHubReportProductTransformerService secHubResultService;
 
     @MockBean
-    ReportProductExecutionService reportProductExecutionService;
+    private ReportProductExecutionService reportProductExecutionService;
 
     @MockBean
-    TrafficLightCalculator trafficLightCalculator;
+    private TrafficLightCalculator trafficLightCalculator;
 
     @MockBean
-    ScanReportRepository reportRepository;
+    private ScanReportRepository reportRepository;
 
     @MockBean
-    HTMLScanResultReportModelBuilder modelBuilder;
+    private HTMLScanResultReportModelBuilder modelBuilder;
 
     private UUID randomUUID;
 
+    private Map<String, Object> reportModelBuilderResult;
+
     @Test
     @WithMockUser
-    public void get_report_from_existing_job_returns_information_as_json_when_type_is_APPLICATION_JSON_UTF8() throws Exception {
+    void get_report_from_existing_job_returns_information_as_json_when_type_is_APPLICATION_JSON_UTF8() throws Exception {
         internalTestAcceptedAndReturnsJSON(MediaType.APPLICATION_JSON);
     }
 
     @Test
     @WithMockUser
-    public void get_report_from_existing_job_returns_406_NOT_ACCEPTABLE__when_type_is_APPLICATION_PDF() throws Exception {
+    void get_report_from_existing_job_returns_406_NOT_ACCEPTABLE__when_type_is_APPLICATION_PDF() throws Exception {
         /* prepare */
         ScanReport scanReport = new ScanReport(randomUUID, PROJECT1_ID);
         scanReport.setResult("{'count':'1'}");
@@ -110,19 +113,19 @@ public class ScanReportRestControllerMockTest {
 
     @Test
     @WithMockUser
-    public void get_report_from_existing_job_returns_information_as_html_when_type_is_APPLICATION_XHTML_XML() throws Exception {
+    void get_report_from_existing_job_returns_information_as_html_when_type_is_APPLICATION_XHTML_XML() throws Exception {
         internalTestAcceptedAndReturnsHTML(MediaType.APPLICATION_XHTML_XML);
     }
 
     @Test
     @WithMockUser
-    public void get_report_from_existing_job_returns_information_as_html_when_type_is_TEXT_HTML() throws Exception {
+    void get_report_from_existing_job_returns_information_as_html_when_type_is_TEXT_HTML() throws Exception {
         internalTestAcceptedAndReturnsHTML(MediaType.TEXT_HTML);
     }
 
     @Test
     @WithMockUser
-    public void get_html_report_with_cwe_id() throws Exception {
+    void get_html_report_with_cwe_id() throws Exception {
         /* prepare */
 
         Integer cweId = Integer.valueOf(77);
@@ -130,19 +133,10 @@ public class ScanReportRestControllerMockTest {
         SecHubFinding finding = new SecHubFinding();
         finding.setCweId(cweId);
 
-        Map<String, Object> map = new HashMap<>();
-        map.put("jobuuid", randomUUID);
-        map.put("styleRed", "theRedStyle");
-        map.put("styleGreen", "display:none");
-        map.put("styleYellow", "display:none");
-        map.put("redList", Arrays.asList(finding));
-        map.put("yellowList", new ArrayList<>());
-        map.put("greenList", new ArrayList<>());
-        map.put("isWebDesignMode", false);
-        map.put("codeScanSupport", new HtmlCodeScanDescriptionSupport());
-        map.put("codeScanEntries", new ArrayList<>());
+        reportModelBuilderResult.put("redList", Arrays.asList(finding));
+        reportModelBuilderResult.put("codeScanEntries", new ArrayList<>());
 
-        when(modelBuilder.build(any())).thenReturn(map);
+        when(modelBuilder.build(any())).thenReturn(reportModelBuilderResult);
 
         /* execute + test @formatter:off */
         this.mockMvc.perform(
@@ -162,22 +156,13 @@ public class ScanReportRestControllerMockTest {
 
     @Test
     @WithMockUser
-    public void get_html_report_without_cwe_id() throws Exception {
+    void get_html_report_without_cwe_id() throws Exception {
         /* prepare */
 
-        Map<String, Object> map = new HashMap<>();
-        map.put("jobuuid", randomUUID);
-        map.put("styleRed", "theRedStyle");
-        map.put("styleGreen", "display:none");
-        map.put("styleYellow", "display:none");
-        map.put("redList", Arrays.asList(new SecHubFinding()));
-        map.put("yellowList", new ArrayList<>());
-        map.put("greenList", new ArrayList<>());
-        map.put("isWebDesignMode", false);
-        map.put("codeScanSupport", new HtmlCodeScanDescriptionSupport());
-        map.put("codeScanEntries", new ArrayList<>());
+        reportModelBuilderResult.put("redList", Arrays.asList(new SecHubFinding()));
+        reportModelBuilderResult.put("codeScanEntries", new ArrayList<>());
 
-        when(modelBuilder.build(any())).thenReturn(map);
+        when(modelBuilder.build(any())).thenReturn(reportModelBuilderResult);
 
         /* execute + test @formatter:off */
         this.mockMvc.perform(
@@ -196,7 +181,7 @@ public class ScanReportRestControllerMockTest {
 
     @Test
     @WithMockUser
-    public void get_spdx_json_report() throws Exception {
+    void get_spdx_json_report() throws Exception {
         /* prepare */
         String spdxJsonReport = "{ spdx }";
         when(serecoSpdaxDownloadService.getScanSpdxJsonReport(PROJECT1_ID, randomUUID)).thenReturn(spdxJsonReport);
@@ -264,19 +249,25 @@ public class ScanReportRestControllerMockTest {
 
     }
 
-    @Before
-    public void before() throws Exception {
+    @BeforeEach
+    void beforeEach() throws Exception {
         randomUUID = UUID.randomUUID();
-        Map<String, Object> map = new HashMap<>();
-        map.put("jobuuid", randomUUID);
-        map.put("styleRed", "theRedStyle");
-        map.put("styleGreen", "display:none");
-        map.put("styleYellow", "display:none");
-        map.put("redList", new ArrayList<>());
-        map.put("yellowList", new ArrayList<>());
-        map.put("greenList", new ArrayList<>());
-        map.put("isWebDesignMode", false);
-        when(modelBuilder.build(any())).thenReturn(map);
+
+        reportModelBuilderResult = new HashMap<>();
+
+        /* define report model builder default result */
+        reportModelBuilderResult.put("jobuuid", randomUUID);
+        reportModelBuilderResult.put("styleRed", "theRedStyle");
+        reportModelBuilderResult.put("styleGreen", "display:none");
+        reportModelBuilderResult.put("styleYellow", "display:none");
+        reportModelBuilderResult.put("redList", new ArrayList<>());
+        reportModelBuilderResult.put("yellowList", new ArrayList<>());
+        reportModelBuilderResult.put("greenList", new ArrayList<>());
+        reportModelBuilderResult.put("isWebDesignMode", false);
+        reportModelBuilderResult.put("metaData", Optional.ofNullable(null));
+        reportModelBuilderResult.put("codeScanSupport", new HtmlCodeScanDescriptionSupport());
+
+        when(modelBuilder.build(any())).thenReturn(reportModelBuilderResult);
     }
 
 }

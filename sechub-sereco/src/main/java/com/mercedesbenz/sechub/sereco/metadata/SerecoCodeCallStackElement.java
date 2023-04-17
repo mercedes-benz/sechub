@@ -7,9 +7,9 @@ public class SerecoCodeCallStackElement {
 
     private String location;
 
-    private Integer line;
+    private Integer line = 0;
 
-    private Integer column;
+    private Integer column = 0;
 
     private String source;
 
@@ -45,16 +45,32 @@ public class SerecoCodeCallStackElement {
         return line;
     }
 
+    /**
+     * Set value of line to the value of parameter line, if the parameter line is
+     * NOT null
+     *
+     * @param line
+     */
     public void setLine(Integer line) {
-        this.line = line;
+        if (line != null) {
+            this.line = line;
+        }
     }
 
     public Integer getColumn() {
         return column;
     }
 
+    /**
+     * Set value of column to the value of parameter column, if the parameter column
+     * is NOT null
+     *
+     * @param column
+     */
     public void setColumn(Integer column) {
-        this.column = column;
+        if (column != null) {
+            this.column = column;
+        }
     }
 
     public String getSource() {
