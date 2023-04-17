@@ -531,7 +531,7 @@ table.CodeRay td.code{padding:0 0 0 .75em}
 <div id="header">
 <h1><span class="image"><a class="image" href="https://mercedes-benz.github.io/sechub"><img src="images/sechub-logo.png" alt="sechub logo"></a></span> SecHub TechDoc</h1>
 <div class="details">
-<span id="revnumber"> Server 0.41.0</span>
+<span id="revnumber"> Server 0.41.1</span>
 </div>
 <div id="toc" class="toc2">
 <div id="toctitle">Table of contents</div>
@@ -1393,7 +1393,7 @@ build pipeline / contionus integration (CI) and helps to provide
 </tbody>
 </table>
 <div class="paragraph">
-<p>Documentation version: <code>Server 0.41.0-20230413103656</code></p>
+<p>Documentation version: <code>Server 0.41.1-20230417110242</code></p>
 </div>
 <div class="paragraph">
 <p>Target audience for this document are <strong>SecHub Developers</strong> only!</p>
@@ -14829,7 +14829,7 @@ The complete documentation about REST API is generated. If you want to change co
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/scan/download/238a9fd3-9e65-4586-8509-5460bbef166e' -i -u 'user:secret' -X GET \
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/scan/download/0d8bff85-96a7-4e4c-ba3e-0015e56e7b22' -i -u 'user:secret' -X GET \
     -H 'Content-Type: application/json;charset=UTF-8'</code></pre>
 </div>
 </div>
@@ -15702,7 +15702,7 @@ The complete documentation about REST API is generated. If you want to change co
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code>[{&quot;sechubJobUUID&quot;:&quot;d9acdabd-55ef-4745-811f-3d6f83944791&quot;,&quot;executedBy&quot;:&quot;spartakus&quot;,&quot;started&quot;:&quot;2023-04-12T10:37:14.013721&quot;,&quot;ended&quot;:&quot;2023-04-13T10:37:14.013751&quot;,&quot;status&quot;:&quot;OK&quot;}]</code></pre>
+<pre class="CodeRay highlight nowrap"><code>[{&quot;sechubJobUUID&quot;:&quot;b0bd65df-dd90-4534-8cd0-071933b5635d&quot;,&quot;executedBy&quot;:&quot;spartakus&quot;,&quot;started&quot;:&quot;2023-04-16T11:03:10.765757&quot;,&quot;ended&quot;:&quot;2023-04-17T11:03:10.765786&quot;,&quot;status&quot;:&quot;OK&quot;}]</code></pre>
 </div>
 </div>
 </div>
@@ -16252,7 +16252,7 @@ The complete documentation about REST API is generated. If you want to change co
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code>{&quot;jobId&quot;:&quot;78a2866c-02c2-4a28-84c9-9283164af8c2&quot;}</code></pre>
+<pre class="CodeRay highlight nowrap"><code>{&quot;jobId&quot;:&quot;2b04e7c0-7b9e-4059-9352-df491b988d5e&quot;}</code></pre>
 </div>
 </div>
 </div>
@@ -16391,7 +16391,7 @@ The complete documentation about REST API is generated. If you want to change co
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code>{&quot;jobId&quot;:&quot;66316173-bfe5-45b7-ad94-fe7e60e14a21&quot;}</code></pre>
+<pre class="CodeRay highlight nowrap"><code>{&quot;jobId&quot;:&quot;f9170f63-e639-421b-9fe6-29a57b71473d&quot;}</code></pre>
 </div>
 </div>
 </div>
@@ -16545,7 +16545,7 @@ The complete documentation about REST API is generated. If you want to change co
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code>{&quot;jobId&quot;:&quot;50253720-11fc-4c31-875e-253069b4e140&quot;}</code></pre>
+<pre class="CodeRay highlight nowrap"><code>{&quot;jobId&quot;:&quot;274821b2-e852-4c5e-9eb9-f00d6a69f47b&quot;}</code></pre>
 </div>
 </div>
 </div>
@@ -16704,7 +16704,7 @@ The complete documentation about REST API is generated. If you want to change co
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code>{&quot;jobId&quot;:&quot;57e2b2a1-65cc-446a-a64c-6b78cd2f269a&quot;}</code></pre>
+<pre class="CodeRay highlight nowrap"><code>{&quot;jobId&quot;:&quot;53a2fc56-83b9-4f96-8f9f-5744072a08a1&quot;}</code></pre>
 </div>
 </div>
 </div>
@@ -16883,7 +16883,7 @@ The complete documentation about REST API is generated. If you want to change co
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code>{&quot;jobId&quot;:&quot;13e5e547-48cb-471b-8a81-16cec653face&quot;}</code></pre>
+<pre class="CodeRay highlight nowrap"><code>{&quot;jobId&quot;:&quot;b43e92df-5b4d-467c-9a16-372ec8b4893b&quot;}</code></pre>
 </div>
 </div>
 </div>
@@ -16957,7 +16957,7 @@ The complete documentation about REST API is generated. If you want to change co
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/job/51f6bae5-7b40-4e18-a031-146d6c74da5a/sourcecode' -i -u 'user:secret' -X POST \
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/job/61b2533d-2372-48cb-8970-4da95105fa18/sourcecode' -i -u 'user:secret' -X POST \
     -H 'Content-Type: multipart/form-data;charset=UTF-8' \
     -F 'file=PK  
       �&lt;M                       test1.txtPK  ?
@@ -17040,7 +17040,7 @@ The complete documentation about REST API is generated. If you want to change co
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/job/e8c12cc8-e49e-4ab4-9d7f-4447baf50283/approve' -i -u 'user:secret' -X PUT \
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/job/d810e3a2-1c6f-462d-b019-1ecee97e2fc9/approve' -i -u 'user:secret' -X PUT \
     -H 'Content-Type: application/json;charset=UTF-8'</code></pre>
 </div>
 </div>
@@ -17177,7 +17177,7 @@ The complete documentation about REST API is generated. If you want to change co
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/job/bf5a95a9-eae7-4a76-81fb-3fffc88fb9b2' -i -u 'user:secret' -X GET \
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/job/87195a37-74b0-466e-88fc-96e24c3027da' -i -u 'user:secret' -X GET \
     -H 'Content-Type: application/json;charset=UTF-8'</code></pre>
 </div>
 </div>
@@ -17186,7 +17186,7 @@ The complete documentation about REST API is generated. If you want to change co
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code>{&quot;jobUUID&quot;:&quot;bf5a95a9-eae7-4a76-81fb-3fffc88fb9b2&quot;,&quot;owner&quot;:&quot;CREATOR1&quot;,&quot;created&quot;:&quot;&quot;,&quot;started&quot;:&quot;2023-04-13T10:22:38.73874&quot;,&quot;ended&quot;:&quot;2023-04-13T10:37:38.738766&quot;,&quot;state&quot;:&quot;ENDED&quot;,&quot;result&quot;:&quot;OK&quot;,&quot;trafficLight&quot;:&quot;GREEN&quot;}</code></pre>
+<pre class="CodeRay highlight nowrap"><code>{&quot;jobUUID&quot;:&quot;87195a37-74b0-466e-88fc-96e24c3027da&quot;,&quot;owner&quot;:&quot;CREATOR1&quot;,&quot;created&quot;:&quot;&quot;,&quot;started&quot;:&quot;2023-04-17T10:48:36.080638&quot;,&quot;ended&quot;:&quot;2023-04-17T11:03:36.08066&quot;,&quot;state&quot;:&quot;ENDED&quot;,&quot;result&quot;:&quot;OK&quot;,&quot;trafficLight&quot;:&quot;GREEN&quot;}</code></pre>
 </div>
 </div>
 </div>
@@ -17261,7 +17261,7 @@ The complete documentation about REST API is generated. If you want to change co
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/report/7a8d3992-c445-48c4-8462-6ca916853a06' -i -u 'user:secret' -X GET \
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/report/80d5dd8e-3c48-481f-8280-8cd4091bc9f3' -i -u 'user:secret' -X GET \
     -H 'Content-Type: application/json;charset=UTF-8' \
     -H 'Accept: application/json'</code></pre>
 </div>
@@ -17333,7 +17333,7 @@ The complete documentation about REST API is generated. If you want to change co
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/report/2507d096-583b-477b-931f-52f990e8da9e' -i -u 'user:secret' -X GET \
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/report/47ac60e8-3faf-42d0-8739-18005f77a033' -i -u 'user:secret' -X GET \
     -H 'Content-Type: application/json;charset=UTF-8' \
     -H 'Accept: application/xhtml+xml'</code></pre>
 </div>
@@ -17825,7 +17825,7 @@ The complete documentation about REST API is generated. If you want to change co
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/job/1e74f927-ec66-4ecd-9660-ec21d99e6810/binaries' -i -u 'user:secret' -X POST \
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/job/2ce0c97d-5307-4922-89b7-86a718a10921/binaries' -i -u 'user:secret' -X POST \
     -H 'Content-Type: multipart/form-data;charset=UTF-8' \
     -H 'x-file-size: 10240' \
     -F 'file=test1.txt                                                                                           0000664 0001750 0001750 00000000000 13353454574 012170  0                                                                                                    ustar   albert                          albert                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 ' \
@@ -17906,7 +17906,7 @@ The complete documentation about REST API is generated. If you want to change co
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/report/spdx/6145bcad-fea4-4ae8-9db0-a855742e6515' -i -u 'user:secret' -X GET \
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/report/spdx/851d6ef1-511f-4eee-bb51-b35e30f1baec' -i -u 'user:secret' -X GET \
     -H 'Content-Type: application/json;charset=UTF-8' \
     -H 'Accept: application/json'</code></pre>
 </div>
@@ -18409,7 +18409,7 @@ The complete documentation about REST API is generated. If you want to change co
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code>[{&quot;jobUUID&quot;:&quot;19b12345-60b4-4a2c-8be5-e513dcf2d00a&quot;,&quot;projectId&quot;:&quot;project-name&quot;,&quot;owner&quot;:&quot;owner-userid&quot;,&quot;status&quot;:&quot;RUNNING&quot;,&quot;since&quot;:&quot;2023-04-13T10:37:24.07675&quot;,&quot;configuration&quot;:&quot;{ config data }&quot;}]</code></pre>
+<pre class="CodeRay highlight nowrap"><code>[{&quot;jobUUID&quot;:&quot;41f6639d-09b4-4927-91b9-56325f25f8aa&quot;,&quot;projectId&quot;:&quot;project-name&quot;,&quot;owner&quot;:&quot;owner-userid&quot;,&quot;status&quot;:&quot;RUNNING&quot;,&quot;since&quot;:&quot;2023-04-17T11:03:23.626691&quot;,&quot;configuration&quot;:&quot;{ config data }&quot;}]</code></pre>
 </div>
 </div>
 </div>
@@ -18478,7 +18478,7 @@ The complete documentation about REST API is generated. If you want to change co
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/jobs/cancel/dbec2272-7c03-42b3-9f1f-580748f5da5e' -i -u 'user:secret' -X POST \
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/jobs/cancel/58a5317e-003a-4f8b-95dd-7ce28c0c2f4d' -i -u 'user:secret' -X POST \
     -H 'Content-Type: application/json;charset=UTF-8'</code></pre>
 </div>
 </div>
@@ -18552,7 +18552,7 @@ The complete documentation about REST API is generated. If you want to change co
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/jobs/restart/ffccc23b-9735-432e-ba12-b4a5f681087d' -i -u 'user:secret' -X POST \
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/jobs/restart/70089d50-82b4-4ee4-8abb-d03d601b66a6' -i -u 'user:secret' -X POST \
     -H 'Content-Type: application/json;charset=UTF-8'</code></pre>
 </div>
 </div>
@@ -18626,7 +18626,7 @@ The complete documentation about REST API is generated. If you want to change co
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/jobs/restart-hard/e701fcd4-2ec4-43e7-ba8a-47c24ac1aec6' -i -u 'user:secret' -X POST \
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/jobs/restart-hard/fdd27562-1330-46d6-9524-34c3df911720' -i -u 'user:secret' -X POST \
     -H 'Content-Type: application/json;charset=UTF-8'</code></pre>
 </div>
 </div>
@@ -19084,7 +19084,7 @@ The complete documentation about REST API is generated. If you want to change co
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code>4419c76b-15c5-470d-9ccd-d1555745a63c</code></pre>
+<pre class="CodeRay highlight nowrap"><code>0e875440-c0f4-40ce-b81a-f6e26a8bc15b</code></pre>
 </div>
 </div>
 </div>
@@ -19153,7 +19153,7 @@ The complete documentation about REST API is generated. If you want to change co
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/config/executor/874847e7-5e9f-49ed-a11d-11cb48ca8d27' -i -u 'user:secret' -X DELETE \
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/config/executor/2f56e153-746d-4a9f-980f-6158c76e27b1' -i -u 'user:secret' -X DELETE \
     -H 'Content-Type: application/json;charset=UTF-8'</code></pre>
 </div>
 </div>
@@ -19253,7 +19253,7 @@ The complete documentation about REST API is generated. If you want to change co
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code>{&quot;executorConfigurations&quot;:[{&quot;uuid&quot;:&quot;9b5aa9ec-4e70-4107-9531-29d350fab7a0&quot;,&quot;name&quot;:&quot;example configuration&quot;,&quot;enabled&quot;:true}],&quot;type&quot;:&quot;executorConfigurationList&quot;}</code></pre>
+<pre class="CodeRay highlight nowrap"><code>{&quot;executorConfigurations&quot;:[{&quot;uuid&quot;:&quot;94da5110-945c-4325-ae27-3acffe47f8ec&quot;,&quot;name&quot;:&quot;example configuration&quot;,&quot;enabled&quot;:true}],&quot;type&quot;:&quot;executorConfigurationList&quot;}</code></pre>
 </div>
 </div>
 </div>
@@ -19391,7 +19391,7 @@ The complete documentation about REST API is generated. If you want to change co
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/config/executor/d4c0e48b-8a0d-4df0-a47f-870d9b968e6e' -i -u 'user:secret' -X GET \
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/config/executor/3e06466d-b478-4ed0-a316-1188143e809c' -i -u 'user:secret' -X GET \
     -H 'Content-Type: application/json;charset=UTF-8'</code></pre>
 </div>
 </div>
@@ -19400,7 +19400,7 @@ The complete documentation about REST API is generated. If you want to change co
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code>{&quot;name&quot;:&quot;New name&quot;,&quot;productIdentifier&quot;:&quot;PDS_CODESCAN&quot;,&quot;setup&quot;:{&quot;baseURL&quot;:&quot;https://product.example.com&quot;,&quot;credentials&quot;:{&quot;user&quot;:&quot;env:EXAMPLE_USENAME&quot;,&quot;password&quot;:&quot;env:EXAMPLE_PASSWORD&quot;},&quot;jobParameters&quot;:[{&quot;key&quot;:&quot;example.key1&quot;,&quot;value&quot;:&quot;A value&quot;}]},&quot;executorVersion&quot;:1,&quot;enabled&quot;:false,&quot;uuid&quot;:&quot;d4c0e48b-8a0d-4df0-a47f-870d9b968e6e&quot;}</code></pre>
+<pre class="CodeRay highlight nowrap"><code>{&quot;name&quot;:&quot;New name&quot;,&quot;productIdentifier&quot;:&quot;PDS_CODESCAN&quot;,&quot;setup&quot;:{&quot;baseURL&quot;:&quot;https://product.example.com&quot;,&quot;credentials&quot;:{&quot;user&quot;:&quot;env:EXAMPLE_USENAME&quot;,&quot;password&quot;:&quot;env:EXAMPLE_PASSWORD&quot;},&quot;jobParameters&quot;:[{&quot;key&quot;:&quot;example.key1&quot;,&quot;value&quot;:&quot;A value&quot;}]},&quot;executorVersion&quot;:1,&quot;enabled&quot;:false,&quot;uuid&quot;:&quot;3e06466d-b478-4ed0-a316-1188143e809c&quot;}</code></pre>
 </div>
 </div>
 </div>
@@ -19533,7 +19533,7 @@ The complete documentation about REST API is generated. If you want to change co
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/config/executor/b5ea625c-db97-45f3-9bc3-e36f2f225cf4' -i -u 'user:secret' -X PUT \
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/config/executor/1bb7d888-e7de-45ff-aa69-ae05953102cb' -i -u 'user:secret' -X PUT \
     -H 'Content-Type: application/json;charset=UTF-8' \
     -d '{&quot;name&quot;:&quot;New name&quot;,&quot;productIdentifier&quot;:&quot;PDS_CODESCAN&quot;,&quot;executorVersion&quot;:1,&quot;enabled&quot;:false,&quot;setup&quot;:{&quot;baseURL&quot;:&quot;https://productNew.example.com&quot;,&quot;credentials&quot;:{&quot;user&quot;:&quot;env:EXAMPLE_NEW_USENAME&quot;,&quot;password&quot;:&quot;env:EXAMPLE_NEW_PASSWORD&quot;},&quot;jobParameters&quot;:[{&quot;key&quot;:&quot;example.key1&quot;,&quot;value&quot;:&quot;A value but changed. Remark: the other parameter (example.key2) has been removed by this call&quot;}]}}'</code></pre>
 </div>
@@ -19832,7 +19832,7 @@ The complete documentation about REST API is generated. If you want to change co
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/config/execution/profile/existing-profile-1' -i -u 'user:secret' -X PUT \
     -H 'Content-Type: application/json;charset=UTF-8' \
-    -d '{&quot;description&quot;:&quot;changed description&quot;,&quot;configurations&quot;:[{&quot;uuid&quot;:&quot;6831b889-8eec-45d9-b9ad-ab1a3caab9ad&quot;,&quot;executorVersion&quot;:0,&quot;enabled&quot;:false,&quot;setup&quot;:{&quot;credentials&quot;:{},&quot;jobParameters&quot;:[]}}],&quot;enabled&quot;:true}'</code></pre>
+    -d '{&quot;description&quot;:&quot;changed description&quot;,&quot;configurations&quot;:[{&quot;uuid&quot;:&quot;033ea89c-bb3a-41ed-a3e8-bbdac54da8b0&quot;,&quot;executorVersion&quot;:0,&quot;enabled&quot;:false,&quot;setup&quot;:{&quot;credentials&quot;:{},&quot;jobParameters&quot;:[]}}],&quot;enabled&quot;:true}'</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -19973,7 +19973,7 @@ The complete documentation about REST API is generated. If you want to change co
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code>{&quot;description&quot;:&quot;a description&quot;,&quot;enabled&quot;:true,&quot;configurations&quot;:[{&quot;name&quot;:&quot;New name&quot;,&quot;productIdentifier&quot;:&quot;PDS_CODESCAN&quot;,&quot;setup&quot;:{&quot;baseURL&quot;:&quot;https://product.example.com&quot;,&quot;credentials&quot;:{&quot;user&quot;:&quot;env:EXAMPLE_USENAME&quot;,&quot;password&quot;:&quot;env:EXAMPLE_PASSWORD&quot;},&quot;jobParameters&quot;:[{&quot;key&quot;:&quot;example.key1&quot;,&quot;value&quot;:&quot;A value but changed. Remark: the other parameter (example.key2) has been removed by this call&quot;}]},&quot;executorVersion&quot;:1,&quot;enabled&quot;:false,&quot;uuid&quot;:&quot;fe6ecf7b-f603-4bd2-a93f-985c70c6651d&quot;}],&quot;projectIds&quot;:[&quot;project-1&quot;,&quot;project-2&quot;]}</code></pre>
+<pre class="CodeRay highlight nowrap"><code>{&quot;description&quot;:&quot;a description&quot;,&quot;enabled&quot;:true,&quot;configurations&quot;:[{&quot;name&quot;:&quot;New name&quot;,&quot;productIdentifier&quot;:&quot;PDS_CODESCAN&quot;,&quot;setup&quot;:{&quot;baseURL&quot;:&quot;https://product.example.com&quot;,&quot;credentials&quot;:{&quot;user&quot;:&quot;env:EXAMPLE_USENAME&quot;,&quot;password&quot;:&quot;env:EXAMPLE_PASSWORD&quot;},&quot;jobParameters&quot;:[{&quot;key&quot;:&quot;example.key1&quot;,&quot;value&quot;:&quot;A value but changed. Remark: the other parameter (example.key2) has been removed by this call&quot;}]},&quot;executorVersion&quot;:1,&quot;enabled&quot;:false,&quot;uuid&quot;:&quot;f13c5b93-ec3f-47a4-b8ef-85c567dd4a14&quot;}],&quot;projectIds&quot;:[&quot;project-1&quot;,&quot;project-2&quot;]}</code></pre>
 </div>
 </div>
 </div>
@@ -20777,7 +20777,7 @@ The complete documentation about REST API is generated. If you want to change co
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code>{&quot;page&quot;:0,&quot;totalPages&quot;:1,&quot;content&quot;:[{&quot;jobUUID&quot;:&quot;659f6181-a31d-4184-b56a-bf2c5d784cfa&quot;,&quot;executedBy&quot;:&quot;User1&quot;,&quot;created&quot;:&quot;2023-04-13T10:20:38.773&quot;,&quot;started&quot;:&quot;2023-04-13T10:22:38.773027&quot;,&quot;ended&quot;:&quot;2023-04-13T10:37:38.773036&quot;,&quot;executionState&quot;:&quot;ENDED&quot;,&quot;trafficLight&quot;:&quot;GREEN&quot;,&quot;executionResult&quot;:&quot;OK&quot;}]}</code></pre>
+<pre class="CodeRay highlight nowrap"><code>{&quot;page&quot;:0,&quot;totalPages&quot;:1,&quot;content&quot;:[{&quot;jobUUID&quot;:&quot;496f2fbb-df10-492c-a5c2-8f0c3cd32798&quot;,&quot;executedBy&quot;:&quot;User1&quot;,&quot;created&quot;:&quot;2023-04-17T10:46:36.114454&quot;,&quot;started&quot;:&quot;2023-04-17T10:48:36.114479&quot;,&quot;ended&quot;:&quot;2023-04-17T11:03:36.114488&quot;,&quot;executionState&quot;:&quot;ENDED&quot;,&quot;trafficLight&quot;:&quot;GREEN&quot;,&quot;executionResult&quot;:&quot;OK&quot;}]}</code></pre>
 </div>
 </div>
 <div style="page-break-after: always;"></div>
@@ -21411,7 +21411,7 @@ configure the client to do this also on color YELLOW. Only Green is always accep
 </div>
 <div id="footer">
 <div id="footer-text">
- Server 0.41.0<br>
+ Server 0.41.1<br>
 </div>
 </div>
 </body>
