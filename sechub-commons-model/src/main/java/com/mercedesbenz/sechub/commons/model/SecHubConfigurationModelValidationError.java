@@ -43,9 +43,9 @@ public enum SecHubConfigurationModelValidationError {
 
     METADATA_LABEL_VALUE_TOO_LONG("Meta data label value length is too long."),
 
-    METADATA_TOO_MANY_LABELS("Too many meta data labels defined"),
+    METADATA_TOO_MANY_LABELS("Too many meta data labels defined!"),
 
-    METADATA_LABEL_KEY_CONTAINS_ILLEGAL_CHARACTERS("Meta data label key contains illegal characters"),
+    METADATA_LABEL_KEY_CONTAINS_ILLEGAL_CHARACTERS("Meta data label key contains illegal characters."),
 
     ;
 
