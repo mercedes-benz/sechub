@@ -8,6 +8,8 @@ public class SystemTestParameters {
     private String pathToPdsSolution;
     private String pathToWorkspace;
     private boolean localRun = true;// default always local
+    
+    private boolean dryRun;
 
     public SystemTestConfiguration getConfiguration() {
         return configuration;
@@ -23,6 +25,10 @@ public class SystemTestParameters {
 
     public boolean isLocalRun() {
         return localRun;
+    }
+    
+    public boolean isDryRun() {
+        return dryRun;
     }
 
     public static SystemTestParametersBuilder builder() {
@@ -55,6 +61,16 @@ public class SystemTestParameters {
             parameter.localRun = true;
             return this;
         }
+        
+        /**
+         * Mark as "dry run" - will just start processes etc. but will not
+         * change anything - only interesting for internal testing of the framework
+         * @return itself
+         */
+        public SystemTestParametersBuilder dryRun() {
+            parameter.dryRun=true;
+            return this;
+        }
 
         public SystemTestParametersBuilder remoteRun() {
             parameter.localRun = false;
@@ -65,5 +81,9 @@ public class SystemTestParameters {
             return parameter;
         }
     }
+
+    
+    
+    
 
 }

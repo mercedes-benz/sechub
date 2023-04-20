@@ -5,6 +5,7 @@ import static com.mercedesbenz.sechub.test.TestUtil.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 import java.io.IOException;
+import java.net.URL;
 import java.nio.file.Path;
 import java.util.concurrent.TimeUnit;
 
@@ -64,7 +65,6 @@ class SystemTestIntegrationTest {
                 localSetup().
                     secHub().
                         addStartStep().
-
                             script().
                                 envVariable("TEST_NUMBER_LIST", "${variables.test_var_number}").
                                 path("./01-start-single-docker-compose.sh").
@@ -136,6 +136,7 @@ class SystemTestIntegrationTest {
         SystemTestResult result = runSystemTests(
                 params().
                     localRun().
+                    dryRun().
                     workspacePath(createTempDirectoryInBuildFolder("systemtest_inttest/faked_gosec_can_be_executed_without_errors").toString()).
                     testConfiguration(configuration).
                     pdsSolutionPath(TEST_PDS_SOLUTIONS_PATH).
@@ -221,6 +222,7 @@ class SystemTestIntegrationTest {
         ProcessContainerFailedException exception = assertThrows(ProcessContainerFailedException.class,()->runSystemTests(
             params().
                 localRun().
+                dryRun().
                 workspacePath(createTempDirectoryInBuildFolder("systemtest_inttest/fail_on_start").toString()).
                 testConfiguration(configuration).
                 pdsSolutionPath(TEST_PDS_SOLUTIONS_PATH).

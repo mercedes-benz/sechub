@@ -13,7 +13,7 @@ package com.mercedesbenz.sechub.docgen.adopt;
  *
  * Equality is checked by
  * <code>SystemTestFallbacksAndDocFallbacksTest.java</code> If it fails, please
- * copy system test DefaultFallbacks at this location.
+ * copy content system test DefaultFallback at this location (comments can be customized)
  *
  * @return
  */

@@ -2,11 +2,11 @@ package com.mercedesbenz.sechub.systemtest.connect;
 
 import java.net.URI;
 
-import com.mercedesbenz.sechub.api.java.SecHubAccess;
+import com.mercedesbenz.sechub.api.SecHubClient;
 
 public class SecHubServerConnector {
 
-    private SecHubAccess sechubClient;
+    private SecHubClient sechubClient;
 
     public void SecHubServerConnector(String serverBase, String userId, String apiToken) {
         URI uri = URI.create(serverBase);

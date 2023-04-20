@@ -8,9 +8,7 @@ import java.net.URI;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.mercedesbenz.sechub.api.java.AnonymousApi;
-import com.mercedesbenz.sechub.api.java.ApiException;
-import com.mercedesbenz.sechub.api.java.SecHubAccess;
+import com.mercedesbenz.sechub.api.SecHubClient;
 import com.mercedesbenz.sechub.api.java.demo.config.ConfigurationProvider;
 import com.mercedesbenz.sechub.api.java.demo.playground.AdminApiPlayground;
 
@@ -37,12 +35,13 @@ public class OpenAPITestTool {
             LOG.trace("*** Privileged user's API token: {}", "*".repeat(apiToken.length()));
             LOG.trace("*** trustAll: {}", trustAll);
 
-            SecHubAccess sechubAccess = new SecHubAccess(serverUri, userName, apiToken, trustAll);
+            SecHubClient client = new SecHubClient(serverUri, userName, apiToken, trustAll);
 
-            testAnonymousApi(sechubAccess);
+            // simple test here
+            testAnonymousApi(client);
 
             // more sophisticated stuff
-            new AdminApiPlayground(sechubAccess).run();
+            new AdminApiPlayground(client).run();
 
             LOG.info("Sechub server successfully tested.");
             System.out.println("[ OK ] SecHub was accessible with generated Java API");
@@ -53,20 +52,13 @@ public class OpenAPITestTool {
 
     }
 
-    private void testAnonymousApi(SecHubAccess access) throws ApiException {
+    private void testAnonymousApi(SecHubClient client) throws Exception {
         logTitle("Start testing anonymous API");
-        AnonymousApi anonymousApi = access.getAnonymousApi();
 
-        anonymousApi.anonymousCheckAliveGet();
-        logSuccess("Sechub server is alive (GET).");
+        boolean serverAlive = client.checkIsServerAlive();
 
-        anonymousApi.anonymousCheckAliveHead();
-        logSuccess("Sechub server is alive (HEAD).");
+        assumeEquals(true, serverAlive, "SecHub server is alive");
 
     }
-
-    
-
-    
 
 }

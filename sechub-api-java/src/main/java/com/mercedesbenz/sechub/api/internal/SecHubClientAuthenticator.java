@@ -1,12 +1,14 @@
-package com.mercedesbenz.sechub.api.java;
+package com.mercedesbenz.sechub.api.internal;
 
 import java.net.Authenticator;
 import java.net.PasswordAuthentication;
 
-public class SecHubAccessAuthenticator extends Authenticator {
+import com.mercedesbenz.sechub.api.SecHubClient;
+
+public class SecHubClientAuthenticator extends Authenticator {
     private PasswordAuthentication paswordAuthentication;
 
-    SecHubAccessAuthenticator(SecHubAccess access) {
+    public SecHubClientAuthenticator(SecHubClient access) {
         this.paswordAuthentication = new PasswordAuthentication(access.getUsername(), access.getSealedApiToken().toCharArray());
     }
 

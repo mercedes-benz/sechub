@@ -37,8 +37,8 @@ public class SystemTestAPI {
         return SystemTestParameters.builder();
     }
 
-    public static SystemTestResult runSystemTests(SystemTestParameters parameter) {
-        LocationSupport locationSupport = new LocationSupport(parameter.getPathToPdsSolution(), null, parameter.getPathToWorkspace());
+    public static SystemTestResult runSystemTests(SystemTestParameters parameters) {
+        LocationSupport locationSupport = new LocationSupport(parameters.getPathToPdsSolution(), null, parameters.getPathToWorkspace());
 
         Path runtimeFolder = locationSupport.getRuntimeFolder();
         if (Files.exists(runtimeFolder)) {
@@ -55,7 +55,7 @@ public class SystemTestAPI {
 
         SystemTestRuntime runtime = new SystemTestRuntime(locationSupport, execSupport);
 
-        return runtime.run(parameter.getConfiguration(), parameter.isLocalRun());
+        return runtime.run(parameters.getConfiguration(), parameters.isLocalRun(), parameters.isDryRun());
     }
 
 }

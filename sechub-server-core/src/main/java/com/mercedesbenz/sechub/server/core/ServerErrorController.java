@@ -68,7 +68,6 @@ public class ServerErrorController implements ErrorController {
 
             if (httpStatusEnum.is4xxClientError()) {
                 options = options.including(ErrorAttributeOptions.Include.MESSAGE);
-                options = options.including(ErrorAttributeOptions.Include.BINDING_ERRORS);
             }
 
         } catch (RuntimeException e) {

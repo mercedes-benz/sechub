@@ -4,35 +4,35 @@ import static com.mercedesbenz.sechub.api.java.demo.Utils.*;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.UUID;
 
-import com.mercedesbenz.sechub.api.java.AdminApi;
-import com.mercedesbenz.sechub.api.java.ApiException;
-import com.mercedesbenz.sechub.api.java.SecHubAccess;
-import com.mercedesbenz.sechub.api.java.model.ExecutionProfileCreate;
-import com.mercedesbenz.sechub.api.java.model.ExecutorConfiguration;
-import com.mercedesbenz.sechub.api.java.model.ExecutorConfigurationSetup;
-import com.mercedesbenz.sechub.api.java.model.ListOfSignupsInner;
-import com.mercedesbenz.sechub.api.java.model.Project;
-import com.mercedesbenz.sechub.api.java.model.UserSignup;
+import com.mercedesbenz.sechub.api.ExecutionProfileCreate;
+import com.mercedesbenz.sechub.api.ExecutorConfiguration;
+import com.mercedesbenz.sechub.api.ExecutorConfigurationSetup;
+import com.mercedesbenz.sechub.api.ExecutorConfigurationSetupCredentials;
+import com.mercedesbenz.sechub.api.ExecutorConfigurationSetupJobParameter;
+import com.mercedesbenz.sechub.api.OpenUserSignup;
+import com.mercedesbenz.sechub.api.Project;
+import com.mercedesbenz.sechub.api.SecHubClient;
+import com.mercedesbenz.sechub.api.SecHubClientException;
+import com.mercedesbenz.sechub.api.UserSignup;
 
 public class AdminApiPlayground {
-    SecHubAccess access;
+    SecHubClient client;
     long identifier = System.currentTimeMillis();
     private String userName;
-    private AdminApi adminApi;
     private String projectName;
-    
-    public AdminApiPlayground(SecHubAccess access) {
+
+    public AdminApiPlayground(SecHubClient access) {
         userName = "un" + identifier;
         projectName = "pn" + identifier;
-        
-        this.access=access;
-        this.adminApi = access.getAdminApi();
+
+        this.client = access;
     }
 
-    public void run()  throws ApiException {
+    public void run() throws Exception {
         logTitle("Start testing admin API");
-        
+
 //        Object result = adminApi.adminChecksServerVersion();
 //        assumeEquals("0.0.0", result, "Check server version");
 
@@ -43,58 +43,86 @@ public class AdminApiPlayground {
 
         createProjectAndCheckFoundInList();
 
+        UUID uuid = createExecutorConfiguration();
+
+        String profileId = createProfile();
+
+        client.addExecutorToProfile(uuid, profileId);
+
+        logSuccess("Added executor configuration with uuid: " + uuid + " to profile : " + profileId);
         
+
+    }
+
+    private String createProfile() throws SecHubClientException {
+        /* create a profile */
+        String profileName = "profile" + identifier;
+        ExecutionProfileCreate profile = new ExecutionProfileCreate();
+        profile.setDescription("Something");
+        profile.setEnabled(true);
+        profile.getProjectIds().add(projectName);
+        client.createExecutionProfile(profileName, profile);
+
+        logSuccess("Profile: " + profile + " created");
+
+        return profileName;
+    }
+
+    private UUID createExecutorConfiguration() throws SecHubClientException {
         /* create an executor configuration */
-        ExecutorConfigurationSetup setup = new ExecutorConfigurationSetup();
-        setup.setBaseURL("https://example.com:8443");
-        
         ExecutorConfiguration configuration = new ExecutorConfiguration();
+
         configuration.setEnabled(false);
         configuration.setExecutorVersion(BigDecimal.valueOf(1));
         configuration.setName("PDS_TEST1");
         configuration.setProductIdentifier("PDS_CODESCAN");
-        
-        configuration.setSetup(setup);
-        
-        /* FIXME Albert Tregnaghi, 2023-04-17: the api wantes a JSON result but it isn't - same problem as for adminChecksServerVersion*/
-        Object result = adminApi.adminCreatesExecutorConfiguration(configuration);
-        System.out.println("result="+result);
-        
-        /* create a profile */
-        String profileName = "profile" +identifier;
-        ExecutionProfileCreate create = new ExecutionProfileCreate();
-        adminApi.adminCreatesExecutionProfile(profileName, create);
-        
+
+        ExecutorConfigurationSetupJobParameter parameter1 = new ExecutorConfigurationSetupJobParameter();
+        ExecutorConfigurationSetup setup = configuration.getSetup();
+        setup.getJobParameters().add(parameter1);
+        setup.setBaseURL("https://example.com:8443");
+
+        ExecutorConfigurationSetupCredentials credentials = new ExecutorConfigurationSetupCredentials();
+        credentials.setUser("user");
+        credentials.setPassword("pwd");
+
+        setup.setCredentials(credentials);
+
+        UUID uuid = client.createExecutorConfiguration(configuration);
+        logSuccess("Executor configuration with uuid: " + uuid + " created");
+        return uuid;
     }
 
-    private void createProjectAndCheckFoundInList() throws ApiException {
+    private void createProjectAndCheckFoundInList() throws SecHubClientException {
+
         Project project = new Project();
         project.setOwner(userName);
         project.setName(projectName);
         project.setApiVersion("1.0");
         project.setDescription("description1");
 
-        adminApi.adminCreatesProject(project);
+        client.createProject(project);
+
         logSuccess("Project " + projectName + " created");
 
-        List<String> projects = adminApi.adminListsAllProjects();
+        List<String> projects = client.fetchAllProjectNames();
         assumeEquals(true, projects.contains(projectName), "Project " + projectName + " was found in list");
     }
 
-    private void acceptUserAndCheckListedAsUser() throws ApiException {
-        adminApi.adminAcceptsSignup(userName);
+    private void acceptUserAndCheckListedAsUser() throws SecHubClientException {
+        client.acceptOpenSignup(userName);
         waitMilliseconds(300);
-        
-        List<String> usersList = adminApi.adminListsAllUsers();
+
+        List<String> usersList = client.fetchAllUserNames();
         logSuccess("List of users has entries: " + usersList.size());
-       
+
         assumeEquals(true, usersList.contains(userName), "Accepted user is found in user list after signup");
     }
 
-    private void checkUserSignupListForNewUser() throws ApiException {
-        List<ListOfSignupsInner> waitingSignups = adminApi.adminListsOpenUserSignups();
-        boolean foundUserSignup=false;
-        for (ListOfSignupsInner signup: waitingSignups) {
+    private void checkUserSignupListForNewUser() throws SecHubClientException {
+        List<OpenUserSignup> waitingSignups = client.fetchAllOpenSignups();
+        boolean foundUserSignup = false;
+        for (OpenUserSignup signup : waitingSignups) {
             foundUserSignup = signup.getUserId().equals(userName);
             if (foundUserSignup) {
                 break;
@@ -103,13 +131,14 @@ public class AdminApiPlayground {
         assumeEquals(true, foundUserSignup, "Signup for user: " + userName + " was found in list of signups");
     }
 
-    private void signupNewUser() throws ApiException {
+    private void signupNewUser() throws SecHubClientException {
+
         UserSignup signUp = new UserSignup();
         signUp.setApiVersion("1.0");
-        signUp.setEmailAdress(userName+"@example.com");
+        signUp.setEmailAdress(userName + "@example.com");
         signUp.setUserId(userName);
-        access.getAnonymousApi().userSignup(signUp);
-        
+        client.createSignup(signUp);
+
         waitMilliseconds(300);
     }
 

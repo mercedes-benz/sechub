@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-package com.mercedesbenz.sechub.api.java;
+package com.mercedesbenz.sechub.api;
 
 public class AssertJavaClientAPI {
 

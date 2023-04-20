@@ -15,9 +15,13 @@ import org.slf4j.LoggerFactory;
 
 import com.mercedesbenz.sechub.pds.commons.core.config.PDSProductSetup;
 import com.mercedesbenz.sechub.pds.commons.core.config.PDSServerConfiguration;
+import com.mercedesbenz.sechub.systemtest.config.CredentialsDefinition;
 import com.mercedesbenz.sechub.systemtest.config.ExecutionStepDefinition;
+import com.mercedesbenz.sechub.systemtest.config.LocalSecHubDefinition;
 import com.mercedesbenz.sechub.systemtest.config.LocalSetupDefinition;
 import com.mercedesbenz.sechub.systemtest.config.PDSSolutionDefinition;
+import com.mercedesbenz.sechub.systemtest.config.RemoteSecHubDefinition;
+import com.mercedesbenz.sechub.systemtest.config.RemoteSetupDefinition;
 import com.mercedesbenz.sechub.systemtest.config.ScriptDefinition;
 import com.mercedesbenz.sechub.systemtest.config.SecHubConfigurationDefinition;
 import com.mercedesbenz.sechub.systemtest.config.SecHubExecutorConfigDefinition;
@@ -30,6 +34,35 @@ public class SystemTestRuntimeHealthCheck {
 
     public void check(SystemTestRuntimeContext context) {
 
+        checkLocal(context);
+        checkRemote(context);
+    }
+
+    private void checkRemote(SystemTestRuntimeContext context) {
+        if (context.isLocalRun()) {
+            return;
+        }
+        verifySecHubRemote(context);
+    }
+
+    private void verifySecHubRemote(SystemTestRuntimeContext context) {
+        RemoteSetupDefinition remoteSetup = context.getRemoteSetupOrFail();
+        RemoteSecHubDefinition secHub = remoteSetup.getSecHub();
+
+        CredentialsDefinition user = secHub.getUser();
+
+        String userId = user.getUserId();
+        if (userId == null || userId.isEmpty()) {
+            throw new WrongConfigurationException("SecHub remote user name not configured but necessary for remote run!", context);
+        }
+
+        String apiToken = user.getApiToken();
+        if (apiToken == null || apiToken.isEmpty()) {
+            throw new WrongConfigurationException("SecHub remote user api token not configured but necessary for remote run!", context);
+        }
+    }
+
+    private void checkLocal(SystemTestRuntimeContext context) {
         if (!context.isLocalRun()) {
             LOG.debug("Skip local health check parts - run is not local");
         }
@@ -39,10 +72,30 @@ public class SystemTestRuntimeHealthCheck {
     }
 
     private void verifySecHubLocal(SystemTestRuntimeContext context) {
+        if (!context.isLocalSecHubConfigured()) {
+            return;
+        }
         LocalSetupDefinition localSetup = context.getLocalSetupOrFail();
+        LocalSecHubDefinition secHub = localSetup.getSecHub();
 
-        asssertSteps(localSetup.getSecHub().getStart(), SystemTestExecutionScope.SECHUB.name(), SystemTestExecutionState.START, context);
-        asssertSteps(localSetup.getSecHub().getStop(), SystemTestExecutionScope.SECHUB.name(), SystemTestExecutionState.STOP, context);
+        CredentialsDefinition user = secHub.getAdmin();
+
+        if (secHub.getUrl() == null) {
+            throw new WrongConfigurationException("SecHub local url not configured but necessary for local run!", context);
+        }
+
+        String userId = user.getUserId();
+        if (userId == null || userId.isEmpty()) {
+            throw new WrongConfigurationException("SecHub local admin user name not configured but necessary for local run!", context);
+        }
+
+        String apiToken = user.getApiToken();
+        if (apiToken == null || apiToken.isEmpty()) {
+            throw new WrongConfigurationException("SecHub local admin user name not configured but necessary for local run!", context);
+        }
+
+        asssertSteps(secHub.getStart(), SystemTestExecutionScope.SECHUB.name(), SystemTestExecutionState.START, context);
+        asssertSteps(secHub.getStop(), SystemTestExecutionScope.SECHUB.name(), SystemTestExecutionState.STOP, context);
 
         for (PDSSolutionDefinition pdsSolution : localSetup.getPdsSolutions()) {
             asssertSteps(pdsSolution.getStart(), SystemTestExecutionScope.PDS_SOLUTION.name() + ":" + pdsSolution.getName(), SystemTestExecutionState.START,

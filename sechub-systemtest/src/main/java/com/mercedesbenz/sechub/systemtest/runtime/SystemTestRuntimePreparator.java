@@ -2,6 +2,8 @@ package com.mercedesbenz.sechub.systemtest.runtime;
 
 import static com.mercedesbenz.sechub.systemtest.config.DefaultFallback.*;
 
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -14,6 +16,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.mercedesbenz.sechub.commons.model.JSONConverter;
+import com.mercedesbenz.sechub.systemtest.config.CredentialsDefinition;
+import com.mercedesbenz.sechub.systemtest.config.DefaultFallback;
 import com.mercedesbenz.sechub.systemtest.config.ExecutionStepDefinition;
 import com.mercedesbenz.sechub.systemtest.config.LocalSecHubDefinition;
 import com.mercedesbenz.sechub.systemtest.config.LocalSetupDefinition;
@@ -112,7 +116,8 @@ public class SystemTestRuntimePreparator {
 
     }
 
-    private void addFallbackDefaultProfileToExecutorsWithoutProfile(SecHubConfigurationDefinition sechubConfig) {
+    private void addFallbackDefaultProfileToExecutorsWithoutProfile(SystemTestRuntimeContext context) {
+        SecHubConfigurationDefinition sechubConfig = context.getLocalSecHubConfigurationOrFail();
         List<SecHubExecutorConfigDefinition> executors = sechubConfig.getExecutors();
         for (SecHubExecutorConfigDefinition executor : executors) {
             String profile = executor.getProfile();
@@ -122,7 +127,8 @@ public class SystemTestRuntimePreparator {
         }
     }
 
-    private void createFallbackDefaultProjectWhenNoProjectsDefined(SecHubConfigurationDefinition sechubConfig) {
+    private void createFallbackDefaultProjectWhenNoProjectsDefined(SystemTestRuntimeContext context) {
+        SecHubConfigurationDefinition sechubConfig = context.getLocalSecHubConfigurationOrFail();
         Optional<List<ProjectDefinition>> projects = sechubConfig.getProjects();
         if (!projects.isPresent()) {
             sechubConfig.setProjects(Optional.of(new ArrayList<>()));
@@ -145,11 +151,41 @@ public class SystemTestRuntimePreparator {
          * the start and stop objects are generated automatically by the default object.
          * So the default class must have the logic for the changes inside
          */
-        SecHubConfigurationDefinition sechubConfig = context.getLocalSecHubConfigurationOrFail();
 
-        /* setup default fallback implementations */
-        createFallbackDefaultProjectWhenNoProjectsDefined(sechubConfig);
-        addFallbackDefaultProfileToExecutorsWithoutProfile(sechubConfig);
+        createFallbackSecHubSetupParts(context);
+        createFallbackDefaultProjectWhenNoProjectsDefined(context);
+        addFallbackDefaultProfileToExecutorsWithoutProfile(context);
+
+    }
+
+    private void createFallbackSecHubSetupParts(SystemTestRuntimeContext context) {
+        if (!context.isLocalRun()) {
+            return;
+        }
+        if (!context.isLocalSecHubConfigured()) {
+            return;
+        }
+        LocalSetupDefinition localSetup = context.getLocalSetupOrFail();
+        LocalSecHubDefinition secHub = localSetup.getSecHub();
+
+        if (secHub.getUrl()==null) {
+            String defaultValue = DefaultFallback.FALLBACK_SECHUB_LOCAL_URL.getValue();
+            try {
+                secHub.setUrl(new URL(defaultValue));
+                LOG.info("No URL set for local SecHub, added default url:"+secHub.getUrl());
+                
+            } catch (MalformedURLException e) {
+               throw new IllegalStateException("Default value is not an URL:"+defaultValue);
+            }
+        }
+        CredentialsDefinition admin = secHub.getAdmin();
+
+        if (admin.getUserId() == null || admin.getUserId().isEmpty()) {
+            admin.setUserId(DefaultFallback.FALLBACK_SECHUB_ADMIN_USER.getValue());
+            admin.setApiToken(DefaultFallback.FALLBACK_SECHUB_ADMIN_TOKEN.getValue());
+
+            LOG.info("No credentials set for local SecHub, added defaults");
+        }
 
     }
 

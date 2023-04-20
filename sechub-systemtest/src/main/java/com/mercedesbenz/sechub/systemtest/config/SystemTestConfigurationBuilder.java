@@ -1,5 +1,6 @@
 package com.mercedesbenz.sechub.systemtest.config;
 
+import java.net.URL;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
@@ -101,6 +102,66 @@ public class SystemTestConfigurationBuilder {
 
         }
     }
+    
+    private abstract class AbstractSecHubDefinitionBuilder<T extends AbstractSecHubDefinitionBuilder<?>>{
+        private AbstractSecHubDefinition sechubDefinition;
+
+        AbstractSecHubDefinitionBuilder(Class<T> clazz,  AbstractSecHubDefinition sechubDefinition){
+            this.sechubDefinition=sechubDefinition;
+        }
+        @SuppressWarnings("unchecked")
+        public T user(String userId, String apiToken) {
+            CredentialsDefinition userCredentials = sechubDefinition.getUser();
+            
+            userCredentials.setUserId(userId);
+            userCredentials.setApiToken(apiToken);
+            return (T) this;
+        }
+        @SuppressWarnings("unchecked")
+        public T admin(String userId, String apiToken) {
+            CredentialsDefinition adminCredentials = sechubDefinition.getAdmin();
+            
+            adminCredentials.setUserId(userId);
+            adminCredentials.setApiToken(apiToken);
+            return (T) this;
+        }
+        @SuppressWarnings("unchecked")
+        public T url(URL url) {
+            sechubDefinition.setUrl(url);
+            return (T) this;
+        }
+    }
+
+    public class RemoteSetupBuilder {
+        private RemoteSetupDefinition remoteSetup;
+
+        private RemoteSetupBuilder() {
+            remoteSetup = new RemoteSetupDefinition();
+            configuration.getSetup().setRemote(Optional.of(remoteSetup));
+        }
+
+        public RemoteSecHubSetupBuilder secHub() {
+            return new RemoteSecHubSetupBuilder();
+        }
+
+        public class RemoteSecHubSetupBuilder extends AbstractSecHubDefinitionBuilder<RemoteSecHubSetupBuilder>{
+
+
+            public RemoteSecHubSetupBuilder() {
+                super(RemoteSecHubSetupBuilder.class, remoteSetup.getSecHub());
+            }
+
+            public RemoteSetupBuilder endSecHub() {
+                return RemoteSetupBuilder.this;
+            }
+            
+        }
+
+        public SystemTestConfigurationBuilder endRemoteSetup() {
+            return SystemTestConfigurationBuilder.this;
+        }
+        
+    }
 
     public class LocalSetupBuilder {
 
@@ -119,15 +180,16 @@ public class SystemTestConfigurationBuilder {
             return SystemTestConfigurationBuilder.this;
         }
 
-        public SecHubSetupBuilder secHub() {
-            return new SecHubSetupBuilder();
+        public LocalSecHubSetupBuilder secHub() {
+            return new LocalSecHubSetupBuilder();
         }
 
-        public class SecHubSetupBuilder {
+        public class LocalSecHubSetupBuilder extends AbstractSecHubDefinitionBuilder<LocalSecHubSetupBuilder>{
 
             private LocalSecHubDefinition localSechub;
 
-            public SecHubSetupBuilder() {
+            public LocalSecHubSetupBuilder() {
+                super(LocalSecHubSetupBuilder.class, localSetup.getSecHub());
                 localSechub = localSetup.getSecHub();
             }
 
@@ -135,12 +197,12 @@ public class SystemTestConfigurationBuilder {
                 return LocalSetupBuilder.this;
             }
 
-            public StepBuilder<SecHubSetupBuilder> addStartStep() {
-                return new StepBuilder<SecHubSetupBuilder>(this, localSechub.getStart());
+            public StepBuilder<LocalSecHubSetupBuilder> addStartStep() {
+                return new StepBuilder<LocalSecHubSetupBuilder>(this, localSechub.getStart());
             }
 
-            public StepBuilder<SecHubSetupBuilder> addStopStep() {
-                return new StepBuilder<SecHubSetupBuilder>(this, localSechub.getStop());
+            public StepBuilder<LocalSecHubSetupBuilder> addStopStep() {
+                return new StepBuilder<LocalSecHubSetupBuilder>(this, localSechub.getStop());
             }
 
             public SecHubConfigurationBuilder configure() {
@@ -149,8 +211,8 @@ public class SystemTestConfigurationBuilder {
 
             public class SecHubConfigurationBuilder {
 
-                public SecHubSetupBuilder endConfigure() {
-                    return SecHubSetupBuilder.this;
+                public LocalSecHubSetupBuilder endConfigure() {
+                    return LocalSecHubSetupBuilder.this;
                 }
 
                 public SecHubExecutorConfigBuilder addExecutor() {
@@ -227,6 +289,10 @@ public class SystemTestConfigurationBuilder {
         configuration.getVariables().put(name, value);
 
         return this;
+    }
+
+    public RemoteSetupBuilder remoteSetup() {
+        return new RemoteSetupBuilder();
     }
 
     public LocalSetupBuilder localSetup() {

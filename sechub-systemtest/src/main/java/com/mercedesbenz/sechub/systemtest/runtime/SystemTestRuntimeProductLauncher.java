@@ -5,6 +5,8 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.mercedesbenz.sechub.api.SecHubClient;
+import com.mercedesbenz.sechub.api.SecHubClientException;
 import com.mercedesbenz.sechub.systemtest.config.ExecutionStepDefinition;
 import com.mercedesbenz.sechub.systemtest.config.LocalSecHubDefinition;
 import com.mercedesbenz.sechub.systemtest.config.LocalSetupDefinition;
@@ -110,6 +112,48 @@ public class SystemTestRuntimeProductLauncher {
 
             }
         }
+    }
+
+    public void waitUntilSecHubAvailable(SystemTestRuntimeContext context) throws SystemTestErrorException {
+        SecHubClient client = null;
+        if (context.isLocalRun()) {
+            if (! context.isLocalSecHubConfigured()) {
+                /* not defined - no wait necessary */
+                return;
+            }
+            client = context.getLocalAdminSecHubClient();
+        } else {
+            if (! context.isRemoteSecHubConfigured()) {
+                /* not defined - no wait necessary */
+                return;
+            }
+            client = context.getRemoteUserSecHubClient();
+        }
+        if (context.isDryRun()) {
+            LOG.info("Dry run: waitUntilSecHubAvailable is skipped");
+            return;
+        }
+        try {
+            long start = System.currentTimeMillis();
+            while (!client.checkIsServerAlive()) {
+                Thread.sleep(1000);
+                long millisecondsWaited = System.currentTimeMillis() - start;
+                boolean timedOut = millisecondsWaited > 60 * 1000 * 1;
+                if (timedOut) {
+                    throw new IllegalStateException("Check for SecHub server alive timed out after " + (millisecondsWaited / 1000) + " seconds.");
+                }
+            }
+            LOG.info("SecHub server at {} is alive", client.getServerUri());
+
+        } catch (SecHubClientException e) {
+            throw new SystemTestRuntimeException("Was not able to check if server is alive.", e);
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+        }
+    }
+
+    public void waitUntilPDSSolutionsAvailable(SystemTestRuntimeContext context) {
+        /* FIXME Albert Tregnaghi, 2023-04-20:implement */
     }
 
 }

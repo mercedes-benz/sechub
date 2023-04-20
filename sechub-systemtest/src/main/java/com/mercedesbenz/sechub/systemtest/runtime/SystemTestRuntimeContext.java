@@ -1,5 +1,8 @@
 package com.mercedesbenz.sechub.systemtest.runtime;
 
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.net.URL;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -10,13 +13,22 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.mercedesbenz.sechub.api.SecHubClient;
+import com.mercedesbenz.sechub.systemtest.config.AbstractSecHubDefinition;
+import com.mercedesbenz.sechub.systemtest.config.CredentialsDefinition;
 import com.mercedesbenz.sechub.systemtest.config.LocalSecHubDefinition;
 import com.mercedesbenz.sechub.systemtest.config.LocalSetupDefinition;
 import com.mercedesbenz.sechub.systemtest.config.PDSSolutionDefinition;
+import com.mercedesbenz.sechub.systemtest.config.RemoteSetupDefinition;
 import com.mercedesbenz.sechub.systemtest.config.SecHubConfigurationDefinition;
 import com.mercedesbenz.sechub.systemtest.config.SystemTestConfiguration;
 
 class SystemTestRuntimeContext {
+
+    private static final Logger LOG = LoggerFactory.getLogger(SystemTestRuntimeContext.class);
 
     SystemTestConfiguration originConfiguration;
     boolean localRun;
@@ -34,6 +46,10 @@ class SystemTestRuntimeContext {
     private Map<PDSSolutionDefinition, PDSSolutionRuntimeData> pdsSolutionRuntimeDataMap = new LinkedHashMap<>();
     private SystemTestRuntimeStage currentStage;
     private List<SystemTestRuntimeStage> stages = new ArrayList<>();
+    private SecHubClient remoteUserSecHubClient;
+    private SecHubClient localAdminSecHubClient;
+
+    private boolean dryRun;
 
     void alterConfguration(SystemTestConfiguration configuration) {
         this.configuration = configuration;
@@ -51,11 +67,15 @@ class SystemTestRuntimeContext {
         return currentResult;
     }
 
+    public boolean isDryRun() {
+        return dryRun;
+    }
+    
     /* only for tests */
     SystemTestRuntimeContext() {
     }
 
-    public SystemTestRuntimeContext(SystemTestConfiguration originConfiguration, Path workspaceRoot, boolean localRun) {
+    public SystemTestRuntimeContext(SystemTestConfiguration originConfiguration, Path workspaceRoot, boolean localRun, boolean dryRun) {
         if (originConfiguration == null) {
             throw new IllegalArgumentException("Origin configuration may never be null!");
         }
@@ -66,6 +86,8 @@ class SystemTestRuntimeContext {
         this.configuration = originConfiguration;
 
         this.localRun = localRun;
+        this.dryRun = dryRun;
+        
         this.workspaceRoot = workspaceRoot;
     }
 
@@ -128,10 +150,20 @@ class SystemTestRuntimeContext {
     public LocalSetupDefinition getLocalSetupOrFail() {
         Optional<LocalSetupDefinition> localOpt = configuration.getSetup().getLocal();
         if (localOpt.isEmpty()) {
-            throw new WrongConfigurationException("To run a local system tests the local setpu must be configured!", this);
+            throw new WrongConfigurationException("To run a local system tests the local setup must be configured!", this);
         }
 
         return localOpt.get();
+    }
+
+    public RemoteSetupDefinition getRemoteSetupOrFail() {
+        Optional<RemoteSetupDefinition> localOpt = configuration.getSetup().getRemote();
+        if (localOpt.isEmpty()) {
+            throw new WrongConfigurationException("To run a remote system tests the remote setup must be configured!", this);
+        }
+
+        return localOpt.get();
+
     }
 
     public SecHubConfigurationDefinition getLocalSecHubConfigurationOrFail() {
@@ -156,6 +188,64 @@ class SystemTestRuntimeContext {
 
     public List<SystemTestRuntimeStage> getStages() {
         return Collections.unmodifiableList(stages);
+    }
+
+    public SecHubClient getLocalAdminSecHubClient() {
+        if (!isLocalRun()) {
+            throw new IllegalStateException(
+            /* @formatter:off */
+                      "This is a remote run - which does not need local client..."
+                    + "This means the logic inside system test framework has a bug inside!");
+            /* @formatter:on */
+        }
+        if (localAdminSecHubClient == null) {
+            LocalSecHubDefinition localSecHub = getLocalSetupOrFail().getSecHub();
+            localAdminSecHubClient = createClient(localSecHub, localSecHub.getAdmin());
+            
+            LOG.info("Created local admin client for user: '{}', apiToken: {}", localAdminSecHubClient.getUsername(), "*".repeat(localAdminSecHubClient.getSealedApiToken().length()));
+        }
+        return localAdminSecHubClient;
+    }
+
+    public SecHubClient getRemoteUserSecHubClient() {
+        if (isLocalRun()) {
+            throw new IllegalStateException(
+            /* @formatter:off */
+                      "This is a local run which does not need remote user client."
+                    + "This means the logic inside system test framework has a bug inside!");
+            /* @formatter:on */
+        }
+        if (remoteUserSecHubClient == null) {
+            LocalSecHubDefinition localSecHub = getLocalSetupOrFail().getSecHub();
+            remoteUserSecHubClient = createClient(localSecHub, localSecHub.getAdmin());
+            
+            LOG.info("Created remote user client for user: {}, apiToken: {}", remoteUserSecHubClient.getUsername(), "*".repeat(remoteUserSecHubClient.getSealedApiToken().length()));
+        }
+        return remoteUserSecHubClient;
+    }
+
+    private SecHubClient createClient(AbstractSecHubDefinition secHubDefinition, CredentialsDefinition credentials) {
+        SecHubClient client = null;
+        URL url = secHubDefinition.getUrl();
+        if (url == null) {
+            throw new WrongConfigurationException("URL not defined for local sechub server", this);
+        }
+        try {
+            URI serverUri = url.toURI();
+            client = new SecHubClient(serverUri, credentials.getUserId(), credentials.getApiToken(), true);
+            
+        } catch (URISyntaxException e) {
+            throw new WrongConfigurationException("URL not defined correct local sechub server: " + e.getMessage(), this);
+        }
+        return client;
+    }
+
+    public boolean isLocalSecHubConfigured() {
+        return configuration.getSetup().getLocal().isPresent();
+    }
+
+    public boolean isRemoteSecHubConfigured() {
+        return configuration.getSetup().getRemote().isPresent();
     }
 
 }

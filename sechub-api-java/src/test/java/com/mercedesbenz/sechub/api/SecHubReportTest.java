@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
-package com.mercedesbenz.sechub.api.java;
+package com.mercedesbenz.sechub.api;
 
-import static com.mercedesbenz.sechub.api.java.AssertJavaClientAPI.*;
+import static com.mercedesbenz.sechub.api.AssertJavaClientAPI.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 import java.io.File;
@@ -11,16 +11,15 @@ import org.junit.jupiter.api.Test;
 import com.mercedesbenz.sechub.commons.model.Severity;
 import com.mercedesbenz.sechub.commons.model.TrafficLight;
 
-public class SecHubAccessTest {
-    
+public class SecHubReportTest {
 
     @Test
-    public void client_reads_scan_code_green_no_findings() throws Exception {
+    public void from_file_scan_code_green_no_findings() throws Exception {
         /* prepare */
         File file = new File("src/test/resources/scan_code_green_no_findings.json");
 
         /* execute */
-        SecHubReport report = SecHubAccess.readSecHubReport(file);
+        SecHubReport report = SecHubReport.fromFile(file);
 
         /* test */
         /* @formatter:off */
@@ -33,12 +32,12 @@ public class SecHubAccessTest {
     }
 
     @Test
-    public void client_reads_scan_code_red_product_error() throws Exception {
+    public void from_file_scan_code_red_product_error() throws Exception {
         /* prepare */
         File file = new File("src/test/resources/scan_code_red_product_error.json");
 
         /* execute */
-        SecHubReport report = SecHubAccess.readSecHubReport(file);
+        SecHubReport report = SecHubReport.fromFile(file);
 
         /* test */
         /* @formatter:off */
@@ -58,12 +57,12 @@ public class SecHubAccessTest {
     }
 
     @Test
-    public void client_reads_test_report_1() throws Exception {
+    public void from_file_test_report_1() throws Exception {
         /* prepare */
         File file = new File("src/test/resources/test_sechub_report-1.json");
 
         /* execute */
-        SecHubReport report = SecHubAccess.readSecHubReport(file);
+        SecHubReport report = SecHubReport.fromFile(file);
 
         /* test */
         /* @formatter:off */
@@ -81,12 +80,12 @@ public class SecHubAccessTest {
     }
 
     @Test
-    public void client_reads_scan_code_yellow_with_findings() throws Exception {
+    public void from_file_scan_code_yellow_with_findings() throws Exception {
         /* prepare */
         File file = new File("src/test/resources/scan_code_yellow_with_findings.json");
 
         /* execute */
-        SecHubReport report = SecHubAccess.readSecHubReport(file);
+        SecHubReport report = SecHubReport.fromFile(file);
 
         /* test */
         assertReport(report).hasJobUUID("6cf02ccf-da13-4dee-b529-0225ed9661bd").hasFindings(2).hasTrafficLight(TrafficLight.YELLOW).finding(0).hasId(1)
@@ -102,14 +101,14 @@ public class SecHubAccessTest {
     }
 
     @Test
-    public void client_reads_wrong_file() throws SecHubReportException {
+    public void from_file_wrong_file() throws SecHubReportException {
         /* prepare */
         File file = new File("src/test/resources/no_sechub_report.json");
 
         /* execute + test */
         /* @formatter:off */
         assertThrows(SecHubReportException.class,
-                () -> SecHubAccess.readSecHubReport(file),
+                () -> SecHubReport.fromFile(file),
                 "The report is not a SecHub report and cannot be read. It should throw an exception.");
         /* @formatter:on */
     }

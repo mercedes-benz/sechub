@@ -125,6 +125,10 @@ and profiles must be configured here. Also the usage of <<section-systemtests-lo
 
 
 ===== Local
+When we run system tests on a local environment, all necessary data and setup will be done by the framework.
+This means an administrator account is necessary to setup the systems.
+
+If not defined, the default credentials for integration test server will be used 
 
 ====== Defaults
 [[section-systemtests-local-defaults]]

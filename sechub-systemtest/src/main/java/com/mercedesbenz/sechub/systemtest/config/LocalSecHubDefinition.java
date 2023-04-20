@@ -3,7 +3,7 @@ package com.mercedesbenz.sechub.systemtest.config;
 import java.util.ArrayList;
 import java.util.List;
 
-public class LocalSecHubDefinition extends AbstractDefinition {
+public class LocalSecHubDefinition extends AbstractSecHubDefinition {
 
     private List<ExecutionStepDefinition> start = new ArrayList<>();
 

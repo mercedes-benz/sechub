@@ -27,6 +27,8 @@ public class SystemTestRuntime {
 
     private EnvironmentProvider environmentSupport;
 
+    private SystemTestRuntimeProductConfigurator configurator;
+
     public SystemTestRuntime(LocationSupport locationSupport, ExecutionSupport execSupport) {
         if (locationSupport == null) {
             throw new IllegalArgumentException("Location support may not be null!");
@@ -34,17 +36,19 @@ public class SystemTestRuntime {
         if (execSupport == null) {
             throw new IllegalArgumentException("Exec support may not be null!");
         }
+
         this.productLauncher = new SystemTestRuntimeProductLauncher(execSupport);
+        this.configurator = new SystemTestRuntimeProductConfigurator();
         this.preparator = new SystemTestRuntimePreparator();
         this.locationSupport = locationSupport;
         this.environmentSupport = execSupport.getEnvironmentProvider();
     }
 
-    public SystemTestResult run(SystemTestConfiguration configuration, boolean localRun) {
+    public SystemTestResult run(SystemTestConfiguration configuration, boolean localRun, boolean isDryRun) {
 
-        SystemTestRuntimeContext context = new SystemTestRuntimeContext(configuration, locationSupport.getWorkspaceRoot(), localRun);
+        SystemTestRuntimeContext context = new SystemTestRuntimeContext(configuration, locationSupport.getWorkspaceRoot(), localRun, isDryRun);
         try {
-            LOG.info("Starting - local run:{}", localRun);
+            LOG.info("Starting - run {}{}", isDryRun ? "DRY " : "", localRun ? "LOCAL" : "REMOTE");
 
             context.locationSupport = locationSupport;
             context.environmentProvider = environmentSupport;
@@ -62,6 +66,11 @@ public class SystemTestRuntime {
 
             execOrFail(() -> productLauncher.startSecHub(context), "Start SecHub");
             execOrFail(() -> productLauncher.startPDSSolutions(context), "Start PDS solutions");
+
+            execOrFail(() -> productLauncher.waitUntilSecHubAvailable(context), "Wait for SecHub available");
+            execOrFail(() -> productLauncher.waitUntilPDSSolutionsAvailable(context), "Wait for PDS solutions available");
+
+            execOrFail(() -> configurator.applyConfigurationWhenLocal(context), "Apply SecHub configuration when local run");
 
             /* execute tests */
             switchToStage("Test", context);
@@ -148,13 +157,20 @@ public class SystemTestRuntime {
         try {
             runnable.runOrFail();
         } catch (WrongConfigurationException e) {
-            String problem = identifier + " failed!\nReason:" + e.createDetails();
+            String problem = identifier + " failed!\nReason: " + e.createDetails();
             LOG.error(problem);
             throw new SystemTestRuntimeException(identifier + " failed!\nReason: " + e.getMessage() + "\n(Look into log ouptput for more details)", e);
-        } catch (Exception e) {
-            String problem = identifier + " failed!\nReason:" + e.getMessage();
+
+        } catch (SystemTestRuntimeException e) {
+            String problem = identifier + " failed!\nReason: " + e.getMessage();
             LOG.error(problem);
-            throw new SystemTestRuntimeException(identifier + " failed!\nReason: " + e.getMessage(), e);
+            throw e;
+
+        } catch (Exception e) {
+            String problem = identifier + " failed!\nReason: " + e.getMessage();
+            LOG.error(problem);
+
+            throw new SystemTestRuntimeException(problem, e);
         }
     }
 

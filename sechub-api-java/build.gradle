@@ -16,6 +16,9 @@ dependencies {
     
     testImplementation project(':sechub-testframework')
     testImplementation spring_boot_dependency.junit_jupiter
+    
+    testImplementation project(':sechub-doc') // we use docgen inspection parts
+    
 }
 
 /*
@@ -63,21 +66,7 @@ sourceSets {
     	    srcDir 'gen/src/main/java'
     	}
     }
-    test {
-        java {
-            srcDir 'gen/src/test/java'
-        }
-
-    }
     
-    example {
-        java {
-             srcDir 'example/src/main/java'
-        }
-        
-    }
-
-
 }
 
 def specFilePath = "$rootDir/sechub-doc/build/api-spec/openapi3.json"
@@ -95,28 +84,31 @@ task cleanUpGenFolder(type: Delete) {
 task callOpenAPIJavaGenerator(type: org.openapitools.generator.gradle.plugin.tasks.GenerateTask) {
     dependsOn cleanUpGenFolder
     
-    generatorName = "java"
+    generatorName =      "java"
+                         
+    inputSpec =          "$specFilePath"
+    outputDir =          "$rootDir/sechub-api-java/gen"
+    apiPackage =         "com.mercedesbenz.sechub.api.internal.gen"
+    invokerPackage =     "com.mercedesbenz.sechub.api.internal.gen.invoker"
+    modelPackage =       "com.mercedesbenz.sechub.api.internal.gen.model"
+                         
+    modelNamePrefix =    "OpenApi"
     
-    inputSpec = "$specFilePath"
-    outputDir = "$rootDir/sechub-api-java/gen"
-    apiPackage = "com.mercedesbenz.sechub.api.java"
-    invokerPackage = "com.mercedesbenz.sechub.api.java"
-    modelPackage = "com.mercedesbenz.sechub.api.java.model"
+    generateModelTests = false
+    generateApiTests   = false
     
     globalProperties = [
-            validateSpec   : "true",
-            modelDocs      : "false",
-            models         : "",  // generate all
-            apis           : "", // generate all
-            supportingFiles: ""  // generate all
+            validateSpec       : "true",
+            modelDocs          : "false",
+            models             : "",  // generate all
+            apis               : "", // generate all
+            supportingFiles    : "",  // generate all
     ]
     // java generator: https://github.com/OpenAPITools/openapi-generator/blob/master/docs/generators/java.md
     configOptions = [
     		groupId 					: "com.mercedesbenz.sechub",
     		version                     : "${project.version}",
             performBeanValidation		: "false",
-            generateModelTests          : "false", 
-            generateApiTests            : "false",
             useBeanValidation    		: "false",
             dateLibrary          		: "java8",
             serializableModel    		: "true",
