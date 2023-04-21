@@ -11,7 +11,7 @@ To be able to use this action you need a SecHub project. Check the https://merce
 
 ```yaml
 
-- uses: mercedes-benz/sechub/github-actions/scan@ffc232775
+- uses: mercedes-benz/sechub/github-actions/scan@ffc232775a6d86ba2b4635eaf55b440be1f95152
   with:
     # OPTIONAL: Path to sechub.json for manual configuration. If no value is set the input parameters will be used to create it for the scan.'
     config-path: 'sechub.json'
@@ -29,8 +29,8 @@ To be able to use this action you need a SecHub project. Check the https://merce
     project-name: ${{ secrets.SECHUB_PROJECT }}
 
     # OPTIONAL: Which version of the SecHub cli to use
-    # DEFAULT: 0.34.0
-    version: '0.34.0'
+    # DEFAULT: 0.35.1
+    version: '0.35.1'
 
     # OPTIONAL: A list of folders to be included. Multiple folders can be separated by ,
     include-folders: 'src,lib'
