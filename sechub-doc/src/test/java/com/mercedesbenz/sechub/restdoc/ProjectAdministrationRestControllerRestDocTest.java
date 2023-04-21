@@ -248,7 +248,7 @@ public class ProjectAdministrationRestControllerRestDocTest implements TestIsNec
     @UseCaseRestDoc(useCase = UseCaseAdminChangesProjectOwner.class)
     public void restdoc_change_project_owner() throws Exception {
         /* prepare */
-        String apiEndpoint = https(PORT_USED).buildAdminChangesProjectOwnerUrl(USER_ID.pathElement(), PROJECT_ID.pathElement());
+        String apiEndpoint = https(PORT_USED).buildAdminChangesProjectOwnerUrl(PROJECT_ID.pathElement(), USER_ID.pathElement());
         Class<? extends Annotation> useCase = UseCaseAdminChangesProjectOwner.class;
 
         /* execute + test @formatter:off */
@@ -328,7 +328,7 @@ public class ProjectAdministrationRestControllerRestDocTest implements TestIsNec
     @UseCaseRestDoc(useCase = UseCaseAdminAssignsUserToProject.class)
     public void restdoc_assign_user2project() throws Exception {
         /* prepare */
-        String apiEndpoint = https(PORT_USED).buildAdminAssignsUserToProjectUrl(USER_ID.pathElement(), PROJECT_ID.pathElement());
+        String apiEndpoint = https(PORT_USED).buildAdminAssignsUserToProjectUrl(PROJECT_ID.pathElement(), USER_ID.pathElement());
         Class<? extends Annotation> useCase = UseCaseAdminAssignsUserToProject.class;
 
         /* execute + test @formatter:off */
@@ -360,7 +360,7 @@ public class ProjectAdministrationRestControllerRestDocTest implements TestIsNec
     @UseCaseRestDoc(useCase = UseCaseAdminUnassignsUserFromProject.class)
     public void restdoc_unassign_userFromProject() throws Exception {
         /* prepare */
-        String apiEndpoint = https(PORT_USED).buildAdminUnassignsUserFromProjectUrl(USER_ID.pathElement(), PROJECT_ID.pathElement());
+        String apiEndpoint = https(PORT_USED).buildAdminUnassignsUserFromProjectUrl(PROJECT_ID.pathElement(), USER_ID.pathElement());
         Class<? extends Annotation> useCase = UseCaseAdminUnassignsUserFromProject.class;
 
         /* execute + test @formatter:off */
