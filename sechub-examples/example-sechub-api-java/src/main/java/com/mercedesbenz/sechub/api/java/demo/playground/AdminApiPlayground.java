@@ -105,7 +105,7 @@ public class AdminApiPlayground {
 
         logSuccess("Project " + projectName + " created");
 
-        List<String> projects = client.fetchAllProjectNames();
+        List<String> projects = client.fetchAllProjectIds();
         assumeEquals(true, projects.contains(projectName), "Project " + projectName + " was found in list");
     }
 
@@ -113,7 +113,7 @@ public class AdminApiPlayground {
         client.acceptOpenSignup(userName);
         waitMilliseconds(300);
 
-        List<String> usersList = client.fetchAllUserNames();
+        List<String> usersList = client.fetchAllUserIds();
         logSuccess("List of users has entries: " + usersList.size());
 
         assumeEquals(true, usersList.contains(userName), "Accepted user is found in user list after signup");

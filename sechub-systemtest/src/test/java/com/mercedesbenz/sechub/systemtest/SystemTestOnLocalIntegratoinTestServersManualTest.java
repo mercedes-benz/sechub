@@ -4,6 +4,7 @@ import static com.mercedesbenz.sechub.systemtest.SystemTestAPI.*;
 import static com.mercedesbenz.sechub.test.TestUtil.*;
 import static org.junit.jupiter.api.Assertions.*;
 
+import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 
@@ -19,14 +20,22 @@ import com.mercedesbenz.sechub.systemtest.config.SystemTestConfiguration;
 import com.mercedesbenz.sechub.systemtest.runtime.SystemTestResult;
 
 /**
- * An integration test which needs a running SecHub server
+ * A special manual test for developers.
+ * 
+ * Howto use:
+ * 
+ * <pre>
+ * - start SecHub server in integration test mode from your IDE
+ * - start PDS server in integration test mode from your IDE
+ * - run this test wit dedicated system properties (see inside test method for details)
+ * </pre>
  *
  * @author Albert Tregnaghi
  *
  */
-class SystemTestManualLocalServerIntTest {
+class SystemTestOnLocalIntegratoinTestServersManualTest {
 
-    private static final Logger LOG = LoggerFactory.getLogger(SystemTestManualLocalServerIntTest.class);
+    private static final Logger LOG = LoggerFactory.getLogger(SystemTestOnLocalIntegratoinTestServersManualTest.class);
 
     @BeforeEach
     void beforeEach(TestInfo info) {
@@ -46,7 +55,16 @@ class SystemTestManualLocalServerIntTest {
                     secHub().
                         url(new URL("https://localhost:8443")).
                         admin("int-test_superadmin","int-test_superadmin-pwd"). // because an URL is defined, the framework will check that his server is alive!
+                        configure().
+                            addExecutor().
+                                pdsProductId("PDS_INTTEST_PRODUCT_CODESCAN").
+                            endExecutor().
+                        endConfigure().
                     endSecHub().
+                    addSolution("PDS_INTTEST_PRODUCT_CODESCAN"). // we do not define any steps here - developers must have started PDS server here locally in IDE
+                        pathToServerConfigFile(new File("./../sechub-integrationtest/src/main/resources/pds-config-integrationtest.json").toPath().toString()).
+                        waitForAVailable().
+                    endSolution().
                 endLocalSetup().
                 build();
 

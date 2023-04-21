@@ -281,6 +281,18 @@ public class SystemTestConfigurationBuilder {
                 setup.setWaitForAvailable(waitForAVailable);
                 return this;
             }
+            
+
+            /**
+             * If define, the server config file location will not be calculated, but the defined
+             * part will be used.
+             * @param pathToPdsServerConfigFile
+             * @return
+             */
+            public SolutionSetupBuilder pathToServerConfigFile(String pathToPdsServerConfigFile) {
+                setup.setPathToPdsServerConfigFile(pathToPdsServerConfigFile);
+                return this;
+            }
 
         }
     }

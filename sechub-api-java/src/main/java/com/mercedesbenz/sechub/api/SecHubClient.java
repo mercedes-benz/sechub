@@ -19,6 +19,7 @@ import com.mercedesbenz.sechub.api.internal.gen.model.OpenApiExecutionProfileFet
 import com.mercedesbenz.sechub.api.internal.gen.model.OpenApiExecutionProfileFetchConfigurationsInner;
 import com.mercedesbenz.sechub.api.internal.gen.model.OpenApiExecutionProfileUpdate;
 import com.mercedesbenz.sechub.api.internal.gen.model.OpenApiExecutionProfileUpdateConfigurationsInner;
+import com.mercedesbenz.sechub.api.internal.gen.model.OpenApiProjectDetails;
 import com.mercedesbenz.sechub.commons.core.FailableRunnable;
 import com.mercedesbenz.sechub.commons.core.security.CryptoAccess;
 import com.mercedesbenz.sechub.commons.model.JsonMapperFactory;
@@ -121,11 +122,11 @@ public class SecHubClient {
         return runOrFail(() -> OpenUserSignup.fromDelegates(adminApi.adminListsOpenUserSignups()), "Cannot fetch open signups");
     }
 
-    public List<String> fetchAllProjectNames() throws SecHubClientException {
+    public List<String> fetchAllProjectIds() throws SecHubClientException {
         return runOrFail(() -> adminApi.adminListsAllProjects(), "Cannot fetch all project names");
     }
 
-    public List<String> fetchAllUserNames() throws SecHubClientException {
+    public List<String> fetchAllUserIds() throws SecHubClientException {
         return runOrFail(() -> adminApi.adminListsAllUsers(), "Cannot fetch all user names");
     }
 
@@ -186,6 +187,36 @@ public class SecHubClient {
         }, "Cannot add executor config: " + uuidOfExecutorConfigToAdd + " to profile:" + profileId);
     }
 
+    public boolean isProjectExisting(String projectId) throws SecHubClientException {
+        return runOrFail(() -> adminApi.adminListsAllProjects().contains(projectId),
+
+                "Cannot check if project '" + projectId + "' exists!");
+    }
+
+    public void assignUserToProject(String userId, String projectId) throws SecHubClientException {
+        runOrFail(() -> adminApi.adminAssignsUserToProject(projectId, userId),
+
+                "Was not able to assign user '" + userId + "' to project '" + projectId + "'");
+
+    }
+
+    public void unassignUserFromProject(String userId, String projectId) throws SecHubClientException {
+        runOrFail(() -> adminApi.adminUnassignsUserFromProject(projectId, userId),
+
+                "Was not able to unassign user '" + userId + "' from project '" + projectId + "'");
+
+    }
+
+    public boolean isUserAssignedToProject(String userId, String projectId) throws SecHubClientException {
+        return runOrFail(() -> {
+            /* not very smart... but works : */
+            OpenApiProjectDetails details = adminApi.adminShowsProjectDetails(projectId);
+            List<String> userIds = details.getUsers();
+            return userIds.contains(userId);
+        }, "");
+    }
+
+    
     private OpenApiExecutionProfileUpdate fetchProfileAsUpdateObject(String profileId) throws ApiException {
         OpenApiExecutionProfileUpdate update = new OpenApiExecutionProfileUpdate();
 
@@ -206,17 +237,5 @@ public class SecHubClient {
         return update;
     }
 
-    public boolean isProjectExisting(String projectName) throws SecHubClientException {
-        return runOrFail(()->adminApi.adminListsAllProjects().contains(projectName),"Cannot check if project exists:"+projectName);
-    }
-
-    public void assignUserToProject(String userId, String projectId) throws SecHubClientException {
-        runOrFail(()->adminApi.adminAssignsUserToProject(userId, projectId),"Was not able to assign user "+userId+" to project "+projectId);
-    }
-    
-    public boolean isUserAssignedToProject() {
-        return false;
-    }
-
-
+   
 }

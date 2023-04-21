@@ -46,13 +46,17 @@ class AdoptedSystemTestDefaultFallbacksTest {
     }
 
     private String withoutCommentsOrEmptyLines(String code) {
-        String regexpNoComments = "\\/\\*(.|\\n)*\\*\\/";
-        String noComments = code.replaceAll(regexpNoComments, "");
-
-        String[] lines = noComments.split("\n");
+        String[] lines = code.split("\n");
         StringBuilder sb = new StringBuilder();
         for (String line : lines) {
             if (!line.isBlank()) {
+                String trimmed = line.trim();
+                boolean isComment = trimmed.startsWith("*");
+                isComment = isComment || trimmed.startsWith("/*");
+
+                if (isComment) {
+                    continue;
+                }
                 sb.append(line);
                 sb.append("\n");
             }

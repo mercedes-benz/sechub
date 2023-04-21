@@ -1,11 +1,11 @@
 package com.mercedesbenz.sechub.systemtest;
 
 import static com.mercedesbenz.sechub.systemtest.SystemTestAPI.*;
+import static com.mercedesbenz.sechub.systemtest.TestConfigConstants.*;
 import static com.mercedesbenz.sechub.test.TestUtil.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 import java.io.IOException;
-import java.net.URL;
 import java.nio.file.Path;
 import java.util.concurrent.TimeUnit;
 
@@ -21,7 +21,6 @@ import com.mercedesbenz.sechub.systemtest.runtime.ProcessContainerFailedExceptio
 import com.mercedesbenz.sechub.systemtest.runtime.SystemTestResult;
 import com.mercedesbenz.sechub.systemtest.runtime.SystemTestRuntimeException;
 import com.mercedesbenz.sechub.test.TestFileReader;
-
 /**
  * An integration test if the system test API and the involved runtime +
  * configuration builder can work together and execute real (but simple fake)
@@ -31,8 +30,7 @@ import com.mercedesbenz.sechub.test.TestFileReader;
  *
  */
 class SystemTestIntegrationTest {
-
-    private static final String TEST_PDS_SOLUTIONS_PATH = "./src/test/resources/fake-root/sechub-pds-solutions";
+    private static final String FAKED_PDS_SOLUTIONS_PATH = "./src/test/resources/fake-root/sechub-pds-solutions";
     private static final Logger LOG = LoggerFactory.getLogger(SystemTestIntegrationTest.class);
 
     @BeforeEach
@@ -139,7 +137,7 @@ class SystemTestIntegrationTest {
                     dryRun().
                     workspacePath(createTempDirectoryInBuildFolder("systemtest_inttest/faked_gosec_can_be_executed_without_errors").toString()).
                     testConfiguration(configuration).
-                    pdsSolutionPath(TEST_PDS_SOLUTIONS_PATH).
+                    pdsSolutionPath(FAKED_PDS_SOLUTIONS_PATH).
                 build());
 
         /* test */
@@ -186,7 +184,7 @@ class SystemTestIntegrationTest {
                 localRun().
                 workspacePath(createTempDirectoryInBuildFolder("systemtest_inttest/fail_because_unknown_runtime_variable").toString()).
                 testConfiguration(configuration).
-                pdsSolutionPath(TEST_PDS_SOLUTIONS_PATH).
+                pdsSolutionPath(FAKED_PDS_SOLUTIONS_PATH).
             build()));
 
         /* test */
@@ -225,7 +223,7 @@ class SystemTestIntegrationTest {
                 dryRun().
                 workspacePath(createTempDirectoryInBuildFolder("systemtest_inttest/fail_on_start").toString()).
                 testConfiguration(configuration).
-                pdsSolutionPath(TEST_PDS_SOLUTIONS_PATH).
+                pdsSolutionPath(FAKED_PDS_SOLUTIONS_PATH).
             build()));
 
         /* test */
@@ -263,7 +261,7 @@ class SystemTestIntegrationTest {
                 localRun().
                 workspacePath(createTempDirectoryInBuildFolder("systemtest_inttest/fail_because_no_pds_config").toString()).
                 testConfiguration(configuration).
-                pdsSolutionPath(TEST_PDS_SOLUTIONS_PATH).
+                pdsSolutionPath(FAKED_PDS_SOLUTIONS_PATH).
             build()));
 
         String message = exception.getMessage();

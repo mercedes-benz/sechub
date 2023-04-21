@@ -10,6 +10,7 @@ public class SystemTestParameters {
     private boolean localRun = true;// default always local
     
     private boolean dryRun;
+    private String pdsServerconfigFileName="pds-config.json";
 
     public SystemTestConfiguration getConfiguration() {
         return configuration;
@@ -31,6 +32,10 @@ public class SystemTestParameters {
         return dryRun;
     }
 
+    public String getPdsServerconfigFileName() {
+        return pdsServerconfigFileName;
+    }
+    
     public static SystemTestParametersBuilder builder() {
         return new SystemTestParametersBuilder();
     }
@@ -49,6 +54,11 @@ public class SystemTestParameters {
 
         public SystemTestParametersBuilder pdsSolutionPath(String pathToPdsSolution) {
             parameter.pathToPdsSolution = pathToPdsSolution;
+            return this;
+        }
+        
+        public SystemTestParametersBuilder pdsServerConfigFileName(String pdsServerconfigFileName) {
+            parameter.pdsServerconfigFileName = pdsServerconfigFileName;
             return this;
         }
 
