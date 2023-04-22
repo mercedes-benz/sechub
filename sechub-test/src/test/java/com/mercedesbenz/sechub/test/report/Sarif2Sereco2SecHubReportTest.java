@@ -9,7 +9,7 @@ import org.junit.jupiter.api.Test;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.mercedesbenz.sechub.domain.scan.product.ProductIdentifier;
+import com.mercedesbenz.sechub.sharedkernel.ProductIdentifier;
 
 /**
  * A special reporting test: Will test if existing SARIF reports are transformed

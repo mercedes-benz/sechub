@@ -1,8 +1,2 @@
-# The base image to use
-# uncomment to use local image
-# BASE_IMAGE="pds-base_pds"
-
-BASE_IMAGE="ghcr.io/mercedes-benz/sechub/pds-base:v0.32.1"
-
 # The gitleaks version to use
-GITLEAKS_VERSION="8.11.2"
+GITLEAKS_VERSION="8.15.3"

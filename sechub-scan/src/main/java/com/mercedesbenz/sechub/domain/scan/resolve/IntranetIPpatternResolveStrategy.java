@@ -59,18 +59,12 @@ public class IntranetIPpatternResolveStrategy implements InetAdressTargetResolve
 
     @Override
     public NetworkTarget resolveTargetFor(InetAddress inetAdress) {
-        NetworkTarget result = null;
-
         for (InetAddressPattern p : patterns) {
             if (p.isMatching(inetAdress)) {
-                result = new NetworkTarget(inetAdress, NetworkTargetType.INTRANET);
-                break;
+                return new NetworkTarget(inetAdress, NetworkTargetType.INTRANET);
             }
         }
-        if (result == null) {
-            result = new NetworkTarget(inetAdress, NetworkTargetType.INTERNET);
-        }
-        return result;
+        return null;
     }
 
 }

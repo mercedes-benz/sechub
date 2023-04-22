@@ -7,6 +7,11 @@
 # The image argument needs to be placed on top
 ARG BASE_IMAGE
 
+# Inject the target architecture
+# For more information: 
+# - https://docs.docker.com/engine/reference/builder/#automatic-platform-args-in-the-global-scope
+ARG TARGETARCH
+
 # Build args
 ARG BUILD_TYPE="download"
 
@@ -14,7 +19,7 @@ ARG SECHUB_VERSION="0.35.2"
 ARG TAG=""
 ARG BRANCH=""
 
-ARG GO="go1.19.3.linux-amd64.tar.gz"
+ARG GO="go1.20.1.linux-${TARGETARCH}.tar.gz"
 
 # possible values: temurin, openj9, openjdk
 ARG JAVA_DISTRIBUTION="openjdk"

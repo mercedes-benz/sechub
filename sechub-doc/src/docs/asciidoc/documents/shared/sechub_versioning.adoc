@@ -18,8 +18,8 @@ TIP: GitHub releases (versions) should be ideal to work with!
 General used version at build time looks always like: `$versionId-$buildId`
 For example `1.2.3-b123`
 
-NOTE: Every gradle build will regenerate the versioning. Why? Because gradle configuration
-      phase is always done for ALL gradle stuff! This includes version setup for build.
+NOTE: Every gradle build will regenerate the versioning. Why? Because the gradle configuration
+      phase is always done for ALL gradle builds. This includes version setup for build.
       Means for example: Setting version for server into file only when server build task
       will be run does not work, because version setting would be configured before. +
        +

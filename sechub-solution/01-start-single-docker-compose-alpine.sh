@@ -3,9 +3,6 @@
 
 ENVIRONMENT_FILE=".env-single"
 
-resource_limits_enabled="$1"
-compose_file="docker-compose_sechub-alpine"
-
 cd $(dirname "$0")
 source ../sechub-solutions-shared/scripts/9999-env-file-helper.sh
 
@@ -18,10 +15,5 @@ setup_environment_file "$ENVIRONMENT_FILE" "env-sechub"
 export BUILDKIT_PROGRESS=plain
 export DOCKER_BUILDKIT=1
 
-if [[ "$resource_limits_enabled" == "yes" ]]
-then
-    compose_file="docker-compose_sechub_resource_limits"
-fi
-
 echo "Compose file: $compose_file"
-docker-compose --file "$compose_file.yaml" up --build --remove-orphans
+docker compose --file "docker-compose_sechub-alpine.yaml" up --build --remove-orphans

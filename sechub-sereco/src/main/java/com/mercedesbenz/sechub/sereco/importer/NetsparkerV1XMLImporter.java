@@ -19,7 +19,7 @@ import com.mercedesbenz.sechub.sereco.metadata.SerecoWeb;
 @Component
 public class NetsparkerV1XMLImporter extends AbstractProductResultImporter {
 
-    public SerecoMetaData importResult(String xml) throws IOException {
+    public SerecoMetaData importResult(String xml, ScanType scanType) throws IOException {
         SerecoMetaData metaData = new SerecoMetaData();
         if (xml == null) {
             xml = "";

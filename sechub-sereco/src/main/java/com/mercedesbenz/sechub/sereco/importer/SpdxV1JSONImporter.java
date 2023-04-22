@@ -10,6 +10,7 @@ import org.springframework.stereotype.Component;
 
 import com.fasterxml.jackson.core.JacksonException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.mercedesbenz.sechub.commons.model.ScanType;
 import com.mercedesbenz.sechub.sereco.metadata.SerecoLicenseDocument;
 import com.mercedesbenz.sechub.sereco.metadata.SerecoLicenseSpdx;
 import com.mercedesbenz.sechub.sereco.metadata.SerecoMetaData;
@@ -19,7 +20,7 @@ public class SpdxV1JSONImporter extends AbstractProductResultImporter {
     private static final Logger LOG = LoggerFactory.getLogger(SpdxV1JSONImporter.class);
 
     @Override
-    public SerecoMetaData importResult(String spdxJson) throws IOException {
+    public SerecoMetaData importResult(String spdxJson, ScanType scanType) throws IOException {
         Objects.requireNonNull(spdxJson, "SPDX cannot be null.");
 
         SerecoMetaData metaData = new SerecoMetaData();

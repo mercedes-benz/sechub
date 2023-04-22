@@ -16,7 +16,7 @@ function usage {
 Usage: `basename $0` [-p] [-y] [-s <sechub server url> [-u <sechub user>] [-a <sechub api token>] action [<action's parameters>]
 
 Shell front end to selected SecHub API calls (https://mercedes-benz.github.io/sechub/latest/sechub-restapi.html).
-Output will be beautified/colorized by piping json output through jq command (https://github.com/stedolan/jq)
+Output will be improved by piping json output through jq command (https://github.com/stedolan/jq)
 unless you specify -p or -plain option. Option -y or -yes skips confirmation dialog when deleting items.
 
 You are encouraged to set SECHUB_SERVER, SECHUB_USERID and SECHUB_APITOKEN as environment variables
@@ -29,10 +29,10 @@ alive_check - alive check (No user needed)
 autocleanup_get - Get autocleanup setting
 autocleanup_set <value> <time unit> - Update autocleanup setting. <time unit> is one of days, weeks, months, years
 executor_create <json-file> - Create executor configuration from JSON file
-executor_delete <executor-uuid> - Delete executor <executor-uuid>
-executor_details <executor-uuid> - Show definition of executor <executor-uuid>
+executor_delete <executor uuid or name> - Delete executor <executor uuid or name>
+executor_details <executor uuid or name> - Show definition of executor <executor uuid or name>
 executor_list - List all existing executors (json format)
-executor_update <executor-uuid> <json-file> - Update executor <executor-uuid> with <json-file> contents
+executor_update <executor-uuid uuid or name> <json-file> - Update executor <executor-uuid uuid or name> with <json-file> contents
 job_approve <project-id> <job-uuid> - Approve a job <job-uuid> and mark it as ready to start
 job_cancel <job-uuid> - Cancel job <job-uuid>
 job_create <project-id> <json-file> - Create a new job for a project <project-id> from a SecHub configuration file <json-file> (JSON format)
@@ -43,12 +43,12 @@ job_restart_hard <job-uuid> - Run new backend scan of job <job-uuid>
 job_status <project-id> <job-uuid> - Get status of job <job-uuid> in project <project-id> (json format)
 job_upload_sourcecode <project-id> <job-uuid> <zip-file> - Upload source code <zip-file> for project <project-id> and job <job-uuid>
 job_upload_binaries <project-id> <job-uuid> <tar-file> - Upload source code <tar-file> for project <project-id> and job <job-uuid>
-profile_create <profile-id> <executor-uuid1>[,<executor-uuid2>...] [<description>]
+profile_create <profile-id> <executor1 uuid or name>[,<executor2 uuid or name>...] [<description>]
                Create execution profile <profile-id> with named executors assigned; description optional
 profile_delete <profile-id> - Delete execution profile <profile-id>
 profile_details <profile-id> - Show details of execution profile <profile-id> (e.g. assinged executors)
 profile_list - List all existing execution profiles (json format)
-profile_update <profile-id> <executor-uuid1>[,<executor-uuid2>...] [<description>]
+profile_update <profile-id> <executor1 uuid or name>[,<executor2 uuid or name>...] [<description>]
                Update execution profile <profile-id> with named executors assigned; description optional
 project_assign_profile <project-id> <profile-id> - Assign execution profile <profile-id> to project <project-id>
 project_assign_user <project-id> <user-id> - Assign user to project (allow scanning)
@@ -226,6 +226,37 @@ function generate_short_description {
 }
 
 
+function is_uuid {
+  # Example: 806b1f9a-f31c-4238-8201-ce9e9fc06b28
+  if [[ $1 =~ ^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$ ]]; then
+    return 0
+  else
+    return 1
+  fi
+}
+
+
+function get_executor_uuid_from_name {
+  local uuid
+  curl_with_sechub_auth -X GET -H 'Content-Type: application/json' "$SECHUB_SERVER/api/admin/config/executors" | jq -r --arg executorname "$1" '.executorConfigurations | map(select(.name == $executorname)) | .[].uuid'
+}
+
+
+function get_executor_uuid {
+  local uuid
+  if is_uuid "$1" ; then
+    uuid="$1"
+  else
+    uuid="$(get_executor_uuid_from_name $1)"
+    if ! is_uuid "$uuid" ; then
+      echo "Executor with name \"$1\" not found or not unique." >&2
+      exit 1
+    fi
+  fi
+  echo $uuid
+}
+
+
 #######################################
 # SecHub api functions
 
@@ -267,24 +298,37 @@ function sechub_executor_create {
 
 
 function sechub_executor_details {
-  curl_with_sechub_auth -i -X GET -H 'Content-Type: application/json' "$SECHUB_SERVER/api/admin/config/executor/$1" | $RESULT_FILTER | $JSON_FORMATTER
+  local uuid
+  uuid="$(get_executor_uuid $1)"
+  is_uuid "$uuid" && curl_with_sechub_auth -i -X GET -H 'Content-Type: application/json' "$SECHUB_SERVER/api/admin/config/executor/$uuid" | $RESULT_FILTER | $JSON_FORMATTER
 }
 
 
 function sechub_executor_delete {
+  local uuid
+  uuid="$(get_executor_uuid $1)"
+  if ! is_uuid "$uuid" ; then
+    exit 1
+  fi
   echo "Executor \"$1\" will be deleted. This cannot be undone."
   are_you_sure
-  curl_with_sechub_auth -i -X DELETE -H 'Content-Type: application/json' "$SECHUB_SERVER/api/admin/config/executor/$1" | $CURL_FILTER
+  curl_with_sechub_auth -i -X DELETE -H 'Content-Type: application/json' "$SECHUB_SERVER/api/admin/config/executor/$uuid" | $CURL_FILTER
 }
 
 
 function sechub_executor_update {
-  curl_with_sechub_auth -i -X PUT -H 'Content-Type: application/json' -d "@$2" "$SECHUB_SERVER/api/admin/config/executor/$1" | $CURL_FILTER
+  local uuid
+  uuid="$(get_executor_uuid $1)"
+  is_uuid "$uuid" && curl_with_sechub_auth -i -X PUT -H 'Content-Type: application/json' -d "@$2" "$SECHUB_SERVER/api/admin/config/executor/$uuid" | $CURL_FILTER
 }
 
 
 function sechub_executor_list {
-  curl_with_sechub_auth -i -X GET -H 'Content-Type: application/json' "$SECHUB_SERVER/api/admin/config/executors" | $RESULT_FILTER | jq '.executorConfigurations'
+  if [ "$JQ_INSTALLED" == "true" ] ; then
+    curl_with_sechub_auth -i -X GET -H 'Content-Type: application/json' "$SECHUB_SERVER/api/admin/config/executors" | $RESULT_FILTER | jq '.executorConfigurations | sort_by(.name)'
+  else
+    curl_with_sechub_auth -i -X GET -H 'Content-Type: application/json' "$SECHUB_SERVER/api/admin/config/executors" | $RESULT_FILTER
+  fi
 }
 
 
@@ -383,7 +427,28 @@ function sechub_job_upload_binaries {
 }
 
 function generate_sechub_profile_data {
-  local EXECUTORS=$(echo $1 | awk -F',' '{ for (i = 1; i < NF; i++) { printf("{\"uuid\": \"%s\"}, ", $i) } printf ("{\"uuid\": \"%s\"}", $NF) }')
+  local failed=false
+  local executor_uuids=""
+  # Resolve executor names to their uuids
+  while read executor; do
+    local uuid=$(get_executor_uuid $executor)
+    if is_uuid "$uuid" ; then
+      if [ -z "$executor_uuids" ] ; then
+        executor_uuids="$uuid"
+      else
+        executor_uuids="$executor_uuids,$uuid"
+      fi
+    else
+      failed=true
+    fi
+  done < <(echo "$1" | awk -F',' '{ for( i=1; i<=NF; i++ ) print $i }')
+  if $failed ; then
+    echo "Error: Could not resolve all executors. See above messages." >&2
+    echo "ERROR"
+    exit 1
+  fi
+
+  local EXECUTORS=$(echo $executor_uuids | awk -F',' '{ for (i = 1; i < NF; i++) { printf("{\"uuid\": \"%s\"}, ", $i) } printf ("{\"uuid\": \"%s\"}", $NF) }')
   shift
   local SHORT_DESCRIPTION="$*"
   cat <<EOF
@@ -397,6 +462,9 @@ EOF
 
 function sechub_profile_create {
   local JSON_DATA="$(generate_sechub_profile_data $2 $3)"
+  if [ "$JSON_DATA" = "ERROR" ] ; then
+    exit 1
+  fi
   echo $JSON_DATA | $JSON_FORMATTER
   curl_with_sechub_auth -i -X POST -H 'Content-Type: application/json' -d "$JSON_DATA" "$SECHUB_SERVER/api/admin/config/execution/profile/$1" | $CURL_FILTER
 }
@@ -415,12 +483,19 @@ function sechub_profile_details {
 
 
 function sechub_profile_list {
-  curl_with_sechub_auth -i -X GET -H 'Content-Type: application/json' "$SECHUB_SERVER/api/admin/config/execution/profiles" | $RESULT_FILTER | jq '.executionProfiles'
+  if [ "$JQ_INSTALLED" == "true" ] ; then
+    curl_with_sechub_auth -i -X GET -H 'Content-Type: application/json' "$SECHUB_SERVER/api/admin/config/execution/profiles" | $RESULT_FILTER | jq '.executionProfiles | sort_by(.id)'
+  else
+    curl_with_sechub_auth -i -X GET -H 'Content-Type: application/json' "$SECHUB_SERVER/api/admin/config/execution/profiles" | $RESULT_FILTER
+  fi
 }
 
 
 function sechub_profile_update {
   local JSON_DATA="$(generate_sechub_profile_data $2 $3)"
+  if [ "$JSON_DATA" = "ERROR" ] ; then
+    exit 1
+  fi
   echo $JSON_DATA | $JSON_FORMATTER
   curl_with_sechub_auth -i -X PUT -H 'Content-Type: application/json' -d "$JSON_DATA" "$SECHUB_SERVER/api/admin/config/execution/profile/$1" | $CURL_FILTER
 }
@@ -518,7 +593,7 @@ function sechub_project_joblist {
 }
 
 function sechub_project_list {
-  curl_with_sechub_auth -i -X GET -H 'Content-Type: application/json' "$SECHUB_SERVER/api/project/testproject/jobs?size=10&page=0" | $RESULT_FILTER | $JSON_FORMAT_SORT
+  curl_with_sechub_auth -i -X GET -H 'Content-Type: application/json' "$SECHUB_SERVER/api/admin/projects" | $RESULT_FILTER | $JSON_FORMAT_SORT
 }
 
 
@@ -639,8 +714,19 @@ function sechub_scheduler_status {
 function sechub_server_status {
   # 1. Update status in admin domain
   curl_with_sechub_auth -i -X POST -H 'Content-Type: application/json' "$SECHUB_SERVER/api/admin/scheduler/status/refresh" > /dev/null 2>&1
-  # 2. Display status
-  curl_with_sechub_auth -i -X GET -H 'Content-Type: application/json' "$SECHUB_SERVER/api/admin/status" | $RESULT_FILTER | $JSON_FORMAT_SORT
+  # 2. Get status
+  local result_json
+  result_json=$(curl_with_sechub_auth -i -X GET -H 'Content-Type: application/json' "$SECHUB_SERVER/api/admin/status" | $RESULT_FILTER)
+  # 3. Display result
+  if [ -n "$TABLE_FORMATTER" -a "$TABLE_FORMATTER" != "$NOFORMAT_PIPE" -a "$JQ_INSTALLED" == "true" ] ; then
+    # Print as table to save space
+    local result_data
+    result_data=( $(printf "key|value\n---|-----\n" && echo $result_json | jq -r '.[] | .key + "|" + .value' | sort) )
+    printf "%s\n" ${result_data[@]} | $TABLE_FORMATTER
+  else
+    # Fallback: Print raw JSON
+    echo $result_json | $JSON_FORMATTER
+  fi
 }
 
 
@@ -731,12 +817,19 @@ NOFORMAT_PIPE="cat -"
 RESULT_FILTER="tail -1"
 TIMESTAMP=`date +"%Y-%m-%d %H:%M %Z"`
 if which jq >/dev/null 2>&1 ; then
+  JQ_INSTALLED="true"
   JSON_FORMATTER="jq ."   # . is needed or pipeing the result is not possible
   JSON_FORMAT_SORT="jq sort"
 else
-  echo "### Hint: Install jq (https://github.com/stedolan/jq) to improve output." >&2  # appears only on stderr
+  echo "### Hint: Install jq (https://github.com/stedolan/jq). Now executor access by name will not work." >&2  # appears only on stderr
+  JQ_INSTALLED="false"
   JSON_FORMATTER="$NOFORMAT_PIPE"
   JSON_FORMAT_SORT="$NOFORMAT_PIPE"
+fi
+if which column >/dev/null 2>&1 ; then
+  TABLE_FORMATTER="column -t -s '|'"
+else
+  echo "### Hint: Install column to improve table output." >&2  # appears only on stderr
 fi
 
 # Parse command line options (everything starting with '-')
@@ -761,6 +854,7 @@ while [[ "${opt:0:1}" == "-" ]] ; do
   -p|-plain)
     JSON_FORMATTER="$NOFORMAT_PIPE"
     JSON_FORMAT_SORT="$NOFORMAT_PIPE"
+    TABLE_FORMATTER="$NOFORMAT_PIPE"
     shift
     ;;
   -s|-server)
@@ -815,20 +909,20 @@ case "$action" in
     $failed || sechub_executor_create "$EXECUTOR_JSONFILE"
     ;;
   executor_delete)
-    EXECUTOR_UUID="$1" ; check_parameter EXECUTOR_UUID '<executor-uuid>'
-    $failed || sechub_executor_delete "$EXECUTOR_UUID"
+    EXECUTOR="$1" ; check_parameter EXECUTOR '<executor uuid or name>'
+    $failed || sechub_executor_delete "$EXECUTOR"
     ;;
   executor_details)
-    EXECUTOR_UUID="$1" ; check_parameter EXECUTOR_UUID '<executor-uuid>'
-    $failed || sechub_executor_details "$EXECUTOR_UUID"
+    EXECUTOR="$1" ; check_parameter EXECUTOR '<executor uuid or name>'
+    $failed || sechub_executor_details "$EXECUTOR"
     ;;
   executor_list)
     $failed || sechub_executor_list
     ;;
   executor_update)
-    EXECUTOR_UUID="$1" ; check_parameter EXECUTOR_UUID '<executor-uuid>'
+    EXECUTOR="$1" ; check_parameter EXECUTOR '<executor uuid or name>'
     EXECUTOR_JSONFILE="$2" ; check_file "$EXECUTOR_JSONFILE" '<json-file>'
-    $failed || sechub_executor_update "$EXECUTOR_UUID" "$EXECUTOR_JSONFILE"
+    $failed || sechub_executor_update "$EXECUTOR" "$EXECUTOR_JSONFILE"
     ;;
   job_approve)
     PROJECT_ID="$1" ; check_parameter PROJECT_ID '<project-id>'

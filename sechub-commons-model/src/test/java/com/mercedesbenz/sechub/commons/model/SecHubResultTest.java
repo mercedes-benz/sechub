@@ -2,14 +2,14 @@
 package com.mercedesbenz.sechub.commons.model;
 
 import static com.mercedesbenz.sechub.commons.model.AssertSecHubResult.*;
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-public class SecHubResultTest {
+class SecHubResultTest {
 
     @Test
-    public void empty_sechub_result__to_json__returns_not_null() throws Exception {
+    void empty_sechub_result__to_json__returns_not_null() throws Exception {
         /* prepare */
         SecHubResult result = new SecHubResult();
 
@@ -22,7 +22,7 @@ public class SecHubResultTest {
     }
 
     @Test
-    public void one_finding_sechub_result__json_contains_sample_data() throws Exception {
+    void one_finding_sechub_result__json_contains_sample_data() throws Exception {
         /* prepare */
         SecHubResult result = new SecHubResult();
         SecHubFinding finding = new SecHubFinding();
@@ -46,7 +46,7 @@ public class SecHubResultTest {
     }
 
     @Test
-    public void one_finding_sechub_result__json__reloaded_fromJson_finding_found_as_defined() throws Exception {
+    void one_finding_sechub_result__json__reloaded_fromJson_finding_found_as_defined() throws Exception {
         /* prepare */
         SecHubResult result = new SecHubResult();
         SecHubFinding finding = new SecHubFinding();

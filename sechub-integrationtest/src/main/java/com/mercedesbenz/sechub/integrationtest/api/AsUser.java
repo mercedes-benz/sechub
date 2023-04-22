@@ -30,6 +30,7 @@ import org.springframework.web.client.RestTemplate;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.mercedesbenz.sechub.commons.TextFileWriter;
 import com.mercedesbenz.sechub.commons.mapping.MappingData;
 import com.mercedesbenz.sechub.commons.model.JSONConverter;
 import com.mercedesbenz.sechub.commons.model.SecHubScanConfiguration;
@@ -60,6 +61,8 @@ public class AsUser {
     private JSONTestSupport jsonTestSupport = JSONTestSupport.DEFAULT;
     private SecHubJobAutoDumper autoDumper = new SecHubJobAutoDumper();
     TestUser user;
+    private TextFileWriter writer;
+    private boolean enableHTMLautoDumps;
 
     AsUser(TestUser user) {
         this.user = user;
@@ -501,13 +504,18 @@ public class AsUser {
     }
 
     public UUID createJobAndReturnJobUUID(TestProject project, SecHubScanConfiguration config) {
+        String resultAsString = createJobAndReturnResultAsString(project, config);
+        return fetchJobUUID(resultAsString);
+    }
+
+    public String createJobAndReturnResultAsString(TestProject project, SecHubScanConfiguration config) {
         String projectId = project.getProjectId();
         config.setProjectId(projectId);
 
         String json = config.toJSON();
         String url = getUrlBuilder().buildAddJobUrl(projectId);
         String resultAsString = getRestHelper().postJson(url, json);
-        return fetchJobUUID(resultAsString);
+        return resultAsString;
     }
 
     private String createTargetURIForSechubConfiguration(IntegrationTestMockMode runMode, List<String> whites) {
@@ -593,6 +601,33 @@ public class AsUser {
 
         /* okay report is available - so do download */
         return getRestHelper().getJSON(getUrlBuilder().buildGetJobReportUrl(projectId, jobUUID));
+    }
+
+    private TextFileWriter getWriter() {
+        if (writer == null) {
+            writer = new TextFileWriter();
+        }
+        return writer;
+    }
+
+    public AsUser enableAutoDumpForHTMLReports() {
+        this.enableHTMLautoDumps = true;
+        return this;
+    }
+
+    public String getHTMLJobReport(TestProject project, UUID jobUUID) {
+        waitForJobToFinish(project.getProjectId(), jobUUID);
+
+        /* okay report is available - so do download */
+        String html = getRestHelper().getStringFromURL(getUrlBuilder().buildGetJobReportUrl(project.getProjectId(), jobUUID), MediaType.TEXT_HTML);
+        if (enableHTMLautoDumps) {
+            try {
+                getWriter().save(new File("./build/test-results/html-reports/" + jobUUID + ".html"), html, false);
+            } catch (IOException e) {
+                throw new IllegalStateException("Was not able to dump HTML data", e);
+            }
+        }
+        return html;
     }
 
     public String getSpdxReport(TestProject project, UUID jobUUID) {
@@ -764,7 +799,7 @@ public class AsUser {
     }
 
     public String getServerVersion() {
-        return getRestHelper().getJSON(getUrlBuilder().buildGetServerVersionUrl());
+        return getRestHelper().getStringFromURL(getUrlBuilder().buildGetServerVersionUrl());
     }
 
     public boolean getIsAlive() {

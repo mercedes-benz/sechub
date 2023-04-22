@@ -96,8 +96,8 @@ For an example look into `ProjectTransactionService`.
 
 [IMPORTANT]
 ====
-Only add the special transactional parts to the "transactional" service but
-do all other stuff inside "normal" services!
+Only add the special transactional parts to the "transactional" service and
+put all other parts inside "normal" services!
 ====
 
 === RestController

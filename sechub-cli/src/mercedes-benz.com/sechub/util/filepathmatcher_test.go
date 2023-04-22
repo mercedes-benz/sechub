@@ -37,7 +37,7 @@ func TestXYZ_When_NO_double_asterisk_and_path_is_same_it_matches(t *testing.T) {
 }
 
 func Test_When_double_asterisk_on_start_any_path_is_accepted_when_filename_without_asterisk_matches(t *testing.T) {
-	/* filenames all matching but different pathes */
+	/* filenames all matching but different paths */
 	AssertTrue(FilePathMatch("/home/gargamel/schlumpfine/testfolder/a.txt", "**/a.txt"), t)
 	AssertTrue(FilePathMatch("/home/gargamel/testfolder/a.txt", "**/a.txt"), t)
 	AssertTrue(FilePathMatch("/x/y/z/V/a.txt", "**/a.txt"), t)
@@ -61,7 +61,7 @@ func Test_When_double_asterisk_also_matching_files_in_current_working_directory(
 }
 
 func Test_When_double_asterisk_on_inside_path_is_accepted_when_filename_without_asterisk_matches(t *testing.T) {
-	/* filenames all matching but different pathes */
+	/* filenames all matching but different paths */
 	AssertTrue(FilePathMatch("/home/gargamel/schlumpfine/testfolder/a.txt", "/home/**/a.txt"), t)
 	AssertTrue(FilePathMatch("/home/gargamel/testfolder/a.txt", "/home/gargamel/**/a.txt"), t)
 	AssertTrue(FilePathMatch("/x/y/z/V/a.txt", "/x/y/z/**/a.txt"), t)
@@ -72,7 +72,7 @@ func Test_When_double_asterisk_on_inside_path_is_accepted_when_filename_without_
 }
 
 func Test_When_multiple_double_asterisk_on_inside_path_is_accepted_when_filename_without_asterisk_matches(t *testing.T) {
-	/* filenames all matching but different pathes */
+	/* filenames all matching but different paths */
 	AssertTrue(FilePathMatch("/x/y/z/V/a.txt", "/x/**/V/a.txt"), t)
 	AssertTrue(FilePathMatch("/home/gargamel/schlumpfine/testfolder/a.txt", "/home/**/schlumpfine/**/a.txt"), t)
 	AssertTrue(FilePathMatch("/home/gargamel/schlumpfine/testfolder/a.txt", "/home/**/**/a.txt"), t)

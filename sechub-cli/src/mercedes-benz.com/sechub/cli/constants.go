@@ -209,11 +209,17 @@ const SechubWhitelistAllEnvVar = "SECHUB_WHITELIST_ALL"
 /* -------- Status ------------------ */
 /* ---------------------------------- */
 
-// ExecutionStateEnded - SecHub job has succesfully finished
-const ExecutionStateEnded = "ENDED"
+// Job execution states
+// as defined in sechub-commons-pds/src/main/java/com/mercedesbenz/sechub/commons/pds/data/PDSJobStatusState.java
 
 // ExecutionStateCanceled - SecHub job has been canceled
-const ExecutionStateCanceled = "CANCEL_REQUESTED"
+const ExecutionStateCanceled = "CANCELED"
+
+// ExecutionStateCanceled - SecHub job has been canceled
+const ExecutionStateCancelRequested = "CANCEL_REQUESTED"
+
+// ExecutionStateEnded - SecHub job has succesfully finished
+const ExecutionStateEnded = "ENDED"
 
 // JobStatusOkay - SecHub job has a report ready to download
 const JobStatusOkay = "OK"

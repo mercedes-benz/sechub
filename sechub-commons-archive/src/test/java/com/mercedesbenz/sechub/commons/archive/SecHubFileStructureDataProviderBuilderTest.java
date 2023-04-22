@@ -14,6 +14,7 @@ import com.mercedesbenz.sechub.commons.model.SecHubCodeScanConfiguration;
 import com.mercedesbenz.sechub.commons.model.SecHubConfigurationModel;
 import com.mercedesbenz.sechub.commons.model.SecHubDataConfiguration;
 import com.mercedesbenz.sechub.commons.model.SecHubFileSystemConfiguration;
+import com.mercedesbenz.sechub.commons.model.SecHubSecretScanConfiguration;
 import com.mercedesbenz.sechub.commons.model.SecHubSourceDataConfiguration;
 
 class SecHubFileStructureDataProviderBuilderTest {
@@ -201,6 +202,35 @@ class SecHubFileStructureDataProviderBuilderTest {
         assertNotNull(dataProvider);
         assertTrue(dataProvider.getUnmodifiableSetOfAcceptedReferenceNames().contains("test-ref-1"));
         assertTrue(dataProvider.isRootFolderAccepted());
+    }
+
+    @Test
+    void for_scantype_secretscan_and_source_data_section_create_data_provider() {
+        /* prepare */
+        SecHubConfigurationModel model = new SecHubConfigurationModel();
+        SecHubSecretScanConfiguration secretScan = new SecHubSecretScanConfiguration();
+        secretScan.getNamesOfUsedDataConfigurationObjects().add("test-ref-1");
+
+        SecHubFileSystemConfiguration fileSystemConfiguration = new SecHubFileSystemConfiguration();
+        fileSystemConfiguration.getFolders().add("myfolder1");
+
+        SecHubSourceDataConfiguration sourceConfig1 = new SecHubSourceDataConfiguration();
+        sourceConfig1.setFileSystem(fileSystemConfiguration);
+        sourceConfig1.setUniqueName("test-ref-1");
+
+        SecHubDataConfiguration data = new SecHubDataConfiguration();
+        data.getSources().add(sourceConfig1);
+
+        model.setData(data);
+        model.setSecretScan(secretScan);
+
+        /* execute */
+        SecHubFileStructureDataProvider dataProvider = builderToTest.setModel(model).setScanType(ScanType.SECRET_SCAN).build();
+
+        /* test */
+        assertNotNull(dataProvider);
+        assertTrue(dataProvider.getUnmodifiableSetOfAcceptedReferenceNames().contains("test-ref-1"));
+        assertFalse(dataProvider.isRootFolderAccepted());
     }
 
 }

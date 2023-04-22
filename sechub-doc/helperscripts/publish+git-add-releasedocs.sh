@@ -35,7 +35,7 @@ function add_files(){
       files_to_add="sechub-product-delegation-server.html pds-download.html"
       ;;
     server)
-      files_to_add="sechub-architecture.html sechub-operations.html sechub-quickstart-guide.html sechub-restapi.html sechub-techdoc.html server-download.html"
+      files_to_add="sechub-architecture.html sechub-developer-quickstart-guide.html sechub-getting-started.html sechub-operations.html sechub-restapi.html sechub-techdoc.html server-download.html"
       ;;
     *)
       echo "Ignoring unknown product name '$product' in git tag."

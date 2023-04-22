@@ -5,7 +5,8 @@ ARG BASE_IMAGE
 
 FROM ${BASE_IMAGE}
 
-ENV GITLEAKS_VERSION="8.8.11"
+ARG GITLEAKS_VERSION
+ENV GITLEAKS_VERSION="${GITLEAKS_VERSION}"
 
 USER root
 
@@ -25,7 +26,10 @@ RUN cd "$DOWNLOAD_FOLDER" && \
 COPY pds-config.json "$PDS_FOLDER"/pds-config.json
 
 # Copy scripts
-COPY scripts/ "$SCRIPT_FOLDER"
+COPY --chmod=0755 --chown="$USER:$USER" scripts/ "$SCRIPT_FOLDER"
+
+# Copy run_additional script
+COPY --chmod=0755 --chown="$USER:$USER" run_additional.sh /run_additional.sh
 
 # Copy mocks
 COPY mocks "$MOCK_FOLDER"

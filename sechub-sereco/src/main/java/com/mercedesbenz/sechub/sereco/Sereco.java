@@ -16,7 +16,7 @@ public class Sereco {
     @Lookup
     // create always new instances by container
     // ----------------------------------------
-    // dony by workspace is component with scope prototype
+    // done by workspace is component with scope prototype
     // lookup will let the creation be at container side
     // will use constructor with string argument...
     //

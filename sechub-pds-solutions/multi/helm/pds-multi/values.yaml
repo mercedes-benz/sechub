@@ -1,6 +1,6 @@
 # SPDX-License-Identifier: MIT
 
-# This is just a sample values file.
+# This is a sample values file containing the defaults.
 
 replicaCount: 1
 
@@ -8,13 +8,25 @@ image:
     registry: "my.registry.example.org/pds_multi"
     tag: "latest"
 
+resources:
+    requests:
+        # Initial container memory size
+        memory: 256Mi
+    limits:
+        # Maximum container memory size
+        memory: 1Gi
+
 pds:
     startMode: localserver
-    maxFileUploadSize: 20MB
+    # Maximum upload size: 20 MiB by default (20 * 1024 * 1024 = 20971520)
+    uploadMaximumBytes: "20971520"
     config:
         execute:
+            # Maximal accepted queue size (new job requests will be denied and thus cached on SecHub server)
             queueMax: 10
-            workerThreadCount: 1
+            # Maximum number of jobs that are processed in parallel by PDS
+            workerThreadCount: 10
+    heartbeatLogging: "true"
     logging:
         type:
             enabled: false
@@ -28,8 +40,10 @@ pds:
 users:
     technical:
         id: "techuser"
+        apiToken: "<api token of techuser>"
     admin:
         id: "admin"
+        apiToken: "<api token of admin user>"
 
 storage:
     local:

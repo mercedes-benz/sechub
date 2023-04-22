@@ -14,8 +14,6 @@ import com.mercedesbenz.sechub.domain.scan.project.FalsePositiveWebMetaData;
 import com.mercedesbenz.sechub.sereco.metadata.SerecoClassification;
 import com.mercedesbenz.sechub.sereco.metadata.SerecoVulnerability;
 import com.mercedesbenz.sechub.sereco.metadata.SerecoWeb;
-import com.mercedesbenz.sechub.sereco.metadata.SerecoWebAttack;
-import com.mercedesbenz.sechub.sereco.metadata.SerecoWebEvidence;
 
 /**
  * Strategy to check if a web scan vulnerability identified by a product is
@@ -76,8 +74,8 @@ public class SerecoFalsePositiveWebScanStrategy {
         SerecoClassification serecoClassification = vulnerability.getClassification();
         String serecoCWE = serecoClassification.getCwe();
         if (serecoCWE == null || serecoCWE.isEmpty()) {
-            LOG.error("Code scan sereco vulnerability type:{} found without CWE! Cannot determin false positive! Classification was:{}",
-                    vulnerability.getType(), serecoClassification);
+            LOG.error("Web scan sereco vulnerability type:{} found without CWE! Cannot determin false positive! Classification was:{}", vulnerability.getType(),
+                    serecoClassification);
             return false;
         }
         try {
@@ -88,7 +86,7 @@ public class SerecoFalsePositiveWebScanStrategy {
             }
 
         } catch (NumberFormatException e) {
-            LOG.error("Code scan sereco vulnerability type:{} found CWE:{} but not expected integer format!", vulnerability.getType(), serecoCWE);
+            LOG.error("Web scan sereco vulnerability type:{} found CWE:{} but not expected integer format!", vulnerability.getType(), serecoCWE);
             return false;
 
         }
@@ -106,25 +104,6 @@ public class SerecoFalsePositiveWebScanStrategy {
         String metaMethod = metaDataWeb.getRequest().getMethod();
         String vulnerabilityMethod = vulnerabilityWeb.getRequest().getMethod();
         sameData = sameData && SimpleStringUtils.isTrimmedEqual(metaMethod, vulnerabilityMethod);
-
-        /* ---------------------------------------------------- */
-        /* -------------------Attack vector-------------------- */
-        /* ---------------------------------------------------- */
-        String metaAttackVector = metaDataWeb.getRequest().getAttackVector();
-        SerecoWebAttack attack = vulnerabilityWeb.getAttack();
-        String vulnerabilityAttackVector = attack.getVector();
-        sameData = sameData && SimpleStringUtils.isTrimmedEqual(metaAttackVector, vulnerabilityAttackVector);
-
-        /* ---------------------------------------------------- */
-        /* -------------------Evidence------------------------- */
-        /* ---------------------------------------------------- */
-        String metaEvidence = metaDataWeb.getResponse().getEvidence();
-        SerecoWebEvidence evidence = attack.getEvidence();
-        String vulnerabilityEvidence = null;
-        if (evidence != null) {
-            vulnerabilityEvidence = evidence.getSnippet();
-        }
-        sameData = sameData && SimpleStringUtils.isTrimmedEqual(metaEvidence, vulnerabilityEvidence);
 
         return sameData;
     }

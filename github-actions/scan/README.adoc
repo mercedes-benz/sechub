@@ -1,0 +1,76 @@
+// SPDX-License-Identifier: MIT
+
+== GitHub Action for SecHub scan
+
+This GitHub action uses the SecHub cli to scan the repository for security issues.
+
+
+=== Usage
+
+To be able to use this action you need a SecHub project. Check the https://mercedes-benz.github.io/sechub/[documentation] on how to set one up.
+
+```yaml
+
+- uses: mercedes-benz/sechub/github-actions/scan@ffc232775
+  with:
+    # OPTIONAL: Path to sechub.json for manual configuration. If no value is set the input parameters will be used to create it for the scan.'
+    config-path: 'sechub.json'
+
+    # OPTIONAL: SecHub server url
+    url: ${{ secrets.SECHUB_SERVER }}
+
+    # OPTIONAL: SecHub api token
+    api-token: ${{ secrets.SECHUB_APITOKEN }}
+
+    # OPTIONAL: SecHub user
+    user: ${{ secrets.SECHUB_USERID }}
+
+    # OPTIONAL: the name of the project registered in SecHub (required if config-path not set)
+    project-name: ${{ secrets.SECHUB_PROJECT }}
+
+    # OPTIONAL: Which version of the SecHub cli to use
+    # DEFAULT: 0.34.0
+    version: '0.34.0'
+
+    # OPTIONAL: A list of folders to be included. Multiple folders can be separated by ,
+    include-folders: 'src,lib'
+
+    # OPTIONAL: A list of folders to be excluded. Multiple folders can be separated by ,
+    # DEFAULT: empty (see SecHub documentation for default excludes)
+    exclude-folders: 'bin,build,dist'
+
+    # REQUIRED: The formats in which the report should be downloaded. Multiple values can be separatd by ,
+    # DEFAULT: json,html
+    report-formats: 'json,html'
+
+    # OPTIONAL: SecHub debug output on/off.
+    # DEFAULT: false
+    debug: false
+
+    # OPTIONAL: job (pipeline) will be marked as failed if sechub finds something
+    # DEFAULT: true
+    fail-job-with-findings: true
+```
+
+=== Build
+
+To build the action locally you have to run this command:
+
+[source,npm]
+----
+npm run build
+----
+
+This will run the `ncc` compiler and transpile the files from the src folder into the files from the dist folder.
+The dist files will be executed by the GitHub Action.
+
+It's necessary to execute the build after every change of the sources and you have to commit the changes in dist to git.
+
+=== Test
+
+To run the tests you have to run this command:
+
+[source,npm]
+----
+npm run test
+----
