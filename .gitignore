@@ -57,5 +57,8 @@ java-gen/
 .DS_Store
 
 # Containerized solutions
-copy/
+copy/**
 !copy/README.adoc
+
+*.deb
+*.apk

@@ -10,7 +10,7 @@ CPU_LIMIT=1.0
 BUILD_TYPE=download
 
 # The SecHub version used if the BUILD_TYPE is set to `download` 
-SECHUB_VERSION="0.37.0"
+SECHUB_VERSION="0.41.0"
 
 # Go version used
 GO="go1.19.5.linux-amd64.tar.gz"

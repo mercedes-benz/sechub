@@ -1,9 +1,11 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.sereco.test;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -486,7 +488,16 @@ public class AssertVulnerabilities {
                 cwe = "0";
             }
             Integer cweNumber = Integer.valueOf(cwe);
-            map.computeIfAbsent(cweNumber, (key) -> map.put(key, new ArrayList<SerecoVulnerability>()));
+            
+
+            // Check if CWE is already in the map
+            // NOTE: Using computeIfAbsent can cause a ConcurrentModificationException,
+            // except if the much slower ConcurrentSkipListMap is used
+            if (!map.containsKey(cweNumber)) {
+            	// add CWE to the map
+            	map.put(cweNumber, new LinkedList<SerecoVulnerability>());
+            }
+            
             map.get(cweNumber).add(vulnerability);
         }
 
