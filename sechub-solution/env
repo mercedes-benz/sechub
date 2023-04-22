@@ -4,7 +4,7 @@ CPU_LIMIT=1.0
 
 # The build type of SecHub inside the container
 # Possible values are: build, copy, download
-# build - clones and build SecHub
+# build - clones and builds SecHub
 # copy - copies jar into container
 # download - downloads the SecHub jar
 BUILD_TYPE=download

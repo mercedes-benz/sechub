@@ -488,16 +488,15 @@ public class AssertVulnerabilities {
                 cwe = "0";
             }
             Integer cweNumber = Integer.valueOf(cwe);
-            
 
             // Check if CWE is already in the map
             // NOTE: Using computeIfAbsent can cause a ConcurrentModificationException,
             // except if the much slower ConcurrentSkipListMap is used
             if (!map.containsKey(cweNumber)) {
-            	// add CWE to the map
-            	map.put(cweNumber, new LinkedList<SerecoVulnerability>());
+                // add CWE to the map
+                map.put(cweNumber, new LinkedList<SerecoVulnerability>());
             }
-            
+
             map.get(cweNumber).add(vulnerability);
         }
 
