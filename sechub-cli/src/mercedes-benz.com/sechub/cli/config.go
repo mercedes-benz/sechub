@@ -27,6 +27,7 @@ type Config struct {
 	ignoreDefaultExcludes          bool
 	initialWaitIntervalNanoseconds int64
 	keepTempFiles                  bool
+	labelsRawData                  string
 	outputFileName                 string
 	outputFolder                   string
 	outputLocation                 string
@@ -85,6 +86,8 @@ func prepareOptionsFromCommandline(config *Config) {
 		helpOption, false, "Shows help and terminates")
 	flag.StringVar(&config.secHubJobUUID,
 		jobUUIDOption, "", "SecHub job uuid - Optional for actions '"+getStatusAction+"' or '"+getReportAction+"'")
+	flag.StringVar(&config.labelsRawData,
+		labelOption, "", "Define a label for the scan job. Repeat to define multiple labels. Lables can also be defined in environment variable "+SechubLabelsEnvVar)
 	flag.StringVar(&config.outputLocation,
 		outputOption, "", "Where to place reports, false-positive files etc. Can be a directory, a file name or a file path. (Defaults to current directory)")
 	flag.StringVar(&config.projectID,
@@ -120,6 +123,8 @@ func parseConfigFromEnvironment(config *Config) {
 		os.Getenv(SechubIgnoreDefaultExcludesEnvVar) == "true" // make it possible to switch off default excludes
 	config.keepTempFiles =
 		os.Getenv(SechubKeepTempfilesEnvVar) == "true"
+	config.labelsRawData =
+		os.Getenv(SechubLabelsEnvVar)
 	config.quiet =
 		os.Getenv(SechubQuietEnvVar) == "true"
 	config.trustAll =
