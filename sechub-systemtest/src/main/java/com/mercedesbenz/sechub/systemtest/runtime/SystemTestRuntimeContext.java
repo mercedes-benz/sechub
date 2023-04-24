@@ -5,6 +5,7 @@ import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
@@ -17,13 +18,18 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.mercedesbenz.sechub.api.SecHubClient;
+import com.mercedesbenz.sechub.commons.model.ScanType;
+import com.mercedesbenz.sechub.pds.commons.core.config.PDSProductSetup;
+import com.mercedesbenz.sechub.pds.commons.core.config.PDSServerConfiguration;
 import com.mercedesbenz.sechub.systemtest.config.AbstractSecHubDefinition;
 import com.mercedesbenz.sechub.systemtest.config.CredentialsDefinition;
 import com.mercedesbenz.sechub.systemtest.config.LocalSecHubDefinition;
 import com.mercedesbenz.sechub.systemtest.config.LocalSetupDefinition;
 import com.mercedesbenz.sechub.systemtest.config.PDSSolutionDefinition;
+import com.mercedesbenz.sechub.systemtest.config.ProjectDefinition;
 import com.mercedesbenz.sechub.systemtest.config.RemoteSetupDefinition;
 import com.mercedesbenz.sechub.systemtest.config.SecHubConfigurationDefinition;
+import com.mercedesbenz.sechub.systemtest.config.SecHubExecutorConfigDefinition;
 import com.mercedesbenz.sechub.systemtest.config.SystemTestConfiguration;
 
 class SystemTestRuntimeContext {
@@ -70,7 +76,7 @@ class SystemTestRuntimeContext {
     public boolean isDryRun() {
         return dryRun;
     }
-    
+
     /* only for tests */
     SystemTestRuntimeContext() {
     }
@@ -87,7 +93,7 @@ class SystemTestRuntimeContext {
 
         this.localRun = localRun;
         this.dryRun = dryRun;
-        
+
         this.workspaceRoot = workspaceRoot;
     }
 
@@ -201,8 +207,9 @@ class SystemTestRuntimeContext {
         if (localAdminSecHubClient == null) {
             LocalSecHubDefinition localSecHub = getLocalSetupOrFail().getSecHub();
             localAdminSecHubClient = createClient(localSecHub, localSecHub.getAdmin());
-            
-            LOG.info("Created local admin client for user: '{}', apiToken: {}", localAdminSecHubClient.getUsername(), "*".repeat(localAdminSecHubClient.getSealedApiToken().length()));
+
+            LOG.info("Created local admin client for user: '{}', apiToken: {}", localAdminSecHubClient.getUsername(),
+                    "*".repeat(localAdminSecHubClient.getSealedApiToken().length()));
         }
         return localAdminSecHubClient;
     }
@@ -218,8 +225,9 @@ class SystemTestRuntimeContext {
         if (remoteUserSecHubClient == null) {
             LocalSecHubDefinition localSecHub = getLocalSetupOrFail().getSecHub();
             remoteUserSecHubClient = createClient(localSecHub, localSecHub.getAdmin());
-            
-            LOG.info("Created remote user client for user: {}, apiToken: {}", remoteUserSecHubClient.getUsername(), "*".repeat(remoteUserSecHubClient.getSealedApiToken().length()));
+
+            LOG.info("Created remote user client for user: {}, apiToken: {}", remoteUserSecHubClient.getUsername(),
+                    "*".repeat(remoteUserSecHubClient.getSealedApiToken().length()));
         }
         return remoteUserSecHubClient;
     }
@@ -233,7 +241,7 @@ class SystemTestRuntimeContext {
         try {
             URI serverUri = url.toURI();
             client = new SecHubClient(serverUri, credentials.getUserId(), credentials.getApiToken(), true);
-            
+
         } catch (URISyntaxException e) {
             throw new WrongConfigurationException("URL not defined correct local sechub server: " + e.getMessage(), this);
         }
@@ -246,6 +254,86 @@ class SystemTestRuntimeContext {
 
     public boolean isRemoteSecHubConfigured() {
         return configuration.getSetup().getRemote().isPresent();
+    }
+
+    public List<SecHubExecutorConfigDefinition> getLocalSecHubExecutorConfigurationsOrFail() {
+        SecHubConfigurationDefinition config = getLocalSecHubConfigurationOrFail();
+        return config.getExecutors();
+    }
+
+    public Set<String> createSetForLocalSecHubProfileIdsInExecutors() {
+        Set<String> profileIds = new LinkedHashSet<>();
+
+        for (SecHubExecutorConfigDefinition configDefinition : getLocalSecHubExecutorConfigurationsOrFail()) {
+            profileIds.addAll(configDefinition.getProfiles());
+        }
+        return profileIds;
+    }
+
+    public Set<String> createSetForLocalSecHubProjectIdDefinitions() {
+
+        SecHubConfigurationDefinition config = getLocalSecHubConfigurationOrFail();
+        Set<String> projectIds = new LinkedHashSet<>();
+
+        for (ProjectDefinition projectDefinition : config.getProjects().get()) {
+            String projectName = projectDefinition.getName();
+            projectIds.add(projectName);
+        }
+        return projectIds;
+    }
+
+    public List<PDSSolutionDefinition> getLocalPdsSolutionsOrFail() {
+        return getLocalSetupOrFail().getPdsSolutions();
+
+    }
+
+    public PDSProductSetup getPDSProductSetupOrNull(String pdsProductId) {
+
+        Collection<PDSServerConfiguration> serverConfigurations = getRuntimeMetaData().getPDSServerConfigurations();
+        for (PDSServerConfiguration serverConfiguration : serverConfigurations) {
+            for (PDSProductSetup product : serverConfiguration.getProducts()) {
+                if (pdsProductId.equals(product.getId())) {
+                    return product;
+                }
+            }
+        }
+
+        return null;
+    }
+
+    public PDSServerConfiguration getPDSServerConfigurationOrNull(String pdsProductId) {
+
+        Collection<PDSServerConfiguration> serverConfigurations = getRuntimeMetaData().getPDSServerConfigurations();
+        for (PDSServerConfiguration serverConfiguration : serverConfigurations) {
+            for (PDSProductSetup product : serverConfiguration.getProducts()) {
+                if (pdsProductId.equals(product.getId())) {
+                    return serverConfiguration;
+                }
+            }
+        }
+
+        return null;
+    }
+
+    public ScanType getScanTypeForPdsProduct(String pdsProductId) {
+
+        PDSProductSetup productSetup = getPDSProductSetupOrNull(pdsProductId);
+        if (productSetup == null) {
+            throw new WrongConfigurationException("There is no PDS server configuration file available, which references pds product id:" + pdsProductId, this);
+        }
+        return productSetup.getScanType();
+    }
+
+    public PDSSolutionDefinition getPDSSolutionDefinitionOrFail(String pdsProductId) {
+        PDSServerConfiguration serverConfiguration = getPDSServerConfigurationOrNull(pdsProductId);
+        if (serverConfiguration == null) {
+            throw new WrongConfigurationException("No PDS server configuration found for pds product id:" + pdsProductId, this);
+        }
+        PDSSolutionDefinition result = getRuntimeMetaData().getPDSSolutionDefinition(serverConfiguration);
+        if (result == null) {
+            throw new WrongConfigurationException("No PDS solution definition found for pds product id:" + pdsProductId, this);
+        }
+        return result;
     }
 
 }

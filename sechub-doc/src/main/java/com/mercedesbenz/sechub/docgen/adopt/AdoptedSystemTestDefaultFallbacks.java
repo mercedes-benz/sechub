@@ -45,6 +45,8 @@ public enum AdoptedSystemTestDefaultFallbacks {
     /** Same like default in /sechub-pds-solutions/shared/environment/env-base */
     FALLBACK_PDS_TECH_TOKEN("PDS tech user token", "pds-apitoken"),
 
+    FALLBACK_PDS_LOCAL_URL("(Local) PDS url", "https://localhost:8444"),
+
     ;
 
     private String scope;

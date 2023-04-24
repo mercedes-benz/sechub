@@ -1,14 +1,15 @@
 package com.mercedesbenz.sechub.systemtest.config;
 
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
 public class PDSSolutionDefinition extends AbstractDefinition {
 
     private String name;
+    private URL url = DefaultFallbackUtil.convertToURL(DefaultFallback.FALLBACK_PDS_LOCAL_URL);
 
     private String baseDir;
-
     private String pathToPdsServerConfigFile;
 
     private List<ExecutionStepDefinition> start = new ArrayList<>();
@@ -65,5 +66,13 @@ public class PDSSolutionDefinition extends AbstractDefinition {
 
     public String getBaseDir() {
         return baseDir;
+    }
+
+    public URL getUrl() {
+        return url;
+    }
+
+    public void setUrl(URL url) {
+        this.url = url;
     }
 }

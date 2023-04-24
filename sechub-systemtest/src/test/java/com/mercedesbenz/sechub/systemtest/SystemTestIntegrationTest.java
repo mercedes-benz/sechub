@@ -1,7 +1,6 @@
 package com.mercedesbenz.sechub.systemtest;
 
 import static com.mercedesbenz.sechub.systemtest.SystemTestAPI.*;
-import static com.mercedesbenz.sechub.systemtest.TestConfigConstants.*;
 import static com.mercedesbenz.sechub.test.TestUtil.*;
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -21,6 +20,7 @@ import com.mercedesbenz.sechub.systemtest.runtime.ProcessContainerFailedExceptio
 import com.mercedesbenz.sechub.systemtest.runtime.SystemTestResult;
 import com.mercedesbenz.sechub.systemtest.runtime.SystemTestRuntimeException;
 import com.mercedesbenz.sechub.test.TestFileReader;
+
 /**
  * An integration test if the system test API and the involved runtime +
  * configuration builder can work together and execute real (but simple fake)

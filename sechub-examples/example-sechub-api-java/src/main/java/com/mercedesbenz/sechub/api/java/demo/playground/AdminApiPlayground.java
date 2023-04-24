@@ -47,7 +47,7 @@ public class AdminApiPlayground {
 
         String profileId = createProfile();
 
-        client.addExecutorToProfile(uuid, profileId);
+        client.addExecutorConfigurationToProfile(uuid, profileId);
 
         logSuccess("Added executor configuration with uuid: " + uuid + " to profile : " + profileId);
         

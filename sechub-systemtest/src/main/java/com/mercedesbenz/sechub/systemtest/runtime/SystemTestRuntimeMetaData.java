@@ -20,8 +20,15 @@ class SystemTestRuntimeMetaData {
 
     private static final Logger LOG = LoggerFactory.getLogger(SystemTestRuntimeMetaData.class);
 
-    private Map<PDSSolutionDefinition, PDSServerConfiguration> pdsSolutionConfigurations = new LinkedHashMap<>();
+    private Map<PDSServerConfiguration, PdsSolutionData> pdsSolutionConfigurations = new LinkedHashMap<>();
     private TextFileReader textFileReader;
+
+    private class PdsSolutionData {
+        private PDSServerConfiguration serverConfiguration;
+        private Path pathToServerConfiguration;
+        private PDSSolutionDefinition solutionDefinition;
+        public String solutionPathToConfigFile;
+    }
 
     public SystemTestRuntimeMetaData() {
         this.textFileReader = new TextFileReader();
@@ -30,7 +37,8 @@ class SystemTestRuntimeMetaData {
     public void register(PDSSolutionDefinition solution, SystemTestRuntimeContext context) {
         LOG.debug("Register solution: {},", solution.getName());
 
-        Path pdsServerConfigFilePath = Paths.get(solution.getPathToPdsServerConfigFile());
+        String solutionPathToConfigFile = solution.getPathToPdsServerConfigFile();
+        Path pdsServerConfigFilePath = Paths.get(solutionPathToConfigFile);
         if (!Files.exists(pdsServerConfigFilePath)) {
             throw new WrongConfigurationException(
                     "The calculated PDS server config file does not exist for solution:" + solution.getName() + "!\n" + "Calculated was: "
@@ -53,11 +61,22 @@ class SystemTestRuntimeMetaData {
             throw new WrongConfigurationException("The PDS server configration file {} is invalid! ", context, e);
         }
 
-        this.pdsSolutionConfigurations.put(solution, configuration);
+        PdsSolutionData data = new PdsSolutionData();
+        data.solutionDefinition = solution;
+        data.pathToServerConfiguration = pdsServerConfigFilePath;
+        data.serverConfiguration = configuration;
+        data.solutionPathToConfigFile = solutionPathToConfigFile;
+
+        this.pdsSolutionConfigurations.put(configuration, data);
     };
 
+    public PDSSolutionDefinition getPDSSolutionDefinition(PDSServerConfiguration configuration) {
+        PdsSolutionData data = pdsSolutionConfigurations.get(configuration);
+        return data.solutionDefinition;
+    }
+
     public Collection<PDSServerConfiguration> getPDSServerConfigurations() {
-        return pdsSolutionConfigurations.values();
+        return pdsSolutionConfigurations.keySet();
     }
 
 }

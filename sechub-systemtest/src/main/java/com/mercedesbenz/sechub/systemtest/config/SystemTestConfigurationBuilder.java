@@ -102,29 +102,32 @@ public class SystemTestConfigurationBuilder {
 
         }
     }
-    
-    private abstract class AbstractSecHubDefinitionBuilder<T extends AbstractSecHubDefinitionBuilder<?>>{
+
+    private abstract class AbstractSecHubDefinitionBuilder<T extends AbstractSecHubDefinitionBuilder<?>> {
         private AbstractSecHubDefinition sechubDefinition;
 
-        AbstractSecHubDefinitionBuilder(Class<T> clazz,  AbstractSecHubDefinition sechubDefinition){
-            this.sechubDefinition=sechubDefinition;
+        AbstractSecHubDefinitionBuilder(Class<T> clazz, AbstractSecHubDefinition sechubDefinition) {
+            this.sechubDefinition = sechubDefinition;
         }
+
         @SuppressWarnings("unchecked")
         public T user(String userId, String apiToken) {
             CredentialsDefinition userCredentials = sechubDefinition.getUser();
-            
+
             userCredentials.setUserId(userId);
             userCredentials.setApiToken(apiToken);
             return (T) this;
         }
+
         @SuppressWarnings("unchecked")
         public T admin(String userId, String apiToken) {
             CredentialsDefinition adminCredentials = sechubDefinition.getAdmin();
-            
+
             adminCredentials.setUserId(userId);
             adminCredentials.setApiToken(apiToken);
             return (T) this;
         }
+
         @SuppressWarnings("unchecked")
         public T url(URL url) {
             sechubDefinition.setUrl(url);
@@ -144,8 +147,7 @@ public class SystemTestConfigurationBuilder {
             return new RemoteSecHubSetupBuilder();
         }
 
-        public class RemoteSecHubSetupBuilder extends AbstractSecHubDefinitionBuilder<RemoteSecHubSetupBuilder>{
-
+        public class RemoteSecHubSetupBuilder extends AbstractSecHubDefinitionBuilder<RemoteSecHubSetupBuilder> {
 
             public RemoteSecHubSetupBuilder() {
                 super(RemoteSecHubSetupBuilder.class, remoteSetup.getSecHub());
@@ -154,13 +156,13 @@ public class SystemTestConfigurationBuilder {
             public RemoteSetupBuilder endSecHub() {
                 return RemoteSetupBuilder.this;
             }
-            
+
         }
 
         public SystemTestConfigurationBuilder endRemoteSetup() {
             return SystemTestConfigurationBuilder.this;
         }
-        
+
     }
 
     public class LocalSetupBuilder {
@@ -184,7 +186,7 @@ public class SystemTestConfigurationBuilder {
             return new LocalSecHubSetupBuilder();
         }
 
-        public class LocalSecHubSetupBuilder extends AbstractSecHubDefinitionBuilder<LocalSecHubSetupBuilder>{
+        public class LocalSecHubSetupBuilder extends AbstractSecHubDefinitionBuilder<LocalSecHubSetupBuilder> {
 
             private LocalSecHubDefinition localSechub;
 
@@ -232,12 +234,24 @@ public class SystemTestConfigurationBuilder {
                     }
 
                     public SecHubExecutorConfigBuilder forProfile(String profileId) {
-                        executor.setProfile(profileId);
+                        executor.getProfiles().add(profileId);
+                        return this;
+                    }
+
+                    public SecHubExecutorConfigBuilder forProfile(String... profileIds) {
+                        for (String profileId : profileIds) {
+                            executor.getProfiles().add(profileId);
+                        }
                         return this;
                     }
 
                     public SecHubExecutorConfigBuilder pdsProductId(String productId) {
                         executor.setPdsProductId(productId);
+                        return this;
+                    }
+
+                    public SecHubExecutorConfigBuilder parameter(String key, String value) {
+                        executor.getParameters().put(key, value);
                         return this;
                     }
                 }
@@ -281,11 +295,11 @@ public class SystemTestConfigurationBuilder {
                 setup.setWaitForAvailable(waitForAVailable);
                 return this;
             }
-            
 
             /**
-             * If define, the server config file location will not be calculated, but the defined
-             * part will be used.
+             * If define, the server config file location will not be calculated, but the
+             * defined part will be used.
+             *
              * @param pathToPdsServerConfigFile
              * @return
              */

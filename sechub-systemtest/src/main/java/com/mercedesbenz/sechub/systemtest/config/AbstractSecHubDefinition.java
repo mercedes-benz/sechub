@@ -4,7 +4,7 @@ import java.net.URL;
 
 public class AbstractSecHubDefinition extends AbstractDefinition {
 
-    private URL url;
+    private URL url = DefaultFallbackUtil.convertToURL(DefaultFallback.FALLBACK_SECHUB_LOCAL_URL);
 
     private CredentialsDefinition user = new CredentialsDefinition();
 

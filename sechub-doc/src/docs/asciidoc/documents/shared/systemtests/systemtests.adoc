@@ -4,10 +4,22 @@
 == System tests
 This chapter describes the system test framework.
 
+Integration tests do rely on that {sechub} is running in integration test mode, using one {pds}
+server in integration test mode as well. In this scenario, the integration test API can fetch
+internal meta data and is able to check correctness of the logic inside {sechub} and also inside
+{pds}. But it does not test real product execution - it uses only mocked test scripts and dedicated 
+test data.    
+
+The system tests are different to integration tests: The main purpose is to test 
+{sechub} server(s) in combination with one or multiple {pds} solutions in real live scenarios.
+This helps developers of PDS solutions to drastically reduce development time and also to write 
+automated tests without having to constantly test manually - a command line call in the OS shell or 
+calling a unit test is sufficient. 
+
 [TIP]
 ====
 The system test framework is designed, to make things easier for developers
-when testing SecHub / PDS. It provides as many defaults as possible.
+when testing {sechub} / {pds}. It provides as many defaults as possible.
 So it is normally not necessary to define much to have a running system test!
 
 Do not try to configure every possible part, but instead try to define only 
@@ -206,5 +218,31 @@ script which must be done (and does automatically end) before a stage shall be l
 In this case the stage will wait until the script has finished or times out.
 ====
 
+==== Auto configuration
+===== Remote run
+At a remote run, the configuration of the remote exissting {sechub} and {pds} environments
+will not be changed!
+
+[IMPORTANT]
+====
+There is no auto configuration phase on a remote run. All elements (profiles, executors, project,
+etc. must all be configured before the test is run.
+====
+
+ 
+
+===== Local run
+
+====== Projects
+The defined projects will be created automatically. If a project exists with the defined name (e.g.
+when a system test is restarted locally) the existing projected will be deleted!
+
+====== Executor configurations
+Every system test start will just create new executor configurations.
+
+====== Profiles
+The defined profiles inside test configuration model will be created and connected with the created
+executor configurations. IF a profile does already exist with the defined project id, the existing 
+one will be deleted.
 
 

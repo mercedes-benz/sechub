@@ -17,7 +17,7 @@ public class LocationSupport {
     private Path workspaceRoot;
 
     public LocationSupport(String pdsSolutionsRootFolder, String sechubSolutionRootFolder, String workspaceRootFolder) {
-        if (pdsSolutionsRootFolder==null) {
+        if (pdsSolutionsRootFolder == null) {
             try {
                 pdsSolutionsRootFolder = Files.createTempDirectory("systemtest_pds_solution_rootfolder_fallback").toString();
             } catch (IOException e) {

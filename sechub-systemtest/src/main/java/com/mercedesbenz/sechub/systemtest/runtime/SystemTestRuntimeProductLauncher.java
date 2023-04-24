@@ -117,13 +117,13 @@ public class SystemTestRuntimeProductLauncher {
     public void waitUntilSecHubAvailable(SystemTestRuntimeContext context) throws SystemTestErrorException {
         SecHubClient client = null;
         if (context.isLocalRun()) {
-            if (! context.isLocalSecHubConfigured()) {
+            if (!context.isLocalSecHubConfigured()) {
                 /* not defined - no wait necessary */
                 return;
             }
             client = context.getLocalAdminSecHubClient();
         } else {
-            if (! context.isRemoteSecHubConfigured()) {
+            if (!context.isRemoteSecHubConfigured()) {
                 /* not defined - no wait necessary */
                 return;
             }

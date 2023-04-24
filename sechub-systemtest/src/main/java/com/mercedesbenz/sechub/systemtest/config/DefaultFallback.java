@@ -15,7 +15,7 @@ public enum DefaultFallback {
 
     /** Same like default in /sechub-solution/env-sechub */
     FALLBACK_SECHUB_LOCAL_URL("(Local) SecHub url", "https://localhost:8443"),
-    
+
     /** Same like default in /sechub-solution/env-sechub */
     FALLBACK_SECHUB_ADMIN_USER("(Local) SecHub admin user", "admin"),
 
@@ -34,6 +34,9 @@ public enum DefaultFallback {
     /** Same like default in /sechub-pds-solutions/shared/environment/env-base */
     FALLBACK_PDS_TECH_TOKEN("PDS tech user token", "pds-apitoken"),
 
+    /** Same like default in /sechub-pds-solutions/shared/environment/env-base */
+    FALLBACK_PDS_LOCAL_URL("(Local) PDS url", "https://localhost:8444"),
+
     ;
 
     private String scope;
@@ -51,4 +54,5 @@ public enum DefaultFallback {
     public String getValue() {
         return value;
     }
+
 }

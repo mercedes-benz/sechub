@@ -27,7 +27,7 @@ public class SystemTestRuntime {
 
     private EnvironmentProvider environmentSupport;
 
-    private SystemTestRuntimeProductConfigurator configurator;
+    private SystemTestRuntimeLocalSecHubProductConfigurator localSecHubProductConfigurator;
 
     public SystemTestRuntime(LocationSupport locationSupport, ExecutionSupport execSupport) {
         if (locationSupport == null) {
@@ -38,7 +38,7 @@ public class SystemTestRuntime {
         }
 
         this.productLauncher = new SystemTestRuntimeProductLauncher(execSupport);
-        this.configurator = new SystemTestRuntimeProductConfigurator();
+        this.localSecHubProductConfigurator = new SystemTestRuntimeLocalSecHubProductConfigurator();
         this.preparator = new SystemTestRuntimePreparator();
         this.locationSupport = locationSupport;
         this.environmentSupport = execSupport.getEnvironmentProvider();
@@ -70,7 +70,7 @@ public class SystemTestRuntime {
             execOrFail(() -> productLauncher.waitUntilSecHubAvailable(context), "Wait for SecHub available");
             execOrFail(() -> productLauncher.waitUntilPDSSolutionsAvailable(context), "Wait for PDS solutions available");
 
-            execOrFail(() -> configurator.applyConfigurationWhenLocal(context), "Apply SecHub configuration when local run");
+            execOrFail(() -> localSecHubProductConfigurator.configure(context), "Apply SecHub configuration when local run");
 
             /* execute tests */
             switchToStage("Test", context);
@@ -90,14 +90,18 @@ public class SystemTestRuntime {
 
             return result;
         } finally {
-            for (SystemTestRuntimeStage stage : context.getStages()) {
-                List<ProcessContainer> stillRunningProcessContainers = stage.getStillRunningContainers();
-                for (ProcessContainer processContainer : stillRunningProcessContainers) {
-                    processContainer.terminateProcess();
-                }
-            }
+            terminateStillRunningProcesses(context);
         }
 
+    }
+
+    private void terminateStillRunningProcesses(SystemTestRuntimeContext context) {
+        for (SystemTestRuntimeStage stage : context.getStages()) {
+            List<ProcessContainer> stillRunningProcessContainers = stage.getStillRunningContainers();
+            for (ProcessContainer processContainer : stillRunningProcessContainers) {
+                processContainer.terminateProcess();
+            }
+        }
     }
 
     private void finalCheckForFailedContainers(SystemTestRuntimeContext context) {
@@ -115,10 +119,10 @@ public class SystemTestRuntime {
 
         for (TestDefinition test : tests) {
             switchToStage("Test prepare", context);
-            testPreparator.prepare(test);
+            testPreparator.prepare(test, context);
 
             switchToStage("Test execution", context);
-            testExecutor.executeTest(test);
+            testExecutor.executeTest(test, context);
         }
 
         /* after tests */

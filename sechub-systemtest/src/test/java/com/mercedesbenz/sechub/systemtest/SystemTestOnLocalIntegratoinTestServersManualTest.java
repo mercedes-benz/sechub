@@ -21,9 +21,9 @@ import com.mercedesbenz.sechub.systemtest.runtime.SystemTestResult;
 
 /**
  * A special manual test for developers.
- * 
+ *
  * Howto use:
- * 
+ *
  * <pre>
  * - start SecHub server in integration test mode from your IDE
  * - start PDS server in integration test mode from your IDE
@@ -58,6 +58,8 @@ class SystemTestOnLocalIntegratoinTestServersManualTest {
                         configure().
                             addExecutor().
                                 pdsProductId("PDS_INTTEST_PRODUCT_CODESCAN").
+                                parameter("product1.qualititycheck.enabled","true"). // mandatory for this PDS product setup
+                                parameter("product1.level","A").// mandatory for this PDS product setup
                             endExecutor().
                         endConfigure().
                     endSecHub().

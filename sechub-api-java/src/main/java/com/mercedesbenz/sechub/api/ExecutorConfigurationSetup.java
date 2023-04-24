@@ -86,4 +86,12 @@ public class ExecutorConfigurationSetup extends com.mercedesbenz.sechub.api.inte
         return delegate;
     }
 
+    public void addParameter(String key, String value) {
+        ExecutorConfigurationSetupJobParameter parameter = new ExecutorConfigurationSetupJobParameter();
+        parameter.setKey(key);
+        parameter.setValue(value);
+
+        getJobParameters().add(parameter);
+    }
+
 }

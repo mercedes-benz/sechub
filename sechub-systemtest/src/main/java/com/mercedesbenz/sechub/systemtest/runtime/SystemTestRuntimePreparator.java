@@ -11,6 +11,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -114,15 +115,17 @@ public class SystemTestRuntimePreparator {
         prepareScripts(context);
         collectLocalMetaData(context);
 
+        createFallbackSecHubSetupPartsWithMetaData(context);
+
     }
 
     private void addFallbackDefaultProfileToExecutorsWithoutProfile(SystemTestRuntimeContext context) {
         SecHubConfigurationDefinition sechubConfig = context.getLocalSecHubConfigurationOrFail();
         List<SecHubExecutorConfigDefinition> executors = sechubConfig.getExecutors();
         for (SecHubExecutorConfigDefinition executor : executors) {
-            String profile = executor.getProfile();
-            if (profile == null || profile.isEmpty()) {
-                executor.setProfile(FALLBACK_PROFILE_ID.getValue());
+            Set<String> profiles = executor.getProfiles();
+            if (profiles.isEmpty()) {
+                profiles.add(FALLBACK_PROFILE_ID.getValue());
             }
         }
     }
@@ -133,13 +136,16 @@ public class SystemTestRuntimePreparator {
         if (!projects.isPresent()) {
             sechubConfig.setProjects(Optional.of(new ArrayList<>()));
         }
-        List<ProjectDefinition> projectsX = sechubConfig.getProjects().get();
-        if (projectsX.isEmpty()) {
+
+        List<ProjectDefinition> projectDefinitions = sechubConfig.getProjects().get();
+        if (projectDefinitions.isEmpty()) {
+
             ProjectDefinition fallback = new ProjectDefinition();
+
             fallback.setName(FALLBACK_PROJECT_NAME.getValue());
             fallback.setComment("Auto created fallback default project");
             fallback.getProfiles().add(FALLBACK_PROFILE_ID.getValue());
-            projectsX.add(fallback);
+            projectDefinitions.add(fallback);
         }
     }
 
@@ -168,14 +174,14 @@ public class SystemTestRuntimePreparator {
         LocalSetupDefinition localSetup = context.getLocalSetupOrFail();
         LocalSecHubDefinition secHub = localSetup.getSecHub();
 
-        if (secHub.getUrl()==null) {
+        if (secHub.getUrl() == null) {
             String defaultValue = DefaultFallback.FALLBACK_SECHUB_LOCAL_URL.getValue();
             try {
                 secHub.setUrl(new URL(defaultValue));
-                LOG.info("No URL set for local SecHub, added default url:"+secHub.getUrl());
-                
+                LOG.info("No URL set for local SecHub, added default url:" + secHub.getUrl());
+
             } catch (MalformedURLException e) {
-               throw new IllegalStateException("Default value is not an URL:"+defaultValue);
+                throw new IllegalStateException("Default value is not an URL:" + defaultValue);
             }
         }
         CredentialsDefinition admin = secHub.getAdmin();
@@ -187,6 +193,32 @@ public class SystemTestRuntimePreparator {
             LOG.info("No credentials set for local SecHub, added defaults");
         }
 
+    }
+
+    private void createFallbackSecHubSetupPartsWithMetaData(SystemTestRuntimeContext context) {
+        if (!context.isLocalRun()) {
+            return;
+        }
+        if (!context.isLocalSecHubConfigured()) {
+            return;
+        }
+        for (SecHubExecutorConfigDefinition executorConfigDefinition : context.getLocalSecHubConfigurationOrFail().getExecutors()) {
+            String definedBaseUrl = executorConfigDefinition.getBaseURL();
+            if (definedBaseUrl == null) {
+                String pdsProductId = executorConfigDefinition.getPdsProductId();
+                executorConfigDefinition.setBaseURL(calculateMissingBaseUrlStringForPdsProduct(pdsProductId, context));
+            }
+        }
+
+    }
+
+    private String calculateMissingBaseUrlStringForPdsProduct(String pdsProductId, SystemTestRuntimeContext context) {
+        PDSSolutionDefinition solution = context.getPDSSolutionDefinitionOrFail(pdsProductId);
+        URL definedurl = solution.getUrl();
+        if (definedurl != null) {
+            return definedurl.toString();
+        }
+        return null;
     }
 
     private void prepareScripts(SystemTestRuntimeContext context) {

@@ -7,12 +7,15 @@ import java.nio.file.Paths;
 import java.util.Collection;
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.mercedesbenz.sechub.pds.commons.core.config.PDSProductParameterDefinition;
+import com.mercedesbenz.sechub.pds.commons.core.config.PDSProductParameterSetup;
 import com.mercedesbenz.sechub.pds.commons.core.config.PDSProductSetup;
 import com.mercedesbenz.sechub.pds.commons.core.config.PDSServerConfiguration;
 import com.mercedesbenz.sechub.systemtest.config.CredentialsDefinition;
@@ -69,6 +72,7 @@ public class SystemTestRuntimeHealthCheck {
 
         verifySecHubLocal(context);
         verifyProductIdentifiersForLocalPDS(context);
+        verifyExecutorConfigurations(context);
     }
 
     private void verifySecHubLocal(SystemTestRuntimeContext context) {
@@ -140,6 +144,57 @@ public class SystemTestRuntimeHealthCheck {
             }
         } catch (InvalidPathException e) {
             throw new WrongConfigurationException(scope + " " + state + ": " + info + " - invalid path:" + pathAsString, context, e);
+        }
+    }
+
+    private void verifyExecutorConfigurations(SystemTestRuntimeContext context) {
+
+        SecHubConfigurationDefinition sechubConfig = context.getLocalSecHubConfigurationOrFail();
+        for (SecHubExecutorConfigDefinition executorConfigDefinition : sechubConfig.getExecutors()) {
+            assertExecutorConfigBaseUrlDefined(context, executorConfigDefinition);
+            assertExecutorParametersValid(context, executorConfigDefinition);
+        }
+    }
+
+    private void assertExecutorParametersValid(SystemTestRuntimeContext context, SecHubExecutorConfigDefinition executorConfigDefinition) {
+
+        String productId = executorConfigDefinition.getPdsProductId();
+        PDSProductSetup productSetup = assertProductSetupAvailable(context, productId);
+        PDSProductParameterSetup pdsParamSetup = productSetup.getParameters();
+
+        assertMandatoryParametersAreDefined(context, executorConfigDefinition, productId, pdsParamSetup);
+    }
+
+    private PDSProductSetup assertProductSetupAvailable(SystemTestRuntimeContext context, String productId) {
+        PDSProductSetup productSetup = context.getPDSProductSetupOrNull(productId);
+        if (productSetup == null) {
+            throw new WrongConfigurationException("For product id:" + productId + " no product setup available!", context);
+        }
+        return productSetup;
+    }
+
+    private void assertMandatoryParametersAreDefined(SystemTestRuntimeContext context, SecHubExecutorConfigDefinition executorConfigDefinition,
+            String productId, PDSProductParameterSetup pdsParamSetup) {
+        Map<String, String> parameters = executorConfigDefinition.getParameters();
+        List<PDSProductParameterDefinition> mandatoryParams = pdsParamSetup.getMandatory();
+        for (PDSProductParameterDefinition mandatoryParam : mandatoryParams) {
+            if (mandatoryParam.hasDefault()) {
+                /* with default it doesn't matter */
+                continue;
+            }
+            String mandatoryKey = mandatoryParam.getKey();
+            if (!parameters.containsKey(mandatoryKey)) {
+                throw new WrongConfigurationException(
+                        "The excutor config definition for pds product:" + productId + " has not defined mandatory key:" + mandatoryKey, context);
+            }
+        }
+    }
+
+    private void assertExecutorConfigBaseUrlDefined(SystemTestRuntimeContext context, SecHubExecutorConfigDefinition executorConfigDefinition) {
+        String baseUrl = executorConfigDefinition.getBaseURL();
+        if (baseUrl == null || baseUrl.isEmpty()) {
+            throw new WrongConfigurationException(
+                    "Base url not defined for executor configuration for pds product :" + executorConfigDefinition.getPdsProductId(), context);
         }
     }
 

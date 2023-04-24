@@ -97,6 +97,7 @@ class SystemTestConfigurationTest {
         parameters1.put("pds.reuse.sechubstorage", "false (overrides default)");
 
         executor1.setPdsProductId("GOSEC");
+        executor1.setBaseURL("https://gosec_pds.example.com:8443");
 
         sechubConfig.getExecutors().add(executor1);
 

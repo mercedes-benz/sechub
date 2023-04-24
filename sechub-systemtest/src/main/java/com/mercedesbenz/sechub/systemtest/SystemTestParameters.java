@@ -8,9 +8,9 @@ public class SystemTestParameters {
     private String pathToPdsSolution;
     private String pathToWorkspace;
     private boolean localRun = true;// default always local
-    
+
     private boolean dryRun;
-    private String pdsServerconfigFileName="pds-config.json";
+    private String pdsServerconfigFileName = "pds-config.json";
 
     public SystemTestConfiguration getConfiguration() {
         return configuration;
@@ -27,7 +27,7 @@ public class SystemTestParameters {
     public boolean isLocalRun() {
         return localRun;
     }
-    
+
     public boolean isDryRun() {
         return dryRun;
     }
@@ -35,7 +35,7 @@ public class SystemTestParameters {
     public String getPdsServerconfigFileName() {
         return pdsServerconfigFileName;
     }
-    
+
     public static SystemTestParametersBuilder builder() {
         return new SystemTestParametersBuilder();
     }
@@ -56,7 +56,7 @@ public class SystemTestParameters {
             parameter.pathToPdsSolution = pathToPdsSolution;
             return this;
         }
-        
+
         public SystemTestParametersBuilder pdsServerConfigFileName(String pdsServerconfigFileName) {
             parameter.pdsServerconfigFileName = pdsServerconfigFileName;
             return this;
@@ -71,14 +71,15 @@ public class SystemTestParameters {
             parameter.localRun = true;
             return this;
         }
-        
+
         /**
-         * Mark as "dry run" - will just start processes etc. but will not
-         * change anything - only interesting for internal testing of the framework
+         * Mark as "dry run" - will just start processes etc. but will not change
+         * anything - only interesting for internal testing of the framework
+         *
          * @return itself
          */
         public SystemTestParametersBuilder dryRun() {
-            parameter.dryRun=true;
+            parameter.dryRun = true;
             return this;
         }
 
@@ -91,9 +92,5 @@ public class SystemTestParameters {
             return parameter;
         }
     }
-
-    
-    
-    
 
 }
