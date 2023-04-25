@@ -6,7 +6,6 @@ import static org.junit.jupiter.api.Assertions.*;
 
 import java.io.File;
 import java.io.IOException;
-import java.net.URL;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -22,13 +21,16 @@ import com.mercedesbenz.sechub.systemtest.runtime.SystemTestResult;
 /**
  * A special manual test for developers.
  *
- * Howto use:
+ * How to use:
  *
  * <pre>
  * - start SecHub server in integration test mode from your IDE
  * - start PDS server in integration test mode from your IDE
  * - run this test wit dedicated system properties (see inside test method for details)
  * </pre>
+ *
+ * Purpose: Easier to test and develop system test framework: Less turn around
+ * times ( no repetitive server starts and stops necessary)
  *
  * @author Albert Tregnaghi
  *
@@ -53,21 +55,42 @@ class SystemTestOnLocalIntegratoinTestServersManualTest {
         SystemTestConfiguration configuration = configure().
                 localSetup().
                     secHub().
-                        url(new URL("https://localhost:8443")).
-                        admin("int-test_superadmin","int-test_superadmin-pwd"). // because an URL is defined, the framework will check that his server is alive!
+                        admin("int-test_superadmin","int-test_superadmin-pwd").
+                        /*
+                         * We do not define any steps here - developers must have started the
+                         * integration test SecHub server locally in IDE
+                         */
                         configure().
                             addExecutor().
                                 pdsProductId("PDS_INTTEST_PRODUCT_CODESCAN").
-                                parameter("product1.qualititycheck.enabled","true"). // mandatory for this PDS product setup
-                                parameter("product1.level","A").// mandatory for this PDS product setup
+                                /* add mandatory parameters for this product:*/
+                                parameter("product1.qualititycheck.enabled","true").
+                                parameter("product1.level","A").
+                                /* credentials */
+                                credentials("pds-inttest-techuser", "pds-inttest-apitoken").
                             endExecutor().
                         endConfigure().
                     endSecHub().
-                    addSolution("PDS_INTTEST_PRODUCT_CODESCAN"). // we do not define any steps here - developers must have started PDS server here locally in IDE
+                    addSolution("PDS_INTTEST_PRODUCT_CODESCAN").
+                        /*
+                         * We do not define any steps here - developers must have started the
+                         * integration test PDS server locally in IDE
+                         *
+                         * The next line is important: The path cannot be auto calculated because we use a
+                         * SecHub server started by here - so we set the path */
                         pathToServerConfigFile(new File("./../sechub-integrationtest/src/main/resources/pds-config-integrationtest.json").toPath().toString()).
-                        waitForAVailable().
                     endSolution().
                 endLocalSetup().
+
+                test("test1").
+                    prepareStep().
+                        script().
+                        endScript().
+                    endStep().
+                    runSecHubJob().
+                        uploadBinaries("").
+                    endRunSecHub().
+                endTest().
                 build();
 
         LOG.info("config=\n{}", JSONConverter.get().toJSON(configuration,true));

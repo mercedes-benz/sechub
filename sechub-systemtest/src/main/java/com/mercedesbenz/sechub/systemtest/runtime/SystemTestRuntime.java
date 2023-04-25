@@ -20,8 +20,7 @@ public class SystemTestRuntime {
 
     private SystemTestRuntimeHealthCheck healthCheck = new SystemTestRuntimeHealthCheck();
 
-    private SystemTestRuntimeTestExecutor testExecutor = new SystemTestRuntimeTestExecutor();
-    private SystemTestRuntimeTestPreparator testPreparator = new SystemTestRuntimeTestPreparator();
+    private SystemTestRuntimeTestEngine testEngine = new SystemTestRuntimeTestEngine();
 
     private LocationSupport locationSupport;
 
@@ -75,7 +74,14 @@ public class SystemTestRuntime {
             /* execute tests */
             switchToStage("Test", context);
 
-            execOrFail(() -> prepareAndExecuteTests(context), "Start tests");
+            List<TestDefinition> tests = context.getConfiguration().getTests();
+
+            for (TestDefinition test : tests) {
+                testEngine.execute(test, context);
+            }
+
+            /* shutdown */
+            switchToStage("Shutdown", context);
 
             execOrFail(() -> productLauncher.stopPDSSolutions(context), "Stop PDS solutions");
             execOrFail(() -> productLauncher.stopSecHub(context), "Stop SecHub");
@@ -112,21 +118,6 @@ public class SystemTestRuntime {
             }
         }
 
-    }
-
-    private void prepareAndExecuteTests(SystemTestRuntimeContext context) {
-        List<TestDefinition> tests = context.getConfiguration().getTests();
-
-        for (TestDefinition test : tests) {
-            switchToStage("Test prepare", context);
-            testPreparator.prepare(test, context);
-
-            switchToStage("Test execution", context);
-            testExecutor.executeTest(test, context);
-        }
-
-        /* after tests */
-        switchToStage("Shutdown", context);
     }
 
     private void switchToStage(String name, SystemTestRuntimeContext context) {

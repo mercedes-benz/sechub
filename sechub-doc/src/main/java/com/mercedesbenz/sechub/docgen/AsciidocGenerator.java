@@ -140,9 +140,13 @@ public class AsciidocGenerator implements Generator {
 
     private void generateSystemTestsDocFiles(GenContext context) throws IOException {
         String asciidoc = systemTestDocGenerator.generateDefaultFallbackTable();
-
         File tableGenFile = new File(context.documentsGenFolder, "gen_systemtests_default_fallbacks_table.adoc");
         writer.save(tableGenFile, asciidoc);
+
+        asciidoc = systemTestDocGenerator.generateRuntimeVariableTable();
+        tableGenFile = new File(context.documentsGenFolder, "gen_systemtests_runtime_variables_table.adoc");
+        writer.save(tableGenFile, asciidoc);
+
     }
 
     private void generateModuleAndModuleGroupFiles(GenContext context) throws IOException {

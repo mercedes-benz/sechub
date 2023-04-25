@@ -16,19 +16,23 @@ import java.util.Set;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.mercedesbenz.sechub.commons.core.util.SimpleStringUtils;
 import com.mercedesbenz.sechub.commons.model.JSONConverter;
 import com.mercedesbenz.sechub.systemtest.config.CredentialsDefinition;
 import com.mercedesbenz.sechub.systemtest.config.DefaultFallback;
+import com.mercedesbenz.sechub.systemtest.config.DefaultFallbackUtil;
 import com.mercedesbenz.sechub.systemtest.config.ExecutionStepDefinition;
 import com.mercedesbenz.sechub.systemtest.config.LocalSecHubDefinition;
 import com.mercedesbenz.sechub.systemtest.config.LocalSetupDefinition;
 import com.mercedesbenz.sechub.systemtest.config.PDSSolutionDefinition;
 import com.mercedesbenz.sechub.systemtest.config.ProjectDefinition;
+import com.mercedesbenz.sechub.systemtest.config.RunSecHubJobDefinition;
+import com.mercedesbenz.sechub.systemtest.config.RuntimeVariable;
 import com.mercedesbenz.sechub.systemtest.config.ScriptDefinition;
 import com.mercedesbenz.sechub.systemtest.config.SecHubConfigurationDefinition;
 import com.mercedesbenz.sechub.systemtest.config.SecHubExecutorConfigDefinition;
 import com.mercedesbenz.sechub.systemtest.config.SystemTestConfiguration;
-import com.mercedesbenz.sechub.systemtest.config.VariableConstants;
+import com.mercedesbenz.sechub.systemtest.config.TestDefinition;
 import com.mercedesbenz.sechub.systemtest.template.SystemTestTemplateEngine;
 
 public class SystemTestRuntimePreparator {
@@ -50,6 +54,30 @@ public class SystemTestRuntimePreparator {
             return;
         }
         prepareLocal(context);
+
+        prepareTests(context);
+    }
+
+    private void prepareTests(SystemTestRuntimeContext context) {
+        for (TestDefinition test : context.getConfiguration().getTests()) {
+            prepareTest(test, context);
+        }
+    }
+
+    private void prepareTest(TestDefinition test, SystemTestRuntimeContext context) {
+        handleRunSecHubJob(test, context);
+    }
+
+    private void handleRunSecHubJob(TestDefinition test, SystemTestRuntimeContext context) {
+        Optional<RunSecHubJobDefinition> runSecHubJobOptional = test.getExecute().getRunSecHubJob();
+        if (runSecHubJobOptional.isEmpty()) {
+            return;
+        }
+        RunSecHubJobDefinition runSecHubJob = runSecHubJobOptional.get();
+        String project = runSecHubJob.getProject();
+        if (SimpleStringUtils.isEmpty(project)) {
+            runSecHubJob.setProject(DefaultFallback.FALLBACK_PROJECT_NAME.getValue());
+        }
     }
 
     private void initializeAlteredConfiguration(SystemTestRuntimeContext context) {
@@ -105,7 +133,8 @@ public class SystemTestRuntimePreparator {
 
     private Map<String, String> createRuntimeVariables(SystemTestRuntimeContext context) {
         Map<String, String> runtimeVariables = new LinkedHashMap<>();
-        runtimeVariables.put(VariableConstants.VAR_WORKSPACE_ROOT, context.getWorkspaceRoot().toString());
+        runtimeVariables.put(RuntimeVariable.WORKSPACE_ROOT.getVariableName(), context.getWorkspaceRoot().toString());
+        runtimeVariables.put(RuntimeVariable.PDS_SOLUTIONS_ROOT.getVariableName(), context.getLocationSupport().getPDSSolutionRoot().toString());
         return runtimeVariables;
     }
 
@@ -161,6 +190,43 @@ public class SystemTestRuntimePreparator {
         createFallbackSecHubSetupParts(context);
         createFallbackDefaultProjectWhenNoProjectsDefined(context);
         addFallbackDefaultProfileToExecutorsWithoutProfile(context);
+        addFallbackExecutorConfigurationCredentials(context);
+
+        createFallbackForPDSSolutions(context);
+    }
+
+    private void createFallbackForPDSSolutions(SystemTestRuntimeContext context) {
+        if (!context.isLocalRun()) {
+            return;
+        }
+        for (PDSSolutionDefinition localPdsSolution : context.getLocalPdsSolutionsOrFail()) {
+            URL url = localPdsSolution.getUrl();
+            if (url == null) {
+                localPdsSolution.setUrl(DefaultFallbackUtil.convertToURL(DefaultFallback.FALLBACK_LOCAL_PDS_URL));
+            }
+            if (localPdsSolution.getWaitForAvailable().isEmpty()) {
+                localPdsSolution.setWaitForAvailable(Optional.of(DefaultFallbackUtil.convertToBoolean(DefaultFallback.FALLBACK_LOCAL_PDS_WAIT_FOR_AVAILABLE)));
+            }
+        }
+    }
+
+    private void addFallbackExecutorConfigurationCredentials(SystemTestRuntimeContext context) {
+        if (!context.isLocalRun()) {
+            return;
+        }
+        if (!context.isLocalSecHubConfigured()) {
+            return;
+        }
+        for (SecHubExecutorConfigDefinition definition : context.getLocalSecHubExecutorConfigurationsOrFail()) {
+            CredentialsDefinition credentials = definition.getCredentials();
+            if (credentials.getUserId() == null || credentials.getUserId().isEmpty()) {
+
+                credentials.setUserId(DefaultFallback.FALLBACK_PDS_TECH_USER.getValue());
+                credentials.setApiToken(DefaultFallback.FALLBACK_PDS_TECH_TOKEN.getValue());
+
+                LOG.info("No credentials set for executor, added defaults");
+            }
+        }
 
     }
 
@@ -175,7 +241,7 @@ public class SystemTestRuntimePreparator {
         LocalSecHubDefinition secHub = localSetup.getSecHub();
 
         if (secHub.getUrl() == null) {
-            String defaultValue = DefaultFallback.FALLBACK_SECHUB_LOCAL_URL.getValue();
+            String defaultValue = DefaultFallback.FALLBACK_LOCAL_SECHUB_URL.getValue();
             try {
                 secHub.setUrl(new URL(defaultValue));
                 LOG.info("No URL set for local SecHub, added default url:" + secHub.getUrl());
@@ -189,10 +255,11 @@ public class SystemTestRuntimePreparator {
         if (admin.getUserId() == null || admin.getUserId().isEmpty()) {
             admin.setUserId(DefaultFallback.FALLBACK_SECHUB_ADMIN_USER.getValue());
             admin.setApiToken(DefaultFallback.FALLBACK_SECHUB_ADMIN_TOKEN.getValue());
-
-            LOG.info("No credentials set for local SecHub, added defaults");
         }
 
+        if (secHub.getWaitForAvailable().isEmpty()) {
+            secHub.setWaitForAvailable(Optional.of(DefaultFallbackUtil.convertToBoolean(DefaultFallback.FALLBACK_SECHUB_WAIT_FOR_AVAILABLE)));
+        }
     }
 
     private void createFallbackSecHubSetupPartsWithMetaData(SystemTestRuntimeContext context) {

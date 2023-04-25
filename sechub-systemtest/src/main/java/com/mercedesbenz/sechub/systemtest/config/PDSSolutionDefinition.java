@@ -3,18 +3,19 @@ package com.mercedesbenz.sechub.systemtest.config;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 public class PDSSolutionDefinition extends AbstractDefinition {
 
     private String name;
-    private URL url = DefaultFallbackUtil.convertToURL(DefaultFallback.FALLBACK_PDS_LOCAL_URL);
+    private URL url;
 
     private String baseDir;
     private String pathToPdsServerConfigFile;
 
     private List<ExecutionStepDefinition> start = new ArrayList<>();
 
-    private boolean waitForAvailable = true;
+    private Optional<Boolean> waitForAvailable = Optional.ofNullable(null);
 
     private List<ExecutionStepDefinition> stop = new ArrayList<>();
 
@@ -34,12 +35,12 @@ public class PDSSolutionDefinition extends AbstractDefinition {
         this.name = name;
     }
 
-    public boolean isWaitForAvailable() {
-        return waitForAvailable;
+    public void setWaitForAvailable(Optional<Boolean> waitForAvailable) {
+        this.waitForAvailable = waitForAvailable;
     }
 
-    public void setWaitForAvailable(boolean waitForAvailable) {
-        this.waitForAvailable = waitForAvailable;
+    public Optional<Boolean> getWaitForAvailable() {
+        return waitForAvailable;
     }
 
     public List<ExecutionStepDefinition> getStart() {

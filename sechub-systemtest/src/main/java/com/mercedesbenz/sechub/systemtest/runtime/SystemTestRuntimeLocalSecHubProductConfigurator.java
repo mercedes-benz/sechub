@@ -21,6 +21,7 @@ import com.mercedesbenz.sechub.api.Project;
 import com.mercedesbenz.sechub.api.SecHubClient;
 import com.mercedesbenz.sechub.api.SecHubClientException;
 import com.mercedesbenz.sechub.commons.model.ScanType;
+import com.mercedesbenz.sechub.systemtest.config.CredentialsDefinition;
 import com.mercedesbenz.sechub.systemtest.config.ProjectDefinition;
 import com.mercedesbenz.sechub.systemtest.config.SecHubConfigurationDefinition;
 import com.mercedesbenz.sechub.systemtest.config.SecHubExecutorConfigDefinition;
@@ -44,14 +45,15 @@ public class SystemTestRuntimeLocalSecHubProductConfigurator {
         createProjects(context);
         assignAdminAsUserToProjects(context);
 
-        Map<String, List<UUID>> profileIdsToExecutorUUIDs = createExecutorsAndMapToProfileIds(context);
-        createProfilesAndAssignProjects(context);
+        Map<String, List<UUID>> profileIdsToExecutorUUIDs = createExecutorConfigurationsAndMapToProfileIds(context);
+        createProfilesAndAssignToProjects(context);
 
         addExecutorConfigurationsToProfiles(context, profileIdsToExecutorUUIDs);
     }
 
     private void deleteExistingProjects(SystemTestRuntimeContext context) throws SecHubClientException {
         SecHubClient client = context.getLocalAdminSecHubClient();
+
         for (String projectId : context.createSetForLocalSecHubProjectIdDefinitions()) {
             if (context.isDryRun()) {
                 LOG.info("Dry run: delete existing project '{}' is skipped", projectId);
@@ -108,7 +110,7 @@ public class SystemTestRuntimeLocalSecHubProductConfigurator {
         }
     }
 
-    private Map<String, List<UUID>> createExecutorsAndMapToProfileIds(SystemTestRuntimeContext context) throws SecHubClientException {
+    private Map<String, List<UUID>> createExecutorConfigurationsAndMapToProfileIds(SystemTestRuntimeContext context) throws SecHubClientException {
         Map<String, List<UUID>> map = new LinkedHashMap<>();
         if (context.isDryRun()) {
             LOG.info("Dry run: Skip executor configuration creation");
@@ -116,60 +118,79 @@ public class SystemTestRuntimeLocalSecHubProductConfigurator {
 
             for (SecHubExecutorConfigDefinition executorConfigDefinition : context.getLocalSecHubExecutorConfigurationsOrFail()) {
 
-                SecHubClient client = context.getLocalAdminSecHubClient();
-                ExecutorConfiguration config = new ExecutorConfiguration();
-                config.setEnabled(true);
-                String pdsProductId = executorConfigDefinition.getPdsProductId();
-
-                ScanType scanType = context.getScanTypeForPdsProduct(pdsProductId);
-
-                String secHubProductIdentifier = resolveSecHubProductIdentifierForPdsWithSCanType(scanType);
-                config.setName(pdsProductId);
-                config.setExecutorVersion(BigDecimal.valueOf(executorConfigDefinition.getVersion()));
-                config.setProductIdentifier(secHubProductIdentifier);
-
-                ExecutorConfigurationSetup setup = config.getSetup();
-                setup.setBaseURL(executorConfigDefinition.getBaseURL());
-
-                Map<String, String> parameters = executorConfigDefinition.getParameters();
-                for (String paramKey : parameters.keySet()) {
-                    String paramValue = parameters.get(paramKey);
-
-                    setup.addParameter(paramKey, paramValue);
-
-                }
-                setup.addParameter(PARAM_KEY_PDS_CONFIG_PRODUCTIDENTIFIER, pdsProductId);
-                setup.addParameter(PARAM_KEY_PDS_CONFIG_SCRIPT_TRUSTALL_CERTIFICATES_ENABLED, "true");
-                setup.addParameter(PARAM_KEY_PDS_SCAN_TARGET_TYPE, scanType.name());
-                /*
-                 * FIXME Albert Tregnaghi, 2023-04-24: clarify if we can reuse sechub storage
-                 * here or if this is a bad idea...
-                 */
-                setup.addParameter(PARAM_KEY_PDS_CONFIG_USE_SECHUB_STORAGE, "true");
-
-                ExecutorConfigurationSetupCredentials credentials = setup.getCredentials();
-                /* FIXME Albert Tregnaghi, 2023-04-24: set credentials in config! */
-
-                UUID uuid = client.createExecutorConfiguration(config);
-
-                /* last but not least, collected profile ids... necessary for return result */
-
-                Set<String> profileIds = executorConfigDefinition.getProfiles();
-                for (String profileId : profileIds) {
-                    List<UUID> list = map.computeIfAbsent(profileId, (key) -> new ArrayList<>());
-                    list.add(uuid);
-                }
+                createAndMapExecutorConfiguration(executorConfigDefinition, map, context);
             }
         }
 
         return map;
     }
 
+    private void createAndMapExecutorConfiguration(SecHubExecutorConfigDefinition executorConfigDefinition, Map<String, List<UUID>> map,
+            SystemTestRuntimeContext context) throws SecHubClientException {
+
+        SecHubClient client = context.getLocalAdminSecHubClient();
+
+        String pdsProductId = executorConfigDefinition.getPdsProductId();
+        ScanType scanType = context.getScanTypeForPdsProduct(pdsProductId);
+        String secHubProductIdentifier = resolveSecHubProductIdentifierForPdsWithSCanType(scanType);
+
+        /* create and configure new executor configuration */
+        ExecutorConfiguration config = new ExecutorConfiguration();
+        config.setEnabled(true);
+        config.setName(pdsProductId);
+        config.setExecutorVersion(BigDecimal.valueOf(executorConfigDefinition.getVersion()));
+        config.setProductIdentifier(secHubProductIdentifier);
+
+        ExecutorConfigurationSetup setup = config.getSetup();
+        setup.setBaseURL(executorConfigDefinition.getBaseURL());
+
+        handleCredentials(executorConfigDefinition, setup);
+        handleParametersForNewExecutorConfiguration(executorConfigDefinition, setup, pdsProductId, scanType);
+
+        /* store executor configuration */
+        UUID uuid = client.createExecutorConfiguration(config);
+
+        /* map profiles with created executor configuration */
+        Set<String> profileIds = executorConfigDefinition.getProfiles();
+        for (String profileId : profileIds) {
+            List<UUID> list = map.computeIfAbsent(profileId, (key) -> new ArrayList<>());
+            list.add(uuid);
+        }
+    }
+
+    private void handleCredentials(SecHubExecutorConfigDefinition executorConfigDefinition, ExecutorConfigurationSetup setup) {
+        ExecutorConfigurationSetupCredentials setupCredentials = new ExecutorConfigurationSetupCredentials();
+
+        CredentialsDefinition credentialsDefinition = executorConfigDefinition.getCredentials();
+        setupCredentials.setPassword(credentialsDefinition.getApiToken());
+        setupCredentials.setUser(credentialsDefinition.getUserId());
+        setup.setCredentials(setupCredentials);
+    }
+
+    private void handleParametersForNewExecutorConfiguration(SecHubExecutorConfigDefinition executorConfigDefinition, ExecutorConfigurationSetup setup,
+            String pdsProductId, ScanType scanType) {
+        Map<String, String> parameters = executorConfigDefinition.getParameters();
+        /* define internal standard settings which can be overriden by developers */
+        setup.addParameter(PARAM_KEY_PDS_CONFIG_SCRIPT_TRUSTALL_CERTIFICATES_ENABLED, "true");
+        setup.addParameter(PARAM_KEY_PDS_CONFIG_USE_SECHUB_STORAGE, "false");
+
+        /* developer settings: */
+        for (String paramKey : parameters.keySet()) {
+            String paramValue = parameters.get(paramKey);
+
+            setup.addParameter(paramKey, paramValue);
+
+        }
+        /* fix parts, which cannot be overriden */
+        setup.addParameter(PARAM_KEY_PDS_CONFIG_PRODUCTIDENTIFIER, pdsProductId);
+        setup.addParameter(PARAM_KEY_PDS_SCAN_TARGET_TYPE, scanType.name());
+    }
+
     private String resolveSecHubProductIdentifierForPdsWithSCanType(ScanType scanType) {
         return "PDS_" + (scanType.name().replace("_", ""));
     }
 
-    private void createProfilesAndAssignProjects(SystemTestRuntimeContext context) throws SecHubClientException {
+    private void createProfilesAndAssignToProjects(SystemTestRuntimeContext context) throws SecHubClientException {
         List<SecHubExecutorConfigDefinition> executorDefinitions = context.getLocalSecHubExecutorConfigurationsOrFail();
         for (SecHubExecutorConfigDefinition executorDefinition : executorDefinitions) {
             for (String profileId : executorDefinition.getProfiles()) {

@@ -29,9 +29,9 @@ import com.mercedesbenz.sechub.test.TestFileReader;
  * @author Albert Tregnaghi
  *
  */
-class SystemTestIntegrationTest {
+class SystemTestDryRunIntegrationTest {
     private static final String FAKED_PDS_SOLUTIONS_PATH = "./src/test/resources/fake-root/sechub-pds-solutions";
-    private static final Logger LOG = LoggerFactory.getLogger(SystemTestIntegrationTest.class);
+    private static final Logger LOG = LoggerFactory.getLogger(SystemTestDryRunIntegrationTest.class);
 
     @BeforeEach
     void beforeEach(TestInfo info) {
@@ -125,6 +125,22 @@ class SystemTestIntegrationTest {
                     endSolution().
 
                 endLocalSetup().
+
+                test("test1").
+                    prepareStep().
+                        script().
+                            path("${runtime.}").
+                            process().
+                                markStageWaits().
+                                withTimeOut(3, TimeUnit.SECONDS).
+                            endProcess().
+
+                        endScript().
+                    endStep().
+                    runSecHubJob().
+                        uploadBinaries("").
+                    endRunSecHub().
+                endTest().
 
                 build();
 

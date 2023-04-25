@@ -14,6 +14,7 @@ public class SecHubExecutorConfigDefinition {
 
     private Set<String> profiles = new LinkedHashSet<>();
     private String baseURL;
+    private CredentialsDefinition credentials = new CredentialsDefinition();
 
     public Map<String, String> getParameters() {
         return parameters;
@@ -51,4 +52,9 @@ public class SecHubExecutorConfigDefinition {
     public String getBaseURL() {
         return baseURL;
     }
+
+    public CredentialsDefinition getCredentials() {
+        return credentials;
+    }
+
 }

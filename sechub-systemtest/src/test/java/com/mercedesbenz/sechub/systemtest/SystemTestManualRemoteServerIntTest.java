@@ -1,7 +1,6 @@
 package com.mercedesbenz.sechub.systemtest;
 
 import static com.mercedesbenz.sechub.systemtest.SystemTestAPI.*;
-import static com.mercedesbenz.sechub.systemtest.TestConfigConstants.*;
 import static com.mercedesbenz.sechub.test.TestUtil.*;
 import static org.junit.jupiter.api.Assertions.*;
 

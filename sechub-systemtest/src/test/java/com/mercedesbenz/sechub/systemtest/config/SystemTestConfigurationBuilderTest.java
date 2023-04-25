@@ -15,9 +15,16 @@ class SystemTestConfigurationBuilderTest {
             addVariable("var1","value1").
             localSetup().
                 addSolution("solution1").
-                    waitForAVailable().
+                    waitForAvailable().
                 endSolution().
             endLocalSetup().
+            test("test1").
+
+            runSecHubJob().
+                project("not-default-but-special").
+            endRunSecHub().
+
+            endTest().
         build();
         /* @formatter:on */
 

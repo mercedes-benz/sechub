@@ -1,6 +1,7 @@
 package com.mercedesbenz.sechub.systemtest.runtime;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -121,6 +122,16 @@ public class SystemTestRuntimeProductLauncher {
                 /* not defined - no wait necessary */
                 return;
             }
+            LocalSecHubDefinition localSecHubDefinition = context.getLocalSecHubOrFail();
+            Optional<Boolean> waitForAvailableOpt = localSecHubDefinition.getWaitForAvailable();
+            if (waitForAvailableOpt.isPresent()) {
+
+                if (!waitForAvailableOpt.get()) {
+                    LOG.info("Do not wait for SecHub to become available because explicit not wished");
+                    return;
+                }
+            }
+
             client = context.getLocalAdminSecHubClient();
         } else {
             if (!context.isRemoteSecHubConfigured()) {

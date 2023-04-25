@@ -3,38 +3,42 @@ package com.mercedesbenz.sechub.docgen.adopt;
 import static org.junit.jupiter.api.Assertions.*;
 
 import java.io.File;
+import java.io.IOException;
+import java.util.regex.Matcher;
 
-import org.junit.jupiter.api.Test;
-
+import com.google.re2j.Pattern;
 import com.mercedesbenz.sechub.commons.TextFileReader;
 
-class AdoptedSystemTestDefaultFallbacksTest {
+public class AdoptionChecker {
 
-    @Test
-    public void origin_and_adopted_are_content_equal() throws Exception {
+    TextFileReader reader = new TextFileReader();
+    private Class<?> adoptedClass;
+
+    public AdoptionChecker(Class<?> adoptedClass) {
+        this.adoptedClass = adoptedClass;
+    }
+
+    public void assertAdoptedClassEqualsFileLocatedAt(String packageName, String className) throws IOException {
+
         /*
          * Why is this done by text file compare? because system tools may not be
          * available on sechub-test because sechub-systemtest does need the java api
          * (for details look into technical documentation about build)
          */
 
-        String _packageName = "com.mercedesbenz.sechub.systemtest.config";
-        String _className = "DefaultFallback";
-
-        /* prepare */
-        TextFileReader reader = new TextFileReader();
-
-        Class<AdoptedSystemTestDefaultFallbacks> _adoptedClass = AdoptedSystemTestDefaultFallbacks.class;
-        File adoptedFile = new File("./src/main/java/" + javaClassNameToPath(_adoptedClass));
+        File adoptedFile = new File("./src/main/java/" + javaClassNameToPath(adoptedClass));
         String adopted = reader.loadTextFile(adoptedFile);
-        String adoptedChanged = adopted.replaceAll("AdoptedSystemTestDefaultFallbacks", "DefaultFallback");
-        adoptedChanged = adoptedChanged.replaceAll(_adoptedClass.getPackageName(), _packageName);
+        String adoptedChanged = adopted.replaceAll(Pattern.quote(adoptedClass.getSimpleName()), Matcher.quoteReplacement(className));
+        adoptedChanged = adoptedChanged.replaceAll(Pattern.quote(adoptedClass.getPackageName()), Matcher.quoteReplacement(packageName));
 
-        File originFile = new File("./../sechub-systemtest/src/main/java/" + javaClassToPath(_packageName, _className));
+        String pathname = "./../sechub-systemtest/src/main/java/" + javaClassToPath(packageName, className);
+        File originFile = new File(pathname);
         String origin = reader.loadTextFile(originFile);
 
-        assertEquals(withoutCommentsOrEmptyLines(origin), withoutCommentsOrEmptyLines(adoptedChanged));
+        String originReduced = withoutCommentsOrEmptyLines(origin);
+        String adoptedReduced = withoutCommentsOrEmptyLines(adoptedChanged);
 
+        assertEquals(originReduced, adoptedReduced);
     }
 
     private String javaClassNameToPath(Class<?> javaClass) {

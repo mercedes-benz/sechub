@@ -110,7 +110,9 @@ configuration you can reference it by `${variables.uploadFolder}`.
 
 ===== Runtime variables
 Some variables are created by the test framework and are available at runtime.
-You can use such variables inside the test configuration with the prefix `runtime`. 
+You can use such variables inside the test configuration with the prefix `runtime`.
+
+include::../../gen/gen_systemtests_runtime_variables_table.adoc[]
 
 ====== Workspace root
 On startup a temporary workspace folder will be created and can be used inside the configuration.
@@ -124,6 +126,12 @@ The variable can be referenced with `${runtime.workspaceRoot}`.
   `${runtime.workspaceRoot}/sources1`.
 - inside the test itself we reference it again with `${runtime.workspaceRoot}/sources1`
   as working directory for the client upload.
+
+==== Default fallbacks
+[[section-systemtests-default-fallbacks]]
+Following parts will be automatically defined in preparation phase when not defined explicit inside system test configuration model:
+
+include::../../gen/gen_systemtests_default_fallbacks_table.adoc[]
 
 ==== Setup
 Inside the setup we define things necessary to setup our system test environment.
@@ -141,12 +149,6 @@ When we run system tests on a local environment, all necessary data and setup wi
 This means an administrator account is necessary to setup the systems.
 
 If not defined, the default credentials for integration test server will be used 
-
-====== Defaults
-[[section-systemtests-local-defaults]]
-Following parts will be automatically defined when not inside configuration explicit defined
-
-include::../../gen/gen_systemtests_default_fallbacks_table.adoc[]
 
 ===== Remote
 It is also possible to use an existing real {sechub} platform and run the defined

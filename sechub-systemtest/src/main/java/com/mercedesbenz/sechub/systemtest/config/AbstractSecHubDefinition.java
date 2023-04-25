@@ -1,22 +1,13 @@
 package com.mercedesbenz.sechub.systemtest.config;
 
 import java.net.URL;
+import java.util.Optional;
 
 public class AbstractSecHubDefinition extends AbstractDefinition {
 
-    private URL url = DefaultFallbackUtil.convertToURL(DefaultFallback.FALLBACK_SECHUB_LOCAL_URL);
+    private Optional<Boolean> waitForAvailable = Optional.ofNullable(null);
 
-    private CredentialsDefinition user = new CredentialsDefinition();
-
-    private CredentialsDefinition admin = new CredentialsDefinition();
-
-    public CredentialsDefinition getUser() {
-        return user;
-    }
-
-    public CredentialsDefinition getAdmin() {
-        return admin;
-    }
+    private URL url;
 
     public void setUrl(URL url) {
         this.url = url;
@@ -24,5 +15,13 @@ public class AbstractSecHubDefinition extends AbstractDefinition {
 
     public URL getUrl() {
         return url;
+    }
+
+    public void setWaitForAvailable(Optional<Boolean> waitForAvailable) {
+        this.waitForAvailable = waitForAvailable;
+    }
+
+    public Optional<Boolean> getWaitForAvailable() {
+        return waitForAvailable;
     }
 }

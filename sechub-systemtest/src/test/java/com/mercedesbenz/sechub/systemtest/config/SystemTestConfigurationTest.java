@@ -1,7 +1,5 @@
 package com.mercedesbenz.sechub.systemtest.config;
 
-import static com.mercedesbenz.sechub.systemtest.TestConfigConstants.*;
-import static com.mercedesbenz.sechub.systemtest.config.DefaultFallback.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 import java.net.MalformedURLException;
@@ -21,6 +19,10 @@ import com.mercedesbenz.sechub.commons.model.JSONConverter;
 class SystemTestConfigurationTest {
 
     private static final Logger LOG = LoggerFactory.getLogger(SystemTestConfigurationTest.class);
+
+    private final static String DEFINED_PROJECT_NAME = "a-project-when-not-default-used";
+
+    private static final String DEFINED_PROFILE = "a-defined-profile-when-not-default-used";
 
     @Test
     void a_full_blown_setup_can_be_serialized_and_deserialized() throws Exception {
@@ -103,8 +105,10 @@ class SystemTestConfigurationTest {
 
         List<ProjectDefinition> projects = new ArrayList<>();
         ProjectDefinition project1 = new ProjectDefinition();
-        project1.setName(FALLBACK_PROJECT_NAME.getValue());
-        project1.getProfiles().add(FALLBACK_PROFILE_ID.getValue());
+        project1.setName(DEFINED_PROJECT_NAME);
+        project1.setComment(
+                "The profile can define a profile. When notthing defined, the default will be '" + DefaultFallback.FALLBACK_PROFILE_ID.getValue() + "'");
+        project1.getProfiles().add(DEFINED_PROFILE);
 
         projects.add(project1);
         Optional<List<ProjectDefinition>> projectsOpt = Optional.of(projects);
@@ -117,7 +121,6 @@ class SystemTestConfigurationTest {
         // start
         PDSSolutionDefinition solution1 = new PDSSolutionDefinition();
         solution1.setName("gosec");
-        solution1.setWaitForAvailable(true);
         solution1.setComment(
                 "Test solution1, the scan types etc. cannot be defined, because runtime loads all meta information from config file. Basedir is optional, normally calculated automatically by name");
         solution1.setBaseDirectory("${env.base_dir}/pds-solutions/gosec");
@@ -166,10 +169,6 @@ class SystemTestConfigurationTest {
             throw new IllegalStateException("url should be valid", e);
         }
 
-        CredentialsDefinition admin = secHub.getAdmin();
-        admin.setUserId("testadmin");
-        admin.setApiToken("${env.SYSTEM_TEST_ADMIN_TOKEN}");
-
         CredentialsDefinition user = secHub.getUser();
         user.setUserId("testuser");
         user.setApiToken("${env.SYSTEM_TEST_USER_TOKEN}");
@@ -192,7 +191,8 @@ class SystemTestConfigurationTest {
 
         ScriptDefinition testPrepareScript1 = new ScriptDefinition();
         testPrepareScript1.setComment("The script call here would call the script inside the 'tests' subfoler of the solution");
-        testPrepareScript1.setPath("./../tests/checkout-simple-go-project-withouth-sechub-json.sh ${" + RUNTIME_WORKSPACE_ROOT + "}/checkout");
+        testPrepareScript1
+                .setPath("./../tests/checkout-simple-go-project-withouth-sechub-json.sh ${" + RuntimeVariable.WORKSPACE_ROOT.getVariableName() + "}/checkout");
 
         ExecutionStepDefinition test1Step1 = new ExecutionStepDefinition();
 
@@ -204,7 +204,7 @@ class SystemTestConfigurationTest {
         test1.getPrepare().add(test1Step2);
 
         ScriptDefinition testPrepareScript2 = new ScriptDefinition();
-        testPrepareScript2.setComment("Just another scriptcall as an example for possibility of multiple scripts + an environment variable from 'outside'...");
+        testPrepareScript2.setComment("Just another script call as an example for possibility of multiple scripts + an environment variable from 'outside'...");
         testPrepareScript2.setPath("${env.FROM_OUT_SIDE}/do-something-else.sh");
 
         test1Step2.setScript(Optional.of(testPrepareScript2));
@@ -214,13 +214,14 @@ class SystemTestConfigurationTest {
         test1.setExecute(test1execute1);
         test1execute1.setComment("This part can be defined only once. It describes what is executed");
         RunSecHubJobDefinition runSecHubJob1 = new RunSecHubJobDefinition();
-        runSecHubJob1.setComment("If no project is defined, " + FALLBACK_PROJECT_NAME + " is used with default profile etc.");
-        runSecHubJob1.setProject(FALLBACK_PROJECT_NAME.getValue());
+        runSecHubJob1.setComment(
+                "If a project is defined, it will be used, otherwise always '" + DefaultFallback.FALLBACK_PROJECT_NAME.getValue() + "' is used as default");
+        runSecHubJob1.setProject(DEFINED_PROJECT_NAME);
 
         UploadDefinition upload = runSecHubJob1.getUpload();
         upload.setComment("Here we can define either binaries or sources to upload - we define the folders, framework will create tars/zips automatically");
-        upload.setSourceFolder("${" + RUNTIME_WORKSPACE_ROOT + "}/checkout/sources");
-        upload.setBinariesFolder("${" + RUNTIME_WORKSPACE_ROOT + "}/checkout/binaries");
+        upload.setSourceFolder("${" + RuntimeVariable.WORKSPACE_ROOT.getVariableName() + "}/checkout/sources");
+        upload.setBinariesFolder("${" + RuntimeVariable.WORKSPACE_ROOT.getVariableName() + "}/checkout/binaries");
 
         test1execute1.setRunSecHubJob(Optional.of(runSecHubJob1));
 

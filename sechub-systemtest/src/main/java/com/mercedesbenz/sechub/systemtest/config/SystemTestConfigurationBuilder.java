@@ -103,29 +103,15 @@ public class SystemTestConfigurationBuilder {
         }
     }
 
-    private abstract class AbstractSecHubDefinitionBuilder<T extends AbstractSecHubDefinitionBuilder<?>> {
-        private AbstractSecHubDefinition sechubDefinition;
+    private abstract class AbstractSecHubDefinitionBuilder<T extends AbstractSecHubDefinitionBuilder<?, ?>, D extends AbstractSecHubDefinition> {
+        private D sechubDefinition;
 
-        AbstractSecHubDefinitionBuilder(Class<T> clazz, AbstractSecHubDefinition sechubDefinition) {
+        AbstractSecHubDefinitionBuilder(Class<T> clazz, D sechubDefinition) {
             this.sechubDefinition = sechubDefinition;
         }
 
-        @SuppressWarnings("unchecked")
-        public T user(String userId, String apiToken) {
-            CredentialsDefinition userCredentials = sechubDefinition.getUser();
-
-            userCredentials.setUserId(userId);
-            userCredentials.setApiToken(apiToken);
-            return (T) this;
-        }
-
-        @SuppressWarnings("unchecked")
-        public T admin(String userId, String apiToken) {
-            CredentialsDefinition adminCredentials = sechubDefinition.getAdmin();
-
-            adminCredentials.setUserId(userId);
-            adminCredentials.setApiToken(apiToken);
-            return (T) this;
+        protected D getSechubDefinition() {
+            return sechubDefinition;
         }
 
         @SuppressWarnings("unchecked")
@@ -147,10 +133,18 @@ public class SystemTestConfigurationBuilder {
             return new RemoteSecHubSetupBuilder();
         }
 
-        public class RemoteSecHubSetupBuilder extends AbstractSecHubDefinitionBuilder<RemoteSecHubSetupBuilder> {
+        public class RemoteSecHubSetupBuilder extends AbstractSecHubDefinitionBuilder<RemoteSecHubSetupBuilder, RemoteSecHubDefinition> {
 
             public RemoteSecHubSetupBuilder() {
                 super(RemoteSecHubSetupBuilder.class, remoteSetup.getSecHub());
+            }
+
+            public RemoteSecHubSetupBuilder user(String userId, String apiToken) {
+                CredentialsDefinition userCredentials = getSechubDefinition().getUser();
+
+                userCredentials.setUserId(userId);
+                userCredentials.setApiToken(apiToken);
+                return this;
             }
 
             public RemoteSetupBuilder endSecHub() {
@@ -186,13 +180,10 @@ public class SystemTestConfigurationBuilder {
             return new LocalSecHubSetupBuilder();
         }
 
-        public class LocalSecHubSetupBuilder extends AbstractSecHubDefinitionBuilder<LocalSecHubSetupBuilder> {
-
-            private LocalSecHubDefinition localSechub;
+        public class LocalSecHubSetupBuilder extends AbstractSecHubDefinitionBuilder<LocalSecHubSetupBuilder, LocalSecHubDefinition> {
 
             public LocalSecHubSetupBuilder() {
                 super(LocalSecHubSetupBuilder.class, localSetup.getSecHub());
-                localSechub = localSetup.getSecHub();
             }
 
             public LocalSetupBuilder endSecHub() {
@@ -200,11 +191,19 @@ public class SystemTestConfigurationBuilder {
             }
 
             public StepBuilder<LocalSecHubSetupBuilder> addStartStep() {
-                return new StepBuilder<LocalSecHubSetupBuilder>(this, localSechub.getStart());
+                return new StepBuilder<LocalSecHubSetupBuilder>(this, getSechubDefinition().getStart());
             }
 
             public StepBuilder<LocalSecHubSetupBuilder> addStopStep() {
-                return new StepBuilder<LocalSecHubSetupBuilder>(this, localSechub.getStop());
+                return new StepBuilder<LocalSecHubSetupBuilder>(this, getSechubDefinition().getStop());
+            }
+
+            public LocalSecHubSetupBuilder admin(String userId, String apiToken) {
+                CredentialsDefinition adminCredentials = getSechubDefinition().getAdmin();
+
+                adminCredentials.setUserId(userId);
+                adminCredentials.setApiToken(apiToken);
+                return this;
             }
 
             public SecHubConfigurationBuilder configure() {
@@ -226,15 +225,44 @@ public class SystemTestConfigurationBuilder {
 
                     private SecHubExecutorConfigBuilder() {
                         executor = new SecHubExecutorConfigDefinition();
-                        localSechub.getConfigure().getExecutors().add(executor);
+                        getSechubDefinition().getConfigure().getExecutors().add(executor);
                     }
 
                     public SecHubConfigurationBuilder endExecutor() {
                         return SecHubConfigurationBuilder.this;
                     }
 
+                    /**
+                     * If enabled, the framework will use REST API calls to ensure SecHub is up and
+                     * running.
+                     *
+                     * @return
+                     */
+                    public SecHubExecutorConfigBuilder waitForAvailable() {
+                        return waitForAVailable(true);
+                    }
+
+                    public SecHubExecutorConfigBuilder waitForAVailable(boolean waitForAVailable) {
+                        getSechubDefinition().setWaitForAvailable(Optional.of(waitForAVailable));
+                        return this;
+                    }
+
                     public SecHubExecutorConfigBuilder forProfile(String profileId) {
                         executor.getProfiles().add(profileId);
+                        return this;
+                    }
+
+                    public SecHubExecutorConfigBuilder version(int version) {
+                        executor.setVersion(version);
+                        return this;
+                    }
+
+                    public SecHubExecutorConfigBuilder credentials(String userId, String apiToken) {
+
+                        CredentialsDefinition credentials = executor.getCredentials();
+                        credentials.setUserId(userId);
+                        credentials.setApiToken(apiToken);
+
                         return this;
                     }
 
@@ -282,23 +310,23 @@ public class SystemTestConfigurationBuilder {
             }
 
             /**
-             * If enabled, the framework will use REST api calls to ensure the PDS solution
-             * is up and running.
+             * If enabled, the framework will use REST API calls to ensure PDS is up and
+             * running.
              *
              * @return
              */
-            public SolutionSetupBuilder waitForAVailable() {
+            public SolutionSetupBuilder waitForAvailable() {
                 return waitForAVailable(true);
             }
 
             public SolutionSetupBuilder waitForAVailable(boolean waitForAVailable) {
-                setup.setWaitForAvailable(waitForAVailable);
+                setup.setWaitForAvailable(Optional.of(waitForAVailable));
                 return this;
             }
 
             /**
-             * If define, the server config file location will not be calculated, but the
-             * defined part will be used.
+             * If defined, the server configuration file location will not be calculated,
+             * but the defined part will be used.
              *
              * @param pathToPdsServerConfigFile
              * @return
@@ -327,6 +355,68 @@ public class SystemTestConfigurationBuilder {
 
     public SystemTestConfiguration build() {
         return configuration;
+    }
+
+    public class TestBuilder {
+
+        TestDefinition test;
+
+        public class SecHubRunBuilder {
+
+            private RunSecHubJobDefinition runSecHubJob;
+
+            private SecHubRunBuilder() {
+
+                runSecHubJob = new RunSecHubJobDefinition();
+
+                TestExecutionDefinition execute = test.getExecute();
+                execute.setRunSecHubJob(Optional.of(runSecHubJob));
+
+            }
+
+            public TestBuilder endRunSecHub() {
+                return TestBuilder.this;
+            }
+
+            public SecHubRunBuilder project(String projectId) {
+                runSecHubJob.setProject(projectId);
+                return SecHubRunBuilder.this;
+            }
+
+            public SecHubRunBuilder uploadBinaries(String path) {
+                runSecHubJob.getUpload().setBinariesFolder(path);
+                return SecHubRunBuilder.this;
+            }
+
+            public SecHubRunBuilder uploadSources(String path) {
+                runSecHubJob.getUpload().setSourceFolder(path);
+                return SecHubRunBuilder.this;
+            }
+        }
+
+        private TestBuilder(String testName) {
+            test = new TestDefinition();
+            configuration.getTests().add(test);
+
+            test.setName(testName);
+        }
+
+        public SecHubRunBuilder runSecHubJob() {
+            return new SecHubRunBuilder();
+        }
+
+        public SystemTestConfigurationBuilder endTest() {
+            return SystemTestConfigurationBuilder.this;
+        }
+
+        public StepBuilder<TestBuilder> prepareStep() {
+            return new StepBuilder<TestBuilder>(this, test.getPrepare());
+        }
+
+    }
+
+    public TestBuilder test(String testName) {
+        return new TestBuilder(testName);
     }
 
 }

@@ -1,20 +1,24 @@
-package com.mercedesbenz.sechub.systemtest.config;
+package com.mercedesbenz.sechub.docgen.adopt;
 
 /**
- * This class is used for default handling when user do not define their own
- * values. These values may only be used the {@link SystemTestRuntimePreparator}
- * class and not at field initialization time.<br>
+ * This class is necessary to avoid build cycles from system tests when
+ * generating system test parts. <br>
  * <br>
- * <b><u>Reason</u></b>: We differ between origin configuration by users
- * (developers) and altered configuration after prepare phase. Both
- * configurations are shown in output when health check detects some problems.
- * So it would be confusing for users if the origin configuration would show
- * something that is not configured by themselves.
+ * Avoids cycle:
  *
- * @author Albert Tregnaghi
+ * <pre>
+ * sechub-doc->restdoc tests->java compile necesary ->  generates openapi3.json
+ * sechub-systemtest --> sechub-api-java --> openApiGenerator --> openapi3.json
+ * </pre>
  *
+ * Equality is checked by
+ * <code>AdoptedSystemTestDefaultFallbacksTest.java</code> If it fails, please
+ * copy content system test DefaultFallback at this location (class comments are
+ * ignored means can be custom)
+ *
+ * @return
  */
-public enum DefaultFallback {
+public enum AdoptedSystemTestDefaultFallback {
 
     FALLBACK_PROJECT_NAME("default-test-project", "Project id"),
 
@@ -54,11 +58,11 @@ public enum DefaultFallback {
     private String value;
     private String description;
 
-    DefaultFallback(String value, String description) {
+    AdoptedSystemTestDefaultFallback(String value, String description) {
         this(value, null, description);
     }
 
-    DefaultFallback(String value, String scope, String description) {
+    AdoptedSystemTestDefaultFallback(String value, String scope, String description) {
         if (scope == null) {
             this.scope = "Global";
         } else {

@@ -5,6 +5,8 @@ import java.util.List;
 
 public class LocalSecHubDefinition extends AbstractSecHubDefinition {
 
+    private CredentialsDefinition admin = new CredentialsDefinition();
+
     private List<ExecutionStepDefinition> start = new ArrayList<>();
 
     private SecHubConfigurationDefinition configure = new SecHubConfigurationDefinition();
@@ -31,6 +33,10 @@ public class LocalSecHubDefinition extends AbstractSecHubDefinition {
 
     public String getBaseDir() {
         return baseDir;
+    }
+
+    public CredentialsDefinition getAdmin() {
+        return admin;
     }
 
 }

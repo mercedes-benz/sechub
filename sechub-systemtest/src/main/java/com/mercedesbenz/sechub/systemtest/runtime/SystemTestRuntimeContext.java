@@ -173,10 +173,15 @@ class SystemTestRuntimeContext {
     }
 
     public SecHubConfigurationDefinition getLocalSecHubConfigurationOrFail() {
-        LocalSetupDefinition localSetup = getLocalSetupOrFail();
-        LocalSecHubDefinition sechub = localSetup.getSecHub();
+        LocalSecHubDefinition sechub = getLocalSecHubOrFail();
         SecHubConfigurationDefinition sechubConfig = sechub.getConfigure();
         return sechubConfig;
+    }
+
+    public LocalSecHubDefinition getLocalSecHubOrFail() {
+        LocalSetupDefinition localSetup = getLocalSetupOrFail();
+        LocalSecHubDefinition sechub = localSetup.getSecHub();
+        return sechub;
     }
 
     public SystemTestRuntimeMetaData getRuntimeMetaData() {
@@ -208,7 +213,7 @@ class SystemTestRuntimeContext {
             LocalSecHubDefinition localSecHub = getLocalSetupOrFail().getSecHub();
             localAdminSecHubClient = createClient(localSecHub, localSecHub.getAdmin());
 
-            LOG.info("Created local admin client for user: '{}', apiToken: {}", localAdminSecHubClient.getUsername(),
+            LOG.info("Created local admin client for user: '{}', apiToken: '{}'", localAdminSecHubClient.getUsername(),
                     "*".repeat(localAdminSecHubClient.getSealedApiToken().length()));
         }
         return localAdminSecHubClient;
@@ -226,7 +231,7 @@ class SystemTestRuntimeContext {
             LocalSecHubDefinition localSecHub = getLocalSetupOrFail().getSecHub();
             remoteUserSecHubClient = createClient(localSecHub, localSecHub.getAdmin());
 
-            LOG.info("Created remote user client for user: {}, apiToken: {}", remoteUserSecHubClient.getUsername(),
+            LOG.info("Created remote user client for user: {}, apiToken: '{}'", remoteUserSecHubClient.getUsername(),
                     "*".repeat(remoteUserSecHubClient.getSealedApiToken().length()));
         }
         return remoteUserSecHubClient;

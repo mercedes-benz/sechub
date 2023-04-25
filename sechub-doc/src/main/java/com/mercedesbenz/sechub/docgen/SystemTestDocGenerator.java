@@ -1,18 +1,38 @@
 package com.mercedesbenz.sechub.docgen;
 
-import com.mercedesbenz.sechub.docgen.adopt.AdoptedSystemTestDefaultFallbacks;
+import com.mercedesbenz.sechub.docgen.adopt.AdoptedSystemTestDefaultFallback;
+import com.mercedesbenz.sechub.docgen.adopt.AdoptedSystemTestRuntimeVariable;
 
 public class SystemTestDocGenerator {
 
     public String generateDefaultFallbackTable() {
         /* @formatter:off */
-        String data = "[options=\"header\"]\n"
+        String data = "[cols=\"2,1,4\", options=\"header\"]\n"
                 + "|===\n"
-                + "|Scope   |Default   \n"
-                + "//-------------\n";
+                + "|Type   |Scope   | Default value\n"
+                + "//--------------------------------------------------------\n";
 
-        for (AdoptedSystemTestDefaultFallbacks fallback: AdoptedSystemTestDefaultFallbacks.values()) {
-            data = data+ "|"+fallback.getScope()+" | `"+ fallback.getValue()+"`   \n";
+        for (AdoptedSystemTestDefaultFallback fallback: AdoptedSystemTestDefaultFallback.values()) {
+            data = data+ "|"+fallback.getDescription()+ "|`"+fallback.getScope()+"` | `"+ fallback.getValue()+"` \n";
+        }
+
+        data= data
+                + "|===\n"
+                + "";
+        /* @formatter:on */
+        return data;
+
+    }
+
+    public String generateRuntimeVariableTable() {
+        /* @formatter:off */
+        String data = "[cols=\"1,2\",options=\"header\"]\n"
+                + "|===\n"
+                + "|Variable name | Description\n"
+                + "//--------------------------------------------------------\n";
+
+        for (AdoptedSystemTestRuntimeVariable runtimeVariable: AdoptedSystemTestRuntimeVariable.values()) {
+            data = data+ "|`"+runtimeVariable.getVariableName()+ "`|"+runtimeVariable.getDescription()+"\n";
         }
 
         data= data
