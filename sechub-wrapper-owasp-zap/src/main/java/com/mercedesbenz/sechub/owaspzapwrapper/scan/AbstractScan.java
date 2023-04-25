@@ -468,10 +468,10 @@ public abstract class AbstractScan implements OwaspZapScan {
 
     private void visitInclude(String url) {
         try {
-            String followredirects = "false";
-            clientApi.core.accessUrl(url, followredirects);
+            String followRedirects = "false";
+            clientApi.core.accessUrl(url, followRedirects);
         } catch (ClientApiException e) {
-            LOG.error("Trying to access URL {} produced the error: {}", url, e.getMessage());
+            LOG.error("While trying to access URL {} got the error: {}", url, e.getMessage());
         }
     }
 
