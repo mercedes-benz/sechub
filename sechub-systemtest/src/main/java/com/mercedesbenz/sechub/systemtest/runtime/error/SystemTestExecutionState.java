@@ -6,5 +6,7 @@ public enum SystemTestExecutionState {
 
     STOP,
 
+    PREPARE,
+
     ;
 }

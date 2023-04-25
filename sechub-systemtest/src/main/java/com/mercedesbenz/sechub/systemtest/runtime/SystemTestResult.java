@@ -21,4 +21,16 @@ public class SystemTestResult {
         }
         return hasErrors;
     }
+
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+
+        for (SystemTestRunResult result : getRuns()) {
+            sb.append(result.toString());
+            sb.append("\n");
+        }
+
+        return sb.toString();
+    }
 }

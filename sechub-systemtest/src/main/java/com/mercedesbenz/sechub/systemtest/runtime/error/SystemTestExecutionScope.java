@@ -6,5 +6,7 @@ public enum SystemTestExecutionScope {
 
     PDS_SOLUTION,
 
+    TEST,
+
     ;
 }

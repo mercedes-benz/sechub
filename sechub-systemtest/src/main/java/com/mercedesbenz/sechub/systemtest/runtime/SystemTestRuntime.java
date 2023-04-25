@@ -20,7 +20,7 @@ public class SystemTestRuntime {
 
     private SystemTestRuntimeHealthCheck healthCheck = new SystemTestRuntimeHealthCheck();
 
-    private SystemTestRuntimeTestEngine testEngine = new SystemTestRuntimeTestEngine();
+    private SystemTestRuntimeTestEngine testEngine;
 
     private LocationSupport locationSupport;
 
@@ -41,6 +41,7 @@ public class SystemTestRuntime {
         this.preparator = new SystemTestRuntimePreparator();
         this.locationSupport = locationSupport;
         this.environmentSupport = execSupport.getEnvironmentProvider();
+        this.testEngine = new SystemTestRuntimeTestEngine(execSupport);
     }
 
     public SystemTestResult run(SystemTestConfiguration configuration, boolean localRun, boolean isDryRun) {

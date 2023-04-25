@@ -6,12 +6,12 @@ public class SystemTestScriptExecutionException extends SystemTestErrorException
 
     private static final long serialVersionUID = 1L;
 
-    public SystemTestScriptExecutionException(String scriptName, ProcessContainer executionResult, SystemTestExecutionScope scope,
+    public SystemTestScriptExecutionException(String scriptName, ProcessContainer procesContainer, SystemTestExecutionScope scope,
             SystemTestExecutionState state) {
-        super(createExceptionMessage(scriptName, executionResult, scope, state));
+        super(createExceptionMessage(scriptName, procesContainer, scope, state));
 
         String message = createMessage(scope, state);
-        String details = createDetails(scriptName, executionResult);
+        String details = createDetails(scriptName, procesContainer);
 
         defineError(message, details);
     }

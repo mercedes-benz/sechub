@@ -176,7 +176,7 @@ Just execute the Junit test from your IDE.
 We have different stages:
 
 - Setup
-- Test preparation
+- Test 
 - Shutdown
 
 Every stage can contain different steps inside.
@@ -218,6 +218,13 @@ You only need to setup `stageWaits` to `true` if you have written a special
 script which must be done (and does automatically end) before a stage shall be left. 
 
 In this case the stage will wait until the script has finished or times out.
+
+====
+
+[TIP]
+====
+You do not need to define `stageWait` in test preparation steps: For those steps the framework
+will always wait before the test is executed.
 ====
 
 ==== Auto configuration

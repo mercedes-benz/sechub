@@ -32,6 +32,7 @@ import com.mercedesbenz.sechub.test.TestFileReader;
 class SystemTestDryRunIntegrationTest {
     private static final String FAKED_PDS_SOLUTIONS_PATH = "./src/test/resources/fake-root/sechub-pds-solutions";
     private static final Logger LOG = LoggerFactory.getLogger(SystemTestDryRunIntegrationTest.class);
+    private static final String PREPARE_TEST1_OUPTUT_FILE_NAME = "output-prepare-test1.txt";
 
     @BeforeEach
     void beforeEach(TestInfo info) {
@@ -129,12 +130,13 @@ class SystemTestDryRunIntegrationTest {
                 test("test1").
                     prepareStep().
                         script().
-                            path("${runtime.}").
+                            workingDir("${runtime.pdsSolutionsRoot}/../test").
+                            path("./preparation/prepare-test1.sh").
+                            arguments("${runtime.workspaceRoot}/"+PREPARE_TEST1_OUPTUT_FILE_NAME).
                             process().
                                 markStageWaits().
-                                withTimeOut(3, TimeUnit.SECONDS).
+                                withTimeOut(20, TimeUnit.SECONDS).
                             endProcess().
-
                         endScript().
                     endStep().
                     runSecHubJob().
@@ -147,18 +149,19 @@ class SystemTestDryRunIntegrationTest {
         LOG.info("config=\n{}", JSONConverter.get().toJSON(configuration,true));
 
         /* execute */
+        Path tempWorkspaceFolder = createTempDirectoryInBuildFolder("systemtest_inttest/faked_gosec_can_be_executed_without_errors");
         SystemTestResult result = runSystemTests(
                 params().
                     localRun().
                     dryRun().
-                    workspacePath(createTempDirectoryInBuildFolder("systemtest_inttest/faked_gosec_can_be_executed_without_errors").toString()).
+                    workspacePath(tempWorkspaceFolder.toString()).
                     testConfiguration(configuration).
                     pdsSolutionPath(FAKED_PDS_SOLUTIONS_PATH).
                 build());
 
         /* test */
         if (result.hasFailedTests()) {
-            fail("The execution failed?!?!");
+            fail("The execution failed:"+result.toString());
         }
         // we now check that all test output was written by our test scripts to files
         String sechubStartOutputData = TestFileReader.loadTextFile(secHubStartOutputFile);
@@ -174,6 +177,11 @@ class SystemTestDryRunIntegrationTest {
 
         String gosecStopOutputData = TestFileReader.loadTextFile(goSecStopOutputFile);
         assertEquals("gosec-stopped with param2=second and parm3=third-as:"+var_Text+" and X_TEST=testx", gosecStopOutputData);
+
+        Path preparationOutputFile = tempWorkspaceFolder.resolve(PREPARE_TEST1_OUPTUT_FILE_NAME);
+        String preparationOutputFileContent = TestFileReader.loadTextFile(preparationOutputFile);
+
+        assertEquals("Output from prepare-test1.sh", preparationOutputFileContent);
 
         /* @formatter:on */
     }

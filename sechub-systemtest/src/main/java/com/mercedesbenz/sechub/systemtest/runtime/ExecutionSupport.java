@@ -2,7 +2,9 @@ package com.mercedesbenz.sechub.systemtest.runtime;
 
 import static java.util.Objects.*;
 
+import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Map;
@@ -51,6 +53,20 @@ public class ExecutionSupport {
 
         LOG.trace("Start:{} inside {}", scriptPath, workingDirectory);
 
+        File parentFolder = null;
+        if (workingDirectory != null) {
+            parentFolder = Paths.get(workingDirectory).toFile();
+        } else {
+            parentFolder = new File("./");
+        }
+        File targetFile = new File(parentFolder, scriptPath);
+        if (!targetFile.exists()) {
+            throw new IllegalStateException("The target file does not exist:" + targetFile.getAbsolutePath());
+        }
+        if (!Files.isExecutable(targetFile.toPath())) {
+            throw new IllegalStateException("The target file does exist, but is not executable: " + targetFile.getAbsolutePath());
+        }
+
         ProcessContainer processContainer = new ProcessContainer(scriptDefinition);
 
         Path outputFile = locationSupport.ensureOutputFile(processContainer);
@@ -59,7 +75,9 @@ public class ExecutionSupport {
         writeToFile(processContainer);
 
         ProcessBuilder pb = new ProcessBuilder(scriptPath);
-        pb.directory(Paths.get(workingDirectory).toFile());
+        if (parentFolder != null) {
+            pb.directory(parentFolder);
+        }
         pb.environment().putAll(envVariablesWithSecretsRevealed);
         pb.command().addAll(scriptDefinition.getArguments());
 
@@ -81,7 +99,7 @@ public class ExecutionSupport {
                         TimeUnitDefinition timeOut = scriptDefinition.getProcess().getTimeOut();
                         boolean exited = process.waitFor(timeOut.getAmount(), timeOut.getUnit());
                         if (!exited) {
-                            LOG.error("Container time out : {} {}", timeOut.getAmount(), timeOut.getUnit());
+                            LOG.error("Container timed out : {} {}", timeOut.getAmount(), timeOut.getUnit());
                             processContainer.markTimedOut();
 
                         } else {
