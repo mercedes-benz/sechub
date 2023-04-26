@@ -19,12 +19,13 @@ import (
 // so Webscan, InfraScan are not handled here (but still uploaded)
 // Only code scan is necessary, because determination necessary if there is an upload necessary or not.
 type SecHubConfig struct {
-	APIVersion string                `json:"apiVersion"`
-	User       string                `json:"user"`
-	ProjectID  string                `json:"project"`
-	Server     string                `json:"server"`
-	Data       DataSectionScanConfig `json:"data"`
-	CodeScan   CodeScanConfig        `json:"codeScan"`
+	APIVersion string                 `json:"apiVersion"`
+	User       string                 `json:"user"`
+	ProjectID  string                 `json:"project"`
+	Server     string                 `json:"server"`
+	CodeScan   CodeScanConfig         `json:"codeScan"`
+	Data       DataSectionScanConfig  `json:"data"`
+	MetaData   map[string]interface{} `json:"metaData"`
 }
 
 type DataSectionScanConfig struct {
@@ -102,12 +103,11 @@ func newSecHubConfigurationFromFile(context *Context, filePath string) (SecHubCo
 	/* open file and check exists */
 	sechubUtil.LogDebug(context.config.debug, fmt.Sprintf("Loading config file: '%s'", filePath))
 	jsonFile, err := os.Open(filePath)
-	defer jsonFile.Close()
-
 	if err != nil {
 		emptyConfig := SecHubConfig{}
 		return emptyConfig, fileWasRead
 	}
+	defer jsonFile.Close()
 
 	/* read text content as "unfilled byte value". This will be used for debug outputs,
 	   so we do not have passwords etc. accidently leaked. We limit read to maximum allowed bytes */
@@ -123,7 +123,7 @@ func newSecHubConfigurationFromFile(context *Context, filePath string) (SecHubCo
 		os.Exit(ExitCodeInvalidConfigFile)
 	}
 
-	if !sechubUtil.IsValidJSON(context.inputForContentProcessing) {
+	if !json.Valid(context.inputForContentProcessing) {
 		sechubUtil.LogError("Given SecHub config file '" + context.config.configFilePath + "' is not correct JSON!")
 		os.Exit(ExitCodeInvalidConfigFile)
 	} else {

@@ -4,6 +4,7 @@ package cli
 
 import (
 	"errors"
+	"fmt"
 	"strings"
 )
 
@@ -24,4 +25,23 @@ func addLabelToList(list map[string]string, labelDefinition string, overrideIfEx
 
 	list[splitted[0]] = splitted[1]
 	return list, nil
+}
+
+// applyLabelsToConfig extends/creates the `labels` section in the sechub config JSON
+func applyLabelsToConfigJson(context *Context) error {
+	var err error
+	labels := context.sechubConfig.MetaData["labels"]
+	l, ok := labels.(map[string]interface{})
+	fmt.Println("labels:", labels, " l:", l, " ok:", ok)
+	if ok {
+		for k, v := range l {
+			fmt.Println("- k:", k, "v:", v)
+			context.config.labels, err = addLabelToList(context.config.labels, fmt.Sprintf("%v=%v", k, v), false)
+			if err != nil {
+				return err
+			}
+		}
+	}
+	context.sechubConfig.MetaData["labels"] = context.config.labels
+	return err
 }
