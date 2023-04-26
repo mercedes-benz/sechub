@@ -22,6 +22,7 @@ import com.mercedesbenz.sechub.systemtest.template.SystemTestTemplateEngine;
 public class ExecutionSupport {
 
     private static final Logger LOG = LoggerFactory.getLogger(ExecutionSupport.class);
+    private static final KeepAsIsDynamicVariableCalculator NO_CALCULATION = new KeepAsIsDynamicVariableCalculator();
 
     private EnvironmentProvider environmentProvider;
     private SystemTestTemplateEngine templateEngine;
@@ -45,10 +46,20 @@ public class ExecutionSupport {
     }
 
     public ProcessContainer execute(ScriptDefinition scriptDefinition) {
+        return execute(scriptDefinition, null);
+    }
 
-        Map<String, String> envVariablesWithSecretsRevealed = revealSecretsForScript(scriptDefinition);
+    public ProcessContainer execute(ScriptDefinition scriptDefinition, DynamicVariableCalculator dynamicVariableCalculator) {
+        if (dynamicVariableCalculator == null) {
+            dynamicVariableCalculator = NO_CALCULATION;
+        }
+        Map<String, String> envVariables = revealSecretsForScript(scriptDefinition);
+        envVariables = dynamicVariableCalculator.calculateEnvironmentEntries(envVariables);
 
         String scriptPath = scriptDefinition.getPath();
+        if (scriptPath == null || scriptPath.isEmpty()) {
+            throw new IllegalStateException("Script definition has no script path set!");
+        }
         String workingDirectory = scriptDefinition.getWorkingDirectory();
 
         LOG.trace("Start:{} inside {}", scriptPath, workingDirectory);
@@ -78,8 +89,8 @@ public class ExecutionSupport {
         if (parentFolder != null) {
             pb.directory(parentFolder);
         }
-        pb.environment().putAll(envVariablesWithSecretsRevealed);
-        pb.command().addAll(scriptDefinition.getArguments());
+        pb.environment().putAll(envVariables);
+        pb.command().addAll(dynamicVariableCalculator.calculateArguments(scriptDefinition.getArguments()));
 
         pb.redirectOutput(outputFile.toFile());
         pb.redirectError(errorFile.toFile());

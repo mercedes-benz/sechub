@@ -52,6 +52,8 @@ public enum AdoptedSystemTestDefaultFallback {
 
     FALLBACK_SECHUB_WAIT_FOR_AVAILABLE("true", "SecHub wait for available"),
 
+    FALLBACK_UPLOAD_REF_ID("default-ref", "Upload reference id"),
+
     ;
 
     private String scope;

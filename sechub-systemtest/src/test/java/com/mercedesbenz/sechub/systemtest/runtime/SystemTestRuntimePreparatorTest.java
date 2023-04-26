@@ -4,6 +4,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 import java.io.IOException;
+import java.nio.file.Path;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -20,13 +21,17 @@ class SystemTestRuntimePreparatorTest {
 
     @BeforeEach
     void beforeEach() throws IOException {
+        Path aTemporaryFolder = TestUtil.createTempDirectoryInBuildFolder("systemtest_prep_testfolder");
+
         locationSupport = mock(LocationSupport.class);
+        when(locationSupport.getPDSSolutionRoot()).thenReturn(aTemporaryFolder);
+
         environmentProvider = mock(EnvironmentProvider.class);
 
         context = new SystemTestRuntimeContext();
         context.environmentProvider = environmentProvider;
         context.locationSupport = locationSupport;
-        context.workspaceRoot = TestUtil.createTempDirectoryInBuildFolder("systemtest_prep_workspaceroot");
+        context.workspaceRoot = aTemporaryFolder;
 
         preparatorToTest = new SystemTestRuntimePreparator();
 

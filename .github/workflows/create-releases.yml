@@ -154,7 +154,7 @@ jobs:
       # Integration test
       # ----------------------
       - name: Integration test
-        run: ./gradlew integrationtest
+        run: ./gradlew integrationtest -Dsechub.build.stage=all
 
       - name: Create combined test report
         if: always()

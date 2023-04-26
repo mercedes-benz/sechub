@@ -20,8 +20,6 @@ dependencies {
     implementation project(':sechub-systemtest')
     
     implementation library.apache_commons_io
-    implementation library.apache_commons_compress // we need TAR archive support
-    
     
     testImplementation spring_boot_dependency.junit_jupiter
     testImplementation spring_boot_dependency.mockito_core

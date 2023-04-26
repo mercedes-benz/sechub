@@ -15,11 +15,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.mercedesbenz.sechub.commons.model.JSONConverter;
+import com.mercedesbenz.sechub.systemtest.config.RuntimeVariable;
 import com.mercedesbenz.sechub.systemtest.config.SystemTestConfiguration;
 import com.mercedesbenz.sechub.systemtest.runtime.SystemTestResult;
 
 /**
- * A special manual test for developers.
+ * A special integration test
  *
  * How to use:
  *
@@ -29,15 +30,18 @@ import com.mercedesbenz.sechub.systemtest.runtime.SystemTestResult;
  * - run this test wit dedicated system properties (see inside test method for details)
  * </pre>
  *
- * Purpose: Easier to test and develop system test framework: Less turn around
- * times ( no repetitive server starts and stops necessary)
+ * Purpose: An integration test for CI/CD - ensures system test framework works
+ * with a started local SecHub environment.x It makes it also easier to test and
+ * develop system test framework at developmenttime: Less turn around times ( no
+ * repetitive server starts and stops necessary). The process start/stop
+ * automation is tested in a {@link SystemTestDryRunTest} separately.
  *
  * @author Albert Tregnaghi
  *
  */
-class SystemTestOnLocalIntegratoinTestServersManualTest {
+class SystemTestFrameworkIntTest {
 
-    private static final Logger LOG = LoggerFactory.getLogger(SystemTestOnLocalIntegratoinTestServersManualTest.class);
+    private static final Logger LOG = LoggerFactory.getLogger(SystemTestFrameworkIntTest.class);
 
     @BeforeEach
     void beforeEach(TestInfo info) {
@@ -47,12 +51,14 @@ class SystemTestOnLocalIntegratoinTestServersManualTest {
     }
 
     @Test
-    @EnabledIfSystemProperty(named = "sechub.manual.test.by.developer", matches = "true")
-    void manual_test_sechub_inttestserver_running() throws IOException {
+    @EnabledIfSystemProperty(named = "sechub.integrationtest.running", matches = "true")
+    void even_integration_test_setup_can_be_tested__codescan() throws IOException {
         /* @formatter:off */
 
         /* prepare */
         SystemTestConfiguration configuration = configure().
+                addVariable("testSourceUploadFolder", "${runtime."+RuntimeVariable.CURRENT_TEST_FOLDER.getVariableName()+"}/testsources").
+
                 localSetup().
                     secHub().
                         admin("int-test_superadmin","int-test_superadmin-pwd").
@@ -85,10 +91,21 @@ class SystemTestOnLocalIntegratoinTestServersManualTest {
                 test("test1").
                     prepareStep().
                         script().
+                            workingDir("./../sechub-systemtest/src/test/resources/fake-root/test/preparation").
+                            path("./prepare-inttest-copy-codescan-medium-findings.sh").
+                            arguments("${variables.testSourceUploadFolder}").
                         endScript().
                     endStep().
                     runSecHubJob().
-                        uploadBinaries("").
+                        codeScan().
+                            use("reference1").
+                        endScan().
+                        uploads().
+                            upload().
+                                sources("${variables.testSourceUploadFolder}").
+                                withReferenceId("reference1").
+                            endUpload().
+                        endUploads().
                     endRunSecHub().
                 endTest().
                 build();
@@ -99,13 +116,13 @@ class SystemTestOnLocalIntegratoinTestServersManualTest {
         SystemTestResult result = runSystemTests(
                 params().
                     localRun().
-                    workspacePath(createTempDirectoryInBuildFolder("systemtest_inttest/remote_run_test").toString()).
+                    workspacePath(createTempDirectoryInBuildFolder("systemtest_inttest_run").toString()).
                     testConfiguration(configuration).
                 build());
 
         /* test */
         if (result.hasFailedTests()) {
-            fail("The execution failed?!?!");
+            fail(result.toString());
         }
         /* @formatter:on */
     }

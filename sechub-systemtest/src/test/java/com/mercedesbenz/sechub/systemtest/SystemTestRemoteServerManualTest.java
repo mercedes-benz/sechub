@@ -24,9 +24,9 @@ import com.mercedesbenz.sechub.systemtest.runtime.SystemTestResult;
  * @author Albert Tregnaghi
  *
  */
-class SystemTestManualRemoteServerIntTest {
+class SystemTestRemoteServerManualTest {
 
-    private static final Logger LOG = LoggerFactory.getLogger(SystemTestManualRemoteServerIntTest.class);
+    private static final Logger LOG = LoggerFactory.getLogger(SystemTestRemoteServerManualTest.class);
 
     @BeforeEach
     void beforeEach(TestInfo info) {

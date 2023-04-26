@@ -18,6 +18,7 @@ import org.slf4j.LoggerFactory;
 
 import com.mercedesbenz.sechub.commons.core.util.SimpleStringUtils;
 import com.mercedesbenz.sechub.commons.model.JSONConverter;
+import com.mercedesbenz.sechub.systemtest.config.CalculatedVariables;
 import com.mercedesbenz.sechub.systemtest.config.CredentialsDefinition;
 import com.mercedesbenz.sechub.systemtest.config.DefaultFallback;
 import com.mercedesbenz.sechub.systemtest.config.DefaultFallbackUtil;
@@ -135,6 +136,8 @@ public class SystemTestRuntimePreparator {
         Map<String, String> runtimeVariables = new LinkedHashMap<>();
         runtimeVariables.put(RuntimeVariable.WORKSPACE_ROOT.getVariableName(), context.getWorkspaceRoot().toString());
         runtimeVariables.put(RuntimeVariable.PDS_SOLUTIONS_ROOT.getVariableName(), context.getLocationSupport().getPDSSolutionRoot().toString());
+
+        runtimeVariables.put(RuntimeVariable.CURRENT_TEST_FOLDER.getVariableName(), CalculatedVariables.CURRENT_TEST_FOLDER.asExpression());
         return runtimeVariables;
     }
 

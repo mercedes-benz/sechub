@@ -5,8 +5,8 @@ import static org.junit.jupiter.api.Assertions.*;
 import java.io.File;
 import java.io.IOException;
 import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
-import com.google.re2j.Pattern;
 import com.mercedesbenz.sechub.commons.TextFileReader;
 
 public class AdoptionChecker {

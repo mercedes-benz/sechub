@@ -51,7 +51,7 @@ jobs:
 
       # Integration test
       - name: Integration test
-        run: ./gradlew integrationtest
+        run: ./gradlew integrationtest -Dsechub.build.stage=all
 
       # We use 'if: always()' to run a step even if a previous step failed
       - name: Create combined test report

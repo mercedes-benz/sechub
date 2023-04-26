@@ -14,6 +14,7 @@ import java.util.Set;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.mercedesbenz.sechub.commons.core.util.SimpleStringUtils;
 import com.mercedesbenz.sechub.pds.commons.core.config.PDSProductParameterDefinition;
 import com.mercedesbenz.sechub.pds.commons.core.config.PDSProductParameterSetup;
 import com.mercedesbenz.sechub.pds.commons.core.config.PDSProductSetup;
@@ -28,6 +29,7 @@ import com.mercedesbenz.sechub.systemtest.config.RemoteSetupDefinition;
 import com.mercedesbenz.sechub.systemtest.config.ScriptDefinition;
 import com.mercedesbenz.sechub.systemtest.config.SecHubConfigurationDefinition;
 import com.mercedesbenz.sechub.systemtest.config.SecHubExecutorConfigDefinition;
+import com.mercedesbenz.sechub.systemtest.config.TestDefinition;
 import com.mercedesbenz.sechub.systemtest.runtime.error.SystemTestExecutionScope;
 import com.mercedesbenz.sechub.systemtest.runtime.error.SystemTestExecutionState;
 
@@ -39,6 +41,25 @@ public class SystemTestRuntimeHealthCheck {
 
         checkLocal(context);
         checkRemote(context);
+        checkTests(context);
+    }
+
+    private void checkTests(SystemTestRuntimeContext context) {
+        List<TestDefinition> tests = context.getConfiguration().getTests();
+        for (TestDefinition test : tests) {
+            if (SimpleStringUtils.isEmpty(test.getName())) {
+                throw new WrongConfigurationException("Found at least one test where no name is defined! Every test must have its name!", context);
+            }
+            for (ExecutionStepDefinition step : test.getPrepare()) {
+                if (step.getScript().isPresent()) {
+                    ScriptDefinition script = step.getScript().get();
+                    String path = script.getPath();
+                    if (SimpleStringUtils.isEmpty(path)) {
+                        throw new WrongConfigurationException("Path is missing for script in prepare step for test: " + test.getName(), context);
+                    }
+                }
+            }
+        }
     }
 
     private void checkRemote(SystemTestRuntimeContext context) {

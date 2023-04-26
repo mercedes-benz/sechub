@@ -36,7 +36,7 @@ public class PDSToolsCLI {
             exitHandler.exit(0);
         case PDSToolsCLiConstants.CMD_GENERATE:
             PDSSolutionTestFilesGenerator generator = new PDSSolutionTestFilesGenerator();
-            generator.setOutputHandler(consoleHandler);
+            generator.setConsoleHandler(consoleHandler);
 
             if (args.length < 3 || args.length > 4) {
                 showHelpAndExit("Generate command needs 2 additional parameters: 1. config file path, 2.scan type", 3);

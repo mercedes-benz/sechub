@@ -31,6 +31,7 @@ import com.mercedesbenz.sechub.systemtest.config.RemoteSetupDefinition;
 import com.mercedesbenz.sechub.systemtest.config.SecHubConfigurationDefinition;
 import com.mercedesbenz.sechub.systemtest.config.SecHubExecutorConfigDefinition;
 import com.mercedesbenz.sechub.systemtest.config.SystemTestConfiguration;
+import com.mercedesbenz.sechub.systemtest.config.TestDefinition;
 
 class SystemTestRuntimeContext {
 
@@ -144,8 +145,8 @@ class SystemTestRuntimeContext {
         return results;
     }
 
-    public void startNewRun(String runId) {
-        this.currentResult = new SystemTestRunResult(runId);
+    public void testStarted(TestDefinition test) {
+        this.currentResult = new SystemTestRunResult(test.getName());
         results.add(currentResult);
     }
 

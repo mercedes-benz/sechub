@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-package com.mercedesbenz.sechub.pds.tools.archive;
+package com.mercedesbenz.sechub.systemtest.util;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -12,7 +12,7 @@ import org.apache.commons.compress.archivers.ArchiveStreamFactory;
 import org.apache.commons.compress.archivers.tar.TarArchiveOutputStream;
 import org.apache.commons.compress.utils.IOUtils;
 
-public class DeveloperArchiveSupport {
+public class SystemTestArchiveSupport {
 
     public void compressToTar(File folder, File targetFile) throws IOException {
         ArchiveStreamFactory asf = new ArchiveStreamFactory();

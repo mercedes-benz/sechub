@@ -30,8 +30,8 @@ public class SystemTestRunResult {
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
-        sb.append("TEST: ");
-        sb.append(testName).append(" :");
+        sb.append("TEST '");
+        sb.append(testName).append("' ");
 
         if (isFailed()) {
             sb.append("[FAILED] - ");

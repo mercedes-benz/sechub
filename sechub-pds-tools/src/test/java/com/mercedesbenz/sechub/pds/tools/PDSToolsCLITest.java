@@ -80,6 +80,8 @@ class PDSToolsCLITest {
         cliToTest.start(new String[] { "--generate", testConfigFile.getAbsolutePath(), scanType, tmpFolder.getAbsolutePath() });
 
         /* test */
+        assertFileExists(tmpFolder, "extracted");
+
         assertFileExists(tmpFolder, "binaries.tar");
         assertFileExists(tmpFolder, "sourcecode.zip");
         assertFileExists(tmpFolder, "pdsJobData.json");

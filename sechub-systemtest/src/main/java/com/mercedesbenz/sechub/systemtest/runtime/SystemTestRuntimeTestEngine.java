@@ -52,9 +52,10 @@ public class SystemTestRuntimeTestEngine {
     }
 
     public void execute(TestDefinition test, SystemTestRuntimeContext context) {
-        try {
 
-            context.startNewRun(test.getName());
+        context.testStarted(test);
+
+        try {
 
             TestContext testContext = prepare(test, context);
 
@@ -82,7 +83,8 @@ public class SystemTestRuntimeTestEngine {
 
     }
 
-    private void executeSteps(String name, List<ExecutionStepDefinition> steps, SystemTestRuntimeContext context) throws SystemTestScriptExecutionException {
+    private void executePreparationSteps(String name, TestDefinition test, SystemTestRuntimeContext context) throws SystemTestScriptExecutionException {
+        List<ExecutionStepDefinition> steps = test.getPrepare();
         if (steps.isEmpty()) {
             return;
         }
@@ -92,7 +94,7 @@ public class SystemTestRuntimeTestEngine {
             if (step.getScript().isPresent()) {
                 ScriptDefinition scriptDefinition = step.getScript().get();
 
-                ProcessContainer processContainer = execSupport.execute(scriptDefinition);
+                ProcessContainer processContainer = execSupport.execute(scriptDefinition, new CurrentTestDynamicVariableCalculator(test, context));
                 long startTime = System.currentTimeMillis();
                 long diffTime = startTime;
                 while (!processContainer.hasFailed() && processContainer.isStillRunning()) {
@@ -127,7 +129,7 @@ public class SystemTestRuntimeTestEngine {
 
     private TestContext prepare(TestDefinition test, SystemTestRuntimeContext context) throws SystemTestScriptExecutionException {
 
-        executeSteps("Prepare", test.getPrepare(), context);
+        executePreparationSteps("Prepare", test, context);
 
         TestContext testContext = new TestContext();
         TestExecutionDefinition execute = test.getExecute();
@@ -136,7 +138,7 @@ public class SystemTestRuntimeTestEngine {
             SecHubRunData secHubRunData = new SecHubRunData();
             RunSecHubJobDefinition runSecHubJobDefinition = runSecHOptional.get();
 
-            UploadDefinition uploadDefinition = runSecHubJobDefinition.getUpload();
+            List<UploadDefinition> uploadDefinitions = runSecHubJobDefinition.getUploads();
 
             testContext.secHubRunData = secHubRunData;
         }

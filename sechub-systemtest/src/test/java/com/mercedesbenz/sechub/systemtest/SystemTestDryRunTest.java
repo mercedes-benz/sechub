@@ -22,16 +22,15 @@ import com.mercedesbenz.sechub.systemtest.runtime.SystemTestRuntimeException;
 import com.mercedesbenz.sechub.test.TestFileReader;
 
 /**
- * An integration test if the system test API and the involved runtime +
- * configuration builder can work together and execute real (but simple fake)
- * bash scripts.
+ * A test if the system test API and the involved runtime + configuration
+ * builder can work together and execute real (but simple fake) bash scripts.
  *
  * @author Albert Tregnaghi
  *
  */
-class SystemTestDryRunIntegrationTest {
+class SystemTestDryRunTest {
     private static final String FAKED_PDS_SOLUTIONS_PATH = "./src/test/resources/fake-root/sechub-pds-solutions";
-    private static final Logger LOG = LoggerFactory.getLogger(SystemTestDryRunIntegrationTest.class);
+    private static final Logger LOG = LoggerFactory.getLogger(SystemTestDryRunTest.class);
     private static final String PREPARE_TEST1_OUPTUT_FILE_NAME = "output-prepare-test1.txt";
 
     @BeforeEach
@@ -140,7 +139,9 @@ class SystemTestDryRunIntegrationTest {
                         endScript().
                     endStep().
                     runSecHubJob().
-                        uploadBinaries("").
+                        uploads().
+
+                        endUploads().
                     endRunSecHub().
                 endTest().
 

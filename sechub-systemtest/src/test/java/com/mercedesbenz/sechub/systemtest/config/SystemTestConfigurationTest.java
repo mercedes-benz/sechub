@@ -191,8 +191,8 @@ class SystemTestConfigurationTest {
 
         ScriptDefinition testPrepareScript1 = new ScriptDefinition();
         testPrepareScript1.setComment("The script call here would call the script inside the 'tests' subfoler of the solution");
-        testPrepareScript1
-                .setPath("./../tests/checkout-simple-go-project-withouth-sechub-json.sh ${" + RuntimeVariable.WORKSPACE_ROOT.getVariableName() + "}/checkout");
+        testPrepareScript1.setPath(
+                "./../tests/checkout-simple-go-project-withouth-sechub-json.sh ${runtime." + RuntimeVariable.WORKSPACE_ROOT.getVariableName() + "}/checkout");
 
         ExecutionStepDefinition test1Step1 = new ExecutionStepDefinition();
 
@@ -218,10 +218,11 @@ class SystemTestConfigurationTest {
                 "If a project is defined, it will be used, otherwise always '" + DefaultFallback.FALLBACK_PROJECT_NAME.getValue() + "' is used as default");
         runSecHubJob1.setProject(DEFINED_PROJECT_NAME);
 
-        UploadDefinition upload = runSecHubJob1.getUpload();
+        UploadDefinition upload = new UploadDefinition();
         upload.setComment("Here we can define either binaries or sources to upload - we define the folders, framework will create tars/zips automatically");
-        upload.setSourceFolder("${" + RuntimeVariable.WORKSPACE_ROOT.getVariableName() + "}/checkout/sources");
-        upload.setBinariesFolder("${" + RuntimeVariable.WORKSPACE_ROOT.getVariableName() + "}/checkout/binaries");
+        upload.setSourceFolder(Optional.of("${runtime." + RuntimeVariable.WORKSPACE_ROOT.getVariableName() + "}/checkout/sources"));
+        upload.setReferenceId(Optional.of(DefaultFallback.FALLBACK_UPLOAD_REF_ID.getValue()));
+        runSecHubJob1.getUploads().add(upload);
 
         test1execute1.setRunSecHubJob(Optional.of(runSecHubJob1));
 

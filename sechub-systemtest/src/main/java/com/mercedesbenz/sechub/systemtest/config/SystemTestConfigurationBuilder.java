@@ -6,6 +6,13 @@ import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 
+import com.mercedesbenz.sechub.commons.model.SecHubCodeScanConfiguration;
+import com.mercedesbenz.sechub.commons.model.SecHubDataConfigurationUsageByName;
+import com.mercedesbenz.sechub.commons.model.SecHubInfrastructureScanConfiguration;
+import com.mercedesbenz.sechub.commons.model.SecHubLicenseScanConfiguration;
+import com.mercedesbenz.sechub.commons.model.SecHubSecretScanConfiguration;
+import com.mercedesbenz.sechub.commons.model.SecHubWebScanConfiguration;
+
 public class SystemTestConfigurationBuilder {
 
     private SystemTestConfiguration configuration;
@@ -383,15 +390,137 @@ public class SystemTestConfigurationBuilder {
                 return SecHubRunBuilder.this;
             }
 
-            public SecHubRunBuilder uploadBinaries(String path) {
-                runSecHubJob.getUpload().setBinariesFolder(path);
-                return SecHubRunBuilder.this;
+            public SecHubUploadsBuilder uploads() {
+                return new SecHubUploadsBuilder();
             }
 
-            public SecHubRunBuilder uploadSources(String path) {
-                runSecHubJob.getUpload().setSourceFolder(path);
-                return SecHubRunBuilder.this;
+            public class SecHubUploadsBuilder {
+                public SecHubUploadBuilder upload() {
+                    return new SecHubUploadBuilder();
+                }
+
+                public SecHubRunBuilder endUploads() {
+                    return SecHubRunBuilder.this;
+                }
+
+                public class SecHubUploadBuilder {
+
+                    private UploadDefinition uploadDefinition;
+
+                    private SecHubUploadBuilder() {
+                        uploadDefinition = new UploadDefinition();
+                        runSecHubJob.getUploads().add(uploadDefinition);
+                    }
+
+                    public SecHubUploadsBuilder endUpload() {
+                        return SecHubUploadsBuilder.this;
+                    }
+
+                    public SecHubUploadBuilder sources(String path) {
+                        uploadDefinition.setSourceFolder(Optional.of(path));
+                        return this;
+                    }
+
+                    public SecHubUploadBuilder binaries(String path) {
+                        uploadDefinition.setBinariesFolder(Optional.of(path));
+                        return this;
+                    }
+
+                    public SecHubUploadBuilder withReferenceId(String id) {
+                        uploadDefinition.setReferenceId(Optional.of(id));
+                        return this;
+                    }
+
+                }
             }
+
+            public abstract class AbstractWithUploadReferencesScanConfigBuilder<T extends AbstractWithUploadReferencesScanConfigBuilder<T, C>, C extends SecHubDataConfigurationUsageByName> {
+
+                private C configuration;
+
+                private AbstractWithUploadReferencesScanConfigBuilder(C configuration) {
+                    this.configuration = configuration;
+                }
+
+                protected C getConfiguration() {
+                    return configuration;
+                }
+
+                @SuppressWarnings("unchecked")
+                public T use(String... referenceIds) {
+                    configuration.getNamesOfUsedDataConfigurationObjects().addAll(Arrays.asList(referenceIds));
+                    return (T) this;
+                }
+
+                public SecHubRunBuilder endScan() {
+                    return SecHubRunBuilder.this;
+                }
+            }
+
+            public CodeScanConfigBuilder codeScan() {
+                return new CodeScanConfigBuilder();
+            }
+
+            public LicenseScanConfigBuilder licenseScan() {
+                return new LicenseScanConfigBuilder();
+            }
+
+            public WebScanConfigBuilder webScan() {
+                return new WebScanConfigBuilder();
+            }
+
+            public InfraScanConfigBuilder infraScan() {
+                return new InfraScanConfigBuilder();
+            }
+
+            public SecretScanConfigBuilder secretScan() {
+                return new SecretScanConfigBuilder();
+            }
+
+            public class WebScanConfigBuilder {
+                private WebScanConfigBuilder() {
+                    SecHubWebScanConfiguration configuration = new SecHubWebScanConfiguration();
+                    runSecHubJob.setWebScan(Optional.of(configuration));
+                }
+
+                public SecHubRunBuilder endScan() {
+                    return SecHubRunBuilder.this;
+                }
+            }
+
+            public class InfraScanConfigBuilder {
+                private InfraScanConfigBuilder() {
+                    SecHubInfrastructureScanConfiguration configuration = new SecHubInfrastructureScanConfiguration();
+                    runSecHubJob.setInfraScan(Optional.of(configuration));
+                }
+
+                public SecHubRunBuilder endScan() {
+                    return SecHubRunBuilder.this;
+                }
+            }
+
+            public class SecretScanConfigBuilder extends AbstractWithUploadReferencesScanConfigBuilder<SecretScanConfigBuilder, SecHubSecretScanConfiguration> {
+                private SecretScanConfigBuilder() {
+                    super(new SecHubSecretScanConfiguration());
+                    runSecHubJob.setSecretScan(Optional.of(getConfiguration()));
+                }
+            }
+
+            public class CodeScanConfigBuilder extends AbstractWithUploadReferencesScanConfigBuilder<CodeScanConfigBuilder, SecHubCodeScanConfiguration> {
+                private CodeScanConfigBuilder() {
+                    super(new SecHubCodeScanConfiguration());
+                    runSecHubJob.setCodeScan(Optional.of(getConfiguration()));
+                }
+            }
+
+            public class LicenseScanConfigBuilder
+                    extends AbstractWithUploadReferencesScanConfigBuilder<LicenseScanConfigBuilder, SecHubLicenseScanConfiguration> {
+                private LicenseScanConfigBuilder() {
+                    super(new SecHubLicenseScanConfiguration());
+                    runSecHubJob.setLicenseScan(Optional.of(getConfiguration()));
+                }
+            }
+
         }
 
         private TestBuilder(String testName) {

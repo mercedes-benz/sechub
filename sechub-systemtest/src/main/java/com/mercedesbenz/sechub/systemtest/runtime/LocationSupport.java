@@ -8,6 +8,8 @@ import java.nio.file.Paths;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.mercedesbenz.sechub.systemtest.config.TestDefinition;
+
 public class LocationSupport {
 
     private static final Logger LOG = LoggerFactory.getLogger(LocationSupport.class);
@@ -119,14 +121,45 @@ public class LocationSupport {
 
     private Path ensureRuntimeFolder() {
         Path runtimeFolder = getRuntimeFolder();
-        if (!Files.exists(runtimeFolder)) {
-            try {
+        try {
+            if (!Files.exists(runtimeFolder)) {
                 Files.createDirectories(runtimeFolder);
+            }
+            return runtimeFolder.toRealPath();
+        } catch (IOException e) {
+            throw new SystemTestRuntimeException("Was not able to create runtime folder:" + runtimeFolder, e);
+        }
+    }
+
+    public Path ensureTestFolder(TestDefinition test) {
+        String testName = test.getName();
+        if (testName == null) {
+            throw new IllegalStateException("test name is null- may not happen!");
+        }
+        Path tests = getWorkspaceTestsFolder();
+        Path testFolder = tests.resolve(testName);
+        try {
+            Files.createDirectories(testFolder);
+            return testFolder.toRealPath();
+
+        } catch (IOException e) {
+            throw new SystemTestRuntimeException("Not able to ensure test folder for test: " + testName + " inside workspace root: " + workspaceRoot, e);
+        }
+
+    }
+
+    private Path getWorkspaceTestsFolder() {
+        Path workspaceRoot = getWorkspaceRoot();
+        Path tests = workspaceRoot.resolve("tests");
+
+        if (!Files.exists(tests)) {
+            try {
+                Files.createDirectories(tests);
             } catch (IOException e) {
-                throw new SystemTestRuntimeException("Was not able to create runtime folder:" + runtimeFolder, e);
+                throw new SystemTestRuntimeException("Not able to ensure tests folder inside workspace root: " + workspaceRoot, e);
             }
         }
-        return runtimeFolder;
+        return tests;
     }
 
 }

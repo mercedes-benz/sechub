@@ -11,15 +11,19 @@ package com.mercedesbenz.sechub.docgen.adopt;
  * sechub-systemtest --> sechub-api-java --> openApiGenerator --> openapi3.json
  * </pre>
  *
- * Equality is checked by <code>AdoptedSystemRuntimeVariablesTest.java</code> If
- * it fails, please copy content system test RuntimeVariables at this location
- * (class comments are ignored means can be custom)
+ * Equality to RuntimeVariable is checked by
+ * <code>AdoptedSystemTestRuntimeVariableTest.java</code> If it fails, please
+ * copy content system test RuntimeVariables at this location (class comments
+ * are ignored means can be custom)
  *
  * @return
  */
 public enum AdoptedSystemTestRuntimeVariable {
 
     WORKSPACE_ROOT("workspaceRoot", "Contains the absolute path to the workspace root folder"),
+
+    CURRENT_TEST_FOLDER("currentTestFolder",
+            "Contains the absolute path to the folder for the current test inside the workspace. This will be calculated at runtime."),
 
     PDS_SOLUTIONS_ROOT("pdsSolutionsRoot", "Contains the absolute path to the PDS solutions root folder"),
 
