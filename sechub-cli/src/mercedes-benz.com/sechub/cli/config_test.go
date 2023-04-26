@@ -3,6 +3,7 @@
 package cli
 
 import (
+	"flag"
 	"fmt"
 	"io/ioutil"
 	"os"
@@ -479,4 +480,66 @@ func Test_check_max_cmdline_args_are_accepted(t *testing.T) {
 
 	// Restore original arguments
 	os.Args = originalArgs
+}
+
+func Example_label_from_cmdline_args() {
+	// PREPARE
+	argSafe := os.Args
+	os.Args = []string{"sechub", "-label", "key1=value1", "-label", "key2=value2"}
+
+	// EXECUTE
+	flag.Parse()
+
+	// restore original os.Args
+	os.Args = argSafe
+
+	// TEST
+	fmt.Println(configFromInit.labels["key1"])
+	fmt.Println(configFromInit.labels["key2"])
+
+	// Output:
+	// value1
+	// value2
+}
+
+func Example_label_from_env_var() {
+	// PREPARE
+	os.Setenv(SechubLabelsEnvVar, "key1=value1,key2=value2")
+
+	// EXECUTE
+	parseConfigFromEnvironment(&configFromInit)
+
+	// TEST
+	fmt.Println(configFromInit.labels["key1"])
+	fmt.Println(configFromInit.labels["key2"])
+
+	// Output:
+	// value1
+	// value2
+}
+
+func Example_label_from_cmdline_args_and_env_var() {
+	// PREPARE
+	argSafe := os.Args
+	os.Args = []string{"sechub", "-label", "key1=value1", "-label", "key2=value2"}
+
+	os.Setenv(SechubLabelsEnvVar, "key2=value2x,key3=value3x")
+	// args override env var - so key2 from env will be ignored
+
+	// EXECUTE
+	parseConfigFromEnvironment(&configFromInit)
+	flag.Parse()
+
+	// restore original os.Args
+	os.Args = argSafe
+
+	// TEST
+	fmt.Println(configFromInit.labels["key1"])
+	fmt.Println(configFromInit.labels["key2"])
+	fmt.Println(configFromInit.labels["key3"])
+
+	// Output:
+	// value1
+	// value2
+	// value3x
 }
