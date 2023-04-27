@@ -444,7 +444,7 @@ public class CheckmarxAdapterV1WireMockTest {
         /* we send 404, because project not found */
         stubFor(get(
                 urlEqualTo(history.rememberGET(apiURLSupport.nextURL("/cxrestapi/projects?" + WireMockUtil.toFormUrlEncoded(checkProjectExistingMap, true)))))
-                        .willReturn(aResponse().withStatus(HttpStatus.NOT_FOUND.value())));
+                .willReturn(aResponse().withStatus(HttpStatus.NOT_FOUND.value())));
     }
 
     private void simulateCheckProjectExistsReturnsTrue(LinkedHashMap<String, String> checkProjectExistingMap) {
