@@ -79,58 +79,6 @@ func Test_key_with_empty_value_in_addLabelToList(t *testing.T) {
 	sechubTestUtil.AssertErrorHasExpectedStartMessage(err, "no value given for key", t)
 }
 
-func Example_labels_section_is_read_as_map() {
-	// PREPARE
-	var context Context
-	var config Config
-	context.config = &config
-
-	sechubJSON := `
-  {
-    "apiVersion": "1.0",
-    "project": "myproject",
-    "metaData": {
-      "labels": {
-        "key1": "value1",
-        "key2": "value2"
-      }
-    }
-  }
-  `
-	// EXECUTE
-	sechubConfig := newSecHubConfigFromBytes([]byte(sechubJSON))
-	context.sechubConfig = &sechubConfig
-
-	// TEST
-	fmt.Printf("%+v\n", context.sechubConfig.MetaData["labels"])
-
-	// Output:
-	// map[key1:value1 key2:value2]
-}
-
-func Example_non_existing_labels_section() {
-	// PREPARE
-	var context Context
-	var config Config
-	context.config = &config
-
-	sechubJSON := `
-  {
-    "apiVersion": "1.0",
-    "project": "myproject"
-  }
-  `
-	// EXECUTE
-	sechubConfig := newSecHubConfigFromBytes([]byte(sechubJSON))
-	context.sechubConfig = &sechubConfig
-
-	// TEST
-	fmt.Printf("%+v\n", context.sechubConfig.MetaData["labels"])
-
-	// Output:
-	// <nil>
-}
-
 func Example_applyLabelsToConfigJson_with_labels_section_in_json() {
 	// PREPARE
 	var context Context
@@ -149,22 +97,89 @@ func Example_applyLabelsToConfigJson_with_labels_section_in_json() {
     }
   }
   `
+	context.contentToSend = []byte(sechubJSON)
+
 	// These lables must override the above defined ones
 	labels := map[string]string{
 		"key1": "value1x",
 	}
 	context.config.labels = labels
 
-	sechubConfig := newSecHubConfigFromBytes([]byte(sechubJSON))
-	context.sechubConfig = &sechubConfig
+	// EXECUTE
+	applyLabelsToConfigJson(&context)
+
+	// TEST
+	fmt.Printf("labels: %+v\n", context.config.labels)
+	fmt.Println("context.contentToSend:", string(context.contentToSend))
+
+	// Output:
+	// labels: map[key1:value1x key2:value2]
+	// context.contentToSend: {"apiVersion":"1.0","metaData":{"labels":{"key1":"value1x","key2":"value2"}},"project":"myproject"}
+}
+
+func Example_applyLabelsToConfigJson_without_labels_section_in_json() {
+	// PREPARE
+	var context Context
+	var config Config
+	context.config = &config
+
+	sechubJSON := `
+  {
+    "apiVersion": "1.0",
+    "project": "myproject",
+    "metaData": {
+      "other": "123"
+    }
+  }
+  `
+	context.contentToSend = []byte(sechubJSON)
+
+	// These lables must override the above defined ones
+	labels := map[string]string{
+		"key1": "value1x",
+	}
+	context.config.labels = labels
 
 	// EXECUTE
 	applyLabelsToConfigJson(&context)
 
 	// TEST
 	fmt.Printf("labels: %+v\n", context.config.labels)
-	fmt.Printf("sechubConfig: %+v\n", context.sechubConfig.MetaData["labels"])
+	fmt.Println("context.contentToSend:", string(context.contentToSend))
 
 	// Output:
-	// map[key1:value1x key2:value2]
+	// labels: map[key1:value1x]
+	// context.contentToSend: {"apiVersion":"1.0","metaData":{"labels":{"key1":"value1x"},"other":"123"},"project":"myproject"}
+}
+
+func Example_applyLabelsToConfigJson_without_metadata_section_in_json() {
+	// PREPARE
+	var context Context
+	var config Config
+	context.config = &config
+
+	sechubJSON := `
+  {
+    "apiVersion": "1.0",
+    "project": "myproject"
+  }
+  `
+	context.contentToSend = []byte(sechubJSON)
+
+	// These lables must override the above defined ones
+	labels := map[string]string{
+		"key1": "value1x",
+	}
+	context.config.labels = labels
+
+	// EXECUTE
+	applyLabelsToConfigJson(&context)
+
+	// TEST
+	fmt.Printf("labels: %+v\n", context.config.labels)
+	fmt.Println("context.contentToSend:", string(context.contentToSend))
+
+	// Output:
+	// labels: map[key1:value1x]
+	// context.contentToSend: {"apiVersion":"1.0","metaData":{"labels":{"key1":"value1x"}},"project":"myproject"}
 }

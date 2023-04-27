@@ -19,13 +19,12 @@ import (
 // so Webscan, InfraScan are not handled here (but still uploaded)
 // Only code scan is necessary, because determination necessary if there is an upload necessary or not.
 type SecHubConfig struct {
-	APIVersion string                 `json:"apiVersion"`
-	User       string                 `json:"user"`
-	ProjectID  string                 `json:"project"`
-	Server     string                 `json:"server"`
-	CodeScan   CodeScanConfig         `json:"codeScan"`
-	Data       DataSectionScanConfig  `json:"data"`
-	MetaData   map[string]interface{} `json:"metaData"`
+	APIVersion string                `json:"apiVersion"`
+	User       string                `json:"user"`
+	ProjectID  string                `json:"project"`
+	Server     string                `json:"server"`
+	CodeScan   CodeScanConfig        `json:"codeScan"`
+	Data       DataSectionScanConfig `json:"data"`
 }
 
 type DataSectionScanConfig struct {
