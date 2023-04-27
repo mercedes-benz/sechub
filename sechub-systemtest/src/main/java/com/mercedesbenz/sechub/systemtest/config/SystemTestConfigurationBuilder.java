@@ -136,17 +136,17 @@ public class SystemTestConfigurationBuilder {
             configuration.getSetup().setRemote(Optional.of(remoteSetup));
         }
 
-        public RemoteSecHubSetupBuilder secHub() {
-            return new RemoteSecHubSetupBuilder();
+        public SecHubSetupBuilder secHub() {
+            return new SecHubSetupBuilder();
         }
 
-        public class RemoteSecHubSetupBuilder extends AbstractSecHubDefinitionBuilder<RemoteSecHubSetupBuilder, RemoteSecHubDefinition> {
+        public class SecHubSetupBuilder extends AbstractSecHubDefinitionBuilder<SecHubSetupBuilder, RemoteSecHubDefinition> {
 
-            public RemoteSecHubSetupBuilder() {
-                super(RemoteSecHubSetupBuilder.class, remoteSetup.getSecHub());
+            public SecHubSetupBuilder() {
+                super(SecHubSetupBuilder.class, remoteSetup.getSecHub());
             }
 
-            public RemoteSecHubSetupBuilder user(String userId, String apiToken) {
+            public SecHubSetupBuilder user(String userId, String apiToken) {
                 CredentialsDefinition userCredentials = getSechubDefinition().getUser();
 
                 userCredentials.setUserId(userId);
@@ -183,29 +183,29 @@ public class SystemTestConfigurationBuilder {
             return SystemTestConfigurationBuilder.this;
         }
 
-        public LocalSecHubSetupBuilder secHub() {
-            return new LocalSecHubSetupBuilder();
+        public SecHubSetupBuilder secHub() {
+            return new SecHubSetupBuilder();
         }
 
-        public class LocalSecHubSetupBuilder extends AbstractSecHubDefinitionBuilder<LocalSecHubSetupBuilder, LocalSecHubDefinition> {
+        public class SecHubSetupBuilder extends AbstractSecHubDefinitionBuilder<SecHubSetupBuilder, LocalSecHubDefinition> {
 
-            public LocalSecHubSetupBuilder() {
-                super(LocalSecHubSetupBuilder.class, localSetup.getSecHub());
+            public SecHubSetupBuilder() {
+                super(SecHubSetupBuilder.class, localSetup.getSecHub());
             }
 
             public LocalSetupBuilder endSecHub() {
                 return LocalSetupBuilder.this;
             }
 
-            public StepBuilder<LocalSecHubSetupBuilder> addStartStep() {
-                return new StepBuilder<LocalSecHubSetupBuilder>(this, getSechubDefinition().getStart());
+            public StepBuilder<SecHubSetupBuilder> addStartStep() {
+                return new StepBuilder<SecHubSetupBuilder>(this, getSechubDefinition().getStart());
             }
 
-            public StepBuilder<LocalSecHubSetupBuilder> addStopStep() {
-                return new StepBuilder<LocalSecHubSetupBuilder>(this, getSechubDefinition().getStop());
+            public StepBuilder<SecHubSetupBuilder> addStopStep() {
+                return new StepBuilder<SecHubSetupBuilder>(this, getSechubDefinition().getStop());
             }
 
-            public LocalSecHubSetupBuilder admin(String userId, String apiToken) {
+            public SecHubSetupBuilder admin(String userId, String apiToken) {
                 CredentialsDefinition adminCredentials = getSechubDefinition().getAdmin();
 
                 adminCredentials.setUserId(userId);
@@ -213,30 +213,30 @@ public class SystemTestConfigurationBuilder {
                 return this;
             }
 
-            public SecHubConfigurationBuilder configure() {
-                return new SecHubConfigurationBuilder();
+            public ConfigurationBuilder configure() {
+                return new ConfigurationBuilder();
             }
 
-            public class SecHubConfigurationBuilder {
+            public class ConfigurationBuilder {
 
-                public LocalSecHubSetupBuilder endConfigure() {
-                    return LocalSecHubSetupBuilder.this;
+                public SecHubSetupBuilder endConfigure() {
+                    return SecHubSetupBuilder.this;
                 }
 
-                public SecHubExecutorConfigBuilder addExecutor() {
-                    return new SecHubExecutorConfigBuilder();
+                public ExecutorConfigBuilder addExecutor() {
+                    return new ExecutorConfigBuilder();
                 }
 
-                public class SecHubExecutorConfigBuilder {
+                public class ExecutorConfigBuilder {
                     SecHubExecutorConfigDefinition executor;
 
-                    private SecHubExecutorConfigBuilder() {
+                    private ExecutorConfigBuilder() {
                         executor = new SecHubExecutorConfigDefinition();
                         getSechubDefinition().getConfigure().getExecutors().add(executor);
                     }
 
-                    public SecHubConfigurationBuilder endExecutor() {
-                        return SecHubConfigurationBuilder.this;
+                    public ConfigurationBuilder endExecutor() {
+                        return ConfigurationBuilder.this;
                     }
 
                     /**
@@ -245,26 +245,26 @@ public class SystemTestConfigurationBuilder {
                      *
                      * @return
                      */
-                    public SecHubExecutorConfigBuilder waitForAvailable() {
+                    public ExecutorConfigBuilder waitForAvailable() {
                         return waitForAVailable(true);
                     }
 
-                    public SecHubExecutorConfigBuilder waitForAVailable(boolean waitForAVailable) {
+                    public ExecutorConfigBuilder waitForAVailable(boolean waitForAVailable) {
                         getSechubDefinition().setWaitForAvailable(Optional.of(waitForAVailable));
                         return this;
                     }
 
-                    public SecHubExecutorConfigBuilder forProfile(String profileId) {
+                    public ExecutorConfigBuilder forProfile(String profileId) {
                         executor.getProfiles().add(profileId);
                         return this;
                     }
 
-                    public SecHubExecutorConfigBuilder version(int version) {
+                    public ExecutorConfigBuilder version(int version) {
                         executor.setVersion(version);
                         return this;
                     }
 
-                    public SecHubExecutorConfigBuilder credentials(String userId, String apiToken) {
+                    public ExecutorConfigBuilder credentials(String userId, String apiToken) {
 
                         CredentialsDefinition credentials = executor.getCredentials();
                         credentials.setUserId(userId);
@@ -273,19 +273,19 @@ public class SystemTestConfigurationBuilder {
                         return this;
                     }
 
-                    public SecHubExecutorConfigBuilder forProfile(String... profileIds) {
+                    public ExecutorConfigBuilder forProfile(String... profileIds) {
                         for (String profileId : profileIds) {
                             executor.getProfiles().add(profileId);
                         }
                         return this;
                     }
 
-                    public SecHubExecutorConfigBuilder pdsProductId(String productId) {
+                    public ExecutorConfigBuilder pdsProductId(String productId) {
                         executor.setPdsProductId(productId);
                         return this;
                     }
 
-                    public SecHubExecutorConfigBuilder parameter(String key, String value) {
+                    public ExecutorConfigBuilder parameter(String key, String value) {
                         executor.getParameters().put(key, value);
                         return this;
                     }
@@ -343,6 +343,11 @@ public class SystemTestConfigurationBuilder {
                 return this;
             }
 
+            public SolutionSetupBuilder url(URL url) {
+                setup.setUrl(url);
+                return this;
+            }
+
         }
     }
 
@@ -390,43 +395,43 @@ public class SystemTestConfigurationBuilder {
                 return SecHubRunBuilder.this;
             }
 
-            public SecHubUploadsBuilder uploads() {
-                return new SecHubUploadsBuilder();
+            public UploadsBuilder uploads() {
+                return new UploadsBuilder();
             }
 
-            public class SecHubUploadsBuilder {
-                public SecHubUploadBuilder upload() {
-                    return new SecHubUploadBuilder();
+            public class UploadsBuilder {
+                public UploadBuilder upload() {
+                    return new UploadBuilder();
                 }
 
                 public SecHubRunBuilder endUploads() {
                     return SecHubRunBuilder.this;
                 }
 
-                public class SecHubUploadBuilder {
+                public class UploadBuilder {
 
                     private UploadDefinition uploadDefinition;
 
-                    private SecHubUploadBuilder() {
+                    private UploadBuilder() {
                         uploadDefinition = new UploadDefinition();
                         runSecHubJob.getUploads().add(uploadDefinition);
                     }
 
-                    public SecHubUploadsBuilder endUpload() {
-                        return SecHubUploadsBuilder.this;
+                    public UploadsBuilder endUpload() {
+                        return UploadsBuilder.this;
                     }
 
-                    public SecHubUploadBuilder sources(String path) {
+                    public UploadBuilder sources(String path) {
                         uploadDefinition.setSourceFolder(Optional.of(path));
                         return this;
                     }
 
-                    public SecHubUploadBuilder binaries(String path) {
+                    public UploadBuilder binaries(String path) {
                         uploadDefinition.setBinariesFolder(Optional.of(path));
                         return this;
                     }
 
-                    public SecHubUploadBuilder withReferenceId(String id) {
+                    public UploadBuilder withReferenceId(String id) {
                         uploadDefinition.setReferenceId(Optional.of(id));
                         return this;
                     }

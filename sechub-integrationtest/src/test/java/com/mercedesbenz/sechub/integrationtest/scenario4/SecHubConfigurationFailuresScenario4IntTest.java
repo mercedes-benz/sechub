@@ -74,7 +74,10 @@ public class SecHubConfigurationFailuresScenario4IntTest {
         for (String detail : details) {
 
             JsonNode detailNode = detailsNode.get(index);
+            if (detailNode == null) {
+                fail("Wainted detail '" + details[index] + "'\ndoes not exist at index:" + index + " inside JSON:\n" + json);
 
+            }
             String detailText = detailNode.asText();
             if (!detailText.contains(detail)) {
                 // use now assertEquals to have text compare editors inside IDE on test

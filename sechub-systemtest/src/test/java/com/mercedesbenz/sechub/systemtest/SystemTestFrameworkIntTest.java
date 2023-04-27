@@ -6,6 +6,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.URL;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -55,12 +56,17 @@ class SystemTestFrameworkIntTest {
     void even_integration_test_setup_can_be_tested__codescan() throws IOException {
         /* @formatter:off */
 
+
+        int secHubPort = TestConfigUtil.getSecHubIntTestServerPort();
+        int pdsPort = TestConfigUtil.getPDSIntTestServerPort();
+
         /* prepare */
         SystemTestConfiguration configuration = configure().
                 addVariable("testSourceUploadFolder", "${runtime."+RuntimeVariable.CURRENT_TEST_FOLDER.getVariableName()+"}/testsources").
 
                 localSetup().
                     secHub().
+                        url(new URL("https://localhost:"+secHubPort)).
                         admin("int-test_superadmin","int-test_superadmin-pwd").
                         /*
                          * We do not define any steps here - developers must have started the
@@ -78,6 +84,7 @@ class SystemTestFrameworkIntTest {
                         endConfigure().
                     endSecHub().
                     addSolution("PDS_INTTEST_PRODUCT_CODESCAN").
+                        url(new URL("https://localhost:"+pdsPort)).
                         /*
                          * We do not define any steps here - developers must have started the
                          * integration test PDS server locally in IDE
@@ -113,16 +120,22 @@ class SystemTestFrameworkIntTest {
         LOG.info("config=\n{}", JSONConverter.get().toJSON(configuration,true));
 
         /* execute */
-        SystemTestResult result = runSystemTests(
-                params().
+        try {
+            System.out.println("------> start test");
+            SystemTestResult result = runSystemTests(
+                    params().
                     localRun().
                     workspacePath(createTempDirectoryInBuildFolder("systemtest_inttest_run").toString()).
                     testConfiguration(configuration).
-                build());
+                    build());
 
-        /* test */
-        if (result.hasFailedTests()) {
-            fail(result.toString());
+            /* test */
+            if (result.hasFailedTests()) {
+                fail(result.toString());
+            }
+        }catch(Exception e) {
+            e.printStackTrace();
+            throw e;
         }
         /* @formatter:on */
     }

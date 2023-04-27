@@ -84,8 +84,11 @@ jobs:
       # ----------------------
       # SecHub PDS-Tools
       # ----------------------
-      - name: Build PDS-Tools
-        run: ./gradlew buildPDSToolsCLI
+      - name: Build Server, DAUI and generate OpenAPI file
+        run: ./gradlew ensureLocalhostCertificate build generateOpenapi buildDeveloperAdminUI -x :sechub-integrationtest:test -x :sechub-cli:build
+
+      - name: Generate and build Java projects related to SecHub Java API
+        run: ./gradlew :sechub-api-java:build :sechub-systemtest:build :sechub-pds-tools:buildPDSToolsCLI -Dsechub.build.stage=api-necessary
 
       # To identifiy parts not in git history and leading to "-dirty-$commitId" markern in documentation
       - name: Inspect GIT status
