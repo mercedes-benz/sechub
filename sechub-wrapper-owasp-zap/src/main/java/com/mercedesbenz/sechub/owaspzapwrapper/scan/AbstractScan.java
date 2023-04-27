@@ -388,26 +388,28 @@ public abstract class AbstractScan implements OwaspZapScan {
     }
 
     private void scanUnsafe() throws ClientApiException {
+        /* OWASP ZAP setup on local machine */
         setupBasicConfiguration();
         deactivateRules();
         setupAdditonalProxyConfiguration();
-
         createContext();
+
+        /* OWASP ZAP setup with access to target */
         addIncludedAndExcludedUrlsToContext();
         loadApiDefinitions();
+
+        /* OWASP ZAP scan */
         if (scanContext.isAjaxSpiderEnabled()) {
             runAjaxSpider();
         }
-
         runSpider();
-
         passiveScan();
-
         if (scanContext.isActiveScanEnabled()) {
             runActiveScan();
         }
-        generateOwaspZapReport();
 
+        /* After scan */
+        generateOwaspZapReport();
         cleanUp();
     }
 
@@ -464,9 +466,19 @@ public abstract class AbstractScan implements OwaspZapScan {
         }
     }
 
+    private void visitInclude(String url) {
+        try {
+            String followRedirects = "false";
+            clientApi.core.accessUrl(url, followRedirects);
+        } catch (ClientApiException e) {
+            LOG.error("While trying to access URL {} got the error: {}", url, e.getMessage());
+        }
+    }
+
     private void registerUrlsIncludedInContext() throws ClientApiException {
         for (URL url : scanContext.getOwaspZapURLsIncludeList()) {
             clientApi.context.includeInContext(scanContext.getContextName(), url + ".*");
+            visitInclude(url.toString());
         }
     }
 

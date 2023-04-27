@@ -504,13 +504,18 @@ public class AsUser {
     }
 
     public UUID createJobAndReturnJobUUID(TestProject project, SecHubScanConfiguration config) {
+        String resultAsString = createJobAndReturnResultAsString(project, config);
+        return fetchJobUUID(resultAsString);
+    }
+
+    public String createJobAndReturnResultAsString(TestProject project, SecHubScanConfiguration config) {
         String projectId = project.getProjectId();
         config.setProjectId(projectId);
 
         String json = config.toJSON();
         String url = getUrlBuilder().buildAddJobUrl(projectId);
         String resultAsString = getRestHelper().postJson(url, json);
-        return fetchJobUUID(resultAsString);
+        return resultAsString;
     }
 
     private String createTargetURIForSechubConfiguration(IntegrationTestMockMode runMode, List<String> whites) {

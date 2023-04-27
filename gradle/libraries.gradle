@@ -33,8 +33,8 @@ ext {
       jsoup:                                   "1.15.4",
       re2j:                                    "1.7",
       logstash_logback_encoder:                "7.3",
-      aws_java_sdk_s3:                         "1.12.421",
-      postgresql:                              "42.5.4",
+      aws_java_sdk_s3:                         "1.12.453",
+      postgresql:                              "42.6.0",
                                               
       /* JDK > 9 needs these ones: */         
       jaxb_api:                                "2.3.1",
@@ -49,7 +49,7 @@ ext {
       apache_commons_io:                       "2.11.0",
       apache_commons_validator:                "1.7",
       apache_commons_fileupload:               "1.5",
-      apache_commons_compress:                 "1.22",
+      apache_commons_compress:                 "1.23.0",
       apache_commons_lang3:                    "3.12.0",
 
       /* testing */                            
@@ -58,7 +58,7 @@ ext {
       s3mock:                                  "2.11.0",
 
       /* gradle plugins */      
-      dependency_check:                        "8.1.2",
+      dependency_check:                        "8.2.1",
       grgit:                                   "5.0.0",
       
       /* documentation */
@@ -71,7 +71,7 @@ ext {
       owaspzap_client_api:                     "1.11.0",
       jcommander:                              "1.82",
       
-      thymeleaf_extras_springsecurity5:        "3.1.0.RELEASE",
+      thymeleaf_extras_springsecurity5:        "3.1.1.RELEASE",
       
       /* SARIF */
       sarif_210:                               "1.1.0"
