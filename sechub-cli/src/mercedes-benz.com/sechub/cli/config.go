@@ -120,6 +120,7 @@ func prepareOptionsFromCommandline(config *Config) {
 }
 
 func parseConfigFromEnvironment(config *Config) {
+	var err error
 	apiTokenFromEnv :=
 		os.Getenv(SechubApitokenEnvVar)
 	config.debug =
@@ -165,7 +166,10 @@ func parseConfigFromEnvironment(config *Config) {
 	if labelsRawDataFromEnv != "" {
 		labelsFromEnv := strings.Split(labelsRawDataFromEnv, ",")
 		for _, labelDefinition := range labelsFromEnv {
-			config.labels, _ = addLabelToList(config.labels, labelDefinition, false)
+			config.labels, err = addLabelToList(config.labels, labelDefinition, false)
+			if err != nil {
+				sechubUtil.LogWarning(fmt.Sprintf("Parse error of environment variable '%s' as labels: %s)", SechubLabelsEnvVar, err))
+			}
 		}
 	}
 	if projectFromEnv != "" {

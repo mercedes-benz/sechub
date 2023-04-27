@@ -13,13 +13,17 @@ import (
 
 func addLabelToList(list map[string]string, labelDefinition string, overrideIfExists bool) (map[string]string, error) {
 	if len(labelDefinition) < 3 || !strings.Contains(labelDefinition, "=") {
-		return list, errors.New("incorrect label definition. Example: \"key1=value1\"")
+		return list, errors.New("incorrect label definition: \"" + labelDefinition + "\". Example: \"key1=value1\"")
 	}
 
 	splitted := strings.Split(labelDefinition, "=")
 
+	if splitted[0] == "" {
+		return list, errors.New("key cannot be empty: \"" + labelDefinition + "\". Example: \"key1=value1\"")
+	}
+
 	if splitted[1] == "" {
-		return list, errors.New("no value given for key \"" + splitted[0] + "\"")
+		return list, errors.New("no value given for key \"" + splitted[0] + "\". Example: \"key1=value1\"")
 	}
 
 	if !overrideIfExists && list[splitted[0]] != "" {

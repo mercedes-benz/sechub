@@ -26,7 +26,10 @@ func InitializeContext() *Context {
 
 	// Add labels defined via cmdline args or env var to config JSON (only for scan jobs)
 	if len(context.config.labels) > 0 && (context.config.action == scanAction || context.config.action == scanAsynchronAction) {
-		applyLabelsToConfigJson(context)
+		err := applyLabelsToConfigJson(context)
+		if err != nil {
+			sechubUtil.LogError("Error while processing labels: " + err.Error())
+		}
 	}
 
 	/* assert after load the configuration is valid */

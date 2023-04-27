@@ -79,6 +79,19 @@ func Test_key_with_empty_value_in_addLabelToList(t *testing.T) {
 	sechubTestUtil.AssertErrorHasExpectedStartMessage(err, "no value given for key", t)
 }
 
+func Test_empty_key_in_addLabelToList(t *testing.T) {
+	// PREPARE
+	var err error
+	labels := map[string]string{}
+	malformedLabel := "=value1"
+
+	// EXECUTE
+	_, err = addLabelToList(labels, malformedLabel, false)
+
+	// TEST
+	sechubTestUtil.AssertErrorHasExpectedStartMessage(err, "key cannot be empty", t)
+}
+
 func Example_applyLabelsToConfigJson_with_labels_section_in_json() {
 	// PREPARE
 	var context Context
