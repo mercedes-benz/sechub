@@ -132,6 +132,14 @@ public class CommandLineSettings {
     }
 
     @Parameter(names = {
+            "--connectionCheck" }, description = "Set this option to enable an initial connection check performed by this wrapper application.", required = false)
+    private boolean connectionCheckEnabled;
+
+    public boolean isConnectionCheckEnabled() {
+        return connectionCheckEnabled;
+    }
+
+    @Parameter(names = {
             "--maxNumberOfConnectionRetries" }, description = "Maximum number of times the wrapper tries to reach each URL. Including each URL constructed from the sechub includes.", required = false)
     private int maxNumberOfConnectionRetries = 3;
 
