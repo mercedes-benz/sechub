@@ -2,10 +2,7 @@
 package com.mercedesbenz.sechub.domain.scan;
 
 import java.io.File;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -14,10 +11,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Component;
 
-import com.mercedesbenz.sechub.commons.model.SecHubFinding;
-import com.mercedesbenz.sechub.commons.model.SecHubResult;
-import com.mercedesbenz.sechub.commons.model.SecHubResultTrafficLightFilter;
-import com.mercedesbenz.sechub.commons.model.TrafficLight;
+import com.mercedesbenz.sechub.commons.model.*;
 import com.mercedesbenz.sechub.domain.scan.report.ScanSecHubReport;
 import com.mercedesbenz.sechub.sharedkernel.MustBeDocumented;
 
@@ -53,16 +47,16 @@ public class HTMLScanResultReportModelBuilder {
         }
 
         switch (trafficLight) {
-        case RED:
-            styleRed = SHOW_LIGHT;
-            break;
-        case YELLOW:
-            styleYellow = SHOW_LIGHT;
-            break;
-        case GREEN:
-            styleGreen = SHOW_LIGHT;
-            break;
-        default:
+            case RED:
+                styleRed = SHOW_LIGHT;
+                break;
+            case YELLOW:
+                styleYellow = SHOW_LIGHT;
+                break;
+            case GREEN:
+                styleGreen = SHOW_LIGHT;
+                break;
+            default:
         }
         HtmlCodeScanDescriptionSupport codeScanSupport = new HtmlCodeScanDescriptionSupport();
         SecHubResult result = report.getResult();
@@ -111,6 +105,41 @@ public class HTMLScanResultReportModelBuilder {
         } else {
             model.put("jobuuid", "none");
         }
+
+        Map<ScanType, ScanTypeCount> scanSummaryMap = new HashMap<>();
+        for (SecHubFinding finding : result.getFindings()) {
+            ScanType scanType = finding.getType();
+            ScanTypeCount scanTypeCount;
+            if (scanSummaryMap.containsKey(scanType)) {
+                scanTypeCount = scanSummaryMap.get(scanType);
+            } else {
+                scanTypeCount = new ScanTypeCount(scanType);
+                scanSummaryMap.put(scanType, scanTypeCount);
+            }
+            incrementScanCount(finding.getSeverity(), scanTypeCount);
+        }
+        List<ScanTypeCount> scanTypeCountList = new ArrayList<>();
+        extractScanTypeCountListFromMap(scanTypeCountList, scanSummaryMap);
+        model.put("scanTypeCountList", scanTypeCountList);
+
         return model;
+    }
+
+    private void incrementScanCount(Severity severity, ScanTypeCount scanTypeCount) {
+        if (Severity.HIGH.equals(severity)) {
+            scanTypeCount.incrementHighSeverityCount();
+        }
+        if (Severity.MEDIUM.equals(severity)) {
+            scanTypeCount.incrementMediumSeverityCount();
+        }
+        if (Severity.LOW.equals(severity)) {
+            scanTypeCount.incrementLowSeverityCount();
+        }
+    }
+
+    private void extractScanTypeCountListFromMap(List<ScanTypeCount> scanTypeCountList, Map<ScanType, ScanTypeCount> scanSummary) {
+        for (ScanTypeCount scanTypeCount : scanSummary.values()) {
+            scanTypeCountList.add(scanTypeCount);
+        }
     }
 }
