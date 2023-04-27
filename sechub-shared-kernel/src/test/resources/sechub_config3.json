@@ -1,13 +1,14 @@
 {
-    "apiVersion" : "1.0" ,
-    
-     "webScan": {
-        "url": "https://fscan.intranet.example.org/"
-     },
-    
-     "infraScan": {
-        "uris": ["https://fscan.intranet.example.org/"],
-        "ips": ["192.168.1.1/24"]
-     }
-    
+  "apiVersion": "1.0",
+  "webScan": {
+    "url": "https://fscan.intranet.example.org/"
+  },
+  "infraScan": {
+    "uris": [
+      "https://fscan.intranet.example.org/"
+    ],
+    "ips": [
+      "192.168.1.1/24"
+    ]
+  }
 }

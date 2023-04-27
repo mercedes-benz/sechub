@@ -84,16 +84,17 @@ Following actions are supported:
 
 ===== scan
 
-Does a synchronous scan which means
-
- - create a `{sechub}` job
- - upload necessary data to `{sechub}` (e.g. zipped sourcefiles for source scans)
- - approve job as ready to start
- - wait until the job is done,
- - download the report file
- - exits with a non-zero status on `red` (critical or high findings) so your build will break (depends on your build tool)
-
 This is the recommended scan action: You only have to make one single client call to trigger a scan and get the report.
+
+The client performs these steps for you:
+
+ 1. create a scan job on the {sechub} server
+ 2. upload necessary data (e.g. zipped sourcefiles for source scans)
+ 3. approve the job as ready to start
+ 4. wait until the job is done
+ 5. download the report file
+
+NOTE: On "red" (critical or high findings) the {sechub} client exits with a non-zero status so your build will break (depends on your build tool).
 
 IMPORTANT: For security reasons always pass your API-token via the environment variable `SECHUB_APITOKEN`.
 
@@ -102,7 +103,6 @@ IMPORTANT: For security reasons always pass your API-token via the environment v
 Prerequisite is a configuration file `sechub.json` in current directory. +
 See here for details: <<section-client-configuration-file,Configuration file>>
 ----
-SECHUB_APITOKEN=${apitoken}
 sechub scan
 ----
 
@@ -126,7 +126,6 @@ TIP: This can be interesting if you have long running scans and you want have a 
 
 **Minimum call syntax**
 ----
-SECHUB_APITOKEN=${apitoken}
 sechub scanAsync
 ----
 
@@ -136,7 +135,6 @@ Will fetch the job status and return result as json
 
 **Minimum call syntax**
 ----
-SECHUB_APITOKEN=${apitoken}
 sechub getStatus
 ----
 
@@ -148,7 +146,6 @@ Will fetch the report as json. (result will only exist when job is done)
 
 **Minimum call syntax**
 ----
-SECHUB_APITOKEN=${apitoken}
 sechub getReport
 ----
 
@@ -162,9 +159,8 @@ TIP: With `-output ${file-or-directory}` you can define where to place the repor
 ===== listJobs
 Lists the last jobs and their state.
 
-**Call syntax**
+**Minimum call syntax**
 ----
-SECHUB_APITOKEN=${apitoken}
 sechub listJobs
 ----
 
@@ -178,7 +174,6 @@ This will fetch the false positives list of your project as JSON - format is sam
 
 **Minimum call syntax**
 ----
-SECHUB_APITOKEN=${apitoken}
 sechub getFalsePositives
 ----
 
@@ -196,7 +191,6 @@ Select this file by the `-file` argument and start action `markFalsePositives`.
 
 **Minimum call syntax**
 ----
-SECHUB_APITOKEN=${apitoken}
 sechub -file ${json-file} markFalsePositives
 ----
 
@@ -221,9 +215,14 @@ TIP: See also <<interactiveMarkFalsePositives,interactiveMarkFalsePositives>> fo
 
 [[section-client-false-positives-unmark]]
 ===== unmarkFalsePositives
-Removes formerly defined false positives entries. +
+Remove formerly defined false positives. +
 It works similar to `markFalsePositives`: Just define a JSON file, select the file by the `-file` argument and start
 action `unmarkFalsePositives`
+
+**Minimum call syntax**
+----
+sechub -file ${json-file} unmarkFalsePositives
+----
 
 *Example JSON:*
 
@@ -276,23 +275,25 @@ Basically parameters can be passed to the `{sechub}` client in three ways:
 
 In below table, there is an overview of what can be defined where.
 |===
-| *parameter* | *cmdline option* | *environment variable* | *config json file*
-| api token | -apitoken _(!! not recommended !!)_ | SECHUB_APITOKEN |
-| code scan config ||| codeScan
-| configuration file | -configfile ||
-| file | -file ||
-| job uuid | -jobUUID ||
-| network timeout | -timeout||
-| output folder or file | -output ||
-| max. poll interval | -wait | SECHUB_WAITTIME_DEFAULT |
-| project id | -project | SECHUB_PROJECT |project
-| quiet mode | -quiet | SECHUB_QUIET |
-| report format | -reportformat||
-| server url | -server | SECHUB_SERVER | server
-| stop on yellow | -stop-on-yellow||
-| temporary dir | -tempdir | SECHUB_TEMP_DIR |
-| user id | -user | SECHUB_USERID | user
-| web scan config ||| webScan
+| *scope* | *cmdline option* | *environment variable* | *JSON config file*
+| api token | `-apitoken` _(!! not recommended !!)_ | `SECHUB_APITOKEN` |
+| code scan config ||| <<sechub-config-code-scan,codeScan>>
+| JSON config file | `-configfile` ||
+| file | `-file` ||
+| job uuid | `-jobUUID` ||
+| label definitions | `-label` | `SECHUB_LABELS` | <<labels,metaData.labels>>
+| max. poll interval | `-wait` | `SECHUB_WAITTIME_DEFAULT` |
+| network timeout | `-timeout` ||
+| output folder or file | `-output` ||
+| project id | `-project` | `SECHUB_PROJECT` |project
+| quiet mode | `-quiet` | `SECHUB_QUIET` |
+| report format | `-reportformat`||
+| scan for secrets ||| <<secret-scan,secretScan>>
+| server url | `-server` | `SECHUB_SERVER` | server
+| stop on yellow | `-stop-on-yellow`||
+| temporary dir | `-tempdir` | `SECHUB_TEMP_DIR` |
+| user id | `-user` | `SECHUB_USERID` | user
+| web scan config ||| <<web-scan,webScan>>
 |===
 
 
@@ -318,8 +319,8 @@ Here is an overview of mandatory parameter for each `action`:
 ==== Commandline Options
 
 - `-apitoken <string>` +
-  The api token. Although you can pass it as a runtime option, it is recommended for security reasons to define the environment variable `SECHUB_APITOKEN` (see: <<Environment variables>>) and not to use this option.
-  Can *NOT* be defined in config file
+  The user's api token - mandatory. _Please try to avoid `-apitoken` parameter for security reasons!!_ +
+  Use environment variable `SECHUB_APITOKEN` instead! (see: <<Environment variables>>)
 - `-configfile <filepath>` +
   Path to `{sechub}` JSON config file. Defaults to `sechub.json` in current directory.
 - `-file <filepath>` +
@@ -327,7 +328,9 @@ Here is an overview of mandatory parameter for each `action`:
 - `-help` +
   Shows help and terminates
 - `-jobUUID <string>` +
-  `{sechub}` job uuid (mandatory when using 'getStatus' or 'getReport')
+  `{sechub}` job uuid. Optional for actions 'getStatus' or 'getReport'
+- `-label <label definition>` +
+  Define a SecHub label for the scan job. (Example: "key1=value1") Repeat to define multiple labels.
 - `-output <path to folder or file>` +
   Where to place reports, false-positive files etc. Can be a directory, a file name or a file path (defaults to current working directory and default file names)
 - `-project <string>` +
@@ -350,8 +353,8 @@ Here is an overview of mandatory parameter for each `action`:
 - `-version` +
   Shows version info and terminates
 - `-wait <seconds>` +
-       Maximum wait time in seconds (default 60).
-       Will be used for periodic status checks when action=`scan` and for retries of HTTP calls.
+  Maximum wait time in seconds (default 60).
+  Will be used for periodic status checks when action=`scan` and for retries of HTTP calls.
 
 ==== Environment variables
 Additionally to above cmdline options, you can set some values also via environment variables which can be helpful when you have different SecHub environments (like: dev, int, prod)
@@ -370,6 +373,8 @@ Additionally to above cmdline options, you can set some values also via environm
   When set to `true`, then HTTPS certificate checking will be disabled. May be useful when using self-signed certificates. Please try to avoid this setting for security reasons.
 - `SECHUB_USERID` +
   The SecHub username. (same as `-user` option)
+- `SECHUB_WAITTIME_DEFAULT` +
+  Maximum wait time in seconds (default 60). Will be used for automatic status checks etc. when action=`scan`.
 - `SECHUB_WHITELIST_ALL` +
   When set to `true` then ignore the default whitelist for source files and add _every_ file. You may want to define <<sechub-config-example-sourcescan,excludes>> in your `sechub.json` file. _!! Handle with care !!_
 
@@ -385,8 +390,6 @@ Settings for debugging/client development:
   Initial wait time (floating point number) until SecHub client polls the first time if the report is ready (`sechub scan`). Meant for local integration tests.
 - `SECHUB_KEEP_TEMPFILES` +
   When set to `true` then `sourcecode-<projectID>.zip` files for code scan will not be removed, so you can check, what was uploaded to the `{sechub}` server.
-- `SECHUB_WAITTIME_DEFAULT` +
-  Maximum wait time in seconds (default 60). Will be used for automatic status checks etc. when action=`scan`.
 
 
 ==== Proxy support
@@ -411,6 +414,8 @@ For troubleshooting, you can
 - set environment variable `SECHUB_DEBUG_HTTP` to `true` +
   Now you will see the complete HTTP communication including headers. +
   (basic-auth headers (security) and contents of uploads (binary data) are filtered out)
+- set environment variable `SECHUB_KEEP_TEMPFILES` to `true` +
+  Now `sourcecode-<projectID>.zip` files for code scan or `binaries-<projectID>.tar` will not be removed, so you can check, what was uploaded to the `{sechub}` server.
 
 
 [[section-client-configuration-file]]
@@ -445,61 +450,67 @@ include::sechub_config_apiversion_example.json[]
 
 === Examples
 
-NOTE: Next following sub chapters contain some `{sechub}` configuration examples.
-      You can use them as templates for your own files.
-      At least replace example credentials `7536a8c4aa82407da7e06bdbEXAMPLE` and `alice` with your real ones to
-      get them working.
+The next subsections contain some `{sechub}` configuration examples.
+You can use them as templates for your own files.
+
+First: Define your `{SecHub}` environment variables:
+
+[source, bash]
+----
+export SECHUB_SERVER=https://sechub.example.org
+export SECHUB_USERID=alice
+export SECHUB_APITOKEN=EXAMPLE4aa82407da7e06bdbEXAMPLE
+export SECHUB_PROJECT=myproject
+----
+
+NOTE: Please replace the example values with your real ones to get them working.
 
 ==== Start a source code scan
 
 [source, bash]
 ----
-SECHUB_APITOKEN=7536a8c4aa82407da7e06bdbEXAMPLE
 sechub scan
 ----
 with corresponding 'sechub.json' config file: see <<sechub-config-example-sourcescan,source scan example>> .
-
 
 ==== Start a web scan
 
 [source, bash]
 ----
-SECHUB_APITOKEN=7536a8c4aa82407da7e06bdbEXAMPLE
 sechub scan
 ----
 with corresponding 'sechub.json' config file:
 see <<sechub-config-example-webscan-anonymous,web scan example (anonymous)>>
 
+==== Start a scan for secrets
+
+[source, bash]
+----
+sechub scan
+----
+with corresponding 'sechub.json' config file:
+see <<sechub-config-example-secretscan-sources,examples for secret scans>>
+
 ==== Start an infra scan
 
 [source, bash]
 ----
-SECHUB_APITOKEN=7536a8c4aa82407da7e06bdbEXAMPLE
 sechub scan
 ----
 with corresponding `sechub.json` config file: <<sechub-config-example-infrascan-with-ip, infrastructure scan example>> .
 
 ==== Mark false positives
+===== markFalsePositives
 [source, bash]
 ----
-SECHUB_APITOKEN=7536a8c4aa82407da7e06bdbEXAMPLE
 sechub -file mark-fp.json markFalsePositives
 ----
 with a corresponding `mark-fp.json` - see <<section-client-false-positives-mark,Mark false positives JSON format>>
-
-==== Unmark false positives
-[source, bash]
-----
-SECHUB_APITOKEN=7536a8c4aa82407da7e06bdbEXAMPLE
-sechub -file mark-fp.json unmarkFalsePositives
-----
-with a corresponding `mark-fp.json` - see <<section-client-false-positives-unmark,Unmark false positives JSON format>>
 
 [[section-client-interactiveMarkFalsePositives-mark]]
 ===== interactiveMarkFalsePositives
 [source, shell]
 ```
-SECHUB_APITOKEN=7536a8c4aa82407da7e06bdbEXAMPLE
 sechub interactiveMarkFalsePositives
 
 /  ___|         | | | |     | |
@@ -532,11 +543,18 @@ Add this as false positive? ('y' Yes, 'n' No, 's' Skip following findings, 'c' C
 - Successfully uploaded SecHub false-positives list for project "mytestproject" to server.
 ```
 
+==== Unmark false positives
+===== unmarkFalsePositives
+[source, bash]
+----
+sechub -file mark-fp.json unmarkFalsePositives
+----
+with a corresponding `mark-fp.json` - see <<section-client-false-positives-unmark,Unmark false positives JSON format>>
+
 [[section-client-interactiveUnmarkFalsePositives-mark]]
 ===== interactiveUnmarkFalsePositives
 [source, shell]
 ```
-SECHUB_APITOKEN=7536a8c4aa82407da7e06bdbEXAMPLE
 sechub interactiveUnmarkFalsePositives
  _____           _   _       _
 /  ___|         | | | |     | |
