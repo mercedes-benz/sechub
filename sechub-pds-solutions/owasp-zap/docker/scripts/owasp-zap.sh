@@ -81,6 +81,14 @@ else
     echo "Use proxy: disabled"
 fi
 
+if [ "$WRAPPER_CONNECTIONCHECK_ENABLED" = "true" ]
+then
+    echo "Wrapper connection check: enabled"
+    options="$options --connectionCheck"
+else
+    echo "Wrapper connection check: disabled"
+fi
+
 if [ ! -z "$WRAPPER_MAXIMUM_CONNECTION_RETRIES" ]
 then
     echo "Use WRAPPER_MAXIMUM_CONNECTION_RETRIES: $WRAPPER_MAXIMUM_CONNECTION_RETRIES"

@@ -6,7 +6,7 @@
       "id": "PDS_OWASP_ZAP",
       "path": "/scripts/owasp-zap.sh",
       "scanType": "webScan",
-      "minutesToWaitForProductResult": 510,
+      "minutesToWaitForProductResult": 600,
       "description": "Runs OWASP ZAP",
       "parameters": {
         "mandatory": [
@@ -49,6 +49,10 @@
           	"description": "Comma separated list of rule references that will be deactivated during the scan."
           },
           {
+          	"key": "wrapper.connectioncheck.enabled",
+          	"description": "Enable/disable initial connection done by the Owasp Zap wrapper."
+          },
+          {
           	"key": "wrapper.maximum.connection.retries",
           	"description": "Maximum amount of retries the wrapper does for each URL to check if it is reachable."
           },
@@ -68,13 +72,13 @@
         "mandatory": [
           {
             "key": "pds.scan.target.url",
-            "description": "The target url for the scan"
+            "description": "The target url for the scan."
           }
         ],
         "optional": [
           {
             "key": "pds.scan.configuration",
-            "description": "The configuration of the web scan"
+            "description": "The configuration of the web scan."
           },
           {
             "key": "zap.activescan.enabled",
@@ -86,7 +90,7 @@
           },
           {
             "key": "zap.use.proxy",
-            "description": "Enable/disable proxy for scanning. This overwrites the target type configuration."
+            "description": "Enable/disable proxy for scanning."
           },
           {
             "key": "zap.proxy.host",
@@ -103,6 +107,18 @@
           {
           	"key": "zap.deactivated.rule.references",
           	"description": "Comma separated list of rule references that will be deactivated during the scan."
+          },
+          {
+          	"key": "wrapper.connectioncheck.enabled",
+          	"description": "Enable/disable initial connection done by the Owasp Zap wrapper."
+          },
+          {
+          	"key": "wrapper.maximum.connection.retries",
+          	"description": "Maximum amount of retries the wrapper does for each URL to check if it is reachable."
+          },
+          {
+          	"key": "wrapper.retry.waittime.milliseconds",
+          	"description": "The time to wait between connection checks to the same URL. The value cannot be less than 1000 milliseconds."
           }
         ]
       }
