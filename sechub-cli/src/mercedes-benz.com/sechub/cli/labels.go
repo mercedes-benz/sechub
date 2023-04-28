@@ -34,7 +34,8 @@ func addLabelToList(list map[string]string, labelDefinition string, overrideIfEx
 	return list, nil
 }
 
-// applyLabelsToConfig extends/creates the `labels` section in the sechub config JSON (context.contentToSend) by context.config.labels
+// applyLabelsToConfigJson extends/creates the `labels` section
+// in the sechub config JSON (context.contentToSend) by context.config.labels
 func applyLabelsToConfigJson(context *Context) error {
 	var err error
 	if len(context.config.labels) == 0 {

@@ -12,7 +12,7 @@ TIP: If you want to have management summaries you could store downloaded JSON jo
  becomes part of {sechub}.
 
 === Job reports
-With {sechub} users are able to download their results for finished scan jobs. We provide following
+With {sechub} users are able to download their results for finished scan jobs. {sechub} provides these
 report formats:
 
 - HTML +

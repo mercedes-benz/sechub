@@ -325,10 +325,10 @@ include::sechub_config_example6_infrascan_ip.json[]
 
 [[sechub-config-data-section]]
 ==== Data section
-With the (optional) `data` section users are able to
+With the `data` section users are able to
 
 - define binary and source uploads
-- reference same uploads by muliple scan types in same job without another upload
+- reference the same by muliple scan types in one job
 
 The scan configurations can reference the name data configuration elements by defining the
 array attribute `"use"` with a list of references.
