@@ -41,7 +41,7 @@ to your current situation.
 [NOTE]
 ====
 
-You can open the complete call hierarchy by clicking on "Open Callstack". This allows you to see the full hierarchy from entry point down to data sink and can help you in analyzing this finding.
+You can open the details by clicking on "Open details". This allows you to see the full hierarchy from entry point down to data sink and can help you in analyzing this finding. It also shows a description and a possible solution (if there is one).
 
 ====
 
