@@ -49,13 +49,11 @@ The next picture shows a report which resulted in a red traffic light.
 
 image::sechub-report-html-example1.png[]
 
-At the top of the report you find the most critical parts - in this example it is a red finding which is a "Command Injection".
-If available for this type of finding, you can find the corresponding CWE-Id (Common Weakness Enumeration)
+At the top of the report you find the most critical parts - in this example it is a "red" finding with finding ID 19 which is a "Stored XSS". +
+The second finding with ID 20 is of the same type. Here the details view is opened so more details can be seen.
+
+If available, you can find the corresponding CWE-Id (Common Weakness Enumeration)
 as a link to the knowledge base of MITRE in the `Type` column.
-
-The data sink with Id 9 (where the command injection could lead to problems at the end) is at the top of the Description field.
-
-There are other findings (yellow and green) which are less problematic.
 
 TIP: The {sechub} client will exit with a non-zero return code per default only at a RED traffic light, but you can also
 configure the client to do this on color YELLOW.
