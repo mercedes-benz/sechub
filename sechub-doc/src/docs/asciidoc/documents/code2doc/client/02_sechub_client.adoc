@@ -74,9 +74,7 @@ In case your platform is not included in the table, you might be able to compile
 ----
 sechub -help
 ----
-will print out a simple help of all command line options. Also an almost running example snippet is shown.
-The example config file does contain many fake entries, even for `server` and webscan `url`.
-Please change to correct values.
+will print out a simple help of all command line options. At the end you will find a link to the latest config and variable examples.
 
 ==== Actions
 
