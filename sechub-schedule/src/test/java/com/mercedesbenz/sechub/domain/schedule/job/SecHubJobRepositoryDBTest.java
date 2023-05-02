@@ -235,9 +235,9 @@ public class SecHubJobRepositoryDBTest {
         /* prepare */
         DeleteJobTestData testData = new DeleteJobTestData();
         testData.createAndCheckAvailable();
-        
+
         LocalDateTime olderThan = olderThanForDelete(testData.before_1_day);
-        
+
         /* execute */
         int deleted = jobRepository.deleteJobsOlderThan(olderThan);
         jobRepository.flush();
@@ -257,7 +257,7 @@ public class SecHubJobRepositoryDBTest {
         testData.createAndCheckAvailable();
 
         LocalDateTime olderThan = testData.before_1_day.plusSeconds(1);
-        
+
         /* execute */
         int deleted = jobRepository.deleteJobsOlderThan(olderThan);
         jobRepository.flush();
@@ -276,7 +276,7 @@ public class SecHubJobRepositoryDBTest {
         testData.createAndCheckAvailable();
 
         LocalDateTime olderThan = olderThanForDelete(testData.before_90_days);
-        
+
         /* execute */
         int deleted = jobRepository.deleteJobsOlderThan(olderThan);
         jobRepository.flush();
@@ -298,7 +298,7 @@ public class SecHubJobRepositoryDBTest {
         testData.createAndCheckAvailable();
 
         LocalDateTime olderThan = olderThanForDelete(testData.before_90_days);
-        
+
         /* execute */
         int deleted = jobRepository.deleteJobsOlderThan(olderThan);
         jobRepository.flush();
@@ -312,7 +312,7 @@ public class SecHubJobRepositoryDBTest {
         /* prepare */
         DeleteJobTestData testData = new DeleteJobTestData();
         testData.createAndCheckAvailable();
-        
+
         LocalDateTime olderThan = testData.before_89_days;
 
         /* execute */
@@ -329,33 +329,13 @@ public class SecHubJobRepositoryDBTest {
     }
 
     @Test
-    public void test_data_4_jobs_oldest_90_days_delete_1_day() throws Exception {
-        /* prepare */
-        DeleteJobTestData testData = new DeleteJobTestData();
-        testData.createAndCheckAvailable();
-        
-        LocalDateTime olderThan = testData.before_89_days;
-
-        /* execute */
-        jobRepository.deleteJobsOlderThan(olderThan);
-        jobRepository.flush();
-
-        /* test */
-        List<ScheduleSecHubJob> allJobsNow = jobRepository.findAll();
-        assertTrue(allJobsNow.contains(testData.job2_2_days_before_created));
-        assertTrue(allJobsNow.contains(testData.job3_1_day_before_created));
-        assertTrue(allJobsNow.contains(testData.job4_now_created));
-        assertEquals(3, allJobsNow.size());
-    }
-
-    @Test
     public void test_data_4_jobs_oldest_90_days_deleted_1() throws Exception {
         /* prepare */
         DeleteJobTestData testData = new DeleteJobTestData();
         testData.createAndCheckAvailable();
-        
+
         LocalDateTime olderThan = testData.before_89_days;
-        
+
         /* execute */
         int deleted = jobRepository.deleteJobsOlderThan(olderThan);
         jobRepository.flush();
@@ -440,7 +420,7 @@ public class SecHubJobRepositoryDBTest {
         sb.append(describe(testData.job2_2_days_before_created, testData));
         sb.append(describe(testData.job3_1_day_before_created, testData));
         sb.append(describe(testData.job4_now_created, testData));
-    
+
         fail(sb.toString());
     }
 
@@ -464,7 +444,6 @@ public class SecHubJobRepositoryDBTest {
         return null;
     }
 
-    
     private class DeleteJobTestData {
         LocalDateTime now = LocalDateTime.now();
         LocalDateTime before_89_days = now.minusDays(89);

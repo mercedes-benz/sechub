@@ -1,8 +1,9 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.domain.administration.job;
 
-import static org.junit.Assert.*;
 import static com.mercedesbenz.sechub.test.FlakyOlderThanTestWorkaround.*;
+import static org.junit.Assert.*;
+
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -147,26 +148,6 @@ public class JobInformationRepositoryDBTest {
         assertEquals(3, allJobsNow.size());
     }
 
-    @Test
-    public void test_data_4_jobs_oldest_90_days_delete_1_day() throws Exception {
-        /* prepare */
-        DeleteJobTestData testData = new DeleteJobTestData();
-        testData.createAndCheckAvailable();
-
-        /* execute */
-        LocalDateTime olderThan = testData.before_89_days;
-        int deleted = jobRepository.deleteJobInformationOlderThan(olderThan);
-        jobRepository.flush();
-
-        /* test */
-        assertDeleted(1, deleted, testData, olderThan);
-        List<JobInformation> allJobsNow = jobRepository.findAll();
-        assertTrue(allJobsNow.contains(testData.job2_2_days_before_created));
-        assertTrue(allJobsNow.contains(testData.job3_1_day_before_created));
-        assertTrue(allJobsNow.contains(testData.job4_now_created));
-        assertEquals(3, allJobsNow.size());
-    }
-
     private void assertDeleted(int expected, int deleted, DeleteJobTestData testData, LocalDateTime olderThan) {
         if (deleted == expected) {
             return;
@@ -185,7 +166,7 @@ public class JobInformationRepositoryDBTest {
         sb.append(describe(testData.job2_2_days_before_created, testData));
         sb.append(describe(testData.job3_1_day_before_created, testData));
         sb.append(describe(testData.job4_now_created, testData));
-    
+
         fail(sb.toString());
     }
 
