@@ -76,6 +76,10 @@ subprojects{
     }
     
     test {
+        filter {
+             excludeTestsMatching "*ManualTest"
+        }
+
 	    /* Per default GRADLE stops the build if one single test fails. We want to have all tests executed. */
         ignoreFailures = true
         
