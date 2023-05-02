@@ -2,6 +2,7 @@
 package com.mercedesbenz.sechub.domain.scan.product;
 
 import static com.mercedesbenz.sechub.sharedkernel.ProductIdentifier.*;
+import static com.mercedesbenz.sechub.test.FlakyOlderThanTestWorkaround.*;
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
@@ -46,13 +47,15 @@ public class ProductResultRepositoryDBTest {
         /* prepare */
         DeleteProductResultTestData testData = new DeleteProductResultTestData();
         testData.createAndCheckAvailable();
-
+        
+        LocalDateTime olderThan = olderThanForDelete(testData.before_1_day);
+        
         /* execute */
-        int deleted = repositoryToTest.deleteResultsOlderThan(testData.before_1_day);
+        int deleted = repositoryToTest.deleteResultsOlderThan(olderThan);
         repositoryToTest.flush();
 
         /* test */
-        assertEquals(2, deleted);
+        assertDeleted(2, deleted, testData, olderThan);
     }
 
     @Test
@@ -61,11 +64,13 @@ public class ProductResultRepositoryDBTest {
         DeleteProductResultTestData testData = new DeleteProductResultTestData();
         testData.createAndCheckAvailable();
 
+        LocalDateTime olderThan = olderThanForDelete(testData.before_1_day);
         /* execute */
-        repositoryToTest.deleteResultsOlderThan(testData.before_1_day);
+        int deleted = repositoryToTest.deleteResultsOlderThan(olderThan);
         repositoryToTest.flush();
 
         /* test */
+        assertDeleted(2, deleted, testData, olderThan);
         List<ProductResult> allJobsNow = repositoryToTest.findAll();
         assertTrue(allJobsNow.contains(testData.job3_1_day_before_created));
         assertTrue(allJobsNow.contains(testData.job4_now_created));
@@ -78,11 +83,14 @@ public class ProductResultRepositoryDBTest {
         DeleteProductResultTestData testData = new DeleteProductResultTestData();
         testData.createAndCheckAvailable();
 
+        LocalDateTime olderThan = testData.before_1_day.plusSeconds(1);
+        
         /* execute */
-        repositoryToTest.deleteResultsOlderThan(testData.before_1_day.plusSeconds(1));
+        int deleted = repositoryToTest.deleteResultsOlderThan(olderThan);
         repositoryToTest.flush();
 
         /* test */
+        assertDeleted(3, deleted, testData, olderThan);
         List<ProductResult> allJobsNow = repositoryToTest.findAll();
         assertTrue(allJobsNow.contains(testData.job4_now_created));
         assertEquals(1, allJobsNow.size());
@@ -94,12 +102,14 @@ public class ProductResultRepositoryDBTest {
         DeleteProductResultTestData testData = new DeleteProductResultTestData();
         testData.createAndCheckAvailable();
 
+        LocalDateTime olderThan = testData.before_1_day.plusSeconds(1);
+        
         /* execute */
-        int deleted = repositoryToTest.deleteResultsOlderThan(testData.before_1_day.plusSeconds(1));
+        int deleted = repositoryToTest.deleteResultsOlderThan(olderThan);
         repositoryToTest.flush();
 
         /* test */
-        assertEquals(3, deleted);
+        assertDeleted(3, deleted, testData, olderThan);
     }
 
     @Test
@@ -107,12 +117,15 @@ public class ProductResultRepositoryDBTest {
         /* prepare */
         DeleteProductResultTestData testData = new DeleteProductResultTestData();
         testData.createAndCheckAvailable();
-
+        
+        LocalDateTime olderThan = olderThanForDelete(testData.before_90_days);
+        
         /* execute */
-        repositoryToTest.deleteResultsOlderThan(testData.before_90_days);
+        int deleted = repositoryToTest.deleteResultsOlderThan(olderThan);
         repositoryToTest.flush();
 
         /* test */
+        assertDeleted(0, deleted, testData, olderThan);
         List<ProductResult> allJobsNow = repositoryToTest.findAll();
         assertTrue(allJobsNow.contains(testData.job1_90_days_before_created));
         assertTrue(allJobsNow.contains(testData.job2_2_days_before_created));
@@ -127,11 +140,14 @@ public class ProductResultRepositoryDBTest {
         DeleteProductResultTestData testData = new DeleteProductResultTestData();
         testData.createAndCheckAvailable();
 
+        LocalDateTime olderThan = testData.before_89_days;
+        
         /* execute */
-        repositoryToTest.deleteResultsOlderThan(testData.before_89_days.minusSeconds(1));
+        int deleted = repositoryToTest.deleteResultsOlderThan(olderThan);
         repositoryToTest.flush();
 
         /* test */
+        assertDeleted(1, deleted, testData, olderThan);
         List<ProductResult> allJobsNow = repositoryToTest.findAll();
         assertTrue(allJobsNow.contains(testData.job2_2_days_before_created));
         assertTrue(allJobsNow.contains(testData.job3_1_day_before_created));
@@ -145,11 +161,14 @@ public class ProductResultRepositoryDBTest {
         DeleteProductResultTestData testData = new DeleteProductResultTestData();
         testData.createAndCheckAvailable();
 
+        LocalDateTime olderThan = testData.before_89_days;
+        
         /* execute */
-        repositoryToTest.deleteResultsOlderThan(testData.before_89_days.minusSeconds(1));
+        int deleted = repositoryToTest.deleteResultsOlderThan(olderThan);
         repositoryToTest.flush();
 
         /* test */
+        assertDeleted(1, deleted, testData, olderThan);
         List<ProductResult> allJobsNow = repositoryToTest.findAll();
         assertTrue(allJobsNow.contains(testData.job2_2_days_before_created));
         assertTrue(allJobsNow.contains(testData.job3_1_day_before_created));
@@ -327,6 +346,49 @@ public class ProductResultRepositoryDBTest {
         assertEquals(netsparkerContent, result.getResult());
 
     }
+    
+    private void assertDeleted(int expected, int deleted, DeleteProductResultTestData testData, LocalDateTime olderThan) {
+        if (deleted == expected) {
+            return;
+        }
+        StringBuilder sb = new StringBuilder();
+        List<ProductResult> all = repositoryToTest.findAll();
+        sb.append("Delete call did return ").append(deleted).append(" uploadMaximumBytes was ").append(expected).append("\n");
+        sb.append("The remaining entries are:\n");
+        for (ProductResult info : all) {
+            sb.append(resolveName(info.started, testData)).append("- since       : ").append(info.started).append("\n");
+        }
+        sb.append("\n-----------------------------------------------------");
+        sb.append("\nolderThan was: ").append(olderThan).append(" - means :").append((resolveName(olderThan, testData)));
+        sb.append("\n-----------------------------------------------------\n");
+        sb.append(describe(testData.job1_90_days_before_created, testData));
+        sb.append(describe(testData.job2_2_days_before_created, testData));
+        sb.append(describe(testData.job3_1_day_before_created, testData));
+        sb.append(describe(testData.job4_now_created, testData));
+    
+        fail(sb.toString());
+    }
+
+    private String describe(ProductResult info, DeleteProductResultTestData data) {
+        return resolveName(info.started, data) + " - created: " + info.started + "\n";
+    }
+
+    private String resolveName(LocalDateTime time, DeleteProductResultTestData data) {
+        if (data.job1_90_days_before_created.started.equals(time)) {
+            return "job1_90_days_before_created";
+        }
+        if (data.job2_2_days_before_created.started.equals(time)) {
+            return "job2_2_days_before_created";
+        }
+        if (data.job3_1_day_before_created.started.equals(time)) {
+            return "job3_1_day_before_created";
+        }
+        if (data.job4_now_created.started.equals(time)) {
+            return "job4_now_created";
+        }
+        return null;
+    }
+    
 
     private class DeleteProductResultTestData {
         LocalDateTime now = LocalDateTime.now();
