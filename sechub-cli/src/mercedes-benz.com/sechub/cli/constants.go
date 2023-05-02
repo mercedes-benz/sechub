@@ -146,6 +146,7 @@ const configfileOption = "configfile"
 const fileOption = "file"
 const helpOption = "help"
 const jobUUIDOption = "jobUUID"
+const labelOption = "label"
 const outputOption = "output"
 const projectOption = "project"
 const quietOption = "quiet"
@@ -180,14 +181,18 @@ const SechubIninitialWaitIntervalSecondsEnvVar = "SECHUB_INITIAL_WAIT_INTERVAL"
 // SechubKeepTempfilesEnvVar - environment variable to keep temporary files
 const SechubKeepTempfilesEnvVar = "SECHUB_KEEP_TEMPFILES"
 
+// SechubLabelsEnvVar - environment variable to define labels. Comma separated if more than one.
+// Example: "key1=value1,key2=value2"
+const SechubLabelsEnvVar = "SECHUB_LABELS"
+
+// SechubProjectEnvVar - environment variable to set the project ID
+const SechubProjectEnvVar = "SECHUB_PROJECT"
+
 // SechubQuietEnvVar - environment variable to set quiet mode
 const SechubQuietEnvVar = "SECHUB_QUIET"
 
 // SechubServerEnvVar - environment variable to set the SecHub server url
 const SechubServerEnvVar = "SECHUB_SERVER"
-
-// SechubProjectEnvVar - environment variable to set the project ID
-const SechubProjectEnvVar = "SECHUB_PROJECT"
 
 // SechubTempDir - environment variable to set the directory for temporary files
 const SechubTempDir = "SECHUB_TEMP_DIR"
