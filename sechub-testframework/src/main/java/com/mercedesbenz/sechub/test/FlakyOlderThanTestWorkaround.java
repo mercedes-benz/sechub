@@ -4,8 +4,9 @@ import java.time.LocalDateTime;
 
 /**
  * We had some tests which were flaky when it comes to "older than" calculation,
- * The suspicion lies on the h2 database and the precision of the timestamps which is only integer.
- * 
+ * The suspicion lies on the h2 database and the precision of the timestamps
+ * which is only integer.
+ *
  * @author Albert Tregnaghi
  *
  */
@@ -13,7 +14,8 @@ public class FlakyOlderThanTestWorkaround {
 
     /**
      * Returns a local date time object which is one second "older" than the given
-     * oldest. 
+     * oldest.
+     *
      * @param oldest
      * @return local date time object
      */
