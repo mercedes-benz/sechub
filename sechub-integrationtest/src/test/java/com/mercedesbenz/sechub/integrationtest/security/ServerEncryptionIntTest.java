@@ -7,14 +7,15 @@ import java.net.URL;
 
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.condition.EnabledIfSystemProperty;
 
 import com.mercedesbenz.sechub.integrationtest.SecurityTestHelper;
 import com.mercedesbenz.sechub.integrationtest.SecurityTestHelper.TestTargetType;
-import com.mercedesbenz.sechub.integrationtest.api.OnlyForRegularTestExecution;
 import com.mercedesbenz.sechub.integrationtest.internal.IntegrationTestContext;
 
-@OnlyForRegularTestExecution
-class ServerEncryptionTest {
+/* We need a running SecHub Server instance - so do execute this test only when integration test server is running:*/
+@EnabledIfSystemProperty(named = "sechub.integrationtest.running", matches = "true")
+class ServerEncryptionIntTest {
 
     private static SecurityTestHelper securityTestHelper;
 

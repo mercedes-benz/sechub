@@ -8,16 +8,17 @@ import java.net.URL;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.condition.EnabledIfSystemProperty;
 
 import com.mercedesbenz.sechub.integrationtest.SecurityTestHelper;
 import com.mercedesbenz.sechub.integrationtest.SecurityTestHelper.TestTargetType;
-import com.mercedesbenz.sechub.integrationtest.api.OnlyForRegularTestExecution;
 import com.mercedesbenz.sechub.integrationtest.api.TestAPI;
 import com.mercedesbenz.sechub.integrationtest.internal.IntegrationTestContext;
 import com.mercedesbenz.sechub.test.TestPortProvider;
 
-@OnlyForRegularTestExecution
-class ServerSecurityLogHandlingTest {
+/* We need a running PDS instance - so do execute this test only when integration test server is running:*/
+@EnabledIfSystemProperty(named = "sechub.integrationtest.running", matches = "true")
+class ServerSecurityLogHandlingIntTest {
 
     private static SecurityTestHelper securityTestHelper;
     private IntegrationTestContext context;
