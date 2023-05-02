@@ -16,21 +16,21 @@ func addLabelToList(list map[string]string, labelDefinition string, overrideIfEx
 		return list, errors.New("incorrect label definition: \"" + labelDefinition + "\". Example: \"key1=value1\"")
 	}
 
-	splitted := strings.Split(labelDefinition, "=")
+	key, value, _ := strings.Cut(labelDefinition, "=")
 
-	if splitted[0] == "" {
+	if key == "" {
 		return list, errors.New("key cannot be empty: \"" + labelDefinition + "\". Example: \"key1=value1\"")
 	}
 
-	if splitted[1] == "" {
-		return list, errors.New("no value given for key \"" + splitted[0] + "\". Example: \"key1=value1\"")
+	if value == "" {
+		return list, errors.New("no value given for key \"" + key + "\". Example: \"key1=value1\"")
 	}
 
-	if !overrideIfExists && list[splitted[0]] != "" {
+	if !overrideIfExists && list[key] != "" {
 		return list, nil
 	}
 
-	list[splitted[0]] = splitted[1]
+	list[key] = value
 	return list, nil
 }
 

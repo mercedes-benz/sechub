@@ -92,6 +92,21 @@ func Test_empty_key_in_addLabelToList(t *testing.T) {
 	sechubTestUtil.AssertErrorHasExpectedStartMessage(err, "key cannot be empty", t)
 }
 
+func Example_addLabelToList_value_contains_equals_signs() {
+	// PREPARE
+	labels := map[string]string{}
+	label_with_equals_signs := "key1=myvalue=123=test"
+
+	// EXECUTE
+	labels, _ = addLabelToList(labels, label_with_equals_signs, false)
+
+	// TEST
+	fmt.Println(labels)
+
+	// Output:
+	// map[key1:myvalue=123=test]
+}
+
 func Example_applyLabelsToConfigJson_with_labels_section_in_json() {
 	// PREPARE
 	var context Context
