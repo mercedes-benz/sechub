@@ -182,6 +182,10 @@ task integrationtest(type: Test, dependsOn: startIntegrationTestInstances) {
    systemProperty "sechub.integrationtest.longrunning", "true"
    
    finalizedBy "stopIntegrationTestInstances"
+   
+   filter {
+         includeTestsMatching "*IntTest"
+   }
 
 }
 

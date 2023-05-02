@@ -1,5 +1,7 @@
 #!/bin/bash 
 
+set -e
+
 function showHelp () {
     echo "-------------------------------------" 
     echo "- SDC - SecHub developer command line"
@@ -7,14 +9,16 @@ function showHelp () {
     echo "Usage: Usage sdc"
     echo " Options: "
     echo "   -f,  --format-all                 : format all source code files"
+    echo "   -b,  --build-full                 : full build"
+    echo "   -u,  --unit-tests                 : execute all unit tests"
     echo "   -i,  --integrationtest-all        : execute all integration tests"
     echo "   -ii, --integrationtest-integration: execute integration tests from sechub-integrationtest only"
     echo "   -is, --integrationtest-systemtest : execute integration tests from sechub-systemtest only"
     echo "   -r,  --report-combined-all        : create combined report for all"
     echo "   -c,  --clean-all                  : clean all"
     echo "   -ct, --clean-all-tests            : clean all test output"
-    echo "   -cut,--clean-unit-tests           : clean all unit test output"
-    echo "   -cit,--clean-integrationtests     : clean all integrationtest output"
+    echo "   -cu, --clean-unit-tests           : clean all unit test output"
+    echo "   -ci, --clean-integrationtests     : clean all integrationtest output"
     echo "   -h,  --help                       : show this help"
 }
 
@@ -69,16 +73,20 @@ case $key in
     CLEAN_ALL_TESTS="YES"
     shift # past argument
     ;;
-    -cut|--clean-unit-tests)
+    -cu|--clean-unit-tests)
     CLEAN_UNIT_TESTS="YES"
     shift # past argument
     ;;
-    -cit|--clean-integrationtests)
+    -ci|--clean-integrationtests)
     CLEAN_INTEGRATIONTEST="YES"
     shift # past argument
     ;;
-    -b|--full-build)
+    -b|--build-full)
     FULL_BUILD="YES"
+    shift # past argument
+    ;;
+    -u|--unit-tests)
+    UNIT_TESTS="YES"
     shift # past argument
     ;;
     -x|--xsearchpath)
@@ -144,7 +152,21 @@ fi
 
 if [[ "$FORMAT_CODE_ALL" = "YES" ]]; then
     startJob "Format all sourcecode"
+    openApiFilePath="$SECHUB_ROOT_DIR/sechub-doc/build/api-spec/openapi3.json"
+    if [ -f "$openApiFilePath" ]; then
+        echo ">>> Open API file exists"
+    else
+        echo ">>> Open API file DOES NOT exist - must be generated."
+         # Problem detected: open api file must be generated to avoid problems with gradle configuration lifecycle for open api generator!
+         ./gradlew generateOpenapi 
+    fi        
     ./gradlew spotlessApply -Dsechub.build.stage=all
+    
+fi
+
+if [[ "$UNIT_TESTS" = "YES" ]]; then
+    startJob "Execute all unit tests"
+    ./gradlew test -Dsechub.build.stage=all --console=plain
 fi
 
 if [[ "$INTEGRATIONTEST_ALL" = "YES" ]]; then
@@ -169,7 +191,7 @@ if [[ "$FULL_BUILD" = "YES" ]]; then
     ./gradlew :sechub-cli:buildGo :sechub-cli:testGo
     
     step "Build Server, DAUI and generate OpenAPI file"
-    ./gradlew ensureLocalhostCertificate build generateOpenapi buildDeveloperAdminUI -x :sechub-integrationtest:test -x :sechub-cli:build
+    ./gradlew ensureLocalhostCertificate build generateOpenapi buildDeveloperAdminUI -x :sechub-cli:build
     
     step "Generate and build Java projects related to SecHub Java API"
     ./gradlew :sechub-api-java:build :sechub-systemtest:build :sechub-pds-tools:buildPDSToolsCLI -Dsechub.build.stage=api-necessary

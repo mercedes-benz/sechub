@@ -50,5 +50,9 @@ task integrationtest(type: Test) {
     */
    systemProperty "sechub.integrationtest.running", "true"
    
+   filter {
+         includeTestsMatching "*IntTest"
+   }
+   
 }
 

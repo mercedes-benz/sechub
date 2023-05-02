@@ -6,6 +6,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.URI;
 import java.net.URL;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -15,6 +16,7 @@ import org.junit.jupiter.api.condition.EnabledIfSystemProperty;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.mercedesbenz.sechub.api.SecHubClient;
 import com.mercedesbenz.sechub.commons.model.JSONConverter;
 import com.mercedesbenz.sechub.systemtest.config.RuntimeVariable;
 import com.mercedesbenz.sechub.systemtest.config.SystemTestConfiguration;
@@ -133,9 +135,21 @@ class SystemTestFrameworkIntTest {
             if (result.hasFailedTests()) {
                 fail(result.toString());
             }
-        }catch(Exception e) {
-            e.printStackTrace();
-            throw e;
+        }catch(Throwable t) {
+            System.err.println("----> failed with:"+t.getClass());
+            t.printStackTrace();
+
+            System.err.println("---- test if server is still alive:");
+            try {
+                URI serverUri = new URI("https://localhost:"+secHubPort);
+                SecHubClient client = new SecHubClient(serverUri, "int-test_superadmin", "int-test_superadmin-pwd");
+                boolean alive = client.checkIsServerAlive();
+                System.out.println("server alive at "+serverUri+" : "+alive);
+            } catch (Exception e) {
+                System.out.println("Not able to check server alive!");
+                e.printStackTrace();
+            }
+            throw t;
         }
         /* @formatter:on */
     }
