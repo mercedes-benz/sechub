@@ -22,7 +22,7 @@
 :launchServerClassName: SecHubServerApplication
 
 :launchDevAdminUIPackageName: com.mercedesbenz.sechub.developertools.admin.ui
-:launchDevAdminUIClasName: DeveloperAdministrationUI
+:launchDevAdminUIClassName: DeveloperAdministrationUI
 
 :required_java_version: 17
 :required_JDK: JDK {required_java_version}
