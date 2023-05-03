@@ -531,7 +531,7 @@ table.CodeRay td.code{padding:0 0 0 .75em}
 <div id="header">
 <h1><span class="image"><a class="image" href="https://mercedes-benz.github.io/sechub"><img src="images/sechub-logo.png" alt="sechub logo"></a></span> SecHub Client Documentation</h1>
 <div class="details">
-<span id="revnumber"> Client 0.35.1</span>
+<span id="revnumber"> Client 0.36.0</span>
 </div>
 <div id="toc" class="toc2">
 <div id="toctitle">Table of contents</div>
@@ -628,15 +628,10 @@ table.CodeRay td.code{padding:0 0 0 .75em}
 </li>
 </ul>
 </li>
-<li><a href="#sechub-config-data-section">2.5.9. Data</a>
-<ul class="sectlevel4">
-<li><a href="#general-json-syntax">2.5.9.1. General JSON syntax</a></li>
-</ul>
-</li>
+<li><a href="#sechub-config-data-section">2.5.9. Data section</a></li>
 <li><a href="#sechub-config-metadata-section">2.5.10. MetaData</a>
 <ul class="sectlevel4">
 <li><a href="#labels">2.5.10.1. Labels</a></li>
-<li><a href="#general-json-syntax-2">2.5.10.2. General JSON syntax</a></li>
 </ul>
 </li>
 <li><a href="#code-scan-accepted-source-code-files">2.5.11. Code scan: accepted source code files</a></li>
@@ -647,12 +642,18 @@ table.CodeRay td.code{padding:0 0 0 .75em}
 <ul class="sectlevel3">
 <li><a href="#start-a-source-code-scan">2.6.1. Start a source code scan</a></li>
 <li><a href="#start-a-web-scan">2.6.2. Start a web scan</a></li>
-<li><a href="#start-an-infra-scan">2.6.3. Start an infra scan</a></li>
-<li><a href="#mark-false-positives">2.6.4. Mark false positives</a></li>
-<li><a href="#unmark-false-positives">2.6.5. Unmark false positives</a>
+<li><a href="#start-a-scan-for-secrets">2.6.3. Start a scan for secrets</a></li>
+<li><a href="#start-an-infra-scan">2.6.4. Start an infra scan</a></li>
+<li><a href="#mark-false-positives">2.6.5. Mark false positives</a>
 <ul class="sectlevel4">
-<li><a href="#section-client-interactiveMarkFalsePositives-mark">2.6.5.1. interactiveMarkFalsePositives</a></li>
-<li><a href="#section-client-interactiveUnmarkFalsePositives-mark">2.6.5.2. interactiveUnmarkFalsePositives</a></li>
+<li><a href="#markfalsepositives">2.6.5.1. markFalsePositives</a></li>
+<li><a href="#section-client-interactiveMarkFalsePositives-mark">2.6.5.2. interactiveMarkFalsePositives</a></li>
+</ul>
+</li>
+<li><a href="#unmark-false-positives">2.6.6. Unmark false positives</a>
+<ul class="sectlevel4">
+<li><a href="#unmarkfalsepositives">2.6.6.1. unmarkFalsePositives</a></li>
+<li><a href="#section-client-interactiveUnmarkFalsePositives-mark">2.6.6.2. interactiveUnmarkFalsePositives</a></li>
 </ul>
 </li>
 </ul>
@@ -663,12 +664,7 @@ table.CodeRay td.code{padding:0 0 0 .75em}
 <ul class="sectlevel2">
 <li><a href="#job-reports">3.1. Job reports</a>
 <ul class="sectlevel3">
-<li><a href="#html">3.1.1. HTML</a>
-<ul class="sectlevel4">
-<li><a href="#example-code-scan-report-with-red-traffic-light">3.1.1.1. Example code scan report with red traffic light</a></li>
-<li><a href="#what-about-descriptions-and-mitigation-suggestions">3.1.1.2. What about descriptions and mitigation suggestions?</a></li>
-</ul>
-</li>
+<li><a href="#html">3.1.1. HTML</a></li>
 <li><a href="#json">3.1.2. JSON</a>
 <ul class="sectlevel4">
 <li><a href="#example-code-scan-report-with-yellow-traffic-light">3.1.2.1. Example code scan report with yellow traffic light</a></li>
@@ -762,7 +758,7 @@ build pipeline / contionus integration (CI) and helps to provide
 </tbody>
 </table>
 <div class="paragraph">
-<p>Documentation version: <code>Client 0.35.1-20230417113054</code></p>
+<p>Documentation version: <code>Client 0.36.0-20230503102309</code></p>
 </div>
 <hr>
 <div style="page-break-after: always;"></div>
@@ -890,9 +886,7 @@ For documentation, please look at <a href="https://mercedes-benz.github.io/sechu
 </div>
 </div>
 <div class="paragraph">
-<p>will print out a simple help of all command line options. Also an almost running example snippet is shown.
-The example config file does contain many fake entries, even for <code>server</code> and webscan <code>url</code>.
-Please change to correct values.</p>
+<p>will print out a simple help of all command line options. At the end you will find a link to the latest config and variable examples.</p>
 </div>
 </div>
 <div class="sect3">
@@ -903,32 +897,41 @@ Please change to correct values.</p>
 <div class="sect4">
 <h5 id="scan">2.4.2.1. scan</h5>
 <div class="paragraph">
-<p>Does a synchronous scan which means</p>
+<p>This is the recommended scan action: You only have to make one single client call to trigger a scan and get the report.</p>
 </div>
-<div class="ulist">
-<ul>
+<div class="paragraph">
+<p>The client performs these steps for you:</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
 <li>
-<p>create a <code>SecHub</code> job</p>
+<p>create a scan job on the SecHub server</p>
 </li>
 <li>
-<p>upload necessary data to <code>SecHub</code> (e.g. zipped sourcefiles for source scans)</p>
+<p>upload necessary data (e.g. zipped sourcefiles for source scans)</p>
 </li>
 <li>
-<p>approve job as ready to start</p>
+<p>approve the job as ready to start</p>
 </li>
 <li>
-<p>wait until the job is done,</p>
+<p>wait until the job is done</p>
 </li>
 <li>
 <p>download the report file</p>
 </li>
-<li>
-<p>exits with a non-zero status on <code>red</code> (critical or high findings) so your build will break (depends on your build tool)</p>
-</li>
-</ul>
+</ol>
 </div>
-<div class="paragraph">
-<p>This is the recommended scan action: You only have to make one single client call to trigger a scan and get the report.</p>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+On "red" (critical or high findings) the SecHub client exits with a non-zero status so your build will break (depends on your build tool).
+</td>
+</tr>
+</table>
 </div>
 <div class="admonitionblock important">
 <table>
@@ -951,8 +954,7 @@ See here for details: <a href="#section-client-configuration-file">Configuration
 </div>
 <div class="listingblock">
 <div class="content">
-<pre>SECHUB_APITOKEN=${apitoken}
-sechub scan</pre>
+<pre>sechub scan</pre>
 </div>
 </div>
 <div class="admonitionblock tip">
@@ -1017,8 +1019,7 @@ This can be interesting if you have long running scans and you want have a fast
 </div>
 <div class="listingblock">
 <div class="content">
-<pre>SECHUB_APITOKEN=${apitoken}
-sechub scanAsync</pre>
+<pre>sechub scanAsync</pre>
 </div>
 </div>
 </div>
@@ -1032,8 +1033,7 @@ sechub scanAsync</pre>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre>SECHUB_APITOKEN=${apitoken}
-sechub getStatus</pre>
+<pre>sechub getStatus</pre>
 </div>
 </div>
 <div class="admonitionblock tip">
@@ -1060,8 +1060,7 @@ Defaults to latest job.<br>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre>SECHUB_APITOKEN=${apitoken}
-sechub getReport</pre>
+<pre>sechub getReport</pre>
 </div>
 </div>
 <div class="admonitionblock tip">
@@ -1098,12 +1097,11 @@ With <code>-output ${file-or-directory}</code> you can define where to place the
 <p>Lists the last jobs and their state.</p>
 </div>
 <div class="paragraph">
-<p><strong>Call syntax</strong></p>
+<p><strong>Minimum call syntax</strong></p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre>SECHUB_APITOKEN=${apitoken}
-sechub listJobs</pre>
+<pre>sechub listJobs</pre>
 </div>
 </div>
 <div class="admonitionblock tip">
@@ -1131,8 +1129,7 @@ This might be useful for an overview or<br>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre>SECHUB_APITOKEN=${apitoken}
-sechub getFalsePositives</pre>
+<pre>sechub getFalsePositives</pre>
 </div>
 </div>
 <div class="admonitionblock tip">
@@ -1163,8 +1160,7 @@ Select this file by the <code>-file</code> argument and start action <code>markF
 </div>
 <div class="listingblock">
 <div class="content">
-<pre>SECHUB_APITOKEN=${apitoken}
-sechub -file ${json-file} markFalsePositives</pre>
+<pre>sechub -file ${json-file} markFalsePositives</pre>
 </div>
 </div>
 <div class="paragraph">
@@ -1173,26 +1169,19 @@ sechub -file ${json-file} markFalsePositives</pre>
 <div class="listingblock">
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="json">{
-    <span class="key"><span class="delimiter">&quot;</span><span class="content">apiVersion</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">1.0</span><span class="delimiter">&quot;</span></span>, <i class="conum" data-value="1"></i><b>(1)</b>
-    <span class="key"><span class="delimiter">&quot;</span><span class="content">type</span><span class="delimiter">&quot;</span></span> : <span class="string"><span class="delimiter">&quot;</span><span class="content">falsePositiveJobDataList</span><span class="delimiter">&quot;</span></span>, <i class="conum" data-value="2"></i><b>(2)</b>
-    
-    <span class="key"><span class="delimiter">&quot;</span><span class="content">jobData</span><span class="delimiter">&quot;</span></span>: [
-            {
-                <span class="key"><span class="delimiter">&quot;</span><span class="content">jobUUID</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">6cfa2ccf-da13-4dee-b529-0225ed9661bd</span><span class="delimiter">&quot;</span></span>,<i class="conum" data-value="3"></i><b>(3)</b>
-                <span class="key"><span class="delimiter">&quot;</span><span class="content">findingId</span><span class="delimiter">&quot;</span></span>: <span class="integer">1</span>, <i class="conum" data-value="4"></i><b>(4)</b>
-                <span class="key"><span class="delimiter">&quot;</span><span class="content">comment</span><span class="delimiter">&quot;</span></span> : <span class="string"><span class="delimiter">&quot;</span><span class="content">Absolute Path Traversal, can be ignored, because not in deployment</span><span class="delimiter">&quot;</span></span> <i class="conum" data-value="5"></i><b>(5)</b>
-            },
-            {
-                <span class="key"><span class="delimiter">&quot;</span><span class="content">jobUUID</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">6cfa2ccf-da13-4dee-b529-0225ed9661bd</span><span class="delimiter">&quot;</span></span>,
-                <span class="key"><span class="delimiter">&quot;</span><span class="content">findingId</span><span class="delimiter">&quot;</span></span>: <span class="integer">2</span>, 
-                <span class="key"><span class="delimiter">&quot;</span><span class="content">comment</span><span class="delimiter">&quot;</span></span> : <span class="string"><span class="delimiter">&quot;</span><span class="content">Temp File permissions can be ignored, because we are at docker container with only ONE user</span><span class="delimiter">&quot;</span></span>
-            },
-            {
-                <span class="key"><span class="delimiter">&quot;</span><span class="content">jobUUID</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">6cfa2ccf-da13-4dee-b529-0225ed9661bd</span><span class="delimiter">&quot;</span></span>,
-                <span class="key"><span class="delimiter">&quot;</span><span class="content">findingId</span><span class="delimiter">&quot;</span></span>: <span class="integer">15</span>
-            }
-      ]
-                
+  <span class="key"><span class="delimiter">&quot;</span><span class="content">apiVersion</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">1.0</span><span class="delimiter">&quot;</span></span>, <i class="conum" data-value="1"></i><b>(1)</b>
+  <span class="key"><span class="delimiter">&quot;</span><span class="content">type</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">falsePositiveJobDataList</span><span class="delimiter">&quot;</span></span>, <i class="conum" data-value="2"></i><b>(2)</b>
+  <span class="key"><span class="delimiter">&quot;</span><span class="content">jobData</span><span class="delimiter">&quot;</span></span>: [
+    {
+      <span class="key"><span class="delimiter">&quot;</span><span class="content">jobUUID</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">6cfa2ccf-da13-4dee-b529-0225ed9661bd</span><span class="delimiter">&quot;</span></span>, <i class="conum" data-value="3"></i><b>(3)</b>
+      <span class="key"><span class="delimiter">&quot;</span><span class="content">findingId</span><span class="delimiter">&quot;</span></span>: <span class="integer">1</span>, <i class="conum" data-value="4"></i><b>(4)</b>
+      <span class="key"><span class="delimiter">&quot;</span><span class="content">comment</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">Absolute Path Traversal, can be ignored because not in deployment</span><span class="delimiter">&quot;</span></span> <i class="conum" data-value="5"></i><b>(5)</b>
+    },
+    {
+      <span class="key"><span class="delimiter">&quot;</span><span class="content">jobUUID</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">6cfa2ccf-da13-4dee-b529-0225ed9661bd</span><span class="delimiter">&quot;</span></span>,
+      <span class="key"><span class="delimiter">&quot;</span><span class="content">findingId</span><span class="delimiter">&quot;</span></span>: <span class="integer">15</span>
+    }
+  ]
 }</code></pre>
 </div>
 </div>
@@ -1250,9 +1239,17 @@ See also <a href="#interactivemarkfalsepositives">interactiveMarkFalsePositives<
 <div class="sect4">
 <h5 id="section-client-false-positives-unmark">2.4.2.8. unmarkFalsePositives</h5>
 <div class="paragraph">
-<p>Removes formerly defined false positives entries.<br>
+<p>Remove formerly defined false positives.<br>
 It works similar to <code>markFalsePositives</code>: Just define a JSON file, select the file by the <code>-file</code> argument and start
 action <code>unmarkFalsePositives</code></p>
+</div>
+<div class="paragraph">
+<p><strong>Minimum call syntax</strong></p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>sechub -file ${json-file} unmarkFalsePositives</pre>
+</div>
 </div>
 <div class="paragraph">
 <p><strong>Example JSON:</strong></p>
@@ -1394,106 +1391,118 @@ Your choices are:</p>
 </colgroup>
 <tbody>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>parameter</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>scope</strong></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><strong>cmdline option</strong></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><strong>environment variable</strong></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>config json file</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>JSON config file</strong></p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">api token</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">-apitoken <em>(!! not recommended !!)</em></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">SECHUB_APITOKEN</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>-apitoken</code> <em>(!! not recommended !!)</em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>SECHUB_APITOKEN</code></p></td>
 <td class="tableblock halign-left valign-top"></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">code scan config</p></td>
 <td class="tableblock halign-left valign-top"></td>
 <td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">codeScan</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="#sechub-config-code-scan">codeScan</a></p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">configuration file</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">-configfile</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">JSON config file</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>-configfile</code></p></td>
 <td class="tableblock halign-left valign-top"></td>
 <td class="tableblock halign-left valign-top"></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">file</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">-file</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>-file</code></p></td>
 <td class="tableblock halign-left valign-top"></td>
 <td class="tableblock halign-left valign-top"></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">job uuid</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">-jobUUID</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>-jobUUID</code></p></td>
 <td class="tableblock halign-left valign-top"></td>
 <td class="tableblock halign-left valign-top"></td>
 </tr>
 <tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">label definitions</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>-label</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>SECHUB_LABELS</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="#labels">metaData.labels</a></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">max. poll interval</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>-wait</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>SECHUB_WAITTIME_DEFAULT</code></p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">network timeout</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">-timeout</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>-timeout</code></p></td>
 <td class="tableblock halign-left valign-top"></td>
 <td class="tableblock halign-left valign-top"></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">output folder or file</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">-output</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>-output</code></p></td>
 <td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">max. poll interval</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">-wait</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">SECHUB_WAITTIME_DEFAULT</p></td>
 <td class="tableblock halign-left valign-top"></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">project id</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">-project</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">SECHUB_PROJECT</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>-project</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>SECHUB_PROJECT</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">project</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">quiet mode</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">-quiet</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">SECHUB_QUIET</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>-quiet</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>SECHUB_QUIET</code></p></td>
 <td class="tableblock halign-left valign-top"></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">report format</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">-reportformat</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>-reportformat</code></p></td>
 <td class="tableblock halign-left valign-top"></td>
 <td class="tableblock halign-left valign-top"></td>
 </tr>
 <tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">scan for secrets</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="#secret-scan">secretScan</a></p></td>
+</tr>
+<tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">server url</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">-server</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">SECHUB_SERVER</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>-server</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>SECHUB_SERVER</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">server</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">stop on yellow</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">-stop-on-yellow</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>-stop-on-yellow</code></p></td>
 <td class="tableblock halign-left valign-top"></td>
 <td class="tableblock halign-left valign-top"></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">temporary dir</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">-tempdir</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">SECHUB_TEMP_DIR</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>-tempdir</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>SECHUB_TEMP_DIR</code></p></td>
 <td class="tableblock halign-left valign-top"></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">user id</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">-user</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">SECHUB_USERID</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>-user</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>SECHUB_USERID</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">user</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">web scan config</p></td>
 <td class="tableblock halign-left valign-top"></td>
 <td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">webScan</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="#web-scan">webScan</a></p></td>
 </tr>
 </tbody>
 </table>
@@ -1570,8 +1579,8 @@ Your choices are:</p>
 <ul>
 <li>
 <p><code>-apitoken &lt;string&gt;</code><br>
-The api token. Although you can pass it as a runtime option, it is recommended for security reasons to define the environment variable <code>SECHUB_APITOKEN</code> (see: <a href="#environment-variables">Environment variables</a>) and not to use this option.
-Can <strong>NOT</strong> be defined in config file</p>
+The user&#8217;s api token - mandatory. <em>Please try to avoid <code>-apitoken</code> parameter for security reasons!!</em><br>
+Use environment variable <code>SECHUB_APITOKEN</code> instead! (see: <a href="#environment-variables">Environment variables</a>)</p>
 </li>
 <li>
 <p><code>-configfile &lt;filepath&gt;</code><br>
@@ -1587,7 +1596,11 @@ Shows help and terminates</p>
 </li>
 <li>
 <p><code>-jobUUID &lt;string&gt;</code><br>
-<code>SecHub</code> job uuid (mandatory when using 'getStatus' or 'getReport')</p>
+<code>SecHub</code> job uuid. Optional for actions 'getStatus' or 'getReport'</p>
+</li>
+<li>
+<p><code>-label &lt;label definition&gt;</code><br>
+Define a SecHub label for the scan job. (Example: "key1=value1") Repeat to define multiple labels.</p>
 </li>
 <li>
 <p><code>-output &lt;path to folder or file&gt;</code><br>
@@ -1674,6 +1687,10 @@ When set to <code>true</code>, then HTTPS certificate checking will be disabled.
 The SecHub username. (same as <code>-user</code> option)</p>
 </li>
 <li>
+<p><code>SECHUB_WAITTIME_DEFAULT</code><br>
+Maximum wait time in seconds (default 60). Will be used for automatic status checks etc. when action=<code>scan</code>.</p>
+</li>
+<li>
 <p><code>SECHUB_WHITELIST_ALL</code><br>
 When set to <code>true</code> then ignore the default whitelist for source files and add <em>every</em> file. You may want to define <a href="#sechub-config-example-sourcescan">excludes</a> in your <code>sechub.json</code> file. <em>!! Handle with care !!</em></p>
 </li>
@@ -1703,10 +1720,6 @@ Initial wait time (floating point number) until SecHub client polls the first ti
 <li>
 <p><code>SECHUB_KEEP_TEMPFILES</code><br>
 When set to <code>true</code> then <code>sourcecode-&lt;projectID&gt;.zip</code> files for code scan will not be removed, so you can check, what was uploaded to the <code>SecHub</code> server.</p>
-</li>
-<li>
-<p><code>SECHUB_WAITTIME_DEFAULT</code><br>
-Maximum wait time in seconds (default 60). Will be used for automatic status checks etc. when action=<code>scan</code>.</p>
 </li>
 </ul>
 </div>
@@ -1748,6 +1761,10 @@ Now you will see in detail what the client does and also the html calls sent to 
 <p>set environment variable <code>SECHUB_DEBUG_HTTP</code> to <code>true</code><br>
 Now you will see the complete HTTP communication including headers.<br>
 (basic-auth headers (security) and contents of uploads (binary data) are filtered out)</p>
+</li>
+<li>
+<p>set environment variable <code>SECHUB_KEEP_TEMPFILES</code> to <code>true</code><br>
+Now <code>sourcecode-&lt;projectID&gt;.zip</code> files for code scan or <code>binaries-&lt;projectID&gt;.tar</code> will not be removed, so you can check, what was uploaded to the <code>SecHub</code> server.</p>
 </li>
 </ul>
 </div>
@@ -1807,7 +1824,7 @@ the API version remains - despite changes - to 1.0.</p>
 <div class="sect3">
 <h4 id="server">2.5.2. Server</h4>
 <div class="paragraph">
-<p><code>server</code> (optional) defines the location to <code>SecHub</code> server.
+<p><code>server</code> defines the url of your <code>SecHub</code> server.
 Information can be used by client implementations.</p>
 </div>
 <div class="admonitionblock note">
@@ -1817,7 +1834,7 @@ Information can be used by client implementations.</p>
 <i class="fa icon-note" title="Note"></i>
 </td>
 <td class="content">
-This is optional parameter only interesting for the client to pass the URL.
+This is an optional parameter only which is only interesting for the client to pass the URL.
       Every REST call contains the server URL already.
 </td>
 </tr>
@@ -1827,7 +1844,7 @@ This is optional parameter only interesting for the client to pass the URL.
 <div class="sect3">
 <h4 id="project">2.5.3. Project</h4>
 <div class="paragraph">
-<p><code>project</code> (optional) defines the project to use. Information can be used by
+<p><code>project</code> defines the project id within <code>SecHub</code>. Information can be used by
 client implementations.</p>
 </div>
 <div class="admonitionblock note">
@@ -1846,7 +1863,7 @@ When using project id related REST calls, you do not need the project id inside 
 <div class="sect3">
 <h4 id="sechub-config-code-scan">2.5.4. Code scan</h4>
 <div class="paragraph">
-<p><code>codeScan</code> (optional) defines the settings for code scans.</p>
+<p><code>codeScan</code> defines the settings for code scans.</p>
 </div>
 <div class="sect4">
 <h5 id="upload-source-files-from-file-system">2.5.4.1. Upload source files from file system</h5>
@@ -1872,16 +1889,15 @@ on a Jenkins Build Server this is usually the root folder of your repository.</p
 <p>Please do <strong>NOT</strong> use <code>\</code> inside paths <strong>but</strong> always <code>/</code>.</p>
 </div>
 <div class="paragraph">
-<p>Also do <strong>NOT</strong> use absolute paths <strong>but</strong> always relative paths! Normally you should
-call SecHub inside root folder of your source repository - this is the standard situation
-on build servers.</p>
+<p>We do <strong>NOT</strong> recommend using absolute paths <strong>but</strong> always relative paths!<br>
+You should call SecHub inside the repository&#8217;s root folder - this is the standard on build servers.</p>
 </div>
 </td>
 </tr>
 </table>
 </div>
 <div class="paragraph">
-<p>There a two ways to define source code uploads for the SecHub client:</p>
+<p>There are two ways to define source code uploads for the SecHub client:</p>
 </div>
 <div class="sect5">
 <h6 id="using-data-section">2.5.4.1.1. Using <code>data</code> section</h6>
@@ -1995,8 +2011,6 @@ Here we also add ".cplusplus" and ".py9" as additional accepted source file exte
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="json">{
   <span class="key"><span class="delimiter">&quot;</span><span class="content">apiVersion</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">1.0</span><span class="delimiter">&quot;</span></span>,
-  <span class="key"><span class="delimiter">&quot;</span><span class="content">server</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">https://sechub.example.org</span><span class="delimiter">&quot;</span></span>,
-  <span class="key"><span class="delimiter">&quot;</span><span class="content">project</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">gamechanger</span><span class="delimiter">&quot;</span></span>,
   <span class="key"><span class="delimiter">&quot;</span><span class="content">codeScan</span><span class="delimiter">&quot;</span></span>: {
     <span class="key"><span class="delimiter">&quot;</span><span class="content">fileSystem</span><span class="delimiter">&quot;</span></span>: {
       <span class="key"><span class="delimiter">&quot;</span><span class="content">folders</span><span class="delimiter">&quot;</span></span>: [
@@ -2022,7 +2036,7 @@ Here we also add ".cplusplus" and ".py9" as additional accepted source file exte
 <div class="sect3">
 <h4 id="license-scan">2.5.5. License scan</h4>
 <div class="paragraph">
-<p><code>licenseScan</code>(optional) defines the license scan settings.</p>
+<p><code>licenseScan</code> defines the settings for license scans.</p>
 </div>
 <div class="sect4">
 <h5 id="sechub-config-example-licensescan-binary">2.5.5.1. Example binary license scan</h5>
@@ -2138,7 +2152,7 @@ Here we also add ".cplusplus" and ".py9" as additional accepted source file exte
 <div class="sect3">
 <h4 id="secret-scan">2.5.6. Secret scan</h4>
 <div class="paragraph">
-<p><code>secretScan</code>(optional) defines the secret scan settings.</p>
+<p><code>secretScan</code> defines the settings for scanning for secrets in your source code.</p>
 </div>
 <div class="sect4">
 <h5 id="sechub-config-example-secretscan-sources">2.5.6.1. Example source secret scan</h5>
@@ -2261,7 +2275,7 @@ Here we also add ".cplusplus" and ".py9" as additional accepted source file exte
 <div class="sect3">
 <h4 id="web-scan">2.5.7. Web scan</h4>
 <div class="paragraph">
-<p><code>webScan</code> (optional) defines the web scan settings.</p>
+<p><code>webScan</code> defines the settings for web scans (DAST).</p>
 </div>
 <div class="sect4">
 <h5 id="url">2.5.7.1. URL</h5>
@@ -2287,18 +2301,16 @@ The URL must be whitelisted in your project. Otherwise it will be rejected.
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="json">{
   <span class="key"><span class="delimiter">&quot;</span><span class="content">apiVersion</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">1.0</span><span class="delimiter">&quot;</span></span>,
-
-  <span class="key"><span class="delimiter">&quot;</span><span class="content">server</span><span class="delimiter">&quot;</span></span>   : <span class="string"><span class="delimiter">&quot;</span><span class="content">https://sechub.example.org</span><span class="delimiter">&quot;</span></span>,
-  <span class="key"><span class="delimiter">&quot;</span><span class="content">user</span><span class="delimiter">&quot;</span></span>     : <span class="string"><span class="delimiter">&quot;</span><span class="content">alice</span><span class="delimiter">&quot;</span></span>,
-
-  <span class="key"><span class="delimiter">&quot;</span><span class="content">project</span><span class="delimiter">&quot;</span></span>  : <span class="string"><span class="delimiter">&quot;</span><span class="content">gamechanger</span><span class="delimiter">&quot;</span></span>,
-     
-  <span class="key"><span class="delimiter">&quot;</span><span class="content">webScan</span><span class="delimiter">&quot;</span></span>  : {<i class="conum" data-value="1"></i><b>(1)</b>
-      <span class="key"><span class="delimiter">&quot;</span><span class="content">url</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">https://www.gamechanger.example.org</span><span class="delimiter">&quot;</span></span>,<i class="conum" data-value="2"></i><b>(2)</b>
-      <span class="key"><span class="delimiter">&quot;</span><span class="content">includes</span><span class="delimiter">&quot;</span></span>: [ <span class="string"><span class="delimiter">&quot;</span><span class="content">/special/include</span><span class="delimiter">&quot;</span></span> ], <i class="conum" data-value="3"></i><b>(3)</b>
-      <span class="key"><span class="delimiter">&quot;</span><span class="content">excludes</span><span class="delimiter">&quot;</span></span> : [ <span class="string"><span class="delimiter">&quot;</span><span class="content">/en/contact</span><span class="delimiter">&quot;</span></span>, <span class="string"><span class="delimiter">&quot;</span><span class="content">/contact</span><span class="delimiter">&quot;</span></span> ] <i class="conum" data-value="4"></i><b>(4)</b>
+  <span class="key"><span class="delimiter">&quot;</span><span class="content">webScan</span><span class="delimiter">&quot;</span></span>: { <i class="conum" data-value="1"></i><b>(1)</b>
+    <span class="key"><span class="delimiter">&quot;</span><span class="content">url</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">https://www.gamechanger.example.org</span><span class="delimiter">&quot;</span></span>, <i class="conum" data-value="2"></i><b>(2)</b>
+    <span class="key"><span class="delimiter">&quot;</span><span class="content">includes</span><span class="delimiter">&quot;</span></span>: [
+      <span class="string"><span class="delimiter">&quot;</span><span class="content">/special/include</span><span class="delimiter">&quot;</span></span>
+    ], <i class="conum" data-value="3"></i><b>(3)</b>
+    <span class="key"><span class="delimiter">&quot;</span><span class="content">excludes</span><span class="delimiter">&quot;</span></span>: [
+      <span class="string"><span class="delimiter">&quot;</span><span class="content">/en/contact</span><span class="delimiter">&quot;</span></span>,
+      <span class="string"><span class="delimiter">&quot;</span><span class="content">/contact</span><span class="delimiter">&quot;</span></span>
+    ] <i class="conum" data-value="4"></i><b>(4)</b>
   },
-  
   <span class="key"><span class="delimiter">&quot;</span><span class="content">maxScanDuration</span><span class="delimiter">&quot;</span></span>: { <i class="conum" data-value="5"></i><b>(5)</b>
     <span class="key"><span class="delimiter">&quot;</span><span class="content">duration</span><span class="delimiter">&quot;</span></span>: <span class="integer">1</span>,
     <span class="key"><span class="delimiter">&quot;</span><span class="content">unit</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">hour</span><span class="delimiter">&quot;</span></span> <i class="conum" data-value="6"></i><b>(6)</b>
@@ -2697,14 +2709,10 @@ to obtain the open api configuration file</td>
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="json">{
   <span class="key"><span class="delimiter">&quot;</span><span class="content">apiVersion</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">1.0</span><span class="delimiter">&quot;</span></span>,
-
-  <span class="key"><span class="delimiter">&quot;</span><span class="content">server</span><span class="delimiter">&quot;</span></span>   : <span class="string"><span class="delimiter">&quot;</span><span class="content">https://sechub.example.org</span><span class="delimiter">&quot;</span></span>,
-  <span class="key"><span class="delimiter">&quot;</span><span class="content">user</span><span class="delimiter">&quot;</span></span>     : <span class="string"><span class="delimiter">&quot;</span><span class="content">alice</span><span class="delimiter">&quot;</span></span>,
-
-  <span class="key"><span class="delimiter">&quot;</span><span class="content">project</span><span class="delimiter">&quot;</span></span>  : <span class="string"><span class="delimiter">&quot;</span><span class="content">gamechanger</span><span class="delimiter">&quot;</span></span>,
-
-  <span class="key"><span class="delimiter">&quot;</span><span class="content">infraScan</span><span class="delimiter">&quot;</span></span>: {<i class="conum" data-value="1"></i><b>(1)</b>
-      <span class="key"><span class="delimiter">&quot;</span><span class="content">uris</span><span class="delimiter">&quot;</span></span>: [<span class="string"><span class="delimiter">&quot;</span><span class="content">https://www.gamechanger.example.org/</span><span class="delimiter">&quot;</span></span>]<i class="conum" data-value="2"></i><b>(2)</b>
+  <span class="key"><span class="delimiter">&quot;</span><span class="content">infraScan</span><span class="delimiter">&quot;</span></span>: { <i class="conum" data-value="1"></i><b>(1)</b>
+    <span class="key"><span class="delimiter">&quot;</span><span class="content">uris</span><span class="delimiter">&quot;</span></span>: [ <i class="conum" data-value="2"></i><b>(2)</b>
+      <span class="string"><span class="delimiter">&quot;</span><span class="content">https://www.gamechanger.example.org/</span><span class="delimiter">&quot;</span></span>
+    ]
   }
 }</code></pre>
 </div>
@@ -2734,14 +2742,10 @@ to obtain the open api configuration file</td>
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="json">{
   <span class="key"><span class="delimiter">&quot;</span><span class="content">apiVersion</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">1.0</span><span class="delimiter">&quot;</span></span>,
-
-  <span class="key"><span class="delimiter">&quot;</span><span class="content">server</span><span class="delimiter">&quot;</span></span>   : <span class="string"><span class="delimiter">&quot;</span><span class="content">https://sechub.example.org</span><span class="delimiter">&quot;</span></span>,
-  <span class="key"><span class="delimiter">&quot;</span><span class="content">user</span><span class="delimiter">&quot;</span></span>     : <span class="string"><span class="delimiter">&quot;</span><span class="content">alice</span><span class="delimiter">&quot;</span></span>,
-
-  <span class="key"><span class="delimiter">&quot;</span><span class="content">project</span><span class="delimiter">&quot;</span></span>  : <span class="string"><span class="delimiter">&quot;</span><span class="content">gamechanger</span><span class="delimiter">&quot;</span></span>,
-
-  <span class="key"><span class="delimiter">&quot;</span><span class="content">infraScan</span><span class="delimiter">&quot;</span></span>: {<i class="conum" data-value="1"></i><b>(1)</b>
-      <span class="key"><span class="delimiter">&quot;</span><span class="content">ips</span><span class="delimiter">&quot;</span></span>: [<span class="string"><span class="delimiter">&quot;</span><span class="content">127.0.0.1</span><span class="delimiter">&quot;</span></span>]<i class="conum" data-value="2"></i><b>(2)</b>
+  <span class="key"><span class="delimiter">&quot;</span><span class="content">infraScan</span><span class="delimiter">&quot;</span></span>: { <i class="conum" data-value="1"></i><b>(1)</b>
+    <span class="key"><span class="delimiter">&quot;</span><span class="content">ips</span><span class="delimiter">&quot;</span></span>: [ <i class="conum" data-value="2"></i><b>(2)</b>
+      <span class="string"><span class="delimiter">&quot;</span><span class="content">127.0.0.1</span><span class="delimiter">&quot;</span></span>
+    ]
   }
 }</code></pre>
 </div>
@@ -2764,27 +2768,23 @@ because scanners do not scan them self.</td>
 </div>
 </div>
 <div class="sect3">
-<h4 id="sechub-config-data-section">2.5.9. Data</h4>
+<h4 id="sechub-config-data-section">2.5.9. Data section</h4>
 <div class="paragraph">
-<p>The <a href="#sechub-config-code-scan">codeScan</a> element provides a way to define
-source code uploads for code scans only.</p>
-</div>
-<div class="paragraph">
-<p>With the (optional) <code>data</code> section users are able to</p>
+<p>With the <code>data</code> section users are able to</p>
 </div>
 <div class="ulist">
 <ul>
 <li>
-<p>define binary and source upload information</p>
+<p>define binary and source uploads</p>
 </li>
 <li>
-<p>reference same uploads by muliple scan types in same job without another upload</p>
+<p>reference the same by muliple scan types in one job</p>
 </li>
 </ul>
 </div>
 <div class="paragraph">
-<p>The scan configurations can reference the name data configuration elements by defining the an
-array attribute <code>uses</code> with a list of unique references names.</p>
+<p>The scan configurations can reference the name data configuration elements by defining the
+array attribute <code>"use"</code> with a list of references.</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -2821,46 +2821,53 @@ array attribute <code>uses</code> with a list of unique references names.</p>
 </li>
 </ul>
 </div>
-<div class="admonitionblock tip">
-<table>
-<tr>
-<td class="icon">
-<i class="fa icon-tip" title="Tip"></i>
-</td>
-<td class="content">
-If you want to upload binaries, you MUST use the data section, there is no other way to do this.
-</td>
-</tr>
-</table>
-</div>
-<div class="sect4">
-<h5 id="general-json-syntax">2.5.9.1. General JSON syntax</h5>
 <div class="paragraph">
 <p>The next figure shows an example which presents all possibilities <em>(for simplicity the source and
-binary configuration arrays do contain only just one entry)</em>.</p>
+binary configuration arrays do contain only just one entry)</em>:</p>
 </div>
 <div class="listingblock">
 <div class="title">General JSON syntax</div>
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="json">{
-  <span class="key"><span class="delimiter">&quot;</span><span class="content">data</span><span class="delimiter">&quot;</span></span> : {<i class="conum" data-value="1"></i><b>(1)</b>
-    <span class="key"><span class="delimiter">&quot;</span><span class="content">sources</span><span class="delimiter">&quot;</span></span> : [ { <i class="conum" data-value="2"></i><b>(2)</b>
-      <span class="key"><span class="delimiter">&quot;</span><span class="content">name</span><span class="delimiter">&quot;</span></span> : <span class="string"><span class="delimiter">&quot;</span><span class="content">reference-name-sources-1</span><span class="delimiter">&quot;</span></span>,<i class="conum" data-value="3"></i><b>(3)</b>
-      <span class="key"><span class="delimiter">&quot;</span><span class="content">fileSystem</span><span class="delimiter">&quot;</span></span> : { <i class="conum" data-value="4"></i><b>(4)</b>
-        <span class="key"><span class="delimiter">&quot;</span><span class="content">files</span><span class="delimiter">&quot;</span></span> : [ <span class="string"><span class="delimiter">&quot;</span><span class="content">somewhere/file1.txt</span><span class="delimiter">&quot;</span></span>, <span class="string"><span class="delimiter">&quot;</span><span class="content">somewhere/file2.txt</span><span class="delimiter">&quot;</span></span> ], <i class="conum" data-value="5"></i><b>(5)</b>
-        <span class="key"><span class="delimiter">&quot;</span><span class="content">folders</span><span class="delimiter">&quot;</span></span> : [ <span class="string"><span class="delimiter">&quot;</span><span class="content">somewhere/subfolder1</span><span class="delimiter">&quot;</span></span>, <span class="string"><span class="delimiter">&quot;</span><span class="content">somewhere/subfolder2</span><span class="delimiter">&quot;</span></span> ] <i class="conum" data-value="6"></i><b>(6)</b>
-      },
-      <span class="key"><span class="delimiter">&quot;</span><span class="content">excludes</span><span class="delimiter">&quot;</span></span>: [<span class="string"><span class="delimiter">&quot;</span><span class="content">**/mytestcode/**</span><span class="delimiter">&quot;</span></span>,<span class="string"><span class="delimiter">&quot;</span><span class="content">**/documentation/**</span><span class="delimiter">&quot;</span></span>], <i class="conum" data-value="7"></i><b>(7)</b>
-      <span class="key"><span class="delimiter">&quot;</span><span class="content">additionalFilenameExtensions</span><span class="delimiter">&quot;</span></span>: [<span class="string"><span class="delimiter">&quot;</span><span class="content">.cplusplus</span><span class="delimiter">&quot;</span></span>,<span class="string"><span class="delimiter">&quot;</span><span class="content">.py9</span><span class="delimiter">&quot;</span></span>] <i class="conum" data-value="8"></i><b>(8)</b>
-    } ],
-    <span class="key"><span class="delimiter">&quot;</span><span class="content">binaries</span><span class="delimiter">&quot;</span></span> : [ { <i class="conum" data-value="9"></i><b>(9)</b>
-      <span class="key"><span class="delimiter">&quot;</span><span class="content">name</span><span class="delimiter">&quot;</span></span> : <span class="string"><span class="delimiter">&quot;</span><span class="content">reference-name-binaries-1</span><span class="delimiter">&quot;</span></span>,<i class="conum" data-value="3"></i><b>(3)</b>
-      <span class="key"><span class="delimiter">&quot;</span><span class="content">fileSystem</span><span class="delimiter">&quot;</span></span> : {
-        <span class="key"><span class="delimiter">&quot;</span><span class="content">files</span><span class="delimiter">&quot;</span></span> : [ <span class="string"><span class="delimiter">&quot;</span><span class="content">somewhere/file1.dll</span><span class="delimiter">&quot;</span></span>, <span class="string"><span class="delimiter">&quot;</span><span class="content">somewhere/file2.a</span><span class="delimiter">&quot;</span></span> ], <i class="conum" data-value="5"></i><b>(5)</b>
-        <span class="key"><span class="delimiter">&quot;</span><span class="content">folders</span><span class="delimiter">&quot;</span></span> : [ <span class="string"><span class="delimiter">&quot;</span><span class="content">somewhere/bin/subfolder1</span><span class="delimiter">&quot;</span></span>, <span class="string"><span class="delimiter">&quot;</span><span class="content">somewhere/bin/subfolder2</span><span class="delimiter">&quot;</span></span> ] <i class="conum" data-value="6"></i><b>(6)</b>
+  <span class="key"><span class="delimiter">&quot;</span><span class="content">data</span><span class="delimiter">&quot;</span></span>: { <i class="conum" data-value="1"></i><b>(1)</b>
+    <span class="key"><span class="delimiter">&quot;</span><span class="content">sources</span><span class="delimiter">&quot;</span></span>: [
+      { <i class="conum" data-value="2"></i><b>(2)</b>
+        <span class="key"><span class="delimiter">&quot;</span><span class="content">name</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">reference-name-sources-1</span><span class="delimiter">&quot;</span></span>, <i class="conum" data-value="3"></i><b>(3)</b>
+        <span class="key"><span class="delimiter">&quot;</span><span class="content">fileSystem</span><span class="delimiter">&quot;</span></span>: { <i class="conum" data-value="4"></i><b>(4)</b>
+          <span class="key"><span class="delimiter">&quot;</span><span class="content">files</span><span class="delimiter">&quot;</span></span>: [ <i class="conum" data-value="5"></i><b>(5)</b>
+            <span class="string"><span class="delimiter">&quot;</span><span class="content">somewhere/file1.txt</span><span class="delimiter">&quot;</span></span>,
+            <span class="string"><span class="delimiter">&quot;</span><span class="content">somewhere/file2.txt</span><span class="delimiter">&quot;</span></span>
+          ],
+          <span class="key"><span class="delimiter">&quot;</span><span class="content">folders</span><span class="delimiter">&quot;</span></span>: [ <i class="conum" data-value="6"></i><b>(6)</b>
+            <span class="string"><span class="delimiter">&quot;</span><span class="content">somewhere/subfolder1</span><span class="delimiter">&quot;</span></span>,
+            <span class="string"><span class="delimiter">&quot;</span><span class="content">somewhere/subfolder2</span><span class="delimiter">&quot;</span></span>
+          ]
+        },
+        <span class="key"><span class="delimiter">&quot;</span><span class="content">excludes</span><span class="delimiter">&quot;</span></span>: [ <i class="conum" data-value="7"></i><b>(7)</b>
+          <span class="string"><span class="delimiter">&quot;</span><span class="content">**/mytestcode/**</span><span class="delimiter">&quot;</span></span>,
+          <span class="string"><span class="delimiter">&quot;</span><span class="content">**/documentation/**</span><span class="delimiter">&quot;</span></span>
+        ],
+        <span class="key"><span class="delimiter">&quot;</span><span class="content">additionalFilenameExtensions</span><span class="delimiter">&quot;</span></span>: [ <i class="conum" data-value="8"></i><b>(8)</b>
+          <span class="string"><span class="delimiter">&quot;</span><span class="content">.cplusplus</span><span class="delimiter">&quot;</span></span>,
+          <span class="string"><span class="delimiter">&quot;</span><span class="content">.py9</span><span class="delimiter">&quot;</span></span>
+        ]
       }
-    }
-   ]
+    ],
+    <span class="key"><span class="delimiter">&quot;</span><span class="content">binaries</span><span class="delimiter">&quot;</span></span>: [
+      { <i class="conum" data-value="9"></i><b>(9)</b>
+        <span class="key"><span class="delimiter">&quot;</span><span class="content">name</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">reference-name-binaries-1</span><span class="delimiter">&quot;</span></span>, <i class="conum" data-value="3"></i><b>(3)</b>
+        <span class="key"><span class="delimiter">&quot;</span><span class="content">fileSystem</span><span class="delimiter">&quot;</span></span>: {
+          <span class="key"><span class="delimiter">&quot;</span><span class="content">files</span><span class="delimiter">&quot;</span></span>: [ <i class="conum" data-value="5"></i><b>(5)</b>
+            <span class="string"><span class="delimiter">&quot;</span><span class="content">somewhere/file1.dll</span><span class="delimiter">&quot;</span></span>,
+            <span class="string"><span class="delimiter">&quot;</span><span class="content">somewhere/file2.a</span><span class="delimiter">&quot;</span></span>
+          ],
+          <span class="key"><span class="delimiter">&quot;</span><span class="content">folders</span><span class="delimiter">&quot;</span></span>: [ <i class="conum" data-value="6"></i><b>(6)</b>
+            <span class="string"><span class="delimiter">&quot;</span><span class="content">somewhere/bin/subfolder1</span><span class="delimiter">&quot;</span></span>,
+            <span class="string"><span class="delimiter">&quot;</span><span class="content">somewhere/bin/subfolder2</span><span class="delimiter">&quot;</span></span>
+          ]
+        }
+      }
+    ]
   }
 }</code></pre>
 </div>
@@ -2878,23 +2885,7 @@ binary configuration arrays do contain only just one entry)</em>.</p>
 <tr>
 <td><i class="conum" data-value="3"></i><b>3</b></td>
 <td><code>name</code>:  Is a unique name for the data configuration element. The name must
-be unique inside the whole SecHub configuration file! Allowed characters are
-<div class="ulist">
-<ul>
-<li>
-<p><code>a-z</code></p>
-</li>
-<li>
-<p><code>0-9</code></p>
-</li>
-<li>
-<p><code>-</code></p>
-</li>
-<li>
-<p><code>_</code></p>
-</li>
-</ul>
-</div></td>
+be unique inside the whole SecHub configuration file! Allowed characters are <code>a-z</code>,<code>0-9</code> and the special characters <code>_</code> and <code>-</code>.</td>
 </tr>
 <tr>
 <td><i class="conum" data-value="4"></i><b>4</b></td>
@@ -2925,7 +2916,6 @@ for details about default behaviour for sources.</td>
 </table>
 </div>
 </div>
-</div>
 <div class="sect3">
 <h4 id="sechub-config-metadata-section">2.5.10. MetaData</h4>
 <div class="paragraph">
@@ -2937,9 +2927,6 @@ for details about default behaviour for sources.</td>
 <p>With labels a user is able to add additional information to the
 scan configuration which end up in the report as key value pairs.</p>
 </div>
-</div>
-<div class="sect4">
-<h5 id="general-json-syntax-2">2.5.10.2. General JSON syntax</h5>
 <div class="paragraph">
 <p>The next figure shows an example which presents all possibilities <em>(for simplicity other configuration
 elements are removed)</em>.</p>
@@ -2981,7 +2968,7 @@ elements are removed)</em>.</p>
 <div class="ulist">
 <ul>
 <li>
-<p>allowed are characters <code>A-Za-z</code>, digits and the special characters <code>_</code> , <code>-</code> and <code>.</code></p>
+<p>allowed are characters <code>A-Z</code>,<code>a-z</code>,<code>0-9</code> and the special characters <code>_</code> , <code>-</code> and <code>.</code></p>
 </li>
 <li>
 <p>minimum length: 1 character</p>
@@ -3300,6 +3287,21 @@ template syntax:</p>
 </div>
 <div class="sect2">
 <h3 id="examples">2.6. Examples</h3>
+<div class="paragraph">
+<p>The next subsections contain some <code>SecHub</code> configuration examples.
+You can use them as templates for your own files.</p>
+</div>
+<div class="paragraph">
+<p>First: Define your <code>SecHub</code> environment variables:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="bash">export SECHUB_SERVER=https://sechub.example.org
+export SECHUB_USERID=alice
+export SECHUB_APITOKEN=EXAMPLE4aa82407da7e06bdbEXAMPLE
+export SECHUB_PROJECT=myproject</code></pre>
+</div>
+</div>
 <div class="admonitionblock note">
 <table>
 <tr>
@@ -3307,10 +3309,7 @@ template syntax:</p>
 <i class="fa icon-note" title="Note"></i>
 </td>
 <td class="content">
-Next following sub chapters contain some <code>SecHub</code> configuration examples.
-      You can use them as templates for your own files.
-      At least replace example credentials <code>7536a8c4aa82407da7e06bdbEXAMPLE</code> and <code>alice</code> with your real ones to
-      get them working.
+Please replace the example values with your real ones to get them working.
 </td>
 </tr>
 </table>
@@ -3319,8 +3318,7 @@ Next following sub chapters contain some <code>SecHub</code> configuration examp
 <h4 id="start-a-source-code-scan">2.6.1. Start a source code scan</h4>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">SECHUB_APITOKEN=7536a8c4aa82407da7e06bdbEXAMPLE
-sechub scan</code></pre>
+<pre class="CodeRay highlight"><code data-lang="bash">sechub scan</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -3331,8 +3329,7 @@ sechub scan</code></pre>
 <h4 id="start-a-web-scan">2.6.2. Start a web scan</h4>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">SECHUB_APITOKEN=7536a8c4aa82407da7e06bdbEXAMPLE
-sechub scan</code></pre>
+<pre class="CodeRay highlight"><code data-lang="bash">sechub scan</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -3341,11 +3338,22 @@ see <a href="#sechub-config-example-webscan-anonymous">web scan example (anonymo
 </div>
 </div>
 <div class="sect3">
-<h4 id="start-an-infra-scan">2.6.3. Start an infra scan</h4>
+<h4 id="start-a-scan-for-secrets">2.6.3. Start a scan for secrets</h4>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">SECHUB_APITOKEN=7536a8c4aa82407da7e06bdbEXAMPLE
-sechub scan</code></pre>
+<pre class="CodeRay highlight"><code data-lang="bash">sechub scan</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>with corresponding 'sechub.json' config file:
+see <a href="#sechub-config-example-secretscan-sources">examples for secret scans</a></p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="start-an-infra-scan">2.6.4. Start an infra scan</h4>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="bash">sechub scan</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -3353,34 +3361,23 @@ sechub scan</code></pre>
 </div>
 </div>
 <div class="sect3">
-<h4 id="mark-false-positives">2.6.4. Mark false positives</h4>
+<h4 id="mark-false-positives">2.6.5. Mark false positives</h4>
+<div class="sect4">
+<h5 id="markfalsepositives">2.6.5.1. markFalsePositives</h5>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">SECHUB_APITOKEN=7536a8c4aa82407da7e06bdbEXAMPLE
-sechub -file mark-fp.json markFalsePositives</code></pre>
+<pre class="CodeRay highlight"><code data-lang="bash">sechub -file mark-fp.json markFalsePositives</code></pre>
 </div>
 </div>
 <div class="paragraph">
 <p>with a corresponding <code>mark-fp.json</code> - see <a href="#section-client-false-positives-mark">Mark false positives JSON format</a></p>
 </div>
 </div>
-<div class="sect3">
-<h4 id="unmark-false-positives">2.6.5. Unmark false positives</h4>
-<div class="listingblock">
-<div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">SECHUB_APITOKEN=7536a8c4aa82407da7e06bdbEXAMPLE
-sechub -file mark-fp.json unmarkFalsePositives</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>with a corresponding <code>mark-fp.json</code> - see <a href="#section-client-false-positives-unmark">Unmark false positives JSON format</a></p>
-</div>
 <div class="sect4">
-<h5 id="section-client-interactiveMarkFalsePositives-mark">2.6.5.1. interactiveMarkFalsePositives</h5>
+<h5 id="section-client-interactiveMarkFalsePositives-mark">2.6.5.2. interactiveMarkFalsePositives</h5>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code>SECHUB_APITOKEN=7536a8c4aa82407da7e06bdbEXAMPLE
-sechub interactiveMarkFalsePositives
+<pre class="CodeRay highlight"><code>sechub interactiveMarkFalsePositives
 
 /  ___|         | | | |     | |
 \ `--.  ___  ___| |_| |_   _| |__
@@ -3413,12 +3410,25 @@ Add this as false positive? ('y' Yes, 'n' No, 's' Skip following findings, 'c' C
 </div>
 </div>
 </div>
+</div>
+<div class="sect3">
+<h4 id="unmark-false-positives">2.6.6. Unmark false positives</h4>
 <div class="sect4">
-<h5 id="section-client-interactiveUnmarkFalsePositives-mark">2.6.5.2. interactiveUnmarkFalsePositives</h5>
+<h5 id="unmarkfalsepositives">2.6.6.1. unmarkFalsePositives</h5>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code>SECHUB_APITOKEN=7536a8c4aa82407da7e06bdbEXAMPLE
-sechub interactiveUnmarkFalsePositives
+<pre class="CodeRay highlight"><code data-lang="bash">sechub -file mark-fp.json unmarkFalsePositives</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>with a corresponding <code>mark-fp.json</code> - see <a href="#section-client-false-positives-unmark">Unmark false positives JSON format</a></p>
+</div>
+</div>
+<div class="sect4">
+<h5 id="section-client-interactiveUnmarkFalsePositives-mark">2.6.6.2. interactiveUnmarkFalsePositives</h5>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code>sechub interactiveUnmarkFalsePositives
  _____           _   _       _
 /  ___|         | | | |     | |
 \ `--.  ___  ___| |_| |_   _| |__
@@ -3481,8 +3491,8 @@ If you want to have management summaries you could store downloaded JSON job rep
 <div class="sect2">
 <h3 id="job-reports">3.1. Job reports</h3>
 <div class="paragraph">
-<p>With SecHub users are able to download their scan results for finished project jobs. We provide following
-formats:</p>
+<p>With SecHub users are able to download their results for finished scan jobs. SecHub provides these
+report formats:</p>
 </div>
 <div class="ulist">
 <ul>
@@ -3494,6 +3504,9 @@ human friendly report variant with less details</p>
 <p>JSON<br>
 as a machine readable format, usable for SecHub client to determine to break build. Will also be
 the base for planned development of IDE plugins (<code>Eclipse</code>, <code>IntelliJ</code>, <code>VSCode</code>)</p>
+</li>
+<li>
+<p>SPDX JSON</p>
 </li>
 </ul>
 </div>
@@ -3523,17 +3536,6 @@ to your current situation.</p>
 </li>
 </ul>
 </div>
-<div class="sect4">
-<h5 id="example-code-scan-report-with-red-traffic-light">3.1.1.1. Example code scan report with red traffic light</h5>
-<div class="paragraph">
-<p>The next picture shows a report which resulted in a red traffic light.</p>
-</div>
-<div class="paragraph">
-<p>At the top of the report you will find the most critical parts - in our example it is a red finding which is a <code>Command Injection</code>. If available for this type of finding, you can find the corresponding CWE-Id (Common Weakness Enumeration) as a link to the knowledge base of MITRE in the <code>Type</code> column.</p>
-</div>
-<div class="paragraph">
-<p>The data sink with Id 9 (where the command injection could lead to problems at the end) is at the top of the Description field.</p>
-</div>
 <div class="admonitionblock note">
 <table>
 <tr>
@@ -3542,14 +3544,27 @@ to your current situation.</p>
 </td>
 <td class="content">
 <div class="paragraph">
-<p>You can open the complete call hierarchy by clicking on "Open full callstack". This allows you to see the full hierarchy from entry point up to data sink and can help you in analyzing this finding.</p>
+<p>You can open the details by clicking on "Open details". This allows you to see the full hierarchy from entry point down to data sink and can help you in analyzing this finding. It also shows a description and a possible solution (if there is one).</p>
 </div>
 </td>
 </tr>
 </table>
 </div>
 <div class="paragraph">
-<p>There are other findings (yellow and green) which are less problematic.</p>
+<p>The next picture shows a report which resulted in a red traffic light.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="images/sechub-report-html-example1.png" alt="sechub report html example1">
+</div>
+</div>
+<div class="paragraph">
+<p>At the top of the report you find the most critical parts - in this example it is a "red" finding with finding ID 19 which is a "Stored XSS".<br>
+The second finding with ID 20 is of the same type. Here the details view is opened so more details can be seen.</p>
+</div>
+<div class="paragraph">
+<p>If available, you can find the corresponding CWE-Id (Common Weakness Enumeration)
+as a link to the knowledge base of MITRE in the <code>Type</code> column.</p>
 </div>
 <div class="admonitionblock tip">
 <table>
@@ -3558,23 +3573,11 @@ to your current situation.</p>
 <i class="fa icon-tip" title="Tip"></i>
 </td>
 <td class="content">
-SecHub client will break your build per default only at a RED traffic light, but you can also
-configure the client to do this also on color YELLOW. Only Green is always accepted.
+The SecHub client will exit with a non-zero return code per default only at a RED traffic light, but you can also
+configure the client to do this on color YELLOW.
 </td>
 </tr>
 </table>
-</div>
-<div class="imageblock">
-<div class="content">
-<img src="images/sechub-report-html-example1.png" alt="sechub report html example1">
-</div>
-</div>
-</div>
-<div class="sect4">
-<h5 id="what-about-descriptions-and-mitigation-suggestions">3.1.1.2. What about descriptions and mitigation suggestions?</h5>
-<div class="paragraph">
-<p>At the moment SecHub does not contain this inside it&#8217;s reports, but this feature will come in future</p>
-</div>
 </div>
 </div>
 <div class="sect3">
@@ -3587,76 +3590,76 @@ configure the client to do this also on color YELLOW. Only Green is always accep
 <div class="listingblock">
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="JSON">{
-    <span class="key"><span class="delimiter">&quot;</span><span class="content">jobUUID</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">6cf02ccf-da13-4dee-b529-0225ed9661bd</span><span class="delimiter">&quot;</span></span>,<i class="conum" data-value="1"></i><b>(1)</b>
-    <span class="key"><span class="delimiter">&quot;</span><span class="content">result</span><span class="delimiter">&quot;</span></span>: {
-        <span class="key"><span class="delimiter">&quot;</span><span class="content">count</span><span class="delimiter">&quot;</span></span>: <span class="integer">0</span>,
-        <span class="key"><span class="delimiter">&quot;</span><span class="content">findings</span><span class="delimiter">&quot;</span></span>: [
-            {
-                <span class="key"><span class="delimiter">&quot;</span><span class="content">id</span><span class="delimiter">&quot;</span></span>: <span class="integer">1</span>,<i class="conum" data-value="2"></i><b>(2)</b>
-                <span class="key"><span class="delimiter">&quot;</span><span class="content">description</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="delimiter">&quot;</span></span>,
-                <span class="key"><span class="delimiter">&quot;</span><span class="content">hostnames</span><span class="delimiter">&quot;</span></span>: [
-                ],
-                <span class="key"><span class="delimiter">&quot;</span><span class="content">name</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">Absolute Path Traversal</span><span class="delimiter">&quot;</span></span>,<i class="conum" data-value="3"></i><b>(3)</b>
-                <span class="key"><span class="delimiter">&quot;</span><span class="content">references</span><span class="delimiter">&quot;</span></span>: [
-                ],
-                <span class="key"><span class="delimiter">&quot;</span><span class="content">severity</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">MEDIUM</span><span class="delimiter">&quot;</span></span>,<i class="conum" data-value="4"></i><b>(4)</b>
-                <span class="key"><span class="delimiter">&quot;</span><span class="content">code</span><span class="delimiter">&quot;</span></span>: {
-                    <span class="key"><span class="delimiter">&quot;</span><span class="content">location</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">java/com/mercedesbenz/sechub/docgen/AsciidocGenerator.java</span><span class="delimiter">&quot;</span></span>,<i class="conum" data-value="5"></i><b>(5)</b>
-                    <span class="key"><span class="delimiter">&quot;</span><span class="content">line</span><span class="delimiter">&quot;</span></span>: <span class="integer">28</span>,<i class="conum" data-value="6"></i><b>(6)</b>
-                    <span class="key"><span class="delimiter">&quot;</span><span class="content">column</span><span class="delimiter">&quot;</span></span>: <span class="integer">35</span>,
-                    <span class="key"><span class="delimiter">&quot;</span><span class="content">source</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="char">\t</span><span class="content">public static void main(String[] args) throws Exception {</span><span class="delimiter">&quot;</span></span>,
-                    <span class="key"><span class="delimiter">&quot;</span><span class="content">relevantPart</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">args</span><span class="delimiter">&quot;</span></span>,
-                    <span class="key"><span class="delimiter">&quot;</span><span class="content">calls</span><span class="delimiter">&quot;</span></span>: {<i class="conum" data-value="7"></i><b>(7)</b>
-                        <span class="key"><span class="delimiter">&quot;</span><span class="content">location</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">java/com/mercedesbenz/sechub/docgen/AsciidocGenerator.java</span><span class="delimiter">&quot;</span></span>,
-                        <span class="key"><span class="delimiter">&quot;</span><span class="content">line</span><span class="delimiter">&quot;</span></span>: <span class="integer">33</span>,
-                        <span class="key"><span class="delimiter">&quot;</span><span class="content">column</span><span class="delimiter">&quot;</span></span>: <span class="integer">17</span>,
-                        <span class="key"><span class="delimiter">&quot;</span><span class="content">source</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="char">\t</span><span class="char">\t</span><span class="content">String path = args[0];</span><span class="delimiter">&quot;</span></span>,
-                        <span class="key"><span class="delimiter">&quot;</span><span class="content">relevantPart</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">args</span><span class="delimiter">&quot;</span></span>,
-                        <span class="key"><span class="delimiter">&quot;</span><span class="content">calls</span><span class="delimiter">&quot;</span></span>: {
-                            <span class="key"><span class="delimiter">&quot;</span><span class="content">location</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">java/com/mercedesbenz/sechub/docgen/AsciidocGenerator.java</span><span class="delimiter">&quot;</span></span>,
-                            <span class="key"><span class="delimiter">&quot;</span><span class="content">line</span><span class="delimiter">&quot;</span></span>: <span class="integer">33</span>,
-                            <span class="key"><span class="delimiter">&quot;</span><span class="content">column</span><span class="delimiter">&quot;</span></span>: <span class="integer">10</span>,
-                            <span class="key"><span class="delimiter">&quot;</span><span class="content">source</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="char">\t</span><span class="char">\t</span><span class="content">String path = args[0];</span><span class="delimiter">&quot;</span></span>,
-                            <span class="key"><span class="delimiter">&quot;</span><span class="content">relevantPart</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">path</span><span class="delimiter">&quot;</span></span>,
-                            <span class="key"><span class="delimiter">&quot;</span><span class="content">calls</span><span class="delimiter">&quot;</span></span>: {
-                                <span class="key"><span class="delimiter">&quot;</span><span class="content">location</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">java/com/mercedesbenz/sechub/docgen/AsciidocGenerator.java</span><span class="delimiter">&quot;</span></span>,
-                                <span class="key"><span class="delimiter">&quot;</span><span class="content">line</span><span class="delimiter">&quot;</span></span>: <span class="integer">34</span>,
-                                <span class="key"><span class="delimiter">&quot;</span><span class="content">column</span><span class="delimiter">&quot;</span></span>: <span class="integer">38</span>,
-                                <span class="key"><span class="delimiter">&quot;</span><span class="content">source</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="char">\t</span><span class="char">\t</span><span class="content">File documentsGenFolder = new File(path);</span><span class="delimiter">&quot;</span></span>,
-                                <span class="key"><span class="delimiter">&quot;</span><span class="content">relevantPart</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">path</span><span class="delimiter">&quot;</span></span>,
-                                <span class="key"><span class="delimiter">&quot;</span><span class="content">calls</span><span class="delimiter">&quot;</span></span>: {
-                                    <span class="key"><span class="delimiter">&quot;</span><span class="content">location</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">java/com/mercedesbenz/sechub/docgen/AsciidocGenerator.java</span><span class="delimiter">&quot;</span></span>,<i class="conum" data-value="8"></i><b>(8)</b>
-                                    <span class="key"><span class="delimiter">&quot;</span><span class="content">line</span><span class="delimiter">&quot;</span></span>: <span class="integer">34</span>,<i class="conum" data-value="9"></i><b>(9)</b>
-                                    <span class="key"><span class="delimiter">&quot;</span><span class="content">column</span><span class="delimiter">&quot;</span></span>: <span class="integer">29</span>,
-                                    <span class="key"><span class="delimiter">&quot;</span><span class="content">source</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="char">\t</span><span class="char">\t</span><span class="content">File documentsGenFolder = new File(path);</span><span class="delimiter">&quot;</span></span>,<i class="conum" data-value="10"></i><b>(10)</b>
-                                    <span class="key"><span class="delimiter">&quot;</span><span class="content">relevantPart</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">File</span><span class="delimiter">&quot;</span></span><i class="conum" data-value="11"></i><b>(11)</b>
-                                }
-                            }
-                        }
-                    }
+  <span class="key"><span class="delimiter">&quot;</span><span class="content">jobUUID</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">6cf02ccf-da13-4dee-b529-0225ed9661bd</span><span class="delimiter">&quot;</span></span>, <i class="conum" data-value="1"></i><b>(1)</b>
+  <span class="key"><span class="delimiter">&quot;</span><span class="content">trafficLight</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">YELLOW</span><span class="delimiter">&quot;</span></span>, <i class="conum" data-value="2"></i><b>(2)</b>
+  <span class="key"><span class="delimiter">&quot;</span><span class="content">messages</span><span class="delimiter">&quot;</span></span>: [],
+  <span class="key"><span class="delimiter">&quot;</span><span class="content">status</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">SUCCESS</span><span class="delimiter">&quot;</span></span>,
+  <span class="key"><span class="delimiter">&quot;</span><span class="content">reportVersion</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">1.0</span><span class="delimiter">&quot;</span></span>,
+  <span class="key"><span class="delimiter">&quot;</span><span class="content">result</span><span class="delimiter">&quot;</span></span>: {
+    <span class="key"><span class="delimiter">&quot;</span><span class="content">count</span><span class="delimiter">&quot;</span></span>: <span class="integer">2</span>,
+    <span class="key"><span class="delimiter">&quot;</span><span class="content">findings</span><span class="delimiter">&quot;</span></span>: [
+      {
+        <span class="key"><span class="delimiter">&quot;</span><span class="content">id</span><span class="delimiter">&quot;</span></span>: <span class="integer">1</span>, <i class="conum" data-value="3"></i><b>(3)</b>
+        <span class="key"><span class="delimiter">&quot;</span><span class="content">description</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="delimiter">&quot;</span></span>,
+        <span class="key"><span class="delimiter">&quot;</span><span class="content">name</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">Absolute Path Traversal</span><span class="delimiter">&quot;</span></span>, <i class="conum" data-value="4"></i><b>(4)</b>
+        <span class="key"><span class="delimiter">&quot;</span><span class="content">severity</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">MEDIUM</span><span class="delimiter">&quot;</span></span>, <i class="conum" data-value="5"></i><b>(5)</b>
+        <span class="key"><span class="delimiter">&quot;</span><span class="content">code</span><span class="delimiter">&quot;</span></span>: {
+          <span class="key"><span class="delimiter">&quot;</span><span class="content">location</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">java/com/mercedesbenz/sechub/docgen/AsciidocGenerator.java</span><span class="delimiter">&quot;</span></span>, <i class="conum" data-value="6"></i><b>(6)</b>
+          <span class="key"><span class="delimiter">&quot;</span><span class="content">line</span><span class="delimiter">&quot;</span></span>: <span class="integer">28</span>, <i class="conum" data-value="7"></i><b>(7)</b>
+          <span class="key"><span class="delimiter">&quot;</span><span class="content">column</span><span class="delimiter">&quot;</span></span>: <span class="integer">35</span>,
+          <span class="key"><span class="delimiter">&quot;</span><span class="content">source</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="char">\t</span><span class="content">public static void main(String[] args) throws Exception {</span><span class="delimiter">&quot;</span></span>,
+          <span class="key"><span class="delimiter">&quot;</span><span class="content">relevantPart</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">args</span><span class="delimiter">&quot;</span></span>,
+          <span class="key"><span class="delimiter">&quot;</span><span class="content">calls</span><span class="delimiter">&quot;</span></span>: { <i class="conum" data-value="8"></i><b>(8)</b>
+            <span class="key"><span class="delimiter">&quot;</span><span class="content">location</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">java/com/mercedesbenz/sechub/docgen/AsciidocGenerator.java</span><span class="delimiter">&quot;</span></span>,
+            <span class="key"><span class="delimiter">&quot;</span><span class="content">line</span><span class="delimiter">&quot;</span></span>: <span class="integer">33</span>,
+            <span class="key"><span class="delimiter">&quot;</span><span class="content">column</span><span class="delimiter">&quot;</span></span>: <span class="integer">17</span>,
+            <span class="key"><span class="delimiter">&quot;</span><span class="content">source</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="char">\t</span><span class="char">\t</span><span class="content">String path = args[0];</span><span class="delimiter">&quot;</span></span>,
+            <span class="key"><span class="delimiter">&quot;</span><span class="content">relevantPart</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">args</span><span class="delimiter">&quot;</span></span>,
+            <span class="key"><span class="delimiter">&quot;</span><span class="content">calls</span><span class="delimiter">&quot;</span></span>: {
+              <span class="key"><span class="delimiter">&quot;</span><span class="content">location</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">java/com/mercedesbenz/sechub/docgen/AsciidocGenerator.java</span><span class="delimiter">&quot;</span></span>,
+              <span class="key"><span class="delimiter">&quot;</span><span class="content">line</span><span class="delimiter">&quot;</span></span>: <span class="integer">33</span>,
+              <span class="key"><span class="delimiter">&quot;</span><span class="content">column</span><span class="delimiter">&quot;</span></span>: <span class="integer">10</span>,
+              <span class="key"><span class="delimiter">&quot;</span><span class="content">source</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="char">\t</span><span class="char">\t</span><span class="content">String path = args[0];</span><span class="delimiter">&quot;</span></span>,
+              <span class="key"><span class="delimiter">&quot;</span><span class="content">relevantPart</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">path</span><span class="delimiter">&quot;</span></span>,
+              <span class="key"><span class="delimiter">&quot;</span><span class="content">calls</span><span class="delimiter">&quot;</span></span>: {
+                <span class="key"><span class="delimiter">&quot;</span><span class="content">location</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">java/com/mercedesbenz/sechub/docgen/AsciidocGenerator.java</span><span class="delimiter">&quot;</span></span>,
+                <span class="key"><span class="delimiter">&quot;</span><span class="content">line</span><span class="delimiter">&quot;</span></span>: <span class="integer">34</span>,
+                <span class="key"><span class="delimiter">&quot;</span><span class="content">column</span><span class="delimiter">&quot;</span></span>: <span class="integer">38</span>,
+                <span class="key"><span class="delimiter">&quot;</span><span class="content">source</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="char">\t</span><span class="char">\t</span><span class="content">File documentsGenFolder = new File(path);</span><span class="delimiter">&quot;</span></span>,
+                <span class="key"><span class="delimiter">&quot;</span><span class="content">relevantPart</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">path</span><span class="delimiter">&quot;</span></span>,
+                <span class="key"><span class="delimiter">&quot;</span><span class="content">calls</span><span class="delimiter">&quot;</span></span>: {
+                  <span class="key"><span class="delimiter">&quot;</span><span class="content">location</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">java/com/mercedesbenz/sechub/docgen/AsciidocGenerator.java</span><span class="delimiter">&quot;</span></span>, <i class="conum" data-value="9"></i><b>(9)</b>
+                  <span class="key"><span class="delimiter">&quot;</span><span class="content">line</span><span class="delimiter">&quot;</span></span>: <span class="integer">34</span>, <i class="conum" data-value="10"></i><b>(10)</b>
+                  <span class="key"><span class="delimiter">&quot;</span><span class="content">column</span><span class="delimiter">&quot;</span></span>: <span class="integer">29</span>,
+                  <span class="key"><span class="delimiter">&quot;</span><span class="content">source</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="char">\t</span><span class="char">\t</span><span class="content">File documentsGenFolder = new File(path);</span><span class="delimiter">&quot;</span></span>, <i class="conum" data-value="11"></i><b>(11)</b>
+                  <span class="key"><span class="delimiter">&quot;</span><span class="content">relevantPart</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">File</span><span class="delimiter">&quot;</span></span> <i class="conum" data-value="12"></i><b>(12)</b>
                 }
-            },
-             <i class="conum" data-value="12"></i><b>(12)</b>
-            {
-                <span class="key"><span class="delimiter">&quot;</span><span class="content">id</span><span class="delimiter">&quot;</span></span>: <span class="integer">109</span>, <i class="conum" data-value="13"></i><b>(13)</b>
-                <span class="key"><span class="delimiter">&quot;</span><span class="content">description</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="delimiter">&quot;</span></span>,
-                <span class="key"><span class="delimiter">&quot;</span><span class="content">hostnames</span><span class="delimiter">&quot;</span></span>: [
-                ],
-                <span class="key"><span class="delimiter">&quot;</span><span class="content">name</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">Insufficient Logging of Exceptions</span><span class="delimiter">&quot;</span></span>,
-                <span class="key"><span class="delimiter">&quot;</span><span class="content">references</span><span class="delimiter">&quot;</span></span>: [
-                ],
-                <span class="key"><span class="delimiter">&quot;</span><span class="content">severity</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">INFO</span><span class="delimiter">&quot;</span></span>,
-                <span class="key"><span class="delimiter">&quot;</span><span class="content">code</span><span class="delimiter">&quot;</span></span>: {
-                    <span class="key"><span class="delimiter">&quot;</span><span class="content">location</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">java/com/mercedesbenz/sechub/docgen/usecase/UseCaseRestDocModelDataCollector.java</span><span class="delimiter">&quot;</span></span>,
-                    <span class="key"><span class="delimiter">&quot;</span><span class="content">line</span><span class="delimiter">&quot;</span></span>: <span class="integer">137</span>,
-                    <span class="key"><span class="delimiter">&quot;</span><span class="content">column</span><span class="delimiter">&quot;</span></span>: <span class="integer">5</span>,
-                    <span class="key"><span class="delimiter">&quot;</span><span class="content">source</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="char">\t</span><span class="char">\t</span><span class="content">} catch (IOException e) {</span><span class="delimiter">&quot;</span></span>,
-                    <span class="key"><span class="delimiter">&quot;</span><span class="content">relevantPart</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">catch</span><span class="delimiter">&quot;</span></span>
-                }
+              }
             }
-        ]
-    },
-    <span class="key"><span class="delimiter">&quot;</span><span class="content">trafficLight</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">YELLOW</span><span class="delimiter">&quot;</span></span> <i class="conum" data-value="14"></i><b>(14)</b>
+          }
+        },
+        <span class="key"><span class="delimiter">&quot;</span><span class="content">type</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">codeScan</span><span class="delimiter">&quot;</span></span>,
+        <span class="key"><span class="delimiter">&quot;</span><span class="content">cweId</span><span class="delimiter">&quot;</span></span>: <span class="integer">778</span>
+      },
+      {
+        <span class="key"><span class="delimiter">&quot;</span><span class="content">id</span><span class="delimiter">&quot;</span></span>: <span class="integer">2</span>,
+        <span class="key"><span class="delimiter">&quot;</span><span class="content">description</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="delimiter">&quot;</span></span>,
+        <span class="key"><span class="delimiter">&quot;</span><span class="content">hostnames</span><span class="delimiter">&quot;</span></span>: [],
+        <span class="key"><span class="delimiter">&quot;</span><span class="content">name</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">Insufficient Logging of Exceptions</span><span class="delimiter">&quot;</span></span>,
+        <span class="key"><span class="delimiter">&quot;</span><span class="content">references</span><span class="delimiter">&quot;</span></span>: [],
+        <span class="key"><span class="delimiter">&quot;</span><span class="content">severity</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">INFO</span><span class="delimiter">&quot;</span></span>,
+        <span class="key"><span class="delimiter">&quot;</span><span class="content">code</span><span class="delimiter">&quot;</span></span>: {
+          <span class="key"><span class="delimiter">&quot;</span><span class="content">location</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">java/com/mercedesbenz/sechub/docgen/usecase/UseCaseRestDocModelDataCollector.java</span><span class="delimiter">&quot;</span></span>,
+          <span class="key"><span class="delimiter">&quot;</span><span class="content">line</span><span class="delimiter">&quot;</span></span>: <span class="integer">137</span>,
+          <span class="key"><span class="delimiter">&quot;</span><span class="content">column</span><span class="delimiter">&quot;</span></span>: <span class="integer">5</span>,
+          <span class="key"><span class="delimiter">&quot;</span><span class="content">source</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="char">\t</span><span class="char">\t</span><span class="content">} catch (IOException e) {</span><span class="delimiter">&quot;</span></span>,
+          <span class="key"><span class="delimiter">&quot;</span><span class="content">relevantPart</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">catch</span><span class="delimiter">&quot;</span></span>
+        },
+        <span class="key"><span class="delimiter">&quot;</span><span class="content">type</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">codeScan</span><span class="delimiter">&quot;</span></span>,
+        <span class="key"><span class="delimiter">&quot;</span><span class="content">cweId</span><span class="delimiter">&quot;</span></span>: <span class="integer">778</span>
+      }
+    ]
+  }
 }</code></pre>
 </div>
 </div>
@@ -3668,61 +3671,53 @@ configure the client to do this also on color YELLOW. Only Green is always accep
 </tr>
 <tr>
 <td><i class="conum" data-value="2"></i><b>2</b></td>
-<td>Finding ID inside report</td>
+<td>Traffic light color of report - here YELLOW</td>
 </tr>
 <tr>
 <td><i class="conum" data-value="3"></i><b>3</b></td>
+<td>Finding ID inside report</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="4"></i><b>4</b></td>
 <td>The name of the vulnerability<br>
 <em>in our case an <code>Absolute path traversal</code> where attackers could try to manipulate path input, so output could contain unwanted content/wrong file (e.g. a passwd file etc.)</em></td>
 </tr>
 <tr>
-<td><i class="conum" data-value="4"></i><b>4</b></td>
-<td>The severity of the report<br>
+<td><i class="conum" data-value="5"></i><b>5</b></td>
+<td>The severity of this finding<br>
 <em>(will be used to calculate the traffic light color)</em></td>
 </tr>
 <tr>
-<td><i class="conum" data-value="5"></i><b>5</b></td>
+<td><i class="conum" data-value="6"></i><b>6</b></td>
 <td>Entry point location<br>
 <em>in this case the Java class where the potential malicious input starts</em></td>
 </tr>
 <tr>
-<td><i class="conum" data-value="6"></i><b>6</b></td>
+<td><i class="conum" data-value="7"></i><b>7</b></td>
 <td>Line number of entry point</td>
 </tr>
 <tr>
-<td><i class="conum" data-value="7"></i><b>7</b></td>
+<td><i class="conum" data-value="8"></i><b>8</b></td>
 <td>Next call hierarchy element<br>
 <em>this is the next element of the call hierarchy, means what is called by</em>
 <em>entry point with potential malicious content as parameter. This is ongoing</em>
 <em>until last entry inside call hierarchy which is the so called "data sink"</em></td>
 </tr>
 <tr>
-<td><i class="conum" data-value="8"></i><b>8</b></td>
+<td><i class="conum" data-value="9"></i><b>9</b></td>
 <td>Data sink location</td>
 </tr>
 <tr>
-<td><i class="conum" data-value="9"></i><b>9</b></td>
+<td><i class="conum" data-value="10"></i><b>10</b></td>
 <td>Line number inside data sink</td>
 </tr>
 <tr>
-<td><i class="conum" data-value="10"></i><b>10</b></td>
+<td><i class="conum" data-value="11"></i><b>11</b></td>
 <td>Source snippet</td>
 </tr>
 <tr>
-<td><i class="conum" data-value="11"></i><b>11</b></td>
-<td>Relevant code part where the found vulnerability lies/could be exploited</td>
-</tr>
-<tr>
 <td><i class="conum" data-value="12"></i><b>12</b></td>
-<td>More findings - in example this was cut</td>
-</tr>
-<tr>
-<td><i class="conum" data-value="13"></i><b>13</b></td>
-<td>Last finding with ID - format explanation see points above.</td>
-</tr>
-<tr>
-<td><i class="conum" data-value="14"></i><b>14</b></td>
-<td>Traffic light color of report - here YELLOW</td>
+<td>Relevant code part where the found vulnerability lies/could be exploited</td>
 </tr>
 </table>
 </div>
@@ -3734,7 +3729,7 @@ configure the client to do this also on color YELLOW. Only Green is always accep
 </div>
 <div id="footer">
 <div id="footer-text">
- Client 0.35.1<br>
+ Client 0.36.0<br>
 </div>
 </div>
 </body>
