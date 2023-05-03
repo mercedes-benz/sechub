@@ -5,8 +5,8 @@
 ==== Tool installation
 You need
 
-- JAVA 11 JDK
-- Go Lang (min. 1.19)
+- JAVA {required_java_version} JDK
+- Go Lang (min. {required_go_version})
 - GIT
 
 NOTE: A Go installation is only necessary for client development. All tools must be accessible from PATH variable.

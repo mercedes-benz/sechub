@@ -33,8 +33,8 @@ The following topics are covered:
 
 === Requirements
 
-* Java JDK 11+
-* Go 1.16+
+* Java {required_JDK}+
+* Go {required_go_version}+
 * Git
 * cURL
 * jq
@@ -48,8 +48,9 @@ SecHub can be build and runs with https://openjdk.java.net/groups/hotspot/[OpenJ
 
 ==== Alpine Linux
 
+[source, subs="attributes"]
 ----
-apk add openjdk11 go curl git bash jq
+apk add openjdk{required_java_version} go curl git bash jq
 ----
 
 NOTE: Tested with Alpine Linux 3.12, 3.13 and 3.14.
@@ -58,18 +59,20 @@ WARNING: Cross-compiling the SecHub client on Alpine Linux 3.11 does not work (G
 
 ==== Debian/Ubuntu
 
+[source, subs="attributes"]
 ----
-sudo apt install openjdk-11-jdk-headless golang git curl jq
+sudo apt install openjdk-{required_java_version}-jdk-headless golang git curl jq
 ----
 
 NOTE: Tested with Debian 10 "Buster", Ubuntu 18.04 "Bionic" and 20.04 "Focal" LTS.
 
-WARNING: If the version of your GoLang is below 1.15, please install a more recent version from https://go.dev/dl/[here], because you can't compile the executables.
+WARNING: If the version of your GoLang is below {required_go_version}, please install a more recent version from https://go.dev/dl/[here], because you can't compile the executables.
 
 ==== Fedora and CentOS
 
+[source, subs="attributes"]
 ----
-sudo dnf install java-11-openjdk-devel golang git curl jq
+sudo dnf install java-{required_java_version}-openjdk-devel golang git curl jq
 ----
 
 NOTE: Tested with Fedora 34 and CentOS 8.
