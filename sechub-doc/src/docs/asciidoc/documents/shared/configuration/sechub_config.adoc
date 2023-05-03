@@ -25,21 +25,21 @@ During this time, however, the API always remains backwards compatible!
 ====
 
 ==== Server
-`server` (optional) defines the location to `{sechub}` server.
+`server` defines the url of your `{sechub}` server.
 Information can be used by client implementations.
 
-NOTE: This is optional parameter only interesting for the client to pass the URL.
+NOTE: This is an optional parameter only which is only interesting for the client to pass the URL.
       Every REST call contains the server URL already.
 
 ==== Project
-`project` (optional) defines the project to use. Information can be used by
+`project` defines the project id within `{sechub}`. Information can be used by
 client implementations.
 
 NOTE: When using project id related REST calls, you do not need the project id inside the configuration.
 
 [[sechub-config-code-scan]]
 ==== Code scan
-`codeScan` (optional) defines the settings for code scans.
+`codeScan` defines the settings for code scans.
 
 ===== Upload source files from file system
 This section applies only to the {sechub} client.
@@ -54,12 +54,11 @@ on a Jenkins Build Server this is usually the root folder of your repository.
 ====
 Please do *NOT* use `\` inside paths *but* always `/`.
 
-Also do *NOT* use absolute paths *but* always relative paths! Normally you should
-call {sechub} inside root folder of your source repository - this is the standard situation
-on build servers.
+We do *NOT* recommend using absolute paths *but* always relative paths! +
+You should call {sechub} inside the repository's root folder - this is the standard on build servers.
 ====
 
-There a two ways to define source code uploads for the {sechub} client:
+There are two ways to define source code uploads for the {sechub} client:
 
 ###### Using `data` section
 
@@ -103,7 +102,7 @@ include::sechub_config_example1_sourcescan_filesystem.json[]
 
 
 ==== License scan
-`licenseScan`(optional) defines the license scan settings.
+`licenseScan` defines the settings for license scans.
 
 [[sechub-config-example-licensescan-binary]]
 ===== Example binary license scan
@@ -134,7 +133,7 @@ include::sechub_config_example11_license_scan_and_code_scan_with_sources_data_re
 <3> code scan uses the referenced <<sechub-config-data-section,data>> configuration "firmware-sources"
 
 ==== Secret scan
-`secretScan`(optional) defines the secret scan settings.
+`secretScan` defines the settings for scanning for secrets in your source code.
 
 [[sechub-config-example-secretscan-sources]]
 ===== Example source secret scan
@@ -167,7 +166,7 @@ include::sechub_config_example14_secret_scan_and_code_scan_with_sources_data_ref
 <4> code scan uses the referenced <<sechub-config-data-section,data>> configuration "gamechanger-source"
 
 ==== Web scan
-`webScan` (optional) defines the web scan settings.
+`webScan` defines the settings for web scans (DAST).
 
 ===== URL
 Use the `url` element to define a URL you want to scan.
@@ -325,17 +324,14 @@ include::sechub_config_example6_infrascan_ip.json[]
     because scanners do not scan them self.
 
 [[sechub-config-data-section]]
-==== Data
-The <<sechub-config-code-scan,codeScan>> element provides a way to define
-source code uploads for code scans only.
+==== Data section
+With the `data` section users are able to
 
-With the (optional) `data` section users are able to
+- define binary and source uploads
+- reference the same by muliple scan types in one job
 
-- define binary and source upload information
-- reference same uploads by muliple scan types in same job without another upload
-
-The scan configurations can reference the name data configuration elements by defining the an
-array attribute `uses` with a list of unique references names.
+The scan configurations can reference the name data configuration elements by defining the
+array attribute `"use"` with a list of references.
 
 [source,json]
 ----
@@ -353,11 +349,8 @@ Here are some links to examples which are using <<sechub-config-data-section,dat
 - <<sechub-config-example-licensescan-combined-with-codescan,License scan for sources combined with code scan>>
 - <<sechub-config-example-webscan-openapi,OpenAPI web scan>>
 
-TIP: If you want to upload binaries, you MUST use the data section, there is no other way to do this.
-
-===== General JSON syntax
 The next figure shows an example which presents all possibilities _(for simplicity the source and
-binary configuration arrays do contain only just one entry)_.
+binary configuration arrays do contain only just one entry)_:
 
 [source, json, title="General JSON syntax"]
 ----
@@ -367,11 +360,7 @@ include::sechub_config_data_section_general_example1.json[]
 <1> `data`: The main element for data configuration.
 <2> `sources`: Inside this array multiple source data definitions can be listed
 <3> `name`:  Is a unique name for the data configuration element. The name must
-    be unique inside the whole {sechub} configuration file! Allowed characters are
-     - `a-z`
-     - `0-9`
-     - `-`
-     - `_`
+    be unique inside the whole {sechub} configuration file! Allowed characters are `a-z`,`0-9` and the special characters `_` and `-`.
 <4> `fileSystem`: Describes fileystem parts which are available inside this data configuration element
 <5> `files`: An array containing file paths to use for uploading dedicated files
 <6> `folders`: An array containing folder paths to use for uploading dedicated folders
@@ -387,10 +376,9 @@ for details about default behaviour for sources.
 The {sechub} configuration file can have optional meta data.
 
 ===== Labels
-With labels a user is able to add additional information to the 
+With labels a user is able to add additional information to the
 scan configuration which end up in the report as key value pairs.
 
-===== General JSON syntax
 The next figure shows an example which presents all possibilities _(for simplicity other configuration
 elements are removed)_.
 
@@ -404,12 +392,12 @@ include::sechub_config_metadata_example1.json[]
 <2> `labels`: Inside this element the user can define labels as key value pairs.
 - maximum allowed entries per configuration file: 20
 <3> represents the label key.
-- allowed are characters `A-Za-z`, digits and the special characters `_` , `-` and `.`
+- allowed are characters `A-Z`,`a-z`,`0-9` and the special characters `_` , `-` and `.`
 - minimum length: 1 character
 - maximum length: 30 characters
 <4> represents the label value.
 - can contain any text (content will be escaped accordingly in reports)
 - minimum length: 0 characters
 - maximum length: 150 characters
- 
+
 

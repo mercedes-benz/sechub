@@ -9,7 +9,7 @@ import (
 
 // LogError - print unified error message with time stamp
 func LogError(text string) {
-	fmt.Fprintln(os.Stderr, Timestamp(), "ERROR:", text)
+	fmt.Fprintln(os.Stderr, "ERROR:", text)
 }
 
 // LogWarning - print unified warn message
