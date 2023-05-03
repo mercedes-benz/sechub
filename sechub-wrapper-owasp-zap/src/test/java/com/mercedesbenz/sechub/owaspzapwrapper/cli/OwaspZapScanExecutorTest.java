@@ -60,7 +60,7 @@ class OwaspZapScanExecutorTest {
         when(scanContext.getOwaspZapURLsIncludeList()).thenReturn(includeList);
         when(scanContext.getMaxNumberOfConnectionRetries()).thenReturn(1);
         when(scanContext.getRetryWaittimeInMilliseconds()).thenReturn(0);
-        when(scanContext.isConnectionCheckEnabled()).thenReturn(false);
+        when(scanContext.connectionCheckEnabled()).thenReturn(false);
 
         OwaspZapScan scan = mock(OwaspZapScan.class);
         when(resolver.resolveScanImplementation(eq(scanContext), any())).thenReturn(scan);
@@ -94,7 +94,7 @@ class OwaspZapScanExecutorTest {
         when(scanContext.getMaxNumberOfConnectionRetries()).thenReturn(1);
         when(scanContext.getRetryWaittimeInMilliseconds()).thenReturn(0);
         when(scanContext.getOwaspZapProductMessageHelper()).thenReturn(productMessageHelper);
-        when(scanContext.isConnectionCheckEnabled()).thenReturn(true);
+        when(scanContext.connectionCheckEnabled()).thenReturn(true);
         doNothing().when(productMessageHelper).writeSingleProductMessage(any());
 
         OwaspZapScan scan = mock(OwaspZapScan.class);

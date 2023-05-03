@@ -131,7 +131,7 @@ public class OwaspZapScanContext {
         return owaspZapURLsExcludeList;
     }
 
-    public boolean isConnectionCheckEnabled() {
+    public boolean connectionCheckEnabled() {
         return connectionCheckEnabled;
     }
 

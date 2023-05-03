@@ -25,7 +25,7 @@ public class OwaspZapScanExecutor {
     }
 
     public void execute(OwaspZapScanContext scanContext) throws ZapWrapperRuntimeException {
-        if (scanContext.isConnectionCheckEnabled()) {
+        if (scanContext.connectionCheckEnabled()) {
             connectionChecker.assertApplicationIsReachable(scanContext);
         }
 

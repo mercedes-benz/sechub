@@ -503,7 +503,7 @@ class OwaspZapScanContextFactoryTest {
         OwaspZapScanContext result = factoryToTest.create(settings);
 
         /* test */
-        assertEquals(result.isConnectionCheckEnabled(), enabled);
+        assertEquals(result.connectionCheckEnabled(), enabled);
 
     }
 

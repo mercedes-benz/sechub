@@ -61,10 +61,9 @@ public class UnauthenticatedScan extends AbstractScan {
         // if no URLs to scan where detected by the spider/ajaxSpider before
         if (!atLeastOneURLDetected()) {
             LOG.warn("For {} skipping active scan, since no URLs where detected by spider or ajaxSpider!", scanContext.getContextName());
-            scanContext.getOwaspZapProductMessageHelper()
-                    .writeSingleProductMessage(new SecHubMessage(SecHubMessageType.WARNING,
-                            "Active scan part of the webscan was skipped, because no URLs where detected by crawling mechanisms! "
-                                    + "Please check if the URL you specified or any of the includes are accessible."));
+            scanContext.getOwaspZapProductMessageHelper().writeSingleProductMessage(
+                    new SecHubMessage(SecHubMessageType.WARNING, "Skipped the active scan, because no URLs were detected by the crawler! "
+                            + "Please check if the URL you specified or any of the includes are accessible."));
             return;
         }
         String targetUrlAsString = scanContext.getTargetUrlAsString();
