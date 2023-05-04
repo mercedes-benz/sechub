@@ -491,6 +491,22 @@ class OwaspZapScanContextFactoryTest {
         assertEquals(2, result.getOwaspZapURLsExcludeList().size());
     }
 
+    @ParameterizedTest
+    @CsvSource({ "true", "false" })
+    void connection_check_from_settings_is_in_result(boolean enabled) {
+        /* prepare */
+        CommandLineSettings settings = createSettingsMockWithNecessaryParts();
+        when(settings.isConnectionCheckEnabled()).thenReturn(enabled);
+        when(ruleProvider.fetchDeactivatedRuleReferences(any())).thenReturn(new DeactivatedRuleReferences());
+
+        /* execute */
+        OwaspZapScanContext result = factoryToTest.create(settings);
+
+        /* test */
+        assertEquals(result.connectionCheckEnabled(), enabled);
+
+    }
+
     private CommandLineSettings createSettingsMockWithNecessaryParts() {
         CommandLineSettings settings = mock(CommandLineSettings.class);
         when(settings.getTargetURL()).thenReturn("https://www.targeturl.com");

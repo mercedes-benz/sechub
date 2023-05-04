@@ -32,6 +32,10 @@ Usage: OwaspZapWrapper [options]
     --ajaxSpider
       Set this option to enable Owasp Zap ajaxSpider.
       Default: false
+    --connectionCheck
+      Set this option to enable an initial connection check performed by this 
+      wrapper application.
+      Default: false
     --deactivateRules
       Specify references of rules you want to deactivate during the scan 
       inside the Owasp Zap. If you specifiy multiple rules use comma separated 

@@ -55,7 +55,7 @@ public class TargetConnectionChecker {
     }
 
     boolean isReponseCodeValid(int responseCode) {
-        return responseCode < 400 || responseCode == 401 || responseCode == 403;
+        return responseCode < 500 && responseCode != 404;
     }
 
     private boolean isSiteCurrentlyReachable(OwaspZapScanContext scanContext, URL url, int maxNumberOfConnectionRetries, int retryWaittimeInMilliseconds) {

@@ -43,6 +43,8 @@ public class OwaspZapScanContext {
     private Set<URL> owaspZapURLsIncludeList = new HashSet<>();
     private Set<URL> owaspZapURLsExcludeList = new HashSet<>();
 
+    private boolean connectionCheckEnabled;
+
     private int maxNumberOfConnectionRetries;
     private int retryWaittimeInMilliseconds;
 
@@ -129,6 +131,10 @@ public class OwaspZapScanContext {
         return owaspZapURLsExcludeList;
     }
 
+    public boolean connectionCheckEnabled() {
+        return connectionCheckEnabled;
+    }
+
     public int getMaxNumberOfConnectionRetries() {
         return maxNumberOfConnectionRetries;
     }
@@ -176,6 +182,8 @@ public class OwaspZapScanContext {
         // Using Set here to avoid duplicates
         private Set<URL> owaspZapURLsIncludeList = new HashSet<>();
         private Set<URL> owaspZapURLsExcludeList = new HashSet<>();
+
+        private boolean connectionCheckEnabled;
 
         private int maxNumberOfConnectionRetries;
         private int setRetryWaittimeInMilliseconds;
@@ -262,6 +270,11 @@ public class OwaspZapScanContext {
             return this;
         }
 
+        public OwaspZapBasicScanContextBuilder setConnectionCheckEnabled(boolean connectionCheckEnabled) {
+            this.connectionCheckEnabled = connectionCheckEnabled;
+            return this;
+        }
+
         public OwaspZapBasicScanContextBuilder setMaxNumberOfConnectionRetries(int maxNumberOfConnectionRetries) {
             this.maxNumberOfConnectionRetries = maxNumberOfConnectionRetries;
             return this;
@@ -301,6 +314,8 @@ public class OwaspZapScanContext {
 
             owaspZapBasicScanConfiguration.owaspZapURLsIncludeList.addAll(this.owaspZapURLsIncludeList);
             owaspZapBasicScanConfiguration.owaspZapURLsExcludeList.addAll(this.owaspZapURLsExcludeList);
+
+            owaspZapBasicScanConfiguration.connectionCheckEnabled = this.connectionCheckEnabled;
 
             owaspZapBasicScanConfiguration.maxNumberOfConnectionRetries = this.maxNumberOfConnectionRetries;
             owaspZapBasicScanConfiguration.retryWaittimeInMilliseconds = this.setRetryWaittimeInMilliseconds;
