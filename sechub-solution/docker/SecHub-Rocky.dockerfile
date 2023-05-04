@@ -23,8 +23,8 @@ ARG GO="go1.20.1.linux-${TARGETARCH}.tar.gz"
 
 # possible values: temurin, openj9, openjdk
 ARG JAVA_DISTRIBUTION="openjdk"
-# possible values are 11, 17
-ARG JAVA_VERSION="11"
+# possible values: 17
+ARG JAVA_VERSION="17"
 
 # Artifact folder
 ARG SECHUB_ARTIFACT_FOLDER="/artifacts"

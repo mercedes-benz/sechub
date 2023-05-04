@@ -12,8 +12,8 @@ ARG PDS_VERSION
 ARG BUILD_TYPE
 ARG GO="go1.19.linux-amd64.tar.gz"
 
-# possible values are 11, 17
-ARG JAVA_VERSION="11"
+# possible values: 17
+ARG JAVA_VERSION="17"
 
 # Artifact folder 
 ARG PDS_ARTIFACT_FOLDER="/artifacts"

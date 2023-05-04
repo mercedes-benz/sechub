@@ -3,6 +3,7 @@ package com.mercedesbenz.sechub.domain.schedule.job;
 
 import static com.mercedesbenz.sechub.domain.schedule.ExecutionState.*;
 import static com.mercedesbenz.sechub.domain.schedule.job.JobCreator.*;
+import static com.mercedesbenz.sechub.test.FlakyOlderThanTestWorkaround.*;
 import static org.junit.Assert.*;
 
 import java.time.LocalDateTime;
@@ -235,11 +236,14 @@ public class SecHubJobRepositoryDBTest {
         DeleteJobTestData testData = new DeleteJobTestData();
         testData.createAndCheckAvailable();
 
+        LocalDateTime olderThan = olderThanForDelete(testData.before_1_day);
+
         /* execute */
-        jobRepository.deleteJobsOlderThan(testData.before_1_day);
+        int deleted = jobRepository.deleteJobsOlderThan(olderThan);
         jobRepository.flush();
 
         /* test */
+        assertDeleted(2, deleted, testData, olderThan);
         List<ScheduleSecHubJob> allJobsNow = jobRepository.findAll();
         assertTrue(allJobsNow.contains(testData.job3_1_day_before_created));
         assertTrue(allJobsNow.contains(testData.job4_now_created));
@@ -252,11 +256,14 @@ public class SecHubJobRepositoryDBTest {
         DeleteJobTestData testData = new DeleteJobTestData();
         testData.createAndCheckAvailable();
 
+        LocalDateTime olderThan = testData.before_1_day.plusSeconds(1);
+
         /* execute */
-        jobRepository.deleteJobsOlderThan(testData.before_1_day.plusSeconds(1));
+        int deleted = jobRepository.deleteJobsOlderThan(olderThan);
         jobRepository.flush();
 
         /* test */
+        assertDeleted(3, deleted, testData, olderThan);
         List<ScheduleSecHubJob> allJobsNow = jobRepository.findAll();
         assertTrue(allJobsNow.contains(testData.job4_now_created));
         assertEquals(1, allJobsNow.size());
@@ -268,11 +275,14 @@ public class SecHubJobRepositoryDBTest {
         DeleteJobTestData testData = new DeleteJobTestData();
         testData.createAndCheckAvailable();
 
+        LocalDateTime olderThan = olderThanForDelete(testData.before_90_days);
+
         /* execute */
-        jobRepository.deleteJobsOlderThan(testData.before_90_days);
+        int deleted = jobRepository.deleteJobsOlderThan(olderThan);
         jobRepository.flush();
 
         /* test */
+        assertDeleted(0, deleted, testData, olderThan);
         List<ScheduleSecHubJob> allJobsNow = jobRepository.findAll();
         assertTrue(allJobsNow.contains(testData.job1_90_days_before_created));
         assertTrue(allJobsNow.contains(testData.job2_2_days_before_created));
@@ -287,12 +297,14 @@ public class SecHubJobRepositoryDBTest {
         DeleteJobTestData testData = new DeleteJobTestData();
         testData.createAndCheckAvailable();
 
+        LocalDateTime olderThan = olderThanForDelete(testData.before_90_days);
+
         /* execute */
-        int deleted = jobRepository.deleteJobsOlderThan(testData.before_90_days);
+        int deleted = jobRepository.deleteJobsOlderThan(olderThan);
         jobRepository.flush();
 
         /* test */
-        assertEquals(0, deleted);
+        assertDeleted(0, deleted, testData, olderThan);
     }
 
     @Test
@@ -301,29 +313,14 @@ public class SecHubJobRepositoryDBTest {
         DeleteJobTestData testData = new DeleteJobTestData();
         testData.createAndCheckAvailable();
 
+        LocalDateTime olderThan = testData.before_89_days;
+
         /* execute */
-        jobRepository.deleteJobsOlderThan(testData.before_89_days.minusSeconds(1));
+        int deleted = jobRepository.deleteJobsOlderThan(olderThan);
         jobRepository.flush();
 
         /* test */
-        List<ScheduleSecHubJob> allJobsNow = jobRepository.findAll();
-        assertTrue(allJobsNow.contains(testData.job2_2_days_before_created));
-        assertTrue(allJobsNow.contains(testData.job3_1_day_before_created));
-        assertTrue(allJobsNow.contains(testData.job4_now_created));
-        assertEquals(3, allJobsNow.size());
-    }
-
-    @Test
-    public void test_data_4_jobs_oldest_90_days_delete_1_day() throws Exception {
-        /* prepare */
-        DeleteJobTestData testData = new DeleteJobTestData();
-        testData.createAndCheckAvailable();
-
-        /* execute */
-        jobRepository.deleteJobsOlderThan(testData.before_89_days.minusSeconds(1));
-        jobRepository.flush();
-
-        /* test */
+        assertDeleted(1, deleted, testData, olderThan);
         List<ScheduleSecHubJob> allJobsNow = jobRepository.findAll();
         assertTrue(allJobsNow.contains(testData.job2_2_days_before_created));
         assertTrue(allJobsNow.contains(testData.job3_1_day_before_created));
@@ -337,12 +334,14 @@ public class SecHubJobRepositoryDBTest {
         DeleteJobTestData testData = new DeleteJobTestData();
         testData.createAndCheckAvailable();
 
+        LocalDateTime olderThan = testData.before_89_days;
+
         /* execute */
-        int deleted = jobRepository.deleteJobsOlderThan(testData.before_89_days.minusSeconds(1));
+        int deleted = jobRepository.deleteJobsOlderThan(olderThan);
         jobRepository.flush();
 
         /* test */
-        assertEquals(1, deleted);
+        assertDeleted(1, deleted, testData, olderThan);
     }
 
     @Test
@@ -401,6 +400,48 @@ public class SecHubJobRepositoryDBTest {
 		/* test @formatter:on*/
         assertNotNull(jobUUID);
         assertEquals(expectedNextJob.getUUID(), jobUUID);
+    }
+
+    private void assertDeleted(int expected, int deleted, DeleteJobTestData testData, LocalDateTime olderThan) {
+        if (deleted == expected) {
+            return;
+        }
+        StringBuilder sb = new StringBuilder();
+        List<ScheduleSecHubJob> all = jobRepository.findAll();
+        sb.append("Delete call did return ").append(deleted).append(" uploadMaximumBytes was ").append(expected).append("\n");
+        sb.append("The remaining entries are:\n");
+        for (ScheduleSecHubJob info : all) {
+            sb.append(resolveName(info.created, testData)).append("- since       : ").append(info.created).append("\n");
+        }
+        sb.append("\n-----------------------------------------------------");
+        sb.append("\nolderThan was: ").append(olderThan).append(" - means :").append((resolveName(olderThan, testData)));
+        sb.append("\n-----------------------------------------------------\n");
+        sb.append(describe(testData.job1_90_days_before_created, testData));
+        sb.append(describe(testData.job2_2_days_before_created, testData));
+        sb.append(describe(testData.job3_1_day_before_created, testData));
+        sb.append(describe(testData.job4_now_created, testData));
+
+        fail(sb.toString());
+    }
+
+    private String describe(ScheduleSecHubJob info, DeleteJobTestData data) {
+        return resolveName(info.created, data) + " - created: " + info.created + "\n";
+    }
+
+    private String resolveName(LocalDateTime time, DeleteJobTestData data) {
+        if (data.job1_90_days_before_created.created.equals(time)) {
+            return "job1_90_days_before_created";
+        }
+        if (data.job2_2_days_before_created.created.equals(time)) {
+            return "job2_2_days_before_created";
+        }
+        if (data.job3_1_day_before_created.created.equals(time)) {
+            return "job3_1_day_before_created";
+        }
+        if (data.job4_now_created.created.equals(time)) {
+            return "job4_now_created";
+        }
+        return null;
     }
 
     private class DeleteJobTestData {
