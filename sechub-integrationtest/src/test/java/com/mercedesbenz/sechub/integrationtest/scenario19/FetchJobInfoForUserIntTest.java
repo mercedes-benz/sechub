@@ -47,7 +47,7 @@ public class FetchJobInfoForUserIntTest {
         assertUserJobInfo(jobInfoListA).
             hasPage(0).
             hasTotalPages(3).
-            hasJobInfoFor(sechubJobUUD3).
+            hasJobInfoFor(sechubJobUUD3,0).
             and().
             hasProjectId(project.getProjectId());
 
@@ -57,9 +57,9 @@ public class FetchJobInfoForUserIntTest {
         /* test (B) */
         assertUserJobInfo(jobInfoListB).
             hasEntries(2).
-            hasJobInfoFor(sechubJobUUD3).
+            hasJobInfoFor(sechubJobUUD3,0).
             and().
-            hasJobInfoFor(sechubJobUUD2);
+            hasJobInfoFor(sechubJobUUD2,1);
 
 
         /* execute (C) - use size 10 */
@@ -70,11 +70,11 @@ public class FetchJobInfoForUserIntTest {
             hasEntries(3).
             hasPage(0).
             hasTotalPages(1).
-            hasJobInfoFor(sechubJobUUD3).
+            hasJobInfoFor(sechubJobUUD3,0).
             and().
-            hasJobInfoFor(sechubJobUUD2).
+            hasJobInfoFor(sechubJobUUD2,1).
             and().
-            hasJobInfoFor(sechubJobUUD1);
+            hasJobInfoFor(sechubJobUUD1,2);
 
         /* prepare (D) */
         UUID sechubJobUUD4 = as(USER_1).createWebScan(project);
@@ -87,11 +87,11 @@ public class FetchJobInfoForUserIntTest {
             hasPage(0).
             hasTotalPages(2).
             hasEntries(2).
-            hasJobInfoFor(sechubJobUUD3).
+            hasJobInfoFor(sechubJobUUD3,1).
                 withExecutionResult("NONE").
                 withOneOfAllowedExecutionStates("INITIALIZING").
             and().
-            hasJobInfoFor(sechubJobUUD4);
+            hasJobInfoFor(sechubJobUUD4,0); // is newer, so on top
 
         /* execute (E) - use size 0 - will do fallback to one  */
         TestSecHubJobInfoForUserListPage jobInfoListE = as(USER_1).fetchUserJobInfoList(project, 0);
@@ -99,7 +99,7 @@ public class FetchJobInfoForUserIntTest {
         /* test (E) */
         assertUserJobInfo(jobInfoListE).
             hasEntries(1).
-            hasJobInfoFor(sechubJobUUD4).
+            hasJobInfoFor(sechubJobUUD4,0).
                 withExecutionResult("NONE").
                 withOneOfAllowedExecutionStates("INITIALIZING");
 
@@ -113,7 +113,7 @@ public class FetchJobInfoForUserIntTest {
         /* test (F) */
         assertUserJobInfo(jobInfoListF).
             hasEntries(1).
-            hasJobInfoFor(sechubJobUUD4).
+            hasJobInfoFor(sechubJobUUD4,0).
                 withExecutionResult("FAILED").
                 withOneOfAllowedExecutionStates("CANCELED", "CANCEL_REQUESTED");
 
@@ -123,7 +123,7 @@ public class FetchJobInfoForUserIntTest {
         /* test (H) */
         assertUserJobInfo(jobInfoListG).
             hasEntries(1).
-            hasJobInfoFor(sechubJobUUD3).
+            hasJobInfoFor(sechubJobUUD3,0).
                 withExecutionResult("NONE").
                 withOneOfAllowedExecutionStates("INITIALIZING");
 
@@ -134,7 +134,7 @@ public class FetchJobInfoForUserIntTest {
         assertUserJobInfo(jobInfoListH).
             hasEntries(1).
             hasTotalPages(4).
-            hasJobInfoFor(sechubJobUUD2);
+            hasJobInfoFor(sechubJobUUD2,0);
 
 
         /* execute (I) - use size 1 - page 200 (will be reduced to default max: 100, but still not existing) */

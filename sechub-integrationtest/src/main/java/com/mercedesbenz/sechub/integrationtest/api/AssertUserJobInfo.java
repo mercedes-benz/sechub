@@ -27,23 +27,50 @@ public class AssertUserJobInfo {
         this.listPage = listPage;
     }
 
+    /**
+     * Asserts the fetched job info list does contain an entry for the job - no
+     * matter which position
+     *
+     * @param jobUUID
+     * @return assert object
+     */
     public AssertUserJobInfoForJob hasJobInfoFor(UUID jobUUID) {
-        return new AssertUserJobInfoForJob(jobUUID);
+        return hasJobInfoFor(jobUUID, -1);
+    }
+
+    /**
+     * Asserts the fetched job info list does contain an entry for the job at the
+     * expected position
+     *
+     * @param jobUUID
+     * @param expectedPosition
+     * @return assert object
+     */
+    public AssertUserJobInfoForJob hasJobInfoFor(UUID jobUUID, int expectedPosition) {
+        return new AssertUserJobInfoForJob(jobUUID, expectedPosition);
     }
 
     public class AssertUserJobInfoForJob {
 
         private TestSecHubJobInfoForUser info;
 
-        private AssertUserJobInfoForJob(UUID jobUUID) {
+        private AssertUserJobInfoForJob(UUID jobUUID, int expectedPosition) {
+            int pos = 0;
             for (TestSecHubJobInfoForUser info : listPage.getContent()) {
                 if (jobUUID.equals(info.jobUUID)) {
                     this.info = info;
                     break;
                 }
+                pos++;
             }
             if (this.info == null) {
                 dumpInfoAndfailWith("Did not contain a job with uuid:" + jobUUID);
+            }
+
+            if (expectedPosition >= 0) {
+                if (expectedPosition != pos) {
+                    fail("A job info for the job with uuid:" + jobUUID + " is found, but\nposition is:" + pos + " and expected was:" + expectedPosition);
+                }
             }
         }
 
