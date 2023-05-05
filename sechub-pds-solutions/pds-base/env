@@ -9,11 +9,11 @@ CPU_LIMIT=1.0
 # download - downloads the SecHub jar
 BUILD_TYPE=download
 
-# The PDS version used if the BUILD_TYPE is set to `download` 
+# The PDS version used if the BUILD_TYPE is set to `download`
 PDS_VERSION="0.34.1"
 
 # Go version used
-GO="go1.19.linux-amd64.tar.gz"
+GO="go1.20.4.linux-amd64.tar.gz"
 
 # The Java version used
 JAVA_VERSION="11"
