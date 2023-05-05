@@ -27,7 +27,7 @@ jobs:
       - name: Set up Go
         uses: actions/setup-go@v4
         with:
-          go-version: 1.19.1
+          go-version: 1.20.4
       - uses: actions/cache@v3.3.1
         with:
           path: |
@@ -83,7 +83,7 @@ jobs:
         with:
           name: sechub-pds
           path: sechub-pds/build/libs
-          
+
       - name: Archive pds tools artifacts
         if: always()
         uses: actions/upload-artifact@v3
