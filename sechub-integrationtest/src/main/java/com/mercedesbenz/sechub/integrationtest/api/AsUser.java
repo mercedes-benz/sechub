@@ -485,15 +485,19 @@ public class AsUser {
         return getRestHelper().postJson(url, templateJson);
     }
 
-    private String createWebScanJob(TestProject project, IntegrationTestMockMode runMode) {
+    private String createWebScanJob(TestProject project, IntegrationTestMockMode runMode, IntegrationTestTemplateFile customTemplateFile) {
         List<String> whites = project.getWhiteListUrls();
         String acceptedURI1 = createTargetURIForSechubConfiguration(runMode, whites);
 
-        return createWebScanJobForTargetURL(project, acceptedURI1);
+        return createWebScanJobForTargetURL(project, acceptedURI1, customTemplateFile);
     }
 
-    private String createWebScanJobForTargetURL(TestProject project, String targetURL) {
-        String json = getConfigTemplate(IntegrationTestTemplateFile.WEBSCAN_1);
+    private String createWebScanJobForTargetURL(TestProject project, String targetURL, IntegrationTestTemplateFile customTemplateFile) {
+        IntegrationTestTemplateFile templateToUse = customTemplateFile;
+        if (templateToUse == null) {
+            templateToUse = IntegrationTestTemplateFile.WEBSCAN_1;
+        }
+        String json = getConfigTemplate(templateToUse);
         String projectId = project.getProjectId();
 
         json = json.replaceAll("__projectId__", projectId);
@@ -702,6 +706,17 @@ public class AsUser {
      * started)
      *
      * @param project
+     * @return uuid for created job
+     */
+    public UUID createWebScan(TestProject project, IntegrationTestTemplateFile templateFile) {
+        return createWebScan(project, null, true, templateFile);
+    }
+
+    /**
+     * Creates a webscan job for project (but job is not approved, so will not be
+     * started)
+     *
+     * @param project
      * @param useLongRunningButGreen
      * @return uuid for created job
      */
@@ -731,7 +746,22 @@ public class AsUser {
      * @return uuid for created job
      */
     public UUID createWebScan(TestProject project, IntegrationTestMockMode runMode, boolean checkExists) {
+        return createWebScan(project, runMode, checkExists, null);
+    }
 
+    /**
+     * Creates a webscan job for project (but job is not approved, so will not be
+     * started)
+     *
+     * @param project
+     * @param useLongRunningButGreen
+     * @param checkExists
+     * @param customTemplateFile     if <code>null</code> the default
+     *                               (IntegrationTestTemplateFile#WEBSCAN_1) will be
+     *                               used, otherwise the given one
+     * @return uuid for created job
+     */
+    public UUID createWebScan(TestProject project, IntegrationTestMockMode runMode, boolean checkExists, IntegrationTestTemplateFile customTemplateFile) {
         if (checkExists) {
             assertProject(project).doesExist();
         }
@@ -739,10 +769,9 @@ public class AsUser {
         if (runMode == null) {
             runMode = IntegrationTestMockMode.WEBSCAN__NETSPARKER_GREEN__ZERO_WAIT;
         }
-        String jsonResponse = createWebScanJob(project, runMode);
+        String jsonResponse = createWebScanJob(project, runMode, customTemplateFile);
 
         return fetchJobUUID(jsonResponse);
-
     }
 
     /**
@@ -754,7 +783,7 @@ public class AsUser {
      * @return uuid
      */
     public UUID createWebScan(TestProject project, String targetURL) {
-        String jsonResponse = createWebScanJobForTargetURL(project, targetURL);
+        String jsonResponse = createWebScanJobForTargetURL(project, targetURL, null);
         return fetchJobUUID(jsonResponse);
     }
 
@@ -1235,7 +1264,7 @@ public class AsUser {
      * @return info or <code>null</code>, if no job available at all
      */
     public TestSecHubJobInfoForUserListPage fetchUserJobInfoListOneEntryOrNull(TestProject project) {
-        TestSecHubJobInfoForUserListPage listPage = fetchUserJobInfoList(project, null, null);
+        TestSecHubJobInfoForUserListPage listPage = fetchUserJobInfoList(project, null, null, null);
         if (listPage.getContent().isEmpty()) {
             return null;
         }
@@ -1244,16 +1273,20 @@ public class AsUser {
     }
 
     public TestSecHubJobInfoForUserListPage fetchUserJobInfoList(TestProject project, int size) {
-        return fetchUserJobInfoList(project, String.valueOf(size), null);
+        return fetchUserJobInfoList(project, String.valueOf(size), null, null);
     }
 
     public TestSecHubJobInfoForUserListPage fetchUserJobInfoList(TestProject project, int size, int page) {
-        return fetchUserJobInfoList(project, String.valueOf(size), String.valueOf(page));
+        return fetchUserJobInfoList(project, String.valueOf(size), String.valueOf(page), null);
     }
 
-    public TestSecHubJobInfoForUserListPage fetchUserJobInfoList(TestProject project, String size, String page) {
+    public TestSecHubJobInfoForUserListPage fetchUserJobInfoList(TestProject project, int size, int page, boolean withMetaData) {
+        return fetchUserJobInfoList(project, String.valueOf(size), String.valueOf(page), String.valueOf(withMetaData));
+    }
 
-        String url = getUrlBuilder().buildUserFetchesListOfJobsForProject(project.getProjectId(), size, page);
+    private TestSecHubJobInfoForUserListPage fetchUserJobInfoList(TestProject project, String size, String page, String withMetaData) {
+
+        String url = getUrlBuilder().buildUserFetchesListOfJobsForProject(project.getProjectId(), size, page, withMetaData);
         String json = getRestHelper().getJSON(url);
 
         TestSecHubJobInfoForUserListPage listPage = TestJSONHelper.get().createFromJSON(json, TestSecHubJobInfoForUserListPage.class);

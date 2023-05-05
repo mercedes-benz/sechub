@@ -12,7 +12,6 @@ import java.util.List;
 import java.util.UUID;
 
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.mockito.ArgumentCaptor;
@@ -21,6 +20,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Order;
 
+import com.mercedesbenz.sechub.commons.model.SecHubConfigurationMetaData;
+import com.mercedesbenz.sechub.commons.model.SecHubScanConfiguration;
 import com.mercedesbenz.sechub.commons.model.TrafficLight;
 import com.mercedesbenz.sechub.domain.schedule.ExecutionResult;
 import com.mercedesbenz.sechub.domain.schedule.ExecutionState;
@@ -46,13 +47,14 @@ class SecHubJobInfoForUserServiceTest {
 
     }
 
-    @Test
-    void assert_validation_is_done_before_any_repo_interaction() {
+    @ParameterizedTest
+    @ValueSource(booleans = { true, false })
+    void assert_validation_is_done_before_any_repo_interaction(boolean withMetaData) {
         /* prepare */
         doThrow(new TestCanaryException()).when(assertService).assertUserHasAccessToProject("project1");
 
         /* execute */
-        assertThrows(TestCanaryException.class, () -> serviceToTest.listJobsForProject("project1", 1000, 0));
+        assertThrows(TestCanaryException.class, () -> serviceToTest.listJobsForProject("project1", 1000, 0, withMetaData));
 
         /* test */
         verify(assertService).assertProjectIdValid("project1"); // project validation is done before
@@ -77,7 +79,7 @@ class SecHubJobInfoForUserServiceTest {
         serviceToTest.postConstruct();
 
         /* execute */
-        serviceToTest.listJobsForProject("project1", limit, 0);
+        serviceToTest.listJobsForProject("project1", limit, 0, false);
 
         /* test */
         ArgumentCaptor<Pageable> pageableCaptor = ArgumentCaptor.forClass(Pageable.class);
@@ -113,7 +115,7 @@ class SecHubJobInfoForUserServiceTest {
         serviceToTest.postConstruct();
 
         /* execute */
-        serviceToTest.listJobsForProject("project1", limit, 0);
+        serviceToTest.listJobsForProject("project1", limit, 0, false);
 
         /* test */
         ArgumentCaptor<Pageable> pageableCaptor = ArgumentCaptor.forClass(Pageable.class);
@@ -144,7 +146,7 @@ class SecHubJobInfoForUserServiceTest {
         serviceToTest.postConstruct();
 
         /* execute */
-        serviceToTest.listJobsForProject("project1", limit, 0);
+        serviceToTest.listJobsForProject("project1", limit, 0, false);
 
         /* test */
         ArgumentCaptor<Pageable> pageableCaptor = ArgumentCaptor.forClass(Pageable.class);
@@ -170,17 +172,27 @@ class SecHubJobInfoForUserServiceTest {
         assertEquals(100, serviceToTest.maximumSize);
     }
 
-    @Test
-    void sechub_job_entries_returned_by_job_repo_are_base_for_result() {
+    @ParameterizedTest
+    @ValueSource(booleans = { true, false })
+    void sechub_job_entries_returned_by_job_repo_are_base_for_result__jobs_have_metadata(boolean withMetaData) {
+        createEntriesAndAssertMetaDataAvailableOrNot(withMetaData, true);
+    }
 
+    @ParameterizedTest
+    @ValueSource(booleans = { true, false })
+    void sechub_job_entries_returned_by_job_repo_are_base_for_result__jobs_have_no_metadata(boolean withMetaData) {
+        createEntriesAndAssertMetaDataAvailableOrNot(withMetaData, false);
+    }
+
+    private void createEntriesAndAssertMetaDataAvailableOrNot(boolean withMetaData, boolean createdJobsHaveMetaDataInside) {
         /* prepare */
 
         List<ScheduleSecHubJob> list = new ArrayList<>();
-        ScheduleSecHubJob job1 = createJob(TrafficLight.GREEN, ExecutionResult.OK, ExecutionState.ENDED);
-        ScheduleSecHubJob job2 = createJob(TrafficLight.RED, ExecutionResult.FAILED, ExecutionState.CANCELED);
-        ScheduleSecHubJob job3 = createJob(TrafficLight.RED, ExecutionResult.OK, ExecutionState.ENDED);
-        ScheduleSecHubJob job4 = createJob(null, ExecutionResult.NONE, ExecutionState.STARTED);
-        ScheduleSecHubJob job5 = createJob(null, null, ExecutionState.READY_TO_START);
+        ScheduleSecHubJob job1 = createJob(TrafficLight.GREEN, ExecutionResult.OK, ExecutionState.ENDED, createdJobsHaveMetaDataInside);
+        ScheduleSecHubJob job2 = createJob(TrafficLight.RED, ExecutionResult.FAILED, ExecutionState.CANCELED, createdJobsHaveMetaDataInside);
+        ScheduleSecHubJob job3 = createJob(TrafficLight.RED, ExecutionResult.OK, ExecutionState.ENDED, createdJobsHaveMetaDataInside);
+        ScheduleSecHubJob job4 = createJob(null, ExecutionResult.NONE, ExecutionState.STARTED, createdJobsHaveMetaDataInside);
+        ScheduleSecHubJob job5 = createJob(null, null, ExecutionState.READY_TO_START, createdJobsHaveMetaDataInside);
         list.add(job1);
         list.add(job2);
         list.add(job3);
@@ -193,7 +205,7 @@ class SecHubJobInfoForUserServiceTest {
         when(jobRepository.findAll(any(), any(Pageable.class))).thenReturn(page);
 
         /* execute */
-        SecHubJobInfoForUserListPage listPage = serviceToTest.listJobsForProject("project1", 10, 0);
+        SecHubJobInfoForUserListPage listPage = serviceToTest.listJobsForProject("project1", 10, 0, withMetaData);
 
         /* test */
         List<SecHubJobInfoForUser> content = listPage.getContent();
@@ -211,6 +223,14 @@ class SecHubJobInfoForUserServiceTest {
         assertInfoBasedOnJob(info4, job4);
         assertInfoBasedOnJob(info5, job5);
 
+        boolean mustHaveMetaData = withMetaData && createdJobsHaveMetaDataInside;
+
+        if (mustHaveMetaData) {
+            assertTrue(info1.getMetaData().isPresent());
+        } else {
+            /* the job has meta data but it is not added here : */
+            assertTrue(info1.getMetaData().isEmpty());
+        }
     }
 
     private void assertInfoBasedOnJob(SecHubJobInfoForUser info, ScheduleSecHubJob job) {
@@ -246,7 +266,7 @@ class SecHubJobInfoForUserServiceTest {
 
     }
 
-    private ScheduleSecHubJob createJob(TrafficLight trafficLight, ExecutionResult result, ExecutionState state) {
+    private ScheduleSecHubJob createJob(TrafficLight trafficLight, ExecutionResult result, ExecutionState state, boolean createJobsWithMetaData) {
         ScheduleSecHubJob sechubJob = new ScheduleSecHubJob();
         sechubJob.uUID = UUID.randomUUID();// simulate generation
         sechubJob.created = LocalDateTime.now().minusMinutes(3); // simulate factory creation timestamp
@@ -257,6 +277,15 @@ class SecHubJobInfoForUserServiceTest {
         sechubJob.setOwner("the-owner-id" + System.currentTimeMillis());
         sechubJob.setExecutionResult(result);
         sechubJob.setExecutionState(state);
+
+        if (createJobsWithMetaData) {
+
+            SecHubScanConfiguration config = new SecHubScanConfiguration();
+            SecHubConfigurationMetaData metaData = new SecHubConfigurationMetaData();
+            metaData.getLabels().put("testlabel1", "testvalue1");
+            config.setMetaData(metaData);
+            sechubJob.jsonConfiguration = config.toJSON();
+        }
 
         return sechubJob;
     }

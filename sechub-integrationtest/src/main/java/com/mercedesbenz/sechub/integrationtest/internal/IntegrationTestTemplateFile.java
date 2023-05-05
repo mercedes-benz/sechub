@@ -7,7 +7,22 @@ public enum IntegrationTestTemplateFile {
 
     UPDATE_WHITELIST("sechub-integrationtest-updatewhitelist1.json"),
 
+    /**
+     * Simple webscan setup
+     */
     WEBSCAN_1("sechub-integrationtest-webscanconfig1.json"),
+
+    /**
+     * Same as {@link #WEBSCAN_1} but with meta data inside :
+     *
+     * <h3>Labels</h3>
+     *
+     * <pre>
+     * stage:testing
+     * purpose:quality assurance
+     * </pre>
+     */
+    WEBSCAN_2("sechub-integrationtest-webscanconfig2.json"),
 
     CODE_SCAN_1_SOURCE_EMBEDDED("sechub-integrationtest-sourcescanconfig1.json"),
 

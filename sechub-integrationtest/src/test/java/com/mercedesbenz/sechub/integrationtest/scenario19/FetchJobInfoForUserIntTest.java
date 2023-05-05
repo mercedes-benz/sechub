@@ -13,6 +13,7 @@ import org.junit.rules.Timeout;
 import com.mercedesbenz.sechub.integrationtest.api.IntegrationTestSetup;
 import com.mercedesbenz.sechub.integrationtest.api.TestProject;
 import com.mercedesbenz.sechub.integrationtest.api.TestSecHubJobInfoForUserListPage;
+import com.mercedesbenz.sechub.integrationtest.internal.IntegrationTestTemplateFile;
 
 /**
  * Integration tests to check operations for user job information fetching
@@ -37,7 +38,7 @@ public class FetchJobInfoForUserIntTest {
         /* @formatter:off */
         /* prepare */
         UUID sechubJobUUD1 = as(USER_1).createWebScan(project);
-        UUID sechubJobUUD2 = as(USER_1).createWebScan(project);
+        UUID sechubJobUUD2 = as(USER_1).createWebScan(project, IntegrationTestTemplateFile.WEBSCAN_2); // only this job has meta data inside
         UUID sechubJobUUD3 = as(USER_1).createWebScan(project);
 
         /* execute (A) - default size (1) */
@@ -57,24 +58,25 @@ public class FetchJobInfoForUserIntTest {
         /* test (B) */
         assertUserJobInfo(jobInfoListB).
             hasEntries(2).
-            hasJobInfoFor(sechubJobUUD3,0).
+            hasJobInfoFor(sechubJobUUD3,0).withoutMetaData().
             and().
-            hasJobInfoFor(sechubJobUUD2,1);
+            hasJobInfoFor(sechubJobUUD2,1).withoutMetaData();
 
 
         /* execute (C) - use size 10 */
-        TestSecHubJobInfoForUserListPage jobInfoListC = as(USER_1).fetchUserJobInfoList(project, 10);
+        TestSecHubJobInfoForUserListPage jobInfoListC = as(USER_1).fetchUserJobInfoList(project, 10, 0, true);
 
         /* test (C) */
         assertUserJobInfo(jobInfoListC).
             hasEntries(3).
             hasPage(0).
             hasTotalPages(1).
-            hasJobInfoFor(sechubJobUUD3,0).
+            hasJobInfoFor(sechubJobUUD3,0).withoutMetaData().
             and().
-            hasJobInfoFor(sechubJobUUD2,1).
+            hasJobInfoFor(sechubJobUUD2,1).withLabel("stage","testing").withLabel("purpose", "quality assurance").
             and().
-            hasJobInfoFor(sechubJobUUD1,2);
+            hasJobInfoFor(sechubJobUUD1,2).withoutMetaData()
+            ;
 
         /* prepare (D) */
         UUID sechubJobUUD4 = as(USER_1).createWebScan(project);

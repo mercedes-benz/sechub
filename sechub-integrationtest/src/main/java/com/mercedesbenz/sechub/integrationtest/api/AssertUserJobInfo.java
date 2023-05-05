@@ -5,11 +5,14 @@ import static org.junit.Assert.*;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.mercedesbenz.sechub.commons.model.JSONConverter;
+import com.mercedesbenz.sechub.commons.model.SecHubConfigurationMetaData;
 import com.mercedesbenz.sechub.integrationtest.internal.TestJSONHelper;
 
 public class AssertUserJobInfo {
@@ -72,6 +75,37 @@ public class AssertUserJobInfo {
                     fail("A job info for the job with uuid:" + jobUUID + " is found, but\nposition is:" + pos + " and expected was:" + expectedPosition);
                 }
             }
+        }
+
+        public AssertUserJobInfoForJob withoutMetaData() {
+            if (info.metaData.isPresent()) {
+                fail("The job info does contain any meta data!\n" + JSONConverter.get().toJSON(info.metaData, true));
+            }
+            return this;
+        }
+
+        public AssertUserJobInfoForJob withMetaData() {
+            fetchMetaDataOrFail();
+            return this;
+        }
+
+        public AssertUserJobInfoForJob withLabel(String key, String expectedValue) {
+            SecHubConfigurationMetaData metaData = fetchMetaDataOrFail();
+            Map<String, String> labels = metaData.getLabels();
+            if (!labels.containsKey(key)) {
+                fail("Labels found but do not contain key:" + key + "\n" + labels);
+            }
+            String value = labels.get(key);
+            assertEquals("Label with " + key + " has not expected value", expectedValue, value);
+            return this;
+        }
+
+        private SecHubConfigurationMetaData fetchMetaDataOrFail() {
+            if (info.metaData.isEmpty()) {
+                fail("The job info does not contain any meta data!");
+            }
+            SecHubConfigurationMetaData metaData = info.metaData.get();
+            return metaData;
         }
 
         public AssertUserJobInfoForJob withOneOfAllowedExecutionStates(String... acceptedStates) {

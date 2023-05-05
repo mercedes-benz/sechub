@@ -97,9 +97,10 @@ public class SecHubTestURLBuilder extends AbstractTestURLBuilder {
         return buildUrl(API_PROJECT, projectId, "false-positives");
     }
 
-    public String buildUserFetchesListOfJobsForProject(String projectId, String size, String page) {
+    public String buildUserFetchesListOfJobsForProject(String projectId, String size, String page, String withMetaData) {
 
-        String url = appendParameters(buildUrl(API_PROJECT, projectId, "jobs"), params().set("size", size).set("page", page).build());
+        String url = appendParameters(buildUrl(API_PROJECT, projectId, "jobs"),
+                params().set("size", size).set("page", page).set("withMetaData", withMetaData).build());
         return url;
     }
 

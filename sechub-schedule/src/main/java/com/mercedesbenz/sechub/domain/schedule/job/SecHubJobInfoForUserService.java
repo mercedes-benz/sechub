@@ -1,6 +1,8 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.domain.schedule.job;
 
+import java.util.Optional;
+
 import javax.annotation.PostConstruct;
 
 import org.slf4j.Logger;
@@ -15,6 +17,8 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.stereotype.Service;
 
+import com.mercedesbenz.sechub.commons.model.SecHubConfigurationMetaData;
+import com.mercedesbenz.sechub.commons.model.SecHubScanConfiguration;
 import com.mercedesbenz.sechub.domain.schedule.ScheduleAssertService;
 import com.mercedesbenz.sechub.sharedkernel.MustBeDocumented;
 import com.mercedesbenz.sechub.sharedkernel.Step;
@@ -58,7 +62,7 @@ public class SecHubJobInfoForUserService {
     }
 
     @UseCaseUserListsJobsForProject(@Step(number = 2, name = "Assert access by service and fetch job information for user"))
-    public SecHubJobInfoForUserListPage listJobsForProject(String projectId, int size, int page) {
+    public SecHubJobInfoForUserListPage listJobsForProject(String projectId, int size, int page, boolean withMetaData) {
 
         assertService.assertProjectIdValid(projectId);
         assertService.assertProjectAllowsReadAccess(projectId);
@@ -85,10 +89,10 @@ public class SecHubJobInfoForUserService {
             page = maximumPage;
         }
 
-        return loadDataAndCreateListPage(projectId, size, page);
+        return loadDataAndCreateListPage(projectId, size, page, withMetaData);
     }
 
-    private SecHubJobInfoForUserListPage loadDataAndCreateListPage(String projectId, int size, int page) {
+    private SecHubJobInfoForUserListPage loadDataAndCreateListPage(String projectId, int size, int page, boolean withMetaData) {
         Pageable pageable = PageRequest.of(page, size, Sort.by(Direction.DESC, ScheduleSecHubJob.PROPERTY_CREATED));
 
         ScheduleSecHubJob probe = new ScheduleSecHubJob();
@@ -101,10 +105,10 @@ public class SecHubJobInfoForUserService {
         Example<ScheduleSecHubJob> example = Example.of(probe);
         Page<ScheduleSecHubJob> pageFound = jobRepository.findAll(example, pageable);
 
-        return transformToListPage(projectId, pageFound);
+        return transformToListPage(projectId, pageFound, withMetaData);
     }
 
-    private SecHubJobInfoForUserListPage transformToListPage(String projectId, Page<ScheduleSecHubJob> pageFound) {
+    private SecHubJobInfoForUserListPage transformToListPage(String projectId, Page<ScheduleSecHubJob> pageFound, boolean withMetaData) {
         SecHubJobInfoForUserListPage listPage = new SecHubJobInfoForUserListPage();
         listPage.setPage(pageFound.getNumber());
         listPage.setTotalPages(pageFound.getTotalPages());
@@ -125,8 +129,25 @@ public class SecHubJobInfoForUserService {
             infoForUser.setTrafficLight(job.getTrafficLight());
 
             listPage.getContent().add(infoForUser);
+
+            if (withMetaData) {
+                attachJobMetaData(job, infoForUser);
+            }
         }
         return listPage;
+    }
+
+    private void attachJobMetaData(ScheduleSecHubJob job, SecHubJobInfoForUser infoForUser) {
+        String json = job.getJsonConfiguration();
+        if (json == null) {
+            LOG.error("No sechub configuration found for job: {}. Cannot resolve meta data!", job.getUUID());
+            return;
+        }
+        SecHubScanConfiguration configuration = SecHubScanConfiguration.createFromJSON(json);
+        Optional<SecHubConfigurationMetaData> metaDataOpt = configuration.getMetaData();
+        if (metaDataOpt.isPresent()) {
+            infoForUser.setMetaData(metaDataOpt.get());
+        }
     }
 
 }

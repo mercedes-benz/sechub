@@ -44,6 +44,7 @@ import org.springframework.util.StringUtils;
 
 import com.mercedesbenz.sechub.commons.core.CommonConstants;
 import com.mercedesbenz.sechub.commons.model.SecHubCodeScanConfiguration;
+import com.mercedesbenz.sechub.commons.model.SecHubConfigurationMetaData;
 import com.mercedesbenz.sechub.commons.model.SecHubDataConfigurationUsageByName;
 import com.mercedesbenz.sechub.commons.model.SecHubFileSystemConfiguration;
 import com.mercedesbenz.sechub.commons.model.SecHubInfrastructureScanConfiguration;
@@ -708,7 +709,8 @@ public class SchedulerRestControllerRestDocTest implements TestIsNecessaryForDoc
     @UseCaseRestDoc(useCase = UseCaseUserListsJobsForProject.class)
     public void restDoc_userListsJobsForProject() throws Exception {
         /* prepare */
-        String apiEndpoint = https(PORT_USED).buildUserFetchesListOfJobsForProject(PROJECT_ID.pathElement(), SIZE.pathElement(), PAGE.pathElement());
+        String apiEndpoint = https(PORT_USED).buildUserFetchesListOfJobsForProject(PROJECT_ID.pathElement(), SIZE.pathElement(), PAGE.pathElement(),
+                WITH_META_DATA.pathElement());
         Class<? extends Annotation> useCase = UseCaseUserListsJobsForProject.class;
 
         SecHubJobInfoForUser job1 = new SecHubJobInfoForUser();
@@ -722,17 +724,21 @@ public class SchedulerRestControllerRestDocTest implements TestIsNecessaryForDoc
         job1.setExecutedBy("User1");
         job1.setTrafficLight(TrafficLight.GREEN);
 
+        SecHubConfigurationMetaData metaData = new SecHubConfigurationMetaData();
+        metaData.getLabels().put("stage", "testing");
+        job1.setMetaData(metaData);
+
         SecHubJobInfoForUserListPage listPage = new SecHubJobInfoForUserListPage();
         listPage.setPage(0);
         listPage.setTotalPages(1);
         List<SecHubJobInfoForUser> list = listPage.getContent();
         list.add(job1);
 
-        when(mockedJobInfoForUserService.listJobsForProject(PROJECT1_ID, 1, 0)).thenReturn(listPage);
+        when(mockedJobInfoForUserService.listJobsForProject(PROJECT1_ID, 1, 0, true)).thenReturn(listPage);
 
         /* execute + test @formatter:off */
         this.mockMvc.perform(
-                get(apiEndpoint, PROJECT1_ID,1,0).
+                get(apiEndpoint, PROJECT1_ID, 1, 0, true).
                     contentType(MediaType.APPLICATION_JSON_VALUE).
                     header(AuthenticationHelper.HEADER_NAME, AuthenticationHelper.getHeaderValue())
                 ).
@@ -753,7 +759,8 @@ public class SchedulerRestControllerRestDocTest implements TestIsNecessaryForDoc
                                           ),
                                           requestParameters(
                                               parameterWithName(SIZE.paramName()).optional().description("The wanted (maximum) size for the result set. When not defined, the default will be "+SchedulerRestController.DEFAULT_JOB_INFORMATION_SIZE),
-                                              parameterWithName(PAGE.paramName()).optional().description("The wanted page number. When not defined, the default will be "+SchedulerRestController.DEFAULT_JOB_INFORMATION_PAGE)
+                                              parameterWithName(PAGE.paramName()).optional().description("The wanted page number. When not defined, the default will be "+SchedulerRestController.DEFAULT_JOB_INFORMATION_PAGE),
+                                              parameterWithName(WITH_META_DATA.paramName()).optional().description("An optional parameter to define if meta data shall be fetched as well. When not defined, the default will be "+SchedulerRestController.DEFAULT_WITH_METADATA)
                                           ),
                                           responseFields(
                                             fieldWithPath(SecHubJobInfoForUserListPage.PROPERTY_PAGE).description("The page number"),
@@ -765,7 +772,8 @@ public class SchedulerRestControllerRestDocTest implements TestIsNecessaryForDoc
                                             fieldWithPath("content[]."+SecHubJobInfoForUser.PROPERTY_EXECUTED_BY).description("User who initiated the job"),
                                             fieldWithPath("content[]."+SecHubJobInfoForUser.PROPERTY_EXECUTION_STATE).description("Execution state of job"),
                                             fieldWithPath("content[]."+SecHubJobInfoForUser.PROPERTY_EXECUTION_RESULT).description("Execution result of job"),
-                                            fieldWithPath("content[]."+SecHubJobInfoForUser.PROPERTY_TRAFFIC_LIGHT).description("Trafficlight of job - but only available when job has been done. Possible states are "+StringUtils.arrayToDelimitedString(TrafficLight.values(),", "))
+                                            fieldWithPath("content[]."+SecHubJobInfoForUser.PROPERTY_TRAFFIC_LIGHT).description("Trafficlight of job - but only available when job has been done. Possible states are "+StringUtils.arrayToDelimitedString(TrafficLight.values(),", ")),
+                                            fieldWithPath("content[]."+SecHubJobInfoForUser.PROPERTY_METADATA+".labels.stage").description("Meta data of job (here a label with key 'stage') - but only available when "+WITH_META_DATA.paramName()+" is 'true'.")
                                           )
                             )
                 );
