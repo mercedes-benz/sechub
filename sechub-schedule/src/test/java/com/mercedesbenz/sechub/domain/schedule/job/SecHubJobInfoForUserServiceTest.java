@@ -7,6 +7,7 @@ import static org.mockito.Mockito.*;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.UUID;
@@ -54,7 +55,7 @@ class SecHubJobInfoForUserServiceTest {
         doThrow(new TestCanaryException()).when(assertService).assertUserHasAccessToProject("project1");
 
         /* execute */
-        assertThrows(TestCanaryException.class, () -> serviceToTest.listJobsForProject("project1", 1000, 0, withMetaData));
+        assertThrows(TestCanaryException.class, () -> serviceToTest.listJobsForProject("project1", 1000, 0, withMetaData, new HashMap<>()));
 
         /* test */
         verify(assertService).assertProjectIdValid("project1"); // project validation is done before
@@ -79,7 +80,7 @@ class SecHubJobInfoForUserServiceTest {
         serviceToTest.postConstruct();
 
         /* execute */
-        serviceToTest.listJobsForProject("project1", limit, 0, false);
+        serviceToTest.listJobsForProject("project1", limit, 0, false, new HashMap<>());
 
         /* test */
         ArgumentCaptor<Pageable> pageableCaptor = ArgumentCaptor.forClass(Pageable.class);
@@ -115,7 +116,7 @@ class SecHubJobInfoForUserServiceTest {
         serviceToTest.postConstruct();
 
         /* execute */
-        serviceToTest.listJobsForProject("project1", limit, 0, false);
+        serviceToTest.listJobsForProject("project1", limit, 0, false, new HashMap<>());
 
         /* test */
         ArgumentCaptor<Pageable> pageableCaptor = ArgumentCaptor.forClass(Pageable.class);
@@ -146,7 +147,7 @@ class SecHubJobInfoForUserServiceTest {
         serviceToTest.postConstruct();
 
         /* execute */
-        serviceToTest.listJobsForProject("project1", limit, 0, false);
+        serviceToTest.listJobsForProject("project1", limit, 0, false, new HashMap<>());
 
         /* test */
         ArgumentCaptor<Pageable> pageableCaptor = ArgumentCaptor.forClass(Pageable.class);
@@ -205,7 +206,7 @@ class SecHubJobInfoForUserServiceTest {
         when(jobRepository.findAll(any(), any(Pageable.class))).thenReturn(page);
 
         /* execute */
-        SecHubJobInfoForUserListPage listPage = serviceToTest.listJobsForProject("project1", 10, 0, withMetaData);
+        SecHubJobInfoForUserListPage listPage = serviceToTest.listJobsForProject("project1", 10, 0, withMetaData, new HashMap<>());
 
         /* test */
         List<SecHubJobInfoForUser> content = listPage.getContent();

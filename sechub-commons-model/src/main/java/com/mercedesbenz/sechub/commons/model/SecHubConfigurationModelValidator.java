@@ -33,11 +33,39 @@ public class SecHubConfigurationModelValidator {
 
     private List<String> supportedVersions;
 
+    /**
+     * Does validate a given map containing meta data labels. Same logic as for complete model,
+     * but useful when only label meta data shall be validated.
+     * 
+     * @param metaDataLabels
+     * @return validation result
+     */
+    public static SecHubConfigurationModelValidationResult validateMetaDataLabels(Map<String, String> metaDataLabels) {
+        SecHubConfigurationModelValidationResult result = new SecHubConfigurationModelValidationResult();
+        handleMetaDataLabels(metaDataLabels, result);
+        return result;
+    }
+
     public SecHubConfigurationModelValidator() {
         supportedVersions = new ArrayList<String>();
 
         // currently we only support 1.0 as version
         supportedVersions.add("1.0");
+    }
+
+    /**
+     * Validates a complete model
+     * 
+     * @param model
+     * @return validation result
+     */
+    public SecHubConfigurationModelValidationResult validate(SecHubConfigurationModel model) {
+        SecHubConfigurationModelValidationResult result = new SecHubConfigurationModelValidationResult();
+        InternalValidationContext context = new InternalValidationContext();
+        context.result = result;
+        context.model = model;
+        validate(context);
+        return result;
     }
 
     private String describeSupportedVersions() {
@@ -50,13 +78,41 @@ public class SecHubConfigurationModelValidator {
         private SecHubConfigurationModel model;;
     }
 
-    public SecHubConfigurationModelValidationResult validate(SecHubConfigurationModel model) {
-        SecHubConfigurationModelValidationResult result = new SecHubConfigurationModelValidationResult();
-        InternalValidationContext context = new InternalValidationContext();
-        context.result = result;
-        context.model = model;
-        validate(context);
-        return result;
+    private static void handleMetaDataLabels(Map<String, String> labels, SecHubConfigurationModelValidationResult result) {
+        Set<String> keySet = labels.keySet();
+        /* validate max amount of labels */
+        if (keySet.size() > MAX_METADATA_LABEL_AMOUNT) {
+            result.addError(METADATA_TOO_MANY_LABELS);
+            return;
+        }
+
+        /* validate keys */
+        for (String key : keySet) {
+            if (key == null || key.length() < MIN_METADATA_LABEL_KEY_LENGTH) {
+                result.addError(METADATA_LABEL_KEY_TOO_SHORT);
+                return;
+            }
+            if (key.length() > MAX_METADATA_LABEL_KEY_LENGTH) {
+                result.addError(METADATA_LABEL_KEY_TOO_LONG);
+                return;
+            }
+            if (!hasStandardAsciiLettersDigitsOrAdditionalAllowedCharacters(key, '-', '_', '.')) {
+                result.addError(METADATA_LABEL_KEY_CONTAINS_ILLEGAL_CHARACTERS,
+                        "Label key '" + key + "' may only contain 'a-z','0-9', '-', '_' or '.' characters");
+                continue;
+            }
+        }
+
+        /* validate values */
+        for (String value : labels.values()) {
+            if (value == null) {
+                continue;// we accept even null values
+            }
+            if (value.length() > MAX_METADATA_LABEL_VALUE_LENGTH) {
+                result.addError(METADATA_LABEL_VALUE_TOO_LONG);
+                return;
+            }
+        }
     }
 
     private void validate(InternalValidationContext context) {
@@ -85,45 +141,8 @@ public class SecHubConfigurationModelValidator {
 
         SecHubConfigurationMetaData metaData = metaDataOpt.get();
         Map<String, String> labels = metaData.getLabels();
-        handleMetaDataLabels(labels, context);
+        handleMetaDataLabels(labels, context.result);
 
-    }
-
-    private void handleMetaDataLabels(Map<String, String> labels, InternalValidationContext context) {
-        Set<String> keySet = labels.keySet();
-        /* validate max amount of labels */
-        if (keySet.size() > MAX_METADATA_LABEL_AMOUNT) {
-            context.result.addError(METADATA_TOO_MANY_LABELS);
-            return;
-        }
-
-        /* validate keys */
-        for (String key : keySet) {
-            if (key == null || key.length() < MIN_METADATA_LABEL_KEY_LENGTH) {
-                context.result.addError(METADATA_LABEL_KEY_TOO_SHORT);
-                return;
-            }
-            if (key.length() > MAX_METADATA_LABEL_KEY_LENGTH) {
-                context.result.addError(METADATA_LABEL_KEY_TOO_LONG);
-                return;
-            }
-            if (!hasStandardAsciiLettersDigitsOrAdditionalAllowedCharacters(key, '-', '_', '.')) {
-                context.result.addError(METADATA_LABEL_KEY_CONTAINS_ILLEGAL_CHARACTERS,
-                        "Label key '" + key + "' may only contain 'a-z','0-9', '-', '_' or '.' characters");
-                continue;
-            }
-        }
-
-        /* validate values */
-        for (String value : labels.values()) {
-            if (value == null) {
-                continue;// we accept even null values
-            }
-            if (value.length() > MAX_METADATA_LABEL_VALUE_LENGTH) {
-                context.result.addError(METADATA_LABEL_VALUE_TOO_LONG);
-                return;
-            }
-        }
     }
 
     private void handleScanTypesAndModuleGroups(InternalValidationContext context) {

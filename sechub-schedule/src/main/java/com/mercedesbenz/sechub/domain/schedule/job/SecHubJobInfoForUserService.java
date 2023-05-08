@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.domain.schedule.job;
 
+import java.util.Map;
 import java.util.Optional;
 
 import javax.annotation.PostConstruct;
@@ -22,6 +23,7 @@ import com.mercedesbenz.sechub.commons.model.SecHubScanConfiguration;
 import com.mercedesbenz.sechub.domain.schedule.ScheduleAssertService;
 import com.mercedesbenz.sechub.sharedkernel.MustBeDocumented;
 import com.mercedesbenz.sechub.sharedkernel.Step;
+import com.mercedesbenz.sechub.sharedkernel.configuration.MapToSecHubConfigurationMetaDataTransformer;
 import com.mercedesbenz.sechub.sharedkernel.usecases.job.UseCaseUserListsJobsForProject;
 
 @Service
@@ -40,6 +42,9 @@ public class SecHubJobInfoForUserService {
 
     @Autowired
     ScheduleAssertService assertService;
+    
+    @Autowired
+    MapToSecHubConfigurationMetaDataTransformer metaDataTransformer;
 
     @Value("${sechub.project.joblist.size.max:" + DEFAULT_MAXIMUM_LIMIT + "}")
     @MustBeDocumented("Maximum limit for job information list entries per page")
@@ -62,11 +67,12 @@ public class SecHubJobInfoForUserService {
     }
 
     @UseCaseUserListsJobsForProject(@Step(number = 2, name = "Assert access by service and fetch job information for user"))
-    public SecHubJobInfoForUserListPage listJobsForProject(String projectId, int size, int page, boolean withMetaData) {
+    public SecHubJobInfoForUserListPage listJobsForProject(String projectId, int size, int page, boolean resultsContainMetaData, Map<String, String> allParams) {
 
         assertService.assertProjectIdValid(projectId);
         assertService.assertProjectAllowsReadAccess(projectId);
         assertService.assertUserHasAccessToProject(projectId);
+        
 
         if (size < MINIMUM_SIZE) {
             LOG.warn("Size: {} is to small, will change to: {}", size, MINIMUM_SIZE);
@@ -88,11 +94,13 @@ public class SecHubJobInfoForUserService {
             LOG.warn("Page:{} was too big, will change to: {}", page, maximumPage);
             page = maximumPage;
         }
-
-        return loadDataAndCreateListPage(projectId, size, page, withMetaData);
+        
+        SecHubConfigurationMetaData metaDataForFiltering = metaDataTransformer.transform(allParams);
+        
+        return loadDataAndCreateListPage(projectId, size, page, resultsContainMetaData, metaDataForFiltering);
     }
 
-    private SecHubJobInfoForUserListPage loadDataAndCreateListPage(String projectId, int size, int page, boolean withMetaData) {
+    private SecHubJobInfoForUserListPage loadDataAndCreateListPage(String projectId, int size, int page, boolean withMetaData, SecHubConfigurationMetaData metaDataForFiltering) {
         Pageable pageable = PageRequest.of(page, size, Sort.by(Direction.DESC, ScheduleSecHubJob.PROPERTY_CREATED));
 
         ScheduleSecHubJob probe = new ScheduleSecHubJob();

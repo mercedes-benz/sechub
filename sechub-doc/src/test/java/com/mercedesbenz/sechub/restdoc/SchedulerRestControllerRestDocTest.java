@@ -734,7 +734,7 @@ public class SchedulerRestControllerRestDocTest implements TestIsNecessaryForDoc
         List<SecHubJobInfoForUser> list = listPage.getContent();
         list.add(job1);
 
-        when(mockedJobInfoForUserService.listJobsForProject(PROJECT1_ID, 1, 0, true)).thenReturn(listPage);
+        when(mockedJobInfoForUserService.listJobsForProject(PROJECT1_ID, 1, 0, true, any())).thenReturn(listPage);
 
         /* execute + test @formatter:off */
         this.mockMvc.perform(
