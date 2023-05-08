@@ -58,6 +58,8 @@ import de.jcup.sarif_2_1_0.model.WebResponse;
 @Component
 public class SarifV1JSONImporter extends AbstractProductResultImporter {
 
+    private static final String CWE_ID_798_USE_OF_HARDCODED_CREDENTIALS = "798";
+
     private static final String CWE = "CWE";
 
     private static final Logger LOG = LoggerFactory.getLogger(SarifV1JSONImporter.class);
@@ -122,12 +124,23 @@ public class SarifV1JSONImporter extends AbstractProductResultImporter {
         vulnerability.setSolution(resultData.solution);
 
         vulnerability.setSeverity(resolveSeverity(result, run));
-        vulnerability.getClassification().setCwe(resultData.cweId);
+        vulnerability.getClassification().setCwe(resolveCweId(scanType, resultData));
         vulnerability.setScanType(scanType);
 
         setWebInformationOrCodeFlow(result, vulnerability);
 
         return vulnerability;
+    }
+
+    private String resolveCweId(ScanType scanType, ResultData data) {
+        String cweId = data.cweId;
+
+        if (cweId == null || cweId.isEmpty()) {
+            if (scanType == ScanType.SECRET_SCAN) {
+                cweId = CWE_ID_798_USE_OF_HARDCODED_CREDENTIALS;
+            }
+        }
+        return cweId;
     }
 
     private void setWebInformationOrCodeFlow(Result result, SerecoVulnerability vulnerability) {
