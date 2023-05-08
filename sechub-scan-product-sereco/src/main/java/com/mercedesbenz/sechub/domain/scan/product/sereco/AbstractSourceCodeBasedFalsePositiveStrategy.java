@@ -6,48 +6,46 @@ import static com.mercedesbenz.sechub.sharedkernel.util.Assert.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 
 import com.mercedesbenz.sechub.commons.model.ScanType;
 import com.mercedesbenz.sechub.domain.scan.project.FalsePositiveCodeMetaData;
 import com.mercedesbenz.sechub.domain.scan.project.FalsePositiveCodePartMetaData;
 import com.mercedesbenz.sechub.domain.scan.project.FalsePositiveMetaData;
-import com.mercedesbenz.sechub.sereco.metadata.SerecoClassification;
 import com.mercedesbenz.sechub.sereco.metadata.SerecoCodeCallStackElement;
 import com.mercedesbenz.sechub.sereco.metadata.SerecoVulnerability;
 
-/**
- * Strategy to check if a code scan vulnerability identified by a product is
- * handled by a false positive meta data configuration
- *
- * @author Albert Tregnaghi
- *
- */
-@Component
-public class SerecoFalsePositiveCodeScanStrategy {
+public abstract class AbstractSourceCodeBasedFalsePositiveStrategy implements SerecoFalsePositiveStrategy {
+
+    private static final Logger LOG = LoggerFactory.getLogger(AbstractSourceCodeBasedFalsePositiveStrategy.class);
+
+    protected abstract ScanType getScanType();
 
     @Autowired
     SerecoSourceRelevantPartResolver relevantPartResolver;
 
-    private static final Logger LOG = LoggerFactory.getLogger(SerecoFalsePositiveCodeScanStrategy.class);
+    @Autowired
+    SerecoFalsePositiveSupport falsePositiveSupport;
+
+    public boolean isFalsePositive(SerecoVulnerability vulnerability, FalsePositiveMetaData metaData) {
+        return isFalsePositive(getScanType(), vulnerability, metaData);
+    }
 
     /**
      * Checks if given vulnerability is identified as false positive by given meta
      * data
      *
+     * @param scanType
      * @param vulnerability
      * @param metaData
      * @return <code>true</code> when identified as false positive
      */
-    public boolean isFalsePositive(SerecoVulnerability vulnerability, FalsePositiveMetaData metaData) {
+    protected boolean isFalsePositive(ScanType scanType, SerecoVulnerability vulnerability, FalsePositiveMetaData metaData) {
         notNull(vulnerability, " vulnerability may not be null");
         notNull(metaData, " metaData may not be null");
+        notNull(scanType, " scanType may not be null");
 
         /* check supported scan type */
-        if (metaData.getScanType() != ScanType.CODE_SCAN) {
-            return false;
-        }
-        if (vulnerability.getScanType() != ScanType.CODE_SCAN) {
+        if (!falsePositiveSupport.areBothHavingExpectedScanType(scanType, metaData, vulnerability)) {
             return false;
         }
 
@@ -60,37 +58,17 @@ public class SerecoFalsePositiveCodeScanStrategy {
         /* ---------------------------------------------------- */
         /* -------------------CWE ID--------------------------- */
         /* ---------------------------------------------------- */
-
-        /* for code scans we only use CWE as wellknown common identifier */
-        Integer cweId = metaData.getCweId();
-        if (cweId == null) {
-            LOG.error("Cannot check code vulnerability for false positives when code meta data has no CWE id set!");
+        if (!falsePositiveSupport.areBothHavingSameCweIdOrBothNoCweId(metaData, vulnerability)) {
             return false;
-        }
-
-        SerecoClassification serecoClassification = vulnerability.getClassification();
-        String serecoCWE = serecoClassification.getCwe();
-        if (serecoCWE == null || serecoCWE.isEmpty()) {
-            LOG.error("Code scan sereco vulnerability type:{} found without CWE! Cannot determin false positive! Classification was:{}",
-                    vulnerability.getType(), serecoClassification);
-            return false;
-        }
-        try {
-            int serecoCWEint = Integer.parseInt(serecoCWE);
-            if (cweId.intValue() != serecoCWEint) {
-                /* not same type of common vulnerability enumeration - so skip */
-                return false;
-            }
-
-        } catch (NumberFormatException e) {
-            LOG.error("Code scan sereco vulnerability type:{} found CWE:{} but not expected integer format!", vulnerability.getType(), serecoCWE);
-            return false;
-
         }
 
         /* ------------------------------------------------------- */
         /* -------------------Location---------------------------- */
         /* ------------------------------------------------------- */
+        return hasSameLocation(vulnerability, metaDataCode);
+    }
+
+    protected boolean hasSameLocation(SerecoVulnerability vulnerability, FalsePositiveCodeMetaData metaDataCode) {
         SerecoCodeCallStackElement serecoFirstElement = vulnerability.getCode();
         if (serecoFirstElement == null) {
             /* strange - canot be investigated */
