@@ -41,6 +41,8 @@ public class FalsePositiveMetaDataFactory {
         switch (type) {
         case CODE_SCAN:
             return createCodeScan(finding);
+        case SECRET_SCAN:
+            return createSecretScan(finding);
         case WEB_SCAN:
             return createWebScan(finding);
         default:
@@ -49,7 +51,7 @@ public class FalsePositiveMetaDataFactory {
     }
 
     private FalsePositiveMetaData createWebScan(SecHubFinding finding) {
-        FalsePositiveMetaData metaData = createCommonMetaDataWithCweIdEnsured(finding);
+        FalsePositiveMetaData metaData = createCommonMetaDataWithCweId(finding);
         metaData.setCveId(finding.getCveId());
         metaData.setScanType(ScanType.WEB_SCAN);
 
@@ -78,11 +80,27 @@ public class FalsePositiveMetaDataFactory {
         return metaData;
     }
 
+    private FalsePositiveMetaData createSecretScan(SecHubFinding finding) {
+        FalsePositiveMetaData metaData = createCommonMetaDataWithCweId(finding);
+
+        metaData.setScanType(ScanType.SECRET_SCAN);
+
+        appendCommonCodeBasedParts(finding, metaData);
+
+        return metaData;
+    }
+
     private FalsePositiveMetaData createCodeScan(SecHubFinding finding) {
-        FalsePositiveMetaData metaData = createCommonMetaDataWithCweIdEnsured(finding);
+        FalsePositiveMetaData metaData = createCommonMetaDataWithCweId(finding);
 
         metaData.setScanType(ScanType.CODE_SCAN);
 
+        appendCommonCodeBasedParts(finding, metaData);
+
+        return metaData;
+    }
+
+    private void appendCommonCodeBasedParts(SecHubFinding finding, FalsePositiveMetaData metaData) {
         FalsePositiveCodeMetaData code = new FalsePositiveCodeMetaData();
 
         SecHubCodeCallStack startCallStack = finding.getCode();
@@ -97,27 +115,14 @@ public class FalsePositiveMetaDataFactory {
         code.setStart(importCallStackElement(startCallStack));
         code.setEnd(importCallStackElement(endCallStack));
         metaData.setCode(code);
-
-        return metaData;
     }
 
-    private FalsePositiveMetaData createCommonMetaDataWithCweIdEnsured(SecHubFinding finding) {
+    private FalsePositiveMetaData createCommonMetaDataWithCweId(SecHubFinding finding) {
         FalsePositiveMetaData metaData = new FalsePositiveMetaData();
         metaData.setName(finding.getName());
         metaData.setSeverity(finding.getSeverity());
 
-        /* CWE id is used to identify same code weaknes accross products */
         Integer cweId = finding.getCweId();
-        if (cweId == null) {
-            /*
-             * old sechub results do not contain CWE information - so a new scan is
-             * necessary to create cwe identifier inside next report
-             */
-            throw new NotAcceptableException("No CWE identifier found in given sechub finding " + finding.getId() + ":" + finding.getName()
-                    + ", so cannot mark false positives!\n"
-                    + "This could be a migration issue from an older report which did not cotain such information. Please just execute a new scan job and retry to mark false positives by new finding");
-        }
-
         metaData.setCweId(cweId);
         return metaData;
     }

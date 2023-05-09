@@ -2,6 +2,7 @@
 package com.mercedesbenz.sechub.domain.scan.product.sereco;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.*;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -22,24 +23,29 @@ import com.mercedesbenz.sechub.sereco.metadata.SerecoWeb;
 import com.mercedesbenz.sechub.sereco.metadata.SerecoWebEvidence;
 import com.mercedesbenz.sechub.sereco.metadata.SerecoWebRequest;
 
-class SerecoFalsePositiveWebScanStrategyTest {
+class WebScanFalsePositiveStrategyTest {
 
     private static final String METHOD1 = "method1";
     private static final String EVIDENCE1 = "evidence1";
     private static final String TARGET1 = "target1";
     private static final String ATTACK_VECTOR1 = "vector1";
     private static final int CWE_ID_4711 = 4711;
-    private SerecoFalsePositiveWebScanStrategy strategyToTest;
+    private WebScanFalsePositiveStrategy strategyToTest;
     private FalsePositivedTestDataContainer testData;
+    private SerecoFalsePositiveSupport serecoFalsePositiveSupport;
 
     @BeforeEach
     void beforeEach() {
-        strategyToTest = new SerecoFalsePositiveWebScanStrategy();
+        strategyToTest = new WebScanFalsePositiveStrategy();
 
         // Initial this created test data contains meta and vulnerability data which do
         // match. When not changed, this must lead to a false positive detection. Tests
         // do change this data to simulate different situations.
         testData = createInitialTestDataWithMatchingVulnerabilityAndFalsePositiveDefinition();
+
+        serecoFalsePositiveSupport = mock(SerecoFalsePositiveSupport.class);
+
+        strategyToTest.falsePositiveSupport = serecoFalsePositiveSupport;
     }
 
     /* @formatter:off */
@@ -55,6 +61,8 @@ class SerecoFalsePositiveWebScanStrategyTest {
     void no_false_positive_because_metadata_has_not_target_like_vulnerability(String target) {
         /* prepare */
         testData.metaData.getWeb().getRequest().setTarget(target);
+        when(serecoFalsePositiveSupport.areBothHavingExpectedScanType(ScanType.WEB_SCAN, testData.metaData, testData.vulnerability)).thenReturn(true);
+        when(serecoFalsePositiveSupport.areBothHavingSameCweIdOrBothNoCweId(testData.metaData,testData.vulnerability)).thenReturn(true);
 
         /* execute */
         boolean isFalsePositive = strategyToTest.isFalsePositive(testData.vulnerability, testData.metaData);
@@ -69,6 +77,8 @@ class SerecoFalsePositiveWebScanStrategyTest {
     void is_false_positive_because_metadata_has_same_target_like_vulnerability(String target) {
         /* prepare */
         testData.metaData.getWeb().getRequest().setTarget(target);
+        when(serecoFalsePositiveSupport.areBothHavingExpectedScanType(ScanType.WEB_SCAN, testData.metaData, testData.vulnerability)).thenReturn(true);
+        when(serecoFalsePositiveSupport.areBothHavingSameCweIdOrBothNoCweId(testData.metaData,testData.vulnerability)).thenReturn(true);
 
         /* execute */
         boolean isFalsePositive = strategyToTest.isFalsePositive(testData.vulnerability, testData.metaData);
@@ -88,6 +98,8 @@ class SerecoFalsePositiveWebScanStrategyTest {
     void no_false_positive_because_metadata_has_not_method_like_vulnerability(String method) {
         /* prepare */
         testData.metaData.getWeb().getRequest().setMethod(method);
+        when(serecoFalsePositiveSupport.areBothHavingExpectedScanType(ScanType.WEB_SCAN, testData.metaData, testData.vulnerability)).thenReturn(true);
+        when(serecoFalsePositiveSupport.areBothHavingSameCweIdOrBothNoCweId(testData.metaData,testData.vulnerability)).thenReturn(true);
 
         /* execute */
         boolean isFalsePositive = strategyToTest.isFalsePositive(testData.vulnerability, testData.metaData);
@@ -102,6 +114,8 @@ class SerecoFalsePositiveWebScanStrategyTest {
     void is_false_positive_because_metadata_has_similar_method_like_vulnerability(String method) {
         /* prepare */
         testData.metaData.getWeb().getRequest().setMethod(method);
+        when(serecoFalsePositiveSupport.areBothHavingExpectedScanType(ScanType.WEB_SCAN, testData.metaData, testData.vulnerability)).thenReturn(true);
+        when(serecoFalsePositiveSupport.areBothHavingSameCweIdOrBothNoCweId(testData.metaData,testData.vulnerability)).thenReturn(true);
 
         /* execute */
         boolean isFalsePositive = strategyToTest.isFalsePositive(testData.vulnerability, testData.metaData);
@@ -114,11 +128,12 @@ class SerecoFalsePositiveWebScanStrategyTest {
     /* --------------------------------------------------------------------------------*/
     /* -----------CWE tests------------------------------------------------------------*/
     /* --------------------------------------------------------------------------------*/
-    @DisplayName("Not false positive. Nearly valid false positive, but other cweId in meta data")
+    @DisplayName("Not false positive. Nearly valid false positive, but cweIds differ")
     @Test
     void no_false_positive_because_wrong_metadata_cweid() {
         /* prepare */
-        testData.metaData.setCweId(CWE_ID_4711 + 1);
+        when(serecoFalsePositiveSupport.areBothHavingExpectedScanType(ScanType.WEB_SCAN, testData.metaData, testData.vulnerability)).thenReturn(true);
+        when(serecoFalsePositiveSupport.areBothHavingSameCweIdOrBothNoCweId(testData.metaData,testData.vulnerability)).thenReturn(false);
 
         /* execute */
         boolean isFalsePositive = strategyToTest.isFalsePositive(testData.vulnerability, testData.metaData);
@@ -126,31 +141,18 @@ class SerecoFalsePositiveWebScanStrategyTest {
         /* test */
         assertFalse(isFalsePositive);
     }
-
-    @DisplayName("Not false positive. Nearly valid false positive, but cweId in vulnerability is defined as 'other'")
-    @Test
-    void no_false_positive_because_wrong_cwe_other() {
-        /* prepare */
-        testData.vulnerability.getClassification().setCwe("other");
-
-        /* execute */
-        boolean isFalsePositive = strategyToTest.isFalsePositive(testData.vulnerability, testData.metaData);
-
-        /* test */
-        assertFalse(isFalsePositive);
-    }
-
 
     /* --------------------------------------------------------------------------------*/
     /* -----------ScanType tests-------------------------------------------------------*/
     /* --------------------------------------------------------------------------------*/
     @ParameterizedTest
     @EnumSource(value = ScanType.class, names = "WEB_SCAN", mode = EnumSource.Mode.EXCLUDE)
-    @DisplayName("Not false positive. Nearly valid false positive, but not marked because wrong scan type in meta data defined")
+    @DisplayName("Not false positive. Nearly valid false positive, but not marked because scan type not as expected ")
     @NullSource
     void no_false_positive_because_wrong_scan_type(ScanType type) {
         /* prepare */
-        testData.vulnerability.setScanType(type);// but we change scan type...
+        when(serecoFalsePositiveSupport.areBothHavingExpectedScanType(ScanType.WEB_SCAN, testData.metaData, testData.vulnerability)).thenReturn(false);
+        when(serecoFalsePositiveSupport.areBothHavingSameCweIdOrBothNoCweId(testData.metaData,testData.vulnerability)).thenReturn(true);
 
         /* execute */
         boolean isFalsePositive = strategyToTest.isFalsePositive(testData.vulnerability, testData.metaData);
@@ -159,12 +161,11 @@ class SerecoFalsePositiveWebScanStrategyTest {
         assertFalse(isFalsePositive);// no longer found
     }
 
-    @ParameterizedTest
-    @EnumSource(value = ScanType.class, names = "WEB_SCAN", mode = EnumSource.Mode.INCLUDE)
-    @DisplayName("IS false positive. Valid false positive defined, scan type is correct")
-    void is_false_positive_because_correct_scan_type(ScanType type) {
+    @Test
+    void is_false_positive_because_correct_scan_type() {
         /* prepare */
-        testData.vulnerability.setScanType(type);// we change scan type...(if not already set)
+        when(serecoFalsePositiveSupport.areBothHavingExpectedScanType(ScanType.WEB_SCAN, testData.metaData, testData.vulnerability)).thenReturn(true);
+        when(serecoFalsePositiveSupport.areBothHavingSameCweIdOrBothNoCweId(testData.metaData,testData.vulnerability)).thenReturn(true);
 
         /* execute */
         boolean isFalsePositive = strategyToTest.isFalsePositive(testData.vulnerability, testData.metaData);

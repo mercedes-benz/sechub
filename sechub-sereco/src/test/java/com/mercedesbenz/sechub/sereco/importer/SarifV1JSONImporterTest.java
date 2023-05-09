@@ -275,6 +275,7 @@ class SarifV1JSONImporterTest {
         assertVulnerabilities(vulnerabilities).
             hasVulnerabilities(6).
             verifyVulnerability().
+                classifiedBy().cwe(798).and(). // 798 is our generic fallback for secret scans when no cweId is set by products (gitleaks SARIF does currently not set cweId)
                 withDescriptionContaining("generic-api-key has detected secret for file UnSAFE_Bank/Backend/src/api/application/config/database.php.").
                 withCodeLocation("UnSAFE_Bank/Backend/src/api/application/config/database.php", 80, 7).containingSource("531486b2bf646636a6a1bba61e78ec4a4a54efbd").done().
             isContained();
