@@ -138,6 +138,9 @@ public class PDSWorkspaceService {
 
         PDSWorkspacePreparationContext preparationContext = preparationContextFactory.createPreparationContext(configurationSupport);
 
+        LOG.debug("Info about workspace for PDS job: {}. Sources accepted: {}. Binaries accepted: {}", pdsJobUUID, preparationContext.isSourceAccepted(),
+                preparationContext.isBinaryAccepted());
+
         writeMetaData(pdsJobUUID, metaData);
 
         importWantedFilesFromJobStorage(pdsJobUUID, config, configurationSupport, preparationContext);
@@ -221,6 +224,9 @@ public class PDSWorkspaceService {
     }
 
     void extractZipFileUploadsWhenConfigured(UUID jobUUID, PDSJobConfiguration config, PDSWorkspacePreparationContext preparationContext) throws IOException {
+        if (!preparationContext.isSourceAccepted()) {
+            return;
+        }
         PDSProductSetup productSetup = resolveProductSetup(config);
 
         ScanType scanType = productSetup.getScanType();
@@ -229,6 +235,9 @@ public class PDSWorkspaceService {
     }
 
     void extractTarFileUploadsWhenConfigured(UUID jobUUID, PDSJobConfiguration config, PDSWorkspacePreparationContext preparationContext) throws IOException {
+        if (!preparationContext.isBinaryAccepted()) {
+            return;
+        }
         PDSProductSetup productSetup = resolveProductSetup(config);
 
         ScanType scanType = productSetup.getScanType();
