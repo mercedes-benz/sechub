@@ -76,3 +76,11 @@ networkPolicy:
             - podSelector:
                 matchLabels:
                     name: sechub-adminserver
+
+# optional: Add annotations to template.metadata.annotations
+#           Can contain multiple lines. Example for Prometheus actuator:
+# templateMetadataAnnotations: |-
+#   prometheus.io/scrape: "true"
+#   prometheus.io/probe: "true"
+#   prometheus.io/port: "10251"
+#   prometheus.io/path: "/actuator/prometheus"
