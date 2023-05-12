@@ -1264,7 +1264,7 @@ public class AsUser {
      * @return info or <code>null</code>, if no job available at all
      */
     public TestSecHubJobInfoForUserListPage fetchUserJobInfoListOneEntryOrNull(TestProject project) {
-        TestSecHubJobInfoForUserListPage listPage = fetchUserJobInfoList(project, null, null, null);
+        TestSecHubJobInfoForUserListPage listPage = fetchUserJobInfoList(project, null, null, null, null);
         if (listPage.getContent().isEmpty()) {
             return null;
         }
@@ -1273,20 +1273,26 @@ public class AsUser {
     }
 
     public TestSecHubJobInfoForUserListPage fetchUserJobInfoList(TestProject project, int size) {
-        return fetchUserJobInfoList(project, String.valueOf(size), null, null);
+        return fetchUserJobInfoList(project, String.valueOf(size), null, null, null);
     }
 
     public TestSecHubJobInfoForUserListPage fetchUserJobInfoList(TestProject project, int size, int page) {
-        return fetchUserJobInfoList(project, String.valueOf(size), String.valueOf(page), null);
+        return fetchUserJobInfoList(project, String.valueOf(size), String.valueOf(page), null, null);
     }
 
     public TestSecHubJobInfoForUserListPage fetchUserJobInfoList(TestProject project, int size, int page, boolean withMetaData) {
-        return fetchUserJobInfoList(project, String.valueOf(size), String.valueOf(page), String.valueOf(withMetaData));
+        return fetchUserJobInfoList(project, String.valueOf(size), String.valueOf(page), String.valueOf(withMetaData), null);
     }
 
-    private TestSecHubJobInfoForUserListPage fetchUserJobInfoList(TestProject project, String size, String page, String withMetaData) {
+    public TestSecHubJobInfoForUserListPage fetchUserJobInfoList(TestProject project, int size, int page, boolean withMetaData,
+            Map<String, String> additionalParameters) {
+        return fetchUserJobInfoList(project, String.valueOf(size), String.valueOf(page), String.valueOf(withMetaData), additionalParameters);
+    }
 
-        String url = getUrlBuilder().buildUserFetchesListOfJobsForProject(project.getProjectId(), size, page, withMetaData);
+    private TestSecHubJobInfoForUserListPage fetchUserJobInfoList(TestProject project, String size, String page, String withMetaData,
+            Map<String, String> additionalParametersOrNull) {
+
+        String url = getUrlBuilder().buildUserFetchesListOfJobsForProject(project.getProjectId(), size, page, withMetaData, additionalParametersOrNull);
         String json = getRestHelper().getJSON(url);
 
         TestSecHubJobInfoForUserListPage listPage = TestJSONHelper.get().createFromJSON(json, TestSecHubJobInfoForUserListPage.class);

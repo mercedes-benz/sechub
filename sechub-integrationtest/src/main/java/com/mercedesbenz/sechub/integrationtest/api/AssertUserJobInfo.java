@@ -13,7 +13,6 @@ import org.slf4j.LoggerFactory;
 
 import com.mercedesbenz.sechub.commons.model.JSONConverter;
 import com.mercedesbenz.sechub.commons.model.SecHubConfigurationMetaData;
-import com.mercedesbenz.sechub.integrationtest.internal.TestJSONHelper;
 
 public class AssertUserJobInfo {
 
@@ -79,7 +78,7 @@ public class AssertUserJobInfo {
 
         public AssertUserJobInfoForJob withoutMetaData() {
             if (info.metaData.isPresent()) {
-                fail("The job info does contain any meta data!\n" + JSONConverter.get().toJSON(info.metaData, true));
+                fail("The job info does contain meta data but ther should be none!!\n" + JSONConverter.get().toJSON(info.metaData, true));
             }
             return this;
         }
@@ -138,7 +137,7 @@ public class AssertUserJobInfo {
     }
 
     private void dumpInfoAndfailWith(String message) {
-        String json = TestJSONHelper.get().createJSON(listPage, true);
+        String json = JSONConverter.get().toJSON(listPage, true);
         LOG.info("DUMP user job info:\n{}", json);
 
         fail(message + "\nJson was:\n" + json);

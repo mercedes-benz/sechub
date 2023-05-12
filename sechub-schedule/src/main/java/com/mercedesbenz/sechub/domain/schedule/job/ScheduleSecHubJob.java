@@ -4,14 +4,18 @@ package com.mercedesbenz.sechub.domain.schedule.job;
 import static javax.persistence.EnumType.*;
 
 import java.time.LocalDateTime;
+import java.util.HashSet;
 import java.util.Objects;
+import java.util.Set;
 import java.util.UUID;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Version;
 
@@ -69,8 +73,10 @@ public class ScheduleSecHubJob {
     public static final String PROPERTY_ENDED = "ended";
     public static final String PROPERTY_MESSAGES = "jsonMessages";
     public static final String PROPERTY_MODULE_GROUP = "moduleGroup";
+    public static final String PROPERTY_DATA = "data";
 
-    public static final String QUERY_DELETE_JOBINFORMATION_OLDER_THAN = "DELETE FROM ScheduleSecHubJob j WHERE j." + PROPERTY_CREATED + " <:cleanTimeStamp";;
+    public static final String QUERY_DELETE_JOB_OLDER_THAN = "DELETE FROM ScheduleSecHubJob j WHERE j." + PROPERTY_CREATED + " <:cleanTimeStamp";
+
     @Id
     @GeneratedValue(generator = "UUID")
     @GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
@@ -113,6 +119,9 @@ public class ScheduleSecHubJob {
 
     @Column(name = COLUMN_MESSAGES)
     private String jsonMessages;
+
+    @OneToMany(cascade = { CascadeType.ALL }, mappedBy = ScheduleSecHubJobData.PROPERTY_JOB_UUID, orphanRemoval = true)
+    Set<ScheduleSecHubJobData> data = new HashSet<>();
 
     @Version
     @Column(name = "VERSION")
@@ -223,6 +232,11 @@ public class ScheduleSecHubJob {
         }
         ScheduleSecHubJob other = (ScheduleSecHubJob) obj;
         return Objects.equals(uUID, other.uUID);
+    }
+
+    public void addData(String key, String value) {
+        ScheduleSecHubJobData jobData = new ScheduleSecHubJobData(uUID, key, value);
+        data.add(jobData);
     }
 
 }

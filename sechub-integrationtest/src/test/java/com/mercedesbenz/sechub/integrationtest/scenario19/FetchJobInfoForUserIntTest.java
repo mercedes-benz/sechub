@@ -4,6 +4,7 @@ package com.mercedesbenz.sechub.integrationtest.scenario19;
 import static com.mercedesbenz.sechub.integrationtest.api.TestAPI.*;
 import static com.mercedesbenz.sechub.integrationtest.scenario19.Scenario19.*;
 
+import java.util.Collections;
 import java.util.UUID;
 
 import org.junit.Rule;
@@ -38,8 +39,8 @@ public class FetchJobInfoForUserIntTest {
         /* @formatter:off */
         /* prepare */
         UUID sechubJobUUD1 = as(USER_1).createWebScan(project);
-        UUID sechubJobUUD2 = as(USER_1).createWebScan(project, IntegrationTestTemplateFile.WEBSCAN_2); // only this job has meta data inside
-        UUID sechubJobUUD3 = as(USER_1).createWebScan(project);
+        UUID sechubJobUUD2 = as(USER_1).createWebScan(project, IntegrationTestTemplateFile.WEBSCAN_2); // this job has meta data inside
+        UUID sechubJobUUD3 = as(USER_1).createWebScan(project, IntegrationTestTemplateFile.WEBSCAN_3); // this job has meta data inside);
 
         /* execute (A) - default size (1) */
         TestSecHubJobInfoForUserListPage jobInfoListA = as(USER_1).fetchUserJobInfoListOneEntryOrNull(project);
@@ -71,7 +72,7 @@ public class FetchJobInfoForUserIntTest {
             hasEntries(3).
             hasPage(0).
             hasTotalPages(1).
-            hasJobInfoFor(sechubJobUUD3,0).withoutMetaData().
+            hasJobInfoFor(sechubJobUUD3,0).withLabel("stage","testing").withLabel("purpose", "security assurance").withLabel("reviewer","senior-security-expert-A").
             and().
             hasJobInfoFor(sechubJobUUD2,1).withLabel("stage","testing").withLabel("purpose", "quality assurance").
             and().
@@ -148,6 +149,18 @@ public class FetchJobInfoForUserIntTest {
             hasTotalPages(4).
             hasEntries(0);
 
+        /* execute (J) - use size 10, but filter for labels with stage:testing */
+        TestSecHubJobInfoForUserListPage jobInfoListJ = as(USER_1).fetchUserJobInfoList(project, 10, 0, true, Collections.singletonMap("metadata.labels.stage","testing"));
+
+        /* test (C) */
+        assertUserJobInfo(jobInfoListJ).
+            hasEntries(2).
+            hasPage(0).
+            hasTotalPages(1).
+            hasJobInfoFor(sechubJobUUD3,0).withLabel("stage","testing").withLabel("purpose", "security assurance").withLabel("reviewer","senior-security-expert-A").
+            and().
+            hasJobInfoFor(sechubJobUUD2,1).withLabel("stage","testing").withLabel("purpose", "quality assurance")
+            ;
     }
     /* @formatter:on */
 

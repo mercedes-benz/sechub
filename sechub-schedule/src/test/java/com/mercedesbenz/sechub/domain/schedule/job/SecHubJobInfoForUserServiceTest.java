@@ -20,13 +20,16 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Order;
+import org.springframework.data.jpa.domain.Specification;
 
 import com.mercedesbenz.sechub.commons.model.SecHubConfigurationMetaData;
+import com.mercedesbenz.sechub.commons.model.SecHubConfigurationModelValidator;
 import com.mercedesbenz.sechub.commons.model.SecHubScanConfiguration;
 import com.mercedesbenz.sechub.commons.model.TrafficLight;
 import com.mercedesbenz.sechub.domain.schedule.ExecutionResult;
 import com.mercedesbenz.sechub.domain.schedule.ExecutionState;
 import com.mercedesbenz.sechub.domain.schedule.ScheduleAssertService;
+import com.mercedesbenz.sechub.sharedkernel.configuration.SecHubConfigurationMetaDataMapTransformer;
 import com.mercedesbenz.sechub.test.TestCanaryException;
 
 class SecHubJobInfoForUserServiceTest {
@@ -45,6 +48,8 @@ class SecHubJobInfoForUserServiceTest {
 
         serviceToTest.jobRepository = jobRepository;
         serviceToTest.assertService = assertService;
+        serviceToTest.metaDataTransformer = new SecHubConfigurationMetaDataMapTransformer();
+        serviceToTest.modelValidator = new SecHubConfigurationModelValidator();
 
     }
 
@@ -67,16 +72,16 @@ class SecHubJobInfoForUserServiceTest {
 
     }
 
+    @SuppressWarnings("unchecked")
     @ParameterizedTest
     @ValueSource(ints = { 1, 33, 100 })
     void job_repository_is_called_with_pageable_limit_of_parameter_when_valid(int limit) {
         /* prepare */
-        @SuppressWarnings("unchecked")
         Page<ScheduleSecHubJob> page = mock(Page.class);
 
         List<ScheduleSecHubJob> list = new ArrayList<>();
         when(page.iterator()).thenReturn(list.iterator());
-        when(jobRepository.findAll(any(), any(Pageable.class))).thenReturn(page);
+        when(jobRepository.findAll(any(Specification.class), any(Pageable.class))).thenReturn(page);
         serviceToTest.postConstruct();
 
         /* execute */
@@ -84,7 +89,7 @@ class SecHubJobInfoForUserServiceTest {
 
         /* test */
         ArgumentCaptor<Pageable> pageableCaptor = ArgumentCaptor.forClass(Pageable.class);
-        verify(jobRepository).findAll(any(), pageableCaptor.capture());
+        verify(jobRepository).findAll(any(Specification.class), pageableCaptor.capture());
 
         // test given parameters are as expected
         Pageable value = pageableCaptor.getValue();
@@ -102,16 +107,16 @@ class SecHubJobInfoForUserServiceTest {
 
     }
 
+    @SuppressWarnings("unchecked")
     @ParameterizedTest
     @ValueSource(ints = { -100, -1, 0 })
     void limit_lower_than_1_is_converted_to_1(int limit) {
         /* prepare */
-        @SuppressWarnings("unchecked")
         Page<ScheduleSecHubJob> page = mock(Page.class);
 
         List<ScheduleSecHubJob> list = new ArrayList<>();
         when(page.iterator()).thenReturn(list.iterator());
-        when(jobRepository.findAll(any(), any(Pageable.class))).thenReturn(page);
+        when(jobRepository.findAll(any(Specification.class), any(Pageable.class))).thenReturn(page);
 
         serviceToTest.postConstruct();
 
@@ -120,7 +125,7 @@ class SecHubJobInfoForUserServiceTest {
 
         /* test */
         ArgumentCaptor<Pageable> pageableCaptor = ArgumentCaptor.forClass(Pageable.class);
-        verify(jobRepository).findAll(any(), pageableCaptor.capture());
+        verify(jobRepository).findAll(any(Specification.class), pageableCaptor.capture());
 
         // test given parameters are as expected
         Pageable value = pageableCaptor.getValue();
@@ -129,16 +134,16 @@ class SecHubJobInfoForUserServiceTest {
 
     }
 
+    @SuppressWarnings("unchecked")
     @ParameterizedTest
     @ValueSource(ints = { 44, 55, 100 })
     void limit_higher_than_max_is_converted_to_max(int limit) {
         /* prepare */
-        @SuppressWarnings("unchecked")
         Page<ScheduleSecHubJob> page = mock(Page.class);
 
         List<ScheduleSecHubJob> list = new ArrayList<>();
         when(page.iterator()).thenReturn(list.iterator());
-        when(jobRepository.findAll(any(), any(Pageable.class))).thenReturn(page);
+        when(jobRepository.findAll(any(Specification.class), any(Pageable.class))).thenReturn(page);
 
         // define given limit always bigger than defined max - so fallback to max must
         // be used.
@@ -151,7 +156,7 @@ class SecHubJobInfoForUserServiceTest {
 
         /* test */
         ArgumentCaptor<Pageable> pageableCaptor = ArgumentCaptor.forClass(Pageable.class);
-        verify(jobRepository).findAll(any(), pageableCaptor.capture());
+        verify(jobRepository).findAll(any(Specification.class), pageableCaptor.capture());
 
         // test given parameters are as expected
         Pageable value = pageableCaptor.getValue();
@@ -185,6 +190,7 @@ class SecHubJobInfoForUserServiceTest {
         createEntriesAndAssertMetaDataAvailableOrNot(withMetaData, false);
     }
 
+    @SuppressWarnings("unchecked")
     private void createEntriesAndAssertMetaDataAvailableOrNot(boolean withMetaData, boolean createdJobsHaveMetaDataInside) {
         /* prepare */
 
@@ -200,10 +206,9 @@ class SecHubJobInfoForUserServiceTest {
         list.add(job4);
         list.add(job5);
 
-        @SuppressWarnings("unchecked")
         Page<ScheduleSecHubJob> page = mock(Page.class);
         when(page.iterator()).thenReturn(list.iterator());
-        when(jobRepository.findAll(any(), any(Pageable.class))).thenReturn(page);
+        when(jobRepository.findAll(any(Specification.class), any(Pageable.class))).thenReturn(page);
 
         /* execute */
         SecHubJobInfoForUserListPage listPage = serviceToTest.listJobsForProject("project1", 10, 0, withMetaData, new HashMap<>());

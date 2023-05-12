@@ -34,13 +34,13 @@ public class SecHubConfigurationModelValidator {
     private List<String> supportedVersions;
 
     /**
-     * Does validate a given map containing meta data labels. Same logic as for complete model,
-     * but useful when only label meta data shall be validated.
-     * 
+     * Does validate a given map containing meta data labels. Same logic as for
+     * complete model, but useful when only label meta data shall be validated.
+     *
      * @param metaDataLabels
      * @return validation result
      */
-    public static SecHubConfigurationModelValidationResult validateMetaDataLabels(Map<String, String> metaDataLabels) {
+    public SecHubConfigurationModelValidationResult validateMetaDataLabels(Map<String, String> metaDataLabels) {
         SecHubConfigurationModelValidationResult result = new SecHubConfigurationModelValidationResult();
         handleMetaDataLabels(metaDataLabels, result);
         return result;
@@ -55,7 +55,7 @@ public class SecHubConfigurationModelValidator {
 
     /**
      * Validates a complete model
-     * 
+     *
      * @param model
      * @return validation result
      */
@@ -78,7 +78,7 @@ public class SecHubConfigurationModelValidator {
         private SecHubConfigurationModel model;;
     }
 
-    private static void handleMetaDataLabels(Map<String, String> labels, SecHubConfigurationModelValidationResult result) {
+    private void handleMetaDataLabels(Map<String, String> labels, SecHubConfigurationModelValidationResult result) {
         Set<String> keySet = labels.keySet();
         /* validate max amount of labels */
         if (keySet.size() > MAX_METADATA_LABEL_AMOUNT) {

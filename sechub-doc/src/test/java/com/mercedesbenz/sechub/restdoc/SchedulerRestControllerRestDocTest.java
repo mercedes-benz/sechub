@@ -20,7 +20,9 @@ import java.lang.annotation.Annotation;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.TreeMap;
 import java.util.UUID;
 
 import org.junit.Before;
@@ -708,9 +710,14 @@ public class SchedulerRestControllerRestDocTest implements TestIsNecessaryForDoc
     @Test
     @UseCaseRestDoc(useCase = UseCaseUserListsJobsForProject.class)
     public void restDoc_userListsJobsForProject() throws Exception {
+
         /* prepare */
+        Map<String, String> labels = new TreeMap<>();
+        labels.put("metadata.labels.stage", "testing");
+
         String apiEndpoint = https(PORT_USED).buildUserFetchesListOfJobsForProject(PROJECT_ID.pathElement(), SIZE.pathElement(), PAGE.pathElement(),
-                WITH_META_DATA.pathElement());
+                WITH_META_DATA.pathElement(), labels);
+
         Class<? extends Annotation> useCase = UseCaseUserListsJobsForProject.class;
 
         SecHubJobInfoForUser job1 = new SecHubJobInfoForUser();
@@ -725,7 +732,7 @@ public class SchedulerRestControllerRestDocTest implements TestIsNecessaryForDoc
         job1.setTrafficLight(TrafficLight.GREEN);
 
         SecHubConfigurationMetaData metaData = new SecHubConfigurationMetaData();
-        metaData.getLabels().put("stage", "testing");
+        metaData.getLabels().put("stage", "test");
         job1.setMetaData(metaData);
 
         SecHubJobInfoForUserListPage listPage = new SecHubJobInfoForUserListPage();
@@ -734,11 +741,11 @@ public class SchedulerRestControllerRestDocTest implements TestIsNecessaryForDoc
         List<SecHubJobInfoForUser> list = listPage.getContent();
         list.add(job1);
 
-        when(mockedJobInfoForUserService.listJobsForProject(PROJECT1_ID, 1, 0, true, any())).thenReturn(listPage);
+        when(mockedJobInfoForUserService.listJobsForProject(eq(PROJECT1_ID), eq(1), eq(0), eq(true), any())).thenReturn(listPage);
 
         /* execute + test @formatter:off */
         this.mockMvc.perform(
-                get(apiEndpoint, PROJECT1_ID, 1, 0, true).
+                get(apiEndpoint, PROJECT1_ID, 1, 0, true, labels).
                     contentType(MediaType.APPLICATION_JSON_VALUE).
                     header(AuthenticationHelper.HEADER_NAME, AuthenticationHelper.getHeaderValue())
                 ).
@@ -760,6 +767,8 @@ public class SchedulerRestControllerRestDocTest implements TestIsNecessaryForDoc
                                           requestParameters(
                                               parameterWithName(SIZE.paramName()).optional().description("The wanted (maximum) size for the result set. When not defined, the default will be "+SchedulerRestController.DEFAULT_JOB_INFORMATION_SIZE),
                                               parameterWithName(PAGE.paramName()).optional().description("The wanted page number. When not defined, the default will be "+SchedulerRestController.DEFAULT_JOB_INFORMATION_PAGE),
+                                              parameterWithName("metadata.labels.stage").optional().description("An optional parameter example to query labels. The parmater is dynamic: \n"
+                                                      + "Every label which is defined for the job can be queried by 'metadata.labels.${labelName}=${labelValue}'. In the example only jobs for label 'stage' = 'test' will be returned. "),
                                               parameterWithName(WITH_META_DATA.paramName()).optional().description("An optional parameter to define if meta data shall be fetched as well. When not defined, the default will be "+SchedulerRestController.DEFAULT_WITH_METADATA)
                                           ),
                                           responseFields(
