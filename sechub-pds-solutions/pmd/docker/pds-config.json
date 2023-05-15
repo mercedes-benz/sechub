@@ -1,35 +1,34 @@
 {
-    "apiVersion" : "1.0",
-    "serverId" : "PMD_CLUSTER",
-
-    "products" : [
-        {
-            "id" : "PDS_PMD",
-            "path" : "/scripts/pmd.sh",
-            "scanType" : "codeScan",
-            "description" : "PMD is a static source code analyzer.",
-            "parameters" : {
-                "optional" : [
-                    {
-                        "key" : "pmd.ruleset",
-                        "description" : "Analyze source code with ALL rules or SECURITY(enabled by default) rules only."
-                    }
-                ]
-            }
-        },
-        {
-            "id" : "PDS_PMD_MOCK",
-            "path" : "/scripts/pmd_mock.sh",
-            "scanType" : "codeScan",
-            "description" : "Runs PMD mock. It returns a fixed result file.",
-            "parameters" : {
-                "optional" : [
-                    {
-                        "key" : "pmd.ruleset",
-                        "description" : "Analyze source code with ALL rules or SECURITY(enabled by default) rules only."
-                    }
-                ]
-            }
-        }
-    ]
+  "apiVersion": "1.0",
+  "serverId": "PMD_CLUSTER",
+  "products": [
+    {
+      "id": "PDS_PMD",
+      "path": "/scripts/pmd.sh",
+      "scanType": "codeScan",
+      "description": "PMD is a static source code analyzer.",
+      "parameters": {
+        "optional": [
+          {
+            "key": "pmd.ruleset",
+            "description": "Analyze source code with ALL rules or SECURITY(enabled by default) rules only."
+          }
+        ]
+      }
+    },
+    {
+      "id": "PDS_PMD_MOCK",
+      "path": "/scripts/pmd_mock.sh",
+      "scanType": "codeScan",
+      "description": "Runs PMD mock. It returns a fixed result file.",
+      "parameters": {
+        "optional": [
+          {
+            "key": "pmd.ruleset",
+            "description": "Analyze source code with ALL rules or SECURITY(enabled by default) rules only."
+          }
+        ]
+      }
+    }
+  ]
 }
