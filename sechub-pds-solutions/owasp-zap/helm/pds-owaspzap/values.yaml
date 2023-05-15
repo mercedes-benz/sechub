@@ -74,7 +74,7 @@ database:
     postgres:
         enabled: false
         connection: "jdbc:postgresql://database:5432/pds"
-        username: "owaspzap"
+        username: "pds_owaspzap"
         password: "<password-of-db-user>"
 
 networkPolicy:

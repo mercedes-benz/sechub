@@ -68,7 +68,7 @@ database:
     postgres:
         enabled: false
         connection: "jdbc:postgresql://database:5432/pds"
-        username: "scancode"
+        username: "pds_scancode"
         password: "<password-of-db-user>"
 
 networkPolicy:
