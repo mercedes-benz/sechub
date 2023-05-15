@@ -100,8 +100,8 @@ ext {
         springframework_restdocs:              "org.springframework.restdocs:spring-restdocs-mockmvc",
         springframework_security_test:         "org.springframework.security:spring-security-test", 
         springframework_web:                   "org.springframework:spring-web",
-		
-		micrometer_prometheus:                 "io.micrometer:micrometer-registry-prometheus",
+
+        micrometer_prometheus:                 "io.micrometer:micrometer-registry-prometheus",
 
 
         /* additional (1): version by spring boot dependency management - because inside spring application */
