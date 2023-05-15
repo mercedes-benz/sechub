@@ -429,6 +429,21 @@ spec:
                name: secret-pds-gosec
                key: techuser_password
 {{- end }}
+{{- if .Values.pdsMulti.enabled }}
+# ----------------------------------------------------------------------------------------------#
+# - Scope: PDS-Multi
+# --------------------------------------------------------------------------------------------- #
+        - name: SECHUB_PDS_MULTI_USERID
+          valueFrom:
+            secretKeyRef:
+               name: secret-pds-multi
+               key: techuser_username
+        - name: SECHUB_PDS_MULTI_PASSWORD
+          valueFrom:
+            secretKeyRef:
+               name: secret-pds-multi
+               key: techuser_password
+{{- end }}
 {{- if .Values.pdsOWASPZAP.enabled }}
 # ----------------------------------------------------------------------------------------------#
 # - Scope: PDS-OWASP ZAP
