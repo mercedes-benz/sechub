@@ -92,6 +92,8 @@ server:
      - DHE-RSA-AES128-GCM-SHA256
      - ECDHE-RSA-AES256-GCM-SHA384
      - ECDHE-RSA-AES128-GCM-SHA256
+
+# Spring Boot Actuators and Metrics
 management:
   server:
     port:
