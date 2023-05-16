@@ -55,7 +55,7 @@ server:
     # Job scheduling strategy - Possible values:
     # - first-come-first-serve (one project can have multiple scan jobs running in parallel
     # - only-one-scan-per-project-at-a-time (one project can only have one running scan job at a time)
-    # - only-one-scan-per-project-and-module-group (enable parralel scans, but not in same module group)
+    # - only-one-scan-per-project-and-module-group (enable parallel scans, but not in same module group)
     strategy: only-one-scan-per-project-and-module-group
   # loggingType (optional): See https://mercedes-benz.github.io/sechub/latest/sechub-operations.html#logging-2
   #                         https://github.com/mercedes-benz/sechub/blob/develop/sechub-server/src/main/resources/logback-spring.xml
@@ -291,6 +291,14 @@ pdsGoSec:
   enabled: false
   # Put the user id  of PDS-GoSec in k8s secret secret-pds-gosec:techuser_username
   # Put the password of PDS-GoSec in k8s secret secret-pds-gosec:techuser_password
+
+# ------------------------------------------------------------------------------------- #
+# PDS-Multi adapter
+# ------------------------------------------------------------------------------------- #
+pdsMulti:
+  enabled: false
+  # Put the user id  of PDS-Multi in k8s secret secret-pds-multi:techuser_username
+  # Put the password of PDS-Multi in k8s secret secret-pds-multi:techuser_password
 
 # ------------------------------------------------------------------------------------- #
 # PDS-OWASP ZAP adapter

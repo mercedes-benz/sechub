@@ -52,7 +52,7 @@ PODs* _(means this is a shared kernel / bottle neck but necessary)_
 
 ==== Server Application
 
-{sechub} server is a written in `Java` and needs at least `JDK 11`.
+{sechub} server is a written in `Java` and needs at least `{required_JDK}`.
 
 You can configure {sechub} server by system properties or also by  environment
 variables.

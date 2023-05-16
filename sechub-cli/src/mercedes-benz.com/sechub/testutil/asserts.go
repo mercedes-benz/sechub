@@ -15,7 +15,7 @@ func AssertErrorHasExpectedStartMessage(err error, expectedErrMsg string, t *tes
 	AssertError(err, t)
 
 	if !strings.HasPrefix(err.Error(), expectedErrMsg) {
-		t.Fatalf("Error actual = \"%v\", and expected beginning with = \"%v\"...", err.Error(), expectedErrMsg)
+		t.Fatalf("error = \"%s\" but expected beginning with \"%s\"...", err.Error(), expectedErrMsg)
 	}
 }
 
@@ -23,7 +23,7 @@ func AssertErrorHasExpectedStartMessage(err error, expectedErrMsg string, t *tes
 func AssertErrorHasExpectedMessage(err error, expectedErrMsg string, t *testing.T) {
 	AssertError(err, t)
 	if err.Error() != expectedErrMsg {
-		t.Fatalf("Error actual = %v, and Expected = %v.", err.Error(), expectedErrMsg)
+		t.Fatalf("error = \"%s\" but expected \"%s\".", err.Error(), expectedErrMsg)
 	}
 }
 

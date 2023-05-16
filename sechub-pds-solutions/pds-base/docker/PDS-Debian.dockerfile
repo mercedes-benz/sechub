@@ -10,12 +10,12 @@ ARG BASE_IMAGE
 # Build args
 ARG PDS_VERSION
 ARG BUILD_TYPE
-ARG GO="go1.19.linux-amd64.tar.gz"
+ARG GO="go1.20.4.linux-amd64.tar.gz"
 
-# possible values are 11, 17
-ARG JAVA_VERSION="11"
+# possible values: 17
+ARG JAVA_VERSION="17"
 
-# Artifact folder 
+# Artifact folder
 ARG PDS_ARTIFACT_FOLDER="/artifacts"
 
 #-------------------
@@ -124,7 +124,7 @@ RUN echo "build stage"
 
 FROM ${BASE_IMAGE} AS sechub
 
-# Annotations according to the Open Containers Image Spec: 
+# Annotations according to the Open Containers Image Spec:
 #  https://github.com/opencontainers/image-spec/blob/main/annotations.md
 
 # Required by GitHub to link repository and image
