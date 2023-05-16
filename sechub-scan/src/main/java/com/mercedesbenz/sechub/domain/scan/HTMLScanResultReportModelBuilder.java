@@ -113,19 +113,19 @@ public class HTMLScanResultReportModelBuilder {
             if (scanSummaryMap.containsKey(scanType)) {
                 scanTypeCount = scanSummaryMap.get(scanType);
             } else {
-                scanTypeCount = new ScanTypeCount(scanType);
+                scanTypeCount = ScanTypeCount.of(scanType);
                 scanSummaryMap.put(scanType, scanTypeCount);
             }
             incrementScanCount(finding.getSeverity(), scanTypeCount);
         }
-        List<ScanTypeCount> scanTypeCountList = new ArrayList<>();
-        extractScanTypeCountListFromMap(scanTypeCountList, scanSummaryMap);
-        model.put("scanTypeCountList", scanTypeCountList);
+        Set<ScanTypeCount> scanTypeCountSet = new TreeSet<>();
+        scanTypeCountSet.addAll(scanSummaryMap.values());
+        model.put("scanTypeCountSet", scanTypeCountSet);
 
         return model;
     }
 
-    private void incrementScanCount(Severity severity, ScanTypeCount scanTypeCount) {
+    protected void incrementScanCount(Severity severity, ScanTypeCount scanTypeCount) {
         if (Severity.HIGH.equals(severity)) {
             scanTypeCount.incrementHighSeverityCount();
         }
@@ -137,9 +137,4 @@ public class HTMLScanResultReportModelBuilder {
         }
     }
 
-    private void extractScanTypeCountListFromMap(List<ScanTypeCount> scanTypeCountList, Map<ScanType, ScanTypeCount> scanSummary) {
-        for (ScanTypeCount scanTypeCount : scanSummary.values()) {
-            scanTypeCountList.add(scanTypeCount);
-        }
-    }
 }

@@ -3,50 +3,41 @@ package com.mercedesbenz.sechub.domain.scan;
 
 import com.mercedesbenz.sechub.commons.model.ScanType;
 
-public class ScanTypeCount {
+public class ScanTypeCount implements Comparable<ScanTypeCount> {
 
     private ScanType scanType;
     private int highSeverityCount;
     private int mediumSeverityCount;
     private int lowSeverityCount;
 
-    ScanTypeCount(ScanType scanType){
+    private ScanTypeCount(ScanType scanType){
         this.scanType = scanType;
         highSeverityCount = 0;
         mediumSeverityCount = 0;
         lowSeverityCount = 0;
     }
 
-    public ScanType getScanType() {
-        return scanType;
+    public static ScanTypeCount of(ScanType scanType) {
+        if (scanType == null) {
+            throw new IllegalArgumentException("ScanType argument must exist");
+        }
+        return new ScanTypeCount(scanType);
     }
 
-    public void setScanType(ScanType scanType) {
-        this.scanType = scanType;
+    public ScanType getScanType() {
+        return scanType;
     }
 
     public int getHighSeverityCount() {
         return highSeverityCount;
     }
 
-    public void setHighSeverityCount(int highSeverityCount) {
-        this.highSeverityCount = highSeverityCount;
-    }
-
     public int getMediumSeverityCount() {
         return mediumSeverityCount;
     }
 
-    public void setMediumSeverityCount(int mediumSeverityCount) {
-        this.mediumSeverityCount = mediumSeverityCount;
-    }
-
     public int getLowSeverityCount() {
         return lowSeverityCount;
-    }
-
-    public void setLowSeverityCount(int lowSeverityCount) {
-        this.lowSeverityCount = lowSeverityCount;
     }
 
     public void incrementHighSeverityCount(){
@@ -61,4 +52,13 @@ public class ScanTypeCount {
         this.lowSeverityCount++;
     }
 
+    @Override
+    public int compareTo(ScanTypeCount o) {
+        if (o == null) {
+            return 1;
+        }
+        String descriptionA = this.scanType.getDescription();
+        String descriptionB = o.scanType.getDescription();
+        return descriptionA.compareTo(descriptionB);
+    }
 }

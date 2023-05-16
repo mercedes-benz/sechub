@@ -13,16 +13,11 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 
+import com.mercedesbenz.sechub.commons.model.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.core.io.Resource;
 
-import com.mercedesbenz.sechub.commons.model.SecHubCodeCallStack;
-import com.mercedesbenz.sechub.commons.model.SecHubFinding;
-import com.mercedesbenz.sechub.commons.model.SecHubReportMetaData;
-import com.mercedesbenz.sechub.commons.model.SecHubResult;
-import com.mercedesbenz.sechub.commons.model.SecHubResultTrafficLightFilter;
-import com.mercedesbenz.sechub.commons.model.TrafficLight;
 import com.mercedesbenz.sechub.domain.scan.report.ScanSecHubReport;
 
 class HTMLScanResultReportModelBuilderTest {
@@ -41,6 +36,7 @@ class HTMLScanResultReportModelBuilderTest {
     private List<SecHubFinding> greenList;
     private List<SecHubFinding> redList;
     private List<SecHubFinding> yellowList;
+    private ScanTypeCount scanTypeCount;
 
     @BeforeEach
     void beforeEach() throws Exception {
@@ -65,6 +61,8 @@ class HTMLScanResultReportModelBuilderTest {
         when(trafficLightFilter.filterFindingsFor(result, TrafficLight.RED)).thenReturn(redList);
         when(trafficLightFilter.filterFindingsFor(result, TrafficLight.YELLOW)).thenReturn(yellowList);
         when(trafficLightFilter.filterFindingsFor(result, TrafficLight.GREEN)).thenReturn(greenList);
+
+        scanTypeCount = ScanTypeCount.of(ScanType.CODE_SCAN);
     }
 
     @Test
@@ -210,6 +208,7 @@ class HTMLScanResultReportModelBuilderTest {
         when(scanSecHubReport.getResult()).thenReturn(result);
         when(result.getFindings()).thenReturn(Arrays.asList(finding));
         when(finding.getCode()).thenReturn(code1);
+        when(finding.getType()).thenReturn(ScanType.CODE_SCAN);
         when(code1.getCalls()).thenReturn(subCode);
 
         /* execute */
@@ -237,10 +236,34 @@ class HTMLScanResultReportModelBuilderTest {
         Map<String, Object> map = builderToTest.build(scanSecHubReport);
 
         /* test */
-
         assertNotNull(map.get("codeScanSupport"));
         assertTrue(map.get("codeScanSupport") instanceof HtmlCodeScanDescriptionSupport);
-
     }
 
+    @Test
+    void when_severity_is_high_then_highSeverityCount_should_be_incremented(){
+        /* execute */
+        builderToTest.incrementScanCount(Severity.HIGH, scanTypeCount);
+
+        /* test */
+        assertEquals(1, scanTypeCount.getHighSeverityCount());
+    }
+
+    @Test
+    void when_severity_is_medium_then_mediumSeverityCount_should_be_incremented(){
+        /* execute */
+        builderToTest.incrementScanCount(Severity.MEDIUM, scanTypeCount);
+
+        /* test */
+        assertEquals(1, scanTypeCount.getMediumSeverityCount());
+    }
+
+    @Test
+    void when_severity_is_low_then_lowSeverityCount_should_be_incremented(){
+        /* execute */
+        builderToTest.incrementScanCount(Severity.LOW, scanTypeCount);
+
+        /* test */
+        assertEquals(1, scanTypeCount.getLowSeverityCount());
+    }
 }

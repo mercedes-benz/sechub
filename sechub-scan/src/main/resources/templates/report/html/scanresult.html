@@ -80,7 +80,7 @@
 			</table>
 		</div>
 		<div class="content">
-			<div th:if="!${scanTypeCountList.isEmpty()}">
+			<div th:if="!${scanTypeCountSet.isEmpty()}">
 				<h2 class='summaryHeadline'>Summary</h2>
 				<table class='summaryTable'>
 					<thead>
@@ -93,7 +93,7 @@
 						</tr>
 					</thead>
 					<tbody>
-					<tr th:each="scanTypeCount : ${scanTypeCountList}">
+					<tr th:each="scanTypeCount : ${scanTypeCountSet}">
 						<td th:text="${scanTypeCount.scanType}" />
 						<td><strong><span th:text="${scanTypeCount.highSeverityCount + scanTypeCount.mediumSeverityCount + scanTypeCount.lowSeverityCount}"/></strong></td>
 						<td th:text="${scanTypeCount.highSeverityCount}" />
