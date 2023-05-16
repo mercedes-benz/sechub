@@ -81,7 +81,7 @@ database:
     postgres:
         enabled: false
         connection: "jdbc:postgresql://database:5432/pds"
-        username: "cloc"
+        username: "pds_cloc"
         password: "<password-of-db-user>"
 
 networkPolicy:

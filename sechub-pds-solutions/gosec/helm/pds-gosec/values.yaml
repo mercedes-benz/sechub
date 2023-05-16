@@ -63,7 +63,7 @@ database:
     postgres:
         enabled: false
         connection: "jdbc:postgresql://database:5432/pds"
-        username: "gosec"
+        username: "pds_gosec"
         password: "<password-of-db-user>"
 
 networkPolicy:

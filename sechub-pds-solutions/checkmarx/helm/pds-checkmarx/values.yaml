@@ -63,7 +63,7 @@ database:
     postgres:
         enabled: false
         connection: "jdbc:postgresql://database:5432/pds"
-        username: "checkmarx"
+        username: "pds_checkmarx"
         password: "<password-of-db-user>"
 
 networkPolicy:
