@@ -4,6 +4,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 
 import org.junit.jupiter.api.Test;
 
@@ -34,4 +35,10 @@ public class RotationTest {
         assertEquals(rotation.getCurrentCipher(), PersistenceCipherType.NONE);
         assertEquals(rotation.getNewCipher(), PersistenceCipherType.AES_128_GCM_SIV);
     }
+    
+    @Test
+    void rotate() {
+        fail();
+    }
+    
 }

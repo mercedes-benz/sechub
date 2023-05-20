@@ -16,7 +16,7 @@ public class NoneCipherTest {
         String plainText = "This is a plaintext";
         
         PersistenceCipher cipher = NoneCipher.create(null);
-        String cipherText = cipher.encrypt(plainText, null);
+        B64String cipherText = cipher.encrypt(plainText, null);
         
         assertEquals(plainText, cipherText);
     }
@@ -26,14 +26,14 @@ public class NoneCipherTest {
         String plainText = "This is a plaintext";
         
         PersistenceCipher cipher = NoneCipher.create(null);
-        String cipherText = cipher.encrypt(plainText, "Hello");
+        B64String cipherText = cipher.encrypt(plainText, B64String.from("Hello"));
         
         assertEquals(plainText, cipherText);
     }
     
     @Test
     void decrypt_null_iv() throws InvalidKeyException, InvalidAlgorithmParameterException, IllegalBlockSizeException, BadPaddingException {
-        String cipherText = "This is a cipher text";
+        B64String cipherText = B64String.from("This is a plaintext");
         
         PersistenceCipher cipher = NoneCipher.create(null);
         String plainText = cipher.decrypt(cipherText, null);
@@ -43,10 +43,10 @@ public class NoneCipherTest {
     
     @Test
     void decrypt_with_iv() throws InvalidKeyException, InvalidAlgorithmParameterException, IllegalBlockSizeException, BadPaddingException {
-        String cipherText = "This is a cipher text";;
+        B64String cipherText = B64String.from("This is a plaintext");
         
         PersistenceCipher cipher = NoneCipher.create(null);
-        String plainText = cipher.decrypt(cipherText, "Hello");
+        String plainText = cipher.decrypt(cipherText, B64String.from("Hello"));
         
         assertEquals(plainText, cipherText);
     }
@@ -59,7 +59,7 @@ public class NoneCipherTest {
     
     @Test
     void getCipher_string() throws InvalidKeyException {
-        PersistenceCipher cipher = NoneCipher.create("Hello");
+        PersistenceCipher cipher = NoneCipher.create(B64String.from("Hello"));
         assertEquals(PersistenceCipherType.NONE, cipher.getCipher());
     }
 }

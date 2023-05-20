@@ -12,7 +12,7 @@ import javax.crypto.IllegalBlockSizeException;
  * @author Jeremias Eppler
  */
 public interface PersistenceCipher {
-    public static PersistenceCipher create(String secret)  throws InvalidKeyException {
+    public static PersistenceCipher create(B64String secret)  throws InvalidKeyException {
         return null;
     }
     
@@ -20,9 +20,9 @@ public interface PersistenceCipher {
         return null;
     }
     
-    public String encrypt(String plaintext, String b64InitializationVector) throws InvalidAlgorithmParameterException, InvalidKeyException;
+    public B64String encrypt(String plaintext, B64String initializationVector) throws InvalidAlgorithmParameterException, InvalidKeyException;
 
-    public String decrypt(String b64Ciphertext, String b64InitializationVector)
+    public String decrypt(B64String b64Ciphertext, B64String initializationVector)
             throws InvalidKeyException, InvalidAlgorithmParameterException, IllegalBlockSizeException, BadPaddingException;
 
     public PersistenceCipherType getCipher();
