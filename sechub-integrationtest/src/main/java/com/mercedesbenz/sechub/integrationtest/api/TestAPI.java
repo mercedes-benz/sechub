@@ -125,10 +125,20 @@ public class TestAPI {
      * flaky tests!
      *
      * @param json
-     * @return
+     * @return assert object
      */
     public static AssertReport assertReport(String json) {
         return AssertReport.assertReport(json);
+    }
+
+    /**
+     * Asserts given report HTML
+     *
+     * @param html
+     * @return assert object
+     */
+    public static AssertHTMLReport assertHTMLReport(String html) {
+        return AssertHTMLReport.assertHTMLReport(html);
     }
 
     public static AssertFullScanData assertFullScanDataZipFile(File file) {
@@ -201,6 +211,10 @@ public class TestAPI {
      */
     public static AssertPDSJob assertPDSJob(UUID pdsJobUUID) {
         return AssertPDSJob.assertPDSJob(pdsJobUUID);
+    }
+
+    public static AssertStatistic assertStatistic(UUID sechubJobUUID) {
+        return AssertStatistic.assertStatistic(sechubJobUUID);
     }
 
     /**
@@ -324,14 +338,18 @@ public class TestAPI {
         waitForJobRunning(project, 5, 300, jobUUID);
     }
 
-    public static UUID waitForFirstPDSJobOfSecHubJobAndReturnPDSJobUUID(UUID sechubJobUUID) {
-        String errorMessage = "Not at least one PDS job uuid was found for sechub job:" + sechubJobUUID;
+    public static UUID waitForPDSJobWithIndexOfSecHubJobAndReturnPDSJobUUID(UUID sechubJobUUID, int index) {
+        String indexNotFoundErrorMessage = "Did not found PDS job [" + index + "] uuid was found for sechub job:" + sechubJobUUID;
         return executeCallableAndAcceptAssertionsMaximumTimes(15, () -> {
 
             List<UUID> allPDSJobUUIDs = TestAPI.fetchAllPDSJobUUIDsForSecHubJob(sechubJobUUID);
-            assertTrue(errorMessage, allPDSJobUUIDs.size() > 0);
-            return allPDSJobUUIDs.iterator().next();
+            assertTrue(indexNotFoundErrorMessage, allPDSJobUUIDs.size() > index);
+            return allPDSJobUUIDs.get(index);
         }, 1000);
+    }
+
+    public static UUID waitForFirstPDSJobOfSecHubJobAndReturnPDSJobUUID(UUID sechubJobUUID) {
+        return waitForPDSJobWithIndexOfSecHubJobAndReturnPDSJobUUID(sechubJobUUID, 0);
     }
 
     public static void waitForPDSJobInState(PDSJobStatusState wantedState, int timeOutInSeconds, int timeToWaitInMillis, UUID pdsJobUUID,
@@ -1467,5 +1485,33 @@ public class TestAPI {
             }
         }
         return result;
+    }
+
+    public static TestJobStatistic fetchJobStatistic(UUID sechubJobUUID) {
+        String url = getURLBuilder().buildintegrationTestFetchJobStatistic(sechubJobUUID);
+        String json = getSuperAdminRestHelper().getJSON(url);
+
+        return JSONConverter.get().fromJSON(TestJobStatistic.class, json);
+    }
+
+    public static List<TestJobStatisticData> fetchJobStatisticData(UUID sechubJobUUID) {
+        String url = getURLBuilder().buildintegrationTestFetchJobStatisticData(sechubJobUUID);
+        String json = getSuperAdminRestHelper().getJSON(url);
+
+        return JSONConverter.get().fromJSONtoListOf(TestJobStatisticData.class, json);
+    }
+
+    public static List<TestJobRunStatistic> fetchJobRunStatisticListForSecHubJob(UUID sechubJobUUID) {
+        String url = getURLBuilder().buildintegrationTestFetchJobRunStatistic(sechubJobUUID);
+        String json = getSuperAdminRestHelper().getJSON(url);
+
+        return JSONConverter.get().fromJSONtoListOf(TestJobRunStatistic.class, json);
+    }
+
+    public static List<TestJobRunStatisticData> fetchJobRunStatisticData(UUID executionUUID) {
+        String url = getURLBuilder().buildintegrationTestFetchJobRunStatisticData(executionUUID);
+        String json = getSuperAdminRestHelper().getJSON(url);
+
+        return JSONConverter.get().fromJSONtoListOf(TestJobRunStatisticData.class, json);
     }
 }

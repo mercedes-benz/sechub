@@ -3,6 +3,7 @@
 package cli
 
 import (
+	"flag"
 	"fmt"
 	"io/ioutil"
 	"os"
@@ -92,15 +93,25 @@ func Example_isConfigFieldFilledVerification() {
 
 func Example_willTrailingSlashBeRemovedFromUrl() {
 	// PREPARE
+	originalArgs := os.Args
+	os.Args = []string{"sechub", "scan"}
+
+	context := new(Context)
 	config := NewConfigByFlags()
+	context.config = config
+
 	config.server = "https://test.example.org/"
 	config.action = "version"
 	config.apiToken = "not empty"
 	config.projectID = "testproject"
 	config.user = "testuser"
 	// EXECUTE
-	assertValidConfig(config)
+	assertValidConfig(context)
 	// TEST
+
+	// Restore original arguments
+	os.Args = originalArgs
+
 	fmt.Println(config.server)
 	// Output: https://test.example.org
 }
@@ -398,7 +409,13 @@ func Test_validateInitialWaitIntervalOrWarning(t *testing.T) {
 
 func Example_will_reportfile_be_found_in_current_dir() {
 	// PREPARE
-	var config Config
+	originalArgs := os.Args
+	os.Args = []string{"sechub", "scan"}
+
+	context := new(Context)
+	config := new(Config)
+	context.config = config
+
 	config.action = interactiveMarkFalsePositivesAction
 	config.projectID = "testproject"
 
@@ -416,9 +433,11 @@ func Example_will_reportfile_be_found_in_current_dir() {
 	defer os.Remove(reportFileName)
 
 	// EXECUTE
-	assertValidConfig(&config)
+	assertValidConfig(context)
 
 	// TEST
+	// Restore original arguments
+	os.Args = originalArgs
 
 	// Output:
 	// Using latest report file "sechub_report_testproject_45cd4f59-4be7-4a86-9bc7-47528ced16c2.json".
@@ -473,4 +492,66 @@ func Test_check_max_cmdline_args_are_accepted(t *testing.T) {
 
 	// Restore original arguments
 	os.Args = originalArgs
+}
+
+func Example_label_from_cmdline_args() {
+	// PREPARE
+	argSafe := os.Args
+	os.Args = []string{"sechub", "-label", "key1=value1", "-label", "key2=value2"}
+
+	// EXECUTE
+	flag.Parse()
+
+	// restore original os.Args
+	os.Args = argSafe
+
+	// TEST
+	fmt.Println(configFromInit.labels["key1"])
+	fmt.Println(configFromInit.labels["key2"])
+
+	// Output:
+	// value1
+	// value2
+}
+
+func Example_label_from_env_var() {
+	// PREPARE
+	os.Setenv(SechubLabelsEnvVar, "key1=value1,key2=value2")
+
+	// EXECUTE
+	parseConfigFromEnvironment(&configFromInit)
+
+	// TEST
+	fmt.Println(configFromInit.labels["key1"])
+	fmt.Println(configFromInit.labels["key2"])
+
+	// Output:
+	// value1
+	// value2
+}
+
+func Example_label_from_cmdline_args_and_env_var() {
+	// PREPARE
+	argSafe := os.Args
+	os.Args = []string{"sechub", "-label", "key1=value1", "-label", "key2=value2"}
+
+	os.Setenv(SechubLabelsEnvVar, "key2=value2x,key3=value3x")
+	// args override env var - so key2 from env will be ignored
+
+	// EXECUTE
+	parseConfigFromEnvironment(&configFromInit)
+	flag.Parse()
+
+	// restore original os.Args
+	os.Args = argSafe
+
+	// TEST
+	fmt.Println(configFromInit.labels["key1"])
+	fmt.Println(configFromInit.labels["key2"])
+	fmt.Println(configFromInit.labels["key3"])
+
+	// Output:
+	// value1
+	// value2
+	// value3x
 }

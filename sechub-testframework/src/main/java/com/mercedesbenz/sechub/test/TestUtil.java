@@ -10,10 +10,12 @@ import java.lang.reflect.Method;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.attribute.FileAttribute;
+import java.util.List;
 import java.util.UUID;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
+import org.apache.commons.lang3.SystemUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -23,7 +25,8 @@ public class TestUtil {
     private static final Logger LOG = LoggerFactory.getLogger(TestUtil.class);
 
     private static final String SECHUB_KEEP_TEMPFILES = "SECHUB_KEEP_TEMPFILES";
-    private static final OperationSystem operationSystem = new OperationSystem();
+    private static final String SECHUB_TEST_TRACEMODE = "SECHUB_TEST_TRACEMODE";
+    private static final String SECHUB_AUTO_GENERATE_CSS_FRAGMENTS_ON_HTML_TESTS = "SECHUB_AUTO_GENERATE_CSS_FRAGMENTS_ON_HTML_TESTS";
 
     public static String createRAndomString(int wantedLength) {
         if (wantedLength < 0) {
@@ -91,6 +94,29 @@ public class TestUtil {
             throw new IllegalStateException("Testcase szenario corrupt / should not happen", e);
         }
 
+    }
+
+    /**
+     *
+     * * @return true when environment variable
+     * {@value TestUtil#SECHUB_AUTO_GENERATE_CSS_FRAGMENTS_ON_HTML_TESTS} is set to
+     * `true` otherwise false
+     */
+    public static boolean isAutoCSSFragementGenerationEnabled() {
+        return Boolean.parseBoolean(System.getenv(SECHUB_AUTO_GENERATE_CSS_FRAGMENTS_ON_HTML_TESTS));
+    }
+
+    /**
+     * In some situations a developer wants to enable special tracing (without
+     * changing any log levels etc.). Dedicated points in test code can use this
+     * method to log more information in this case.
+     *
+     * @return true when environment variable
+     *         {@value TestUtil#SECHUB_TEST_TRACEMODE} is set to `true` otherwise
+     *         false
+     */
+    public static boolean isTraceEnabled() {
+        return Boolean.parseBoolean(System.getenv(SECHUB_TEST_TRACEMODE));
     }
 
     /**
@@ -200,7 +226,7 @@ public class TestUtil {
     }
 
     public static boolean isWindows() {
-        return operationSystem.isWindows();
+        return SystemUtils.IS_OS_WINDOWS;
     }
 
     public static void unzip(final File zipFile, final Path unzipTo) throws IOException {
@@ -216,21 +242,6 @@ public class TestUtil {
                     Files.copy(zipInputStream, toPath);
                 }
             }
-        }
-    }
-
-    private static class OperationSystem {
-
-        private boolean windows;
-
-        OperationSystem() {
-            String os = System.getProperty("os.name").toLowerCase();
-            ;
-            windows = (os.indexOf("win") >= 0);
-        }
-
-        public boolean isWindows() {
-            return windows;
         }
     }
 
@@ -260,6 +271,16 @@ public class TestUtil {
 
         }
         return false;
+    }
+
+    public static String createInfoForList(List<?> data) {
+        StringBuilder sb = new StringBuilder();
+        sb.append("List:\n");
+        for (Object obj : data) {
+            sb.append(obj);
+            sb.append("\n");
+        }
+        return sb.toString();
     }
 
 }

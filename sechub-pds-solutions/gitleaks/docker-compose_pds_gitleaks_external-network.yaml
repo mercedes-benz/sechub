@@ -1,0 +1,25 @@
+# SPDX-License-Identifier: MIT
+
+version: "3"
+services:
+    pds-gitleaks:
+        build:
+            args:
+                - BASE_IMAGE=${BASE_IMAGE}
+                - GITLEAKS_VERSION=${GITLEAKS_VERSION}
+            context: docker/
+            dockerfile: Gitleaks.dockerfile
+        container_name: pds-gitleaks
+        hostname: pds-gitleaks
+        volumes:
+            - ./docker/scripts:/scripts
+        env_file:
+            - .env
+            - .env-single
+        networks:
+            - "sechub"
+
+networks:
+    sechub:
+        external: true
+        name: "sechub"

@@ -92,3 +92,24 @@ server:
      - ECDHE-RSA-AES256-GCM-SHA384
      - ECDHE-RSA-AES128-GCM-SHA256
      
+# Spring Boot Actuators and Metrics
+management:
+  server:
+    port:
+       10251
+    ssl:
+      enabled:
+         false
+  endpoints:
+    web:
+      exposure:
+        include: "prometheus,health"
+  endpoint:
+    metrics:
+      enabled: true
+    prometheus:
+      enabled: true
+  metrics:
+    export:
+      prometheus:
+        enabled: true

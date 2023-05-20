@@ -23,6 +23,14 @@ public class SecHubConfigurationModelReducedCloningSupport {
      * @return JSON representing a reduced {@link SecHubScanConfiguration}
      */
     public String createReducedScanConfigurationCloneJSON(SecHubConfigurationModel model, ScanType scanTypeForClone) {
+        if (ScanType.ANALYTICS.equals(scanTypeForClone)) {
+            /*
+             * special case: for analytics we want always the complete model, so we just
+             * return JSON for the origin model
+             */
+            return JSONConverter.get().toJSON(model);
+        }
+
         SecHubScanConfiguration newModel = new SecHubScanConfiguration();
         newModel.setApiVersion(model.getApiVersion());
         newModel.setProjectId(model.getProjectId());
@@ -57,6 +65,15 @@ public class SecHubConfigurationModelReducedCloningSupport {
             } else {
                 LOG.warn("The model did not contain a license scan configuration - so add new one as fallback");
                 newModel.setLicenseScan(new SecHubLicenseScanConfiguration());
+            }
+            break;
+        case SECRET_SCAN:
+            Optional<SecHubSecretScanConfiguration> secretScan = model.getSecretScan();
+            if (secretScan.isPresent()) {
+                newModel.setSecretScan(secretScan.get());
+            } else {
+                LOG.warn("The model did not contain a secret scan configuration - so add new one as fallback");
+                newModel.setSecretScan(new SecHubSecretScanConfiguration());
             }
             break;
         case WEB_SCAN:

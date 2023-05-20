@@ -33,7 +33,7 @@ public class IntegrationTestPDSCodeScanImporter implements ProductResultImporter
     private static final String ID_PDS_INTTEST_PRODUCT_CODESCAN_FAILED = "#PDS_INTTEST_PRODUCT_CODESCAN_FAILED";
 
     @Override
-    public SerecoMetaData importResult(String simpleText) throws IOException {
+    public SerecoMetaData importResult(String simpleText, ScanType scanType) throws IOException {
         String[] lines = simpleText.split("\n");
         SerecoMetaData metaData = new SerecoMetaData();
         List<SerecoVulnerability> vulnerabilities = metaData.getVulnerabilities();

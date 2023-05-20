@@ -19,7 +19,6 @@ import com.mercedesbenz.sechub.commons.model.SecHubResult;
 import com.mercedesbenz.sechub.commons.model.Severity;
 import com.mercedesbenz.sechub.domain.scan.AssertSecHubResult;
 import com.mercedesbenz.sechub.domain.scan.ReportTransformationResult;
-import com.mercedesbenz.sechub.domain.scan.product.ProductIdentifier;
 import com.mercedesbenz.sechub.domain.scan.product.ProductResult;
 import com.mercedesbenz.sechub.domain.scan.product.config.WithoutProductExecutorConfigInfo;
 import com.mercedesbenz.sechub.sereco.metadata.SerecoClassification;
@@ -27,6 +26,7 @@ import com.mercedesbenz.sechub.sereco.metadata.SerecoCodeCallStackElement;
 import com.mercedesbenz.sechub.sereco.metadata.SerecoMetaData;
 import com.mercedesbenz.sechub.sereco.metadata.SerecoSeverity;
 import com.mercedesbenz.sechub.sereco.metadata.SerecoVulnerability;
+import com.mercedesbenz.sechub.sharedkernel.ProductIdentifier;
 
 public class SerecoProductResultTransformerTest {
 
@@ -51,6 +51,42 @@ public class SerecoProductResultTransformerTest {
     }
 
     @Test
+    public void one_vulnerability_as_secret_in_meta_results_in_one_finding() throws Exception {
+        /* prepare */
+        String converted = createMetaDataWithOneVulnerabilityAsSecretFound();
+
+        /* execute */
+        ReportTransformationResult result = transformerToTest.transform(createProductResult(converted));
+
+        /* test */
+        SecHubResult sechubResult = result.getResult();
+        for (SecHubFinding finding : sechubResult.getFindings()) {
+            assertEquals(ScanType.SECRET_SCAN, finding.getType());
+        }
+
+        AssertSecHubResult.assertSecHubResult(sechubResult).hasFindings(1);
+        SecHubFinding finding1 = sechubResult.getFindings().get(0);
+        assertEquals(Integer.valueOf(4711), finding1.getCweId());
+
+        SecHubCodeCallStack code1 = finding1.getCode();
+        assertNotNull(code1);
+        assertEquals(Integer.valueOf(1), code1.getLine());
+        assertEquals(Integer.valueOf(2), code1.getColumn());
+        assertEquals("Location1", code1.getLocation());
+        assertEquals("source1", code1.getSource());
+        assertEquals("relevantPart1", code1.getRelevantPart());
+
+        SecHubCodeCallStack code2 = code1.getCalls();
+        assertNotNull(code2);
+        assertEquals(Integer.valueOf(3), code2.getLine());
+        assertEquals(Integer.valueOf(4), code2.getColumn());
+        assertEquals("Location2", code2.getLocation());
+        assertEquals("source2", code2.getSource());
+        assertEquals("relevantPart2", code2.getRelevantPart());
+
+    }
+
+    @Test
     public void one_vulnerability_as_code_in_meta_results_in_one_finding() throws Exception {
         /* prepare */
         String converted = createMetaDataWithOneVulnerabilityAsCodeFound();
@@ -66,6 +102,7 @@ public class SerecoProductResultTransformerTest {
 
         AssertSecHubResult.assertSecHubResult(sechubResult).hasFindings(1);
         SecHubFinding finding1 = sechubResult.getFindings().get(0);
+        assertEquals(Integer.valueOf(4711), finding1.getCweId());
 
         SecHubCodeCallStack code1 = finding1.getCode();
         assertNotNull(code1);
@@ -195,13 +232,21 @@ public class SerecoProductResultTransformerTest {
     }
 
     private String createMetaDataWithOneVulnerabilityAsCodeFound() {
+        return createMetaDataWithOneVulnerability(ScanType.CODE_SCAN);
+    }
+
+    private String createMetaDataWithOneVulnerabilityAsSecretFound() {
+        return createMetaDataWithOneVulnerability(ScanType.SECRET_SCAN);
+    }
+
+    private String createMetaDataWithOneVulnerability(ScanType scanType) {
         SerecoMetaData data = new SerecoMetaData();
         List<SerecoVulnerability> vulnerabilities = data.getVulnerabilities();
 
         SerecoVulnerability v1 = new SerecoVulnerability();
         v1.setSeverity(SerecoSeverity.MEDIUM);
         v1.setType("type1");
-        v1.setScanType(ScanType.CODE_SCAN);
+        v1.setScanType(scanType);
 
         SerecoCodeCallStackElement serecoCode1 = new SerecoCodeCallStackElement();
         serecoCode1.setLine(1);
@@ -223,6 +268,7 @@ public class SerecoProductResultTransformerTest {
 
         SerecoClassification cl = v1.getClassification();
         cl.setCapec("capec1");
+        cl.setCwe("4711");
 
         vulnerabilities.add(v1);
 

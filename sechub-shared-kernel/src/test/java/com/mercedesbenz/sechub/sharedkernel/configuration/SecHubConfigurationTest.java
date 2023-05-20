@@ -20,6 +20,7 @@ import com.mercedesbenz.sechub.commons.model.JSONConverter;
 import com.mercedesbenz.sechub.commons.model.JSONConverterException;
 import com.mercedesbenz.sechub.commons.model.SecHubInfrastructureScanConfiguration;
 import com.mercedesbenz.sechub.commons.model.SecHubLicenseScanConfiguration;
+import com.mercedesbenz.sechub.commons.model.SecHubSecretScanConfiguration;
 import com.mercedesbenz.sechub.commons.model.SecHubTimeUnit;
 import com.mercedesbenz.sechub.commons.model.SecHubWebScanConfiguration;
 import com.mercedesbenz.sechub.commons.model.WebScanDurationConfiguration;
@@ -539,6 +540,24 @@ public class SecHubConfigurationTest {
         assertTrue("license scan must be present", licenseScan.isPresent());
 
         Set<String> usedDataConfigs = licenseScan.get().getNamesOfUsedDataConfigurationObjects();
+        assertEquals(1, usedDataConfigs.size());
+        assertEquals(expectedDataConfigName, usedDataConfigs.iterator().next());
+    }
+
+    @Test
+    public void a_sechub_configuration_JSON_with_secret_scan_can_be_read_and_secret_scan_has_correct_data_configuration_reference() {
+        /* prepare */
+        String expectedDataConfigName = "files";
+        String json = SharedKernelTestFileSupport.getTestfileSupport().loadTestFile("secretscan/secret_scan.json");
+
+        /* execute */
+        SecHubConfiguration result = SECHUB_CONFIG.fromJSON(json);
+
+        /* test */
+        Optional<SecHubSecretScanConfiguration> secretScan = result.getSecretScan();
+        assertTrue("secret scan must be present", secretScan.isPresent());
+
+        Set<String> usedDataConfigs = secretScan.get().getNamesOfUsedDataConfigurationObjects();
         assertEquals(1, usedDataConfigs.size());
         assertEquals(expectedDataConfigName, usedDataConfigs.iterator().next());
     }

@@ -15,6 +15,10 @@ spec:
         metadata:
             labels:
                 name: {{ .Chart.Name }}
+{{- if .Values.templateMetadataAnnotations }}
+            annotations:
+        {{ .Values.templateMetadataAnnotations | indent 12 | trim }}
+{{- end }}
         spec:
             securityContext:
                 runAsUser: 2323 # user id of the application user. (overrides settings in the Dockerfile)
@@ -23,6 +27,11 @@ spec:
             containers:
                 - name: {{ .Chart.Name }}
                   image: "{{ .Values.image.registry }}:{{ .Values.image.tag }}"
+                  resources:
+                      requests:
+                          memory: "{{ .Values.resources.requests.memory }}"
+                      limits:
+                          memory: "{{ .Values.resources.limits.memory }}"
                   env:
                     - name: PDS_START_MODE
                       value: "{{ .Values.pds.startMode }}"
@@ -36,29 +45,29 @@ spec:
                       value: "{{ .Values.users.technical.apiToken }}"
                     - name: PDS_MAX_FILE_UPLOAD_BYTES
                       value: "{{ .Values.pds.maxFileUploadBytes }}"
-                    - name: PDS_HEARTBEAT_LOGGING
-                      value: "{{ .Values.pds.heartbeatLogging }}"
                     - name: PDS_CONFIG_EXECUTE_QUEUE_MAX
                       value: "{{ .Values.pds.config.execute.queueMax }}"
                     - name: PDS_CONFIG_EXECUTE_WORKER_THREAD_COUNT
                       value: "{{ .Values.pds.config.execute.workerThreadCount }}"
-                    {{- if .Values.pds.logging.type.enabled }}
+                    - name: PDS_HEARTBEAT_LOGGING
+                      value: "{{ .Values.pds.heartbeatLogging }}"
+{{- if .Values.pds.logging.type.enabled }}
                     - name: LOGGING_TYPE
                       value: {{ .Values.pds.logging.type.appenderName }}
-                    {{- end }}
-                    {{- if .Values.pds.debug.keepReportsInWorkspace }}
+{{- end }}
+{{- if .Values.pds.debug.keepReportsInWorkspace }}
                     - name: SECHUB_PDS_WORKSPACE_AUTOCLEAN_DISABLED
                       value: "true"
-                    {{- end }}
-                    {{- if .Values.pds.javaDebug.enabled }}
+{{- end }}
+{{- if .Values.pds.javaDebug.enabled }}
                     - name: JAVA_ENABLE_DEBUG
                       value: "true"
-                    {{- end }}
-                    {{- if .Values.pds.keepContainerAliveAfterPDSCrashed }}
+{{- end }}
+{{- if .Values.pds.keepContainerAliveAfterPDSCrashed }}
                     - name: KEEP_CONTAINER_ALIVE_AFTER_PDS_CRASHED
                       value: "true"
-                    {{- end }}
-                    {{- if .Values.database.postgres.enabled }}
+{{- end }}
+{{- if .Values.database.postgres.enabled }}
                     - name: POSTGRES_ENABLED
                       value: "true"
                     - name: DATABASE_CONNECTION
@@ -67,7 +76,7 @@ spec:
                       value: "{{ .Values.database.postgres.username }}"
                     - name: DATABASE_PASSWORD
                       value: "{{ .Values.database.postgres.password }}"
-                    {{- end }}
+{{- end }}
                     # limit database connection pool
                     - name: SPRING_DATASOURCE_HIKARI_MINIMUMIDLE
                       value: "1"
@@ -77,10 +86,10 @@ spec:
                     # Storage priority in order: local, s3, shared volume
                     # Meaning if local is enabled local will be used,
                     # regardless of other storage configurations.
-                    {{- if .Values.storage.local.enabled }}
+{{- if .Values.storage.local.enabled }}
                     - name: SHARED_VOLUME_UPLOAD_DIR
                       value: "/shared_volumes/uploads"
-                    {{- else if .Values.storage.s3.enabled }}
+{{- else if .Values.storage.s3.enabled }}
                     - name: S3_ENABLED
                       value: "true"
                     - name:  S3_ENDPOINT
@@ -91,10 +100,10 @@ spec:
                       value: {{ .Values.storage.s3.accesskey }}
                     - name: S3_SECRETKEY
                       value: {{ .Values.storage.s3.secretkey }}
-                    {{- else if .Values.storage.sharedVolume.enabled }}
+{{- else if .Values.storage.sharedVolume.enabled }}
                     - name: SHARED_VOLUME_UPLOAD_DIR
                       value: "{{ .Values.storage.sharedVolume.upload.dir }}"
-                    {{- end}}
+{{- end}}
                   ports:
                     - name: pds-https-port
                       containerPort: 8444

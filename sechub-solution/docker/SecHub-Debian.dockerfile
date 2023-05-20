@@ -7,19 +7,24 @@
 # The image argument needs to be placed on top
 ARG BASE_IMAGE
 
+# Inject the target architecture
+# For more information: 
+# - https://docs.docker.com/engine/reference/builder/#automatic-platform-args-in-the-global-scope
+ARG TARGETARCH
+
 # Build args
 ARG BUILD_TYPE="download"
 
 ARG SECHUB_VERSION="0.35.2"
-ARG GO="go1.19.3.linux-amd64.tar.gz"
 ARG TAG=""
 ARG BRANCH=""
 
+ARG GO="go1.20.1.linux-${TARGETARCH}.tar.gz"
+
 # possible values: temurin, openj9, openjdk
 ARG JAVA_DISTRIBUTION="openjdk"
-
-# possible values are 11, 17
-ARG JAVA_VERSION="11"
+# possible values: 17
+ARG JAVA_VERSION="17"
 
 # Artifact folder
 ARG SECHUB_ARTIFACT_FOLDER="/artifacts"
@@ -68,7 +73,7 @@ RUN cd "$DOWNLOAD_FOLDER" && \
     # remove go tar.gz
     rm "$GO"
 
-COPY --chmod=755 install-java/ "$DOWNLOAD_FOLDER/install-java/"
+COPY --chmod=755 install-java/debian "$DOWNLOAD_FOLDER/install-java/"
 
 # Install Java
 RUN cd "$DOWNLOAD_FOLDER/install-java/" && \
@@ -144,6 +149,9 @@ FROM builder-${BUILD_TYPE} as builder
 
 FROM ${BASE_IMAGE} AS sechub
 
+LABEL org.opencontainers.image.source="https://github.com/mercedes-benz/sechub"
+LABEL org.opencontainers.image.title="SecHub Debian Image"
+LABEL org.opencontainers.image.description="A container for SecHub based on Debian"
 LABEL maintainer="SecHub FOSS Team"
 
 ARG SECHUB_ARTIFACT_FOLDER
@@ -158,13 +166,17 @@ ENV SECHUB_STORAGE_SHAREDVOLUME_UPLOAD_DIR="/shared_volumes/uploads"
 
 ARG SECHUB_FOLDER="/sechub"
 
-# non-root user
 # using fixed group and user ids
 RUN groupadd --gid "$GID" "$USER" && \
     useradd --uid "$UID" --gid "$GID" --no-log-init --create-home "$USER"
 
-RUN mkdir --parent "$SECHUB_FOLDER" "$SECHUB_STORAGE_SHAREDVOLUME_UPLOAD_DIR"
+# Mounted secret files (like e.g. SSL certificates) go to $SECHUB_FOLDER/secrets. See deployment.yaml file.
+RUN mkdir --parent "$SECHUB_FOLDER/secrets" "$SECHUB_STORAGE_SHAREDVOLUME_UPLOAD_DIR"
 COPY --from=builder "$SECHUB_ARTIFACT_FOLDER" "$SECHUB_FOLDER"
+
+# Copy run script into container and make it executable
+COPY run.sh /run.sh
+RUN chmod +x /run.sh
 
 # Upgrade system
 RUN export DEBIAN_FRONTEND=noninteractive && \
@@ -172,25 +184,20 @@ RUN export DEBIAN_FRONTEND=noninteractive && \
     apt-get upgrade --assume-yes --quiet && \
     apt-get clean
 
-COPY --chmod=755 install-java/ "$SECHUB_FOLDER/install-java/"
+COPY --chmod=755 install-java/debian/ "$SECHUB_FOLDER/install-java/"
 
 # Install Java
 RUN cd "$SECHUB_FOLDER/install-java/" && \
     ./install-java.sh "$JAVA_DISTRIBUTION" "$JAVA_VERSION" jre
 
-# Copy run script into container
-COPY run.sh /run.sh
-
-# Set execute permissions for scripts
-RUN chmod +x /run.sh
-
-# Set permissions
-RUN chown --recursive "$USER:$USER" "$SECHUB_FOLDER" "$SECHUB_STORAGE_SHAREDVOLUME_UPLOAD_DIR"
+# Set permissions and clean up install folder
+RUN chown --recursive "$USER:$USER" "$SECHUB_FOLDER" "$SECHUB_STORAGE_SHAREDVOLUME_UPLOAD_DIR" && \
+    rm --recursive --force "$SECHUB_FOLDER/install-java/"
 
 # Set workspace
 WORKDIR "$SECHUB_FOLDER"
 
-# Switch from root to non-root user
+# Switch to non-root user
 USER "$USER"
 
 CMD ["/run.sh"]

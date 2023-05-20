@@ -13,6 +13,7 @@ import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 
 import com.mercedesbenz.sechub.domain.scan.product.config.ProductExecutorConfigInfo;
+import com.mercedesbenz.sechub.sharedkernel.ProductIdentifier;
 
 public class ProductResultRepositoryImpl implements ProductResultRepositoryCustom {
     /* @formatter:off */

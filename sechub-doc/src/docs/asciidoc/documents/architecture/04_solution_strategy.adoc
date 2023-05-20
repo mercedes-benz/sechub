@@ -80,8 +80,8 @@ based upon your problem statement, the quality goals and key constraints.
                                       | Development                                 | We use AsciiDoc and checkin documenteation together inside one GIT repository
                                                                                                                 | see https://asciidoctor.org/docs/asciidoc-syntax-quick-reference/
 | We want to have a way to provide special scan configurations in a dynamic way
-                                      | Deployment                                 | We provide a JSON based scan configuration where different provider meta information can be defined. Dedicated providers can 
-                                                                                     use this information and handle dynamic configuration - e.g. based on name of sechub project.
-                                                                                                                | see https://github.com/mercedes-benz/sechub/issues/127 ,`ScanMappingConfigurationService` class or description inside `technical documentation`. 
+                                      | Deployment                                 | We provide a JSON based scan configuration where different provider meta information can be defined. Dedicated providers can
+                                                                                     use this information and handle dynamic configuration - e.g. based on name of {sechub} project.
+                                                                                                                | see https://github.com/mercedes-benz/sechub/issues/127 ,`ScanMappingConfigurationService` class or description inside `technical documentation`.
 
 |===

@@ -22,7 +22,7 @@ public class ListExecutionProfilesDialogUI extends AbstractListDialogUI<String> 
         List<String> model = new ArrayList<>();
         model.add("Profile id");// 0
         model.add("enabled");
-        model.add("descrition");
+        model.add("description");
         return model;
     }
 

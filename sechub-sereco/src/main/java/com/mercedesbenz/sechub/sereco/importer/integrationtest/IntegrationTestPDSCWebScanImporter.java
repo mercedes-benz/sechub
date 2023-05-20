@@ -31,7 +31,7 @@ public class IntegrationTestPDSCWebScanImporter implements ProductResultImporter
     private static final String ID_PDS_INTTEST_PRODUCT_WEBSCAN_FAILED = "#PDS_INTTEST_PRODUCT_WEBSCAN_FAILED";
 
     @Override
-    public SerecoMetaData importResult(String simpleText) throws IOException {
+    public SerecoMetaData importResult(String simpleText, ScanType scanType) throws IOException {
         String[] lines = simpleText.split("\n");
         SerecoMetaData metaData = new SerecoMetaData();
         List<SerecoVulnerability> vulnerabilities = metaData.getVulnerabilities();

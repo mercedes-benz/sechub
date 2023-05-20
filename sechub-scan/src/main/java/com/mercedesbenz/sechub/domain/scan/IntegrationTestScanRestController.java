@@ -29,7 +29,6 @@ import com.mercedesbenz.sechub.domain.scan.config.ScanMapping;
 import com.mercedesbenz.sechub.domain.scan.config.ScanMappingConfigurationService;
 import com.mercedesbenz.sechub.domain.scan.config.ScanMappingRepository;
 import com.mercedesbenz.sechub.domain.scan.config.UpdateScanMappingConfigurationService;
-import com.mercedesbenz.sechub.domain.scan.product.ProductIdentifier;
 import com.mercedesbenz.sechub.domain.scan.product.ProductResult;
 import com.mercedesbenz.sechub.domain.scan.product.ProductResultCountService;
 import com.mercedesbenz.sechub.domain.scan.product.ProductResultRepository;
@@ -40,6 +39,7 @@ import com.mercedesbenz.sechub.domain.scan.product.config.ProductExecutorConfigI
 import com.mercedesbenz.sechub.domain.scan.product.config.WithoutProductExecutorConfigInfo;
 import com.mercedesbenz.sechub.domain.scan.report.ScanReportCountService;
 import com.mercedesbenz.sechub.sharedkernel.APIConstants;
+import com.mercedesbenz.sechub.sharedkernel.ProductIdentifier;
 import com.mercedesbenz.sechub.sharedkernel.Profiles;
 
 /**

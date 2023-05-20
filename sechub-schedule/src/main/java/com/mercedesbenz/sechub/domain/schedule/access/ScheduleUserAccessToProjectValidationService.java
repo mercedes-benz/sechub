@@ -39,7 +39,7 @@ public class ScheduleUserAccessToProjectValidationService {
             /* a super admin has always access to existing projects */
 
             if (!accessRepository.hasProjectUserAccess(projectId)) {
-                throw new NotFoundException("Project " + projectId + " does not exist, or no user has access at all.");
+                throw new NotFoundException("Project " + projectId + " does not exist, or user has no access.");
             }
 
             return;

@@ -1,0 +1,46 @@
+# SPDX-License-Identifier: MIT
+
+name: sechub scan
+description: 'a GitHub actions wrapper for SecHub security scan.'
+inputs:
+  config-path:
+    description: 'Path to sechub.json for manual configuration. If no value is set the input parameters will be used to create it for the scan.'
+    required: false
+  url:
+    description: 'SecHub server URL'
+    required: false
+  api-token:
+    description: 'SecHub API Token'
+    required: false
+  user:
+    description: 'SecHub userid'
+    required: false
+  project-name:
+    description: 'SecHub project name'
+    required: false
+  version:
+    description: 'Which version of the SecHub'
+    required: false
+    default: '0.36.0'
+  include-folders:
+    description: 'a list of folders to include'
+    required: false
+    default: '.'
+  exclude-folders:
+    description: 'a list of folders to exclude'
+    required: false
+  report-formats:
+    description: 'a list of report formats to fetch'
+    required: true
+    default: 'html,json'
+  debug:
+    description: 'SecHub debug output on/off'
+    required: false
+    default: false
+  fail-job-with-findings:
+    description: 'job will be marked as failed if sechub finds something'
+    required: true
+
+runs:
+  using: 'node12'
+  main: './dist/index.js'

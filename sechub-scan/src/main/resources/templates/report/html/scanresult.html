@@ -3,6 +3,13 @@
 <head>
 <meta charset="UTF-8">
 <title>SecHub scan result</title>
+<!--/* 
+    Remark: This comments will be removed at thymeleaf parsing time - means not in HTML output... 
+    
+    Important: If you change scanresult.css please always start HTMLReportCSSFragementGenerator to
+               synch to the fragment part. Details see HTMLReportCSSFragementGenerator.java
+    
+*/-->
 <link th:if="${isWebDesignMode}" th:href="${includedCSSRef}"
 	rel="stylesheet" type="text/css" href="scanresult.css">
 <style type="text/css" th:if="!${isWebDesignMode}"
@@ -60,6 +67,17 @@
 					<td>Scan result Report for Job:<span th:text="${jobuuid}">job-uuid</span>
 					</td>
 				</tr>
+				<tr class="reportlabels" th:if="${metaData.isPresent() && !metaData.get().getLabels().isEmpty()}" >
+                    <td></td>
+                    <td>
+                        <table class='reportMetaDataTable' >
+                           <tr th:each="entry : ${metaData.get().getLabels()}">
+                                <td class="metaDataLabelKey" th:text="${entry.key}">key</td>
+                                <td class="metaDataLabelValue" th:text="${entry.value}">value</td>
+                        </tr>
+                        </table>
+                    </td>
+                </tr>
 			</table>
 		</div>
 		<div class="content">

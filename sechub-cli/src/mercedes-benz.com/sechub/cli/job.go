@@ -18,7 +18,6 @@ import (
  * --------------------------------------------------
  */
 func createNewSecHubJob(context *Context) {
-	sechubUtil.Log("Creating new SecHub job", context.config.quiet)
 	response := sendWithDefaultHeader("POST", buildCreateNewSecHubJobAPICall(context), context)
 
 	data, err := ioutil.ReadAll(response.Body)
@@ -29,6 +28,7 @@ func createNewSecHubJob(context *Context) {
 	sechubUtil.HandleError(jsonErr, ExitCodeFailed)
 
 	context.config.secHubJobUUID = result.JobID
+	sechubUtil.Log("Creating new SecHub job: "+context.config.secHubJobUUID, context.config.quiet)
 }
 
 // approveSecHubJob - Approve Job
@@ -49,8 +49,15 @@ func waitForSecHubJobDone(context *Context) (status jobStatusResult) {
 	for {
 		getSecHubJobStatus(context)
 
+		// Check if job has finished
 		if context.jobStatus.State == ExecutionStateEnded {
 			break
+		}
+		// Exit if job has been canceled on SecHub server
+		if context.jobStatus.State == ExecutionStateCanceled || context.jobStatus.State == ExecutionStateCancelRequested {
+			sechubUtil.PrintIfNotSilent("\n", context.config.quiet)
+			sechubUtil.LogError("Job " + context.config.secHubJobUUID + " has been canceled on SecHub server.")
+			os.Exit(ExitCodeCanceled)
 		}
 
 		if !context.config.quiet {
@@ -153,5 +160,78 @@ func printSecHubJobSummaryAndFailOnTrafficLight(context *Context) {
 	default:
 		sechubUtil.LogError(fmt.Sprintln("UNKNOWN traffic light:", context.jobStatus.TrafficLight, "- Expected one of: RED, YELLOW, GREEN."))
 		os.Exit(ExitCodeFailed)
+	}
+}
+
+func getSecHubJobList(context *Context, size int) {
+	// request SecHub job state from server
+	response := sendWithDefaultHeader("GET", buildGetSecHubJobListAPICall(context, size), context)
+
+	data, err := ioutil.ReadAll(response.Body)
+	sechubUtil.HandleHTTPError(err, ExitCodeHTTPError)
+	if context.config.debug {
+		sechubUtil.LogDebug(context.config.debug, fmt.Sprintf("Get job list: %s", string(data)))
+	}
+
+	/* transform json result into context.jobList */
+	err = json.Unmarshal(data, context.jobList)
+	sechubUtil.HandleError(err, ExitCodeFailed)
+}
+
+func latestUUIDFromJobList(context *Context, filter string) (uuid string) {
+	if filter == "" {
+		uuid = context.jobList.List[0].JobUUID
+	} else {
+		for _, item := range context.jobList.List {
+			if item.ExecutionState == filter {
+				uuid = item.JobUUID
+				break
+			}
+		}
+	}
+	return uuid
+}
+
+func getLatestSecHubJobUUID(context *Context, expectedState ...string) string {
+	// get latest 5 entries into context.jobList
+	getSecHubJobList(context, 5)
+
+	if len(context.jobList.List) == 0 {
+		sechubUtil.LogError("No SecHub jobs found. Have you started a scan?")
+	}
+
+	// If not provided: accept any job state
+	stateFilter := ""
+	if len(expectedState) > 0 {
+		stateFilter = expectedState[0]
+	}
+
+	return latestUUIDFromJobList(context, stateFilter)
+}
+
+func printLatestJobsOfProject(context *Context) {
+	// get latest jobs into context.jobList
+	getSecHubJobList(context, SizeOfJobList)
+
+	printFormat := "%-36s | %-6s | %-8s | %-6s | %-19s | %-19s\n"
+	fmt.Printf(printFormat, "SecHub JobUUID", "Status", "Stage", "Result", "Created", "Ended")
+	fmt.Println("-------------------------------------+--------+----------+--------+---------------------+--------------------")
+	for _, item := range context.jobList.List {
+		// Create reasonable job status strings
+		jobStatus := item.ExecutionState
+		if strings.HasPrefix(item.ExecutionState, "READY") {
+			jobStatus = "WAITING"
+		} else if strings.HasPrefix(item.ExecutionState, "CANCEL") {
+			jobStatus = "CANCELED"
+		}
+
+		// Cut some of the results to keep the table's format (needs some padding with blanks in case the strings are smaller)
+		fmt.Printf(printFormat,
+			item.JobUUID,
+			item.TrafficLight,
+			(jobStatus + "        ")[0:8],
+			item.ExecutionResult,
+			(item.Created + "                   ")[0:19],
+			(item.Ended + "                   ")[0:19])
 	}
 }

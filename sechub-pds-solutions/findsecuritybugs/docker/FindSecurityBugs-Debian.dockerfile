@@ -56,6 +56,12 @@ RUN chmod --recursive +x $SCRIPT_FOLDER
 # Mock folder
 COPY mocks $MOCK_FOLDER
 
+# TODO: Remove the lines below in the future
+# This is a workaround as long as Spotbugs does not support taxonomies
+# https://github.com/spotbugs/spotbugs/issues/2321
+COPY copy/spotbugs.jar $TOOL_FOLDER/lib/spotbugs.jar
+COPY copy/spotbugs-annotations.jar $TOOL_FOLDER/lib/spotbugs-annotations.jar
+
 # Set workspace
 WORKDIR "$WORKSPACE"
 

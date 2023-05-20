@@ -78,7 +78,16 @@ public enum PDSIntTestProductIdentifier {
      */
     PDS_TEST_PRODUCT_LICENSESCAN("PDS_TEST_PRODUCT_LICENSESCAN"),
 
+    /**
+     * PDS product identifier for PDS secret scan integration test. The PDS secret
+     * scan script will return an already existing SARIF file as output. <br>
+     * For details please look at {@link PDSIntTestProductIdentifier}.
+     */
+    PDS_TEST_PRODUCT_SECRETSCAN("PDS_TEST_PRODUCT_SECRETSCAN"),
+
     PDS_CHECKMARX_INTEGRATIONTEST("PDS_CHECKMARX_INTEGRATIONTEST"),
+
+    PDS_INTTEST_PRODUCT_ANALYZE("PDS_INTTEST_PRODUCT_ANALYZE"),
 
     ;
 

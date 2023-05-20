@@ -98,12 +98,16 @@ func tarOneFolderRecursively(folder string, config *TarConfig) error {
 			return err
 		}
 
-		// Add prefix to tarPath
-		tarPath = config.PrefixInTar + tarPath
-
 		// Filter excludes
 		for _, excludePattern := range config.Excludes {
-			if FilePathMatch(tarPath, excludePattern) {
+			var path string
+			if strings.HasPrefix(excludePattern, "/") {
+				path = file
+			} else {
+				path = tarPath
+			}
+
+			if FilePathMatch(path, excludePattern) {
 				LogDebug(config.Debug, fmt.Sprintf("%q matches exclude pattern %q -> skip", file, excludePattern))
 				return nil
 			}
@@ -113,6 +117,9 @@ func tarOneFolderRecursively(folder string, config *TarConfig) error {
 			// Cannot add tar file to itself
 			return errors.New(TargetTarFileLoop)
 		}
+
+		// Add prefix to tarPath
+		tarPath = config.PrefixInTar + tarPath
 
 		return tarOneFile(file, tarPath, config)
 	})

@@ -16,7 +16,7 @@ define a network policy, services, endpoints etc. etc.
 
 [IMPORTANT]
 ====
-Be aware to mount *only ONE pod* - the database is *shared by all sechub server
+Be aware to mount *only ONE pod* - the database is *shared by all {sechub} server
 PODs* _(means this is a shared kernel / bottle neck but necessary)_
 ====
 
@@ -46,13 +46,13 @@ define a network policy, services, endpoints etc.
 
 [IMPORTANT]
 ====
-Be aware to mount *only ONE pod* - the database is *shared by all sechub server
+Be aware to mount *only ONE pod* - the database is *shared by all {sechub} server
 PODs* _(means this is a shared kernel / bottle neck but necessary)_
 ====
 
 ==== Server Application
 
-{sechub} server is a written in `Java` and needs at least `JDK 11`.
+{sechub} server is a written in `Java` and needs at least `{required_JDK}`.
 
 You can configure {sechub} server by system properties or also by  environment
 variables.
@@ -129,7 +129,7 @@ generated yaml part contains a reference to a kubernetes secret instead of
 a fixed value.
 ../
 The yaml file can be used when you initally create a deployment file, or
-when new attributes has been added to {secHub}, identify missing/new ones
+when new attributes has been added to {sechub}, identify missing/new ones
 very fast.
 
 *secrets*
@@ -158,7 +158,7 @@ accidently add the credentials to your repository.
 
 *Logstash support*
 
-When you want to use `logstash` (e.g. when using `ElasticSearch` or `OpenSearch`) you just have to set the environment variable 
-`LOGGING_TYPE` to `LOGSTASH_JSON` before server starts. 
+When you want to use `logstash` (e.g. when using `ElasticSearch` or `OpenSearch`) you just have to set the environment variable
+`LOGGING_TYPE` to `LOGSTASH_JSON` before server starts.
 
 

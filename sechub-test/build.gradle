@@ -5,6 +5,8 @@ dependencies {
        reason: fat jars are build which cannot be directly used for testing etc. */
     testImplementation project(':sechub-server-core')
     testImplementation project(':sechub-pds-core')
+    testImplementation project(':sechub-schedule')
+    testImplementation project(':sechub-administration')
     testImplementation project(':sechub-adapter')
     testImplementation project(':sechub-testframework')
     testImplementation project(':sechub-doc') // here we got the dependency to Reflections 

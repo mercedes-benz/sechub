@@ -15,5 +15,5 @@ dependencies {
 
     implementation library.wiremock
     implementation library.apache_commons_io
-
-} 
+    implementation library.apache_commons_lang3
+}

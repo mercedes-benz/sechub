@@ -5,11 +5,11 @@
 ==== Tool installation
 You need
 
-- JAVA 8 JDK
-- Go Lang (min 1.10)
+- JAVA {required_java_version} JDK
+- Go Lang (min. {required_go_version})
 - GIT
 
-NOTE: Go installation is only necessary for client development. All Tools must be accessible from PATH variable
+NOTE: A Go installation is only necessary for client development. All tools must be accessible from PATH variable.
 
 ==== GIT setup
 
@@ -20,7 +20,7 @@ git clone https://github.com/mercedes-benz/sechub.git
 
 [[sechub-git-configuration]]
 ===== GIT Configuration
-After clone is done, please go into repository root folder and define
+After Git clone is done, please go into the repository's root folder and define
 
 ====== User name and email
 Only necessary when not like your global configuration:
@@ -45,7 +45,7 @@ git config --add remote.origin.fetch +refs/tags/*:refs/tags/*
 ===== Eclipse
 
 ====== Import projects
-Open a console in sechub repository root folder and type:
+Open a console in {sechub}'s repository root folder and type:
 
 ----
 ./gradlew cleanEclipse eclipse assemble
@@ -65,22 +65,8 @@ Import as you would normally do in your IDE.
 To get the localhost server certificate created, open a console
 just call  `./gradlew ensureLocalhostCertificate`
 
-This will generate a randomized server certificate for localhost, necessary for
-development
+This will generate a self signed server certificate for localhost.
 
-==== Go development setup
-
-===== Common
-You should create a soft link inside your go sources to real git repository parts
-So this uses standard go structures and it should work out of the box in any
-go development IDE:
-
-For example:
-[source,bash]
-----
-mkdir ~/go/src/mercedes-benz.com/
-ln -s $pathToSecHubRepo/sechub-cli/src/mercedes-benz.com/sechub ~/go/src/mercedes-benz.com/sechub
-----
 
 ==== Special developer files
 
@@ -88,20 +74,20 @@ ln -s $pathToSecHubRepo/sechub-cli/src/mercedes-benz.com/sechub ~/go/src/mercede
 Inside `~/.sechub/sechub-developer.properties` you can define some special default behaviours
 [options="header",cols="1,1,1"]
 |===
-|Key                                |Possible values/types   |Description   
+|Key                                |Possible values/types   |Description
 //----------------------------------------------------------------------------------------
-|sechub.integrationtest.running     |boolean                 |When `true`, every integration test is run, 
-                                                              no matter if system property is set for launch config or not   
+|sechub.integrationtest.running     |boolean                 |When `true`, every integration test is run,
+                                                              no matter if system property is set for launch config or not
 |===
 
-see `LocalDeveloperFileSetupSupport.java` for more details
+See `LocalDeveloperFileSetupSupport.java` for details.
 
 === First steps
-Here some first steps to get {sechub} running and being able to develop parts.
+Here are some first steps to get {sechub} running and being able to start developing.
 
 ==== Integration test scenario
 
-With this setup we will start sechub server ready for executing integration tests.
+With this setup we will start a {sechub} server instance ready for executing integration tests.
 It does use only security product mocks, so we got no long running sessions. We need
 no running security suite... but of course we have no real products and can not make real scans.
 
@@ -155,17 +141,18 @@ If you have executed a `clean` task before, you are forced to call
 `gradlew build buildGo integrationtest` to get all things working again.
 
 ====
+
 ===== Stop integration test server
-====== IDE
-Just stop your running server...
+To stop your running server:
 
 ====== Console
 ----
 ./gradlew stopIntegrationTestServer
 ----
+
 === Developer administration UI
 
-There exists a very simple user interface for developers, to test out behaviour of sechub server. There will be
+There exists a very simple user interface for developers to test out the behaviour of the {sechub} server. There will be
 all functions of server available, but in a very reduced way.
 
 WARNING: The developer administration UI is only a tool for developers and should be handled with care. +
@@ -181,25 +168,23 @@ include::./../shared/launchconfig/launchconfig_start_integrationtest_dev_adminui
 
 === Branching model
 
-We got following branch types:
+Overview of branch types:
 
 [options="header",cols="1,1,1"]
 |===
 |Name-Pattern   |Parent branch  |Details
 //----------------------
-|master             |none            | This is the leading branch. Versions, Tags etc. are done here!
-                                            Direct commits to master have to be avoided. Version build
-                                            is done here. Hotfixes
-|hotfix             |master          | Hotfix branch. This is the branch we use for hot fixes.
-                                       So we ensure changes from current development are not in a hotfix.
+|`master`             |none          | This is the leading branch. Versions, Tags etc. are done here!
+                                       Direct commits to master have to be avoided. Version build
+                                       is done here.
+|`hotfix`             |master        | Hotfix branch. This is the branch we use for hot fixes.
+                                       So we ensure changes from `develop` are not in a hotfix.
 
                                        After a hotfix has been merged to master the changes must be applied
-                                       to development branch as well.
-|develop            |master          | Development branch. This is the branch we use for development.
-                                       The stuff inside will be alway part of next release. So only
-                                       smaller features should be committed here directly. Bigger ones
-                                       must be inside a dedicated feature-branch!
-|feature-${issue}   |develop         |When we develop a feature which is bigger and where its not clear if it will be inside next release, we create a feature branch.
+                                       to `develop` branch as well.
+|`develop`            |master        | Development branch. This branch will be part of the next release.
+                                       Do not commit into this branch. Instead create a dedicated feature-branch.
+|`feature-${issue}`   |develop       | For each feature we create a `feature-1234-xyz` branch. It will be merged into the `develop` branch when finished.
 |===
 
 
@@ -243,7 +228,7 @@ include::./../shared/launchconfig/launchconfig_start_prod_server.adoc[]
 === Terminate SSL and use HTTP only
 Per default {sechub} will always use `HTTPS` for communication.
 
-Its not recommended, but if anybody wants to use SecHub with `HTTP` only
+Its not recommended, but if somebody wants to use SecHub with `HTTP` only
 _(e.g. when running behind a SSL proxy)_ this can be done in this way:
 
 Start your server as described before but add following additional
@@ -254,8 +239,8 @@ system properties:
 -Dsecurity.require-ssl=false
 ----
 
-This will disable ssl encryption and also spring security requiring ssl.
+NOTE: This will disable ssl encryption and also Spring security which requires ssl.
 
-When you want to administrate this by developer admin ui, you should also
-switch to HTTP protocol, as described at
+If you want to administrate this by developer admin ui, you should also
+switch to the HTTP protocol as described in section
 <<section-developer-adminui-setup,developer admin UI setup>>

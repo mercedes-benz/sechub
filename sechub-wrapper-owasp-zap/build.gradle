@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: MIT
  /*============================================================================
- * Build file for subproject 
+ * Build file for subproject
  *
  * Root build file: "${rootProject.projectDir}/build.gradle"
  * ============================================================================
@@ -8,32 +8,33 @@
 dependencies {
     implementation project(':sechub-commons-model')
     implementation project(':sechub-commons-core')
+        implementation project(':sechub-commons-pds')
     testImplementation project(':sechub-testframework')
-    
+
     implementation library.owaspzap_client_api
     implementation library.jcommander
-    
+
     implementation spring_boot_dependency.slf4j_api
     implementation spring_boot_dependency.logback_classic
-    
+
 	testImplementation spring_boot_dependency.junit_jupiter
     testImplementation spring_boot_dependency.junit_jupiter_params
     testImplementation spring_boot_dependency.mockito_core
 }
 
-version = VersionData.getPdsVersion()
+version = VersionData.getOwaspzapWrapperVersion()
 
 task buildWrapperOwaspZap(type: Jar, dependsOn: build) {
     group 'sechub'
     description 'Builds the SecHub Owasp Zap Wrapper CLI tool.'
     archiveBaseName = 'sechub-pds-wrapperowaspzap'
-    
+
 	manifest {
         attributes 'Main-Class': 'com.mercedesbenz.sechub.owaspzapwrapper.cli.OwaspZapWrapperCLI'
     }
 
-    from { 
-        configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) } 
+    from {
+        configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) }
     }
     duplicatesStrategy = DuplicatesStrategy.INCLUDE
     with jar

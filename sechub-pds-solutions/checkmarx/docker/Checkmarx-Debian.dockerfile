@@ -14,7 +14,7 @@ ARG CHECKMARX_WRAPPER_VERSION
 # The base image of the builder
 ARG BUIDLER_BASE_IMAGE="debian:11-slim"
 
-# Artifact folder 
+# Artifact folder
 ARG ARTIFACT_FOLDER="/artifacts"
 
 #-------------------
@@ -36,9 +36,9 @@ RUN export DEBIAN_FRONTEND=noninteractive && \
 # Download the Checkmarx Wrapper
 RUN cd "$ARTIFACT_FOLDER" && \
     # download checksum file
-    wget --no-verbose "https://github.com/mercedes-benz/sechub/releases/download/v$CHECKMARX_WRAPPER_VERSION-pds/sechub-wrapper-checkmarx-$CHECKMARX_WRAPPER_VERSION.jar.sha256sum" && \
+    wget --no-verbose "https://github.com/mercedes-benz/sechub/releases/download/v$CHECKMARX_WRAPPER_VERSION-checkmarx-wrapper/sechub-wrapper-checkmarx-$CHECKMARX_WRAPPER_VERSION.jar.sha256sum" && \
     # download wrapper jar
-    wget --no-verbose "https://github.com/mercedes-benz/sechub/releases/download/v$CHECKMARX_WRAPPER_VERSION-pds/sechub-wrapper-checkmarx-$CHECKMARX_WRAPPER_VERSION.jar" && \
+    wget --no-verbose "https://github.com/mercedes-benz/sechub/releases/download/v$CHECKMARX_WRAPPER_VERSION-checkmarx-wrapper/sechub-wrapper-checkmarx-$CHECKMARX_WRAPPER_VERSION.jar" && \
     # verify that the checksum and the checksum of the file are same
     sha256sum --check "sechub-wrapper-checkmarx-$CHECKMARX_WRAPPER_VERSION.jar.sha256sum"
 

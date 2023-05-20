@@ -1,5 +1,5 @@
 # SPDX-License-Identifier: MIT
-name: PDS-Tools-Release
+name: Release PDS-Tools
 
 on:
   workflow_dispatch:
@@ -38,13 +38,13 @@ jobs:
       # ----------------------
       # Setup + Caching
       # ----------------------
-      - name: Set up JDK 11
+      - name: Set up JDK 17
         uses: actions/setup-java@v3
         with:
-          java-version: 11
+          java-version: 17
           distribution: temurin
           cache: gradle
-          
+
       # ----------------------
       # Create pull request if license headers are missing
       # ----------------------
@@ -56,12 +56,12 @@ jobs:
           ./apply-headers.sh
           git commit -am "SPDX headers added by SecHub release job @github-actions" || true
           COMMITS=`git log --oneline --branches --not --remotes`
-          echo "::set-output name=commits::$COMMITS"
+          echo "commits=$COMMITS" >> $GITHUB_OUTPUT
 
       - name: Create pull request for SPDX license headers
         id: pr_spdx_headers
         if: steps.apply-headers.outputs.commits != ''
-        uses: peter-evans/create-pull-request@v4.2.0
+        uses: peter-evans/create-pull-request@v5.0.1
         with:
           branch: release-spdx-headers
           branch-suffix: short-commit-hash
@@ -162,6 +162,20 @@ jobs:
           asset_path: sechub-pds-tools/build/libs/sechub-pds-tools-cli-${{ github.event.inputs.pds-tools-version }}.jar.sha256sum
           asset_name: sechub-pds-tools-cli-${{ github.event.inputs.pds-tools-version }}.jar.sha256sum
           asset_content_type: text/plain
+
+      # -----------------------------------------
+      # Create release issue
+      # -----------------------------------------
+      - name: Create PDS-Tool ${{ github.event.inputs.pds-tools-version }} release issue
+        uses: dacbd/create-issue-action@main
+        with:
+          token: ${{ github.token }}
+          title: Release PDS-Tool ${{ github.event.inputs.pds-tools-version }}
+          body: |
+            See [Milestone ${{github.event.inputs.pds-tools-milestone-number}}]( https://github.com/mercedes-benz/sechub/milestone/${{github.event.inputs.pds-tools-milestone-number}}?closed=1) for details.
+
+            Please close this issue after the release.
+          milestone: ${{ github.event.inputs.pds-tools-milestone-number }}
 
       # -----------------------------------------
       # Create a pull request for merging back `master` into `develop`

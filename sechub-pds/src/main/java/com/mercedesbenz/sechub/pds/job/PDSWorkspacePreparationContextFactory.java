@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.pds.job;
 
 import java.util.Set;
@@ -49,7 +50,7 @@ public class PDSWorkspacePreparationContextFactory {
         SecHubConfigurationModel model = configurationSupport.resolveSecHubConfigurationModel();
 
         Set<SecHubDataConfigurationType> supportedDataTypes = configurationSupport.getSupportedDataTypes(productSupportedDataTypesAsString);
-        LOG.debug("Found supported data types: {} for produt: {}", supportedDataTypes, configurationSupport.getProductId());
+        LOG.debug("Found supported data types: {} for product: {}", supportedDataTypes, configurationSupport.getProductId());
 
         preparationContext.setSourceAccepted(supportedDataTypes.contains(SecHubDataConfigurationType.SOURCE));
         preparationContext.setBinaryAccepted(supportedDataTypes.contains(SecHubDataConfigurationType.BINARY));

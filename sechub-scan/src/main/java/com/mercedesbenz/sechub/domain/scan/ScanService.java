@@ -130,6 +130,7 @@ public class ScanService implements SynchronMessageHandler {
         LOG.info("Start scan for SecHub job: {}", sechubJobUUID);
 
         UUID logUUID = scanLogService.logScanStarted(context);
+
         try {
             ProgressMonitor progressMonitor = monitorFactory.createProgressMonitor(sechubJobUUID);
 
@@ -180,14 +181,16 @@ public class ScanService implements SynchronMessageHandler {
     }
 
     private SecHubExecutionContext createExecutionContext(DomainMessage message) throws JSONConverterException {
-        UUID uuid = message.get(SECHUB_UUID);
+        UUID executionUUID = message.get(SECHUB_EXECUTION_UUID);
+
+        UUID sechubJobUUID = message.get(SECHUB_JOB_UUID);
         String executedBy = message.get(EXECUTED_BY);
 
         SecHubConfiguration configuration = message.get(SECHUB_CONFIG);
         if (configuration == null) {
             throw new IllegalStateException("SecHubConfiguration not found in message - so cannot execute!");
         }
-        SecHubExecutionContext executionContext = new SecHubExecutionContext(uuid, configuration, executedBy);
+        SecHubExecutionContext executionContext = new SecHubExecutionContext(sechubJobUUID, configuration, executedBy, executionUUID);
 
         buildOptions(executionContext);
 

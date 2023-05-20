@@ -17,6 +17,7 @@ import javax.persistence.Version;
 
 import org.hibernate.annotations.GenericGenerator;
 
+import com.mercedesbenz.sechub.commons.model.ModuleGroup;
 import com.mercedesbenz.sechub.commons.model.TrafficLight;
 import com.mercedesbenz.sechub.domain.schedule.ExecutionResult;
 import com.mercedesbenz.sechub.domain.schedule.ExecutionState;
@@ -45,6 +46,7 @@ public class ScheduleSecHubJob {
     public static final String COLUMN_STATE = "STATE";
     public static final String COLUMN_CONFIGURATION = "CONFIGURATION";
     public static final String COLUMN_TRAFFIC_LIGHT = "TRAFFIC_LIGHT";
+    public static final String COLUMN_MODULE_GROUP = "MODULE_GROUP";
 
     public static final String COLUMN_PROJECT_ID = "PROJECT_ID";
 
@@ -66,6 +68,7 @@ public class ScheduleSecHubJob {
     public static final String PROPERTY_STARTED = "started";
     public static final String PROPERTY_ENDED = "ended";
     public static final String PROPERTY_MESSAGES = "jsonMessages";
+    public static final String PROPERTY_MODULE_GROUP = "moduleGroup";
 
     public static final String QUERY_DELETE_JOBINFORMATION_OLDER_THAN = "DELETE FROM ScheduleSecHubJob j WHERE j." + PROPERTY_CREATED + " <:cleanTimeStamp";;
     @Id
@@ -103,6 +106,10 @@ public class ScheduleSecHubJob {
     @Enumerated(STRING)
     @Column(name = COLUMN_TRAFFIC_LIGHT, nullable = true)
     TrafficLight trafficLight;
+
+    @Enumerated(STRING)
+    @Column(name = COLUMN_MODULE_GROUP, nullable = true) // nullable only for backward compatibility with old jobs
+    ModuleGroup moduleGroup;
 
     @Column(name = COLUMN_MESSAGES)
     private String jsonMessages;
@@ -185,6 +192,14 @@ public class ScheduleSecHubJob {
 
     public void setJsonMessages(String jsonMessages) {
         this.jsonMessages = jsonMessages;
+    }
+
+    public void setModuleGroup(ModuleGroup moduleGroup) {
+        this.moduleGroup = moduleGroup;
+    }
+
+    public ModuleGroup getModuleGroup() {
+        return moduleGroup;
     }
 
     @Override

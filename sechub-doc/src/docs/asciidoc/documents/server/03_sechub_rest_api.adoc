@@ -9,7 +9,7 @@ It makes usage of {sechub} much more comfortable!
 
 Using REST API directly can be a little bit cumbersome...
 
-Look at {webPage}[{secHub} web page] to get information about {sechub} client.
+Look at {webPage}[{sechub} web page] to get information about {sechub} client.
 ====
 
 include::../shared/configuration/sechub_config.adoc[]

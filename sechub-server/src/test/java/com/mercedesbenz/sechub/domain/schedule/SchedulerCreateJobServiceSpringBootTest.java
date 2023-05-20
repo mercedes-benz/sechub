@@ -72,7 +72,7 @@ public class SchedulerCreateJobServiceSpringBootTest {
 
         /* prepare */
         when(jobRepository.save(nextJob)).thenReturn(nextJob);
-        when(jobRepository.findNextJobToExecute()).thenReturn(Optional.of(nextJob));
+        when(jobRepository.nextJobIdToExecuteFirstInFirstOut()).thenReturn(Optional.of(jobUUID));
     }
 
     @Test(expected = NotFoundException.class) // spring boot tests with Rule "ExpectedException" not working.
@@ -94,7 +94,6 @@ public class SchedulerCreateJobServiceSpringBootTest {
 
         /* prepare */
         when(jobRepository.save(nextJob)).thenReturn(nextJob);
-        when(jobRepository.findNextJobToExecute()).thenReturn(Optional.of(nextJob));
 
         /* execute */
         serviceToTest.createJob(PROJECT_ID, configuration);

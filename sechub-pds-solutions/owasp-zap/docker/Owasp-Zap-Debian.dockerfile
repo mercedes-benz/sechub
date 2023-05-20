@@ -13,7 +13,7 @@ LABEL maintainer="SecHub FOSS Team"
 ARG OWASPZAP_VERSION="2.12.0"
 ARG OWASPZAP_SHA256SUM="7eaf340d9fcc42576c7a5572249fe0bcad6e7acd68098a7ca110e64beab46207"
 
-ARG OWASPZAP_WRAPPER_VERSION="0.33.0"
+ARG OWASPZAP_WRAPPER_VERSION="1.0.0"
 
 # OWASP ZAP host and port
 ENV ZAP_HOST="127.0.0.1"
@@ -39,18 +39,18 @@ RUN cd "$TOOL_FOLDER" && \
 	dpkg -i zaproxy_${OWASPZAP_VERSION}-1_all.deb && \
 	# remove zaproxy deb package
 	rm zaproxy_${OWASPZAP_VERSION}-1_all.deb
-	
+
 
 # Install SecHub OWASP ZAP wrapper
 RUN cd "$TOOL_FOLDER" && \
     # download checksum file
-    wget --no-verbose "https://github.com/mercedes-benz/sechub/releases/download/v$OWASPZAP_WRAPPER_VERSION-pds/sechub-pds-wrapperowaspzap-$OWASPZAP_WRAPPER_VERSION.jar.sha256sum" && \
+    wget --no-verbose "https://github.com/mercedes-benz/sechub/releases/download/v$OWASPZAP_WRAPPER_VERSION-owaspzap-wrapper/sechub-pds-wrapperowaspzap-$OWASPZAP_WRAPPER_VERSION.jar.sha256sum" && \
     # download wrapper jar
-    wget --no-verbose "https://github.com/mercedes-benz/sechub/releases/download/v$OWASPZAP_WRAPPER_VERSION-pds/sechub-pds-wrapperowaspzap-$OWASPZAP_WRAPPER_VERSION.jar" && \
+    wget --no-verbose "https://github.com/mercedes-benz/sechub/releases/download/v$OWASPZAP_WRAPPER_VERSION-owaspzap-wrapper/sechub-pds-wrapperowaspzap-$OWASPZAP_WRAPPER_VERSION.jar" && \
     # verify that the checksum and the checksum of the file are same
     sha256sum --check sechub-pds-wrapperowaspzap-$OWASPZAP_WRAPPER_VERSION.jar.sha256sum && \
     ln -s sechub-pds-wrapperowaspzap-$OWASPZAP_WRAPPER_VERSION.jar wrapperowaspzap.jar
-    
+
 # Copy default full ruleset file
 COPY owasp-zap-full-ruleset-all-release-status.json ${TOOL_FOLDER}/owasp-zap-full-ruleset-all-release-status.json
 

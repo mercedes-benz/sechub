@@ -32,6 +32,7 @@ class SarifV1JSONImporterTest {
     private static String sarif_2_1_0_coverity_20_21_03_taxonomyExample;
     private static String sarif_2_1_0_owasp_zap;
     private static String sarif_2_1_0_gosec2_9_5_example5_cosdescan;
+    private static String sarif_2_1_0_sarif_2_1_0_gitleaks_8_0;
 
     private SarifV1JSONImporter importerToTest;
 
@@ -44,6 +45,7 @@ class SarifV1JSONImporterTest {
         sarif_2_1_0_gosec2_9_5_example5_cosdescan = loadSarifTestFile("sarif_2.1.0_gosec_2.9.5_example5_codescan.sarif.json");
         sarif_2_1_0_coverity_20_21_03_taxonomyExample = loadSarifTestFile("sarif_2.1.0_coverity_20.21.03_example_with_taxonomy.json");
         sarif_2_1_0_owasp_zap = loadSarifTestFile("sarif_2.1.0_owasp_zap.json");
+        sarif_2_1_0_sarif_2_1_0_gitleaks_8_0 = loadSarifTestFile("sarif_2.1.0_gitleaks_8.0.json");
     }
 
     @BeforeEach
@@ -54,7 +56,7 @@ class SarifV1JSONImporterTest {
     @Test
     void sarif_2_1_0_owasp_zap_can_be_imported_and_contains_cwe_and_is_marked_as_webscan_type() throws Exception {
         /* prepare */
-        SerecoMetaData result = importerToTest.importResult(sarif_2_1_0_owasp_zap);
+        SerecoMetaData result = importerToTest.importResult(sarif_2_1_0_owasp_zap, ScanType.WEB_SCAN);
 
         /* execute */
         List<SerecoVulnerability> vulnerabilities = result.getVulnerabilities();
@@ -80,7 +82,7 @@ class SarifV1JSONImporterTest {
     void sarif_2_1_0_owasp_zap_can_be_imported_and_contains_cwe_webvulnerability_with_parts() throws Exception {
         /* @formatter:off */
         /* prepare */
-        SerecoMetaData result = importerToTest.importResult(sarif_2_1_0_owasp_zap);
+        SerecoMetaData result = importerToTest.importResult(sarif_2_1_0_owasp_zap, ScanType.WEB_SCAN);
 
         /* execute */
         List<SerecoVulnerability> vulnerabilities = result.getVulnerabilities();
@@ -169,7 +171,7 @@ class SarifV1JSONImporterTest {
     @Test
     void sarif_2_1_0_coverity_v8_can_be_imported_and_contains_cwe_with_description() throws Exception {
         /* prepare */
-        SerecoMetaData result = importerToTest.importResult(sarif_2_1_0_coverity_20_21_03_taxonomyExample);
+        SerecoMetaData result = importerToTest.importResult(sarif_2_1_0_coverity_20_21_03_taxonomyExample, ScanType.CODE_SCAN);
 
         /* execute */
         List<SerecoVulnerability> vulnerabilities = result.getVulnerabilities();
@@ -216,7 +218,7 @@ class SarifV1JSONImporterTest {
     @Test
     void go_sec_2_8_0_example_with_taxonomy__can_be_imported_and_contains_cwe_with_description() throws Exception {
         /* prepare */
-        SerecoMetaData result = importerToTest.importResult(sarif_2_1_0_gosec2_8_0_taxonomyExample);
+        SerecoMetaData result = importerToTest.importResult(sarif_2_1_0_gosec2_8_0_taxonomyExample, ScanType.CODE_SCAN);
 
         /* execute */
         List<SerecoVulnerability> vulnerabilities = result.getVulnerabilities();
@@ -239,7 +241,7 @@ class SarifV1JSONImporterTest {
     @Test
     void go_sec_2_9_5_example5_codescan__can_be_imported_and_contains_source() throws Exception {
         /* prepare */
-        SerecoMetaData result = importerToTest.importResult(sarif_2_1_0_gosec2_9_5_example5_cosdescan);
+        SerecoMetaData result = importerToTest.importResult(sarif_2_1_0_gosec2_9_5_example5_cosdescan, ScanType.CODE_SCAN);
 
         /* execute */
         List<SerecoVulnerability> vulnerabilities = result.getVulnerabilities();
@@ -255,6 +257,27 @@ class SarifV1JSONImporterTest {
                 withDescriptionContaining("will not auto-escape").
                 withSeverity(SerecoSeverity.HIGH).
                 withCodeLocation("go-test-bench/pkg/servestd/servestd.go", 69,14).containingSource("68: \t\t}\n69: \t\tvar data = template.HTML(v.TmplFile)\n70: \t\tisTmpl := true").done().
+            isContained();
+
+        /* @formatter:on */
+    }
+
+    @Test
+    void gitleaks_8_0_example_secretscan__can_be_imported() throws Exception {
+        /* prepare */
+        SerecoMetaData result = importerToTest.importResult(sarif_2_1_0_sarif_2_1_0_gitleaks_8_0, ScanType.SECRET_SCAN);
+
+        /* execute */
+        List<SerecoVulnerability> vulnerabilities = result.getVulnerabilities();
+
+        /* test */
+        /* @formatter:off */
+        assertVulnerabilities(vulnerabilities).
+            hasVulnerabilities(6).
+            verifyVulnerability().
+                classifiedBy().cwe(798).and(). // 798 is our generic fallback for secret scans when no cweId is set by products (gitleaks SARIF does currently not set cweId)
+                withDescriptionContaining("generic-api-key has detected secret for file UnSAFE_Bank/Backend/src/api/application/config/database.php.").
+                withCodeLocation("UnSAFE_Bank/Backend/src/api/application/config/database.php", 80, 7).containingSource("531486b2bf646636a6a1bba61e78ec4a4a54efbd").done().
             isContained();
 
         /* @formatter:on */
@@ -317,8 +340,8 @@ class SarifV1JSONImporterTest {
 
         /* test */
         assertThrows(IOException.class, () -> {
-            importerToTest.importResult("");// here we call the importer directly with empty string, isAbleToImport is not
-                                            // used, so an exception is expected
+            importerToTest.importResult("", ScanType.CODE_SCAN);// here we call the importer directly with empty string, isAbleToImport is not
+            // used, so an exception is expected
         });
     }
 
@@ -327,14 +350,14 @@ class SarifV1JSONImporterTest {
 
         /* test */
         assertThrows(IOException.class, () -> {
-            importerToTest.importResult(null);
+            importerToTest.importResult(null, null);
         });
     }
 
     @Test
     void sarif_report_has_errorlevel() throws Exception {
         /* prepare */
-        SerecoMetaData result = importerToTest.importResult(sarif_2_1_0_brakeman);
+        SerecoMetaData result = importerToTest.importResult(sarif_2_1_0_brakeman, ScanType.CODE_SCAN);
 
         /* execute */
         List<SerecoVulnerability> vulnerabilities = result.getVulnerabilities();
@@ -347,7 +370,7 @@ class SarifV1JSONImporterTest {
     @Test
     void sarif_report_has_simple_text_description() throws Exception {
         /* prepare */
-        SerecoMetaData result = importerToTest.importResult(sarif_2_1_0_brakeman);
+        SerecoMetaData result = importerToTest.importResult(sarif_2_1_0_brakeman, ScanType.CODE_SCAN);
 
         /* execute */
         List<SerecoVulnerability> vulnerabilities = result.getVulnerabilities();
@@ -361,7 +384,7 @@ class SarifV1JSONImporterTest {
     @Test
     void sarif_report_has_no_results() throws Exception {
         /* prepare */
-        SerecoMetaData result = importerToTest.importResult(sarif_2_1_0_es_lint_empty_results);
+        SerecoMetaData result = importerToTest.importResult(sarif_2_1_0_es_lint_empty_results, ScanType.CODE_SCAN);
 
         /* execute */
         List<SerecoVulnerability> vulnerabilities = result.getVulnerabilities();
@@ -374,7 +397,7 @@ class SarifV1JSONImporterTest {
     @Test
     void sarif_report_has_code_info() throws Exception {
         /* prepare */
-        SerecoMetaData result = importerToTest.importResult(sarif_2_1_0_brakeman);
+        SerecoMetaData result = importerToTest.importResult(sarif_2_1_0_brakeman, ScanType.CODE_SCAN);
 
         /* execute */
         List<SerecoVulnerability> vulnerabilities = result.getVulnerabilities();
@@ -395,7 +418,7 @@ class SarifV1JSONImporterTest {
     @Test
     void sarif_report_threadflow_locations() throws Exception {
         /* prepare */
-        SerecoMetaData result = importerToTest.importResult(sarif_2_1_0_pythonscanner_thread_flows);
+        SerecoMetaData result = importerToTest.importResult(sarif_2_1_0_pythonscanner_thread_flows, ScanType.CODE_SCAN);
 
         /* execute */
         List<SerecoVulnerability> vulnerabilities = result.getVulnerabilities();

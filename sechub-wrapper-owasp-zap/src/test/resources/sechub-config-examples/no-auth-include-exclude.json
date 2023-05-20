@@ -2,7 +2,7 @@
   "apiVersion" : "1.0",
   "webScan" : {
     "url" : "https://127.0.0.1:8080",
-    "includes" : [ ],
+    "includes" : [ "/include", "healthcheck" ],
     "excludes" : [ "/logout/", "/hello/" ]
   }
 }

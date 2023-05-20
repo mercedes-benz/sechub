@@ -67,10 +67,16 @@ public class PDSCodeScanSarifJobScenario10IntTest {
 
         // test content as expected
         String report = as(USER_1).getJobReport(project, jobUUID);
+
         assertReport(report).
             hasStatus(SecHubStatus.SUCCESS).
             hasMessages(0).
             hasJobUUID(jobUUID).
+            hasMetaDataLabel("quality-level", "high").
+            hasMetaDataLabel("test-label1", "Something special").
+            hasMetaDataLabel("test-label2", "").
+            hasMetaDataLabel("test-label3_with_html", "<html>HTML is allowed, but must always be escaped in reports!</html>").
+            hasMetaDataLabel("test-label4_with_special_chars", "Line1\nLine2\tLine3").
             hasTrafficLight(RED).
                finding(0).
                    hasSeverity(Severity.HIGH).
@@ -86,10 +92,21 @@ public class PDSCodeScanSarifJobScenario10IntTest {
                    hasSeverity(Severity.MEDIUM).
                    hasDescription("Rails 5.0.0 has a vulnerability that may allow CSRF token forgery. Upgrade to Rails 5.2.4.3 or patch.");
 
+        String htmlReport = as(USER_1).
+                enableAutoDumpForHTMLReports().
+                getHTMLJobReport(project, jobUUID);
 
+        assertHTMLReport(htmlReport).
+            containsAtLeastOneOpenDetailsBlock().
+            hasMetaDataLabel("quality-level", "high").
+            hasMetaDataLabel("test-label1", "Something special").
+            hasMetaDataLabel("test-label2", "").
+            hasMetaDataLabel("test-label3_with_html", "&lt;html&gt;HTML is allowed, but must always be escaped in reports!&lt;/html&gt;").
+            hasMetaDataLabel("test-label4_with_special_chars", "Line1\nLine2\tLine3");
 
-        // try to restart sechub (will reuse existing PDS job because already done )
+        // try to restart SecHub (will reuse existing PDS job because already done )
         assertSecHubRestartWillNotStartNewJobButReusesExistingBecausePDSJobWasAlreadyDone(project,jobUUID);
+
 
         /* @formatter:on */
     }

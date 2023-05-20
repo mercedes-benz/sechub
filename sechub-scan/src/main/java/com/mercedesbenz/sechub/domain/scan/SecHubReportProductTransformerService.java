@@ -1,10 +1,12 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.domain.scan;
 
-import static com.mercedesbenz.sechub.domain.scan.product.ProductIdentifier.*;
+import static com.mercedesbenz.sechub.sharedkernel.ProductIdentifier.*;
 import static com.mercedesbenz.sechub.sharedkernel.util.Assert.*;
 
 import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 import java.util.UUID;
 
 import org.slf4j.Logger;
@@ -12,9 +14,12 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.mercedesbenz.sechub.commons.model.SecHubConfigurationMetaData;
+import com.mercedesbenz.sechub.commons.model.SecHubReportMetaData;
 import com.mercedesbenz.sechub.domain.scan.product.ProductResult;
 import com.mercedesbenz.sechub.domain.scan.product.ProductResultRepository;
 import com.mercedesbenz.sechub.domain.scan.report.ReportProductResultTransformer;
+import com.mercedesbenz.sechub.sharedkernel.configuration.SecHubConfiguration;
 
 @Service
 /**
@@ -46,9 +51,36 @@ public class SecHubReportProductTransformerService {
      */
     public ReportTransformationResult createResult(SecHubExecutionContext context) throws SecHubExecutionException {
         notNull(context, "Context may not be null!");
+        notNull(context.getConfiguration(), "SecHubConfiguration may not be null!");
 
         UUID secHubJobUUID = context.getSechubJobUUID();
-        return createResult(secHubJobUUID);
+        ReportTransformationResult result = createResult(secHubJobUUID);
+
+        SecHubConfiguration configuration = context.getConfiguration();
+        addMetaDataFromConfigurationToReport(configuration, result);
+
+        return result;
+    }
+
+    private void addMetaDataFromConfigurationToReport(SecHubConfiguration configuration, ReportTransformationResult result) {
+        Optional<SecHubConfigurationMetaData> userDefinedConfigMetaDataOpt = configuration.getMetaData();
+        if (userDefinedConfigMetaDataOpt.isEmpty()) {
+            return;
+        }
+        /*
+         * we add desired meta data from configuration (user defined) back into the scan
+         * result
+         */
+        SecHubReportMetaData reportMetaData = new SecHubReportMetaData();
+        result.setMetaData(reportMetaData);
+
+        SecHubConfigurationMetaData userDefinedConfigMetaData = userDefinedConfigMetaDataOpt.get();
+        copyLabelsFromConfigToReport(userDefinedConfigMetaData, reportMetaData);
+    }
+
+    private void copyLabelsFromConfigToReport(SecHubConfigurationMetaData metaData, SecHubReportMetaData reportMetaData) {
+        Map<String, String> userDefinedLabels = metaData.getLabels();
+        reportMetaData.getLabels().putAll(userDefinedLabels);
     }
 
     ReportTransformationResult createResult(UUID secHubJobUUID) throws SecHubExecutionException {

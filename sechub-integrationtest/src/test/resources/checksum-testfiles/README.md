@@ -11,7 +11,6 @@ See `SecHubExecutionScenarioSecHubClientIntTest.java` and also `sechub-integrati
 Please do not change the content of this folder and subfolders because the exclude
 check is done by creating a checksum which is calculated without the excluded files.
 So changing content of included parts will fail test! If you must change the files be aware
-to create a windows and a linux checksum. Why? Because zip files generated for windows are always
-a little bit different than on Linux - even when same content. Maybe pathes or a hidden OS stamp...
-So prevent build and test problems we provide 2 dedicated sha256 keys: one for Windows another for Linux.
-Sound a little bit odd, but is still okay, because keys are valid on their OS.
+to create a windows and a Linux checksum. Why? Because zip files generated for windows are always
+a little different than on Linux - even when same content. Maybe paths or a hidden OS stamp...
+In order to prevent build and test problems we provide 2 dedicated sha256 keys: one for Windows another for Linux.

@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.domain.scan.report;
 
+import static com.mercedesbenz.sechub.test.FlakyOlderThanTestWorkaround.*;
 import static org.junit.Assert.*;
 
 import java.time.LocalDateTime;
@@ -39,11 +40,14 @@ public class ScanReportRepositoryDBTest {
         DeleteScanReportTestData testData = new DeleteScanReportTestData();
         testData.createAndCheckAvailable();
 
+        LocalDateTime olderThan = olderThanForDelete(testData.before_1_day);
+
         /* execute */
-        repositoryToTest.deleteReportsOlderThan(testData.before_1_day);
+        int deleted = repositoryToTest.deleteReportsOlderThan(olderThan);
         repositoryToTest.flush();
 
         /* test */
+        assertDeleted(2, deleted, testData, olderThan);
         List<ScanReport> allJobsNow = repositoryToTest.findAll();
         assertTrue(allJobsNow.contains(testData.job3_1_day_before_created));
         assertTrue(allJobsNow.contains(testData.job4_now_created));
@@ -57,10 +61,12 @@ public class ScanReportRepositoryDBTest {
         testData.createAndCheckAvailable();
 
         /* execute */
-        repositoryToTest.deleteReportsOlderThan(testData.before_1_day.plusSeconds(1));
+        LocalDateTime olderThan = testData.before_1_day.plusSeconds(1);
+        int deleted = repositoryToTest.deleteReportsOlderThan(olderThan);
         repositoryToTest.flush();
 
         /* test */
+        assertDeleted(3, deleted, testData, olderThan);
         List<ScanReport> allJobsNow = repositoryToTest.findAll();
         assertTrue(allJobsNow.contains(testData.job4_now_created));
         assertEquals(1, allJobsNow.size());
@@ -72,12 +78,14 @@ public class ScanReportRepositoryDBTest {
         DeleteScanReportTestData testData = new DeleteScanReportTestData();
         testData.createAndCheckAvailable();
 
+        LocalDateTime olderThan = testData.before_1_day.plusSeconds(1);
+
         /* execute */
-        int deleted = repositoryToTest.deleteReportsOlderThan(testData.before_1_day.plusSeconds(1));
+        int deleted = repositoryToTest.deleteReportsOlderThan(olderThan);
         repositoryToTest.flush();
 
         /* test */
-        assertEquals(3, deleted);
+        assertDeleted(3, deleted, testData, olderThan);
     }
 
     @Test
@@ -86,11 +94,14 @@ public class ScanReportRepositoryDBTest {
         DeleteScanReportTestData testData = new DeleteScanReportTestData();
         testData.createAndCheckAvailable();
 
+        LocalDateTime olderThan = olderThanForDelete(testData.before_90_days);
+
         /* execute */
-        repositoryToTest.deleteReportsOlderThan(testData.before_90_days);
+        int deleted = repositoryToTest.deleteReportsOlderThan(olderThan);
         repositoryToTest.flush();
 
         /* test */
+        assertDeleted(0, deleted, testData, olderThan);
         List<ScanReport> allJobsNow = repositoryToTest.findAll();
         assertTrue(allJobsNow.contains(testData.job1_90_days_before_created));
         assertTrue(allJobsNow.contains(testData.job2_2_days_before_created));
@@ -105,12 +116,14 @@ public class ScanReportRepositoryDBTest {
         DeleteScanReportTestData testData = new DeleteScanReportTestData();
         testData.createAndCheckAvailable();
 
+        LocalDateTime olderThan = olderThanForDelete(testData.before_90_days);
+
         /* execute */
-        int deleted = repositoryToTest.deleteReportsOlderThan(testData.before_90_days);
+        int deleted = repositoryToTest.deleteReportsOlderThan(olderThan);
         repositoryToTest.flush();
 
         /* test */
-        assertEquals(0, deleted);
+        assertDeleted(0, deleted, testData, olderThan);
     }
 
     @Test
@@ -119,29 +132,14 @@ public class ScanReportRepositoryDBTest {
         DeleteScanReportTestData testData = new DeleteScanReportTestData();
         testData.createAndCheckAvailable();
 
+        LocalDateTime olderThan = testData.before_89_days;
+
         /* execute */
-        repositoryToTest.deleteReportsOlderThan(testData.before_89_days.minusSeconds(1));
+        int deleted = repositoryToTest.deleteReportsOlderThan(olderThan);
         repositoryToTest.flush();
 
         /* test */
-        List<ScanReport> allJobsNow = repositoryToTest.findAll();
-        assertTrue(allJobsNow.contains(testData.job2_2_days_before_created));
-        assertTrue(allJobsNow.contains(testData.job3_1_day_before_created));
-        assertTrue(allJobsNow.contains(testData.job4_now_created));
-        assertEquals(3, allJobsNow.size());
-    }
-
-    @Test
-    public void test_data_4_jobs_oldest_90_days_delete_1_day() throws Exception {
-        /* prepare */
-        DeleteScanReportTestData testData = new DeleteScanReportTestData();
-        testData.createAndCheckAvailable();
-
-        /* execute */
-        repositoryToTest.deleteReportsOlderThan(testData.before_89_days.minusSeconds(1));
-        repositoryToTest.flush();
-
-        /* test */
+        assertDeleted(1, deleted, testData, olderThan);
         List<ScanReport> allJobsNow = repositoryToTest.findAll();
         assertTrue(allJobsNow.contains(testData.job2_2_days_before_created));
         assertTrue(allJobsNow.contains(testData.job3_1_day_before_created));
@@ -177,6 +175,48 @@ public class ScanReportRepositoryDBTest {
         /* test */
         assertEquals(1, repositoryToTest.count());
         assertNotNull(repositoryToTest.findById(job2_project2));
+    }
+
+    private void assertDeleted(int expected, int deleted, DeleteScanReportTestData testData, LocalDateTime olderThan) {
+        if (deleted == expected) {
+            return;
+        }
+        StringBuilder sb = new StringBuilder();
+        List<ScanReport> all = repositoryToTest.findAll();
+        sb.append("Delete call did return ").append(deleted).append(" uploadMaximumBytes was ").append(expected).append("\n");
+        sb.append("The remaining entries are:\n");
+        for (ScanReport info : all) {
+            sb.append(resolveName(info.started, testData)).append("- since       : ").append(info.started).append("\n");
+        }
+        sb.append("\n-----------------------------------------------------");
+        sb.append("\nolderThan was: ").append(olderThan).append(" - means :").append((resolveName(olderThan, testData)));
+        sb.append("\n-----------------------------------------------------\n");
+        sb.append(describe(testData.job1_90_days_before_created, testData));
+        sb.append(describe(testData.job2_2_days_before_created, testData));
+        sb.append(describe(testData.job3_1_day_before_created, testData));
+        sb.append(describe(testData.job4_now_created, testData));
+
+        fail(sb.toString());
+    }
+
+    private String describe(ScanReport info, DeleteScanReportTestData data) {
+        return resolveName(info.started, data) + " - created: " + info.started + "\n";
+    }
+
+    private String resolveName(LocalDateTime time, DeleteScanReportTestData data) {
+        if (data.job1_90_days_before_created.started.equals(time)) {
+            return "job1_90_days_before_created";
+        }
+        if (data.job2_2_days_before_created.started.equals(time)) {
+            return "job2_2_days_before_created";
+        }
+        if (data.job3_1_day_before_created.started.equals(time)) {
+            return "job3_1_day_before_created";
+        }
+        if (data.job4_now_created.started.equals(time)) {
+            return "job4_now_created";
+        }
+        return null;
     }
 
     private class DeleteScanReportTestData {

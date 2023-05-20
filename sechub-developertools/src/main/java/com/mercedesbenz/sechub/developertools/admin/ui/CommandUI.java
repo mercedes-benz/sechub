@@ -106,7 +106,7 @@ import com.mercedesbenz.sechub.developertools.admin.ui.action.user.ShowUserListA
 import com.mercedesbenz.sechub.developertools.admin.ui.action.user.UpdateUserEmailAction;
 import com.mercedesbenz.sechub.developertools.admin.ui.action.user.privileges.GrantAdminRightsToUserAction;
 import com.mercedesbenz.sechub.developertools.admin.ui.action.user.privileges.RevokeAdminRightsFromAdminAction;
-import com.mercedesbenz.sechub.domain.scan.product.ProductIdentifier;
+import com.mercedesbenz.sechub.sharedkernel.ProductIdentifier;
 
 public class CommandUI {
     private static final ImageIcon EDIT_ROAD_BLACK_ICON = new ImageIcon(CommandUI.class.getResource("/icons/material-io/twotone_edit_road_black_18dp.png"));
@@ -142,6 +142,7 @@ public class CommandUI {
         register(ShowProductExecutorTemplatesDialogActionFactory.createPDS_WEBSCAN_V1Action(context));
         register(ShowProductExecutorTemplatesDialogActionFactory.createPDS_INFRASCAN_V1Action(context));
         register(ShowProductExecutorTemplatesDialogActionFactory.createPDS_LICENSESCAN_V1Action(context));
+        register(ShowProductExecutorTemplatesDialogActionFactory.createPDS_ANALYTICS_V1Action(context));
 
         panel = new JPanel(new BorderLayout());
 

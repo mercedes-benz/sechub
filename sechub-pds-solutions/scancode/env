@@ -1,5 +1,7 @@
-# The base image to use
-# uncomment to use local image
-# BASE_IMAGE="pds-base_pds"
-BASE_IMAGE="ghcr.io/mercedes-benz/sechub/pds-base:v0.33.0"
-PDS_UPLOAD_MAXIMUM_BYTES=26214400000
+PDS_MAX_FILE_UPLOAD_BYTES=26214400000
+
+# The version number can be found at: https://pypi.org/project/scancode-toolkit/
+SCANCODE_VERSION="31.2.4"
+
+# For the version number look at: https://mvnrepository.com/artifact/org.spdx/tools-java
+SPDX_TOOL_VERSION="1.1.5"

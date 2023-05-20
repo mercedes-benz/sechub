@@ -6,6 +6,7 @@ import static com.mercedesbenz.sechub.sharedkernel.util.Assert.*;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 import javax.annotation.security.RolesAllowed;
@@ -27,6 +28,12 @@ import com.mercedesbenz.sechub.sharedkernel.error.BadRequestException;
 import com.mercedesbenz.sechub.sharedkernel.error.NotAcceptableException;
 import com.mercedesbenz.sechub.sharedkernel.logging.AuditLogService;
 import com.mercedesbenz.sechub.sharedkernel.logging.LogSanitizer;
+import com.mercedesbenz.sechub.sharedkernel.messaging.DomainMessage;
+import com.mercedesbenz.sechub.sharedkernel.messaging.DomainMessageService;
+import com.mercedesbenz.sechub.sharedkernel.messaging.IsSendingAsyncMessage;
+import com.mercedesbenz.sechub.sharedkernel.messaging.MessageDataKeys;
+import com.mercedesbenz.sechub.sharedkernel.messaging.MessageID;
+import com.mercedesbenz.sechub.sharedkernel.messaging.StorageMessageData;
 import com.mercedesbenz.sechub.sharedkernel.usecases.user.execute.UseCaseUserUploadsSourceCode;
 import com.mercedesbenz.sechub.sharedkernel.util.ArchiveSupportProvider;
 import com.mercedesbenz.sechub.sharedkernel.validation.UserInputAssertion;
@@ -68,6 +75,9 @@ public class SchedulerSourcecodeUploadService {
 
     @Autowired
     UserInputAssertion assertion;
+
+    @Autowired
+    DomainMessageService domainMessageService;
 
     @UseCaseUserUploadsSourceCode(@Step(number = 2, name = "Try to find project and upload sourcecode as zipfile", description = "When project is found and user has access and job is initializing the sourcecode file will be uploaded"))
     public void uploadSourceCode(String projectId, UUID jobUUID, MultipartFile file, String checkSum) {
@@ -112,6 +122,8 @@ public class SchedulerSourcecodeUploadService {
             long fileSizeAsStringSizeInBytes = fileSizeAsString.getBytes().length;
 
             jobStorage.store(FILENAME_SOURCECODE_ZIP, inputStream, fileSize);
+            sendSourceSourceUploadDoneEvent(projectId, jobUUID, fileSize);
+
             // we store the file size information inside storage - so we can use this for
             // PDS uploads when no reuse of storage is wanted.
             jobStorage.store(FILENAME_SOURCECODE_ZIP_FILESIZE, new StringInputStream(fileSizeAsString), fileSizeAsStringSizeInBytes);
@@ -122,6 +134,22 @@ public class SchedulerSourcecodeUploadService {
             LOG.error("Was not able to store zipped sources! {}", traceLogID, e);
             throw new SecHubRuntimeException("Was not able to upload sources");
         }
+    }
+
+    @IsSendingAsyncMessage(MessageID.SOURCE_UPLOAD_DONE)
+    private void sendSourceSourceUploadDoneEvent(String projectId, UUID jobUUID, long fileSizeInBytes) {
+        DomainMessage message = new DomainMessage(MessageID.SOURCE_UPLOAD_DONE);
+
+        StorageMessageData storageDataMessage = new StorageMessageData();
+        storageDataMessage.setJobUUID(jobUUID);
+        storageDataMessage.setProjectId(projectId);
+        storageDataMessage.setSince(LocalDateTime.now());
+        storageDataMessage.setSizeInBytes(fileSizeInBytes);
+
+        message.set(MessageDataKeys.SECHUB_JOB_UUID, jobUUID);
+        message.set(MessageDataKeys.UPLOAD_STORAGE_DATA, storageDataMessage);
+
+        domainMessageService.sendAsynchron(message);
     }
 
     private void handleChecksumValidation(MultipartFile file, String checkSum, String traceLogID) {

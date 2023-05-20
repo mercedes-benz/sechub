@@ -16,9 +16,15 @@
 :webPage: https://mercedes-benz.github.io/sechub
 :sechub: SecHub
 :pds: PDS
+:pds-solutions-projectsite: {projectSite}/tree/develop/sechub-pds-solutions
 
 :launchServerPackageName: com.mercedesbenz.sechub
 :launchServerClassName: SecHubServerApplication
 
 :launchDevAdminUIPackageName: com.mercedesbenz.sechub.developertools.admin.ui
-:launchDevAdminUIClasName: DeveloperAdministrationUI
+:launchDevAdminUIClassName: DeveloperAdministrationUI
+
+:required_java_version: 17
+:required_JDK: JDK {required_java_version}
+
+:required_go_version: 1.20.4
