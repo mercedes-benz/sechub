@@ -75,6 +75,17 @@ sudo dnf install java-{required_java_version}-openjdk-devel golang git curl jq
 
 NOTE: Tested with Fedora 34 and CentOS 8.
 
+==== MacOS
+
+To easily install the requirements via cli you can use https://brew.sh[brew].
+
+[source, subs="attributes"]
+----
+brew install openjdk@17 go git curl jq
+----
+
+NOTE: Tested with MacOS Ventura 13.3.1.
+
 === Instructions
 
 Let's start with:
