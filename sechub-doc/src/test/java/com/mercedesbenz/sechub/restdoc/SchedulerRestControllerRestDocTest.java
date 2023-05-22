@@ -47,6 +47,7 @@ import org.springframework.util.StringUtils;
 import com.mercedesbenz.sechub.commons.core.CommonConstants;
 import com.mercedesbenz.sechub.commons.model.SecHubCodeScanConfiguration;
 import com.mercedesbenz.sechub.commons.model.SecHubConfigurationMetaData;
+import com.mercedesbenz.sechub.commons.model.SecHubConfigurationModelValidator;
 import com.mercedesbenz.sechub.commons.model.SecHubDataConfigurationUsageByName;
 import com.mercedesbenz.sechub.commons.model.SecHubFileSystemConfiguration;
 import com.mercedesbenz.sechub.commons.model.SecHubInfrastructureScanConfiguration;
@@ -765,11 +766,14 @@ public class SchedulerRestControllerRestDocTest implements TestIsNecessaryForDoc
                                             parameterWithName(PROJECT_ID.paramName()).description("The id of the project where job information shall be fetched for")
                                           ),
                                           requestParameters(
-                                              parameterWithName(SIZE.paramName()).optional().description("The wanted (maximum) size for the result set. When not defined, the default will be "+SchedulerRestController.DEFAULT_JOB_INFORMATION_SIZE),
-                                              parameterWithName(PAGE.paramName()).optional().description("The wanted page number. When not defined, the default will be "+SchedulerRestController.DEFAULT_JOB_INFORMATION_PAGE),
-                                              parameterWithName("metadata.labels.stage").optional().description("An optional parameter example to query labels. The parmater is dynamic: \n"
-                                                      + "Every label which is defined for the job can be queried by 'metadata.labels.${labelName}=${labelValue}'. In the example only jobs for label 'stage' = 'test' will be returned. "),
-                                              parameterWithName(WITH_META_DATA.paramName()).optional().description("An optional parameter to define if meta data shall be fetched as well. When not defined, the default will be "+SchedulerRestController.DEFAULT_WITH_METADATA)
+                                              parameterWithName(SIZE.paramName()).optional().description("The wanted (maximum) size for the result set. When not defined, the default will be "+SchedulerRestController.DEFAULT_JOB_INFORMATION_SIZE+"."),
+                                              parameterWithName(PAGE.paramName()).optional().description("The wanted page number. When not defined, the default will be "+SchedulerRestController.DEFAULT_JOB_INFORMATION_PAGE+"."),
+                                              parameterWithName("metadata.labels.*").optional().
+                                                  description("An optional dynamic query parameter to filter jobs by labels. The syntax is 'metadata.labels.${labelKey}=${labelValue}'.\n\n"
+                                                            + "It is possible to query for multiple labels (up to "+ SecHubConfigurationModelValidator.MAX_METADATA_LABEL_AMOUNT + " ).\n"
+                                                            + "The filter works as an AND combination: Only jobs having all wanted label key value combinations are returned."),
+                                              parameterWithName("metadata.labels.stage").ignored(), // we we do not want the label query example to be documented - we document only the generic way
+                                              parameterWithName(WITH_META_DATA.paramName()).optional().description("An optional parameter to define if meta data shall be fetched as well. When not defined, the default will be "+SchedulerRestController.DEFAULT_WITH_METADATA+".")
                                           ),
                                           responseFields(
                                             fieldWithPath(SecHubJobInfoForUserListPage.PROPERTY_PAGE).description("The page number"),
@@ -782,7 +786,8 @@ public class SchedulerRestControllerRestDocTest implements TestIsNecessaryForDoc
                                             fieldWithPath("content[]."+SecHubJobInfoForUser.PROPERTY_EXECUTION_STATE).description("Execution state of job"),
                                             fieldWithPath("content[]."+SecHubJobInfoForUser.PROPERTY_EXECUTION_RESULT).description("Execution result of job"),
                                             fieldWithPath("content[]."+SecHubJobInfoForUser.PROPERTY_TRAFFIC_LIGHT).description("Trafficlight of job - but only available when job has been done. Possible states are "+StringUtils.arrayToDelimitedString(TrafficLight.values(),", ")),
-                                            fieldWithPath("content[]."+SecHubJobInfoForUser.PROPERTY_METADATA+".labels.stage").description("Meta data of job (here a label with key 'stage') - but only available when "+WITH_META_DATA.paramName()+" is 'true'.")
+                                            fieldWithPath("content[]."+SecHubJobInfoForUser.PROPERTY_METADATA+".*").optional().description("Meta data of job - but only contained in result, when query parameter `"+WITH_META_DATA.paramName()+"` is defined as 'true'."),
+                                            fieldWithPath("content[]."+SecHubJobInfoForUser.PROPERTY_METADATA+".labels.stage").ignored()// we do not want the label example to be documented - we document only the generic way
                                           )
                             )
                 );

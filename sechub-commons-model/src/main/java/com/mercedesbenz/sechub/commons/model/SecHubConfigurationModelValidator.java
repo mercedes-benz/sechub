@@ -19,6 +19,8 @@ import com.mercedesbenz.sechub.commons.core.util.SimpleStringUtils;
 
 public class SecHubConfigurationModelValidator {
 
+    public static final int MAX_METADATA_LABEL_AMOUNT = 20;
+
     private static int MIN_NAME_LENGTH = 1;
     private static final int MAX_NAME_LENGTH = 80;
 
@@ -26,8 +28,6 @@ public class SecHubConfigurationModelValidator {
     private static final int MAX_METADATA_LABEL_KEY_LENGTH = 30;
 
     private static final int MAX_METADATA_LABEL_VALUE_LENGTH = 150;
-
-    private static final int MAX_METADATA_LABEL_AMOUNT = 20;
 
     SecHubConfigurationModelSupport modelSupport = new SecHubConfigurationModelSupport();
 
