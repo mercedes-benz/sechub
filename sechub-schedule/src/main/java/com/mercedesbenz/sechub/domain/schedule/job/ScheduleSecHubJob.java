@@ -234,8 +234,16 @@ public class ScheduleSecHubJob {
         return Objects.equals(uUID, other.uUID);
     }
 
+    /**
+     * Adds job data. The job data will have the same creation time as the job
+     * itself.
+     *
+     * @param key
+     * @param value
+     */
     public void addData(String key, String value) {
         ScheduleSecHubJobData jobData = new ScheduleSecHubJobData(uUID, key, value);
+        jobData.created = created; // we sync the creation time - avoids potential conflicts with deleteOlderThan
         data.add(jobData);
     }
 
