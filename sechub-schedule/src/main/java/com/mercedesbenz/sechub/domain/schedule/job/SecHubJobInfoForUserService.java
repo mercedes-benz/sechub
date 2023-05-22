@@ -32,7 +32,7 @@ import com.mercedesbenz.sechub.sharedkernel.usecases.job.UseCaseUserListsJobsFor
 @Service
 public class SecHubJobInfoForUserService {
 
-    private static final int MAXIMUM_ALLOWED_LABEL_PARAMETERS = 10;
+    public static final int MAXIMUM_ALLOWED_LABEL_PARAMETERS = 10;
     private static final int MAXIMUM_ALLOWED_PARAMETERS = MAXIMUM_ALLOWED_LABEL_PARAMETERS + 4; // projectId, page, size, withMetaData
 
     private static final Logger LOG = LoggerFactory.getLogger(SecHubJobInfoForUserService.class);
@@ -135,7 +135,7 @@ public class SecHubJobInfoForUserService {
 
         Map<String, String> labels = metaDataForFiltering.getLabels();
         if (labels.size() > MAXIMUM_ALLOWED_LABEL_PARAMETERS) {
-            throw new BadRequestException("Maximum of allowed label parameters reached:" + MAXIMUM_ALLOWED_LABEL_PARAMETERS);
+            throw new BadRequestException("Maximum of allowed label parameters reached: " + MAXIMUM_ALLOWED_LABEL_PARAMETERS);
         }
 
         SecHubConfigurationModelValidationResult result = modelValidator.validateMetaDataLabels(labels);

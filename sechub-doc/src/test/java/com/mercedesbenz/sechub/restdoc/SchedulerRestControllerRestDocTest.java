@@ -47,7 +47,6 @@ import org.springframework.util.StringUtils;
 import com.mercedesbenz.sechub.commons.core.CommonConstants;
 import com.mercedesbenz.sechub.commons.model.SecHubCodeScanConfiguration;
 import com.mercedesbenz.sechub.commons.model.SecHubConfigurationMetaData;
-import com.mercedesbenz.sechub.commons.model.SecHubConfigurationModelValidator;
 import com.mercedesbenz.sechub.commons.model.SecHubDataConfigurationUsageByName;
 import com.mercedesbenz.sechub.commons.model.SecHubFileSystemConfiguration;
 import com.mercedesbenz.sechub.commons.model.SecHubInfrastructureScanConfiguration;
@@ -770,7 +769,7 @@ public class SchedulerRestControllerRestDocTest implements TestIsNecessaryForDoc
                                               parameterWithName(PAGE.paramName()).optional().description("The wanted page number. When not defined, the default will be "+SchedulerRestController.DEFAULT_JOB_INFORMATION_PAGE+"."),
                                               parameterWithName("metadata.labels.*").optional().
                                                   description("An optional dynamic query parameter to filter jobs by labels. The syntax is 'metadata.labels.${labelKey}=${labelValue}'.\n\n"
-                                                            + "It is possible to query for multiple labels (up to "+ SecHubConfigurationModelValidator.MAX_METADATA_LABEL_AMOUNT + " ).\n"
+                                                            + "It is possible to query for multiple labels (up to "+ SecHubJobInfoForUserService.MAXIMUM_ALLOWED_LABEL_PARAMETERS + " ).\n"
                                                             + "The filter works as an AND combination: Only jobs having all wanted label key value combinations are returned."),
                                               parameterWithName("metadata.labels.stage").ignored(), // we we do not want the label query example to be documented - we document only the generic way
                                               parameterWithName(WITH_META_DATA.paramName()).optional().description("An optional parameter to define if meta data shall be fetched as well. When not defined, the default will be "+SchedulerRestController.DEFAULT_WITH_METADATA+".")
