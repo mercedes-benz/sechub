@@ -69,7 +69,7 @@ start_server() {
         -Dsechub.pds.admin.apitoken="$ADMIN_APITOKEN" \
         -DsecHub.pds.techuser.userid="$TECHUSER_USERID" \
         -Dsechub.pds.techuser.apitoken="$TECHUSER_APITOKEN" \
-        -Dsechub.pds.workspace.rootfolder=/workspace \
+        -Dsechub.pds.workspace.rootfolder="$WORKSPACE" \
         -Dsechub.pds.config.file=/pds/pds-config.json \
         -Dpds.upload.maximum.bytes="$PDS_MAX_FILE_UPLOAD_BYTES" \
         -Dsechub.pds.config.heartbeat.verbose.logging.enabled="$PDS_HEARTBEAT_LOGGING" \
