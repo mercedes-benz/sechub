@@ -15,6 +15,10 @@ spec:
         metadata:
             labels:
                 name: {{ .Chart.Name }}
+{{- if .Values.templateMetadataAnnotations }}
+            annotations:
+        {{ .Values.templateMetadataAnnotations | indent 12 | trim }}
+{{- end }}
         spec:
             securityContext:
                 runAsUser: 2323

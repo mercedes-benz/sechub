@@ -81,7 +81,7 @@ database:
     postgres:
         enabled: false
         connection: "jdbc:postgresql://database:5432/pds"
-        username: "cloc"
+        username: "pds_cloc"
         password: "<password-of-db-user>"
 
 networkPolicy:
@@ -95,3 +95,11 @@ networkPolicy:
         - podSelector:
             matchLabels:
                 name: sechub-adminserver
+
+# optional: Add annotations to template.metadata.annotations
+#           Can contain multiple lines. Example for Prometheus actuator:
+# templateMetadataAnnotations: |-
+#   prometheus.io/scrape: "true"
+#   prometheus.io/probe: "true"
+#   prometheus.io/port: "10251"
+#   prometheus.io/path: "/actuator/prometheus"

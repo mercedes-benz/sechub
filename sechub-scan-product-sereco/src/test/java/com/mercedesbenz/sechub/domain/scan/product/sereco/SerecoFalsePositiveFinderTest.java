@@ -15,8 +15,8 @@ import com.mercedesbenz.sechub.sereco.metadata.SerecoVulnerability;
 public class SerecoFalsePositiveFinderTest {
 
     private SerecoFalsePositiveFinder finderToTest;
-    private SerecoFalsePositiveCodeScanStrategy codeScanStrategy;
-    private SerecoFalsePositiveWebScanStrategy webScanStrategy;
+    private CodeScanFalsePositiveStrategy codeScanStrategy;
+    private WebScanFalsePositiveStrategy webScanStrategy;
 
     // we use always true here, because every mock will return false when
     // not defined. Only some "syntactic sugar" to make test easier to read
@@ -26,10 +26,10 @@ public class SerecoFalsePositiveFinderTest {
     public void before() throws Exception {
         finderToTest = new SerecoFalsePositiveFinder();
 
-        codeScanStrategy = mock(SerecoFalsePositiveCodeScanStrategy.class);
+        codeScanStrategy = mock(CodeScanFalsePositiveStrategy.class);
         finderToTest.codeScanStrategy = codeScanStrategy;
 
-        webScanStrategy = mock(SerecoFalsePositiveWebScanStrategy.class);
+        webScanStrategy = mock(WebScanFalsePositiveStrategy.class);
         finderToTest.webScanStrategy = webScanStrategy;
 
     }

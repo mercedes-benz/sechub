@@ -241,12 +241,23 @@ func assertValidConfig(context *Context) {
 		showVersionAction:                     {},
 	}
 
-	/* --------------------------------------------------
-	 * 					Validation
-	 * --------------------------------------------------
-	 */
-	if context.config.action == "" {
-		sechubUtil.LogError("SecHub action not set")
+	// --------------------------------------------------
+	//  Validation
+	// --------------------------------------------------
+	var detectedActions []string
+	for action, _ := range checklist {
+		for _, arg := range os.Args {
+			if arg == action {
+				detectedActions = append(detectedActions, action)
+			}
+		}
+	}
+	if len(detectedActions) == 0 {
+		sechubUtil.LogError("SecHub action not set or unknown action.")
+	} else if len(detectedActions) > 1 {
+		sechubUtil.LogError(fmt.Sprint("Multiple actions set: ", detectedActions, ". Only one action is possible."))
+	}
+	if len(detectedActions) != 1 {
 		showHelpHint()
 		os.Exit(ExitCodeMissingParameter)
 	}
@@ -271,9 +282,6 @@ func assertValidConfig(context *Context) {
 				errorsFound = true
 			}
 		}
-	} else {
-		sechubUtil.LogError("Unknown action: '" + context.config.action + "'")
-		errorsFound = true
 	}
 
 	if !validateRequestedReportFormat(context.config) {
@@ -339,8 +347,7 @@ func validateRequestedReportFormat(config *Config) bool {
 	return true
 }
 
-// normalizeCMDLineArgs - Make sure that the `action` is last in the argument list
-//                        Otherwise flag.Parse() will not work properly.
+// normalizeCMDLineArgs - Make sure that the `action` is last in the argument list. Otherwise flag.Parse() will not work properly.
 func normalizeCMDLineArgs(args []string) []string {
 	if len(args) == 1 {
 		return args

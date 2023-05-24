@@ -8,22 +8,27 @@ import static org.mockito.Mockito.*;
 import org.junit.Before;
 import org.junit.Test;
 
+import com.mercedesbenz.sechub.commons.model.ScanType;
 import com.mercedesbenz.sechub.domain.scan.project.FalsePositiveEntry;
 import com.mercedesbenz.sechub.domain.scan.project.FalsePositiveMetaData;
 import com.mercedesbenz.sechub.domain.scan.project.FalsePositiveProjectConfiguration;
 import com.mercedesbenz.sechub.sereco.metadata.SerecoVulnerability;
 
-public class SerecoFalsePositiveCodeScanStrategyTest {
+public class CodeScanFalsePositiveStrategyTest {
 
-    private SerecoFalsePositiveCodeScanStrategy strategyToTest;
+    private CodeScanFalsePositiveStrategy strategyToTest;
     private SerecoSourceRelevantPartResolver relevantPartResolver;
+    private SerecoFalsePositiveSupport serecoFalsePositiveSupport;
 
     @Before
     public void before() throws Exception {
-        strategyToTest = new SerecoFalsePositiveCodeScanStrategy();
+        strategyToTest = new CodeScanFalsePositiveStrategy();
 
         relevantPartResolver = mock(SerecoSourceRelevantPartResolver.class);
+        serecoFalsePositiveSupport = mock(SerecoFalsePositiveSupport.class);
+
         strategyToTest.relevantPartResolver = relevantPartResolver;
+        strategyToTest.falsePositiveSupport = serecoFalsePositiveSupport;
 
     }
 
@@ -50,6 +55,10 @@ public class SerecoFalsePositiveCodeScanStrategyTest {
 
         FalsePositiveMetaData metaData = fetchFirstEntryMetaDataOfExample3();
         when(relevantPartResolver.toRelevantPart(any())).thenReturn("");
+
+        when(serecoFalsePositiveSupport.areBothHavingExpectedScanType(ScanType.CODE_SCAN, metaData, vulnerability)).thenReturn(true);
+        when(serecoFalsePositiveSupport.areBothHavingSameCweIdOrBothNoCweId(metaData, vulnerability)).thenReturn(true);
+
         /* execute + test */
         assertTrue(strategyToTest.isFalsePositive(vulnerability, metaData));
     }
@@ -77,6 +86,9 @@ public class SerecoFalsePositiveCodeScanStrategyTest {
 
         FalsePositiveMetaData metaData = fetchFirstEntryMetaDataOfExample3();
         when(relevantPartResolver.toRelevantPart(any())).thenReturn("");
+        when(serecoFalsePositiveSupport.areBothHavingExpectedScanType(ScanType.CODE_SCAN, metaData, vulnerability)).thenReturn(true);
+        when(serecoFalsePositiveSupport.areBothHavingSameCweIdOrBothNoCweId(metaData, vulnerability)).thenReturn(false);
+
         /* execute + test */
         assertFalse(strategyToTest.isFalsePositive(vulnerability, metaData));
     }
@@ -105,6 +117,9 @@ public class SerecoFalsePositiveCodeScanStrategyTest {
         FalsePositiveMetaData metaData = fetchFirstEntryMetaDataOfExample3();
         when(relevantPartResolver.toRelevantPart(any())).thenReturn("");
 
+        when(serecoFalsePositiveSupport.areBothHavingExpectedScanType(ScanType.CODE_SCAN, metaData, vulnerability)).thenReturn(true);
+        when(serecoFalsePositiveSupport.areBothHavingSameCweIdOrBothNoCweId(metaData, vulnerability)).thenReturn(true);
+
         /* execute + test */
         assertFalse(strategyToTest.isFalsePositive(vulnerability, metaData));
     }
@@ -131,6 +146,9 @@ public class SerecoFalsePositiveCodeScanStrategyTest {
         FalsePositiveMetaData metaData = fetchFirstEntryMetaDataOfExample3();
         when(relevantPartResolver.toRelevantPart("source1")).thenReturn("relevant1");
         when(relevantPartResolver.toRelevantPart("source2")).thenReturn("relevant2");
+
+        when(serecoFalsePositiveSupport.areBothHavingExpectedScanType(ScanType.CODE_SCAN, metaData, vulnerability)).thenReturn(true);
+        when(serecoFalsePositiveSupport.areBothHavingSameCweIdOrBothNoCweId(metaData, vulnerability)).thenReturn(true);
 
         /* execute */
         boolean isFalsePositive = strategyToTest.isFalsePositive(vulnerability, metaData);

@@ -5,27 +5,23 @@ import static com.mercedesbenz.sechub.sharedkernel.util.Assert.*;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.mercedesbenz.sechub.commons.core.util.SimpleStringUtils;
 import com.mercedesbenz.sechub.commons.model.ScanType;
 import com.mercedesbenz.sechub.domain.scan.project.FalsePositiveMetaData;
 import com.mercedesbenz.sechub.domain.scan.project.FalsePositiveWebMetaData;
-import com.mercedesbenz.sechub.sereco.metadata.SerecoClassification;
 import com.mercedesbenz.sechub.sereco.metadata.SerecoVulnerability;
 import com.mercedesbenz.sechub.sereco.metadata.SerecoWeb;
 
-/**
- * Strategy to check if a web scan vulnerability identified by a product is
- * handled by a false positive meta data configuration
- *
- * @author Albert Tregnaghi
- *
- */
 @Component
-public class SerecoFalsePositiveWebScanStrategy {
+public class WebScanFalsePositiveStrategy implements SerecoFalsePositiveStrategy {
 
-    private static final Logger LOG = LoggerFactory.getLogger(SerecoFalsePositiveWebScanStrategy.class);
+    @Autowired
+    SerecoFalsePositiveSupport falsePositiveSupport;
+
+    private static final Logger LOG = LoggerFactory.getLogger(WebScanFalsePositiveStrategy.class);
 
     /**
      * Checks if given vulnerability is identified as false positive by given meta
@@ -39,12 +35,7 @@ public class SerecoFalsePositiveWebScanStrategy {
         notNull(vulnerability, " vulnerability may not be null");
         notNull(metaData, " metaData may not be null");
 
-        /* check supported scan type */
-        if (metaData.getScanType() != ScanType.WEB_SCAN) {
-            return false;
-        }
-
-        if (vulnerability.getScanType() != ScanType.WEB_SCAN) {
+        if (!falsePositiveSupport.areBothHavingExpectedScanType(ScanType.WEB_SCAN, metaData, vulnerability)) {
             return false;
         }
 
@@ -63,32 +54,8 @@ public class SerecoFalsePositiveWebScanStrategy {
         /* ---------------------------------------------------- */
         /* -------------------CWE ID--------------------------- */
         /* ---------------------------------------------------- */
-
-        /* for web scans we only use CWE as wellknown common identifier */
-        Integer cweId = metaData.getCweId();
-        if (cweId == null) {
-            LOG.error("Cannot check web vulnerability for false positives web code meta data has no CWE id set!");
+        if (!falsePositiveSupport.areBothHavingSameCweIdOrBothNoCweId(metaData, vulnerability)) {
             return false;
-        }
-
-        SerecoClassification serecoClassification = vulnerability.getClassification();
-        String serecoCWE = serecoClassification.getCwe();
-        if (serecoCWE == null || serecoCWE.isEmpty()) {
-            LOG.error("Web scan sereco vulnerability type:{} found without CWE! Cannot determin false positive! Classification was:{}", vulnerability.getType(),
-                    serecoClassification);
-            return false;
-        }
-        try {
-            int serecoCWEint = Integer.parseInt(serecoCWE);
-            if (cweId.intValue() != serecoCWEint) {
-                /* not same type of common vulnerability enumeration - so skip */
-                return false;
-            }
-
-        } catch (NumberFormatException e) {
-            LOG.error("Web scan sereco vulnerability type:{} found CWE:{} but not expected integer format!", vulnerability.getType(), serecoCWE);
-            return false;
-
         }
         boolean sameData = true;
         /* ---------------------------------------------------- */

@@ -55,8 +55,6 @@ apk add openjdk{required_java_version} go curl git bash jq
 
 NOTE: Tested with Alpine Linux 3.12, 3.13 and 3.14.
 
-WARNING: Cross-compiling the SecHub client on Alpine Linux 3.11 does not work (Go version go1.13.13 linux/amd64).
-
 ==== Debian/Ubuntu
 
 [source, subs="attributes"]
@@ -66,7 +64,7 @@ sudo apt install openjdk-{required_java_version}-jdk-headless golang git curl jq
 
 NOTE: Tested with Debian 10 "Buster", Ubuntu 18.04 "Bionic" and 20.04 "Focal" LTS.
 
-WARNING: If the version of your GoLang is below {required_go_version}, please install a more recent version from https://go.dev/dl/[here], because you can't compile the executables.
+WARNING: If the version of your GoLang is below {required_go_version}, please install a more recent version from https://go.dev/dl/[here].
 
 ==== Fedora and CentOS
 
@@ -76,6 +74,17 @@ sudo dnf install java-{required_java_version}-openjdk-devel golang git curl jq
 ----
 
 NOTE: Tested with Fedora 34 and CentOS 8.
+
+==== MacOS
+
+To easily install the requirements via cli you can use https://brew.sh[brew].
+
+[source, subs="attributes"]
+----
+brew install openjdk@17 go git curl jq
+----
+
+NOTE: Tested with MacOS Ventura 13.3.1.
 
 === Instructions
 

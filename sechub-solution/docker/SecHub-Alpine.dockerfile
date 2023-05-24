@@ -120,6 +120,9 @@ FROM builder-${BUILD_TYPE} as builder
 
 FROM ${BASE_IMAGE} AS sechub
 
+LABEL org.opencontainers.image.source="https://github.com/mercedes-benz/sechub"
+LABEL org.opencontainers.image.title="SecHub Alpine Linux Image"
+LABEL org.opencontainers.image.description="A container for SecHub based on Alpine Linux"
 LABEL maintainer="SecHub FOSS Team"
 
 ARG SECHUB_ARTIFACT_FOLDER

@@ -93,6 +93,9 @@ func Example_isConfigFieldFilledVerification() {
 
 func Example_willTrailingSlashBeRemovedFromUrl() {
 	// PREPARE
+	originalArgs := os.Args
+	os.Args = []string{"sechub", "scan"}
+
 	context := new(Context)
 	config := NewConfigByFlags()
 	context.config = config
@@ -105,6 +108,10 @@ func Example_willTrailingSlashBeRemovedFromUrl() {
 	// EXECUTE
 	assertValidConfig(context)
 	// TEST
+
+	// Restore original arguments
+	os.Args = originalArgs
+
 	fmt.Println(config.server)
 	// Output: https://test.example.org
 }
@@ -402,6 +409,9 @@ func Test_validateInitialWaitIntervalOrWarning(t *testing.T) {
 
 func Example_will_reportfile_be_found_in_current_dir() {
 	// PREPARE
+	originalArgs := os.Args
+	os.Args = []string{"sechub", "scan"}
+
 	context := new(Context)
 	config := new(Config)
 	context.config = config
@@ -426,6 +436,8 @@ func Example_will_reportfile_be_found_in_current_dir() {
 	assertValidConfig(context)
 
 	// TEST
+	// Restore original arguments
+	os.Args = originalArgs
 
 	// Output:
 	// Using latest report file "sechub_report_testproject_45cd4f59-4be7-4a86-9bc7-47528ced16c2.json".

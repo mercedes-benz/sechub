@@ -80,7 +80,7 @@ jobs:
       - name: Set up Go
         uses: actions/setup-go@v4
         with:
-          go-version: 1.19.1
+          go-version: 1.20.4
       - uses: actions/cache@v3.3.1
         id: go-cache
         with:
@@ -91,8 +91,8 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-go-
 
-      - name: Gradle clean
-        run: ./gradlew clean
+      - name: Gradle clean + spotlessCheck
+        run: ./gradlew clean spotlessCheck
 
       # ----------------------
       # Create pull request if license headers are missing
@@ -110,7 +110,7 @@ jobs:
       - name: Create pull request for SPDX license headers
         id: pr_spdx_headers
         if: steps.apply-headers.outputs.commits != ''
-        uses: peter-evans/create-pull-request@v5.0.0
+        uses: peter-evans/create-pull-request@v5.0.1
         with:
           branch: release-spdx-headers
           branch-suffix: short-commit-hash
@@ -262,7 +262,7 @@ jobs:
       # -----------------------------------------
       - name: Create pull request for release documentation
         id: pr_release_documentation
-        uses: peter-evans/create-pull-request@v5.0.0
+        uses: peter-evans/create-pull-request@v5.0.1
         with:
           branch: release-documentation
           branch-suffix: short-commit-hash

@@ -39,7 +39,8 @@ class PDSWorkspaceServiceTest {
     private PDSWorkspacePreparationContextFactory preparationContextFactory;
     private PDSServerConfigurationService serverConfigService;
     private PDSWorkspacePreparationResultCalculator preparationResultCalculator;
-    private PDSWorkspacePreparationContext context;
+    private PDSWorkspacePreparationContext preparationContext;
+    private UUID jobUUID;
 
     @BeforeAll
     static void beforeAll() throws IOException {
@@ -48,6 +49,7 @@ class PDSWorkspaceServiceTest {
 
     @BeforeEach
     void beforeEach() {
+        jobUUID = UUID.randomUUID();
 
         storageService = mock(PDSMultiStorageService.class);
         storage = mock(JobStorage.class);
@@ -56,8 +58,8 @@ class PDSWorkspaceServiceTest {
         serverConfigService = mock(PDSServerConfigurationService.class);
         preparationResultCalculator = mock(PDSWorkspacePreparationResultCalculator.class);
 
-        context = mock(PDSWorkspacePreparationContext.class);
-        when(preparationContextFactory.createPreparationContext(any())).thenReturn(context);
+        preparationContext = mock(PDSWorkspacePreparationContext.class);
+        when(preparationContextFactory.createPreparationContext(any())).thenReturn(preparationContext);
 
         PDSProductSetup setup = new PDSProductSetup();
         when(serverConfigService.getProductSetupOrNull(any())).thenReturn(setup);
@@ -81,10 +83,6 @@ class PDSWorkspaceServiceTest {
 
     @Test
     void prepare_uses_prepare_factory() throws Exception {
-
-        /* prepare */
-        UUID jobUUID = UUID.randomUUID();
-
         /* execute */
         serviceToTest.prepare(jobUUID, config, null);
 
@@ -93,13 +91,55 @@ class PDSWorkspaceServiceTest {
     }
 
     @Test
-    void prepare_returns_result_from_calculator() throws Exception {
+    void prepare_does_not_set_extracted_sources_when_no_source_accepted() throws Exception {
+        /* execute */
+        when(preparationContext.isSourceAccepted()).thenReturn(false);
 
+        serviceToTest.prepare(jobUUID, config, null);
+
+        /* test */
+        verify(preparationContext, never()).setExtractedSourceAvailable(any(Boolean.class));
+    }
+
+    @Test
+    void prepare_does_set_extracted_sources_when_source_accepted() throws Exception {
+        /* execute */
+        when(preparationContext.isSourceAccepted()).thenReturn(true);
+
+        serviceToTest.prepare(jobUUID, config, null);
+
+        /* test */
+        verify(preparationContext).setExtractedSourceAvailable(any(Boolean.class));
+    }
+
+    @Test
+    void prepare_does_not_set_extracted_binaries_when_no_binaries_accepted() throws Exception {
+        /* execute */
+        when(preparationContext.isBinaryAccepted()).thenReturn(false);
+
+        serviceToTest.prepare(jobUUID, config, null);
+
+        /* test */
+        verify(preparationContext, never()).setExtractedBinaryAvailable(any(Boolean.class));
+    }
+
+    @Test
+    void prepare_does_set_extracted_binaries_when_no_binaries_accepted() throws Exception {
+        /* execute */
+        when(preparationContext.isBinaryAccepted()).thenReturn(true);
+
+        serviceToTest.prepare(jobUUID, config, null);
+
+        /* test */
+        verify(preparationContext).setExtractedBinaryAvailable(any(Boolean.class));
+    }
+
+    @Test
+    void prepare_returns_result_from_calculator() throws Exception {
         /* prepare */
-        UUID jobUUID = UUID.randomUUID();
         PDSWorkspacePreparationResult expected = new PDSWorkspacePreparationResult(true);
 
-        when(preparationResultCalculator.calculateResult(context)).thenReturn(expected);
+        when(preparationResultCalculator.calculateResult(preparationContext)).thenReturn(expected);
 
         /* execute */
         PDSWorkspacePreparationResult result = serviceToTest.prepare(jobUUID, config, null);
@@ -111,9 +151,6 @@ class PDSWorkspaceServiceTest {
     @Test
     @DisplayName("When job has no former meta data, there is no metadata file preparated")
     void when_job_has_no_metadata_no_metadata_file_is_created_in_workspace() throws Exception {
-        /* prepare */
-        UUID jobUUID = UUID.randomUUID();
-
         /* execute */
         serviceToTest.prepare(jobUUID, config, null);
 
@@ -126,9 +163,6 @@ class PDSWorkspaceServiceTest {
     @Test
     @DisplayName("When job has former meta data, the workspace will have a filled metadata.txt is preparated")
     void when_job_has_metadata_a_metadata_file_is_created_in_workspace_containing_content() throws Exception {
-        /* prepare */
-        UUID jobUUID = UUID.randomUUID();
-
         /* execute */
         serviceToTest.prepare(jobUUID, config, "this is my metadata");
 
@@ -141,10 +175,6 @@ class PDSWorkspaceServiceTest {
     @Test
     @DisplayName("createLocationData method contains expected pathes when using temp directory for upload")
     void createLocationData_contains_expected_pathes_when_using_temp_directory_as_upload_base_path() throws Exception {
-        /* prepare */
-
-        UUID jobUUID = UUID.randomUUID();
-
         /* execute */
         WorkspaceLocationData result = serviceToTest.createLocationData(jobUUID);
 
@@ -166,8 +196,6 @@ class PDSWorkspaceServiceTest {
     @Test
     void when_configuration_tells_to_use_sechubstorage_sechub_storage_path_and_sechub_job_uuid_are_used() throws Exception {
         /* prepare */
-        UUID jobUUID = UUID.randomUUID();
-
         config.getParameters().add(createEntry(PDSDefaultParameterKeyConstants.PARAM_KEY_PDS_CONFIG_USE_SECHUB_STORAGE, "true"));
         config.getParameters().add(createEntry(PDSDefaultParameterKeyConstants.PARAM_KEY_PDS_CONFIG_SECHUB_STORAGE_PATH, "xyz/abc/project1"));
 

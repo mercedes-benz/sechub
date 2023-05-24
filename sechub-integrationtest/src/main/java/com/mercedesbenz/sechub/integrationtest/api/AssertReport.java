@@ -127,6 +127,11 @@ public class AssertReport {
             return this;
         }
 
+        public AssertFinding hasNotId(int id) {
+            autoDumper.execute(() -> assertNotEquals(id, finding.getId()));
+            return this;
+        }
+
         public AssertFinding hasName(String name) {
             autoDumper.execute(() -> assertEquals(name, finding.getName()));
             return this;
@@ -134,6 +139,11 @@ public class AssertReport {
 
         public AssertFinding hasScanType(ScanType type) {
             autoDumper.execute(() -> assertEquals(type, finding.getType()));
+            return this;
+        }
+
+        public AssertFinding hasNotScanType(ScanType type) {
+            autoDumper.execute(() -> assertNotEquals(type, finding.getType()));
             return this;
         }
 
