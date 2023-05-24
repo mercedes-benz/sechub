@@ -38,7 +38,7 @@ RUN cd "$DOWNLOAD_FOLDER" && \
     tar --extract --file "$CLOC_TAR" cloc-${CLOC_VERSION}/cloc && \
     # copy cloc binary to /usr/local/bin
     mv cloc-"$CLOC_VERSION"/cloc /usr/local/bin/ && \
-    # remove cloc tar
+    # Cleanup download folder
     rm --recursive --force "$DOWNLOAD_FOLDER"/*
 
 # Copy scripts
