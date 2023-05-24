@@ -53,7 +53,7 @@ note on link
      (traffic light, messages, etc.)
 end note
 
-DomainMessageService ---> SynchronSecHubJobExecutor
+DomainMessageService ---> SynchronSecHubJobExecutor: receive synchron message result
 
 CreateScanReportService -> ScanReport :creates
 ScanService -> CreateScanReportService

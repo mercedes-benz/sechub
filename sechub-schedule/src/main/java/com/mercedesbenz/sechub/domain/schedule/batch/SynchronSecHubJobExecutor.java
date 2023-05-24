@@ -43,6 +43,8 @@ import com.mercedesbenz.sechub.sharedkernel.messaging.MessageID;
 @Component
 public class SynchronSecHubJobExecutor {
 
+    private static final String SECHUB_SCHEDULE_THREAD_PREFIX = "sechub-schedule:";
+
     private static final Logger LOG = LoggerFactory.getLogger(SynchronSecHubJobExecutor.class);
 
     @Autowired
@@ -54,57 +56,53 @@ public class SynchronSecHubJobExecutor {
 
     @IsSendingSyncMessage(MessageID.START_SCAN)
     public void execute(final ScheduleSecHubJob secHubJob) {
-        Thread scanThread = new Thread(new Runnable() {
+        Thread scheduleWorkerThread = new Thread(() -> executeInsideThread(secHubJob), SECHUB_SCHEDULE_THREAD_PREFIX + secHubJob.getUUID());
+        scheduleWorkerThread.start();
+    }
 
-            @Override
-            public void run() {
-                UUIDContainer uuids = new UUIDContainer();
-                uuids.setExecutionUUID(UUID.randomUUID());
-                uuids.setSecHubJobUUID(secHubJob.getUUID());
+    private void executeInsideThread(final ScheduleSecHubJob secHubJob) {
+        UUIDContainer uuids = new UUIDContainer();
+        uuids.setExecutionUUID(UUID.randomUUID());
+        uuids.setSecHubJobUUID(secHubJob.getUUID());
 
-                try {
-                    String secHubConfiguration = secHubJob.getJsonConfiguration();
+        try {
+            String secHubConfiguration = secHubJob.getJsonConfiguration();
 
-                    /* own thread so MDC.put necessary */
-                    MDC.clear();
-                    MDC.put(LogConstants.MDC_SECHUB_JOB_UUID, uuids.getSecHubJobUUIDasString());
-                    MDC.put(LogConstants.MDC_SECHUB_EXECUTION_UUID, uuids.getExecutionUUIDAsString());
-                    MDC.put(LogConstants.MDC_SECHUB_PROJECT_ID, secHubJob.getProjectId());
+            /* own thread so MDC.put necessary */
+            MDC.clear();
+            MDC.put(LogConstants.MDC_SECHUB_JOB_UUID, uuids.getSecHubJobUUIDasString());
+            MDC.put(LogConstants.MDC_SECHUB_EXECUTION_UUID, uuids.getExecutionUUIDAsString());
+            MDC.put(LogConstants.MDC_SECHUB_PROJECT_ID, secHubJob.getProjectId());
 
-                    LOG.info("Executing sechub job: {}, execution uuid: {}", uuids.getSecHubJobUUIDasString(), uuids.getExecutionUUIDAsString());
+            LOG.info("Executing sechub job: {}, execution uuid: {}", uuids.getSecHubJobUUIDasString(), uuids.getExecutionUUIDAsString());
 
-                    sendJobExecutionStartingEvent(secHubJob, uuids, secHubConfiguration);
+            sendJobExecutionStartingEvent(secHubJob, uuids, secHubConfiguration);
 
-                    /* we send now a synchronous SCAN event */
-                    DomainMessage request = new DomainMessage(MessageID.START_SCAN);
-                    request.set(MessageDataKeys.SECHUB_EXECUTION_UUID, uuids.getExecutionUUID());
-                    request.set(MessageDataKeys.EXECUTED_BY, secHubJob.getOwner());
+            /* we send now a synchronous SCAN event */
+            DomainMessage request = new DomainMessage(MessageID.START_SCAN);
+            request.set(MessageDataKeys.SECHUB_EXECUTION_UUID, uuids.getExecutionUUID());
+            request.set(MessageDataKeys.EXECUTED_BY, secHubJob.getOwner());
 
-                    request.set(MessageDataKeys.SECHUB_JOB_UUID, uuids.getSecHubJobUUID());
-                    request.set(MessageDataKeys.SECHUB_CONFIG, MessageDataKeys.SECHUB_CONFIG.getProvider().get(secHubConfiguration));
+            request.set(MessageDataKeys.SECHUB_JOB_UUID, uuids.getSecHubJobUUID());
+            request.set(MessageDataKeys.SECHUB_CONFIG, MessageDataKeys.SECHUB_CONFIG.getProvider().get(secHubConfiguration));
 
-                    /* wait for scan event result - synchron */
-                    DomainMessageSynchronousResult response = messageService.sendSynchron(request);
+            /* wait for scan event result - synchron */
+            DomainMessageSynchronousResult response = messageService.sendSynchron(request);
 
-                    updateSecHubJob(uuids, response);
+            updateSecHubJob(uuids, response);
 
-                    sendJobDoneMessage(uuids, response);
+            sendJobDoneMessage(uuids, response);
 
-                } catch (Exception e) {
-                    LOG.error("Error happend at spring batch task execution:" + e.getMessage(), e);
+        } catch (Exception e) {
+            LOG.error("Error happend at spring batch task execution:" + e.getMessage(), e);
 
-                    markSechHubJobFailed(uuids);
-                    sendJobFailed(uuids, TrafficLight.OFF);
+            markSechHubJobFailed(uuids);
+            sendJobFailed(uuids, TrafficLight.OFF);
 
-                } finally {
-                    /* cleanup MDC */
-                    MDC.clear();
-                }
-
-            }
-
-        }, "scan_" + secHubJob.getUUID());
-        scanThread.start();
+        } finally {
+            /* cleanup MDC */
+            MDC.clear();
+        }
     }
 
     @IsSendingAsyncMessage(MessageID.JOB_EXECUTION_STARTING)
