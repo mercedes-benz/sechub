@@ -14,7 +14,7 @@ LABEL maintainer="SecHub FOSS Team"
 
 # Build args
 ARG GO="go1.20.4.linux-amd64.tar.gz"
-ARG GOSEC_VERSION="2.13.1"
+ARG GOSEC_VERSION="2.16.0"
 
 # Environment variables in container
 ENV GOSEC_VERSION="${GOSEC_VERSION}"
