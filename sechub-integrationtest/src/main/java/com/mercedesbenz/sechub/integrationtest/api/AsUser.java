@@ -1261,4 +1261,18 @@ public class AsUser {
 
     }
 
+    /**
+     * Tries to create a SecHub job by given configuration string.
+     *
+     * @param project
+     * @param sechubConfigAsString
+     * @return result as string
+     */
+    public String tryToCreateJobByJson(TestProject project, String sechubConfigAsString) {
+
+        String url = getUrlBuilder().buildAddJobUrl(project.getProjectId());
+        return getRestHelper().postJson(url, sechubConfigAsString);
+
+    }
+
 }
