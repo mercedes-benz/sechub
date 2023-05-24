@@ -105,7 +105,8 @@ spec:
                       value: "{{ .Values.storage.sharedVolume.upload.dir }}"
 {{- end}}
                   ports:
-                    - pds-https-port: 8444
+                    - name: pds-https-port
+                      containerPort: 8444
                   startupProbe:
                     httpGet:
                       scheme: HTTPS
