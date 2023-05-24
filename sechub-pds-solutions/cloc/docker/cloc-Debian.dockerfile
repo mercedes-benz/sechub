@@ -39,7 +39,7 @@ RUN cd "$DOWNLOAD_FOLDER" && \
     # copy cloc binary to /usr/local/bin
     mv cloc-"$CLOC_VERSION"/cloc /usr/local/bin/ && \
     # remove cloc tar
-    rm --recursive --force "$DOWNLOAD_FOLDER/*"
+    rm --recursive --force "$DOWNLOAD_FOLDER"/*
 
 # Copy scripts
 COPY scripts $SCRIPT_FOLDER

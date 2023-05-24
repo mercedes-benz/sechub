@@ -42,7 +42,7 @@ RUN cd "$DOWNLOAD_FOLDER" && \
     # make FindSecurityBugs executable
     chmod +x "$TOOL_FOLDER/findsecbugs.sh" && \
     # Cleanup download folder
-    rm --recursive --force "$DOWNLOAD_FOLDER/*"
+    rm --recursive --force "$DOWNLOAD_FOLDER"/*
 
 # Copy PDS configfile
 COPY pds-config.json "$PDS_FOLDER/pds-config.json"
