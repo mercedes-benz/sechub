@@ -31,6 +31,10 @@ public class ProjectMetaDataEntity implements Serializable {
     /* +-----------------------------------------------------------------------+ */
     public static final String CLASS_NAME = ProjectMetaDataEntity.class.getSimpleName();
 
+    public static final String PROPERTY_PROJECT_ID = "projectId";
+    public static final String PROPERTY_KEY = "key";
+    public static final String PROPERTY_VALUE = "value";
+
     ProjectMetaDataEntity() {
         // jpa only
     }

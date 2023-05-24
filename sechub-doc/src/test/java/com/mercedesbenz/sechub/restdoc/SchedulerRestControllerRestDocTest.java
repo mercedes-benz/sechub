@@ -20,7 +20,9 @@ import java.lang.annotation.Annotation;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.TreeMap;
 import java.util.UUID;
 
 import org.junit.Before;
@@ -44,6 +46,7 @@ import org.springframework.util.StringUtils;
 
 import com.mercedesbenz.sechub.commons.core.CommonConstants;
 import com.mercedesbenz.sechub.commons.model.SecHubCodeScanConfiguration;
+import com.mercedesbenz.sechub.commons.model.SecHubConfigurationMetaData;
 import com.mercedesbenz.sechub.commons.model.SecHubDataConfigurationUsageByName;
 import com.mercedesbenz.sechub.commons.model.SecHubFileSystemConfiguration;
 import com.mercedesbenz.sechub.commons.model.SecHubInfrastructureScanConfiguration;
@@ -707,8 +710,14 @@ public class SchedulerRestControllerRestDocTest implements TestIsNecessaryForDoc
     @Test
     @UseCaseRestDoc(useCase = UseCaseUserListsJobsForProject.class)
     public void restDoc_userListsJobsForProject() throws Exception {
+
         /* prepare */
-        String apiEndpoint = https(PORT_USED).buildUserFetchesListOfJobsForProject(PROJECT_ID.pathElement(), SIZE.pathElement(), PAGE.pathElement());
+        Map<String, String> labels = new TreeMap<>();
+        labels.put("metadata.labels.stage", "testing");
+
+        String apiEndpoint = https(PORT_USED).buildUserFetchesListOfJobsForProject(PROJECT_ID.pathElement(), SIZE.pathElement(), PAGE.pathElement(),
+                WITH_META_DATA.pathElement(), labels);
+
         Class<? extends Annotation> useCase = UseCaseUserListsJobsForProject.class;
 
         SecHubJobInfoForUser job1 = new SecHubJobInfoForUser();
@@ -722,17 +731,21 @@ public class SchedulerRestControllerRestDocTest implements TestIsNecessaryForDoc
         job1.setExecutedBy("User1");
         job1.setTrafficLight(TrafficLight.GREEN);
 
+        SecHubConfigurationMetaData metaData = new SecHubConfigurationMetaData();
+        metaData.getLabels().put("stage", "test");
+        job1.setMetaData(metaData);
+
         SecHubJobInfoForUserListPage listPage = new SecHubJobInfoForUserListPage();
         listPage.setPage(0);
         listPage.setTotalPages(1);
         List<SecHubJobInfoForUser> list = listPage.getContent();
         list.add(job1);
 
-        when(mockedJobInfoForUserService.listJobsForProject(PROJECT1_ID, 1, 0)).thenReturn(listPage);
+        when(mockedJobInfoForUserService.listJobsForProject(eq(PROJECT1_ID), eq(1), eq(0), eq(true), any())).thenReturn(listPage);
 
         /* execute + test @formatter:off */
         this.mockMvc.perform(
-                get(apiEndpoint, PROJECT1_ID,1,0).
+                get(apiEndpoint, PROJECT1_ID, 1, 0, true, labels).
                     contentType(MediaType.APPLICATION_JSON_VALUE).
                     header(AuthenticationHelper.HEADER_NAME, AuthenticationHelper.getHeaderValue())
                 ).
@@ -752,8 +765,14 @@ public class SchedulerRestControllerRestDocTest implements TestIsNecessaryForDoc
                                             parameterWithName(PROJECT_ID.paramName()).description("The id of the project where job information shall be fetched for")
                                           ),
                                           requestParameters(
-                                              parameterWithName(SIZE.paramName()).optional().description("The wanted (maximum) size for the result set. When not defined, the default will be "+SchedulerRestController.DEFAULT_JOB_INFORMATION_SIZE),
-                                              parameterWithName(PAGE.paramName()).optional().description("The wanted page number. When not defined, the default will be "+SchedulerRestController.DEFAULT_JOB_INFORMATION_PAGE)
+                                              parameterWithName(SIZE.paramName()).optional().description("The wanted (maximum) size for the result set. When not defined, the default will be "+SchedulerRestController.DEFAULT_JOB_INFORMATION_SIZE+"."),
+                                              parameterWithName(PAGE.paramName()).optional().description("The wanted page number. When not defined, the default will be "+SchedulerRestController.DEFAULT_JOB_INFORMATION_PAGE+"."),
+                                              parameterWithName("metadata.labels.*").optional().
+                                                  description("An optional dynamic query parameter to filter jobs by labels. The syntax is 'metadata.labels.${labelKey}=${labelValue}'.\n\n"
+                                                            + "It is possible to query for multiple labels (up to "+ SecHubJobInfoForUserService.MAXIMUM_ALLOWED_LABEL_PARAMETERS + " ).\n"
+                                                            + "The filter works as an AND combination: Only jobs having all wanted label key value combinations are returned."),
+                                              parameterWithName("metadata.labels.stage").ignored(), // we we do not want the label query example to be documented - we document only the generic way
+                                              parameterWithName(WITH_META_DATA.paramName()).optional().description("An optional parameter to define if meta data shall be fetched as well. When not defined, the default will be "+SchedulerRestController.DEFAULT_WITH_METADATA+".")
                                           ),
                                           responseFields(
                                             fieldWithPath(SecHubJobInfoForUserListPage.PROPERTY_PAGE).description("The page number"),
@@ -765,7 +784,9 @@ public class SchedulerRestControllerRestDocTest implements TestIsNecessaryForDoc
                                             fieldWithPath("content[]."+SecHubJobInfoForUser.PROPERTY_EXECUTED_BY).description("User who initiated the job"),
                                             fieldWithPath("content[]."+SecHubJobInfoForUser.PROPERTY_EXECUTION_STATE).description("Execution state of job"),
                                             fieldWithPath("content[]."+SecHubJobInfoForUser.PROPERTY_EXECUTION_RESULT).description("Execution result of job"),
-                                            fieldWithPath("content[]."+SecHubJobInfoForUser.PROPERTY_TRAFFIC_LIGHT).description("Trafficlight of job - but only available when job has been done. Possible states are "+StringUtils.arrayToDelimitedString(TrafficLight.values(),", "))
+                                            fieldWithPath("content[]."+SecHubJobInfoForUser.PROPERTY_TRAFFIC_LIGHT).description("Trafficlight of job - but only available when job has been done. Possible states are "+StringUtils.arrayToDelimitedString(TrafficLight.values(),", ")),
+                                            fieldWithPath("content[]."+SecHubJobInfoForUser.PROPERTY_METADATA+".*").optional().description("Meta data of job - but only contained in result, when query parameter `"+WITH_META_DATA.paramName()+"` is defined as 'true'."),
+                                            fieldWithPath("content[]."+SecHubJobInfoForUser.PROPERTY_METADATA+".labels.stage").ignored()// we do not want the label example to be documented - we document only the generic way
                                           )
                             )
                 );
