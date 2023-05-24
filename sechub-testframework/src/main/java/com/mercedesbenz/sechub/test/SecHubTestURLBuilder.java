@@ -97,9 +97,14 @@ public class SecHubTestURLBuilder extends AbstractTestURLBuilder {
         return buildUrl(API_PROJECT, projectId, "false-positives");
     }
 
-    public String buildUserFetchesListOfJobsForProject(String projectId, String size, String page) {
+    public String buildUserFetchesListOfJobsForProject(String projectId, String size, String page, String withMetaData,
+            Map<String, String> additionalParametersOrNull) {
 
-        String url = appendParameters(buildUrl(API_PROJECT, projectId, "jobs"), params().set("size", size).set("page", page).build());
+        String url = appendParameters(buildUrl(API_PROJECT, projectId, "jobs"),
+                params().set("size", size).set("page", page).set("withMetaData", withMetaData).build());
+        if (additionalParametersOrNull != null) {
+            url = appendParameters(url, additionalParametersOrNull);
+        }
         return url;
     }
 
@@ -128,7 +133,11 @@ public class SecHubTestURLBuilder extends AbstractTestURLBuilder {
         if (params == null || params.isEmpty()) {
             return url;
         }
-        sb.append("?");
+        if (url.contains("?")) {
+            sb.append("&");
+        } else {
+            sb.append("?");
+        }
 
         Iterator<String> it = params.keySet().iterator();
         while (it.hasNext()) {

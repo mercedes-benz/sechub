@@ -91,8 +91,8 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-go-
 
-      - name: Gradle clean
-        run: ./gradlew clean
+      - name: Gradle clean + spotlessCheck
+        run: ./gradlew clean spotlessCheck
 
       # ----------------------
       # Create pull request if license headers are missing

@@ -1,27 +1,39 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.domain.schedule.job;
 
+import java.util.Map;
+import java.util.Optional;
+
 import javax.annotation.PostConstruct;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.data.domain.Example;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Direction;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
+import com.mercedesbenz.sechub.commons.model.SecHubConfigurationMetaData;
+import com.mercedesbenz.sechub.commons.model.SecHubConfigurationModelValidationResult;
+import com.mercedesbenz.sechub.commons.model.SecHubConfigurationModelValidator;
+import com.mercedesbenz.sechub.commons.model.SecHubScanConfiguration;
 import com.mercedesbenz.sechub.domain.schedule.ScheduleAssertService;
 import com.mercedesbenz.sechub.sharedkernel.MustBeDocumented;
 import com.mercedesbenz.sechub.sharedkernel.Step;
+import com.mercedesbenz.sechub.sharedkernel.configuration.SecHubConfigurationMetaDataMapTransformer;
+import com.mercedesbenz.sechub.sharedkernel.error.BadRequestException;
 import com.mercedesbenz.sechub.sharedkernel.usecases.job.UseCaseUserListsJobsForProject;
 
 @Service
 public class SecHubJobInfoForUserService {
+
+    public static final int MAXIMUM_ALLOWED_LABEL_PARAMETERS = 10;
+    private static final int MAXIMUM_ALLOWED_PARAMETERS = MAXIMUM_ALLOWED_LABEL_PARAMETERS + 4; // projectId, page, size, withMetaData
 
     private static final Logger LOG = LoggerFactory.getLogger(SecHubJobInfoForUserService.class);
 
@@ -36,6 +48,12 @@ public class SecHubJobInfoForUserService {
 
     @Autowired
     ScheduleAssertService assertService;
+
+    @Autowired
+    SecHubConfigurationMetaDataMapTransformer metaDataTransformer;
+
+    @Autowired
+    SecHubConfigurationModelValidator modelValidator;
 
     @Value("${sechub.project.joblist.size.max:" + DEFAULT_MAXIMUM_LIMIT + "}")
     @MustBeDocumented("Maximum limit for job information list entries per page")
@@ -58,57 +76,94 @@ public class SecHubJobInfoForUserService {
     }
 
     @UseCaseUserListsJobsForProject(@Step(number = 2, name = "Assert access by service and fetch job information for user"))
-    public SecHubJobInfoForUserListPage listJobsForProject(String projectId, int size, int page) {
+    public SecHubJobInfoForUserListPage listJobsForProject(String projectId, int size, int page, boolean resultsShallContainMetaData,
+            Map<String, String> allParams) {
 
         assertService.assertProjectIdValid(projectId);
         assertService.assertProjectAllowsReadAccess(projectId);
         assertService.assertUserHasAccessToProject(projectId);
 
+        assertNotTooManyParameters(allParams);
+
+        SearchContext searchContext = new SearchContext();
+        searchContext.projectId = projectId;
+        searchContext.page = page;
+        searchContext.size = size;
+        searchContext.resultsShallContainMetaData = resultsShallContainMetaData;
+
+        ensureValidSearchParameters(searchContext);
+
+        handleJobDataParametersIfExisting(allParams, searchContext);
+
+        return loadDataAndCreateListPage(searchContext);
+    }
+
+    private SecHubJobInfoForUserListPage loadDataAndCreateListPage(SearchContext searchContext) {
+        Pageable pageable = PageRequest.of(searchContext.page, searchContext.size, Sort.by(Direction.DESC, ScheduleSecHubJob.PROPERTY_CREATED));
+
+        Specification<ScheduleSecHubJob> specification = ScheduleSecHubJobSpecifications.hasProjectIdAndData(searchContext.projectId, searchContext.filterData);
+
+        Page<ScheduleSecHubJob> pageFound = jobRepository.findAll(specification, pageable);
+        return transformToListPage(pageFound, searchContext);
+    }
+
+    private void ensureValidSearchParameters(SearchContext searchContext) {
+        ensureValidSize(searchContext);
+        ensureValidPage(searchContext);
+    }
+
+    private void ensureValidSize(SearchContext searchContext) {
+        int size = searchContext.size;
+
         if (size < MINIMUM_SIZE) {
-            LOG.warn("Size: {} is to small, will change to: {}", size, MINIMUM_SIZE);
-            size = MINIMUM_SIZE;
+            LOG.warn("Size: {} is too small, will change to: {}", size, MINIMUM_SIZE);
+            searchContext.size = MINIMUM_SIZE;
         }
 
         if (size > maximumSize) {
             LOG.warn("Size: {} is too big, will change to: {}", size, maximumSize);
-            size = maximumSize;
+            searchContext.size = maximumSize;
 
         }
+    }
 
+    private void ensureValidPage(SearchContext searchContext) {
+        int page = searchContext.page;
         if (page < MINIMUM_PAGE) {
-            LOG.warn("Page:{} was to small, will change to: {}", page, MINIMUM_PAGE);
-            page = MINIMUM_PAGE;
+            LOG.warn("Page: {} was too small, will change to: {}", page, MINIMUM_PAGE);
+            searchContext.page = MINIMUM_PAGE;
         }
 
         if (page > maximumPage) {
-            LOG.warn("Page:{} was too big, will change to: {}", page, maximumPage);
-            page = maximumPage;
+            LOG.warn("Page: {} was too big, will change to: {}", page, maximumPage);
+            searchContext.page = maximumPage;
+        }
+    }
+
+    private void handleJobDataParametersIfExisting(Map<String, String> allParams, SearchContext context) {
+        SecHubConfigurationMetaData metaDataForFiltering = metaDataTransformer.transform(allParams);
+
+        Map<String, String> labels = metaDataForFiltering.getLabels();
+        if (labels.size() > MAXIMUM_ALLOWED_LABEL_PARAMETERS) {
+            throw new BadRequestException("Maximum of allowed label parameters reached: " + MAXIMUM_ALLOWED_LABEL_PARAMETERS);
         }
 
-        return loadDataAndCreateListPage(projectId, size, page);
+        SecHubConfigurationModelValidationResult result = modelValidator.validateMetaDataLabels(labels);
+        if (result.hasErrors()) {
+            throw new BadRequestException(result.getErrors().iterator().next().getMessage());
+        }
+        /* we transform back to have only valid parameter data */
+        Map<String, String> validFilterData = metaDataTransformer.transform(metaDataForFiltering);
+        context.filterData = validFilterData;
+
     }
 
-    private SecHubJobInfoForUserListPage loadDataAndCreateListPage(String projectId, int size, int page) {
-        Pageable pageable = PageRequest.of(page, size, Sort.by(Direction.DESC, ScheduleSecHubJob.PROPERTY_CREATED));
-
-        ScheduleSecHubJob probe = new ScheduleSecHubJob();
-        // reset predefined fields
-        probe.executionResult = null;
-        probe.executionState = null;
-        // set project id as a filter
-        probe.projectId = projectId;
-
-        Example<ScheduleSecHubJob> example = Example.of(probe);
-        Page<ScheduleSecHubJob> pageFound = jobRepository.findAll(example, pageable);
-
-        return transformToListPage(projectId, pageFound);
-    }
-
-    private SecHubJobInfoForUserListPage transformToListPage(String projectId, Page<ScheduleSecHubJob> pageFound) {
+    private SecHubJobInfoForUserListPage transformToListPage(Page<ScheduleSecHubJob> pageFound, SearchContext searchContext) {
         SecHubJobInfoForUserListPage listPage = new SecHubJobInfoForUserListPage();
+
         listPage.setPage(pageFound.getNumber());
         listPage.setTotalPages(pageFound.getTotalPages());
-        listPage.setProjectId(projectId);
+        listPage.setProjectId(searchContext.projectId);
 
         for (ScheduleSecHubJob job : pageFound) {
 
@@ -125,8 +180,40 @@ public class SecHubJobInfoForUserService {
             infoForUser.setTrafficLight(job.getTrafficLight());
 
             listPage.getContent().add(infoForUser);
+
+            if (searchContext.resultsShallContainMetaData) {
+                attachJobMetaData(job, infoForUser);
+            }
         }
         return listPage;
+    }
+
+    private void attachJobMetaData(ScheduleSecHubJob job, SecHubJobInfoForUser infoForUser) {
+        String json = job.getJsonConfiguration();
+        if (json == null) {
+            LOG.error("No sechub configuration found for job: {}. Cannot resolve meta data!", job.getUUID());
+            return;
+        }
+        SecHubScanConfiguration configuration = SecHubScanConfiguration.createFromJSON(json);
+        Optional<SecHubConfigurationMetaData> metaDataOpt = configuration.getMetaData();
+        if (metaDataOpt.isPresent()) {
+            infoForUser.setMetaData(metaDataOpt.get());
+        }
+    }
+
+    private void assertNotTooManyParameters(Map<String, String> allParams) {
+        if (allParams.size() > MAXIMUM_ALLOWED_PARAMETERS) {
+            throw new BadRequestException("Too many parameters used. Maximum allowed parameters:" + MAXIMUM_ALLOWED_PARAMETERS);
+        }
+
+    }
+
+    private class SearchContext {
+        private String projectId;
+        private int size;
+        int page;
+        boolean resultsShallContainMetaData;
+        private Map<String, String> filterData;
     }
 
 }
