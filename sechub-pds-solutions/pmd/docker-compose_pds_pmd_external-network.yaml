@@ -11,7 +11,7 @@ services:
         container_name: pds-pmd
         hostname: pds-pmd
         volumes:
-          - ./docker/scripts:/scripts
+          - ./docker/scripts:/pds/scripts
         env_file:
             - .env
         ports:
@@ -24,4 +24,3 @@ networks:
     sechub:
         external: true
         name: "sechub"
-

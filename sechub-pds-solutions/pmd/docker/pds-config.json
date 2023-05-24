@@ -4,7 +4,7 @@
   "products": [
     {
       "id": "PDS_PMD",
-      "path": "/scripts/pmd.sh",
+      "path": "/pds/scripts/pmd.sh",
       "scanType": "codeScan",
       "description": "PMD is a static source code analyzer.",
       "parameters": {
@@ -18,7 +18,7 @@
     },
     {
       "id": "PDS_PMD_MOCK",
-      "path": "/scripts/pmd_mock.sh",
+      "path": "/pds/scripts/pmd_mock.sh",
       "scanType": "codeScan",
       "description": "Runs PMD mock. It returns a fixed result file.",
       "parameters": {
