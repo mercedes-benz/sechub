@@ -16,7 +16,7 @@ services:
         networks:
             - "sechub"
         volumes:
-          - ./docker/scripts:/scripts
+          - ./docker/scripts:/pds/scripts
 
 networks:
     sechub:
