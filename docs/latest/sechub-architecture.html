@@ -531,7 +531,7 @@ table.CodeRay td.code{padding:0 0 0 .75em}
 <div id="header">
 <h1><span class="image"><a class="image" href="https://mercedes-benz.github.io/sechub"><img src="images/sechub-logo.png" alt="sechub logo"></a></span> SecHub Architecture</h1>
 <div class="details">
-<span id="revnumber"> Server 0.41.2</span>
+<span id="revnumber"> Server 0.42.0</span>
 </div>
 <div id="toc" class="toc2">
 <div id="toctitle">Table of contents</div>
@@ -1267,7 +1267,7 @@ build pipeline / contionus integration (CI) and helps to provide
 </tbody>
 </table>
 <div class="paragraph">
-<p>Documentation version: <code>Server 0.41.2-20230503102309</code></p>
+<p>Documentation version: <code>Server 0.42.0-20230524122647</code></p>
 </div>
 <div class="paragraph">
 <p>This architecture documentation is based on arc42 template.</p>
@@ -3240,17 +3240,17 @@ For example a user must have a project assigned to be able to scan on it!</p>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">2</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Assign user</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">ROLE_SUPERADMIN</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Update schedule authorization parts</p></td>
+<td class="tableblock halign-left valign-top"></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">2</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The service will add the user to the project. If user does not have ROLE_USER it will obtain it</p></td>
+<td class="tableblock halign-left valign-top"></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">2</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Update schedule authorization parts</p></td>
-<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Assign user</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">ROLE_SUPERADMIN</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">3</p></td>
-<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The service will add the user to the project. If user does not have ROLE_USER it will obtain it</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">3</p></td>
@@ -3339,17 +3339,17 @@ For example a user must have a project assigned to be able to scan on it!</p>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">2</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Unassign user</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">ROLE_SUPERADMIN</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">2</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The service will remove the user to the project. If users has no longer access to projects ROLE_USER will be removed</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">2</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Update authorization parts</p></td>
 <td class="tableblock halign-left valign-top"></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">2</p></td>
 <td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">2</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Unassign user</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">ROLE_SUPERADMIN</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">2</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The service will remove the user to the project. If users has no longer access to projects ROLE_USER will be removed</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">2</p></td>
@@ -4169,14 +4169,14 @@ user signup is accepted by admin.</p>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Service call</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">ROLE_SUPERADMIN</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">2</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Sends request to scheduler domain to disable scheduler job processing</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Sends request to scheduler to send updates about current status.</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">2</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Service call</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">ROLE_SUPERADMIN</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">3</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Sends request to scheduler to send updates about current status.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Sends request to scheduler domain to disable scheduler job processing</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">3</p></td>
@@ -7094,6 +7094,27 @@ than one. In this case the returned entries are ordered by creation date.</p>
 </tbody>
 </table>
 <div class="paragraph">
+<p><strong>Request headers</strong> <br></p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Name</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Authorization</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Basic authentication credentials</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
 <p><strong>Response fields</strong> <br></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
@@ -7199,6 +7220,27 @@ than one. In this case the returned entries are ordered by creation date.</p>
 </tbody>
 </table>
 <div class="paragraph">
+<p><strong>Request headers</strong> <br></p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Name</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Authorization</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Basic authentication credentials</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
 <p><strong class="big">Example</strong></p>
 </div>
 <div class="paragraph">
@@ -7277,6 +7319,27 @@ than one. In this case the returned entries are ordered by creation date.</p>
 </tbody>
 </table>
 <div class="paragraph">
+<p><strong>Request headers</strong> <br></p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Name</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Authorization</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Basic authentication credentials</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
 <p><strong class="big">Example</strong></p>
 </div>
 <div class="paragraph">
@@ -7347,6 +7410,27 @@ than one. In this case the returned entries are ordered by creation date.</p>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>userId</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">The user id of user to show details for</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p><strong>Request headers</strong> <br></p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Name</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Authorization</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Basic authentication credentials</p></td>
 </tr>
 </tbody>
 </table>
@@ -7472,6 +7556,27 @@ than one. In this case the returned entries are ordered by creation date.</p>
 </tbody>
 </table>
 <div class="paragraph">
+<p><strong>Request headers</strong> <br></p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Name</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Authorization</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Basic authentication credentials</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
 <p><strong class="big">Example</strong></p>
 </div>
 <div class="paragraph">
@@ -7541,6 +7646,27 @@ than one. In this case the returned entries are ordered by creation date.</p>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>projectId</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">The id for project to show details for</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p><strong>Request headers</strong> <br></p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Name</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Authorization</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Basic authentication credentials</p></td>
 </tr>
 </tbody>
 </table>
@@ -7689,7 +7815,7 @@ than one. In this case the returned entries are ordered by creation date.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/scan/download/0870a002-3938-4caf-9492-2b59d1c2e761' -i -u 'user:secret' -X GET \
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/scan/download/46252059-3f9f-4813-8d24-b71fb06a5126' -i -u 'user:secret' -X GET \
     -H 'Content-Type: application/json;charset=UTF-8'</code></pre>
 </div>
 </div>
@@ -7748,6 +7874,27 @@ than one. In this case the returned entries are ordered by creation date.</p>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>userId</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">The userId of the user who becomes admin</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p><strong>Request headers</strong> <br></p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Name</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Authorization</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Basic authentication credentials</p></td>
 </tr>
 </tbody>
 </table>
@@ -7825,6 +7972,27 @@ than one. In this case the returned entries are ordered by creation date.</p>
 </tbody>
 </table>
 <div class="paragraph">
+<p><strong>Request headers</strong> <br></p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Name</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Authorization</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Basic authentication credentials</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
 <p><strong class="big">Example</strong></p>
 </div>
 <div class="paragraph">
@@ -7872,6 +8040,27 @@ than one. In this case the returned entries are ordered by creation date.</p>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Status code</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">200 OK</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p><strong>Request headers</strong> <br></p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Name</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Authorization</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Basic authentication credentials</p></td>
 </tr>
 </tbody>
 </table>
@@ -7981,6 +8170,27 @@ than one. In this case the returned entries are ordered by creation date.</p>
 </tbody>
 </table>
 <div class="paragraph">
+<p><strong>Request headers</strong> <br></p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Name</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Authorization</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Basic authentication credentials</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
 <p><strong class="big">Example</strong></p>
 </div>
 <div class="paragraph">
@@ -8059,6 +8269,27 @@ than one. In this case the returned entries are ordered by creation date.</p>
 </tbody>
 </table>
 <div class="paragraph">
+<p><strong>Request headers</strong> <br></p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Name</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Authorization</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Basic authentication credentials</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
 <p><strong class="big">Example</strong></p>
 </div>
 <div class="paragraph">
@@ -8106,6 +8337,27 @@ than one. In this case the returned entries are ordered by creation date.</p>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Status code</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">201 CREATED</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p><strong>Request headers</strong> <br></p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Name</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Authorization</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Basic authentication credentials</p></td>
 </tr>
 </tbody>
 </table>
@@ -8217,6 +8469,27 @@ than one. In this case the returned entries are ordered by creation date.</p>
 </tbody>
 </table>
 <div class="paragraph">
+<p><strong>Request headers</strong> <br></p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Name</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Authorization</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Basic authentication credentials</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
 <p><strong>Response fields</strong> <br></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
@@ -8319,6 +8592,27 @@ than one. In this case the returned entries are ordered by creation date.</p>
 </tbody>
 </table>
 <div class="paragraph">
+<p><strong>Request headers</strong> <br></p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Name</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Authorization</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Basic authentication credentials</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
 <p><strong class="big">Example</strong></p>
 </div>
 <div class="paragraph">
@@ -8389,6 +8683,27 @@ than one. In this case the returned entries are ordered by creation date.</p>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>projectId</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">The id of the project for which whitelist shall be updated</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p><strong>Request headers</strong> <br></p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Name</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Authorization</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Basic authentication credentials</p></td>
 </tr>
 </tbody>
 </table>
@@ -8497,6 +8812,27 @@ than one. In this case the returned entries are ordered by creation date.</p>
 </tbody>
 </table>
 <div class="paragraph">
+<p><strong>Request headers</strong> <br></p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Name</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Authorization</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Basic authentication credentials</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
 <p><strong>Response fields</strong> <br></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
@@ -8562,7 +8898,7 @@ than one. In this case the returned entries are ordered by creation date.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code>[{&quot;sechubJobUUID&quot;:&quot;a4fc5e85-7712-41f5-b5e7-d19c29ee9dbe&quot;,&quot;executedBy&quot;:&quot;spartakus&quot;,&quot;started&quot;:&quot;2023-05-02T10:23:26.157568&quot;,&quot;ended&quot;:&quot;2023-05-03T10:23:26.1576&quot;,&quot;status&quot;:&quot;OK&quot;}]</code></pre>
+<pre class="CodeRay highlight nowrap"><code>[{&quot;sechubJobUUID&quot;:&quot;f69766dc-3247-4d21-86b6-1a0b891e5933&quot;,&quot;executedBy&quot;:&quot;spartakus&quot;,&quot;started&quot;:&quot;2023-05-23T12:27:02.041264529&quot;,&quot;ended&quot;:&quot;2023-05-24T12:27:02.04130243&quot;,&quot;status&quot;:&quot;OK&quot;}]</code></pre>
 </div>
 </div>
 </div>
@@ -8620,6 +8956,27 @@ than one. In this case the returned entries are ordered by creation date.</p>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>projectId</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">The id of the project for which metadata shall be updated</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p><strong>Request headers</strong> <br></p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Name</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Authorization</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Basic authentication credentials</p></td>
 </tr>
 </tbody>
 </table>
@@ -8729,6 +9086,27 @@ than one. In this case the returned entries are ordered by creation date.</p>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>projectId</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">The id for project to change details for</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p><strong>Request headers</strong> <br></p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Name</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Authorization</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Basic authentication credentials</p></td>
 </tr>
 </tbody>
 </table>
@@ -8873,6 +9251,27 @@ than one. In this case the returned entries are ordered by creation date.</p>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>projectAccessLevel</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">The new project access level. Accepted values: full(Full access to project, no restrictions), read_only(Users have only read access to existing data, No new jobs possible), none(Users have no access at all.)</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p><strong>Request headers</strong> <br></p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Name</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Authorization</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Basic authentication credentials</p></td>
 </tr>
 </tbody>
 </table>
@@ -9027,6 +9426,27 @@ than one. In this case the returned entries are ordered by creation date.</p>
 </tbody>
 </table>
 <div class="paragraph">
+<p><strong>Request headers</strong> <br></p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Name</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Authorization</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Basic authentication credentials</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
 <p><strong>Request fields</strong> <br></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
@@ -9112,7 +9532,7 @@ than one. In this case the returned entries are ordered by creation date.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code>{&quot;jobId&quot;:&quot;a2445b20-8a73-42d4-a5d1-4f2a6a7b615f&quot;}</code></pre>
+<pre class="CodeRay highlight nowrap"><code>{&quot;jobId&quot;:&quot;4bdfa7c5-987d-40a8-bc6f-b82ecfd8ca1e&quot;}</code></pre>
 </div>
 </div>
 </div>
@@ -9167,6 +9587,27 @@ than one. In this case the returned entries are ordered by creation date.</p>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>projectId</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">The unique id of the project id where a new sechub job shall be created</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p><strong>Request headers</strong> <br></p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Name</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Authorization</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Basic authentication credentials</p></td>
 </tr>
 </tbody>
 </table>
@@ -9251,7 +9692,7 @@ than one. In this case the returned entries are ordered by creation date.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code>{&quot;jobId&quot;:&quot;ca41bbc5-c0d5-42d8-861b-47e7f884a98f&quot;}</code></pre>
+<pre class="CodeRay highlight nowrap"><code>{&quot;jobId&quot;:&quot;0b909932-397d-4c3b-bb0d-156672b41671&quot;}</code></pre>
 </div>
 </div>
 </div>
@@ -9306,6 +9747,27 @@ than one. In this case the returned entries are ordered by creation date.</p>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>projectId</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">The unique id of the project id where a new sechub job shall be created</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p><strong>Request headers</strong> <br></p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Name</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Authorization</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Basic authentication credentials</p></td>
 </tr>
 </tbody>
 </table>
@@ -9405,7 +9867,7 @@ than one. In this case the returned entries are ordered by creation date.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code>{&quot;jobId&quot;:&quot;2b597e2a-4333-4ed4-afe4-e4a915d4016e&quot;}</code></pre>
+<pre class="CodeRay highlight nowrap"><code>{&quot;jobId&quot;:&quot;eec30658-bdd7-4464-861a-c13980955274&quot;}</code></pre>
 </div>
 </div>
 </div>
@@ -9460,6 +9922,27 @@ than one. In this case the returned entries are ordered by creation date.</p>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>projectId</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">The unique id of the project id where a new sechub job shall be created</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p><strong>Request headers</strong> <br></p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Name</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Authorization</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Basic authentication credentials</p></td>
 </tr>
 </tbody>
 </table>
@@ -9564,7 +10047,7 @@ than one. In this case the returned entries are ordered by creation date.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code>{&quot;jobId&quot;:&quot;a5e8f134-9aaa-4695-82a8-e98aae7ccc22&quot;}</code></pre>
+<pre class="CodeRay highlight nowrap"><code>{&quot;jobId&quot;:&quot;85d4f0ef-ba9f-4359-b310-aa5200a93aee&quot;}</code></pre>
 </div>
 </div>
 </div>
@@ -9619,6 +10102,27 @@ than one. In this case the returned entries are ordered by creation date.</p>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>projectId</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">The unique id of the project id where a new sechub job shall be created</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p><strong>Request headers</strong> <br></p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Name</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Authorization</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Basic authentication credentials</p></td>
 </tr>
 </tbody>
 </table>
@@ -9743,7 +10247,7 @@ than one. In this case the returned entries are ordered by creation date.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code>{&quot;jobId&quot;:&quot;d7c2dcac-e44d-4243-8c97-55e56852c78a&quot;}</code></pre>
+<pre class="CodeRay highlight nowrap"><code>{&quot;jobId&quot;:&quot;4575b861-bbd3-4d37-ab09-901f6783c8ab&quot;}</code></pre>
 </div>
 </div>
 </div>
@@ -9810,6 +10314,48 @@ than one. In this case the returned entries are ordered by creation date.</p>
 </tbody>
 </table>
 <div class="paragraph">
+<p><strong>Request parameters</strong> <br></p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Parameter</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>checkSum</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">A sha256 checksum for file upload validation</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p><strong>Request headers</strong> <br></p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Name</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Authorization</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Basic authentication credentials</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
 <p><strong class="big">Example</strong></p>
 </div>
 <div class="paragraph">
@@ -9817,7 +10363,7 @@ than one. In this case the returned entries are ordered by creation date.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/job/45bbbc3e-de3e-4459-b7a9-5bf77405c05e/sourcecode' -i -u 'user:secret' -X POST \
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/job/49c3ed9a-d0e8-4c5f-abd2-83eaf84f53b7/sourcecode' -i -u 'user:secret' -X POST \
     -H 'Content-Type: multipart/form-data;charset=UTF-8' \
     -F 'file=PK  
       �&lt;M                       test1.txtPK  ?
@@ -9893,6 +10439,27 @@ than one. In this case the returned entries are ordered by creation date.</p>
 </tbody>
 </table>
 <div class="paragraph">
+<p><strong>Request headers</strong> <br></p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Name</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Authorization</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Basic authentication credentials</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
 <p><strong class="big">Example</strong></p>
 </div>
 <div class="paragraph">
@@ -9900,7 +10467,7 @@ than one. In this case the returned entries are ordered by creation date.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/job/8020909f-a7fb-4825-82ae-d2055aa2c6d2/approve' -i -u 'user:secret' -X PUT \
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/job/fd9215a2-1d11-422b-8775-2dc405327b26/approve' -i -u 'user:secret' -X PUT \
     -H 'Content-Type: application/json;charset=UTF-8'</code></pre>
 </div>
 </div>
@@ -9971,6 +10538,27 @@ than one. In this case the returned entries are ordered by creation date.</p>
 </tbody>
 </table>
 <div class="paragraph">
+<p><strong>Request headers</strong> <br></p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Name</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Authorization</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Basic authentication credentials</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
 <p><strong>Response fields</strong> <br></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
@@ -10037,7 +10625,7 @@ than one. In this case the returned entries are ordered by creation date.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/job/e592b489-deeb-4ae8-9cc8-e5d9a106c7ee' -i -u 'user:secret' -X GET \
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/job/c5ccf604-ce73-4c25-b462-b27e1153bea7' -i -u 'user:secret' -X GET \
     -H 'Content-Type: application/json;charset=UTF-8'</code></pre>
 </div>
 </div>
@@ -10046,7 +10634,7 @@ than one. In this case the returned entries are ordered by creation date.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code>{&quot;jobUUID&quot;:&quot;e592b489-deeb-4ae8-9cc8-e5d9a106c7ee&quot;,&quot;owner&quot;:&quot;CREATOR1&quot;,&quot;created&quot;:&quot;&quot;,&quot;started&quot;:&quot;2023-05-03T10:08:50.98367&quot;,&quot;ended&quot;:&quot;2023-05-03T10:23:50.983696&quot;,&quot;state&quot;:&quot;ENDED&quot;,&quot;result&quot;:&quot;OK&quot;,&quot;trafficLight&quot;:&quot;GREEN&quot;}</code></pre>
+<pre class="CodeRay highlight nowrap"><code>{&quot;jobUUID&quot;:&quot;c5ccf604-ce73-4c25-b462-b27e1153bea7&quot;,&quot;owner&quot;:&quot;CREATOR1&quot;,&quot;created&quot;:&quot;&quot;,&quot;started&quot;:&quot;2023-05-24T12:12:21.183852076&quot;,&quot;ended&quot;:&quot;2023-05-24T12:27:21.183879076&quot;,&quot;state&quot;:&quot;ENDED&quot;,&quot;result&quot;:&quot;OK&quot;,&quot;trafficLight&quot;:&quot;GREEN&quot;}</code></pre>
 </div>
 </div>
 </div>
@@ -10121,7 +10709,7 @@ than one. In this case the returned entries are ordered by creation date.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/report/2d187299-245f-4e00-a7fc-36661e0fb03c' -i -u 'user:secret' -X GET \
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/report/c711ca4e-370d-4a23-a550-6a9691c6c689' -i -u 'user:secret' -X GET \
     -H 'Content-Type: application/json;charset=UTF-8' \
     -H 'Accept: application/json'</code></pre>
 </div>
@@ -10193,7 +10781,7 @@ than one. In this case the returned entries are ordered by creation date.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/report/ffcc0bcc-f7ec-4633-b7ee-9d18156ec222' -i -u 'user:secret' -X GET \
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/report/c28b8319-aef8-46f6-8e82-ea05aaaee246' -i -u 'user:secret' -X GET \
     -H 'Content-Type: application/json;charset=UTF-8' \
     -H 'Accept: application/xhtml+xml'</code></pre>
 </div>
@@ -10254,6 +10842,27 @@ than one. In this case the returned entries are ordered by creation date.</p>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>projectId</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">The projectId of the project where users adds false positives for</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p><strong>Request headers</strong> <br></p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Name</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Authorization</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Basic authentication credentials</p></td>
 </tr>
 </tbody>
 </table>
@@ -10390,6 +10999,27 @@ than one. In this case the returned entries are ordered by creation date.</p>
 </tbody>
 </table>
 <div class="paragraph">
+<p><strong>Request headers</strong> <br></p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Name</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Authorization</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Basic authentication credentials</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
 <p><strong class="big">Example</strong></p>
 </div>
 <div class="paragraph">
@@ -10459,6 +11089,27 @@ than one. In this case the returned entries are ordered by creation date.</p>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>projectId</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">The project id</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p><strong>Request headers</strong> <br></p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Name</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Authorization</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Basic authentication credentials</p></td>
 </tr>
 </tbody>
 </table>
@@ -10678,6 +11329,48 @@ than one. In this case the returned entries are ordered by creation date.</p>
 </tbody>
 </table>
 <div class="paragraph">
+<p><strong>Request parameters</strong> <br></p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Parameter</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>checkSum</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">A sha256 checksum for file upload validation</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p><strong>Request headers</strong> <br></p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Name</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>x-file-size</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The file size of the tar-archive to upload in bytes. Needs to be a positive integer value.</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
 <p><strong class="big">Example</strong></p>
 </div>
 <div class="paragraph">
@@ -10685,7 +11378,7 @@ than one. In this case the returned entries are ordered by creation date.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/job/f6bbb28e-eed0-4931-b005-781347ae56e9/binaries' -i -u 'user:secret' -X POST \
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/job/3ba3239b-53ff-4a02-84fe-34ce85cd6bb1/binaries' -i -u 'user:secret' -X POST \
     -H 'Content-Type: multipart/form-data;charset=UTF-8' \
     -H 'x-file-size: 10240' \
     -F 'file=test1.txt                                                                                           0000664 0001750 0001750 00000000000 13353454574 012170  0                                                                                                    ustar   albert                          albert                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 ' \
@@ -10766,7 +11459,7 @@ than one. In this case the returned entries are ordered by creation date.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/report/spdx/044fd75f-f9d0-4c01-a50a-eb60a852bc74' -i -u 'user:secret' -X GET \
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/report/spdx/e5814e02-5701-42b4-b586-d7c0c521a0de' -i -u 'user:secret' -X GET \
     -H 'Content-Type: application/json;charset=UTF-8' \
     -H 'Accept: application/json'</code></pre>
 </div>
@@ -10895,6 +11588,27 @@ than one. In this case the returned entries are ordered by creation date.</p>
 </tbody>
 </table>
 <div class="paragraph">
+<p><strong>Request headers</strong> <br></p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Name</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Authorization</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Basic authentication credentials</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
 <p><strong>Response fields</strong> <br></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
@@ -11006,6 +11720,27 @@ than one. In this case the returned entries are ordered by creation date.</p>
 </tbody>
 </table>
 <div class="paragraph">
+<p><strong>Request headers</strong> <br></p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Name</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Authorization</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Basic authentication credentials</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
 <p><strong class="big">Example</strong></p>
 </div>
 <div class="paragraph">
@@ -11075,6 +11810,27 @@ than one. In this case the returned entries are ordered by creation date.</p>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>userId</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">The userId of the signup which shall be deleted</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p><strong>Request headers</strong> <br></p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Name</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Authorization</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Basic authentication credentials</p></td>
 </tr>
 </tbody>
 </table>
@@ -11204,6 +11960,27 @@ than one. In this case the returned entries are ordered by creation date.</p>
 </tbody>
 </table>
 <div class="paragraph">
+<p><strong>Request headers</strong> <br></p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Name</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Authorization</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Basic authentication credentials</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
 <p><strong>Response fields</strong> <br></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
@@ -11269,7 +12046,7 @@ than one. In this case the returned entries are ordered by creation date.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code>[{&quot;jobUUID&quot;:&quot;b7aabf8d-a338-4b03-907a-6bef5741f5c5&quot;,&quot;projectId&quot;:&quot;project-name&quot;,&quot;owner&quot;:&quot;owner-userid&quot;,&quot;status&quot;:&quot;RUNNING&quot;,&quot;since&quot;:&quot;2023-05-03T10:23:35.954774&quot;,&quot;configuration&quot;:&quot;{ config data }&quot;}]</code></pre>
+<pre class="CodeRay highlight nowrap"><code>[{&quot;jobUUID&quot;:&quot;30334a6f-6cd8-40eb-901a-693004b71f0b&quot;,&quot;projectId&quot;:&quot;project-name&quot;,&quot;owner&quot;:&quot;owner-userid&quot;,&quot;status&quot;:&quot;RUNNING&quot;,&quot;since&quot;:&quot;2023-05-24T12:27:10.586927002&quot;,&quot;configuration&quot;:&quot;{ config data }&quot;}]</code></pre>
 </div>
 </div>
 </div>
@@ -11331,6 +12108,27 @@ than one. In this case the returned entries are ordered by creation date.</p>
 </tbody>
 </table>
 <div class="paragraph">
+<p><strong>Request headers</strong> <br></p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Name</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Authorization</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Basic authentication credentials</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
 <p><strong class="big">Example</strong></p>
 </div>
 <div class="paragraph">
@@ -11338,7 +12136,7 @@ than one. In this case the returned entries are ordered by creation date.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/jobs/cancel/93e0a7ee-ba22-4fce-bba1-9d3e40d9d7e4' -i -u 'user:secret' -X POST \
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/jobs/cancel/202be8f7-1e23-4105-8d26-9da8340a128a' -i -u 'user:secret' -X POST \
     -H 'Content-Type: application/json;charset=UTF-8'</code></pre>
 </div>
 </div>
@@ -11405,6 +12203,27 @@ than one. In this case the returned entries are ordered by creation date.</p>
 </tbody>
 </table>
 <div class="paragraph">
+<p><strong>Request headers</strong> <br></p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Name</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Authorization</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Basic authentication credentials</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
 <p><strong class="big">Example</strong></p>
 </div>
 <div class="paragraph">
@@ -11412,7 +12231,7 @@ than one. In this case the returned entries are ordered by creation date.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/jobs/restart/c8e9382d-0291-4641-819a-3c09829bbdd3' -i -u 'user:secret' -X POST \
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/jobs/restart/0cc85d62-f82c-4944-ac35-be88fc843c21' -i -u 'user:secret' -X POST \
     -H 'Content-Type: application/json;charset=UTF-8'</code></pre>
 </div>
 </div>
@@ -11479,6 +12298,27 @@ than one. In this case the returned entries are ordered by creation date.</p>
 </tbody>
 </table>
 <div class="paragraph">
+<p><strong>Request headers</strong> <br></p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Name</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Authorization</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Basic authentication credentials</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
 <p><strong class="big">Example</strong></p>
 </div>
 <div class="paragraph">
@@ -11486,7 +12326,7 @@ than one. In this case the returned entries are ordered by creation date.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/jobs/restart-hard/d74c2fee-d610-4088-acdd-ec6b26cdaec2' -i -u 'user:secret' -X POST \
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/jobs/restart-hard/b1b2afe4-6b3a-41f8-9013-f64d59982c3f' -i -u 'user:secret' -X POST \
     -H 'Content-Type: application/json;charset=UTF-8'</code></pre>
 </div>
 </div>
@@ -11527,6 +12367,27 @@ than one. In this case the returned entries are ordered by creation date.</p>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Status code</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">200 OK</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p><strong>Request headers</strong> <br></p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Name</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Authorization</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Basic authentication credentials</p></td>
 </tr>
 </tbody>
 </table>
@@ -11581,6 +12442,27 @@ than one. In this case the returned entries are ordered by creation date.</p>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Status code</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">200 OK</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p><strong>Request headers</strong> <br></p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Name</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Authorization</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Basic authentication credentials</p></td>
 </tr>
 </tbody>
 </table>
@@ -11660,6 +12542,27 @@ than one. In this case the returned entries are ordered by creation date.</p>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>mappingId</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">The mappingID, identifiying which mapping shall be updated</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p><strong>Request headers</strong> <br></p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Name</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Authorization</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Basic authentication credentials</p></td>
 </tr>
 </tbody>
 </table>
@@ -11773,6 +12676,27 @@ than one. In this case the returned entries are ordered by creation date.</p>
 </tbody>
 </table>
 <div class="paragraph">
+<p><strong>Request headers</strong> <br></p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Name</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Authorization</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Basic authentication credentials</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
 <p><strong>Response fields</strong> <br></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
@@ -11863,6 +12787,27 @@ than one. In this case the returned entries are ordered by creation date.</p>
 </tbody>
 </table>
 <div class="paragraph">
+<p><strong>Request headers</strong> <br></p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Name</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Authorization</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Basic authentication credentials</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
 <p><strong>Request fields</strong> <br></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
@@ -11944,7 +12889,7 @@ than one. In this case the returned entries are ordered by creation date.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code>f40751ae-7940-4335-8e15-51763b5ec590</code></pre>
+<pre class="CodeRay highlight nowrap"><code>c5aa80dc-b7ca-48ac-91f0-7471220028bc</code></pre>
 </div>
 </div>
 </div>
@@ -12006,6 +12951,27 @@ than one. In this case the returned entries are ordered by creation date.</p>
 </tbody>
 </table>
 <div class="paragraph">
+<p><strong>Request headers</strong> <br></p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Name</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Authorization</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Basic authentication credentials</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
 <p><strong class="big">Example</strong></p>
 </div>
 <div class="paragraph">
@@ -12013,7 +12979,7 @@ than one. In this case the returned entries are ordered by creation date.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/config/executor/b0464563-7e7b-4b31-85e6-ebbffbde4844' -i -u 'user:secret' -X DELETE \
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/config/executor/55e1e9ab-c89a-4c90-93ca-33cf1f485bd0' -i -u 'user:secret' -X DELETE \
     -H 'Content-Type: application/json;charset=UTF-8'</code></pre>
 </div>
 </div>
@@ -12054,6 +13020,27 @@ than one. In this case the returned entries are ordered by creation date.</p>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Status code</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">200 OK</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p><strong>Request headers</strong> <br></p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Name</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Authorization</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Basic authentication credentials</p></td>
 </tr>
 </tbody>
 </table>
@@ -12113,7 +13100,7 @@ than one. In this case the returned entries are ordered by creation date.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code>{&quot;executorConfigurations&quot;:[{&quot;uuid&quot;:&quot;ed074a99-c856-4eb6-bd79-6d7415907f7d&quot;,&quot;name&quot;:&quot;example configuration&quot;,&quot;enabled&quot;:true}],&quot;type&quot;:&quot;executorConfigurationList&quot;}</code></pre>
+<pre class="CodeRay highlight nowrap"><code>{&quot;executorConfigurations&quot;:[{&quot;uuid&quot;:&quot;3a72ed8e-ccfa-484e-8816-9ce7c6d9f8de&quot;,&quot;name&quot;:&quot;example configuration&quot;,&quot;enabled&quot;:true}],&quot;type&quot;:&quot;executorConfigurationList&quot;}</code></pre>
 </div>
 </div>
 </div>
@@ -12171,6 +13158,27 @@ than one. In this case the returned entries are ordered by creation date.</p>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>uuid</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">The configuration uuid</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p><strong>Request headers</strong> <br></p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Name</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Authorization</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Basic authentication credentials</p></td>
 </tr>
 </tbody>
 </table>
@@ -12251,7 +13259,7 @@ than one. In this case the returned entries are ordered by creation date.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/config/executor/5025aba0-ade2-4f72-9aa2-51474d295903' -i -u 'user:secret' -X GET \
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/config/executor/8ce45a38-fcb7-44f0-82c8-ff8c183c56ee' -i -u 'user:secret' -X GET \
     -H 'Content-Type: application/json;charset=UTF-8'</code></pre>
 </div>
 </div>
@@ -12260,7 +13268,7 @@ than one. In this case the returned entries are ordered by creation date.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code>{&quot;name&quot;:&quot;New name&quot;,&quot;productIdentifier&quot;:&quot;PDS_CODESCAN&quot;,&quot;setup&quot;:{&quot;baseURL&quot;:&quot;https://product.example.com&quot;,&quot;credentials&quot;:{&quot;user&quot;:&quot;env:EXAMPLE_USENAME&quot;,&quot;password&quot;:&quot;env:EXAMPLE_PASSWORD&quot;},&quot;jobParameters&quot;:[{&quot;key&quot;:&quot;example.key1&quot;,&quot;value&quot;:&quot;A value&quot;}]},&quot;executorVersion&quot;:1,&quot;enabled&quot;:false,&quot;uuid&quot;:&quot;5025aba0-ade2-4f72-9aa2-51474d295903&quot;}</code></pre>
+<pre class="CodeRay highlight nowrap"><code>{&quot;name&quot;:&quot;New name&quot;,&quot;productIdentifier&quot;:&quot;PDS_CODESCAN&quot;,&quot;setup&quot;:{&quot;baseURL&quot;:&quot;https://product.example.com&quot;,&quot;credentials&quot;:{&quot;user&quot;:&quot;env:EXAMPLE_USENAME&quot;,&quot;password&quot;:&quot;env:EXAMPLE_PASSWORD&quot;},&quot;jobParameters&quot;:[{&quot;key&quot;:&quot;example.key1&quot;,&quot;value&quot;:&quot;A value&quot;}]},&quot;executorVersion&quot;:1,&quot;enabled&quot;:false,&quot;uuid&quot;:&quot;8ce45a38-fcb7-44f0-82c8-ff8c183c56ee&quot;}</code></pre>
 </div>
 </div>
 </div>
@@ -12318,6 +13326,27 @@ than one. In this case the returned entries are ordered by creation date.</p>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>uuid</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">The configuration uuid</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p><strong>Request headers</strong> <br></p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Name</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Authorization</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Basic authentication credentials</p></td>
 </tr>
 </tbody>
 </table>
@@ -12393,7 +13422,7 @@ than one. In this case the returned entries are ordered by creation date.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/config/executor/c4aa641a-f214-4856-be46-cbc35f01ae1e' -i -u 'user:secret' -X PUT \
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/config/executor/a6c46dd9-bbec-4d0c-b59f-0c76e005c019' -i -u 'user:secret' -X PUT \
     -H 'Content-Type: application/json;charset=UTF-8' \
     -d '{&quot;name&quot;:&quot;New name&quot;,&quot;productIdentifier&quot;:&quot;PDS_CODESCAN&quot;,&quot;executorVersion&quot;:1,&quot;enabled&quot;:false,&quot;setup&quot;:{&quot;baseURL&quot;:&quot;https://productNew.example.com&quot;,&quot;credentials&quot;:{&quot;user&quot;:&quot;env:EXAMPLE_NEW_USENAME&quot;,&quot;password&quot;:&quot;env:EXAMPLE_NEW_PASSWORD&quot;},&quot;jobParameters&quot;:[{&quot;key&quot;:&quot;example.key1&quot;,&quot;value&quot;:&quot;A value but changed. Remark: the other parameter (example.key2) has been removed by this call&quot;}]}}'</code></pre>
 </div>
@@ -12457,6 +13486,27 @@ than one. In this case the returned entries are ordered by creation date.</p>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>profileId</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">The profile id</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p><strong>Request headers</strong> <br></p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Name</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Authorization</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Basic authentication credentials</p></td>
 </tr>
 </tbody>
 </table>
@@ -12575,6 +13625,27 @@ than one. In this case the returned entries are ordered by creation date.</p>
 </tbody>
 </table>
 <div class="paragraph">
+<p><strong>Request headers</strong> <br></p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Name</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Authorization</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Basic authentication credentials</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
 <p><strong class="big">Example</strong></p>
 </div>
 <div class="paragraph">
@@ -12649,6 +13720,27 @@ than one. In this case the returned entries are ordered by creation date.</p>
 </tbody>
 </table>
 <div class="paragraph">
+<p><strong>Request headers</strong> <br></p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Name</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Authorization</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Basic authentication credentials</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
 <p><strong>Request fields</strong> <br></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
@@ -12692,7 +13784,7 @@ than one. In this case the returned entries are ordered by creation date.</p>
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/config/execution/profile/existing-profile-1' -i -u 'user:secret' -X PUT \
     -H 'Content-Type: application/json;charset=UTF-8' \
-    -d '{&quot;description&quot;:&quot;changed description&quot;,&quot;configurations&quot;:[{&quot;uuid&quot;:&quot;29d6c96b-8bb3-4a13-8bb5-aed371f965dc&quot;,&quot;executorVersion&quot;:0,&quot;enabled&quot;:false,&quot;setup&quot;:{&quot;credentials&quot;:{},&quot;jobParameters&quot;:[]}}],&quot;enabled&quot;:true}'</code></pre>
+    -d '{&quot;description&quot;:&quot;changed description&quot;,&quot;configurations&quot;:[{&quot;uuid&quot;:&quot;22886999-005d-4187-9f73-b139049aa2db&quot;,&quot;executorVersion&quot;:0,&quot;enabled&quot;:false,&quot;setup&quot;:{&quot;credentials&quot;:{},&quot;jobParameters&quot;:[]}}],&quot;enabled&quot;:true}'</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -12754,6 +13846,27 @@ than one. In this case the returned entries are ordered by creation date.</p>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>profileId</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">The profile id</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p><strong>Request headers</strong> <br></p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Name</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Authorization</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Basic authentication credentials</p></td>
 </tr>
 </tbody>
 </table>
@@ -12833,7 +13946,7 @@ than one. In this case the returned entries are ordered by creation date.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code>{&quot;description&quot;:&quot;a description&quot;,&quot;enabled&quot;:true,&quot;configurations&quot;:[{&quot;name&quot;:&quot;New name&quot;,&quot;productIdentifier&quot;:&quot;PDS_CODESCAN&quot;,&quot;setup&quot;:{&quot;baseURL&quot;:&quot;https://product.example.com&quot;,&quot;credentials&quot;:{&quot;user&quot;:&quot;env:EXAMPLE_USENAME&quot;,&quot;password&quot;:&quot;env:EXAMPLE_PASSWORD&quot;},&quot;jobParameters&quot;:[{&quot;key&quot;:&quot;example.key1&quot;,&quot;value&quot;:&quot;A value but changed. Remark: the other parameter (example.key2) has been removed by this call&quot;}]},&quot;executorVersion&quot;:1,&quot;enabled&quot;:false,&quot;uuid&quot;:&quot;967334d5-8cb4-46f4-8666-0930a1a84a0c&quot;}],&quot;projectIds&quot;:[&quot;project-1&quot;,&quot;project-2&quot;]}</code></pre>
+<pre class="CodeRay highlight nowrap"><code>{&quot;description&quot;:&quot;a description&quot;,&quot;enabled&quot;:true,&quot;configurations&quot;:[{&quot;name&quot;:&quot;New name&quot;,&quot;productIdentifier&quot;:&quot;PDS_CODESCAN&quot;,&quot;setup&quot;:{&quot;baseURL&quot;:&quot;https://product.example.com&quot;,&quot;credentials&quot;:{&quot;user&quot;:&quot;env:EXAMPLE_USENAME&quot;,&quot;password&quot;:&quot;env:EXAMPLE_PASSWORD&quot;},&quot;jobParameters&quot;:[{&quot;key&quot;:&quot;example.key1&quot;,&quot;value&quot;:&quot;A value but changed. Remark: the other parameter (example.key2) has been removed by this call&quot;}]},&quot;executorVersion&quot;:1,&quot;enabled&quot;:false,&quot;uuid&quot;:&quot;46c9a8ff-6780-4033-81bf-cc926909dfbb&quot;}],&quot;projectIds&quot;:[&quot;project-1&quot;,&quot;project-2&quot;]}</code></pre>
 </div>
 </div>
 </div>
@@ -12869,6 +13982,27 @@ than one. In this case the returned entries are ordered by creation date.</p>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Status code</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">200 OK</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p><strong>Request headers</strong> <br></p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Name</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Authorization</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Basic authentication credentials</p></td>
 </tr>
 </tbody>
 </table>
@@ -12994,6 +14128,27 @@ than one. In this case the returned entries are ordered by creation date.</p>
 </tbody>
 </table>
 <div class="paragraph">
+<p><strong>Request headers</strong> <br></p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Name</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Authorization</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Basic authentication credentials</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
 <p><strong class="big">Example</strong></p>
 </div>
 <div class="paragraph">
@@ -13072,6 +14227,27 @@ than one. In this case the returned entries are ordered by creation date.</p>
 </tbody>
 </table>
 <div class="paragraph">
+<p><strong>Request headers</strong> <br></p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Name</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Authorization</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Basic authentication credentials</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
 <p><strong class="big">Example</strong></p>
 </div>
 <div class="paragraph">
@@ -13120,6 +14296,27 @@ than one. In this case the returned entries are ordered by creation date.</p>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Status code</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">200 OK</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p><strong>Request headers</strong> <br></p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Name</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Authorization</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Basic authentication credentials</p></td>
 </tr>
 </tbody>
 </table>
@@ -13180,6 +14377,27 @@ than one. In this case the returned entries are ordered by creation date.</p>
 </tbody>
 </table>
 <div class="paragraph">
+<p><strong>Request headers</strong> <br></p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Name</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Authorization</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Basic authentication credentials</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
 <p><strong class="big">Example</strong></p>
 </div>
 <div class="paragraph">
@@ -13229,6 +14447,27 @@ than one. In this case the returned entries are ordered by creation date.</p>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Status code</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">202 ACCEPTED</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p><strong>Request headers</strong> <br></p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Name</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Authorization</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Basic authentication credentials</p></td>
 </tr>
 </tbody>
 </table>
@@ -13285,6 +14524,27 @@ than one. In this case the returned entries are ordered by creation date.</p>
 </tbody>
 </table>
 <div class="paragraph">
+<p><strong>Request headers</strong> <br></p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Name</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Authorization</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Basic authentication credentials</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
 <p><strong class="big">Example</strong></p>
 </div>
 <div class="paragraph">
@@ -13337,6 +14597,27 @@ than one. In this case the returned entries are ordered by creation date.</p>
 </tbody>
 </table>
 <div class="paragraph">
+<p><strong>Request headers</strong> <br></p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Name</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Authorization</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Basic authentication credentials</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
 <p><strong class="big">Example</strong></p>
 </div>
 <div class="paragraph">
@@ -13385,6 +14666,27 @@ than one. In this case the returned entries are ordered by creation date.</p>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Status code</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">200 OK</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p><strong>Request headers</strong> <br></p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Name</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Authorization</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Basic authentication credentials</p></td>
 </tr>
 </tbody>
 </table>
@@ -13474,6 +14776,27 @@ than one. In this case the returned entries are ordered by creation date.</p>
 </tbody>
 </table>
 <div class="paragraph">
+<p><strong>Request headers</strong> <br></p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Name</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Authorization</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Basic authentication credentials</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
 <p><strong class="big">Example</strong></p>
 </div>
 <div class="paragraph">
@@ -13552,6 +14875,62 @@ than one. In this case the returned entries are ordered by creation date.</p>
 </tbody>
 </table>
 <div class="paragraph">
+<p><strong>Request parameters</strong> <br></p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Parameter</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>size</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The wanted (maximum) size for the result set. When not defined, the default will be 1.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>page</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The wanted page number. When not defined, the default will be 0.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>metadata.labels.*</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">An optional dynamic query parameter to filter jobs by labels. The syntax is 'metadata.labels.${labelKey}=${labelValue}'.</p>
+<p class="tableblock">It is possible to query for multiple labels (up to 10 ).
+The filter works as an AND combination: Only jobs having all wanted label key value combinations are returned.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>withMetaData</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">An optional parameter to define if meta data shall be fetched as well. When not defined, the default will be false.</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p><strong>Request headers</strong> <br></p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Name</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Authorization</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Basic authentication credentials</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
 <p><strong>Response fields</strong> <br></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
@@ -13618,6 +14997,11 @@ than one. In this case the returned entries are ordered by creation date.</p>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Trafficlight of job - but only available when job has been done. Possible states are GREEN, YELLOW, RED, OFF</p></td>
 </tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>content[].metaData.*</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Object</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Meta data of job - but only contained in result, when query parameter <code>withMetaData</code> is defined as 'true'.</p></td>
+</tr>
 </tbody>
 </table>
 <div class="paragraph">
@@ -13628,7 +15012,7 @@ than one. In this case the returned entries are ordered by creation date.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/jobs?size=1&amp;page=0' -i -u 'user:secret' -X GET \
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/jobs?size=1&amp;page=0&amp;withMetaData=true&amp;metadata.labels.stage=testing' -i -u 'user:secret' -X GET \
     -H 'Content-Type: application/json;charset=UTF-8'</code></pre>
 </div>
 </div>
@@ -13637,7 +15021,7 @@ than one. In this case the returned entries are ordered by creation date.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code>{&quot;page&quot;:0,&quot;totalPages&quot;:1,&quot;content&quot;:[{&quot;jobUUID&quot;:&quot;a00e94b7-950b-43e7-8cf1-ffb188c8d932&quot;,&quot;executedBy&quot;:&quot;User1&quot;,&quot;created&quot;:&quot;2023-05-03T10:06:51.012519&quot;,&quot;started&quot;:&quot;2023-05-03T10:08:51.012545&quot;,&quot;ended&quot;:&quot;2023-05-03T10:23:51.012555&quot;,&quot;executionState&quot;:&quot;ENDED&quot;,&quot;trafficLight&quot;:&quot;GREEN&quot;,&quot;executionResult&quot;:&quot;OK&quot;}]}</code></pre>
+<pre class="CodeRay highlight nowrap"><code>{&quot;page&quot;:0,&quot;totalPages&quot;:1,&quot;content&quot;:[{&quot;jobUUID&quot;:&quot;9fe19cf7-bec6-4ab4-9e45-bd57e7cea34f&quot;,&quot;executedBy&quot;:&quot;User1&quot;,&quot;created&quot;:&quot;2023-05-24T12:10:21.220355149&quot;,&quot;started&quot;:&quot;2023-05-24T12:12:21.22038145&quot;,&quot;ended&quot;:&quot;2023-05-24T12:27:21.22039105&quot;,&quot;executionState&quot;:&quot;ENDED&quot;,&quot;trafficLight&quot;:&quot;GREEN&quot;,&quot;executionResult&quot;:&quot;OK&quot;,&quot;metaData&quot;:{&quot;labels&quot;:{&quot;stage&quot;:&quot;test&quot;}}}]}</code></pre>
 </div>
 </div>
 </div>
@@ -14347,7 +15731,7 @@ one domain calls another one.</p>
 <h5 id="section-gen-messaging-request_user_role_recalculation">7.7.2.31. Message REQUEST_USER_ROLE_RECALCULATION</h5>
 <div class="imageblock">
 <div class="content">
-<img src="images/gen_domain_messaging_request_user_role_recalculation.svg" alt="Sequence diagram of messaging REQUEST_USER_ROLE_RECALCULATION" width="2237" height="380">
+<img src="images/gen_domain_messaging_request_user_role_recalculation.svg" alt="Sequence diagram of messaging REQUEST_USER_ROLE_RECALCULATION" width="2280" height="380">
 </div>
 </div>
 <div class="admonitionblock note">
@@ -14557,7 +15941,7 @@ one domain calls another one.</p>
 <h5 id="section-gen-messaging-user_api_token_changed">7.7.2.43. Message USER_API_TOKEN_CHANGED</h5>
 <div class="imageblock">
 <div class="content">
-<img src="images/gen_domain_messaging_user_api_token_changed.svg" alt="Sequence diagram of messaging USER_API_TOKEN_CHANGED" width="1153" height="234">
+<img src="images/gen_domain_messaging_user_api_token_changed.svg" alt="Sequence diagram of messaging USER_API_TOKEN_CHANGED" width="1068" height="234">
 </div>
 </div>
 </div>
@@ -14912,7 +16296,7 @@ a target type - so for different target types we can define two different PDS ex
 <h6 id="overview-3">8.2.1.1.1. Overview</h6>
 <div class="imageblock">
 <div class="content">
-<img src="images/gen_springprofiles.svg" alt="Diagram" width="2453" height="232">
+<img src="images/gen_springprofiles.svg" alt="Diagram" width="2424" height="232">
 </div>
 <div class="title">Figure 6. Spring profiles and their explicit/implicit included parts</div>
 </div>
@@ -14949,7 +16333,7 @@ the profile on this machine. So you prevent illegal administrative access attemp
 <h6 id="dev">8.2.1.1.3. DEV</h6>
 <div class="imageblock">
 <div class="content">
-<img src="images/gen_springprofiles-dev.svg" alt="Diagram" width="1308" height="274">
+<img src="images/gen_springprofiles-dev.svg" alt="Diagram" width="1231" height="274">
 </div>
 <div class="title">Figure 8. Spring profile dev and its explicit/implicit included parts</div>
 </div>
@@ -14962,7 +16346,7 @@ starting - but its extreme flexible and has only a dependency to localserver</p>
 <h6 id="integration-test">8.2.1.1.4. Integration-Test</h6>
 <div class="imageblock">
 <div class="content">
-<img src="images/gen_springprofiles-integrationtest.svg" alt="Diagram" width="1428" height="271">
+<img src="images/gen_springprofiles-integrationtest.svg" alt="Diagram" width="1396" height="271">
 </div>
 <div class="title">Figure 9. Spring profile integrationtest and its explicit/implicit included parts</div>
 </div>
@@ -18937,7 +20321,7 @@ See <a href="https://github.com/mercedes-benz/sechub/issues/12" class="bare">htt
 </div>
 <div id="footer">
 <div id="footer-text">
- Server 0.41.2<br>
+ Server 0.42.0<br>
 </div>
 </div>
 </body>
