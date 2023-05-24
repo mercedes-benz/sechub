@@ -141,7 +141,7 @@ spec:
                        name: pds-owaspzap-pds-workspace
 {{- end}}
 {{- if .Values.pds.volumes.zapWorkspace.enabled }}
-                     - mountPath: "/home/zap/.ZAP/session"
+                     - mountPath: "/home/pds/.ZAP/session"
                        name: pds-owaspzap-zap-workspace
 {{- end}}
             volumes:
