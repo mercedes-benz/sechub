@@ -9,6 +9,9 @@ import java.util.UUID;
 import org.jboss.logging.MDC;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
+import org.springframework.stereotype.Component;
 
 import com.mercedesbenz.sechub.commons.model.SecHubMessage;
 import com.mercedesbenz.sechub.commons.model.SecHubMessageType;
@@ -18,7 +21,6 @@ import com.mercedesbenz.sechub.domain.schedule.ExecutionResult;
 import com.mercedesbenz.sechub.domain.schedule.UUIDContainer;
 import com.mercedesbenz.sechub.domain.schedule.job.ScheduleSecHubJob;
 import com.mercedesbenz.sechub.sharedkernel.LogConstants;
-import com.mercedesbenz.sechub.sharedkernel.messaging.BatchJobMessage;
 import com.mercedesbenz.sechub.sharedkernel.messaging.DomainMessage;
 import com.mercedesbenz.sechub.sharedkernel.messaging.DomainMessageService;
 import com.mercedesbenz.sechub.sharedkernel.messaging.DomainMessageSynchronousResult;
@@ -29,19 +31,29 @@ import com.mercedesbenz.sechub.sharedkernel.messaging.MessageDataKey;
 import com.mercedesbenz.sechub.sharedkernel.messaging.MessageDataKeys;
 import com.mercedesbenz.sechub.sharedkernel.messaging.MessageID;
 
-class SynchronSecHubJobExecutor {
+/**
+ * This component executes SecHub jobs in own worker threads (means
+ * parallel/asynchronous) but the event handling inside the worker thread is
+ * done synchronous to wait inside scheduler domain for scan results from other
+ * domain (scan) - this is the reason for the naming.
+ *
+ * @author Albert Tregnaghi
+ *
+ */
+@Component
+public class SynchronSecHubJobExecutor {
 
     private static final Logger LOG = LoggerFactory.getLogger(SynchronSecHubJobExecutor.class);
-    private DomainMessageService messageService;
-    private SecHubJobSafeUpdater secHubJobSafeUpdater;
 
-    public SynchronSecHubJobExecutor(DomainMessageService messageService, SecHubJobSafeUpdater secHubJobSafeUpdater) {
-        this.secHubJobSafeUpdater = secHubJobSafeUpdater;
-        this.messageService = messageService;
-    }
+    @Autowired
+    @Lazy
+    DomainMessageService messageService;
+
+    @Autowired
+    SecHubJobSafeUpdater secHubJobSafeUpdater;
 
     @IsSendingSyncMessage(MessageID.START_SCAN)
-    public void execute(final ScheduleSecHubJob secHubJob, final Long batchJobId) {
+    public void execute(final ScheduleSecHubJob secHubJob) {
         Thread scanThread = new Thread(new Runnable() {
 
             @Override
@@ -70,11 +82,6 @@ class SynchronSecHubJobExecutor {
 
                     request.set(MessageDataKeys.SECHUB_JOB_UUID, uuids.getSecHubJobUUID());
                     request.set(MessageDataKeys.SECHUB_CONFIG, MessageDataKeys.SECHUB_CONFIG.getProvider().get(secHubConfiguration));
-
-                    BatchJobMessage batchJobIdMessage = new BatchJobMessage();
-                    batchJobIdMessage.setBatchJobId(batchJobId);
-                    batchJobIdMessage.setSecHubJobUUID(uuids.getSecHubJobUUID());
-                    request.set(MessageDataKeys.BATCH_JOB_ID, batchJobIdMessage);
 
                     /* wait for scan event result - synchron */
                     DomainMessageSynchronousResult response = messageService.sendSynchron(request);

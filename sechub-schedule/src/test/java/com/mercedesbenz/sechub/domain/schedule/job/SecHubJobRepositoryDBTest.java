@@ -14,7 +14,6 @@ import java.util.UUID;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.springframework.batch.core.repository.JobRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
@@ -29,7 +28,7 @@ import com.mercedesbenz.sechub.test.TestUtil;
 
 @RunWith(SpringRunner.class)
 @DataJpaTest
-@ContextConfiguration(classes = { JobRepository.class, SecHubJobRepositoryDBTest.SimpleTestConfiguration.class })
+@ContextConfiguration(classes = { SecHubJobRepository.class, SecHubJobRepositoryDBTest.SimpleTestConfiguration.class })
 public class SecHubJobRepositoryDBTest {
 
     @Autowired
