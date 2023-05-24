@@ -67,7 +67,7 @@ RUN cd "$DOWNLOAD_FOLDER" && \
     # unpack GoSec into tools folder
     tar --extract --ungzip --file "gosec_${GOSEC_VERSION}_linux_amd64.tar.gz" --directory "$TOOL_FOLDER/gosec" && \
     # Cleanup download folder
-    rm --recursive --force "$DOWNLOAD_FOLDER/*"
+    rm --recursive --force "$DOWNLOAD_FOLDER"/*
 
 # Set workspace
 WORKDIR "$WORKSPACE"
