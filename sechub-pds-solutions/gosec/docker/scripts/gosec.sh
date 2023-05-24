@@ -5,5 +5,5 @@
 export PATH="$TOOL_FOLDER/gosec:/usr/local/go/bin:$PATH"
 gosec -fmt=sarif -out="$PDS_JOB_RESULT_FILE" "$PDS_JOB_SOURCECODE_UNZIPPED_FOLDER/..."
 
-# GoSec returns an exit code of 1 in case findings are found
+# GoSec returns an exit code of 1 in case of findings
 exit 0

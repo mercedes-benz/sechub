@@ -13,11 +13,11 @@ services:
             - .env-cluster-object-storage
         networks:
             - internal
-        depends_on: 
+        depends_on:
             - database
             - object-storage
         volumes:
-          - ./docker/scripts:/scripts
+          - ./docker/scripts:/pds/scripts
 
     loadbalancer:
         build:
@@ -32,7 +32,7 @@ services:
             - pds-gosec
         ports:
             - "127.0.0.1:8444:8444"
-    
+
     database:
         build:
             context: ../shared/docker/database
@@ -42,7 +42,7 @@ services:
             - internal
         ports:
             - "127.0.0.1:5432:5432"
-        
+
     object-storage:
         build:
             context: ../shared/docker/object-storage
