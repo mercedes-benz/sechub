@@ -19,14 +19,14 @@ ENV SPDX_TOOL_VERSION="${SPDX_TOOL_VERSION}"
 USER root
 
 # Copy run_additional script
-COPY --chown="$USER:$USER" run_additional.sh /run_additional.sh
+COPY run_additional.sh /run_additional.sh
 RUN chmod +x /run_additional.sh
 
 # Copy mock folder
 COPY mocks "$MOCK_FOLDER"
 
 # Copy PDS configfile
-COPY pds-config.json "$PDS_FOLDER"/pds-config.json
+COPY pds-config.json "$PDS_FOLDER/pds-config.json"
 
 # Copy scripts
 COPY scripts "$SCRIPT_FOLDER"
