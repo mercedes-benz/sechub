@@ -740,8 +740,10 @@ public class AsUser {
      * Creates a webscan job for project (but job is not approved, so will not be
      * started)
      *
-     * @param project
-     * @param useLongRunningButGreen
+     * @param project     the used test project
+     * @param runMode     wanted mock mode. If <code>null</code> the default
+     *                    {@link IntegrationTestMockMode.WEBSCAN__NETSPARKER_GREEN__ZERO_WAIT}
+     *                    will be used
      * @param checkExists
      * @return uuid for created job
      */
@@ -753,12 +755,14 @@ public class AsUser {
      * Creates a webscan job for project (but job is not approved, so will not be
      * started)
      *
-     * @param project
-     * @param useLongRunningButGreen
+     * @param project            the used test project
+     * @param runMode            wanted mock mode. If <code>null</code> the default
+     *                           {@link IntegrationTestMockMode.WEBSCAN__NETSPARKER_GREEN__ZERO_WAIT}
+     *                           will be used
      * @param checkExists
-     * @param customTemplateFile     if <code>null</code> the default
-     *                               (IntegrationTestTemplateFile#WEBSCAN_1) will be
-     *                               used, otherwise the given one
+     * @param customTemplateFile if <code>null</code> the default
+     *                           (IntegrationTestTemplateFile#WEBSCAN_1) will be
+     *                           used, otherwise the given one
      * @return uuid for created job
      */
     public UUID createWebScan(TestProject project, IntegrationTestMockMode runMode, boolean checkExists, IntegrationTestTemplateFile customTemplateFile) {

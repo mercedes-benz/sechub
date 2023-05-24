@@ -91,7 +91,7 @@ public class SecHubJobInfoForUserService {
         searchContext.size = size;
         searchContext.resultsShallContainMetaData = resultsShallContainMetaData;
 
-        ensureValidPageSizes(size, page, searchContext);
+        ensureValidSearchParameters(searchContext);
 
         handleJobDataParametersIfExisting(allParams, searchContext);
 
@@ -107,25 +107,35 @@ public class SecHubJobInfoForUserService {
         return transformToListPage(pageFound, searchContext);
     }
 
-    private void ensureValidPageSizes(int size, int page, SearchContext searchContext) {
-        if (searchContext.size < MINIMUM_SIZE) {
-            LOG.warn("Size: {} is to small, will change to: {}", size, MINIMUM_SIZE);
+    private void ensureValidSearchParameters(SearchContext searchContext) {
+        ensureValidSize(searchContext);
+        ensureValidPage(searchContext);
+    }
+
+    private void ensureValidSize(SearchContext searchContext) {
+        int size = searchContext.size;
+
+        if (size < MINIMUM_SIZE) {
+            LOG.warn("Size: {} is too small, will change to: {}", size, MINIMUM_SIZE);
             searchContext.size = MINIMUM_SIZE;
         }
 
-        if (searchContext.size > maximumSize) {
+        if (size > maximumSize) {
             LOG.warn("Size: {} is too big, will change to: {}", size, maximumSize);
             searchContext.size = maximumSize;
 
         }
+    }
 
-        if (searchContext.page < MINIMUM_PAGE) {
-            LOG.warn("Page:{} was to small, will change to: {}", page, MINIMUM_PAGE);
+    private void ensureValidPage(SearchContext searchContext) {
+        int page = searchContext.page;
+        if (page < MINIMUM_PAGE) {
+            LOG.warn("Page: {} was too small, will change to: {}", page, MINIMUM_PAGE);
             searchContext.page = MINIMUM_PAGE;
         }
 
-        if (searchContext.page > maximumPage) {
-            LOG.warn("Page:{} was too big, will change to: {}", page, maximumPage);
+        if (page > maximumPage) {
+            LOG.warn("Page: {} was too big, will change to: {}", page, maximumPage);
             searchContext.page = maximumPage;
         }
     }
