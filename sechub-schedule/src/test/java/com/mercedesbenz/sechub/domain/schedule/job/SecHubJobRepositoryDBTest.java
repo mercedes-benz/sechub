@@ -20,7 +20,6 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EmptySource;
 import org.junit.jupiter.params.provider.NullSource;
 import org.junit.jupiter.params.provider.ValueSource;
-import org.springframework.batch.core.repository.JobRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
@@ -36,7 +35,7 @@ import com.mercedesbenz.sechub.test.TestUtil;
 
 @ExtendWith(SpringExtension.class)
 @DataJpaTest
-@ContextConfiguration(classes = { JobRepository.class, SecHubJobRepositoryDBTest.SimpleTestConfiguration.class })
+@ContextConfiguration(classes = { SecHubJobRepository.class, SecHubJobRepositoryDBTest.SimpleTestConfiguration.class })
 public class SecHubJobRepositoryDBTest {
 
     @Autowired

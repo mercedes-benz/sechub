@@ -52,7 +52,7 @@ public class MemoryConsumer {
                 } catch (InterruptedException e) {
                     Thread.currentThread().interrupt();
                 }
-            }, "test-thread:" + (threadNr));
+            }, "sechub-test-memory-consumer:" + (threadNr));
             t.start();
 
         }
