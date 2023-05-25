@@ -6,9 +6,9 @@ source "${HELPER_FOLDER}/message.sh"
 function convert() {
     local spdx_file="$1"
     local spdx_json_file="$PDS_JOB_RESULT_FILE.spdx.json"
-    
+
     echo "Converting to SPDX JSON"
-    	
+
 	if [[ ! -f "$spdx_file" ]]
 	then
 		echo "Error file $spdx_file does not exist."
@@ -17,7 +17,7 @@ function convert() {
 
     # use the SPDX tool converter to convert the SPDX tag-value to SPDX JSON
     java -jar "$TOOL_FOLDER/tools-java-${SPDX_TOOL_VERSION}-jar-with-dependencies.jar" Convert "$spdx_file" "$spdx_json_file" TAG JSON
-        
+
     if [[ -f "$spdx_json_file" ]]
     then
     	mv "$spdx_json_file" "$PDS_JOB_RESULT_FILE"
@@ -54,7 +54,7 @@ python_version=$( python3 --version 2>&1 )
 
 printf "%-26s %s\n" "Python:" "$python_version"
 printf "%-26s %s\n" "PDS version:" "$PDS_VERSION"
-printf "Scancode-Toolkit version:\n\n" 
+printf "Scancode-Toolkit version:\n\n"
 scancode --version
 printf "\n\n%-26s %s\n" "Extractcode version:" "$extractcode_version"
 printf "SPDX Tools version:\n\n"
@@ -94,7 +94,7 @@ echo ""
 tree "$extracted_folder"
 echo ""
 
-echo "Size of the extracted folder on disk" 
+echo "Size of the extracted folder on disk"
 du --summarize --human-readable "$extracted_folder"
 
 echo ""
@@ -144,7 +144,7 @@ then
     then
         convert_output_to_spdx_json="false"
         output_format="--$given_output_format"
-    fi 
+    fi
 fi
 
 if [[ "$SCANCODE_SCAN_COPYRIGHT" == "true" ]]
@@ -223,6 +223,6 @@ if $convert_output_to_spdx_json
 then
 	convert "$spdx_file"
 else
-    echo "Moving file"
+    echo "Moving SPDX file to $PDS_JOB_RESULT_FILE"
     mv "$PDS_JOB_RESULT_FILE.spdx" "$PDS_JOB_RESULT_FILE"
 fi

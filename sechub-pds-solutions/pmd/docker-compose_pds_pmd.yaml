@@ -10,7 +10,7 @@ services:
             dockerfile: PMD-Debian.dockerfile
         container_name: pds-pmd
         volumes:
-          - ./docker/scripts:/scripts
+          - ./docker/scripts:/pds/scripts
         env_file:
             - .env
         ports:

@@ -4,115 +4,115 @@
   "products": [
     {
       "id": "PDS_CHECKMARX",
-      "path": "/scripts/checkmarx.sh",
+      "path": "/pds/scripts/checkmarx.sh",
       "scanType": "codeScan",
       "description": "Runs Checkmarx",
       "parameters": {
         "mandatory": [
-                {
-                  "key": "pds.checkmarx.baseurl",
-                  "description": "The base URL of the checkmarx server."
-                },
-                {
-                  "key": "checkmarx.newproject.teamid.mapping",
-                  "description": "The team id mapping"
-                },
-                {
-                  "key": "pds.checkmarx.user",
-                  "description": "The user (or an env entry) of the checkmarx user."
-                },
-                {
-                  "key": "pds.checkmarx.password",
-                  "description": "The password (or an env entry) of the checkmarx user."
-                }
-              ],
-              "optional": [
-                {
-                  "key": "pds.checkmarx.engine.configuration.name",
-                  "description": "The name of the engine to use. If not set, a default engine will be used. Default: Multi-language Scan."
-                },
-                {
-                  "key": "checkmarx.newproject.presetid.mapping",
-                  "description": "When not set, the default preset will be used"
-                },
-                {
-                  "key": "pds.checkmarx.mocking.enabled",
-                  "description": "When true, a mocked adapter will be used."
-                },
-                {
-                  "key": "pds.checkmarx.result.check.period.minutes",
-                  "description": "The period time in minutes when checkmarx adapter tries to fetch the result from checkmarx server again."
-                },
-                {
-                  "key": "pds.checkmarx.result.check.timeout.minutes",
-                  "description": "The timout in minutes when checkmarx adapter will stop communictaion with checkmarx server and return an error instead."
-                },
-                {
-                  "key": "pds.checkmarx.client.secret",
-                  "description": "This is a standard value and has not to be set. It is NOT a really secret value. But we made this value optional to be safe in future, if the static default value must be changed."
-                },
-                {
-                  "key": "pds.checkmarx.always.fullscan.enabled",
-                  "description": "When true, full scan is always active."
-                }
-              ]
+          {
+            "key": "pds.checkmarx.baseurl",
+            "description": "The base URL of the checkmarx server."
+          },
+          {
+            "key": "checkmarx.newproject.teamid.mapping",
+            "description": "The team id mapping"
+          },
+          {
+            "key": "pds.checkmarx.user",
+            "description": "The user (or an env entry) of the checkmarx user."
+          },
+          {
+            "key": "pds.checkmarx.password",
+            "description": "The password (or an env entry) of the checkmarx user."
+          }
+        ],
+        "optional": [
+          {
+            "key": "pds.checkmarx.engine.configuration.name",
+            "description": "The name of the engine to use. If not set, a default engine will be used. Default: Multi-language Scan."
+          },
+          {
+            "key": "checkmarx.newproject.presetid.mapping",
+            "description": "When not set, the default preset will be used"
+          },
+          {
+            "key": "pds.checkmarx.mocking.enabled",
+            "description": "When true, a mocked adapter will be used."
+          },
+          {
+            "key": "pds.checkmarx.result.check.period.minutes",
+            "description": "The period time in minutes when checkmarx adapter tries to fetch the result from checkmarx server again."
+          },
+          {
+            "key": "pds.checkmarx.result.check.timeout.minutes",
+            "description": "The timout in minutes when checkmarx adapter will stop communictaion with checkmarx server and return an error instead."
+          },
+          {
+            "key": "pds.checkmarx.client.secret",
+            "description": "This is a standard value and has not to be set. It is NOT a really secret value. But we made this value optional to be safe in future, if the static default value must be changed."
+          },
+          {
+            "key": "pds.checkmarx.always.fullscan.enabled",
+            "description": "When true, full scan is always active."
+          }
+        ]
       }
     },
     {
-        "id": "PDS_CHECKMARX_MOCK",
-        "path": "/scripts/checkmarx_mock.sh",
-        "scanType": "codeScan",
-        "description": "Runs Checkmarx Mock",
-        "parameters": {
-          "mandatory": [
-                  {
-                    "key": "pds.checkmarx.baseurl",
-                    "description": "The base URL of the checkmarx server."
-                  },
-                  {
-                    "key": "checkmarx.newproject.teamid.mapping",
-                    "description": "The team id mapping"
-                  },
-                  {
-                    "key": "pds.checkmarx.user",
-                    "description": "The user (or an env entry) of the checkmarx user."
-                  },
-                  {
-                    "key": "pds.checkmarx.password",
-                    "description": "The password (or an env entry) of the checkmarx user."
-                  }
-                ],
-                "optional": [
-                {
-                  "key": "pds.checkmarx.engine.configuration.name",
-                  "description": "The name of the engine to use. If not set, a default engine will be used. Default: Multi-language Scan."
-                 },
-                  {
-                    "key": "checkmarx.newproject.presetid.mapping",
-                    "description": "When not set, the default preset will be used"
-                  },
-                  {
-                    "key": "pds.checkmarx.mocking.enabled",
-                    "description": "When true, a mocked adapter will be used."
-                  },
-                  {
-                    "key": "pds.checkmarx.result.check.period.minutes",
-                    "description": "The period time in minutes when checkmarx adapter tries to fetch the result from checkmarx server again."
-                  },
-                  {
-                    "key": "pds.checkmarx.result.check.timeout.minutes",
-                    "description": "The timout in minutes when checkmarx adapter will stop communictaion with checkmarx server and return an error instead."
-                  },
-                  {
-                    "key": "pds.checkmarx.client.secret",
-                    "description": "This is a standard value and has not to be set. It is NOT a really secret value. But we made this value optional to be safe in future, if the static default value must be changed."
-                  },
-                  {
-                    "key": "pds.checkmarx.always.fullscan.enabled",
-                    "description": "When true, full scan is always active."
-                  }
-                ]
-        }
+      "id": "PDS_CHECKMARX_MOCK",
+      "path": "/pds/scripts/checkmarx_mock.sh",
+      "scanType": "codeScan",
+      "description": "Runs Checkmarx Mock",
+      "parameters": {
+        "mandatory": [
+          {
+            "key": "pds.checkmarx.baseurl",
+            "description": "The base URL of the checkmarx server."
+          },
+          {
+            "key": "checkmarx.newproject.teamid.mapping",
+            "description": "The team id mapping"
+          },
+          {
+            "key": "pds.checkmarx.user",
+            "description": "The user (or an env entry) of the checkmarx user."
+          },
+          {
+            "key": "pds.checkmarx.password",
+            "description": "The password (or an env entry) of the checkmarx user."
+          }
+        ],
+        "optional": [
+          {
+            "key": "pds.checkmarx.engine.configuration.name",
+            "description": "The name of the engine to use. If not set, a default engine will be used. Default: Multi-language Scan."
+          },
+          {
+            "key": "checkmarx.newproject.presetid.mapping",
+            "description": "When not set, the default preset will be used"
+          },
+          {
+            "key": "pds.checkmarx.mocking.enabled",
+            "description": "When true, a mocked adapter will be used."
+          },
+          {
+            "key": "pds.checkmarx.result.check.period.minutes",
+            "description": "The period time in minutes when checkmarx adapter tries to fetch the result from checkmarx server again."
+          },
+          {
+            "key": "pds.checkmarx.result.check.timeout.minutes",
+            "description": "The timout in minutes when checkmarx adapter will stop communictaion with checkmarx server and return an error instead."
+          },
+          {
+            "key": "pds.checkmarx.client.secret",
+            "description": "This is a standard value and has not to be set. It is NOT a really secret value. But we made this value optional to be safe in future, if the static default value must be changed."
+          },
+          {
+            "key": "pds.checkmarx.always.fullscan.enabled",
+            "description": "When true, full scan is always active."
+          }
+        ]
       }
+    }
   ]
 }

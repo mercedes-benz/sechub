@@ -112,9 +112,9 @@ echo ""
 if [ ! -z "$PDS_SCAN_CONFIGURATION" ]
 then
     sechub_scan_configuration="$PDS_JOB_WORKSPACE_LOCATION/sechubScanConfiguration.json"
-    
+
     echo "Using configuration file: $sechub_scan_configuration"
-    
+
     echo "$PDS_SCAN_CONFIGURATION" > "$sechub_scan_configuration"
 
     options="$options --sechubConfigfile $sechub_scan_configuration"
