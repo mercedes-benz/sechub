@@ -39,22 +39,41 @@ public class AwsS3JobStorage implements JobStorage {
     private UUID jobUUID;
     private TransferManager transferManager;
 
-    AwsS3TransferManagerFactory transferManagerFactory = new AwsS3TransferManagerFactory();
+    /**
+     * Creates a new AWS S3 storage object and uses the default transfer manager
+     * factory.
+     *
+     * @param client      s3 client instance to use
+     * @param bucketName  name of the bucket
+     * @param storagePath path for storage
+     * @param jobUUID     SecHub job uuid
+     */
+    public AwsS3JobStorage(AmazonS3 client, String bucketName, String storagePath, UUID jobUUID) {
+        this(client, bucketName, storagePath, jobUUID, null);
+    }
 
     /**
      * Creates a new AWS S3 storage object
      *
-     * @param client
-     * @param bucketName
-     * @param storagePath
-     * @param jobUUID
+     * @param client                 s3 client instance to use
+     * @param bucketName             name of the bucket
+     * @param storagePath            path for storage
+     * @param jobUUID                SecHub job uuid
+     * @param transferManagerFactory transfer manager factor or <code>null</code>.
+     *                               When <code>null</code> a default factory
+     *                               instance will be used.
      */
-    public AwsS3JobStorage(AmazonS3 client, String bucketName, String storagePath, UUID jobUUID) {
+    public AwsS3JobStorage(AmazonS3 client, String bucketName, String storagePath, UUID jobUUID, TransferManagerFactory transferManagerFactory) {
         this.bucketName = bucketName;
         this.client = client;
         this.storagePath = storagePath;
         this.jobUUID = jobUUID;
-        this.transferManager = transferManagerFactory.create(client);
+
+        TransferManagerFactory factoryToUse = transferManagerFactory;
+        if (factoryToUse == null) {
+            factoryToUse = DefaultTransferManagerFactory.INSTANCE;
+        }
+        this.transferManager = factoryToUse.createTransferManager(client);
     }
 
     @Override
@@ -173,7 +192,7 @@ public class AwsS3JobStorage implements JobStorage {
             }
 
             String objectName = getObjectName(name);
-            LOG.debug("Start upload of objectName={}", objectName + " to bucket {}", objectName, bucketName);
+            LOG.debug("Start upload of objectName={} to bucket {}", objectName, bucketName);
 
             // The Transfer Manager is by default non-blocking, which means it will not wait
             // for the upload to finish and returns immediately
@@ -184,10 +203,10 @@ public class AwsS3JobStorage implements JobStorage {
 
             try {
                 upload.waitForCompletion();
-                LOG.debug("Successfully uploaded objectName={}", objectName + " to bucket {}", objectName, bucketName);
+                LOG.debug("Successfully uploaded objectName={} to bucket {}", objectName, bucketName);
             } catch (AmazonClientException e) {
-                LOG.error("Error while uploading objectName={}", objectName + " to bucket {}", objectName, bucketName);
-                LOG.error(e.getMessage());
+                LOG.error("Error while uploading objectName={} to bucket {}", objectName, bucketName);
+                throw e;
             }
 
         } catch (Exception e) {
