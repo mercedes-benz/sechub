@@ -4,7 +4,7 @@ package com.mercedesbenz.sechub.domain.scan.report;
 import java.util.Map;
 import java.util.UUID;
 
-import javax.annotation.security.RolesAllowed;
+import jakarta.annotation.security.RolesAllowed;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;

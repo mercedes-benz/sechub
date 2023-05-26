@@ -29,7 +29,7 @@ public class NewApiTokenService {
     public Mono<String> requestNewApiToken(String email) {
 
         return webClient.post().uri("api/anonymous/refresh/apitoken/" + email).retrieve()
-                .onStatus(HttpStatus::is4xxClientError, error -> Mono.error(new RuntimeException("API not found")))
+                .onRawStatus(HttpStatus::is4xxClientError, error -> Mono.error(new RuntimeException("API not found")))
                 .onStatus(HttpStatus::is5xxServerError, error -> Mono.error(new RuntimeException("Server is not responding"))).bodyToMono(String.class);
     }
 }

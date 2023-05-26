@@ -3,7 +3,7 @@ package com.mercedesbenz.sechub.domain.administration.project;
 
 import static com.mercedesbenz.sechub.sharedkernel.util.Assert.*;
 
-import javax.annotation.security.RolesAllowed;
+import jakarta.annotation.security.RolesAllowed;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

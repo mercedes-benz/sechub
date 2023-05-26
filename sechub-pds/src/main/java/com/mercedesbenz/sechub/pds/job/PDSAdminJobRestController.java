@@ -3,7 +3,7 @@ package com.mercedesbenz.sechub.pds.job;
 
 import java.util.UUID;
 
-import javax.annotation.security.RolesAllowed;
+import jakarta.annotation.security.RolesAllowed;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;

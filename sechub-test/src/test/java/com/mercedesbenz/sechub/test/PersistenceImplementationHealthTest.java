@@ -9,8 +9,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
-import javax.persistence.Entity;
-import javax.persistence.Version;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Version;
 
 import org.junit.BeforeClass;
 import org.junit.Test;

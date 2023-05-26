@@ -5,7 +5,7 @@ import static com.mercedesbenz.sechub.sharedkernel.validation.AssertValidation.*
 
 import java.util.Optional;
 
-import javax.annotation.security.RolesAllowed;
+import jakarta.annotation.security.RolesAllowed;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Profile;

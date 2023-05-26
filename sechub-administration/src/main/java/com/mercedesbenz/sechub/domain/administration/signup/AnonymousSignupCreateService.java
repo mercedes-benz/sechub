@@ -3,7 +3,7 @@ package com.mercedesbenz.sechub.domain.administration.signup;
 
 import java.util.Optional;
 
-import javax.validation.Valid;
+import jakarta.validation.Valid;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

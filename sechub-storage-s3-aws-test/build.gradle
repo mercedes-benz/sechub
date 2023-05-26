@@ -16,7 +16,7 @@ dependencies {
     testImplementation library.s3mock
     testImplementation library.s3mock_junit4
     testImplementation spring_boot_dependency.mockito_core
-    testImplementation library.mockito_inline
+    //testImplementation library.mockito_inline
     testImplementation project(':sechub-testframework')
 
 }

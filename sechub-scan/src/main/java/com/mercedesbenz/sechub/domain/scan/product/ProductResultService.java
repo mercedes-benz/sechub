@@ -4,7 +4,7 @@ package com.mercedesbenz.sechub.domain.scan.product;
 import java.util.List;
 import java.util.UUID;
 
-import javax.annotation.security.RolesAllowed;
+import jakarta.annotation.security.RolesAllowed;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;

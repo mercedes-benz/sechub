@@ -3,7 +3,7 @@ package com.mercedesbenz.sechub.domain.administration.signup;
 
 import static com.mercedesbenz.sechub.domain.administration.signup.SignupJsonInput.*;
 
-import javax.annotation.PostConstruct;
+import jakarta.annotation.PostConstruct;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

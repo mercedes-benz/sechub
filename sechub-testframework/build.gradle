@@ -9,7 +9,7 @@ dependencies {
 
     implementation library.junit4
     implementation spring_boot_dependency.mockito_core
-    implementation library.mockito_inline
+    //implementation library.mockito_inline
     implementation spring_boot_dependency.hamcrest
     implementation spring_boot_dependency.slf4j_api
 

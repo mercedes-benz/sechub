@@ -4,7 +4,7 @@ package com.mercedesbenz.sechub.pds.batch;
 import java.util.Random;
 import java.util.UUID;
 
-import javax.annotation.PostConstruct;
+import jakarta.annotation.PostConstruct;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
