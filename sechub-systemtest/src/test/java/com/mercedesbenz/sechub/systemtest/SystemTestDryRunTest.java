@@ -16,9 +16,9 @@ import org.slf4j.LoggerFactory;
 
 import com.mercedesbenz.sechub.commons.model.JSONConverter;
 import com.mercedesbenz.sechub.systemtest.config.SystemTestConfiguration;
-import com.mercedesbenz.sechub.systemtest.runtime.ProcessContainerFailedException;
 import com.mercedesbenz.sechub.systemtest.runtime.SystemTestResult;
 import com.mercedesbenz.sechub.systemtest.runtime.SystemTestRuntimeException;
+import com.mercedesbenz.sechub.systemtest.runtime.launch.ProcessContainerFailedException;
 import com.mercedesbenz.sechub.test.TestFileReader;
 
 /**

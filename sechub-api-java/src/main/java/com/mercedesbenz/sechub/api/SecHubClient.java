@@ -271,24 +271,25 @@ public class SecHubClient {
     /* ++++++++++++++++++++++++++++++++++++++++++++++++++++ */
     /* + ................Scheduling...................... + */
     /* ++++++++++++++++++++++++++++++++++++++++++++++++++++ */
-    public UUID createJob(SecHubConfigurationModel configuration) throws SecHubClientException{
+    public UUID createJob(SecHubConfigurationModel configuration) throws SecHubClientException {
         requireNonNull(configuration, "configuration may not be null!");
         String projectId = configuration.getProjectId();
-        if (projectId==null) {
+        if (projectId == null) {
             throw new IllegalStateException("Project id missing inside configuration!");
         }
-        
-        String configAsJson = JSONConverter.get().toJSON(configuration,true);
-        LOG.debug("configAsJson=\n{}",configAsJson);
-        
-        OpenApiScanJob openApiScanJob = JSONConverter.get().fromJSON(OpenApiScanJob.class, configAsJson); 
+
+        String configAsJson = JSONConverter.get().toJSON(configuration, true);
+        LOG.debug("configAsJson=\n{}", configAsJson);
+
+        OpenApiScanJob openApiScanJob = JSONConverter.get().fromJSON(OpenApiScanJob.class, configAsJson);
         if (LOG.isDebugEnabled()) {
-            String openApiJSON = JSONConverter.get().toJSON(openApiScanJob,true);
-            LOG.debug("openApiJSON=\n{}",openApiJSON);
+            String openApiJSON = JSONConverter.get().toJSON(openApiScanJob, true);
+            LOG.debug("openApiJSON=\n{}", openApiJSON);
         }
-        OpenApiJobId openApiJobId = runOrFail(()-> projectApi.userCreatesNewJob(projectId, openApiScanJob), "Was not able to create a SecHub job for project:"+projectId);
+        OpenApiJobId openApiJobId = runOrFail(() -> projectApi.userCreatesNewJob(projectId, openApiScanJob),
+                "Was not able to create a SecHub job for project:" + projectId);
         String jobIdAsString = openApiJobId.getJobId();
-        
+
         UUID uuid = UUID.fromString(jobIdAsString);
         return uuid;
     }

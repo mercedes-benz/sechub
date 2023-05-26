@@ -19,6 +19,7 @@ import com.mercedesbenz.sechub.commons.model.SecHubSecretScanConfiguration;
 import com.mercedesbenz.sechub.commons.model.SecHubSourceDataConfiguration;
 import com.mercedesbenz.sechub.commons.model.SecHubWebScanConfiguration;
 import com.mercedesbenz.sechub.systemtest.config.RunSecHubJobDefinition;
+import com.mercedesbenz.sechub.systemtest.config.RunSecHubJobDefinitionTransformer;
 import com.mercedesbenz.sechub.systemtest.config.UploadDefinition;
 
 class RunSecHubJobDefinitionTransformerTest {
@@ -29,19 +30,20 @@ class RunSecHubJobDefinitionTransformerTest {
     void beforeEach() {
         transformerToTest = new RunSecHubJobDefinitionTransformer();
     }
-    
+
     @Test
     void configuration_has_project_id_from_definition() {
         /* prepare */
         RunSecHubJobDefinition definition = new RunSecHubJobDefinition();
         definition.setProject("projectName1");
-        
+
         /* execute */
         SecHubConfigurationModel result = transformerToTest.transformToSecHubConfiguration(definition);
-        
+
         /* test */
         assertEquals("projectName1", result.getProjectId());
     }
+
     @Test
     void configuration_has_api_1_0() {
         /* prepare */

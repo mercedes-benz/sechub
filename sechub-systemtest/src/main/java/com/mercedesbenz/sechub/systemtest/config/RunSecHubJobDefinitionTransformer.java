@@ -1,4 +1,4 @@
-package com.mercedesbenz.sechub.systemtest.runtime;
+package com.mercedesbenz.sechub.systemtest.config;
 
 import static java.util.Objects.*;
 
@@ -10,18 +10,17 @@ import com.mercedesbenz.sechub.commons.model.SecHubConfigurationModel;
 import com.mercedesbenz.sechub.commons.model.SecHubDataConfiguration;
 import com.mercedesbenz.sechub.commons.model.SecHubFileSystemConfiguration;
 import com.mercedesbenz.sechub.commons.model.SecHubSourceDataConfiguration;
-import com.mercedesbenz.sechub.systemtest.config.RunSecHubJobDefinition;
-import com.mercedesbenz.sechub.systemtest.config.UploadDefinition;
+
 public class RunSecHubJobDefinitionTransformer {
 
     public SecHubConfigurationModel transformToSecHubConfiguration(RunSecHubJobDefinition definition) {
         requireNonNull(definition, "The defintion may not be null!");
-        
+
         SecHubConfigurationModel config = new SecHubConfigurationModel();
 
         config.setApiVersion("1.0");
         config.setProjectId(definition.getProject());
-        
+
         /* adopt scans as they are */
         config.setCodeScan(definition.getCodeScan().orElse(null));
         config.setWebScan(definition.getWebScan().orElse(null));

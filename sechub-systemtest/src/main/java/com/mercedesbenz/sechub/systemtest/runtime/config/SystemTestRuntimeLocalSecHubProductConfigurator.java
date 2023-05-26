@@ -1,4 +1,5 @@
-package com.mercedesbenz.sechub.systemtest.runtime;
+
+package com.mercedesbenz.sechub.systemtest.runtime.config;
 
 import static com.mercedesbenz.sechub.commons.pds.PDSDefaultParameterKeyConstants.*;
 
@@ -25,6 +26,7 @@ import com.mercedesbenz.sechub.systemtest.config.CredentialsDefinition;
 import com.mercedesbenz.sechub.systemtest.config.ProjectDefinition;
 import com.mercedesbenz.sechub.systemtest.config.SecHubConfigurationDefinition;
 import com.mercedesbenz.sechub.systemtest.config.SecHubExecutorConfigDefinition;
+import com.mercedesbenz.sechub.systemtest.runtime.SystemTestRuntimeContext;
 
 public class SystemTestRuntimeLocalSecHubProductConfigurator {
 

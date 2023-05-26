@@ -1,6 +1,8 @@
 package com.mercedesbenz.sechub.systemtest.runtime.error;
 
-import com.mercedesbenz.sechub.systemtest.runtime.ProcessContainer;
+import com.mercedesbenz.sechub.systemtest.runtime.SystemTestExecutionScope;
+import com.mercedesbenz.sechub.systemtest.runtime.SystemTestExecutionState;
+import com.mercedesbenz.sechub.systemtest.runtime.launch.ProcessContainer;
 
 public class SystemTestScriptExecutionException extends SystemTestErrorException {
 

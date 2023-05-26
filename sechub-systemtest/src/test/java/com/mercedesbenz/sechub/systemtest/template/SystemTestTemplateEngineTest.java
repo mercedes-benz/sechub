@@ -12,7 +12,7 @@ import org.junit.jupiter.params.provider.EmptySource;
 import org.junit.jupiter.params.provider.NullSource;
 import org.junit.jupiter.params.provider.ValueSource;
 
-import com.mercedesbenz.sechub.systemtest.runtime.EnvironmentProvider;
+import com.mercedesbenz.sechub.systemtest.runtime.variable.EnvironmentProvider;
 
 class SystemTestTemplateEngineTest {
 

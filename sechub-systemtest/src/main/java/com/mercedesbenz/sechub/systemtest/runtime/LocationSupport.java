@@ -9,6 +9,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.mercedesbenz.sechub.systemtest.config.TestDefinition;
+import com.mercedesbenz.sechub.systemtest.runtime.launch.ProcessContainer;
 
 public class LocationSupport {
 

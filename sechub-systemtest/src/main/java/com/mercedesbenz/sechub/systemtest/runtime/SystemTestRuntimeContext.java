@@ -34,8 +34,9 @@ import com.mercedesbenz.sechub.systemtest.config.SecHubExecutorConfigDefinition;
 import com.mercedesbenz.sechub.systemtest.config.SystemTestConfiguration;
 import com.mercedesbenz.sechub.systemtest.config.TestDefinition;
 import com.mercedesbenz.sechub.systemtest.pdsclient.PDSClient;
+import com.mercedesbenz.sechub.systemtest.runtime.variable.EnvironmentProvider;
 
-class SystemTestRuntimeContext {
+public class SystemTestRuntimeContext {
 
     private static final Logger LOG = LoggerFactory.getLogger(SystemTestRuntimeContext.class);
 
@@ -62,7 +63,7 @@ class SystemTestRuntimeContext {
 
     private Map<String, PDSClient> localTechUserPdsClientMap = new TreeMap<>();
 
-    void alterConfguration(SystemTestConfiguration configuration) {
+    public void alterConfguration(SystemTestConfiguration configuration) {
         this.configuration = configuration;
     }
 

@@ -1,6 +1,7 @@
-package com.mercedesbenz.sechub.systemtest.runtime;
+package com.mercedesbenz.sechub.systemtest.runtime.launch;
 
 import com.mercedesbenz.sechub.systemtest.config.ScriptDefinition;
+import com.mercedesbenz.sechub.systemtest.runtime.SystemTestRuntimeException;
 
 public class ProcessContainerFailedException extends SystemTestRuntimeException {
 

@@ -1,4 +1,4 @@
-package com.mercedesbenz.sechub.systemtest.runtime;
+package com.mercedesbenz.sechub.systemtest.runtime.launch;
 
 import java.util.UUID;
 

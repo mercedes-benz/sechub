@@ -1,4 +1,4 @@
-package com.mercedesbenz.sechub.systemtest.runtime;
+package com.mercedesbenz.sechub.systemtest.runtime.launch;
 
 import java.util.List;
 import java.util.Optional;
@@ -15,9 +15,11 @@ import com.mercedesbenz.sechub.systemtest.config.PDSSolutionDefinition;
 import com.mercedesbenz.sechub.systemtest.config.ScriptDefinition;
 import com.mercedesbenz.sechub.systemtest.pdsclient.PDSClient;
 import com.mercedesbenz.sechub.systemtest.pdsclient.PDSClientException;
+import com.mercedesbenz.sechub.systemtest.runtime.SystemTestExecutionScope;
+import com.mercedesbenz.sechub.systemtest.runtime.SystemTestExecutionState;
+import com.mercedesbenz.sechub.systemtest.runtime.SystemTestRuntimeContext;
+import com.mercedesbenz.sechub.systemtest.runtime.SystemTestRuntimeException;
 import com.mercedesbenz.sechub.systemtest.runtime.error.SystemTestErrorException;
-import com.mercedesbenz.sechub.systemtest.runtime.error.SystemTestExecutionScope;
-import com.mercedesbenz.sechub.systemtest.runtime.error.SystemTestExecutionState;
 import com.mercedesbenz.sechub.systemtest.runtime.error.SystemTestScriptExecutionException;
 
 /**

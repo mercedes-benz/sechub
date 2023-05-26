@@ -1,4 +1,4 @@
-package com.mercedesbenz.sechub.systemtest.runtime;
+package com.mercedesbenz.sechub.systemtest.runtime.variable;
 
 public class SystemEnvironmentProvider implements EnvironmentProvider {
 

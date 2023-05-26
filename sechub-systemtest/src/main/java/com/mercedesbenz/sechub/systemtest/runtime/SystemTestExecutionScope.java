@@ -1,4 +1,4 @@
-package com.mercedesbenz.sechub.systemtest.runtime.error;
+package com.mercedesbenz.sechub.systemtest.runtime;
 
 public enum SystemTestExecutionScope {
 

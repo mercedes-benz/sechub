@@ -1,4 +1,4 @@
-package com.mercedesbenz.sechub.systemtest.runtime;
+package com.mercedesbenz.sechub.systemtest.runtime.init;
 
 import java.nio.file.Files;
 import java.nio.file.InvalidPathException;
@@ -18,7 +18,6 @@ import org.slf4j.LoggerFactory;
 import com.mercedesbenz.sechub.commons.core.util.SimpleStringUtils;
 import com.mercedesbenz.sechub.commons.model.SecHubCodeScanConfiguration;
 import com.mercedesbenz.sechub.commons.model.SecHubConfigurationModel;
-import com.mercedesbenz.sechub.commons.model.SecHubConfigurationModelValidationError;
 import com.mercedesbenz.sechub.commons.model.SecHubConfigurationModelValidationResult;
 import com.mercedesbenz.sechub.commons.model.SecHubConfigurationModelValidationResult.SecHubConfigurationModelValidationErrorData;
 import com.mercedesbenz.sechub.commons.model.SecHubConfigurationModelValidator;
@@ -38,13 +37,17 @@ import com.mercedesbenz.sechub.systemtest.config.PDSSolutionDefinition;
 import com.mercedesbenz.sechub.systemtest.config.RemoteSecHubDefinition;
 import com.mercedesbenz.sechub.systemtest.config.RemoteSetupDefinition;
 import com.mercedesbenz.sechub.systemtest.config.RunSecHubJobDefinition;
+import com.mercedesbenz.sechub.systemtest.config.RunSecHubJobDefinitionTransformer;
 import com.mercedesbenz.sechub.systemtest.config.ScriptDefinition;
 import com.mercedesbenz.sechub.systemtest.config.SecHubConfigurationDefinition;
 import com.mercedesbenz.sechub.systemtest.config.SecHubExecutorConfigDefinition;
 import com.mercedesbenz.sechub.systemtest.config.TestDefinition;
 import com.mercedesbenz.sechub.systemtest.config.UploadDefinition;
-import com.mercedesbenz.sechub.systemtest.runtime.error.SystemTestExecutionScope;
-import com.mercedesbenz.sechub.systemtest.runtime.error.SystemTestExecutionState;
+import com.mercedesbenz.sechub.systemtest.runtime.SystemTestExecutionScope;
+import com.mercedesbenz.sechub.systemtest.runtime.SystemTestExecutionState;
+import com.mercedesbenz.sechub.systemtest.runtime.SystemTestRuntimeContext;
+import com.mercedesbenz.sechub.systemtest.runtime.SystemTestRuntimeMetaData;
+import com.mercedesbenz.sechub.systemtest.runtime.WrongConfigurationException;
 
 public class SystemTestRuntimeHealthCheck {
 
@@ -75,18 +78,17 @@ public class SystemTestRuntimeHealthCheck {
         }
         RunSecHubJobDefinition runSecHubJob = runSecHubJobOpt.get();
         assertReferenceIds(context, runSecHubJob);
-        
+
         /* last but not least */
         RunSecHubJobDefinitionTransformer transformer = new RunSecHubJobDefinitionTransformer();
         SecHubConfigurationModel model = transformer.transformToSecHubConfiguration(runSecHubJob);
-        SecHubConfigurationModelValidator validator= new SecHubConfigurationModelValidator();
+        SecHubConfigurationModelValidator validator = new SecHubConfigurationModelValidator();
         SecHubConfigurationModelValidationResult result = validator.validate(model);
         if (result.hasErrors()) {
             for (SecHubConfigurationModelValidationErrorData errorData : result.getErrors()) {
-                throw new WrongConfigurationException("Test: "+test.getName()+" leads to an invalid sechub configurarion:"+ errorData.toString(), context);
+                throw new WrongConfigurationException("Test: " + test.getName() + " leads to an invalid sechub configurarion:" + errorData.toString(), context);
             }
         }
-        
 
     }
 

@@ -3,7 +3,7 @@ package com.mercedesbenz.sechub.systemtest.template;
 import java.util.Collections;
 import java.util.List;
 
-import com.mercedesbenz.sechub.systemtest.runtime.EnvironmentProvider;
+import com.mercedesbenz.sechub.systemtest.runtime.variable.EnvironmentProvider;
 
 class GenericEnvironentVariableResolver implements VariableValueResolver {
     private EnvironmentProvider environmentProvider;

@@ -16,7 +16,7 @@ import com.mercedesbenz.sechub.pds.commons.core.PDSJSONConverterException;
 import com.mercedesbenz.sechub.pds.commons.core.config.PDSServerConfiguration;
 import com.mercedesbenz.sechub.systemtest.config.PDSSolutionDefinition;
 
-class SystemTestRuntimeMetaData {
+public class SystemTestRuntimeMetaData {
 
     private static final Logger LOG = LoggerFactory.getLogger(SystemTestRuntimeMetaData.class);
 

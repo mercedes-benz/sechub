@@ -13,6 +13,7 @@ import org.junit.jupiter.params.provider.NullSource;
 import org.junit.jupiter.params.provider.ValueSource;
 
 import com.mercedesbenz.sechub.systemtest.config.TestDefinition;
+import com.mercedesbenz.sechub.systemtest.runtime.test.CurrentTestDynamicVariableCalculator;
 import com.mercedesbenz.sechub.test.TestUtil;
 
 class CurrentTestDynamicVariableCalculatorTest {

@@ -1,4 +1,4 @@
-package com.mercedesbenz.sechub.systemtest.runtime;
+package com.mercedesbenz.sechub.systemtest.runtime.test;
 
 import java.nio.file.Path;
 import java.util.ArrayList;
@@ -8,6 +8,9 @@ import java.util.TreeMap;
 
 import com.mercedesbenz.sechub.systemtest.config.CalculatedVariables;
 import com.mercedesbenz.sechub.systemtest.config.TestDefinition;
+import com.mercedesbenz.sechub.systemtest.runtime.LocationSupport;
+import com.mercedesbenz.sechub.systemtest.runtime.SystemTestRuntimeContext;
+import com.mercedesbenz.sechub.systemtest.runtime.variable.DynamicVariableCalculator;
 
 public class CurrentTestDynamicVariableCalculator implements DynamicVariableCalculator {
 

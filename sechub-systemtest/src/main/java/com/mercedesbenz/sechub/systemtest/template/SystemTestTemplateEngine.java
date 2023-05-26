@@ -5,8 +5,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
-import com.mercedesbenz.sechub.systemtest.runtime.EnvironmentProvider;
 import com.mercedesbenz.sechub.systemtest.runtime.SystemTestRuntimeException;
+import com.mercedesbenz.sechub.systemtest.runtime.variable.EnvironmentProvider;
 
 public class SystemTestTemplateEngine {
 

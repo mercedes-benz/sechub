@@ -11,13 +11,13 @@ import org.slf4j.LoggerFactory;
 import com.mercedesbenz.sechub.systemtest.SystemTestParameters.SystemTestParametersBuilder;
 import com.mercedesbenz.sechub.systemtest.config.SystemTestConfiguration;
 import com.mercedesbenz.sechub.systemtest.config.SystemTestConfigurationBuilder;
-import com.mercedesbenz.sechub.systemtest.runtime.EnvironmentProvider;
-import com.mercedesbenz.sechub.systemtest.runtime.ExecutionSupport;
 import com.mercedesbenz.sechub.systemtest.runtime.LocationSupport;
-import com.mercedesbenz.sechub.systemtest.runtime.SystemEnvironmentProvider;
 import com.mercedesbenz.sechub.systemtest.runtime.SystemTestResult;
 import com.mercedesbenz.sechub.systemtest.runtime.SystemTestRuntime;
 import com.mercedesbenz.sechub.systemtest.runtime.SystemTestRuntimeException;
+import com.mercedesbenz.sechub.systemtest.runtime.launch.ExecutionSupport;
+import com.mercedesbenz.sechub.systemtest.runtime.variable.EnvironmentProvider;
+import com.mercedesbenz.sechub.systemtest.runtime.variable.SystemEnvironmentProvider;
 
 /**
  * This is the central point for system tests
