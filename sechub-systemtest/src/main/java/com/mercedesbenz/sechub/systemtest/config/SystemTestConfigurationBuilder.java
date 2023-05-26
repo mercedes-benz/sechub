@@ -264,7 +264,15 @@ public class SystemTestConfigurationBuilder {
                         return this;
                     }
 
-                    public ExecutorConfigBuilder credentials(String userId, String apiToken) {
+                    /**
+                     * Overrides technical user credentials from PDS solution definition. Normally
+                     * unnecessary - use only when absolutely necesssary.
+                     *
+                     * @param userId
+                     * @param apiToken
+                     * @return
+                     */
+                    public ExecutorConfigBuilder overrideTechUserCredentials(String userId, String apiToken) {
 
                         CredentialsDefinition credentials = executor.getCredentials();
                         credentials.setUserId(userId);
@@ -348,6 +356,15 @@ public class SystemTestConfigurationBuilder {
                 return this;
             }
 
+            public SolutionSetupBuilder techUser(String userId, String apiToken) {
+
+                CredentialsDefinition credentials = setup.getTechUser();
+                credentials.setUserId(userId);
+                credentials.setApiToken(apiToken);
+
+                return this;
+            }
+
         }
     }
 
@@ -400,8 +417,13 @@ public class SystemTestConfigurationBuilder {
             }
 
             public class UploadsBuilder {
+
                 public UploadBuilder upload() {
-                    return new UploadBuilder();
+                    return upload(null);
+                }
+
+                public UploadBuilder upload(String referenceId) {
+                    return new UploadBuilder(referenceId);
                 }
 
                 public SecHubRunBuilder endUploads() {
@@ -412,8 +434,9 @@ public class SystemTestConfigurationBuilder {
 
                     private UploadDefinition uploadDefinition;
 
-                    private UploadBuilder() {
+                    private UploadBuilder(String referenceId) {
                         uploadDefinition = new UploadDefinition();
+                        uploadDefinition.setReferenceId(Optional.ofNullable(referenceId));
                         runSecHubJob.getUploads().add(uploadDefinition);
                     }
 
@@ -421,18 +444,13 @@ public class SystemTestConfigurationBuilder {
                         return UploadsBuilder.this;
                     }
 
-                    public UploadBuilder sources(String path) {
+                    public UploadBuilder sourceFolder(String path) {
                         uploadDefinition.setSourceFolder(Optional.of(path));
                         return this;
                     }
 
-                    public UploadBuilder binaries(String path) {
+                    public UploadBuilder binariesFolder(String path) {
                         uploadDefinition.setBinariesFolder(Optional.of(path));
-                        return this;
-                    }
-
-                    public UploadBuilder withReferenceId(String id) {
-                        uploadDefinition.setReferenceId(Optional.of(id));
                         return this;
                     }
 

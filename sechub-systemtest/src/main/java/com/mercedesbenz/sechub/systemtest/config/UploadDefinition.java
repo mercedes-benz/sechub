@@ -4,9 +4,9 @@ import java.util.Optional;
 
 public class UploadDefinition extends AbstractDefinition {
 
-    private Optional<String> binariesFolder;
-    private Optional<String> sourceFolder;
-    private Optional<String> referenceId;
+    private Optional<String> binariesFolder = Optional.ofNullable(null);
+    private Optional<String> sourceFolder = Optional.ofNullable(null);
+    private Optional<String> referenceId = Optional.ofNullable(null);
 
     public Optional<String> getBinariesFolder() {
         return binariesFolder;

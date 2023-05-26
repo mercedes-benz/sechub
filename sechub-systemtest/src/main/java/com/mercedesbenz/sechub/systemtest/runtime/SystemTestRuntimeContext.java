@@ -13,6 +13,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+import java.util.TreeMap;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -32,6 +33,7 @@ import com.mercedesbenz.sechub.systemtest.config.SecHubConfigurationDefinition;
 import com.mercedesbenz.sechub.systemtest.config.SecHubExecutorConfigDefinition;
 import com.mercedesbenz.sechub.systemtest.config.SystemTestConfiguration;
 import com.mercedesbenz.sechub.systemtest.config.TestDefinition;
+import com.mercedesbenz.sechub.systemtest.pdsclient.PDSClient;
 
 class SystemTestRuntimeContext {
 
@@ -57,6 +59,8 @@ class SystemTestRuntimeContext {
     private SecHubClient localAdminSecHubClient;
 
     private boolean dryRun;
+
+    private Map<String, PDSClient> localTechUserPdsClientMap = new TreeMap<>();
 
     void alterConfguration(SystemTestConfiguration configuration) {
         this.configuration = configuration;
@@ -202,6 +206,38 @@ class SystemTestRuntimeContext {
         return Collections.unmodifiableList(stages);
     }
 
+    public PDSClient getLocalTechUserPDSClient(String solutionId) {
+        if (solutionId == null) {
+            throw new IllegalStateException("solution id may not be null!");
+        }
+        if (!isLocalRun()) {
+            throw new IllegalStateException(
+            /* @formatter:off */
+                      "This is a remote run - which does not need local client..."
+                    + "This means the logic inside system test framework has a bug inside!");
+            /* @formatter:on */
+        }
+        final PDSSolutionDefinition pdsSolution = fetchPDSSolutionOrFail(solutionId);
+        return localTechUserPdsClientMap.computeIfAbsent(solutionId, (id) -> createPDSClient(pdsSolution));
+    }
+
+    public PDSSolutionDefinition fetchPDSSolutionOrFail(String solutionId) {
+        List<PDSSolutionDefinition> localPDSSolutions = getLocalPdsSolutionsOrFail();
+        PDSSolutionDefinition solutionToUse = null;
+        for (PDSSolutionDefinition pdsSolution : localPDSSolutions) {
+            String name = pdsSolution.getName();
+            if (solutionId.equals(name)) {
+                solutionToUse = pdsSolution;
+                break;
+            }
+        }
+        if (solutionToUse == null) {
+            throw new WrongConfigurationException("There is no solution available with id: " + solutionId, this);
+        }
+        final PDSSolutionDefinition pdsSolution = solutionToUse;
+        return pdsSolution;
+    }
+
     public SecHubClient getLocalAdminSecHubClient() {
         if (!isLocalRun()) {
             throw new IllegalStateException(
@@ -212,10 +248,7 @@ class SystemTestRuntimeContext {
         }
         if (localAdminSecHubClient == null) {
             LocalSecHubDefinition localSecHub = getLocalSetupOrFail().getSecHub();
-            localAdminSecHubClient = createClient(localSecHub, localSecHub.getAdmin());
-
-            LOG.info("Created local admin client for user: '{}', apiToken: '{}'", localAdminSecHubClient.getUsername(),
-                    "*".repeat(localAdminSecHubClient.getSealedApiToken().length()));
+            localAdminSecHubClient = createSecHubClient(localSecHub, localSecHub.getAdmin());
         }
         return localAdminSecHubClient;
     }
@@ -230,7 +263,7 @@ class SystemTestRuntimeContext {
         }
         if (remoteUserSecHubClient == null) {
             LocalSecHubDefinition localSecHub = getLocalSetupOrFail().getSecHub();
-            remoteUserSecHubClient = createClient(localSecHub, localSecHub.getAdmin());
+            remoteUserSecHubClient = createSecHubClient(localSecHub, localSecHub.getAdmin());
 
             LOG.info("Created remote user client for user: {}, apiToken: '{}'", remoteUserSecHubClient.getUsername(),
                     "*".repeat(remoteUserSecHubClient.getSealedApiToken().length()));
@@ -238,19 +271,44 @@ class SystemTestRuntimeContext {
         return remoteUserSecHubClient;
     }
 
-    private SecHubClient createClient(AbstractSecHubDefinition secHubDefinition, CredentialsDefinition credentials) {
+    private SecHubClient createSecHubClient(AbstractSecHubDefinition secHubDefinition, CredentialsDefinition credentials) {
         SecHubClient client = null;
+
         URL url = secHubDefinition.getUrl();
         if (url == null) {
             throw new WrongConfigurationException("URL not defined for local sechub server", this);
         }
+
         try {
             URI serverUri = url.toURI();
             client = new SecHubClient(serverUri, credentials.getUserId(), credentials.getApiToken(), true);
-
+            LOG.info("Created SecHub client for user: '{}', apiToken: '{}'", client.getUsername(), "*".repeat(client.getSealedApiToken().length()));
         } catch (URISyntaxException e) {
             throw new WrongConfigurationException("URL not defined correct local sechub server: " + e.getMessage(), this);
         }
+        return client;
+    }
+
+    private PDSClient createPDSClient(PDSSolutionDefinition solutionToUse) {
+
+        PDSClient client = null;
+
+        URL url = solutionToUse.getUrl();
+        if (url == null) {
+            throw new WrongConfigurationException("URL not defined for PDS solution: " + solutionToUse.getName(), this);
+        }
+
+        CredentialsDefinition credentials = solutionToUse.getTechUser();
+        try {
+            URI serverUri = url.toURI();
+            client = new PDSClient(serverUri, credentials.getUserId(), credentials.getApiToken(), true);
+
+        } catch (URISyntaxException e) {
+            throw new WrongConfigurationException("URL not defined correct for local PDS solution: " + e.getMessage(), this);
+        }
+
+        LOG.info("Created PDS client for user: '{}', apiToken: '{}', solution: '{}'", client.getUsername(), "*".repeat(client.getSealedApiToken().length()),
+                solutionToUse.getName());
         return client;
     }
 

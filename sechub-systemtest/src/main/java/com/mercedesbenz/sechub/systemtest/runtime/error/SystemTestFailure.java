@@ -1,6 +1,6 @@
 package com.mercedesbenz.sechub.systemtest.runtime.error;
 
-public class SystemTestError {
+public class SystemTestFailure {
 
     private String message;
     private String details;

@@ -8,17 +8,18 @@ function showHelp () {
     echo "-------------------------------------" 
     echo "Usage: Usage sdc"
     echo " Options: "
-    echo "   -f,  --format-all                 : format all source code files"
-    echo "   -b,  --build-full                 : full build"
-    echo "   -u,  --unit-tests                 : execute all unit tests"
-    echo "   -i,  --integrationtest-all        : execute all integration tests"
-    echo "   -ii, --integrationtest-integration: execute integration tests from sechub-integrationtest only"
-    echo "   -is, --integrationtest-systemtest : execute integration tests from sechub-systemtest only"
-    echo "   -r,  --report-combined-all        : create combined report for all"
-    echo "   -c,  --clean-all                  : clean all"
-    echo "   -ct, --clean-all-tests            : clean all test output"
-    echo "   -cu, --clean-unit-tests           : clean all unit test output"
-    echo "   -ci, --clean-integrationtests     : clean all integrationtest output"
+    echo "   -f,  --format-all                     : format all source code files"
+    echo "   -b,  --build-full                     : full build"
+    echo "   -u,  --unit-tests                     : execute all unit tests"
+    echo "   -i,  --integrationtest-all            : execute all integration tests"
+    echo "   -ii, --integrationtest-integration    : execute integration tests from sechub-integrationtest only"
+    echo "   -is, --integrationtest-systemtest     : execute integration tests from sechub-systemtest only"
+    echo "   -r,  --report-combined-all            : create combined report for all"
+    echo "   -c,  --clean-all                      : clean all"
+    echo "   -ct, --clean-all-tests                : clean all test output"
+    echo "   -cu, --clean-unit-tests               : clean all unit test output"
+    echo "   -ci, --clean-integrationtests         : clean all integrationtest output"
+    echo "   -si, --stop-inttest-server            : stop running integration test servers (SecHub, PDS)"
     echo "   -h,  --help                       : show this help"
 }
 
@@ -89,6 +90,10 @@ case $key in
     UNIT_TESTS="YES"
     shift # past argument
     ;;
+    -si|--stop-inttest-server)
+    STOP_SERVERS="YES"
+    shift # past argument
+    ;;
     -x|--xsearchpath)
     SEARCHPATH="$2"
     shift # past argument
@@ -133,6 +138,10 @@ CMD_CREATE_COMBINED_REPORT="./gradlew createCombinedTestReport -Dsechub.build.st
 # -----------------------
 # Handle known commands
 # -----------------------
+if [[ "$STOP_SERVERS" = "YES" ]]; then
+    startJob "Stop running servers"
+    ./gradlew stopIntegrationTestInstances
+fi
 if [[ "$CLEAN_ALL" = "YES" ]]; then
     startJob "Clean all"
     ./gradlew clean -Dsechub.build.stage=all --console=plain

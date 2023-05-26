@@ -1,18 +1,17 @@
 package com.mercedesbenz.sechub.systemtest.runtime;
 
 import java.util.List;
-import java.util.Optional;
+import java.util.UUID;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.mercedesbenz.sechub.api.SecHubClient;
+import com.mercedesbenz.sechub.api.SecHubClientException;
+import com.mercedesbenz.sechub.commons.model.SecHubConfigurationModel;
 import com.mercedesbenz.sechub.systemtest.config.ExecutionStepDefinition;
-import com.mercedesbenz.sechub.systemtest.config.RunSecHubJobDefinition;
 import com.mercedesbenz.sechub.systemtest.config.ScriptDefinition;
 import com.mercedesbenz.sechub.systemtest.config.TestDefinition;
-import com.mercedesbenz.sechub.systemtest.config.TestExecutionDefinition;
-import com.mercedesbenz.sechub.systemtest.config.UploadDefinition;
-import com.mercedesbenz.sechub.systemtest.runtime.error.SystemTestError;
 import com.mercedesbenz.sechub.systemtest.runtime.error.SystemTestExecutionScope;
 import com.mercedesbenz.sechub.systemtest.runtime.error.SystemTestExecutionState;
 import com.mercedesbenz.sechub.systemtest.runtime.error.SystemTestScriptExecutionException;
@@ -25,65 +24,63 @@ import com.mercedesbenz.sechub.systemtest.runtime.error.SystemTestScriptExecutio
  */
 public class SystemTestRuntimeTestEngine {
 
-    private static final Logger LOG = LoggerFactory.getLogger(SystemTestRuntimeTestEngine.class);
+    static final Logger LOG = LoggerFactory.getLogger(SystemTestRuntimeTestEngine.class);
 
     private ExecutionSupport execSupport;
 
-    private class SecHubRunData {
-
-    }
-
-    private class TestContext {
-
-        private SecHubRunData secHubRunData;
-
-        public boolean isSecHubTest() {
-            return secHubRunData != null;
-        }
-
-        public SecHubRunData getSecHubRunData() {
-            return secHubRunData;
-        }
-
-    }
+    RunSecHubJobDefinitionTransformer runSecHubJobTransformer = new RunSecHubJobDefinitionTransformer();
 
     public SystemTestRuntimeTestEngine(ExecutionSupport execSupport) {
         this.execSupport = execSupport;
     }
+    
+    public TestEngineContext createTestContext(TestDefinition test, SystemTestRuntimeContext context) {
+        return new TestEngineContext(this, test, context);
+    }
 
-    public void execute(TestDefinition test, SystemTestRuntimeContext context) {
+    public void execute(TestEngineContext testContext) {
 
-        context.testStarted(test);
+        testContext.runtimeContext.testStarted(testContext.test);
 
         try {
+            executePreparationSteps("Prepare", testContext);
 
-            TestContext testContext = prepare(test, context);
-
-            if (testContext.isSecHubTest()) {
-                launchSecHubJob(testContext.getSecHubRunData());
-            } else {
-                // currently we do only support SecHub runs
-                throw new WrongConfigurationException("Cannot execute test because not havign a sechub runs: " + test.getName(), context);
-            }
         } catch (SystemTestScriptExecutionException e) {
-            LOG.error("Test preparation failed for test: {}", test.getName(), e);
-
-            SystemTestError error = new SystemTestError();
-            error.setMessage("Was not able to prepare test : " + test.getName());
-            error.setDetails(e.getMessage());
-
-            context.getCurrentResult().setError(error);
-
+            testContext.markAsFailed("Was not able to prepare test", e);
+            return;
+        }
+        if (testContext.isSecHubTest()) {
+            try {
+                launchSecHubJob(testContext);
+            } catch (SecHubClientException e) {
+                testContext.markAsFailed("Was not able to launch SecHub job", e);
+            }
+        } else {
+            // currently we do only support SecHub runs
+            throw new WrongConfigurationException("Cannot execute test because not havign a sechub runs: " + testContext.test.getName(), testContext.runtimeContext);
         }
 
     }
 
-    private void launchSecHubJob(SecHubRunData secHubRunData) {
-        /* FIXME Albert Tregnaghi, 2023-04-25:implement */
+    private void launchSecHubJob(TestEngineContext testEngineContext) throws SecHubClientException {
+        SecHubClient clientForScheduling = null;
+
+        SystemTestRuntimeContext runtimeContext = testEngineContext.getRuntimeContext();
+        if (runtimeContext.isLocalRun()) {
+            clientForScheduling = runtimeContext.getLocalAdminSecHubClient();
+        } else {
+            clientForScheduling = runtimeContext.getRemoteUserSecHubClient();
+        }
+        SecHubConfigurationModel configuration = testEngineContext.getSecHubRunData().getSecHubConfiguration();
+
+        UUID jobUUID = clientForScheduling.createJob(configuration);
+        LOG.debug("SecHub job {} created", jobUUID);
 
     }
 
-    private void executePreparationSteps(String name, TestDefinition test, SystemTestRuntimeContext context) throws SystemTestScriptExecutionException {
+    private void executePreparationSteps(String name, TestEngineContext testContext) throws SystemTestScriptExecutionException {
+        TestDefinition test = testContext.getTest();
+
         List<ExecutionStepDefinition> steps = test.getPrepare();
         if (steps.isEmpty()) {
             return;
@@ -94,7 +91,7 @@ public class SystemTestRuntimeTestEngine {
             if (step.getScript().isPresent()) {
                 ScriptDefinition scriptDefinition = step.getScript().get();
 
-                ProcessContainer processContainer = execSupport.execute(scriptDefinition, new CurrentTestDynamicVariableCalculator(test, context));
+                ProcessContainer processContainer = execSupport.execute(scriptDefinition, testContext.getDynamicVariableGenerator());
                 long startTime = System.currentTimeMillis();
                 long diffTime = startTime;
                 while (!processContainer.hasFailed() && processContainer.isStillRunning()) {
@@ -127,28 +124,16 @@ public class SystemTestRuntimeTestEngine {
         }
     }
 
-    private TestContext prepare(TestDefinition test, SystemTestRuntimeContext context) throws SystemTestScriptExecutionException {
-
-        executePreparationSteps("Prepare", test, context);
-
-        TestContext testContext = new TestContext();
-        TestExecutionDefinition execute = test.getExecute();
-        Optional<RunSecHubJobDefinition> runSecHOptional = execute.getRunSecHubJob();
-        if (runSecHOptional.isPresent()) {
-            SecHubRunData secHubRunData = new SecHubRunData();
-            RunSecHubJobDefinition runSecHubJobDefinition = runSecHOptional.get();
-
-            List<UploadDefinition> uploadDefinitions = runSecHubJobDefinition.getUploads();
-
-            testContext.secHubRunData = secHubRunData;
+    class SecHubRunData {
+    
+        SecHubConfigurationModel secHubConfiguration;
+    
+        public SecHubConfigurationModel getSecHubConfiguration() {
+            return secHubConfiguration;
         }
-
-        return testContext;
+    
     }
 
-    public void assertTestResults(TestDefinition test, SystemTestRuntimeContext context) {
-        // TODO Auto-generated method stub
-
-    }
+    
 
 }

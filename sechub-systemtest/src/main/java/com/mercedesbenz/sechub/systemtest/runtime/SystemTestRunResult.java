@@ -1,11 +1,11 @@
 package com.mercedesbenz.sechub.systemtest.runtime;
 
-import com.mercedesbenz.sechub.systemtest.runtime.error.SystemTestError;
+import com.mercedesbenz.sechub.systemtest.runtime.error.SystemTestFailure;
 
 public class SystemTestRunResult {
 
     private String testName;
-    private SystemTestError error;
+    private SystemTestFailure failure;
 
     SystemTestRunResult(String testName) {
         this.testName = testName;
@@ -15,16 +15,16 @@ public class SystemTestRunResult {
         return testName;
     }
 
-    public SystemTestError getError() {
-        return error;
+    public SystemTestFailure getFailure() {
+        return failure;
     }
 
-    public void setError(SystemTestError error) {
-        this.error = error;
+    public void setFailure(SystemTestFailure failure) {
+        this.failure = failure;
     }
 
     public boolean isFailed() {
-        return error != null;
+        return failure != null;
     }
 
     @Override
@@ -35,9 +35,9 @@ public class SystemTestRunResult {
 
         if (isFailed()) {
             sb.append("[FAILED] - ");
-            sb.append(error.getMessage());
+            sb.append(failure.getMessage());
             sb.append("\nDetails:");
-            sb.append(error.getDetails());
+            sb.append(failure.getDetails());
         } else {
             sb.append("[ OK ]");
         }

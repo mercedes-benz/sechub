@@ -13,6 +13,8 @@ import com.mercedesbenz.sechub.systemtest.config.LocalSecHubDefinition;
 import com.mercedesbenz.sechub.systemtest.config.LocalSetupDefinition;
 import com.mercedesbenz.sechub.systemtest.config.PDSSolutionDefinition;
 import com.mercedesbenz.sechub.systemtest.config.ScriptDefinition;
+import com.mercedesbenz.sechub.systemtest.pdsclient.PDSClient;
+import com.mercedesbenz.sechub.systemtest.pdsclient.PDSClientException;
 import com.mercedesbenz.sechub.systemtest.runtime.error.SystemTestErrorException;
 import com.mercedesbenz.sechub.systemtest.runtime.error.SystemTestExecutionScope;
 import com.mercedesbenz.sechub.systemtest.runtime.error.SystemTestExecutionState;
@@ -24,6 +26,9 @@ import com.mercedesbenz.sechub.systemtest.runtime.error.SystemTestScriptExecutio
  *
  */
 public class SystemTestRuntimeProductLauncher {
+
+    private int maximumSecondsToWaitForSecHubAlive = 60;
+    private int maximumSecondsToWaitForPDSSolutionAlive = 60;
 
     private static final Logger LOG = LoggerFactory.getLogger(SystemTestRuntimeProductLauncher.class);
 
@@ -146,25 +151,76 @@ public class SystemTestRuntimeProductLauncher {
         }
         try {
             long start = System.currentTimeMillis();
+            LOG.info("Wait until SecHub server at {} is alive - will wait {} seconds.", client.getServerUri(), maximumSecondsToWaitForSecHubAlive);
             while (!client.checkIsServerAlive()) {
                 Thread.sleep(1000);
                 long millisecondsWaited = System.currentTimeMillis() - start;
-                boolean timedOut = millisecondsWaited > 60 * 1000 * 1;
+                boolean timedOut = millisecondsWaited > maximumSecondsToWaitForSecHubAlive * 1000 * 1;
                 if (timedOut) {
                     throw new IllegalStateException("Check for SecHub server alive timed out after " + (millisecondsWaited / 1000) + " seconds.");
                 }
             }
-            LOG.info("SecHub server at {} is alive", client.getServerUri());
+            LOG.debug("SecHub server at {} is alive", client.getServerUri());
 
         } catch (SecHubClientException e) {
-            throw new SystemTestRuntimeException("Was not able to check if server is alive.", e);
+            throw new SystemTestRuntimeException("Was not able to check if SecHub server is alive.", e);
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
         }
     }
 
     public void waitUntilPDSSolutionsAvailable(SystemTestRuntimeContext context) {
-        /* FIXME Albert Tregnaghi, 2023-04-20:implement */
+        if (!context.isLocalRun()) {
+            /* we do not wait for remote PDS solutions - must be available */
+            return;
+        }
+        List<PDSSolutionDefinition> pdsSolutions = context.getLocalPdsSolutionsOrFail();
+        for (PDSSolutionDefinition pdsSolution : pdsSolutions) {
+            waitForPDSSolution(pdsSolution, context);
+        }
+    }
+
+    private void waitForPDSSolution(PDSSolutionDefinition pdsSolution, SystemTestRuntimeContext context) {
+
+        String pdsSolutionName = pdsSolution.getName();
+
+        PDSClient client = context.getLocalTechUserPDSClient(pdsSolutionName);
+        Optional<Boolean> waitForAvailableOpt = pdsSolution.getWaitForAvailable();
+        if (waitForAvailableOpt.isPresent()) {
+
+            if (!waitForAvailableOpt.get()) {
+                LOG.info("Do not wait for PDS solution '" + pdsSolutionName + "' to become available because explicit not wished");
+                return;
+            }
+        }
+
+        client = context.getLocalTechUserPDSClient(pdsSolutionName);
+        if (context.isDryRun()) {
+            LOG.info("Dry run: waitUntilPDSavailable (pds solution '" + pdsSolutionName + "') is skipped");
+            return;
+        }
+        try {
+            long start = System.currentTimeMillis();
+            LOG.info("Wait until PDS solution '" + pdsSolutionName + "' at {} is alive - will wait {} seconds.", client.getServerUri(),
+                    maximumSecondsToWaitForPDSSolutionAlive);
+            while (!client.checkIsServerAlive()) {
+                Thread.sleep(1000);
+                long millisecondsWaited = System.currentTimeMillis() - start;
+                boolean timedOut = millisecondsWaited > maximumSecondsToWaitForPDSSolutionAlive * 1000 * 1;
+                if (timedOut) {
+                    throw new IllegalStateException(
+                            "Check alive for PDS solution '" + pdsSolutionName + "' timed out after " + (millisecondsWaited / 1000) + " seconds.");
+                }
+            }
+            LOG.debug("PDS solution '" + pdsSolutionName + "' at {} is alive", client.getServerUri());
+
+        } catch (PDSClientException e) {
+            throw new SystemTestRuntimeException("Was not able to check if PDS solution :'" + pdsSolutionName + "' is alive.", e);
+
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+        }
+
     }
 
 }

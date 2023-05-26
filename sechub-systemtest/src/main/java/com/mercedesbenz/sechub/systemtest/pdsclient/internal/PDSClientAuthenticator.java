@@ -1,14 +1,14 @@
-package com.mercedesbenz.sechub.api.internal;
+package com.mercedesbenz.sechub.systemtest.pdsclient.internal;
 
 import java.net.Authenticator;
 import java.net.PasswordAuthentication;
 
-import com.mercedesbenz.sechub.api.SecHubClient;
+import com.mercedesbenz.sechub.systemtest.pdsclient.PDSClient;
 
-public class SecHubClientAuthenticator extends Authenticator {
+public class PDSClientAuthenticator extends Authenticator {
     private PasswordAuthentication paswordAuthentication;
 
-    public SecHubClientAuthenticator(SecHubClient client) {
+    public PDSClientAuthenticator(PDSClient client) {
         this.paswordAuthentication = new PasswordAuthentication(client.getUsername(), client.getSealedApiToken().toCharArray());
     }
 
@@ -16,4 +16,5 @@ public class SecHubClientAuthenticator extends Authenticator {
     protected PasswordAuthentication getPasswordAuthentication() {
         return paswordAuthentication;
     }
+
 }

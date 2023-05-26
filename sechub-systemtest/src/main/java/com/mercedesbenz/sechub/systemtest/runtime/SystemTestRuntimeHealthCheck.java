@@ -10,11 +10,22 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+import java.util.TreeSet;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.mercedesbenz.sechub.commons.core.util.SimpleStringUtils;
+import com.mercedesbenz.sechub.commons.model.SecHubCodeScanConfiguration;
+import com.mercedesbenz.sechub.commons.model.SecHubConfigurationModel;
+import com.mercedesbenz.sechub.commons.model.SecHubConfigurationModelValidationError;
+import com.mercedesbenz.sechub.commons.model.SecHubConfigurationModelValidationResult;
+import com.mercedesbenz.sechub.commons.model.SecHubConfigurationModelValidationResult.SecHubConfigurationModelValidationErrorData;
+import com.mercedesbenz.sechub.commons.model.SecHubConfigurationModelValidator;
+import com.mercedesbenz.sechub.commons.model.SecHubLicenseScanConfiguration;
+import com.mercedesbenz.sechub.commons.model.SecHubSecretScanConfiguration;
+import com.mercedesbenz.sechub.commons.model.SecHubWebScanApiConfiguration;
+import com.mercedesbenz.sechub.commons.model.SecHubWebScanConfiguration;
 import com.mercedesbenz.sechub.pds.commons.core.config.PDSProductParameterDefinition;
 import com.mercedesbenz.sechub.pds.commons.core.config.PDSProductParameterSetup;
 import com.mercedesbenz.sechub.pds.commons.core.config.PDSProductSetup;
@@ -26,10 +37,12 @@ import com.mercedesbenz.sechub.systemtest.config.LocalSetupDefinition;
 import com.mercedesbenz.sechub.systemtest.config.PDSSolutionDefinition;
 import com.mercedesbenz.sechub.systemtest.config.RemoteSecHubDefinition;
 import com.mercedesbenz.sechub.systemtest.config.RemoteSetupDefinition;
+import com.mercedesbenz.sechub.systemtest.config.RunSecHubJobDefinition;
 import com.mercedesbenz.sechub.systemtest.config.ScriptDefinition;
 import com.mercedesbenz.sechub.systemtest.config.SecHubConfigurationDefinition;
 import com.mercedesbenz.sechub.systemtest.config.SecHubExecutorConfigDefinition;
 import com.mercedesbenz.sechub.systemtest.config.TestDefinition;
+import com.mercedesbenz.sechub.systemtest.config.UploadDefinition;
 import com.mercedesbenz.sechub.systemtest.runtime.error.SystemTestExecutionScope;
 import com.mercedesbenz.sechub.systemtest.runtime.error.SystemTestExecutionState;
 
@@ -50,13 +63,115 @@ public class SystemTestRuntimeHealthCheck {
             if (SimpleStringUtils.isEmpty(test.getName())) {
                 throw new WrongConfigurationException("Found at least one test where no name is defined! Every test must have its name!", context);
             }
-            for (ExecutionStepDefinition step : test.getPrepare()) {
-                if (step.getScript().isPresent()) {
-                    ScriptDefinition script = step.getScript().get();
-                    String path = script.getPath();
-                    if (SimpleStringUtils.isEmpty(path)) {
-                        throw new WrongConfigurationException("Path is missing for script in prepare step for test: " + test.getName(), context);
-                    }
+            assertPreparationScriptPathsAreSet(context, test);
+            assertRunSecHubJobCorrect(context, test);
+        }
+    }
+
+    private void assertRunSecHubJobCorrect(SystemTestRuntimeContext context, TestDefinition test) {
+        Optional<RunSecHubJobDefinition> runSecHubJobOpt = test.getExecute().getRunSecHubJob();
+        if (runSecHubJobOpt.isEmpty()) {
+            return;
+        }
+        RunSecHubJobDefinition runSecHubJob = runSecHubJobOpt.get();
+        assertReferenceIds(context, runSecHubJob);
+        
+        /* last but not least */
+        RunSecHubJobDefinitionTransformer transformer = new RunSecHubJobDefinitionTransformer();
+        SecHubConfigurationModel model = transformer.transformToSecHubConfiguration(runSecHubJob);
+        SecHubConfigurationModelValidator validator= new SecHubConfigurationModelValidator();
+        SecHubConfigurationModelValidationResult result = validator.validate(model);
+        if (result.hasErrors()) {
+            for (SecHubConfigurationModelValidationErrorData errorData : result.getErrors()) {
+                throw new WrongConfigurationException("Test: "+test.getName()+" leads to an invalid sechub configurarion:"+ errorData.toString(), context);
+            }
+        }
+        
+
+    }
+
+    private void assertReferenceIds(SystemTestRuntimeContext context, RunSecHubJobDefinition runSecHubJob) {
+        Set<String> existingReferenceIds = collectReferenceIdsAndFailIfMissing(context, runSecHubJob);
+
+        asertReferencesCorrectForCodeScan(context, runSecHubJob, existingReferenceIds);
+        asertReferencesCorrectForWebScan(context, runSecHubJob, existingReferenceIds);
+        asertReferencesCorrectForLicenseScan(context, runSecHubJob, existingReferenceIds);
+        asertReferencesCorrectForSecretcan(context, runSecHubJob, existingReferenceIds);
+
+        /* Because infrastructure scans do not have references we do not handled them */
+    }
+
+    private void asertReferencesCorrectForCodeScan(SystemTestRuntimeContext context, RunSecHubJobDefinition runSecHubJob, Set<String> existingReferenceIds) {
+        Optional<SecHubCodeScanConfiguration> codeConfigOpt = runSecHubJob.getCodeScan();
+        if (codeConfigOpt.isPresent()) {
+            assertReferenceIdsCorrect("code scan", context, existingReferenceIds, codeConfigOpt.get().getNamesOfUsedDataConfigurationObjects());
+        }
+    }
+
+    private void asertReferencesCorrectForSecretcan(SystemTestRuntimeContext context, RunSecHubJobDefinition runSecHubJob, Set<String> existingReferenceIds) {
+        Optional<SecHubSecretScanConfiguration> secretConfigOpt = runSecHubJob.getSecretScan();
+        if (secretConfigOpt.isPresent()) {
+            assertReferenceIdsCorrect("secret scan", context, existingReferenceIds, secretConfigOpt.get().getNamesOfUsedDataConfigurationObjects());
+        }
+    }
+
+    private void asertReferencesCorrectForLicenseScan(SystemTestRuntimeContext context, RunSecHubJobDefinition runSecHubJob, Set<String> existingReferenceIds) {
+        Optional<SecHubLicenseScanConfiguration> licenseConfigOpt = runSecHubJob.getLicenseScan();
+        if (licenseConfigOpt.isPresent()) {
+            assertReferenceIdsCorrect("license scan", context, existingReferenceIds, licenseConfigOpt.get().getNamesOfUsedDataConfigurationObjects());
+        }
+    }
+
+    private void asertReferencesCorrectForWebScan(SystemTestRuntimeContext context, RunSecHubJobDefinition runSecHubJob, Set<String> existingReferenceIds) {
+        Optional<SecHubWebScanConfiguration> webConfigOpt = runSecHubJob.getWebScan();
+        if (webConfigOpt.isPresent()) {
+            Optional<SecHubWebScanApiConfiguration> apiOpt = webConfigOpt.get().getApi();
+            if (apiOpt.isEmpty()) {
+                return;
+            }
+            SecHubWebScanApiConfiguration api = apiOpt.get();
+            assertReferenceIdsCorrect("web scan api", context, existingReferenceIds, api.getNamesOfUsedDataConfigurationObjects());
+        }
+    }
+
+    private Set<String> collectReferenceIdsAndFailIfMissing(SystemTestRuntimeContext context, RunSecHubJobDefinition runSecHubJob) {
+        List<UploadDefinition> uploads = runSecHubJob.getUploads();
+        Set<String> existingReferenceIds = new TreeSet<>();
+        for (UploadDefinition upload : uploads) {
+            Optional<String> refIdOpt = upload.getReferenceId();
+            if (refIdOpt.isEmpty()) {
+                throw new WrongConfigurationException("There is at least one upload defined without a reference-id", context);
+            }
+            String referenceId = refIdOpt.get();
+            if (existingReferenceIds.contains(referenceId)) {
+                throw new WrongConfigurationException("The reference id:" + referenceId + " is used in multiple uploads. This is currently not supported1",
+                        context);
+            }
+            existingReferenceIds.add(referenceId);
+        }
+        return existingReferenceIds;
+    }
+
+    private void assertReferenceIdsCorrect(String configName, SystemTestRuntimeContext context, Set<String> existingReferenceIds,
+            Set<String> referencedByScanOrNull) {
+        if (referencedByScanOrNull == null) {
+            return;
+        }
+        for (String name : referencedByScanOrNull) {
+            if (!existingReferenceIds.contains(name)) {
+                throw new WrongConfigurationException("The reference id:" + name + " is used in  " + configName
+                        + " configuration, but there is no upload which references it.\nFound reference ids:" + referencedByScanOrNull, context);
+            }
+        }
+    }
+
+    private void assertPreparationScriptPathsAreSet(SystemTestRuntimeContext context, TestDefinition test) {
+        for (ExecutionStepDefinition step : test.getPrepare()) {
+            if (step.getScript().isPresent()) {
+                ScriptDefinition script = step.getScript().get();
+                String path = script.getPath();
+                if (SimpleStringUtils.isEmpty(path)) {
+                    throw new WrongConfigurationException("Path is missing for script in prepare step for test: " + test.getName(), context);
                 }
             }
         }

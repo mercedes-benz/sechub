@@ -13,6 +13,8 @@ public class PDSSolutionDefinition extends AbstractDefinition {
     private String baseDir;
     private String pathToPdsServerConfigFile;
 
+    private CredentialsDefinition techUser = new CredentialsDefinition();
+
     private List<ExecutionStepDefinition> start = new ArrayList<>();
 
     private Optional<Boolean> waitForAvailable = Optional.ofNullable(null);
@@ -75,5 +77,9 @@ public class PDSSolutionDefinition extends AbstractDefinition {
 
     public void setUrl(URL url) {
         this.url = url;
+    }
+
+    public CredentialsDefinition getTechUser() {
+        return techUser;
     }
 }

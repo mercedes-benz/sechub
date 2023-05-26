@@ -4,19 +4,19 @@ public class SystemTestErrorException extends Exception {
 
     private static final long serialVersionUID = 1L;
 
-    private SystemTestError error;
+    private SystemTestFailure error;
 
     public SystemTestErrorException(String message) {
         super(message);
     }
 
     protected void defineError(String message, String details) {
-        error = new SystemTestError();
+        error = new SystemTestFailure();
         error.setMessage(message);
         error.setDetails(details);
     }
 
-    public SystemTestError getError() {
+    public SystemTestFailure getError() {
         return error;
     }
 

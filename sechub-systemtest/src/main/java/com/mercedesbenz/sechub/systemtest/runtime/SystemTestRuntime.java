@@ -1,5 +1,6 @@
 package com.mercedesbenz.sechub.systemtest.runtime;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -75,10 +76,14 @@ public class SystemTestRuntime {
             /* execute tests */
             switchToStage("Test", context);
 
-            List<TestDefinition> tests = context.getConfiguration().getTests();
+            /* handle dynamic variables */
+            List<TestDefinition> originTestList = context.getConfiguration().getTests();
+            List<TestDefinition> workingList = new ArrayList<>(originTestList);
+            originTestList.clear();
 
-            for (TestDefinition test : tests) {
-                testEngine.execute(test, context);
+            for (TestDefinition test : workingList) {
+                TestEngineContext testEngineContext = testEngine.createTestContext(test, context);
+                testEngine.execute(testEngineContext);
             }
 
             /* shutdown */

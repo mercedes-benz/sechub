@@ -18,6 +18,12 @@ import org.slf4j.LoggerFactory;
 
 import com.mercedesbenz.sechub.commons.core.util.SimpleStringUtils;
 import com.mercedesbenz.sechub.commons.model.JSONConverter;
+import com.mercedesbenz.sechub.commons.model.SecHubCodeScanConfiguration;
+import com.mercedesbenz.sechub.commons.model.SecHubDataConfigurationUsageByName;
+import com.mercedesbenz.sechub.commons.model.SecHubInfrastructureScanConfiguration;
+import com.mercedesbenz.sechub.commons.model.SecHubLicenseScanConfiguration;
+import com.mercedesbenz.sechub.commons.model.SecHubSecretScanConfiguration;
+import com.mercedesbenz.sechub.commons.model.SecHubWebScanConfiguration;
 import com.mercedesbenz.sechub.systemtest.config.CalculatedVariables;
 import com.mercedesbenz.sechub.systemtest.config.CredentialsDefinition;
 import com.mercedesbenz.sechub.systemtest.config.DefaultFallback;
@@ -34,6 +40,7 @@ import com.mercedesbenz.sechub.systemtest.config.SecHubConfigurationDefinition;
 import com.mercedesbenz.sechub.systemtest.config.SecHubExecutorConfigDefinition;
 import com.mercedesbenz.sechub.systemtest.config.SystemTestConfiguration;
 import com.mercedesbenz.sechub.systemtest.config.TestDefinition;
+import com.mercedesbenz.sechub.systemtest.config.UploadDefinition;
 import com.mercedesbenz.sechub.systemtest.template.SystemTestTemplateEngine;
 
 public class SystemTestRuntimePreparator {
@@ -78,6 +85,80 @@ public class SystemTestRuntimePreparator {
         String project = runSecHubJob.getProject();
         if (SimpleStringUtils.isEmpty(project)) {
             runSecHubJob.setProject(DefaultFallback.FALLBACK_PROJECT_NAME.getValue());
+        }
+        handleCodeScan(test, context, runSecHubJob);
+        handleSecretScan(test, context, runSecHubJob);
+        handleLicenseScan(test, context, runSecHubJob);
+        handleWebScan(test, context, runSecHubJob);
+        handleInfraScan(test, context, runSecHubJob);
+
+        handleUploads(test, context, runSecHubJob);
+    }
+
+    private void handleUploads(TestDefinition test, SystemTestRuntimeContext context, RunSecHubJobDefinition runSecHubJob) {
+        List<UploadDefinition> uploads = runSecHubJob.getUploads();
+        for (UploadDefinition upload : uploads) {
+            handleMissingUploadReferenceId(upload);
+        }
+    }
+
+    private void handleMissingUploadReferenceId(UploadDefinition upload) {
+        Optional<String> refIdOpt = upload.getReferenceId();
+        if (!refIdOpt.isPresent()) {
+            upload.setReferenceId(Optional.of(DefaultFallback.FALLBACK_UPLOAD_REF_ID.getValue()));
+        }
+    }
+
+    private void handleWebScan(TestDefinition test, SystemTestRuntimeContext context, RunSecHubJobDefinition runSecHubJob) {
+        Optional<SecHubWebScanConfiguration> webScanOpt = runSecHubJob.getWebScan();
+        if (webScanOpt.isEmpty()) {
+            return;
+        }
+        SecHubWebScanConfiguration webScan = webScanOpt.get();
+        LOG.warn("Web scan found, but no special preparation done for url: {}", webScan.getUrl());
+
+    }
+
+    private void handleInfraScan(TestDefinition test, SystemTestRuntimeContext context, RunSecHubJobDefinition runSecHubJob) {
+        Optional<SecHubInfrastructureScanConfiguration> infraScanOpt = runSecHubJob.getInfraScan();
+        if (infraScanOpt.isEmpty()) {
+            return;
+        }
+        SecHubInfrastructureScanConfiguration infraScan = infraScanOpt.get();
+        LOG.warn("Infrastructure scan found, but no special preparation done for uris: {}", infraScan.getUris());
+
+    }
+
+    private void handleCodeScan(TestDefinition test, SystemTestRuntimeContext context, RunSecHubJobDefinition runSecHubJob) {
+        Optional<SecHubCodeScanConfiguration> codeScanOpt = runSecHubJob.getCodeScan();
+        if (codeScanOpt.isEmpty()) {
+            return;
+        }
+        SecHubCodeScanConfiguration codeScan = codeScanOpt.get();
+        handleUsedDataConfigurationObjects(codeScan, test, context);
+    }
+
+    private void handleLicenseScan(TestDefinition test, SystemTestRuntimeContext context, RunSecHubJobDefinition runSecHubJob) {
+        Optional<SecHubLicenseScanConfiguration> licenseScanOpt = runSecHubJob.getLicenseScan();
+        if (licenseScanOpt.isEmpty()) {
+            return;
+        }
+        SecHubLicenseScanConfiguration licenseScan = licenseScanOpt.get();
+        handleUsedDataConfigurationObjects(licenseScan, test, context);
+    }
+
+    private void handleSecretScan(TestDefinition test, SystemTestRuntimeContext context, RunSecHubJobDefinition runSecHubJob) {
+        Optional<SecHubSecretScanConfiguration> secretScanOpt = runSecHubJob.getSecretScan();
+        if (secretScanOpt.isEmpty()) {
+            return;
+        }
+        SecHubSecretScanConfiguration secretScan = secretScanOpt.get();
+        handleUsedDataConfigurationObjects(secretScan, test, context);
+    }
+
+    private void handleUsedDataConfigurationObjects(SecHubDataConfigurationUsageByName usageByName, TestDefinition test, SystemTestRuntimeContext context) {
+        if (usageByName.getNamesOfUsedDataConfigurationObjects().isEmpty()) {
+            usageByName.getNamesOfUsedDataConfigurationObjects().add(FALLBACK_UPLOAD_REF_ID.getValue());
         }
     }
 
@@ -193,9 +274,11 @@ public class SystemTestRuntimePreparator {
         createFallbackSecHubSetupParts(context);
         createFallbackDefaultProjectWhenNoProjectsDefined(context);
         addFallbackDefaultProfileToExecutorsWithoutProfile(context);
-        addFallbackExecutorConfigurationCredentials(context);
 
         createFallbackForPDSSolutions(context);
+
+        /* Important: must be done AFTER PDS solution handing */
+        addFallbackExecutorConfigurationCredentials(context);
     }
 
     private void createFallbackForPDSSolutions(SystemTestRuntimeContext context) {
@@ -210,6 +293,14 @@ public class SystemTestRuntimePreparator {
             if (localPdsSolution.getWaitForAvailable().isEmpty()) {
                 localPdsSolution.setWaitForAvailable(Optional.of(DefaultFallbackUtil.convertToBoolean(DefaultFallback.FALLBACK_LOCAL_PDS_WAIT_FOR_AVAILABLE)));
             }
+            CredentialsDefinition credentials = localPdsSolution.getTechUser();
+            if (credentials.getUserId() == null || credentials.getUserId().isEmpty()) {
+
+                credentials.setUserId(DefaultFallback.FALLBACK_PDS_TECH_USER.getValue());
+                credentials.setApiToken(DefaultFallback.FALLBACK_PDS_TECH_TOKEN.getValue());
+
+                LOG.info("No credentials set for solution: '{}', added defaults");
+            }
         }
     }
 
@@ -222,10 +313,21 @@ public class SystemTestRuntimePreparator {
         }
         for (SecHubExecutorConfigDefinition definition : context.getLocalSecHubExecutorConfigurationsOrFail()) {
             CredentialsDefinition credentials = definition.getCredentials();
+            String productId = definition.getPdsProductId();
+
+            PDSSolutionDefinition solution = context.fetchPDSSolutionOrFail(productId);
+
             if (credentials.getUserId() == null || credentials.getUserId().isEmpty()) {
 
-                credentials.setUserId(DefaultFallback.FALLBACK_PDS_TECH_USER.getValue());
-                credentials.setApiToken(DefaultFallback.FALLBACK_PDS_TECH_TOKEN.getValue());
+                CredentialsDefinition techUser = solution.getTechUser();
+
+                String userId = techUser.getUserId();
+                if (userId == null || userId.isEmpty()) {
+                    throw new IllegalStateException("At this point of preparation, the tech user credentials must be not null!");
+                }
+
+                credentials.setUserId(userId);
+                credentials.setApiToken(techUser.getApiToken());
 
                 LOG.info("No credentials set for executor, added defaults");
             }

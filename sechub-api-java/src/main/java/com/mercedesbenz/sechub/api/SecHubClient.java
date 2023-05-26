@@ -10,12 +10,16 @@ import java.util.concurrent.Callable;
 
 import javax.crypto.SealedObject;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.fasterxml.jackson.databind.json.JsonMapper;
 import com.mercedesbenz.sechub.api.internal.ApiClientBuilder;
 import com.mercedesbenz.sechub.api.internal.OpenApiSecHubClientConversionHelper;
 import com.mercedesbenz.sechub.api.internal.WorkaroundAdminApi;
 import com.mercedesbenz.sechub.api.internal.gen.AdminApi;
 import com.mercedesbenz.sechub.api.internal.gen.AnonymousApi;
+import com.mercedesbenz.sechub.api.internal.gen.ProjectApi;
 import com.mercedesbenz.sechub.api.internal.gen.invoker.ApiClient;
 import com.mercedesbenz.sechub.api.internal.gen.invoker.ApiException;
 import com.mercedesbenz.sechub.api.internal.gen.model.OpenApiExecutionProfileFetch;
@@ -23,10 +27,14 @@ import com.mercedesbenz.sechub.api.internal.gen.model.OpenApiExecutionProfileUpd
 import com.mercedesbenz.sechub.api.internal.gen.model.OpenApiExecutionProfileUpdateConfigurationsInner;
 import com.mercedesbenz.sechub.api.internal.gen.model.OpenApiExecutorConfiguration;
 import com.mercedesbenz.sechub.api.internal.gen.model.OpenApiExecutorConfigurationSetup;
+import com.mercedesbenz.sechub.api.internal.gen.model.OpenApiJobId;
 import com.mercedesbenz.sechub.api.internal.gen.model.OpenApiProjectDetails;
+import com.mercedesbenz.sechub.api.internal.gen.model.OpenApiScanJob;
 import com.mercedesbenz.sechub.commons.core.FailableRunnable;
 import com.mercedesbenz.sechub.commons.core.security.CryptoAccess;
+import com.mercedesbenz.sechub.commons.model.JSONConverter;
 import com.mercedesbenz.sechub.commons.model.JsonMapperFactory;
+import com.mercedesbenz.sechub.commons.model.SecHubConfigurationModel;
 
 /**
  * The central java API entry to access SecHub
@@ -35,6 +43,8 @@ import com.mercedesbenz.sechub.commons.model.JsonMapperFactory;
  *
  */
 public class SecHubClient {
+
+    private static final Logger LOG = LoggerFactory.getLogger(SecHubClient.class);
 
     private static JsonMapper mapper = JsonMapperFactory.createMapper();
 
@@ -47,6 +57,7 @@ public class SecHubClient {
     private ApiClient apiClient;
     private AnonymousApi anonymousApi;
     private AdminApi adminApi;
+    private ProjectApi projectApi;
 
     private WorkaroundAdminApi workaroundAdminApi;
 
@@ -68,6 +79,7 @@ public class SecHubClient {
         anonymousApi = new AnonymousApi(getApiClient());
         adminApi = new AdminApi(getApiClient());
         workaroundAdminApi = new WorkaroundAdminApi(getApiClient());
+        projectApi = new ProjectApi(getApiClient());
 
         conversionHelper = new OpenApiSecHubClientConversionHelper(adminApi);
     }
@@ -254,6 +266,31 @@ public class SecHubClient {
         requireNonNull(executorUUID, "executor uuid may not be null!");
 
         runOrFail(() -> adminApi.adminDeletesExecutorConfiguration(executorUUID.toString()), "Was not able to delete executor configuration: " + executorUUID);
+    }
+
+    /* ++++++++++++++++++++++++++++++++++++++++++++++++++++ */
+    /* + ................Scheduling...................... + */
+    /* ++++++++++++++++++++++++++++++++++++++++++++++++++++ */
+    public UUID createJob(SecHubConfigurationModel configuration) throws SecHubClientException{
+        requireNonNull(configuration, "configuration may not be null!");
+        String projectId = configuration.getProjectId();
+        if (projectId==null) {
+            throw new IllegalStateException("Project id missing inside configuration!");
+        }
+        
+        String configAsJson = JSONConverter.get().toJSON(configuration,true);
+        LOG.debug("configAsJson=\n{}",configAsJson);
+        
+        OpenApiScanJob openApiScanJob = JSONConverter.get().fromJSON(OpenApiScanJob.class, configAsJson); 
+        if (LOG.isDebugEnabled()) {
+            String openApiJSON = JSONConverter.get().toJSON(openApiScanJob,true);
+            LOG.debug("openApiJSON=\n{}",openApiJSON);
+        }
+        OpenApiJobId openApiJobId = runOrFail(()-> projectApi.userCreatesNewJob(projectId, openApiScanJob), "Was not able to create a SecHub job for project:"+projectId);
+        String jobIdAsString = openApiJobId.getJobId();
+        
+        UUID uuid = UUID.fromString(jobIdAsString);
+        return uuid;
     }
 
     /* ++++++++++++++++++++++++++++++++++++++++++++++++++++ */

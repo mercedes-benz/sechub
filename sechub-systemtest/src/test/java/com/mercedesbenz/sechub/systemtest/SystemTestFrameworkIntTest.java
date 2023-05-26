@@ -6,7 +6,6 @@ import static org.junit.jupiter.api.Assertions.*;
 
 import java.io.File;
 import java.io.IOException;
-import java.net.URI;
 import java.net.URL;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -16,7 +15,6 @@ import org.junit.jupiter.api.condition.EnabledIfSystemProperty;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.mercedesbenz.sechub.api.SecHubClient;
 import com.mercedesbenz.sechub.commons.model.JSONConverter;
 import com.mercedesbenz.sechub.systemtest.config.RuntimeVariable;
 import com.mercedesbenz.sechub.systemtest.config.SystemTestConfiguration;
@@ -46,6 +44,9 @@ class SystemTestFrameworkIntTest {
 
     private static final Logger LOG = LoggerFactory.getLogger(SystemTestFrameworkIntTest.class);
 
+    private static int SECHUB_PORT = TestConfigUtil.getSecHubIntTestServerPort();
+    private static int PDS_PORT = TestConfigUtil.getPDSIntTestServerPort();
+
     @BeforeEach
     void beforeEach(TestInfo info) {
         LOG.info("--------------------------------------------------------------------------------------------------------------------------------");
@@ -58,17 +59,13 @@ class SystemTestFrameworkIntTest {
     void even_integration_test_setup_can_be_tested__codescan() throws IOException {
         /* @formatter:off */
 
-
-        int secHubPort = TestConfigUtil.getSecHubIntTestServerPort();
-        int pdsPort = TestConfigUtil.getPDSIntTestServerPort();
-
         /* prepare */
         SystemTestConfiguration configuration = configure().
                 addVariable("testSourceUploadFolder", "${runtime."+RuntimeVariable.CURRENT_TEST_FOLDER.getVariableName()+"}/testsources").
 
                 localSetup().
                     secHub().
-                        url(new URL("https://localhost:"+secHubPort)).
+                        url(new URL("https://localhost:"+SECHUB_PORT)).
                         admin("int-test_superadmin","int-test_superadmin-pwd").
                         /*
                          * We do not define any steps here - developers must have started the
@@ -80,16 +77,16 @@ class SystemTestFrameworkIntTest {
                                 /* add mandatory parameters for this product:*/
                                 parameter("product1.qualititycheck.enabled","true").
                                 parameter("product1.level","A").
-                                /* credentials */
-                                credentials("pds-inttest-techuser", "pds-inttest-apitoken").
                             endExecutor().
                         endConfigure().
                     endSecHub().
+
                     addSolution("PDS_INTTEST_PRODUCT_CODESCAN").
-                        url(new URL("https://localhost:"+pdsPort)).
+                        url(new URL("https://localhost:"+PDS_PORT)).
+                        techUser("pds-inttest-techuser", "pds-inttest-apitoken").
                         /*
-                         * We do not define any steps here - developers must have started the
-                         * integration test PDS server locally in IDE
+                         * We do not define any steps here - the PDS and SecHub instances
+                         * must be started already.
                          *
                          * The next line is important: The path cannot be auto calculated because we use a
                          * SecHub server started by here - so we set the path */
@@ -107,12 +104,10 @@ class SystemTestFrameworkIntTest {
                     endStep().
                     runSecHubJob().
                         codeScan().
-                            use("reference1").
                         endScan().
                         uploads().
                             upload().
-                                sources("${variables.testSourceUploadFolder}").
-                                withReferenceId("reference1").
+                                sourceFolder("${variables.testSourceUploadFolder}").
                             endUpload().
                         endUploads().
                     endRunSecHub().
@@ -122,34 +117,16 @@ class SystemTestFrameworkIntTest {
         LOG.info("config=\n{}", JSONConverter.get().toJSON(configuration,true));
 
         /* execute */
-        try {
-            System.out.println("------> start test");
-            SystemTestResult result = runSystemTests(
-                    params().
+        SystemTestResult result = runSystemTests(
+                params().
                     localRun().
                     workspacePath(createTempDirectoryInBuildFolder("systemtest_inttest_run").toString()).
                     testConfiguration(configuration).
-                    build());
+                build());
 
-            /* test */
-            if (result.hasFailedTests()) {
-                fail(result.toString());
-            }
-        }catch(Throwable t) {
-            System.err.println("----> failed with:"+t.getClass());
-            t.printStackTrace();
-
-            System.err.println("---- test if server is still alive:");
-            try {
-                URI serverUri = new URI("https://localhost:"+secHubPort);
-                SecHubClient client = new SecHubClient(serverUri, "int-test_superadmin", "int-test_superadmin-pwd");
-                boolean alive = client.checkIsServerAlive();
-                System.out.println("server alive at "+serverUri+" : "+alive);
-            } catch (Exception e) {
-                System.out.println("Not able to check server alive!");
-                e.printStackTrace();
-            }
-            throw t;
+        /* test */
+        if (result.hasFailedTests()) {
+            fail(result.toString());
         }
         /* @formatter:on */
     }

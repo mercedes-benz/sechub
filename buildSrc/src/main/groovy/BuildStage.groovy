@@ -37,7 +37,7 @@ class BuildStage{
                 openApiFileMustExist=true;
                 break;
             default: 
-                throw new IllegalArgumentException("Unknown build stage:"+ stage);
+                throw new IllegalArgumentException("Unknown build stage: '"+ stage+"'");
         }
           
     }
