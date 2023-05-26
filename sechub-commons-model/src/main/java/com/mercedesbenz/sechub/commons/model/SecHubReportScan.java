@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.commons.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
@@ -9,6 +10,38 @@ public class SecHubReportScan {
     private long red = 0;
     private long yellow = 0;
     private long green = 0;
+    private SecHubReportScanDetails details = new SecHubReportScanDetails();
+
+    public void reportScanHelper(SecHubFinding finding) {
+        incrementColors(finding);
+        details.detailsHelper(finding);
+    }
+
+    public void incrementColors(SecHubFinding finding) {
+        Severity severity = finding.getSeverity();
+        switch (severity) {
+        case HIGH -> incrementRedCount();
+        case MEDIUM -> incrementYellowCount();
+        case LOW, INFO -> incrementGreenCount();
+        }
+        incrementTotalCount();
+    }
+
+    protected void incrementRedCount() {
+        this.red++;
+    }
+
+    protected void incrementYellowCount() {
+        this.yellow++;
+    }
+
+    protected void incrementGreenCount() {
+        this.green++;
+    }
+
+    protected void incrementTotalCount() {
+        this.total++;
+    }
 
     public long getTotal() {
         return total;
@@ -24,5 +57,9 @@ public class SecHubReportScan {
 
     public long getGreen() {
         return green;
+    }
+
+    public SecHubReportScanDetails getDetails() {
+        return details;
     }
 }

@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.commons.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
@@ -7,6 +8,7 @@ public class SecHubReportSummary {
 
     SecHubReportScan codeScan = new SecHubReportScan();
     SecHubReportScan infraScan = new SecHubReportScan();
+    SecHubReportScan webScan = new SecHubReportScan();
 
     public SecHubReportScan getCodeScan() {
         return codeScan;
@@ -22,5 +24,13 @@ public class SecHubReportSummary {
 
     public void setInfraScan(SecHubReportScan infraScan) {
         this.infraScan = infraScan;
+    }
+
+    public SecHubReportScan getWebScan() {
+        return webScan;
+    }
+
+    public void setWebScan(SecHubReportScan webScan) {
+        this.webScan = webScan;
     }
 }

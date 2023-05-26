@@ -12,16 +12,7 @@ import org.slf4j.LoggerFactory;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.mercedesbenz.sechub.commons.core.MustBeKeptStable;
-import com.mercedesbenz.sechub.commons.model.JSONConverterException;
-import com.mercedesbenz.sechub.commons.model.JSONable;
-import com.mercedesbenz.sechub.commons.model.SecHubMessage;
-import com.mercedesbenz.sechub.commons.model.SecHubMessageType;
-import com.mercedesbenz.sechub.commons.model.SecHubReportData;
-import com.mercedesbenz.sechub.commons.model.SecHubReportMetaData;
-import com.mercedesbenz.sechub.commons.model.SecHubReportModel;
-import com.mercedesbenz.sechub.commons.model.SecHubResult;
-import com.mercedesbenz.sechub.commons.model.SecHubStatus;
-import com.mercedesbenz.sechub.commons.model.TrafficLight;
+import com.mercedesbenz.sechub.commons.model.*;
 import com.mercedesbenz.sechub.sharedkernel.UUIDTraceLogID;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
@@ -68,6 +59,12 @@ public class ScanSecHubReport implements SecHubReportData, JSONable<ScanSecHubRe
                     model.setJobUUID(report.getSecHubJobUUID());
                 }
 
+                SecHubReportMetaData reportMetaData = new SecHubReportMetaData();
+                setMetaData(reportMetaData);
+
+                SecHubReportSummary secHubReportSummary = new SecHubReportSummary();
+                reportMetaData.setSummary(secHubReportSummary);
+
             } catch (JSONConverterException e) {
                 LOG.error("FATAL PROBLEM! Failed to create sechub result by model for job:{}", report.getSecHubJobUUID(), e);
 
@@ -105,9 +102,23 @@ public class ScanSecHubReport implements SecHubReportData, JSONable<ScanSecHubRe
     }
 
     private void buildCalculatedData(ScanReport report) {
-
         model.setTrafficLight(TrafficLight.fromString(report.getTrafficLightAsString()));
         model.getResult().setCount(model.getResult().getFindings().size());
+        calculateSummary();
+    }
+
+    private void calculateSummary() {
+        SecHubReportScan codeScan = model.getMetaData().get().getSummary().getCodeScan();
+        SecHubReportScan infraScan = model.getMetaData().get().getSummary().getInfraScan();
+        SecHubReportScan webScan = model.getMetaData().get().getSummary().getWebScan();
+        for (SecHubFinding finding : model.getResult().getFindings()) {
+            ScanType scanType = finding.getType();
+            switch (scanType) {
+            case CODE_SCAN -> codeScan.reportScanHelper(finding);
+            case INFRA_SCAN -> infraScan.reportScanHelper(finding);
+            case WEB_SCAN -> webScan.reportScanHelper(finding);
+            }
+        }
     }
 
     @Override

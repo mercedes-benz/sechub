@@ -20,4 +20,8 @@ public class SecHubReportMetaData {
     public SecHubReportSummary getSummary() {
         return summary;
     }
+
+    public void setSummary(SecHubReportSummary summary) {
+        this.summary = summary;
+    }
 }

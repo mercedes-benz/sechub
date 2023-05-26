@@ -10,6 +10,7 @@ import java.nio.file.Path;
 import java.time.LocalDateTime;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Optional;
 import java.util.TreeMap;
 
 import org.junit.jupiter.api.BeforeAll;
@@ -344,9 +345,9 @@ public class ThymeLeafHTMLReportingTest {
             ScanSecHubReport scanReport = new ScanSecHubReport(report);
             if (getMetaData().isMetaDataNecessaryForReport()) {
 
-                SecHubReportMetaData reportMetaData = new SecHubReportMetaData();
-                reportMetaData.getLabels().putAll(getMetaData().labels);
-                scanReport.setMetaData(reportMetaData);
+                Optional<SecHubReportMetaData> reportMetaData = scanReport.getMetaData();
+                reportMetaData.get().getLabels().putAll(getMetaData().labels);
+                scanReport.setMetaData(reportMetaData.get());
             }
             storeAsJSONFileForDebuggingWhenTempFilesAreKept(JSONConverter.get().toJSON(scanReport, true), this);
             Map<String, Object> tyhmeleafMap = reportModelBuilder.build(scanReport);
