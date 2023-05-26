@@ -14,7 +14,7 @@ services:
       - "internal"
     volumes:
       - "shared_volume:/shared_volumes/uploads"
-      - ./docker/scripts:/scripts
+      - ./docker/scripts:/pds/scripts
     depends_on:
       - database
 

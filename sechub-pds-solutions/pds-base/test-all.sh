@@ -4,13 +4,11 @@
 function run_test() {
     local test_build_type="$1"
 
-    local space_line="#########################"
-
-    echo "$space_line"
+    echo "#########################"
     echo "# Test: $test_build_type"
-    echo "$space_line"
+    echo "#########################"
 
-    export BUILD_TYPE="build"
+    export BUILD_TYPE="$test_build_type"
     ./test.sh > /dev/null
 
     if [[ "$?" -eq 0 ]]

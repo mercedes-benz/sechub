@@ -33,7 +33,7 @@ Supported security tools:
 
 === Getting Started
 
-* https://mercedes-benz.github.io/sechub/latest/sechub-developer-quickstart-guide.html[SecHub Developer Quickstart Guide]
+* https://mercedes-benz.github.io/sechub/latest/sechub-getting-started.html[SecHub Getting Started Guide]
 
 === Installation
 

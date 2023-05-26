@@ -37,8 +37,8 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-go-
 
-      - name: Gradle clean
-        run: ./gradlew clean
+      - name: Gradle clean + spotlessCheck
+        run: ./gradlew clean spotlessCheck
 
       - name: Build Client
         run: ./gradlew :sechub-cli:buildGo :sechub-cli:testGo
