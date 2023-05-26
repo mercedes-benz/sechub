@@ -323,7 +323,6 @@ jobs:
         if: github.event.inputs.server-version != ''
         run: |
           cd sechub-developertools/build/libs/
-          sha256sum sechub-developertools-${{ github.event.inputs.server-version }}.jar > sechub-developertools-${{ github.event.inputs.server-version }}.jar.sha256sum
           sha256sum sechub-developer-admin-ui-${{ github.event.inputs.server-version }}.jar > sechub-developer-admin-ui-${{ github.event.inputs.server-version }}.jar.sha256sum
 
       - name: Upload Server release asset sechub-server-${{ github.event.inputs.server-version }}.jar
@@ -346,28 +345,6 @@ jobs:
           upload_url: ${{ steps.create_server_release.outputs.upload_url }}
           asset_path: sechub-server/build/libs/sechub-server-${{ github.event.inputs.server-version }}.jar.sha256sum
           asset_name: sechub-server-${{ github.event.inputs.server-version }}.jar.sha256sum
-          asset_content_type: text/plain
-
-      - name: Upload SecHub release asset sechub-developertools-${{ github.event.inputs.server-version }}.jar
-        if: github.event.inputs.server-version != ''
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ steps.create_server_release.outputs.upload_url }}
-          asset_path: sechub-developertools/build/libs/sechub-developertools-${{ github.event.inputs.server-version }}.jar
-          asset_name: sechub-developertools-${{ github.event.inputs.server-version }}.jar
-          asset_content_type: application/zip
-
-      - name: Upload Server release asset sechub-developertools-${{ github.event.inputs.server-version }}.jar.sha256sum
-        if: github.event.inputs.server-version != ''
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ steps.create_server_release.outputs.upload_url }}
-          asset_path: sechub-developertools/build/libs/sechub-developertools-${{ github.event.inputs.server-version }}.jar.sha256sum
-          asset_name: sechub-developertools-${{ github.event.inputs.server-version }}.jar.sha256sum
           asset_content_type: text/plain
 
       - name: Upload SecHub release asset sechub-developer-admin-ui-${{ github.event.inputs.server-version }}.jar
