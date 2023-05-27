@@ -3,6 +3,7 @@ package com.mercedesbenz.sechub.domain.scan.product;
 
 import static jakarta.persistence.EnumType.*;
 
+import java.sql.Types;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
@@ -15,8 +16,7 @@ import jakarta.persistence.Table;
 import jakarta.persistence.Version;
 
 import org.hibernate.annotations.GenericGenerator;
-import org.hibernate.annotations.Type;
-
+import org.hibernate.annotations.JdbcTypeCode;
 import com.mercedesbenz.sechub.domain.scan.product.config.ProductExecutorConfigInfo;
 import com.mercedesbenz.sechub.sharedkernel.ProductIdentifier;
 
@@ -81,8 +81,9 @@ public class ProductResult {
     @Column(name = COLUMN_PRODUCT_IDENTIFIER, nullable = false)
     ProductIdentifier productIdentifier;
 
-    @Type(type = "text") // why not using @Lob, because hibernate/postgres issues. see
-                         // https://stackoverflow.com/questions/25094410/hibernate-error-while-persisting-text-datatype?noredirect=1#comment39048566_25094410
+    @JdbcTypeCode(Types.LONGVARCHAR) // why not using @Lob, because hibernate/postgres issues. see
+                                     // https://stackoverflow.com/questions/25094410/hibernate-error-while-persisting-text-datatype?noredirect=1#comment39048566_25094410
+                                     // In Hibernate 6: https://stackoverflow.com/a/74602072
     @Column(name = COLUMN_RESULT)
     private String result;
 
@@ -102,14 +103,14 @@ public class ProductResult {
     @Column(name = COLUMN_ENDED) // remark: we setup hibernate to use UTC settings - see application.properties
     LocalDateTime ended;
 
-    @Type(type = "text")
+    @JdbcTypeCode(Types.LONGVARCHAR)
     @Column(name = COLUMN_META_DATA, nullable = true)
     String metaData;
 
     @Column(name = COLUMN_PRODUCT_CONFIG_UUID, nullable = true, columnDefinition = "UUID") // when null it means we got (old) entries or SERECO fallback
     UUID productExecutorConfigUUID;
 
-    @Type(type = "text")
+    @JdbcTypeCode(Types.LONGVARCHAR)
     @Column(name = COLUMN_MESSAGES, nullable = true)
     String messages;
 

@@ -2,7 +2,7 @@
 package com.mercedesbenz.sechub.webui;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 
@@ -29,7 +29,7 @@ public class NewApiTokenService {
     public Mono<String> requestNewApiToken(String email) {
 
         return webClient.post().uri("api/anonymous/refresh/apitoken/" + email).retrieve()
-                .onRawStatus(HttpStatus::is4xxClientError, error -> Mono.error(new RuntimeException("API not found")))
-                .onStatus(HttpStatus::is5xxServerError, error -> Mono.error(new RuntimeException("Server is not responding"))).bodyToMono(String.class);
+                .onStatus(HttpStatusCode::is4xxClientError, error -> Mono.error(new RuntimeException("API not found")))
+                .onStatus(HttpStatusCode::is5xxServerError, error -> Mono.error(new RuntimeException("Server is not responding"))).bodyToMono(String.class);
     }
 }
