@@ -17,30 +17,32 @@ import org.springframework.security.web.server.util.matcher.ServerWebExchangeMat
 public class SecurityConfiguration {
     @Autowired
     UserDetailInformationService userDetailInformationService;
-
+    
     @Bean
-    public SecurityWebFilterChain springSecurityFilterChain(ServerHttpSecurity httpSecurity) throws Exception {
+    public SecurityWebFilterChain springSecurityFilterChain(ServerHttpSecurity httpSecurity) {
 
-        /* @formatter:off */
-		httpSecurity.
-			        authorizeExchange().
-					  pathMatchers("/css/**", "/js/**", "/images/**").permitAll().
-					  pathMatchers("/login", "/logout").permitAll().
-					  anyExchange().authenticated().
-					and().
-					  formLogin().loginPage("/login").
-					and().
-					  logout().
-					  requiresLogout(ServerWebExchangeMatchers.pathMatchers(HttpMethod.GET, "/logout")).
-					and().
-					  csrf(csrf -> csrf.csrfTokenRepository(new CookieServerCsrfTokenRepository()));
-		/* @formatter:on */
-
-        return httpSecurity.build();
+		/* @formatter:off */
+    	httpSecurity.
+	        authorizeExchange(exchanges -> exchanges.
+	                pathMatchers("/css/**", "/js/**", "/images/**").permitAll().
+	                pathMatchers("/login").permitAll().
+	                anyExchange().authenticated()
+	        ).
+	        formLogin(formLogin -> formLogin.
+	                loginPage("/login")
+	        ).
+			logout(logout -> logout.
+					logoutUrl("/logout").
+					requiresLogout(ServerWebExchangeMatchers.pathMatchers(HttpMethod.GET, "/logout"))
+			).
+			csrf((csrf) -> csrf.disable() // CSRF protection disabled. The CookieServerCsrfTokenRepository does not work, since Spring Boot 3
+        );
+    	/* @formatter:on */
+    	return httpSecurity.build();
     }
 
     @Bean
     public MapReactiveUserDetailsService userDetailsService() {
-        return new MapReactiveUserDetailsService(userDetailInformationService.getUser());
+		return new MapReactiveUserDetailsService(userDetailInformationService.getUser(), userDetailInformationService.getAdmin());
     }
 }
