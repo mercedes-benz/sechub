@@ -89,6 +89,8 @@ public class AdministrationAPIConstants {
     public static final String API_REVOKE_ADMIN_RIGHTS_FROM_USER = API_ADMINISTRATION + "user/{userId}/revoke/superadmin";
 
     public static final String API_SHOW_USER_DETAILS = API_ADMINISTRATION + "user/{userId}";
+    public static final String API_SHOW_USER_BY_EMAIL_DETAILS = API_ADMINISTRATION + "user-by-email/{emailAddress}";
+
     public static final String API_DELETE_USER = API_ADMINISTRATION + "user/{userId}";
     public static final String API_UPDATE_USER_EMAIL_ADDRESS = API_ADMINISTRATION + "user/{userId}/email/{newEmailAddress}";
 

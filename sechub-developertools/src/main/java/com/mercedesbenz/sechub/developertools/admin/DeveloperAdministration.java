@@ -465,6 +465,10 @@ public class DeveloperAdministration {
         return getRestHelper().getStringFromURL(getUrlBuilder().buildAdminShowsUserDetailsUrl(userId));
     }
 
+    public String fetchUserInfoByEmailAddress(String emailAddress) {
+        return getRestHelper().getStringFromURL(getUrlBuilder().buildAdminShowsUserDetailsForEmailAddressUrl(emailAddress));
+    }
+
     public List<String> fetchProjectWhiteList(String projectId) {
         List<String> result = new ArrayList<>();
         String json = getRestHelper().getJSON(getUrlBuilder().buildAdminFetchProjectInfoUrl(projectId));
