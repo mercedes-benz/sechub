@@ -78,7 +78,7 @@ superadmin_list - List all superadmin users (json format)
 superadmin_revoke <user-id> - Revoke superadmin role from user <user-id>
 user_change_email <user-id> <new email address> - Update the email of user <user-id>
 user_delete <user-id> - Delete user <user-id>
-user_details <user-id> - List details of user <user-id> (json format)
+user_details <user-id or email> - List details of user <user-id or email> (json format)
 user_list - List all users (json format)
 user_list_open_signups - List all users waiting to get their signup accepted (json format)
 user_reset_apitoken <email address> - Request new api token for <email address>
@@ -763,7 +763,12 @@ function sechub_user_delete {
 
 
 function sechub_user_details {
-  curl_with_sechub_auth -i -X GET -H 'Content-Type: application/json' "$SECHUB_SERVER/api/admin/user/$1" | $RESULT_FILTER | $JSON_FORMATTER
+  local sechub_user_or_email="$1"
+  if [[ $sechub_user_or_email =~ ^.+@.+$ ]]; then
+    curl_with_sechub_auth -i -X GET -H 'Content-Type: application/json' "$SECHUB_SERVER/api/admin/user-by-email/$sechub_user_or_email" | $RESULT_FILTER | $JSON_FORMATTER
+  else
+    curl_with_sechub_auth -i -X GET -H 'Content-Type: application/json' "$SECHUB_SERVER/api/admin/user/$sechub_user_or_email" | $RESULT_FILTER | $JSON_FORMATTER
+  fi
 }
 
 
@@ -1123,8 +1128,8 @@ case "$action" in
     $failed || sechub_user_delete "$SECHUB_USER"
     ;;
   user_details)
-    SECHUB_USER="$1" ; check_parameter SECHUB_USER '<user-id>'
-    $failed || sechub_user_details "$SECHUB_USER"
+    SECHUB_USER_OR_EMAIL="$1" ; check_parameter SECHUB_USER_OR_EMAIL '<user-id or email>'
+    $failed || sechub_user_details "$SECHUB_USER_OR_EMAIL"
     ;;
   user_list)
     $failed || sechub_user_list
