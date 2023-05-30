@@ -86,7 +86,7 @@ public class PDSTestURLBuilder extends AbstractTestURLBuilder {
     }
 
     public String buildIntegrationTestGetWorkspaceUploadFolder(UUID jobUUID) {
-        return buildUrl(API_PDS_INTEGRATIONTEST, "workspace", jobUUID, "uploadfolder");
+        return buildUrl(API_PDS_INTEGRATIONTEST, jobUUID, "uploadfolder");
     }
 
     public String buildFetchLastStartedJobUUIDUrl() {
