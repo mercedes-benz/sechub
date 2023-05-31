@@ -67,7 +67,7 @@ class CheckmarxWrapperScanServiceTest {
 
         when(environment.isAlwaysFullScanEnabled()).thenReturn(alwaysFullScan);
         when(environment.isTrustAllCertificatesEnabled()).thenReturn(trustAllCertificates);
-        when(environment.getScanResultCheckPeriodInMinutes()).thenReturn(10);
+        when(environment.getScanResultCheckPeriodInMilliseconds()).thenReturn(10);
         when(environment.getScanResultCheckTimeOutInMinutes()).thenReturn(20);
 
         when(environment.getCheckmarxProductBaseURL()).thenReturn("product-base-url1");
