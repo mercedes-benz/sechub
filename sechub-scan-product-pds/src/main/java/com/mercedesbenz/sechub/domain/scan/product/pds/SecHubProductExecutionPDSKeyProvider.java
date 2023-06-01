@@ -3,6 +3,7 @@ package com.mercedesbenz.sechub.domain.scan.product.pds;
 
 import static com.mercedesbenz.sechub.sharedkernel.util.Assert.*;
 
+import com.mercedesbenz.sechub.adapter.pds.PDSSocketExceptionResilienceConsultant;
 import com.mercedesbenz.sechub.commons.pds.PDSKeyProvider;
 import com.mercedesbenz.sechub.domain.scan.NetworkTargetType;
 
@@ -27,6 +28,14 @@ public enum SecHubProductExecutionPDSKeyProvider implements PDSKeyProvider<SecHu
 
     TRUST_ALL_CERTIFICATES(new AdapterSetupPDSKey(PDSProductExecutorKeyConstants.TRUST_ALL_CERTIFICATES,
             "When 'true' then all certificates are accepted. Do not use this in production!")),
+
+    ADAPTER_RESILIENCE_RETRY_MAX(new AdapterSetupPDSKey(PDSProductExecutorKeyConstants.ADAPTER_RESILIENCE_RETRY_MAX,
+            "Maximum amount of retries to handle resilience. When not defined or smaller than 0 the default will be: "
+                    + PDSSocketExceptionResilienceConsultant.DEFAULT_MAX_RETRIES)),
+
+    ADAPTER_RESILIENCE_RETRY_WAIT_MILLISECONDS(new AdapterSetupPDSKey(PDSProductExecutorKeyConstants.ADAPTER_RESILIENCE_RETRY_WAIT_MILLISECONDS,
+            "Amount of milliseconds the PDS adapter shall wait before doing a next retry to handle resilience. When not defined or smaller than 1 the default will be: "
+                    + PDSSocketExceptionResilienceConsultant.DEFAULT_RETRY_TIME_TO_WAIT_IN_MILLISECONDS)),
 
     ;
 

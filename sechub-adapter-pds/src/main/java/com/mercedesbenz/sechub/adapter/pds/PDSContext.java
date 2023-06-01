@@ -9,6 +9,9 @@ import com.mercedesbenz.sechub.adapter.AbstractSpringRestAdapterContext;
 import com.mercedesbenz.sechub.adapter.AdapterRuntimeContext;
 import com.mercedesbenz.sechub.adapter.support.JSONAdapterSupport;
 import com.mercedesbenz.sechub.adapter.support.RestOperationsSupport;
+import com.mercedesbenz.sechub.commons.core.resilience.ResilientActionExecutor;
+import com.mercedesbenz.sechub.commons.core.resilience.ResilientRunnableExecutor;
+import com.mercedesbenz.sechub.commons.pds.data.PDSJobStatus;
 
 /**
  * Context for PDS execution.
@@ -23,11 +26,44 @@ public class PDSContext extends AbstractSpringRestAdapterContext<PDSAdapterConfi
     private RestOperationsSupport restSupport;
     private UUID pdsJobUUID;
 
+    private PDSSocketExceptionResilienceConsultant socketExceptionConsultant;
+    private ResilientRunnableExecutor resilientExecutor;
+    private ResilientActionExecutor<PDSJobStatus> resilientJobStatusResultExecutor;
+    private ResilientActionExecutor<String> resilientStringResultExecutor;
+
     public PDSContext(PDSAdapterConfig config, PDSAdapter adapter, AdapterRuntimeContext runtimeContext) {
         super(config, adapter, runtimeContext);
         urlBuilder = new PDSUrlBuilder(config.getProductBaseURL());
         jsonSupport = new JSONAdapterSupport(adapter, config);
         restSupport = new RestOperationsSupport(getRestOperations());
+
+        socketExceptionConsultant = new PDSSocketExceptionResilienceConsultant();
+
+        resilientExecutor = new ResilientRunnableExecutor();
+        resilientExecutor.add(socketExceptionConsultant);
+
+        resilientJobStatusResultExecutor = new ResilientActionExecutor<>();
+        resilientJobStatusResultExecutor.add(socketExceptionConsultant);
+
+        resilientStringResultExecutor = new ResilientActionExecutor<>();
+        resilientStringResultExecutor.add(socketExceptionConsultant);
+
+    }
+
+    public PDSSocketExceptionResilienceConsultant getSocketExceptionConsultant() {
+        return socketExceptionConsultant;
+    }
+
+    public ResilientRunnableExecutor getResilientExecutor() {
+        return resilientExecutor;
+    }
+
+    public ResilientActionExecutor<PDSJobStatus> getResilientJobStatusResultExecutor() {
+        return resilientJobStatusResultExecutor;
+    }
+
+    public ResilientActionExecutor<String> getResilientStringResultExecutor() {
+        return resilientStringResultExecutor;
     }
 
     public RestOperationsSupport getRestSupport() {

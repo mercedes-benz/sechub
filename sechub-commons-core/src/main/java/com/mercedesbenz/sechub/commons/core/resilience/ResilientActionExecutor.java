@@ -27,16 +27,16 @@ import com.mercedesbenz.sechub.commons.core.util.StacktraceUtil;
  * @author Albert Tregnaghi
  *
  */
-public class ResilientActionExecutor<R> {
+public class ResilientActionExecutor<R> implements ResilientExecutor<ActionWhichShallBeResilient<R>, R> {
 
     private static final Logger LOG = LoggerFactory.getLogger(ResilientActionExecutor.class);
 
-    private List<ResilienceConsultant> consultants = new ArrayList<>();
+    private List<ResilienceConsultant> consultants;
+    private FallthroughSupport fallThroughSupport;
 
-    private FallthroughSupport fallThroughSupport = new FallthroughSupport();
-
-    public R executeResilient(ActionWhichShallBeResilient<R> action) throws Exception {
-        return this.executeResilient(action, null);
+    public ResilientActionExecutor() {
+        fallThroughSupport = new FallthroughSupport();
+        consultants = new ArrayList<>();
     }
 
     public R executeResilient(ActionWhichShallBeResilient<R> action, ResilienceCallback callback) throws Exception {
