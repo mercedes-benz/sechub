@@ -10,14 +10,16 @@ PID_JAVA_SERVER=""
 
 ###########################
 # Trap and process signals
-trap trigger_shutdown SIGINT SIGQUIT SIGTERM
+trap trigger_shutdown INT QUIT TERM
 
 trigger_shutdown()
 {
-  echo "`basename $0`: Caught shutdown signal! Sending SIGTERM to Java server process $PID_JAVA_SERVER"
-  kill -TERM "$PID_JAVA_SERVER"
-  # Wait until Java server process has ended
-  wait "$PID_JAVA_SERVER"
+  if [ -n "$PID_JAVA_SERVER" ] ; then
+    echo "`basename $0`: Caught shutdown signal! Sending SIGTERM to Java server process $PID_JAVA_SERVER"
+    kill -TERM "$PID_JAVA_SERVER"
+    # Wait until Java server process has ended
+    wait "$PID_JAVA_SERVER"
+  fi
   exit
 }
 ###########################
