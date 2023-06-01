@@ -6,6 +6,21 @@ DEFAULT_PDS_HEARTBEAT_LOGGING="true"
 SLEEP_TIME_IN_WAIT_LOOP="2h"
 
 JAVA_DEBUG_OPTIONS=""
+PID_JAVA_SERVER=""
+
+###########################
+# Trap and process signals
+trap trigger_shutdown SIGINT SIGQUIT SIGTERM
+
+trigger_shutdown()
+{
+  echo "`basename $0`: Caught shutdown signal! Sending SIGTERM to Java server process $PID_JAVA_SERVER"
+  kill -TERM "$PID_JAVA_SERVER"
+  # Wait until Java server process has ended
+  wait "$PID_JAVA_SERVER"
+  exit
+}
+###########################
 
 wait_loop() {
     while true
@@ -75,7 +90,12 @@ start_server() {
         -Dsechub.pds.config.heartbeat.verbose.logging.enabled="$PDS_HEARTBEAT_LOGGING" \
         -Dserver.port=8444 \
         -Dserver.address=0.0.0.0 \
-        -jar /pds/sechub-pds-*.jar
+        -jar /pds/sechub-pds-*.jar &
+
+    # Get process pid and wait until it ends
+    #   The pid will be needed by function trigger_shutdown() in case we receive a termination signal.
+    PID_JAVA_SERVER=$!
+    wait "$PID_JAVA_SERVER"
 
     keep_container_alive_or_exit
 }
