@@ -3,9 +3,9 @@ package com.mercedesbenz.sechub.domain.scan.product.checkmarx;
 
 import com.mercedesbenz.sechub.adapter.AdapterMetaData;
 import com.mercedesbenz.sechub.adapter.checkmarx.CheckmarxMetaDataID;
+import com.mercedesbenz.sechub.commons.core.resilience.ResilienceCallback;
+import com.mercedesbenz.sechub.commons.core.resilience.ResilienceContext;
 import com.mercedesbenz.sechub.domain.scan.product.ProductExecutorContext;
-import com.mercedesbenz.sechub.sharedkernel.resilience.ResilienceCallback;
-import com.mercedesbenz.sechub.sharedkernel.resilience.ResilienceContext;
 
 /**
  * A resilience callback which handles checkmarx

@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-package com.mercedesbenz.sechub.sharedkernel.resilience;
+package com.mercedesbenz.sechub.commons.core.resilience;
 
 import static org.junit.Assert.*;
 import static org.mockito.ArgumentMatchers.*;
@@ -12,6 +12,15 @@ import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.Timeout;
+
+import com.mercedesbenz.sechub.commons.core.resilience.ActionWhichShallBeResilient;
+import com.mercedesbenz.sechub.commons.core.resilience.FallthroughResilienceProposal;
+import com.mercedesbenz.sechub.commons.core.resilience.ResilienceCallback;
+import com.mercedesbenz.sechub.commons.core.resilience.ResilienceConsultant;
+import com.mercedesbenz.sechub.commons.core.resilience.ResilienceContext;
+import com.mercedesbenz.sechub.commons.core.resilience.ResilienceProposal;
+import com.mercedesbenz.sechub.commons.core.resilience.ResilientActionExecutor;
+import com.mercedesbenz.sechub.commons.core.resilience.RetryResilienceProposal;
 
 public class ResilientActionExecutorTest {
 
