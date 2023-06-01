@@ -67,7 +67,7 @@ class CheckmarxWrapperScanServiceTest {
 
         when(environment.isAlwaysFullScanEnabled()).thenReturn(alwaysFullScan);
         when(environment.isTrustAllCertificatesEnabled()).thenReturn(trustAllCertificates);
-        when(environment.getScanResultCheckPeriodInMinutes()).thenReturn(10);
+        when(environment.getScanResultCheckPeriodInMilliseconds()).thenReturn(49152);
         when(environment.getScanResultCheckTimeOutInMinutes()).thenReturn(20);
 
         when(environment.getCheckmarxProductBaseURL()).thenReturn("product-base-url1");
@@ -100,7 +100,7 @@ class CheckmarxWrapperScanServiceTest {
         assertEquals(trustAllCertificates, config.isTrustAllCertificatesEnabled());
 
         assertEquals(20 * 1000 * 60, config.getTimeOutInMilliseconds());
-        assertEquals(10 * 1000 * 60, config.getTimeToWaitForNextCheckOperationInMilliseconds());
+        assertEquals(49152, config.getTimeToWaitForNextCheckOperationInMilliseconds());
         assertEquals("product-base-url1", config.getProductBaseURL());
 
         assertEquals(inputStreamCreatedByContext, config.getSourceCodeZipFileInputStream());

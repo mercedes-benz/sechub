@@ -232,6 +232,7 @@ public class IntegrationTestDefaultExecutorConfigurations {
         List<TestExecutorSetupJobParam> parameters = new ArrayList<>();
 
         parameters.add(new TestExecutorSetupJobParam(KEY_PDS_CHECKMARX_ALWAYS_FULLSCAN_ENABLED, "true"));
+        parameters.add(new TestExecutorSetupJobParam(KEY_PDS_CHECKMARX_RESULT_CHECK_PERIOD_MILLISECONDS, "100"));
 
         parameters.add(new TestExecutorSetupJobParam(KEY_PDS_CHECKMARX_BASE_URL, "https://localhost:6931/not-real-checkmarx"));
         parameters.add(new TestExecutorSetupJobParam(KEY_PDS_CHECKMARX_USER, "checkmarx-fakeuser"));
