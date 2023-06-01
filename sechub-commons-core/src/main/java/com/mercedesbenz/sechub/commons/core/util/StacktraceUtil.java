@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-package com.mercedesbenz.sechub.sharedkernel.util;
+package com.mercedesbenz.sechub.commons.core.util;
 
 public class StacktraceUtil {
 

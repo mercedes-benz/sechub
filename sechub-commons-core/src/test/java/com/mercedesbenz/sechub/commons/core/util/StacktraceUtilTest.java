@@ -1,18 +1,16 @@
 // SPDX-License-Identifier: MIT
-package com.mercedesbenz.sechub.sharedkernel.util;
+package com.mercedesbenz.sechub.commons.core.util;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
-import org.junit.Test;
-import org.springframework.http.HttpStatus;
-import org.springframework.web.client.HttpClientErrorException;
+import org.junit.jupiter.api.Test;
 
 public class StacktraceUtilTest {
 
     @Test
-    public void runtime_exception_containing_a_HttpClientErrorException_find_root_HttpClientErrorException() {
+    void runtime_exception_having_IllegalStateException_as_root_cause() {
         /* prepare */
-        Throwable wantedrootCause = new HttpClientErrorException(HttpStatus.BAD_REQUEST);
+        Throwable wantedrootCause = new IllegalStateException("teststate");
         RuntimeException e = new RuntimeException("test", wantedrootCause);
 
         /* execute */
@@ -23,7 +21,7 @@ public class StacktraceUtilTest {
     }
 
     @Test
-    public void runtime_exception_containing_no_cause_returns_runtime_exception() {
+    void runtime_exception_containing_no_cause_returns_runtime_exception() {
         /* prepare */
         RuntimeException e = new RuntimeException("test");
 
@@ -35,7 +33,7 @@ public class StacktraceUtilTest {
     }
 
     @Test
-    public void null_given_returns_null() {
+    void null_given_returns_null() {
         /* prepare */
 
         /* execute */
