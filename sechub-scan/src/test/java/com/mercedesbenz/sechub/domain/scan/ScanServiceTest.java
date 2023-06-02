@@ -32,7 +32,6 @@ import com.mercedesbenz.sechub.domain.scan.report.ScanReport;
 import com.mercedesbenz.sechub.sharedkernel.ProgressMonitor;
 import com.mercedesbenz.sechub.sharedkernel.configuration.SecHubConfiguration;
 import com.mercedesbenz.sechub.sharedkernel.messaging.AsynchronMessageHandler;
-import com.mercedesbenz.sechub.sharedkernel.messaging.BatchJobMessage;
 import com.mercedesbenz.sechub.sharedkernel.messaging.DomainMessage;
 import com.mercedesbenz.sechub.sharedkernel.messaging.DomainMessageService;
 import com.mercedesbenz.sechub.sharedkernel.messaging.DomainMessageSynchronousResult;
@@ -312,15 +311,11 @@ public class ScanServiceTest {
     }
 
     private DomainMessage prepareRequest(SecHubConfiguration configMin) {
-        BatchJobMessage batchJobMessage = new BatchJobMessage();
-        batchJobMessage.setSecHubJobUUID(SECHUB_JOB_UUID);
-        batchJobMessage.setBatchJobId(42);
 
         DomainMessage request = new DomainMessage(MessageID.START_SCAN);
         request.set(MessageDataKeys.SECHUB_JOB_UUID, SECHUB_JOB_UUID);
         request.set(MessageDataKeys.SECHUB_EXECUTION_UUID, EXECUTION_UUID);
         request.set(MessageDataKeys.SECHUB_CONFIG, configMin);
-        request.set(MessageDataKeys.BATCH_JOB_ID, batchJobMessage);
 
         return request;
     }

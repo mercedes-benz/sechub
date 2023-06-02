@@ -6,6 +6,23 @@ DEFAULT_PDS_HEARTBEAT_LOGGING="true"
 SLEEP_TIME_IN_WAIT_LOOP="2h"
 
 JAVA_DEBUG_OPTIONS=""
+PID_JAVA_SERVER=""
+
+###########################
+# Trap and process signals
+trap trigger_shutdown INT QUIT TERM
+
+trigger_shutdown()
+{
+  if [ -n "$PID_JAVA_SERVER" ] ; then
+    echo "`basename $0`: Caught shutdown signal! Sending SIGTERM to Java server process $PID_JAVA_SERVER"
+    kill -TERM "$PID_JAVA_SERVER"
+    # Wait until Java server process has ended
+    wait "$PID_JAVA_SERVER"
+  fi
+  exit
+}
+###########################
 
 wait_loop() {
     while true
@@ -69,13 +86,18 @@ start_server() {
         -Dsechub.pds.admin.apitoken="$ADMIN_APITOKEN" \
         -DsecHub.pds.techuser.userid="$TECHUSER_USERID" \
         -Dsechub.pds.techuser.apitoken="$TECHUSER_APITOKEN" \
-        -Dsechub.pds.workspace.rootfolder=/workspace \
+        -Dsechub.pds.workspace.rootfolder="$WORKSPACE" \
         -Dsechub.pds.config.file=/pds/pds-config.json \
         -Dpds.upload.maximum.bytes="$PDS_MAX_FILE_UPLOAD_BYTES" \
         -Dsechub.pds.config.heartbeat.verbose.logging.enabled="$PDS_HEARTBEAT_LOGGING" \
         -Dserver.port=8444 \
         -Dserver.address=0.0.0.0 \
-        -jar /pds/sechub-pds-*.jar
+        -jar /pds/sechub-pds-*.jar &
+
+    # Get process pid and wait until it ends
+    #   The pid will be needed by function trigger_shutdown() in case we receive a termination signal.
+    PID_JAVA_SERVER=$!
+    wait "$PID_JAVA_SERVER"
 
     keep_container_alive_or_exit
 }

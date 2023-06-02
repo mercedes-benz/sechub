@@ -19,10 +19,17 @@ ARG OWASPZAP_WRAPPER_VERSION="1.0.0"
 ENV ZAP_HOST="127.0.0.1"
 ENV ZAP_PORT="8080"
 
-# Create folders & change owner of folders
-RUN mkdir --parents "/home/$USER/.ZAP/plugin"
-
 USER root
+
+# Copy mock folders
+COPY mocks "$MOCK_FOLDER"
+
+# Copy scripts
+COPY scripts "$SCRIPT_FOLDER"
+RUN chmod --recursive +x "$SCRIPT_FOLDER"
+
+# Copy PDS configfile
+COPY pds-config.json "$PDS_FOLDER/pds-config.json"
 
 RUN export DEBIAN_FRONTEND=noninteractive && \
     apt-get update && \
@@ -31,7 +38,7 @@ RUN export DEBIAN_FRONTEND=noninteractive && \
     apt-get clean
 
 # Install OWASP ZAP
-RUN cd "$TOOL_FOLDER" && \
+RUN cd "$DOWNLOAD_FOLDER" && \
 	# download latest release of owasp zap
 	wget --no-verbose https://github.com/zaproxy/zaproxy/releases/download/v${OWASPZAP_VERSION}/zaproxy_${OWASPZAP_VERSION}-1_all.deb && \
 	# verify that the checksum and the checksum of the file are same
@@ -54,16 +61,6 @@ RUN cd "$TOOL_FOLDER" && \
 # Copy default full ruleset file
 COPY owasp-zap-full-ruleset-all-release-status.json ${TOOL_FOLDER}/owasp-zap-full-ruleset-all-release-status.json
 
-# Copy mock folders
-COPY mocks "$MOCK_FOLDER"
-
-# Copy scripts
-COPY scripts $SCRIPT_FOLDER
-RUN chmod --recursive +x $SCRIPT_FOLDER
-
-# Copy PDS configfile
-COPY pds-config.json "$PDS_FOLDER/pds-config.json"
-
 # Copy zap addon download urls into container
 COPY zap-addons.txt "$TOOL_FOLDER/zap-addons.txt"
 
@@ -76,5 +73,6 @@ USER "$USER"
 # Install OWASP ZAP addons
 # see: https://www.zaproxy.org/addons/
 # via addon manager: owasp-zap -cmd -addoninstall webdriverlinux
-RUN cd "/home/$USER/.ZAP/plugin" && \
+RUN mkdir --parents "/home/$USER/.ZAP/plugin" && \
+    cd "/home/$USER/.ZAP/plugin" && \
     wget --no-verbose --input-file="$TOOL_FOLDER/zap-addons.txt"

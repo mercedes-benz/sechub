@@ -179,7 +179,7 @@ class PDSWorkspaceServiceTest {
         WorkspaceLocationData result = serviceToTest.createLocationData(jobUUID);
 
         /* test */
-        String expectedWorspaceLocation = workspaceRootFolderPath + separatorChar + "workspace" + separatorChar + jobUUID;
+        String expectedWorspaceLocation = workspaceRootFolderPath + separatorChar + jobUUID;
 
         /* @formatter:off */
         assertEquals(expectedWorspaceLocation,result.getWorkspaceLocation());

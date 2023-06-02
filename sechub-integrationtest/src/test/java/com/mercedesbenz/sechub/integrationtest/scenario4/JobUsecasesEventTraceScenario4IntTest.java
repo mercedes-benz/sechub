@@ -116,7 +116,7 @@ public class JobUsecasesEventTraceScenario4IntTest implements IntegrationTestIsN
                  to("com.mercedesbenz.sechub.domain.statistic.StatisticMessageHandler").
            /* 6 */
            syncEvent(MessageID.START_SCAN).
-                 from("com.mercedesbenz.sechub.domain.schedule.batch.SynchronSecHubJobExecutor$1").
+                 from("com.mercedesbenz.sechub.domain.schedule.batch.SynchronSecHubJobExecutor").
                  to("com.mercedesbenz.sechub.domain.scan.ScanService").
            /* 7 */
            syncEvent(MessageID.REQUEST_SCHEDULER_JOB_STATUS).
@@ -128,7 +128,7 @@ public class JobUsecasesEventTraceScenario4IntTest implements IntegrationTestIsN
                  to("com.mercedesbenz.sechub.domain.administration.job.JobAdministrationMessageHandler",
                     "com.mercedesbenz.sechub.domain.statistic.StatisticMessageHandler").
         /* assert + write */
-        assertAsExpectedAndCreateHistoryFile(UseCaseIdentifier.UC_ADMIN_RESTARTS_JOB_HARD.name(),"crashed_jvm_with_product_result");
+        assertAsExpectedAndCreateHistoryFile(UseCaseIdentifier.UC_ADMIN_RESTARTS_JOB_HARD.name());
         /* @formatter:on */
     }
 
@@ -178,7 +178,7 @@ public class JobUsecasesEventTraceScenario4IntTest implements IntegrationTestIsN
                  to("com.mercedesbenz.sechub.domain.statistic.StatisticMessageHandler").
            /* 5 */
            syncEvent(MessageID.START_SCAN).
-                 from("com.mercedesbenz.sechub.domain.schedule.batch.SynchronSecHubJobExecutor$1").
+                 from("com.mercedesbenz.sechub.domain.schedule.batch.SynchronSecHubJobExecutor").
                  to("com.mercedesbenz.sechub.domain.scan.ScanService").
            /* 6 */
            syncEvent(MessageID.REQUEST_SCHEDULER_JOB_STATUS).
@@ -275,7 +275,7 @@ public class JobUsecasesEventTraceScenario4IntTest implements IntegrationTestIsN
                  to("com.mercedesbenz.sechub.domain.statistic.StatisticMessageHandler").
            /* 4 */
            syncEvent(MessageID.START_SCAN).
-                 from("com.mercedesbenz.sechub.domain.schedule.batch.SynchronSecHubJobExecutor$1").
+                 from("com.mercedesbenz.sechub.domain.schedule.batch.SynchronSecHubJobExecutor").
                  to("com.mercedesbenz.sechub.domain.scan.ScanService").
            /* 5 */
            syncEvent(MessageID.REQUEST_SCHEDULER_JOB_STATUS).
@@ -334,7 +334,7 @@ public class JobUsecasesEventTraceScenario4IntTest implements IntegrationTestIsN
                  to("com.mercedesbenz.sechub.domain.statistic.StatisticMessageHandler").
            /* 4 */
            syncEvent(MessageID.START_SCAN).
-                 from("com.mercedesbenz.sechub.domain.schedule.batch.SynchronSecHubJobExecutor$1").
+                 from("com.mercedesbenz.sechub.domain.schedule.batch.SynchronSecHubJobExecutor").
                  to("com.mercedesbenz.sechub.domain.scan.ScanService").
            /* 5 */
            syncEvent(MessageID.REQUEST_SCHEDULER_JOB_STATUS).

@@ -51,6 +51,12 @@ spec:
                       value: "{{ .Values.pds.config.execute.workerThreadCount }}"
                     - name: PDS_HEARTBEAT_LOGGING
                       value: "{{ .Values.pds.heartbeatLogging }}"
+{{- if .Values.deploymentComment }}
+                    # Setting DEPLOYMENT_COMMENT to a different value every time forces k8s to spin up a new container.
+                    # This way, you can force deployments e.g. when secrets have changed.
+                    - name: DEPLOYMENT_COMMENT
+                      value: "{{ .Values.deploymentComment }}"
+{{- end }}
 {{- if .Values.pds.logging.type.enabled }}
                     - name: LOGGING_TYPE
                       value: {{ .Values.pds.logging.type.appenderName }}
@@ -105,4 +111,24 @@ spec:
                       value: "{{ .Values.storage.sharedVolume.upload.dir }}"
 {{- end}}
                   ports:
-                    - containerPort: 8444
+                    - name: pds-https-port
+                      containerPort: 8444
+                  startupProbe:
+                    httpGet:
+                      scheme: HTTPS
+                      path: /api/anonymous/check/alive
+                      port: pds-https-port
+                    periodSeconds: 1
+                    failureThreshold: 300
+                    # probe every 1s x 300 = 5 mins before restart of container
+                    successThreshold: 1
+                    timeoutSeconds: 1
+                  livenessProbe:
+                    httpGet:
+                      scheme: HTTPS
+                      path: /api/anonymous/check/alive
+                      port: pds-https-port
+                    periodSeconds: 5
+                    failureThreshold: 3
+                    successThreshold: 1
+                    timeoutSeconds: 3

@@ -15,7 +15,7 @@ LABEL maintainer="SecHub FOSS Team"
 user root
 
 # Copy PDS configfile
-COPY pds-config.json "/$PDS_FOLDER/pds-config.json"
+COPY pds-config.json "$PDS_FOLDER/pds-config.json"
 
 # Copy scripts
 COPY scripts "$SCRIPT_FOLDER"

@@ -50,7 +50,7 @@ storage:
         enabled: true
     s3:
         enabled: false
-        endpoint: "https://<minio-or-s3-server>:<port>"
+        endpoint: "https://<s3-server>:<port>"
         bucketname: "<my-bucketname>"
         accesskey: "<my-accesskey>"
         secretkey: "<my-secretkey>"
@@ -76,6 +76,11 @@ networkPolicy:
             - podSelector:
                 matchLabels:
                     name: sechub-adminserver
+
+# deploymentComment (optional):
+#  When setting to a different value than before, it forces k8s to spin up a new container.
+#  This way, you can force deployments e.g. when only secrets have changed.
+deploymentComment: "my deployment comment"
 
 # optional: Add annotations to template.metadata.annotations
 #           Can contain multiple lines. Example for Prometheus actuator:

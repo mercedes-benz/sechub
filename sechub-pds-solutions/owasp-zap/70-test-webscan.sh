@@ -9,7 +9,7 @@ json_config=""
 function usage() {
     local script_name=
     printf "`basename $0` <target-url or path-to-json-config>\n\n"
-    
+
     cat <<'USAGE'
 # Please set the environment variables:
 
@@ -73,16 +73,16 @@ function create_json() {
 json=$(cat <<JSON
 {
     "apiVersion" : "1.0",
-    "sechubJobUUID": "$sechub_job_uuid", 
-    "productId": "$PDS_PRODUCT_IDENTFIER", 
+    "sechubJobUUID": "$sechub_job_uuid",
+    "productId": "$PDS_PRODUCT_IDENTFIER",
     "parameters": [
         {
-            "key" : "pds.scan.target.url", 
-            "value" : "$target_url" 
+            "key" : "pds.scan.target.url",
+            "value" : "$target_url"
         },
         {
-            "key" : "pds.scan.target.type", 
-            "value" : "INTRANET" 
+            "key" : "pds.scan.target.type",
+            "value" : "INTRANET"
         }
      ]
 }

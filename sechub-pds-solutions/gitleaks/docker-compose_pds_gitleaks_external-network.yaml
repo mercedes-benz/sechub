@@ -12,7 +12,7 @@ services:
         container_name: pds-gitleaks
         hostname: pds-gitleaks
         volumes:
-            - ./docker/scripts:/scripts
+            - ./docker/scripts:/pds/scripts
         env_file:
             - .env
             - .env-single

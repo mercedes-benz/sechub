@@ -44,7 +44,7 @@ public class SimulatedSchedulerAsManagedCPUConsumer {
 
         Thread t = new Thread(() -> {
             simulateCPUload(maxPrimeNumberChecks);
-        }, "cpu-harvesting-by-prime-numbers-" + (nr));
+        }, "sechub-test-cpu-load-by-prime-numbers-" + (nr));
         t.start();
         LOG.info("> thread {} started", t.getName());
     }
@@ -72,7 +72,7 @@ public class SimulatedSchedulerAsManagedCPUConsumer {
         int i = 2;
         boolean isPrime = false;
         while (i <= num / 2) {
-            // condition for nonprime number
+            // condition for non prime number
             if (num % i == 0) {
                 isPrime = true;
                 break;

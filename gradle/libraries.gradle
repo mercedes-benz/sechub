@@ -90,7 +90,6 @@ ext {
         springboot_starter_security :          "org.springframework.boot:spring-boot-starter-security",
         springboot_starter_web:                "org.springframework.boot:spring-boot-starter-web",
         springboot_starter_test:               "org.springframework.boot:spring-boot-starter-test",
-        springboot_starter_batch:              "org.springframework.boot:spring-boot-starter-batch",
         springboot_starter_json:               "org.springframework.boot:spring-boot-starter-json",
         springboot_starter_actuator:           "org.springframework.boot:spring-boot-starter-actuator",
         springboot_starter_mail:               "org.springframework.boot:spring-boot-starter-mail",
