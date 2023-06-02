@@ -26,7 +26,7 @@ public class PDSContext extends AbstractSpringRestAdapterContext<PDSAdapterConfi
     private RestOperationsSupport restSupport;
     private UUID pdsJobUUID;
 
-    private PDSAdapterResilienceConsultant socketExceptionConsultant;
+    private PDSAdapterResilienceConsultant resilienceConsultant;
     private ResilientRunOrFailExecutor resilientRunOrFailExecutor;
     private ResilientActionExecutor<PDSJobStatus> resilientJobStatusResultExecutor;
     private ResilientActionExecutor<String> resilientStringResultExecutor;
@@ -37,33 +37,27 @@ public class PDSContext extends AbstractSpringRestAdapterContext<PDSAdapterConfi
         jsonSupport = new JSONAdapterSupport(adapter, config);
         restSupport = new RestOperationsSupport(getRestOperations());
 
-        createConsultants();
+        resilienceConsultant = new PDSAdapterResilienceConsultant();
 
         createResilientExectors();
-
-        addConsultantsToExecutors();
+        prepareResilientExecutors();
 
     }
 
-    private void createConsultants() {
-        socketExceptionConsultant = new PDSAdapterResilienceConsultant();
-    }
-
-    private void createResilientExectors() {
+    void createResilientExectors() {
         resilientRunOrFailExecutor = new ResilientRunOrFailExecutor();
         resilientJobStatusResultExecutor = new ResilientActionExecutor<>();
         resilientStringResultExecutor = new ResilientActionExecutor<>();
     }
 
-    private void addConsultantsToExecutors() {
-
-        resilientRunOrFailExecutor.add(socketExceptionConsultant);
-        resilientJobStatusResultExecutor.add(socketExceptionConsultant);
-        resilientStringResultExecutor.add(socketExceptionConsultant);
+    void prepareResilientExecutors() {
+        resilientRunOrFailExecutor.add(resilienceConsultant);
+        resilientJobStatusResultExecutor.add(resilienceConsultant);
+        resilientStringResultExecutor.add(resilienceConsultant);
     }
 
-    public PDSAdapterResilienceConsultant getSocketExceptionConsultant() {
-        return socketExceptionConsultant;
+    public PDSAdapterResilienceConsultant getResilienceConsultant() {
+        return resilienceConsultant;
     }
 
     public ResilientRunOrFailExecutor getResilientRunOrFailExecutor() {

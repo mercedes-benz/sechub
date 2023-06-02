@@ -37,8 +37,8 @@ class PDSContextTest {
 
     @Test
     void context_provides_resilient_consultant_for_socket_exceptions_with_expected_defaults() {
-        assertEquals(3, contextToTest.getSocketExceptionConsultant().getMaxRetries());
-        assertEquals(10000, contextToTest.getSocketExceptionConsultant().getRetryTimeToWaitInMilliseconds());
+        assertEquals(3, contextToTest.getResilienceConsultant().getMaxRetries());
+        assertEquals(10000, contextToTest.getResilienceConsultant().getRetryTimeToWaitInMilliseconds());
     }
 
     @ParameterizedTest
@@ -199,7 +199,7 @@ class PDSContextTest {
     }
 
     private void prepareConsultantToAcceptFailures(int acceptedFailures) {
-        PDSAdapterResilienceConsultant consultant = contextToTest.getSocketExceptionConsultant();
+        PDSAdapterResilienceConsultant consultant = contextToTest.getResilienceConsultant();
         consultant.setMaxRetries(acceptedFailures + 1);
         consultant.setRetryTimeToWaitInMilliseconds(1);
     }

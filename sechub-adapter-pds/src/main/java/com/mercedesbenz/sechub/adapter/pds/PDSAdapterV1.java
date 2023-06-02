@@ -96,13 +96,13 @@ public class PDSAdapterV1 extends AbstractAdapter<PDSAdapterContext, PDSAdapterC
         int maxRetries = data.getResilienceMaxRetries();
         if (maxRetries >= 0) {
             LOG.info("Change resilience max retries to: {}", maxRetries);
-            pdsContext.getSocketExceptionConsultant().setMaxRetries(maxRetries);
+            pdsContext.getResilienceConsultant().setMaxRetries(maxRetries);
         }
 
         long maxWaitInMillis = data.getResilienceTimeToWaitBeforeRetryInMilliseconds();
         if (maxWaitInMillis > 0) {
             LOG.info("Change resilience max wait time to: {} milliseconds", maxRetries);
-            pdsContext.getSocketExceptionConsultant().setRetryTimeToWaitInMilliseconds(maxWaitInMillis);
+            pdsContext.getResilienceConsultant().setRetryTimeToWaitInMilliseconds(maxWaitInMillis);
         }
     }
 

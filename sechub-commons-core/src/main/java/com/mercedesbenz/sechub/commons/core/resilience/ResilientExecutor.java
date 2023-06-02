@@ -8,7 +8,7 @@ public interface ResilientExecutor<T, R> {
      *
      * @param consultant
      */
-    public void add(ResilienceConsultant consultant) throws Exception;
+    public void add(ResilienceConsultant consultant);
 
     /**
      * Execute target resilient
