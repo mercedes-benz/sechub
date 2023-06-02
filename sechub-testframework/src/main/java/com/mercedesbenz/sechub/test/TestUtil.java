@@ -28,6 +28,22 @@ public class TestUtil {
     private static final String SECHUB_TEST_TRACEMODE = "SECHUB_TEST_TRACEMODE";
     private static final String SECHUB_AUTO_GENERATE_CSS_FRAGMENTS_ON_HTML_TESTS = "SECHUB_AUTO_GENERATE_CSS_FRAGMENTS_ON_HTML_TESTS";
 
+    public static <E extends Exception, R> FailUntilAmountOfRunsReached<E, R> createFailUntil(int amount, E failure, R result) {
+        return new FailUntilAmountOfRunsReached<>(amount, failure, result);
+    }
+
+    public static <E extends Exception, R> FailUntilAmountOfRunsReached<E, R> createFailUntil(int amount, Class<E> failure, R result) {
+        return new FailUntilAmountOfRunsReached<>(amount, failure, result);
+    }
+
+    public static <E extends Exception> FailUntilAmountOfRunsReached<E, Void> createFailUntil(int amount, E failure) {
+        return new FailUntilAmountOfRunsReached<>(amount, failure, (Void) null);
+    }
+
+    public static <E extends Exception> FailUntilAmountOfRunsReached<E, Void> createFailUntil(int amount, Class<E> failure) {
+        return new FailUntilAmountOfRunsReached<>(amount, failure, (Void) null);
+    }
+
     public static String createRAndomString(int wantedLength) {
         if (wantedLength < 0) {
             throw new IllegalArgumentException("Length must be greater or equal 0!");

@@ -288,7 +288,7 @@ public class PDSAdapterV1 extends AbstractAdapter<PDSAdapterContext, PDSAdapterC
 
         UUID uuid = context.getPdsJobUUID();
         String url = context.getUrlBuilder().buildMarkJobReadyToStart(uuid);
-        context.getResilientExecutor().executeResilient(() -> context.getRestSupport().put(url));
+        context.getResilientRunOrFailExecutor().executeResilient(() -> context.getRestSupport().put(url));
 
         metaData.setValue(PDS_JOB_MARKED_AS_READY, true);
 
@@ -356,7 +356,7 @@ public class PDSAdapterV1 extends AbstractAdapter<PDSAdapterContext, PDSAdapterC
         }
         final String finalFileSizeAsString = fileSizeAsString;
 
-        context.getResilientExecutor().executeResilient(() -> uploadSupport.upload(type, context, data, checksum, finalFileSizeAsString));
+        context.getResilientRunOrFailExecutor().executeResilient(() -> uploadSupport.upload(type, context, data, checksum, finalFileSizeAsString));
 
         /* after this - mark file upload done - at least for debugging */
         metaData.setValue(sourceUploadMetaDataKey, true);
@@ -549,7 +549,7 @@ public class PDSAdapterV1 extends AbstractAdapter<PDSAdapterContext, PDSAdapterC
         UUID pdsJobUUID = context.getPdsJobUUID();
 
         String url = context.getUrlBuilder().buildCancelJob(pdsJobUUID);
-        context.getResilientExecutor().executeResilient(() -> context.getRestSupport().put(url));
+        context.getResilientRunOrFailExecutor().executeResilient(() -> context.getRestSupport().put(url));
 
         LOG.info("PDS job canceled: {}", pdsJobUUID);
 

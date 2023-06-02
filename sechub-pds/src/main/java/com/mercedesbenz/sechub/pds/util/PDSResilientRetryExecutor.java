@@ -8,7 +8,7 @@ import java.util.concurrent.Callable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.mercedesbenz.sechub.commons.core.FailableRunnable;
+import com.mercedesbenz.sechub.commons.core.RunOrFail;
 
 /**
  * An executor which tries to execute a task in a resilient way by doing a
@@ -66,7 +66,7 @@ public class PDSResilientRetryExecutor<E extends Exception> {
      *                   the problem - e.g. could contain a job UUID
      * @throws E
      */
-    public void execute(FailableRunnable<?> runnable, String identifier) throws E {
+    public void execute(RunOrFail<?> runnable, String identifier) throws E {
         Callable<Void> callable = () -> {
             runnable.runOrFail();
             return null;

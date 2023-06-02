@@ -1,12 +1,13 @@
+// SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.commons.core.resilience;
 
-import com.mercedesbenz.sechub.commons.core.FailableRunnable;
+import com.mercedesbenz.sechub.commons.core.RunOrFail;
 
-public class ResilientRunnableExecutor implements ResilientExecutor<FailableRunnable<Exception>, Void> {
+public class ResilientRunOrFailExecutor implements ResilientExecutor<RunOrFail<Exception>, Void> {
 
     ResilientActionExecutor<Void> voidActionExecutor;
 
-    public ResilientRunnableExecutor() {
+    public ResilientRunOrFailExecutor() {
         voidActionExecutor = new ResilientActionExecutor<>();
     }
 
@@ -14,7 +15,7 @@ public class ResilientRunnableExecutor implements ResilientExecutor<FailableRunn
         voidActionExecutor.add(consultant);
     }
 
-    public Void executeResilient(FailableRunnable<Exception> r, ResilienceCallback callback) throws Exception {
+    public Void executeResilient(RunOrFail<Exception> r, ResilienceCallback callback) throws Exception {
         return voidActionExecutor.executeResilient(() -> {
             r.runOrFail();
             return null;

@@ -10,7 +10,7 @@ import com.mercedesbenz.sechub.adapter.AdapterRuntimeContext;
 import com.mercedesbenz.sechub.adapter.support.JSONAdapterSupport;
 import com.mercedesbenz.sechub.adapter.support.RestOperationsSupport;
 import com.mercedesbenz.sechub.commons.core.resilience.ResilientActionExecutor;
-import com.mercedesbenz.sechub.commons.core.resilience.ResilientRunnableExecutor;
+import com.mercedesbenz.sechub.commons.core.resilience.ResilientRunOrFailExecutor;
 import com.mercedesbenz.sechub.commons.pds.data.PDSJobStatus;
 
 /**
@@ -26,8 +26,8 @@ public class PDSContext extends AbstractSpringRestAdapterContext<PDSAdapterConfi
     private RestOperationsSupport restSupport;
     private UUID pdsJobUUID;
 
-    private PDSSocketExceptionResilienceConsultant socketExceptionConsultant;
-    private ResilientRunnableExecutor resilientExecutor;
+    private PDSAdapterResilienceConsultant socketExceptionConsultant;
+    private ResilientRunOrFailExecutor resilientRunOrFailExecutor;
     private ResilientActionExecutor<PDSJobStatus> resilientJobStatusResultExecutor;
     private ResilientActionExecutor<String> resilientStringResultExecutor;
 
@@ -37,25 +37,37 @@ public class PDSContext extends AbstractSpringRestAdapterContext<PDSAdapterConfi
         jsonSupport = new JSONAdapterSupport(adapter, config);
         restSupport = new RestOperationsSupport(getRestOperations());
 
-        socketExceptionConsultant = new PDSSocketExceptionResilienceConsultant();
+        createConsultants();
 
-        resilientExecutor = new ResilientRunnableExecutor();
-        resilientExecutor.add(socketExceptionConsultant);
+        createResilientExectors();
 
-        resilientJobStatusResultExecutor = new ResilientActionExecutor<>();
-        resilientJobStatusResultExecutor.add(socketExceptionConsultant);
-
-        resilientStringResultExecutor = new ResilientActionExecutor<>();
-        resilientStringResultExecutor.add(socketExceptionConsultant);
+        addConsultantsToExecutors();
 
     }
 
-    public PDSSocketExceptionResilienceConsultant getSocketExceptionConsultant() {
+    private void createConsultants() {
+        socketExceptionConsultant = new PDSAdapterResilienceConsultant();
+    }
+
+    private void createResilientExectors() {
+        resilientRunOrFailExecutor = new ResilientRunOrFailExecutor();
+        resilientJobStatusResultExecutor = new ResilientActionExecutor<>();
+        resilientStringResultExecutor = new ResilientActionExecutor<>();
+    }
+
+    private void addConsultantsToExecutors() {
+
+        resilientRunOrFailExecutor.add(socketExceptionConsultant);
+        resilientJobStatusResultExecutor.add(socketExceptionConsultant);
+        resilientStringResultExecutor.add(socketExceptionConsultant);
+    }
+
+    public PDSAdapterResilienceConsultant getSocketExceptionConsultant() {
         return socketExceptionConsultant;
     }
 
-    public ResilientRunnableExecutor getResilientExecutor() {
-        return resilientExecutor;
+    public ResilientRunOrFailExecutor getResilientRunOrFailExecutor() {
+        return resilientRunOrFailExecutor;
     }
 
     public ResilientActionExecutor<PDSJobStatus> getResilientJobStatusResultExecutor() {

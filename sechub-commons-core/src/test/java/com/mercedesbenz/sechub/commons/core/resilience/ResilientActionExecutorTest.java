@@ -1,34 +1,29 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.commons.core.resilience;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
 
 import java.util.Queue;
 import java.util.concurrent.ArrayBlockingQueue;
 
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.Timeout;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
-public class ResilientActionExecutorTest {
+class ResilientActionExecutorTest {
 
     private ResilientActionExecutor<TestResult> executorToTest;
     private TestAction action;
 
-    @Rule
-    public Timeout timeOut = Timeout.millis(2000);
-
-    @Before
-    public void before() {
+    @BeforeEach
+    void before() {
         executorToTest = new ResilientActionExecutor<>();
         action = new TestAction();
     }
 
     @Test
-    public void fall_through_200_ms__inside_time_frame_same_exception_will_be_returned_after_this_real_call_done() throws Exception {
+    void fall_through_200_ms__inside_time_frame_same_exception_will_be_returned_after_this_real_call_done() throws Exception {
         /* prepare */
         long millisToFallThrough = 200;
 
@@ -65,15 +60,15 @@ public class ResilientActionExecutorTest {
         long timeEnd = System.currentTimeMillis();
         long timeElapsed = timeEnd - timeStart;
 
-        assertTrue("Must have at least 5 times called action, but was only " + counter, counter > 5);
-        assertTrue("Time elapsed:" + timeElapsed + " millis", timeElapsed >= millisToFallThrough);
+        assertTrue(counter > 5, "Must have at least 5 times called action, but was only " + counter);
+        assertTrue(timeElapsed >= millisToFallThrough, "Time elapsed:" + timeElapsed + " millis");
         assertNotNull(result);
         assertEquals("OK", result.text);
 
     }
 
     @Test
-    public void no_error_no_consultant_defined_just_runs_through_and_returns_result() throws Exception {
+    void no_error_no_consultant_defined_just_runs_through_and_returns_result() throws Exception {
         /* execute */
         TestResult result = executorToTest.executeResilient(action);
 
@@ -83,7 +78,7 @@ public class ResilientActionExecutorTest {
     }
 
     @Test
-    public void no_error_but_consultant_defined_just_runs_through_and_returns_result_consultant_never_called() throws Exception {
+    void no_error_but_consultant_defined_just_runs_through_and_returns_result_consultant_never_called() throws Exception {
         /* prepare */
         ResilienceConsultant resilienceConsultant = mock(ResilienceConsultant.class);
         executorToTest.add(resilienceConsultant);
@@ -98,7 +93,7 @@ public class ResilientActionExecutorTest {
     }
 
     @Test
-    public void retry_3_times_allowed__we_throw_errors_which_forces_a_retry_the_callback_is_called_3_times() throws Exception {
+    void retry_3_times_allowed__we_throw_errors_which_forces_a_retry_the_callback_is_called_3_times() throws Exception {
         /* prepare */
         action.throwables.add(new IllegalArgumentException());
         action.throwables.add(new IllegalArgumentException());
@@ -125,7 +120,7 @@ public class ResilientActionExecutorTest {
     }
 
     @Test
-    public void retry_3_times_allowed__we_got_an_error_which_forces_a_retry_the_callback_is_called1_times() throws Exception {
+    void retry_3_times_allowed__we_got_an_error_which_forces_a_retry_the_callback_is_called1_times() throws Exception {
         /* prepare */
         action.throwables.add(new IllegalArgumentException());
 
@@ -150,7 +145,7 @@ public class ResilientActionExecutorTest {
     }
 
     @Test
-    public void retry_2_times_allowed__we_got_an_error_which_forces_a_retry_we_got_the_result_from_second_attempt() throws Exception {
+    void retry_2_times_allowed__we_got_an_error_which_forces_a_retry_we_got_the_result_from_second_attempt() throws Exception {
         /* prepare */
         action.throwables.add(new IllegalArgumentException()); // one exception only, so second try will return result
         action.result.text = "OK";
@@ -178,7 +173,7 @@ public class ResilientActionExecutorTest {
     }
 
     @Test
-    public void retry_2_times_allowed__we_got_two_errors_which_forces_2_retries_we_got_the_result_from_third_attempt() throws Exception {
+    void retry_2_times_allowed__we_got_two_errors_which_forces_2_retries_we_got_the_result_from_third_attempt() throws Exception {
         /* prepare */
         action.throwables.add(new IllegalArgumentException()); // first
         action.throwables.add(new IllegalArgumentException()); // second
@@ -206,7 +201,7 @@ public class ResilientActionExecutorTest {
     }
 
     @Test
-    public void retry_2_times_allowed__we_got_3_errors_which_forces_2_retries_and_we_got_the_origin_failure_from_third_attempt() throws Exception {
+    void retry_2_times_allowed__we_got_3_errors_which_forces_2_retries_and_we_got_the_origin_failure_from_third_attempt() throws Exception {
         /* prepare */
         action.throwables.add(new IllegalArgumentException("first")); // first will be ignored
         action.throwables.add(new IllegalArgumentException("second")); // second will be ignored
@@ -242,7 +237,7 @@ public class ResilientActionExecutorTest {
     }
 
     @Test
-    public void containsConsultatant_differs_correctly() {
+    void containsConsultatant_differs_correctly() {
         /* prepare */
         executorToTest.add(new TestConsultant());
 
@@ -251,7 +246,7 @@ public class ResilientActionExecutorTest {
         assertFalse(executorToTest.containsConsultant(TestConsultant2.class));
     }
 
-    private class TestAction implements ActionWhichShallBeResilient<TestResult> {
+    private class TestAction implements ResilientAction<TestResult> {
 
         Queue<Exception> throwables = new ArrayBlockingQueue<>(10);
         TestResult result = new TestResult();
