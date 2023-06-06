@@ -77,10 +77,12 @@ jobs:
           java-version: 17
           distribution: temurin
           cache: gradle
+
       - name: Set up Go
         uses: actions/setup-go@v4
         with:
           go-version: 1.20.4
+
       - uses: actions/cache@v3.3.1
         id: go-cache
         with:
@@ -596,6 +598,7 @@ jobs:
       # -----------------------------------------
       - name: pull-request master to develop
         id: pr_master_to_develop
+        continue-on-error: true
         uses: repo-sync/pull-request@v2
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
@@ -612,9 +615,14 @@ jobs:
             Merge master branch back into develop
 
             -> Please merge **after** the release has been published.
-      # Remark: Fails silently if there is no difference between the branches.
-      #         In that case, you have to create a PR yourself after merging the documentation PR.
-      - name: Print PR infos
+
+      - name: Print PR infos if PR was created
+        if: steps.pr_master_to_develop.outcome == 'success'
         run: |
           echo "Pull Request Number - ${{ steps.pr_master_to_develop.outputs.pr_number }}"
           echo "Pull Request URL - ${{ steps.pr_master_to_develop.outputs.pr_url }}"
+
+      - name: Print info if no PR was created
+        if: steps.pr_master_to_develop.outcome != 'success'
+        run: |
+          echo "Nothing to merge - no pull request necessary."
