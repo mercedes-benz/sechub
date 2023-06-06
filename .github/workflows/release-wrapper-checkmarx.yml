@@ -193,13 +193,13 @@ jobs:
 
             -> Please merge **after** the release has been published.
 
-      - name: Print PR infos
+      - name: Print PR infos if PR was created
         if: steps.pr_master_to_develop.outcome == 'success'
         run: |
           echo "Pull Request Number - ${{ steps.pr_master_to_develop.outputs.pr_number }}"
           echo "Pull Request URL - ${{ steps.pr_master_to_develop.outputs.pr_url }}"
 
-      - name: Print PR infos
+      - name: Print info if no PR was created
         if: steps.pr_master_to_develop.outcome != 'success'
         run: |
           echo "Nothing to merge - no pull request necessary."
