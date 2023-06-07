@@ -19,6 +19,10 @@ on:
         required: true
         type: string
 
+env:
+  ACTIONS_SECHUB_REGISTRY: ghcr.io/mercedes-benz/sechub
+  ACTIONS_BASE_IMAGE: ghcr.io/mercedes-benz/sechub/pds-base:latest
+
 jobs:
   build-pds-solution:
     name: Build and publish PDS solution
@@ -33,15 +37,18 @@ jobs:
         uses: actions/checkout@v3
 
       # Build pds-base container image + push to ghcr
-      # - name: Build pds-base ${{ github.event.inputs.server-version }} container image + push to ghcr
-      #   run: |
-      #     PDS_VERSION="${{ github.event.inputs.pds-version }}"
-      #     DOCKER_REGISTRY="$ACTIONS_SECHUB_REGISTRY/pds-base"
-      #     VERSION_TAG="${PDS_VERSION}"
-      #     cp sechub-pds/build/libs/sechub-pds-${PDS_VERSION}.jar sechub-pds-solutions/pds-base/docker/copy/
-      #     cd sechub-pds-solutions/pds-base
-      #     echo "# Building image $DOCKER_REGISTRY:$VERSION_TAG"
-      #     echo "  from $ACTIONS_BASE_IMAGE_DEBIAN"
-      #     ./10-create-image.sh $DOCKER_REGISTRY $VERSION_TAG $PDS_VERSION $ACTIONS_BASE_IMAGE_DEBIAN copy
-      #     echo "# Pushing image $DOCKER_REGISTRY:$VERSION_TAG (latest)"
-      #     ./20-push-image.sh $DOCKER_REGISTRY $VERSION_TAG yes
+      - name: Build pds-base ${{ inputs.server-version }} container image + push to ghcr
+        run: |
+          PDS_SOLUTION="${{ inputs.pds-solution }}"
+          PDS_VERSION="${{ inputs.pds-version }}"
+          if [ ! -d "sechub-pds-solutions/$PDS_SOLUTION" ] ; then
+            echo "Fatal: No directory named \"$PDS_SOLUTION\" found in sechub-pds-solutions/"
+            exit 1
+          fi
+          cd "sechub-pds-solutions/$PDS_SOLUTION"
+          DOCKER_REGISTRY="$ACTIONS_SECHUB_REGISTRY/pds-$PDS_SOLUTION"
+          VERSION_TAG="${PDS_VERSION}"
+          BASE_IMAGE="$ACTIONS_BASE_IMAGE"
+          echo "# Building image $DOCKER_REGISTRY:$VERSION_TAG from $BASE_IMAGE"
+          ./10-create-image.sh "$REGISTRY" "$VERSION_TAG" "$BASE_IMAGE"
+          ./20-push-image.sh "$REGISTRY" "$VERSION_TAG" yes
