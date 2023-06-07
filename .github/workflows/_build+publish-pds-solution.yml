@@ -19,6 +19,9 @@ on:
         required: true
         type: string
 
+permissions:
+  packages: write
+
 env:
   ACTIONS_SECHUB_REGISTRY: ghcr.io/mercedes-benz/sechub
   ACTIONS_BASE_IMAGE: ghcr.io/mercedes-benz/sechub/pds-base:latest
@@ -35,6 +38,13 @@ jobs:
 
       - name: Checkout git repository
         uses: actions/checkout@v3
+
+      - name: Docker login to ghcr.io
+        uses: docker/login-action@v2
+        with:
+          registry: ghcr.io
+          username: ${{ github.repository_owner }}
+          password: ${{ secrets.GITHUB_TOKEN }}
 
       # Build pds-base container image + push to ghcr
       - name: Build pds-base ${{ inputs.server-version }} container image + push to ghcr
