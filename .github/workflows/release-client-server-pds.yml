@@ -630,7 +630,7 @@ jobs:
         if: github.event.inputs.pds-version != ''
         run: |
           PDS_VERSION="${{ github.event.inputs.pds-version }}"
-          DOCKER_REGISTRY="$ACTIONS_SECHUB_REGISTRY/pds-base"
+          DOCKER_REGISTRY="$ACTIONS_SECHUB_REGISTRY/pds-base-image"
           VERSION_TAG="${PDS_VERSION}"
           cp sechub-pds/build/libs/sechub-pds-${PDS_VERSION}.jar sechub-pds-solutions/pds-base/docker/copy/
           cd sechub-pds-solutions/pds-base
