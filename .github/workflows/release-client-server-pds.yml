@@ -24,7 +24,9 @@ on:
         required: false
 
 permissions:
+  issues: write
   packages: write
+  pull-requests: write
 
 env:
   ACTIONS_BASE_IMAGE_ALPINE: alpine:3.17
@@ -314,7 +316,7 @@ jobs:
       # ******************************************
       # S E R V E R  release
       # ******************************************
-      - name: Create server release
+      - name: Create server release ${{ github.event.inputs.server-version }}
         id: create_server_release
         if: github.event.inputs.server-version != ''
         uses: actions/create-release@v1
@@ -477,7 +479,7 @@ jobs:
       # ******************************************
       # C l i e n t  release
       # ******************************************
-      - name: Create client release
+      - name: Create client release ${{ github.event.inputs.client-version }}
         id: create_client_release
         if: github.event.inputs.client-version != ''
         uses: actions/create-release@v1
@@ -552,7 +554,7 @@ jobs:
       # ******************************************
       # P D S  release
       # ******************************************
-      - name: Create PDS release
+      - name: Create PDS release ${{ github.event.inputs.pds-version }}
         id: create_pds_release
         if: github.event.inputs.pds-version != ''
         uses: actions/create-release@v1
