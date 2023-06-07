@@ -22,6 +22,18 @@ on:
       pds-milestone-number:
         description: PDS Milestone number (e.g. 46)
         required: false
+
+permissions:
+  contents: write
+  issues: write
+  packages: write
+  pull-requests: write
+
+env:
+  ACTIONS_BASE_IMAGE_ALPINE: alpine:3.17
+  ACTIONS_BASE_IMAGE_DEBIAN: debian:11-slim
+  ACTIONS_SECHUB_REGISTRY: ghcr.io/mercedes-benz/sechub
+
 jobs:
   release-version:
     name: Create releases
@@ -83,7 +95,8 @@ jobs:
         with:
           go-version: 1.20.4
 
-      - uses: actions/cache@v3.3.1
+      - name: Set up Go caching
+        uses: actions/cache@v3.3.1
         id: go-cache
         with:
           path: |
@@ -92,6 +105,13 @@ jobs:
           key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
           restore-keys: |
             ${{ runner.os }}-go-
+
+      - name: Docker login to ghcr.io
+        uses: docker/login-action@v2
+        with:
+          registry: ghcr.io
+          username: ${{ github.repository_owner }}
+          password: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Gradle clean + spotlessCheck
         run: ./gradlew clean spotlessCheck
@@ -133,19 +153,19 @@ jobs:
         run: git checkout master
 
       # ----------------------
-      # SecHub Client
+      # Build SecHub Client
       # ----------------------
       - name: Build Client
         run: ./gradlew :sechub-cli:buildGo :sechub-cli:testGo
 
       # ----------------------
-      # SecHub Server + PDS
+      # Build SecHub Server + PDS
       # ----------------------
       - name: Build Server and PDS artifacts
         run: ./gradlew ensureLocalhostCertificate build generateOpenapi buildDeveloperAdminUI -x :sechub-integrationtest:test -x :sechub-cli:build
 
       # ----------------------
-      # API Java publish
+      # Build API Java publish
       # ----------------------
       - name: Generate, build (and publish on server release) Java API
         run: ./gradlew :sechub-api-java:buildAPIJava
@@ -293,11 +313,11 @@ jobs:
       - name: Assert releasable
         run: ./gradlew assertReleaseable
 
+
       # ******************************************
-      # Now let's create a new SERVER release
-      # when server version is set
+      # S E R V E R  release
       # ******************************************
-      - name: Create server release
+      - name: Create server release ${{ github.event.inputs.server-version }}
         id: create_server_release
         if: github.event.inputs.server-version != ''
         uses: actions/create-release@v1
@@ -371,9 +391,7 @@ jobs:
           asset_name: sechub-developer-admin-ui-${{ github.event.inputs.server-version }}.jar.sha256sum
           asset_content_type: text/plain
 
-      # -----------------------------------------
       # Server documentation:
-      # -----------------------------------------
       - name: Upload sechub-architecture.pdf release asset
         if: github.event.inputs.server-version != ''
         uses: actions/upload-release-asset@v1
@@ -441,11 +459,28 @@ jobs:
             Please close this issue after the release.
           milestone: ${{ github.event.inputs.server-milestone-number }}
 
+      # Build Server container image + push to ghcr
+      - name: Build Server ${{ github.event.inputs.server-version }} container image + push to ghcr
+        if: github.event.inputs.server-version != ''
+        run: |
+          SERVER_VERSION="${{ github.event.inputs.server-version }}"
+          BUILD_FLAVOR="alpine"
+          DOCKER_REGISTRY="$ACTIONS_SECHUB_REGISTRY/server"
+          VERSION_TAG="${SERVER_VERSION}_${BUILD_FLAVOR}"
+          cp sechub-server/build/libs/sechub-server-${SERVER_VERSION}.jar sechub-solution/docker/copy/
+          cd sechub-solution
+          export DOCKER_BUILD_TYPE=copy
+          echo "# Building image $DOCKER_REGISTRY:$VERSION_TAG"
+          echo "  from $ACTIONS_BASE_IMAGE_ALPINE"
+          ./10-create-image-${BUILD_FLAVOR}.sh $DOCKER_REGISTRY $VERSION_TAG $ACTIONS_BASE_IMAGE_ALPINE
+          echo "# Pushing image $DOCKER_REGISTRY:$VERSION_TAG (latest)"
+          ./20-push-image.sh $DOCKER_REGISTRY $VERSION_TAG yes
+
+
       # ******************************************
-      # Now let's create a new CLIENT release
-      # when client version is set
+      # C l i e n t  release
       # ******************************************
-      - name: Create client release
+      - name: Create client release ${{ github.event.inputs.client-version }}
         id: create_client_release
         if: github.event.inputs.client-version != ''
         uses: actions/create-release@v1
@@ -504,11 +539,23 @@ jobs:
           asset_name: sechub-client-${{ github.event.inputs.client-version }}.pdf
           asset_content_type: application/pdf
 
+      - name: Create Client ${{ github.event.inputs.client-version }} release issue
+        if: github.event.inputs.client-version != ''
+        uses: dacbd/create-issue-action@main
+        with:
+          token: ${{ github.token }}
+          title: Release Client ${{ github.event.inputs.client-version }}
+          body: |
+            See [Milestone ${{github.event.inputs.client-milestone-number}}]( https://github.com/mercedes-benz/sechub/milestone/${{github.event.inputs.client-milestone-number}}?closed=1) for details.
+
+            Please close this issue after the release.
+          milestone: ${{ github.event.inputs.client-milestone-number }}
+
+
       # ******************************************
-      # Now let's create a new PDS release
-      # when pds version is set
+      # P D S  release
       # ******************************************
-      - name: Create PDS release
+      - name: Create PDS release ${{ github.event.inputs.pds-version }}
         id: create_pds_release
         if: github.event.inputs.pds-version != ''
         uses: actions/create-release@v1
@@ -578,20 +625,21 @@ jobs:
             Please close this issue after the release.
           milestone: ${{ github.event.inputs.pds-milestone-number }}
 
-      # -----------------------------------------
-      # Create release issue
-      # -----------------------------------------
-      - name: Create Client ${{ github.event.inputs.client-version }} release issue
-        if: github.event.inputs.client-version != ''
-        uses: dacbd/create-issue-action@main
-        with:
-          token: ${{ github.token }}
-          title: Release Client ${{ github.event.inputs.client-version }}
-          body: |
-            See [Milestone ${{github.event.inputs.client-milestone-number}}]( https://github.com/mercedes-benz/sechub/milestone/${{github.event.inputs.client-milestone-number}}?closed=1) for details.
+      # Build pds-base container image + push to ghcr
+      - name: Build pds-base ${{ github.event.inputs.server-version }} container image + push to ghcr
+        if: github.event.inputs.pds-version != ''
+        run: |
+          PDS_VERSION="${{ github.event.inputs.pds-version }}"
+          DOCKER_REGISTRY="$ACTIONS_SECHUB_REGISTRY/pds-base"
+          VERSION_TAG="${PDS_VERSION}"
+          cp sechub-pds/build/libs/sechub-pds-${PDS_VERSION}.jar sechub-pds-solutions/pds-base/docker/copy/
+          cd sechub-pds-solutions/pds-base
+          echo "# Building image $DOCKER_REGISTRY:$VERSION_TAG"
+          echo "  from $ACTIONS_BASE_IMAGE_DEBIAN"
+          ./10-create-image.sh $DOCKER_REGISTRY $VERSION_TAG $PDS_VERSION $ACTIONS_BASE_IMAGE_DEBIAN copy
+          echo "# Pushing image $DOCKER_REGISTRY:$VERSION_TAG (latest)"
+          ./20-push-image.sh $DOCKER_REGISTRY $VERSION_TAG yes
 
-            Please close this issue after the release.
-          milestone: ${{ github.event.inputs.client-milestone-number }}
 
       # -----------------------------------------
       # Create a pull request for merging back `master` into `develop`

@@ -1,0 +1,26 @@
+# SPDX-License-Identifier: MIT
+name: Build and publish all SecHub PDS solutions
+
+on:
+  workflow_dispatch:
+    inputs:
+      pds-version:
+        description: pds-base version to use (e.g. 1.0.0)
+        required: true
+  workflow_call:
+    inputs:
+      pds-version:
+        required: true
+        type: string
+
+jobs:
+  build-pds-solution1:
+    name: Build and publish PDS solution 1
+    runs-on: ubuntu-latest
+    steps:
+      - name: "Show Inputs"
+        run: |
+          echo "pds-version '${{ github.event.inputs.pds-version }}'"
+
+      - name: Checkout git repository
+        uses: actions/checkout@v3

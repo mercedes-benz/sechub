@@ -1,0 +1,33 @@
+# SPDX-License-Identifier: MIT
+name: Build and publish one single PDS solution
+
+on:
+  workflow_dispatch:
+    inputs:
+      pds-solution:
+        description: pds solution to build (e.g. gosec ; see sechub-pds-solutions/)
+        required: true
+      pds-version:
+        description: pds-base version to use (e.g. 1.0.0)
+        required: true
+  workflow_call:
+    inputs:
+      pds-solution:
+        required: true
+        type: string
+      pds-version:
+        required: true
+        type: string
+
+jobs:
+  build-pds-solution:
+    name: Build and publish all PDS solutions
+    runs-on: ubuntu-latest
+    steps:
+      - name: "Show Inputs"
+        run: |
+          echo "pds-solution '${{ github.event.inputs.pds-solution }}'"
+          echo "pds-version '${{ github.event.inputs.pds-version }}'"
+
+      - name: Checkout git repository
+        uses: actions/checkout@v3
