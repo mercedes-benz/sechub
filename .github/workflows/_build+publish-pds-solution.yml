@@ -28,7 +28,7 @@ env:
 
 jobs:
   build-pds-solution:
-    name: Build and publish PDS solution
+    name: Build and publish pds-${{ inputs.pds-solution }}
     runs-on: ubuntu-latest
     steps:
       - name: "Show Inputs"
@@ -46,8 +46,8 @@ jobs:
           username: ${{ github.repository_owner }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      # Build pds-base container image + push to ghcr
-      - name: Build pds-base ${{ inputs.server-version }} container image + push to ghcr
+      # Build pds solution container image + push to ghcr
+      - name: Build pds-${{ inputs.pds-solution }} container image + push to ghcr
         run: |
           PDS_SOLUTION="${{ inputs.pds-solution }}"
           PDS_VERSION="${{ inputs.pds-version }}"
