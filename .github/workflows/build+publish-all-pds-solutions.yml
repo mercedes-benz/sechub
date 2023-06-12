@@ -14,7 +14,7 @@ on:
         type: string
 
 jobs:
-  call-build+publish-pds-checkmarx:
+  call_build-and-publish-pds-checkmarx:
     uses: mercedes-benz/sechub/.github/workflows/_build+publish-pds-solution.yml@feature-1936-build+push-pds-solutions
     with:
       pds-solution: checkmarx
