@@ -681,6 +681,6 @@ jobs:
     needs: release-version
     # Build all PDS solutions based on above released pds-base image
     name: Build all PDS solutions
-    uses: mercedes-benz/sechub/.github/workflows/build+publish-all-pds-solutions.yml@feature-1936-build+push-pds-solutions
+    uses: mercedes-benz/sechub/.github/workflows/build+publish-all-pds-solutions.yml@develop
     with:
       pds-version: ${{ inputs.pds-version }}

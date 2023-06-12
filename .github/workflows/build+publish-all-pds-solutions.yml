@@ -15,62 +15,62 @@ on:
 
 jobs:
   call_build_pds-checkmarx:
-    uses: mercedes-benz/sechub/.github/workflows/_build+publish-pds-solution.yml@feature-1936-build+push-pds-solutions
+    uses: mercedes-benz/sechub/.github/workflows/_build+publish-pds-solution.yml@develop
     with:
       pds-solution: checkmarx
       pds-version: ${{ inputs.pds-version }}
 
   call_build_pds-cloc:
-    uses: mercedes-benz/sechub/.github/workflows/_build+publish-pds-solution.yml@feature-1936-build+push-pds-solutions
+    uses: mercedes-benz/sechub/.github/workflows/_build+publish-pds-solution.yml@develop
     with:
       pds-solution: cloc
       pds-version: ${{ inputs.pds-version }}
 
   # 2023-06-12: findsecuritybugs deactivated due to upstream fix is not yet released
   # call_build_pds-findsecuritybugs:
-  #   uses: mercedes-benz/sechub/.github/workflows/_build+publish-pds-solution.yml@feature-1936-build+push-pds-solutions
+  #   uses: mercedes-benz/sechub/.github/workflows/_build+publish-pds-solution.yml@develop
   #   with:
   #     pds-solution: findsecuritybugs
   #     pds-version: ${{ inputs.pds-version }}
 
   call_build_pds-gitleaks:
-    uses: mercedes-benz/sechub/.github/workflows/_build+publish-pds-solution.yml@feature-1936-build+push-pds-solutions
+    uses: mercedes-benz/sechub/.github/workflows/_build+publish-pds-solution.yml@develop
     with:
       pds-solution: gitleaks
       pds-version: ${{ inputs.pds-version }}
 
   call_build_pds-gosec:
-    uses: mercedes-benz/sechub/.github/workflows/_build+publish-pds-solution.yml@feature-1936-build+push-pds-solutions
+    uses: mercedes-benz/sechub/.github/workflows/_build+publish-pds-solution.yml@develop
     with:
       pds-solution: gosec
       pds-version: ${{ inputs.pds-version }}
 
   call_build_pds-multi:
-    uses: mercedes-benz/sechub/.github/workflows/_build+publish-pds-solution.yml@feature-1936-build+push-pds-solutions
+    uses: mercedes-benz/sechub/.github/workflows/_build+publish-pds-solution.yml@develop
     with:
       pds-solution: multi
       pds-version: ${{ inputs.pds-version }}
 
   call_build_pds-owasp-zap:
-    uses: mercedes-benz/sechub/.github/workflows/_build+publish-pds-solution.yml@feature-1936-build+push-pds-solutions
+    uses: mercedes-benz/sechub/.github/workflows/_build+publish-pds-solution.yml@develop
     with:
       pds-solution: owasp-zap
       pds-version: ${{ inputs.pds-version }}
 
   call_build-and-publish-pmd:
-    uses: mercedes-benz/sechub/.github/workflows/_build+publish-pds-solution.yml@feature-1936-build+push-pds-solutions
+    uses: mercedes-benz/sechub/.github/workflows/_build+publish-pds-solution.yml@develop
     with:
       pds-solution: pmd
       pds-version: ${{ inputs.pds-version }}
 
   call_build_pds-scancode:
-    uses: mercedes-benz/sechub/.github/workflows/_build+publish-pds-solution.yml@feature-1936-build+push-pds-solutions
+    uses: mercedes-benz/sechub/.github/workflows/_build+publish-pds-solution.yml@develop
     with:
       pds-solution: scancode
       pds-version: ${{ inputs.pds-version }}
 
   call_build_pds-tern:
-    uses: mercedes-benz/sechub/.github/workflows/_build+publish-pds-solution.yml@feature-1936-build+push-pds-solutions
+    uses: mercedes-benz/sechub/.github/workflows/_build+publish-pds-solution.yml@develop
     with:
       pds-solution: tern
       pds-version: ${{ inputs.pds-version }}
