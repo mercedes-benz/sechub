@@ -640,12 +640,6 @@ jobs:
           echo "# Pushing image $DOCKER_REGISTRY:$VERSION_TAG (latest)"
           ./20-push-image.sh $DOCKER_REGISTRY $VERSION_TAG yes
 
-      # Build all PDS solutions based on above image
-      - name: Build all PDS solutions
-        uses: mercedes-benz/sechub/.github/workflows/build+publish-all-pds-solutions.yml@feature-1936-build+push-pds-solutions
-        with:
-          pds-version: ${{ inputs.pds-version }}
-
 
       # -----------------------------------------
       # Create a pull request for merging back `master` into `develop`
@@ -680,3 +674,13 @@ jobs:
         if: steps.pr_master_to_develop.outcome != 'success'
         run: |
           echo "Nothing to merge - no pull request necessary."
+
+
+  build-pds-solutions:
+    if: inputs.pds-version != ''
+    needs: release-version
+    # Build all PDS solutions based on above released pds-base image
+    name: Build all PDS solutions
+    uses: mercedes-benz/sechub/.github/workflows/build+publish-all-pds-solutions.yml@feature-1936-build+push-pds-solutions
+    with:
+      pds-version: ${{ inputs.pds-version }}
