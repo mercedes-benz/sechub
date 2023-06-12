@@ -9,8 +9,10 @@ LABEL org.opencontainers.image.description="A container which combines Scancode-
 LABEL maintainer="SecHub FOSS Team"
 
 # Build args
-ARG SCANCODE_VERSION
-ARG SPDX_TOOL_VERSION
+#  SCANCODE_VERSION: see https://github.com/nexB/scancode-toolkit/releases Use the version number only
+ARG SCANCODE_VERSION="32.0.2"
+#  SPDX_TOOL_VERSION: see https://mvnrepository.com/artifact/org.spdx/tools-java
+ARG SPDX_TOOL_VERSION="1.1.5"
 
 # Environment variables in container
 ENV SCANCODE_VERSION="${SCANCODE_VERSION}"
