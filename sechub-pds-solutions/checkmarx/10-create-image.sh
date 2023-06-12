@@ -12,7 +12,7 @@ usage() {
 usage: $0 <docker registry> <version tag> <base image>
 Builds a docker image of SecHub PDS with Checkmarx Wrapper
 for <docker registry> with tag <version tag>.
-Required: <base image> ; Example: ghcr.io/mercedes-benz/sechub/pds-base:v0.32.1
+Required: <base image> ; Example: ghcr.io/mercedes-benz/sechub/pds-base
 
 Additionally these environment variables can be defined:
 - BUILD_TYPE - The build type of the Checkmarx-Wrapper. Defaults to "$DEFAULT_BUILD_TYPE"

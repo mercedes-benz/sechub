@@ -55,10 +55,11 @@ jobs:
             echo "Fatal: No directory named \"$PDS_SOLUTION\" found in sechub-pds-solutions/"
             exit 1
           fi
-          cd "sechub-pds-solutions/$PDS_SOLUTION"
-          DOCKER_REGISTRY="$ACTIONS_SECHUB_REGISTRY/pds-$PDS_SOLUTION"
-          VERSION_TAG="${PDS_VERSION}"
-          BASE_IMAGE="$ACTIONS_BASE_IMAGE"
+          cd "sechub-pds-solutions/${PDS_SOLUTION}"
+          test -f env && source env
+          DOCKER_REGISTRY="${ACTIONS_SECHUB_REGISTRY}/pds-${PDS_SOLUTION}"
+          VERSION_TAG=`./09-compute-image-tag.sh ${PDS_VERSION}`
+          BASE_IMAGE="${ACTIONS_SECHUB_REGISTRY}/pds-base:${PDS_VERSION}"
           echo "# Building image $DOCKER_REGISTRY:$VERSION_TAG from $BASE_IMAGE"
           ./10-create-image.sh "$DOCKER_REGISTRY" "$VERSION_TAG" "$BASE_IMAGE"
           ./20-push-image.sh "$DOCKER_REGISTRY" "$VERSION_TAG" yes

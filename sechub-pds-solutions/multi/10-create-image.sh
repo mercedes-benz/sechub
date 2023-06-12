@@ -12,7 +12,7 @@ usage() {
 usage: $0 <docker registry> <version tag> <base image>
 Builds a docker image of SecHub PDS with multiple scan tools
 for <docker registry> with tag <version tag>.
-Required: <base image> ; for example ghcr.io/mercedes-benz/sechub/pds-base:v0.32.1
+Required: <base image> ; for example ghcr.io/mercedes-benz/sechub/pds-base
 EOF
 }
 
