@@ -14,13 +14,9 @@ on:
         type: string
 
 jobs:
-  build-pds-solution1:
-    name: Build and publish PDS solution 1
-    runs-on: ubuntu-latest
-    steps:
-      - name: "Show Inputs"
-        run: |
-          echo "pds-version '${{ github.event.inputs.pds-version }}'"
-
-      - name: Checkout git repository
-        uses: actions/checkout@v3
+  call-build+publish-pds-checkmarx:
+    uses: mercedes-benz/sechub/.github/workflows/_build+publish-pds-solution.yml@feature-1936-build+push-pds-solutions
+    with:
+      pds-solution: checkmarx
+      pds-version: ${{ inputs.pds-version }}
+    # secrets: inherit
