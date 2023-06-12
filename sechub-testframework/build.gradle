@@ -8,6 +8,7 @@
 dependencies {
 
     implementation library.junit4
+    implementation spring_boot_dependency.junit_jupiter
     implementation spring_boot_dependency.mockito_core
     implementation library.mockito_inline
     implementation spring_boot_dependency.hamcrest
@@ -16,4 +17,9 @@ dependencies {
     implementation library.wiremock
     implementation library.apache_commons_io
     implementation library.apache_commons_lang3
+    
+    implementation project(':sechub-commons-core'); // core does NOT use the testframework
+    
+    testImplementation spring_boot_dependency.junit_jupiter
+    testImplementation spring_boot_dependency.mockito_core
 }

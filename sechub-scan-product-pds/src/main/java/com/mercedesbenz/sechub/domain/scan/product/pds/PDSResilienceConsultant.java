@@ -9,12 +9,12 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.HttpClientErrorException;
 
+import com.mercedesbenz.sechub.commons.core.resilience.ResilienceConsultant;
+import com.mercedesbenz.sechub.commons.core.resilience.ResilienceContext;
+import com.mercedesbenz.sechub.commons.core.resilience.ResilienceProposal;
+import com.mercedesbenz.sechub.commons.core.resilience.SimpleRetryResilienceProposal;
+import com.mercedesbenz.sechub.commons.core.util.StacktraceUtil;
 import com.mercedesbenz.sechub.sharedkernel.MustBeDocumented;
-import com.mercedesbenz.sechub.sharedkernel.resilience.ResilienceConsultant;
-import com.mercedesbenz.sechub.sharedkernel.resilience.ResilienceContext;
-import com.mercedesbenz.sechub.sharedkernel.resilience.ResilienceProposal;
-import com.mercedesbenz.sechub.sharedkernel.resilience.SimpleRetryResilienceProposal;
-import com.mercedesbenz.sechub.sharedkernel.util.StacktraceUtil;
 
 @Component
 public class PDSResilienceConsultant implements ResilienceConsultant {

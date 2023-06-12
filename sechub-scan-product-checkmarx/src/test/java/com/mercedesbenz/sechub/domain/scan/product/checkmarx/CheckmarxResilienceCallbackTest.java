@@ -11,8 +11,8 @@ import org.junit.Test;
 import com.mercedesbenz.sechub.adapter.AdapterMetaData;
 import com.mercedesbenz.sechub.adapter.AdapterMetaDataCallback;
 import com.mercedesbenz.sechub.adapter.checkmarx.CheckmarxMetaDataID;
+import com.mercedesbenz.sechub.commons.core.resilience.ResilienceContext;
 import com.mercedesbenz.sechub.domain.scan.product.ProductExecutorContext;
-import com.mercedesbenz.sechub.sharedkernel.resilience.ResilienceContext;
 
 public class CheckmarxResilienceCallbackTest {
 

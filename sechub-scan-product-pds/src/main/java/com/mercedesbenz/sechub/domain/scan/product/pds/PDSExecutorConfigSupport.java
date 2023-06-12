@@ -47,7 +47,7 @@ public class PDSExecutorConfigSupport extends DefaultExecutorConfigSupport imple
 
     }
 
-    public static List<PDSKeyProvider<? extends PDSKey>> getUnmodifiableListOfParameterKeyProvidersSentToPDS() {
+    public static List<PDSKeyProvider<? extends PDSKey>> getUnmodifiableListOfParameterKeyProvidersForPdsExecutorConfiguration() {
         return keyProvidersForSendingParametersToPDS;
     }
 
@@ -267,4 +267,11 @@ public class PDSExecutorConfigSupport extends DefaultExecutorConfigSupport imple
         return getParameterBooleanValue(PDSConfigDataKeyProvider.PDS_CONFIG_SCRIPT_TRUSTALL_CERTIFICATES_ENABLED);
     }
 
+    public int getPDSAdapterResilienceMaxRetries() {
+        return getParameterIntValue(PDSProductExecutorKeyConstants.ADAPTER_RESILIENCE_RETRY_MAX);
+    }
+
+    public long getPDSAdapterResilienceRetryWaitInMilliseconds() {
+        return getParameterLongValue(PDSProductExecutorKeyConstants.ADAPTER_RESILIENCE_RETRY_WAIT_MILLISECONDS);
+    }
 }

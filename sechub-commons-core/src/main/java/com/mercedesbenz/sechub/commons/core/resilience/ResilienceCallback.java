@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-package com.mercedesbenz.sechub.sharedkernel.resilience;
+package com.mercedesbenz.sechub.commons.core.resilience;
 
 /**
  * Represents a possibility to do some callbacks at resilience side

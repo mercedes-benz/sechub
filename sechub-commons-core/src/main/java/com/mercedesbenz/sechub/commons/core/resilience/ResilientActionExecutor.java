@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-package com.mercedesbenz.sechub.sharedkernel.resilience;
+package com.mercedesbenz.sechub.commons.core.resilience;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -10,7 +10,7 @@ import java.util.Objects;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.mercedesbenz.sechub.sharedkernel.util.StacktraceUtil;
+import com.mercedesbenz.sechub.commons.core.util.StacktraceUtil;
 
 /**
  * This class is able to execute actions which shall be resilient by help of
@@ -19,45 +19,44 @@ import com.mercedesbenz.sechub.sharedkernel.util.StacktraceUtil;
  * <br>
  * But be aware: You <b>MUST</b> use one executor always for same kind of
  * action. If you have dedicated actions you need different executors!. An
- * example: When you want to connect to two servers and you want a fallthrough
- * if server1 is not available you do not want to have a fallthrough of server2
- * automatically. So in this case you should use two different executors for
- * these different targets !
+ * example: When you want to connect to 2 different servers and you want a
+ * fallthrough if server 1 is not available you do not want to have a
+ * fallthrough of server2 automatically. So in this case you should use two
+ * different executors for these different targets !
  *
  * @author Albert Tregnaghi
  *
  */
-public class ResilientActionExecutor<R> {
+public class ResilientActionExecutor<R> implements ResilientExecutor<ResilientAction<R>, R> {
 
     private static final Logger LOG = LoggerFactory.getLogger(ResilientActionExecutor.class);
 
-    private List<ResilienceConsultant> consultants = new ArrayList<>();
+    private List<ResilienceConsultant> consultants;
+    private FallthroughSupport fallThroughSupport;
 
-    private FallthroughSupport fallThroughSupport = new FallthroughSupport();
-
-    public R executeResilient(ActionWhichShallBeResilient<R> action) throws Exception {
-        return this.executeResilient(action, null);
+    public ResilientActionExecutor() {
+        fallThroughSupport = new FallthroughSupport();
+        consultants = new ArrayList<>();
     }
 
-    public R executeResilient(ActionWhichShallBeResilient<R> action, ResilienceCallback callback) throws Exception {
+    public R executeResilient(ResilientAction<R> action, ResilienceCallback callback) throws Exception {
         Objects.requireNonNull(action, "action may not be null!");
 
         fallThroughSupport.handleFallThrough();
 
         ResilienctActionContext context = new ResilienctActionContext(callback);
 
-        R result = null;
         do {
-            /* try to execute */
             try {
-                result = action.execute();
+                return action.execute();
+
             } catch (Exception e) {
                 handleException(context, e);
             }
 
-        } while (result == null && context.isRetryNecessary());
+        } while (context.isRetryNecessary());
 
-        return result;
+        return null;
     }
 
     private void handleException(ResilienctActionContext context, Exception e) throws Exception, InterruptedException {
@@ -76,17 +75,18 @@ public class ResilientActionExecutor<R> {
             RetryResilienceProposal retryProposal = (RetryResilienceProposal) proposal;
 
             int maxRetries = retryProposal.getMaximumAmountOfRetries();
-            if (context.getAlreadyDoneRetries() >= maxRetries) {
-                LOG.warn("Maximum retry amount ({}/{}) reached, will rethrow exception for :{}", context.getAlreadyDoneRetries(), maxRetries,
-                        proposal.getInfo());
+            int alreadyDoneRetries = context.getAlreadyDoneRetries();
+
+            if (alreadyDoneRetries >= maxRetries) {
+                LOG.warn("Maximum retry amount ({}/{}) reached, will rethrow exception for :{}", alreadyDoneRetries, maxRetries, proposal.getInfo());
                 throw e;
             } else {
                 context.forceRetry();
-                LOG.debug("Wait {} millis before retry:{}", retryProposal.getMillisecondsToWaitBeforeRetry(), proposal.getInfo());
+                LOG.debug("Wait {} millis before retry: {}", retryProposal.getMillisecondsToWaitBeforeRetry(), proposal.getInfo());
 
                 /* wait time for next retry */
                 Thread.sleep(retryProposal.getMillisecondsToWaitBeforeRetry());
-                LOG.info("Retry {}/{}:{}", context.getAlreadyDoneRetries(), maxRetries, proposal.getInfo());
+                LOG.info("Retry {}/{}:{}", alreadyDoneRetries, maxRetries, proposal.getInfo());
 
                 if (callback != null) {
                     callback.beforeRetry(context);
