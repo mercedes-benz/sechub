@@ -17,10 +17,10 @@ jobs:
     steps:
       - name: "Show Inputs"
         run: |
-          echo "PDS-Tools '${{ github.event.inputs.pds-tools-version }}' - Milestone '${{ github.event.inputs.pds-tools-milestone-number }}'"
+          echo "PDS-Tools '${{ inputs.pds-tools-version }}' - Milestone '${{ inputs.pds-tools-milestone-number }}'"
       # Check inputs if a milestone number is provided for each version to be released:
       - name: "Verify Input: PDS-Tools"
-        if: (github.event.inputs.pds-tools-version != '') && (github.event.inputs.pds-tools-milestone-number == '')
+        if: (inputs.pds-tools-version != '') && (inputs.pds-tools-milestone-number == '')
         run: |
           echo "For PDS-Tools release, pds-tools-milestone-number must be provided!"
           exit 1
@@ -31,9 +31,9 @@ jobs:
       # Create temporary local tags, so we build documentation for this tag...
       # The final tag on git server side will be done by the release when the draft is saved as "real" release
       # automatically.
-      - name: "Temporary tag server version: v${{ github.event.inputs.pds-tools-version }}-pds-tools - if defined"
-        if: github.event.inputs.pds-tools-version != ''
-        run: git tag v${{ github.event.inputs.pds-tools-version }}-pds-tools
+      - name: "Temporary tag server version: v${{ inputs.pds-tools-version }}-pds-tools - if defined"
+        if: inputs.pds-tools-version != ''
+        run: git tag v${{ inputs.pds-tools-version }}-pds-tools
 
       # ----------------------
       # Setup + Caching
@@ -122,60 +122,60 @@ jobs:
 
       - name: Create PDS-Tools release
         id: create_pds_tools_release
-        if: github.event.inputs.pds-tools-version != ''
+        if: inputs.pds-tools-version != ''
         uses: actions/create-release@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # This token is provided by Actions, you do not need to create your own token
         with:
-          tag_name: v${{ github.event.inputs.pds-tools-version }}-pds-tools
+          tag_name: v${{ inputs.pds-tools-version }}-pds-tools
           commitish: master
-          release_name: PDS-Tools Version ${{ github.event.inputs.pds-tools-version }}
+          release_name: PDS-Tools Version ${{ inputs.pds-tools-version }}
           body: |
             Changes in this Release
             - Some minor changes on PDS-Tools implementation
 
-            For more details please look at [Milestone ${{github.event.inputs.pds-tools-milestone-number}}]( https://github.com/mercedes-benz/sechub/milestone/${{github.event.inputs.pds-tools-milestone-number}}?closed=1)
+            For more details please look at [Milestone ${{inputs.pds-tools-milestone-number}}]( https://github.com/mercedes-benz/sechub/milestone/${{inputs.pds-tools-milestone-number}}?closed=1)
           draft: true
           prerelease: false
       - name: Create sha256 checksum file for PDS-Tools cli jar
-        if: github.event.inputs.pds-tools-version != ''
+        if: inputs.pds-tools-version != ''
         run: |
           cd sechub-pds-tools/build/libs
-          sha256sum sechub-pds-tools-cli-${{ github.event.inputs.pds-tools-version }}.jar > sechub-pds-tools-cli-${{ github.event.inputs.pds-tools-version }}.jar.sha256sum
-      - name: Upload PDS-Tools release asset sechub-pds-tools-cli-${{ github.event.inputs.pds-tools-version }}.jar
-        if: github.event.inputs.pds-tools-version != ''
+          sha256sum sechub-pds-tools-cli-${{ inputs.pds-tools-version }}.jar > sechub-pds-tools-cli-${{ inputs.pds-tools-version }}.jar.sha256sum
+      - name: Upload PDS-Tools release asset sechub-pds-tools-cli-${{ inputs.pds-tools-version }}.jar
+        if: inputs.pds-tools-version != ''
         uses: actions/upload-release-asset@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_pds_tools_release.outputs.upload_url }}
-          asset_path: sechub-pds-tools/build/libs/sechub-pds-tools-cli-${{ github.event.inputs.pds-tools-version }}.jar
-          asset_name: sechub-pds-tools-cli-${{ github.event.inputs.pds-tools-version }}.jar
+          asset_path: sechub-pds-tools/build/libs/sechub-pds-tools-cli-${{ inputs.pds-tools-version }}.jar
+          asset_name: sechub-pds-tools-cli-${{ inputs.pds-tools-version }}.jar
           asset_content_type: application/zip
-      - name: Upload PDS-Tools release asset sechub-pds-tools-cli-${{ github.event.inputs.pds-tools-version }}.jar.sha256sum
-        if: github.event.inputs.pds-tools-version != ''
+      - name: Upload PDS-Tools release asset sechub-pds-tools-cli-${{ inputs.pds-tools-version }}.jar.sha256sum
+        if: inputs.pds-tools-version != ''
         uses: actions/upload-release-asset@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_pds_tools_release.outputs.upload_url }}
-          asset_path: sechub-pds-tools/build/libs/sechub-pds-tools-cli-${{ github.event.inputs.pds-tools-version }}.jar.sha256sum
-          asset_name: sechub-pds-tools-cli-${{ github.event.inputs.pds-tools-version }}.jar.sha256sum
+          asset_path: sechub-pds-tools/build/libs/sechub-pds-tools-cli-${{ inputs.pds-tools-version }}.jar.sha256sum
+          asset_name: sechub-pds-tools-cli-${{ inputs.pds-tools-version }}.jar.sha256sum
           asset_content_type: text/plain
 
       # -----------------------------------------
       # Create release issue
       # -----------------------------------------
-      - name: Create PDS-Tool ${{ github.event.inputs.pds-tools-version }} release issue
+      - name: Create PDS-Tool ${{ inputs.pds-tools-version }} release issue
         uses: dacbd/create-issue-action@main
         with:
           token: ${{ github.token }}
-          title: Release PDS-Tool ${{ github.event.inputs.pds-tools-version }}
+          title: Release PDS-Tool ${{ inputs.pds-tools-version }}
           body: |
-            See [Milestone ${{github.event.inputs.pds-tools-milestone-number}}]( https://github.com/mercedes-benz/sechub/milestone/${{github.event.inputs.pds-tools-milestone-number}}?closed=1) for details.
+            See [Milestone ${{inputs.pds-tools-milestone-number}}]( https://github.com/mercedes-benz/sechub/milestone/${{inputs.pds-tools-milestone-number}}?closed=1) for details.
 
             Please close this issue after the release.
-          milestone: ${{ github.event.inputs.pds-tools-milestone-number }}
+          milestone: ${{ inputs.pds-tools-milestone-number }}
 
       # -----------------------------------------
       # Create a pull request for merging back `master` into `develop`
@@ -192,7 +192,7 @@ jobs:
           pr_title: '2 - After pds-tools release: Merge master back into develop [auto-generated]'
           pr_body: |
             After PDS-Tool release
-            - PDS-Tools '${{ github.event.inputs.pds-tools-version }}'
+            - PDS-Tools '${{ inputs.pds-tools-version }}'
 
             Merge master branch back into develop
 
