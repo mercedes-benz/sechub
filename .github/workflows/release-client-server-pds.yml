@@ -33,6 +33,7 @@ env:
   ACTIONS_BASE_IMAGE_ALPINE: alpine:3.17
   ACTIONS_BASE_IMAGE_DEBIAN: debian:11-slim
   ACTIONS_SECHUB_REGISTRY: ghcr.io/mercedes-benz/sechub
+  ACTIONS_HELM_REGISTRY: "oci://ghcr.io/mercedes-benz/sechub/helm-charts"
 
 jobs:
   release-version:
@@ -465,7 +466,7 @@ jobs:
         run: |
           SERVER_VERSION="${{ inputs.server-version }}"
           BUILD_FLAVOR="alpine"
-          DOCKER_REGISTRY="$ACTIONS_SECHUB_REGISTRY/server"
+          DOCKER_REGISTRY="$ACTIONS_SECHUB_REGISTRY/sechub-server"
           VERSION_TAG="${SERVER_VERSION}_${BUILD_FLAVOR}"
           cp sechub-server/build/libs/sechub-server-${SERVER_VERSION}.jar sechub-solution/docker/copy/
           cd sechub-solution
@@ -475,6 +476,15 @@ jobs:
           ./10-create-image-${BUILD_FLAVOR}.sh $DOCKER_REGISTRY $VERSION_TAG $ACTIONS_BASE_IMAGE_ALPINE
           echo "# Pushing image $DOCKER_REGISTRY:$VERSION_TAG (latest)"
           ./20-push-image.sh $DOCKER_REGISTRY $VERSION_TAG yes
+
+      - name: Build Server Helm chart + push to ghcr
+        if: inputs.server-version != ''
+        shell: bash
+        run: |
+          cd "sechub-solution/helm"
+          echo "# Building Helm chart for sechub-server"
+          helm package sechub-server
+          helm push sechub-server-*.tgz $ACTIONS_HELM_REGISTRY
 
 
       # ******************************************
