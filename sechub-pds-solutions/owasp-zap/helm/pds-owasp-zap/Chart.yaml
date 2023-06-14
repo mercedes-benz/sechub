@@ -1,7 +1,7 @@
 # SPDX-License-Identifier: MIT
 
 apiVersion: v2
-name: pds-owaspzap
+name: pds-owasp-zap
 description: The OWASP ZAP + PDS as Helm chart for Kubernetes
 
 type: application
