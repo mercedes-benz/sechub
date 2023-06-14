@@ -33,6 +33,7 @@ env:
   ACTIONS_BASE_IMAGE_ALPINE: alpine:3.17
   ACTIONS_BASE_IMAGE_DEBIAN: debian:11-slim
   ACTIONS_SECHUB_REGISTRY: ghcr.io/mercedes-benz/sechub
+  ACTIONS_HELM_REGISTRY: "oci://ghcr.io/mercedes-benz/sechub/helm-charts"
 
 jobs:
   release-version:
@@ -41,22 +42,22 @@ jobs:
     steps:
       - name: "Show Inputs"
         run: |
-          echo "Server '${{ github.event.inputs.server-version }}' - Milestone '${{ github.event.inputs.server-milestone-number }}'"
-          echo "Client '${{ github.event.inputs.client-version }}' - Milestone '${{ github.event.inputs.client-milestone-number }}'"
-          echo "PDS '${{ github.event.inputs.pds-version }}' - Milestone '${{ github.event.inputs.pds-milestone-number }}'"
+          echo "Server '${{ inputs.server-version }}' - Milestone '${{ inputs.server-milestone-number }}'"
+          echo "Client '${{ inputs.client-version }}' - Milestone '${{ inputs.client-milestone-number }}'"
+          echo "PDS '${{ inputs.pds-version }}' - Milestone '${{ inputs.pds-milestone-number }}'"
       # Check inputs if a milestone number is provided for each version to be released:
       - name: "Verify Input: Server"
-        if: (github.event.inputs.server-version != '') && (github.event.inputs.server-milestone-number == '')
+        if: (inputs.server-version != '') && (inputs.server-milestone-number == '')
         run: |
           echo "For Server release, server-milestone-number must be provided!"
           exit 1
       - name: "Verify Input: Client"
-        if: (github.event.inputs.client-version != '') && (github.event.inputs.client-milestone-number == '')
+        if: (inputs.client-version != '') && (inputs.client-milestone-number == '')
         run: |
           echo "For Client release, client-milestone-number must be provided!"
           exit 1
       - name: "Verify Input: PDS"
-        if: (github.event.inputs.pds-version != '') && (github.event.inputs.pds-milestone-number == '')
+        if: (inputs.pds-version != '') && (inputs.pds-milestone-number == '')
         run: |
           echo "For PDS release, pds-milestone-number must be provided!"
           exit 1
@@ -68,17 +69,17 @@ jobs:
       # Create temporary local tags, so we build documentation for this tag...
       # The final tag on git server side will be done by the release when the draft is saved as "real" release
       # automatically.
-      - name: "Temporary tag server version: v${{ github.event.inputs.server-version }}-server - if defined"
-        if: github.event.inputs.server-version != ''
-        run: git tag v${{ github.event.inputs.server-version }}-server
+      - name: "Temporary tag server version: v${{ inputs.server-version }}-server - if defined"
+        if: inputs.server-version != ''
+        run: git tag v${{ inputs.server-version }}-server
 
-      - name: "Temporary tag client version: v${{ github.event.inputs.client-version }}-client - if defined"
-        if: github.event.inputs.client-version != ''
-        run: git tag v${{ github.event.inputs.client-version }}-client
+      - name: "Temporary tag client version: v${{ inputs.client-version }}-client - if defined"
+        if: inputs.client-version != ''
+        run: git tag v${{ inputs.client-version }}-client
 
-      - name: "Temporary tag PDS version: v${{ github.event.inputs.pds-version }}-pds - if defined"
-        if: github.event.inputs.pds-version != ''
-        run: git tag v${{ github.event.inputs.pds-version }}-pds
+      - name: "Temporary tag PDS version: v${{ inputs.pds-version }}-pds - if defined"
+        if: inputs.pds-version != ''
+        run: git tag v${{ inputs.pds-version }}-pds
 
       # ----------------------
       # Setup + Caching
@@ -292,9 +293,9 @@ jobs:
           title: '1 - Release documentation [auto-generated]'
           body: |
             Release of SecHub documentation
-            - Server "${{ github.event.inputs.server-version }}"
-            - Client "${{ github.event.inputs.client-version }}"
-            - PDS "${{ github.event.inputs.pds-version }}"
+            - Server "${{ inputs.server-version }}"
+            - Client "${{ inputs.client-version }}"
+            - PDS "${{ inputs.pds-version }}"
 
             -> Please review and merge **before** publishing the release.
 
@@ -317,155 +318,155 @@ jobs:
       # ******************************************
       # S E R V E R  release
       # ******************************************
-      - name: Create server release ${{ github.event.inputs.server-version }}
+      - name: Create server release ${{ inputs.server-version }}
         id: create_server_release
-        if: github.event.inputs.server-version != ''
+        if: inputs.server-version != ''
         uses: actions/create-release@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # This token is provided by Actions, you do not need to create your own token
         with:
-          tag_name: v${{ github.event.inputs.server-version }}-server
+          tag_name: v${{ inputs.server-version }}-server
           commitish: master
-          release_name: Server Version ${{ github.event.inputs.server-version }}
+          release_name: Server Version ${{ inputs.server-version }}
           body: |
             Changes in this Release
             - Some minor changes on SecHub server implementation
 
-            For more details please look at [Milestone ${{github.event.inputs.server-milestone-number}}]( https://github.com/mercedes-benz/sechub/milestone/${{github.event.inputs.server-milestone-number}}?closed=1)
+            For more details please look at [Milestone ${{inputs.server-milestone-number}}]( https://github.com/mercedes-benz/sechub/milestone/${{inputs.server-milestone-number}}?closed=1)
           draft: true
           prerelease: false
 
       - name: Create sha256 checksum file for SecHub server jar
-        if: github.event.inputs.server-version != ''
+        if: inputs.server-version != ''
         run: |
           cd sechub-server/build/libs
-          sha256sum sechub-server-${{ github.event.inputs.server-version }}.jar > sechub-server-${{ github.event.inputs.server-version }}.jar.sha256sum
+          sha256sum sechub-server-${{ inputs.server-version }}.jar > sechub-server-${{ inputs.server-version }}.jar.sha256sum
 
       - name: Create sha256 checksum files for SecHub developer tools jars
-        if: github.event.inputs.server-version != ''
+        if: inputs.server-version != ''
         run: |
           cd sechub-developertools/build/libs/
-          sha256sum sechub-developer-admin-ui-${{ github.event.inputs.server-version }}.jar > sechub-developer-admin-ui-${{ github.event.inputs.server-version }}.jar.sha256sum
+          sha256sum sechub-developer-admin-ui-${{ inputs.server-version }}.jar > sechub-developer-admin-ui-${{ inputs.server-version }}.jar.sha256sum
 
-      - name: Upload Server release asset sechub-server-${{ github.event.inputs.server-version }}.jar
-        if: github.event.inputs.server-version != ''
+      - name: Upload Server release asset sechub-server-${{ inputs.server-version }}.jar
+        if: inputs.server-version != ''
         uses: actions/upload-release-asset@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_server_release.outputs.upload_url }}
-          asset_path: sechub-server/build/libs/sechub-server-${{ github.event.inputs.server-version }}.jar
-          asset_name: sechub-server-${{ github.event.inputs.server-version }}.jar
+          asset_path: sechub-server/build/libs/sechub-server-${{ inputs.server-version }}.jar
+          asset_name: sechub-server-${{ inputs.server-version }}.jar
           asset_content_type: application/zip
 
-      - name: Upload Server release asset sechub-server-${{ github.event.inputs.server-version }}.jar.sha256sum
-        if: github.event.inputs.server-version != ''
+      - name: Upload Server release asset sechub-server-${{ inputs.server-version }}.jar.sha256sum
+        if: inputs.server-version != ''
         uses: actions/upload-release-asset@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_server_release.outputs.upload_url }}
-          asset_path: sechub-server/build/libs/sechub-server-${{ github.event.inputs.server-version }}.jar.sha256sum
-          asset_name: sechub-server-${{ github.event.inputs.server-version }}.jar.sha256sum
+          asset_path: sechub-server/build/libs/sechub-server-${{ inputs.server-version }}.jar.sha256sum
+          asset_name: sechub-server-${{ inputs.server-version }}.jar.sha256sum
           asset_content_type: text/plain
 
-      - name: Upload SecHub release asset sechub-developer-admin-ui-${{ github.event.inputs.server-version }}.jar
-        if: github.event.inputs.server-version != ''
+      - name: Upload SecHub release asset sechub-developer-admin-ui-${{ inputs.server-version }}.jar
+        if: inputs.server-version != ''
         uses: actions/upload-release-asset@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_server_release.outputs.upload_url }}
-          asset_path: sechub-developertools/build/libs/sechub-developer-admin-ui-${{ github.event.inputs.server-version }}.jar
-          asset_name: sechub-developer-admin-ui-${{ github.event.inputs.server-version }}.jar
+          asset_path: sechub-developertools/build/libs/sechub-developer-admin-ui-${{ inputs.server-version }}.jar
+          asset_name: sechub-developer-admin-ui-${{ inputs.server-version }}.jar
           asset_content_type: application/zip
 
-      - name: Upload Server release asset sechub-developer-admin-ui-${{ github.event.inputs.server-version }}.jar.sha256sum
-        if: github.event.inputs.server-version != ''
+      - name: Upload Server release asset sechub-developer-admin-ui-${{ inputs.server-version }}.jar.sha256sum
+        if: inputs.server-version != ''
         uses: actions/upload-release-asset@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_server_release.outputs.upload_url }}
-          asset_path: sechub-developertools/build/libs/sechub-developer-admin-ui-${{ github.event.inputs.server-version }}.jar.sha256sum
-          asset_name: sechub-developer-admin-ui-${{ github.event.inputs.server-version }}.jar.sha256sum
+          asset_path: sechub-developertools/build/libs/sechub-developer-admin-ui-${{ inputs.server-version }}.jar.sha256sum
+          asset_name: sechub-developer-admin-ui-${{ inputs.server-version }}.jar.sha256sum
           asset_content_type: text/plain
 
       # Server documentation:
       - name: Upload sechub-architecture.pdf release asset
-        if: github.event.inputs.server-version != ''
+        if: inputs.server-version != ''
         uses: actions/upload-release-asset@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_server_release.outputs.upload_url }}
           asset_path: ./sechub-doc/build/docs/asciidoc/sechub-architecture.pdf
-          asset_name: sechub-architecture-${{ github.event.inputs.server-version }}.pdf
+          asset_name: sechub-architecture-${{ inputs.server-version }}.pdf
           asset_content_type: application/pdf
 
       - name: Upload sechub-operations.pdf release asset
-        if: github.event.inputs.server-version != ''
+        if: inputs.server-version != ''
         uses: actions/upload-release-asset@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_server_release.outputs.upload_url }}
           asset_path: ./sechub-doc/build/docs/asciidoc/sechub-operations.pdf
-          asset_name: sechub-operations-${{ github.event.inputs.server-version }}.pdf
+          asset_name: sechub-operations-${{ inputs.server-version }}.pdf
           asset_content_type: application/pdf
 
       - name: Upload sechub-developer-quickstart-guide.pdf release asset
-        if: github.event.inputs.server-version != ''
+        if: inputs.server-version != ''
         uses: actions/upload-release-asset@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_server_release.outputs.upload_url }}
           asset_path: ./sechub-doc/build/docs/asciidoc/sechub-developer-quickstart-guide.pdf
-          asset_name: sechub-developer-quickstart-guide-${{ github.event.inputs.server-version }}.pdf
+          asset_name: sechub-developer-quickstart-guide-${{ inputs.server-version }}.pdf
           asset_content_type: application/pdf
 
       - name: Upload sechub-restapi.pdf release asset
-        if: github.event.inputs.server-version != ''
+        if: inputs.server-version != ''
         uses: actions/upload-release-asset@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_server_release.outputs.upload_url }}
           asset_path: ./sechub-doc/build/docs/asciidoc/sechub-restapi.pdf
-          asset_name: sechub-restapi-${{ github.event.inputs.server-version }}.pdf
+          asset_name: sechub-restapi-${{ inputs.server-version }}.pdf
           asset_content_type: application/pdf
 
       - name: Upload sechub-openapi3.json release asset
-        if: github.event.inputs.server-version != ''
+        if: inputs.server-version != ''
         uses: actions/upload-release-asset@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_server_release.outputs.upload_url }}
           asset_path: ./sechub-doc/build/api-spec/openapi3.json
-          asset_name: sechub-openapi3-${{ github.event.inputs.server-version }}.json
+          asset_name: sechub-openapi3-${{ inputs.server-version }}.json
           asset_content_type: text/plain
 
-      - name: Create Server ${{ github.event.inputs.server-version }} release issue
-        if: github.event.inputs.server-version != ''
+      - name: Create Server ${{ inputs.server-version }} release issue
+        if: inputs.server-version != ''
         uses: dacbd/create-issue-action@main
         with:
           token: ${{ github.token }}
-          title: Release Server ${{ github.event.inputs.server-version }}
+          title: Release Server ${{ inputs.server-version }}
           body: |
-            See [Milestone ${{github.event.inputs.server-milestone-number}}]( https://github.com/mercedes-benz/sechub/milestone/${{github.event.inputs.server-milestone-number}}?closed=1) for details.
+            See [Milestone ${{inputs.server-milestone-number}}]( https://github.com/mercedes-benz/sechub/milestone/${{inputs.server-milestone-number}}?closed=1) for details.
 
             Please close this issue after the release.
-          milestone: ${{ github.event.inputs.server-milestone-number }}
+          milestone: ${{ inputs.server-milestone-number }}
 
       # Build Server container image + push to ghcr
-      - name: Build Server ${{ github.event.inputs.server-version }} container image + push to ghcr
-        if: github.event.inputs.server-version != ''
+      - name: Build Server ${{ inputs.server-version }} container image + push to ghcr
+        if: inputs.server-version != ''
         run: |
-          SERVER_VERSION="${{ github.event.inputs.server-version }}"
+          SERVER_VERSION="${{ inputs.server-version }}"
           BUILD_FLAVOR="alpine"
-          DOCKER_REGISTRY="$ACTIONS_SECHUB_REGISTRY/server"
+          DOCKER_REGISTRY="$ACTIONS_SECHUB_REGISTRY/sechub-server"
           VERSION_TAG="${SERVER_VERSION}_${BUILD_FLAVOR}"
           cp sechub-server/build/libs/sechub-server-${SERVER_VERSION}.jar sechub-solution/docker/copy/
           cd sechub-solution
@@ -476,160 +477,169 @@ jobs:
           echo "# Pushing image $DOCKER_REGISTRY:$VERSION_TAG (latest)"
           ./20-push-image.sh $DOCKER_REGISTRY $VERSION_TAG yes
 
+      - name: Build Server Helm chart + push to ghcr
+        if: inputs.server-version != ''
+        shell: bash
+        run: |
+          cd "sechub-solution/helm"
+          echo "# Building Helm chart for sechub-server"
+          helm package sechub-server
+          helm push sechub-server-*.tgz $ACTIONS_HELM_REGISTRY
+
 
       # ******************************************
       # C l i e n t  release
       # ******************************************
-      - name: Create client release ${{ github.event.inputs.client-version }}
+      - name: Create client release ${{ inputs.client-version }}
         id: create_client_release
-        if: github.event.inputs.client-version != ''
+        if: inputs.client-version != ''
         uses: actions/create-release@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # This token is provided by Actions, you do not need to create your own token
         with:
-          tag_name: v${{ github.event.inputs.client-version }}-client
+          tag_name: v${{ inputs.client-version }}-client
           commitish: master
-          release_name: Client Version ${{ github.event.inputs.client-version }}
+          release_name: Client Version ${{ inputs.client-version }}
           body: |
             Changes in this Release
             - Some minor changes on client implementation
 
-            For more details please look at [Milestone ${{github.event.inputs.client-milestone-number}}]( https://github.com/mercedes-benz/sechub/milestone/${{github.event.inputs.client-milestone-number}}?closed=1)
+            For more details please look at [Milestone ${{inputs.client-milestone-number}}]( https://github.com/mercedes-benz/sechub/milestone/${{inputs.client-milestone-number}}?closed=1)
           draft: true
           prerelease: false
 
-      - name: Create client release asset sechub-cli-${{ github.event.inputs.client-version }}.zip
-        if: github.event.inputs.client-version != ''
+      - name: Create client release asset sechub-cli-${{ inputs.client-version }}.zip
+        if: inputs.client-version != ''
         run: |
           cd sechub-cli/build/go
           zip -r sechub-cli.zip platform
           sha256sum sechub-cli.zip > sechub-cli.zip.sha256
 
-      - name: Upload Client release asset sechub-cli-${{ github.event.inputs.client-version }}.zip
-        if: github.event.inputs.client-version != ''
+      - name: Upload Client release asset sechub-cli-${{ inputs.client-version }}.zip
+        if: inputs.client-version != ''
         uses: actions/upload-release-asset@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_client_release.outputs.upload_url }}
           asset_path: ./sechub-cli/build/go/sechub-cli.zip
-          asset_name: sechub-cli-${{ github.event.inputs.client-version }}.zip
+          asset_name: sechub-cli-${{ inputs.client-version }}.zip
           asset_content_type: application/zip
 
-      - name: Upload Client release asset sechub-cli-${{ github.event.inputs.client-version }}.zip.sha256
-        if: github.event.inputs.client-version != ''
+      - name: Upload Client release asset sechub-cli-${{ inputs.client-version }}.zip.sha256
+        if: inputs.client-version != ''
         uses: actions/upload-release-asset@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_client_release.outputs.upload_url }}
           asset_path: ./sechub-cli/build/go/sechub-cli.zip.sha256
-          asset_name: sechub-cli-${{ github.event.inputs.client-version }}.zip.sha256
+          asset_name: sechub-cli-${{ inputs.client-version }}.zip.sha256
           asset_content_type: text/plain
 
       - name: Upload sechub-client.pdf release asset
         id: upload-sechub-doc-client-release-asset
-        if: github.event.inputs.client-version != ''
+        if: inputs.client-version != ''
         uses: actions/upload-release-asset@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_client_release.outputs.upload_url }}
           asset_path: ./sechub-doc/build/docs/asciidoc/sechub-client.pdf
-          asset_name: sechub-client-${{ github.event.inputs.client-version }}.pdf
+          asset_name: sechub-client-${{ inputs.client-version }}.pdf
           asset_content_type: application/pdf
 
-      - name: Create Client ${{ github.event.inputs.client-version }} release issue
-        if: github.event.inputs.client-version != ''
+      - name: Create Client ${{ inputs.client-version }} release issue
+        if: inputs.client-version != ''
         uses: dacbd/create-issue-action@main
         with:
           token: ${{ github.token }}
-          title: Release Client ${{ github.event.inputs.client-version }}
+          title: Release Client ${{ inputs.client-version }}
           body: |
-            See [Milestone ${{github.event.inputs.client-milestone-number}}]( https://github.com/mercedes-benz/sechub/milestone/${{github.event.inputs.client-milestone-number}}?closed=1) for details.
+            See [Milestone ${{inputs.client-milestone-number}}]( https://github.com/mercedes-benz/sechub/milestone/${{inputs.client-milestone-number}}?closed=1) for details.
 
             Please close this issue after the release.
-          milestone: ${{ github.event.inputs.client-milestone-number }}
+          milestone: ${{ inputs.client-milestone-number }}
 
 
       # ******************************************
       # P D S  release
       # ******************************************
-      - name: Create PDS release ${{ github.event.inputs.pds-version }}
+      - name: Create PDS release ${{ inputs.pds-version }}
         id: create_pds_release
-        if: github.event.inputs.pds-version != ''
+        if: inputs.pds-version != ''
         uses: actions/create-release@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # This token is provided by Actions, you do not need to create your own token
         with:
-          tag_name: v${{ github.event.inputs.pds-version }}-pds
+          tag_name: v${{ inputs.pds-version }}-pds
           commitish: master
-          release_name: PDS Version ${{ github.event.inputs.pds-version }}
+          release_name: PDS Version ${{ inputs.pds-version }}
           body: |
             Changes in this Release
             - Some minor changes on PDS server implementation
 
-            For more details please look at [Milestone ${{github.event.inputs.pds-milestone-number}}]( https://github.com/mercedes-benz/sechub/milestone/${{github.event.inputs.pds-milestone-number}}?closed=1)
+            For more details please look at [Milestone ${{inputs.pds-milestone-number}}]( https://github.com/mercedes-benz/sechub/milestone/${{inputs.pds-milestone-number}}?closed=1)
           draft: true
           prerelease: false
 
       - name: Create sha256 checksum file for PDS jar
-        if: github.event.inputs.pds-version != ''
+        if: inputs.pds-version != ''
         run: |
           cd sechub-pds/build/libs/
-          sha256sum sechub-pds-${{ github.event.inputs.pds-version }}.jar > sechub-pds-${{ github.event.inputs.pds-version }}.jar.sha256sum
+          sha256sum sechub-pds-${{ inputs.pds-version }}.jar > sechub-pds-${{ inputs.pds-version }}.jar.sha256sum
 
-      - name: Upload PDS release asset sechub-pds-${{ github.event.inputs.pds-version }}.jar
-        if: github.event.inputs.pds-version != ''
+      - name: Upload PDS release asset sechub-pds-${{ inputs.pds-version }}.jar
+        if: inputs.pds-version != ''
         uses: actions/upload-release-asset@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_pds_release.outputs.upload_url }}
-          asset_path: sechub-pds/build/libs/sechub-pds-${{ github.event.inputs.pds-version }}.jar
-          asset_name: sechub-pds-${{ github.event.inputs.pds-version }}.jar
+          asset_path: sechub-pds/build/libs/sechub-pds-${{ inputs.pds-version }}.jar
+          asset_name: sechub-pds-${{ inputs.pds-version }}.jar
           asset_content_type: application/zip
 
-      - name: Upload PDS release asset sechub-pds-${{ github.event.inputs.pds-version }}.jar.sha256sum
-        if: github.event.inputs.pds-version != ''
+      - name: Upload PDS release asset sechub-pds-${{ inputs.pds-version }}.jar.sha256sum
+        if: inputs.pds-version != ''
         uses: actions/upload-release-asset@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_pds_release.outputs.upload_url }}
-          asset_path: sechub-pds/build/libs/sechub-pds-${{ github.event.inputs.pds-version }}.jar.sha256sum
-          asset_name: sechub-pds-${{ github.event.inputs.pds-version }}.jar.sha256sum
+          asset_path: sechub-pds/build/libs/sechub-pds-${{ inputs.pds-version }}.jar.sha256sum
+          asset_name: sechub-pds-${{ inputs.pds-version }}.jar.sha256sum
           asset_content_type: text/plain
 
       # sechub-product-delegation-server.pdf
-      - name: Upload PDS release asset sechub-product-delegation-server-${{ github.event.inputs.pds-version }}.pdf
-        if: github.event.inputs.pds-version != ''
+      - name: Upload PDS release asset sechub-product-delegation-server-${{ inputs.pds-version }}.pdf
+        if: inputs.pds-version != ''
         uses: actions/upload-release-asset@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_pds_release.outputs.upload_url }}
           asset_path: ./sechub-doc/build/docs/asciidoc/sechub-product-delegation-server.pdf
-          asset_name: /sechub-product-delegation-server-${{ github.event.inputs.pds-version }}.pdf
+          asset_name: /sechub-product-delegation-server-${{ inputs.pds-version }}.pdf
           asset_content_type: application/pdf
 
-      - name: Create PDS ${{ github.event.inputs.pds-version }} release issue
-        if: github.event.inputs.pds-version != ''
+      - name: Create PDS ${{ inputs.pds-version }} release issue
+        if: inputs.pds-version != ''
         uses: dacbd/create-issue-action@main
         with:
           token: ${{ github.token }}
-          title: Release PDS ${{ github.event.inputs.pds-version }}
+          title: Release PDS ${{ inputs.pds-version }}
           body: |
-            See [Milestone ${{github.event.inputs.pds-milestone-number}}]( https://github.com/mercedes-benz/sechub/milestone/${{github.event.inputs.pds-milestone-number}}?closed=1) for details.
+            See [Milestone ${{inputs.pds-milestone-number}}]( https://github.com/mercedes-benz/sechub/milestone/${{inputs.pds-milestone-number}}?closed=1) for details.
 
             Please close this issue after the release.
-          milestone: ${{ github.event.inputs.pds-milestone-number }}
+          milestone: ${{ inputs.pds-milestone-number }}
 
       # Build pds-base container image + push to ghcr
-      - name: Build pds-base ${{ github.event.inputs.server-version }} container image + push to ghcr
-        if: github.event.inputs.pds-version != ''
+      - name: Build pds-base ${{ inputs.server-version }} container image + push to ghcr
+        if: inputs.pds-version != ''
         run: |
-          PDS_VERSION="${{ github.event.inputs.pds-version }}"
+          PDS_VERSION="${{ inputs.pds-version }}"
           DOCKER_REGISTRY="$ACTIONS_SECHUB_REGISTRY/pds-base"
           VERSION_TAG="${PDS_VERSION}"
           cp sechub-pds/build/libs/sechub-pds-${PDS_VERSION}.jar sechub-pds-solutions/pds-base/docker/copy/
@@ -656,9 +666,9 @@ jobs:
           pr_title: '2 - After release: Merge master back into develop [auto-generated]'
           pr_body: |
             After SecHub release
-            - Client '${{ github.event.inputs.client-version }}'
-            - Server '${{ github.event.inputs.server-version }}'
-            - PDS '${{ github.event.inputs.pds-version }}'
+            - Client '${{ inputs.client-version }}'
+            - Server '${{ inputs.server-version }}'
+            - PDS '${{ inputs.pds-version }}'
 
             Merge master branch back into develop
 
@@ -674,3 +684,13 @@ jobs:
         if: steps.pr_master_to_develop.outcome != 'success'
         run: |
           echo "Nothing to merge - no pull request necessary."
+
+
+  build-pds-solutions:
+    if: inputs.pds-version != ''
+    needs: release-version
+    # Build all PDS solutions based on above released pds-base image
+    name: Build all PDS solutions
+    uses: mercedes-benz/sechub/.github/workflows/build+publish-all-pds-solutions.yml@develop
+    with:
+      pds-version: ${{ inputs.pds-version }}
