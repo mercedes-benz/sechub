@@ -105,7 +105,7 @@ Same as before described for plain server, but you should use a copy of the `val
 helm pull oci://ghcr.io/mercedes-benz/sechub/helm-charts/sechub-server
 tar zxf sechub-server-*.tgz
 cp sechub-server/values.yaml sechub-server.yaml
-# edit "values.yaml" file and adapt settings
+# edit "sechub-server.yaml" file and adapt settings
 
 # Deploy SecHub server to your Kubernetes:
 helm install sechub-server sechub-server/ -f ./sechub-server.yaml
