@@ -96,7 +96,7 @@ docker run ghcr.io/mercedes-benz/sechub/sechub-server
 
 
 ===== Kubernetes
-We provide a Helm chart for above container image: https://github.com/mercedes-benz/sechub/pkgs/container/sechub%2Fhelm-charts%2Fsechub-server
+We provide a Helm chart for the container image above: https://github.com/mercedes-benz/sechub/pkgs/container/sechub%2Fhelm-charts%2Fsechub-server
 
 Same as before described for plain server, but you should use a copy of the `values.yaml` and adapt it to your needs.
 
