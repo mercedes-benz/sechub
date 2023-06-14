@@ -2,7 +2,7 @@
 spring.profiles.include:
  - pds_localserver
  
-sechub.pds.config.file: "src/test/resources/dev-pds-config.json"
+pds.config.file: "src/test/resources/dev-pds-config.json"
  
 sechub.initialadmin:
    userid: sechubadm
