@@ -2,4 +2,4 @@
 [[section-infrastructure-setup-kubernetes]]
 === Kubernetes
 
-We provide container images and Helm charts: https://github.com/orgs/mercedes-benz/packages?q=sechub
+We provide container images and Helm charts: https://github.com/mercedes-benz/sechub/packages
