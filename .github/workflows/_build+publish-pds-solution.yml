@@ -25,6 +25,7 @@ permissions:
 env:
   ACTIONS_SECHUB_REGISTRY: ghcr.io/mercedes-benz/sechub
   ACTIONS_BASE_IMAGE: ghcr.io/mercedes-benz/sechub/pds-base:latest
+  ACTIONS_HELM_REGISTRY: "oci://ghcr.io/mercedes-benz/sechub/helm-charts"
 
 jobs:
   build-pds-solution:
@@ -76,3 +77,17 @@ jobs:
           echo "# Building image $DOCKER_REGISTRY:$VERSION_TAG from $BASE_IMAGE"
           ./10-create-image.sh "$DOCKER_REGISTRY" "$VERSION_TAG" "$BASE_IMAGE"
           ./20-push-image.sh "$DOCKER_REGISTRY" "$VERSION_TAG" yes
+
+      - name: Build pds-${{ inputs.pds-solution }} Helm chart + push to ghcr
+        shell: bash
+        run: |
+          PDS_SOLUTION="${{ inputs.pds-solution }}"
+          HELM_DIR="sechub-pds-solutions/${PDS_SOLUTION}/helm"
+          if [ ! -d "$HELM_DIR" ] ; then
+            echo "Fatal: No directory named \"$HELM_DIR\" found"
+            exit 1
+          fi
+          cd "$HELM_DIR"
+          echo "# Building Helm chart for pds-${PDS_SOLUTION}"
+          helm package pds-${PDS_SOLUTION}
+          helm push pds-${PDS_SOLUTION}-*.tgz $ACTIONS_HELM_REGISTRY
