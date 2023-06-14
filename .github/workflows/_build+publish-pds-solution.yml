@@ -84,8 +84,8 @@ jobs:
           PDS_SOLUTION="${{ inputs.pds-solution }}"
           HELM_DIR="sechub-pds-solutions/${PDS_SOLUTION}/helm"
           if [ ! -d "$HELM_DIR" ] ; then
-            echo "Fatal: No directory named \"$HELM_DIR\" found"
-            exit 1
+            echo "No directory named \"$HELM_DIR\" found - skipping Helm chart creation"
+            exit 0
           fi
           cd "$HELM_DIR"
           echo "# Building Helm chart for pds-${PDS_SOLUTION}"
