@@ -9,8 +9,7 @@ sechub.initialadmin:
    email: sechubadm@example.org    
    apitoken: pseudo-token-development-only
    
-sechub:
- pds:
+pds:
    techuser:
        userid: pds-dev-techuser
        apitoken: "{noop}pds-dev-apitoken"

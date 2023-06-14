@@ -12,8 +12,8 @@ server:
     key-alias:
        tomcat
   port: 8444
-sechub:
-  pds:
+
+pds:
     server:
        baseurl: "https://localhost:${server.port}"
     config:

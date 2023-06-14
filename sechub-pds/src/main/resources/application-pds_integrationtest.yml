@@ -9,8 +9,7 @@ server:
 pds.config.file: "./../sechub-integrationtest/src/main/resources/pds-config-integrationtest.json"
 pds.workspace.rootfolder: "./../sechub-integrationtest/build/test-results/pds-runtime"
 
-sechub:
- pds:
+pds:
    config:
        job:
          stream:
