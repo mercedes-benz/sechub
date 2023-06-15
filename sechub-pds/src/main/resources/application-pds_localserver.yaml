@@ -7,17 +7,16 @@
 server:
   ssl:
     keyStoreType: 'PKCS12'
-    key-store:
-      # we use a keystore location which is never tracked by git. 
-      # see dev-create_localhost_certificate.sh and dev-ensure_localhost_certificate.sh
-      classpath: 'certificates-untracked/generated-dev-localhost-keystore.p12'
+    # we use a keystore location which is never tracked by git. 
+    # see dev-create_localhost_certificate.sh and dev-ensure_localhost_certificate.sh
+    key-store: 'classpath:certificates-untracked/generated-dev-localhost-keystore.p12'
     key-store-password: '123456'
     key-alias: 'tomcat'
   port: 8444
 
 pds:
   server:
-    baseurl: "https://localhost:${server.port}"
+    baseurl: 'https://localhost:${server.port}'
   config:
     trigger:
       nextjob:
