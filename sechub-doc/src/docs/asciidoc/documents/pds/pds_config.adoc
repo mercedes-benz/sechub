@@ -9,13 +9,13 @@ include::../shared/pds_options.adoc[]
 Either use system properties
 
 ----
-sechub.pds.techuser.userid
-sechub.pds.techuser.apitoken
+pds.techuser.userid
+pds.techuser.apitoken
 ----
 or env entries
 ----
-SECHUB_PDS_TECHUSER_USERID
-SECHUB_PDS_TECHUSER_APITOKEN
+PDS_TECHUSER_USERID
+PDS_TECHUSER_APITOKEN
 ----
 to define user credentisals. For apitoken please define encrypted password in spring boot
 style - e.g. `{noop}unencrypted`, `{bcrypt}crypted` ...
@@ -25,20 +25,20 @@ style - e.g. `{noop}unencrypted`, `{bcrypt}crypted` ...
 Either use system properties
 
 ----
-sechub.pds.admin.userid
-sechub.pds.admin.apitoken
+pds.admin.userid
+pds.admin.apitoken
 ----
 or env entries
 ----
-SECHUB_PDS_ADMIN_USERID
-SECHUB_PDS_ADMIN_APITOKEN
+PDS_ADMIN_USERID
+PDS_ADMIN_APITOKEN
 ----
 to define admin credentisals. For apitoken please define encrypted password in spring boot
 style - e.g. `{noop}unencrypted`, `{bcrypt}crypted` ...
 
 
 === Workspace parent folder
-With `-Dsechub.pds.workspace.rootfolder` or using environment variable `SECHUB_PDS_WORKSPACE_ROOTFOLDER`
+With `-Dpds.workspace.rootfolder` or using environment variable `PDS_WORKSPACE_ROOTFOLDER`
 workspace location can be defined
 
 [[section-pds-server-config-file]]
@@ -47,7 +47,7 @@ PDS reads configuration JSON file on startup.
 
 *Location*
 
-With `-Dsechub.pds.config.file=...` or using environment variable `SECHUB_PDS_CONFIG_FILE`
+With `-Dpds.config.file=...` or using environment variable `PDS_CONFIG_FILE`
 its is possible to set config file path ( when not defined fallback is `./pds-config.json`)
 
      
