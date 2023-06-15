@@ -21,6 +21,60 @@ We are using PostgreSQL which does automatically use lower_case names
 ==== Naming in JPA
 We are using upper cased names
 
+=== YAML
+Inside YAML files, we use following convention
+
+- YAML files have the file ending `.yaml`
+- define *SPDX header* with MIT license as first line comment
+- use an *indention* of *2 spaces*
+- define *strings* with *single apostrophes*
+- define *integers*, *longs* etc. as *numbers*
+- *prefer hierarchical key structure* to long key variants
+- use comments to explain details (when really necessary)
+
+[NOTE]
+====
+Currently we still have a lot of unconventional YAML files. But there is
+a GitHub issue to adopt them.
+
+If you are writing new YAML files or adding new content to existing files, please follow 
+always the instructions above.
+
+====
+
+
+
+.Example
+[source,yaml]
+----
+# SPDX-License-Identifier: MIT
+
+# This configuration setup is only for local development and needs
+# a generated certificate which is never shared. Because of this
+# it is valid to define the credentials inside this file. 
+
+server:
+  ssl:
+    keyStoreType: 'PKCS12'
+    key-store:
+      # we use a keystore location which is never tracked by git. 
+      # see dev-create_localhost_certificate.sh and dev-ensure_localhost_certificate.sh
+      classpath: 'certificates-untracked/generated-dev-localhost-keystore.p12'
+    key-store-password: '123456'
+    key-alias: 'tomcat'
+  port: 8444
+
+pds:
+  server:
+    baseurl: "https://localhost:${server.port}"
+  config:
+    trigger:
+      nextjob:
+        initialdelay: 100
+        delay: 500      
+----
+
+
 === Java
 
 ==== Classes
