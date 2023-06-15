@@ -13,7 +13,7 @@ case "$PMD_RULESET" in
         ruleset="ruleset-all.xml"
 esac
 
-run.sh pmd --rulesets "$SCRIPT_FOLDER/$ruleset" --format sarif --dir "$PDS_JOB_SOURCECODE_UNZIPPED_FOLDER" --report-file "$PDS_JOB_RESULT_FILE"
+run.sh pmd --rulesets "$SCRIPT_FOLDER/$ruleset" --format sarif --dir "$PDS_JOB_EXTRACTED_SOURCES_FOLDER" --report-file "$PDS_JOB_RESULT_FILE"
 
 # PMD returns an exit code of 4 in case findings are found
 exit 0
