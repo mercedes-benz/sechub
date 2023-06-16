@@ -535,10 +535,10 @@ public class SchedulerRestControllerRestDocTest implements TestIsNecessaryForDoc
                                                 fieldWithPath(PROPERTY_API_VERSION).description("The api version, currently only 1.0 is supported"),
                                                 fieldWithPath(PROPERTY_WEB_SCAN).description("Webscan configuration block").optional(),
                                                 fieldWithPath(PROPERTY_WEB_SCAN+"."+SecHubWebScanConfiguration.PROPERTY_URL).description("Webscan URI to scan for").optional(),
-                                                fieldWithPath(PROPERTY_WEB_SCAN+"."+SecHubWebScanConfiguration.PROPERTY_HEADERS).optional().description("List of HTTP headers. Can be used for authentication or anything else.").optional(),
+                                                fieldWithPath(PROPERTY_WEB_SCAN+"."+SecHubWebScanConfiguration.PROPERTY_HEADERS).description("List of HTTP headers. Can be used for authentication or anything else.").optional(),
                                                 fieldWithPath(PROPERTY_WEB_SCAN+"."+SecHubWebScanConfiguration.PROPERTY_HEADERS+"[]."+HTTPHeaderConfiguration.PROPERTY_NAME).description("Name of the defined HTTP header.").optional(),
                                                 fieldWithPath(PROPERTY_WEB_SCAN+"."+SecHubWebScanConfiguration.PROPERTY_HEADERS+"[]."+HTTPHeaderConfiguration.PROPERTY_VALUE).description("Value of the defined HTTP header.").optional(),
-                                                fieldWithPath(PROPERTY_WEB_SCAN+"."+SecHubWebScanConfiguration.PROPERTY_HEADERS+"[]."+HTTPHeaderConfiguration.PROPERTY_ONLY_FOR_URLS).optional().description("Optional list of URLs this header shall be used for. Can contain wildcards like: https://mywebapp.com/path/<*>/with/wildcard").optional()
+                                                fieldWithPath(PROPERTY_WEB_SCAN+"."+SecHubWebScanConfiguration.PROPERTY_HEADERS+"[]."+HTTPHeaderConfiguration.PROPERTY_ONLY_FOR_URLS+"[]").description("Optional list of URLs this header shall be used for like: https://mywebapp.com/path/. Can contain wildcards like: https://mywebapp.com/path/<*>/with/wildcard").optional()
                                         ),
                                         responseFields(
                                                 fieldWithPath(SchedulerResult.PROPERTY_JOBID).description("A unique job id")
