@@ -28,8 +28,6 @@ public class SecHubConfigurationModelValidator {
     private static final int MAX_METADATA_LABEL_VALUE_LENGTH = 150;
     private static final int MAX_METADATA_LABEL_AMOUNT = 20;
 
-    private static final String WEBSCAN_URL_WILDCARD_SYMBOL = "{*}";
-
     SecHubConfigurationModelSupport modelSupport = new SecHubConfigurationModelSupport();
 
     private List<String> supportedVersions;
@@ -305,7 +303,7 @@ public class SecHubConfigurationModelValidator {
 
     private void validateHTTPHeaderUrls(InternalValidationContext context, List<String> onlyForUrls, String targetUrl) {
         for (String url : onlyForUrls) {
-            int index = url.indexOf(WEBSCAN_URL_WILDCARD_SYMBOL);
+            int index = url.indexOf(SecHubWebScanConfiguration.WEBSCAN_URL_WILDCARD_SYMBOL);
             if (index != -1) {
                 url = url.substring(0, index);
             }

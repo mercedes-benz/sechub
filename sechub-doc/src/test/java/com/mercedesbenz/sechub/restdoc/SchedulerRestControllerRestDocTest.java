@@ -487,15 +487,18 @@ public class SchedulerRestControllerRestDocTest implements TestIsNecessaryForDoc
         String apiEndpoint = https(PORT_USED).buildAddJobUrl(PROJECT_ID.pathElement());
         Class<? extends Annotation> useCase = UseCaseUserCreatesNewJob.class;
 
-        UUID randomUUID = UUID.randomUUID();
-        SchedulerResult mockResult = new SchedulerResult(randomUUID);
-
-        List<HTTPHeaderConfiguration> httpHeaders = new ArrayList<>();
         HTTPHeaderConfiguration header = new HTTPHeaderConfiguration();
         header.setName("api-token");
         header.setValue("secret");
-        List<String> onlyForUrls = Arrays.asList("https://mywebapp.com/admin", "https://mywebapp.com/{*}/profile", "https://mywebapp.com/blog/{*}");
+        List<String> onlyForUrls = Arrays.asList("https://localhost/mywebapp/admin", "https://localhost/mywebapp/<*>/profile",
+                "https://localhost/mywebapp/blog/<*>");
         header.setOnlyForUrls(Optional.ofNullable(onlyForUrls));
+
+        List<HTTPHeaderConfiguration> httpHeaders = new ArrayList<>();
+        httpHeaders.add(header);
+
+        UUID randomUUID = UUID.randomUUID();
+        SchedulerResult mockResult = new SchedulerResult(randomUUID);
 
         when(mockedScheduleCreateJobService.createJob(any(), any(SecHubConfiguration.class))).thenReturn(mockResult);
 
@@ -508,7 +511,7 @@ public class SchedulerRestControllerRestDocTest implements TestIsNecessaryForDoc
 	    					api("1.0").
 	    					webConfig().
 	    						addURI("https://localhost/mywebapp").
-	    						addHTTPHeaders(httpHeaders).
+	    						addHeaders(httpHeaders).
 	    					build().
 	    					toJSON())
 	    		).
@@ -532,11 +535,10 @@ public class SchedulerRestControllerRestDocTest implements TestIsNecessaryForDoc
                                                 fieldWithPath(PROPERTY_API_VERSION).description("The api version, currently only 1.0 is supported"),
                                                 fieldWithPath(PROPERTY_WEB_SCAN).description("Webscan configuration block").optional(),
                                                 fieldWithPath(PROPERTY_WEB_SCAN+"."+SecHubWebScanConfiguration.PROPERTY_URL).description("Webscan URI to scan for").optional(),
-                                                fieldWithPath(PROPERTY_WEB_SCAN+"."+SecHubWebScanConfiguration.PROPERTY_HEADERS).description("List of HTTP headers. Can be used for authentication or anything else.").optional(),
-                                                fieldWithPath(PROPERTY_WEB_SCAN+"."+SecHubWebScanConfiguration.PROPERTY_HEADERS+"."+HTTPHeaderConfiguration.PROPERTY_NAME).description("Name of the defined HTTP header.").optional(),
-                                                fieldWithPath(PROPERTY_WEB_SCAN+"."+SecHubWebScanConfiguration.PROPERTY_HEADERS+"."+HTTPHeaderConfiguration.PROPERTY_VALUE).description("Value of the defined HTTP header.").optional(),
-                                                fieldWithPath(PROPERTY_WEB_SCAN+"."+SecHubWebScanConfiguration.PROPERTY_HEADERS+"."+HTTPHeaderConfiguration.PROPERTY_ONLY_FOR_URLS).description("Optional list of URLs this header shall be used for. Can contain wildcards like: https://mywebapp.com/path/{*}/with/wildcard").optional()
-
+                                                fieldWithPath(PROPERTY_WEB_SCAN+"."+SecHubWebScanConfiguration.PROPERTY_HEADERS).optional().description("List of HTTP headers. Can be used for authentication or anything else.").optional(),
+                                                fieldWithPath(PROPERTY_WEB_SCAN+"."+SecHubWebScanConfiguration.PROPERTY_HEADERS+"[]."+HTTPHeaderConfiguration.PROPERTY_NAME).description("Name of the defined HTTP header.").optional(),
+                                                fieldWithPath(PROPERTY_WEB_SCAN+"."+SecHubWebScanConfiguration.PROPERTY_HEADERS+"[]."+HTTPHeaderConfiguration.PROPERTY_VALUE).description("Value of the defined HTTP header.").optional(),
+                                                fieldWithPath(PROPERTY_WEB_SCAN+"."+SecHubWebScanConfiguration.PROPERTY_HEADERS+"[]."+HTTPHeaderConfiguration.PROPERTY_ONLY_FOR_URLS).optional().description("Optional list of URLs this header shall be used for. Can contain wildcards like: https://mywebapp.com/path/<*>/with/wildcard").optional()
                                         ),
                                         responseFields(
                                                 fieldWithPath(SchedulerResult.PROPERTY_JOBID).description("A unique job id")

@@ -1019,7 +1019,7 @@ class SecHubConfigurationModelValidatorTest {
     }
 
     @ParameterizedTest
-    @ValueSource(strings = { "https://mywebapp.com", "https://mywebapp.com/admin", "https://mywebapp.com/{*}/profile", "https://mywebapp.com/blog/{*}" })
+    @ValueSource(strings = { "https://mywebapp.com", "https://mywebapp.com/admin", "https://mywebapp.com/<*>/profile", "https://mywebapp.com/blog/<*>" })
     void model_has_valid_urls_for_headers_specified_has_no_error(String onlyForUrl) {
         /* prepare */
         SecHubWebScanConfiguration webScan = createWebScanConfigurationWithHeader("https://mywebapp.com/", onlyForUrl);
@@ -1038,7 +1038,7 @@ class SecHubConfigurationModelValidatorTest {
     }
 
     @ParameterizedTest
-    @ValueSource(strings = { "https://mywebapp.com/admin", "https://mywebapp.com/{*}/profile", "https://mywebapp.com/blog/{*}" })
+    @ValueSource(strings = { "https://mywebapp.com/admin", "https://mywebapp.com/<*>/profile", "https://mywebapp.com/blog/<*>" })
     void model_has_valid_urls_for_headers_specified_but_different_target_url_has_error(String onlyForUrl) {
         /* prepare */
         SecHubWebScanConfiguration webScan = createWebScanConfigurationWithHeader("https://otherwebapp.com/", onlyForUrl);

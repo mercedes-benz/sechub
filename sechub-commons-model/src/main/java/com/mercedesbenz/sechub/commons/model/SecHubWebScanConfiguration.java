@@ -16,7 +16,9 @@ public class SecHubWebScanConfiguration {
     public static final String PROPERTY_MAX_SCAN_DURATION = "maxScanDuration";
     public static final String PROPERTY_INCLUDES = "includes";
     public static final String PROPERTY_EXCLUDES = "excludes";
-    public static final String PROPERTY_HEADERS = "haders";
+    public static final String PROPERTY_HEADERS = "headers";
+
+    public static final String WEBSCAN_URL_WILDCARD_SYMBOL = "<*>";
 
     Optional<WebLoginConfiguration> login = Optional.empty();
     Optional<WebScanDurationConfiguration> maxScanDuration = Optional.empty();

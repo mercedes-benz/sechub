@@ -308,7 +308,7 @@ This might be useful to load the information via the SecHub client dynamically, 
 <5> Optional Parameter: For each header you can specify a list of URLs.
 The header this list belongs to will only be send when accessing one of the URLs on the list.
 If you do not specify a list of URLs or the list is empty, the header will be send on each request.
-You can also use wildcards by specifying `{*}` like in the example above. 
+You can also use wildcards by specifying `<*>` like in the example above. 
 Adding a wildcard to the end of an URL, the header will be sent to all sub URLs as well, otherwise it won't be sent to sub URLs.
 
 ==== Infrastructure scan
