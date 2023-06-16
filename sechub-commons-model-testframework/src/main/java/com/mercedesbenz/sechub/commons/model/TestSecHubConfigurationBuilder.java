@@ -127,7 +127,7 @@ public class TestSecHubConfigurationBuilder {
         }
 
         public TestWebConfigurationBuilder addHTTPHeaders(List<HTTPHeaderConfiguration> headers) {
-            TestSecHubConfigurationBuilder.this.testData.webConfig.httpHeaders = Optional.ofNullable(headers);
+            TestSecHubConfigurationBuilder.this.testData.webConfig.headers = Optional.ofNullable(headers);
             return this;
         }
 

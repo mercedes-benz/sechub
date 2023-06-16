@@ -1083,7 +1083,7 @@ class SecHubConfigurationModelValidatorTest {
         List<HTTPHeaderConfiguration> httpHeaders = createListOfHeaders(headerName, "secret-key", "https://mywebapp.com");
 
         SecHubWebScanConfiguration webScan = new SecHubWebScanConfiguration();
-        webScan.httpHeaders = Optional.ofNullable(httpHeaders);
+        webScan.headers = Optional.ofNullable(httpHeaders);
         webScan.url = URI.create("https://mywebapp.com");
 
         SecHubConfigurationModel model = new SecHubConfigurationModel();
@@ -1107,7 +1107,7 @@ class SecHubConfigurationModelValidatorTest {
         List<HTTPHeaderConfiguration> httpHeaders = createListOfHeaders("Authorization", headerValue, "https://mywebapp.com");
 
         SecHubWebScanConfiguration webScan = new SecHubWebScanConfiguration();
-        webScan.httpHeaders = Optional.ofNullable(httpHeaders);
+        webScan.headers = Optional.ofNullable(httpHeaders);
         webScan.url = URI.create("https://mywebapp.com");
 
         SecHubConfigurationModel model = new SecHubConfigurationModel();
@@ -1130,7 +1130,7 @@ class SecHubConfigurationModelValidatorTest {
         List<HTTPHeaderConfiguration> httpHeaders = createListOfHeaders(headerName, headerValue, onlyForUrl);
 
         SecHubWebScanConfiguration webScan = new SecHubWebScanConfiguration();
-        webScan.httpHeaders = Optional.ofNullable(httpHeaders);
+        webScan.headers = Optional.ofNullable(httpHeaders);
         webScan.url = URI.create(targetUrl);
 
         return webScan;

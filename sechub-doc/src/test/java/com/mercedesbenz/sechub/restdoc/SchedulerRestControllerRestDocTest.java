@@ -516,7 +516,7 @@ public class SchedulerRestControllerRestDocTest implements TestIsNecessaryForDoc
 	    			andExpect(content().json("{jobId:"+randomUUID.toString()+"}")).
 	    			andDo(defineRestService().
                             with().
-                                useCaseData(useCase, "Web Scan login basic").
+                                useCaseData(useCase, "Web Scan headers").
                                 tag(RestDocFactory.extractTag(apiEndpoint)).
                                 requestSchema(OpenApiSchema.SCAN_JOB.getSchema()).
                                 responseSchema(OpenApiSchema.JOB_ID.getSchema()).
@@ -532,10 +532,10 @@ public class SchedulerRestControllerRestDocTest implements TestIsNecessaryForDoc
                                                 fieldWithPath(PROPERTY_API_VERSION).description("The api version, currently only 1.0 is supported"),
                                                 fieldWithPath(PROPERTY_WEB_SCAN).description("Webscan configuration block").optional(),
                                                 fieldWithPath(PROPERTY_WEB_SCAN+"."+SecHubWebScanConfiguration.PROPERTY_URL).description("Webscan URI to scan for").optional(),
-                                                fieldWithPath(PROPERTY_WEB_SCAN+"."+SecHubWebScanConfiguration.PROPERTY_HTTP_HEADERS).description("List of HTTP headers. Can be used for authentication or anything else.").optional(),
-                                                fieldWithPath(PROPERTY_WEB_SCAN+"."+SecHubWebScanConfiguration.PROPERTY_HTTP_HEADERS+"."+HTTPHeaderConfiguration.PROPERTY_NAME).description("Name of the defined HTTP header.").optional(),
-                                                fieldWithPath(PROPERTY_WEB_SCAN+"."+SecHubWebScanConfiguration.PROPERTY_HTTP_HEADERS+"."+HTTPHeaderConfiguration.PROPERTY_VALUE).description("Value of the defined HTTP header.").optional(),
-                                                fieldWithPath(PROPERTY_WEB_SCAN+"."+SecHubWebScanConfiguration.PROPERTY_HTTP_HEADERS+"."+HTTPHeaderConfiguration.PROPERTY_ONLY_FOR_URLS).description("Optional list of URLs this header shall be used for. Can contain wildcards like: https://mywebapp.com/path/{*}/with/wildcard").optional()
+                                                fieldWithPath(PROPERTY_WEB_SCAN+"."+SecHubWebScanConfiguration.PROPERTY_HEADERS).description("List of HTTP headers. Can be used for authentication or anything else.").optional(),
+                                                fieldWithPath(PROPERTY_WEB_SCAN+"."+SecHubWebScanConfiguration.PROPERTY_HEADERS+"."+HTTPHeaderConfiguration.PROPERTY_NAME).description("Name of the defined HTTP header.").optional(),
+                                                fieldWithPath(PROPERTY_WEB_SCAN+"."+SecHubWebScanConfiguration.PROPERTY_HEADERS+"."+HTTPHeaderConfiguration.PROPERTY_VALUE).description("Value of the defined HTTP header.").optional(),
+                                                fieldWithPath(PROPERTY_WEB_SCAN+"."+SecHubWebScanConfiguration.PROPERTY_HEADERS+"."+HTTPHeaderConfiguration.PROPERTY_ONLY_FOR_URLS).description("Optional list of URLs this header shall be used for. Can contain wildcards like: https://mywebapp.com/path/{*}/with/wildcard").optional()
 
                                         ),
                                         responseFields(

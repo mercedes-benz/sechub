@@ -16,7 +16,7 @@ public class SecHubWebScanConfiguration {
     public static final String PROPERTY_MAX_SCAN_DURATION = "maxScanDuration";
     public static final String PROPERTY_INCLUDES = "includes";
     public static final String PROPERTY_EXCLUDES = "excludes";
-    public static final String PROPERTY_HTTP_HEADERS = "httpHeaders";
+    public static final String PROPERTY_HEADERS = "haders";
 
     Optional<WebLoginConfiguration> login = Optional.empty();
     Optional<WebScanDurationConfiguration> maxScanDuration = Optional.empty();
@@ -28,7 +28,7 @@ public class SecHubWebScanConfiguration {
     Optional<List<String>> includes = Optional.empty();
     Optional<List<String>> excludes = Optional.empty();
 
-    Optional<List<HTTPHeaderConfiguration>> httpHeaders = Optional.empty();
+    Optional<List<HTTPHeaderConfiguration>> headers = Optional.empty();
 
     public URI getUrl() {
         return url;
@@ -54,7 +54,7 @@ public class SecHubWebScanConfiguration {
         return excludes;
     }
 
-    public Optional<List<HTTPHeaderConfiguration>> getHTTPHeaders() {
-        return httpHeaders;
+    public Optional<List<HTTPHeaderConfiguration>> getHeaders() {
+        return headers;
     }
 }

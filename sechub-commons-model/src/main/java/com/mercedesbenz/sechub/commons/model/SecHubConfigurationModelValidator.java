@@ -280,7 +280,7 @@ public class SecHubConfigurationModelValidator {
     }
 
     private void handleHTTPHeaders(InternalValidationContext context, SecHubWebScanConfiguration webScan) {
-        Optional<List<HTTPHeaderConfiguration>> optHttpHeaders = webScan.getHTTPHeaders();
+        Optional<List<HTTPHeaderConfiguration>> optHttpHeaders = webScan.getHeaders();
         if (!optHttpHeaders.isPresent()) {
             return;
         }
