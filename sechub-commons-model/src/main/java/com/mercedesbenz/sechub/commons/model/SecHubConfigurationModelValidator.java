@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.commons.model;
 
-import static com.mercedesbenz.sechub.commons.core.util.SimpleStringUtils.hasStandardAsciiLettersDigitsOrAdditionalAllowedCharacters;
+import static com.mercedesbenz.sechub.commons.core.util.SimpleStringUtils.*;
 import static com.mercedesbenz.sechub.commons.model.SecHubConfigurationModelValidationError.*;
 
 import java.net.URI;
