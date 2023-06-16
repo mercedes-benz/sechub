@@ -2,15 +2,14 @@
 spring.profiles.include:
  - pds_localserver
  
-sechub.pds.config.file: "src/test/resources/dev-pds-config.json"
+pds.config.file: "src/test/resources/dev-pds-config.json"
  
 sechub.initialadmin:
    userid: sechubadm
    email: sechubadm@example.org    
    apitoken: pseudo-token-development-only
    
-sechub:
- pds:
+pds:
    techuser:
        userid: pds-dev-techuser
        apitoken: "{noop}pds-dev-apitoken"

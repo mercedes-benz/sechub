@@ -18,7 +18,7 @@ jobs:
     steps:
       - name: Show Inputs
         run: |
-          echo "OWASP-ZAP Wrapper '${{ github.event.inputs.owaspzap-wrapper-version }}' - Milestone '${{ github.event.inputs.owaspzap-wrapper-milestone-number }}'"
+          echo "OWASP-ZAP Wrapper '${{ inputs.owaspzap-wrapper-version }}' - Milestone '${{ inputs.owaspzap-wrapper-milestone-number }}'"
 
       - name: Checkout branch master
         uses: actions/checkout@v3
@@ -27,8 +27,8 @@ jobs:
 
       # Create temporary local tags, so we build documentation for this tag...
       # The final tag on git server side will be done automatically by the release when the draft is saved as "real" release
-      - name: Tag OWASP-ZAP Wrapper version v${{ github.event.inputs.owaspzap-wrapper-version }}-owaspzap-wrapper (temporarily)
-        run: git tag v${{ github.event.inputs.owaspzap-wrapper-version }}-owaspzap-wrapper
+      - name: Tag OWASP-ZAP Wrapper version v${{ inputs.owaspzap-wrapper-version }}-owaspzap-wrapper (temporarily)
+        run: git tag v${{ inputs.owaspzap-wrapper-version }}-owaspzap-wrapper
 
       # ----------------------
       # Setup + Caching
@@ -123,14 +123,14 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # This token is provided by Actions, you do not need to create your own token
         with:
-          tag_name: v${{ github.event.inputs.owaspzap-wrapper-version }}-owaspzap-wrapper
+          tag_name: v${{ inputs.owaspzap-wrapper-version }}-owaspzap-wrapper
           commitish: master
-          release_name: OWASP-ZAP Wrapper Version ${{ github.event.inputs.owaspzap-wrapper-version }}
+          release_name: OWASP-ZAP Wrapper Version ${{ inputs.owaspzap-wrapper-version }}
           body: |
             Changes in this Release
             - Some minor changes on OWASP-ZAP Wrapper implementation
 
-            For more details please look at [Milestone ${{github.event.inputs.owaspzap-wrapper-milestone-number}}]( https://github.com/mercedes-benz/sechub/milestone/${{github.event.inputs.owaspzap-wrapper-milestone-number}}?closed=1)
+            For more details please look at [Milestone ${{inputs.owaspzap-wrapper-milestone-number}}]( https://github.com/mercedes-benz/sechub/milestone/${{inputs.owaspzap-wrapper-milestone-number}}?closed=1)
           draft: true
           prerelease: false
 
@@ -140,41 +140,41 @@ jobs:
       - name: Create files and sha256 checksum for OWASP-ZAP Wrapper jar
         run: |
           cd sechub-wrapper-owasp-zap/build/libs/
-          sha256sum sechub-pds-wrapperowaspzap-${{ github.event.inputs.owaspzap-wrapper-version }}.jar > sechub-pds-wrapperowaspzap-${{ github.event.inputs.owaspzap-wrapper-version }}.jar.sha256sum
+          sha256sum sechub-pds-wrapperowaspzap-${{ inputs.owaspzap-wrapper-version }}.jar > sechub-pds-wrapperowaspzap-${{ inputs.owaspzap-wrapper-version }}.jar.sha256sum
 
-      - name: Upload asset sechub-pds-wrapperowaspzap-${{ github.event.inputs.owaspzap-wrapper-version }}.jar
+      - name: Upload asset sechub-pds-wrapperowaspzap-${{ inputs.owaspzap-wrapper-version }}.jar
         uses: actions/upload-release-asset@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_owaspzap-wrapper_release.outputs.upload_url }}
-          asset_path: sechub-wrapper-owasp-zap/build/libs/sechub-pds-wrapperowaspzap-${{ github.event.inputs.owaspzap-wrapper-version }}.jar
-          asset_name: sechub-pds-wrapperowaspzap-${{ github.event.inputs.owaspzap-wrapper-version }}.jar
+          asset_path: sechub-wrapper-owasp-zap/build/libs/sechub-pds-wrapperowaspzap-${{ inputs.owaspzap-wrapper-version }}.jar
+          asset_name: sechub-pds-wrapperowaspzap-${{ inputs.owaspzap-wrapper-version }}.jar
           asset_content_type: application/zip
 
-      - name: Upload asset sechub-pds-wrapperowaspzap-${{ github.event.inputs.owaspzap-wrapper-version }}.jar.sha256sum
+      - name: Upload asset sechub-pds-wrapperowaspzap-${{ inputs.owaspzap-wrapper-version }}.jar.sha256sum
         uses: actions/upload-release-asset@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_owaspzap-wrapper_release.outputs.upload_url }}
-          asset_path: sechub-wrapper-owasp-zap/build/libs/sechub-pds-wrapperowaspzap-${{ github.event.inputs.owaspzap-wrapper-version }}.jar.sha256sum
-          asset_name: sechub-pds-wrapperowaspzap-${{ github.event.inputs.owaspzap-wrapper-version }}.jar.sha256sum
+          asset_path: sechub-wrapper-owasp-zap/build/libs/sechub-pds-wrapperowaspzap-${{ inputs.owaspzap-wrapper-version }}.jar.sha256sum
+          asset_name: sechub-pds-wrapperowaspzap-${{ inputs.owaspzap-wrapper-version }}.jar.sha256sum
           asset_content_type: text/plain
 
       # -----------------------------------------
       # Create release issue
       # -----------------------------------------
-      - name: Create OWASP-ZAP Wrapper ${{ github.event.inputs.owaspzap-wrapper-version }} release issue
+      - name: Create OWASP-ZAP Wrapper ${{ inputs.owaspzap-wrapper-version }} release issue
         uses: dacbd/create-issue-action@main
         with:
           token: ${{ github.token }}
-          title: Release OWASP-ZAP Wrapper ${{ github.event.inputs.owaspzap-wrapper-version }}
+          title: Release OWASP-ZAP Wrapper ${{ inputs.owaspzap-wrapper-version }}
           body: |
-            See [Milestone ${{github.event.inputs.owaspzap-wrapper-milestone-number}}]( https://github.com/mercedes-benz/sechub/milestone/${{github.event.inputs.owaspzap-wrapper-milestone-number}}?closed=1) for details.
+            See [Milestone ${{inputs.owaspzap-wrapper-milestone-number}}]( https://github.com/mercedes-benz/sechub/milestone/${{inputs.owaspzap-wrapper-milestone-number}}?closed=1) for details.
 
             Please close this issue after the release.
-          milestone: ${{ github.event.inputs.owaspzap-wrapper-milestone-number }}
+          milestone: ${{ inputs.owaspzap-wrapper-milestone-number }}
 
       # -----------------------------------------
       # Create a pull request for merging back `master` into `develop`

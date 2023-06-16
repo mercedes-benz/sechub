@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+#!/bin/bash
 # SPDX-License-Identifier: MIT
 
 REGISTRY="$1"
@@ -11,7 +11,7 @@ usage() {
 usage: $0 <docker registry> <version tag> [<base image>]
 Builds a docker image of SecHub PDS with OWASP ZAP
 for <docker registry> with tag <version tag>.
-Required: <base image> ; Example: ghcr.io/mercedes-benz/sechub/pds-base:v0.32.1
+Required: <base image> ; Example: ghcr.io/mercedes-benz/sechub/pds-base
 
 Additionally these environment variables can be defined:
 - OWASPZAP_VERSION - OWASP ZAP version to use. Example: 2.12.0

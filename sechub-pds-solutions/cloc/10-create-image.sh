@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+#!/bin/bash
 # SPDX-License-Identifier: MIT
 
 REGISTRY="$1"
@@ -10,7 +10,7 @@ usage() {
 usage: $0 <docker registry> <version tag> <base image>
 Builds a docker image of SecHub PDS with cloc
 for <docker registry> with tag <version tag>.
-Required: <base image> ; for example ghcr.io/mercedes-benz/sechub/pds-base:v0.32.1
+Required: <base image> ; for example ghcr.io/mercedes-benz/sechub/pds-base
 
 Additionally these environment variables can be defined:
 - CLOC_VERSION - Cloc version to use. E.g. 1.94
