@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.commons.model;
 
-import static com.mercedesbenz.sechub.commons.core.util.SimpleStringUtils.*;
+import static com.mercedesbenz.sechub.commons.core.util.SimpleStringUtils.hasStandardAsciiLettersDigitsOrAdditionalAllowedCharacters;
 import static com.mercedesbenz.sechub.commons.model.SecHubConfigurationModelValidationError.*;
 
 import java.net.URI;
@@ -27,6 +27,8 @@ public class SecHubConfigurationModelValidator {
 
     private static final int MAX_METADATA_LABEL_VALUE_LENGTH = 150;
     private static final int MAX_METADATA_LABEL_AMOUNT = 20;
+
+    private static final String WEBSCAN_URL_WILDCARD_SYMBOL = "{*}";
 
     SecHubConfigurationModelSupport modelSupport = new SecHubConfigurationModelSupport();
 
@@ -263,6 +265,7 @@ public class SecHubConfigurationModelValidator {
         }
 
         handleApi(context, webScan);
+        handleHTTPHeaders(context, webScan);
 
     }
 
@@ -274,6 +277,52 @@ public class SecHubConfigurationModelValidator {
 
         SecHubWebScanApiConfiguration openApi = apiOpt.get();
         handleUsages(context, openApi);
+    }
+
+    private void handleHTTPHeaders(InternalValidationContext context, SecHubWebScanConfiguration webScan) {
+        Optional<List<HTTPHeaderConfiguration>> optHttpHeaders = webScan.getHTTPHeaders();
+        if (!optHttpHeaders.isPresent()) {
+            return;
+        }
+
+        List<HTTPHeaderConfiguration> httpHeaders = optHttpHeaders.get();
+        for (HTTPHeaderConfiguration httpHeader : httpHeaders) {
+            if (httpHeader.getName() == null || httpHeader.getName().isEmpty()) {
+                context.result.addError(WEB_SCAN_NO_HEADER_NAME_DEFINED);
+                return;
+            }
+            if (httpHeader.getValue() == null || httpHeader.getValue().isEmpty()) {
+                context.result.addError(WEB_SCAN_NO_HEADER_VALUE_DEFINED);
+                return;
+            }
+            if (!httpHeader.getOnlyForUrls().isPresent()) {
+                continue;
+            }
+            validateHTTPHeaderUrls(context, httpHeader.getOnlyForUrls().get(), webScan.getUrl().toString());
+        }
+
+    }
+
+    private void validateHTTPHeaderUrls(InternalValidationContext context, List<String> onlyForUrls, String targetUrl) {
+        for (String url : onlyForUrls) {
+            int index = url.indexOf(WEBSCAN_URL_WILDCARD_SYMBOL);
+            if (index != -1) {
+                url = url.substring(0, index);
+            }
+            try {
+                String onlyForUrl = URI.create(url).toURL().toString();
+                if (targetUrl.endsWith("/")) {
+                    // ensure "https://mywebapp.com/" and "https://mywebapp.com" are accepted as the
+                    // same
+                    targetUrl = targetUrl.substring(0, targetUrl.length() - 1);
+                }
+                if (!onlyForUrl.contains(targetUrl)) {
+                    context.result.addError(WEB_SCAN_HTTP_HEADER_ONLY_FOR_URL_DOES_NOT_CONTAIN_TARGET_URL);
+                }
+            } catch (Exception e) {
+                context.result.addError(WEB_SCAN_HTTP_HEADER_ONLY_FOR_URL_HAS_UNSUPPORTED_SCHEMA, "OnlyForUrls defined URL: " + url + " is not a valid URL.");
+            }
+        }
     }
 
     private void handleInfraScanConfiguration(InternalValidationContext context) {

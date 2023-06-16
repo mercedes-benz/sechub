@@ -1,23 +1,44 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.restdoc;
 
-import static com.mercedesbenz.sechub.commons.model.SecHubConfigurationModel.*;
-import static com.mercedesbenz.sechub.commons.model.TestSecHubConfigurationBuilder.*;
-import static com.mercedesbenz.sechub.restdoc.RestDocumentation.*;
-import static com.mercedesbenz.sechub.test.RestDocPathParameter.*;
-import static com.mercedesbenz.sechub.test.SecHubTestURLBuilder.*;
-import static org.mockito.ArgumentMatchers.*;
-import static org.mockito.Mockito.*;
-import static org.springframework.restdocs.headers.HeaderDocumentation.*;
-import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.*;
-import static org.springframework.restdocs.payload.PayloadDocumentation.*;
-import static org.springframework.restdocs.request.RequestDocumentation.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static com.mercedesbenz.sechub.commons.model.SecHubConfigurationModel.PROPERTY_API_VERSION;
+import static com.mercedesbenz.sechub.commons.model.SecHubConfigurationModel.PROPERTY_CODE_SCAN;
+import static com.mercedesbenz.sechub.commons.model.SecHubConfigurationModel.PROPERTY_INFRA_SCAN;
+import static com.mercedesbenz.sechub.commons.model.SecHubConfigurationModel.PROPERTY_WEB_SCAN;
+import static com.mercedesbenz.sechub.commons.model.TestSecHubConfigurationBuilder.configureSecHub;
+import static com.mercedesbenz.sechub.restdoc.RestDocumentation.defineRestService;
+import static com.mercedesbenz.sechub.test.RestDocPathParameter.JOB_UUID;
+import static com.mercedesbenz.sechub.test.RestDocPathParameter.PAGE;
+import static com.mercedesbenz.sechub.test.RestDocPathParameter.PROJECT_ID;
+import static com.mercedesbenz.sechub.test.RestDocPathParameter.SIZE;
+import static com.mercedesbenz.sechub.test.RestDocPathParameter.WITH_META_DATA;
+import static com.mercedesbenz.sechub.test.SecHubTestURLBuilder.https;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
+import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
+import static org.springframework.restdocs.headers.HeaderDocumentation.requestHeaders;
+import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.get;
+import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.multipart;
+import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.post;
+import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.put;
+import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
+import static org.springframework.restdocs.payload.PayloadDocumentation.requestFields;
+import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields;
+import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
+import static org.springframework.restdocs.request.RequestDocumentation.partWithName;
+import static org.springframework.restdocs.request.RequestDocumentation.pathParameters;
+import static org.springframework.restdocs.request.RequestDocumentation.requestParameters;
+import static org.springframework.restdocs.request.RequestDocumentation.requestParts;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import java.io.InputStream;
 import java.lang.annotation.Annotation;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
@@ -45,6 +66,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.util.StringUtils;
 
 import com.mercedesbenz.sechub.commons.core.CommonConstants;
+import com.mercedesbenz.sechub.commons.model.HTTPHeaderConfiguration;
 import com.mercedesbenz.sechub.commons.model.SecHubCodeScanConfiguration;
 import com.mercedesbenz.sechub.commons.model.SecHubConfigurationMetaData;
 import com.mercedesbenz.sechub.commons.model.SecHubDataConfigurationUsageByName;
@@ -475,6 +497,72 @@ public class SchedulerRestControllerRestDocTest implements TestIsNecessaryForDoc
                                                 fieldWithPath(SchedulerResult.PROPERTY_JOBID).description("A unique job id")
                                         )
 	    		    ));
+	    /* @formatter:on */
+    }
+
+    @Test
+    @UseCaseRestDoc(useCase = UseCaseUserCreatesNewJob.class, variant = "Web Scan headers")
+    public void restDoc_userCreatesNewJob_webscan_with_headers() throws Exception {
+        /* prepare */
+        String apiEndpoint = https(PORT_USED).buildAddJobUrl(PROJECT_ID.pathElement());
+        Class<? extends Annotation> useCase = UseCaseUserCreatesNewJob.class;
+
+        UUID randomUUID = UUID.randomUUID();
+        SchedulerResult mockResult = new SchedulerResult(randomUUID);
+
+        List<HTTPHeaderConfiguration> httpHeaders = new ArrayList<>();
+        HTTPHeaderConfiguration header = new HTTPHeaderConfiguration();
+        header.setName("api-token");
+        header.setValue("secret");
+        List<String> onlyForUrls = Arrays.asList("https://mywebapp.com/admin", "https://mywebapp.com/{*}/profile", "https://mywebapp.com/blog/{*}");
+        header.setOnlyForUrls(Optional.ofNullable(onlyForUrls));
+
+        when(mockedScheduleCreateJobService.createJob(any(), any(SecHubConfiguration.class))).thenReturn(mockResult);
+
+        /* execute + test @formatter:off */
+	    this.mockMvc.perform(
+	    		post(apiEndpoint, PROJECT1_ID).
+                	header(AuthenticationHelper.HEADER_NAME, AuthenticationHelper.getHeaderValue()).
+	    			contentType(MediaType.APPLICATION_JSON_VALUE).
+	    			content(configureSecHub().
+	    					api("1.0").
+	    					webConfig().
+	    						addURI("https://localhost/mywebapp").
+	    						addHTTPHeaders(httpHeaders).
+	    					build().
+	    					toJSON())
+	    		).
+	    			andExpect(status().isOk()).
+	    			andExpect(content().json("{jobId:"+randomUUID.toString()+"}")).
+	    			andDo(defineRestService().
+                            with().
+                                useCaseData(useCase, "Web Scan login basic").
+                                tag(RestDocFactory.extractTag(apiEndpoint)).
+                                requestSchema(OpenApiSchema.SCAN_JOB.getSchema()).
+                                responseSchema(OpenApiSchema.JOB_ID.getSchema()).
+                            and().
+                            document(
+	                            		requestHeaders(
+	                            				headerWithName(AuthenticationHelper.HEADER_NAME).description(AuthenticationHelper.HEADER_DESCRIPTION)
+	                            		),
+                                        pathParameters(
+                                                parameterWithName(PROJECT_ID.paramName()).description("The unique id of the project id where a new sechub job shall be created")
+                                        ),
+                                        requestFields(
+                                                fieldWithPath(PROPERTY_API_VERSION).description("The api version, currently only 1.0 is supported"),
+                                                fieldWithPath(PROPERTY_WEB_SCAN).description("Webscan configuration block").optional(),
+                                                fieldWithPath(PROPERTY_WEB_SCAN+"."+SecHubWebScanConfiguration.PROPERTY_URL).description("Webscan URI to scan for").optional(),
+                                                fieldWithPath(PROPERTY_WEB_SCAN+"."+SecHubWebScanConfiguration.PROPERTY_HTTP_HEADERS).description("List of HTTP headers. Can be used for authentication or anything else.").optional(),
+                                                fieldWithPath(PROPERTY_WEB_SCAN+"."+SecHubWebScanConfiguration.PROPERTY_HTTP_HEADERS+"."+HTTPHeaderConfiguration.PROPERTY_NAME).description("Name of the defined HTTP header.").optional(),
+                                                fieldWithPath(PROPERTY_WEB_SCAN+"."+SecHubWebScanConfiguration.PROPERTY_HTTP_HEADERS+"."+HTTPHeaderConfiguration.PROPERTY_VALUE).description("Value of the defined HTTP header.").optional(),
+                                                fieldWithPath(PROPERTY_WEB_SCAN+"."+SecHubWebScanConfiguration.PROPERTY_HTTP_HEADERS+"."+HTTPHeaderConfiguration.PROPERTY_ONLY_FOR_URLS).description("Optional list of URLs this header shall be used for. Can contain wildcards like: https://mywebapp.com/path/{*}/with/wildcard").optional()
+
+                                        ),
+                                        responseFields(
+                                                fieldWithPath(SchedulerResult.PROPERTY_JOBID).description("A unique job id")
+                                        )
+	    			    ));
+
 	    /* @formatter:on */
     }
 

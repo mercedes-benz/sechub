@@ -22,7 +22,7 @@ import com.mercedesbenz.sechub.integrationtest.api.TestProject;
 import com.mercedesbenz.sechub.integrationtest.internal.IntegrationTestFileSupport;
 
 /**
- * Integration test doing code scans by integration test servers (sechub server,
+ * Integration test doing web scans by integration test servers (sechub server,
  * pds server)
  *
  * @author Albert Tregnaghi

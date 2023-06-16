@@ -126,6 +126,11 @@ public class TestSecHubConfigurationBuilder {
             return this;
         }
 
+        public TestWebConfigurationBuilder addHTTPHeaders(List<HTTPHeaderConfiguration> headers) {
+            TestSecHubConfigurationBuilder.this.testData.webConfig.httpHeaders = Optional.ofNullable(headers);
+            return this;
+        }
+
         public TestWebLoginConfigurationBuilder login(String loginURL) {
             return new TestWebLoginConfigurationBuilder(loginURL, this);
         }
