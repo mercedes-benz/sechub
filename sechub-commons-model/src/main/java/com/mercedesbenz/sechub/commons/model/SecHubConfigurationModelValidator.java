@@ -13,6 +13,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+import java.util.regex.Pattern;
 
 import com.mercedesbenz.sechub.commons.core.util.SimpleNetworkUtils;
 import com.mercedesbenz.sechub.commons.core.util.SimpleStringUtils;
@@ -303,20 +304,17 @@ public class SecHubConfigurationModelValidator {
 
     private void validateHTTPHeaderUrls(InternalValidationContext context, List<String> onlyForUrls, String targetUrl) {
         for (String url : onlyForUrls) {
-            int index = url.indexOf(SecHubWebScanConfiguration.WEBSCAN_URL_WILDCARD_SYMBOL);
-            if (index != -1) {
-                url = url.substring(0, index);
-            }
+            url = url.replaceAll(Pattern.quote(SecHubWebScanConfiguration.WEBSCAN_URL_WILDCARD_SYMBOL), "");
             try {
-                String onlyForUrl = URI.create(url).toURL().toString();
                 if (targetUrl.endsWith("/")) {
                     // ensure "https://mywebapp.com/" and "https://mywebapp.com" are accepted as the
                     // same
                     targetUrl = targetUrl.substring(0, targetUrl.length() - 1);
                 }
-                if (!onlyForUrl.contains(targetUrl)) {
+                if (!url.contains(targetUrl)) {
                     context.result.addError(WEB_SCAN_HTTP_HEADER_ONLY_FOR_URL_DOES_NOT_CONTAIN_TARGET_URL);
                 }
+                URI.create(url).toURL();
             } catch (Exception e) {
                 context.result.addError(WEB_SCAN_HTTP_HEADER_ONLY_FOR_URL_HAS_UNSUPPORTED_SCHEMA, "OnlyForUrls defined URL: " + url + " is not a valid URL.");
             }
