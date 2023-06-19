@@ -2,14 +2,14 @@
 
 version: "3"
 services:
-  pds-owasp-zap:
+  pds-owaspzap:
     build:
       args:
         - BASE_IMAGE=${BASE_IMAGE}
       context: docker/
       dockerfile: Owasp-Zap-Debian.dockerfile
-    container_name: pds-owasp-zap
-    hostname: pds-owasp-zap
+    container_name: pds-owaspzap
+    hostname: pds-owaspzap
     env_file:
       - .env
     networks:

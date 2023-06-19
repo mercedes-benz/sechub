@@ -5,7 +5,7 @@
 replicaCount: 1
 
 image:
-    registry: "my.registry.example.org/pds-owasp-zap"
+    registry: "ghcr.io/mercedes-benz/sechub/pds-owaspzap"
     tag: "latest"
 
 resources:

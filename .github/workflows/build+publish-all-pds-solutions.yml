@@ -51,10 +51,10 @@ jobs:
       pds-solution: multi
       pds-version: ${{ inputs.pds-version }}
 
-  call_build_pds-owasp-zap:
+  call_build_pds-owaspzap:
     uses: mercedes-benz/sechub/.github/workflows/_build+publish-pds-solution.yml@develop
     with:
-      pds-solution: owasp-zap
+      pds-solution: owaspzap
       pds-version: ${{ inputs.pds-version }}
 
   call_build-and-publish-pmd:

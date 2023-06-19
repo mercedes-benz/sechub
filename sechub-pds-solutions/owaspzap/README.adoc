@@ -54,7 +54,7 @@ IMPORTANT: Make sure the SecHub container is running.
 
 The steps required to scan with the PDS.
 
-==== Scan Script 
+==== Scan Script
 
 WARNING: Scan only targets you have permission to scan.
 
@@ -102,12 +102,12 @@ or
 ----
 {
     "apiVersion" : "1.0",
-    "sechubJobUUID": "288607bf-ac81-4088-842c-005d5702a9e9", 
+    "sechubJobUUID": "288607bf-ac81-4088-842c-005d5702a9e9",
     "productId": "PDS_OWASP_ZAP",
     "parameters": [
         {
             "key" : "pds.scan.target.url",
-            "value" : "https://my.juiceshop.org" 
+            "value" : "https://my.juiceshop.org"
         },
         {
             "key" : "zap.activescan.enabled",
@@ -180,7 +180,7 @@ This section contains information about how to troubleshoot PDS+OWSAP-Zap if som
 ==== Access the container
 
 ----
-docker exec -it pds-owasp-zap-debian bash
+docker exec -it pds-owaspzap-debian bash
 ----
 
 ==== Java Application Remote Debugging of PDS
@@ -209,7 +209,7 @@ Build container images and push them to registry to run PDS+OWSAP-Zap on virtual
 
 Build the container image.
 
-. Using the default image: 
+. Using the default image:
 +
 ----
 ./10-create-image.sh my.registry.example.org/sechub/pds_owasp_zap v0.1
@@ -300,7 +300,7 @@ To generate passwords use `tr -dc A-Za-z0-9 </dev/urandom | head -c 18 ; echo ''
 . Install helm package from file system
 +
 ----
-helm install --values myvalues.yaml pds-owasp-zap helm/pds-owasp-zap/
+helm install --values myvalues.yaml pds-owaspzap helm/pds-owaspzap/
 ----
 +
 [TIP]
@@ -311,13 +311,13 @@ Use `helm --namespace <my-namespace> install…` to install the helm chart into 
 ----
 kubectl get pods
 NAME                                              READY   STATUS    RESTARTS   AGE
-pds-owasp-zap-759ffc8dfb-8jj8f                    1/1     Running   0          75s
+pds-owaspzap-759ffc8dfb-8jj8f                    1/1     Running   0          75s
 ----
 
 . Forward port of one of the pods to own machine
 +
 ----
-kubectl port-forward pds-owasp-zap-759ffc8dfb-8jj8f 8444:8444
+kubectl port-forward pds-owaspzap-759ffc8dfb-8jj8f 8444:8444
 ----
 
 . Scan as explained in the <<scan,scan>> section.
@@ -327,23 +327,23 @@ kubectl port-forward pds-owasp-zap-759ffc8dfb-8jj8f 8444:8444
 In case, `my-values.yaml` was changed. Simply, use `helm upgrade` to update the deployment. `helm` will handle scaling up and down as well as changing the configuration.
 
 ----
-helm upgrade --values my-values.yaml pds-owasp-zap helm/pds-owasp-zap/
+helm upgrade --values my-values.yaml pds-owaspzap helm/pds-owaspzap/
 ----
 
-==== Uninstall 
+==== Uninstall
 
 . Helm list
 +
 ----
 helm list
 NAME                          	NAMESPACE 	    REVISION	UPDATED                                 	STATUS  	CHART                          	APP VERSION
-pds-owasp-zap                 	my-namespace	1       	2021-11-05 18:42:23.613991303 +0100 CET 	deployed	pds-owasp-zap-0.1.0            	0.24.0 
+pds-owaspzap                 	my-namespace	1       	2021-11-05 18:42:23.613991303 +0100 CET 	deployed	pds-owaspzap-0.1.0            	0.24.0
 ----
 
 . Helm uninstall
 +
 ----
-helm uninstall pds-owasp-zap
+helm uninstall pds-owaspzap
 ----
 
 === Troubleshooting
@@ -351,22 +351,22 @@ helm uninstall pds-owasp-zap
 * Access deployment events.
 +
 ----
-kubectl describe pod pds-owasp-zap-759ffc8dfb-8jj8f
+kubectl describe pod pds-owaspzap-759ffc8dfb-8jj8f
 …
 Events:
   Type    Reason     Age    From               Message
   ----    ------     ----   ----               -------
-  Normal  Scheduled  6m52s  default-scheduler  Successfully assigned sechub-zap/pds-owasp-zap-759ffc8dfb-8jj8f to c06p043-md-cc8c675cb-bqtpb
+  Normal  Scheduled  6m52s  default-scheduler  Successfully assigned sechub-zap/pds-owaspzap-759ffc8dfb-8jj8f to c06p043-md-cc8c675cb-bqtpb
   Normal  Pulling    6m52s  kubelet            Pulling image "my.registry.org/sechub/pds_owasp_zap:latest"
   Normal  Pulled     6m31s  kubelet            Successfully pulled image "my.registry.org/sechub/pds_owasp_zap:latest" in 21.303104727s
-  Normal  Created    6m30s  kubelet            Created container pds-owasp-zap
-  Normal  Started    6m30s  kubelet            Started container pds-owasp-zap
+  Normal  Created    6m30s  kubelet            Created container pds-owaspzap
+  Normal  Started    6m30s  kubelet            Started container pds-owaspzap
 ----
 
 * Access container logs.
 +
 ----
-kubectl logs pds-owasp-zap-759ffc8dfb-8jj8f
+kubectl logs pds-owaspzap-759ffc8dfb-8jj8f
 
   .   ____          _            __ _ _
  /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
@@ -376,7 +376,7 @@ kubectl logs pds-owasp-zap-759ffc8dfb-8jj8f
  =========|_|==============|___/=/_/_/_/
  :: Spring Boot ::                (v2.5.2)
 
-2021-11-05 17:42:47.697  INFO 7 --- [           main] d.s.p.ProductDelegationServerApplication : Starting ProductDelegationServerApplication using Java 11.0.11 on pds-owasp-zap-759ffc8dfb-8jj8f with PID 7 (/pds/sechub-pds-0.24.0.jar started by zap in /workspace)
+2021-11-05 17:42:47.697  INFO 7 --- [           main] d.s.p.ProductDelegationServerApplication : Starting ProductDelegationServerApplication using Java 11.0.11 on pds-owaspzap-759ffc8dfb-8jj8f with PID 7 (/pds/sechub-pds-0.24.0.jar started by zap in /workspace)
 2021-11-05 17:42:47.702  INFO 7 --- [           main] d.s.p.ProductDelegationServerApplication : The following profiles are active: pds_localserver
 2021-11-05 17:42:53.054  WARN 7 --- [           main] o.apache.tomcat.util.net.SSLHostConfig   : The protocol [TLSv1.3] was added to the list of protocols on the SSLHostConfig named [_default_]. Check if a +/- prefix is missing.
 2021-11-05 17:42:53.131  INFO 7 --- [           main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
@@ -392,5 +392,5 @@ kubectl logs pds-owasp-zap-759ffc8dfb-8jj8f
 2021-11-05 17:42:58.375  INFO 7 --- [           main] d.s.p.ProductDelegationServerApplication : Started ProductDelegationServerApplication in 13.2 seconds (JVM running for 14.465)
 2021-11-05 17:42:59.394  INFO 7 --- [   scheduling-1] c.d.s.p.m.PDSHeartBeatTriggerService     : Heartbeat will be initialized
 2021-11-05 17:42:59.394  INFO 7 --- [   scheduling-1] c.d.s.p.m.PDSHeartBeatTriggerService     : Create new server hearbeat
-2021-11-05 17:42:59.467  INFO 7 --- [   scheduling-1] c.d.s.p.m.PDSHeartBeatTriggerService     : heartbeat update - serverid:OWASP_ZAP_CLUSTER, heartbeatuuid:d6b06e92-e3e6-4f39-aefb-eb70fee49ce7, cluster-member-data:{"hostname":"pds-owasp-zap-759ffc8dfb-8jj8f","ip":"192.168.128.4","port":8444,"heartBeatTimestamp":"2021-11-05T17:42:59.395871","executionState":{"queueMax":50,"jobsInQueue":0,"entries":[]}}
+2021-11-05 17:42:59.467  INFO 7 --- [   scheduling-1] c.d.s.p.m.PDSHeartBeatTriggerService     : heartbeat update - serverid:OWASP_ZAP_CLUSTER, heartbeatuuid:d6b06e92-e3e6-4f39-aefb-eb70fee49ce7, cluster-member-data:{"hostname":"pds-owaspzap-759ffc8dfb-8jj8f","ip":"192.168.128.4","port":8444,"heartBeatTimestamp":"2021-11-05T17:42:59.395871","executionState":{"queueMax":50,"jobsInQueue":0,"entries":[]}}
 ----
