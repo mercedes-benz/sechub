@@ -2,7 +2,7 @@
 
 version: "3"
 services:
-  pds-owasp-zap:
+  pds-owaspzap:
     build:
       args:
         - BASE_IMAGE=${BASE_IMAGE}
@@ -23,13 +23,13 @@ services:
     build:
       context: ../shared/docker/loadbalancer
       args:
-        - PDS_SOLUTION=pds-owasp-zap
+        - PDS_SOLUTION=pds-owaspzap
     env_file:
       - .env-cluster
     networks:
       - "internal"
     depends_on:
-      - pds-owasp-zap
+      - pds-owaspzap
     ports:
       - "127.0.0.1:8444:8444"
 
