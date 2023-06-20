@@ -3,12 +3,12 @@
   "webScan" : {
     "url" : "https://productfailure.demo.example.org",
     "headers" : [ {
-      "name" : "Authorization",
-      "value" : "{{ .HEADER_VALUE }}"
+      "name" : "Authorization", //<1>
+      "value" : "{{ .HEADER_VALUE }}" //<2>
     }, {
-      "name" : "x-file-size",
-      "value" : "123456",
-      "onlyForUrls" : [ "https://productfailure.demo.example.org/admin", "https://productfailure.demo.example.org/upload/<*>", "https://productfailure.demo.example.org/<*>/special/" ]
+      "name" : "x-file-size", //<3>
+      "value" : "123456", //<4>
+      "onlyForUrls" : [ "https://productfailure.demo.example.org/admin", "https://productfailure.demo.example.org/upload/<*>", "https://productfailure.demo.example.org/<*>/special/" ] //<5>
     } ]
   }
 }

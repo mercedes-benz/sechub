@@ -303,21 +303,32 @@ public class SecHubConfigurationModelValidator {
     }
 
     private void validateHTTPHeaderUrls(InternalValidationContext context, List<String> onlyForUrls, String targetUrl) {
-        for (String url : onlyForUrls) {
-            url = url.replaceAll(Pattern.quote(SecHubWebScanConfiguration.WEBSCAN_URL_WILDCARD_SYMBOL), "");
-            try {
-                if (targetUrl.endsWith("/")) {
-                    // ensure "https://mywebapp.com/" and "https://mywebapp.com" are accepted as the
-                    // same
-                    targetUrl = targetUrl.substring(0, targetUrl.length() - 1);
-                }
-                if (!url.contains(targetUrl)) {
-                    context.result.addError(WEB_SCAN_HTTP_HEADER_ONLY_FOR_URL_DOES_NOT_CONTAIN_TARGET_URL);
-                }
-                URI.create(url).toURL();
-            } catch (Exception e) {
-                context.result.addError(WEB_SCAN_HTTP_HEADER_ONLY_FOR_URL_HAS_UNSUPPORTED_SCHEMA, "OnlyForUrls defined URL: " + url + " is not a valid URL.");
+        for (String onlyForUrl : onlyForUrls) {
+            String onlyForUrlToCheck = createURLWithoutWildCardsAndAddTrailingSlashIfMissing(onlyForUrl);
+
+            if (!onlyForUrlToCheck.contains(targetUrl)) {
+                context.result.addError(WEB_SCAN_HTTP_HEADER_ONLY_FOR_URL_DOES_NOT_CONTAIN_TARGET_URL);
             }
+            assertValidURL(context, onlyForUrlToCheck);
+        }
+    }
+
+    private String createURLWithoutWildCardsAndAddTrailingSlashIfMissing(String onlyForUrl) {
+        String onlyForUrlToCheck = onlyForUrl.replaceAll(Pattern.quote(SecHubWebScanConfiguration.WEBSCAN_URL_WILDCARD_SYMBOL), "");
+        if (!onlyForUrlToCheck.endsWith("/")) {
+            // ensure "https://mywebapp.com/" and "https://mywebapp.com" are accepted as the
+            // same. This way we can check if this URL contains our scan target URL.
+            onlyForUrlToCheck = onlyForUrlToCheck + "/";
+        }
+        return onlyForUrlToCheck;
+    }
+
+    private void assertValidURL(InternalValidationContext context, String onlyForUrl) {
+        try {
+            URI.create(onlyForUrl).toURL();
+        } catch (Exception e) {
+            context.result.addError(WEB_SCAN_HTTP_HEADER_ONLY_FOR_URL_HAS_UNSUPPORTED_SCHEMA,
+                    "OnlyForUrls defined URL: " + onlyForUrl + " is not a valid URL.");
         }
     }
 
