@@ -50,4 +50,28 @@ public class SecHubWebScanConfiguration {
     public Optional<List<String>> getExcludes() {
         return excludes;
     }
+
+    public void setLogin(Optional<WebLoginConfiguration> login) {
+        this.login = login;
+    }
+
+    public void setMaxScanDuration(Optional<WebScanDurationConfiguration> maxScanDuration) {
+        this.maxScanDuration = maxScanDuration;
+    }
+
+    public void setApi(Optional<SecHubWebScanApiConfiguration> api) {
+        this.api = api;
+    }
+
+    public void setUrl(URI url) {
+        this.url = url;
+    }
+
+    public void setIncludes(Optional<List<String>> includes) {
+        this.includes = includes;
+    }
+
+    public void setExcludes(Optional<List<String>> excludes) {
+        this.excludes = excludes;
+    }
 }

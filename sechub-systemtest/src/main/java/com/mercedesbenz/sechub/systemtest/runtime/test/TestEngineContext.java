@@ -1,6 +1,7 @@
 package com.mercedesbenz.sechub.systemtest.runtime.test;
 
 import java.util.Optional;
+import java.util.UUID;
 
 import com.mercedesbenz.sechub.commons.model.SecHubConfigurationModel;
 import com.mercedesbenz.sechub.systemtest.config.RunSecHubJobDefinition;
@@ -73,11 +74,26 @@ public class TestEngineContext {
         SystemTestFailure failure = new SystemTestFailure();
 
         failure.setMessage("Test: " + getTest().getName() + " failed: " + message);
-        if (e != null) {
-            failure.setDetails(e.getMessage());
-        }
+        failure.setDetails(createDetails(e));
 
         runtimeContext.getCurrentResult().setFailure(failure);
+    }
+    
+    private String createDetails(Exception e) {
+        StringBuilder sb = new StringBuilder();
+        sb.append("SecHubJob:").append(runtimeContext.getCurrentResult().getSechubJobUUID());
+        sb.append(", ");
+        if (e!=null) {
+            sb.append(e.getMessage());
+        }else {
+            sb.append("No exception available");
+        }
+        
+        return sb.toString();
+    }
+
+    public void markCurrentSecHubJob(UUID sechubJobUUID) {
+        runtimeContext.getCurrentResult().setSecHubJobUUID(sechubJobUUID);
     }
 
 }

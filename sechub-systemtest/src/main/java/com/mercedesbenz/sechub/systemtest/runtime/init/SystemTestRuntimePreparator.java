@@ -232,6 +232,8 @@ public class SystemTestRuntimePreparator {
         collectLocalMetaData(context);
 
         createFallbackSecHubSetupPartsWithMetaData(context);
+        
+        addFallbackExecutorConfigurationCredentials(context);
 
     }
 
@@ -279,9 +281,7 @@ public class SystemTestRuntimePreparator {
         addFallbackDefaultProfileToExecutorsWithoutProfile(context);
 
         createFallbackForPDSSolutions(context);
-
-        /* Important: must be done AFTER PDS solution handing */
-        addFallbackExecutorConfigurationCredentials(context);
+       
     }
 
     private void createFallbackForPDSSolutions(SystemTestRuntimeContext context) {
@@ -318,7 +318,7 @@ public class SystemTestRuntimePreparator {
             CredentialsDefinition credentials = definition.getCredentials();
             String productId = definition.getPdsProductId();
 
-            PDSSolutionDefinition solution = context.fetchPDSSolutionOrFail(productId);
+            PDSSolutionDefinition solution = context.fetchPDSSolutionByProductIdOrFail(productId);
 
             if (credentials.getUserId() == null || credentials.getUserId().isEmpty()) {
 

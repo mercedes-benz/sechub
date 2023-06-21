@@ -139,6 +139,9 @@ class SystemTestDryRunTest {
                         endScript().
                     endStep().
                     runSecHubJob().
+                        webScan().
+                            url("https://example.com").
+                        endScan().
                         uploads().
 
                         endUploads().
@@ -147,7 +150,9 @@ class SystemTestDryRunTest {
 
                 build();
 
-        LOG.info("config=\n{}", JSONConverter.get().toJSON(configuration,true));
+        if (LOG.isTraceEnabled()) {
+            LOG.trace("config=\n{}", JSONConverter.get().toJSON(configuration,true));
+        }
 
         /* execute */
         Path tempWorkspaceFolder = createTempDirectoryInBuildFolder("systemtest_inttest/faked_gosec_can_be_executed_without_errors");
@@ -277,8 +282,40 @@ class SystemTestDryRunTest {
                     endSolution().
                 endLocalSetup().
                 build();
+        
+        LOG.debug("loaded config=\n{}", JSONConverter.get().toJSON(configuration,true));
 
-        LOG.info("loaded config=\n{}", JSONConverter.get().toJSON(configuration,true));
+        /* execute */
+        SystemTestRuntimeException exception = assertThrows(SystemTestRuntimeException.class, ()->runSystemTests(
+           params().
+                localRun().
+                workspacePath(createTempDirectoryInBuildFolder("systemtest_inttest/fail_because_no_pds_config").toString()).
+                testConfiguration(configuration).
+                pdsSolutionPath(FAKED_PDS_SOLUTIONS_PATH).
+            build()));
+
+        String message = exception.getMessage();
+        assertTrue(message.contains("PDS server config file does not exist"));
+
+
+        /* @formatter:on */
+    }
+    
+    @Test
+    void fail_because_pds_config_file_does_not_exist() {
+        /* @formatter:off */
+
+        /* prepare */
+        SystemTestConfiguration configuration = configure().
+                localSetup().
+                    addSolution("faked-fail_because_no_pds_server_config_file").
+                        addStartStep().script().path("./05-start-single-sechub-network-docker-compose.sh").endScript().endStep().
+                        addStopStep().script().path("./05-stop-single-sechub-network-docker-compose.sh").endScript().endStep().
+                    endSolution().
+                endLocalSetup().
+                build();
+        
+        LOG.debug("loaded config=\n{}", JSONConverter.get().toJSON(configuration,true));
 
         /* execute */
         SystemTestRuntimeException exception = assertThrows(SystemTestRuntimeException.class, ()->runSystemTests(

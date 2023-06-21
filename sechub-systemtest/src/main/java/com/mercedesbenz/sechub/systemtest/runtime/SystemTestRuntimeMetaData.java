@@ -38,6 +38,9 @@ public class SystemTestRuntimeMetaData {
         LOG.debug("Register solution: {},", solution.getName());
 
         String solutionPathToConfigFile = solution.getPathToPdsServerConfigFile();
+        if (solutionPathToConfigFile== null) {
+            throw new IllegalStateException("No path to PDS server config file defined in your system test configuration!");
+        }
         Path pdsServerConfigFilePath = Paths.get(solutionPathToConfigFile);
         if (!Files.exists(pdsServerConfigFilePath)) {
             throw new WrongConfigurationException(
@@ -45,14 +48,14 @@ public class SystemTestRuntimeMetaData {
                             + pdsServerConfigFilePath + "\nYou can set this manually by using 'pathToPdsServerConfigFile' at solution definition level.",
                     context);
         }
-        LOG.debug("Read existing PDS server configuration file: {},", pdsServerConfigFilePath);
+        LOG.debug("Read existing PDS server configuration file: {}", pdsServerConfigFilePath);
         String pdsServerConfigurationJson;
         try {
             pdsServerConfigurationJson = textFileReader.loadTextFile(pdsServerConfigFilePath.toFile());
         } catch (IOException e) {
             throw new WrongConfigurationException("Was not able to load PDS server configration file: {}! ", context, e);
         }
-        LOG.debug("Fetched PDS server configuration as JSON:\n{},", pdsServerConfigurationJson);
+        LOG.debug("Fetched configuration {}:\n==================\nPDS server config:\n==================\n{},", solutionPathToConfigFile, pdsServerConfigurationJson);
 
         PDSServerConfiguration configuration;
         try {

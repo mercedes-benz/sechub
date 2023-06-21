@@ -56,19 +56,19 @@ public class SystemTestRuntimeTestEngine {
         }
         if (testContext.isSecHubTest()) {
             try {
-                launchSecHubJob(testContext);
+                testContext.markCurrentSecHubJob(launchSecHubJob(testContext));
             } catch (SecHubClientException e) {
                 testContext.markAsFailed("Was not able to launch SecHub job", e);
             }
         } else {
             // currently we do only support SecHub runs
-            throw new WrongConfigurationException("Cannot execute test because not havign a sechub runs: " + testContext.test.getName(),
+            throw new WrongConfigurationException("Cannot execute test because not found any sechub runs: " + testContext.test.getName(),
                     testContext.runtimeContext);
         }
 
     }
 
-    private void launchSecHubJob(TestEngineContext testEngineContext) throws SecHubClientException {
+    private UUID launchSecHubJob(TestEngineContext testEngineContext) throws SecHubClientException {
         SecHubClient clientForScheduling = null;
 
         SystemTestRuntimeContext runtimeContext = testEngineContext.getRuntimeContext();
@@ -79,8 +79,16 @@ public class SystemTestRuntimeTestEngine {
         }
         SecHubConfigurationModel configuration = testEngineContext.getSecHubRunData().getSecHubConfiguration();
 
-        UUID jobUUID = clientForScheduling.createJob(configuration);
+        UUID jobUUID = null;
+        if (runtimeContext.isDryRun()) {
+            jobUUID = UUID.randomUUID();
+            LOG.debug("Skip job creation - use fake job uuid");
+        }else {
+            jobUUID = clientForScheduling.createJob(configuration);
+        }
         LOG.debug("SecHub job {} created", jobUUID);
+        
+        return jobUUID;
 
     }
 

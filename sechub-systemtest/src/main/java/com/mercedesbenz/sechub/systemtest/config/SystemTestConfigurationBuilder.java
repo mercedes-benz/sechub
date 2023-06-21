@@ -1,5 +1,6 @@
 package com.mercedesbenz.sechub.systemtest.config;
 
+import java.net.URI;
 import java.net.URL;
 import java.util.Arrays;
 import java.util.List;
@@ -501,13 +502,20 @@ public class SystemTestConfigurationBuilder {
             }
 
             public class WebScanConfigBuilder {
+                private SecHubWebScanConfiguration webScanConfig;
+                
                 private WebScanConfigBuilder() {
-                    SecHubWebScanConfiguration configuration = new SecHubWebScanConfiguration();
-                    runSecHubJob.setWebScan(Optional.of(configuration));
+                    webScanConfig = new SecHubWebScanConfiguration();
+                    runSecHubJob.setWebScan(Optional.of(webScanConfig));
                 }
 
                 public SecHubRunBuilder endScan() {
                     return SecHubRunBuilder.this;
+                }
+
+                public WebScanConfigBuilder url(String urlAsString) {
+                    webScanConfig.setUrl(URI.create(urlAsString));
+                    return this;
                 }
             }
 

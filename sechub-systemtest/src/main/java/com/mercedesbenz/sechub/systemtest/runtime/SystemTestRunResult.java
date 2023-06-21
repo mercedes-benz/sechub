@@ -1,11 +1,14 @@
 package com.mercedesbenz.sechub.systemtest.runtime;
 
+import java.util.UUID;
+
 import com.mercedesbenz.sechub.systemtest.runtime.error.SystemTestFailure;
 
 public class SystemTestRunResult {
 
     private String testName;
     private SystemTestFailure failure;
+    private UUID sechubJobUUID;
 
     SystemTestRunResult(String testName) {
         this.testName = testName;
@@ -42,6 +45,14 @@ public class SystemTestRunResult {
             sb.append("[ OK ]");
         }
         return sb.toString();
+    }
+
+    public void setSecHubJobUUID(UUID sechubJobUUID) {
+        this.sechubJobUUID = sechubJobUUID;
+    }
+
+    public UUID getSechubJobUUID() {
+        return sechubJobUUID;
     }
 
 }
