@@ -22,7 +22,7 @@ include::documents/shared/about_documentation_all.adoc[]
 
 <<<<
 // 1. SecHub client
-include::documents/code2doc/client/02_sechub_client.adoc[]
+include::documents/client/02_sechub_client.adoc[]
 
 <<<<
 // 2. Reporting
