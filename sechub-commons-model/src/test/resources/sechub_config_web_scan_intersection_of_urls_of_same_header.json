@@ -1,0 +1,20 @@
+{
+// validation must fail, because /upload and /special are duplicated
+  "apiVersion" : "1.0",
+  "webScan" : {
+    "url" : "https://productfailure.demo.example.org",
+    "headers" : [ {
+      "name" : "Authorization", //<1>
+      "value" : "{{ .HEADER_VALUE }}" //<2>
+    }, {
+      "name" : "x-file-size", //<3>
+      "value" : "123456", //<4>
+      "onlyForUrls" : [ "https://productfailure.demo.example.org/admin", "https://productfailure.demo.example.org/upload/<*>", "https://productfailure.demo.example.org/<*>/special/" ] //<5>
+    },
+    {
+      "name" : "X-FILE-SIZE", //<3>
+      "value" : "97324", //<4>
+      "onlyForUrls" : [ "https://productfailure.demo.example.org/user", "https://productfailure.demo.example.org/upload/<*>", "https://productfailure.demo.example.org/<*>/special/" ] //<5>
+    } ]
+  }
+}

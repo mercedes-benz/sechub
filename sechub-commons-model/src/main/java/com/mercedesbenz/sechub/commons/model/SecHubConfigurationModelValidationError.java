@@ -29,9 +29,14 @@ public enum SecHubConfigurationModelValidationError {
 
     WEB_SCAN_NO_HEADER_VALUE_DEFINED("The value for an HTTP header is not defined!"),
 
-    WEB_SCAN_HTTP_HEADER_ONLY_FOR_URL_HAS_UNSUPPORTED_SCHEMA("The URL for an HTTP header has an unsupported schema!"),
+    WEB_SCAN_HTTP_HEADER_ONLY_FOR_URL_IS_NOT_A_VALID_URL("The URL for an HTTP header is not a valid URL!"),
 
     WEB_SCAN_HTTP_HEADER_ONLY_FOR_URL_DOES_NOT_CONTAIN_TARGET_URL("The URL for an HTTP header does not contain the base URL that shall be scanned!"),
+
+    WEB_SCAN_MULTIPLE_DEFAULT_URLS_FOR_THE_SAME_TYPE_OF_HEADER_DEFINED(
+            "The webscan config contains multiple entries for the same header which default to the scan target URL!"),
+
+    WEB_SCAN_NON_UNIQUE_URLS_FOR_HEADER("The webscan config contains multiple entries for the same header with the same URL!"),
 
     REFERENCED_DATA_CONFIG_OBJECT_NAME_NOT_EXISTING("The referenced config object name was not found in object!"),
 

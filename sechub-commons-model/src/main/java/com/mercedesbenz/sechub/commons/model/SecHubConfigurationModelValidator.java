@@ -7,6 +7,7 @@ import static com.mercedesbenz.sechub.commons.model.SecHubConfigurationModelVali
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -284,51 +285,107 @@ public class SecHubConfigurationModelValidator {
             return;
         }
 
+        String targetUrlLowerCased = addTrailingSlashToUrlWhenMissingAndLowerCase(webScan.getUrl().toString());
+
+        // A simple map to keep track of headers an the urls they should be sent to
+        // With this map we validate the header configurations and inform the user about
+        // invalid combinations
+        Map<String, Boolean> occurencesMap = new HashMap<>();
+
         List<HTTPHeaderConfiguration> httpHeaders = optHttpHeaders.get();
         for (HTTPHeaderConfiguration httpHeader : httpHeaders) {
-            if (httpHeader.getName() == null || httpHeader.getName().isEmpty()) {
-                context.result.addError(WEB_SCAN_NO_HEADER_NAME_DEFINED);
+            if (!assertHeaderNameAndHeaderValueAreSet(context, httpHeader)) {
                 return;
             }
-            if (httpHeader.getValue() == null || httpHeader.getValue().isEmpty()) {
-                context.result.addError(WEB_SCAN_NO_HEADER_VALUE_DEFINED);
-                return;
-            }
+
+            String headerNameLowerCased = httpHeader.getName().toLowerCase();
+
             if (!httpHeader.getOnlyForUrls().isPresent()) {
+                // Map key is a combination of the lowercased headerName and target URL
+                // Setting the target URL here means the header is send for every URL
+                // But this way it is easier to check if the configuration is valid
+                String mapKey = headerNameLowerCased + ":" + targetUrlLowerCased;
+                if (occurencesMap.putIfAbsent(mapKey, true) != null) {
+                    context.result.addError(WEB_SCAN_MULTIPLE_DEFAULT_URLS_FOR_THE_SAME_TYPE_OF_HEADER_DEFINED);
+                    return;
+                }
                 continue;
             }
-            validateHTTPHeaderUrls(context, httpHeader.getOnlyForUrls().get(), webScan.getUrl().toString());
-        }
 
+            List<String> onlyForUrls = httpHeader.getOnlyForUrls().get();
+            if (!validateOnlyForUrls(context, targetUrlLowerCased, occurencesMap, headerNameLowerCased, onlyForUrls)) {
+                return;
+            }
+        }
     }
 
-    private void validateHTTPHeaderUrls(InternalValidationContext context, List<String> onlyForUrls, String targetUrl) {
-        for (String onlyForUrl : onlyForUrls) {
-            String onlyForUrlToCheck = createURLWithoutWildCardsAndAddTrailingSlashIfMissing(onlyForUrl);
-
-            if (!onlyForUrlToCheck.contains(targetUrl)) {
-                context.result.addError(WEB_SCAN_HTTP_HEADER_ONLY_FOR_URL_DOES_NOT_CONTAIN_TARGET_URL);
-            }
-            assertValidURL(context, onlyForUrlToCheck);
+    private boolean assertHeaderNameAndHeaderValueAreSet(InternalValidationContext context, HTTPHeaderConfiguration httpHeader) {
+        if (httpHeader.getName() == null || httpHeader.getName().isEmpty()) {
+            context.result.addError(WEB_SCAN_NO_HEADER_NAME_DEFINED);
+            return false;
         }
+        if (httpHeader.getValue() == null || httpHeader.getValue().isEmpty()) {
+            context.result.addError(WEB_SCAN_NO_HEADER_VALUE_DEFINED);
+            return false;
+        }
+        return true;
+    }
+
+    private boolean validateOnlyForUrls(InternalValidationContext context, String targetUrlLowerCased, Map<String, Boolean> occurencesMap,
+            String headerNameLowerCased, List<String> onlyForUrls) {
+        for (String onlyForUrl : onlyForUrls) {
+            String onlyForUrlToCheckLowerCased = createURLWithoutWildCardsAndAddTrailingSlashIfMissing(onlyForUrl);
+
+            if (!onlyForUrlToCheckLowerCased.contains(targetUrlLowerCased)) {
+                context.result.addError(WEB_SCAN_HTTP_HEADER_ONLY_FOR_URL_DOES_NOT_CONTAIN_TARGET_URL);
+                return false;
+            }
+
+            if (!assertValidURL(context, onlyForUrlToCheckLowerCased)) {
+                return false;
+            }
+
+            // Map key is a combination of the lowercased headerName and the current URL
+            // This combination must be unique, otherwise the URL is used for the same
+            // header multiple times
+            String mapKey = headerNameLowerCased + ":" + onlyForUrlToCheckLowerCased;
+            if (occurencesMap.putIfAbsent(mapKey, true) != null) {
+                // If the target URL is specified inside the onlyForUrls, we want to send an
+                // error that informs the user about the multiple defaults for the same header
+                if (targetUrlLowerCased.equals(onlyForUrlToCheckLowerCased)) {
+                    context.result.addError(WEB_SCAN_MULTIPLE_DEFAULT_URLS_FOR_THE_SAME_TYPE_OF_HEADER_DEFINED);
+                    return false;
+                }
+                context.result.addError(WEB_SCAN_NON_UNIQUE_URLS_FOR_HEADER,
+                        "The onlyForUrl: " + onlyForUrl + " is defined for the same type of header multiple times!");
+                return false;
+            }
+        }
+        return true;
+    }
+
+    private String addTrailingSlashToUrlWhenMissingAndLowerCase(String url) {
+        String resultUrl = url;
+        if (!resultUrl.endsWith("/")) {
+            resultUrl += "/";
+        }
+        return resultUrl.toLowerCase();
     }
 
     private String createURLWithoutWildCardsAndAddTrailingSlashIfMissing(String onlyForUrl) {
         String onlyForUrlToCheck = onlyForUrl.replaceAll(Pattern.quote(SecHubWebScanConfiguration.WEBSCAN_URL_WILDCARD_SYMBOL), "");
-        if (!onlyForUrlToCheck.endsWith("/")) {
-            // ensure "https://mywebapp.com/" and "https://mywebapp.com" are accepted as the
-            // same. This way we can check if this URL contains our scan target URL.
-            onlyForUrlToCheck = onlyForUrlToCheck + "/";
-        }
-        return onlyForUrlToCheck;
+        // ensure "https://mywebapp.com/" and "https://mywebapp.com" are accepted as the
+        // same. This way we can check if this URL contains our scan target URL.
+        return addTrailingSlashToUrlWhenMissingAndLowerCase(onlyForUrlToCheck);
     }
 
-    private void assertValidURL(InternalValidationContext context, String onlyForUrl) {
+    private boolean assertValidURL(InternalValidationContext context, String onlyForUrl) {
         try {
             URI.create(onlyForUrl).toURL();
+            return true;
         } catch (Exception e) {
-            context.result.addError(WEB_SCAN_HTTP_HEADER_ONLY_FOR_URL_HAS_UNSUPPORTED_SCHEMA,
-                    "OnlyForUrls defined URL: " + onlyForUrl + " is not a valid URL.");
+            context.result.addError(WEB_SCAN_HTTP_HEADER_ONLY_FOR_URL_IS_NOT_A_VALID_URL, "OnlyForUrls defined URL: " + onlyForUrl + " is not a valid URL.");
+            return false;
         }
     }
 

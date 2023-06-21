@@ -2,6 +2,7 @@
 package com.mercedesbenz.sechub.commons.model;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
 
 import java.net.InetAddress;
@@ -23,6 +24,7 @@ import org.junit.jupiter.params.provider.ValueSource;
 
 import com.mercedesbenz.sechub.commons.model.SecHubConfigurationModelValidationResult.SecHubConfigurationModelValidationErrorData;
 import com.mercedesbenz.sechub.commons.model.SecHubConfigurationModelValidator.SecHubConfigurationModelValidationException;
+import com.mercedesbenz.sechub.test.TestFileReader;
 
 class SecHubConfigurationModelValidatorTest {
 
@@ -1129,7 +1131,7 @@ class SecHubConfigurationModelValidatorTest {
         SecHubConfigurationModelValidationResult result = validatorToTest.validate(model);
 
         /* test */
-        assertHasError(result, SecHubConfigurationModelValidationError.WEB_SCAN_HTTP_HEADER_ONLY_FOR_URL_HAS_UNSUPPORTED_SCHEMA);
+        assertHasError(result, SecHubConfigurationModelValidationError.WEB_SCAN_HTTP_HEADER_ONLY_FOR_URL_IS_NOT_A_VALID_URL);
     }
 
     @ParameterizedTest
@@ -1155,7 +1157,7 @@ class SecHubConfigurationModelValidatorTest {
         SecHubConfigurationModelValidationResult result = validatorToTest.validate(model);
 
         /* test */
-        assertHasError(result, SecHubConfigurationModelValidationError.WEB_SCAN_HTTP_HEADER_ONLY_FOR_URL_HAS_UNSUPPORTED_SCHEMA);
+        assertHasError(result, SecHubConfigurationModelValidationError.WEB_SCAN_HTTP_HEADER_ONLY_FOR_URL_IS_NOT_A_VALID_URL);
     }
 
     @ParameterizedTest
@@ -1183,7 +1185,7 @@ class SecHubConfigurationModelValidatorTest {
         SecHubConfigurationModelValidationResult result = validatorToTest.validate(model);
 
         /* test */
-        assertHasError(result, SecHubConfigurationModelValidationError.WEB_SCAN_HTTP_HEADER_ONLY_FOR_URL_HAS_UNSUPPORTED_SCHEMA);
+        assertHasError(result, SecHubConfigurationModelValidationError.WEB_SCAN_HTTP_HEADER_ONLY_FOR_URL_IS_NOT_A_VALID_URL);
     }
 
     @ParameterizedTest
@@ -1232,6 +1234,88 @@ class SecHubConfigurationModelValidatorTest {
 
         /* test */
         assertHasError(result, SecHubConfigurationModelValidationError.WEB_SCAN_NO_HEADER_VALUE_DEFINED);
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = { "src/test/resources/sechub_config_web_scan_no_intersection_of_urls_of_same_header.json" })
+    void explicit_definitions_for_the_same_header_for_certain_urls_but_list_of_urls_have_no_intersections_has_no_errors(String testFilePath) {
+        /* prepare */
+        String json = TestFileReader.loadTextFile(testFilePath);
+        SecHubScanConfiguration sechubConfiguration = SecHubScanConfiguration.createFromJSON(json);
+
+        modelSupportCollectedScanTypes.add(ScanType.WEB_SCAN);
+
+        /* execute */
+        SecHubConfigurationModelValidationResult result = validatorToTest.validate(sechubConfiguration);
+
+        /* test */
+        assertHasNoErrors(result);
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = { "src/test/resources/sechub_config_web_scan_valid_headers_mixed_upper_and_lower_case.json" })
+    void explicit_definitions_for_the_same_header_for_certain_urls_but_list_of_urls_have_no_intersections_with_lower_and_upper_cases_has_no_errors(
+            String testFilePath) {
+        /* prepare */
+        String json = TestFileReader.loadTextFile(testFilePath);
+        SecHubScanConfiguration sechubConfiguration = SecHubScanConfiguration.createFromJSON(json);
+
+        modelSupportCollectedScanTypes.add(ScanType.WEB_SCAN);
+
+        /* execute */
+        SecHubConfigurationModelValidationResult result = validatorToTest.validate(sechubConfiguration);
+
+        /* test */
+        assertHasNoErrors(result);
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = { "src/test/resources/sechub_config_web_scan_default_and_explicit_definitions_for_urls_for_header.json" })
+    void default_for_a_header_with_explicit_definitions_for_the_same_header_for_certain_urls_has_no_errors(String testFilePath) {
+        /* prepare */
+        String json = TestFileReader.loadTextFile(testFilePath);
+        SecHubScanConfiguration sechubConfiguration = SecHubScanConfiguration.createFromJSON(json);
+
+        modelSupportCollectedScanTypes.add(ScanType.WEB_SCAN);
+
+        /* execute */
+        SecHubConfigurationModelValidationResult result = validatorToTest.validate(sechubConfiguration);
+
+        /* test */
+        assertHasNoErrors(result);
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = { "src/test/resources/sechub_config_web_scan_duplicated_default.json",
+            "src/test/resources/sechub_config_web_scan_duplicated_default_with_upper_case.json" })
+    void duplicated_default_for_the_same_header_has_error(String testFilePath) {
+        /* prepare */
+        String json = TestFileReader.loadTextFile(testFilePath);
+        SecHubScanConfiguration sechubConfiguration = SecHubScanConfiguration.createFromJSON(json);
+
+        modelSupportCollectedScanTypes.add(ScanType.WEB_SCAN);
+
+        /* execute */
+        SecHubConfigurationModelValidationResult result = validatorToTest.validate(sechubConfiguration);
+
+        /* test */
+        assertHasError(result, SecHubConfigurationModelValidationError.WEB_SCAN_MULTIPLE_DEFAULT_URLS_FOR_THE_SAME_TYPE_OF_HEADER_DEFINED);
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = { "src/test/resources/sechub_config_web_scan_intersection_of_urls_of_same_header.json" })
+    void explicit_definitions_for_the_same_header_for_certain_urls_but_list_of_urls_do_have_intersections_has_error(String testFilePath) {
+        /* prepare */
+        String json = TestFileReader.loadTextFile(testFilePath);
+        SecHubScanConfiguration sechubConfiguration = SecHubScanConfiguration.createFromJSON(json);
+
+        modelSupportCollectedScanTypes.add(ScanType.WEB_SCAN);
+
+        /* execute */
+        SecHubConfigurationModelValidationResult result = validatorToTest.validate(sechubConfiguration);
+
+        /* test */
+        assertHasError(result, SecHubConfigurationModelValidationError.WEB_SCAN_NON_UNIQUE_URLS_FOR_HEADER);
     }
 
     private SecHubWebScanConfiguration createWebScanConfigurationWithHeader(String targetUrl, String onlyForUrl) {
