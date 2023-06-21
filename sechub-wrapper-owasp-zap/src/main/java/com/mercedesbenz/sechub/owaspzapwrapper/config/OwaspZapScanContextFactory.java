@@ -116,6 +116,7 @@ public class OwaspZapScanContextFactory {
 												.setApiDefinitionFile(apiDefinitionFile)
 												.setOwaspZapURLsIncludeSet(includeSet)
 												.setOwaspZapURLsExcludeSet(excludeSet)
+												.setConnectionCheckEnabled(settings.isConnectionCheckEnabled())
 												.setMaxNumberOfConnectionRetries(settings.getMaxNumberOfConnectionRetries())
 												.setRetryWaittimeInMilliseconds(settings.getRetryWaittimeInMilliseconds())
 												.setOwaspZapProductMessageHelper(productMessagehelper)

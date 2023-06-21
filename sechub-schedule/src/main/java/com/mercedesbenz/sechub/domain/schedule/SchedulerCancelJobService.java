@@ -8,8 +8,6 @@ import java.util.UUID;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.batch.core.explore.JobExplorer;
-import org.springframework.batch.core.launch.JobOperator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
@@ -48,12 +46,6 @@ public class SchedulerCancelJobService {
     @Autowired
     @Lazy
     DomainMessageService eventBus;
-
-    @Autowired
-    JobExplorer explorer;
-
-    @Autowired
-    JobOperator operator;
 
     private ScheduleSecHubJobMessagesSupport jobMessageSupport = new ScheduleSecHubJobMessagesSupport();
 

@@ -80,8 +80,9 @@ public abstract class AbstractAuthScan extends AbstractScan implements AuthScan 
         // if no URLs to scan where detected by the spider/ajaxSpider before
         if (!atLeastOneURLDetected()) {
             LOG.warn("For {} skipping active scan, since no URLs where detected by spider or ajaxSpider!", scanContext.getContextName());
-            scanContext.getOwaspZapProductMessageHelper().writeSingleProductMessage(new SecHubMessage(SecHubMessageType.WARNING,
-                    "Active scan part of the webscan was skipped, because no URLs where detected by crawling mechanisms!"));
+            scanContext.getOwaspZapProductMessageHelper().writeSingleProductMessage(
+                    new SecHubMessage(SecHubMessageType.WARNING, "Skipped the active scan, because no URLs were detected by the crawler! "
+                            + "Please check if the URL you specified or any of the includes are accessible."));
             return;
         }
         String url = scanContext.getTargetUrlAsString();
@@ -112,27 +113,29 @@ public abstract class AbstractAuthScan extends AbstractScan implements AuthScan 
     }
 
     private void scanUnsafe() throws ClientApiException {
+        /* OWASP ZAP setup on local machine */
         setupBasicConfiguration();
         deactivateRules();
         setupAdditonalProxyConfiguration();
-
         createContext();
+
+        /* OWASP ZAP setup with access to target */
         addIncludedAndExcludedUrlsToContext();
         init();
         loadApiDefinitions();
+
+        /* OWASP ZAP scan */
         if (scanContext.isAjaxSpiderEnabled()) {
             runAjaxSpider();
         }
-
         runSpider();
-
         passiveScan();
-
         if (scanContext.isActiveScanEnabled()) {
             runActiveScan();
         }
-        generateOwaspZapReport();
 
+        /* After scan */
+        generateOwaspZapReport();
         cleanUp();
     }
 

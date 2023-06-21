@@ -1,7 +1,5 @@
 {
   "apiVersion": "1.0",
-  "server": "https://sechub.example.org",
-  "project": "gamechanger",
   "codeScan": {
     "fileSystem": {
       "folders": [

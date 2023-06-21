@@ -76,8 +76,9 @@ public class JobAdministrationRestControllerRestDocTest implements TestIsNecessa
     @Before
     public void before() {
         List<JobInformation> list = new ArrayList<>();
-        JobInformation info = new JobInformation();
-        info.setJobUUID(UUID.randomUUID());
+
+        JobInformation info = new JobInformation(UUID.randomUUID());
+
         info.setStatus(JobStatus.RUNNING);
         info.setProjectId("project-name");
         info.setConfiguration("{ config data }");

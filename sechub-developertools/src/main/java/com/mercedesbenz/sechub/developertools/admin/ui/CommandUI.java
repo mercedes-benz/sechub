@@ -101,6 +101,7 @@ import com.mercedesbenz.sechub.developertools.admin.ui.action.user.DeleteUserAct
 import com.mercedesbenz.sechub.developertools.admin.ui.action.user.ListSignupsAction;
 import com.mercedesbenz.sechub.developertools.admin.ui.action.user.ShowAdminListAction;
 import com.mercedesbenz.sechub.developertools.admin.ui.action.user.ShowUserDetailAction;
+import com.mercedesbenz.sechub.developertools.admin.ui.action.user.ShowUserDetailForEmailAddressAction;
 import com.mercedesbenz.sechub.developertools.admin.ui.action.user.ShowUserListAction;
 import com.mercedesbenz.sechub.developertools.admin.ui.action.user.UpdateUserEmailAction;
 import com.mercedesbenz.sechub.developertools.admin.ui.action.user.privileges.GrantAdminRightsToUserAction;
@@ -298,6 +299,7 @@ public class CommandUI {
         add(menu, new DeleteUserAction(context));
         menu.addSeparator();
         add(menu, new ShowUserDetailAction(context));
+        add(menu, new ShowUserDetailForEmailAddressAction(context));
         add(menu, new UpdateUserEmailAction(context));
         add(menu, new AnonymousRequestNewAPITokenUserAction(context));
         menu.addSeparator();

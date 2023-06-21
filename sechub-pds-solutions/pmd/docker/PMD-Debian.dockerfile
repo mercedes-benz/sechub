@@ -7,37 +7,18 @@ FROM ${BASE_IMAGE}
 # The remaining arguments need to be placed after the `FROM`
 # See: https://ryandaniels.ca/blog/docker-dockerfile-arg-from-arg-trouble/
 
+LABEL org.opencontainers.image.source="https://github.com/mercedes-benz/sechub"
+LABEL org.opencontainers.image.title="SecHub PMD+PDS Image"
+LABEL org.opencontainers.image.description="A container which combines PMD with the SecHub Product Delegation Server (PDS)"
 LABEL maintainer="SecHub FOSS Team"
 
 # Build args
 ARG PMD_VERSION="6.47.0"
-ARG PDS_FOLDER="/pds"
-ARG PDS_VERSION="0.31.0"
-ARG SCRIPT_FOLDER="/scripts"
-ARG WORKSPACE="/workspace"
 
 # Environment variables in container
-ENV DOWNLOAD_FOLDER="/downloads"
-ENV MOCK_FOLDER="$SCRIPT_FOLDER/mocks"
-ENV PDS_VERSION="${PDS_VERSION}"
-ENV SCRIPT_FOLDER="${SCRIPT_FOLDER}"
-ENV SHARED_VOLUMES="/shared_volumes"
-ENV SHARED_VOLUME_UPLOAD_DIR="$SHARED_VOLUMES/uploads"
-ENV TOOL_FOLDER="/tools"
-ENV USER="pmd"
-ENV UID="2323"
-ENV GID="${UID}"
+ENV PMD_VERSION="${PMD_VERSION}"
 
-# non-root user
-# using fixed group and user ids
-RUN groupadd --gid "$GID" "$USER" && \
-    useradd --uid "$UID" --gid "$GID" --no-log-init --create-home "$USER"
-
-# Create folders & change owner of folders
-RUN mkdir --parents "$PDS_FOLDER" "$SCRIPT_FOLDER" "$TOOL_FOLDER" "$WORKSPACE" "$DOWNLOAD_FOLDER" "$MOCK_FOLDER" "$SHARED_VOLUME_UPLOAD_DIR" && \
-    # Change owner and workspace and shared volumes folder
-    # the only two folders pds really needs write access to
-    chown --recursive "$USER:$USER" "$WORKSPACE" "$SHARED_VOLUMES"
+user root
 
 # Copy mock folder
 COPY mocks "$MOCK_FOLDER"
@@ -48,11 +29,8 @@ COPY pds-config.json "$PDS_FOLDER"/pds-config.json
 # Copy PMD scripts and rulesets
 COPY scripts "$SCRIPT_FOLDER"
 
-# Copy run script into container
-COPY run.sh /run.sh
-
 # Set execute permissions for scripts
-RUN chmod +x /run.sh "$SCRIPT_FOLDER"/pmd.sh "$SCRIPT_FOLDER"/pmd_mock.sh
+RUN chmod +x "$SCRIPT_FOLDER"/pmd.sh "$SCRIPT_FOLDER"/pmd_mock.sh
 
 RUN export DEBIAN_FRONTEND=noninteractive && \
     apt-get update && \
@@ -69,22 +47,11 @@ RUN cd "$DOWNLOAD_FOLDER" && \
     # unpack pmd
     unzip -j pmd-bin-${PMD_VERSION}.zip pmd-bin-${PMD_VERSION}/bin/* -d "$TOOL_FOLDER/pmd/bin" && \
     unzip -j pmd-bin-${PMD_VERSION}.zip pmd-bin-${PMD_VERSION}/lib/* -d "$TOOL_FOLDER/pmd/lib" && \
-    # Remove pmd zip
-    rm pmd-bin-${PMD_VERSION}.zip
-
-# Install the SecHub Product Delegation Server (PDS)
-RUN cd "$PDS_FOLDER" && \
-    # download checksum file
-    wget --no-verbose "https://github.com/mercedes-benz/sechub/releases/download/v$PDS_VERSION-pds/sechub-pds-$PDS_VERSION.jar.sha256sum" && \
-    # download pds
-    wget --no-verbose "https://github.com/mercedes-benz/sechub/releases/download/v$PDS_VERSION-pds/sechub-pds-$PDS_VERSION.jar" && \
-    # verify that the checksum and the checksum of the file are same
-    sha256sum --check sechub-pds-$PDS_VERSION.jar.sha256sum
+    # Cleanup download folder
+    rm --recursive --force "$DOWNLOAD_FOLDER"/*
 
 # Set workspace
 WORKDIR "$WORKSPACE"
 
 # Switch from root to non-root user
 USER "$USER"
-
-CMD ["/run.sh"]

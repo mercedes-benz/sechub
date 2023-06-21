@@ -74,6 +74,9 @@ class PDSWorkspacePreparationContextFactoryTest {
         assertTrue(result.isSourceAccepted());
         assertFalse(result.isNoneAccepted());
 
+        assertFalse(result.isExtractedSourceAvailable());
+        assertFalse(result.isExtractedBinaryAvailable());
+
     }
 
     @Test

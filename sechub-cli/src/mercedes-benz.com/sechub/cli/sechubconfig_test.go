@@ -34,7 +34,7 @@ func Test_fillTemplate_without_data_keeps_data_as_is(t *testing.T) {
 func Test_fillTemplate_with_data_changes_template_content(t *testing.T) {
 
 	jStrA := `
-    { 
+    {
         "apiVersion" : "1.2.3",
         "codeScan":{
             "fileSystem": {
@@ -44,7 +44,7 @@ func Test_fillTemplate_with_data_changes_template_content(t *testing.T) {
     }
 	`
 	jStrB := `
-		{ 
+		{
         "apiVersion" : "1.2.3",
         "codeScan":{
             "fileSystem": {

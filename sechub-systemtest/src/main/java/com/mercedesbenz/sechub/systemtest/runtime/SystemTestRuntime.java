@@ -6,7 +6,7 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.mercedesbenz.sechub.commons.core.FailableRunnable;
+import com.mercedesbenz.sechub.commons.core.RunOrFail;
 import com.mercedesbenz.sechub.commons.model.JSONConverter;
 import com.mercedesbenz.sechub.systemtest.config.SystemTestConfiguration;
 import com.mercedesbenz.sechub.systemtest.config.TestDefinition;
@@ -164,7 +164,7 @@ public class SystemTestRuntime {
         }
     }
 
-    private void execOrFail(FailableRunnable<Exception> runnable, String identifier) {
+    private void execOrFail(RunOrFail<Exception> runnable, String identifier) {
         try {
             runnable.runOrFail();
         } catch (WrongConfigurationException e) {

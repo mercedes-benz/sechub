@@ -15,4 +15,9 @@ public class PDSAPIConstants {
     /* auto cleanup */
     public static final String API_AUTOCLEAN = API_ADMIN + "config/autoclean";
     public static final String API_SERVER_CONFIG = API_ADMIN + "config/server";
+
+    /**
+     * Actuator endpoints are available anonymous
+     */
+    public static final String ACTUATOR = "/actuator/";
 }

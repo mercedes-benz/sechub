@@ -30,7 +30,7 @@ import com.mercedesbenz.sechub.api.internal.gen.model.OpenApiExecutorConfigurati
 import com.mercedesbenz.sechub.api.internal.gen.model.OpenApiJobId;
 import com.mercedesbenz.sechub.api.internal.gen.model.OpenApiProjectDetails;
 import com.mercedesbenz.sechub.api.internal.gen.model.OpenApiScanJob;
-import com.mercedesbenz.sechub.commons.core.FailableRunnable;
+import com.mercedesbenz.sechub.commons.core.RunOrFail;
 import com.mercedesbenz.sechub.commons.core.security.CryptoAccess;
 import com.mercedesbenz.sechub.commons.model.JSONConverter;
 import com.mercedesbenz.sechub.commons.model.JsonMapperFactory;
@@ -298,7 +298,7 @@ public class SecHubClient {
     /* + ................Helpers......................... + */
     /* ++++++++++++++++++++++++++++++++++++++++++++++++++++ */
 
-    private void runOrFail(FailableRunnable<ApiException> failable, String failureMessage) throws SecHubClientException {
+    private void runOrFail(RunOrFail<ApiException> failable, String failureMessage) throws SecHubClientException {
         try {
             failable.runOrFail();
         } catch (ApiException e) {

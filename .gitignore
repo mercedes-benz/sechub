@@ -61,5 +61,8 @@ java-gen/
 copy/
 !copy/README.adoc
 
+*.deb
+*.apk
+
 # Node
 node_modules/

@@ -13,7 +13,7 @@ public class CheckmarxWrapperKeyConstants {
 
     public static final String KEY_PDS_CHECKMARX_ALWAYS_FULLSCAN_ENABLED = "pds.checkmarx.always.fullscan.enabled";
 
-    public static final String KEY_PDS_CHECKMARX_RESULT_CHECK_PERIOD_MINUTES = "pds.checkmarx.result.check.period.minutes";
+    public static final String KEY_PDS_CHECKMARX_RESULT_CHECK_PERIOD_MILLISECONDS = "pds.checkmarx.result.check.period.milliseconds";
 
     public static final String KEY_PDS_CHECKMARX_RESULT_CHECK_TIMOUT_MINUTES = "pds.checkmarx.result.check.timeout.minutes";
 

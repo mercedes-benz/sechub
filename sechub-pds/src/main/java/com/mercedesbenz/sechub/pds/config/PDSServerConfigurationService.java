@@ -39,7 +39,7 @@ public class PDSServerConfigurationService {
     private static final int minimumConfigurableMinutesToWaitForProduct = PDSDefaultParameterValueConstants.MINIMUM_CONFIGURABLE_TIME_TO_WAIT_FOR_PRODUCT_IN_MINUTES;
 
     @PDSMustBeDocumented(value = "Define path to PDS configuration file", scope = "startup")
-    @Value("${sechub.pds.config.file:" + DEFAULT_PATH + "}")
+    @Value("${pds.config.file:" + DEFAULT_PATH + "}")
     String pathToConfigFile;
 
     @PDSMustBeDocumented(value = "Set maximum time a PDS will wait for a product before canceling execution automatically. This value can be overriden as a job parameter as well.", scope = "execution")

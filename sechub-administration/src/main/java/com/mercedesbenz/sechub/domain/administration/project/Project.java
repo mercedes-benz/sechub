@@ -85,7 +85,7 @@ public class Project {
     @CollectionTable(name = TABLE_NAME_PROJECT_WHITELIST_URI)
     Set<URI> whiteList = new HashSet<>();
 
-    @OneToMany(cascade = { CascadeType.REFRESH }, fetch = FetchType.EAGER, mappedBy = "projectId")
+    @OneToMany(cascade = { CascadeType.REFRESH }, fetch = FetchType.EAGER, mappedBy = ProjectMetaDataEntity.PROPERTY_PROJECT_ID)
     Set<ProjectMetaDataEntity> metaData = new HashSet<>();
 
     @Version
