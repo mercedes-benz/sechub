@@ -71,7 +71,7 @@ In case your platform is not included in the table, you might be able to compile
 
 ==== Show help
 ----
-sechub -help
+sechub help
 ----
 will print out a simple help of all command line options. At the end you will find a link to the latest config and variable examples.
 
@@ -321,8 +321,6 @@ In below table, there is an overview of what can be defined where.
   Path to `{sechub}` JSON config file. Defaults to `sechub.json` in current directory.
 - `-file <filepath>` +
   Defines file to read from for actions `markFalsePositives` or `interactiveMarkFalsePositives` or `unmarkFalsePositives`
-- `-help` +
-  Shows help and terminates
 - `-jobUUID <string>` +
   `{sechub}` job uuid. Optional for actions 'getStatus' or 'getReport'
 - `-label <label definition>` +
@@ -346,8 +344,6 @@ In below table, there is an overview of what can be defined where.
   Timeout for network communication in seconds. (default 120)
 - `-user <string>` +
   Username - mandatory, but can also be defined in config file or via environment variable.
-- `-version` +
-  Shows version info and terminates
 - `-wait <seconds>` +
   Maximum wait time in seconds (default 60).
   Will be used for periodic status checks when action=`scan` and for retries of HTTP calls.
