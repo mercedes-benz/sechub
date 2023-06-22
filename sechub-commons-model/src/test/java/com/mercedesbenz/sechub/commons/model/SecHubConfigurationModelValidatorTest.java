@@ -1253,7 +1253,8 @@ class SecHubConfigurationModelValidatorTest {
     }
 
     @ParameterizedTest
-    @ValueSource(strings = { "src/test/resources/sechub_config_web_scan_valid_headers_mixed_upper_and_lower_case.json" })
+    @ValueSource(strings = { "src/test/resources/sechub_config_web_scan_valid_headers_mixed_upper_and_lower_case.json",
+            "src/test/resources/sechub_config_web_scan_not_duplicated_without_wildcard.json" })
     void explicit_definitions_for_the_same_header_for_certain_urls_but_list_of_urls_have_no_intersections_with_lower_and_upper_cases_has_no_errors(
             String testFilePath) {
         /* prepare */
@@ -1299,7 +1300,7 @@ class SecHubConfigurationModelValidatorTest {
         SecHubConfigurationModelValidationResult result = validatorToTest.validate(sechubConfiguration);
 
         /* test */
-        assertHasError(result, SecHubConfigurationModelValidationError.WEB_SCAN_MULTIPLE_DEFAULT_URLS_FOR_THE_SAME_TYPE_OF_HEADER_DEFINED);
+        assertHasError(result, SecHubConfigurationModelValidationError.WEB_SCAN_NON_UNIQUE_HEADER_CONFIGURATION);
     }
 
     @ParameterizedTest
@@ -1316,7 +1317,7 @@ class SecHubConfigurationModelValidatorTest {
         SecHubConfigurationModelValidationResult result = validatorToTest.validate(sechubConfiguration);
 
         /* test */
-        assertHasError(result, SecHubConfigurationModelValidationError.WEB_SCAN_NON_UNIQUE_URLS_FOR_HEADER);
+        assertHasError(result, SecHubConfigurationModelValidationError.WEB_SCAN_NON_UNIQUE_HEADER_CONFIGURATION);
     }
 
     private SecHubWebScanConfiguration createWebScanConfigurationWithHeader(String targetUrl, String onlyForUrl) {
@@ -1371,8 +1372,16 @@ class SecHubConfigurationModelValidatorTest {
     }
 
     private void assertHasNoErrors(SecHubConfigurationModelValidationResult result) {
-        assertFalse(result.hasErrors());
-        assertEquals(0, result.getErrors().size());
+        if (!result.hasErrors()) {
+            return;
+        }
+        StringBuilder sb = new StringBuilder();
+        sb.append("The validation result contains errors:\n");
+        for (SecHubConfigurationModelValidationErrorData errorData : result.getErrors()) {
+            sb.append(errorData.toString());
+            sb.append("\n");
+        }
+        fail(sb.toString());
     }
 
     private void assertHasError(SecHubConfigurationModelValidationResult result, SecHubConfigurationModelValidationError error) {
