@@ -1303,7 +1303,8 @@ class SecHubConfigurationModelValidatorTest {
     }
 
     @ParameterizedTest
-    @ValueSource(strings = { "src/test/resources/sechub_config_web_scan_intersection_of_urls_of_same_header.json" })
+    @ValueSource(strings = { "src/test/resources/sechub_config_web_scan_intersection_of_urls_of_same_header.json",
+            "src/test/resources/sechub_config_web_scan_intersection_of_urls_of_same_header2.json" })
     void explicit_definitions_for_the_same_header_for_certain_urls_but_list_of_urls_do_have_intersections_has_error(String testFilePath) {
         /* prepare */
         String json = TestFileReader.loadTextFile(testFilePath);

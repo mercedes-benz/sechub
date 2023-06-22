@@ -12,7 +12,7 @@
     }, {
       "name" : "X-FILE-SIZE",
       "value" : "97324",
-      "onlyForUrls" : [ "https://productfailure.demo.example.org/user", "https://productfailure.demo.example.org/upload/<*>", "https://productfailure.demo.example.org/<*>/special/" ]
+      "onlyForUrls" : [ "https://productfailure.demo.example.org/user", "https://productfailure.demo.example.org/<*>/special" ]
     } ]
   }
 }
