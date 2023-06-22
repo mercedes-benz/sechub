@@ -13,16 +13,10 @@ But this is mentioned inside this documentation
 
 The individual components in the JSON are documented below:
 
+
 ==== API version
 `apiVersion` must be defined (so mandatory). Currently only `1.0` is valid.
 
-[NOTE]
-====
-As long as the SecHub configuration is still strongly developed,
-the API version remains - despite changes - to 1.0.
-
-During this time, however, the API always remains backwards compatible!
-====
 
 ==== Server
 `server` defines the url of your `{sechub}` server.
@@ -30,6 +24,7 @@ Information can be used by client implementations.
 
 NOTE: This is an optional parameter only which is only interesting for the client to pass the URL.
       Every REST call contains the server URL already.
+
 
 ==== Project
 `project` defines the project id within `{sechub}`. Information can be used by
@@ -65,8 +60,6 @@ There are two ways to define source code uploads for the {sechub} client:
 Define the files and folders in a `data` section and reference it inside the `codeScan`. +
 This becomes useful e.g. if the same sources are used by different scan types.
 
-TIP: We _recommend_ using the `data` section.
-
 Example `sechub.json` using `data` section
 
 [[sechub-config-example-sourcescan-with-data-section]]
@@ -88,9 +81,12 @@ include::sechub_config_example1_sourcescan_data_section.json[]
     In the {sechub} client documentation you will find a list of the default file endings. +
     Here we also add ".cplusplus" and ".py9" as additional accepted source file extensions.
 
-###### `fileSystem` inside the `codeScan` section
+###### `fileSystem` inside the `codeScan` section (deprecated)
 
-Define a `fileSystem` child entry inside the `codeScan` section for code scanning.
+Define a `fileSystem` child entry inside the `codeScan` section for code scanning. +
+
+NOTE: This option is deprecated but still supported. +
+  Please consider using the `data` section as described above as it provides more flexibility.
 
 Example `sechub.json` using `fileSystem` inside the `codeScan` section (results in same upload as in above example):
 
@@ -336,8 +332,8 @@ array attribute `"use"` with a list of references.
 [source,json]
 ----
 {
-    // ..scan definition
-    "use" : [ "reference-name-1","reference-name-2", ... ] //<1>
+  // ..scan definition
+  "use" : [ "reference-name-1","reference-name-2", ... ] //<1>
 }
 ----
 <1> the list of referenced data configurations . The referenced names must exist.
@@ -378,6 +374,8 @@ The {sechub} configuration file can have optional meta data.
 ===== Labels
 With labels a user is able to add additional information to the
 scan configuration which end up in the report as key value pairs.
+
+TIP: Using the {sechub} client, you can also pass labels via command line or environment variables.
 
 The next figure shows an example which presents all possibilities _(for simplicity other configuration
 elements are removed)_.

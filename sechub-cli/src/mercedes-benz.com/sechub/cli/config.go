@@ -58,9 +58,6 @@ var configFromInit Config = Config{
 	waitSeconds:                    DefaultWaitTime,
 }
 
-var flagHelp bool
-var flagVersion bool
-
 var missingFieldHelpTexts = map[string]string{
 	"server":         "Server URL is missing. Can be defined with option '-server' or in environment variable " + SechubServerEnvVar + " or in config file.",
 	"user":           "User id is missing. Can be defined with option '-user' or in environment variable " + SechubUserIDEnvVar + " or in config file.",
@@ -83,8 +80,6 @@ func prepareOptionsFromCommandline(config *Config) {
 		configfileOption, config.configFilePath, "Path to SecHub config file")
 	flag.StringVar(&config.file,
 		fileOption, "", "Defines file to read from for actions '"+markFalsePositivesAction+"' or '"+interactiveMarkFalsePositivesAction+"' or '"+unmarkFalsePositivesAction+"'")
-	flag.BoolVar(&flagHelp,
-		helpOption, false, "Shows help and terminates")
 	flag.StringVar(&config.secHubJobUUID,
 		jobUUIDOption, "", "SecHub job uuid - Optional for actions '"+getStatusAction+"' or '"+getReportAction+"'")
 	flag.Func(labelOption, "Define a `SecHub label` for the scan job. (Example: \"key1=value1\") Repeat to define multiple labels.", func(s string) error {
@@ -113,8 +108,6 @@ func prepareOptionsFromCommandline(config *Config) {
 		timeoutOption, config.timeOutSeconds, "Timeout for network communication in seconds.")
 	flag.StringVar(&config.user,
 		userOption, config.user, "User id - Mandatory, but can also be defined in environment variable "+SechubUserIDEnvVar+" or in config file")
-	flag.BoolVar(&flagVersion,
-		versionOption, false, "Shows version info and terminates")
 	flag.IntVar(&config.waitSeconds,
 		waitOption, config.waitSeconds, "Maximum wait time in seconds - For status checks of action='"+scanAction+"' and for retries of HTTP calls.\nCan also be defined in environment variable "+SechubWaittimeDefaultEnvVar)
 }
@@ -199,24 +192,27 @@ func NewConfigByFlags() *Config {
 	// Parse command line options
 	flag.Parse()
 
-	if flagHelp {
+	if len(flag.Args()) == 0 {
+		// Default: Show help if no action is given
 		configFromInit.action = showHelpAction
-	} else if flagVersion {
-		configFromInit.action = showVersionAction
 	} else {
-		if len(flag.Args()) == 0 {
-			// Default: Show help if no action is given
-			configFromInit.action = showHelpAction
-		} else {
-			// read `action` from commandline
-			configFromInit.action = flag.Arg(0)
-		}
+		// read `action` from commandline
+		configFromInit.action = flag.Arg(0)
 	}
 
 	return &configFromInit
 }
 
 func assertValidConfig(context *Context) {
+	// Nothing to check if help output is requested
+	if context.config.action == showHelpAction {
+		if len(os.Args) > 1 {
+			// If flags are set then claim missing action
+			sechubUtil.LogError("SecHub action not set.\n")
+		}
+		return
+	}
+
 	if context.config.trustAll {
 		if !context.config.quiet {
 			sechubUtil.LogWarning("Configured to trust all - means unknown service certificate is accepted. Don't use this in production!")
@@ -244,6 +240,8 @@ func assertValidConfig(context *Context) {
 	// --------------------------------------------------
 	//  Validation
 	// --------------------------------------------------
+
+	// Check if one valid action is specified
 	var detectedActions []string
 	for action, _ := range checklist {
 		for _, arg := range os.Args {
@@ -262,6 +260,7 @@ func assertValidConfig(context *Context) {
 		os.Exit(ExitCodeMissingParameter)
 	}
 
+	// Check mandatory fields for the requested action
 	errorsFound := false
 	if mandatoryFields, ok := checklist[context.config.action]; ok {
 		for _, fieldname := range mandatoryFields {

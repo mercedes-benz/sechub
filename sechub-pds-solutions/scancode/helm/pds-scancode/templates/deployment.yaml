@@ -17,7 +17,7 @@ spec:
                 name: {{ .Chart.Name }}
 {{- if .Values.templateMetadataAnnotations }}
             annotations:
-        {{ .Values.templateMetadataAnnotations | indent 12 | trim }}
+                {{ .Values.templateMetadataAnnotations | indent 16 | trim }}
 {{- end }}
         spec:
             securityContext:
@@ -62,7 +62,7 @@ spec:
                       value: {{ .Values.pds.logging.type.appenderName }}
 {{- end }}
 {{- if .Values.pds.debug.keepReportsInWorkspace }}
-                    - name: SECHUB_PDS_WORKSPACE_AUTOCLEAN_DISABLED
+                    - name: PDS_WORKSPACE_AUTOCLEAN_DISABLED
                       value: "true"
 {{- end }}
 {{- if .Values.pds.javaDebug.enabled }}

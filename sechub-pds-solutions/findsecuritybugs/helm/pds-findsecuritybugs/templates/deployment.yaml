@@ -17,7 +17,7 @@ spec:
                 name: {{ .Chart.Name }}
 {{- if .Values.templateMetadataAnnotations }}
             annotations:
-        {{ .Values.templateMetadataAnnotations | indent 12 | trim }}
+                {{ .Values.templateMetadataAnnotations | indent 16 | trim }}
 {{- end }}
         spec:
             securityContext:

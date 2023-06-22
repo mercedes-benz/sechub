@@ -5,7 +5,7 @@
     "products" : [
         {
             "id" : "PDS",
-            "path" : "/scripts/pds.sh",
+            "path" : "/pds/scripts/pds.sh",
             "scanType" : "codeScan",
             "description" : "Test file for PDS"
         }

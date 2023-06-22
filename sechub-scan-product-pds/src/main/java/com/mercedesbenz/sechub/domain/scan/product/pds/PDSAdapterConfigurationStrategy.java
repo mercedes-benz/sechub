@@ -171,6 +171,9 @@ public class PDSAdapterConfigurationStrategy implements AdapterConfigurationStra
         pdsConfigurable.setSourceCodeZipFileRequired(strategyConfig.contentProvider.isSourceRequired());
         pdsConfigurable.setBinaryTarFileRequired(strategyConfig.contentProvider.isBinaryRequired());
 
+        pdsConfigurable.setResilienceMaxRetries(configSupport.getPDSAdapterResilienceMaxRetries());
+        pdsConfigurable.setResilienceTimeToWaitBeforeRetryInMilliseconds(configSupport.getPDSAdapterResilienceRetryWaitInMilliseconds());
+
         handleSourceCodeChecksum(pdsConfigurable);
         handleSourceCodeFileSize(pdsConfigurable);
 

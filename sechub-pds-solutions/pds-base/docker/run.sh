@@ -54,16 +54,16 @@ start_server() {
     then
         echo "Using object storage"
 
-        storage_options="-Dsechub.pds.storage.s3.endpoint=$S3_ENDPOINT"
-        storage_options="$storage_options -Dsechub.pds.storage.s3.bucketname=$S3_BUCKETNAME"
-        storage_options="$storage_options -Dsechub.pds.storage.s3.accesskey=$S3_ACCESSKEY"
-        storage_options="$storage_options -Dsechub.pds.storage.s3.secretkey=$S3_SECRETKEY"
+        storage_options="-Dpds.storage.s3.endpoint=$S3_ENDPOINT"
+        storage_options="$storage_options -Dpds.storage.s3.bucketname=$S3_BUCKETNAME"
+        storage_options="$storage_options -Dpds.storage.s3.accesskey=$S3_ACCESSKEY"
+        storage_options="$storage_options -Dpds.storage.s3.secretkey=$S3_SECRETKEY"
 
         echo "Object storage:"
         echo " * Endpoint: $S3_ENDPOINT"
         echo " * Bucketname: $S3_BUCKETNAME"
     else
-        storage_options="-Dsechub.pds.storage.sharedvolume.upload.dir=$SHARED_VOLUME_UPLOAD_DIR"
+        storage_options="-Dpds.storage.sharedvolume.upload.dir=$SHARED_VOLUME_UPLOAD_DIR"
     fi
 
     echo "Calling the run_additional.sh script"
@@ -82,14 +82,14 @@ start_server() {
         $storage_options \
         -Dfile.encoding=UTF-8 \
         -Dspring.profiles.active="$profiles" \
-        -DsecHub.pds.admin.userid="$ADMIN_USERID" \
-        -Dsechub.pds.admin.apitoken="$ADMIN_APITOKEN" \
-        -DsecHub.pds.techuser.userid="$TECHUSER_USERID" \
-        -Dsechub.pds.techuser.apitoken="$TECHUSER_APITOKEN" \
-        -Dsechub.pds.workspace.rootfolder="$WORKSPACE" \
-        -Dsechub.pds.config.file=/pds/pds-config.json \
+        -Dpds.admin.userid="$ADMIN_USERID" \
+        -Dpds.admin.apitoken="$ADMIN_APITOKEN" \
+        -Dpds.techuser.userid="$TECHUSER_USERID" \
+        -Dpds.techuser.apitoken="$TECHUSER_APITOKEN" \
+        -Dpds.workspace.rootfolder="$WORKSPACE" \
+        -Dpds.config.file=/pds/pds-config.json \
         -Dpds.upload.maximum.bytes="$PDS_MAX_FILE_UPLOAD_BYTES" \
-        -Dsechub.pds.config.heartbeat.verbose.logging.enabled="$PDS_HEARTBEAT_LOGGING" \
+        -Dpds.config.heartbeat.verbose.logging.enabled="$PDS_HEARTBEAT_LOGGING" \
         -Dserver.port=8444 \
         -Dserver.address=0.0.0.0 \
         -jar /pds/sechub-pds-*.jar &
