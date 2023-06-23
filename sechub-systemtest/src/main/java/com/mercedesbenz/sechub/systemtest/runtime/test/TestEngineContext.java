@@ -78,17 +78,17 @@ public class TestEngineContext {
 
         runtimeContext.getCurrentResult().setFailure(failure);
     }
-    
+
     private String createDetails(Exception e) {
         StringBuilder sb = new StringBuilder();
         sb.append("SecHubJob:").append(runtimeContext.getCurrentResult().getSechubJobUUID());
         sb.append(", ");
-        if (e!=null) {
+        if (e != null) {
             sb.append(e.getMessage());
-        }else {
+        } else {
             sb.append("No exception available");
         }
-        
+
         return sb.toString();
     }
 

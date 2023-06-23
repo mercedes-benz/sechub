@@ -365,7 +365,7 @@ public class SystemTestRuntimeContext {
 
         return null;
     }
-    
+
     public PDSServerConfiguration getPDSServerConfigurationOrNull(String pdsProductId) {
 
         Collection<PDSServerConfiguration> serverConfigurations = getRuntimeMetaData().getPDSServerConfigurations();
@@ -403,12 +403,12 @@ public class SystemTestRuntimeContext {
 
     public PDSSolutionDefinition fetchPDSSolutionByProductIdOrFail(String pdsProductId) {
         PDSServerConfiguration serverConfig = getPDSServerConfigurationOrNull(pdsProductId);
-        if (serverConfig==null) {
-            throw new WrongConfigurationException("No PDS server configuration found for productId:"+pdsProductId,this);
+        if (serverConfig == null) {
+            throw new WrongConfigurationException("No PDS server configuration found for productId:" + pdsProductId, this);
         }
         PDSSolutionDefinition solutionDefinition = runtimeMetaData.getPDSSolutionDefinition(serverConfig);
-        if (solutionDefinition==null) {
-            throw new IllegalStateException("No PDS solution definition found for productId:"+pdsProductId + " but a server configuration was found?!?!");
+        if (solutionDefinition == null) {
+            throw new IllegalStateException("No PDS solution definition found for productId:" + pdsProductId + " but a server configuration was found?!?!");
         }
         return solutionDefinition;
     }

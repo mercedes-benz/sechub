@@ -503,7 +503,7 @@ public class SystemTestConfigurationBuilder {
 
             public class WebScanConfigBuilder {
                 private SecHubWebScanConfiguration webScanConfig;
-                
+
                 private WebScanConfigBuilder() {
                     webScanConfig = new SecHubWebScanConfiguration();
                     runSecHubJob.setWebScan(Optional.of(webScanConfig));

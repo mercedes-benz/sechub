@@ -14,22 +14,16 @@ public class WrongConfigurationException extends SystemTestRuntimeException {
             SystemTestConfiguration originConfig = context.getOriginConfiguration();
             if (originConfig != null) {
                 String json = JSONConverter.get().toJSON(originConfig, true);
-                fullmessage = fullmessage + "\n"
-                        + "==========================\n"
-                        + "Origin system test config:\n"
-                        + "==========================\n"
-                        + "\n" + json;
+                fullmessage = fullmessage + "\n" + "==========================\n" + "Origin system test config:\n" + "==========================\n" + "\n"
+                        + json;
             }
 
             SystemTestConfiguration runtimeConfig = context.getConfiguration();
             if (runtimeConfig != null) {
                 String json = JSONConverter.get().toJSON(runtimeConfig, true);
-                fullmessage = fullmessage + "\n"
-                        + "======================================\n"
-                        + "Prepared system test config (runtime):\n"
-                        + "======================================\n"
-                        + "\n" + json;
-                
+                fullmessage = fullmessage + "\n" + "======================================\n" + "Prepared system test config (runtime):\n"
+                        + "======================================\n" + "\n" + json;
+
             }
         }
         return fullmessage;

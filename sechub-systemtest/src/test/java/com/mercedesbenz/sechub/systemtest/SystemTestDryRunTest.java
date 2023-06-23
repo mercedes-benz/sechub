@@ -282,7 +282,7 @@ class SystemTestDryRunTest {
                     endSolution().
                 endLocalSetup().
                 build();
-        
+
         LOG.debug("loaded config=\n{}", JSONConverter.get().toJSON(configuration,true));
 
         /* execute */
@@ -300,7 +300,7 @@ class SystemTestDryRunTest {
 
         /* @formatter:on */
     }
-    
+
     @Test
     void fail_because_pds_config_file_does_not_exist() {
         /* @formatter:off */
@@ -314,7 +314,7 @@ class SystemTestDryRunTest {
                     endSolution().
                 endLocalSetup().
                 build();
-        
+
         LOG.debug("loaded config=\n{}", JSONConverter.get().toJSON(configuration,true));
 
         /* execute */

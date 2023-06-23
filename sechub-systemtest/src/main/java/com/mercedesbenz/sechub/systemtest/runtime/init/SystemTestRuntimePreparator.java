@@ -232,7 +232,7 @@ public class SystemTestRuntimePreparator {
         collectLocalMetaData(context);
 
         createFallbackSecHubSetupPartsWithMetaData(context);
-        
+
         addFallbackExecutorConfigurationCredentials(context);
 
     }
@@ -281,7 +281,7 @@ public class SystemTestRuntimePreparator {
         addFallbackDefaultProfileToExecutorsWithoutProfile(context);
 
         createFallbackForPDSSolutions(context);
-       
+
     }
 
     private void createFallbackForPDSSolutions(SystemTestRuntimeContext context) {

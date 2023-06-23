@@ -83,11 +83,11 @@ public class SystemTestRuntimeTestEngine {
         if (runtimeContext.isDryRun()) {
             jobUUID = UUID.randomUUID();
             LOG.debug("Skip job creation - use fake job uuid");
-        }else {
+        } else {
             jobUUID = clientForScheduling.createJob(configuration);
         }
         LOG.debug("SecHub job {} created", jobUUID);
-        
+
         return jobUUID;
 
     }
