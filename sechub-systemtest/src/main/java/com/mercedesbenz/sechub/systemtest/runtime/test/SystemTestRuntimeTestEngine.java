@@ -8,6 +8,7 @@ import org.slf4j.LoggerFactory;
 
 import com.mercedesbenz.sechub.api.SecHubClient;
 import com.mercedesbenz.sechub.api.SecHubClientException;
+import com.mercedesbenz.sechub.commons.model.JSONConverter;
 import com.mercedesbenz.sechub.commons.model.SecHubConfigurationModel;
 import com.mercedesbenz.sechub.systemtest.config.ExecutionStepDefinition;
 import com.mercedesbenz.sechub.systemtest.config.RunSecHubJobDefinitionTransformer;
@@ -80,6 +81,10 @@ public class SystemTestRuntimeTestEngine {
         SecHubConfigurationModel configuration = testEngineContext.getSecHubRunData().getSecHubConfiguration();
 
         UUID jobUUID = null;
+        if (LOG.isTraceEnabled()) {
+            LOG.trace("Start create job for sechub configuration:\n{}",JSONConverter.get().toJSON(configuration, true));
+        }
+        
         if (runtimeContext.isDryRun()) {
             jobUUID = UUID.randomUUID();
             LOG.debug("Skip job creation - use fake job uuid");

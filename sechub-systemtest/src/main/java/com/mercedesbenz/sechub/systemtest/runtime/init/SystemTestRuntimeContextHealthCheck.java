@@ -49,9 +49,9 @@ import com.mercedesbenz.sechub.systemtest.runtime.SystemTestRuntimeContext;
 import com.mercedesbenz.sechub.systemtest.runtime.SystemTestRuntimeMetaData;
 import com.mercedesbenz.sechub.systemtest.runtime.WrongConfigurationException;
 
-public class SystemTestRuntimeHealthCheck {
+public class SystemTestRuntimeContextHealthCheck {
 
-    private static final Logger LOG = LoggerFactory.getLogger(SystemTestRuntimeHealthCheck.class);
+    private static final Logger LOG = LoggerFactory.getLogger(SystemTestRuntimeContextHealthCheck.class);
 
     public void check(SystemTestRuntimeContext context) {
 

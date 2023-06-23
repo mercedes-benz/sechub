@@ -47,9 +47,11 @@ import org.springframework.util.StringUtils;
 import com.mercedesbenz.sechub.commons.core.CommonConstants;
 import com.mercedesbenz.sechub.commons.model.SecHubCodeScanConfiguration;
 import com.mercedesbenz.sechub.commons.model.SecHubConfigurationMetaData;
+import com.mercedesbenz.sechub.commons.model.SecHubDataConfiguration;
 import com.mercedesbenz.sechub.commons.model.SecHubDataConfigurationUsageByName;
 import com.mercedesbenz.sechub.commons.model.SecHubFileSystemConfiguration;
 import com.mercedesbenz.sechub.commons.model.SecHubInfrastructureScanConfiguration;
+import com.mercedesbenz.sechub.commons.model.SecHubSourceDataConfiguration;
 import com.mercedesbenz.sechub.commons.model.SecHubTimeUnit;
 import com.mercedesbenz.sechub.commons.model.SecHubWebScanConfiguration;
 import com.mercedesbenz.sechub.commons.model.TrafficLight;
@@ -197,6 +199,81 @@ public class SchedulerRestControllerRestDocTest implements TestIsNecessaryForDoc
    			                ));
 
 	    /* @formatter:on */
+    }
+
+    @Test
+    @UseCaseRestDoc(useCase = UseCaseUserCreatesNewJob.class, variant = "Code Scan (with a full blown data section)")
+    public void restDoc_userCreatesNewJob_codescan_with_data_section() throws Exception {
+        /* prepare */
+        String apiEndpoint = https(PORT_USED).buildAddJobUrl(PROJECT_ID.pathElement());
+        Class<? extends Annotation> useCase = UseCaseUserCreatesNewJob.class;
+
+        UUID randomUUID = UUID.randomUUID();
+        SchedulerResult mockResult = new SchedulerResult(randomUUID);
+
+        when(mockedScheduleCreateJobService.createJob(any(), any(SecHubConfiguration.class))).thenReturn(mockResult);
+
+        /* execute + test @formatter:off */
+        this.mockMvc.perform(
+                post(apiEndpoint,PROJECT1_ID).
+                    header(AuthenticationHelper.HEADER_NAME, AuthenticationHelper.getHeaderValue()).
+                    contentType(MediaType.APPLICATION_JSON_VALUE).
+                    content(configureSecHub().
+                            api("1.0").
+                            codeScanConfig().
+                                useDataReferences("source-ref-name","bin-ref-name").
+                            and().
+                            data().
+                                withSource().
+                                    uniqueName("source-ref-name").
+                                    fileSystemFolders("testproject1/src/main/java","testproject2/src/main/java").
+                                    fileSystemFiles("testproject1/src/other/example/php-example.php").
+                                end().
+                                withBinary().
+                                    uniqueName("bin-ref-name").
+                                    fileSystemFolders("testproject1/build/kotlin").
+                                    fileSystemFolders("testproject1/build/kotlin").
+                                    fileSystemFiles("testproject1/build/other/native.dll").
+                                end().
+                            and().
+                            build().
+                            toJSON())
+                ).
+                    andExpect(status().isOk()).
+                    andExpect(content().json("{jobId:"+randomUUID.toString()+"}")).
+                    andDo(print()).
+                    andDo(defineRestService().
+                            with().
+                                useCaseData(useCase, "Code Scan (with data section)").
+                                tag(RestDocFactory.extractTag(apiEndpoint)).
+                                requestSchema(OpenApiSchema.SCAN_JOB.getSchema()).
+                                responseSchema(OpenApiSchema.JOB_ID.getSchema()).
+                            and().
+                            document(
+                                                requestHeaders(
+
+                                                ),
+                                                pathParameters(
+                                                        parameterWithName(PROJECT_ID.paramName()).description("The unique id of the project id where a new sechub job shall be created")
+                                                ),
+                                                requestFields(
+                                                        fieldWithPath(PROPERTY_API_VERSION).description("The api version, currently only 1.0 is supported"),
+                                                        fieldWithPath(PROPERTY_CODE_SCAN).description("Code scan configuration block").optional(),
+                                                        fieldWithPath(PROPERTY_CODE_SCAN+"."+SecHubDataConfigurationUsageByName.PROPERTY_USE).description("Referenced data configuration objects by their unique names").optional(),
+                                                        fieldWithPath(PROPERTY_DATA+"."+SecHubDataConfiguration.PROPERTY_SOURCES +"[]."+SecHubSourceDataConfiguration.PROPERTY_UNIQUENAME_AS_NAME).description("Unique reference name").optional(),
+                                                        fieldWithPath(PROPERTY_DATA+"."+SecHubDataConfiguration.PROPERTY_SOURCES +"[]."+SecHubSourceDataConfiguration.PROPERTY_FILESYSTEM+"."+SecHubFileSystemConfiguration.PROPERTY_FOLDERS+"[]").description("Sources from given file system folders").optional(),
+                                                        fieldWithPath(PROPERTY_DATA+"."+SecHubDataConfiguration.PROPERTY_SOURCES +"[]."+SecHubSourceDataConfiguration.PROPERTY_FILESYSTEM+"."+SecHubFileSystemConfiguration.PROPERTY_FILES+"[]").description("Sources from given file system files").optional(),
+                                                        fieldWithPath(PROPERTY_DATA+"."+SecHubDataConfiguration.PROPERTY_BINARIES+"[]."+SecHubSourceDataConfiguration.PROPERTY_UNIQUENAME_AS_NAME).description("Unique reference name").optional(),
+                                                        fieldWithPath(PROPERTY_DATA+"."+SecHubDataConfiguration.PROPERTY_BINARIES+"[]."+SecHubSourceDataConfiguration.PROPERTY_FILESYSTEM+"."+SecHubFileSystemConfiguration.PROPERTY_FOLDERS+"[]").description("Binaries from given file system folders").optional(),
+                                                        fieldWithPath(PROPERTY_DATA+"."+SecHubDataConfiguration.PROPERTY_BINARIES+"[]."+SecHubSourceDataConfiguration.PROPERTY_FILESYSTEM+"."+SecHubFileSystemConfiguration.PROPERTY_FILES+"[]").description("Binaries from given file system files").optional()
+
+                                                ),
+                                                responseFields(
+                                                        fieldWithPath(SchedulerResult.PROPERTY_JOBID).description("A unique job id")
+                                                )
+                            ));
+
+        /* @formatter:on */
     }
 
     @Test

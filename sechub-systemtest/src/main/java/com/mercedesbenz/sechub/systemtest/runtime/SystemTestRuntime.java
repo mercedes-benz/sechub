@@ -11,7 +11,7 @@ import com.mercedesbenz.sechub.commons.model.JSONConverter;
 import com.mercedesbenz.sechub.systemtest.config.SystemTestConfiguration;
 import com.mercedesbenz.sechub.systemtest.config.TestDefinition;
 import com.mercedesbenz.sechub.systemtest.runtime.config.SystemTestRuntimeLocalSecHubProductConfigurator;
-import com.mercedesbenz.sechub.systemtest.runtime.init.SystemTestRuntimeHealthCheck;
+import com.mercedesbenz.sechub.systemtest.runtime.init.SystemTestRuntimeContextHealthCheck;
 import com.mercedesbenz.sechub.systemtest.runtime.init.SystemTestRuntimePreparator;
 import com.mercedesbenz.sechub.systemtest.runtime.launch.ExecutionSupport;
 import com.mercedesbenz.sechub.systemtest.runtime.launch.ProcessContainer;
@@ -29,7 +29,7 @@ public class SystemTestRuntime {
 
     private SystemTestRuntimeProductLauncher productLauncher;
 
-    private SystemTestRuntimeHealthCheck healthCheck = new SystemTestRuntimeHealthCheck();
+    private SystemTestRuntimeContextHealthCheck healthCheck = new SystemTestRuntimeContextHealthCheck();
 
     private SystemTestRuntimeTestEngine testEngine;
 

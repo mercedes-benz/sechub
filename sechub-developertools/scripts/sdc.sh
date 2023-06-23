@@ -20,6 +20,7 @@ function showHelp () {
     echo "   -cu, --clean-unit-tests               : clean all unit test output"
     echo "   -ci, --clean-integrationtests         : clean all integrationtest output"
     echo "   -si, --stop-inttest-server            : stop running integration test servers (SecHub, PDS)"
+    echo "   -ga, --generate-java-api              : generates parts for java api"
     echo "   -h,  --help                       : show this help"
 }
 
@@ -84,6 +85,10 @@ case $key in
     ;;
     -b|--build-full)
     FULL_BUILD="YES"
+    shift # past argument
+    ;;
+    -gj|--generate-java-api)
+    GENERATE_JAVA_API="YES"
     shift # past argument
     ;;
     -u|--unit-tests)
@@ -197,7 +202,7 @@ if [[ "$FULL_BUILD" = "YES" ]]; then
     
     # Simulate github workflow "gradle"
     step "Build Client"
-    ./gradlew :sechub-cli:buildGo :sechub-cli:testGo
+    ./gradlew spotlessCheck :sechub-cli:buildGo :sechub-cli:testGo
     
     step "Build Server, DAUI and generate OpenAPI file"
     ./gradlew ensureLocalhostCertificate build generateOpenapi buildDeveloperAdminUI -x :sechub-cli:build
@@ -219,6 +224,14 @@ fi
 if [[ "$REPORT_COMBINED" = "YES" ]]; then
     startJob "Create combined test report"
     eval "${CMD_CREATE_COMBINED_REPORT}"
+fi
+
+if [[ "$GENERATE_JAVA_API" = "YES" ]]; then
+    startJob "Regenerate open api class files"
+    cd $SECHUB_ROOT_DIR
+    cd sechub-api-java
+    ./fullRegenerateOpenAPIClassFiles.sh
+    cd $SECHUB_ROOT_DIR 
 fi
 
 
