@@ -531,7 +531,7 @@ table.CodeRay td.code{padding:0 0 0 .75em}
 <div id="header">
 <h1><span class="image"><a class="image" href="https://mercedes-benz.github.io/sechub"><img src="images/sechub-logo.png" alt="sechub logo"></a></span> SecHub Developer Quickstart Guide</h1>
 <div class="details">
-<span id="revnumber"> Server 0.41.1</span>
+<span id="revnumber"> Server 0.43.0</span>
 </div>
 <div id="toc" class="toc2">
 <div id="toctitle">Table of contents</div>
@@ -544,6 +544,7 @@ table.CodeRay td.code{padding:0 0 0 .75em}
 <li><a href="#alpine-linux">2.1.1. Alpine Linux</a></li>
 <li><a href="#debianubuntu">2.1.2. Debian/Ubuntu</a></li>
 <li><a href="#fedora-and-centos">2.1.3. Fedora and CentOS</a></li>
+<li><a href="#macos">2.1.4. MacOS</a></li>
 </ul>
 </li>
 <li><a href="#instructions">2.2. Instructions</a>
@@ -640,7 +641,7 @@ build pipeline / contionus integration (CI) and helps to provide
 </tbody>
 </table>
 <div class="paragraph">
-<p>Documentation version: <code>Server 0.41.1-20230417110242</code></p>
+<p>Documentation version: <code>Server 0.43.0-20230602134927</code></p>
 </div>
 </div>
 </div>
@@ -694,10 +695,10 @@ build pipeline / contionus integration (CI) and helps to provide
 <div class="ulist">
 <ul>
 <li>
-<p>Java JDK 11+</p>
+<p>Java JDK 17+</p>
 </li>
 <li>
-<p>Go 1.16+</p>
+<p>Go 1.20.4+</p>
 </li>
 <li>
 <p>Git</p>
@@ -731,7 +732,7 @@ build pipeline / contionus integration (CI) and helps to provide
 <h4 id="alpine-linux">2.1.1. Alpine Linux</h4>
 <div class="listingblock">
 <div class="content">
-<pre>apk add openjdk11 go curl git bash jq</pre>
+<pre class="CodeRay highlight"><code>apk add openjdk17 go curl git bash jq</code></pre>
 </div>
 </div>
 <div class="admonitionblock note">
@@ -746,24 +747,12 @@ Tested with Alpine Linux 3.12, 3.13 and 3.14.
 </tr>
 </table>
 </div>
-<div class="admonitionblock warning">
-<table>
-<tr>
-<td class="icon">
-<i class="fa icon-warning" title="Warning"></i>
-</td>
-<td class="content">
-Cross-compiling the SecHub client on Alpine Linux 3.11 does not work (Go version go1.13.13 linux/amd64).
-</td>
-</tr>
-</table>
-</div>
 </div>
 <div class="sect3">
 <h4 id="debianubuntu">2.1.2. Debian/Ubuntu</h4>
 <div class="listingblock">
 <div class="content">
-<pre>sudo apt install openjdk-11-jdk-headless golang git curl jq</pre>
+<pre class="CodeRay highlight"><code>sudo apt install openjdk-17-jdk-headless golang git curl jq</code></pre>
 </div>
 </div>
 <div class="admonitionblock note">
@@ -785,7 +774,7 @@ Tested with Debian 10 "Buster", Ubuntu 18.04 "Bionic" and 20.04 "Focal" LTS.
 <i class="fa icon-warning" title="Warning"></i>
 </td>
 <td class="content">
-If the version of your GoLang is below 1.15, please install a more recent version from <a href="https://go.dev/dl/">here</a>, because you can&#8217;t compile the executables.
+If the version of your GoLang is below 1.20.4, please install a more recent version from <a href="https://go.dev/dl/">here</a>.
 </td>
 </tr>
 </table>
@@ -795,7 +784,7 @@ If the version of your GoLang is below 1.15, please install a more recent versio
 <h4 id="fedora-and-centos">2.1.3. Fedora and CentOS</h4>
 <div class="listingblock">
 <div class="content">
-<pre>sudo dnf install java-11-openjdk-devel golang git curl jq</pre>
+<pre class="CodeRay highlight"><code>sudo dnf install java-17-openjdk-devel golang git curl jq</code></pre>
 </div>
 </div>
 <div class="admonitionblock note">
@@ -806,6 +795,29 @@ If the version of your GoLang is below 1.15, please install a more recent versio
 </td>
 <td class="content">
 Tested with Fedora 34 and CentOS 8.
+</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect3">
+<h4 id="macos">2.1.4. MacOS</h4>
+<div class="paragraph">
+<p>To easily install the requirements via cli you can use <a href="https://brew.sh">brew</a>.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code>brew install openjdk@17 go git curl jq</code></pre>
+</div>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+Tested with MacOS Ventura 13.3.1.
 </td>
 </tr>
 </table>
@@ -1045,7 +1057,7 @@ For real results, you have to define an 'execution profile' with a scanner (via 
 </div>
 <div id="footer">
 <div id="footer-text">
- Server 0.41.1<br>
+ Server 0.43.0<br>
 </div>
 </div>
 </body>

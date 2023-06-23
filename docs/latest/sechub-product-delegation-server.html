@@ -531,7 +531,7 @@ table.CodeRay td.code{padding:0 0 0 .75em}
 <div id="header">
 <h1><span class="image"><a class="image" href="https://mercedes-benz.github.io/sechub"><img src="images/sechub-logo.png" alt="sechub logo"></a></span> SecHub PDS Documentation</h1>
 <div class="details">
-<span id="revnumber"> PDS 0.36.0</span>
+<span id="revnumber"> PDS 0.38.0</span>
 </div>
 <div id="toc" class="toc2">
 <div id="toctitle">Table of contents</div>
@@ -786,7 +786,7 @@ build pipeline / contionus integration (CI) and helps to provide
 </tbody>
 </table>
 <div class="paragraph">
-<p>Documentation version: <code>PDS 0.36.0-pds-20230302150415</code></p>
+<p>Documentation version: <code>PDS 0.38.0-20230602134927</code></p>
 </div>
 <div class="paragraph">
 <p><strong>About PDS (Product Delegation Server)</strong></p>
@@ -2188,8 +2188,8 @@ PDS by SecHub will use</p>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">sechub.pds.workspace.rootfolder</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">./</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Set PDS workspace root folder path. Inside this path the sub directory <code>workspace</code> will be created.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">./workspace/</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Set PDS workspace root folder path. Each running PDS job will have its own temporary sub directory inside this folder.</p></td>
 </tr>
 </tbody>
 </table>
@@ -2566,9 +2566,9 @@ PDS to Checmarx will use</p>
 <td class="tableblock halign-left valign-top"><p class="tableblock">When 'true', Checkmarx will do a full scan and not a delta scan.</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">pds.checkmarx.result.check.period.minutes</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">pds.checkmarx.result.check.period.milliseconds</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Optional</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The time period in minutes when the next check for Checkmarx resuls will be done. An example: If you define <code>3</code>,every 3 minutes PDS will check the current state of the job.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The time period in milliseconds when the next check for Checkmarx resuls will be done. An example: If you define <code>180000</code>,every 3 minutes (3*60*1000 milliseconds) PDS will check the current state of the job.</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">pds.checkmarx.result.check.timeout.minutes</p></td>
@@ -2960,7 +2960,7 @@ Mandatory parts are always present, optional ones can be empty.</p>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">pds.productexecutor.forbidden.targettype.internet</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">
-When this key is set to true, than this pds instance does not scan INTERNET!
+When this key is set to true, then this PDS instance does not scan INTERNET!
 </p></td>
 <td class="tableblock halign-left valign-top"><div class="content"><div class="ulist">
 <ul>
@@ -2973,7 +2973,7 @@ When this key is set to true, than this pds instance does not scan INTERNET!
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">pds.productexecutor.forbidden.targettype.intranet</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">
-When this key is set to true, than this pds instance does not scan INTRANET!
+When this key is set to true, then this PDS instance does not scan INTRANET!
 </p></td>
 <td class="tableblock halign-left valign-top"><div class="content"><div class="ulist">
 <ul>
@@ -3060,9 +3060,9 @@ Contains the target type (depending on scan type) and will be just an additional
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">pds.config.use.sechub.storage</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">
-When 'true' the SecHub storage will be reused by PDS server. In this case SecHub will not upload job data to PDS.
-But it's crucial to have same root storage setup on PDS server side (e.g. same s3 bucket for S3 storage, or same NFS base for shared volumes).
-When not `true` or not defined, pds will use its own storage locations
+When 'true' the SecHub storage will be reused by the PDS server. In this case SecHub will not upload job data to PDS.
+But it's crucial to have the same root storage setup on the PDS server side (e.g. same s3 bucket for S3 storage, or same NFS base for shared volumes).
+When not 'true' or not defined, PDS will use its own storage locations
 </p></td>
 <td class="tableblock halign-left valign-top"><div class="content"><div class="ulist">
 <ul>
@@ -3110,9 +3110,11 @@ This contains the sechub storage location when sechub storage shall be used. So 
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">pds.config.filefilter.includes</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">
-This contains a comma separated list of path patterns for file includes. These patterns can contain wildcards. Matching will be done case insensitive!For example: `*.go,*.html, test1.txt` would include every go file, every HTML file and files named `test1.txt`.</p>
-<p class="tableblock">When nothing defined, every content is accepted as include.
-Every file which is matched by one of the patterns will be included - except those which are explicitly excluded.</p></td>
+This contains a comma separated list of path patterns for file includes. These patterns can contain wildcards. Matching will be done case insensitive!
+Every file which is matched by one of the patterns will be included - except those which are explicitly excluded.
+When nothing is defined, then every content is accepted for include.</p>
+<p class="tableblock">For example: '*.go,*.html, test1.txt' would include every Go file, every HTML file and files named 'test1.txt'.
+</p></td>
 <td class="tableblock halign-left valign-top"><div class="content"><div class="ulist">
 <ul>
 <li>
@@ -3143,7 +3145,7 @@ When 'true' the PDS adapter script used by the job will have the information and
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">pds.config.supported.datatypes</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">
-Can be SOURCE, BINARY, NONE or a combination as a comma separated list. This data shouldnormally not be defined via a default value of an optional PDS configuration parameter.
+Can be SOURCE, BINARY, NONE or a combination as a comma separated list. This data should normally not be defined via a default value of an optional PDS configuration parameter.
 </p></td>
 <td class="tableblock halign-left valign-top"><div class="content"><div class="ulist">
 <ul>
@@ -3182,7 +3184,7 @@ Defines the time to wait in seconds before the next retry is done (when it comes
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">pds.config.product.timeout.minutes</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">
-Maximum allowed time in minutes, before a producct will be timeout - means launcher script is automatically canceled by PDS
+Maximum allowed time in minutes, before a product will time out - this means that the launcher script is automatically canceled by PDS
 </p></td>
 <td class="tableblock halign-left valign-top"><div class="content"><div class="ulist">
 <ul>
@@ -3195,8 +3197,9 @@ Maximum allowed time in minutes, before a producct will be timeout - means launc
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">pds.config.filefilter.excludes</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">
-This contains a comma separated list of path patterns for file excludes. These patterns can contain wildcards. Matching will be done case insensitive!For example: `*.go,*.html, test1.txt` would excluded every go file, every HTML file and files named `test1.txt`.</p>
-<p class="tableblock">When empty none of the files will be excluded. The exclude operation will be done AFTER the include file filtering has happend.
+This contains a comma separated list of path patterns for file excludes. These patterns can contain wildcards. Matching will be done case insensitive!
+When empty, then nothing will be excluded. The exclude operation will be done AFTER the include file filtering.</p>
+<p class="tableblock">For example: '*.go,*.html, test1.txt' would exclude every Go file, every HTML file and files named 'test1.txt'.
 </p></td>
 <td class="tableblock halign-left valign-top"><div class="content"><div class="ulist">
 <ul>
@@ -3209,7 +3212,7 @@ This contains a comma separated list of path patterns for file excludes. These p
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">pds.scan.target.url</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">
-This contains the Target URL for current scan i.e webscan. Will not be set in all scan types. E.g. for a code scan this environment variable will not be available
+This contains the target URL for the current scan (i.e. webscan). Will not be set in all scan types. E.g. for a code scan this environment variable will not be available
 </p></td>
 <td class="tableblock halign-left valign-top"><div class="content"><div class="ulist">
 <ul>
@@ -3754,14 +3757,14 @@ have to use exact same S3 bucket and provide PDS servers with correct S3 credent
 <td class="tableblock halign-left valign-top"><p class="tableblock">service call</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">ROLE_SUPERADMIN, ROLE_USER</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">2</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">trigger change to execution service and marks job status as cancel requested</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">marks job status as cancel requested</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">2</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">service call</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">ROLE_SUPERADMIN, ROLE_USER</p></td>
 <td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">marks job status as cancel requested</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">trigger change to execution service and marks job status as cancel requested</p></td>
 </tr>
 </tbody>
 </table>
@@ -4625,7 +4628,7 @@ This will the process hard!
 </div>
 <div id="footer">
 <div id="footer-text">
- PDS 0.36.0<br>
+ PDS 0.38.0<br>
 </div>
 </div>
 </body>

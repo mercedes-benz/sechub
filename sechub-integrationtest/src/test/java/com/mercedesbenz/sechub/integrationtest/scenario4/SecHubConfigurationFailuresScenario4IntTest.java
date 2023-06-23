@@ -13,9 +13,7 @@ import org.springframework.web.client.HttpClientErrorException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.json.JsonMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
-
 import com.mercedesbenz.sechub.commons.core.RunOrFail;
-
 import com.mercedesbenz.sechub.commons.model.SecHubCodeScanConfiguration;
 import com.mercedesbenz.sechub.commons.model.SecHubConfigurationMetaData;
 import com.mercedesbenz.sechub.commons.model.SecHubScanConfiguration;
@@ -106,6 +104,7 @@ public class SecHubConfigurationFailuresScenario4IntTest {
         }
 
     }
+
     private JsonNode assertFailedWithJsonOutput(HttpStatus expectedStatus, RunOrFail<Exception> failable) throws Exception {
         try {
             failable.runOrFail();
