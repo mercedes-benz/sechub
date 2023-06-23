@@ -30,6 +30,8 @@ public enum ExampleFile {
     LICENSESCAN_WITH_BINARIES_DATA_REFERENCE(
             "src/docs/asciidoc/documents/shared/configuration/sechub_config_example9_license_scan_with_binaries_data_reference.json"),
 
+    WEBSCAN_HEADER_SCAN("src/docs/asciidoc/documents/shared/configuration/sechub_config_example15_web_scan_header.json"),
+
     ;
 
     private String path;
