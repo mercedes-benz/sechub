@@ -474,8 +474,8 @@ public class SecHubConfigurationModelValidator {
         private boolean failed;
         private String sanatizedTargetUrl;
 
-        // A simple map to keep track of headers an the urls they should be sent to
-        // With this map we validate the header configurations and inform the user about
+        // A Set to keep track of headers URL combinations
+        // With this Set we validate the header configurations and inform the user about
         // invalid combinations
         private Set<String> headerUrlCombinations = new HashSet<>();
         private InternalValidationContext context;
