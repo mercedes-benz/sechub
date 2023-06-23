@@ -1,0 +1,18 @@
+{
+  "apiVersion" : "1.0",
+  "webScan" : {
+    "url" : "https://productfailure.demo.example.org",
+    "headers" : [ {
+      "name" : "Authorization",
+      "value" : "{{ .HEADER_VALUE }}"
+    }, {
+      "name" : "x-file-size",
+      "value" : "123456",
+      "onlyForUrls" : [ "https://productfailure.demo.example.org/admin", "https://productfailure.demo.example.org/upload/<*>", "https://productfailure.demo.example.org/<*>/special/" ]
+    }, {
+      "name" : "X-FILE-SIZE",
+      "value" : "97324",
+      "onlyForUrls" : [ "https://productfailure.demo.example.org/user", "https://productfailure.demo.example.org/upload/<*>", "https://productfailure.demo.example.org/<*>/special/" ]
+    } ]
+  }
+}
