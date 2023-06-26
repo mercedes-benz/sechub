@@ -161,7 +161,6 @@ public class SchedulerRestControllerRestDocTest implements TestIsNecessaryForDoc
         /* execute + test @formatter:off */
 	    this.mockMvc.perform(
 	    		post(apiEndpoint,PROJECT1_ID).
-                	header(AuthenticationHelper.HEADER_NAME, AuthenticationHelper.getHeaderValue()).
 	    			contentType(MediaType.APPLICATION_JSON_VALUE).
 	    			content(configureSecHub().
 	    					api("1.0").
@@ -218,7 +217,6 @@ public class SchedulerRestControllerRestDocTest implements TestIsNecessaryForDoc
         /* execute + test @formatter:off */
         this.mockMvc.perform(
                 post(apiEndpoint,PROJECT1_ID).
-                    header(AuthenticationHelper.HEADER_NAME, AuthenticationHelper.getHeaderValue()).
                     contentType(MediaType.APPLICATION_JSON_VALUE).
                     content(configureSecHub().
                             api("1.0").
@@ -293,7 +291,6 @@ public class SchedulerRestControllerRestDocTest implements TestIsNecessaryForDoc
         /* execute + test @formatter:off */
 	    this.mockMvc.perform(
 	    		post(apiEndpoint,PROJECT1_ID).
-                	header(AuthenticationHelper.HEADER_NAME, AuthenticationHelper.getHeaderValue()).
 	    			contentType(MediaType.APPLICATION_JSON_VALUE).
 	    			content(configureSecHub().
 	    					api("1.0").
@@ -357,7 +354,6 @@ public class SchedulerRestControllerRestDocTest implements TestIsNecessaryForDoc
         /* execute + test @formatter:off */
 	    this.mockMvc.perform(
 	    		post(apiEndpoint,PROJECT1_ID).
-                	header(AuthenticationHelper.HEADER_NAME, AuthenticationHelper.getHeaderValue()).
 	    			contentType(MediaType.APPLICATION_JSON_VALUE).
 	    			content(configureSecHub().
 	    					api("1.0").
@@ -418,7 +414,6 @@ public class SchedulerRestControllerRestDocTest implements TestIsNecessaryForDoc
         /* execute + test @formatter:off */
 	    this.mockMvc.perform(
 	    		post(apiEndpoint, PROJECT1_ID).
-                	header(AuthenticationHelper.HEADER_NAME, AuthenticationHelper.getHeaderValue()).
 	    			contentType(MediaType.APPLICATION_JSON_VALUE).
 	    			content(configureSecHub().
 	    					api("1.0").
@@ -478,7 +473,6 @@ public class SchedulerRestControllerRestDocTest implements TestIsNecessaryForDoc
         /* execute + test @formatter:off */
 	    this.mockMvc.perform(
 	    		post(apiEndpoint,PROJECT1_ID).
-	    			header(AuthenticationHelper.HEADER_NAME, AuthenticationHelper.getHeaderValue()).
 	    			contentType(MediaType.APPLICATION_JSON_VALUE).
 	    			content(configureSecHub().
 	    					api("1.0").
@@ -582,7 +576,6 @@ public class SchedulerRestControllerRestDocTest implements TestIsNecessaryForDoc
         /* execute + test @formatter:off */
 	    this.mockMvc.perform(
 	    		post(apiEndpoint, PROJECT1_ID).
-                	header(AuthenticationHelper.HEADER_NAME, AuthenticationHelper.getHeaderValue()).
 	    			contentType(MediaType.APPLICATION_JSON_VALUE).
 	    			content(configureSecHub().
 	    					api("1.0").
@@ -602,9 +595,6 @@ public class SchedulerRestControllerRestDocTest implements TestIsNecessaryForDoc
                                 responseSchema(OpenApiSchema.JOB_ID.getSchema()).
                             and().
                             document(
-	                            		requestHeaders(
-	                            				headerWithName(AuthenticationHelper.HEADER_NAME).description(AuthenticationHelper.HEADER_DESCRIPTION)
-	                            		),
                                         pathParameters(
                                                 parameterWithName(PROJECT_ID.paramName()).description("The unique id of the project id where a new sechub job shall be created")
                                         ),
@@ -653,8 +643,7 @@ public class SchedulerRestControllerRestDocTest implements TestIsNecessaryForDoc
         /* execute + test @formatter:off */
         this.mockMvc.perform(
         		multipart(apiEndpoint, PROJECT1_ID, randomUUID).
-        			file(file1).param("checkSum", "mychecksum").
-                    header(AuthenticationHelper.HEADER_NAME, AuthenticationHelper.getHeaderValue())
+        			file(file1).param("checkSum", "mychecksum")
         		).
         			andExpect(status().isOk()).
         					// https://docs.spring.io/spring-restdocs/docs/2.0.2.RELEASE/reference/html5/
@@ -713,8 +702,7 @@ public class SchedulerRestControllerRestDocTest implements TestIsNecessaryForDoc
                 multipart(apiEndpoint, PROJECT1_ID, randomUUID).
                     file(file1).
                     param("checkSum", "mychecksum").
-                    header(CommonConstants.FILE_SIZE_HEADER_FIELD_NAME, file1.getBytes().length).
-                    header(AuthenticationHelper.HEADER_NAME, AuthenticationHelper.getHeaderValue())
+                    header(CommonConstants.FILE_SIZE_HEADER_FIELD_NAME, file1.getBytes().length)
                 ).
                     andExpect(status().isOk()).
                             // https://docs.spring.io/spring-restdocs/docs/2.0.2.RELEASE/reference/html5/
@@ -771,8 +759,7 @@ public class SchedulerRestControllerRestDocTest implements TestIsNecessaryForDoc
         /* execute + test @formatter:off */
 	    this.mockMvc.perform(
 	    		put(apiEndpoint, PROJECT1_ID,randomUUID).
-	    			contentType(MediaType.APPLICATION_JSON_VALUE).
-	    			header(AuthenticationHelper.HEADER_NAME, AuthenticationHelper.getHeaderValue())
+	    			contentType(MediaType.APPLICATION_JSON_VALUE)
 	    		).
 	    			andExpect(status().isOk()).
 	    			andDo(defineRestService().
@@ -819,8 +806,7 @@ public class SchedulerRestControllerRestDocTest implements TestIsNecessaryForDoc
         /* execute + test @formatter:off */
         this.mockMvc.perform(
         		get(apiEndpoint, PROJECT1_ID,randomUUID).
-        			contentType(MediaType.APPLICATION_JSON_VALUE).
-        			header(AuthenticationHelper.HEADER_NAME, AuthenticationHelper.getHeaderValue())
+        			contentType(MediaType.APPLICATION_JSON_VALUE)
         		).
         			andExpect(status().isOk()).
         			andExpect(content().json("{jobUUID:"+randomUUID.toString()+", result:OK, state:ENDED, trafficLight:GREEN}")).
@@ -893,8 +879,7 @@ public class SchedulerRestControllerRestDocTest implements TestIsNecessaryForDoc
         /* execute + test @formatter:off */
         this.mockMvc.perform(
                 get(apiEndpoint, PROJECT1_ID, 1, 0, true, labels).
-                    contentType(MediaType.APPLICATION_JSON_VALUE).
-                    header(AuthenticationHelper.HEADER_NAME, AuthenticationHelper.getHeaderValue())
+                    contentType(MediaType.APPLICATION_JSON_VALUE)
                 ).
                     andExpect(status().isOk()).
                     andExpect(content().json("{page:0, totalPages:1, content:[{jobUUID:"+randomUUID.toString()+", executionState:ENDED, executionResult:OK, trafficLight:GREEN, executedBy:User1, executionState:ENDED}]}")).

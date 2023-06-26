@@ -80,7 +80,6 @@ public class SecHubWebScanConfiguration {
         this.excludes = excludes;
     }
 
-    
     public Optional<List<HTTPHeaderConfiguration>> getHeaders() {
         return headers;
     }

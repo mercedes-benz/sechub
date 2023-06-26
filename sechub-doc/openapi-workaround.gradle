@@ -5,45 +5,42 @@
 import groovy.json.JsonSlurper
 import groovy.json.JsonOutput
 
-task generateOpenapi() {
-    /*
-     * Generate the OpenAPI file and perform some post processing steps
-     *
-     * At the moment this is necessary to remove `oneOf` from several schemas.
-     * This is necessary, because arrays cannot be properly declared in Spring RESTDoc:
-     * - https://github.com/ePages-de/restdocs-api-spec/issues/147
-     */
-    group 'sechub'
-    description 'Generate the OpenAPI file'
-    
-    dependsOn 'openapi3'
-    
-    doLast {
-        def openApiFile = "$buildDir/api-spec/openapi3.json"
+ext.openApiFile = "$buildDir/api-spec/openapi3.json"
+ext.backupExtension = "origin.json"
+
+ext.stringType = new HashMap<>()
+stringType.put("type", "string")
+      
+/* 
+   Documenting an array of strings in RestDoc is currently not supported
+   - https://github.com/spring-projects/spring-restdocs/issues/505
+   - https://github.com/ePages-de/restdocs-api-spec/issues/147
+   
+   To solve this issue, this task takes the OpenAPI file and adjusts it.
+  
+   The steps are:
+  
+   1. read in the generated OpenAPI file in `/sechub-doc/build/api-spec/openapi3.json`
+   2. get the values which contain a `oneOf` element
+   3. overwrite the `oneOf` with `string`
+   4. write the modified JSON structure back into the generated OpenAPI 3 file
+  
+   This is not a clean solution, but it solves the problem.
+   
+   Remark: if you still find any `oneOf` elements inside the `openApi3.json` file you have
+   to fix another one this inside this gradle file!
+*/
+void postProcessOpenApiGeneration(){
         
-        // Documenting an array of strings in RestDoc is currently not supported
-        // - https://github.com/spring-projects/spring-restdocs/issues/505
-        // - https://github.com/ePages-de/restdocs-api-spec/issues/147
-        // 
-        // To solve this issue, this task takes the OpenAPI file and adjusts it.
-        //
-        // The steps are:
-        //
-        // 1. read in the generated OpenAPI file in `/sechub-doc/build/api-spec/openapi3.json`
-        // 2. get the values which contain a `oneOf` element
-        // 3. overwrite the `oneOf` with `string`
-        // 4. write the modified JSON structure back into the generated OpenAPI 3 file
-        //
-        // This is not a clean solution, but it solves the problem.
+        // make a backup from origin file so can we check differences via IDE
+        IOUtil.createBackupFile(openApiFile, backupExtension)
         
         // Load JSON
         def jsonSlurper = new JsonSlurper() 
         File jsonFile = new File(openApiFile)
         def jsonObject = jsonSlurper.parse(jsonFile)
-        
-        // Type definitions
-        def stringType = new HashMap<>()
-        stringType.put("type", "string")
+
+        writePrettyPrintedFile("${openApiFile}_origin_prettified.json", jsonObject)
         
         // Replace oneOf in schemas
         def projectSchema = jsonObject.components.schemas.Project
@@ -53,15 +50,7 @@ task generateOpenapi() {
         projectDetailsSchema.properties.whiteList.items = stringType
         projectDetailsSchema.properties.users.items = stringType
         
-        def scanJobSchema = jsonObject.components.schemas.ScanJob
-        scanJobSchema.properties.infraScan.properties.uris.items = stringType
-        scanJobSchema.properties.infraScan.properties.ips.items = stringType
-        scanJobSchema.properties.codeScan.properties.fileSystem.properties.folders.items = stringType
-        scanJobSchema.properties.codeScan.properties.fileSystem.properties.files.items = stringType
-        scanJobSchema.properties.codeScan.properties.use.items = stringType
-        scanJobSchema.properties.webScan.properties.includes.items = stringType
-        scanJobSchema.properties.webScan.properties.excludes.items = stringType
-        scanJobSchema.properties.webScan.properties.headers.items.properties.onlyForUrls.items = stringType
+        handleOneOfForScanJobSchema(jsonObject)
         
         def userDetailsSchema = jsonObject.components.schemas.UserDetails
         userDetailsSchema.properties.projects.items = stringType
@@ -84,9 +73,80 @@ task generateOpenapi() {
         projectWhiteListSchema.properties.whiteList.properties.uris.items=stringType
         
         // Write JSON
+        writePrettyPrintedFile(openApiFile, jsonObject)
+}
+
+void handleOneOfForScanJobSchema(jsonObject){
+
+    def scanJobSchema = jsonObject.components.schemas.ScanJob
+    scanJobSchema.properties.infraScan.properties.uris.items = stringType
+    scanJobSchema.properties.infraScan.properties.ips.items = stringType
+    scanJobSchema.properties.webScan.properties.includes.items = stringType
+    scanJobSchema.properties.webScan.properties.excludes.items = stringType
+    scanJobSchema.properties.webScan.properties.headers.items.properties.onlyForUrls.items = stringType
+    scanJobSchema.properties.codeScan.properties.use.items = stringType
+    
+    handleOneOfForFileSystem(scanJobSchema.properties.codeScan.properties.fileSystem)
+    
+    /* handle the data section */
+    def scanJobDataProperties = scanJobSchema.properties.data.properties
+    handleOneOfForFileSystem(scanJobDataProperties.sources.items.properties.fileSystem)
+    handleOneOfForFileSystem(scanJobDataProperties.binaries.items.properties.fileSystem)
+
+}
+
+void handleOneOfForFileSystem(filesystem){
+    filesystem.properties.folders.items = stringType
+    filesystem.properties.files.items = stringType
+}
+
+
+
+void writePrettyPrintedFile(openApiFile, jsonObject){
         def json = JsonOutput.toJson(jsonObject)
         def pretty = JsonOutput.prettyPrint(json)
- 
+        
         new File(openApiFile).write(pretty)
+}
+
+
+// What does this task do?
+// When we have to develop workaround parts it is very enerving when we need to generate the complete
+// open api file again and again. Even when there are only problems with the post processing itself.
+// The origin open file (before postprocessing) needs only ONE generation in this case.
+//
+// In this case just call this task multiple times and the origin generated file will be 
+// restored and reused again. So much more faster to develop...  
+task development_openApiPostprocessing{
+    doLast{
+        
+        // restore a backup from origin file if existing, so we do not
+        // need to generate the origin file again and again (faster development lifecycle...)
+        IOUtil.restoreBackupFile(openApiFile, backupExtension)
+        
+        // now starts post processing parts with restored origin file
+        postProcessOpenApiGeneration()
     }
+
+}
+
+task generateOpenapi() {
+    /*
+     * Generate the OpenAPI file and perform some post processing steps
+     *
+     * At the moment this is necessary to remove `oneOf` from several schemas.
+     * This is necessary, because arrays cannot be properly declared in Spring RESTDoc:
+     * - https://github.com/ePages-de/restdocs-api-spec/issues/147
+     */
+    group 'sechub'
+    description 'Generate the OpenAPI file'
+    
+    dependsOn 'openapi3'
+    
+    doLast {
+        // start post processing (workaround)
+        postProcessOpenApiGeneration()
+    }
+    
+    
 }

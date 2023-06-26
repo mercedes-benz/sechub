@@ -20,7 +20,7 @@ function showHelp () {
     echo "   -cu, --clean-unit-tests               : clean all unit test output"
     echo "   -ci, --clean-integrationtests         : clean all integrationtest output"
     echo "   -si, --stop-inttest-server            : stop running integration test servers (SecHub, PDS)"
-    echo "   -ga, --generate-java-api              : generates parts for java api"
+    echo "   -gj, --generate-java-api              : generates parts for java api"
     echo "   -h,  --help                       : show this help"
 }
 
