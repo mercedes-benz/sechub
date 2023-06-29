@@ -109,7 +109,7 @@ public class LocationSupport {
 
     private Path ensureProcessFolder(ProcessContainer processContainer) {
         Path runtimeFolder = ensureRuntimeFolder();
-        Path processFolder = runtimeFolder.resolve(processContainer.getUuid().toString());
+        Path processFolder = runtimeFolder.resolve("process-container#"+processContainer.getNumber()+"["+processContainer.getUuid().toString()+"]");
         if (!Files.exists(processFolder)) {
             try {
                 Files.createDirectories(processFolder);

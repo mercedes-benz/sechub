@@ -2,6 +2,7 @@ package com.mercedesbenz.sechub.commons.model;
 
 import java.time.LocalDateTime;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.DeserializationFeature;
@@ -16,6 +17,10 @@ public class JsonMapperFactory {
     public static JsonMapper createMapper() {
         /* @formatter:off */
         JsonMapper mapper = JsonMapper.builder().
+            // remove absent parts from Json, so it is more "compact" / without boiler plate
+            // code
+            serializationInclusion(JsonInclude.Include.NON_EMPTY).
+                
             enable(JsonParser.Feature.ALLOW_COMMENTS).
             enable(JsonParser.Feature.ALLOW_SINGLE_QUOTES).
             /*
@@ -28,7 +33,6 @@ public class JsonMapperFactory {
              */
             enable(DeserializationFeature.ACCEPT_SINGLE_VALUE_AS_ARRAY).
             disable(SerializationFeature.WRITE_SINGLE_ELEM_ARRAYS_UNWRAPPED).
-
             disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS).
             /*
              * we accept enums also case insensitive - e.g Traffic light shall be accesible
@@ -41,10 +45,6 @@ public class JsonMapperFactory {
 
         build();
         /* @formatter:on */
-
-        // remove absent parts from Json, so it is more "compact" / without boiler plate
-        // code
-        mapper.setSerializationInclusion(Include.NON_ABSENT);
 
         mapper.registerModule(new Jdk8Module()); // to provide optional etc.
 

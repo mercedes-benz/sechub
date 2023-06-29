@@ -19,6 +19,10 @@ import org.junit.jupiter.api.Test;
 import com.mercedesbenz.sechub.commons.TextFileReader;
 import com.mercedesbenz.sechub.commons.TextFileWriter;
 import com.mercedesbenz.sechub.commons.archive.ArchiveSupport.ArchiveType;
+import com.mercedesbenz.sechub.commons.archive.ArchiveSupport.ArchivesCreationResult;
+import com.mercedesbenz.sechub.commons.model.JSONConverter;
+import com.mercedesbenz.sechub.commons.model.ScanType;
+import com.mercedesbenz.sechub.commons.model.SecHubConfigurationModel;
 import com.mercedesbenz.sechub.test.TestFileSupport;
 import com.mercedesbenz.sechub.test.TestUtil;
 
@@ -30,6 +34,10 @@ class ArchiveSupportTest {
     private static File expectedTar2WithFilterReferenceName1AndNoRootAllowedFolder;
     private static File expectedTar2WithFilterReferenceName1AndReferenceName2Folder;
     private static File expectedOutputOfTestTar2WithRootOnly;
+    private static File expectedCreateArchivesTest1DecompressWithoutFileStructureZip;
+    private static File expectedCreateArchivesTest1DecompressWithoutFileStructureTar;
+    private static File expectedCreateArchivesTest1DecompressWithFileStructureZip;
+    private static File expectedCreateArchivesTest1DecompressWithFileStructureTar;
 
     private ArchiveSupport supportToTest;
 
@@ -43,10 +51,19 @@ class ArchiveSupportTest {
         expectedTar2WithFilterReferenceName1AndReferenceName2Folder = ensureTar2("expected-extracted-reference-name-1-and-2-no-root-allowed");
         expectedOutputOfTestTar2WithRootOnly = ensureTar2("expected-extracted-with-root-allowed-only");
 
+        expectedCreateArchivesTest1DecompressWithoutFileStructureZip = ensureCreateArchivesTest1("expected-decompress-without-filestructure-provider/zip");
+        expectedCreateArchivesTest1DecompressWithoutFileStructureTar = ensureCreateArchivesTest1("expected-decompress-without-filestructure-provider/tar");
+        
+        expectedCreateArchivesTest1DecompressWithFileStructureZip = ensureCreateArchivesTest1("expected-decompress-with-filestructure-provider/zip");
+        expectedCreateArchivesTest1DecompressWithFileStructureTar = ensureCreateArchivesTest1("expected-decompress-with-filestructure-provider/tar");
     }
 
     private static File ensureTar2(String path) {
         return ensure("./src/test/resources/tar/test-tar2/" + path);
+    }
+
+    private static File ensureCreateArchivesTest1(String path) {
+        return ensure("./src/test/resources/create-archives/test1/" + path);
     }
 
     private static File ensure(String path) {
@@ -58,6 +75,98 @@ class ArchiveSupportTest {
     @BeforeEach
     void beforeEach() {
         supportToTest = new ArchiveSupport();
+    }
+
+    @Test
+    void create_archives_for_binaries_contains_all_content_as_expected_without_filestructure_provider() throws Exception {
+        /* prepare */
+        File workingDirectory = new File("./src/test/resources/create-archives/test1/working-directory");
+        File configFile = new File("./src/test/resources/create-archives/test1/sechub-configuration.json");
+        String json = TestFileSupport.loadTextFile(configFile);
+        SecHubConfigurationModel model = JSONConverter.get().fromJSON(SecHubConfigurationModel.class, json);
+
+        Path tempDir = TestUtil.createTempDirectoryInBuildFolder("create-archives");
+
+        /* execute */
+        ArchivesCreationResult result = supportToTest.createArchives(model, workingDirectory.toPath(), tempDir);
+
+        /* test */
+        assertNotNull(result.getBinaryArchiveFile());
+        assertNotNull(result.getSourceArchiveFile());
+
+        assertTrue(result.isBinaryArchiveCreated());
+        assertTrue(result.isSourceArchiveCreated());
+
+        // check ZIP content
+        Path reverseFolder = TestUtil.createTempDirectoryInBuildFolder("decompressed-reverse");
+        Path reverseFolderZip = reverseFolder.resolve("zip");
+        supportToTest.extract(ZIP, new FileInputStream(result.getSourceArchiveFile().toFile()), result.getSourceArchiveFile().toFile().getAbsolutePath(),
+                reverseFolderZip.toFile(), null);
+
+        expectedExtractedFilesAreAllFoundInOutputDirectory(reverseFolderZip.toFile(),
+                TestFileSupport.loadFilesAsFileList(expectedCreateArchivesTest1DecompressWithoutFileStructureZip),
+                expectedCreateArchivesTest1DecompressWithoutFileStructureZip);
+
+        // check TAR content
+        Path reverseFolderTar = reverseFolder.resolve("tar");
+        supportToTest.extract(TAR, new FileInputStream(result.getBinaryArchiveFile().toFile()), result.getBinaryArchiveFile().toFile().getAbsolutePath(),
+                reverseFolderTar.toFile(), null);
+
+        expectedExtractedFilesAreAllFoundInOutputDirectory(reverseFolderTar.toFile(),
+                TestFileSupport.loadFilesAsFileList(expectedCreateArchivesTest1DecompressWithoutFileStructureTar),
+                expectedCreateArchivesTest1DecompressWithoutFileStructureTar);
+
+    }
+
+    @Test
+    void create_archives_for_binaries_contains_all_content_as_expected_with_filestructure_provider() throws Exception {
+        /* prepare */
+        File workingDirectory = new File("./src/test/resources/create-archives/test1/working-directory");
+        File configFile = new File("./src/test/resources/create-archives/test1/sechub-configuration.json");
+        String json = TestFileSupport.loadTextFile(configFile);
+        SecHubConfigurationModel model = JSONConverter.get().fromJSON(SecHubConfigurationModel.class, json);
+
+        Path tempDir = TestUtil.createTempDirectoryInBuildFolder("create-archives");
+
+        /* execute */
+        ArchivesCreationResult result = supportToTest.createArchives(model, workingDirectory.toPath(), tempDir);
+
+        /* test */
+        assertNotNull(result.getBinaryArchiveFile());
+        assertNotNull(result.getSourceArchiveFile());
+
+        assertTrue(result.isBinaryArchiveCreated());
+        assertTrue(result.isSourceArchiveCreated());
+
+        // check ZIP content
+        Path reverseFolder = TestUtil.createTempDirectoryInBuildFolder("decompressed-reverse-with-fs");
+        Path reverseFolderZip = reverseFolder.resolve("zip");
+        SecHubFileStructureDataProvider codeScanProvider = SecHubFileStructureDataProvider.builder().
+                setModel(model).
+                setScanType(ScanType.CODE_SCAN).
+                build();
+        
+        supportToTest.extract(ZIP, new FileInputStream(result.getSourceArchiveFile().toFile()), result.getSourceArchiveFile().toFile().getAbsolutePath(),
+                reverseFolderZip.toFile(), codeScanProvider);
+
+        expectedExtractedFilesAreAllFoundInOutputDirectory(reverseFolderZip.toFile(),
+                TestFileSupport.loadFilesAsFileList(expectedCreateArchivesTest1DecompressWithFileStructureZip),
+                expectedCreateArchivesTest1DecompressWithFileStructureZip);
+
+        // check TAR content
+        SecHubFileStructureDataProvider licenseScanProvider = SecHubFileStructureDataProvider.builder().
+                setModel(model).
+                setScanType(ScanType.LICENSE_SCAN).
+                build();
+
+        Path reverseFolderTar = reverseFolder.resolve("tar");
+        supportToTest.extract(TAR, new FileInputStream(result.getBinaryArchiveFile().toFile()), result.getBinaryArchiveFile().toFile().getAbsolutePath(),
+                reverseFolderTar.toFile(), licenseScanProvider);
+
+        expectedExtractedFilesAreAllFoundInOutputDirectory(reverseFolderTar.toFile(),
+                TestFileSupport.loadFilesAsFileList(expectedCreateArchivesTest1DecompressWithFileStructureTar),
+                expectedCreateArchivesTest1DecompressWithFileStructureTar);
+
     }
 
     @Test
@@ -370,12 +479,33 @@ class ArchiveSupportTest {
         List<String> relativePathExpected = reduceToRelativePath(allExpectedFiles, expectedOutputBaseFolder);
         List<String> relativePathExtracted = reduceToRelativePath(allExtractedFiles, outputDirectory);
 
+        if (allExpectedFiles.size() != allExtractedFiles.size()) {
+            StringBuilder sb = new StringBuilder();
+            sb.append("Amount of files did differs: Expected:").append(allExpectedFiles.size() + " but was:" + allExtractedFiles.size());
+            sb.append("\n\nExpected files:\n");
+            dump(allExpectedFiles, sb);
+            sb.append("\n\nExtracted files:\n");
+            dump(allExtractedFiles, sb);
+            fail(sb.toString());
+            assertEquals(allExpectedFiles.size(), allExtractedFiles.size(), "Amount of files did differ!");
+        }
         for (String expected : relativePathExpected) {
             if (!relativePathExtracted.contains(expected)) {
-                fail("did not found " + expected + " inside: " + relativePathExtracted + "\nOutput was at:" + outputDirectory.getAbsolutePath());
+                StringBuilder sb = new StringBuilder();
+                sb.append("did not found '").append(expected).append("' inside:");
+                dump(relativePathExtracted, sb);
+                sb.append("\n\nOutput location:").append(outputDirectory.getAbsolutePath());
+                fail(sb.toString());
             }
         }
-        assertEquals(allExtractedFiles.size(), allExpectedFiles.size(), "Amount of files did differ!");
+    }
+
+    private void dump(List<?> list, StringBuilder sb) {
+        int i = 0;
+        for (Object entry : list) {
+            i++;
+            sb.append("\n  - (").append(i).append(") ").append(entry);
+        }
     }
 
     private List<String> reduceToRelativePath(List<File> files, File parentFolder) {

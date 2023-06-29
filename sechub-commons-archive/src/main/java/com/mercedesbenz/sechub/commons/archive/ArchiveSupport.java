@@ -9,7 +9,16 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.nio.file.FileSystem;
+import java.nio.file.FileSystems;
 import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.PathMatcher;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Set;
 import java.util.zip.ZipInputStream;
 
 import org.apache.commons.compress.archivers.ArchiveEntry;
@@ -19,10 +28,19 @@ import org.apache.commons.compress.archivers.ArchiveOutputStream;
 import org.apache.commons.compress.archivers.ArchiveStreamFactory;
 import org.apache.commons.compress.archivers.tar.TarArchiveEntry;
 import org.apache.commons.compress.archivers.tar.TarArchiveInputStream;
+import org.apache.commons.compress.archivers.tar.TarArchiveOutputStream;
 import org.apache.commons.compress.archivers.zip.ZipArchiveEntry;
 import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.mercedesbenz.sechub.commons.archive.ArchiveCreationContext.CreationPathContext;
+import com.mercedesbenz.sechub.commons.model.SecHubCodeScanConfiguration;
+import com.mercedesbenz.sechub.commons.model.SecHubConfigurationModel;
+import com.mercedesbenz.sechub.commons.model.SecHubDataConfiguration;
+import com.mercedesbenz.sechub.commons.model.SecHubDataConfigurationObject;
+import com.mercedesbenz.sechub.commons.model.SecHubFileSystemConfiguration;
+import com.mercedesbenz.sechub.commons.model.SecHubFileSystemContainer;
 
 public class ArchiveSupport {
 
@@ -35,22 +53,197 @@ public class ArchiveSupport {
         this.archiveTransformationDataFactory = new ArchiveTransformationDataFactory();
     }
 
-    public ArchiveExtractionResult extract(ArchiveType type, InputStream sourceInputStream, String sourceLocation, File outputDir,
-            SecHubFileStructureDataProvider configuration) throws IOException {
-        if (type == null) {
+    /**
+     * Extract given archive type to output directory by
+     * 
+     * @param archiveType
+     * @param sourceInputStream
+     * @param sourceLocation            the path for the given source input stream.
+     *                                  This information is only used in case of
+     *                                  failures to print out the location - means
+     *                                  only for debugging/error handling
+     * @param outputDir
+     * @param fileStructureDataProvider used to transform/filter the extraction. If
+     *                                  <code>null</code>, a fallback will be used
+     *                                  which does no transformation or filtering
+     * 
+     * @return extraction result
+     * 
+     * @throws IOException
+     */
+    public ArchiveExtractionResult extract(ArchiveType archiveType, InputStream sourceInputStream, String sourceLocation, File outputDir,
+            SecHubFileStructureDataProvider fileStructureDataProvider) throws IOException {
+        if (archiveType == null) {
             throw new IllegalArgumentException("archive type must be defined!");
         }
-        switch (type) {
+        switch (archiveType) {
         case TAR:
-            return extractTar(sourceInputStream, sourceLocation, outputDir, configuration);
+            return extractTar(sourceInputStream, sourceLocation, outputDir, fileStructureDataProvider);
         case ZIP:
-            return extractZip(sourceInputStream, sourceLocation, outputDir, configuration);
+            return extractZip(sourceInputStream, sourceLocation, outputDir, fileStructureDataProvider);
         default:
-            throw new IllegalArgumentException("archive type " + type + " is not supported");
+            throw new IllegalArgumentException("archive type " + archiveType + " is not supported");
 
         }
     }
 
+    /**
+     * Creates all necessary archives for a given SecHub configuration
+     * 
+     * @param configuration    the sechub configuration
+     * @param workingDirectory the directory where the configuration relative paths
+     *                         starts from
+     * @param targetFolder     the directory where the archives shall be created. If
+     *                         not existing and archive files are created, the
+     *                         target folder will be created automatically.
+     * @return {@link ArchivesCreationResult}
+     * @throws IOException
+     */
+    public ArchivesCreationResult createArchives(SecHubConfigurationModel configuration, Path workingDirectory, Path targetFolder) throws IOException {
+        if (configuration == null) {
+            throw new IllegalArgumentException("configuration may not be null!");
+        }
+        if (workingDirectory == null) {
+            throw new IllegalArgumentException("workingDirectory may not be null!");
+        }
+        if (targetFolder == null) {
+            throw new IllegalArgumentException("targetFolder may not be null!");
+        }
+
+        ArchivesCreationResult result = new ArchivesCreationResult();
+        File sourceArchiveFile = createArchive(ArchiveType.ZIP, configuration, workingDirectory, targetFolder);
+        if (sourceArchiveFile != null) {
+            result.sourceArchiveFile = sourceArchiveFile.toPath();
+        }
+
+        File binaryArchiveFile = createArchive(ArchiveType.TAR, configuration, workingDirectory, targetFolder);
+        if (binaryArchiveFile != null) {
+            result.binaryArchiveFile = binaryArchiveFile.toPath();
+        }
+
+        return result;
+    }
+
+    private File createArchive(ArchiveType archiveType, SecHubConfigurationModel configuration, Path workingDirectory, Path targetFolder) throws IOException {
+        ArchiveCreationContext creationContext = new ArchiveCreationContext(archiveType, targetFolder);
+        collectLegacySetupForCodeScan(configuration, creationContext);
+        collectDataParts(configuration, creationContext);
+
+        if (creationContext.isEmpty()) {
+            return null;
+        }
+        LOG.debug("Start creating {} archive: {}", archiveType, creationContext.getArchiveFile());
+        try (ArchiveOutputStream outputStream = new ArchiveStreamFactory().createArchiveOutputStream(archiveType.getType(),
+                new FileOutputStream(creationContext.getArchiveFile()))) {
+
+            if (outputStream instanceof TarArchiveOutputStream) {
+                @SuppressWarnings("resource")
+                TarArchiveOutputStream tarOutputStream = (TarArchiveOutputStream) outputStream;
+                tarOutputStream.setLongFileMode(TarArchiveOutputStream.LONGFILE_POSIX);
+            }
+
+            Map<String, CreationPathContext> uniqueNameToPathes = creationContext.getUniqueToPathsMap();
+            Path workingDirectoryRealPath = workingDirectory.toRealPath();
+
+            for (Entry<String, CreationPathContext> entry : uniqueNameToPathes.entrySet()) {
+
+                String uniqueName = entry.getKey();
+                CreationPathContext creationPathContext = entry.getValue();
+                Set<String> pathes = creationPathContext.getPathes();
+
+                for (String relativePathFromConfiguration : pathes) {
+
+                    File file = new File(workingDirectoryRealPath.toFile(), relativePathFromConfiguration);
+                    if (!file.exists()) {
+                        throw new FileNotFoundException("Did not found: " + relativePathFromConfiguration + " inside " + workingDirectory);
+                    }
+                    String pathAddition;
+                    if (ArchiveCreationContext.LEGACY_IDENTIFIER_UNIQUE_NAME.equals(uniqueName)) {
+                        pathAddition = null;
+                    } else {
+                        pathAddition = ArchiveConstants.DATA_SECTION_FOLDER + uniqueName;
+                    }
+                    compressRecursively(workingDirectoryRealPath.toString(), outputStream, file, archiveType, pathAddition, creationPathContext);
+                    LOG.debug("Create archive entry with relative prefix: {}. Origin file/folder: {}", pathAddition, file);
+                }
+
+            }
+
+            outputStream.finish();
+
+        } catch (ArchiveException e) {
+            throw new IOException("Was not able to create: " + creationContext.getArchiveFile(), e);
+        }
+
+        return creationContext.getArchiveFile();
+    }
+
+    private void collectDataParts(SecHubConfigurationModel configuration, ArchiveCreationContext creationContext) {
+        if (configuration.getData().isEmpty()) {
+            return;
+        }
+        SecHubDataConfiguration data = configuration.getData().get();
+
+        switch (creationContext.getArchiveType()) {
+        case TAR:
+            collectBaseFoldersAndFiles(data.getBinaries(), creationContext);
+            break;
+        case ZIP:
+            collectBaseFoldersAndFiles(data.getSources(), creationContext);
+            break;
+        default:
+            LOG.error("Unsupported archive type: {}", creationContext.getArchiveType());
+            break;
+        }
+    }
+
+    private void collectBaseFoldersAndFiles(List<? extends SecHubFileSystemContainer> fileSystemContainers, ArchiveCreationContext creationContext) {
+        for (SecHubFileSystemContainer fileSystemContainer : fileSystemContainers) {
+            if (fileSystemContainer.getFileSystem().isEmpty()) {
+                continue;
+            }
+            String uniqueName = ArchiveCreationContext.LEGACY_IDENTIFIER_UNIQUE_NAME;
+            if (fileSystemContainer instanceof SecHubDataConfigurationObject) {
+                SecHubDataConfigurationObject configObject = (SecHubDataConfigurationObject) fileSystemContainer;
+                uniqueName = configObject.getUniqueName();
+            } else {
+                LOG.warn("No unique name found inside a data section entry - should not happen! Will use legacy identifier as fallback!");
+            }
+            SecHubFileSystemConfiguration fileSystem = fileSystemContainer.getFileSystem().get();
+            creationContext.addBaseFolderOrFilePaths(uniqueName, fileSystem.getFiles(), fileSystemContainer.getIncludes(), fileSystemContainer.getExcludes());
+            creationContext.addBaseFolderOrFilePaths(uniqueName, fileSystem.getFolders(), fileSystemContainer.getIncludes(), fileSystemContainer.getExcludes());
+        }
+
+    }
+
+    private void collectLegacySetupForCodeScan(SecHubConfigurationModel configuration, ArchiveCreationContext creationContext) {
+        if (!ArchiveType.ZIP.equals(creationContext.getArchiveType())) {
+            return;
+        }
+        if (configuration.getCodeScan().isEmpty()) {
+            return;
+        }
+        SecHubCodeScanConfiguration codeScan = configuration.getCodeScan().get();
+        if (codeScan.getFileSystem().isEmpty()) {
+            return;
+        }
+        SecHubFileSystemConfiguration fileSystem = codeScan.getFileSystem().get();
+        creationContext.addBaseFolderOrFilePaths(ArchiveCreationContext.LEGACY_IDENTIFIER_UNIQUE_NAME, fileSystem.getFiles(), codeScan.getIncludes(),
+                codeScan.getExcludes());
+        creationContext.addBaseFolderOrFilePaths(ArchiveCreationContext.LEGACY_IDENTIFIER_UNIQUE_NAME, fileSystem.getFolders(), codeScan.getIncludes(),
+                codeScan.getExcludes());
+
+    }
+
+    /**
+     * Simple archive compression - does only compress a given folder to a given
+     * target file. No special data structure transformation.
+     * 
+     * @param type
+     * @param folder
+     * @param targetArchiveFile
+     * @throws IOException
+     */
     public void compressFolder(ArchiveType type, File folder, File targetArchiveFile) throws IOException {
         requireNonNull(type, "type may not be null!");
         requireNonNull(folder, "folder may not be null!");
@@ -71,11 +264,17 @@ public class ArchiveSupport {
         }
 
         try (ArchiveOutputStream outputStream = new ArchiveStreamFactory().createArchiveOutputStream(type.getType(), new FileOutputStream(targetArchiveFile))) {
-            String basePath = folder.getAbsolutePath();
+            String basePath = folder.toPath().toRealPath().toString();
 
-            compressRecursively(basePath, outputStream, folder, type);
+            if (outputStream instanceof TarArchiveOutputStream) {
+                /* in this case we activate long file support */
+                @SuppressWarnings("resource")
+                TarArchiveOutputStream tarArchiveOutputStream = (TarArchiveOutputStream) outputStream;
+                tarArchiveOutputStream.setLongFileMode(TarArchiveOutputStream.LONGFILE_POSIX);
+            }
+            compressRecursively(basePath, outputStream, folder, type, null, null);
 
-            outputStream.closeArchiveEntry();
+            outputStream.finish();
 
             LOG.debug("Compressed folder: {} into {} archive: {}", folder, type, targetArchiveFile);
 
@@ -85,48 +284,91 @@ public class ArchiveSupport {
 
     }
 
-    private void compressRecursively(String basePath, ArchiveOutputStream outputStream, File folder, ArchiveType type) throws IOException {
-        for (File child : folder.listFiles()) {
-            if (child.isDirectory()) {
-
-                compressRecursively(basePath, outputStream, child, type);
-
-            } else {
-
-                String parentPath = child.getParentFile().getAbsolutePath();
-                String relativeFromBasePath = parentPath.substring(basePath.length());
-                String relativePath = "./" + relativeFromBasePath + "/" + child.getName();
-
-                ArchiveEntry entry = null;
-                switch (type) {
-                case TAR:
-                    entry = new TarArchiveEntry(child, relativePath);
-                    break;
-                case ZIP:
-                    entry = new ZipArchiveEntry(child, relativePath);
-                    break;
-                default:
-                    throw new IllegalStateException("Unsupported type:" + type);
-                }
-                /* write archive entry */
-                outputStream.putArchiveEntry(entry);
-
-                /* write entry data */
-                try (InputStream i = Files.newInputStream(child.toPath())) {
-                    IOUtils.copy(i, outputStream);
+    private void compressRecursively(String basePath, ArchiveOutputStream outputStream, File file, ArchiveType type, String pathAddition,
+            CreationPathContext creationPathContext ) throws IOException {
+        
+        if (creationPathContext!=null) {
+            if (creationPathContext.isExcluded(file)) {
+                /* shall be excluded */
+                if (!creationPathContext.isIncluded(file)) {
+                    /* exclude not overriden by include filter */
+                    return;
                 }
             }
+        }
+        if (file.isDirectory()) {
+            for (File child : file.listFiles()) {
+                compressRecursively(basePath, outputStream, child, type, pathAddition, creationPathContext);
+            }
+        } else {
+            String relativePath;
+
+            String parentPath = file.getParentFile().toPath().toRealPath().toString();
+            String relativeFromBasePath = parentPath.substring(basePath.length());
+            relativePath = (pathAddition == null ? "" : pathAddition) + relativeFromBasePath + "/" + file.getName();
+            if (relativePath.isEmpty()) {
+                LOG.error("Relative path is empty");
+                return;
+            }
+            if (relativePath.startsWith("./")) {
+                relativePath = relativePath.substring(1);
+            }
+
+            Path.of(relativePath).toAbsolutePath();
+            if (LOG.isDebugEnabled()) {
+                /* @formatter:off */
+                    String logText = """
+                        Compress
+                            - pathAddition         :{}
+                            - basePath             :{}
+                            - parentPath           :{}
+                            - file to compress     :{}
+                            - relativeFromBasePath :{}
+                            - relativePath         :{}
+                            """;
+                    
+                    LOG.debug(logText, 
+                            pathAddition,
+                            basePath, 
+                            parentPath,
+                            file, 
+                            relativeFromBasePath, 
+                            relativePath 
+                            );
+                    /* @formatter:on */
+            }
+
+            ArchiveEntry entry = null;
+            switch (type) {
+            case TAR:
+                entry = new TarArchiveEntry(file, relativePath);
+                break;
+            case ZIP:
+                entry = new ZipArchiveEntry(file, relativePath);
+                break;
+            default:
+                throw new IllegalStateException("Unsupported type:" + type);
+            }
+            /* write archive entry */
+            outputStream.putArchiveEntry(entry);
+
+            /* write entry data */
+            try (InputStream inputStream = Files.newInputStream(file.toPath())) {
+                IOUtils.copy(inputStream, outputStream);
+            }
+            outputStream.closeArchiveEntry();
+
         }
 
     }
 
     private ArchiveExtractionResult extractTar(InputStream sourceInputStream, String sourceLocation, File outputDir,
-            SecHubFileStructureDataProvider configuration) throws IOException {
+            SecHubFileStructureDataProvider fileStructureProvider) throws IOException {
         try (ArchiveInputStream archiveInputStream = new ArchiveStreamFactory().createArchiveInputStream("tar", sourceInputStream)) {
             if (!(archiveInputStream instanceof TarArchiveInputStream)) {
                 throw new IOException("Cannot extract: " + sourceLocation + " because it is not a tar tar");
             }
-            return extract(archiveInputStream, sourceLocation, outputDir, configuration);
+            return extract(archiveInputStream, sourceLocation, outputDir, fileStructureProvider);
 
         } catch (ArchiveException e) {
             throw new IOException("Was not able to extract tar:" + sourceLocation + " at " + outputDir, e);
@@ -172,7 +414,7 @@ public class ArchiveSupport {
     }
 
     private ArchiveExtractionResult extract(ArchiveInputStream sourceArchiveInputStream, String sourceLocation, File outputDir,
-            SecHubFileStructureDataProvider configuration) throws ArchiveException, IOException {
+            SecHubFileStructureDataProvider fileStructureProvider) throws ArchiveException, IOException {
 
         ArchiveExtractionResult result = new ArchiveExtractionResult();
         result.targetLocation = outputDir.getAbsolutePath();
@@ -185,7 +427,7 @@ public class ArchiveSupport {
                 throw new IllegalStateException("Entry path is null - cannot be handled!");
             }
 
-            ArchiveTransformationData data = createTransformationData(configuration, name);
+            ArchiveTransformationData data = createTransformationData(fileStructureProvider, name);
             if (data == null) {
                 continue;
             }
@@ -277,6 +519,29 @@ public class ArchiveSupport {
         public String getType() {
             return type;
         }
+    }
+
+    public class ArchivesCreationResult {
+
+        private Path sourceArchiveFile;
+        private Path binaryArchiveFile;
+
+        public Path getBinaryArchiveFile() {
+            return binaryArchiveFile;
+        }
+
+        public Path getSourceArchiveFile() {
+            return sourceArchiveFile;
+        }
+
+        public boolean isBinaryArchiveCreated() {
+            return binaryArchiveFile != null && Files.exists(binaryArchiveFile);
+        }
+
+        public boolean isSourceArchiveCreated() {
+            return sourceArchiveFile != null && Files.exists(sourceArchiveFile);
+        }
+
     }
 
     private static class KeepAsIsTransformationData implements ArchiveTransformationData {

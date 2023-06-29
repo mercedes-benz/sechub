@@ -1,9 +1,13 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.api;
 
+import static com.mercedesbenz.sechub.commons.core.util.FileAttributesUtil.*;
 import static java.util.Objects.*;
 
 import java.net.URI;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.attribute.PosixFilePermission;
 import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.Callable;
@@ -17,6 +21,7 @@ import com.fasterxml.jackson.databind.json.JsonMapper;
 import com.mercedesbenz.sechub.api.internal.ApiClientBuilder;
 import com.mercedesbenz.sechub.api.internal.OpenApiSecHubClientConversionHelper;
 import com.mercedesbenz.sechub.api.internal.WorkaroundAdminApi;
+import com.mercedesbenz.sechub.api.internal.WorkaroundProjectApi;
 import com.mercedesbenz.sechub.api.internal.gen.AdminApi;
 import com.mercedesbenz.sechub.api.internal.gen.AnonymousApi;
 import com.mercedesbenz.sechub.api.internal.gen.ProjectApi;
@@ -30,7 +35,10 @@ import com.mercedesbenz.sechub.api.internal.gen.model.OpenApiExecutorConfigurati
 import com.mercedesbenz.sechub.api.internal.gen.model.OpenApiJobId;
 import com.mercedesbenz.sechub.api.internal.gen.model.OpenApiProjectDetails;
 import com.mercedesbenz.sechub.api.internal.gen.model.OpenApiScanJob;
+import com.mercedesbenz.sechub.commons.archive.ArchiveSupport;
+import com.mercedesbenz.sechub.commons.archive.ArchiveSupport.ArchivesCreationResult;
 import com.mercedesbenz.sechub.commons.core.RunOrFail;
+import com.mercedesbenz.sechub.commons.core.security.CheckSumSupport;
 import com.mercedesbenz.sechub.commons.core.security.CryptoAccess;
 import com.mercedesbenz.sechub.commons.model.JSONConverter;
 import com.mercedesbenz.sechub.commons.model.JsonMapperFactory;
@@ -54,6 +62,9 @@ public class SecHubClient {
     private boolean trustAll;
 
     private CryptoAccess<String> apiTokenAccess = new CryptoAccess<>();
+    private ArchiveSupport archiveSupport = new ArchiveSupport();
+    private CheckSumSupport checkSumSupport = new CheckSumSupport();
+
     private ApiClient apiClient;
     private AnonymousApi anonymousApi;
     private AdminApi adminApi;
@@ -62,6 +73,8 @@ public class SecHubClient {
     private WorkaroundAdminApi workaroundAdminApi;
 
     private OpenApiSecHubClientConversionHelper conversionHelper;
+
+    private WorkaroundProjectApi workaroundProjectApi;
 
     public SecHubClient(URI serverUri, String username, String apiToken) {
         this(serverUri, username, apiToken, false);
@@ -77,9 +90,12 @@ public class SecHubClient {
         apiClient = new ApiClientBuilder().createApiClient(this, mapper);
 
         anonymousApi = new AnonymousApi(getApiClient());
+
         adminApi = new AdminApi(getApiClient());
         workaroundAdminApi = new WorkaroundAdminApi(getApiClient());
+
         projectApi = new ProjectApi(getApiClient());
+        workaroundProjectApi = new WorkaroundProjectApi(getApiClient());
 
         conversionHelper = new OpenApiSecHubClientConversionHelper(adminApi);
     }
@@ -140,6 +156,57 @@ public class SecHubClient {
         requireNonNull(profile, "profile may not be null!");
 
         runOrFail(() -> adminApi.adminCreatesExecutionProfile(profileName, profile.getDelegate()), "Was not able to create profile:" + profileName);
+    }
+
+    /* ++++++++++++++++++++++++++++++++++++++++++++++++++++ */
+    /* + ................Upload.......................... + */
+    /* ++++++++++++++++++++++++++++++++++++++++++++++++++++ */
+
+    /**
+     * Uploads data as defined in given configuration
+     * 
+     * @param projectId        the project id
+     * @param jobUUID          SecHub Job UUID
+     * @param configuration    SecHub Job configuration (contains information about
+     *                         upload behavior (e.g. paths etc.)
+     * @param workingDirectory directory where the relative paths inside
+     *                         configuration model shall start from
+     * @throws SecHubClientException
+     */
+    public void upload(String projectId, UUID jobUUID, SecHubConfigurationModel configuration, Path workingDirectory) throws SecHubClientException {
+        requireNonNull(projectId, "projectId may not be null!");
+        requireNonNull(configuration, "configuration may not be null!");
+
+        Path uploadDirectory = runOrFail(
+                () -> Files.createTempDirectory("sechub_client_upload", createFileAttributes(PosixFilePermission.OWNER_READ, PosixFilePermission.OWNER_WRITE)),
+                "Temp directory creation was not possible");
+
+        ArchivesCreationResult createArchiveResult = runOrFail(() -> archiveSupport.createArchives(configuration, workingDirectory, uploadDirectory),
+                "Cannot create archives!");
+        uploadSources(projectId, jobUUID, createArchiveResult);
+        uploadBinaries(projectId, jobUUID, createArchiveResult);
+    }
+
+    private void uploadBinaries(String projectId, UUID jobUUID, ArchivesCreationResult createArchiveResult) throws SecHubClientException {
+        if (!createArchiveResult.isBinaryArchiveCreated()) {
+            return;
+        }
+        Path tarFile = createArchiveResult.getBinaryArchiveFile();
+
+        String filesize = String.valueOf(tarFile.toFile().length());
+        String checksum = checkSumSupport.createSha256Checksum(tarFile);
+
+        runOrFail(() -> workaroundProjectApi.userUploadsBinaries(projectId, jobUUID.toString(), checksum, filesize, tarFile.toFile()), "Binary upload (tar)");
+    }
+
+    private void uploadSources(String projectId, UUID jobUUID, ArchivesCreationResult createArchiveResult) throws SecHubClientException {
+        if (!createArchiveResult.isSourceArchiveCreated()) {
+            return;
+        }
+        Path zipFile = createArchiveResult.getSourceArchiveFile();
+        String checksum = checkSumSupport.createSha256Checksum(zipFile);
+
+        runOrFail(() -> workaroundProjectApi.userUploadsSourceCode(projectId, jobUUID.toString(), checksum, zipFile.toFile()), "Source upload (zip)");
     }
 
     /* ++++++++++++++++++++++++++++++++++++++++++++++++++++ */

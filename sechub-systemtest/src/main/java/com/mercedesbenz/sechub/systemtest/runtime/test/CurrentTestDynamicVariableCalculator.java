@@ -6,6 +6,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.mercedesbenz.sechub.systemtest.config.CalculatedVariables;
 import com.mercedesbenz.sechub.systemtest.config.TestDefinition;
 import com.mercedesbenz.sechub.systemtest.runtime.LocationSupport;
@@ -13,6 +16,8 @@ import com.mercedesbenz.sechub.systemtest.runtime.SystemTestRuntimeContext;
 import com.mercedesbenz.sechub.systemtest.runtime.variable.DynamicVariableCalculator;
 
 public class CurrentTestDynamicVariableCalculator implements DynamicVariableCalculator {
+
+    private static final Logger LOG = LoggerFactory.getLogger(CurrentTestDynamicVariableCalculator.class);
 
     private TestDefinition test;
     private SystemTestRuntimeContext context;
@@ -38,6 +43,7 @@ public class CurrentTestDynamicVariableCalculator implements DynamicVariableCalc
             result = result.substring(0, pos) + testFolder.toString() + result.substring(end);
 
         }
+        LOG.debug("Calculated value: {} is replaced by {}", value, result);
         return result;
     }
 

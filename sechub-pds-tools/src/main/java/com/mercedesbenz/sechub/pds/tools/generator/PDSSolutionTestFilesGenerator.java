@@ -8,6 +8,7 @@ import java.nio.file.Files;
 
 import com.mercedesbenz.sechub.commons.TextFileReader;
 import com.mercedesbenz.sechub.commons.TextFileWriter;
+import com.mercedesbenz.sechub.commons.archive.ArchiveSupport;
 import com.mercedesbenz.sechub.commons.model.JSONConverter;
 import com.mercedesbenz.sechub.commons.model.JSONConverterException;
 import com.mercedesbenz.sechub.commons.model.ScanType;
@@ -17,9 +18,7 @@ import com.mercedesbenz.sechub.commons.pds.PDSDefaultParameterKeyConstants;
 import com.mercedesbenz.sechub.commons.pds.data.PDSJobData;
 import com.mercedesbenz.sechub.commons.pds.data.PDSJobParameterEntry;
 import com.mercedesbenz.sechub.pds.tools.handler.ConsoleHandler;
-import com.mercedesbenz.sechub.pds.tools.handler.ConsoleOutputHandler;
 import com.mercedesbenz.sechub.pds.tools.handler.PrintStreamConsoleHandler;
-import com.mercedesbenz.sechub.systemtest.util.SystemTestUploadFilesSupport;
 
 public class PDSSolutionTestFilesGenerator {
 
@@ -83,10 +82,8 @@ public class PDSSolutionTestFilesGenerator {
             String recucedSecHubConfigJson = writeReducedConfigFile();
             writePDSJobDataFile(recucedSecHubConfigJson);
 
-            SystemTestUploadFilesSupport uploadSupport = new SystemTestUploadFilesSupport(originConfigFile.getParentFile(), targetFolder);
-            uploadSupport.setOutputHandler(new ConsoleOutputHandler(getConsoleHandler()));
-
-            uploadSupport.createUploadFilesAsConfiguredInSecHubConfigFile(config, scanType);
+            ArchiveSupport archiveSupport = new ArchiveSupport();
+            archiveSupport.createArchives(config, originConfigFile.getParentFile().toPath(), targetFolder.toPath());
 
             getConsoleHandler().output("Written files to:" + targetFolder.getAbsolutePath());
             return targetFolder;

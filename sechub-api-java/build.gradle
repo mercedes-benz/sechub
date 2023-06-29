@@ -13,6 +13,7 @@ plugins {
 
 dependencies {
     implementation project(':sechub-commons-model')
+    implementation project(':sechub-commons-archive')
     
     testImplementation project(':sechub-testframework')
     testImplementation spring_boot_dependency.junit_jupiter

@@ -1,5 +1,7 @@
 package com.mercedesbenz.sechub.systemtest.runtime.test;
 
+import java.io.File;
+import java.nio.file.Path;
 import java.util.List;
 import java.util.UUID;
 
@@ -92,6 +94,15 @@ public class SystemTestRuntimeTestEngine {
             jobUUID = clientForScheduling.createJob(configuration);
         }
         LOG.debug("SecHub job {} created", jobUUID);
+        
+        /* FIXME Albert Tregnaghi, 2023-06-29: calculation is missing here. we must get data from test setup etc. and link to defined folder */
+        Path workingDirectory = new File("./src/test/java/").toPath();//testEngineContext.getTest().get;
+        LOG.debug("Start upload job data. Use working directory:{}", workingDirectory);
+        if (runtimeContext.isDryRun()) {
+            LOG.debug("Skip job upload");
+        } else {
+            clientForScheduling.upload(configuration.getProjectId(), jobUUID, configuration, workingDirectory);
+        }
 
         return jobUUID;
 
