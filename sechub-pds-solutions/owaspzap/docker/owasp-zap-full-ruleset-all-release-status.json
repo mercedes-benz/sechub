@@ -1,5 +1,5 @@
 {
-  "timestamp" : "2022-11-07 16:05:01.860710",
+  "timestamp" : "2023-07-03 09:09:26.333556",
   "origin" : "https://www.zaproxy.org/docs/alerts/",
   "rules" : {
     "Directory-Browsing-0" : {
@@ -362,9 +362,9 @@
       "type" : "passive",
       "link" : "https://www.zaproxy.org/docs/alerts/10098"
     },
-    "Source-Code-Disclosure-10099" : {
+    "Source-Code-Disclosure-PHP-10099" : {
       "id" : "10099",
-      "name" : "Source Code Disclosure",
+      "name" : "Source Code Disclosure - PHP",
       "type" : "passive",
       "link" : "https://www.zaproxy.org/docs/alerts/10099"
     },
@@ -415,6 +415,24 @@
       "name" : "Dangerous JS Functions",
       "type" : "passive",
       "link" : "https://www.zaproxy.org/docs/alerts/10110"
+    },
+    "Authentication-Request-Identified-10111" : {
+      "id" : "10111",
+      "name" : "Authentication Request Identified",
+      "type" : "passive",
+      "link" : "https://www.zaproxy.org/docs/alerts/10111"
+    },
+    "Session-Management-Response-Identified-10112" : {
+      "id" : "10112",
+      "name" : "Session Management Response Identified",
+      "type" : "passive",
+      "link" : "https://www.zaproxy.org/docs/alerts/10112"
+    },
+    "Verification-Request-Identified-10113" : {
+      "id" : "10113",
+      "name" : "Verification Request Identified",
+      "type" : "passive",
+      "link" : "https://www.zaproxy.org/docs/alerts/10113"
     },
     "Absence-of-Anti-CSRF-Tokens-10202" : {
       "id" : "10202",
@@ -691,6 +709,12 @@
       "name" : "Spring4Shell",
       "type" : "active",
       "link" : "https://www.zaproxy.org/docs/alerts/40045"
+    },
+    "Server-Side-Request-Forgery-40046" : {
+      "id" : "40046",
+      "name" : "Server Side Request Forgery",
+      "type" : "active",
+      "link" : "https://www.zaproxy.org/docs/alerts/40046"
     },
     "Text4shell-(CVE-2022-42889)-40047" : {
       "id" : "40047",
