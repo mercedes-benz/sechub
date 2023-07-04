@@ -13,3 +13,4 @@ https://github.com/zaproxy/zap-extensions/releases/download/spider-v0.4.0/spider
 https://github.com/zaproxy/zap-extensions/releases/download/database-v0.1.0/database-alpha-0.1.0.zap
 https://github.com/zaproxy/zap-extensions/releases/download/oast-v0.15.0/oast-beta-0.15.0.zap
 https://github.com/zaproxy/zap-extensions/releases/download/reports-v0.22.0/reports-release-0.22.0.zap
+https://github.com/zaproxy/zap-extensions/releases/download/replacer-v12/replacer-release-12.zap
