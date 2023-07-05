@@ -10,6 +10,7 @@ import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.util.List;
 import java.util.Optional;
+import java.util.regex.Pattern;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -19,9 +20,11 @@ import org.zaproxy.clientapi.core.ApiResponseList;
 import org.zaproxy.clientapi.core.ClientApi;
 import org.zaproxy.clientapi.core.ClientApiException;
 
+import com.mercedesbenz.sechub.commons.model.HTTPHeaderConfiguration;
 import com.mercedesbenz.sechub.commons.model.SecHubMessage;
 import com.mercedesbenz.sechub.commons.model.SecHubMessageType;
 import com.mercedesbenz.sechub.commons.model.SecHubWebScanApiConfiguration;
+import com.mercedesbenz.sechub.commons.model.SecHubWebScanConfiguration;
 import com.mercedesbenz.sechub.owaspzapwrapper.cli.ZapWrapperExitCode;
 import com.mercedesbenz.sechub.owaspzapwrapper.cli.ZapWrapperRuntimeException;
 import com.mercedesbenz.sechub.owaspzapwrapper.config.OwaspZapScanContext;
@@ -36,6 +39,9 @@ import com.mercedesbenz.sechub.owaspzapwrapper.helper.ScanDurationHelper;
 
 public abstract class AbstractScan implements OwaspZapScan {
     private static final Logger LOG = LoggerFactory.getLogger(AbstractScan.class);
+
+    private static final String QUOTED_WEBSCAN_URL_WILDCARD_SYMBOL = Pattern.quote(SecHubWebScanConfiguration.WEBSCAN_URL_WILDCARD_SYMBOL);
+    private static final Pattern PATTERN_QUOTED_WEBSCAN_URL_WILDCARD_SYMBOL = Pattern.compile(QUOTED_WEBSCAN_URL_WILDCARD_SYMBOL);
 
     private static final int CHECK_SCAN_STATUS_TIME_IN_MILLISECONDS = 3000;
 
@@ -64,6 +70,7 @@ public abstract class AbstractScan implements OwaspZapScan {
         try {
             scanUnsafe();
         } catch (ClientApiException e) {
+            cleanUp();
             throw new ZapWrapperRuntimeException("For scan: " + scanContext.getContextName() + ". An error occured while scanning!", e,
                     ZapWrapperExitCode.PRODUCT_EXECUTION_ERROR);
         }
@@ -266,11 +273,21 @@ public abstract class AbstractScan implements OwaspZapScan {
 
     }
 
-    protected void cleanUp() throws ClientApiException {
+    protected void cleanUp() {
         // to ensure parts from previous scan are deleted
-        LOG.info("Cleaning up by starting new and empty session...", scanContext.getContextName());
-        clientApi.core.newSession("Cleaned after scan", "true");
-        LOG.info("Cleanup successful.");
+        try {
+            LOG.info("Cleaning up by starting new and empty session...", scanContext.getContextName());
+            clientApi.core.newSession("Cleaned after scan", "true");
+            LOG.info("New and empty session inside Owasp Zap created.");
+
+            // Replacer rules are persistent even after restarting OWASP ZAP
+            // This means we need to cleanUp after every scan.
+            LOG.info("Start cleaning up replacer rules.");
+            cleanUpReplacerRules();
+            LOG.info("Cleanup successful.");
+        } catch (ClientApiException e) {
+            LOG.error("For scan: {}. An error occurred during the clean up, because: {}", scanContext.getContextName(), e.getMessage());
+        }
     }
 
     protected void setupBasicConfiguration() throws ClientApiException {
@@ -369,6 +386,52 @@ public abstract class AbstractScan implements OwaspZapScan {
         return sitesList.getItems().size() > 0;
     }
 
+    protected void addReplacerRulesForHeaders() throws ClientApiException {
+        if (scanContext.getSecHubWebScanConfiguration().getHeaders().isEmpty()) {
+            LOG.info("No headers were configured inside the sechub webscan configuration.");
+            return;
+        }
+
+        // description specifies the rule name, which will be set later in this method
+        String description = null;
+
+        String enabled = "true";
+        // "REQ_HEADER" means the header entry will be added to the requests if not
+        // existing or replaced if already existing
+        String matchtype = "REQ_HEADER";
+        String matchregex = "false";
+
+        // matchstring and replacement will be set to the header name and header value
+        String matchstring = null;
+        String replacement = null;
+
+        // setting initiators to null means all initiators (ZAP components),
+        // this means spider, active scan, etc will send this rule for their requests.
+        String initiators = null;
+        // default URL is null which means the header would be send on any request to
+        // any URL
+        String url = null;
+        List<HTTPHeaderConfiguration> httpHeaders = scanContext.getSecHubWebScanConfiguration().getHeaders().get();
+        LOG.info("For scan {}: Applying header configuration.", scanContext.getContextName());
+        for (HTTPHeaderConfiguration httpHeader : httpHeaders) {
+            matchstring = httpHeader.getName();
+            replacement = httpHeader.getValue();
+
+            if (httpHeader.getOnlyForUrls().isEmpty()) {
+                // if there are no onlyForUrl patterns, there is only one rule for each header
+                description = httpHeader.getName();
+                clientApi.replacer.addRule(description, enabled, matchtype, matchregex, matchstring, replacement, initiators, url);
+            } else {
+                for (String onlyForUrl : httpHeader.getOnlyForUrls().get()) {
+                    // we need to create a rule for each onlyForUrl pattern on each header
+                    description = onlyForUrl;
+                    url = replaceWildCardsInUrlWithRegex(onlyForUrl);
+                    clientApi.replacer.addRule(description, enabled, matchtype, matchregex, matchstring, replacement, initiators, url);
+                }
+            }
+        }
+    }
+
     private void writeUserMessagesWithScannedURLs(List<ApiResponse> spiderResults) {
         for (ApiResponse result : spiderResults) {
             String url = result.toString();
@@ -393,6 +456,7 @@ public abstract class AbstractScan implements OwaspZapScan {
         deactivateRules();
         setupAdditonalProxyConfiguration();
         createContext();
+        addReplacerRulesForHeaders();
 
         /* OWASP ZAP setup with access to target */
         addIncludedAndExcludedUrlsToContext();
@@ -486,6 +550,29 @@ public abstract class AbstractScan implements OwaspZapScan {
         for (URL url : scanContext.getOwaspZapURLsExcludeList()) {
             clientApi.context.excludeFromContext(scanContext.getContextName(), url + ".*");
         }
+    }
+
+    private void cleanUpReplacerRules() throws ClientApiException {
+        if (scanContext.getSecHubWebScanConfiguration().getHeaders().isEmpty()) {
+            return;
+        }
+
+        List<HTTPHeaderConfiguration> httpHeaders = scanContext.getSecHubWebScanConfiguration().getHeaders().get();
+        for (HTTPHeaderConfiguration httpHeader : httpHeaders) {
+            if (httpHeader.getOnlyForUrls().isEmpty()) {
+                String description = httpHeader.getName();
+                clientApi.replacer.removeRule(description);
+            } else {
+                for (String onlyForUrl : httpHeader.getOnlyForUrls().get()) {
+                    String description = onlyForUrl;
+                    clientApi.replacer.removeRule(description);
+                }
+            }
+        }
+    }
+
+    private String replaceWildCardsInUrlWithRegex(String onlyForUrl) {
+        return PATTERN_QUOTED_WEBSCAN_URL_WILDCARD_SYMBOL.matcher(onlyForUrl).replaceAll(".*");
     }
 
     /**

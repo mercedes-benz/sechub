@@ -118,6 +118,7 @@ public abstract class AbstractAuthScan extends AbstractScan implements AuthScan 
         deactivateRules();
         setupAdditonalProxyConfiguration();
         createContext();
+        addReplacerRulesForHeaders();
 
         /* OWASP ZAP setup with access to target */
         addIncludedAndExcludedUrlsToContext();
