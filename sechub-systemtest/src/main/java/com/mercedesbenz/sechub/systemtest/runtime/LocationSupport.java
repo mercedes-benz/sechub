@@ -1,5 +1,6 @@
 package com.mercedesbenz.sechub.systemtest.runtime;
 
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -19,45 +20,115 @@ public class LocationSupport {
     private Path sechubSolutionRoot;
     private Path workspaceRoot;
 
-    public LocationSupport(String pdsSolutionsRootFolder, String sechubSolutionRootFolder, String workspaceRootFolder) {
-        if (pdsSolutionsRootFolder == null) {
-            try {
-                pdsSolutionsRootFolder = Files.createTempDirectory("systemtest_pds_solution_rootfolder_fallback").toString();
-            } catch (IOException e) {
-                throw new SystemTestRuntimeException("Cannot create pds solution rootfolder fallback", e);
-            }
-        }
-        try {
-            pdsSolutionsRoot = Paths.get(pdsSolutionsRootFolder).toAbsolutePath().toRealPath();
-        } catch (IOException e) {
-            throw new IllegalStateException("Cannot determine real path for " + pdsSolutionsRootFolder, e);
-        }
-        LOG.debug("PDS solution root:{}", pdsSolutionsRoot);
-        if (sechubSolutionRootFolder != null) {
-            try {
-                sechubSolutionRoot = Paths.get(pdsSolutionsRootFolder).toAbsolutePath().toRealPath();
-            } catch (IOException e) {
-                throw new IllegalStateException("Cannot determine real path for " + sechubSolutionRoot, e);
-            }
-        } else {
-            sechubSolutionRoot = pdsSolutionsRoot.getParent().resolve("sechub-solution");
-        }
-        LOG.debug("SecHub solution root:{}", sechubSolutionRoot);
+    private Path additionalResourcesRoot;
 
-        if (workspaceRootFolder != null) {
-            try {
-                workspaceRoot = Paths.get(workspaceRootFolder).toAbsolutePath().toRealPath();
-            } catch (IOException e) {
-                throw new IllegalStateException("Cannot determine real path for " + sechubSolutionRoot, e);
-            }
-        } else {
-            try {
-                workspaceRoot = Files.createTempDirectory("systemtest_workspace");
-            } catch (IOException e) {
-                throw new SystemTestRuntimeException("Cannot create workspace root", e);
-            }
+    public static LocationSupportBuilder builder() {
+        return new LocationSupportBuilder();
+    }
+
+    public static class LocationSupportBuilder {
+        private String pdsSolutionsRootFolder;
+        private String sechubSolutionRootFolder;
+        private String workspaceRootFolder;
+        private String additionalResourcesFolder;
+
+        private LocationSupportBuilder() {
+
         }
-        LOG.debug("Workspace root:{}", workspaceRoot);
+
+        public LocationSupportBuilder pdsSolutionRootFolder(String pdsSolutionsRootFolder) {
+            this.pdsSolutionsRootFolder = pdsSolutionsRootFolder;
+            return this;
+        }
+
+        public LocationSupportBuilder sechubSolutionRootFolder(String sechubSolutionRootFolder) {
+            this.sechubSolutionRootFolder = sechubSolutionRootFolder;
+            return this;
+        }
+
+        public LocationSupportBuilder workspaceRootFolder(String workspaceRootFolder) {
+            this.workspaceRootFolder = workspaceRootFolder;
+            return this;
+        }
+
+        public LocationSupportBuilder additionalResourcesFolder(String additionalResourcesFolder) {
+            this.additionalResourcesFolder = additionalResourcesFolder;
+            return this;
+        }
+
+        public LocationSupport build() {
+            LocationSupport support = new LocationSupport();
+
+            initPDSSolutionRootFolder(support);
+            initSecHubSolutionRootFolder(support);
+            initWorkspaceRootFolder(support);
+            initAdditionalResourcesFolder(support);
+
+            return support;
+        }
+
+        private void initAdditionalResourcesFolder(LocationSupport support) {
+            if (additionalResourcesFolder != null) {
+                try {
+                    support.additionalResourcesRoot = Paths.get(additionalResourcesFolder).toAbsolutePath().toRealPath();
+                } catch (IOException e) {
+                    throw new IllegalStateException("Cannot determine real path for additional resources folder: " + additionalResourcesFolder, e);
+                }
+            } else {
+                support.additionalResourcesRoot = new File("./").toPath();
+            }
+            LOG.debug("Additional resource folder:{}", support.additionalResourcesRoot);
+        }
+
+        private void initWorkspaceRootFolder(LocationSupport support) {
+            if (workspaceRootFolder != null) {
+                try {
+                    support.workspaceRoot = Paths.get(workspaceRootFolder).toAbsolutePath().toRealPath();
+                } catch (IOException e) {
+                    throw new IllegalStateException("Cannot determine real path for wokspace root folder: " + workspaceRootFolder, e);
+                }
+            } else {
+                try {
+                    support.workspaceRoot = Files.createTempDirectory("systemtest_workspace");
+                } catch (IOException e) {
+                    throw new SystemTestRuntimeException("Cannot create workspace root", e);
+                }
+            }
+            LOG.debug("Workspace root:{}", support.workspaceRoot);
+        }
+
+        private void initSecHubSolutionRootFolder(LocationSupport support) {
+            if (sechubSolutionRootFolder != null) {
+                try {
+                    support.sechubSolutionRoot = Paths.get(pdsSolutionsRootFolder).toAbsolutePath().toRealPath();
+                } catch (IOException e) {
+                    throw new IllegalStateException("Cannot determine real path for pds solutions root folder: " + pdsSolutionsRootFolder, e);
+                }
+            } else {
+                support.sechubSolutionRoot = support.pdsSolutionsRoot.getParent().resolve("sechub-solution");
+            }
+            LOG.debug("SecHub solution root:{}", support.sechubSolutionRoot);
+        }
+
+        private void initPDSSolutionRootFolder(LocationSupport support) {
+            if (pdsSolutionsRootFolder == null) {
+                try {
+                    pdsSolutionsRootFolder = Files.createTempDirectory("systemtest_pds_solution_rootfolder_fallback").toString();
+                } catch (IOException e) {
+                    throw new SystemTestRuntimeException("Cannot create pds solution rootfolder fallback", e);
+                }
+            }
+            try {
+                support.pdsSolutionsRoot = Paths.get(pdsSolutionsRootFolder).toAbsolutePath().toRealPath();
+            } catch (IOException e) {
+                throw new IllegalStateException("Cannot determine real path for " + pdsSolutionsRootFolder, e);
+            }
+            LOG.debug("PDS solution root:{}", support.pdsSolutionsRoot);
+        }
+    }
+
+    private LocationSupport() {
+
     }
 
     public Path getPDSSolutionRoot() {
@@ -72,16 +143,24 @@ public class LocationSupport {
         return workspaceRoot;
     }
 
+    public Path getAdditionalResourcesRoot() {
+        return additionalResourcesRoot;
+    }
+
     public Path ensureOutputFile(ProcessContainer processContainer) {
-        return ensureProcessRuntimeFile(processContainer, "output.txt");
+        return ensureProcessRuntimeFileRealPath(processContainer, "output.txt");
     }
 
     public Path ensureErrorFile(ProcessContainer processContainer) {
-        return ensureProcessRuntimeFile(processContainer, "error.txt");
+        return ensureProcessRuntimeFileRealPath(processContainer, "error.txt");
+    }
+
+    public Path ensureProcessContainerErrorFile(ProcessContainer processContainer) {
+        return ensureProcessRuntimeFileRealPath(processContainer, "process-container-error.txt");
     }
 
     public Path ensureProcessContainerFile(ProcessContainer processContainer) {
-        return ensureProcessRuntimeFile(processContainer, "process-container.json");
+        return ensureProcessRuntimeFileRealPath(processContainer, "process-container.json");
     }
 
     /**
@@ -94,73 +173,75 @@ public class LocationSupport {
         return workspaceRoot.resolve(".runtime");
     }
 
-    private Path ensureProcessRuntimeFile(ProcessContainer processContainer, String fileName) {
-        Path processFolder = ensureProcessFolder(processContainer);
+    private Path ensureProcessRuntimeFileRealPath(ProcessContainer processContainer, String fileName) {
+        Path processFolder = ensureProcessFolderRealPath(processContainer);
         Path processRuntimeFile = processFolder.resolve(fileName);
-        if (!Files.exists(processRuntimeFile)) {
-            try {
-                Files.createFile(processRuntimeFile);
-            } catch (IOException e) {
-                throw new SystemTestRuntimeException("Was not able to create process runtime file:" + processRuntimeFile, e);
-            }
-        }
-        return processRuntimeFile;
+        return assertFileAndReturnRealPath(processRuntimeFile);
     }
 
-    private Path ensureProcessFolder(ProcessContainer processContainer) {
-        Path runtimeFolder = ensureRuntimeFolder();
-        Path processFolder = runtimeFolder.resolve("process-container#"+processContainer.getNumber()+"["+processContainer.getUuid().toString()+"]");
-        if (!Files.exists(processFolder)) {
-            try {
-                Files.createDirectories(processFolder);
-            } catch (IOException e) {
-                throw new SystemTestRuntimeException("Was not able to create process folder:" + processFolder, e);
-            }
-        }
-        return processFolder;
+    private Path ensureProcessFolderRealPath(ProcessContainer processContainer) {
+        Path runtimeFolder = ensureRuntimeFolderRealPath();
+        Path processFolder = runtimeFolder.resolve("process-container#" + processContainer.getNumber() + "[" + processContainer.getUuid().toString() + "]");
+        return assertFolderAndReturnRealPath(processFolder);
     }
 
-    private Path ensureRuntimeFolder() {
+    public Path ensureRuntimeFolderRealPath() {
         Path runtimeFolder = getRuntimeFolder();
-        try {
-            if (!Files.exists(runtimeFolder)) {
-                Files.createDirectories(runtimeFolder);
-            }
-            return runtimeFolder.toRealPath();
-        } catch (IOException e) {
-            throw new SystemTestRuntimeException("Was not able to create runtime folder:" + runtimeFolder, e);
-        }
+        return assertFolderAndReturnRealPath(runtimeFolder);
     }
 
-    public Path ensureTestFolder(TestDefinition test) {
+    public Path ensureTestWorkingDirectoryRealPath(TestDefinition test) {
         String testName = test.getName();
         if (testName == null) {
             throw new IllegalStateException("test name is null- may not happen!");
         }
         Path tests = getWorkspaceTestsFolder();
         Path testFolder = tests.resolve(testName);
-        try {
-            Files.createDirectories(testFolder);
-            return testFolder.toRealPath();
-
-        } catch (IOException e) {
-            throw new SystemTestRuntimeException("Not able to ensure test folder for test: " + testName + " inside workspace root: " + workspaceRoot, e);
-        }
-
+        return assertFolderAndReturnRealPath(testFolder);
     }
 
     private Path getWorkspaceTestsFolder() {
         Path workspaceRoot = getWorkspaceRoot();
         Path tests = workspaceRoot.resolve("tests");
+        return assertFolderAndReturnRealPath(tests);
+    }
 
-        if (!Files.exists(tests)) {
+    private Path assertFileAndReturnRealPath(Path file) {
+        if (!Files.exists(file)) {
             try {
-                Files.createDirectories(tests);
+                Files.createFile(file);
             } catch (IOException e) {
-                throw new SystemTestRuntimeException("Not able to ensure tests folder inside workspace root: " + workspaceRoot, e);
+                throw new SystemTestRuntimeException("Was not able to create:" + file, e);
             }
         }
-        return tests;
+        return convertFileToRealPath(file);
+    }
+
+    private Path convertFileToRealPath(Path file) {
+        try {
+            return file.toRealPath();
+        } catch (IOException e) {
+            throw new IllegalStateException("Was not able to ensure real path for file: " + file, e);
+        }
+    }
+
+    private Path assertFolderAndReturnRealPath(Path folder) {
+        if (!Files.exists(folder)) {
+            try {
+                Files.createDirectories(folder);
+            } catch (IOException e) {
+                throw new SystemTestRuntimeException("Was not able to create folder:" + folder, e);
+            }
+        }
+        return convertFolderToRealPath(folder);
+    }
+
+    private Path convertFolderToRealPath(Path folder) {
+        try {
+            return folder.toRealPath();
+        } catch (IOException e) {
+            throw new IllegalStateException("Was not able to ensure real path for folder: " + folder, e);
+        }
     }
 
 }

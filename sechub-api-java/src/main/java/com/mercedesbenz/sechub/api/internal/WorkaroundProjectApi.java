@@ -12,25 +12,30 @@
 
 package com.mercedesbenz.sechub.api.internal;
 
-import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
+import java.net.http.HttpRequest.BodyPublisher;
 import java.net.http.HttpResponse;
+import java.nio.file.Path;
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.StringJoiner;
 import java.util.function.Consumer;
 
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.mercedesbenz.sechub.api.SecHubReport;
 import com.mercedesbenz.sechub.api.internal.gen.ProjectApi;
 import com.mercedesbenz.sechub.api.internal.gen.invoker.ApiClient;
 import com.mercedesbenz.sechub.api.internal.gen.invoker.ApiException;
 import com.mercedesbenz.sechub.api.internal.gen.invoker.ApiResponse;
 import com.mercedesbenz.sechub.api.internal.gen.invoker.Pair;
+import com.mercedesbenz.sechub.api.internal.net.MultiPartBodyPublisherBuilder;
+import com.mercedesbenz.sechub.commons.core.CommonConstants;
 
 /**
  * Some parts of the generated {@link ProjectApi} do not work well - it seems
@@ -39,10 +44,10 @@ import com.mercedesbenz.sechub.api.internal.gen.invoker.Pair;
  * problematic public methods from AdminApi will be added. So it is clear were
  * the problems lie and what must be fixed in open api definition file
  * generation in 'sechub-doc'.
- * 
+ *
  * Attention: We do ONLY use this class and its methods were necessary. The
- * origina class shall when the methods there work without any problems (means
- * new generated stuff is available)
+ * origin class shall be used when the methods there work without any problems
+ * (means new generated stuff is available)
  *
  * @author Albert Tregnaghi
  *
@@ -54,6 +59,7 @@ public class WorkaroundProjectApi {
     private final Consumer<HttpRequest.Builder> memberVarInterceptor;
     private final Duration memberVarReadTimeout;
     private final Consumer<HttpResponse<InputStream>> memberVarResponseInterceptor;
+    private ObjectMapper memberVarObjectMapper;
 
     public WorkaroundProjectApi() {
         this(new ApiClient());
@@ -65,6 +71,7 @@ public class WorkaroundProjectApi {
         memberVarInterceptor = apiClient.getRequestInterceptor();
         memberVarReadTimeout = apiClient.getReadTimeout();
         memberVarResponseInterceptor = apiClient.getResponseInterceptor();
+        memberVarObjectMapper = apiClient.getObjectMapper();
     }
 
     protected ApiException getApiException(String operationId, HttpResponse<InputStream> response) throws IOException {
@@ -93,7 +100,7 @@ public class WorkaroundProjectApi {
      * @param file      File to upload...
      * @throws ApiException if fails to make API call
      */
-    public void userUploadsBinaries(String projectId, String jobUUID, String checkSum, String xFileSize, File file) throws ApiException {
+    public void userUploadsBinaries(String projectId, String jobUUID, String checkSum, String xFileSize, Path file) throws ApiException {
         userUploadsBinariesWithHttpInfo(projectId, jobUUID, checkSum, xFileSize, file);
     }
 
@@ -111,7 +118,7 @@ public class WorkaroundProjectApi {
      * @return ApiResponse&lt;Void&gt;
      * @throws ApiException if fails to make API call
      */
-    public ApiResponse<Void> userUploadsBinariesWithHttpInfo(String projectId, String jobUUID, String checkSum, String xFileSize, File file)
+    public ApiResponse<Void> userUploadsBinariesWithHttpInfo(String projectId, String jobUUID, String checkSum, String xFileSize, Path file)
             throws ApiException {
         HttpRequest.Builder localVarRequestBuilder = userUploadsBinariesRequestBuilder(projectId, jobUUID, checkSum, xFileSize, file);
         try {
@@ -140,7 +147,7 @@ public class WorkaroundProjectApi {
         }
     }
 
-    private HttpRequest.Builder userUploadsBinariesRequestBuilder(String projectId, String jobUUID, String checkSum, String xFileSize, File file)
+    private HttpRequest.Builder userUploadsBinariesRequestBuilder(String projectId, String jobUUID, String checkSum, String xFileSize, Path file)
             throws ApiException {
         // verify the required parameter 'projectId' is set
         if (projectId == null) {
@@ -166,7 +173,10 @@ public class WorkaroundProjectApi {
 
         List<Pair> localVarQueryParams = new ArrayList<>();
         StringJoiner localVarQueryStringJoiner = new StringJoiner("&");
-        localVarQueryParams.addAll(ApiClient.parameterToPairs("checkSum", checkSum));
+        /* workaround2 - we need no query params */
+        // generated but wrong:
+        // localVarQueryParams.addAll(ApiClient.parameterToPairs("checkSum", checkSum));
+        /* workaround 2 end */
 
         if (!localVarQueryParams.isEmpty() || localVarQueryStringJoiner.length() != 0) {
             StringJoiner queryJoiner = new StringJoiner("&");
@@ -188,12 +198,21 @@ public class WorkaroundProjectApi {
             localVarRequestBuilder.timeout(memberVarReadTimeout);
         }
         /* workaround start: upload the given file ... */
-        try {
-            localVarRequestBuilder.POST(HttpRequest.BodyPublishers.ofFile(file.toPath()));
-        } catch (FileNotFoundException e) {
-            throw new ApiException(e);
-        }
+        /* @formatter:off */
+        MultiPartBodyPublisherBuilder builder = new MultiPartBodyPublisherBuilder().
+            addFile(CommonConstants.MULTIPART_FILE, file).
+            addString(CommonConstants.FILE_SIZE_HEADER_FIELD_NAME, xFileSize).
+            addString(CommonConstants.MULTIPART_CHECKSUM, checkSum);
+
+        BodyPublisher publisher = builder.build();
+
+        localVarRequestBuilder.setHeader("Content-Type","multipart/form-data;boundary="+builder.getBoundary());
+
+        /* @formatter:on */
+        localVarRequestBuilder.POST(publisher);
+
         /* workaround end */
+
         if (memberVarInterceptor != null) {
             memberVarInterceptor.accept(localVarRequestBuilder);
         }
@@ -211,7 +230,7 @@ public class WorkaroundProjectApi {
      * @param file      File to upload...
      * @throws ApiException if fails to make API call
      */
-    public void userUploadsSourceCode(String projectId, String jobUUID, String checkSum, File file) throws ApiException {
+    public void userUploadsSourceCode(String projectId, String jobUUID, String checkSum, Path file) throws ApiException {
         userUploadsSourceCodeWithHttpInfo(projectId, jobUUID, checkSum, file);
     }
 
@@ -227,7 +246,7 @@ public class WorkaroundProjectApi {
      * @return ApiResponse&lt;Void&gt;
      * @throws ApiException if fails to make API call
      */
-    public ApiResponse<Void> userUploadsSourceCodeWithHttpInfo(String projectId, String jobUUID, String checkSum, File file) throws ApiException {
+    public ApiResponse<Void> userUploadsSourceCodeWithHttpInfo(String projectId, String jobUUID, String checkSum, Path file) throws ApiException {
         HttpRequest.Builder localVarRequestBuilder = userUploadsSourceCodeRequestBuilder(projectId, jobUUID, checkSum, file);
         try {
             HttpResponse<InputStream> localVarResponse = memberVarHttpClient.send(localVarRequestBuilder.build(), HttpResponse.BodyHandlers.ofInputStream());
@@ -254,7 +273,7 @@ public class WorkaroundProjectApi {
         }
     }
 
-    private HttpRequest.Builder userUploadsSourceCodeRequestBuilder(String projectId, String jobUUID, String checkSum, File file) throws ApiException {
+    private HttpRequest.Builder userUploadsSourceCodeRequestBuilder(String projectId, String jobUUID, String checkSum, Path file) throws ApiException {
         // verify the required parameter 'projectId' is set
         if (projectId == null) {
             throw new ApiException(400, "Missing the required parameter 'projectId' when calling userUploadsSourceCode");
@@ -275,8 +294,10 @@ public class WorkaroundProjectApi {
 
         List<Pair> localVarQueryParams = new ArrayList<>();
         StringJoiner localVarQueryStringJoiner = new StringJoiner("&");
-        localVarQueryParams.addAll(ApiClient.parameterToPairs("checkSum", checkSum));
-
+        /* workaround4 - we need no query params */
+        // generated but wrong:
+        // localVarQueryParams.addAll(ApiClient.parameterToPairs("checkSum", checkSum));
+        /* workaround 4 end */
         if (!localVarQueryParams.isEmpty() || localVarQueryStringJoiner.length() != 0) {
             StringJoiner queryJoiner = new StringJoiner("&");
             localVarQueryParams.forEach(p -> queryJoiner.add(p.getName() + '=' + p.getValue()));
@@ -293,17 +314,103 @@ public class WorkaroundProjectApi {
         if (memberVarReadTimeout != null) {
             localVarRequestBuilder.timeout(memberVarReadTimeout);
         }
-        /* workaround start: upload the given file ... */
-        try {
-            localVarRequestBuilder.POST(HttpRequest.BodyPublishers.ofFile(file.toPath()));
-        } catch (FileNotFoundException e) {
-            throw new ApiException(e);
-        }
-        /* workaround end */
-        
+        /* workaround3 start: upload the given file ... */
+        /* @formatter:off */
+        MultiPartBodyPublisherBuilder builder = new MultiPartBodyPublisherBuilder().
+            addFile(CommonConstants.MULTIPART_FILE, file).
+            addString(CommonConstants.MULTIPART_CHECKSUM, checkSum);
+
+        BodyPublisher publisher = builder.build();
+
+        localVarRequestBuilder.setHeader("Content-Type","multipart/form-data;boundary="+builder.getBoundary());
+
+        /* @formatter:on */
+        localVarRequestBuilder.POST(publisher);
+        /* workaround3 end */
+
         if (memberVarInterceptor != null) {
             memberVarInterceptor.accept(localVarRequestBuilder);
         }
         return localVarRequestBuilder;
     }
+
+    /*
+     * Workaround5: use SecHubReport as object instead of Object, so object mapper
+     * works as epxected
+     */
+    /**
+     * User downloads sechub job report User downloads sechub job report
+     *
+     * @param projectId The project Id (required)
+     * @param jobUUID   The job UUID (required)
+     * @return Object
+     * @throws ApiException if fails to make API call
+     */
+    public SecHubReport userDownloadsJobReport(String projectId, String jobUUID) throws ApiException {
+        ApiResponse<SecHubReport> localVarResponse = userDownloadsJobReportWithHttpInfo(projectId, jobUUID);
+        return localVarResponse.getData();
+    }
+
+    /**
+     * User downloads sechub job report User downloads sechub job report
+     *
+     * @param projectId The project Id (required)
+     * @param jobUUID   The job UUID (required)
+     * @return ApiResponse&lt;Object&gt;
+     * @throws ApiException if fails to make API call
+     */
+    public ApiResponse<SecHubReport> userDownloadsJobReportWithHttpInfo(String projectId, String jobUUID) throws ApiException {
+        HttpRequest.Builder localVarRequestBuilder = userDownloadsJobReportRequestBuilder(projectId, jobUUID);
+        try {
+            HttpResponse<InputStream> localVarResponse = memberVarHttpClient.send(localVarRequestBuilder.build(), HttpResponse.BodyHandlers.ofInputStream());
+            if (memberVarResponseInterceptor != null) {
+                memberVarResponseInterceptor.accept(localVarResponse);
+            }
+            try {
+                if (localVarResponse.statusCode() / 100 != 2) {
+                    throw getApiException("userDownloadsJobReport", localVarResponse);
+                }
+                return new ApiResponse<SecHubReport>(localVarResponse.statusCode(), localVarResponse.headers().map(),
+                        localVarResponse.body() == null ? null : memberVarObjectMapper.readValue(localVarResponse.body(), new TypeReference<SecHubReport>() {
+                        }) // closes the InputStream
+                );
+            } finally {
+            }
+        } catch (IOException e) {
+            throw new ApiException(e);
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+            throw new ApiException(e);
+        }
+    }
+
+    private HttpRequest.Builder userDownloadsJobReportRequestBuilder(String projectId, String jobUUID) throws ApiException {
+        // verify the required parameter 'projectId' is set
+        if (projectId == null) {
+            throw new ApiException(400, "Missing the required parameter 'projectId' when calling userDownloadsJobReport");
+        }
+        // verify the required parameter 'jobUUID' is set
+        if (jobUUID == null) {
+            throw new ApiException(400, "Missing the required parameter 'jobUUID' when calling userDownloadsJobReport");
+        }
+
+        HttpRequest.Builder localVarRequestBuilder = HttpRequest.newBuilder();
+
+        String localVarPath = "/api/project/{projectId}/report/{jobUUID}".replace("{projectId}", ApiClient.urlEncode(projectId.toString())).replace("{jobUUID}",
+                ApiClient.urlEncode(jobUUID.toString()));
+
+        localVarRequestBuilder.uri(URI.create(memberVarBaseUri + localVarPath));
+
+        localVarRequestBuilder.header("Accept", "application/json, text/html;charset&#x3D;UTF-8");
+
+        localVarRequestBuilder.method("GET", HttpRequest.BodyPublishers.noBody());
+        if (memberVarReadTimeout != null) {
+            localVarRequestBuilder.timeout(memberVarReadTimeout);
+        }
+        if (memberVarInterceptor != null) {
+            memberVarInterceptor.accept(localVarRequestBuilder);
+        }
+        return localVarRequestBuilder;
+    }
+    /* end workaround 5 */
 }

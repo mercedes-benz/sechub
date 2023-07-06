@@ -3,7 +3,7 @@ package com.mercedesbenz.sechub.systemtest.runtime.variable;
 import java.util.List;
 import java.util.Map;
 
-public class KeepAsIsDynamicVariableCalculator implements DynamicVariableCalculator {
+public class KeepAsIsDynamicVariableCalculator implements VariableCalculator {
 
     @Override
     public String calculateValue(String value) {

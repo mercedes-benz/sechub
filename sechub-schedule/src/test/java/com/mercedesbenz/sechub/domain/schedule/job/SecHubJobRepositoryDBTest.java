@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.domain.schedule.job;
 
-import static com.mercedesbenz.sechub.domain.schedule.ExecutionState.*;
+import static com.mercedesbenz.sechub.commons.model.job.ExecutionState.*;
 import static com.mercedesbenz.sechub.domain.schedule.job.JobCreator.*;
 import static com.mercedesbenz.sechub.test.FlakyOlderThanTestWorkaround.*;
 import static org.junit.jupiter.api.Assertions.*;
@@ -30,7 +30,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import com.mercedesbenz.sechub.commons.model.ModuleGroup;
-import com.mercedesbenz.sechub.domain.schedule.ExecutionState;
+import com.mercedesbenz.sechub.commons.model.job.ExecutionState;
 import com.mercedesbenz.sechub.test.TestUtil;
 
 @ExtendWith(SpringExtension.class)

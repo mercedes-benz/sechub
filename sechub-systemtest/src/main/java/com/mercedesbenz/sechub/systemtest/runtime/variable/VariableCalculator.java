@@ -3,7 +3,7 @@ package com.mercedesbenz.sechub.systemtest.runtime.variable;
 import java.util.List;
 import java.util.Map;
 
-public interface DynamicVariableCalculator {
+public interface VariableCalculator {
 
     public String calculateValue(String value);
 

@@ -53,7 +53,7 @@ class ArchiveSupportTest {
 
         expectedCreateArchivesTest1DecompressWithoutFileStructureZip = ensureCreateArchivesTest1("expected-decompress-without-filestructure-provider/zip");
         expectedCreateArchivesTest1DecompressWithoutFileStructureTar = ensureCreateArchivesTest1("expected-decompress-without-filestructure-provider/tar");
-        
+
         expectedCreateArchivesTest1DecompressWithFileStructureZip = ensureCreateArchivesTest1("expected-decompress-with-filestructure-provider/zip");
         expectedCreateArchivesTest1DecompressWithFileStructureTar = ensureCreateArchivesTest1("expected-decompress-with-filestructure-provider/tar");
     }
@@ -141,11 +141,8 @@ class ArchiveSupportTest {
         // check ZIP content
         Path reverseFolder = TestUtil.createTempDirectoryInBuildFolder("decompressed-reverse-with-fs");
         Path reverseFolderZip = reverseFolder.resolve("zip");
-        SecHubFileStructureDataProvider codeScanProvider = SecHubFileStructureDataProvider.builder().
-                setModel(model).
-                setScanType(ScanType.CODE_SCAN).
-                build();
-        
+        SecHubFileStructureDataProvider codeScanProvider = SecHubFileStructureDataProvider.builder().setModel(model).setScanType(ScanType.CODE_SCAN).build();
+
         supportToTest.extract(ZIP, new FileInputStream(result.getSourceArchiveFile().toFile()), result.getSourceArchiveFile().toFile().getAbsolutePath(),
                 reverseFolderZip.toFile(), codeScanProvider);
 
@@ -154,10 +151,8 @@ class ArchiveSupportTest {
                 expectedCreateArchivesTest1DecompressWithFileStructureZip);
 
         // check TAR content
-        SecHubFileStructureDataProvider licenseScanProvider = SecHubFileStructureDataProvider.builder().
-                setModel(model).
-                setScanType(ScanType.LICENSE_SCAN).
-                build();
+        SecHubFileStructureDataProvider licenseScanProvider = SecHubFileStructureDataProvider.builder().setModel(model).setScanType(ScanType.LICENSE_SCAN)
+                .build();
 
         Path reverseFolderTar = reverseFolder.resolve("tar");
         supportToTest.extract(TAR, new FileInputStream(result.getBinaryArchiveFile().toFile()), result.getBinaryArchiveFile().toFile().getAbsolutePath(),

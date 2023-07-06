@@ -38,10 +38,10 @@ import com.mercedesbenz.sechub.api.internal.gen.model.OpenApiExecutorConfigurati
  * public methods from AdminApi will be added. So it is clear were the problems
  * lie and what must be fixed in open api definition file generation in
  * 'sechub-doc'
- * 
+ *
  * Attention: We do ONLY use this class and its methods were necessary. The
- * origina class shall when the methods there work without any problems (means
- * new generated stuff is available)
+ * origin class shall be used when the methods there work without any problems
+ * (means new generated stuff is available)
  *
  * @author Albert Tregnaghi
  *
@@ -140,8 +140,6 @@ public class WorkaroundAdminApi {
         return operationId + " call failed with: " + statusCode + " - " + body;
     }
 
-    
-
     private HttpRequest.Builder adminCreatesExecutorConfigurationRequestBuilder(OpenApiExecutorConfiguration openApiExecutorConfiguration) throws ApiException {
 
         HttpRequest.Builder localVarRequestBuilder = HttpRequest.newBuilder();
@@ -168,6 +166,4 @@ public class WorkaroundAdminApi {
         return localVarRequestBuilder;
     }
 
-    
-   
 }

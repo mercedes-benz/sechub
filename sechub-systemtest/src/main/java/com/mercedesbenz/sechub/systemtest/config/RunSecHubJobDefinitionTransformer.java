@@ -13,6 +13,12 @@ import com.mercedesbenz.sechub.commons.model.SecHubSourceDataConfiguration;
 
 public class RunSecHubJobDefinitionTransformer {
 
+    /**
+     * Transforms a given SecHub job definition to a configuration model
+     *
+     * @param definition
+     * @return {@link SecHubConfigurationModel} instance
+     */
     public SecHubConfigurationModel transformToSecHubConfiguration(RunSecHubJobDefinition definition) {
         requireNonNull(definition, "The defintion may not be null!");
 

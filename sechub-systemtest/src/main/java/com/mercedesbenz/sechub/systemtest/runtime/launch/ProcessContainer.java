@@ -17,7 +17,7 @@ public class ProcessContainer {
     String outputMessage;
     long pid = -1;
     long number;
-    
+
     @JsonIgnore
     private Process process;
 
@@ -27,14 +27,14 @@ public class ProcessContainer {
     private UUID uuid;
 
     public ProcessContainer(ScriptDefinition scriptDefinition) {
-        
+
         this.stillRunning = true;
         this.scriptDefinition = scriptDefinition;
         this.uuid = UUID.randomUUID();
 
         /* additional stuff to have an ordering of the created process containers */
         amountOfContainers++;
-        this.number=amountOfContainers;
+        this.number = amountOfContainers;
     }
 
     public UUID getUuid() {

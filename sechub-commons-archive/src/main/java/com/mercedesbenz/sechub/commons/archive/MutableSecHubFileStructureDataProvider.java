@@ -67,9 +67,9 @@ public class MutableSecHubFileStructureDataProvider implements SecHubFileStructu
     }
 
     public void setScanType(ScanType scanType) {
-        this.scanType=scanType;
+        this.scanType = scanType;
     }
-    
+
     public ScanType getScanType() {
         return scanType;
     }

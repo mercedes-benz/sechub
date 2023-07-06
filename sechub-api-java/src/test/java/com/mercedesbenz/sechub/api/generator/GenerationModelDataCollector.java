@@ -166,7 +166,8 @@ public class GenerationModelDataCollector {
 
             String missingCode = missingCodeSb.toString();
             if (!missingCode.isEmpty()) {
-                LOG.info("Some generated parts are not marked to generate. Here is a code snippet to add them:\n{}", missingCode);
+                LOG.info("Some generated parts are not marked to generate inside `ApiWrapperObjectsGenerator.java`. Here is a code snippet to add them:\n{}",
+                        missingCode);
             }
         }
     }

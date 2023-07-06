@@ -1,8 +1,19 @@
 package com.mercedesbenz.sechub.systemtest.config;
 
+/**
+ * This kind variables are calculated by system test engine at runtime. The
+ * replacement is not directly exchanged after preparation (like done for
+ * runtime variables) but only for dedicated situations. For example: if you use
+ *
+ * @author Albert Tregnaghi
+ *
+ */
 public enum CalculatedVariables {
 
-    CURRENT_TEST_FOLDER("currentTestFolder");
+    /**
+     * Represents the working directory for the current test
+     */
+    TEST_WORKING_DIRECTORY("testWorkingDirectory");
 
     private String variableName;
 

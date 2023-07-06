@@ -3,7 +3,6 @@ package com.mercedesbenz.sechub.commons.model;
 import java.time.LocalDateTime;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.MapperFeature;
@@ -20,7 +19,7 @@ public class JsonMapperFactory {
             // remove absent parts from Json, so it is more "compact" / without boiler plate
             // code
             serializationInclusion(JsonInclude.Include.NON_EMPTY).
-                
+
             enable(JsonParser.Feature.ALLOW_COMMENTS).
             enable(JsonParser.Feature.ALLOW_SINGLE_QUOTES).
             /*

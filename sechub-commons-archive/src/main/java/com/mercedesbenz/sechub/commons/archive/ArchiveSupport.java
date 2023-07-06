@@ -9,12 +9,9 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.nio.file.FileSystem;
-import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.PathMatcher;
-import java.util.ArrayList;
+import java.nio.file.Paths;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -55,7 +52,7 @@ public class ArchiveSupport {
 
     /**
      * Extract given archive type to output directory by
-     * 
+     *
      * @param archiveType
      * @param sourceInputStream
      * @param sourceLocation            the path for the given source input stream.
@@ -66,9 +63,9 @@ public class ArchiveSupport {
      * @param fileStructureDataProvider used to transform/filter the extraction. If
      *                                  <code>null</code>, a fallback will be used
      *                                  which does no transformation or filtering
-     * 
+     *
      * @return extraction result
-     * 
+     *
      * @throws IOException
      */
     public ArchiveExtractionResult extract(ArchiveType archiveType, InputStream sourceInputStream, String sourceLocation, File outputDir,
@@ -89,7 +86,7 @@ public class ArchiveSupport {
 
     /**
      * Creates all necessary archives for a given SecHub configuration
-     * 
+     *
      * @param configuration    the sechub configuration
      * @param workingDirectory the directory where the configuration relative paths
      *                         starts from
@@ -111,17 +108,38 @@ public class ArchiveSupport {
         }
 
         ArchivesCreationResult result = new ArchivesCreationResult();
-        File sourceArchiveFile = createArchive(ArchiveType.ZIP, configuration, workingDirectory, targetFolder);
-        if (sourceArchiveFile != null) {
-            result.sourceArchiveFile = sourceArchiveFile.toPath();
-        }
+        try {
+            File sourceArchiveFile = createArchive(ArchiveType.ZIP, configuration, workingDirectory, targetFolder);
+            if (sourceArchiveFile != null) {
+                result.sourceArchiveFile = sourceArchiveFile.toPath();
+            }
 
-        File binaryArchiveFile = createArchive(ArchiveType.TAR, configuration, workingDirectory, targetFolder);
-        if (binaryArchiveFile != null) {
-            result.binaryArchiveFile = binaryArchiveFile.toPath();
+            File binaryArchiveFile = createArchive(ArchiveType.TAR, configuration, workingDirectory, targetFolder);
+            if (binaryArchiveFile != null) {
+                result.binaryArchiveFile = binaryArchiveFile.toPath();
+            }
+        } catch (Exception e) {
+            StringBuilder sb = new StringBuilder();
+            sb.append("Create of archives failed");
+            try {
+                deleteArchives(result);
+            } catch (Exception cleanupFailure) {
+                sb.append(" (and auto cleanup of tempoary data also failed: ");
+                sb.append(cleanupFailure.getMessage());
+                sb.append(")");
+            }
+            throw new IOException(sb.toString(), e);
         }
-
         return result;
+    }
+
+    public void deleteArchives(ArchivesCreationResult creationResult) throws IOException {
+        if (creationResult.isBinaryArchiveCreated()) {
+            Files.deleteIfExists(creationResult.getBinaryArchiveFile());
+        }
+        if (creationResult.isSourceArchiveCreated()) {
+            Files.deleteIfExists(creationResult.getSourceArchiveFile());
+        }
     }
 
     private File createArchive(ArchiveType archiveType, SecHubConfigurationModel configuration, Path workingDirectory, Path targetFolder) throws IOException {
@@ -132,9 +150,11 @@ public class ArchiveSupport {
         if (creationContext.isEmpty()) {
             return null;
         }
-        LOG.debug("Start creating {} archive: {}", archiveType, creationContext.getArchiveFile());
+        File archiveFile = creationContext.getArchiveFile();
+        LOG.debug("Start creating {} archive: {}", archiveType, archiveFile);
+
         try (ArchiveOutputStream outputStream = new ArchiveStreamFactory().createArchiveOutputStream(archiveType.getType(),
-                new FileOutputStream(creationContext.getArchiveFile()))) {
+                new FileOutputStream(archiveFile))) {
 
             if (outputStream instanceof TarArchiveOutputStream) {
                 @SuppressWarnings("resource")
@@ -151,12 +171,25 @@ public class ArchiveSupport {
                 CreationPathContext creationPathContext = entry.getValue();
                 Set<String> pathes = creationPathContext.getPathes();
 
-                for (String relativePathFromConfiguration : pathes) {
+                for (String pathAsStringFromConfiguration : pathes) {
 
-                    File file = new File(workingDirectoryRealPath.toFile(), relativePathFromConfiguration);
-                    if (!file.exists()) {
-                        throw new FileNotFoundException("Did not found: " + relativePathFromConfiguration + " inside " + workingDirectory);
+                    File file = null;
+                    Path pathFromConfig = Paths.get(pathAsStringFromConfiguration);
+                    if (pathFromConfig.isAbsolute()) {
+                        if (!pathFromConfig.startsWith(workingDirectoryRealPath)) {
+                            throw new FileNotFoundException(
+                                    "The absolute path: " + pathAsStringFromConfiguration + " is not part of inside " + workingDirectoryRealPath);
+                        }
+                        ;
+                        file = pathFromConfig.toFile();
+
+                    } else {
+                        file = new File(workingDirectoryRealPath.toFile(), pathAsStringFromConfiguration);
+                        if (!file.exists()) {
+                            throw new FileNotFoundException("Did not found: " + pathAsStringFromConfiguration + " inside " + workingDirectory);
+                        }
                     }
+
                     String pathAddition;
                     if (ArchiveCreationContext.LEGACY_IDENTIFIER_UNIQUE_NAME.equals(uniqueName)) {
                         pathAddition = null;
@@ -172,10 +205,10 @@ public class ArchiveSupport {
             outputStream.finish();
 
         } catch (ArchiveException e) {
-            throw new IOException("Was not able to create: " + creationContext.getArchiveFile(), e);
+            throw new IOException("Was not able to create: " + archiveFile, e);
         }
 
-        return creationContext.getArchiveFile();
+        return archiveFile;
     }
 
     private void collectDataParts(SecHubConfigurationModel configuration, ArchiveCreationContext creationContext) {
@@ -238,7 +271,7 @@ public class ArchiveSupport {
     /**
      * Simple archive compression - does only compress a given folder to a given
      * target file. No special data structure transformation.
-     * 
+     *
      * @param type
      * @param folder
      * @param targetArchiveFile
@@ -285,9 +318,9 @@ public class ArchiveSupport {
     }
 
     private void compressRecursively(String basePath, ArchiveOutputStream outputStream, File file, ArchiveType type, String pathAddition,
-            CreationPathContext creationPathContext ) throws IOException {
-        
-        if (creationPathContext!=null) {
+            CreationPathContext creationPathContext) throws IOException {
+
+        if (creationPathContext != null) {
             if (creationPathContext.isExcluded(file)) {
                 /* shall be excluded */
                 if (!creationPathContext.isIncluded(file)) {
@@ -326,14 +359,14 @@ public class ArchiveSupport {
                             - relativeFromBasePath :{}
                             - relativePath         :{}
                             """;
-                    
-                    LOG.debug(logText, 
+
+                    LOG.debug(logText,
                             pathAddition,
-                            basePath, 
+                            basePath,
                             parentPath,
-                            file, 
-                            relativeFromBasePath, 
-                            relativePath 
+                            file,
+                            relativeFromBasePath,
+                            relativePath
                             );
                     /* @formatter:on */
             }

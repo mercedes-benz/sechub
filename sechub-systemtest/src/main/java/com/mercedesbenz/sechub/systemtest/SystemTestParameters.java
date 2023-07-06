@@ -6,11 +6,12 @@ public class SystemTestParameters {
 
     private SystemTestConfiguration configuration;
     private String pathToPdsSolution;
+    private String pathToSechubSolution;
     private String pathToWorkspace;
+    private String pathToAdditionalResources;
     private boolean localRun = true;// default always local
 
     private boolean dryRun;
-    private String pdsServerconfigFileName = "pds-config.json";
 
     public SystemTestConfiguration getConfiguration() {
         return configuration;
@@ -18,6 +19,19 @@ public class SystemTestParameters {
 
     public String getPathToPdsSolution() {
         return pathToPdsSolution;
+    }
+
+    public String getPathToSechubSolution() {
+        return pathToSechubSolution;
+    }
+
+    /**
+     * Returns a path to additional resources - e.g. checkout scripts etc.
+     *
+     * @return path
+     */
+    public String getPathToAdditionalResources() {
+        return pathToAdditionalResources;
     }
 
     public String getPathToWorkspace() {
@@ -30,10 +44,6 @@ public class SystemTestParameters {
 
     public boolean isDryRun() {
         return dryRun;
-    }
-
-    public String getPdsServerconfigFileName() {
-        return pdsServerconfigFileName;
     }
 
     public static SystemTestParametersBuilder builder() {
@@ -57,13 +67,26 @@ public class SystemTestParameters {
             return this;
         }
 
-        public SystemTestParametersBuilder pdsServerConfigFileName(String pdsServerconfigFileName) {
-            parameter.pdsServerconfigFileName = pdsServerconfigFileName;
+        /**
+         * You can use this method to define the SecHub solution path. But this is
+         * normally not necessary : The location support will automatically use a
+         * calculated server location from PDS solution path.
+         *
+         * @param pathToPdsSolution
+         * @return
+         */
+        public SystemTestParametersBuilder secHubSolutionPath(String pathToPdsSolution) {
+            parameter.pathToPdsSolution = pathToPdsSolution;
             return this;
         }
 
         public SystemTestParametersBuilder workspacePath(String pathToWorkspace) {
             parameter.pathToWorkspace = pathToWorkspace;
+            return this;
+        }
+
+        public SystemTestParametersBuilder additionalResourcesPath(String pathToAdditionalResources) {
+            parameter.pathToAdditionalResources = pathToAdditionalResources;
             return this;
         }
 
@@ -91,6 +114,7 @@ public class SystemTestParameters {
         SystemTestParameters build() {
             return parameter;
         }
+
     }
 
 }

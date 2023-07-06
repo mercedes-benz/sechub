@@ -43,26 +43,6 @@ public class ApiWrapperObjectsGenerator {
         runFormatter();
     }
 
-    private void runFormatter() throws IOException, InterruptedException {
-
-        ProcessBuilder pb = new ProcessBuilder("./gradlew", ":sechub-api-java:spotlessApply", "--console=plain", "-Dsechub.build.stage=all");
-        pb.directory(new File("./..")); // gradle root project
-        pb.inheritIO();
-        LOG.info("Start gradle process to format after generation");
-        Process process = pb.start();
-        LOG.info("Wait for gradle process");
-        boolean exited = process.waitFor(2, TimeUnit.MINUTES);
-        if (!exited) {
-            throw new IllegalStateException("Timeout");
-        }
-        int exitCode = process.exitValue();
-
-        if (exitCode != 0) {
-            throw new IllegalStateException("Gradle build failed with exit code:" + exitCode);
-        }
-
-    }
-
     private void init() throws Exception {
         context = new ApiWrapperGenerationContext();
 
@@ -90,8 +70,29 @@ public class ApiWrapperObjectsGenerator {
 
         context.mapModel("OpenApiExecutorConfiguration").markPublicAvailable();
 
+        context.ignoreModel("OpenApiJobStatus"); // this will be implemented manually
+
         context.getCollector().collect();
 
     }
 
+    private void runFormatter() throws IOException, InterruptedException {
+
+        ProcessBuilder pb = new ProcessBuilder("./gradlew", ":sechub-api-java:spotlessApply", "--console=plain", "-Dsechub.build.stage=all");
+        pb.directory(new File("./..")); // gradle root project
+        pb.inheritIO();
+        LOG.info("Start gradle process to format after generation");
+        Process process = pb.start();
+        LOG.info("Wait for gradle process");
+        boolean exited = process.waitFor(2, TimeUnit.MINUTES);
+        if (!exited) {
+            throw new IllegalStateException("Timeout");
+        }
+        int exitCode = process.exitValue();
+
+        if (exitCode != 0) {
+            throw new IllegalStateException("Gradle build failed with exit code:" + exitCode);
+        }
+
+    }
 }

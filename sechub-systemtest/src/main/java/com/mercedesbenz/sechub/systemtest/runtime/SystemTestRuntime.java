@@ -17,8 +17,7 @@ import com.mercedesbenz.sechub.systemtest.runtime.launch.ExecutionSupport;
 import com.mercedesbenz.sechub.systemtest.runtime.launch.ProcessContainer;
 import com.mercedesbenz.sechub.systemtest.runtime.launch.ProcessContainerFailedException;
 import com.mercedesbenz.sechub.systemtest.runtime.launch.SystemTestRuntimeProductLauncher;
-import com.mercedesbenz.sechub.systemtest.runtime.test.SystemTestRuntimeTestEngine;
-import com.mercedesbenz.sechub.systemtest.runtime.test.TestEngineContext;
+import com.mercedesbenz.sechub.systemtest.runtime.testengine.SystemTestRuntimeTestEngine;
 import com.mercedesbenz.sechub.systemtest.runtime.variable.EnvironmentProvider;
 
 public class SystemTestRuntime {
@@ -57,7 +56,8 @@ public class SystemTestRuntime {
 
     public SystemTestResult run(SystemTestConfiguration configuration, boolean localRun, boolean isDryRun) {
 
-        SystemTestRuntimeContext context = new SystemTestRuntimeContext(configuration, locationSupport.getWorkspaceRoot(), localRun, isDryRun);
+        SystemTestRuntimeContext context = new SystemTestRuntimeContext(configuration, locationSupport.getWorkspaceRoot(),
+                locationSupport.getAdditionalResourcesRoot(), localRun, isDryRun);
         try {
             LOG.info("Starting - run {}{}", isDryRun ? "DRY " : "", localRun ? "LOCAL" : "REMOTE");
 
@@ -92,8 +92,7 @@ public class SystemTestRuntime {
             originTestList.clear();
 
             for (TestDefinition test : workingList) {
-                TestEngineContext testEngineContext = testEngine.createTestContext(test, context);
-                testEngine.execute(testEngineContext);
+                testEngine.execute(test, context);
             }
 
             /* shutdown */

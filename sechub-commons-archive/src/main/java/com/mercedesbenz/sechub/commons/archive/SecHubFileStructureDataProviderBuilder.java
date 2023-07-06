@@ -18,6 +18,7 @@ import com.mercedesbenz.sechub.commons.model.SecHubWebScanConfiguration;
 
 /**
  * This builder creates a file structure data object for ONE scan type.
+ *
  * @author Albert Tregnaghi
  *
  */

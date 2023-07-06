@@ -1,6 +1,12 @@
 // SPDX-License-Identifier: MIT
-package com.mercedesbenz.sechub.domain.schedule;
+package com.mercedesbenz.sechub.commons.model.job;
 
+/**
+ * Represents the execution result of a SecHub job
+ *
+ * @author Albert Tregnaghi
+ *
+ */
 public enum ExecutionResult {
 
     /**
@@ -32,6 +38,22 @@ public enum ExecutionResult {
      */
     public boolean hasFinished() {
         return !this.equals(NONE);
+    }
+
+    /**
+     * Resolves execution result from given string - if not found it will return
+     * <code>null</code>
+     *
+     * @param string
+     * @return result or <code>null</code>
+     */
+    public static ExecutionResult fromString(String string) {
+        for (ExecutionResult result : values()) {
+            if (result.name().equalsIgnoreCase(string)) {
+                return result;
+            }
+        }
+        return null;
     }
 
 }

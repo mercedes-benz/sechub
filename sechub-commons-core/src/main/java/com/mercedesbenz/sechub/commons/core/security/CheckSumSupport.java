@@ -15,16 +15,17 @@ public class CheckSumSupport {
 
     /**
      * Creates a SHA256 checksum for given file.
+     *
      * @param path
      * @return checksum or <code>null</code> when file is not existing
      */
     public String createSha256Checksum(Path path) {
-        if (path==null) {
+        if (path == null) {
             return null;
         }
         return createSha256Checksum(path.toAbsolutePath().toString());
     }
-    
+
     /**
      * Creates a SHA256 checksum for given file.
      *

@@ -217,11 +217,15 @@ public class SystemTestRuntimePreparator {
     }
 
     private Map<String, String> createRuntimeVariables(SystemTestRuntimeContext context) {
-        Map<String, String> runtimeVariables = new LinkedHashMap<>();
-        runtimeVariables.put(RuntimeVariable.WORKSPACE_ROOT.getVariableName(), context.getWorkspaceRoot().toString());
-        runtimeVariables.put(RuntimeVariable.PDS_SOLUTIONS_ROOT.getVariableName(), context.getLocationSupport().getPDSSolutionRoot().toString());
 
-        runtimeVariables.put(RuntimeVariable.CURRENT_TEST_FOLDER.getVariableName(), CalculatedVariables.CURRENT_TEST_FOLDER.asExpression());
+        Map<String, String> runtimeVariables = new LinkedHashMap<>();
+        /*
+         * at this point, we are NOT inside a test, we only know this is a calculated
+         * variable which is available when the test starts. Because of this, we just
+         * rename it to "calculated"
+         */
+        runtimeVariables.put(RuntimeVariable.CURRENT_TEST_FOLDER.getVariableName(), CalculatedVariables.TEST_WORKING_DIRECTORY.asExpression());
+        runtimeVariables.put(RuntimeVariable.ADDITIONAL_RESOURCES_FOLDER.getVariableName(), context.getAdditionalResourcesRoot().toString());
         return runtimeVariables;
     }
 

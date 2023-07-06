@@ -419,10 +419,21 @@ public class SystemTestConfigurationBuilder {
 
             public class UploadsBuilder {
 
+                /**
+                 * Defines an upload with default reference id
+                 *
+                 * @return builder
+                 */
                 public UploadBuilder upload() {
                     return upload(null);
                 }
 
+                /**
+                 * Defines an upload with given reference id
+                 *
+                 * @param referenceId this reference id will be used inside data structure
+                 * @return builder
+                 */
                 public UploadBuilder upload(String referenceId) {
                     return new UploadBuilder(referenceId);
                 }

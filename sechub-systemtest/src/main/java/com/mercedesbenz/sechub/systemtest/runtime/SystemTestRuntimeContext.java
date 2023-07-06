@@ -48,6 +48,7 @@ public class SystemTestRuntimeContext {
     EnvironmentProvider environmentProvider;
     LocationSupport locationSupport;
     Path workspaceRoot;
+    Path additionalResourcesRoot;
 
     private SystemTestConfiguration configuration;
     private SystemTestRunResult currentResult;
@@ -87,7 +88,8 @@ public class SystemTestRuntimeContext {
     SystemTestRuntimeContext() {
     }
 
-    public SystemTestRuntimeContext(SystemTestConfiguration originConfiguration, Path workspaceRoot, boolean localRun, boolean dryRun) {
+    public SystemTestRuntimeContext(SystemTestConfiguration originConfiguration, Path workspaceRoot, Path additionalResourcesRoot, boolean localRun,
+            boolean dryRun) {
         if (originConfiguration == null) {
             throw new IllegalArgumentException("Origin configuration may never be null!");
         }
@@ -101,10 +103,15 @@ public class SystemTestRuntimeContext {
         this.dryRun = dryRun;
 
         this.workspaceRoot = workspaceRoot;
+        this.additionalResourcesRoot = additionalResourcesRoot;
     }
 
     public Path getWorkspaceRoot() {
         return workspaceRoot;
+    }
+
+    public Path getAdditionalResourcesRoot() {
+        return additionalResourcesRoot;
     }
 
     /**

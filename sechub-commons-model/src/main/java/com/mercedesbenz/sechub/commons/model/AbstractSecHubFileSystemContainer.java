@@ -13,7 +13,7 @@ public abstract class AbstractSecHubFileSystemContainer implements SecHubFileSys
     public static final String PROPERTY_FILESYSTEM = "fileSystem";
 
     private Optional<SecHubFileSystemConfiguration> fileSystem = Optional.empty();
-    
+
     private List<String> excludes = new ArrayList<>();
     private List<String> includes = new ArrayList<>();
 
@@ -25,11 +25,11 @@ public abstract class AbstractSecHubFileSystemContainer implements SecHubFileSys
     public Optional<SecHubFileSystemConfiguration> getFileSystem() {
         return fileSystem;
     }
-    
+
     public List<String> getIncludes() {
         return includes;
     }
-    
+
     public List<String> getExcludes() {
         return excludes;
     }

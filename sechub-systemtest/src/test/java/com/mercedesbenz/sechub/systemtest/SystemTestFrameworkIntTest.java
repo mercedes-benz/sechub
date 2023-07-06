@@ -28,14 +28,14 @@ import com.mercedesbenz.sechub.systemtest.runtime.SystemTestResult;
  * <pre>
  * - start SecHub server in integration test mode from your IDE
  * - start PDS server in integration test mode from your IDE
- * - run this test wit dedicated system properties (see inside test method for details)
+ * - run this test with dedicated system properties (see inside test method for details)
  * </pre>
  *
  * Purpose: An integration test for CI/CD - ensures system test framework works
- * with a started local SecHub environment.x It makes it also easier to test and
- * develop system test framework at developmenttime: Less turn around times ( no
- * repetitive server starts and stops necessary). The process start/stop
- * automation is tested in a {@link SystemTestDryRunTest} separately.
+ * with a started local SecHub (integration test) environment. It makes it also
+ * easier to test and develop system test framework for development: Less turn
+ * around times ( no repetitive server starts and stops necessary). The process
+ * start/stop automation is tested in a {@link SystemTestDryRunTest} separately.
  *
  * @author Albert Tregnaghi
  *
@@ -97,7 +97,11 @@ class SystemTestFrameworkIntTest {
                 test("test1").
                     prepareStep().
                         script().
-                            workingDir("./../sechub-systemtest/src/test/resources/fake-root/test/preparation").
+                            /* we could have used the optional runtime.additionalResourcesFolder but
+                             * here we use simply the current path from caller side - this works as well
+                             * and shall show that this way is also correct.
+                             */
+                            workingDir("./../sechub-systemtest/src/test/resources/additional-resources/preparation").
                             path("./prepare-inttest-copy-codescan-medium-findings.sh").
                             arguments("${variables.testSourceUploadFolder}").
                         endScript().
@@ -108,6 +112,9 @@ class SystemTestFrameworkIntTest {
                         uploads().
                             upload().
                                 sourceFolder("${variables.testSourceUploadFolder}").
+                            endUpload().
+                            upload("i-am-usesless-for-the-systemtest-but-i-test-that-a-binary-upload-works").
+                                binariesFolder("${variables.testSourceUploadFolder}").
                             endUpload().
                         endUploads().
                     endRunSecHub().

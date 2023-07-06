@@ -1,13 +1,12 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.api;
 
-import static com.mercedesbenz.sechub.commons.core.util.FileAttributesUtil.*;
 import static java.util.Objects.*;
 
+import java.io.IOException;
 import java.net.URI;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.attribute.PosixFilePermission;
 import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.Callable;
@@ -33,6 +32,7 @@ import com.mercedesbenz.sechub.api.internal.gen.model.OpenApiExecutionProfileUpd
 import com.mercedesbenz.sechub.api.internal.gen.model.OpenApiExecutorConfiguration;
 import com.mercedesbenz.sechub.api.internal.gen.model.OpenApiExecutorConfigurationSetup;
 import com.mercedesbenz.sechub.api.internal.gen.model.OpenApiJobId;
+import com.mercedesbenz.sechub.api.internal.gen.model.OpenApiJobStatus;
 import com.mercedesbenz.sechub.api.internal.gen.model.OpenApiProjectDetails;
 import com.mercedesbenz.sechub.api.internal.gen.model.OpenApiScanJob;
 import com.mercedesbenz.sechub.commons.archive.ArchiveSupport;
@@ -164,7 +164,7 @@ public class SecHubClient {
 
     /**
      * Uploads data as defined in given configuration
-     * 
+     *
      * @param projectId        the project id
      * @param jobUUID          SecHub Job UUID
      * @param configuration    SecHub Job configuration (contains information about
@@ -177,14 +177,21 @@ public class SecHubClient {
         requireNonNull(projectId, "projectId may not be null!");
         requireNonNull(configuration, "configuration may not be null!");
 
-        Path uploadDirectory = runOrFail(
-                () -> Files.createTempDirectory("sechub_client_upload", createFileAttributes(PosixFilePermission.OWNER_READ, PosixFilePermission.OWNER_WRITE)),
-                "Temp directory creation was not possible");
-
+        Path uploadDirectory = runOrFail(() -> Files.createTempDirectory("sechub_client_upload"), "Temp directory creation was not possible");
         ArchivesCreationResult createArchiveResult = runOrFail(() -> archiveSupport.createArchives(configuration, workingDirectory, uploadDirectory),
                 "Cannot create archives!");
-        uploadSources(projectId, jobUUID, createArchiveResult);
-        uploadBinaries(projectId, jobUUID, createArchiveResult);
+        try {
+            uploadSources(projectId, jobUUID, createArchiveResult);
+            uploadBinaries(projectId, jobUUID, createArchiveResult);
+
+        } finally {
+            LOG.debug("Remove temporary data from: {}", uploadDirectory);
+            try {
+                archiveSupport.deleteArchives(createArchiveResult);
+            } catch (IOException e) {
+                throw new IllegalStateException("Was not able to remove temporary archve data!", e);
+            }
+        }
     }
 
     private void uploadBinaries(String projectId, UUID jobUUID, ArchivesCreationResult createArchiveResult) throws SecHubClientException {
@@ -196,7 +203,7 @@ public class SecHubClient {
         String filesize = String.valueOf(tarFile.toFile().length());
         String checksum = checkSumSupport.createSha256Checksum(tarFile);
 
-        runOrFail(() -> workaroundProjectApi.userUploadsBinaries(projectId, jobUUID.toString(), checksum, filesize, tarFile.toFile()), "Binary upload (tar)");
+        runOrFail(() -> workaroundProjectApi.userUploadsBinaries(projectId, jobUUID.toString(), checksum, filesize, tarFile), "Binary upload (tar)");
     }
 
     private void uploadSources(String projectId, UUID jobUUID, ArchivesCreationResult createArchiveResult) throws SecHubClientException {
@@ -206,7 +213,7 @@ public class SecHubClient {
         Path zipFile = createArchiveResult.getSourceArchiveFile();
         String checksum = checkSumSupport.createSha256Checksum(zipFile);
 
-        runOrFail(() -> workaroundProjectApi.userUploadsSourceCode(projectId, jobUUID.toString(), checksum, zipFile.toFile()), "Source upload (zip)");
+        runOrFail(() -> workaroundProjectApi.userUploadsSourceCode(projectId, jobUUID.toString(), checksum, zipFile), "Source upload (zip)");
     }
 
     /* ++++++++++++++++++++++++++++++++++++++++++++++++++++ */
@@ -359,6 +366,28 @@ public class SecHubClient {
 
         UUID uuid = UUID.fromString(jobIdAsString);
         return uuid;
+    }
+
+    public JobStatus fetchStatus(String projectId, UUID jobUUID) throws SecHubClientException {
+        OpenApiJobStatus status = runOrFail(() -> projectApi.userChecksJobStatus(projectId, jobUUID.toString()), "Fetch status");
+        return JobStatus.from(status);
+    }
+
+    public SecHubReport downloadSecHubReportAsJson(String projectId, UUID jobUUID) throws SecHubClientException {
+        SecHubReport report = runOrFail(() -> workaroundProjectApi.userDownloadsJobReport(projectId, jobUUID.toString()), "Download SecHub report (JSON)");
+        return report;
+    }
+
+    /**
+     * Approve SecHub job for project. This will mark the job as ready to start
+     * inside SecHub
+     *
+     * @param projectId
+     * @param jobUUID
+     * @throws SecHubClientException
+     */
+    public void approveJob(String projectId, UUID jobUUID) throws SecHubClientException {
+        runOrFail(() -> projectApi.userApprovesJob(projectId, jobUUID.toString()), "Job approve");
     }
 
     /* ++++++++++++++++++++++++++++++++++++++++++++++++++++ */

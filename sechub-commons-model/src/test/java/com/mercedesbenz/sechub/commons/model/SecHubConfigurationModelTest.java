@@ -147,11 +147,11 @@ class SecHubConfigurationModelTest {
         SecHubCodeScanConfiguration codeScan = model.getCodeScan().get();
         assertTrue(codeScan.getExcludes().contains("**/filtered-folder/**"));
         assertTrue(codeScan.getExcludes().contains("must-not-be-contained.*"));
-        
+
         SecHubDataConfiguration data = model.getData().get();
-        
+
         SecHubBinaryDataConfiguration binReferenceExample2 = data.getBinaries().iterator().next();
-        assertEquals("bin-reference-example2",binReferenceExample2.getUniqueName());
+        assertEquals("bin-reference-example2", binReferenceExample2.getUniqueName());
         assertTrue(binReferenceExample2.getExcludes().contains("**/filtered-folder/**"));
         assertTrue(binReferenceExample2.getExcludes().contains("must-not-be-contained.*"));
         assertTrue(binReferenceExample2.getIncludes().contains("something-important.txt"));

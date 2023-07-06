@@ -34,6 +34,7 @@ class SystemTestRuntimePreparatorTest {
         context.environmentProvider = environmentProvider;
         context.locationSupport = locationSupport;
         context.workspaceRoot = aTemporaryFolder;
+        context.additionalResourcesRoot = aTemporaryFolder;
 
         preparatorToTest = new SystemTestRuntimePreparator();
 

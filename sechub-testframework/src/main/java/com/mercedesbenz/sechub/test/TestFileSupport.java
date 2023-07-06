@@ -173,18 +173,20 @@ public class TestFileSupport {
 
     /**
      * Load text file as string - use "\n" for line breaks
+     *
      * @param file
-     * @return string 
+     * @return string
      */
     public static String loadTextFile(File file) {
-        return loadTextFile(file,"\n");
+        return loadTextFile(file, "\n");
     }
-    
+
     /**
      * Load text file as string
+     *
      * @param file
      * @param lineBreak
-     * @return string 
+     * @return string
      */
     public static String loadTextFile(File file, String lineBreak) {
         StringBuilder sb = new StringBuilder();

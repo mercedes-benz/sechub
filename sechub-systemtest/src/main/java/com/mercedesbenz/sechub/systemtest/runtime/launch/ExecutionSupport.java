@@ -14,14 +14,15 @@ import org.slf4j.LoggerFactory;
 
 import com.mercedesbenz.sechub.commons.TextFileReader;
 import com.mercedesbenz.sechub.commons.TextFileWriter;
+import com.mercedesbenz.sechub.commons.core.util.StacktraceUtil;
 import com.mercedesbenz.sechub.commons.model.JSONConverter;
 import com.mercedesbenz.sechub.systemtest.config.ScriptDefinition;
 import com.mercedesbenz.sechub.systemtest.config.TimeUnitDefinition;
 import com.mercedesbenz.sechub.systemtest.runtime.LocationSupport;
 import com.mercedesbenz.sechub.systemtest.runtime.SystemTestRuntimeException;
-import com.mercedesbenz.sechub.systemtest.runtime.variable.DynamicVariableCalculator;
 import com.mercedesbenz.sechub.systemtest.runtime.variable.EnvironmentProvider;
 import com.mercedesbenz.sechub.systemtest.runtime.variable.KeepAsIsDynamicVariableCalculator;
+import com.mercedesbenz.sechub.systemtest.runtime.variable.VariableCalculator;
 import com.mercedesbenz.sechub.systemtest.template.SystemTestTemplateEngine;
 
 public class ExecutionSupport {
@@ -54,7 +55,7 @@ public class ExecutionSupport {
         return execute(scriptDefinition, null);
     }
 
-    public ProcessContainer execute(ScriptDefinition scriptDefinition, DynamicVariableCalculator dynamicVariableCalculator) {
+    public ProcessContainer execute(ScriptDefinition scriptDefinition, VariableCalculator dynamicVariableCalculator) {
         if (dynamicVariableCalculator == null) {
             dynamicVariableCalculator = NO_CALCULATION;
         }
@@ -65,23 +66,8 @@ public class ExecutionSupport {
         if (scriptPath == null || scriptPath.isEmpty()) {
             throw new IllegalStateException("Script definition has no script path set!");
         }
-        String workingDirectory = scriptDefinition.getWorkingDirectory();
-
-        LOG.trace("Start:{} inside {}", scriptPath, workingDirectory);
-
-        File parentFolder = null;
-        if (workingDirectory != null) {
-            parentFolder = Paths.get(workingDirectory).toFile();
-        } else {
-            parentFolder = new File("./");
-        }
-        File targetFile = new File(parentFolder, scriptPath);
-        if (!targetFile.exists()) {
-            throw new IllegalStateException("The target file does not exist:" + targetFile.getAbsolutePath());
-        }
-        if (!Files.isExecutable(targetFile.toPath())) {
-            throw new IllegalStateException("The target file does exist, but is not executable: " + targetFile.getAbsolutePath());
-        }
+        File workingDirectory = resolveWorkingDirectory(scriptDefinition, scriptPath);
+        assertScriptCanBeExecuted(scriptPath, workingDirectory);
 
         ProcessContainer processContainer = new ProcessContainer(scriptDefinition);
 
@@ -91,8 +77,8 @@ public class ExecutionSupport {
         writeToFile(processContainer);
 
         ProcessBuilder pb = new ProcessBuilder(scriptPath);
-        if (parentFolder != null) {
-            pb.directory(parentFolder);
+        if (workingDirectory != null) {
+            pb.directory(workingDirectory);
         }
         pb.environment().putAll(envVariables);
         pb.command().addAll(dynamicVariableCalculator.calculateArguments(scriptDefinition.getArguments()));
@@ -140,10 +126,71 @@ public class ExecutionSupport {
         } catch (IOException e) {
             LOG.warn("Script execution failed: {}", e.getMessage());
             processContainer.markFailed();
+
+            writeProcessContainerExecutionErrorFile(workingDirectory, processContainer, e);
+
             fetchStreamsAndWriteProcessFile(processContainer);
         }
 
         return processContainer;
+    }
+
+    private File resolveWorkingDirectory(ScriptDefinition scriptDefinition, String scriptPath) {
+        String workingDirectoryAsString = scriptDefinition.getWorkingDirectory();
+
+        File workingDirectory = null;
+        if (workingDirectoryAsString != null) {
+            workingDirectory = Paths.get(workingDirectoryAsString).toFile();
+        } else {
+            workingDirectory = new File("./");
+        }
+        LOG.trace("Start:{} inside {}", scriptPath, workingDirectoryAsString);
+        return workingDirectory;
+    }
+
+    private void assertScriptCanBeExecuted(String scriptPath, File workingDirectory) {
+        File targetFile = new File(workingDirectory, scriptPath);
+        String canonicalPath;
+        try {
+            canonicalPath = targetFile.getCanonicalPath();
+        } catch (IOException e) {
+            throw new IllegalStateException("The target file path is not a canonical path::" + targetFile.getAbsolutePath(), e);
+        }
+
+        if (!targetFile.exists()) {
+            throw new IllegalStateException("The target file does not exist:" + canonicalPath);
+        }
+        try {
+            targetFile = targetFile.toPath().toRealPath().toFile();
+        } catch (IOException e) {
+            throw new IllegalStateException("The target file cannot be converted to real path variant:" + targetFile.getAbsolutePath(), e);
+        }
+        if (!Files.isExecutable(targetFile.toPath())) {
+            throw new IllegalStateException("The target file does exist, but is not executable: " + targetFile.getAbsolutePath());
+        }
+    }
+
+    private void writeProcessContainerExecutionErrorFile(File workingDirectory, ProcessContainer processContainer, IOException reason) {
+        Path processContainerErrorFile = locationSupport.ensureProcessContainerErrorFile(processContainer);
+        String data = """
+                ******************************************************************************
+                Execution failed for process container: %s
+                ******************************************************************************
+                Caller working directory: %s
+                Script working directory: %s
+
+                Exception was:
+                --------------
+                %s
+
+                """.formatted(processContainer.getUuid(), new File("./").getAbsolutePath(), workingDirectory.getAbsolutePath(),
+                StacktraceUtil.createFullTraceDescription(reason));
+        try {
+            textFileWriter.save(processContainerErrorFile.toFile(), data, true);
+        } catch (IOException e) {
+            LOG.error("Was not able to write error file for process container:{}", processContainer.getUuid(), e);
+        }
+
     }
 
     private void fetchStreamsAndWriteProcessFile(ProcessContainer processContainer) {

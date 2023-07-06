@@ -9,6 +9,6 @@ public interface SecHubFileSystemContainer {
     Optional<SecHubFileSystemConfiguration> getFileSystem();
 
     public List<String> getIncludes();
-    
+
     public List<String> getExcludes();
 }

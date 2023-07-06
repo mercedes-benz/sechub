@@ -15,6 +15,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.mercedesbenz.sechub.commons.model.JSONConverter;
+import com.mercedesbenz.sechub.systemtest.config.RuntimeVariable;
 import com.mercedesbenz.sechub.systemtest.config.SystemTestConfiguration;
 import com.mercedesbenz.sechub.systemtest.runtime.SystemTestResult;
 import com.mercedesbenz.sechub.systemtest.runtime.SystemTestRuntimeException;
@@ -30,6 +31,7 @@ import com.mercedesbenz.sechub.test.TestFileReader;
  */
 class SystemTestDryRunTest {
     private static final String FAKED_PDS_SOLUTIONS_PATH = "./src/test/resources/fake-root/sechub-pds-solutions";
+    private static final String ADDITIONAL_RESOURCES_PATH = "./src/test/resources/additional-resources";
     private static final Logger LOG = LoggerFactory.getLogger(SystemTestDryRunTest.class);
     private static final String PREPARE_TEST1_OUPTUT_FILE_NAME = "output-prepare-test1.txt";
 
@@ -129,9 +131,9 @@ class SystemTestDryRunTest {
                 test("test1").
                     prepareStep().
                         script().
-                            workingDir("${runtime.pdsSolutionsRoot}/../test").
+                            workingDir(RuntimeVariable.ADDITIONAL_RESOURCES_FOLDER.asExpression()).
                             path("./preparation/prepare-test1.sh").
-                            arguments("${runtime.workspaceRoot}/"+PREPARE_TEST1_OUPTUT_FILE_NAME).
+                            arguments("${runtime."+RuntimeVariable.CURRENT_TEST_FOLDER.getVariableName()+"}/"+PREPARE_TEST1_OUPTUT_FILE_NAME).
                             process().
                                 markStageWaits().
                                 withTimeOut(20, TimeUnit.SECONDS).
@@ -162,8 +164,10 @@ class SystemTestDryRunTest {
                     dryRun().
                     workspacePath(tempWorkspaceFolder.toString()).
                     testConfiguration(configuration).
+                    additionalResourcesPath(ADDITIONAL_RESOURCES_PATH).
                     pdsSolutionPath(FAKED_PDS_SOLUTIONS_PATH).
-                build());
+                build()
+         );
 
         /* test */
         if (result.hasFailedTests()) {
@@ -184,7 +188,8 @@ class SystemTestDryRunTest {
         String gosecStopOutputData = TestFileReader.loadTextFile(goSecStopOutputFile);
         assertEquals("gosec-stopped with param2=second and parm3=third-as:"+var_Text+" and X_TEST=testx", gosecStopOutputData);
 
-        Path preparationOutputFile = tempWorkspaceFolder.resolve(PREPARE_TEST1_OUPTUT_FILE_NAME);
+        // Here we check if the test1 output file preparation was written to test folder
+        Path preparationOutputFile = tempWorkspaceFolder.resolve("tests/test1/"+PREPARE_TEST1_OUPTUT_FILE_NAME);
         String preparationOutputFileContent = TestFileReader.loadTextFile(preparationOutputFile);
 
         assertEquals("Output from prepare-test1.sh", preparationOutputFileContent);
@@ -222,7 +227,7 @@ class SystemTestDryRunTest {
         assertTrue(message.contains("'runtime.unknown_must_fail' is not defined!"));
         // test proposals are inside error message:
         assertTrue(message.contains("Allowed variables for type RUNTIME_VARIABLES are:"));
-        assertTrue(message.contains("- runtime.workspaceRoot"));
+        assertTrue(message.contains("- runtime."+RuntimeVariable.CURRENT_TEST_FOLDER.getVariableName()));
 
 
         /* @formatter:on */

@@ -38,8 +38,28 @@ public class SystemTestAPI {
     }
 
     public static SystemTestResult runSystemTests(SystemTestParameters parameters) {
-        LocationSupport locationSupport = new LocationSupport(parameters.getPathToPdsSolution(), null, parameters.getPathToWorkspace());
+        /* @formatter:off */
+        LocationSupport locationSupport = LocationSupport.builder().
 
+                pdsSolutionRootFolder(parameters.getPathToPdsSolution()).
+                sechubSolutionRootFolder(parameters.getPathToSechubSolution()).
+                additionalResourcesFolder(parameters.getPathToAdditionalResources()).
+                workspaceRootFolder(parameters.getPathToWorkspace()).
+
+                build();
+        /* @formatter:on */
+
+        cleanupOldRuntimeFolderIfExisting(locationSupport);
+
+        EnvironmentProvider variableSupport = new SystemEnvironmentProvider();
+        ExecutionSupport execSupport = new ExecutionSupport(variableSupport, locationSupport);
+
+        SystemTestRuntime runtime = new SystemTestRuntime(locationSupport, execSupport);
+
+        return runtime.run(parameters.getConfiguration(), parameters.isLocalRun(), parameters.isDryRun());
+    }
+
+    private static void cleanupOldRuntimeFolderIfExisting(LocationSupport locationSupport) {
         Path runtimeFolder = locationSupport.getRuntimeFolder();
         if (Files.exists(runtimeFolder)) {
             try {
@@ -49,13 +69,6 @@ public class SystemTestAPI {
                 throw new SystemTestRuntimeException("Was not able to delete former runtime folder:" + runtimeFolder, e);
             }
         }
-
-        EnvironmentProvider variableSupport = new SystemEnvironmentProvider();
-        ExecutionSupport execSupport = new ExecutionSupport(variableSupport, locationSupport);
-
-        SystemTestRuntime runtime = new SystemTestRuntime(locationSupport, execSupport);
-
-        return runtime.run(parameters.getConfiguration(), parameters.isLocalRun(), parameters.isDryRun());
     }
 
 }
