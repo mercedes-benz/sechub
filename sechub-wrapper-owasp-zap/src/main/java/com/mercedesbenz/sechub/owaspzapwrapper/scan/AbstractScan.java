@@ -19,6 +19,7 @@ import org.zaproxy.clientapi.core.ApiResponseList;
 import org.zaproxy.clientapi.core.ClientApi;
 import org.zaproxy.clientapi.core.ClientApiException;
 
+import com.mercedesbenz.sechub.commons.model.HTTPHeaderConfiguration;
 import com.mercedesbenz.sechub.commons.model.SecHubMessage;
 import com.mercedesbenz.sechub.commons.model.SecHubMessageType;
 import com.mercedesbenz.sechub.commons.model.SecHubWebScanApiConfiguration;
@@ -33,6 +34,7 @@ import com.mercedesbenz.sechub.owaspzapwrapper.config.data.RuleReference;
 import com.mercedesbenz.sechub.owaspzapwrapper.helper.OwaspZapApiResponseHelper;
 import com.mercedesbenz.sechub.owaspzapwrapper.helper.OwaspZapEventHandler;
 import com.mercedesbenz.sechub.owaspzapwrapper.helper.ScanDurationHelper;
+import com.mercedesbenz.sechub.owaspzapwrapper.util.UrlUtil;
 
 public abstract class AbstractScan implements OwaspZapScan {
     private static final Logger LOG = LoggerFactory.getLogger(AbstractScan.class);
@@ -50,6 +52,8 @@ public abstract class AbstractScan implements OwaspZapScan {
 
     private OwaspZapEventHandler owaspZapEventHandler;
 
+    private UrlUtil urlUtil;
+
     public AbstractScan(ClientApi clientApi, OwaspZapScanContext scanContext) {
         this.clientApi = clientApi;
         this.scanContext = scanContext;
@@ -57,6 +61,7 @@ public abstract class AbstractScan implements OwaspZapScan {
         this.remainingScanTime = scanContext.getMaxScanDurationInMillis();
         this.apiResponseHelper = new OwaspZapApiResponseHelper();
         this.owaspZapEventHandler = new OwaspZapEventHandler();
+        this.urlUtil = new UrlUtil();
     }
 
     @Override
@@ -64,6 +69,7 @@ public abstract class AbstractScan implements OwaspZapScan {
         try {
             scanUnsafe();
         } catch (ClientApiException e) {
+            cleanUp();
             throw new ZapWrapperRuntimeException("For scan: " + scanContext.getContextName() + ". An error occured while scanning!", e,
                     ZapWrapperExitCode.PRODUCT_EXECUTION_ERROR);
         }
@@ -133,10 +139,9 @@ public abstract class AbstractScan implements OwaspZapScan {
      * Wait for the results of the ajax spider. Periodically checks the progress of
      * the ajax spider.
      *
-     * @param response
      * @throws ClientApiException
      */
-    protected void waitForAjaxSpiderResults(ApiResponse response) throws ClientApiException {
+    protected void waitForAjaxSpiderResults() throws ClientApiException {
         String ajaxSpiderStatus = null;
 
         long startTime = System.currentTimeMillis();
@@ -179,7 +184,6 @@ public abstract class AbstractScan implements OwaspZapScan {
                 owaspZapEventHandler.cancelScan(scanContext.getContextName());
             }
             waitForNextCheck();
-            clientApi.pscan.recordsToScan();
             numberOfRecords = Integer.parseInt(((ApiResponseElement) clientApi.pscan.recordsToScan()).getValue());
             LOG.info("For scan {}: Passive scan number of records left for scanning: {}", scanContext.getContextName(), numberOfRecords);
         }
@@ -266,11 +270,21 @@ public abstract class AbstractScan implements OwaspZapScan {
 
     }
 
-    protected void cleanUp() throws ClientApiException {
+    protected void cleanUp() {
         // to ensure parts from previous scan are deleted
-        LOG.info("Cleaning up by starting new and empty session...", scanContext.getContextName());
-        clientApi.core.newSession("Cleaned after scan", "true");
-        LOG.info("Cleanup successful.");
+        try {
+            LOG.info("Cleaning up by starting new and empty session...", scanContext.getContextName());
+            clientApi.core.newSession("Cleaned after scan", "true");
+            LOG.info("New and empty session inside Owasp Zap created.");
+
+            // Replacer rules are persistent even after restarting OWASP ZAP
+            // This means we need to cleanUp after every scan.
+            LOG.info("Start cleaning up replacer rules.");
+            cleanUpReplacerRules();
+            LOG.info("Cleanup successful.");
+        } catch (ClientApiException e) {
+            LOG.error("For scan: {}. An error occurred during the clean up, because: {}", scanContext.getContextName(), e.getMessage());
+        }
     }
 
     protected void setupBasicConfiguration() throws ClientApiException {
@@ -369,6 +383,52 @@ public abstract class AbstractScan implements OwaspZapScan {
         return sitesList.getItems().size() > 0;
     }
 
+    protected void addReplacerRulesForHeaders() throws ClientApiException {
+        if (scanContext.getSecHubWebScanConfiguration().getHeaders().isEmpty()) {
+            LOG.info("No headers were configured inside the sechub webscan configuration.");
+            return;
+        }
+
+        // description specifies the rule name, which will be set later in this method
+        String description = null;
+
+        String enabled = "true";
+        // "REQ_HEADER" means the header entry will be added to the requests if not
+        // existing or replaced if already existing
+        String matchtype = "REQ_HEADER";
+        String matchregex = "false";
+
+        // matchstring and replacement will be set to the header name and header value
+        String matchstring = null;
+        String replacement = null;
+
+        // setting initiators to null means all initiators (ZAP components),
+        // this means spider, active scan, etc will send this rule for their requests.
+        String initiators = null;
+        // default URL is null which means the header would be send on any request to
+        // any URL
+        String url = null;
+        List<HTTPHeaderConfiguration> httpHeaders = scanContext.getSecHubWebScanConfiguration().getHeaders().get();
+        LOG.info("For scan {}: Applying header configuration.", scanContext.getContextName());
+        for (HTTPHeaderConfiguration httpHeader : httpHeaders) {
+            matchstring = httpHeader.getName();
+            replacement = httpHeader.getValue();
+
+            if (httpHeader.getOnlyForUrls().isEmpty()) {
+                // if there are no onlyForUrl patterns, there is only one rule for each header
+                description = httpHeader.getName();
+                clientApi.replacer.addRule(description, enabled, matchtype, matchregex, matchstring, replacement, initiators, url);
+            } else {
+                for (String onlyForUrl : httpHeader.getOnlyForUrls().get()) {
+                    // we need to create a rule for each onlyForUrl pattern on each header
+                    description = onlyForUrl;
+                    url = urlUtil.replaceWildCardsWithRegexInUrl(onlyForUrl);
+                    clientApi.replacer.addRule(description, enabled, matchtype, matchregex, matchstring, replacement, initiators, url);
+                }
+            }
+        }
+    }
+
     private void writeUserMessagesWithScannedURLs(List<ApiResponse> spiderResults) {
         for (ApiResponse result : spiderResults) {
             String url = result.toString();
@@ -393,6 +453,7 @@ public abstract class AbstractScan implements OwaspZapScan {
         deactivateRules();
         setupAdditonalProxyConfiguration();
         createContext();
+        addReplacerRulesForHeaders();
 
         /* OWASP ZAP setup with access to target */
         addIncludedAndExcludedUrlsToContext();
@@ -485,6 +546,25 @@ public abstract class AbstractScan implements OwaspZapScan {
     private void registerUrlsExcludedFromContext() throws ClientApiException {
         for (URL url : scanContext.getOwaspZapURLsExcludeList()) {
             clientApi.context.excludeFromContext(scanContext.getContextName(), url + ".*");
+        }
+    }
+
+    private void cleanUpReplacerRules() throws ClientApiException {
+        if (scanContext.getSecHubWebScanConfiguration().getHeaders().isEmpty()) {
+            return;
+        }
+
+        List<HTTPHeaderConfiguration> httpHeaders = scanContext.getSecHubWebScanConfiguration().getHeaders().get();
+        for (HTTPHeaderConfiguration httpHeader : httpHeaders) {
+            if (httpHeader.getOnlyForUrls().isEmpty()) {
+                String description = httpHeader.getName();
+                clientApi.replacer.removeRule(description);
+            } else {
+                for (String onlyForUrl : httpHeader.getOnlyForUrls().get()) {
+                    String description = onlyForUrl;
+                    clientApi.replacer.removeRule(description);
+                }
+            }
         }
     }
 
