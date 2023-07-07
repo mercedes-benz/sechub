@@ -307,6 +307,9 @@ If you do not specify a list of URLs or the list is empty, the header will be se
 You can also use wildcards by specifying `<*>` like in the example above. 
 Adding a wildcard to the end of an URL, the header will be sent to all sub URLs as well, otherwise it won't be sent to sub URLs.
 Make sure that the header URL combinations are unique. This means do not specify the same header multiple times for the same scope of URLs.
+<6> Optional Parameter: If `"sensitive" : true`, the value of this header will be shown inside the SecHub report. 
+This means, if `"sensitive" : false`, the value of this header will be inside the report.
+The **default** value is `"sensitive" : true` if nothing is specified.
 
 ==== Infrastructure scan
 `infraScan` (optional) defines the infrastructure scan settings.
