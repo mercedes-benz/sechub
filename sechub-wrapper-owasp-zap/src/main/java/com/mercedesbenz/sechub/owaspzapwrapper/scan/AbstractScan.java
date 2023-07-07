@@ -10,7 +10,6 @@ import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.util.List;
 import java.util.Optional;
-import java.util.regex.Pattern;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -24,7 +23,6 @@ import com.mercedesbenz.sechub.commons.model.HTTPHeaderConfiguration;
 import com.mercedesbenz.sechub.commons.model.SecHubMessage;
 import com.mercedesbenz.sechub.commons.model.SecHubMessageType;
 import com.mercedesbenz.sechub.commons.model.SecHubWebScanApiConfiguration;
-import com.mercedesbenz.sechub.commons.model.SecHubWebScanConfiguration;
 import com.mercedesbenz.sechub.owaspzapwrapper.cli.ZapWrapperExitCode;
 import com.mercedesbenz.sechub.owaspzapwrapper.cli.ZapWrapperRuntimeException;
 import com.mercedesbenz.sechub.owaspzapwrapper.config.OwaspZapScanContext;
@@ -36,12 +34,10 @@ import com.mercedesbenz.sechub.owaspzapwrapper.config.data.RuleReference;
 import com.mercedesbenz.sechub.owaspzapwrapper.helper.OwaspZapApiResponseHelper;
 import com.mercedesbenz.sechub.owaspzapwrapper.helper.OwaspZapEventHandler;
 import com.mercedesbenz.sechub.owaspzapwrapper.helper.ScanDurationHelper;
+import com.mercedesbenz.sechub.owaspzapwrapper.util.UrlUtil;
 
 public abstract class AbstractScan implements OwaspZapScan {
     private static final Logger LOG = LoggerFactory.getLogger(AbstractScan.class);
-
-    private static final String QUOTED_WEBSCAN_URL_WILDCARD_SYMBOL = Pattern.quote(SecHubWebScanConfiguration.WEBSCAN_URL_WILDCARD_SYMBOL);
-    private static final Pattern PATTERN_QUOTED_WEBSCAN_URL_WILDCARD_SYMBOL = Pattern.compile(QUOTED_WEBSCAN_URL_WILDCARD_SYMBOL);
 
     private static final int CHECK_SCAN_STATUS_TIME_IN_MILLISECONDS = 3000;
 
@@ -56,6 +52,8 @@ public abstract class AbstractScan implements OwaspZapScan {
 
     private OwaspZapEventHandler owaspZapEventHandler;
 
+    private UrlUtil urlUtil;
+
     public AbstractScan(ClientApi clientApi, OwaspZapScanContext scanContext) {
         this.clientApi = clientApi;
         this.scanContext = scanContext;
@@ -63,6 +61,7 @@ public abstract class AbstractScan implements OwaspZapScan {
         this.remainingScanTime = scanContext.getMaxScanDurationInMillis();
         this.apiResponseHelper = new OwaspZapApiResponseHelper();
         this.owaspZapEventHandler = new OwaspZapEventHandler();
+        this.urlUtil = new UrlUtil();
     }
 
     @Override
@@ -140,10 +139,9 @@ public abstract class AbstractScan implements OwaspZapScan {
      * Wait for the results of the ajax spider. Periodically checks the progress of
      * the ajax spider.
      *
-     * @param response
      * @throws ClientApiException
      */
-    protected void waitForAjaxSpiderResults(ApiResponse response) throws ClientApiException {
+    protected void waitForAjaxSpiderResults() throws ClientApiException {
         String ajaxSpiderStatus = null;
 
         long startTime = System.currentTimeMillis();
@@ -186,7 +184,6 @@ public abstract class AbstractScan implements OwaspZapScan {
                 owaspZapEventHandler.cancelScan(scanContext.getContextName());
             }
             waitForNextCheck();
-            clientApi.pscan.recordsToScan();
             numberOfRecords = Integer.parseInt(((ApiResponseElement) clientApi.pscan.recordsToScan()).getValue());
             LOG.info("For scan {}: Passive scan number of records left for scanning: {}", scanContext.getContextName(), numberOfRecords);
         }
@@ -425,7 +422,7 @@ public abstract class AbstractScan implements OwaspZapScan {
                 for (String onlyForUrl : httpHeader.getOnlyForUrls().get()) {
                     // we need to create a rule for each onlyForUrl pattern on each header
                     description = onlyForUrl;
-                    url = replaceWildCardsInUrlWithRegex(onlyForUrl);
+                    url = urlUtil.replaceWildCardsWithRegexInUrl(onlyForUrl);
                     clientApi.replacer.addRule(description, enabled, matchtype, matchregex, matchstring, replacement, initiators, url);
                 }
             }
@@ -569,10 +566,6 @@ public abstract class AbstractScan implements OwaspZapScan {
                 }
             }
         }
-    }
-
-    private String replaceWildCardsInUrlWithRegex(String onlyForUrl) {
-        return PATTERN_QUOTED_WEBSCAN_URL_WILDCARD_SYMBOL.matcher(onlyForUrl).replaceAll(".*");
     }
 
     /**
