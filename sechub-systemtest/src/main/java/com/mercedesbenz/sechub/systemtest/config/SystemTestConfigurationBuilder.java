@@ -13,6 +13,7 @@ import com.mercedesbenz.sechub.commons.model.SecHubInfrastructureScanConfigurati
 import com.mercedesbenz.sechub.commons.model.SecHubLicenseScanConfiguration;
 import com.mercedesbenz.sechub.commons.model.SecHubSecretScanConfiguration;
 import com.mercedesbenz.sechub.commons.model.SecHubWebScanConfiguration;
+import com.mercedesbenz.sechub.commons.model.TrafficLight;
 
 public class SystemTestConfigurationBuilder {
 
@@ -396,6 +397,74 @@ public class SystemTestConfigurationBuilder {
 
         TestDefinition test;
 
+        public class AssertsBuilder{
+
+            public class AssertBuilder{
+                TestAssertDefinition assertDefinition;
+                public AssertBuilder(){
+                    assertDefinition = new TestAssertDefinition();
+                    test.getAssert().add(assertDefinition);
+                }
+                
+                public AssertsBuilder endAssert() {
+                    return AssertsBuilder.this;
+                }
+
+                public SecHubResultAssertBuilder secHubResult() {
+                    return new SecHubResultAssertBuilder();
+                }
+                
+                public class SecHubResultAssertBuilder{
+                    AssertSechubResultDefinition sechubResultDefinition;
+                    
+                    public SecHubResultAssertBuilder() {
+                        sechubResultDefinition = new AssertSechubResultDefinition();
+                        assertDefinition.getSechubResult().add(sechubResultDefinition);
+                        
+                    }
+                    
+                    public AssertBuilder endSecHubResult() {
+                        return AssertBuilder.this;
+                    }
+
+                    public SecHubResultAssertBuilder equalsFile(String pathToFile) {
+                        AssertEqualsFileDefinition definition = new AssertEqualsFileDefinition();
+                        definition.setPath(pathToFile);
+                        
+                        sechubResultDefinition.setEqualsFile(Optional.of(definition));
+                        return this;
+                    }
+                    
+                    public SecHubResultAssertBuilder containsStrings(String ... containedStrings) {
+                        AssertContainsStringsDefinition definition = new AssertContainsStringsDefinition();
+                        definition.setValues(Arrays.asList(containedStrings));
+                        sechubResultDefinition.setContainsStrings(Optional.of(definition));
+                        return this;
+                    }
+                    public SecHubResultAssertBuilder hasTrafficLight(TrafficLight trafficLight) {
+                        sechubResultDefinition.setHasTrafficLight(Optional.of(trafficLight));
+                        return this;
+                    }
+                    
+                }
+            }
+            
+            public AssertBuilder assertThat() {
+                return new AssertBuilder();
+            }
+            
+            
+            
+            public TestBuilder endAsserts() {
+                return TestBuilder.this;
+            }
+
+        }
+
+        public AssertsBuilder asserts() {
+            return new AssertsBuilder();
+        }
+        
         public class SecHubRunBuilder {
 
             private RunSecHubJobDefinition runSecHubJob;
@@ -595,5 +664,7 @@ public class SystemTestConfigurationBuilder {
     public TestBuilder test(String testName) {
         return new TestBuilder(testName);
     }
+    
+    
 
 }

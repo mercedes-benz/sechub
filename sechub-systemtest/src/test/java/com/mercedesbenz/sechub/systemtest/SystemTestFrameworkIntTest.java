@@ -16,6 +16,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.mercedesbenz.sechub.commons.model.JSONConverter;
+import com.mercedesbenz.sechub.commons.model.TrafficLight;
 import com.mercedesbenz.sechub.systemtest.config.RuntimeVariable;
 import com.mercedesbenz.sechub.systemtest.config.SystemTestConfiguration;
 import com.mercedesbenz.sechub.systemtest.runtime.SystemTestResult;
@@ -116,6 +117,15 @@ class SystemTestFrameworkIntTest {
                         endUploads().
                     endRunSecHub().
                     
+                    asserts().
+                        assertThat().
+                            secHubResult().
+                                hasTrafficLight(TrafficLight.GREEN).
+                                equalsFile("./../sechub-systemtest/src/test/resources/additional-resources/expected-output/sechub-result1.json").
+                                containsStrings("CWE89","CWE33").// not necessary, because already file check, but good to show possiblity inside this test
+                            endSecHubResult().
+                        endAssert().
+                    endAsserts().
                 endTest().
                 build();
 

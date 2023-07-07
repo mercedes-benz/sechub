@@ -2,6 +2,7 @@ package com.mercedesbenz.sechub.systemtest.runtime.testengine;
 
 import java.nio.file.Path;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
@@ -14,10 +15,13 @@ import com.mercedesbenz.sechub.api.SecHubClientException;
 import com.mercedesbenz.sechub.api.SecHubReport;
 import com.mercedesbenz.sechub.commons.model.JSONConverter;
 import com.mercedesbenz.sechub.commons.model.SecHubConfigurationModel;
+import com.mercedesbenz.sechub.commons.model.TrafficLight;
+import com.mercedesbenz.sechub.systemtest.config.AssertSechubResultDefinition;
 import com.mercedesbenz.sechub.systemtest.config.ExecutionStepDefinition;
 import com.mercedesbenz.sechub.systemtest.config.RunSecHubJobDefinition;
 import com.mercedesbenz.sechub.systemtest.config.RunSecHubJobDefinitionTransformer;
 import com.mercedesbenz.sechub.systemtest.config.ScriptDefinition;
+import com.mercedesbenz.sechub.systemtest.config.TestAssertDefinition;
 import com.mercedesbenz.sechub.systemtest.config.TestDefinition;
 import com.mercedesbenz.sechub.systemtest.config.TestExecutionDefinition;
 import com.mercedesbenz.sechub.systemtest.runtime.LocationSupport;
@@ -52,22 +56,86 @@ public class SystemTestRuntimeTestEngine {
         this.execSupport = execSupport;
     }
 
-    public void execute(TestDefinition test, SystemTestRuntimeContext runtimeContext) {
-        TestEngineTestContext testContext = new TestEngineTestContext(this, test, runtimeContext);
+    public void runTest(TestDefinition test, SystemTestRuntimeContext runtimeContext) {
+        TestEngineTestContext testContext = createTestContext(test, runtimeContext);
 
-        testContext.runtimeContext.testStarted(testContext.test);
-
-        try {
-            executePreparationSteps("Prepare", testContext);
-
-        } catch (SystemTestScriptExecutionException e) {
-            testContext.markAsFailed("Was not able to prepare test", e);
+        if (!prepareTest(testContext)) {
+            /* preparation failed */
             return;
         }
 
+        executeTest(testContext);
+
+        assertTest(testContext);
+
+    }
+
+    private TestEngineTestContext createTestContext(TestDefinition test, SystemTestRuntimeContext runtimeContext) {
+        TestEngineTestContext testContext = new TestEngineTestContext(this, test, runtimeContext);
+        testContext.runtimeContext.testStarted(testContext.test);
+        return testContext;
+    }
+
+    private void assertTest(TestEngineTestContext testContext) {
+        List<TestAssertDefinition> asserts = testContext.getTest().getAssert();
+        for (TestAssertDefinition assertDef : asserts) {
+            handleAssert(assertDef, testContext);
+        }
+    }
+
+    private void handleAssert(TestAssertDefinition assertDef, TestEngineTestContext testContext) {
+        handleSecHubAsserts(assertDef, testContext);
+    }
+
+    private void handleSecHubAsserts(TestAssertDefinition assertDef, TestEngineTestContext testContext) {
+        if (!testContext.isSecHubTest()) {
+            return;
+        }
+        List<AssertSechubResultDefinition> sechubResultAsserts = assertDef.getSechubResult();
+        for (AssertSechubResultDefinition sechubResultAssert : sechubResultAsserts) {
+            handleSecHubAssert(sechubResultAssert, testContext);
+        }
+
+    }
+
+    private void handleSecHubAssert(AssertSechubResultDefinition sechubResultAssert, TestEngineTestContext testContext) {
+        SecHubReport report = testContext.getSecHubRunData().getReport();
+        
+        if (sechubResultAssert.getHasTrafficLight().isPresent()) {
+            TrafficLight expected = sechubResultAssert.getHasTrafficLight().get();
+            assertEquals(expected,report.getTrafficLight());
+            
+        }
+        if (sechubResultAssert.getContainsStrings().isPresent()) {
+            sechubResultAssert.getContainsStrings().get();
+        }
+        
+    }
+
+    private void assertEquals(Object expected, Object given) {
+        /* FIXME Albert Tregnaghi, 2023-07-07: enhance implementation, move to other - clarify if we throw an exception or not. */
+        if (! Objects.equals(expected, given)) {
+            throw new RuntimeException("Objects not equal");
+        }
+        
+    }
+
+    private boolean prepareTest(TestEngineTestContext testContext) {
+        boolean prepared = false;
+        try {
+            executePreparationSteps("Prepare", testContext);
+            prepared = true;
+        } catch (SystemTestScriptExecutionException e) {
+            testContext.markAsFailed("Was not able to prepare test", e);
+        }
+        return prepared;
+    }
+
+    private void executeTest(TestEngineTestContext testContext) {
+        /* mark current test - fail if not supported */
         if (testContext.isSecHubTest()) {
             try {
-                testContext.markCurrentSecHubJob(launchSecHubJob(testContext));
+                launchSecHubJob(testContext);
             } catch (SecHubClientException e) {
                 testContext.markAsFailed("Was not able to launch SecHub job", e);
             }
@@ -76,10 +144,9 @@ public class SystemTestRuntimeTestEngine {
             throw new WrongConfigurationException("Cannot execute test: " + testContext.test.getName() + " because not found any sechub runs.",
                     testContext.runtimeContext);
         }
-
     }
 
-    private UUID launchSecHubJob(TestEngineTestContext testContext) throws SecHubClientException {
+    private void launchSecHubJob(TestEngineTestContext testContext) throws SecHubClientException {
         SecHubClient clientForScheduling = null;
 
         SystemTestRuntimeContext runtimeContext = testContext.getRuntimeContext();
@@ -133,12 +200,11 @@ public class SystemTestRuntimeTestEngine {
         }
 
         SecHubReport report = clientForScheduling.downloadSecHubReportAsJson(projectId, jobUUID);
-
         if (LOG.isDebugEnabled()) {
             LOG.debug("Report returned from SecHub server for job: {}:\n", report.toFormattedJSON());
         }
-
-        return jobUUID;
+        testContext.getSecHubRunData().report=report;
+        testContext.markCurrentSecHubJob(jobUUID);
 
     }
 
@@ -201,10 +267,14 @@ public class SystemTestRuntimeTestEngine {
 
     class SecHubRunData {
 
+        SecHubReport report;
         SecHubConfigurationModel secHubConfiguration;
 
         public SecHubConfigurationModel getSecHubConfiguration() {
             return secHubConfiguration;
+        }
+        public SecHubReport getReport() {
+            return report;
         }
 
     }

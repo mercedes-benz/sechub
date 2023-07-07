@@ -96,7 +96,7 @@ public class SystemTestRuntime {
             originTestList.clear();
 
             for (TestDefinition test : workingList) {
-                testEngine.execute(test, context);
+                testEngine.runTest(test, context);
             }
 
             /* shutdown */
