@@ -64,14 +64,14 @@ public abstract class AbstractAuthScan extends AbstractScan implements AuthScan 
         String subtreeonly = "true";
         LOG.info("For scan {}: Starting authenticated Ajax Spider.", scanContext.getContextName());
         /* @formatter:off */
-		ApiResponse responseAjaxSpider = clientApi.ajaxSpider.scanAsUser(
+		clientApi.ajaxSpider.scanAsUser(
 		        contextname,
 		        username,
 				url,
 				subtreeonly);
 		/* @formatter:on */
 
-        waitForAjaxSpiderResults(responseAjaxSpider);
+        waitForAjaxSpiderResults();
     }
 
     @Override
