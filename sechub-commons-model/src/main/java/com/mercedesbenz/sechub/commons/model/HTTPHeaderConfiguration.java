@@ -8,10 +8,12 @@ public class HTTPHeaderConfiguration {
     public static final String PROPERTY_NAME = "name";
     public static final String PROPERTY_VALUE = "value";
     public static final String PROPERTY_ONLY_FOR_URLS = "onlyForUrls";
+    public static final String PROPERTY_SENSITIVE = "sensitive";
 
     private String name;
     private String value;
     private Optional<List<String>> onlyForUrls = Optional.empty();
+    private boolean sensitive = true;
 
     public String getName() {
         return name;
@@ -37,4 +39,11 @@ public class HTTPHeaderConfiguration {
         this.onlyForUrls = onlyForUrls;
     }
 
+    public boolean isSensitive() {
+        return sensitive;
+    }
+
+    public void setSensitive(boolean sensitive) {
+        this.sensitive = sensitive;
+    }
 }
