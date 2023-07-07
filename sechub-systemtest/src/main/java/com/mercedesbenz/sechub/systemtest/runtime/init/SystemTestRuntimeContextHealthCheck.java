@@ -289,9 +289,19 @@ public class SystemTestRuntimeContextHealthCheck {
 
         SecHubConfigurationDefinition sechubConfig = context.getLocalSecHubConfigurationOrFail();
         for (SecHubExecutorConfigDefinition executorConfigDefinition : sechubConfig.getExecutors()) {
+            assertExecutorConfigNameDefined(context,executorConfigDefinition);
             assertExecutorConfigBaseUrlDefined(context, executorConfigDefinition);
             assertExecutorParametersValid(context, executorConfigDefinition);
         }
+    }
+
+    private void assertExecutorConfigNameDefined(SystemTestRuntimeContext context, SecHubExecutorConfigDefinition executorConfigDefinition) {
+        String name = executorConfigDefinition.getName();
+        if (name==null || name.isEmpty()) {
+            String productId = executorConfigDefinition.getPdsProductId();
+            throw new WrongConfigurationException("For product id:" + productId + " an executor definition has no name!", context);
+        }
+        
     }
 
     private void assertExecutorParametersValid(SystemTestRuntimeContext context, SecHubExecutorConfigDefinition executorConfigDefinition) {

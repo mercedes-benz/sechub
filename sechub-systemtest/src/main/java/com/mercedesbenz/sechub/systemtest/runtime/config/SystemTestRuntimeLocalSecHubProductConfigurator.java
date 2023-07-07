@@ -5,6 +5,7 @@ import static com.mercedesbenz.sechub.commons.pds.PDSDefaultParameterKeyConstant
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -16,6 +17,7 @@ import org.slf4j.LoggerFactory;
 
 import com.mercedesbenz.sechub.api.ExecutionProfileCreate;
 import com.mercedesbenz.sechub.api.ExecutorConfiguration;
+import com.mercedesbenz.sechub.api.ExecutorConfigurationInfo;
 import com.mercedesbenz.sechub.api.ExecutorConfigurationSetup;
 import com.mercedesbenz.sechub.api.ExecutorConfigurationSetupCredentials;
 import com.mercedesbenz.sechub.api.Project;
@@ -131,6 +133,20 @@ public class SystemTestRuntimeLocalSecHubProductConfigurator {
             SystemTestRuntimeContext context) throws SecHubClientException {
 
         SecHubClient client = context.getLocalAdminSecHubClient();
+        
+        String name = executorConfigDefinition.getName();
+
+        List<ExecutorConfigurationInfo> executorConfigurations = client.fetchAllExecutorConfigurationInfo();
+        Set<UUID> oldEntries = new HashSet<>();
+        for (ExecutorConfigurationInfo info: executorConfigurations) {
+            if (name.equals(info.getName())){
+                oldEntries.add(info.getUuid());
+            }
+        }
+        for (UUID oldEntry: oldEntries) {
+            LOG.info("Delete existing executor configuration: {} - {}", name, oldEntry);
+            client.deleteExecutorConfiguration(oldEntry);
+        }
 
         String pdsProductId = executorConfigDefinition.getPdsProductId();
         ScanType scanType = context.getScanTypeForPdsProduct(pdsProductId);
@@ -139,7 +155,7 @@ public class SystemTestRuntimeLocalSecHubProductConfigurator {
         /* create and configure new executor configuration */
         ExecutorConfiguration config = new ExecutorConfiguration();
         config.setEnabled(true);
-        config.setName(pdsProductId);
+        config.setName(name);
         config.setExecutorVersion(BigDecimal.valueOf(executorConfigDefinition.getVersion()));
         config.setProductIdentifier(secHubProductIdentifier);
 

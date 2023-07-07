@@ -8,6 +8,7 @@ import java.util.Set;
 public class SecHubExecutorConfigDefinition {
 
     private String pdsProductId;
+    private String name;
     private int version = 1;
 
     private Map<String, String> parameters = new LinkedHashMap<>();
@@ -18,6 +19,14 @@ public class SecHubExecutorConfigDefinition {
 
     public Map<String, String> getParameters() {
         return parameters;
+    }
+    
+    public String getName() {
+        return name;
+    }
+    
+    public void setName(String name) {
+        this.name = name;
     }
 
     public void setProfiles(Set<String> profileIds) {

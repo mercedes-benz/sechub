@@ -12,7 +12,7 @@ public class SystemTestParameters {
     private boolean localRun = true;// default always local
 
     private boolean dryRun;
-
+    
     public SystemTestConfiguration getConfiguration() {
         return configuration;
     }

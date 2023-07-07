@@ -57,7 +57,11 @@ public class SystemTestRuntime {
     public SystemTestResult run(SystemTestConfiguration configuration, boolean localRun, boolean isDryRun) {
 
         SystemTestRuntimeContext context = new SystemTestRuntimeContext(configuration, locationSupport.getWorkspaceRoot(),
-                locationSupport.getAdditionalResourcesRoot(), localRun, isDryRun);
+                locationSupport.getAdditionalResourcesRoot());
+        
+        context.localRun=localRun;
+        context.dryRun=isDryRun;
+        
         try {
             LOG.info("Starting - run {}{}", isDryRun ? "DRY " : "", localRun ? "LOCAL" : "REMOTE");
 

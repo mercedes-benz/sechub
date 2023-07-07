@@ -7,7 +7,9 @@ import java.io.IOException;
 import java.net.URI;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.Callable;
 
@@ -33,6 +35,8 @@ import com.mercedesbenz.sechub.api.internal.gen.model.OpenApiExecutorConfigurati
 import com.mercedesbenz.sechub.api.internal.gen.model.OpenApiExecutorConfigurationSetup;
 import com.mercedesbenz.sechub.api.internal.gen.model.OpenApiJobId;
 import com.mercedesbenz.sechub.api.internal.gen.model.OpenApiJobStatus;
+import com.mercedesbenz.sechub.api.internal.gen.model.OpenApiListOfExecutorConfigurations;
+import com.mercedesbenz.sechub.api.internal.gen.model.OpenApiListOfExecutorConfigurationsExecutorConfigurationsInner;
 import com.mercedesbenz.sechub.api.internal.gen.model.OpenApiProjectDetails;
 import com.mercedesbenz.sechub.api.internal.gen.model.OpenApiScanJob;
 import com.mercedesbenz.sechub.commons.archive.ArchiveSupport;
@@ -214,6 +218,24 @@ public class SecHubClient {
         String checksum = checkSumSupport.createSha256Checksum(zipFile);
 
         runOrFail(() -> workaroundProjectApi.userUploadsSourceCode(projectId, jobUUID.toString(), checksum, zipFile), "Source upload (zip)");
+    }
+
+    public List<ExecutorConfigurationInfo> fetchAllExecutorConfigurationInfo() throws SecHubClientException {
+        OpenApiListOfExecutorConfigurations configList = runOrFail(() -> adminApi.adminFetchesExecutorConfigurationList(), "Fetch executor configurations");
+
+        List<OpenApiListOfExecutorConfigurationsExecutorConfigurationsInner> list = configList.getExecutorConfigurations();
+        List<ExecutorConfigurationInfo> result = new ArrayList<>();
+        
+        for (OpenApiListOfExecutorConfigurationsExecutorConfigurationsInner inner : list) {
+            
+            ExecutorConfigurationInfo info = new ExecutorConfigurationInfo();
+            info.setEnabled(inner.getEnabled() == null ? false : inner.getEnabled());
+            info.setName(inner.getName());
+            info.setUuid(UUID.fromString(inner.getUuid()));
+            
+            result.add(info);
+        }
+        return result;
     }
 
     /* ++++++++++++++++++++++++++++++++++++++++++++++++++++ */

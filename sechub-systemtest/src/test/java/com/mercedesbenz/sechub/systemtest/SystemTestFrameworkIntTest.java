@@ -73,6 +73,7 @@ class SystemTestFrameworkIntTest {
                          */
                         configure().
                             addExecutor().
+                                name("system-test-codescan-exec1").
                                 pdsProductId("PDS_INTTEST_PRODUCT_CODESCAN").
                                 /* add mandatory parameters for this product:*/
                                 parameter("product1.qualititycheck.enabled","true").
@@ -88,8 +89,8 @@ class SystemTestFrameworkIntTest {
                          * We do not define any steps here - the PDS and SecHub instances
                          * must be started already.
                          *
-                         * The next line is important: The path cannot be auto calculated because we use a
-                         * SecHub server started by here - so we set the path */
+                         * The next line is important: The path cannot be auto calculated because we use an integration test
+                         * SecHub server which has been already started - so we set the path */
                         pathToServerConfigFile(new File("./../sechub-integrationtest/src/main/resources/pds-config-integrationtest.json").toPath().toString()).
                     endSolution().
                 endLocalSetup().
@@ -110,14 +111,11 @@ class SystemTestFrameworkIntTest {
                         codeScan().
                         endScan().
                         uploads().
-                            upload().
-                                sourceFolder("${variables.testSourceUploadFolder}").
-                            endUpload().
-                            upload("i-am-usesless-for-the-systemtest-but-i-test-that-a-binary-upload-works").
-                                binariesFolder("${variables.testSourceUploadFolder}").
-                            endUpload().
+                            addSourceUploadWithDefaultRef("${variables.testSourceUploadFolder}").
+                            addBinaryUpload("i-am-usesless-for-the-systemtest-but-i-test-that-a-binary-upload-works","${variables.testSourceUploadFolder}").
                         endUploads().
                     endRunSecHub().
+                    
                 endTest().
                 build();
 

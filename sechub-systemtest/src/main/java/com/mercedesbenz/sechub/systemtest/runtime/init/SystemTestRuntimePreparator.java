@@ -165,6 +165,7 @@ public class SystemTestRuntimePreparator {
         }
     }
 
+    /* creates a configuration where variables are replaced with dedicated values */
     private void initializeAlteredConfiguration(SystemTestRuntimeContext context) {
         SystemTestConfiguration newConfiguration = createAlternativeConfigurationWithVariablesReplaced(context);
 
@@ -273,7 +274,7 @@ public class SystemTestRuntimePreparator {
 
     private void createDefaultsWhereNothingDefined(SystemTestRuntimeContext context) {
         /*
-         * FIXME Albert Tregnaghi, 2023-03-24:we must introduce
+         * TODO Albert Tregnaghi, 2023-03-24:we must introduce
          * "SechubDefaultsDefinition" + "PDSDefaultsDefinition". Here we will have only
          * a variant field (e.g "alpine") and at runtime, the model will be altered and
          * the start and stop objects are generated automatically by the default object.
@@ -282,13 +283,31 @@ public class SystemTestRuntimePreparator {
 
         createFallbackSecHubSetupParts(context);
         createFallbackDefaultProjectWhenNoProjectsDefined(context);
+        createFallbackNamesForExecutorsWithoutName(context);
         addFallbackDefaultProfileToExecutorsWithoutProfile(context);
 
-        createFallbackForPDSSolutions(context);
-
+        createFallbacksForPDSSolutions(context);
+        
     }
 
-    private void createFallbackForPDSSolutions(SystemTestRuntimeContext context) {
+    private void createFallbackNamesForExecutorsWithoutName(SystemTestRuntimeContext context) {
+        SecHubConfigurationDefinition sechubConfig = context.getLocalSecHubConfigurationOrFail();
+        List<SecHubExecutorConfigDefinition> executors = sechubConfig.getExecutors();
+        for (SecHubExecutorConfigDefinition executor : executors) {
+            String name = executor.getName();
+            if (name == null || name.isEmpty()) {
+                String productId = executor.getPdsProductId();
+                String newName = "systemtest-"+productId;
+                if (newName.length()>30) {
+                    newName=newName.substring(0,30);
+                }
+                executor.setName(newName);
+            }
+        }
+        
+    }
+
+    private void createFallbacksForPDSSolutions(SystemTestRuntimeContext context) {
         if (!context.isLocalRun()) {
             return;
         }

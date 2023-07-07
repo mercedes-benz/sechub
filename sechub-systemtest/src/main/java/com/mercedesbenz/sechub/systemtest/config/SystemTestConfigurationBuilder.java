@@ -298,6 +298,11 @@ public class SystemTestConfigurationBuilder {
                         executor.getParameters().put(key, value);
                         return this;
                     }
+
+                    public ExecutorConfigBuilder name(String name) {
+                        executor.setName(name);
+                        return this;
+                    }
                 }
 
             }
@@ -419,22 +424,23 @@ public class SystemTestConfigurationBuilder {
 
             public class UploadsBuilder {
 
-                /**
-                 * Defines an upload with default reference id
-                 *
-                 * @return builder
-                 */
-                public UploadBuilder upload() {
-                    return upload(null);
+                public UploadsBuilder addBinaryUploadWithDefaultRef(String path) {
+                    return addBinaryUpload(null, path);
                 }
-
-                /**
-                 * Defines an upload with given reference id
-                 *
-                 * @param referenceId this reference id will be used inside data structure
-                 * @return builder
-                 */
-                public UploadBuilder upload(String referenceId) {
+                
+                public UploadsBuilder addBinaryUpload(String referenceId,String path) {
+                    return upload(referenceId).binariesFolder(path).endUpload();
+                }
+                
+                public UploadsBuilder addSourceUploadWithDefaultRef(String path) {
+                    return addSourceUpload(null, path);
+                }
+                
+                public UploadsBuilder addSourceUpload(String referenceId,String path) {
+                    return upload(referenceId).sourceFolder(path).endUpload();
+                }
+                
+                private UploadBuilder upload(String referenceId) {
                     return new UploadBuilder(referenceId);
                 }
 

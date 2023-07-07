@@ -42,6 +42,7 @@ public class SystemTestRuntimeContext {
 
     SystemTestConfiguration originConfiguration;
     boolean localRun;
+    boolean dryRun;
     boolean secHubStarted;
     boolean atLeastOnePDSStarted;
 
@@ -60,9 +61,9 @@ public class SystemTestRuntimeContext {
     private SecHubClient remoteUserSecHubClient;
     private SecHubClient localAdminSecHubClient;
 
-    private boolean dryRun;
 
     private Map<String, PDSClient> localTechUserPdsClientMap = new TreeMap<>();
+    
 
     public void alterConfguration(SystemTestConfiguration configuration) {
         this.configuration = configuration;
@@ -88,8 +89,7 @@ public class SystemTestRuntimeContext {
     SystemTestRuntimeContext() {
     }
 
-    public SystemTestRuntimeContext(SystemTestConfiguration originConfiguration, Path workspaceRoot, Path additionalResourcesRoot, boolean localRun,
-            boolean dryRun) {
+    public SystemTestRuntimeContext(SystemTestConfiguration originConfiguration, Path workspaceRoot, Path additionalResourcesRoot){
         if (originConfiguration == null) {
             throw new IllegalArgumentException("Origin configuration may never be null!");
         }
@@ -98,9 +98,6 @@ public class SystemTestRuntimeContext {
         }
         this.originConfiguration = originConfiguration;
         this.configuration = originConfiguration;
-
-        this.localRun = localRun;
-        this.dryRun = dryRun;
 
         this.workspaceRoot = workspaceRoot;
         this.additionalResourcesRoot = additionalResourcesRoot;
@@ -419,5 +416,7 @@ public class SystemTestRuntimeContext {
         }
         return solutionDefinition;
     }
+
+  
 
 }
