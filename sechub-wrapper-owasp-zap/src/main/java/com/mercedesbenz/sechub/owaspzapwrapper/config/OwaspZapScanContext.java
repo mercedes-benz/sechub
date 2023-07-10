@@ -40,8 +40,8 @@ public class OwaspZapScanContext {
     private Path apiDefinitionFile;
 
     // Using Set here to avoid duplicates
-    private Set<URL> owaspZapURLsIncludeList = new HashSet<>();
-    private Set<URL> owaspZapURLsExcludeList = new HashSet<>();
+    private Set<URL> owaspZapURLsIncludeSet = new HashSet<>();
+    private Set<URL> owaspZapURLsExcludeSet = new HashSet<>();
 
     private boolean connectionCheckEnabled;
 
@@ -123,12 +123,12 @@ public class OwaspZapScanContext {
         return apiDefinitionFile;
     }
 
-    public Set<URL> getOwaspZapURLsIncludeList() {
-        return owaspZapURLsIncludeList;
+    public Set<URL> getOwaspZapURLsIncludeSet() {
+        return owaspZapURLsIncludeSet;
     }
 
-    public Set<URL> getOwaspZapURLsExcludeList() {
-        return owaspZapURLsExcludeList;
+    public Set<URL> getOwaspZapURLsExcludeSet() {
+        return owaspZapURLsExcludeSet;
     }
 
     public boolean connectionCheckEnabled() {
@@ -180,8 +180,8 @@ public class OwaspZapScanContext {
         private Path apiDefinitionFile;
 
         // Using Set here to avoid duplicates
-        private Set<URL> owaspZapURLsIncludeList = new HashSet<>();
-        private Set<URL> owaspZapURLsExcludeList = new HashSet<>();
+        private Set<URL> owaspZapURLsIncludeSet = new HashSet<>();
+        private Set<URL> owaspZapURLsExcludeSet = new HashSet<>();
 
         private boolean connectionCheckEnabled;
 
@@ -261,12 +261,12 @@ public class OwaspZapScanContext {
         }
 
         public OwaspZapBasicScanContextBuilder setOwaspZapURLsIncludeSet(Set<URL> owaspZapURLsIncludeList) {
-            this.owaspZapURLsIncludeList.addAll(owaspZapURLsIncludeList);
+            this.owaspZapURLsIncludeSet.addAll(owaspZapURLsIncludeList);
             return this;
         }
 
         public OwaspZapBasicScanContextBuilder setOwaspZapURLsExcludeSet(Set<URL> owaspZapURLsExcludeList) {
-            this.owaspZapURLsExcludeList.addAll(owaspZapURLsExcludeList);
+            this.owaspZapURLsExcludeSet.addAll(owaspZapURLsExcludeList);
             return this;
         }
 
@@ -312,8 +312,8 @@ public class OwaspZapScanContext {
 
             owaspZapBasicScanConfiguration.apiDefinitionFile = this.apiDefinitionFile;
 
-            owaspZapBasicScanConfiguration.owaspZapURLsIncludeList.addAll(this.owaspZapURLsIncludeList);
-            owaspZapBasicScanConfiguration.owaspZapURLsExcludeList.addAll(this.owaspZapURLsExcludeList);
+            owaspZapBasicScanConfiguration.owaspZapURLsIncludeSet.addAll(this.owaspZapURLsIncludeSet);
+            owaspZapBasicScanConfiguration.owaspZapURLsExcludeSet.addAll(this.owaspZapURLsExcludeSet);
 
             owaspZapBasicScanConfiguration.connectionCheckEnabled = this.connectionCheckEnabled;
 

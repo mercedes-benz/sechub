@@ -487,8 +487,8 @@ class OwaspZapScanContextFactoryTest {
         OwaspZapScanContext result = factoryToTest.create(settings);
 
         /* test */
-        assertEquals(3, result.getOwaspZapURLsIncludeList().size());
-        assertEquals(2, result.getOwaspZapURLsExcludeList().size());
+        assertEquals(3, result.getOwaspZapURLsIncludeSet().size());
+        assertEquals(2, result.getOwaspZapURLsExcludeSet().size());
     }
 
     @ParameterizedTest

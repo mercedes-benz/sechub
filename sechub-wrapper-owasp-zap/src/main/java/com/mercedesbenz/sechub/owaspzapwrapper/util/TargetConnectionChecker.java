@@ -40,7 +40,7 @@ public class TargetConnectionChecker {
 
     public void assertApplicationIsReachable(OwaspZapScanContext scanContext) {
         boolean isReachable = false;
-        Iterator<URL> iterator = scanContext.getOwaspZapURLsIncludeList().iterator();
+        Iterator<URL> iterator = scanContext.getOwaspZapURLsIncludeSet().iterator();
         while (iterator.hasNext() && isReachable == false) {
             // trying to reach the target URL and all includes until the first reachable
             // URL is found.

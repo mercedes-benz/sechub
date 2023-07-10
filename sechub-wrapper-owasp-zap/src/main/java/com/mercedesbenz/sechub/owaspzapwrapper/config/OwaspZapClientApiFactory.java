@@ -7,11 +7,12 @@ import org.zaproxy.clientapi.core.ClientApi;
 
 import com.mercedesbenz.sechub.owaspzapwrapper.cli.ZapWrapperExitCode;
 import com.mercedesbenz.sechub.owaspzapwrapper.cli.ZapWrapperRuntimeException;
+import com.mercedesbenz.sechub.owaspzapwrapper.scan.ClientApiFacade;
 
 public class OwaspZapClientApiFactory {
     private static final Logger LOG = LoggerFactory.getLogger(OwaspZapClientApiFactory.class);
 
-    public ClientApi create(OwaspZapServerConfiguration serverConfig) {
+    public ClientApiFacade create(OwaspZapServerConfiguration serverConfig) {
         LOG.info("Creating Owasp Zap ClientApi.");
         assertValidServerConfig(serverConfig);
         String zaproxyHost = serverConfig.getZaproxyHost();
@@ -20,7 +21,7 @@ public class OwaspZapClientApiFactory {
 
         ClientApi clientApi = new ClientApi(zaproxyHost, zaproxyPort, zaproxyApiKey);
 
-        return clientApi;
+        return new ClientApiFacade(clientApi);
     }
 
     private void assertValidServerConfig(OwaspZapServerConfiguration serverConfig) {

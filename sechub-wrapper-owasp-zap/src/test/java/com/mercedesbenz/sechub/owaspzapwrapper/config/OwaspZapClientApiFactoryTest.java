@@ -7,10 +7,10 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
-import org.zaproxy.clientapi.core.ClientApi;
 import org.zaproxy.clientapi.core.ClientApiException;
 
 import com.mercedesbenz.sechub.owaspzapwrapper.cli.ZapWrapperRuntimeException;
+import com.mercedesbenz.sechub.owaspzapwrapper.scan.ClientApiFacade;
 
 class OwaspZapClientApiFactoryTest {
 
@@ -33,10 +33,10 @@ class OwaspZapClientApiFactoryTest {
         OwaspZapServerConfiguration serverConfig = new OwaspZapServerConfiguration("127.0.0.1", 8080, "secret-key");
 
         /* execute */
-        ClientApi clientApi = factoryToTest.create(serverConfig);
+        ClientApiFacade clientApiFacade = factoryToTest.create(serverConfig);
 
         /* test */
-        assertNotNull(clientApi);
+        assertNotNull(clientApiFacade);
     }
 
     /* @formatter:off */

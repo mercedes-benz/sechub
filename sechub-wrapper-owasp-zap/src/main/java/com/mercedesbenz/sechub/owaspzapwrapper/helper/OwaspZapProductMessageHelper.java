@@ -58,6 +58,17 @@ public class OwaspZapProductMessageHelper {
         }
     }
 
+    public void writeUserMessagesWithScannedURLs(List<String> urls) {
+        for (String url : urls) {
+            // robots.txt and sitemap.xml always appear inside the sites tree even if they
+            // are not available. Because of this it is skipped here.
+            if (url.contains("robots.txt") || url.contains("sitemap.xml")) {
+                continue;
+            }
+            writeSingleProductMessage(new SecHubMessage(SecHubMessageType.INFO, "Detect url to scan: " + url));
+        }
+    }
+
     private void writeProductErrorForExitCode(ZapWrapperExitCode exitCode) throws IOException {
         if (exitCode == null) {
             return;
