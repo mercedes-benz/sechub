@@ -2,7 +2,6 @@ package com.mercedesbenz.sechub.systemtest.runtime.testengine;
 
 import java.nio.file.Path;
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
@@ -100,25 +99,26 @@ public class SystemTestRuntimeTestEngine {
 
     private void handleSecHubAssert(AssertSechubResultDefinition sechubResultAssert, TestEngineTestContext testContext) {
         SecHubReport report = testContext.getSecHubRunData().getReport();
-        
+
         if (sechubResultAssert.getHasTrafficLight().isPresent()) {
             TrafficLight expected = sechubResultAssert.getHasTrafficLight().get();
-            assertEquals(expected,report.getTrafficLight());
-            
+            if (!expected.equals(report.getTrafficLight())) {
+                String reportAsJson = JSONConverter.get().toJSON(report, true);
+                failWithMessage("SecHub report not as wanted. Expected was traffic light: " + expected + ", but result was: " + report.getTrafficLight()
+                        + "\nSecHub report was:\n" + reportAsJson, testContext);
+            }
+
         }
         if (sechubResultAssert.getContainsStrings().isPresent()) {
             sechubResultAssert.getContainsStrings().get();
         }
-        
+
     }
 
-    private void assertEquals(Object expected, Object given) {
-        /* FIXME Albert Tregnaghi, 2023-07-07: enhance implementation, move to other - clarify if we throw an exception or not. */
-        if (! Objects.equals(expected, given)) {
-            throw new RuntimeException("Objects not equal");
-        }
-        
+    private void failWithMessage(String message, TestEngineTestContext testContext) {
+        testContext.markAsFailed(message);
     }
+
 
     private boolean prepareTest(TestEngineTestContext testContext) {
         boolean prepared = false;
@@ -183,27 +183,42 @@ public class SystemTestRuntimeTestEngine {
         }
 
         /* mark job as ready to start */
-        clientForScheduling.approveJob(projectId, jobUUID);
+        if (runtimeContext.isDryRun()) {
+            LOG.debug("Skip job approve because dry run");
+        } else {
+            clientForScheduling.approveJob(projectId, jobUUID);
+        }
 
         /* wait for job failed or done */
-        long started = System.currentTimeMillis();
-        while (!clientForScheduling.fetchStatus(projectId, jobUUID).getResult().hasFinished()) {
-            long diff = System.currentTimeMillis() - started;
-            if (diff > MILLISECONDS_TO_WAIT_FOR_JOB_FINISHED) {
-                throw new SystemTestRuntimeException("Job status for " + jobUUID + " took " + diff + " milliseconds (time out)");
-            }
-            try {
-                TimeUnit.MICROSECONDS.sleep(300);
-            } catch (InterruptedException e) {
-                Thread.currentThread().interrupt();
+        if (runtimeContext.isDryRun()) {
+            LOG.debug("Skip job status fetching because dry run");
+        } else {
+            long started = System.currentTimeMillis();
+            while (!clientForScheduling.fetchStatus(projectId, jobUUID).getResult().hasFinished()) {
+                long diff = System.currentTimeMillis() - started;
+                if (diff > MILLISECONDS_TO_WAIT_FOR_JOB_FINISHED) {
+                    throw new SystemTestRuntimeException("Job status for " + jobUUID + " took " + diff + " milliseconds (time out)");
+                }
+                try {
+                    TimeUnit.MICROSECONDS.sleep(300);
+                } catch (InterruptedException e) {
+                    Thread.currentThread().interrupt();
+                }
             }
         }
 
-        SecHubReport report = clientForScheduling.downloadSecHubReportAsJson(projectId, jobUUID);
+        SecHubReport report = null;
+        if (runtimeContext.isDryRun()) {
+            LOG.debug("Simulate sechub report because dry run");
+            report = new SecHubReport();
+            report.setJobUUID(jobUUID);
+        } else {
+            report = clientForScheduling.downloadSecHubReportAsJson(projectId, jobUUID);
+        }
         if (LOG.isDebugEnabled()) {
             LOG.debug("Report returned from SecHub server for job: {}:\n", report.toFormattedJSON());
         }
-        testContext.getSecHubRunData().report=report;
+        testContext.getSecHubRunData().report = report;
         testContext.markCurrentSecHubJob(jobUUID);
 
     }
@@ -273,6 +288,7 @@ public class SystemTestRuntimeTestEngine {
         public SecHubConfigurationModel getSecHubConfiguration() {
             return secHubConfiguration;
         }
+
         public SecHubReport getReport() {
             return report;
         }
@@ -356,19 +372,23 @@ public class SystemTestRuntimeTestEngine {
 
         private String createDetails(Exception e) {
             StringBuilder sb = new StringBuilder();
-            sb.append("SecHubJob:").append(runtimeContext.getCurrentResult().getSechubJobUUID());
-            sb.append(", ");
-            if (e != null) {
-                sb.append(e.getMessage());
-            } else {
-                sb.append("No exception available");
-            }
+            sb.append("\n- SecHubJob UUID: ");
+            sb.append(safeString(runtimeContext.getCurrentResult().getSechubJobUUID()));
+            sb.append("\n- Exception: ");
+            sb.append(safeString(e));
 
             return sb.toString();
         }
 
         public void markCurrentSecHubJob(UUID sechubJobUUID) {
             runtimeContext.getCurrentResult().setSecHubJobUUID(sechubJobUUID);
+        }
+        
+        private String safeString(Object obj) {
+            if (obj==null) {
+                return "";
+            }
+            return obj.toString();
         }
 
     }

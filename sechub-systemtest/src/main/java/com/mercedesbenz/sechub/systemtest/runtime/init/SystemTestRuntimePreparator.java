@@ -24,6 +24,7 @@ import com.mercedesbenz.sechub.commons.model.SecHubInfrastructureScanConfigurati
 import com.mercedesbenz.sechub.commons.model.SecHubLicenseScanConfiguration;
 import com.mercedesbenz.sechub.commons.model.SecHubSecretScanConfiguration;
 import com.mercedesbenz.sechub.commons.model.SecHubWebScanConfiguration;
+import com.mercedesbenz.sechub.commons.pds.PDSDefaultParameterKeyConstants;
 import com.mercedesbenz.sechub.systemtest.config.CalculatedVariables;
 import com.mercedesbenz.sechub.systemtest.config.CredentialsDefinition;
 import com.mercedesbenz.sechub.systemtest.config.DefaultFallback;
@@ -239,6 +240,7 @@ public class SystemTestRuntimePreparator {
         createFallbackSecHubSetupPartsWithMetaData(context);
 
         addFallbackExecutorConfigurationCredentials(context);
+        addExecutorDefaultsForMissingParts(context);
 
     }
 
@@ -325,7 +327,7 @@ public class SystemTestRuntimePreparator {
                 credentials.setUserId(DefaultFallback.FALLBACK_PDS_TECH_USER.getValue());
                 credentials.setApiToken(DefaultFallback.FALLBACK_PDS_TECH_TOKEN.getValue());
 
-                LOG.info("No credentials set for solution: '{}', added defaults");
+                LOG.debug("No credentials set for solution: '{}', added defaults");
             }
         }
     }
@@ -355,10 +357,35 @@ public class SystemTestRuntimePreparator {
                 credentials.setUserId(userId);
                 credentials.setApiToken(techUser.getApiToken());
 
-                LOG.info("No credentials set for executor, added defaults");
+                LOG.debug("No credentials set for executor, added defaults");
             }
         }
 
+    }
+    private void addExecutorDefaultsForMissingParts(SystemTestRuntimeContext context) {
+        if (!context.isLocalRun()) {
+            return;
+        }
+        if (!context.isLocalSecHubConfigured()) {
+            return;
+        }
+        for (SecHubExecutorConfigDefinition definition : context.getLocalSecHubExecutorConfigurationsOrFail()) {
+            
+            Map<String, String> params = definition.getParameters();
+            if (params.get("pds.productexecutor.trustall.certificates")==null) {
+                params.put("pds.productexecutor.trustall.certificates", "true");
+                LOG.debug("No trust all definition defined for product executor, defined default");
+            }
+            if (params.get("pds.productexecutor.timetowait.nextcheck.milliseconds")==null) {
+                params.put("pds.productexecutor.timetowait.nextcheck.milliseconds", "500");
+                LOG.debug("No next check time found for PDS product executor, defined default");
+            }
+            if (params.get(PDSDefaultParameterKeyConstants.PARAM_KEY_PDS_CONFIG_USE_SECHUB_STORAGE)==null) {
+                params.put(PDSDefaultParameterKeyConstants.PARAM_KEY_PDS_CONFIG_USE_SECHUB_STORAGE, "true");
+                LOG.debug("No SecHub storage usage definition found, defined default");
+            }
+        }
+        
     }
 
     private void createFallbackSecHubSetupParts(SystemTestRuntimeContext context) {

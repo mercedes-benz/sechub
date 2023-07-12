@@ -201,7 +201,6 @@ public class WorkaroundProjectApi {
         /* @formatter:off */
         MultiPartBodyPublisherBuilder builder = new MultiPartBodyPublisherBuilder().
             addFile(CommonConstants.MULTIPART_FILE, file).
-            addString(CommonConstants.FILE_SIZE_HEADER_FIELD_NAME, xFileSize).
             addString(CommonConstants.MULTIPART_CHECKSUM, checkSum);
 
         BodyPublisher publisher = builder.build();

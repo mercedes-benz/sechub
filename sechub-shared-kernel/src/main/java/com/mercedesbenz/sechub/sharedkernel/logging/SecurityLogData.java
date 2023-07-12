@@ -23,10 +23,16 @@ public class SecurityLogData {
     String message;
     Object[] messageParameters;
     List<String> traceInformation = new ArrayList<>();
+    String method;
     String requestURI;
     Map<String, String> httpHeaders = new TreeMap<>(); // we want it sorted, so a tree map
 
     String sessionId;
+    boolean afterSessionClosed;
+    
+    public boolean isAfterSessionClosed() {
+        return afterSessionClosed;
+    }
 
     public String getSessionId() {
         return sessionId;
@@ -40,6 +46,10 @@ public class SecurityLogData {
         return requestURI;
     }
 
+    public String getMethod() {
+        return method;
+    }
+    
     public String getUserId() {
         return userId;
     }
@@ -58,6 +68,7 @@ public class SecurityLogData {
     public String getMessage() {
         return message;
     }
+    
 
     public List<Object> getMessageParameters() {
         if (messageParameters == null) {

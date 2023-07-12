@@ -3,7 +3,6 @@ package com.mercedesbenz.sechub.systemtest;
 import static com.mercedesbenz.sechub.systemtest.SystemTestAPI.*;
 import static com.mercedesbenz.sechub.test.TestUtil.*;
 import static org.junit.jupiter.api.Assertions.*;
-
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
@@ -17,9 +16,11 @@ import org.slf4j.LoggerFactory;
 
 import com.mercedesbenz.sechub.commons.model.JSONConverter;
 import com.mercedesbenz.sechub.commons.model.TrafficLight;
+import com.mercedesbenz.sechub.commons.pds.PDSDefaultParameterKeyConstants;
 import com.mercedesbenz.sechub.systemtest.config.RuntimeVariable;
 import com.mercedesbenz.sechub.systemtest.config.SystemTestConfiguration;
 import com.mercedesbenz.sechub.systemtest.runtime.SystemTestResult;
+import com.mercedesbenz.sechub.test.TestUtil;
 
 /**
  * A special integration test
@@ -59,15 +60,20 @@ class SystemTestFrameworkIntTest {
     @EnabledIfSystemProperty(named = "sechub.integrationtest.running", matches = "true")
     void even_integration_test_setup_can_be_tested__codescan() throws IOException {
         /* @formatter:off */
-
+        
         /* prepare */
+        String integrationTestAdminUser = TestUtil.getSystemProperty("sechub.initialadmin.userid", "int-test_superadmin");
+        String integrationTestAdminPwd = TestUtil.getSystemProperty("sechub.initialadmin.apitoken", "int-test_superadmin-pwd");
+        String integrationTestPDSTechUserName = TestUtil.getSystemProperty("pds.techuser.username", "pds-inttest-techuser");
+        String integrationTestPDSTechUserPwd = TestUtil.getSystemProperty("pds.techuser.apitoken", "pds-inttest-apitoken");
+        
         SystemTestConfiguration configuration = configure().
                 addVariable("testSourceUploadFolder", "${runtime."+RuntimeVariable.CURRENT_TEST_FOLDER.getVariableName()+"}/testsources").
 
                 localSetup().
                     secHub().
                         url(new URL("https://localhost:"+SECHUB_PORT)).
-                        admin("int-test_superadmin","int-test_superadmin-pwd").
+                        admin(integrationTestAdminUser, integrationTestAdminPwd).
                         /*
                          * We do not define any steps here - developers must have started the
                          * integration test SecHub server locally in IDE
@@ -79,13 +85,15 @@ class SystemTestFrameworkIntTest {
                                 /* add mandatory parameters for this product:*/
                                 parameter("product1.qualititycheck.enabled","true").
                                 parameter("product1.level","A").
+                                /* next parameter only necessary, because we are in integration test mode but we want to have real PDS server response */
+                                parameter(PDSDefaultParameterKeyConstants.PARAM_KEY_PDS_MOCKING_DISABLED, "true").
                             endExecutor().
                         endConfigure().
                     endSecHub().
 
                     addSolution("PDS_INTTEST_PRODUCT_CODESCAN").
                         url(new URL("https://localhost:"+PDS_PORT)).
-                        techUser("pds-inttest-techuser", "pds-inttest-apitoken").
+                        techUser(integrationTestPDSTechUserName, integrationTestPDSTechUserPwd).
                         /*
                          * We do not define any steps here - the PDS and SecHub instances
                          * must be started already.
@@ -122,7 +130,7 @@ class SystemTestFrameworkIntTest {
                             secHubResult().
                                 hasTrafficLight(TrafficLight.GREEN).
                                 equalsFile("./../sechub-systemtest/src/test/resources/additional-resources/expected-output/sechub-result1.json").
-                                containsStrings("CWE89","CWE33").// not necessary, because already file check, but good to show possiblity inside this test
+                                containsStrings("CWE89","CWE33").// not necessary, because already file check, but good to show possibility inside this test
                             endSecHubResult().
                         endAssert().
                     endAsserts().

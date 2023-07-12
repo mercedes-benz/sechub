@@ -1,0 +1,32 @@
+{
+  "jobUUID" : "64994609-46a8-4349-8bee-3ae6d2ba4b37",
+  "trafficLight" : "GREEN",
+  "result" : {
+    "count" : 1,
+    "findings" : [ {
+      "id" : 1,
+      "description" : "pds.test.key.variantname as PDS_TEST_KEY_VARIANTNAME=,product1.level as PRODUCT1_LEVEL=A",
+      "severity" : "INFO",
+      "code" : {
+        "location" : "data.txt",
+        "line" : 2,
+        "column" : 123,
+        "source" : "integration test code only!",
+        "relevantPart" : "integrationtest"
+      },
+      "type" : "codeScan"
+    } ]
+  },
+  "status" : "SUCCESS",
+  "reportVersion" : "1.0",
+  "messages" : [ {
+    "type" : "ERROR",
+    "text" : "error for PDS job: 25877f25-1f09-4281-8f3d-66cd0013b208 but with\n    a multine ....\n    "
+  }, {
+    "type" : "WARNING",
+    "text" : "warn for PDS job: 25877f25-1f09-4281-8f3d-66cd0013b208"
+  }, {
+    "type" : "INFO",
+    "text" : "info for PDS job: 25877f25-1f09-4281-8f3d-66cd0013b208"
+  } ]
+}

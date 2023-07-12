@@ -31,12 +31,13 @@ public class PDSCodeScanProductExecutor extends AbstractPDSProductExecutor {
 
     @Override
     protected List<ProductResult> executeByAdapter(ProductExecutorData data) throws Exception {
-        LOG.debug("Trigger PDS adapter execution");
 
         ProductExecutorContext executorContext = data.getProductExecutorContext();
         PDSExecutorConfigSupport configSupport = PDSExecutorConfigSupport.createSupportAndAssertConfigValid(executorContext.getExecutorConfig(),
                 serviceCollection);
-
+        
+        LOG.debug("Trigger PDS adapter execution of {} at {}", configSupport.getPDSProductIdentifier(), configSupport.getProductBaseURL());
+        
         SecHubExecutionContext context = data.getSechubExecutionContext();
 
         PDSStorageContentProvider contentProvider = contentProviderFactory.createContentProvider(context, configSupport, getScanType());
