@@ -93,10 +93,6 @@ class TestTemplateSupportTest {
                   } ]
                 """;
 
-        // remark: all whitespaces are removed at diff calculation - to
-        // tests this
-        // as well, the template and the content are different in leading and trailing.
-
         /* execute */
         TemplateMatchResult data = supportToTest.calculateTemplateMatching(template, content);
 
