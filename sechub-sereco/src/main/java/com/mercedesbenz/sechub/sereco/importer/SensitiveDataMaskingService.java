@@ -20,16 +20,15 @@ public class SensitiveDataMaskingService {
     public static final String SENSITIVE_DATA_MASK = "********";
 
     public List<SerecoVulnerability> maskSensitiveData(SecHubConfigurationModel sechubConfig, List<SerecoVulnerability> vulnerabilities) {
-
         if (sechubConfig.getWebScan().isEmpty()) {
             return vulnerabilities;
         }
         SecHubWebScanConfiguration webScanConfig = sechubConfig.getWebScan().get();
-        List<SerecoVulnerability> maskedVulnerabilities = new ArrayList<>();
-        if (webScanConfig.getHeaders().isPresent()) {
-            maskedVulnerabilities.addAll(maskSensitiveHeaderData(webScanConfig.getHeaders().get(), vulnerabilities));
+        if (webScanConfig.getHeaders().isEmpty()) {
+            return vulnerabilities;
         }
-        return maskedVulnerabilities;
+
+        return maskSensitiveHeaderData(webScanConfig.getHeaders().get(), vulnerabilities);
     }
 
     private List<SerecoVulnerability> maskSensitiveHeaderData(List<HTTPHeaderConfiguration> httpHeaders, List<SerecoVulnerability> vulnerabilities) {
@@ -37,6 +36,7 @@ public class SensitiveDataMaskingService {
         for (SerecoVulnerability serecoVulnerability : vulnerabilities) {
             maskedVulnerabilities.add(maskHeadersInSerecoVulnerability(httpHeaders, serecoVulnerability));
         }
+
         return maskedVulnerabilities;
     }
 
@@ -44,12 +44,11 @@ public class SensitiveDataMaskingService {
         if (ScanType.WEB_SCAN != serecoVulnerability.getScanType()) {
             return serecoVulnerability;
         }
-
-        SerecoVulnerability maskedVulnerability = serecoVulnerability;
-        SerecoWeb web = maskedVulnerability.getWeb();
+        SerecoWeb web = serecoVulnerability.getWeb();
         if (web == null) {
             return serecoVulnerability;
         }
+
         Map<String, String> requestHeaders = web.getRequest().getHeaders();
         Map<String, String> responseHeaders = web.getResponse().getHeaders();
 
@@ -64,12 +63,11 @@ public class SensitiveDataMaskingService {
                 }
             }
         }
-
         web.getRequest().getHeaders().putAll(requestHeaders);
         web.getResponse().getHeaders().putAll(responseHeaders);
-        maskedVulnerability.setWeb(web);
+        serecoVulnerability.setWeb(web);
 
-        return maskedVulnerability;
+        return serecoVulnerability;
     }
 
 }
