@@ -1,5 +1,5 @@
 {
-  "jobUUID" : "64994609-46a8-4349-8bee-3ae6d2ba4b37",
+  "jobUUID" : "{sechub.jobuuid}",
   "trafficLight" : "GREEN",
   "result" : {
     "count" : 1,
@@ -21,12 +21,12 @@
   "reportVersion" : "1.0",
   "messages" : [ {
     "type" : "ERROR",
-    "text" : "error for PDS job: 25877f25-1f09-4281-8f3d-66cd0013b208 but with\n    a multine ....\n    "
+    "text" : "error for PDS job: {*:36} but with\n    a multine ....\n    "
   }, {
     "type" : "WARNING",
-    "text" : "warn for PDS job: 25877f25-1f09-4281-8f3d-66cd0013b208"
+    "text" : "warn for PDS job: {*:36}"
   }, {
     "type" : "INFO",
-    "text" : "info for PDS job: 25877f25-1f09-4281-8f3d-66cd0013b208"
+    "text" : "info for PDS job: {*:36}"
   } ]
 }

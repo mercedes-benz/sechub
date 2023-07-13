@@ -14,8 +14,6 @@ import com.mercedesbenz.sechub.api.SecHubClientException;
 import com.mercedesbenz.sechub.api.SecHubReport;
 import com.mercedesbenz.sechub.commons.model.JSONConverter;
 import com.mercedesbenz.sechub.commons.model.SecHubConfigurationModel;
-import com.mercedesbenz.sechub.commons.model.TrafficLight;
-import com.mercedesbenz.sechub.systemtest.config.AssertSechubResultDefinition;
 import com.mercedesbenz.sechub.systemtest.config.ExecutionStepDefinition;
 import com.mercedesbenz.sechub.systemtest.config.RunSecHubJobDefinition;
 import com.mercedesbenz.sechub.systemtest.config.RunSecHubJobDefinitionTransformer;
@@ -50,6 +48,7 @@ public class SystemTestRuntimeTestEngine {
     private ExecutionSupport execSupport;
 
     RunSecHubJobDefinitionTransformer runSecHubJobTransformer = new RunSecHubJobDefinitionTransformer();
+    SystemTestRuntimeTestAssertion testAssertion = new SystemTestRuntimeTestAssertion();
 
     public SystemTestRuntimeTestEngine(ExecutionSupport execSupport) {
         this.execSupport = execSupport;
@@ -78,47 +77,9 @@ public class SystemTestRuntimeTestEngine {
     private void assertTest(TestEngineTestContext testContext) {
         List<TestAssertDefinition> asserts = testContext.getTest().getAssert();
         for (TestAssertDefinition assertDef : asserts) {
-            handleAssert(assertDef, testContext);
+            testAssertion.assertTest(assertDef, testContext);
         }
     }
-
-    private void handleAssert(TestAssertDefinition assertDef, TestEngineTestContext testContext) {
-        handleSecHubAsserts(assertDef, testContext);
-    }
-
-    private void handleSecHubAsserts(TestAssertDefinition assertDef, TestEngineTestContext testContext) {
-        if (!testContext.isSecHubTest()) {
-            return;
-        }
-        List<AssertSechubResultDefinition> sechubResultAsserts = assertDef.getSechubResult();
-        for (AssertSechubResultDefinition sechubResultAssert : sechubResultAsserts) {
-            handleSecHubAssert(sechubResultAssert, testContext);
-        }
-
-    }
-
-    private void handleSecHubAssert(AssertSechubResultDefinition sechubResultAssert, TestEngineTestContext testContext) {
-        SecHubReport report = testContext.getSecHubRunData().getReport();
-
-        if (sechubResultAssert.getHasTrafficLight().isPresent()) {
-            TrafficLight expected = sechubResultAssert.getHasTrafficLight().get();
-            if (!expected.equals(report.getTrafficLight())) {
-                String reportAsJson = JSONConverter.get().toJSON(report, true);
-                failWithMessage("SecHub report not as wanted. Expected was traffic light: " + expected + ", but result was: " + report.getTrafficLight()
-                        + "\nSecHub report was:\n" + reportAsJson, testContext);
-            }
-
-        }
-        if (sechubResultAssert.getContainsStrings().isPresent()) {
-            sechubResultAssert.getContainsStrings().get();
-        }
-
-    }
-
-    private void failWithMessage(String message, TestEngineTestContext testContext) {
-        testContext.markAsFailed(message);
-    }
-
 
     private boolean prepareTest(TestEngineTestContext testContext) {
         boolean prepared = false;
@@ -169,6 +130,7 @@ public class SystemTestRuntimeTestEngine {
             jobUUID = clientForScheduling.createJob(configuration);
         }
         LOG.debug("SecHub job {} created", jobUUID);
+        testContext.getSecHubRunData().sechubJobUUID = jobUUID;
 
         /* we use the current test folder as working directory */
         Path workingDirectory = resolveWorkingDirectoryForCurrentTest(testContext);
@@ -284,6 +246,11 @@ public class SystemTestRuntimeTestEngine {
 
         SecHubReport report;
         SecHubConfigurationModel secHubConfiguration;
+        UUID sechubJobUUID;
+        
+        private SecHubRunData() {
+            
+        }
 
         public SecHubConfigurationModel getSecHubConfiguration() {
             return secHubConfiguration;
@@ -291,6 +258,10 @@ public class SystemTestRuntimeTestEngine {
 
         public SecHubReport getReport() {
             return report;
+        }
+        
+        public UUID getSecHubJobUUID() {
+            return sechubJobUUID;
         }
 
     }
@@ -352,7 +323,6 @@ public class SystemTestRuntimeTestEngine {
             String changedConfigurationAsJson = dynamicVariableGenerator.replace(configurationAsJson);
 
             secHubRunData.secHubConfiguration = converter.fromJSON(SecHubConfigurationModel.class, changedConfigurationAsJson);
-            ;
         }
 
         public void markAsFailed(String message) {

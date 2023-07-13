@@ -14,6 +14,7 @@ import com.mercedesbenz.sechub.commons.model.SecHubLicenseScanConfiguration;
 import com.mercedesbenz.sechub.commons.model.SecHubSecretScanConfiguration;
 import com.mercedesbenz.sechub.commons.model.SecHubWebScanConfiguration;
 import com.mercedesbenz.sechub.commons.model.TrafficLight;
+import com.mercedesbenz.sechub.systemtest.runtime.testengine.TestTemplateSupport;
 
 public class SystemTestConfigurationBuilder {
 
@@ -397,15 +398,16 @@ public class SystemTestConfigurationBuilder {
 
         TestDefinition test;
 
-        public class AssertsBuilder{
+        public class AssertsBuilder {
 
-            public class AssertBuilder{
+            public class AssertBuilder {
                 TestAssertDefinition assertDefinition;
-                public AssertBuilder(){
+
+                public AssertBuilder() {
                     assertDefinition = new TestAssertDefinition();
                     test.getAssert().add(assertDefinition);
                 }
-                
+
                 public AssertsBuilder endAssert() {
                     return AssertsBuilder.this;
                 }
@@ -413,48 +415,55 @@ public class SystemTestConfigurationBuilder {
                 public SecHubResultAssertBuilder secHubResult() {
                     return new SecHubResultAssertBuilder();
                 }
-                
-                public class SecHubResultAssertBuilder{
+
+                public class SecHubResultAssertBuilder {
                     AssertSechubResultDefinition sechubResultDefinition;
-                    
+
                     public SecHubResultAssertBuilder() {
                         sechubResultDefinition = new AssertSechubResultDefinition();
                         assertDefinition.getSechubResult().add(sechubResultDefinition);
-                        
+
                     }
-                    
+
                     public AssertBuilder endSecHubResult() {
                         return AssertBuilder.this;
                     }
 
+                    /**
+                     * Check if the SecHub result is the same as inside given file. Variable parts
+                     * can be handled by place holders - look at
+                     * {@link TestTemplateSupport#isTemplateMatching(String, String)} for details.
+                     * 
+                     * @param pathToFile
+                     * @return
+                     */
                     public SecHubResultAssertBuilder equalsFile(String pathToFile) {
                         AssertEqualsFileDefinition definition = new AssertEqualsFileDefinition();
                         definition.setPath(pathToFile);
-                        
+
                         sechubResultDefinition.setEqualsFile(Optional.of(definition));
                         return this;
                     }
-                    
-                    public SecHubResultAssertBuilder containsStrings(String ... containedStrings) {
+
+                    public SecHubResultAssertBuilder containsStrings(String... containedStrings) {
                         AssertContainsStringsDefinition definition = new AssertContainsStringsDefinition();
                         definition.setValues(Arrays.asList(containedStrings));
                         sechubResultDefinition.setContainsStrings(Optional.of(definition));
                         return this;
                     }
+
                     public SecHubResultAssertBuilder hasTrafficLight(TrafficLight trafficLight) {
                         sechubResultDefinition.setHasTrafficLight(Optional.of(trafficLight));
                         return this;
                     }
-                    
+
                 }
             }
-            
+
             public AssertBuilder assertThat() {
                 return new AssertBuilder();
             }
-            
-            
-            
+
             public TestBuilder endAsserts() {
                 return TestBuilder.this;
             }
@@ -464,7 +473,7 @@ public class SystemTestConfigurationBuilder {
         public AssertsBuilder asserts() {
             return new AssertsBuilder();
         }
-        
+
         public class SecHubRunBuilder {
 
             private RunSecHubJobDefinition runSecHubJob;
@@ -496,19 +505,19 @@ public class SystemTestConfigurationBuilder {
                 public UploadsBuilder addBinaryUploadWithDefaultRef(String path) {
                     return addBinaryUpload(null, path);
                 }
-                
-                public UploadsBuilder addBinaryUpload(String referenceId,String path) {
+
+                public UploadsBuilder addBinaryUpload(String referenceId, String path) {
                     return upload(referenceId).binariesFolder(path).endUpload();
                 }
-                
+
                 public UploadsBuilder addSourceUploadWithDefaultRef(String path) {
                     return addSourceUpload(null, path);
                 }
-                
-                public UploadsBuilder addSourceUpload(String referenceId,String path) {
+
+                public UploadsBuilder addSourceUpload(String referenceId, String path) {
                     return upload(referenceId).sourceFolder(path).endUpload();
                 }
-                
+
                 private UploadBuilder upload(String referenceId) {
                     return new UploadBuilder(referenceId);
                 }
@@ -664,7 +673,5 @@ public class SystemTestConfigurationBuilder {
     public TestBuilder test(String testName) {
         return new TestBuilder(testName);
     }
-    
-    
 
 }

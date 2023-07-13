@@ -130,7 +130,7 @@ class SystemTestFrameworkIntTest {
                             secHubResult().
                                 hasTrafficLight(TrafficLight.GREEN).
                                 equalsFile("./../sechub-systemtest/src/test/resources/additional-resources/expected-output/sechub-result1.json").
-                                containsStrings("CWE89","CWE33").// not necessary, because already file check, but good to show possibility inside this test
+                                containsStrings("ERROR","WARNING","INFO","SUCCESS","integration test code only!").// not necessary, because already file check, but good to show possibility inside this test
                             endSecHubResult().
                         endAssert().
                     endAsserts().
