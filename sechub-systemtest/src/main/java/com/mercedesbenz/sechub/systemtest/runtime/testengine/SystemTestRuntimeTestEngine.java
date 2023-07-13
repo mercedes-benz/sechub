@@ -247,9 +247,9 @@ public class SystemTestRuntimeTestEngine {
         SecHubReport report;
         SecHubConfigurationModel secHubConfiguration;
         UUID sechubJobUUID;
-        
+
         private SecHubRunData() {
-            
+
         }
 
         public SecHubConfigurationModel getSecHubConfiguration() {
@@ -259,7 +259,7 @@ public class SystemTestRuntimeTestEngine {
         public SecHubReport getReport() {
             return report;
         }
-        
+
         public UUID getSecHubJobUUID() {
             return sechubJobUUID;
         }
@@ -353,9 +353,9 @@ public class SystemTestRuntimeTestEngine {
         public void markCurrentSecHubJob(UUID sechubJobUUID) {
             runtimeContext.getCurrentResult().setSecHubJobUUID(sechubJobUUID);
         }
-        
+
         private String safeString(Object obj) {
-            if (obj==null) {
+            if (obj == null) {
                 return "";
             }
             return obj.toString();

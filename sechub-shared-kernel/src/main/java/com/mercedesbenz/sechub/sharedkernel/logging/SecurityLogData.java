@@ -29,7 +29,7 @@ public class SecurityLogData {
 
     String sessionId;
     boolean afterSessionClosed;
-    
+
     public boolean isAfterSessionClosed() {
         return afterSessionClosed;
     }
@@ -49,7 +49,7 @@ public class SecurityLogData {
     public String getMethod() {
         return method;
     }
-    
+
     public String getUserId() {
         return userId;
     }
@@ -68,7 +68,6 @@ public class SecurityLogData {
     public String getMessage() {
         return message;
     }
-    
 
     public List<Object> getMessageParameters() {
         if (messageParameters == null) {

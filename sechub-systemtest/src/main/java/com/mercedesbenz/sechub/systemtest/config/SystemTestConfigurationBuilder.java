@@ -433,7 +433,7 @@ public class SystemTestConfigurationBuilder {
                      * Check if the SecHub result is the same as inside given file. Variable parts
                      * can be handled by place holders - look at
                      * {@link TestTemplateSupport#isTemplateMatching(String, String)} for details.
-                     * 
+                     *
                      * @param pathToFile
                      * @return
                      */

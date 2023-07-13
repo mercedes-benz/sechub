@@ -70,7 +70,7 @@ class SecHubSourceDataConfigurationTest {
         String json = JSONConverter.get().toJSON(config);
 
         /* test */
-        String expected = "{\"name\":\"name1\"}";
+        String expected = "{\"excludes\":[],\"includes\":[],\"name\":\"name1\"}";
         assertEquals(expected, json);
     }
 

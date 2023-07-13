@@ -3,6 +3,7 @@ package com.mercedesbenz.sechub.systemtest;
 import static com.mercedesbenz.sechub.systemtest.SystemTestAPI.*;
 import static com.mercedesbenz.sechub.test.TestUtil.*;
 import static org.junit.jupiter.api.Assertions.*;
+
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
@@ -60,13 +61,13 @@ class SystemTestFrameworkIntTest {
     @EnabledIfSystemProperty(named = "sechub.integrationtest.running", matches = "true")
     void even_integration_test_setup_can_be_tested__codescan() throws IOException {
         /* @formatter:off */
-        
+
         /* prepare */
         String integrationTestAdminUser = TestUtil.getSystemProperty("sechub.initialadmin.userid", "int-test_superadmin");
         String integrationTestAdminPwd = TestUtil.getSystemProperty("sechub.initialadmin.apitoken", "int-test_superadmin-pwd");
         String integrationTestPDSTechUserName = TestUtil.getSystemProperty("pds.techuser.username", "pds-inttest-techuser");
         String integrationTestPDSTechUserPwd = TestUtil.getSystemProperty("pds.techuser.apitoken", "pds-inttest-apitoken");
-        
+
         SystemTestConfiguration configuration = configure().
                 addVariable("testSourceUploadFolder", "${runtime."+RuntimeVariable.CURRENT_TEST_FOLDER.getVariableName()+"}/testsources").
 
@@ -124,13 +125,13 @@ class SystemTestFrameworkIntTest {
                             addBinaryUpload("i-am-usesless-for-the-systemtest-but-i-test-that-a-binary-upload-works","${variables.testSourceUploadFolder}").
                         endUploads().
                     endRunSecHub().
-                    
+
                     asserts().
                         assertThat().
                             secHubResult().
-                                hasTrafficLight(TrafficLight.GREEN).
+                                hasTrafficLight(TrafficLight.YELLOW).
                                 equalsFile("./../sechub-systemtest/src/test/resources/additional-resources/expected-output/sechub-result1.json").
-                                containsStrings("ERROR","WARNING","INFO","SUCCESS","integration test code only!").// not necessary, because already file check, but good to show possibility inside this test
+                                containsStrings("MEDIUM","ERROR","WARNING","INFO","SUCCESS","integration test code only!").// not necessary, because already file check, but good to show possibility inside this test
                             endSecHubResult().
                         endAssert().
                     endAsserts().

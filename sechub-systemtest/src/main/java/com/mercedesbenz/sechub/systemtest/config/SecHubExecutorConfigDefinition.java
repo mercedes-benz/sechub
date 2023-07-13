@@ -20,11 +20,11 @@ public class SecHubExecutorConfigDefinition {
     public Map<String, String> getParameters() {
         return parameters;
     }
-    
+
     public String getName() {
         return name;
     }
-    
+
     public void setName(String name) {
         this.name = name;
     }

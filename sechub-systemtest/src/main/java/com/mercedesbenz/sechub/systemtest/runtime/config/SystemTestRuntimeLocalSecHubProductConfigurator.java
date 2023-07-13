@@ -133,17 +133,17 @@ public class SystemTestRuntimeLocalSecHubProductConfigurator {
             SystemTestRuntimeContext context) throws SecHubClientException {
 
         SecHubClient client = context.getLocalAdminSecHubClient();
-        
+
         String name = executorConfigDefinition.getName();
 
         List<ExecutorConfigurationInfo> executorConfigurations = client.fetchAllExecutorConfigurationInfo();
         Set<UUID> oldEntries = new HashSet<>();
-        for (ExecutorConfigurationInfo info: executorConfigurations) {
-            if (name.equals(info.getName())){
+        for (ExecutorConfigurationInfo info : executorConfigurations) {
+            if (name.equals(info.getName())) {
                 oldEntries.add(info.getUuid());
             }
         }
-        for (UUID oldEntry: oldEntries) {
+        for (UUID oldEntry : oldEntries) {
             LOG.info("Delete existing executor configuration: {} - {}", name, oldEntry);
             client.deleteExecutorConfiguration(oldEntry);
         }

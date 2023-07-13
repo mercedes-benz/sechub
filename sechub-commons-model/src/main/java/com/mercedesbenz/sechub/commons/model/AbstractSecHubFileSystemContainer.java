@@ -11,6 +11,8 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 public abstract class AbstractSecHubFileSystemContainer implements SecHubFileSystemContainer {
 
     public static final String PROPERTY_FILESYSTEM = "fileSystem";
+    public static final String PROPERTY_INCLUDES = "includes";
+    public static final String PROPERTY_EXCLUDES = "excludes";
 
     private Optional<SecHubFileSystemConfiguration> fileSystem = Optional.empty();
 

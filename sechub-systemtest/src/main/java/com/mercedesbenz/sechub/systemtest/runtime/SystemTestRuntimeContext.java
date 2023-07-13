@@ -61,9 +61,7 @@ public class SystemTestRuntimeContext {
     private SecHubClient remoteUserSecHubClient;
     private SecHubClient localAdminSecHubClient;
 
-
     private Map<String, PDSClient> localTechUserPdsClientMap = new TreeMap<>();
-    
 
     public void alterConfguration(SystemTestConfiguration configuration) {
         this.configuration = configuration;
@@ -89,7 +87,7 @@ public class SystemTestRuntimeContext {
     SystemTestRuntimeContext() {
     }
 
-    public SystemTestRuntimeContext(SystemTestConfiguration originConfiguration, Path workspaceRoot, Path additionalResourcesRoot){
+    public SystemTestRuntimeContext(SystemTestConfiguration originConfiguration, Path workspaceRoot, Path additionalResourcesRoot) {
         if (originConfiguration == null) {
             throw new IllegalArgumentException("Origin configuration may never be null!");
         }
@@ -416,7 +414,5 @@ public class SystemTestRuntimeContext {
         }
         return solutionDefinition;
     }
-
-  
 
 }

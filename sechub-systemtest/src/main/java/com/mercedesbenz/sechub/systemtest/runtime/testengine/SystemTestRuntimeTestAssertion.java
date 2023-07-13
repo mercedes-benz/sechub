@@ -60,8 +60,8 @@ public class SystemTestRuntimeTestAssertion {
             templateSupport.setSecHubJobUUID(secHubJobUUID);
 
             if (!templateSupport.isTemplateMatching(template, reportAsJson)) {
-                failWithMessage("The SecHub report content was not equal/matched not the given test template file.\n\nTemplate:\n" + template+
-                        "\n\nReport was:\n"+reportAsJson, testContext);
+                failWithMessage("The SecHub report content was not equal/matched not the given test template file.\n\nTemplate:\n" + template
+                        + "\n\nReport was:\n" + reportAsJson, testContext);
                 return;
             }
 
@@ -70,10 +70,11 @@ public class SystemTestRuntimeTestAssertion {
         if (sechubResultAssert.getContainsStrings().isPresent()) {
             AssertContainsStringsDefinition containsStrings = sechubResultAssert.getContainsStrings().get();
             List<String> containingStrings = containsStrings.getValues();
-            
-            for (String stringWhichMustBeContained: containingStrings) {
-                if (! reportAsJson.contains(stringWhichMustBeContained)) {
-                    failWithMessage("The SecHub report did not contain expected string:"+ stringWhichMustBeContained+".\n\nReport was:\n"+reportAsJson, testContext);
+
+            for (String stringWhichMustBeContained : containingStrings) {
+                if (!reportAsJson.contains(stringWhichMustBeContained)) {
+                    failWithMessage("The SecHub report did not contain expected string:" + stringWhichMustBeContained + ".\n\nReport was:\n" + reportAsJson,
+                            testContext);
                 }
             }
         }

@@ -16,9 +16,8 @@ public class JsonMapperFactory {
     public static JsonMapper createMapper() {
         /* @formatter:off */
         JsonMapper mapper = JsonMapper.builder().
-            // remove absent parts from Json, so it is more "compact" / without boiler plate
-            // code
-            serializationInclusion(JsonInclude.Include.NON_EMPTY).
+            // remove absent parts from Json, so it is more "compact"
+            serializationInclusion(JsonInclude.Include.NON_ABSENT).
 
             enable(JsonParser.Feature.ALLOW_COMMENTS).
             enable(JsonParser.Feature.ALLOW_SINGLE_QUOTES).

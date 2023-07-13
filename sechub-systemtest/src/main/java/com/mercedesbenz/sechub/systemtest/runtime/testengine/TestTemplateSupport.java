@@ -3,7 +3,12 @@ package com.mercedesbenz.sechub.systemtest.runtime.testengine;
 import java.util.UUID;
 import java.util.regex.Pattern;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 public class TestTemplateSupport {
+
+    private static final Logger LOG = LoggerFactory.getLogger(TestTemplateSupport.class);
 
     private static final int MAXIMUM_STAR_PLACEHOLDER_AMOUNT = 10000;
     private static final Pattern SECHUB_JOBUUID_PATTERN = Pattern.compile("\\{sechub.jobuuid\\}");
@@ -13,9 +18,10 @@ public class TestTemplateSupport {
     private UUID secHubJobUUID;
 
     /**
-     * Checks if the given template matches to given content. Following place
-     * holders are supported:
-     * 
+     * Checks if the given template matches to given content. Content and template
+     * are always trimmed, so leading white spaces are removed automatically.
+     * Following place holders are supported:
+     *
      * <table border="1">
      * <tr>
      * <th>Placeholder</td>
@@ -27,10 +33,12 @@ public class TestTemplateSupport {
      * </tr>
      * <tr>
      * <td>$&#123;*:$amount&#125;</td>
-     * <td>The star placeholder represents a given amount of chars. -for example: '$&#123;*:36&#125;' could be used for an unknown UUID (which has
-     * 36 characters)</td>
+     * <td>The star placeholder represents a given amount of chars. -for example:
+     * '$&#123;*:36&#125;' could be used for an unknown UUID (which has 36
+     * characters)</td>
      * </tr>
      * </table>
+     *
      * @param template
      * @param contentToCheckForMatch
      * @return
@@ -43,31 +51,56 @@ public class TestTemplateSupport {
             return false;
         }
 
-        String changedTemplate = template;
-        String changedContent = contentToCheckForMatch;
+        CompareData data = calculateCompareData(template, contentToCheckForMatch);
+
+        LOG.trace("changedContent=\n{}", data.getChangedContent());
+        LOG.trace("changedTemplate=\n{}", data.getChangedTemplate());
+
+        return data.changedContent.equals(data.changedTemplate);
+    }
+
+    public CompareData calculateCompareData(String template, String contentToCheckForMatch) {
+        CompareData data = new CompareData();
+        data.changedTemplate = template.trim();
+        data.changedContent = contentToCheckForMatch.trim();
 
         if (secHubJobUUID != null) {
-            changedTemplate = SECHUB_JOBUUID_PATTERN.matcher(changedTemplate).replaceAll(secHubJobUUID.toString());
+            data.changedTemplate = SECHUB_JOBUUID_PATTERN.matcher(data.changedTemplate).replaceAll(secHubJobUUID.toString());
         }
         int index;
-        while ((index = changedTemplate.indexOf(START_STAR_PLACEHOLDER)) != -1) {
-            int endIndex = changedTemplate.indexOf(END_PLACEHOLDER, index);
+        while ((index = data.changedTemplate.indexOf(START_STAR_PLACEHOLDER)) != -1) {
+            int endIndex = data.changedTemplate.indexOf(END_PLACEHOLDER, index);
             if (endIndex == -1) {
                 throw new TestTemplateException("A " + END_PLACEHOLDER + " is missing! after index:" + index);
             }
 
-            String statementWithoutEnd = changedTemplate.substring(index, endIndex);
+            String statementWithoutEnd = data.changedTemplate.substring(index, endIndex);
             int replacements = parseStarPlaceHolderReplacementAndReturnAmount(statementWithoutEnd);
             String replacementString = "x".repeat(replacements);
 
-            changedTemplate = changedTemplate.substring(0, index) + replacementString + changedTemplate.substring(endIndex + 1);
+            data.changedTemplate = data.changedTemplate.substring(0, index) + replacementString + data.changedTemplate.substring(endIndex + 1);
 
-            if (changedContent.length() >= index + replacements) {
-                changedContent = changedContent.substring(0, index) + replacementString + changedContent.substring(index + replacements);
+            if (data.changedContent.length() < index + replacements) {
+                return data;
             }
+            data.changedContent = data.changedContent.substring(0, index) + replacementString + data.changedContent.substring(index + replacements);
+        }
+        return data;
+    }
+
+    class CompareData {
+
+        private String changedContent;
+        private String changedTemplate;
+
+        String getChangedContent() {
+            return changedContent;
         }
 
-        return changedContent.equals(changedTemplate);
+        String getChangedTemplate() {
+            return changedTemplate;
+        }
+
     }
 
     private int parseStarPlaceHolderReplacementAndReturnAmount(String statement) {

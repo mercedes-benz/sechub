@@ -289,7 +289,7 @@ public class SystemTestRuntimePreparator {
         addFallbackDefaultProfileToExecutorsWithoutProfile(context);
 
         createFallbacksForPDSSolutions(context);
-        
+
     }
 
     private void createFallbackNamesForExecutorsWithoutName(SystemTestRuntimeContext context) {
@@ -299,14 +299,14 @@ public class SystemTestRuntimePreparator {
             String name = executor.getName();
             if (name == null || name.isEmpty()) {
                 String productId = executor.getPdsProductId();
-                String newName = "systemtest-"+productId;
-                if (newName.length()>30) {
-                    newName=newName.substring(0,30);
+                String newName = "systemtest-" + productId;
+                if (newName.length() > 30) {
+                    newName = newName.substring(0, 30);
                 }
                 executor.setName(newName);
             }
         }
-        
+
     }
 
     private void createFallbacksForPDSSolutions(SystemTestRuntimeContext context) {
@@ -362,6 +362,7 @@ public class SystemTestRuntimePreparator {
         }
 
     }
+
     private void addExecutorDefaultsForMissingParts(SystemTestRuntimeContext context) {
         if (!context.isLocalRun()) {
             return;
@@ -370,22 +371,22 @@ public class SystemTestRuntimePreparator {
             return;
         }
         for (SecHubExecutorConfigDefinition definition : context.getLocalSecHubExecutorConfigurationsOrFail()) {
-            
+
             Map<String, String> params = definition.getParameters();
-            if (params.get("pds.productexecutor.trustall.certificates")==null) {
+            if (params.get("pds.productexecutor.trustall.certificates") == null) {
                 params.put("pds.productexecutor.trustall.certificates", "true");
                 LOG.debug("No trust all definition defined for product executor, defined default");
             }
-            if (params.get("pds.productexecutor.timetowait.nextcheck.milliseconds")==null) {
+            if (params.get("pds.productexecutor.timetowait.nextcheck.milliseconds") == null) {
                 params.put("pds.productexecutor.timetowait.nextcheck.milliseconds", "500");
                 LOG.debug("No next check time found for PDS product executor, defined default");
             }
-            if (params.get(PDSDefaultParameterKeyConstants.PARAM_KEY_PDS_CONFIG_USE_SECHUB_STORAGE)==null) {
+            if (params.get(PDSDefaultParameterKeyConstants.PARAM_KEY_PDS_CONFIG_USE_SECHUB_STORAGE) == null) {
                 params.put(PDSDefaultParameterKeyConstants.PARAM_KEY_PDS_CONFIG_USE_SECHUB_STORAGE, "true");
                 LOG.debug("No SecHub storage usage definition found, defined default");
             }
         }
-        
+
     }
 
     private void createFallbackSecHubSetupParts(SystemTestRuntimeContext context) {

@@ -58,21 +58,22 @@ public class PDSExecutionEnvironmentService {
 
     /*
      * Replace null values with empty strings to avoid problems with environment map
-     * of process builder: This map does throw an exception in this case (index of problems) 
+     * of process builder: This map does throw an exception in this case (index of
+     * problems)
      */
     private void replaceNullValuesWithEmptyStrings(Map<String, String> map) {
-        
+
         List<String> keysForEntriesWithNullValue = new ArrayList<>();
-        
+
         for (Entry<String, String> entry : map.entrySet()) {
             if (entry.getValue() == null) {
                 keysForEntriesWithNullValue.add(entry.getKey());
             }
         }
-        
+
         for (String keyForEntryWithNullValue : keysForEntriesWithNullValue) {
             map.put(keyForEntryWithNullValue, "");
-            
+
             LOG.warn("Replaced null value for key: {} with empty string", keyForEntryWithNullValue);
         }
 
