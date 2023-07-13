@@ -12,7 +12,7 @@ public class SerecoWebRequest {
     String target;
     String method;
 
-    Map<String, String> headers = new TreeMap<>();
+    Map<String, String> headers = new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
 
     SerecoWebBody body = new SerecoWebBody();
 

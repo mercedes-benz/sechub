@@ -13,7 +13,7 @@ public class SerecoWebResponse {
     String version;
     boolean noResponseReceived;
 
-    Map<String, String> headers = new TreeMap<>();
+    Map<String, String> headers = new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
 
     SerecoWebBody body = new SerecoWebBody();
 
