@@ -9,7 +9,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 
-import com.mercedesbenz.sechub.systemtest.runtime.testengine.TestTemplateSupport.CompareData;
+import com.mercedesbenz.sechub.systemtest.runtime.testengine.TestTemplateSupport.TemplateMatchResult;
 
 class TestTemplateSupportTest {
 
@@ -28,7 +28,7 @@ class TestTemplateSupportTest {
         supportToTest.setSecHubJobUUID(uuid);
 
         /* execute + test */
-        assertTrue(supportToTest.isTemplateMatching("abcd {sechub.jobuuid}", "abcd " + sechubJobUUID));
+        assertTrue(supportToTest.calculateTemplateMatching("abcd {sechub.jobuuid}", "abcd " + sechubJobUUID).isMatching());
     }
 
     @Test
@@ -37,22 +37,22 @@ class TestTemplateSupportTest {
         supportToTest.setSecHubJobUUID(null);
 
         /* execute + test */
-        assertFalse(supportToTest.isTemplateMatching("abcd {sechub.jobuuid}", "abcd null"));
-        assertFalse(supportToTest.isTemplateMatching("abcd {sechub.jobuuid}", "abcd "));
-        assertTrue(supportToTest.isTemplateMatching("abcd {sechub.jobuuid}", "abcd {sechub.jobuuid}"));
+        assertFalse(supportToTest.calculateTemplateMatching("abcd {sechub.jobuuid}", "abcd null").isMatching());
+        assertFalse(supportToTest.calculateTemplateMatching("abcd {sechub.jobuuid}", "abcd ").isMatching());
+        assertTrue(supportToTest.calculateTemplateMatching("abcd {sechub.jobuuid}", "abcd {sechub.jobuuid}").isMatching());
     }
 
     @Test
     void star_placeholder_with_number_matches_template_data() {
-        assertTrue(supportToTest.isTemplateMatching("abcd {*:36}", "abcd 25877f25-1f09-4281-8f3d-66cd0013b208"));
-        assertTrue(supportToTest.isTemplateMatching("abcd {*:36} xyz", "abcd 25877f25-1f09-4281-8f3d-66cd0013b208 xyz"));
+        assertTrue(supportToTest.calculateTemplateMatching("abcd {*:36}", "abcd 25877f25-1f09-4281-8f3d-66cd0013b208").isMatching());
+        assertTrue(supportToTest.calculateTemplateMatching("abcd {*:36} xyz", "abcd 25877f25-1f09-4281-8f3d-66cd0013b208 xyz").isMatching());
     }
 
     @Test
     void star_placeholder_with_number_matches_not_template_data() {
-        assertFalse(supportToTest.isTemplateMatching("abcd {*:35}", "abcd 25877f25-1f09-4281-8f3d-66cd0013b208"));
-        assertFalse(supportToTest.isTemplateMatching("abcd {*:37}", "abcd 25877f25-1f09-4281-8f3d-66cd0013b208"));
-        assertFalse(supportToTest.isTemplateMatching("abcd {*:37}", null));
+        assertFalse(supportToTest.calculateTemplateMatching("abcd {*:35}", "abcd 25877f25-1f09-4281-8f3d-66cd0013b208").isMatching());
+        assertFalse(supportToTest.calculateTemplateMatching("abcd {*:37}", "abcd 25877f25-1f09-4281-8f3d-66cd0013b208").isMatching());
+        assertFalse(supportToTest.calculateTemplateMatching("abcd {*:37}", null).isMatching());
     }
 
     @Test
@@ -98,7 +98,7 @@ class TestTemplateSupportTest {
         // as well, the template and the content are different in leading and trailing.
 
         /* execute */
-        CompareData data = supportToTest.calculateCompareData(template, content);
+        TemplateMatchResult data = supportToTest.calculateTemplateMatching(template, content);
 
         /* test */
         assertEquals(data.getChangedTemplate(), data.getChangedContent(), "changed template <!=> changed content");
@@ -109,7 +109,7 @@ class TestTemplateSupportTest {
     void wrong_configured_placeholders_throw_test_template_exception(String placeholder) {
         /* execute */
         TestTemplateException exception = assertThrows(TestTemplateException.class,
-                () -> supportToTest.isTemplateMatching("abcd " + placeholder, "abcd 25877f25-1f09-4281-8f3d-66cd0013b208"));
+                () -> supportToTest.calculateTemplateMatching("abcd " + placeholder, "abcd 25877f25-1f09-4281-8f3d-66cd0013b208"));
 
         /* test */
         assertTrue(exception.getMessage().contains("Star placeholder syntax is {*:$amountOfCharsToIgnore}"));
@@ -118,13 +118,13 @@ class TestTemplateSupportTest {
     @ParameterizedTest
     @ValueSource(strings = { "{unknown}", "{blubb:1}", "{}", "{_*}", "{x:1}" })
     void unknown_placeholders_are_just_ignored(String placeholder) {
-        assertFalse(supportToTest.isTemplateMatching("abcd " + placeholder, "abcd something else"));
-        assertTrue(supportToTest.isTemplateMatching("abcd " + placeholder, "abcd " + placeholder));
+        assertFalse(supportToTest.calculateTemplateMatching("abcd " + placeholder, "abcd something else").isMatching());
+        assertTrue(supportToTest.calculateTemplateMatching("abcd " + placeholder, "abcd " + placeholder).isMatching());
     }
 
     @Test
     void template_null_throws_illegal_argument_exception() {
-        assertThrows(IllegalArgumentException.class, () -> supportToTest.isTemplateMatching(null, "content"));
+        assertThrows(IllegalArgumentException.class, () -> supportToTest.calculateTemplateMatching(null, "content"));
     }
 
 }

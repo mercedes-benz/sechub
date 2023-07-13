@@ -190,8 +190,6 @@ public class SchedulerRestControllerRestDocTest implements TestIsNecessaryForDoc
 	    			                                    fieldWithPath(PROPERTY_API_VERSION).description("The api version, currently only 1.0 is supported"),
 	    			                                    fieldWithPath(PROPERTY_CODE_SCAN).description("Code scan configuration block").optional(),
 	    			                                    fieldWithPath(PROPERTY_CODE_SCAN+"."+SecHubDataConfigurationUsageByName.PROPERTY_USE).description("Referenced data configuration objects by their unique names").optional(),
-	    			                                    fieldWithPath(PROPERTY_CODE_SCAN+"."+SecHubCodeScanConfiguration.PROPERTY_INCLUDES).description("Special include information for ZIP and/or TAR file creation (client only)").optional(),
-                                                        fieldWithPath(PROPERTY_CODE_SCAN+"."+SecHubCodeScanConfiguration.PROPERTY_EXCLUDES).description("Special include information for ZIP and/or TAR file creation (client only)").optional(),
 
 	    			                                    fieldWithPath(PROPERTY_CODE_SCAN+"."+SecHubCodeScanConfiguration.PROPERTY_FILESYSTEM+"."+SecHubFileSystemConfiguration.PROPERTY_FOLDERS).description("Code scan sources from given file system folders").optional(),
 	    			                                    fieldWithPath(PROPERTY_CODE_SCAN+"."+SecHubCodeScanConfiguration.PROPERTY_FILESYSTEM+"."+SecHubFileSystemConfiguration.PROPERTY_FILES).description("Code scan sources from given file system files").optional()
@@ -263,8 +261,6 @@ public class SchedulerRestControllerRestDocTest implements TestIsNecessaryForDoc
                                                         fieldWithPath(PROPERTY_API_VERSION).description("The api version, currently only 1.0 is supported"),
                                                         fieldWithPath(PROPERTY_CODE_SCAN).description("Code scan configuration block").optional(),
                                                         fieldWithPath(PROPERTY_CODE_SCAN+"."+SecHubDataConfigurationUsageByName.PROPERTY_USE).description("Referenced data configuration objects by their unique names").optional(),
-                                                        fieldWithPath(PROPERTY_CODE_SCAN+"."+SecHubCodeScanConfiguration.PROPERTY_INCLUDES).description("Special include information for ZIP and/or TAR file creation (client only)").optional(),
-                                                        fieldWithPath(PROPERTY_CODE_SCAN+"."+SecHubCodeScanConfiguration.PROPERTY_EXCLUDES).description("Special include information for ZIP and/or TAR file creation (client only)").optional(),
 
                                                         fieldWithPath(PROPERTY_DATA+"."+SecHubDataConfiguration.PROPERTY_SOURCES +"[]."+SecHubSourceDataConfiguration.PROPERTY_UNIQUENAME_AS_NAME).description("Unique reference name").optional(),
                                                         fieldWithPath(PROPERTY_DATA+"."+SecHubDataConfiguration.PROPERTY_SOURCES +"[]."+SecHubSourceDataConfiguration.PROPERTY_FILESYSTEM+"."+SecHubFileSystemConfiguration.PROPERTY_FOLDERS+"[]").description("Sources from given file system folders").optional(),
@@ -273,6 +269,7 @@ public class SchedulerRestControllerRestDocTest implements TestIsNecessaryForDoc
                                                         fieldWithPath(PROPERTY_DATA+"."+SecHubDataConfiguration.PROPERTY_BINARIES+"[]."+SecHubSourceDataConfiguration.PROPERTY_UNIQUENAME_AS_NAME).description("Unique reference name").optional(),
                                                         fieldWithPath(PROPERTY_DATA+"."+SecHubDataConfiguration.PROPERTY_BINARIES+"[]."+SecHubSourceDataConfiguration.PROPERTY_FILESYSTEM+"."+SecHubFileSystemConfiguration.PROPERTY_FOLDERS+"[]").description("Binaries from given file system folders").optional(),
                                                         fieldWithPath(PROPERTY_DATA+"."+SecHubDataConfiguration.PROPERTY_BINARIES+"[]."+SecHubSourceDataConfiguration.PROPERTY_FILESYSTEM+"."+SecHubFileSystemConfiguration.PROPERTY_FILES+"[]").description("Binaries from given file system files").optional()
+
 
                                                 ),
                                                 responseFields(

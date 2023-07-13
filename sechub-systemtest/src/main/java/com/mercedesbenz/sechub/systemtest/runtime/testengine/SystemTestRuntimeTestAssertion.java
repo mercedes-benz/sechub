@@ -14,6 +14,7 @@ import com.mercedesbenz.sechub.systemtest.config.AssertEqualsFileDefinition;
 import com.mercedesbenz.sechub.systemtest.config.AssertSechubResultDefinition;
 import com.mercedesbenz.sechub.systemtest.config.TestAssertDefinition;
 import com.mercedesbenz.sechub.systemtest.runtime.testengine.SystemTestRuntimeTestEngine.TestEngineTestContext;
+import com.mercedesbenz.sechub.systemtest.runtime.testengine.TestTemplateSupport.TemplateMatchResult;
 
 public class SystemTestRuntimeTestAssertion {
 
@@ -59,9 +60,11 @@ public class SystemTestRuntimeTestAssertion {
             TestTemplateSupport templateSupport = new TestTemplateSupport();
             templateSupport.setSecHubJobUUID(secHubJobUUID);
 
-            if (!templateSupport.isTemplateMatching(template, reportAsJson)) {
-                failWithMessage("The SecHub report content was not equal/matched not the given test template file.\n\nTemplate:\n" + template
-                        + "\n\nReport was:\n" + reportAsJson, testContext);
+            TemplateMatchResult matchResult = templateSupport.calculateTemplateMatching(template, reportAsJson);
+
+            if (!matchResult.isMatching()) {
+                failWithMessage("The SecHub report content was not equal/matched not the given test template file.\n\nReduced template:\n"
+                        + matchResult.getChangedTemplate() + "\n\nGot reduced report:\n" + matchResult.getChangedContent(), testContext);
                 return;
             }
 

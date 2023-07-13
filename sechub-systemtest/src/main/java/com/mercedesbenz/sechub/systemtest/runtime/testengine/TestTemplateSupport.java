@@ -3,12 +3,7 @@ package com.mercedesbenz.sechub.systemtest.runtime.testengine;
 import java.util.UUID;
 import java.util.regex.Pattern;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 public class TestTemplateSupport {
-
-    private static final Logger LOG = LoggerFactory.getLogger(TestTemplateSupport.class);
 
     private static final int MAXIMUM_STAR_PLACEHOLDER_AMOUNT = 10000;
     private static final Pattern SECHUB_JOBUUID_PATTERN = Pattern.compile("\\{sechub.jobuuid\\}");
@@ -18,8 +13,11 @@ public class TestTemplateSupport {
     private UUID secHubJobUUID;
 
     /**
-     * Checks if the given template matches to given content. Content and template
-     * are always trimmed, so leading white spaces are removed automatically.
+     * Calculates compare data between given template and given content. Content and
+     * template are always trimmed, so leading white spaces are removed
+     * automatically. At both sides changes are done with place holders. The result
+     * contains the "normalized" content which can be compared.
+     *
      * Following place holders are supported:
      *
      * <table border="1">
@@ -39,39 +37,38 @@ public class TestTemplateSupport {
      * </tr>
      * </table>
      *
-     * @param template
-     * @param contentToCheckForMatch
-     * @return
+     * @param template is the template string containing placeholders etc.
+     * @param content  is the content which shall be compared with the template
+     * @return compare data which contains changed template and content data. If the
+     *         template is matching both parts are equal
      */
-    public boolean isTemplateMatching(String template, String contentToCheckForMatch) {
+    public TemplateMatchResult calculateTemplateMatching(String template, String content) {
+
         if (template == null) {
             throw new IllegalArgumentException("Template may never be null!");
         }
-        if (contentToCheckForMatch == null) {
-            return false;
-        }
-
-        CompareData data = calculateCompareData(template, contentToCheckForMatch);
-
-        LOG.trace("changedContent=\n{}", data.getChangedContent());
-        LOG.trace("changedTemplate=\n{}", data.getChangedTemplate());
-
-        return data.changedContent.equals(data.changedTemplate);
-    }
-
-    public CompareData calculateCompareData(String template, String contentToCheckForMatch) {
-        CompareData data = new CompareData();
+        TemplateMatchResult data = new TemplateMatchResult();
         data.changedTemplate = template.trim();
-        data.changedContent = contentToCheckForMatch.trim();
+
+        if (content == null) {
+            return data;
+        }
+        data.changedContent = content.trim();
 
         if (secHubJobUUID != null) {
             data.changedTemplate = SECHUB_JOBUUID_PATTERN.matcher(data.changedTemplate).replaceAll(secHubJobUUID.toString());
         }
+
         int index;
         while ((index = data.changedTemplate.indexOf(START_STAR_PLACEHOLDER)) != -1) {
             int endIndex = data.changedTemplate.indexOf(END_PLACEHOLDER, index);
-            if (endIndex == -1) {
-                throw new TestTemplateException("A " + END_PLACEHOLDER + " is missing! after index:" + index);
+
+            int nextStartIndex = -1;
+            if (data.changedTemplate.length() > index) {
+                nextStartIndex = data.changedTemplate.indexOf("{", index + 1);
+            }
+            if (endIndex == -1 || (nextStartIndex != -1 && nextStartIndex < endIndex)) {
+                throw new TestTemplateException("A '" + END_PLACEHOLDER + "' is missing after index:" + index);
             }
 
             String statementWithoutEnd = data.changedTemplate.substring(index, endIndex);
@@ -88,17 +85,21 @@ public class TestTemplateSupport {
         return data;
     }
 
-    class CompareData {
+    public class TemplateMatchResult {
 
         private String changedContent;
         private String changedTemplate;
 
-        String getChangedContent() {
+        public String getChangedContent() {
             return changedContent;
         }
 
-        String getChangedTemplate() {
+        public String getChangedTemplate() {
             return changedTemplate;
+        }
+
+        public boolean isMatching() {
+            return changedTemplate.equals(changedContent);
         }
 
     }

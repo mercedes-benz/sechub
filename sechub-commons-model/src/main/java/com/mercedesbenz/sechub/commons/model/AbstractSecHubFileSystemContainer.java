@@ -6,6 +6,8 @@ import java.util.List;
 import java.util.Optional;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 public abstract class AbstractSecHubFileSystemContainer implements SecHubFileSystemContainer {
@@ -16,7 +18,10 @@ public abstract class AbstractSecHubFileSystemContainer implements SecHubFileSys
 
     private Optional<SecHubFileSystemConfiguration> fileSystem = Optional.empty();
 
+    @JsonInclude(Include.NON_EMPTY) // when no excludes defined then they should not appear in payload
     private List<String> excludes = new ArrayList<>();
+
+    @JsonInclude(Include.NON_EMPTY) // when no includes defined then they should not appear in payload
     private List<String> includes = new ArrayList<>();
 
     public void setFileSystem(SecHubFileSystemConfiguration fileSystem) {
