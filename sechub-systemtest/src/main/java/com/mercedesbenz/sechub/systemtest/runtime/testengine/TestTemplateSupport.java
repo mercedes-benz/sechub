@@ -13,10 +13,10 @@ public class TestTemplateSupport {
     private UUID secHubJobUUID;
 
     /**
-     * Calculates compare data between given template and given content. Content and
-     * template are always trimmed, so leading white spaces are removed
-     * automatically. At both sides changes are done with place holders. The result
-     * contains the "normalized" content which can be compared.
+     * Calculates match result for given template and given content. Content and
+     * template are transformed: They are trimmed, any whitespace is removed and
+     * place holders are used for special content. The result can be checked for
+     * deltas.
      *
      * Following place holders are supported:
      *
@@ -39,8 +39,7 @@ public class TestTemplateSupport {
      *
      * @param template is the template string containing placeholders etc.
      * @param content  is the content which shall be compared with the template
-     * @return compare data which contains changed template and content data. If the
-     *         template is matching both parts are equal
+     * @return {@link TemplateMatchResult}
      */
     public TemplateMatchResult calculateTemplateMatching(String template, String content) {
 
@@ -48,58 +47,67 @@ public class TestTemplateSupport {
             throw new IllegalArgumentException("Template may never be null!");
         }
         TemplateMatchResult data = new TemplateMatchResult();
-        data.changedTemplate = template.trim();
+        data.transformedTemplate = template.trim().replaceAll("\s", "");
 
         if (content == null) {
             return data;
         }
-        data.changedContent = content.trim();
+        data.transformedContent = content.trim().replaceAll("\s", "");
 
         if (secHubJobUUID != null) {
-            data.changedTemplate = SECHUB_JOBUUID_PATTERN.matcher(data.changedTemplate).replaceAll(secHubJobUUID.toString());
+            data.transformedTemplate = SECHUB_JOBUUID_PATTERN.matcher(data.transformedTemplate).replaceAll(secHubJobUUID.toString());
         }
 
         int index;
-        while ((index = data.changedTemplate.indexOf(START_STAR_PLACEHOLDER)) != -1) {
-            int endIndex = data.changedTemplate.indexOf(END_PLACEHOLDER, index);
+        while ((index = data.transformedTemplate.indexOf(START_STAR_PLACEHOLDER)) != -1) {
+            int endIndex = data.transformedTemplate.indexOf(END_PLACEHOLDER, index);
 
             int nextStartIndex = -1;
-            if (data.changedTemplate.length() > index) {
-                nextStartIndex = data.changedTemplate.indexOf("{", index + 1);
+            if (data.transformedTemplate.length() > index) {
+                nextStartIndex = data.transformedTemplate.indexOf("{", index + 1);
             }
             if (endIndex == -1 || (nextStartIndex != -1 && nextStartIndex < endIndex)) {
                 throw new TestTemplateException("A '" + END_PLACEHOLDER + "' is missing after index:" + index);
             }
 
-            String statementWithoutEnd = data.changedTemplate.substring(index, endIndex);
+            String statementWithoutEnd = data.transformedTemplate.substring(index, endIndex);
             int replacements = parseStarPlaceHolderReplacementAndReturnAmount(statementWithoutEnd);
             String replacementString = "x".repeat(replacements);
 
-            data.changedTemplate = data.changedTemplate.substring(0, index) + replacementString + data.changedTemplate.substring(endIndex + 1);
+            data.transformedTemplate = data.transformedTemplate.substring(0, index) + replacementString + data.transformedTemplate.substring(endIndex + 1);
 
-            if (data.changedContent.length() < index + replacements) {
+            if (data.transformedContent.length() < index + replacements) {
                 return data;
             }
-            data.changedContent = data.changedContent.substring(0, index) + replacementString + data.changedContent.substring(index + replacements);
+            data.transformedContent = data.transformedContent.substring(0, index) + replacementString + data.transformedContent.substring(index + replacements);
         }
         return data;
     }
 
     public class TemplateMatchResult {
 
-        private String changedContent;
-        private String changedTemplate;
+        private String transformedContent;
+        private String transformedTemplate;
 
-        public String getChangedContent() {
-            return changedContent;
+        /**
+         *
+         * @return content which has been transformed with information from origin
+         *         template so it is equal to the transformed template (when matching)
+         */
+        public String getTransformedContent() {
+            return transformedContent;
         }
 
-        public String getChangedTemplate() {
-            return changedTemplate;
+        /**
+         *
+         * @return template with place holders replaced with data
+         */
+        public String getTransformedTemplate() {
+            return transformedTemplate;
         }
 
         public boolean isMatching() {
-            return changedTemplate.equals(changedContent);
+            return transformedTemplate.equals(transformedContent);
         }
 
     }

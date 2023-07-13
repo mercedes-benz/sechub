@@ -79,7 +79,7 @@ class TestTemplateSupportTest {
         String template = """
 
 
-                  status" : "SUCCESS",
+                  status" :               "SUCCESS",
                   "reportVersion" : "1.0",
                   "messages" : [ {
                     "type" : "ERROR",
@@ -93,7 +93,7 @@ class TestTemplateSupportTest {
                   } ]
                 """;
 
-        // remark: the leading and trailing whitespaces are automatically removed - to
+        // remark: all whitespaces are removed at diff calculation - to
         // tests this
         // as well, the template and the content are different in leading and trailing.
 
@@ -101,7 +101,7 @@ class TestTemplateSupportTest {
         TemplateMatchResult data = supportToTest.calculateTemplateMatching(template, content);
 
         /* test */
-        assertEquals(data.getChangedTemplate(), data.getChangedContent(), "changed template <!=> changed content");
+        assertEquals(data.getTransformedTemplate(), data.getTransformedContent(), "changed template <!=> changed content");
     }
 
     @ParameterizedTest

@@ -63,8 +63,8 @@ public class SystemTestRuntimeTestAssertion {
             TemplateMatchResult matchResult = templateSupport.calculateTemplateMatching(template, reportAsJson);
 
             if (!matchResult.isMatching()) {
-                failWithMessage("The SecHub report content was not equal/matched not the given test template file.\n\nReduced template:\n"
-                        + matchResult.getChangedTemplate() + "\n\nGot reduced report:\n" + matchResult.getChangedContent(), testContext);
+                failWithMessage("The SecHub report content was not equal/matched not the given test template file.\n\nChanged template:\n"
+                        + matchResult.getTransformedTemplate() + "\n\nChanged report:\n" + matchResult.getTransformedContent(), testContext);
                 return;
             }
 
