@@ -13,6 +13,7 @@ import org.junit.jupiter.api.Test;
 
 import com.mercedesbenz.sechub.commons.model.SecHubMessage;
 import com.mercedesbenz.sechub.commons.model.SecHubMessageType;
+import com.mercedesbenz.sechub.sharedkernel.configuration.SecHubConfiguration;
 
 public class WorkspaceTest {
     private String projectId = "myTestProject";
@@ -59,7 +60,7 @@ public class WorkspaceTest {
         /* formatter:on */
 
         /* execute */
-        IOException exception = assertThrows(IOException.class, () -> workspace.doImport(importParameter));
+        IOException exception = assertThrows(IOException.class, () -> workspace.doImport(new SecHubConfiguration(), importParameter));
 
         /* test */
         assertEquals("Import failed, no importer was able to import product result: " + productId, exception.getMessage());
