@@ -11,12 +11,13 @@ DEFAULT_BUILD_TYPE="download"
 
 usage() {
   cat - <<EOF
-usage: $0 <docker registry> <version tag> <pds version> [<base image> [<build type>]]
+usage: $0 <docker registry> <version tag> <pds version>
 Builds a docker image of SecHub PDS <pds version> for <docker registry>
 with tag <version tag>.
 
-Optional: <base image> ; defaults to $DEFAULT_BASE_IMAGE
-Optional: <build type> ; defaults to $DEFAULT_BUILD_TYPE
+Optional environment variables:
+BASE_IMAGE - Base image to build from ; defaults to $DEFAULT_BASE_IMAGE
+BUILD_TYPE - Build type ; defaults to $DEFAULT_BUILD_TYPE
 EOF
 }
 
