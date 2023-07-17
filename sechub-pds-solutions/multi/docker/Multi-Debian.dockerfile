@@ -28,7 +28,7 @@ COPY mocks "$MOCK_FOLDER"
 RUN export DEBIAN_FRONTEND=noninteractive && \
     apt-get update && \
     apt-get --assume-yes upgrade  && \
-    apt-get --assume-yes install sed wget openjdk-11-jre-headless pip && \
+    apt-get --assume-yes install sed wget openjdk-17-jre-headless pip && \
     apt-get --assume-yes clean
 
 # Install Flawfinder, Bandit, njsscan and mobsfscan
