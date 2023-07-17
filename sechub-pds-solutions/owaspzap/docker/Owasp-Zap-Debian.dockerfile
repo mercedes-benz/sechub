@@ -10,8 +10,8 @@ LABEL org.opencontainers.image.description="A container which combines OWASP ZAP
 LABEL maintainer="SecHub FOSS Team"
 
 # Build args
-ARG OWASPZAP_VERSION="2.12.0"
-ARG OWASPZAP_SHA256SUM="7eaf340d9fcc42576c7a5572249fe0bcad6e7acd68098a7ca110e64beab46207"
+ARG OWASPZAP_VERSION="2.13.0"
+ARG OWASPZAP_SHA256SUM="24dfba87278515e3dabe8d24c259981cd812a8f6e66808c956104c3283d91d9d"
 
 ARG OWASPZAP_WRAPPER_VERSION="1.1.0"
 
@@ -34,7 +34,7 @@ COPY pds-config.json "$PDS_FOLDER/pds-config.json"
 RUN export DEBIAN_FRONTEND=noninteractive && \
     apt-get update && \
     apt-get upgrade --assume-yes && \
-    apt-get install --assume-yes wget firefox-esr && \
+    apt-get install --assume-yes openjdk-17-jre firefox-esr wget && \
     apt-get clean
 
 # Install OWASP ZAP
