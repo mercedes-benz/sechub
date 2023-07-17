@@ -186,7 +186,7 @@ Build the container image.
 . Using debian-slim as base image (recommended):
 +
 ----
-./10-create-image.sh my.registry.example.org/sechub/pds_cloc v0.1 debian:11-slim
+./10-create-image.sh my.registry.example.org/sechub/pds_cloc v0.1 debian:12-slim
 ----
 
 === Push Image to Registry
