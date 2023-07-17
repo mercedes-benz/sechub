@@ -6,7 +6,7 @@ VERSION="$2"
 PDS_VERSION="$3"
 BASE_IMAGE="$4"  # optional
 BUILD_TYPE="$5" # optional
-DEFAULT_BASE_IMAGE="debian:11-slim"
+DEFAULT_BASE_IMAGE="debian:12-slim"
 DEFAULT_BUILD_TYPE="download"
 
 usage() {
