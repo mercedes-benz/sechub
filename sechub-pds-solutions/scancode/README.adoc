@@ -176,7 +176,7 @@ Build the container image.
 
 ==== Debian
 
-. Using the default image: 
+. Using the default image:
 +
 ----
 ./10-create-image.sh my.registry.example.org/sechub/pds_scancode v0.1
@@ -185,7 +185,7 @@ Build the container image.
 . Using your own base image:
 +
 ----
-./10-create-image.sh my.registry.example.org/sechub/pds_scancode v0.1 "my.registry.example.org/debian:11-slim"
+./10-create-image.sh my.registry.example.org/sechub/pds_scancode v0.1 "my.registry.example.org/debian:12-slim"
 ----
 
 === Push Image to Registry
@@ -279,7 +279,7 @@ users:
    technical:
       id: "techuser"
       apiToken: "{noop}<my-technical-password>"
-      
+
 
 database:
     postgres:
@@ -349,14 +349,14 @@ In case, `my-values.yaml` was changed. Simply, use `helm upgrade` to update the 
 helm upgrade --values my-values.yaml pds-scancode helm/pds-scancode/
 ----
 
-==== Uninstall 
+==== Uninstall
 
 . Helm list
 +
 ----
 helm list
 NAME     	NAMESPACE 	REVISION	UPDATED                                 	STATUS  	CHART                          	APP VERSION
-pds-scancode	my-namespace	1       	2022-03-01 19:54:37.668489822 +0200 CEST	deployed	pds-scancode-0.1.0                	0.25.0 
+pds-scancode	my-namespace	1       	2022-03-01 19:54:37.668489822 +0200 CEST	deployed	pds-scancode-0.1.0                	0.25.0
 ----
 
 . Helm uninstall
