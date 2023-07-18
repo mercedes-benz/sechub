@@ -43,8 +43,8 @@ RUN export DEBIAN_FRONTEND=noninteractive && \
 
 # Install Scancode
 # the constraint makes sure exactly the requiered packages are installed
-# https://peps.python.org/pep-0668/[PEP 668 – Marking Python base environments as “externally managed”] 
-# want's to prevent developers from mixing Python Package Index (PyPI) packages with Debian packages.
+# https://peps.python.org/pep-0668/[PEP 668 – Marking Python base environments as “externally managed”]
+# wants to prevent developers from mixing Python Package Index (PyPI) packages with Debian packages.
 # Interesting idea, but not as useful inside a container, which in essence is already a virtual environment.
 # Use `--break-system-packages` to let the Python package manager `pip` mix packages from Debian and Python
 RUN pip install --break-system-packages --constraint "https://raw.githubusercontent.com/nexB/scancode-toolkit/v${SCANCODE_VERSION}/requirements.txt" "scancode-toolkit[full]==${SCANCODE_VERSION}"
