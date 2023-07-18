@@ -288,6 +288,25 @@ include::sechub_config_example8_web_scan_openapi_with_data_reference.json[]
 <2> web scan uses "openApi" as API type
 <3> web scan uses the referenced <<sechub-config-data-section,data>> configuration "open-api-file-reference"
     to obtain the open api configuration file
+    
+[[sechub-config-example-webscan-header]]
+====== Example Header scan
+[source,json,title="header scan"]
+----
+include::sechub_config_example15_web_scan_header.json[]
+----
+<1> Name of the specified header. Must not be null or empty.
+<2> Value of the specified header. Must not be null or empty.
+You can use the `go template` format like above by creating a environment variable like: `HEADER_VALUE="Bearer mytoken1234"`. 
+This might be useful to load the information via the SecHub client dynamically, if the header value you specify contains credentials. 
+<3> Name of the second header. You can specify a list of headers the DAST Scanner needs interact with your application.
+<4> Value of the second header. Here no `go template` format is used, since in this example there are no credentials but only file size of an upload.
+<5> Optional Parameter: For each header you can specify a list of URLs.
+The header this list belongs to, will only be send when accessing one of the URLs on the list.
+If you do not specify a list of URLs or the list is empty, the header will be send on each request to every URL.
+You can also use wildcards by specifying `<*>` like in the example above. 
+Adding a wildcard to the end of an URL, the header will be sent to all sub URLs as well, otherwise it won't be sent to sub URLs.
+Make sure that the header URL combinations are unique. This means do not specify the same header multiple times for the same scope of URLs.
 
 ==== Infrastructure scan
 `infraScan` (optional) defines the infrastructure scan settings.

@@ -20,7 +20,7 @@ JAVA_DISTRIBUTION="openjdk"
 
 # Which Java version to use
 # Not all Java versions are available
-JAVA_VERSION="11"
+JAVA_VERSION="17"
 
 # Git information if the BUILD_TYPE is set to `build`
 TAG=""
