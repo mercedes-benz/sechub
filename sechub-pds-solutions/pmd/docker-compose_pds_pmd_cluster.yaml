@@ -5,7 +5,7 @@ services:
   pds-pmd:
     build:
       args:
-        - BASE_IMAGE=debian:12-slim
+        - BASE_IMAGE=debian:testing-slim
       context: docker/
       dockerfile: PMD-Debian.dockerfile
     env_file:
