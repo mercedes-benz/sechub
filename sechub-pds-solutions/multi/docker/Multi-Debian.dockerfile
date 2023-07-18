@@ -34,8 +34,8 @@ RUN export DEBIAN_FRONTEND=noninteractive && \
 # Install Flawfinder, Bandit, njsscan and mobsfscan
 COPY packages.txt $TOOL_FOLDER/packages.txt
 
-# https://peps.python.org/pep-0668/[PEP 668 – Marking Python base environments as “externally managed”] 
-# want's to prevent developers from mixing Python Package Index (PyPI) packages with Debian packages.
+# https://peps.python.org/pep-0668/[PEP 668 – Marking Python base environments as “externally managed”]
+# wants to prevent developers from mixing Python Package Index (PyPI) packages with Debian packages.
 # Interesting idea, but not as useful inside a container, which in essence is already a virtual environment.
 # Use `--break-system-packages` to let the Python package manager `pip` mix packages from Debian and Python
 RUN pip install --break-system-packages -r $TOOL_FOLDER/packages.txt
