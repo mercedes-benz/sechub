@@ -7,6 +7,7 @@ import static org.mockito.Mockito.*;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -16,6 +17,7 @@ import org.springframework.core.task.TaskExecutor;
 import com.mercedesbenz.sechub.commons.model.JSONConverterException;
 import com.mercedesbenz.sechub.commons.model.TrafficLight;
 import com.mercedesbenz.sechub.domain.scan.log.ProjectScanLogService;
+import com.mercedesbenz.sechub.domain.scan.product.AnalyticsProductExecutionService;
 import com.mercedesbenz.sechub.domain.scan.product.CodeScanProductExecutionService;
 import com.mercedesbenz.sechub.domain.scan.product.InfrastructureScanProductExecutionService;
 import com.mercedesbenz.sechub.domain.scan.product.LicenseScanProductExecutionService;
@@ -30,7 +32,6 @@ import com.mercedesbenz.sechub.domain.scan.report.ScanReport;
 import com.mercedesbenz.sechub.sharedkernel.ProgressMonitor;
 import com.mercedesbenz.sechub.sharedkernel.configuration.SecHubConfiguration;
 import com.mercedesbenz.sechub.sharedkernel.messaging.AsynchronMessageHandler;
-import com.mercedesbenz.sechub.sharedkernel.messaging.BatchJobMessage;
 import com.mercedesbenz.sechub.sharedkernel.messaging.DomainMessage;
 import com.mercedesbenz.sechub.sharedkernel.messaging.DomainMessageService;
 import com.mercedesbenz.sechub.sharedkernel.messaging.DomainMessageSynchronousResult;
@@ -45,7 +46,9 @@ public class ScanServiceTest {
 
     private static final String TEST_PROJECT_ID1 = "test-project-id1";
     private static final String TRAFFIC_LIGHT = "someColor";
-    private static final java.util.UUID UUID = java.util.UUID.randomUUID();
+    private static final UUID SECHUB_JOB_UUID = UUID.randomUUID();
+    private static final UUID EXECUTION_UUID = UUID.randomUUID();
+
     private static final String SECHUB_CONFIG_VALID_MINIMUM = "{ \"projectId\" : \"" + TEST_PROJECT_ID1 + "\" }";
     private ScanService serviceToTest;
     private WebScanProductExecutionService webScanProductExecutionService;
@@ -61,6 +64,7 @@ public class ScanServiceTest {
     private ScanProgressMonitorFactory monitorFactory;
     private LicenseScanProductExecutionService licenseScanProductExecutionService;
     private ProductExecutionServiceContainer productExecutionServiceContainer;
+    private AnalyticsProductExecutionService analyticsProductExecutionService;
     private static final SecHubConfiguration SECHUB_CONFIG = new SecHubConfiguration();
 
     @Before
@@ -80,6 +84,8 @@ public class ScanServiceTest {
         codeScanProductExecutionService = mock(CodeScanProductExecutionService.class);
         infrastructureScanProductExecutionService = mock(InfrastructureScanProductExecutionService.class);
         licenseScanProductExecutionService = mock(LicenseScanProductExecutionService.class);
+        analyticsProductExecutionService = mock(AnalyticsProductExecutionService.class);
+
         scanLogService = mock(ProjectScanLogService.class);
 
         reportService = mock(CreateScanReportService.class);
@@ -95,6 +101,7 @@ public class ScanServiceTest {
         when(productExecutionServiceContainer.getInfraScanProductExecutionService()).thenReturn(infrastructureScanProductExecutionService);
         when(productExecutionServiceContainer.getCodeScanProductExecutionService()).thenReturn(codeScanProductExecutionService);
         when(productExecutionServiceContainer.getLicenseScanProductExecutionService()).thenReturn(licenseScanProductExecutionService);
+        when(productExecutionServiceContainer.getAnalyticsProductExecutionService()).thenReturn(analyticsProductExecutionService);
 
         serviceToTest.reportService = reportService;
         serviceToTest.storageService = storageService;
@@ -304,13 +311,11 @@ public class ScanServiceTest {
     }
 
     private DomainMessage prepareRequest(SecHubConfiguration configMin) {
+
         DomainMessage request = new DomainMessage(MessageID.START_SCAN);
-        request.set(MessageDataKeys.SECHUB_UUID, UUID);
+        request.set(MessageDataKeys.SECHUB_JOB_UUID, SECHUB_JOB_UUID);
+        request.set(MessageDataKeys.SECHUB_EXECUTION_UUID, EXECUTION_UUID);
         request.set(MessageDataKeys.SECHUB_CONFIG, configMin);
-        BatchJobMessage batchJobMessage = new BatchJobMessage();
-        batchJobMessage.setSecHubJobUUID(UUID);
-        batchJobMessage.setBatchJobId(42);
-        request.set(MessageDataKeys.BATCH_JOB_ID, batchJobMessage);
 
         return request;
     }

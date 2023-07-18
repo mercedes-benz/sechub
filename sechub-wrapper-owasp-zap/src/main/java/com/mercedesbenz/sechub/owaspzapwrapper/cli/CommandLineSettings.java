@@ -130,4 +130,31 @@ public class CommandLineSettings {
     public String getDeactivatedRuleReferences() {
         return deactivatedRuleReferences;
     }
+
+    @Parameter(names = {
+            "--connectionCheck" }, description = "Set this option to enable an initial connection check performed by this wrapper application.", required = false)
+    private boolean connectionCheckEnabled;
+
+    public boolean isConnectionCheckEnabled() {
+        return connectionCheckEnabled;
+    }
+
+    @Parameter(names = {
+            "--maxNumberOfConnectionRetries" }, description = "Maximum number of times the wrapper tries to reach each URL. Including each URL constructed from the sechub includes.", required = false)
+    private int maxNumberOfConnectionRetries = 3;
+
+    public int getMaxNumberOfConnectionRetries() {
+        return maxNumberOfConnectionRetries;
+    }
+
+    @Parameter(names = {
+            "--retryWaittimeInMilliseconds" }, description = "Specify the time to wait between connection retries in milliseconds. The value cannot be less than 1000 milliseconds.", required = false)
+    private int retryWaittimeInMilliseconds = 1000;
+
+    public int getRetryWaittimeInMilliseconds() {
+        if (retryWaittimeInMilliseconds < 1000) {
+            retryWaittimeInMilliseconds = 1000;
+        }
+        return retryWaittimeInMilliseconds;
+    }
 }

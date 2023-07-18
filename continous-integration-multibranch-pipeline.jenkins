@@ -27,7 +27,7 @@ pipeline {
         stage('Initialize') {
             steps {
                 script{
-                    sechubGitBranch = sh(returnStdout: true, script: "git branch | grep \\* | cut -d ' ' -f2").trim()
+                    sechubGitBranch = "${env.GIT_BRANCH}"
                     echo "Branch is $sechubGitBranch"
                     if( sechubGitBranch == "master" ) {
                         echo "Cancel build, because master is built by release-pipeline.jenkins!"
@@ -90,15 +90,12 @@ pipeline {
                         SECHUB_STORAGE_S3_ENDPOINT = getStringCredentialsOrUndefined('sechub-storage-s3-endpoint')
 
                         // we setup PDS storage with same s3 bucket data
-                        SECHUB_PDS_STORAGE_S3_ACCESSKEY = getStringCredentialsOrUndefined('sechub-storage-s3-accesskey')
-                        SECHUB_PDS_STORAGE_S3_SECRETKEY = getStringCredentialsOrUndefined('sechub-storage-s3-secretkey')
-                        SECHUB_PDS_STORAGE_S3_BUCKETNAME = getStringCredentialsOrUndefined('sechub-storage-s3-bucketname')
-                        SECHUB_PDS_STORAGE_S3_ENDPOINT = getStringCredentialsOrUndefined('sechub-storage-s3-endpoint')
-                        
+                        PDS_STORAGE_S3_ACCESSKEY = getStringCredentialsOrUndefined('sechub-storage-s3-accesskey')
+                        PDS_STORAGE_S3_SECRETKEY = getStringCredentialsOrUndefined('sechub-storage-s3-secretkey')
+                        PDS_STORAGE_S3_BUCKETNAME = getStringCredentialsOrUndefined('sechub-storage-s3-bucketname')
+                        PDS_STORAGE_S3_ENDPOINT = getStringCredentialsOrUndefined('sechub-storage-s3-endpoint')
+
                         SECHUB_INTEGRATIONTEST_PREPARE_WAIT_MS=100
-                        
-                        /* avoid race conditions with management port */
-                        MANAGEMENT_SERVER_PORT = getJenkinsExecutorPort(10250)
                     }
                     steps {
                         script{
@@ -130,7 +127,7 @@ pipeline {
 
             }
         }
-        
+
         stage('Build Documentation') {
             steps {
                 script{
@@ -144,17 +141,17 @@ pipeline {
     post {
         failure {
             emailext (
-                subject:"[ BUILD FAILED ] Build:${env.BUILD_NUMBER}, branch: $sechubGitBranch",
+                subject:"[ BUILD FAILED ] Branch: $sechubGitBranch, build #${env.BUILD_NUMBER}",
                 body:"CI build for branch '$sechubGitBranch' failed.\n"+
-                     "${env.BUILD_URL}",
+                     "${env.BUILD_URL}/console",
                 to: '$DEFAULT_RECIPIENTS'
             )
         }
         fixed {
             emailext (
-                subject:"[ BUILD FIXED ] Build:${env.BUILD_NUMBER}, branch: $sechubGitBranch",
+                subject:"[ BUILD FIXED ] Branch: $sechubGitBranch, build #${env.BUILD_NUMBER}",
                 body:"CI build for branch '$sechubGitBranch' has been fixed.\n"+
-                     "${env.BUILD_URL}",
+                     "${env.BUILD_URL}/console",
                 to: '$DEFAULT_RECIPIENTS'
             )
         }
@@ -180,7 +177,7 @@ int getJenkinsExecutorPort(int originPort){
 }
 
 void callGradleWrapper(String gradleCommand) {
-    jdk = tool name: 'JDK_11'
+    jdk = tool name: 'JDK_17'
     env.JAVA_HOME = "${jdk}"
 
     if (isUnix()) {

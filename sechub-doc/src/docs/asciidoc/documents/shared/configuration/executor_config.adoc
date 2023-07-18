@@ -20,8 +20,8 @@ They ignore
 - Base URL
 - Credentials
 - Parameter content
-  
-You still have to configure the ignored parts by system environment variables 
+
+You still have to configure the ignored parts by system environment variables
 (or system properties) in a global way and you can't change these settings at runtime.
 ====
 
@@ -36,18 +36,16 @@ Only when the executor configuration is enabled, it will be used (of course
 it has also be added to an enabled profile and this to a project).
 
 ===== UUID
-Unmodifiaable unique ID of an executor configuration. Cannot be changed. 
+Unmodifiaable unique ID of an executor configuration. Cannot be changed.
 
 ===== Product identifier
 The product identifier for the product executor to use.
-Examples are: 
+Examples are:
 
-- `CHECKMARX`
-- `NESSUS`
-- `NETSPARKER`
 - `PDS_CODESCAN`
 - `PDS_WEBSCAN`
 - `PDS_INFRASCAN`
+- `PDS_LICENSESCAN`
 
 ===== Executor version
 At the moment all product executors exists only in version `1` and as long as there is no
@@ -76,13 +74,13 @@ environment variable will be used at runtime when it comes to authentication.
 
 [TIP]
 ====
-*Example for an environment variable reference:* 
+*Example for an environment variable reference:*
 
-Let's assume a have a running PDS server which accepts _"exampleToken"_ as API token for 
-technical user. 
+Let's assume a have a running PDS server which accepts _"exampleToken"_ as API token for
+technical user.
 
 You would add
----- 
+----
 export PDS_CODESCAN1_APITOKEN=exampleToken
 ----
 at the beginning of your start script for {sechub} server.
@@ -99,7 +97,7 @@ The user name used by {sechub} to authenticate at security product.
 ====== Password or API token
 The password or API token used by {sechub} to authenticate at security product.
 
-WARNING: It is strongly recommended to use <<executor-config-env-variable-references,environment variable references>>  environment variable references here instead of plain text. 
+WARNING: It is strongly recommended to use <<executor-config-env-variable-references,environment variable references>>  environment variable references here instead of plain text.
 
 
 ===== Parameters
@@ -109,7 +107,7 @@ product behaviours.
 ====== Mappings
 Some product executors do need special mappings - e.g for new project creations. Please look at
 <<mapping-technical-details, mapping>> for more details about the
-concept and the format. 
+concept and the format.
 
 
 ====== Key values
@@ -134,7 +132,7 @@ endif::usecasedoc[]
 
 ===== {pds}
 For {pds} we have a set of predefined configuration parameters _(see next table)_ and the possibility
-to define custom parameters. 
+to define custom parameters.
 
 Some of the predefined parameters are generated.
 In this case the user cannot define them in the executor configuration, but they
@@ -175,9 +173,9 @@ On lazy project creation time, depending on project name in sechub, after checkm
 
 *For example:*
 
-* project named in sechub with `my-java-project-marvelous1` will have preset id `100021` and teamId `1`.
-* project named in sechub with `a-go-project-super-cli` will have preset id `100031` and teamId `2`.
-* project named in sechub with `something-else`will have preset id `100001` and teamId `3`
+* project named in {sechub} with `my-java-project-marvelous1` will have preset id `100021` and teamId `1`.
+* project named in {sechub} with `a-go-project-super-cli` will have preset id `100031` and teamId `2`.
+* project named in {sechub} with `something-else`will have preset id `100001` and teamId `3`
 
 [IMPORTANT]
 ====
@@ -186,8 +184,8 @@ First matching part will be used! So ordering is important!
 
 ifdef::techdoc[]
 ======= Technical details
-Checkmarx install setup does use a dedicated configuration support to provide `presetId` and `teamId` 
-to adapter. Adapter will use `presetId` (if defined) and `teamId` _(mandatory as before)_ when 
+Checkmarx install setup does use a dedicated configuration support to provide `presetId` and `teamId`
+to adapter. Adapter will use `presetId` (if defined) and `teamId` _(mandatory as before)_ when
 project creation is necessary
 endif::techdoc[]
 
@@ -196,7 +194,7 @@ Unfortunately the preset ID is necessary for REST calls, but not
 visible at Checkmarx UI.
 
 You can either directly access the DB or inspect the web page by
-web tools in you browser (e.g. enable network monitoring and change preset id at UI...)  
+web tools in you browser (e.g. enable network monitoring and change preset id at UI...)
 
 ====== How to obtain team id
 Unfortunately the team ID is necessary for REST calls, but not
@@ -240,7 +238,7 @@ shown above the text component. This makes it easier to configure values.
 
 At the mapping tab pane you can edit the JSON data. With "Test mapping" button you can also
 check if the naming pattern are correct and the expected values are resulting.
- 
+
 For the "normal" key value pairs we got the "key/values" tab pane. Here the content is normally
 only simple text. For example `checkmarx.fullscan.always` could contain
 like "true" or "false" or simply nothing.
@@ -248,7 +246,7 @@ like "true" or "false" or simply nothing.
 image::sechub-daui-checkmarx-executor-parameter-editor-key-values-example.png[width=75%]
 
 After pressing the `Apply` button the changed data is set inside executor configuration in correct
-format. 
+format.
 
 
 ===== PDS code scan configuration
@@ -259,10 +257,10 @@ image::sechub-daui-pds-executor-parameter-editor-key-values-example.png[]
 The `pds.config.productidentifier` which is an mandatory value is marked *red* because it must be
 sent to PDS server to identify which product shall be used on the other side.
 
-Optional, but wellknown PDS key value pairs are shown in *black* - the parameters `example.key1` and 
-`example.key2` are marked *yellow*. Reason: Those keys are unknown by 
-SecHub and so normally custom parameters. 
- 
+Optional, but wellknown PDS key value pairs are shown in *black* - the parameters `example.key1` and
+`example.key2` are marked *yellow*. Reason: Those keys are unknown by
+SecHub and so normally custom parameters.
+
 ===== Sereco configuration
 `Sereco` is *the only product which needs no configuration at all*, because it is an embedded "product".
 

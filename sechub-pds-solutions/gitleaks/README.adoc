@@ -1,0 +1,160 @@
+// SPDX-License-Identifier: MIT
+
+:toc:
+:numbered:
+
+= Gitleaks + PDS
+
+https://github.com/zricethezav/gitleaks[Gitleaks] is a free and open source secret scanner tool. Gitleaks is a command line interface (CLI) tool. By combining Gitleaks  with the SecHub https://mercedes-benz.github.io/sechub/latest/sechub-product-delegation-server.html[Product Delegation Server (PDS)] in a container, Gitleaks can be used with SecHub. Another scenario is to use Gitleaks+PDS standalone.
+
+Furthermore, the combination of Gitleaks and PDS makes it possible to run both inside a Kubernetes cluser or virtual machines.
+
+This folder contains the necessary scripts to run Gitleaks+PDS inside a container locally.
+
+== Run Locally
+
+This is the easiest way to get started.
+
+=== Requirements
+
+Docker and Docker-Compose need to be installed:
+
+. https://docs.docker.com/engine/install/[Install Docker]
+
+. Linux: https://docs.docker.com/engine/install/linux-postinstall/#manage-docker-as-a-non-root-user[Use Docker as non Root user]
+
+. https://docs.docker.com/compose/install/[Install Docker-Compose]
+
+=== Single Instance
+
+Start a single instance by using the Bash wrapper script which does setup everything automatically for you.
+
+==== Scan script
+
+The folder contains a start script which does the manual steps for you:
+
+----
+./01-start-docker-compose.sh
+----
+
+==== Together with SecHub
+
+The container will be started and attached to the `sechub` Network.
+
+WARNING: Make sure the SecHub container is running.
+
+. Start container:
++
+----
+./05-start-single-sechub-network-docker-compose.sh
+----
+
+=== Scan
+
+The scan script scans using the Gitleaks+PDS solution directly.
+
+. Set the environment variables
++
+----
+export PDS_SERVER=https://<pds-host>:<port>
+export PDS_USERID=admin
+export PDS_APITOKEN="<pds-admin-apitoken>"
+export PDS_PRODUCT_IDENTFIER=PDS_GITLEAKS
+----
++
+For example:
++
+----
+export PDS_SERVER=https://localhost:8444
+export PDS_USERID=admin
+export PDS_APITOKEN="pds-apitoken"
+export PDS_PRODUCT_IDENTFIER=PDS_GITLEAKS
+----
++
+[NOTE]
+Those values are the default values from `env-initial` and `env-cluster-initial` files. In case you run Gitleaks+PDS in Kubernetes or other environments those values will be different.
+
+. Scan by providing a `ZIP` folder with source code containing secrets.
++
+----
+cd sechub/sechub-solutions-shared/scripts
+./01-test.sh <path-to-zip-file>
+----
++
+For example:
++
+----
+cd sechub/sechub-solutions-shared/scripts
+./01-test.sh ~/myproject.zip
+----
+
+=== Change the Configuration
+
+There are several configuration options available for the Gitleaks+PDS `docker-compose` files. Have a look at `.env` and `.env-single` for more details.
+
+=== Troubleshooting
+
+This section contains information about how to troubleshoot Gitleaks+PDS if something goes wrong.
+
+==== Access the container
+
+----
+docker exec -it pds-gitleaks bash
+----
+
+==== Java Application Remote Debugging of PDS
+
+. Set `JAVA_ENABLE_DEBUG=true` in the `.env` file
+
+. Connect via remote debugging to the `pds`
++
+connect via CLI
++
+----
+jdb -attach localhost:15024
+----
++
+TIP: https://www.baeldung.com/java-application-remote-debugging[Java Application Remote Debugging] and https://www.tutorialspoint.com/jdb/jdb_basic_commands.htm[JDB - Basic Commands]
++
+or connect via IDE (e. g. Eclipse IDE, VSCodium, Eclipse Theia, IntelliJ etc.).
++
+TIP: https://www.eclipse.org/community/eclipse_newsletter/2017/june/article1.php[Debugging the Eclipse IDE for Java Developers]
+
+== Build Image and Push to Registry
+
+Build container images and push them to registry to run Gitleaks+PDS on virtual machines, Kubernetes or any other distributed system.
+
+=== Build Image
+
+Build the container image.
+
+==== Build
+
+. Using the default image:
++
+----
+./10-create-image.sh my.registry.example.org/sechub/pds_gitleaks v0.1
+----
+
+. Using your own base image:
++
+----
+./10-create-image.sh my.registry.example.org/sechub/pds_gitleaks v0.1 "my.registry.example.org/pds-base"
+----
+
+=== Push Image to Registry
+
+Push the container image to a registry.
+
+* Push the version tag only
++
+----
+./20-push-image.sh my.registry.example.org/sechub/pds_gitleaks v0.1
+----
+
+* Push the version and `latest` tags
++
+----
+./20-push-image.sh my.registry.example.org/sechub/pds_gitleaks v0.1 yes
+----
+

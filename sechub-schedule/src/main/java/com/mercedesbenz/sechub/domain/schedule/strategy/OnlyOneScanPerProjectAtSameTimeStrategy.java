@@ -17,7 +17,7 @@ public class OnlyOneScanPerProjectAtSameTimeStrategy implements SchedulerStrateg
 
     @Override
     public SchedulerStrategyId getSchedulerId() {
-        return SchedulerStrategyId.OnlyOneScanPerProjectAtATime;
+        return SchedulerStrategyId.ONE_SCAN_PER_PROJECT;
     }
 
     @Override

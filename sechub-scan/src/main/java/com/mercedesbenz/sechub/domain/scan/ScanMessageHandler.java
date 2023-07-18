@@ -122,7 +122,7 @@ public class ScanMessageHandler implements AsynchronMessageHandler, SynchronMess
 
     @IsRecevingSyncMessage(MessageID.REQUEST_PURGE_JOB_RESULTS)
     private DomainMessageSynchronousResult handleJobRestartHardRequested(DomainMessage request) {
-        UUID jobUUID = request.get(MessageDataKeys.SECHUB_UUID);
+        UUID jobUUID = request.get(MessageDataKeys.SECHUB_JOB_UUID);
         try {
             /* delete all former results */
             productResultService.deleteAllResultsForJob(jobUUID);
@@ -136,14 +136,14 @@ public class ScanMessageHandler implements AsynchronMessageHandler, SynchronMess
     @IsSendingSyncMessageAnswer(value = MessageID.JOB_RESULT_PURGE_FAILED, answeringTo = MessageID.REQUEST_PURGE_JOB_RESULTS, branchName = "failed")
     private DomainMessageSynchronousResult purgeFailed(UUID jobUUID, Exception e) {
         DomainMessageSynchronousResult result = new DomainMessageSynchronousResult(MessageID.JOB_RESULT_PURGE_FAILED, e);
-        result.set(MessageDataKeys.SECHUB_UUID, jobUUID);
+        result.set(MessageDataKeys.SECHUB_JOB_UUID, jobUUID);
         return result;
     }
 
     @IsSendingSyncMessageAnswer(value = MessageID.JOB_RESULT_PURGE_DONE, answeringTo = MessageID.REQUEST_PURGE_JOB_RESULTS, branchName = "success")
     private DomainMessageSynchronousResult purgeDone(UUID jobUUID) {
         DomainMessageSynchronousResult result = new DomainMessageSynchronousResult(MessageID.JOB_RESULT_PURGE_DONE);
-        result.set(MessageDataKeys.SECHUB_UUID, jobUUID);
+        result.set(MessageDataKeys.SECHUB_JOB_UUID, jobUUID);
         return result;
     }
 

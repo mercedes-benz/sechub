@@ -16,6 +16,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -68,12 +69,34 @@ public class TestRestHelper {
         return template;
     }
 
+    /**
+     * This is a shortcut for {@link #getStringFromURL(String),
+     * MediaType.APPLICATION_JSON)}.
+     *
+     * @param url the url to fetch JSON by HTTP GET request
+     * @return result as JSON
+     */
     public String getJSON(String url) {
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_JSON);
+        return getStringFromURL(url, MediaType.APPLICATION_JSON);
+    }
 
-        markLastURL(url);
-        return template.getForEntity(url, String.class).getBody();
+    /**
+     * Returns a string representation from URL for given accepted media types.
+     *
+     * @param url      the url to fetch string by HTTP GET request
+     * @param accepted the list of accepted media types. If empty the header will
+     *                 not contain an accepted media type, means accepting
+     *                 everything
+     * @return result as string
+     */
+    public String getStringFromURL(String url, MediaType... accepted) {
+        HttpHeaders headers = new HttpHeaders();
+        List<MediaType> types = new ArrayList<>();
+        for (MediaType type : accepted) {
+            types.add(type);
+        }
+        headers.setAccept(types);
+        return getStringWithHeaders(url, headers);
     }
 
     public void put(String url) {
@@ -278,6 +301,13 @@ public class TestRestHelper {
         markLastURL(uploadUrl);
         ResponseEntity<String> response = template.postForEntity(uploadUrl, requestEntity, String.class);
         return response.getBody();
+    }
+
+    private String getStringWithHeaders(String url, HttpHeaders headers) {
+        markLastURL(url);
+        HttpEntity<String> entity = new HttpEntity<>(headers);
+        ResponseEntity<String> result = template.exchange(url, HttpMethod.GET, entity, String.class);
+        return result.getBody();
     }
 
     private class ErrorHandler extends DefaultResponseErrorHandler {

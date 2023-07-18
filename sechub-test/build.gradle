@@ -1,10 +1,12 @@
 // SPDX-License-Identifier: MIT
 dependencies {
-
+    
     /* we don reference spring boot application projects but core parts - 
        reason: fat jars are build which cannot be directly used for testing etc. */
     testImplementation project(':sechub-server-core')
     testImplementation project(':sechub-pds-core')
+    testImplementation project(':sechub-schedule')
+    testImplementation project(':sechub-administration')
     testImplementation project(':sechub-adapter')
     testImplementation project(':sechub-testframework')
     testImplementation project(':sechub-doc') // here we got the dependency to Reflections 

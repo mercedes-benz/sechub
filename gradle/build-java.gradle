@@ -65,8 +65,8 @@ subprojects{
 	/* Setup UTF-8 for compile AND test compilation*/
 	[ compileJava, compileTestJava ]*.options*.encoding = 'UTF-8'
 
-	sourceCompatibility = '11'
-	targetCompatibility = '11'
+	sourceCompatibility = '17'
+	targetCompatibility = '17'
 
 
     dependencies {
@@ -123,7 +123,7 @@ subprojects{
 	 * Task to create source jars
 	 */
 	task sourcesJar(type: Jar, dependsOn:classes) {
-		classifier = 'sources'
+		archiveClassifier = 'sources'
 		from sourceSets.main.allSource
 	}
 
@@ -131,7 +131,7 @@ subprojects{
 	 * Task to create javadoc jars
 	 */
 	task javadocJar(type: Jar, dependsOn:javadoc) {
-		classifier = 'javadoc'
+		archiveClassifier = 'javadoc'
 		from javadoc.destinationDir
 	}
 

@@ -20,8 +20,8 @@ import org.hibernate.annotations.Type;
 
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import com.mercedesbenz.sechub.commons.model.LocalDateTimeDeserializer;
-import com.mercedesbenz.sechub.commons.model.LocalDateTimeSerializer;
+import com.mercedesbenz.sechub.commons.model.SecHubLocalDateTimeDeserializer;
+import com.mercedesbenz.sechub.commons.model.SecHubLocalDateTimeSerializer;
 import com.mercedesbenz.sechub.commons.pds.data.PDSJobStatusState;
 
 /**
@@ -88,6 +88,9 @@ public class PDSJob {
 
     public static final String QUERY_FIND_JOBS_IN_STATE = "SELECT j from PDSJob j WHERE j." + PROPERTY_STATE + "= :statusState";
 
+    public static final String QUERY_FORCE_JOB_STATE_UPDATE = "UPDATE PDSJob j set j." + PROPERTY_STATE + "=:statusState WHERE j." + PROPERTY_UUID
+            + " in :jobUUIDs";
+
     @Id
     @GeneratedValue(generator = "UUID")
     @GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
@@ -106,28 +109,28 @@ public class PDSJob {
     String serverId;
 
     @Column(name = COLUMN_CREATED, nullable = false) // remark: we setup hibernate to use UTC settings - see
-    @JsonDeserialize(using = LocalDateTimeDeserializer.class)
-    @JsonSerialize(using = LocalDateTimeSerializer.class)
+    @JsonDeserialize(using = SecHubLocalDateTimeDeserializer.class)
+    @JsonSerialize(using = SecHubLocalDateTimeSerializer.class)
     LocalDateTime created;
 
     @Column(name = COLUMN_STARTED) // remark: we setup hibernate to use UTC settings - see application.properties
-    @JsonDeserialize(using = LocalDateTimeDeserializer.class)
-    @JsonSerialize(using = LocalDateTimeSerializer.class)
+    @JsonDeserialize(using = SecHubLocalDateTimeDeserializer.class)
+    @JsonSerialize(using = SecHubLocalDateTimeSerializer.class)
     LocalDateTime started;
 
     @Column(name = COLUMN_ENDED) // remark: we setup hibernate to use UTC settings - see application.properties
-    @JsonDeserialize(using = LocalDateTimeDeserializer.class)
-    @JsonSerialize(using = LocalDateTimeSerializer.class)
+    @JsonDeserialize(using = SecHubLocalDateTimeDeserializer.class)
+    @JsonSerialize(using = SecHubLocalDateTimeSerializer.class)
     LocalDateTime ended;
 
     @Column(name = COLUMN_LAST_STREAM_TEXT_REFRESH_REQUEST) // remark: we setup hibernate to use UTC settings - see application.properties
-    @JsonDeserialize(using = LocalDateTimeDeserializer.class)
-    @JsonSerialize(using = LocalDateTimeSerializer.class)
+    @JsonDeserialize(using = SecHubLocalDateTimeDeserializer.class)
+    @JsonSerialize(using = SecHubLocalDateTimeSerializer.class)
     LocalDateTime lastStreamTextRefreshRequest;
 
     @Column(name = COLUMN_LAST_STREAM_TEXT_UPDATE) // remark: we setup hibernate to use UTC settings - see application.properties
-    @JsonDeserialize(using = LocalDateTimeDeserializer.class)
-    @JsonSerialize(using = LocalDateTimeSerializer.class)
+    @JsonDeserialize(using = SecHubLocalDateTimeDeserializer.class)
+    @JsonSerialize(using = SecHubLocalDateTimeSerializer.class)
     LocalDateTime lastStreamTextUpdate;
 
     @Column(name = COLUMN_CONFIGURATION)

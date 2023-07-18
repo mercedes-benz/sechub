@@ -25,7 +25,6 @@ public class SecHubConfigurationValidatorTest {
     private SecHubConfiguration target;
     private ValidationResult okResult;
     private ValidationResult failedResult;
-    private SecHubConfigurationModelValidatorFactory modelValidatorFactory;
     private SecHubConfigurationModelValidator modelValidator;
     private SecHubConfigurationModelValidationResult configurationModelValidationResult;
 
@@ -49,12 +48,8 @@ public class SecHubConfigurationValidatorTest {
         modelValidator = mock(SecHubConfigurationModelValidator.class);
         when(modelValidator.validate(any())).thenReturn(configurationModelValidationResult);
 
-        modelValidatorFactory = mock(SecHubConfigurationModelValidatorFactory.class);
-        when(modelValidatorFactory.createValidator()).thenReturn(modelValidator);
+        validatorToTest.modelValidator = modelValidator;
 
-        validatorToTest.modelValidatorFactory = modelValidatorFactory;
-
-        validatorToTest.postConstruct();// simulate spring boot post construct
     }
 
     @Test

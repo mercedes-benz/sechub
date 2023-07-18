@@ -1,0 +1,29 @@
+{
+  "name": "sechub-scan-action",
+  "version": "0.1.0",
+  "description": "GitHub Action for SecHub scan",
+  "main": "dist/main.js",
+  "scripts": {
+    "build": "ncc build src/main.ts",
+    "lint": "eslint src",
+    "prettier": "npx prettier --write src",
+    "test": "npx jest"
+  },
+  "license": "MIT",
+  "dependencies": {
+    "@actions/artifact": "^1.1.0",
+    "@actions/core": "^1.8.2",
+    "shelljs": "^0.8.5"
+  },
+  "devDependencies": {
+    "@types/jest": "^29.4.0",
+    "@types/shelljs": "^0.8.11",
+    "@typescript-eslint/eslint-plugin": "^5.54.1",
+    "@typescript-eslint/parser": "^5.54.1",
+    "@vercel/ncc": "^0.36.1",
+    "eslint": "^8.35.0",
+    "prettier": "2.8.4",
+    "ts-jest": "^29.0.5",
+    "typescript": "^4.9.5"
+  }
+}

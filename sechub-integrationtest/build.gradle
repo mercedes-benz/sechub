@@ -26,7 +26,8 @@ dependencies {
     api project(':sechub-wrapper-checkmarx') // we have access to the parameter constants..
     
     api library.junit4
-    
+
+    api library.apache_commons_lang3
 }
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -273,4 +274,3 @@ class IntegrationTestPDSScriptAccess extends IntegrationTestScriptAccess{
         super("integrationtest-pds");
     }
 }
-

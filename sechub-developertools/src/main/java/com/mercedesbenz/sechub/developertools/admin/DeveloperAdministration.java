@@ -25,7 +25,6 @@ import com.mercedesbenz.sechub.commons.model.JSONConverter;
 import com.mercedesbenz.sechub.commons.pds.PDSDefaultParameterKeyConstants;
 import com.mercedesbenz.sechub.developertools.admin.ui.ConfigurationSetup;
 import com.mercedesbenz.sechub.developertools.admin.ui.UIContext;
-import com.mercedesbenz.sechub.domain.scan.product.ProductIdentifier;
 import com.mercedesbenz.sechub.domain.scan.product.pds.PDSProductExecutorKeyConstants;
 import com.mercedesbenz.sechub.domain.scan.product.pds.SecHubProductExecutionPDSKeyProvider;
 import com.mercedesbenz.sechub.integrationtest.api.AsPDSUser;
@@ -44,6 +43,7 @@ import com.mercedesbenz.sechub.integrationtest.internal.TestAutoCleanupData;
 import com.mercedesbenz.sechub.integrationtest.internal.TestJSONHelper;
 import com.mercedesbenz.sechub.integrationtest.internal.TestRestHelper;
 import com.mercedesbenz.sechub.integrationtest.internal.TestRestHelper.RestHelperTarget;
+import com.mercedesbenz.sechub.sharedkernel.ProductIdentifier;
 import com.mercedesbenz.sechub.sharedkernel.project.ProjectAccessLevel;
 import com.mercedesbenz.sechub.test.PDSTestURLBuilder;
 import com.mercedesbenz.sechub.test.SecHubTestURLBuilder;
@@ -463,6 +463,10 @@ public class DeveloperAdministration {
 
     public String fetchUserInfo(String userId) {
         return getRestHelper().getStringFromURL(getUrlBuilder().buildAdminShowsUserDetailsUrl(userId));
+    }
+
+    public String fetchUserInfoByEmailAddress(String emailAddress) {
+        return getRestHelper().getStringFromURL(getUrlBuilder().buildAdminShowsUserDetailsForEmailAddressUrl(emailAddress));
     }
 
     public List<String> fetchProjectWhiteList(String projectId) {

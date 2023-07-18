@@ -42,5 +42,5 @@ while read line ; do
   RESPONSE="$RESPONSE/* $SRCLANG */"$'\n'
 done <<< "$SRC"
 
-echo -n "$RESPONSE" | head -n -1  # all but last line
+echo -n "$RESPONSE" | sed \$d  # all but last line
 echo -n "$RESPONSE" | tail -1 | sed 's/\(.*\),/\1}/'  # last line

@@ -25,11 +25,37 @@ public enum SecHubConfigurationModelValidationError {
 
     WEB_SCAN_URL_HAS_UNSUPPORTED_SCHEMA("The URL for web scan has an unsupported schema!"),
 
+    WEB_SCAN_NO_HEADER_NAME_DEFINED("The name for a HTTP header is not defined!"),
+
+    WEB_SCAN_NO_HEADER_VALUE_DEFINED("The value for a HTTP header is not defined!"),
+
+    WEB_SCAN_HTTP_HEADER_ONLY_FOR_URL_IS_NOT_A_VALID_URL("The URL for a HTTP header is not a valid URL!"),
+
+    WEB_SCAN_HTTP_HEADER_ONLY_FOR_URL_DOES_NOT_CONTAIN_TARGET_URL("The URL for a HTTP header does not contain the base URL that shall be scanned!"),
+
+    WEB_SCAN_NON_UNIQUE_HEADER_CONFIGURATION("The webscan config contains header configurations that default to the same URL scope!"),
+
     REFERENCED_DATA_CONFIG_OBJECT_NAME_NOT_EXISTING("The referenced config object name was not found in object!"),
 
     NO_DATA_CONFIG_SPECIFIED_FOR_SCAN("No data config was specified for the scan!"),
 
     DATA_CONFIG_OBJECT_NAME_CONTAINS_ILLEGAL_CHARACTERS("Data configuration object name contains illegal characters!"),
+
+    NO_PUBLIC_SCAN_TYPES_DETECTED("No public scan types can be detected."),
+
+    NO_MODULE_GROUP_DETECTED("No module group detected."),
+
+    MULTIPLE_MODULE_GROUPS_DETECTED("Multiple module groups detected."),
+
+    METADATA_LABEL_KEY_TOO_SHORT("Metadata label key length is too short."),
+
+    METADATA_LABEL_KEY_TOO_LONG("Meta data label key length is too long."),
+
+    METADATA_LABEL_VALUE_TOO_LONG("Meta data label value length is too long."),
+
+    METADATA_TOO_MANY_LABELS("Too many meta data labels defined!"),
+
+    METADATA_LABEL_KEY_CONTAINS_ILLEGAL_CHARACTERS("Meta data label key contains illegal characters."),
 
     ;
 

@@ -18,18 +18,19 @@ The following communication channels exist for this project:
 
 Transparent and open communication is important to us. Thus, all project-related communication should happen only through these channels and in English. Issue-related communication should happen within the concerned issue.
 
-
 ## Quick Start
 Please look at [First steps Wiki page](https://github.com/mercedes-benz/sechub/wiki/First-steps)
 
 ## Contributions
+Contributions are highly welcome.
+
 If you would like to contribute code you can do so through Mercedes-Benz GitHub by forking the repository and sending a pull request.
 
-When submitting code, please make every effort to follow existing conventions and style in order to keep the code as readable as possible.
+When submitting code, please follow the existing conventions and style in order to keep the code as readable as possible.
+
+Please sign our [Contributor's License Agreement](https://github.com/mercedes-benz/foss/blob/master/CONTRIBUTORS_LICENSE_AGREEMENT.md) otherwise we cannot accept your contribution.
 
 If you are new to contributing in Github, [First Contributions](https://github.com/firstcontributions/first-contributions) might be a good starting point.
-
-Before you can contribute, you will need to sign our [CLA](https://github.com/mercedes-benz/foss/blob/master/CONTRIBUTORS_LICENSE_AGREEMENT.md) and send the signed CLA to cla-tss@daimler.com
 
 ## Quality
 Please ensure that for all contributions, the corresponding documentation is in-sync and up-to-date. All documentation should be in English language.
@@ -37,4 +38,3 @@ Please ensure that for all contributions, the corresponding documentation is in-
 Please look into [Quality Wiki page](https://github.com/mercedes-benz/sechub/wiki/Quality) for more details.
 
 We assume that for every non-trivial contribution, the project has been built and tested prior to the contribution.
-

@@ -11,6 +11,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
+import org.mockito.ArgumentCaptor;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.mercedesbenz.sechub.commons.archive.ArchiveSupport;
@@ -20,6 +21,9 @@ import com.mercedesbenz.sechub.sharedkernel.error.BadRequestException;
 import com.mercedesbenz.sechub.sharedkernel.error.NotAcceptableException;
 import com.mercedesbenz.sechub.sharedkernel.logging.AuditLogService;
 import com.mercedesbenz.sechub.sharedkernel.logging.LogSanitizer;
+import com.mercedesbenz.sechub.sharedkernel.messaging.DomainMessage;
+import com.mercedesbenz.sechub.sharedkernel.messaging.DomainMessageService;
+import com.mercedesbenz.sechub.sharedkernel.messaging.MessageID;
 import com.mercedesbenz.sechub.sharedkernel.util.ArchiveSupportProvider;
 import com.mercedesbenz.sechub.sharedkernel.validation.UserInputAssertion;
 import com.mercedesbenz.sechub.storage.core.JobStorage;
@@ -40,6 +44,7 @@ public class SchedulerSourcecodeUploadServiceTest {
     private ArchiveSupport mockedArchiveSupport;
     private ArchiveSupportProvider archiveSupportProvider;
     private SchedulerSourcecodeUploadConfiguration configuration;
+    private DomainMessageService domainMessageService;
 
     @BeforeEach
     void beforeEach() {
@@ -62,6 +67,7 @@ public class SchedulerSourcecodeUploadServiceTest {
         when(archiveSupportProvider.getArchiveSupport()).thenReturn(mockedArchiveSupport);
 
         configuration = mock(SchedulerSourcecodeUploadConfiguration.class);
+        domainMessageService = mock(DomainMessageService.class);
 
         /* attach at service to test */
         serviceToTest = new SchedulerSourcecodeUploadService();
@@ -70,6 +76,7 @@ public class SchedulerSourcecodeUploadServiceTest {
         serviceToTest.assertService = mockedAssertService;
         serviceToTest.archiveSupportProvider = archiveSupportProvider;
         serviceToTest.configuration = configuration;
+        serviceToTest.domainMessageService = domainMessageService;
 
         serviceToTest.logSanitizer = mock(LogSanitizer.class);
         serviceToTest.assertion = mock(UserInputAssertion.class);
@@ -91,6 +98,9 @@ public class SchedulerSourcecodeUploadServiceTest {
 
         /* execute + test */
         assertThrows(BadRequestException.class, () -> serviceToTest.uploadSourceCode(PROJECT1, randomUuid, file, "mychecksum"));
+
+        /* test */
+        assertNoUploadEvent();
     }
 
     @Test
@@ -117,6 +127,9 @@ public class SchedulerSourcecodeUploadServiceTest {
 
         /* execute + test */
         assertThrows(NotAcceptableException.class, () -> serviceToTest.uploadSourceCode(PROJECT1, randomUuid, file, "mychecksum"));
+
+        /* test */
+        assertNoUploadEvent();
     }
 
     @Test
@@ -130,6 +143,9 @@ public class SchedulerSourcecodeUploadServiceTest {
 
         /* execute + test (no exception) */
         serviceToTest.uploadSourceCode(PROJECT1, randomUuid, file, "mychecksum");
+
+        /* test */
+        assertUploadEvent();
     }
 
     @Test
@@ -143,6 +159,9 @@ public class SchedulerSourcecodeUploadServiceTest {
 
         /* execute + test (no exception) */
         serviceToTest.uploadSourceCode(PROJECT1, randomUuid, file, "mychecksum");
+
+        /* test */
+        assertUploadEvent();
     }
 
     @Test
@@ -158,4 +177,16 @@ public class SchedulerSourcecodeUploadServiceTest {
         assertThrows(NotAcceptableException.class, () -> serviceToTest.uploadSourceCode(PROJECT1, randomUuid, file, "mychecksum"));
     }
 
+    private void assertNoUploadEvent() {
+        verifyNoInteractions(domainMessageService);
+    }
+
+    private void assertUploadEvent() {
+        ArgumentCaptor<DomainMessage> captor = ArgumentCaptor.forClass(DomainMessage.class);
+        verify(domainMessageService).sendAsynchron(captor.capture());
+
+        DomainMessage message = captor.getValue();
+        assertNotNull(message);
+        assertEquals(MessageID.SOURCE_UPLOAD_DONE, message.getMessageId());
+    }
 }

@@ -529,9 +529,9 @@ table.CodeRay td.code{padding:0 0 0 .75em}
 </head>
 <body class="article toc2 toc-left">
 <div id="header">
-<h1><span class="image"><img src="images/sechub-logo.png" alt="sechub"></span> SecHub PDS Documentation</h1>
+<h1><span class="image"><a class="image" href="https://mercedes-benz.github.io/sechub"><img src="images/sechub-logo.png" alt="sechub logo"></a></span> SecHub PDS Documentation</h1>
 <div class="details">
-<span id="revnumber"> PDS 0.33.0</span>
+<span id="revnumber"> PDS 0.38.0</span>
 </div>
 <div id="toc" class="toc2">
 <div id="toctitle">Table of contents</div>
@@ -786,7 +786,7 @@ build pipeline / contionus integration (CI) and helps to provide
 </tbody>
 </table>
 <div class="paragraph">
-<p>Documentation version: <code>PDS 0.33.0-pds-20221018082042</code></p>
+<p>Documentation version: <code>PDS 0.38.0-20230602134927</code></p>
 </div>
 <div class="paragraph">
 <p><strong>About PDS (Product Delegation Server)</strong></p>
@@ -863,7 +863,7 @@ need to provide a <code>ProductDelegationServer</code> (in short form <code>PDS<
 <p>a spring boot application which uses a network DB for providing cluster possibility</p>
 </li>
 <li>
-<p>a complete standalone application without runtime dependencies to sechub server (or its shared kernel)</p>
+<p>a complete standalone application without runtime dependencies to SecHub server (or its shared kernel)</p>
 </li>
 <li>
 <p>provides REST access</p>
@@ -957,7 +957,7 @@ but of course this applies to multiple clusters for different products as well</
 <div class="paragraph">
 <p>When talking about a NFS or a shared volume here, this is always meant to be a file system path.
 It&#8217;s important to mount a NFS at a local file path for the PDS server when using a shared volume.
-URLs are NOT supported - only filepathes. So you must mount your network file storage to a local file location!</p>
+URLs are NOT supported - only file paths. So you must mount your network file storage to a local file location!</p>
 </div>
 <div class="paragraph">
 <p>For example: a base path for a shared volume could look like: <code>/media/mounted-storage/</code></p>
@@ -1137,7 +1137,7 @@ In this case the way is exactly as shown in next picture:<br></p>
 <div class="ulist">
 <ul>
 <li>
-<p>The user uploads job data for a SecHub job and it is stored at sechub shared volume <em>(blue lines)</em>.</p>
+<p>The user uploads job data for a SecHub job and it is stored at SecHub shared volume <em>(blue lines)</em>.</p>
 </li>
 <li>
 <p>The storage path location for SecHub is <code>${sechubSharedVolumeBasePath}/jobstorage/${secHubJobUUID}/</code></p>
@@ -1382,7 +1382,7 @@ SecHub configuration, we already provided a <code>fileSystem</code> element insi
 </div>
 <div class="paragraph">
 <p>For source scans this a more convenient way and we wanted to keep this possiblity - also for
-backward compatibility with existing sechub configuration files.</p>
+backward compatibility with existing SecHub configuration files.</p>
 </div>
 <div class="paragraph">
 <p>So this is the reason, why <a href="#sechub-config-data-section">data</a> is contained inside <code><em>_data_</em></code>
@@ -1908,7 +1908,7 @@ For example: When using Kubernetes you normally would do this by just defining a
 <div class="ulist">
 <ul>
 <li>
-<p>Define executor at sechub server side - <strong>will be implemented with #148</strong></p>
+<p>Define executor on SecHub server side - <strong>will be implemented with #148</strong></p>
 </li>
 <li>
 <p>When your product uses sereco general report format your are done- <strong>will be implemented with #283</strong>
@@ -1919,7 +1919,7 @@ implementatiion</p>
 </div>
 </li>
 <li>
-<p>test via sechub client by start a new sechub job which shall use the product and verify results</p>
+<p>test via SecHub client by starting a new SecHub job which shall use the product and verify results</p>
 </li>
 </ul>
 </div>
@@ -2162,6 +2162,16 @@ PDS by SecHub will use</p>
 </thead>
 <tbody>
 <tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">pds.config.product.timeout.max.configurable.minutes</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">4320</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Set maximum configurable time in minutes for parameter: <code>pds.config.product.timeout.minutes</code>. The minimum time is not configurable. It is a fixed value of 1 minute(s).</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">pds.config.product.timeout.minutes</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">120</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Set maximum time a PDS will wait for a product before canceling execution automatically. This value can be overriden as a job parameter as well.</p></td>
+</tr>
+<tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">sechub.pds.config.execute.queue.max</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">50</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Set amount of maximum executed parts in queue for same time</p></td>
@@ -2178,8 +2188,8 @@ PDS by SecHub will use</p>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">sechub.pds.workspace.rootfolder</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">./</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Set pds workspace root folder path. Inside this path the sub directory <code>workspace</code> will be created.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">./workspace/</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Set PDS workspace root folder path. Each running PDS job will have its own temporary sub directory inside this folder.</p></td>
 </tr>
 </tbody>
 </table>
@@ -2386,6 +2396,26 @@ PDS by SecHub will use</p>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Defines the s3 bucket name</p></td>
 </tr>
 <tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">sechub.pds.storage.s3.connection.idle.max.milliseconds</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">60000</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">S3 client maximum idle time (in milliseconds) for a connection in the connection pool.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">sechub.pds.storage.s3.connection.idle.validate.milliseconds</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">5000</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">S3 client time (in milliseconds) a connection can be idle in the connection pool before it must be validated that it&#8217;s still open.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">sechub.pds.storage.s3.connection.max.poolsize</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">50</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">S3 client max connection pool size.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">sechub.pds.storage.s3.connection.ttl.milliseconds</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">-1</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">S3 client expiration time (in milliseconds) for a connection in the connection pool. -1 means deactivated</p></td>
+</tr>
+<tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">sechub.pds.storage.s3.endpoint</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">undefined</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Defines the s3 endpoint - e.g. <a href="https://play.min.io" class="bare">https://play.min.io</a></p></td>
@@ -2394,6 +2424,31 @@ PDS by SecHub will use</p>
 <td class="tableblock halign-left valign-top"><p class="tableblock">sechub.pds.storage.s3.secretkey</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">undefined</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Defines the secret key for used s3 bucket</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">sechub.pds.storage.s3.signer.override</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">AWSS3V4SignerType</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Can be used to override the default name of the signature algorithm used to sign requests.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">sechub.pds.storage.s3.timeout.connection.milliseconds</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">10000</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">S3 client timeout (in milliseconds) for creating new connections.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">sechub.pds.storage.s3.timeout.execution.milliseconds</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">0</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">S3 client timeout (in milliseconds) for execution. 0 means it is disabled.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">sechub.pds.storage.s3.timeout.request.milliseconds</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">0</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">S3 client timeout (in milliseconds) for a request. 0 means it is disabled.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">sechub.pds.storage.s3.timeout.socket.milliseconds</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">50000</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">S3 client timeout (in milliseconds) for reading from a connected socket.</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">sechub.pds.storage.sharedvolume.upload.dir</p></td>
@@ -2511,9 +2566,9 @@ PDS to Checmarx will use</p>
 <td class="tableblock halign-left valign-top"><p class="tableblock">When 'true', Checkmarx will do a full scan and not a delta scan.</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">pds.checkmarx.result.check.period.minutes</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">pds.checkmarx.result.check.period.milliseconds</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Optional</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The time period in minutes when the next check for Checkmarx resuls will be done. An example: If you define <code>3</code>,every 3 minutes PDS will check the current state of the job.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The time period in milliseconds when the next check for Checkmarx resuls will be done. An example: If you define <code>180000</code>,every 3 minutes (3*60*1000 milliseconds) PDS will check the current state of the job.</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">pds.checkmarx.result.check.timeout.minutes</p></td>
@@ -2646,7 +2701,10 @@ Must be <strong>unique</strong> for this product. Allowed characters are [a-zA-Z
                     {
                         <span class="key"><span class="delimiter">&quot;</span><span class="content">key</span><span class="delimiter">&quot;</span></span> : <span class="string"><span class="delimiter">&quot;</span><span class="content">product1.add.tipoftheday</span><span class="delimiter">&quot;</span></span>,
                         <span class="key"><span class="delimiter">&quot;</span><span class="content">description</span><span class="delimiter">&quot;</span></span> : <span class="string"><span class="delimiter">&quot;</span><span class="content">boolean as string, when 'true' we add always a tip of the day as info to results</span><span class="delimiter">&quot;</span></span>
-                    }  
+                    }, {
+                        <span class="key"><span class="delimiter">&quot;</span><span class="content">key</span><span class="delimiter">&quot;</span></span> : <span class="string"><span class="delimiter">&quot;</span><span class="content">pds.config.supported.datatypes</span><span class="delimiter">&quot;</span></span>, <i class="conum" data-value="11"></i><b>(11)</b>
+                        <span class="key"><span class="delimiter">&quot;</span><span class="content">default</span><span class="delimiter">&quot;</span></span> : <span class="string"><span class="delimiter">&quot;</span><span class="content">source</span><span class="delimiter">&quot;</span></span> 
+                    } 
                 ]
             }
             
@@ -2655,8 +2713,15 @@ Must be <strong>unique</strong> for this product. Allowed characters are [a-zA-Z
         {
             <span class="key"><span class="delimiter">&quot;</span><span class="content">id</span><span class="delimiter">&quot;</span></span> : <span class="string"><span class="delimiter">&quot;</span><span class="content">PRODUCT_2</span><span class="delimiter">&quot;</span></span>,
             <span class="key"><span class="delimiter">&quot;</span><span class="content">path</span><span class="delimiter">&quot;</span></span> : <span class="string"><span class="delimiter">&quot;</span><span class="content">/srv/security/scanner2.sh</span><span class="delimiter">&quot;</span></span>,
-            <span class="key"><span class="delimiter">&quot;</span><span class="content">scanType</span><span class="delimiter">&quot;</span></span> : <span class="string"><span class="delimiter">&quot;</span><span class="content">infraScan</span><span class="delimiter">&quot;</span></span> ,
-            <span class="key"><span class="delimiter">&quot;</span><span class="content">extractUploads</span><span class="delimiter">&quot;</span></span> : <span class="value">false</span> <i class="conum" data-value="11"></i><b>(11)</b>
+            <span class="key"><span class="delimiter">&quot;</span><span class="content">scanType</span><span class="delimiter">&quot;</span></span> : <span class="string"><span class="delimiter">&quot;</span><span class="content">infraScan</span><span class="delimiter">&quot;</span></span>,
+            <span class="key"><span class="delimiter">&quot;</span><span class="content">parameters</span><span class="delimiter">&quot;</span></span> : {
+                <span class="key"><span class="delimiter">&quot;</span><span class="content">mandatory</span><span class="delimiter">&quot;</span></span> : [
+                    {
+                        <span class="key"><span class="delimiter">&quot;</span><span class="content">key</span><span class="delimiter">&quot;</span></span> : <span class="string"><span class="delimiter">&quot;</span><span class="content">pds.config.supported.datatypes</span><span class="delimiter">&quot;</span></span>, <i class="conum" data-value="12"></i><b>(12)</b>
+                        <span class="key"><span class="delimiter">&quot;</span><span class="content">default</span><span class="delimiter">&quot;</span></span> : <span class="string"><span class="delimiter">&quot;</span><span class="content">none</span><span class="delimiter">&quot;</span></span> 
+                    }  
+                ]
+            }
         }
     ]
 }</code></pre>
@@ -2723,7 +2788,7 @@ SecHub will</td>
 </tr>
 <tr>
 <td><i class="conum" data-value="9"></i><b>9</b></td>
-<td>a 'description' of the 'key'. Should contain information</td>
+<td>a description of the <code>key</code> or the used <code>default</code> setup. This is optional and only for information/better understanding.</td>
 </tr>
 <tr>
 <td><i class="conum" data-value="10"></i><b>10</b></td>
@@ -2731,23 +2796,17 @@ SecHub will</td>
 </tr>
 <tr>
 <td><i class="conum" data-value="11"></i><b>11</b></td>
-<td>defines if <code>PDS</code> will automatically extract archive files - default is <code>true</code>. When <code>true</code> the content
-of <code>zip</code> source files will be available inside <code>$PDS_JOB_EXTRACTED_SOURCES_FOLDER</code>, <code>tar</code> files containing binaries can be found at <code>$PDS_JOB_EXTRACTED_BINARIES_FOLDER</code>.
+<td>By defining supported data type <code>source</code> we ensure sources are downloaded from storage and automatically extracted.
+If the extraction target folder is empty (e.g. filtering or no source available) the launcher script will NOT be called.<br>
+Valid entries are <code>source</code>, <code>binary</code>, <code>none</code> or a combination of them as a comma separated list. When not defined as a parameter, the
+PDS configuration default will be used. If available, the content of <code>zip</code> source files will be extracted into <code>$PDS_JOB_EXTRACTED_SOURCES_FOLDER</code>,
+<code>tar</code> archive content containing binaries can be found at <code>$PDS_JOB_EXTRACTED_BINARIES_FOLDER</code>.<br>
 The extraction will automatically filter and transform archive content as described at <a href="#data-structure-tar-and-zip-files">data structure definition</a>.
 Also the environment variables <code>$PDS_JOB_HAS_EXTRACTED_SOURCES</code> and <code>$PDS_JOB_HAS_EXTRACTED_BINARIES</code> are automatically defined.</td>
 </tr>
-</table>
-</div>
-<div class="admonitionblock note">
-<table>
 <tr>
-<td class="icon">
-<i class="fa icon-note" title="Note"></i>
-</td>
-<td class="content">
-When no SecHub configuration model is defined for the <code>PDS</code> job, the transformation and filtering described at &lt;11&gt; will accept all binaries and all sources which are uploaded.
-      But this can happen only when PDS is used without SecHub - normally only for testing PDS solutions.
-</td>
+<td><i class="conum" data-value="12"></i><b>12</b></td>
+<td>Using <code>none</code> will not try to download any ZIP or TAR from storage but does call the caller script even when no data is available.</td>
 </tr>
 </table>
 </div>
@@ -2901,7 +2960,7 @@ Mandatory parts are always present, optional ones can be empty.</p>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">pds.productexecutor.forbidden.targettype.internet</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">
-When this key is set to true, than this pds instance does not scan INTERNET!
+When this key is set to true, then this PDS instance does not scan INTERNET!
 </p></td>
 <td class="tableblock halign-left valign-top"><div class="content"><div class="ulist">
 <ul>
@@ -2914,7 +2973,7 @@ When this key is set to true, than this pds instance does not scan INTERNET!
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">pds.productexecutor.forbidden.targettype.intranet</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">
-When this key is set to true, than this pds instance does not scan INTRANET!
+When this key is set to true, then this PDS instance does not scan INTRANET!
 </p></td>
 <td class="tableblock halign-left valign-top"><div class="content"><div class="ulist">
 <ul>
@@ -3001,9 +3060,9 @@ Contains the target type (depending on scan type) and will be just an additional
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">pds.config.use.sechub.storage</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">
-When 'true' the SecHub storage will be reused by PDS server. In this case SecHub will not upload job data to PDS.
-But it's crucial to have same root storage setup on PDS server side (e.g. same s3 bucket for S3 storage, or same NFS base for shared volumes).
-When not `true` or not defined, pds will use its own storage locations
+When 'true' the SecHub storage will be reused by the PDS server. In this case SecHub will not upload job data to PDS.
+But it's crucial to have the same root storage setup on the PDS server side (e.g. same s3 bucket for S3 storage, or same NFS base for shared volumes).
+When not 'true' or not defined, PDS will use its own storage locations
 </p></td>
 <td class="tableblock halign-left valign-top"><div class="content"><div class="ulist">
 <ul>
@@ -3051,9 +3110,11 @@ This contains the sechub storage location when sechub storage shall be used. So 
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">pds.config.filefilter.includes</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">
-This contains a comma separated list of path patterns for file includes. These patterns can contain wildcards. Matching will be done case insensitive!For example: `*.go,*.html, test1.txt` would include every go file, every HTML file and files named `test1.txt`.</p>
-<p class="tableblock">When nothing defined, every content is accepted as include.
-Every file which is matched by one of the patterns will be included - except those which are explicitly excluded.</p></td>
+This contains a comma separated list of path patterns for file includes. These patterns can contain wildcards. Matching will be done case insensitive!
+Every file which is matched by one of the patterns will be included - except those which are explicitly excluded.
+When nothing is defined, then every content is accepted for include.</p>
+<p class="tableblock">For example: '*.go,*.html, test1.txt' would include every Go file, every HTML file and files named 'test1.txt'.
+</p></td>
 <td class="tableblock halign-left valign-top"><div class="content"><div class="ulist">
 <ul>
 <li>
@@ -3082,10 +3143,63 @@ When 'true' the PDS adapter script used by the job will have the information and
 </div></div></td>
 </tr>
 <tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">pds.config.supported.datatypes</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">
+Can be SOURCE, BINARY, NONE or a combination as a comma separated list. This data should normally not be defined via a default value of an optional PDS configuration parameter.
+</p></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="ulist">
+<ul>
+<li>
+<p>Optional</p>
+</li>
+</ul>
+</div></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">pds.config.jobstorage.read.resilience.retries.max</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">
+Defines the maximum amount of retries done when a job storage read access is failing
+</p></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="ulist">
+<ul>
+<li>
+<p>Optional</p>
+</li>
+</ul>
+</div></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">pds.config.jobstorage.read.resilience.retry.wait.seconds</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">
+Defines the time to wait in seconds before the next retry is done (when it comes to storage READ problems)
+</p></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="ulist">
+<ul>
+<li>
+<p>Optional</p>
+</li>
+</ul>
+</div></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">pds.config.product.timeout.minutes</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">
+Maximum allowed time in minutes, before a product will time out - this means that the launcher script is automatically canceled by PDS
+</p></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="ulist">
+<ul>
+<li>
+<p>Optional</p>
+</li>
+</ul>
+</div></div></td>
+</tr>
+<tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">pds.config.filefilter.excludes</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">
-This contains a comma separated list of path patterns for file excludes. These patterns can contain wildcards. Matching will be done case insensitive!For example: `*.go,*.html, test1.txt` would excluded every go file, every HTML file and files named `test1.txt`.</p>
-<p class="tableblock">When empty none of the files will be excluded. The exclude operation will be done AFTER the include file filtering has happend.
+This contains a comma separated list of path patterns for file excludes. These patterns can contain wildcards. Matching will be done case insensitive!
+When empty, then nothing will be excluded. The exclude operation will be done AFTER the include file filtering.</p>
+<p class="tableblock">For example: '*.go,*.html, test1.txt' would exclude every Go file, every HTML file and files named 'test1.txt'.
 </p></td>
 <td class="tableblock halign-left valign-top"><div class="content"><div class="ulist">
 <ul>
@@ -3098,7 +3212,7 @@ This contains a comma separated list of path patterns for file excludes. These p
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">pds.scan.target.url</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">
-This contains the Target URL for current scan i.e webscan. Will not be set in all scan types. E.g. for a code scan this environment variable will not be available
+This contains the target URL for the current scan (i.e. webscan). Will not be set in all scan types. E.g. for a code scan this environment variable will not be available
 </p></td>
 <td class="tableblock halign-left valign-top"><div class="content"><div class="ulist">
 <ul>
@@ -3110,6 +3224,25 @@ This contains the Target URL for current scan i.e webscan. Will not be set in al
 </li>
 <li>
 <p>Optional</p>
+</li>
+</ul>
+</div></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">pds.debug.enabled</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">
+When 'true', the PDS instance will show up some debug information on scan time. The output level of debugging information differs on PDS solutions/launcher scripts.
+</p></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="ulist">
+<ul>
+<li>
+<p>Available as ENV variable <code>PDS_DEBUG_ENABLED</code> inside launcher script.</p>
+</li>
+<li>
+<p>Optional</p>
+</li>
+<li>
+<p>Default is "false"</p>
 </li>
 </ul>
 </div></div></td>
@@ -3624,14 +3757,14 @@ have to use exact same S3 bucket and provide PDS servers with correct S3 credent
 <td class="tableblock halign-left valign-top"><p class="tableblock">service call</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">ROLE_SUPERADMIN, ROLE_USER</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">2</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">trigger change to execution service and marks job status as cancel requested</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">marks job status as cancel requested</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">2</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">service call</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">ROLE_SUPERADMIN, ROLE_USER</p></td>
 <td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">marks job status as cancel requested</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">trigger change to execution service and marks job status as cancel requested</p></td>
 </tr>
 </tbody>
 </table>
@@ -4495,7 +4628,7 @@ This will the process hard!
 </div>
 <div id="footer">
 <div id="footer-text">
- PDS 0.33.0<br>
+ PDS 0.38.0<br>
 </div>
 </div>
 </body>

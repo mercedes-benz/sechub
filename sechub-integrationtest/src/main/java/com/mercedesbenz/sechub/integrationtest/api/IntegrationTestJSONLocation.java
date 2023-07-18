@@ -35,7 +35,9 @@ public enum IntegrationTestJSONLocation {
 
     CLIENT_JSON_WEBSCAN_PRODUCTFAILURE_ZERO_WAIT("sechub-integrationtest-webscanconfig-scenario3-productfailure.json"),
 
-    CLIENT_JSON_WEBSCAN_RED_ZERO_WAIT("sechub-integrationtest-webscanconfig-red-result.json");
+    CLIENT_JSON_WEBSCAN_RED_ZERO_WAIT("sechub-integrationtest-webscanconfig-red-result.json"),
+
+    CLIENT_JSON_SECRET_SCAN_YELLOW_ZERO_WAIT("sechub-integrationtest-secretscanconfig.json");
 
     private String path;
 

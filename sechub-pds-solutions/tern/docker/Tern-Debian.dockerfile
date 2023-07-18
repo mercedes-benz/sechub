@@ -9,8 +9,8 @@ LABEL org.opencontainers.image.title="SecHub Tern+PDS Image"
 LABEL org.opencontainers.image.description="A container which combines Tern with the SecHub Product Delegation Server (PDS)"
 LABEL maintainer="SecHub FOSS Team"
 
-ARG TERN_VERSION="2.11.0"
-ARG SCANCODE_VERSION="31.2.4"
+ARG TERN_VERSION="2.12.0"
+ARG SCANCODE_VERSION="32.0.4"
 
 # execute commands as root
 USER root

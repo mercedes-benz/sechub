@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 
 [[section-db-configuration]]
-==== Database configuration 
+==== Database configuration
 ===== PostgreSQL
 First of all, install a PostgreSQL database.
 
@@ -20,7 +20,7 @@ POSTGRES_DB_PASSWORD=a-very-strong-password...
 
 [[section-general-configuration]]
 ==== General configuration
-{sechub} can be configured  by keys on server startup.
+{sechub} can be configured by keys on server startup.
 Using the spring `@Value` annotation we are able to
 use these keys as Java system properties but also as environment entries.
 

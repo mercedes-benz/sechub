@@ -8,7 +8,7 @@ import org.zaproxy.clientapi.core.ClientApi;
 import org.zaproxy.clientapi.core.ClientApiException;
 
 import com.mercedesbenz.sechub.commons.model.login.BasicLoginConfiguration;
-import com.mercedesbenz.sechub.owaspzapwrapper.config.OwaspZapScanConfiguration;
+import com.mercedesbenz.sechub.owaspzapwrapper.config.OwaspZapScanContext;
 import com.mercedesbenz.sechub.owaspzapwrapper.config.auth.SessionManagementType;
 
 public class HTTPBasicAuthScan extends AbstractAuthScan {
@@ -17,13 +17,13 @@ public class HTTPBasicAuthScan extends AbstractAuthScan {
 
     private static final Logger LOG = LoggerFactory.getLogger(HTTPBasicAuthScan.class);
 
-    public HTTPBasicAuthScan(ClientApi clientApi, OwaspZapScanConfiguration scanConfig) {
-        super(clientApi, scanConfig);
+    public HTTPBasicAuthScan(ClientApi clientApi, OwaspZapScanContext scanContext) {
+        super(clientApi, scanContext);
     }
 
     @Override
     public void init() throws ClientApiException {
-        this.basicLoginConfiguration = this.scanConfig.getSecHubWebScanConfiguration().getLogin().get().getBasic().get();
+        this.basicLoginConfiguration = this.scanContext.getSecHubWebScanConfiguration().getLogin().get().getBasic().get();
         initAuthenticationMethod();
         initScanUser();
 
@@ -34,15 +34,15 @@ public class HTTPBasicAuthScan extends AbstractAuthScan {
         if (basicLoginConfiguration.getRealm().isPresent()) {
             realm = basicLoginConfiguration.getRealm().get();
         }
-        String port = Integer.toString(scanConfig.getTargetUri().getPort());
+        String port = Integer.toString(scanContext.getTargetUrl().getPort());
         /* @formatter:off */
 		StringBuilder authMethodConfigParams = new StringBuilder();
-		authMethodConfigParams.append("hostname=").append(urlEncodeUTF8(scanConfig.getTargetUri().getHost()))
+		authMethodConfigParams.append("hostname=").append(urlEncodeUTF8(scanContext.getTargetUrl().getHost()))
 							  .append("&realm=").append(urlEncodeUTF8(realm))
 							  .append("&port=").append(urlEncodeUTF8(port));
 		/* @formatter:on */
-        LOG.info("For scan {}: Setting authentication.", scanConfig.getContextName());
-        String authMethodName = scanConfig.getAuthenticationType().getOwaspZapAuthenticationMethod();
+        LOG.info("For scan {}: Setting authentication.", scanContext.getContextName());
+        String authMethodName = scanContext.getAuthenticationType().getOwaspZapAuthenticationMethod();
         clientApi.authentication.setAuthenticationMethod(contextId, authMethodName, authMethodConfigParams.toString());
 
         String methodName = SessionManagementType.HTTP_AUTH_SESSION_MANAGEMENT.getOwaspZapSessionManagementMethod();
@@ -66,7 +66,7 @@ public class HTTPBasicAuthScan extends AbstractAuthScan {
 								   .append("&password=").append(urlEncodeUTF8(password));
 		/* @formatter:on */
 
-        LOG.info("For scan {}: Setting up user.", scanConfig.getContextName());
+        LOG.info("For scan {}: Setting up user.", scanContext.getContextName());
         clientApi.users.setAuthenticationCredentials(contextId, userId, authCredentialsConfigParams.toString());
         String enabled = "true";
         clientApi.users.setUserEnabled(contextId, userId, enabled);

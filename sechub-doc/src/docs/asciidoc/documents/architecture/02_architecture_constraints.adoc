@@ -41,7 +41,6 @@ much effort/impact.
 |===
 |Domain|Table|Description
 | SCHEDULE | SCHEDULE_SECHUBJOB| Represents a SecHub Job instance
-| SCHEDULE | BATCH_xxx         | *Exception*: done by spring batch framework. Those batch operations shall only be accessed by schedule domain
 | SCAN     | SCAN_RESULT       | Contains the collected scan result from all scan product. Shall represent entity ScanResult
 | SCAN     | SCAN_DATA         | Does contain (intermediate) information from job scans etc.
 | ...      | ...               | ...

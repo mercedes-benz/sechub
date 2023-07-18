@@ -36,11 +36,13 @@ def buildVersionFiles(){
     def versionCommitTags = commitTags.findAll {it.name.startsWith("v")}
 
     // We use "v${major}.${minor}.${hotfix}-${type}" pattern for tag names
-    def serverVersionCommitTag = versionCommitTags.find{ it.name.endsWith("-server") }
     def clientVersionCommitTag = versionCommitTags.find{ it.name.endsWith("-client") }
+    def librariesVersionCommitTag = versionCommitTags.find{ it.name.endsWith("-libraries") }
+    def checkmarxWrapperVersionCommitTag = versionCommitTags.find{ it.name.endsWith("-checkmarx-wrapper") }
+    def owaspzapWrapperVersionCommitTag = versionCommitTags.find{ it.name.endsWith("-owaspzap-wrapper") }
     def pdsVersionCommitTag = versionCommitTags.find{ it.name.endsWith("-pds") }
     def pdsToolsVersionCommitTag = versionCommitTags.find{ it.name.endsWith("-pds-tools") }
-    def librariesVersionCommitTag = versionCommitTags.find{ it.name.endsWith("-libraries") }
+    def serverVersionCommitTag = versionCommitTags.find{ it.name.endsWith("-server") }
 
     def unstagedChanges = git.status().unstaged
     def stagedChanges = git.status().staged
@@ -56,9 +58,9 @@ def buildVersionFiles(){
 
     // write version code for go client
     String clientGoVersionTemplate = new File('./sechub-cli/src/mercedes-benz.com/sechub/cli/version.go.template').getText('UTF-8')
-    
+
     def clientVersionInfo = VersionData.defineVersion("Client",buildVersionString(clientVersionCommitTag, hasChanged,buildNumber))
-    
+
     String clientGoVersionCode = clientGoVersionTemplate.replaceAll("__version__",clientVersionInfo.getFullVersion())
     def clientVersionFile = new File('./sechub-cli/src/mercedes-benz.com/sechub/cli/version.go')
     clientVersionFile.write(clientGoVersionCode)
@@ -71,7 +73,7 @@ def buildVersionFiles(){
     // - Server
     // ------------------------
     def serverVersionInfo =  VersionData.defineVersion("Server",buildVersionString(serverVersionCommitTag, hasChanged,buildNumber))
-    
+
      /* write version info also as asciidoc file*/
     def serverVersionAsciiDocFile = new File('./sechub-doc/src/docs/asciidoc/documents/gen/server-version.adoc')
     serverVersionAsciiDocFile.write("// SPDX-License-Identifier: MIT\n:revnumber: Server "+serverVersionInfo.getShortVersion()+"\n:longrevnumber: Server "+serverVersionInfo.getFullVersion()+"\n")
@@ -83,7 +85,7 @@ def buildVersionFiles(){
      /* write version info also as asciidoc file*/
     def pdsVersionAsciiDocFile = new File('./sechub-doc/src/docs/asciidoc/documents/gen/pds-version.adoc')
     pdsVersionAsciiDocFile.write("// SPDX-License-Identifier: MIT\n:revnumber: PDS "+pdsVersionInfo.getShortVersion()+"\n:longrevnumber: PDS "+pdsVersionInfo.getFullVersion()+"\n")
-    
+
     // ------------------------
     // - PDS tools
     // ------------------------
@@ -93,18 +95,30 @@ def buildVersionFiles(){
     // - Libraries
     // ------------------------
     def librariesVersionInfo =  VersionData.defineVersion("Libraries",buildVersionString(librariesVersionCommitTag, hasChanged,buildNumber))
-    
+
+    // ------------------------
+    // - Checkmarx wrapper
+    // ------------------------
+    def checkmarxWrapperVersionInfo = VersionData.defineVersion("Checkmarx Wrapper",buildVersionString(checkmarxWrapperVersionCommitTag, hasChanged, buildNumber))
+
+    // ------------------------
+    // - OWASP-ZAP wrapper
+    // ------------------------
+    def owaspzapWrapperVersionInfo = VersionData.defineVersion("OWASP-ZAP Wrapper",buildVersionString(owaspzapWrapperVersionCommitTag, hasChanged, buildNumber))
+
 
     def stop = new Date()
 
-    println(serverVersionInfo.describe());
     println(clientVersionInfo.describe());
+    println(serverVersionInfo.describe());
     println(pdsVersionInfo.describe())
-    println(librariesVersionInfo.describe())
     println(pdsToolsVersionInfo.describe())
-    
+    println(librariesVersionInfo.describe())
+    println(checkmarxWrapperVersionInfo.describe())
+    println(owaspzapWrapperVersionInfo.describe())
+
     TimeDuration td = TimeCategory.minus( stop, start )
-    println("- Time elapsed to build versions:"+td)
+    println("\nTime elapsed to build versions: "+td)
 }
 
 /**
@@ -145,8 +159,13 @@ def buildVersionString(commitTag, boolean hasChanged, buildNumber){
     } else {
         calcversion = commitTag.name - 'v'
         // remove identifiers for server, client, ..
-        calcversion=calcversion-"-server"
         calcversion=calcversion-"-client"
+        calcversion=calcversion-"-libraries"
+        calcversion=calcversion-"-pds-tools"
+        calcversion=calcversion-"-pds"
+        calcversion=calcversion-"-server"
+        calcversion=calcversion-"-checkmarx-wrapper"
+        calcversion=calcversion-"-owaspzap-wrapper"
 
     }
     if (hasChanged){
@@ -184,8 +203,8 @@ def getLocalBuildNr() {
  */
 task assertReleaseable {
     group = 'sechub'
-    
-    description = '''Asserts calculated versions do not contain a dirty flag inside. 
+
+    description = '''Asserts calculated versions do not contain a dirty flag inside.
                    (This should be called in releases after all artifact creations has nothing changed)'''
 
     doLast {

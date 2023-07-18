@@ -12,7 +12,6 @@ import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
 import com.mercedesbenz.sechub.commons.model.SecHubRuntimeException;
-import com.mercedesbenz.sechub.domain.schedule.batch.SchedulerCancelBatchJobService;
 import com.mercedesbenz.sechub.domain.schedule.job.ScheduleSecHubJob;
 import com.mercedesbenz.sechub.domain.schedule.job.SecHubJobRepository;
 import com.mercedesbenz.sechub.sharedkernel.SecHubEnvironment;
@@ -61,9 +60,6 @@ public class SchedulerRestartJobService {
 
     @Autowired
     ScheduleAssertService scheduleAssertService;
-
-    @Autowired
-    SchedulerCancelBatchJobService schedulerCancelJobService;
 
     /**
      * This service will restart given JOB. There is NO check if current user has
@@ -115,11 +111,6 @@ public class SchedulerRestartJobService {
             throw new AlreadyExistsException("Job has already finished - restart not necessary");
         }
 
-        /*
-         * when we have still running batch jobs we must terminate them as well
-         */
-        schedulerCancelJobService.stopAndAbandonAllRunningBatchJobsForSechubJobUUID(jobUUID);
-
         if (hard) {
             sendPurgeJobResultsSynchronousRequest(job);
         }
@@ -163,7 +154,7 @@ public class SchedulerRestartJobService {
     private void sendPurgeJobResultsSynchronousRequest(ScheduleSecHubJob secHubJob) {
         DomainMessage request = DomainMessageFactory.createEmptyRequest(MessageID.REQUEST_PURGE_JOB_RESULTS);
 
-        request.set(MessageDataKeys.SECHUB_UUID, secHubJob.getUUID());
+        request.set(MessageDataKeys.SECHUB_JOB_UUID, secHubJob.getUUID());
         request.set(MessageDataKeys.ENVIRONMENT_BASE_URL, sechubEnvironment.getServerBaseUrl());
         DomainMessageSynchronousResult result = eventBus.sendSynchron(request);
         if (result.hasFailed()) {

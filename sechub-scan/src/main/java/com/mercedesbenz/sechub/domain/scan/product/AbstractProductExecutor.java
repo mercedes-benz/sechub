@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import com.mercedesbenz.sechub.adapter.AdapterExecutionResult;
 import com.mercedesbenz.sechub.adapter.mock.MockDataIdentifierFactory;
+import com.mercedesbenz.sechub.commons.core.resilience.ResilientActionExecutor;
 import com.mercedesbenz.sechub.commons.model.ScanType;
 import com.mercedesbenz.sechub.commons.model.SecHubConfigurationModel;
 import com.mercedesbenz.sechub.commons.model.SecHubMessagesList;
@@ -25,9 +26,9 @@ import com.mercedesbenz.sechub.domain.scan.SecHubExecutionContext;
 import com.mercedesbenz.sechub.domain.scan.SecHubExecutionException;
 import com.mercedesbenz.sechub.domain.scan.SecHubExecutionHistoryElement;
 import com.mercedesbenz.sechub.domain.scan.resolve.NetworkTargetResolver;
+import com.mercedesbenz.sechub.sharedkernel.ProductIdentifier;
 import com.mercedesbenz.sechub.sharedkernel.UUIDTraceLogID;
 import com.mercedesbenz.sechub.sharedkernel.configuration.SecHubConfiguration;
-import com.mercedesbenz.sechub.sharedkernel.resilience.ResilientActionExecutor;
 
 /**
  * An abstract product executor implementation
@@ -247,6 +248,11 @@ public abstract class AbstractProductExecutor implements ProductExecutor {
             return config.getWebScan().isPresent();
         case LICENSE_SCAN:
             return config.getLicenseScan().isPresent();
+        case SECRET_SCAN:
+            return config.getSecretScan().isPresent();
+        case ANALYTICS:
+            // will be handled inisde isExecutionNecessary() of executor implementation
+            return true;
         case UNKNOWN:
             return false;
         default:

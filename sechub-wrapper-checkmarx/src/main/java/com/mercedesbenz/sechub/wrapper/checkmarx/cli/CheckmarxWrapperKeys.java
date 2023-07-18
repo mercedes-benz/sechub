@@ -46,11 +46,11 @@ public enum CheckmarxWrapperKeys implements PDSSolutionVariableKey {
             PDSSolutionVariableType.OPTIONAL_JOB_PARAMETER,
             "When 'true', Checkmarx will do a full scan and not a delta scan."),
 
-    CHECKMARX_RESULT_CHECK_PERIOD_MINUTES(
-            CheckmarxWrapperKeyConstants.KEY_PDS_CHECKMARX_RESULT_CHECK_PERIOD_MINUTES,
+    CHECKMARX_RESULT_CHECK_PERIOD_MILLISECONDS(
+            CheckmarxWrapperKeyConstants.KEY_PDS_CHECKMARX_RESULT_CHECK_PERIOD_MILLISECONDS,
             PDSSolutionVariableType.OPTIONAL_JOB_PARAMETER,
-            "The time period in minutes when the next check for Checkmarx resuls will be done. An example: If you define `3`,"
-            + "every 3 minutes PDS will check the current state of the job."
+            "The time period in milliseconds when the next check for Checkmarx resuls will be done. An example: If you define `180000`,"
+            + "every 3 minutes (3*60*1000 milliseconds) PDS will check the current state of the job."
             ),
 
     CHECKMARX_RESULT_CHECK_TIMOUT_MINUTES(

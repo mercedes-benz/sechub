@@ -68,6 +68,12 @@ public class SecHubConfigurationModelValidationResult {
             return message;
         }
 
+        @Override
+        public String toString() {
+            return "SecHubConfigurationModelValidationErrorData [" + (error != null ? "error=" + error + ", " : "")
+                    + (message != null ? "message=" + message : "") + "]";
+        }
+
     }
 
 }

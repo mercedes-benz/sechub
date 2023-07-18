@@ -14,3 +14,5 @@
 
 // let us include the config so our variables are always in IDE previews available (eclipse, intellij)
 include::{asciidoctorconfigdir}/src/docs/asciidoc/documents/config.adoc[]
+
+:imagesdir: {asciidoctorconfigdir}/src/docs/asciidoc/images

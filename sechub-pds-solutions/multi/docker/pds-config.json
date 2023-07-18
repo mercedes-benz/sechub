@@ -1,79 +1,78 @@
 {
-    "apiVersion" : "1.0",
-    "serverId" : "MULTI_TOOL_CLUSTER", 
-
-    "products" : [
-        {
-            "id" : "PDS_BANDIT",
-            "path" : "/scripts/bandit.sh",
-            "scanType" : "codeScan",
-            "description" : "Runs Bandit. Bandit is a static analysis tool for Python3.",
-            "parameters" : {
-                "optional" : [
-                    {
-                        "key" : "bandit.severity",
-                        "description" : "Limit the result to findings above a severity of LOW, MEDIUM and HIGH."
-                    },
-                    {
-                        "key" : "bandit.confidence",
-                        "description" : "Limit the result to findings above a confidence of LOW, MEDIUM and HIGH."
-                    }
-                ]
-            }
-        },
-        {
-            "id" : "PDS_FLAWFINDER",
-            "path" : "/scripts/flawfinder.sh",
-            "scanType" : "codeScan",
-            "description" : "Runs Flawfinder. Flawfinder is a static analysis tool for C/C++."
-        },
-        {
-            "id" : "PDS_MOBSFSCAN",
-            "path" : "/scripts/mobsfscan.sh",
-            "scanType" : "codeScan",
-            "description" : "Runs mobsfscan. mobsfscan is a static analysis tool for mobile applications. It can scan mobile applications written in Java, Kotlin, Swift and Objective-C"
-        },
-        {
-            "id" : "PDS_NJSSCAN",
-            "path" : "/scripts/njsscan.sh",
-            "scanType" : "codeScan",
-            "description" : "Runs njsscan. njsscan is a static analysis tool for Node.js applications. It scans only JavaScript Node.js applications."
-        },
-        {
-            "id" : "PDS_BANDIT_MOCK",
-            "path" : "/scripts/bandit_mock.sh",
-            "scanType" : "codeScan",
-            "description" : "Runs Bandit mock. It returns a fixed result file.",
-            "parameters" : {
-                "optional" : [
-                    {
-                        "key" : "bandit.severity",
-                        "description" : "Limit the result to findings above a severity of LOW, MEDIUM and HIGH."
-                    },
-                    {
-                        "key" : "bandit.confidence",
-                        "description" : "Limit the result to findings above a confidence of LOW, MEDIUM and HIGH."
-                    }
-                ]
-            }
-        },
-        {
-            "id" : "PDS_FLAWFINDER_MOCK",
-            "path" : "/scripts/flawfinder_mock.sh",
-            "scanType" : "codeScan",
-            "description" : "Runs Flawfinder mock. It returns a fixed result file."
-        },
-        {
-            "id" : "PDS_MOBSFSCAN_MOCK",
-            "path" : "/scripts/mobsfscan_mock.sh",
-            "scanType" : "codeScan",
-            "description" : "Runs mobsfscan mock. It returns a fixed result file."
-        },
-        {
-            "id" : "PDS_NJSSCAN_MOCK",
-            "path" : "/scripts/njsscan_mock.sh",
-            "scanType" : "codeScan",
-            "description" : "Runs sjsscan mock. It returns a fixed result file."
-        }
-    ]
+  "apiVersion": "1.0",
+  "serverId": "MULTI_TOOL_CLUSTER",
+  "products": [
+    {
+      "id": "PDS_BANDIT",
+      "path": "/pds/scripts/bandit.sh",
+      "scanType": "codeScan",
+      "description": "Runs Bandit. Bandit is a static analysis tool for Python3.",
+      "parameters": {
+        "optional": [
+          {
+            "key": "bandit.severity",
+            "description": "Limit the result to findings above a severity of LOW, MEDIUM and HIGH."
+          },
+          {
+            "key": "bandit.confidence",
+            "description": "Limit the result to findings above a confidence of LOW, MEDIUM and HIGH."
+          }
+        ]
+      }
+    },
+    {
+      "id": "PDS_FLAWFINDER",
+      "path": "/pds/scripts/flawfinder.sh",
+      "scanType": "codeScan",
+      "description": "Runs Flawfinder. Flawfinder is a static analysis tool for C/C++."
+    },
+    {
+      "id": "PDS_MOBSFSCAN",
+      "path": "/pds/scripts/mobsfscan.sh",
+      "scanType": "codeScan",
+      "description": "Runs mobsfscan. mobsfscan is a static analysis tool for mobile applications. It can scan mobile applications written in Java, Kotlin, Swift and Objective-C"
+    },
+    {
+      "id": "PDS_NJSSCAN",
+      "path": "/pds/scripts/njsscan.sh",
+      "scanType": "codeScan",
+      "description": "Runs njsscan. njsscan is a static analysis tool for Node.js applications. It scans only JavaScript Node.js applications."
+    },
+    {
+      "id": "PDS_BANDIT_MOCK",
+      "path": "/pds/scripts/bandit_mock.sh",
+      "scanType": "codeScan",
+      "description": "Runs Bandit mock. It returns a fixed result file.",
+      "parameters": {
+        "optional": [
+          {
+            "key": "bandit.severity",
+            "description": "Limit the result to findings above a severity of LOW, MEDIUM and HIGH."
+          },
+          {
+            "key": "bandit.confidence",
+            "description": "Limit the result to findings above a confidence of LOW, MEDIUM and HIGH."
+          }
+        ]
+      }
+    },
+    {
+      "id": "PDS_FLAWFINDER_MOCK",
+      "path": "/pds/scripts/flawfinder_mock.sh",
+      "scanType": "codeScan",
+      "description": "Runs Flawfinder mock. It returns a fixed result file."
+    },
+    {
+      "id": "PDS_MOBSFSCAN_MOCK",
+      "path": "/pds/scripts/mobsfscan_mock.sh",
+      "scanType": "codeScan",
+      "description": "Runs mobsfscan mock. It returns a fixed result file."
+    },
+    {
+      "id": "PDS_NJSSCAN_MOCK",
+      "path": "/pds/scripts/njsscan_mock.sh",
+      "scanType": "codeScan",
+      "description": "Runs sjsscan mock. It returns a fixed result file."
+    }
+  ]
 }

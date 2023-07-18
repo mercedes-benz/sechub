@@ -9,34 +9,30 @@ import java.util.Optional;
 import java.util.UUID;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.transaction.annotation.Transactional;
 
-public interface SecHubJobRepository extends JpaRepository<ScheduleSecHubJob, UUID>, SecHubJobRepositoryCustom {
+import com.mercedesbenz.sechub.domain.schedule.ExecutionState;
+
+public interface SecHubJobRepository extends JpaRepository<ScheduleSecHubJob, UUID>, SecHubJobRepositoryCustom, JpaSpecificationExecutor<ScheduleSecHubJob> {
 
     @Query(value = "SELECT * FROM " + TABLE_NAME + " where " + COLUMN_PROJECT_ID + " = ?1 and " + COLUMN_UUID + " = ?2", nativeQuery = true)
     public Optional<ScheduleSecHubJob> findForProject(String projectId, UUID jobUUID);
-
-    @Query(value = "SELECT COUNT(t) FROM " + ScheduleSecHubJob.CLASS_NAME + " t where t." + PROPERTY_STARTED + " is NOT NULL and t." + PROPERTY_ENDED
-            + " is NULL", nativeQuery = false)
-    public long countRunningJobs();
 
     @Query(value = "SELECT t from " + ScheduleSecHubJob.CLASS_NAME + " t where t." + PROPERTY_STARTED + " <= :untilLocalDateTime and t." + PROPERTY_ENDED
             + " is NULL", nativeQuery = false)
     public List<ScheduleSecHubJob> findAllRunningJobsStartedBefore(@Param("untilLocalDateTime") LocalDateTime untilLocalDateTime);
 
-    @Query(value = "SELECT COUNT(t) FROM " + ScheduleSecHubJob.CLASS_NAME + " t where t." + PROPERTY_STARTED + " is NULL", nativeQuery = false)
-    public long countWaitingJobs();
-
-    @Modifying
-    @Query(value = "DELETE FROM " + ScheduleSecHubJob.CLASS_NAME + " t where t." + PROPERTY_STARTED + " is NULL", nativeQuery = false)
-    public void deleteWaitingJobs();
+    @Query(value = "SELECT COUNT(t) FROM " + ScheduleSecHubJob.CLASS_NAME + " t where t." + PROPERTY_EXECUTION_STATE
+            + " is :executionState", nativeQuery = false)
+    public long countJobsInExecutionState(@Param("executionState") ExecutionState state);
 
     @Transactional
     @Modifying
-    @Query(ScheduleSecHubJob.QUERY_DELETE_JOBINFORMATION_OLDER_THAN)
+    @Query(ScheduleSecHubJob.QUERY_DELETE_JOB_OLDER_THAN)
     public int deleteJobsOlderThan(@Param("cleanTimeStamp") LocalDateTime cleanTimeStamp);
 
 }

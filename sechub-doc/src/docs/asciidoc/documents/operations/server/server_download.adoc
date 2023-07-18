@@ -2,7 +2,7 @@
 
 === Download
 
-You can download the ready to use .jar binary of {secHub} Server.
+You can download the ready to use .jar binary of {sechub} Server.
 
-Download link to the latest {secHub} Server release: {webPage}/latest/server-download.html
-For documentation, please look at {webPage}[{secHub} web page] .
+Download link to the latest {sechub} Server release: {webPage}/latest/server-download.html
+For documentation, please look at {webPage}[{sechub} web page] .

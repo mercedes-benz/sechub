@@ -8,7 +8,7 @@ import javax.swing.AbstractAction;
 import com.mercedesbenz.sechub.developertools.admin.ui.UIContext;
 import com.mercedesbenz.sechub.developertools.admin.ui.action.adapter.ProductExecutorTemplatesDialogUI.TemplatesDialogConfig;
 import com.mercedesbenz.sechub.developertools.admin.ui.action.adapter.ProductExecutorTemplatesDialogUI.TemplatesDialogResult;
-import com.mercedesbenz.sechub.domain.scan.product.ProductIdentifier;
+import com.mercedesbenz.sechub.sharedkernel.ProductIdentifier;
 
 public class ShowProductExecutorTemplatesDialogAction extends AbstractAction {
     private static final long serialVersionUID = 1L;

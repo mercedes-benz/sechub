@@ -24,8 +24,8 @@ import com.mercedesbenz.sechub.domain.scan.WebConfigBuilderStrategy;
 import com.mercedesbenz.sechub.domain.scan.WebScanNetworkLocationProvider;
 import com.mercedesbenz.sechub.domain.scan.product.ProductExecutorContext;
 import com.mercedesbenz.sechub.domain.scan.product.ProductExecutorData;
-import com.mercedesbenz.sechub.domain.scan.product.ProductIdentifier;
 import com.mercedesbenz.sechub.domain.scan.product.ProductResult;
+import com.mercedesbenz.sechub.sharedkernel.ProductIdentifier;
 import com.mercedesbenz.sechub.sharedkernel.configuration.SecHubConfiguration;
 
 @Service

@@ -29,7 +29,6 @@ import com.mercedesbenz.sechub.commons.model.web.SecHubReportWebRequest;
 import com.mercedesbenz.sechub.commons.model.web.SecHubReportWebResponse;
 import com.mercedesbenz.sechub.domain.scan.ReportTransformationResult;
 import com.mercedesbenz.sechub.domain.scan.SecHubExecutionException;
-import com.mercedesbenz.sechub.domain.scan.product.ProductIdentifier;
 import com.mercedesbenz.sechub.domain.scan.product.ProductResult;
 import com.mercedesbenz.sechub.domain.scan.report.ReportProductResultTransformer;
 import com.mercedesbenz.sechub.sereco.metadata.SerecoAnnotation;
@@ -45,6 +44,7 @@ import com.mercedesbenz.sechub.sereco.metadata.SerecoWebEvidence;
 import com.mercedesbenz.sechub.sereco.metadata.SerecoWebRequest;
 import com.mercedesbenz.sechub.sereco.metadata.SerecoWebResponse;
 import com.mercedesbenz.sechub.sharedkernel.MustBeDocumented;
+import com.mercedesbenz.sechub.sharedkernel.ProductIdentifier;
 
 @Component
 public class SerecoProductResultTransformer implements ReportProductResultTransformer {
@@ -109,6 +109,7 @@ public class SerecoProductResultTransformer implements ReportProductResultTransf
             }
             switch (scanType) {
             case CODE_SCAN:
+            case SECRET_SCAN:
                 finding.setCode(convert(vulnerability.getCode()));
                 break;
             case INFRA_SCAN:

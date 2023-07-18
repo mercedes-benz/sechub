@@ -1,0 +1,2 @@
+copy/**
+!copy/README.adoc

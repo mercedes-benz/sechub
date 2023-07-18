@@ -3,7 +3,7 @@ package com.mercedesbenz.sechub.domain.scan.product.config;
 
 import java.util.UUID;
 
-import com.mercedesbenz.sechub.domain.scan.product.ProductIdentifier;
+import com.mercedesbenz.sechub.sharedkernel.ProductIdentifier;
 
 public interface ProductExecutorConfigInfo {
     /**

@@ -1,9 +1,11 @@
+// SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.pds.execution;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.mercedesbenz.sechub.pds.job.PDSCheckJobStatusService;
+import com.mercedesbenz.sechub.pds.job.PDSGetJobStreamService;
 import com.mercedesbenz.sechub.pds.job.PDSJobTransactionService;
 import com.mercedesbenz.sechub.pds.job.PDSWorkspaceService;
 
@@ -28,6 +30,9 @@ public class PDSExecutionCallableServiceCollection {
     @Autowired
     ProcessHandlingDataFactory processHandlingDataFactory;
 
+    @Autowired
+    PDSGetJobStreamService pdsGetJobStreamService;
+
     public PDSJobTransactionService getJobTransactionService() {
         return jobTransactionService;
     }
@@ -50,6 +55,10 @@ public class PDSExecutionCallableServiceCollection {
 
     public ProcessHandlingDataFactory getProcessHandlingDataFactory() {
         return processHandlingDataFactory;
+    }
+
+    public PDSGetJobStreamService getPdsGetJobStreamService() {
+        return pdsGetJobStreamService;
     }
 
 }

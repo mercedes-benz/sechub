@@ -1,34 +1,39 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.owaspzapwrapper.helper;
 
+import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.net.URL;
 
 import com.mercedesbenz.sechub.owaspzapwrapper.cli.ZapWrapperExitCode;
 import com.mercedesbenz.sechub.owaspzapwrapper.cli.ZapWrapperRuntimeException;
 
 public class BaseTargetUriFactory {
 
-    public URI create(String targetUri) {
-        return createBaseURIForTarget(targetUri);
+    public URL create(String targetUri) {
+        try {
+            return createBaseURIForTarget(targetUri).toURL();
+        } catch (MalformedURLException e) {
+            throw new ZapWrapperRuntimeException("Target URL is not a valid URL.", ZapWrapperExitCode.TARGET_URL_INVALID);
+        }
     }
 
     private URI createBaseURIForTarget(String targetUri) {
         if (targetUri == null) {
-            throw new ZapWrapperRuntimeException("Target URI may not be null.", ZapWrapperExitCode.TARGET_URL_CONFIGURATION_INVALID);
+            throw new ZapWrapperRuntimeException("Target URI may not be null.", ZapWrapperExitCode.TARGET_URL_INVALID);
         }
         String sanitizedTargetUri = sanitizeTargetUri(targetUri);
         URI uri;
         try {
             uri = URI.create(sanitizedTargetUri);
         } catch (IllegalArgumentException e) {
-            throw new ZapWrapperRuntimeException("Target URI could not be converted from string.", e, ZapWrapperExitCode.TARGET_URL_CONFIGURATION_INVALID);
+            throw new ZapWrapperRuntimeException("Target URI could not be converted from string.", e, ZapWrapperExitCode.TARGET_URL_INVALID);
         }
 
         String scheme = uri.getScheme();
         if (!isValidScheme(scheme)) {
-            throw new ZapWrapperRuntimeException("URI: " + uri.toString() + " does not contain valid scheme!",
-                    ZapWrapperExitCode.TARGET_URL_CONFIGURATION_INVALID);
+            throw new ZapWrapperRuntimeException("URI: " + uri.toString() + " does not contain valid scheme!", ZapWrapperExitCode.TARGET_URL_INVALID);
         }
 
         String userInfo = null;
@@ -43,7 +48,7 @@ public class BaseTargetUriFactory {
         try {
             rootURI = new URI(scheme, userInfo, host, port, path, query, fragment);
         } catch (URISyntaxException e) {
-            throw new ZapWrapperRuntimeException("Was not able to build base uri for: " + uri, e, ZapWrapperExitCode.TARGET_URL_CONFIGURATION_INVALID);
+            throw new ZapWrapperRuntimeException("Was not able to build base uri for: " + uri, e, ZapWrapperExitCode.TARGET_URL_INVALID);
         }
         return rootURI;
     }

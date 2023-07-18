@@ -4,29 +4,74 @@ package com.mercedesbenz.sechub.commons.model;
 import static com.mercedesbenz.sechub.commons.core.util.SimpleStringUtils.*;
 import static com.mercedesbenz.sechub.commons.model.SecHubConfigurationModelValidationError.*;
 
+import java.net.MalformedURLException;
 import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+import java.util.regex.Pattern;
 
 import com.mercedesbenz.sechub.commons.core.util.SimpleNetworkUtils;
 import com.mercedesbenz.sechub.commons.core.util.SimpleStringUtils;
 
 public class SecHubConfigurationModelValidator {
 
+    private static final String QUOTED_WEBSCAN_URL_WILDCARD_SYMBOL = Pattern.quote(SecHubWebScanConfiguration.WEBSCAN_URL_WILDCARD_SYMBOL);
+    private static final Pattern PATTERN_QUOTED_WEBSCAN_URL_WILDCARD_SYMBOL = Pattern.compile(QUOTED_WEBSCAN_URL_WILDCARD_SYMBOL);
+
     private static int MIN_NAME_LENGTH = 1;
     private static final int MAX_NAME_LENGTH = 80;
 
+    private static final int MIN_METADATA_LABEL_KEY_LENGTH = 1;
+    private static final int MAX_METADATA_LABEL_KEY_LENGTH = 30;
+
+    private static final int MAX_METADATA_LABEL_VALUE_LENGTH = 150;
+    private static final int MAX_METADATA_LABEL_AMOUNT = 20;
+
+    SecHubConfigurationModelSupport modelSupport = new SecHubConfigurationModelSupport();
+
     private List<String> supportedVersions;
+
+    /**
+     * Does validate a given map containing meta data labels. Same logic as for
+     * complete model, but useful when only label meta data shall be validated.
+     *
+     * @param metaDataLabels
+     * @return validation result
+     */
+    public SecHubConfigurationModelValidationResult validateMetaDataLabels(Map<String, String> metaDataLabels) {
+        SecHubConfigurationModelValidationResult result = new SecHubConfigurationModelValidationResult();
+        handleMetaDataLabels(metaDataLabels, result);
+        return result;
+    }
 
     public SecHubConfigurationModelValidator() {
         supportedVersions = new ArrayList<String>();
 
         // currently we only support 1.0 as version
         supportedVersions.add("1.0");
+    }
+
+    /**
+     * Validates a complete model
+     *
+     * @param model
+     * @return validation result
+     */
+    public SecHubConfigurationModelValidationResult validate(SecHubConfigurationModel model) {
+        SecHubConfigurationModelValidationResult result = new SecHubConfigurationModelValidationResult();
+        InternalValidationContext context = new InternalValidationContext();
+        context.result = result;
+        context.model = model;
+        validate(context);
+        return result;
     }
 
     private String describeSupportedVersions() {
@@ -39,13 +84,41 @@ public class SecHubConfigurationModelValidator {
         private SecHubConfigurationModel model;;
     }
 
-    public SecHubConfigurationModelValidationResult validate(SecHubConfigurationModel model) {
-        SecHubConfigurationModelValidationResult result = new SecHubConfigurationModelValidationResult();
-        InternalValidationContext context = new InternalValidationContext();
-        context.result = result;
-        context.model = model;
-        validate(context);
-        return result;
+    private void handleMetaDataLabels(Map<String, String> labels, SecHubConfigurationModelValidationResult result) {
+        Set<String> keySet = labels.keySet();
+        /* validate max amount of labels */
+        if (keySet.size() > MAX_METADATA_LABEL_AMOUNT) {
+            result.addError(METADATA_TOO_MANY_LABELS);
+            return;
+        }
+
+        /* validate keys */
+        for (String key : keySet) {
+            if (key == null || key.length() < MIN_METADATA_LABEL_KEY_LENGTH) {
+                result.addError(METADATA_LABEL_KEY_TOO_SHORT);
+                return;
+            }
+            if (key.length() > MAX_METADATA_LABEL_KEY_LENGTH) {
+                result.addError(METADATA_LABEL_KEY_TOO_LONG);
+                return;
+            }
+            if (!hasStandardAsciiLettersDigitsOrAdditionalAllowedCharacters(key, '-', '_', '.')) {
+                result.addError(METADATA_LABEL_KEY_CONTAINS_ILLEGAL_CHARACTERS,
+                        "Label key '" + key + "' may only contain 'a-z','0-9', '-', '_' or '.' characters");
+                continue;
+            }
+        }
+
+        /* validate values */
+        for (String value : labels.values()) {
+            if (value == null) {
+                continue;// we accept even null values
+            }
+            if (value.length() > MAX_METADATA_LABEL_VALUE_LENGTH) {
+                result.addError(METADATA_LABEL_VALUE_TOO_LONG);
+                return;
+            }
+        }
     }
 
     private void validate(InternalValidationContext context) {
@@ -60,8 +133,59 @@ public class SecHubConfigurationModelValidator {
             context.result.addError(API_VERSION_NOT_SUPPORTED, "Supported versions are:" + describeSupportedVersions());
             return;
         }
+        handleScanTypesAndModuleGroups(context);
         handleDataConfiguration(context);
         handleScanConfigurations(context);
+        handleMetaData(context);
+    }
+
+    private void handleMetaData(InternalValidationContext context) {
+        Optional<SecHubConfigurationMetaData> metaDataOpt = context.model.getMetaData();
+        if (metaDataOpt.isEmpty()) {
+            return;
+        }
+
+        SecHubConfigurationMetaData metaData = metaDataOpt.get();
+        Map<String, String> labels = metaData.getLabels();
+        handleMetaDataLabels(labels, context.result);
+
+    }
+
+    private void handleScanTypesAndModuleGroups(InternalValidationContext context) {
+        Set<ScanType> scanTypes = modelSupport.collectPublicScanTypes(context.model);
+        handleScanTypes(context, scanTypes);
+
+        handleModuleGroup(context, scanTypes);
+    }
+
+    private void handleModuleGroup(InternalValidationContext context, Set<ScanType> scanTypes) {
+        ModuleGroup group = ModuleGroup.resolveModuleGroupOrNull(scanTypes);
+        if (group != null) {
+            /* no problems, the matching module group can be found */
+            return;
+        }
+        Map<ScanType, ModuleGroup> moduleGroupDetectionMap = new LinkedHashMap<>();
+        /* we can have two reasons here: no group at all or multiple groups */
+        for (ModuleGroup groupToInspect : ModuleGroup.values()) {
+            for (ScanType scanType : scanTypes) {
+                if (groupToInspect.isGivenModuleInGroup(scanType)) {
+                    moduleGroupDetectionMap.put(scanType, groupToInspect);
+                }
+
+            }
+        }
+        Collection<ModuleGroup> detectedModuleGroups = moduleGroupDetectionMap.values();
+        if (detectedModuleGroups.isEmpty()) {
+            context.result.addError(NO_MODULE_GROUP_DETECTED);
+        } else {
+            context.result.addError(MULTIPLE_MODULE_GROUPS_DETECTED, "Module groups detected: " + detectedModuleGroups);
+        }
+    }
+
+    private void handleScanTypes(InternalValidationContext context, Set<ScanType> scanTypes) {
+        if (scanTypes.isEmpty()) {
+            context.result.addError(NO_PUBLIC_SCAN_TYPES_DETECTED);
+        }
     }
 
     private void handleScanConfigurations(InternalValidationContext context) {
@@ -72,6 +196,7 @@ public class SecHubConfigurationModelValidator {
         handleWebScanConfiguration(context);
         handleInfraScanConfiguration(context);
         handleLicenseScanConfiguration(context);
+        handleSecretScanConfiguration(context);
 
     }
 
@@ -88,6 +213,21 @@ public class SecHubConfigurationModelValidator {
         }
 
         handleUsages(context, licenseScan);
+    }
+
+    private void handleSecretScanConfiguration(InternalValidationContext context) {
+        Optional<SecHubSecretScanConfiguration> secretScanOpt = context.model.getSecretScan();
+
+        if (!secretScanOpt.isPresent()) {
+            return;
+        }
+        SecHubDataConfigurationUsageByName secretScan = secretScanOpt.get();
+
+        if (secretScan.getNamesOfUsedDataConfigurationObjects().isEmpty()) {
+            context.result.addError(NO_DATA_CONFIG_SPECIFIED_FOR_SCAN);
+        }
+
+        handleUsages(context, secretScan);
     }
 
     private void handleCodeScanConfiguration(InternalValidationContext context) {
@@ -130,6 +270,7 @@ public class SecHubConfigurationModelValidator {
         }
 
         handleApi(context, webScan);
+        handleHTTPHeaders(context, webScan);
 
     }
 
@@ -141,6 +282,107 @@ public class SecHubConfigurationModelValidator {
 
         SecHubWebScanApiConfiguration openApi = apiOpt.get();
         handleUsages(context, openApi);
+    }
+
+    private void handleHTTPHeaders(InternalValidationContext context, SecHubWebScanConfiguration webScan) {
+        Optional<List<HTTPHeaderConfiguration>> optHttpHeaders = webScan.getHeaders();
+        if (!optHttpHeaders.isPresent()) {
+            return;
+        }
+        String targetUrl = webScan.getUrl().toString();
+        WebScanConfigurationModelValidationContext webScanContext = new WebScanConfigurationModelValidationContext(context,
+                addTrailingSlashToUrlWhenMissingAndLowerCase(targetUrl), optHttpHeaders.get());
+
+        validateHeaderNamesAndValues(webScanContext);
+
+        validateUrlsAreValid(webScanContext);
+
+        validateHeaderOnlyForUrlNotDuplicated(webScanContext);
+    }
+
+    private void validateHeaderOnlyForUrlNotDuplicated(WebScanConfigurationModelValidationContext webScanContext) {
+        if (webScanContext.failed) {
+            return;
+        }
+        for (HTTPHeaderConfiguration sanatizedHttpHeader : webScanContext.sanatizedHttpHeaders) {
+            if (sanatizedHttpHeader.getOnlyForUrls().isEmpty()) {
+                continue;
+            }
+            for (String sanatizedOnlyForUrl : sanatizedHttpHeader.getOnlyForUrls().get()) {
+                String headerUrlCombiniation = createHeaderUrlKey(sanatizedHttpHeader.getName(), sanatizedOnlyForUrl);
+                if (webScanContext.headerUrlCombinations.add(headerUrlCombiniation) == false) {
+                    webScanContext.markAsFailed(WEB_SCAN_NON_UNIQUE_HEADER_CONFIGURATION, "The header name is : " + sanatizedHttpHeader.getName());
+                    return;
+                }
+            }
+        }
+    }
+
+    private void validateHeaderNamesAndValues(WebScanConfigurationModelValidationContext webScanContext) {
+        if (webScanContext.failed) {
+            return;
+        }
+        for (HTTPHeaderConfiguration sanatizedHttpHeader : webScanContext.sanatizedHttpHeaders) {
+            if (sanatizedHttpHeader.getName() == null || sanatizedHttpHeader.getName().isEmpty()) {
+                webScanContext.markAsFailed(WEB_SCAN_NO_HEADER_NAME_DEFINED);
+                return;
+            }
+            if (sanatizedHttpHeader.getValue() == null || sanatizedHttpHeader.getValue().isEmpty()) {
+                webScanContext.markAsFailed(WEB_SCAN_NO_HEADER_VALUE_DEFINED, "The header name is : " + sanatizedHttpHeader.getName());
+                return;
+            }
+        }
+    }
+
+    private void validateUrlsAreValid(WebScanConfigurationModelValidationContext webScanContext) {
+        if (webScanContext.failed) {
+            return;
+        }
+        for (HTTPHeaderConfiguration sanatizedHttpHeader : webScanContext.sanatizedHttpHeaders) {
+            Optional<List<String>> onlyForUrls = sanatizedHttpHeader.getOnlyForUrls();
+            if (onlyForUrls.isEmpty()) {
+                continue;
+            }
+            for (String sanatizedOnlyForUrl : onlyForUrls.get()) {
+
+                if (!sanatizedOnlyForUrl.contains(webScanContext.sanatizedTargetUrl)) {
+                    webScanContext.markAsFailed(WEB_SCAN_HTTP_HEADER_ONLY_FOR_URL_DOES_NOT_CONTAIN_TARGET_URL,
+                            "The header name is : " + sanatizedHttpHeader.getName());
+                    return;
+                }
+
+                String sanatizedWithoutWildCards = createUrlWithoutWildCards(sanatizedOnlyForUrl);
+                try {
+                    new URI(sanatizedWithoutWildCards).toURL();
+                } catch (URISyntaxException | MalformedURLException e) {
+                    webScanContext.markAsFailed(WEB_SCAN_HTTP_HEADER_ONLY_FOR_URL_IS_NOT_A_VALID_URL,
+                            "OnlyForUrls defined URL: " + sanatizedOnlyForUrl + " is not a valid URL.");
+                }
+            }
+        }
+    }
+
+    private String createHeaderUrlKey(String headerNameLowerCased, String urlLowerCased) {
+        String headerUrlId = headerNameLowerCased + ":" + urlLowerCased;
+        return headerUrlId;
+    }
+
+    private String addTrailingSlashToUrlWhenMissingAndLowerCase(String url) {
+        String resultUrl = url;
+        if (!resultUrl.endsWith("/")) {
+            resultUrl += "/";
+        }
+        return resultUrl.toLowerCase();
+    }
+
+    private String createLowerCasedUrlAndAddTrailingSlashIfMissing(String onlyForUrl) {
+        // ensure "https://mywebapp.com/" and "https://mywebapp.com" are accepted as the
+        // same. This way we can check if this URL contains our scan target URL.
+        return addTrailingSlashToUrlWhenMissingAndLowerCase(onlyForUrl);
+    }
+
+    private String createUrlWithoutWildCards(String onlyForUrl) {
+        return PATTERN_QUOTED_WEBSCAN_URL_WILDCARD_SYMBOL.matcher(onlyForUrl).replaceAll("");
     }
 
     private void handleInfraScanConfiguration(InternalValidationContext context) {
@@ -178,7 +420,7 @@ public class SecHubConfigurationModelValidator {
                 result.addError(DATA_CONFIG_OBJECT_NAME_IS_NULL);
                 continue;
             }
-            if (!hasOnlyAlphabeticDigitOrAdditionalAllowedCharacters(uniqueName, '-', '_')) {
+            if (!hasStandardAsciiLettersDigitsOrAdditionalAllowedCharacters(uniqueName, '-', '_')) {
                 result.addError(DATA_CONFIG_OBJECT_NAME_CONTAINS_ILLEGAL_CHARACTERS,
                         "Name '" + uniqueName + "' may only contain 'a-z','0-9', '-' or '_' characters");
                 continue;
@@ -212,6 +454,7 @@ public class SecHubConfigurationModelValidator {
         atLeastOne = atLeastOne || model.getInfraScan().isPresent();
         atLeastOne = atLeastOne || model.getWebScan().isPresent();
         atLeastOne = atLeastOne || model.getLicenseScan().isPresent();
+        atLeastOne = atLeastOne || model.getSecretScan().isPresent();
 
         return atLeastOne;
     }
@@ -222,6 +465,60 @@ public class SecHubConfigurationModelValidator {
 
         public SecHubConfigurationModelValidationException(String message) {
             super(message);
+        }
+
+    }
+
+    private class WebScanConfigurationModelValidationContext {
+        private List<HTTPHeaderConfiguration> sanatizedHttpHeaders = new ArrayList<>();
+        private boolean failed;
+        private String sanatizedTargetUrl;
+
+        // A Set to keep track of headers URL combinations
+        // With this Set we validate the header configurations and inform the user about
+        // invalid combinations
+        private Set<String> headerUrlCombinations = new HashSet<>();
+        private InternalValidationContext context;
+
+        private WebScanConfigurationModelValidationContext(InternalValidationContext context, String sanatizedTargetUrl,
+                List<HTTPHeaderConfiguration> httpHeaders) {
+            this.context = context;
+            this.sanatizedTargetUrl = sanatizedTargetUrl;
+            initSanatizedHttpHeaders(httpHeaders);
+        }
+
+        private void initSanatizedHttpHeaders(List<HTTPHeaderConfiguration> httpHeaders) {
+            for (HTTPHeaderConfiguration httpHeaderConfiguration : httpHeaders) {
+                HTTPHeaderConfiguration sanatizedConfig = new HTTPHeaderConfiguration();
+                String headerName = httpHeaderConfiguration.getName();
+                if (headerName != null) {
+                    sanatizedConfig.setName(headerName.toLowerCase());
+                }
+                sanatizedConfig.setValue(httpHeaderConfiguration.getValue());
+
+                if (httpHeaderConfiguration.getOnlyForUrls().isPresent()) {
+                    List<String> sanatizedOnlyForUrls = new ArrayList<>();
+                    for (String onlyForUrl : httpHeaderConfiguration.getOnlyForUrls().get()) {
+                        sanatizedOnlyForUrls.add(createLowerCasedUrlAndAddTrailingSlashIfMissing(onlyForUrl));
+                    }
+                    sanatizedConfig.setOnlyForUrls(Optional.of(sanatizedOnlyForUrls));
+                } else {
+
+                    String defaultWildCard = sanatizedTargetUrl + SecHubWebScanConfiguration.WEBSCAN_URL_WILDCARD_SYMBOL;
+                    defaultWildCard = createLowerCasedUrlAndAddTrailingSlashIfMissing(defaultWildCard);
+                    sanatizedConfig.setOnlyForUrls(Optional.of(Arrays.asList(defaultWildCard)));
+                }
+                this.sanatizedHttpHeaders.add(sanatizedConfig);
+            }
+        }
+
+        public void markAsFailed(SecHubConfigurationModelValidationError error) {
+            markAsFailed(error, null);
+        }
+
+        public void markAsFailed(SecHubConfigurationModelValidationError error, String message) {
+            context.result.addError(error, message);
+            failed = true;
         }
 
     }

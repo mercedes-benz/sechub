@@ -9,7 +9,6 @@ projectType = [
                project(':sechub-testframework'),
                project(':sechub-analyzer-cli'),
                project(':sechub-api-java'),
-               project(':sechub-sarif'),
                project(':sechub-commons-core'),
                project(':sechub-commons-model'),
                project(':sechub-commons-model-testframework'),
@@ -51,10 +50,10 @@ projectType = [
             /* adapter projects - have simple spring dependencies, but know only sechub-adapter as base */
             springBootAdapterProjects: [
                     project(':sechub-adapter'),
-                    project(':sechub-adapter-netsparker'),
-                    project(':sechub-adapter-nessus'),
-                    project(':sechub-adapter-checkmarx'),
                     project(':sechub-adapter-pds'),
+                    project(':sechub-adapter-checkmarx'),
+                    project(':deprecated-sechub-adapter-netsparker'),
+                    project(':deprecated-sechub-adapter-nessus'),
             ],
             
              /* PDS projects, all contained inside product delegation server */
@@ -74,17 +73,27 @@ projectType = [
                     project(':sechub-shared-kernel'),
 
                     project(':sechub-scan'),
-                    project(':sechub-scan-product-netsparker'),
-                    project(':sechub-scan-product-nessus'),
-                    project(':sechub-scan-product-checkmarx'),
-                    project(':sechub-scan-product-sereco'),
                     project(':sechub-scan-product-pds'),
+
+                    project(':sechub-scan-product-sereco'),
+                    project(':sechub-scan-product-checkmarx'),
+                    project(':deprecated-sechub-scan-product-netsparker'),
+                    project(':deprecated-sechub-scan-product-nessus'),
+
+                    project(':sechub-statistic'),
+
+            ],
+            
+            /* SecHub frontend projects */
+            springBootWebUiProjects:[
+                   project(':sechub-webui'),
             ],
             
             bootableSpringApplicationProjects:[
                    project(':sechub-server'),
                    project(':sechub-pds'),
                    project(':sechub-wrapper-checkmarx'),
+                   project(':sechub-webui'),
             ],
 
             /* documentation projects */
@@ -114,7 +123,7 @@ projectType.springBootProjects.addAll(projectType.springBootSecHubServerProjects
 projectType.springBootProjects.addAll(projectType.springBootPDSProjects)
 projectType.springBootProjects.addAll(projectType.springBootAdapterProjects)
 projectType.springBootProjects.addAll(projectType.springDocProjects)
-//projectType.springBootProjects.addAll(projectType.springBootFrontentProjects)
+projectType.springBootProjects.addAll(projectType.springBootWebUiProjects)
 
 projectType.javaProjects.addAll(projectType.springBootProjects)
 

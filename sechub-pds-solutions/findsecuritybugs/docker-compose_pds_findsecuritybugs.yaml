@@ -5,19 +5,19 @@ services:
     pds-findsecuritybugs:
         build:
             args:
-                - BASE_IMAGE=debian:11-slim
-                - PDS_VERSION=${PDS_VERSION}
+                - BASE_IMAGE=${BASE_IMAGE}
             context: docker/
             dockerfile: FindSecurityBugs-Debian.dockerfile
         container_name: pds-findsecuritybugs
         env_file:
             - .env
+            - .env-single
         ports:
             - "127.0.0.1:8444:8444"
             - "127.0.0.1:15024:15024"
         networks:
             - "internal"
         volumes:
-          - ./docker/scripts:/scripts
+          - ./docker/scripts:/pds/scripts
 networks:
     internal:

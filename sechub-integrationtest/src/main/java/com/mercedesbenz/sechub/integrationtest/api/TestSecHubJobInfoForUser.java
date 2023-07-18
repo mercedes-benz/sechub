@@ -1,9 +1,12 @@
+// SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.integrationtest.api;
 
 import java.time.LocalDateTime;
+import java.util.Optional;
 import java.util.UUID;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.mercedesbenz.sechub.commons.model.SecHubConfigurationMetaData;
 import com.mercedesbenz.sechub.commons.model.TrafficLight;
 
 /**
@@ -28,5 +31,7 @@ public class TestSecHubJobInfoForUser {
     public String executionResult;
 
     public TrafficLight trafficLight;
+
+    public Optional<SecHubConfigurationMetaData> metaData = Optional.empty();
 
 }

@@ -9,19 +9,19 @@ ARG BASE_IMAGE
 
 # Build args
 ARG BUILD_TYPE
-ARG CHECKMARX_WRAPPER_VERSION
+ARG CHECKMARX_WRAPPER_VERSION=1.1.0
 
 # The base image of the builder
-ARG BUIDLER_BASE_IMAGE="debian:11-slim"
+ARG BUILDER_BASE_IMAGE="debian:testing-slim"
 
-# Artifact folder 
+# Artifact folder
 ARG ARTIFACT_FOLDER="/artifacts"
 
 #-------------------
 # Builder Download
 #-------------------
 
-FROM ${BUIDLER_BASE_IMAGE} AS builder-download
+FROM ${BUILDER_BASE_IMAGE} AS builder-download
 
 ARG ARTIFACT_FOLDER
 ARG CHECKMARX_WRAPPER_VERSION
@@ -36,9 +36,9 @@ RUN export DEBIAN_FRONTEND=noninteractive && \
 # Download the Checkmarx Wrapper
 RUN cd "$ARTIFACT_FOLDER" && \
     # download checksum file
-    wget --no-verbose "https://github.com/mercedes-benz/sechub/releases/download/v$CHECKMARX_WRAPPER_VERSION-pds/sechub-wrapper-checkmarx-$CHECKMARX_WRAPPER_VERSION.jar.sha256sum" && \
+    wget --no-verbose "https://github.com/mercedes-benz/sechub/releases/download/v$CHECKMARX_WRAPPER_VERSION-checkmarx-wrapper/sechub-wrapper-checkmarx-$CHECKMARX_WRAPPER_VERSION.jar.sha256sum" && \
     # download wrapper jar
-    wget --no-verbose "https://github.com/mercedes-benz/sechub/releases/download/v$CHECKMARX_WRAPPER_VERSION-pds/sechub-wrapper-checkmarx-$CHECKMARX_WRAPPER_VERSION.jar" && \
+    wget --no-verbose "https://github.com/mercedes-benz/sechub/releases/download/v$CHECKMARX_WRAPPER_VERSION-checkmarx-wrapper/sechub-wrapper-checkmarx-$CHECKMARX_WRAPPER_VERSION.jar" && \
     # verify that the checksum and the checksum of the file are same
     sha256sum --check "sechub-wrapper-checkmarx-$CHECKMARX_WRAPPER_VERSION.jar.sha256sum"
 
@@ -46,7 +46,7 @@ RUN cd "$ARTIFACT_FOLDER" && \
 # Builder Copy Jar
 #-------------------
 
-FROM ${BUIDLER_BASE_IMAGE} AS builder-copy
+FROM ${BUILDER_BASE_IMAGE} AS builder-copy
 
 ARG ARTIFACT_FOLDER
 

@@ -8,12 +8,12 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 import com.mercedesbenz.sechub.commons.model.JSONConverter;
-import com.mercedesbenz.sechub.domain.scan.product.ProductIdentifier;
 import com.mercedesbenz.sechub.domain.scan.product.ProductResult;
 import com.mercedesbenz.sechub.domain.scan.resolve.ProductResultSpdxJsonResolver;
 import com.mercedesbenz.sechub.sereco.metadata.SerecoLicenseDocument;
 import com.mercedesbenz.sechub.sereco.metadata.SerecoLicenseSpdx;
 import com.mercedesbenz.sechub.sereco.metadata.SerecoMetaData;
+import com.mercedesbenz.sechub.sharedkernel.ProductIdentifier;
 
 @Component
 public class SerecoProductResultSpdxJsonResolver implements ProductResultSpdxJsonResolver {

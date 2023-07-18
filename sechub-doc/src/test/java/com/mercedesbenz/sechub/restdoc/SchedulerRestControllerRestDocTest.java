@@ -18,9 +18,12 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import java.io.InputStream;
 import java.lang.annotation.Annotation;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.TreeMap;
 import java.util.UUID;
 
 import org.junit.Before;
@@ -43,7 +46,9 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.util.StringUtils;
 
 import com.mercedesbenz.sechub.commons.core.CommonConstants;
+import com.mercedesbenz.sechub.commons.model.HTTPHeaderConfiguration;
 import com.mercedesbenz.sechub.commons.model.SecHubCodeScanConfiguration;
+import com.mercedesbenz.sechub.commons.model.SecHubConfigurationMetaData;
 import com.mercedesbenz.sechub.commons.model.SecHubDataConfigurationUsageByName;
 import com.mercedesbenz.sechub.commons.model.SecHubFileSystemConfiguration;
 import com.mercedesbenz.sechub.commons.model.SecHubInfrastructureScanConfiguration;
@@ -476,6 +481,74 @@ public class SchedulerRestControllerRestDocTest implements TestIsNecessaryForDoc
     }
 
     @Test
+    @UseCaseRestDoc(useCase = UseCaseUserCreatesNewJob.class, variant = "Web Scan headers")
+    public void restDoc_userCreatesNewJob_webscan_with_headers() throws Exception {
+        /* prepare */
+        String apiEndpoint = https(PORT_USED).buildAddJobUrl(PROJECT_ID.pathElement());
+        Class<? extends Annotation> useCase = UseCaseUserCreatesNewJob.class;
+
+        HTTPHeaderConfiguration header = new HTTPHeaderConfiguration();
+        header.setName("api-token");
+        header.setValue("secret");
+        List<String> onlyForUrls = Arrays.asList("https://localhost/mywebapp/admin", "https://localhost/mywebapp/<*>/profile",
+                "https://localhost/mywebapp/blog/<*>");
+        header.setOnlyForUrls(Optional.ofNullable(onlyForUrls));
+
+        List<HTTPHeaderConfiguration> httpHeaders = new ArrayList<>();
+        httpHeaders.add(header);
+
+        UUID randomUUID = UUID.randomUUID();
+        SchedulerResult mockResult = new SchedulerResult(randomUUID);
+
+        when(mockedScheduleCreateJobService.createJob(any(), any(SecHubConfiguration.class))).thenReturn(mockResult);
+
+        /* execute + test @formatter:off */
+	    this.mockMvc.perform(
+	    		post(apiEndpoint, PROJECT1_ID).
+                	header(AuthenticationHelper.HEADER_NAME, AuthenticationHelper.getHeaderValue()).
+	    			contentType(MediaType.APPLICATION_JSON_VALUE).
+	    			content(configureSecHub().
+	    					api("1.0").
+	    					webConfig().
+	    						addURI("https://localhost/mywebapp").
+	    						addHeaders(httpHeaders).
+	    					build().
+	    					toJSON())
+	    		).
+	    			andExpect(status().isOk()).
+	    			andExpect(content().json("{jobId:"+randomUUID.toString()+"}")).
+	    			andDo(defineRestService().
+                            with().
+                                useCaseData(useCase, "Web Scan headers").
+                                tag(RestDocFactory.extractTag(apiEndpoint)).
+                                requestSchema(OpenApiSchema.SCAN_JOB.getSchema()).
+                                responseSchema(OpenApiSchema.JOB_ID.getSchema()).
+                            and().
+                            document(
+	                            		requestHeaders(
+	                            				headerWithName(AuthenticationHelper.HEADER_NAME).description(AuthenticationHelper.HEADER_DESCRIPTION)
+	                            		),
+                                        pathParameters(
+                                                parameterWithName(PROJECT_ID.paramName()).description("The unique id of the project id where a new sechub job shall be created")
+                                        ),
+                                        requestFields(
+                                                fieldWithPath(PROPERTY_API_VERSION).description("The api version, currently only 1.0 is supported"),
+                                                fieldWithPath(PROPERTY_WEB_SCAN).description("Webscan configuration block").optional(),
+                                                fieldWithPath(PROPERTY_WEB_SCAN+"."+SecHubWebScanConfiguration.PROPERTY_URL).description("Webscan URI to scan for").optional(),
+                                                fieldWithPath(PROPERTY_WEB_SCAN+"."+SecHubWebScanConfiguration.PROPERTY_HEADERS).description("List of HTTP headers. Can be used for authentication or anything else.").optional(),
+                                                fieldWithPath(PROPERTY_WEB_SCAN+"."+SecHubWebScanConfiguration.PROPERTY_HEADERS+"[]."+HTTPHeaderConfiguration.PROPERTY_NAME).description("Name of the defined HTTP header.").optional(),
+                                                fieldWithPath(PROPERTY_WEB_SCAN+"."+SecHubWebScanConfiguration.PROPERTY_HEADERS+"[]."+HTTPHeaderConfiguration.PROPERTY_VALUE).description("Value of the defined HTTP header.").optional(),
+                                                fieldWithPath(PROPERTY_WEB_SCAN+"."+SecHubWebScanConfiguration.PROPERTY_HEADERS+"[]."+HTTPHeaderConfiguration.PROPERTY_ONLY_FOR_URLS+"[]").description("Optional list of URLs this header shall be used for like: https://mywebapp.com/path/. Can contain wildcards like: https://mywebapp.com/path/<*>/with/wildcard").optional()
+                                        ),
+                                        responseFields(
+                                                fieldWithPath(SchedulerResult.PROPERTY_JOBID).description("A unique job id")
+                                        )
+	    			    ));
+
+	    /* @formatter:on */
+    }
+
+    @Test
     @UseCaseRestDoc(useCase = UseCaseUserUploadsSourceCode.class)
     public void restDoc_userUploadsSourceCode() throws Exception {
         /* prepare */
@@ -707,8 +780,14 @@ public class SchedulerRestControllerRestDocTest implements TestIsNecessaryForDoc
     @Test
     @UseCaseRestDoc(useCase = UseCaseUserListsJobsForProject.class)
     public void restDoc_userListsJobsForProject() throws Exception {
+
         /* prepare */
-        String apiEndpoint = https(PORT_USED).buildUserFetchesListOfJobsForProject(PROJECT_ID.pathElement(), SIZE.pathElement(), PAGE.pathElement());
+        Map<String, String> labels = new TreeMap<>();
+        labels.put("metadata.labels.stage", "testing");
+
+        String apiEndpoint = https(PORT_USED).buildUserFetchesListOfJobsForProject(PROJECT_ID.pathElement(), SIZE.pathElement(), PAGE.pathElement(),
+                WITH_META_DATA.pathElement(), labels);
+
         Class<? extends Annotation> useCase = UseCaseUserListsJobsForProject.class;
 
         SecHubJobInfoForUser job1 = new SecHubJobInfoForUser();
@@ -722,17 +801,21 @@ public class SchedulerRestControllerRestDocTest implements TestIsNecessaryForDoc
         job1.setExecutedBy("User1");
         job1.setTrafficLight(TrafficLight.GREEN);
 
+        SecHubConfigurationMetaData metaData = new SecHubConfigurationMetaData();
+        metaData.getLabels().put("stage", "test");
+        job1.setMetaData(metaData);
+
         SecHubJobInfoForUserListPage listPage = new SecHubJobInfoForUserListPage();
         listPage.setPage(0);
         listPage.setTotalPages(1);
         List<SecHubJobInfoForUser> list = listPage.getContent();
         list.add(job1);
 
-        when(mockedJobInfoForUserService.listJobsForProject(PROJECT1_ID, 1, 0)).thenReturn(listPage);
+        when(mockedJobInfoForUserService.listJobsForProject(eq(PROJECT1_ID), eq(1), eq(0), eq(true), any())).thenReturn(listPage);
 
         /* execute + test @formatter:off */
         this.mockMvc.perform(
-                get(apiEndpoint, PROJECT1_ID,1,0).
+                get(apiEndpoint, PROJECT1_ID, 1, 0, true, labels).
                     contentType(MediaType.APPLICATION_JSON_VALUE).
                     header(AuthenticationHelper.HEADER_NAME, AuthenticationHelper.getHeaderValue())
                 ).
@@ -752,8 +835,14 @@ public class SchedulerRestControllerRestDocTest implements TestIsNecessaryForDoc
                                             parameterWithName(PROJECT_ID.paramName()).description("The id of the project where job information shall be fetched for")
                                           ),
                                           requestParameters(
-                                              parameterWithName(SIZE.paramName()).optional().description("The wanted (maximum) size for the result set. When not defined, the default will be "+SchedulerRestController.DEFAULT_JOB_INFORMATION_SIZE),
-                                              parameterWithName(PAGE.paramName()).optional().description("The wanted page number. When not defined, the default will be "+SchedulerRestController.DEFAULT_JOB_INFORMATION_PAGE)
+                                              parameterWithName(SIZE.paramName()).optional().description("The wanted (maximum) size for the result set. When not defined, the default will be "+SchedulerRestController.DEFAULT_JOB_INFORMATION_SIZE+"."),
+                                              parameterWithName(PAGE.paramName()).optional().description("The wanted page number. When not defined, the default will be "+SchedulerRestController.DEFAULT_JOB_INFORMATION_PAGE+"."),
+                                              parameterWithName("metadata.labels.*").optional().
+                                                  description("An optional dynamic query parameter to filter jobs by labels. The syntax is 'metadata.labels.${labelKey}=${labelValue}'.\n\n"
+                                                            + "It is possible to query for multiple labels (up to "+ SecHubJobInfoForUserService.MAXIMUM_ALLOWED_LABEL_PARAMETERS + " ).\n"
+                                                            + "The filter works as an AND combination: Only jobs having all wanted label key value combinations are returned."),
+                                              parameterWithName("metadata.labels.stage").ignored(), // we we do not want the label query example to be documented - we document only the generic way
+                                              parameterWithName(WITH_META_DATA.paramName()).optional().description("An optional parameter to define if meta data shall be fetched as well. When not defined, the default will be "+SchedulerRestController.DEFAULT_WITH_METADATA+".")
                                           ),
                                           responseFields(
                                             fieldWithPath(SecHubJobInfoForUserListPage.PROPERTY_PAGE).description("The page number"),
@@ -765,7 +854,9 @@ public class SchedulerRestControllerRestDocTest implements TestIsNecessaryForDoc
                                             fieldWithPath("content[]."+SecHubJobInfoForUser.PROPERTY_EXECUTED_BY).description("User who initiated the job"),
                                             fieldWithPath("content[]."+SecHubJobInfoForUser.PROPERTY_EXECUTION_STATE).description("Execution state of job"),
                                             fieldWithPath("content[]."+SecHubJobInfoForUser.PROPERTY_EXECUTION_RESULT).description("Execution result of job"),
-                                            fieldWithPath("content[]."+SecHubJobInfoForUser.PROPERTY_TRAFFIC_LIGHT).description("Trafficlight of job - but only available when job has been done. Possible states are "+StringUtils.arrayToDelimitedString(TrafficLight.values(),", "))
+                                            fieldWithPath("content[]."+SecHubJobInfoForUser.PROPERTY_TRAFFIC_LIGHT).description("Trafficlight of job - but only available when job has been done. Possible states are "+StringUtils.arrayToDelimitedString(TrafficLight.values(),", ")),
+                                            fieldWithPath("content[]."+SecHubJobInfoForUser.PROPERTY_METADATA+".*").optional().description("Meta data of job - but only contained in result, when query parameter `"+WITH_META_DATA.paramName()+"` is defined as 'true'."),
+                                            fieldWithPath("content[]."+SecHubJobInfoForUser.PROPERTY_METADATA+".labels.stage").ignored()// we do not want the label example to be documented - we document only the generic way
                                           )
                             )
                 );

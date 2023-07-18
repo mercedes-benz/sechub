@@ -22,6 +22,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.ListSelectionModel;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableRowSorter;
 
 public abstract class AbstractListDialogUI<T> {
 
@@ -104,7 +105,8 @@ public abstract class AbstractListDialogUI<T> {
         public void actionPerformed(ActionEvent e) {
             okPressed = true;
             int row = table.getSelectedRow();
-            selectedValue = model.getValueAt(row, getSelectionColumn());
+            int rowInModel = table.getRowSorter().convertRowIndexToModel(row);
+            selectedValue = model.getValueAt(rowInModel, getSelectionColumn());
 
             dialog.setVisible(false);
             dialog.dispose();
@@ -135,7 +137,6 @@ public abstract class AbstractListDialogUI<T> {
 
         table = new JTable(model);
         table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-        table.setPreferredSize(new Dimension(-1, 300));
         table.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
@@ -186,6 +187,9 @@ public abstract class AbstractListDialogUI<T> {
         for (Object[] rowData : data) {
             model.addRow(rowData);
         }
+
+        table.setRowSorter(new TableRowSorter<>(model));
+        table.getRowSorter().toggleSortOrder(0);
     }
 
 }

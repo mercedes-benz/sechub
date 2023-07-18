@@ -4,7 +4,9 @@ package com.mercedesbenz.sechub.integrationtest.api;
 import static org.junit.Assert.*;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.UUID;
 
 import org.slf4j.Logger;
@@ -16,6 +18,7 @@ import com.mercedesbenz.sechub.commons.model.SecHubFinding;
 import com.mercedesbenz.sechub.commons.model.SecHubMessage;
 import com.mercedesbenz.sechub.commons.model.SecHubMessageType;
 import com.mercedesbenz.sechub.commons.model.SecHubReportData;
+import com.mercedesbenz.sechub.commons.model.SecHubReportMetaData;
 import com.mercedesbenz.sechub.commons.model.SecHubReportModel;
 import com.mercedesbenz.sechub.commons.model.SecHubReportVersion;
 import com.mercedesbenz.sechub.commons.model.SecHubResult;
@@ -124,6 +127,11 @@ public class AssertReport {
             return this;
         }
 
+        public AssertFinding hasNotId(int id) {
+            autoDumper.execute(() -> assertNotEquals(id, finding.getId()));
+            return this;
+        }
+
         public AssertFinding hasName(String name) {
             autoDumper.execute(() -> assertEquals(name, finding.getName()));
             return this;
@@ -131,6 +139,11 @@ public class AssertReport {
 
         public AssertFinding hasScanType(ScanType type) {
             autoDumper.execute(() -> assertEquals(type, finding.getType()));
+            return this;
+        }
+
+        public AssertFinding hasNotScanType(ScanType type) {
+            autoDumper.execute(() -> assertNotEquals(type, finding.getType()));
             return this;
         }
 
@@ -204,6 +217,14 @@ public class AssertReport {
                 autoDumper.execute(() -> fail("No cwe id found inside finding at all!"));
             }
             autoDumper.execute(() -> assertEquals("CWE id not as expected", cweId, finding.getCweId().intValue()));
+            return this;
+        }
+
+        public AssertFinding hasNoCweId() {
+            if (finding.getCweId() != null) {
+                dump();
+                autoDumper.execute(() -> fail("CWE id found inside finding:" + finding.getCweId()));
+            }
             return this;
         }
 
@@ -288,6 +309,23 @@ public class AssertReport {
 
     public AssertReport hasJobUUID(String uuidAsString) {
         return hasJobUUID(UUID.fromString(uuidAsString));
+    }
+
+    public AssertReport hasMetaDataLabel(String key, String value) {
+        Optional<SecHubReportMetaData> metaDataOpt = report.getMetaData();
+        if (metaDataOpt.isEmpty()) {
+            fail("Meta data not found inside report!");
+        }
+        SecHubReportMetaData metaData = metaDataOpt.get();
+        Map<String, String> labels = metaData.getLabels();
+        if (!labels.containsKey(key)) {
+            fail("Meta data labels do not contain key:" + key + "\nKeys found:" + labels.keySet());
+        }
+        String foundValue = labels.get(key);
+
+        assertEquals(value, foundValue);
+
+        return this;
     }
 
     public AssertReport dump() {

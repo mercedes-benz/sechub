@@ -7,8 +7,7 @@ import "time"
 // CurrentAPIVersion - SecHub current api version
 const CurrentAPIVersion = "1.0"
 
-// DefaultSecHubConfigFile represents the name of the sechub configuration file
-// used per default when no other set
+// DefaultSecHubConfigFile - name of the default SecHub configuration file when no other is set
 const DefaultSecHubConfigFile = "sechub.json"
 
 // DefaultReportFormat - Report format if not configured differently
@@ -41,6 +40,9 @@ const DefaultTimeoutInSeconds = 120
 // MinimalTimeoutInSeconds - Minimal allowed timeout setting
 const MinimalTimeoutInSeconds = 10
 
+// SizeOfJobList - Number of latest jobs to print
+const SizeOfJobList = 20
+
 // DefaultSourceCodeExcludeDirPatterns - Define directory patterns to exclude from zip file:
 // - code in directories named "test" is not considered to end up in the binary
 // - also ignore ".git" directory
@@ -58,7 +60,7 @@ var SupportedReportFormats = []string{ReportFormatJSON, ReportFormatHTML, Report
 /* -------- Exit codes -------------- */
 /* ---------------------------------- */
 
-// ExitCodeOK means all okay...
+// ExitCodeOK means successful ended
 const ExitCodeOK = 0
 
 // ExitCodeFailed means common failure
@@ -85,35 +87,41 @@ const ExitCodeIOError = 8
 // ExitCodeInvalidConfigFile means config file is not in expected format
 const ExitCodeInvalidConfigFile = 9
 
+// ExitCodeCanceled means that the scan job has been canceled on SecHub server
+const ExitCodeCanceled = 10
+
 /* ---------------------------------- */
 /* -------- Actions ----------------- */
 /* ---------------------------------- */
 
-// scanAction name of synchron scan action
+// scanAction - name of synchron scan action
 const scanAction = "scan"
 
-// scanAsynchronAction name of asynchron scan action
+// scanAsynchronAction - name of asynchron scan action
 const scanAsynchronAction = "scanAsync"
 
-// getStatusAction name of action to get status of Job
+// getStatusAction - name of action to get status of Job
 const getStatusAction = "getStatus"
 
-// getReportAction name of action to get report (json/html) of job
+// getReportAction - name of action to get report (json/html) of job
 const getReportAction = "getReport"
 
-// getFalsePositivesAction name of action to download false-positives list (json) of project
+// getFalsePositivesAction - name of action to download false-positives list (json) of project
 const getFalsePositivesAction = "getFalsePositives"
 
-// markFalsePositivesAction name of action to define false-positives of a project and upload it to SecHub server
+// listJobsAction - name of action to list latest Jobs
+const listJobsAction = "listJobs"
+
+// markFalsePositivesAction - name of action to define false-positives of a project and upload it to SecHub server
 const markFalsePositivesAction = "markFalsePositives"
 
-// interactiveMarkFalsePositivesAction name of action to interactively define false-positives of a project and upload it to SecHub server
+// interactiveMarkFalsePositivesAction - name of action to interactively define false-positives of a project and upload it to SecHub server
 const interactiveMarkFalsePositivesAction = "interactiveMarkFalsePositives"
 
-// unmarkFalsePositivesAction name of action to undefine false-positives of a project and upload it to SecHub server
+// unmarkFalsePositivesAction - name of action to undefine false-positives of a project and upload it to SecHub server
 const unmarkFalsePositivesAction = "unmarkFalsePositives"
 
-// interactiveUnmarkFalsePositivesAction name of action to interactively remove items from false-positives list of a project and upload it to SecHub server
+// interactiveUnmarkFalsePositivesAction - name of action to interactively remove items from false-positives list of a project and upload it to SecHub server
 const interactiveUnmarkFalsePositivesAction = "interactiveUnmarkFalsePositives"
 
 // showHelpAction - name of action to display SecHub client help
@@ -138,6 +146,7 @@ const configfileOption = "configfile"
 const fileOption = "file"
 const helpOption = "help"
 const jobUUIDOption = "jobUUID"
+const labelOption = "label"
 const outputOption = "output"
 const projectOption = "project"
 const quietOption = "quiet"
@@ -172,14 +181,18 @@ const SechubIninitialWaitIntervalSecondsEnvVar = "SECHUB_INITIAL_WAIT_INTERVAL"
 // SechubKeepTempfilesEnvVar - environment variable to keep temporary files
 const SechubKeepTempfilesEnvVar = "SECHUB_KEEP_TEMPFILES"
 
+// SechubLabelsEnvVar - environment variable to define labels. Comma separated if more than one.
+// Example: "key1=value1,key2=value2"
+const SechubLabelsEnvVar = "SECHUB_LABELS"
+
+// SechubProjectEnvVar - environment variable to set the project ID
+const SechubProjectEnvVar = "SECHUB_PROJECT"
+
 // SechubQuietEnvVar - environment variable to set quiet mode
 const SechubQuietEnvVar = "SECHUB_QUIET"
 
 // SechubServerEnvVar - environment variable to set the SecHub server url
 const SechubServerEnvVar = "SECHUB_SERVER"
-
-// SechubProjectEnvVar - environment variable to set the project ID
-const SechubProjectEnvVar = "SECHUB_PROJECT"
 
 // SechubTempDir - environment variable to set the directory for temporary files
 const SechubTempDir = "SECHUB_TEMP_DIR"
@@ -201,17 +214,26 @@ const SechubWhitelistAllEnvVar = "SECHUB_WHITELIST_ALL"
 /* -------- Status ------------------ */
 /* ---------------------------------- */
 
-// ExecutionStateEnded sechub job has succesfully finished
+// Job execution states
+// as defined in sechub-commons-pds/src/main/java/com/mercedesbenz/sechub/commons/pds/data/PDSJobStatusState.java
+
+// ExecutionStateCanceled - SecHub job has been canceled
+const ExecutionStateCanceled = "CANCELED"
+
+// ExecutionStateCanceled - SecHub job has been canceled
+const ExecutionStateCancelRequested = "CANCEL_REQUESTED"
+
+// ExecutionStateEnded - SecHub job has succesfully finished
 const ExecutionStateEnded = "ENDED"
 
-// JobStatusOkay - sechub job has a report ready to download
+// JobStatusOkay - SecHub job has a report ready to download
 const JobStatusOkay = "OK"
 
 /* ---------------------------------- */
 /* -------- Validation -------------- */
 /* ---------------------------------- */
 
-// MaximumBytesOfSecHubConfig maximum byte length allowed for a sechub config file
+// MaximumBytesOfSecHubConfig - maximum byte length allowed for a SecHub config file
 const MaximumBytesOfSecHubConfig = 20000
 
 // MaximumNumberOfCMDLineArguments - maximum number of commandline args. os.Args will be capped if exceeded.

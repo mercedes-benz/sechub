@@ -27,6 +27,7 @@ type Config struct {
 	ignoreDefaultExcludes          bool
 	initialWaitIntervalNanoseconds int64
 	keepTempFiles                  bool
+	labels                         map[string]string
 	outputFileName                 string
 	outputFolder                   string
 	outputLocation                 string
@@ -50,14 +51,12 @@ type Config struct {
 var configFromInit Config = Config{
 	configFilePath:                 DefaultSecHubConfigFile,
 	initialWaitIntervalNanoseconds: int64(DefaultinitialWaitIntervalSeconds * time.Second),
+	labels:                         map[string]string{},
 	reportFormat:                   DefaultReportFormat,
 	tempDir:                        DefaultTempDir,
 	timeOutSeconds:                 DefaultTimeoutInSeconds,
 	waitSeconds:                    DefaultWaitTime,
 }
-
-var flagHelp bool
-var flagVersion bool
 
 var missingFieldHelpTexts = map[string]string{
 	"server":         "Server URL is missing. Can be defined with option '-server' or in environment variable " + SechubServerEnvVar + " or in config file.",
@@ -78,13 +77,19 @@ func prepareOptionsFromCommandline(config *Config) {
 	flag.StringVar(&config.apiToken,
 		apitokenOption, config.apiToken, "The api token - Mandatory. Please try to avoid '-apitoken' parameter for security reasons. Use environment variable "+SechubApitokenEnvVar+" instead!")
 	flag.StringVar(&config.configFilePath,
-		configfileOption, config.configFilePath, "Path to sechub config file")
+		configfileOption, config.configFilePath, "Path to SecHub config file")
 	flag.StringVar(&config.file,
 		fileOption, "", "Defines file to read from for actions '"+markFalsePositivesAction+"' or '"+interactiveMarkFalsePositivesAction+"' or '"+unmarkFalsePositivesAction+"'")
-	flag.BoolVar(&flagHelp,
-		helpOption, false, "Shows help and terminates")
 	flag.StringVar(&config.secHubJobUUID,
-		jobUUIDOption, "", "SecHub job uuid - Mandatory for actions '"+getStatusAction+"' or '"+getReportAction+"'")
+		jobUUIDOption, "", "SecHub job uuid - Optional for actions '"+getStatusAction+"' or '"+getReportAction+"'")
+	flag.Func(labelOption, "Define a `SecHub label` for the scan job. (Example: \"key1=value1\") Repeat to define multiple labels.", func(s string) error {
+		var err error
+		config.labels, err = addLabelToList(config.labels, s, true)
+		if err != nil {
+			return err
+		}
+		return nil
+	})
 	flag.StringVar(&config.outputLocation,
 		outputOption, "", "Where to place reports, false-positive files etc. Can be a directory, a file name or a file path. (Defaults to current directory)")
 	flag.StringVar(&config.projectID,
@@ -94,7 +99,7 @@ func prepareOptionsFromCommandline(config *Config) {
 	flag.StringVar(&config.reportFormat,
 		reportformatOption, config.reportFormat, "Output format for reports, supported currently: "+fmt.Sprint(SupportedReportFormats)+".")
 	flag.StringVar(&config.server,
-		serverOption, config.server, "Server url of sechub server to use - e.g. 'https://sechub.example.com:8443'. Mandatory, but can also be defined in environment variable "+SechubServerEnvVar+" or in config file")
+		serverOption, config.server, "Server url of SecHub server to use - e.g. 'https://sechub.example.com:8443'.\nMandatory, but can also be defined in environment variable "+SechubServerEnvVar+" or in config file")
 	flag.BoolVar(&config.stopOnYellow,
 		stopOnYellowOption, config.stopOnYellow, "Makes a yellow traffic light in the scan also break the build")
 	flag.StringVar(&config.tempDir,
@@ -103,13 +108,12 @@ func prepareOptionsFromCommandline(config *Config) {
 		timeoutOption, config.timeOutSeconds, "Timeout for network communication in seconds.")
 	flag.StringVar(&config.user,
 		userOption, config.user, "User id - Mandatory, but can also be defined in environment variable "+SechubUserIDEnvVar+" or in config file")
-	flag.BoolVar(&flagVersion,
-		versionOption, false, "Shows version info and terminates")
 	flag.IntVar(&config.waitSeconds,
-		waitOption, config.waitSeconds, "Maximum wait time in seconds - For status checks of action='"+scanAction+"' and for retries of HTTP calls. Can also be defined in environment variable "+SechubWaittimeDefaultEnvVar)
+		waitOption, config.waitSeconds, "Maximum wait time in seconds - For status checks of action='"+scanAction+"' and for retries of HTTP calls.\nCan also be defined in environment variable "+SechubWaittimeDefaultEnvVar)
 }
 
 func parseConfigFromEnvironment(config *Config) {
+	var err error
 	apiTokenFromEnv :=
 		os.Getenv(SechubApitokenEnvVar)
 	config.debug =
@@ -120,6 +124,8 @@ func parseConfigFromEnvironment(config *Config) {
 		os.Getenv(SechubIgnoreDefaultExcludesEnvVar) == "true" // make it possible to switch off default excludes
 	config.keepTempFiles =
 		os.Getenv(SechubKeepTempfilesEnvVar) == "true"
+	labelsRawDataFromEnv :=
+		os.Getenv(SechubLabelsEnvVar)
 	config.quiet =
 		os.Getenv(SechubQuietEnvVar) == "true"
 	config.trustAll =
@@ -150,6 +156,15 @@ func parseConfigFromEnvironment(config *Config) {
 			sechubUtil.LogWarning(fmt.Sprintf("Could not parse '%v' as number (read from $%s)", initialWaitIntervalFromEnv, SechubIninitialWaitIntervalSecondsEnvVar))
 		}
 	}
+	if labelsRawDataFromEnv != "" {
+		labelsFromEnv := strings.Split(labelsRawDataFromEnv, ",")
+		for _, labelDefinition := range labelsFromEnv {
+			config.labels, err = addLabelToList(config.labels, labelDefinition, false)
+			if err != nil {
+				sechubUtil.LogWarning(fmt.Sprintf("Parse error of environment variable '%s' as labels: %s)", SechubLabelsEnvVar, err))
+			}
+		}
+	}
 	if projectFromEnv != "" {
 		config.projectID = projectFromEnv
 	}
@@ -177,26 +192,29 @@ func NewConfigByFlags() *Config {
 	// Parse command line options
 	flag.Parse()
 
-	if flagHelp {
+	if len(flag.Args()) == 0 {
+		// Default: Show help if no action is given
 		configFromInit.action = showHelpAction
-	} else if flagVersion {
-		configFromInit.action = showVersionAction
 	} else {
-		if len(flag.Args()) == 0 {
-			// Default: Show help if no action is given
-			configFromInit.action = showHelpAction
-		} else {
-			// read `action` from commandline
-			configFromInit.action = flag.Arg(0)
-		}
+		// read `action` from commandline
+		configFromInit.action = flag.Arg(0)
 	}
 
 	return &configFromInit
 }
 
-func assertValidConfig(config *Config) {
-	if config.trustAll {
-		if !config.quiet {
+func assertValidConfig(context *Context) {
+	// Nothing to check if help output is requested
+	if context.config.action == showHelpAction {
+		if len(os.Args) > 1 {
+			// If flags are set then claim missing action
+			sechubUtil.LogError("SecHub action not set.\n")
+		}
+		return
+	}
+
+	if context.config.trustAll {
+		if !context.config.quiet {
 			sechubUtil.LogWarning("Configured to trust all - means unknown service certificate is accepted. Don't use this in production!")
 		}
 	}
@@ -210,6 +228,7 @@ func assertValidConfig(config *Config) {
 		getStatusAction:                       {"server", "user", "apiToken", "projectID", "secHubJobUUID"},
 		getReportAction:                       {"server", "user", "apiToken", "projectID", "secHubJobUUID"},
 		getFalsePositivesAction:               {"server", "user", "apiToken", "projectID"},
+		listJobsAction:                        {"server", "user", "apiToken", "projectID"},
 		markFalsePositivesAction:              {"server", "user", "apiToken", "projectID", "file"},
 		unmarkFalsePositivesAction:            {"server", "user", "apiToken", "projectID", "file"},
 		interactiveMarkFalsePositivesAction:   {"server", "user", "apiToken", "projectID"},
@@ -218,46 +237,70 @@ func assertValidConfig(config *Config) {
 		showVersionAction:                     {},
 	}
 
-	/* --------------------------------------------------
-	 * 					Validation
-	 * --------------------------------------------------
-	 */
-	if config.action == "" {
-		sechubUtil.LogError("sechub action not set")
+	// --------------------------------------------------
+	//  Validation
+	// --------------------------------------------------
+
+	// Check if one valid action is specified
+	var detectedActions []string
+	for action, _ := range checklist {
+		for _, arg := range os.Args {
+			if arg == action {
+				detectedActions = append(detectedActions, action)
+			}
+		}
+	}
+	if len(detectedActions) == 0 {
+		sechubUtil.LogError("SecHub action not set or unknown action.")
+	} else if len(detectedActions) > 1 {
+		sechubUtil.LogError(fmt.Sprint("Multiple actions set: ", detectedActions, ". Only one action is possible."))
+	}
+	if len(detectedActions) != 1 {
 		showHelpHint()
 		os.Exit(ExitCodeMissingParameter)
 	}
 
+	// Check mandatory fields for the requested action
 	errorsFound := false
-	if mandatoryFields, ok := checklist[config.action]; ok {
+	if mandatoryFields, ok := checklist[context.config.action]; ok {
 		for _, fieldname := range mandatoryFields {
-			if !isConfigFieldFilled(config, fieldname) {
+			// Try to get latest secHubJobUUID from server if not provided
+			if fieldname == "secHubJobUUID" && context.config.secHubJobUUID == "" {
+				switch context.config.action {
+				case getReportAction:
+					// Get job UUID from latest ended job
+					context.config.secHubJobUUID = getLatestSecHubJobUUID(context, ExecutionStateEnded)
+					sechubUtil.Log("Using latest finished job: "+context.config.secHubJobUUID, context.config.quiet)
+				default:
+					// Get job UUID from latest job (any state)
+					context.config.secHubJobUUID = getLatestSecHubJobUUID(context)
+				}
+			}
+
+			if !isConfigFieldFilled(context.config, fieldname) {
 				errorsFound = true
 			}
 		}
-	} else {
-		sechubUtil.LogError("Unknown action: '" + config.action + "'")
+	}
+
+	if !validateRequestedReportFormat(context.config) {
+		errorsFound = true
+	}
+	if !validateTempDir(context.config) {
+		errorsFound = true
+	}
+	if !validateOutputLocation(context.config) {
 		errorsFound = true
 	}
 
-	if !validateRequestedReportFormat(config) {
-		errorsFound = true
-	}
-	if !validateTempDir(config) {
-		errorsFound = true
-	}
-	if !validateOutputLocation(config) {
-		errorsFound = true
-	}
-
-	if config.action == interactiveMarkFalsePositivesAction && config.file == "" {
+	if context.config.action == interactiveMarkFalsePositivesAction && context.config.file == "" {
 		// Let's try to find the latest report (default naming scheme) and take this as file
-		config.file = sechubUtil.FindNewestMatchingFileInDir("sechub_report_"+config.projectID+"_.+\\.json$", ".", config.debug)
-		if config.file == "" {
+		context.config.file = sechubUtil.FindNewestMatchingFileInDir("sechub_report_"+context.config.projectID+"_.+\\.json$", ".", context.config.debug)
+		if context.config.file == "" {
 			sechubUtil.LogError("An input file is needed for action '" + interactiveMarkFalsePositivesAction + "'. Please define input file with -file option.")
 			errorsFound = true
 		} else {
-			fmt.Printf("Using latest report file %q.\n", config.file)
+			fmt.Printf("Using latest report file %q.\n", context.config.file)
 		}
 	}
 
@@ -267,19 +310,19 @@ func assertValidConfig(config *Config) {
 	}
 
 	// For convenience: lowercase user id and project id if needed
-	config.user = lowercaseOrNotice(config.user, "user id")
-	config.projectID = lowercaseOrNotice(config.projectID, "project id")
+	context.config.user = lowercaseOrNotice(context.config.user, "user id")
+	context.config.projectID = lowercaseOrNotice(context.config.projectID, "project id")
 
 	// Remove trailing slash from url if present
-	config.server = strings.TrimSuffix(config.server, "/")
+	context.config.server = strings.TrimSuffix(context.config.server, "/")
 
-	config.initialWaitIntervalNanoseconds = validateInitialWaitIntervalOrWarning(config.initialWaitIntervalNanoseconds)
+	context.config.initialWaitIntervalNanoseconds = validateInitialWaitIntervalOrWarning(context.config.initialWaitIntervalNanoseconds)
 
-	config.waitSeconds = validateWaitTimeOrWarning(config.waitSeconds)
-	config.waitNanoseconds = int64(config.waitSeconds) * int64(time.Second)
+	context.config.waitSeconds = validateWaitTimeOrWarning(context.config.waitSeconds)
+	context.config.waitNanoseconds = int64(context.config.waitSeconds) * int64(time.Second)
 
-	config.timeOutSeconds = validateTimeoutOrWarning(config.timeOutSeconds)
-	config.timeOutNanoseconds = int64(config.timeOutSeconds) * int64(time.Second)
+	context.config.timeOutSeconds = validateTimeoutOrWarning(context.config.timeOutSeconds)
+	context.config.timeOutNanoseconds = int64(context.config.timeOutSeconds) * int64(time.Second)
 }
 
 // isConfigFieldFilled checks if field is not empty or is 'true' in case of boolean type
@@ -303,8 +346,7 @@ func validateRequestedReportFormat(config *Config) bool {
 	return true
 }
 
-// normalizeCMDLineArgs - Make sure that the `action` is last in the argument list
-//                        Otherwise flag.Parse() will not work properly.
+// normalizeCMDLineArgs - Make sure that the `action` is last in the argument list. Otherwise flag.Parse() will not work properly.
 func normalizeCMDLineArgs(args []string) []string {
 	if len(args) == 1 {
 		return args

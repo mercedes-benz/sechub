@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.pds.job;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -72,6 +73,9 @@ class PDSWorkspacePreparationContextFactoryTest {
         assertTrue(result.isBinaryAccepted());
         assertTrue(result.isSourceAccepted());
         assertFalse(result.isNoneAccepted());
+
+        assertFalse(result.isExtractedSourceAvailable());
+        assertFalse(result.isExtractedBinaryAvailable());
 
     }
 

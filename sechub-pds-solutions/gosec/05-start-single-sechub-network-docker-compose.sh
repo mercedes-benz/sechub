@@ -2,14 +2,14 @@
 # SPDX-License-Identifier: MIT
 
 cd $(dirname "$0")
-source "../shared/scripts/9999-helper.sh"
+source "../../sechub-solutions-shared/scripts/9999-env-file-helper.sh"
 
 ENVIRONMENT_FILES_FOLDER="../shared/environment"
 ENVIRONMENT_FILE=".env-single"
 
 # Only variables from .env can be used in the Docker-Compose file
 # all other variables are only available in the container
-setup_environment_file ".env" "env"
+setup_environment_file ".env" "env" "$ENVIRONMENT_FILES_FOLDER/env-base-image"
 setup_environment_file "$ENVIRONMENT_FILE" "$ENVIRONMENT_FILES_FOLDER/env-base"
 
 # Use Docker BuildKit
