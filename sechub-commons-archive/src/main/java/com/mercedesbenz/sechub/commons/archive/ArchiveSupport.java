@@ -45,6 +45,7 @@ public class ArchiveSupport {
     private static final Logger LOG = LoggerFactory.getLogger(ArchiveSupport.class);
 
     private ArchiveTransformationDataFactory archiveTransformationDataFactory;
+    private boolean createMissingFiles;
 
     public ArchiveSupport() {
         this.archiveTransformationDataFactory = new ArchiveTransformationDataFactory();
@@ -84,6 +85,10 @@ public class ArchiveSupport {
         }
     }
 
+    public void setCreateMissingFiles(boolean createPseudoFilesForMissingFiles) {
+        this.createMissingFiles = createPseudoFilesForMissingFiles;
+    }
+
     /**
      * Creates all necessary archives for a given SecHub configuration
      *
@@ -121,6 +126,9 @@ public class ArchiveSupport {
         } catch (Exception e) {
             StringBuilder sb = new StringBuilder();
             sb.append("Create of archives failed");
+            if (e instanceof IOException) {
+                sb.append(" - ").append(e.getMessage());
+            }
             try {
                 deleteArchives(result);
             } catch (Exception cleanupFailure) {
@@ -186,7 +194,12 @@ public class ArchiveSupport {
                     } else {
                         file = new File(workingDirectoryRealPath.toFile(), pathAsStringFromConfiguration);
                         if (!file.exists()) {
-                            throw new FileNotFoundException("Did not found: " + pathAsStringFromConfiguration + " inside " + workingDirectory);
+                            if (createMissingFiles) {
+                                file.getParentFile().mkdirs();
+                                Files.createFile(file.toPath());
+                            } else {
+                                throw new FileNotFoundException("Did not found: " + pathAsStringFromConfiguration + " inside " + workingDirectory);
+                            }
                         }
                     }
 

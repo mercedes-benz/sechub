@@ -5,6 +5,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.nio.file.Path;
 
 import com.mercedesbenz.sechub.commons.TextFileReader;
 import com.mercedesbenz.sechub.commons.TextFileWriter;
@@ -17,6 +18,7 @@ import com.mercedesbenz.sechub.commons.model.SecHubConfigurationModelReducedClon
 import com.mercedesbenz.sechub.commons.pds.PDSDefaultParameterKeyConstants;
 import com.mercedesbenz.sechub.commons.pds.data.PDSJobData;
 import com.mercedesbenz.sechub.commons.pds.data.PDSJobParameterEntry;
+import com.mercedesbenz.sechub.pds.tools.GeneratorCommand;
 import com.mercedesbenz.sechub.pds.tools.handler.ConsoleHandler;
 import com.mercedesbenz.sechub.pds.tools.handler.PrintStreamConsoleHandler;
 
@@ -27,11 +29,6 @@ public class PDSSolutionTestFilesGenerator {
 
     private File targetFolder;
     private File originConfigFile;
-
-    public static void main(String[] args) throws Exception {
-        PDSSolutionTestFilesGenerator geno = new PDSSolutionTestFilesGenerator();
-        geno.generate(args);
-    }
 
     private ConsoleHandler consoleHandler;
     private ScanType scanType;
@@ -48,28 +45,37 @@ public class PDSSolutionTestFilesGenerator {
         this.consoleHandler = consoleHandler;
     }
 
-    /* only for command line call - so private */
-    private File generate(String[] args) throws Exception {
-        if (args.length != 2) {
-            getConsoleHandler().error("please call with ${pathToSechubConfigFile} ${scanType}");
-            throw new IllegalArgumentException("wrong number of parameters");
+    public File generate(GeneratorCommand generatorCommand) throws Exception {
+
+        File targetFolder = null;
+        String targetFolderPath = generatorCommand.getTargetFolderPath();
+        if (targetFolderPath != null && !targetFolderPath.isBlank()) {
+            targetFolder = new File(targetFolderPath);
+            if (!targetFolder.exists()) {
+                targetFolder.mkdirs();
+            }
         }
-        return generate(args[0], args[1], null);
+        File workingDirectoryFolder = null;
+        String workingDirectory = generatorCommand.getWorkingDirectory();
+
+        if (workingDirectory != null && !workingDirectory.isBlank()) {
+            workingDirectoryFolder = new File(workingDirectory);
+            if (!workingDirectoryFolder.exists()) {
+                throw new FileNotFoundException("Working directory " + workingDirectoryFolder.getAbsolutePath() + " does not exist!");
+            }
+        }
+        return generate(generatorCommand.getPathToConfigFile(), generatorCommand.getScanType(), targetFolder, workingDirectoryFolder,
+                generatorCommand.isCreateMissingFiles());
     }
 
-    /**
-     * Generates PSD solution files for development
-     *
-     * @param pathToSecHubConfigFile
-     * @param wantedScanType
-     * @return folder where files are generated into
-     * @throws Exception
-     */
-    public File generate(String pathToSecHubConfigFile, String wantedScanType, File targetFolderOrNull) throws Exception {
+    public File generate(String pathToSecHubConfigFile, String wantedScanType, File targetFolderOrNull, File workingDirectory, boolean createMissingFiles)
+            throws Exception {
         try {
 
             ensureScanType(wantedScanType);
             ensureSecHubConfiguration(pathToSecHubConfigFile);
+
+            Path workingDirectoryPath = resolveWorkingDirectory(workingDirectory);
 
             if (targetFolderOrNull != null) {
                 targetFolder = targetFolderOrNull;
@@ -83,15 +89,24 @@ public class PDSSolutionTestFilesGenerator {
             writePDSJobDataFile(recucedSecHubConfigJson);
 
             ArchiveSupport archiveSupport = new ArchiveSupport();
-            archiveSupport.createArchives(config, originConfigFile.getParentFile().toPath(), targetFolder.toPath());
+            archiveSupport.setCreateMissingFiles(createMissingFiles);
 
-            getConsoleHandler().output("Written files to:" + targetFolder.getAbsolutePath());
+            archiveSupport.createArchives(config, workingDirectoryPath, targetFolder.toPath());
+
+            getConsoleHandler().output("Written files to: " + targetFolder.getAbsolutePath());
             return targetFolder;
         } catch (Exception e) {
-            getConsoleHandler().error("Generation failed:" + e.getMessage());
+            getConsoleHandler().error("Generation failed: " + e.getMessage());
             throw e;
         }
 
+    }
+
+    private Path resolveWorkingDirectory(File workingDirectory) {
+        if (workingDirectory != null) {
+            return workingDirectory.toPath();
+        }
+        return originConfigFile.getParentFile().toPath();
     }
 
     private void writeSecHubConfigurationToTempFolder() throws JSONConverterException, IOException {

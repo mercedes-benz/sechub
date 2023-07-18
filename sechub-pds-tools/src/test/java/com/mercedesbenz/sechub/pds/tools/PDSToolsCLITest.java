@@ -4,6 +4,7 @@ package com.mercedesbenz.sechub.pds.tools;
 import static org.junit.jupiter.api.Assertions.*;
 
 import java.io.File;
+import java.nio.file.Files;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -45,7 +46,7 @@ class PDSToolsCLITest {
     @Test
     void generate_without_parameter_1_fails_with_exit_3() throws Exception {
 
-        TestExitException exception = assertThrows(TestExitException.class, () -> cliToTest.start(new String[] { "--generate" }));
+        TestExitException exception = assertThrows(TestExitException.class, () -> cliToTest.start(new String[] { "generate" }));
 
         assertEquals(3, exception.getExitCode());
     }
@@ -53,7 +54,7 @@ class PDSToolsCLITest {
     @Test
     void generate_without_parameter_2_fails_with_exit_3() throws Exception {
 
-        TestExitException exception = assertThrows(TestExitException.class, () -> cliToTest.start(new String[] { "--generate", "1" }));
+        TestExitException exception = assertThrows(TestExitException.class, () -> cliToTest.start(new String[] { "generate", "1" }));
 
         assertEquals(3, exception.getExitCode());
     }
@@ -63,9 +64,12 @@ class PDSToolsCLITest {
         /* prepare */
         File testConfigFile = new File("./src/test/resources/test_codescan_example1.json");
         String scanType = "codeScan";
+        File definedWorkingFolder = new File("./build/tmp/pds-tools/" + System.currentTimeMillis() + "_working_folder");
+        Files.createDirectories(definedWorkingFolder.toPath());
 
         /* execute */
-        cliToTest.start(new String[] { "--generate", testConfigFile.getAbsolutePath(), scanType });
+        cliToTest.start(new String[] { "generate", "-w", definedWorkingFolder.getAbsolutePath(), "-p", testConfigFile.getAbsolutePath(), "-s", scanType,
+                "--createMissingFiles" });
     }
 
     @Test
@@ -74,19 +78,21 @@ class PDSToolsCLITest {
         File testConfigFile = new File("./src/test/resources/test_codescan_example1.json");
         String scanType = "codeScan";
 
-        File tmpFolder = new File("./build/tmp/pds-tools/" + System.currentTimeMillis());
+        long timestamp = System.currentTimeMillis();
+        File definedTargetFolder = new File("./build/tmp/pds-tools/" + timestamp + "_target_folder");
+        File definedWorkingFolder = new File("./build/tmp/pds-tools/" + timestamp + "_working_folder");
+        Files.createDirectories(definedWorkingFolder.toPath());
 
         /* execute */
-        cliToTest.start(new String[] { "--generate", testConfigFile.getAbsolutePath(), scanType, tmpFolder.getAbsolutePath() });
+        cliToTest.start(new String[] { "generate", "--createMissingFiles", "-w", definedWorkingFolder.getAbsolutePath(), "-p", testConfigFile.getAbsolutePath(),
+                "-s", scanType, "-t", definedTargetFolder.getAbsolutePath() });
 
         /* test */
-        assertFileExists(tmpFolder, "extracted");
-
-        assertFileExists(tmpFolder, "binaries.tar");
-        assertFileExists(tmpFolder, "sourcecode.zip");
-        assertFileExists(tmpFolder, "pdsJobData.json");
-        assertFileExists(tmpFolder, "original-used-sechub-configfile.json");
-        assertFileExists(tmpFolder, "reducedSecHubJson_for_codeScan.json");
+        assertFileExists(definedTargetFolder, "binaries.tar");
+        assertFileExists(definedTargetFolder, "sourcecode.zip");
+        assertFileExists(definedTargetFolder, "pdsJobData.json");
+        assertFileExists(definedTargetFolder, "original-used-sechub-configfile.json");
+        assertFileExists(definedTargetFolder, "reducedSecHubJson_for_codeScan.json");
     }
 
     private void assertFileExists(File tmpFolder, String fileName) {
