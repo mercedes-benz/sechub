@@ -5,6 +5,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -16,7 +17,6 @@ import org.junit.jupiter.params.provider.EnumSource;
 import com.mercedesbenz.sechub.commons.model.ScanType;
 import com.mercedesbenz.sechub.commons.model.SecHubConfigurationModel;
 import com.mercedesbenz.sechub.commons.model.SecHubWebScanConfiguration;
-import com.mercedesbenz.sechub.sereco.metadata.SerecoMetaData;
 import com.mercedesbenz.sechub.sereco.metadata.SerecoVulnerability;
 import com.mercedesbenz.sechub.sereco.metadata.SerecoWeb;
 import com.mercedesbenz.sechub.sharedkernel.configuration.SecHubConfiguration;
@@ -27,53 +27,59 @@ class SensitiveDataMaskingServiceTest {
     private static final String SECHUB_WEBSCAN_CONFIG_FILE_WITH_SENSITIVE_HEADERS = "src/test/resources/sechub-config-examples/sechub_webscan_config_with_sensitive_headers.json";
     private static final String SECHUB_WEBSCAN_CONFIG_FILE_WITHOUT_SENSITIVE_HEADERS = "src/test/resources/sechub-config-examples/sechub_webscan_config_without_sensitive_headers.json";
 
-    private static final String SARIF_2_1_0_OWASP_ZAP_REPORT_FILE_WITH_SENSITIVE_HEADERS = "src/test/resources/sarif/sarif_2.1.0_owasp_zap_with_sensitive_headers.json";
-    private static final String SARIF_2_1_0_OWASP_ZAP_REPORT_FILE_WITHOUT_SENSITIVE_HEADERS = "src/test/resources/sarif/sarif_2.1.0_owasp_zap_without_sensitive_headers.json";
-    private static final String SARIF_2_1_0_OWASP_ZAP_EMPTY_REPORT_FILE = "src/test/resources/sarif/sarif_2.1.0_owasp_zap_empty_report.json";
-
     private SensitiveDataMaskingService serviceToTest;
-
-    private SarifV1JSONImporter importer;
 
     @BeforeEach
     void beforeEach() {
-        importer = new SarifV1JSONImporter();
         serviceToTest = new SensitiveDataMaskingService();
+    }
+
+    @Test
+    void sechub_scan_config_is_null_results_in_illegal_argument_exception() {
+        /* execute */
+        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> serviceToTest.maskSensitiveData(null, new ArrayList<>()));
+
+        /* test */
+        assertEquals("Cannot mask sensitive data because the sechub configuration was null!", exception.getMessage());
+    }
+
+    @Test
+    void list_of_sereco_vulnerabilities_is_null_results_in_illegal_argument_exception() {
+        /* execute */
+        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class,
+                () -> serviceToTest.maskSensitiveData(new SecHubConfigurationModel(), null));
+
+        /* test */
+        assertEquals("Cannot mask sensitive data because the list of sereco vulnerabilities is null!", exception.getMessage());
     }
 
     @Test
     void sensitive_headers_are_filtered_case_insensitive() throws IOException {
         /* prepare */
-        String sechubConfigJson = TestFileReader.loadTextFile(SECHUB_WEBSCAN_CONFIG_FILE_WITH_SENSITIVE_HEADERS);
-        SecHubConfigurationModel scanConfigWithSensitiveHeaders = SecHubConfiguration.createFromJSON(sechubConfigJson);
-
-        String sarifReport = TestFileReader.loadTextFile(SARIF_2_1_0_OWASP_ZAP_REPORT_FILE_WITH_SENSITIVE_HEADERS);
-        SerecoMetaData data = importer.importResult(sarifReport, ScanType.WEB_SCAN);
+        SecHubConfigurationModel scanConfigWithSensitiveHeaders = createConfigWithSensitive();
+        List<SerecoVulnerability> vulnerabilities = createListOfVulnerabilitiesWithSensitiveHeaders();
 
         /* execute */
-        List<SerecoVulnerability> maskedVulnerabilities = serviceToTest.maskSensitiveData(scanConfigWithSensitiveHeaders, data.getVulnerabilities());
+        List<SerecoVulnerability> maskedVulnerabilities = serviceToTest.maskSensitiveData(scanConfigWithSensitiveHeaders, vulnerabilities);
 
         /* test */
-        assertEquals(14, maskedVulnerabilities.size());
+        assertEquals(vulnerabilities.size(), maskedVulnerabilities.size());
         assertHeaderWasMasked("authorization", maskedVulnerabilities);
-        assertHeaderWasMasked("Api-Key", maskedVulnerabilities);
-        assertHeaderWasNotMasked("x-file-size", "123456", maskedVulnerabilities);
+        assertHeaderWasMasked("api-key", maskedVulnerabilities);
+        assertHeaderWasNotMasked("custom-header", "non-secret-value", maskedVulnerabilities);
     }
 
     @Test
     void non_sensitive_headers_are_not_changed() throws IOException {
         /* prepare */
-        String sechubConfigJson = TestFileReader.loadTextFile(SECHUB_WEBSCAN_CONFIG_FILE_WITHOUT_SENSITIVE_HEADERS);
-        SecHubConfigurationModel scanConfigWithoutSensitiveHeaders = SecHubConfiguration.createFromJSON(sechubConfigJson);
-
-        String sarifReport = TestFileReader.loadTextFile(SARIF_2_1_0_OWASP_ZAP_REPORT_FILE_WITHOUT_SENSITIVE_HEADERS);
-        SerecoMetaData data = importer.importResult(sarifReport, ScanType.WEB_SCAN);
+        SecHubConfigurationModel scanConfigWithoutSensitiveHeaders = createConfigWithOutSensitive();
+        List<SerecoVulnerability> vulnerabilities = createListOfVulnerabilitiesWithoutSensitiveHeaders();
 
         /* execute */
-        List<SerecoVulnerability> maskedVulnerabilities = serviceToTest.maskSensitiveData(scanConfigWithoutSensitiveHeaders, data.getVulnerabilities());
+        List<SerecoVulnerability> maskedVulnerabilities = serviceToTest.maskSensitiveData(scanConfigWithoutSensitiveHeaders, vulnerabilities);
 
         /* test */
-        assertEquals(14, maskedVulnerabilities.size());
+        assertEquals(vulnerabilities.size(), maskedVulnerabilities.size());
         assertHeaderWasNotMasked("x-file-size", "123456", maskedVulnerabilities);
         assertHeaderWasNotMasked("custom-header", "non-secret-value", maskedVulnerabilities);
     }
@@ -81,15 +87,14 @@ class SensitiveDataMaskingServiceTest {
     @Test
     void vulnerabilities_not_changed_when_no_web_scan_config_is_defined() throws IOException {
         /* prepare */
-        String sarifReport = TestFileReader.loadTextFile(SARIF_2_1_0_OWASP_ZAP_REPORT_FILE_WITH_SENSITIVE_HEADERS);
-        SerecoMetaData data = importer.importResult(sarifReport, ScanType.WEB_SCAN);
         SecHubConfigurationModel sechubConfigWithoutWebScan = new SecHubConfigurationModel();
+        List<SerecoVulnerability> vulnerabilities = createListOfVulnerabilitiesWithSensitiveHeaders();
 
         /* execute */
-        List<SerecoVulnerability> maskedVulnerabilities = serviceToTest.maskSensitiveData(sechubConfigWithoutWebScan, data.getVulnerabilities());
+        List<SerecoVulnerability> maskedVulnerabilities = serviceToTest.maskSensitiveData(sechubConfigWithoutWebScan, vulnerabilities);
 
         /* test */
-        assertEquals(data.getVulnerabilities(), maskedVulnerabilities);
+        assertEquals(vulnerabilities, maskedVulnerabilities);
     }
 
     @Test
@@ -97,76 +102,121 @@ class SensitiveDataMaskingServiceTest {
         /* prepare */
         SecHubConfigurationModel scanConfigWithoutHeaders = new SecHubConfigurationModel();
         scanConfigWithoutHeaders.setWebScan(new SecHubWebScanConfiguration());
-
-        String sarifReport = TestFileReader.loadTextFile(SARIF_2_1_0_OWASP_ZAP_REPORT_FILE_WITH_SENSITIVE_HEADERS);
-        SerecoMetaData data = importer.importResult(sarifReport, ScanType.WEB_SCAN);
+        List<SerecoVulnerability> vulnerabilities = createListOfVulnerabilitiesWithSensitiveHeaders();
 
         /* execute */
-        List<SerecoVulnerability> maskedVulnerabilities = serviceToTest.maskSensitiveData(scanConfigWithoutHeaders, data.getVulnerabilities());
+        List<SerecoVulnerability> maskedVulnerabilities = serviceToTest.maskSensitiveData(scanConfigWithoutHeaders, vulnerabilities);
 
         /* test */
-        assertEquals(data.getVulnerabilities(), maskedVulnerabilities);
+        assertEquals(vulnerabilities, maskedVulnerabilities);
     }
 
     @Test
     void empty_sarif_report_with_no_findings_handled_without_changing_anything() throws IOException {
         /* prepare */
-        String sechubConfigJson = TestFileReader.loadTextFile(SECHUB_WEBSCAN_CONFIG_FILE_WITH_SENSITIVE_HEADERS);
-        SecHubConfigurationModel scanConfig = SecHubConfiguration.createFromJSON(sechubConfigJson);
-
-        String sarifReport = TestFileReader.loadTextFile(SARIF_2_1_0_OWASP_ZAP_EMPTY_REPORT_FILE);
-        SerecoMetaData data = importer.importResult(sarifReport, ScanType.WEB_SCAN);
+        SecHubConfigurationModel scanConfig = createConfigWithSensitive();
+        List<SerecoVulnerability> vulnerabilities = new ArrayList<>();
 
         /* execute */
-        List<SerecoVulnerability> maskedVulnerabilities = serviceToTest.maskSensitiveData(scanConfig, data.getVulnerabilities());
+        List<SerecoVulnerability> maskedVulnerabilities = serviceToTest.maskSensitiveData(scanConfig, vulnerabilities);
 
         /* test */
-        assertEquals(data.getVulnerabilities(), maskedVulnerabilities);
+        assertEquals(vulnerabilities, maskedVulnerabilities);
     }
 
     @ParameterizedTest
     @EnumSource(value = ScanType.class, names = { "WEB_SCAN" }, mode = EnumSource.Mode.EXCLUDE)
     void wrong_scan_type_results_in_unchanged_vulnerabilities(ScanType scanType) {
         /* prepare */
-        String sechubConfigJson = TestFileReader.loadTextFile(SECHUB_WEBSCAN_CONFIG_FILE_WITH_SENSITIVE_HEADERS);
-        SecHubConfigurationModel scanConfigWithSensitiveHeaders = SecHubConfiguration.createFromJSON(sechubConfigJson);
+        SecHubConfigurationModel scanConfigWithSensitiveHeaders = createConfigWithSensitive();
 
         SerecoVulnerability vulnerability = mock(SerecoVulnerability.class);
         vulnerability.setWeb(new SerecoWeb());
-        SerecoMetaData data = new SerecoMetaData();
-        data.getVulnerabilities().add(vulnerability);
+        List<SerecoVulnerability> vulnerabilities = new ArrayList<>();
+        vulnerabilities.add(vulnerability);
 
         when(vulnerability.getScanType()).thenReturn(scanType);
 
         /* execute */
-        List<SerecoVulnerability> maskedVulnerabilities = serviceToTest.maskSensitiveData(scanConfigWithSensitiveHeaders, data.getVulnerabilities());
+        List<SerecoVulnerability> maskedVulnerabilities = serviceToTest.maskSensitiveData(scanConfigWithSensitiveHeaders, vulnerabilities);
 
         /* test */
-        assertEquals(data.getVulnerabilities(), maskedVulnerabilities);
+        assertEquals(vulnerabilities, maskedVulnerabilities);
         verify(vulnerability, times(1)).getScanType();
         verify(vulnerability, never()).getWeb();
     }
 
     @Test
-    void empty_web_part_results_in_unchanged_vulnerabilities() {
+    void null_web_part_results_in_unchanged_vulnerabilities() {
         /* prepare */
-        String sechubConfigJson = TestFileReader.loadTextFile(SECHUB_WEBSCAN_CONFIG_FILE_WITH_SENSITIVE_HEADERS);
-        SecHubConfigurationModel scanConfigWithSensitiveHeaders = SecHubConfiguration.createFromJSON(sechubConfigJson);
+        SecHubConfigurationModel scanConfigWithSensitiveHeaders = createConfigWithSensitive();
 
         SerecoVulnerability vulnerability = mock(SerecoVulnerability.class);
         vulnerability.setWeb(null);
-        SerecoMetaData data = new SerecoMetaData();
-        data.getVulnerabilities().add(vulnerability);
+        List<SerecoVulnerability> vulnerabilities = new ArrayList<>();
+        vulnerabilities.add(vulnerability);
 
         when(vulnerability.getScanType()).thenReturn(ScanType.WEB_SCAN);
 
         /* execute */
-        List<SerecoVulnerability> maskedVulnerabilities = serviceToTest.maskSensitiveData(scanConfigWithSensitiveHeaders, data.getVulnerabilities());
+        List<SerecoVulnerability> maskedVulnerabilities = serviceToTest.maskSensitiveData(scanConfigWithSensitiveHeaders, vulnerabilities);
 
         /* test */
-        assertEquals(data.getVulnerabilities(), maskedVulnerabilities);
+        assertEquals(vulnerabilities, maskedVulnerabilities);
         verify(vulnerability, times(1)).getScanType();
         verify(vulnerability, times(1)).getWeb();
+    }
+
+    private List<SerecoVulnerability> createListOfVulnerabilitiesWithSensitiveHeaders() {
+        List<SerecoVulnerability> vulnerabilities = new ArrayList<>();
+        SerecoVulnerability serecoVuln = new SerecoVulnerability();
+
+        serecoVuln.setScanType(ScanType.WEB_SCAN);
+        SerecoWeb web = new SerecoWeb();
+        web.getRequest().getHeaders().put("Authorization", "Bearer secret-token");
+        web.getRequest().getHeaders().put("Api-Key", "secret-key");
+        web.getRequest().getHeaders().put("Custom-Header", "non-secret-value");
+
+        web.getResponse().getHeaders().put("Authorization", "Bearer secret-token");
+        web.getResponse().getHeaders().put("Api-Key", "secret-key");
+        web.getResponse().getHeaders().put("Custom-Header", "non-secret-value");
+        serecoVuln.setWeb(web);
+
+        vulnerabilities.add(serecoVuln);
+        return vulnerabilities;
+    }
+
+    private List<SerecoVulnerability> createListOfVulnerabilitiesWithoutSensitiveHeaders() {
+        List<SerecoVulnerability> vulnerabilities = new ArrayList<>();
+        SerecoVulnerability serecoVuln = new SerecoVulnerability();
+
+        serecoVuln.setScanType(ScanType.WEB_SCAN);
+        SerecoWeb web = new SerecoWeb();
+        web.getRequest().getHeaders().put("X-File-Size", "123456");
+        web.getRequest().getHeaders().put("Custom-Header", "non-secret-value");
+
+        web.getResponse().getHeaders().put("X-File-Size", "123456");
+        web.getResponse().getHeaders().put("Custom-Header", "non-secret-value");
+        serecoVuln.setWeb(web);
+
+        vulnerabilities.add(serecoVuln);
+        return vulnerabilities;
+    }
+
+    private SecHubConfigurationModel createConfigWithSensitive() {
+        return createConfiguration(true);
+    }
+
+    private SecHubConfigurationModel createConfigWithOutSensitive() {
+        return createConfiguration(false);
+    }
+
+    private SecHubConfigurationModel createConfiguration(boolean withSensitiveHeaders) {
+        String path = withSensitiveHeaders ? SECHUB_WEBSCAN_CONFIG_FILE_WITH_SENSITIVE_HEADERS : SECHUB_WEBSCAN_CONFIG_FILE_WITHOUT_SENSITIVE_HEADERS;
+
+        String sechubConfigJson = TestFileReader.loadTextFile(path);
+        SecHubConfigurationModel result = SecHubConfiguration.createFromJSON(sechubConfigJson);
+        return result;
     }
 
     private void assertHeaderWasMasked(String headerName, List<SerecoVulnerability> maskedVulnerabilities) {
@@ -174,12 +224,8 @@ class SensitiveDataMaskingServiceTest {
             Map<String, String> requestHeaders = vulnerability.getWeb().getRequest().getHeaders();
             Map<String, String> responseHeaders = vulnerability.getWeb().getResponse().getHeaders();
 
-            if (requestHeaders.containsKey(headerName)) {
-                assertEquals(SensitiveDataMaskingService.SENSITIVE_DATA_MASK, requestHeaders.get(headerName));
-            }
-            if (responseHeaders.containsKey(headerName)) {
-                assertEquals(SensitiveDataMaskingService.SENSITIVE_DATA_MASK, responseHeaders.get(headerName));
-            }
+            assertEquals(SensitiveDataMaskingService.SENSITIVE_DATA_MASK, requestHeaders.get(headerName));
+            assertEquals(SensitiveDataMaskingService.SENSITIVE_DATA_MASK, responseHeaders.get(headerName));
         }
     }
 
@@ -188,17 +234,13 @@ class SensitiveDataMaskingServiceTest {
             Map<String, String> requestHeaders = vulnerability.getWeb().getRequest().getHeaders();
             Map<String, String> responseHeaders = vulnerability.getWeb().getResponse().getHeaders();
 
-            if (requestHeaders.containsKey(headerName)) {
-                String actualHeaderValue = requestHeaders.get(headerName);
-                if (actualHeaderValue.equalsIgnoreCase(headerValue) == false) {
-                    fail("For header: '" + headerName + "' expected value: '" + headerValue + "', but got '" + actualHeaderValue + "' instead!");
-                }
+            String actualRequestHeaderValue = requestHeaders.getOrDefault(headerName, "");
+            if (actualRequestHeaderValue.equalsIgnoreCase(headerValue) == false) {
+                fail("For header: '" + headerName + "' expected value: '" + headerValue + "', but got '" + actualRequestHeaderValue + "' instead!");
             }
-            if (responseHeaders.containsKey(headerName)) {
-                String actualHeaderValue = responseHeaders.get(headerName);
-                if (actualHeaderValue.equalsIgnoreCase(headerValue) == false) {
-                    fail("For header: '" + headerName + "' expected value: '" + headerValue + "', but got '" + actualHeaderValue + "' instead!");
-                }
+            String actualResponseHeaderValue = responseHeaders.getOrDefault(headerName, "");
+            if (actualResponseHeaderValue.equalsIgnoreCase(headerValue) == false) {
+                fail("For header: '" + headerName + "' expected value: '" + headerValue + "', but got '" + actualResponseHeaderValue + "' instead!");
             }
         }
     }
