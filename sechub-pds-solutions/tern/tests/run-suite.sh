@@ -34,7 +34,7 @@ then
     do
         create_build_folder
         run_test "sechub-test-$test_case" "${test_cases[$test_case]}"
-        remove_build_folder 
+        #remove_build_folder 
     done
 else
     log_error "Unable to connect to PDS Tern."
