@@ -52,16 +52,18 @@ public class SensitiveDataMaskingService {
         return maskSensitiveHeaderData(webScanConfig.getHeaders().get(), vulnerabilities);
     }
 
-    private List<SerecoVulnerability> maskSensitiveHeaderData(List<HTTPHeaderConfiguration> httpHeaders, List<SerecoVulnerability> vulnerabilities) {
+    private List<SerecoVulnerability> maskSensitiveHeaderData(List<HTTPHeaderConfiguration> httpHeaderConfigurations,
+            List<SerecoVulnerability> vulnerabilities) {
         List<SerecoVulnerability> maskedVulnerabilities = new ArrayList<>();
         for (SerecoVulnerability serecoVulnerability : vulnerabilities) {
-            maskedVulnerabilities.add(maskHeadersInSerecoVulnerability(httpHeaders, serecoVulnerability));
+            maskedVulnerabilities.add(maskHeadersInSerecoVulnerability(httpHeaderConfigurations, serecoVulnerability));
         }
 
         return maskedVulnerabilities;
     }
 
-    private SerecoVulnerability maskHeadersInSerecoVulnerability(List<HTTPHeaderConfiguration> httpHeaders, SerecoVulnerability serecoVulnerability) {
+    private SerecoVulnerability maskHeadersInSerecoVulnerability(List<HTTPHeaderConfiguration> httpHeaderConfigurations,
+            SerecoVulnerability serecoVulnerability) {
         if (ScanType.WEB_SCAN != serecoVulnerability.getScanType()) {
             return serecoVulnerability;
         }
@@ -73,7 +75,7 @@ public class SensitiveDataMaskingService {
         Map<String, String> requestHeaders = web.getRequest().getHeaders();
         Map<String, String> responseHeaders = web.getResponse().getHeaders();
 
-        for (HTTPHeaderConfiguration httpHeaderConfiguration : httpHeaders) {
+        for (HTTPHeaderConfiguration httpHeaderConfiguration : httpHeaderConfigurations) {
             if (httpHeaderConfiguration.isSensitive()) {
                 String headerName = httpHeaderConfiguration.getName();
                 if (requestHeaders.containsKey(headerName)) {

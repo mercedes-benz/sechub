@@ -12,13 +12,15 @@ import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import com.mercedesbenz.sechub.commons.model.ScanType;
 import com.mercedesbenz.sechub.commons.model.SecHubMessage;
 import com.mercedesbenz.sechub.commons.model.SecHubMessageType;
+import com.mercedesbenz.sechub.sereco.importer.ProductImportAbility;
 import com.mercedesbenz.sechub.sereco.importer.ProductResultImporter;
-import com.mercedesbenz.sechub.sereco.importer.SarifV1JSONImporter;
 import com.mercedesbenz.sechub.sereco.importer.SensitiveDataMaskingService;
+import com.mercedesbenz.sechub.sereco.metadata.SerecoMetaData;
+import com.mercedesbenz.sechub.sereco.metadata.SerecoVulnerability;
 import com.mercedesbenz.sechub.sharedkernel.configuration.SecHubConfiguration;
-import com.mercedesbenz.sechub.test.TestFileReader;
 
 public class WorkspaceTest {
     private String projectId = "myTestProject";
@@ -67,10 +69,16 @@ public class WorkspaceTest {
         String productId = "PDS_SCANCODE";
         List<SecHubMessage> messages = List.of(info);
 
-        /* formatter:off */
-        ImportParameter importParameter = ImportParameter.builder().importData(importData).importId(importId).importProductMessages(messages)
-                .productId(productId).build();
-        /* formatter:on */
+        /* @formatter:off */
+        ImportParameter importParameter =
+
+        ImportParameter.builder().
+                importData(importData).
+                importId(importId).
+                importProductMessages(messages).
+                productId(productId).
+        build();
+        /* @formatter:on */
 
         /* execute */
         IOException exception = assertThrows(IOException.class, () -> workspace.doImport(new SecHubConfiguration(), importParameter));
@@ -84,20 +92,30 @@ public class WorkspaceTest {
         /* prepare */
         SecHubMessage info = new SecHubMessage(SecHubMessageType.INFO, "info");
         String importId = "id1";
-        String importData = TestFileReader.loadTextFile("src/test/resources/sarif/sarif_2.1.0_owasp_zap.json");
+        String importData = "{}";
         String productId = "PDS_WEBSCAN";
         List<SecHubMessage> messages = List.of(info);
 
-        /* formatter:off */
-        ImportParameter importParameter = ImportParameter.builder().importData(importData).importId(importId).importProductMessages(messages)
-                .productId(productId).build();
-        /* formatter:on */
+        /* @formatter:off */
+        ImportParameter importParameter =
+
+        ImportParameter.builder().
+                importData(importData).
+                importId(importId).
+                importProductMessages(messages).
+                productId(productId).
+        build();
+        /* @formatter:on */
+
+        ProductResultImporter mockedImporter = mock(ProductResultImporter.class);
+        when(mockedImporter.isAbleToImportForProduct(importParameter)).thenReturn(ProductImportAbility.ABLE_TO_IMPORT);
+        when(mockedImporter.importResult(importData, ScanType.WEB_SCAN)).thenReturn(new SerecoMetaData());
 
         List<ProductResultImporter> importers = new ArrayList<>();
-        importers.add(new SarifV1JSONImporter());
+        importers.add(mockedImporter);
         when(registry.getImporters()).thenReturn(importers);
 
-        doCallRealMethod().when(maskingService).maskSensitiveData(any(), any());
+        when(maskingService.maskSensitiveData(any(), any())).thenReturn(new ArrayList<SerecoVulnerability>());
 
         /* execute */
         workspace.doImport(new SecHubConfiguration(), importParameter);
