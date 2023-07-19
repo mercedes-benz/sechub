@@ -6,11 +6,11 @@ import com.mercedesbenz.sechub.commons.model.ScanType;
 public class ScanTypeCount implements Comparable<ScanTypeCount> {
 
     private ScanType scanType;
-    private int highSeverityCount;
-    private int mediumSeverityCount;
-    private int lowSeverityCount;
+    protected int highSeverityCount;
+    protected int mediumSeverityCount;
+    protected int lowSeverityCount;
 
-    private ScanTypeCount(ScanType scanType){
+    private ScanTypeCount(ScanType scanType) {
         this.scanType = scanType;
         highSeverityCount = 0;
         mediumSeverityCount = 0;
@@ -40,15 +40,15 @@ public class ScanTypeCount implements Comparable<ScanTypeCount> {
         return lowSeverityCount;
     }
 
-    public void incrementHighSeverityCount(){
+    public void incrementHighSeverityCount() {
         this.highSeverityCount++;
     }
 
-    public void incrementMediumSeverityCount(){
+    public void incrementMediumSeverityCount() {
         this.mediumSeverityCount++;
     }
 
-    public void incrementLowSeverityCount(){
+    public void incrementLowSeverityCount() {
         this.lowSeverityCount++;
     }
 

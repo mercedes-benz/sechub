@@ -1,11 +1,14 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.domain.scan;
 
+import static java.util.stream.Collectors.groupingBy;
+
 import java.io.File;
 import java.util.*;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
@@ -47,16 +50,16 @@ public class HTMLScanResultReportModelBuilder {
         }
 
         switch (trafficLight) {
-            case RED:
-                styleRed = SHOW_LIGHT;
-                break;
-            case YELLOW:
-                styleYellow = SHOW_LIGHT;
-                break;
-            case GREEN:
-                styleGreen = SHOW_LIGHT;
-                break;
-            default:
+        case RED:
+            styleRed = SHOW_LIGHT;
+            break;
+        case YELLOW:
+            styleYellow = SHOW_LIGHT;
+            break;
+        case GREEN:
+            styleGreen = SHOW_LIGHT;
+            break;
+        default:
         }
         HtmlCodeScanDescriptionSupport codeScanSupport = new HtmlCodeScanDescriptionSupport();
         SecHubResult result = report.getResult();
@@ -106,8 +109,22 @@ public class HTMLScanResultReportModelBuilder {
             model.put("jobuuid", "none");
         }
 
+        model.put("scanTypeCountSet", prepareScanTypesForModel(result.getFindings()));
+
+        model.put("redHTMLSecHubFindingList", filterFindingsForGeneralScan(result.getFindings(), codeScanEntries, List.of(Severity.HIGH)));
+        model.put("yellowHTMLSecHubFindingList", filterFindingsForGeneralScan(result.getFindings(), codeScanEntries, List.of(Severity.MEDIUM)));
+        model.put("greenHTMLSecHubFindingList", filterFindingsForGeneralScan(result.getFindings(), codeScanEntries, List.of(Severity.INFO, Severity.LOW)));
+
+        model.put("redHTMLWebScanMap", filterFindingsForWebScan(result.getFindings(), List.of(Severity.HIGH)));
+        model.put("yellowHTMLWebScanMap", filterFindingsForWebScan(result.getFindings(), List.of(Severity.MEDIUM)));
+        model.put("greenHTMLWebScanMap", filterFindingsForWebScan(result.getFindings(), List.of(Severity.INFO, Severity.LOW)));
+
+        return model;
+    }
+
+    protected Set<ScanTypeCount> prepareScanTypesForModel(List<SecHubFinding> findings) {
         Map<ScanType, ScanTypeCount> scanSummaryMap = new HashMap<>();
-        for (SecHubFinding finding : result.getFindings()) {
+        for (SecHubFinding finding : findings) {
             ScanType scanType = finding.getType();
             ScanTypeCount scanTypeCount;
             if (scanSummaryMap.containsKey(scanType)) {
@@ -120,21 +137,53 @@ public class HTMLScanResultReportModelBuilder {
         }
         Set<ScanTypeCount> scanTypeCountSet = new TreeSet<>();
         scanTypeCountSet.addAll(scanSummaryMap.values());
-        model.put("scanTypeCountSet", scanTypeCountSet);
-
-        return model;
+        return scanTypeCountSet;
     }
 
     protected void incrementScanCount(Severity severity, ScanTypeCount scanTypeCount) {
-        if (Severity.HIGH.equals(severity)) {
-            scanTypeCount.incrementHighSeverityCount();
-        }
-        if (Severity.MEDIUM.equals(severity)) {
-            scanTypeCount.incrementMediumSeverityCount();
-        }
-        if (Severity.LOW.equals(severity)) {
-            scanTypeCount.incrementLowSeverityCount();
+        switch (severity) {
+        case HIGH -> scanTypeCount.incrementHighSeverityCount();
+        case MEDIUM -> scanTypeCount.incrementMediumSeverityCount();
+        case LOW, INFO -> scanTypeCount.incrementLowSeverityCount();
         }
     }
 
+    public Map<String, List<SecHubFinding>> filterFindingsForWebScan(List<SecHubFinding> findings, List<Severity> severities) {
+        Map<String, List<SecHubFinding>> groupedFindingsByName = findings.stream().filter(finding -> severities.contains(finding.getSeverity()))
+                .filter(finding -> finding.hasScanType("webScan")).collect(groupingBy(SecHubFinding::getName));
+        Map<String, List<SecHubFinding>> groupedAndSortedFindingsByName = new TreeMap<>();
+        groupedAndSortedFindingsByName.putAll(groupedFindingsByName);
+        return groupedAndSortedFindingsByName;
+    }
+
+    public List<HTMLSecHubFinding> filterFindingsForGeneralScan(List<SecHubFinding> findings, Map<Integer, List<HTMLScanResultCodeScanEntry>> codeScanEntries,
+            List<Severity> severities) {
+        List<HTMLSecHubFinding> htmlSecHubFindings = new ArrayList<>();
+        Map<String, List<SecHubFinding>> groupedFindingsByName = findings.stream().filter(finding -> severities.contains(finding.getSeverity()))
+                .collect(groupingBy(SecHubFinding::getName));
+
+        Map<String, List<SecHubFinding>> groupedAndSortedFindingsByName = new TreeMap<>();
+        groupedAndSortedFindingsByName.putAll(groupedFindingsByName);
+
+        groupedAndSortedFindingsByName.entrySet().stream().forEach(entry -> {
+            List<SecHubFinding> findingList = entry.getValue();
+            if (!findingList.isEmpty()) {
+                SecHubFinding firstFinding = findingList.get(0);
+                HTMLSecHubFinding htmlSecHubFinding = new HTMLSecHubFinding();
+                BeanUtils.copyProperties(firstFinding, htmlSecHubFinding);
+                htmlSecHubFinding.setId(0);
+                List<HTMLScanResultCodeScanEntry> entryList = htmlSecHubFinding.getEntryList();
+                for (SecHubFinding finding : findingList) {
+                    if (!finding.hasScanType("webScan")) {
+                        List<HTMLScanResultCodeScanEntry> codeScanEntryList = codeScanEntries.get(finding.getId());
+                        for (HTMLScanResultCodeScanEntry htmlScanResultCodeScanEntry : codeScanEntryList) {
+                            entryList.add(htmlScanResultCodeScanEntry);
+                        }
+                    }
+                }
+                htmlSecHubFindings.add(htmlSecHubFinding);
+            }
+        });
+        return htmlSecHubFindings;
+    }
 }

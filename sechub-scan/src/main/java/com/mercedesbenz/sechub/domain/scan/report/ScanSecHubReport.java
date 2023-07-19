@@ -58,13 +58,6 @@ public class ScanSecHubReport implements SecHubReportData, JSONable<ScanSecHubRe
                     LOG.warn("Job uuid not found inside report result JSON, will set Job UUID from entity data");
                     model.setJobUUID(report.getSecHubJobUUID());
                 }
-
-                SecHubReportMetaData reportMetaData = new SecHubReportMetaData();
-                setMetaData(reportMetaData);
-
-                SecHubReportSummary secHubReportSummary = new SecHubReportSummary();
-                reportMetaData.setSummary(secHubReportSummary);
-
             } catch (JSONConverterException e) {
                 LOG.error("FATAL PROBLEM! Failed to create sechub result by model for job:{}", report.getSecHubJobUUID(), e);
 
@@ -97,6 +90,12 @@ public class ScanSecHubReport implements SecHubReportData, JSONable<ScanSecHubRe
             throw new IllegalStateException("Unsupported report result type:" + resultType);
         }
 
+        SecHubReportMetaData reportMetaData = new SecHubReportMetaData();
+        setMetaData(reportMetaData);
+
+        SecHubReportSummary secHubReportSummary = new SecHubReportSummary();
+        reportMetaData.setSummary(secHubReportSummary);
+
         /* calculate data */
         buildCalculatedData(report);
     }
@@ -107,16 +106,23 @@ public class ScanSecHubReport implements SecHubReportData, JSONable<ScanSecHubRe
         calculateSummary();
     }
 
-    private void calculateSummary() {
-        SecHubReportScan codeScan = model.getMetaData().get().getSummary().getCodeScan();
-        SecHubReportScan infraScan = model.getMetaData().get().getSummary().getInfraScan();
-        SecHubReportScan webScan = model.getMetaData().get().getSummary().getWebScan();
+    protected void calculateSummary() {
+        SecHubReportMetaDataSummary codeScan = model.getMetaData().get().getSummary().getCodeScan();
+        SecHubReportMetaDataSummary infraScan = model.getMetaData().get().getSummary().getInfraScan();
+        SecHubReportMetaDataSummary licenseScan = model.getMetaData().get().getSummary().getLicenseScan();
+        SecHubReportMetaDataSummary secretScan = model.getMetaData().get().getSummary().getSecretScan();
+        SecHubReportMetaDataSummary webScan = model.getMetaData().get().getSummary().getWebScan();
+
         for (SecHubFinding finding : model.getResult().getFindings()) {
             ScanType scanType = finding.getType();
-            switch (scanType) {
-            case CODE_SCAN -> codeScan.reportScanHelper(finding);
-            case INFRA_SCAN -> infraScan.reportScanHelper(finding);
-            case WEB_SCAN -> webScan.reportScanHelper(finding);
+            if (scanType != null) {
+                switch (scanType) {
+                case CODE_SCAN -> codeScan.reportScanHelper(finding);
+                case INFRA_SCAN -> infraScan.reportScanHelper(finding);
+                case WEB_SCAN -> webScan.reportScanHelper(finding);
+                case LICENSE_SCAN -> licenseScan.reportScanHelper(finding);
+                case SECRET_SCAN -> secretScan.reportScanHelper(finding);
+                }
             }
         }
     }

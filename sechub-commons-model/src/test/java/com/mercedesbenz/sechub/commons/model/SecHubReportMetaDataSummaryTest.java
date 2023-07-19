@@ -1,0 +1,116 @@
+package com.mercedesbenz.sechub.commons.model;
+
+import static org.junit.Assert.assertEquals;
+
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
+public class SecHubReportMetaDataSummaryTest {
+
+    SecHubReportMetaDataSummary secHubReportMetaDataSummary;
+    SecHubFinding highFinding;
+    SecHubFinding mediumFinding;
+    SecHubFinding lowFinding;
+
+    @BeforeEach
+    void beforeEach() {
+        secHubReportMetaDataSummary = new SecHubReportMetaDataSummary();
+
+        highFinding = new SecHubFinding();
+        highFinding.setSeverity(Severity.HIGH);
+
+        mediumFinding = new SecHubFinding();
+        mediumFinding.setSeverity(Severity.MEDIUM);
+
+        lowFinding = new SecHubFinding();
+        lowFinding.setSeverity(Severity.LOW);
+    }
+
+    @Test
+    void when_add_new_high_finding_then_only_red_and_total_counters_must_be_increased() {
+        /* execute */
+        secHubReportMetaDataSummary.reportScanHelper(highFinding);
+
+        /* test */
+        assertEquals(1, secHubReportMetaDataSummary.getTotal());
+        assertEquals(1, secHubReportMetaDataSummary.getRed());
+        assertEquals(0, secHubReportMetaDataSummary.getYellow());
+        assertEquals(0, secHubReportMetaDataSummary.getGreen());
+    }
+
+    @Test
+    void when_add_new_medium_finding_then_only_yellow_and_total_counters_must_be_increased() {
+        /* execute */
+        secHubReportMetaDataSummary.reportScanHelper(mediumFinding);
+
+        /* test */
+        assertEquals(1, secHubReportMetaDataSummary.getTotal());
+        assertEquals(0, secHubReportMetaDataSummary.getRed());
+        assertEquals(1, secHubReportMetaDataSummary.getYellow());
+        assertEquals(0, secHubReportMetaDataSummary.getGreen());
+    }
+
+    @Test
+    void when_add_new_medium_finding_then_only_green_and_total_counters_must_be_increased() {
+        /* execute */
+        secHubReportMetaDataSummary.reportScanHelper(lowFinding);
+
+        /* test */
+        assertEquals(1, secHubReportMetaDataSummary.getTotal());
+        assertEquals(0, secHubReportMetaDataSummary.getRed());
+        assertEquals(0, secHubReportMetaDataSummary.getYellow());
+        assertEquals(1, secHubReportMetaDataSummary.getGreen());
+    }
+
+    @Test
+    void when_add_multiple_high_findings_then_red_and_total_counters_must_be_increased() {
+        /* execute */
+        for (int i = 0; i < 101; i++) {
+            secHubReportMetaDataSummary.reportScanHelper(highFinding);
+        }
+
+        /* test */
+        assertEquals(101, secHubReportMetaDataSummary.getTotal());
+        assertEquals(101, secHubReportMetaDataSummary.getRed());
+    }
+
+    @Test
+    void when_add_multiple_medium_findings_then_yellow_and_total_counters_must_be_increased() {
+        /* execute */
+        for (int i = 0; i < 101; i++) {
+            secHubReportMetaDataSummary.reportScanHelper(mediumFinding);
+        }
+
+        /* test */
+        assertEquals(101, secHubReportMetaDataSummary.getTotal());
+        assertEquals(101, secHubReportMetaDataSummary.getYellow());
+    }
+
+    @Test
+    void when_add_multiple_low_findings_then_green_and_total_counters_must_be_increased() {
+        /* execute */
+        for (int i = 0; i < 101; i++) {
+            secHubReportMetaDataSummary.reportScanHelper(lowFinding);
+        }
+
+        /* test */
+        assertEquals(101, secHubReportMetaDataSummary.getTotal());
+        assertEquals(101, secHubReportMetaDataSummary.getGreen());
+    }
+
+    @Test
+    void when_add_multiple_high_medium_low_findings_then_red_yellow_green_and_total_counters_must_be_increased() {
+        /* execute */
+        for (int i = 0; i < 101; i++) {
+            secHubReportMetaDataSummary.reportScanHelper(highFinding);
+            secHubReportMetaDataSummary.reportScanHelper(mediumFinding);
+            secHubReportMetaDataSummary.reportScanHelper(lowFinding);
+        }
+
+        /* test */
+        assertEquals(303, secHubReportMetaDataSummary.getTotal());
+        assertEquals(101, secHubReportMetaDataSummary.getRed());
+        assertEquals(101, secHubReportMetaDataSummary.getYellow());
+        assertEquals(101, secHubReportMetaDataSummary.getGreen());
+    }
+}

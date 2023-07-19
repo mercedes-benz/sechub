@@ -4,20 +4,20 @@ package com.mercedesbenz.sechub.commons.model;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class SecHubReportScan {
+public class SecHubReportMetaDataSummary {
 
     private long total = 0;
     private long red = 0;
     private long yellow = 0;
     private long green = 0;
-    private SecHubReportScanDetails details = new SecHubReportScanDetails();
+    private SecHubReportMetaDataSummaryDetails details = new SecHubReportMetaDataSummaryDetails();
 
     public void reportScanHelper(SecHubFinding finding) {
         incrementColors(finding);
         details.detailsHelper(finding);
     }
 
-    public void incrementColors(SecHubFinding finding) {
+    protected void incrementColors(SecHubFinding finding) {
         Severity severity = finding.getSeverity();
         switch (severity) {
         case HIGH -> incrementRedCount();
@@ -59,7 +59,7 @@ public class SecHubReportScan {
         return green;
     }
 
-    public SecHubReportScanDetails getDetails() {
+    public SecHubReportMetaDataSummaryDetails getDetails() {
         return details;
     }
 }

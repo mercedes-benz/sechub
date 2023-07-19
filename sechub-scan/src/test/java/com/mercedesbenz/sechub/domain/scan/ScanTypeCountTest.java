@@ -31,19 +31,21 @@ public class ScanTypeCountTest {
 
     @Test
     void when_ScanType_is_null_then_of_constructor_throws_IllegalArgumentException() {
-        /* prepare + execute */
+        /* prepare */
+        String expectedMessage = "ScanType argument must exist";
+
+        /* execute */
         Exception exception = assertThrows(IllegalArgumentException.class, () -> {
             ScanTypeCount.of(null);
         });
-        String expectedMessage = "ScanType argument must exist";
-        String actualMessage = exception.getMessage();
 
         /* test */
+        String actualMessage = exception.getMessage();
         assertTrue(actualMessage.contains(expectedMessage));
     }
 
     @Test
-    void incrementHighSeverityCount_do_increment_highSeverityCount_value_by_one() {
+    void execute_incrementHighSeverityCount_once_increment_highSeverityCount_value_by_one() {
         /* execute */
         scanTypeCount.incrementHighSeverityCount();
 
@@ -52,7 +54,18 @@ public class ScanTypeCountTest {
     }
 
     @Test
-    void incrementMediumSeverityCount_do_increment_mediumSeverityCount_value_by_one() {
+    void executing_incrementHighSeverityCount_101_times_increases_highSeverityCount_value_by_101() {
+        /* execute */
+        for (int i = 0; i < 101; i++) {
+            scanTypeCount.incrementHighSeverityCount();
+        }
+
+        /* test */
+        assertEquals(scanTypeCount.getHighSeverityCount(), 101);
+    }
+
+    @Test
+    void execute_incrementMediumSeverityCount_once_increment_mediumSeverityCount_value_by_one() {
         /* execute */
         scanTypeCount.incrementMediumSeverityCount();
 
@@ -61,12 +74,34 @@ public class ScanTypeCountTest {
     }
 
     @Test
-    void incrementLowSeverityCount_do_increment_lowSeverityCount_value_by_one() {
+    void executing_incrementMediumSeverityCount_101_times_increases_mediumSeverityCount_value_by_101() {
+        /* execute */
+        for (int i = 0; i < 101; i++) {
+            scanTypeCount.incrementMediumSeverityCount();
+        }
+
+        /* test */
+        assertEquals(scanTypeCount.getMediumSeverityCount(), 101);
+    }
+
+    @Test
+    void execute_incrementLowSeverityCount_once_increment_lowSeverityCount_value_by_one() {
         /* execute */
         scanTypeCount.incrementLowSeverityCount();
 
         /* test */
         assertEquals(scanTypeCount.getLowSeverityCount(), 1);
+    }
+
+    @Test
+    void executing_incrementLowSeverityCount_101_times_increases_lowSeverityCount_value_by_101() {
+        /* execute */
+        for (int i = 0; i < 101; i++) {
+            scanTypeCount.incrementLowSeverityCount();
+        }
+
+        /* test */
+        assertEquals(scanTypeCount.getLowSeverityCount(), 101);
     }
 
     @Test
@@ -96,7 +131,7 @@ public class ScanTypeCountTest {
     }
 
     @Test
-    void compareTo_must_return_positive_value_because_scanTypeCountA_smaller_scanTypeCountB() {
+    void compareTo_must_return_positive_value_because_scanTypeCountA_different_from_scanTypeCountB() {
         /* prepare */
         ScanTypeCount scanTypeCountA = ScanTypeCount.of(ScanType.CODE_SCAN);
         ScanTypeCount scanTypeCountB = ScanTypeCount.of(ScanType.WEB_SCAN);
@@ -109,7 +144,7 @@ public class ScanTypeCountTest {
     }
 
     @Test
-    void compareTo_must_return_negative_value_bacause_scanTypeCountA_bigger_scanTypeCountB() {
+    void compareTo_must_return_negative_value_because_scanTypeCountA_different_from_scanTypeCountB() {
         /* prepare */
         ScanTypeCount scanTypeCountA = ScanTypeCount.of(ScanType.WEB_SCAN);
         ScanTypeCount scanTypeCountB = ScanTypeCount.of(ScanType.CODE_SCAN);
@@ -119,5 +154,41 @@ public class ScanTypeCountTest {
 
         /* test */
         assertTrue(0 > compareResult);
+    }
+
+    @Test
+    void when_highSeverityCount_equals_MAX_VALUE_then_after_increasing_it_must_be_less_than_0() {
+        /* prepare */
+        scanTypeCount.highSeverityCount = Integer.MAX_VALUE;
+
+        /* execute */
+        scanTypeCount.incrementHighSeverityCount();
+
+        /* test */
+        assertTrue(0 > scanTypeCount.getHighSeverityCount());
+    }
+
+    @Test
+    void when_mediumSeverityCount_equals_MAX_VALUE_then_after_increasing_it_must_be_less_than_0() {
+        /* prepare */
+        scanTypeCount.mediumSeverityCount = Integer.MAX_VALUE;
+
+        /* execute */
+        scanTypeCount.incrementMediumSeverityCount();
+
+        /* test */
+        assertTrue(0 > scanTypeCount.getMediumSeverityCount());
+    }
+
+    @Test
+    void when_lowSeverityCount_equals_MAX_VALUE_then_after_increasing_it_must_be_less_than_0() {
+        /* prepare */
+        scanTypeCount.lowSeverityCount = Integer.MAX_VALUE;
+
+        /* execute */
+        scanTypeCount.incrementLowSeverityCount();
+
+        /* test */
+        assertTrue(0 > scanTypeCount.getLowSeverityCount());
     }
 }

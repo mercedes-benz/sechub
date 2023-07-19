@@ -1,16 +1,18 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.commons.model;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonInclude;
 
+@JsonInclude(JsonInclude.Include.NON_EMPTY)
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class SecHubReportScanDetails {
-    private List<SeverityDetails> high = new ArrayList<>();
-    private List<SeverityDetails> medium = new ArrayList<>();
-    private List<SeverityDetails> low = new ArrayList<>();
+public class SecHubReportMetaDataSummaryDetails {
+
+    Map<String, SeverityDetails> high = new TreeMap<>();
+    Map<String, SeverityDetails> medium = new TreeMap<>();
+    Map<String, SeverityDetails> low = new TreeMap<>();
 
     public void detailsHelper(SecHubFinding finding) {
         switch (finding.getSeverity()) {
@@ -20,36 +22,31 @@ public class SecHubReportScanDetails {
         }
     }
 
-    private void detailsFiller(List<SeverityDetails> severityDetailsList, SecHubFinding finding) {
-        boolean fl = false;
-        int i = 0;
-        while (fl == false && i < severityDetailsList.size()) {
-            SeverityDetails details = severityDetailsList.get(i);
-            if (details.getCweId().equals(finding.getCweId())) {
-                details.incrementCount();
-                fl = true;
-            }
-            i++;
-        }
-        if (fl == false) {
-            severityDetailsList.add(new SeverityDetails(finding.getCweId(), finding.getName()));
+    protected void detailsFiller(Map<String, SeverityDetails> helperMap, SecHubFinding finding) {
+        Integer cweId = finding.getCweId();
+        String name = finding.getName();
+        SeverityDetails severityDetails = helperMap.get(name);
+        if (severityDetails != null) {
+            severityDetails.incrementCount();
+        } else {
+            helperMap.put(name, new SeverityDetails(cweId, name));
         }
     }
 
     public List<SeverityDetails> getHigh() {
-        return high;
+        return new ArrayList<>(high.values());
     }
 
     public List<SeverityDetails> getMedium() {
-        return medium;
+        return new ArrayList<>(medium.values());
     }
 
     public List<SeverityDetails> getLow() {
-        return low;
+        return new ArrayList<>(low.values());
     }
 
     @JsonIgnoreProperties(ignoreUnknown = true)
-    private class SeverityDetails {
+    protected class SeverityDetails {
         private Integer cweId;
         private String name;
         private long count;
