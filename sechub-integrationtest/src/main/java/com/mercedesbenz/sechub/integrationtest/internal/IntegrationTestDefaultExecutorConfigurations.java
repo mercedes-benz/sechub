@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import com.mercedesbenz.sechub.adapter.AdapterConfigBuilder;
 import com.mercedesbenz.sechub.commons.mapping.MappingData;
 import com.mercedesbenz.sechub.commons.mapping.MappingEntry;
 import com.mercedesbenz.sechub.commons.pds.PDSDefaultParameterKeyConstants;
@@ -232,7 +233,8 @@ public class IntegrationTestDefaultExecutorConfigurations {
         List<TestExecutorSetupJobParam> parameters = new ArrayList<>();
 
         parameters.add(new TestExecutorSetupJobParam(KEY_PDS_CHECKMARX_ALWAYS_FULLSCAN_ENABLED, "true"));
-        parameters.add(new TestExecutorSetupJobParam(KEY_PDS_CHECKMARX_RESULT_CHECK_PERIOD_MILLISECONDS, "100"));
+        parameters.add(new TestExecutorSetupJobParam(KEY_PDS_CHECKMARX_RESULT_CHECK_PERIOD_MILLISECONDS,
+                String.valueOf(AdapterConfigBuilder.MIN_SCAN_RESULT_CHECK_IN_MILLISECONDS)));
 
         parameters.add(new TestExecutorSetupJobParam(KEY_PDS_CHECKMARX_BASE_URL, "https://localhost:6931/not-real-checkmarx"));
         parameters.add(new TestExecutorSetupJobParam(KEY_PDS_CHECKMARX_USER, "checkmarx-fakeuser"));
