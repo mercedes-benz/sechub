@@ -12,6 +12,8 @@ public class SecHubTestURLBuilder extends AbstractTestURLBuilder {
     private static final String API_ANONYMOUS = "/api/anonymous";
 
     private static final String API_ADMIN_USER = API_ADMIN + "/user";
+    private static final String API_ADMIN_USER_BY_EMAIL = API_ADMIN + "/user-by-email";
+
     private static final String API_ADMIN_PROJECT = API_ADMIN + "/project";
     private static final String API_ADMIN_JOB = API_ADMIN + "/job";
     private static final String API_ADMIN_JOBS = API_ADMIN_JOB + "s";
@@ -211,6 +213,10 @@ public class SecHubTestURLBuilder extends AbstractTestURLBuilder {
 
     public String buildAdminShowsUserDetailsUrl(String userId) {
         return buildUrl(API_ADMIN_USER, userId);
+    }
+
+    public String buildAdminShowsUserDetailsForEmailAddressUrl(String emailAddress) {
+        return buildUrl(API_ADMIN_USER_BY_EMAIL, emailAddress);
     }
 
     public String buildAdminChangesUserEmailAddress(String userId, String newEmailAddress) {

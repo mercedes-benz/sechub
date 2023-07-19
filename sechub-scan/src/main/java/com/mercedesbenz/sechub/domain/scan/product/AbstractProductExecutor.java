@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import com.mercedesbenz.sechub.adapter.AdapterExecutionResult;
 import com.mercedesbenz.sechub.adapter.mock.MockDataIdentifierFactory;
+import com.mercedesbenz.sechub.commons.core.resilience.ResilientActionExecutor;
 import com.mercedesbenz.sechub.commons.model.ScanType;
 import com.mercedesbenz.sechub.commons.model.SecHubConfigurationModel;
 import com.mercedesbenz.sechub.commons.model.SecHubMessagesList;
@@ -28,7 +29,6 @@ import com.mercedesbenz.sechub.domain.scan.resolve.NetworkTargetResolver;
 import com.mercedesbenz.sechub.sharedkernel.ProductIdentifier;
 import com.mercedesbenz.sechub.sharedkernel.UUIDTraceLogID;
 import com.mercedesbenz.sechub.sharedkernel.configuration.SecHubConfiguration;
-import com.mercedesbenz.sechub.sharedkernel.resilience.ResilientActionExecutor;
 
 /**
  * An abstract product executor implementation

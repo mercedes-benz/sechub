@@ -36,7 +36,7 @@ SHARED_VOLUME_UPLOAD_DIR=/shared_volumes/uploads
 DATABASE_START_MODE=debug, server
 POSTGRES_ENABLED=true, false
 DATABASE_CONNECTION=jdbc:postgresql://database:5432/pds?currentSchema=multi
-DATABASE_PASSWORD=top$ecret
+DATABASE_PASSWORD='top$ecret'
 DATABASE_USERNAME=multi
 
 # The object storage start mode

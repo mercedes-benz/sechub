@@ -531,7 +531,7 @@ table.CodeRay td.code{padding:0 0 0 .75em}
 <div id="header">
 <h1><span class="image"><a class="image" href="https://mercedes-benz.github.io/sechub"><img src="images/sechub-logo.png" alt="sechub logo"></a></span> SecHub Client Documentation</h1>
 <div class="details">
-<span id="revnumber"> Client 0.36.0</span>
+<span id="revnumber"> Client 1.0.0</span>
 </div>
 <div id="toc" class="toc2">
 <div id="toctitle">Table of contents</div>
@@ -545,22 +545,22 @@ table.CodeRay td.code{padding:0 0 0 .75em}
 <li><a href="#usage">2.4. Usage</a>
 <ul class="sectlevel3">
 <li><a href="#show-help">2.4.1. Show help</a></li>
-<li><a href="#actions">2.4.2. Actions</a>
+<li><a href="#actions">2.4.2. Actions</a></li>
+<li><a href="#parameter-overview-for-client-actions">2.4.3. Parameter overview for client actions</a>
 <ul class="sectlevel4">
-<li><a href="#scan">2.4.2.1. scan</a></li>
-<li><a href="#scanasync">2.4.2.2. scanAsync</a></li>
-<li><a href="#getstatus">2.4.2.3. getStatus</a></li>
-<li><a href="#getreport">2.4.2.4. getReport</a></li>
-<li><a href="#listjobs">2.4.2.5. listJobs</a></li>
-<li><a href="#getfalsepositives">2.4.2.6. getFalsePositives</a></li>
-<li><a href="#section-client-false-positives-mark">2.4.2.7. markFalsePositives</a></li>
-<li><a href="#section-client-false-positives-unmark">2.4.2.8. unmarkFalsePositives</a></li>
-<li><a href="#interactivemarkfalsepositives">2.4.2.9. interactiveMarkFalsePositives</a></li>
-<li><a href="#interactiveunmarkfalsepositives">2.4.2.10. interactiveUnmarkFalsePositives</a></li>
+<li><a href="#section-client-scan">2.4.3.1. scan</a></li>
+<li><a href="#scanasync">2.4.3.2. scanAsync</a></li>
+<li><a href="#getstatus">2.4.3.3. getStatus</a></li>
+<li><a href="#getreport">2.4.3.4. getReport</a></li>
+<li><a href="#listjobs">2.4.3.5. listJobs</a></li>
+<li><a href="#getfalsepositives">2.4.3.6. getFalsePositives</a></li>
+<li><a href="#interactivemarkfalsepositives">2.4.3.7. interactiveMarkFalsePositives</a></li>
+<li><a href="#interactiveunmarkfalsepositives">2.4.3.8. interactiveUnmarkFalsePositives</a></li>
+<li><a href="#section-client-false-positives-mark">2.4.3.9. markFalsePositives</a></li>
+<li><a href="#section-client-false-positives-unmark">2.4.3.10. unmarkFalsePositives</a></li>
 </ul>
 </li>
-<li><a href="#configuration-overview">2.4.3. Configuration overview</a></li>
-<li><a href="#mandatory-parameters">2.4.4. Mandatory parameters</a></li>
+<li><a href="#configuration-overview">2.4.4. Configuration overview</a></li>
 <li><a href="#commandline-options">2.4.5. Commandline Options</a></li>
 <li><a href="#environment-variables">2.4.6. Environment variables</a></li>
 <li><a href="#proxy-support">2.4.7. Proxy support</a></li>
@@ -577,7 +577,7 @@ table.CodeRay td.code{padding:0 0 0 .75em}
 <li><a href="#upload-source-files-from-file-system">2.5.4.1. Upload source files from file system</a>
 <ul class="sectlevel5">
 <li><a href="#using-data-section">2.5.4.1.1. Using <code>data</code> section</a></li>
-<li><a href="#filesystem-inside-the-codescan-section">2.5.4.1.2. <code>fileSystem</code> inside the <code>codeScan</code> section</a></li>
+<li><a href="#filesystem-inside-the-codescan-section-deprecated">2.5.4.1.2. <code>fileSystem</code> inside the <code>codeScan</code> section (deprecated)</a></li>
 </ul>
 </li>
 </ul>
@@ -758,7 +758,7 @@ build pipeline / contionus integration (CI) and helps to provide
 </tbody>
 </table>
 <div class="paragraph">
-<p>Documentation version: <code>Client 0.36.0-20230503102309</code></p>
+<p>Documentation version: <code>Client 1.0.0-20230622154511</code></p>
 </div>
 <hr>
 <div style="page-break-after: always;"></div>
@@ -882,7 +882,7 @@ For documentation, please look at <a href="https://mercedes-benz.github.io/sechu
 <h4 id="show-help">2.4.1. Show help</h4>
 <div class="listingblock">
 <div class="content">
-<pre>sechub -help</pre>
+<pre>sechub help</pre>
 </div>
 </div>
 <div class="paragraph">
@@ -891,11 +891,75 @@ For documentation, please look at <a href="https://mercedes-benz.github.io/sechu
 </div>
 <div class="sect3">
 <h4 id="actions">2.4.2. Actions</h4>
-<div class="paragraph">
-<p>Following actions are supported:</p>
+
 </div>
+<div class="sect3">
+<h4 id="parameter-overview-for-client-actions">2.4.3. Parameter overview for client actions</h4>
+<div class="paragraph">
+<p>Here is an overview of the mandatory parameters for each <strong>action</strong>:</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>action</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>mandatory parameters</strong></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="#section-client-scan">scan</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">server + user + api token + projectID + configFile</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="#scanasync">scanAsync</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">server + user + api token + projectID + configFile</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="#getstatus">getStatus</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">server + user + api token + projectID</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="#getreport">getReport</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">server + user + api token + projectID</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="#listjobs">listJobs</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">server + user + api token + projectID</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="#getfalsepositives">getFalsePositives</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">server + user + api token + projectID</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="#interactivemarkfalsepositives">interactiveMarkFalsePositives</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">server + user + api token + projectID + (file only if no report file is in current dir)</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="#interactiveunmarkfalsepositives">interactiveUnmarkFalsePositives</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">server + user + apiToken + projectID</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="#section-client-false-positives-mark">markFalsePositives</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">server + user + api token + projectID + file</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="#section-client-false-positives-unmark">unmarkFalsePositives</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">server + user + api token + projectID + file</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">help</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">version</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+</tbody>
+</table>
 <div class="sect4">
-<h5 id="scan">2.4.2.1. scan</h5>
+<h5 id="section-client-scan">2.4.3.1. scan</h5>
 <div class="paragraph">
 <p>This is the recommended scan action: You only have to make one single client call to trigger a scan and get the report.</p>
 </div>
@@ -986,7 +1050,7 @@ With <code>-output ${file-or-directory}</code> you can define where to place the
 </div>
 </div>
 <div class="sect4">
-<h5 id="scanasync">2.4.2.2. scanAsync</h5>
+<h5 id="scanasync">2.4.3.2. scanAsync</h5>
 <div class="paragraph">
 <p>Does scan asynchronous:</p>
 </div>
@@ -1024,7 +1088,7 @@ This can be interesting if you have long running scans and you want have a fast
 </div>
 </div>
 <div class="sect4">
-<h5 id="getstatus">2.4.2.3. getStatus</h5>
+<h5 id="getstatus">2.4.3.3. getStatus</h5>
 <div class="paragraph">
 <p>Will fetch the job status and return result as json</p>
 </div>
@@ -1051,7 +1115,7 @@ Defaults to latest job.<br>
 </div>
 </div>
 <div class="sect4">
-<h5 id="getreport">2.4.2.4. getReport</h5>
+<h5 id="getreport">2.4.3.4. getReport</h5>
 <div class="paragraph">
 <p>Will fetch the report as json. (result will only exist when job is done)</p>
 </div>
@@ -1092,7 +1156,7 @@ With <code>-output ${file-or-directory}</code> you can define where to place the
 </div>
 </div>
 <div class="sect4">
-<h5 id="listjobs">2.4.2.5. listJobs</h5>
+<h5 id="listjobs">2.4.3.5. listJobs</h5>
 <div class="paragraph">
 <p>Lists the last jobs and their state.</p>
 </div>
@@ -1120,7 +1184,7 @@ This might be useful for an overview or<br>
 </div>
 </div>
 <div class="sect4">
-<h5 id="getfalsepositives">2.4.2.6. getFalsePositives</h5>
+<h5 id="getfalsepositives">2.4.3.6. getFalsePositives</h5>
 <div class="paragraph">
 <p>This will fetch the false positives list of your project as JSON - format is same as for <code>markFalsePositives</code>.</p>
 </div>
@@ -1148,7 +1212,82 @@ With <code>-output ${file-or-directory}</code> you can define where to place the
 </div>
 </div>
 <div class="sect4">
-<h5 id="section-client-false-positives-mark">2.4.2.7. markFalsePositives</h5>
+<h5 id="interactivemarkfalsepositives">2.4.3.7. interactiveMarkFalsePositives</h5>
+<div class="paragraph">
+<p>Instead of creating a json file to mark false positives, you can also do this interactively:
+Go to the project directory containing <code>sechub.json</code> and a report file from a recent scan and run <code>sechub interactiveMarkFalsePositives</code>.</p>
+</div>
+<div class="paragraph">
+<p>You can select the report file using the <code>-file</code> option of the client. Otherwise the project&#8217;s latest report file in the current directory is automatically selected.</p>
+</div>
+<div class="paragraph">
+<p>For each finding in the reports file, you are prompted: <code>"Add this as false positive?"</code>
+Your choices are:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>y</code> Yes - Mark as false positive. You are prompted for an optional comment line which can help to understand later why this has been marked.</p>
+</li>
+<li>
+<p><code>n</code> No - Do nothing and go to next item.</p>
+</li>
+<li>
+<p><code>s</code> Skip following findings - Finish the marking and add the marked items to the false positives list on the SecHub server.</p>
+</li>
+<li>
+<p><code>c</code> Cancel - Quit and upload nothing</p>
+</li>
+</ul>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+You can download and view your current false positives list with <a href="#getfalsepositives">getFalsePositives</a>
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>See also <a href="#section-client-interactiveMarkFalsePositives-mark">example for interactiveMarkFalsePositives</a></p>
+</div>
+</div>
+<div class="sect4">
+<h5 id="interactiveunmarkfalsepositives">2.4.3.8. interactiveUnmarkFalsePositives</h5>
+<div class="paragraph">
+<p>Instead of creating a json file to unmark false positives, you can also do this interactively:
+Go to the project directory containing <code>sechub.json</code> and run <code>sechub interactiveUnmarkFalsePositives</code></p>
+</div>
+<div class="paragraph">
+<p>SecHub client will download the current false posisitves list and interactively ask each entry: <code>"Do you want to remove this false positive?"</code>
+Your choices are:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>y</code> Yes - Unmark this false positive.</p>
+</li>
+<li>
+<p><code>n</code> No - Do nothing and go to next item.</p>
+</li>
+<li>
+<p><code>s</code> Skip the rest - End the asking here and remove the marked items from the false positives list on the SecHub server.</p>
+</li>
+<li>
+<p><code>c</code> Cancel - Quit and change nothing</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>See also <a href="#section-client-interactiveMarkFalsePositives-mark">example for interactiveMarkFalsePositives</a></p>
+</div>
+</div>
+<div class="sect4">
+<h5 id="section-client-false-positives-mark">2.4.3.9. markFalsePositives</h5>
 <div class="paragraph">
 <p>Read your report carefully and figure out which of the findings are "false positives" (FP).
 After this, create a json file containing jobUUID and ID of the findings you decided to be a FP.
@@ -1237,7 +1376,7 @@ See also <a href="#interactivemarkfalsepositives">interactiveMarkFalsePositives<
 </div>
 </div>
 <div class="sect4">
-<h5 id="section-client-false-positives-unmark">2.4.2.8. unmarkFalsePositives</h5>
+<h5 id="section-client-false-positives-unmark">2.4.3.10. unmarkFalsePositives</h5>
 <div class="paragraph">
 <p>Remove formerly defined false positives.<br>
 It works similar to <code>markFalsePositives</code>: Just define a JSON file, select the file by the <code>-file</code> argument and start
@@ -1285,84 +1424,9 @@ action <code>unmarkFalsePositives</code></p>
 </table>
 </div>
 </div>
-<div class="sect4">
-<h5 id="interactivemarkfalsepositives">2.4.2.9. interactiveMarkFalsePositives</h5>
-<div class="paragraph">
-<p>Instead of creating a json file to mark false positives, you can also do this interactively:
-Go to the project directory containing <code>sechub.json</code> and a report file from a recent scan and run <code>sechub interactiveMarkFalsePositives</code>.</p>
-</div>
-<div class="paragraph">
-<p>You can select the report file using the <code>-file</code> option of the client. Otherwise the project&#8217;s latest report file in the current directory is automatically selected.</p>
-</div>
-<div class="paragraph">
-<p>For each finding in the reports file, you are prompted: <code>"Add this as false positive?"</code>
-Your choices are:</p>
-</div>
-<div class="ulist">
-<ul>
-<li>
-<p><code>y</code> Yes - Mark as false positive. You are prompted for an optional comment line which can help to understand later why this has been marked.</p>
-</li>
-<li>
-<p><code>n</code> No - Do nothing and go to next item.</p>
-</li>
-<li>
-<p><code>s</code> Skip following findings - Finish the marking and add the marked items to the false positives list on the SecHub server.</p>
-</li>
-<li>
-<p><code>c</code> Cancel - Quit and upload nothing</p>
-</li>
-</ul>
-</div>
-<div class="admonitionblock tip">
-<table>
-<tr>
-<td class="icon">
-<i class="fa icon-tip" title="Tip"></i>
-</td>
-<td class="content">
-You can download and view your current false positives list with <a href="#getfalsepositives">getFalsePositives</a>
-</td>
-</tr>
-</table>
-</div>
-<div class="paragraph">
-<p>See also <a href="#section-client-interactiveMarkFalsePositives-mark">example for interactiveMarkFalsePositives</a></p>
-</div>
-</div>
-<div class="sect4">
-<h5 id="interactiveunmarkfalsepositives">2.4.2.10. interactiveUnmarkFalsePositives</h5>
-<div class="paragraph">
-<p>Instead of creating a json file to unmark false positives, you can also do this interactively:
-Go to the project directory containing <code>sechub.json</code> and run <code>sechub interactiveUnmarkFalsePositives</code></p>
-</div>
-<div class="paragraph">
-<p>SecHub client will download the current false posisitves list and interactively ask each entry: <code>"Do you want to remove this false positive?"</code>
-Your choices are:</p>
-</div>
-<div class="ulist">
-<ul>
-<li>
-<p><code>y</code> Yes - Unmark this false positive.</p>
-</li>
-<li>
-<p><code>n</code> No - Do nothing and go to next item.</p>
-</li>
-<li>
-<p><code>s</code> Skip the rest - End the asking here and remove the marked items from the false positives list on the SecHub server.</p>
-</li>
-<li>
-<p><code>c</code> Cancel - Quit and change nothing</p>
-</li>
-</ul>
-</div>
-<div class="paragraph">
-<p>See also <a href="#section-client-interactiveMarkFalsePositives-mark">example for interactiveMarkFalsePositives</a></p>
-</div>
-</div>
 </div>
 <div class="sect3">
-<h4 id="configuration-overview">2.4.3. Configuration overview</h4>
+<h4 id="configuration-overview">2.4.4. Configuration overview</h4>
 <div class="paragraph">
 <p>Basically parameters can be passed to the <code>SecHub</code> client in three ways:</p>
 </div>
@@ -1508,72 +1572,6 @@ Your choices are:</p>
 </table>
 </div>
 <div class="sect3">
-<h4 id="mandatory-parameters">2.4.4. Mandatory parameters</h4>
-<div class="paragraph">
-<p>Here is an overview of mandatory parameter for each <code>action</code>:</p>
-</div>
-<table class="tableblock frame-all grid-all stretch">
-<colgroup>
-<col style="width: 50%;">
-<col style="width: 50%;">
-</colgroup>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>action</strong></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>mandatory parameters</strong></p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">scan</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">server + user + api token + projectID + configFile</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">scanAsync</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">server + user + api token + projectID + configFile</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">getStatus</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">server + user + api token + projectID</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">getReport</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">server + user + api token + projectID</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">listJobs</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">server + user + api token + projectID</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">getFalsePositives</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">server + user + api token + projectID</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">markFalsePositives</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">server + user + api token + projectID + file</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">unmarkFalsePositives</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">server + user + api token + projectID + file</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">interactiveMarkFalsePositives</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">server + user + api token + projectID + (file only if no report file is in current dir)</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">interactiveUnmarkFalsePositives</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">server + user + apiToken + projectID</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">help</p></td>
-<td class="tableblock halign-left valign-top"></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">version</p></td>
-<td class="tableblock halign-left valign-top"></td>
-</tr>
-</tbody>
-</table>
-</div>
-<div class="sect3">
 <h4 id="commandline-options">2.4.5. Commandline Options</h4>
 <div class="ulist">
 <ul>
@@ -1589,10 +1587,6 @@ Path to <code>SecHub</code> JSON config file. Defaults to <code>sechub.json</cod
 <li>
 <p><code>-file &lt;filepath&gt;</code><br>
 Defines file to read from for actions <code>markFalsePositives</code> or <code>interactiveMarkFalsePositives</code> or <code>unmarkFalsePositives</code></p>
-</li>
-<li>
-<p><code>-help</code><br>
-Shows help and terminates</p>
 </li>
 <li>
 <p><code>-jobUUID &lt;string&gt;</code><br>
@@ -1638,10 +1632,6 @@ Timeout for network communication in seconds. (default 120)</p>
 <li>
 <p><code>-user &lt;string&gt;</code><br>
 Username - mandatory, but can also be defined in config file or via environment variable.</p>
-</li>
-<li>
-<p><code>-version</code><br>
-Shows version info and terminates</p>
 </li>
 <li>
 <p><code>-wait &lt;seconds&gt;</code><br>
@@ -1802,24 +1792,6 @@ But this is mentioned inside this documentation
 <div class="paragraph">
 <p><code>apiVersion</code> must be defined (so mandatory). Currently only <code>1.0</code> is valid.</p>
 </div>
-<div class="admonitionblock note">
-<table>
-<tr>
-<td class="icon">
-<i class="fa icon-note" title="Note"></i>
-</td>
-<td class="content">
-<div class="paragraph">
-<p>As long as the SecHub configuration is still strongly developed,
-the API version remains - despite changes - to 1.0.</p>
-</div>
-<div class="paragraph">
-<p>During this time, however, the API always remains backwards compatible!</p>
-</div>
-</td>
-</tr>
-</table>
-</div>
 </div>
 <div class="sect3">
 <h4 id="server">2.5.2. Server</h4>
@@ -1905,18 +1877,6 @@ You should call SecHub inside the repository&#8217;s root folder - this is the s
 <p>Define the files and folders in a <code>data</code> section and reference it inside the <code>codeScan</code>.<br>
 This becomes useful e.g. if the same sources are used by different scan types.</p>
 </div>
-<div class="admonitionblock tip">
-<table>
-<tr>
-<td class="icon">
-<i class="fa icon-tip" title="Tip"></i>
-</td>
-<td class="content">
-We <em>recommend</em> using the <code>data</code> section.
-</td>
-</tr>
-</table>
-</div>
 <div class="paragraph">
 <p>Example <code>sechub.json</code> using <code>data</code> section</p>
 </div>
@@ -2000,9 +1960,22 @@ Here we also add ".cplusplus" and ".py9" as additional accepted source file exte
 </div>
 </div>
 <div class="sect5">
-<h6 id="filesystem-inside-the-codescan-section">2.5.4.1.2. <code>fileSystem</code> inside the <code>codeScan</code> section</h6>
+<h6 id="filesystem-inside-the-codescan-section-deprecated">2.5.4.1.2. <code>fileSystem</code> inside the <code>codeScan</code> section (deprecated)</h6>
 <div class="paragraph">
-<p>Define a <code>fileSystem</code> child entry inside the <code>codeScan</code> section for code scanning.</p>
+<p>Define a <code>fileSystem</code> child entry inside the <code>codeScan</code> section for code scanning.<br></p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+This option is deprecated but still supported.<br>
+  Please consider using the <code>data</code> section as described above as it provides more flexibility.
+</td>
+</tr>
+</table>
 </div>
 <div class="paragraph">
 <p>Example <code>sechub.json</code> using <code>fileSystem</code> inside the <code>codeScan</code> section (results in same upload as in above example):</p>
@@ -2789,8 +2762,8 @@ array attribute <code>"use"</code> with a list of references.</p>
 <div class="listingblock">
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="json">{
-    <span class="error">/</span><span class="error">/</span> <span class="error">.</span><span class="error">.</span><span class="error">s</span><span class="error">c</span><span class="error">a</span><span class="error">n</span> <span class="error">d</span><span class="error">e</span><span class="error">f</span><span class="error">i</span><span class="error">n</span><span class="error">i</span><span class="error">t</span><span class="error">i</span><span class="error">o</span><span class="error">n</span>
-    <span class="key"><span class="delimiter">&quot;</span><span class="content">use</span><span class="delimiter">&quot;</span></span> : [ <span class="string"><span class="delimiter">&quot;</span><span class="content">reference-name-1</span><span class="delimiter">&quot;</span></span>,<span class="string"><span class="delimiter">&quot;</span><span class="content">reference-name-2</span><span class="delimiter">&quot;</span></span>, <span class="error">.</span><span class="error">.</span><span class="error">.</span> ] <i class="conum" data-value="1"></i><b>(1)</b>
+  <span class="error">/</span><span class="error">/</span> <span class="error">.</span><span class="error">.</span><span class="error">s</span><span class="error">c</span><span class="error">a</span><span class="error">n</span> <span class="error">d</span><span class="error">e</span><span class="error">f</span><span class="error">i</span><span class="error">n</span><span class="error">i</span><span class="error">t</span><span class="error">i</span><span class="error">o</span><span class="error">n</span>
+  <span class="key"><span class="delimiter">&quot;</span><span class="content">use</span><span class="delimiter">&quot;</span></span> : [ <span class="string"><span class="delimiter">&quot;</span><span class="content">reference-name-1</span><span class="delimiter">&quot;</span></span>,<span class="string"><span class="delimiter">&quot;</span><span class="content">reference-name-2</span><span class="delimiter">&quot;</span></span>, <span class="error">.</span><span class="error">.</span><span class="error">.</span> ] <i class="conum" data-value="1"></i><b>(1)</b>
 }</code></pre>
 </div>
 </div>
@@ -2926,6 +2899,18 @@ for details about default behaviour for sources.</td>
 <div class="paragraph">
 <p>With labels a user is able to add additional information to the
 scan configuration which end up in the report as key value pairs.</p>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+Using the SecHub client, you can also pass labels via command line or environment variables.
+</td>
+</tr>
+</table>
 </div>
 <div class="paragraph">
 <p>The next figure shows an example which presents all possibilities <em>(for simplicity other configuration
@@ -3279,7 +3264,7 @@ template syntax:</p>
 <div class="listingblock">
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="json">{
-    <span class="key"><span class="delimiter">&quot;</span><span class="content">apiVersion</span><span class="delimiter">&quot;</span></span> : <span class="string"><span class="delimiter">&quot;</span><span class="content">{{ .USED_API_VERSION }}</span><span class="delimiter">&quot;</span></span>
+  <span class="key"><span class="delimiter">&quot;</span><span class="content">apiVersion</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">{{ .USED_API_VERSION }}</span><span class="delimiter">&quot;</span></span>
 }</code></pre>
 </div>
 </div>
@@ -3468,30 +3453,15 @@ Transfer completed</code></pre>
 <h2 id="section-sechub-reporting">3. Reporting</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>This chapter describes the different SecHub reports and how to read them.</p>
+<p>This chapter describes the different SecHub report types and how to read them.</p>
 </div>
 <div class="paragraph">
-<p>At the moment SecHub only provides job reports and no cumulated reports.
-Job reports do only contain information of exact one scan job done by SecHub.</p>
-</div>
-<div class="admonitionblock tip">
-<table>
-<tr>
-<td class="icon">
-<i class="fa icon-tip" title="Tip"></i>
-</td>
-<td class="content">
-If you want to have management summaries you could store downloaded JSON job reports
- , process data and provide those reports by your own - or you wait while this
- becomes part of SecHub.
-</td>
-</tr>
-</table>
+<p>Job reports do only contain information of exact one scan job done by SecHub.</p>
 </div>
 <div class="sect2">
 <h3 id="job-reports">3.1. Job reports</h3>
 <div class="paragraph">
-<p>With SecHub users are able to download their results for finished scan jobs. SecHub provides these
+<p>Users can download the results of their finished scan jobs. SecHub provides these
 report formats:</p>
 </div>
 <div class="ulist">
@@ -3502,8 +3472,7 @@ human friendly report variant with less details</p>
 </li>
 <li>
 <p>JSON<br>
-as a machine readable format, usable for SecHub client to determine to break build. Will also be
-the base for planned development of IDE plugins (<code>Eclipse</code>, <code>IntelliJ</code>, <code>VSCode</code>)</p>
+as an also machine readable format. It can be directly used by the SecHub IDE plugins (<a href="https://github.com/mercedes-benz/sechub-plugin-eclipse">Eclipse</a>, <a href="https://github.com/mercedes-benz/sechub-plugin-intellij">IntelliJ</a>, <a href="https://github.com/mercedes-benz/sechub-plugin-vscode">VSCode/Codium</a>)</p>
 </li>
 <li>
 <p>SPDX JSON</p>
@@ -3513,13 +3482,11 @@ the base for planned development of IDE plugins (<code>Eclipse</code>, <code>Int
 <div class="sect3">
 <h4 id="html">3.1.1. HTML</h4>
 <div class="paragraph">
-<p>The main purpose for the HTML report is to have a human friendly report which gives you a fast overview
-to your current situation.</p>
+<p>The main purpose for the HTML report is to have a human friendly report which gives you a fast overview.</p>
 </div>
-<div class="ulist">
-<ul>
-<li>
-<p>At the left top corner you see a traffic light showing either</p>
+<div class="paragraph">
+<p>At the top left corner you see a traffic light showing either</p>
+</div>
 <div class="ulist">
 <ul>
 <li>
@@ -3530,9 +3497,6 @@ to your current situation.</p>
 </li>
 <li>
 <p>RED.</p>
-</li>
-</ul>
-</div>
 </li>
 </ul>
 </div>
@@ -3729,7 +3693,7 @@ configure the client to do this on color YELLOW.
 </div>
 <div id="footer">
 <div id="footer-text">
- Client 0.36.0<br>
+ Client 1.0.0<br>
 </div>
 </div>
 </body>

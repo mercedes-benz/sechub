@@ -46,13 +46,13 @@ public class UnauthenticatedScan extends AbstractScan {
         String targetUrlAsString = scanContext.getTargetUrlAsString();
         LOG.info("For scan {}: Starting AjaxSpider.", scanContext.getContextName());
         /* @formatter:off */
-		ApiResponse responseAjaxSpider = clientApi.ajaxSpider.scan(
+		clientApi.ajaxSpider.scan(
 				targetUrlAsString,
 				inScope,
 				contextName,
 				subTreeOnly);
 		/* @formatter:on */
-        waitForAjaxSpiderResults(responseAjaxSpider);
+        waitForAjaxSpiderResults();
     }
 
     @Override

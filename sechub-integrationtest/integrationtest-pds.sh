@@ -162,7 +162,7 @@ function startServer(){
     export SERVER_PORT=$PDS_PORT
     export SPRING_PROFILES_ACTIVE=pds_integrationtest,pds_h2
     export SECHUB_SERVER_DEBUG=true
-    export SECHUB_PDS_STORAGE_SHAREDVOLUME_UPLOAD_DIR="$SHARED_VOLUME_BASEDIR"
+    export PDS_STORAGE_SHAREDVOLUME_UPLOAD_DIR="$SHARED_VOLUME_BASEDIR"
 
     pathToJar="../sechub-pds/build/libs/sechub-pds-$PDS_VERSION.jar"
     if [ ! -f $pathToJar ]; then

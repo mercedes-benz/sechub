@@ -41,6 +41,7 @@ RUN mkdir --parent "$PDS_ARTIFACT_FOLDER" "$DOWNLOAD_FOLDER"
 
 RUN export DEBIAN_FRONTEND=noninteractive && \
     apt-get update && \
+    apt-get upgrade --assume-yes --quiet && \
     apt-get install --quiet --assume-yes wget w3m git "openjdk-$JAVA_VERSION-jdk-headless" && \
     apt-get clean
 

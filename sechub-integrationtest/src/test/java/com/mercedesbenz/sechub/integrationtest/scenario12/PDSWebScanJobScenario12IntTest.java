@@ -6,12 +6,14 @@ import static com.mercedesbenz.sechub.integrationtest.scenario12.Scenario12.*;
 import static org.junit.Assert.*;
 
 import java.util.Arrays;
+import java.util.List;
 import java.util.UUID;
 
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.Timeout;
 
+import com.mercedesbenz.sechub.commons.model.HTTPHeaderConfiguration;
 import com.mercedesbenz.sechub.commons.model.JSONConverter;
 import com.mercedesbenz.sechub.commons.model.SecHubMessageType;
 import com.mercedesbenz.sechub.commons.model.SecHubScanConfiguration;
@@ -22,7 +24,7 @@ import com.mercedesbenz.sechub.integrationtest.api.TestProject;
 import com.mercedesbenz.sechub.integrationtest.internal.IntegrationTestFileSupport;
 
 /**
- * Integration test doing code scans by integration test servers (sechub server,
+ * Integration test doing web scans by integration test servers (sechub server,
  * pds server)
  *
  * @author Albert Tregnaghi
@@ -94,6 +96,10 @@ public class PDSWebScanJobScenario12IntTest {
         SecHubWebScanConfiguration webConfiguration = returnedConfiguration.getWebScan().get();
         assertNotNull(webConfiguration.getUrl());
         assertEquals(JSONConverter.get().toJSON(configuration, true), JSONConverter.get().toJSON(returnedConfiguration, true));
+
+        assertTrue(webConfiguration.getHeaders().isPresent());
+        List<HTTPHeaderConfiguration> headers = webConfiguration.getHeaders().get();
+        assertEquals(2, headers.size());
 
         /* additional testing : messages*/
 
