@@ -1,19 +1,28 @@
 {
-    "apiVersion" : "1.0",
-    "serverId" : "TERN_CLUSTER", 
-
-    "products" : [
+    "apiVersion": "1.0",
+    "serverId": "TERN_CLUSTER",
+    "products": [
         {
-            "id" : "PDS_TERN",
-            "path" : "/scripts/tern.sh",
-            "scanType" : "licenseScan",
-            "description" : "Runs tern. Tern is a container analysis tool."
+            "id": "PDS_TERN",
+            "path": "/scripts/tern.sh",
+            "scanType": "licenseScan",
+            "description": "Runs tern. Tern is a container analysis tool.",
+            "minutesToWaitForProductResult": "660",
+            "parameters": {
+                "optional": [
+                    {
+                        "key": "scancode.activated",
+                        "description": "Activate scancode-toolkit while scanning.",
+                        "default": "false"
+                    }
+                ]
+            }
         },
         {
-            "id" : "PDS_TERN_MOCK",
-            "path" : "/scripts/tern_mock.sh",
-            "scanType" : "licenseScan",
-            "description" : "Runs tern. Tern is a container analysis tool."
+            "id": "PDS_TERN_MOCK",
+            "path": "/scripts/tern_mock.sh",
+            "scanType": "licenseScan",
+            "description": "Runs tern. Tern is a container analysis tool."
         }
     ]
 }
