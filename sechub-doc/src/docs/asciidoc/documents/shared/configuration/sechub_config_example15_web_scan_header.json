@@ -8,7 +8,8 @@
     }, {
       "name" : "x-file-size", //<3>
       "value" : "123456", //<4>
-      "onlyForUrls" : [ "https://productfailure.demo.example.org/admin", "https://productfailure.demo.example.org/upload/<*>", "https://productfailure.demo.example.org/<*>/special/" ] //<5>
+      "onlyForUrls" : [ "https://productfailure.demo.example.org/admin", "https://productfailure.demo.example.org/upload/<*>", "https://productfailure.demo.example.org/<*>/special/" ], //<5>
+      "sensitive" : false //<6>
     } ]
   }
 }
