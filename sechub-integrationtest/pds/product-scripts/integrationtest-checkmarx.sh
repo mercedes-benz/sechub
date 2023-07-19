@@ -1,7 +1,9 @@
 #!/bin/bash 
 # SPDX-License-Identifier: MIT
 
-set -e
+set -eE  # same as: `set -o errexit -o errtrace`
+trap 'echo "ERROR: $BASH_SOURCE:$LINENO -> '"'"'$BASH_COMMAND'"'"' returned exit code: $?" >&2' ERR
+
 echo "###############################################"
 echo "# Start PDS checkmarx integration test script #"
 echo "###############################################"
@@ -45,4 +47,5 @@ unzip sourcecode.zip
 # (For the complete zip file it is not possible, because timestamps differ inside the zip file, so
 # sha256 would be always different)
 TEST_RECOMPRESSED_ZIP_DATA_TXT_SHA256=$(sha256sum ./data.txt)
-dumpVariable "TEST_RECOMPRESSED_ZIP_DATA_TXT_SHA256"
+echo "   > variable for recompression check dumped"
+echo "[test script done]"
