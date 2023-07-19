@@ -34,6 +34,7 @@ then
     do
         create_build_folder
         run_test "sechub-test-$test_case" "${test_cases[$test_case]}"
+        # Intentionally commented out. Otherwhise the reports are deleted as well
         #remove_build_folder 
     done
 else

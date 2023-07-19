@@ -18,7 +18,7 @@ USER root
 RUN export DEBIAN_FRONTEND=noninteractive && \
     apt-get --quiet update && \
     apt-get --quiet --assume-yes upgrade && \
-    apt-get --quiet --assume-yes install wget attr jq skopeo python3-pip procps tar python3 python3-distutils python-dev git bzip2 xz-utils zlib1g libxml2-dev libxslt1-dev libgomp1 libpopt0 && \
+    apt-get --quiet --assume-yes install attr bzip2 git jq libgomp1 libpopt0 libxml2-dev libxslt1-dev procps python3 python3-distutils python3-pip python-dev skopeo tar wget xz-utils zlib1g && \
     apt-get --quiet --assume-yes clean
 
 # Install Tern
