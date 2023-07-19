@@ -356,12 +356,12 @@ public class ArchiveSupport {
                 LOG.error("Relative path is empty");
                 return;
             }
-            if (relativePath.startsWith("./")) {
+            if (relativePath.startsWith("/")) {
                 relativePath = relativePath.substring(1);
             }
 
             Path.of(relativePath).toAbsolutePath();
-            if (LOG.isDebugEnabled()) {
+            if (LOG.isTraceEnabled()) {
                 /* @formatter:off */
                     String logText = """
                         Compress
@@ -373,7 +373,7 @@ public class ArchiveSupport {
                             - relativePath         :{}
                             """;
 
-                    LOG.debug(logText,
+                    LOG.trace(logText,
                             pathAddition,
                             basePath,
                             parentPath,

@@ -11,6 +11,8 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipInputStream;
 
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
@@ -183,6 +185,30 @@ class ArchiveSupportTest {
 
         // check extracted same as before
         expectedExtractedFilesAreAllFoundInOutputDirectory(reverseFolder.toFile(), TestFileSupport.loadFilesAsFileList(expectedTar1Folder), expectedTar1Folder);
+
+    }
+
+    @Test
+    void compress_zip_files_from_folder_have_no_absolute_paths() throws Exception {
+        /* prepare */
+
+        File targetFile = TestUtil.createTempFileInBuildFolder("output", "zip").toFile();
+        File folder = new File("./src/test/resources/tar/test-tar1/expected-extracted");
+
+        /* execute */
+        supportToTest.compressFolder(ArchiveType.ZIP, folder, targetFile);
+
+        /* test */
+        assertTrue(targetFile.exists());
+
+        ZipEntry entry = null;
+        try (ZipInputStream zip = new ZipInputStream(new FileInputStream(targetFile))) {
+            while ((entry = zip.getNextEntry()) != null) {
+                if (entry.getName().startsWith("/")) {
+                    fail("Expected relative path only - but found absolute path: " + entry.getName() + " inside " + targetFile.getAbsolutePath());
+                }
+            }
+        }
 
     }
 
