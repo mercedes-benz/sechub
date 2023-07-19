@@ -3,3 +3,6 @@ TERN_VERSION="2.12.1"
 
 # See: https://github.com/nexB/scancode-toolkit/releases
 SCANCODE_VERSION="32.0.4"
+
+PDS_MAX_FILE_UPLOAD_BYTES=26214400000
+
