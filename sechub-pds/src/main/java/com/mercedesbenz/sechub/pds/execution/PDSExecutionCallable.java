@@ -88,6 +88,9 @@ class PDSExecutionCallable implements Callable<PDSExecutionResult> {
     public PDSExecutionResult call() throws Exception {
         LOG.info("Prepare execution of PDS job {}", pdsJobUUID);
         PDSExecutionResult result = new PDSExecutionResult();
+
+        String productPath = null;
+
         try {
             MDC.clear();
             MDC.put(PDSLogConstants.MDC_PDS_JOB_UUID, Objects.toString(pdsJobUUID));
@@ -104,7 +107,8 @@ class PDSExecutionCallable implements Callable<PDSExecutionResult> {
             PDSWorkspacePreparationResult preparationResult = pepareWorkspace(config, data);
             if (preparationResult.isLauncherScriptExecutable()) {
 
-                createProcess(pdsJobUUID, config, getWorkspaceService().getProductPathFor(config));
+                productPath = getWorkspaceService().getProductPathFor(config);
+                createProcess(pdsJobUUID, config, productPath);
                 waitForProcessEndAndGetResultByFiles(result, pdsJobUUID, config, minutesToWaitForResult);
 
             } else {
@@ -141,8 +145,26 @@ class PDSExecutionCallable implements Callable<PDSExecutionResult> {
 
         if (result.failed) {
             PDSGetJobStreamService pdsGetJobStreamService = serviceCollection.getPdsGetJobStreamService();
-            LOG.info("Job error stream = {}", pdsGetJobStreamService.getJobErrorStreamTruncated(pdsJobUUID));
-            LOG.info("Job output stream = {}", pdsGetJobStreamService.getJobOutputStreamTruncated(pdsJobUUID));
+            String truncatedErrorStream = pdsGetJobStreamService.getJobErrorStreamTruncated(pdsJobUUID);
+            String truncatedOutputStream = pdsGetJobStreamService.getJobOutputStreamTruncated(pdsJobUUID);
+
+            String message = """
+                    Execution of PDS job %s failed!
+
+                    Product path: %s
+                    Exit code   : %d
+
+                    Job error stream (truncated):
+                    -----------------------------
+                    %s
+
+                    Job output stream (truncated):
+                    ------------------------------
+                    %s
+
+                    """.formatted(pdsJobUUID, productPath, result.exitCode, truncatedErrorStream, truncatedOutputStream);
+
+            LOG.error(message);
         }
 
         return result;
