@@ -47,5 +47,4 @@ unzip sourcecode.zip
 # (For the complete zip file it is not possible, because timestamps differ inside the zip file, so
 # sha256 would be always different)
 TEST_RECOMPRESSED_ZIP_DATA_TXT_SHA256=$(sha256sum ./data.txt)
-echo "   > variable for recompression check dumped"
-echo "[test script done]"
+dumpVariable "TEST_RECOMPRESSED_ZIP_DATA_TXT_SHA256"
