@@ -5,88 +5,89 @@
 replicaCount: 1
 
 image:
-    registry: "ghcr.io/mercedes-benz/sechub/pds-owaspzap"
-    tag: "latest"
+  registry: "ghcr.io/mercedes-benz/sechub/pds-owaspzap"
+  tag: "latest"
 
 resources:
-    requests:
-        # Initial container memory size
-        memory: 512Mi
-    limits:
-        # Maximum container memory size
-        memory: 6Gi
+  requests:
+    # Initial container memory size
+    memory: 512Mi
+  limits:
+    # Maximum container memory size
+    memory: 6Gi
 
 pds:
-    startMode: localserver
-    config:
-        execute:
-            # Maximal accepted queue size (new job requests will be denied and thus cached on SecHub server)
-            queueMax: 10
-            # workerThreadCount is pinned to 1
-    heartbeatLogging: "true"
-    logging:
-        type:
-            enabled: false
-            appenderName: "LOGSTASH_JSON"
-    debug:
-        keepReportsInWorkspace: false
-    javaDebug:
-        enabled: false
-    keepContainerAliveAfterPDSCrashed: false
-    volumes:
-        pdsWorkspace:
-            enabled: false
-            size: 1Gi
-        zapWorkspace:
-            enabled: false
-            size: 15Gi
+  startMode: localserver
+  config:
+    execute:
+      # Maximal accepted queue size (new job requests will be denied and thus cached on SecHub server)
+      queueMax: 10
+      # workerThreadCount is pinned to 1
+  volumes:
+    pdsWorkspace:
+      enabled: false
+      size: 1Gi
+    zapWorkspace:
+      enabled: false
+      size: 15Gi
+  heartbeatLogging: "true"
+  logging:
+    type:
+      enabled: false
+      appenderName: "LOGSTASH_JSON"
+  debug:
+    keepReportsInWorkspace: false
+  javaDebug:
+    enabled: false
+  keepContainerAliveAfterPDSCrashed: false
 
 zap:
-    apiKey: "<random-api-key>"
-    proxy:
-        host: "127.0.0.1"
-        port: "9999"
-        forPdsTargetType:
+  apiKey: "<random-api-key>"
+  proxy:
+    # define this if you need a proxy to reach hosts
+    host: "127.0.0.1"
+    port: "9999"
+    forPdsTargetType:
 
 users:
-    admin:
-        id: "admin"
-        apiToken: "my-admin-apitoken"
-    technical:
-        id: "techuser"
-        apiToken: "my-techuser-apitoken"
+  admin:
+    id: "admin"
+    apiToken: "my-admin-apitoken"
+  technical:
+    id: "techuser"
+    apiToken: "my-techuser-apitoken"
 
 storage:
-    local:
-        enabled: true
-    s3:
-        enabled: false
-        endpoint: "https://<minio-or-s3-server>:<port>"
-        bucketname: "<my-bucketname>"
-        accesskey: "<my-accesskey>"
-        secretkey: "<my-secretkey>"
-    sharedVolume:
-        enabled: false
-        upload:
-            dir: "/mount/nfs/shares/<sharename>"
+  local:
+    enabled: true
+  s3:
+    enabled: false
+    endpoint: "https://<minio-or-s3-server>:<port>"
+    bucketname: "<my-bucketname>"
+    accesskey: "<my-accesskey>"
+    secretkey: "<my-secretkey>"
+  sharedVolume:
+    enabled: false
+    upload:
+      dir: "/mount/nfs/shares/<sharename>"
 
 database:
-    postgres:
-        enabled: false
-        connection: "jdbc:postgresql://database:5432/pds"
-        username: "pds_owaspzap"
-        password: "<password-of-db-user>"
+  postgres:
+    enabled: false
+    connection: "jdbc:postgresql://database:5432/pds"
+    username: "pds_owaspzap"
+    password: "<password-of-db-user>"
 
 networkPolicy:
-    enabled: false
-    ingress:
-        - from:
-            - podSelector:
-                matchLabels:
-                    name: sechub-server
-            - podSelector:
-                matchLabels:
-                    name: sechub-adminserver
+  enabled: false
+  ingress:
+    - from:
+      - podSelector:
+          matchLabels:
+            name: sechub-server
+      - podSelector:
+          matchLabels:
+            name: sechub-adminserver
 
 # deploymentComment (optional):
 #  When setting to a different value than before, it forces k8s to spin up a new container.

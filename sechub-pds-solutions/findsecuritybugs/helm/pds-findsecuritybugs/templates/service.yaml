@@ -3,11 +3,11 @@
 apiVersion: v1
 kind: Service
 metadata:
-    name: {{ .Chart.Name }}
+  name: {{ .Chart.Name }}
 spec:
-    selector:
-        name: {{ .Chart.Name }}
-    ports:
-        - protocol: TCP
-          port: 8444
-          targetPort: 8444
+  selector:
+    name: {{ .Chart.Name }}
+  ports:
+    - protocol: TCP
+      port: 8444
+      targetPort: 8444
