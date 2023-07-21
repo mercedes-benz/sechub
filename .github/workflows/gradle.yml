@@ -117,7 +117,7 @@ jobs:
       # Build Documentation
       # -----------------------------------------
       - name: Create documentation
-        run: ./gradlew documentation
+        run: ./gradlew documentation -Dsechub.build.stage=all
 
       # -----------------------------------------
       # Upload documentation

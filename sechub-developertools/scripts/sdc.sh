@@ -10,6 +10,7 @@ function showHelp () {
     echo " Options: "
     echo "   -f,  --format-all                     : format all source code files"
     echo "   -b,  --build-full                     : full build"
+    echo "   -d,  --document-full                  : full document build"
     echo "   -u,  --unit-tests                     : execute all unit tests"
     echo "   -i,  --integrationtest-all            : execute all integration tests"
     echo "   -ii, --integrationtest-integration    : execute integration tests from sechub-integrationtest only"
@@ -85,6 +86,10 @@ case $key in
     ;;
     -b|--build-full)
     FULL_BUILD="YES"
+    shift # past argument
+    ;;
+    -d|--document-full)
+    DOCUMENT_FULL="YES"
     shift # past argument
     ;;
     -gj|--generate-java-api)
@@ -217,8 +222,13 @@ if [[ "$FULL_BUILD" = "YES" ]]; then
     eval "${CMD_CREATE_COMBINED_REPORT}"
     
     step "Create documentation"
-    ./gradlew documentation
+    ./gradlew documentation -Dsechub.build.stage=all
     
+fi
+
+if [[ "$DOCUMENT_FULL" = "YES" ]]; then
+    startJob "Create documentation"
+    ./gradlew documentation -Dsechub.build.stage=all
 fi
 
 if [[ "$REPORT_COMBINED" = "YES" ]]; then

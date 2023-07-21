@@ -105,6 +105,7 @@ import com.mercedesbenz.sechub.test.TestPortProvider;
 public class SchedulerRestControllerRestDocTest implements TestIsNecessaryForDocumentation {
 
     private static final String PROJECT1_ID = "project1";
+    private static final String VARIANT_CODES_SCAN_WITH_FULL_DATA_SECTION = "Code Scan using data section";
 
     private static final int PORT_USED = TestPortProvider.DEFAULT_INSTANCE.getRestDocTestPort();
 
@@ -204,7 +205,7 @@ public class SchedulerRestControllerRestDocTest implements TestIsNecessaryForDoc
     }
 
     @Test
-    @UseCaseRestDoc(useCase = UseCaseUserCreatesNewJob.class, variant = "Code Scan (with a full blown data section)")
+    @UseCaseRestDoc(useCase = UseCaseUserCreatesNewJob.class, variant = VARIANT_CODES_SCAN_WITH_FULL_DATA_SECTION)
     public void restDoc_userCreatesNewJob_codescan_with_data_section() throws Exception {
         /* prepare */
         String apiEndpoint = https(PORT_USED).buildAddJobUrl(PROJECT_ID.pathElement());
@@ -245,7 +246,7 @@ public class SchedulerRestControllerRestDocTest implements TestIsNecessaryForDoc
                     andDo(print()).
                     andDo(defineRestService().
                             with().
-                                useCaseData(useCase, "Code Scan (with data section)").
+                                useCaseData(useCase, VARIANT_CODES_SCAN_WITH_FULL_DATA_SECTION).
                                 tag(RestDocFactory.extractTag(apiEndpoint)).
                                 requestSchema(OpenApiSchema.SCAN_JOB.getSchema()).
                                 responseSchema(OpenApiSchema.JOB_ID.getSchema()).
