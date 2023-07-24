@@ -21,7 +21,9 @@ spec:
 {{- end }}
     spec:
       securityContext:
-        runAsUser: 2323
+        runAsUser: 2323 # user id of the application user. (overrides settings in the Dockerfile)
+        runAsGroup: 2323 # group id of the application group. (overrides setings in the Dockerfile)
+        fsGroup: 2323 # group id of the application group. Set in the Dockerfile. This group has write access to the volumes.
       containers:
         - name: {{ .Chart.Name }}
           image: "{{ .Values.image.registry }}:{{ .Values.image.tag }}"
