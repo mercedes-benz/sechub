@@ -35,6 +35,7 @@ import com.mercedesbenz.sechub.systemtest.config.SystemTestConfiguration;
 import com.mercedesbenz.sechub.systemtest.config.TestDefinition;
 import com.mercedesbenz.sechub.systemtest.pdsclient.PDSClient;
 import com.mercedesbenz.sechub.systemtest.runtime.variable.EnvironmentProvider;
+import com.mercedesbenz.sechub.systemtest.template.SystemTestTemplateEngine;
 
 public class SystemTestRuntimeContext {
 
@@ -60,6 +61,7 @@ public class SystemTestRuntimeContext {
     private List<SystemTestRuntimeStage> stages = new ArrayList<>();
     private SecHubClient remoteUserSecHubClient;
     private SecHubClient localAdminSecHubClient;
+    private SystemTestTemplateEngine templateEngine = new SystemTestTemplateEngine();
 
     private Map<String, PDSClient> localTechUserPdsClientMap = new TreeMap<>();
 
@@ -69,6 +71,10 @@ public class SystemTestRuntimeContext {
 
     public EnvironmentProvider getEnvironmentProvider() {
         return environmentProvider;
+    }
+
+    public SystemTestTemplateEngine getTemplateEngine() {
+        return templateEngine;
     }
 
     public LocationSupport getLocationSupport() {
@@ -284,7 +290,11 @@ public class SystemTestRuntimeContext {
 
         try {
             URI serverUri = url.toURI();
-            client = new SecHubClient(serverUri, credentials.getUserId(), credentials.getApiToken(), true);
+
+            String userId = getTemplateEngine().replaceSecretEnvironmentVariablesWithValues(credentials.getUserId(), getEnvironmentProvider());
+            String apiToken = getTemplateEngine().replaceSecretEnvironmentVariablesWithValues(credentials.getApiToken(), getEnvironmentProvider());
+
+            client = new SecHubClient(serverUri, userId, apiToken, true);
             LOG.info("Created SecHub client for user: '{}', apiToken: '{}'", client.getUsername(), "*".repeat(client.getSealedApiToken().length()));
         } catch (URISyntaxException e) {
             throw new WrongConfigurationException("URL not defined correct local sechub server: " + e.getMessage(), this);
@@ -304,7 +314,10 @@ public class SystemTestRuntimeContext {
         CredentialsDefinition credentials = solutionToUse.getTechUser();
         try {
             URI serverUri = url.toURI();
-            client = new PDSClient(serverUri, credentials.getUserId(), credentials.getApiToken(), true);
+            String userId = getTemplateEngine().replaceSecretEnvironmentVariablesWithValues(credentials.getUserId(), getEnvironmentProvider());
+            String apiToken = getTemplateEngine().replaceSecretEnvironmentVariablesWithValues(credentials.getApiToken(), getEnvironmentProvider());
+
+            client = new PDSClient(serverUri, userId, apiToken, true);
 
         } catch (URISyntaxException e) {
             throw new WrongConfigurationException("URL not defined correct for local PDS solution: " + e.getMessage(), this);

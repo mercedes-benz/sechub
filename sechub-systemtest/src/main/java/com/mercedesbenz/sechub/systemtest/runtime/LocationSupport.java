@@ -36,7 +36,7 @@ public class LocationSupport {
 
         }
 
-        public LocationSupportBuilder pdsSolutionRootFolder(String pdsSolutionsRootFolder) {
+        public LocationSupportBuilder pdsSolutionsRootFolder(String pdsSolutionsRootFolder) {
             this.pdsSolutionsRootFolder = pdsSolutionsRootFolder;
             return this;
         }
@@ -100,7 +100,7 @@ public class LocationSupport {
         private void initSecHubSolutionRootFolder(LocationSupport support) {
             if (sechubSolutionRootFolder != null) {
                 try {
-                    support.sechubSolutionRoot = Paths.get(pdsSolutionsRootFolder).toAbsolutePath().toRealPath();
+                    support.sechubSolutionRoot = Paths.get(sechubSolutionRootFolder).toAbsolutePath().toRealPath();
                 } catch (IOException e) {
                     throw new IllegalStateException("Cannot determine real path for pds solutions root folder: " + pdsSolutionsRootFolder, e);
                 }

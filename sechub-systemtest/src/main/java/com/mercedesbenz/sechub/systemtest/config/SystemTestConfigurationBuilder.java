@@ -24,7 +24,7 @@ public class SystemTestConfigurationBuilder {
         this.configuration = new SystemTestConfiguration();
     }
 
-    public class StepBuilder<T> {
+    public class StepBuilder<T> extends AbstractDefinitionBuilder<StepBuilder<T>> {
         private T parent;
         private ExecutionStepDefinition stepDefinition;
 
@@ -39,6 +39,11 @@ public class SystemTestConfigurationBuilder {
             return this;
         }
 
+        @Override
+        protected AbstractDefinition resolveDefinition() {
+            return stepDefinition;
+        }
+
         public ScriptBuilder script() {
             return new ScriptBuilder();
         }
@@ -47,7 +52,7 @@ public class SystemTestConfigurationBuilder {
             return parent;
         }
 
-        public class ScriptBuilder {
+        public class ScriptBuilder extends AbstractDefinitionBuilder<ScriptBuilder> {
 
             private ScriptDefinition scriptCallDefinition;
 
@@ -83,9 +88,14 @@ public class SystemTestConfigurationBuilder {
             public ProcessDefinitionBuilder process() {
                 return new ProcessDefinitionBuilder(this);
             }
+
+            @Override
+            protected AbstractDefinition resolveDefinition() {
+                return scriptCallDefinition;
+            }
         }
 
-        public class ProcessDefinitionBuilder {
+        public class ProcessDefinitionBuilder extends AbstractDefinitionBuilder<ProcessDefinitionBuilder> {
 
             private StepBuilder<T>.ScriptBuilder scriptBuilder;
             private ProcessDefinition process;
@@ -110,10 +120,27 @@ public class SystemTestConfigurationBuilder {
                 return scriptBuilder;
             }
 
+            @Override
+            protected AbstractDefinition resolveDefinition() {
+                return process;
+            }
+
         }
+
     }
 
-    private abstract class AbstractSecHubDefinitionBuilder<T extends AbstractSecHubDefinitionBuilder<?, ?>, D extends AbstractSecHubDefinition> {
+    /**
+     * Abstract sechub defintion builder
+     *
+     * @author Albert Tregnaghi
+     *
+     * @param <T> Reference for constructor and inheritance... (caller class with
+     *            generics)
+     * @param <D> the SecHub definition
+     * @param <X> Pain result target (caller class without any generics)
+     */
+    private abstract class AbstractSecHubDefinitionBuilder<T extends AbstractSecHubDefinitionBuilder<?, ?, ?>, D extends AbstractSecHubDefinition, X>
+            extends AbstractDefinitionBuilder<X> {
         private D sechubDefinition;
 
         AbstractSecHubDefinitionBuilder(Class<T> clazz, D sechubDefinition) {
@@ -125,13 +152,19 @@ public class SystemTestConfigurationBuilder {
         }
 
         @SuppressWarnings("unchecked")
-        public T url(URL url) {
+        public X url(URL url) {
             sechubDefinition.setUrl(url);
-            return (T) this;
+            return (X) this;
         }
+
+        @Override
+        protected final AbstractDefinition resolveDefinition() {
+            return sechubDefinition;
+        }
+
     }
 
-    public class RemoteSetupBuilder {
+    public class RemoteSetupBuilder extends AbstractDefinitionBuilder<RemoteSetupBuilder> {
         private RemoteSetupDefinition remoteSetup;
 
         private RemoteSetupBuilder() {
@@ -143,7 +176,7 @@ public class SystemTestConfigurationBuilder {
             return new SecHubSetupBuilder();
         }
 
-        public class SecHubSetupBuilder extends AbstractSecHubDefinitionBuilder<SecHubSetupBuilder, RemoteSecHubDefinition> {
+        public class SecHubSetupBuilder extends AbstractSecHubDefinitionBuilder<SecHubSetupBuilder, RemoteSecHubDefinition, SecHubSetupBuilder> {
 
             public SecHubSetupBuilder() {
                 super(SecHubSetupBuilder.class, remoteSetup.getSecHub());
@@ -167,9 +200,14 @@ public class SystemTestConfigurationBuilder {
             return SystemTestConfigurationBuilder.this;
         }
 
+        @Override
+        protected AbstractDefinition resolveDefinition() {
+            return remoteSetup;
+        }
+
     }
 
-    public class LocalSetupBuilder {
+    public class LocalSetupBuilder extends AbstractDefinitionBuilder<LocalSetupBuilder> {
 
         private LocalSetupDefinition localSetup;
 
@@ -190,7 +228,12 @@ public class SystemTestConfigurationBuilder {
             return new SecHubSetupBuilder();
         }
 
-        public class SecHubSetupBuilder extends AbstractSecHubDefinitionBuilder<SecHubSetupBuilder, LocalSecHubDefinition> {
+        @Override
+        protected AbstractDefinition resolveDefinition() {
+            return localSetup;
+        }
+
+        public class SecHubSetupBuilder extends AbstractSecHubDefinitionBuilder<SecHubSetupBuilder, LocalSecHubDefinition, SecHubSetupBuilder> {
 
             public SecHubSetupBuilder() {
                 super(SecHubSetupBuilder.class, localSetup.getSecHub());
@@ -230,12 +273,17 @@ public class SystemTestConfigurationBuilder {
                     return new ExecutorConfigBuilder();
                 }
 
-                public class ExecutorConfigBuilder {
+                public class ExecutorConfigBuilder extends AbstractDefinitionBuilder<ExecutorConfigBuilder> {
                     SecHubExecutorConfigDefinition executor;
 
                     private ExecutorConfigBuilder() {
                         executor = new SecHubExecutorConfigDefinition();
                         getSechubDefinition().getConfigure().getExecutors().add(executor);
+                    }
+
+                    @Override
+                    protected AbstractDefinition resolveDefinition() {
+                        return executor;
                     }
 
                     public ConfigurationBuilder endExecutor() {
@@ -267,23 +315,6 @@ public class SystemTestConfigurationBuilder {
                         return this;
                     }
 
-                    /**
-                     * Overrides technical user credentials from PDS solution definition. Normally
-                     * unnecessary - use only when absolutely necesssary.
-                     *
-                     * @param userId
-                     * @param apiToken
-                     * @return
-                     */
-                    public ExecutorConfigBuilder overrideTechUserCredentials(String userId, String apiToken) {
-
-                        CredentialsDefinition credentials = executor.getCredentials();
-                        credentials.setUserId(userId);
-                        credentials.setApiToken(apiToken);
-
-                        return this;
-                    }
-
                     public ExecutorConfigBuilder forProfile(String... profileIds) {
                         for (String profileId : profileIds) {
                             executor.getProfiles().add(profileId);
@@ -310,13 +341,18 @@ public class SystemTestConfigurationBuilder {
             }
         }
 
-        public class SolutionSetupBuilder {
+        public class SolutionSetupBuilder extends AbstractDefinitionBuilder<SolutionSetupBuilder> {
 
             private PDSSolutionDefinition setup;
 
             public SolutionSetupBuilder(String name) {
                 setup = new PDSSolutionDefinition();
                 setup.setName(name);
+            }
+
+            @Override
+            protected AbstractDefinition resolveDefinition() {
+                return setup;
             }
 
             public LocalSetupBuilder endSolution() {
@@ -374,6 +410,7 @@ public class SystemTestConfigurationBuilder {
             }
 
         }
+
     }
 
     public SystemTestConfigurationBuilder addVariable(String name, String value) {
@@ -394,18 +431,28 @@ public class SystemTestConfigurationBuilder {
         return configuration;
     }
 
-    public class TestBuilder {
+    public class TestBuilder extends AbstractDefinitionBuilder<TestBuilder> {
 
         TestDefinition test;
 
+        @Override
+        protected AbstractDefinition resolveDefinition() {
+            return test;
+        }
+
         public class AssertsBuilder {
 
-            public class AssertBuilder {
+            public class AssertBuilder extends AbstractDefinitionBuilder<AssertBuilder> {
                 TestAssertDefinition assertDefinition;
 
                 public AssertBuilder() {
                     assertDefinition = new TestAssertDefinition();
                     test.getAssert().add(assertDefinition);
+                }
+
+                @Override
+                protected AbstractDefinition resolveDefinition() {
+                    return assertDefinition;
                 }
 
                 public AssertsBuilder endAssert() {
@@ -416,13 +463,17 @@ public class SystemTestConfigurationBuilder {
                     return new SecHubResultAssertBuilder();
                 }
 
-                public class SecHubResultAssertBuilder {
+                public class SecHubResultAssertBuilder extends AbstractDefinitionBuilder<SecHubResultAssertBuilder> {
                     AssertSechubResultDefinition sechubResultDefinition;
 
                     public SecHubResultAssertBuilder() {
                         sechubResultDefinition = new AssertSechubResultDefinition();
                         assertDefinition.getSechubResult().add(sechubResultDefinition);
+                    }
 
+                    @Override
+                    protected AbstractDefinition resolveDefinition() {
+                        return sechubResultDefinition;
                     }
 
                     public AssertBuilder endSecHubResult() {
@@ -474,7 +525,7 @@ public class SystemTestConfigurationBuilder {
             return new AssertsBuilder();
         }
 
-        public class SecHubRunBuilder {
+        public class SecHubRunBuilder extends AbstractDefinitionBuilder<SecHubRunBuilder> {
 
             private RunSecHubJobDefinition runSecHubJob;
 
@@ -485,6 +536,11 @@ public class SystemTestConfigurationBuilder {
                 TestExecutionDefinition execute = test.getExecute();
                 execute.setRunSecHubJob(Optional.of(runSecHubJob));
 
+            }
+
+            @Override
+            protected AbstractDefinition resolveDefinition() {
+                return runSecHubJob;
             }
 
             public TestBuilder endRunSecHub() {
@@ -526,7 +582,7 @@ public class SystemTestConfigurationBuilder {
                     return SecHubRunBuilder.this;
                 }
 
-                public class UploadBuilder {
+                public class UploadBuilder extends AbstractDefinitionBuilder<UploadBuilder> {
 
                     private UploadDefinition uploadDefinition;
 
@@ -534,6 +590,11 @@ public class SystemTestConfigurationBuilder {
                         uploadDefinition = new UploadDefinition();
                         uploadDefinition.setReferenceId(Optional.ofNullable(referenceId));
                         runSecHubJob.getUploads().add(uploadDefinition);
+                    }
+
+                    @Override
+                    protected AbstractDefinition resolveDefinition() {
+                        return uploadDefinition;
                     }
 
                     public UploadsBuilder endUpload() {

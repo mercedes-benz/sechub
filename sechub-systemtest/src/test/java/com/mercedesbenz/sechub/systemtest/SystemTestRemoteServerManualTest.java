@@ -28,8 +28,12 @@ class SystemTestRemoteServerManualTest {
 
     private static final Logger LOG = LoggerFactory.getLogger(SystemTestRemoteServerManualTest.class);
 
+    private SystemTestAPI systemTestApi;
+
     @BeforeEach
     void beforeEach(TestInfo info) {
+        systemTestApi = new SystemTestAPI();
+
         LOG.info("--------------------------------------------------------------------------------------------------------------------------------");
         LOG.info("System API tests: {}", info.getDisplayName());
         LOG.info("--------------------------------------------------------------------------------------------------------------------------------");
@@ -52,7 +56,7 @@ class SystemTestRemoteServerManualTest {
         LOG.info("config=\n{}", JSONConverter.get().toJSON(configuration,true));
 
         /* execute */
-        SystemTestResult result = runSystemTests(
+        SystemTestResult result = systemTestApi.runSystemTests(
                 params().
                     remoteRun().
                     workspacePath(createTempDirectoryInBuildFolder("systemtest_inttest/remote_run_test").toString()).

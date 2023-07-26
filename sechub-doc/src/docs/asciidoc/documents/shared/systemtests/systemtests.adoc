@@ -4,15 +4,17 @@
 == System tests
 This chapter describes the system test framework.
 
+=== We have integration test framework, why another one?
 Integration tests do rely on that {sechub} is running in integration test mode, using one {pds}
-server in integration test mode as well. In this scenario, the integration test API can fetch
-internal meta data and is able to check correctness of the logic inside {sechub} and also inside
-{pds}. But it does not test real product execution - it uses only mocked test scripts and dedicated 
-test data.    
+server in integration test mode as well. 
+
+In this scenario, the integration test API can fetch internal meta data and is able to check 
+correctness of the logic inside {sechub} and also inside {pds}. But it does not test real product 
+execution - at the end it uses only mocked test scripts and dedicated test data.    
 
 The system tests are different to integration tests: The main purpose is to test 
 {sechub} server(s) in combination with one or multiple {pds} solutions in real live scenarios.
-This helps developers of PDS solutions to drastically reduce development time and also to write 
+This helps developers of {pds} solutions to drastically reduce development time and also to write 
 automated tests without having to constantly test manually - a command line call in the OS shell or 
 calling a unit test is sufficient. 
 
@@ -31,8 +33,8 @@ This chapter describes the different parts inside the test configuration model.
 
 System tests can be written in two ways:
 
-2. Write a Junit test and use methods provided by `SystemTestAPI`
-1. Writing a JSON file and execute it with `pds-tools`.
+1. Write a JUnit test and use methods provided by `SystemTestAPI` or
+2. Write a JSON file and execute it with `pds-tools`.
 
 It does not matter if you write the configuration directly in JSON or with the java test API - 
 the underlying model is the same. 
@@ -78,7 +80,6 @@ configuration you reference it by `${secretEnv.USER_PASSWORD}`.
 When you are using secret environment variables but they are not defined at runtime,
 the system test framework will fail with an error about the missing variables.
 ====
-
 
 But those variables can only be used at some locations:
 
@@ -146,18 +147,24 @@ and profiles must be configured here. Also the usage of <<section-systemtests-lo
 
 ===== Local
 When we run system tests on a local environment, all necessary data and setup will be done by the framework.
-This means an administrator account is necessary to setup the systems.
+This means an administrator account is necessary to setup the system.
 
-If not defined, the default credentials for integration test server will be used 
+If not defined, the default credentials for integration test server will be used. If you not define
+{sechub} or {pds}
 
 ===== Remote
 It is also possible to use an existing real {sechub} platform and run the defined
 tests there. The configuration is not tampered here - executor configurations, users, projects
 and profiles must be configured here. Also the usage of <<section-systemtests-local-defaults,local defaults>>   is not possible - except those parts are defined on remote site with such names!  
 
-==== Example
-// FIXME 2023-04-05, albert: not implemented
-TBD: Not implemented at the moment
+==== Examples
+
+===== Testing with already running integration test servers
+[source,json]
+----
+include::../../gen/examples/gen_example_systemtest_using_local_integrationtestservers.json[]
+----
+
 
 === Execution
 

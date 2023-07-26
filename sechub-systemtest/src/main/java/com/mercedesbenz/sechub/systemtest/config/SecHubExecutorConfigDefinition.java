@@ -3,19 +3,20 @@ package com.mercedesbenz.sechub.systemtest.config;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 
-public class SecHubExecutorConfigDefinition {
+public class SecHubExecutorConfigDefinition extends AbstractDefinition {
 
     private String pdsProductId;
     private String name;
-    private int version = 1;
+    private int version;
 
     private Map<String, String> parameters = new LinkedHashMap<>();
 
     private Set<String> profiles = new LinkedHashSet<>();
     private String baseURL;
-    private CredentialsDefinition credentials = new CredentialsDefinition();
+    private Optional<CredentialsDefinition> credentials = Optional.empty();
 
     public Map<String, String> getParameters() {
         return parameters;
@@ -62,8 +63,12 @@ public class SecHubExecutorConfigDefinition {
         return baseURL;
     }
 
-    public CredentialsDefinition getCredentials() {
+    public Optional<CredentialsDefinition> getCredentials() {
         return credentials;
+    }
+
+    public void setCredentials(Optional<CredentialsDefinition> credentials) {
+        this.credentials = credentials;
     }
 
 }

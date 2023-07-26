@@ -35,8 +35,15 @@ public class JSONConverter {
     }
 
     public String toJSON(Object object, boolean prettyPrinted) throws JSONConverterException {
+        return toJSON(object, prettyPrinted, null);
+    }
+
+    public String toJSON(Object object, boolean prettyPrinted, JsonMapper mapper) throws JSONConverterException {
         if (object == null) {
             return "null";
+        }
+        if (mapper == null) {
+            mapper = this.mapper;
         }
         try {
             byte[] bytes;

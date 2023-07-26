@@ -35,8 +35,12 @@ class SystemTestDryRunTest {
     private static final Logger LOG = LoggerFactory.getLogger(SystemTestDryRunTest.class);
     private static final String PREPARE_TEST1_OUPTUT_FILE_NAME = "output-prepare-test1.txt";
 
+    private SystemTestAPI systemTestApi;
+
     @BeforeEach
     void beforeEach(TestInfo info) {
+        systemTestApi = new SystemTestAPI();
+
         LOG.info("--------------------------------------------------------------------------------------------------------------------------------");
         LOG.info("System API tests: {}", info.getDisplayName());
         LOG.info("--------------------------------------------------------------------------------------------------------------------------------");
@@ -158,7 +162,7 @@ class SystemTestDryRunTest {
 
         /* execute */
         Path tempWorkspaceFolder = createTempDirectoryInBuildFolder("systemtest_inttest/faked_gosec_can_be_executed_without_errors");
-        SystemTestResult result = runSystemTests(
+        SystemTestResult result = systemTestApi.runSystemTests(
                 params().
                     localRun().
                     dryRun().
@@ -214,7 +218,7 @@ class SystemTestDryRunTest {
         LOG.info("loaded config=\n{}", JSONConverter.get().toJSON(configuration,true));
 
         /* execute */
-        SystemTestRuntimeException exception = assertThrows(SystemTestRuntimeException.class, ()->runSystemTests(
+        SystemTestRuntimeException exception = assertThrows(SystemTestRuntimeException.class, ()->systemTestApi.runSystemTests(
             params().
                 localRun().
                 workspacePath(createTempDirectoryInBuildFolder("systemtest_inttest/fail_because_unknown_runtime_variable").toString()).
@@ -252,7 +256,7 @@ class SystemTestDryRunTest {
         LOG.info("loaded config=\n{}", JSONConverter.get().toJSON(configuration,true));
 
         /* execute */
-        ProcessContainerFailedException exception = assertThrows(ProcessContainerFailedException.class,()->runSystemTests(
+        ProcessContainerFailedException exception = assertThrows(ProcessContainerFailedException.class,()->systemTestApi.runSystemTests(
             params().
                 localRun().
                 dryRun().
@@ -291,7 +295,7 @@ class SystemTestDryRunTest {
         LOG.debug("loaded config=\n{}", JSONConverter.get().toJSON(configuration,true));
 
         /* execute */
-        SystemTestRuntimeException exception = assertThrows(SystemTestRuntimeException.class, ()->runSystemTests(
+        SystemTestRuntimeException exception = assertThrows(SystemTestRuntimeException.class, ()->systemTestApi.runSystemTests(
            params().
                 localRun().
                 workspacePath(createTempDirectoryInBuildFolder("systemtest_inttest/fail_because_no_pds_config").toString()).
@@ -323,7 +327,7 @@ class SystemTestDryRunTest {
         LOG.debug("loaded config=\n{}", JSONConverter.get().toJSON(configuration,true));
 
         /* execute */
-        SystemTestRuntimeException exception = assertThrows(SystemTestRuntimeException.class, ()->runSystemTests(
+        SystemTestRuntimeException exception = assertThrows(SystemTestRuntimeException.class, ()->systemTestApi.runSystemTests(
            params().
                 localRun().
                 workspacePath(createTempDirectoryInBuildFolder("systemtest_inttest/fail_because_no_pds_config").toString()).

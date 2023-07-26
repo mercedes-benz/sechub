@@ -15,6 +15,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.mercedesbenz.sechub.commons.model.JSONConverter;
+import com.mercedesbenz.sechub.commons.model.TrafficLight;
 
 class SystemTestConfigurationTest {
 
@@ -243,6 +244,8 @@ class SystemTestConfigurationTest {
         test1Assert1ContainsStrings.setComment("Checks if the sechub result file contains the given strings.");
         test1Assert1ContainsStrings.setValues(Arrays.asList("CWE-89", "SQL-Injection", "Improper"));
         assertSecHubResult1.setContainsStrings(Optional.of(test1Assert1ContainsStrings));
+
+        assertSecHubResult1.setHasTrafficLight(Optional.of(TrafficLight.GREEN));
     }
 
 }

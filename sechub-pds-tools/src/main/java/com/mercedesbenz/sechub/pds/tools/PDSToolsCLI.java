@@ -1,6 +1,8 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.pds.tools;
 
+import java.io.IOException;
+
 import com.beust.jcommander.JCommander;
 import com.beust.jcommander.MissingCommandException;
 import com.beust.jcommander.ParameterException;
@@ -9,15 +11,18 @@ import com.mercedesbenz.sechub.pds.tools.handler.ConsoleHandler;
 import com.mercedesbenz.sechub.pds.tools.handler.ExitHandler;
 import com.mercedesbenz.sechub.pds.tools.handler.PrintStreamConsoleHandler;
 import com.mercedesbenz.sechub.pds.tools.handler.SystemExitHandler;
+import com.mercedesbenz.sechub.pds.tools.systemtest.SystemTestLauncher;
 
 public class PDSToolsCLI {
 
     ConsoleHandler consoleHandler;
     ExitHandler exitHandler;
+    SystemTestLauncher systemTestLauncher;
 
     public PDSToolsCLI() {
         consoleHandler = new PrintStreamConsoleHandler();
         exitHandler = new SystemExitHandler();
+        systemTestLauncher = new SystemTestLauncher();
     }
 
     public static void main(String[] args) throws Exception {
@@ -27,12 +32,14 @@ public class PDSToolsCLI {
 
     void start(String... args) throws Exception {
         GeneratorCommand generatorCommand = new GeneratorCommand();
+        SystemTestCommand systemTestCommand = new SystemTestCommand();
 
         /* @formatter:off */
         HelpArgument helpArgument = new HelpArgument();
         JCommander jc = JCommander.newBuilder().
                 console(consoleHandler).
                 addCommand(generatorCommand).
+                addCommand(systemTestCommand).
                 addObject(helpArgument).
                 build();
         /* @formatter:on */
@@ -42,7 +49,7 @@ public class PDSToolsCLI {
         } catch (MissingCommandException e) {
             wrongUsage("Wrong usage: " + e.getMessage(), jc);
         } catch (ParameterException e) {
-            wrongUsage("Wrong usage.", jc, 3);
+            wrongUsage("Wrong usage: " + e.getMessage(), jc, 3);
         }
 
         if (helpArgument.help) {
@@ -56,9 +63,19 @@ public class PDSToolsCLI {
         }
         switch (parsedCmdStr) {
         case CommandConstants.GENERATE -> generate(generatorCommand);
+        case CommandConstants.SYSTEMTEST -> systemtest(systemTestCommand);
         default -> {
             wrongUsage("Unknown command", jc);
         }
+        }
+    }
+
+    private void systemtest(SystemTestCommand systemTestCommand) {
+        try {
+            systemTestLauncher.launch(systemTestCommand);
+        } catch (IOException e) {
+            consoleHandler.error("Was not able to launch system test: " + e.getMessage());
+            exitHandler.exit(1);
         }
     }
 

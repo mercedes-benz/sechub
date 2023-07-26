@@ -142,7 +142,8 @@ public class ExecutionSupport {
         if (workingDirectoryAsString != null) {
             workingDirectory = Paths.get(workingDirectoryAsString).toFile();
         } else {
-            workingDirectory = new File("./");
+            File scriptFile = new File("./");
+            workingDirectory = scriptFile.getParentFile();
         }
         LOG.trace("Start:{} inside {}", scriptPath, workingDirectoryAsString);
         return workingDirectory;

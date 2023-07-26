@@ -36,11 +36,13 @@ public class GeneratorCommand {
             description="working directory. if not set, the parent directory of the sechub configuration file will be used"
           )
     String workingDirectory;
+
     @Parameter(
             names = { "--createMissingFiles", "-m"},
             description="if the files defined inside the SecHub configuration file do not exist inside the working directory and this option is enabled, an empty file will be created"
             )
     boolean createMissingFiles;
+
     /* @formatter:on */
 
     public boolean isCreateMissingFiles() {

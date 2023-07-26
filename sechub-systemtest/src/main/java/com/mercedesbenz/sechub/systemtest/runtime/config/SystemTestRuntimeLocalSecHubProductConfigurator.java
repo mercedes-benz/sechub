@@ -9,6 +9,7 @@ import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 
@@ -162,7 +163,7 @@ public class SystemTestRuntimeLocalSecHubProductConfigurator {
         ExecutorConfigurationSetup setup = config.getSetup();
         setup.setBaseURL(executorConfigDefinition.getBaseURL());
 
-        handleCredentials(executorConfigDefinition, setup);
+        handleCredentials(executorConfigDefinition, setup, context);
         handleParametersForNewExecutorConfiguration(executorConfigDefinition, setup, pdsProductId, scanType);
 
         /* store executor configuration */
@@ -176,13 +177,29 @@ public class SystemTestRuntimeLocalSecHubProductConfigurator {
         }
     }
 
-    private void handleCredentials(SecHubExecutorConfigDefinition executorConfigDefinition, ExecutorConfigurationSetup setup) {
-        ExecutorConfigurationSetupCredentials setupCredentials = new ExecutorConfigurationSetupCredentials();
+    private void handleCredentials(SecHubExecutorConfigDefinition executorConfigDefinition, ExecutorConfigurationSetup setup,
+            SystemTestRuntimeContext context) {
+        ExecutorConfigurationSetupCredentials executorSetupCredentials = new ExecutorConfigurationSetupCredentials();
 
-        CredentialsDefinition credentialsDefinition = executorConfigDefinition.getCredentials();
-        setupCredentials.setPassword(credentialsDefinition.getApiToken());
-        setupCredentials.setUser(credentialsDefinition.getUserId());
-        setup.setCredentials(setupCredentials);
+        Optional<CredentialsDefinition> executorConfigOptCredentials = executorConfigDefinition.getCredentials();
+
+        if (executorConfigOptCredentials.isPresent()) {
+            /*
+             * we must provide secret environment variables here - to avoid them inside
+             * logs...
+             */
+            CredentialsDefinition executorCredentialsDefinition = executorConfigOptCredentials.get();
+
+            String userId = context.getTemplateEngine().replaceSecretEnvironmentVariablesWithValues(executorCredentialsDefinition.getUserId(),
+                    context.getEnvironmentProvider());
+            executorSetupCredentials.setUser(userId);
+
+            String apiToken = context.getTemplateEngine().replaceSecretEnvironmentVariablesWithValues(executorCredentialsDefinition.getApiToken(),
+                    context.getEnvironmentProvider());
+            executorSetupCredentials.setPassword(apiToken);
+
+        }
+        setup.setCredentials(executorSetupCredentials);
     }
 
     private void handleParametersForNewExecutorConfiguration(SecHubExecutorConfigDefinition executorConfigDefinition, ExecutorConfigurationSetup setup,

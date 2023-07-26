@@ -51,10 +51,9 @@ public class SystemTestRuntimePreparator {
 
     private static final Logger LOG = LoggerFactory.getLogger(SystemTestRuntimePreparator.class);
     private static final int MAX_VARIABLE_REPLACEMENT_LOOP_COUNT = 100;
-    private SystemTestTemplateEngine templateEngine;
 
     public SystemTestRuntimePreparator() {
-        this.templateEngine = new SystemTestTemplateEngine();
+
     }
 
     public void prepare(SystemTestRuntimeContext context) {
@@ -180,6 +179,7 @@ public class SystemTestRuntimePreparator {
         /* --------------------- */
         /* Environment variables */
         /* --------------------- */
+        SystemTestTemplateEngine templateEngine = context.getTemplateEngine();
         String alteredJson = templateEngine.replaceEnvironmentVariablesWithValues(orgJson, context.getEnvironmentProvider());
         /*
          * at this point we have no longer any data with ${env.XYZ} but only dedicated
@@ -321,11 +321,11 @@ public class SystemTestRuntimePreparator {
             if (localPdsSolution.getWaitForAvailable().isEmpty()) {
                 localPdsSolution.setWaitForAvailable(Optional.of(DefaultFallbackUtil.convertToBoolean(DefaultFallback.FALLBACK_LOCAL_PDS_WAIT_FOR_AVAILABLE)));
             }
-            CredentialsDefinition credentials = localPdsSolution.getTechUser();
-            if (credentials.getUserId() == null || credentials.getUserId().isEmpty()) {
+            CredentialsDefinition localPDSSolutionTechUser = localPdsSolution.getTechUser();
+            if (localPDSSolutionTechUser.getUserId() == null || localPDSSolutionTechUser.getUserId().isEmpty()) {
 
-                credentials.setUserId(DefaultFallback.FALLBACK_PDS_TECH_USER.getValue());
-                credentials.setApiToken(DefaultFallback.FALLBACK_PDS_TECH_TOKEN.getValue());
+                localPDSSolutionTechUser.setUserId(DefaultFallback.FALLBACK_PDS_TECH_USER.getValue());
+                localPDSSolutionTechUser.setApiToken(DefaultFallback.FALLBACK_PDS_TECH_TOKEN.getValue());
 
                 LOG.debug("No credentials set for solution: '{}', added defaults");
             }
@@ -339,25 +339,33 @@ public class SystemTestRuntimePreparator {
         if (!context.isLocalSecHubConfigured()) {
             return;
         }
-        for (SecHubExecutorConfigDefinition definition : context.getLocalSecHubExecutorConfigurationsOrFail()) {
-            CredentialsDefinition credentials = definition.getCredentials();
-            String productId = definition.getPdsProductId();
+        for (SecHubExecutorConfigDefinition localExecutorDefinition : context.getLocalSecHubExecutorConfigurationsOrFail()) {
 
-            PDSSolutionDefinition solution = context.fetchPDSSolutionByProductIdOrFail(productId);
+            String productId = localExecutorDefinition.getPdsProductId();
 
-            if (credentials.getUserId() == null || credentials.getUserId().isEmpty()) {
+            PDSSolutionDefinition solutionToExecute = context.fetchPDSSolutionByProductIdOrFail(productId);
 
-                CredentialsDefinition techUser = solution.getTechUser();
+            if (localExecutorDefinition.getCredentials().isEmpty()) {
+                /* when not defined, define an empty one as fallback */
+                localExecutorDefinition.setCredentials(Optional.of(new CredentialsDefinition()));
+            }
+
+            CredentialsDefinition executorCredentials = localExecutorDefinition.getCredentials().get();
+
+            if (executorCredentials.getUserId() == null || executorCredentials.getUserId().isEmpty()) {
+
+                /* nothing special defined, so just use the executor credentials! */
+                CredentialsDefinition techUser = solutionToExecute.getTechUser();
 
                 String userId = techUser.getUserId();
                 if (userId == null || userId.isEmpty()) {
                     throw new IllegalStateException("At this point of preparation, the tech user credentials must be not null!");
                 }
 
-                credentials.setUserId(userId);
-                credentials.setApiToken(techUser.getApiToken());
+                executorCredentials.setUserId(userId);
+                executorCredentials.setApiToken(techUser.getApiToken());
 
-                LOG.debug("No credentials set for executor, added defaults");
+                LOG.debug("No credentials set for executor, reused credentials from pds product");
             }
         }
 
@@ -384,6 +392,10 @@ public class SystemTestRuntimePreparator {
             if (params.get(PDSDefaultParameterKeyConstants.PARAM_KEY_PDS_CONFIG_USE_SECHUB_STORAGE) == null) {
                 params.put(PDSDefaultParameterKeyConstants.PARAM_KEY_PDS_CONFIG_USE_SECHUB_STORAGE, "true");
                 LOG.debug("No SecHub storage usage definition found, defined default");
+            }
+            if (definition.getVersion() == 0) {
+                definition.setVersion(1);
+                LOG.debug("No executor version found, defined default");
             }
         }
 

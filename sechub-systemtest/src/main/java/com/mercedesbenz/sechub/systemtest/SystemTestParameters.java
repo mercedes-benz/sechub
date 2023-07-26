@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.systemtest;
 
 import com.mercedesbenz.sechub.systemtest.config.SystemTestConfiguration;
@@ -5,8 +6,8 @@ import com.mercedesbenz.sechub.systemtest.config.SystemTestConfiguration;
 public class SystemTestParameters {
 
     private SystemTestConfiguration configuration;
-    private String pathToPdsSolution;
-    private String pathToSechubSolution;
+    private String pathToPdsSolutionsRootFolder;
+    private String pathToSechubSolutionRootFolder;
     private String pathToWorkspace;
     private String pathToAdditionalResources;
     private boolean localRun = true;// default always local
@@ -17,12 +18,12 @@ public class SystemTestParameters {
         return configuration;
     }
 
-    public String getPathToPdsSolution() {
-        return pathToPdsSolution;
+    public String getPathToPdsSolutionsRootFolder() {
+        return pathToPdsSolutionsRootFolder;
     }
 
-    public String getPathToSechubSolution() {
-        return pathToSechubSolution;
+    public String getPathToSechubSolutionRootFolder() {
+        return pathToSechubSolutionRootFolder;
     }
 
     /**
@@ -63,7 +64,7 @@ public class SystemTestParameters {
         }
 
         public SystemTestParametersBuilder pdsSolutionPath(String pathToPdsSolution) {
-            parameter.pathToPdsSolution = pathToPdsSolution;
+            parameter.pathToPdsSolutionsRootFolder = pathToPdsSolution;
             return this;
         }
 
@@ -72,11 +73,11 @@ public class SystemTestParameters {
          * normally not necessary : The location support will automatically use a
          * calculated server location from PDS solution path.
          *
-         * @param pathToPdsSolution
-         * @return
+         * @param pathToSecHubSolution
+         * @return builder
          */
-        public SystemTestParametersBuilder secHubSolutionPath(String pathToPdsSolution) {
-            parameter.pathToPdsSolution = pathToPdsSolution;
+        public SystemTestParametersBuilder secHubSolutionPath(String pathToSecHubSolution) {
+            parameter.pathToSechubSolutionRootFolder = pathToSecHubSolution;
             return this;
         }
 
@@ -111,7 +112,7 @@ public class SystemTestParameters {
             return this;
         }
 
-        SystemTestParameters build() {
+        public SystemTestParameters build() {
             return parameter;
         }
 

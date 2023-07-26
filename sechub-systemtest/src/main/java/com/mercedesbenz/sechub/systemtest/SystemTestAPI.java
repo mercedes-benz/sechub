@@ -37,12 +37,16 @@ public class SystemTestAPI {
         return SystemTestParameters.builder();
     }
 
-    public static SystemTestResult runSystemTests(SystemTestParameters parameters) {
+    public SystemTestResult runSystemTests(SystemTestParameters parameters) {
+        return runSystemTests(parameters, null);
+    }
+
+    public SystemTestResult runSystemTests(SystemTestParameters parameters, EnvironmentProvider environmentSupport) {
         /* @formatter:off */
         LocationSupport locationSupport = LocationSupport.builder().
 
-                pdsSolutionRootFolder(parameters.getPathToPdsSolution()).
-                sechubSolutionRootFolder(parameters.getPathToSechubSolution()).
+                pdsSolutionsRootFolder(parameters.getPathToPdsSolutionsRootFolder()).
+                sechubSolutionRootFolder(parameters.getPathToSechubSolutionRootFolder()).
                 additionalResourcesFolder(parameters.getPathToAdditionalResources()).
                 workspaceRootFolder(parameters.getPathToWorkspace()).
 
@@ -50,16 +54,17 @@ public class SystemTestAPI {
         /* @formatter:on */
 
         cleanupOldRuntimeFolderIfExisting(locationSupport);
-
-        EnvironmentProvider variableSupport = new SystemEnvironmentProvider();
-        ExecutionSupport execSupport = new ExecutionSupport(variableSupport, locationSupport);
+        if (environmentSupport == null) {
+            environmentSupport = new SystemEnvironmentProvider();
+        }
+        ExecutionSupport execSupport = new ExecutionSupport(environmentSupport, locationSupport);
 
         SystemTestRuntime runtime = new SystemTestRuntime(locationSupport, execSupport);
 
         return runtime.run(parameters.getConfiguration(), parameters.isLocalRun(), parameters.isDryRun());
     }
 
-    private static void cleanupOldRuntimeFolderIfExisting(LocationSupport locationSupport) {
+    private void cleanupOldRuntimeFolderIfExisting(LocationSupport locationSupport) {
         Path runtimeFolder = locationSupport.getRuntimeFolder();
         if (Files.exists(runtimeFolder)) {
             try {

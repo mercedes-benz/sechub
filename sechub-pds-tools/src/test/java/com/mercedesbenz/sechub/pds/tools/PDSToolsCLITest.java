@@ -2,61 +2,89 @@
 package com.mercedesbenz.sechub.pds.tools;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.Mockito.*;
 
 import java.io.File;
 import java.nio.file.Files;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.ArgumentCaptor;
+
+import com.mercedesbenz.sechub.pds.tools.handler.ExitHandler;
+import com.mercedesbenz.sechub.pds.tools.systemtest.SystemTestLauncher;
 
 class PDSToolsCLITest {
 
     private PDSToolsCLI cliToTest;
+    private SystemTestLauncher systemTestLauncher;
+    private ExitHandler exitHandler;
 
     @BeforeEach
     void beforeEach() {
         cliToTest = new PDSToolsCLI();
-        cliToTest.exitHandler = new TestExitHandler();
+
+        exitHandler = new TestExitHandler();
+        systemTestLauncher = mock(SystemTestLauncher.class);
+
+        cliToTest.exitHandler = exitHandler;
+        cliToTest.systemTestLauncher = systemTestLauncher;
     }
 
     @Test
     void no_argument_fails_with_exit_code_1() throws Exception {
 
+        /* execute */
         TestExitException exception = assertThrows(TestExitException.class, () -> cliToTest.start(new String[] {}));
 
+        /* test */
         assertEquals(1, exception.getExitCode());
+        verify(systemTestLauncher, never()).launch(any());
     }
 
     @Test
     void unknown_command_fails_with_exit_code_2() throws Exception {
 
+        /* execute */
         TestExitException exception = assertThrows(TestExitException.class, () -> cliToTest.start(new String[] { "unknown" }));
 
+        /* test */
         assertEquals(2, exception.getExitCode());
+        verify(systemTestLauncher, never()).launch(any());
     }
 
     @Test
     void help_does_exit_with_0() throws Exception {
 
+        /* execute */
         TestExitException exception = assertThrows(TestExitException.class, () -> cliToTest.start(new String[] { "--help" }));
 
+        /* test */
         assertEquals(0, exception.getExitCode());
+        verify(systemTestLauncher, never()).launch(any());
     }
 
     @Test
     void generate_without_parameter_1_fails_with_exit_3() throws Exception {
 
+        /* execute */
         TestExitException exception = assertThrows(TestExitException.class, () -> cliToTest.start(new String[] { "generate" }));
 
+        /* test */
         assertEquals(3, exception.getExitCode());
+        verify(systemTestLauncher, never()).launch(any());
     }
 
     @Test
     void generate_without_parameter_2_fails_with_exit_3() throws Exception {
 
+        /* execute */
         TestExitException exception = assertThrows(TestExitException.class, () -> cliToTest.start(new String[] { "generate", "1" }));
 
+        /* test */
         assertEquals(3, exception.getExitCode());
+        verify(systemTestLauncher, never()).launch(any());
     }
 
     @Test
@@ -70,6 +98,9 @@ class PDSToolsCLITest {
         /* execute */
         cliToTest.start(new String[] { "generate", "-w", definedWorkingFolder.getAbsolutePath(), "-p", testConfigFile.getAbsolutePath(), "-s", scanType,
                 "--createMissingFiles" });
+
+        /* test */
+        verify(systemTestLauncher, never()).launch(any());
     }
 
     @Test
@@ -93,6 +124,50 @@ class PDSToolsCLITest {
         assertFileExists(definedTargetFolder, "pdsJobData.json");
         assertFileExists(definedTargetFolder, "original-used-sechub-configfile.json");
         assertFileExists(definedTargetFolder, "reducedSecHubJson_for_codeScan.json");
+
+        verify(systemTestLauncher, never()).launch(any());
+    }
+
+    @Test
+    void systemtest_does_call_systemtest_launcher_with_correct_paramters_1() throws Exception {
+        /* execute */
+        cliToTest.start(new String[] { "systemtest", "--dry", "--file", "./testfile.json" });
+
+        /* test */
+        ArgumentCaptor<SystemTestCommand> captor = ArgumentCaptor.forClass(SystemTestCommand.class);
+        verify(systemTestLauncher).launch(captor.capture());
+
+        SystemTestCommand systemTestCommand = captor.getValue();
+        assertEquals(null, systemTestCommand.getAdditionalResourcesFolder());
+        assertEquals("./testfile.json", systemTestCommand.getPathToConfigFile());
+        assertEquals(null, systemTestCommand.getPdsSolutionsRootFolder());
+        assertEquals(null, systemTestCommand.getSecHubSolutionRootFolder());
+        assertEquals(true, systemTestCommand.isDryRun());
+        assertEquals(false, systemTestCommand.isRemoteRun());
+        assertEquals(null, systemTestCommand.getWorkspaceFolder());
+
+    }
+
+    @Test
+    void systemtest_does_call_systemtest_launcher_with_correct_paramters_2() throws Exception {
+        /* execute */
+        cliToTest.start(new String[] { "systemtest", "--workspace-rootfolder", "/path/to/workspace", "--file", "/absolute/testfile.json",
+                "--additional-resources-folder", "./additionalResources/path", "--pds-solutions-rootfolder", "/path/to/pds-solution",
+                "--sechub-solution-rootfolder", "/path/to/sechub-solution" });
+
+        /* test */
+        ArgumentCaptor<SystemTestCommand> captor = ArgumentCaptor.forClass(SystemTestCommand.class);
+        verify(systemTestLauncher).launch(captor.capture());
+
+        SystemTestCommand systemTestCommand = captor.getValue();
+        assertEquals("./additionalResources/path", systemTestCommand.getAdditionalResourcesFolder());
+        assertEquals("/absolute/testfile.json", systemTestCommand.getPathToConfigFile());
+        assertEquals("/path/to/pds-solution", systemTestCommand.getPdsSolutionsRootFolder());
+        assertEquals("/path/to/sechub-solution", systemTestCommand.getSecHubSolutionRootFolder());
+        assertEquals(false, systemTestCommand.isDryRun());
+        assertEquals(false, systemTestCommand.isRemoteRun());
+        assertEquals("/path/to/workspace", systemTestCommand.getWorkspaceFolder());
+
     }
 
     private void assertFileExists(File tmpFolder, String fileName) {
