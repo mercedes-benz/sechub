@@ -1,83 +1,59 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.sharedkernel.validation;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
-import org.junit.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.EmptySource;
+import org.junit.jupiter.params.provider.NullSource;
+import org.junit.jupiter.params.provider.ValueSource;
 
 public class ProjectIdValidationImplTest {
 
     private ProjectIdValidationImpl validationToTest = new ProjectIdValidationImpl();
 
-    @Test
-    public void lengthTest() {
-        ValidationResult projectIdValidationResult = validationToTest.validate("ab");
-        assertTrue("Project id not valid", projectIdValidationResult.isValid());
+    private static final String VALID_PROJECT_ID_WITH_40_CHARS = "a2345678901234567890b2345678901234567890";
+
+    @ParameterizedTest
+    @ValueSource(strings = { "a2", "i-am-with-hyphens", "i_am_with_underscore", VALID_PROJECT_ID_WITH_40_CHARS })
+    void valid_projectIds(String projectId) {
+        /* execute */
+        ValidationResult validationResult = validationToTest.validate(projectId);
+
+        /* test */
+        if (!validationResult.isValid()) {
+            fail("Project id not valid - but should be, validation message:" + validationResult.getErrorDescription());
+        }
     }
 
-    @Test
-    public void lengthTooShortTest() {
-        ValidationResult projectIdValidationResult = validationToTest.validate("a");
-        assertFalse("Project id is not too short.", projectIdValidationResult.isValid());
+    @ParameterizedTest
+    @NullSource
+    @EmptySource
+    @ValueSource(strings = { "a", "i.am.with.dot", "i-am/slashy", "with\\backslash", "percent%", "dollar$", "question?", "colon:", "exclamationmark!",
+            VALID_PROJECT_ID_WITH_40_CHARS + "x" })
+    void invalid_projectIds(String projectId) {
+        /* execute */
+        ValidationResult validationResult = validationToTest.validate(projectId);
+
+        /* test */
+        if (validationResult.isValid()) {
+            fail("Project id valid - but should not be, validation message:" + validationResult.getErrorDescription());
+        }
     }
 
-    @Test
-    public void ABCDIsNOTValidBecauseUppercaseCharactersNotAllowed() {
-        ValidationResult projectIdValidationResult = validationToTest.validate("ABCD");
-        assertFalse("Project id is not okay, but should?!?", projectIdValidationResult.isValid());
-    }
+    @ParameterizedTest
+    @ValueSource(strings = { "ALPHA", "Alpha-centauri", "gammA" })
+    void invalid_but_not_when_lowercased(String projectId) {
+        /* execute */
+        ValidationResult validationResult = validationToTest.validate(projectId.toLowerCase());
 
-    @Test
-    public void abcdIsValid() {
-        ValidationResult projectIdValidationResult = validationToTest.validate("abcd");
-        assertTrue("Project id is not okay, but should?!?", projectIdValidationResult.isValid());
-    }
+        /* test */
+        // precondition check that this is valid when lower cased...
+        assertTrue(validationResult.isValid(), "Project id as lowercased must be valid but isn't");
 
-    @Test
-    public void containsDotIsNotValid() {
-        ValidationResult projectIdValidationResult = validationToTest.validate("ab.d");
-        assertFalse("Project id dot forbidden, but accepted?!?", projectIdValidationResult.isValid());
-    }
+        // not valid when there are upper cased characters
+        validationResult = validationToTest.validate(projectId);
+        assertFalse(validationResult.isValid(), "Project id contains uppercase but is valid?");
 
-    @Test
-    public void containsSlashIsNotValid() {
-        ValidationResult projectIdValidationResult = validationToTest.validate("ab/d");
-        assertFalse("Project id slash forbidden, but accepted?!?", projectIdValidationResult.isValid());
-    }
-
-    @Test
-    public void containsBackSlashIsNotValid() {
-        ValidationResult projectIdValidationResult = validationToTest.validate("ab\\d");
-        assertFalse("Project id backslash forbidden, but accepted?!?", projectIdValidationResult.isValid());
-    }
-
-    @Test
-    public void containsDollorIsNotValid() {
-        ValidationResult projectIdValidationResult = validationToTest.validate("ab$d");
-        assertFalse("Project id backslash forbidden, but accepted?!?", projectIdValidationResult.isValid());
-    }
-
-    @Test
-    public void containsPercentageIsNotValid() {
-        ValidationResult projectIdValidationResult = validationToTest.validate("ab$d");
-        assertFalse("Project id backslash forbidden, but accepted?!?", projectIdValidationResult.isValid());
-    }
-
-    @Test
-    public void containsQuestionMarkIsNotValid() {
-        ValidationResult projectIdValidationResult = validationToTest.validate("ab?d");
-        assertFalse("Project id backslash forbidden, but accepted?!?", projectIdValidationResult.isValid());
-    }
-
-    @Test
-    public void containsExlamationMarkIsNotValid() {
-        ValidationResult projectIdValidationResult = validationToTest.validate("ab!d");
-        assertFalse("Project id backslash forbidden, but accepted?!?", projectIdValidationResult.isValid());
-    }
-
-    @Test
-    public void containsColonIsNotValid() {
-        ValidationResult projectIdValidationResult = validationToTest.validate("AB:D".toLowerCase());
-        assertFalse("Project id backslash forbidden, but accepted?!?", projectIdValidationResult.isValid());
     }
 }
