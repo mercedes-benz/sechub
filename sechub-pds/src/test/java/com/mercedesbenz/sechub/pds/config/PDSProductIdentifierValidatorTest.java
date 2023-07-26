@@ -15,7 +15,7 @@ public class PDSProductIdentifierValidatorTest {
     private PDSProductIdentifierValidator validatorToTest;
 
     @BeforeEach
-    public void before() throws Exception {
+    void beforeEach() {
         validatorToTest = new PDSProductIdentifierValidator();
     }
 
