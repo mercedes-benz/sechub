@@ -29,8 +29,8 @@ import com.mercedesbenz.sechub.systemtest.runtime.error.SystemTestScriptExecutio
  */
 public class SystemTestRuntimeProductLauncher {
 
-    private int maximumSecondsToWaitForSecHubAlive = 60;
-    private int maximumSecondsToWaitForPDSSolutionAlive = 60;
+    private int maximumSecondsToWaitForSecHubAlive = 120;
+    private int maximumSecondsToWaitForPDSSolutionAlive = 120;
 
     private static final Logger LOG = LoggerFactory.getLogger(SystemTestRuntimeProductLauncher.class);
 
@@ -114,7 +114,7 @@ public class SystemTestRuntimeProductLauncher {
             if (step.getScript().isPresent()) {
                 ScriptDefinition scriptDefinition = step.getScript().get();
 
-                ProcessContainer processContainer = execSupport.execute(scriptDefinition);
+                ProcessContainer processContainer = execSupport.execute(scriptDefinition, state);
 
                 context.getCurrentStage().add(processContainer);
 
@@ -153,9 +153,9 @@ public class SystemTestRuntimeProductLauncher {
         }
         try {
             long start = System.currentTimeMillis();
-            LOG.info("Wait until SecHub server at {} is alive - will wait {} seconds.", client.getServerUri(), maximumSecondsToWaitForSecHubAlive);
+            LOG.info("Wait until SecHub server at {} is alive - will wait {} seconds (max).", client.getServerUri(), maximumSecondsToWaitForSecHubAlive);
             while (!client.checkIsServerAlive()) {
-                Thread.sleep(1000);
+                Thread.sleep(MILLISECONDS_TO_WAIT_FOR_NEXT_ALIVE_CHECK());
                 long millisecondsWaited = System.currentTimeMillis() - start;
                 boolean timedOut = millisecondsWaited > maximumSecondsToWaitForSecHubAlive * 1000 * 1;
                 if (timedOut) {
@@ -169,6 +169,10 @@ public class SystemTestRuntimeProductLauncher {
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
         }
+    }
+
+    private int MILLISECONDS_TO_WAIT_FOR_NEXT_ALIVE_CHECK() {
+        return 1000;
     }
 
     public void waitUntilPDSSolutionsAvailable(SystemTestRuntimeContext context) {
@@ -203,7 +207,7 @@ public class SystemTestRuntimeProductLauncher {
         }
         try {
             long start = System.currentTimeMillis();
-            LOG.info("Wait until PDS solution '" + pdsSolutionName + "' at {} is alive - will wait {} seconds.", client.getServerUri(),
+            LOG.info("Wait until PDS solution '" + pdsSolutionName + "' at {} is alive - will wait {} seconds (max).", client.getServerUri(),
                     maximumSecondsToWaitForPDSSolutionAlive);
             while (!client.checkIsServerAlive()) {
                 Thread.sleep(1000);

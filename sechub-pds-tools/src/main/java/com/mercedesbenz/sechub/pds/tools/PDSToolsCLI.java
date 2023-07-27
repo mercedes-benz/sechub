@@ -2,6 +2,7 @@
 package com.mercedesbenz.sechub.pds.tools;
 
 import java.io.IOException;
+import java.util.Set;
 
 import com.beust.jcommander.JCommander;
 import com.beust.jcommander.MissingCommandException;
@@ -12,6 +13,8 @@ import com.mercedesbenz.sechub.pds.tools.handler.ExitHandler;
 import com.mercedesbenz.sechub.pds.tools.handler.PrintStreamConsoleHandler;
 import com.mercedesbenz.sechub.pds.tools.handler.SystemExitHandler;
 import com.mercedesbenz.sechub.pds.tools.systemtest.SystemTestLauncher;
+import com.mercedesbenz.sechub.systemtest.runtime.SystemTestResult;
+import com.mercedesbenz.sechub.systemtest.runtime.SystemTestRunResult;
 
 public class PDSToolsCLI {
 
@@ -72,7 +75,21 @@ public class PDSToolsCLI {
 
     private void systemtest(SystemTestCommand systemTestCommand) {
         try {
-            systemTestLauncher.launch(systemTestCommand);
+            SystemTestResult result = systemTestLauncher.launch(systemTestCommand);
+            if (result == null) {
+                consoleHandler.error("No system test result available");
+                exitHandler.exit(2);
+            }
+            if (result.hasFailedTests()) {
+                Set<SystemTestRunResult> runs = result.getRuns();
+                for (SystemTestRunResult run : runs) {
+                    if (run.isFailed()) {
+                        String message = "Test '" + run.getTestName() + "' FAILED!\n" + run.getFailure().getMessage() + "\n" + run.getFailure().getDetails();
+                        consoleHandler.error(message);
+                    }
+                }
+                exitHandler.exit(1);
+            }
         } catch (IOException e) {
             consoleHandler.error("Was not able to launch system test: " + e.getMessage());
             exitHandler.exit(1);

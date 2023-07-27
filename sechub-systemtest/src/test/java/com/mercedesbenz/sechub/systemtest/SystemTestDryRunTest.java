@@ -156,9 +156,6 @@ class SystemTestDryRunTest {
 
                 build();
 
-        if (LOG.isTraceEnabled()) {
-            LOG.trace("config=\n{}", JSONConverter.get().toJSON(configuration,true));
-        }
 
         /* execute */
         Path tempWorkspaceFolder = createTempDirectoryInBuildFolder("systemtest_inttest/faked_gosec_can_be_executed_without_errors");

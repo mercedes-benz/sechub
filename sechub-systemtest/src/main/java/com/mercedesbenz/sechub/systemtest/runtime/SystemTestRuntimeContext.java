@@ -1,8 +1,6 @@
 package com.mercedesbenz.sechub.systemtest.runtime;
 
 import java.net.URI;
-import java.net.URISyntaxException;
-import java.net.URL;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -283,20 +281,20 @@ public class SystemTestRuntimeContext {
     private SecHubClient createSecHubClient(AbstractSecHubDefinition secHubDefinition, CredentialsDefinition credentials) {
         SecHubClient client = null;
 
-        URL url = secHubDefinition.getUrl();
+        String url = secHubDefinition.getUrl();
         if (url == null) {
             throw new WrongConfigurationException("URL not defined for local sechub server", this);
         }
 
         try {
-            URI serverUri = url.toURI();
+            URI serverUri = URI.create(url);
 
             String userId = getTemplateEngine().replaceSecretEnvironmentVariablesWithValues(credentials.getUserId(), getEnvironmentProvider());
             String apiToken = getTemplateEngine().replaceSecretEnvironmentVariablesWithValues(credentials.getApiToken(), getEnvironmentProvider());
 
             client = new SecHubClient(serverUri, userId, apiToken, true);
             LOG.info("Created SecHub client for user: '{}', apiToken: '{}'", client.getUsername(), "*".repeat(client.getSealedApiToken().length()));
-        } catch (URISyntaxException e) {
+        } catch (RuntimeException e) {
             throw new WrongConfigurationException("URL not defined correct local sechub server: " + e.getMessage(), this);
         }
         return client;
@@ -306,20 +304,20 @@ public class SystemTestRuntimeContext {
 
         PDSClient client = null;
 
-        URL url = solutionToUse.getUrl();
+        String url = solutionToUse.getUrl();
         if (url == null) {
             throw new WrongConfigurationException("URL not defined for PDS solution: " + solutionToUse.getName(), this);
         }
 
         CredentialsDefinition credentials = solutionToUse.getTechUser();
         try {
-            URI serverUri = url.toURI();
+            URI serverUri = URI.create(url);
             String userId = getTemplateEngine().replaceSecretEnvironmentVariablesWithValues(credentials.getUserId(), getEnvironmentProvider());
             String apiToken = getTemplateEngine().replaceSecretEnvironmentVariablesWithValues(credentials.getApiToken(), getEnvironmentProvider());
 
             client = new PDSClient(serverUri, userId, apiToken, true);
 
-        } catch (URISyntaxException e) {
+        } catch (RuntimeException e) {
             throw new WrongConfigurationException("URL not defined correct for local PDS solution: " + e.getMessage(), this);
         }
 

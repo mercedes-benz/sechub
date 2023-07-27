@@ -1,0 +1,72 @@
+{
+  "setup" : {
+    "local" : {
+      "secHub" : {
+        // we do not define a start script part  here, so we can use an integration test 
+        // server at this point - means easier to debug
+        "admin" : {
+          "userId" : "${secretEnv.ADMIN_USERID}",
+          "apiToken" : "${secretEnv.ADMIN_APITOKEN}"
+        },
+        "configure" : {
+          "executors" : [ {
+            "pdsProductId" : "PDS_GOSEC",
+            "name" : "system-test-codescan-gosec"
+          } ]
+        },
+        "stop" : [ {
+          "script" : {
+            "path" : "./01-stop-single-docker-compose.sh"
+          }
+        } ]
+      },
+      "pdsSolutions" : [ {
+        "name" : "gosec",
+        "url" : "${env.PDS_SERVER}",
+        "start" : [ {
+          "script" : {
+            "path" : "./50-start-multiple-docker-compose.sh",
+            "arguments" : [ "1" ]
+          }
+        } ],
+        "stop" : [ {
+          "script" : {
+            "path" : "./05-stop-single-sechub-network-docker-compose.sh"
+          }
+        } ],
+        "techUser" : {
+          "userId" : "${secretEnv.PDS_USERID}",
+          "apiToken" : "${secretEnv.PDS_APITOKEN}"
+        }
+      } ]
+    }
+  },
+  "tests" : [ {
+    "name" : "test1",
+    "prepare" : [ {
+      "copy" : {
+        // copy sources to test folder location 
+        "from" : "./../sechub-cli/src",
+        "to" : "${runtime.currentTestFolder}/testsources/src"
+      }
+    } ],
+    "execute" : {
+      "runSecHubJob" : {
+        "uploads" : [ {
+          // we must (at least currently) use ony relative paths inside upload definitions.
+          // base directory is always the current test folder
+          "sourceFolder" : "./testsources/src"
+        } ],
+        "codeScan" : { }
+      }
+    },
+    "assert" : [ {
+      "sechubResult" : {
+        "hasTrafficLight" : "GREEN",
+        "containsStrings" : {
+          "values" : [ "MEDIUM", "ERROR", "WARNING", "INFO", "SUCCESS", "integration test code only!" ]
+        }
+      } 
+    } ]
+  } ]
+}

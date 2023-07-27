@@ -1,6 +1,5 @@
 package com.mercedesbenz.sechub.systemtest.config;
 
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -8,7 +7,7 @@ import java.util.Optional;
 public class PDSSolutionDefinition extends AbstractDefinition {
 
     private String name;
-    private URL url;
+    private String url;
 
     private String baseDir;
     private String pathToPdsServerConfigFile;
@@ -71,11 +70,11 @@ public class PDSSolutionDefinition extends AbstractDefinition {
         return baseDir;
     }
 
-    public URL getUrl() {
+    public String getUrl() {
         return url;
     }
 
-    public void setUrl(URL url) {
+    public void setUrl(String url) {
         this.url = url;
     }
 

@@ -14,12 +14,13 @@ import com.mercedesbenz.sechub.systemtest.SystemTestAPI;
 import com.mercedesbenz.sechub.systemtest.SystemTestParameters;
 import com.mercedesbenz.sechub.systemtest.SystemTestParameters.SystemTestParametersBuilder;
 import com.mercedesbenz.sechub.systemtest.config.SystemTestConfiguration;
+import com.mercedesbenz.sechub.systemtest.runtime.SystemTestResult;
 
 public class SystemTestLauncher {
 
     SystemTestAPI systemTestApi;
 
-    public void launch(SystemTestCommand systemTestCommand) throws IOException {
+    public SystemTestResult launch(SystemTestCommand systemTestCommand) throws IOException {
         SystemTestParametersBuilder builder = SystemTestParameters.builder();
 
         handleTestConfigurationFile(systemTestCommand, builder);
@@ -31,7 +32,8 @@ public class SystemTestLauncher {
 
         SystemTestParameters parameters = builder.build();
 
-        systemTestApi.runSystemTests(parameters);
+        SystemTestResult result = systemTestApi.runSystemTests(parameters);
+        return result;
 
     }
 

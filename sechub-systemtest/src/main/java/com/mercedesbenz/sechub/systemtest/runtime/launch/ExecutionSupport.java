@@ -19,6 +19,7 @@ import com.mercedesbenz.sechub.commons.model.JSONConverter;
 import com.mercedesbenz.sechub.systemtest.config.ScriptDefinition;
 import com.mercedesbenz.sechub.systemtest.config.TimeUnitDefinition;
 import com.mercedesbenz.sechub.systemtest.runtime.LocationSupport;
+import com.mercedesbenz.sechub.systemtest.runtime.SystemTestExecutionState;
 import com.mercedesbenz.sechub.systemtest.runtime.SystemTestRuntimeException;
 import com.mercedesbenz.sechub.systemtest.runtime.variable.EnvironmentProvider;
 import com.mercedesbenz.sechub.systemtest.runtime.variable.KeepAsIsDynamicVariableCalculator;
@@ -51,11 +52,11 @@ public class ExecutionSupport {
         return environmentProvider;
     }
 
-    public ProcessContainer execute(ScriptDefinition scriptDefinition) {
-        return execute(scriptDefinition, null);
+    public ProcessContainer execute(ScriptDefinition scriptDefinition, SystemTestExecutionState state) {
+        return execute(scriptDefinition, null, state);
     }
 
-    public ProcessContainer execute(ScriptDefinition scriptDefinition, VariableCalculator dynamicVariableCalculator) {
+    public ProcessContainer execute(ScriptDefinition scriptDefinition, VariableCalculator dynamicVariableCalculator, SystemTestExecutionState state) {
         if (dynamicVariableCalculator == null) {
             dynamicVariableCalculator = NO_CALCULATION;
         }
@@ -69,7 +70,7 @@ public class ExecutionSupport {
         File workingDirectory = resolveWorkingDirectory(scriptDefinition, scriptPath);
         assertScriptCanBeExecuted(scriptPath, workingDirectory);
 
-        ProcessContainer processContainer = new ProcessContainer(scriptDefinition);
+        ProcessContainer processContainer = new ProcessContainer(scriptDefinition, state);
 
         Path outputFile = locationSupport.ensureOutputFile(processContainer);
         Path errorFile = locationSupport.ensureErrorFile(processContainer);

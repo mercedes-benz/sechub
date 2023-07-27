@@ -12,23 +12,30 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 
+import com.mercedesbenz.sechub.pds.tools.handler.ConsoleHandler;
 import com.mercedesbenz.sechub.pds.tools.handler.ExitHandler;
 import com.mercedesbenz.sechub.pds.tools.systemtest.SystemTestLauncher;
+import com.mercedesbenz.sechub.systemtest.runtime.SystemTestResult;
+import com.mercedesbenz.sechub.systemtest.runtime.SystemTestRunResult;
+import com.mercedesbenz.sechub.systemtest.runtime.error.SystemTestFailure;
 
 class PDSToolsCLITest {
 
     private PDSToolsCLI cliToTest;
     private SystemTestLauncher systemTestLauncher;
     private ExitHandler exitHandler;
+    private ConsoleHandler consoleHandler;
 
     @BeforeEach
     void beforeEach() {
         cliToTest = new PDSToolsCLI();
 
         exitHandler = new TestExitHandler();
+        consoleHandler = mock(ConsoleHandler.class);
         systemTestLauncher = mock(SystemTestLauncher.class);
 
         cliToTest.exitHandler = exitHandler;
+        cliToTest.consoleHandler = consoleHandler;
         cliToTest.systemTestLauncher = systemTestLauncher;
     }
 
@@ -130,6 +137,11 @@ class PDSToolsCLITest {
 
     @Test
     void systemtest_does_call_systemtest_launcher_with_correct_paramters_1() throws Exception {
+
+        /* prepare */
+        SystemTestResult result = new SystemTestResult();
+        when(cliToTest.systemTestLauncher.launch(any())).thenReturn(result);
+
         /* execute */
         cliToTest.start(new String[] { "systemtest", "--dry", "--file", "./testfile.json" });
 
@@ -150,6 +162,10 @@ class PDSToolsCLITest {
 
     @Test
     void systemtest_does_call_systemtest_launcher_with_correct_paramters_2() throws Exception {
+        /* prepare */
+        SystemTestResult result = new SystemTestResult();
+        when(cliToTest.systemTestLauncher.launch(any())).thenReturn(result);
+
         /* execute */
         cliToTest.start(new String[] { "systemtest", "--workspace-rootfolder", "/path/to/workspace", "--file", "/absolute/testfile.json",
                 "--additional-resources-folder", "./additionalResources/path", "--pds-solutions-rootfolder", "/path/to/pds-solution",
@@ -167,6 +183,38 @@ class PDSToolsCLITest {
         assertEquals(false, systemTestCommand.isDryRun());
         assertEquals(false, systemTestCommand.isRemoteRun());
         assertEquals("/path/to/workspace", systemTestCommand.getWorkspaceFolder());
+
+    }
+
+    @Test
+    void failing_system_test_results_in_exit_1_and_error_output_with_message_and_details() throws Exception {
+        /* prepare */
+        SystemTestResult result = new SystemTestResult();
+        when(cliToTest.systemTestLauncher.launch(any())).thenReturn(result);
+        SystemTestRunResult runResult1 = mock(SystemTestRunResult.class);
+        when(runResult1.isFailed()).thenReturn(true);
+        SystemTestFailure failure = new SystemTestFailure();
+        failure.setDetails("detail1");
+        failure.setMessage("message1");
+        when(runResult1.getFailure()).thenReturn(failure);
+        result.getRuns().add(runResult1);
+
+        // here we use a mocked exit handler
+        exitHandler = mock(ExitHandler.class);
+        cliToTest.exitHandler = exitHandler;
+
+        /* execute */
+        cliToTest.start(new String[] { "systemtest", "--workspace-rootfolder", "/path/to/workspace", "--file", "/absolute/testfile.json",
+                "--additional-resources-folder", "./additionalResources/path", "--pds-solutions-rootfolder", "/path/to/pds-solution",
+                "--sechub-solution-rootfolder", "/path/to/sechub-solution" });
+
+        /* test */
+        ArgumentCaptor<String> captor = ArgumentCaptor.forClass(String.class);
+        verify(exitHandler).exit(1);
+        verify(consoleHandler).error(captor.capture());
+        String errorMessage = captor.getValue();
+        assertTrue(errorMessage.contains("detail1"));
+        assertTrue(errorMessage.contains("message1"));
 
     }
 

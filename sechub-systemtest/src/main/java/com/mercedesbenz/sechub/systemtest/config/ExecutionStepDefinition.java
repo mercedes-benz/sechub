@@ -11,14 +11,23 @@ import java.util.Optional;
  */
 public class ExecutionStepDefinition extends AbstractDefinition {
 
-    private Optional<ScriptDefinition> script = Optional.ofNullable(null);
+    private Optional<ScriptDefinition> script = Optional.empty();
+    private Optional<CopyDefinition> copy = Optional.empty();
 
     public Optional<ScriptDefinition> getScript() {
         return script;
     }
 
+    public Optional<CopyDefinition> getCopy() {
+        return copy;
+    }
+
     public void setScript(Optional<ScriptDefinition> script) {
         this.script = script;
+    }
+
+    public void setCopy(Optional<CopyDefinition> copy) {
+        this.copy = copy;
     }
 
 }

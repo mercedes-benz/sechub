@@ -7,6 +7,7 @@ import org.slf4j.LoggerFactory;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.mercedesbenz.sechub.systemtest.config.ScriptDefinition;
+import com.mercedesbenz.sechub.systemtest.runtime.SystemTestExecutionState;
 
 public class ProcessContainer {
 
@@ -25,16 +26,22 @@ public class ProcessContainer {
     ScriptDefinition scriptDefinition;
     private boolean timedOut;
     private UUID uuid;
+    private SystemTestExecutionState systemTestExecutionState;
 
-    public ProcessContainer(ScriptDefinition scriptDefinition) {
+    public ProcessContainer(ScriptDefinition scriptDefinition, SystemTestExecutionState state) {
 
         this.stillRunning = true;
         this.scriptDefinition = scriptDefinition;
         this.uuid = UUID.randomUUID();
+        this.systemTestExecutionState = state;
 
         /* additional stuff to have an ordering of the created process containers */
         amountOfContainers++;
         this.number = amountOfContainers;
+    }
+
+    public SystemTestExecutionState getSystemTestExecutionState() {
+        return systemTestExecutionState;
     }
 
     public UUID getUuid() {
@@ -145,10 +152,38 @@ public class ProcessContainer {
 
     public void terminateProcess() {
         if (process.isAlive()) {
-            if (process.destroyForcibly().isAlive()) {
-                LOG.error("Was not able to destroy process with PID:{} it is still alive!", pid);
+            process.destroy();
+        }
+    }
+
+    public void waitForProcessTerminated(long startTime, long maximumMillisecondsToWait) {
+        if (!process.isAlive()) {
+            return;
+        }
+        LOG.info("Process container {} [{}]: Wait {} milliseconds (max) for process with PID {} to terminate. Path={}", uuid, systemTestExecutionState,
+                maximumMillisecondsToWait, pid, scriptDefinition.getPath());
+
+        while (process.isAlive() && !isTimeOutReached(startTime, maximumMillisecondsToWait)) {
+            try {
+                LOG.debug("Process with PID {} still alive", pid);
+                Thread.sleep(1000);
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
             }
         }
+        if (process.isAlive()) {
+            LOG.warn("Process with PID {} has NOT terminated!", pid);
+        } else {
+            LOG.info("Process with PID {} has terminated", pid);
+        }
+    }
+
+    private boolean isTimeOutReached(long startTime, long maxMilliseconds) {
+        long current = System.currentTimeMillis();
+        if (current > startTime + maxMilliseconds) {
+            return true;
+        }
+        return false;
     }
 
     public long getNumber() {

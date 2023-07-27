@@ -2,8 +2,6 @@ package com.mercedesbenz.sechub.systemtest.runtime.init;
 
 import static com.mercedesbenz.sechub.systemtest.config.DefaultFallback.*;
 
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -47,6 +45,18 @@ import com.mercedesbenz.sechub.systemtest.runtime.SystemTestRuntimeMetaData;
 import com.mercedesbenz.sechub.systemtest.runtime.WrongConfigurationException;
 import com.mercedesbenz.sechub.systemtest.template.SystemTestTemplateEngine;
 
+/**
+ * This class prepares / enhances the given system test configuration. By this
+ * class it is possible to define only small parts inside the configuration file
+ * and defaults or logical fallbacks are automatically applied.
+ *
+ * This means: We do not define defaults or fallback definitions inside the
+ * model classes, but all default and fallback handling is done inside the
+ * preparator class!
+ *
+ * @author Albert Tregnaghi
+ *
+ */
 public class SystemTestRuntimePreparator {
 
     private static final Logger LOG = LoggerFactory.getLogger(SystemTestRuntimePreparator.class);
@@ -314,9 +324,9 @@ public class SystemTestRuntimePreparator {
             return;
         }
         for (PDSSolutionDefinition localPdsSolution : context.getLocalPdsSolutionsOrFail()) {
-            URL url = localPdsSolution.getUrl();
+            String url = localPdsSolution.getUrl();
             if (url == null) {
-                localPdsSolution.setUrl(DefaultFallbackUtil.convertToURL(DefaultFallback.FALLBACK_LOCAL_PDS_URL));
+                localPdsSolution.setUrl(DefaultFallbackUtil.convertToURL(DefaultFallback.FALLBACK_LOCAL_PDS_URL).toExternalForm());
             }
             if (localPdsSolution.getWaitForAvailable().isEmpty()) {
                 localPdsSolution.setWaitForAvailable(Optional.of(DefaultFallbackUtil.convertToBoolean(DefaultFallback.FALLBACK_LOCAL_PDS_WAIT_FOR_AVAILABLE)));
@@ -393,6 +403,10 @@ public class SystemTestRuntimePreparator {
                 params.put(PDSDefaultParameterKeyConstants.PARAM_KEY_PDS_CONFIG_USE_SECHUB_STORAGE, "true");
                 LOG.debug("No SecHub storage usage definition found, defined default");
             }
+            if (params.get(PDSDefaultParameterKeyConstants.PARAM_KEY_PDS_DEBUG_ENABLED) == null) {
+                params.put(PDSDefaultParameterKeyConstants.PARAM_KEY_PDS_DEBUG_ENABLED, "true");
+                LOG.debug("No SecHub PDS debug property definition found, defined default");
+            }
             if (definition.getVersion() == 0) {
                 definition.setVersion(1);
                 LOG.debug("No executor version found, defined default");
@@ -413,13 +427,8 @@ public class SystemTestRuntimePreparator {
 
         if (secHub.getUrl() == null) {
             String defaultValue = DefaultFallback.FALLBACK_LOCAL_SECHUB_URL.getValue();
-            try {
-                secHub.setUrl(new URL(defaultValue));
-                LOG.info("No URL set for local SecHub, added default url:" + secHub.getUrl());
-
-            } catch (MalformedURLException e) {
-                throw new IllegalStateException("Default value is not an URL:" + defaultValue);
-            }
+            secHub.setUrl(defaultValue);
+            LOG.info("No URL set for local SecHub, added default url:" + secHub.getUrl());
         }
         CredentialsDefinition admin = secHub.getAdmin();
 
@@ -452,11 +461,7 @@ public class SystemTestRuntimePreparator {
 
     private String calculateMissingBaseUrlStringForPdsProduct(String pdsProductId, SystemTestRuntimeContext context) {
         PDSSolutionDefinition solution = context.getPDSSolutionDefinitionOrFail(pdsProductId);
-        URL definedurl = solution.getUrl();
-        if (definedurl != null) {
-            return definedurl.toString();
-        }
-        return null;
+        return solution.getUrl();
     }
 
     private void prepareScripts(SystemTestRuntimeContext context) {

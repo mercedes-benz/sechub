@@ -77,7 +77,7 @@ public class LocationSupport {
             } else {
                 support.additionalResourcesRoot = new File("./").toPath();
             }
-            LOG.debug("Additional resource folder:{}", support.additionalResourcesRoot);
+            LOG.info("Additional resource folder:{}", support.additionalResourcesRoot);
         }
 
         private void initWorkspaceRootFolder(LocationSupport support) {
@@ -94,7 +94,7 @@ public class LocationSupport {
                     throw new SystemTestRuntimeException("Cannot create workspace root", e);
                 }
             }
-            LOG.debug("Workspace root:{}", support.workspaceRoot);
+            LOG.info("Workspace root:{}", support.workspaceRoot);
         }
 
         private void initSecHubSolutionRootFolder(LocationSupport support) {
@@ -107,7 +107,7 @@ public class LocationSupport {
             } else {
                 support.sechubSolutionRoot = support.pdsSolutionsRoot.getParent().resolve("sechub-solution");
             }
-            LOG.debug("SecHub solution root:{}", support.sechubSolutionRoot);
+            LOG.info("SecHub solution root:{}", support.sechubSolutionRoot);
         }
 
         private void initPDSSolutionRootFolder(LocationSupport support) {
@@ -123,7 +123,7 @@ public class LocationSupport {
             } catch (IOException e) {
                 throw new IllegalStateException("Cannot determine real path for " + pdsSolutionsRootFolder, e);
             }
-            LOG.debug("PDS solution root:{}", support.pdsSolutionsRoot);
+            LOG.info("PDS solution root:{}", support.pdsSolutionsRoot);
         }
     }
 

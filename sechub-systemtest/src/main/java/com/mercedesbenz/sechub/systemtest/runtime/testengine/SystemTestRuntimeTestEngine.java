@@ -1,11 +1,15 @@
 package com.mercedesbenz.sechub.systemtest.runtime.testengine;
 
+import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
+import org.apache.commons.io.file.PathUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -14,6 +18,7 @@ import com.mercedesbenz.sechub.api.SecHubClientException;
 import com.mercedesbenz.sechub.api.SecHubReport;
 import com.mercedesbenz.sechub.commons.model.JSONConverter;
 import com.mercedesbenz.sechub.commons.model.SecHubConfigurationModel;
+import com.mercedesbenz.sechub.systemtest.config.CopyDefinition;
 import com.mercedesbenz.sechub.systemtest.config.ExecutionStepDefinition;
 import com.mercedesbenz.sechub.systemtest.config.RunSecHubJobDefinition;
 import com.mercedesbenz.sechub.systemtest.config.RunSecHubJobDefinitionTransformer;
@@ -133,7 +138,7 @@ public class SystemTestRuntimeTestEngine {
         testContext.getSecHubRunData().sechubJobUUID = jobUUID;
 
         /* we use the current test folder as working directory */
-        Path workingDirectory = resolveWorkingDirectoryForCurrentTest(testContext);
+        Path workingDirectory = resolveWorkingDirectoryRealPathForCurrentTest(testContext);
 
         LOG.debug("Start upload job data. Use working directory of current test: {}", workingDirectory);
         String projectId = configuration.getProjectId();
@@ -141,6 +146,7 @@ public class SystemTestRuntimeTestEngine {
         if (runtimeContext.isDryRun()) {
             LOG.debug("Skip job upload because dry run");
         } else {
+
             clientForScheduling.upload(projectId, jobUUID, configuration, workingDirectory);
         }
 
@@ -185,7 +191,7 @@ public class SystemTestRuntimeTestEngine {
 
     }
 
-    private Path resolveWorkingDirectoryForCurrentTest(TestEngineTestContext testContext) {
+    private Path resolveWorkingDirectoryRealPathForCurrentTest(TestEngineTestContext testContext) {
         LocationSupport locationSupport = testContext.runtimeContext.getLocationSupport();
         Path workingDirectory = locationSupport.ensureTestWorkingDirectoryRealPath(testContext.getTest());
 
@@ -202,15 +208,43 @@ public class SystemTestRuntimeTestEngine {
 
         for (ExecutionStepDefinition step : steps) {
             LOG.trace("Enter: {} - step: {}", name, step.getComment());
+            if (step.getCopy().isPresent()) {
+                executePreparationCopy(testContext, step.getCopy().get());
+            }
             if (step.getScript().isPresent()) {
                 executePreparationScript(testContext, step.getScript().get());
             }
         }
     }
 
+    private void executePreparationCopy(TestEngineTestContext testContext, CopyDefinition copyDirectoriesDefinition) {
+        String from = copyDirectoriesDefinition.getFrom();
+        String to = copyDirectoriesDefinition.getTo();
+
+        from = testContext.dynamicVariableGenerator.calculateValue(from);
+        to = testContext.dynamicVariableGenerator.calculateValue(to);
+
+        try {
+            Path source = Paths.get(from).toRealPath();
+            if (Files.isDirectory(source)) {
+                Path destinationDirectory = Paths.get(to);
+                destinationDirectory.toFile().mkdirs();
+
+                PathUtils.copyDirectory(source, destinationDirectory);
+            } else {
+                Path destinationDirectory = Paths.get(to);
+                destinationDirectory.toFile().mkdirs();
+                PathUtils.copyFileToDirectory(source, destinationDirectory);
+            }
+
+        } catch (IOException e) {
+            throw new WrongConfigurationException("Was not able to copy file/folders", testContext.runtimeContext, e);
+        }
+    }
+
     private void executePreparationScript(TestEngineTestContext testContext, ScriptDefinition scriptDefinition) throws SystemTestScriptExecutionException {
 
-        ProcessContainer processContainer = execSupport.execute(scriptDefinition, testContext.getDynamicVariableGenerator());
+        ProcessContainer processContainer = execSupport.execute(scriptDefinition, testContext.getDynamicVariableGenerator(), SystemTestExecutionState.PREPARE);
 
         long startTime = System.currentTimeMillis();
         long diffTime = startTime;

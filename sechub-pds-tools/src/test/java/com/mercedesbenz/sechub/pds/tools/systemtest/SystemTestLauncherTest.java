@@ -17,6 +17,7 @@ import com.mercedesbenz.sechub.pds.tools.SystemTestCommand;
 import com.mercedesbenz.sechub.systemtest.SystemTestAPI;
 import com.mercedesbenz.sechub.systemtest.SystemTestParameters;
 import com.mercedesbenz.sechub.systemtest.config.SystemTestConfiguration;
+import com.mercedesbenz.sechub.systemtest.runtime.SystemTestResult;
 
 class SystemTestLauncherTest {
 
@@ -44,6 +45,22 @@ class SystemTestLauncherTest {
         /* test */
         assertTrue(exception.getMessage().contains("config file not defined"));
         verifyNoInteractions(systemTestApi);
+    }
+
+    @Test
+    void result_is_returned_from_sytemtestapi() throws Exception {
+        /* prepare */
+        String path = "./src/test/resources/systemtest/systemtest_example1.json";
+        SystemTestResult resultFromApiCall = new SystemTestResult();
+        when(systemTestApi.runSystemTests(any())).thenReturn(resultFromApiCall);
+        when(command.getPathToConfigFile()).thenReturn(path);
+
+        /* execute */
+        SystemTestResult result = launcherToTest.launch(command);
+
+        /* test */
+        assertSame(resultFromApiCall, result);
+
     }
 
     @Test

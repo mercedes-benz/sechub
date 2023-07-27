@@ -26,11 +26,10 @@ public class SystemTestRuntimeTestAssertion {
         if (!testContext.isSecHubTest()) {
             return;
         }
-        List<AssertSechubResultDefinition> sechubResultAsserts = assertDefinition.getSechubResult();
-        for (AssertSechubResultDefinition sechubResultAssert : sechubResultAsserts) {
-            handleSecHubAssert(sechubResultAssert, testContext);
+        if (assertDefinition.getSechubResult().isEmpty()) {
+            return;
         }
-
+        handleSecHubAssert(assertDefinition.getSechubResult().get(), testContext);
     }
 
     private void handleSecHubAssert(AssertSechubResultDefinition sechubResultAssert, TestEngineTestContext testContext) {

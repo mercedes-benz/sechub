@@ -17,6 +17,8 @@ import java.util.zip.ZipInputStream;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 
 import com.mercedesbenz.sechub.commons.TextFileReader;
 import com.mercedesbenz.sechub.commons.TextFileWriter;
@@ -79,11 +81,12 @@ class ArchiveSupportTest {
         supportToTest = new ArchiveSupport();
     }
 
-    @Test
-    void create_archives_for_binaries_contains_all_content_as_expected_without_filestructure_provider() throws Exception {
+    @ParameterizedTest
+    @ValueSource(strings = { "sechub-configuration.json", "sechub-configuration_relative_paths.json" })
+    void create_archives_for_binaries_contains_all_content_as_expected_without_filestructure_provider(String configFileName) throws Exception {
         /* prepare */
         File workingDirectory = new File("./src/test/resources/create-archives/test1/working-directory");
-        File configFile = new File("./src/test/resources/create-archives/test1/sechub-configuration.json");
+        File configFile = new File("./src/test/resources/create-archives/test1/" + configFileName);
         String json = TestFileSupport.loadTextFile(configFile);
         SecHubConfigurationModel model = JSONConverter.get().fromJSON(SecHubConfigurationModel.class, json);
 
@@ -117,6 +120,52 @@ class ArchiveSupportTest {
         expectedExtractedFilesAreAllFoundInOutputDirectory(reverseFolderTar.toFile(),
                 TestFileSupport.loadFilesAsFileList(expectedCreateArchivesTest1DecompressWithoutFileStructureTar),
                 expectedCreateArchivesTest1DecompressWithoutFileStructureTar);
+
+    }
+
+    @Test
+    void create_archives_for_sources_reduces_absolute_path_origins_to_relative_in_zip() throws Exception {
+        /* prepare */
+        File workingDirectory = new File("./src/test/resources/create-archives/test1/working-directory");
+        File configFile = new File("./src/test/resources/create-archives/test1/sechub-configuration.json");
+        String json = TestFileSupport.loadTextFile(configFile);
+        SecHubConfigurationModel model = JSONConverter.get().fromJSON(SecHubConfigurationModel.class, json);
+
+        Path tempDir = TestUtil.createTempDirectoryInBuildFolder("create-archives");
+
+        /* execute */
+        ArchivesCreationResult result = supportToTest.createArchives(model, workingDirectory.toPath(), tempDir);
+
+        /* test */
+        assertNotNull(result.getBinaryArchiveFile());
+        assertNotNull(result.getSourceArchiveFile());
+
+        assertTrue(result.isBinaryArchiveCreated());
+        assertTrue(result.isSourceArchiveCreated());
+
+        // check ZIP content
+        Path reverseFolder = TestUtil.createTempDirectoryInBuildFolder("decompressed-reverse-with-fs");
+        Path reverseFolderZip = reverseFolder.resolve("zip");
+        SecHubFileStructureDataProvider codeScanProvider = SecHubFileStructureDataProvider.builder().setModel(model).setScanType(ScanType.CODE_SCAN).build();
+
+        supportToTest.extract(ZIP, new FileInputStream(result.getSourceArchiveFile().toFile()), result.getSourceArchiveFile().toFile().getAbsolutePath(),
+                reverseFolderZip.toFile(), codeScanProvider);
+
+        expectedExtractedFilesAreAllFoundInOutputDirectory(reverseFolderZip.toFile(),
+                TestFileSupport.loadFilesAsFileList(expectedCreateArchivesTest1DecompressWithFileStructureZip),
+                expectedCreateArchivesTest1DecompressWithFileStructureZip);
+
+        // check TAR content
+        SecHubFileStructureDataProvider licenseScanProvider = SecHubFileStructureDataProvider.builder().setModel(model).setScanType(ScanType.LICENSE_SCAN)
+                .build();
+
+        Path reverseFolderTar = reverseFolder.resolve("tar");
+        supportToTest.extract(TAR, new FileInputStream(result.getBinaryArchiveFile().toFile()), result.getBinaryArchiveFile().toFile().getAbsolutePath(),
+                reverseFolderTar.toFile(), licenseScanProvider);
+
+        expectedExtractedFilesAreAllFoundInOutputDirectory(reverseFolderTar.toFile(),
+                TestFileSupport.loadFilesAsFileList(expectedCreateArchivesTest1DecompressWithFileStructureTar),
+                expectedCreateArchivesTest1DecompressWithFileStructureTar);
 
     }
 

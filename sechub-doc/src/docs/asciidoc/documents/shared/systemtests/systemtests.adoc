@@ -12,7 +12,7 @@ In this scenario, the integration test API can fetch internal meta data and is a
 correctness of the logic inside {sechub} and also inside {pds}. But it does not test real product 
 execution - at the end it uses only mocked test scripts and dedicated test data.    
 
-The system tests are different to integration tests: The main purpose is to test 
+The system tests are different to integration tests: Their main purpose is to test 
 {sechub} server(s) in combination with one or multiple {pds} solutions in real live scenarios.
 This helps developers of {pds} solutions to drastically reduce development time and also to write 
 automated tests without having to constantly test manually - a command line call in the OS shell or 
@@ -26,9 +26,14 @@ So it is normally not necessary to define much to have a running system test!
 
 Do not try to configure every possible part, but instead try to define only 
 necessary things and let the framework do the rest.
+
+It is also possible to use already running local servers. For example when you are
+developing a PDS solution you can start a local SecHub server in your IDE and run
+your tests only with start definitions for your {pds} solution! This will increase
+speed, because the test will not spawn (and also not shutdown) the {sechub} server instance!
 ====
 
-=== Write a test
+=== Write a system test configuration file
 This chapter describes the different parts inside the test configuration model.
 
 System tests can be written in two ways:
@@ -38,6 +43,56 @@ System tests can be written in two ways:
 
 It does not matter if you write the configuration directly in JSON or with the java test API - 
 the underlying model is the same. 
+
+[[systemtests-script-definitions]]
+==== Script definitions
+At many locations it is possible to define script execution steps 
+(e.g. {sechub} start/sto, {pds} start/stop or at test preparation)
+
+As the name indicates the system test will execute a script.
+
+You can following define:
+
+- path
+- arguments _(optional)_
+- envVariables _(optional)_ +
+  as a map
+- workingDirectory_(optional)_
+- process _(optional)_
+  * timeout _(optional)_
+- stageWaits _(optional)_ +
+  if `true` the stage will wait until this script is executed and has successfully finished. +
+  The default is `false` - please set this to `true` only when really necessary. E.g. for a prepare +
+  script which must be done before a next step.
+
+===== Example snippet
+[source,json]
+----
+
+"script" : {
+            "path" : "./01-start-single-docker-compose.sh", //<1>
+            "arguments" : [ "alpine" ],//<2>
+            "envVariables" : { //<3>
+                "NAME1" : "value1",
+                "NAME2" : "value2"
+            }
+            "workingDirectory" : "./../my-preparaton-folder1", //<4> 
+            "process" : { //<5>
+              "timeOut" : { 
+                "amount" : 10, //<6>
+                "unit" : "MINUTES"
+              }
+            },
+            "stageWaits" : false //<6>
+          }
+
+----
+<1> The path for the executable script
+<2> Arguments (optional)
+<3> Environment variables (optional)
+<4> The working directory (optional, per default the working directory of system test call)
+<5> The process definition (optional)
+<6> Time out definition. When not defined, the default is 5 minutes
 
 
 ==== Variables
@@ -96,11 +151,10 @@ But those variables can only be used at some locations:
 ----
 <1> This works, at runtime the environment entry for the script will contain `USER_PASSWORD` inside 
     variable `D_RESOLVED_SECRET`.
-<2> The secret will not be sent as an argument (for security reasons we only allowe env entries)
+<2> The secret will not be sent as an argument (for security reasons we only allow env entries)
 
 ====== Inside credentials
-// FIXME 2023-04-05, albert: not implemented
-TBD: Not implemented at the moment
+This is possible for tech users and also for admin credentials.
 
 ===== User variables
 You can define your own variables inside the test configuration.
@@ -109,24 +163,28 @@ The prefix for those variables is `variables`.
 For example, if you have defined the variable `uploadFolder` inside the 
 configuration you can reference it by `${variables.uploadFolder}`.
 
+[[systemtests-runtime-variables]]
 ===== Runtime variables
 Some variables are created by the test framework and are available at runtime.
 You can use such variables inside the test configuration with the prefix `runtime`.
-
 include::../../gen/gen_systemtests_runtime_variables_table.adoc[]
 
 ====== Workspace root
-On startup a temporary workspace folder will be created and can be used inside the configuration.
-The variable can be referenced with `${runtime.workspaceRoot}`.
+A workspace root for a system test means the root folder location where all data 
+for the current system test is stored. This includes test folders and also the `.runtime` folder
+which contains information about processes and their output and error streams.
 
-*An example:*
+If not defined a temporary workspace folder will be created and can be used inside the configuration.
 
-- write a bash script which downloads some test source code from a git repository.
-- the bash script uses `$1` to determine the target folder
-- inside our test configuration we set the first argument of a test prepare script to 
-  `${runtime.workspaceRoot}/sources1`.
-- inside the test itself we reference it again with `${runtime.workspaceRoot}/sources1`
-  as working directory for the client upload.
+====== Test folders
+The test folders are located inside the workspace root folder.
+Every executed test has its own sub folder.
+
+Uploads for SecHub etc. must be done  with relative paths from this location.
+You need to copy necessary parts for testing in a prepare step to the current test folder 
+(see <<systemtests-runtime-variables,runtime variables tables>>  for names etc.)
+
+
 
 ==== Default fallbacks
 [[section-systemtests-default-fallbacks]]
@@ -142,31 +200,189 @@ PDS solutions and configure all automatically.
 
 But it is also possible to use an existing real {sechub} platform and run the defined
 tests there. The configuration is not tampered here - executor configurations, users, projects
-and profiles must be configured here. Also the usage of <<section-systemtests-local-defaults,local defaults>>   is not possible - except those parts are defined on remote site with such names!  
+and profiles must be configured here.
 
-
+    
 ===== Local
 When we run system tests on a local environment, all necessary data and setup will be done by the framework.
 This means an administrator account is necessary to setup the system.
 
-If not defined, the default credentials for integration test server will be used. If you not define
-{sechub} or {pds}
+If not defined, the default credentials for integration test server will be used. If you do not define
+{sechub} or {pds} you can also use running local servers (for example integration test servers) and only
+start the tests.
+
+====== Start
+
+====== Stop
+
+====== Configure
+
 
 ===== Remote
 It is also possible to use an existing real {sechub} platform and run the defined
-tests there. The configuration is not tampered here - executor configurations, users, projects
-and profiles must be configured here. Also the usage of <<section-systemtests-local-defaults,local defaults>>   is not possible - except those parts are defined on remote site with such names!  
+tests there. The configuration is *not tampered* here - executor configurations, users, projects
+and profiles must be already configured by administrators. Also the usage of <<section-systemtests-local-defaults,local defaults>>   is not possible - except those parts are defined on remote site with such names!  
 
-==== Examples
 
-===== Testing with already running integration test servers
+===== Example snippet
+[source,json]
+----
+  setup" : {
+    "local" : {
+      "secHub" : {
+        "admin" : { //<1>
+          "userId" : "${secretEnv.ADMIN_USERID}",
+          "apiToken" : "${secretEnv.ADMIN_APITOKEN}"
+        },
+        "start" : [ {<2>
+          "script" : {
+            "path" : "./01-start-single-docker-compose.sh",
+            "arguments" : [ "alpine" ]
+          }
+        } ],
+        "configure" : {
+          "executors" : [ {<3>
+            "pdsProductId" : "NEW_FANCY_PRODUCT",
+            "name" : "system-test-codescan-new-fancy"
+          } ]
+        },
+        "stop" : [ {//<4>
+          "script" : {
+            "path" : "./01-stop-single-docker-compose.sh"
+          }
+        } ]
+      },
+      "pdsSolutions" : [ {
+        "name" : "new-fancy",//<5>
+        "url" : "${env.PDS_SERVER}",
+        "start" : [ {
+          "script" : {
+            "path" : "./50-start-multiple-docker-compose.sh",
+            "arguments" : [ "2" ]
+          }
+        } ],
+        "stop" : [ {
+          "script" : {
+            "path" : "./05-stop-single-sechub-network-docker-compose.sh"
+          }
+        } ],
+        "techUser" : {
+          "userId" : "${secretEnv.PDS_USERID}",
+          "apiToken" : "${secretEnv.PDS_APITOKEN}"
+        }
+      } ]
+    }
+    
+----
+
+<1> defines {sechub} administrator credentials to use for communication
+<2> starts a {sechub} server by this script call
+<3> configures executors and their products to use. It's a good style to define a name here for the executor
+    so restarting the system test will override always the same executor configuration. The scan type 
+    is automatically determined from meta information inside the {pds} configuration file. 
+<4> stop script to shutown the {sechub} server
+<5> defome a pds solution defintion for "new-fance" (not existing, but would be inside a folder `new-fance` below
+    `sechub-pds-solutions folder`. In this example "new-fancy" would have "NEW_FANCY_PRODUCT" as product identifier inside
+    its {pds} configuration file.
+
+
+==== Tests
+Tests are defined at root level of the configuration file. It is possible to define
+multiple tests in one configurationfile.
+
+===== Prepare
+A test can have one ore more preparation steps where following commands can be executed:
+
+- `copy` +
+  Provides parameters "from" and "to" and enables users to copy folders or files to other locations
+
+- `script` +
+  Provides the possibility to execute a script
+
+===== Execute
+The test execution phase can contain currently:
+
+- `runSecHubJob` +
+  Here we can define the uploads and also the different scan types. When nothing defined, the
+  default reference identifier will be used, but it is also possible to define more complex
+  data structures with different content and identifiers.
+  
+===== Assert
+Asserts are done after the execution phase. Following steps are possible
+
+- secHubResult +
+  Here we assert there is a {sechub} result (JSON report) available (the job is automatically
+  started by system test framework). We have following possibilities to check the content:
+  * `hasTrafficLight` +
+    Checks if the report has the expected traffic light
+  * `containsStrings` +
+    Asserts that the JSON report contains all of the defined strings inside the given array
+  * `equalsFile`
+    Loads the given template report file and asserts that if the {sechub} JSON report matches 
+    the template. Following place holders are supported to handle dynamic content:
+    . `{sechub.jobuuid}` - can be used at any location inside the report if there is the job uuid
+      inside the report
+    . `{*:n}` - `n` represents the number for characters to be ignored.
+    
+===== Example snippet
+
+[source,json]
+----
+"tests" : [ {
+    "name" : "test1",
+    "prepare" : [ {
+      "copy" : { //<1>
+        "from" : "./../sechub-cli/src",
+        "to" : "${runtime.currentTestFolder}/testsources/src"
+      }
+    } ],
+    "execute" : {
+      "runSecHubJob" : {
+        "uploads" : [ {
+          "sourceFolder" : "./testsources/src"  //<2>
+        } ],
+        "codeScan" : { }
+      }
+    },
+    "assert" : [ {
+      "sechubResult" : { //<3>
+        "hasTrafficLight" : "YELLOW",
+        "containsStrings" : {
+          "values" : [ "MEDIUM" ]
+        }
+      } 
+    } ]
+  } ]
+----
+<1> copies sources to current test folder at subfolder "testsources"
+<2> uploads source folder (files which were formerly copied)
+<3> assert that there is an ended {sechub} job for this test where the {sechub} report has +
+    traffic light `yellow` and contains at least one time a string "MEDIUM" inside JSON report. 
+    
+=== Example configurations
+
+==== Testing with already running integration test servers
+[NOTE]
+====
+This example is being used inside integration test `SystemTestFrameworkIntTest.java`.
+====
 [source,json]
 ----
 include::../../gen/examples/gen_example_systemtest_using_local_integrationtestservers.json[]
 ----
+==== A full blown example
+[IMPORTANT]
+====
+This example is just an example what steps could be configured at all. It is not 
+used in any real world scenario  - just for documentation
+====
+[source,json]
+----
+include::../../gen/examples/gen_example_systemtest_full_blown_config.json[]
+----
 
 
-=== Execution
+=== How to execute system tests
 
 ==== With PDS tools
 As a first step, download the latest release of `pds-tools` from https://github.com/mercedes-benz/sechub/releases.

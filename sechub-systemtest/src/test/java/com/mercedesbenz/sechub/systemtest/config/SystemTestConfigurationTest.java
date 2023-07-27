@@ -2,8 +2,7 @@ package com.mercedesbenz.sechub.systemtest.config;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-import java.net.MalformedURLException;
-import java.net.URL;
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -14,14 +13,18 @@ import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
+import com.fasterxml.jackson.databind.json.JsonMapper;
+import com.mercedesbenz.sechub.commons.TextFileWriter;
 import com.mercedesbenz.sechub.commons.model.JSONConverter;
+import com.mercedesbenz.sechub.commons.model.JsonMapperFactory;
 import com.mercedesbenz.sechub.commons.model.TrafficLight;
 
 class SystemTestConfigurationTest {
 
     private static final Logger LOG = LoggerFactory.getLogger(SystemTestConfigurationTest.class);
 
-    private final static String DEFINED_PROJECT_NAME = "a-project-when-not-default-used";
+    private final static String DEFINED_PROJECT_NAME = "a-project-id-when-not-default-used";
 
     private static final String DEFINED_PROFILE = "a-defined-profile-when-not-default-used";
 
@@ -39,6 +42,17 @@ class SystemTestConfigurationTest {
 
         /* test 1 */
         assertNotNull(json);
+
+        /* store as example */
+        JsonMapper mapper = JsonMapperFactory.createMapper();
+        mapper.setDefaultPropertyInclusion(Include.NON_DEFAULT);
+        String configurationAsPrettyPrintedJson = JSONConverter.get().toJSON(configuration, true, mapper);
+
+        // store meta data for documentation (later)
+        File generatedSecHubDocExampleFile = new File("./../sechub-doc/src/docs/asciidoc/documents/gen/examples/gen_example_systemtest_full_blown_config.json");
+        TextFileWriter writer = new TextFileWriter();
+        writer.save(generatedSecHubDocExampleFile, configurationAsPrettyPrintedJson, true);
+        LOG.info("Wrote configuration data as example doc file into: {}", generatedSecHubDocExampleFile.getAbsolutePath());
 
         /* execute 2 */
         SystemTestConfiguration configLoaded = JSONConverter.get().fromJSON(SystemTestConfiguration.class, json);
@@ -82,49 +96,26 @@ class SystemTestConfigurationTest {
         /* SecHub */
         /* ------ */
 
-        LocalSecHubDefinition sechub = local.getSecHub();
-        sechub.setComment(
-                "If there are variants defined, the further defined tests will be run with all of those variants by the framework! ADDITION: we could introced here start/stop step like in pds solutions to build the sechub container from scratch as well (with different jdks etc.)");
-        // start + stop (as an addition to variants
-
-        SecHubConfigurationDefinition sechubConfig = sechub.getConfigure();
-        sechubConfig.setComment(
-                "Here we can configure sechub. At least one executor entry is mandatory " + "(we must know which products shall be inside the profile). "
-                        + "Projects is optional. If not defined only a default project and a default profile"
-                        + " for the given executors will be automatically created and used.");
-
-        SecHubExecutorConfigDefinition executor1 = new SecHubExecutorConfigDefinition();
-
-        Map<String, String> parameters1 = executor1.getParameters();
-        parameters1.put("gosec.additional.parameter", "${variables.custom_data_txt}");
-        parameters1.put("pds.reuse.sechubstorage", "false (overrides default)");
-
-        executor1.setPdsProductId("GOSEC");
-        executor1.setBaseURL("https://gosec_pds.example.com:8443");
-
-        sechubConfig.getExecutors().add(executor1);
-
-        List<ProjectDefinition> projects = new ArrayList<>();
-        ProjectDefinition project1 = new ProjectDefinition();
-        project1.setName(DEFINED_PROJECT_NAME);
-        project1.setComment(
-                "The profile can define a profile. When notthing defined, the default will be '" + DefaultFallback.FALLBACK_PROFILE_ID.getValue() + "'");
-        project1.getProfiles().add(DEFINED_PROFILE);
-
-        projects.add(project1);
-        Optional<List<ProjectDefinition>> projectsOpt = Optional.of(projects);
-        sechubConfig.setProjects(projectsOpt);
+        configureSecHub(local);
 
         /* --------- */
         /* Solutions */
         /* --------- */
 
+        configurePDSSolutions(local);
+    }
+
+    private void configurePDSSolutions(LocalSetupDefinition local) {
         // start
         PDSSolutionDefinition solution1 = new PDSSolutionDefinition();
         solution1.setName("gosec");
         solution1.setComment(
                 "Test solution1, the scan types etc. cannot be defined, because runtime loads all meta information from config file. Basedir is optional, normally calculated automatically by name");
         solution1.setBaseDirectory("${env.base_dir}/pds-solutions/gosec");
+
+        CredentialsDefinition techUser = solution1.getTechUser();
+        techUser.setUserId("${secretEnv.GOSEC_PDS_TECHUSER_USERID}");
+        techUser.setApiToken("${secretEnv.GOSEC_PDS_TECHUSER_TOKEN}");
 
         ExecutionStepDefinition startStep1 = new ExecutionStepDefinition();
         startStep1.setComment("In first start step, we build the image");
@@ -159,16 +150,71 @@ class SystemTestConfigurationTest {
         solution1.getStop().add(stopStep1);
     }
 
+    private void configureSecHub(LocalSetupDefinition local) {
+        LocalSecHubDefinition sechub = local.getSecHub();
+        CredentialsDefinition admin = sechub.getAdmin();
+        admin.setUserId("${secretEnv.SECHUB_ADMIN_USERID}");
+        admin.setApiToken("${secretEnv.SECHUB_ADMIN_TOKEN}");
+
+        ExecutionStepDefinition secHubStartStep1 = new ExecutionStepDefinition();
+
+        ScriptDefinition secHubStartStep1StartStep1Script1 = new ScriptDefinition();
+        secHubStartStep1StartStep1Script1.setPath("./01-start-single-docker-compose.sh");
+        secHubStartStep1StartStep1Script1.getArguments().add("alpine");
+
+        secHubStartStep1.setScript(Optional.of(secHubStartStep1StartStep1Script1));
+
+        sechub.getStart().add(secHubStartStep1);
+
+        // stop
+        ExecutionStepDefinition secHubStopStep1 = new ExecutionStepDefinition();
+        secHubStopStep1.setComment("One single step to finally stop the gosec PDS solution when tests have been done.");
+
+        ScriptDefinition secHubStopStep1Script1 = new ScriptDefinition();
+        secHubStopStep1Script1.setPath("./01-stop-single-docker-compose.sh");
+        secHubStopStep1.setScript(Optional.of(secHubStopStep1Script1));
+
+        sechub.getStop().add(secHubStopStep1);
+
+        sechub.setComment(
+                "If there are variants defined, the further defined tests will be run with all of those variants by the framework! ADDITION: we could introced here start/stop step like in pds solutions to build the sechub container from scratch as well (with different jdks etc.)");
+        // start + stop (as an addition to variants
+
+        SecHubConfigurationDefinition sechubConfig = sechub.getConfigure();
+        sechubConfig.setComment(
+                "Here we can configure sechub. At least one executor entry is mandatory " + "(we must know which products shall be inside the profile). "
+                        + "Projects is optional. If not defined only a default project and a default profile"
+                        + " for the given executors will be automatically created and used.");
+
+        SecHubExecutorConfigDefinition executor1 = new SecHubExecutorConfigDefinition();
+
+        Map<String, String> parameters1 = executor1.getParameters();
+        parameters1.put("gosec.additional.parameter", "${variables.custom_data_txt}");
+        parameters1.put("pds.reuse.sechubstorage", "false (overrides default)");
+
+        executor1.setPdsProductId("GOSEC");
+        executor1.setBaseURL("https://gosec_pds.example.com:8443");
+
+        sechubConfig.getExecutors().add(executor1);
+
+        List<ProjectDefinition> projects = new ArrayList<>();
+        ProjectDefinition project1 = new ProjectDefinition();
+        project1.setName(DEFINED_PROJECT_NAME);
+        project1.setComment(
+                "The profile can define a profile. When nothing is defined, the default will be '" + DefaultFallback.FALLBACK_PROFILE_ID.getValue() + "'");
+        project1.getProfiles().add(DEFINED_PROFILE);
+
+        projects.add(project1);
+        Optional<List<ProjectDefinition>> projectsOpt = Optional.of(projects);
+        sechubConfig.setProjects(projectsOpt);
+    }
+
     private void buildRemoteSetup(SystemTestConfiguration configuration) {
         RemoteSetupDefinition remote = new RemoteSetupDefinition();
         remote.setComment("This is a remote setup - we use an existing and configured SecHub cluster/instance");
         RemoteSecHubDefinition secHub = remote.getSecHub();
 
-        try {
-            secHub.setUrl(new URL("https://sechub.example.com:8443"));
-        } catch (MalformedURLException e) {
-            throw new IllegalStateException("url should be valid", e);
-        }
+        secHub.setUrl("https://sechub.example.com:8443");
 
         CredentialsDefinition user = secHub.getUser();
         user.setUserId("testuser");
@@ -232,11 +278,11 @@ class SystemTestConfigurationTest {
         test1.getAssert().add(test1Assert1);
 
         AssertSechubResultDefinition assertSecHubResult1 = new AssertSechubResultDefinition();
-        test1Assert1.getSechubResult().add(assertSecHubResult1);
+        test1Assert1.setSechubResult(Optional.of(assertSecHubResult1));
 
         AssertEqualsFileDefinition test1Assert1equalsFile1 = new AssertEqualsFileDefinition();
         test1Assert1equalsFile1.setComment(
-                "At execution time, the different job uuids inside the two reports may are handled automatically. The given file is just a normal report.");
+                "At execution time, the different job uuids inside the two reports may are handled automatically. The given file is just a normal report but dynamic parts can be marked with parameters.");
         test1Assert1equalsFile1.setPath("./../tests/expected-sechub-json.json");
         assertSecHubResult1.setEqualsFile(Optional.of(test1Assert1equalsFile1));
 

@@ -11,6 +11,7 @@ import com.mercedesbenz.sechub.commons.model.JSONConverter;
 import com.mercedesbenz.sechub.systemtest.config.SystemTestConfiguration;
 import com.mercedesbenz.sechub.systemtest.config.TestDefinition;
 import com.mercedesbenz.sechub.systemtest.runtime.config.SystemTestRuntimeLocalSecHubProductConfigurator;
+import com.mercedesbenz.sechub.systemtest.runtime.error.SystemTestErrorException;
 import com.mercedesbenz.sechub.systemtest.runtime.init.SystemTestRuntimeContextHealthCheck;
 import com.mercedesbenz.sechub.systemtest.runtime.init.SystemTestRuntimePreparator;
 import com.mercedesbenz.sechub.systemtest.runtime.launch.ExecutionSupport;
@@ -62,8 +63,11 @@ public class SystemTestRuntime {
         context.localRun = localRun;
         context.dryRun = isDryRun;
 
+        boolean stopSecHubTriggeredSuccessfully = false;
+        boolean stopPDSTriggeredSuccessfully = false;
+
         try {
-            LOG.info("Starting - run {}{}", isDryRun ? "DRY " : "", localRun ? "LOCAL" : "REMOTE");
+            LOG.info("Starting - run {}{}\nWorking directory: {}", isDryRun ? "DRY " : "", localRun ? "LOCAL" : "REMOTE");
 
             context.locationSupport = locationSupport;
             context.environmentProvider = environmentSupport;
@@ -103,7 +107,10 @@ public class SystemTestRuntime {
             switchToStage("Shutdown", context);
 
             execOrFail(() -> productLauncher.stopPDSSolutions(context), "Stop PDS solutions");
+            stopPDSTriggeredSuccessfully = true;
+
             execOrFail(() -> productLauncher.stopSecHub(context), "Stop SecHub");
+            stopSecHubTriggeredSuccessfully = true;
 
             /* fetch results from context and publish only this */
             SystemTestResult result = new SystemTestResult();
@@ -114,17 +121,60 @@ public class SystemTestRuntime {
             finalCheckForFailedContainers(context);
 
             return result;
+
         } finally {
-            terminateStillRunningProcesses(context);
+
+            if (!stopPDSTriggeredSuccessfully) {
+                try {
+                    LOG.info("Trigger missing PDS solution stop");
+                    productLauncher.stopPDSSolutions(context);
+                } catch (SystemTestErrorException e) {
+                    LOG.error("Retry to stop PDS solutions was not possible", e);
+                }
+            }
+            if (!stopSecHubTriggeredSuccessfully) {
+                try {
+                    LOG.info("Trigger missing SecHub stop");
+                    productLauncher.stopSecHub(context);
+                } catch (SystemTestErrorException e) {
+                    LOG.error("Retry to stop SecHub was not possible", e);
+                }
+            }
+
+            terminateAndWaitForStillRunningProcesses(context);
         }
 
     }
 
-    private void terminateStillRunningProcesses(SystemTestRuntimeContext context) {
+    private void terminateAndWaitForStillRunningProcesses(SystemTestRuntimeContext context) {
+        long startTimeStopScripts = System.currentTimeMillis();
+        long timeToWaitForStopScriptsInMilliseconds = 30 * 1000;
+
+        // give stop script execution time to do their job!
+        for (SystemTestRuntimeStage stage : context.getStages()) {
+            List<ProcessContainer> stillRunningProcessContainers = stage.getStillRunningContainers();
+            for (ProcessContainer processContainer : stillRunningProcessContainers) {
+                if (SystemTestExecutionState.STOP.equals(processContainer.getSystemTestExecutionState())) {
+                    processContainer.waitForProcessTerminated(startTimeStopScripts, timeToWaitForStopScriptsInMilliseconds);
+                }
+            }
+        }
+
+        // terminate
         for (SystemTestRuntimeStage stage : context.getStages()) {
             List<ProcessContainer> stillRunningProcessContainers = stage.getStillRunningContainers();
             for (ProcessContainer processContainer : stillRunningProcessContainers) {
                 processContainer.terminateProcess();
+            }
+        }
+
+        // final, general wait for processes - with time out
+        long startTime = System.currentTimeMillis();
+        int timeToWaitInMilliseconds = 30 * 1000;
+        for (SystemTestRuntimeStage stage : context.getStages()) {
+            List<ProcessContainer> stillRunningProcessContainers = stage.getStillRunningContainers();
+            for (ProcessContainer processContainer : stillRunningProcessContainers) {
+                processContainer.waitForProcessTerminated(startTime, timeToWaitInMilliseconds);
             }
         }
     }

@@ -153,7 +153,7 @@ public class SystemTestConfigurationBuilder {
 
         @SuppressWarnings("unchecked")
         public X url(URL url) {
-            sechubDefinition.setUrl(url);
+            sechubDefinition.setUrl(url == null ? null : url.toExternalForm());
             return (X) this;
         }
 
@@ -396,7 +396,7 @@ public class SystemTestConfigurationBuilder {
             }
 
             public SolutionSetupBuilder url(URL url) {
-                setup.setUrl(url);
+                setup.setUrl(url == null ? null : url.toExternalForm());
                 return this;
             }
 
@@ -468,7 +468,7 @@ public class SystemTestConfigurationBuilder {
 
                     public SecHubResultAssertBuilder() {
                         sechubResultDefinition = new AssertSechubResultDefinition();
-                        assertDefinition.getSechubResult().add(sechubResultDefinition);
+                        assertDefinition.setSechubResult(Optional.of(sechubResultDefinition));
                     }
 
                     @Override

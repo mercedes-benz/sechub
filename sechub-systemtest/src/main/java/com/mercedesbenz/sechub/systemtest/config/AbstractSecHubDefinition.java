@@ -1,19 +1,18 @@
 package com.mercedesbenz.sechub.systemtest.config;
 
-import java.net.URL;
 import java.util.Optional;
 
 public class AbstractSecHubDefinition extends AbstractDefinition {
 
     private Optional<Boolean> waitForAvailable = Optional.ofNullable(null);
 
-    private URL url;
+    private String url;
 
-    public void setUrl(URL url) {
+    public void setUrl(String url) {
         this.url = url;
     }
 
-    public URL getUrl() {
+    public String getUrl() {
         return url;
     }
 

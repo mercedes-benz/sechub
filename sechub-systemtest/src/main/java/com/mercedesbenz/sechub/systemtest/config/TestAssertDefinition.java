@@ -1,14 +1,17 @@
 package com.mercedesbenz.sechub.systemtest.config;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Optional;
 
 public class TestAssertDefinition extends AbstractDefinition {
 
-    private List<AssertSechubResultDefinition> sechubResult = new ArrayList<>();
+    private Optional<AssertSechubResultDefinition> sechubResult = Optional.empty();
 
-    public List<AssertSechubResultDefinition> getSechubResult() {
+    public Optional<AssertSechubResultDefinition> getSechubResult() {
         return sechubResult;
+    }
+
+    public void setSechubResult(Optional<AssertSechubResultDefinition> sechubResult) {
+        this.sechubResult = sechubResult;
     }
 
 }

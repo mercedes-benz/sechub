@@ -282,10 +282,6 @@ public class UserAdministrationRestControllerRestDocTest implements TestIsNecess
                     responseSchema(OpenApiSchema.USER_LIST.getSchema()).
                 and().
                 document(
-                        /* FIXME Albert Tregnaghi, 2023-04-13: temporory removed for api generation */
-//                		requestHeaders(
-//
-//                		),
                             responseFields(
                                     fieldWithPath("[]").description("List of user Ids").optional()
                         )
