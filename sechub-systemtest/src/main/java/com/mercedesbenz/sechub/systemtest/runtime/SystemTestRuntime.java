@@ -57,31 +57,18 @@ public class SystemTestRuntime {
 
     public SystemTestResult run(SystemTestConfiguration configuration, boolean localRun, boolean isDryRun) {
 
-        SystemTestRuntimeContext context = new SystemTestRuntimeContext(configuration, locationSupport.getWorkspaceRoot(),
-                locationSupport.getAdditionalResourcesRoot());
+        SystemTestRuntimeContext context = initialize(configuration, localRun, isDryRun);
 
-        context.localRun = localRun;
-        context.dryRun = isDryRun;
+        return runAfterInitialization(context);
+
+    }
+
+    private SystemTestResult runAfterInitialization(SystemTestRuntimeContext context) {
+        switchToStage("Setup", context);
 
         boolean stopSecHubTriggeredSuccessfully = false;
         boolean stopPDSTriggeredSuccessfully = false;
-
         try {
-            LOG.info("Starting - run {}{}\nWorking directory: {}", isDryRun ? "DRY " : "", localRun ? "LOCAL" : "REMOTE");
-
-            context.locationSupport = locationSupport;
-            context.environmentProvider = environmentSupport;
-
-            switchToStage("Setup", context);
-
-            /* before tests */
-            execOrFail(() -> preparator.prepare(context), "Preparation");
-
-            if (LOG.isDebugEnabled()) {
-                LOG.debug("Configuration after prepare phase:\n{}", JSONConverter.get().toJSON(context.getConfiguration(), true));
-            }
-
-            execOrFail(() -> healthCheck.check(context), "Health check");
 
             execOrFail(() -> productLauncher.startSecHub(context), "Start SecHub");
             execOrFail(() -> productLauncher.startPDSSolutions(context), "Start PDS solutions");
@@ -143,7 +130,31 @@ public class SystemTestRuntime {
 
             terminateAndWaitForStillRunningProcesses(context);
         }
+    }
 
+    private SystemTestRuntimeContext initialize(SystemTestConfiguration configuration, boolean localRun, boolean isDryRun) {
+        SystemTestRuntimeContext context = new SystemTestRuntimeContext(configuration, locationSupport.getWorkspaceRoot(),
+                locationSupport.getAdditionalResourcesRoot());
+
+        context.localRun = localRun;
+        context.dryRun = isDryRun;
+
+        LOG.info("Starting - run {}{}\nWorking directory: {}", isDryRun ? "DRY " : "", localRun ? "LOCAL" : "REMOTE");
+
+        context.locationSupport = locationSupport;
+        context.environmentProvider = environmentSupport;
+
+        switchToStage("Initialize context", context);
+
+        /* before tests */
+        execOrFail(() -> preparator.prepare(context), "Preparation");
+
+        if (LOG.isDebugEnabled()) {
+            LOG.debug("Configuration after prepare phase:\n{}", JSONConverter.get().toJSON(context.getConfiguration(), true));
+        }
+
+        execOrFail(() -> healthCheck.check(context), "Health check");
+        return context;
     }
 
     private void terminateAndWaitForStillRunningProcesses(SystemTestRuntimeContext context) {
