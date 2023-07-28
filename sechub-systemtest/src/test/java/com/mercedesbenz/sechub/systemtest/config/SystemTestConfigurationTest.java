@@ -1,8 +1,9 @@
+// SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.systemtest.config;
 
+import static com.mercedesbenz.sechub.systemtest.SystemTestExampleWriter.*;
 import static org.junit.jupiter.api.Assertions.*;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -13,11 +14,7 @@ import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.fasterxml.jackson.annotation.JsonInclude.Include;
-import com.fasterxml.jackson.databind.json.JsonMapper;
-import com.mercedesbenz.sechub.commons.TextFileWriter;
 import com.mercedesbenz.sechub.commons.model.JSONConverter;
-import com.mercedesbenz.sechub.commons.model.JsonMapperFactory;
 import com.mercedesbenz.sechub.commons.model.TrafficLight;
 
 class SystemTestConfigurationTest {
@@ -43,16 +40,7 @@ class SystemTestConfigurationTest {
         /* test 1 */
         assertNotNull(json);
 
-        /* store as example */
-        JsonMapper mapper = JsonMapperFactory.createMapper();
-        mapper.setDefaultPropertyInclusion(Include.NON_DEFAULT);
-        String configurationAsPrettyPrintedJson = JSONConverter.get().toJSON(configuration, true, mapper);
-
-        // store meta data for documentation (later)
-        File generatedSecHubDocExampleFile = new File("./../sechub-doc/src/docs/asciidoc/documents/gen/examples/gen_example_systemtest_full_blown_config.json");
-        TextFileWriter writer = new TextFileWriter();
-        writer.save(generatedSecHubDocExampleFile, configurationAsPrettyPrintedJson, true);
-        LOG.info("Wrote configuration data as example doc file into: {}", generatedSecHubDocExampleFile.getAbsolutePath());
+        writeExample(configuration, "gen_example_systemtest_full_blown_config.json");
 
         /* execute 2 */
         SystemTestConfiguration configLoaded = JSONConverter.get().fromJSON(SystemTestConfiguration.class, json);

@@ -368,7 +368,7 @@ This example is being used inside integration test `SystemTestFrameworkIntTest.j
 ====
 [source,json]
 ----
-include::../../gen/examples/gen_example_systemtest_using_local_integrationtestservers.json[]
+include::../../gen/gen_example_systemtest_using_local_integrationtestservers.json[]
 ----
 ==== A full blown example
 [IMPORTANT]
@@ -378,7 +378,7 @@ used in any real world scenario  - just for documentation
 ====
 [source,json]
 ----
-include::../../gen/examples/gen_example_systemtest_full_blown_config.json[]
+include::../../gen/gen_example_systemtest_full_blown_config.json[]
 ----
 
 

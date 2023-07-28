@@ -1,6 +1,8 @@
+// SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.systemtest;
 
 import static com.mercedesbenz.sechub.systemtest.SystemTestAPI.*;
+import static com.mercedesbenz.sechub.systemtest.SystemTestExampleWriter.*;
 import static com.mercedesbenz.sechub.test.TestUtil.*;
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -15,11 +17,6 @@ import org.junit.jupiter.api.condition.EnabledIfSystemProperty;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.fasterxml.jackson.annotation.JsonInclude.Include;
-import com.fasterxml.jackson.databind.json.JsonMapper;
-import com.mercedesbenz.sechub.commons.TextFileWriter;
-import com.mercedesbenz.sechub.commons.model.JSONConverter;
-import com.mercedesbenz.sechub.commons.model.JsonMapperFactory;
 import com.mercedesbenz.sechub.commons.model.TrafficLight;
 import com.mercedesbenz.sechub.commons.pds.PDSDefaultParameterKeyConstants;
 import com.mercedesbenz.sechub.systemtest.config.RuntimeVariable;
@@ -140,15 +137,7 @@ class SystemTestFrameworkIntTest {
                 endTest().
                 build();
 
-        JsonMapper mapper = JsonMapperFactory.createMapper();
-        mapper.setDefaultPropertyInclusion(Include.NON_DEFAULT);
-        String configurationAsPrettyPrintedJson = JSONConverter.get().toJSON(configuration,true, mapper);
-
-        // store meta data for documentation (later)
-        File generatedSecHubDocExampleFile = new File("./../sechub-doc/src/docs/asciidoc/documents/gen/examples/gen_example_systemtest_using_local_integrationtestservers.json");
-        TextFileWriter writer = new TextFileWriter();
-        writer.save(generatedSecHubDocExampleFile, configurationAsPrettyPrintedJson, true);
-        LOG.info("Wrote configuration data as example doc file into: {}", generatedSecHubDocExampleFile.getAbsolutePath());
+        writeExample(configuration,"gen_example_systemtest_using_local_integrationtestservers.json");
 
         TestEnvironmentProvider environmentProvider = createEnvironmentProviderForSecrets();
 
