@@ -139,7 +139,7 @@ if (secHubBuildStage.providesGeneratedOpenApiFile()){
     /* avoid spotless duplication problem in gradle build */
     projectType.noSpotless.add(project(':sechub-examples:example-sechub-api-java'))
     
-    /* make it possible to use integration test parts (e.g. hook) for system tests as well */
+    /* make it possible to use integration test parts for systemtest (unit tests) as well */
     projectType.integrationTestProjects.add(project(':sechub-systemtest'))
 }
 

@@ -3,7 +3,7 @@ package com.mercedesbenz.sechub.adapter;
 
 import static com.mercedesbenz.sechub.adapter.TimeConstants.*;
 
-public interface AdapterConfigBuilder/* <B extends AdapterConfigBuilder<B, C>, C extends AdapterConfig> */ {
+public interface AdapterConfigBuilder {
 
     public static final int DEFAULT_SCAN_RESULT_CHECK_IN_MILLISECONDS = TIME_1_MINUTE_IN_MILLISECONDS;
     public static final int MIN_SCAN_RESULT_CHECK_IN_MILLISECONDS = 500;

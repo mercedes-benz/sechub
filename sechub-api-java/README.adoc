@@ -1,15 +1,5 @@
 == About SecHub Java API
 
-This project was established to have an easy to use SecHub API Java library.
-
-=== Usage
-
-Just create an instance of `com.mercedesbenz.sechub.api.SecHubClient` and use the client methods.
-
-For a working example please look into `sechub-examples/example-sechub-api-java`.
-
-=== Build and development
-
 The aim of the API was to
 
 - have an easy to use library which can be used in SecHub plugins (Eclipse, IntelliJ),
@@ -19,6 +9,15 @@ The aim of the API was to
 - detect OpenAPI file generation problems
 - as far as possible use code generation
 - provide a stable API
+
+
+=== Usage
+
+Just create an instance of `com.mercedesbenz.sechub.api.SecHubClient` and use the client methods.
+
+For a working example please look into `sechub-examples/example-sechub-api-java`.
+
+=== Build and development
 
 ==== Generation and build lifecycle handling
 We use OpenAPI generator gradle plugin to generate the API with our existing `openApi3.json`.

@@ -4,7 +4,9 @@
 == System tests
 This chapter describes the system test framework.
 
-=== We have integration test framework, why another one?
+=== Purpose
+We have already the integration test framework, why another one?
+
 Integration tests do rely on that {sechub} is running in integration test mode, using one {pds}
 server in integration test mode as well. 
 
@@ -94,6 +96,21 @@ You can following define:
 <5> The process definition (optional)
 <6> Time out definition. When not defined, the default is 5 minutes
 
+==== Comments
+If you want to comment your configuration file setup, you have different options, depending
+how you use the framework.
+
+===== PDS-Tools using a JSON configuration file
+Here you have two options:
+
+1. Use Javascript comments inside your JSON (the framework just ignores it) - for 
+   example: `// I am comment` or
+   
+2. use the `comment` attribute 
+
+===== JUnit tests
+The `SystemTestAPI` configuration builder provides for many attributes a `comment` method
+as well. Those parts will be transformed to corresponding JSON attribute inside the model.
 
 ==== Variables
 
@@ -373,8 +390,8 @@ include::../../gen/gen_example_systemtest_using_local_integrationtestservers.jso
 ==== A full blown example
 [IMPORTANT]
 ====
-This example is just an example what steps could be configured at all. It is not 
-used in any real world scenario  - just for documentation
+This example is just an overview what steps could be configured at all. It is not 
+used in any real world scenario but only for documentation.
 ====
 [source,json]
 ----
