@@ -73,11 +73,7 @@ for platform in "${platforms[@]}" ; do
 
     # Create subfolder for platform
     targetSubFolder="platform/$GOOS-$GOARCH"
-    if [[ -z "$globalBuildDir" ]]; then
-        buildDir="$projectDirLinuxPath/build/go/$targetSubFolder"
-    else
-        buildDir="$globalBuildDir/$targetSubFolder"
-    fi
+    buildDir="$projectDirLinuxPath/build/go/$targetSubFolder"
     mkdir -p "$buildDir"
 
     output_name="$package_name"
