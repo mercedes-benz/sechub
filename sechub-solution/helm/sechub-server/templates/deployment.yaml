@@ -358,12 +358,12 @@ spec:
 # ----------------------------------------------------------------------------------------------#
 # - Scope: PDS-Checkmarx
 # --------------------------------------------------------------------------------------------- #
-        - name: PDS_CHECKMARX_USERID
+        - name: SECHUB_PDS_CHECKMARX_USERID
           valueFrom:
             secretKeyRef:
                name: secret-pds-checkmarx
                key: techuser_username
-        - name: PDS_CHECKMARX_PASSWORD
+        - name: SECHUB_PDS_CHECKMARX_PASSWORD
           valueFrom:
             secretKeyRef:
                name: secret-pds-checkmarx
@@ -373,12 +373,12 @@ spec:
 # ----------------------------------------------------------------------------------------------#
 # - Scope: PDS-Cloc
 # --------------------------------------------------------------------------------------------- #
-        - name: PDS_CLOC_USERID
+        - name: SECHUB_PDS_CLOC_USERID
           valueFrom:
             secretKeyRef:
                name: secret-pds-cloc
                key: techuser_username
-        - name: PDS_CLOC_PASSWORD
+        - name: SECHUB_PDS_CLOC_PASSWORD
           valueFrom:
             secretKeyRef:
                name: secret-pds-cloc
@@ -388,12 +388,12 @@ spec:
 # ----------------------------------------------------------------------------------------------#
 # - Scope: PDS-Coverity
 # --------------------------------------------------------------------------------------------- #
-        - name: PDS_COVERITY_USERID
+        - name: SECHUB_PDS_COVERITY_USERID
           valueFrom:
             secretKeyRef:
                name: secret-pds-coverity
                key: techuser_username
-        - name: PDS_COVERITY_PASSWORD
+        - name: SECHUB_PDS_COVERITY_PASSWORD
           valueFrom:
             secretKeyRef:
                name: secret-pds-coverity
@@ -403,12 +403,12 @@ spec:
 # ----------------------------------------------------------------------------------------------#
 # - Scope: PDS-FindSecurityBugs
 # --------------------------------------------------------------------------------------------- #
-        - name: PDS_FINDSECURITYBUGS_USERID
+        - name: SECHUB_PDS_FINDSECURITYBUGS_USERID
           valueFrom:
             secretKeyRef:
                name: secret-pds-findsecuritybugs
                key: techuser_username
-        - name: PDS_FINDSECURITYBUGS_PASSWORD
+        - name: SECHUB_PDS_FINDSECURITYBUGS_PASSWORD
           valueFrom:
             secretKeyRef:
                name: secret-pds-findsecuritybugs
@@ -418,12 +418,12 @@ spec:
 # ----------------------------------------------------------------------------------------------#
 # - Scope: PDS-GoSec
 # --------------------------------------------------------------------------------------------- #
-        - name: PDS_GOSEC_USERID
+        - name: SECHUB_PDS_GOSEC_USERID
           valueFrom:
             secretKeyRef:
                name: secret-pds-gosec
                key: techuser_username
-        - name: PDS_GOSEC_PASSWORD
+        - name: SECHUB_PDS_GOSEC_PASSWORD
           valueFrom:
             secretKeyRef:
                name: secret-pds-gosec
@@ -433,12 +433,12 @@ spec:
 # ----------------------------------------------------------------------------------------------#
 # - Scope: PDS-Multi
 # --------------------------------------------------------------------------------------------- #
-        - name: PDS_MULTI_USERID
+        - name: SECHUB_PDS_MULTI_USERID
           valueFrom:
             secretKeyRef:
                name: secret-pds-multi
                key: techuser_username
-        - name: PDS_MULTI_PASSWORD
+        - name: SECHUB_PDS_MULTI_PASSWORD
           valueFrom:
             secretKeyRef:
                name: secret-pds-multi
@@ -448,12 +448,12 @@ spec:
 # ----------------------------------------------------------------------------------------------#
 # - Scope: PDS-OWASP ZAP
 # ----------------------------------------------------------------------------------------------#
-        - name: PDS_OWASPZAP_USERID
+        - name: SECHUB_PDS_OWASPZAP_USERID
           valueFrom:
             secretKeyRef:
                name: secret-pds-owaspzap
                key: techuser_username
-        - name: PDS_OWASPZAP_PASSWORD
+        - name: SECHUB_PDS_OWASPZAP_PASSWORD
           valueFrom:
             secretKeyRef:
                name: secret-pds-owaspzap
@@ -463,12 +463,12 @@ spec:
 # ----------------------------------------------------------------------------------------------#
 # - Scope: PDS-Scancode
 # --------------------------------------------------------------------------------------------- #
-        - name: PDS_SCANCODE_USERID
+        - name: SECHUB_PDS_SCANCODE_USERID
           valueFrom:
             secretKeyRef:
                name: secret-pds-scancode
                key: techuser_username
-        - name: PDS_SCANCODE_PASSWORD
+        - name: SECHUB_PDS_SCANCODE_PASSWORD
           valueFrom:
             secretKeyRef:
                name: secret-pds-scancode
@@ -478,12 +478,12 @@ spec:
 # ----------------------------------------------------------------------------------------------#
 # - Scope: PDS-SecretScanner
 # --------------------------------------------------------------------------------------------- #
-        - name: PDS_SECRETSCANNER_USERID
+        - name: SECHUB_PDS_SECRETSCANNER_USERID
           valueFrom:
             secretKeyRef:
                name: secret-pds-secretscanner
                key: techuser_username
-        - name: PDS_SECRETSCANNER_PASSWORD
+        - name: SECHUB_PDS_SECRETSCANNER_PASSWORD
           valueFrom:
             secretKeyRef:
                name: secret-pds-secretscanner
