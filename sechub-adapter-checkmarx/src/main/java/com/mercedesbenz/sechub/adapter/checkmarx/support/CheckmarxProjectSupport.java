@@ -18,6 +18,7 @@ import org.springframework.web.client.RestOperations;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.mercedesbenz.sechub.adapter.AdapterException;
+import com.mercedesbenz.sechub.adapter.checkmarx.CheckmarxAdapter;
 import com.mercedesbenz.sechub.adapter.checkmarx.CheckmarxAdapterConfig;
 import com.mercedesbenz.sechub.adapter.checkmarx.CheckmarxContext;
 import com.mercedesbenz.sechub.adapter.checkmarx.CheckmarxEngineConfiguration;
@@ -53,7 +54,9 @@ public class CheckmarxProjectSupport {
         } catch (HttpStatusCodeException e) {
             if (e.getRawStatusCode() != 404) {
                 /* only 404 - not found is accepted */
-                throw context.asAdapterException("Unexpected HTTP status error", e);
+                throw context.asAdapterException(
+                        CheckmarxAdapter.CHECKMARX_MESSAGE_PREFIX + "HTTP status=" + e.getStatusCode() + " (expected was only 404 for non existing project)",
+                        e);
             }
         }
         /* 404 error - okay, lets create */

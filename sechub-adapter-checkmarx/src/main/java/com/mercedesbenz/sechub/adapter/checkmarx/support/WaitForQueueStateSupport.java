@@ -11,6 +11,7 @@ import org.springframework.web.client.RestOperations;
 import com.mercedesbenz.sechub.adapter.Adapter;
 import com.mercedesbenz.sechub.adapter.AdapterException;
 import com.mercedesbenz.sechub.adapter.WaitForStateSupport;
+import com.mercedesbenz.sechub.adapter.checkmarx.CheckmarxAdapter;
 import com.mercedesbenz.sechub.adapter.checkmarx.CheckmarxAdapterConfig;
 import com.mercedesbenz.sechub.adapter.checkmarx.CheckmarxContext;
 import com.mercedesbenz.sechub.adapter.support.JSONAdapterSupport.Access;
@@ -67,7 +68,7 @@ class WaitForQueueStateSupport extends WaitForStateSupport<CheckmarxContext, Che
                     details.newQueueEntryFound = true;
                 }
                 details.failureText = context.json().fetch("stageDetails", body).asText();
-                LOG.info("Scan queue stage failed. Failure text: {}", details.failureText);
+                LOG.info(CheckmarxAdapter.CHECKMARX_MESSAGE_PREFIX + "Scan queue stage failed. Details: {}", details.failureText);
                 break;
             case "Finished":
                 if (!details.newQueueEntryFound) {
