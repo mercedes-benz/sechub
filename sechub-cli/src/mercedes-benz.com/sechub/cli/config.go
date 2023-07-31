@@ -206,10 +206,6 @@ func NewConfigByFlags() *Config {
 func assertValidConfig(context *Context) {
 	// Nothing to check if help output is requested
 	if context.config.action == showHelpAction {
-		if len(os.Args) > 1 {
-			// If flags are set then claim missing action
-			sechubUtil.LogError("SecHub action not set.\n")
-		}
 		return
 	}
 
