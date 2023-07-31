@@ -72,7 +72,7 @@ for platform in "${platforms[@]}" ; do
     export GOARCH=${platform_split[1]}
 
     # Create subfolder for platform
-    targetSubFolder='platform/'$GOOS'-'$GOARCH
+    targetSubFolder="platform/$GOOS-$GOARCH"
     if [[ -z "$globalBuildDir" ]]; then
         buildDir="$projectDirLinuxPath/build/go/$targetSubFolder"
     else
