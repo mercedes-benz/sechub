@@ -10,6 +10,6 @@ from an IDE (e.g. Eclipse) because having multiple Spring Boot Applications insi
 `sechub-storage-s3-aws-test` is a dedicated gradle project which has only dependencies to storage
 parts (core, s3-aws) and nothing else. The only Spring Boot Application is `S3MockApplication`.
 
-With this project is possible to use S3Mock for Junit tests without special processes, docker
+With this project it is possible to use S3Mock for Junit tests without special processes, docker
 containers etc. but also without any side effects.
 
