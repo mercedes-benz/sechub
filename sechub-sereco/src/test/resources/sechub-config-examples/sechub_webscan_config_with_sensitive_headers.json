@@ -1,0 +1,19 @@
+{
+  "apiVersion" : "1.0",
+  "webScan" : {
+    "url" : "https://productfailure.demo.example.org",
+    "headers" : [ {
+      "name" : "authorization",
+      "value" : "Bearer secret-token"
+    }, {
+      "name" : "api-key",
+      "value" : "secret-api-key",
+      "sensitive" : true
+    }, {
+      "name" : "x-file-size",
+      "value" : "123456",
+      "onlyForUrls" : [ "https://productfailure.demo.example.org/admin", "https://productfailure.demo.example.org/upload/<*>", "https://productfailure.demo.example.org/<*>/special/" ],
+      "sensitive" : false
+    } ]
+  }
+}

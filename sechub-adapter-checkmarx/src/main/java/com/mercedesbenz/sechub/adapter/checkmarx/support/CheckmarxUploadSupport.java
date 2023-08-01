@@ -16,6 +16,7 @@ import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestOperations;
 
 import com.mercedesbenz.sechub.adapter.AdapterException;
+import com.mercedesbenz.sechub.adapter.checkmarx.CheckmarxAdapter;
 import com.mercedesbenz.sechub.adapter.checkmarx.CheckmarxAdapterConfig;
 import com.mercedesbenz.sechub.adapter.checkmarx.CheckmarxAdapterContext;
 import com.mercedesbenz.sechub.adapter.checkmarx.CheckmarxContext;
@@ -42,8 +43,10 @@ public class CheckmarxUploadSupport {
         RestOperations restTemplate = context.getRestOperations();
 
         ResponseEntity<String> result = restTemplate.exchange(url, HttpMethod.POST, requestEntity, String.class);
-        if (!result.getStatusCode().equals(HttpStatus.NO_CONTENT)) {
-            throw context.asAdapterException("Response HTTP status not as expected: " + result.getStatusCode());
+        HttpStatus expectedStatus = HttpStatus.NO_CONTENT;
+        if (!result.getStatusCode().equals(expectedStatus)) {
+            throw context.asAdapterException(
+                    CheckmarxAdapter.CHECKMARX_MESSAGE_PREFIX + "HTTP status=" + result.getStatusCode() + " (expected was HTTP status=" + expectedStatus + ")");
         }
     }
 
