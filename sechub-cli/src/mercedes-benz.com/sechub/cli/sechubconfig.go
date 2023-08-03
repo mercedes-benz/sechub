@@ -6,11 +6,11 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
-	"html/template"
 	"io"
 	"io/ioutil"
 	"os"
 	"strings"
+	"text/template"
 
 	sechubUtil "mercedes-benz.com/sechub/util"
 )
