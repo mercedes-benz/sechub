@@ -353,6 +353,9 @@ Additionally to above cmdline options, you can set some values also via environm
 
 - `SECHUB_APITOKEN` +
   The SecHub api token for `SECHUB_USERID`. (same as `-apitoken` option)
+- `SECHUB_LABELS` +
+  Define one or more labels for the scan job. The labels will appear in your SecHub report. Separate multiple labels with ",". (see also `-label` option) +
+  Example: `export SECHUB_LABELS="key1=test 1,key2=test 2"`
 - `SECHUB_PROJECT` +
   The SecHub project id. (same as `-project` option)
 - `SECHUB_QUIET` +
