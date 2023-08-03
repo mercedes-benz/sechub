@@ -15,6 +15,9 @@ import java.util.UUID;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.mercedesbenz.sechub.commons.TextFileWriter;
+import com.mercedesbenz.sechub.commons.model.JSONConverter;
+import com.mercedesbenz.sechub.commons.model.SecHubScanConfiguration;
 import com.mercedesbenz.sechub.integrationtest.api.AsUser.ProjectFalsePositivesDefinition;
 import com.mercedesbenz.sechub.integrationtest.internal.IntegrationTestExampleConstants;
 import com.mercedesbenz.sechub.integrationtest.internal.IntegrationTestFileSupport;
@@ -253,6 +256,11 @@ public class WithSecHubClient {
     public AssertAsyncResult startAsynchronScanFor(TestProject project, IntegrationTestJSONLocation location, Map<String, String> environmentVariables,
             ApiTokenStrategy apiTokenStrategy) {
         File sechubConfigFile = IntegrationTestFileSupport.getTestfileSupport().createFileFromResourcePath(location.getPath());
+        return startAsynchronScanFor(project, environmentVariables, apiTokenStrategy, sechubConfigFile);
+    }
+
+    public AssertAsyncResult startAsynchronScanFor(TestProject project, Map<String, String> environmentVariables, ApiTokenStrategy apiTokenStrategy,
+            File sechubConfigFile) {
         SecHubClientExecutor executor = createExecutor();
         List<String> list = buildEnvironmentAndBehaviourCommands(project);
         ExecutionResult result = doExecute(ClientAction.START_ASYNC, apiTokenStrategy, sechubConfigFile, executor, list, environmentVariables);
@@ -263,6 +271,29 @@ public class WithSecHubClient {
         asynchResult.jobUUID = UUID.fromString(result.getLastOutputLine());
         asynchResult.configFile = sechubConfigFile;
         return asynchResult;
+    }
+
+    public AssertAsyncResult startAsynchronScanFor(TestProject project, SecHubScanConfiguration configuration) {
+        return startAsynchronScanFor(project, configuration, null, ApiTokenStrategy.VISIBLE_AS_ARGUMENT);
+    }
+
+    public AssertAsyncResult startAsynchronScanFor(TestProject project, SecHubScanConfiguration configuration, Map<String, String> environmentVariables,
+            ApiTokenStrategy apiTokenStrategy) {
+        /* ensure project id is inside the configuration */
+        configuration.setProjectId(project.getProjectId());
+
+        String configAsJson = JSONConverter.get().toJSON(configuration, true);
+        try {
+            Path tempFile = TestUtil.createTempFileInBuildFolder("sechub-config", ".json");
+            File file = tempFile.toFile();
+
+            TextFileWriter writer = new TextFileWriter();
+            writer.save(file, configAsJson, true);
+
+            return startAsynchronScanFor(project, environmentVariables, apiTokenStrategy, file);
+        } catch (IOException e) {
+            throw new IllegalStateException("Was not able to create test temp file!", e);
+        }
     }
 
     /**
@@ -450,4 +481,5 @@ public class WithSecHubClient {
 
         return asUser.create(project, json);
     }
+
 }
