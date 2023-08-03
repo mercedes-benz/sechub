@@ -51,12 +51,9 @@ public class PDSWebScanJobScenario12IntTest {
         TestProject project = PROJECT_1;
         String targetURL = configuration.getWebScan().get().getUrl().toString();
         as(SUPER_ADMIN).updateWhiteListForProject(project, Arrays.asList(targetURL));
-        UUID jobUUID = as(USER_1).createJobAndReturnJobUUID(project, configuration);
 
         /* execute */
-        as(USER_1).
-            approveJob(project, jobUUID);
-
+        UUID jobUUID = as(USER_1).withSecHubClient().startAsynchronScanFor(project, configuration).getJobUUID();
         waitForJobDone(project, jobUUID, 30, true);
 
         /* test */
