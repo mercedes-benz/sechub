@@ -159,7 +159,7 @@ public class ScanTypeCountTest {
     @Test
     void when_highSeverityCount_equals_MAX_VALUE_then_after_increasing_it_must_be_less_than_0() {
         /* prepare */
-        scanTypeCount.highSeverityCount = Integer.MAX_VALUE;
+        scanTypeCount.highSeverityCount = Long.MAX_VALUE;
 
         /* execute */
         scanTypeCount.incrementHighSeverityCount();
@@ -171,7 +171,7 @@ public class ScanTypeCountTest {
     @Test
     void when_mediumSeverityCount_equals_MAX_VALUE_then_after_increasing_it_must_be_less_than_0() {
         /* prepare */
-        scanTypeCount.mediumSeverityCount = Integer.MAX_VALUE;
+        scanTypeCount.mediumSeverityCount = Long.MAX_VALUE;
 
         /* execute */
         scanTypeCount.incrementMediumSeverityCount();
@@ -183,7 +183,7 @@ public class ScanTypeCountTest {
     @Test
     void when_lowSeverityCount_equals_MAX_VALUE_then_after_increasing_it_must_be_less_than_0() {
         /* prepare */
-        scanTypeCount.lowSeverityCount = Integer.MAX_VALUE;
+        scanTypeCount.lowSeverityCount = Long.MAX_VALUE;
 
         /* execute */
         scanTypeCount.incrementLowSeverityCount();

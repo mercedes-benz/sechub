@@ -158,7 +158,7 @@ public class HTMLScanResultReportModelBuilder {
 
     public List<HTMLSecHubFinding> filterFindingsForGeneralScan(List<SecHubFinding> findings, Map<Integer, List<HTMLScanResultCodeScanEntry>> codeScanEntries,
             List<Severity> severities) {
-        List<HTMLSecHubFinding> htmlSecHubFindings = new ArrayList<>();
+        List<HTMLSecHubFinding> htmlSecHubFindings = new LinkedList<>();
         Map<String, List<SecHubFinding>> groupedFindingsByName = findings.stream().filter(finding -> severities.contains(finding.getSeverity()))
                 .collect(groupingBy(SecHubFinding::getName));
 
