@@ -191,4 +191,5 @@ public class ScanTypeCountTest {
         /* test */
         assertTrue(0 > scanTypeCount.getLowSeverityCount());
     }
+
 }
