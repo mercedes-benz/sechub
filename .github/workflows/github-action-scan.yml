@@ -16,7 +16,11 @@ jobs:
         # which should be the default environment for the github actions runtime as well
         uses: actions/setup-node@v3 
     
-      - name: Clean install
+      - name: Clean install (shared)
+        run: npm ci 
+        working-directory: ./github-actions/shared
+
+      - name: Clean install (scan)
         run: npm ci 
         working-directory: ./github-actions/scan
         
