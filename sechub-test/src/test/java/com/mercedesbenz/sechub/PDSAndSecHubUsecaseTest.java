@@ -44,10 +44,5 @@ class PDSAndSecHubUsecaseTest {
 
         return obj.getClass().getSimpleName() + "." + obj.toString();
     }
-    
-    @Test
-    void fail_on_purpose() {
-    	fail("Test failed on purpose");
-    }
 
 }
