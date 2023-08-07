@@ -13,7 +13,7 @@ LABEL maintainer="SecHub FOSS Team"
 ARG OWASPZAP_VERSION="2.13.0"
 ARG OWASPZAP_SHA256SUM="24dfba87278515e3dabe8d24c259981cd812a8f6e66808c956104c3283d91d9d"
 
-ARG OWASPZAP_WRAPPER_VERSION="1.1.0"
+ARG OWASPZAP_WRAPPER_VERSION="1.2.0"
 
 # OWASP ZAP host and port
 ENV ZAP_HOST="127.0.0.1"
@@ -64,15 +64,15 @@ COPY owasp-zap-full-ruleset-all-release-status.json ${TOOL_FOLDER}/owasp-zap-ful
 # Copy zap addon download urls into container
 COPY zap-addons.txt "$TOOL_FOLDER/zap-addons.txt"
 
-# Create the PDS workspace
-WORKDIR "$WORKSPACE"
-
-# Switch from root to non-root user
-USER "$USER"
-
 # Install OWASP ZAP addons
 # see: https://www.zaproxy.org/addons/
 # via addon manager: owasp-zap -cmd -addoninstall webdriverlinux
 RUN mkdir --parents "/home/$USER/.ZAP/plugin" && \
     cd "/home/$USER/.ZAP/plugin" && \
     wget --no-verbose --input-file="$TOOL_FOLDER/zap-addons.txt"
+
+# Switch from root to non-root user
+USER "$USER"
+
+# Switch to workspace folder
+WORKDIR "$WORKSPACE"
