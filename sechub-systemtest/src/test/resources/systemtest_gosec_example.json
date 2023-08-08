@@ -3,8 +3,8 @@
     "local" : {
       "secHub" : {
         "admin" : {
-          "userId" : "${secretEnv.ADMIN_USERID}",
-          "apiToken" : "${secretEnv.ADMIN_APITOKEN}"
+          "userId" : "${secretEnv.TEST_ADMIN_USERID}",
+          "apiToken" : "${secretEnv.TEST_ADMIN_APITOKEN}"
         },
         "start" : [ {
           "script" : {
@@ -26,11 +26,15 @@
       },
       "pdsSolutions" : [ {
         "name" : "gosec",
-        "url" : "${env.PDS_SERVER}",
+        "url" : "${env.TEST_PDS_SERVER}",
+        
+        // we set this, because the PDS solution is not reachable from localhost
+        // (port not forwarded)
+        "waitForAvailable" : false,
+        
         "start" : [ {
           "script" : {
-            "path" : "./50-start-multiple-docker-compose.sh",
-            "arguments" : [ "1" ]
+            "path" : "./05-start-single-sechub-network-docker-compose.sh"
           }
         } ],
         "stop" : [ {
@@ -39,8 +43,8 @@
           }
         } ],
         "techUser" : {
-          "userId" : "${secretEnv.PDS_USERID}",
-          "apiToken" : "${secretEnv.PDS_APITOKEN}"
+          "userId" : "${secretEnv.TEST_PDS_USERID}",
+          "apiToken" : "${secretEnv.TEST_PDS_APITOKEN}"
         }
       } ]
     }

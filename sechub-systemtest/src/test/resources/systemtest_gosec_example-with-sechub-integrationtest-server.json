@@ -2,31 +2,33 @@
   "setup" : {
     "local" : {
       "secHub" : {
-        // we do not define a start script part  here, so we can use an integration test 
-        // server at this point - means easier to debug
         "admin" : {
-          "userId" : "${secretEnv.ADMIN_USERID}",
-          "apiToken" : "${secretEnv.ADMIN_APITOKEN}"
+          "userId" : "${secretEnv.TEST_INTTEST_ADMIN_USERID}",
+          "apiToken" : "${secretEnv.TEST_INTTEST_ADMIN_APITOKEN}"
         },
         "configure" : {
           "executors" : [ {
             "pdsProductId" : "PDS_GOSEC",
-            "name" : "system-test-codescan-gosec"
+            "name" : "system-test-codescan-gosec",
+            "parameters" : {
+              "pds.mocking.disabled" : "true",
+              "pds.config.use.sechub.storage" : "false"
+            }
           } ]
-        },
-        "stop" : [ {
-          "script" : {
-            "path" : "./01-stop-single-docker-compose.sh"
-          }
-        } ]
+        }
       },
       "pdsSolutions" : [ {
         "name" : "gosec",
-        "url" : "${env.PDS_SERVER}",
+        "url" : "${env.TEST_PDS_SERVER}",
+        
+        // we set this, because the PDS solution is not reachable from localhost
+        // (port not forwarded)
+        "waitForAvailable" : false,
+        
         "start" : [ {
           "script" : {
-            "path" : "./50-start-multiple-docker-compose.sh",
-            "arguments" : [ "1" ]
+            "path" : "./01-start-single-docker-compose.sh",
+            "arguments" : [ "alpine" ]
           }
         } ],
         "stop" : [ {
@@ -35,8 +37,8 @@
           }
         } ],
         "techUser" : {
-          "userId" : "${secretEnv.PDS_USERID}",
-          "apiToken" : "${secretEnv.PDS_APITOKEN}"
+          "userId" : "${secretEnv.TEST_PDS_USERID}",
+          "apiToken" : "${secretEnv.TEST_PDS_APITOKEN}"
         }
       } ]
     }

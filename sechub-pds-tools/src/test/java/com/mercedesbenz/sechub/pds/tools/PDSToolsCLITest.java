@@ -40,6 +40,17 @@ class PDSToolsCLITest {
     }
 
     @Test
+    void a_normal_instanciated_cli_object_has_all_parts_inside() {
+        /* execute */
+        cliToTest = new PDSToolsCLI();
+
+        /* test */
+        assertNotNull(cliToTest.consoleHandler);
+        assertNotNull(cliToTest.exitHandler);
+        assertNotNull(cliToTest.systemTestLauncher);
+    }
+
+    @Test
     void no_argument_fails_with_exit_code_1() throws Exception {
 
         /* execute */

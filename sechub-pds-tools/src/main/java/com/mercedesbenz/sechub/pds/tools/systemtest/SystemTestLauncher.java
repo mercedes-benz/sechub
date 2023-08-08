@@ -20,6 +20,10 @@ public class SystemTestLauncher {
 
     SystemTestAPI systemTestApi;
 
+    public SystemTestLauncher() {
+        systemTestApi = new SystemTestAPI();
+    }
+
     public SystemTestResult launch(SystemTestCommand systemTestCommand) throws IOException {
         SystemTestParametersBuilder builder = SystemTestParameters.builder();
 

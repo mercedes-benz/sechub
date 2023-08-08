@@ -22,7 +22,9 @@ import com.mercedesbenz.sechub.systemtest.runtime.variable.TestEnvironmentProvid
 import com.mercedesbenz.sechub.test.TestUtil;
 
 /**
- * An integration test which needs a running SecHub server
+ * A local test for developers to check if gosec integration works. Can be
+ * simply started as a junit test - but also from commandline by using
+ * pds-tools.
  *
  * @author Albert Tregnaghi
  *
@@ -59,12 +61,16 @@ class SystemTestLocalGoSecManualTest {
         }else {
             throw new RuntimeException("this variant is not supported:"+variant);
         }
+        LOG.info("VARIANT: {}", variant);
+        LOG.info("CONFIG : {}", configFile);
+
         TextFileReader reader = new TextFileReader();
         String json = reader.loadTextFile(new File("./src/test/resources/"+configFile));
         SystemTestConfiguration config = JSONConverter.get().fromJSON(SystemTestConfiguration.class, json);
 
         TestEnvironmentProvider environmentProvider= createEnvironmentProviderForSecrets() ;
-        LOG.info("Using variant: {} -> config file: {}", variant, configFile);
+        LOG.debug("PDS tech user id: {}", environmentProvider.getEnv("TEST_PDS_USERID"));
+        LOG.debug("PDS tech user apitoken: {}", environmentProvider.getEnv("TEST_PDS_APITOKEN"));
 
         /* execute */
         SystemTestResult result = systemTestApi.runSystemTests(
@@ -89,15 +95,21 @@ class SystemTestLocalGoSecManualTest {
         String testPDSTechUserName = TestUtil.getSystemProperty("pds.techuser.username", "techuser");
         String testPDSTechUserPwd = TestUtil.getSystemProperty("pds.techuser.apitoken", "pds-apitoken");
 
+        String testIntTestServerAdminUser = TestUtil.getSystemProperty("pds.inttestadmin.userid", "int-test_superadmin");
+        String testIntTestServerAdminPwd = TestUtil.getSystemProperty("pds.inttestadmin.apitoken", "int-test_superadmin-pwd");
+
         TestEnvironmentProvider environmentProvider = new TestEnvironmentProvider();
-        environmentProvider.setEnv("ADMIN_USERID", testSecHubAdminUser);
-        environmentProvider.setEnv("ADMIN_APITOKEN", testSecHubAdminPwd);
+        environmentProvider.setEnv("TEST_ADMIN_USERID", testSecHubAdminUser);
+        environmentProvider.setEnv("TEST_ADMIN_APITOKEN", testSecHubAdminPwd);
 
-        environmentProvider.setEnv("PDS_USERID", testPDSTechUserName);
-        environmentProvider.setEnv("PDS_APITOKEN", testPDSTechUserPwd);
+        environmentProvider.setEnv("TEST_INTTEST_ADMIN_USERID", testIntTestServerAdminUser);
+        environmentProvider.setEnv("TEST_INTTEST_ADMIN_APITOKEN", testIntTestServerAdminPwd);
 
-        environmentProvider.setEnv("PDS_SERVER", "https://localhost:8444");
-        environmentProvider.setEnv("SECHUB_SERVER", "https://localhost:8443");
+        environmentProvider.setEnv("TEST_PDS_USERID", testPDSTechUserName);
+        environmentProvider.setEnv("TEST_PDS_APITOKEN", testPDSTechUserPwd);
+
+        environmentProvider.setEnv("TEST_PDS_SERVER", "https://pds-gosec:8444");
+        environmentProvider.setEnv("TEST_SECHUB_SERVER", "https://localhost:8443");
         return environmentProvider;
     }
 

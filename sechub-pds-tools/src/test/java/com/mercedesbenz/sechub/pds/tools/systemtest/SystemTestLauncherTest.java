@@ -37,6 +37,15 @@ class SystemTestLauncherTest {
     }
 
     @Test
+    void new_launcher_has_all_parts_defined() throws Exception {
+        /* execute */
+        launcherToTest = new SystemTestLauncher();
+
+        /* test */
+        assertNotNull(launcherToTest.systemTestApi);
+    }
+
+    @Test
     void no_config_file_defined_throws_illegal_argument_without_interactions() throws Exception {
 
         /* execute */
