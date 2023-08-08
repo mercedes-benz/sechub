@@ -8,16 +8,16 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * This generator does following:
+ * This generator does the following:
  *
  * <pre>
  * 1. Reads the the folders inside the generated open api model packages
  * 2. Defines some explicit definitions which parts shall be part of public api
- * 3. Generates a abstract wrapper class and a model class which inherits the generated class
+ * 3. Generates an abstract wrapper class and a model class which inherits the generated class
  * </pre>
  *
  * The model classes shall be editable by users and are only overridden when
- * explicit defined. The abstract classes are always new generated.
+ * explicitly defined. The abstract classes are always newly generated.
  *
  * @author Albert Tregnaghi
  *

@@ -551,18 +551,18 @@ class ArchiveSupportTest {
 
         if (allExpectedFiles.size() != allExtractedFiles.size()) {
             StringBuilder sb = new StringBuilder();
-            sb.append("Amount of files did differs: Expected:").append(allExpectedFiles.size() + " but was:" + allExtractedFiles.size());
+            sb.append("Number of files differs: Expected:").append(allExpectedFiles.size() + " but was:" + allExtractedFiles.size());
             sb.append("\n\nExpected files:\n");
             dump(allExpectedFiles, sb);
             sb.append("\n\nExtracted files:\n");
             dump(allExtractedFiles, sb);
             fail(sb.toString());
-            assertEquals(allExpectedFiles.size(), allExtractedFiles.size(), "Amount of files did differ!");
+            assertEquals(allExpectedFiles.size(), allExtractedFiles.size(), "Number of files differed!");
         }
         for (String expected : relativePathExpected) {
             if (!relativePathExtracted.contains(expected)) {
                 StringBuilder sb = new StringBuilder();
-                sb.append("did not found '").append(expected).append("' inside:");
+                sb.append("did not find'").append(expected).append("' inside:");
                 dump(relativePathExtracted, sb);
                 sb.append("\n\nOutput location:").append(outputDirectory.getAbsolutePath());
                 fail(sb.toString());

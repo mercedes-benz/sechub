@@ -113,7 +113,7 @@ public class GenerationModelDataCollector {
                 foundMapGenInfoForType = findMapGenForGenClass(openApiGenClassInfo.getInnerType());
                 if (foundMapGenInfoForType == null) {
                     throw new IllegalStateException(
-                            "Auto model mapping failed for for open api gen class: " + openApiGenClassInfo.getInnerType().getSimpleName());
+                            "Auto model mapping failed for open api gen class: " + openApiGenClassInfo.getInnerType().getSimpleName());
                 }
 
             } catch (Exception e) {

@@ -13,7 +13,7 @@ The goal of the API is to:
 
 === Usage
 
-Just create an instance of `com.mercedesbenz.sechub.api.SecHubClient` and use the client methods.
+Create an instance of `com.mercedesbenz.sechub.api.SecHubClient` and use the client methods.
 
 For a working example please look into `sechub-examples/example-sechub-api-java`.
 
@@ -26,9 +26,9 @@ Because the file is generated from `sechub-doc` at build time we have a lifecycl
 To solve this, `sechub-api-java` is only build in some "sechub build stages" - which can be
 defined with `-Dsechub.build.stage=$stage`.
 
-But there were some issues with the generated java files and also with some logic of the REST 
-communication. To have a stable client library and still be possible to switch/update generators or
-underlying network libraries a wrapper facade mechanism was introduced.
+But there were some issues with the generated Java files and also with some logic of the REST API
+communication. To have a stable client library and still be able to switch/update generators or
+underlying network libraries, a wrapper facade mechanism was introduced.
 
 
 ==== OpenAPI generated
@@ -47,14 +47,14 @@ changes!
 
 ===== Internal API wrapper model
 The internal API wrapper model classes are abstract classes which are inherited by the public model
-parts. The abstract classes provide access to the OpenAPI generated classes, but still hide
+The abstract classes provide access to the OpenAPI generated classes, but still hide
 them - except for child classes. 
 
 It is not intended to change the internal classes (or use it from outside). Only the public model 
 classes shall be used or changed manually.
 
 ===== Generation
-To avoid coding the wrapper parts manually a generator was introduced - but this generator is 
+To avoid coding the wrapper manually a generator was introduced - but this generator is 
 NOT called at build time automatically! This must be done by a developer and the changed sources
 must be commited to git !
   
