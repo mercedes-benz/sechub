@@ -29,6 +29,7 @@ import com.mercedesbenz.sechub.systemtest.runtime.error.SystemTestScriptExecutio
  */
 public class SystemTestRuntimeProductLauncher {
 
+    private static final int ONE_SECOND_IN_MILLISECONDS = 1000;
     private int maximumSecondsToWaitForSecHubAlive = 120;
     private int maximumSecondsToWaitForPDSSolutionAlive = 120;
 
@@ -157,9 +158,10 @@ public class SystemTestRuntimeProductLauncher {
             while (!client.checkIsServerAlive()) {
                 Thread.sleep(MILLISECONDS_TO_WAIT_FOR_NEXT_ALIVE_CHECK());
                 long millisecondsWaited = System.currentTimeMillis() - start;
-                boolean timedOut = millisecondsWaited > maximumSecondsToWaitForSecHubAlive * 1000 * 1;
+                boolean timedOut = millisecondsWaited > maximumSecondsToWaitForSecHubAlive * ONE_SECOND_IN_MILLISECONDS;
                 if (timedOut) {
-                    throw new IllegalStateException("Check for SecHub server alive timed out after " + (millisecondsWaited / 1000) + " seconds.");
+                    throw new IllegalStateException(
+                            "Check for SecHub server alive timed out after " + (millisecondsWaited / ONE_SECOND_IN_MILLISECONDS) + " seconds.");
                 }
             }
             LOG.debug("SecHub server at {} is alive", client.getServerUri());
@@ -212,10 +214,10 @@ public class SystemTestRuntimeProductLauncher {
             while (!client.checkIsServerAlive()) {
                 Thread.sleep(1000);
                 long millisecondsWaited = System.currentTimeMillis() - start;
-                boolean timedOut = millisecondsWaited > maximumSecondsToWaitForPDSSolutionAlive * 1000 * 1;
+                boolean timedOut = millisecondsWaited > maximumSecondsToWaitForPDSSolutionAlive * ONE_SECOND_IN_MILLISECONDS;
                 if (timedOut) {
-                    throw new IllegalStateException(
-                            "Check alive for PDS solution '" + pdsSolutionName + "' timed out after " + (millisecondsWaited / 1000) + " seconds.");
+                    throw new IllegalStateException("Check alive for PDS solution '" + pdsSolutionName + "' timed out after "
+                            + (millisecondsWaited / ONE_SECOND_IN_MILLISECONDS) + " seconds.");
                 }
             }
             LOG.debug("PDS solution '" + pdsSolutionName + "' at {} is alive", client.getServerUri());

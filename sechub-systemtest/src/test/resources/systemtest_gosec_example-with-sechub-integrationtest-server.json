@@ -27,7 +27,7 @@
         
         "start" : [ {
           "script" : {
-            "path" : "./01-start-single-docker-compose.sh",
+            "path" : "./05-start-single-sechub-network-docker-compose.sh",
             "arguments" : [ "alpine" ]
           }
         } ],

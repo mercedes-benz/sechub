@@ -46,10 +46,6 @@ class SystemTestTemplateEngineTest {
 
     }
 
-    // "var1"="${secrets.my_password}"
-
-    // script: env={$var1} -->env={${secrets.my_password}}
-
     @Test
     void replaceEnvironmentVariablesWithValues_simple_text_with_two_env_variable() {
         /* prepare */
@@ -70,7 +66,6 @@ class SystemTestTemplateEngineTest {
     @ParameterizedTest
     @ValueSource(strings = { "John Doe", "!Something$$$$", "{\"iAmNotEscaped\":\true}" })
     @EmptySource
-    @NullSource
     void replaceEnvironmentVariablesWithValues_json_with_same_two_env_variables(String replacement) {
         /* prepare */
         String content = "{ \"message\" :\"This is ${env.USER_NAME}\", \"userName\" : \"${env.USER_NAME}\"}";
@@ -82,12 +77,23 @@ class SystemTestTemplateEngineTest {
         String result = engineToTest.replaceEnvironmentVariablesWithValues(content, envProvider);
 
         /* test */
-        if (replacement == null) {
-            assertEquals("{ \"message\" :\"This is \", \"userName\" : \"\"}", result);
-        } else {
-            assertEquals("{ \"message\" :\"This is " + replacement + "\", \"userName\" : \"" + replacement + "\"}", result);
-        }
+        assertEquals("{ \"message\" :\"This is " + replacement + "\", \"userName\" : \"" + replacement + "\"}", result);
 
+    }
+
+    @Test
+    void replaceEnvironmentVariablesWithValues_json_replacement_null_is_handled_as_empty_string() {
+        /* prepare */
+        String content = "{ \"message\" :\"This is ${env.USER_NAME}\", \"userName\" : \"${env.USER_NAME}\"}";
+
+        EnvironmentProvider envProvider = mock(EnvironmentProvider.class);
+        when(envProvider.getEnv("USER_NAME")).thenReturn(null);
+
+        /* execute */
+        String result = engineToTest.replaceEnvironmentVariablesWithValues(content, envProvider);
+
+        /* test */
+        assertEquals("{ \"message\" :\"This is \", \"userName\" : \"\"}", result);
     }
 
     @Test

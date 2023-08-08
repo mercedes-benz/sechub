@@ -16,7 +16,7 @@ import com.mercedesbenz.sechub.integrationtest.api.TestAPI;
 import com.mercedesbenz.sechub.integrationtest.internal.IntegrationTestContext;
 import com.mercedesbenz.sechub.test.TestPortProvider;
 
-/* We need a running PDS instance - so do execute this test only when integration test server is running:*/
+/* We need a running PDS instance - execute this test only when integration test server is running:*/
 @EnabledIfSystemProperty(named = "sechub.integrationtest.running", matches = "true")
 class ServerSecurityLogHandlingIntTest {
 

@@ -14,7 +14,7 @@ public class SystemTestResult {
     public boolean hasFailedTests() {
         boolean hasErrors = false;
         for (SystemTestRunResult runResult : runs) {
-            hasErrors = runResult.isFailed();
+            hasErrors = runResult.hasFailed();
             if (hasErrors) {
                 break;
             }

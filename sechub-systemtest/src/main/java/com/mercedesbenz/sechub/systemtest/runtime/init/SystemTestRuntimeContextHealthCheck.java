@@ -194,12 +194,12 @@ public class SystemTestRuntimeContextHealthCheck {
 
         String userId = user.getUserId();
         if (userId == null || userId.isEmpty()) {
-            throw new WrongConfigurationException("SecHub remote user name not configured but necessary for remote run!", context);
+            throw new WrongConfigurationException("SecHub remote user name not configured, but required for remote run!", context);
         }
 
         String apiToken = user.getApiToken();
         if (apiToken == null || apiToken.isEmpty()) {
-            throw new WrongConfigurationException("SecHub remote user api token not configured but necessary for remote run!", context);
+            throw new WrongConfigurationException("SecHub remote user api token not configured, but required for remote run!", context);
         }
     }
 
@@ -363,7 +363,7 @@ public class SystemTestRuntimeContextHealthCheck {
             for (PDSProductSetup productSetup : productSetups) {
                 String foundProductId = productSetup.getId();
                 if (allProductIdentifiers.contains(foundProductId)) {
-                    throw new IllegalStateException("This is odd: There are two PDS product setups which do both define a product with ID:" + foundProductId
+                    throw new IllegalStateException("This is odd: There are two PDS product setups which both define a product with ID:" + foundProductId
                             + "! This may never happen!\nPlease change your PDS server configuration file and provide another product ID!");
                 }
                 allProductIdentifiers.add(foundProductId);

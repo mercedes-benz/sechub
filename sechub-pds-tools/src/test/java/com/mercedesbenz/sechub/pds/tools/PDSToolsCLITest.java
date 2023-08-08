@@ -203,7 +203,7 @@ class PDSToolsCLITest {
         SystemTestResult result = new SystemTestResult();
         when(cliToTest.systemTestLauncher.launch(any())).thenReturn(result);
         SystemTestRunResult runResult1 = mock(SystemTestRunResult.class);
-        when(runResult1.isFailed()).thenReturn(true);
+        when(runResult1.hasFailed()).thenReturn(true);
         SystemTestFailure failure = new SystemTestFailure();
         failure.setDetails("detail1");
         failure.setMessage("message1");

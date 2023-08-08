@@ -13,7 +13,7 @@ import com.mercedesbenz.sechub.integrationtest.SecurityTestHelper;
 import com.mercedesbenz.sechub.integrationtest.SecurityTestHelper.TestTargetType;
 import com.mercedesbenz.sechub.integrationtest.internal.IntegrationTestContext;
 
-/* We need a running SecHub Server instance - so do execute this test only when integration test server is running:*/
+/* We need a running SecHub Server instance - execute this test only when integration test server is running:*/
 @EnabledIfSystemProperty(named = "sechub.integrationtest.running", matches = "true")
 class ServerEncryptionIntTest {
 

@@ -263,7 +263,7 @@ class PDSExecutionCallable implements Callable<PDSExecutionResult> {
             int max = MAXIMUM_START_TRUNCATE_CHARS;
 
             String shrinkedStartOfOutputStream = appendOutputStreamToResultAndReturnShrinkedVariant(result, jobUUID, encoding, max);
-            String shrinkedStartOfErrorStream = appendErrroStreamToResultAndReturnShrinkedVariant(result, jobUUID, encoding, max);
+            String shrinkedStartOfErrorStream = appendErrorStreamToResultAndReturnShrinkedVariant(result, jobUUID, encoding, max);
 
             String message = """
                     Execution of PDS job %s created no result file!
@@ -284,7 +284,7 @@ class PDSExecutionCallable implements Callable<PDSExecutionResult> {
 
     }
 
-    private String appendErrroStreamToResultAndReturnShrinkedVariant(PDSExecutionResult result, UUID jobUUID, String encoding, int max) throws IOException {
+    private String appendErrorStreamToResultAndReturnShrinkedVariant(PDSExecutionResult result, UUID jobUUID, String encoding, int max) throws IOException {
         String shrinkedErrorStream = null;
         File systemErrorFile = getWorkspaceService().getSystemErrorFile(jobUUID);
         if (systemErrorFile.exists()) {

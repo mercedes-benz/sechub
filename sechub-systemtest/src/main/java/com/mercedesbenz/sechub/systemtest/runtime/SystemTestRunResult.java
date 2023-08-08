@@ -26,7 +26,7 @@ public class SystemTestRunResult {
         this.failure = failure;
     }
 
-    public boolean isFailed() {
+    public boolean hasFailed() {
         return failure != null;
     }
 
@@ -36,7 +36,7 @@ public class SystemTestRunResult {
         sb.append("TEST '");
         sb.append(testName).append("' ");
 
-        if (isFailed()) {
+        if (hasFailed()) {
             sb.append("[FAILED] - ");
             sb.append(failure.getMessage());
             sb.append("\nDetails:");

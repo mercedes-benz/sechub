@@ -10,8 +10,8 @@ public class TestDefinition extends AbstractDefinition {
     private List<TestAssertDefinition> _assert = new ArrayList<>();
     private TestExecutionDefinition execute = new TestExecutionDefinition();
 
-    public void setName(String id) {
-        this.name = id;
+    public void setName(String name) {
+        this.name = name;
     }
 
     public String getName() {

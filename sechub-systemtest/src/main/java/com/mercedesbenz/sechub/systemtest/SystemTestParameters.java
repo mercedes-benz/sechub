@@ -70,7 +70,7 @@ public class SystemTestParameters {
 
         /**
          * You can use this method to define the SecHub solution path. But this is
-         * normally not necessary : The location support will automatically use a
+         * normally not necessary. The location support will automatically use a
          * calculated server location from PDS solution path.
          *
          * @param pathToSecHubSolution

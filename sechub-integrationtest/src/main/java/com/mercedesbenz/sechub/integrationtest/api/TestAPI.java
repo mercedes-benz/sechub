@@ -373,13 +373,15 @@ public class TestAPI {
                         String errorStreamText = asPDSUser(PDS_ADMIN).getJobErrorStreamText(pdsJobUUID);
 
                         String message = """
-                                The status of PDS job: %s is %s - wanted was %s
+                                PDS job: %s status not as expected
+                                - actual: %s
+                                - expected: %s
 
-                                Fetched output stream:
+                                Output stream:
                                 ----------------------
                                 %s
 
-                                Fetched error stream:
+                                Error stream:
                                 ----------------------
                                 %s
 

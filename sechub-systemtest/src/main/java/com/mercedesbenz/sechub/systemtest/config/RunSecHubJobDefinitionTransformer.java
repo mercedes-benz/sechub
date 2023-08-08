@@ -89,7 +89,7 @@ public class RunSecHubJobDefinitionTransformer {
 
     private void assertFolderDefined(UploadDefinition upload, String referenceId) {
         if (upload.getSourceFolder().isEmpty() && upload.getBinariesFolder().isEmpty()) {
-            throw new IllegalStateException("Neither a source folder or a binary folder is defined for reference id:" + referenceId);
+            throw new IllegalStateException("Neither a source folder nor a binary folder is defined for reference id:" + referenceId);
         }
     }
 

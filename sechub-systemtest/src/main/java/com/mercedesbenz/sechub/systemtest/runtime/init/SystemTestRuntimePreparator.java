@@ -59,6 +59,7 @@ import com.mercedesbenz.sechub.systemtest.template.SystemTestTemplateEngine;
  */
 public class SystemTestRuntimePreparator {
 
+    private static final String SUB_PATH_PDS_CONFIG_JSON = "docker/pds-config.json";
     private static final Logger LOG = LoggerFactory.getLogger(SystemTestRuntimePreparator.class);
     private static final int MAX_VARIABLE_REPLACEMENT_LOOP_COUNT = 100;
 
@@ -184,18 +185,18 @@ public class SystemTestRuntimePreparator {
 
     private SystemTestConfiguration createAlternativeConfigurationWithVariablesReplaced(SystemTestRuntimeContext context) {
         SystemTestConfiguration originConfiguration = context.getOriginConfiguration();
-        String orgJson = JSONConverter.get().toJSON(originConfiguration);
+        String originJson = JSONConverter.get().toJSON(originConfiguration);
 
         /* --------------------- */
         /* Environment variables */
         /* --------------------- */
         SystemTestTemplateEngine templateEngine = context.getTemplateEngine();
-        String alteredJson = templateEngine.replaceEnvironmentVariablesWithValues(orgJson, context.getEnvironmentProvider());
+        String modifiedJson = templateEngine.replaceEnvironmentVariablesWithValues(originJson, context.getEnvironmentProvider());
         /*
-         * at this point we have no longer any data with ${env.XYZ} but only dedicated
-         * data
+         * at this point all variable placeholders `${env.XYZ}` have been replaced with
+         * the values set in the environment
          */
-        if (templateEngine.hasEnvironmentVariables(alteredJson)) {
+        if (templateEngine.hasEnvironmentVariables(modifiedJson)) {
             throw new WrongConfigurationException("Cycle detected!\nWe do not allow environment variables which are nesting environment variables again!",
                     context);
         }
@@ -204,10 +205,10 @@ public class SystemTestRuntimePreparator {
         /* User variables */
         /* -------------- */
         int loopCount = 0;
-        while (templateEngine.hasUserVariables(alteredJson)) {
+        while (templateEngine.hasUserVariables(modifiedJson)) {
             loopCount++;
 
-            SystemTestConfiguration intermediateConfiguration = JSONConverter.get().fromJSON(SystemTestConfiguration.class, alteredJson);
+            SystemTestConfiguration intermediateConfiguration = JSONConverter.get().fromJSON(SystemTestConfiguration.class, modifiedJson);
             Map<String, String> variables = intermediateConfiguration.getVariables();
 
             if (loopCount > MAX_VARIABLE_REPLACEMENT_LOOP_COUNT) {
@@ -215,16 +216,16 @@ public class SystemTestRuntimePreparator {
                         context);
             }
 
-            alteredJson = templateEngine.replaceUserVariablesWithValues(alteredJson, variables);
+            modifiedJson = templateEngine.replaceUserVariablesWithValues(modifiedJson, variables);
         }
 
         /* ----------------- */
         /* Runtime variables */
         /* ----------------- */
         Map<String, String> runtimeVariables = createRuntimeVariables(context);
-        alteredJson = templateEngine.replaceRuntimeVariablesWithValues(alteredJson, runtimeVariables);
+        modifiedJson = templateEngine.replaceRuntimeVariablesWithValues(modifiedJson, runtimeVariables);
 
-        SystemTestConfiguration newConfiguration = JSONConverter.get().fromJSON(SystemTestConfiguration.class, alteredJson);
+        SystemTestConfiguration newConfiguration = JSONConverter.get().fromJSON(SystemTestConfiguration.class, modifiedJson);
         return newConfiguration;
     }
 
@@ -493,7 +494,7 @@ public class SystemTestRuntimePreparator {
             }
 
             if (solution.getPathToPdsServerConfigFile() == null) {
-                Path pdsServerConfigFilePath = pdsWorkingDirectory.resolve("docker/pds-config.json");
+                Path pdsServerConfigFilePath = pdsWorkingDirectory.resolve(SUB_PATH_PDS_CONFIG_JSON);
                 solution.setPathToPdsServerConfigFile(pdsServerConfigFilePath.toString());
             }
 
@@ -503,9 +504,9 @@ public class SystemTestRuntimePreparator {
     }
 
     private void prepareScriptData(List<ExecutionStepDefinition> steps, Path workingDirectory) {
-        for (ExecutionStepDefinition steep : steps) {
-            if (steep.getScript().isPresent()) {
-                ScriptDefinition scriptDefinition = steep.getScript().get();
+        for (ExecutionStepDefinition step : steps) {
+            if (step.getScript().isPresent()) {
+                ScriptDefinition scriptDefinition = step.getScript().get();
                 scriptDefinition.setWorkingDir(workingDirectory.toString());
             }
         }

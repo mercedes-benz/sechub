@@ -193,7 +193,7 @@ public class LocationSupport {
     public Path ensureTestWorkingDirectoryRealPath(TestDefinition test) {
         String testName = test.getName();
         if (testName == null) {
-            throw new IllegalStateException("test name is null- may not happen!");
+            throw new IllegalStateException("test name is null - may not happen!");
         }
         Path tests = getWorkspaceTestsFolder();
         Path testFolder = tests.resolve(testName);

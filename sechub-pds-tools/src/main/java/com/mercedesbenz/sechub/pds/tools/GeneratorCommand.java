@@ -4,7 +4,7 @@ package com.mercedesbenz.sechub.pds.tools;
 import com.beust.jcommander.Parameter;
 import com.beust.jcommander.Parameters;
 
-@Parameters(commandNames = { CommandConstants.GENERATE }, commandDescription = "Generate all files necessary for a PDS")
+@Parameters(commandNames = { CommandConstants.GENERATE }, commandDescription = "Generate files necessary for a PDS scan")
 public class GeneratorCommand {
 
     /* @formatter:off */

@@ -1,9 +1,9 @@
 package com.mercedesbenz.sechub.systemtest.config;
 
 /**
- * This kind variables are calculated by system test engine at runtime. The
+ * These variables are calculated by system test engine at runtime. The
  * replacement is not directly exchanged after preparation (like done for
- * runtime variables) but only for dedicated situations. For example: if you use
+ * runtime variables) but only for dedicated situations.
  *
  * @author Albert Tregnaghi
  *

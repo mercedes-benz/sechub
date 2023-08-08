@@ -73,7 +73,7 @@ public class AdminApiPlayground {
         ExecutorConfiguration configuration = new ExecutorConfiguration();
 
         configuration.setEnabled(false);
-        configuration.setExecutorVersion(BigDecimal.valueOf(1));
+        configuration.setExecutorVersion(1);
         configuration.setName("PDS_TEST1");
         configuration.setProductIdentifier("PDS_CODESCAN");
 

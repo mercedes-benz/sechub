@@ -5,6 +5,13 @@
 This chapter describes the system test framework.
 
 === Purpose
+Integration tests do rely on {sechub} running in integration test mode, using one {pds}
+server in integration test mode as well. 
+
+In this scenario, the integration test API can fetch internal meta data and is able to check 
+correctness of the logic inside {sechub} and also inside {pds}. But it does not test real product 
+execution - at the end it uses only mocked test scripts and dedicated test data.    
+
 "The system tests are different to integration tests: Their main purpose is to test
 {sechub} server(s) in combination with one or multiple {pds} solutions in real live scenarios.
 This helps developers of {pds} solutions to drastically reduce development time and also to write
@@ -15,10 +22,9 @@ calling a unit test is sufficient.
 ====
 The system test framework is designed, to make things easier for developers
 when testing {sechub} / {pds}. It provides as many defaults as possible.
-So it is normally not necessary to define much to have a running system test!
+So it is normally not necessary to explicitly define much to have a running system test!
 
-Do not try to configure every possible part, but instead try to define only 
-necessary things and let the framework do the rest.
+Try to only define the necessary minimum and let the system test framework do the rest.
 
 It is also possible to use already running local servers. For example when you are
 developing a PDS solution you can start a local SecHub server in your IDE and run
@@ -27,7 +33,7 @@ speed, because the test will not spawn (and also not shutdown) the {sechub} serv
 ====
 
 === Write a system test configuration file
-This chapter describes the different parts inside the test configuration model.
+This section describes the different parts inside the test configuration model.
 
 System tests can be written in two ways:
 
@@ -40,11 +46,11 @@ the underlying model is the same.
 [[systemtests-script-definitions]]
 ==== Script definitions
 At many locations it is possible to define script execution steps 
-(e.g. {sechub} start/sto, {pds} start/stop or at test preparation)
+(e.g. {sechub} start/stop, {pds} start/stop or at test preparation)
 
 As the name indicates the system test will execute a script.
 
-You can following define:
+You can define the following:
 
 - path
 - arguments _(optional)_
@@ -76,7 +82,7 @@ You can following define:
                 "unit" : "MINUTES"
               }
             },
-            "stageWaits" : false //<6>
+            "stageWaits" : false //<7>
           }
 
 ----
@@ -84,8 +90,13 @@ You can following define:
 <2> Arguments (optional)
 <3> Environment variables (optional)
 <4> The working directory (optional, per default the working directory of system test call)
-<5> The process definition (optional)
-<6> Time out definition. When not defined, the default is 5 minutes
+<5> The process definition (optional). A user can define here some additional
+    constraints for the created process (currently only a time out is supported).
+<6> Time out definition. When not defined, the default is 5 minutes. When a time out
+    happens, the test will fail and the system test runtime will shutdown.
+<7> Defines if the current stage (e.g. test preparation) needs to wait for this script to be 
+    executed before next stage can be entered (e.g. test execution)
+    
 
 ==== Comments
 If you want to comment your configuration file setup, you have different options, depending
@@ -124,10 +135,11 @@ easier to understand the problem.
 But inside this output, all standard variables (environment, runtime, user variables) are 
 revealed and will be shown in plain text.
 
-If you have any secret information which shall not be revealed inside log output this is no option
-from a security perspective.
+To hide sensitive information you can use secret environment variables.
 
-To hide such sensitive information you can use secret environment variables.
+Secret environment variables are hidden in the log output. 
+Use secret information for all sensitive information 
+(secrets, passwords, credentials, personal information etc.).
 
 [WARNING]
 ====
@@ -144,7 +156,7 @@ When you are using secret environment variables but they are not defined at runt
 the system test framework will fail with an error about the missing variables.
 ====
 
-But those variables can only be used at some locations:
+But those variables can only be used in some locations:
 
 ====== Inside script environments 
 [source,json]
@@ -203,16 +215,18 @@ include::../../gen/gen_systemtests_default_fallbacks_table.adoc[]
 ==== Setup
 Inside the setup we define things necessary to setup our system test environment.
 
-It is possible to run system tests on local side and just automatically start SecHub, 
-PDS solutions and configure all automatically.
+It is possible to run system tests locally and start & configure {sechub} and 
+{pds} solutions automatically.
 
 But it is also possible to use an existing real {sechub} platform and run the defined
-tests there. The configuration is not tampered here - executor configurations, users, projects
-and profiles must be configured here.
+tests there by a remote setup. In this setup it is not possible to change any existing 
+configuration. This means that executor configurations, users, projects, profiles etc. 
+must be configured on server side by administrators.
 
     
 ===== Local
-When we run system tests on a local environment, all necessary data and setup will be done by the framework.
+When we run system tests in a local environment, all necessary settings and the setup will be done
+by the system testing framework.
 This means an administrator account is necessary to setup the system.
 
 If not defined, the default credentials for integration test server will be used. If you do not define
@@ -227,11 +241,19 @@ start the tests.
 
 
 ===== Remote
-It is also possible to use an existing real {sechub} platform and run the defined
-tests there. The configuration is *not tampered* here - executor configurations, users, projects
-and profiles must be already configured by administrators. Also the usage of <<section-systemtests-local-defaults,local defaults>>   is not possible - except those parts are defined on remote site with such names!  
+It is also possible to use an existing real {sechub} platform and run the defined tests there. 
+The configuration is *not changed* here - executor configurations, users, projects
+and profiles must be already configured by administrators. A remote setup does not require
+an administrative account, but only a normal user account which has access to the project.
 
+The framework does help you by setting <<section-systemtests-default-fallbacks,fallback default>>
+values when you do not configure some parts. But if those fallbacks are in use, you must 
+ensure that the remote environment can handle it.
 
+An example: if you did not define a project inside the configuration, the default project name
+will be used at system test runtime. In this case you must have created a project with this name
+at your remote {sechub} server before.
+  
 ===== Example snippet
 [source,json]
 ----
@@ -265,13 +287,13 @@ and profiles must be already configured by administrators. Also the usage of <<s
         "url" : "${env.PDS_SERVER}",
         "start" : [ {
           "script" : {
-            "path" : "./50-start-multiple-docker-compose.sh",
+            "path" : "./05-start-single-new-fancy-pds-docker-compose.sh",
             "arguments" : [ "2" ]
           }
         } ],
         "stop" : [ {
           "script" : {
-            "path" : "./05-stop-single-sechub-network-docker-compose.sh"
+            "path" : "./05-stop-single-new-fancy-pds-docker-compose.sh"
           }
         } ],
         "techUser" : {
@@ -284,12 +306,12 @@ and profiles must be already configured by administrators. Also the usage of <<s
 ----
 
 <1> defines {sechub} administrator credentials to use for communication
-<2> starts a {sechub} server by this script call
+<2> starts the {sechub} server by executing the script
 <3> configures executors and their products to use. It's a good style to define a name here for the executor
     so restarting the system test will override always the same executor configuration. The scan type 
     is automatically determined from meta information inside the {pds} configuration file. 
 <4> stop script to shutown the {sechub} server
-<5> defome a pds solution defintion for "new-fance" (not existing, but would be inside a folder `new-fance` below
+<5> define a pds solution defintion for "new-fancy" (not existing, but would be inside a folder `new-fancy` below
     `sechub-pds-solutions folder`. In this example "new-fancy" would have "NEW_FANCY_PRODUCT" as product identifier inside
     its {pds} configuration file.
 
@@ -311,7 +333,7 @@ A test can have one ore more preparation steps where following commands can be e
 The test execution phase can contain currently:
 
 - `runSecHubJob` +
-  Here we can define the uploads and also the different scan types. When nothing defined, the
+  Here we can define the uploads and also the different scan types. When nothing is defined, the
   default reference identifier will be used, but it is also possible to define more complex
   data structures with different content and identifiers.
   
@@ -417,7 +439,7 @@ Before a stage can be left and another is started, a check is done, if there is 
 to be finished. When a script of the stage times out in mean time, the framework will stop with a failure message.
 
 If not explicit defined, the test framework automatically uses dedicated defaults for script steps
-inside the stage, but it is possible to alter this inside the configuration. Here an example:
+inside the stage, but it is possible change the defaults inside the configuration. Here is an example:
 
 [source,json]
 ----
@@ -482,7 +504,7 @@ Every system test start will just create new executor configurations.
 
 ====== Profiles
 The defined profiles inside test configuration model will be created and connected with the created
-executor configurations. IF a profile does already exist with the defined project id, the existing 
+executor configurations. If a profile does already exist with the defined project id, the existing 
 one will be deleted.
 
 

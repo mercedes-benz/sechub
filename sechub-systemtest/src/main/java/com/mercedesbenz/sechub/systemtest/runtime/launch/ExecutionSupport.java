@@ -156,7 +156,7 @@ public class ExecutionSupport {
         try {
             canonicalPath = targetFile.getCanonicalPath();
         } catch (IOException e) {
-            throw new IllegalStateException("The target file path is not a canonical path::" + targetFile.getAbsolutePath(), e);
+            throw new IllegalStateException("The target file path is not a canonical path: " + targetFile.getAbsolutePath(), e);
         }
 
         if (!targetFile.exists()) {
@@ -230,7 +230,7 @@ public class ExecutionSupport {
         /*
          * at this point we can replace the secret environment parts - they will not be
          * shown inside a dump, because we create an alterableScriptDefinition which is
-         * not dumped...
+         * not dumped.
          */
         Map<String, String> scriptEnvVariables = alterableScriptDefinition.getEnvVariables();
         for (String key : scriptEnvVariables.keySet()) {

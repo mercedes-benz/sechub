@@ -13,7 +13,8 @@ We use `github-actions` for CI which gives us a quick response at
 include::./../buildserver/jenkins-pipeline.adoc[]
 
 === Build stages
-Builds stages were introduced because of a problematic life cycle situation when it comes to Java API generation. 
+Builds stages were introduced because of a problematic build dependency situation when it comes
+to Java API generation. Build stages avoid cyclic build dependencies.
 
 `sechub-api-java` uses a code generator which needs an OpenAPI file. But this file
 is only available when SecHub server and PDS projects are compiled! 
@@ -47,7 +48,8 @@ The build has following stages:
   
   
 The logic is provided inside `BuildStage.groovy` and a snippet inside `settings.gradle`.
-In a nutshell: At gradle initialization phase the API related projects are only added when wanted.
+In a nutshell: At gradle initialization phase the API related projects are only added 
+if wanted.
 
 ==== Special treatment on IDE imports
 Because the API related gradle projects are not initialized per default, the IDE import mechanism
@@ -57,9 +59,10 @@ For eclipse task there is a special treatment added inside `sechub-developertool
 at commandline by `./gradlew eclipse` or by `EGradle` plugin will automatically import those
 projects automatically.
 
-For eclipse build ship you must enter the following command and import the additionally created
-projects manually into eclipse:
+For the eclipse standard gradle integration (Eclipse Buildship) you must enter the following
+command at root folder: 
 `./gradlew eclipse -Dsechub.build.stage=all`
+As next step import the additionally created projects manually into eclipse.
 
 For IntelliJ similar:
 `./gradlew idea -Dsechub.build.stage=all`

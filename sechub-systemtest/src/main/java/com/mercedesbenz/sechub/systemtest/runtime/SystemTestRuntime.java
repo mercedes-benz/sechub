@@ -39,6 +39,10 @@ public class SystemTestRuntime {
 
     private SystemTestRuntimeLocalSecHubProductConfigurator localSecHubProductConfigurator;
 
+    private int secondsToWaitForRemainingProcesses;
+
+    private int secondsToWaitForStopScripts;
+
     public SystemTestRuntime(LocationSupport locationSupport, ExecutionSupport execSupport) {
         if (locationSupport == null) {
             throw new IllegalArgumentException("Location support may not be null!");
@@ -53,6 +57,9 @@ public class SystemTestRuntime {
         this.locationSupport = locationSupport;
         this.environmentSupport = execSupport.getEnvironmentProvider();
         this.testEngine = new SystemTestRuntimeTestEngine(execSupport);
+
+        this.secondsToWaitForStopScripts = getValue("SYSTEMTEST_WAIT_FOR_STOP_SCRIPTS", 30);
+        this.secondsToWaitForRemainingProcesses = getValue("SYSTEMTEST_WAIT_FOR_REMAINING_PROCESSES", 30);
     }
 
     public SystemTestResult run(SystemTestConfiguration configuration, boolean localRun, boolean isDryRun) {
@@ -61,6 +68,19 @@ public class SystemTestRuntime {
 
         return runAfterInitialization(context);
 
+    }
+
+    private int getValue(String key, int defaultValue) {
+        String valueAsString = environmentSupport.getEnv(key);
+
+        if (valueAsString == null) {
+            return defaultValue;
+        }
+        try {
+            return Integer.valueOf(valueAsString);
+        } catch (Exception e) {
+            return defaultValue;
+        }
     }
 
     private SystemTestResult runAfterInitialization(SystemTestRuntimeContext context) {
@@ -159,9 +179,9 @@ public class SystemTestRuntime {
 
     private void terminateAndWaitForStillRunningProcesses(SystemTestRuntimeContext context) {
         long startTimeStopScripts = System.currentTimeMillis();
-        long timeToWaitForStopScriptsInMilliseconds = 30 * 1000;
+        long timeToWaitForStopScriptsInMilliseconds = getSecondsToWaitForStopScripts() * 1000;
 
-        // give stop script execution time to do their job!
+        // give stop scripts time to finish their job!
         for (SystemTestRuntimeStage stage : context.getStages()) {
             List<ProcessContainer> stillRunningProcessContainers = stage.getStillRunningContainers();
             for (ProcessContainer processContainer : stillRunningProcessContainers) {
@@ -179,15 +199,23 @@ public class SystemTestRuntime {
             }
         }
 
-        // final, general wait for processes - with time out
+        // final, general wait for any processes - with time out
         long startTime = System.currentTimeMillis();
-        int timeToWaitInMilliseconds = 30 * 1000;
+        int timeToWaitInMilliseconds = getSecondsToWaitForRemainingProcesses() * 1000;
         for (SystemTestRuntimeStage stage : context.getStages()) {
             List<ProcessContainer> stillRunningProcessContainers = stage.getStillRunningContainers();
             for (ProcessContainer processContainer : stillRunningProcessContainers) {
                 processContainer.waitForProcessTerminated(startTime, timeToWaitInMilliseconds);
             }
         }
+    }
+
+    private int getSecondsToWaitForRemainingProcesses() {
+        return secondsToWaitForRemainingProcesses;
+    }
+
+    private int getSecondsToWaitForStopScripts() {
+        return secondsToWaitForStopScripts;
     }
 
     private void finalCheckForFailedContainers(SystemTestRuntimeContext context) {

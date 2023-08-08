@@ -39,7 +39,7 @@ import com.mercedesbenz.sechub.test.TestUtil;
  * Purpose: An integration test for CI/CD - ensures system test framework works
  * with a started local SecHub (integration test) environment. It makes it also
  * easier to test and develop system test framework for development: Less turn
- * around times ( no repetitive server starts and stops necessary). The process
+ * around times (no repetitive server starts and stops necessary). The process
  * start/stop automation is tested in a {@link SystemTestDryRunTest} separately.
  *
  * @author Albert Tregnaghi
@@ -204,8 +204,7 @@ class SystemTestFrameworkIntTest {
                     prepareStep().
                         script().
                             /* we could have used the optional runtime.additionalResourcesFolder but
-                             * here we use simply the current path from caller side - this works as well
-                             * and shall show that this way is also correct.
+                             * here we use simply the current path from caller side. It just shows that this way also works well.
                              */
                             workingDir("./../sechub-systemtest/src/test/resources/additional-resources/preparation").
                             path("./prepare-inttest-copy-codescan-medium-findings.sh").

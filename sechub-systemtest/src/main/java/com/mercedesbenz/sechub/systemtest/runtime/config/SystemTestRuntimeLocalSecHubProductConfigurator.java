@@ -3,7 +3,6 @@ package com.mercedesbenz.sechub.systemtest.runtime.config;
 
 import static com.mercedesbenz.sechub.commons.pds.PDSDefaultParameterKeyConstants.*;
 
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
@@ -157,7 +156,7 @@ public class SystemTestRuntimeLocalSecHubProductConfigurator {
         ExecutorConfiguration config = new ExecutorConfiguration();
         config.setEnabled(true);
         config.setName(name);
-        config.setExecutorVersion(BigDecimal.valueOf(executorConfigDefinition.getVersion()));
+        config.setExecutorVersion(executorConfigDefinition.getVersion());
         config.setProductIdentifier(secHubProductIdentifier);
 
         ExecutorConfigurationSetup setup = config.getSetup();

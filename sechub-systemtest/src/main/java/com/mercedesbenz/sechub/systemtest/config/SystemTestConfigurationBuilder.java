@@ -137,7 +137,7 @@ public class SystemTestConfigurationBuilder {
      * @param <T> Reference for constructor and inheritance... (caller class with
      *            generics)
      * @param <D> the SecHub definition
-     * @param <X> Pain result target (caller class without any generics)
+     * @param <X> Plain result target (caller class without any generics)
      */
     private abstract class AbstractSecHubDefinitionBuilder<T extends AbstractSecHubDefinitionBuilder<?, ?, ?>, D extends AbstractSecHubDefinition, X>
             extends AbstractDefinitionBuilder<X> {
@@ -297,11 +297,11 @@ public class SystemTestConfigurationBuilder {
                      * @return
                      */
                     public ExecutorConfigBuilder waitForAvailable() {
-                        return waitForAVailable(true);
+                        return waitForAvailable(true);
                     }
 
-                    public ExecutorConfigBuilder waitForAVailable(boolean waitForAVailable) {
-                        getSechubDefinition().setWaitForAvailable(Optional.of(waitForAVailable));
+                    public ExecutorConfigBuilder waitForAvailable(boolean waitForAvailable) {
+                        getSechubDefinition().setWaitForAvailable(Optional.of(waitForAvailable));
                         return this;
                     }
 
@@ -375,11 +375,11 @@ public class SystemTestConfigurationBuilder {
              * @return
              */
             public SolutionSetupBuilder waitForAvailable() {
-                return waitForAVailable(true);
+                return waitForAvailable(true);
             }
 
-            public SolutionSetupBuilder waitForAVailable(boolean waitForAVailable) {
-                setup.setWaitForAvailable(Optional.of(waitForAVailable));
+            public SolutionSetupBuilder waitForAvailable(boolean waitForAvailable) {
+                setup.setWaitForAvailable(Optional.of(waitForAvailable));
                 return this;
             }
 

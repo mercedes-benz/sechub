@@ -83,7 +83,7 @@ public class PDSToolsCLI {
             if (result.hasFailedTests()) {
                 Set<SystemTestRunResult> runs = result.getRuns();
                 for (SystemTestRunResult run : runs) {
-                    if (run.isFailed()) {
+                    if (run.hasFailed()) {
                         String message = "Test '" + run.getTestName() + "' FAILED!\n" + run.getFailure().getMessage() + "\n" + run.getFailure().getDetails();
                         consoleHandler.error(message);
                     }

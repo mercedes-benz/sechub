@@ -18,7 +18,7 @@ else
     PARAM3_STILL_A_SECRET="false"
 fi
 
-# no we just wait some milliseconds without writing to disk
+# now we just wait some milliseconds without writing to disk
 # - we need this to test stage wait is correct implemented
 sleep 0.3s
 
