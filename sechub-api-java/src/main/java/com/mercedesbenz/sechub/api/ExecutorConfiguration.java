@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.api;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -51,8 +52,8 @@ public class ExecutorConfiguration {
         return internalAccess.getDelegate();
     }
 
-    public Boolean getEnabled() {
-        return internalAccess.getEnabled();
+    public boolean isEnabled() {
+        return Boolean.TRUE.equals(internalAccess.getEnabled());
     }
 
     public String getName() {
@@ -63,16 +64,20 @@ public class ExecutorConfiguration {
         return internalAccess.getProductIdentifier();
     }
 
-    public java.math.BigDecimal getExecutorVersion() {
-        return internalAccess.getExecutorVersion();
+    public int getExecutorVersion() {
+        BigDecimal version = internalAccess.getExecutorVersion();
+        if (version == null) {
+            return 0;
+        }
+        return version.intValue();
     }
 
     public void setEnabled(Boolean enabled) {
         internalAccess.setEnabled(enabled);
     }
 
-    public void setExecutorVersion(java.math.BigDecimal executorVersion) {
-        internalAccess.setExecutorVersion(executorVersion);
+    public void setExecutorVersion(int executorVersion) {
+        internalAccess.setExecutorVersion(BigDecimal.valueOf(executorVersion));
     }
 
     public void setName(String name) {

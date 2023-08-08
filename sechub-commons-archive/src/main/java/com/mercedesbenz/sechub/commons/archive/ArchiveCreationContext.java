@@ -20,7 +20,7 @@ import com.mercedesbenz.sechub.commons.core.CommonConstants;
 class ArchiveCreationContext {
 
     class CreationPathContext {
-        private Set<String> pathes = new TreeSet<>();
+        private Set<String> paths = new TreeSet<>();
         private Set<String> excludes = new LinkedHashSet<>();
         private Set<String> includes = new LinkedHashSet<>();
 
@@ -31,8 +31,8 @@ class ArchiveCreationContext {
 
         }
 
-        public Set<String> getPathes() {
-            return Collections.unmodifiableSet(pathes);
+        public Set<String> getPaths() {
+            return Collections.unmodifiableSet(paths);
         }
 
         public boolean isExcluded(File file) {
@@ -132,7 +132,7 @@ class ArchiveCreationContext {
         data.includePathMatchers = null;
         data.excludePathMatchers = null;
 
-        data.pathes.addAll(fileOrFolders);
+        data.paths.addAll(fileOrFolders);
         data.includes.addAll(includes);
         data.excludes.addAll(excludes);
 

@@ -111,7 +111,7 @@ void writePrettyPrintedFile(openApiFile, jsonObject){
 
 
 // What does this task do?
-// When we have to develop workaround parts it is very enerving when we need to generate the complete
+// When we have to develop workaround parts it is very annoying when we need to generate the complete
 // open api file again and again. Even when there are only problems with the post processing itself.
 // The origin open file (before postprocessing) needs only ONE generation in this case.
 //

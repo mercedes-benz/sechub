@@ -1,6 +1,20 @@
 #!/bin/bash 
 
 set -e
+lastCommandHandled=""
+
+function startJob (){
+    echo "**************************************************************************************************"
+    echo "* Start job: $1"
+    echo "**************************************************************************************************"
+    export lastCommandHandled=$1
+}
+
+function step (){
+    echo "- ++++++++++++++++++++++++++++++++++"
+    echo "- STEP: $1"
+    echo "- ++++++++++++++++++++++++++++++++++"
+}
 
 function showHelp () {
     echo "-------------------------------------" 
@@ -25,8 +39,6 @@ function showHelp () {
     echo "   -h,  --help                       : show this help"
 }
 
-lastCommandHandled=""
-
 SCRIPT_DIR="$(dirname -- "$0")"
 cd ${SCRIPT_DIR}
 cd ..
@@ -44,80 +56,80 @@ fi
 POSITIONAL=()
 while [[ $# -gt 0 ]]
 do
-key="$1"
-
-
-case $key in
-    -f|--format-all)
-    FORMAT_CODE_ALL="YES"
-    shift # past argument
-    ;;
-    -r|--report-combined)
-    REPORT_COMBINED="YES"
-    shift # past argument
-    ;;
-    -i|--integrationtest-all)
-    INTEGRATIONTEST_ALL="YES"
-    shift # past argument
-    ;;
-    -ii|--integrationtest-integratio)
-    INTEGRATIONTEST_INTEGRATION="YES"
-    shift # past argument
-    ;;
-    -is|--integrationtest-systemtest)
-    INTEGRATIONTEST_SYSTEMTEST="YES"
-    shift # past argument
-    ;;
-    -c|--clean-all)
-    CLEAN_ALL="YES"
-    shift # past argument
-    ;;
-    -ct|--clean-all-tests)
-    CLEAN_ALL_TESTS="YES"
-    shift # past argument
-    ;;
-    -cu|--clean-unit-tests)
-    CLEAN_UNIT_TESTS="YES"
-    shift # past argument
-    ;;
-    -ci|--clean-integrationtests)
-    CLEAN_INTEGRATIONTEST="YES"
-    shift # past argument
-    ;;
-    -b|--build-full)
-    FULL_BUILD="YES"
-    shift # past argument
-    ;;
-    -d|--document-full)
-    DOCUMENT_FULL="YES"
-    shift # past argument
-    ;;
-    -gj|--generate-java-api)
-    GENERATE_JAVA_API="YES"
-    shift # past argument
-    ;;
-    -u|--unit-tests)
-    UNIT_TESTS="YES"
-    shift # past argument
-    ;;
-    -si|--stop-inttest-server)
-    STOP_SERVERS="YES"
-    shift # past argument
-    ;;
-    -x|--xsearchpath)
-    SEARCHPATH="$2"
-    shift # past argument
-    shift # past value
-    ;;
-    -h|--help)
-    HELP=YES
-    shift # past argument
-    ;;
-    *)    # unknown option
-    POSITIONAL+=("$1") # save it in an array for later
-    shift # past argument
-    ;;
-esac
+    key="$1"
+    
+    
+    case $key in
+        -f|--format-all)
+        FORMAT_CODE_ALL="YES"
+        shift # past argument
+        ;;
+        -r|--report-combined)
+        REPORT_COMBINED="YES"
+        shift # past argument
+        ;;
+        -i|--integrationtest-all)
+        INTEGRATIONTEST_ALL="YES"
+        shift # past argument
+        ;;
+        -ii|--integrationtest-integratio)
+        INTEGRATIONTEST_INTEGRATION="YES"
+        shift # past argument
+        ;;
+        -is|--integrationtest-systemtest)
+        INTEGRATIONTEST_SYSTEMTEST="YES"
+        shift # past argument
+        ;;
+        -c|--clean-all)
+        CLEAN_ALL="YES"
+        shift # past argument
+        ;;
+        -ct|--clean-all-tests)
+        CLEAN_ALL_TESTS="YES"
+        shift # past argument
+        ;;
+        -cu|--clean-unit-tests)
+        CLEAN_UNIT_TESTS="YES"
+        shift # past argument
+        ;;
+        -ci|--clean-integrationtests)
+        CLEAN_INTEGRATIONTEST="YES"
+        shift # past argument
+        ;;
+        -b|--build-full)
+        FULL_BUILD="YES"
+        shift # past argument
+        ;;
+        -d|--document-full)
+        DOCUMENT_FULL="YES"
+        shift # past argument
+        ;;
+        -gj|--generate-java-api)
+        GENERATE_JAVA_API="YES"
+        shift # past argument
+        ;;
+        -u|--unit-tests)
+        UNIT_TESTS="YES"
+        shift # past argument
+        ;;
+        -si|--stop-inttest-server)
+        STOP_SERVERS="YES"
+        shift # past argument
+        ;;
+        -x|--xsearchpath)
+        SEARCHPATH="$2"
+        shift # past argument
+        shift # past value
+        ;;
+        -h|--help)
+        HELP=YES
+        shift # past argument
+        ;;
+        *)    # unknown option
+        POSITIONAL+=("$1") # save it in an array for later
+        shift # past argument
+        ;;
+    esac
 done
 
 set -- "${POSITIONAL[@]}" # restore positional parameters
@@ -130,18 +142,6 @@ if [[ "$HELP" = "YES" ]]; then
     exit 0
 fi
 
-function startJob (){
-    echo "**************************************************************************************************"
-    echo "* Start job: $1"
-    echo "**************************************************************************************************"
-    export lastCommandHandled=$1
-}
-
-function step (){
-    echo "- ++++++++++++++++++++++++++++++++++"
-    echo "- STEP: $1"
-    echo "- ++++++++++++++++++++++++++++++++++"
-}
 
 CMD_EXEC_ALL_INTEGRATIONTESTS="./gradlew :sechub-integrationtest:startIntegrationTestInstances :sechub-systemtest:integrationtest :sechub-integrationtest:integrationtest :sechub-integrationtest:stopIntegrationTestInstances -Dsechub.build.stage=all --console=plain"
 CMD_CREATE_COMBINED_REPORT="./gradlew createCombinedTestReport -Dsechub.build.stage=all"

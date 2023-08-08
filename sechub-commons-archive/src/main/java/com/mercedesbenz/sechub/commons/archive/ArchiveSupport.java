@@ -125,7 +125,7 @@ public class ArchiveSupport {
             }
         } catch (Exception e) {
             StringBuilder sb = new StringBuilder();
-            sb.append("Create of archives failed");
+            sb.append("Creation of archives failed");
             if (e instanceof IOException) {
                 sb.append(" - ").append(e.getMessage());
             }
@@ -170,16 +170,16 @@ public class ArchiveSupport {
                 tarOutputStream.setLongFileMode(TarArchiveOutputStream.LONGFILE_POSIX);
             }
 
-            Map<String, CreationPathContext> uniqueNameToPathes = creationContext.getUniqueToPathsMap();
+            Map<String, CreationPathContext> uniqueNameToPaths = creationContext.getUniqueToPathsMap();
             Path workingDirectoryRealPath = workingDirectory.toRealPath();
 
-            for (Entry<String, CreationPathContext> entry : uniqueNameToPathes.entrySet()) {
+            for (Entry<String, CreationPathContext> entry : uniqueNameToPaths.entrySet()) {
 
                 String uniqueName = entry.getKey();
                 CreationPathContext creationPathContext = entry.getValue();
-                Set<String> pathes = creationPathContext.getPathes();
+                Set<String> paths = creationPathContext.getPaths();
 
-                for (String pathAsStringFromConfiguration : pathes) {
+                for (String pathAsStringFromConfiguration : paths) {
 
                     File file = null;
                     Path pathFromConfig = Paths.get(pathAsStringFromConfiguration);
@@ -188,7 +188,6 @@ public class ArchiveSupport {
                             throw new FileNotFoundException(
                                     "The absolute path: " + pathAsStringFromConfiguration + " is not part of inside " + workingDirectoryRealPath);
                         }
-                        ;
                         file = pathFromConfig.toFile();
 
                     } else {

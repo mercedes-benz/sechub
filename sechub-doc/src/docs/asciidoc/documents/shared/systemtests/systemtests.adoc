@@ -5,19 +5,10 @@
 This chapter describes the system test framework.
 
 === Purpose
-We have already the integration test framework, why another one?
-
-Integration tests do rely on that {sechub} is running in integration test mode, using one {pds}
-server in integration test mode as well. 
-
-In this scenario, the integration test API can fetch internal meta data and is able to check 
-correctness of the logic inside {sechub} and also inside {pds}. But it does not test real product 
-execution - at the end it uses only mocked test scripts and dedicated test data.    
-
-The system tests are different to integration tests: Their main purpose is to test 
+"The system tests are different to integration tests: Their main purpose is to test
 {sechub} server(s) in combination with one or multiple {pds} solutions in real live scenarios.
-This helps developers of {pds} solutions to drastically reduce development time and also to write 
-automated tests without having to constantly test manually - a command line call in the OS shell or 
+This helps developers of {pds} solutions to drastically reduce development time and also to write
+automated tests without having to constantly test manually - a command line call in the OS shell or
 calling a unit test is sufficient. 
 
 [TIP]

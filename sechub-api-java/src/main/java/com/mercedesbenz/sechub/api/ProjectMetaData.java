@@ -50,12 +50,4 @@ public class ProjectMetaData {
         return internalAccess.getDelegate();
     }
 
-    public String getStar() {
-        return internalAccess.getStar();
-    }
-
-    public void setStar(String star) {
-        internalAccess.setStar(star);
-    }
-
 }

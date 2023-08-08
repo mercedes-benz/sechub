@@ -4,6 +4,12 @@ import java.io.InputStream;
 import java.nio.file.Path;
 import java.util.function.Supplier;
 
+/**
+ * This class represents data entries inside a multipart body
+ *
+ * @author Albert Tregnaghi
+ *
+ */
 class MultiPartData {
 
     private String name;

@@ -11,13 +11,16 @@ import org.slf4j.LoggerFactory;
  * This generator does the following:
  *
  * <pre>
- * 1. Reads the the folders inside the generated open api model packages
- * 2. Defines some explicit definitions which parts shall be part of public api
- * 3. Generates an abstract wrapper class and a model class which inherits the generated class
+ * 1. Reads the the folders inside the generated open API model packages
+ * 2. Defines which parts shall be inside the public API
+ * 3. Generates an internal access and a public model class which uses the internal access class
  * </pre>
  *
  * The model classes shall be editable by users and are only overridden when
- * explicitly defined. The abstract classes are always newly generated.
+ * explicitly defined. The internal access classes are always newly generated.
+ *
+ * Remark: We use here no inheritance but composition (public class calls
+ * internal access class), to be able to replace even method signatures.
  *
  * @author Albert Tregnaghi
  *

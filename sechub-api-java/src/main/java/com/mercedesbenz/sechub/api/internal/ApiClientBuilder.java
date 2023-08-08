@@ -31,7 +31,7 @@ public class ApiClientBuilder {
         try {
             sslContext = SSLContext.getInstance("TLS");
 
-            TrustManager tm = new X509TrustManager() {
+            TrustManager trustManager = new X509TrustManager() {
 
                 private X509Certificate[] emptyCertificatesArray = new X509Certificate[] {};
 
@@ -48,7 +48,7 @@ public class ApiClientBuilder {
                 }
             };
 
-            sslContext.init(null, new TrustManager[] { tm }, null);
+            sslContext.init(null, new TrustManager[] { trustManager }, null);
 
             return sslContext;
         } catch (NoSuchAlgorithmException | KeyManagementException e) {

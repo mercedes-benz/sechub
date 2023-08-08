@@ -192,7 +192,7 @@ public class SecHubClient {
             try {
                 archiveSupport.deleteArchives(createArchiveResult);
             } catch (IOException e) {
-                throw new IllegalStateException("Was not able to remove temporary archve data!", e);
+                throw new IllegalStateException("Was not able to remove temporary archive data!", e);
             }
         }
     }

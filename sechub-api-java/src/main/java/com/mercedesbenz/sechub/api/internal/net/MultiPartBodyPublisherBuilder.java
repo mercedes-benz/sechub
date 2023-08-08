@@ -54,6 +54,7 @@ public class MultiPartBodyPublisherBuilder {
 
     class MultiPartIterator implements Iterator<byte[]> {
 
+        private static final int BUFER_SIZE = 8192;
         private Iterator<MultiPartData> iter;
         private InputStream inputStream;
 
@@ -133,14 +134,18 @@ public class MultiPartBodyPublisherBuilder {
                         + "Content-Type: " + contentType + "\r\n\r\n";
                 return partHeader.getBytes(StandardCharsets.UTF_8);
             } else {
-                byte[] buf = new byte[8192];
-                int r = inputStream.read(buf);
-                if (r > 0) {
-                    byte[] actualBytes = new byte[r];
-                    System.arraycopy(buf, 0, actualBytes, 0, r);
+                byte[] buffer = new byte[BUFER_SIZE];
+
+                int amountOfBytesRead = inputStream.read(buffer);
+
+                if (amountOfBytesRead > 0) {
+                    byte[] actualBytes = new byte[amountOfBytesRead];
+                    System.arraycopy(buffer, 0, actualBytes, 0, amountOfBytesRead);
 
                     return actualBytes;
+
                 } else {
+                    /* nothing read - no more data available */
                     inputStream.close();
                     inputStream = null;
 

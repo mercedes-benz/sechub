@@ -395,7 +395,7 @@ public class SystemTestRuntimePreparator {
                 params.put("sechub.productexecutor.pds.trustall.certificates", "true");
                 LOG.debug("No trust all definition defined for product executor, defined default");
             }
-            
+
             if (params.get("sechub.productexecutor.pds.timetowait.nextcheck.milliseconds") == null) {
                 params.put("sechub.productexecutor.pds.timetowait.nextcheck.milliseconds", "500");
                 LOG.debug("No next check time found for PDS product executor, defined default");
