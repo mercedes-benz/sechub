@@ -10,7 +10,6 @@ import java.io.IOException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInfo;
-import org.junit.jupiter.api.condition.EnabledIfSystemProperty;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -19,17 +18,17 @@ import com.mercedesbenz.sechub.commons.model.JSONConverter;
 import com.mercedesbenz.sechub.systemtest.config.SystemTestConfiguration;
 import com.mercedesbenz.sechub.systemtest.runtime.SystemTestResult;
 import com.mercedesbenz.sechub.systemtest.runtime.variable.TestEnvironmentProvider;
+import com.mercedesbenz.sechub.test.ManualTest;
 import com.mercedesbenz.sechub.test.TestUtil;
 
 /**
- * A local test for developers to check if gosec integration works. Can be
- * simply started as a junit test - but also from commandline by using
- * pds-tools.
+ * A local test for developers to check if GOSEC integration works. See
+ * {@link ManualTest} for details about manual testing.
  *
  * @author Albert Tregnaghi
  *
  */
-class SystemTestLocalGoSecManualTest {
+class SystemTestLocalGoSecManualTest implements ManualTest {
 
     private static final Logger LOG = LoggerFactory.getLogger(SystemTestLocalGoSecManualTest.class);
 
@@ -45,7 +44,6 @@ class SystemTestLocalGoSecManualTest {
     }
 
     @Test
-    @EnabledIfSystemProperty(named = "sechub.manual.test.by.developer", matches = "true")
     void manual_local_gosec_test_can_run_without_errors() throws IOException {
         /* @formatter:off */
 

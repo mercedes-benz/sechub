@@ -4,18 +4,16 @@ package com.mercedesbenz.sechub.docgen.messaging;
 import java.io.File;
 
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.condition.EnabledIfSystemProperty;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.mercedesbenz.sechub.test.TestConstants;
+import com.mercedesbenz.sechub.test.ManualTest;
 
-class UseCaseEventOverviewPlantUmlGeneratorManualTest {
+class UseCaseEventOverviewPlantUmlGeneratorManualTest implements ManualTest {
 
     private static final Logger LOG = LoggerFactory.getLogger(UseCaseEventOverviewPlantUmlGeneratorManualTest.class);
 
     @Test
-    @EnabledIfSystemProperty(named = TestConstants.MANUAL_TEST_BY_DEVELOPER, matches = "true", disabledReason = TestConstants.DESCRIPTION_DISABLED_BECAUSE_A_MANUAL_TEST_FOR_GENERATION)
     void manualTestByDeveloper() {
         System.setProperty("com.mercedesbenz.sechub.docgen.debug", "true");
 

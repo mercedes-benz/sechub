@@ -10,21 +10,22 @@ import java.net.URL;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInfo;
-import org.junit.jupiter.api.condition.EnabledIfSystemProperty;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.mercedesbenz.sechub.commons.model.JSONConverter;
 import com.mercedesbenz.sechub.systemtest.config.SystemTestConfiguration;
 import com.mercedesbenz.sechub.systemtest.runtime.SystemTestResult;
+import com.mercedesbenz.sechub.test.ManualTest;
 
 /**
- * An integration test which needs a running SecHub server
+ * An system test which needs a running SecHub server See {@link ManualTest} for
+ * details about manual testing.
  *
  * @author Albert Tregnaghi
  *
  */
-class SystemTestRemoteServerManualTest {
+class SystemTestRemoteServerManualTest implements ManualTest {
 
     private static final Logger LOG = LoggerFactory.getLogger(SystemTestRemoteServerManualTest.class);
 
@@ -40,7 +41,6 @@ class SystemTestRemoteServerManualTest {
     }
 
     @Test
-    @EnabledIfSystemProperty(named = "sechub.manual.test.by.developer", matches = "true")
     void manual_remote_test_can_run_without_errors() throws IOException {
         /* @formatter:off */
 
