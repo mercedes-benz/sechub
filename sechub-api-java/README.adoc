@@ -1,6 +1,6 @@
 == About SecHub Java API
 
-The aim of the API was to
+The goal of the API is to:
 
 - have an easy to use library which can be used in SecHub plugins (Eclipse, IntelliJ),
   our WebUI and also by customers which want to use a java library instead of the
