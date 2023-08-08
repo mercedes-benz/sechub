@@ -68,6 +68,7 @@ COPY zap-addons.txt "$TOOL_FOLDER/zap-addons.txt"
 # see: https://www.zaproxy.org/addons/
 # via addon manager: owasp-zap -cmd -addoninstall webdriverlinux
 RUN mkdir --parents "/home/$USER/.ZAP/plugin" && \
+    chown --recursive "$USER:$USER" "/home/$USER/" && \
     cd "/home/$USER/.ZAP/plugin" && \
     wget --no-verbose --input-file="$TOOL_FOLDER/zap-addons.txt"
 
