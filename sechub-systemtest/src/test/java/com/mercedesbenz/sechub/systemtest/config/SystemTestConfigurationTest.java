@@ -76,7 +76,7 @@ class SystemTestConfigurationTest {
 
     private void buildLocalSetup(SystemTestConfiguration configuration) {
         LocalSetupDefinition local = new LocalSetupDefinition();
-        local.setComment("This is a local setup - it uses not an existing SecHub infrastructure, but does build all by its own");
+        local.setComment("This is a local setup - it does not use existing SecHub infrastructure, instead it does build up all by its own");
 
         configuration.getSetup().setLocal(Optional.of(local));
 
