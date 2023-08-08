@@ -19,15 +19,14 @@ class BuildStage{
     BuildStage(){
         stage = System.getProperty("sechub.build.stage");
         if(stage==null|| stage.isEmpty()){
-            // per default we do not support API parts (to avoid life cycle problems
-            // - we need java compile to generate the open api file
+            // Per default we do not support API parts to avoid build life cycle problems
             stage = STAGE_WITHOUT_API;
         }
 
         switch(stage){
             case STAGE_ALL:
-                // we just do not define any constraints here
-                // means: all is importable by IDEs
+                // We just do not define any constraints here
+                // Meaning: this stage can be imported by IDEs
                 acceptAll=true;
                 break;
              case STAGE_WITHOUT_API:
