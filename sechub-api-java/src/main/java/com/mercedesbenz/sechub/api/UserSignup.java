@@ -12,8 +12,7 @@ import java.util.List;
  * The wrapper class itself was initial generated with
  * com.mercedesbenz.sechub.api.generator.PublicModelFileGenerator.
  */
-public class UserSignup extends com.mercedesbenz.sechub.api.internal.model.AbstractUserSignup {
-
+public class UserSignup {
     // only for usage by SecHubClient
     static List<UserSignup> fromDelegates(List<com.mercedesbenz.sechub.api.internal.gen.model.OpenApiUserSignup> delegates) {
         List<UserSignup> resultList = new ArrayList<>();
@@ -36,42 +35,43 @@ public class UserSignup extends com.mercedesbenz.sechub.api.internal.model.Abstr
         return resultList;
     }
 
+    private com.mercedesbenz.sechub.api.internal.model.InternalAccessUserSignup internalAccess;
+
     public UserSignup() {
-        super();
+        this(null);
     }
 
-    public String getApiVersion() {
-        return super.getApiVersion();
-    }
-
-    public String getEmailAdress() {
-        return super.getEmailAdress();
-    }
-
-    public String getUserId() {
-        return super.getUserId();
-    }
-
-    public void setApiVersion(String apiVersion) {
-        super.setApiVersion(apiVersion);
-    }
-
-    public void setEmailAdress(String emailAdress) {
-        super.setEmailAdress(emailAdress);
-    }
-
-    public void setUserId(String userId) {
-        super.setUserId(userId);
-    }
-
-    // only for usage by SecHubClient
     UserSignup(com.mercedesbenz.sechub.api.internal.gen.model.OpenApiUserSignup delegate) {
-        super(delegate);
+        this.internalAccess = new com.mercedesbenz.sechub.api.internal.model.InternalAccessUserSignup(delegate);
     }
 
     // only for usage by SecHubClient
     com.mercedesbenz.sechub.api.internal.gen.model.OpenApiUserSignup getDelegate() {
-        return delegate;
+        return internalAccess.getDelegate();
+    }
+
+    public String getApiVersion() {
+        return internalAccess.getApiVersion();
+    }
+
+    public String getEmailAdress() {
+        return internalAccess.getEmailAdress();
+    }
+
+    public String getUserId() {
+        return internalAccess.getUserId();
+    }
+
+    public void setApiVersion(String apiVersion) {
+        internalAccess.setApiVersion(apiVersion);
+    }
+
+    public void setEmailAdress(String emailAdress) {
+        internalAccess.setEmailAdress(emailAdress);
+    }
+
+    public void setUserId(String userId) {
+        internalAccess.setUserId(userId);
     }
 
 }

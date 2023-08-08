@@ -12,8 +12,7 @@ import java.util.List;
  * The wrapper class itself was initial generated with
  * com.mercedesbenz.sechub.api.generator.PublicModelFileGenerator.
  */
-public class ExecutorConfigurationSetupCredentials extends com.mercedesbenz.sechub.api.internal.model.AbstractExecutorConfigurationSetupCredentials {
-
+public class ExecutorConfigurationSetupCredentials {
     // only for usage by SecHubClient
     static List<ExecutorConfigurationSetupCredentials> fromDelegates(
             List<com.mercedesbenz.sechub.api.internal.gen.model.OpenApiExecutorConfigurationSetupCredentials> delegates) {
@@ -38,34 +37,35 @@ public class ExecutorConfigurationSetupCredentials extends com.mercedesbenz.sech
         return resultList;
     }
 
+    private com.mercedesbenz.sechub.api.internal.model.InternalAccessExecutorConfigurationSetupCredentials internalAccess;
+
     public ExecutorConfigurationSetupCredentials() {
-        super();
+        this(null);
     }
 
-    public String getPassword() {
-        return super.getPassword();
-    }
-
-    public String getUser() {
-        return super.getUser();
-    }
-
-    public void setPassword(String password) {
-        super.setPassword(password);
-    }
-
-    public void setUser(String user) {
-        super.setUser(user);
-    }
-
-    // only for usage by SecHubClient
     ExecutorConfigurationSetupCredentials(com.mercedesbenz.sechub.api.internal.gen.model.OpenApiExecutorConfigurationSetupCredentials delegate) {
-        super(delegate);
+        this.internalAccess = new com.mercedesbenz.sechub.api.internal.model.InternalAccessExecutorConfigurationSetupCredentials(delegate);
     }
 
     // only for usage by SecHubClient
     com.mercedesbenz.sechub.api.internal.gen.model.OpenApiExecutorConfigurationSetupCredentials getDelegate() {
-        return delegate;
+        return internalAccess.getDelegate();
+    }
+
+    public String getPassword() {
+        return internalAccess.getPassword();
+    }
+
+    public String getUser() {
+        return internalAccess.getUser();
+    }
+
+    public void setPassword(String password) {
+        internalAccess.setPassword(password);
+    }
+
+    public void setUser(String user) {
+        internalAccess.setUser(user);
     }
 
 }

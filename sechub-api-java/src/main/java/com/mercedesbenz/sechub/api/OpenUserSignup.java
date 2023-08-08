@@ -12,8 +12,7 @@ import java.util.List;
  * The wrapper class itself was initial generated with
  * com.mercedesbenz.sechub.api.generator.PublicModelFileGenerator.
  */
-public class OpenUserSignup extends com.mercedesbenz.sechub.api.internal.model.AbstractOpenUserSignup {
-
+public class OpenUserSignup {
     // only for usage by SecHubClient
     static List<OpenUserSignup> fromDelegates(List<com.mercedesbenz.sechub.api.internal.gen.model.OpenApiListOfSignupsInner> delegates) {
         List<OpenUserSignup> resultList = new ArrayList<>();
@@ -36,34 +35,35 @@ public class OpenUserSignup extends com.mercedesbenz.sechub.api.internal.model.A
         return resultList;
     }
 
+    private com.mercedesbenz.sechub.api.internal.model.InternalAccessOpenUserSignup internalAccess;
+
     public OpenUserSignup() {
-        super();
+        this(null);
     }
 
-    public String getEmailAdress() {
-        return super.getEmailAdress();
-    }
-
-    public String getUserId() {
-        return super.getUserId();
-    }
-
-    public void setEmailAdress(String emailAdress) {
-        super.setEmailAdress(emailAdress);
-    }
-
-    public void setUserId(String userId) {
-        super.setUserId(userId);
-    }
-
-    // only for usage by SecHubClient
     OpenUserSignup(com.mercedesbenz.sechub.api.internal.gen.model.OpenApiListOfSignupsInner delegate) {
-        super(delegate);
+        this.internalAccess = new com.mercedesbenz.sechub.api.internal.model.InternalAccessOpenUserSignup(delegate);
     }
 
     // only for usage by SecHubClient
     com.mercedesbenz.sechub.api.internal.gen.model.OpenApiListOfSignupsInner getDelegate() {
-        return delegate;
+        return internalAccess.getDelegate();
+    }
+
+    public String getEmailAdress() {
+        return internalAccess.getEmailAdress();
+    }
+
+    public String getUserId() {
+        return internalAccess.getUserId();
+    }
+
+    public void setEmailAdress(String emailAdress) {
+        internalAccess.setEmailAdress(emailAdress);
+    }
+
+    public void setUserId(String userId) {
+        internalAccess.setUserId(userId);
     }
 
 }

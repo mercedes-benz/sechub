@@ -11,8 +11,7 @@ import java.util.List;
  * The wrapper class itself was initial generated with
  * com.mercedesbenz.sechub.api.generator.PublicModelFileGenerator.
  */
-public class Project extends com.mercedesbenz.sechub.api.internal.model.AbstractProject {
-
+public class Project {
     // only for usage by SecHubClient
     static List<Project> fromDelegates(List<com.mercedesbenz.sechub.api.internal.gen.model.OpenApiProject> delegates) {
         List<Project> resultList = new ArrayList<>();
@@ -35,79 +34,79 @@ public class Project extends com.mercedesbenz.sechub.api.internal.model.Abstract
         return resultList;
     }
 
+    private com.mercedesbenz.sechub.api.internal.model.InternalAccessProject internalAccess;
     private ProjectMetaData metaData;
     private ProjectWhiteList whiteList;
 
     public Project() {
-        super();
+        this(null);
+    }
+
+    Project(com.mercedesbenz.sechub.api.internal.gen.model.OpenApiProject delegate) {
+        this.internalAccess = new com.mercedesbenz.sechub.api.internal.model.InternalAccessProject(delegate);
+    }
+
+    // only for usage by SecHubClient
+    com.mercedesbenz.sechub.api.internal.gen.model.OpenApiProject getDelegate() {
+        return internalAccess.getDelegate();
     }
 
     public String getApiVersion() {
-        return super.getApiVersion();
+        return internalAccess.getApiVersion();
     }
 
     public String getDescription() {
-        return super.getDescription();
+        return internalAccess.getDescription();
     }
 
     public String getName() {
-        return super.getName();
+        return internalAccess.getName();
     }
 
     public String getOwner() {
-        return super.getOwner();
+        return internalAccess.getOwner();
     }
 
     public void setApiVersion(String apiVersion) {
-        super.setApiVersion(apiVersion);
+        internalAccess.setApiVersion(apiVersion);
     }
 
     public void setDescription(String description) {
-        super.setDescription(description);
+        internalAccess.setDescription(description);
     }
 
     public void setName(String name) {
-        super.setName(name);
+        internalAccess.setName(name);
     }
 
     public void setOwner(String owner) {
-        super.setOwner(owner);
+        internalAccess.setOwner(owner);
     }
 
     public ProjectMetaData getMetaData() {
         if (metaData == null) {
-            metaData = new ProjectMetaData(delegate.getMetaData());
-            delegate.setMetaData(metaData.getDelegate()); // necessary if delegate had no content, but wrapper created one
+            metaData = new ProjectMetaData(internalAccess.getDelegate().getMetaData());
+            internalAccess.getDelegate().setMetaData(metaData.getDelegate()); // necessary if delegate had no content, but wrapper created one
         }
         return metaData;
     }
 
     public void setMetaData(ProjectMetaData metaData) {
         this.metaData = metaData;
-        this.delegate.setMetaData(metaData.getDelegate());
+        this.internalAccess.getDelegate().setMetaData(metaData.getDelegate());
     }
 
     public ProjectWhiteList getWhiteList() {
         if (whiteList == null) {
-            whiteList = new ProjectWhiteList(delegate.getWhiteList());
-            delegate.setWhiteList(whiteList.getDelegate()); // necessary if delegate had no content, but wrapper created one
+            whiteList = new ProjectWhiteList(internalAccess.getDelegate().getWhiteList());
+            internalAccess.getDelegate().setWhiteList(whiteList.getDelegate()); // necessary if delegate had no content, but wrapper created one
         }
         return whiteList;
     }
 
     public void setWhiteList(ProjectWhiteList whiteList) {
         this.whiteList = whiteList;
-        this.delegate.setWhiteList(whiteList.getDelegate());
-    }
-
-    // only for usage by SecHubClient
-    Project(com.mercedesbenz.sechub.api.internal.gen.model.OpenApiProject delegate) {
-        super(delegate);
-    }
-
-    // only for usage by SecHubClient
-    com.mercedesbenz.sechub.api.internal.gen.model.OpenApiProject getDelegate() {
-        return delegate;
+        this.internalAccess.getDelegate().setWhiteList(whiteList.getDelegate());
     }
 
 }

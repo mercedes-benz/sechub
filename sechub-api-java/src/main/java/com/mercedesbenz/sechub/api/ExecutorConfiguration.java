@@ -12,8 +12,7 @@ import java.util.List;
  * The wrapper class itself was initial generated with
  * com.mercedesbenz.sechub.api.generator.PublicModelFileGenerator.
  */
-public class ExecutorConfiguration extends com.mercedesbenz.sechub.api.internal.model.AbstractExecutorConfiguration {
-
+public class ExecutorConfiguration {
     // only for usage by SecHubClient
     static List<ExecutorConfiguration> fromDelegates(List<com.mercedesbenz.sechub.api.internal.gen.model.OpenApiExecutorConfiguration> delegates) {
         List<ExecutorConfiguration> resultList = new ArrayList<>();
@@ -36,65 +35,65 @@ public class ExecutorConfiguration extends com.mercedesbenz.sechub.api.internal.
         return resultList;
     }
 
+    private com.mercedesbenz.sechub.api.internal.model.InternalAccessExecutorConfiguration internalAccess;
     private ExecutorConfigurationSetup setup;
 
     public ExecutorConfiguration() {
-        super();
+        this(null);
+    }
+
+    ExecutorConfiguration(com.mercedesbenz.sechub.api.internal.gen.model.OpenApiExecutorConfiguration delegate) {
+        this.internalAccess = new com.mercedesbenz.sechub.api.internal.model.InternalAccessExecutorConfiguration(delegate);
+    }
+
+    // only for usage by SecHubClient
+    com.mercedesbenz.sechub.api.internal.gen.model.OpenApiExecutorConfiguration getDelegate() {
+        return internalAccess.getDelegate();
     }
 
     public Boolean getEnabled() {
-        return super.getEnabled();
+        return internalAccess.getEnabled();
     }
 
     public String getName() {
-        return super.getName();
+        return internalAccess.getName();
     }
 
     public String getProductIdentifier() {
-        return super.getProductIdentifier();
+        return internalAccess.getProductIdentifier();
     }
 
     public java.math.BigDecimal getExecutorVersion() {
-        return super.getExecutorVersion();
+        return internalAccess.getExecutorVersion();
     }
 
     public void setEnabled(Boolean enabled) {
-        super.setEnabled(enabled);
+        internalAccess.setEnabled(enabled);
     }
 
     public void setExecutorVersion(java.math.BigDecimal executorVersion) {
-        super.setExecutorVersion(executorVersion);
+        internalAccess.setExecutorVersion(executorVersion);
     }
 
     public void setName(String name) {
-        super.setName(name);
+        internalAccess.setName(name);
     }
 
     public void setProductIdentifier(String productIdentifier) {
-        super.setProductIdentifier(productIdentifier);
+        internalAccess.setProductIdentifier(productIdentifier);
     }
 
     public ExecutorConfigurationSetup getSetup() {
         if (setup == null) {
-            setup = new ExecutorConfigurationSetup(delegate.getSetup());
-            delegate.setSetup(setup.getDelegate()); // necessary if delegate had no content, but wrapper created one
+            setup = new ExecutorConfigurationSetup(internalAccess.getDelegate().getSetup());
+            internalAccess.getDelegate().setSetup(setup.getDelegate()); // necessary if delegate had no content, but wrapper created one
         }
         return setup;
     }
 
     public void setSetup(ExecutorConfigurationSetup setup) {
         this.setup = setup;
-        this.delegate.setSetup(setup.getDelegate());
-    }
-
-    // only for usage by SecHubClient
-    ExecutorConfiguration(com.mercedesbenz.sechub.api.internal.gen.model.OpenApiExecutorConfiguration delegate) {
-        super(delegate);
-    }
-
-    // only for usage by SecHubClient
-    com.mercedesbenz.sechub.api.internal.gen.model.OpenApiExecutorConfiguration getDelegate() {
-        return delegate;
+        this.internalAccess.getDelegate().setSetup(setup.getDelegate());
     }
 
 }

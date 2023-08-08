@@ -2,23 +2,23 @@
 package com.mercedesbenz.sechub.api.internal.model;
 
 /**
- * AbstractUserSignup is a model class for SecHubClient. It uses internally the
- * generated class
+ * InternalAccessUserSignup is a model class for SecHubClient. It uses
+ * internally the generated class
  * com.mercedesbenz.sechub.api.internal.gen.model.OpenApiUserSignup.<br>
  * <br>
- * The abstract wrapper class was generated from a developer with
- * com.mercedesbenz.sechub.api.generator.AbstractModelFileGenerator and is not
- * intended to be changed manually!
+ * The internal access wrapper class was generated from a developer with
+ * com.mercedesbenz.sechub.api.generator.InternalAccessModelFileGenerator and is
+ * not intended to be changed manually!
  */
-public abstract class AbstractUserSignup {
+public class InternalAccessUserSignup {
 
     protected com.mercedesbenz.sechub.api.internal.gen.model.OpenApiUserSignup delegate;
 
-    protected AbstractUserSignup() {
+    protected InternalAccessUserSignup() {
         this(null);
     }
 
-    protected AbstractUserSignup(com.mercedesbenz.sechub.api.internal.gen.model.OpenApiUserSignup delegate) {
+    public InternalAccessUserSignup(com.mercedesbenz.sechub.api.internal.gen.model.OpenApiUserSignup delegate) {
         if (delegate == null) {
             this.delegate = new com.mercedesbenz.sechub.api.internal.gen.model.OpenApiUserSignup();
             initDelegateWithDefaults();
@@ -31,32 +31,36 @@ public abstract class AbstractUserSignup {
         /* child classes can override this */
     }
 
-    protected String getApiVersion() {
+    public String getApiVersion() {
         return delegate.getApiVersion();
     }
 
-    protected String getEmailAdress() {
+    public String getEmailAdress() {
         return delegate.getEmailAdress();
     }
 
-    protected String getUserId() {
+    public String getUserId() {
         return delegate.getUserId();
     }
 
-    protected void setApiVersion(String apiVersion) {
+    public void setApiVersion(String apiVersion) {
         delegate.setApiVersion(apiVersion);
     }
 
-    protected void setEmailAdress(String emailAdress) {
+    public void setEmailAdress(String emailAdress) {
         delegate.setEmailAdress(emailAdress);
     }
 
-    protected void setUserId(String userId) {
+    public void setUserId(String userId) {
         delegate.setUserId(userId);
     }
 
+    public com.mercedesbenz.sechub.api.internal.gen.model.OpenApiUserSignup getDelegate() {
+        return delegate;
+    }
+
     public boolean equals(Object object) {
-        if (object instanceof AbstractUserSignup) {
+        if (object instanceof InternalAccessUserSignup) {
             com.mercedesbenz.sechub.api.internal.gen.model.OpenApiUserSignup other = (com.mercedesbenz.sechub.api.internal.gen.model.OpenApiUserSignup) object;
             return delegate.equals(other);
         }

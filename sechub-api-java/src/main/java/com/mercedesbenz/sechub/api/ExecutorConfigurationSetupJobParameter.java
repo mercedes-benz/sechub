@@ -12,8 +12,7 @@ import java.util.List;
  * The wrapper class itself was initial generated with
  * com.mercedesbenz.sechub.api.generator.PublicModelFileGenerator.
  */
-public class ExecutorConfigurationSetupJobParameter extends com.mercedesbenz.sechub.api.internal.model.AbstractExecutorConfigurationSetupJobParameter {
-
+public class ExecutorConfigurationSetupJobParameter {
     // only for usage by SecHubClient
     static List<ExecutorConfigurationSetupJobParameter> fromDelegates(
             List<com.mercedesbenz.sechub.api.internal.gen.model.OpenApiExecutorConfigurationSetupJobParametersInner> delegates) {
@@ -38,34 +37,35 @@ public class ExecutorConfigurationSetupJobParameter extends com.mercedesbenz.sec
         return resultList;
     }
 
+    private com.mercedesbenz.sechub.api.internal.model.InternalAccessExecutorConfigurationSetupJobParameter internalAccess;
+
     public ExecutorConfigurationSetupJobParameter() {
-        super();
+        this(null);
     }
 
-    public String getKey() {
-        return super.getKey();
-    }
-
-    public String getValue() {
-        return super.getValue();
-    }
-
-    public void setKey(String key) {
-        super.setKey(key);
-    }
-
-    public void setValue(String value) {
-        super.setValue(value);
-    }
-
-    // only for usage by SecHubClient
     ExecutorConfigurationSetupJobParameter(com.mercedesbenz.sechub.api.internal.gen.model.OpenApiExecutorConfigurationSetupJobParametersInner delegate) {
-        super(delegate);
+        this.internalAccess = new com.mercedesbenz.sechub.api.internal.model.InternalAccessExecutorConfigurationSetupJobParameter(delegate);
     }
 
     // only for usage by SecHubClient
     com.mercedesbenz.sechub.api.internal.gen.model.OpenApiExecutorConfigurationSetupJobParametersInner getDelegate() {
-        return delegate;
+        return internalAccess.getDelegate();
+    }
+
+    public String getKey() {
+        return internalAccess.getKey();
+    }
+
+    public String getValue() {
+        return internalAccess.getValue();
+    }
+
+    public void setKey(String key) {
+        internalAccess.setKey(key);
+    }
+
+    public void setValue(String value) {
+        internalAccess.setValue(value);
     }
 
 }

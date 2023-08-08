@@ -12,8 +12,7 @@ import java.util.List;
  * The wrapper class itself was initial generated with
  * com.mercedesbenz.sechub.api.generator.PublicModelFileGenerator.
  */
-public class ProjectWhiteList extends com.mercedesbenz.sechub.api.internal.model.AbstractProjectWhiteList {
-
+public class ProjectWhiteList {
     // only for usage by SecHubClient
     static List<ProjectWhiteList> fromDelegates(List<com.mercedesbenz.sechub.api.internal.gen.model.OpenApiProjectWhiteList> delegates) {
         List<ProjectWhiteList> resultList = new ArrayList<>();
@@ -36,26 +35,27 @@ public class ProjectWhiteList extends com.mercedesbenz.sechub.api.internal.model
         return resultList;
     }
 
+    private com.mercedesbenz.sechub.api.internal.model.InternalAccessProjectWhiteList internalAccess;
+
     public ProjectWhiteList() {
-        super();
+        this(null);
     }
 
-    public java.util.List<String> getUris() {
-        return super.getUris();
-    }
-
-    public void setUris(java.util.List<String> uris) {
-        super.setUris(uris);
-    }
-
-    // only for usage by SecHubClient
     ProjectWhiteList(com.mercedesbenz.sechub.api.internal.gen.model.OpenApiProjectWhiteList delegate) {
-        super(delegate);
+        this.internalAccess = new com.mercedesbenz.sechub.api.internal.model.InternalAccessProjectWhiteList(delegate);
     }
 
     // only for usage by SecHubClient
     com.mercedesbenz.sechub.api.internal.gen.model.OpenApiProjectWhiteList getDelegate() {
-        return delegate;
+        return internalAccess.getDelegate();
+    }
+
+    public java.util.List<String> getUris() {
+        return internalAccess.getUris();
+    }
+
+    public void setUris(java.util.List<String> uris) {
+        internalAccess.setUris(uris);
     }
 
 }

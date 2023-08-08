@@ -11,13 +11,13 @@ import org.slf4j.LoggerFactory;
 
 import com.mercedesbenz.sechub.api.SecHubClient;
 
-public class AbstractModelFileGenerator {
+public class InternalAccessModelFileGenerator {
 
-    private static final Logger LOG = LoggerFactory.getLogger(AbstractModelFileGenerator.class);
+    private static final Logger LOG = LoggerFactory.getLogger(InternalAccessModelFileGenerator.class);
 
     private ApiWrapperGenerationContext context;
 
-    public AbstractModelFileGenerator(ApiWrapperGenerationContext context) {
+    public InternalAccessModelFileGenerator(ApiWrapperGenerationContext context) {
         this.context = context;
     }
 
@@ -34,10 +34,10 @@ public class AbstractModelFileGenerator {
             return;
         }
 
-        LOG.info("Generate: {}", info.targetAbstractClassName);
+        LOG.info("Generate: {}", info.targetInternalAccessClassName);
         LOG.debug("-".repeat(120));
         LOG.debug("From    : {}", fromGenclazz);
-        File genFile = new File(context.getAbstractModelTargetPath() + "/" + info.targetAbstractClassName + ".java");
+        File genFile = new File(context.getAbstractModelTargetPath() + "/" + info.targetInternalAccessClassName + ".java");
         LOG.debug("To      : {}", genFile);
         LOG.debug("");
 
@@ -49,23 +49,23 @@ public class AbstractModelFileGenerator {
         template.addLine("import java.util.List;");
         template.addLine("");
         template.addLine("/**");
-        template.addLine(" * " + info.targetAbstractClassName + " is a model class for " + SecHubClient.class.getSimpleName()
+        template.addLine(" * " + info.targetInternalAccessClassName + " is a model class for " + SecHubClient.class.getSimpleName()
                 + ". It uses internally the generated class");
         template.addLine(" * " + fromGenclazz.getName() + ".<br>");
         template.addLine(" * <br>");
-        template.addLine(" * The abstract wrapper class was generated from a developer with");
+        template.addLine(" * The internal access wrapper class was generated from a developer with");
         template.addLine(" * " + getClass().getName());
         template.addLine(" * and is not intended to be changed manually!");
         template.addLine(" */");
-        template.addLine("public abstract class " + info.targetAbstractClassName + " {");
+        template.addLine("public class " + info.targetInternalAccessClassName + " {");
         template.addLine("");
         template.addLine("    protected " + info.fromGenclazz.getName() + " delegate;");
         template.addLine("    ");
-        template.addLine("    protected " + info.targetAbstractClassName + "() {");
+        template.addLine("    protected " + info.targetInternalAccessClassName + "() {");
         template.addLine("        this(null);");
         template.addLine("    }");
         template.addLine("");
-        template.addLine("    protected " + info.targetAbstractClassName + "(" + info.fromGenclazz.getName() + " delegate) {");
+        template.addLine("    public " + info.targetInternalAccessClassName + "(" + info.fromGenclazz.getName() + " delegate) {");
         template.addLine("         if (delegate==null) {");
         template.addLine("             this.delegate = new " + info.fromGenclazz.getName() + "();");
         template.addLine("             initDelegateWithDefaults();");
@@ -80,9 +80,13 @@ public class AbstractModelFileGenerator {
         template.addLine("");
 
         generateMethods(template, collectGettersAndSetters(fromGenclazz));
-
+        template.addLine("");
+        template.addLine("    public " + fromGenclazz.getName() + " getDelegate(){");
+        template.addLine("          return delegate;");
+        template.addLine("    }");
+        template.addLine("");
         template.addLine("    public boolean equals(Object object) {");
-        template.addLine("        if (object instanceof " + info.targetAbstractClassName + ") {");
+        template.addLine("        if (object instanceof " + info.targetInternalAccessClassName + ") {");
         template.addLine("            " + info.fromGenclazz.getName() + " other = (" + info.fromGenclazz.getName() + ") object;");
         template.addLine("            return delegate.equals(other);");
         template.addLine("        }");
@@ -100,7 +104,7 @@ public class AbstractModelFileGenerator {
 
     private void generateMethods(Template template, List<Method> methods) {
         for (Method method : methods) {
-            context.getSetterGetterSupport().generateMethod(method, template, "protected", true, "delegate");
+            context.getSetterGetterSupport().generateMethod(method, template, "public", true, "delegate");
         }
 
     }

@@ -12,8 +12,7 @@ import java.util.List;
  * The wrapper class itself was initial generated with
  * com.mercedesbenz.sechub.api.generator.PublicModelFileGenerator.
  */
-public class ExecutionProfileCreate extends com.mercedesbenz.sechub.api.internal.model.AbstractExecutionProfileCreate {
-
+public class ExecutionProfileCreate {
     // only for usage by SecHubClient
     static List<ExecutionProfileCreate> fromDelegates(List<com.mercedesbenz.sechub.api.internal.gen.model.OpenApiExecutionProfileCreate> delegates) {
         List<ExecutionProfileCreate> resultList = new ArrayList<>();
@@ -36,52 +35,54 @@ public class ExecutionProfileCreate extends com.mercedesbenz.sechub.api.internal
         return resultList;
     }
 
+    private com.mercedesbenz.sechub.api.internal.model.InternalAccessExecutionProfileCreate internalAccess;
+
     public ExecutionProfileCreate() {
-        super();
+        this(null);
     }
 
-    public Boolean getEnabled() {
-        return super.getEnabled();
-    }
-
-    public String getDescription() {
-        return super.getDescription();
-    }
-
-//    removed, because this is not a string but product executor configurations
-//    public java.util.List<String> getConfigurations() {
-//        return super.getConfigurations();
-//    }
-
-    public java.util.List<String> getProjectIds() {
-        return super.getProjectIds();
-    }
-
-//  removed, because this is not a string but product executor configurations
-//    public void setConfigurations(java.util.List<String> configurations) {
-//        super.setConfigurations(configurations);
-//    }
-
-    public void setDescription(String description) {
-        super.setDescription(description);
-    }
-
-    public void setEnabled(Boolean enabled) {
-        super.setEnabled(enabled);
-    }
-
-    public void setProjectIds(java.util.List<String> projectIds) {
-        super.setProjectIds(projectIds);
-    }
-
-    // only for usage by SecHubClient
     ExecutionProfileCreate(com.mercedesbenz.sechub.api.internal.gen.model.OpenApiExecutionProfileCreate delegate) {
-        super(delegate);
+        this.internalAccess = new com.mercedesbenz.sechub.api.internal.model.InternalAccessExecutionProfileCreate(delegate);
     }
 
     // only for usage by SecHubClient
     com.mercedesbenz.sechub.api.internal.gen.model.OpenApiExecutionProfileCreate getDelegate() {
-        return delegate;
+        return internalAccess.getDelegate();
+    }
+
+    public boolean isEnabled() {
+        return Boolean.TRUE.equals(internalAccess.getEnabled());
+    }
+
+    public String getDescription() {
+        return internalAccess.getDescription();
+    }
+
+//    removed, because this is not a string but product executor configurations
+//    public java.util.List<String> getConfigurations() {
+//    return internalAccess.getConfigurations();
+//
+//    }
+
+    public java.util.List<String> getProjectIds() {
+        return internalAccess.getProjectIds();
+    }
+
+//    removed, because this is not a string but product executor configurations
+//    public void setConfigurations(java.util.List<String> configurations) {
+//        internalAccess.setConfigurations(configurations);
+//    }
+
+    public void setDescription(String description) {
+        internalAccess.setDescription(description);
+    }
+
+    public void setEnabled(boolean enabled) {
+        internalAccess.setEnabled(enabled);
+    }
+
+    public void setProjectIds(java.util.List<String> projectIds) {
+        internalAccess.setProjectIds(projectIds);
     }
 
 }

@@ -57,7 +57,7 @@ public class ApiWrapperGenerationContext {
         } catch (ClassNotFoundException e) {
             throw new IllegalStateException("Was not able to map " + generationName + " to " + targetClassName + "\nClass not found:" + className, e);
         }
-        info.targetAbstractClassName = "Abstract" + targetClassName;
+        info.targetInternalAccessClassName = "InternalAccess" + targetClassName;
         info.targetClassName = targetClassName;
         return info;
 

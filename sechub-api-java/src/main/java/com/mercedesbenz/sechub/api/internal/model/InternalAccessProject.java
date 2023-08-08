@@ -2,23 +2,23 @@
 package com.mercedesbenz.sechub.api.internal.model;
 
 /**
- * AbstractProject is a model class for SecHubClient. It uses internally the
- * generated class
+ * InternalAccessProject is a model class for SecHubClient. It uses internally
+ * the generated class
  * com.mercedesbenz.sechub.api.internal.gen.model.OpenApiProject.<br>
  * <br>
- * The abstract wrapper class was generated from a developer with
- * com.mercedesbenz.sechub.api.generator.AbstractModelFileGenerator and is not
- * intended to be changed manually!
+ * The internal access wrapper class was generated from a developer with
+ * com.mercedesbenz.sechub.api.generator.InternalAccessModelFileGenerator and is
+ * not intended to be changed manually!
  */
-public abstract class AbstractProject {
+public class InternalAccessProject {
 
     protected com.mercedesbenz.sechub.api.internal.gen.model.OpenApiProject delegate;
 
-    protected AbstractProject() {
+    protected InternalAccessProject() {
         this(null);
     }
 
-    protected AbstractProject(com.mercedesbenz.sechub.api.internal.gen.model.OpenApiProject delegate) {
+    public InternalAccessProject(com.mercedesbenz.sechub.api.internal.gen.model.OpenApiProject delegate) {
         if (delegate == null) {
             this.delegate = new com.mercedesbenz.sechub.api.internal.gen.model.OpenApiProject();
             initDelegateWithDefaults();
@@ -31,40 +31,44 @@ public abstract class AbstractProject {
         /* child classes can override this */
     }
 
-    protected String getApiVersion() {
+    public String getApiVersion() {
         return delegate.getApiVersion();
     }
 
-    protected String getDescription() {
+    public String getDescription() {
         return delegate.getDescription();
     }
 
-    protected String getName() {
+    public String getName() {
         return delegate.getName();
     }
 
-    protected String getOwner() {
+    public String getOwner() {
         return delegate.getOwner();
     }
 
-    protected void setApiVersion(String apiVersion) {
+    public void setApiVersion(String apiVersion) {
         delegate.setApiVersion(apiVersion);
     }
 
-    protected void setDescription(String description) {
+    public void setDescription(String description) {
         delegate.setDescription(description);
     }
 
-    protected void setName(String name) {
+    public void setName(String name) {
         delegate.setName(name);
     }
 
-    protected void setOwner(String owner) {
+    public void setOwner(String owner) {
         delegate.setOwner(owner);
     }
 
+    public com.mercedesbenz.sechub.api.internal.gen.model.OpenApiProject getDelegate() {
+        return delegate;
+    }
+
     public boolean equals(Object object) {
-        if (object instanceof AbstractProject) {
+        if (object instanceof InternalAccessProject) {
             com.mercedesbenz.sechub.api.internal.gen.model.OpenApiProject other = (com.mercedesbenz.sechub.api.internal.gen.model.OpenApiProject) object;
             return delegate.equals(other);
         }

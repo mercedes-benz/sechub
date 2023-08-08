@@ -44,6 +44,8 @@ public class PublicModelFileGenerator {
         LOG.debug("To      : {}", genFile);
         LOG.debug("");
 
+        String internalAccessClass = context.getTargetAbstractModelPackage() + "." + info.targetInternalAccessClassName;
+
         Template template = new Template();
         template.addLine("// SPDX-License-Identifier: MIT");
         template.addLine("package " + context.getTargetModelPackage() + ";");
@@ -60,9 +62,7 @@ public class PublicModelFileGenerator {
         template.addLine(" * The wrapper class itself was initial generated with");
         template.addLine(" * " + getClass().getName() + ".");
         template.addLine(" */");
-        template.addLine(
-                "public class " + info.targetClassName + " extends " + context.getTargetAbstractModelPackage() + "." + info.targetAbstractClassName + " {");
-        template.addLine("");
+        template.addLine("public class " + info.targetClassName + " {");
         template.addLine("    // only for usage by " + SecHubClient.class.getSimpleName());
         template.addLine("    static List<" + info.targetClassName + "> fromDelegates(List<" + info.fromGenclazz.getName() + "> delegates) {");
         template.addLine("            List<" + info.targetClassName + "> resultList = new ArrayList<>();");
@@ -86,24 +86,27 @@ public class PublicModelFileGenerator {
         template.addLine("            return resultList;");
         template.addLine("    }");
         template.addLine("");
+        template.addLine("    private " + internalAccessClass + " internalAccess;");
         generateAdditionalWrapperFields(info, template);
+        /* constructors */
         template.addLine("");
         template.addLine("    public " + info.targetClassName + "() {");
-        template.addLine("        super();");
+        template.addLine("        this(null);");
         template.addLine("    }");
         template.addLine("");
-        generatePublicSetterGetterMethods(info, template);
-        template.addLine("");
-        generateAdditionalWrapperMethods(info, template);
-        template.addLine("    // only for usage by " + SecHubClient.class.getSimpleName());
         template.addLine("    " + info.targetClassName + "(" + info.fromGenclazz.getName() + " delegate) {");
-        template.addLine("         super(delegate);");
+        template.addLine("         this.internalAccess= new " + internalAccessClass + "(delegate);");
         template.addLine("    }");
         template.addLine("");
         template.addLine("    // only for usage by " + SecHubClient.class.getSimpleName());
         template.addLine("    " + info.fromGenclazz.getName() + " getDelegate() {");
-        template.addLine("         return delegate;");
+        template.addLine("         return internalAccess.getDelegate();");
         template.addLine("    }");
+        template.addLine("");
+        /* other methods */
+        generatePublicSetterGetterMethods(info, template);
+        template.addLine("");
+        generateAdditionalWrapperMethods(info, template);
         template.addLine("");
         template.addLine("}");
 
@@ -113,7 +116,7 @@ public class PublicModelFileGenerator {
 
     private void generatePublicSetterGetterMethods(MapGenInfo info, Template template) {
         for (Method method : collectGettersAndSetters(info.fromGenclazz)) {
-            context.getSetterGetterSupport().generateMethod(method, template, "public", false, "super");
+            context.getSetterGetterSupport().generateMethod(method, template, "public", false, "internalAccess");
         }
     }
 
@@ -133,14 +136,15 @@ public class PublicModelFileGenerator {
 
             template.addLine("    public " + other.asTargetTypeResult() + " get" + beanName + "(){");
             template.addLine("         if (" + fieldName + " == null) {");
-            template.addLine("               " + fieldName + " = " + other.targetClassName() + ".fromDelegates(delegate.get" + beanName + "());");
+            template.addLine(
+                    "               " + fieldName + " = " + other.targetClassName() + ".fromDelegates(internalAccess.getDelegate().get" + beanName + "());");
             template.addLine("         }");
             template.addLine("         return " + fieldName + ";");
             template.addLine("    }");
             template.addLine("");
             template.addLine("    public void set" + beanName + "(" + other.asTargetTypeResult() + " " + fieldName + "){");
             template.addLine("         this." + fieldName + " = " + fieldName + ";");
-            template.addLine("         this.delegate.set" + beanName + "(" + other.targetClassName() + ".toDelegates(" + fieldName + "));");
+            template.addLine("         this.internalAccess.getDelegate().set" + beanName + "(" + other.targetClassName() + ".toDelegates(" + fieldName + "));");
             template.addLine("    }");
             template.addLine("");
 
@@ -148,8 +152,9 @@ public class PublicModelFileGenerator {
 
             template.addLine("    public " + other.asTargetTypeResult() + " get" + beanName + "(){");
             template.addLine("         if (" + fieldName + " == null) {");
-            template.addLine("               " + fieldName + " = new " + other.asTargetTypeInstance() + "(delegate.get" + beanName + "());");
-            template.addLine("               delegate.set" + beanName + "(" + fieldName
+            template.addLine(
+                    "               " + fieldName + " = new " + other.asTargetTypeInstance() + "(internalAccess.getDelegate().get" + beanName + "());");
+            template.addLine("               internalAccess.getDelegate().set" + beanName + "(" + fieldName
                     + ".getDelegate()); // necessary if delegate had no content, but wrapper created one");
             template.addLine("         }");
             template.addLine("         return " + fieldName + ";");
@@ -157,7 +162,7 @@ public class PublicModelFileGenerator {
             template.addLine("");
             template.addLine("    public void set" + beanName + "(" + other.asTargetTypeResult() + " " + fieldName + "){");
             template.addLine("         this." + fieldName + " = " + fieldName + ";");
-            template.addLine("         this.delegate.set" + beanName + "(" + fieldName + ".getDelegate());");
+            template.addLine("         this.internalAccess.getDelegate().set" + beanName + "(" + fieldName + ".getDelegate());");
             template.addLine("    }");
             template.addLine("");
         }

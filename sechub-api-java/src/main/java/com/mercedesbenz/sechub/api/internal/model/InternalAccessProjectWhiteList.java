@@ -4,23 +4,23 @@ package com.mercedesbenz.sechub.api.internal.model;
 import java.util.ArrayList;
 
 /**
- * AbstractProjectWhiteList is a model class for SecHubClient. It uses
+ * InternalAccessProjectWhiteList is a model class for SecHubClient. It uses
  * internally the generated class
  * com.mercedesbenz.sechub.api.internal.gen.model.OpenApiProjectWhiteList.<br>
  * <br>
- * The abstract wrapper class was generated from a developer with
- * com.mercedesbenz.sechub.api.generator.AbstractModelFileGenerator and is not
- * intended to be changed manually!
+ * The internal access wrapper class was generated from a developer with
+ * com.mercedesbenz.sechub.api.generator.InternalAccessModelFileGenerator and is
+ * not intended to be changed manually!
  */
-public abstract class AbstractProjectWhiteList {
+public class InternalAccessProjectWhiteList {
 
     protected com.mercedesbenz.sechub.api.internal.gen.model.OpenApiProjectWhiteList delegate;
 
-    protected AbstractProjectWhiteList() {
+    protected InternalAccessProjectWhiteList() {
         this(null);
     }
 
-    protected AbstractProjectWhiteList(com.mercedesbenz.sechub.api.internal.gen.model.OpenApiProjectWhiteList delegate) {
+    public InternalAccessProjectWhiteList(com.mercedesbenz.sechub.api.internal.gen.model.OpenApiProjectWhiteList delegate) {
         if (delegate == null) {
             this.delegate = new com.mercedesbenz.sechub.api.internal.gen.model.OpenApiProjectWhiteList();
             initDelegateWithDefaults();
@@ -33,19 +33,23 @@ public abstract class AbstractProjectWhiteList {
         /* child classes can override this */
     }
 
-    protected java.util.List<String> getUris() {
+    public java.util.List<String> getUris() {
         if (delegate.getUris() == null) {
             setUris(new ArrayList<>());
         }
         return delegate.getUris();
     }
 
-    protected void setUris(java.util.List<String> uris) {
+    public void setUris(java.util.List<String> uris) {
         delegate.setUris(uris);
     }
 
+    public com.mercedesbenz.sechub.api.internal.gen.model.OpenApiProjectWhiteList getDelegate() {
+        return delegate;
+    }
+
     public boolean equals(Object object) {
-        if (object instanceof AbstractProjectWhiteList) {
+        if (object instanceof InternalAccessProjectWhiteList) {
             com.mercedesbenz.sechub.api.internal.gen.model.OpenApiProjectWhiteList other = (com.mercedesbenz.sechub.api.internal.gen.model.OpenApiProjectWhiteList) object;
             return delegate.equals(other);
         }

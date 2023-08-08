@@ -35,9 +35,9 @@ public class ApiWrapperObjectsGenerator {
         init();
 
         PublicModelFileGenerator publicModelFileGenerator = new PublicModelFileGenerator(context);
-        AbstractModelFileGenerator abstractModelFileGenerator = new AbstractModelFileGenerator(context);
+        InternalAccessModelFileGenerator internalAccessModelFileGenerator = new InternalAccessModelFileGenerator(context);
 
-        abstractModelFileGenerator.generate();
+        internalAccessModelFileGenerator.generate();
         publicModelFileGenerator.generate(overwritePublicModelFiles);
 
         runFormatter();

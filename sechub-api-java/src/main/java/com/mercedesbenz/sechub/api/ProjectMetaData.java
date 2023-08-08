@@ -12,8 +12,7 @@ import java.util.List;
  * The wrapper class itself was initial generated with
  * com.mercedesbenz.sechub.api.generator.PublicModelFileGenerator.
  */
-public class ProjectMetaData extends com.mercedesbenz.sechub.api.internal.model.AbstractProjectMetaData {
-
+public class ProjectMetaData {
     // only for usage by SecHubClient
     static List<ProjectMetaData> fromDelegates(List<com.mercedesbenz.sechub.api.internal.gen.model.OpenApiProjectMetaData> delegates) {
         List<ProjectMetaData> resultList = new ArrayList<>();
@@ -36,26 +35,27 @@ public class ProjectMetaData extends com.mercedesbenz.sechub.api.internal.model.
         return resultList;
     }
 
+    private com.mercedesbenz.sechub.api.internal.model.InternalAccessProjectMetaData internalAccess;
+
     public ProjectMetaData() {
-        super();
+        this(null);
     }
 
-    public String getStar() {
-        return super.getStar();
-    }
-
-    public void setStar(String star) {
-        super.setStar(star);
-    }
-
-    // only for usage by SecHubClient
     ProjectMetaData(com.mercedesbenz.sechub.api.internal.gen.model.OpenApiProjectMetaData delegate) {
-        super(delegate);
+        this.internalAccess = new com.mercedesbenz.sechub.api.internal.model.InternalAccessProjectMetaData(delegate);
     }
 
     // only for usage by SecHubClient
     com.mercedesbenz.sechub.api.internal.gen.model.OpenApiProjectMetaData getDelegate() {
-        return delegate;
+        return internalAccess.getDelegate();
+    }
+
+    public String getStar() {
+        return internalAccess.getStar();
+    }
+
+    public void setStar(String star) {
+        internalAccess.setStar(star);
     }
 
 }

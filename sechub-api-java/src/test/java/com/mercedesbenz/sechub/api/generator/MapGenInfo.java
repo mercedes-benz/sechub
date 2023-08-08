@@ -5,14 +5,14 @@ import java.util.Map;
 
 class MapGenInfo {
     String targetClassName;
-    String targetAbstractClassName;
+    String targetInternalAccessClassName;
     Class<?> fromGenclazz;
     boolean ignored;
     boolean publicAvailable;
     private Map<String, BeanDataContainer> referenceMap = new LinkedHashMap<>();
 
     public String toString() {
-        return targetAbstractClassName + ", ignored=" + ignored;
+        return targetInternalAccessClassName + ", ignored=" + ignored;
     }
 
     public boolean addReference(String beanName, MapGenInfo mapGenForGenClass, TypeInfo typeInfo) {

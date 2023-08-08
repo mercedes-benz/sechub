@@ -2,23 +2,23 @@
 package com.mercedesbenz.sechub.api.internal.model;
 
 /**
- * AbstractExecutorConfigurationSetup is a model class for SecHubClient. It uses
- * internally the generated class
+ * InternalAccessExecutorConfigurationSetup is a model class for SecHubClient.
+ * It uses internally the generated class
  * com.mercedesbenz.sechub.api.internal.gen.model.OpenApiExecutorConfigurationSetup.<br>
  * <br>
- * The abstract wrapper class was generated from a developer with
- * com.mercedesbenz.sechub.api.generator.AbstractModelFileGenerator and is not
- * intended to be changed manually!
+ * The internal access wrapper class was generated from a developer with
+ * com.mercedesbenz.sechub.api.generator.InternalAccessModelFileGenerator and is
+ * not intended to be changed manually!
  */
-public abstract class AbstractExecutorConfigurationSetup {
+public class InternalAccessExecutorConfigurationSetup {
 
     protected com.mercedesbenz.sechub.api.internal.gen.model.OpenApiExecutorConfigurationSetup delegate;
 
-    protected AbstractExecutorConfigurationSetup() {
+    protected InternalAccessExecutorConfigurationSetup() {
         this(null);
     }
 
-    protected AbstractExecutorConfigurationSetup(com.mercedesbenz.sechub.api.internal.gen.model.OpenApiExecutorConfigurationSetup delegate) {
+    public InternalAccessExecutorConfigurationSetup(com.mercedesbenz.sechub.api.internal.gen.model.OpenApiExecutorConfigurationSetup delegate) {
         if (delegate == null) {
             this.delegate = new com.mercedesbenz.sechub.api.internal.gen.model.OpenApiExecutorConfigurationSetup();
             initDelegateWithDefaults();
@@ -31,16 +31,20 @@ public abstract class AbstractExecutorConfigurationSetup {
         /* child classes can override this */
     }
 
-    protected String getBaseURL() {
+    public String getBaseURL() {
         return delegate.getBaseURL();
     }
 
-    protected void setBaseURL(String baseURL) {
+    public void setBaseURL(String baseURL) {
         delegate.setBaseURL(baseURL);
     }
 
+    public com.mercedesbenz.sechub.api.internal.gen.model.OpenApiExecutorConfigurationSetup getDelegate() {
+        return delegate;
+    }
+
     public boolean equals(Object object) {
-        if (object instanceof AbstractExecutorConfigurationSetup) {
+        if (object instanceof InternalAccessExecutorConfigurationSetup) {
             com.mercedesbenz.sechub.api.internal.gen.model.OpenApiExecutorConfigurationSetup other = (com.mercedesbenz.sechub.api.internal.gen.model.OpenApiExecutorConfigurationSetup) object;
             return delegate.equals(other);
         }
