@@ -50,8 +50,7 @@ The internal API wrapper model classes are abstract classes which are inherited 
 The abstract classes provide access to the OpenAPI generated classes, but still hide
 them - except for child classes. 
 
-It is not intended to change the internal classes (or use it from outside). Only the public model 
-classes shall be used or changed manually.
+Do not change the internal classes. Only the public model classes shall be used or changed manually.
 
 ===== Generation
 To avoid coding the wrapper manually a generator was introduced - but this generator is 

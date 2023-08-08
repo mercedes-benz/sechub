@@ -32,7 +32,7 @@ class TestTemplateSupportTest {
     }
 
     @Test
-    void sechub_job_uuid_not_set_means_no_matching() {
+    void sechub_job_uuid_not_set_means_not_matching() {
         /* prepare */
         supportToTest.setSecHubJobUUID(null);
 
