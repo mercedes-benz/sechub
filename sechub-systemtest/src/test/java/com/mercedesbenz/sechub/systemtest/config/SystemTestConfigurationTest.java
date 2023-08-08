@@ -165,7 +165,7 @@ class SystemTestConfigurationTest {
         sechub.getStop().add(secHubStopStep1);
 
         sechub.setComment(
-                "If there are variants defined, the further defined tests will be run with all of those variants by the framework! ADDITION: we could introced here start/stop step like in pds solutions to build the sechub container from scratch as well (with different jdks etc.)");
+                "If there are variants defined, the further defined tests will be run with all of those variants by the framework! ADDITION: we could introduce here start/stop step like in pds solutions to build the sechub container from scratch as well (with different jdks etc.)");
         // start + stop (as an addition to variants
 
         SecHubConfigurationDefinition sechubConfig = sechub.getConfigure();
