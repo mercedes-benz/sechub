@@ -99,6 +99,18 @@ public class TestUtil {
         return Boolean.parseBoolean(property);
     }
 
+    public static int getSystemPropertyIntOrDefault(String id, int defaultValue) {
+        String sechubPortAsString = System.getProperty(id);
+
+        int value = defaultValue;
+        try {
+            value = Integer.parseInt(sechubPortAsString);
+        } catch (NumberFormatException e) {
+            /* ignore - we use default */
+        }
+        return value;
+    }
+
     public static void dumpSystemProperty(String key) {
         System.out.println("property:" + key + "=" + getSystemProperty(key, "<NOT DEFINED/>"));
     }

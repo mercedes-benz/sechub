@@ -42,7 +42,7 @@ class SystemTestDryRunTest {
         systemTestApi = new SystemTestAPI();
 
         LOG.info("--------------------------------------------------------------------------------------------------------------------------------");
-        LOG.info("System API tests: {}", info.getDisplayName());
+        LOG.info("Systemtest: {}", info.getDisplayName());
         LOG.info("--------------------------------------------------------------------------------------------------------------------------------");
     }
 

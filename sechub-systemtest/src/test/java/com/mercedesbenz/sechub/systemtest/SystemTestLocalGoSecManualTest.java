@@ -39,7 +39,7 @@ class SystemTestLocalGoSecManualTest implements ManualTest {
         systemTestApi = new SystemTestAPI();
 
         LOG.info("--------------------------------------------------------------------------------------------------------------------------------");
-        LOG.info("System API tests: {}", info.getDisplayName());
+        LOG.info("Systemtest: {}", info.getDisplayName());
         LOG.info("--------------------------------------------------------------------------------------------------------------------------------");
     }
 
@@ -66,9 +66,9 @@ class SystemTestLocalGoSecManualTest implements ManualTest {
         String json = reader.loadTextFile(new File("./src/test/resources/"+configFile));
         SystemTestConfiguration config = JSONConverter.get().fromJSON(SystemTestConfiguration.class, json);
 
-        TestEnvironmentProvider environmentProvider= createEnvironmentProviderForSecrets() ;
-        LOG.debug("PDS tech user id: {}", environmentProvider.getEnv("TEST_PDS_USERID"));
-        LOG.debug("PDS tech user apitoken: {}", environmentProvider.getEnv("TEST_PDS_APITOKEN"));
+        TestEnvironmentProvider environmentProvider= TestConfigUtil.createEnvironmentProviderForSecrets() ;
+        LOG.debug("PDS tech user id: {}", environmentProvider.getEnv("ENV_TEST_PDS_USERID"));
+        LOG.debug("PDS tech user apitoken: {}", environmentProvider.getEnv("ENV_TEST_PDS_APITOKEN"));
 
         /* execute */
         SystemTestResult result = systemTestApi.runSystemTests(
@@ -84,31 +84,6 @@ class SystemTestLocalGoSecManualTest implements ManualTest {
             fail("The execution failed?!?!");
         }
         /* @formatter:on */
-    }
-
-    private TestEnvironmentProvider createEnvironmentProviderForSecrets() {
-        // Setup environment. When not defined, use defaults for local integration tests
-        String testSecHubAdminUser = TestUtil.getSystemProperty("sechub.initialadmin.userid", "admin");
-        String testSecHubAdminPwd = TestUtil.getSystemProperty("sechub.initialadmin.apitoken", "myTop$ecret!");
-        String testPDSTechUserName = TestUtil.getSystemProperty("pds.techuser.username", "techuser");
-        String testPDSTechUserPwd = TestUtil.getSystemProperty("pds.techuser.apitoken", "pds-apitoken");
-
-        String testIntTestServerAdminUser = TestUtil.getSystemProperty("pds.inttestadmin.userid", "int-test_superadmin");
-        String testIntTestServerAdminPwd = TestUtil.getSystemProperty("pds.inttestadmin.apitoken", "int-test_superadmin-pwd");
-
-        TestEnvironmentProvider environmentProvider = new TestEnvironmentProvider();
-        environmentProvider.setEnv("TEST_ADMIN_USERID", testSecHubAdminUser);
-        environmentProvider.setEnv("TEST_ADMIN_APITOKEN", testSecHubAdminPwd);
-
-        environmentProvider.setEnv("TEST_INTTEST_ADMIN_USERID", testIntTestServerAdminUser);
-        environmentProvider.setEnv("TEST_INTTEST_ADMIN_APITOKEN", testIntTestServerAdminPwd);
-
-        environmentProvider.setEnv("TEST_PDS_USERID", testPDSTechUserName);
-        environmentProvider.setEnv("TEST_PDS_APITOKEN", testPDSTechUserPwd);
-
-        environmentProvider.setEnv("TEST_PDS_SERVER", "https://pds-gosec:8444");
-        environmentProvider.setEnv("TEST_SECHUB_SERVER", "https://localhost:8443");
-        return environmentProvider;
     }
 
 }

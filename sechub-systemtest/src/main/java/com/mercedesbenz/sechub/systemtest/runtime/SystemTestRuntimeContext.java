@@ -26,6 +26,7 @@ import com.mercedesbenz.sechub.systemtest.config.LocalSecHubDefinition;
 import com.mercedesbenz.sechub.systemtest.config.LocalSetupDefinition;
 import com.mercedesbenz.sechub.systemtest.config.PDSSolutionDefinition;
 import com.mercedesbenz.sechub.systemtest.config.ProjectDefinition;
+import com.mercedesbenz.sechub.systemtest.config.RemoteSecHubDefinition;
 import com.mercedesbenz.sechub.systemtest.config.RemoteSetupDefinition;
 import com.mercedesbenz.sechub.systemtest.config.SecHubConfigurationDefinition;
 import com.mercedesbenz.sechub.systemtest.config.SecHubExecutorConfigDefinition;
@@ -269,8 +270,8 @@ public class SystemTestRuntimeContext {
             /* @formatter:on */
         }
         if (remoteUserSecHubClient == null) {
-            LocalSecHubDefinition localSecHub = getLocalSetupOrFail().getSecHub();
-            remoteUserSecHubClient = createSecHubClient(localSecHub, localSecHub.getAdmin());
+            RemoteSecHubDefinition remoteSecHub = getRemoteSetupOrFail().getSecHub();
+            remoteUserSecHubClient = createSecHubClient(remoteSecHub, remoteSecHub.getUser());
 
             LOG.info("Created remote user client for user: {}, apiToken: '{}'", remoteUserSecHubClient.getUsername(),
                     "*".repeat(remoteUserSecHubClient.getSealedApiToken().length()));

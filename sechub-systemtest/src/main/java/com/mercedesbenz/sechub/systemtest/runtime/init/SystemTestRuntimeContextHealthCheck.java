@@ -206,6 +206,7 @@ public class SystemTestRuntimeContextHealthCheck {
     private void checkLocal(SystemTestRuntimeContext context) {
         if (!context.isLocalRun()) {
             LOG.debug("Skip local health check parts - run is not local");
+            return;
         }
 
         verifySecHubLocal(context);

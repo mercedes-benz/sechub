@@ -3,6 +3,8 @@ package com.mercedesbenz.sechub.systemtest;
 
 import static com.mercedesbenz.sechub.systemtest.SystemTestAPI.*;
 import static com.mercedesbenz.sechub.systemtest.SystemTestExampleWriter.*;
+import static com.mercedesbenz.sechub.systemtest.TestConfigConstants.*;
+import static com.mercedesbenz.sechub.systemtest.TestConfigUtil.*;
 import static com.mercedesbenz.sechub.test.TestUtil.*;
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -23,7 +25,6 @@ import com.mercedesbenz.sechub.systemtest.config.RuntimeVariable;
 import com.mercedesbenz.sechub.systemtest.config.SystemTestConfiguration;
 import com.mercedesbenz.sechub.systemtest.runtime.SystemTestResult;
 import com.mercedesbenz.sechub.systemtest.runtime.variable.TestEnvironmentProvider;
-import com.mercedesbenz.sechub.test.TestUtil;
 
 /**
  * A special integration test
@@ -59,7 +60,7 @@ class SystemTestFrameworkIntTest {
         systemTestApi = new SystemTestAPI();
 
         LOG.info("--------------------------------------------------------------------------------------------------------------------------------");
-        LOG.info("System API tests: {}", info.getDisplayName());
+        LOG.info("Systemtest: {}", info.getDisplayName());
         LOG.info("--------------------------------------------------------------------------------------------------------------------------------");
     }
 
@@ -76,7 +77,7 @@ class SystemTestFrameworkIntTest {
                     secHub().
                         comment("We do not define start/stop here, because reuse running local SecHub server").
                         url(new URL("https://localhost:"+SECHUB_PORT)).
-                        admin("${secretEnv.TESTSECHUB_ADMIN_USER}","${secretEnv.TESTSECHUB_ADMIN_TOKEN}").
+                        admin(toSecretEnvVariable(ENV_TEST_INTTEST_ADMIN_USERID),toSecretEnvVariable(ENV_TEST_INTTEST_ADMIN_APITOKEN)).
                         /*
                          * We do not define any steps here - developers must have started the
                          * integration test SecHub server locally in IDE
@@ -98,7 +99,7 @@ class SystemTestFrameworkIntTest {
                     addSolution("PDS_INTTEST_PRODUCT_CODESCAN").
                         url(new URL("https://localhost:"+PDS_PORT)).
                         comment("We do not define start/stop here, because reuse running local PDS server").
-                        techUser("${secretEnv.TESTPDS_ADMIN_USER}","${secretEnv.TESTPDS_ADMIN_TOKEN}").
+                        techUser(toSecretEnvVariable(ENV_TEST_INTTEST_PDS_TECHUSER_USERID), toSecretEnvVariable(ENV_TEST_INTTEST_PDS_TECHUSER_APITOKEN)).
                         /*
                          * We do not define any steps here - the PDS and SecHub instances
                          * must be started already.
@@ -139,7 +140,7 @@ class SystemTestFrameworkIntTest {
 
         writeExample(configuration,"gen_example_systemtest_using_local_integrationtestservers.json");
 
-        TestEnvironmentProvider environmentProvider = createEnvironmentProviderForSecrets();
+        TestEnvironmentProvider environmentProvider = TestConfigUtil.createEnvironmentProviderForSecrets();
 
         /* execute */
         SystemTestResult result = systemTestApi.runSystemTests(
@@ -168,7 +169,7 @@ class SystemTestFrameworkIntTest {
                 localSetup().
                     secHub().
                         url(new URL("https://localhost:"+SECHUB_PORT)).
-                        admin("${secretEnv.TESTSECHUB_ADMIN_USER}","${secretEnv.TESTSECHUB_ADMIN_TOKEN}").
+                        admin(toSecretEnvVariable(ENV_TEST_INTTEST_ADMIN_USERID),toSecretEnvVariable(ENV_TEST_INTTEST_ADMIN_APITOKEN)).
                         /*
                          * We do not define any steps here - developers must have started the
                          * integration test SecHub server locally in IDE
@@ -189,7 +190,7 @@ class SystemTestFrameworkIntTest {
                     addSolution("PDS_INTTEST_PRODUCT_CODESCAN").
                         url(new URL("https://localhost:"+PDS_PORT)).
 
-                        techUser("${secretEnv.TESTPDS_ADMIN_USER}","${secretEnv.TESTPDS_ADMIN_TOKEN}").
+                        techUser(toSecretEnvVariable(ENV_TEST_INTTEST_PDS_TECHUSER_USERID),toSecretEnvVariable(ENV_TEST_INTTEST_PDS_TECHUSER_APITOKEN)).
                         /*
                          * We do not define any steps here - the PDS and SecHub instances
                          * must be started already.
@@ -232,7 +233,7 @@ class SystemTestFrameworkIntTest {
                 endTest().
                 build();
 
-        TestEnvironmentProvider environmentProvider = createEnvironmentProviderForSecrets();
+        TestEnvironmentProvider environmentProvider = TestConfigUtil.createEnvironmentProviderForSecrets();
 
         /* execute */
         SystemTestResult result = systemTestApi.runSystemTests(
@@ -247,21 +248,6 @@ class SystemTestFrameworkIntTest {
             fail(result.toString());
         }
         /* @formatter:on */
-    }
-
-    private TestEnvironmentProvider createEnvironmentProviderForSecrets() {
-        // Setup environment. When not defined, use defaults for local integration tests
-        String testSecHubAdminUser = TestUtil.getSystemProperty("sechub.initialadmin.userid", "int-test_superadmin");
-        String testSecHubAdminPwd = TestUtil.getSystemProperty("sechub.initialadmin.apitoken", "int-test_superadmin-pwd");
-        String testPDSTechUserName = TestUtil.getSystemProperty("pds.techuser.username", "pds-inttest-techuser");
-        String testPDSTechUserPwd = TestUtil.getSystemProperty("pds.techuser.apitoken", "pds-inttest-apitoken");
-
-        TestEnvironmentProvider environmentProvider = new TestEnvironmentProvider();
-        environmentProvider.setEnv("TESTSECHUB_ADMIN_USER", testSecHubAdminUser);
-        environmentProvider.setEnv("TESTSECHUB_ADMIN_TOKEN", testSecHubAdminPwd);
-        environmentProvider.setEnv("TESTPDS_ADMIN_USER", testPDSTechUserName);
-        environmentProvider.setEnv("TESTPDS_ADMIN_TOKEN", testPDSTechUserPwd);
-        return environmentProvider;
     }
 
 }
