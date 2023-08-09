@@ -146,8 +146,9 @@ public class SystemTestRuntimeTestEngine {
         if (runtimeContext.isDryRun()) {
             LOG.debug("Skip job upload because dry run");
         } else {
-
+            waitMilliseconds(300); // give server chance to create project parts
             clientForScheduling.upload(projectId, jobUUID, configuration, workingDirectory);
+            waitMilliseconds(300); // give server chance to store result
         }
 
         /* mark job as ready to start */
@@ -167,11 +168,7 @@ public class SystemTestRuntimeTestEngine {
                 if (diff > MILLISECONDS_TO_WAIT_FOR_JOB_FINISHED) {
                     throw new SystemTestRuntimeException("Job status for " + jobUUID + " took " + diff + " milliseconds (time out)");
                 }
-                try {
-                    TimeUnit.MICROSECONDS.sleep(300);
-                } catch (InterruptedException e) {
-                    Thread.currentThread().interrupt();
-                }
+                waitMilliseconds(300);
             }
         }
 
@@ -188,6 +185,15 @@ public class SystemTestRuntimeTestEngine {
         }
         testContext.getSecHubRunData().report = report;
         testContext.markCurrentSecHubJob(jobUUID);
+
+    }
+
+    private void waitMilliseconds(int milliSeconds) {
+        try {
+            TimeUnit.MICROSECONDS.sleep(milliSeconds);
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+        }
 
     }
 

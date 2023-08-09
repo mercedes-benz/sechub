@@ -2,6 +2,7 @@ package com.mercedesbenz.sechub.systemtest.runtime.launch;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -28,6 +29,8 @@ import com.mercedesbenz.sechub.systemtest.runtime.error.SystemTestScriptExecutio
  *
  */
 public class SystemTestRuntimeProductLauncher {
+
+    private static final AtomicInteger parallelStepExecutionCounter = new AtomicInteger();
 
     private static final int ONE_SECOND_IN_MILLISECONDS = 1000;
     private int maximumSecondsToWaitForSecHubAlive = 120;
@@ -115,12 +118,30 @@ public class SystemTestRuntimeProductLauncher {
             if (step.getScript().isPresent()) {
                 ScriptDefinition scriptDefinition = step.getScript().get();
 
-                ProcessContainer processContainer = execSupport.execute(scriptDefinition, state);
+                executeStep(() -> {
+                    ProcessContainer processContainer = execSupport.execute(scriptDefinition, state);
+                    context.getCurrentStage().add(processContainer);
 
-                context.getCurrentStage().add(processContainer);
+                });
 
             }
         }
+    }
+
+    private void executeStep(Runnable runnable) {
+        if (isScriptStepExecutionParallel()) {
+
+            Thread t = new Thread(runnable);
+            t.setName("process-container-" + parallelStepExecutionCounter.getAndIncrement());
+            t.start();
+
+        } else {
+            runnable.run();
+        }
+    }
+
+    private boolean isScriptStepExecutionParallel() {
+        return Boolean.getBoolean("systemtest.script.steps.run.parallel");
     }
 
     public void waitUntilSecHubAvailable(SystemTestRuntimeContext context) throws SystemTestErrorException {

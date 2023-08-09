@@ -22,6 +22,6 @@ fi
 # - we need this to test stage wait is correct implemented
 sleep 0.3s
 
-echo "gosec-started with param2=$2 and C_test_var_number_added=$C_test_var_number_added, B_TEST2=$B_TEST2, D_RESOLVED_SECRET is like path=$LIKE_PATH, parameter3 is still a secret=${PARAM3_STILL_A_SECRET}" > $1 # Write for test
+echo "gosec-started with param2=$2 and C_test_var_number_added=$C_test_var_number_added, B_TEST2=$B_TEST2, D_RESOLVED_SECRET is like path=$LIKE_PATH, parameter3 is still a secret=${PARAM3_STILL_A_SECRET}" > "$1" # Write for test
 ## Wait again
 sleep 0.3s 

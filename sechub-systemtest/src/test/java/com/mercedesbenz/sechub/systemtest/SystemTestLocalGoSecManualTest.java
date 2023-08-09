@@ -67,8 +67,10 @@ class SystemTestLocalGoSecManualTest implements ManualTest {
         SystemTestConfiguration config = JSONConverter.get().fromJSON(SystemTestConfiguration.class, json);
 
         TestEnvironmentProvider environmentProvider= TestConfigUtil.createEnvironmentProviderForSecrets() ;
-        LOG.debug("PDS tech user id: {}", environmentProvider.getEnv("ENV_TEST_PDS_USERID"));
-        LOG.debug("PDS tech user apitoken: {}", environmentProvider.getEnv("ENV_TEST_PDS_APITOKEN"));
+        LOG.debug("PDS tech user id: {}", environmentProvider.getEnv(TestConfigConstants.ENV_TEST_PDS_USERID));
+        LOG.debug("PDS tech user apitoken: {}", environmentProvider.getEnv(TestConfigConstants.ENV_TEST_PDS_APITOKEN));
+        LOG.debug("SecHub admin user id: {}", environmentProvider.getEnv(TestConfigConstants.ENV_TEST_ADMIN_USERID));
+        LOG.debug("SecHub admin user apitoken: {}", environmentProvider.getEnv(TestConfigConstants.ENV_TEST_ADMIN_APITOKEN));
 
         /* execute */
         SystemTestResult result = systemTestApi.runSystemTests(

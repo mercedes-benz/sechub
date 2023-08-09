@@ -8,14 +8,24 @@
         },
         "start" : [ {
           "script" : {
-            "path" : "./01-start-single-docker-compose.sh",
-            "arguments" : [ "alpine" ]
+            "path" : "./01-start-single-docker-compose.sh"
           }
         } ],
         "configure" : {
           "executors" : [ {
             "pdsProductId" : "PDS_GOSEC",
-            "name" : "system-test-codescan-gosec"
+            "name" : "system-test-codescan-gosec",
+            "parameters" : {
+                // we enhance pds adapter resilience here, because we have no access to
+                // the pds solution (port not forwarded), so not able to wait
+                // that PDS becomes available (see "waitAvailable:false" below).
+                // This means, that the test will fail because PDS server is starting but
+                // SecHub tests that PDS solution is available
+                // but we can use the resilience feature from sechub to handle this.
+                "sechub.productexecutor.pds.adapter.resilience.retry.wait.milliseconds" : 3000,
+                "sechub.productexecutor.pds.adapter.resilience.retry.max": 20
+            }
+            
           } ]
         },
         "stop" : [ {
@@ -54,7 +64,7 @@
     "prepare" : [ {
       "copy" : {
         // copy sources to test folder location 
-        "from" : "./../sechub-cli/src",
+        "from" : "./../sechub-cli/src/mercedes-benz.com/sechub/main",
         "to" : "${runtime.currentTestFolder}/testsources/src"
       }
     } ],
