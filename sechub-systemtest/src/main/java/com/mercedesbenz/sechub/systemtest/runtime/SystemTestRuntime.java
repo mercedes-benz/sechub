@@ -94,13 +94,15 @@ public class SystemTestRuntime {
 
         SystemTestResult result = null;
         try {
-
+            /* Setup phase 1 : SecHub */
             execOrFail(() -> productLauncher.startSecHub(context), "Start SecHub");
-            execOrFail(() -> productLauncher.startPDSSolutions(context), "Start PDS solutions");
-
             execOrFail(() -> productLauncher.waitUntilSecHubAvailable(context), "Wait for SecHub available");
+            
+            /* Setup phase 2 : PDS solutions - it is ensured that SecHub has been started (if common network is necessary) */
+            execOrFail(() -> productLauncher.startPDSSolutions(context), "Start PDS solutions");
             execOrFail(() -> productLauncher.waitUntilPDSSolutionsAvailable(context), "Wait for PDS solutions available");
 
+            /* Setup phase 3 : Configure SecHub */
             execOrFail(() -> localSecHubProductConfigurator.configure(context), "Apply SecHub configuration when local run");
 
             /* execute tests */
