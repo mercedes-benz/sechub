@@ -190,7 +190,7 @@ public class PDSExecutorConfigSupportTest {
 
         // create support again (necessary to have new job parameters included)
         supportToTest = PDSExecutorConfigSupport.createSupportAndAssertConfigValid(config, serviceCollection);
-        
+
         /* execute */
         boolean result = supportToTest.isGivenStorageSupportedByPDSProduct(contentProvider);
 

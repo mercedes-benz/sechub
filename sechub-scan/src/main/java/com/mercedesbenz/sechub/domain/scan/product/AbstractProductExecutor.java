@@ -122,7 +122,7 @@ public abstract class AbstractProductExecutor implements ProductExecutor {
 
     /**
      * Execute with adapter and given data
-     * 
+     *
      * @param data product executor data
      * @return list of product results or <code>null</code> when product adapter is
      *         not called/ no result available

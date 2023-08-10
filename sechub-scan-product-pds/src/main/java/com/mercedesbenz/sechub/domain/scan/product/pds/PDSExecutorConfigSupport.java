@@ -289,14 +289,14 @@ public class PDSExecutorConfigSupport extends DefaultExecutorConfigSupport imple
         if (typesOrNull.contains(SecHubDataConfigurationType.NONE)) {
             return true;
         }
-        
+
         if (contentProvider.isBinaryRequired()) {
-            if (typesOrNull.contains(SecHubDataConfigurationType.BINARY)){
+            if (typesOrNull.contains(SecHubDataConfigurationType.BINARY)) {
                 return true;
             }
         }
         if (contentProvider.isSourceRequired()) {
-            if (typesOrNull.contains(SecHubDataConfigurationType.SOURCE)){
+            if (typesOrNull.contains(SecHubDataConfigurationType.SOURCE)) {
                 return true;
             }
         }
