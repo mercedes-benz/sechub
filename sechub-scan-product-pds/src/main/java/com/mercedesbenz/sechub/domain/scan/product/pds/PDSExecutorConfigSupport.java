@@ -281,6 +281,10 @@ public class PDSExecutorConfigSupport extends DefaultExecutorConfigSupport imple
 
     public boolean isGivenStorageSupportedByPDSProduct(PDSStorageContentProvider contentProvider) {
         String supportedDataTypes = getDataTypesSupportedByPDSAsString();
+        if (SimpleStringUtils.isEmpty(supportedDataTypes)) {
+            LOG.debug("No supported data types defined in executor confguration. Assume supported and return true");
+            return true;
+        }
         Set<SecHubDataConfigurationType> typesOrNull = parser.fetchTypesAsSetOrNull(supportedDataTypes);
         if (typesOrNull == null) {
             LOG.warn("Was not able to determine data configuration types, so return true as fallback!");

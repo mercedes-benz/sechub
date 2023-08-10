@@ -80,9 +80,7 @@ public abstract class AbstractPDSProductExecutor extends AbstractProductExecutor
 
         SecHubExecutionContext context = data.getSechubExecutionContext();
 
-        PDSStorageContentProvider contentProvider = null;
-
-        contentProviderFactory.createContentProvider(context, configSupport, getScanType());
+        PDSStorageContentProvider contentProvider = contentProviderFactory.createContentProvider(context, configSupport, getScanType());
         if (!configSupport.isGivenStorageSupportedByPDSProduct(contentProvider)) {
             LOG.info("Adapter execution skipped, because given storage is not supported by executor PDS product: {}",
                     configSupport.getDataTypesSupportedByPDSAsString());
