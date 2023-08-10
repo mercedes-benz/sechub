@@ -365,25 +365,31 @@ public class SystemTestRuntimeTestEngine {
             secHubRunData.secHubConfiguration = converter.fromJSON(SecHubConfigurationModel.class, changedConfigurationAsJson);
         }
 
-        public void markAsFailed(String message) {
-            markAsFailed(message, null);
+        public void markAsFailed(String message, Exception e) {
+            markAsFailed(message, null, e);
         }
 
-        public void markAsFailed(String message, Exception e) {
+        public void markAsFailed(String message, String hint) {
+            markAsFailed(message, hint, null);
+        }
+
+        public void markAsFailed(String message, String hint, Exception e) {
             SystemTestRuntimeTestEngine.LOG.error("Test: {} failed: {}", getTest().getName(), message, e);
 
             SystemTestFailure failure = new SystemTestFailure();
 
-            failure.setMessage("Test: " + getTest().getName() + " failed: " + message);
-            failure.setDetails(createDetails(e));
+            failure.setMessage(message);
+            failure.setDetails(createDetails(hint, e));
 
             runtimeContext.getCurrentResult().setFailure(failure);
         }
 
-        private String createDetails(Exception e) {
+        private String createDetails(String hint, Exception e) {
             StringBuilder sb = new StringBuilder();
             sb.append("\n- SecHubJob UUID: ");
             sb.append(safeString(runtimeContext.getCurrentResult().getSechubJobUUID()));
+            sb.append("\n- Hint: ");
+            sb.append(safeString(hint));
             sb.append("\n- Exception: ");
             sb.append(safeString(e));
 

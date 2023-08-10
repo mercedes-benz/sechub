@@ -105,6 +105,12 @@ public class SystemTestConfigurationBuilder {
                 this.process = scriptBuilder.scriptCallDefinition.getProcess();
             }
 
+            /**
+             * Use this method to mark that the current stage will wait for this process to
+             * end. Until the process has not ended the switch to next stage is blocked.
+             *
+             * @return builder
+             */
             public ProcessDefinitionBuilder markStageWaits() {
                 process.setStageWaits(true);
                 return this;
@@ -486,7 +492,7 @@ public class SystemTestConfigurationBuilder {
                      * {@link TestTemplateSupport#isTemplateMatching(String, String)} for details.
                      *
                      * @param pathToFile
-                     * @return
+                     * @return builder
                      */
                     public SecHubResultAssertBuilder equalsFile(String pathToFile) {
                         AssertEqualsFileDefinition definition = new AssertEqualsFileDefinition();
@@ -496,6 +502,12 @@ public class SystemTestConfigurationBuilder {
                         return this;
                     }
 
+                    /**
+                     * Assert that the JSON sechub report does contain all of the given strings
+                     *
+                     * @param containedStrings
+                     * @return builder
+                     */
                     public SecHubResultAssertBuilder containsStrings(String... containedStrings) {
                         AssertContainsStringsDefinition definition = new AssertContainsStringsDefinition();
                         definition.setValues(Arrays.asList(containedStrings));

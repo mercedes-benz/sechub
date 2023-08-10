@@ -77,7 +77,7 @@ public class LocationSupport {
             } else {
                 support.additionalResourcesRoot = new File("./").toPath();
             }
-            LOG.info("Additional resource folder:{}", support.additionalResourcesRoot);
+            LOG.debug("Additional resource folder:{}", support.additionalResourcesRoot);
         }
 
         private void initWorkspaceRootFolder(LocationSupport support) {
@@ -94,7 +94,7 @@ public class LocationSupport {
                     throw new SystemTestRuntimeException("Cannot create workspace root", e);
                 }
             }
-            LOG.info("Workspace root:{}", support.workspaceRoot);
+            LOG.debug("Workspace root:{}", support.workspaceRoot);
         }
 
         private void initSecHubSolutionRootFolder(LocationSupport support) {
@@ -107,7 +107,7 @@ public class LocationSupport {
             } else {
                 support.sechubSolutionRoot = support.pdsSolutionsRoot.getParent().resolve("sechub-solution");
             }
-            LOG.info("SecHub solution root:{}", support.sechubSolutionRoot);
+            LOG.debug("SecHub solution root:{}", support.sechubSolutionRoot);
         }
 
         private void initPDSSolutionRootFolder(LocationSupport support) {
@@ -123,7 +123,7 @@ public class LocationSupport {
             } catch (IOException e) {
                 throw new IllegalStateException("Cannot determine real path for " + pdsSolutionsRootFolder, e);
             }
-            LOG.info("PDS solution root:{}", support.pdsSolutionsRoot);
+            LOG.debug("PDS solution root:{}", support.pdsSolutionsRoot);
         }
     }
 
@@ -148,19 +148,23 @@ public class LocationSupport {
     }
 
     public Path ensureOutputFile(ProcessContainer processContainer) {
-        return ensureProcessRuntimeFileRealPath(processContainer, "output.txt");
+        String processContainerFilenamePart = createFilenamePartFor(processContainer);
+        return ensureProcessRuntimeFileRealPath(processContainer, "output_" + processContainerFilenamePart + ".txt");
     }
 
     public Path ensureErrorFile(ProcessContainer processContainer) {
-        return ensureProcessRuntimeFileRealPath(processContainer, "error.txt");
+        String processContainerFilenamePart = createFilenamePartFor(processContainer);
+        return ensureProcessRuntimeFileRealPath(processContainer, "error_" + processContainerFilenamePart + ".txt");
     }
 
     public Path ensureProcessContainerErrorFile(ProcessContainer processContainer) {
-        return ensureProcessRuntimeFileRealPath(processContainer, "process-container-error.txt");
+        String processContainerFilenamePart = createFilenamePartFor(processContainer);
+        return ensureProcessRuntimeFileRealPath(processContainer, "process-container-error_" + processContainerFilenamePart + ".txt");
     }
 
     public Path ensureProcessContainerFile(ProcessContainer processContainer) {
-        return ensureProcessRuntimeFileRealPath(processContainer, "process-container.json");
+        String processContainerFilenamePart = createFilenamePartFor(processContainer);
+        return ensureProcessRuntimeFileRealPath(processContainer, "process-container_" + processContainerFilenamePart + ".json");
     }
 
     /**
@@ -170,7 +174,7 @@ public class LocationSupport {
      * @return runtime folder
      */
     public Path getRuntimeFolder() {
-        return workspaceRoot.resolve(".runtime");
+        return workspaceRoot.resolve("runtime");
     }
 
     private Path ensureProcessRuntimeFileRealPath(ProcessContainer processContainer, String fileName) {
@@ -181,13 +185,24 @@ public class LocationSupport {
 
     private Path ensureProcessFolderRealPath(ProcessContainer processContainer) {
         Path runtimeFolder = ensureRuntimeFolderRealPath();
-        Path processFolder = runtimeFolder.resolve("process-container#" + processContainer.getNumber() + "[" + processContainer.getUuid().toString() + "]");
-        return assertFolderAndReturnRealPath(processFolder);
+
+        String folderName = createFilenamePartFor(processContainer);
+        Path processFolder = runtimeFolder.resolve("process-containers").resolve(folderName);
+        return ensureFolderAndReturnRealPath(processFolder);
+    }
+
+    private String createFilenamePartFor(ProcessContainer processContainer) {
+        return processContainer.getNumber() + "_" + processContainer.getTargetFile().getName() + "_";
     }
 
     public Path ensureRuntimeFolderRealPath() {
         Path runtimeFolder = getRuntimeFolder();
-        return assertFolderAndReturnRealPath(runtimeFolder);
+        return ensureFolderAndReturnRealPath(runtimeFolder);
+    }
+
+    public Path ensureRuntimeArtifactsFolderRealPath(String testName) {
+        Path runtimeArtifactsFolder = getRuntimeFolder().resolve("artifacts").resolve(testName);
+        return ensureFolderAndReturnRealPath(runtimeArtifactsFolder);
     }
 
     public Path ensureTestWorkingDirectoryRealPath(TestDefinition test) {
@@ -197,13 +212,13 @@ public class LocationSupport {
         }
         Path tests = getWorkspaceTestsFolder();
         Path testFolder = tests.resolve(testName);
-        return assertFolderAndReturnRealPath(testFolder);
+        return ensureFolderAndReturnRealPath(testFolder);
     }
 
     private Path getWorkspaceTestsFolder() {
         Path workspaceRoot = getWorkspaceRoot();
         Path tests = workspaceRoot.resolve("tests");
-        return assertFolderAndReturnRealPath(tests);
+        return ensureFolderAndReturnRealPath(tests);
     }
 
     private Path assertFileAndReturnRealPath(Path file) {
@@ -225,7 +240,7 @@ public class LocationSupport {
         }
     }
 
-    private Path assertFolderAndReturnRealPath(Path folder) {
+    private Path ensureFolderAndReturnRealPath(Path folder) {
         if (!Files.exists(folder)) {
             try {
                 Files.createDirectories(folder);

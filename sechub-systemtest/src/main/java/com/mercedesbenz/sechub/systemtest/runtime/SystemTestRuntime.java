@@ -23,6 +23,9 @@ import com.mercedesbenz.sechub.systemtest.runtime.variable.EnvironmentProvider;
 
 public class SystemTestRuntime {
 
+    private static final int DEFAULT_SECONDS_TO_WAIT_FOR_REMAINIG_PROCESSES = 30;
+    private static final int DEFAULT_SECONDS_TO_WAIT_FOR_STOP_SCRIPTS = 30;
+
     private static final Logger LOG = LoggerFactory.getLogger(SystemTestRuntime.class);
 
     private SystemTestRuntimePreparator preparator;
@@ -58,8 +61,8 @@ public class SystemTestRuntime {
         this.environmentSupport = execSupport.getEnvironmentProvider();
         this.testEngine = new SystemTestRuntimeTestEngine(execSupport);
 
-        this.secondsToWaitForStopScripts = getValue("SYSTEMTEST_WAIT_FOR_STOP_SCRIPTS", 30);
-        this.secondsToWaitForRemainingProcesses = getValue("SYSTEMTEST_WAIT_FOR_REMAINING_PROCESSES", 30);
+        this.secondsToWaitForStopScripts = getValue("SYSTEMTEST_WAIT_FOR_STOP_SCRIPTS", DEFAULT_SECONDS_TO_WAIT_FOR_STOP_SCRIPTS);
+        this.secondsToWaitForRemainingProcesses = getValue("SYSTEMTEST_WAIT_FOR_REMAINING_PROCESSES", DEFAULT_SECONDS_TO_WAIT_FOR_REMAINIG_PROCESSES);
     }
 
     public SystemTestResult run(SystemTestConfiguration configuration, boolean localRun, boolean isDryRun) {
@@ -88,6 +91,8 @@ public class SystemTestRuntime {
 
         boolean stopSecHubTriggeredSuccessfully = false;
         boolean stopPDSTriggeredSuccessfully = false;
+
+        SystemTestResult result = null;
         try {
 
             execOrFail(() -> productLauncher.startSecHub(context), "Start SecHub");
@@ -120,7 +125,7 @@ public class SystemTestRuntime {
             stopSecHubTriggeredSuccessfully = true;
 
             /* fetch results from context and publish only this */
-            SystemTestResult result = new SystemTestResult();
+            result = new SystemTestResult();
             result.getRuns().addAll(context.getResults());
 
             endCurrentStage(context);
@@ -149,7 +154,51 @@ public class SystemTestRuntime {
             }
 
             terminateAndWaitForStillRunningProcesses(context);
+
+            logResult(context, result);
         }
+    }
+
+    private void logResult(SystemTestRuntimeContext context, SystemTestResult result) {
+        String resultStatus = "FAILED";
+        int testsFailed = 0;
+        int testsRun = 0;
+        String failedTestsOutput = "";
+
+        if (result != null) {
+            if (!result.hasFailedTests()) {
+                resultStatus = "SUCCESS";
+            }
+            testsFailed = result.getAmountOfFailedTests();
+            testsRun = result.getAmountOfAllTests();
+        }
+
+        if (testsFailed > 0) {
+            StringBuilder sb = new StringBuilder();
+            sb.append("\n  Failed tests:\n");
+            for (SystemTestRunResult run : result.getRuns()) {
+                if (run.hasFailed()) {
+                    sb.append("   * '").append(run.getTestName()).append("' : ");
+                    sb.append(run.getFailure().getMessage());
+                    sb.append("\n");
+                }
+            }
+            sb.append("\n");
+            failedTestsOutput = sb.toString();
+        }
+
+        String info = """
+
+                ------------------------------
+                 System test result [%s]
+                ------------------------------
+                 - Tests run   : %d
+                 - Tests failed: %d
+                 %s
+                 Workspace: %s
+                """.formatted(resultStatus, testsRun, testsFailed, failedTestsOutput, context.getLocationSupport().getWorkspaceRoot());
+
+        LOG.info(info);
     }
 
     private SystemTestRuntimeContext initialize(SystemTestConfiguration configuration, boolean localRun, boolean isDryRun) {

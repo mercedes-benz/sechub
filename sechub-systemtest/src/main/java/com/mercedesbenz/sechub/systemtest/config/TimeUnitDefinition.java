@@ -4,7 +4,7 @@ import java.util.concurrent.TimeUnit;
 
 public class TimeUnitDefinition extends AbstractDefinition {
 
-    public TimeUnitDefinition() {
+    TimeUnitDefinition() {
         /* necessary for JSON */
     }
 

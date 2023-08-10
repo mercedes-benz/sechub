@@ -286,13 +286,6 @@ public class SystemTestRuntimePreparator {
     }
 
     private void createDefaultsWhereNothingDefined(SystemTestRuntimeContext context) {
-        /*
-         * TODO Albert Tregnaghi, 2023-03-24:we should introduce
-         * "SechubDefaultsDefinition" + "PDSDefaultsDefinition". Here we will have only
-         * a variant field (e.g "alpine") and at runtime, the model will be altered and
-         * the start and stop objects are generated automatically by the default object.
-         * So the default class must have the logic for the changes inside
-         */
 
         createFallbackSecHubSetupParts(context);
         createFallbackDefaultProjectWhenNoProjectsDefined(context);
@@ -344,10 +337,7 @@ public class SystemTestRuntimePreparator {
     }
 
     private void addFallbackExecutorConfigurationCredentials(SystemTestRuntimeContext context) {
-        if (!context.isLocalRun()) {
-            return;
-        }
-        if (!context.isLocalSecHubConfigured()) {
+        if (isSecHubConfigurationUnnecessary(context)) {
             return;
         }
         for (SecHubExecutorConfigDefinition localExecutorDefinition : context.getLocalSecHubExecutorConfigurationsOrFail()) {
@@ -382,13 +372,22 @@ public class SystemTestRuntimePreparator {
 
     }
 
-    private void addExecutorDefaultsForMissingParts(SystemTestRuntimeContext context) {
+    private boolean isSecHubConfigurationUnnecessary(SystemTestRuntimeContext context) {
         if (!context.isLocalRun()) {
-            return;
+            return true;
         }
         if (!context.isLocalSecHubConfigured()) {
+            return true;
+        }
+        /* it is necessary to configure SecHub parts by the framework */
+        return false;
+    }
+
+    private void addExecutorDefaultsForMissingParts(SystemTestRuntimeContext context) {
+        if (isSecHubConfigurationUnnecessary(context)) {
             return;
         }
+
         for (SecHubExecutorConfigDefinition definition : context.getLocalSecHubExecutorConfigurationsOrFail()) {
 
             Map<String, String> params = definition.getParameters();
@@ -418,10 +417,7 @@ public class SystemTestRuntimePreparator {
     }
 
     private void createFallbackSecHubSetupParts(SystemTestRuntimeContext context) {
-        if (!context.isLocalRun()) {
-            return;
-        }
-        if (!context.isLocalSecHubConfigured()) {
+        if (isSecHubConfigurationUnnecessary(context)) {
             return;
         }
         LocalSetupDefinition localSetup = context.getLocalSetupOrFail();
@@ -445,10 +441,7 @@ public class SystemTestRuntimePreparator {
     }
 
     private void createFallbackSecHubSetupPartsWithMetaData(SystemTestRuntimeContext context) {
-        if (!context.isLocalRun()) {
-            return;
-        }
-        if (!context.isLocalSecHubConfigured()) {
+        if (isSecHubConfigurationUnnecessary(context)) {
             return;
         }
         for (SecHubExecutorConfigDefinition executorConfigDefinition : context.getLocalSecHubConfigurationOrFail().getExecutors()) {

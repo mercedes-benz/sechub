@@ -33,4 +33,18 @@ public class SystemTestResult {
 
         return sb.toString();
     }
+
+    public int getAmountOfFailedTests() {
+        int amount = 0;
+        for (SystemTestRunResult run : runs) {
+            if (run.hasFailed()) {
+                amount++;
+            }
+        }
+        return amount;
+    }
+
+    public int getAmountOfAllTests() {
+        return runs.size();
+    }
 }

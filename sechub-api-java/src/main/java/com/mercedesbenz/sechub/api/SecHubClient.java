@@ -8,6 +8,7 @@ import java.net.URI;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.Callable;
@@ -79,6 +80,8 @@ public class SecHubClient {
 
     private WorkaroundProjectApi workaroundProjectApi;
 
+    private List<SecHubClientListener> secHubClientListeners;
+
     public SecHubClient(URI serverUri, String username, String apiToken) {
         this(serverUri, username, apiToken, false);
     }
@@ -101,6 +104,31 @@ public class SecHubClient {
         workaroundProjectApi = new WorkaroundProjectApi(getApiClient());
 
         conversionHelper = new OpenApiSecHubClientConversionHelper(adminApi);
+        secHubClientListeners = new LinkedList<>();
+    }
+
+    /**
+     * Adds an listener to the client. For some action on client side the listener
+     * will be informed. A listener can be added only one time no matter how many
+     * times this method is called.
+     *
+     * @param listener
+     */
+    public void addListener(SecHubClientListener listener) {
+        if (secHubClientListeners.contains(listener)) {
+            /* already added - ignore */
+            return;
+        }
+        this.secHubClientListeners.add(listener);
+    }
+
+    /**
+     * Removes a listener from the client (if added).
+     *
+     * @param listener
+     */
+    public void removeListener(SecHubClientListener listener) {
+        this.secHubClientListeners.remove(listener);
     }
 
     private ApiClient getApiClient() {
@@ -183,9 +211,14 @@ public class SecHubClient {
         Path uploadDirectory = runOrFail(() -> Files.createTempDirectory("sechub_client_upload"), "Temp directory creation was not possible");
         ArchivesCreationResult createArchiveResult = runOrFail(() -> archiveSupport.createArchives(configuration, workingDirectory, uploadDirectory),
                 "Cannot create archives!");
+
+        inform((listener) -> listener.beforeUpload(jobUUID, configuration, createArchiveResult));
+
         try {
             uploadSources(projectId, jobUUID, createArchiveResult);
             uploadBinaries(projectId, jobUUID, createArchiveResult);
+
+            inform((listener) -> listener.afterUpload(jobUUID, configuration, createArchiveResult));
 
         } finally {
             LOG.debug("Remove temporary data from: {}", uploadDirectory);
@@ -396,6 +429,8 @@ public class SecHubClient {
 
     public SecHubReport downloadSecHubReportAsJson(String projectId, UUID jobUUID) throws SecHubClientException {
         SecHubReport report = runOrFail(() -> workaroundProjectApi.userDownloadsJobReport(projectId, jobUUID.toString()), "Download SecHub report (JSON)");
+        inform((listener) -> listener.afterReportDownload(jobUUID, report));
+
         return report;
     }
 
@@ -441,4 +476,15 @@ public class SecHubClient {
         }
     }
 
+    private void inform(SecHubClientListenerCaller r) {
+        for (SecHubClientListener listener : secHubClientListeners) {
+            r.inform(listener);
+        }
+    }
+
+    private interface SecHubClientListenerCaller {
+
+        public void inform(SecHubClientListener listener);
+
+    }
 }

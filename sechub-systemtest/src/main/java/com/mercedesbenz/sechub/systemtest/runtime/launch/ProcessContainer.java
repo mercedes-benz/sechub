@@ -1,5 +1,6 @@
 package com.mercedesbenz.sechub.systemtest.runtime.launch;
 
+import java.io.File;
 import java.util.UUID;
 
 import org.slf4j.Logger;
@@ -12,7 +13,7 @@ import com.mercedesbenz.sechub.systemtest.runtime.SystemTestExecutionState;
 public class ProcessContainer {
 
     private static final Logger LOG = LoggerFactory.getLogger(ProcessContainer.class);
-    private static long amountOfContainers;
+
     int exitValue;
     String errorMessage;
     String outputMessage;
@@ -27,17 +28,35 @@ public class ProcessContainer {
     private boolean timedOut;
     private UUID uuid;
     private SystemTestExecutionState systemTestExecutionState;
+    private File targetFile;
 
-    public ProcessContainer(ScriptDefinition scriptDefinition, SystemTestExecutionState state) {
-
+    /**
+     * Creates a process container object which contains information about the
+     * process, definitions and more which are stored at runtime in a file .It
+     * represents the state of the process
+     *
+     * @param number           the number of the process container
+     * @param scriptDefinition configuration for the script to execute
+     * @param state            the state of the system test execution
+     * @param targetFile       the file which will be executed by the process
+     */
+    public ProcessContainer(int number, ScriptDefinition scriptDefinition, SystemTestExecutionState state, File targetFile) {
+        if (scriptDefinition == null) {
+            throw new IllegalArgumentException("script definition must be defined but is null!");
+        }
+        if (targetFile == null) {
+            throw new IllegalArgumentException("target file must be defined but is null!");
+        }
         this.stillRunning = true;
         this.scriptDefinition = scriptDefinition;
         this.uuid = UUID.randomUUID();
         this.systemTestExecutionState = state;
+        this.targetFile = targetFile;
+        this.number = number;
+    }
 
-        /* additional stuff to have an ordering of the created process containers */
-        amountOfContainers++;
-        this.number = amountOfContainers;
+    public File getTargetFile() {
+        return targetFile;
     }
 
     public SystemTestExecutionState getSystemTestExecutionState() {
@@ -85,18 +104,19 @@ public class ProcessContainer {
 
     private void waitWhileTrue(String info, WaitForNecessary waitForNecessary, long millisecondsForOneWait, int maximumWaits) {
 
-        int waited = 0;
+        int amountOfWaits = 0;
 
         while (waitForNecessary.waitIsStillNecessary()) {
             // give system IO chance to write stream data to disk
             try {
-                waited++;
-                LOG.debug("{} - Waiting ({}) {} milliseconds", info, waited, millisecondsForOneWait);
+                amountOfWaits++;
+                LOG.debug("{} - Waiting ({}) {} milliseconds", info, amountOfWaits, millisecondsForOneWait);
 
                 Thread.sleep(millisecondsForOneWait);
 
-                if (waited >= maximumWaits) {
-                    LOG.warn("{} - {} waits done for container {}, maximum {} reached - will skip here.", info, waited, uuid, maximumWaits);
+                if (amountOfWaits >= maximumWaits) {
+                    LOG.warn("{} - Waited {} * {} milliseconds for process container {}, maximum of {} wait times is reached - will skip here.", info,
+                            amountOfWaits, millisecondsForOneWait, uuid, maximumWaits);
                     return;
                 }
             } catch (InterruptedException e) {
@@ -150,6 +170,9 @@ public class ProcessContainer {
         return pid == -1 || exitValue < 0 || exitValue > 0;
     }
 
+    /**
+     * If the process is still alive it will be destroyed
+     */
     public void terminateProcess() {
         if (process.isAlive()) {
             process.destroy();

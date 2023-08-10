@@ -77,7 +77,7 @@ class SystemTestFrameworkIntTest {
                     secHub().
                         comment("We do not define start/stop here, because reuse running local SecHub server").
                         url(new URL("https://localhost:"+SECHUB_PORT)).
-                        admin(toSecretEnvVariable(ENV_TEST_INTTEST_ADMIN_USERID),toSecretEnvVariable(ENV_TEST_INTTEST_ADMIN_APITOKEN)).
+                        admin(toEnvVariable(ENV_TEST_INTTEST_ADMIN_USERID),toSecretEnvVariable(ENV_TEST_INTTEST_ADMIN_APITOKEN)).
                         /*
                          * We do not define any steps here - developers must have started the
                          * integration test SecHub server locally in IDE
@@ -99,7 +99,7 @@ class SystemTestFrameworkIntTest {
                     addSolution("PDS_INTTEST_PRODUCT_CODESCAN").
                         url(new URL("https://localhost:"+PDS_PORT)).
                         comment("We do not define start/stop here, because reuse running local PDS server").
-                        techUser(toSecretEnvVariable(ENV_TEST_INTTEST_PDS_TECHUSER_USERID), toSecretEnvVariable(ENV_TEST_INTTEST_PDS_TECHUSER_APITOKEN)).
+                        techUser(toEnvVariable(ENV_TEST_INTTEST_PDS_TECHUSER_USERID), toSecretEnvVariable(ENV_TEST_INTTEST_PDS_TECHUSER_APITOKEN)).
                         /*
                          * We do not define any steps here - the PDS and SecHub instances
                          * must be started already.
@@ -169,7 +169,7 @@ class SystemTestFrameworkIntTest {
                 localSetup().
                     secHub().
                         url(new URL("https://localhost:"+SECHUB_PORT)).
-                        admin(toSecretEnvVariable(ENV_TEST_INTTEST_ADMIN_USERID),toSecretEnvVariable(ENV_TEST_INTTEST_ADMIN_APITOKEN)).
+                        admin(toEnvVariable(ENV_TEST_INTTEST_ADMIN_USERID),toSecretEnvVariable(ENV_TEST_INTTEST_ADMIN_APITOKEN)).
                         /*
                          * We do not define any steps here - developers must have started the
                          * integration test SecHub server locally in IDE
@@ -190,7 +190,7 @@ class SystemTestFrameworkIntTest {
                     addSolution("PDS_INTTEST_PRODUCT_CODESCAN").
                         url(new URL("https://localhost:"+PDS_PORT)).
 
-                        techUser(toSecretEnvVariable(ENV_TEST_INTTEST_PDS_TECHUSER_USERID),toSecretEnvVariable(ENV_TEST_INTTEST_PDS_TECHUSER_APITOKEN)).
+                        techUser(toEnvVariable(ENV_TEST_INTTEST_PDS_TECHUSER_USERID),toSecretEnvVariable(ENV_TEST_INTTEST_PDS_TECHUSER_APITOKEN)).
                         /*
                          * We do not define any steps here - the PDS and SecHub instances
                          * must be started already.

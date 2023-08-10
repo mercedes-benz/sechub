@@ -16,7 +16,7 @@ public class PDSSolutionDefinition extends AbstractDefinition {
 
     private List<ExecutionStepDefinition> start = new ArrayList<>();
 
-    private Optional<Boolean> waitForAvailable = Optional.ofNullable(null);
+    private Optional<Boolean> waitForAvailable = Optional.empty();
 
     private List<ExecutionStepDefinition> stop = new ArrayList<>();
 

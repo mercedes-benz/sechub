@@ -38,6 +38,8 @@ import com.mercedesbenz.sechub.systemtest.template.SystemTestTemplateEngine;
 
 public class SystemTestRuntimeContext {
 
+    private static final boolean TRUST_ALL = true;
+
     private static final Logger LOG = LoggerFactory.getLogger(SystemTestRuntimeContext.class);
 
     SystemTestConfiguration originConfiguration;
@@ -293,7 +295,8 @@ public class SystemTestRuntimeContext {
             String userId = getTemplateEngine().replaceSecretEnvironmentVariablesWithValues(credentials.getUserId(), getEnvironmentProvider());
             String apiToken = getTemplateEngine().replaceSecretEnvironmentVariablesWithValues(credentials.getApiToken(), getEnvironmentProvider());
 
-            client = new SecHubClient(serverUri, userId, apiToken, true);
+            client = new SecHubClient(serverUri, userId, apiToken, TRUST_ALL);
+            client.addListener(new ArtifactStorageSecHubClientListener(this));
             LOG.info("Created SecHub client for user: '{}', apiToken: '{}'", client.getUsername(), "*".repeat(client.getSealedApiToken().length()));
         } catch (RuntimeException e) {
             throw new WrongConfigurationException("URL not defined correct local sechub server: " + e.getMessage(), this);

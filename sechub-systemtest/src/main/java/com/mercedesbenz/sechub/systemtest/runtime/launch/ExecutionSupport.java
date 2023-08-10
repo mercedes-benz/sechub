@@ -8,6 +8,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -36,6 +37,7 @@ public class ExecutionSupport {
     private LocationSupport locationSupport;
     private TextFileWriter textFileWriter;
     private TextFileReader textFileReader;
+    private AtomicInteger nextProcessContainerNumber = new AtomicInteger(1);
 
     public ExecutionSupport(EnvironmentProvider provider, LocationSupport locationSupport) {
         requireNonNull(locationSupport);
@@ -68,9 +70,9 @@ public class ExecutionSupport {
             throw new IllegalStateException("Script definition has no script path set!");
         }
         File workingDirectory = resolveWorkingDirectory(scriptDefinition, scriptPath);
-        assertScriptCanBeExecuted(scriptPath, workingDirectory);
+        File targetFile = assertScriptCanBeExecuted(scriptPath, workingDirectory);
 
-        ProcessContainer processContainer = new ProcessContainer(scriptDefinition, state);
+        ProcessContainer processContainer = new ProcessContainer(nextProcessContainerNumber.getAndIncrement(), scriptDefinition, state, targetFile);
 
         Path outputFile = locationSupport.ensureOutputFile(processContainer);
         Path errorFile = locationSupport.ensureErrorFile(processContainer);
@@ -150,7 +152,7 @@ public class ExecutionSupport {
         return workingDirectory;
     }
 
-    private void assertScriptCanBeExecuted(String scriptPath, File workingDirectory) {
+    private File assertScriptCanBeExecuted(String scriptPath, File workingDirectory) {
         File targetFile = new File(workingDirectory, scriptPath);
         String canonicalPath;
         try {
@@ -170,6 +172,7 @@ public class ExecutionSupport {
         if (!Files.isExecutable(targetFile.toPath())) {
             throw new IllegalStateException("The target file does exist, but is not executable: " + targetFile.getAbsolutePath());
         }
+        return targetFile;
     }
 
     private void writeProcessContainerExecutionErrorFile(File workingDirectory, ProcessContainer processContainer, IOException reason) {

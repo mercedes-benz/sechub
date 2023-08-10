@@ -39,8 +39,9 @@ public class SystemTestRuntimeTestAssertion {
         if (sechubResultAssert.getHasTrafficLight().isPresent()) {
             TrafficLight expected = sechubResultAssert.getHasTrafficLight().get();
             if (!expected.equals(report.getTrafficLight())) {
-                failWithMessage("SecHub report not as wanted. Expected was traffic light: " + expected + ", but result was: " + report.getTrafficLight()
-                        + "\nSecHub report was:\n" + reportAsJson, testContext);
+                testContext.markAsFailed(
+                        "SecHub report not as wanted. Expected was traffic light: " + expected + ", but result was: " + report.getTrafficLight(),
+                        "SecHub report was:\n" + reportAsJson);
                 return;
             }
 
@@ -62,8 +63,8 @@ public class SystemTestRuntimeTestAssertion {
             TemplateMatchResult matchResult = templateSupport.calculateTemplateMatching(template, reportAsJson);
 
             if (!matchResult.isMatching()) {
-                failWithMessage("The SecHub report content was not equal/matched not the given test template file.\n\nChanged template:\n"
-                        + matchResult.getTransformedTemplate() + "\n\nChanged report:\n" + matchResult.getTransformedContent(), testContext);
+                testContext.markAsFailed("The SecHub report content was not equal/matched not the given test template file.",
+                        "Changed template:\n" + matchResult.getTransformedTemplate() + "\n\nChanged report:\n" + matchResult.getTransformedContent());
                 return;
             }
 
@@ -75,16 +76,11 @@ public class SystemTestRuntimeTestAssertion {
 
             for (String stringWhichMustBeContained : containingStrings) {
                 if (!reportAsJson.contains(stringWhichMustBeContained)) {
-                    failWithMessage("The SecHub report did not contain expected string:" + stringWhichMustBeContained + ".\n\nReport was:\n" + reportAsJson,
-                            testContext);
+                    testContext.markAsFailed("The SecHub report did not contain expected string:" + stringWhichMustBeContained, "Report was:\n" + reportAsJson);
                 }
             }
         }
 
-    }
-
-    private void failWithMessage(String message, TestEngineTestContext testContext) {
-        testContext.markAsFailed(message);
     }
 
 }
