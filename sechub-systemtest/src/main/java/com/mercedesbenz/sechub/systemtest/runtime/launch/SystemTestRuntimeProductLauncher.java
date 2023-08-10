@@ -38,6 +38,9 @@ public class SystemTestRuntimeProductLauncher {
 
     private static final Logger LOG = LoggerFactory.getLogger(SystemTestRuntimeProductLauncher.class);
 
+    private static final int MAX_AMOUNT_OF_ADMIN_AVAILABLE_CHECKS = 60;
+    private static final int MILLISECONDS_TO_WAIT_FOR_NEXT_ADMIN_AVAILABLE_CHECK = 1000;
+
     private ExecutionSupport execSupport;
 
     public SystemTestRuntimeProductLauncher(ExecutionSupport executionSupport) {
@@ -176,7 +179,7 @@ public class SystemTestRuntimeProductLauncher {
         try {
             long start = System.currentTimeMillis();
             LOG.info("Wait until SecHub server at {} is alive - will wait {} seconds (max).", client.getServerUri(), maximumSecondsToWaitForSecHubAlive);
-            while (!client.checkIsServerAlive()) {
+            while (!client.isServerAlive()) {
                 Thread.sleep(MILLISECONDS_TO_WAIT_FOR_NEXT_ALIVE_CHECK());
                 long millisecondsWaited = System.currentTimeMillis() - start;
                 boolean timedOut = millisecondsWaited > maximumSecondsToWaitForSecHubAlive * ONE_SECOND_IN_MILLISECONDS;
@@ -192,6 +195,33 @@ public class SystemTestRuntimeProductLauncher {
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
         }
+    }
+
+    public void waitUntilSecHubAdminAvailable(SystemTestRuntimeContext context) {
+        if (!context.isLocalRun()) {
+            return;
+        }
+        SecHubClient sechubClient = context.getLocalAdminSecHubClient();
+        boolean adminAccountAvailable = false;
+
+        for (int i = 0; !adminAccountAvailable && i < MAX_AMOUNT_OF_ADMIN_AVAILABLE_CHECKS; i++) {
+            try {
+                sechubClient.fetchSecHubStatus();
+                adminAccountAvailable = true;
+            } catch (SecHubClientException e) {
+                try {
+                    Thread.sleep(MILLISECONDS_TO_WAIT_FOR_NEXT_ADMIN_AVAILABLE_CHECK);
+                } catch (InterruptedException e1) {
+                    Thread.currentThread().interrupt();
+                }
+            }
+        }
+
+        if (!adminAccountAvailable) {
+            LOG.error("Even after {} tries and waiting {} milliseconds it was not possible to fetch SecHub status as admin",
+                    MAX_AMOUNT_OF_ADMIN_AVAILABLE_CHECKS, MILLISECONDS_TO_WAIT_FOR_NEXT_ADMIN_AVAILABLE_CHECK);
+        }
+        LOG.info("Was able to fetch SecHub status as administrator.");
     }
 
     private int MILLISECONDS_TO_WAIT_FOR_NEXT_ALIVE_CHECK() {

@@ -56,8 +56,10 @@ class SystemTestLocalGoSecManualTest implements ManualTest {
             configFile = "systemtest_gosec_example-with-sechub-integrationtest-server.json";
         }else if ("docker".equals(variant)) {
             configFile="systemtest_gosec_example.json";
+        }else if ("docker-mock".equals(variant)) {
+            configFile="systemtest_gosec_mock_example.json";
         }else {
-            throw new RuntimeException("this variant is not supported:"+variant);
+            throw new RuntimeException("this variant is not supported:"+variant+". Please use 'docker, docker-mock or integrationtest'");
         }
         LOG.info("VARIANT: {}", variant);
         LOG.info("CONFIG : {}", configFile);

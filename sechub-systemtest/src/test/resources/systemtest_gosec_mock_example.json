@@ -13,7 +13,7 @@
         } ],
         "configure" : {
           "executors" : [ {
-            "pdsProductId" : "PDS_GOSEC",
+            "pdsProductId" : "PDS_GOSEC_MOCK",
             "name" : "system-test-codescan-gosec",
             "parameters" : {
                 // we enhance pds adapter resilience here, because we have no access to
@@ -81,9 +81,9 @@
     },
     "assert" : [ {
       "sechubResult" : {
-        "hasTrafficLight" : "GREEN",
+        "hasTrafficLight" : "RED",
         "containsStrings" : {
-          "values" : [ "result", "SUCCESS", "jobUUID", "reportVersion" ]
+          "values" : [ "Potential file inclusion via variable", "go-test-bench/internal/injection/cmdi/cmd-injection.go" ]
         }
       } 
     } ]

@@ -55,7 +55,7 @@ public class OpenAPITestTool {
     private void testAnonymousApi(SecHubClient client) throws Exception {
         logTitle("Start testing anonymous API");
 
-        boolean serverAlive = client.checkIsServerAlive();
+        boolean serverAlive = client.isServerAlive();
 
         assumeEquals(true, serverAlive, "SecHub server is alive");
 

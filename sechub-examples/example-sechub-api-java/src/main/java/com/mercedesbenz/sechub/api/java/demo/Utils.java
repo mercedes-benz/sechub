@@ -11,7 +11,7 @@ public class Utils {
 
     public static void assertEquals(Object obj1, Object obj2, String message) {
         if (!Objects.equals(obj1, obj2)) {
-            throw new IllegalStateException("Objects are not equal!" + message);
+            throw new IllegalStateException(message+" - Objects are not equal!");
         }
     }
 
@@ -38,6 +38,15 @@ public class Utils {
     }
 
     public static void logSuccess(String text) {
-        LOG.info("  ✔️ {}", text);
+        LOG.info("  ✅ {}", text);
     }
+
+    public static void logWarn(String text) {
+        LOG.warn("  ⚠️ {}", text);
+    }
+
+    public static void logError(String text, Throwable t) {
+        LOG.error("  🔥 {}", text, t);
+    }
+
 }

@@ -2,7 +2,6 @@ package com.mercedesbenz.sechub.api.java.demo.playground;
 
 import static com.mercedesbenz.sechub.api.java.demo.Utils.*;
 
-import java.math.BigDecimal;
 import java.util.List;
 import java.util.UUID;
 
@@ -15,6 +14,7 @@ import com.mercedesbenz.sechub.api.OpenUserSignup;
 import com.mercedesbenz.sechub.api.Project;
 import com.mercedesbenz.sechub.api.SecHubClient;
 import com.mercedesbenz.sechub.api.SecHubClientException;
+import com.mercedesbenz.sechub.api.SecHubStatus;
 import com.mercedesbenz.sechub.api.UserSignup;
 
 public class AdminApiPlayground {
@@ -33,8 +33,7 @@ public class AdminApiPlayground {
     public void run() throws Exception {
         logTitle("Start testing admin API");
 
-//        Object result = adminApi.adminChecksServerVersion();
-//        assumeEquals("0.0.0", result, "Check server version");
+        checkStatus();
 
         signupNewUser();
         checkUserSignupListForNewUser();
@@ -50,8 +49,21 @@ public class AdminApiPlayground {
         client.addExecutorConfigurationToProfile(uuid, profileId);
 
         logSuccess("Added executor configuration with uuid: " + uuid + " to profile : " + profileId);
-        
 
+    }
+
+    private void checkStatus() throws SecHubClientException {
+        client.triggerRefreshOfSecHubSchedulerStatus();
+        logSuccess("Triggered refresh of sechub scheduler status");
+        waitMilliseconds(500);
+
+        fetchAndLogSechubStatus();
+
+    }
+
+    private void fetchAndLogSechubStatus() throws SecHubClientException {
+        SecHubStatus status = client.fetchSecHubStatus();
+        logSuccess("Sechub status: " + status);
     }
 
     private String createProfile() throws SecHubClientException {

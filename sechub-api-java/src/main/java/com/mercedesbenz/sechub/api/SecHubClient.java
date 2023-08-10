@@ -39,6 +39,7 @@ import com.mercedesbenz.sechub.api.internal.gen.model.OpenApiListOfExecutorConfi
 import com.mercedesbenz.sechub.api.internal.gen.model.OpenApiListOfExecutorConfigurationsExecutorConfigurationsInner;
 import com.mercedesbenz.sechub.api.internal.gen.model.OpenApiProjectDetails;
 import com.mercedesbenz.sechub.api.internal.gen.model.OpenApiScanJob;
+import com.mercedesbenz.sechub.api.internal.gen.model.OpenApiStatusInformationInner;
 import com.mercedesbenz.sechub.commons.archive.ArchiveSupport;
 import com.mercedesbenz.sechub.commons.archive.ArchiveSupport.ArchivesCreationResult;
 import com.mercedesbenz.sechub.commons.core.RunOrFail;
@@ -271,9 +272,30 @@ public class SecHubClient {
     }
 
     /* ++++++++++++++++++++++++++++++++++++++++++++++++++++ */
+    /* + ................Status........................... + */
+    /* ++++++++++++++++++++++++++++++++++++++++++++++++++++ */
+    public SecHubStatus fetchSecHubStatus() throws SecHubClientException {
+        SecHubStatus status = new SecHubStatus();
+        runOrFail(() -> {
+            List<OpenApiStatusInformationInner> statusInformationList = adminApi.adminListsStatusInformation();
+            for (OpenApiStatusInformationInner info : statusInformationList) {
+                String key = info.getKey();
+                if (key != null) {
+                    status.statusInformation.put(key, info.getValue());
+                }
+            }
+        }, "Was not able to fetch SecHub status!");
+        return status;
+    }
+
+    public void triggerRefreshOfSecHubSchedulerStatus() throws SecHubClientException {
+        runOrFail(() -> adminApi.adminTriggersRefreshOfSchedulerStatus(), "Was not able to trigger scheduler refresh");
+    }
+
+    /* ++++++++++++++++++++++++++++++++++++++++++++++++++++ */
     /* + ................Check........................... + */
     /* ++++++++++++++++++++++++++++++++++++++++++++++++++++ */
-    public boolean checkIsServerAlive() throws SecHubClientException {
+    public boolean isServerAlive() throws SecHubClientException {
         try {
             anonymousApi.anonymousCheckAliveGet();
             return true;
@@ -422,7 +444,7 @@ public class SecHubClient {
         return uuid;
     }
 
-    public JobStatus fetchStatus(String projectId, UUID jobUUID) throws SecHubClientException {
+    public JobStatus fetchJobStatus(String projectId, UUID jobUUID) throws SecHubClientException {
         OpenApiJobStatus status = runOrFail(() -> projectApi.userChecksJobStatus(projectId, jobUUID.toString()), "Fetch status");
         return JobStatus.from(status);
     }

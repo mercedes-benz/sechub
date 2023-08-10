@@ -97,8 +97,12 @@ public class SystemTestRuntime {
             /* Setup phase 1 : SecHub */
             execOrFail(() -> productLauncher.startSecHub(context), "Start SecHub");
             execOrFail(() -> productLauncher.waitUntilSecHubAvailable(context), "Wait for SecHub available");
-            
-            /* Setup phase 2 : PDS solutions - it is ensured that SecHub has been started (if common network is necessary) */
+            execOrFail(() -> productLauncher.waitUntilSecHubAdminAvailable(context), "Wait for SecHub admin available");
+
+            /*
+             * Setup phase 2 : PDS solutions - it is ensured that SecHub has been started
+             * (if common network is necessary)
+             */
             execOrFail(() -> productLauncher.startPDSSolutions(context), "Start PDS solutions");
             execOrFail(() -> productLauncher.waitUntilPDSSolutionsAvailable(context), "Wait for PDS solutions available");
 

@@ -163,7 +163,7 @@ public class SystemTestRuntimeTestEngine {
             LOG.debug("Skip job status fetching because dry run");
         } else {
             long started = System.currentTimeMillis();
-            while (!clientForScheduling.fetchStatus(projectId, jobUUID).getResult().hasFinished()) {
+            while (!clientForScheduling.fetchJobStatus(projectId, jobUUID).getResult().hasFinished()) {
                 long diff = System.currentTimeMillis() - started;
                 if (diff > MILLISECONDS_TO_WAIT_FOR_JOB_FINISHED) {
                     throw new SystemTestRuntimeException("Job status for " + jobUUID + " took " + diff + " milliseconds (time out)");
