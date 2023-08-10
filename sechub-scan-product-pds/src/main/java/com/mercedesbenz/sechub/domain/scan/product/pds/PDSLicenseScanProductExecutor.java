@@ -22,6 +22,7 @@ import com.mercedesbenz.sechub.sharedkernel.metadata.MetaDataInspection;
 
 @Service
 public class PDSLicenseScanProductExecutor extends AbstractPDSProductExecutor {
+    
     private static final Logger LOG = LoggerFactory.getLogger(PDSLicenseScanProductExecutor.class);
 
     public PDSLicenseScanProductExecutor() {
@@ -39,7 +40,11 @@ public class PDSLicenseScanProductExecutor extends AbstractPDSProductExecutor {
         SecHubExecutionContext context = data.getSechubExecutionContext();
 
         PDSStorageContentProvider contentProvider = contentProviderFactory.createContentProvider(context, configSupport, getScanType());
-
+        if (!configSupport.isGivenStorageSupportedByPDSProduct(contentProvider)) {
+            LOG.info("Adapter execution skipped, because given storage is not supported by executor PDS product: {}", configSupport.getDataTypesSupportedByPDSAsString());
+            return null;
+        }
+        
         ProductResult result = resilientActionExecutor.executeResilient(() -> {
 
             try (InputStream sourceCodeZipFileInputStreamOrNull = contentProvider.getSourceZipFileInputStreamOrNull();

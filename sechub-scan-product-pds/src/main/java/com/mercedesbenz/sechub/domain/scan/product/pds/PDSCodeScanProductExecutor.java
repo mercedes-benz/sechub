@@ -40,6 +40,10 @@ public class PDSCodeScanProductExecutor extends AbstractPDSProductExecutor {
         SecHubExecutionContext context = data.getSechubExecutionContext();
 
         PDSStorageContentProvider contentProvider = contentProviderFactory.createContentProvider(context, configSupport, getScanType());
+        if (!configSupport.isGivenStorageSupportedByPDSProduct(contentProvider)) {
+            LOG.info("Adapter execution skipped, because given storage is not supported by executor PDS product: {}", configSupport.getDataTypesSupportedByPDSAsString());
+            return null;
+        }
 
         ProductResult result = resilientActionExecutor.executeResilient(() -> {
 
