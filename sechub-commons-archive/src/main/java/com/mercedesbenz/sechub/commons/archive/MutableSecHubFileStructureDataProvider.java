@@ -7,6 +7,8 @@ import java.util.LinkedHashSet;
 import java.util.Set;
 import java.util.TreeSet;
 
+import com.mercedesbenz.sechub.commons.model.ScanType;
+
 public class MutableSecHubFileStructureDataProvider implements SecHubFileStructureDataProvider {
 
     private Set<String> acceptedReferenceNames = new LinkedHashSet<>();
@@ -16,6 +18,8 @@ public class MutableSecHubFileStructureDataProvider implements SecHubFileStructu
     private Set<String> excludeFilePatterns = new TreeSet<>();
 
     private Set<String> includeFilePatterns = new TreeSet<>();
+
+    private ScanType scanType;
 
     public void setRootFolderAccepted(boolean rootFolderAccepted) {
         this.rootFolderAccepted = rootFolderAccepted;
@@ -60,6 +64,14 @@ public class MutableSecHubFileStructureDataProvider implements SecHubFileStructu
             return;
         }
         this.excludeFilePatterns.addAll(excludeFilePatterns);
+    }
+
+    public void setScanType(ScanType scanType) {
+        this.scanType = scanType;
+    }
+
+    public ScanType getScanType() {
+        return scanType;
     }
 
 }

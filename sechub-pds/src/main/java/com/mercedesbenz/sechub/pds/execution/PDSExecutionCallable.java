@@ -23,8 +23,8 @@ import org.springframework.dao.OptimisticLockingFailureException;
 
 import com.mercedesbenz.sechub.commons.model.SecHubMessage;
 import com.mercedesbenz.sechub.commons.model.SecHubMessagesList;
-import com.mercedesbenz.sechub.pds.PDSJSONConverterException;
 import com.mercedesbenz.sechub.pds.PDSLogConstants;
+import com.mercedesbenz.sechub.pds.commons.core.PDSJSONConverterException;
 import com.mercedesbenz.sechub.pds.job.JobConfigurationData;
 import com.mercedesbenz.sechub.pds.job.PDSCheckJobStatusService;
 import com.mercedesbenz.sechub.pds.job.PDSGetJobStreamService;
@@ -48,6 +48,8 @@ import com.mercedesbenz.sechub.pds.util.PDSResilientRetryExecutor.ExceptionThrow
  *
  */
 class PDSExecutionCallable implements Callable<PDSExecutionResult> {
+
+    private static final int MAXIMUM_START_TRUNCATE_CHARS = 1024;
 
     private static final Logger LOG = LoggerFactory.getLogger(PDSExecutionCallable.class);
 
@@ -88,6 +90,9 @@ class PDSExecutionCallable implements Callable<PDSExecutionResult> {
     public PDSExecutionResult call() throws Exception {
         LOG.info("Prepare execution of PDS job {}", pdsJobUUID);
         PDSExecutionResult result = new PDSExecutionResult();
+
+        String productPath = null;
+
         try {
             MDC.clear();
             MDC.put(PDSLogConstants.MDC_PDS_JOB_UUID, Objects.toString(pdsJobUUID));
@@ -104,7 +109,8 @@ class PDSExecutionCallable implements Callable<PDSExecutionResult> {
             PDSWorkspacePreparationResult preparationResult = pepareWorkspace(config, data);
             if (preparationResult.isLauncherScriptExecutable()) {
 
-                createProcess(pdsJobUUID, config, getWorkspaceService().getProductPathFor(config));
+                productPath = getWorkspaceService().getProductPathFor(config);
+                createProcess(pdsJobUUID, config, productPath);
                 waitForProcessEndAndGetResultByFiles(result, pdsJobUUID, config, minutesToWaitForResult);
 
             } else {
@@ -141,8 +147,27 @@ class PDSExecutionCallable implements Callable<PDSExecutionResult> {
 
         if (result.failed) {
             PDSGetJobStreamService pdsGetJobStreamService = serviceCollection.getPdsGetJobStreamService();
-            LOG.info("Job error stream = {}", pdsGetJobStreamService.getJobErrorStreamTruncated(pdsJobUUID));
-            LOG.info("Job output stream = {}", pdsGetJobStreamService.getJobOutputStreamTruncated(pdsJobUUID));
+            String truncatedErrorStream = pdsGetJobStreamService.getJobErrorStreamTruncated(pdsJobUUID);
+            String truncatedOutputStream = pdsGetJobStreamService.getJobOutputStreamTruncated(pdsJobUUID);
+
+            int lastChars = PDSGetJobStreamService.TRUNCATED_STREAM_SIZE;
+            String message = """
+                    Execution of PDS job %s failed!
+
+                    Product path: %s
+                    Exit code   : %d
+
+                    Job error stream (last %s chars):
+                    ------------------------------------
+                    %s
+
+                    Job output stream (last %s chars):
+                    ------------------------------------
+                    %s
+
+                    """.formatted(pdsJobUUID, productPath, result.exitCode, lastChars, truncatedErrorStream, lastChars, truncatedOutputStream);
+
+            LOG.error(message);
         }
 
         return result;
@@ -227,44 +252,57 @@ class PDSExecutionCallable implements Callable<PDSExecutionResult> {
 
         if (file.exists()) {
             LOG.debug("Result file found - will read data and set as result");
+
             result.result = FileUtils.readFileToString(file, encoding);
         } else {
-            LOG.debug("Result file NOT found - will fetch system out and and err and use this as to set result");
-            /*
-             * no result file available - so snap error and system out and paste as result
-             */
+            LOG.debug("Result file NOT found - will append output and error streams as result");
+
             result.failed = true;
             result.result = "Result file not found at " + file.getAbsolutePath();
 
-            String shrinkedOutputStream = createShrinkedOutput(result, jobUUID, encoding);
-            String shrinkedErrorStream = createShrinkedError(result, jobUUID, encoding);
+            int max = MAXIMUM_START_TRUNCATE_CHARS;
 
-            LOG.error("job {} wrote no result file - here part of console log:\noutput stream:\n{}\nerror stream:\n{}", jobUUID, shrinkedOutputStream,
-                    shrinkedErrorStream);
+            String shrinkedStartOfOutputStream = appendOutputStreamToResultAndReturnShrinkedVariant(result, jobUUID, encoding, max);
+            String shrinkedStartOfErrorStream = appendErrorStreamToResultAndReturnShrinkedVariant(result, jobUUID, encoding, max);
+
+            String message = """
+                    Execution of PDS job %s created no result file!
+
+                    Job error stream (first %d chars):
+                    ---------------------------------------
+                    %s
+
+                    Job output stream (first %d chars):
+                    ----------------------------------------
+                    %s
+
+                    """.formatted(pdsJobUUID, max, shrinkedStartOfErrorStream, max, shrinkedStartOfOutputStream);
+
+            LOG.error(message);
 
         }
 
     }
 
-    private String createShrinkedError(PDSExecutionResult result, UUID jobUUID, String encoding) throws IOException {
+    private String appendErrorStreamToResultAndReturnShrinkedVariant(PDSExecutionResult result, UUID jobUUID, String encoding, int max) throws IOException {
         String shrinkedErrorStream = null;
         File systemErrorFile = getWorkspaceService().getSystemErrorFile(jobUUID);
         if (systemErrorFile.exists()) {
             String error = FileUtils.readFileToString(systemErrorFile, encoding);
             result.result += "\nErrors:\n" + error;
-            shrinkedErrorStream = maximum1024chars(error);
+            shrinkedErrorStream = shrinkTo(error, max);
         }
         return shrinkedErrorStream;
     }
 
-    private String createShrinkedOutput(PDSExecutionResult result, UUID jobUUID, String encoding) throws IOException {
+    private String appendOutputStreamToResultAndReturnShrinkedVariant(PDSExecutionResult result, UUID jobUUID, String encoding, int max) throws IOException {
         File systemOutFile = getWorkspaceService().getSystemOutFile(jobUUID);
         String shrinkedOutputStream = null;
 
         if (systemOutFile.exists()) {
             String output = FileUtils.readFileToString(systemOutFile, encoding);
             result.result += "\nOutput:\n" + output;
-            shrinkedOutputStream = maximum1024chars(output);
+            shrinkedOutputStream = shrinkTo(output, max);
         }
         return shrinkedOutputStream;
     }
@@ -364,14 +402,14 @@ class PDSExecutionCallable implements Callable<PDSExecutionResult> {
         }
     }
 
-    private String maximum1024chars(String content) {
+    private String shrinkTo(String content, int max) {
         if (content == null) {
             return null;
         }
-        if (content.length() < 1024) {
+        if (content.length() < max) {
             return content;
         }
-        return content.substring(0, 1021) + "...";
+        return content.substring(0, max - 3) + "...";
     }
 
     private void createProcess(UUID jobUUID, PDSJobConfiguration config, String path) throws IOException {

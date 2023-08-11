@@ -13,7 +13,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.mercedesbenz.sechub.domain.schedule.ExecutionState;
+import com.mercedesbenz.sechub.commons.model.job.ExecutionState;
 
 @Service
 @Transactional(propagation = Propagation.REQUIRES_NEW)

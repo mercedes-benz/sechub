@@ -15,6 +15,7 @@ public class SecHubConfigurationModel {
     public static final String PROPERTY_CODE_SCAN = "codeScan";
     public static final String PROPERTY_LICENSE_SCAN = "licenseScan";
     public static final String PROPERTY_SCERET_SCAN = "secretScan";
+    public static final String PROPERTY_DATA = "data";
 
     private Optional<SecHubWebScanConfiguration> webScan = Optional.empty();
     private Optional<SecHubInfrastructureScanConfiguration> infraScan = Optional.empty();

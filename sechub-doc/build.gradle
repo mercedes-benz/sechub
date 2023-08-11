@@ -14,6 +14,9 @@ dependencies {
         'sechub-developertools',/* only tests or tools */
         'sechub-other',/* not java */
         'sechub-pds-solutions', /* only pds scripts*/
+        'sechub-pds-tools', /* only pds tooling + avoid cycles */
+        'sechub-api-java', /* the api project needs sechub-doc tests (and compile) for open api json files. So we may not have this as relation! */
+        'sechub-systemtest', /* avoid cyclic dependency, see AdoptedSystemTestDefaultFallbacks javadoc for more information */
         
         ]
     /* fetch all sub projects, except unwanted and all only used for testing */
@@ -23,8 +26,16 @@ dependencies {
             continue
         }
         def projectName = inspectedProject.name
-        if (projectName.endsWith('test')){
-            // test projects are always not wanted 
+        if (projectName.endsWith('test') ){
+            // test projects are always not wanted, except systemtest (we generate doc here as well)
+            continue
+        }
+        if (projectName.startsWith('deprecated')){
+            // we do not document deprecated parts
+            continue
+        }
+        if (projectName.startsWith('example')){
+            // we do not document example parts
             continue
         }
         if (projectName.endsWith('testframework')){

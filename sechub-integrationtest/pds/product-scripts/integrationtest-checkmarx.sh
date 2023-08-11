@@ -1,7 +1,9 @@
 #!/bin/bash 
 # SPDX-License-Identifier: MIT
 
-set -e
+set -eE  # same as: `set -o errexit -o errtrace`
+trap 'echo "ERROR: $BASH_SOURCE:$LINENO -> '"'"'$BASH_COMMAND'"'"' returned exit code: $?" >&2' ERR
+
 echo "###############################################"
 echo "# Start PDS checkmarx integration test script #"
 echo "###############################################"
