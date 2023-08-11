@@ -44,4 +44,20 @@ public class IOUtil {
         System.out.println("Restore: "+targetPath + "\nfrom backup file: "+sourcePath);
         Files.copy(sourcePath, targetPath, StandardCopyOption.REPLACE_EXISTING);
     }
+    
+    /**
+     * Copy a file to another location
+     * @sourcePath source path as string
+     * @targetPath target path as string
+     */
+    public static final void copyFile(String sourcePath, String targetPath) throws IOException{
+        
+        Path source = Paths.get(sourcePath);
+        Path target = Paths.get(targetPath);
+        
+        target.toFile().getParentFile().mkdirs();
+        
+        System.out.println("Copy: "+source + "\nto  : "+target);
+        Files.copy(source, target, StandardCopyOption.REPLACE_EXISTING);
+    }
 }

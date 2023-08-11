@@ -60,7 +60,7 @@ sourceSets {
     
 }
 
-def specFilePath = "$rootDir/sechub-doc/build/api-spec/openapi3.json"
+def specFilePath = "$projectDir/src/main/resources/reduced-openapi3.json"
 
 openApiValidate {
     inputSpec = "$specFilePath"

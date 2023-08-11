@@ -19,8 +19,9 @@ import org.slf4j.LoggerFactory;
  * The model classes shall be editable by users and are only overridden when
  * explicitly defined. The internal access classes are always newly generated.
  *
- * Remark: For that, we use no inheritance, but instead composition (public class calls
- * internal access class) to be able to replace even method signatures.
+ * Remark: For that, we use no inheritance, but instead composition (public
+ * class calls internal access class) to be able to replace even method
+ * signatures.
  *
  * @author Albert Tregnaghi
  *

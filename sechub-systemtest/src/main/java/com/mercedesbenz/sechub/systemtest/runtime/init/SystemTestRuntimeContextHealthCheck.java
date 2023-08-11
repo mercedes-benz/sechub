@@ -117,7 +117,8 @@ public class SystemTestRuntimeContextHealthCheck {
         }
     }
 
-    private void assertReferencesCorrectForLicenseScan(SystemTestRuntimeContext context, RunSecHubJobDefinition runSecHubJob, Set<String> existingReferenceIds) {
+    private void assertReferencesCorrectForLicenseScan(SystemTestRuntimeContext context, RunSecHubJobDefinition runSecHubJob,
+            Set<String> existingReferenceIds) {
         Optional<SecHubLicenseScanConfiguration> licenseConfigOpt = runSecHubJob.getLicenseScan();
         if (licenseConfigOpt.isPresent()) {
             assertReferenceIdsCorrect("license scan", context, existingReferenceIds, licenseConfigOpt.get().getNamesOfUsedDataConfigurationObjects());

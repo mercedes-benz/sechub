@@ -127,7 +127,7 @@ pipeline {
             }
             steps {
                 script{
-                    callGradleWrapper('documentation')
+                    callGradleWrapper('documentation -Dsechub.build.stage=all')
                 }
             }
         }

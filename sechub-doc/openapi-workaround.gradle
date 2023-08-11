@@ -4,8 +4,10 @@
 // http://docs.groovy-lang.org/latest/html/gapi/groovy/json/JsonSlurper.html
 import groovy.json.JsonSlurper
 import groovy.json.JsonOutput
+import groovy.json.JsonBuilder
 
 ext.openApiFile = "$buildDir/api-spec/openapi3.json"
+ext.reducedOpenApiFile = "$buildDir/api-spec/reduced-openapi3.json"
 ext.backupExtension = "origin.json"
 
 ext.stringType = new HashMap<>()
@@ -109,6 +111,75 @@ void writePrettyPrintedFile(openApiFile, jsonObject){
         new File(openApiFile).write(pretty)
 }
 
+/*
+ * Provide shrinked api file for SCM (git)
+ */
+void provideReducedOpenApiFile(){
+        // Copy the file to location inside SCM
+        //
+        // Explanation why this is necessary: when a developer does a fresh clone of the github 
+        // repository it shall be possible to import the projects into IDE without any compile errors.
+        // Because the java api client does need generated parts from open api generator it is  
+        // necessary to start the open api client generation to have the generat classes (we do not
+        // add those clasess to our git repo).
+        //
+        // But the open api file itself is also generated: It only exist when all RESTDoc tests 
+        // are executed sucessfully.
+        // 
+        // To have always the possibility to import the projects into our IDE - even when there 
+        // are failing tests - we create a copy of the open api file at another location (inside git)
+        // and use this for the generation.  Because (unfortunately) the open api generator
+        // creates examples with randum uuids inside the generated file, it does always change
+        // and would lead always to (unwanted) git changes.
+        // To handle this, we create a reproducible reduced version, which has no examples inside but 
+        // can be used for generation of java classes.
+        
+        // Load JSON
+        def jsonSlurper = new JsonSlurper() 
+        File jsonFile = new File(openApiFile)
+        
+        def i=0
+        def slurped = jsonSlurper.parse(jsonFile);
+        
+        /* now reduce each entry recursive */
+        slurped.each {
+            reduceRecursive(it)
+        }
+        
+        def parsedJsonDiff = new JsonBuilder(slurped)
+        
+        new File(reducedOpenApiFile).write(parsedJsonDiff.toPrettyString())
+        
+        IOUtil.copyFile(reducedOpenApiFile, "$rootDir/sechub-api-java/src/main/resources/reduced-openapi3.json")
+    
+}
+
+void reduceRecursiveMap(map){
+        map.removeAll {
+          it.key.equalsIgnoreCase("examples") || it.key.equalsIgnoreCase("example")
+        }
+        map.each { reduceRecursive(it.value) }
+}
+
+void reduceRecursiveList(list){
+    list.each {
+        reduceRecursive(it)
+    }
+
+}
+
+void reduceRecursive(obj){
+    if (obj instanceof java.util.Map.Entry){
+        if (obj.value instanceof Map){
+            reduceRecursiveMap(obj.value)
+        }
+    }else if (obj instanceof java.util.Map){
+         reduceRecursiveMap(obj)
+    }else if (obj instanceof java.util.List){
+         reduceRecursiveList(obj)
+    }
+}
+
 
 // What does this task do?
 // When we have to develop workaround parts it is very annoying when we need to generate the complete
@@ -118,6 +189,7 @@ void writePrettyPrintedFile(openApiFile, jsonObject){
 // In this case just call this task multiple times and the origin generated file will be 
 // restored and reused again. So much more faster to develop...  
 task development_openApiPostprocessing{
+
     doLast{
         
         // restore a backup from origin file if existing, so we do not
@@ -129,6 +201,14 @@ task development_openApiPostprocessing{
     }
 
 }
+
+task development_provideReducedOpenApiFile{
+
+    doLast{
+        provideReducedOpenApiFile()
+    }
+}   
+
 
 task generateOpenapi() {
     /*
@@ -144,8 +224,11 @@ task generateOpenapi() {
     dependsOn 'openapi3'
     
     doLast {
-        // start post processing (workaround)
+        // Start post processing (workaround)
         postProcessOpenApiGeneration()
+        
+        // Provide shrinked api file in resources
+        provideReducedOpenApiFile()
     }
     
     
