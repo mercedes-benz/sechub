@@ -26,9 +26,9 @@ therefore it is usually not necessary to explicitly define much to have a runnin
 
 Try to only define the necessary minimum and let the system test framework do the rest.
 
-It is also possible to use an already running local servers. For example when you are
-developing a PDS solution you can start a local SecHub server in your IDE and run
-your tests only with start definitions for your {pds} solution! This will increase
+It is also possible to use already running local servers ({sechub} and/or {pds}). 
+For example: When you are developing a PDS solution you can start a local SecHub server in your IDE 
+and run your tests only with start definitions for your {pds} solution! This will increase
 speed, because the test will not spawn (and also not shutdown) the {sechub} server instance!
 ====
 
@@ -418,7 +418,7 @@ include::../../gen/gen_example_systemtest_full_blown_config.json[]
 As a first step, download the latest release of `pds-tools` from https://github.com/mercedes-benz/sechub/releases.
 
 Execute: 
-`java -jar sechub-pds-tools-cli-<version>.jar  --systemTest=${pathToJson}`
+`java -jar sechub-pds-tools-cli-<version>.jar systemTest --file ${pathToTestConfigurationJson} --pds-solutions-rootfolder ${pathToPDSSolutions}`
 
 ==== JUnit tests
 Just execute the Junit test from your IDE. 
@@ -497,7 +497,7 @@ etc. must all be configured before the test is run.
 
 ====== Projects
 The defined projects will be created automatically. If a project exists with the defined name (e.g.
-when a system test is restarted locally) the existing projected will be deleted!
+when a system test is restarted locally) the existing project will be deleted!
 
 ====== Executor configurations
 Every system test start will just create new executor configurations.

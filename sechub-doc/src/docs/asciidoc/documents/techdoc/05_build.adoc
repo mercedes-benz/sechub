@@ -55,16 +55,21 @@ if wanted.
 Because the API related gradle projects are not initialized per default, the IDE import mechanism
 will not automatically import gradle subprojects like `sechub-systemtest`. 
 
-For eclipse task there is a special treatment added inside `sechub-developertools/build.gradle` - importing
-at commandline by `./gradlew eclipse` or by `EGradle` plugin will automatically import those
-projects automatically.
+For the gradle eclipse task there is a special treatment added inside `sechub-developertools/build.gradle`:
 
-For the Eclipse standard Gradle integration (Eclipse Buildship) you must enter the following
-command at root folder: 
-`./gradlew eclipse -Dsechub.build.stage=all`
-As next step import the additionally created projects manually into Eclipse.
+===== Eclipse 
+When you execute `./gradlew eclipse` at command line the eclipse files for those projects will be generated.
+As next step import the additionally created projects manually into Eclipse ("Import -> existing projects").
 
-For IntelliJ similar:
+If you are using the Eclipse standard Gradle integration (Eclipse Buildship), the manual import step 
+is probably necessary as well.
+
+Another option is to use the https://marketplace.eclipse.org/content/egradle-ide[`EGradle`] plugin - it uses also
+`./gradlew eclipse` and does the import automatically.
+
+
+===== IntelliJ
+For IntelliJ - similar to the steps for Eclipse - you can use the gradle idea task
 `./gradlew idea -Dsechub.build.stage=all`
 
 === Gradle build commands overview

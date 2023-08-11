@@ -95,36 +95,36 @@ public class SystemTestRuntimeContextHealthCheck {
     private void assertReferenceIds(SystemTestRuntimeContext context, RunSecHubJobDefinition runSecHubJob) {
         Set<String> existingReferenceIds = collectReferenceIdsAndFailIfMissing(context, runSecHubJob);
 
-        asertReferencesCorrectForCodeScan(context, runSecHubJob, existingReferenceIds);
-        asertReferencesCorrectForWebScan(context, runSecHubJob, existingReferenceIds);
-        asertReferencesCorrectForLicenseScan(context, runSecHubJob, existingReferenceIds);
-        asertReferencesCorrectForSecretcan(context, runSecHubJob, existingReferenceIds);
+        assertReferencesCorrectForCodeScan(context, runSecHubJob, existingReferenceIds);
+        assertReferencesCorrectForWebScan(context, runSecHubJob, existingReferenceIds);
+        assertReferencesCorrectForLicenseScan(context, runSecHubJob, existingReferenceIds);
+        assertReferencesCorrectForSecretcan(context, runSecHubJob, existingReferenceIds);
 
         /* Because infrastructure scans do not have references we do not handled them */
     }
 
-    private void asertReferencesCorrectForCodeScan(SystemTestRuntimeContext context, RunSecHubJobDefinition runSecHubJob, Set<String> existingReferenceIds) {
+    private void assertReferencesCorrectForCodeScan(SystemTestRuntimeContext context, RunSecHubJobDefinition runSecHubJob, Set<String> existingReferenceIds) {
         Optional<SecHubCodeScanConfiguration> codeConfigOpt = runSecHubJob.getCodeScan();
         if (codeConfigOpt.isPresent()) {
             assertReferenceIdsCorrect("code scan", context, existingReferenceIds, codeConfigOpt.get().getNamesOfUsedDataConfigurationObjects());
         }
     }
 
-    private void asertReferencesCorrectForSecretcan(SystemTestRuntimeContext context, RunSecHubJobDefinition runSecHubJob, Set<String> existingReferenceIds) {
+    private void assertReferencesCorrectForSecretcan(SystemTestRuntimeContext context, RunSecHubJobDefinition runSecHubJob, Set<String> existingReferenceIds) {
         Optional<SecHubSecretScanConfiguration> secretConfigOpt = runSecHubJob.getSecretScan();
         if (secretConfigOpt.isPresent()) {
             assertReferenceIdsCorrect("secret scan", context, existingReferenceIds, secretConfigOpt.get().getNamesOfUsedDataConfigurationObjects());
         }
     }
 
-    private void asertReferencesCorrectForLicenseScan(SystemTestRuntimeContext context, RunSecHubJobDefinition runSecHubJob, Set<String> existingReferenceIds) {
+    private void assertReferencesCorrectForLicenseScan(SystemTestRuntimeContext context, RunSecHubJobDefinition runSecHubJob, Set<String> existingReferenceIds) {
         Optional<SecHubLicenseScanConfiguration> licenseConfigOpt = runSecHubJob.getLicenseScan();
         if (licenseConfigOpt.isPresent()) {
             assertReferenceIdsCorrect("license scan", context, existingReferenceIds, licenseConfigOpt.get().getNamesOfUsedDataConfigurationObjects());
         }
     }
 
-    private void asertReferencesCorrectForWebScan(SystemTestRuntimeContext context, RunSecHubJobDefinition runSecHubJob, Set<String> existingReferenceIds) {
+    private void assertReferencesCorrectForWebScan(SystemTestRuntimeContext context, RunSecHubJobDefinition runSecHubJob, Set<String> existingReferenceIds) {
         Optional<SecHubWebScanConfiguration> webConfigOpt = runSecHubJob.getWebScan();
         if (webConfigOpt.isPresent()) {
             Optional<SecHubWebScanApiConfiguration> apiOpt = webConfigOpt.get().getApi();
@@ -237,19 +237,19 @@ public class SystemTestRuntimeContextHealthCheck {
             throw new WrongConfigurationException("SecHub local admin user name not configured but necessary for local run!", context);
         }
 
-        asssertSteps(secHub.getStart(), SystemTestExecutionScope.SECHUB.name(), SystemTestExecutionState.START, context);
-        asssertSteps(secHub.getStop(), SystemTestExecutionScope.SECHUB.name(), SystemTestExecutionState.STOP, context);
+        assertSteps(secHub.getStart(), SystemTestExecutionScope.SECHUB.name(), SystemTestExecutionState.START, context);
+        assertSteps(secHub.getStop(), SystemTestExecutionScope.SECHUB.name(), SystemTestExecutionState.STOP, context);
 
         for (PDSSolutionDefinition pdsSolution : localSetup.getPdsSolutions()) {
-            asssertSteps(pdsSolution.getStart(), SystemTestExecutionScope.PDS_SOLUTION.name() + ":" + pdsSolution.getName(), SystemTestExecutionState.START,
+            assertSteps(pdsSolution.getStart(), SystemTestExecutionScope.PDS_SOLUTION.name() + ":" + pdsSolution.getName(), SystemTestExecutionState.START,
                     context);
-            asssertSteps(pdsSolution.getStop(), SystemTestExecutionScope.PDS_SOLUTION.name() + ":" + pdsSolution.getName(), SystemTestExecutionState.STOP,
+            assertSteps(pdsSolution.getStop(), SystemTestExecutionScope.PDS_SOLUTION.name() + ":" + pdsSolution.getName(), SystemTestExecutionState.STOP,
                     context);
         }
 
     }
 
-    private void asssertSteps(List<ExecutionStepDefinition> startSteps, String scope, SystemTestExecutionState state, SystemTestRuntimeContext context) {
+    private void assertSteps(List<ExecutionStepDefinition> startSteps, String scope, SystemTestExecutionState state, SystemTestRuntimeContext context) {
         if (startSteps.isEmpty()) {
             return;
         }
