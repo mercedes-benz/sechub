@@ -3185,55 +3185,6 @@
                     }
                 }
             },
-            "ExecutionProfileFetch": {
-                "title": "ExecutionProfileFetch",
-                "type": "object",
-                "properties": {
-                    "configurations": {
-                        "type": "array",
-                        "items": {
-                            "type": "object",
-                            "properties": {
-                                "productIdentifier": {
-                                    "type": "string",
-                                    "description": "executed product"
-                                },
-                                "name": {
-                                    "type": "string",
-                                    "description": "name of configuration"
-                                },
-                                "executorVersion": {
-                                    "type": "number",
-                                    "description": "executor version"
-                                },
-                                "uuid": {
-                                    "type": "string",
-                                    "description": "uuid of configuration"
-                                },
-                                "enabled": {
-                                    "type": "boolean",
-                                    "description": "enabled state of this config"
-                                }
-                            }
-                        }
-                    },
-                    "description": {
-                        "type": "string",
-                        "description": "A short description for the profile"
-                    },
-                    "projectIds": {
-                        "type": "array",
-                        "description": "Projects can be linked by their ids here",
-                        "items": {
-                            "type": "string"
-                        }
-                    },
-                    "enabled": {
-                        "type": "boolean",
-                        "description": "Enabled state of profile, default is false"
-                    }
-                }
-            },
             "FalsePositives": {
                 "title": "FalsePositives",
                 "type": "object",
@@ -3347,6 +3298,55 @@
                     }
                 }
             },
+            "ExecutionProfileFetch": {
+                "title": "ExecutionProfileFetch",
+                "type": "object",
+                "properties": {
+                    "configurations": {
+                        "type": "array",
+                        "items": {
+                            "type": "object",
+                            "properties": {
+                                "productIdentifier": {
+                                    "type": "string",
+                                    "description": "executed product"
+                                },
+                                "name": {
+                                    "type": "string",
+                                    "description": "name of configuration"
+                                },
+                                "executorVersion": {
+                                    "type": "number",
+                                    "description": "executor version"
+                                },
+                                "uuid": {
+                                    "type": "string",
+                                    "description": "uuid of configuration"
+                                },
+                                "enabled": {
+                                    "type": "boolean",
+                                    "description": "enabled state of this config"
+                                }
+                            }
+                        }
+                    },
+                    "description": {
+                        "type": "string",
+                        "description": "A short description for the profile"
+                    },
+                    "projectIds": {
+                        "type": "array",
+                        "description": "Projects can be linked by their ids here",
+                        "items": {
+                            "type": "string"
+                        }
+                    },
+                    "enabled": {
+                        "type": "boolean",
+                        "description": "Enabled state of profile, default is false"
+                    }
+                }
+            },
             "FullScanDataZIP": {
                 "title": "FullScanDataZIP",
                 "type": "object"
@@ -3387,16 +3387,6 @@
                 "title": "ServerVersion",
                 "type": "object"
             },
-            "JobId": {
-                "title": "JobId",
-                "type": "object",
-                "properties": {
-                    "jobId": {
-                        "type": "string",
-                        "description": "A unique job id"
-                    }
-                }
-            },
             "ExecutionProfileCreate": {
                 "title": "ExecutionProfileCreate",
                 "type": "object",
@@ -3422,6 +3412,16 @@
                     "enabled": {
                         "type": "boolean",
                         "description": "Enabled state of profile, default is false"
+                    }
+                }
+            },
+            "JobId": {
+                "title": "JobId",
+                "type": "object",
+                "properties": {
+                    "jobId": {
+                        "type": "string",
+                        "description": "A unique job id"
                     }
                 }
             },

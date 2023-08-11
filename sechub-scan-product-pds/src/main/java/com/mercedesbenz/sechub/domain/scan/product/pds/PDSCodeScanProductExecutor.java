@@ -27,7 +27,7 @@ public class PDSCodeScanProductExecutor extends AbstractPDSProductExecutor {
     @Override
     protected List<ProductResult> executeByAdapter(ProductExecutorData data, PDSExecutorConfigSupport configSupport, PDSStorageContentProvider contentProvider)
             throws Exception {
-      ProductExecutorContext executorContext = data.getProductExecutorContext();
+        ProductExecutorContext executorContext = data.getProductExecutorContext();
 
         ProductResult result = resilientActionExecutor.executeResilient(() -> {
 
