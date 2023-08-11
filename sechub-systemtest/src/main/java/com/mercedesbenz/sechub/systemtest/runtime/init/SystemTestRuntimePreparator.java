@@ -360,7 +360,7 @@ public class SystemTestRuntimePreparator {
 
                 String userId = techUser.getUserId();
                 if (userId == null || userId.isEmpty()) {
-                    throw new IllegalStateException("At this point of preparation, the tech user credentials must be not null!");
+                    throw new IllegalStateException("At this point of the preparation, the tech user credentials must be not null!");
                 }
 
                 executorCredentials.setUserId(userId);

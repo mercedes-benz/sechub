@@ -32,7 +32,7 @@ public class ProcessContainer {
 
     /**
      * Creates a process container object which contains information about the
-     * process, definitions and more which are stored at runtime in a file .It
+     * process, definitions and more, all of which are stored at runtime in a file . It
      * represents the state of the process
      *
      * @param number           the number of the process container

@@ -6,27 +6,27 @@ This chapter describes the system test framework.
 
 === Purpose
 Integration tests do rely on {sechub} running in integration test mode, using one {pds}
-server in integration test mode as well. 
+server in integration test mode. 
 
 In this scenario, the integration test API can fetch internal meta data and is able to check 
 correctness of the logic inside {sechub} and also inside {pds}. But it does not test real product 
-execution - at the end it uses only mocked test scripts and dedicated test data.    
+execution - in the end it only uses mocked test scripts and static test data.    
 
 "The system tests are different to integration tests: Their main purpose is to test
 {sechub} server(s) in combination with one or multiple {pds} solutions in real live scenarios.
-This helps developers of {pds} solutions to drastically reduce development time and also to write
-automated tests without having to constantly test manually - a command line call in the OS shell or
+This helps developers of {pds} solutions to drastically reduce development time and to write
+automated tests without having to constantly test manually. To run the system tests a command line call in the OS shell or
 calling a unit test is sufficient. 
 
 [TIP]
 ====
 The system test framework is designed, to make things easier for developers
-when testing {sechub} / {pds}. It provides as many defaults as possible.
-So it is normally not necessary to explicitly define much to have a running system test!
+when testing {sechub} / {pds}. It provides as many defaults as possible,
+therefore it is usually not necessary to explicitly define much to have a running system test!
 
 Try to only define the necessary minimum and let the system test framework do the rest.
 
-It is also possible to use already running local servers. For example when you are
+It is also possible to use an already running local servers. For example when you are
 developing a PDS solution you can start a local SecHub server in your IDE and run
 your tests only with start definitions for your {pds} solution! This will increase
 speed, because the test will not spawn (and also not shutdown) the {sechub} server instance!
@@ -40,7 +40,7 @@ System tests can be written in two ways:
 1. Write a JUnit test and use methods provided by `SystemTestAPI` or
 2. Write a JSON file and execute it with `pds-tools`.
 
-It does not matter if you write the configuration directly in JSON or with the java test API - 
+It does not matter if you write the configuration directly in JSON or with the Java SystemTestFramework API - 
 the underlying model is the same. 
 
 [[systemtests-script-definitions]]
@@ -219,9 +219,9 @@ It is possible to run system tests locally and start & configure {sechub} and
 {pds} solutions automatically.
 
 But it is also possible to use an existing real {sechub} platform and run the defined
-tests there by a remote setup. In this setup it is not possible to change any existing 
+tests using a remote setup. In this setup it is not possible to change any existing 
 configuration. This means that executor configurations, users, projects, profiles etc. 
-must be configured on server side by administrators.
+must all be configured on the server side by administrators before the start of the remote tests.
 
     
 ===== Local
@@ -230,7 +230,7 @@ by the system testing framework.
 This means an administrator account is necessary to setup the system.
 
 If not defined, the default credentials for integration test server will be used. If you do not define
-{sechub} or {pds} you can also use running local servers (for example integration test servers) and only
+{sechub} or {pds} you can also use a running local servers (for example integration test servers) and only
 start the tests.
 
 ====== Start
@@ -244,7 +244,7 @@ start the tests.
 It is also possible to use an existing real {sechub} platform and run the defined tests there. 
 The configuration is *not changed* here - executor configurations, users, projects
 and profiles must be already configured by administrators. A remote setup does not require
-an administrative account, but only a normal user account which has access to the project.
+an administrative account, a normal user account which has access to the project is sufficient.
 
 The framework does help you by setting <<section-systemtests-default-fallbacks,fallback default>>
 values when you do not configure some parts. But if those fallbacks are in use, you must 
@@ -385,7 +385,7 @@ Asserts are done after the execution phase. Following steps are possible
   } ]
 ----
 <1> copies sources to current test folder at subfolder "testsources"
-<2> uploads source folder (files which were formerly copied)
+<2> uploads source folder (files which were previously copied)
 <3> assert that there is an ended {sechub} job for this test where the {sechub} report has +
     traffic light `yellow` and contains at least one time a string "MEDIUM" inside JSON report. 
     
@@ -418,7 +418,7 @@ include::../../gen/gen_example_systemtest_full_blown_config.json[]
 As a first step, download the latest release of `pds-tools` from https://github.com/mercedes-benz/sechub/releases.
 
 Execute: 
-`java -jar pds-tools.jar --systemTest=${pathToJson}`
+`java -jar sechub-pds-tools-cli-<version>.jar  --systemTest=${pathToJson}`
 
 ==== JUnit tests
 Just execute the Junit test from your IDE. 
@@ -439,7 +439,7 @@ Before a stage can be left and another is started, a check is done, if there is 
 to be finished. When a script of the stage times out in mean time, the framework will stop with a failure message.
 
 If not explicit defined, the test framework automatically uses dedicated defaults for script steps
-inside the stage, but it is possible change the defaults inside the configuration. Here is an example:
+inside the stage, but it is possible to change the defaults inside the configuration. Here is an example:
 
 [source,json]
 ----

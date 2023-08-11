@@ -29,7 +29,7 @@ public class IOUtil {
     }
     
     /**
-     * Restores a former created backup to the wanted file path (if a backup exists).
+     * Restores a previously created backup to the wanted file path (if a backup exists).
      * The location of the backup is handled by IOUtil internally.
      * 
      * @param filePath the path for the file to restore (not the backup file!)

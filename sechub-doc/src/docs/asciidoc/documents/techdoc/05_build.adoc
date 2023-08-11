@@ -35,20 +35,20 @@ setup the build stage accordingly.
 The build has following stages:
 
 - `without-api` (default) +
-  The build will build everything except those gradle projects, which need the OpenAPI file or the generated
-  and compile Java API.
+  The build will build everything, except those gradle projects which require the OpenAPI file or the generated
+  and compiled Java API.
   
 - `api-necessary`
-   The gradle initialization phase does contain also the gradle projects which rely on an existing OpenAPI definition
+   The Gradle initialization phase does contain additionally the Gradle projects which rely on an existing OpenAPI definition
    and/or access to build artifacts of `sechub-api-java`. This means the open file definition does already
    exist and may not change in the build.
 
 - `all` +
-  Everything is included, no constraints at all
+  Everything is included, no constraints at all.
   
   
 The logic is provided inside `BuildStage.groovy` and a snippet inside `settings.gradle`.
-In a nutshell: At gradle initialization phase the API related projects are only added 
+In a nutshell: During the Gradle initialization phase the API related projects are only added 
 if wanted.
 
 ==== Special treatment on IDE imports
@@ -59,10 +59,10 @@ For eclipse task there is a special treatment added inside `sechub-developertool
 at commandline by `./gradlew eclipse` or by `EGradle` plugin will automatically import those
 projects automatically.
 
-For the eclipse standard gradle integration (Eclipse Buildship) you must enter the following
+For the Eclipse standard Gradle integration (Eclipse Buildship) you must enter the following
 command at root folder: 
 `./gradlew eclipse -Dsechub.build.stage=all`
-As next step import the additionally created projects manually into eclipse.
+As next step import the additionally created projects manually into Eclipse.
 
 For IntelliJ similar:
 `./gradlew idea -Dsechub.build.stage=all`

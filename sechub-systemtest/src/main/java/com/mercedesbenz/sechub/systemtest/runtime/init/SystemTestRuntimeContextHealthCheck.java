@@ -64,7 +64,7 @@ public class SystemTestRuntimeContextHealthCheck {
         List<TestDefinition> tests = context.getConfiguration().getTests();
         for (TestDefinition test : tests) {
             if (SimpleStringUtils.isEmpty(test.getName())) {
-                throw new WrongConfigurationException("Found at least one test where no name is defined! Every test must have its name!", context);
+                throw new WrongConfigurationException("Found at least one test without a name! Every test must have its own name!", context);
             }
             assertPreparationScriptPathsAreSet(context, test);
             assertRunSecHubJobCorrect(context, test);

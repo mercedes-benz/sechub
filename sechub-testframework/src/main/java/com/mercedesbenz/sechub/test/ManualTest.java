@@ -3,7 +3,7 @@ package com.mercedesbenz.sechub.test;
 import org.junit.jupiter.api.condition.EnabledIfSystemProperty;
 
 /**
- * Implementations of this interface are meant to be not automatically tested by
+ * Implementations of this interface are meant not to be automatically tested by
  * continuous integration builds or in any other "normal" test phase. They are
  * filtered/ignored per default.
  *
