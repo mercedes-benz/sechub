@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: MIT
 subprojects {
 
     if (! projectType.integrationTestProjects.contains(project)){

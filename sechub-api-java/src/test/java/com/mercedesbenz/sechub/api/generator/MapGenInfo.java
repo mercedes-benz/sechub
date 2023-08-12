@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.api.generator;
 
 import java.util.LinkedHashMap;

@@ -1,3 +1,4 @@
+' SPDX-License-Identifier: MIT
 package "all" {
     package "without-api (default)" {
         component sechub_server as "sechub-server"

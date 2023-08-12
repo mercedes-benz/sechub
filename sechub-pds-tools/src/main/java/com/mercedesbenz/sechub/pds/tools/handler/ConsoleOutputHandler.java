@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.pds.tools.handler;
 
 import com.mercedesbenz.sechub.commons.core.OutputHandler;
