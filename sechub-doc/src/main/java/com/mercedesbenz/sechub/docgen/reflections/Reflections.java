@@ -1,6 +1,8 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.docgen.reflections;
 
+import static com.mercedesbenz.sechub.docgen.GeneratorConstants.*;
+
 import java.io.File;
 import java.io.FileFilter;
 import java.lang.annotation.Annotation;
@@ -30,6 +32,21 @@ import com.mercedesbenz.sechub.sharedkernel.usecases.UseCaseRestDoc;
 public class Reflections {
     private static final Logger LOG = LoggerFactory.getLogger(Reflections.class);
     private static Object MONITOR = new Object();
+
+    private static List<String> ignoredFolderNames = createIgnoredFolderNamesList();
+
+    private static List<String> createIgnoredFolderNamesList() {
+        List<String> list = new ArrayList<>();
+
+        list.add("sechub-pds-tools");
+        list.add("sechub-systemtest");
+        list.add("sechub-api-java");
+        list.add("sechub-scan-testframework");
+        list.add("sechub-test");
+        list.add("sechub-developertools");
+
+        return list;
+    }
 
     private boolean scanDone;
     private File sechHubDoc;
@@ -201,6 +218,9 @@ public class Reflections {
                 fetchJavaClassNamesToInspect(sourceDirectory, child, javaSourceFileFilter);
             }
         } else if (file.isFile()) {
+            if (!file.getName().endsWith(".java")) {
+                return;
+            }
             String className = extractJavaFileName(sourceDirectory, file);
             if (isIgnoredClassName(className)) {
                 LOG.trace("Class ignored:{}", className);
@@ -224,7 +244,7 @@ public class Reflections {
                  * at at least at info level for debugging purposes (e.g. when we add a new
                  * gradle sub project and it is not documented).
                  */
-                LOG.info("The class '{}' was not found in sechub-doc classpath, but source file was found at {}", className, file.getAbsolutePath());
+                LOG.warn("The class '{}' was not found in sechub-doc classpath, but source file was found at {}", className, file.getAbsolutePath());
             }
         } else {
             LOG.error("Was not able to handle file:{}", file);
@@ -274,7 +294,9 @@ public class Reflections {
 
             @Override
             public boolean accept(File file) {
-                return file.isDirectory();
+                boolean accepted = file.isDirectory();
+                accepted = accepted && !isIgnoredFolder(file);
+                return accepted;
             }
         });
         for (File subDir : subDirs) {
@@ -282,10 +304,21 @@ public class Reflections {
             if (!deepSubDir.exists()) {
                 continue;
             }
-            LOG.info("Add source directory:{}", deepSubDir);
+            if (DEBUG) {
+                LOG.info("Add source directory: {}", deepSubDir);
+            }
             this.sourceDirectories.add(deepSubDir);
         }
         this.sourceDirectories.add(new File(sechHubDoc, "src/test/java")); // we need this to be able to execute restdoc gen tests + ReflectionsTest.java
+    }
+
+    protected boolean isIgnoredFolder(File folder) {
+        for (String ignoredFolderName : ignoredFolderNames) {
+            if (folder.getName().equals(ignoredFolderName)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     private class JavaContentFilter implements FileFilter {

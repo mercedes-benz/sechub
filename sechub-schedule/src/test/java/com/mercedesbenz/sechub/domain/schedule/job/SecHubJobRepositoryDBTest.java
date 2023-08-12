@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.domain.schedule.job;
 
-import static com.mercedesbenz.sechub.domain.schedule.ExecutionState.*;
+import static com.mercedesbenz.sechub.commons.model.job.ExecutionState.*;
 import static com.mercedesbenz.sechub.domain.schedule.job.JobCreator.*;
 import static com.mercedesbenz.sechub.test.FlakyOlderThanTestWorkaround.*;
 import static org.junit.jupiter.api.Assertions.*;
@@ -30,7 +30,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import com.mercedesbenz.sechub.commons.model.ModuleGroup;
-import com.mercedesbenz.sechub.domain.schedule.ExecutionState;
+import com.mercedesbenz.sechub.commons.model.job.ExecutionState;
 import com.mercedesbenz.sechub.test.TestUtil;
 
 @ExtendWith(SpringExtension.class)
@@ -734,27 +734,27 @@ public class SecHubJobRepositoryDBTest {
     void findNextJobToExecute__the_first_job_in_state_READY_TO_START_is_returned_when_existing() {
         /* prepare @formatter:off*/
 
-		jobCreator.newJob().being(STARTED).createAnd().
-				   newJob().being(CANCEL_REQUESTED).createAnd().
-				   newJob().being(CANCELED).createAnd().
-				   newJob().being(ENDED).create();
+        jobCreator.newJob().being(STARTED).createAnd().
+                   newJob().being(CANCEL_REQUESTED).createAnd().
+                   newJob().being(CANCELED).createAnd().
+                   newJob().being(ENDED).create();
 
-		ScheduleSecHubJob expectedNextJob =
-		jobCreator.newJob().being(READY_TO_START).create();
+        ScheduleSecHubJob expectedNextJob =
+        jobCreator.newJob().being(READY_TO_START).create();
 
-		TestUtil.waitMilliseconds(1); // just enough time to make the next job "older" than former one, so we got no flaky tests when checking jobUUID later
+        TestUtil.waitMilliseconds(1); // just enough time to make the next job "older" than former one, so we got no flaky tests when checking jobUUID later
 
 
-		jobCreator.newJob().being(STARTED).createAnd().
-				   newJob().being(READY_TO_START).create();
+        jobCreator.newJob().being(STARTED).createAnd().
+                   newJob().being(READY_TO_START).create();
 
-		/* execute */
-		Optional<UUID> optional = jobRepository.nextJobIdToExecuteFirstInFirstOut();
-		assertTrue(optional.isPresent());
+        /* execute */
+        Optional<UUID> optional = jobRepository.nextJobIdToExecuteFirstInFirstOut();
+        assertTrue(optional.isPresent());
 
-		UUID jobUUID = optional.get();
+        UUID jobUUID = optional.get();
 
-		/* test @formatter:on*/
+        /* test @formatter:on*/
         assertNotNull(jobUUID);
         assertEquals(expectedNextJob.getUUID(), jobUUID);
     }

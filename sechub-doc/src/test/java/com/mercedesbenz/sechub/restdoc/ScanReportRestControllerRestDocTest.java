@@ -113,7 +113,7 @@ public class ScanReportRestControllerRestDocTest implements TestIsNecessaryForDo
                             and().
                             document(
 	                            		requestHeaders(
-	                            				headerWithName(AuthenticationHelper.HEADER_NAME).description(AuthenticationHelper.HEADER_DESCRIPTION)
+
 	                            		),
                                     	pathParameters(
                                                 parameterWithName(PROJECT_ID.paramName()).description("The project Id"),
@@ -166,7 +166,7 @@ public class ScanReportRestControllerRestDocTest implements TestIsNecessaryForDo
                             and().
                             document(
 	                            		requestHeaders(
-	                            				headerWithName(AuthenticationHelper.HEADER_NAME).description(AuthenticationHelper.HEADER_DESCRIPTION)
+
 	                            		),
                                         pathParameters(
                                                 parameterWithName(PROJECT_ID.paramName()).description("The project Id"),
@@ -212,7 +212,7 @@ public class ScanReportRestControllerRestDocTest implements TestIsNecessaryForDo
                             and().
                             document(
 	                            		requestHeaders(
-	                            				headerWithName(AuthenticationHelper.HEADER_NAME).description(AuthenticationHelper.HEADER_DESCRIPTION)
+
 	                            		),
                                         pathParameters(
                                                 parameterWithName(PROJECT_ID.paramName()).description("The project Id"),

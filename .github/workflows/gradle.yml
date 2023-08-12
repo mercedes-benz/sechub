@@ -47,19 +47,19 @@ jobs:
         run: ./gradlew :sechub-cli:buildGo :sechub-cli:testGo
 
       - name: Build Server, DAUI and generate OpenAPI file
-        run: ./gradlew ensureLocalhostCertificate build generateOpenapi buildDeveloperAdminUI buildPDSToolsCLI -x :sechub-integrationtest:test -x :sechub-cli:build
-
-      - name: Generate and build API Java
-        run: ./gradlew :sechub-api-java:buildAPIJava
+        run: ./gradlew ensureLocalhostCertificate build generateOpenapi buildDeveloperAdminUI -x :sechub-cli:build
+        
+      - name: Generate and build Java projects related to SecHub Java API
+        run: ./gradlew :sechub-api-java:build :sechub-systemtest:build :sechub-pds-tools:buildPDSToolsCLI -Dsechub.build.stage=api-necessary
 
       # Integration test
       - name: Integration test
-        run: ./gradlew integrationtest
+        run: ./gradlew :sechub-integrationtest:startIntegrationTestInstances :sechub-systemtest:integrationtest :sechub-integrationtest:integrationtest :sechub-integrationtest:stopIntegrationTestInstances -Dsechub.build.stage=all --console=plain
 
       # We use 'if: always()' to run a step even if a previous step failed
       - name: Create combined test report
         if: always()
-        run: ./gradlew createCombinedTestReport
+        run: ./gradlew createCombinedTestReport -Dsechub.build.stage=all
 
       # -----------------------------------------
       # Upload Build Artifacts
@@ -117,7 +117,7 @@ jobs:
       # Build Documentation
       # -----------------------------------------
       - name: Create documentation
-        run: ./gradlew documentation
+        run: ./gradlew documentation -Dsechub.build.stage=all
 
       # -----------------------------------------
       # Upload documentation

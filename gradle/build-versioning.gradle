@@ -222,7 +222,7 @@ task assertReleaseable {
 subprojects{
     /**
      * Get the current version for the sub project.
-     * Usage: ./gradlew :eclipse-commons-model:getCurrentVersion
+     * Usage: ./gradlew :$subProjectNamel:getCurrentVersion
      */
     task getCurrentVersion {
         doLast {

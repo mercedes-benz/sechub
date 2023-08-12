@@ -1,0 +1,65 @@
+// SPDX-License-Identifier: MIT
+== OpenAPI Test Tool
+
+CLI Test Tool for OpenAPI
+
+=== Usage
+
+This is a small CLI tool created for testing SecHub OpenApi library.
+It must be configured by using the command line parameters or the environment variables. All configurations in a way that the command line parameters always overwrite the environment variables. *All parameters are required.*
+
+Ennvironment variables:
+----
+SECHUB_SERVER=https://localhost:8443
+SECHUB_USERID=int-test_superadmin
+SECHUB_APITOKEN=int-test_superadmin-pwd
+----
+
+Command line paremeters:
+----
+Usage: OpenAPITestTool [options]
+  Options:
+    --apiToken
+      Specifies the privileged user's api token. You can also set the
+      environment variable SECHUB_APITOKEN, instead of using this parameter.
+    --help
+      Shows help and provides information on how to use OpenAPI Test Tool.
+    --serverPort
+      Specifies the Sechub Server port. You can also set the environment
+      variable SECHUB_SERVER_PORT, instead of using this parameter.
+      Default: 0
+    --serverUri
+      Specifies the Sechub Server URI. You can also set the environment
+      variable SECHUB_SERVER_URI, instead of using this parameter.
+    --userId
+      Specifies the Sechub Server privileged user id. You can also set the
+      environment variable SECHUB_USERID, instead of using this parameter.
+----
+
+
+=== Build
+
+==== IDE
+If not already imported, import the example project as a project/module into your IDE.
+
+After this, call the main class `OpenAPITestTool` with the mentioned environment entries or 
+parameters. 
+
+==== Gradle
+
+When you want to build the OpenAPI Test Tool, do next:
+
+- generate Open API json file
+----
+sechub$ ./gradlew generateOpenapi
+----
+
+- build Open API library
+----
+sechub$ ./gradlew :sechub-api-java:build
+----
+
+- build OpenAPI Test Tool
+----
+sechub$ ./gradlew buildOpenAPITestTool
+----

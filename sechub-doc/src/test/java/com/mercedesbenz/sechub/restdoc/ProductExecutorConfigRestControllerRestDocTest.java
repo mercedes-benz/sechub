@@ -7,7 +7,6 @@ import static com.mercedesbenz.sechub.test.RestDocPathParameter.*;
 import static com.mercedesbenz.sechub.test.SecHubTestURLBuilder.*;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
-import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
 import static org.springframework.restdocs.headers.HeaderDocumentation.requestHeaders;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.*;
 import static org.springframework.restdocs.payload.PayloadDocumentation.*;
@@ -152,7 +151,7 @@ public class ProductExecutorConfigRestControllerRestDocTest implements TestIsNec
                             and().
                             document(
 		    	                		requestHeaders(
-		    	                				headerWithName(AuthenticationHelper.HEADER_NAME).description(AuthenticationHelper.HEADER_DESCRIPTION)
+
 		    	                		),
 	                                    requestFields(
 	                                            fieldWithPath(PROPERTY_NAME).description("A name for this configuration"),
@@ -208,7 +207,7 @@ public class ProductExecutorConfigRestControllerRestDocTest implements TestIsNec
                             and().
                             document(
 		    	                		requestHeaders(
-		    	                				headerWithName(AuthenticationHelper.HEADER_NAME).description(AuthenticationHelper.HEADER_DESCRIPTION)
+
 		    	                		),
                                         requestFields(
                                                 fieldWithPath(PROPERTY_NAME).description("The name of this configuration"),
@@ -270,7 +269,7 @@ public class ProductExecutorConfigRestControllerRestDocTest implements TestIsNec
                             and().
                             document(
 		    	                		requestHeaders(
-		    	                				headerWithName(AuthenticationHelper.HEADER_NAME).description(AuthenticationHelper.HEADER_DESCRIPTION)
+
 		    	                		),
                                         responseFields(
                                                 fieldWithPath(PROPERTY_UUID).description("The uuid of this configuration"),
@@ -314,7 +313,7 @@ public class ProductExecutorConfigRestControllerRestDocTest implements TestIsNec
                             and().
                             document(
 	    	                		 requestHeaders(
-	    	                				 headerWithName(AuthenticationHelper.HEADER_NAME).description(AuthenticationHelper.HEADER_DESCRIPTION)
+
 	    	                		 ),
                                      pathParameters(
                                     		 parameterWithName(UUID_PARAMETER.paramName()).description("The configuration uuid")
@@ -354,7 +353,7 @@ public class ProductExecutorConfigRestControllerRestDocTest implements TestIsNec
                             and().
                             document(
 		    	                		requestHeaders(
-		    	                				headerWithName(AuthenticationHelper.HEADER_NAME).description(AuthenticationHelper.HEADER_DESCRIPTION)
+
 		    	                		),
                                         responseFields(
                                                 fieldWithPath("type").description("Always `executorConfigurationList` as an identifier for the list"),

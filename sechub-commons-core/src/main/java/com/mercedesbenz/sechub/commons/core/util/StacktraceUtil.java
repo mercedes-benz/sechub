@@ -35,4 +35,26 @@ public class StacktraceUtil {
         }
         return throwable.getClass().getName() + ":" + throwable.getMessage();
     }
+
+    /**
+     * Creates a full stacktrace description
+     *
+     * @param throwable
+     * @return
+     */
+    public static String createFullTraceDescription(Throwable throwable) {
+        if (throwable == null) {
+            return "null";
+        }
+
+        StringBuilder sb = new StringBuilder();
+        sb.append(createDescription(throwable));
+        for (StackTraceElement stackTraceElement : throwable.getStackTrace()) {
+            sb.append("\n  ");
+            sb.append(stackTraceElement.toString());
+        }
+        sb.append("\n");
+        return sb.toString();
+
+    }
 }

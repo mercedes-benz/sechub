@@ -8,6 +8,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import com.mercedesbenz.sechub.commons.model.job.ExecutionState;
 import com.mercedesbenz.sechub.domain.schedule.access.ScheduleDeleteAllProjectAcessService;
 import com.mercedesbenz.sechub.domain.schedule.access.ScheduleGrantUserAccessToProjectService;
 import com.mercedesbenz.sechub.domain.schedule.access.ScheduleRevokeUserAccessAtAllService;
