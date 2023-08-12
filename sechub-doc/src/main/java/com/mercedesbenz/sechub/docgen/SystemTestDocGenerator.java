@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.docgen;
 
 import com.mercedesbenz.sechub.docgen.adopt.AdoptedSystemTestDefaultFallback;

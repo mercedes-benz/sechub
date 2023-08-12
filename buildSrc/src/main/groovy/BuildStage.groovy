@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: MIT
 /**
  * Special build stage class. Because we need compiled java code to generate our open api file,
  * the java api generation - which needs the open api file + a java compile - cannot happen 

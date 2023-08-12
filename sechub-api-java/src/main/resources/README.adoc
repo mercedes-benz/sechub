@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: MIT
 == README
 :reduced-filename: reduced-openapi3.json
  

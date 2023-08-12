@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.api.java.demo.playground;
 
 import static com.mercedesbenz.sechub.api.java.demo.Utils.*;

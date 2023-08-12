@@ -1,4 +1,5 @@
 #!/bin/bash 
+# SPDX-License-Identifier: MIT
 
 # first argument is the target location for output
 workspaceOutputFile=$1

@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: MIT
 == About SecHub Java API
 
 The goal of the API is to:

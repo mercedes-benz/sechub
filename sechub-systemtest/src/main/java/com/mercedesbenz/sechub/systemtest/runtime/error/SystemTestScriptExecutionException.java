@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.systemtest.runtime.error;
 
 import com.mercedesbenz.sechub.systemtest.runtime.SystemTestExecutionScope;
