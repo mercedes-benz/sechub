@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.test;
 
 import org.junit.jupiter.api.condition.EnabledIfSystemProperty;

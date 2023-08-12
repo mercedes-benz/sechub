@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.systemtest.pdsclient;
 
 public class PDSClientException extends Exception {

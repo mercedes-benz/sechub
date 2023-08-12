@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.systemtest.runtime.init;
 
 import static com.mercedesbenz.sechub.systemtest.config.DefaultFallback.*;
