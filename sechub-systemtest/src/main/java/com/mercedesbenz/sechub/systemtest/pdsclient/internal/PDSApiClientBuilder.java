@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.systemtest.pdsclient.internal;
 
 import java.net.http.HttpClient;

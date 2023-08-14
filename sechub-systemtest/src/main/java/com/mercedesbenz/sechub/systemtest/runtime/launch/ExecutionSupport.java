@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.systemtest.runtime.launch;
 
 import static java.util.Objects.*;

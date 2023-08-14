@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.systemtest.runtime.launch;
 
 import com.mercedesbenz.sechub.systemtest.config.ScriptDefinition;
