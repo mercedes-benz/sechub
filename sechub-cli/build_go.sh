@@ -61,7 +61,7 @@ echo "GOPATH=$GOPATH"
 
 init_go_modules
 
-cd $SRC_PATH/main
+cd "$SRC_PATH/main"
 
 export CGO_ENABLED=0  # This forces statically linked binaries
 GO_LD_FLAGS="-s -w"   # strip (reduce size): disable debug symbol table / disable DWARF generation
