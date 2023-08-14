@@ -2,9 +2,12 @@
 
 == Steps
 
-1. copy `sechub-pds-tools-cli-0.0.0.jar` into this folder.
-2. run system test
+. Download `sechub-pds-tools-cli-x.y.z.jar` from the releases: https://github.com/mercedes-benz/sechub/releases/.
+. Copy `sechub-pds-tools-cli-x.y.z.jar` into this folder.
+. Run system test
++
+Example:
 +
 ----
-java -jar sechub-pds-tools-cli-0.0.0.jar systemtest --file systemtest_local.json --pds-solutions-rootfolder ../../ --sechub-solution-rootfolder ../../../sechub-solution
+java -jar sechub-pds-tools-cli-1.0.0.jar systemtest --file systemtest_local.json --pds-solutions-rootfolder ../../ --sechub-solution-rootfolder ../../../sechub-solution
 ----

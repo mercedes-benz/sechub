@@ -1,15 +1,10 @@
 #!/usr/bin/env bash
 # SPDX-License-Identifier: MIT
 
-vulnerable_apps=(
-    "https://github.com/globocom/secDevLabs.git",
-    "https://github.com/OWASP/crAPI"
-)
-
 current_test_folder="$1"
 vulnerable_repo="$2"
 	
-if [[ -z "$current_test_folder" ]]
+if [[ ! -d "$current_test_folder" ]]
 then
 	echo "Target folder is empty"
 	exit 1
