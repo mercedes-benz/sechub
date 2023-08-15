@@ -164,7 +164,7 @@ jobs:
       # ----------------------
       - name: Build Server and PDS artifacts
         run: ./gradlew ensureLocalhostCertificate build generateOpenapi buildDeveloperAdminUI -x :sechub-cli:build
-        
+
       # ----------------------
       # Build API Java publish
       # ----------------------
