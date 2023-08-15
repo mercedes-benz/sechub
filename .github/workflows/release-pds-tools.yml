@@ -15,19 +15,23 @@ jobs:
     name: Create PDS-Tools release
     runs-on: ubuntu-latest
     steps:
+
       - name: "Show Inputs"
         run: |
           echo "PDS-Tools '${{ inputs.pds-tools-version }}' - Milestone '${{ inputs.pds-tools-milestone-number }}'"
       # Check inputs if a milestone number is provided for each version to be released:
+
       - name: "Verify Input: PDS-Tools"
         if: (inputs.pds-tools-version != '') && (inputs.pds-tools-milestone-number == '')
         run: |
           echo "For PDS-Tools release, pds-tools-milestone-number must be provided!"
           exit 1
+
       - name: Checkout master
         uses: actions/checkout@v3
         with:
           ref: master
+
       # Create temporary local tags, so we build documentation for this tag...
       # The final tag on git server side will be done by the release when the draft is saved as "real" release
       # automatically.
@@ -91,10 +95,12 @@ jobs:
         run: ./gradlew :sechub-api-java:build :sechub-systemtest:build :sechub-pds-tools:buildPDSToolsCLI -Dsechub.build.stage=api-necessary
 
       # To identifiy parts not in git history and leading to "-dirty-$commitId" markern in documentation
-      - name: Inspect GIT status
+      - name: Collect GIT status
         if: always()
         run: |
-          mkdir build/reports -p
+          # restore reduced-openapi3.json
+          git restore sechub-api-java/src/main/resources/reduced-openapi3.json
+          mkdir -p build/reports
           git status > build/reports/git-status.txt
 
       - name: Archive GIT status

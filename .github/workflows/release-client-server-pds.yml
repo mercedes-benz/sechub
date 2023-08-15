@@ -184,9 +184,12 @@ jobs:
         run: ./gradlew createCombinedTestReport -Dsechub.build.stage=all
 
       # To identifiy parts not in git history and leading to "-dirty-$commitId" markern in documentation
-      - name: Inspect GIT status
+      - name: Collect GIT status
         if: always()
-        run: git status > build/reports/git-status.txt
+        run: |
+          # restore reduced-openapi3.json
+          git restore sechub-api-java/src/main/resources/reduced-openapi3.json
+          git status > build/reports/git-status.txt
 
       # -----------------------------------------
       # Upload Build Artifacts
