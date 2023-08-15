@@ -311,8 +311,8 @@ jobs:
       # Assert releaseable, so no dirty flags on releases
       # even when all artifact creation parts are done!
       # -----------------------------------------
-      # - name: Assert releasable
-      #   run: ./gradlew assertReleaseable
+      - name: Assert releasable
+        run: ./gradlew assertReleaseable
 
 
       # ******************************************
