@@ -2628,19 +2628,6 @@
                     "webScan": {
                         "type": "object",
                         "properties": {
-                            "maxScanDuration": {
-                                "type": "object",
-                                "properties": {
-                                    "duration": {
-                                        "type": "number",
-                                        "description": "Duration of the scan as integer"
-                                    },
-                                    "unit": {
-                                        "type": "string",
-                                        "description": "Unit of the duration. Possible values are: millisecond(s), second(s), minute(s), hour(s), day(s)"
-                                    }
-                                }
-                            },
                             "headers": {
                                 "type": "array",
                                 "description": "List of HTTP headers. Can be used for authentication or anything else.",
@@ -2666,6 +2653,19 @@
                                             "type": "string",
                                             "description": "Value of the defined HTTP header."
                                         }
+                                    }
+                                }
+                            },
+                            "maxScanDuration": {
+                                "type": "object",
+                                "properties": {
+                                    "duration": {
+                                        "type": "number",
+                                        "description": "Duration of the scan as integer"
+                                    },
+                                    "unit": {
+                                        "type": "string",
+                                        "description": "Unit of the duration. Possible values are: millisecond(s), second(s), minute(s), hour(s), day(s)"
                                     }
                                 }
                             },
@@ -3387,6 +3387,16 @@
                 "title": "ServerVersion",
                 "type": "object"
             },
+            "JobId": {
+                "title": "JobId",
+                "type": "object",
+                "properties": {
+                    "jobId": {
+                        "type": "string",
+                        "description": "A unique job id"
+                    }
+                }
+            },
             "ExecutionProfileCreate": {
                 "title": "ExecutionProfileCreate",
                 "type": "object",
@@ -3412,16 +3422,6 @@
                     "enabled": {
                         "type": "boolean",
                         "description": "Enabled state of profile, default is false"
-                    }
-                }
-            },
-            "JobId": {
-                "title": "JobId",
-                "type": "object",
-                "properties": {
-                    "jobId": {
-                        "type": "string",
-                        "description": "A unique job id"
                     }
                 }
             },
