@@ -150,9 +150,6 @@ jobs:
           echo "Pull Request Number - ${{ steps.pr_spdx_headers.outputs.pull-request-number }}"
           echo "Pull Request URL - ${{ steps.pr_spdx_headers.outputs.pull-request-url }}"
 
-      - name: Switch back to master branch
-        run: git checkout master
-
       # ----------------------
       # Build SecHub Client
       # ----------------------
@@ -163,13 +160,13 @@ jobs:
       # Build SecHub Server + PDS
       # ----------------------
       - name: Build Server and PDS artifacts
-        run: ./gradlew ensureLocalhostCertificate build generateOpenapi buildDeveloperAdminUI -x :sechub-integrationtest:test -x :sechub-cli:build
+        run: ./gradlew ensureLocalhostCertificate build generateOpenapi buildDeveloperAdminUI -x :sechub-cli:build
 
       # ----------------------
       # Build API Java publish
       # ----------------------
-      - name: Generate, build (and publish on server release) Java API
-        run: ./gradlew :sechub-api-java:buildAPIJava
+      - name: Generate and build Java projects related to SecHub Java API
+        run: ./gradlew :sechub-api-java:build :sechub-systemtest:build :sechub-pds-tools:buildPDSToolsCLI -Dsechub.build.stage=api-necessary
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # This token is provided by Actions, you do not need to create your own token
 
@@ -177,16 +174,19 @@ jobs:
       # Integration test
       # ----------------------
       - name: Integration test
-        run: ./gradlew integrationtest
+        run: ./gradlew :sechub-integrationtest:startIntegrationTestInstances :sechub-systemtest:integrationtest :sechub-integrationtest:integrationtest :sechub-integrationtest:stopIntegrationTestInstances -Dsechub.build.stage=all
 
       - name: Create combined test report
         if: always()
-        run: ./gradlew createCombinedTestReport
+        run: ./gradlew createCombinedTestReport -Dsechub.build.stage=all
 
       # To identifiy parts not in git history and leading to "-dirty-$commitId" markern in documentation
-      - name: Inspect GIT status
+      - name: Collect GIT status
         if: always()
-        run: git status > build/reports/git-status.txt
+        run: |
+          # restore reduced-openapi3.json
+          git restore sechub-api-java/src/main/resources/reduced-openapi3.json
+          git status > build/reports/git-status.txt
 
       # -----------------------------------------
       # Upload Build Artifacts
@@ -304,16 +304,14 @@ jobs:
           echo "Pull Request Number - ${{ steps.pr_release_documentation.outputs.pull-request-number }}"
           echo "Pull Request URL - ${{ steps.pr_release_documentation.outputs.pull-request-url }}"
 
-      - name: Switch back to master branch
-        run: git checkout master
-
       # -----------------------------------------
       # Assert releaseable, so no dirty flags on releases
       # even when all artifact creation parts are done!
       # -----------------------------------------
       - name: Assert releasable
-        run: ./gradlew assertReleaseable
-
+        run: |
+          git status
+          ./gradlew assertReleaseable
 
       # ******************************************
       # S E R V E R  release

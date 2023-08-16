@@ -4,14 +4,12 @@ package com.mercedesbenz.sechub.docgen;
 import java.io.File;
 
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.condition.EnabledIfSystemProperty;
 
-import com.mercedesbenz.sechub.test.TestConstants;
+import com.mercedesbenz.sechub.test.ManualTest;
 
-class AsciidocGeneratorManualTest {
+class AsciidocGeneratorManualTest implements ManualTest {
 
     @Test
-    @EnabledIfSystemProperty(named = TestConstants.MANUAL_TEST_BY_DEVELOPER, matches = "true", disabledReason = TestConstants.DESCRIPTION_DISABLED_BECAUSE_A_MANUAL_TEST_FOR_GENERATION)
     void manualTestByDeveloper() throws Exception {
         /* check preconditions */
         File documentsFolder = new File("src/docs/asciidoc/documents/");

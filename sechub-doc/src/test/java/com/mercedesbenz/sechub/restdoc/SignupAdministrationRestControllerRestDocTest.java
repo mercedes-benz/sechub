@@ -5,7 +5,6 @@ import static com.mercedesbenz.sechub.restdoc.RestDocumentation.*;
 import static com.mercedesbenz.sechub.test.RestDocPathParameter.*;
 import static com.mercedesbenz.sechub.test.SecHubTestURLBuilder.*;
 import static org.mockito.Mockito.*;
-import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
 import static org.springframework.restdocs.headers.HeaderDocumentation.requestHeaders;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.*;
 import static org.springframework.restdocs.payload.PayloadDocumentation.*;
@@ -107,7 +106,7 @@ public class SignupAdministrationRestControllerRestDocTest implements TestIsNece
                             and().
             			    document(
         	                		requestHeaders(
-        	                				headerWithName(AuthenticationHelper.HEADER_NAME).description(AuthenticationHelper.HEADER_DESCRIPTION)
+
         	                		),
 	        	                    responseFields(
 	        	                            fieldWithPath("[]").description("List of user signups").optional(),
@@ -140,7 +139,7 @@ public class SignupAdministrationRestControllerRestDocTest implements TestIsNece
                             and().
             			    document(
         	                	requestHeaders(
-        	                			headerWithName(AuthenticationHelper.HEADER_NAME).description(AuthenticationHelper.HEADER_DESCRIPTION)
+
         	                	),
                                 pathParameters(
                                         parameterWithName(USER_ID.paramName()).description("The userId of the signup which shall be deleted")
