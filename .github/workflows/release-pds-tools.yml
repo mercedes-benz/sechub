@@ -121,7 +121,9 @@ jobs:
       # even when all artifact creation parts are done!
       # -----------------------------------------
       - name: Assert releasable
-        run: ./gradlew assertReleaseable
+        run: |
+          git status
+          ./gradlew assertReleaseable
 
       - name: Create PDS-Tools release
         id: create_pds_tools_release
