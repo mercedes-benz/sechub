@@ -1,4 +1,4 @@
-<th:block th:fragment="details_footer (finding)">
+<th:block th:fragment="details_footer(finding)">
     <h3 class="rDetailHeadline1">Description</h3>
     <div th:if="${reportHelper.hasDescription(finding)}" class="rText" th:text="${reportHelper.getDescription(finding)}">Description1</div>
     <div th:if="${reportHelper.hasDescription(finding) == false AND finding.cweId != null}" class="rCalculatedText">

@@ -16,6 +16,10 @@ public class SecHubReportMetaDataSummaryDetailsTest {
     static final int MEDIUM_FINDING_CWEID = 456;
     static final int LOW_FINDING_CWEID = 789;
 
+    static final String HIGH_FINDING_NAME = "Cross Site Scripting (Reflected)";
+    static final String MEDIUM_FINDING_NAME = "CSP: Wildcard Directive";
+    static final String LOW_FINDING_NAME = "Cookie Without Secure Flag";
+
     SecHubReportMetaDataSummaryDetails secHubReportMetaDataSummaryDetails;
     SecHubFinding highFinding;
     SecHubFinding mediumFinding;
@@ -28,17 +32,17 @@ public class SecHubReportMetaDataSummaryDetailsTest {
         highFinding = new SecHubFinding();
         highFinding.setCweId(HIGH_FINDING_CWEID);
         highFinding.setSeverity(Severity.HIGH);
-        highFinding.setName("Cross Site Scripting (Reflected)");
+        highFinding.setName(HIGH_FINDING_NAME);
 
         mediumFinding = new SecHubFinding();
         mediumFinding.setCweId(MEDIUM_FINDING_CWEID);
         mediumFinding.setSeverity(Severity.MEDIUM);
-        mediumFinding.setName("CSP: Wildcard Directive");
+        mediumFinding.setName(MEDIUM_FINDING_NAME);
 
         lowFinding = new SecHubFinding();
         lowFinding.setCweId(LOW_FINDING_CWEID);
         lowFinding.setSeverity(Severity.LOW);
-        lowFinding.setName("Cookie Without Secure Flag");
+        lowFinding.setName(LOW_FINDING_NAME);
     }
 
     @Test
@@ -47,7 +51,7 @@ public class SecHubReportMetaDataSummaryDetailsTest {
         secHubReportMetaDataSummaryDetails.detailsHelper(highFinding);
 
         /* test */
-        assertNotNull(secHubReportMetaDataSummaryDetails.high.get(HIGH_FINDING_CWEID));
+        assertNotNull(secHubReportMetaDataSummaryDetails.high.get(HIGH_FINDING_NAME));
     }
 
     @Test
@@ -56,7 +60,7 @@ public class SecHubReportMetaDataSummaryDetailsTest {
         secHubReportMetaDataSummaryDetails.detailsHelper(mediumFinding);
 
         /* test */
-        assertNotNull(secHubReportMetaDataSummaryDetails.medium.get(MEDIUM_FINDING_CWEID));
+        assertNotNull(secHubReportMetaDataSummaryDetails.medium.get(MEDIUM_FINDING_NAME));
     }
 
     @Test
@@ -65,18 +69,18 @@ public class SecHubReportMetaDataSummaryDetailsTest {
         secHubReportMetaDataSummaryDetails.detailsHelper(lowFinding);
 
         /* test */
-        assertNotNull(secHubReportMetaDataSummaryDetails.low.get(LOW_FINDING_CWEID));
+        assertNotNull(secHubReportMetaDataSummaryDetails.low.get(LOW_FINDING_NAME));
     }
 
     @Test
     void instance_variables_of_new_element_in_high_map_initialized_correctly() {
         /* execute */
         secHubReportMetaDataSummaryDetails.detailsHelper(highFinding);
-        SecHubReportMetaDataSummaryDetails.SeverityDetails severityDetails = secHubReportMetaDataSummaryDetails.high.get(HIGH_FINDING_CWEID);
+        SecHubReportMetaDataSummaryDetails.SeverityDetails severityDetails = secHubReportMetaDataSummaryDetails.high.get(HIGH_FINDING_NAME);
 
         /* test */
         assertEquals(HIGH_FINDING_CWEID, severityDetails.getCweId());
-        assertEquals("Cross Site Scripting (Reflected)", severityDetails.getName());
+        assertEquals(HIGH_FINDING_NAME, severityDetails.getName());
         assertEquals(1, severityDetails.getCount());
     }
 
@@ -84,11 +88,11 @@ public class SecHubReportMetaDataSummaryDetailsTest {
     void instance_variables_of_new_element_in_medium_map_initialized_correctly() {
         /* execute */
         secHubReportMetaDataSummaryDetails.detailsHelper(mediumFinding);
-        SecHubReportMetaDataSummaryDetails.SeverityDetails severityDetails = secHubReportMetaDataSummaryDetails.medium.get(MEDIUM_FINDING_CWEID);
+        SecHubReportMetaDataSummaryDetails.SeverityDetails severityDetails = secHubReportMetaDataSummaryDetails.medium.get(MEDIUM_FINDING_NAME);
 
         /* test */
         assertEquals(MEDIUM_FINDING_CWEID, severityDetails.getCweId());
-        assertEquals("CSP: Wildcard Directive", severityDetails.getName());
+        assertEquals(MEDIUM_FINDING_NAME, severityDetails.getName());
         assertEquals(1, severityDetails.getCount());
     }
 
@@ -96,11 +100,11 @@ public class SecHubReportMetaDataSummaryDetailsTest {
     void instance_variables_of_new_element_in_low_map_initialized_correctly() {
         /* execute */
         secHubReportMetaDataSummaryDetails.detailsHelper(lowFinding);
-        SecHubReportMetaDataSummaryDetails.SeverityDetails severityDetails = secHubReportMetaDataSummaryDetails.low.get(LOW_FINDING_CWEID);
+        SecHubReportMetaDataSummaryDetails.SeverityDetails severityDetails = secHubReportMetaDataSummaryDetails.low.get(LOW_FINDING_NAME);
 
         /* test */
         assertEquals(LOW_FINDING_CWEID, severityDetails.getCweId());
-        assertEquals("Cookie Without Secure Flag", severityDetails.getName());
+        assertEquals(LOW_FINDING_NAME, severityDetails.getName());
         assertEquals(1, severityDetails.getCount());
     }
 
@@ -110,7 +114,7 @@ public class SecHubReportMetaDataSummaryDetailsTest {
         for (int i = 0; i < 101; i++) {
             secHubReportMetaDataSummaryDetails.detailsHelper(highFinding);
         }
-        SecHubReportMetaDataSummaryDetails.SeverityDetails severityDetails = secHubReportMetaDataSummaryDetails.high.get(HIGH_FINDING_CWEID);
+        SecHubReportMetaDataSummaryDetails.SeverityDetails severityDetails = secHubReportMetaDataSummaryDetails.high.get(HIGH_FINDING_NAME);
 
         /* test */
         assertEquals(101, severityDetails.getCount());
@@ -122,7 +126,7 @@ public class SecHubReportMetaDataSummaryDetailsTest {
         for (int i = 0; i < 101; i++) {
             secHubReportMetaDataSummaryDetails.detailsHelper(mediumFinding);
         }
-        SecHubReportMetaDataSummaryDetails.SeverityDetails severityDetails = secHubReportMetaDataSummaryDetails.medium.get(MEDIUM_FINDING_CWEID);
+        SecHubReportMetaDataSummaryDetails.SeverityDetails severityDetails = secHubReportMetaDataSummaryDetails.medium.get(MEDIUM_FINDING_NAME);
 
         /* test */
         assertEquals(101, severityDetails.getCount());
@@ -134,7 +138,7 @@ public class SecHubReportMetaDataSummaryDetailsTest {
         for (int i = 0; i < 101; i++) {
             secHubReportMetaDataSummaryDetails.detailsHelper(lowFinding);
         }
-        SecHubReportMetaDataSummaryDetails.SeverityDetails severityDetails = secHubReportMetaDataSummaryDetails.low.get(LOW_FINDING_CWEID);
+        SecHubReportMetaDataSummaryDetails.SeverityDetails severityDetails = secHubReportMetaDataSummaryDetails.low.get(LOW_FINDING_NAME);
 
         /* test */
         assertEquals(101, severityDetails.getCount());

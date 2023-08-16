@@ -66,7 +66,7 @@
                 <td>Scan result Report for Job:<span th:text="${jobuuid}">job-uuid</span>
                 </td>
             </tr>
-            <tr class="reportlabels" th:if="${metaData.isPresent() && !metaData.get().getLabels().isEmpty()}">
+            <tr class="reportlabels" th:if="${metaData!=null && !metaData.get().getLabels().isEmpty()}">
                 <td></td>
                 <td>
                     <table class='reportMetaDataTable'>
@@ -101,66 +101,68 @@
             </table>
         </div>
 
-        <details th:if="${metaData.get().getSummary().getCodeScan().getTotal() != 0}">
-            <summary class='summaryScanType'>CodeScan</summary>
-            <div th:if="!${metaData.get().getSummary().getCodeScan().getDetails().getHigh().isEmpty()}">
-                <div th:replace="report/html/fragment-cwe-summary-table :: cweSummaryTable(severity = 'High', detailsList = ${metaData.get().getSummary().getCodeScan().getDetails().getHigh()})"></div>
-            </div>
-            <div th:if="!${metaData.get().getSummary().getCodeScan().getDetails().getMedium().isEmpty()}">
-                <div th:replace="report/html/fragment-cwe-summary-table :: cweSummaryTable(severity = 'Medium', detailsList = ${metaData.get().getSummary().getCodeScan().getDetails().getMedium()})"></div>
-            </div>
-            <div th:if="!${metaData.get().getSummary().getCodeScan().getDetails().getLow().isEmpty()}">
-                <div th:replace="report/html/fragment-cwe-summary-table :: cweSummaryTable(severity = 'Low', detailsList = ${metaData.get().getSummary().getCodeScan().getDetails().getLow()})"></div>
-            </div>
-        </details>
-        <details th:if="${metaData.get().getSummary().getInfraScan().getTotal() != 0}">
-            <summary class='summaryScanType'>InfraScan</summary>
-            <div th:if="!${metaData.get().getSummary().getInfraScan().getDetails().getHigh().isEmpty()}">
-                <div th:replace="report/html/fragment-cwe-summary-table :: cweSummaryTable(severity = 'High', detailsList = ${metaData.get().getSummary().getInfraScan().getDetails().getHigh()})"></div>
-            </div>
-            <div th:if="!${metaData.get().getSummary().getInfraScan().getDetails().getMedium().isEmpty()}">
-                <div th:replace="report/html/fragment-cwe-summary-table :: cweSummaryTable(severity = 'Medium', detailsList = ${metaData.get().getSummary().getInfraScan().getDetails().getMedium()})"></div>
-            </div>
-            <div th:if="!${metaData.get().getSummary().getInfraScan().getDetails().getLow().isEmpty()}">
-                <div th:replace="report/html/fragment-cwe-summary-table :: cweSummaryTable(severity = 'Low', detailsList = ${metaData.get().getSummary().getInfraScan().getDetails().getLow()})"></div>
-            </div>
-        </details>
-        <details th:if="${metaData.get().getSummary().getLicenseScan().getTotal() != 0}">
-            <summary class='summaryScanType'>LicenseScan</summary>
-            <div th:if="!${metaData.get().getSummary().getLicenseScan().getDetails().getHigh().isEmpty()}">
-                <div th:replace="report/html/fragment-cwe-summary-table :: cweSummaryTable(severity = 'High', detailsList = ${metaData.get().getSummary().getLicenseScan().getDetails().getHigh()})"></div>
-            </div>
-            <div th:if="!${metaData.get().getSummary().getLicenseScan().getDetails().getMedium().isEmpty()}">
-                <div th:replace="report/html/fragment-cwe-summary-table :: cweSummaryTable(severity = 'Medium', detailsList = ${metaData.get().getSummary().getLicenseScan().getDetails().getMedium()})"></div>
-            </div>
-            <div th:if="!${metaData.get().getSummary().getLicenseScan().getDetails().getLow().isEmpty()}">
-                <div th:replace="report/html/fragment-cwe-summary-table :: cweSummaryTable(severity = 'Low', detailsList = ${metaData.get().getSummary().getLicenseScan().getDetails().getLow()})"></div>
-            </div>
-        </details>
-        <details th:if="${metaData.get().getSummary().getSecretScan().getTotal() != 0}">
-            <summary class='summaryScanType'>SecretScan</summary>
-            <div th:if="!${metaData.get().getSummary().getSecretScan().getDetails().getHigh().isEmpty()}">
-                <div th:replace="report/html/fragment-cwe-summary-table :: cweSummaryTable(severity = 'High', detailsList = ${metaData.get().getSummary().getSecretScan().getDetails().getHigh()})"></div>
-            </div>
-            <div th:if="!${metaData.get().getSummary().getSecretScan().getDetails().getMedium().isEmpty()}">
-                <div th:replace="report/html/fragment-cwe-summary-table :: cweSummaryTable(severity = 'Medium', detailsList = ${metaData.get().getSummary().getSecretScan().getDetails().getMedium()})"></div>
-            </div>
-            <div th:if="!${metaData.get().getSummary().getSecretScan().getDetails().getLow().isEmpty()}">
-                <div th:replace="report/html/fragment-cwe-summary-table :: cweSummaryTable(severity = 'Low', detailsList = ${metaData.get().getSummary().getSecretScan().getDetails().getLow()})"></div>
-            </div>
-        </details>
-        <details th:if="${metaData.get().getSummary().getWebScan().getTotal() != 0}">
-            <summary class='summaryScanType'>WebScan</summary>
-            <div th:if="!${metaData.get().getSummary().getWebScan().getDetails().getHigh().isEmpty()}">
-                <div th:replace="report/html/fragment-cwe-summary-table :: cweSummaryTable(severity = 'High', detailsList = ${metaData.get().getSummary().getWebScan().getDetails().getHigh()})"></div>
-            </div>
-            <div th:if="!${metaData.get().getSummary().getWebScan().getDetails().getMedium().isEmpty()}">
-                <div th:replace="report/html/fragment-cwe-summary-table :: cweSummaryTable(severity = 'Medium', detailsList = ${metaData.get().getSummary().getWebScan().getDetails().getMedium()})"></div>
-            </div>
-            <div th:if="!${metaData.get().getSummary().getWebScan().getDetails().getLow().isEmpty()}">
-                <div th:replace="report/html/fragment-cwe-summary-table :: cweSummaryTable(severity = 'Low', detailsList = ${metaData.get().getSummary().getWebScan().getDetails().getLow()})"></div>
-            </div>
-        </details>
+        <div th:if="${metaData!=null}">
+            <details th:if="${metaData.get().getSummary().getCodeScan().getTotal() != 0}">
+                <summary class='summaryScanType'>CodeScan</summary>
+                <div th:if="!${metaData.get().getSummary().getCodeScan().getDetails().getHigh().isEmpty()}">
+                    <div th:replace="report/html/fragment-cwe-summary-table :: cweSummaryTable(severity = 'High', detailsList = ${metaData.get().getSummary().getCodeScan().getDetails().getHigh()})"></div>
+                </div>
+                <div th:if="!${metaData.get().getSummary().getCodeScan().getDetails().getMedium().isEmpty()}">
+                    <div th:replace="report/html/fragment-cwe-summary-table :: cweSummaryTable(severity = 'Medium', detailsList = ${metaData.get().getSummary().getCodeScan().getDetails().getMedium()})"></div>
+                </div>
+                <div th:if="!${metaData.get().getSummary().getCodeScan().getDetails().getLow().isEmpty()}">
+                    <div th:replace="report/html/fragment-cwe-summary-table :: cweSummaryTable(severity = 'Low', detailsList = ${metaData.get().getSummary().getCodeScan().getDetails().getLow()})"></div>
+                </div>
+            </details>
+            <details th:if="${metaData.get().getSummary().getInfraScan().getTotal() != 0}">
+                <summary class='summaryScanType'>InfraScan</summary>
+                <div th:if="!${metaData.get().getSummary().getInfraScan().getDetails().getHigh().isEmpty()}">
+                    <div th:replace="report/html/fragment-cwe-summary-table :: cweSummaryTable(severity = 'High', detailsList = ${metaData.get().getSummary().getInfraScan().getDetails().getHigh()})"></div>
+                </div>
+                <div th:if="!${metaData.get().getSummary().getInfraScan().getDetails().getMedium().isEmpty()}">
+                    <div th:replace="report/html/fragment-cwe-summary-table :: cweSummaryTable(severity = 'Medium', detailsList = ${metaData.get().getSummary().getInfraScan().getDetails().getMedium()})"></div>
+                </div>
+                <div th:if="!${metaData.get().getSummary().getInfraScan().getDetails().getLow().isEmpty()}">
+                    <div th:replace="report/html/fragment-cwe-summary-table :: cweSummaryTable(severity = 'Low', detailsList = ${metaData.get().getSummary().getInfraScan().getDetails().getLow()})"></div>
+                </div>
+            </details>
+            <details th:if="${metaData.get().getSummary().getLicenseScan().getTotal() != 0}">
+                <summary class='summaryScanType'>LicenseScan</summary>
+                <div th:if="!${metaData.get().getSummary().getLicenseScan().getDetails().getHigh().isEmpty()}">
+                    <div th:replace="report/html/fragment-cwe-summary-table :: cweSummaryTable(severity = 'High', detailsList = ${metaData.get().getSummary().getLicenseScan().getDetails().getHigh()})"></div>
+                </div>
+                <div th:if="!${metaData.get().getSummary().getLicenseScan().getDetails().getMedium().isEmpty()}">
+                    <div th:replace="report/html/fragment-cwe-summary-table :: cweSummaryTable(severity = 'Medium', detailsList = ${metaData.get().getSummary().getLicenseScan().getDetails().getMedium()})"></div>
+                </div>
+                <div th:if="!${metaData.get().getSummary().getLicenseScan().getDetails().getLow().isEmpty()}">
+                    <div th:replace="report/html/fragment-cwe-summary-table :: cweSummaryTable(severity = 'Low', detailsList = ${metaData.get().getSummary().getLicenseScan().getDetails().getLow()})"></div>
+                </div>
+            </details>
+            <details th:if="${metaData.get().getSummary().getSecretScan().getTotal() != 0}">
+                <summary class='summaryScanType'>SecretScan</summary>
+                <div th:if="!${metaData.get().getSummary().getSecretScan().getDetails().getHigh().isEmpty()}">
+                    <div th:replace="report/html/fragment-cwe-summary-table :: cweSummaryTable(severity = 'High', detailsList = ${metaData.get().getSummary().getSecretScan().getDetails().getHigh()})"></div>
+                </div>
+                <div th:if="!${metaData.get().getSummary().getSecretScan().getDetails().getMedium().isEmpty()}">
+                    <div th:replace="report/html/fragment-cwe-summary-table :: cweSummaryTable(severity = 'Medium', detailsList = ${metaData.get().getSummary().getSecretScan().getDetails().getMedium()})"></div>
+                </div>
+                <div th:if="!${metaData.get().getSummary().getSecretScan().getDetails().getLow().isEmpty()}">
+                    <div th:replace="report/html/fragment-cwe-summary-table :: cweSummaryTable(severity = 'Low', detailsList = ${metaData.get().getSummary().getSecretScan().getDetails().getLow()})"></div>
+                </div>
+            </details>
+            <details th:if="${metaData.get().getSummary().getWebScan().getTotal() != 0}">
+                <summary class='summaryScanType'>WebScan</summary>
+                <div th:if="!${metaData.get().getSummary().getWebScan().getDetails().getHigh().isEmpty()}">
+                    <div th:replace="report/html/fragment-cwe-summary-table :: cweSummaryTable(severity = 'High', detailsList = ${metaData.get().getSummary().getWebScan().getDetails().getHigh()})"></div>
+                </div>
+                <div th:if="!${metaData.get().getSummary().getWebScan().getDetails().getMedium().isEmpty()}">
+                    <div th:replace="report/html/fragment-cwe-summary-table :: cweSummaryTable(severity = 'Medium', detailsList = ${metaData.get().getSummary().getWebScan().getDetails().getMedium()})"></div>
+                </div>
+                <div th:if="!${metaData.get().getSummary().getWebScan().getDetails().getLow().isEmpty()}">
+                    <div th:replace="report/html/fragment-cwe-summary-table :: cweSummaryTable(severity = 'Low', detailsList = ${metaData.get().getSummary().getWebScan().getDetails().getLow()})"></div>
+                </div>
+            </details>
+        </div>
 
         <div th:if="${not #lists.isEmpty(redHTMLSecHubFindingList) or not #maps.isEmpty(redHTMLWebScanMap)}">
             <h2 class='redFindingHeadline' id="redFindingsBlock" th:text="'Red findings (Count: ' + ${#lists.size(redList)} + ')'"/>

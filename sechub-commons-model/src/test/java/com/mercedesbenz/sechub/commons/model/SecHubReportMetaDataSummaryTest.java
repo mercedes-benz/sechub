@@ -18,12 +18,15 @@ public class SecHubReportMetaDataSummaryTest {
 
         highFinding = new SecHubFinding();
         highFinding.setSeverity(Severity.HIGH);
+        highFinding.setName("Cross Site Scripting (Reflected)");
 
         mediumFinding = new SecHubFinding();
         mediumFinding.setSeverity(Severity.MEDIUM);
+        mediumFinding.setName("CSP: Wildcard Directive");
 
         lowFinding = new SecHubFinding();
         lowFinding.setSeverity(Severity.LOW);
+        lowFinding.setName("Cookie Without Secure Flag");
     }
 
     @Test
