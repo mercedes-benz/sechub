@@ -8,8 +8,8 @@ FROM ${BASE_IMAGE}
 # See: https://ryandaniels.ca/blog/docker-dockerfile-arg-from-arg-trouble/
 
 LABEL org.opencontainers.image.source="https://github.com/mercedes-benz/sechub"
-LABEL org.opencontainers.image.title="SecHub cloc+PDS Image"
-LABEL org.opencontainers.image.description="A container which combines cloc with the SecHub Product Delegation Server (PDS)"
+LABEL org.opencontainers.image.title="SecHub loc+PDS Image"
+LABEL org.opencontainers.image.description="A container which combines loc analytics tools with the SecHub Product Delegation Server (PDS)"
 LABEL maintainer="SecHub FOSS Team"
 
 # Build args

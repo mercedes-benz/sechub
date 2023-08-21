@@ -2,12 +2,12 @@
 
 version: "3"
 services:
-    pds-cloc:
+    pds-loc:
         build:
             args:
                 - BASE_IMAGE=${BASE_IMAGE}
             context: docker/
-            dockerfile: cloc-Debian.dockerfile
+            dockerfile: loc-Debian.dockerfile
         env_file:
             - .env
             - .env-cluster-object-storage
@@ -23,13 +23,13 @@ services:
         build:
             context: ../shared/docker/loadbalancer
             args:
-                - PDS_SOLUTION=pds-cloc
+                - PDS_SOLUTION=pds-loc
         env_file:
             - .env-cluster-object-storage
         networks:
             - internal
         depends_on:
-            - pds-cloc
+            - pds-loc
         ports:
             - "127.0.0.1:8444:8444"
 

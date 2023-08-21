@@ -6,7 +6,7 @@
 replicaCount: 1
 
 image:
-  registry: "ghcr.io/mercedes-benz/sechub/pds-cloc:latest"
+  registry: "ghcr.io/mercedes-benz/sechub/pds-loc"
   tag: "latest"
   # Optional: If your image is in a private registry, you can specify pull secrets defined in k8s
   #   Docs: https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/
@@ -85,7 +85,7 @@ database:
   postgres:
     enabled: false
     connection: "jdbc:postgresql://database:5432/pds"
-    username: "pds_cloc"
+    username: "pds_loc"
     password: "<password-of-db-user>"
 
 networkPolicy:

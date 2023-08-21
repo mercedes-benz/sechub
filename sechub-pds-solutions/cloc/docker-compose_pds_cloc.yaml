@@ -2,13 +2,13 @@
 
 version: "3"
 services:
-    pds-cloc:
+    pds-loc:
         build:
             args:
                 - BASE_IMAGE=${BASE_IMAGE}
             context: docker/
-            dockerfile: cloc-Debian.dockerfile
-        container_name: pds-cloc
+            dockerfile: loc-Debian.dockerfile
+        container_name: pds-loc
         env_file:
             - .env
             - .env-single

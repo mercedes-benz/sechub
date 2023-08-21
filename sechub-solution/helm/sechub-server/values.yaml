@@ -261,12 +261,12 @@ pdsCheckmarx:
   # Put the password of PDS-Checkmarx in k8s secret secret-pds-checkmarx:techuser_password
 
 # ------------------------------------------------------------------------------------- #
-# PDS-Cloc adapter
+# PDS-Loc analytics adapter
 # ------------------------------------------------------------------------------------- #
-pdsCloc:
+pdsLoc:
   enabled: false
-  # Put the user id  of PDS-Cloc in k8s secret secret-pds-cloc:techuser_username
-  # Put the password of PDS-Cloc in k8s secret secret-pds-cloc:techuser_password
+  # Put the user id  of PDS-Loc in k8s secret secret-pds-loc:techuser_username
+  # Put the password of PDS-Loc in k8s secret secret-pds-loc:techuser_password
 
 # ------------------------------------------------------------------------------------- #
 # PDS-Coverity adapter

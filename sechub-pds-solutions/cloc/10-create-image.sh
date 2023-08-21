@@ -8,7 +8,7 @@ BASE_IMAGE="$3"
 usage() {
   cat - <<EOF
 usage: $0 <docker registry> <version tag> <base image>
-Builds a docker image of SecHub PDS with cloc
+Builds a docker image of SecHub PDS with loc analytics tools
 for <docker registry> with tag <version tag>.
 Required: <base image> ; for example ghcr.io/mercedes-benz/sechub/pds-base
 
@@ -53,5 +53,5 @@ export DOCKER_BUILDKIT=1
 
 docker build --pull --no-cache $BUILD_ARGS \
        --tag "$REGISTRY:$VERSION" \
-       --file docker/cloc-Debian.dockerfile docker/
+       --file docker/loc-Debian.dockerfile docker/
 docker tag "$REGISTRY:$VERSION" "$REGISTRY:latest"
