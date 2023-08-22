@@ -29,7 +29,7 @@ COPY pds-config.json "$PDS_FOLDER"/pds-config.json
 
 RUN export DEBIAN_FRONTEND=noninteractive && \
     apt-get update && \
-    # apt-get --assume-yes upgrade && \
+    apt-get --assume-yes upgrade && \
     apt-get --assume-yes install perl wget yq && \
     apt-get --assume-yes clean
 
