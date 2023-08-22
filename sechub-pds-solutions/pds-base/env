@@ -13,10 +13,10 @@ CPU_LIMIT=1.0
 BUILD_TYPE=download
 
 # The PDS version used if the BUILD_TYPE is set to `download`
-PDS_VERSION="0.38.0"
+PDS_VERSION="1.1.0"
 
 # Go version used
-GO="go1.20.4.linux-amd64.tar.gz"
+GO="go1.21.0.linux-amd64.tar.gz"
 
 # The Java version used
 JAVA_VERSION="17"
