@@ -7,19 +7,19 @@ test_folder_name="$3"
 	
 if [[ ! -d "$current_test_folder" ]]
 then
-	echo "Target folder is empty"
+	echo "ERROR: Target folder \"$current_test_folder\" does not exist."
 	exit 1
 fi
 
 if [[ -z "$test_file" ]]
 then
-	echo "No file to test provided"
+	echo "ERROR: No file to test provided."
 	exit 1
 fi
 
 if [[ -z "$test_folder_name" ]]
 then
-	echo "No file to test provided"
+	echo "ERROR: No test folder provided."
 	exit 1
 fi
 
