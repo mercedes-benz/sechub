@@ -7,4 +7,4 @@ BASE_IMAGE="ghcr.io/mercedes-benz/sechub/pds-base"
 CLOC_VERSION="1.96"
 
 # See: https://github.com/boyter/scc/releases
-CLOC_VERSION="3.1.0"
+SCC_VERSION="3.1.0"
