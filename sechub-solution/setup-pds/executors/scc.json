@@ -1,5 +1,5 @@
 {
-  "name": "pds-cloc",
+  "name": "pds-scc",
   "productIdentifier": "PDS_ANALYTICS",
   "executorVersion": 1,
   "enabled": true,
@@ -12,7 +12,7 @@
     "jobParameters": [
       {
         "key": "pds.config.productidentifier",
-        "value": "PDS_CLOC"
+        "value": "PDS_SCC"
       },
       {
         "key": "pds.config.use.sechub.storage",

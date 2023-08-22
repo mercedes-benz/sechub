@@ -18,10 +18,10 @@ image:
 resources:
   requests:
     # Initial container memory size
-    memory: 128Mi
+    memory: 256Mi
   limits:
     # Maximum container memory size
-    memory: 512Mi
+    memory: 2Gi
 
 pds:
   # Maximum upload size: 100 MiB by default (100 * 1024 * 1024 = 104857600)

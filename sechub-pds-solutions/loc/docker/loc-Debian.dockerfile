@@ -14,7 +14,10 @@ LABEL maintainer="SecHub FOSS Team"
 
 # Build args
 ARG CLOC_VERSION="1.94"
+ARG SCC_VERSION="3.1.0"
+
 ENV CLOC_TAR="cloc-$CLOC_VERSION.tar.gz"
+ENV SCC_VERSION="${SCC_VERSION}"
 
 USER root
 
@@ -26,9 +29,17 @@ COPY pds-config.json "$PDS_FOLDER"/pds-config.json
 
 RUN export DEBIAN_FRONTEND=noninteractive && \
     apt-get update && \
-    apt-get --assume-yes upgrade && \
-    apt-get --assume-yes install wget perl && \
+    # apt-get --assume-yes upgrade && \
+    apt-get --assume-yes install perl wget yq && \
     apt-get --assume-yes clean
+
+# Install scc
+RUN cd "$DOWNLOAD_FOLDER" && \
+    wget --no-verbose "https://github.com/boyter/scc/releases/download/v${SCC_VERSION}/scc_${SCC_VERSION}_Linux_x86_64.tar.gz" && \
+    tar zxf scc_${SCC_VERSION}_Linux_x86_64.tar.gz scc && \
+    mv scc /usr/local/bin/ && \
+    # Cleanup download folder
+    rm --recursive --force "$DOWNLOAD_FOLDER"/*
 
 # Install cloc
 RUN cd "$DOWNLOAD_FOLDER" && \

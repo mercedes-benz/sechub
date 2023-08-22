@@ -5,3 +5,6 @@ BASE_IMAGE="ghcr.io/mercedes-benz/sechub/pds-base"
 
 # See: https://github.com/AlDanial/cloc/releases
 CLOC_VERSION="1.96"
+
+# See: https://github.com/boyter/scc/releases
+CLOC_VERSION="3.1.0"

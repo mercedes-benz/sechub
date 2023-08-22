@@ -13,6 +13,18 @@
       "path": "/pds/scripts/cloc_mock.sh",
       "scanType": "analytics",
       "description": "Runs cloc mock. It returns a fixed result file."
+    },
+    {
+      "id": "PDS_SCC",
+      "path": "/pds/scripts/scc.sh",
+      "scanType": "analytics",
+      "description": "Runs the source code analyzer Scc."
+    },
+    {
+      "id": "PDS_SCC_MOCK",
+      "path": "/pds/scripts/scc_mock.sh",
+      "scanType": "analytics",
+      "description": "Runs Scc mock. It returns a fixed result file."
     }
   ]
 }
