@@ -16,5 +16,5 @@ fi
 
 # Call scc and convert Yaml to Json
 # We need to turn the "version" attribute to "cloc_version" so the SecHub server will parse it.
-scc -f cloc-yaml "$extracted_folder" > scc.yaml && \
+scc --format cloc-yaml "$extracted_folder" > scc.yaml && \
 cat scc.yaml | sed 's/  version:/  cloc_version:/' | yq > "$PDS_JOB_RESULT_FILE"

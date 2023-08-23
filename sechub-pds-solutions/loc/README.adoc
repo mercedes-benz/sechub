@@ -3,7 +3,9 @@
 :toc:
 :numbered:
 
-= loc (lines of code) analytics tools + PDS
+= LoC analytics tools + PDS
+
+Lines of Code (LoC) analytics tools measure the number of lines of code in source code files.
 
 https://github.com/AlDanial/cloc[cloc] and https://github.com/boyter/scc/[scc] are free and open source applications that count blank lines, comment lines, and physical lines of source code in many programming languages. By combining these tools with the SecHub https://mercedes-benz.github.io/sechub/latest/sechub-product-delegation-server.html[Product Delegation Server (PDS)] in a container, they can serve as code analytics tools for SecHub.
 Another scenario is to use loc+PDS standalone.
