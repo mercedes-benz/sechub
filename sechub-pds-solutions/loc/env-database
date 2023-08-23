@@ -3,7 +3,6 @@
 #   server - initializes and starts the database
 DATABASE_START_MODE=server
 POSTGRES_ENABLED=true
-DATABASE_CONNECTION=jdbc:postgresql://database:5432/pds?currentSchema=cloc
+DATABASE_CONNECTION=jdbc:postgresql://database:5432/pds?currentSchema=pds_loc
 DATABASE_PASSWORD='top$ecret'
-DATABASE_USERNAME=cloc
-
+DATABASE_USERNAME=pds_loc

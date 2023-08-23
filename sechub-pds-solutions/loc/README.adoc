@@ -3,13 +3,14 @@
 :toc:
 :numbered:
 
-= cloc + PDS
+= LoC analytics tools + PDS
 
-https://github.com/AlDanial/cloc[cloc] is a free and open source application that counts blank lines, comment lines, and physical lines of source code in many programming languages. It is used on the command line. By combining cloc with the SecHub https://mercedes-benz.github.io/sechub/latest/sechub-product-delegation-server.html[Product Delegation Server (PDS)] in a container, cloc can be used with SecHub. Another scenario is to use cloc+PDS standalone.
+Lines of Code (LoC) analytics tools measure the number of lines of code in source code files.
 
-Furthermore, the combination of cloc and PDS makes it possible to run both inside a Kubernetes cluser or virtual machines.
+https://github.com/AlDanial/cloc[cloc] and https://github.com/boyter/scc/[scc] are free and open source applications that count blank lines, comment lines, and physical lines of source code in many programming languages. By combining these tools with the SecHub https://mercedes-benz.github.io/sechub/latest/sechub-product-delegation-server.html[Product Delegation Server (PDS)] in a container, they can serve as code analytics tools for SecHub.
+Another scenario is to use loc+PDS standalone.
 
-This folder contains the necessary scripts to run cloc+PDS inside a container locally. Additionally, it contains scripts to build and push the PDS + cloc container to your container registry and a Helm chart to install and run cloc+PDS in a Kubernetes cluster.
+This folder contains the necessary scripts to run loc+PDS inside a container locally. Additionally, it contains scripts to build and push the loc+PDS container to your container registry and a Helm chart to install and run loc+PDS in a Kubernetes cluster.
 
 == Run Locally
 
@@ -64,6 +65,8 @@ export PDS_SERVER=https://<pds-host>:<port>
 export PDS_USERID=admin
 export PDS_APITOKEN="<pds-admin-apitoken>"
 export PDS_PRODUCT_IDENTFIER=PDS_CLOC
+# If you want to use scc instead of cloc, use:
+# export PDS_PRODUCT_IDENTFIER=PDS_SCC
 ----
 +
 For example:
@@ -76,7 +79,7 @@ export PDS_PRODUCT_IDENTFIER=PDS_CLOC
 ----
 +
 [NOTE]
-Those values are the default values from `env-initial` and `env-cluster-initial` files. In case you run PDS+cloc in Kubernetes or other environments those values will be different.
+Those values are the default values from `env-initial` and `env-cluster-initial` files. In case you run loc+PDS in Kubernetes or other environments those values will be different.
 
 . Scan by providing a `ZIP` folder with source code.
 +
@@ -98,7 +101,7 @@ The cluster is created locally via `docker-compose`.
 
 ==== Shared Volume
 
-The cluster uses a shared volume defined in `docker-compose`. Docker allows to create volumes which can be used by multiple instances to upload files to. Reading, extracting and analysing the files is done in the cloc+PDS container.
+The cluster uses a shared volume defined in `docker-compose`. Docker allows to create volumes which can be used by multiple instances to upload files to. Reading, extracting and analysing the files is done in the loc+PDS container.
 
 The cluster consists of a PostgreSQL database, a Nginx loadbalancer and one or more PDS server.
 
@@ -106,13 +109,13 @@ image::../shared/media/cluster_shared_volume.svg[Components of cluster with shar
 
 ===== Start Script
 
-Starting several cloc+PDS instances:
+Starting several loc+PDS instances:
 
 ----
 ./50-start-multiple-docker-compose.sh <replicas>
 ----
 
-Example of starting 3 cloc+PDS instances:
+Example of starting 3 loc+PDS instances:
 
 ----
 ./50-start-multiple-docker-compose.sh 3
@@ -120,7 +123,7 @@ Example of starting 3 cloc+PDS instances:
 
 ==== Object Storage
 
-The cluster uses an object storage to store files. The cluster uses https://github.com/chrislusf/seaweedfs[SeaweedFS] (S3 compatible) to store files. The PDS instance(s) use the object storage to upload files to. Reading, extracting and analysing the files is done in the cloc+PDS container.
+The cluster uses an object storage to store files. The cluster uses https://github.com/chrislusf/seaweedfs[SeaweedFS] (S3 compatible) to store files. The PDS instance(s) use the object storage to upload files to. Reading, extracting and analysing the files is done in the loc+PDS container.
 
 The cluster consists of a PostgreSQL database, a Nginx loadbalancer, a SeaweedFS object storage and one or more PDS server.
 
@@ -128,13 +131,13 @@ image::../shared/media/cluster_object_storage.svg[Components of cluster with obj
 
 ===== Start Script
 
-Starting several cloc+PDS instances
+Starting several loc+PDS instances
 
 ----
 ./51-start-multiple-object-storage-docker-compose.sh <replicas>
 ----
 
-Example of starting 3 cloc+PDS instances
+Example of starting 3 loc+PDS instances
 
 ----
 ./51-start-multiple-object-storage-docker-compose.sh 3
@@ -142,11 +145,11 @@ Example of starting 3 cloc+PDS instances
 
 === Change the Configuration
 
-There are several configuration options available for the cloc+PDS `docker-compose` files. Have a look at `env-example` for more details.
+There are several configuration options available for the loc+PDS `docker-compose` files. Have a look at `env-example` for more details.
 
 === Troubleshooting
 
-This section contains information about how to troubleshoot cloc+PDS if something goes wrong.
+This section contains information about how to troubleshoot loc+PDS if something goes wrong.
 
 ==== Access the container
 
@@ -175,7 +178,7 @@ TIP: https://www.eclipse.org/community/eclipse_newsletter/2017/june/article1.php
 
 == Build Image and Push to Registry
 
-Build container images and push them to registry to run cloc+PDS on virtual machines, Kubernetes or any other distributed system.
+Build container images and push them to registry to run loc+PDS on virtual machines, Kubernetes or any other distributed system.
 
 === Build Image
 
@@ -186,7 +189,7 @@ Build the container image.
 . Using debian-slim as base image (recommended):
 +
 ----
-./10-create-image.sh my.registry.example.org/sechub/pds_cloc v0.1 debian:12-slim
+./10-create-image.sh my.registry.example.org/sechub/pds_loc v0.1 debian:12-slim
 ----
 
 === Push Image to Registry
@@ -196,18 +199,18 @@ Push the container image to a registry.
 * Push the version tag only
 +
 ----
-./20-push-image.sh my.registry.example.org/sechub/pds_cloc v0.1
+./20-push-image.sh my.registry.example.org/sechub/pds_loc v0.1
 ----
 
 * Push the version and `latest` tags
 +
 ----
-./20-push-image.sh my.registry.example.org/sechub/pds_cloc v0.1 yes
+./20-push-image.sh my.registry.example.org/sechub/pds_loc v0.1 yes
 ----
 
 == Kubernetes
 
-https://kubernetes.io/[Kubernetes] is an open-source container-orchestration system. This sections explains how to deploy and run PDS+cloc in Kubernetes.
+https://kubernetes.io/[Kubernetes] is an open-source container-orchestration system. This sections explains how to deploy and run loc+PDS in Kubernetes.
 
 === Helm
 
@@ -216,7 +219,7 @@ https://helm.sh/[Helm] is a package manager for Kubernetes.
 ==== Requierments
 
 * https://helm.sh/docs/intro/install/[Helm] installed
-* `pds_cloc` image pushed to registry
+* `pds_loc` image pushed to registry
 
 ==== Installation
 
@@ -229,7 +232,7 @@ A minimal example configuration file with one instance:
 replicaCount: 1
 
 image:
-   registry: my.registry.example.org/sechub/pds_cloc
+   registry: my.registry.example.org/sechub/pds_loc
    tag: latest
 
 pds:
@@ -266,7 +269,7 @@ An example configuration file with 3 replicas, postgresql and object storage:
 replicaCount: 3
 
 image:
-   registry: my.registry.example.org/sechub/pds_cloc
+   registry: my.registry.example.org/sechub/pds_loc
    tag: latest
 
 pds:
@@ -317,7 +320,7 @@ To generate passwords you could use `tr -dc A-Za-z0-9 </dev/urandom | head -c 18
 . Install helm package from file system
 +
 ----
-helm install --values myvalues.yaml pds-cloc helm/pds-cloc/
+helm install --values myvalues.yaml pds-loc helm/pds-loc/
 ----
 +
 [TIP]
@@ -328,16 +331,16 @@ Use `helm --namespace <my-namespace> install…` to install the helm chart into 
 ----
 kubectl get pods
 NAME                             READY   STATUS    RESTARTS   AGE
-pds-cloc-545f5bc8-7s6rh         1/1     Running   0          1m43s
-pds-cloc-545f5bc8-px9cs         1/1     Running   0          1m43s
-pds-cloc-545f5bc8-t52p6         1/1     Running   0          3m
+pds-loc-545f5bc8-7s6rh         1/1     Running   0          1m43s
+pds-loc-545f5bc8-px9cs         1/1     Running   0          1m43s
+pds-loc-545f5bc8-t52p6         1/1     Running   0          3m
 
 ----
 
 . Forward port of one of the pods to own machine
 +
 ----
-kubectl port-forward pds-cloc-545f5bc8-7s6rh  8444:8444
+kubectl port-forward pds-loc-545f5bc8-7s6rh  8444:8444
 ----
 
 Now the PDS is ready to scan.
@@ -347,7 +350,7 @@ Now the PDS is ready to scan.
 In case, `my-values.yaml` was changed. Simply, use `helm upgrade` to update the deployment. `helm` will handle scaling up and down as well as changing the configuration.
 
 ----
-helm upgrade --values my-values.yaml pds-cloc helm/pds-cloc/
+helm upgrade --values my-values.yaml pds-loc helm/pds-loc/
 ----
 
 ==== Uninstall
@@ -357,7 +360,7 @@ helm upgrade --values my-values.yaml pds-cloc helm/pds-cloc/
 ----
 helm list
 NAME     	NAMESPACE 	REVISION	UPDATED                                 	STATUS  	CHART                          	APP VERSION
-pds-cloc	my-namespace	1       	2021-06-24 21:54:37.668489822 +0200 CEST	deployed	pds-cloc-0.1.0                	0.21.0
+pds-loc	my-namespace	1       	2021-06-24 21:54:37.668489822 +0200 CEST	deployed	pds-loc-0.1.0                	0.21.0
 ----
 
 . Helm uninstall
@@ -371,22 +374,22 @@ helm uninstall pds-cloc
 * Access deployment events.
 +
 ----
-kubectl describe pod pds-cloc-545f5bc8-7s6rh
+kubectl describe pod pds-loc-545f5bc8-7s6rh
 …
 Events:
   Type    Reason     Age   From               Message
   ----    ------     ----  ----               -------
-  Normal  Scheduled  1m    default-scheduler  Successfully assigned sechub-dev/pds-cloc-749fcb8d7f-jjqwn to kube-node01
-  Normal  Pulling    54s   kubelet            Pulling image "my.registry.example.org/sechub/pds_cloc:v0.1"
-  Normal  Pulled     40s   kubelet            Successfully pulled image "my.registry.example.org/sechub/pds_cloc:v0.1" in 13.815348799s
-  Normal  Created    15s   kubelet            Created container pds-cloc
-  Normal  Started    10s   kubelet            Started container pds-cloc
+  Normal  Scheduled  1m    default-scheduler  Successfully assigned sechub-dev/pds-loc-749fcb8d7f-jjqwn to kube-node01
+  Normal  Pulling    54s   kubelet            Pulling image "my.registry.example.org/sechub/pds_loc:v0.1"
+  Normal  Pulled     40s   kubelet            Successfully pulled image "my.registry.example.org/sechub/pds_loc:v0.1" in 13.815348799s
+  Normal  Created    15s   kubelet            Created container pds-loc
+  Normal  Started    10s   kubelet            Started container pds-loc
 ----
 
 * Access container logs.
 +
 ----
-kubectl logs pds-cloc-545f5bc8-7s6rh
+kubectl logs pds-loc-545f5bc8-7s6rh
 
   .   ____          _            __ _ _
  /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
@@ -396,7 +399,7 @@ kubectl logs pds-cloc-545f5bc8-7s6rh
  =========|_|==============|___/=/_/_/_/
  :: Spring Boot ::                (v2.4.0)
 
-2021-06-09 14:46:07.310  INFO 7 --- [           main] d.s.p.ProductDelegationServerApplication : Starting ProductDelegationServerApplication using Java 11.0.11 on pds-cloc-749fcb8d7f-jjqwn with PID 7 (/pds/sechub-pds-0.21.0.jar started by cloc in /workspace)
+2021-06-09 14:46:07.310  INFO 7 --- [           main] d.s.p.ProductDelegationServerApplication : Starting ProductDelegationServerApplication using Java 11.0.11 on pds-loc-749fcb8d7f-jjqwn with PID 7 (/pds/sechub-pds-0.21.0.jar started by loc in /workspace)
 2021-06-09 14:46:07.312  INFO 7 --- [           main] d.s.p.ProductDelegationServerApplication : The following profiles are active: pds_localserver
 2021-06-09 14:46:08.945  INFO 7 --- [           main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
 2021-06-09 14:46:08.945  INFO 7 --- [           main] org.apache.catalina.core.StandardEngine  : Starting Servlet engine: [Apache Tomcat/9.0.39]
@@ -408,5 +411,5 @@ kubectl logs pds-cloc-545f5bc8-7s6rh
 2021-06-09 14:46:13.192  INFO 7 --- [           main] d.s.p.ProductDelegationServerApplication : Started ProductDelegationServerApplication in 6.783 seconds (JVM running for 7.27)
 2021-06-09 14:46:14.206  INFO 7 --- [   scheduling-1] c.d.s.p.m.PDSHeartBeatTriggerService     : Heartbeat will be initialized
 2021-06-09 14:46:14.206  INFO 7 --- [   scheduling-1] c.d.s.p.m.PDSHeartBeatTriggerService     : Create new server hearbeat
-2021-06-09 14:46:14.255  INFO 7 --- [   scheduling-1] c.d.s.p.m.PDSHeartBeatTriggerService     : heartbeat update - serverid:CLOC_CLUSTER, heartbeatuuid:a46b97b2-4cfb-449d-a171-42b255c4aab8, cluster-member-data:{"hostname":"pds-cloc-749fcb8d7f-jjqwn","ip":"192.168.129.206","port":8444,"heartBeatTimestamp":"2021-06-09T14:46:14.207113","executionState":{"queueMax":50,"jobsInQueue":0,"entries":[]}}
+2021-06-09 14:46:14.255  INFO 7 --- [   scheduling-1] c.d.s.p.m.PDSHeartBeatTriggerService     : heartbeat update - serverid:LOC_CLUSTER, heartbeatuuid:a46b97b2-4cfb-449d-a171-42b255c4aab8, cluster-member-data:{"hostname":"pds-loc-749fcb8d7f-jjqwn","ip":"192.168.129.206","port":8444,"heartBeatTimestamp":"2021-06-09T14:46:14.207113","executionState":{"queueMax":50,"jobsInQueue":0,"entries":[]}}
 ----

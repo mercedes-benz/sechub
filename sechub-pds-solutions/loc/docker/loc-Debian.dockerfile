@@ -8,13 +8,16 @@ FROM ${BASE_IMAGE}
 # See: https://ryandaniels.ca/blog/docker-dockerfile-arg-from-arg-trouble/
 
 LABEL org.opencontainers.image.source="https://github.com/mercedes-benz/sechub"
-LABEL org.opencontainers.image.title="SecHub cloc+PDS Image"
-LABEL org.opencontainers.image.description="A container which combines cloc with the SecHub Product Delegation Server (PDS)"
+LABEL org.opencontainers.image.title="SecHub loc+PDS Image"
+LABEL org.opencontainers.image.description="A container which combines lines of code (LoC) counting analytics tools with the SecHub Product Delegation Server (PDS)"
 LABEL maintainer="SecHub FOSS Team"
 
 # Build args
 ARG CLOC_VERSION="1.94"
+ARG SCC_VERSION="3.1.0"
+
 ENV CLOC_TAR="cloc-$CLOC_VERSION.tar.gz"
+ENV SCC_VERSION="${SCC_VERSION}"
 
 USER root
 
@@ -27,8 +30,18 @@ COPY pds-config.json "$PDS_FOLDER"/pds-config.json
 RUN export DEBIAN_FRONTEND=noninteractive && \
     apt-get update && \
     apt-get --assume-yes upgrade && \
-    apt-get --assume-yes install wget perl && \
+    apt-get --assume-yes install perl wget yq && \
     apt-get --assume-yes clean
+
+# Install scc
+RUN cd "$DOWNLOAD_FOLDER" && \
+    wget --no-verbose "https://github.com/boyter/scc/releases/download/v${SCC_VERSION}/scc_${SCC_VERSION}_Linux_x86_64.tar.gz" && \
+    wget --no-verbose "https://github.com/boyter/scc/releases/download/v${SCC_VERSION}/checksums.txt" && \
+    grep scc_${SCC_VERSION}_Linux_x86_64.tar.gz checksums.txt | sha256sum --check && \
+    tar zxf scc_${SCC_VERSION}_Linux_x86_64.tar.gz scc && \
+    mv scc /usr/local/bin/ && \
+    # Cleanup download folder
+    rm --recursive --force "$DOWNLOAD_FOLDER"/*
 
 # Install cloc
 RUN cd "$DOWNLOAD_FOLDER" && \

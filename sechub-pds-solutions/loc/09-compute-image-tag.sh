@@ -12,8 +12,7 @@ else
   VERSION_TAG="`date +%Y-%m-%d`"
 fi
 
-if [[ -n "$CLOC_VERSION" ]] ; then
-    VERSION_TAG+="_$CLOC_VERSION"
-fi
+# Use date of build, because there are multiple tools contained
+VERSION_TAG+="_`date +%Y%m%d`"
 
 echo $VERSION_TAG

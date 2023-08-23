@@ -8,12 +8,13 @@ BASE_IMAGE="$3"
 usage() {
   cat - <<EOF
 usage: $0 <docker registry> <version tag> <base image>
-Builds a docker image of SecHub PDS with cloc
+Builds a docker image of SecHub PDS with loc analytics tools
 for <docker registry> with tag <version tag>.
 Required: <base image> ; for example ghcr.io/mercedes-benz/sechub/pds-base
 
 Additionally these environment variables can be defined:
 - CLOC_VERSION - Cloc version to use. E.g. 1.94
+- SCC_VERSION - Scc version to use. E.g. 3.1.0
 
 EOF
 }
@@ -44,7 +45,12 @@ echo ">> Base image: $BASE_IMAGE"
 
 if [[ ! -z "$CLOC_VERSION" ]] ; then
     echo ">> Cloc version: $CLOC_VERSION"
-    BUILD_ARGS="$BUILD_ARGS --build-arg CLOC_VERSION=$CLOC_VERSION"
+    BUILD_ARGS+=" --build-arg CLOC_VERSION=$CLOC_VERSION"
+fi
+
+if [[ ! -z "$SCC_VERSION" ]] ; then
+    echo ">> Scc version: $SCC_VERSION"
+    BUILD_ARGS+=" --build-arg SCC_VERSION=$SCC_VERSION"
 fi
 
 # Use Docker BuildKit
@@ -53,5 +59,5 @@ export DOCKER_BUILDKIT=1
 
 docker build --pull --no-cache $BUILD_ARGS \
        --tag "$REGISTRY:$VERSION" \
-       --file docker/cloc-Debian.dockerfile docker/
+       --file docker/loc-Debian.dockerfile docker/
 docker tag "$REGISTRY:$VERSION" "$REGISTRY:latest"

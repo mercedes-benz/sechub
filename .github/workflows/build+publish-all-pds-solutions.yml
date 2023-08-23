@@ -20,10 +20,10 @@ jobs:
       pds-solution: checkmarx
       pds-version: ${{ inputs.pds-version }}
 
-  call_build_pds-cloc:
+  call_build_pds-loc:
     uses: mercedes-benz/sechub/.github/workflows/_build+publish-pds-solution.yml@develop
     with:
-      pds-solution: cloc
+      pds-solution: loc
       pds-version: ${{ inputs.pds-version }}
 
   # 2023-06-12: findsecuritybugs deactivated due to upstream fix is not yet released
