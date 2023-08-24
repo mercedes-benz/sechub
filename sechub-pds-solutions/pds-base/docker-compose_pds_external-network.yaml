@@ -22,10 +22,12 @@ services:
       - "127.0.0.1:8444:8444"
       - "127.0.0.1:15024:15024"
     networks:
-      - "internal"
+      - "sechub"
     volumes:
       - ./docker/scripts:/pds/scripts
       - ./docker/mocks:/pds/mocks
 
 networks:
-  internal:
+  sechub:
+    external: true
+    name: "sechub"
