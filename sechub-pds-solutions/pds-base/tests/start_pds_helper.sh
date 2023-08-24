@@ -3,7 +3,7 @@
 
 function start_pds() {
     echo "Starting script."
-    "./../05-start-single-sechub-network-docker-compose.sh"
+    "../05-start-single-sechub-network-docker-compose.sh"
 }
 
 cd $(dirname "$0")

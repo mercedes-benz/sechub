@@ -28,6 +28,6 @@ services:
       - ./docker/mocks:/pds/mocks
 
 networks:
-    sechub:
-        external: true
-        name: "sechub"
+  sechub:
+    external: true
+    name: "sechub"

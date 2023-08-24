@@ -11,7 +11,7 @@
 Example:
 +
 ----
-export PDS_VERSION='1.0.0'
+export PDS_VERSION='1.1.0'
 export BUILD_TYPE='build'
 java -jar sechub-pds-tools-cli-1.0.0.jar systemtest --file systemtest_local.json --pds-solutions-rootfolder ../../ --sechub-solution-rootfolder ../../../sechub-solution
 ----
