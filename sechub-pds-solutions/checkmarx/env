@@ -1,8 +1,3 @@
-# The base image to use
-# uncomment to use local image
-# BASE_IMAGE="pds-base_pds"
-BASE_IMAGE="ghcr.io/mercedes-benz/sechub/pds-base"
-
 # The build type of the Checkmarx-Wrapper
 # Possible values are: copy, download
 # copy - copies jar into container
