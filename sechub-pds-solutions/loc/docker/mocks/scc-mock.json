@@ -1,0 +1,38 @@
+{
+  "header": {
+    "url": "https://github.com/boyter/scc/",
+    "cloc_version": "3.1.0",
+    "elapsed_seconds": 0.004,
+    "n_files": 7,
+    "n_lines": 138,
+    "files_per_second": 1750,
+    "lines_per_second": 34500
+  },
+  "JSON": {
+    "name": "JSON",
+    "code": 71,
+    "comment": 0,
+    "blank": 1,
+    "nFiles": 2
+  },
+  "Shell": {
+    "name": "Shell",
+    "code": 39,
+    "comment": 13,
+    "blank": 14,
+    "nFiles": 4
+  },
+  "YAML": {
+    "name": "YAML",
+    "code": 0,
+    "comment": 0,
+    "blank": 0,
+    "nFiles": 1
+  },
+  "SUM": {
+    "code": 110,
+    "comment": 13,
+    "blank": 15,
+    "nFiles": 7
+  }
+}

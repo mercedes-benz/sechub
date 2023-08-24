@@ -1,6 +1,8 @@
 #!/usr/bin/env bash
 # SPDX-License-Identifier: MIT
 
+source "${HELPER_FOLDER}/message.sh"
+
 function to_upper() {
     local mixedCase="$1"
 
@@ -20,7 +22,7 @@ function build_xml_bug_patterns() {
     local content=""
 
     # trim whitespaces
-    bug_patterns=$(echo "$bug_patterns" | tr -d ' ')
+    bug_patterns=$(echo "$bug_patterns" | tr --delimiter=' ')
 
     IFS=,
     read line <<<$bug_patterns
@@ -64,12 +66,23 @@ additional_options=""
 
 if [[ "$PDS_JOB_HAS_EXTRACTED_BINARIES" == "true" ]]
 then
+	# The binaries are in a tar file (not compressed), therefore it is possible to check the file size
+	# by checking the directory size
+	binaries_size=$( du --summarize --bytes "$PDS_JOB_EXTRACTED_BINARIES_FOLDER/" | tr '[:space:]' ',' | cut --delimiter=',' --fields=1 )
+	echo "Binaries size: $binaries_size"
+	
+	if [[ "$binaries_size" -gt "$PDS_MAX_FILE_UPLOAD_BYTES" ]]
+	then
+		errorMessage "File limit exceeded. File larger than $PDS_MAX_FILE_UPLOAD_BYTES bytes. Exiting."
+		exit 1
+	fi
+	
     echo "Extracted folder structure:"
     echo ""
     tree "$PDS_JOB_EXTRACTED_BINARIES_FOLDER/"
     echo ""
 else
-    echo "ERROR: No binaries found. Exiting."
+    errorMessage "No files to analyze found. Exiting."
     exit 1
 fi
 
