@@ -5,20 +5,11 @@ import java.io.File;
 
 import com.mercedesbenz.sechub.zapwrapper.cli.ZapWrapperExitCode;
 import com.mercedesbenz.sechub.zapwrapper.cli.ZapWrapperRuntimeException;
-import com.mercedesbenz.sechub.zapwrapper.util.EnvironmentVariableConstants;
-import com.mercedesbenz.sechub.zapwrapper.util.EnvironmentVariableReader;
 
 public class ZapEventHandler {
-
     File cancelEventFile;
-    EnvironmentVariableReader environmentVariableReader = new EnvironmentVariableReader();
 
-    public ZapEventHandler() {
-        String pdsJobEventsFolder = environmentVariableReader.readAsString(EnvironmentVariableConstants.PDS_JOB_EVENTS_FOLDER);
-        if (pdsJobEventsFolder == null) {
-            throw new ZapWrapperRuntimeException("PDS configuration invalid. Cannot send user messages, because environment variable "
-                    + EnvironmentVariableConstants.PDS_JOB_EVENTS_FOLDER + " is not set.", ZapWrapperExitCode.PDS_CONFIGURATION_ERROR);
-        }
+    public ZapEventHandler(String pdsJobEventsFolder) {
         this.cancelEventFile = new File(pdsJobEventsFolder, "cancel_requested.json");
     }
 

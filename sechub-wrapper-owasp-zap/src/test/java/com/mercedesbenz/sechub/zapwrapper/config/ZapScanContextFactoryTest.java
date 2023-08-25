@@ -1,24 +1,10 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.zapwrapper.config;
 
-import static com.mercedesbenz.sechub.zapwrapper.util.EnvironmentVariableConstants.PDS_JOB_EXTRACTED_SOURCES_FOLDER;
-import static com.mercedesbenz.sechub.zapwrapper.util.EnvironmentVariableConstants.PDS_JOB_USER_MESSAGES_FOLDER;
-import static com.mercedesbenz.sechub.zapwrapper.util.EnvironmentVariableConstants.PROXY_HOST_ENV_VARIABLE_NAME;
-import static com.mercedesbenz.sechub.zapwrapper.util.EnvironmentVariableConstants.PROXY_PORT_ENV_VARIABLE_NAME;
-import static com.mercedesbenz.sechub.zapwrapper.util.EnvironmentVariableConstants.ZAP_API_KEY_ENV_VARIABLE_NAME;
-import static com.mercedesbenz.sechub.zapwrapper.util.EnvironmentVariableConstants.ZAP_DEACTIVATED_RULE_REFERENCES;
-import static com.mercedesbenz.sechub.zapwrapper.util.EnvironmentVariableConstants.ZAP_HOST_ENV_VARIABLE_NAME;
-import static com.mercedesbenz.sechub.zapwrapper.util.EnvironmentVariableConstants.ZAP_PORT_ENV_VARIABLE_NAME;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static com.mercedesbenz.sechub.zapwrapper.util.EnvironmentVariableConstants.*;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 import java.io.File;
 import java.net.URI;
@@ -77,6 +63,7 @@ class ZapScanContextFactoryTest {
         deactivationFile = new File("src/test/resources/wrapper-deactivated-rule-examples/zap-rules-to-deactivate.json");
 
         when(environmentVariableReader.readAsString(PDS_JOB_USER_MESSAGES_FOLDER)).thenReturn(tempDir.getAbsolutePath());
+        when(environmentVariableReader.readAsString(PDS_JOB_EVENTS_FOLDER)).thenReturn("");
     }
 
     @Test
@@ -529,6 +516,8 @@ class ZapScanContextFactoryTest {
 
         when(settings.getFullRulesetFile()).thenReturn(null);
         when(settings.getRulesDeactvationFile()).thenReturn(null);
+        when(settings.getPDSUserMessageFolder()).thenReturn("");
+        when(settings.getPDSEventFolder()).thenReturn("");
 
         return settings;
     }

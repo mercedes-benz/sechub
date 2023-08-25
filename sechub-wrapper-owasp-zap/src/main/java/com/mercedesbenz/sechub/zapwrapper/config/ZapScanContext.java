@@ -10,6 +10,7 @@ import com.mercedesbenz.sechub.commons.model.SecHubWebScanConfiguration;
 import com.mercedesbenz.sechub.zapwrapper.config.auth.AuthenticationType;
 import com.mercedesbenz.sechub.zapwrapper.config.data.DeactivatedRuleReferences;
 import com.mercedesbenz.sechub.zapwrapper.config.data.ZapFullRuleset;
+import com.mercedesbenz.sechub.zapwrapper.helper.ZapEventHandler;
 import com.mercedesbenz.sechub.zapwrapper.helper.ZapProductMessageHelper;
 
 public class ZapScanContext {
@@ -49,6 +50,7 @@ public class ZapScanContext {
     private int retryWaittimeInMilliseconds;
 
     private ZapProductMessageHelper zapProductMessageHelper;
+    private ZapEventHandler zapEventHandler;
 
     private ZapScanContext() {
     }
@@ -147,6 +149,10 @@ public class ZapScanContext {
         return zapProductMessageHelper;
     }
 
+    public ZapEventHandler getZapEventHandler() {
+        return zapEventHandler;
+    }
+
     public static ZapBasicScanContextBuilder builder() {
         return new ZapBasicScanContextBuilder();
     }
@@ -189,6 +195,8 @@ public class ZapScanContext {
         private int setRetryWaittimeInMilliseconds;
 
         private ZapProductMessageHelper zapProductMessageHelper;
+
+        private ZapEventHandler zapEventHandler;
 
         public ZapBasicScanContextBuilder setServerConfig(ZapServerConfiguration serverConfig) {
             this.serverConfig = serverConfig;
@@ -290,6 +298,11 @@ public class ZapScanContext {
             return this;
         }
 
+        public ZapBasicScanContextBuilder setZapEventHandler(ZapEventHandler zapEventHandler) {
+            this.zapEventHandler = zapEventHandler;
+            return this;
+        }
+
         public ZapScanContext build() {
             ZapScanContext zapBasicScanConfiguration = new ZapScanContext();
             zapBasicScanConfiguration.serverConfig = this.serverConfig;
@@ -321,6 +334,8 @@ public class ZapScanContext {
             zapBasicScanConfiguration.retryWaittimeInMilliseconds = this.setRetryWaittimeInMilliseconds;
 
             zapBasicScanConfiguration.zapProductMessageHelper = this.zapProductMessageHelper;
+
+            zapBasicScanConfiguration.zapEventHandler = this.zapEventHandler;
 
             return zapBasicScanConfiguration;
         }

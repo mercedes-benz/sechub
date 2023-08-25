@@ -25,6 +25,7 @@ import com.mercedesbenz.sechub.zapwrapper.config.data.ZapFullRuleset;
 import com.mercedesbenz.sechub.zapwrapper.helper.BaseTargetUriFactory;
 import com.mercedesbenz.sechub.zapwrapper.helper.IncludeExcludeToZapURLHelper;
 import com.mercedesbenz.sechub.zapwrapper.helper.SecHubWebScanConfigurationHelper;
+import com.mercedesbenz.sechub.zapwrapper.helper.ZapEventHandler;
 import com.mercedesbenz.sechub.zapwrapper.helper.ZapProductMessageHelper;
 import com.mercedesbenz.sechub.zapwrapper.helper.ZapURLType;
 import com.mercedesbenz.sechub.zapwrapper.util.EnvironmentVariableConstants;
@@ -90,13 +91,9 @@ public class ZapScanContextFactory {
         Set<URL> includeSet = createUrlsIncludedInContext(targetUrl, sechubWebConfig, userMessages);
         Set<URL> excludeSet = createUrlsExcludedFromContext(targetUrl, sechubWebConfig, userMessages);
 
-        String userMessagesFolder = environmentVariableReader.readAsString(EnvironmentVariableConstants.PDS_JOB_USER_MESSAGES_FOLDER);
-        if (userMessagesFolder == null) {
-            throw new ZapWrapperRuntimeException(
-                    "PDS configuration invalid. Cannot send user messages, because environment variable PDS_JOB_USER_MESSAGES_FOLDER is not set.",
-                    ZapWrapperExitCode.PDS_CONFIGURATION_ERROR);
-        }
-        ZapProductMessageHelper productMessagehelper = new ZapProductMessageHelper(userMessagesFolder);
+        ZapProductMessageHelper productMessagehelper = createZapProductMessageHelper(settings);
+        ZapEventHandler zapEventHandler = createZapEventhandler(settings);
+
         checkForIncludeExcludeErrors(userMessages, productMessagehelper);
 
         /* @formatter:off */
@@ -121,6 +118,7 @@ public class ZapScanContextFactory {
 												.setMaxNumberOfConnectionRetries(settings.getMaxNumberOfConnectionRetries())
 												.setRetryWaittimeInMilliseconds(settings.getRetryWaittimeInMilliseconds())
 												.setZapProductMessageHelper(productMessagehelper)
+												.setZapEventHandler(zapEventHandler)
 											  .build();
 		/* @formatter:on */
         return scanContext;
@@ -234,6 +232,31 @@ public class ZapScanContextFactory {
             excludeSet.addAll(includeExcludeToZapURLHelper.createListOfUrls(ZapURLType.EXCLUDE, targetUrl, sechubWebConfig.getExcludes().get(), userMessages));
         }
         return excludeSet;
+    }
+
+    private ZapProductMessageHelper createZapProductMessageHelper(CommandLineSettings settings) {
+        String userMessagesFolder = settings.getPDSUserMessageFolder();
+        if (userMessagesFolder == null) {
+            userMessagesFolder = environmentVariableReader.readAsString(EnvironmentVariableConstants.PDS_JOB_USER_MESSAGES_FOLDER);
+        }
+        if (userMessagesFolder == null) {
+            throw new ZapWrapperRuntimeException("PDS configuration invalid. Cannot send user messages, because environment variable "
+                    + EnvironmentVariableConstants.PDS_JOB_USER_MESSAGES_FOLDER + " is not set.", ZapWrapperExitCode.PDS_CONFIGURATION_ERROR);
+        }
+        return new ZapProductMessageHelper(userMessagesFolder);
+    }
+
+    private ZapEventHandler createZapEventhandler(CommandLineSettings settings) {
+        String pdsJobEventsFolder = settings.getPDSEventFolder();
+        if (pdsJobEventsFolder == null) {
+            pdsJobEventsFolder = environmentVariableReader.readAsString(EnvironmentVariableConstants.PDS_JOB_EVENTS_FOLDER);
+        }
+
+        if (pdsJobEventsFolder == null) {
+            throw new ZapWrapperRuntimeException("PDS configuration invalid. Cannot send check for job events, because environment variable "
+                    + EnvironmentVariableConstants.PDS_JOB_EVENTS_FOLDER + " is not set.", ZapWrapperExitCode.PDS_CONFIGURATION_ERROR);
+        }
+        return new ZapEventHandler(pdsJobEventsFolder);
     }
 
     private void checkForIncludeExcludeErrors(List<SecHubMessage> userMessages, ZapProductMessageHelper productMessageHelper) {

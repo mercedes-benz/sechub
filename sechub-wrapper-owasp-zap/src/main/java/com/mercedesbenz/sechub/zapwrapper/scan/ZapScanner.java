@@ -47,7 +47,6 @@ public class ZapScanner implements ZapScan {
     ZapScanContext scanContext;
 
     ScanDurationHelper scanDurationHelper;
-    ZapEventHandler zapEventHandler;
     UrlUtil urlUtil;
     SystemUtil systemUtil;
 
@@ -59,28 +58,22 @@ public class ZapScanner implements ZapScan {
         }
 
         if (scanContext == null) {
-            throw new ZapWrapperRuntimeException("Cannot create Zap Scanner because ClientApiFacade is null!", ZapWrapperExitCode.UNSUPPORTED_CONFIGURATION);
-        }
-
-        if (scanContext.getMaxScanDurationInMillis() == 0) {
-            throw new ZapWrapperRuntimeException("Cannot create Zap Scanner because ClientApiFacade is null!", ZapWrapperExitCode.UNSUPPORTED_CONFIGURATION);
+            throw new ZapWrapperRuntimeException("Cannot create Zap Scanner because ZapScanContext is null!", ZapWrapperExitCode.UNSUPPORTED_CONFIGURATION);
         }
 
         ScanDurationHelper scanDurationHelper = new ScanDurationHelper();
-        ZapEventHandler zapEventHandler = new ZapEventHandler();
         UrlUtil urlUtil = new UrlUtil();
         SystemUtil systemUtil = new SystemUtil();
 
-        return new ZapScanner(clientApiFacade, scanContext, scanDurationHelper, zapEventHandler, urlUtil, systemUtil);
+        return new ZapScanner(clientApiFacade, scanContext, scanDurationHelper, urlUtil, systemUtil);
     }
 
-    private ZapScanner(ClientApiFacade clientApiFacade, ZapScanContext scanContext, ScanDurationHelper scanDurationHelper, ZapEventHandler zapEventHandler,
-            UrlUtil urlUtil, SystemUtil systemUtil) {
+    private ZapScanner(ClientApiFacade clientApiFacade, ZapScanContext scanContext, ScanDurationHelper scanDurationHelper, UrlUtil urlUtil,
+            SystemUtil systemUtil) {
         this.clientApiFacade = clientApiFacade;
         this.scanContext = scanContext;
 
         this.scanDurationHelper = scanDurationHelper;
-        this.zapEventHandler = zapEventHandler;
         this.urlUtil = urlUtil;
         this.systemUtil = systemUtil;
 
@@ -528,6 +521,8 @@ public class ZapScanner implements ZapScan {
 
         boolean timeOut = false;
 
+        ZapEventHandler zapEventHandler = scanContext.getZapEventHandler();
+
         while (!isAjaxSpiderStopped(ajaxSpiderStatus) && !timeOut) {
             if (zapEventHandler.isScanCancelled()) {
                 clientApiFacade.stopAjaxSpider();
@@ -559,6 +554,7 @@ public class ZapScanner implements ZapScan {
                 remainingScanTime);
 
         boolean timeOut = false;
+        ZapEventHandler zapEventHandler = scanContext.getZapEventHandler();
 
         while (progressSpider < 100 && !timeOut) {
             if (zapEventHandler.isScanCancelled()) {
@@ -592,6 +588,7 @@ public class ZapScanner implements ZapScan {
 
         int numberOfRecords = clientApiFacade.getNumberOfPassiveScannerRecordsToScan();
         boolean timeOut = false;
+        ZapEventHandler zapEventHandler = scanContext.getZapEventHandler();
 
         while (numberOfRecords > 0 && !timeOut) {
             if (zapEventHandler.isScanCancelled()) {
@@ -619,6 +616,9 @@ public class ZapScanner implements ZapScan {
         long startTime = systemUtil.getCurrentTimeInMilliseconds();
         long maxDuration = remainingScanTime;
         boolean timeOut = false;
+
+        ZapEventHandler zapEventHandler = scanContext.getZapEventHandler();
+
         while (progressActive < 100 && !timeOut) {
             if (zapEventHandler.isScanCancelled()) {
                 clientApiFacade.stopActiveScan(scanId);

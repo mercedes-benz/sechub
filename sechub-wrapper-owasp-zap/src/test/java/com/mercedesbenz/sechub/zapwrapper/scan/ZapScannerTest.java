@@ -81,11 +81,11 @@ class ZapScannerTest {
         // assign mocks
         scannerToTest = ZapScanner.from(clientApiFacade, scanContext);
         scannerToTest.systemUtil = systemUtil;
-        scannerToTest.zapEventHandler = zapEventHandler;
 
         // set global behavior
         when(scanContext.getContextName()).thenReturn(contextName);
         when(scanContext.getZapProductMessageHelper()).thenReturn(helper);
+        when(scanContext.getZapEventHandler()).thenReturn(zapEventHandler);
 
         doNothing().when(helper).writeProductError(any());
         doNothing().when(helper).writeProductMessages(any());
@@ -478,7 +478,6 @@ class ZapScannerTest {
     @Test
     void wait_for_ajaxSpider_scan_is_cancelled_results_in_exception_with_dedicated_exit_code() throws ClientApiException {
         /* prepare */
-        scannerToTest.zapEventHandler = zapEventHandler;
         when(zapEventHandler.isScanCancelled()).thenReturn(true);
         doCallRealMethod().when(zapEventHandler).cancelScan(contextName);
 
@@ -503,7 +502,6 @@ class ZapScannerTest {
     @Test
     void wait_for_ajaxSpider_scan_ended_results_in_expected_calls() throws ClientApiException {
         /* prepare */
-        scannerToTest.zapEventHandler = zapEventHandler;
         when(zapEventHandler.isScanCancelled()).thenReturn(false);
 
         when(scanContext.getMaxScanDurationInMillis()).thenReturn(1000L);
@@ -527,7 +525,6 @@ class ZapScannerTest {
         /* prepare */
         String scanId = "12345";
 
-        scannerToTest.zapEventHandler = zapEventHandler;
         when(zapEventHandler.isScanCancelled()).thenReturn(true);
         doCallRealMethod().when(zapEventHandler).cancelScan(contextName);
 
@@ -554,7 +551,6 @@ class ZapScannerTest {
         /* prepare */
         String scanId = "12345";
 
-        scannerToTest.zapEventHandler = zapEventHandler;
         when(zapEventHandler.isScanCancelled()).thenReturn(false);
 
         when(scanContext.getMaxScanDurationInMillis()).thenReturn(1000L);
@@ -583,7 +579,6 @@ class ZapScannerTest {
     @Test
     void wait_for_passiveScan_scan_is_cancelled_results_in_exception_with_dedicated_exit_code() throws ClientApiException {
         /* prepare */
-        scannerToTest.zapEventHandler = zapEventHandler;
         when(zapEventHandler.isScanCancelled()).thenReturn(true);
         doCallRealMethod().when(zapEventHandler).cancelScan(contextName);
 
@@ -610,7 +605,6 @@ class ZapScannerTest {
     @Test
     void wait_for_passiveScan_scan_is_ended_results_in_expected_calls() throws ClientApiException {
         /* prepare */
-        scannerToTest.zapEventHandler = zapEventHandler;
         when(zapEventHandler.isScanCancelled()).thenReturn(false);
 
         when(scanContext.getMaxScanDurationInMillis()).thenReturn(20000L);
@@ -634,7 +628,6 @@ class ZapScannerTest {
         /* prepare */
         String scanId = "12345";
 
-        scannerToTest.zapEventHandler = zapEventHandler;
         when(zapEventHandler.isScanCancelled()).thenReturn(true);
         doCallRealMethod().when(zapEventHandler).cancelScan(contextName);
 
@@ -658,7 +651,6 @@ class ZapScannerTest {
         /* prepare */
         String scanId = "12345";
 
-        scannerToTest.zapEventHandler = zapEventHandler;
         when(zapEventHandler.isScanCancelled()).thenReturn(false);
 
         when(clientApiFacade.getActiveScannerStatusForScan(scanId)).thenReturn(100);
@@ -675,7 +667,6 @@ class ZapScannerTest {
     @Test
     void run_ajaxSpider_scan_ended_results_in_expected_calls() throws ClientApiException {
         /* prepare */
-        scannerToTest.zapEventHandler = zapEventHandler;
         when(zapEventHandler.isScanCancelled()).thenReturn(false);
 
         when(scanContext.getMaxScanDurationInMillis()).thenReturn(1000L);
@@ -699,7 +690,6 @@ class ZapScannerTest {
         /* prepare */
         String scanId = "12345";
 
-        scannerToTest.zapEventHandler = zapEventHandler;
         when(zapEventHandler.isScanCancelled()).thenReturn(false);
 
         when(scanContext.getMaxScanDurationInMillis()).thenReturn(1000L);
@@ -732,7 +722,6 @@ class ZapScannerTest {
         /* prepare */
         String scanId = "12345";
 
-        scannerToTest.zapEventHandler = zapEventHandler;
         when(zapEventHandler.isScanCancelled()).thenReturn(false);
 
         scannerToTest.remainingScanTime = 100L;

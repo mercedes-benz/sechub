@@ -155,4 +155,24 @@ public class CommandLineSettings {
         }
         return retryWaittimeInMilliseconds;
     }
+
+    @Parameter(names = {
+            "--pdsUserMessageFolder" }, description = "Folder where the user messages are written to. When using with SecHub+PDS solution this is not needed since the PDS provides the env variable: "
+                    + EnvironmentVariableConstants.PDS_JOB_USER_MESSAGES_FOLDER
+                    + ". This env variable is automatically used if this command line parameter is not set.", required = false)
+    private String pdsUserMessageFolder;
+
+    public String getPDSUserMessageFolder() {
+        return pdsUserMessageFolder;
+    }
+
+    @Parameter(names = {
+            "--pdsEventFolder" }, description = "Folder where the ZAP wrapper listens for events of the PDS, like cancel requests for the current job. When using with SecHub+PDS solution this is not needed since the PDS provides the env variable: "
+                    + EnvironmentVariableConstants.PDS_JOB_EVENTS_FOLDER
+                    + ". This env variable is automatically used if this command line parameter is not set.", required = false)
+    private String pdsEventFolder;
+
+    public String getPDSEventFolder() {
+        return pdsEventFolder;
+    }
 }

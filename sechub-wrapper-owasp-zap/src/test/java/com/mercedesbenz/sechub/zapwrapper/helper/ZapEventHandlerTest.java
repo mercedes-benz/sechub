@@ -22,7 +22,7 @@ class ZapEventHandlerTest {
 
     @BeforeEach
     void beforeEach() {
-        zapEventHandler = new ZapEventHandler();
+        zapEventHandler = new ZapEventHandler("");
     }
 
     @Test
