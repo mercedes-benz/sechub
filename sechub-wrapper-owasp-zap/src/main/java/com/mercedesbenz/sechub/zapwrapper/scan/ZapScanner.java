@@ -35,6 +35,7 @@ import com.mercedesbenz.sechub.zapwrapper.config.data.RuleReference;
 import com.mercedesbenz.sechub.zapwrapper.config.data.ZapFullRuleset;
 import com.mercedesbenz.sechub.zapwrapper.helper.ScanDurationHelper;
 import com.mercedesbenz.sechub.zapwrapper.helper.ZapEventHandler;
+import com.mercedesbenz.sechub.zapwrapper.internal.scan.ClientApiFacade;
 import com.mercedesbenz.sechub.zapwrapper.util.SystemUtil;
 import com.mercedesbenz.sechub.zapwrapper.util.UrlUtil;
 
@@ -52,14 +53,36 @@ public class ZapScanner implements ZapScan {
 
     long remainingScanTime;
 
-    public ZapScanner(ClientApiFacade clientApiFacade, ZapScanContext scanContext) {
+    public static ZapScanner from(ClientApiFacade clientApiFacade, ZapScanContext scanContext) {
+        if (clientApiFacade == null) {
+            throw new ZapWrapperRuntimeException("Cannot create Zap Scanner because ClientApiFacade is null!", ZapWrapperExitCode.UNSUPPORTED_CONFIGURATION);
+        }
+
+        if (scanContext == null) {
+            throw new ZapWrapperRuntimeException("Cannot create Zap Scanner because ClientApiFacade is null!", ZapWrapperExitCode.UNSUPPORTED_CONFIGURATION);
+        }
+
+        if (scanContext.getMaxScanDurationInMillis() == 0) {
+            throw new ZapWrapperRuntimeException("Cannot create Zap Scanner because ClientApiFacade is null!", ZapWrapperExitCode.UNSUPPORTED_CONFIGURATION);
+        }
+
+        ScanDurationHelper scanDurationHelper = new ScanDurationHelper();
+        ZapEventHandler zapEventHandler = new ZapEventHandler();
+        UrlUtil urlUtil = new UrlUtil();
+        SystemUtil systemUtil = new SystemUtil();
+
+        return new ZapScanner(clientApiFacade, scanContext, scanDurationHelper, zapEventHandler, urlUtil, systemUtil);
+    }
+
+    private ZapScanner(ClientApiFacade clientApiFacade, ZapScanContext scanContext, ScanDurationHelper scanDurationHelper, ZapEventHandler zapEventHandler,
+            UrlUtil urlUtil, SystemUtil systemUtil) {
         this.clientApiFacade = clientApiFacade;
         this.scanContext = scanContext;
 
-        this.scanDurationHelper = new ScanDurationHelper();
-        this.zapEventHandler = new ZapEventHandler();
-        this.urlUtil = new UrlUtil();
-        this.systemUtil = new SystemUtil();
+        this.scanDurationHelper = scanDurationHelper;
+        this.zapEventHandler = zapEventHandler;
+        this.urlUtil = urlUtil;
+        this.systemUtil = systemUtil;
 
         this.remainingScanTime = scanContext.getMaxScanDurationInMillis();
     }

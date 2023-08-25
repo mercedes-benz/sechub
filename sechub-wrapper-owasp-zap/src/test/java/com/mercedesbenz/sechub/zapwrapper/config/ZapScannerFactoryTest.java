@@ -3,6 +3,8 @@ package com.mercedesbenz.sechub.zapwrapper.config;
 
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThrows;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -11,15 +13,15 @@ import org.junit.jupiter.params.provider.CsvSource;
 import org.zaproxy.clientapi.core.ClientApiException;
 
 import com.mercedesbenz.sechub.zapwrapper.cli.ZapWrapperRuntimeException;
-import com.mercedesbenz.sechub.zapwrapper.scan.ClientApiFacade;
+import com.mercedesbenz.sechub.zapwrapper.scan.ZapScanner;
 
-class ZapClientApiFactoryTest {
+class ZapScannerFactoryTest {
 
-    private ZapClientApiFactory factoryToTest;
+    private ZapScannerFactory factoryToTest;
 
     @BeforeEach
     void beforeEach() {
-        factoryToTest = new ZapClientApiFactory();
+        factoryToTest = new ZapScannerFactory();
     }
 
     @Test
@@ -33,11 +35,14 @@ class ZapClientApiFactoryTest {
         /* prepare */
         ZapServerConfiguration serverConfig = new ZapServerConfiguration("127.0.0.1", 8080, "secret-key");
 
+        ZapScanContext scanContext = mock(ZapScanContext.class);
+        when(scanContext.getServerConfig()).thenReturn(serverConfig);
+
         /* execute */
-        ClientApiFacade clientApiFacade = factoryToTest.create(serverConfig);
+        ZapScanner zapScanner = factoryToTest.create(scanContext);
 
         /* test */
-        assertNotNull(clientApiFacade);
+        assertNotNull(zapScanner);
     }
 
     /* @formatter:off */
@@ -52,8 +57,11 @@ class ZapClientApiFactoryTest {
         /* prepare */
         ZapServerConfiguration serverConfig = new ZapServerConfiguration(host, port, apiKey);
 
+        ZapScanContext scanContext = mock(ZapScanContext.class);
+        when(scanContext.getServerConfig()).thenReturn(serverConfig);
+
         /* execute + test */
-        assertThrows(ZapWrapperRuntimeException.class, () -> factoryToTest.create(serverConfig));
+        assertThrows(ZapWrapperRuntimeException.class, () -> factoryToTest.create(scanContext));
     }
 
 }

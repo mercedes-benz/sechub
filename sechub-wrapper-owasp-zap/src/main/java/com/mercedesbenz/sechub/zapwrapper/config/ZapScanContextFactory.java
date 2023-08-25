@@ -92,8 +92,9 @@ public class ZapScanContextFactory {
 
         String userMessagesFolder = environmentVariableReader.readAsString(EnvironmentVariableConstants.PDS_JOB_USER_MESSAGES_FOLDER);
         if (userMessagesFolder == null) {
-            throw new IllegalStateException(
-                    "PDS configuration invalid. Cannot send user messages, because environment variable PDS_JOB_USER_MESSAGES_FOLDER is not set.");
+            throw new ZapWrapperRuntimeException(
+                    "PDS configuration invalid. Cannot send user messages, because environment variable PDS_JOB_USER_MESSAGES_FOLDER is not set.",
+                    ZapWrapperExitCode.PDS_CONFIGURATION_ERROR);
         }
         ZapProductMessageHelper productMessagehelper = new ZapProductMessageHelper(userMessagesFolder);
         checkForIncludeExcludeErrors(userMessages, productMessagehelper);

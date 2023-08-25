@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-package com.mercedesbenz.sechub.zapwrapper.scan;
+package com.mercedesbenz.sechub.zapwrapper.internal.scan;
 
 import java.util.ArrayList;
 import java.util.List;

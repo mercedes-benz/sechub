@@ -52,6 +52,7 @@ import com.mercedesbenz.sechub.zapwrapper.helper.IncludeExcludeToZapURLHelper;
 import com.mercedesbenz.sechub.zapwrapper.helper.ZapEventHandler;
 import com.mercedesbenz.sechub.zapwrapper.helper.ZapProductMessageHelper;
 import com.mercedesbenz.sechub.zapwrapper.helper.ZapURLType;
+import com.mercedesbenz.sechub.zapwrapper.internal.scan.ClientApiFacade;
 import com.mercedesbenz.sechub.zapwrapper.scan.ZapScanner.UserInformation;
 import com.mercedesbenz.sechub.zapwrapper.util.SystemUtil;
 
@@ -78,7 +79,7 @@ class ZapScannerTest {
         zapEventHandler = mock(ZapEventHandler.class);
 
         // assign mocks
-        scannerToTest = new ZapScanner(clientApiFacade, scanContext);
+        scannerToTest = ZapScanner.from(clientApiFacade, scanContext);
         scannerToTest.systemUtil = systemUtil;
         scannerToTest.zapEventHandler = zapEventHandler;
 
