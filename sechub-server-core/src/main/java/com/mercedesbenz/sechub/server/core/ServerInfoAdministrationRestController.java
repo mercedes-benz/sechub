@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.mercedesbenz.sechub.commons.model.JSONConverter;
 import com.mercedesbenz.sechub.sharedkernel.APIConstants;
 import com.mercedesbenz.sechub.sharedkernel.Profiles;
 import com.mercedesbenz.sechub.sharedkernel.RoleConstants;
@@ -34,10 +35,10 @@ public class ServerInfoAdministrationRestController {
 					name="REST API Call",
 					description="Administrator wants to get the server version of SecHub",
 					needsRestDoc=true))
-	@RequestMapping(path = APIConstants.API_ADMINISTRATION+ "info/version", method = RequestMethod.GET, produces = { MediaType.TEXT_PLAIN_VALUE })
+	@RequestMapping(path = APIConstants.API_ADMINISTRATION+ "info/version", method = RequestMethod.GET, produces = { MediaType.APPLICATION_JSON_VALUE })
 	@ResponseBody
 	public String getServerVersion() {
 		/* @formatter:on */
-        return serverInfoService.getVersionAsString();
+        return JSONConverter.get().toJSON(serverInfoService.getVersionAsString());
     }
 }

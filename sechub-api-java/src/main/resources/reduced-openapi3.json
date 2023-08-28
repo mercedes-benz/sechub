@@ -354,7 +354,7 @@
                     "200": {
                         "description": "200",
                         "content": {
-                            "text/plain;charset=UTF-8": {
+                            "application/json": {
                                 "schema": {
                                     "$ref": "#/components/schemas/ServerVersion"
                                 }
@@ -2771,6 +2771,16 @@
                     "type": "string"
                 }
             },
+            "ServerVersion": {
+                "title": "ServerVersion",
+                "type": "object",
+                "properties": {
+                    "serverVersion": {
+                        "type": "string",
+                        "description": "The sechub server version."
+                    }
+                }
+            },
             "UserSignup": {
                 "title": "UserSignup",
                 "type": "object",
@@ -3185,6 +3195,55 @@
                     }
                 }
             },
+            "ExecutionProfileFetch": {
+                "title": "ExecutionProfileFetch",
+                "type": "object",
+                "properties": {
+                    "configurations": {
+                        "type": "array",
+                        "items": {
+                            "type": "object",
+                            "properties": {
+                                "productIdentifier": {
+                                    "type": "string",
+                                    "description": "executed product"
+                                },
+                                "name": {
+                                    "type": "string",
+                                    "description": "name of configuration"
+                                },
+                                "executorVersion": {
+                                    "type": "number",
+                                    "description": "executor version"
+                                },
+                                "uuid": {
+                                    "type": "string",
+                                    "description": "uuid of configuration"
+                                },
+                                "enabled": {
+                                    "type": "boolean",
+                                    "description": "enabled state of this config"
+                                }
+                            }
+                        }
+                    },
+                    "description": {
+                        "type": "string",
+                        "description": "A short description for the profile"
+                    },
+                    "projectIds": {
+                        "type": "array",
+                        "description": "Projects can be linked by their ids here",
+                        "items": {
+                            "type": "string"
+                        }
+                    },
+                    "enabled": {
+                        "type": "boolean",
+                        "description": "Enabled state of profile, default is false"
+                    }
+                }
+            },
             "FalsePositives": {
                 "title": "FalsePositives",
                 "type": "object",
@@ -3298,55 +3357,6 @@
                     }
                 }
             },
-            "ExecutionProfileFetch": {
-                "title": "ExecutionProfileFetch",
-                "type": "object",
-                "properties": {
-                    "configurations": {
-                        "type": "array",
-                        "items": {
-                            "type": "object",
-                            "properties": {
-                                "productIdentifier": {
-                                    "type": "string",
-                                    "description": "executed product"
-                                },
-                                "name": {
-                                    "type": "string",
-                                    "description": "name of configuration"
-                                },
-                                "executorVersion": {
-                                    "type": "number",
-                                    "description": "executor version"
-                                },
-                                "uuid": {
-                                    "type": "string",
-                                    "description": "uuid of configuration"
-                                },
-                                "enabled": {
-                                    "type": "boolean",
-                                    "description": "enabled state of this config"
-                                }
-                            }
-                        }
-                    },
-                    "description": {
-                        "type": "string",
-                        "description": "A short description for the profile"
-                    },
-                    "projectIds": {
-                        "type": "array",
-                        "description": "Projects can be linked by their ids here",
-                        "items": {
-                            "type": "string"
-                        }
-                    },
-                    "enabled": {
-                        "type": "boolean",
-                        "description": "Enabled state of profile, default is false"
-                    }
-                }
-            },
             "FullScanDataZIP": {
                 "title": "FullScanDataZIP",
                 "type": "object"
@@ -3382,10 +3392,6 @@
                         }
                     }
                 }
-            },
-            "ServerVersion": {
-                "title": "ServerVersion",
-                "type": "object"
             },
             "JobId": {
                 "title": "JobId",

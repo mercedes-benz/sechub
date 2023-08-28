@@ -19,7 +19,7 @@ public class InfoService {
      * @return version as string, always like "major.minor.hotfix{additional chars}"
      *         - e.g. "1.0.0" or "0.6.0-alpha"
      */
-    public String getVersionAsString() {
+    public ServerVersion getVersionAsString() {
         if (buildProperties == null) {
             /*
              * means we got no injection by ProjectInfoAutoConfiguration - means we are not
@@ -27,7 +27,7 @@ public class InfoService {
              */
             buildProperties = buildFallbackProperties();
         }
-        return buildProperties.getVersion();
+        return new ServerVersion(buildProperties.getVersion());
     }
 
     public BuildProperties buildFallbackProperties() {

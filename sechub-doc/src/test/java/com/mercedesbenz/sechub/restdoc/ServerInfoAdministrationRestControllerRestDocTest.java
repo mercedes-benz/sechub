@@ -1,12 +1,14 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.restdoc;
 
-import static com.mercedesbenz.sechub.restdoc.RestDocumentation.*;
-import static com.mercedesbenz.sechub.test.SecHubTestURLBuilder.*;
-import static org.mockito.Mockito.*;
-import static org.springframework.restdocs.headers.HeaderDocumentation.requestHeaders;
-import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static com.mercedesbenz.sechub.restdoc.RestDocumentation.defineRestService;
+import static com.mercedesbenz.sechub.test.SecHubTestURLBuilder.https;
+import static org.mockito.Mockito.when;
+import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.get;
+import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
+import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import java.lang.annotation.Annotation;
 
@@ -28,6 +30,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import com.mercedesbenz.sechub.docgen.util.RestDocFactory;
 import com.mercedesbenz.sechub.server.core.InfoService;
 import com.mercedesbenz.sechub.server.core.ServerInfoAdministrationRestController;
+import com.mercedesbenz.sechub.server.core.ServerVersion;
 import com.mercedesbenz.sechub.sharedkernel.Profiles;
 import com.mercedesbenz.sechub.sharedkernel.RoleConstants;
 import com.mercedesbenz.sechub.sharedkernel.configuration.AbstractAllowSecHubAPISecurityConfiguration;
@@ -48,7 +51,8 @@ public class ServerInfoAdministrationRestControllerRestDocTest implements TestIs
 
     private static final int PORT_USED = TestPortProvider.DEFAULT_INSTANCE.getRestDocTestPort();
 
-    private static final String SERVER_VERSION = "0.12.3";
+    private static final String SECHUB_SERVER_VERSION = "0.12.3";
+    private static final String SERVER_VERSION = "serverVersion";
 
     @Autowired
     private MockMvc mockMvc;
@@ -63,16 +67,18 @@ public class ServerInfoAdministrationRestControllerRestDocTest implements TestIs
         String apiEndpoint = https(PORT_USED).buildGetServerVersionUrl();
         Class<? extends Annotation> useCase = UseCaseAdminChecksServerVersion.class;
 
-        when(serverInfoService.getVersionAsString()).thenReturn(SERVER_VERSION);
+        when(serverInfoService.getVersionAsString()).thenReturn(new ServerVersion(SECHUB_SERVER_VERSION));
+
+        String expectedContent = "{\"" + SERVER_VERSION + "\":\"" + SECHUB_SERVER_VERSION + "\"}";
 
         /* execute + test @formatter:off */
 		this.mockMvc.perform(
 				get(apiEndpoint).
-					contentType(MediaType.TEXT_PLAIN_VALUE).
+					contentType(MediaType.APPLICATION_JSON).
 					header(AuthenticationHelper.HEADER_NAME, AuthenticationHelper.getHeaderValue())
 				).
 					andExpect(status().isOk()).
-					andExpect(content().string(SERVER_VERSION)).
+					andExpect(content().string(expectedContent)).
 					andDo(defineRestService().
 		                        with().
 		                            useCaseData(useCase).
@@ -80,9 +86,10 @@ public class ServerInfoAdministrationRestControllerRestDocTest implements TestIs
 		                            responseSchema(OpenApiSchema.SERVER_VERSION.getSchema()).
 		                        and().
 		                        document(
-			    	                		requestHeaders(
+        	                            responseFields(
+        	                                    fieldWithPath(SERVER_VERSION).description("The sechub server version.")
+        	                            )
 
-			    	                		)
 		                        )
 					);
 		/* @formatter:on */

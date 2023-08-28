@@ -6,7 +6,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 
-import reactor.core.publisher.Mono;
+import com.mercedesbenz.sechub.api.SecHubClientException;
+import com.mercedesbenz.sechub.api.SecHubStatus;
 
 @Controller
 public class StatusController {
@@ -18,10 +19,14 @@ public class StatusController {
 
     @GetMapping("/status")
     String status(Model model) {
-        Mono<String> secHubServerVersion = statusService.getServerVersion();
+    	SecHubStatus secHubServerStatus = null;
+		
+    	secHubServerStatus = statusService.getSecHubServerStatusInformation();
 
+		//model.addAttribute("secHubServerStatus", secHubServerStatus);
+    	model.addAttribute("secHubServerAlive", statusService.isSecHubServerAlive());
         model.addAttribute("sechubServerUrl", accessService.getSecHubServerUrl());
-        model.addAttribute("sechubServerVersion", secHubServerVersion);
+        model.addAttribute("sechubServerVersion", statusService.getServerVersion());
         return "status";
     }
 }

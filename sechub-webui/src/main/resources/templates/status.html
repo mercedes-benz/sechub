@@ -10,8 +10,12 @@
 		<h1>Status</h1>
 		<table>
 			<tbody>
+				<tr>
+					<td>Alive</td><td th:text="${secHubServerAlive}">unavailable</td>
+				</tr>
 				<tr class="placeholder">
-					<td>Scheduler</td><td>enabled</td>
+					<!--  <td>Scheduler</td><td th:text="${secHubServerStatus}">enabled</td> -->
+					<td>Scheduler</td><td>5</td>
 				</tr>
 				<tr class="placeholder">
 					<td>Jobs running</td><td>5</td>
