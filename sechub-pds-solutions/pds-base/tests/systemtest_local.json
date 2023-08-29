@@ -1,0 +1,94 @@
+{
+  "setup" : {
+    "local" : {
+      "secHub" : {
+        "admin" : {
+          "userId" : "admin",
+          "apiToken" : "myTop$ecret!"
+        },
+        "start" : [ {
+          "script" : {
+            "path" : "./01-start-single-docker-compose.sh",
+            "comment" : "The build type needs to be set. Otherwise the server script will react to it.",
+            "envVariables" : {
+              "BUILD_TYPE" : "download"
+            }
+          }
+        } ],
+        "configure" : {
+          "executors" : [ {
+            "pdsProductId" : "PDS",
+            "name" : "system-test-codescan-pds",
+            "parameters" : {
+              "sechub.productexecutor.pds.adapter.resilience.retry.wait.milliseconds" : 3000,
+              "sechub.productexecutor.pds.adapter.resilience.retry.max" : 20,
+              "pds.config.use.sechub.storage" : false
+            }
+          } ]
+        },
+        "stop" : [ {
+          "script" : {
+            "path" : "./01-stop-single-docker-compose.sh"
+          }
+        } ]
+      },
+      "pdsSolutions" : [ {
+        "name" : "pds-base",
+        "url" : "https://pds:8444/",
+        "waitForAvailable" : false,
+        "start" : [ {
+          "script" : {
+            "path" : "./tests/start_pds_helper.sh",
+            "envVariables" : {
+              "BUILD_TYPE" : "${env.BUILD_TYPE}",
+              "PDS_VERSION" : "${env.PDS_VERSION}"
+            },
+            "process" : {
+              "timeOut" : {
+                "amount" : 20,
+                "unit" : "MINUTES"
+              }
+            }
+          }
+        } ],
+        "stop" : [ {
+          "script" : {
+            "path" : "./05-stop-single-sechub-network-docker-compose.sh"
+          }
+        } ],
+        "techUser" : {
+          "userId" : "techuser",
+          "apiToken" : "pds-apitoken"
+        }
+      } ]
+    }
+  },
+  "tests" : [ {
+    "name" : "go-test-bench-mock",
+    "prepare" : [ {
+      "copy" : {
+        "from" : "dummy",
+        "to" : "${runtime.currentTestFolder}/dummy"
+      }
+    } ],
+    "execute" : {
+      "runSecHubJob" : {
+        "uploads" : [ {
+          "sourceFolder" : "dummy"
+        } ],
+        "codeScan" : { }
+      }
+    },
+    "assert" : [ {
+      "sechubResult" : {
+        "hasTrafficLight" : "RED",
+        "containsStrings" : {
+          "values" : [ "result", "SUCCESS", "jobUUID", "reportVersion", "HIGH", "severity", "INFO", "Running PDS Mock" ]
+        },
+        "equalsFile" : {
+          "path" : "sechub-report.json"
+        }
+      }
+    } ]
+  } ]
+}

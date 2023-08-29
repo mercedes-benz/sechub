@@ -1,0 +1,101 @@
+{
+  "setup" : {
+    "local" : {
+      "secHub" : {
+        "admin" : {
+          "userId" : "admin",
+          "apiToken" : "myTop$ecret!"
+        },
+        "start" : [ {
+          "script" : {
+            "path" : "./01-start-single-docker-compose.sh"
+          }
+        } ],
+        "configure" : {
+          "executors" : [ {
+            "pdsProductId" : "PDS_FINDSECURITYBUGS",
+            "name" : "system-test-findsecuritybugs",
+            "parameters" : {
+              "sechub.productexecutor.pds.adapter.resilience.retry.wait.milliseconds" : 3000,
+              "sechub.productexecutor.pds.adapter.resilience.retry.max" : 20,
+              "pds.config.use.sechub.storage" : false
+            }
+          } ]
+        },
+        "stop" : [ {
+          "script" : {
+            "path" : "./01-stop-single-docker-compose.sh"
+          }
+        } ]
+      },
+      "pdsSolutions" : [ {
+        "name" : "findsecuritybugs",
+        "url" : "https://pds-findsecuritybugs:8444/",
+        "waitForAvailable" : false,
+        "start" : [ {
+          "script" : {
+            "path" : "./05-start-single-sechub-network-docker-compose.sh"
+          }
+        } ],
+        "stop" : [ {
+          "script" : {
+            "path" : "./05-stop-single-sechub-network-docker-compose.sh"
+          }
+        } ],
+        "techUser" : {
+          "userId" : "techuser",
+          "apiToken" : "pds-apitoken"
+        }
+      } ]
+    }
+  },
+  "tests" : [ {
+    "name" : "easybuggy",
+    "prepare" : [ {
+      "script" : {
+        "arguments" : [ "${runtime.currentTestFolder}", "https://github.com/k-tamura/easybuggy/releases/download/1.4.1/easybuggy.jar", "easybuggy" ],
+        "path" : "./download_test_files.sh"
+      }
+    } ],
+    "execute" : {
+      "runSecHubJob" : {
+        "uploads" : [ {
+          "binariesFolder" : "easybuggy"
+        } ],
+        "codeScan" : { }
+      }
+    },
+    "assert" : [ {
+      "sechubResult" : {
+        "hasTrafficLight" : "RED",
+        "containsStrings" : {
+          "values" : [ "result", "SUCCESS", "jobUUID", "reportVersion", "HIGH", "severity", "codeScan", "easybuggy/vulnerabilities/NullByteInjectionServlet.java" ]
+        }
+      }
+    } ]
+  }, {
+    "name" : "easybuggy4kt",
+    "prepare" : [ {
+      "script" : {
+        "arguments" : [ "${runtime.currentTestFolder}", "https://github.com/k-tamura/easybuggy4kt/releases/download/1.0.5/ROOT.war", "easybuggy4kt" ],
+        "path" : "./download_test_files.sh"
+      }
+    } ],
+    "execute" : {
+      "runSecHubJob" : {
+        "uploads" : [ {
+          "binariesFolder" : "easybuggy4kt"
+        } ],
+        "codeScan" : { }
+      }
+    },
+    "assert" : [ {
+      "sechubResult" : {
+        "hasTrafficLight" : "RED",
+        "containsStrings" : {
+          "values" : [ "result", "SUCCESS", "jobUUID", "reportVersion", "HIGH", "severity", "codeScan", "easybuggy4kt/vulnerabilities/OpenRedirectController.kt" ]
+        }
+      }
+    } ]
+  } ]
+}

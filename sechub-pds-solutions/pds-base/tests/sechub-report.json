@@ -1,0 +1,534 @@
+{
+  "jobUUID" : "{sechub.jobuuid}",
+  "trafficLight" : "RED",
+  "result" : {
+    "count" : 40,
+    "findings" : [ {
+      "id" : 29,
+      "description" : "Potential file inclusion via variable",
+      "name" : "Potential file inclusion via variable",
+      "severity" : "HIGH",
+      "code" : {
+        "location" : "go-test-bench/pkg/servegin/pathtraversal.go",
+        "line" : 46,
+        "column" : 16,
+        "source" : "data, err := ioutil.ReadFile(payload)"
+      },
+      "type" : "codeScan",
+      "cweId" : 22
+    }, {
+      "id" : 30,
+      "description" : "Potential file inclusion via variable",
+      "name" : "Potential file inclusion via variable",
+      "severity" : "HIGH",
+      "code" : {
+        "location" : "go-test-bench/internal/pathtraversal/path-traversal.go",
+        "line" : 132,
+        "column" : 13,
+        "source" : "fr, err := os.Create(filename)"
+      },
+      "type" : "codeScan",
+      "cweId" : 22
+    }, {
+      "id" : 31,
+      "description" : "Potential file inclusion via variable",
+      "name" : "Potential file inclusion via variable",
+      "severity" : "HIGH",
+      "code" : {
+        "location" : "go-test-bench/internal/pathtraversal/path-traversal.go",
+        "line" : 70,
+        "column" : 18,
+        "source" : "content, err := ioutil.ReadFile(filename)"
+      },
+      "type" : "codeScan",
+      "cweId" : 22
+    }, {
+      "id" : 32,
+      "description" : "Potential file inclusion via variable",
+      "name" : "Potential file inclusion via variable",
+      "severity" : "HIGH",
+      "code" : {
+        "location" : "go-test-bench/internal/pathtraversal/path-traversal.go",
+        "line" : 55,
+        "column" : 13,
+        "source" : "fr, err := os.Open(filename)"
+      },
+      "type" : "codeScan",
+      "cweId" : 22
+    }, {
+      "id" : 33,
+      "description" : "Potential file inclusion via variable",
+      "name" : "Potential file inclusion via variable",
+      "severity" : "HIGH",
+      "code" : {
+        "location" : "go-test-bench/internal/common/routes.go",
+        "line" : 128,
+        "column" : 15,
+        "source" : "data, err := os.ReadFile(path)"
+      },
+      "type" : "codeScan",
+      "cweId" : 22
+    }, {
+      "id" : 26,
+      "description" : "Subprocess launched with a potential tainted input or cmd arguments",
+      "name" : "Subprocess launched with a potential tainted input or cmd arguments",
+      "severity" : "HIGH",
+      "code" : {
+        "location" : "go-test-bench/internal/injection/cmdi/cmd-injection.go",
+        "line" : 75,
+        "column" : 9,
+        "source" : "cmd = exec.CommandContext(ctx, args[0], args[1:]...)"
+      },
+      "type" : "codeScan",
+      "cweId" : 78
+    }, {
+      "id" : 27,
+      "description" : "Subprocess launched with a potential tainted input or cmd arguments",
+      "name" : "Subprocess launched with a potential tainted input or cmd arguments",
+      "severity" : "HIGH",
+      "code" : {
+        "location" : "go-test-bench/internal/injection/cmdi/cmd-injection.go",
+        "line" : 48,
+        "column" : 9,
+        "source" : "cmd = exec.Command(args[0], args[1:]...)"
+      },
+      "type" : "codeScan",
+      "cweId" : 78
+    }, {
+      "id" : 1,
+      "description" : "this method will not auto-escape HTML. Verify data is well formed.",
+      "name" : "this method will not auto-escape HTML. Verify data is well formed.",
+      "severity" : "HIGH",
+      "code" : {
+        "location" : "go-test-bench/pkg/servestd/servestd.go",
+        "line" : 69,
+        "column" : 14,
+        "source" : "var data = template.HTML(v.TmplFile)"
+      },
+      "type" : "codeScan",
+      "cweId" : 79
+    }, {
+      "id" : 2,
+      "description" : "this method will not auto-escape HTML. Verify data is well formed.",
+      "name" : "this method will not auto-escape HTML. Verify data is well formed.",
+      "severity" : "HIGH",
+      "code" : {
+        "location" : "go-test-bench/internal/xss/xss.go",
+        "line" : 151,
+        "column" : 10,
+        "source" : "return template.HTML(userInput), false"
+      },
+      "type" : "codeScan",
+      "cweId" : 79
+    }, {
+      "id" : 3,
+      "description" : "this method will not auto-escape HTML. Verify data is well formed.",
+      "name" : "this method will not auto-escape HTML. Verify data is well formed.",
+      "severity" : "HIGH",
+      "code" : {
+        "location" : "go-test-bench/internal/xss/xss.go",
+        "line" : 145,
+        "column" : 10,
+        "source" : "return template.HTML(userInput), false"
+      },
+      "type" : "codeScan",
+      "cweId" : 79
+    }, {
+      "id" : 4,
+      "description" : "this method will not auto-escape HTML. Verify data is well formed.",
+      "name" : "this method will not auto-escape HTML. Verify data is well formed.",
+      "severity" : "HIGH",
+      "code" : {
+        "location" : "go-test-bench/internal/xss/xss.go",
+        "line" : 118,
+        "column" : 9,
+        "source" : "return template.HTML(input), false"
+      },
+      "type" : "codeScan",
+      "cweId" : 79
+    }, {
+      "id" : 5,
+      "description" : "this method will not auto-escape HTML. Verify data is well formed.",
+      "name" : "this method will not auto-escape HTML. Verify data is well formed.",
+      "severity" : "HIGH",
+      "code" : {
+        "location" : "go-test-bench/internal/xss/xss.go",
+        "line" : 101,
+        "column" : 10,
+        "source" : "return template.HTML(\"Cannot GET \" + r.URL.Path), false"
+      },
+      "type" : "codeScan",
+      "cweId" : 79
+    }, {
+      "id" : 6,
+      "description" : "this method will not auto-escape HTML. Verify data is well formed.",
+      "name" : "this method will not auto-escape HTML. Verify data is well formed.",
+      "severity" : "HIGH",
+      "code" : {
+        "location" : "go-test-bench/internal/xss/xss.go",
+        "line" : 95,
+        "column" : 9,
+        "source" : "return template.HTML(input), false"
+      },
+      "type" : "codeScan",
+      "cweId" : 79
+    }, {
+      "id" : 7,
+      "description" : "this method will not auto-escape HTML. Verify data is well formed.",
+      "name" : "this method will not auto-escape HTML. Verify data is well formed.",
+      "severity" : "HIGH",
+      "code" : {
+        "location" : "go-test-bench/internal/xss/xss.go",
+        "line" : 79,
+        "column" : 10,
+        "source" : "return template.HTML(\"Cannot GET \" + r.URL.Path), false"
+      },
+      "type" : "codeScan",
+      "cweId" : 79
+    }, {
+      "id" : 8,
+      "description" : "this method will not auto-escape HTML. Verify data is well formed.",
+      "name" : "this method will not auto-escape HTML. Verify data is well formed.",
+      "severity" : "HIGH",
+      "code" : {
+        "location" : "go-test-bench/internal/xss/xss.go",
+        "line" : 74,
+        "column" : 9,
+        "source" : "return template.HTML(input), false"
+      },
+      "type" : "codeScan",
+      "cweId" : 79
+    }, {
+      "id" : 9,
+      "description" : "this method will not auto-escape HTML. Verify data is well formed.",
+      "name" : "this method will not auto-escape HTML. Verify data is well formed.",
+      "severity" : "HIGH",
+      "code" : {
+        "location" : "go-test-bench/internal/xss/xss.go",
+        "line" : 52,
+        "column" : 9,
+        "source" : "return template.HTML(input), false"
+      },
+      "type" : "codeScan",
+      "cweId" : 79
+    }, {
+      "id" : 10,
+      "description" : "this method will not auto-escape HTML. Verify data is well formed.",
+      "name" : "this method will not auto-escape HTML. Verify data is well formed.",
+      "severity" : "HIGH",
+      "code" : {
+        "location" : "go-test-bench/internal/xss/xss.go",
+        "line" : 30,
+        "column" : 9,
+        "source" : "return template.HTML(input), false"
+      },
+      "type" : "codeScan",
+      "cweId" : 79
+    }, {
+      "id" : 11,
+      "description" : "this method will not auto-escape HTML. Verify data is well formed.",
+      "name" : "this method will not auto-escape HTML. Verify data is well formed.",
+      "severity" : "HIGH",
+      "code" : {
+        "location" : "go-test-bench/internal/pathtraversal/path-traversal.go",
+        "line" : 124,
+        "column" : 9,
+        "source" : "return template.HTML(data), false"
+      },
+      "type" : "codeScan",
+      "cweId" : 79
+    }, {
+      "id" : 12,
+      "description" : "this method will not auto-escape HTML. Verify data is well formed.",
+      "name" : "this method will not auto-escape HTML. Verify data is well formed.",
+      "severity" : "HIGH",
+      "code" : {
+        "location" : "go-test-bench/internal/pathtraversal/path-traversal.go",
+        "line" : 100,
+        "column" : 11,
+        "source" : "return template.HTML(\"Congrats, you are safe! Error from writeFile: \" + err.Error()), false"
+      },
+      "type" : "codeScan",
+      "cweId" : 79
+    }, {
+      "id" : 13,
+      "description" : "this method will not auto-escape HTML. Verify data is well formed.",
+      "name" : "this method will not auto-escape HTML. Verify data is well formed.",
+      "severity" : "HIGH",
+      "code" : {
+        "location" : "go-test-bench/internal/pathtraversal/path-traversal.go",
+        "line" : 50,
+        "column" : 9,
+        "source" : "return template.HTML(data), false"
+      },
+      "type" : "codeScan",
+      "cweId" : 79
+    }, {
+      "id" : 14,
+      "description" : "this method will not auto-escape HTML. Verify data is well formed.",
+      "name" : "this method will not auto-escape HTML. Verify data is well formed.",
+      "severity" : "HIGH",
+      "code" : {
+        "location" : "go-test-bench/internal/pathtraversal/path-traversal.go",
+        "line" : 35,
+        "column" : 11,
+        "source" : "return template.HTML(\"Congrats, you are safe! Error from readFile: \" + err.Error()), false"
+      },
+      "type" : "codeScan",
+      "cweId" : 79
+    }, {
+      "id" : 15,
+      "description" : "this method will not auto-escape HTML. Verify data is well formed.",
+      "name" : "this method will not auto-escape HTML. Verify data is well formed.",
+      "severity" : "HIGH",
+      "code" : {
+        "location" : "go-test-bench/internal/injection/sqli/sql-injection.go",
+        "line" : 112,
+        "column" : 9,
+        "source" : "return template.HTML(query), false //change to out desired output"
+      },
+      "type" : "codeScan",
+      "cweId" : 79
+    }, {
+      "id" : 16,
+      "description" : "this method will not auto-escape HTML. Verify data is well formed.",
+      "name" : "this method will not auto-escape HTML. Verify data is well formed.",
+      "severity" : "HIGH",
+      "code" : {
+        "location" : "go-test-bench/internal/injection/sqli/sql-injection.go",
+        "line" : 110,
+        "column" : 10,
+        "source" : "return template.HTML(err.Error()), false"
+      },
+      "type" : "codeScan",
+      "cweId" : 79
+    }, {
+      "id" : 17,
+      "description" : "this method will not auto-escape HTML. Verify data is well formed.",
+      "name" : "this method will not auto-escape HTML. Verify data is well formed.",
+      "severity" : "HIGH",
+      "code" : {
+        "location" : "go-test-bench/internal/injection/sqli/sql-injection.go",
+        "line" : 104,
+        "column" : 10,
+        "source" : "return template.HTML(err.Error()), false"
+      },
+      "type" : "codeScan",
+      "cweId" : 79
+    }, {
+      "id" : 18,
+      "description" : "this method will not auto-escape HTML. Verify data is well formed.",
+      "name" : "this method will not auto-escape HTML. Verify data is well formed.",
+      "severity" : "HIGH",
+      "code" : {
+        "location" : "go-test-bench/internal/injection/sqli/sql-injection.go",
+        "line" : 85,
+        "column" : 9,
+        "source" : "return template.HTML(query), false //change to out desired output"
+      },
+      "type" : "codeScan",
+      "cweId" : 79
+    }, {
+      "id" : 19,
+      "description" : "this method will not auto-escape HTML. Verify data is well formed.",
+      "name" : "this method will not auto-escape HTML. Verify data is well formed.",
+      "severity" : "HIGH",
+      "code" : {
+        "location" : "go-test-bench/internal/injection/sqli/sql-injection.go",
+        "line" : 79,
+        "column" : 11,
+        "source" : "return template.HTML(err.Error()), false"
+      },
+      "type" : "codeScan",
+      "cweId" : 79
+    }, {
+      "id" : 20,
+      "description" : "this method will not auto-escape HTML. Verify data is well formed.",
+      "name" : "this method will not auto-escape HTML. Verify data is well formed.",
+      "severity" : "HIGH",
+      "code" : {
+        "location" : "go-test-bench/internal/injection/sqli/sql-injection.go",
+        "line" : 43,
+        "column" : 9,
+        "source" : "return template.HTML(query), false //change to out desired output"
+      },
+      "type" : "codeScan",
+      "cweId" : 79
+    }, {
+      "id" : 21,
+      "description" : "this method will not auto-escape HTML. Verify data is well formed.",
+      "name" : "this method will not auto-escape HTML. Verify data is well formed.",
+      "severity" : "HIGH",
+      "code" : {
+        "location" : "go-test-bench/internal/injection/sqli/sql-injection.go",
+        "line" : 40,
+        "column" : 10,
+        "source" : "return template.HTML(err.Error()), false"
+      },
+      "type" : "codeScan",
+      "cweId" : 79
+    }, {
+      "id" : 22,
+      "description" : "this method will not auto-escape HTML. Verify data is well formed.",
+      "name" : "this method will not auto-escape HTML. Verify data is well formed.",
+      "severity" : "HIGH",
+      "code" : {
+        "location" : "go-test-bench/internal/injection/nosqli/nosql-injection.go",
+        "line" : 93,
+        "column" : 10,
+        "source" : "return template.HTML(output), false"
+      },
+      "type" : "codeScan",
+      "cweId" : 79
+    }, {
+      "id" : 23,
+      "description" : "this method will not auto-escape HTML. Verify data is well formed.",
+      "name" : "this method will not auto-escape HTML. Verify data is well formed.",
+      "severity" : "HIGH",
+      "code" : {
+        "location" : "go-test-bench/internal/injection/nosqli/nosql-injection.go",
+        "line" : 74,
+        "column" : 10,
+        "source" : "return template.HTML(output), false"
+      },
+      "type" : "codeScan",
+      "cweId" : 79
+    }, {
+      "id" : 24,
+      "description" : "this method will not auto-escape HTML. Verify data is well formed.",
+      "name" : "this method will not auto-escape HTML. Verify data is well formed.",
+      "severity" : "HIGH",
+      "code" : {
+        "location" : "go-test-bench/internal/injection/cmdi/cmd-injection.go",
+        "line" : 87,
+        "column" : 9,
+        "source" : "return template.HTML(out.String()), false"
+      },
+      "type" : "codeScan",
+      "cweId" : 79
+    }, {
+      "id" : 25,
+      "description" : "this method will not auto-escape HTML. Verify data is well formed.",
+      "name" : "this method will not auto-escape HTML. Verify data is well formed.",
+      "severity" : "HIGH",
+      "code" : {
+        "location" : "go-test-bench/internal/injection/cmdi/cmd-injection.go",
+        "line" : 60,
+        "column" : 9,
+        "source" : "return template.HTML(out.String()), false"
+      },
+      "type" : "codeScan",
+      "cweId" : 79
+    }, {
+      "id" : 28,
+      "description" : "SQL string formatting",
+      "name" : "SQL string formatting",
+      "severity" : "HIGH",
+      "code" : {
+        "location" : "go-test-bench/pkg/servegin/sqli.go",
+        "line" : 51,
+        "column" : 13,
+        "source" : "query := fmt.Sprintf(\"SELECT '%s' as '%s'\", payload, \"test\")"
+      },
+      "type" : "codeScan",
+      "cweId" : 89
+    }, {
+      "id" : 34,
+      "description" : "Expect WriteFile permissions to be 0600 or less",
+      "name" : "Expect WriteFile permissions to be 0600 or less",
+      "severity" : "HIGH",
+      "code" : {
+        "location" : "go-test-bench/pkg/servegin/pathtraversal.go",
+        "line" : 53,
+        "column" : 10,
+        "source" : "err := ioutil.WriteFile(payload, []byte(\"haxx'd\"), 0666)"
+      },
+      "type" : "codeScan",
+      "cweId" : 276
+    }, {
+      "id" : 35,
+      "description" : "Expect WriteFile permissions to be 0600 or less",
+      "name" : "Expect WriteFile permissions to be 0600 or less",
+      "severity" : "HIGH",
+      "code" : {
+        "location" : "go-test-bench/internal/pathtraversal/path-traversal.go",
+        "line" : 150,
+        "column" : 9,
+        "source" : "err := ioutil.WriteFile(filename, []byte(message), 0644)"
+      },
+      "type" : "codeScan",
+      "cweId" : 276
+    }, {
+      "id" : 36,
+      "description" : "Deferring unsafe method \"Close\" on type \"*os.File\"",
+      "name" : "Deferring unsafe method \"Close\" on type \"*os.File\"",
+      "severity" : "HIGH",
+      "code" : {
+        "location" : "go-test-bench/internal/pathtraversal/path-traversal.go",
+        "line" : 137,
+        "column" : 2,
+        "source" : "defer fr.Close()"
+      },
+      "type" : "codeScan",
+      "cweId" : 703
+    }, {
+      "id" : 37,
+      "description" : "Deferring unsafe method \"Close\" on type \"*os.File\"",
+      "name" : "Deferring unsafe method \"Close\" on type \"*os.File\"",
+      "severity" : "HIGH",
+      "code" : {
+        "location" : "go-test-bench/internal/pathtraversal/path-traversal.go",
+        "line" : 60,
+        "column" : 2,
+        "source" : "defer fr.Close()"
+      },
+      "type" : "codeScan",
+      "cweId" : 703
+    }, {
+      "id" : 38,
+      "description" : "Errors unhandled.",
+      "name" : "Errors unhandled.",
+      "severity" : "MEDIUM",
+      "code" : {
+        "location" : "go-test-bench/internal/xss/xss.go",
+        "line" : 149,
+        "column" : 3,
+        "source" : "response.Write(&buf)"
+      },
+      "type" : "codeScan",
+      "cweId" : 703
+    }, {
+      "id" : 39,
+      "description" : "Errors unhandled.",
+      "name" : "Errors unhandled.",
+      "severity" : "MEDIUM",
+      "code" : {
+        "location" : "go-test-bench/internal/xss/xss.go",
+        "line" : 143,
+        "column" : 3,
+        "source" : "response.Write(&buf)"
+      },
+      "type" : "codeScan",
+      "cweId" : 703
+    }, {
+      "id" : 40,
+      "description" : "Errors unhandled.",
+      "name" : "Errors unhandled.",
+      "severity" : "MEDIUM",
+      "code" : {
+        "location" : "go-test-bench/internal/pathtraversal/path-traversal.go",
+        "line" : 63,
+        "column" : 2,
+        "source" : "buf.ReadFrom(fr)"
+      },
+      "type" : "codeScan",
+      "cweId" : 703
+    } ]
+  },
+  "status" : "SUCCESS",
+  "reportVersion" : "1.0",
+  "messages" : [ {
+    "type" : "INFO",
+    "text" : "Running PDS Mock"
+  } ]
+}

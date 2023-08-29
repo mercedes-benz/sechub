@@ -12,6 +12,8 @@ on:
       # We ignore everything where tag starts with v* - this is done by release build!
     tags-ignore:
       - v*
+  # enable manual triggering of workflow
+  workflow_dispatch:
 
 jobs:
   build:
@@ -48,7 +50,7 @@ jobs:
 
       - name: Build Server, DAUI and generate OpenAPI file
         run: ./gradlew ensureLocalhostCertificate build generateOpenapi buildDeveloperAdminUI -x :sechub-cli:build
-        
+
       - name: Generate and build Java projects related to SecHub Java API
         run: ./gradlew :sechub-api-java:build :sechub-systemtest:build :sechub-pds-tools:buildPDSToolsCLI -Dsechub.build.stage=api-necessary
 

@@ -31,38 +31,38 @@ TEST_FOLDER="$BUILD_TMP_FOLDER/shared-functions-test"
 TEST_FOLDER_EXTRACTED="$TEST_FOLDER/extracted"
 TEST_FOLDER_RESULT="$TEST_FOLDER/result.txt"
 
-rm -fr $TEST_FOLDER
-mkdir -p $TEST_FOLDER_EXTRACTED
+rm -fr "$TEST_FOLDER"
+mkdir -p "$TEST_FOLDER_EXTRACTED"
 debug "> dropped old tmp data from: $TEST_FOLDER" $DEBUG
-tar -xf $TEST_DAT_TAR_LOCATION --directory $TEST_FOLDER_EXTRACTED
+tar -xf "$TEST_DAT_TAR_LOCATION" --directory "$TEST_FOLDER_EXTRACTED"
 debug "> extracted $TEST_DAT_TAR_LOCATION into : $TEST_FOLDER" $DEBUG
 
-mergeFolderFilesRecursivelyIntoResultFile "test-sources" $TEST_FOLDER_EXTRACTED $TEST_FOLDER_RESULT $DEBUG
+mergeFolderFilesRecursivelyIntoResultFile "test-sources" "$TEST_FOLDER_EXTRACTED" "$TEST_FOLDER_RESULT" $DEBUG
 
 echo ">>>> RESULT"
 if [[ "$DEBUG" = "true" ]]; then
     echo "$TEST_FOLDER contains:"
-    ls -all $TEST_FOLDER 
+    ls -all "$TEST_FOLDER" 
 fi
 echo "$TEST_FOLDER_RESULT contains:"
-cat $TEST_FOLDER_RESULT
+cat "$TEST_FOLDER_RESULT"
 
 echo "/-------------------------------------------------\\"
 echo "|                                                 |"
 echo "| TEST: message methods                           |"
 echo "|                                                 |"
 echo "\\-------------------------------------------------/"
-PDS_JOB_USER_MESSAGES_FOLDER=$TEST_FOLDER/output/messages
-rm -rf $PDS_JOB_USER_MESSAGES_FOLDER
+PDS_JOB_USER_MESSAGES_FOLDER="$TEST_FOLDER/output/messages"
+rm -rf "$PDS_JOB_USER_MESSAGES_FOLDER"
 
-mkdir -p $PDS_JOB_USER_MESSAGES_FOLDER
+mkdir -p "$PDS_JOB_USER_MESSAGES_FOLDER"
 
 # next line uses messaging function (included by hared-functions.sh and being part of documentation)
 source ./shared/shared-messaging-referenced-in-documentation-as-example-usage.sh
 
 echo "Messages at: $PDS_JOB_USER_MESSAGES_FOLDER"
 echo "----------------------------------------------------------------------------"
-ls $PDS_JOB_USER_MESSAGES_FOLDER 
+ls "$PDS_JOB_USER_MESSAGES_FOLDER" 
 echo "----------------------------------------------------------------------------"
 
 echo "Attention! This should look similar to:"
@@ -98,14 +98,14 @@ echo "|                                                 |"
 echo "| TEST: check events handled by scripts functions |"
 echo "|                                                 |"
 echo "\\-------------------------------------------------/"
-PDS_JOB_EVENTS_FOLDER=$TEST_FOLDER/events
-mkdir $PDS_JOB_EVENTS_FOLDER 
+PDS_JOB_EVENTS_FOLDER="$TEST_FOLDER/events"
+mkdir "$PDS_JOB_EVENTS_FOLDER" 
 
-touch $PDS_JOB_EVENTS_FOLDER/cancel_requested.json
-touch $PDS_JOB_EVENTS_FOLDER/other.json
+touch "$PDS_JOB_EVENTS_FOLDER/cancel_requested.json"
+touch "$PDS_JOB_EVENTS_FOLDER/other.json"
 
 echo "Events found in $PDS_JOB_EVENTS_FOLDER"
-ls -l $PDS_JOB_EVENTS_FOLDER 
+ls -l "$PDS_JOB_EVENTS_FOLDER" 
 
 ## ---------------------------
 ## eventExists 

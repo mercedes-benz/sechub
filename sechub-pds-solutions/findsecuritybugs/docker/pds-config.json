@@ -1,58 +1,51 @@
 {
-  "apiVersion": "1.0",
-  "serverId": "FINDSECURITYBUGS_CLUSTER",
-  "products": [
-    {
-      "id": "PDS_FINDSECURITYBUGS",
-      "path": "/pds/scripts/findsecuritybugs.sh",
-      "scanType": "codeScan",
-      "description": "Runs FindSecurityBugs. FindSecurityBugs is a static analysis tool for Java, Kotlin, Scala and Groovy.",
-      "parameters": {
-        "optional": [
-          {
-            "key": "findsecuritybugs.severity",
-            "description": "Limit the results to findings above a severity level of EXPERIMENTAL, LOW, MEDIUM and HIGH."
-          },
-          {
-            "key": "findsecuritybugs.effort",
-            "description": "The analysis effort level: MIN, LESS, DEFAULT, MORE, MAX."
-          },
-          {
-            "key": "findsecuritybugs.include.bugpatterns",
-            "description": "Include only the given bug patterns. A list of bug patter names can be found at: https://find-sec-bugs.github.io/bugs.htm. For example: WEAK_MESSAGE_DIGEST_MD5, SQL_INJECTION."
-          },
-          {
-            "key": "findsecuritybugs.exclude.bugpatterns",
-            "description": "Exclude the given bug patterns. A list of bug patter names can be found at: https://find-sec-bugs.github.io/bugs.htm. For example: WEAK_MESSAGE_DIGEST_MD5, SQL_INJECTION."
-          }
-        ]
-      }
-    },
-    {
-      "id": "PDS_FINDSECURITYBUGS_MOCK",
-      "path": "/pds/scripts/findsecuritybugs_mock.sh",
-      "scanType": "codeScan",
-      "description": "Runs FindSecurityBugs mock. It returns a fixed result file.",
-      "parameters": {
-        "optional": [
-          {
-            "key": "findsecuritybugs.severity",
-            "description": "Limit the results to findings above a severity level of EXPERIMENTAL, LOW, MEDIUM and HIGH."
-          },
-          {
-            "key": "findsecuritybugs.effort",
-            "description": "The analysis effort level: MIN, LESS, DEFAULT, MORE, MAX."
-          },
-          {
-            "key": "findsecuritybugs.include.bugpatterns",
-            "description": "Include only the given bug patterns. A list of bug patter names can be found at: https://find-sec-bugs.github.io/bugs.htm. For example: WEAK_MESSAGE_DIGEST_MD5, SQL_INJECTION."
-          },
-          {
-            "key": "findsecuritybugs.exclude.bugpatterns",
-            "description": "Exclude the given bug patterns. A list of bug patter names can be found at: https://find-sec-bugs.github.io/bugs.htm. For example: WEAK_MESSAGE_DIGEST_MD5, SQL_INJECTION."
-          }
-        ]
-      }
+  "apiVersion" : "1.0",
+  "serverId" : "FINDSECURITYBUGS_CLUSTER",
+  "products" : [ {
+    "id" : "PDS_FINDSECURITYBUGS",
+    "path" : "/pds/scripts/findsecuritybugs.sh",
+    "scanType" : "codeScan",
+    "description" : "Runs FindSecurityBugs. FindSecurityBugs is a static analysis tool for Java, Kotlin, Scala and Groovy.",
+    "parameters" : {
+      "optional" : [ {
+        "key" : "pds.config.supported.datatypes",
+        "default" : "binary"
+      }, {
+        "key" : "findsecuritybugs.severity",
+        "description" : "Limit the results to findings above a severity level of EXPERIMENTAL, LOW, MEDIUM and HIGH."
+      }, {
+        "key" : "findsecuritybugs.effort",
+        "description" : "The analysis effort level: MIN, LESS, DEFAULT, MORE, MAX."
+      }, {
+        "key" : "findsecuritybugs.include.bugpatterns",
+        "description" : "Include only the given bug patterns. A list of bug patter names can be found at: https://find-sec-bugs.github.io/bugs.htm. For example: WEAK_MESSAGE_DIGEST_MD5, SQL_INJECTION."
+      }, {
+        "key" : "findsecuritybugs.exclude.bugpatterns",
+        "description" : "Exclude the given bug patterns. A list of bug patter names can be found at: https://find-sec-bugs.github.io/bugs.htm. For example: WEAK_MESSAGE_DIGEST_MD5, SQL_INJECTION."
+      } ]
     }
-  ]
+  }, {
+    "id" : "PDS_FINDSECURITYBUGS_MOCK",
+    "path" : "/pds/scripts/findsecuritybugs_mock.sh",
+    "scanType" : "codeScan",
+    "description" : "Runs FindSecurityBugs mock. It returns a fixed result file.",
+    "parameters" : {
+      "optional" : [ {
+        "key" : "pds.config.supported.datatypes",
+        "default" : "binary"
+      }, {
+        "key" : "findsecuritybugs.severity",
+        "description" : "Limit the results to findings above a severity level of EXPERIMENTAL, LOW, MEDIUM and HIGH."
+      }, {
+        "key" : "findsecuritybugs.effort",
+        "description" : "The analysis effort level: MIN, LESS, DEFAULT, MORE, MAX."
+      }, {
+        "key" : "findsecuritybugs.include.bugpatterns",
+        "description" : "Include only the given bug patterns. A list of bug patter names can be found at: https://find-sec-bugs.github.io/bugs.htm. For example: WEAK_MESSAGE_DIGEST_MD5, SQL_INJECTION."
+      }, {
+        "key" : "findsecuritybugs.exclude.bugpatterns",
+        "description" : "Exclude the given bug patterns. A list of bug patter names can be found at: https://find-sec-bugs.github.io/bugs.htm. For example: WEAK_MESSAGE_DIGEST_MD5, SQL_INJECTION."
+      } ]
+    }
+  } ]
 }

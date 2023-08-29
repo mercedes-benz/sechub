@@ -12,7 +12,7 @@ fi
 
 if [[ -z "$vulnerable_repo" ]]
 then
-	echo "No vulneable application repository provided"
+	echo "No vulnerable application repository provided"
 	exit 1
 fi
 
