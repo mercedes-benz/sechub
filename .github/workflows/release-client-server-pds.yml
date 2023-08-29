@@ -238,15 +238,6 @@ jobs:
           path: sechub-cli/build/go
           retention-days: 14
 
-      - name: Build Server Helm chart + push to ghcr
-        if: inputs.server-version != ''
-        shell: bash
-        run: |
-          cd "sechub-solution/helm"
-          echo "# Building Helm chart for sechub-server"
-          helm package sechub-server
-          helm push sechub-server-*.tgz $ACTIONS_HELM_REGISTRY
-
       - name: Install graphviz (asciidoc diagrams)
         run: sudo apt-get -qq --assume-yes install graphviz
 
@@ -483,6 +474,15 @@ jobs:
           ./10-create-image-${BUILD_FLAVOR}.sh $DOCKER_REGISTRY $VERSION_TAG $ACTIONS_BASE_IMAGE_ALPINE
           echo "# Pushing image $DOCKER_REGISTRY:$VERSION_TAG (latest)"
           ./20-push-image.sh $DOCKER_REGISTRY $VERSION_TAG yes
+
+      - name: Build Server Helm chart + push to ghcr
+        if: inputs.server-version != ''
+        shell: bash
+        run: |
+          cd "sechub-solution/helm"
+          echo "# Building Helm chart for sechub-server"
+          helm package sechub-server
+          helm push sechub-server-*.tgz $ACTIONS_HELM_REGISTRY
 
 
       # ******************************************
