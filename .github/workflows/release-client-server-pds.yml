@@ -304,6 +304,15 @@ jobs:
           echo "Pull Request Number - ${{ steps.pr_release_documentation.outputs.pull-request-number }}"
           echo "Pull Request URL - ${{ steps.pr_release_documentation.outputs.pull-request-url }}"
 
+      - name: Build Server Helm chart + push to ghcr
+        if: inputs.server-version != ''
+        shell: bash
+        run: |
+          cd "sechub-solution/helm"
+          echo "# Building Helm chart for sechub-server"
+          helm package sechub-server
+          helm push sechub-server-*.tgz $ACTIONS_HELM_REGISTRY
+
       # -----------------------------------------
       # Assert releaseable, so no dirty flags on releases
       # even when all artifact creation parts are done!
@@ -474,15 +483,6 @@ jobs:
           ./10-create-image-${BUILD_FLAVOR}.sh $DOCKER_REGISTRY $VERSION_TAG $ACTIONS_BASE_IMAGE_ALPINE
           echo "# Pushing image $DOCKER_REGISTRY:$VERSION_TAG (latest)"
           ./20-push-image.sh $DOCKER_REGISTRY $VERSION_TAG yes
-
-      - name: Build Server Helm chart + push to ghcr
-        if: inputs.server-version != ''
-        shell: bash
-        run: |
-          cd "sechub-solution/helm"
-          echo "# Building Helm chart for sechub-server"
-          helm package sechub-server
-          helm push sechub-server-*.tgz $ACTIONS_HELM_REGISTRY
 
 
       # ******************************************
