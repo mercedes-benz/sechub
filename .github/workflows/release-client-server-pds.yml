@@ -238,6 +238,15 @@ jobs:
           path: sechub-cli/build/go
           retention-days: 14
 
+      - name: Build Server Helm chart + push to ghcr
+        if: inputs.server-version != ''
+        shell: bash
+        run: |
+          cd "sechub-solution/helm"
+          echo "# Building Helm chart for sechub-server"
+          helm package sechub-server
+          helm push sechub-server-*.tgz $ACTIONS_HELM_REGISTRY
+
       - name: Install graphviz (asciidoc diagrams)
         run: sudo apt-get -qq --assume-yes install graphviz
 
@@ -303,15 +312,6 @@ jobs:
         run: |
           echo "Pull Request Number - ${{ steps.pr_release_documentation.outputs.pull-request-number }}"
           echo "Pull Request URL - ${{ steps.pr_release_documentation.outputs.pull-request-url }}"
-
-      - name: Build Server Helm chart + push to ghcr
-        if: inputs.server-version != ''
-        shell: bash
-        run: |
-          cd "sechub-solution/helm"
-          echo "# Building Helm chart for sechub-server"
-          helm package sechub-server
-          helm push sechub-server-*.tgz $ACTIONS_HELM_REGISTRY
 
       # -----------------------------------------
       # Assert releaseable, so no dirty flags on releases
