@@ -10,7 +10,7 @@ import com.mercedesbenz.sechub.commons.model.SecHubWebScanConfiguration;
 import com.mercedesbenz.sechub.zapwrapper.config.auth.AuthenticationType;
 import com.mercedesbenz.sechub.zapwrapper.config.data.DeactivatedRuleReferences;
 import com.mercedesbenz.sechub.zapwrapper.config.data.ZapFullRuleset;
-import com.mercedesbenz.sechub.zapwrapper.helper.ZapEventHandler;
+import com.mercedesbenz.sechub.zapwrapper.helper.ZapPDSEventHandler;
 import com.mercedesbenz.sechub.zapwrapper.helper.ZapProductMessageHelper;
 
 public class ZapScanContext {
@@ -28,7 +28,7 @@ public class ZapScanContext {
 
     private AuthenticationType authenticationType;
 
-    private long maxScanDurationInMillis;
+    private long maxScanDurationInMilliSeconds;
 
     private SecHubWebScanConfiguration secHubWebScanConfiguration;
 
@@ -50,7 +50,7 @@ public class ZapScanContext {
     private int retryWaittimeInMilliseconds;
 
     private ZapProductMessageHelper zapProductMessageHelper;
-    private ZapEventHandler zapEventHandler;
+    private ZapPDSEventHandler zapPDSEventHandler;
 
     private ZapScanContext() {
     }
@@ -91,8 +91,8 @@ public class ZapScanContext {
         return authenticationType;
     }
 
-    public long getMaxScanDurationInMillis() {
-        return maxScanDurationInMillis;
+    public long getMaxScanDurationInMilliSeconds() {
+        return maxScanDurationInMilliSeconds;
     }
 
     public SecHubWebScanConfiguration getSecHubWebScanConfiguration() {
@@ -149,8 +149,8 @@ public class ZapScanContext {
         return zapProductMessageHelper;
     }
 
-    public ZapEventHandler getZapEventHandler() {
-        return zapEventHandler;
+    public ZapPDSEventHandler getZapPDSEventHandler() {
+        return zapPDSEventHandler;
     }
 
     public static ZapBasicScanContextBuilder builder() {
@@ -173,7 +173,7 @@ public class ZapScanContext {
 
         private AuthenticationType authenticationType;
 
-        private long maxScanDurationInMillis;
+        private long maxScanDurationInMilliSeconds;
 
         private SecHubWebScanConfiguration secHubWebScanConfiguration;
 
@@ -196,7 +196,7 @@ public class ZapScanContext {
 
         private ZapProductMessageHelper zapProductMessageHelper;
 
-        private ZapEventHandler zapEventHandler;
+        private ZapPDSEventHandler zapPDSEventHandler;
 
         public ZapBasicScanContextBuilder setServerConfig(ZapServerConfiguration serverConfig) {
             this.serverConfig = serverConfig;
@@ -238,8 +238,8 @@ public class ZapScanContext {
             return this;
         }
 
-        public ZapBasicScanContextBuilder setMaxScanDurationInMillis(long maxScanDurationInMillis) {
-            this.maxScanDurationInMillis = maxScanDurationInMillis;
+        public ZapBasicScanContextBuilder setMaxScanDurationInMilliSeconds(long maxScanDurationInMilliSeconds) {
+            this.maxScanDurationInMilliSeconds = maxScanDurationInMilliSeconds;
             return this;
         }
 
@@ -298,8 +298,8 @@ public class ZapScanContext {
             return this;
         }
 
-        public ZapBasicScanContextBuilder setZapEventHandler(ZapEventHandler zapEventHandler) {
-            this.zapEventHandler = zapEventHandler;
+        public ZapBasicScanContextBuilder setZapPDSEventHandler(ZapPDSEventHandler zapPDSEventHandler) {
+            this.zapPDSEventHandler = zapPDSEventHandler;
             return this;
         }
 
@@ -314,7 +314,7 @@ public class ZapScanContext {
             zapBasicScanConfiguration.targetUrl = this.targetUrl;
             zapBasicScanConfiguration.authenticationType = this.authenticationType;
 
-            zapBasicScanConfiguration.maxScanDurationInMillis = this.maxScanDurationInMillis;
+            zapBasicScanConfiguration.maxScanDurationInMilliSeconds = this.maxScanDurationInMilliSeconds;
 
             zapBasicScanConfiguration.secHubWebScanConfiguration = this.secHubWebScanConfiguration;
 
@@ -335,7 +335,7 @@ public class ZapScanContext {
 
             zapBasicScanConfiguration.zapProductMessageHelper = this.zapProductMessageHelper;
 
-            zapBasicScanConfiguration.zapEventHandler = this.zapEventHandler;
+            zapBasicScanConfiguration.zapPDSEventHandler = this.zapPDSEventHandler;
 
             return zapBasicScanConfiguration;
         }

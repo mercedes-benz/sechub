@@ -25,7 +25,7 @@ import com.mercedesbenz.sechub.zapwrapper.config.data.ZapFullRuleset;
 import com.mercedesbenz.sechub.zapwrapper.helper.BaseTargetUriFactory;
 import com.mercedesbenz.sechub.zapwrapper.helper.IncludeExcludeToZapURLHelper;
 import com.mercedesbenz.sechub.zapwrapper.helper.SecHubWebScanConfigurationHelper;
-import com.mercedesbenz.sechub.zapwrapper.helper.ZapEventHandler;
+import com.mercedesbenz.sechub.zapwrapper.helper.ZapPDSEventHandler;
 import com.mercedesbenz.sechub.zapwrapper.helper.ZapProductMessageHelper;
 import com.mercedesbenz.sechub.zapwrapper.helper.ZapURLType;
 import com.mercedesbenz.sechub.zapwrapper.util.EnvironmentVariableConstants;
@@ -92,7 +92,7 @@ public class ZapScanContextFactory {
         Set<URL> excludeSet = createUrlsExcludedFromContext(targetUrl, sechubWebConfig, userMessages);
 
         ZapProductMessageHelper productMessagehelper = createZapProductMessageHelper(settings);
-        ZapEventHandler zapEventHandler = createZapEventhandler(settings);
+        ZapPDSEventHandler zapEventHandler = createZapEventhandler(settings);
 
         checkForIncludeExcludeErrors(userMessages, productMessagehelper);
 
@@ -106,7 +106,7 @@ public class ZapScanContextFactory {
 												.setActiveScanEnabled(settings.isActiveScanEnabled())
 												.setServerConfig(serverConfig)
 												.setAuthenticationType(authType)
-												.setMaxScanDurationInMillis(maxScanDurationInMillis)
+												.setMaxScanDurationInMilliSeconds(maxScanDurationInMillis)
 												.setSecHubWebScanConfiguration(sechubWebConfig)
 												.setProxyInformation(proxyInformation)
 												.setFullRuleset(fullRuleset)
@@ -118,7 +118,7 @@ public class ZapScanContextFactory {
 												.setMaxNumberOfConnectionRetries(settings.getMaxNumberOfConnectionRetries())
 												.setRetryWaittimeInMilliseconds(settings.getRetryWaittimeInMilliseconds())
 												.setZapProductMessageHelper(productMessagehelper)
-												.setZapEventHandler(zapEventHandler)
+												.setZapPDSEventHandler(zapEventHandler)
 											  .build();
 		/* @formatter:on */
         return scanContext;
@@ -246,7 +246,7 @@ public class ZapScanContextFactory {
         return new ZapProductMessageHelper(userMessagesFolder);
     }
 
-    private ZapEventHandler createZapEventhandler(CommandLineSettings settings) {
+    private ZapPDSEventHandler createZapEventhandler(CommandLineSettings settings) {
         String pdsJobEventsFolder = settings.getPDSEventFolder();
         if (pdsJobEventsFolder == null) {
             pdsJobEventsFolder = environmentVariableReader.readAsString(EnvironmentVariableConstants.PDS_JOB_EVENTS_FOLDER);
@@ -256,7 +256,7 @@ public class ZapScanContextFactory {
             throw new ZapWrapperRuntimeException("PDS configuration invalid. Cannot send check for job events, because environment variable "
                     + EnvironmentVariableConstants.PDS_JOB_EVENTS_FOLDER + " is not set.", ZapWrapperExitCode.PDS_CONFIGURATION_ERROR);
         }
-        return new ZapEventHandler(pdsJobEventsFolder);
+        return new ZapPDSEventHandler(pdsJobEventsFolder);
     }
 
     private void checkForIncludeExcludeErrors(List<SecHubMessage> userMessages, ZapProductMessageHelper productMessageHelper) {

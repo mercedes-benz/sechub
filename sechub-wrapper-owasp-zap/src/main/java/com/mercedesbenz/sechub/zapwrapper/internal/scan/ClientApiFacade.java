@@ -23,7 +23,7 @@ public class ClientApiFacade {
     }
 
     /**
-     * Create new context inside the ZAP.
+     * Create new context inside the ZAP with the given name.
      *
      * @param contextName
      * @return contextId returned by ZAP
@@ -35,6 +35,8 @@ public class ClientApiFacade {
     }
 
     /**
+     * Create a new session inside the ZAP. Overwriting files if the parameter is
+     * set.
      *
      * @param contextName
      * @param overwrite
@@ -46,6 +48,7 @@ public class ClientApiFacade {
     }
 
     /**
+     * Set maximum alerts for rule.
      *
      * @param maximum
      * @return
@@ -56,6 +59,7 @@ public class ClientApiFacade {
     }
 
     /**
+     * Enables all passive rules.
      *
      * @return
      * @throws ClientApiException
@@ -65,6 +69,7 @@ public class ClientApiFacade {
     }
 
     /**
+     * Enable all active rules for the given policy.
      *
      * @param policy
      * @return
@@ -75,6 +80,7 @@ public class ClientApiFacade {
     }
 
     /**
+     * Set the Browser used by the AjaxSpider.
      *
      * @param browserId
      * @return
@@ -95,6 +101,7 @@ public class ClientApiFacade {
     }
 
     /**
+     * Disable the given rule by ID inside the given policy.
      *
      * @param ruleId
      * @param policy
@@ -106,6 +113,7 @@ public class ClientApiFacade {
     }
 
     /**
+     * Set HTTP proxy with the given parameters.
      *
      * @param host
      * @param port
@@ -120,6 +128,7 @@ public class ClientApiFacade {
     }
 
     /**
+     * Set usage of a HTTP proxy.
      *
      * @param enabled
      * @return
@@ -130,6 +139,7 @@ public class ClientApiFacade {
     }
 
     /**
+     * Set usage of HTTP proxy authentication.
      *
      * @param enabled
      * @return
@@ -140,6 +150,8 @@ public class ClientApiFacade {
     }
 
     /**
+     * Add replacer rule. If a entry already exists from the last scan it is
+     * replaced.
      *
      * @param description
      * @param enabled
@@ -154,10 +166,19 @@ public class ClientApiFacade {
      */
     public ApiResponse addReplacerRule(String description, String enabled, String matchtype, String matchregex, String matchstring, String replacement,
             String initiators, String url) throws ClientApiException {
-        return clientApi.replacer.addRule(description, enabled, matchtype, matchregex, matchstring, replacement, initiators, url);
+        try {
+            return clientApi.replacer.addRule(description, enabled, matchtype, matchregex, matchstring, replacement, initiators, url);
+        } catch (ClientApiException e) {
+            String message = e.getMessage();
+            if ("already exists".equalsIgnoreCase(message)) {
+                clientApi.replacer.removeRule(description);
+            }
+            return clientApi.replacer.addRule(description, enabled, matchtype, matchregex, matchstring, replacement, initiators, url);
+        }
     }
 
     /**
+     * Include URL pattern to the given context.
      *
      * @param contextName
      * @param urlPattern
@@ -169,6 +190,7 @@ public class ClientApiFacade {
     }
 
     /**
+     * Exclude URL pattern from the given context.
      *
      * @param contextName
      * @param urlPattern
@@ -180,6 +202,8 @@ public class ClientApiFacade {
     }
 
     /**
+     * Access an URL through the ZAP. Successfully accessing the site will add it to
+     * the site tree.
      *
      * @param url
      * @param followRedirects
@@ -196,6 +220,9 @@ public class ClientApiFacade {
     }
 
     /**
+     * Import the given openApi file in the context with the given ID. While
+     * importing the file the ZAP tries to access all API endpoints via the given
+     * URL and adds them to the sites tree if they could be accessed.
      *
      * @param openApiFile
      * @param url
@@ -208,10 +235,10 @@ public class ClientApiFacade {
     }
 
     /**
-     * This method checks if the sites tree is empty. The ZAP creates this sites
-     * tree while crawling and detecting pages. The method is necessary since the
-     * active scanner exits with an exception if the sites tree is empty, when
-     * starting an active scan.
+     * This method checks if the site tree is empty. The ZAP creates the site tree
+     * while crawling and detecting pages. The method is necessary since the active
+     * scanner exits with an exception if the site tree is empty, when starting an
+     * active scan.
      *
      * This can only happen in very few cases, but then we want to be able to inform
      * the user and write a report which is empty or contains at least the passively
@@ -226,6 +253,8 @@ public class ClientApiFacade {
     }
 
     /**
+     * Removes a replacer rule by the given description. (Description is the ID for
+     * the replacer rule)
      *
      * @param description
      * @return
@@ -236,6 +265,7 @@ public class ClientApiFacade {
     }
 
     /**
+     * Generate a report for the given parameters.
      *
      * @param title
      * @param template
@@ -272,6 +302,7 @@ public class ClientApiFacade {
     }
 
     /**
+     * Stop the ajax spider.
      *
      * @return
      * @throws ClientApiException
@@ -281,6 +312,7 @@ public class ClientApiFacade {
     }
 
     /**
+     * Stop the spider for the given scan ID.
      *
      * @param scanId
      * @return
@@ -331,6 +363,7 @@ public class ClientApiFacade {
     }
 
     /**
+     * Stop the active scanner for the given scan ID.
      *
      * @param scanId
      * @return
@@ -354,6 +387,7 @@ public class ClientApiFacade {
     }
 
     /**
+     * Start the spider with the given parameters.
      *
      * @param targetUrlAsString
      * @param maxChildren
@@ -370,6 +404,7 @@ public class ClientApiFacade {
     }
 
     /**
+     * Start the ajax spider with the given parameters.
      *
      * @param targetUrlAsString
      * @param inScope
@@ -383,6 +418,7 @@ public class ClientApiFacade {
     }
 
     /**
+     * Start the active scanner with the given parameters.
      *
      * @param targetUrlAsString
      * @param recurse
@@ -400,6 +436,7 @@ public class ClientApiFacade {
     }
 
     /**
+     * Start the spider with the given parameters as the given user.
      *
      * @param contextId
      * @param userId
@@ -417,6 +454,7 @@ public class ClientApiFacade {
     }
 
     /**
+     * Start the ajax spider with the given parameters as the given user.
      *
      * @param contextname
      * @param username
@@ -430,6 +468,7 @@ public class ClientApiFacade {
     }
 
     /**
+     * Start the active scanner with the given parameters as the given user.
      *
      * @param url
      * @param contextId
@@ -448,6 +487,7 @@ public class ClientApiFacade {
     }
 
     /**
+     * Configure the given authentication method for the given context.
      *
      * @param contextId
      * @param authMethodName
@@ -460,6 +500,7 @@ public class ClientApiFacade {
     }
 
     /**
+     * Set session management method for the given context.
      *
      * @param contextId
      * @param methodName
@@ -467,11 +508,12 @@ public class ClientApiFacade {
      * @return
      * @throws ClientApiException
      */
-    public ApiResponse sessionManagementMethod(String contextId, String methodName, String methodconfigparams) throws ClientApiException {
+    public ApiResponse setSessionManagementMethod(String contextId, String methodName, String methodconfigparams) throws ClientApiException {
         return clientApi.sessionManagement.setSessionManagementMethod(contextId, methodName, methodconfigparams);
     }
 
     /**
+     * Create a new user inside the given context.
      *
      * @param contextId
      * @param username
@@ -484,6 +526,7 @@ public class ClientApiFacade {
     }
 
     /**
+     * Set authentication credentials for the given user inside the given context.
      *
      * @param contextId
      * @param userId
@@ -496,6 +539,7 @@ public class ClientApiFacade {
     }
 
     /**
+     * Sets whether or not the user, should be enabled inside the given context.
      *
      * @param contextId
      * @param userId
@@ -508,6 +552,7 @@ public class ClientApiFacade {
     }
 
     /**
+     * Set the user that will be used in forced user mode for the given context.
      *
      * @param contextId
      * @param userId
@@ -519,6 +564,7 @@ public class ClientApiFacade {
     }
 
     /**
+     * Set if the forced user mode should be enabled or not.
      *
      * @param enabled
      * @return

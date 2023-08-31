@@ -84,7 +84,7 @@ class ZapScanContextFactoryTest {
         ZapScanContext result = factoryToTest.create(settings);
 
         /* test */
-        assertEquals(result.getMaxScanDurationInMillis(), maxScanDuration);
+        assertEquals(result.getMaxScanDurationInMilliSeconds(), maxScanDuration);
 
     }
 

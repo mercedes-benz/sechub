@@ -16,13 +16,13 @@ import org.junit.jupiter.api.io.TempDir;
 
 import com.mercedesbenz.sechub.zapwrapper.cli.ZapWrapperRuntimeException;
 
-class ZapEventHandlerTest {
+class ZapPDSEventHandlerTest {
 
-    private ZapEventHandler zapEventHandler;
+    private ZapPDSEventHandler zapPDSEventHandler;
 
     @BeforeEach
     void beforeEach() {
-        zapEventHandler = new ZapEventHandler("");
+        zapPDSEventHandler = new ZapPDSEventHandler("");
     }
 
     @Test
@@ -31,19 +31,19 @@ class ZapEventHandlerTest {
         String scanContextName = UUID.randomUUID().toString();
 
         /* execute + test */
-        assertFalse(zapEventHandler.isScanCancelled());
-        assertDoesNotThrow(() -> zapEventHandler.cancelScan(scanContextName));
+        assertFalse(zapPDSEventHandler.isScanCancelled());
+        assertDoesNotThrow(() -> zapPDSEventHandler.cancelScan(scanContextName));
     }
 
     @Test
     void file_does_exist_and_so_scan_is_cancelled(@TempDir File tempDir) throws IOException {
         /* prepare */
-        zapEventHandler.cancelEventFile = tempDir;
+        zapPDSEventHandler.cancelEventFile = tempDir;
         String scanContextName = UUID.randomUUID().toString();
 
         /* execute + test */
-        assertTrue(zapEventHandler.isScanCancelled());
-        assertThrows(ZapWrapperRuntimeException.class, () -> zapEventHandler.cancelScan(scanContextName));
+        assertTrue(zapPDSEventHandler.isScanCancelled());
+        assertThrows(ZapWrapperRuntimeException.class, () -> zapPDSEventHandler.cancelScan(scanContextName));
     }
 
 }

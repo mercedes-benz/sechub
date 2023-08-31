@@ -6,10 +6,10 @@ import java.io.File;
 import com.mercedesbenz.sechub.zapwrapper.cli.ZapWrapperExitCode;
 import com.mercedesbenz.sechub.zapwrapper.cli.ZapWrapperRuntimeException;
 
-public class ZapEventHandler {
+public class ZapPDSEventHandler {
     File cancelEventFile;
 
-    public ZapEventHandler(String pdsJobEventsFolder) {
+    public ZapPDSEventHandler(String pdsJobEventsFolder) {
         this.cancelEventFile = new File(pdsJobEventsFolder, "cancel_requested.json");
     }
 

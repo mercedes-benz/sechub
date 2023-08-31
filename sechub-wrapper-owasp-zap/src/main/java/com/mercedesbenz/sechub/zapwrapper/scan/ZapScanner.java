@@ -26,6 +26,7 @@ import com.mercedesbenz.sechub.commons.model.login.BasicLoginConfiguration;
 import com.mercedesbenz.sechub.commons.model.login.WebLoginConfiguration;
 import com.mercedesbenz.sechub.zapwrapper.cli.ZapWrapperExitCode;
 import com.mercedesbenz.sechub.zapwrapper.cli.ZapWrapperRuntimeException;
+import com.mercedesbenz.sechub.zapwrapper.config.BrowserId;
 import com.mercedesbenz.sechub.zapwrapper.config.ProxyInformation;
 import com.mercedesbenz.sechub.zapwrapper.config.ZapScanContext;
 import com.mercedesbenz.sechub.zapwrapper.config.auth.SessionManagementType;
@@ -34,7 +35,7 @@ import com.mercedesbenz.sechub.zapwrapper.config.data.Rule;
 import com.mercedesbenz.sechub.zapwrapper.config.data.RuleReference;
 import com.mercedesbenz.sechub.zapwrapper.config.data.ZapFullRuleset;
 import com.mercedesbenz.sechub.zapwrapper.helper.ScanDurationHelper;
-import com.mercedesbenz.sechub.zapwrapper.helper.ZapEventHandler;
+import com.mercedesbenz.sechub.zapwrapper.helper.ZapPDSEventHandler;
 import com.mercedesbenz.sechub.zapwrapper.internal.scan.ClientApiFacade;
 import com.mercedesbenz.sechub.zapwrapper.util.SystemUtil;
 import com.mercedesbenz.sechub.zapwrapper.util.UrlUtil;
@@ -77,11 +78,11 @@ public class ZapScanner implements ZapScan {
         this.urlUtil = urlUtil;
         this.systemUtil = systemUtil;
 
-        this.remainingScanTime = scanContext.getMaxScanDurationInMillis();
+        this.remainingScanTime = scanContext.getMaxScanDurationInMilliSeconds();
     }
 
     @Override
-    public void scan() {
+    public void scan() throws ZapWrapperRuntimeException {
         try {
             /* ZAP setup on local machine */
             setupStandardConfiguration();
@@ -127,7 +128,7 @@ public class ZapScanner implements ZapScan {
 
         LOG.info("Set browser for ajaxSpider.");
         // use firefox in headless mode by default
-        clientApiFacade.configureAjaxSpiderBrowserId("firefox-headless");
+        clientApiFacade.configureAjaxSpiderBrowserId(BrowserId.FIREFOX_HEADLESS.getBrowserId());
     }
 
     void deactivateRules(ZapFullRuleset fullRuleset, DeactivatedRuleReferences deactivatedRuleReferences) throws ClientApiException {
@@ -521,12 +522,12 @@ public class ZapScanner implements ZapScan {
 
         boolean timeOut = false;
 
-        ZapEventHandler zapEventHandler = scanContext.getZapEventHandler();
+        ZapPDSEventHandler zapPDSEventHandler = scanContext.getZapPDSEventHandler();
 
         while (!isAjaxSpiderStopped(ajaxSpiderStatus) && !timeOut) {
-            if (zapEventHandler.isScanCancelled()) {
+            if (zapPDSEventHandler.isScanCancelled()) {
                 clientApiFacade.stopAjaxSpider();
-                zapEventHandler.cancelScan(scanContext.getContextName());
+                zapPDSEventHandler.cancelScan(scanContext.getContextName());
             }
             systemUtil.waitForMilliseconds(CHECK_SCAN_STATUS_TIME_IN_MILLISECONDS);
             ajaxSpiderStatus = clientApiFacade.getAjaxSpiderStatus();
@@ -554,12 +555,12 @@ public class ZapScanner implements ZapScan {
                 remainingScanTime);
 
         boolean timeOut = false;
-        ZapEventHandler zapEventHandler = scanContext.getZapEventHandler();
+        ZapPDSEventHandler zapPDSEventHandler = scanContext.getZapPDSEventHandler();
 
         while (progressSpider < 100 && !timeOut) {
-            if (zapEventHandler.isScanCancelled()) {
+            if (zapPDSEventHandler.isScanCancelled()) {
                 clientApiFacade.stopSpiderScan(scanId);
-                zapEventHandler.cancelScan(scanContext.getContextName());
+                zapPDSEventHandler.cancelScan(scanContext.getContextName());
             }
             systemUtil.waitForMilliseconds(CHECK_SCAN_STATUS_TIME_IN_MILLISECONDS);
             progressSpider = clientApiFacade.getSpiderStatusForScan(scanId);
@@ -588,11 +589,11 @@ public class ZapScanner implements ZapScan {
 
         int numberOfRecords = clientApiFacade.getNumberOfPassiveScannerRecordsToScan();
         boolean timeOut = false;
-        ZapEventHandler zapEventHandler = scanContext.getZapEventHandler();
+        ZapPDSEventHandler zapPDSEventHandler = scanContext.getZapPDSEventHandler();
 
         while (numberOfRecords > 0 && !timeOut) {
-            if (zapEventHandler.isScanCancelled()) {
-                zapEventHandler.cancelScan(scanContext.getContextName());
+            if (zapPDSEventHandler.isScanCancelled()) {
+                zapPDSEventHandler.cancelScan(scanContext.getContextName());
             }
             systemUtil.waitForMilliseconds(CHECK_SCAN_STATUS_TIME_IN_MILLISECONDS);
             numberOfRecords = clientApiFacade.getNumberOfPassiveScannerRecordsToScan();
@@ -617,12 +618,12 @@ public class ZapScanner implements ZapScan {
         long maxDuration = remainingScanTime;
         boolean timeOut = false;
 
-        ZapEventHandler zapEventHandler = scanContext.getZapEventHandler();
+        ZapPDSEventHandler zapPDSEventHandler = scanContext.getZapPDSEventHandler();
 
         while (progressActive < 100 && !timeOut) {
-            if (zapEventHandler.isScanCancelled()) {
+            if (zapPDSEventHandler.isScanCancelled()) {
                 clientApiFacade.stopActiveScan(scanId);
-                zapEventHandler.cancelScan(scanContext.getContextName());
+                zapPDSEventHandler.cancelScan(scanContext.getContextName());
             }
             systemUtil.waitForMilliseconds(CHECK_SCAN_STATUS_TIME_IN_MILLISECONDS);
             progressActive = clientApiFacade.getActiveScannerStatusForScan(scanId);
@@ -663,7 +664,7 @@ public class ZapScanner implements ZapScan {
         // methodconfigparams in case of http basic auth is null, because it is
         // configured automatically
         String methodconfigparams = null;
-        clientApiFacade.sessionManagementMethod(zapContextId, methodName, methodconfigparams);
+        clientApiFacade.setSessionManagementMethod(zapContextId, methodName, methodconfigparams);
 
         return initBasicAuthScanUser(zapContextId, basicLoginConfiguration);
     }

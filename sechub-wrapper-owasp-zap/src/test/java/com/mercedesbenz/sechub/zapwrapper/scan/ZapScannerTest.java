@@ -49,7 +49,7 @@ import com.mercedesbenz.sechub.zapwrapper.config.data.DeactivatedRuleReferences;
 import com.mercedesbenz.sechub.zapwrapper.config.data.RuleReference;
 import com.mercedesbenz.sechub.zapwrapper.config.data.ZapFullRuleset;
 import com.mercedesbenz.sechub.zapwrapper.helper.IncludeExcludeToZapURLHelper;
-import com.mercedesbenz.sechub.zapwrapper.helper.ZapEventHandler;
+import com.mercedesbenz.sechub.zapwrapper.helper.ZapPDSEventHandler;
 import com.mercedesbenz.sechub.zapwrapper.helper.ZapProductMessageHelper;
 import com.mercedesbenz.sechub.zapwrapper.helper.ZapURLType;
 import com.mercedesbenz.sechub.zapwrapper.internal.scan.ClientApiFacade;
@@ -62,7 +62,7 @@ class ZapScannerTest {
 
     private ClientApiFacade clientApiFacade;
     private ZapScanContext scanContext;
-    private ZapEventHandler zapEventHandler;
+    private ZapPDSEventHandler zapPDSEventHandler;
     private SystemUtil systemUtil;
 
     private ZapProductMessageHelper helper;
@@ -76,7 +76,7 @@ class ZapScannerTest {
         systemUtil = mock(SystemUtil.class);
         helper = mock(ZapProductMessageHelper.class);
 
-        zapEventHandler = mock(ZapEventHandler.class);
+        zapPDSEventHandler = mock(ZapPDSEventHandler.class);
 
         // assign mocks
         scannerToTest = ZapScanner.from(clientApiFacade, scanContext);
@@ -85,7 +85,7 @@ class ZapScannerTest {
         // set global behavior
         when(scanContext.getContextName()).thenReturn(contextName);
         when(scanContext.getZapProductMessageHelper()).thenReturn(helper);
-        when(scanContext.getZapEventHandler()).thenReturn(zapEventHandler);
+        when(scanContext.getZapPDSEventHandler()).thenReturn(zapPDSEventHandler);
 
         doNothing().when(helper).writeProductError(any());
         doNothing().when(helper).writeProductMessages(any());
@@ -373,7 +373,7 @@ class ZapScannerTest {
 
         when(clientApiFacade.configureAuthenticationMethod(eq(contextId), eq(AuthenticationType.HTTP_BASIC_AUTHENTICATION.getZapAuthenticationMethod()), any()))
                 .thenReturn(response);
-        when(clientApiFacade.sessionManagementMethod(eq(contextId), eq(SessionManagementType.HTTP_AUTH_SESSION_MANAGEMENT.getZapSessionManagementMethod()),
+        when(clientApiFacade.setSessionManagementMethod(eq(contextId), eq(SessionManagementType.HTTP_AUTH_SESSION_MANAGEMENT.getZapSessionManagementMethod()),
                 any())).thenReturn(response);
         when(clientApiFacade.createNewUser(contextId, userName)).thenReturn(userId);
         when(clientApiFacade.configureAuthenticationCredentials(eq(contextId), eq(userId), any())).thenReturn(response);
@@ -392,7 +392,7 @@ class ZapScannerTest {
 
         verify(clientApiFacade, times(1)).configureAuthenticationMethod(eq(contextId),
                 eq(AuthenticationType.HTTP_BASIC_AUTHENTICATION.getZapAuthenticationMethod()), any());
-        verify(clientApiFacade, times(1)).sessionManagementMethod(eq(contextId),
+        verify(clientApiFacade, times(1)).setSessionManagementMethod(eq(contextId),
                 eq(SessionManagementType.HTTP_AUTH_SESSION_MANAGEMENT.getZapSessionManagementMethod()), any());
         verify(clientApiFacade, times(1)).createNewUser(contextId, userName);
         verify(clientApiFacade, times(1)).configureAuthenticationCredentials(eq(contextId), eq(userId), any());
@@ -478,10 +478,10 @@ class ZapScannerTest {
     @Test
     void wait_for_ajaxSpider_scan_is_cancelled_results_in_exception_with_dedicated_exit_code() throws ClientApiException {
         /* prepare */
-        when(zapEventHandler.isScanCancelled()).thenReturn(true);
-        doCallRealMethod().when(zapEventHandler).cancelScan(contextName);
+        when(zapPDSEventHandler.isScanCancelled()).thenReturn(true);
+        doCallRealMethod().when(zapPDSEventHandler).cancelScan(contextName);
 
-        when(scanContext.getMaxScanDurationInMillis()).thenReturn(20000L);
+        when(scanContext.getMaxScanDurationInMilliSeconds()).thenReturn(20000L);
         when(scanContext.isActiveScanEnabled()).thenReturn(true);
 
         when(clientApiFacade.stopAjaxSpider()).thenReturn(null);
@@ -493,8 +493,8 @@ class ZapScannerTest {
 
         /* test */
         assertEquals(ZapWrapperExitCode.SCAN_JOB_CANCELLED, exception.getExitCode());
-        verify(zapEventHandler, times(2)).isScanCancelled();
-        verify(scanContext, times(1)).getMaxScanDurationInMillis();
+        verify(zapPDSEventHandler, times(2)).isScanCancelled();
+        verify(scanContext, times(1)).getMaxScanDurationInMilliSeconds();
         verify(scanContext, times(1)).isActiveScanEnabled();
         verify(clientApiFacade, times(1)).stopAjaxSpider();
     }
@@ -502,9 +502,9 @@ class ZapScannerTest {
     @Test
     void wait_for_ajaxSpider_scan_ended_results_in_expected_calls() throws ClientApiException {
         /* prepare */
-        when(zapEventHandler.isScanCancelled()).thenReturn(false);
+        when(zapPDSEventHandler.isScanCancelled()).thenReturn(false);
 
-        when(scanContext.getMaxScanDurationInMillis()).thenReturn(1000L);
+        when(scanContext.getMaxScanDurationInMilliSeconds()).thenReturn(1000L);
         when(scanContext.isActiveScanEnabled()).thenReturn(true);
 
         when(clientApiFacade.stopAjaxSpider()).thenReturn(null);
@@ -514,7 +514,7 @@ class ZapScannerTest {
         scannerToTest.waitForAjaxSpiderResults();
 
         /* test */
-        verify(scanContext, times(1)).getMaxScanDurationInMillis();
+        verify(scanContext, times(1)).getMaxScanDurationInMilliSeconds();
         verify(scanContext, times(1)).isActiveScanEnabled();
         verify(clientApiFacade, atLeast(1)).getAjaxSpiderStatus();
         verify(clientApiFacade, times(1)).stopAjaxSpider();
@@ -525,10 +525,10 @@ class ZapScannerTest {
         /* prepare */
         String scanId = "12345";
 
-        when(zapEventHandler.isScanCancelled()).thenReturn(true);
-        doCallRealMethod().when(zapEventHandler).cancelScan(contextName);
+        when(zapPDSEventHandler.isScanCancelled()).thenReturn(true);
+        doCallRealMethod().when(zapPDSEventHandler).cancelScan(contextName);
 
-        when(scanContext.getMaxScanDurationInMillis()).thenReturn(20000L);
+        when(scanContext.getMaxScanDurationInMilliSeconds()).thenReturn(20000L);
         when(scanContext.isActiveScanEnabled()).thenReturn(true);
 
         when(clientApiFacade.stopSpiderScan(scanId)).thenReturn(null);
@@ -540,8 +540,8 @@ class ZapScannerTest {
 
         /* test */
         assertEquals(ZapWrapperExitCode.SCAN_JOB_CANCELLED, exception.getExitCode());
-        verify(zapEventHandler, times(2)).isScanCancelled();
-        verify(scanContext, times(1)).getMaxScanDurationInMillis();
+        verify(zapPDSEventHandler, times(2)).isScanCancelled();
+        verify(scanContext, times(1)).getMaxScanDurationInMilliSeconds();
         verify(scanContext, times(1)).isActiveScanEnabled();
         verify(clientApiFacade, times(1)).stopSpiderScan(scanId);
     }
@@ -551,9 +551,9 @@ class ZapScannerTest {
         /* prepare */
         String scanId = "12345";
 
-        when(zapEventHandler.isScanCancelled()).thenReturn(false);
+        when(zapPDSEventHandler.isScanCancelled()).thenReturn(false);
 
-        when(scanContext.getMaxScanDurationInMillis()).thenReturn(1000L);
+        when(scanContext.getMaxScanDurationInMilliSeconds()).thenReturn(1000L);
         when(scanContext.isActiveScanEnabled()).thenReturn(true);
         ZapProductMessageHelper messageHelper = mock(ZapProductMessageHelper.class);
         when(scanContext.getZapProductMessageHelper()).thenReturn(messageHelper);
@@ -567,7 +567,7 @@ class ZapScannerTest {
         scannerToTest.waitForSpiderResults(scanId);
 
         /* test */
-        verify(scanContext, times(1)).getMaxScanDurationInMillis();
+        verify(scanContext, times(1)).getMaxScanDurationInMilliSeconds();
         verify(scanContext, times(1)).isActiveScanEnabled();
         verify(scanContext, times(1)).getZapProductMessageHelper();
         verify(messageHelper, times(1)).writeUserMessagesWithScannedURLs(any());
@@ -579,10 +579,10 @@ class ZapScannerTest {
     @Test
     void wait_for_passiveScan_scan_is_cancelled_results_in_exception_with_dedicated_exit_code() throws ClientApiException {
         /* prepare */
-        when(zapEventHandler.isScanCancelled()).thenReturn(true);
-        doCallRealMethod().when(zapEventHandler).cancelScan(contextName);
+        when(zapPDSEventHandler.isScanCancelled()).thenReturn(true);
+        doCallRealMethod().when(zapPDSEventHandler).cancelScan(contextName);
 
-        when(scanContext.getMaxScanDurationInMillis()).thenReturn(20000L);
+        when(scanContext.getMaxScanDurationInMilliSeconds()).thenReturn(20000L);
         when(scanContext.isActiveScanEnabled()).thenReturn(false);
         when(scanContext.isAjaxSpiderEnabled()).thenReturn(false);
 
@@ -595,8 +595,8 @@ class ZapScannerTest {
 
         /* test */
         assertEquals(ZapWrapperExitCode.SCAN_JOB_CANCELLED, exception.getExitCode());
-        verify(zapEventHandler, times(2)).isScanCancelled();
-        verify(scanContext, times(1)).getMaxScanDurationInMillis();
+        verify(zapPDSEventHandler, times(2)).isScanCancelled();
+        verify(scanContext, times(1)).getMaxScanDurationInMilliSeconds();
         verify(scanContext, times(1)).isActiveScanEnabled();
         verify(scanContext, times(1)).isAjaxSpiderEnabled();
         verify(clientApiFacade, atLeast(1)).getNumberOfPassiveScannerRecordsToScan();
@@ -605,9 +605,9 @@ class ZapScannerTest {
     @Test
     void wait_for_passiveScan_scan_is_ended_results_in_expected_calls() throws ClientApiException {
         /* prepare */
-        when(zapEventHandler.isScanCancelled()).thenReturn(false);
+        when(zapPDSEventHandler.isScanCancelled()).thenReturn(false);
 
-        when(scanContext.getMaxScanDurationInMillis()).thenReturn(20000L);
+        when(scanContext.getMaxScanDurationInMilliSeconds()).thenReturn(20000L);
         when(scanContext.isActiveScanEnabled()).thenReturn(false);
         when(scanContext.isAjaxSpiderEnabled()).thenReturn(false);
 
@@ -617,7 +617,7 @@ class ZapScannerTest {
         scannerToTest.passiveScan();
 
         /* test */
-        verify(scanContext, times(1)).getMaxScanDurationInMillis();
+        verify(scanContext, times(1)).getMaxScanDurationInMilliSeconds();
         verify(scanContext, times(1)).isActiveScanEnabled();
         verify(scanContext, times(1)).isAjaxSpiderEnabled();
         verify(clientApiFacade, times(1)).getNumberOfPassiveScannerRecordsToScan();
@@ -628,8 +628,8 @@ class ZapScannerTest {
         /* prepare */
         String scanId = "12345";
 
-        when(zapEventHandler.isScanCancelled()).thenReturn(true);
-        doCallRealMethod().when(zapEventHandler).cancelScan(contextName);
+        when(zapPDSEventHandler.isScanCancelled()).thenReturn(true);
+        doCallRealMethod().when(zapPDSEventHandler).cancelScan(contextName);
 
         when(clientApiFacade.getActiveScannerStatusForScan(scanId)).thenReturn(42);
         when(clientApiFacade.stopActiveScan(scanId)).thenReturn(null);
@@ -641,7 +641,7 @@ class ZapScannerTest {
 
         /* test */
         assertEquals(ZapWrapperExitCode.SCAN_JOB_CANCELLED, exception.getExitCode());
-        verify(zapEventHandler, times(2)).isScanCancelled();
+        verify(zapPDSEventHandler, times(2)).isScanCancelled();
         verify(clientApiFacade, never()).getActiveScannerStatusForScan(scanId);
         verify(clientApiFacade, times(1)).stopActiveScan(scanId);
     }
@@ -651,7 +651,7 @@ class ZapScannerTest {
         /* prepare */
         String scanId = "12345";
 
-        when(zapEventHandler.isScanCancelled()).thenReturn(false);
+        when(zapPDSEventHandler.isScanCancelled()).thenReturn(false);
 
         when(clientApiFacade.getActiveScannerStatusForScan(scanId)).thenReturn(100);
         when(clientApiFacade.stopActiveScan(scanId)).thenReturn(null);
@@ -667,9 +667,9 @@ class ZapScannerTest {
     @Test
     void run_ajaxSpider_scan_ended_results_in_expected_calls() throws ClientApiException {
         /* prepare */
-        when(zapEventHandler.isScanCancelled()).thenReturn(false);
+        when(zapPDSEventHandler.isScanCancelled()).thenReturn(false);
 
-        when(scanContext.getMaxScanDurationInMillis()).thenReturn(1000L);
+        when(scanContext.getMaxScanDurationInMilliSeconds()).thenReturn(1000L);
         when(scanContext.isActiveScanEnabled()).thenReturn(true);
 
         when(clientApiFacade.stopAjaxSpider()).thenReturn(null);
@@ -679,7 +679,7 @@ class ZapScannerTest {
         scannerToTest.runAjaxSpider();
 
         /* test */
-        verify(scanContext, times(1)).getMaxScanDurationInMillis();
+        verify(scanContext, times(1)).getMaxScanDurationInMilliSeconds();
         verify(scanContext, times(1)).isActiveScanEnabled();
         verify(clientApiFacade, atLeast(1)).getAjaxSpiderStatus();
         verify(clientApiFacade, times(1)).stopAjaxSpider();
@@ -690,9 +690,9 @@ class ZapScannerTest {
         /* prepare */
         String scanId = "12345";
 
-        when(zapEventHandler.isScanCancelled()).thenReturn(false);
+        when(zapPDSEventHandler.isScanCancelled()).thenReturn(false);
 
-        when(scanContext.getMaxScanDurationInMillis()).thenReturn(1000L);
+        when(scanContext.getMaxScanDurationInMilliSeconds()).thenReturn(1000L);
         when(scanContext.isActiveScanEnabled()).thenReturn(true);
         ZapProductMessageHelper messageHelper = mock(ZapProductMessageHelper.class);
         when(scanContext.getZapProductMessageHelper()).thenReturn(messageHelper);
@@ -707,7 +707,7 @@ class ZapScannerTest {
         scannerToTest.runSpider();
 
         /* test */
-        verify(scanContext, times(1)).getMaxScanDurationInMillis();
+        verify(scanContext, times(1)).getMaxScanDurationInMilliSeconds();
         verify(scanContext, times(1)).isActiveScanEnabled();
         verify(scanContext, times(1)).getZapProductMessageHelper();
         verify(messageHelper, times(1)).writeUserMessagesWithScannedURLs(any());
@@ -722,7 +722,7 @@ class ZapScannerTest {
         /* prepare */
         String scanId = "12345";
 
-        when(zapEventHandler.isScanCancelled()).thenReturn(false);
+        when(zapPDSEventHandler.isScanCancelled()).thenReturn(false);
 
         scannerToTest.remainingScanTime = 100L;
 
