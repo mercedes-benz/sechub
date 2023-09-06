@@ -1,0 +1,49 @@
+// SPDX-License-Identifier: MIT
+
+:toc:
+:numbered:
+
+= Xray + PDS
+
+JFrog Xray is a universal software composition analysis (SCA) solution that natively integrates with Artifactory, giving developers and DevSecOps teams an easy way to proactively identify vulnerabilities on open source and license compliance violations, before they manifest in production releases.
+Furthermore, the combination of GoSec and PDS makes it possible to run both inside a Kubernetes cluser or virtual machines.
+
+This folder contains the necessary scripts to run Xray+PDS inside a container locally. Additionally, it contains scripts to build and push the PDS + Xray container to your container registry and a Helm chart to install and run Xray+PDS in a Kubernetes cluster.
+
+== Run Locally
+
+This is the easiest way to get started.
+
+=== Requirements
+
+Docker and Docker-Compose need to be installed:
+
+. https://docs.docker.com/engine/install/[Install Docker]
+
+. Linux: https://docs.docker.com/engine/install/linux-postinstall/#manage-docker-as-a-non-root-user[Use Docker as non Root user]
+
+. https://docs.docker.com/compose/install/[Install Docker-Compose]
+
+=== Single Instance
+
+Start a single instance by using the Bash wrapper script which does setup everything <<_automatic,automatically>> for you.
+
+==== Scan script
+
+The folder contains a start script which does the <<_manually, manual>> steps for you:
+
+----
+./01-start-docker-compose.sh
+----
+
+==== Together with SecHub
+
+The container will be started and attached to the `sechub` Network.
+
+WARNING: Make sure the SecHub container is running.
+
+. Start container:
++
+----
+./05-start-single-sechub-network-docker-compose.sh
+----
