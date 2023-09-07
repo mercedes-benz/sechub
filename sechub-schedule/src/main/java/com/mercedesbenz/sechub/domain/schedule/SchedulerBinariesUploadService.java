@@ -6,6 +6,7 @@ import static com.mercedesbenz.sechub.commons.core.CommonConstants.*;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
+import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.time.LocalDateTime;
 import java.util.Objects;
@@ -14,13 +15,11 @@ import java.util.UUID;
 import jakarta.annotation.security.RolesAllowed;
 import jakarta.servlet.http.HttpServletRequest;
 
-import org.apache.commons.fileupload.FileItemIterator;
-import org.apache.commons.fileupload.FileItemStream;
-import org.apache.commons.fileupload.FileUploadBase.FileSizeLimitExceededException;
-import org.apache.commons.fileupload.FileUploadBase.SizeLimitExceededException;
-import org.apache.commons.fileupload.FileUploadException;
-import org.apache.commons.fileupload.servlet.ServletFileUpload;
-import org.apache.commons.fileupload.util.Streams;
+import org.apache.commons.fileupload2.core.FileItemInput;
+import org.apache.commons.fileupload2.core.FileItemInputIterator;
+import org.apache.commons.fileupload2.core.FileUploadException;
+import org.apache.commons.fileupload2.core.FileUploadSizeException;
+import org.apache.commons.fileupload2.jakarta.JakartaServletFileUpload;
 import org.apache.commons.io.input.CountingInputStream;
 import org.apache.commons.io.input.MessageDigestCalculatingInputStream;
 import org.slf4j.Logger;
@@ -107,15 +106,10 @@ public class SchedulerBinariesUploadService {
 
             startUpload(projectId, jobUUID, request);
 
-        } catch (SizeLimitExceededException sizeLimitExceededException) {
+        } catch (FileUploadSizeException fileUploadSizeException) {
 
-            LOG.error("Size limit reached: {}", sizeLimitExceededException.getMessage());
-            throw new BadRequestException("Binaries upload maximum reached. Please reduce your upload size.", sizeLimitExceededException);
-
-        } catch (FileSizeLimitExceededException fileSizeLimitExceededException) {
-
-            LOG.error("Size limit reached: {}", fileSizeLimitExceededException.getMessage());
-            throw new BadRequestException("Binaries upload maximum reached. Please reduce your upload file size.", fileSizeLimitExceededException);
+            LOG.error("Size limit reached: {}", fileUploadSizeException.getMessage());
+            throw new BadRequestException("Binaries upload maximum reached. Please reduce your upload file size.", fileUploadSizeException);
 
         } catch (UnsupportedEncodingException e) {
 
@@ -144,7 +138,7 @@ public class SchedulerBinariesUploadService {
 
         JobStorage jobStorage = storageService.getJobStorage(projectId, jobUUID);
 
-        ServletFileUpload upload = servletFileUploadFactory.create();
+        JakartaServletFileUpload upload = servletFileUploadFactory.create();
 
         long maxUploadSize = configuration.getMaxUploadSizeInBytes();
         long maxUploadSizeWithHeaders = maxUploadSize + 600; // we accept 600 bytes more for header, checksum etc.
@@ -178,15 +172,15 @@ public class SchedulerBinariesUploadService {
          *
          * ------------------------- So please do NOT change! -------------------------
          */
-        FileItemIterator iterStream = upload.getItemIterator(request);
+        FileItemInputIterator iterStream = upload.getItemIterator(request);
 
         while (iterStream.hasNext()) {
-            FileItemStream item = iterStream.next();
+            FileItemInput item = iterStream.next();
             String fieldName = item.getFieldName();
             switch (fieldName) {
             case PARAMETER_CHECKSUM:
-                try (InputStream checkSumInputStream = item.openStream()) {
-                    checksumFromUser = Streams.asString(checkSumInputStream);
+                try (InputStream checkSumInputStream = item.getInputStream()) {
+                    checksumFromUser = streamToString(checkSumInputStream);
 
                     assertion.assertIsValidSha256Checksum(checksumFromUser);
 
@@ -196,7 +190,7 @@ public class SchedulerBinariesUploadService {
                 checkSumDefinedByUser = true;
                 break;
             case PARAMETER_FILE:
-                try (InputStream fileInputstream = item.openStream()) {
+                try (InputStream fileInputstream = item.getInputStream()) {
 
                     MessageDigest digest = checkSumSupport.createSha256MessageDigest();
 
@@ -286,7 +280,7 @@ public class SchedulerBinariesUploadService {
     }
 
     private void assertMultipart(HttpServletRequest request) {
-        if (!ServletFileUpload.isMultipartContent(request)) {
+        if (!JakartaServletFileUpload.isMultipartContent(request)) {
             throw new BadRequestException("The binary upload request did not contain multipart content");
         }
     }
@@ -305,5 +299,8 @@ public class SchedulerBinariesUploadService {
             throw new BadRequestException("Not in correct state");// upload only possible when in initializing state
         }
     }
-
+    
+    String streamToString(InputStream inputStream) throws IOException {
+    	return new String(inputStream.readAllBytes(), StandardCharsets.UTF_8);
+    }
 }

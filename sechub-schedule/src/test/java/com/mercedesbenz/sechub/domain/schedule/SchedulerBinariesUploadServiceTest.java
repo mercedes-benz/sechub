@@ -15,9 +15,9 @@ import java.util.UUID;
 import jakarta.servlet.ServletInputStream;
 import jakarta.servlet.http.HttpServletRequest;
 
-import org.apache.commons.fileupload.FileItemIterator;
-import org.apache.commons.fileupload.FileItemStream;
-import org.apache.commons.fileupload.servlet.ServletFileUpload;
+import org.apache.commons.fileupload2.core.FileItemInput;
+import org.apache.commons.fileupload2.core.FileItemInputIterator;
+import org.apache.commons.fileupload2.jakarta.JakartaServletFileUpload;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
@@ -98,7 +98,7 @@ public class SchedulerBinariesUploadServiceTest {
         when(httpRequest.getMethod()).thenReturn("POST");
         when(httpRequest.getContentType()).thenReturn("multipart/");
         when(httpRequest.getInputStream()).thenReturn(inputStream);
-        when(servletFileUploadFactory.create()).thenReturn(new ServletFileUpload());
+        when(servletFileUploadFactory.create()).thenReturn(new JakartaServletFileUpload());
 
         String numberOfBytes = String.valueOf(fileContent.getBytes().length);
         when(httpRequest.getHeader(FILE_SIZE_HEADER_FIELD_NAME)).thenReturn(numberOfBytes);
@@ -173,7 +173,7 @@ public class SchedulerBinariesUploadServiceTest {
         when(httpRequest.getMethod()).thenReturn("POST");
         when(httpRequest.getContentType()).thenReturn("multipart/");
         when(httpRequest.getHeader(FILE_SIZE_HEADER_FIELD_NAME)).thenReturn("611"); // Add 600 bytes for headers.
-        when(servletFileUploadFactory.create()).thenReturn(new ServletFileUpload());
+        when(servletFileUploadFactory.create()).thenReturn(new JakartaServletFileUpload());
 
         when(configuration.getMaxUploadSizeInBytes()).thenReturn((long) 10);
 
@@ -200,21 +200,21 @@ public class SchedulerBinariesUploadServiceTest {
 
         when(configuration.getMaxUploadSizeInBytes()).thenReturn((long) 612);
 
-        ServletFileUpload upload = mock(ServletFileUpload.class);
+        JakartaServletFileUpload upload = mock(JakartaServletFileUpload.class);
         when(servletFileUploadFactory.create()).thenReturn(upload);
 
-        FileItemIterator itemIterator = mock(FileItemIterator.class);
-        FileItemStream checksumItemStream = mock(FileItemStream.class);
-        FileItemStream fileItemStream = mock(FileItemStream.class);
+        FileItemInputIterator itemIterator = mock(FileItemInputIterator.class);
+        FileItemInput checksumItemStream = mock(FileItemInput.class);
+        FileItemInput fileItemStream = mock(FileItemInput.class);
 
         when(itemIterator.hasNext()).thenReturn(true).thenReturn(true).thenReturn(false);
         when(itemIterator.next()).thenReturn(fileItemStream).thenReturn(checksumItemStream);
 
-        when(fileItemStream.openStream()).thenReturn(input);
+        when(fileItemStream.getInputStream()).thenReturn(input);
         when(fileItemStream.getFieldName()).thenReturn("file");
 
         when(checksumItemStream.getFieldName()).thenReturn("checkSum");
-        when(checksumItemStream.openStream()).thenReturn(new ByteArrayInputStream("12345".getBytes()));
+        when(checksumItemStream.getInputStream()).thenReturn(new ByteArrayInputStream("12345".getBytes()));
 
         when(upload.getItemIterator(httpRequest)).thenReturn(itemIterator);
         when(checkSumSupport.convertMessageDigestToHex(any())).thenReturn("1234");

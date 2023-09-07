@@ -18,20 +18,22 @@ import javax.net.ssl.SSLSession;
 import javax.net.ssl.TrustManager;
 import javax.net.ssl.X509TrustManager;
 
-import org.apache.http.HttpHost;
-import org.apache.http.config.Registry;
-import org.apache.http.config.RegistryBuilder;
-import org.apache.http.conn.DnsResolver;
-import org.apache.http.conn.socket.ConnectionSocketFactory;
-import org.apache.http.conn.socket.PlainConnectionSocketFactory;
-import org.apache.http.conn.ssl.NoopHostnameVerifier;
-import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
-import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.impl.client.HttpClientBuilder;
-import org.apache.http.impl.client.HttpClients;
-import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
-import org.apache.http.protocol.HttpContext;
-import org.apache.http.ssl.SSLContexts;
+import org.apache.hc.core5.http.HttpHost;
+import org.apache.hc.core5.http.config.Registry;
+import org.apache.hc.core5.http.config.RegistryBuilder;
+import org.apache.hc.client5.http.DnsResolver;
+import org.apache.hc.client5.http.socket.ConnectionSocketFactory;
+import org.apache.hc.client5.http.socket.PlainConnectionSocketFactory;
+import org.apache.hc.client5.http.ssl.NoopHostnameVerifier;
+import org.apache.hc.client5.http.ssl.SSLConnectionSocketFactory;
+import org.apache.hc.client5.http.impl.classic.CloseableHttpClient;
+import org.apache.hc.client5.http.impl.classic.HttpClientBuilder;
+import org.apache.hc.client5.http.impl.classic.HttpClients;
+import org.apache.hc.client5.http.impl.io.PoolingHttpClientConnectionManager;
+import org.apache.hc.client5.http.impl.io.PoolingHttpClientConnectionManagerBuilder;
+import org.apache.hc.core5.http.protocol.HttpContext;
+import org.apache.hc.core5.ssl.SSLContexts;
+import org.apache.hc.core5.util.TimeValue;
 import org.springframework.http.client.ClientHttpRequestFactory;
 import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 
@@ -82,13 +84,14 @@ public class TrustAllSupport {
             Registry<ConnectionSocketFactory> reg = RegistryBuilder.<ConnectionSocketFactory>create().register("http", new SocksProxyConnectionSocketFactory())
                     .register("https", new SocksProxySSLConnectionSocketFactory(sslContext)).build();
 
-            PoolingHttpClientConnectionManager cm = new PoolingHttpClientConnectionManager(reg, new FakeDnsResolver());
+            PoolingHttpClientConnectionManager cm = PoolingHttpClientConnectionManagerBuilder.create().setDnsResolver(new FakeDnsResolver()).build(); //(reg, new FakeDnsResolver());
             clientBuilder.setConnectionManager(cm);
         } else {
+        	
             clientBuilder.setSSLContext(sslContext);
             clientBuilder.setSSLHostnameVerifier(new HostnameVerifier() {
                 public boolean verify(String hostname, SSLSession session) {
-                    return /* NOSONAR - we know what we do here! */true;
+                    return true;
                 }
             });
         }
@@ -138,6 +141,11 @@ public class TrustAllSupport {
             return new InetAddress[] { InetAddress.getByAddress(new byte[] { 1, 1, 1, 1 }) };
         }
 
+		@Override
+		public String resolveCanonicalHostname(String host) throws UnknownHostException {
+			return "fakeHost";
+		}
+
     }
 
     private class SocksProxyConnectionSocketFactory extends PlainConnectionSocketFactory {
@@ -149,7 +157,7 @@ public class TrustAllSupport {
         }
 
         @Override
-        public Socket connectSocket(int connectTimeout, Socket socket, HttpHost host, InetSocketAddress remoteAddress, InetSocketAddress localAddress,
+        public Socket connectSocket(TimeValue connectTimeout, Socket socket, HttpHost host, InetSocketAddress remoteAddress, InetSocketAddress localAddress,
                 HttpContext context) throws IOException {
             // Convert address to unresolved
             InetSocketAddress unresolvedRemote = InetSocketAddress.createUnresolved(host.getHostName(), remoteAddress.getPort());
@@ -172,7 +180,7 @@ public class TrustAllSupport {
         }
 
         @Override
-        public Socket connectSocket(int connectTimeout, Socket socket, HttpHost host, InetSocketAddress remoteAddress, InetSocketAddress localAddress,
+        public Socket connectSocket(TimeValue connectTimeout, Socket socket, HttpHost host, InetSocketAddress remoteAddress, InetSocketAddress localAddress,
                 HttpContext context) throws IOException {
             // Convert address to unresolved
             InetSocketAddress unresolvedRemote = InetSocketAddress.createUnresolved(host.getHostName(), remoteAddress.getPort());

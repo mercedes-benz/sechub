@@ -42,13 +42,14 @@ ext {
       xml_bind:                                "2.2.0",
                                               
       /* apache http components*/             
-      apache_httpcomponents_client:            "4.5.14",
+      apache_httpcomponents_client:            "5.2.1",
                                              
       /* apache commons */                   
       apache_commons_cli:                      "1.5.0",
-      apache_commons_io:                       "2.11.0",
+      apache_commons_io:                       "2.13.0",
       apache_commons_validator:                "1.7",
-      apache_commons_fileupload:               "1.5",
+
+      apache_commons_fileupload2:               "2.0.0-M1",
       apache_commons_compress:                 "1.23.0",
       apache_commons_lang3:                    "3.12.0",
 
@@ -119,12 +120,16 @@ ext {
         amazonaws_sdk:                         "com.amazonaws:aws-java-sdk-s3:${libraryVersion.aws_java_sdk_s3}",
         logstashLogbackEncoder        :        "net.logstash.logback:logstash-logback-encoder:${libraryVersion.logstash_logback_encoder}",
 
-        apache_httpcomponents_client:          "org.apache.httpcomponents:httpclient:${libraryVersion.apache_httpcomponents_client}",
+        apache_httpcomponents_client:          "org.apache.httpcomponents.client5:httpclient5:${libraryVersion.apache_httpcomponents_client}",
 
         apache_commons_validator:              "commons-validator:commons-validator:${libraryVersion.apache_commons_validator}",
         apache_commons_io:                     "commons-io:commons-io:${libraryVersion.apache_commons_io}",
         apache_commons_cli:                    "commons-cli:commons-cli:${libraryVersion.apache_commons_cli}",
-        apache_commons_fileupload:             "commons-fileupload:commons-fileupload:${libraryVersion.apache_commons_fileupload}",
+        //apache_commons_fileupload2:            "org.apache.commons:commons-fileupload2:${libraryVersion.apache_commons_fileupload2}",
+        apache_commons_fileupload2_core:       "org.apache.commons:commons-fileupload2-core:${libraryVersion.apache_commons_fileupload2}",
+        apache_commons_fileupload2_jakarta:    "org.apache.commons:commons-fileupload2-jakarta:${libraryVersion.apache_commons_fileupload2}",
+	
+        // https://mvnrepository.com/artifact/org.apache.commons/commons-fileupload2-core
         apache_commons_compress:               "org.apache.commons:commons-compress:${libraryVersion.apache_commons_compress}",
         apache_commons_lang3:                  "org.apache.commons:commons-lang3:${libraryVersion.apache_commons_lang3}",
 
