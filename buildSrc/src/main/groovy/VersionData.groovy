@@ -9,6 +9,8 @@ class VersionData{
     private static final String ID_WEBSITE = "website"
     private static final String ID_WRAPPER_CHECKMARX = "checkmarx wrapper"
     private static final String ID_WRAPPER_OWASPZAP = "owasp-zap wrapper"
+    private static final String ID_WRAPPER_XRAY= "xray wrapper"
+
 
     private static Map<String,VersionInfo> map = new HashMap<>();
 
@@ -35,6 +37,7 @@ class VersionData{
         initialize(ID_WEBSITE,  "Website")
         initialize(ID_WRAPPER_CHECKMARX, "Checkmarx Wrapper")
         initialize(ID_WRAPPER_OWASPZAP, "OWASP-ZAP Wrapper")
+        initialize(ID_WRAPPER_XRAY, "Xray Wrapper")
     }
 
 
@@ -85,6 +88,10 @@ class VersionData{
 
     public static String getOwaspzapWrapperVersion(){
         return map.get(ID_WRAPPER_OWASPZAP).getShortVersion()
+    }
+
+    public static String getXrayWrapperVersion(){
+        return map.get(ID_WRAPPER_XRAY).getShortVersion()
     }
 
     public static String getPdsVersion(){
