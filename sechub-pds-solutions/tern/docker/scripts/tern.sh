@@ -8,6 +8,8 @@ function log_step() {
     printf '\n>> %s\n' "$message"
 }
 
+options=""
+
 if [[ "$PDS_JOB_HAS_EXTRACTED_BINARIES" == "true" ]]
 then
     log_step "Has extracted binaries"
@@ -50,8 +52,14 @@ then
     exit 3
 fi
 
+if [[ "$SCANCODE_ACTIVATED" == "true" ]]
+then
+    log_step "Activate scancode while scanning."
+    options+=" -x scancode "
+fi
+
 log_step "Starting Tern"
 echo "Analyzing: $tar_file"
 echo "Path: $tar_file_path"
 
-tern report -f spdxjson -w "$tar_file_path" -o "$PDS_JOB_RESULT_FILE"
+tern report -f spdxjson -w "$tar_file_path" -o "$PDS_JOB_RESULT_FILE" $options

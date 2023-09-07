@@ -49,19 +49,19 @@ public class PDSHeartBeatTriggerService {
     PDSServerConfigurationService serverConfigService;
 
     @PDSMustBeDocumented(value = "Initial delay for heartbeat checks", scope = "monitoring")
-    @Value("${sechub.pds.config.trigger.heartbeat.initialdelay:" + DEFAULT_INITIAL_DELAY_MILLIS + "}")
+    @Value("${pds.config.trigger.heartbeat.initialdelay:" + DEFAULT_INITIAL_DELAY_MILLIS + "}")
     private String infoInitialDelay; // here only for logging - used in scheduler annotation as well!
 
     @PDSMustBeDocumented(value = "Delay for heartbeat checks", scope = "monitoring")
-    @Value("${sechub.pds.config.trigger.heartbeat.delay:" + DEFAULT_FIXED_DELAY_MILLIS + "}")
+    @Value("${pds.config.trigger.heartbeat.delay:" + DEFAULT_FIXED_DELAY_MILLIS + "}")
     private String infoFixedDelay; // here only for logging - used in scheduler annotation as well!
 
     @PDSMustBeDocumented(value = "Configure if heartbeat checks are enabled", scope = "monitoring")
-    @Value("${sechub.pds.config.heartbeat.enabled:" + DEFAULT_SCHEDULING_ENABLED + "}")
+    @Value("${pds.config.heartbeat.enabled:" + DEFAULT_SCHEDULING_ENABLED + "}")
     boolean heartbeatEnabled = DEFAULT_SCHEDULING_ENABLED;
 
     @PDSMustBeDocumented(value = "Configure if heartbeat verbose logging is enabled", scope = "monitoring")
-    @Value("${sechub.pds.config.heartbeat.verbose.logging.enabled:" + DEFAULT_VERBOSE_LOGGING_ENABLED + "}")
+    @Value("${pds.config.heartbeat.verbose.logging.enabled:" + DEFAULT_VERBOSE_LOGGING_ENABLED + "}")
     boolean verboseHeartBeatLogging = DEFAULT_VERBOSE_LOGGING_ENABLED;
 
     @PostConstruct
@@ -74,8 +74,8 @@ public class PDSHeartBeatTriggerService {
     }
 
     // default 10 seconds delay and 5 seconds initial
-    @Scheduled(initialDelayString = "${sechub.pds.config.trigger.heartbeat.initialdelay:" + DEFAULT_INITIAL_DELAY_MILLIS
-            + "}", fixedDelayString = "${sechub.pds.config.trigger.heartbeat.delay:" + DEFAULT_FIXED_DELAY_MILLIS + "}")
+    @Scheduled(initialDelayString = "${pds.config.trigger.heartbeat.initialdelay:" + DEFAULT_INITIAL_DELAY_MILLIS
+            + "}", fixedDelayString = "${pds.config.trigger.heartbeat.delay:" + DEFAULT_FIXED_DELAY_MILLIS + "}")
     @Transactional
     @UseCaseAdminFetchesMonitoringStatus(@PDSStep(name = "heartbeat update", description = "a scheduled heartbeat update is done by PDS server - will persist hearbeat information of server instance to database and also into logs", number = 1))
     public void triggerNextHearbeat() {

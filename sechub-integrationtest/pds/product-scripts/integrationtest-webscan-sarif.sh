@@ -17,7 +17,7 @@ echo "- current working directory: $(pwd)"
 
 if [[ "$PDS_TEST_KEY_VARIANTNAME" = "b" ]]; then
     # variant b is used in test executor profile 8
-    cp ./../sechub-integrationtest/src/test/resources/pds/webscan/webscan-result-variant-b.sarif.json $PDS_JOB_RESULT_FILE
+    cp ./../sechub-integrationtest/src/test/resources/pds/webscan/webscan-result-variant-b.sarif.json "$PDS_JOB_RESULT_FILE"
 else
   	errEcho "Unsupported variant: '$PDS_TEST_KEY_VARIANTNAME'. Must be implemented! Will exit now with failure."
   	exit 1

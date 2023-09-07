@@ -27,6 +27,7 @@ import com.mercedesbenz.sechub.sharedkernel.usecases.admin.user.UseCaseAdminList
 import com.mercedesbenz.sechub.sharedkernel.usecases.admin.user.UseCaseAdminListsAllUsers;
 import com.mercedesbenz.sechub.sharedkernel.usecases.admin.user.UseCaseAdminRevokesAdminRightsFromAdmin;
 import com.mercedesbenz.sechub.sharedkernel.usecases.admin.user.UseCaseAdminShowsUserDetails;
+import com.mercedesbenz.sechub.sharedkernel.usecases.admin.user.UseCaseAdminShowsUserDetailsForEmailAddress;
 import com.mercedesbenz.sechub.sharedkernel.usecases.admin.user.UseCaseAdminUpdatesUserEmailAddress;
 
 /**
@@ -93,6 +94,14 @@ public class UserAdministrationRestController {
 	public UserDetailInformation showUserDetails(@PathVariable(name="userId") String userId) {
 		/* @formatter:on */
         return detailsService.fetchDetails(userId);
+    }
+
+    /* @formatter:off */
+	@UseCaseAdminShowsUserDetailsForEmailAddress(@Step(number=1,name="Rest call",description="Json returned containing details about user and her/his projects",needsRestDoc=true))
+	@RequestMapping(path = AdministrationAPIConstants.API_SHOW_USER_BY_EMAIL_DETAILS, method = RequestMethod.GET, produces= {MediaType.APPLICATION_JSON_VALUE})
+	public UserDetailInformation showUserDetailsForEmailAddress(@PathVariable(name="emailAddress") String emailAddress) {
+	    /* @formatter:on */
+        return detailsService.fetchDetailsByEmailAddress(emailAddress);
     }
 
     /* @formatter:off */

@@ -9,9 +9,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.mercedesbenz.sechub.pds.PDSNotAcceptableException;
+import com.mercedesbenz.sechub.pds.commons.core.config.PDSProductParameterDefinition;
+import com.mercedesbenz.sechub.pds.commons.core.config.PDSProductSetup;
 import com.mercedesbenz.sechub.pds.config.PDSProductIdentifierValidator;
-import com.mercedesbenz.sechub.pds.config.PDSProductParameterDefinition;
-import com.mercedesbenz.sechub.pds.config.PDSProductSetup;
 import com.mercedesbenz.sechub.pds.config.PDSServerConfigurationService;
 import com.mercedesbenz.sechub.pds.execution.PDSExecutionParameterEntry;
 

@@ -52,8 +52,8 @@ public class CheckmarxWrapperEnvironment {
     @Value("${" + CheckmarxWrapperKeyConstants.KEY_PDS_CHECKMARX_ALWAYS_FULLSCAN_ENABLED + ":false}")
     private boolean alwaysFullScanEnabled;
 
-    @Value("${" + CheckmarxWrapperKeyConstants.KEY_PDS_CHECKMARX_RESULT_CHECK_PERIOD_MINUTES + ":1}")
-    private int scanResultCheckPeriodInMinutes;
+    @Value("${" + CheckmarxWrapperKeyConstants.KEY_PDS_CHECKMARX_RESULT_CHECK_PERIOD_MILLISECONDS + ":60000}")
+    private int scanResultCheckPeriodInMilliseconds;
 
     @Value("${" + CheckmarxWrapperKeyConstants.KEY_PDS_CHECKMARX_RESULT_CHECK_TIMOUT_MINUTES + ":300}")
     private int scanResultCheckTimoutInMinutes;
@@ -101,8 +101,8 @@ public class CheckmarxWrapperEnvironment {
         return alwaysFullScanEnabled;
     }
 
-    public int getScanResultCheckPeriodInMinutes() {
-        return scanResultCheckPeriodInMinutes;
+    public int getScanResultCheckPeriodInMilliseconds() {
+        return scanResultCheckPeriodInMilliseconds;
     }
 
     public int getScanResultCheckTimeOutInMinutes() {

@@ -28,6 +28,7 @@ import com.mercedesbenz.sechub.sereco.Sereco;
 import com.mercedesbenz.sechub.sereco.Workspace;
 import com.mercedesbenz.sechub.sharedkernel.ProductIdentifier;
 import com.mercedesbenz.sechub.sharedkernel.UUIDTraceLogID;
+import com.mercedesbenz.sechub.sharedkernel.configuration.SecHubConfiguration;
 
 @Component
 public class SerecoReportProductExecutor implements ProductExecutor {
@@ -90,22 +91,22 @@ public class SerecoReportProductExecutor implements ProductExecutor {
             return new ProductResult(secHubJobUUID, projectId, executorContext.getExecutorConfig(), "{}");
         }
 
-        return createReport(projectId, secHubJobUUID, traceLogId, executorContext, foundProductResults);
+        return createReport(projectId, secHubJobUUID, context.getConfiguration(), traceLogId, executorContext, foundProductResults);
     }
 
-    private ProductResult createReport(String projectId, UUID secHubJobUUID, UUIDTraceLogID traceLogId, ProductExecutorContext executorContext,
-            List<ProductResult> foundProductResults) {
+    private ProductResult createReport(String projectId, UUID secHubJobUUID, SecHubConfiguration sechubConfig, UUIDTraceLogID traceLogId,
+            ProductExecutorContext executorContext, List<ProductResult> foundProductResults) {
         Workspace workspace = sechubReportCollector.createWorkspace(projectId);
 
         for (ProductResult productResult : foundProductResults) {
-            importProductResult(traceLogId, workspace, productResult);
+            importProductResult(traceLogId, sechubConfig, workspace, productResult);
         }
         String json = workspace.createReport();
         /* fetch + return all vulnerabilities as JSON */
         return new ProductResult(secHubJobUUID, projectId, executorContext.getExecutorConfig(), json);
     }
 
-    private void importProductResult(UUIDTraceLogID traceLogId, Workspace workspace, ProductResult productResult) {
+    private void importProductResult(UUIDTraceLogID traceLogId, SecHubConfiguration sechubConfig, Workspace workspace, ProductResult productResult) {
         String importData = productResult.getResult();
 
         String productId = productResult.getProductIdentifier().name();
@@ -133,7 +134,7 @@ public class SerecoReportProductExecutor implements ProductExecutor {
 
         /* @formatter:off */
 		try {
-			workspace.doImport(builder().
+			workspace.doImport(sechubConfig, builder().
 						productId(productId).
 						importData(importData).
 						importProductMessages(productMessages).

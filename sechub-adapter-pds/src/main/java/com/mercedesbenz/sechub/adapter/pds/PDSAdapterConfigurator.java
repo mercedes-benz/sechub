@@ -64,4 +64,8 @@ public interface PDSAdapterConfigurator {
 
     void setPDSScriptTrustsAllCertificates(boolean trustAllCertificates);
 
+    void setResilienceMaxRetries(int maxRetries);
+
+    void setResilienceTimeToWaitBeforeRetryInMilliseconds(long milliseconds);
+
 }

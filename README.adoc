@@ -343,7 +343,7 @@ PDS-Solutions:
 [[secretscan]]
 ==== secretScan
 
-**Status: Experimental**
+**Status: Productive**
 
 Scans code or artifacts for secrets (API tokens, certificates, passwords).
 

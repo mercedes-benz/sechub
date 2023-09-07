@@ -53,7 +53,7 @@ WARNING: Make sure the SecHub container is running.
 
 The steps required to scan with the PDS.
 
-==== Scan Script 
+==== Scan Script
 
 . Set the environment variables
 +
@@ -181,7 +181,7 @@ Build the container image.
 
 ==== Build
 
-. Using the default image: 
+. Using the default image:
 +
 ----
 ./10-create-image.sh my.registry.example.org/sechub/pds_pmd v0.1
@@ -190,7 +190,7 @@ Build the container image.
 . Using your own base image:
 +
 ----
-./10-create-image.sh my.registry.example.org/sechub/pds_pmd v0.1 "my.registry.example.org/debian:11-slim"
+./10-create-image.sh my.registry.example.org/sechub/pds_pmd v0.1 "my.registry.example.org/debian:12-slim"
 ----
 
 === Push Image to Registry
@@ -284,7 +284,7 @@ users:
    technical:
       id: "techuser"
       apiToken: "{noop}<my-technical-password>"
-      
+
 
 database:
     postgres:
@@ -354,14 +354,14 @@ In case, `my-values.yaml` was changed. Simply, use `helm upgrade` to update the 
 helm upgrade --values my-values.yaml pds-pmd helm/pds-pmd/
 ----
 
-==== Uninstall 
+==== Uninstall
 
 . Helm list
 +
 ----
 helm list
 NAME     	NAMESPACE 	REVISION	UPDATED                                 	STATUS  	CHART                          	APP VERSION
-pds-pmd	my-namespace	1       	2021-06-24 21:54:37.668489822 +0200 CEST	deployed	pds-pmd-0.1.0                	0.21.0 
+pds-pmd	my-namespace	1       	2021-06-24 21:54:37.668489822 +0200 CEST	deployed	pds-pmd-0.1.0                	0.21.0
 ----
 
 . Helm uninstall

@@ -12,61 +12,61 @@ public class PDSS3PropertiesSetup implements S3Setup {
 
     private static final String UNDEFINED = "undefined";
     @PDSMustBeDocumented(value = "Defines the access key for used s3 bucket", scope = "storage", secret = true)
-    @Value("${sechub.pds.storage.s3.accesskey:" + UNDEFINED + "}") // we use undefined here. Will be used in isValid
+    @Value("${pds.storage.s3.accesskey:" + UNDEFINED + "}") // we use undefined here. Will be used in isValid
     private String accessKey;
 
     @PDSMustBeDocumented(value = "Defines the secret key for used s3 bucket", scope = "storage", secret = true)
-    @Value("${sechub.pds.storage.s3.secretkey:" + UNDEFINED + "}") // we use undefined here. Will be used in isValid
+    @Value("${pds.storage.s3.secretkey:" + UNDEFINED + "}") // we use undefined here. Will be used in isValid
     private String secretKey;
 
     @PDSMustBeDocumented(value = "Defines the s3 bucket name", scope = "storage")
-    @Value("${sechub.pds.storage.s3.bucketname:" + UNDEFINED + "}") // we use undefined here. Will be used in isValid
+    @Value("${pds.storage.s3.bucketname:" + UNDEFINED + "}") // we use undefined here. Will be used in isValid
     private String bucketName;
 
     @PDSMustBeDocumented(value = "Defines the s3 endpoint - e.g. https://play.min.io", scope = "storage")
-    @Value("${sechub.pds.storage.s3.endpoint:" + UNDEFINED + "}") // we use undefined here. Will be used in isValid
+    @Value("${pds.storage.s3.endpoint:" + UNDEFINED + "}") // we use undefined here. Will be used in isValid
     private String endpoint;
 
     /* timeout */
 
     @PDSMustBeDocumented(value = "S3 client timeout (in milliseconds) for creating new connections.", scope = "storage")
-    @Value("${sechub.pds.storage.s3.timeout.connection.milliseconds:" + S3Setup.DEFAULT_CONNECTION_TIMEOUT + "}")
+    @Value("${pds.storage.s3.timeout.connection.milliseconds:" + S3Setup.DEFAULT_CONNECTION_TIMEOUT + "}")
     private int connectionTimeoutInMilliseconds;
 
     @PDSMustBeDocumented(value = "S3 client timeout (in milliseconds) for reading from a connected socket.", scope = "storage")
-    @Value("${sechub.pds.storage.s3.timeout.socket.milliseconds:" + S3Setup.DEFAULT_SOCKET_TIMEOUT + "}")
+    @Value("${pds.storage.s3.timeout.socket.milliseconds:" + S3Setup.DEFAULT_SOCKET_TIMEOUT + "}")
     private int socketTimeoutInMilliseconds;
 
     @PDSMustBeDocumented(value = "S3 client timeout (in milliseconds) for a request. 0 means it is disabled.", scope = "storage")
-    @Value("${sechub.pds.storage.s3.timeout.request.milliseconds:" + S3Setup.DEFAULT_REQUEST_TIMEOUT + "}")
+    @Value("${pds.storage.s3.timeout.request.milliseconds:" + S3Setup.DEFAULT_REQUEST_TIMEOUT + "}")
     private int requestTimeoutInMilliseconds;
 
     @PDSMustBeDocumented(value = "S3 client timeout (in milliseconds) for execution. 0 means it is disabled.", scope = "storage")
-    @Value("${sechub.pds.storage.s3.timeout.execution.milliseconds:" + S3Setup.DEFAULT_CLIENT_EXECUTION_TIMEOUT + "}")
+    @Value("${pds.storage.s3.timeout.execution.milliseconds:" + S3Setup.DEFAULT_CLIENT_EXECUTION_TIMEOUT + "}")
     private int clientExecutionTimeoutInMilliseconds;
 
     /* connections */
 
     @PDSMustBeDocumented(value = "S3 client max connection pool size.", scope = "storage")
-    @Value("${sechub.pds.storage.s3.connection.max.poolsize:" + S3Setup.DEFAULT_MAX_CONNECTIONS + "}")
+    @Value("${pds.storage.s3.connection.max.poolsize:" + S3Setup.DEFAULT_MAX_CONNECTIONS + "}")
     private int maximumAllowedConnections;
 
     @PDSMustBeDocumented(value = "S3 client expiration time (in milliseconds) for a connection in the connection pool. -1 means deactivated", scope = "storage")
-    @Value("${sechub.pds.storage.s3.connection.ttl.milliseconds:" + S3Setup.DEFAULT_CONNECTION_TTL + "}")
+    @Value("${pds.storage.s3.connection.ttl.milliseconds:" + S3Setup.DEFAULT_CONNECTION_TTL + "}")
     private long connectionTTLInMilliseconds;
 
     @PDSMustBeDocumented(value = "S3 client maximum idle time (in milliseconds) for a connection in the connection pool.", scope = "storage")
-    @Value("${sechub.pds.storage.s3.connection.idle.max.milliseconds:" + S3Setup.DEFAULT_CONNECTION_MAX_IDLE_MILLIS + "}")
+    @Value("${pds.storage.s3.connection.idle.max.milliseconds:" + S3Setup.DEFAULT_CONNECTION_MAX_IDLE_MILLIS + "}")
     private long connectionMaxIdleInMilliseconds;
 
     @PDSMustBeDocumented(value = "S3 client time (in milliseconds) a connection can be idle in the connection pool before it must be validated that it's still open.", scope = "storage")
-    @Value("${sechub.pds.storage.s3.connection.idle.validate.milliseconds:" + S3Setup.DEFAULT_VALIDATE_AFTER_INACTIVITY_MILLIS + "}")
+    @Value("${pds.storage.s3.connection.idle.validate.milliseconds:" + S3Setup.DEFAULT_VALIDATE_AFTER_INACTIVITY_MILLIS + "}")
     private int validateAfterInactivityInMilliseconds;
 
     /* signer */
 
     @PDSMustBeDocumented(value = "Can be used to override the default name of the signature algorithm used to sign requests.", scope = "storage")
-    @Value("${sechub.pds.storage.s3.signer.override:" + S3Setup.DEFAULT_SIGNER_OVERRIDE + "}")
+    @Value("${pds.storage.s3.signer.override:" + S3Setup.DEFAULT_SIGNER_OVERRIDE + "}")
     private String signerOverride;
 
     @Override

@@ -40,8 +40,8 @@
             "description": "When true, a mocked adapter will be used."
           },
           {
-            "key": "pds.checkmarx.result.check.period.minutes",
-            "description": "The period time in minutes when checkmarx adapter tries to fetch the result from checkmarx server again."
+            "key": "pds.checkmarx.result.check.period.milliseconds",
+            "description": "The period time in milliseconds when checkmarx adapter tries to fetch the result from checkmarx server again."
           },
           {
             "key": "pds.checkmarx.result.check.timeout.minutes",
@@ -96,7 +96,7 @@
             "description": "When true, a mocked adapter will be used."
           },
           {
-            "key": "pds.checkmarx.result.check.period.minutes",
+            "key": "pds.checkmarx.result.check.period.milliseconds",
             "description": "The period time in minutes when checkmarx adapter tries to fetch the result from checkmarx server again."
           },
           {

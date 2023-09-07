@@ -1,12 +1,10 @@
 # SPDX-License-Identifier: MIT
 
-FROM debian:11-slim
+FROM debian:12-slim
 
 ENV STORAGE_USER=seaweedfs
 ENV STORAGE_FOLDER=/storage
-ENV SEAWEEDFS_VERSION=3.44
-# MD5 checksum from SeaweedFS
-ENV SEAWEEDFS_CHECKSUM=e4b7d3ce45bd3d7c0978c82c2da19959
+ENV SEAWEEDFS_VERSION=3.54
 ENV BUCKET_FOLDER=/buckets
 
 # non-root user
@@ -35,8 +33,11 @@ RUN mkdir -p $BUCKET_FOLDER && \
 RUN cd /tmp && \
     # download seaweedfs
     wget --no-verbose "https://github.com/chrislusf/seaweedfs/releases/download/$SEAWEEDFS_VERSION/linux_amd64.tar.gz"  && \
+    # download checksum
+    wget --no-verbose "https://github.com/chrislusf/seaweedfs/releases/download/$SEAWEEDFS_VERSION/linux_amd64.tar.gz.md5"  && \
+    seaweedfs_checksum=$(cat linux_amd64.tar.gz.md5) && \
     # create checksum file
-    echo "$SEAWEEDFS_CHECKSUM  linux_amd64.tar.gz" > linux_amd64.tar.gz.md5sum && \
+    echo "$seaweedfs_checksum  linux_amd64.tar.gz" > linux_amd64.tar.gz.md5sum && \
     # verify checksum
     md5sum -c linux_amd64.tar.gz.md5sum && \
     # extract seaweedfs executable

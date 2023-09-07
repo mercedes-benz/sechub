@@ -1,7 +1,9 @@
 #!/bin/bash 
 # SPDX-License-Identifier: MIT
 
-set -e
+set -eE  # same as: `set -o errexit -o errtrace`
+trap 'echo "ERROR: $BASH_SOURCE:$LINENO -> '"'"'$BASH_COMMAND'"'"' returned exit code: $?" >&2' ERR
+
 echo "###############################################"
 echo "# Start PDS checkmarx integration test script #"
 echo "###############################################"
@@ -38,7 +40,7 @@ source ./../sechub-pds-solutions/checkmarx/docker/scripts/checkmarx.sh
 # To check the re-compression works as expected, we can inspect the recompressed parts here after
 # the normal checkmarx.sh script has been called.
 TEST_RECOMPRESSED_ZIP_FILE_PATH="$PDS_JOB_EXTRACTED_SOURCES_FOLDER/../recompressed"
-cd $TEST_RECOMPRESSED_ZIP_FILE_PATH
+cd "$TEST_RECOMPRESSED_ZIP_FILE_PATH"
 unzip sourcecode.zip
 
 # There must be a data.txt file inside - we create a sha256 for this file now

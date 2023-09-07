@@ -6,8 +6,8 @@ import static org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
 
+import com.mercedesbenz.sechub.commons.model.job.ExecutionState;
 import com.mercedesbenz.sechub.domain.administration.scheduler.SchedulerStatusEntryKeys;
-import com.mercedesbenz.sechub.domain.schedule.ExecutionState;
 
 class SchedulerStatusEntryKeysTest {
 

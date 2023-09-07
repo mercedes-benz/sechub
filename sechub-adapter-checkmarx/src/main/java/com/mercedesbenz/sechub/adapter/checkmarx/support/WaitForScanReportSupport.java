@@ -11,6 +11,7 @@ import org.springframework.web.client.RestOperations;
 import com.mercedesbenz.sechub.adapter.Adapter;
 import com.mercedesbenz.sechub.adapter.AdapterException;
 import com.mercedesbenz.sechub.adapter.WaitForStateSupport;
+import com.mercedesbenz.sechub.adapter.checkmarx.CheckmarxAdapter;
 import com.mercedesbenz.sechub.adapter.checkmarx.CheckmarxAdapterConfig;
 import com.mercedesbenz.sechub.adapter.checkmarx.CheckmarxAdapterContext;
 import com.mercedesbenz.sechub.adapter.support.JSONAdapterSupport.Access;
@@ -60,14 +61,15 @@ class WaitForScanReportSupport extends WaitForStateSupport<CheckmarxAdapterConte
             LOG.debug("Report status: {}. Checkmarx report Id: {}.", details.status, reportId);
 
             if (details.status.equalsIgnoreCase("failed")) {
-                LOG.warn("Scan report status is: failed. Checkmarx report Id: {}.", reportId);
+                LOG.warn(CheckmarxAdapter.CHECKMARX_MESSAGE_PREFIX + "Scan report status is: failed. Checkmarx report Id: {}.", reportId);
             }
 
         } catch (HttpStatusCodeException e) {
             if (HttpStatus.NOT_FOUND.equals(e.getStatusCode())) {
                 /* ok just no longer in queue / or never existed */
                 details.notFound = true;
-                LOG.info("Unable to find Checkmarx report Id: {}. Possible reasons: no longer in queue or never existed.", reportId);
+                LOG.info(CheckmarxAdapter.CHECKMARX_MESSAGE_PREFIX
+                        + "Unable to find Checkmarx report Id: {}. Possible reasons: no longer in queue or never existed.", reportId);
 
                 return;
             }

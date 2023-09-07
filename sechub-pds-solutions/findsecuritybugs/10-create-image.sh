@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+#!/bin/bash
 # SPDX-License-Identifier: MIT
 
 cd `dirname $0`
@@ -12,7 +12,7 @@ usage() {
 usage: $0 <docker registry> <version tag> <base image>
 Builds a docker image of SecHub PDS with FindSecurityBugs
 for <docker registry> with tag <version tag>.
-Required: <base image> ; for example ghcr.io/mercedes-benz/sechub/pds-base:v0.32.1
+Required: <base image> ; for example ghcr.io/mercedes-benz/sechub/pds-base
 
 Additionally these environment variables can be defined:
 - FINDSECURITYBUGS_VERSION - version of FindSecurityBugs to use. E.g. 1.12.0

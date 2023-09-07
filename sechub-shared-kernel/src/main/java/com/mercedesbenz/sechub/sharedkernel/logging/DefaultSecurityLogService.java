@@ -74,7 +74,7 @@ public class DefaultSecurityLogService implements SecurityLogService {
             }
         }
 
-        doLogging(buildLogData(httpServletRequest, sessionId, type, message, objects));
+        doLogging(buildLogData(httpServletRequest, sessionId, false, type, message, objects));
     }
 
     /**
@@ -94,7 +94,7 @@ public class DefaultSecurityLogService implements SecurityLogService {
      * @param objects
      */
     public final void logAfterSessionClosed(HttpServletRequest request, String httpSessionId, SecurityLogType type, String message, Object... objects) {
-        doLogging(buildLogData(request, httpSessionId, type, message, objects));
+        doLogging(buildLogData(request, httpSessionId, true, type, message, objects));
     }
 
     void doLogging(SecurityLogData logData) {
@@ -133,7 +133,8 @@ public class DefaultSecurityLogService implements SecurityLogService {
         return LOG;
     }
 
-    private SecurityLogData buildLogData(HttpServletRequest request, String sessionId, SecurityLogType type, String message, Object... objects) {
+    private SecurityLogData buildLogData(HttpServletRequest request, String sessionId, boolean afterSessionClosed, SecurityLogType type, String message,
+            Object... objects) {
         SecurityLogData logData = new SecurityLogData();
         if (type == null) {
             getLogger().warn("Security log service was called with no log type! Using fallback:{}", logData.type);
@@ -143,6 +144,7 @@ public class DefaultSecurityLogService implements SecurityLogService {
         logData.message = message;
         logData.messageParameters = objects;
         logData.sessionId = sessionId;
+        logData.afterSessionClosed = afterSessionClosed;
 
         collectRequestInfo(request, logData);
 
@@ -161,6 +163,7 @@ public class DefaultSecurityLogService implements SecurityLogService {
         }
         logContext.clientIp = logSanititzer.sanitize(request.getRemoteAddr(), 1024);
         logContext.requestURI = logSanititzer.sanitize(request.getRequestURI(), 1024);
+        logContext.method = logSanititzer.sanitize(request.getMethod(), 10);
 
         appendSanitizedHttpHeaders(request, logContext);
 

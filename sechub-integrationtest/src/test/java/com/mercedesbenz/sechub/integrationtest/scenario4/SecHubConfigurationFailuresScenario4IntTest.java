@@ -13,7 +13,7 @@ import org.springframework.web.client.HttpClientErrorException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.json.JsonMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
-import com.mercedesbenz.sechub.commons.core.FailableRunnable;
+import com.mercedesbenz.sechub.commons.core.RunOrFail;
 import com.mercedesbenz.sechub.commons.model.SecHubCodeScanConfiguration;
 import com.mercedesbenz.sechub.commons.model.SecHubConfigurationMetaData;
 import com.mercedesbenz.sechub.commons.model.SecHubScanConfiguration;
@@ -93,7 +93,6 @@ public class SecHubConfigurationFailuresScenario4IntTest {
         for (String detail : details) {
 
             JsonNode detailNode = detailsNode.get(index);
-
             String detailText = detailNode.asText();
             if (!detailText.contains(detail)) {
                 // use now assertEquals to have text compare editors inside IDE on test
@@ -106,7 +105,7 @@ public class SecHubConfigurationFailuresScenario4IntTest {
 
     }
 
-    private JsonNode assertFailedWithJsonOutput(HttpStatus expectedStatus, FailableRunnable<Exception> failable) throws Exception {
+    private JsonNode assertFailedWithJsonOutput(HttpStatus expectedStatus, RunOrFail<Exception> failable) throws Exception {
         try {
             failable.runOrFail();
             fail("Shall be not reachable - configuration was wrong. Must have 400 failure");

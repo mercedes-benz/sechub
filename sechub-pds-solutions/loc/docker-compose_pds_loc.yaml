@@ -1,0 +1,23 @@
+# SPDX-License-Identifier: MIT
+
+version: "3"
+services:
+    pds-loc:
+        build:
+            args:
+                - BASE_IMAGE=${BASE_IMAGE}
+            context: docker/
+            dockerfile: loc-Debian.dockerfile
+        container_name: pds-loc
+        env_file:
+            - .env
+            - .env-single
+        ports:
+            - "127.0.0.1:8444:8444"
+            - "127.0.0.1:15024:15024"
+        networks:
+            - "internal"
+        volumes:
+          - ./docker/scripts:/pds/scripts
+networks:
+    internal:

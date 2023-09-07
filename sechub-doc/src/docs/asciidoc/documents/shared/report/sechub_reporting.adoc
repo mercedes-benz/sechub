@@ -1,42 +1,32 @@
 // SPDX-License-Identifier: MIT
+
 [[section-sechub-reporting]]
-
 == Reporting
-This chapter describes the different {sechub} reports and how to read them.
+This chapter describes the different {sechub} report types and how to read them.
 
-At the moment {sechub} only provides job reports and no cumulated reports.
 Job reports do only contain information of exact one scan job done by {sechub}.
 
-TIP: If you want to have management summaries you could store downloaded JSON job reports
- , process data and provide those reports by your own - or you wait while this
- becomes part of {sechub}.
 
 === Job reports
-With {sechub} users are able to download their results for finished scan jobs. {sechub} provides these
+Users can download the results of their finished scan jobs. {sechub} provides these
 report formats:
 
 - HTML +
   human friendly report variant with less details
 - JSON +
-  as a machine readable format, usable for {sechub} client to determine to break build. Will also be
-  the base for planned development of IDE plugins (`Eclipse`, `IntelliJ`, `VSCode`)
+  as an also machine readable format. It can be directly used by the {sechub} IDE plugins (https://github.com/mercedes-benz/sechub-plugin-eclipse[Eclipse], https://github.com/mercedes-benz/sechub-plugin-intellij[IntelliJ], https://github.com/mercedes-benz/sechub-plugin-vscode[VSCode/Codium])
 - SPDX JSON
-
-ifdef::techdoc[]
-NOTE: If you are interested in technical details/ development situation you can take a look at https://github.com/mercedes-benz/sechub/issues/68. Newer changes
-      /additions in report should normally reference this base issue always, so it is a good starting point.
-endif::techdoc[]
 
 
 ==== HTML
 
-The main purpose for the HTML report is to have a human friendly report which gives you a fast overview
-to your current situation.
+The main purpose for the HTML report is to have a human friendly report which gives you a fast overview.
 
-* At the left top corner you see a traffic light showing either
-** GREEN
-** YELLOW or
-** RED.
+At the top left corner you see a traffic light showing either
+
+* GREEN
+* YELLOW or
+* RED.
 
 [NOTE]
 ====

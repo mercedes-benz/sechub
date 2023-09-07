@@ -8,7 +8,6 @@ import static com.mercedesbenz.sechub.restdoc.RestDocumentation.*;
 import static com.mercedesbenz.sechub.test.RestDocPathParameter.*;
 import static com.mercedesbenz.sechub.test.SecHubTestURLBuilder.*;
 import static org.mockito.Mockito.*;
-import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
 import static org.springframework.restdocs.headers.HeaderDocumentation.requestHeaders;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.*;
 import static org.springframework.restdocs.payload.PayloadDocumentation.*;
@@ -143,7 +142,7 @@ public class FalsePositiveRestControllerRestDocTest implements TestIsNecessaryFo
                 and().
                 document(
 	                		requestHeaders(
-	                				headerWithName(AuthenticationHelper.HEADER_NAME).description(AuthenticationHelper.HEADER_DESCRIPTION)
+
 	                		),
                             requestFields(
                                     fieldWithPath(PROPERTY_API_VERSION).description("The api version, currently only 1.0 is supported"),
@@ -187,7 +186,7 @@ public class FalsePositiveRestControllerRestDocTest implements TestIsNecessaryFo
                 and().
                 document(
 	                		requestHeaders(
-	                				headerWithName(AuthenticationHelper.HEADER_NAME).description(AuthenticationHelper.HEADER_DESCRIPTION)
+
 	                		),
                             pathParameters(
                                     parameterWithName(PROJECT_ID.paramName()).description("The project id"),
@@ -263,7 +262,7 @@ public class FalsePositiveRestControllerRestDocTest implements TestIsNecessaryFo
                 and().
                 document(
 	                		requestHeaders(
-	                				headerWithName(AuthenticationHelper.HEADER_NAME).description(AuthenticationHelper.HEADER_DESCRIPTION)
+
 	                		),
                             responseFields(
                                     fieldWithPath(PROPERTY_FALSE_POSITIVES).description("Job data list containing false positive setup based on former jobs"),

@@ -21,7 +21,7 @@ inputs:
   version:
     description: 'Which version of the SecHub'
     required: false
-    default: '0.36.0'
+    default: '1.0.0'
   include-folders:
     description: 'a list of folders to include'
     required: false

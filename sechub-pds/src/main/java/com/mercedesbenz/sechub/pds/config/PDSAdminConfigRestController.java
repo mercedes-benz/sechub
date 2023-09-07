@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.mercedesbenz.sechub.pds.PDSAPIConstants;
 import com.mercedesbenz.sechub.pds.autocleanup.PDSAutoCleanupConfig;
+import com.mercedesbenz.sechub.pds.commons.core.config.PDSServerConfiguration;
 import com.mercedesbenz.sechub.pds.security.PDSRoleConstants;
 import com.mercedesbenz.sechub.pds.usecase.PDSStep;
 import com.mercedesbenz.sechub.pds.usecase.UseCaseAdminFetchesAutoCleanupConfiguration;

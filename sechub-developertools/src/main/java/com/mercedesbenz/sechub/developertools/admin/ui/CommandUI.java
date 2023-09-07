@@ -58,7 +58,6 @@ import com.mercedesbenz.sechub.developertools.admin.ui.action.pds.FetchPDSJobMes
 import com.mercedesbenz.sechub.developertools.admin.ui.action.pds.FetchPDSJobOutputStreamAction;
 import com.mercedesbenz.sechub.developertools.admin.ui.action.pds.FetchPDSJobParameterExampleAction;
 import com.mercedesbenz.sechub.developertools.admin.ui.action.pds.FetchPDSMonitoringStatusAction;
-import com.mercedesbenz.sechub.developertools.admin.ui.action.pds.GeneratePDSSolutionTestFilesAction;
 import com.mercedesbenz.sechub.developertools.admin.ui.action.pds.MarkPDSJobReadyAction;
 import com.mercedesbenz.sechub.developertools.admin.ui.action.pds.ShowPDSConfigurationDialogAction;
 import com.mercedesbenz.sechub.developertools.admin.ui.action.pds.UploadPDSJobFileAction;
@@ -102,6 +101,7 @@ import com.mercedesbenz.sechub.developertools.admin.ui.action.user.DeleteUserAct
 import com.mercedesbenz.sechub.developertools.admin.ui.action.user.ListSignupsAction;
 import com.mercedesbenz.sechub.developertools.admin.ui.action.user.ShowAdminListAction;
 import com.mercedesbenz.sechub.developertools.admin.ui.action.user.ShowUserDetailAction;
+import com.mercedesbenz.sechub.developertools.admin.ui.action.user.ShowUserDetailForEmailAddressAction;
 import com.mercedesbenz.sechub.developertools.admin.ui.action.user.ShowUserListAction;
 import com.mercedesbenz.sechub.developertools.admin.ui.action.user.UpdateUserEmailAction;
 import com.mercedesbenz.sechub.developertools.admin.ui.action.user.privileges.GrantAdminRightsToUserAction;
@@ -284,18 +284,8 @@ public class CommandUI {
         add(menu, new FetchPDSJobErrorStreamAction(context));
         add(menu, new FetchPDSJobMessagesAction(context));
         menu.addSeparator();
-        menu.add(createPDSDeveloperToolsMenu());
-        menu.addSeparator();
         menu.add(new ConfigurePDSAutoCleanupAction(context));
 
-    }
-
-    private JMenu createPDSDeveloperToolsMenu() {
-        JMenu menu = new JMenu("PDS-Developertools");
-
-        menu.add(new GeneratePDSSolutionTestFilesAction(context));
-
-        return menu;
     }
 
     private void createUserMenu() {
@@ -309,6 +299,7 @@ public class CommandUI {
         add(menu, new DeleteUserAction(context));
         menu.addSeparator();
         add(menu, new ShowUserDetailAction(context));
+        add(menu, new ShowUserDetailForEmailAddressAction(context));
         add(menu, new UpdateUserEmailAction(context));
         add(menu, new AnonymousRequestNewAPITokenUserAction(context));
         menu.addSeparator();

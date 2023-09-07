@@ -2,14 +2,12 @@
 
 **About PDS (Product Delegation Server)**
 
-The product delegation server (`PDS`) represents a server which is high configurable and
-can execute any command line tool. It has no runtime dependencies to {sechub}, so it can be started
-as another server.
+The product delegation server (`PDS`) represents a server which is highly configurable and
+can execute any command line tool. It has no runtime dependencies to {sechub}, so it can be used
+independently.
 
-Via `PDS` it is possible to easily integrate new security products into SecHub without writing 
-adapters or executors, because `PDS` as a part of {sechub} is automatically supported.
+Via `PDS` it is possible to easily integrate new security products into SecHub without writing
+adapters or executors, because `PDS` is automatically supported as it is a part of the {sechub} ecosystem.
 
-You can use `PDS` instances also in a clustered way - e.g. by using Kubernetes and define a service
-for the `PDS` PODs. 
-
-
+You can use `PDS` instances also highly available in a clustered way - e.g. by using Kubernetes. +
+See <<section-pds-ops,Operating the {sechub} {pds}>>

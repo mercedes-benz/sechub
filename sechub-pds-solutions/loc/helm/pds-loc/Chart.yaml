@@ -1,0 +1,16 @@
+# SPDX-License-Identifier: MIT
+
+apiVersion: v2
+name: pds-loc
+description: SecHub PDS + loc (lines of code) analytics tools as Helm chart for Kubernetes
+
+type: application
+
+maintainers:
+  - name: Rouven Härtel
+  - name: Sven Dolderer
+
+# This is the chart version. This version number should be incremented each time you make changes
+# to the chart and its templates, including the app version.
+# Versions are expected to follow Semantic Versioning (https://semver.org/)
+version: 1.0.0

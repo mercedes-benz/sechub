@@ -35,6 +35,8 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 
 import com.mercedesbenz.sechub.commons.model.TrafficLight;
+import com.mercedesbenz.sechub.commons.model.job.ExecutionResult;
+import com.mercedesbenz.sechub.commons.model.job.ExecutionState;
 import com.mercedesbenz.sechub.domain.schedule.access.ScheduleAccess;
 import com.mercedesbenz.sechub.domain.schedule.access.ScheduleAccess.ProjectAccessCompositeKey;
 import com.mercedesbenz.sechub.domain.schedule.access.ScheduleAccessRepository;

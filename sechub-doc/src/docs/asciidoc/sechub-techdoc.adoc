@@ -69,4 +69,9 @@ include::documents/techdoc/09_howtos.adoc[]
 // 13. Reporting
 include::documents/shared/report/sechub_reporting.adoc[]
 
+<<<<
+// 14. system tests
+include::documents/shared/systemtests/systemtests.adoc[]
+
+<<<
 
