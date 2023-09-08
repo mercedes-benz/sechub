@@ -244,24 +244,27 @@ public class ZapScanner implements ZapScan {
     }
 
     void loadApiDefinitions(String zapContextId) throws ClientApiException {
-        if (scanContext.getApiDefinitionFile() == null) {
+        if (scanContext.getApiDefinitionFiles().isEmpty()) {
             LOG.info("For scan {}: No file with API definition found!", scanContext.getContextName());
             return;
         }
         Optional<SecHubWebScanApiConfiguration> apiConfig = scanContext.getSecHubWebScanConfiguration().getApi();
         if (!apiConfig.isPresent()) {
-            throw new ZapWrapperRuntimeException("For scan :" + scanContext.getContextName() + " No API type was definied!",
-                    ZapWrapperExitCode.API_DEFINITION_CONFIG_INVALID);
+            LOG.info("For scan {}: No API definition was found!", scanContext.getContextName());
+            return;
         }
 
         switch (apiConfig.get().getType()) {
         case OPEN_API:
-            clientApiFacade.importOpenApiFile(scanContext.getApiDefinitionFile().toString(), scanContext.getTargetUrlAsString(), zapContextId);
+            for (File apiFile : scanContext.getApiDefinitionFiles()) {
+                LOG.info("For scan {}: Loading openAPI file: {}", scanContext.getContextName(), apiFile.toString());
+                clientApiFacade.importOpenApiFile(apiFile.toString(), scanContext.getTargetUrlAsString(), zapContextId);
+            }
             break;
         default:
             // should never happen since API type is an Enum
             // Failure should happen before getting here
-            throw new ZapWrapperRuntimeException("For scan :" + scanContext.getContextName() + " Unknown API type was definied!",
+            throw new ZapWrapperRuntimeException("For scan :" + scanContext.getContextName() + ". Unknown API type was definied!",
                     ZapWrapperExitCode.API_DEFINITION_CONFIG_INVALID);
         }
     }
