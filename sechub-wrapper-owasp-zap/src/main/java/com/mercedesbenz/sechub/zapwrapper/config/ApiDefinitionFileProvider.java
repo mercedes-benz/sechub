@@ -35,7 +35,7 @@ public class ApiDefinitionFileProvider {
             LOG.info("Extracted sources folder path env variable was not set.");
             return Collections.emptyList();
         }
-        if (!isValidConfigWithDataSection(sechubConfig)) {
+        if (!isValidWebScanConfigWithDataSection(sechubConfig)) {
             return Collections.emptyList();
         }
 
@@ -57,6 +57,7 @@ public class ApiDefinitionFileProvider {
                 continue;
             }
             for (SecHubSourceDataConfiguration dataConfig : sourceData) {
+                // Continue if this is NOT the correct data section
                 if (!use.equals(dataConfig.getUniqueName())) {
                     continue;
                 }
@@ -66,6 +67,7 @@ public class ApiDefinitionFileProvider {
                 }
                 List<String> files = dataConfig.getFileSystem().get().getFiles();
                 for (String file : files) {
+                    // Add all files to the list of API definition files
                     apiFiles.add(new File(extractedSourcesFolderPath, file));
                 }
             }
@@ -73,7 +75,7 @@ public class ApiDefinitionFileProvider {
         return Collections.unmodifiableList(apiFiles);
     }
 
-    private boolean isValidConfigWithDataSection(SecHubScanConfiguration sechubConfig) {
+    private boolean isValidWebScanConfigWithDataSection(SecHubScanConfiguration sechubConfig) {
         if (sechubConfig == null) {
             LOG.info("SecHub scan configuration was not set.");
             return false;
