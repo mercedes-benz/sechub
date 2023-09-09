@@ -241,3 +241,122 @@ For real results, you have to define an 'execution profile' with a scanner (via 
 ===== Log files
 
 Open the log file `./sechub-integrationtest/integrationtest-server.log` to get more details about the problem.
+
+== Run Integration Tests From IDE
+
+We explain the setup based on the Free and Open Source Software (FOSS) https://eclipseide.org/[Eclipse IDE].
+
+=== SecHub Server
+
+Run a SecHub server integration test.
+
+[#configure-sechub-server]
+==== Configure SecHub Server
+
+Download the launch configuration for the Eclipse IDE: link:eclipse/SecHubServerApplication_(INTEGRATION_TEST-H2).launch[SecHubServerApplication (INTEGRATION TEST - H2)]
+
+. Open the `Run Configurations…` in the toolbar of the Eclipse IDE
++
+image::eclipse-run-configurations.png[]
+
+. Right-click on `Java Application` and select `New Configuration` from the context menu.
++
+image::eclipse-new-configuration.png[]
+
+. Name the new configuration `SecHubServerApplication_(INTEGRATION_TEST-H2)`
+
+. In the tab `Main`:
+** `Project:` Select the `sechub-server` project.
+** `Main class: com.mercedesbenz.sechub.SecHubServerApplication`
++
+image::eclipse-run-configuration-server-main-tab.png[]
+
+. Next open the `Arguments` tab and add the following arguments into the `VM arguments` section:
++
+----
+-Dspring.profiles.active=mocked_products,h2,integrationtest
+-Dsechub.server.debug=true
+-Dsechub.storage.sharedvolume.upload.dir=/home/<user>/.sechub/sharedvolume
+-Dsechub.targettype.detection.intranet.hostname.endswith=intranet.example.org
+-Dsechub.config.trigger.nextjob.initialdelay=0
+----
++
+NOTE: Ensure you replace the `<user>` with your own user. Additionally, set the `sechub.storage.sharedvolume.upload.dir` parameter to a folder with read and write access on the system.
++
+image::eclipse-run-configuration-server-arguments-tab.png[]
+
+==== Run a SecHub server integration test
+
+This section demonstrate how to run an integration test for the SecHub server using `UserRegistrationScenario1IntTest.java` as example.
+Other SecHub server integration tests can be run in the same way. 
+
+. Start SecHub server in integration test mode using the SecHub integration test launch configuration as explained in <<configure-sechub-server>>
+
+. Select `sechub-integrationtest/src/test/java/com/mercedesbenz/sechub/integrationtest/scenario1/UserRegistrationScenario1IntTest.java` in the `Project Explorer`
+
+. Right-click on `UserRegistrationScenario1IntTest.java` to open the context menu and select `Run As` and select `JUnit Test` in the submenu.  
++
+image::eclipse-run-server-integrationtest.png[]
+
+. Check the JUnit tab, the result should be green indicating a successful run.
+
+=== Product Delegation Server (PDS)
+
+Run a Product Delegation Server (PDS) integration test.
+
+[#configure-pds]
+==== Configure Product Delegation Server (PDS)
+
+Download the launch configure for the Eclipse IDE: link:eclipse/ProductDelegationServerApplication_(INTEGRATION_TEST-H2).launch[ProductDelegationServerApplication (INTEGRATION TEST - H2)]
+
+. Open the `Run Configurations…` in the toolbar of the Eclipse IDE
++
+image::eclipse-run-configurations.png[]
+
+. Right-click on `Java Application` and select `New Configuration` from the context menu.
++
+image::eclipse-new-configuration.png[]
+
+. Name the new configuration `ProductDelegationServerApplication_(INTEGRATION_TEST-H2)`
+
+. In the tab `Main`:
+** `Project:` Select the `sechub-pds` project.
+** `Main class: com.mercedesbenz.sechub.pds.ProductDelegationServerApplication`
+
+. Next open the `Arguments` tab and add the following arguments into the `VM arguments` section:
++
+----
+-Dspring.profiles.active=pds_integrationtest,pds_h2
+-Dpds.storage.sharedvolume.upload.dir=/home/<user>/.sechub/sharedvolume
+-Dpds.workspace.rootfolder=/home/<user>/.pds/workspace
+----
++
+NOTE: Ensure you replace the `<user>` with your own user. It is necessary to set the folder `sechub.pds.storage.sharedvolume.upload.dir` to the same folder as configured for the <<configure-sechub-server, SecHub server>>.
+
+==== Run a PDS integration test
+
+This section demonstrate how to run an integration test for the PDS server using `DirectPDSAPICheckAliveScenario6IntTest.java` as example.
+Other PDS integration tests can be run in the same way. 
+
+. Start PDS in integration test mode using the SecHub integration test launch configuration as explained in <<configure-pds>>
+
+. Select `sechub-integrationtest/src/test/java/com/mercedesbenz/sechub/integrationtest/scenario6/DirectPDSAPICheckAliveScenario6IntTest.java` in the `Project Explorer`
+
+. Right-click on `DirectPDSAPICheckAliveScenario6IntTest.java` to open the context menu and select `Run As` and select `JUnit Test` in the submenu.
+
+. Check the JUnit tab, the result should be green indicating a successful run.
+
+
+==== Run a SecHub + PDS integration test
+
+This section demonstrate how to run an integration test for the SecHub + PDS server using `PDSCodeScanJobScenario5IntTest.java` as example.
+Other PDS integration tests can be run in the same way. 
+
+. Start PDS and SecHub server in integration test mode using the launch configurations created in <<configure-sechub-server>> and <<configure-pds>>
+
+. Select `sechub-integrationtest/src/test/java/com/mercedesbenz/sechub/integrationtest/scenario5/PDSCodeScanJobScenario5IntTest.java` in the `Project Explorer`
+
+. Right-click on `PDSCodeScanJobScenario5IntTest.java` to open the context menu and select `Run As` and select `JUnit Test` in the submenu.
+
+. Check the JUnit tab, the result should be green indicating a successful run.
+
