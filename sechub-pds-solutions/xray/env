@@ -1,0 +1,5 @@
+# Xray env file
+ARTIFACTORY=artifacts.i.mercedes-benz.com
+REGISTER=sechubm-dev-docker-local
+XRAY_USERNAME=change-me
+XRAY_PASSWORD=change-me

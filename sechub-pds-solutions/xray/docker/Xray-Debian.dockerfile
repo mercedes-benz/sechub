@@ -14,6 +14,10 @@ LABEL maintainer="SecHub FOSS Team"
 
 USER root
 
+# Build Args
+ARG XRAY_WRAPPER_VERSION="0.0.0"
+ENV ARTIFACTORY=artifacts.i.mercedes-benz.com
+
 # Copy mock folder
 COPY mocks "$MOCK_FOLDER"
 
@@ -27,10 +31,29 @@ COPY pds-config.json "$PDS_FOLDER/pds-config.json"
 RUN export DEBIAN_FRONTEND=noninteractive && \
     apt-get update && \
     apt-get --assume-yes upgrade && \
-    apt-get --assume-yes install w3m wget && \
+    apt-get --assume-yes install openjdk-17-jre wget skopeo jq && \
     apt-get --assume-yes clean
 
-# TODO: xray API wrapper usage
+# TODO: Install SecHub XRAY wrapper from github
+        #RUN cd "$TOOL_FOLDER" && \
+        #    # download checksum file
+        #    wget --no-verbose "https://github.com/mercedes-benz/sechub/releases/download/v$Xlink" && \
+        #    # download wrapper jar
+        #    wget --no-verbose "https://github.com/mercedes-benz/sechub/releases/download/v$link" && \
+        #    # verify that the checksum and the checksum of the file are same
+        #    sha256sum --check sechub-pds-wrapperxray-$XRAY_WRAPPER_VERSION.jar.sha256sum && \
+        #    ln -s sechub-pds-wrapperxray-$XRAY_WRAPPER_VERSION.jar wrapperxray.jar
+
+# workaround until release
+COPY sechub-pds-wrapperxray-$XRAY_WRAPPER_VERSION.jar "$TOOL_FOLDER""/sechub-pds-wrapperxray-$XRAY_WRAPPER_VERSION.jar"
+RUN ln -s "$TOOL_FOLDER""/sechub-pds-wrapperxray-$XRAY_WRAPPER_VERSION.jar" "$TOOL_FOLDER""/wrapperxray.jar"
+COPY random-mini.tar $WORKSPACE"/random-mini.tar"
+RUN chown "$USER:$USER" $WORKSPACE"/random-mini.tar"
+
+# creating run directory for skopeo
+# XDG_RUNTIME_DIR might be neeeded
+# RUN mkdir "/run/user/$USER" && \
+#    chown -R "$USER:$USER" "/run/user/$USER"
 
 # Set workspace
 WORKDIR "$WORKSPACE"
