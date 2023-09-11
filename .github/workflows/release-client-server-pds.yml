@@ -97,7 +97,7 @@ jobs:
           go-version: 1.20.4
 
       - name: Set up Go caching
-        uses: actions/cache@v3.3.1
+        uses: actions/cache@v3.3.2
         id: go-cache
         with:
           path: |
