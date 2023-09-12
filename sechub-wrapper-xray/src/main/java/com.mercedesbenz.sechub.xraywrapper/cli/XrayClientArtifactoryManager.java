@@ -1,26 +1,28 @@
 package com.mercedesbenz.sechub.xraywrapper.cli;
 
-import java.io.*;
+import java.io.IOException;
 
+import com.mercedesbenz.sechub.xraywrapper.config.XrayConfiguration;
 import com.mercedesbenz.sechub.xraywrapper.helper.XrayAPIRequest;
 import com.mercedesbenz.sechub.xraywrapper.helper.XrayAPIResponse;
 import com.mercedesbenz.sechub.xraywrapper.helper.XrayDockerImage;
 import com.mercedesbenz.sechub.xraywrapper.reportgenerator.XrayReportReader;
 
 public class XrayClientArtifactoryManager {
+
     private String baseUrl;
 
     private String repository;
 
+    private String reportfiles;
     private XrayDockerImage image;
 
-    private String reportfiles;
-
-    public XrayClientArtifactoryManager(String baseUrl, String repository, XrayDockerImage image, String reportfiles) {
-        this.baseUrl = baseUrl;
-        this.repository = repository;
+    public XrayClientArtifactoryManager(XrayConfiguration xrayConfiguration, XrayDockerImage image) {
+        this.baseUrl = xrayConfiguration.getArtifactory();
+        this.repository = xrayConfiguration.getRegister();
+        this.reportfiles = xrayConfiguration.getReport_filename();
         this.image = image;
-        this.reportfiles = reportfiles;
+
     }
 
     public void start() throws IOException {
@@ -56,6 +58,7 @@ public class XrayClientArtifactoryManager {
     private void checkResponse(XrayAPIResponse response) {
         response.print();
         if (response.getStatus_code() > 299) {
+            // todo: Error handling
             System.out.println("Error Response:");
             System.out.println(response.getBody());
             System.exit(0);

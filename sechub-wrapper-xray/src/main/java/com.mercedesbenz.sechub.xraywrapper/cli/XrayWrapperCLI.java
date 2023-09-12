@@ -2,7 +2,10 @@ package com.mercedesbenz.sechub.xraywrapper.cli;
 
 import java.io.IOException;
 
+import com.mercedesbenz.sechub.xraywrapper.config.XrayConfiguration;
 import com.mercedesbenz.sechub.xraywrapper.helper.XrayDockerImage;
+import com.mercedesbenz.sechub.xraywrapper.util.EnvironmentVairiableReader;
+import com.mercedesbenz.sechub.xraywrapper.util.EnvironmentVariableConstants;
 
 public class XrayWrapperCLI {
 
@@ -11,9 +14,8 @@ public class XrayWrapperCLI {
     }
 
     private void start(String[] args) throws IOException {
-        String baseUrl = "https://artifacts.i.mercedes-benz.com";
-        String repository = "sechubm-dev-docker-local";
-        String reportfiles = "XrayReports";
+
+        XrayConfiguration xrayConfiguration = getXrayConfiguration();
 
         // args should contain docker_image_name:tag sha256 of docker_image
         if (args.length < 2) {
@@ -26,7 +28,17 @@ public class XrayWrapperCLI {
         String[] sha = args[1].split(":");
         XrayDockerImage image = new XrayDockerImage(s[0], s[1], sha[1]);
 
-        XrayClientArtifactoryManager xrayClientArtifactoryManager = new XrayClientArtifactoryManager(baseUrl, repository, image, reportfiles);
+        XrayClientArtifactoryManager xrayClientArtifactoryManager = new XrayClientArtifactoryManager(xrayConfiguration, image);
         xrayClientArtifactoryManager.start();
+    }
+
+    private static XrayConfiguration getXrayConfiguration() {
+        EnvironmentVairiableReader environmentVairiableReader = new EnvironmentVairiableReader();
+
+        String baseUrl = "https://" + environmentVairiableReader.readEnvAsString(EnvironmentVariableConstants.ARTIFACTORY_ENV);
+        String repository = environmentVairiableReader.readEnvAsString(EnvironmentVariableConstants.REGISTER_ENV);
+        String reportfiles = environmentVairiableReader.readEnvAsString(EnvironmentVariableConstants.WORKSPACE) + "/XrayArtifactoryReports";
+
+        return new XrayConfiguration(baseUrl, repository, "docker", reportfiles);
     }
 }

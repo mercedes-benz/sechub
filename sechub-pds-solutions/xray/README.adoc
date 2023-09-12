@@ -33,7 +33,7 @@ Start a single instance by using the Bash wrapper script which does setup everyt
 The folder contains a start script which does the <<_manually, manual>> steps for you:
 
 ----
-./01-start-docker-compose.sh
+./01-start-single-docker-compose.sh
 ----
 
 ==== Together with SecHub
