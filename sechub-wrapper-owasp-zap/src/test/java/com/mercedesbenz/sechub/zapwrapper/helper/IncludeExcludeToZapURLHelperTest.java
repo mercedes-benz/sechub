@@ -11,10 +11,12 @@ import java.util.List;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 
 import com.mercedesbenz.sechub.commons.model.SecHubMessage;
 
-class IncludeExcludeToZapURIHelperTest {
+class IncludeExcludeToZapURLHelperTest {
 
     private IncludeExcludeToZapURLHelper helperToTest;
 
@@ -27,7 +29,7 @@ class IncludeExcludeToZapURIHelperTest {
     }
 
     @Test
-    void returns_empty_list_if_list_of_subSites_is_null() throws MalformedURLException {
+    void list_of_subSites_is_null_returns_empty_list() throws MalformedURLException {
         /* prepare */
         URL targetUrl = new URL("https://127.0.0.1:8080");
         List<String> sites = null;
@@ -41,7 +43,7 @@ class IncludeExcludeToZapURIHelperTest {
     }
 
     @Test
-    void returns_empty_list_if_list_of_subSites_is_empty() throws MalformedURLException {
+    void list_of_subSites_is_empty_returns_empty_list() throws MalformedURLException {
         /* prepare */
         URL targetUrl = new URL("https://127.0.0.1:8080");
         List<String> sites = new ArrayList<>();
@@ -54,10 +56,11 @@ class IncludeExcludeToZapURIHelperTest {
         assertTrue(userMessages.isEmpty());
     }
 
-    @Test
-    void returns_list_of_url_conform_for_zap_includes_or_excludes() throws MalformedURLException {
+    @ParameterizedTest
+    @ValueSource(strings = { "https://127.0.0.1:8080", "https://127.0.0.1:8080/" })
+    void list_of_subsites_and_target_url_returns_list_of_combined_urls(String url) throws MalformedURLException {
         /* prepare */
-        URL targetUrl = new URL("https://127.0.0.1:8080");
+        URL targetUrl = new URL(url);
         List<String> sites = createExampleListOfSites();
 
         /* execute */
