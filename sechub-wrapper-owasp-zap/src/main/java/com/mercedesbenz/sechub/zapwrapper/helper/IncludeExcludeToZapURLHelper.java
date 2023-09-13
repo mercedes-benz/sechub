@@ -15,7 +15,7 @@ public class IncludeExcludeToZapURLHelper {
      * Combine the targetUrl with all list of subSites.<br>
      * <br>
      * E.g. for the targetUrl http://localhost:8000 and the sub sites ["/api/v1/",
-     * "admin/profile"], results in ["http://localhost:8000/api/v1/",
+     * "admin/profile"], results in ["http://localhost:8000/api/v1",
      * "http://localhost:8000/admin/profile"].
      *
      * @param urlType
