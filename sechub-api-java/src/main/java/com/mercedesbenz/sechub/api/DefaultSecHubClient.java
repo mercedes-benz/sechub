@@ -272,7 +272,7 @@ public class DefaultSecHubClient extends AbstractSecHubClient {
             OpenApiProjectDetails details = adminApi.adminShowsProjectDetails(projectId);
             List<String> userIds = details.getUsers();
             return userIds.contains(userId);
-        }, "");
+        }, "Cannot check if user '" + userId + "' is assigned to project '" + projectId + "'");
     }
 
     @Override

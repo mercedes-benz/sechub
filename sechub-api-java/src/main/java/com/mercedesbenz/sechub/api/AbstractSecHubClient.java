@@ -1,8 +1,8 @@
 package com.mercedesbenz.sechub.api;
 
 import java.net.URI;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.LinkedHashSet;
+import java.util.Set;
 
 import javax.crypto.SealedObject;
 
@@ -16,10 +16,10 @@ public abstract class AbstractSecHubClient implements SecHubClient {
     private URI serverUri;
     private CryptoAccess<String> apiTokenAccess = new CryptoAccess<>();
 
-    private List<SecHubClientListener> secHubClientListeners;
+    private Set<SecHubClientListener> secHubClientListeners;
 
     public AbstractSecHubClient() {
-        secHubClientListeners = new LinkedList<>();
+        secHubClientListeners = new LinkedHashSet<>();
     }
 
     public void setUsername(String username) {
@@ -59,7 +59,7 @@ public abstract class AbstractSecHubClient implements SecHubClient {
     }
 
     /**
-     * Adds an listener to the client. For some action on client side the listener
+     * Adds a listener to the client. For some action on client side the listener
      * will be informed. A listener can be added only one time no matter how many
      * times this method is called.
      *
@@ -67,8 +67,7 @@ public abstract class AbstractSecHubClient implements SecHubClient {
      */
     @Override
     public void addListener(SecHubClientListener listener) {
-        if (secHubClientListeners.contains(listener)) {
-            /* already added - ignore */
+        if (listener == null) {
             return;
         }
         this.secHubClientListeners.add(listener);
@@ -81,6 +80,9 @@ public abstract class AbstractSecHubClient implements SecHubClient {
      */
     @Override
     public void removeListener(SecHubClientListener listener) {
+        if (listener == null) {
+            return;
+        }
         this.secHubClientListeners.remove(listener);
     }
 
