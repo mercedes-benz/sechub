@@ -11,15 +11,34 @@ import com.mercedesbenz.sechub.commons.model.SecHubMessageType;
 
 public class IncludeExcludeToZapURLHelper {
 
+    /**
+     * Combine the targetUrl with all list of subSites.<br>
+     * <br>
+     * E.g. for the targetUrl http://localhost:8000 and the sub sites ["/api/v1/",
+     * "admin/profile"], results in ["http://localhost:8000/api/v1",
+     * "http://localhost:8000/admin/profile"].
+     *
+     * @param urlType
+     * @param targetUrl
+     * @param subSites
+     * @param userMessages
+     * @return a list of full URLs
+     */
     public List<URL> createListOfUrls(ZapURLType urlType, URL targetUrl, List<String> subSites, List<SecHubMessage> userMessages) {
         if (subSites == null) {
             return new LinkedList<URL>();
         }
 
+        String targetUrlAsString = targetUrl.toString();
         List<URL> listOfUrls = new LinkedList<>();
         for (String subSite : subSites) {
             StringBuilder urlBuilder = new StringBuilder();
-            urlBuilder.append(targetUrl);
+
+            if (targetUrlAsString.endsWith("/")) {
+                urlBuilder.append(targetUrlAsString.substring(0, targetUrlAsString.length() - 1));
+            } else {
+                urlBuilder.append(targetUrlAsString);
+            }
 
             if (!subSite.startsWith("/")) {
                 urlBuilder.append("/");
