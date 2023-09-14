@@ -1,6 +1,7 @@
 package com.mercedesbenz.sechub.xraywrapper.cli;
 
 import java.io.IOException;
+import java.util.Objects;
 
 import com.mercedesbenz.sechub.xraywrapper.config.XrayConfiguration;
 import com.mercedesbenz.sechub.xraywrapper.helper.XrayDockerImage;
@@ -13,25 +14,19 @@ public class XrayWrapperCLI {
         new XrayWrapperCLI().start(args);
     }
 
-    private void start(String[] args) throws IOException {
-
+    private void start(String[] args) {
         XrayConfiguration xrayConfiguration = getXrayConfiguration();
 
-        // args should contain docker_image_name:tag sha256 of docker_image
-        if (args.length < 2) {
-            System.out.println("XrayWrapperCLI: no docker image and SHA56 have been passed");
-            // exit(0);
+        if (Objects.equals(xrayConfiguration.getScan_type(), "docker")) {
+            startDockerScan(args, xrayConfiguration);
         }
-
-        // todo: make argument parser class
-        String[] s = args[0].split(":");
-        String[] sha = args[1].split(":");
-        XrayDockerImage image = new XrayDockerImage(s[0], s[1], sha[1]);
-
-        XrayClientArtifactoryManager xrayClientArtifactoryManager = new XrayClientArtifactoryManager(xrayConfiguration, image);
-        xrayClientArtifactoryManager.start();
     }
 
+    /**
+     * Get the configurations from the environment variables
+     *
+     * @return
+     */
     private static XrayConfiguration getXrayConfiguration() {
         EnvironmentVairiableReader environmentVairiableReader = new EnvironmentVairiableReader();
 
@@ -40,5 +35,27 @@ public class XrayWrapperCLI {
         String reportfiles = environmentVairiableReader.readEnvAsString(EnvironmentVariableConstants.WORKSPACE) + "/XrayArtifactoryReports";
 
         return new XrayConfiguration(baseUrl, repository, "docker", reportfiles);
+    }
+
+    /**
+     * Starting a docker image scan
+     *
+     * @param args
+     * @param xrayConfiguration
+     */
+    private void startDockerScan(String[] args, XrayConfiguration xrayConfiguration) {
+        XrayWrapperCommandLineParser parser = new XrayWrapperCommandLineParser();
+        XrayDockerImage image = parser.parseDockerArguments(args);
+        if (image != null) {
+            XrayClientArtifactoryManager xrayClientArtifactoryManager = new XrayClientArtifactoryManager(xrayConfiguration, image);
+            try {
+                xrayClientArtifactoryManager.start();
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        } else {
+            System.out.println("Error: could not parse argument input to docker image");
+            System.exit(0);
+        }
     }
 }

@@ -12,7 +12,7 @@ import java.util.zip.ZipInputStream;
 public class ReportExtractor {
 
     /**
-     * Checks if a file exists
+     * Check if file exists
      *
      * @param filename
      */
@@ -24,14 +24,19 @@ public class ReportExtractor {
         }
     }
 
+    /**
+     * Unzips the report received from the artifactory
+     *
+     * @param source
+     * @param target
+     * @throws IOException
+     */
     public static void unzipReports(Path source, Path target) throws IOException {
         // https://mkyong.com/java/how-to-decompress-files-from-a-zip-file/
         try (ZipInputStream zis = new ZipInputStream(new FileInputStream(source.toFile()))) {
-
             ZipEntry zipEntry = zis.getNextEntry();
 
             while (zipEntry != null) {
-
                 boolean isDirectory = false;
                 if (zipEntry.getName().endsWith(File.separator)) {
                     isDirectory = true;
@@ -58,7 +63,14 @@ public class ReportExtractor {
         }
     }
 
-    // protect zip slip attack
+    /**
+     * Protect from zip slip attack
+     *
+     * @param zipEntry
+     * @param targetDir
+     * @return
+     * @throws IOException
+     */
     private static Path zipSlipProtect(ZipEntry zipEntry, Path targetDir) throws IOException {
 
         // test zip slip vulnerability

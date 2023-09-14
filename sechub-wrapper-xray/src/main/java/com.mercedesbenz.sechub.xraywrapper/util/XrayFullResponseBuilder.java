@@ -1,14 +1,26 @@
 package com.mercedesbenz.sechub.xraywrapper.util;
 
-import java.io.*;
+import java.io.IOException;
+import java.io.InputStream;
 import java.net.HttpURLConnection;
-import java.util.*;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 
 import com.mercedesbenz.sechub.xraywrapper.helper.XrayAPIResponse;
 
 public class XrayFullResponseBuilder {
 
     // https://github.com/eugenp/tutorials/blob/master/core-java-modules/core-java-networking-2/src/main/java/com/baeldung/httprequest/FullResponseBuilder.java
+
+    /**
+     * Get input stream from connection and builds Xray response from it
+     *
+     * @param con
+     * @param filename
+     * @return
+     * @throws IOException
+     */
     public static XrayAPIResponse getFullResponse(HttpURLConnection con, String filename) throws IOException {
         XrayAPIResponse response = new XrayAPIResponse();
         filename = filename + ".zip";

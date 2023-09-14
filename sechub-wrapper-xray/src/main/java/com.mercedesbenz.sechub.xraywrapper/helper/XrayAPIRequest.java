@@ -74,8 +74,14 @@ public class XrayAPIRequest {
         return data;
     }
 
+    /**
+     * Creates http request as required
+     *
+     * @return
+     * @throws IOException
+     */
     public XrayAPIResponse sendRequest() throws IOException {
-        URL url = new URL(getBaseUrl());
+        URL url = new URL(this.baseUrl);
         HttpURLConnection con = null;
         if (requestMethodEnum == RequestMethodEnum.POST) {
             con = setUpPostConnection(url, data);
@@ -93,6 +99,13 @@ public class XrayAPIRequest {
         return XrayAuthenticationHeader.setAuthHeader();
     }
 
+    /**
+     * Creates and Http get connection and sends request
+     *
+     * @param url
+     * @return
+     * @throws IOException
+     */
     protected HttpURLConnection setUpGetConnection(URL url) throws IOException {
         HttpURLConnection con = (HttpURLConnection) url.openConnection();
         con.setRequestMethod(getRequestMethodEnum().toString());
@@ -107,6 +120,14 @@ public class XrayAPIRequest {
         return con;
     }
 
+    /**
+     * Creates and Http post connection and sends request
+     *
+     * @param url
+     * @param jsonInputString
+     * @return
+     * @throws IOException
+     */
     protected HttpURLConnection setUpPostConnection(URL url, String jsonInputString) throws IOException {
         HttpURLConnection con = (HttpURLConnection) url.openConnection();
         con.setRequestMethod(getRequestMethodEnum().toString());

@@ -47,8 +47,6 @@ RUN export DEBIAN_FRONTEND=noninteractive && \
 # workaround until release
 COPY sechub-pds-wrapperxray-$XRAY_WRAPPER_VERSION.jar "$TOOL_FOLDER""/sechub-pds-wrapperxray-$XRAY_WRAPPER_VERSION.jar"
 RUN ln -s "$TOOL_FOLDER""/sechub-pds-wrapperxray-$XRAY_WRAPPER_VERSION.jar" "$TOOL_FOLDER""/wrapperxray.jar"
-COPY random-mini.tar $WORKSPACE"/random-mini.tar"
-RUN chown "$USER:$USER" $WORKSPACE"/random-mini.tar"
 
 # creating run directory for skopeo
 # XDG_RUNTIME_DIR might be neeeded

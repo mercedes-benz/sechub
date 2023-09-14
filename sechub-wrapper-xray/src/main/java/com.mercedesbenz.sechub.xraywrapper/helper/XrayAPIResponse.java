@@ -49,6 +49,13 @@ public class XrayAPIResponse {
         System.out.println("Body: " + body);
     }
 
+    /**
+     * Saves receiving input stream as zip file to filesystem
+     *
+     * @param filename
+     * @param is
+     * @throws IOException
+     */
     public void saveZipFile(String filename, InputStream is) throws IOException {
         File file = new File(filename);
         int read;
@@ -60,6 +67,13 @@ public class XrayAPIResponse {
         is.close();
     }
 
+    /**
+     * Saves receiving input stream as string
+     *
+     * @param is
+     * @return
+     * @throws IOException
+     */
     public StringBuilder saveJsonBody(InputStream is) throws IOException {
         BufferedReader in = new BufferedReader(new InputStreamReader(is));
         String inputLine;

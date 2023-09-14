@@ -34,6 +34,6 @@ do
   SHA256=$(jq '.Digest' $WORKSPACE/inspect.json | tr -d \")
 
   # run as jar
-  java -jar $TOOL_FOLDER/wrapperxray.jar $IMAGE $SHA256
+  java -jar $TOOL_FOLDER/wrapperxray.jar "--image" $IMAGE "--sha256" $SHA256
 done
 

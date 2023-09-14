@@ -1,7 +1,8 @@
 package xraywrapper.util;
 
-import com.mercedesbenz.sechub.xraywrapper.util.ReportExtractor;
 import org.junit.jupiter.api.Test;
+
+import com.mercedesbenz.sechub.xraywrapper.util.ReportExtractor;
 
 class ReportExtractorTest {
 
@@ -25,42 +26,26 @@ class ReportExtractorTest {
     public void testUnzipReports() {
         // prepare
         /*
-        StringBuilder sb = new StringBuilder();
-        sb.append("test data");
-        File f = new File(source);
-        try {
-            ZipOutputStream out = new ZipOutputStream(new FileOutputStream(f));
-            byte[] data = sb.toString().getBytes();
-            out.write(data, 0, data.length);
-            out.closeEntry();
-
-            out.close();
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-        */
-        /* TODO: test fails when zip is not in git (and we dont want zip in git)
-        Path src = Path.of(source);
-        Path trg = Path.of(target);
-
-        // execute
-        try {
-            ReportExtractor.unzipReports(src, trg);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-        // assert
-        assertTrue(Files.exists(Path.of(target)));
-
-        // clean
-        try {
-            Files.delete(Path.of(target + "/test_file"));
-            Files.delete(Path.of(target));
-
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-
+         * StringBuilder sb = new StringBuilder(); sb.append("test data"); File f = new
+         * File(source); try { ZipOutputStream out = new ZipOutputStream(new
+         * FileOutputStream(f)); byte[] data = sb.toString().getBytes(); out.write(data,
+         * 0, data.length); out.closeEntry();
+         *
+         * out.close(); } catch (IOException e) { throw new RuntimeException(e); }
+         */
+        /*
+         * TODO: test fails when zip is not in git (and we dont want zip in git) Path
+         * src = Path.of(source); Path trg = Path.of(target);
+         *
+         * // execute try { ReportExtractor.unzipReports(src, trg); } catch (IOException
+         * e) { throw new RuntimeException(e); } // assert
+         * assertTrue(Files.exists(Path.of(target)));
+         *
+         * // clean try { Files.delete(Path.of(target + "/test_file"));
+         * Files.delete(Path.of(target));
+         *
+         * } catch (IOException e) { throw new RuntimeException(e); }
+         *
          */
     }
 
