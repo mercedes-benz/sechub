@@ -8,6 +8,9 @@ import java.util.Optional;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
+import org.junit.jupiter.params.provider.ValueSource;
 
 import com.mercedesbenz.sechub.commons.model.SecHubBinaryDataConfiguration;
 import com.mercedesbenz.sechub.commons.model.SecHubCodeScanConfiguration;
@@ -24,6 +27,11 @@ import com.mercedesbenz.sechub.systemtest.config.RunSecHubJobDefinitionTransform
 import com.mercedesbenz.sechub.systemtest.config.UploadDefinition;
 
 class RunSecHubJobDefinitionTransformerTest {
+
+    private static final String BINARY_FILE = "binaryFile";
+    private static final String BINARIES_FOLDER = "binariesFolder";
+    private static final String SOURCE_FOLDER = "sourceFolder";
+    private static final String SOURCE_FILE = "sourceFile";
 
     private RunSecHubJobDefinitionTransformer transformerToTest;
 
@@ -137,12 +145,14 @@ class RunSecHubJobDefinitionTransformerTest {
         /* prepare */
         String referenceId = "ref1";
         String folder = "somewhere";
+        String file = "some-source-file";
 
         RunSecHubJobDefinition definition = new RunSecHubJobDefinition();
 
         UploadDefinition upload = new UploadDefinition();
         upload.setReferenceId(Optional.of(referenceId));
         upload.setSourceFolder(Optional.of(folder));
+        upload.setSourceFile(Optional.of(file));
 
         definition.getUploads().add(upload);
 
@@ -165,6 +175,9 @@ class RunSecHubJobDefinitionTransformerTest {
         List<String> folders = fileSystemConfiguration.getFolders();
         assertTrue(folders.contains(folder));
 
+        List<String> files = fileSystemConfiguration.getFiles();
+        assertTrue(files.contains(file));
+
     }
 
     @Test
@@ -172,13 +185,14 @@ class RunSecHubJobDefinitionTransformerTest {
         /* prepare */
         String referenceId = "ref2";
         String folder = "somewhere-bin";
+        String file = "some-binary-file";
 
         RunSecHubJobDefinition definition = new RunSecHubJobDefinition();
 
         UploadDefinition upload = new UploadDefinition();
         upload.setReferenceId(Optional.of(referenceId));
         upload.setBinariesFolder(Optional.of(folder));
-
+        upload.setBinaryFile(Optional.of(file));
         definition.getUploads().add(upload);
 
         /* execute */
@@ -199,6 +213,107 @@ class RunSecHubJobDefinitionTransformerTest {
         SecHubFileSystemConfiguration fileSystemConfiguration = fileSystemConfigurationOpt.get();
         List<String> folders = fileSystemConfiguration.getFolders();
         assertTrue(folders.contains(folder));
+
+        List<String> files = fileSystemConfiguration.getFiles();
+        assertTrue(files.contains(file));
+
+    }
+
+    @Test
+    void transformation_fails_when_no_files_and_no_folders_defined_in_upload_definition() {
+        /* prepare */
+        String referenceId = "reference-id";
+
+        RunSecHubJobDefinition definition = new RunSecHubJobDefinition();
+
+        UploadDefinition upload = new UploadDefinition();
+        upload.setReferenceId(Optional.of(referenceId));
+        definition.getUploads().add(upload);
+
+        /* execute + test */
+        assertThrows(IllegalStateException.class, () -> transformerToTest.transformToSecHubConfiguration(definition));
+    }
+
+    /* @formatter:off */
+    @ParameterizedTest
+    @CsvSource({
+        SOURCE_FILE+","+BINARY_FILE,
+        SOURCE_FILE+","+BINARIES_FOLDER,
+        SOURCE_FOLDER+","+BINARY_FILE,
+        SOURCE_FOLDER+","+BINARIES_FOLDER
+        })
+    /* @formatter:on */
+    void transformation_fails_for_invalid_upload_combinations_on_same_reference_id(String type1, String type2) {
+        /* prepare */
+        String referenceId = "reference-id";
+
+        RunSecHubJobDefinition definition = new RunSecHubJobDefinition();
+
+        UploadDefinition upload = new UploadDefinition();
+        upload.setReferenceId(Optional.of(referenceId));
+
+        callUploadSetterForType(upload, type1);
+        callUploadSetterForType(upload, type2);
+
+        definition.getUploads().add(upload);
+
+        /* execute + test */
+        assertThrows(IllegalStateException.class, () -> transformerToTest.transformToSecHubConfiguration(definition));
+    }
+
+    /* @formatter:off */
+    @ParameterizedTest
+    @CsvSource({
+        SOURCE_FILE+","+SOURCE_FOLDER,
+        BINARY_FILE+","+BINARIES_FOLDER
+    })
+    /* @formatter:on */
+    void transformation_does_not_fails_for_valid_upload_combinations_on_same_reference_id(String type1, String type2) {
+        /* prepare */
+        String referenceId = "reference-id";
+
+        RunSecHubJobDefinition definition = new RunSecHubJobDefinition();
+
+        UploadDefinition upload = new UploadDefinition();
+        upload.setReferenceId(Optional.of(referenceId));
+
+        callUploadSetterForType(upload, type1);
+        callUploadSetterForType(upload, type2);
+
+        definition.getUploads().add(upload);
+
+        /* execute + test */
+        assertDoesNotThrow(() -> transformerToTest.transformToSecHubConfiguration(definition));
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = { SOURCE_FILE, SOURCE_FOLDER, BINARIES_FOLDER, BINARY_FILE })
+    void transformation_does_not_fails_when_at_least_one_file_or_folder_in_upload_definition(String type) {
+        /* prepare */
+        String referenceId = "reference-id";
+
+        RunSecHubJobDefinition definition = new RunSecHubJobDefinition();
+
+        UploadDefinition upload = new UploadDefinition();
+        upload.setReferenceId(Optional.of(referenceId));
+
+        callUploadSetterForType(upload, type);
+
+        definition.getUploads().add(upload);
+
+        /* execute + test */
+        assertDoesNotThrow(() -> transformerToTest.transformToSecHubConfiguration(definition));
+
+    }
+
+    private void callUploadSetterForType(UploadDefinition upload, String type) {
+        switch (type) {
+        case SOURCE_FILE -> upload.setSourceFile(Optional.of("x"));
+        case SOURCE_FOLDER -> upload.setSourceFolder(Optional.of("x"));
+        case BINARIES_FOLDER -> upload.setBinariesFolder(Optional.of("y"));
+        case BINARY_FILE -> upload.setBinaryFile(Optional.of("y"));
+        default -> throw new IllegalStateException("Not tested");
+        }
     }
 
 }
