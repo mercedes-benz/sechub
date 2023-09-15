@@ -16,12 +16,8 @@ public class ReportExtractor {
      *
      * @param filename
      */
-    public static void fileExists(String filename) {
-        if (!(Files.exists(Path.of(filename)))) {
-            // todo: Error handling
-            System.out.println("Could not find reports archive " + filename);
-            System.exit(0);
-        }
+    public static boolean fileExists(String filename) {
+        return Files.exists(Path.of(filename));
     }
 
     /**

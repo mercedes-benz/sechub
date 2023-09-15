@@ -25,7 +25,7 @@ public class XrayWrapperCLI {
     /**
      * Get the configurations from the environment variables
      *
-     * @return
+     * @return the configurations
      */
     private static XrayConfiguration getXrayConfiguration() {
         EnvironmentVairiableReader environmentVairiableReader = new EnvironmentVairiableReader();
@@ -40,8 +40,8 @@ public class XrayWrapperCLI {
     /**
      * Starting a docker image scan
      *
-     * @param args
-     * @param xrayConfiguration
+     * @param args              command line argument
+     * @param xrayConfiguration starts scan with the configuration
      */
     private void startDockerScan(String[] args, XrayConfiguration xrayConfiguration) {
         XrayWrapperCommandLineParser parser = new XrayWrapperCommandLineParser();

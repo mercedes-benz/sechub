@@ -30,8 +30,14 @@ public class XrayClientArtifactoryManager {
 
     }
 
+    /**
+     * manages communication with the xray server in correct order
+     *
+     * @throws IOException
+     */
     public void start() throws IOException {
         // performs all necessary API calls to get reports
+        int retries = 5;
 
         // get xray version from artifactory
         String xray_version = getXrayVersion();
@@ -49,21 +55,23 @@ public class XrayClientArtifactoryManager {
 
         String scanned = getScanStatus();
         String startScan;
-        int retries = 0;
+
         if (scanned.equals("error"))
             System.exit(0);
+
         /*
-         * // Todo: if artifact is uploaded scan is started automatic but delay in
-         * response --> error when staring scan again if (scanned.equals("not scanned"))
-         * { // start scan if not started yet startScan = startScanArtifact(); if
+         * Todo: if artifact is uploaded scan is started automatic but delay in
+         * Implement switch case for scan status response --> error when staring scan
+         * again if (scanned.equals("not scanned")) { // start scan if not started yet
+         * startScan = startScanArtifact(); if
          * (startScan.equals("Scan of artifact is in progress")) scanned =
          * "in progress"; }
          */
 
-        while ((scanned.equals("in progress") || scanned.equals("not scanned")) && retries < 6) {
+        while ((scanned.equals("in progress") || scanned.equals("not scanned")) && retries >= 0) {
             System.out.println("Scan in progress...");
             waitSeconds(10);
-            retries++;
+            retries--;
             // todo: may have dely? and return ist not scanned?
             scanned = getScanStatus();
         }

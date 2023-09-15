@@ -1,8 +1,8 @@
-package xraywrapper.util;
+package com.mercedesbenz.sechub.xraywrapper.util;
+
+import static org.junit.Assert.assertTrue;
 
 import org.junit.jupiter.api.Test;
-
-import com.mercedesbenz.sechub.xraywrapper.util.ReportExtractor;
 
 class ReportExtractorTest {
 
@@ -13,7 +13,7 @@ class ReportExtractorTest {
     @Test
     public void testFileExists() {
         // execute
-        ReportExtractor.fileExists(source);
+        assertTrue(ReportExtractor.fileExists(source));
     }
 
     // file doesn't exist

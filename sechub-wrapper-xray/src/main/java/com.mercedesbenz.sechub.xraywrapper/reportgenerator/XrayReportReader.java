@@ -2,8 +2,13 @@ package com.mercedesbenz.sechub.xraywrapper.reportgenerator;
 
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.*;
-import java.util.*;
+import java.nio.file.DirectoryStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Objects;
 
 import com.fasterxml.jackson.core.util.DefaultPrettyPrinter;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -17,17 +22,28 @@ public class XrayReportReader {
 
     private File cyclonreport;
     private File securityreport;
+
+    private File sechubReport;
     HashMap<String, XrayCycloneVulnerability> vulnerabilityHashMap;
 
     public void readReport(String filename) throws IOException {
-        String zipArchive = filename + ".zip";
-        ReportExtractor.fileExists(zipArchive);
-
-        ReportExtractor.unzipReports(Paths.get(zipArchive), Paths.get(filename));
+        if (!ReportExtractor.fileExists(filename)) {
+            // folder is zipped :)
+            String zipArchive = filename + ".zip";
+            if (ReportExtractor.fileExists(zipArchive)) {
+                ReportExtractor.unzipReports(Paths.get(zipArchive), Paths.get(filename));
+            } else {
+                System.out.println("Error: could not find reports!");
+                System.exit(0);
+            }
+        }
 
         ArrayList<Path> cyclones = getFilesByName(filename, "CycloneDX");
-        if (!cyclones.isEmpty())
+        if (!cyclones.isEmpty()) {
             cyclonreport = cyclones.get(0).toFile();
+            String s = cyclonreport.toString().split("\\.")[0];
+            sechubReport = new File(s + "-SecHub.json");
+        }
         ArrayList<Path> securityPath = getFilesByName(filename, "Security");
         if (!securityPath.isEmpty())
             securityreport = securityPath.get(0).toFile();
@@ -166,6 +182,6 @@ public class XrayReportReader {
         }
         ObjectNode root = (ObjectNode) rootNode;
         root.set("vulnerabilities", arryNode);
-        writer.writeValue(new File(cyclonreport.toURI()), root);
+        writer.writeValue(new File(sechubReport.toURI()), root);
     }
 }

@@ -1,6 +1,7 @@
 package com.mercedesbenz.sechub.xraywrapper.cli;
 
 import com.beust.jcommander.JCommander;
+import com.beust.jcommander.ParameterException;
 import com.mercedesbenz.sechub.xraywrapper.helper.XrayDockerImage;
 
 public class XrayWrapperCommandLineParser {
@@ -10,8 +11,8 @@ public class XrayWrapperCommandLineParser {
     /**
      * Parse input arguments to create Xray docker image object
      *
-     * @param args
-     * @return
+     * @param args command line arguments
+     * @return docker image saving name, tag and sha256
      */
     public XrayDockerImage parseDockerArguments(String[] args) {
         XrayCommandLineArgs xrayArgs = buildArguments(args);
@@ -37,19 +38,26 @@ public class XrayWrapperCommandLineParser {
     /**
      * Parsing arguments with jcommander
      *
-     * @param args
-     * @return
+     * @param args command line arguments
+     * @return parsed command line arguments
      */
     private XrayCommandLineArgs buildArguments(String[] args) {
         XrayCommandLineArgs xrayCommandLineArgs = new XrayCommandLineArgs();
-        commander = JCommander.newBuilder().addObject(xrayCommandLineArgs).acceptUnknownOptions(false).build();
-        commander.parse(args);
+        try {
+            commander = JCommander.newBuilder().addObject(xrayCommandLineArgs).acceptUnknownOptions(false).build();
+            commander.parse(args);
+        } catch (ParameterException e) {
+            // todo log error
+            System.out.println("Error: unknown parameter");
+        }
         return xrayCommandLineArgs;
     }
 
     private String[] parseImage(String image) {
         String[] s = image.split(":");
-        if (s.length != 2)
+        if (s.length == 1)
+            return new String[] { s[0], "latest" };
+        if (s.length > 2)
             return null;
         return s;
     }
