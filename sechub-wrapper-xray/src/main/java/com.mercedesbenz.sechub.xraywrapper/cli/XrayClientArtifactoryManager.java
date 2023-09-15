@@ -1,5 +1,8 @@
 package com.mercedesbenz.sechub.xraywrapper.cli;
 
+import java.io.IOException;
+import java.util.concurrent.TimeUnit;
+
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -8,9 +11,6 @@ import com.mercedesbenz.sechub.xraywrapper.helper.XrayAPIRequest;
 import com.mercedesbenz.sechub.xraywrapper.helper.XrayAPIResponse;
 import com.mercedesbenz.sechub.xraywrapper.helper.XrayDockerImage;
 import com.mercedesbenz.sechub.xraywrapper.reportgenerator.XrayReportReader;
-
-import java.io.IOException;
-import java.util.concurrent.TimeUnit;
 
 public class XrayClientArtifactoryManager {
 
