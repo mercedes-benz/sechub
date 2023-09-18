@@ -251,7 +251,10 @@ Open the log file `./sechub-integrationtest/integrationtest-server.log` to get m
 
 . Select a SecHub issue you want to work on: https://github.com/mercedes-benz/sechub/issues
 +
-TIP: Issues have labels a good way to start is to look for issues with https://github.com/mercedes-benz/sechub/issues?q=is%3Aopen+is%3Aissue+label%3A%22help+wanted%22[`help wanted`] label.
+[TIP] 
+Issues have labels a good way to start is to look for issues with https://github.com/mercedes-benz/sechub/labels/good%20first%20issue[`good first issue`] or https://github.com/mercedes-benz/sechub/labels/help%20wanted[`help wanted`]. 
+Issues with labels https://github.com/mercedes-benz/sechub/labels/beginner[`beginner`], https://github.com/mercedes-benz/sechub/labels/intermediate[`intermediate`], https://github.com/mercedes-benz/sechub/labels/advanced[`advanced`] indicate the level of difficulty. 
+However, not all issues are labeled. In addition, if you like an issue just comment on it, so that we can assign you to it.
 
 ** In case, the issue you want to work on does not yet exists, please create an issue.
 
@@ -478,7 +481,7 @@ Run a SecHub server integration test.
 [#configure-sechub-server]
 ==== Configure SecHub Server
 
-Download the launch configuration for the Eclipse IDE: link:eclipse/SecHubServerApplication_(INTEGRATION_TEST-H2).launch[SecHubServerApplication (INTEGRATION TEST - H2)]
+Download the launch configuration for the Eclipse IDE: https://raw.githubusercontent.com/mercedes-benz/sechub/develop/sechub-examples/eclipse/SecHubServerApplication_(INTEGRATION_TEST-H2).launch[SecHubServerApplication (INTEGRATION TEST - H2)]
 
 . Open the `Run Configurations…` in the toolbar of the Eclipse IDE
 +
@@ -532,7 +535,7 @@ Run a Product Delegation Server (PDS) integration test.
 [#configure-pds]
 ==== Configure Product Delegation Server (PDS)
 
-Download the launch configure for the Eclipse IDE: link:eclipse/ProductDelegationServerApplication_(INTEGRATION_TEST-H2).launch[ProductDelegationServerApplication (INTEGRATION TEST - H2)]
+Download the launch configure for the Eclipse IDE: https://raw.githubusercontent.com/mercedes-benz/sechub/develop/sechub-examples/eclipse/ProductDelegationServerApplication_(INTEGRATION_TEST-H2).launch[ProductDelegationServerApplication (INTEGRATION TEST - H2)]
 
 . Open the `Run Configurations…` in the toolbar of the Eclipse IDE
 +
@@ -571,7 +574,6 @@ Other PDS integration tests can be run in the same way.
 
 . Check the JUnit tab, the result should be green indicating a successful run.
 
-
 ==== Run a SecHub + PDS integration test
 
 This section demonstrate how to run an integration test for the SecHub + PDS server using `PDSCodeScanJobScenario5IntTest.java` as example.
@@ -584,4 +586,3 @@ Other PDS integration tests can be run in the same way.
 . Right-click on `PDSCodeScanJobScenario5IntTest.java` to open the context menu and select `Run As` and select `JUnit Test` in the submenu.
 
 . Check the JUnit tab, the result should be green indicating a successful run.
-
