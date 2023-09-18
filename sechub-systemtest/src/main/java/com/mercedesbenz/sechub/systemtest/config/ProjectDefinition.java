@@ -8,6 +8,7 @@ public class ProjectDefinition extends AbstractDefinition {
 
     private String name;
     private List<String> profiles = new ArrayList<>();
+    private List<String> whitelistedURIs = new ArrayList<>();
 
     public String getName() {
         return name;
@@ -19,5 +20,9 @@ public class ProjectDefinition extends AbstractDefinition {
 
     public List<String> getProfiles() {
         return profiles;
+    }
+
+    public List<String> getWhitelistedURIs() {
+        return whitelistedURIs;
     }
 }
