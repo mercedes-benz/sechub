@@ -1,12 +1,21 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.pds.job;
 
-import static jakarta.persistence.EnumType.*;
+import static jakarta.persistence.EnumType.STRING;
 
 import java.sql.Types;
 import java.time.LocalDateTime;
 import java.util.Objects;
 import java.util.UUID;
+
+import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.annotations.JdbcTypeCode;
+
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.mercedesbenz.sechub.commons.model.SecHubLocalDateTimeDeserializer;
+import com.mercedesbenz.sechub.commons.model.SecHubLocalDateTimeSerializer;
+import com.mercedesbenz.sechub.commons.pds.data.PDSJobStatusState;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -15,16 +24,6 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import jakarta.persistence.Version;
-
-import org.hibernate.annotations.GenericGenerator;
-import org.hibernate.annotations.JdbcTypeCode;
-import org.hibernate.annotations.Type;
-
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import com.mercedesbenz.sechub.commons.model.SecHubLocalDateTimeDeserializer;
-import com.mercedesbenz.sechub.commons.model.SecHubLocalDateTimeSerializer;
-import com.mercedesbenz.sechub.commons.pds.data.PDSJobStatusState;
 
 /**
  * Represents a PDS Job which contains information about ownership, related

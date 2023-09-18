@@ -19,8 +19,9 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 
 import com.mercedesbenz.sechub.pds.PDSProfiles;
-import com.mercedesbenz.sechub.pds.security.AbstractAllowPDSAPISecurityConfiguration;
+//import com.mercedesbenz.sechub.pds.security.AbstractAllowPDSAPISecurityConfiguration;
 import com.mercedesbenz.sechub.pds.security.PDSRoleConstants;
+import com.mercedesbenz.sechub.pds.security.PDSAPISecurityConfiguration;
 import com.mercedesbenz.sechub.test.TestPortProvider;
 
 @RunWith(SpringRunner.class)
@@ -74,7 +75,7 @@ public class PDSAnonymousCheckAliveRestControllerMockTest {
     @TestConfiguration
     @Profile(PDSProfiles.TEST)
     @EnableAutoConfiguration
-    public static class SimpleTestConfiguration extends AbstractAllowPDSAPISecurityConfiguration {
+    public static class SimpleTestConfiguration extends PDSAPISecurityConfiguration {
 
     }
 

@@ -46,7 +46,7 @@ public abstract class AbstractHttpStatusCodeExceptionTestValidator implements Ht
     }
 
     protected void validateHttpStatusCode(HttpStatusCodeException exception) {
-        int status = exception.getRawStatusCode();
+        int status = exception.getStatusCode().value();
         boolean failedAsExpected = isExpectedStatusCode(status, expectedStatusCodes);
         if (failedAsExpected) {
             return;

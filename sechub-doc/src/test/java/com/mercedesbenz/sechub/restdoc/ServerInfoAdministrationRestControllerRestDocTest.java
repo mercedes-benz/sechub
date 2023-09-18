@@ -30,7 +30,7 @@ import com.mercedesbenz.sechub.server.core.InfoService;
 import com.mercedesbenz.sechub.server.core.ServerInfoAdministrationRestController;
 import com.mercedesbenz.sechub.sharedkernel.Profiles;
 import com.mercedesbenz.sechub.sharedkernel.RoleConstants;
-import com.mercedesbenz.sechub.sharedkernel.configuration.AbstractAllowSecHubAPISecurityConfiguration;
+import com.mercedesbenz.sechub.sharedkernel.configuration.SecHubAPISecurityConfiguration;
 import com.mercedesbenz.sechub.sharedkernel.usecases.UseCaseRestDoc;
 import com.mercedesbenz.sechub.sharedkernel.usecases.admin.status.UseCaseAdminChecksServerVersion;
 import com.mercedesbenz.sechub.test.ExampleConstants;
@@ -90,7 +90,7 @@ public class ServerInfoAdministrationRestControllerRestDocTest implements TestIs
 
     @Profile(Profiles.TEST)
     @EnableAutoConfiguration
-    public static class SimpleTestConfiguration extends AbstractAllowSecHubAPISecurityConfiguration {
+    public static class SimpleTestConfiguration extends SecHubAPISecurityConfiguration {
 
     }
 }

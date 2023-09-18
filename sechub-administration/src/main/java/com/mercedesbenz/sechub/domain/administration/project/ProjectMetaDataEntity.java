@@ -7,6 +7,8 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.IdClass;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import jakarta.persistence.Version;
 
@@ -48,6 +50,10 @@ public class ProjectMetaDataEntity implements Serializable {
     @Id
     @Column(name = COLUMN_PROJECT_ID)
     String projectId;
+    
+    @ManyToOne
+    @JoinColumn(name = COLUMN_PROJECT_ID, nullable = false)
+    Project project;
 
     @Id
     @Column(name = COLUMN_METADATA_KEY)

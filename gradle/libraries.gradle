@@ -49,8 +49,8 @@ ext {
       apache_commons_io:                       "2.13.0",
       apache_commons_validator:                "1.7",
 
-      apache_commons_fileupload2:               "2.0.0-M1",
-      apache_commons_compress:                 "1.23.0",
+      apache_commons_fileupload2:              "2.0.0-M1",
+      apache_commons_compress:                 "1.24.0",
       apache_commons_lang3:                    "3.12.0",
 
       /* testing */                            
@@ -66,7 +66,7 @@ ext {
       asciidoctor_j:                           "2.5.2",
       asciidoctor_j_diagram:                   "2.2.1",
       // openapi3-generator, releases see https://github.com/ePages-de/restdocs-api-spec/releases
-      restDocsApiSpec:                         "0.16.4",  // newest version compatible with Spring Boot 2.x
+      restDocsApiSpec:                         "0.18.4",
       
       /* Owasp Zap wrapper */
       owaspzap_client_api:                     "1.12.0",
@@ -111,7 +111,7 @@ ext {
 
 
         /* additional (2): version based on other libraries used by spring boot */      
-        mockito_inline:                        "org.mockito:mockito-inline:${spring_boot_dependency_version.mockito_core}",
+        //mockito_inline:                        "org.mockito:mockito-inline:${spring_boot_dependency_version.mockito_core}",
         jackson_jr_all:                        "com.fasterxml.jackson.jr:jackson-jr-all:${spring_boot_dependency_version.jackson_core}",
 
 

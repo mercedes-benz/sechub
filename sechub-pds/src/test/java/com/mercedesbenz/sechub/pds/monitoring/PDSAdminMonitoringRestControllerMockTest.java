@@ -23,7 +23,8 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import com.mercedesbenz.sechub.pds.PDSProfiles;
 import com.mercedesbenz.sechub.pds.commons.core.PDSJSONConverter;
-import com.mercedesbenz.sechub.pds.security.AbstractAllowPDSAPISecurityConfiguration;
+import com.mercedesbenz.sechub.pds.security.PDSAPISecurityConfiguration;
+//import com.mercedesbenz.sechub.pds.security.AbstractAllowPDSAPISecurityConfiguration;
 import com.mercedesbenz.sechub.pds.security.PDSRoleConstants;
 import com.mercedesbenz.sechub.test.TestPortProvider;
 
@@ -77,7 +78,7 @@ public class PDSAdminMonitoringRestControllerMockTest {
     @TestConfiguration
     @Profile(PDSProfiles.TEST)
     @EnableAutoConfiguration
-    public static class SimpleTestConfiguration extends AbstractAllowPDSAPISecurityConfiguration {
+    public static class SimpleTestConfiguration extends PDSAPISecurityConfiguration {
 
     }
 

@@ -1,4 +1,2 @@
 # SPDX-License-Identifier: MIT
-spring.profiles.include:
- - pds_postgres
- - pds_server
+# Intentionally empty. No, configuration necessary

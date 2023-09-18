@@ -3,15 +3,26 @@
 # This configuration setup is only for local development and needs
 # a generated certificate which is never shared. Because of this
 # it is valid to define the credentials inside this file. 
+spring:
+  config:
+    activate:
+      on-profile: "pds_localserver"
 
+  ssl:
+    bundle:
+      jks:
+        pds-self-signed:
+          key:
+            alias: "tomcat"
+          keystore:
+            # we use a keystore location which is never tracked by git. 
+            # see dev-create_localhost_certificate.sh and dev-ensure_localhost_certificate.sh
+            location: "classpath:certificates-untracked/generated-dev-localhost-keystore.p12"
+            password: "123456"
+            type: "PKCS12"
 server:
   ssl:
-    keyStoreType: 'PKCS12'
-    # we use a keystore location which is never tracked by git. 
-    # see dev-create_localhost_certificate.sh and dev-ensure_localhost_certificate.sh
-    key-store: 'classpath:certificates-untracked/generated-dev-localhost-keystore.p12'
-    key-store-password: '123456'
-    key-alias: 'tomcat'
+    bundle: "pds-self-signed"
   port: 8444
 
 pds:

@@ -82,7 +82,7 @@ import com.mercedesbenz.sechub.domain.schedule.job.SecHubJobInfoForUserListPage;
 import com.mercedesbenz.sechub.domain.schedule.job.SecHubJobInfoForUserService;
 import com.mercedesbenz.sechub.domain.schedule.job.SecHubJobRepository;
 import com.mercedesbenz.sechub.sharedkernel.Profiles;
-import com.mercedesbenz.sechub.sharedkernel.configuration.AbstractAllowSecHubAPISecurityConfiguration;
+import com.mercedesbenz.sechub.sharedkernel.configuration.SecHubAPISecurityConfiguration;
 import com.mercedesbenz.sechub.sharedkernel.configuration.SecHubConfiguration;
 import com.mercedesbenz.sechub.sharedkernel.configuration.SecHubConfigurationValidator;
 import com.mercedesbenz.sechub.sharedkernel.usecases.UseCaseRestDoc;
@@ -666,7 +666,7 @@ public class SchedulerRestControllerRestDocTest implements TestIsNecessaryForDoc
                                             parameterWithName("projectId").description("The id of the project where sourcecode shall be uploaded for"),
                                             parameterWithName("jobUUID").description(DESCRIPTION_JOB_UUID)
                                     ),
-                                    requestParameters(
+                                    formParameters(
                                             parameterWithName("checkSum").description("A sha256 checksum for file upload validation")
                                     ),
                                     // TODO jeeppler, 2020-12-07: It is not possible to document this part properly in OpenAPI.
@@ -725,7 +725,7 @@ public class SchedulerRestControllerRestDocTest implements TestIsNecessaryForDoc
                                             parameterWithName("projectId").description("The id of the project for which the binaries are uploaded for"),
                                             parameterWithName("jobUUID").description(DESCRIPTION_JOB_UUID)
                                     ),
-                                    requestParameters(
+                                    formParameters(
                                             parameterWithName("checkSum").description("A sha256 checksum for file upload validation")
                                     ),
                                     requestHeaders(
@@ -902,7 +902,7 @@ public class SchedulerRestControllerRestDocTest implements TestIsNecessaryForDoc
                                           pathParameters(
                                             parameterWithName(PROJECT_ID.paramName()).description("The id of the project where job information shall be fetched for")
                                           ),
-                                          requestParameters(
+                                          queryParameters(
                                               parameterWithName(SIZE.paramName()).optional().description("The wanted (maximum) size for the result set. When not defined, the default will be "+SchedulerRestController.DEFAULT_JOB_INFORMATION_SIZE+"."),
                                               parameterWithName(PAGE.paramName()).optional().description("The wanted page number. When not defined, the default will be "+SchedulerRestController.DEFAULT_JOB_INFORMATION_PAGE+"."),
                                               parameterWithName("metadata.labels.*").optional().
@@ -948,7 +948,7 @@ public class SchedulerRestControllerRestDocTest implements TestIsNecessaryForDoc
     @TestConfiguration
     @Profile(Profiles.TEST)
     @EnableAutoConfiguration
-    public static class SimpleTestConfiguration extends AbstractAllowSecHubAPISecurityConfiguration {
+    public static class SimpleTestConfiguration extends SecHubAPISecurityConfiguration {
 
     }
 }

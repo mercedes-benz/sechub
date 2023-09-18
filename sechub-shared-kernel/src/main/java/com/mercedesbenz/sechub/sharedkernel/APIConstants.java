@@ -1,8 +1,6 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.sharedkernel;
 
-import com.mercedesbenz.sechub.sharedkernel.configuration.AbstractAllowSecHubAPISecurityConfiguration;
-
 /**
  * API constants, usable inside rest controllers etc. Be AWARE: its very
  * important to start the api constants always with an "/" e.g. "/api/admin/"

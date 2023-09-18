@@ -193,9 +193,10 @@ public class PDSFileUploadJobService {
 
                     MessageDigest digest = checksumSupport.createSha256MessageDigest();
 
-                    // NOTE: Constructing the MessageDigestCalculatingInputStream using the Builder does not work at the moment 
+                    // TODO Jeremias Eppler, 2023-09-08:  Constructing the MessageDigestCalculatingInputStream 
+                    // using the Builder does not work see: https://issues.apache.org/jira/browse/IO-809 
                     MessageDigestCalculatingInputStream messageDigestInputStream = new MessageDigestCalculatingInputStream(fileInputstream, digest);
-                    
+
                     CountingInputStream byteCountingInputStream = new CountingInputStream(messageDigestInputStream);
 
                     if (fileSizeFromUser == null) {
