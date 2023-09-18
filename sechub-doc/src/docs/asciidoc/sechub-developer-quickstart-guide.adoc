@@ -14,11 +14,14 @@ include::documents/shared/about_documentation_all.adoc[]
 
 == Target audience
 
-This guide is designed to help you if your are a developer or administrator and want to build, start and use the SecHub server either to help you with testing when writing new features or to test the integration into your own environment. If you are a enduser and want to use the SecHub client please have a look at our https://mercedes-benz.github.io/sechub/latest/sechub-client.html[client documentation].
+In case you are a **developer**, this guide is for you.
+
+* Users: In case, you are an enduser and want to use the SecHub client please have a look at our https://mercedes-benz.github.io/sechub/latest/sechub-client.html[client documentation]
+* Operations: In case, you are an administrator or operation engineers, who just wants to run SecHub have a look at the SecHub Getting Started Guide: https://mercedes-benz.github.io/sechub/latest/sechub-getting-started.html
 
 == Guide
 
-This guide describes how to get started with SecHub.
+This guide describes how to get started with SecHub from a developer perspective.
 
 The following topics are covered:
 
@@ -241,6 +244,228 @@ For real results, you have to define an 'execution profile' with a scanner (via 
 ===== Log files
 
 Open the log file `./sechub-integrationtest/integrationtest-server.log` to get more details about the problem.
+
+== Start Contributing
+
+. Fork SecHub: https://github.com/mercedes-benz/sechub/fork
+
+. Select a SecHub issue you want to work on: https://github.com/mercedes-benz/sechub/issues
++
+TIP: Issues have labels a good way to start is to look for issues with https://github.com/mercedes-benz/sechub/issues?q=is%3Aopen+is%3Aissue+label%3A%22help+wanted%22[`help wanted`] label.
+
+** In case, the issue you want to work on does not yet exists, please create an issue.
+
+. Create a new branch on your local fork following the naming pattern `feature-<issue-number>-<short-description>`
++
+TIP: Example: `feature-36-go-client-supports-env-variable`.
+
+. Implement your changes
++
+TIP: In case, you have any questions or need clarification ask inside the issues
+
+. Run the tests locally
+
+** From within the (Eclipse) IDE
+** Using the `sdc.sh` helper script (located in the `sechub` repository folder)
++
+----
+# Run all Unit Tests
+./sechub-developertools/scripts/sdc.sh -u
+
+# Run all Integration Tests
+./sechub-developertools/scripts/sdc.sh -i
+----
++
+NOTE: `sdc.sh` is a convenience wrapper around the `gradlew` tool, which bundles the CLI calls into use cases. 
+
+. Create a pull-request and merge your changes into SecHub
+
+== Setup IDE for SecHub
+
+Our supported setup is:
+
+* Eclipse IDE 
+* Git
+* Debian based GNU/Linux
+* x86 64-bit CPU 
+* Docker
+
+In case your setup differs, please try to adjust the guides to your setup. Any contributions for other setups are welcome. Feel free to create pull requests for this guide with your setup.
+
+=== Setup SecHub in Eclipse IDE
+
+. Please, first create a fork of SecHub on GitHub: https://github.com/mercedes-benz/sechub/fork
++
+image::github-fork-sechub.png[]
+
+. On your local Linux computer create a new folder `Development` in your home folder
++
+----
+$ mkdir "$HOME/Development"
+----
+
+. Change into the `Development` folder
++
+----
+cd "$HOME/Development"
+----
+
+. Download https://www.eclipse.org/downloads/packages/[`Eclipse IDE for Java Developers` or `Eclipse IDE for Enterprise Java and Web Developers`]
++
+----
+# Download Eclipse IDE for Enterprise Java and Web Developers
+wget http://www.mirrorservice.org/sites/download.eclipse.org/eclipseMirror/technology/epp/downloads/release/2023-09/R/eclipse-jee-2023-09-R-linux-gtk-x86_64.tar.gz
+
+# Download checksum
+wget http://www.mirrorservice.org/sites/download.eclipse.org/eclipseMirror/technology/epp/downloads/release/2023-09/R/eclipse-jee-2023-09-R-linux-gtk-x86_64.tar.gz.sha512
+
+# Verify checksum
+sha512sum -c eclipse*.sha512
+
+# Extract archive
+tar -xf eclipse-jee-2023-09-R-linux-gtk-x86_64.tar.gz
+
+# Remove downloaded files
+rm eclipse-jee-*
+----
++
+As end result an `eclipse` folder containing the `eclipse` executable should be available.
++
+NOTE: http://www.mirrorservice.org/[www.mirrorservice.org] is provided by the University of Kent School of Computing.
+
+. Create a `projects` folder
++
+----
+mkdir projects
+----
+
+. Switch into the project folder
++
+----
+mkdir projects
+cd projects/
+----
++
+NOTE: We create a `projects` folder, because there are several SecHub projects. For example, the "sechub-<ide>` plugins are separated into different repositories.
+
+. Clone the SecHub repository (your fork)
++
+----
+git clone https://github.com/<your-github-username>/sechub.git
+----
++
+After, successfully cloning the repository. There should be a folder named `sechub` containing the source code.
+
+. Go one level up into to the `Development` folder
++
+----
+$ cd ..
+$ pwd
+/home/<user>/Development
+$ ls 
+eclipse  projects
+----
++
+
+. Create a `workspaces/sechub` folder for the Eclipse IDE to store settings in
++
+----
+mkdir -p workspaces/sechub
+----
+
+. Check the folder structure
++
+The folder structure should look like this:
++
+----
+$ pwd
+/home/user/Development
+$ tree -L 2
+.
+├── eclipse
+│   ├── artifacts.xml
+│   ├── configuration
+│   ├── dropins
+│   ├── eclipse
+│   ├── eclipse.ini
+│   ├── features
+│   ├── icon.xpm
+│   ├── p2
+│   ├── plugins
+│   └── readme
+├── projects
+│   └── sechub
+└── workspaces
+    └── sechub
+----
+
+. Go into the `eclipse` folder and start `eclipse`
++
+----
+cd eclipse
+./eclipse
+----
+
+. Select the `workspaces/sechub` folder as workspace folder and press the `Launch` button
++
+image::eclipse-choose-workspaces-folder.png[]
+
+. Install the https://marketplace.eclipse.org/content/egradle-ide[EGradle IDE Plugin]
+.. In the Eclipse IDE menu click the help menu and select marketplace
++
+image::eclipse-help-menu-marketplace.png[]
+
+.. To search for the EGradle IDE Plugin, type `egradle ide` into the `Find` intput box and press enter
++
+image::eclipse-marketplace-egradle-ide.png[]
+
+.. Select the EGradle IDE Plugin and press install. Next follow the installation wizard.
++
+[NOTE]
+The creator and developer of the EGradle IDE Plugin is a SecHub developer. 
+However, the EGradle IDE Plugin is a private project and not affiliated with SecHub.
+
+
+. Import the SecHub project into the workspace
+.. Select `Import` from the `File` menu
++
+image::eclipse-import-menu.png[]
+
+.. Select the `EGradle -> Import gradle root project with all subprojects` option and select next
++
+image::eclipse-import-egradle.png[]
+
+.. The EGradle Import Wizard opens up. Next, click `Browse…` after the `Gradle root project path` input box
++
+image::eclipse-import-gradle-projects-wizard.png[]
+
+.. A file dialog opens, select the `Development/projects/sechub` folder (previously cloned)
++
+image::eclipse-egradle-import-file-dialog.png[]
+
+.. The `sechub` folder is selected. Next, click the `Finish` button to import the SecHub project
++
+image::eclipse-import-gradle-projects-sechub-selected.png[]
+
+.. The import will take some time. Once, successfully imported all SecHub sub-projects, a `Virtual Root` and the success message in the console should be visible 
++
+image::eclipse-egradle-sechub-imported.png[]
+
+==== Switch to `Dark` theme (Optional)
+
+Needs to be done for every new workspace.
+
+. Select `Preferences` from the `Window` menu
++
+image::eclipse-preferences.png[]
+ 
+. Search for `Dark` in the input box. The menu point `General -> Appearance` should appear as an option
++
+image::eclipse-dark-theme.png[]
+
+. Select `Dark` from the theme drop-down menu
+
+. Press the `Apply and Close` button
 
 == Run Integration Tests From IDE
 
