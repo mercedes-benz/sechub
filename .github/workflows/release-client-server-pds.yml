@@ -108,7 +108,7 @@ jobs:
             ${{ runner.os }}-go-
 
       - name: Docker login to ghcr.io
-        uses: docker/login-action@v2
+        uses: docker/login-action@v3
         with:
           registry: ghcr.io
           username: ${{ github.repository_owner }}
