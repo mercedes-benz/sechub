@@ -5,8 +5,8 @@ import java.util.Objects;
 
 import com.mercedesbenz.sechub.xraywrapper.config.XrayConfiguration;
 import com.mercedesbenz.sechub.xraywrapper.helper.XrayDockerImage;
-import com.mercedesbenz.sechub.xraywrapper.util.EnvironmentVairiableReader;
 import com.mercedesbenz.sechub.xraywrapper.util.EnvironmentVariableConstants;
+import com.mercedesbenz.sechub.xraywrapper.util.EnvironmentVariableReader;
 
 public class XrayWrapperCLI {
 
@@ -28,13 +28,14 @@ public class XrayWrapperCLI {
      * @return the configurations
      */
     private static XrayConfiguration getXrayConfiguration() {
-        EnvironmentVairiableReader environmentVairiableReader = new EnvironmentVairiableReader();
+        EnvironmentVariableReader environmentVairiableReader = new EnvironmentVariableReader();
 
         String baseUrl = "https://" + environmentVairiableReader.readEnvAsString(EnvironmentVariableConstants.ARTIFACTORY_ENV);
         String repository = environmentVairiableReader.readEnvAsString(EnvironmentVariableConstants.REGISTER_ENV);
-        String reportfiles = environmentVairiableReader.readEnvAsString(EnvironmentVariableConstants.WORKSPACE) + "/XrayArtifactoryReports";
+        String zipDirectory = environmentVairiableReader.readEnvAsString(EnvironmentVariableConstants.WORKSPACE) + "/XrayArtifactoryReports";
+        String pds_report_file = environmentVairiableReader.readEnvAsString(EnvironmentVariableConstants.PDS_JOB_RESULT_FILE);
 
-        return new XrayConfiguration(baseUrl, repository, "docker", reportfiles);
+        return new XrayConfiguration(baseUrl, repository, "docker", zipDirectory, pds_report_file);
     }
 
     /**

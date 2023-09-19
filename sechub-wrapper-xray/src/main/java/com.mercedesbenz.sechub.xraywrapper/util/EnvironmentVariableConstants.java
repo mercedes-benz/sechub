@@ -12,4 +12,6 @@ public class EnvironmentVariableConstants {
 
     public static final String XRAY_PASSWORD_ENV = "XRAY_PASSWORD";
 
+    public static final String PDS_JOB_RESULT_FILE = "PDS_JOB_RESULT_FILE";
+
 }

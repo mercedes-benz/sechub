@@ -1,8 +1,5 @@
 package com.mercedesbenz.sechub.xraywrapper.cli;
 
-import java.io.IOException;
-import java.util.concurrent.TimeUnit;
-
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -12,22 +9,30 @@ import com.mercedesbenz.sechub.xraywrapper.helper.XrayAPIResponse;
 import com.mercedesbenz.sechub.xraywrapper.helper.XrayDockerImage;
 import com.mercedesbenz.sechub.xraywrapper.reportgenerator.XrayReportReader;
 
+import java.io.IOException;
+import java.util.concurrent.TimeUnit;
+
 public class XrayClientArtifactoryManager {
 
-    private String baseUrl;
+    private final String baseUrl;
 
-    private String repository;
+    private final String repository;
 
-    private String reportfiles;
+    private final String zipArchiveFilename;
 
-    private XrayDockerImage image;
+    private final XrayDockerImage image;
+
+    private final String pdsResultFile;
+
+    private int wait = 10;
+    private int retries = 6;
 
     public XrayClientArtifactoryManager(XrayConfiguration xrayConfiguration, XrayDockerImage image) {
         this.baseUrl = xrayConfiguration.getArtifactory();
         this.repository = xrayConfiguration.getRegister();
-        this.reportfiles = xrayConfiguration.getReport_filename();
+        this.zipArchiveFilename = xrayConfiguration.getZip_directory();
         this.image = image;
-
+        this.pdsResultFile = xrayConfiguration.getSecHubReport();
     }
 
     /**
@@ -37,7 +42,6 @@ public class XrayClientArtifactoryManager {
      */
     public void start() throws IOException {
         // performs all necessary API calls to get reports
-        int retries = 5;
 
         // get xray version from artifactory
         String xray_version = getXrayVersion();
@@ -46,34 +50,20 @@ public class XrayClientArtifactoryManager {
         // check if artifact is uploaded
         boolean isUploaded = checkArtifactoryUpload();
         if (!isUploaded) {
-            // todo: retry x-times
-            System.out.println("Error: Component could not be found, was upload correct?");
+            System.out.println("Error: Component could not be found in artifactory, was upload correctly?");
             System.exit(0);
         } else {
             System.out.println("Artifact successful uploaded");
         }
 
-        String scanned = getScanStatus();
-        String startScan;
+        String scanStatus = getScanStatus();
+        boolean scanned = false;
 
-        if (scanned.equals("error"))
+        if (scanStatus.equals("error"))
             System.exit(0);
 
-        /*
-         * Todo: if artifact is uploaded scan is started automatic but delay in
-         * Implement switch case for scan status response --> error when staring scan
-         * again if (scanned.equals("not scanned")) { // start scan if not started yet
-         * startScan = startScanArtifact(); if
-         * (startScan.equals("Scan of artifact is in progress")) scanned =
-         * "in progress"; }
-         */
-
-        while ((scanned.equals("in progress") || scanned.equals("not scanned")) && retries >= 0) {
-            System.out.println("Scan in progress...");
-            waitSeconds(10);
-            retries--;
-            // todo: may have dely? and return ist not scanned?
-            scanned = getScanStatus();
+        while (!scanned) {
+            scanned = handleScanStatus();
         }
 
         // save reports from xray
@@ -94,9 +84,8 @@ public class XrayClientArtifactoryManager {
 
     private void manageReports() throws IOException {
         // hardcoded in response builder
-        String filename = reportfiles;
         XrayReportReader reportReader = new XrayReportReader();
-        reportReader.readReport(filename);
+        reportReader.readReport(zipArchiveFilename, pdsResultFile);
     }
 
     private JsonNode getBodyAsNode(String body) throws JsonProcessingException {
@@ -136,7 +125,7 @@ public class XrayClientArtifactoryManager {
     private boolean saveScanReportsSuccess() throws IOException {
         XrayAPIRequest request;
         XrayAPIResponse response;
-        request = XrayAPIcalls.getScanReports(baseUrl, image, reportfiles);
+        request = XrayAPIcalls.getScanReports(baseUrl, image, zipArchiveFilename);
         response = request.sendRequest();
         return !isErrorResponse(response);
     }
@@ -153,7 +142,34 @@ public class XrayClientArtifactoryManager {
         return "";
     }
 
-    public static void waitSeconds(int val) {
+    private boolean handleScanStatus() throws IOException {
+        String status = getScanStatus();
+        switch (status) {
+        case "not scanned" -> {
+            waitSeconds(wait);
+            if (0 >= retries) {
+                System.out.println("Started Xray scan...");
+                retries = 10;
+                startScanArtifact();
+            }
+            retries--;
+            System.out.println("Artifact not scanned...");
+            return false;
+        }
+        case "in progress" -> {
+            waitSeconds(wait);
+            System.out.println("Scan in progress...");
+            return false;
+        }
+        case "scanned" -> {
+            System.out.println("Artifact already scanned");
+            return true;
+        }
+        }
+        return false;
+    }
+
+    private static void waitSeconds(int val) {
         try {
             TimeUnit.SECONDS.sleep(val);
         } catch (InterruptedException e) {

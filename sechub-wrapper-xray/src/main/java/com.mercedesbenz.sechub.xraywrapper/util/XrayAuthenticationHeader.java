@@ -5,7 +5,7 @@ import java.util.Base64;
 
 public class XrayAuthenticationHeader {
     public static String setAuthHeader() {
-        EnvironmentVairiableReader environmentVairiableReader = new EnvironmentVairiableReader();
+        EnvironmentVariableReader environmentVairiableReader = new EnvironmentVariableReader();
         String username = environmentVairiableReader.readEnvAsString(EnvironmentVariableConstants.XRAY_USERNAME_ENV);
         String pwd = environmentVairiableReader.readEnvAsString(EnvironmentVariableConstants.XRAY_PASSWORD_ENV);
         String auth = (username + ":" + pwd);

@@ -1,5 +1,13 @@
 package com.mercedesbenz.sechub.xraywrapper.reportgenerator;
 
+import com.fasterxml.jackson.core.util.DefaultPrettyPrinter;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.ObjectWriter;
+import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.mercedesbenz.sechub.xraywrapper.util.ReportExtractor;
+
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.DirectoryStream;
@@ -10,43 +18,38 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Objects;
 
-import com.fasterxml.jackson.core.util.DefaultPrettyPrinter;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.ObjectWriter;
-import com.fasterxml.jackson.databind.node.ArrayNode;
-import com.fasterxml.jackson.databind.node.ObjectNode;
-import com.mercedesbenz.sechub.xraywrapper.util.ReportExtractor;
-
 public class XrayReportReader {
 
     private File cyclonreport;
     private File securityreport;
-
     private File sechubReport;
     HashMap<String, XrayCycloneVulnerability> vulnerabilityHashMap;
 
-    public void readReport(String filename) throws IOException {
-        if (!ReportExtractor.fileExists(filename)) {
+    public void readReport(String zipArchiveName, String pdsResultFile) throws IOException {
+        sechubReport = new File(pdsResultFile);
+        if (!ReportExtractor.fileExists(zipArchiveName)) {
             // folder is zipped :)
-            String zipArchive = filename + ".zip";
+            String zipArchive = zipArchiveName + ".zip";
             if (ReportExtractor.fileExists(zipArchive)) {
-                ReportExtractor.unzipReports(Paths.get(zipArchive), Paths.get(filename));
+                ReportExtractor.unzipReports(Paths.get(zipArchive), Paths.get(zipArchiveName));
             } else {
                 System.out.println("Error: could not find reports!");
                 System.exit(0);
             }
         }
 
-        ArrayList<Path> cyclones = getFilesByName(filename, "CycloneDX");
+        ArrayList<Path> cyclones = getFilesByName(zipArchiveName, "CycloneDX");
         if (!cyclones.isEmpty()) {
             cyclonreport = cyclones.get(0).toFile();
-            String s = cyclonreport.toString().split("\\.")[0];
-            sechubReport = new File(s + "-SecHub.json");
+            if (pdsResultFile.isEmpty()) {
+                String s = cyclonreport.toString().split("\\.")[0];
+                sechubReport = new File(s + "-SecHub.json");
+            }
         }
-        ArrayList<Path> securityPath = getFilesByName(filename, "Security");
-        if (!securityPath.isEmpty())
+        ArrayList<Path> securityPath = getFilesByName(zipArchiveName, "Security");
+        if (!securityPath.isEmpty()) {
             securityreport = securityPath.get(0).toFile();
+        }
 
         readSecurityReport();
         insertJSON();

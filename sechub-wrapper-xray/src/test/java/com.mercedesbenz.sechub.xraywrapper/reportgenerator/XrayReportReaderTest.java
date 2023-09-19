@@ -1,14 +1,13 @@
 package com.mercedesbenz.sechub.xraywrapper.reportgenerator;
 
-import java.io.File;
-import java.io.IOException;
-
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import java.io.File;
+import java.io.IOException;
 
 class XrayReportReaderTest {
 
@@ -29,7 +28,7 @@ class XrayReportReaderTest {
 
         // execute
         try {
-            reportReader.readReport(source);
+            reportReader.readReport(source, "");
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

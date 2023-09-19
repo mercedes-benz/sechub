@@ -2,19 +2,22 @@ package com.mercedesbenz.sechub.xraywrapper.config;
 
 public class XrayConfiguration {
 
-    private String artifactory;
+    private final String artifactory;
 
-    private String register;
+    private final String register;
 
-    private String scan_type;
+    private final String scan_type;
 
-    private String report_filename;
+    private final String zip_directory;
 
-    public XrayConfiguration(String artifactory, String register, String scan_type, String report_filename) {
+    private final String secHubReport;
+
+    public XrayConfiguration(String artifactory, String register, String scan_type, String report_filename, String secHubReport) {
         this.artifactory = artifactory;
         this.register = register;
         this.scan_type = scan_type;
-        this.report_filename = report_filename;
+        this.zip_directory = report_filename;
+        this.secHubReport = secHubReport;
     }
 
     public String getArtifactory() {
@@ -29,7 +32,11 @@ public class XrayConfiguration {
         return scan_type;
     }
 
-    public String getReport_filename() {
-        return report_filename;
+    public String getSecHubReport() {
+        return secHubReport;
+    }
+
+    public String getZip_directory() {
+        return zip_directory;
     }
 }

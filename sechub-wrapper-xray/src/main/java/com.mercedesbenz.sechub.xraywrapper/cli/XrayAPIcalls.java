@@ -9,7 +9,7 @@ public class XrayAPIcalls {
     /**
      * Creates GET request to get the JFrog Xray version
      *
-     * @param baseUrl
+     * @param baseUrl factory URL
      * @return XrayAPIRequest
      */
     static XrayAPIRequest getXrayVersion(String baseUrl) {
@@ -22,9 +22,9 @@ public class XrayAPIcalls {
     /**
      * Creates POST request to see if an artifact was uploaded successful
      *
-     * @param baseUrl
-     * @param image
-     * @param repository
+     * @param baseUrl    factory URL
+     * @param image      docker image to scan
+     * @param repository artifactory repository
      * @return XrayAPIRequest
      */
     static XrayAPIRequest checkArtifactUpload(String baseUrl, XrayDockerImage image, String repository) {
@@ -36,9 +36,9 @@ public class XrayAPIcalls {
     /**
      * Creates POST request to scan an artifact with Xray
      *
-     * @param baseUrl
-     * @param image
-     * @param repository
+     * @param baseUrl    factory URL
+     * @param image      docker image to scan
+     * @param repository artifactory repository
      * @return XrayAPIRequest
      */
     static XrayAPIRequest scanArtifact(String baseUrl, XrayDockerImage image, String repository) {
@@ -51,9 +51,9 @@ public class XrayAPIcalls {
     /**
      * Creates POST request to get the status of an artifact
      *
-     * @param baseUrl
-     * @param image
-     * @param repository
+     * @param baseUrl    factory URL
+     * @param image      docker image to scan
+     * @param repository artifactory repository
      * @return XrayAPIRequest
      */
     static XrayAPIRequest getScanStatus(String baseUrl, XrayDockerImage image, String repository) {
@@ -66,9 +66,9 @@ public class XrayAPIcalls {
     /**
      * Creates POST request to download the reports
      *
-     * @param baseUrl
-     * @param image
-     * @param filename
+     * @param baseUrl  factory URL
+     * @param image    docker image to scan
+     * @param filename report name
      * @return XrayAPIRequest
      */
     static XrayAPIRequest getScanReports(String baseUrl, XrayDockerImage image, String filename) {
