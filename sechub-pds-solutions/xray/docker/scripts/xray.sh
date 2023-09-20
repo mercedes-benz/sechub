@@ -59,7 +59,7 @@ do
   skopeo inspect "docker://${ARTIFACTORY}/${REGISTER}/${IMAGE}" --authfile "$WORKSPACE/auth.json" > "$WORKSPACE/inspect.json"
   SHA256=$(jq '.Digest' "$WORKSPACE/inspect.json" | tr -d \")
 
-  java -jar "$TOOL_FOLDER/wrapperxray.jar" "--image" "$IMAGE" "--sha256" "$SHA256"
+  java -jar "$TOOL_FOLDER/wrapperxray.jar" "--name" "$IMAGE" "--sha256" "$SHA256" "--scantype" "docker" "--outputfile" "$PDS_JOB_RESULT_FILE"
 done
 
 clean_workspace

@@ -1,38 +1,33 @@
 package com.mercedesbenz.sechub.xraywrapper.cli;
 
+import java.io.IOException;
+import java.net.HttpURLConnection;
+import java.util.concurrent.TimeUnit;
+
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mercedesbenz.sechub.xraywrapper.config.XrayConfiguration;
 import com.mercedesbenz.sechub.xraywrapper.helper.XrayAPIRequest;
 import com.mercedesbenz.sechub.xraywrapper.helper.XrayAPIResponse;
-import com.mercedesbenz.sechub.xraywrapper.helper.XrayDockerImage;
+import com.mercedesbenz.sechub.xraywrapper.helper.XrayArtifact;
+import com.mercedesbenz.sechub.xraywrapper.http.XrayHttpRequestExecutor;
+import com.mercedesbenz.sechub.xraywrapper.http.XrayHttpRequestGenerator;
+import com.mercedesbenz.sechub.xraywrapper.http.XrayHttpResponseBuilder;
 import com.mercedesbenz.sechub.xraywrapper.reportgenerator.XrayReportReader;
-
-import java.io.IOException;
-import java.util.concurrent.TimeUnit;
 
 public class XrayClientArtifactoryManager {
 
-    private final String baseUrl;
+    private XrayArtifact artifact;
 
-    private final String repository;
+    private XrayConfiguration xrayConfiguration;
 
-    private final String zipArchiveFilename;
+    private int retries;
 
-    private final XrayDockerImage image;
-
-    private final String pdsResultFile;
-
-    private int wait = 10;
-    private int retries = 6;
-
-    public XrayClientArtifactoryManager(XrayConfiguration xrayConfiguration, XrayDockerImage image) {
-        this.baseUrl = xrayConfiguration.getArtifactory();
-        this.repository = xrayConfiguration.getRegister();
-        this.zipArchiveFilename = xrayConfiguration.getZip_directory();
-        this.image = image;
-        this.pdsResultFile = xrayConfiguration.getSecHubReport();
+    public XrayClientArtifactoryManager(XrayConfiguration xrayConfiguration, XrayArtifact artifact) {
+        this.xrayConfiguration = xrayConfiguration;
+        this.artifact = artifact;
+        this.retries = xrayConfiguration.getRequestRetries();
     }
 
     /**
@@ -85,7 +80,7 @@ public class XrayClientArtifactoryManager {
     private void manageReports() throws IOException {
         // hardcoded in response builder
         XrayReportReader reportReader = new XrayReportReader();
-        reportReader.readReport(zipArchiveFilename, pdsResultFile);
+        reportReader.readReport(xrayConfiguration.getZip_directory(), xrayConfiguration.getSecHubReport());
     }
 
     private JsonNode getBodyAsNode(String body) throws JsonProcessingException {
@@ -94,27 +89,21 @@ public class XrayClientArtifactoryManager {
     }
 
     private String getXrayVersion() throws IOException {
-        XrayAPIRequest request;
-        request = XrayAPIcalls.getXrayVersion(baseUrl);
-        XrayAPIResponse response;
-        response = request.sendRequest();
+        XrayAPIRequest request = XrayHttpRequestGenerator.getXrayVersion(xrayConfiguration.getArtifactory());
+        XrayAPIResponse response = send(request);
         JsonNode node = getBodyAsNode(response.getBody());
         return node.get("xray_version").asText();
     }
 
     private boolean checkArtifactoryUpload() throws IOException {
-        XrayAPIRequest request;
-        request = XrayAPIcalls.checkArtifactUpload(baseUrl, image, repository);
-        XrayAPIResponse response;
-        response = request.sendRequest();
+        XrayAPIRequest request = XrayHttpRequestGenerator.checkArtifactUpload(xrayConfiguration.getArtifactory(), artifact, xrayConfiguration.getRegister());
+        XrayAPIResponse response = send(request);
         return !(isErrorResponse(response));
     }
 
     private String getScanStatus() throws IOException {
-        XrayAPIRequest request;
-        XrayAPIResponse response;
-        request = XrayAPIcalls.getScanStatus(baseUrl, image, repository);
-        response = request.sendRequest();
+        XrayAPIRequest request = XrayHttpRequestGenerator.getScanStatus(xrayConfiguration.getArtifactory(), artifact, xrayConfiguration.getRegister());
+        XrayAPIResponse response = send(request);
         if (!isErrorResponse(response)) {
             JsonNode node = getBodyAsNode(response.getBody());
             return node.get("status").asText();
@@ -123,18 +112,14 @@ public class XrayClientArtifactoryManager {
     }
 
     private boolean saveScanReportsSuccess() throws IOException {
-        XrayAPIRequest request;
-        XrayAPIResponse response;
-        request = XrayAPIcalls.getScanReports(baseUrl, image, zipArchiveFilename);
-        response = request.sendRequest();
+        XrayAPIRequest request = XrayHttpRequestGenerator.getScanReports(xrayConfiguration.getArtifactory(), artifact, xrayConfiguration.getRegister());
+        XrayAPIResponse response = send(request);
         return !isErrorResponse(response);
     }
 
     private String startScanArtifact() throws IOException {
-        XrayAPIRequest request;
-        XrayAPIResponse response;
-        request = XrayAPIcalls.scanArtifact(baseUrl, image, repository);
-        response = request.sendRequest();
+        XrayAPIRequest request = XrayHttpRequestGenerator.scanArtifact(xrayConfiguration.getArtifactory(), artifact, xrayConfiguration.getRegister());
+        XrayAPIResponse response = send(request);
         if (!isErrorResponse(response)) {
             JsonNode node = getBodyAsNode(response.getBody());
             return node.get("info").asText();
@@ -146,10 +131,10 @@ public class XrayClientArtifactoryManager {
         String status = getScanStatus();
         switch (status) {
         case "not scanned" -> {
-            waitSeconds(wait);
+            waitSeconds(xrayConfiguration.getWaitUntilRetrySec());
             if (0 >= retries) {
                 System.out.println("Started Xray scan...");
-                retries = 10;
+                retries = xrayConfiguration.getRequestRetries();
                 startScanArtifact();
             }
             retries--;
@@ -157,7 +142,7 @@ public class XrayClientArtifactoryManager {
             return false;
         }
         case "in progress" -> {
-            waitSeconds(wait);
+            waitSeconds(xrayConfiguration.getWaitUntilRetrySec());
             System.out.println("Scan in progress...");
             return false;
         }
@@ -175,6 +160,11 @@ public class XrayClientArtifactoryManager {
         } catch (InterruptedException e) {
             // log.error("Thread interrupted");
         }
+    }
+
+    private XrayAPIResponse send(XrayAPIRequest request) throws IOException {
+        HttpURLConnection con = XrayHttpRequestExecutor.setUpGetConnection(request);
+        return XrayHttpResponseBuilder.getHttpResponseFromConnection(con, xrayConfiguration.getZip_directory());
     }
 
 }

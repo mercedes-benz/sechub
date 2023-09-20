@@ -12,6 +12,10 @@ public class XrayConfiguration {
 
     private final String secHubReport;
 
+    private int waitUntilRetrySec = 10;
+
+    private int requestRetries = 10;
+
     public XrayConfiguration(String artifactory, String register, String scan_type, String report_filename, String secHubReport) {
         this.artifactory = artifactory;
         this.register = register;
@@ -38,5 +42,13 @@ public class XrayConfiguration {
 
     public String getZip_directory() {
         return zip_directory;
+    }
+
+    public int getWaitUntilRetrySec() {
+        return waitUntilRetrySec;
+    }
+
+    public int getRequestRetries() {
+        return requestRetries;
     }
 }

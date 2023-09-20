@@ -68,8 +68,6 @@ public class ReportExtractor {
      * @throws IOException
      */
     private static Path zipSlipProtect(ZipEntry zipEntry, Path targetDir) throws IOException {
-
-        // test zip slip vulnerability
         // Path targetDirResolved = targetDir.resolve("../../" + zipEntry.getName());
 
         Path targetDirResolved = targetDir.resolve(zipEntry.getName());

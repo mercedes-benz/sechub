@@ -2,37 +2,34 @@ package com.mercedesbenz.sechub.xraywrapper.cli;
 
 import com.beust.jcommander.JCommander;
 import com.beust.jcommander.ParameterException;
-import com.mercedesbenz.sechub.xraywrapper.helper.XrayDockerImage;
 
 public class XrayWrapperCommandLineParser {
 
     private JCommander commander;
 
-    /**
-     * Parse input arguments to create Xray docker image object
-     *
-     * @param args command line arguments
-     * @return docker image saving name, tag and sha256
-     */
-    public XrayDockerImage parseDockerArguments(String[] args) {
+    public record Arguments(String name, String sha256, String scantype, String tag, String outputFile) {
+    }
+
+    public Arguments parseCommandLineArgs(String[] args) {
         XrayCommandLineArgs xrayArgs = buildArguments(args);
-        if (xrayArgs.isHelpRequired()) {
+        if (xrayArgs.isHelpRequired() || xrayArgs.getName().isEmpty() || xrayArgs.getSha256().isEmpty()) {
             commander.usage();
             return null;
         }
 
-        if (xrayArgs.getImage().isEmpty() || xrayArgs.getSha256().isEmpty()) {
-            commander.usage();
-            return null;
+        String name = xrayArgs.getName();
+        String tag = "";
+        if (xrayArgs.getScantype().equals("docker")) {
+            String[] image = parseImage(xrayArgs.getName());
+            if (image != null) {
+                name = image[0];
+                tag = image[1];
+            }
         }
 
-        String[] image = parseImage(xrayArgs.getImage());
         String sha256 = parseSha256(xrayArgs.getSha256());
 
-        if (image != null)
-            return new XrayDockerImage(image[0], image[1], sha256);
-
-        return null;
+        return new Arguments(name, sha256, xrayArgs.getScantype(), tag, xrayArgs.getOutputFile());
     }
 
     /**

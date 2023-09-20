@@ -1,4 +1,7 @@
-package com.mercedesbenz.sechub.xraywrapper.util;
+package com.mercedesbenz.sechub.xraywrapper.http;
+
+import static com.mercedesbenz.sechub.xraywrapper.util.InputStreamSaver.saveInputStreamToStringBuilder;
+import static com.mercedesbenz.sechub.xraywrapper.util.InputStreamSaver.saveInputStreamToZipFile;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -9,7 +12,7 @@ import java.util.Objects;
 
 import com.mercedesbenz.sechub.xraywrapper.helper.XrayAPIResponse;
 
-public class XrayFullResponseBuilder {
+public class XrayHttpResponseBuilder {
 
     // https://github.com/eugenp/tutorials/blob/master/core-java-modules/core-java-networking-2/src/main/java/com/baeldung/httprequest/FullResponseBuilder.java
 
@@ -17,13 +20,13 @@ public class XrayFullResponseBuilder {
      * Get input stream from connection and builds Xray response from it
      *
      * @param con
-     * @param filename
+     * @param zipArchive
      * @return
      * @throws IOException
      */
-    public static XrayAPIResponse getFullResponse(HttpURLConnection con, String filename) throws IOException {
+    public static XrayAPIResponse getHttpResponseFromConnection(HttpURLConnection con, String zipArchive) throws IOException {
         XrayAPIResponse response = new XrayAPIResponse();
-        filename = filename + ".zip";
+        zipArchive = zipArchive + ".zip";
 
         response.setStatus_code(con.getResponseCode());
 
@@ -44,16 +47,15 @@ public class XrayFullResponseBuilder {
             // todo: Error Log or Error Handling
             System.out.println("Input Stream is empty - an error occured. Status Code:" + response.getStatus_code());
             System.out.println("Properties:" + con.getRequestProperties().toString());
-            System.exit(0);
         }
 
         String type = con.getHeaderField("Content-Type");
         if (Objects.equals(type, "application/gzip")) {
             // case application/gzip (report files in zip container)
-            response.saveZipFile(filename, is);
+            saveInputStreamToZipFile(zipArchive, is);
         } else {
             // case application/json is saved as string body
-            StringBuilder content = response.saveJsonBody(is);
+            StringBuilder content = saveInputStreamToStringBuilder(is);
             response.setBody(content.toString());
         }
         return response;

@@ -10,11 +10,11 @@ public class XrayCommandLineArgs {
         return help;
     }
 
-    @Parameter(names = { "--image", "-i" }, description = "Name of the image you wish to scan example: my_image:1.0")
-    private String image = "";
+    @Parameter(names = { "--name", "-n" }, description = "Name of the image or artifact you wish to scan example: my_image:1.0")
+    private String name = "";
 
-    public String getImage() {
-        return image;
+    public String getName() {
+        return name;
     }
 
     @Parameter(names = { "--sha256", "-s" }, description = "Digest of the docker image you wish to scan example: sha256:xxx")
@@ -23,4 +23,19 @@ public class XrayCommandLineArgs {
     public String getSha256() {
         return sha256;
     }
+
+    @Parameter(names = { "--scantype" }, description = "Scan type of the xray scan, need to be one of the following: docker")
+    private String scantype = "";
+
+    public String getScantype() {
+        return scantype;
+    }
+
+    @Parameter(names = { "--outputfile", "-o" }, description = "Name of the outputfile")
+    private String outputFile = "";
+
+    public String getOutputFile() {
+        return outputFile;
+    }
+
 }

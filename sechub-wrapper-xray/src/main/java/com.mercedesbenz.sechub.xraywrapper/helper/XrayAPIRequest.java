@@ -1,12 +1,6 @@
 package com.mercedesbenz.sechub.xraywrapper.helper;
 
-import java.io.IOException;
-import java.io.OutputStream;
-import java.net.HttpURLConnection;
-import java.net.URL;
-
 import com.mercedesbenz.sechub.xraywrapper.util.XrayAuthenticationHeader;
-import com.mercedesbenz.sechub.xraywrapper.util.XrayFullResponseBuilder;
 
 public class XrayAPIRequest {
     public enum RequestMethodEnum {
@@ -74,77 +68,8 @@ public class XrayAPIRequest {
         return data;
     }
 
-    /**
-     * Creates http request as required
-     *
-     * @return
-     * @throws IOException
-     */
-    public XrayAPIResponse sendRequest() throws IOException {
-        URL url = new URL(this.baseUrl);
-        HttpURLConnection con = null;
-        if (requestMethodEnum == RequestMethodEnum.POST) {
-            con = setUpPostConnection(url, data);
-        } else if (requestMethodEnum == RequestMethodEnum.GET) {
-            con = setUpGetConnection(url);
-        } else {
-            // default GET method
-            requestMethodEnum = RequestMethodEnum.GET;
-            con = setUpGetConnection(url);
-        }
-        return XrayFullResponseBuilder.getFullResponse(con, filename);
-    }
-
     public String authenticate() {
         return XrayAuthenticationHeader.setAuthHeader();
     }
 
-    /**
-     * Creates and Http get connection and sends request
-     *
-     * @param url
-     * @return
-     * @throws IOException
-     */
-    protected HttpURLConnection setUpGetConnection(URL url) throws IOException {
-        HttpURLConnection con = (HttpURLConnection) url.openConnection();
-        con.setRequestMethod(getRequestMethodEnum().toString());
-        con.setRequestProperty("Content-Type", "application/json");
-        if (needAuthentication()) {
-            String auth = authenticate();
-            con.setRequestProperty("Authorization", auth);
-        }
-        con.setConnectTimeout(5000);
-        con.setReadTimeout(5000);
-        con.connect();
-        return con;
-    }
-
-    /**
-     * Creates and Http post connection and sends request
-     *
-     * @param url
-     * @param jsonInputString
-     * @return
-     * @throws IOException
-     */
-    protected HttpURLConnection setUpPostConnection(URL url, String jsonInputString) throws IOException {
-        HttpURLConnection con = (HttpURLConnection) url.openConnection();
-        con.setRequestMethod(getRequestMethodEnum().toString());
-        con.setRequestProperty("Content-Type", "application/json");
-        // todo: might need workaround for application/gzip for reports
-        con.setRequestProperty("Accept", "application/json");
-        if (needAuthentication()) {
-            String auth = authenticate();
-            con.setRequestProperty("Authorization", auth);
-        }
-        con.setDoOutput(true);
-        try (OutputStream os = con.getOutputStream()) {
-            byte[] input = jsonInputString.getBytes("utf-8");
-            os.write(input, 0, input.length);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-        return con;
-    }
 }

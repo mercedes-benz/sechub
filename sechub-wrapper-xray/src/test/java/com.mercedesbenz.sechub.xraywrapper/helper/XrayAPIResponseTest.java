@@ -1,5 +1,7 @@
 package com.mercedesbenz.sechub.xraywrapper.helper;
 
+import static com.mercedesbenz.sechub.xraywrapper.util.InputStreamSaver.saveInputStreamToStringBuilder;
+import static com.mercedesbenz.sechub.xraywrapper.util.InputStreamSaver.saveInputStreamToZipFile;
 import static org.junit.jupiter.api.Assertions.*;
 
 import java.io.ByteArrayInputStream;
@@ -45,7 +47,7 @@ class XrayAPIResponseTest {
         String path = "src/test/resourcessssss/test_file";
 
         // execute
-        IOException thrown = assertThrows(IOException.class, () -> response.saveZipFile(path, is), "IOException");
+        IOException thrown = assertThrows(IOException.class, () -> saveInputStreamToZipFile(path, is), "IOException");
 
         // assert
         assertTrue(thrown.getMessage().contains("No such file or directory"));
@@ -59,7 +61,7 @@ class XrayAPIResponseTest {
 
         // execute
         try {
-            StringBuilder content = response.saveJsonBody(is);
+            StringBuilder content = saveInputStreamToStringBuilder(is);
             body = content.toString();
         } catch (IOException e) {
             throw new RuntimeException(e);
