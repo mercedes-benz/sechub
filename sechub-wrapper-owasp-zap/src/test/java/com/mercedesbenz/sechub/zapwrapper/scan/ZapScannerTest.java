@@ -14,11 +14,13 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URL;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -303,7 +305,7 @@ class ZapScannerTest {
     void import_openapi_file_but_api_file_is_null_api_facade_is_never_called() throws ClientApiException {
         /* prepare */
         String contextId = "context-id";
-        when(scanContext.getApiDefinitionFile()).thenReturn(null);
+        when(scanContext.getApiDefinitionFiles()).thenReturn(Collections.emptyList());
 
         ApiResponse response = mock(ApiResponse.class);
         when(clientApiFacade.importOpenApiFile(any(), any(), any())).thenReturn(response);
@@ -323,7 +325,10 @@ class ZapScannerTest {
         String json = TestFileReader.loadTextFile(sechubConfigFile);
         SecHubWebScanConfiguration sechubWebScanConfig = SecHubScanConfiguration.createFromJSON(json).getWebScan().get();
 
-        when(scanContext.getApiDefinitionFile()).thenReturn(Paths.get(sechubConfigFile));
+        List<File> apiFiles = new ArrayList<>();
+        apiFiles.add(new File("examplefile.json"));
+
+        when(scanContext.getApiDefinitionFiles()).thenReturn(apiFiles);
         when(scanContext.getSecHubWebScanConfiguration()).thenReturn(sechubWebScanConfig);
 
         ApiResponse response = mock(ApiResponse.class);

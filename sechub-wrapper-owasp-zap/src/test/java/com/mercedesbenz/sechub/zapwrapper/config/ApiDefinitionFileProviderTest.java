@@ -2,9 +2,10 @@
 package com.mercedesbenz.sechub.zapwrapper.config;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import java.nio.file.Path;
+import java.io.File;
+import java.util.List;
 import java.util.stream.Stream;
 
 import org.junit.jupiter.api.Named;
@@ -14,127 +15,181 @@ import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 
 import com.mercedesbenz.sechub.commons.model.SecHubScanConfiguration;
-import com.mercedesbenz.sechub.zapwrapper.cli.ZapWrapperExitCode;
-import com.mercedesbenz.sechub.zapwrapper.cli.ZapWrapperRuntimeException;
 
 class ApiDefinitionFileProviderTest {
 
     private ApiDefinitionFileProvider providerToTest = new ApiDefinitionFileProvider();;
 
     @Test
-    void sources_folder_is_null_results_in_null_as_api_file_path() {
+    void sources_folder_is_null_results_in_empty_list() {
         /* execute */
-        Path result = providerToTest.fetchApiDefinitionFile(null, new SecHubScanConfiguration());
+        List<File> result = providerToTest.fetchApiDefinitionFiles(null, new SecHubScanConfiguration());
 
         /* test */
-        assertEquals(null, result);
+        assertTrue(result.isEmpty());
     }
 
     @Test
-    void sechub_scan_config_is_null_results_in_null_as_api_file_path() {
+    void sechub_scan_config_is_null_results_in_empty_list() {
         /* execute */
-        Path result = providerToTest.fetchApiDefinitionFile("/example/path/to/extracted/sources", null);
+        List<File> result = providerToTest.fetchApiDefinitionFiles("/example/path/to/extracted/sources", null);
 
         /* test */
-        assertEquals(null, result);
+        assertTrue(result.isEmpty());
     }
 
     @Test
-    void missing_data_section_part_results_in_null_as_api_file_path() {
+    void missing_data_section_part_results_in_empty_list() {
         /* prepare */
-        String sechubScanConfigJSON = "{\"apiVersion\":\"1.0\","
-                + "\"webScan\":{\"uri\":\"https://localhost:8443\",\"api\":{\"type\":\"openApi\",\"use\":[\"open-api-file-reference\"]}}}";
+        String sechubScanConfigJSON = """
+                {"apiVersion":"1.0","webScan":{"url":"https://localhost:8443","api":{"type":"openApi","use":["open-api-file-reference"]}}}""";
         SecHubScanConfiguration sechubScanConfiguration = SecHubScanConfiguration.createFromJSON(sechubScanConfigJSON);
 
         /* execute */
-        Path result = providerToTest.fetchApiDefinitionFile("/example/path/to/extracted/sources", sechubScanConfiguration);
+        List<File> result = providerToTest.fetchApiDefinitionFiles("/example/path/to/extracted/sources", sechubScanConfiguration);
 
         /* test */
-        assertEquals(null, result);
+        assertTrue(result.isEmpty());
+    }
+
+    @Test
+    void empty_sources_section_in_sechub_configuration_results_in_empty_list() {
+        /* prepare */
+        String sechubScanConfigJSON = """
+                {"apiVersion":"1.0","data":{"sources":[]},
+                "webScan":{"url":"https://localhost:8443","api":{"type":"openApi","use":["open-api-file-reference"]}}}""";
+        SecHubScanConfiguration sechubScanConfiguration = SecHubScanConfiguration.createFromJSON(sechubScanConfigJSON);
+
+        /* execute */
+        List<File> result = providerToTest.fetchApiDefinitionFiles("/example/path/to/extracted/sources", sechubScanConfiguration);
+
+        /* test */
+        assertTrue(result.isEmpty());
+    }
+
+    @Test
+    void missing_filesystem_part_in_sechub_configuration_results_in_empty_openapi_files_list() {
+        /* prepare */
+        String sechubScanConfigJSON = """
+                {"apiVersion":"1.0","data":{"sources":[{"name":"open-api-file-reference"}]},
+                "webScan":{"url":"https://localhost:8443","api":{"type":"openApi","use":["open-api-file-reference"]}}}""";
+        SecHubScanConfiguration sechubScanConfiguration = SecHubScanConfiguration.createFromJSON(sechubScanConfigJSON);
+
+        /* execute */
+        List<File> result = providerToTest.fetchApiDefinitionFiles("/example/path/to/extracted/sources", sechubScanConfiguration);
+
+        /* test */
+        assertTrue(result.isEmpty());
+    }
+
+    @Test
+    void empty_filesystem_part_in_sechub_configuration_results_in_empty_list() {
+        /* prepare */
+        String sechubScanConfigJSON = """
+                {"apiVersion":"1.0","data":{"sources":[{"name":"open-api-file-reference","fileSystem":{}}]},
+                "webScan":{"url":"https://localhost:8443","api":{"type":"openApi","use":["open-api-file-reference"]}}}""";
+        SecHubScanConfiguration sechubScanConfiguration = SecHubScanConfiguration.createFromJSON(sechubScanConfigJSON);
+
+        /* execute */
+        List<File> result = providerToTest.fetchApiDefinitionFiles("/example/path/to/extracted/sources", sechubScanConfiguration);
+
+        /* test */
+        assertTrue(result.isEmpty());
+    }
+
+    @Test
+    void binaries_instead_of_sources_results_in_empty_list() {
+        /* prepare */
+        String sechubScanConfigJSON = """
+                {"apiVersion":"1.0","data":{"binaries":[{"name":"open-api-file-reference"}]},
+                "webScan":{"url":"https://localhost:8443","api":{"type":"openApi","use":["open-api-file-reference"]}}}""";
+        SecHubScanConfiguration sechubScanConfiguration = SecHubScanConfiguration.createFromJSON(sechubScanConfigJSON);
+
+        /* execute */
+        List<File> result = providerToTest.fetchApiDefinitionFiles("/example/path/to/extracted/sources", sechubScanConfiguration);
+
+        /* test */
+        assertTrue(result.isEmpty());
+    }
+
+    @Test
+    void folders_instead_of_files_inside_filesystem_results_in_empty_list() {
+        /* prepare */
+        String sechubScanConfigJSON = """
+                {"apiVersion":"1.0","data":{"sources":[{"name":"open-api-file-reference","fileSystem":{"folders":["openapifolder/"]}}]},
+                "webScan":{"url":"https://localhost:8443","api":{"type":"openApi","use":["open-api-file-reference"]}}}""";
+        SecHubScanConfiguration sechubScanConfiguration = SecHubScanConfiguration.createFromJSON(sechubScanConfigJSON);
+
+        /* execute */
+        List<File> result = providerToTest.fetchApiDefinitionFiles("test/path", sechubScanConfiguration);
+
+        /* test */
+        assertTrue(result.isEmpty());
+    }
+
+    @Test
+    void data_section_name_differs_from_use_part_inside_openapi_definition_results_in_empty_list() {
+        /* prepare */
+        String sechubScanConfigJSON = """
+                {"apiVersion":"1.0","data":{"sources":[{"name":"open-api-file-reference","fileSystem":{"files":["openapi3.json"]}}]},
+                "webScan":{"url":"https://localhost:8443","api":{"type":"openApi","use":["no-existing-reference"]}}}""";
+        SecHubScanConfiguration sechubScanConfiguration = SecHubScanConfiguration.createFromJSON(sechubScanConfigJSON);
+
+        /* execute */
+        List<File> result = providerToTest.fetchApiDefinitionFiles("test/path", sechubScanConfiguration);
+
+        /* test */
+        assertTrue(result.isEmpty());
+    }
+
+    @Test
+    void valid_sechub_scan_config_with_openapi_definition_file_results_in_list_with_one_file() {
+        /* prepare */
+        String sechubScanConfigJSON = """
+                {"apiVersion":"1.0","data":{"sources":[{"name":"open-api-file-reference","fileSystem":{"files":["openapi3.json"]}}]},
+                "webScan":{"url":"https://localhost:8443","api":{"type":"openApi","use":["open-api-file-reference"]}}}""";
+        SecHubScanConfiguration sechubScanConfiguration = SecHubScanConfiguration.createFromJSON(sechubScanConfigJSON);
+
+        /* execute */
+        List<File> result = providerToTest.fetchApiDefinitionFiles("test/path", sechubScanConfiguration);
+
+        /* test */
+        assertEquals(1, result.size());
     }
 
     @ParameterizedTest
-    @MethodSource("sourcesPartSizeTestNamedArguments")
-    void sources_part_with_size_other_than_exactly_one_results_in_zap_wrapper_runtime_exception(String sechubScanConfigJSON) {
+    @MethodSource("multipleFilesTestNamedArguments")
+    void mutliple_files_result_in_correct_list_of_files(String sechubScanConfigJSON) {
         /* prepare */
-        SecHubScanConfiguration sechubScanConfiguration = SecHubScanConfiguration.createFromJSON(sechubScanConfigJSON);
-
-        /* execute + test */
-        ZapWrapperRuntimeException exception = assertThrows(ZapWrapperRuntimeException.class,
-                () -> providerToTest.fetchApiDefinitionFile("/example/path/to/extracted/sources", sechubScanConfiguration));
-
-        assertEquals("Sources must contain exactly 1 entry.", exception.getMessage());
-        assertEquals(ZapWrapperExitCode.API_DEFINITION_CONFIG_INVALID, exception.getExitCode());
-    }
-
-    @Test
-    void missing_filesystem_part_results_in_zap_wrapper_runtime_exception() {
-        /* prepare */
-        String sechubScanConfigJSON = "{\"apiVersion\":\"1.0\",\"data\":{\"sources\":[{\"name\":\"open-api-file-reference\"}]},"
-                + "\"webScan\":{\"uri\":\"https://localhost:8443\",\"api\":{\"type\":\"openApi\",\"use\":[\"open-api-file-reference\"]}}}";
-        SecHubScanConfiguration sechubScanConfiguration = SecHubScanConfiguration.createFromJSON(sechubScanConfigJSON);
-
-        /* execute + test */
-        ZapWrapperRuntimeException exception = assertThrows(ZapWrapperRuntimeException.class,
-                () -> providerToTest.fetchApiDefinitionFile("/example/path/to/extracted/sources", sechubScanConfiguration));
-
-        assertEquals("Sources filesystem part must be set at this stage.", exception.getMessage());
-        assertEquals(ZapWrapperExitCode.API_DEFINITION_CONFIG_INVALID, exception.getExitCode());
-
-    }
-
-    @ParameterizedTest
-    @MethodSource("filesystemPartSizeTestNamedArguments")
-    void filesystem_part_with_size_other_than_exactly_one_results_in_zap_wrapper_runtime_exception(String sechubScanConfigJSON) {
-        /* prepare */
-        SecHubScanConfiguration sechubScanConfiguration = SecHubScanConfiguration.createFromJSON(sechubScanConfigJSON);
-
-        /* execute + test */
-        ZapWrapperRuntimeException exception = assertThrows(ZapWrapperRuntimeException.class,
-                () -> providerToTest.fetchApiDefinitionFile("/example/path/to/extracted/sources", sechubScanConfiguration));
-
-        assertEquals("Sources filesystem files part must contain exactly 1 entry.", exception.getMessage());
-        assertEquals(ZapWrapperExitCode.API_DEFINITION_CONFIG_INVALID, exception.getExitCode());
-    }
-
-    @Test
-    void provider_returns_correct_path_for_valid_sechub_scan_config_with_openapi_definition_file() {
-        /* prepare */
-        String sechubScanConfigJSON = "{\"apiVersion\":\"1.0\",\"data\":{\"sources\":[{\"name\":\"open-api-file-reference\",\"fileSystem\":{\"files\":[\"openapi3.json\"]}}]},"
-                + "\"webScan\":{\"uri\":\"https://localhost:8443\",\"api\":{\"type\":\"openApi\",\"use\":[\"open-api-file-reference\"]}}}";
         SecHubScanConfiguration sechubScanConfiguration = SecHubScanConfiguration.createFromJSON(sechubScanConfigJSON);
 
         /* execute */
-        Path path = providerToTest.fetchApiDefinitionFile("test/path", sechubScanConfiguration);
+        List<File> result = providerToTest.fetchApiDefinitionFiles("test/path", sechubScanConfiguration);
 
         /* test */
-        assertEquals(path.toString(), "test/path/openapi3.json");
+        assertEquals(2, result.size());
     }
 
-    static Stream<Arguments> sourcesPartSizeTestNamedArguments() {
+    static Stream<Arguments> multipleFilesTestNamedArguments() {
         /* @formatter:off */
-        return Stream.of(
-        		Arguments.of(
-        				Named.of("Sources part empty",
-        				"{\"apiVersion\":\"1.0\",\"data\":{\"sources\":[]},\"webScan\":{\"uri\":\"https://localhost:8443\",\"api\":{\"type\":\"openApi\",\"use\":[\"open-api-file-reference\"]}}}")),
-        		Arguments.of(
-        				Named.of("Sources part more than one file",
-        				"{\"apiVersion\":\"1.0\",\"data\":{\"sources\":[{\"name\":\"open-api-file-reference\",\"fileSystem\":{\"files\":[\"openapi3.json\"]}},{\"name\":\"second-reference\",\"fileSystem\":{\"files\":[\"second-openapi-file.json\"]}}]},\"webScan\":{\"uri\":\"https://localhost:8443\",\"api\":{\"type\":\"openApi\",\"use\":[\"open-api-file-reference\",\"second-reference\"]}}}")),
-        		Arguments.of(
-        				Named.of("Binaries part used instead of sources",
-        				"{\"apiVersion\":\"1.0\",\"data\":{\"binaries\":[{\"name\":\"open-api-file-reference\"}]},\"webScan\":{\"uri\":\"https://localhost:8443\",\"api\":{\"type\":\"openApi\",\"use\":[\"open-api-file-reference\"]}}}")));
-        /* @formatter:on */
-    }
+        String moreThanOneDataSectionName = "Sources part more than one file in 2 data sections";
+        String sechubConfigWithmoreThanOneDataSection = """
+                {"apiVersion":"1.0","data":{"sources":[{"name":"open-api-file-reference","fileSystem":{"files":["openapi3.json"]}},
+                {"name":"second-reference","fileSystem":{"files":["second-openapi-file.json"]}}]},
+                "webScan":{"url":"https://localhost:8443","api":{"type":"openApi","use":["open-api-file-reference","second-reference"]}}}""";
 
-    static Stream<Arguments> filesystemPartSizeTestNamedArguments() {
-        /* @formatter:off */
+        String filesystemPartHasMoreThanOneFileName = "Filesystem files part more than one file";
+        String sechubConfigWithfilesystemPartHasMoreThanOneFile = """
+                {"apiVersion":"1.0","data":{"sources":[{"name":"open-api-file-reference","fileSystem":{"files":["openapi3.json", "second-file.json"]}}]},
+                "webScan":{"url":"https://localhost:8443","api":{"type":"openApi","use":["open-api-file-reference"]}}}""";
+
         return Stream.of(
-        		Arguments.of(
-        				Named.of("Filesystem part empty",
-        				"{\"apiVersion\":\"1.0\",\"data\":{\"sources\":[{\"name\":\"open-api-file-reference\",\"fileSystem\":{}}]},\"webScan\":{\"uri\":\"https://localhost:8443\",\"api\":{\"type\":\"openApi\",\"use\":[\"open-api-file-reference\"]}}}")),
-        		Arguments.of(
-        				Named.of("Filesystem part more than one file",
-        				"{\"apiVersion\":\"1.0\",\"data\":{\"sources\":[{\"name\":\"open-api-file-reference\",\"fileSystem\":{\"files\":[\"openapi3.json\", \"second-file.json\"]}}]},\"webScan\":{\"uri\":\"https://localhost:8443\",\"api\":{\"type\":\"openApi\",\"use\":[\"open-api-file-reference\"]}}}")));
+              Arguments.of(
+                      Named.of(moreThanOneDataSectionName,
+                              sechubConfigWithmoreThanOneDataSection)),
+              Arguments.of(
+                      Named.of(filesystemPartHasMoreThanOneFileName,
+                              sechubConfigWithfilesystemPartHasMoreThanOneFile)));
         /* @formatter:on */
     }
 
