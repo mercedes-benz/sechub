@@ -42,8 +42,7 @@ class ApiDefinitionFileProviderTest {
     void missing_data_section_part_results_in_empty_list() {
         /* prepare */
         String sechubScanConfigJSON = """
-                {\"apiVersion\":\"1.0\",
-                \"webScan\":{\"url\":\"https://localhost:8443\",\"api\":{\"type\":\"openApi\",\"use\":[\"open-api-file-reference\"]}}}""";
+                {"apiVersion":"1.0","webScan":{"url":"https://localhost:8443","api":{"type":"openApi","use":["open-api-file-reference"]}}}""";
         SecHubScanConfiguration sechubScanConfiguration = SecHubScanConfiguration.createFromJSON(sechubScanConfigJSON);
 
         /* execute */
@@ -57,8 +56,8 @@ class ApiDefinitionFileProviderTest {
     void empty_sources_section_in_sechub_configuration_results_in_empty_list() {
         /* prepare */
         String sechubScanConfigJSON = """
-                {\"apiVersion\":\"1.0\",\"data\":{\"sources\":[]},
-                \"webScan\":{\"url\":\"https://localhost:8443\",\"api\":{\"type\":\"openApi\",\"use\":[\"open-api-file-reference\"]}}}""";
+                {"apiVersion":"1.0","data":{"sources":[]},
+                "webScan":{"url":"https://localhost:8443","api":{"type":"openApi","use":["open-api-file-reference"]}}}""";
         SecHubScanConfiguration sechubScanConfiguration = SecHubScanConfiguration.createFromJSON(sechubScanConfigJSON);
 
         /* execute */
@@ -72,8 +71,8 @@ class ApiDefinitionFileProviderTest {
     void missing_filesystem_part_in_sechub_configuration_results_in_empty_openapi_files_list() {
         /* prepare */
         String sechubScanConfigJSON = """
-                {\"apiVersion\":\"1.0\",\"data\":{\"sources\":[{\"name\":\"open-api-file-reference\"}]},
-                \"webScan\":{\"url\":\"https://localhost:8443\",\"api\":{\"type\":\"openApi\",\"use\":[\"open-api-file-reference\"]}}}""";
+                {"apiVersion":"1.0","data":{"sources":[{"name":"open-api-file-reference"}]},
+                "webScan":{"url":"https://localhost:8443","api":{"type":"openApi","use":["open-api-file-reference"]}}}""";
         SecHubScanConfiguration sechubScanConfiguration = SecHubScanConfiguration.createFromJSON(sechubScanConfigJSON);
 
         /* execute */
@@ -87,8 +86,8 @@ class ApiDefinitionFileProviderTest {
     void empty_filesystem_part_in_sechub_configuration_results_in_empty_list() {
         /* prepare */
         String sechubScanConfigJSON = """
-                {\"apiVersion\":\"1.0\",\"data\":{\"sources\":[{\"name\":\"open-api-file-reference\",\"fileSystem\":{}}]},
-                \"webScan\":{\"url\":\"https://localhost:8443\",\"api\":{\"type\":\"openApi\",\"use\":[\"open-api-file-reference\"]}}}""";
+                {"apiVersion":"1.0","data":{"sources":[{"name":"open-api-file-reference","fileSystem":{}}]},
+                "webScan":{"url":"https://localhost:8443","api":{"type":"openApi","use":["open-api-file-reference"]}}}""";
         SecHubScanConfiguration sechubScanConfiguration = SecHubScanConfiguration.createFromJSON(sechubScanConfigJSON);
 
         /* execute */
@@ -102,8 +101,8 @@ class ApiDefinitionFileProviderTest {
     void binaries_instead_of_sources_results_in_empty_list() {
         /* prepare */
         String sechubScanConfigJSON = """
-                {\"apiVersion\":\"1.0\",\"data\":{\"binaries\":[{\"name\":\"open-api-file-reference\"}]},
-                \"webScan\":{\"url\":\"https://localhost:8443\",\"api\":{\"type\":\"openApi\",\"use\":[\"open-api-file-reference\"]}}}""";
+                {"apiVersion":"1.0","data":{"binaries":[{"name":"open-api-file-reference"}]},
+                "webScan":{"url":"https://localhost:8443","api":{"type":"openApi","use":["open-api-file-reference"]}}}""";
         SecHubScanConfiguration sechubScanConfiguration = SecHubScanConfiguration.createFromJSON(sechubScanConfigJSON);
 
         /* execute */
@@ -117,8 +116,8 @@ class ApiDefinitionFileProviderTest {
     void folders_instead_of_files_inside_filesystem_results_in_empty_list() {
         /* prepare */
         String sechubScanConfigJSON = """
-                {\"apiVersion\":\"1.0\",\"data\":{\"sources\":[{\"name\":\"open-api-file-reference\",\"fileSystem\":{\"folders\":[\"openapifolder/\"]}}]},
-                \"webScan\":{\"url\":\"https://localhost:8443\",\"api\":{\"type\":\"openApi\",\"use\":[\"open-api-file-reference\"]}}}""";
+                {"apiVersion":"1.0","data":{"sources":[{"name":"open-api-file-reference","fileSystem":{"folders":["openapifolder/"]}}]},
+                "webScan":{"url":"https://localhost:8443","api":{"type":"openApi","use":["open-api-file-reference"]}}}""";
         SecHubScanConfiguration sechubScanConfiguration = SecHubScanConfiguration.createFromJSON(sechubScanConfigJSON);
 
         /* execute */
@@ -132,8 +131,8 @@ class ApiDefinitionFileProviderTest {
     void data_section_name_differs_from_use_part_inside_openapi_definition_results_in_empty_list() {
         /* prepare */
         String sechubScanConfigJSON = """
-                {\"apiVersion\":\"1.0\",\"data\":{\"sources\":[{\"name\":\"open-api-file-reference\",\"fileSystem\":{\"files\":[\"openapi3.json\"]}}]},
-                \"webScan\":{\"url\":\"https://localhost:8443\",\"api\":{\"type\":\"openApi\",\"use\":[\"no-existing-reference\"]}}}""";
+                {"apiVersion":"1.0","data":{"sources":[{"name":"open-api-file-reference","fileSystem":{"files":["openapi3.json"]}}]},
+                "webScan":{"url":"https://localhost:8443","api":{"type":"openApi","use":["no-existing-reference"]}}}""";
         SecHubScanConfiguration sechubScanConfiguration = SecHubScanConfiguration.createFromJSON(sechubScanConfigJSON);
 
         /* execute */
@@ -147,8 +146,8 @@ class ApiDefinitionFileProviderTest {
     void valid_sechub_scan_config_with_openapi_definition_file_results_in_list_with_one_file() {
         /* prepare */
         String sechubScanConfigJSON = """
-                {\"apiVersion\":\"1.0\",\"data\":{\"sources\":[{\"name\":\"open-api-file-reference\",\"fileSystem\":{\"files\":[\"openapi3.json\"]}}]},
-                \"webScan\":{\"url\":\"https://localhost:8443\",\"api\":{\"type\":\"openApi\",\"use\":[\"open-api-file-reference\"]}}}""";
+                {"apiVersion":"1.0","data":{"sources":[{"name":"open-api-file-reference","fileSystem":{"files":["openapi3.json"]}}]},
+                "webScan":{"url":"https://localhost:8443","api":{"type":"openApi","use":["open-api-file-reference"]}}}""";
         SecHubScanConfiguration sechubScanConfiguration = SecHubScanConfiguration.createFromJSON(sechubScanConfigJSON);
 
         /* execute */
@@ -175,14 +174,14 @@ class ApiDefinitionFileProviderTest {
         /* @formatter:off */
         String moreThanOneDataSectionName = "Sources part more than one file in 2 data sections";
         String sechubConfigWithmoreThanOneDataSection = """
-                {\"apiVersion\":\"1.0\",\"data\":{\"sources\":[{\"name\":\"open-api-file-reference\",\"fileSystem\":{\"files\":[\"openapi3.json\"]}},
-                {\"name\":\"second-reference\",\"fileSystem\":{\"files\":[\"second-openapi-file.json\"]}}]},
-                \"webScan\":{\"url\":\"https://localhost:8443\",\"api\":{\"type\":\"openApi\",\"use\":[\"open-api-file-reference\",\"second-reference\"]}}}""";
+                {"apiVersion":"1.0","data":{"sources":[{"name":"open-api-file-reference","fileSystem":{"files":["openapi3.json"]}},
+                {"name":"second-reference","fileSystem":{"files":["second-openapi-file.json"]}}]},
+                "webScan":{"url":"https://localhost:8443","api":{"type":"openApi","use":["open-api-file-reference","second-reference"]}}}""";
 
         String filesystemPartHasMoreThanOneFileName = "Filesystem files part more than one file";
         String sechubConfigWithfilesystemPartHasMoreThanOneFile = """
-                {\"apiVersion\":\"1.0\",\"data\":{\"sources\":[{\"name\":\"open-api-file-reference\",\"fileSystem\":{\"files\":[\"openapi3.json\", \"second-file.json\"]}}]},
-                \"webScan\":{\"url\":\"https://localhost:8443\",\"api\":{\"type\":\"openApi\",\"use\":[\"open-api-file-reference\"]}}}""";
+                {"apiVersion":"1.0","data":{"sources":[{"name":"open-api-file-reference","fileSystem":{"files":["openapi3.json", "second-file.json"]}}]},
+                "webScan":{"url":"https://localhost:8443","api":{"type":"openApi","use":["open-api-file-reference"]}}}""";
 
         return Stream.of(
               Arguments.of(
