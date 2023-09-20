@@ -35,7 +35,7 @@ public class XrayHttpResponseBuilder {
         response.setHeaders(header);
 
         // append response
-        InputStream is = null;
+        InputStream is;
 
         if (con.getResponseCode() > 299) {
             is = con.getErrorStream();
@@ -43,20 +43,16 @@ public class XrayHttpResponseBuilder {
             is = con.getInputStream();
         }
 
-        if (is == null) {
-            // todo: Error Log or Error Handling
-            System.out.println("Input Stream is empty - an error occured. Status Code:" + response.getStatus_code());
-            System.out.println("Properties:" + con.getRequestProperties().toString());
-        }
-
-        String type = con.getHeaderField("Content-Type");
-        if (Objects.equals(type, "application/gzip")) {
-            // case application/gzip (report files in zip container)
-            saveInputStreamToZipFile(zipArchive, is);
-        } else {
-            // case application/json is saved as string body
-            StringBuilder content = saveInputStreamToStringBuilder(is);
-            response.setBody(content.toString());
+        if (is != null) {
+            String type = con.getHeaderField("Content-Type");
+            if (Objects.equals(type, "application/gzip")) {
+                // case application/gzip (report files in zip container)
+                saveInputStreamToZipFile(zipArchive, is);
+            } else {
+                // case application/json is saved as string body
+                StringBuilder content = saveInputStreamToStringBuilder(is);
+                response.setBody(content.toString());
+            }
         }
         return response;
     }

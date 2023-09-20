@@ -5,9 +5,9 @@ import java.util.Base64;
 
 public class XrayAuthenticationHeader {
     public static String setAuthHeader() {
-        EnvironmentVariableReader environmentVairiableReader = new EnvironmentVariableReader();
-        String username = environmentVairiableReader.readEnvAsString(EnvironmentVariableConstants.XRAY_USERNAME_ENV);
-        String pwd = environmentVairiableReader.readEnvAsString(EnvironmentVariableConstants.XRAY_PASSWORD_ENV);
+        EnvironmentVariableReader environmentVariableReader = new EnvironmentVariableReader();
+        String username = environmentVariableReader.readEnvAsString(EnvironmentVariableConstants.XRAY_USERNAME_ENV);
+        String pwd = environmentVariableReader.readEnvAsString(EnvironmentVariableConstants.XRAY_PASSWORD_ENV);
         String auth = (username + ":" + pwd);
         byte[] encodedAuth = Base64.getEncoder().encode(auth.getBytes(StandardCharsets.UTF_8));
         return "Basic " + new String(encodedAuth);

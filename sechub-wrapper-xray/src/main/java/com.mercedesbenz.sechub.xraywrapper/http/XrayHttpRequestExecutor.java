@@ -20,7 +20,7 @@ public class XrayHttpRequestExecutor {
      * @throws IOException
      */
     public static HttpURLConnection setUpGetConnection(XrayAPIRequest request) throws IOException {
-        URL url = new URL(request.getBaseUrl());
+        URL url = request.getUrl();
         HttpURLConnection con = (HttpURLConnection) url.openConnection();
         con.setRequestMethod(request.getRequestMethodEnum().toString());
         con.setRequestProperty("Content-Type", "application/json");

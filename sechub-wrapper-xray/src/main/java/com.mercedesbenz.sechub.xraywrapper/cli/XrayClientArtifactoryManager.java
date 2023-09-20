@@ -62,7 +62,7 @@ public class XrayClientArtifactoryManager {
         }
 
         // save reports from xray
-        if (saveScanReportsSuccess())
+        if (requestScanReports())
             manageReports();
     }
 
@@ -89,20 +89,21 @@ public class XrayClientArtifactoryManager {
     }
 
     private String getXrayVersion() throws IOException {
-        XrayAPIRequest request = XrayHttpRequestGenerator.getXrayVersion(xrayConfiguration.getArtifactory());
+        XrayAPIRequest request = XrayHttpRequestGenerator.generateGetXrayVersion(xrayConfiguration.getArtifactory());
         XrayAPIResponse response = send(request);
         JsonNode node = getBodyAsNode(response.getBody());
         return node.get("xray_version").asText();
     }
 
     private boolean checkArtifactoryUpload() throws IOException {
-        XrayAPIRequest request = XrayHttpRequestGenerator.checkArtifactUpload(xrayConfiguration.getArtifactory(), artifact, xrayConfiguration.getRegister());
+        XrayAPIRequest request = XrayHttpRequestGenerator.generateCheckArtifactUpload(xrayConfiguration.getArtifactory(), artifact,
+                xrayConfiguration.getRegister());
         XrayAPIResponse response = send(request);
         return !(isErrorResponse(response));
     }
 
     private String getScanStatus() throws IOException {
-        XrayAPIRequest request = XrayHttpRequestGenerator.getScanStatus(xrayConfiguration.getArtifactory(), artifact, xrayConfiguration.getRegister());
+        XrayAPIRequest request = XrayHttpRequestGenerator.generateGetScanStatus(xrayConfiguration.getArtifactory(), artifact, xrayConfiguration.getRegister());
         XrayAPIResponse response = send(request);
         if (!isErrorResponse(response)) {
             JsonNode node = getBodyAsNode(response.getBody());
@@ -111,14 +112,14 @@ public class XrayClientArtifactoryManager {
         return "error";
     }
 
-    private boolean saveScanReportsSuccess() throws IOException {
-        XrayAPIRequest request = XrayHttpRequestGenerator.getScanReports(xrayConfiguration.getArtifactory(), artifact, xrayConfiguration.getRegister());
+    private boolean requestScanReports() throws IOException {
+        XrayAPIRequest request = XrayHttpRequestGenerator.generateGetScanReports(xrayConfiguration.getArtifactory(), artifact);
         XrayAPIResponse response = send(request);
         return !isErrorResponse(response);
     }
 
     private String startScanArtifact() throws IOException {
-        XrayAPIRequest request = XrayHttpRequestGenerator.scanArtifact(xrayConfiguration.getArtifactory(), artifact, xrayConfiguration.getRegister());
+        XrayAPIRequest request = XrayHttpRequestGenerator.generateScanArtifact(xrayConfiguration.getArtifactory(), artifact, xrayConfiguration.getRegister());
         XrayAPIResponse response = send(request);
         if (!isErrorResponse(response)) {
             JsonNode node = getBodyAsNode(response.getBody());

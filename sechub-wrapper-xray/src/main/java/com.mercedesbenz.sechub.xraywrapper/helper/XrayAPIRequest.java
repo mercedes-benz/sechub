@@ -1,6 +1,7 @@
 package com.mercedesbenz.sechub.xraywrapper.helper;
 
-import com.mercedesbenz.sechub.xraywrapper.util.XrayAuthenticationHeader;
+import java.net.MalformedURLException;
+import java.net.URL;
 
 public class XrayAPIRequest {
     public enum RequestMethodEnum {
@@ -9,23 +10,15 @@ public class XrayAPIRequest {
 
     private String baseUrl;
 
+    private URL url;
+
     private RequestMethodEnum requestMethodEnum;
 
     private boolean authentication = false;
 
     private String data;
 
-    private String filename;
-
     public XrayAPIRequest() {
-    }
-
-    public XrayAPIRequest(String baseUrl, RequestMethodEnum requestMethodEnum, boolean authentication, String data, String filename) {
-        this.baseUrl = baseUrl;
-        this.requestMethodEnum = requestMethodEnum;
-        this.authentication = authentication;
-        this.data = data;
-        this.filename = filename;
     }
 
     public XrayAPIRequest(String baseUrl, RequestMethodEnum requestMethodEnum, boolean authentication, String data) {
@@ -33,43 +26,52 @@ public class XrayAPIRequest {
         this.requestMethodEnum = requestMethodEnum;
         this.authentication = authentication;
         this.data = data;
-        filename = "";
     }
 
     public void setRequestMethodEnum(RequestMethodEnum requestMethodEnum) {
         this.requestMethodEnum = requestMethodEnum;
     }
 
+    public RequestMethodEnum getRequestMethodEnum() {
+        return requestMethodEnum;
+    }
+
     public void setBaseUrl(String baseUrl) {
         this.baseUrl = baseUrl;
-    }
-
-    public void setAuthentication(boolean authentication) {
-        this.authentication = authentication;
-    }
-
-    public void setData(String data) {
-        this.data = data;
     }
 
     public String getBaseUrl() {
         return baseUrl;
     }
 
+    public void setAuthentication(boolean authentication) {
+        this.authentication = authentication;
+    }
+
     public boolean needAuthentication() {
         return authentication;
     }
 
-    public RequestMethodEnum getRequestMethodEnum() {
-        return requestMethodEnum;
+    public void setData(String data) {
+        this.data = data;
     }
 
     public String getData() {
         return data;
     }
 
-    public String authenticate() {
-        return XrayAuthenticationHeader.setAuthHeader();
+    public URL getUrl() throws MalformedURLException {
+        if (url == null) {
+            url = stringToUrl();
+        }
+        return url;
     }
 
+    public void setUrl(URL url) {
+        this.url = url;
+    }
+
+    private URL stringToUrl() throws MalformedURLException {
+        return new URL(this.baseUrl);
+    }
 }
