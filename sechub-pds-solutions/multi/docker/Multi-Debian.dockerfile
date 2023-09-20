@@ -28,7 +28,7 @@ COPY mocks "$MOCK_FOLDER"
 RUN export DEBIAN_FRONTEND=noninteractive && \
     apt-get update && \
     apt-get --assume-yes upgrade  && \
-    apt-get --assume-yes install sed wget pip && \
+    apt-get --assume-yes install sed wget pip git && \
     apt-get --assume-yes clean
 
 # Install Flawfinder, Bandit, njsscan and mobsfscan
@@ -39,6 +39,11 @@ COPY packages.txt $TOOL_FOLDER/packages.txt
 # Interesting idea, but not as useful inside a container, which in essence is already a virtual environment.
 # Use `--break-system-packages` to let the Python package manager `pip` mix packages from Debian and Python
 RUN pip install --break-system-packages -r $TOOL_FOLDER/packages.txt
+# The pip -e option seems to be broken in recent versions of setuptools
+# when it comes to installing modules from the local filesystem,
+# see: https://github.com/pypa/setuptools/issues/3301
+# this is why we download the plugin using a GIT http call and not use GIT submodules
+RUN pip install --break-system-packages -e "git+https://github.com/alexdd/bandit-sarif-formatter#egg=bandit-sarif-formatter"
 
 # Create the PDS workspace
 WORKDIR "$WORKSPACE"
