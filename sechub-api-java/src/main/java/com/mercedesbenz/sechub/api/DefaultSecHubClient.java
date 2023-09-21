@@ -70,10 +70,7 @@ public class DefaultSecHubClient extends AbstractSecHubClient {
     }
 
     public DefaultSecHubClient(URI serverUri, String username, String apiToken, boolean trustAll) {
-        setUsername(username);
-        setApiToken(apiToken);
-        setServerUri(serverUri);
-        setTrustAll(trustAll);
+        super(serverUri, username, apiToken, trustAll);
 
         apiClient = new ApiClientBuilder().createApiClient(this, mapper);
 

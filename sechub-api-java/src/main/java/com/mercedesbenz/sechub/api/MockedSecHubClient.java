@@ -1,5 +1,6 @@
 package com.mercedesbenz.sechub.api;
 
+import java.net.URI;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -33,6 +34,7 @@ public class MockedSecHubClient extends AbstractSecHubClient {
     private Set<String> userToProjectAssignments = new HashSet<>();
 
     public MockedSecHubClient() {
+        super(URI.create("https://localhost/mocked-sechub"), "mockuser", "pseudo-token", true);
         mockDataAccess = new MockDataAccess();
     }
 
