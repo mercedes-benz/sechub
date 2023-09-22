@@ -63,7 +63,7 @@ jobs:
           exit 1
 
       - name: Checkout master
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           ref: master
       # Create temporary local tags, so we build documentation for this tag...
@@ -97,7 +97,7 @@ jobs:
           go-version: 1.20.4
 
       - name: Set up Go caching
-        uses: actions/cache@v3.3.1
+        uses: actions/cache@v3.3.2
         id: go-cache
         with:
           path: |
@@ -108,7 +108,7 @@ jobs:
             ${{ runner.os }}-go-
 
       - name: Docker login to ghcr.io
-        uses: docker/login-action@v2
+        uses: docker/login-action@v3
         with:
           registry: ghcr.io
           username: ${{ github.repository_owner }}

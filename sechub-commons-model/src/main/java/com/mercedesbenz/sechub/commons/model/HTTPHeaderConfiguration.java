@@ -4,6 +4,9 @@ package com.mercedesbenz.sechub.commons.model;
 import java.util.List;
 import java.util.Optional;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class HTTPHeaderConfiguration {
     public static final String PROPERTY_NAME = "name";
     public static final String PROPERTY_VALUE = "value";

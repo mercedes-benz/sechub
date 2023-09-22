@@ -17,6 +17,7 @@ import java.util.TreeMap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.mercedesbenz.sechub.api.DefaultSecHubClient;
 import com.mercedesbenz.sechub.api.SecHubClient;
 import com.mercedesbenz.sechub.commons.model.ScanType;
 import com.mercedesbenz.sechub.pds.commons.core.config.PDSProductSetup;
@@ -296,7 +297,7 @@ public class SystemTestRuntimeContext {
             String userId = getTemplateEngine().replaceSecretEnvironmentVariablesWithValues(credentials.getUserId(), getEnvironmentProvider());
             String apiToken = getTemplateEngine().replaceSecretEnvironmentVariablesWithValues(credentials.getApiToken(), getEnvironmentProvider());
 
-            client = new SecHubClient(serverUri, userId, apiToken, TRUST_ALL);
+            client = new DefaultSecHubClient(serverUri, userId, apiToken, TRUST_ALL);
             client.addListener(new ArtifactStorageSecHubClientListener(this));
             LOG.info("Created SecHub client for user: '{}', apiToken: '{}'", client.getUsername(), "*".repeat(client.getSealedApiToken().length()));
         } catch (RuntimeException e) {

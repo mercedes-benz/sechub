@@ -9,4 +9,4 @@ set -e
 
 # Working dir: $sechubRoot/echub-systemtest/src/test/resources/fake-root/test/preparation
 echo "Start copy of data.txt to $1"
-cp -r $(pwd)/inttest-data/upload/codescan-medium-findings $1
+cp -r "$(pwd)/inttest-data/upload/codescan-medium-findings" "$1"

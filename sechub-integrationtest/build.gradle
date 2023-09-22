@@ -96,13 +96,13 @@ task stopOldIntegrationTestPDS(dependsOn: configureIntegrationTestPDS){
 
 }
 
-/** Starts integraitontestserver
+/** Starts integrationtestserver
  *  If another integration test server runs, the script will terminate the other server automatically - will kill zombies.
  */
 task startIntegrationTestServer(dependsOn: stopOldIntegrationTestServer){
     group 'sechub'
 
-    description 'Starts an integration test server - if already a server is running we will wait until timout (10 minutes). ' +
+    description 'Starts an integration test server - if already a server is running we will wait until timeout (10 minutes). ' +
                 'When timeout build fails but "zombie server" will be stopped too!'
     doLast{
         def pathString = tempDirPath.toString();
@@ -111,7 +111,7 @@ task startIntegrationTestServer(dependsOn: stopOldIntegrationTestServer){
 
 }
 
-/** Starts integraitontestserver
+/** Starts integrationtestserver
  *  If another integration test server runs, the script will terminate the other server automatically - will kill zombies.
  */
 task startIntegrationTestPDS(dependsOn: stopOldIntegrationTestPDS){
@@ -213,11 +213,11 @@ class IntegrationTestScriptAccess extends CmdExecutor{
             executeScript("stop",workingDir,null,60,port,"")
        }
 
-       public void start(File workingDir, String useVersion,String port,String sharedVolumeBaseDir) throws Exception{
+       public void start(File workingDir, String useVersion, String port, String sharedVolumeBaseDir) throws Exception{
             executeScript("start",workingDir,useVersion,300,port, sharedVolumeBaseDir); /* max 5 minutes */
        }
        
-       private void executeScript(String command, File workingDir, String useVersion, int timeOutInSeconds,String port, String sharedVolumeBaseDir) throws Exception{
+       private void executeScript(String command, File workingDir, String useVersion, int timeOutInSeconds, String port, String sharedVolumeBaseDir) throws Exception{
           CmdExecutor exec = new CmdExecutor();
           exec.setTimeOutInSeconds(timeOutInSeconds);
           

@@ -36,6 +36,10 @@ include 'sechub-cli',
 
 'sechub-statistic',
 
+/* server solutions */
+'sechub-solution',
+'sechub-solutions-shared',
+
 // adapters
 'sechub-adapter',
 'deprecated-sechub-adapter-netsparker',

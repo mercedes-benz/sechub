@@ -54,22 +54,22 @@ fi
 # Handle extreaction
 #
 if [[ "$PDS_JOB_HAS_EXTRACTED_SOURCES" = "true" ]]; then
-   mergeFolderFilesRecursivelyIntoResultFile "sources", $PDS_JOB_EXTRACTED_SOURCES_FOLDER ${PDS_JOB_RESULT_FILE} $PDS_DEBUG_ENABLED
+   mergeFolderFilesRecursivelyIntoResultFile "sources", "$PDS_JOB_EXTRACTED_SOURCES_FOLDER" "${PDS_JOB_RESULT_FILE}" "$PDS_DEBUG_ENABLED"
 fi
 
 if [[ "$PDS_JOB_HAS_EXTRACTED_BINARIES" = "true" ]]; then
-   mergeFolderFilesRecursivelyIntoResultFile "binaries" $PDS_JOB_EXTRACTED_BINARIES_FOLDER ${PDS_JOB_RESULT_FILE} $PDS_DEBUG_ENABLED
+   mergeFolderFilesRecursivelyIntoResultFile "binaries" "$PDS_JOB_EXTRACTED_BINARIES_FOLDER" "${PDS_JOB_RESULT_FILE}" "$PDS_DEBUG_ENABLED"
 fi
 
 # Now we add a "header" so identifyable by importer + synthetic info object to check params
 if [[ ! -f "${PDS_JOB_RESULT_FILE}" ]]; then
-    touch ${PDS_JOB_RESULT_FILE}
+    touch "${PDS_JOB_RESULT_FILE}"
     echo "${PDS_JOB_RESULT_FILE} was missing - created empty file"
 fi
 
 echo "#PDS_INTTEST_PRODUCT_CODESCAN
 info:pds.test.key.variantname as PDS_TEST_KEY_VARIANTNAME=$PDS_TEST_KEY_VARIANTNAME,product1.level as PRODUCT1_LEVEL=$PRODUCT1_LEVEL
-$(cat ${PDS_JOB_RESULT_FILE})" > ${PDS_JOB_RESULT_FILE}
+$(cat ${PDS_JOB_RESULT_FILE})" > "${PDS_JOB_RESULT_FILE}"
 
 
 if [[ "$PDS_TEST_KEY_VARIANTNAME" = "f" ]]; then
@@ -127,11 +127,11 @@ if [[ "$PDS_TEST_KEY_VARIANTNAME" = "" ]]; then
     
     echo "After messages were created, I found this inside messages folder:"
     echo "----------------------------------------------------------------------------"
-    ls $PDS_JOB_USER_MESSAGES_FOLDER 
+    ls "$PDS_JOB_USER_MESSAGES_FOLDER" 
     echo "----------------------------------------------------------------------------"
     
     # For direct pds tests, we create a simple metadata.txt when executed:
-    echo "generated meta data for PDS job:$PDS_JOB_UUID" > $PDS_JOB_METADATA_FILE
+    echo "generated meta data for PDS job:$PDS_JOB_UUID" > "$PDS_JOB_METADATA_FILE"
     echo "> Meta data was written..."
     echo "> PDS_JOB_METADATA_FILE=$PDS_JOB_METADATA_FILE"
     

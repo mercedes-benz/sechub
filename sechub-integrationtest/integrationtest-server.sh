@@ -170,21 +170,21 @@ function startServer(){
     export SECHUB_STORAGE_SHAREDVOLUME_UPLOAD_DIR="$SHARED_VOLUME_BASEDIR"
 
     pathToJar="../sechub-server/build/libs/sechub-server-$SERVER_VERSION.jar"
-    if [ ! -f $pathToJar ]; then
+    if [ ! -f "$pathToJar" ]; then
         log ">> FAILURE: version not build:$SERVER_VERSION, looked into $pathToJar"
         log ">> Found content inside library folder:"
         ls -al "../sechub-server/build/libs/"
         exit 1
     fi
     pathToLog="$currentDir/integrationtest-server.log"
-    if [ -f $pathToLog ]; then
+    if [ -f "$pathToLog" ]; then
         log ">> INFO: removing old logfile: $pathToLog"
-        rm $pathToLog
+        rm "$pathToLog"
     fi
     # Unset proxy so e.g. S3 access will be done without proxy
     export http_proxy=""
     export https_proxy=""
-    java -jar $pathToJar > $pathToLog 2>&1 &
+    java -jar "$pathToJar" > "$pathToLog" 2>&1 &
     log ">> INFO: Integration test server has been started"
     log "         logfiles can be found at: $pathToLog"
     log "         ... waiting for server to be up and running ..."

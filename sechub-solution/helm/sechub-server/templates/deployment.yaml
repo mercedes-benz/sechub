@@ -369,21 +369,6 @@ spec:
                name: secret-pds-checkmarx
                key: techuser_password
 {{- end }}
-{{- if .Values.pdsCloc.enabled }}
-# ----------------------------------------------------------------------------------------------#
-# - Scope: PDS-Cloc
-# --------------------------------------------------------------------------------------------- #
-        - name: SECHUB_PDS_CLOC_USERID
-          valueFrom:
-            secretKeyRef:
-               name: secret-pds-cloc
-               key: techuser_username
-        - name: SECHUB_PDS_CLOC_PASSWORD
-          valueFrom:
-            secretKeyRef:
-               name: secret-pds-cloc
-               key: techuser_password
-{{- end }}
 {{- if .Values.pdsCoverity.enabled }}
 # ----------------------------------------------------------------------------------------------#
 # - Scope: PDS-Coverity
@@ -427,6 +412,21 @@ spec:
           valueFrom:
             secretKeyRef:
                name: secret-pds-gosec
+               key: techuser_password
+{{- end }}
+{{- if .Values.pdsLoc.enabled }}
+# ----------------------------------------------------------------------------------------------#
+# - Scope: PDS-Loc
+# --------------------------------------------------------------------------------------------- #
+        - name: SECHUB_PDS_LOC_USERID
+          valueFrom:
+            secretKeyRef:
+               name: secret-pds-loc
+               key: techuser_username
+        - name: SECHUB_PDS_LOC_PASSWORD
+          valueFrom:
+            secretKeyRef:
+               name: secret-pds-loc
                key: techuser_password
 {{- end }}
 {{- if .Values.pdsMulti.enabled }}
