@@ -5,7 +5,6 @@ import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
-import com.mercedesbenz.sechub.xraywrapper.helper.XrayAPIRequest;
 import com.mercedesbenz.sechub.xraywrapper.util.XrayAuthenticationHeader;
 
 public class XrayHttpRequestExecutor {

@@ -10,8 +10,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
-import com.mercedesbenz.sechub.xraywrapper.helper.XrayAPIResponse;
-
 public class XrayHttpResponseBuilder {
 
     // https://github.com/eugenp/tutorials/blob/master/core-java-modules/core-java-networking-2/src/main/java/com/baeldung/httprequest/FullResponseBuilder.java

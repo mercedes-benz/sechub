@@ -1,4 +1,4 @@
-package com.mercedesbenz.sechub.xraywrapper.helper;
+package com.mercedesbenz.sechub.xraywrapper.http;
 
 import java.util.Collections;
 import java.util.List;

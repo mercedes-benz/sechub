@@ -4,8 +4,8 @@ import static com.mercedesbenz.sechub.xraywrapper.util.XrayConfigurationCreater.
 
 import java.io.IOException;
 
+import com.mercedesbenz.sechub.xraywrapper.config.XrayArtifact;
 import com.mercedesbenz.sechub.xraywrapper.config.XrayConfiguration;
-import com.mercedesbenz.sechub.xraywrapper.helper.XrayArtifact;
 
 public class XrayWrapperCLI {
 
@@ -13,16 +13,22 @@ public class XrayWrapperCLI {
         new XrayWrapperCLI().start(args);
     }
 
-    private void start(String[] args) {
+    XrayClientArtifactoryController xrayClientArtifactoryController;
+
+    void start(String[] args) {
         XrayWrapperCommandLineParser parser = new XrayWrapperCommandLineParser();
         final XrayWrapperCommandLineParser.Arguments arguments = parser.parseCommandLineArgs(args);
 
         XrayConfiguration xrayConfiguration = createXrayConfiguration(arguments.scantype(), arguments.outputFile());
         XrayArtifact artifact = new XrayArtifact(arguments.name(), arguments.sha256(), arguments.tag(), arguments.scantype());
 
-        XrayClientArtifactoryManager xrayClientArtifactoryManager = new XrayClientArtifactoryManager(xrayConfiguration, artifact);
+        // xrayClientArtifactoryManager =
+        // XrayClientArtifactoryManager.Builder.create(xrayConfiguration,
+        // artifact).build();
+
+        xrayClientArtifactoryController = new XrayClientArtifactoryController(xrayConfiguration, artifact);
         try {
-            xrayClientArtifactoryManager.start();
+            xrayClientArtifactoryController.waitForScansToFinishAndDownloadReport();
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

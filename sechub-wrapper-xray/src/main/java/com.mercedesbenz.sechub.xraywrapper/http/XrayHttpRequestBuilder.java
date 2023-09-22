@@ -1,10 +1,9 @@
 package com.mercedesbenz.sechub.xraywrapper.http;
 
-import com.mercedesbenz.sechub.xraywrapper.helper.XrayAPIRequest;
-import com.mercedesbenz.sechub.xraywrapper.helper.XrayArtifact;
+import com.mercedesbenz.sechub.xraywrapper.config.XrayArtifact;
 
 // This class creates POST and GET request to access the JFrog Artifactory and Xray
-public class XrayHttpRequestGenerator {
+public class XrayHttpRequestBuilder {
 
     /**
      * Creates GET request to get the JFrog Xray version

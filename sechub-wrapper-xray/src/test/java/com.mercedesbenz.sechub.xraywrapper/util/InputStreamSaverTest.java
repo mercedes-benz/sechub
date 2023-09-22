@@ -10,7 +10,7 @@ import java.io.InputStream;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import com.mercedesbenz.sechub.xraywrapper.helper.XrayAPIResponse;
+import com.mercedesbenz.sechub.xraywrapper.http.XrayAPIResponse;
 
 class InputStreamSaverTest {
 

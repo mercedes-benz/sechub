@@ -29,7 +29,9 @@ class XrayReportReaderTest {
 
         // execute
         try {
-            reportReader.readReport(source, "");
+            reportReader.getFiles(source, "");
+            reportReader.readSecurityReport();
+            reportReader.mapVulnerabilities();
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

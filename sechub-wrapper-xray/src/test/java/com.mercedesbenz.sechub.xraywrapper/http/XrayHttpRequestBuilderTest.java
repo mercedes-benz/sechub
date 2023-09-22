@@ -1,15 +1,14 @@
 package com.mercedesbenz.sechub.xraywrapper.http;
 
-import static com.mercedesbenz.sechub.xraywrapper.http.XrayHttpRequestGenerator.*;
+import static com.mercedesbenz.sechub.xraywrapper.http.XrayHttpRequestBuilder.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import com.mercedesbenz.sechub.xraywrapper.helper.XrayAPIRequest;
-import com.mercedesbenz.sechub.xraywrapper.helper.XrayArtifact;
+import com.mercedesbenz.sechub.xraywrapper.config.XrayArtifact;
 
-class XrayHttpRequestGeneratorTest {
+class XrayHttpRequestBuilderTest {
 
     String url;
     String register;

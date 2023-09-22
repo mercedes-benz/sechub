@@ -25,7 +25,7 @@ public class XrayReportReader {
     private File sechubReport;
     HashMap<String, XrayCycloneVulnerability> vulnerabilityHashMap;
 
-    public void readReport(String zipArchiveName, String pdsResultFile) throws IOException {
+    public void getFiles(String zipArchiveName, String pdsResultFile) throws IOException {
         sechubReport = new File(pdsResultFile);
         if (!ReportExtractor.fileExists(zipArchiveName)) {
             // folder is zipped :)
@@ -50,9 +50,6 @@ public class XrayReportReader {
         if (!securityPath.isEmpty()) {
             securityreport = securityPath.get(0).toFile();
         }
-
-        readSecurityReport();
-        insertJSON();
     }
 
     /**
@@ -77,7 +74,7 @@ public class XrayReportReader {
      *
      * @throws IOException
      */
-    private void readSecurityReport() throws IOException {
+    public void readSecurityReport() throws IOException {
         vulnerabilityHashMap = new HashMap<String, XrayCycloneVulnerability>();
         final JsonNode rootDataNode = new ObjectMapper().readTree(securityreport).get("data");
         for (JsonNode node : rootDataNode) {
@@ -161,7 +158,7 @@ public class XrayReportReader {
         return bom_ref;
     }
 
-    private void insertJSON() throws IOException {
+    public void mapVulnerabilities() throws IOException {
         // todo: What about CVE-ID not in cycloneDX report or same CVE ID?
         ObjectMapper mapper = new ObjectMapper();
         ObjectWriter writer = mapper.writer(new DefaultPrettyPrinter());

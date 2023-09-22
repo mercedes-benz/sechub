@@ -16,6 +16,8 @@ public class XrayConfiguration {
 
     private int requestRetries = 10;
 
+    // todo: builder
+
     public XrayConfiguration(String artifactory, String register, String scan_type, String report_filename, String secHubReport) {
         this.artifactory = artifactory;
         this.register = register;

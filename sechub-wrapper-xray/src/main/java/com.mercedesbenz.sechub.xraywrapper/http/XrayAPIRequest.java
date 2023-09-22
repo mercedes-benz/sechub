@@ -1,4 +1,4 @@
-package com.mercedesbenz.sechub.xraywrapper.helper;
+package com.mercedesbenz.sechub.xraywrapper.http;
 
 import java.net.MalformedURLException;
 import java.net.URL;

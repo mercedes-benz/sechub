@@ -13,8 +13,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 
-import com.mercedesbenz.sechub.xraywrapper.helper.XrayAPIResponse;
-
 class XrayHttpResponseBuilderTest {
 
     @Mock
