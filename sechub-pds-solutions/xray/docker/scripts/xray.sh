@@ -11,6 +11,7 @@ echo "PDS Job UUID: $PDS_JOB_UUID"
 echo ""
 
 SKOPEO_AUTH="auth.json"
+# UPLOAD_DIR=$PDS_JOB_EXTRACTED_BINARIES_FOLDER
 UPLOAD_DIR=$PDS_JOB_EXTRACTED_SOURCES_FOLDER
 
 check_valid_upload () {
@@ -34,6 +35,7 @@ skopeo_login () {
 }
 
 clean_workspace () {
+  rm -rf "$WORKSPACE/*"
   rm -rf "$UPLOAD_DIR/*"
 }
 

@@ -9,7 +9,7 @@ source 8901-check-setup.sh
 
 check_sechub_server_setup "$0" "$SCRIPT_PARAMETERS"
 
-user="xray"
+user="xrayuser"
 project="test-xray"
 executor_file_name="xray"
 profile="pds-xray"
