@@ -1,15 +1,22 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.commons.model;
 
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.*;
-import static org.mockito.Mockito.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 import java.net.InetAddress;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedHashSet;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -1318,6 +1325,142 @@ class SecHubConfigurationModelValidatorTest {
 
         /* test */
         assertHasError(result, SecHubConfigurationModelValidationError.WEB_SCAN_NON_UNIQUE_HEADER_CONFIGURATION);
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = { "/en/contacts", "/en/contacts/<*>", "<*>/en/contacts/<*>", "<*>/en/<*>/contacts/<*>", "<*>/en/<*>/<*>/contacts/<*>",
+            "<*>/en<*><*>contacts/<*>", "en/contacts/<*>", "en/contacts", "en/contacts/" })
+    void valid_include_and_exclude_has_no_errors(String includeExcludeEntry) {
+        /* prepare */
+        List<String> entryAsList = Arrays.asList(includeExcludeEntry);
+        SecHubScanConfiguration sechubConfiguration = createSecHubConfigurationWithWebScanPart();
+
+        sechubConfiguration.getWebScan().get().excludes = Optional.of(entryAsList);
+        sechubConfiguration.getWebScan().get().includes = Optional.of(entryAsList);
+
+        modelSupportCollectedScanTypes.add(ScanType.WEB_SCAN);
+
+        /* execute */
+        SecHubConfigurationModelValidationResult result = validatorToTest.validate(sechubConfiguration);
+
+        /* test */
+        assertHasNoErrors(result);
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = { "//en/contacts", "/en//contacts", "/en/contacts//" })
+    void double_slashes_include_exclude_has_errors(String includeExcludeEntry) {
+        /* prepare */
+        List<String> entryAsList = Arrays.asList(includeExcludeEntry);
+        SecHubScanConfiguration sechubConfiguration = createSecHubConfigurationWithWebScanPart();
+        sechubConfiguration.getWebScan().get().excludes = Optional.of(entryAsList);
+        sechubConfiguration.getWebScan().get().includes = Optional.of(entryAsList);
+
+        modelSupportCollectedScanTypes.add(ScanType.WEB_SCAN);
+
+        /* execute */
+        SecHubConfigurationModelValidationResult result = validatorToTest.validate(sechubConfiguration);
+        /* test */
+        assertHasError(result, SecHubConfigurationModelValidationError.WEB_SCAN_EXCLUDE_INVALID);
+        assertHasError(result, SecHubConfigurationModelValidationError.WEB_SCAN_INCLUDE_INVALID);
+    }
+
+    @Test
+    void too_many_excludes_results_in_error() {
+        List<String> excludes = createListWithTooManyIncludesOrExcludes();
+
+        SecHubScanConfiguration sechubConfiguration = createSecHubConfigurationWithWebScanPart();
+        sechubConfiguration.getWebScan().get().excludes = Optional.of(excludes);
+
+        modelSupportCollectedScanTypes.add(ScanType.WEB_SCAN);
+
+        /* execute */
+        SecHubConfigurationModelValidationResult result = validatorToTest.validate(sechubConfiguration);
+
+        /* test */
+        assertHasError(result, SecHubConfigurationModelValidationError.WEB_SCAN_EXCLUDE_INVALID);
+    }
+
+    @Test
+    void too_many_includes_results_in_error() {
+        /* prepare */
+        List<String> includes = createListWithTooManyIncludesOrExcludes();
+
+        SecHubScanConfiguration sechubConfiguration = createSecHubConfigurationWithWebScanPart();
+        sechubConfiguration.getWebScan().get().includes = Optional.of(includes);
+
+        modelSupportCollectedScanTypes.add(ScanType.WEB_SCAN);
+
+        /* execute */
+        SecHubConfigurationModelValidationResult result = validatorToTest.validate(sechubConfiguration);
+
+        /* test */
+        assertHasError(result, SecHubConfigurationModelValidationError.WEB_SCAN_INCLUDE_INVALID);
+    }
+
+    @Test
+    void exclude_too_long_results_in_error() {
+        /* prepare */
+        List<String> excludes = createTooLongIncludeOrExcludeEntry();
+
+        SecHubScanConfiguration sechubConfiguration = createSecHubConfigurationWithWebScanPart();
+        sechubConfiguration.getWebScan().get().excludes = Optional.of(excludes);
+
+        modelSupportCollectedScanTypes.add(ScanType.WEB_SCAN);
+
+        /* execute */
+        SecHubConfigurationModelValidationResult result = validatorToTest.validate(sechubConfiguration);
+
+        /* test */
+        assertHasError(result, SecHubConfigurationModelValidationError.WEB_SCAN_EXCLUDE_INVALID);
+    }
+
+    @Test
+    void include_too_long_results_in_error() {
+        /* prepare */
+        List<String> includes = createTooLongIncludeOrExcludeEntry();
+
+        SecHubScanConfiguration sechubConfiguration = createSecHubConfigurationWithWebScanPart();
+        sechubConfiguration.getWebScan().get().includes = Optional.of(includes);
+
+        modelSupportCollectedScanTypes.add(ScanType.WEB_SCAN);
+
+        /* execute */
+        SecHubConfigurationModelValidationResult result = validatorToTest.validate(sechubConfiguration);
+
+        /* test */
+        assertHasError(result, SecHubConfigurationModelValidationError.WEB_SCAN_INCLUDE_INVALID);
+    }
+
+    private SecHubScanConfiguration createSecHubConfigurationWithWebScanPart() {
+        SecHubWebScanConfiguration webScanConfig = new SecHubWebScanConfiguration();
+        webScanConfig.url = URI.create("https://www.gamechanger.example.org/");
+
+        SecHubScanConfiguration sechubConfiguration = new SecHubScanConfiguration();
+        sechubConfiguration.setApiVersion("1.0");
+        sechubConfiguration.setWebScan(webScanConfig);
+        return sechubConfiguration;
+    }
+
+    private List<String> createListWithTooManyIncludesOrExcludes() {
+        List<String> list = new LinkedList<>();
+        for (int i = 1; i <= 501; i++) {
+            list.add("/myapp" + i);
+        }
+        return list;
+    }
+
+    private List<String> createTooLongIncludeOrExcludeEntry() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("/");
+
+        for (int i = 0; i < 64; i++) {
+            sb.append("abcdefghijklmnopqrstuvwxyz012345");
+        }
+
+        List<String> list = new LinkedList<>();
+        list.add(sb.toString());
+        return list;
     }
 
     private SecHubWebScanConfiguration createWebScanConfigurationWithHeader(String targetUrl, String onlyForUrl) {

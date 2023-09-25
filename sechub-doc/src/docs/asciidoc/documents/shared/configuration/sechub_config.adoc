@@ -178,11 +178,16 @@ include::sechub_config_example2_webscan_anonyous.json[]
 ----
 <1> Define web scan
 <2> The `URL` to scan. This `URL` must be whitelisted in `{sechub}` project. Normally without a slash `/` at the end.
+To make the scan work the target URL will always be implicitly included with `"https://www.gamechanger.example.org<*>"`.
+If you want to scan only a specific part of your web application you need to specify the target URL with more details like `"https://www.gamechanger.example.org/path/to/scan/target"`.
 <3> *Optional*: Define includes, if you have a special path that is linked nowhere,
 	so the scanner can not detect it automatically while crawling the application.
-	Always use them starting with a slash (`/`) because they are interpreted relative to the `URL` provided before.
+	You can use wildcards by using the symbol `<*>` like in the example above.
+	- Includes starting with a slash (`/`) like `"includes": [ "/special/include","/special/include/<*>"]` they are interpreted relative to the scan target `URL` provided before. 
+	- Includes not starting with a slash (`/`) like `"includes": [ "<*>/en/contacts/<*>","en/contacts/<*>","en/contacts","en/contacts/"`] are interpreted as enclosed by wildcards like the first include in the list example: `"<*>/en/contacts/<*>"` 
 <4> *Optional*: Define excludes, if you have a special path you want to exclude, from the scan.
-	Always use them starting with a slash (`/`) because they are interpreted relative to the `URL` provided before.
+	You can use excludes the same way you can use the includes.
+	Excludes do always overwrite includes if the provided patterns for includes and excludes do have intersections.
 <5> *Optional*: Define the maximum duration the scan can take.
     Scanning a "large" web page/application can take several hours or even days.
     This option ensures the scan will only run for a limited time.
