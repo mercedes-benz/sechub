@@ -10,7 +10,7 @@ import com.mercedesbenz.sechub.xraywrapper.util.XrayAuthenticationHeader;
 public class XrayHttpRequestExecutor {
 
     static String authenticate() {
-        return XrayAuthenticationHeader.setAuthHeader();
+        return XrayAuthenticationHeader.buildAuthHeader();
     }
 
     /**

@@ -1,21 +1,28 @@
 package com.mercedesbenz.sechub.xraywrapper.util;
 
-import static com.mercedesbenz.sechub.xraywrapper.util.XrayAuthenticationHeader.setAuthHeader;
-import static org.junit.jupiter.api.Assertions.*;
+import static com.mercedesbenz.sechub.xraywrapper.util.XrayAuthenticationHeader.buildAuthHeader;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.Mockito.mockConstruction;
+import static org.mockito.Mockito.when;
 
 import org.junit.jupiter.api.Test;
+import org.mockito.MockedConstruction;
 
 class XrayAuthenticationHeaderTest {
 
     @Test
-    public void testSetAuthHeader() {
-        // prepare
-        String auth;
+    public void test_setAuthHeader() {
+        /* prepare */
+        String s = "string";
 
-        // execute
-        auth = setAuthHeader();
+        /* execute + test */
+        try (MockedConstruction<EnvironmentVariableReader> mocked = mockConstruction(EnvironmentVariableReader.class, (mock, context) -> {
+            when(mock.readEnvAsString(s)).thenReturn("username");
+        })) {
+            String auth = buildAuthHeader();
+            assertEquals("Basic bnVsbDpudWxs", auth);
+        }
+        ;
 
-        // assert
-        assertTrue(auth.contains("Basic"));
     }
 }

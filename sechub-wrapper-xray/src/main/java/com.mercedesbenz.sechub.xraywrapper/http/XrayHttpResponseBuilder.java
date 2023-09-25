@@ -48,8 +48,8 @@ public class XrayHttpResponseBuilder {
                 saveInputStreamToZipFile(zipArchive, is);
             } else {
                 // case application/json is saved as string body
-                StringBuilder content = saveInputStreamToStringBuilder(is);
-                response.setBody(content.toString());
+                String content = saveInputStreamToStringBuilder(is);
+                response.setBody(content);
             }
         }
         return response;

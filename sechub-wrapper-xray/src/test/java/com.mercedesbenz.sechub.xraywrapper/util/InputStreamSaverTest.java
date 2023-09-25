@@ -1,7 +1,10 @@
 package com.mercedesbenz.sechub.xraywrapper.util;
 
 import static com.mercedesbenz.sechub.xraywrapper.util.InputStreamSaver.saveInputStreamToStringBuilder;
-import static org.junit.jupiter.api.Assertions.*;
+import static com.mercedesbenz.sechub.xraywrapper.util.InputStreamSaver.saveInputStreamToZipFile;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.Mockito.mock;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -10,39 +13,48 @@ import java.io.InputStream;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import com.mercedesbenz.sechub.xraywrapper.http.XrayAPIResponse;
-
 class InputStreamSaverTest {
 
-    // prepare
-    XrayAPIResponse response;
-    String testInput;
+    String testinputString;
     InputStream is;
 
     @BeforeEach
     void beforeEach() {
-        response = new XrayAPIResponse();
-        testInput = "test data";
-        is = new ByteArrayInputStream(testInput.getBytes());
+        testinputString = "test data";
+        is = new ByteArrayInputStream(testinputString.getBytes());
     }
 
     @Test
-    public void testSaveInputStreamToStringBuilder() {
-        // prepare
-        StringBuilder builder;
+    public void test_saveInputStreamToStringBuilder() throws IOException {
+        /* prepare */
         String s;
 
-        // execute
-        try {
-            builder = saveInputStreamToStringBuilder(is);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+        /* execute */
+        s = saveInputStreamToStringBuilder(is);
 
-        // assert
-        s = builder.toString();
-        assertEquals(testInput, s);
+        /* test */
+        assertEquals(testinputString, s);
+    }
 
+    @Test
+    public void test_saveInputStreamToStringBuilder_null() {
+        /* execute + test */
+        assertThrows(NullPointerException.class, () -> saveInputStreamToStringBuilder(null));
+    }
+
+    @Test
+    public void test_saveInputStreamToStringBuilder_ioException() {
+        /* prepare */
+        InputStream mockedIs = mock(InputStream.class);
+
+        /* execute + test */
+        assertThrows(IOException.class, () -> saveInputStreamToStringBuilder(mockedIs));
+    }
+
+    @Test
+    public void test_saveInputStreamToZipFile_null() {
+        /* execute + test */
+        assertThrows(NullPointerException.class, () -> saveInputStreamToZipFile(null, null));
     }
 
 }

@@ -1,6 +1,6 @@
 package com.mercedesbenz.sechub.xraywrapper.cli;
 
-import static com.mercedesbenz.sechub.xraywrapper.util.XrayConfigurationCreater.createXrayConfiguration;
+import static com.mercedesbenz.sechub.xraywrapper.util.XrayConfigurationBuilder.createXrayConfiguration;
 
 import java.io.IOException;
 

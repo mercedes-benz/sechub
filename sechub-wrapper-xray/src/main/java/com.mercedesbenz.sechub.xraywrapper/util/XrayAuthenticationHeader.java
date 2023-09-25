@@ -4,7 +4,13 @@ import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 
 public class XrayAuthenticationHeader {
-    public static String setAuthHeader() {
+
+    /**
+     * builds basic authentication header from username and password
+     *
+     * @return basic encoded authentication header
+     */
+    public static String buildAuthHeader() {
         EnvironmentVariableReader environmentVariableReader = new EnvironmentVariableReader();
         String username = environmentVariableReader.readEnvAsString(EnvironmentVariableConstants.XRAY_USERNAME_ENV);
         String pwd = environmentVariableReader.readEnvAsString(EnvironmentVariableConstants.XRAY_PASSWORD_ENV);

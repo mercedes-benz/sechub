@@ -6,9 +6,9 @@ public class XrayConfiguration {
 
     private final String register;
 
-    private final String scan_type;
+    private final String ScanType;
 
-    private final String zip_directory;
+    private final String zipDirectory;
 
     private final String secHubReport;
 
@@ -18,11 +18,11 @@ public class XrayConfiguration {
 
     // todo: builder
 
-    public XrayConfiguration(String artifactory, String register, String scan_type, String report_filename, String secHubReport) {
+    public XrayConfiguration(String artifactory, String register, String ScanType, String zipDirectory, String secHubReport) {
         this.artifactory = artifactory;
         this.register = register;
-        this.scan_type = scan_type;
-        this.zip_directory = report_filename;
+        this.ScanType = ScanType;
+        this.zipDirectory = zipDirectory;
         this.secHubReport = secHubReport;
     }
 
@@ -35,7 +35,7 @@ public class XrayConfiguration {
     }
 
     public String getScan_type() {
-        return scan_type;
+        return ScanType;
     }
 
     public String getSecHubReport() {
@@ -43,7 +43,7 @@ public class XrayConfiguration {
     }
 
     public String getZip_directory() {
-        return zip_directory;
+        return zipDirectory;
     }
 
     public int getWaitUntilRetrySec() {

@@ -1,12 +1,13 @@
 package com.mercedesbenz.sechub.xraywrapper.cli;
 
-import java.io.IOException;
-import java.util.concurrent.TimeUnit;
-
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.mercedesbenz.sechub.xraywrapper.config.XrayArtifact;
 import com.mercedesbenz.sechub.xraywrapper.config.XrayConfiguration;
 import com.mercedesbenz.sechub.xraywrapper.http.XrayArtifactoryClient;
 import com.mercedesbenz.sechub.xraywrapper.reportgenerator.XrayReportReader;
+
+import java.io.IOException;
+import java.util.concurrent.TimeUnit;
 
 public class XrayClientArtifactoryController {
 
@@ -61,7 +62,8 @@ public class XrayClientArtifactoryController {
         XrayReportReader reportReader = new XrayReportReader();
         reportReader.getFiles(xrayConfiguration.getZip_directory(), xrayConfiguration.getSecHubReport());
         reportReader.readSecurityReport();
-        reportReader.mapVulnerabilities();
+        ObjectNode root = reportReader.mapVulnerabilities();
+        reportReader.writeReport(root);
     }
 
     private boolean handleScanStatus() throws IOException {
