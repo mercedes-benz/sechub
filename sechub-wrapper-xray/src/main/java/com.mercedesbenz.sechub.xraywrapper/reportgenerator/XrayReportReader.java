@@ -20,7 +20,7 @@ public class XrayReportReader {
     private File cyclonreport;
     private File securityreport;
     private File sechubReport;
-    HashMap<String, XrayCycloneVulnerability> vulnerabilityHashMap;
+    private HashMap<String, XrayCycloneVulnerability> vulnerabilityHashMap;
 
     public void getFiles(String unzippedArchive, String pdsResultFile) throws IOException {
         sechubReport = new File(pdsResultFile);
@@ -32,7 +32,6 @@ public class XrayReportReader {
                 unzipReports(Paths.get(zipArchive), Paths.get(unzippedArchive));
             } else {
                 System.out.println("Error: could not find reports!");
-                System.exit(0);
             }
         }
 
@@ -86,4 +85,15 @@ public class XrayReportReader {
         XrayReportWriter.writeReport(rootNode, sechubReport);
     }
 
+    public File getCyclonreport() {
+        return cyclonreport;
+    }
+
+    public File getSecurityreport() {
+        return securityreport;
+    }
+
+    public File getSechubReport() {
+        return sechubReport;
+    }
 }

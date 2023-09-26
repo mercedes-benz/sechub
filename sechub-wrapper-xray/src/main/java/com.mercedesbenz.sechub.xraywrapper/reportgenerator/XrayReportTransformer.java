@@ -1,15 +1,15 @@
 package com.mercedesbenz.sechub.xraywrapper.reportgenerator;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ArrayNode;
+import static java.lang.Float.parseFloat;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
 
-import static java.lang.Float.parseFloat;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ArrayNode;
 
 public class XrayReportTransformer {
 
