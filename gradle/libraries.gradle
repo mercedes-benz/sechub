@@ -49,7 +49,7 @@ ext {
       apache_commons_io:                       "2.11.0",
       apache_commons_validator:                "1.7",
       apache_commons_fileupload:               "1.5",
-      apache_commons_compress:                 "1.23.0",
+      apache_commons_compress:                 "1.24.0",
       apache_commons_lang3:                    "3.12.0",
 
       /* testing */                            
@@ -68,7 +68,7 @@ ext {
       restDocsApiSpec:                         "0.16.4",  // newest version compatible with Spring Boot 2.x
       
       /* Owasp Zap wrapper */
-      owaspzap_client_api:                     "1.11.0",
+      owaspzap_client_api:                     "1.12.0",
       jcommander:                              "1.82",
       
       thymeleaf_extras_springsecurity5:        "3.1.1.RELEASE",

@@ -41,6 +41,9 @@ spring:
           jdbc.lob.non_contextual_creation: true
   datasource:
     initialization-mode: always
+    hikari:
+      minimumidle: 1
+      maximumpoolsize: 2
   main:
     # see https://github.com/spring-projects/spring-boot/wiki/Spring-Boot-2.1-Release-Notes#bean-overriding
     allow-bean-definition-overriding: true
