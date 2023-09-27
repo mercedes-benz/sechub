@@ -6,13 +6,16 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 
+import com.mercedesbenz.sechub.webui.configuration.SecHubAccessService;
+
 import reactor.core.publisher.Mono;
 
 @Service
 public class NewApiTokenService {
-    @Autowired
-    private WebClient webClient;
-
+	
+	@Autowired
+	SecHubAccessService accessService;
+	
     /**
      * Request new API token as described in
      *
@@ -27,9 +30,12 @@ public class NewApiTokenService {
      * </pre>
      */
     public Mono<String> requestNewApiToken(String email) {
-
-        return webClient.post().uri("api/anonymous/refresh/apitoken/" + email).retrieve()
-                .onStatus(HttpStatus::is4xxClientError, error -> Mono.error(new RuntimeException("API not found")))
-                .onStatus(HttpStatus::is5xxServerError, error -> Mono.error(new RuntimeException("Server is not responding"))).bodyToMono(String.class);
+    	
+    	// TODO Jeremias Eppler, 2023-09-27: Use client
+    	return null;
+    	//accessService.getSecHubClient().get
+        //return webClient.post().uri("api/anonymous/refresh/apitoken/" + email).retrieve()
+        //        .onStatus(HttpStatus::is4xxClientError, error -> Mono.error(new RuntimeException("API not found")))
+        //        .onStatus(HttpStatus::is5xxServerError, error -> Mono.error(new RuntimeException("Server is not responding"))).bodyToMono(String.class);
     }
 }

@@ -129,4 +129,5 @@ public interface SecHubClient {
      */
     void approveJob(String projectId, UUID jobUUID) throws SecHubClientException;
 
+    String getServerVersion() throws SecHubClientException;
 }

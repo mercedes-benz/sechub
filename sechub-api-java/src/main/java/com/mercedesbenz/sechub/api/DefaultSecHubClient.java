@@ -9,6 +9,8 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
 import java.util.UUID;
 import java.util.concurrent.Callable;
 
@@ -16,6 +18,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.fasterxml.jackson.databind.json.JsonMapper;
+import com.mercedesbenz.sechub.api.SecHubStatus.Jobs;
+import com.mercedesbenz.sechub.api.SecHubStatus.Scheduler;
 import com.mercedesbenz.sechub.api.internal.ApiClientBuilder;
 import com.mercedesbenz.sechub.api.internal.OpenApiSecHubClientConversionHelper;
 import com.mercedesbenz.sechub.api.internal.WorkaroundAdminApi;
@@ -65,11 +69,11 @@ public class DefaultSecHubClient extends AbstractSecHubClient {
 
     private WorkaroundProjectApi workaroundProjectApi;
 
-    public DefaultSecHubClient(URI serverUri, String username, String apiToken) {
-        this(serverUri, username, apiToken, false);
+    public DefaultSecHubClient from(URI serverUri, String username, String apiToken) {
+        return from(serverUri, username, apiToken, false);
     }
 
-    public DefaultSecHubClient(URI serverUri, String username, String apiToken, boolean trustAll) {
+    private DefaultSecHubClient(URI serverUri, String username, String apiToken, boolean trustAll) {
         setUsername(username);
         setApiToken(apiToken);
         setServerUri(serverUri);
@@ -87,6 +91,10 @@ public class DefaultSecHubClient extends AbstractSecHubClient {
 
         conversionHelper = new OpenApiSecHubClientConversionHelper(adminApi);
 
+    }
+    
+    public static DefaultSecHubClient from(URI serverUri, String username, String apiToken, boolean trustAll) {
+    	return new DefaultSecHubClient(serverUri, username, apiToken, trustAll);
     }
 
     private ApiClient getApiClient() {
@@ -223,16 +231,24 @@ public class DefaultSecHubClient extends AbstractSecHubClient {
     /* ++++++++++++++++++++++++++++++++++++++++++++++++++++ */
     @Override
     public SecHubStatus fetchSecHubStatus() throws SecHubClientException {
-        SecHubStatus status = new SecHubStatus();
+        SecHubStatus status = null;
+
+        Map<String, String> statusInformation = new TreeMap<>();
+
         runOrFail(() -> {
             List<OpenApiStatusInformationInner> statusInformationList = adminApi.adminListsStatusInformation();
             for (OpenApiStatusInformationInner info : statusInformationList) {
                 String key = info.getKey();
                 if (key != null) {
-                    status.statusInformation.put(key, info.getValue());
+                    statusInformation.put(key, info.getValue());
                 }
             }
         }, "Was not able to fetch SecHub status!");
+
+        if (!statusInformation.isEmpty()) {
+            status = convertStatusMapToStatus(statusInformation);
+        }
+
         return status;
     }
 
@@ -435,6 +451,15 @@ public class DefaultSecHubClient extends AbstractSecHubClient {
         runOrFail(() -> projectApi.userApprovesJob(projectId, jobUUID.toString()), "Job approve");
     }
 
+    /* +++++++++++++++++++++++++++++++++++++++++++++++++ */
+    /* + ................Version...................... + */
+    /* +++++++++++++++++++++++++++++++++++++++++++++++++ */
+
+    @Override
+    public String getServerVersion() throws SecHubClientException {
+        return runOrFail(() -> adminApi.adminChecksServerVersion().getServerVersion(), "Get server version");
+    }
+
     /* ++++++++++++++++++++++++++++++++++++++++++++++++++++ */
     /* + ................Helpers......................... + */
     /* ++++++++++++++++++++++++++++++++++++++++++++++++++++ */
@@ -465,4 +490,19 @@ public class DefaultSecHubClient extends AbstractSecHubClient {
         }
     }
 
+    private SecHubStatus convertStatusMapToStatus(Map<String, String> statusMap) {
+        var schedulerEnabled = Boolean.valueOf(statusMap.get("status.scheduler.enabled")).booleanValue();
+        var jobsAll = Long.valueOf(statusMap.get("status.scheduler.jobs.all"));
+        var jobsCancelRequested = Long.valueOf(statusMap.get("status.scheduler.jobs.cancel_requested"));
+        var jobsCanceled = Long.valueOf(statusMap.get("status.scheduler.jobs.canceled"));
+        var jobsEnded = Long.valueOf(statusMap.get("status.scheduler.jobs.ended"));
+        var jobsInitializing = Long.valueOf(statusMap.get("status.scheduler.jobs.initializing"));
+        var jobsReadyToStart = Long.valueOf(statusMap.get("status.scheduler.jobs.ready_to_start"));
+        var jobsStarted = Long.valueOf(statusMap.get("status.scheduler.jobs.started"));
+
+        SecHubStatus.Scheduler scheduler = new Scheduler(schedulerEnabled);
+        SecHubStatus.Jobs jobs = new Jobs(jobsAll, jobsCancelRequested, jobsCanceled, jobsEnded, jobsInitializing, jobsReadyToStart, jobsStarted);
+
+        return new SecHubStatus(scheduler, jobs);
+    }
 }

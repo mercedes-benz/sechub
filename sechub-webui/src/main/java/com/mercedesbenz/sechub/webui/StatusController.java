@@ -6,8 +6,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 
-import com.mercedesbenz.sechub.api.SecHubClientException;
 import com.mercedesbenz.sechub.api.SecHubStatus;
+import com.mercedesbenz.sechub.webui.configuration.SecHubAccessService;
 
 @Controller
 public class StatusController {
@@ -15,18 +15,17 @@ public class StatusController {
     StatusService statusService;
 
     @Autowired
-    SecHubServerAccessService accessService;
+    SecHubAccessService accessService;
 
     @GetMapping("/status")
     String status(Model model) {
-    	SecHubStatus secHubServerStatus = null;
-		
-    	secHubServerStatus = statusService.getSecHubServerStatusInformation();
+    	SecHubStatus secHubServerStatus = statusService.getSecHubServerStatusInformation();
 
-		//model.addAttribute("secHubServerStatus", secHubServerStatus);
+		model.addAttribute("secHubServerStatus", secHubServerStatus);
     	model.addAttribute("secHubServerAlive", statusService.isSecHubServerAlive());
-        model.addAttribute("sechubServerUrl", accessService.getSecHubServerUrl());
+        model.addAttribute("sechubServerUrl", accessService.getSecHubServerUri());
         model.addAttribute("sechubServerVersion", statusService.getServerVersion());
+        
         return "status";
     }
 }

@@ -19,7 +19,7 @@ class MockedSecHubClientTest {
 
     @BeforeEach
     void beforeEach() {
-        clientToTest = new MockedSecHubClient();
+        clientToTest = MockedSecHubClient.from(null, null, null);
     }
 
     @Test

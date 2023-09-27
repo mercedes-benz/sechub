@@ -1,5 +1,6 @@
 package com.mercedesbenz.sechub.api;
 
+import java.net.URI;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -13,6 +14,8 @@ import java.util.UUID;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.mercedesbenz.sechub.api.SecHubStatus.Jobs;
+import com.mercedesbenz.sechub.api.SecHubStatus.Scheduler;
 import com.mercedesbenz.sechub.commons.model.SecHubConfigurationModel;
 import com.mercedesbenz.sechub.commons.model.job.ExecutionState;
 
@@ -32,10 +35,23 @@ public class MockedSecHubClient extends AbstractSecHubClient {
 
     private Set<String> userToProjectAssignments = new HashSet<>();
 
-    public MockedSecHubClient() {
+    private MockedSecHubClient(URI serverUri, String username, String apiToken, boolean trustAll) {
+        setUsername(username);
+        setApiToken(apiToken);
+        setServerUri(serverUri);
+        setTrustAll(trustAll);
+        
         mockDataAccess = new MockDataAccess();
     }
 
+    public static MockedSecHubClient from(URI serverUri, String username, String apiToken) {   	
+        return from(serverUri, username, apiToken, false);
+    }
+
+    public static MockedSecHubClient from(URI serverUri, String username, String apiToken, boolean trustAll) {
+    	return new MockedSecHubClient(serverUri, username, apiToken, trustAll);
+    }
+    
     @Override
     public void acceptOpenSignup(String signupUsername) throws SecHubClientException {
         OpenUserSignup signup = openSignups.get(signupUsername);
@@ -214,9 +230,7 @@ public class MockedSecHubClient extends AbstractSecHubClient {
 
     @Override
     public SecHubStatus fetchSecHubStatus() throws SecHubClientException {
-        SecHubStatus statusCopy = new SecHubStatus();
-        statusCopy.statusInformation.putAll(getMockDataAccess().getSecHubStatus().getStatusInformationMap());
-        return statusCopy;
+        return getMockDataAccess().getSecHubStatus();
     }
 
     public MockDataAccess getMockDataAccess() {
@@ -292,9 +306,21 @@ public class MockedSecHubClient extends AbstractSecHubClient {
         private Map<UUID, SecHubReport> reports = new HashMap<>();
 
         private boolean serverAlive;
+        private String serverVersion = "0.0.0-mocked";
 
-        public MockDataAccess() {
-            sechubStatus = new SecHubStatus();
+        public String getServerVersion() {
+			return serverVersion;
+		}
+
+		public void setServerVersion(String serverVersion) {
+			this.serverVersion = serverVersion;
+		}
+
+		public MockDataAccess() {
+            SecHubStatus.Scheduler scheduler = new Scheduler(false);
+            SecHubStatus.Jobs jobs = new Jobs(123456, 1, 2, 3, 4, 5, 6);
+
+            sechubStatus = new SecHubStatus(scheduler, jobs);
         }
 
         public SecHubStatus getSecHubStatus() {
@@ -309,5 +335,10 @@ public class MockedSecHubClient extends AbstractSecHubClient {
             reports.put(jobUUID, report);
         }
     }
+
+	@Override
+	public String getServerVersion() throws SecHubClientException {
+		return mockDataAccess.getServerVersion();
+	}
 
 }

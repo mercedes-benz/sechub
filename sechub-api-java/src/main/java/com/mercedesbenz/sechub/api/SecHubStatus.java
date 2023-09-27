@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.api;
 
 public record SecHubStatus(Scheduler scheduler, Jobs jobs) {
