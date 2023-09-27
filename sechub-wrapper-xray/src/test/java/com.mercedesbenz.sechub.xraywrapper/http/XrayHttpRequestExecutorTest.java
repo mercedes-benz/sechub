@@ -1,16 +1,17 @@
 package com.mercedesbenz.sechub.xraywrapper.http;
 
-import static com.mercedesbenz.sechub.xraywrapper.http.XrayHttpRequestExecutor.setUpGetConnection;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.Mockito.mock;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
 
 import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
+import static com.mercedesbenz.sechub.xraywrapper.http.XrayHttpRequestExecutor.setUpGetConnection;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.Mockito.mock;
 
 class XrayHttpRequestExecutorTest {
 
@@ -22,8 +23,8 @@ class XrayHttpRequestExecutorTest {
     }
 
     @Test
-    public void testSetUpGetConnection() throws IOException {
-        // prepare
+    public void test_setUpGetConnection() throws IOException {
+        /* prepare */
         HttpURLConnection con;
         String stringUrls = url.toString();
         HttpURLConnection mockedCon = mock(HttpURLConnection.class);
@@ -31,11 +32,17 @@ class XrayHttpRequestExecutorTest {
         XrayAPIRequest request = new XrayAPIRequest(stringUrls, XrayAPIRequest.RequestMethodEnum.GET, false, "");
         request.setUrl(url);
 
-        // execute
+        /* execute */
         con = setUpGetConnection(request);
 
-        // assert
+        /* test */
         assertEquals(0, con.getConnectTimeout());
+    }
+
+    @Test
+    public void test_setUpGetConnection_null() throws IOException {
+        /* execute */
+        assertThrows(NullPointerException.class, () -> setUpGetConnection(null));
     }
 
 }

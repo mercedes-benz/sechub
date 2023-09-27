@@ -11,7 +11,7 @@ public class XrayHttpRequestBuilder {
      * @param baseUrl factory URL
      * @return XrayAPIRequest
      */
-    public static XrayAPIRequest generateGetXrayVersion(String baseUrl) {
+    public static XrayAPIRequest buildGetXrayVersion(String baseUrl) {
         XrayAPIRequest request = new XrayAPIRequest();
         request.setBaseUrl(baseUrl + "/xray/api/v1/system/version");
         request.setRequestMethodEnum(XrayAPIRequest.RequestMethodEnum.GET);
@@ -26,7 +26,7 @@ public class XrayHttpRequestBuilder {
      * @param repository artifactory repository
      * @return XrayAPIRequest
      */
-    public static XrayAPIRequest generateCheckArtifactUpload(String baseUrl, XrayArtifact artifact, String repository) {
+    public static XrayAPIRequest buildCheckArtifactUpload(String baseUrl, XrayArtifact artifact, String repository) {
         String url = baseUrl + "/artifactory/api/storage/" + repository + "/" + artifact.getName() + "/" + artifact.getTag() + "/manifest.json";
         String data = "";
         return new XrayAPIRequest(url, XrayAPIRequest.RequestMethodEnum.GET, true, data);
@@ -40,7 +40,7 @@ public class XrayHttpRequestBuilder {
      * @param repository artifactory repository
      * @return XrayAPIRequest
      */
-    public static XrayAPIRequest generateScanArtifact(String baseUrl, XrayArtifact artifact, String repository) {
+    public static XrayAPIRequest buildScanArtifact(String baseUrl, XrayArtifact artifact, String repository) {
         String url = baseUrl + "/xray/api/v1/scanArtifact";
         String data = "{\"componentID\": \"" + artifact.getArtifactType() + "://" + artifact.getName() + ":" + artifact.getTag() + "\"," + "\"path\": \""
                 + repository + "/" + artifact.getName() + "/" + artifact.getTag() + "/manifest.json\"}";
@@ -55,7 +55,7 @@ public class XrayHttpRequestBuilder {
      * @param repository artifactory repository
      * @return XrayAPIRequest
      */
-    public static XrayAPIRequest generateGetScanStatus(String baseUrl, XrayArtifact artifact, String repository) {
+    public static XrayAPIRequest buildGetScanStatus(String baseUrl, XrayArtifact artifact, String repository) {
         String url = baseUrl + "/xray/api/v1/scan/status/artifact";
         String data = "{\"path\": \"" + repository + "/" + artifact.getName() + "/" + artifact.getTag() + "/manifest.json\", \"repository_pkg_type\":\""
                 + artifact.getArtifactType() + "\", \"sha256\": \"" + artifact.getSha256() + "\"}";
@@ -69,7 +69,7 @@ public class XrayHttpRequestBuilder {
      * @param artifact Artifact to scan
      * @return XrayAPIRequest
      */
-    public static XrayAPIRequest generateGetScanReports(String baseUrl, XrayArtifact artifact) {
+    public static XrayAPIRequest buildGetScanReports(String baseUrl, XrayArtifact artifact) {
         String url = baseUrl + "/xray/api/v1/component/exportDetails";
         String data = "{\"component_name\": \"" + artifact.getName() + ":" + artifact.getTag() + "\"," + "\"package_type\": \"" + artifact.getArtifactType()
                 + "\"," + "\"sha_256\" : \"" + artifact.getSha256() + "\"," + "\"violations\": true," + "\"include_ignored_violations\": true,"
