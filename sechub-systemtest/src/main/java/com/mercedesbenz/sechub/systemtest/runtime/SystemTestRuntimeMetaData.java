@@ -24,11 +24,28 @@ public class SystemTestRuntimeMetaData {
     private Map<PDSServerConfiguration, PdsSolutionData> pdsSolutionConfigurations = new LinkedHashMap<>();
     private TextFileReader textFileReader;
 
-    private class PdsSolutionData {
+    class PdsSolutionData {
         private PDSServerConfiguration serverConfiguration;
         private Path pathToServerConfiguration;
         private PDSSolutionDefinition solutionDefinition;
-        public String solutionPathToConfigFile;
+        private String solutionPathToConfigFile;
+
+        public PDSServerConfiguration getServerConfiguration() {
+            return serverConfiguration;
+        }
+
+        public Path getPathToServerConfiguration() {
+            return pathToServerConfiguration;
+        }
+
+        public PDSSolutionDefinition getSolutionDefinition() {
+            return solutionDefinition;
+        }
+
+        public String getSolutionPathToConfigFile() {
+            return solutionPathToConfigFile;
+        }
+
     }
 
     public SystemTestRuntimeMetaData() {
