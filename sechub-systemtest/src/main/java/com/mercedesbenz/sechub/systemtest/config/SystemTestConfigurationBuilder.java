@@ -693,6 +693,16 @@ public class SystemTestConfigurationBuilder {
                         return this;
                     }
 
+                    public UploadBuilder sourceFile(String path) {
+                        uploadDefinition.setSourceFile(Optional.of(path));
+                        return this;
+                    }
+
+                    public UploadBuilder binaryFile(String path) {
+                        uploadDefinition.setBinaryFile(Optional.of(path));
+                        return this;
+                    }
+
                 }
             }
 
