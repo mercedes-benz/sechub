@@ -3,6 +3,7 @@ package com.mercedesbenz.sechub.systemtest.config;
 
 import java.net.URI;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
@@ -266,6 +267,25 @@ public class SystemTestConfigurationBuilder {
                 return this;
             }
 
+            /**
+             * Start definition for project using default project name:
+             * {@value com.mercedesbenz.sechub.systemtest.config.DefaultFallback.StringConstants#DEFAULT_PROJECT_ID}
+             *
+             * @return project setup builder
+             */
+            public ProjectSetupBuilder project() {
+                return project(DefaultFallback.FALLBACK_PROJECT_NAME.getValue());
+            }
+
+            /**
+             * Start definition for project using given project project id.
+             *
+             * @return project setup builder
+             */
+            public ProjectSetupBuilder project(String projectId) {
+                return new ProjectSetupBuilder(projectId);
+            }
+
             public ConfigurationBuilder configure() {
                 return new ConfigurationBuilder();
             }
@@ -346,6 +366,55 @@ public class SystemTestConfigurationBuilder {
                 }
 
             }
+
+            public class ProjectSetupBuilder extends AbstractDefinitionBuilder<ProjectSetupBuilder> {
+
+                private ProjectDefinition projectDefinition;
+
+                public ProjectSetupBuilder(String projectId) {
+
+                    SecHubConfigurationDefinition configuration = SecHubSetupBuilder.this.getSechubDefinition().getConfigure();
+                    Optional<List<ProjectDefinition>> projectsOpt = configuration.getProjects();
+
+                    List<ProjectDefinition> projects = null;
+                    if (projectsOpt.isPresent()) {
+                        projects = projectsOpt.get();
+                    } else {
+                        projects = new ArrayList<>();
+                        configuration.setProjects(Optional.of(projects));
+                    }
+
+                    for (ProjectDefinition foundProjectDefinition : projects) {
+                        if (foundProjectDefinition.getName().equalsIgnoreCase(projectId)) {
+                            projectDefinition = foundProjectDefinition;
+                            break;
+                        }
+                    }
+
+                    if (projectDefinition == null) {
+                        projectDefinition = new ProjectDefinition();
+                        projectDefinition.setName(projectId);
+
+                        projects.add(projectDefinition);
+                    }
+                }
+
+                public SecHubSetupBuilder endProject() {
+                    return SecHubSetupBuilder.this;
+                }
+
+                @Override
+                protected AbstractDefinition resolveDefinition() {
+                    return projectDefinition;
+                }
+
+                public ProjectSetupBuilder addURItoWhiteList(String uri) {
+                    projectDefinition.getWhitelistedURIs().add(uri);
+                    return this;
+                }
+
+            }
+
         }
 
         public class SolutionSetupBuilder extends AbstractDefinitionBuilder<SolutionSetupBuilder> {

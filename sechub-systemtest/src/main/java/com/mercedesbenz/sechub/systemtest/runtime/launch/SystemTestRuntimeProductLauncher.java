@@ -202,6 +202,10 @@ public class SystemTestRuntimeProductLauncher {
         if (!context.isLocalRun()) {
             return;
         }
+        if (context.isDryRun()) {
+            LOG.debug("Skip sechub admin available check - becaus dry run");
+            return;
+        }
         SecHubClient sechubClient = context.getLocalAdminSecHubClient();
         boolean adminAccountAvailable = false;
 

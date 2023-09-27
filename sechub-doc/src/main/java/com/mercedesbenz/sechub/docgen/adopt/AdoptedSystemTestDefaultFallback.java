@@ -21,9 +21,9 @@ package com.mercedesbenz.sechub.docgen.adopt;
  */
 public enum AdoptedSystemTestDefaultFallback {
 
-    FALLBACK_PROJECT_NAME("default-test-project", "Project id"),
+    FALLBACK_PROJECT_NAME(StringConstants.DEFAULT_PROJECT_ID, "Project id"),
 
-    FALLBACK_PROFILE_ID("default-test-profile", "Profile id"),
+    FALLBACK_PROFILE_ID(StringConstants.DEFAULT_PROFILE_ID, "Profile id"),
 
     /** Same like default in /sechub-solution/env-sechub */
     FALLBACK_LOCAL_SECHUB_URL("https://localhost:8443", "Local", "SecHub url"),
@@ -53,13 +53,21 @@ public enum AdoptedSystemTestDefaultFallback {
 
     FALLBACK_SECHUB_WAIT_FOR_AVAILABLE("true", "SecHub wait for available"),
 
-    FALLBACK_UPLOAD_REF_ID("default-ref", "Upload reference id"),
+    FALLBACK_UPLOAD_REF_ID(StringConstants.DEFAULT_REFERENCE_ID, "Upload reference id"),
 
     ;
 
     private String scope;
     private String value;
     private String description;
+
+    public class StringConstants {
+
+        public static final String DEFAULT_PROJECT_ID = "default-test-project";
+        public static final String DEFAULT_PROFILE_ID = "default-test-profile";
+        public static final String DEFAULT_REFERENCE_ID = "default-ref";
+
+    }
 
     AdoptedSystemTestDefaultFallback(String value, String description) {
         this(value, null, description);

@@ -78,6 +78,9 @@ class SystemTestFrameworkIntTest {
                         comment("We do not define start/stop here, because reuse running local SecHub server").
                         url(new URL("https://localhost:"+SECHUB_PORT)).
                         admin(toEnvVariable(ENV_TEST_INTTEST_ADMIN_USERID),toSecretEnvVariable(ENV_TEST_INTTEST_ADMIN_APITOKEN)).
+                        project().
+                            addURItoWhiteList("https://example.org/testproject1").
+                        endProject().
                         /*
                          * We do not define any steps here - developers must have started the
                          * integration test SecHub server locally in IDE
