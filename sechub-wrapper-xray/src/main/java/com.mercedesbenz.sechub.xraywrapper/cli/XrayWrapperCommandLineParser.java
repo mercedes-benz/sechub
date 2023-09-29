@@ -1,5 +1,7 @@
 package com.mercedesbenz.sechub.xraywrapper.cli;
 
+import java.util.Arrays;
+
 import com.beust.jcommander.JCommander;
 import com.beust.jcommander.ParameterException;
 
@@ -10,7 +12,15 @@ public class XrayWrapperCommandLineParser {
     public record Arguments(String name, String sha256, String scantype, String tag, String outputFile) {
     }
 
-    public Arguments parseCommandLineArgs(String[] args) {
+    public static class XrayWrapperCommandLineParserException extends Exception {
+        private static final long serialVersionUID = 1L;
+
+        public XrayWrapperCommandLineParserException(String message, Exception e) {
+            super(message, e);
+        }
+    }
+
+    public Arguments parseCommandLineArgs(String[] args) throws XrayWrapperCommandLineParserException {
         XrayCommandLineArgs xrayArgs = buildArguments(args);
         if (xrayArgs.isHelpRequired() || xrayArgs.getName().isEmpty() || xrayArgs.getSha256().isEmpty()) {
             commander.usage();
@@ -38,14 +48,13 @@ public class XrayWrapperCommandLineParser {
      * @param args command line arguments
      * @return parsed command line arguments
      */
-    private XrayCommandLineArgs buildArguments(String[] args) {
+    private XrayCommandLineArgs buildArguments(String[] args) throws XrayWrapperCommandLineParserException {
         XrayCommandLineArgs xrayCommandLineArgs = new XrayCommandLineArgs();
         try {
             commander = JCommander.newBuilder().addObject(xrayCommandLineArgs).acceptUnknownOptions(false).build();
             commander.parse(args);
         } catch (ParameterException e) {
-            // todo log error
-            System.out.println("Error: unknown parameter");
+            throw new XrayWrapperCommandLineParserException("Error: could not parse parameters:" + Arrays.toString(args), e);
         }
         return xrayCommandLineArgs;
     }

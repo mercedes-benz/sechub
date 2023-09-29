@@ -1,6 +1,7 @@
 package com.mercedesbenz.sechub.xraywrapper.cli;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -15,7 +16,7 @@ class XrayWrapperCommandLineParserTest {
     }
 
     @Test
-    public void testDockerParseArguments() {
+    public void testDockerParseArguments() throws XrayWrapperCommandLineParser.XrayWrapperCommandLineParserException {
         // prepare
         String[] args = { "--name", "myname", "--sha256", "sha256:xxx", "--scantype", "docker", "--outputfile", "outfile" };
         XrayWrapperCommandLineParser.Arguments arguments;
@@ -30,7 +31,7 @@ class XrayWrapperCommandLineParserTest {
     }
 
     @Test
-    public void testInvalidParseArguments() {
+    public void testInvalidParseArguments() throws XrayWrapperCommandLineParser.XrayWrapperCommandLineParserException {
         // prepare
         String[] args = { "--sha256", "sha256:xxx", "--scantype", "docker", "--outputfile", "outfile" };
         XrayWrapperCommandLineParser.Arguments arguments;

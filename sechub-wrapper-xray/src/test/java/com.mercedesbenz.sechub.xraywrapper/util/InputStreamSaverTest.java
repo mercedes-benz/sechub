@@ -7,11 +7,12 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.mock;
 
 import java.io.ByteArrayInputStream;
-import java.io.IOException;
 import java.io.InputStream;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+
+import com.mercedesbenz.sechub.xraywrapper.cli.XrayWrapperRuntimeException;
 
 class InputStreamSaverTest {
 
@@ -25,7 +26,7 @@ class InputStreamSaverTest {
     }
 
     @Test
-    public void test_saveInputStreamToStringBuilder() throws IOException {
+    public void test_saveInputStreamToStringBuilder() throws XrayWrapperRuntimeException {
         /* prepare */
         String s;
 
@@ -48,7 +49,7 @@ class InputStreamSaverTest {
         InputStream mockedIs = mock(InputStream.class);
 
         /* execute + test */
-        assertThrows(IOException.class, () -> saveInputStreamToStringBuilder(mockedIs));
+        assertThrows(XrayWrapperRuntimeException.class, () -> saveInputStreamToStringBuilder(mockedIs));
     }
 
     @Test

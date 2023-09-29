@@ -1,17 +1,17 @@
 package com.mercedesbenz.sechub.xraywrapper.http;
 
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
+import static com.mercedesbenz.sechub.xraywrapper.http.XrayHttpRequestExecutor.setUpGetConnection;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.Mockito.mock;
 
 import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
-import static com.mercedesbenz.sechub.xraywrapper.http.XrayHttpRequestExecutor.setUpGetConnection;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.Mockito.mock;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
 
 class XrayHttpRequestExecutorTest {
 
@@ -40,7 +40,7 @@ class XrayHttpRequestExecutorTest {
     }
 
     @Test
-    public void test_setUpGetConnection_null() throws IOException {
+    public void test_setUpGetConnection_null() {
         /* execute */
         assertThrows(NullPointerException.class, () -> setUpGetConnection(null));
     }

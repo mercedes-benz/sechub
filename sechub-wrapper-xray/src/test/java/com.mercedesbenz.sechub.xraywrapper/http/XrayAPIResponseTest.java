@@ -1,18 +1,20 @@
 package com.mercedesbenz.sechub.xraywrapper.http;
 
-import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import org.junit.jupiter.api.Test;
 
 class XrayAPIResponseTest {
 
+    // TODO
+
     @Test
-    public void testXrayAPIResponseEmpty() {
+    public void test_xrayAPIResponseEmpty() {
         /* prepare */
         XrayAPIResponse response;
 
@@ -25,7 +27,7 @@ class XrayAPIResponseTest {
     }
 
     @Test
-    public void testXrayAPIResponse() {
+    public void test_xrayAPIResponse() {
         /* prepare */
         XrayAPIResponse response;
         int status = 200;

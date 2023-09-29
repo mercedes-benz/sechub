@@ -11,6 +11,7 @@ dependencies {
     implementation project(':sechub-commons-pds')
     testImplementation project(':sechub-testframework')
 
+    implementation spring_boot_dependency.slf4j_api
     implementation spring_boot_dependency.jackson_core
     implementation spring_boot_dependency.jackson_databind
     implementation library.jcommander

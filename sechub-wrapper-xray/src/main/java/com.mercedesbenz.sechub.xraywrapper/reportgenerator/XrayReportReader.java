@@ -22,7 +22,7 @@ public class XrayReportReader {
     private File sechubReport;
     private HashMap<String, XrayCycloneVulnerability> vulnerabilityHashMap;
 
-    public void getFiles(String unzippedArchive, String pdsResultFile) throws IOException {
+    public void getFiles(String unzippedArchive, String pdsResultFile) throws XrayWrapperReportException {
         sechubReport = new File(pdsResultFile);
 
         if (!fileExists(unzippedArchive)) {
@@ -71,17 +71,17 @@ public class XrayReportReader {
      *
      * @throws IOException
      */
-    public void readSecurityReport() throws IOException {
+    public void readSecurityReport() throws XrayWrapperReportException {
         XrayReportTransformer xrayReportTransformer = new XrayReportTransformer();
         JsonNode rootNode = xrayReportTransformer.getRootDataNode(securityreport);
         vulnerabilityHashMap = xrayReportTransformer.transfromSecurityReport(rootNode);
     }
 
-    public ObjectNode mapVulnerabilities() throws IOException {
+    public ObjectNode mapVulnerabilities() throws XrayWrapperReportException {
         return XrayVulnerabilityMapper.mapVulnerabilities(cyclonreport, vulnerabilityHashMap);
     }
 
-    public void writeReport(ObjectNode rootNode) throws IOException {
+    public void writeReport(ObjectNode rootNode) throws XrayWrapperReportException {
         XrayReportWriter.writeReport(rootNode, sechubReport);
     }
 

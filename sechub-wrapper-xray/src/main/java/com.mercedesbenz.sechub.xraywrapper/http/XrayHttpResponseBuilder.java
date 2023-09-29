@@ -10,6 +10,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
+import com.mercedesbenz.sechub.xraywrapper.cli.XrayWrapperExitCode;
+import com.mercedesbenz.sechub.xraywrapper.cli.XrayWrapperRuntimeException;
+
 public class XrayHttpResponseBuilder {
 
     // https://github.com/eugenp/tutorials/blob/master/core-java-modules/core-java-networking-2/src/main/java/com/baeldung/httprequest/FullResponseBuilder.java
@@ -22,12 +25,17 @@ public class XrayHttpResponseBuilder {
      * @return
      * @throws IOException
      */
-    public static XrayAPIResponse getHttpResponseFromConnection(HttpURLConnection con, String zipArchive) throws IOException {
+    public static XrayAPIResponse getHttpResponseFromConnection(HttpURLConnection con, String zipArchive) throws XrayWrapperRuntimeException {
         XrayAPIResponse response = new XrayAPIResponse();
         zipArchive = zipArchive + ".zip";
+        int responseCode = 0;
 
-        response.setStatus_code(con.getResponseCode());
-
+        try {
+            responseCode = con.getResponseCode();
+        } catch (IOException e) {
+            throw new XrayWrapperRuntimeException("Could not get response code from http connection.", e, XrayWrapperExitCode.IO_ERROR);
+        }
+        response.setStatus_code(responseCode);
         // append headers
         Map<String, List<String>> header = con.getHeaderFields();
         response.setHeaders(header);
@@ -35,10 +43,14 @@ public class XrayHttpResponseBuilder {
         // append response
         InputStream is;
 
-        if (con.getResponseCode() > 299) {
+        if (responseCode > 299) {
             is = con.getErrorStream();
         } else {
-            is = con.getInputStream();
+            try {
+                is = con.getInputStream();
+            } catch (IOException e) {
+                throw new XrayWrapperRuntimeException("Could not get Input stream from http connection.", e, XrayWrapperExitCode.IO_ERROR);
+            }
         }
 
         if (is != null) {

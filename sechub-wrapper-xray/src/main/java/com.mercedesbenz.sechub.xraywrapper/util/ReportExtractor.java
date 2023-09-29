@@ -9,6 +9,9 @@ import java.nio.file.StandardCopyOption;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
+import com.mercedesbenz.sechub.xraywrapper.cli.XrayWrapperExitCode;
+import com.mercedesbenz.sechub.xraywrapper.reportgenerator.XrayWrapperReportException;
+
 public class ReportExtractor {
 
     /**
@@ -27,7 +30,7 @@ public class ReportExtractor {
      * @param target
      * @throws IOException
      */
-    public static void unzipReports(Path source, Path target) throws IOException {
+    public static void unzipReports(Path source, Path target) throws XrayWrapperReportException {
         // https://mkyong.com/java/how-to-decompress-files-from-a-zip-file/
         try (ZipInputStream zis = new ZipInputStream(new FileInputStream(source.toFile()))) {
             ZipEntry zipEntry = zis.getNextEntry();
@@ -56,6 +59,8 @@ public class ReportExtractor {
 
             }
             zis.closeEntry();
+        } catch (IOException e) {
+            throw new XrayWrapperReportException("Error: could not extract zip file.", e, XrayWrapperExitCode.IO_ERROR);
         }
     }
 
@@ -67,7 +72,7 @@ public class ReportExtractor {
      * @return
      * @throws IOException
      */
-    private static Path zipSlipProtect(ZipEntry zipEntry, Path targetDir) throws IOException {
+    private static Path zipSlipProtect(ZipEntry zipEntry, Path targetDir) throws XrayWrapperReportException {
         // Path targetDirResolved = targetDir.resolve("../../" + zipEntry.getName());
 
         Path targetDirResolved = targetDir.resolve(zipEntry.getName());
@@ -76,7 +81,7 @@ public class ReportExtractor {
         // else throws exception
         Path normalizePath = targetDirResolved.normalize();
         if (!normalizePath.startsWith(targetDir)) {
-            throw new IOException("Bad zip entry: " + zipEntry.getName());
+            throw new XrayWrapperReportException("Error: Bad zip entry: " + zipEntry.getName(), XrayWrapperExitCode.IO_ERROR);
         }
 
         return normalizePath;

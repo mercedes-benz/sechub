@@ -10,19 +10,29 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.mercedesbenz.sechub.xraywrapper.cli.XrayWrapperExitCode;
 
 public class XrayReportTransformer {
 
-    public JsonNode getRootDataNode(File xraySecurityReport) throws IOException {
-        return new ObjectMapper().readTree(xraySecurityReport).get("data");
+    public JsonNode getRootDataNode(File xraySecurityReport) throws XrayWrapperReportException {
+        try {
+            return new ObjectMapper().readTree(xraySecurityReport).get("data");
+        } catch (IOException e) {
+            throw new XrayWrapperReportException("Error: could not read file as json", e, XrayWrapperExitCode.IO_ERROR);
+        }
     }
 
-    public HashMap<String, XrayCycloneVulnerability> transfromSecurityReport(JsonNode rootDataNode) throws JsonProcessingException {
+    public HashMap<String, XrayCycloneVulnerability> transfromSecurityReport(JsonNode rootDataNode) throws XrayWrapperReportException {
         HashMap<String, XrayCycloneVulnerability> vulnerabilityHashMap = new HashMap<String, XrayCycloneVulnerability>();
         for (JsonNode node : rootDataNode) {
             XrayCycloneVulnerability vulnerability = new XrayCycloneVulnerability("");
             setBomRef(node, vulnerability);
-            String cvssString = getAndSetCveDetails(node, vulnerability);
+            String cvssString = null;
+            try {
+                cvssString = getAndSetCveDetails(node, vulnerability);
+            } catch (JsonProcessingException e) {
+                throw new XrayWrapperReportException("Error: could not process json", e, XrayWrapperExitCode.JSON_NOT_PROCESSABLE);
+            }
             setSource(node, vulnerability);
             if (!cvssString.isEmpty()) {
                 setRatingFromString(node, vulnerability, cvssString);

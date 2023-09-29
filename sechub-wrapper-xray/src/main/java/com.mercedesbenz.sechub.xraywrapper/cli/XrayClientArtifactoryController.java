@@ -1,15 +1,22 @@
 package com.mercedesbenz.sechub.xraywrapper.cli;
 
+import java.io.IOException;
+import java.util.Objects;
+import java.util.concurrent.TimeUnit;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.mercedesbenz.sechub.xraywrapper.config.XrayArtifact;
 import com.mercedesbenz.sechub.xraywrapper.config.XrayConfiguration;
 import com.mercedesbenz.sechub.xraywrapper.http.XrayArtifactoryClient;
 import com.mercedesbenz.sechub.xraywrapper.reportgenerator.XrayReportReader;
-
-import java.io.IOException;
-import java.util.concurrent.TimeUnit;
+import com.mercedesbenz.sechub.xraywrapper.reportgenerator.XrayWrapperReportException;
 
 public class XrayClientArtifactoryController {
+
+    private static final Logger LOG = LoggerFactory.getLogger(XrayClientArtifactoryController.class);
 
     private final XrayConfiguration xrayConfiguration;
     private final XrayArtifactoryClient artifactoryClient;
@@ -26,27 +33,18 @@ public class XrayClientArtifactoryController {
      *
      * @throws IOException
      */
-    public void waitForScansToFinishAndDownloadReport() throws IOException {
+    public void waitForScansToFinishAndDownloadReport() throws XrayWrapperRuntimeException {
 
         // get xray version from artifactory
         String xray_version = artifactoryClient.getXrayVersion();
+        LOG.info("Info: artifactory available, scan with Xray version: {}", xray_version);
 
         // check if artifact is uploaded
-        boolean isUploaded = artifactoryClient.checkArtifactoryUpload();
-        if (!isUploaded) {
-            // todo xrayUploadException
-            System.out.println("Error: Component could not be found in artifactory, was upload correctly?");
-            System.exit(0);
-        } else {
-            System.out.println("Artifact successful uploaded");
-        }
+        artifactoryClient.checkArtifactoryUpload();
+        LOG.info("Info: artifact successfully uploaded to artifactory");
 
-        String scanStatus = artifactoryClient.getScanStatus();
+        // check scan status
         boolean scanned = false;
-
-        if (scanStatus.equals("error"))
-            System.exit(0);
-
         while (!scanned) {
             scanned = handleScanStatus();
         }
@@ -56,7 +54,7 @@ public class XrayClientArtifactoryController {
             manageReports();
     }
 
-    private void manageReports() throws IOException {
+    private void manageReports() throws XrayWrapperReportException {
         // hardcoded in response builder
         XrayReportReader reportReader = new XrayReportReader();
         reportReader.getFiles(xrayConfiguration.getZip_directory(), xrayConfiguration.getSecHubReport());
@@ -65,27 +63,30 @@ public class XrayClientArtifactoryController {
         reportReader.writeReport(root);
     }
 
-    private boolean handleScanStatus() throws IOException {
+    private boolean handleScanStatus() throws XrayWrapperRuntimeException {
         String status = artifactoryClient.getScanStatus();
         switch (status) {
         case "not scanned" -> {
             waitSeconds(xrayConfiguration.getWaitUntilRetrySec());
             if (0 >= retries) {
-                System.out.println("Started Xray scan...");
+                LOG.info("Info: started artifact scan external");
                 retries = xrayConfiguration.getRequestRetries();
-                artifactoryClient.startScanArtifact();
+                String started = artifactoryClient.startScanArtifact();
+                if (!Objects.equals(started, "Scan of artifact is in progress")) {
+                    LOG.error("Scan start was not successful");
+                }
             }
             retries--;
-            System.out.println("Artifact not scanned...");
+            LOG.info("Info: artifact status is not scanned");
             return false;
         }
         case "in progress" -> {
             waitSeconds(xrayConfiguration.getWaitUntilRetrySec());
-            System.out.println("Scan in progress...");
+            LOG.info("Info: artifact scan in progress");
             return false;
         }
         case "scanned" -> {
-            System.out.println("Artifact already scanned");
+            LOG.info("Info: artifact is scanned");
             return true;
         }
         }
