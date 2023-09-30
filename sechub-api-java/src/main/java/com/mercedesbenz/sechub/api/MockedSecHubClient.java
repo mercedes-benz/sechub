@@ -37,22 +37,19 @@ public class MockedSecHubClient extends AbstractSecHubClient {
     private Set<String> userToProjectAssignments = new HashSet<>();
 
     private MockedSecHubClient(URI serverUri, String username, String apiToken, boolean trustAll) {
-        setUsername(username);
-        setApiToken(apiToken);
-        setServerUri(serverUri);
-        setTrustAll(trustAll);
-        
+        super(serverUri, username, apiToken, trustAll);
+
         mockDataAccess = new MockDataAccess();
     }
 
-    public static MockedSecHubClient from(URI serverUri, String username, String apiToken) {   	
+    public static MockedSecHubClient from(URI serverUri, String username, String apiToken) {
         return from(serverUri, username, apiToken, false);
     }
 
     public static MockedSecHubClient from(URI serverUri, String username, String apiToken, boolean trustAll) {
-    	return new MockedSecHubClient(serverUri, username, apiToken, trustAll);
+        return new MockedSecHubClient(serverUri, username, apiToken, trustAll);
     }
-    
+
     @Override
     public void acceptOpenSignup(String signupUsername) throws SecHubClientException {
         OpenUserSignup signup = openSignups.get(signupUsername);
@@ -310,14 +307,14 @@ public class MockedSecHubClient extends AbstractSecHubClient {
         private String serverVersion = "0.0.0-mocked";
 
         public String getServerVersion() {
-			return serverVersion;
-		}
+            return serverVersion;
+        }
 
-		public void setServerVersion(String serverVersion) {
-			this.serverVersion = serverVersion;
-		}
+        public void setServerVersion(String serverVersion) {
+            this.serverVersion = serverVersion;
+        }
 
-		public MockDataAccess() {
+        public MockDataAccess() {
             SecHubStatus.Scheduler scheduler = new Scheduler(false);
             SecHubStatus.Jobs jobs = new Jobs(123456, 1, 2, 3, 4, 5, 6);
 
@@ -337,9 +334,13 @@ public class MockedSecHubClient extends AbstractSecHubClient {
         }
     }
 
-	@Override
-	public String getServerVersion() throws SecHubClientException {
-		return mockDataAccess.getServerVersion();
-	}
+    @Override
+    public String getServerVersion() throws SecHubClientException {
+        return mockDataAccess.getServerVersion();
+    }
+
+    @Override
+    public void userRequestsNewApiToken(String emailAdress) throws SecHubClientException {
+    }
 
 }

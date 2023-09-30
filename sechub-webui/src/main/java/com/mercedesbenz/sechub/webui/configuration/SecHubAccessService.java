@@ -4,27 +4,39 @@ import java.net.URI;
 
 import javax.annotation.PostConstruct;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import com.mercedesbenz.sechub.api.DefaultSecHubClient;
 import com.mercedesbenz.sechub.api.MockedSecHubClient;
 import com.mercedesbenz.sechub.api.SecHubClient;
 
 @Service
 public class SecHubAccessService {
-    @Value("${sechub.server-url}")
+    @Value("${webui.sechub.server-url}")
     private String secHubServerUrl;
 
-    @Value("${sechub.trust-all-certificates}")
+    @Value("${webui.sechub.trust-all-certificates}")
     private boolean trustAllCertificates;
    
+    @Value("${webui.client.mocked}")
+    private boolean useMockedClient;
+    
+    @Autowired
+    private CredentialService credentialService;
+    
 	private SecHubClient client;
 	
     @PostConstruct
     void setupSecHubClient() {
 		URI serverUri = URI.create(secHubServerUrl);
 		
-		this.client = MockedSecHubClient.from(serverUri, "mocked", "verySecretTrustMe", trustAllCertificates);
+		if (useMockedClient) {
+			this.client = MockedSecHubClient.from(serverUri, "mocked", "verySecretTrustMe", trustAllCertificates);
+		} else {
+			this.client = DefaultSecHubClient.from(serverUri, credentialService.getUserId(), credentialService.getApiToken(), trustAllCertificates);
+		}
     }
     
 	public SecHubClient getSecHubClient() {

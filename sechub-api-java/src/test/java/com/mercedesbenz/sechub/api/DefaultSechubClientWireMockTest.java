@@ -18,6 +18,9 @@ import wiremock.org.apache.http.HttpStatus;
  * Junit 4 test because of missing official WireMock Junit5 extension - so we
  * use WireMock Rule and Junit4.
  *
+ * TODO 2023-09-30, Jeremias Eppler: Rewrite to WireMock JUnit 5+:
+ * https://wiremock.org/docs/junit-jupiter/
+ *
  * @author Albert Tregnaghi
  *
  */
@@ -40,14 +43,41 @@ public class DefaultSechubClientWireMockTest {
 
         /* prepare */
         String statusBody = """
-                [ {
-                  "key" : "status.scheduler.enabled",
-                  "value" : "true"
-                }, {
-                  "key" : "status.scheduler.jobs.all",
-                  "value" : "2"
-                } ]
-                """;
+                [
+                    {
+                        "key": "status.scheduler.enabled",
+                        "value": "true"
+                    },
+                    {
+                        "key": "status.scheduler.jobs.all",
+                        "value": "2"
+                    },
+                    {
+                        "key": "status.scheduler.jobs.initializing",
+                        "value": "0"
+                    },
+                    {
+                        "key": "status.scheduler.jobs.ready_to_start",
+                        "value": "0"
+                    },
+                    {
+                        "key": "status.scheduler.jobs.started",
+                        "value": "0"
+                    },
+                    {
+                        "key": "status.scheduler.jobs.cancel_requested",
+                        "value": "0"
+                    },
+                    {
+                        "key": "status.scheduler.jobs.canceled",
+                        "value": "0"
+                    },
+                    {
+                        "key": "status.scheduler.jobs.ended",
+                        "value": "0"
+                    }
+                ]
+                            """;
         stubFor(get(urlEqualTo("/api/admin/status")).withBasicAuth(EXAMPLE_USER, EXAMPLE_TOKEN)
                 .willReturn(aResponse().withStatus(HttpStatus.SC_OK).withHeader("Content-Type", APPLICATION_JSON).withBody(statusBody)));
 
@@ -59,8 +89,8 @@ public class DefaultSechubClientWireMockTest {
         /* test */
         verify(getRequestedFor(urlEqualTo("/api/admin/status")));
         assertNotNull(status);
-        assertEquals("true", status.getStatusInformationMap().get("status.scheduler.enabled"));
-        assertEquals("2", status.getStatusInformationMap().get("status.scheduler.jobs.all"));
+        assertTrue(status.scheduler().isEnabled());
+        assertEquals(2, status.jobs().all());
 
     }
 
@@ -69,14 +99,41 @@ public class DefaultSechubClientWireMockTest {
 
         /* prepare */
         String statusBody = """
-                [ {
-                  "key" : "status.scheduler.enabled",
-                  "value" : "false"
-                }, {
-                  "key" : "status.scheduler.jobs.all",
-                  "value" : "0"
-                } ]
-                """;
+                [
+                    {
+                        "key": "status.scheduler.enabled",
+                        "value": "false"
+                    },
+                    {
+                        "key": "status.scheduler.jobs.all",
+                        "value": "0"
+                    },
+                    {
+                        "key": "status.scheduler.jobs.initializing",
+                        "value": "0"
+                    },
+                    {
+                        "key": "status.scheduler.jobs.ready_to_start",
+                        "value": "0"
+                    },
+                    {
+                        "key": "status.scheduler.jobs.started",
+                        "value": "0"
+                    },
+                    {
+                        "key": "status.scheduler.jobs.cancel_requested",
+                        "value": "0"
+                    },
+                    {
+                        "key": "status.scheduler.jobs.canceled",
+                        "value": "0"
+                    },
+                    {
+                        "key": "status.scheduler.jobs.ended",
+                        "value": "0"
+                    }
+                ]
+                             """;
         stubFor(get(urlEqualTo("/api/admin/status")).withBasicAuth("other-user", "other-token")
                 .willReturn(aResponse().withStatus(HttpStatus.SC_OK).withHeader("Content-Type", APPLICATION_JSON).withBody(statusBody)));
 
@@ -90,12 +147,12 @@ public class DefaultSechubClientWireMockTest {
         SecHubStatus status = client.fetchSecHubStatus();
         verify(getRequestedFor(urlEqualTo("/api/admin/status")));
 
-        assertEquals("false", status.getStatusInformationMap().get("status.scheduler.enabled"));
-        assertEquals("0", status.getStatusInformationMap().get("status.scheduler.jobs.all"));
+        assertFalse(status.scheduler().isEnabled());
+        assertEquals(0, status.jobs().all());
     }
 
     private DefaultSecHubClient createTestClientWithExampleCredentials() {
-        DefaultSecHubClient client = new DefaultSecHubClient(URI.create(wireMockRule.baseUrl()), EXAMPLE_USER, EXAMPLE_TOKEN, true);
+        DefaultSecHubClient client = DefaultSecHubClient.from(URI.create(wireMockRule.baseUrl()), EXAMPLE_USER, EXAMPLE_TOKEN, true);
         return client;
     }
 }

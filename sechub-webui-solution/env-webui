@@ -1,0 +1,16 @@
+# Start mode of WebUI. 
+# Possible values are: localserver, mocked
+# the mocked mode does not require a connection 
+# to the SecHub server
+WEBUI_START_MODE="localserver"
+
+# User credentials for SecHub server
+SECHUB_USERID="admin"
+SECHUB_APITOKEN='myTop$ecret!'
+
+# Enable Java Debugging
+JAVA_ENABLE_DEBUG=false
+
+# Keep the container alive after it crashed
+KEEP_CONTAINER_ALIVE_AFTER_PDS_CRASHED=false
+

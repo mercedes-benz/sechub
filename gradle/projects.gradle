@@ -91,6 +91,8 @@ projectType = [
                    project(':sechub-pds'),
                    project(':sechub-wrapper-checkmarx'),
             ],
+            
+            springBootWebUIProjects:[],
 
             /* documentation projects */
             springDocProjects: [
@@ -107,6 +109,7 @@ projectType = [
                     project(':sechub-pds-solutions'),
 					project(':sechub-solution'),
 					project(':sechub-solutions-shared'),
+					project(':sechub-webui-solution'),
             ],
 
             asciiDoctorProjects: [
@@ -138,7 +141,7 @@ if (secHubBuildStage.providesGeneratedOpenApiFile()){
     /* make it possible to use integration test parts for systemtest (unit tests) as well */
     projectType.integrationTestProjects.add(project(':sechub-systemtest'))
 	
-	//projectType.bootableSpringApplicationProjects.add(project(':sechub-webui'))
+	projectType.springBootWebUIProjects.add(project(':sechub-webui'))
 }
 
 
@@ -147,6 +150,7 @@ projectType.springBootProjects.addAll(projectType.springBootSecHubServerProjects
 projectType.springBootProjects.addAll(projectType.springBootPDSProjects)
 projectType.springBootProjects.addAll(projectType.springBootAdapterProjects)
 projectType.springBootProjects.addAll(projectType.springDocProjects)
+projectType.springBootProjects.addAll(projectType.springBootWebUIProjects)
 
 projectType.javaProjects.addAll(projectType.springBootProjects)
 

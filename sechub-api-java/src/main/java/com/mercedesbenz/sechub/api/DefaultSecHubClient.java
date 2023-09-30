@@ -74,10 +74,7 @@ public class DefaultSecHubClient extends AbstractSecHubClient {
     }
 
     private DefaultSecHubClient(URI serverUri, String username, String apiToken, boolean trustAll) {
-        setUsername(username);
-        setApiToken(apiToken);
-        setServerUri(serverUri);
-        setTrustAll(trustAll);
+        super(serverUri, username, apiToken, trustAll);
 
         apiClient = new ApiClientBuilder().createApiClient(this, mapper);
 
@@ -92,9 +89,9 @@ public class DefaultSecHubClient extends AbstractSecHubClient {
         conversionHelper = new OpenApiSecHubClientConversionHelper(adminApi);
 
     }
-    
+
     public static DefaultSecHubClient from(URI serverUri, String username, String apiToken, boolean trustAll) {
-    	return new DefaultSecHubClient(serverUri, username, apiToken, trustAll);
+        return new DefaultSecHubClient(serverUri, username, apiToken, trustAll);
     }
 
     private ApiClient getApiClient() {
@@ -263,7 +260,7 @@ public class DefaultSecHubClient extends AbstractSecHubClient {
     @Override
     public boolean isServerAlive() throws SecHubClientException {
         try {
-            anonymousApi.anonymousCheckAliveGet();
+            anonymousApi.anonymousCheckAliveHead();
             return true;
         } catch (ApiException e) {
             return false;
@@ -458,6 +455,15 @@ public class DefaultSecHubClient extends AbstractSecHubClient {
     @Override
     public String getServerVersion() throws SecHubClientException {
         return runOrFail(() -> adminApi.adminChecksServerVersion().getServerVersion(), "Get server version");
+    }
+
+    /* +++++++++++++++++++++++++++++++++++++++++++++++++ */
+    /* + ................Version...................... + */
+    /* +++++++++++++++++++++++++++++++++++++++++++++++++ */
+
+    @Override
+    public void userRequestsNewApiToken(String emailAddress) throws SecHubClientException {
+        runOrFail(() -> anonymousApi.userRequestsNewApiToken(emailAddress), "User requests a new API Token");
     }
 
     /* ++++++++++++++++++++++++++++++++++++++++++++++++++++ */

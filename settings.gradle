@@ -79,9 +79,10 @@ include 'sechub-cli',
 'sechub-wrapper-owasp-zap',
 
 // Wrapper checkmarx
-'sechub-wrapper-checkmarx'
+'sechub-wrapper-checkmarx',
 
-
+/* webui */
+'sechub-webui-solution'
 
 String buildStage = System.getProperty("sechub.build.stage");
 
@@ -99,7 +100,7 @@ if (buildStage!=null) {
         'sechub-pds-tools', 
         
         // Examples (are below 'sechub-examples' folder)
-        'sechub-examples:example-sechub-api-java' 
+        'sechub-examples:example-sechub-api-java',
     
 		/* WebUI - needs the Java API */
 		'sechub-webui'

@@ -1,10 +1,20 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.webui.SecHub.WebUI;
 
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.reactive.AutoConfigureWebTestClient;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.ApplicationContext;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.web.reactive.server.WebTestClient;
+
+import com.mercedesbenz.sechub.webui.configuration.CredentialService;
+import com.mercedesbenz.sechub.webui.configuration.SecHubAccessService;
 
 /*
  * This test launches a real HTTP Server (Netty) during the test.
@@ -19,25 +29,25 @@ import org.springframework.test.context.ActiveProfiles;
  */
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
 @AutoConfigureWebTestClient
-@ActiveProfiles("test")
+@ActiveProfiles("webui_test")
 class SecHubWebUiApplicationSpringBootTest {
-//
-//    @Autowired
-//    private WebTestClient webTestClient;
-//
-//    @MockBean
-//    private SecHubServerAccessService mockAccessService;
-//
-//    @MockBean
-//    private CredentialService mockCredentialService;
-//
-//    @Test
-//    void contextLoads(ApplicationContext context) {
-//        assertNotNull(context);
-//    }
-//
-//    @Test
-//    void index() throws Exception {
-//        webTestClient.get().uri("/").exchange().expectStatus().isFound();
-//    }
+
+    @Autowired
+    private WebTestClient webTestClient;
+
+    @MockBean
+    private SecHubAccessService mockAccessService;
+
+    @MockBean
+    private CredentialService mockCredentialService;
+
+    @Test
+    void contextLoads(ApplicationContext context) {
+        assertNotNull(context);
+    }
+
+    @Test
+    void index() throws Exception {
+        webTestClient.get().uri("/").exchange().expectStatus().isFound();
+    }
 }

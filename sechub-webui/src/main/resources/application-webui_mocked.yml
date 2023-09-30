@@ -1,0 +1,3 @@
+webui:
+   client:
+      mocked: true

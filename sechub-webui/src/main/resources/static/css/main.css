@@ -102,3 +102,7 @@ body {
 .text-color-white {
 	color: white;
 }
+
+.error {
+	color: darkred;	
+}
