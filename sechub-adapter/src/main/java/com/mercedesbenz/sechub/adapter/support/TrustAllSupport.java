@@ -39,121 +39,120 @@ import com.mercedesbenz.sechub.adapter.TrustAllConfig;
  */
 public class TrustAllSupport {
 
-	private static final String TLS = "TLS";
-	private Adapter<?> adapter;
-	private TrustAllConfig config;
+    private static final String TLS = "TLS";
+    private Adapter<?> adapter;
+    private TrustAllConfig config;
 
-	public TrustAllSupport(Adapter<?> adapter, TrustAllConfig config) {
-		if (adapter == null) {
-			throw new IllegalArgumentException("adapter may not be null");
-		}
-		if (config == null) {
-			throw new IllegalArgumentException("config may not be null");
-		}
-		this.adapter = adapter;
-		this.config = config;
-	}
+    public TrustAllSupport(Adapter<?> adapter, TrustAllConfig config) {
+        if (adapter == null) {
+            throw new IllegalArgumentException("adapter may not be null");
+        }
+        if (config == null) {
+            throw new IllegalArgumentException("config may not be null");
+        }
+        this.adapter = adapter;
+        this.config = config;
+    }
 
-	public ClientHttpRequestFactory createTrustAllFactory() {
-		HttpClientBuilder clientBuilder = HttpClients.custom();
-		SSLContext sslContext = null;
-		
-		if (config.isTrustAllCertificatesEnabled()) {
-			try {
-				sslContext = createTrustAllSSLContext(adapter);
-			} catch (AdapterException e) {
-				throw new IllegalStateException("Should not happen! See trace", e);
-			}
-		} else {
-			sslContext = SSLContexts.createSystemDefault();
-		}
-		
-		if (config.isProxyDefined()) {
-			// proxy with socks not working with standard HTTPHost,
-			// clientBuilder.setProxy(..)
-			// So own approach necessary, details see
-			// https://stackoverflow.com/questions/22937983/how-to-use-socks-5-proxy-with-apache-http-client-4
-			//Registry<ConnectionSocketFactory> reg = RegistryBuilder.<ConnectionSocketFactory>create()
-			//		.register("http", new SocksProxyConnectionSocketFactory())
-			//		.register("https", new SocksProxySSLConnectionSocketFactory(sslContext)).build();
-			
-			// TODO Jeremias Eppler, 2023-09-15: Find a better way to deal with http/https proxy settings
-			//final HttpHost proxyHTTP = new HttpHost("http", config.getProxyHostname(), config.getProxyPort());
-			
-			// default is the HTTPS proxy
-			final HttpHost proxyHTTPS = new HttpHost("https", config.getProxyHostname(), config.getProxyPort());
-			
-			// TODO Jeremias Eppler, 2023-09-15: Use the underlying system proxy settings
-			//clientBuilder.useSystemProperties();
+    public ClientHttpRequestFactory createTrustAllFactory() {
+        HttpClientBuilder clientBuilder = HttpClients.custom();
+        SSLContext sslContext = null;
 
-			PoolingHttpClientConnectionManager cm = PoolingHttpClientConnectionManagerBuilder.create()
-					.setDnsResolver(new FakeDnsResolver()).build();
-			clientBuilder.setConnectionManager(cm);
-			clientBuilder.setProxy(proxyHTTPS);
-		} else {
-			
-			/* formatter:off */
-			SSLConnectionSocketFactory sslSocketFactory = SSLConnectionSocketFactoryBuilder.create().
-					setSslContext(sslContext).
-					setHostnameVerifier(new NoopHostnameVerifier()).
-					build();
-			/* formatter:on */
-			
-			HttpClientConnectionManager connectionManager = PoolingHttpClientConnectionManagerBuilder.create().setSSLSocketFactory(sslSocketFactory).build();
-			clientBuilder.setConnectionManager(connectionManager);
-		}
+        if (config.isTrustAllCertificatesEnabled()) {
+            try {
+                sslContext = createTrustAllSSLContext(adapter);
+            } catch (AdapterException e) {
+                throw new IllegalStateException("Should not happen! See trace", e);
+            }
+        } else {
+            sslContext = SSLContexts.createSystemDefault();
+        }
 
-		CloseableHttpClient httpClient = clientBuilder.build();
+        if (config.isProxyDefined()) {
+            // proxy with socks not working with standard HTTPHost,
+            // clientBuilder.setProxy(..)
+            // So own approach necessary, details see
+            // https://stackoverflow.com/questions/22937983/how-to-use-socks-5-proxy-with-apache-http-client-4
+            // Registry<ConnectionSocketFactory> reg =
+            // RegistryBuilder.<ConnectionSocketFactory>create()
+            // .register("http", new SocksProxyConnectionSocketFactory())
+            // .register("https", new
+            // SocksProxySSLConnectionSocketFactory(sslContext)).build();
 
-		HttpComponentsClientHttpRequestFactory requestFactory2 = new HttpComponentsClientHttpRequestFactory();
-		requestFactory2.setHttpClient(httpClient);
-		return requestFactory2;
-	}
+            // TODO Jeremias Eppler, 2023-09-15: Find a better way to deal with http/https
+            // proxy settings
+            // final HttpHost proxyHTTP = new HttpHost("http", config.getProxyHostname(),
+            // config.getProxyPort());
 
-	private SSLContext createTrustAllSSLContext(Adapter<?> adapter) throws AdapterException {
-		SSLContext sslContext = null;
-		try {
-			sslContext = SSLContext.getInstance(TLS);
+            // default is the HTTPS proxy
+            final HttpHost proxyHTTPS = new HttpHost("https", config.getProxyHostname(), config.getProxyPort());
 
-			TrustManager tm = new X509TrustManager() {
+            // TODO Jeremias Eppler, 2023-09-15: Use the underlying system proxy settings
+            // clientBuilder.useSystemProperties();
 
-				private X509Certificate[] emptyCertificatesArray = new X509Certificate[] {};
+            PoolingHttpClientConnectionManager cm = PoolingHttpClientConnectionManagerBuilder.create().setDnsResolver(new FakeDnsResolver()).build();
+            clientBuilder.setConnectionManager(cm);
+            clientBuilder.setProxy(proxyHTTPS);
+        } else {
 
-				public void /* NOSONAR */ checkClientTrusted(X509Certificate[] chain, String authType)
-						throws CertificateException {
-					/* we do not check the client - we trust all */
-				}
+            /* formatter:off */
+            SSLConnectionSocketFactory sslSocketFactory = SSLConnectionSocketFactoryBuilder.create().setSslContext(sslContext)
+                    .setHostnameVerifier(new NoopHostnameVerifier()).build();
+            /* formatter:on */
 
-				public void /* NOSONAR */ checkServerTrusted(X509Certificate[] chain, String authType)
-						throws CertificateException {
-					/* we do not check the server - we trust all */
-				}
+            HttpClientConnectionManager connectionManager = PoolingHttpClientConnectionManagerBuilder.create().setSSLSocketFactory(sslSocketFactory).build();
+            clientBuilder.setConnectionManager(connectionManager);
+        }
 
-				public X509Certificate[] getAcceptedIssuers() {
-					return emptyCertificatesArray;
-				}
-			};
+        CloseableHttpClient httpClient = clientBuilder.build();
 
-			sslContext.init(null, new TrustManager[] { tm }, null);
+        HttpComponentsClientHttpRequestFactory requestFactory2 = new HttpComponentsClientHttpRequestFactory();
+        requestFactory2.setHttpClient(httpClient);
+        return requestFactory2;
+    }
 
-			return sslContext;
-		} catch (NoSuchAlgorithmException | KeyManagementException e) {
-			throw adapter.asAdapterException("Was not able to initialize a trust all ssl context", e, config);
-		}
+    private SSLContext createTrustAllSSLContext(Adapter<?> adapter) throws AdapterException {
+        SSLContext sslContext = null;
+        try {
+            sslContext = SSLContext.getInstance(TLS);
 
-	}
+            TrustManager tm = new X509TrustManager() {
 
-	private class FakeDnsResolver implements DnsResolver {
-		@Override
-		public InetAddress[] resolve(String host) throws UnknownHostException {
-			// Return some fake DNS record for every request, we won't be using it
-			return new InetAddress[] { InetAddress.getByAddress(new byte[] { 1, 1, 1, 1 }) };
-		}
+                private X509Certificate[] emptyCertificatesArray = new X509Certificate[] {};
 
-		@Override
-		public String resolveCanonicalHostname(String host) throws UnknownHostException {
-			return "fakeHost";
-		}
+                public void /* NOSONAR */ checkClientTrusted(X509Certificate[] chain, String authType) throws CertificateException {
+                    /* we do not check the client - we trust all */
+                }
 
-	}
+                public void /* NOSONAR */ checkServerTrusted(X509Certificate[] chain, String authType) throws CertificateException {
+                    /* we do not check the server - we trust all */
+                }
+
+                public X509Certificate[] getAcceptedIssuers() {
+                    return emptyCertificatesArray;
+                }
+            };
+
+            sslContext.init(null, new TrustManager[] { tm }, null);
+
+            return sslContext;
+        } catch (NoSuchAlgorithmException | KeyManagementException e) {
+            throw adapter.asAdapterException("Was not able to initialize a trust all ssl context", e, config);
+        }
+
+    }
+
+    private class FakeDnsResolver implements DnsResolver {
+        @Override
+        public InetAddress[] resolve(String host) throws UnknownHostException {
+            // Return some fake DNS record for every request, we won't be using it
+            return new InetAddress[] { InetAddress.getByAddress(new byte[] { 1, 1, 1, 1 }) };
+        }
+
+        @Override
+        public String resolveCanonicalHostname(String host) throws UnknownHostException {
+            return "fakeHost";
+        }
+
+    }
 }

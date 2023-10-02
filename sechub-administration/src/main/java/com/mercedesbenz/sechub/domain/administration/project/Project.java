@@ -5,6 +5,9 @@ import java.net.URI;
 import java.util.HashSet;
 import java.util.Set;
 
+import com.mercedesbenz.sechub.domain.administration.user.User;
+import com.mercedesbenz.sechub.sharedkernel.project.ProjectAccessLevel;
+
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.CollectionTable;
 import jakarta.persistence.Column;
@@ -19,9 +22,6 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import jakarta.persistence.Version;
-
-import com.mercedesbenz.sechub.domain.administration.user.User;
-import com.mercedesbenz.sechub.sharedkernel.project.ProjectAccessLevel;
 
 @Entity
 @Table(name = Project.TABLE_NAME)

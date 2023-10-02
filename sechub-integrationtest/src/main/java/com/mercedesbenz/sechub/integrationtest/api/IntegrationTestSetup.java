@@ -233,8 +233,7 @@ public class IntegrationTestSetup implements TestRule {
                 HttpStatusCode code = e.getStatusCode();
 
                 String lastURL = TestRestHelper.getLastUrl();
-                throw new IntegrationTestException(
-                        "HTTP ERROR " + code + " '" + (code != null ? e.getStatusText() : "?") + "', " + lastURL, e);
+                throw new IntegrationTestException("HTTP ERROR " + code + " '" + (code != null ? e.getStatusText() : "?") + "', " + lastURL, e);
             } finally {
                 logEnd(TestTag.DONE, testClass, testMethod, startTime);
             }

@@ -4,6 +4,8 @@ package com.mercedesbenz.sechub.domain.administration.user;
 import java.util.Date;
 import java.util.Set;
 
+import com.mercedesbenz.sechub.domain.administration.project.Project;
+
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -15,8 +17,6 @@ import jakarta.persistence.Table;
 import jakarta.persistence.Temporal;
 import jakarta.persistence.TemporalType;
 import jakarta.persistence.Version;
-
-import com.mercedesbenz.sechub.domain.administration.project.Project;
 
 @Entity
 @Table(name = User.TABLE_NAME)

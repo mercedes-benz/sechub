@@ -17,11 +17,11 @@ import com.mercedesbenz.sechub.pds.PDSAPIConstants;
 @Configuration
 @EnableWebSecurity
 public class PDSAPISecurityConfiguration {
-			
-	@Bean
-	public SecurityFilterChain filterChain(HttpSecurity httpSecurity) throws Exception {
 
-	    /* @formatter:off */
+    @Bean
+    public SecurityFilterChain filterChain(HttpSecurity httpSecurity) throws Exception {
+
+        /* @formatter:off */
 		httpSecurity.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
 				.authorizeHttpRequests((auth) -> auth.
 						requestMatchers(PDSAPIConstants.API_JOB + "**").hasAnyAuthority(ROLE_USER, ROLE_SUPERADMIN).
@@ -35,8 +35,8 @@ public class PDSAPISecurityConfiguration {
 				.httpBasic(Customizer.withDefaults()).headers((headers) -> headers
 						.contentSecurityPolicy((csp) -> csp.policyDirectives("default-src 'none'")));
 		/* @formatter:on */
-		
-		return httpSecurity.build();
-	}
+
+        return httpSecurity.build();
+    }
 
 }

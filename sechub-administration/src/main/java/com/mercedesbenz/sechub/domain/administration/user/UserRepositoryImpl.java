@@ -1,12 +1,12 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.domain.administration.user;
 
+import com.mercedesbenz.sechub.domain.administration.project.Project;
+import com.mercedesbenz.sechub.sharedkernel.error.NotAcceptableException;
+
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.Query;
-
-import com.mercedesbenz.sechub.domain.administration.project.Project;
-import com.mercedesbenz.sechub.sharedkernel.error.NotAcceptableException;
 
 public class UserRepositoryImpl implements UserRepositoryCustom {
 

@@ -135,7 +135,7 @@ public class NessusAdapterV1 extends AbstractAdapter<NessusAdapterContext, Nessu
         String apiUrl = createGetHistoryIdsApiURL(context);
         ResponseEntity<String> response = context.getRestOperations().getForEntity(apiUrl, String.class);
         if (!OK.equals(response.getStatusCode())) {
-        	
+
             throw new NessusRESTFailureException(converToHttpStatus(response.getStatusCode()), response.getBody());
         }
         String content = response.getBody();
@@ -144,9 +144,9 @@ public class NessusAdapterV1 extends AbstractAdapter<NessusAdapterContext, Nessu
 
         return historyId;
     }
-    
+
     private HttpStatus converToHttpStatus(HttpStatusCode code) {
-    	return HttpStatus.valueOf(code.value());
+        return HttpStatus.valueOf(code.value());
     }
 
     private void launchScan(NessusAdapterContext context) throws AdapterException {

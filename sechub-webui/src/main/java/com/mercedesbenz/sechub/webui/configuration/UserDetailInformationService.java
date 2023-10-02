@@ -9,7 +9,7 @@ import org.springframework.stereotype.Service;
 public class UserDetailInformationService {
 
     public UserDetails getUser() {
-    	/* @formatter:off */
+        /* @formatter:off */
         return User.withDefaultPasswordEncoder()
         		.username("user")
         		.password("password")
@@ -17,7 +17,7 @@ public class UserDetailInformationService {
         		.build();
         /* @formatter:off */
     }
-    
+
     public UserDetails getAdmin() {
     	/* @formatter:off */
         return User.withDefaultPasswordEncoder()

@@ -16,11 +16,11 @@ import org.springframework.security.web.server.util.matcher.ServerWebExchangeMat
 public class SecurityConfiguration {
     @Autowired
     UserDetailInformationService userDetailInformationService;
-    
+
     @Bean
     public SecurityWebFilterChain springSecurityFilterChain(ServerHttpSecurity httpSecurity) {
 
-		/* @formatter:off */
+        /* @formatter:off */
     	httpSecurity.
 	        authorizeExchange(exchanges -> exchanges.
 	                pathMatchers("/css/**", "/js/**", "/images/**").permitAll().
@@ -37,11 +37,11 @@ public class SecurityConfiguration {
 			csrf((csrf) -> csrf.disable() // CSRF protection disabled. The CookieServerCsrfTokenRepository does not work, since Spring Boot 3
         );
     	/* @formatter:on */
-    	return httpSecurity.build();
+        return httpSecurity.build();
     }
 
     @Bean
     public MapReactiveUserDetailsService userDetailsService() {
-		return new MapReactiveUserDetailsService(userDetailInformationService.getUser(), userDetailInformationService.getAdmin());
+        return new MapReactiveUserDetailsService(userDetailInformationService.getUser(), userDetailInformationService.getAdmin());
     }
 }

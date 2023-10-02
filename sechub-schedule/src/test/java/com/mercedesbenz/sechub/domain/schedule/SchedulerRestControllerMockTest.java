@@ -14,8 +14,6 @@ import java.time.LocalDateTime;
 import java.util.Optional;
 import java.util.UUID;
 
-import jakarta.validation.ValidationException;
-
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -48,6 +46,8 @@ import com.mercedesbenz.sechub.sharedkernel.configuration.SecHubAPISecurityConfi
 import com.mercedesbenz.sechub.sharedkernel.configuration.SecHubConfiguration;
 import com.mercedesbenz.sechub.sharedkernel.configuration.SecHubConfigurationValidator;
 import com.mercedesbenz.sechub.test.TestPortProvider;
+
+import jakarta.validation.ValidationException;
 
 @RunWith(SpringRunner.class)
 @WebMvcTest(SchedulerRestController.class)

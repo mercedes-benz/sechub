@@ -9,6 +9,13 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.UUID;
 
+import org.hibernate.annotations.GenericGenerator;
+
+import com.mercedesbenz.sechub.commons.model.ModuleGroup;
+import com.mercedesbenz.sechub.commons.model.TrafficLight;
+import com.mercedesbenz.sechub.commons.model.job.ExecutionResult;
+import com.mercedesbenz.sechub.commons.model.job.ExecutionState;
+
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -18,13 +25,6 @@ import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import jakarta.persistence.Version;
-
-import org.hibernate.annotations.GenericGenerator;
-
-import com.mercedesbenz.sechub.commons.model.ModuleGroup;
-import com.mercedesbenz.sechub.commons.model.TrafficLight;
-import com.mercedesbenz.sechub.commons.model.job.ExecutionResult;
-import com.mercedesbenz.sechub.commons.model.job.ExecutionState;
 
 /**
  * Represents a JOB in SecHub. We did not name it as Job because of Spring batch

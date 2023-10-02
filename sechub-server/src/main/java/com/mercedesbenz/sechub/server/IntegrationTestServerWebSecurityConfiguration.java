@@ -19,8 +19,8 @@ import com.mercedesbenz.sechub.sharedkernel.Profiles;
 @Profile(Profiles.INTEGRATIONTEST)
 public class IntegrationTestServerWebSecurityConfiguration {
 
-	@Bean
-	public WebSecurityCustomizer ignoreIntegrationtestAPI(HttpSecurity httpSecurity) throws Exception {
-		return (web) -> web.ignoring().requestMatchers("api/integrationtest/*");
-	}
+    @Bean
+    public WebSecurityCustomizer ignoreIntegrationtestAPI(HttpSecurity httpSecurity) throws Exception {
+        return (web) -> web.ignoring().requestMatchers("api/integrationtest/*");
+    }
 }

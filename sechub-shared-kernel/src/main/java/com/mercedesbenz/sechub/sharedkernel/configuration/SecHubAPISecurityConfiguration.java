@@ -16,17 +16,17 @@ import com.mercedesbenz.sechub.sharedkernel.APIConstants;
 @EnableWebSecurity
 public class SecHubAPISecurityConfiguration {
 
-	@Bean
-	public SecurityFilterChain filterChain(HttpSecurity httpSecurity) throws Exception {
+    @Bean
+    public SecurityFilterChain filterChain(HttpSecurity httpSecurity) throws Exception {
 
-	    /* @formatter:off */
+        /* @formatter:off */
 		httpSecurity.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
 				.authorizeHttpRequests((auth) -> auth.
 						requestMatchers(APIConstants.API_ADMINISTRATION + "**").hasAnyAuthority(ROLE_SUPERADMIN).
 						requestMatchers(APIConstants.API_USER + "**").hasAnyAuthority(ROLE_USER, ROLE_SUPERADMIN).
 						requestMatchers(APIConstants.API_PROJECT + "**").hasAnyAuthority(ROLE_USER, ROLE_SUPERADMIN).
 						requestMatchers(APIConstants.API_OWNER + "**").hasAnyAuthority(ROLE_OWNER, ROLE_SUPERADMIN).
-						
+
 						requestMatchers(APIConstants.API_ANONYMOUS+"**").permitAll().
 						requestMatchers(APIConstants.ERROR_PAGE).permitAll().
 						requestMatchers(APIConstants.ACTUATOR + "**").permitAll().
@@ -36,7 +36,7 @@ public class SecHubAPISecurityConfiguration {
 				.httpBasic(Customizer.withDefaults()).headers((headers) -> headers
 						.contentSecurityPolicy((csp) -> csp.policyDirectives("default-src 'none'; style-src 'unsafe-inline'")));
 		/* @formatter:on */
-		
-		return httpSecurity.build();
-	}
+
+        return httpSecurity.build();
+    }
 }

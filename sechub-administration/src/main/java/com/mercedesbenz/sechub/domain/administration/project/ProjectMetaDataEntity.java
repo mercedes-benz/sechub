@@ -50,7 +50,7 @@ public class ProjectMetaDataEntity implements Serializable {
     @Id
     @Column(name = COLUMN_PROJECT_ID)
     String projectId;
-    
+
     @ManyToOne
     @JoinColumn(name = COLUMN_PROJECT_ID, nullable = false)
     Project project;

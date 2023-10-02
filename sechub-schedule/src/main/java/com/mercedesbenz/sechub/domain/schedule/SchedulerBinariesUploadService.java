@@ -12,9 +12,6 @@ import java.time.LocalDateTime;
 import java.util.Objects;
 import java.util.UUID;
 
-import jakarta.annotation.security.RolesAllowed;
-import jakarta.servlet.http.HttpServletRequest;
-
 import org.apache.commons.fileupload2.core.FileItemInput;
 import org.apache.commons.fileupload2.core.FileItemInputIterator;
 import org.apache.commons.fileupload2.core.FileUploadException;
@@ -47,6 +44,9 @@ import com.mercedesbenz.sechub.sharedkernel.usecases.user.execute.UseCaseUserUpl
 import com.mercedesbenz.sechub.sharedkernel.validation.UserInputAssertion;
 import com.mercedesbenz.sechub.storage.core.JobStorage;
 import com.mercedesbenz.sechub.storage.core.StorageService;
+
+import jakarta.annotation.security.RolesAllowed;
+import jakarta.servlet.http.HttpServletRequest;
 
 @Service
 @RolesAllowed(RoleConstants.ROLE_USER)
@@ -300,8 +300,8 @@ public class SchedulerBinariesUploadService {
             throw new BadRequestException("Not in correct state");// upload only possible when in initializing state
         }
     }
-    
+
     String streamToString(InputStream inputStream) throws IOException {
-    	return new String(inputStream.readAllBytes(), StandardCharsets.UTF_8);
+        return new String(inputStream.readAllBytes(), StandardCharsets.UTF_8);
     }
 }

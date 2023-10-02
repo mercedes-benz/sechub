@@ -7,6 +7,12 @@ import java.sql.Types;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
+import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.annotations.JdbcTypeCode;
+
+import com.mercedesbenz.sechub.domain.scan.product.config.ProductExecutorConfigInfo;
+import com.mercedesbenz.sechub.sharedkernel.ProductIdentifier;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Enumerated;
@@ -14,11 +20,6 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import jakarta.persistence.Version;
-
-import org.hibernate.annotations.GenericGenerator;
-import org.hibernate.annotations.JdbcTypeCode;
-import com.mercedesbenz.sechub.domain.scan.product.config.ProductExecutorConfigInfo;
-import com.mercedesbenz.sechub.sharedkernel.ProductIdentifier;
 
 /**
  * Represents a product result for a SecHub job UUID

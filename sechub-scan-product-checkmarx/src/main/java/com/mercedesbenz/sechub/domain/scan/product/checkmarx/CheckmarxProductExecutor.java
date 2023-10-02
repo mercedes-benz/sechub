@@ -9,8 +9,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 
-import jakarta.annotation.PostConstruct;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,6 +35,8 @@ import com.mercedesbenz.sechub.sharedkernel.metadata.MetaDataInspection;
 import com.mercedesbenz.sechub.sharedkernel.metadata.MetaDataInspector;
 import com.mercedesbenz.sechub.storage.core.JobStorage;
 import com.mercedesbenz.sechub.storage.core.StorageService;
+
+import jakarta.annotation.PostConstruct;
 
 @Service
 public class CheckmarxProductExecutor extends AbstractProductExecutor {

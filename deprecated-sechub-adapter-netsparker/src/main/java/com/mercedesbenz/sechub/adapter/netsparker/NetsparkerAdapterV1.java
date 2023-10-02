@@ -283,8 +283,8 @@ public class NetsparkerAdapterV1 extends AbstractAdapter<NetsparkerAdapterContex
             return state;
         }
     }
-    
+
     private HttpStatus converToHttpStatus(HttpStatusCode code) {
-    	return HttpStatus.valueOf(code.value());
+        return HttpStatus.valueOf(code.value());
     }
 }

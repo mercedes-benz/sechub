@@ -2,7 +2,6 @@
 package com.mercedesbenz.sechub.domain.scan.product.pds;
 
 import java.util.List;
-import jakarta.annotation.PostConstruct;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -21,6 +20,8 @@ import com.mercedesbenz.sechub.domain.scan.product.ProductExecutorData;
 import com.mercedesbenz.sechub.domain.scan.product.ProductResult;
 import com.mercedesbenz.sechub.sharedkernel.ProductIdentifier;
 import com.mercedesbenz.sechub.sharedkernel.metadata.MetaDataInspector;
+
+import jakarta.annotation.PostConstruct;
 
 public abstract class AbstractPDSProductExecutor extends AbstractProductExecutor implements CanceableProductExecutor {
 

@@ -4,10 +4,6 @@ package com.mercedesbenz.sechub.domain.schedule;
 import java.util.Map;
 import java.util.UUID;
 
-import jakarta.annotation.security.RolesAllowed;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.validation.Valid;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.validation.annotation.Validated;
@@ -35,6 +31,10 @@ import com.mercedesbenz.sechub.sharedkernel.usecases.user.execute.UseCaseUserCre
 import com.mercedesbenz.sechub.sharedkernel.usecases.user.execute.UseCaseUserStartsSynchronousScanByClient;
 import com.mercedesbenz.sechub.sharedkernel.usecases.user.execute.UseCaseUserUploadsBinaries;
 import com.mercedesbenz.sechub.sharedkernel.usecases.user.execute.UseCaseUserUploadsSourceCode;
+
+import jakarta.annotation.security.RolesAllowed;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.validation.Valid;
 
 /**
  * The rest api for job scheduling. It shall be same obvious like

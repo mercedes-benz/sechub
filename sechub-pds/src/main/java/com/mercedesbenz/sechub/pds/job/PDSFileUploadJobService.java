@@ -13,9 +13,6 @@ import java.security.MessageDigest;
 import java.util.Objects;
 import java.util.UUID;
 
-import jakarta.annotation.security.RolesAllowed;
-import jakarta.servlet.http.HttpServletRequest;
-
 import org.apache.commons.fileupload2.core.FileItemInput;
 import org.apache.commons.fileupload2.core.FileItemInputIterator;
 import org.apache.commons.fileupload2.core.FileUploadException;
@@ -42,6 +39,9 @@ import com.mercedesbenz.sechub.pds.usecase.PDSStep;
 import com.mercedesbenz.sechub.pds.usecase.UseCaseUserUploadsJobData;
 import com.mercedesbenz.sechub.pds.util.PDSArchiveSupportProvider;
 import com.mercedesbenz.sechub.storage.core.JobStorage;
+
+import jakarta.annotation.security.RolesAllowed;
+import jakarta.servlet.http.HttpServletRequest;
 
 @Service
 @RolesAllowed({ PDSRoleConstants.ROLE_SUPERADMIN, PDSRoleConstants.ROLE_USER })
@@ -193,8 +193,10 @@ public class PDSFileUploadJobService {
 
                     MessageDigest digest = checksumSupport.createSha256MessageDigest();
 
-                    // TODO Jeremias Eppler, 2023-09-08:  Constructing the MessageDigestCalculatingInputStream 
-                    // using the Builder does not work see: https://issues.apache.org/jira/browse/IO-809 
+                    // TODO Jeremias Eppler, 2023-09-08: Constructing the
+                    // MessageDigestCalculatingInputStream
+                    // using the Builder does not work see:
+                    // https://issues.apache.org/jira/browse/IO-809
                     MessageDigestCalculatingInputStream messageDigestInputStream = new MessageDigestCalculatingInputStream(fileInputstream, digest);
 
                     CountingInputStream byteCountingInputStream = new CountingInputStream(messageDigestInputStream);
@@ -285,8 +287,8 @@ public class PDSFileUploadJobService {
             }
         }
     }
-    
+
     String streamToString(InputStream inputStream) throws IOException {
-    	return new String(inputStream.readAllBytes(), StandardCharsets.UTF_8);
+        return new String(inputStream.readAllBytes(), StandardCharsets.UTF_8);
     }
 }

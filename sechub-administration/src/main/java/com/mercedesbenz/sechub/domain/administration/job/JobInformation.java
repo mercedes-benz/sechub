@@ -1,12 +1,14 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.domain.administration.job;
 
-import static jakarta.persistence.EnumType.*;
 import static com.mercedesbenz.sechub.sharedkernel.util.Assert.*;
+import static jakarta.persistence.EnumType.*;
 
 import java.time.LocalDateTime;
 import java.util.Objects;
 import java.util.UUID;
+
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -14,8 +16,6 @@ import jakarta.persistence.Enumerated;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import jakarta.persistence.Version;
-
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 @Entity
 @Table(name = JobInformation.TABLE_NAME)
