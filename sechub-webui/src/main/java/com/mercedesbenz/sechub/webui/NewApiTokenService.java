@@ -9,10 +9,10 @@ import com.mercedesbenz.sechub.webui.configuration.SecHubAccessService;
 
 @Service
 public class NewApiTokenService {
-	
-	@Autowired
-	SecHubAccessService accessService;
-	
+
+    @Autowired
+    SecHubAccessService accessService;
+
     /**
      * Request new API token as described in
      *
@@ -27,11 +27,11 @@ public class NewApiTokenService {
      * </pre>
      */
     public boolean userRequestsNewApiToken(String emailAddress) {
-    	try {
-			accessService.getSecHubClient().userRequestsNewApiToken(emailAddress);
-			return true;
-		} catch (SecHubClientException e) {
-			return false;
-		}
+        try {
+            accessService.getSecHubClient().userRequestsNewApiToken(emailAddress);
+            return true;
+        } catch (SecHubClientException e) {
+            return false;
+        }
     }
 }

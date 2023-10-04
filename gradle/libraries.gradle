@@ -74,8 +74,10 @@ ext {
       thymeleaf_extras_springsecurity5:        "3.1.1.RELEASE",
       
       /* SARIF */
-      sarif_210:                               "1.1.0"
+      sarif_210:                               "1.1.0",
       
+      /* CycloneDX */
+      cyclonedx_gradle_plugin:                 "1.7.4"
     
    ]    
    

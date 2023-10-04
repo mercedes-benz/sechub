@@ -10,22 +10,22 @@ import com.mercedesbenz.sechub.webui.configuration.SecHubAccessService;
 
 @Controller
 public class NewApiTokenController {
-	@Autowired
-	NewApiTokenService newApiTokenService;
+    @Autowired
+    NewApiTokenService newApiTokenService;
 
-	@Autowired
-	SecHubAccessService accessService;
+    @Autowired
+    SecHubAccessService accessService;
 
-	@GetMapping("/requestNewApiToken")
-	String requestNewApiToken(Model model) {
-		// TODO Jeremias Eppler, 2023-09-27: Replace with real user email once proper
-		// authentication is added
-		String emailAddress = "email@example.org";
+    @GetMapping("/requestNewApiToken")
+    String requestNewApiToken(Model model) {
+        // TODO Jeremias Eppler, 2023-09-27: Replace with real user email once proper
+        // authentication is added
+        String emailAddress = "email@example.org";
 
-		model.addAttribute("sechubServerUrl", accessService.getSecHubServerUri());
-		model.addAttribute("successfullyRequestedToken", newApiTokenService.userRequestsNewApiToken(emailAddress));
-		model.addAttribute("userEmail", emailAddress);
+        model.addAttribute("sechubServerUrl", accessService.getSecHubServerUri());
+        model.addAttribute("successfullyRequestedToken", newApiTokenService.userRequestsNewApiToken(emailAddress));
+        model.addAttribute("userEmail", emailAddress);
 
-		return "newApiToken";
-	}
+        return "newApiToken";
+    }
 }

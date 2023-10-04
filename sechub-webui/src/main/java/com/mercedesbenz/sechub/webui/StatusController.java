@@ -19,13 +19,13 @@ public class StatusController {
 
     @GetMapping("/status")
     String status(Model model) {
-    	SecHubStatus secHubServerStatus = statusService.getSecHubServerStatusInformation();
+        SecHubStatus secHubServerStatus = statusService.getSecHubServerStatusInformation();
 
-		model.addAttribute("secHubServerStatus", secHubServerStatus);
-    	model.addAttribute("secHubServerAlive", statusService.isSecHubServerAlive());
+        model.addAttribute("secHubServerStatus", secHubServerStatus);
+        model.addAttribute("secHubServerAlive", statusService.isSecHubServerAlive());
         model.addAttribute("sechubServerUrl", accessService.getSecHubServerUri());
         model.addAttribute("sechubServerVersion", statusService.getServerVersion());
-        
+
         return "status";
     }
 }

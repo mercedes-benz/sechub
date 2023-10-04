@@ -19,31 +19,31 @@ public class SecHubAccessService {
 
     @Value("${webui.sechub.trust-all-certificates}")
     private boolean trustAllCertificates;
-   
+
     @Value("${webui.client.mocked}")
     private boolean useMockedClient;
-    
+
     @Autowired
     private CredentialService credentialService;
-    
-	private SecHubClient client;
-	
+
+    private SecHubClient client;
+
     @PostConstruct
     void setupSecHubClient() {
-		URI serverUri = URI.create(secHubServerUrl);
-		
-		if (useMockedClient) {
-			this.client = MockedSecHubClient.from(serverUri, "mocked", "verySecretTrustMe", trustAllCertificates);
-		} else {
-			this.client = DefaultSecHubClient.from(serverUri, credentialService.getUserId(), credentialService.getApiToken(), trustAllCertificates);
-		}
+        URI serverUri = URI.create(secHubServerUrl);
+
+        if (useMockedClient) {
+            this.client = MockedSecHubClient.from(serverUri, "mocked", "verySecretTrustMe", trustAllCertificates);
+        } else {
+            this.client = DefaultSecHubClient.from(serverUri, credentialService.getUserId(), credentialService.getApiToken(), trustAllCertificates);
+        }
     }
-    
-	public SecHubClient getSecHubClient() {
-		return this.client;
-	}
-	
-	public URI getSecHubServerUri() {
-		return this.client.getServerUri();
-	}
+
+    public SecHubClient getSecHubClient() {
+        return this.client;
+    }
+
+    public URI getSecHubServerUri() {
+        return this.client.getServerUri();
+    }
 }

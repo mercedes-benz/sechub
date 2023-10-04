@@ -18,7 +18,7 @@ import com.mercedesbenz.sechub.webui.configuration.SecHubAccessService;
 public class IndexControllerTest {
     @Autowired
     private WebTestClient webTestClient;
-    
+
     @MockBean
     private SecHubAccessService mockAccessService;
 

@@ -10,38 +10,38 @@ import com.mercedesbenz.sechub.api.SecHubStatus;
 import com.mercedesbenz.sechub.webui.configuration.SecHubAccessService;
 
 @Service
-public class StatusService {   
+public class StatusService {
     @Autowired
     SecHubAccessService apiAccessService;
-    
+
     public SecHubStatus getSecHubServerStatusInformation() {
-    	SecHubClient client = apiAccessService.getSecHubClient();
-    	
-    	SecHubStatus status = null;
-		try {
-			status = client.fetchSecHubStatus();
-		} catch (SecHubClientException e) {
-			e.printStackTrace();
-		}
-    	
-    	return status;
+        SecHubClient client = apiAccessService.getSecHubClient();
+
+        SecHubStatus status = null;
+        try {
+            status = client.fetchSecHubStatus();
+        } catch (SecHubClientException e) {
+            e.printStackTrace();
+        }
+
+        return status;
     }
-    
+
     public boolean isSecHubServerAlive() {
-    	SecHubClient client = apiAccessService.getSecHubClient();
-    	
-    	try {
-			return client.isServerAlive();
-		} catch (SecHubClientException e) {
-			return false;
-		}
+        SecHubClient client = apiAccessService.getSecHubClient();
+
+        try {
+            return client.isServerAlive();
+        } catch (SecHubClientException e) {
+            return false;
+        }
     }
-    
+
     public String getServerVersion() {
-    	try {
-			return apiAccessService.getSecHubClient().getServerVersion();
-		} catch (SecHubClientException e) {
-			return "invalid";
-		}
+        try {
+            return apiAccessService.getSecHubClient().getServerVersion();
+        } catch (SecHubClientException e) {
+            return "invalid";
+        }
     }
 }

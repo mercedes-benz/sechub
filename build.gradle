@@ -19,7 +19,7 @@ buildscript{
 		classpath "org.ajoberstar.grgit:grgit-gradle:${libraryVersion.grgit}" // necessary for version calculation
 		classpath "com.epages:restdocs-api-spec-gradle-plugin:${libraryVersion.restDocsApiSpec}"
         classpath "org.owasp:dependency-check-gradle:${libraryVersion.dependency_check}"
-        classpath "org.cyclonedx:cyclonedx-gradle-plugin:1.7.4"
+        classpath "org.cyclonedx:cyclonedx-gradle-plugin:${libraryVersion.cyclonedx_gradle_plugin}"
 	}
 }
 
@@ -37,7 +37,7 @@ plugins {
     
     // spotless code formatter
     // (see https://github.com/diffplug/spotless)
-    id 'com.diffplug.spotless' version '6.18.0'
+    id 'com.diffplug.spotless' version '6.22.0'
     
     // versions plugin for checking new available library versions etc. 
     // (see https://github.com/ben-manes/gradle-versions-plugin)
