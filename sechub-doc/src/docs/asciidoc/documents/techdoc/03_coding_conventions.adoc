@@ -14,6 +14,11 @@ When having details we always add an empty new line after summary and list detai
 the beginning to have a pretty output in `GitHub`
 
 === Database
+[IMPORTANT]
+====
+Currently, we use https://h2database.com/html/main.html[H2] and https://www.postgresql.org/[PostgreSQL] in parallel (dev/testing + production). +
+Please make sure that the SQL statements work with both of them.
+====
 
 ==== Naming in DB
 * We are using PostgreSQL which does automatically use lower_case names
