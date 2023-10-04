@@ -731,7 +731,15 @@ function sechub_server_status {
 
 
 function sechub_server_version {
-  curl_with_sechub_auth -i -X GET -H 'Content-Type: text/plain' "$SECHUB_SERVER/api/admin/info/version" | $RESULT_FILTER
+  local result_json
+  result_json=$(curl_with_sechub_auth -i -X GET -H 'Content-Type: application/json' "$SECHUB_SERVER/api/admin/info/version" | $RESULT_FILTER)
+
+  if [ "$JSON_FORMATTER" != "$NOFORMAT_PIPE" -a "$JQ_INSTALLED" == "true" ] ; then
+    echo $result_json | jq --raw-output '.serverVersion'
+  else
+    # Fallback: Print raw JSON
+    echo -n $result_json | $JSON_FORMATTER
+  fi
 }
 
 
