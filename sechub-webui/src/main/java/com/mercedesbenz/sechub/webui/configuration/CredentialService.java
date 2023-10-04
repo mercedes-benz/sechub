@@ -15,10 +15,10 @@ public class CredentialService {
 
     private CryptoAccess<String> cryptoAccess = new CryptoAccess<>();
 
-    @Value("${sechub.userid}")
+    @Value("${webui.sechub.userid}")
     private String userId;
 
-    @Value("${sechub.apitoken}")
+    @Value("${webui.sechub.apitoken}")
     private String apiToken;
 
     @PostConstruct

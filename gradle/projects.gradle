@@ -140,7 +140,9 @@ if (secHubBuildStage.providesGeneratedOpenApiFile()){
     
     /* make it possible to use integration test parts for systemtest (unit tests) as well */
     projectType.integrationTestProjects.add(project(':sechub-systemtest'))
-	
+
+	/* webui */
+	projectType.bootableSpringApplicationProjects.add(project(':sechub-webui'))
 	projectType.springBootWebUIProjects.add(project(':sechub-webui'))
 }
 

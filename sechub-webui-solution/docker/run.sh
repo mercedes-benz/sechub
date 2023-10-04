@@ -39,6 +39,7 @@ start_server() {
     echo ""
     echo "Starting the WebUI"
     echo "WebUI Version: $WEBUI_VERSION"
+    echo "SecHub Server URL: $SECHUB_SERVER_URL"
 
     # Regarding entropy collection:
     #   with JDK 8+ the "obscure workaround using file:///dev/urandom
@@ -47,8 +48,9 @@ start_server() {
     java $JAVA_DEBUG_OPTIONS \
         -Dfile.encoding=UTF-8 \
         -Dspring.profiles.active="$profiles" \
-        -Dsechub.apitoken="$SECHUB_APITOKEN" \
-        -Dsechub.userid="$SECHUB_USERID" \
+        -Dwebui.sechub.apitoken="$SECHUB_APITOKEN" \
+        -Dwebui.sechub.userid="$SECHUB_USERID" \
+        -Dwebui.sechub.server-url="$SECHUB_SERVER_URL" \
         -Dserver.port=4443 \
         -Dserver.address=0.0.0.0 \
         -jar /webui/sechub-webui-*.jar &
@@ -72,6 +74,7 @@ keep_container_alive_or_exit() {
 check_setup () {
     check_variable "$SECHUB_USERID" "SECHUB_USERID"
     check_variable "$SECHUB_APITOKEN" "SECHUB_APITOKEN"
+    check_variable "$SECHUB_SERVER_URL" "SECHUB_SERVER_URL"
 }
 
 check_variable () {
@@ -101,7 +104,7 @@ then
     start_server "webui_localserver"
 elif [ "$WEBUI_START_MODE" = "mocked" ]
 then
-    start_server "webui_localserver,mocked"
+    start_server "webui_localserver,webui_mocked"
 else
     wait_loop
 fi
