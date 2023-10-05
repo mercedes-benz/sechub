@@ -12,10 +12,10 @@
                 {
                   "target": {
                     "id": "78",
-                    "guid": "89df6681-eeb0-4612-8982-1275858175d8",
+                    "guid": "8dd83d5c-cbef-4d50-a5e5-22b24bb72190",
                     "toolComponent": {
                       "name": "CWE",
-                      "guid": "facbbd3d-8b98-4d98-ae03-5ccd006ed65b"
+                      "guid": "fe63bd69-5389-414a-a237-62247271a272"
                     }
                   },
                   "kinds": [
@@ -32,10 +32,10 @@
                 {
                   "target": {
                     "id": "20",
-                    "guid": "89df6681-eeb0-4612-8982-1275858175d8",
+                    "guid": "8dd83d5c-cbef-4d50-a5e5-22b24bb72190",
                     "toolComponent": {
                       "name": "CWE",
-                      "guid": "c3e428f8-948f-4b5b-bc2c-7e9c3d06c04d"
+                      "guid": "7d8fec63-d2d4-420f-bcfe-3ddeb2e1c6cb"
                     }
                   },
                   "kinds": [
@@ -52,10 +52,10 @@
                 {
                   "target": {
                     "id": "327",
-                    "guid": "89df6681-eeb0-4612-8982-1275858175d8",
+                    "guid": "8dd83d5c-cbef-4d50-a5e5-22b24bb72190",
                     "toolComponent": {
                       "name": "CWE",
-                      "guid": "d52091b0-cad1-4ded-802b-447ff426b634"
+                      "guid": "333a4f8b-57a3-478a-9053-9682a122855e"
                     }
                   },
                   "kinds": [
@@ -72,10 +72,10 @@
                 {
                   "target": {
                     "id": "78",
-                    "guid": "89df6681-eeb0-4612-8982-1275858175d8",
+                    "guid": "8dd83d5c-cbef-4d50-a5e5-22b24bb72190",
                     "toolComponent": {
                       "name": "CWE",
-                      "guid": "1ab38582-6f8e-486b-8101-c1f451ece685"
+                      "guid": "eb984ec0-8af6-41ab-b82b-fc812a602d29"
                     }
                   },
                   "kinds": [
@@ -92,10 +92,10 @@
                 {
                   "target": {
                     "id": "78",
-                    "guid": "89df6681-eeb0-4612-8982-1275858175d8",
+                    "guid": "8dd83d5c-cbef-4d50-a5e5-22b24bb72190",
                     "toolComponent": {
                       "name": "CWE",
-                      "guid": "0d922888-da76-4a18-a2fd-47f46704561a"
+                      "guid": "5726be7c-fb62-402b-a00c-b97086331f26"
                     }
                   },
                   "kinds": [
@@ -112,10 +112,10 @@
                 {
                   "target": {
                     "id": "400",
-                    "guid": "89df6681-eeb0-4612-8982-1275858175d8",
+                    "guid": "8dd83d5c-cbef-4d50-a5e5-22b24bb72190",
                     "toolComponent": {
                       "name": "CWE",
-                      "guid": "69b4262b-b3fa-4ac9-8704-e3b0f394562a"
+                      "guid": "0dbf60bb-53ce-4be1-a522-c302ee563be2"
                     }
                   },
                   "kinds": [
@@ -132,10 +132,10 @@
                 {
                   "target": {
                     "id": "259",
-                    "guid": "89df6681-eeb0-4612-8982-1275858175d8",
+                    "guid": "8dd83d5c-cbef-4d50-a5e5-22b24bb72190",
                     "toolComponent": {
                       "name": "CWE",
-                      "guid": "aa7a09c4-f989-495f-99d5-fe253ca0af7d"
+                      "guid": "84158e36-134f-4fe1-93fc-852512d8da80"
                     }
                   },
                   "kinds": [
@@ -152,10 +152,10 @@
                 {
                   "target": {
                     "id": "20",
-                    "guid": "89df6681-eeb0-4612-8982-1275858175d8",
+                    "guid": "8dd83d5c-cbef-4d50-a5e5-22b24bb72190",
                     "toolComponent": {
                       "name": "CWE",
-                      "guid": "5caa2f30-b259-4b3d-8a0c-4fc78e9f5da7"
+                      "guid": "78279d40-f51b-43cb-86b4-c12ba4a5b470"
                     }
                   },
                   "kinds": [
@@ -172,10 +172,10 @@
                 {
                   "target": {
                     "id": "20",
-                    "guid": "89df6681-eeb0-4612-8982-1275858175d8",
+                    "guid": "8dd83d5c-cbef-4d50-a5e5-22b24bb72190",
                     "toolComponent": {
                       "name": "CWE",
-                      "guid": "b073464c-568a-4576-8b26-eeb7ad2eab58"
+                      "guid": "74563cb3-89b9-4a66-a606-83fe898cb16b"
                     }
                   },
                   "kinds": [
@@ -192,10 +192,10 @@
                 {
                   "target": {
                     "id": "502",
-                    "guid": "89df6681-eeb0-4612-8982-1275858175d8",
+                    "guid": "8dd83d5c-cbef-4d50-a5e5-22b24bb72190",
                     "toolComponent": {
                       "name": "CWE",
-                      "guid": "9c3ac6e2-d830-48ae-a856-c1746c68bcc3"
+                      "guid": "cce2454a-4686-4184-8c41-1cb5b7a94fb3"
                     }
                   },
                   "kinds": [
@@ -212,10 +212,10 @@
                 {
                   "target": {
                     "id": "89",
-                    "guid": "89df6681-eeb0-4612-8982-1275858175d8",
+                    "guid": "8dd83d5c-cbef-4d50-a5e5-22b24bb72190",
                     "toolComponent": {
                       "name": "CWE",
-                      "guid": "d46ae837-1c83-4567-8d85-e99211684bbf"
+                      "guid": "171744a8-98a4-47a0-9b27-ce23cecc0a9f"
                     }
                   },
                   "kinds": [
@@ -232,10 +232,10 @@
                 {
                   "target": {
                     "id": "502",
-                    "guid": "89df6681-eeb0-4612-8982-1275858175d8",
+                    "guid": "8dd83d5c-cbef-4d50-a5e5-22b24bb72190",
                     "toolComponent": {
                       "name": "CWE",
-                      "guid": "5d5f5049-74ad-4471-84b8-0afeb58bdb22"
+                      "guid": "74118bc0-608d-46ce-b7e5-3381cb6091bf"
                     }
                   },
                   "kinds": [
@@ -252,10 +252,10 @@
                 {
                   "target": {
                     "id": "20",
-                    "guid": "89df6681-eeb0-4612-8982-1275858175d8",
+                    "guid": "8dd83d5c-cbef-4d50-a5e5-22b24bb72190",
                     "toolComponent": {
                       "name": "CWE",
-                      "guid": "5b777bef-a678-4f69-ad8e-6d8cca78d1f1"
+                      "guid": "d7a4edbb-0e8f-4308-b09a-bc6066a7b737"
                     }
                   },
                   "kinds": [
@@ -272,10 +272,10 @@
                 {
                   "target": {
                     "id": "20",
-                    "guid": "89df6681-eeb0-4612-8982-1275858175d8",
+                    "guid": "8dd83d5c-cbef-4d50-a5e5-22b24bb72190",
                     "toolComponent": {
                       "name": "CWE",
-                      "guid": "5ba38781-a2ea-499a-ab96-7cb0882a53f9"
+                      "guid": "13976a35-127a-45a7-980e-305071492d5c"
                     }
                   },
                   "kinds": [
@@ -292,10 +292,10 @@
                 {
                   "target": {
                     "id": "330",
-                    "guid": "89df6681-eeb0-4612-8982-1275858175d8",
+                    "guid": "8dd83d5c-cbef-4d50-a5e5-22b24bb72190",
                     "toolComponent": {
                       "name": "CWE",
-                      "guid": "890bac19-eaeb-46de-a6ae-3168f33599ce"
+                      "guid": "914e4d43-f404-43fa-bc49-c54d6de0374a"
                     }
                   },
                   "kinds": [
@@ -312,10 +312,10 @@
                 {
                   "target": {
                     "id": "259",
-                    "guid": "89df6681-eeb0-4612-8982-1275858175d8",
+                    "guid": "8dd83d5c-cbef-4d50-a5e5-22b24bb72190",
                     "toolComponent": {
                       "name": "CWE",
-                      "guid": "70a3c1b6-05b1-45f4-99d4-c8db739ed919"
+                      "guid": "aefc3def-f137-4bc5-811d-6967be8f9b24"
                     }
                   },
                   "kinds": [
@@ -332,10 +332,10 @@
                 {
                   "target": {
                     "id": "703",
-                    "guid": "89df6681-eeb0-4612-8982-1275858175d8",
+                    "guid": "8dd83d5c-cbef-4d50-a5e5-22b24bb72190",
                     "toolComponent": {
                       "name": "CWE",
-                      "guid": "7091dcb4-a06d-43d7-b3cf-349212a56970"
+                      "guid": "651d3ad2-fc6d-4507-8b3c-ed285251c503"
                     }
                   },
                   "kinds": [
@@ -352,10 +352,10 @@
                 {
                   "target": {
                     "id": "78",
-                    "guid": "89df6681-eeb0-4612-8982-1275858175d8",
+                    "guid": "8dd83d5c-cbef-4d50-a5e5-22b24bb72190",
                     "toolComponent": {
                       "name": "CWE",
-                      "guid": "c2fa46bf-c2ff-46fa-9574-c84f55deddfb"
+                      "guid": "29f46b80-7831-4384-b949-58617e176855"
                     }
                   },
                   "kinds": [
@@ -371,7 +371,7 @@
           "supportedTaxonomies": [
             {
               "name": "CWE",
-              "guid": "89df6681-eeb0-4612-8982-1275858175d8"
+              "guid": "8dd83d5c-cbef-4d50-a5e5-22b24bb72190"
             }
           ]
         }
@@ -379,7 +379,7 @@
       "invocations": [
         {
           "executionSuccessful": true,
-          "endTimeUtc": "2023-10-05T13:31:51Z"
+          "endTimeUtc": "2023-10-05T13:40:48Z"
         }
       ],
       "properties": {
@@ -397,7 +397,7 @@
             "SEVERITY.HIGH": 4,
             "CONFIDENCE.HIGH": 25
           },
-          "pygoat/PyGoatBot.py": {
+          "./pygoat/PyGoatBot.py": {
             "loc": 55,
             "nosec": 0,
             "skipped_tests": 0,
@@ -410,7 +410,7 @@
             "CONFIDENCE.MEDIUM": 0,
             "CONFIDENCE.HIGH": 0
           },
-          "pygoat/introduction/__init__.py": {
+          "./pygoat/introduction/__init__.py": {
             "loc": 0,
             "nosec": 0,
             "skipped_tests": 0,
@@ -423,7 +423,7 @@
             "CONFIDENCE.MEDIUM": 0,
             "CONFIDENCE.HIGH": 0
           },
-          "pygoat/introduction/admin.py": {
+          "./pygoat/introduction/admin.py": {
             "loc": 13,
             "nosec": 0,
             "skipped_tests": 0,
@@ -436,7 +436,7 @@
             "CONFIDENCE.MEDIUM": 0,
             "CONFIDENCE.HIGH": 0
           },
-          "pygoat/introduction/apis.py": {
+          "./pygoat/introduction/apis.py": {
             "loc": 109,
             "nosec": 0,
             "skipped_tests": 0,
@@ -449,7 +449,7 @@
             "CONFIDENCE.MEDIUM": 0,
             "CONFIDENCE.HIGH": 0
           },
-          "pygoat/introduction/apps.py": {
+          "./pygoat/introduction/apps.py": {
             "loc": 3,
             "nosec": 0,
             "skipped_tests": 0,
@@ -462,7 +462,7 @@
             "CONFIDENCE.MEDIUM": 0,
             "CONFIDENCE.HIGH": 0
           },
-          "pygoat/introduction/forms.py": {
+          "./pygoat/introduction/forms.py": {
             "loc": 14,
             "nosec": 0,
             "skipped_tests": 0,
@@ -475,7 +475,7 @@
             "CONFIDENCE.MEDIUM": 0,
             "CONFIDENCE.HIGH": 0
           },
-          "pygoat/introduction/lab_code/test.py": {
+          "./pygoat/introduction/lab_code/test.py": {
             "loc": 22,
             "nosec": 0,
             "skipped_tests": 0,
@@ -488,7 +488,7 @@
             "CONFIDENCE.MEDIUM": 0,
             "CONFIDENCE.HIGH": 2
           },
-          "pygoat/introduction/migrations/0001_initial.py": {
+          "./pygoat/introduction/migrations/0001_initial.py": {
             "loc": 16,
             "nosec": 0,
             "skipped_tests": 0,
@@ -501,7 +501,7 @@
             "CONFIDENCE.MEDIUM": 0,
             "CONFIDENCE.HIGH": 0
           },
-          "pygoat/introduction/migrations/0002_auto_20210414_1510.py": {
+          "./pygoat/introduction/migrations/0002_auto_20210414_1510.py": {
             "loc": 25,
             "nosec": 0,
             "skipped_tests": 0,
@@ -514,7 +514,7 @@
             "CONFIDENCE.MEDIUM": 0,
             "CONFIDENCE.HIGH": 0
           },
-          "pygoat/introduction/migrations/0003_password_user.py": {
+          "./pygoat/introduction/migrations/0003_password_user.py": {
             "loc": 23,
             "nosec": 0,
             "skipped_tests": 0,
@@ -527,7 +527,7 @@
             "CONFIDENCE.MEDIUM": 0,
             "CONFIDENCE.HIGH": 0
           },
-          "pygoat/introduction/migrations/0004_auto_20210415_1722.py": {
+          "./pygoat/introduction/migrations/0004_auto_20210415_1722.py": {
             "loc": 16,
             "nosec": 0,
             "skipped_tests": 0,
@@ -540,7 +540,7 @@
             "CONFIDENCE.MEDIUM": 0,
             "CONFIDENCE.HIGH": 0
           },
-          "pygoat/introduction/migrations/0005_auto_20210415_1748.py": {
+          "./pygoat/introduction/migrations/0005_auto_20210415_1748.py": {
             "loc": 11,
             "nosec": 0,
             "skipped_tests": 0,
@@ -553,7 +553,7 @@
             "CONFIDENCE.MEDIUM": 0,
             "CONFIDENCE.HIGH": 0
           },
-          "pygoat/introduction/migrations/0006_comments.py": {
+          "./pygoat/introduction/migrations/0006_comments.py": {
             "loc": 15,
             "nosec": 0,
             "skipped_tests": 0,
@@ -566,7 +566,7 @@
             "CONFIDENCE.MEDIUM": 0,
             "CONFIDENCE.HIGH": 0
           },
-          "pygoat/introduction/migrations/0007_auto_20210418_0022.py": {
+          "./pygoat/introduction/migrations/0007_auto_20210418_0022.py": {
             "loc": 12,
             "nosec": 0,
             "skipped_tests": 0,
@@ -579,7 +579,7 @@
             "CONFIDENCE.MEDIUM": 0,
             "CONFIDENCE.HIGH": 0
           },
-          "pygoat/introduction/migrations/0008_otp.py": {
+          "./pygoat/introduction/migrations/0008_otp.py": {
             "loc": 15,
             "nosec": 0,
             "skipped_tests": 0,
@@ -592,7 +592,7 @@
             "CONFIDENCE.MEDIUM": 0,
             "CONFIDENCE.HIGH": 0
           },
-          "pygoat/introduction/migrations/0009_auto_20210517_2047.py": {
+          "./pygoat/introduction/migrations/0009_auto_20210517_2047.py": {
             "loc": 13,
             "nosec": 0,
             "skipped_tests": 0,
@@ -605,7 +605,7 @@
             "CONFIDENCE.MEDIUM": 0,
             "CONFIDENCE.HIGH": 0
           },
-          "pygoat/introduction/migrations/0010_authlogin.py": {
+          "./pygoat/introduction/migrations/0010_authlogin.py": {
             "loc": 16,
             "nosec": 0,
             "skipped_tests": 0,
@@ -618,7 +618,7 @@
             "CONFIDENCE.MEDIUM": 0,
             "CONFIDENCE.HIGH": 0
           },
-          "pygoat/introduction/migrations/0011_tickits.py": {
+          "./pygoat/introduction/migrations/0011_tickits.py": {
             "loc": 16,
             "nosec": 0,
             "skipped_tests": 0,
@@ -631,7 +631,7 @@
             "CONFIDENCE.MEDIUM": 0,
             "CONFIDENCE.HIGH": 0
           },
-          "pygoat/introduction/migrations/0012_alter_tickits_user.py": {
+          "./pygoat/introduction/migrations/0012_alter_tickits_user.py": {
             "loc": 15,
             "nosec": 0,
             "skipped_tests": 0,
@@ -644,7 +644,7 @@
             "CONFIDENCE.MEDIUM": 0,
             "CONFIDENCE.HIGH": 0
           },
-          "pygoat/introduction/migrations/0013_alter_comments_id_alter_faang_id_alter_info_id_and_more.py": {
+          "./pygoat/introduction/migrations/0013_alter_comments_id_alter_faang_id_alter_info_id_and_more.py": {
             "loc": 37,
             "nosec": 0,
             "skipped_tests": 0,
@@ -657,7 +657,7 @@
             "CONFIDENCE.MEDIUM": 0,
             "CONFIDENCE.HIGH": 0
           },
-          "pygoat/introduction/migrations/0014_sql_lab_table.py": {
+          "./pygoat/introduction/migrations/0014_sql_lab_table.py": {
             "loc": 14,
             "nosec": 0,
             "skipped_tests": 0,
@@ -670,7 +670,7 @@
             "CONFIDENCE.MEDIUM": 0,
             "CONFIDENCE.HIGH": 0
           },
-          "pygoat/introduction/migrations/0015_blogs.py": {
+          "./pygoat/introduction/migrations/0015_blogs.py": {
             "loc": 18,
             "nosec": 0,
             "skipped_tests": 0,
@@ -683,7 +683,7 @@
             "CONFIDENCE.MEDIUM": 0,
             "CONFIDENCE.HIGH": 0
           },
-          "pygoat/introduction/migrations/0016_alter_blogs_blog_id.py": {
+          "./pygoat/introduction/migrations/0016_alter_blogs_blog_id.py": {
             "loc": 12,
             "nosec": 0,
             "skipped_tests": 0,
@@ -696,7 +696,7 @@
             "CONFIDENCE.MEDIUM": 0,
             "CONFIDENCE.HIGH": 0
           },
-          "pygoat/introduction/migrations/0017_cf_user.py": {
+          "./pygoat/introduction/migrations/0017_cf_user.py": {
             "loc": 15,
             "nosec": 0,
             "skipped_tests": 0,
@@ -709,7 +709,7 @@
             "CONFIDENCE.MEDIUM": 0,
             "CONFIDENCE.HIGH": 0
           },
-          "pygoat/introduction/migrations/0018_cf_user_password2.py": {
+          "./pygoat/introduction/migrations/0018_cf_user_password2.py": {
             "loc": 13,
             "nosec": 0,
             "skipped_tests": 0,
@@ -722,7 +722,7 @@
             "CONFIDENCE.MEDIUM": 0,
             "CONFIDENCE.HIGH": 0
           },
-          "pygoat/introduction/migrations/0019_af_admin.py": {
+          "./pygoat/introduction/migrations/0019_af_admin.py": {
             "loc": 21,
             "nosec": 0,
             "skipped_tests": 0,
@@ -735,7 +735,7 @@
             "CONFIDENCE.MEDIUM": 0,
             "CONFIDENCE.HIGH": 0
           },
-          "pygoat/introduction/migrations/0020_af_session_id_alter_af_admin_lockout_cooldown.py": {
+          "./pygoat/introduction/migrations/0020_af_session_id_alter_af_admin_lockout_cooldown.py": {
             "loc": 20,
             "nosec": 0,
             "skipped_tests": 0,
@@ -748,7 +748,7 @@
             "CONFIDENCE.MEDIUM": 0,
             "CONFIDENCE.HIGH": 0
           },
-          "pygoat/introduction/migrations/0021_csrf_user_tbl.py": {
+          "./pygoat/introduction/migrations/0021_csrf_user_tbl.py": {
             "loc": 17,
             "nosec": 0,
             "skipped_tests": 0,
@@ -761,7 +761,7 @@
             "CONFIDENCE.MEDIUM": 0,
             "CONFIDENCE.HIGH": 0
           },
-          "pygoat/introduction/migrations/__init__.py": {
+          "./pygoat/introduction/migrations/__init__.py": {
             "loc": 0,
             "nosec": 0,
             "skipped_tests": 0,
@@ -774,7 +774,7 @@
             "CONFIDENCE.MEDIUM": 0,
             "CONFIDENCE.HIGH": 0
           },
-          "pygoat/introduction/mitre.py": {
+          "./pygoat/introduction/mitre.py": {
             "loc": 194,
             "nosec": 0,
             "skipped_tests": 0,
@@ -787,7 +787,7 @@
             "CONFIDENCE.MEDIUM": 0,
             "CONFIDENCE.HIGH": 4
           },
-          "pygoat/introduction/models.py": {
+          "./pygoat/introduction/models.py": {
             "loc": 78,
             "nosec": 0,
             "skipped_tests": 0,
@@ -800,7 +800,7 @@
             "CONFIDENCE.MEDIUM": 0,
             "CONFIDENCE.HIGH": 0
           },
-          "pygoat/introduction/playground/A6/soln.py": {
+          "./pygoat/introduction/playground/A6/soln.py": {
             "loc": 13,
             "nosec": 0,
             "skipped_tests": 0,
@@ -813,7 +813,7 @@
             "CONFIDENCE.MEDIUM": 0,
             "CONFIDENCE.HIGH": 0
           },
-          "pygoat/introduction/playground/A6/utility.py": {
+          "./pygoat/introduction/playground/A6/utility.py": {
             "loc": 13,
             "nosec": 0,
             "skipped_tests": 0,
@@ -826,7 +826,7 @@
             "CONFIDENCE.MEDIUM": 0,
             "CONFIDENCE.HIGH": 0
           },
-          "pygoat/introduction/playground/A9/api.py": {
+          "./pygoat/introduction/playground/A9/api.py": {
             "loc": 30,
             "nosec": 0,
             "skipped_tests": 0,
@@ -839,7 +839,7 @@
             "CONFIDENCE.MEDIUM": 1,
             "CONFIDENCE.HIGH": 0
           },
-          "pygoat/introduction/playground/A9/archive.py": {
+          "./pygoat/introduction/playground/A9/archive.py": {
             "loc": 49,
             "nosec": 0,
             "skipped_tests": 0,
@@ -852,7 +852,7 @@
             "CONFIDENCE.MEDIUM": 1,
             "CONFIDENCE.HIGH": 0
           },
-          "pygoat/introduction/playground/A9/main.py": {
+          "./pygoat/introduction/playground/A9/main.py": {
             "loc": 10,
             "nosec": 0,
             "skipped_tests": 0,
@@ -865,7 +865,7 @@
             "CONFIDENCE.MEDIUM": 0,
             "CONFIDENCE.HIGH": 0
           },
-          "pygoat/introduction/playground/__init__.py": {
+          "./pygoat/introduction/playground/__init__.py": {
             "loc": 0,
             "nosec": 0,
             "skipped_tests": 0,
@@ -878,7 +878,7 @@
             "CONFIDENCE.MEDIUM": 0,
             "CONFIDENCE.HIGH": 0
           },
-          "pygoat/introduction/playground/ssrf/__init__.py": {
+          "./pygoat/introduction/playground/ssrf/__init__.py": {
             "loc": 0,
             "nosec": 0,
             "skipped_tests": 0,
@@ -891,7 +891,7 @@
             "CONFIDENCE.MEDIUM": 0,
             "CONFIDENCE.HIGH": 0
           },
-          "pygoat/introduction/playground/ssrf/main.py": {
+          "./pygoat/introduction/playground/ssrf/main.py": {
             "loc": 10,
             "nosec": 0,
             "skipped_tests": 0,
@@ -904,7 +904,7 @@
             "CONFIDENCE.MEDIUM": 0,
             "CONFIDENCE.HIGH": 0
           },
-          "pygoat/introduction/playground/ssrf/test.py": {
+          "./pygoat/introduction/playground/ssrf/test.py": {
             "loc": 29,
             "nosec": 0,
             "skipped_tests": 0,
@@ -917,7 +917,7 @@
             "CONFIDENCE.MEDIUM": 0,
             "CONFIDENCE.HIGH": 0
           },
-          "pygoat/introduction/tests.py": {
+          "./pygoat/introduction/tests.py": {
             "loc": 1,
             "nosec": 0,
             "skipped_tests": 0,
@@ -930,7 +930,7 @@
             "CONFIDENCE.MEDIUM": 0,
             "CONFIDENCE.HIGH": 0
           },
-          "pygoat/introduction/urls.py": {
+          "./pygoat/introduction/urls.py": {
             "loc": 119,
             "nosec": 0,
             "skipped_tests": 0,
@@ -943,7 +943,7 @@
             "CONFIDENCE.MEDIUM": 0,
             "CONFIDENCE.HIGH": 0
           },
-          "pygoat/introduction/utility.py": {
+          "./pygoat/introduction/utility.py": {
             "loc": 47,
             "nosec": 0,
             "skipped_tests": 0,
@@ -956,7 +956,7 @@
             "CONFIDENCE.MEDIUM": 0,
             "CONFIDENCE.HIGH": 0
           },
-          "pygoat/introduction/views.py": {
+          "./pygoat/introduction/views.py": {
             "loc": 993,
             "nosec": 0,
             "skipped_tests": 0,
@@ -969,7 +969,7 @@
             "CONFIDENCE.MEDIUM": 9,
             "CONFIDENCE.HIGH": 15
           },
-          "pygoat/manage.py": {
+          "./pygoat/manage.py": {
             "loc": 16,
             "nosec": 0,
             "skipped_tests": 0,
@@ -982,7 +982,7 @@
             "CONFIDENCE.MEDIUM": 0,
             "CONFIDENCE.HIGH": 0
           },
-          "pygoat/pygoat/__init__.py": {
+          "./pygoat/pygoat/__init__.py": {
             "loc": 0,
             "nosec": 0,
             "skipped_tests": 0,
@@ -995,7 +995,7 @@
             "CONFIDENCE.MEDIUM": 0,
             "CONFIDENCE.HIGH": 0
           },
-          "pygoat/pygoat/asgi.py": {
+          "./pygoat/pygoat/asgi.py": {
             "loc": 10,
             "nosec": 0,
             "skipped_tests": 0,
@@ -1008,7 +1008,7 @@
             "CONFIDENCE.MEDIUM": 0,
             "CONFIDENCE.HIGH": 0
           },
-          "pygoat/pygoat/settings.py": {
+          "./pygoat/pygoat/settings.py": {
             "loc": 108,
             "nosec": 0,
             "skipped_tests": 0,
@@ -1021,7 +1021,7 @@
             "CONFIDENCE.MEDIUM": 2,
             "CONFIDENCE.HIGH": 0
           },
-          "pygoat/pygoat/urls.py": {
+          "./pygoat/pygoat/urls.py": {
             "loc": 26,
             "nosec": 0,
             "skipped_tests": 0,
@@ -1034,7 +1034,7 @@
             "CONFIDENCE.MEDIUM": 0,
             "CONFIDENCE.HIGH": 0
           },
-          "pygoat/pygoat/wsgi.py": {
+          "./pygoat/pygoat/wsgi.py": {
             "loc": 10,
             "nosec": 0,
             "skipped_tests": 0,
@@ -1047,7 +1047,7 @@
             "CONFIDENCE.MEDIUM": 0,
             "CONFIDENCE.HIGH": 0
           },
-          "pygoat/setup.py": {
+          "./pygoat/setup.py": {
             "loc": 19,
             "nosec": 0,
             "skipped_tests": 0,
@@ -1060,7 +1060,7 @@
             "CONFIDENCE.MEDIUM": 0,
             "CONFIDENCE.HIGH": 0
           },
-          "pygoat/temp.py": {
+          "./pygoat/temp.py": {
             "loc": 0,
             "nosec": 0,
             "skipped_tests": 0,
@@ -1073,7 +1073,7 @@
             "CONFIDENCE.MEDIUM": 0,
             "CONFIDENCE.HIGH": 0
           },
-          "pygoat/uninstaller.py": {
+          "./pygoat/uninstaller.py": {
             "loc": 102,
             "nosec": 0,
             "skipped_tests": 0,
@@ -1123,10 +1123,10 @@
           "taxa": [
             {
               "id": "78",
-              "guid": "89df6681-eeb0-4612-8982-1275858175d8",
+              "guid": "8dd83d5c-cbef-4d50-a5e5-22b24bb72190",
               "toolComponent": {
                 "name": "CWE",
-                "guid": "1f7e0021-392d-4ac3-a41e-ba47cb245dbd"
+                "guid": "2a313714-e7ec-4d06-891c-883519aac8c1"
               }
             }
           ],
@@ -1166,10 +1166,10 @@
           "taxa": [
             {
               "id": "20",
-              "guid": "89df6681-eeb0-4612-8982-1275858175d8",
+              "guid": "8dd83d5c-cbef-4d50-a5e5-22b24bb72190",
               "toolComponent": {
                 "name": "CWE",
-                "guid": "b774401b-f08d-4363-9061-a8ede3b08cca"
+                "guid": "4df5d1f6-f142-44ad-938c-bc0073aacb9c"
               }
             }
           ],
@@ -1210,10 +1210,10 @@
           "taxa": [
             {
               "id": "78",
-              "guid": "89df6681-eeb0-4612-8982-1275858175d8",
+              "guid": "8dd83d5c-cbef-4d50-a5e5-22b24bb72190",
               "toolComponent": {
                 "name": "CWE",
-                "guid": "c965fb4b-e15e-464c-acf7-0454b760ce2e"
+                "guid": "d31d38f6-e89e-4388-9ff5-65a875065568"
               }
             }
           ],
@@ -1254,10 +1254,10 @@
           "taxa": [
             {
               "id": "327",
-              "guid": "89df6681-eeb0-4612-8982-1275858175d8",
+              "guid": "8dd83d5c-cbef-4d50-a5e5-22b24bb72190",
               "toolComponent": {
                 "name": "CWE",
-                "guid": "d979c30a-c471-4ceb-857a-6358b41be277"
+                "guid": "1e380f40-6a0e-4675-8c4f-aaf11529cf23"
               }
             }
           ],
@@ -1297,10 +1297,10 @@
           "taxa": [
             {
               "id": "78",
-              "guid": "89df6681-eeb0-4612-8982-1275858175d8",
+              "guid": "8dd83d5c-cbef-4d50-a5e5-22b24bb72190",
               "toolComponent": {
                 "name": "CWE",
-                "guid": "8d1754c9-b73c-4e79-a036-9f03997029ee"
+                "guid": "1ed4f2e5-bf4f-429a-8c49-1e48e7f50dd1"
               }
             }
           ],
@@ -1341,10 +1341,10 @@
           "taxa": [
             {
               "id": "78",
-              "guid": "89df6681-eeb0-4612-8982-1275858175d8",
+              "guid": "8dd83d5c-cbef-4d50-a5e5-22b24bb72190",
               "toolComponent": {
                 "name": "CWE",
-                "guid": "3cc1a0d0-b947-4f40-a52f-b84a8cd28960"
+                "guid": "c9e65fc7-681b-4a5b-9c31-ea7b83fd7863"
               }
             }
           ],
@@ -1384,10 +1384,10 @@
           "taxa": [
             {
               "id": "400",
-              "guid": "89df6681-eeb0-4612-8982-1275858175d8",
+              "guid": "8dd83d5c-cbef-4d50-a5e5-22b24bb72190",
               "toolComponent": {
                 "name": "CWE",
-                "guid": "384353a5-a770-4627-9138-5ef241e9b4ec"
+                "guid": "2218034d-c7b3-4ffc-b80f-86ccdc3dff87"
               }
             }
           ],
@@ -1427,10 +1427,10 @@
           "taxa": [
             {
               "id": "400",
-              "guid": "89df6681-eeb0-4612-8982-1275858175d8",
+              "guid": "8dd83d5c-cbef-4d50-a5e5-22b24bb72190",
               "toolComponent": {
                 "name": "CWE",
-                "guid": "c172022b-f96c-4968-a4a5-81b431c5a8cf"
+                "guid": "03572b95-5d4f-4407-b026-0c3485bf8a10"
               }
             }
           ],
@@ -1471,10 +1471,10 @@
           "taxa": [
             {
               "id": "259",
-              "guid": "89df6681-eeb0-4612-8982-1275858175d8",
+              "guid": "8dd83d5c-cbef-4d50-a5e5-22b24bb72190",
               "toolComponent": {
                 "name": "CWE",
-                "guid": "bafd7d9d-e6dd-48b7-880f-c781d854b087"
+                "guid": "f224cd16-a426-485e-b0bd-a6d206923535"
               }
             }
           ],
@@ -1515,10 +1515,10 @@
           "taxa": [
             {
               "id": "259",
-              "guid": "89df6681-eeb0-4612-8982-1275858175d8",
+              "guid": "8dd83d5c-cbef-4d50-a5e5-22b24bb72190",
               "toolComponent": {
                 "name": "CWE",
-                "guid": "97fa5fc4-007a-49ed-ba2d-8cb98c6a4c98"
+                "guid": "3dbf0cc8-8e7d-415c-9c13-bb5e74f1350b"
               }
             }
           ],
@@ -1559,10 +1559,10 @@
           "taxa": [
             {
               "id": "20",
-              "guid": "89df6681-eeb0-4612-8982-1275858175d8",
+              "guid": "8dd83d5c-cbef-4d50-a5e5-22b24bb72190",
               "toolComponent": {
                 "name": "CWE",
-                "guid": "5caa2f30-b259-4b3d-8a0c-4fc78e9f5da7"
+                "guid": "78279d40-f51b-43cb-86b4-c12ba4a5b470"
               }
             }
           ],
@@ -1603,10 +1603,10 @@
           "taxa": [
             {
               "id": "20",
-              "guid": "89df6681-eeb0-4612-8982-1275858175d8",
+              "guid": "8dd83d5c-cbef-4d50-a5e5-22b24bb72190",
               "toolComponent": {
                 "name": "CWE",
-                "guid": "32cf21a6-6071-4251-8e5b-fa6aa7fdf16b"
+                "guid": "b7925bca-8012-4cc9-a344-38640e87d187"
               }
             }
           ],
@@ -1647,10 +1647,10 @@
           "taxa": [
             {
               "id": "20",
-              "guid": "89df6681-eeb0-4612-8982-1275858175d8",
+              "guid": "8dd83d5c-cbef-4d50-a5e5-22b24bb72190",
               "toolComponent": {
                 "name": "CWE",
-                "guid": "b073464c-568a-4576-8b26-eeb7ad2eab58"
+                "guid": "74563cb3-89b9-4a66-a606-83fe898cb16b"
               }
             }
           ],
@@ -1691,10 +1691,10 @@
           "taxa": [
             {
               "id": "78",
-              "guid": "89df6681-eeb0-4612-8982-1275858175d8",
+              "guid": "8dd83d5c-cbef-4d50-a5e5-22b24bb72190",
               "toolComponent": {
                 "name": "CWE",
-                "guid": "e8dcd312-f6bf-4b2c-adcc-a30619b18538"
+                "guid": "f74f08c3-dbf9-4920-8796-4058e9432151"
               }
             }
           ],
@@ -1735,10 +1735,10 @@
           "taxa": [
             {
               "id": "502",
-              "guid": "89df6681-eeb0-4612-8982-1275858175d8",
+              "guid": "8dd83d5c-cbef-4d50-a5e5-22b24bb72190",
               "toolComponent": {
                 "name": "CWE",
-                "guid": "9c3ac6e2-d830-48ae-a856-c1746c68bcc3"
+                "guid": "cce2454a-4686-4184-8c41-1cb5b7a94fb3"
               }
             }
           ],
@@ -1778,10 +1778,10 @@
           "taxa": [
             {
               "id": "89",
-              "guid": "89df6681-eeb0-4612-8982-1275858175d8",
+              "guid": "8dd83d5c-cbef-4d50-a5e5-22b24bb72190",
               "toolComponent": {
                 "name": "CWE",
-                "guid": "f667880d-7567-44a7-964e-8118f17ae410"
+                "guid": "278114e0-91aa-4d74-981c-b3a2385de92d"
               }
             }
           ],
@@ -1821,10 +1821,10 @@
           "taxa": [
             {
               "id": "502",
-              "guid": "89df6681-eeb0-4612-8982-1275858175d8",
+              "guid": "8dd83d5c-cbef-4d50-a5e5-22b24bb72190",
               "toolComponent": {
                 "name": "CWE",
-                "guid": "5d5f5049-74ad-4471-84b8-0afeb58bdb22"
+                "guid": "74118bc0-608d-46ce-b7e5-3381cb6091bf"
               }
             }
           ],
@@ -1864,10 +1864,10 @@
           "taxa": [
             {
               "id": "20",
-              "guid": "89df6681-eeb0-4612-8982-1275858175d8",
+              "guid": "8dd83d5c-cbef-4d50-a5e5-22b24bb72190",
               "toolComponent": {
                 "name": "CWE",
-                "guid": "5b777bef-a678-4f69-ad8e-6d8cca78d1f1"
+                "guid": "d7a4edbb-0e8f-4308-b09a-bc6066a7b737"
               }
             }
           ],
@@ -1907,10 +1907,10 @@
           "taxa": [
             {
               "id": "20",
-              "guid": "89df6681-eeb0-4612-8982-1275858175d8",
+              "guid": "8dd83d5c-cbef-4d50-a5e5-22b24bb72190",
               "toolComponent": {
                 "name": "CWE",
-                "guid": "5ba38781-a2ea-499a-ab96-7cb0882a53f9"
+                "guid": "13976a35-127a-45a7-980e-305071492d5c"
               }
             }
           ],
@@ -1951,10 +1951,10 @@
           "taxa": [
             {
               "id": "78",
-              "guid": "89df6681-eeb0-4612-8982-1275858175d8",
+              "guid": "8dd83d5c-cbef-4d50-a5e5-22b24bb72190",
               "toolComponent": {
                 "name": "CWE",
-                "guid": "0d922888-da76-4a18-a2fd-47f46704561a"
+                "guid": "5726be7c-fb62-402b-a00c-b97086331f26"
               }
             }
           ],
@@ -1994,10 +1994,10 @@
           "taxa": [
             {
               "id": "78",
-              "guid": "89df6681-eeb0-4612-8982-1275858175d8",
+              "guid": "8dd83d5c-cbef-4d50-a5e5-22b24bb72190",
               "toolComponent": {
                 "name": "CWE",
-                "guid": "1ab38582-6f8e-486b-8101-c1f451ece685"
+                "guid": "eb984ec0-8af6-41ab-b82b-fc812a602d29"
               }
             }
           ],
@@ -2038,10 +2038,10 @@
           "taxa": [
             {
               "id": "330",
-              "guid": "89df6681-eeb0-4612-8982-1275858175d8",
+              "guid": "8dd83d5c-cbef-4d50-a5e5-22b24bb72190",
               "toolComponent": {
                 "name": "CWE",
-                "guid": "3a28b314-4a18-440d-b934-07d06e21976b"
+                "guid": "5e36e82c-de00-4bf3-b299-9995df5db58d"
               }
             }
           ],
@@ -2081,10 +2081,10 @@
           "taxa": [
             {
               "id": "20",
-              "guid": "89df6681-eeb0-4612-8982-1275858175d8",
+              "guid": "8dd83d5c-cbef-4d50-a5e5-22b24bb72190",
               "toolComponent": {
                 "name": "CWE",
-                "guid": "c3e428f8-948f-4b5b-bc2c-7e9c3d06c04d"
+                "guid": "7d8fec63-d2d4-420f-bcfe-3ddeb2e1c6cb"
               }
             }
           ],
@@ -2125,10 +2125,10 @@
           "taxa": [
             {
               "id": "330",
-              "guid": "89df6681-eeb0-4612-8982-1275858175d8",
+              "guid": "8dd83d5c-cbef-4d50-a5e5-22b24bb72190",
               "toolComponent": {
                 "name": "CWE",
-                "guid": "890bac19-eaeb-46de-a6ae-3168f33599ce"
+                "guid": "914e4d43-f404-43fa-bc49-c54d6de0374a"
               }
             }
           ],
@@ -2169,10 +2169,10 @@
           "taxa": [
             {
               "id": "259",
-              "guid": "89df6681-eeb0-4612-8982-1275858175d8",
+              "guid": "8dd83d5c-cbef-4d50-a5e5-22b24bb72190",
               "toolComponent": {
                 "name": "CWE",
-                "guid": "7bedb33d-37fb-4a11-80f3-91c56d3d9f4f"
+                "guid": "8857a324-2fce-4d64-afe1-09bd0da215f6"
               }
             }
           ],
@@ -2213,10 +2213,10 @@
           "taxa": [
             {
               "id": "259",
-              "guid": "89df6681-eeb0-4612-8982-1275858175d8",
+              "guid": "8dd83d5c-cbef-4d50-a5e5-22b24bb72190",
               "toolComponent": {
                 "name": "CWE",
-                "guid": "21d2b4aa-8b78-410a-b625-3684aadd06f4"
+                "guid": "1ddc12ea-6aac-4476-96cf-39922601f8f0"
               }
             }
           ],
@@ -2257,10 +2257,10 @@
           "taxa": [
             {
               "id": "259",
-              "guid": "89df6681-eeb0-4612-8982-1275858175d8",
+              "guid": "8dd83d5c-cbef-4d50-a5e5-22b24bb72190",
               "toolComponent": {
                 "name": "CWE",
-                "guid": "c2c0c4d5-e499-43f6-9c99-a77c2f268b64"
+                "guid": "2f19ea0b-76bf-4405-b180-e4a8521196b1"
               }
             }
           ],
@@ -2301,10 +2301,10 @@
           "taxa": [
             {
               "id": "259",
-              "guid": "89df6681-eeb0-4612-8982-1275858175d8",
+              "guid": "8dd83d5c-cbef-4d50-a5e5-22b24bb72190",
               "toolComponent": {
                 "name": "CWE",
-                "guid": "c0f70419-2e19-4fcd-8855-69b5ec75807c"
+                "guid": "e5d9a878-8783-4674-827e-5a06b58be463"
               }
             }
           ],
@@ -2344,10 +2344,10 @@
           "taxa": [
             {
               "id": "89",
-              "guid": "89df6681-eeb0-4612-8982-1275858175d8",
+              "guid": "8dd83d5c-cbef-4d50-a5e5-22b24bb72190",
               "toolComponent": {
                 "name": "CWE",
-                "guid": "d46ae837-1c83-4567-8d85-e99211684bbf"
+                "guid": "171744a8-98a4-47a0-9b27-ce23cecc0a9f"
               }
             }
           ],
@@ -2388,10 +2388,10 @@
           "taxa": [
             {
               "id": "259",
-              "guid": "89df6681-eeb0-4612-8982-1275858175d8",
+              "guid": "8dd83d5c-cbef-4d50-a5e5-22b24bb72190",
               "toolComponent": {
                 "name": "CWE",
-                "guid": "9568eb1e-d09c-4543-b6ca-9fcb96bc127d"
+                "guid": "2ca4e647-bd20-4dd4-a8dc-68e266c36629"
               }
             }
           ],
@@ -2432,10 +2432,10 @@
           "taxa": [
             {
               "id": "259",
-              "guid": "89df6681-eeb0-4612-8982-1275858175d8",
+              "guid": "8dd83d5c-cbef-4d50-a5e5-22b24bb72190",
               "toolComponent": {
                 "name": "CWE",
-                "guid": "16709ef5-db14-430c-948c-ab0cf66cbe22"
+                "guid": "fc0b2b72-6acc-4e14-9f58-95315c8d8718"
               }
             }
           ],
@@ -2476,10 +2476,10 @@
           "taxa": [
             {
               "id": "259",
-              "guid": "89df6681-eeb0-4612-8982-1275858175d8",
+              "guid": "8dd83d5c-cbef-4d50-a5e5-22b24bb72190",
               "toolComponent": {
                 "name": "CWE",
-                "guid": "d0ea0fe9-6925-43d6-bd7f-d78dc97b0f2c"
+                "guid": "3551cf6b-7711-4614-8ad7-fee021ff5aec"
               }
             }
           ],
@@ -2520,10 +2520,10 @@
           "taxa": [
             {
               "id": "259",
-              "guid": "89df6681-eeb0-4612-8982-1275858175d8",
+              "guid": "8dd83d5c-cbef-4d50-a5e5-22b24bb72190",
               "toolComponent": {
                 "name": "CWE",
-                "guid": "70a3c1b6-05b1-45f4-99d4-c8db739ed919"
+                "guid": "aefc3def-f137-4bc5-811d-6967be8f9b24"
               }
             }
           ],
@@ -2563,10 +2563,10 @@
           "taxa": [
             {
               "id": "400",
-              "guid": "89df6681-eeb0-4612-8982-1275858175d8",
+              "guid": "8dd83d5c-cbef-4d50-a5e5-22b24bb72190",
               "toolComponent": {
                 "name": "CWE",
-                "guid": "69b4262b-b3fa-4ac9-8704-e3b0f394562a"
+                "guid": "0dbf60bb-53ce-4be1-a522-c302ee563be2"
               }
             }
           ],
@@ -2607,10 +2607,10 @@
           "taxa": [
             {
               "id": "327",
-              "guid": "89df6681-eeb0-4612-8982-1275858175d8",
+              "guid": "8dd83d5c-cbef-4d50-a5e5-22b24bb72190",
               "toolComponent": {
                 "name": "CWE",
-                "guid": "d52091b0-cad1-4ded-802b-447ff426b634"
+                "guid": "333a4f8b-57a3-478a-9053-9682a122855e"
               }
             }
           ],
@@ -2651,10 +2651,10 @@
           "taxa": [
             {
               "id": "259",
-              "guid": "89df6681-eeb0-4612-8982-1275858175d8",
+              "guid": "8dd83d5c-cbef-4d50-a5e5-22b24bb72190",
               "toolComponent": {
                 "name": "CWE",
-                "guid": "97d4e73b-ab0f-4b0a-9dce-7eec1650683c"
+                "guid": "7b586ac9-090d-40c3-a323-156009d33bb5"
               }
             }
           ],
@@ -2695,10 +2695,10 @@
           "taxa": [
             {
               "id": "703",
-              "guid": "89df6681-eeb0-4612-8982-1275858175d8",
+              "guid": "8dd83d5c-cbef-4d50-a5e5-22b24bb72190",
               "toolComponent": {
                 "name": "CWE",
-                "guid": "7091dcb4-a06d-43d7-b3cf-349212a56970"
+                "guid": "651d3ad2-fc6d-4507-8b3c-ed285251c503"
               }
             }
           ],
@@ -2739,10 +2739,10 @@
           "taxa": [
             {
               "id": "259",
-              "guid": "89df6681-eeb0-4612-8982-1275858175d8",
+              "guid": "8dd83d5c-cbef-4d50-a5e5-22b24bb72190",
               "toolComponent": {
                 "name": "CWE",
-                "guid": "a54151e7-4bf9-4609-af4e-33936c735d9f"
+                "guid": "67c6d67a-5ea0-4866-bc01-8552aeeb8308"
               }
             }
           ],
@@ -2783,10 +2783,10 @@
           "taxa": [
             {
               "id": "259",
-              "guid": "89df6681-eeb0-4612-8982-1275858175d8",
+              "guid": "8dd83d5c-cbef-4d50-a5e5-22b24bb72190",
               "toolComponent": {
                 "name": "CWE",
-                "guid": "aa7a09c4-f989-495f-99d5-fe253ca0af7d"
+                "guid": "84158e36-134f-4fe1-93fc-852512d8da80"
               }
             }
           ],
@@ -2827,10 +2827,10 @@
           "taxa": [
             {
               "id": "78",
-              "guid": "89df6681-eeb0-4612-8982-1275858175d8",
+              "guid": "8dd83d5c-cbef-4d50-a5e5-22b24bb72190",
               "toolComponent": {
                 "name": "CWE",
-                "guid": "facbbd3d-8b98-4d98-ae03-5ccd006ed65b"
+                "guid": "fe63bd69-5389-414a-a237-62247271a272"
               }
             }
           ],
@@ -2871,10 +2871,10 @@
           "taxa": [
             {
               "id": "78",
-              "guid": "89df6681-eeb0-4612-8982-1275858175d8",
+              "guid": "8dd83d5c-cbef-4d50-a5e5-22b24bb72190",
               "toolComponent": {
                 "name": "CWE",
-                "guid": "ded091e5-6657-45b4-967a-41c334ad59ab"
+                "guid": "72da2294-7380-4984-b671-a955dc6811d9"
               }
             }
           ],
@@ -2915,10 +2915,10 @@
           "taxa": [
             {
               "id": "78",
-              "guid": "89df6681-eeb0-4612-8982-1275858175d8",
+              "guid": "8dd83d5c-cbef-4d50-a5e5-22b24bb72190",
               "toolComponent": {
                 "name": "CWE",
-                "guid": "ebeec503-3401-4868-8d78-ad1ab539698d"
+                "guid": "9b4ce1ac-9788-42ba-aa20-cca1b922ec42"
               }
             }
           ],
@@ -2959,10 +2959,10 @@
           "taxa": [
             {
               "id": "78",
-              "guid": "89df6681-eeb0-4612-8982-1275858175d8",
+              "guid": "8dd83d5c-cbef-4d50-a5e5-22b24bb72190",
               "toolComponent": {
                 "name": "CWE",
-                "guid": "c2fa46bf-c2ff-46fa-9574-c84f55deddfb"
+                "guid": "29f46b80-7831-4384-b949-58617e176855"
               }
             }
           ],
@@ -2975,7 +2975,7 @@
           "name": "CWE",
           "version": "4.12",
           "releaseDateUtc": "2023-06-29",
-          "guid": "89df6681-eeb0-4612-8982-1275858175d8",
+          "guid": "8dd83d5c-cbef-4d50-a5e5-22b24bb72190",
           "informationUri": "https://cwe.mitre.org/data/published/cwe_v4.12.pdf",
           "downloadUri": "https://cwe.mitre.org/data/xml/cwec_v4.12.xml.zip",
           "organization": "MITRE",
@@ -2985,7 +2985,7 @@
           "taxa": [
             {
               "id": "78",
-              "guid": "89df6681-eeb0-4612-8982-1275858175d8",
+              "guid": "8dd83d5c-cbef-4d50-a5e5-22b24bb72190",
               "name": "Improper Neutralization of Special Elements used in an OS Command ('OS Command Injection')",
               "shortDescription": {
                 "text": "The product constructs all or part of an OS command using externally-influenced input from an upstream component, but it does not neutralize or incorrectly neutralizes special elements that could modify the intended OS command when it is sent to a downstream component."
@@ -2996,7 +2996,7 @@
             },
             {
               "id": "20",
-              "guid": "89df6681-eeb0-4612-8982-1275858175d8",
+              "guid": "8dd83d5c-cbef-4d50-a5e5-22b24bb72190",
               "name": "Improper Input Validation",
               "shortDescription": {
                 "text": "The product receives input or data, but it does\n        not validate or incorrectly validates that the input has the\n        properties that are required to process the data safely and\n        correctly."
@@ -3007,7 +3007,7 @@
             },
             {
               "id": "327",
-              "guid": "89df6681-eeb0-4612-8982-1275858175d8",
+              "guid": "8dd83d5c-cbef-4d50-a5e5-22b24bb72190",
               "name": "Use of a Broken or Risky Cryptographic Algorithm",
               "shortDescription": {
                 "text": "The product uses a broken or risky cryptographic algorithm or protocol."
@@ -3018,7 +3018,7 @@
             },
             {
               "id": "400",
-              "guid": "89df6681-eeb0-4612-8982-1275858175d8",
+              "guid": "8dd83d5c-cbef-4d50-a5e5-22b24bb72190",
               "name": "Uncontrolled Resource Consumption",
               "shortDescription": {
                 "text": "The product does not properly control the allocation and maintenance of a limited resource, thereby enabling an actor to influence the amount of resources consumed, eventually leading to the exhaustion of available resources."
@@ -3029,7 +3029,7 @@
             },
             {
               "id": "259",
-              "guid": "89df6681-eeb0-4612-8982-1275858175d8",
+              "guid": "8dd83d5c-cbef-4d50-a5e5-22b24bb72190",
               "name": "Use of Hard-coded Password",
               "shortDescription": {
                 "text": "The product contains a hard-coded password, which it uses for its own inbound authentication or for outbound communication to external components."
@@ -3040,7 +3040,7 @@
             },
             {
               "id": "502",
-              "guid": "89df6681-eeb0-4612-8982-1275858175d8",
+              "guid": "8dd83d5c-cbef-4d50-a5e5-22b24bb72190",
               "name": "Deserialization of Untrusted Data",
               "shortDescription": {
                 "text": "The product deserializes untrusted data without sufficiently verifying that the resulting data will be valid."
@@ -3051,7 +3051,7 @@
             },
             {
               "id": "89",
-              "guid": "89df6681-eeb0-4612-8982-1275858175d8",
+              "guid": "8dd83d5c-cbef-4d50-a5e5-22b24bb72190",
               "name": "Improper Neutralization of Special Elements used in an SQL Command ('SQL Injection')",
               "shortDescription": {
                 "text": "The product constructs all or part of an SQL command using externally-influenced input from an upstream component, but it does not neutralize or incorrectly neutralizes special elements that could modify the intended SQL command when it is sent to a downstream component."
@@ -3062,7 +3062,7 @@
             },
             {
               "id": "330",
-              "guid": "89df6681-eeb0-4612-8982-1275858175d8",
+              "guid": "8dd83d5c-cbef-4d50-a5e5-22b24bb72190",
               "name": "Use of Insufficiently Random Values",
               "shortDescription": {
                 "text": "The product uses insufficiently random numbers or values in a security context that depends on unpredictable numbers."
@@ -3073,7 +3073,7 @@
             },
             {
               "id": "703",
-              "guid": "89df6681-eeb0-4612-8982-1275858175d8",
+              "guid": "8dd83d5c-cbef-4d50-a5e5-22b24bb72190",
               "name": "Improper Check or Handling of Exceptional Conditions",
               "shortDescription": {
                 "text": "The product does not properly anticipate or handle exceptional conditions that rarely occur during normal operation of the product."
