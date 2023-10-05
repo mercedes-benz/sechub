@@ -6,64 +6,372 @@
           "name": "Bandit",
           "rules": [
             {
-              "id": "B409",
-              "name": "blacklist",
-              "helpUri": "https://bandit.readthedocs.io/en/1.7.3/blacklists/blacklist_imports.html#b409-import-xml-pulldom"
-            },
-            {
-              "id": "B406",
-              "name": "blacklist",
-              "helpUri": "https://bandit.readthedocs.io/en/1.7.3/blacklists/blacklist_imports.html#b406-import-xml-sax"
-            },
-            {
               "id": "B404",
               "name": "blacklist",
-              "helpUri": "https://bandit.readthedocs.io/en/1.7.3/blacklists/blacklist_imports.html#b404-import-subprocess"
-            },
-            {
-              "id": "B403",
-              "name": "blacklist",
-              "helpUri": "https://bandit.readthedocs.io/en/1.7.3/blacklists/blacklist_imports.html#b403-import-pickle"
-            },
-            {
-              "id": "B608",
-              "name": "hardcoded_sql_expressions",
-              "helpUri": "https://bandit.readthedocs.io/en/1.7.3/plugins/b608_hardcoded_sql_expressions.html"
-            },
-            {
-              "id": "B301",
-              "name": "blacklist",
-              "helpUri": "https://bandit.readthedocs.io/en/1.7.3/blacklists/blacklist_calls.html#b301-pickle"
-            },
-            {
-              "id": "B317",
-              "name": "blacklist",
-              "helpUri": "https://bandit.readthedocs.io/en/1.7.3/blacklists/blacklist_calls.html#b313-b320-xml-bad-sax"
-            },
-            {
-              "id": "B319",
-              "name": "blacklist",
-              "helpUri": "https://bandit.readthedocs.io/en/1.7.3/blacklists/blacklist_calls.html#b313-b320-xml-bad-pulldom"
-            },
-            {
-              "id": "B602",
-              "name": "subprocess_popen_with_shell_equals_true",
-              "helpUri": "https://bandit.readthedocs.io/en/1.7.3/plugins/b602_subprocess_popen_with_shell_equals_true.html"
-            },
-            {
-              "id": "B311",
-              "name": "blacklist",
-              "helpUri": "https://bandit.readthedocs.io/en/1.7.3/blacklists/blacklist_calls.html#b311-random"
+              "relationships": [
+                {
+                  "target": {
+                    "id": "78",
+                    "guid": "89df6681-eeb0-4612-8982-1275858175d8",
+                    "toolComponent": {
+                      "name": "CWE",
+                      "guid": "facbbd3d-8b98-4d98-ae03-5ccd006ed65b"
+                    }
+                  },
+                  "kinds": [
+                    "superset"
+                  ]
+                }
+              ],
+              "helpUri": "https://bandit.readthedocs.io/en/1.7.5/blacklists/blacklist_imports.html#b404-import-subprocess"
             },
             {
               "id": "B506",
               "name": "yaml_load",
-              "helpUri": "https://bandit.readthedocs.io/en/1.7.3/plugins/b506_yaml_load.html"
+              "relationships": [
+                {
+                  "target": {
+                    "id": "20",
+                    "guid": "89df6681-eeb0-4612-8982-1275858175d8",
+                    "toolComponent": {
+                      "name": "CWE",
+                      "guid": "c3e428f8-948f-4b5b-bc2c-7e9c3d06c04d"
+                    }
+                  },
+                  "kinds": [
+                    "superset"
+                  ]
+                }
+              ],
+              "helpUri": "https://bandit.readthedocs.io/en/1.7.5/plugins/b506_yaml_load.html"
+            },
+            {
+              "id": "B324",
+              "name": "hashlib",
+              "relationships": [
+                {
+                  "target": {
+                    "id": "327",
+                    "guid": "89df6681-eeb0-4612-8982-1275858175d8",
+                    "toolComponent": {
+                      "name": "CWE",
+                      "guid": "d52091b0-cad1-4ded-802b-447ff426b634"
+                    }
+                  },
+                  "kinds": [
+                    "superset"
+                  ]
+                }
+              ],
+              "helpUri": "https://bandit.readthedocs.io/en/1.7.5/plugins/b324_hashlib.html"
+            },
+            {
+              "id": "B307",
+              "name": "blacklist",
+              "relationships": [
+                {
+                  "target": {
+                    "id": "78",
+                    "guid": "89df6681-eeb0-4612-8982-1275858175d8",
+                    "toolComponent": {
+                      "name": "CWE",
+                      "guid": "1ab38582-6f8e-486b-8101-c1f451ece685"
+                    }
+                  },
+                  "kinds": [
+                    "superset"
+                  ]
+                }
+              ],
+              "helpUri": "https://bandit.readthedocs.io/en/1.7.5/blacklists/blacklist_calls.html#b307-eval"
+            },
+            {
+              "id": "B602",
+              "name": "subprocess_popen_with_shell_equals_true",
+              "relationships": [
+                {
+                  "target": {
+                    "id": "78",
+                    "guid": "89df6681-eeb0-4612-8982-1275858175d8",
+                    "toolComponent": {
+                      "name": "CWE",
+                      "guid": "0d922888-da76-4a18-a2fd-47f46704561a"
+                    }
+                  },
+                  "kinds": [
+                    "superset"
+                  ]
+                }
+              ],
+              "helpUri": "https://bandit.readthedocs.io/en/1.7.5/plugins/b602_subprocess_popen_with_shell_equals_true.html"
+            },
+            {
+              "id": "B113",
+              "name": "request_without_timeout",
+              "relationships": [
+                {
+                  "target": {
+                    "id": "400",
+                    "guid": "89df6681-eeb0-4612-8982-1275858175d8",
+                    "toolComponent": {
+                      "name": "CWE",
+                      "guid": "69b4262b-b3fa-4ac9-8704-e3b0f394562a"
+                    }
+                  },
+                  "kinds": [
+                    "superset"
+                  ]
+                }
+              ],
+              "helpUri": "https://bandit.readthedocs.io/en/1.7.5/plugins/b113_request_without_timeout.html"
             },
             {
               "id": "B105",
               "name": "hardcoded_password_string",
-              "helpUri": "https://bandit.readthedocs.io/en/1.7.3/plugins/b105_hardcoded_password_string.html"
+              "relationships": [
+                {
+                  "target": {
+                    "id": "259",
+                    "guid": "89df6681-eeb0-4612-8982-1275858175d8",
+                    "toolComponent": {
+                      "name": "CWE",
+                      "guid": "aa7a09c4-f989-495f-99d5-fe253ca0af7d"
+                    }
+                  },
+                  "kinds": [
+                    "superset"
+                  ]
+                }
+              ],
+              "helpUri": "https://bandit.readthedocs.io/en/1.7.5/plugins/b105_hardcoded_password_string.html"
+            },
+            {
+              "id": "B409",
+              "name": "blacklist",
+              "relationships": [
+                {
+                  "target": {
+                    "id": "20",
+                    "guid": "89df6681-eeb0-4612-8982-1275858175d8",
+                    "toolComponent": {
+                      "name": "CWE",
+                      "guid": "5caa2f30-b259-4b3d-8a0c-4fc78e9f5da7"
+                    }
+                  },
+                  "kinds": [
+                    "superset"
+                  ]
+                }
+              ],
+              "helpUri": "https://bandit.readthedocs.io/en/1.7.5/blacklists/blacklist_imports.html#b409-import-xml-pulldom"
+            },
+            {
+              "id": "B406",
+              "name": "blacklist",
+              "relationships": [
+                {
+                  "target": {
+                    "id": "20",
+                    "guid": "89df6681-eeb0-4612-8982-1275858175d8",
+                    "toolComponent": {
+                      "name": "CWE",
+                      "guid": "b073464c-568a-4576-8b26-eeb7ad2eab58"
+                    }
+                  },
+                  "kinds": [
+                    "superset"
+                  ]
+                }
+              ],
+              "helpUri": "https://bandit.readthedocs.io/en/1.7.5/blacklists/blacklist_imports.html#b406-import-xml-sax"
+            },
+            {
+              "id": "B403",
+              "name": "blacklist",
+              "relationships": [
+                {
+                  "target": {
+                    "id": "502",
+                    "guid": "89df6681-eeb0-4612-8982-1275858175d8",
+                    "toolComponent": {
+                      "name": "CWE",
+                      "guid": "9c3ac6e2-d830-48ae-a856-c1746c68bcc3"
+                    }
+                  },
+                  "kinds": [
+                    "superset"
+                  ]
+                }
+              ],
+              "helpUri": "https://bandit.readthedocs.io/en/1.7.5/blacklists/blacklist_imports.html#b403-import-pickle"
+            },
+            {
+              "id": "B608",
+              "name": "hardcoded_sql_expressions",
+              "relationships": [
+                {
+                  "target": {
+                    "id": "89",
+                    "guid": "89df6681-eeb0-4612-8982-1275858175d8",
+                    "toolComponent": {
+                      "name": "CWE",
+                      "guid": "d46ae837-1c83-4567-8d85-e99211684bbf"
+                    }
+                  },
+                  "kinds": [
+                    "superset"
+                  ]
+                }
+              ],
+              "helpUri": "https://bandit.readthedocs.io/en/1.7.5/plugins/b608_hardcoded_sql_expressions.html"
+            },
+            {
+              "id": "B301",
+              "name": "blacklist",
+              "relationships": [
+                {
+                  "target": {
+                    "id": "502",
+                    "guid": "89df6681-eeb0-4612-8982-1275858175d8",
+                    "toolComponent": {
+                      "name": "CWE",
+                      "guid": "5d5f5049-74ad-4471-84b8-0afeb58bdb22"
+                    }
+                  },
+                  "kinds": [
+                    "superset"
+                  ]
+                }
+              ],
+              "helpUri": "https://bandit.readthedocs.io/en/1.7.5/blacklists/blacklist_calls.html#b301-pickle"
+            },
+            {
+              "id": "B317",
+              "name": "blacklist",
+              "relationships": [
+                {
+                  "target": {
+                    "id": "20",
+                    "guid": "89df6681-eeb0-4612-8982-1275858175d8",
+                    "toolComponent": {
+                      "name": "CWE",
+                      "guid": "5b777bef-a678-4f69-ad8e-6d8cca78d1f1"
+                    }
+                  },
+                  "kinds": [
+                    "superset"
+                  ]
+                }
+              ],
+              "helpUri": "https://bandit.readthedocs.io/en/1.7.5/blacklists/blacklist_calls.html#b313-b320-xml-bad-sax"
+            },
+            {
+              "id": "B319",
+              "name": "blacklist",
+              "relationships": [
+                {
+                  "target": {
+                    "id": "20",
+                    "guid": "89df6681-eeb0-4612-8982-1275858175d8",
+                    "toolComponent": {
+                      "name": "CWE",
+                      "guid": "5ba38781-a2ea-499a-ab96-7cb0882a53f9"
+                    }
+                  },
+                  "kinds": [
+                    "superset"
+                  ]
+                }
+              ],
+              "helpUri": "https://bandit.readthedocs.io/en/1.7.5/blacklists/blacklist_calls.html#b313-b320-xml-bad-pulldom"
+            },
+            {
+              "id": "B311",
+              "name": "blacklist",
+              "relationships": [
+                {
+                  "target": {
+                    "id": "330",
+                    "guid": "89df6681-eeb0-4612-8982-1275858175d8",
+                    "toolComponent": {
+                      "name": "CWE",
+                      "guid": "890bac19-eaeb-46de-a6ae-3168f33599ce"
+                    }
+                  },
+                  "kinds": [
+                    "superset"
+                  ]
+                }
+              ],
+              "helpUri": "https://bandit.readthedocs.io/en/1.7.5/blacklists/blacklist_calls.html#b311-random"
+            },
+            {
+              "id": "B106",
+              "name": "hardcoded_password_funcarg",
+              "relationships": [
+                {
+                  "target": {
+                    "id": "259",
+                    "guid": "89df6681-eeb0-4612-8982-1275858175d8",
+                    "toolComponent": {
+                      "name": "CWE",
+                      "guid": "70a3c1b6-05b1-45f4-99d4-c8db739ed919"
+                    }
+                  },
+                  "kinds": [
+                    "superset"
+                  ]
+                }
+              ],
+              "helpUri": "https://bandit.readthedocs.io/en/1.7.5/plugins/b106_hardcoded_password_funcarg.html"
+            },
+            {
+              "id": "B110",
+              "name": "try_except_pass",
+              "relationships": [
+                {
+                  "target": {
+                    "id": "703",
+                    "guid": "89df6681-eeb0-4612-8982-1275858175d8",
+                    "toolComponent": {
+                      "name": "CWE",
+                      "guid": "7091dcb4-a06d-43d7-b3cf-349212a56970"
+                    }
+                  },
+                  "kinds": [
+                    "superset"
+                  ]
+                }
+              ],
+              "helpUri": "https://bandit.readthedocs.io/en/1.7.5/plugins/b110_try_except_pass.html"
+            },
+            {
+              "id": "B603",
+              "name": "subprocess_without_shell_equals_true",
+              "relationships": [
+                {
+                  "target": {
+                    "id": "78",
+                    "guid": "89df6681-eeb0-4612-8982-1275858175d8",
+                    "toolComponent": {
+                      "name": "CWE",
+                      "guid": "c2fa46bf-c2ff-46fa-9574-c84f55deddfb"
+                    }
+                  },
+                  "kinds": [
+                    "superset"
+                  ]
+                }
+              ],
+              "helpUri": "https://bandit.readthedocs.io/en/1.7.5/plugins/b603_subprocess_without_shell_equals_true.html"
+            }
+          ],
+          "version": "1.7.5",
+          "informationUri": "https://github.com/PyCQA/bandit/tree/main",
+          "supportedTaxonomies": [
+            {
+              "name": "CWE",
+              "guid": "89df6681-eeb0-4612-8982-1275858175d8"
             }
           ]
         }
@@ -71,25 +379,38 @@
       "invocations": [
         {
           "executionSuccessful": true,
-          "endTimeUtc": "2022-03-01T10:58:59Z"
+          "endTimeUtc": "2023-10-05T13:31:51Z"
         }
       ],
       "properties": {
         "metrics": {
           "_totals": {
-            "loc": 750,
+            "loc": 2453,
             "nosec": 0,
             "skipped_tests": 0,
             "SEVERITY.UNDEFINED": 0,
             "CONFIDENCE.UNDEFINED": 0,
-            "SEVERITY.LOW": 7,
-            "CONFIDENCE.LOW": 1,
-            "SEVERITY.MEDIUM": 5,
-            "CONFIDENCE.MEDIUM": 1,
-            "SEVERITY.HIGH": 1,
-            "CONFIDENCE.HIGH": 11
+            "SEVERITY.LOW": 27,
+            "CONFIDENCE.LOW": 5,
+            "SEVERITY.MEDIUM": 12,
+            "CONFIDENCE.MEDIUM": 13,
+            "SEVERITY.HIGH": 4,
+            "CONFIDENCE.HIGH": 25
           },
-          "./pygoat/pygoat/introduction/__init__.py": {
+          "pygoat/PyGoatBot.py": {
+            "loc": 55,
+            "nosec": 0,
+            "skipped_tests": 0,
+            "SEVERITY.UNDEFINED": 0,
+            "SEVERITY.LOW": 0,
+            "SEVERITY.MEDIUM": 0,
+            "SEVERITY.HIGH": 0,
+            "CONFIDENCE.UNDEFINED": 0,
+            "CONFIDENCE.LOW": 0,
+            "CONFIDENCE.MEDIUM": 0,
+            "CONFIDENCE.HIGH": 0
+          },
+          "pygoat/introduction/__init__.py": {
             "loc": 0,
             "nosec": 0,
             "skipped_tests": 0,
@@ -102,150 +423,7 @@
             "CONFIDENCE.MEDIUM": 0,
             "CONFIDENCE.HIGH": 0
           },
-          "./pygoat/pygoat/introduction/admin.py": {
-            "loc": 7,
-            "nosec": 0,
-            "skipped_tests": 0,
-            "SEVERITY.UNDEFINED": 0,
-            "SEVERITY.LOW": 0,
-            "SEVERITY.MEDIUM": 0,
-            "SEVERITY.HIGH": 0,
-            "CONFIDENCE.UNDEFINED": 0,
-            "CONFIDENCE.LOW": 0,
-            "CONFIDENCE.MEDIUM": 0,
-            "CONFIDENCE.HIGH": 0
-          },
-          "./pygoat/pygoat/introduction/apps.py": {
-            "loc": 3,
-            "nosec": 0,
-            "skipped_tests": 0,
-            "SEVERITY.UNDEFINED": 0,
-            "SEVERITY.LOW": 0,
-            "SEVERITY.MEDIUM": 0,
-            "SEVERITY.HIGH": 0,
-            "CONFIDENCE.UNDEFINED": 0,
-            "CONFIDENCE.LOW": 0,
-            "CONFIDENCE.MEDIUM": 0,
-            "CONFIDENCE.HIGH": 0
-          },
-          "./pygoat/pygoat/introduction/forms.py": {
-            "loc": 0,
-            "nosec": 0,
-            "skipped_tests": 0,
-            "SEVERITY.UNDEFINED": 0,
-            "SEVERITY.LOW": 0,
-            "SEVERITY.MEDIUM": 0,
-            "SEVERITY.HIGH": 0,
-            "CONFIDENCE.UNDEFINED": 0,
-            "CONFIDENCE.LOW": 0,
-            "CONFIDENCE.MEDIUM": 0,
-            "CONFIDENCE.HIGH": 0
-          },
-          "./pygoat/pygoat/introduction/migrations/0001_initial.py": {
-            "loc": 16,
-            "nosec": 0,
-            "skipped_tests": 0,
-            "SEVERITY.UNDEFINED": 0,
-            "SEVERITY.LOW": 0,
-            "SEVERITY.MEDIUM": 0,
-            "SEVERITY.HIGH": 0,
-            "CONFIDENCE.UNDEFINED": 0,
-            "CONFIDENCE.LOW": 0,
-            "CONFIDENCE.MEDIUM": 0,
-            "CONFIDENCE.HIGH": 0
-          },
-          "./pygoat/pygoat/introduction/migrations/0002_auto_20210414_1510.py": {
-            "loc": 25,
-            "nosec": 0,
-            "skipped_tests": 0,
-            "SEVERITY.UNDEFINED": 0,
-            "SEVERITY.LOW": 0,
-            "SEVERITY.MEDIUM": 0,
-            "SEVERITY.HIGH": 0,
-            "CONFIDENCE.UNDEFINED": 0,
-            "CONFIDENCE.LOW": 0,
-            "CONFIDENCE.MEDIUM": 0,
-            "CONFIDENCE.HIGH": 0
-          },
-          "./pygoat/pygoat/introduction/migrations/0003_password_user.py": {
-            "loc": 23,
-            "nosec": 0,
-            "skipped_tests": 0,
-            "SEVERITY.UNDEFINED": 0,
-            "SEVERITY.LOW": 0,
-            "SEVERITY.MEDIUM": 0,
-            "SEVERITY.HIGH": 0,
-            "CONFIDENCE.UNDEFINED": 0,
-            "CONFIDENCE.LOW": 0,
-            "CONFIDENCE.MEDIUM": 0,
-            "CONFIDENCE.HIGH": 0
-          },
-          "./pygoat/pygoat/introduction/migrations/0004_auto_20210415_1722.py": {
-            "loc": 16,
-            "nosec": 0,
-            "skipped_tests": 0,
-            "SEVERITY.UNDEFINED": 0,
-            "SEVERITY.LOW": 0,
-            "SEVERITY.MEDIUM": 0,
-            "SEVERITY.HIGH": 0,
-            "CONFIDENCE.UNDEFINED": 0,
-            "CONFIDENCE.LOW": 0,
-            "CONFIDENCE.MEDIUM": 0,
-            "CONFIDENCE.HIGH": 0
-          },
-          "./pygoat/pygoat/introduction/migrations/0005_auto_20210415_1748.py": {
-            "loc": 11,
-            "nosec": 0,
-            "skipped_tests": 0,
-            "SEVERITY.UNDEFINED": 0,
-            "SEVERITY.LOW": 0,
-            "SEVERITY.MEDIUM": 0,
-            "SEVERITY.HIGH": 0,
-            "CONFIDENCE.UNDEFINED": 0,
-            "CONFIDENCE.LOW": 0,
-            "CONFIDENCE.MEDIUM": 0,
-            "CONFIDENCE.HIGH": 0
-          },
-          "./pygoat/pygoat/introduction/migrations/0006_comments.py": {
-            "loc": 15,
-            "nosec": 0,
-            "skipped_tests": 0,
-            "SEVERITY.UNDEFINED": 0,
-            "SEVERITY.LOW": 0,
-            "SEVERITY.MEDIUM": 0,
-            "SEVERITY.HIGH": 0,
-            "CONFIDENCE.UNDEFINED": 0,
-            "CONFIDENCE.LOW": 0,
-            "CONFIDENCE.MEDIUM": 0,
-            "CONFIDENCE.HIGH": 0
-          },
-          "./pygoat/pygoat/introduction/migrations/0007_auto_20210418_0022.py": {
-            "loc": 12,
-            "nosec": 0,
-            "skipped_tests": 0,
-            "SEVERITY.UNDEFINED": 0,
-            "SEVERITY.LOW": 0,
-            "SEVERITY.MEDIUM": 0,
-            "SEVERITY.HIGH": 0,
-            "CONFIDENCE.UNDEFINED": 0,
-            "CONFIDENCE.LOW": 0,
-            "CONFIDENCE.MEDIUM": 0,
-            "CONFIDENCE.HIGH": 0
-          },
-          "./pygoat/pygoat/introduction/migrations/0008_otp.py": {
-            "loc": 15,
-            "nosec": 0,
-            "skipped_tests": 0,
-            "SEVERITY.UNDEFINED": 0,
-            "SEVERITY.LOW": 0,
-            "SEVERITY.MEDIUM": 0,
-            "SEVERITY.HIGH": 0,
-            "CONFIDENCE.UNDEFINED": 0,
-            "CONFIDENCE.LOW": 0,
-            "CONFIDENCE.MEDIUM": 0,
-            "CONFIDENCE.HIGH": 0
-          },
-          "./pygoat/pygoat/introduction/migrations/0009_auto_20210517_2047.py": {
+          "pygoat/introduction/admin.py": {
             "loc": 13,
             "nosec": 0,
             "skipped_tests": 0,
@@ -258,8 +436,8 @@
             "CONFIDENCE.MEDIUM": 0,
             "CONFIDENCE.HIGH": 0
           },
-          "./pygoat/pygoat/introduction/migrations/__init__.py": {
-            "loc": 0,
+          "pygoat/introduction/apis.py": {
+            "loc": 109,
             "nosec": 0,
             "skipped_tests": 0,
             "SEVERITY.UNDEFINED": 0,
@@ -271,8 +449,8 @@
             "CONFIDENCE.MEDIUM": 0,
             "CONFIDENCE.HIGH": 0
           },
-          "./pygoat/pygoat/introduction/models.py": {
-            "loc": 24,
+          "pygoat/introduction/apps.py": {
+            "loc": 3,
             "nosec": 0,
             "skipped_tests": 0,
             "SEVERITY.UNDEFINED": 0,
@@ -284,8 +462,8 @@
             "CONFIDENCE.MEDIUM": 0,
             "CONFIDENCE.HIGH": 0
           },
-          "./pygoat/pygoat/introduction/tests.py": {
-            "loc": 1,
+          "pygoat/introduction/forms.py": {
+            "loc": 14,
             "nosec": 0,
             "skipped_tests": 0,
             "SEVERITY.UNDEFINED": 0,
@@ -297,33 +475,20 @@
             "CONFIDENCE.MEDIUM": 0,
             "CONFIDENCE.HIGH": 0
           },
-          "./pygoat/pygoat/introduction/urls.py": {
-            "loc": 44,
+          "pygoat/introduction/lab_code/test.py": {
+            "loc": 22,
             "nosec": 0,
             "skipped_tests": 0,
             "SEVERITY.UNDEFINED": 0,
-            "SEVERITY.LOW": 0,
-            "SEVERITY.MEDIUM": 0,
+            "SEVERITY.LOW": 1,
+            "SEVERITY.MEDIUM": 1,
             "SEVERITY.HIGH": 0,
             "CONFIDENCE.UNDEFINED": 0,
             "CONFIDENCE.LOW": 0,
             "CONFIDENCE.MEDIUM": 0,
-            "CONFIDENCE.HIGH": 0
+            "CONFIDENCE.HIGH": 2
           },
-          "./pygoat/pygoat/introduction/views.py": {
-            "loc": 358,
-            "nosec": 0,
-            "skipped_tests": 0,
-            "SEVERITY.UNDEFINED": 0,
-            "SEVERITY.LOW": 6,
-            "SEVERITY.MEDIUM": 5,
-            "SEVERITY.HIGH": 1,
-            "CONFIDENCE.UNDEFINED": 0,
-            "CONFIDENCE.LOW": 1,
-            "CONFIDENCE.MEDIUM": 0,
-            "CONFIDENCE.HIGH": 11
-          },
-          "./pygoat/pygoat/manage.py": {
+          "pygoat/introduction/migrations/0001_initial.py": {
             "loc": 16,
             "nosec": 0,
             "skipped_tests": 0,
@@ -336,7 +501,267 @@
             "CONFIDENCE.MEDIUM": 0,
             "CONFIDENCE.HIGH": 0
           },
-          "./pygoat/pygoat/pygoat/__init__.py": {
+          "pygoat/introduction/migrations/0002_auto_20210414_1510.py": {
+            "loc": 25,
+            "nosec": 0,
+            "skipped_tests": 0,
+            "SEVERITY.UNDEFINED": 0,
+            "SEVERITY.LOW": 0,
+            "SEVERITY.MEDIUM": 0,
+            "SEVERITY.HIGH": 0,
+            "CONFIDENCE.UNDEFINED": 0,
+            "CONFIDENCE.LOW": 0,
+            "CONFIDENCE.MEDIUM": 0,
+            "CONFIDENCE.HIGH": 0
+          },
+          "pygoat/introduction/migrations/0003_password_user.py": {
+            "loc": 23,
+            "nosec": 0,
+            "skipped_tests": 0,
+            "SEVERITY.UNDEFINED": 0,
+            "SEVERITY.LOW": 0,
+            "SEVERITY.MEDIUM": 0,
+            "SEVERITY.HIGH": 0,
+            "CONFIDENCE.UNDEFINED": 0,
+            "CONFIDENCE.LOW": 0,
+            "CONFIDENCE.MEDIUM": 0,
+            "CONFIDENCE.HIGH": 0
+          },
+          "pygoat/introduction/migrations/0004_auto_20210415_1722.py": {
+            "loc": 16,
+            "nosec": 0,
+            "skipped_tests": 0,
+            "SEVERITY.UNDEFINED": 0,
+            "SEVERITY.LOW": 0,
+            "SEVERITY.MEDIUM": 0,
+            "SEVERITY.HIGH": 0,
+            "CONFIDENCE.UNDEFINED": 0,
+            "CONFIDENCE.LOW": 0,
+            "CONFIDENCE.MEDIUM": 0,
+            "CONFIDENCE.HIGH": 0
+          },
+          "pygoat/introduction/migrations/0005_auto_20210415_1748.py": {
+            "loc": 11,
+            "nosec": 0,
+            "skipped_tests": 0,
+            "SEVERITY.UNDEFINED": 0,
+            "SEVERITY.LOW": 0,
+            "SEVERITY.MEDIUM": 0,
+            "SEVERITY.HIGH": 0,
+            "CONFIDENCE.UNDEFINED": 0,
+            "CONFIDENCE.LOW": 0,
+            "CONFIDENCE.MEDIUM": 0,
+            "CONFIDENCE.HIGH": 0
+          },
+          "pygoat/introduction/migrations/0006_comments.py": {
+            "loc": 15,
+            "nosec": 0,
+            "skipped_tests": 0,
+            "SEVERITY.UNDEFINED": 0,
+            "SEVERITY.LOW": 0,
+            "SEVERITY.MEDIUM": 0,
+            "SEVERITY.HIGH": 0,
+            "CONFIDENCE.UNDEFINED": 0,
+            "CONFIDENCE.LOW": 0,
+            "CONFIDENCE.MEDIUM": 0,
+            "CONFIDENCE.HIGH": 0
+          },
+          "pygoat/introduction/migrations/0007_auto_20210418_0022.py": {
+            "loc": 12,
+            "nosec": 0,
+            "skipped_tests": 0,
+            "SEVERITY.UNDEFINED": 0,
+            "SEVERITY.LOW": 0,
+            "SEVERITY.MEDIUM": 0,
+            "SEVERITY.HIGH": 0,
+            "CONFIDENCE.UNDEFINED": 0,
+            "CONFIDENCE.LOW": 0,
+            "CONFIDENCE.MEDIUM": 0,
+            "CONFIDENCE.HIGH": 0
+          },
+          "pygoat/introduction/migrations/0008_otp.py": {
+            "loc": 15,
+            "nosec": 0,
+            "skipped_tests": 0,
+            "SEVERITY.UNDEFINED": 0,
+            "SEVERITY.LOW": 0,
+            "SEVERITY.MEDIUM": 0,
+            "SEVERITY.HIGH": 0,
+            "CONFIDENCE.UNDEFINED": 0,
+            "CONFIDENCE.LOW": 0,
+            "CONFIDENCE.MEDIUM": 0,
+            "CONFIDENCE.HIGH": 0
+          },
+          "pygoat/introduction/migrations/0009_auto_20210517_2047.py": {
+            "loc": 13,
+            "nosec": 0,
+            "skipped_tests": 0,
+            "SEVERITY.UNDEFINED": 0,
+            "SEVERITY.LOW": 0,
+            "SEVERITY.MEDIUM": 0,
+            "SEVERITY.HIGH": 0,
+            "CONFIDENCE.UNDEFINED": 0,
+            "CONFIDENCE.LOW": 0,
+            "CONFIDENCE.MEDIUM": 0,
+            "CONFIDENCE.HIGH": 0
+          },
+          "pygoat/introduction/migrations/0010_authlogin.py": {
+            "loc": 16,
+            "nosec": 0,
+            "skipped_tests": 0,
+            "SEVERITY.UNDEFINED": 0,
+            "SEVERITY.LOW": 0,
+            "SEVERITY.MEDIUM": 0,
+            "SEVERITY.HIGH": 0,
+            "CONFIDENCE.UNDEFINED": 0,
+            "CONFIDENCE.LOW": 0,
+            "CONFIDENCE.MEDIUM": 0,
+            "CONFIDENCE.HIGH": 0
+          },
+          "pygoat/introduction/migrations/0011_tickits.py": {
+            "loc": 16,
+            "nosec": 0,
+            "skipped_tests": 0,
+            "SEVERITY.UNDEFINED": 0,
+            "SEVERITY.LOW": 0,
+            "SEVERITY.MEDIUM": 0,
+            "SEVERITY.HIGH": 0,
+            "CONFIDENCE.UNDEFINED": 0,
+            "CONFIDENCE.LOW": 0,
+            "CONFIDENCE.MEDIUM": 0,
+            "CONFIDENCE.HIGH": 0
+          },
+          "pygoat/introduction/migrations/0012_alter_tickits_user.py": {
+            "loc": 15,
+            "nosec": 0,
+            "skipped_tests": 0,
+            "SEVERITY.UNDEFINED": 0,
+            "SEVERITY.LOW": 0,
+            "SEVERITY.MEDIUM": 0,
+            "SEVERITY.HIGH": 0,
+            "CONFIDENCE.UNDEFINED": 0,
+            "CONFIDENCE.LOW": 0,
+            "CONFIDENCE.MEDIUM": 0,
+            "CONFIDENCE.HIGH": 0
+          },
+          "pygoat/introduction/migrations/0013_alter_comments_id_alter_faang_id_alter_info_id_and_more.py": {
+            "loc": 37,
+            "nosec": 0,
+            "skipped_tests": 0,
+            "SEVERITY.UNDEFINED": 0,
+            "SEVERITY.LOW": 0,
+            "SEVERITY.MEDIUM": 0,
+            "SEVERITY.HIGH": 0,
+            "CONFIDENCE.UNDEFINED": 0,
+            "CONFIDENCE.LOW": 0,
+            "CONFIDENCE.MEDIUM": 0,
+            "CONFIDENCE.HIGH": 0
+          },
+          "pygoat/introduction/migrations/0014_sql_lab_table.py": {
+            "loc": 14,
+            "nosec": 0,
+            "skipped_tests": 0,
+            "SEVERITY.UNDEFINED": 0,
+            "SEVERITY.LOW": 0,
+            "SEVERITY.MEDIUM": 0,
+            "SEVERITY.HIGH": 0,
+            "CONFIDENCE.UNDEFINED": 0,
+            "CONFIDENCE.LOW": 0,
+            "CONFIDENCE.MEDIUM": 0,
+            "CONFIDENCE.HIGH": 0
+          },
+          "pygoat/introduction/migrations/0015_blogs.py": {
+            "loc": 18,
+            "nosec": 0,
+            "skipped_tests": 0,
+            "SEVERITY.UNDEFINED": 0,
+            "SEVERITY.LOW": 0,
+            "SEVERITY.MEDIUM": 0,
+            "SEVERITY.HIGH": 0,
+            "CONFIDENCE.UNDEFINED": 0,
+            "CONFIDENCE.LOW": 0,
+            "CONFIDENCE.MEDIUM": 0,
+            "CONFIDENCE.HIGH": 0
+          },
+          "pygoat/introduction/migrations/0016_alter_blogs_blog_id.py": {
+            "loc": 12,
+            "nosec": 0,
+            "skipped_tests": 0,
+            "SEVERITY.UNDEFINED": 0,
+            "SEVERITY.LOW": 0,
+            "SEVERITY.MEDIUM": 0,
+            "SEVERITY.HIGH": 0,
+            "CONFIDENCE.UNDEFINED": 0,
+            "CONFIDENCE.LOW": 0,
+            "CONFIDENCE.MEDIUM": 0,
+            "CONFIDENCE.HIGH": 0
+          },
+          "pygoat/introduction/migrations/0017_cf_user.py": {
+            "loc": 15,
+            "nosec": 0,
+            "skipped_tests": 0,
+            "SEVERITY.UNDEFINED": 0,
+            "SEVERITY.LOW": 0,
+            "SEVERITY.MEDIUM": 0,
+            "SEVERITY.HIGH": 0,
+            "CONFIDENCE.UNDEFINED": 0,
+            "CONFIDENCE.LOW": 0,
+            "CONFIDENCE.MEDIUM": 0,
+            "CONFIDENCE.HIGH": 0
+          },
+          "pygoat/introduction/migrations/0018_cf_user_password2.py": {
+            "loc": 13,
+            "nosec": 0,
+            "skipped_tests": 0,
+            "SEVERITY.UNDEFINED": 0,
+            "SEVERITY.LOW": 0,
+            "SEVERITY.MEDIUM": 0,
+            "SEVERITY.HIGH": 0,
+            "CONFIDENCE.UNDEFINED": 0,
+            "CONFIDENCE.LOW": 0,
+            "CONFIDENCE.MEDIUM": 0,
+            "CONFIDENCE.HIGH": 0
+          },
+          "pygoat/introduction/migrations/0019_af_admin.py": {
+            "loc": 21,
+            "nosec": 0,
+            "skipped_tests": 0,
+            "SEVERITY.UNDEFINED": 0,
+            "SEVERITY.LOW": 0,
+            "SEVERITY.MEDIUM": 0,
+            "SEVERITY.HIGH": 0,
+            "CONFIDENCE.UNDEFINED": 0,
+            "CONFIDENCE.LOW": 0,
+            "CONFIDENCE.MEDIUM": 0,
+            "CONFIDENCE.HIGH": 0
+          },
+          "pygoat/introduction/migrations/0020_af_session_id_alter_af_admin_lockout_cooldown.py": {
+            "loc": 20,
+            "nosec": 0,
+            "skipped_tests": 0,
+            "SEVERITY.UNDEFINED": 0,
+            "SEVERITY.LOW": 0,
+            "SEVERITY.MEDIUM": 0,
+            "SEVERITY.HIGH": 0,
+            "CONFIDENCE.UNDEFINED": 0,
+            "CONFIDENCE.LOW": 0,
+            "CONFIDENCE.MEDIUM": 0,
+            "CONFIDENCE.HIGH": 0
+          },
+          "pygoat/introduction/migrations/0021_csrf_user_tbl.py": {
+            "loc": 17,
+            "nosec": 0,
+            "skipped_tests": 0,
+            "SEVERITY.UNDEFINED": 0,
+            "SEVERITY.LOW": 0,
+            "SEVERITY.MEDIUM": 0,
+            "SEVERITY.HIGH": 0,
+            "CONFIDENCE.UNDEFINED": 0,
+            "CONFIDENCE.LOW": 0,
+            "CONFIDENCE.MEDIUM": 0,
+            "CONFIDENCE.HIGH": 0
+          },
+          "pygoat/introduction/migrations/__init__.py": {
             "loc": 0,
             "nosec": 0,
             "skipped_tests": 0,
@@ -349,7 +774,85 @@
             "CONFIDENCE.MEDIUM": 0,
             "CONFIDENCE.HIGH": 0
           },
-          "./pygoat/pygoat/pygoat/asgi.py": {
+          "pygoat/introduction/mitre.py": {
+            "loc": 194,
+            "nosec": 0,
+            "skipped_tests": 0,
+            "SEVERITY.UNDEFINED": 0,
+            "SEVERITY.LOW": 1,
+            "SEVERITY.MEDIUM": 1,
+            "SEVERITY.HIGH": 2,
+            "CONFIDENCE.UNDEFINED": 0,
+            "CONFIDENCE.LOW": 0,
+            "CONFIDENCE.MEDIUM": 0,
+            "CONFIDENCE.HIGH": 4
+          },
+          "pygoat/introduction/models.py": {
+            "loc": 78,
+            "nosec": 0,
+            "skipped_tests": 0,
+            "SEVERITY.UNDEFINED": 0,
+            "SEVERITY.LOW": 0,
+            "SEVERITY.MEDIUM": 0,
+            "SEVERITY.HIGH": 0,
+            "CONFIDENCE.UNDEFINED": 0,
+            "CONFIDENCE.LOW": 0,
+            "CONFIDENCE.MEDIUM": 0,
+            "CONFIDENCE.HIGH": 0
+          },
+          "pygoat/introduction/playground/A6/soln.py": {
+            "loc": 13,
+            "nosec": 0,
+            "skipped_tests": 0,
+            "SEVERITY.UNDEFINED": 0,
+            "SEVERITY.LOW": 0,
+            "SEVERITY.MEDIUM": 1,
+            "SEVERITY.HIGH": 0,
+            "CONFIDENCE.UNDEFINED": 0,
+            "CONFIDENCE.LOW": 1,
+            "CONFIDENCE.MEDIUM": 0,
+            "CONFIDENCE.HIGH": 0
+          },
+          "pygoat/introduction/playground/A6/utility.py": {
+            "loc": 13,
+            "nosec": 0,
+            "skipped_tests": 0,
+            "SEVERITY.UNDEFINED": 0,
+            "SEVERITY.LOW": 0,
+            "SEVERITY.MEDIUM": 1,
+            "SEVERITY.HIGH": 0,
+            "CONFIDENCE.UNDEFINED": 0,
+            "CONFIDENCE.LOW": 1,
+            "CONFIDENCE.MEDIUM": 0,
+            "CONFIDENCE.HIGH": 0
+          },
+          "pygoat/introduction/playground/A9/api.py": {
+            "loc": 30,
+            "nosec": 0,
+            "skipped_tests": 0,
+            "SEVERITY.UNDEFINED": 0,
+            "SEVERITY.LOW": 1,
+            "SEVERITY.MEDIUM": 0,
+            "SEVERITY.HIGH": 0,
+            "CONFIDENCE.UNDEFINED": 0,
+            "CONFIDENCE.LOW": 0,
+            "CONFIDENCE.MEDIUM": 1,
+            "CONFIDENCE.HIGH": 0
+          },
+          "pygoat/introduction/playground/A9/archive.py": {
+            "loc": 49,
+            "nosec": 0,
+            "skipped_tests": 0,
+            "SEVERITY.UNDEFINED": 0,
+            "SEVERITY.LOW": 1,
+            "SEVERITY.MEDIUM": 0,
+            "SEVERITY.HIGH": 0,
+            "CONFIDENCE.UNDEFINED": 0,
+            "CONFIDENCE.LOW": 0,
+            "CONFIDENCE.MEDIUM": 1,
+            "CONFIDENCE.HIGH": 0
+          },
+          "pygoat/introduction/playground/A9/main.py": {
             "loc": 10,
             "nosec": 0,
             "skipped_tests": 0,
@@ -362,20 +865,163 @@
             "CONFIDENCE.MEDIUM": 0,
             "CONFIDENCE.HIGH": 0
           },
-          "./pygoat/pygoat/pygoat/settings.py": {
-            "loc": 105,
+          "pygoat/introduction/playground/__init__.py": {
+            "loc": 0,
             "nosec": 0,
             "skipped_tests": 0,
             "SEVERITY.UNDEFINED": 0,
-            "SEVERITY.LOW": 1,
+            "SEVERITY.LOW": 0,
             "SEVERITY.MEDIUM": 0,
             "SEVERITY.HIGH": 0,
             "CONFIDENCE.UNDEFINED": 0,
             "CONFIDENCE.LOW": 0,
-            "CONFIDENCE.MEDIUM": 1,
+            "CONFIDENCE.MEDIUM": 0,
             "CONFIDENCE.HIGH": 0
           },
-          "./pygoat/pygoat/pygoat/urls.py": {
+          "pygoat/introduction/playground/ssrf/__init__.py": {
+            "loc": 0,
+            "nosec": 0,
+            "skipped_tests": 0,
+            "SEVERITY.UNDEFINED": 0,
+            "SEVERITY.LOW": 0,
+            "SEVERITY.MEDIUM": 0,
+            "SEVERITY.HIGH": 0,
+            "CONFIDENCE.UNDEFINED": 0,
+            "CONFIDENCE.LOW": 0,
+            "CONFIDENCE.MEDIUM": 0,
+            "CONFIDENCE.HIGH": 0
+          },
+          "pygoat/introduction/playground/ssrf/main.py": {
+            "loc": 10,
+            "nosec": 0,
+            "skipped_tests": 0,
+            "SEVERITY.UNDEFINED": 0,
+            "SEVERITY.LOW": 0,
+            "SEVERITY.MEDIUM": 0,
+            "SEVERITY.HIGH": 0,
+            "CONFIDENCE.UNDEFINED": 0,
+            "CONFIDENCE.LOW": 0,
+            "CONFIDENCE.MEDIUM": 0,
+            "CONFIDENCE.HIGH": 0
+          },
+          "pygoat/introduction/playground/ssrf/test.py": {
+            "loc": 29,
+            "nosec": 0,
+            "skipped_tests": 0,
+            "SEVERITY.UNDEFINED": 0,
+            "SEVERITY.LOW": 0,
+            "SEVERITY.MEDIUM": 0,
+            "SEVERITY.HIGH": 0,
+            "CONFIDENCE.UNDEFINED": 0,
+            "CONFIDENCE.LOW": 0,
+            "CONFIDENCE.MEDIUM": 0,
+            "CONFIDENCE.HIGH": 0
+          },
+          "pygoat/introduction/tests.py": {
+            "loc": 1,
+            "nosec": 0,
+            "skipped_tests": 0,
+            "SEVERITY.UNDEFINED": 0,
+            "SEVERITY.LOW": 0,
+            "SEVERITY.MEDIUM": 0,
+            "SEVERITY.HIGH": 0,
+            "CONFIDENCE.UNDEFINED": 0,
+            "CONFIDENCE.LOW": 0,
+            "CONFIDENCE.MEDIUM": 0,
+            "CONFIDENCE.HIGH": 0
+          },
+          "pygoat/introduction/urls.py": {
+            "loc": 119,
+            "nosec": 0,
+            "skipped_tests": 0,
+            "SEVERITY.UNDEFINED": 0,
+            "SEVERITY.LOW": 0,
+            "SEVERITY.MEDIUM": 0,
+            "SEVERITY.HIGH": 0,
+            "CONFIDENCE.UNDEFINED": 0,
+            "CONFIDENCE.LOW": 0,
+            "CONFIDENCE.MEDIUM": 0,
+            "CONFIDENCE.HIGH": 0
+          },
+          "pygoat/introduction/utility.py": {
+            "loc": 47,
+            "nosec": 0,
+            "skipped_tests": 0,
+            "SEVERITY.UNDEFINED": 0,
+            "SEVERITY.LOW": 0,
+            "SEVERITY.MEDIUM": 0,
+            "SEVERITY.HIGH": 0,
+            "CONFIDENCE.UNDEFINED": 0,
+            "CONFIDENCE.LOW": 0,
+            "CONFIDENCE.MEDIUM": 0,
+            "CONFIDENCE.HIGH": 0
+          },
+          "pygoat/introduction/views.py": {
+            "loc": 993,
+            "nosec": 0,
+            "skipped_tests": 0,
+            "SEVERITY.UNDEFINED": 0,
+            "SEVERITY.LOW": 17,
+            "SEVERITY.MEDIUM": 8,
+            "SEVERITY.HIGH": 2,
+            "CONFIDENCE.UNDEFINED": 0,
+            "CONFIDENCE.LOW": 3,
+            "CONFIDENCE.MEDIUM": 9,
+            "CONFIDENCE.HIGH": 15
+          },
+          "pygoat/manage.py": {
+            "loc": 16,
+            "nosec": 0,
+            "skipped_tests": 0,
+            "SEVERITY.UNDEFINED": 0,
+            "SEVERITY.LOW": 0,
+            "SEVERITY.MEDIUM": 0,
+            "SEVERITY.HIGH": 0,
+            "CONFIDENCE.UNDEFINED": 0,
+            "CONFIDENCE.LOW": 0,
+            "CONFIDENCE.MEDIUM": 0,
+            "CONFIDENCE.HIGH": 0
+          },
+          "pygoat/pygoat/__init__.py": {
+            "loc": 0,
+            "nosec": 0,
+            "skipped_tests": 0,
+            "SEVERITY.UNDEFINED": 0,
+            "SEVERITY.LOW": 0,
+            "SEVERITY.MEDIUM": 0,
+            "SEVERITY.HIGH": 0,
+            "CONFIDENCE.UNDEFINED": 0,
+            "CONFIDENCE.LOW": 0,
+            "CONFIDENCE.MEDIUM": 0,
+            "CONFIDENCE.HIGH": 0
+          },
+          "pygoat/pygoat/asgi.py": {
+            "loc": 10,
+            "nosec": 0,
+            "skipped_tests": 0,
+            "SEVERITY.UNDEFINED": 0,
+            "SEVERITY.LOW": 0,
+            "SEVERITY.MEDIUM": 0,
+            "SEVERITY.HIGH": 0,
+            "CONFIDENCE.UNDEFINED": 0,
+            "CONFIDENCE.LOW": 0,
+            "CONFIDENCE.MEDIUM": 0,
+            "CONFIDENCE.HIGH": 0
+          },
+          "pygoat/pygoat/settings.py": {
+            "loc": 108,
+            "nosec": 0,
+            "skipped_tests": 0,
+            "SEVERITY.UNDEFINED": 0,
+            "SEVERITY.LOW": 2,
+            "SEVERITY.MEDIUM": 0,
+            "SEVERITY.HIGH": 0,
+            "CONFIDENCE.UNDEFINED": 0,
+            "CONFIDENCE.LOW": 0,
+            "CONFIDENCE.MEDIUM": 2,
+            "CONFIDENCE.HIGH": 0
+          },
+          "pygoat/pygoat/urls.py": {
             "loc": 26,
             "nosec": 0,
             "skipped_tests": 0,
@@ -388,7 +1034,7 @@
             "CONFIDENCE.MEDIUM": 0,
             "CONFIDENCE.HIGH": 0
           },
-          "./pygoat/pygoat/pygoat/wsgi.py": {
+          "pygoat/pygoat/wsgi.py": {
             "loc": 10,
             "nosec": 0,
             "skipped_tests": 0,
@@ -400,13 +1046,52 @@
             "CONFIDENCE.LOW": 0,
             "CONFIDENCE.MEDIUM": 0,
             "CONFIDENCE.HIGH": 0
+          },
+          "pygoat/setup.py": {
+            "loc": 19,
+            "nosec": 0,
+            "skipped_tests": 0,
+            "SEVERITY.UNDEFINED": 0,
+            "SEVERITY.LOW": 0,
+            "SEVERITY.MEDIUM": 0,
+            "SEVERITY.HIGH": 0,
+            "CONFIDENCE.UNDEFINED": 0,
+            "CONFIDENCE.LOW": 0,
+            "CONFIDENCE.MEDIUM": 0,
+            "CONFIDENCE.HIGH": 0
+          },
+          "pygoat/temp.py": {
+            "loc": 0,
+            "nosec": 0,
+            "skipped_tests": 0,
+            "SEVERITY.UNDEFINED": 0,
+            "SEVERITY.LOW": 0,
+            "SEVERITY.MEDIUM": 0,
+            "SEVERITY.HIGH": 0,
+            "CONFIDENCE.UNDEFINED": 0,
+            "CONFIDENCE.LOW": 0,
+            "CONFIDENCE.MEDIUM": 0,
+            "CONFIDENCE.HIGH": 0
+          },
+          "pygoat/uninstaller.py": {
+            "loc": 102,
+            "nosec": 0,
+            "skipped_tests": 0,
+            "SEVERITY.UNDEFINED": 0,
+            "SEVERITY.LOW": 4,
+            "SEVERITY.MEDIUM": 0,
+            "SEVERITY.HIGH": 0,
+            "CONFIDENCE.UNDEFINED": 0,
+            "CONFIDENCE.LOW": 0,
+            "CONFIDENCE.MEDIUM": 0,
+            "CONFIDENCE.HIGH": 4
           }
         }
       },
       "results": [
         {
           "message": {
-            "text": "Using parseString to parse untrusted XML data is known to be vulnerable to XML attacks. Replace parseString with the equivalent defusedxml package, or make sure defusedxml.defuse_stdlib() is called."
+            "text": "Consider possible security implications associated with the subprocess module."
           },
           "level": "note",
           "locations": [
@@ -414,19 +1099,19 @@
               "physicalLocation": {
                 "region": {
                   "snippet": {
-                    "text": "from xml.dom.pulldom import parseString, START_ELEMENT\n"
+                    "text": "import yaml, subprocess\n"
                   },
-                  "startLine": 14
+                  "startLine": 18
                 },
                 "artifactLocation": {
-                  "uri": "pygoat/pygoat/introduction/views.py"
+                  "uri": "pygoat/introduction/lab_code/test.py"
                 },
                 "contextRegion": {
                   "snippet": {
-                    "text": "from random import randint\nfrom xml.dom.pulldom import parseString, START_ELEMENT\nfrom xml.sax.handler import feature_external_ges\n"
+                    "text": "'''\nimport yaml, subprocess\nstream = open('/home/fox/test.yaml', 'r')\n"
                   },
-                  "endLine": 15,
-                  "startLine": 13
+                  "endLine": 19,
+                  "startLine": 17
                 }
               }
             }
@@ -435,75 +1120,60 @@
             "issue_confidence": "HIGH",
             "issue_severity": "LOW"
           },
-          "ruleId": "B409",
+          "taxa": [
+            {
+              "id": "78",
+              "guid": "89df6681-eeb0-4612-8982-1275858175d8",
+              "toolComponent": {
+                "name": "CWE",
+                "guid": "1f7e0021-392d-4ac3-a41e-ba47cb245dbd"
+              }
+            }
+          ],
+          "ruleId": "B404",
           "ruleIndex": 0
         },
         {
           "message": {
-            "text": "Using feature_external_ges to parse untrusted XML data is known to be vulnerable to XML attacks. Replace feature_external_ges with the equivalent defusedxml package, or make sure defusedxml.defuse_stdlib() is called."
+            "text": "Use of unsafe yaml load. Allows instantiation of arbitrary objects. Consider yaml.safe_load()."
           },
-          "level": "note",
           "locations": [
             {
               "physicalLocation": {
                 "region": {
                   "snippet": {
-                    "text": "from xml.sax.handler import feature_external_ges\n"
+                    "text": "data = yaml.load(stream)\n"
                   },
-                  "startLine": 15
+                  "startLine": 20
                 },
                 "artifactLocation": {
-                  "uri": "pygoat/pygoat/introduction/views.py"
+                  "uri": "pygoat/introduction/lab_code/test.py"
                 },
                 "contextRegion": {
                   "snippet": {
-                    "text": "from xml.dom.pulldom import parseString, START_ELEMENT\nfrom xml.sax.handler import feature_external_ges\nfrom xml.sax import make_parser\n"
+                    "text": "stream = open('/home/fox/test.yaml', 'r')\ndata = yaml.load(stream)\n\n"
                   },
-                  "endLine": 16,
-                  "startLine": 14
+                  "endLine": 21,
+                  "startLine": 19
                 }
               }
             }
           ],
           "properties": {
             "issue_confidence": "HIGH",
-            "issue_severity": "LOW"
+            "issue_severity": "MEDIUM"
           },
-          "ruleId": "B406",
-          "ruleIndex": 1
-        },
-        {
-          "message": {
-            "text": "Using make_parser to parse untrusted XML data is known to be vulnerable to XML attacks. Replace make_parser with the equivalent defusedxml package, or make sure defusedxml.defuse_stdlib() is called."
-          },
-          "level": "note",
-          "locations": [
+          "taxa": [
             {
-              "physicalLocation": {
-                "region": {
-                  "snippet": {
-                    "text": "from xml.sax import make_parser\n"
-                  },
-                  "startLine": 16
-                },
-                "artifactLocation": {
-                  "uri": "pygoat/pygoat/introduction/views.py"
-                },
-                "contextRegion": {
-                  "snippet": {
-                    "text": "from xml.sax.handler import feature_external_ges\nfrom xml.sax import make_parser\nfrom django.views.decorators.csrf import csrf_exempt\n"
-                  },
-                  "endLine": 17,
-                  "startLine": 15
-                }
+              "id": "20",
+              "guid": "89df6681-eeb0-4612-8982-1275858175d8",
+              "toolComponent": {
+                "name": "CWE",
+                "guid": "b774401b-f08d-4363-9061-a8ede3b08cca"
               }
             }
           ],
-          "properties": {
-            "issue_confidence": "HIGH",
-            "issue_severity": "LOW"
-          },
-          "ruleId": "B406",
+          "ruleId": "B506",
           "ruleIndex": 1
         },
         {
@@ -518,17 +1188,17 @@
                   "snippet": {
                     "text": "import subprocess\n"
                   },
-                  "startLine": 19
+                  "startLine": 8
                 },
                 "artifactLocation": {
-                  "uri": "pygoat/pygoat/introduction/views.py"
+                  "uri": "pygoat/introduction/mitre.py"
                 },
                 "contextRegion": {
                   "snippet": {
-                    "text": "from django.template.loader import render_to_string\nimport subprocess\nimport pickle\n"
+                    "text": "import re\nimport subprocess\nfrom .models import CSRF_user_tbl\n"
                   },
-                  "endLine": 20,
-                  "startLine": 18
+                  "endLine": 9,
+                  "startLine": 7
                 }
               }
             }
@@ -537,8 +1207,499 @@
             "issue_confidence": "HIGH",
             "issue_severity": "LOW"
           },
+          "taxa": [
+            {
+              "id": "78",
+              "guid": "89df6681-eeb0-4612-8982-1275858175d8",
+              "toolComponent": {
+                "name": "CWE",
+                "guid": "c965fb4b-e15e-464c-acf7-0454b760ce2e"
+              }
+            }
+          ],
           "ruleId": "B404",
+          "ruleIndex": 0
+        },
+        {
+          "message": {
+            "text": "Use of weak MD5 hash for security. Consider usedforsecurity=False"
+          },
+          "level": "error",
+          "locations": [
+            {
+              "physicalLocation": {
+                "region": {
+                  "snippet": {
+                    "text": "        password = md5(password.encode()).hexdigest()\n"
+                  },
+                  "startLine": 158
+                },
+                "artifactLocation": {
+                  "uri": "pygoat/introduction/mitre.py"
+                },
+                "contextRegion": {
+                  "snippet": {
+                    "text": "        username = request.POST.get('username')\n        password = md5(password.encode()).hexdigest()\n        User = CSRF_user_tbl.objects.filter(username=username, password=password)\n"
+                  },
+                  "endLine": 159,
+                  "startLine": 157
+                }
+              }
+            }
+          ],
+          "properties": {
+            "issue_confidence": "HIGH",
+            "issue_severity": "HIGH"
+          },
+          "taxa": [
+            {
+              "id": "327",
+              "guid": "89df6681-eeb0-4612-8982-1275858175d8",
+              "toolComponent": {
+                "name": "CWE",
+                "guid": "d979c30a-c471-4ceb-857a-6358b41be277"
+              }
+            }
+          ],
+          "ruleId": "B324",
           "ruleIndex": 2
+        },
+        {
+          "message": {
+            "text": "Use of possibly insecure function - consider using safer ast.literal_eval."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "region": {
+                  "snippet": {
+                    "text": "        result = eval(expression)\n"
+                  },
+                  "startLine": 215
+                },
+                "artifactLocation": {
+                  "uri": "pygoat/introduction/mitre.py"
+                },
+                "contextRegion": {
+                  "snippet": {
+                    "text": "        expression = request.POST.get('expression')\n        result = eval(expression)\n        return JsonResponse({'result': result})\n"
+                  },
+                  "endLine": 216,
+                  "startLine": 214
+                }
+              }
+            }
+          ],
+          "properties": {
+            "issue_confidence": "HIGH",
+            "issue_severity": "MEDIUM"
+          },
+          "taxa": [
+            {
+              "id": "78",
+              "guid": "89df6681-eeb0-4612-8982-1275858175d8",
+              "toolComponent": {
+                "name": "CWE",
+                "guid": "8d1754c9-b73c-4e79-a036-9f03997029ee"
+              }
+            }
+          ],
+          "ruleId": "B307",
+          "ruleIndex": 3
+        },
+        {
+          "message": {
+            "text": "subprocess call with shell=True identified, security issue."
+          },
+          "level": "error",
+          "locations": [
+            {
+              "physicalLocation": {
+                "region": {
+                  "snippet": {
+                    "text": "    process = subprocess.Popen(command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)\n"
+                  },
+                  "startLine": 230
+                },
+                "artifactLocation": {
+                  "uri": "pygoat/introduction/mitre.py"
+                },
+                "contextRegion": {
+                  "snippet": {
+                    "text": "def command_out(command):\n    process = subprocess.Popen(command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)\n    return process.communicate()\n"
+                  },
+                  "endLine": 231,
+                  "startLine": 229
+                }
+              }
+            }
+          ],
+          "properties": {
+            "issue_confidence": "HIGH",
+            "issue_severity": "HIGH"
+          },
+          "taxa": [
+            {
+              "id": "78",
+              "guid": "89df6681-eeb0-4612-8982-1275858175d8",
+              "toolComponent": {
+                "name": "CWE",
+                "guid": "3cc1a0d0-b947-4f40-a52f-b84a8cd28960"
+              }
+            }
+          ],
+          "ruleId": "B602",
+          "ruleIndex": 4
+        },
+        {
+          "message": {
+            "text": "Requests call without timeout"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "region": {
+                  "snippet": {
+                    "text": "        response = requests.get(url)\n"
+                  },
+                  "startLine": 8
+                },
+                "artifactLocation": {
+                  "uri": "pygoat/introduction/playground/A6/soln.py"
+                },
+                "contextRegion": {
+                  "snippet": {
+                    "text": "        url = f\"https://pypi.org/pypi/{k[0]}/{k[1]}/json\"\n        response = requests.get(url)\n        response.raise_for_status()\n"
+                  },
+                  "endLine": 9,
+                  "startLine": 7
+                }
+              }
+            }
+          ],
+          "properties": {
+            "issue_confidence": "LOW",
+            "issue_severity": "MEDIUM"
+          },
+          "taxa": [
+            {
+              "id": "400",
+              "guid": "89df6681-eeb0-4612-8982-1275858175d8",
+              "toolComponent": {
+                "name": "CWE",
+                "guid": "384353a5-a770-4627-9138-5ef241e9b4ec"
+              }
+            }
+          ],
+          "ruleId": "B113",
+          "ruleIndex": 5
+        },
+        {
+          "message": {
+            "text": "Requests call without timeout"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "region": {
+                  "snippet": {
+                    "text": "        response = requests.get(url)\n"
+                  },
+                  "startLine": 8
+                },
+                "artifactLocation": {
+                  "uri": "pygoat/introduction/playground/A6/utility.py"
+                },
+                "contextRegion": {
+                  "snippet": {
+                    "text": "        url = f\"https://pypi.org/pypi/{k[0]}/{k[1]}/json\"\n        response = requests.get(url)\n        response.raise_for_status()\n"
+                  },
+                  "endLine": 9,
+                  "startLine": 7
+                }
+              }
+            }
+          ],
+          "properties": {
+            "issue_confidence": "LOW",
+            "issue_severity": "MEDIUM"
+          },
+          "taxa": [
+            {
+              "id": "400",
+              "guid": "89df6681-eeb0-4612-8982-1275858175d8",
+              "toolComponent": {
+                "name": "CWE",
+                "guid": "c172022b-f96c-4968-a4a5-81b431c5a8cf"
+              }
+            }
+          ],
+          "ruleId": "B113",
+          "ruleIndex": 5
+        },
+        {
+          "message": {
+            "text": "Possible hardcoded password: 'admin'"
+          },
+          "level": "note",
+          "locations": [
+            {
+              "physicalLocation": {
+                "region": {
+                  "snippet": {
+                    "text": "        if username == \"admin\" and password == \"admin\":\n"
+                  },
+                  "startLine": 15
+                },
+                "artifactLocation": {
+                  "uri": "pygoat/introduction/playground/A9/api.py"
+                },
+                "contextRegion": {
+                  "snippet": {
+                    "text": "        L.info(f\"POST request with username {username} and password {password}\")\n        if username == \"admin\" and password == \"admin\":\n            return JsonResponse({\"message\":\"Loged in successfully\", \"method\":\"post\"},status = 200)\n"
+                  },
+                  "endLine": 16,
+                  "startLine": 14
+                }
+              }
+            }
+          ],
+          "properties": {
+            "issue_confidence": "MEDIUM",
+            "issue_severity": "LOW"
+          },
+          "taxa": [
+            {
+              "id": "259",
+              "guid": "89df6681-eeb0-4612-8982-1275858175d8",
+              "toolComponent": {
+                "name": "CWE",
+                "guid": "bafd7d9d-e6dd-48b7-880f-c781d854b087"
+              }
+            }
+          ],
+          "ruleId": "B105",
+          "ruleIndex": 6
+        },
+        {
+          "message": {
+            "text": "Possible hardcoded password: 'admin'"
+          },
+          "level": "note",
+          "locations": [
+            {
+              "physicalLocation": {
+                "region": {
+                  "snippet": {
+                    "text": "        if username == \"admin\" and password == \"admin\":\n"
+                  },
+                  "startLine": 15
+                },
+                "artifactLocation": {
+                  "uri": "pygoat/introduction/playground/A9/archive.py"
+                },
+                "contextRegion": {
+                  "snippet": {
+                    "text": "        L.info(f\"POST request with username {username} and password {password}\")\n        if username == \"admin\" and password == \"admin\":\n            return JsonResponse({\"message\":\"Loged in successfully\", \"method\":\"post\"},status = 200)\n"
+                  },
+                  "endLine": 16,
+                  "startLine": 14
+                }
+              }
+            }
+          ],
+          "properties": {
+            "issue_confidence": "MEDIUM",
+            "issue_severity": "LOW"
+          },
+          "taxa": [
+            {
+              "id": "259",
+              "guid": "89df6681-eeb0-4612-8982-1275858175d8",
+              "toolComponent": {
+                "name": "CWE",
+                "guid": "97fa5fc4-007a-49ed-ba2d-8cb98c6a4c98"
+              }
+            }
+          ],
+          "ruleId": "B105",
+          "ruleIndex": 6
+        },
+        {
+          "message": {
+            "text": "Using parseString to parse untrusted XML data is known to be vulnerable to XML attacks. Replace parseString with the equivalent defusedxml package, or make sure defusedxml.defuse_stdlib() is called."
+          },
+          "level": "note",
+          "locations": [
+            {
+              "physicalLocation": {
+                "region": {
+                  "snippet": {
+                    "text": "from xml.dom.pulldom import parseString, START_ELEMENT\n"
+                  },
+                  "startLine": 20
+                },
+                "artifactLocation": {
+                  "uri": "pygoat/introduction/views.py"
+                },
+                "contextRegion": {
+                  "snippet": {
+                    "text": "from random import randint\nfrom xml.dom.pulldom import parseString, START_ELEMENT\nfrom xml.sax.handler import feature_external_ges\n"
+                  },
+                  "endLine": 21,
+                  "startLine": 19
+                }
+              }
+            }
+          ],
+          "properties": {
+            "issue_confidence": "HIGH",
+            "issue_severity": "LOW"
+          },
+          "taxa": [
+            {
+              "id": "20",
+              "guid": "89df6681-eeb0-4612-8982-1275858175d8",
+              "toolComponent": {
+                "name": "CWE",
+                "guid": "5caa2f30-b259-4b3d-8a0c-4fc78e9f5da7"
+              }
+            }
+          ],
+          "ruleId": "B409",
+          "ruleIndex": 7
+        },
+        {
+          "message": {
+            "text": "Using feature_external_ges to parse untrusted XML data is known to be vulnerable to XML attacks. Replace feature_external_ges with the equivalent defusedxml package, or make sure defusedxml.defuse_stdlib() is called."
+          },
+          "level": "note",
+          "locations": [
+            {
+              "physicalLocation": {
+                "region": {
+                  "snippet": {
+                    "text": "from xml.sax.handler import feature_external_ges\n"
+                  },
+                  "startLine": 21
+                },
+                "artifactLocation": {
+                  "uri": "pygoat/introduction/views.py"
+                },
+                "contextRegion": {
+                  "snippet": {
+                    "text": "from xml.dom.pulldom import parseString, START_ELEMENT\nfrom xml.sax.handler import feature_external_ges\nfrom xml.sax import make_parser\n"
+                  },
+                  "endLine": 22,
+                  "startLine": 20
+                }
+              }
+            }
+          ],
+          "properties": {
+            "issue_confidence": "HIGH",
+            "issue_severity": "LOW"
+          },
+          "taxa": [
+            {
+              "id": "20",
+              "guid": "89df6681-eeb0-4612-8982-1275858175d8",
+              "toolComponent": {
+                "name": "CWE",
+                "guid": "32cf21a6-6071-4251-8e5b-fa6aa7fdf16b"
+              }
+            }
+          ],
+          "ruleId": "B406",
+          "ruleIndex": 8
+        },
+        {
+          "message": {
+            "text": "Using make_parser to parse untrusted XML data is known to be vulnerable to XML attacks. Replace make_parser with the equivalent defusedxml package, or make sure defusedxml.defuse_stdlib() is called."
+          },
+          "level": "note",
+          "locations": [
+            {
+              "physicalLocation": {
+                "region": {
+                  "snippet": {
+                    "text": "from xml.sax import make_parser\n"
+                  },
+                  "startLine": 22
+                },
+                "artifactLocation": {
+                  "uri": "pygoat/introduction/views.py"
+                },
+                "contextRegion": {
+                  "snippet": {
+                    "text": "from xml.sax.handler import feature_external_ges\nfrom xml.sax import make_parser\nfrom django.views.decorators.csrf import csrf_exempt\n"
+                  },
+                  "endLine": 23,
+                  "startLine": 21
+                }
+              }
+            }
+          ],
+          "properties": {
+            "issue_confidence": "HIGH",
+            "issue_severity": "LOW"
+          },
+          "taxa": [
+            {
+              "id": "20",
+              "guid": "89df6681-eeb0-4612-8982-1275858175d8",
+              "toolComponent": {
+                "name": "CWE",
+                "guid": "b073464c-568a-4576-8b26-eeb7ad2eab58"
+              }
+            }
+          ],
+          "ruleId": "B406",
+          "ruleIndex": 8
+        },
+        {
+          "message": {
+            "text": "Consider possible security implications associated with the subprocess module."
+          },
+          "level": "note",
+          "locations": [
+            {
+              "physicalLocation": {
+                "region": {
+                  "snippet": {
+                    "text": "import subprocess\n"
+                  },
+                  "startLine": 26
+                },
+                "artifactLocation": {
+                  "uri": "pygoat/introduction/views.py"
+                },
+                "contextRegion": {
+                  "snippet": {
+                    "text": "from django.template.loader import render_to_string\nimport subprocess\nimport pickle\n"
+                  },
+                  "endLine": 27,
+                  "startLine": 25
+                }
+              }
+            }
+          ],
+          "properties": {
+            "issue_confidence": "HIGH",
+            "issue_severity": "LOW"
+          },
+          "taxa": [
+            {
+              "id": "78",
+              "guid": "89df6681-eeb0-4612-8982-1275858175d8",
+              "toolComponent": {
+                "name": "CWE",
+                "guid": "e8dcd312-f6bf-4b2c-adcc-a30619b18538"
+              }
+            }
+          ],
+          "ruleId": "B404",
+          "ruleIndex": 0
         },
         {
           "message": {
@@ -552,17 +1713,17 @@
                   "snippet": {
                     "text": "import pickle\n"
                   },
-                  "startLine": 20
+                  "startLine": 27
                 },
                 "artifactLocation": {
-                  "uri": "pygoat/pygoat/introduction/views.py"
+                  "uri": "pygoat/introduction/views.py"
                 },
                 "contextRegion": {
                   "snippet": {
                     "text": "import subprocess\nimport pickle\nimport base64\n"
                   },
-                  "endLine": 21,
-                  "startLine": 19
+                  "endLine": 28,
+                  "startLine": 26
                 }
               }
             }
@@ -571,8 +1732,18 @@
             "issue_confidence": "HIGH",
             "issue_severity": "LOW"
           },
+          "taxa": [
+            {
+              "id": "502",
+              "guid": "89df6681-eeb0-4612-8982-1275858175d8",
+              "toolComponent": {
+                "name": "CWE",
+                "guid": "9c3ac6e2-d830-48ae-a856-c1746c68bcc3"
+              }
+            }
+          ],
           "ruleId": "B403",
-          "ruleIndex": 3
+          "ruleIndex": 9
         },
         {
           "message": {
@@ -583,19 +1754,19 @@
               "physicalLocation": {
                 "region": {
                   "snippet": {
-                    "text": "                val=login.objects.raw(\"SELECT * FROM introduction_login WHERE user='\"+name+\"'AND password='\"+password+\"'\")\n"
+                    "text": "                sql_query = \"SELECT * FROM introduction_login WHERE user='\"+name+\"'AND password='\"+password+\"'\"\n"
                   },
-                  "startLine": 86
+                  "startLine": 155
                 },
                 "artifactLocation": {
-                  "uri": "pygoat/pygoat/introduction/views.py"
+                  "uri": "pygoat/introduction/views.py"
                 },
                 "contextRegion": {
                   "snippet": {
-                    "text": "\n                val=login.objects.raw(\"SELECT * FROM introduction_login WHERE user='\"+name+\"'AND password='\"+password+\"'\")\n\n"
+                    "text": "\n                sql_query = \"SELECT * FROM introduction_login WHERE user='\"+name+\"'AND password='\"+password+\"'\"\n                print(sql_query)\n"
                   },
-                  "endLine": 87,
-                  "startLine": 85
+                  "endLine": 156,
+                  "startLine": 154
                 }
               }
             }
@@ -604,8 +1775,18 @@
             "issue_confidence": "LOW",
             "issue_severity": "MEDIUM"
           },
+          "taxa": [
+            {
+              "id": "89",
+              "guid": "89df6681-eeb0-4612-8982-1275858175d8",
+              "toolComponent": {
+                "name": "CWE",
+                "guid": "f667880d-7567-44a7-964e-8118f17ae410"
+              }
+            }
+          ],
           "ruleId": "B608",
-          "ruleIndex": 4
+          "ruleIndex": 10
         },
         {
           "message": {
@@ -618,17 +1799,17 @@
                   "snippet": {
                     "text": "            admin = pickle.loads(token)\n"
                   },
-                  "startLine": 122
+                  "startLine": 211
                 },
                 "artifactLocation": {
-                  "uri": "pygoat/pygoat/introduction/views.py"
+                  "uri": "pygoat/introduction/views.py"
                 },
                 "contextRegion": {
                   "snippet": {
                     "text": "            token = base64.b64decode(token)\n            admin = pickle.loads(token)\n            if admin.admin == 1:\n"
                   },
-                  "endLine": 123,
-                  "startLine": 121
+                  "endLine": 212,
+                  "startLine": 210
                 }
               }
             }
@@ -637,8 +1818,18 @@
             "issue_confidence": "HIGH",
             "issue_severity": "MEDIUM"
           },
+          "taxa": [
+            {
+              "id": "502",
+              "guid": "89df6681-eeb0-4612-8982-1275858175d8",
+              "toolComponent": {
+                "name": "CWE",
+                "guid": "5d5f5049-74ad-4471-84b8-0afeb58bdb22"
+              }
+            }
+          ],
           "ruleId": "B301",
-          "ruleIndex": 5
+          "ruleIndex": 11
         },
         {
           "message": {
@@ -651,17 +1842,17 @@
                   "snippet": {
                     "text": "    parser = make_parser()\n"
                   },
-                  "startLine": 161
+                  "startLine": 250
                 },
                 "artifactLocation": {
-                  "uri": "pygoat/pygoat/introduction/views.py"
+                  "uri": "pygoat/introduction/views.py"
                 },
                 "contextRegion": {
                   "snippet": {
                     "text": "\n    parser = make_parser()\n    parser.setFeature(feature_external_ges, True)\n"
                   },
-                  "endLine": 162,
-                  "startLine": 160
+                  "endLine": 251,
+                  "startLine": 249
                 }
               }
             }
@@ -670,8 +1861,18 @@
             "issue_confidence": "HIGH",
             "issue_severity": "MEDIUM"
           },
+          "taxa": [
+            {
+              "id": "20",
+              "guid": "89df6681-eeb0-4612-8982-1275858175d8",
+              "toolComponent": {
+                "name": "CWE",
+                "guid": "5b777bef-a678-4f69-ad8e-6d8cca78d1f1"
+              }
+            }
+          ],
           "ruleId": "B317",
-          "ruleIndex": 6
+          "ruleIndex": 12
         },
         {
           "message": {
@@ -684,17 +1885,17 @@
                   "snippet": {
                     "text": "    doc = parseString(request.body.decode('utf-8'), parser=parser)\n"
                   },
-                  "startLine": 163
+                  "startLine": 252
                 },
                 "artifactLocation": {
-                  "uri": "pygoat/pygoat/introduction/views.py"
+                  "uri": "pygoat/introduction/views.py"
                 },
                 "contextRegion": {
                   "snippet": {
                     "text": "    parser.setFeature(feature_external_ges, True)\n    doc = parseString(request.body.decode('utf-8'), parser=parser)\n    for event, node in doc:\n"
                   },
-                  "endLine": 164,
-                  "startLine": 162
+                  "endLine": 253,
+                  "startLine": 251
                 }
               }
             }
@@ -703,8 +1904,18 @@
             "issue_confidence": "HIGH",
             "issue_severity": "MEDIUM"
           },
+          "taxa": [
+            {
+              "id": "20",
+              "guid": "89df6681-eeb0-4612-8982-1275858175d8",
+              "toolComponent": {
+                "name": "CWE",
+                "guid": "5ba38781-a2ea-499a-ab96-7cb0882a53f9"
+              }
+            }
+          ],
           "ruleId": "B319",
-          "ruleIndex": 7
+          "ruleIndex": 13
         },
         {
           "message": {
@@ -716,19 +1927,19 @@
               "physicalLocation": {
                 "region": {
                   "snippet": {
-                    "text": "            output=subprocess.check_output(command,shell=True,encoding=\"UTF-8\");\n"
+                    "text": "                    shell=True,\n"
                   },
-                  "startLine": 312
+                  "startLine": 423
                 },
                 "artifactLocation": {
-                  "uri": "pygoat/pygoat/introduction/views.py"
+                  "uri": "pygoat/introduction/views.py"
                 },
                 "contextRegion": {
                   "snippet": {
-                    "text": "\n            output=subprocess.check_output(command,shell=True,encoding=\"UTF-8\");\n            print(output)\n"
+                    "text": "                    command,\n                    shell=True,\n                    stdout=subprocess.PIPE, \n                    stderr=subprocess.PIPE)\n                stdout, stderr = process.communicate()\n                data = stdout.decode('utf-8')\n                stderr = stderr.decode('utf-8')\n"
                   },
-                  "endLine": 313,
-                  "startLine": 311
+                  "endLine": 428,
+                  "startLine": 422
                 }
               }
             }
@@ -737,8 +1948,61 @@
             "issue_confidence": "HIGH",
             "issue_severity": "HIGH"
           },
+          "taxa": [
+            {
+              "id": "78",
+              "guid": "89df6681-eeb0-4612-8982-1275858175d8",
+              "toolComponent": {
+                "name": "CWE",
+                "guid": "0d922888-da76-4a18-a2fd-47f46704561a"
+              }
+            }
+          ],
           "ruleId": "B602",
-          "ruleIndex": 8
+          "ruleIndex": 4
+        },
+        {
+          "message": {
+            "text": "Use of possibly insecure function - consider using safer ast.literal_eval."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "region": {
+                  "snippet": {
+                    "text": "                output = eval(val)\n"
+                  },
+                  "startLine": 451
+                },
+                "artifactLocation": {
+                  "uri": "pygoat/introduction/views.py"
+                },
+                "contextRegion": {
+                  "snippet": {
+                    "text": "            try:\n                output = eval(val)\n            except:\n"
+                  },
+                  "endLine": 452,
+                  "startLine": 450
+                }
+              }
+            }
+          ],
+          "properties": {
+            "issue_confidence": "HIGH",
+            "issue_severity": "MEDIUM"
+          },
+          "taxa": [
+            {
+              "id": "78",
+              "guid": "89df6681-eeb0-4612-8982-1275858175d8",
+              "toolComponent": {
+                "name": "CWE",
+                "guid": "1ab38582-6f8e-486b-8101-c1f451ece685"
+              }
+            }
+          ],
+          "ruleId": "B307",
+          "ruleIndex": 3
         },
         {
           "message": {
@@ -752,17 +2016,17 @@
                   "snippet": {
                     "text": "        otpN=randint(100,999)\n"
                   },
-                  "startLine": 344
+                  "startLine": 487
                 },
                 "artifactLocation": {
-                  "uri": "pygoat/pygoat/introduction/views.py"
+                  "uri": "pygoat/introduction/views.py"
                 },
                 "contextRegion": {
                   "snippet": {
-                    "text": "        email=request.GET.get('email');\n        otpN=randint(100,999)\n        if email and otpN:\n"
+                    "text": "        email=request.GET.get('email')\n        otpN=randint(100,999)\n        if email and otpN:\n"
                   },
-                  "endLine": 345,
-                  "startLine": 343
+                  "endLine": 488,
+                  "startLine": 486
                 }
               }
             }
@@ -771,8 +2035,18 @@
             "issue_confidence": "HIGH",
             "issue_severity": "LOW"
           },
+          "taxa": [
+            {
+              "id": "330",
+              "guid": "89df6681-eeb0-4612-8982-1275858175d8",
+              "toolComponent": {
+                "name": "CWE",
+                "guid": "3a28b314-4a18-440d-b934-07d06e21976b"
+              }
+            }
+          ],
           "ruleId": "B311",
-          "ruleIndex": 9
+          "ruleIndex": 14
         },
         {
           "message": {
@@ -783,19 +2057,19 @@
               "physicalLocation": {
                 "region": {
                   "snippet": {
-                    "text": "                    data = yaml.load(file)\n"
+                    "text": "                    data = yaml.load(file,yaml.Loader)\n"
                   },
-                  "startLine": 407
+                  "startLine": 551
                 },
                 "artifactLocation": {
-                  "uri": "pygoat/pygoat/introduction/views.py"
+                  "uri": "pygoat/introduction/views.py"
                 },
                 "contextRegion": {
                   "snippet": {
-                    "text": "                try :\n                    data = yaml.load(file)\n                    return render(request,\"Lab/A9/a9_lab.html\",{\"data\":data})\n"
+                    "text": "                try :\n                    data = yaml.load(file,yaml.Loader)\n                    \n"
                   },
-                  "endLine": 408,
-                  "startLine": 406
+                  "endLine": 552,
+                  "startLine": 550
                 }
               }
             }
@@ -804,8 +2078,632 @@
             "issue_confidence": "HIGH",
             "issue_severity": "MEDIUM"
           },
+          "taxa": [
+            {
+              "id": "20",
+              "guid": "89df6681-eeb0-4612-8982-1275858175d8",
+              "toolComponent": {
+                "name": "CWE",
+                "guid": "c3e428f8-948f-4b5b-bc2c-7e9c3d06c04d"
+              }
+            }
+          ],
           "ruleId": "B506",
+          "ruleIndex": 1
+        },
+        {
+          "message": {
+            "text": "Standard pseudo-random generators are not suitable for security/cryptographic purposes."
+          },
+          "level": "note",
+          "locations": [
+            {
+              "physicalLocation": {
+                "region": {
+                  "snippet": {
+                    "text": "    return (''.join(random.choices(string.ascii_uppercase + string.ascii_lowercase, k=10)))\n"
+                  },
+                  "startLine": 671
+                },
+                "artifactLocation": {
+                  "uri": "pygoat/introduction/views.py"
+                },
+                "contextRegion": {
+                  "snippet": {
+                    "text": "def gentckt():\n    return (''.join(random.choices(string.ascii_uppercase + string.ascii_lowercase, k=10)))\n\n"
+                  },
+                  "endLine": 672,
+                  "startLine": 670
+                }
+              }
+            }
+          ],
+          "properties": {
+            "issue_confidence": "HIGH",
+            "issue_severity": "LOW"
+          },
+          "taxa": [
+            {
+              "id": "330",
+              "guid": "89df6681-eeb0-4612-8982-1275858175d8",
+              "toolComponent": {
+                "name": "CWE",
+                "guid": "890bac19-eaeb-46de-a6ae-3168f33599ce"
+              }
+            }
+          ],
+          "ruleId": "B311",
+          "ruleIndex": 14
+        },
+        {
+          "message": {
+            "text": "Possible hardcoded password: 'jacktheripper'"
+          },
+          "level": "note",
+          "locations": [
+            {
+              "physicalLocation": {
+                "region": {
+                  "snippet": {
+                    "text": "        elif (name=='jack' and password=='jacktheripper'): # Will implement hashing here\n"
+                  },
+                  "startLine": 757
+                },
+                "artifactLocation": {
+                  "uri": "pygoat/introduction/views.py"
+                },
+                "contextRegion": {
+                  "snippet": {
+                    "text": "                })\n        elif (name=='jack' and password=='jacktheripper'): # Will implement hashing here\n            html = render(\n"
+                  },
+                  "endLine": 758,
+                  "startLine": 756
+                }
+              }
+            }
+          ],
+          "properties": {
+            "issue_confidence": "MEDIUM",
+            "issue_severity": "LOW"
+          },
+          "taxa": [
+            {
+              "id": "259",
+              "guid": "89df6681-eeb0-4612-8982-1275858175d8",
+              "toolComponent": {
+                "name": "CWE",
+                "guid": "7bedb33d-37fb-4a11-80f3-91c56d3d9f4f"
+              }
+            }
+          ],
+          "ruleId": "B105",
+          "ruleIndex": 6
+        },
+        {
+          "message": {
+            "text": "Possible hardcoded password: 'jacktheripper'"
+          },
+          "level": "note",
+          "locations": [
+            {
+              "physicalLocation": {
+                "region": {
+                  "snippet": {
+                    "text": "        elif ( name=='jack' and password=='jacktheripper'): # Will implement hashing here\n"
+                  },
+                  "startLine": 797
+                },
+                "artifactLocation": {
+                  "uri": "pygoat/introduction/views.py"
+                },
+                "contextRegion": {
+                  "snippet": {
+                    "text": "                })\n        elif ( name=='jack' and password=='jacktheripper'): # Will implement hashing here\n            html = render(\n"
+                  },
+                  "endLine": 798,
+                  "startLine": 796
+                }
+              }
+            }
+          ],
+          "properties": {
+            "issue_confidence": "MEDIUM",
+            "issue_severity": "LOW"
+          },
+          "taxa": [
+            {
+              "id": "259",
+              "guid": "89df6681-eeb0-4612-8982-1275858175d8",
+              "toolComponent": {
+                "name": "CWE",
+                "guid": "21d2b4aa-8b78-410a-b625-3684aadd06f4"
+              }
+            }
+          ],
+          "ruleId": "B105",
+          "ruleIndex": 6
+        },
+        {
+          "message": {
+            "text": "Possible hardcoded password: 'reaper'"
+          },
+          "level": "note",
+          "locations": [
+            {
+              "physicalLocation": {
+                "region": {
+                  "snippet": {
+                    "text": "        if username == 'John' and password == 'reaper':\n"
+                  },
+                  "startLine": 822
+                },
+                "artifactLocation": {
+                  "uri": "pygoat/introduction/views.py"
+                },
+                "contextRegion": {
+                  "snippet": {
+                    "text": "\n        if username == 'John' and password == 'reaper':\n            return render(request,'Lab_2021/A1_BrokenAccessControl/broken_access_lab_3.html', {'loggedin':True, 'admin': False})\n"
+                  },
+                  "endLine": 823,
+                  "startLine": 821
+                }
+              }
+            }
+          ],
+          "properties": {
+            "issue_confidence": "MEDIUM",
+            "issue_severity": "LOW"
+          },
+          "taxa": [
+            {
+              "id": "259",
+              "guid": "89df6681-eeb0-4612-8982-1275858175d8",
+              "toolComponent": {
+                "name": "CWE",
+                "guid": "c2c0c4d5-e499-43f6-9c99-a77c2f268b64"
+              }
+            }
+          ],
+          "ruleId": "B105",
+          "ruleIndex": 6
+        },
+        {
+          "message": {
+            "text": "Possible hardcoded password: 'admin_pass'"
+          },
+          "level": "note",
+          "locations": [
+            {
+              "physicalLocation": {
+                "region": {
+                  "snippet": {
+                    "text": "        elif username == 'admin' and password == 'admin_pass':\n"
+                  },
+                  "startLine": 824
+                },
+                "artifactLocation": {
+                  "uri": "pygoat/introduction/views.py"
+                },
+                "contextRegion": {
+                  "snippet": {
+                    "text": "            return render(request,'Lab_2021/A1_BrokenAccessControl/broken_access_lab_3.html', {'loggedin':True, 'admin': False})\n        elif username == 'admin' and password == 'admin_pass':\n            return render(request,'Lab_2021/A1_BrokenAccessControl/broken_access_lab_3.html', {'loggedin':True, 'admin': True})\n"
+                  },
+                  "endLine": 825,
+                  "startLine": 823
+                }
+              }
+            }
+          ],
+          "properties": {
+            "issue_confidence": "MEDIUM",
+            "issue_severity": "LOW"
+          },
+          "taxa": [
+            {
+              "id": "259",
+              "guid": "89df6681-eeb0-4612-8982-1275858175d8",
+              "toolComponent": {
+                "name": "CWE",
+                "guid": "c0f70419-2e19-4fcd-8855-69b5ec75807c"
+              }
+            }
+          ],
+          "ruleId": "B105",
+          "ruleIndex": 6
+        },
+        {
+          "message": {
+            "text": "Possible SQL injection vector through string-based query construction."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "region": {
+                  "snippet": {
+                    "text": "            sql_query = \"SELECT * FROM introduction_sql_lab_table WHERE id='\"+name+\"'AND password='\"+password+\"'\"\n"
+                  },
+                  "startLine": 855
+                },
+                "artifactLocation": {
+                  "uri": "pygoat/introduction/views.py"
+                },
+                "contextRegion": {
+                  "snippet": {
+                    "text": "        if name:\n            sql_query = \"SELECT * FROM introduction_sql_lab_table WHERE id='\"+name+\"'AND password='\"+password+\"'\"\n\n"
+                  },
+                  "endLine": 856,
+                  "startLine": 854
+                }
+              }
+            }
+          ],
+          "properties": {
+            "issue_confidence": "LOW",
+            "issue_severity": "MEDIUM"
+          },
+          "taxa": [
+            {
+              "id": "89",
+              "guid": "89df6681-eeb0-4612-8982-1275858175d8",
+              "toolComponent": {
+                "name": "CWE",
+                "guid": "d46ae837-1c83-4567-8d85-e99211684bbf"
+              }
+            }
+          ],
+          "ruleId": "B608",
           "ruleIndex": 10
+        },
+        {
+          "message": {
+            "text": "Possible hardcoded password: '65079b006e85a7e798abecb99e47c154'"
+          },
+          "level": "note",
+          "locations": [
+            {
+              "physicalLocation": {
+                "region": {
+                  "snippet": {
+                    "text": "            sql_instance = sql_lab_table(id=\"admin\", password=\"65079b006e85a7e798abecb99e47c154\")\n"
+                  },
+                  "startLine": 857
+                },
+                "artifactLocation": {
+                  "uri": "pygoat/introduction/views.py"
+                },
+                "contextRegion": {
+                  "snippet": {
+                    "text": "\n            sql_instance = sql_lab_table(id=\"admin\", password=\"65079b006e85a7e798abecb99e47c154\")\n            sql_instance.save()\n"
+                  },
+                  "endLine": 858,
+                  "startLine": 856
+                }
+              }
+            }
+          ],
+          "properties": {
+            "issue_confidence": "MEDIUM",
+            "issue_severity": "LOW"
+          },
+          "taxa": [
+            {
+              "id": "259",
+              "guid": "89df6681-eeb0-4612-8982-1275858175d8",
+              "toolComponent": {
+                "name": "CWE",
+                "guid": "9568eb1e-d09c-4543-b6ca-9fcb96bc127d"
+              }
+            }
+          ],
+          "ruleId": "B106",
+          "ruleIndex": 15
+        },
+        {
+          "message": {
+            "text": "Possible hardcoded password: 'jack'"
+          },
+          "level": "note",
+          "locations": [
+            {
+              "physicalLocation": {
+                "region": {
+                  "snippet": {
+                    "text": "            sql_instance = sql_lab_table(id=\"jack\", password=\"jack\")\n"
+                  },
+                  "startLine": 859
+                },
+                "artifactLocation": {
+                  "uri": "pygoat/introduction/views.py"
+                },
+                "contextRegion": {
+                  "snippet": {
+                    "text": "            sql_instance.save()\n            sql_instance = sql_lab_table(id=\"jack\", password=\"jack\")\n            sql_instance.save()\n"
+                  },
+                  "endLine": 860,
+                  "startLine": 858
+                }
+              }
+            }
+          ],
+          "properties": {
+            "issue_confidence": "MEDIUM",
+            "issue_severity": "LOW"
+          },
+          "taxa": [
+            {
+              "id": "259",
+              "guid": "89df6681-eeb0-4612-8982-1275858175d8",
+              "toolComponent": {
+                "name": "CWE",
+                "guid": "16709ef5-db14-430c-948c-ab0cf66cbe22"
+              }
+            }
+          ],
+          "ruleId": "B106",
+          "ruleIndex": 15
+        },
+        {
+          "message": {
+            "text": "Possible hardcoded password: 'b4f945433ea4c369c12741f62a23ccc0'"
+          },
+          "level": "note",
+          "locations": [
+            {
+              "physicalLocation": {
+                "region": {
+                  "snippet": {
+                    "text": "            sql_instance = sql_lab_table(id=\"slinky\", password=\"b4f945433ea4c369c12741f62a23ccc0\")\n"
+                  },
+                  "startLine": 861
+                },
+                "artifactLocation": {
+                  "uri": "pygoat/introduction/views.py"
+                },
+                "contextRegion": {
+                  "snippet": {
+                    "text": "            sql_instance.save()\n            sql_instance = sql_lab_table(id=\"slinky\", password=\"b4f945433ea4c369c12741f62a23ccc0\")\n            sql_instance.save()\n"
+                  },
+                  "endLine": 862,
+                  "startLine": 860
+                }
+              }
+            }
+          ],
+          "properties": {
+            "issue_confidence": "MEDIUM",
+            "issue_severity": "LOW"
+          },
+          "taxa": [
+            {
+              "id": "259",
+              "guid": "89df6681-eeb0-4612-8982-1275858175d8",
+              "toolComponent": {
+                "name": "CWE",
+                "guid": "d0ea0fe9-6925-43d6-bd7f-d78dc97b0f2c"
+              }
+            }
+          ],
+          "ruleId": "B106",
+          "ruleIndex": 15
+        },
+        {
+          "message": {
+            "text": "Possible hardcoded password: 'f8d1ce191319ea8f4d1d26e65e130dd5'"
+          },
+          "level": "note",
+          "locations": [
+            {
+              "physicalLocation": {
+                "region": {
+                  "snippet": {
+                    "text": "            sql_instance = sql_lab_table(id=\"bloke\", password=\"f8d1ce191319ea8f4d1d26e65e130dd5\")\n"
+                  },
+                  "startLine": 863
+                },
+                "artifactLocation": {
+                  "uri": "pygoat/introduction/views.py"
+                },
+                "contextRegion": {
+                  "snippet": {
+                    "text": "            sql_instance.save()\n            sql_instance = sql_lab_table(id=\"bloke\", password=\"f8d1ce191319ea8f4d1d26e65e130dd5\")\n            sql_instance.save()\n"
+                  },
+                  "endLine": 864,
+                  "startLine": 862
+                }
+              }
+            }
+          ],
+          "properties": {
+            "issue_confidence": "MEDIUM",
+            "issue_severity": "LOW"
+          },
+          "taxa": [
+            {
+              "id": "259",
+              "guid": "89df6681-eeb0-4612-8982-1275858175d8",
+              "toolComponent": {
+                "name": "CWE",
+                "guid": "70a3c1b6-05b1-45f4-99d4-c8db739ed919"
+              }
+            }
+          ],
+          "ruleId": "B106",
+          "ruleIndex": 15
+        },
+        {
+          "message": {
+            "text": "Requests call without timeout"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "region": {
+                  "snippet": {
+                    "text": "            response = requests.get(url)\n"
+                  },
+                  "startLine": 954
+                },
+                "artifactLocation": {
+                  "uri": "pygoat/introduction/views.py"
+                },
+                "contextRegion": {
+                  "snippet": {
+                    "text": "        try:\n            response = requests.get(url)\n            return render(request, \"Lab/ssrf/ssrf_lab2.html\", {\"response\": response.content.decode()})\n"
+                  },
+                  "endLine": 955,
+                  "startLine": 953
+                }
+              }
+            }
+          ],
+          "properties": {
+            "issue_confidence": "LOW",
+            "issue_severity": "MEDIUM"
+          },
+          "taxa": [
+            {
+              "id": "400",
+              "guid": "89df6681-eeb0-4612-8982-1275858175d8",
+              "toolComponent": {
+                "name": "CWE",
+                "guid": "69b4262b-b3fa-4ac9-8704-e3b0f394562a"
+              }
+            }
+          ],
+          "ruleId": "B113",
+          "ruleIndex": 5
+        },
+        {
+          "message": {
+            "text": "Use of weak MD5 hash for security. Consider usedforsecurity=False"
+          },
+          "level": "error",
+          "locations": [
+            {
+              "physicalLocation": {
+                "region": {
+                  "snippet": {
+                    "text": "                password = md5(password.encode()).hexdigest()\n"
+                  },
+                  "startLine": 1017
+                },
+                "artifactLocation": {
+                  "uri": "pygoat/introduction/views.py"
+                },
+                "contextRegion": {
+                  "snippet": {
+                    "text": "            try:\n                password = md5(password.encode()).hexdigest()\n                user = CF_user.objects.get(username=username,password=password)\n"
+                  },
+                  "endLine": 1018,
+                  "startLine": 1016
+                }
+              }
+            }
+          ],
+          "properties": {
+            "issue_confidence": "HIGH",
+            "issue_severity": "HIGH"
+          },
+          "taxa": [
+            {
+              "id": "327",
+              "guid": "89df6681-eeb0-4612-8982-1275858175d8",
+              "toolComponent": {
+                "name": "CWE",
+                "guid": "d52091b0-cad1-4ded-802b-447ff426b634"
+              }
+            }
+          ],
+          "ruleId": "B324",
+          "ruleIndex": 2
+        },
+        {
+          "message": {
+            "text": "Possible hardcoded password: 'P@$$w0rd'"
+          },
+          "level": "note",
+          "locations": [
+            {
+              "physicalLocation": {
+                "region": {
+                  "snippet": {
+                    "text": "                if username == \"User\" and password == \"P@$$w0rd\":\n"
+                  },
+                  "startLine": 1063
+                },
+                "artifactLocation": {
+                  "uri": "pygoat/introduction/views.py"
+                },
+                "contextRegion": {
+                  "snippet": {
+                    "text": "            try:\n                if username == \"User\" and password == \"P@$$w0rd\":\n                    expire = datetime.datetime.now() + datetime.timedelta(minutes=60)\n"
+                  },
+                  "endLine": 1064,
+                  "startLine": 1062
+                }
+              }
+            }
+          ],
+          "properties": {
+            "issue_confidence": "MEDIUM",
+            "issue_severity": "LOW"
+          },
+          "taxa": [
+            {
+              "id": "259",
+              "guid": "89df6681-eeb0-4612-8982-1275858175d8",
+              "toolComponent": {
+                "name": "CWE",
+                "guid": "97d4e73b-ab0f-4b0a-9dce-7eec1650683c"
+              }
+            }
+          ],
+          "ruleId": "B105",
+          "ruleIndex": 6
+        },
+        {
+          "message": {
+            "text": "Try, Except, Pass detected."
+          },
+          "level": "note",
+          "locations": [
+            {
+              "physicalLocation": {
+                "region": {
+                  "snippet": {
+                    "text": "        except:\n"
+                  },
+                  "startLine": 1176
+                },
+                "artifactLocation": {
+                  "uri": "pygoat/introduction/views.py"
+                },
+                "contextRegion": {
+                  "snippet": {
+                    "text": "                return render(request,\"Lab_2021/A7_auth_failure/lab3.html\", {\"username\":session.user,\"success\":True})\n        except:\n            pass\n        return render(request, \"Lab_2021/A7_auth_failure/lab3.html\")\n"
+                  },
+                  "endLine": 1178,
+                  "startLine": 1175
+                }
+              }
+            }
+          ],
+          "properties": {
+            "issue_confidence": "HIGH",
+            "issue_severity": "LOW"
+          },
+          "taxa": [
+            {
+              "id": "703",
+              "guid": "89df6681-eeb0-4612-8982-1275858175d8",
+              "toolComponent": {
+                "name": "CWE",
+                "guid": "7091dcb4-a06d-43d7-b3cf-349212a56970"
+              }
+            }
+          ],
+          "ruleId": "B110",
+          "ruleIndex": 16
         },
         {
           "message": {
@@ -819,17 +2717,17 @@
                   "snippet": {
                     "text": "SECRET_KEY = 'lr66%-a!$km5ed@n5ug!tya5bv!0(yqwa1tn!q%0%3m2nh%oml'\n"
                   },
-                  "startLine": 25
+                  "startLine": 24
                 },
                 "artifactLocation": {
-                  "uri": "pygoat/pygoat/pygoat/settings.py"
+                  "uri": "pygoat/pygoat/settings.py"
                 },
                 "contextRegion": {
                   "snippet": {
-                    "text": "# SECURITY WARNING: keep the secret key used in production secret!\nSECRET_KEY = 'lr66%-a!$km5ed@n5ug!tya5bv!0(yqwa1tn!q%0%3m2nh%oml'\n\nSENSITIVE_DATA = 'FLAGTHATNEEDSTOBEFOUND'\n"
+                    "text": "# SECURITY WARNING: keep the secret key used in production secret!\nSECRET_KEY = 'lr66%-a!$km5ed@n5ug!tya5bv!0(yqwa1tn!q%0%3m2nh%oml'\n\n"
                   },
-                  "endLine": 27,
-                  "startLine": 24
+                  "endLine": 25,
+                  "startLine": 23
                 }
               }
             }
@@ -838,12 +2736,357 @@
             "issue_confidence": "MEDIUM",
             "issue_severity": "LOW"
           },
+          "taxa": [
+            {
+              "id": "259",
+              "guid": "89df6681-eeb0-4612-8982-1275858175d8",
+              "toolComponent": {
+                "name": "CWE",
+                "guid": "a54151e7-4bf9-4609-af4e-33936c735d9f"
+              }
+            }
+          ],
           "ruleId": "B105",
-          "ruleIndex": 11
+          "ruleIndex": 6
+        },
+        {
+          "message": {
+            "text": "Possible hardcoded password: 'PYGOAT'"
+          },
+          "level": "note",
+          "locations": [
+            {
+              "physicalLocation": {
+                "region": {
+                  "snippet": {
+                    "text": "SECRET_COOKIE_KEY = \"PYGOAT\"\n"
+                  },
+                  "startLine": 169
+                },
+                "artifactLocation": {
+                  "uri": "pygoat/pygoat/settings.py"
+                },
+                "contextRegion": {
+                  "snippet": {
+                    "text": "\nSECRET_COOKIE_KEY = \"PYGOAT\"\nCSRF_TRUSTED_ORIGINS = [\"http://127.0.0.1:8000\",\"http://0.0.0.0:8000\",\"http://172.16.189.10\"]\n"
+                  },
+                  "endLine": 170,
+                  "startLine": 168
+                }
+              }
+            }
+          ],
+          "properties": {
+            "issue_confidence": "MEDIUM",
+            "issue_severity": "LOW"
+          },
+          "taxa": [
+            {
+              "id": "259",
+              "guid": "89df6681-eeb0-4612-8982-1275858175d8",
+              "toolComponent": {
+                "name": "CWE",
+                "guid": "aa7a09c4-f989-495f-99d5-fe253ca0af7d"
+              }
+            }
+          ],
+          "ruleId": "B105",
+          "ruleIndex": 6
+        },
+        {
+          "message": {
+            "text": "Consider possible security implications associated with the subprocess module."
+          },
+          "level": "note",
+          "locations": [
+            {
+              "physicalLocation": {
+                "region": {
+                  "snippet": {
+                    "text": "import subprocess\n"
+                  },
+                  "startLine": 7
+                },
+                "artifactLocation": {
+                  "uri": "pygoat/uninstaller.py"
+                },
+                "contextRegion": {
+                  "snippet": {
+                    "text": "import colorama\nimport subprocess\nfrom shutil import rmtree, which\n"
+                  },
+                  "endLine": 8,
+                  "startLine": 6
+                }
+              }
+            }
+          ],
+          "properties": {
+            "issue_confidence": "HIGH",
+            "issue_severity": "LOW"
+          },
+          "taxa": [
+            {
+              "id": "78",
+              "guid": "89df6681-eeb0-4612-8982-1275858175d8",
+              "toolComponent": {
+                "name": "CWE",
+                "guid": "facbbd3d-8b98-4d98-ae03-5ccd006ed65b"
+              }
+            }
+          ],
+          "ruleId": "B404",
+          "ruleIndex": 0
+        },
+        {
+          "message": {
+            "text": "subprocess call - check for execution of untrusted input."
+          },
+          "level": "note",
+          "locations": [
+            {
+              "physicalLocation": {
+                "region": {
+                  "snippet": {
+                    "text": "            subprocess.run([pip_v,\n"
+                  },
+                  "startLine": 40
+                },
+                "artifactLocation": {
+                  "uri": "pygoat/uninstaller.py"
+                },
+                "contextRegion": {
+                  "snippet": {
+                    "text": "            pip_v = \"pip3\" if (which('pip3') is not None) else \"pip\"\n            subprocess.run([pip_v,\n                            \"install\",\n                            \"--upgrade\",\n                            \"pip\"],\n                           stdout=subprocess.DEVNULL,\n                           stderr=subprocess.DEVNULL)\n        subprocess.check_call([sys.executable,\n"
+                  },
+                  "endLine": 46,
+                  "startLine": 39
+                }
+              }
+            }
+          ],
+          "properties": {
+            "issue_confidence": "HIGH",
+            "issue_severity": "LOW"
+          },
+          "taxa": [
+            {
+              "id": "78",
+              "guid": "89df6681-eeb0-4612-8982-1275858175d8",
+              "toolComponent": {
+                "name": "CWE",
+                "guid": "ded091e5-6657-45b4-967a-41c334ad59ab"
+              }
+            }
+          ],
+          "ruleId": "B603",
+          "ruleIndex": 17
+        },
+        {
+          "message": {
+            "text": "subprocess call - check for execution of untrusted input."
+          },
+          "level": "note",
+          "locations": [
+            {
+              "physicalLocation": {
+                "region": {
+                  "snippet": {
+                    "text": "        subprocess.check_call([sys.executable,\n"
+                  },
+                  "startLine": 46
+                },
+                "artifactLocation": {
+                  "uri": "pygoat/uninstaller.py"
+                },
+                "contextRegion": {
+                  "snippet": {
+                    "text": "                           stderr=subprocess.DEVNULL)\n        subprocess.check_call([sys.executable,\n                               \"-m\",\n                               \"pip\",\n                               \"uninstall\",\n                               \"-yr\",\n                               \"requirements.txt\"])\n    except subprocess.CalledProcessError:\n"
+                  },
+                  "endLine": 52,
+                  "startLine": 45
+                }
+              }
+            }
+          ],
+          "properties": {
+            "issue_confidence": "HIGH",
+            "issue_severity": "LOW"
+          },
+          "taxa": [
+            {
+              "id": "78",
+              "guid": "89df6681-eeb0-4612-8982-1275858175d8",
+              "toolComponent": {
+                "name": "CWE",
+                "guid": "ebeec503-3401-4868-8d78-ad1ab539698d"
+              }
+            }
+          ],
+          "ruleId": "B603",
+          "ruleIndex": 17
+        },
+        {
+          "message": {
+            "text": "subprocess call - check for execution of untrusted input."
+          },
+          "level": "note",
+          "locations": [
+            {
+              "physicalLocation": {
+                "region": {
+                  "snippet": {
+                    "text": "        subprocess.check_call([sys.executable,\n"
+                  },
+                  "startLine": 61
+                },
+                "artifactLocation": {
+                  "uri": "pygoat/uninstaller.py"
+                },
+                "contextRegion": {
+                  "snippet": {
+                    "text": "    try:\n        subprocess.check_call([sys.executable,\n                               \"-m\",\n                               \"pip\",\n                               \"uninstall\",\n                               \"-y\",\n                               \"pip\"])\n    except subprocess.CalledProcessError:\n"
+                  },
+                  "endLine": 67,
+                  "startLine": 60
+                }
+              }
+            }
+          ],
+          "properties": {
+            "issue_confidence": "HIGH",
+            "issue_severity": "LOW"
+          },
+          "taxa": [
+            {
+              "id": "78",
+              "guid": "89df6681-eeb0-4612-8982-1275858175d8",
+              "toolComponent": {
+                "name": "CWE",
+                "guid": "c2fa46bf-c2ff-46fa-9574-c84f55deddfb"
+              }
+            }
+          ],
+          "ruleId": "B603",
+          "ruleIndex": 17
+        }
+      ],
+      "taxonomies": [
+        {
+          "name": "CWE",
+          "version": "4.12",
+          "releaseDateUtc": "2023-06-29",
+          "guid": "89df6681-eeb0-4612-8982-1275858175d8",
+          "informationUri": "https://cwe.mitre.org/data/published/cwe_v4.12.pdf",
+          "downloadUri": "https://cwe.mitre.org/data/xml/cwec_v4.12.xml.zip",
+          "organization": "MITRE",
+          "shortDescription": {
+            "text": "The MITRE Common Weakness Enumeration"
+          },
+          "taxa": [
+            {
+              "id": "78",
+              "guid": "89df6681-eeb0-4612-8982-1275858175d8",
+              "name": "Improper Neutralization of Special Elements used in an OS Command ('OS Command Injection')",
+              "shortDescription": {
+                "text": "The product constructs all or part of an OS command using externally-influenced input from an upstream component, but it does not neutralize or incorrectly neutralizes special elements that could modify the intended OS command when it is sent to a downstream component."
+              },
+              "defaultConfiguration": {
+                "level": "error"
+              }
+            },
+            {
+              "id": "20",
+              "guid": "89df6681-eeb0-4612-8982-1275858175d8",
+              "name": "Improper Input Validation",
+              "shortDescription": {
+                "text": "The product receives input or data, but it does\n        not validate or incorrectly validates that the input has the\n        properties that are required to process the data safely and\n        correctly."
+              },
+              "defaultConfiguration": {
+                "level": "error"
+              }
+            },
+            {
+              "id": "327",
+              "guid": "89df6681-eeb0-4612-8982-1275858175d8",
+              "name": "Use of a Broken or Risky Cryptographic Algorithm",
+              "shortDescription": {
+                "text": "The product uses a broken or risky cryptographic algorithm or protocol."
+              },
+              "defaultConfiguration": {
+                "level": "error"
+              }
+            },
+            {
+              "id": "400",
+              "guid": "89df6681-eeb0-4612-8982-1275858175d8",
+              "name": "Uncontrolled Resource Consumption",
+              "shortDescription": {
+                "text": "The product does not properly control the allocation and maintenance of a limited resource, thereby enabling an actor to influence the amount of resources consumed, eventually leading to the exhaustion of available resources."
+              },
+              "defaultConfiguration": {
+                "level": "error"
+              }
+            },
+            {
+              "id": "259",
+              "guid": "89df6681-eeb0-4612-8982-1275858175d8",
+              "name": "Use of Hard-coded Password",
+              "shortDescription": {
+                "text": "The product contains a hard-coded password, which it uses for its own inbound authentication or for outbound communication to external components."
+              },
+              "defaultConfiguration": {
+                "level": "error"
+              }
+            },
+            {
+              "id": "502",
+              "guid": "89df6681-eeb0-4612-8982-1275858175d8",
+              "name": "Deserialization of Untrusted Data",
+              "shortDescription": {
+                "text": "The product deserializes untrusted data without sufficiently verifying that the resulting data will be valid."
+              },
+              "defaultConfiguration": {
+                "level": "warning"
+              }
+            },
+            {
+              "id": "89",
+              "guid": "89df6681-eeb0-4612-8982-1275858175d8",
+              "name": "Improper Neutralization of Special Elements used in an SQL Command ('SQL Injection')",
+              "shortDescription": {
+                "text": "The product constructs all or part of an SQL command using externally-influenced input from an upstream component, but it does not neutralize or incorrectly neutralizes special elements that could modify the intended SQL command when it is sent to a downstream component."
+              },
+              "defaultConfiguration": {
+                "level": "error"
+              }
+            },
+            {
+              "id": "330",
+              "guid": "89df6681-eeb0-4612-8982-1275858175d8",
+              "name": "Use of Insufficiently Random Values",
+              "shortDescription": {
+                "text": "The product uses insufficiently random numbers or values in a security context that depends on unpredictable numbers."
+              },
+              "defaultConfiguration": {
+                "level": "error"
+              }
+            },
+            {
+              "id": "703",
+              "guid": "89df6681-eeb0-4612-8982-1275858175d8",
+              "name": "Improper Check or Handling of Exceptional Conditions",
+              "shortDescription": {
+                "text": "The product does not properly anticipate or handle exceptional conditions that rarely occur during normal operation of the product."
+              },
+              "defaultConfiguration": {
+                "level": "none"
+              }
+            }
+          ]
         }
       ]
     }
   ],
   "version": "2.1.0",
-  "$schema": "https://schemastore.azurewebsites.net/schemas/json/sarif-2.1.0-rtm.4.json"
+  "$schema": "https://schemastore.azurewebsites.net/schemas/json/sarif-2.1.0.json"
 }
