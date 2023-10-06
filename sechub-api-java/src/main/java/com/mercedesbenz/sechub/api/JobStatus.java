@@ -13,7 +13,7 @@ import com.mercedesbenz.sechub.commons.model.job.JobStatusInfo;
 
 public class JobStatus extends JobStatusInfo {
 
-    public static JobStatus from(OpenApiJobStatus status) {
+    static JobStatus from(OpenApiJobStatus status) {
 
         JobStatus result = new JobStatus();
 

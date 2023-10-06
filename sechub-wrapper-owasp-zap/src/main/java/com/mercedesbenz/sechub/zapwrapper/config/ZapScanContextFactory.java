@@ -1,8 +1,8 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.zapwrapper.config;
 
+import java.io.File;
 import java.net.URL;
-import java.nio.file.Path;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
@@ -78,7 +78,7 @@ public class ZapScanContextFactory {
 
         AuthenticationType authType = sechubWebConfigHelper.determineAuthenticationType(sechubWebConfig);
 
-        Path apiDefinitionFile = createPathToApiDefinitionFileOrNull(sechubScanConfig);
+        List<File> apiDefinitionFiles = fetchApiDefinitionFiles(sechubScanConfig);
 
         /* we always use the SecHub job UUID as Zap context name */
         String contextName = settings.getJobUUID();
@@ -111,9 +111,9 @@ public class ZapScanContextFactory {
 												.setProxyInformation(proxyInformation)
 												.setFullRuleset(fullRuleset)
 												.setDeactivatedRuleReferences(deactivatedRuleReferences)
-												.setApiDefinitionFile(apiDefinitionFile)
-												.setZapURLsIncludeSet(includeSet)
-												.setZapURLsExcludeSet(excludeSet)
+												.addApiDefinitionFiles(apiDefinitionFiles)
+												.addZapURLsIncludeSet(includeSet)
+												.addZapURLsExcludeSet(excludeSet)
 												.setConnectionCheckEnabled(settings.isConnectionCheckEnabled())
 												.setMaxNumberOfConnectionRetries(settings.getMaxNumberOfConnectionRetries())
 												.setRetryWaittimeInMilliseconds(settings.getRetryWaittimeInMilliseconds())
@@ -210,11 +210,11 @@ public class ZapScanContextFactory {
         return sechubConfig.getWebScan().get();
     }
 
-    private Path createPathToApiDefinitionFileOrNull(SecHubScanConfiguration sechubScanConfig) {
+    private List<File> fetchApiDefinitionFiles(SecHubScanConfiguration sechubScanConfig) {
         // use the extracted sources folder path, where all text files are uploaded and
         // extracted
         String extractedSourcesFolderPath = environmentVariableReader.readAsString(EnvironmentVariableConstants.PDS_JOB_EXTRACTED_SOURCES_FOLDER);
-        return apiDefinitionFileProvider.fetchApiDefinitionFile(extractedSourcesFolderPath, sechubScanConfig);
+        return apiDefinitionFileProvider.fetchApiDefinitionFiles(extractedSourcesFolderPath, sechubScanConfig);
     }
 
     private Set<URL> createUrlsIncludedInContext(URL targetUrl, SecHubWebScanConfiguration sechubWebConfig, List<SecHubMessage> userMessages) {

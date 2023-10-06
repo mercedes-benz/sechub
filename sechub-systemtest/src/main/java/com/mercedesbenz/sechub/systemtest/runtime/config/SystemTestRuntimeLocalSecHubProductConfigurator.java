@@ -22,6 +22,7 @@ import com.mercedesbenz.sechub.api.ExecutorConfigurationInfo;
 import com.mercedesbenz.sechub.api.ExecutorConfigurationSetup;
 import com.mercedesbenz.sechub.api.ExecutorConfigurationSetupCredentials;
 import com.mercedesbenz.sechub.api.Project;
+import com.mercedesbenz.sechub.api.ProjectWhiteList;
 import com.mercedesbenz.sechub.api.SecHubClient;
 import com.mercedesbenz.sechub.api.SecHubClientException;
 import com.mercedesbenz.sechub.commons.model.ScanType;
@@ -111,7 +112,12 @@ public class SystemTestRuntimeLocalSecHubProductConfigurator {
             project.setName(projectName);
             project.setOwner(client.getUsername());// we use the administrator as owner of the project
 
+            ProjectWhiteList whiteList = project.getWhiteList();
+            for (String whiteListEntry : projectDefinition.getWhitelistedURIs()) {
+                whiteList.getUris().add(whiteListEntry);
+            }
             client.createProject(project);
+
         }
     }
 

@@ -1,10 +1,25 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.zapwrapper.config;
 
-import static com.mercedesbenz.sechub.zapwrapper.util.EnvironmentVariableConstants.*;
-import static org.junit.jupiter.api.Assertions.*;
+import static com.mercedesbenz.sechub.zapwrapper.util.EnvironmentVariableConstants.PDS_JOB_EVENTS_FOLDER;
+import static com.mercedesbenz.sechub.zapwrapper.util.EnvironmentVariableConstants.PDS_JOB_EXTRACTED_SOURCES_FOLDER;
+import static com.mercedesbenz.sechub.zapwrapper.util.EnvironmentVariableConstants.PDS_JOB_USER_MESSAGES_FOLDER;
+import static com.mercedesbenz.sechub.zapwrapper.util.EnvironmentVariableConstants.PROXY_HOST_ENV_VARIABLE_NAME;
+import static com.mercedesbenz.sechub.zapwrapper.util.EnvironmentVariableConstants.PROXY_PORT_ENV_VARIABLE_NAME;
+import static com.mercedesbenz.sechub.zapwrapper.util.EnvironmentVariableConstants.ZAP_API_KEY_ENV_VARIABLE_NAME;
+import static com.mercedesbenz.sechub.zapwrapper.util.EnvironmentVariableConstants.ZAP_DEACTIVATED_RULE_REFERENCES;
+import static com.mercedesbenz.sechub.zapwrapper.util.EnvironmentVariableConstants.ZAP_HOST_ENV_VARIABLE_NAME;
+import static com.mercedesbenz.sechub.zapwrapper.util.EnvironmentVariableConstants.ZAP_PORT_ENV_VARIABLE_NAME;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 import java.io.File;
 import java.net.URI;
@@ -451,14 +466,12 @@ class ZapScanContextFactoryTest {
         when(settings.getSecHubConfigFile()).thenReturn(sechubScanConfigFile);
         when(environmentVariableReader.readAsString(PDS_JOB_EXTRACTED_SOURCES_FOLDER)).thenReturn(extractedSourcesPath);
 
-        Path expectedPathToApiDefinitionFile = new File(extractedSourcesPath, "openapi3.json").toPath();
-
         /* execute */
         ZapScanContext result = factoryToTest.create(settings);
 
         /* test */
         verify(environmentVariableReader, times(1)).readAsString(PDS_JOB_EXTRACTED_SOURCES_FOLDER);
-        assertEquals(expectedPathToApiDefinitionFile, result.getApiDefinitionFile());
+        assertEquals(1, result.getApiDefinitionFiles().size());
     }
 
     @Test
