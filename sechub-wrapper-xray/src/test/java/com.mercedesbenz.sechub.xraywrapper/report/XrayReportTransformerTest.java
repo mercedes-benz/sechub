@@ -1,7 +1,10 @@
 package com.mercedesbenz.sechub.xraywrapper.report;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+
 import java.io.File;
-import java.io.IOException;
+import java.util.HashMap;
 
 import org.junit.Assert;
 import org.junit.jupiter.api.BeforeEach;
@@ -26,13 +29,33 @@ class XrayReportTransformerTest {
     }
 
     @Test
-    public void test_getRootDataNode() throws IOException {
+    public void test_getRootDataNode() {
         /* prepare */
-        File file = new File("src/test/resources/xray-sechub-report-examples/Docker_SBOM_Export_CycloneDX.json");
+        File file = new File("src/test/resources/xray-report-examples/Docker_Security_Export.json");
+        int numberOfVulnerabilities = 63;
 
         /* execute + test */
         JsonNode node = xrayReportTransformer.getRootDataNode(file);
-        // assertEquals("2023-09-07T14:12:12+02:00", node.get("timestamp").asText());
+        assertEquals(numberOfVulnerabilities, node.size());
     }
 
+    @Test
+    public void test_transformSecurityReport() {
+        /* prepare */
+        File file = new File("src/test/resources/xray-report-examples/Docker_Security_Export.json");
+        JsonNode node = xrayReportTransformer.getRootDataNode(file);
+        int numberOfVulnerabilities = 25;
+
+        /* execute */
+        HashMap<String, XrayCycloneVulnerabilityBuilder> vulnerabilityHashMap = xrayReportTransformer.transformSecurityReport(node);
+
+        /* test */
+        assertEquals(numberOfVulnerabilities, vulnerabilityHashMap.size());
+    }
+
+    @Test
+    public void test_transformSecurityReport_null() {
+        /* execute + test */
+        assertThrows(NullPointerException.class, () -> xrayReportTransformer.transformSecurityReport(null));
+    }
 }

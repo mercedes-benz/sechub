@@ -22,10 +22,10 @@ public class XrayReportTransformer {
         }
     }
 
-    public HashMap<String, XrayCycloneVulnerability> transfromSecurityReport(JsonNode rootDataNode) throws XrayWrapperReportException {
-        HashMap<String, XrayCycloneVulnerability> vulnerabilityHashMap = new HashMap<String, XrayCycloneVulnerability>();
+    public HashMap<String, XrayCycloneVulnerabilityBuilder> transformSecurityReport(JsonNode rootDataNode) throws XrayWrapperReportException {
+        HashMap<String, XrayCycloneVulnerabilityBuilder> vulnerabilityHashMap = new HashMap<String, XrayCycloneVulnerabilityBuilder>();
         for (JsonNode node : rootDataNode) {
-            XrayCycloneVulnerability vulnerability = new XrayCycloneVulnerability("");
+            XrayCycloneVulnerabilityBuilder vulnerability = new XrayCycloneVulnerabilityBuilder("");
             setBomRef(node, vulnerability);
             String cvssString = null;
             try {
@@ -44,17 +44,17 @@ public class XrayReportTransformer {
         return vulnerabilityHashMap;
     }
 
-    private void setBomRef(JsonNode node, XrayCycloneVulnerability vulnerability) {
+    private void setBomRef(JsonNode node, XrayCycloneVulnerabilityBuilder vulnerability) {
         String bomRef = node.get("id").asText();
         if (bomRef != null) {
             // set bomRef as ID if vulnerability does not have CVE ID
             // cycloneDX vulnerabilities also have XRAY ID as ID (mapping works)
-            vulnerability.setBom_ref(bomRef);
+            vulnerability.addBom_ref(bomRef);
             vulnerability.setId(bomRef);
         }
     }
 
-    private String getAndSetCveDetails(JsonNode node, XrayCycloneVulnerability vulnerability) throws JsonProcessingException {
+    private String getAndSetCveDetails(JsonNode node, XrayCycloneVulnerabilityBuilder vulnerability) throws JsonProcessingException {
         final JsonNode cveDetailsNode = new ObjectMapper().readTree(String.valueOf(node)).get("component_versions").get("more_details").get("cves");
         String cvssString = "";
         JsonNode cvssNode;
@@ -70,21 +70,21 @@ public class XrayReportTransformer {
                 vulnerability.setId(cveIDNode.asText());
             }
             if (cwe != null) {
-                vulnerability.setCwe(cwe);
+                vulnerability.addCWE(cwe);
             }
         }
         return cvssString;
     }
 
-    private void setSource(JsonNode node, XrayCycloneVulnerability vulnerability) {
+    private void setSource(JsonNode node, XrayCycloneVulnerabilityBuilder vulnerability) {
         String name = node.get("provider").asText();
         String url = "";
         if (name != null) {
-            vulnerability.setSource(url, name);
+            vulnerability.addSource(url, name);
         }
     }
 
-    private void setRatingFromString(JsonNode node, XrayCycloneVulnerability vulnerability, String cvssString) {
+    private void setRatingFromString(JsonNode node, XrayCycloneVulnerabilityBuilder vulnerability, String cvssString) {
         String[] cvssArray = cvssString.split("/", 3);
         String score = cvssArray[0];
         Float scoreFloat = parseFloat(score);
@@ -96,23 +96,22 @@ public class XrayReportTransformer {
         String severity = node.get("severity").asText().toLowerCase();
         String severitySource = node.get("severity_source").asText().toUpperCase();
         if (severity != null && severitySource != null && method != null && vector != null && score != null) {
-            vulnerability.setRating(scoreFloat, severity, method, vector, severitySource);
+            vulnerability.addRating(scoreFloat, severity, method, vector, severitySource);
         }
     }
 
-    private void setDescription(JsonNode node, XrayCycloneVulnerability vulnerability) {
+    private void setDescription(JsonNode node, XrayCycloneVulnerabilityBuilder vulnerability) {
         String description = node.get("component_versions").get("more_details").get("description").asText();
         if (description != null) {
-            vulnerability.setDescription(description);
+            vulnerability.addDescription(description);
         }
     }
 
-    private void addAffects(JsonNode node, XrayCycloneVulnerability vulnerability) {
+    private void addAffects(JsonNode node, XrayCycloneVulnerabilityBuilder vulnerability) {
         String ref = node.get("source_comp_id").asText();
         String purls = node.get("source_id").asText();
         ArrayNode vulnerableVersions = (ArrayNode) node.get("component_versions").get("vulnerable_versions");
         ArrayNode fixedVersions = (ArrayNode) node.get("component_versions").get("fixed_versions");
         vulnerability.addAffects(ref, vulnerableVersions, fixedVersions, purls);
-        vulnerability.putAffects();
     }
 }

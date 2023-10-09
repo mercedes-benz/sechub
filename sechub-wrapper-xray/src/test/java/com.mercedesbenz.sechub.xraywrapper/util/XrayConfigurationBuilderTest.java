@@ -29,6 +29,11 @@ class XrayConfigurationBuilderTest {
             assertEquals("https://artifactoryMock", xrayConfiguration.getArtifactory());
             assertEquals("registerMock", xrayConfiguration.getRegister());
         }
-        ;
+    }
+
+    @Test
+    public void test_createXrayConfiguration_null() {
+        /* execute + test */
+        createXrayConfiguration(null, null);
     }
 }

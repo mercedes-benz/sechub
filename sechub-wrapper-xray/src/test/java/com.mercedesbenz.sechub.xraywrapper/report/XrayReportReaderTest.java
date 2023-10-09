@@ -26,27 +26,6 @@ class XrayReportReaderTest {
     }
 
     @Test
-    public void testReadReport() {
-        /*
-         * // prepare String source = "src/test/resources/xray-report-examples"; File
-         * target = new File(
-         * "src/test/resources/xray-sechub-report-examples/Docker_SBOM_Export_CycloneDX.json"
-         * );
-         *
-         * // execute try { reportReader.getFiles(source, "");
-         * reportReader.readSecurityReport(); reportReader.mapVulnerabilities(); } catch
-         * (IOException e) { throw new RuntimeException(e); }
-         *
-         * // assert source = source + "/Docker_SBOM_Export_CycloneDX-SecHub.json"; File
-         * src = new File(source); try {
-         * Assertions.assertEquals(mapper.readTree(target), mapper.readTree(src));
-         * src.delete(); } catch (JsonProcessingException e) { throw new
-         * RuntimeException(e); } catch (IOException e) { throw new RuntimeException(e);
-         * }
-         */
-    }
-
-    @Test
     public void test_getFiles() throws IOException {
         /* prepare */
         String source = "src/test/resources/xray-report-examples";
@@ -58,9 +37,9 @@ class XrayReportReaderTest {
         reportReader.getFiles(source, resultFile);
 
         /* test */
-        String cycloneName = reportReader.getCyclonreport().getName();
-        String securityName = reportReader.getSecurityreport().getName();
-        String sechubReport = reportReader.getSechubReport().getName();
+        String cycloneName = reportReader.cycloneReport.getName();
+        String securityName = reportReader.securityReport.getName();
+        String sechubReport = reportReader.sechubReport.getName();
         assertEquals(resultFile, sechubReport);
         assertEquals(cycloneReport, cycloneName);
         assertEquals(securityReport, securityName);
