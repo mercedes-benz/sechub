@@ -12,19 +12,11 @@ public class XrayWrapperCommandLineParser {
     public record Arguments(String name, String sha256, String scantype, String tag, String outputFile) {
     }
 
-    public static class XrayWrapperCommandLineParserException extends Exception {
-        private static final long serialVersionUID = 1L;
-
-        public XrayWrapperCommandLineParserException(String message, Exception e) {
-            super(message, e);
-        }
-    }
-
     public Arguments parseCommandLineArgs(String[] args) throws XrayWrapperCommandLineParserException {
         XrayCommandLineArgs xrayArgs = buildArguments(args);
         if (xrayArgs.isHelpRequired() || xrayArgs.getName().isEmpty() || xrayArgs.getSha256().isEmpty()) {
             commander.usage();
-            return null;
+            throw new XrayWrapperCommandLineParserException("Error: required parameter was empty" + Arrays.toString(args));
         }
 
         String name = xrayArgs.getName();

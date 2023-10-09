@@ -11,21 +11,23 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.mercedesbenz.sechub.xraywrapper.config.XrayArtifact;
 import com.mercedesbenz.sechub.xraywrapper.config.XrayConfiguration;
 import com.mercedesbenz.sechub.xraywrapper.http.XrayArtifactoryClient;
-import com.mercedesbenz.sechub.xraywrapper.reportgenerator.XrayReportReader;
-import com.mercedesbenz.sechub.xraywrapper.reportgenerator.XrayWrapperReportException;
+import com.mercedesbenz.sechub.xraywrapper.report.XrayReportReader;
+import com.mercedesbenz.sechub.xraywrapper.report.XrayWrapperReportException;
 
 public class XrayClientArtifactoryController {
 
     private static final Logger LOG = LoggerFactory.getLogger(XrayClientArtifactoryController.class);
-
     private final XrayConfiguration xrayConfiguration;
     private final XrayArtifactoryClient artifactoryClient;
     private int retries;
+
+    XrayReportReader reportReader;
 
     public XrayClientArtifactoryController(XrayConfiguration xrayConfiguration, XrayArtifact artifact) {
         this.xrayConfiguration = xrayConfiguration;
         this.retries = xrayConfiguration.getRequestRetries();
         this.artifactoryClient = new XrayArtifactoryClient(artifact, xrayConfiguration);
+        this.reportReader = new XrayReportReader();
     }
 
     /**
@@ -55,8 +57,6 @@ public class XrayClientArtifactoryController {
     }
 
     private void manageReports() throws XrayWrapperReportException {
-        // hardcoded in response builder
-        XrayReportReader reportReader = new XrayReportReader();
         reportReader.getFiles(xrayConfiguration.getZip_directory(), xrayConfiguration.getSecHubReport());
         reportReader.readSecurityReport();
         ObjectNode root = reportReader.mapVulnerabilities();
@@ -97,7 +97,7 @@ public class XrayClientArtifactoryController {
         try {
             TimeUnit.SECONDS.sleep(val);
         } catch (InterruptedException e) {
-            // log.error("Thread interrupted");
+            throw new XrayWrapperRuntimeException("Thread interrupted while wait for next scan status request", e, XrayWrapperExitCode.THREAD_INTERRUPTION);
         }
     }
 

@@ -41,11 +41,4 @@ public class XrayAPIResponse {
     public void setBody(String body) {
         this.body = body;
     }
-
-    public void print() {
-        System.out.println("HTTPS status code: " + status_code);
-        System.out.println("Headers: " + headers.toString());
-        System.out.println("Body: " + body);
-    }
-
 }

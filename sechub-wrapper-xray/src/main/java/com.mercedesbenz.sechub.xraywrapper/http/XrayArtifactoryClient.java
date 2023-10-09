@@ -79,7 +79,7 @@ public class XrayArtifactoryClient {
         return node.get("info").asText();
     }
 
-    public JsonNode getBodyAsNode(String body) throws XrayWrapperRuntimeException {
+    JsonNode getBodyAsNode(String body) throws XrayWrapperRuntimeException {
         ObjectMapper mapper = new ObjectMapper();
         try {
             return mapper.readTree(body);
@@ -88,7 +88,7 @@ public class XrayArtifactoryClient {
         }
     }
 
-    public XrayAPIResponse send(XrayAPIRequest request) throws XrayWrapperRuntimeException {
+    XrayAPIResponse send(XrayAPIRequest request) throws XrayWrapperRuntimeException {
         HttpURLConnection con = XrayHttpRequestExecutor.setUpGetConnection(request);
         return XrayHttpResponseBuilder.getHttpResponseFromConnection(con, xrayConfiguration.getZip_directory());
     }

@@ -20,6 +20,8 @@ public enum XrayWrapperExitCode {
 
     ARTIFACT_NOT_FOUND(9),
 
+    THREAD_INTERRUPTION(10),
+
     ;
 
     private final int exitCode;

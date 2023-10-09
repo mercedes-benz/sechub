@@ -10,7 +10,7 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
 import com.mercedesbenz.sechub.xraywrapper.cli.XrayWrapperExitCode;
-import com.mercedesbenz.sechub.xraywrapper.reportgenerator.XrayWrapperReportException;
+import com.mercedesbenz.sechub.xraywrapper.report.XrayWrapperReportException;
 
 public class ReportExtractor {
 

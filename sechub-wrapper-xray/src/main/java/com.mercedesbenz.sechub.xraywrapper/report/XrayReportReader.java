@@ -1,4 +1,4 @@
-package com.mercedesbenz.sechub.xraywrapper.reportgenerator;
+package com.mercedesbenz.sechub.xraywrapper.report;
 
 import static com.mercedesbenz.sechub.xraywrapper.util.ReportExtractor.fileExists;
 import static com.mercedesbenz.sechub.xraywrapper.util.ReportExtractor.unzipReports;

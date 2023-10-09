@@ -1,4 +1,4 @@
-package com.mercedesbenz.sechub.xraywrapper.reportgenerator;
+package com.mercedesbenz.sechub.xraywrapper.report;
 
 import java.io.File;
 import java.io.IOException;

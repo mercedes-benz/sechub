@@ -30,7 +30,7 @@ class XrayClientArtifactoryControllerTest {
     public void test_waitForScansToFinishAndDownloadReport() throws XrayWrapperRuntimeException {
         /* test + execute */
         try (MockedConstruction<XrayArtifactoryClient> mockedClient = Mockito.mockConstruction(XrayArtifactoryClient.class, (mock, context) -> {
-            when(mock.getXrayVersion()).thenReturn("mockedversion");
+            when(mock.getXrayVersion()).thenReturn("mocked-version");
             when(mock.checkArtifactoryUpload()).thenReturn(true);
             when(mock.getScanStatus()).thenReturn("scanned");
             when(mock.requestScanReports()).thenReturn(false);

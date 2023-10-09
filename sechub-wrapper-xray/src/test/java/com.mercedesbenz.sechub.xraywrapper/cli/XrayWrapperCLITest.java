@@ -3,8 +3,6 @@ package com.mercedesbenz.sechub.xraywrapper.cli;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.mockConstruction;
 
-import java.io.IOException;
-
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -13,7 +11,7 @@ class XrayWrapperCLITest {
     XrayWrapperCLI cli;
 
     @BeforeEach
-    void beforeEach() throws IOException {
+    void beforeEach() {
         cli = new XrayWrapperCLI();
     }
 

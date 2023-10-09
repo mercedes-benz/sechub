@@ -1,7 +1,7 @@
 package com.mercedesbenz.sechub.xraywrapper.cli;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -16,30 +16,35 @@ class XrayWrapperCommandLineParserTest {
     }
 
     @Test
-    public void testDockerParseArguments() throws XrayWrapperCommandLineParser.XrayWrapperCommandLineParserException {
-        // prepare
+    public void test_parseCommandLineArgs() throws XrayWrapperCommandLineParserException {
+        /* prepare */
         String[] args = { "--name", "myname", "--sha256", "sha256:xxx", "--scantype", "docker", "--outputfile", "outfile" };
         XrayWrapperCommandLineParser.Arguments arguments;
 
-        // execute
+        /* execute */
         arguments = parser.parseCommandLineArgs(args);
 
-        // assert
+        /* test */
         assertEquals("myname", arguments.name());
         assertEquals("xxx", arguments.sha256());
         assertEquals("latest", arguments.tag());
     }
 
     @Test
-    public void testInvalidParseArguments() throws XrayWrapperCommandLineParser.XrayWrapperCommandLineParserException {
-        // prepare
+    public void test_parseCommandLineArgs_invalid() throws XrayWrapperCommandLineParserException {
+        /* prepare */
         String[] args = { "--sha256", "sha256:xxx", "--scantype", "docker", "--outputfile", "outfile" };
-        XrayWrapperCommandLineParser.Arguments arguments;
 
-        // execute
-        arguments = parser.parseCommandLineArgs(args);
+        /* execute + test */
+        assertThrows(XrayWrapperCommandLineParserException.class, () -> parser.parseCommandLineArgs(args));
+    }
 
-        // assert
-        assertNull(arguments);
+    @Test
+    public void test_parseCommandLineArgs_empty() throws XrayWrapperCommandLineParserException {
+        /* prepare */
+        String[] args = { "" };
+
+        /* execute + test */
+        assertThrows(XrayWrapperCommandLineParserException.class, () -> parser.parseCommandLineArgs(args));
     }
 }

@@ -7,7 +7,7 @@ import org.slf4j.LoggerFactory;
 
 import com.mercedesbenz.sechub.xraywrapper.config.XrayArtifact;
 import com.mercedesbenz.sechub.xraywrapper.config.XrayConfiguration;
-import com.mercedesbenz.sechub.xraywrapper.reportgenerator.XrayWrapperReportException;
+import com.mercedesbenz.sechub.xraywrapper.report.XrayWrapperReportException;
 
 public class XrayWrapperCLI {
 
@@ -31,8 +31,7 @@ public class XrayWrapperCLI {
         } catch (XrayWrapperRuntimeException e) {
             LOG.error("An error occurred during the scan process: {}", e.getMessage(), e);
             System.exit(e.getExitCode().getExitCode());
-
-        } catch (XrayWrapperCommandLineParser.XrayWrapperCommandLineParserException e) {
+        } catch (XrayWrapperCommandLineParserException e) {
             LOG.error("An error occurred while parsing the command line arguments: {}", e.getMessage(), e);
             System.exit(XrayWrapperExitCode.UNKNOWN_PARAMETERS.getExitCode());
         } catch (XrayWrapperReportException e) {
