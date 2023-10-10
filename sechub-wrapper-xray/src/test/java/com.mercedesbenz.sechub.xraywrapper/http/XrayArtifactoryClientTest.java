@@ -21,18 +21,20 @@ class XrayArtifactoryClientTest {
 
     XrayArtifactoryClient xrayArtifactoryClientSpy;
 
+    XrayAPIResponse response;
+
     @BeforeEach
     public void beforeEach() {
         XrayArtifact artifact = mock(XrayArtifact.class);
         XrayConfiguration configuration = mock(XrayConfiguration.class);
         xrayArtifactoryClient = new XrayArtifactoryClient(artifact, configuration);
         xrayArtifactoryClientSpy = Mockito.spy(xrayArtifactoryClient);
+        response = mock(XrayAPIResponse.class);
     }
 
     @Test
     public void test_getXrayVersion() throws JsonProcessingException {
         /* prepare */
-        XrayAPIResponse response = mock(XrayAPIResponse.class);
         ObjectMapper mapper = new ObjectMapper();
         String jsonString = "{\"xray_version\": \"123\"}";
         response.setBody(jsonString);
@@ -56,7 +58,6 @@ class XrayArtifactoryClientTest {
     @Test
     public void test_checkArtifactoryUpload() {
         /* prepare */
-        XrayAPIResponse response = mock(XrayAPIResponse.class);
         Mockito.doReturn(response).when(xrayArtifactoryClientSpy).send(any());
 
         /* execute + test */
@@ -72,7 +73,6 @@ class XrayArtifactoryClientTest {
     @Test
     public void test_getScanStatus() throws JsonProcessingException {
         /* prepare */
-        XrayAPIResponse response = mock(XrayAPIResponse.class);
         ObjectMapper mapper = new ObjectMapper();
         String jsonString = "{\"status\": \"scanned\"}";
         response.setBody(jsonString);
@@ -96,7 +96,6 @@ class XrayArtifactoryClientTest {
     @Test
     public void test_requestScanReports() {
         /* prepare */
-        XrayAPIResponse response = mock(XrayAPIResponse.class);
         Mockito.doReturn(response).when(xrayArtifactoryClientSpy).send(any());
 
         /* execute + test */
@@ -112,7 +111,6 @@ class XrayArtifactoryClientTest {
     @Test
     public void test_startScanArtifact() throws JsonProcessingException {
         /* prepare */
-        XrayAPIResponse response = mock(XrayAPIResponse.class);
         ObjectMapper mapper = new ObjectMapper();
         String jsonString = "{\"info\": \"info_string\"}";
         response.setBody(jsonString);
@@ -131,6 +129,42 @@ class XrayArtifactoryClientTest {
     public void test_startScanArtifact_xrayWrapperException() {
         /* execute + test */
         assertThrows(XrayWrapperRuntimeException.class, () -> xrayArtifactoryClient.startScanArtifact());
+    }
+
+    @Test
+    public void test_deleteArtifact() throws JsonProcessingException {
+        /* prepare */
+        Mockito.doReturn(response).when(xrayArtifactoryClientSpy).send(any());
+
+        /* execute + test */
+        xrayArtifactoryClientSpy.deleteArtifact();
+    }
+
+    @Test
+    public void test_deleteArtifact_xrayWrapperException() {
+        /* prepare */
+        response.setStatus_code(401);
+
+        /* execute + test */
+        assertThrows(XrayWrapperRuntimeException.class, () -> xrayArtifactoryClient.deleteArtifact());
+    }
+
+    @Test
+    public void test_deleteUploads() throws JsonProcessingException {
+        /* prepare */
+        Mockito.doReturn(response).when(xrayArtifactoryClientSpy).send(any());
+
+        /* execute + test */
+        xrayArtifactoryClientSpy.deleteUploads();
+    }
+
+    @Test
+    public void test_ddeleteUploads_xrayWrapperException() {
+        /* prepare */
+        response.setStatus_code(401);
+
+        /* execute + test */
+        assertThrows(XrayWrapperRuntimeException.class, () -> xrayArtifactoryClient.deleteUploads());
     }
 
 }

@@ -78,4 +78,16 @@ public class XrayHttpRequestBuilder {
                 + "\"cyclonedx\": true," + "\"cyclonedx_format\": \"json\"}";
         return new XrayAPIRequest(url, XrayAPIRequest.RequestMethodEnum.POST, true, data);
     }
+
+    public static XrayAPIRequest buildDeleteArtifact(String baseUrl, XrayArtifact artifact, String repository) {
+        String url = baseUrl + "/artifactory/" + repository + "/" + artifact.getName() + "/" + artifact.getTag();
+        String data = "";
+        return new XrayAPIRequest(url, XrayAPIRequest.RequestMethodEnum.DELETE, true, data);
+    }
+
+    public static XrayAPIRequest buildDeleteUploads(String baseUrl, XrayArtifact artifact, String repository) {
+        String url = baseUrl + "/artifactory/" + repository + "/" + artifact.getName() + "/_uploads";
+        String data = "";
+        return new XrayAPIRequest(url, XrayAPIRequest.RequestMethodEnum.DELETE, true, data);
+    }
 }

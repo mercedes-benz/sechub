@@ -79,6 +79,27 @@ public class XrayArtifactoryClient {
         return node.get("info").asText();
     }
 
+    public void deleteArtifact() throws XrayWrapperRuntimeException {
+        // Xray deletes empty folders with auto cleanup
+        // deletes artifact folder in artifactory
+        XrayAPIRequest request = XrayHttpRequestBuilder.buildDeleteArtifact(xrayConfiguration.getArtifactory(), artifact, xrayConfiguration.getRegister());
+        XrayAPIResponse response = send(request);
+        if (isErrorResponse(response)) {
+            LOG.error("Could not delete artifact from artifactory");
+            throw new XrayWrapperRuntimeException("Could not delete artifact from artifactory", XrayWrapperExitCode.ARTIFACT_NOT_FOUND);
+        }
+    }
+
+    public void deleteUploads() throws XrayWrapperRuntimeException {
+        // deletes _uploads folder in artifactory
+        XrayAPIRequest request = XrayHttpRequestBuilder.buildDeleteUploads(xrayConfiguration.getArtifactory(), artifact, xrayConfiguration.getRegister());
+        XrayAPIResponse response = send(request);
+        if (isErrorResponse(response)) {
+            LOG.error("Could not delete _uploads from artifactory");
+            throw new XrayWrapperRuntimeException("Could not delete artifact from artifactory", XrayWrapperExitCode.ARTIFACT_NOT_FOUND);
+        }
+    }
+
     JsonNode getBodyAsNode(String body) throws XrayWrapperRuntimeException {
         ObjectMapper mapper = new ObjectMapper();
         try {

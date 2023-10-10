@@ -52,8 +52,13 @@ public class XrayClientArtifactoryController {
         }
 
         // save reports from xray
-        if (artifactoryClient.requestScanReports())
+        if (artifactoryClient.requestScanReports()) {
             manageReports();
+        }
+
+        // delete artifact from artifactory
+        artifactoryClient.deleteArtifact();
+        artifactoryClient.deleteUploads();
     }
 
     private void manageReports() throws XrayWrapperReportException {

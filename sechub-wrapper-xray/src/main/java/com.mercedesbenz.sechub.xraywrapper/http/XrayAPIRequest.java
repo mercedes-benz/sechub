@@ -5,7 +5,7 @@ import java.net.URL;
 
 public class XrayAPIRequest {
     public enum RequestMethodEnum {
-        GET, POST;
+        GET, POST, DELETE;
     }
 
     private String baseUrl;
