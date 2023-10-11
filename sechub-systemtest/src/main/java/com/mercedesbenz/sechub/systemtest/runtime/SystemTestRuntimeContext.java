@@ -56,7 +56,7 @@ public class SystemTestRuntimeContext {
     Path additionalResourcesRoot;
 
     private SystemTestConfiguration configuration;
-    private SystemTestRunResult currentResult;
+    private SystemTestRunResult currentResult = new SystemTestRunResult("no-test-fallback-" + System.nanoTime());
     private Set<SystemTestRunResult> results = new LinkedHashSet<>();
     private SystemTestRuntimeMetaData runtimeMetaData = new SystemTestRuntimeMetaData();
     private Map<PDSSolutionDefinition, PDSSolutionRuntimeData> pdsSolutionRuntimeDataMap = new LinkedHashMap<>();
