@@ -353,15 +353,13 @@ public class SecHubConfigurationModelValidator {
     }
 
     private void validateIncludeOrExcludePattern(WebScanConfigurationModelValidationContext webScanContext, String subUrlPattern, boolean include) {
-        if (subUrlPattern.equals("/") || subUrlPattern.equals(SecHubWebScanConfiguration.WEBSCAN_URL_WILDCARD_SYMBOL)) {
-            return;
-        }
         if (subUrlPattern.contains("//")) {
             if (include) {
                 webScanContext.markAsFailed(WEB_SCAN_INCLUDE_INVALID, "The include: " + subUrlPattern + " contains '//'!");
             } else {
                 webScanContext.markAsFailed(WEB_SCAN_EXCLUDE_INVALID, "The exclude: " + subUrlPattern + " contains '//'!");
             }
+            return;
         }
 
         String urlToCheck = webScanContext.sanatizedTargetUrl;
@@ -371,7 +369,7 @@ public class SecHubConfigurationModelValidator {
             urlToCheck += subUrlPattern;
         }
 
-        String createdIncludeOrExcludeUrl = createUrlWithoutWildCards(createUrlWithoutWildCards(urlToCheck));
+        String createdIncludeOrExcludeUrl = createUrlWithoutWildCards(urlToCheck);
         try {
             new URI(createdIncludeOrExcludeUrl).toURL();
         } catch (URISyntaxException | MalformedURLException e) {

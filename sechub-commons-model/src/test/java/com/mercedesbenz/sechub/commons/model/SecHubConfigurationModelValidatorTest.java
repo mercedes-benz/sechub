@@ -1328,8 +1328,9 @@ class SecHubConfigurationModelValidatorTest {
     }
 
     @ParameterizedTest
-    @ValueSource(strings = { "/en/contacts", "/en/contacts/<*>", "<*>/en/contacts/<*>", "<*>/en/<*>/contacts/<*>", "<*>/en/<*>/<*>/contacts/<*>",
-            "<*>/en<*><*>contacts/<*>", "en/contacts/<*>", "en/contacts", "en/contacts/" })
+    @EmptySource
+    @ValueSource(strings = { "/", "<*>", "/<*>", "<*>/<*>", "/en/contacts", "/en/contacts/<*>", "<*>/en/contacts/<*>", "<*>/en/<*>/contacts/<*>",
+            "<*>/en/<*>/<*>/contacts/<*>", "<*>/en<*><*>contacts/<*>", "en/contacts/<*>", "en/contacts", "en/contacts/" })
     void valid_include_and_exclude_has_no_errors(String includeExcludeEntry) {
         /* prepare */
         List<String> entryAsList = Arrays.asList(includeExcludeEntry);
@@ -1348,8 +1349,26 @@ class SecHubConfigurationModelValidatorTest {
     }
 
     @ParameterizedTest
-    @ValueSource(strings = { "//en/contacts", "/en//contacts", "/en/contacts//" })
+    @ValueSource(strings = { "//en/contacts", "/en//contacts", "/en/contacts//", "/en/ contacts/" })
     void double_slashes_include_exclude_has_errors(String includeExcludeEntry) {
+        /* prepare */
+        List<String> entryAsList = Arrays.asList(includeExcludeEntry);
+        SecHubScanConfiguration sechubConfiguration = createSecHubConfigurationWithWebScanPart();
+        sechubConfiguration.getWebScan().get().excludes = Optional.of(entryAsList);
+        sechubConfiguration.getWebScan().get().includes = Optional.of(entryAsList);
+
+        modelSupportCollectedScanTypes.add(ScanType.WEB_SCAN);
+
+        /* execute */
+        SecHubConfigurationModelValidationResult result = validatorToTest.validate(sechubConfiguration);
+        /* test */
+        assertHasError(result, SecHubConfigurationModelValidationError.WEB_SCAN_EXCLUDE_INVALID);
+        assertHasError(result, SecHubConfigurationModelValidationError.WEB_SCAN_INCLUDE_INVALID);
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = { " ", " /en/contacts", "/en/ contacts/", "/en/contacts " })
+    void spaces_in_include_exclude_has_errors(String includeExcludeEntry) {
         /* prepare */
         List<String> entryAsList = Arrays.asList(includeExcludeEntry);
         SecHubScanConfiguration sechubConfiguration = createSecHubConfigurationWithWebScanPart();
@@ -1430,6 +1449,21 @@ class SecHubConfigurationModelValidatorTest {
 
         /* test */
         assertHasError(result, SecHubConfigurationModelValidationError.WEB_SCAN_INCLUDE_INVALID);
+    }
+
+    @Test
+    void can_read_sechub_web_scan_config_with_wildcards() {
+        /* prepare */
+        String json = TestFileReader.loadTextFile("src/test/resources/sechub_config_web_scan_includes_excludes_with_wildcards.json");
+        SecHubScanConfiguration sechubConfiguration = SecHubScanConfiguration.createFromJSON(json);
+
+        modelSupportCollectedScanTypes.add(ScanType.WEB_SCAN);
+
+        /* execute */
+        SecHubConfigurationModelValidationResult result = validatorToTest.validate(sechubConfiguration);
+
+        /* test */
+        assertHasNoErrors(result);
     }
 
     private SecHubScanConfiguration createSecHubConfigurationWithWebScanPart() {
