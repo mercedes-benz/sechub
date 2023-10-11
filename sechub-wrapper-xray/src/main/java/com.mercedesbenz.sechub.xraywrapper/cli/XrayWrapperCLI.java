@@ -1,12 +1,12 @@
 package com.mercedesbenz.sechub.xraywrapper.cli;
 
-import static com.mercedesbenz.sechub.xraywrapper.util.XrayConfigurationBuilder.createXrayConfiguration;
+import static com.mercedesbenz.sechub.xraywrapper.util.XrayWrapperConfigurationHelper.createXrayConfiguration;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.mercedesbenz.sechub.xraywrapper.config.XrayArtifact;
-import com.mercedesbenz.sechub.xraywrapper.config.XrayConfiguration;
+import com.mercedesbenz.sechub.xraywrapper.config.XrayWrapperArtifact;
+import com.mercedesbenz.sechub.xraywrapper.config.XrayWrapperConfiguration;
 import com.mercedesbenz.sechub.xraywrapper.report.XrayWrapperReportException;
 
 public class XrayWrapperCLI {
@@ -17,17 +17,17 @@ public class XrayWrapperCLI {
         new XrayWrapperCLI().start(args);
     }
 
-    XrayClientArtifactoryController xrayClientArtifactoryController;
+    XrayWrapperArtifactoryClientController xrayWrapperArtifactoryClientController;
 
     void start(String[] args) {
         XrayWrapperCommandLineParser parser = new XrayWrapperCommandLineParser();
         final XrayWrapperCommandLineParser.Arguments arguments;
         try {
             arguments = parser.parseCommandLineArgs(args);
-            XrayConfiguration xrayConfiguration = createXrayConfiguration(arguments.scantype(), arguments.outputFile());
-            XrayArtifact artifact = new XrayArtifact(arguments.name(), arguments.sha256(), arguments.tag(), arguments.scantype());
-            xrayClientArtifactoryController = new XrayClientArtifactoryController(xrayConfiguration, artifact);
-            xrayClientArtifactoryController.waitForScansToFinishAndDownloadReport();
+            XrayWrapperConfiguration xrayWrapperConfiguration = createXrayConfiguration(arguments.scantype(), arguments.outputFile());
+            XrayWrapperArtifact artifact = new XrayWrapperArtifact(arguments.name(), arguments.sha256(), arguments.tag(), arguments.scantype());
+            xrayWrapperArtifactoryClientController = new XrayWrapperArtifactoryClientController(xrayWrapperConfiguration, artifact);
+            xrayWrapperArtifactoryClientController.waitForScansToFinishAndDownloadReport();
         } catch (XrayWrapperRuntimeException e) {
             LOG.error("An error occurred during the scan process: {}", e.getMessage(), e);
             System.exit(e.getExitCode().getExitCode());
@@ -38,6 +38,5 @@ public class XrayWrapperCLI {
             LOG.error("An error occurred during report generation: {}", e.getMessage(), e);
             System.exit(e.getExitCode().getExitCode());
         }
-
     }
 }

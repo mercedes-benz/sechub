@@ -2,7 +2,7 @@ package com.mercedesbenz.sechub.xraywrapper.cli;
 
 public class XrayWrapperRuntimeException extends RuntimeException {
 
-    private XrayWrapperExitCode exitCode;
+    private final XrayWrapperExitCode exitCode;
 
     public XrayWrapperRuntimeException(String message, XrayWrapperExitCode exitCode) {
         this(message, null, exitCode);

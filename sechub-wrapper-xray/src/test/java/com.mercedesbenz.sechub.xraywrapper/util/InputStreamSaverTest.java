@@ -1,6 +1,6 @@
 package com.mercedesbenz.sechub.xraywrapper.util;
 
-import static com.mercedesbenz.sechub.xraywrapper.util.InputStreamSaver.saveInputStreamToStringBuilder;
+import static com.mercedesbenz.sechub.xraywrapper.util.InputStreamSaver.saveInputStreamToString;
 import static com.mercedesbenz.sechub.xraywrapper.util.InputStreamSaver.saveInputStreamToZipFile;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -31,7 +31,7 @@ class InputStreamSaverTest {
         String s;
 
         /* execute */
-        s = saveInputStreamToStringBuilder(is);
+        s = saveInputStreamToString(is);
 
         /* test */
         assertEquals(testinputString, s);
@@ -40,7 +40,7 @@ class InputStreamSaverTest {
     @Test
     public void test_saveInputStreamToStringBuilder_null() {
         /* execute + test */
-        assertThrows(NullPointerException.class, () -> saveInputStreamToStringBuilder(null));
+        assertThrows(NullPointerException.class, () -> saveInputStreamToString(null));
     }
 
     @Test
@@ -49,7 +49,7 @@ class InputStreamSaverTest {
         InputStream mockedIs = mock(InputStream.class);
 
         /* execute + test */
-        assertThrows(XrayWrapperRuntimeException.class, () -> saveInputStreamToStringBuilder(mockedIs));
+        assertThrows(XrayWrapperRuntimeException.class, () -> saveInputStreamToString(mockedIs));
     }
 
     @Test

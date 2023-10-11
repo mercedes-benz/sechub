@@ -1,0 +1,82 @@
+package com.mercedesbenz.sechub.xraywrapper.config;
+
+public class XrayWrapperConfiguration {
+
+    private final String artifactory;
+
+    private final String register;
+
+    private final String ScanType;
+
+    private final String zipDirectory;
+
+    private final String secHubReport;
+
+    private int waitUntilRetrySec = 10;
+
+    private int requestRetries = 10;
+
+    public static class Builder {
+        private final String artifactory;
+
+        private final String register;
+
+        private final String ScanType;
+
+        private final String zipDirectory;
+
+        private final String secHubReport;
+
+        private Builder(String artifactory, String register, String ScanType, String zipDirectory, String secHubReport) {
+            this.artifactory = artifactory;
+            this.register = register;
+            this.ScanType = ScanType;
+            this.zipDirectory = zipDirectory;
+            this.secHubReport = secHubReport;
+        }
+
+        public static Builder create(String artifactory, String register, String ScanType, String zipDirectory, String secHubReport) {
+            return new Builder(artifactory, register, ScanType, zipDirectory, secHubReport);
+        }
+
+        public XrayWrapperConfiguration build() {
+            return new XrayWrapperConfiguration(this.artifactory, this.register, this.ScanType, this.zipDirectory, this.secHubReport);
+        }
+    }
+
+    private XrayWrapperConfiguration(String artifactory, String register, String ScanType, String zipDirectory, String secHubReport) {
+        this.artifactory = artifactory;
+        this.register = register;
+        this.ScanType = ScanType;
+        this.zipDirectory = zipDirectory;
+        this.secHubReport = secHubReport;
+    }
+
+    public String getArtifactory() {
+        return artifactory;
+    }
+
+    public String getRegister() {
+        return register;
+    }
+
+    public String getScan_type() {
+        return ScanType;
+    }
+
+    public String getSecHubReport() {
+        return secHubReport;
+    }
+
+    public String getZip_directory() {
+        return zipDirectory;
+    }
+
+    public int getWaitUntilRetrySec() {
+        return waitUntilRetrySec;
+    }
+
+    public int getRequestRetries() {
+        return requestRetries;
+    }
+}

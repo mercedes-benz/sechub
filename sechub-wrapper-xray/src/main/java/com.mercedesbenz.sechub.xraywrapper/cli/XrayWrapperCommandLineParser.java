@@ -13,42 +13,38 @@ public class XrayWrapperCommandLineParser {
     }
 
     public Arguments parseCommandLineArgs(String[] args) throws XrayWrapperCommandLineParserException {
-        XrayCommandLineArgs xrayArgs = buildArguments(args);
+        XrayWrapperCommandLineArgs xrayArgs = buildArguments(args);
         if (xrayArgs.isHelpRequired() || xrayArgs.getName().isEmpty() || xrayArgs.getSha256().isEmpty()) {
             commander.usage();
-            throw new XrayWrapperCommandLineParserException("Error: required parameter was empty" + Arrays.toString(args));
+            throw new XrayWrapperCommandLineParserException("Required parameters were empty" + Arrays.toString(args));
         }
 
         String name = xrayArgs.getName();
         String tag = "";
-        if (xrayArgs.getScantype().equals("docker")) {
+        if (xrayArgs.getScanType().equals("docker")) {
             String[] image = parseImage(xrayArgs.getName());
             if (image != null) {
                 name = image[0];
                 tag = image[1];
             }
+        } else {
+            throw new XrayWrapperCommandLineParserException("Scan type is not supported: " + xrayArgs.getScanType());
         }
 
         String sha256 = parseSha256(xrayArgs.getSha256());
 
-        return new Arguments(name, sha256, xrayArgs.getScantype(), tag, xrayArgs.getOutputFile());
+        return new Arguments(name, sha256, xrayArgs.getScanType(), tag, xrayArgs.getOutputFile());
     }
 
-    /**
-     * Parsing arguments with jcommander
-     *
-     * @param args command line arguments
-     * @return parsed command line arguments
-     */
-    private XrayCommandLineArgs buildArguments(String[] args) throws XrayWrapperCommandLineParserException {
-        XrayCommandLineArgs xrayCommandLineArgs = new XrayCommandLineArgs();
+    private XrayWrapperCommandLineArgs buildArguments(String[] args) throws XrayWrapperCommandLineParserException {
+        XrayWrapperCommandLineArgs xrayWrapperCommandLineArgs = new XrayWrapperCommandLineArgs();
         try {
-            commander = JCommander.newBuilder().addObject(xrayCommandLineArgs).acceptUnknownOptions(false).build();
+            commander = JCommander.newBuilder().addObject(xrayWrapperCommandLineArgs).acceptUnknownOptions(false).build();
             commander.parse(args);
         } catch (ParameterException e) {
-            throw new XrayWrapperCommandLineParserException("Error: could not parse parameters:" + Arrays.toString(args), e);
+            throw new XrayWrapperCommandLineParserException("Could not parse parameters:" + Arrays.toString(args), e);
         }
-        return xrayCommandLineArgs;
+        return xrayWrapperCommandLineArgs;
     }
 
     private String[] parseImage(String image) {

@@ -22,6 +22,8 @@ public enum XrayWrapperExitCode {
 
     THREAD_INTERRUPTION(10),
 
+    FILE_NOT_FOUND(11),
+
     ;
 
     private final int exitCode;

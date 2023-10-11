@@ -24,7 +24,7 @@ class XrayWrapperCLITest {
     @Test
     void test_start() {
         /* prepare */
-        mockConstruction(XrayClientArtifactoryController.class);
+        mockConstruction(XrayWrapperArtifactoryClientController.class);
         String[] args = { "--name", "myname", "--sha256", "sha256:xxx", "--scantype", "docker", "--outputfile", "outfile" };
 
         /* execute + test */
