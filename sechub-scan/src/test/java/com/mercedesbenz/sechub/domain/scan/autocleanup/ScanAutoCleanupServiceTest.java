@@ -90,13 +90,11 @@ class ScanAutoCleanupServiceTest {
         verify(timeCalculationService).calculateNowMinusDays(eq(days));
         verify(productResultRepository, times(1)).deleteResultsOlderThan(cleanTime);
         verify(projectScanLogRepository, times(1)).deleteLogsOlderThan(cleanTime);
-        // as long as issue https://github.com/mercedes-benz/sechub/issues/1010 is not
-        // implemented we keep the old data for statistics, so never called:
-        verify(scanReportRepository, never()).deleteReportsOlderThan(cleanTime);
+        verify(scanReportRepository, times(1)).deleteReportsOlderThan(cleanTime);
 
         // check inspection as expected
         ArgumentCaptor<AutoCleanupResult> captor = ArgumentCaptor.forClass(AutoCleanupResult.class);
-        verify(inspector, times(2)).inspect(captor.capture());
+        verify(inspector, times(3)).inspect(captor.capture());
 
         List<AutoCleanupResult> values = captor.getAllValues();
         for (AutoCleanupResult result : values) {
@@ -111,6 +109,9 @@ class ScanAutoCleanupServiceTest {
                 break;
             case "product-results":
                 assertEquals(20, result.getDeletedEntries());
+                break;
+            case "scan-reports":
+                assertEquals(30, result.getDeletedEntries());
                 break;
             default:
                 fail("unexpected variant:" + variant);
