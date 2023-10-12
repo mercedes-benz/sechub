@@ -12,8 +12,9 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import org.cyclonedx.model.Bom;
+
 import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.mercedesbenz.sechub.xraywrapper.cli.XrayWrapperExitCode;
 
 public class XrayWrapperReportReader {
@@ -21,7 +22,11 @@ public class XrayWrapperReportReader {
     File cycloneReport;
     File securityReport;
     File sechubReport;
-    private HashMap<String, CycloneDXVulnerabilityBuilder> vulnerabilityHashMap;
+
+    // private HashMap<String, CycloneDXVulnerabilityBuilder>
+    // cycloneDXVulnerabilityBuilderHashMap;
+
+    private HashMap<String, CycloneDXVulnerabilityBuilder> cycloneDXVulnerabilityHashMap;
 
     public void getFiles(String unzippedArchive, String pdsResultFile) throws XrayWrapperReportException {
         sechubReport = new File(pdsResultFile);
@@ -59,17 +64,41 @@ public class XrayWrapperReportReader {
         return paths;
     }
 
+    /*
+     * DEPRECATED public void readSecurityReport() throws XrayWrapperReportException
+     * { XrayWrapperReportTransformer xrayWrapperReportTransformer = new
+     * XrayWrapperReportTransformer(); JsonNode rootNode =
+     * xrayWrapperReportTransformer.getRootDataNode(securityReport);
+     * vulnerabilityHashMap =
+     * xrayWrapperReportTransformer.transformSecurityReport(rootNode); }
+     *
+     */
+
+    /*
+     * DEPRECATED public ObjectNode mapVulnerabilities() throws
+     * XrayWrapperReportException { return
+     * XrayWrapperReportVulnerabilityMapper.mapVulnerabilities(cycloneReport,
+     * cycloneDXVulnerabilityHashMap); }
+     *
+     */
+    /*
+     * public void writeReport(ObjectNode rootNode) throws
+     * XrayWrapperReportException { XrayWrapperReportWriter.writeReport(rootNode,
+     * sechubReport); }
+     *
+     */
     public void readSecurityReport() throws XrayWrapperReportException {
-        XrayWrapperReportTransformer xrayWrapperReportTransformer = new XrayWrapperReportTransformer();
-        JsonNode rootNode = xrayWrapperReportTransformer.getRootDataNode(securityReport);
-        vulnerabilityHashMap = xrayWrapperReportTransformer.transformSecurityReport(rootNode);
+        XrayWrapperReportParser xrayWrapperReportParser = new XrayWrapperReportParser();
+        JsonNode rootNode = xrayWrapperReportParser.getRootDataNode(securityReport);
+        cycloneDXVulnerabilityHashMap = xrayWrapperReportParser.transformSecurityReport(rootNode);
     }
 
-    public ObjectNode mapVulnerabilities() throws XrayWrapperReportException {
-        return XrayWrapperReportVulnerabilityMapper.mapVulnerabilities(cycloneReport, vulnerabilityHashMap);
+    public Bom mapVulnerabilities() throws XrayWrapperReportException {
+        return XrayWrapperReportVulnerabilityMapper.mapVulnerabilities(cycloneReport, cycloneDXVulnerabilityHashMap);
     }
 
-    public void writeReport(ObjectNode rootNode) throws XrayWrapperReportException {
-        XrayWrapperReportWriter.writeReport(rootNode, sechubReport);
+    public void writeReport(Bom sbom) throws XrayWrapperReportException {
+        XrayWrapperReportWriter.writeReport(sbom, sechubReport);
     }
+
 }

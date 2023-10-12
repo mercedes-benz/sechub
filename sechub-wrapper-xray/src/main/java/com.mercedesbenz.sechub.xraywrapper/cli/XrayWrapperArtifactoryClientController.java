@@ -1,17 +1,16 @@
 package com.mercedesbenz.sechub.xraywrapper.cli;
 
-import java.util.Objects;
-import java.util.concurrent.TimeUnit;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.mercedesbenz.sechub.xraywrapper.api.XrayAPIArtifactoryClient;
 import com.mercedesbenz.sechub.xraywrapper.config.XrayWrapperArtifact;
 import com.mercedesbenz.sechub.xraywrapper.config.XrayWrapperConfiguration;
 import com.mercedesbenz.sechub.xraywrapper.report.XrayWrapperReportException;
 import com.mercedesbenz.sechub.xraywrapper.report.XrayWrapperReportReader;
+import org.cyclonedx.model.Bom;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.util.Objects;
+import java.util.concurrent.TimeUnit;
 
 public class XrayWrapperArtifactoryClientController {
 
@@ -63,8 +62,8 @@ public class XrayWrapperArtifactoryClientController {
     private void manageReports() throws XrayWrapperReportException {
         reportReader.getFiles(xrayWrapperConfiguration.getZip_directory(), xrayWrapperConfiguration.getSecHubReport());
         reportReader.readSecurityReport();
-        ObjectNode root = reportReader.mapVulnerabilities();
-        reportReader.writeReport(root);
+        Bom cycloneDXBom = reportReader.mapVulnerabilities();
+        reportReader.writeReport(cycloneDXBom);
     }
 
     /**

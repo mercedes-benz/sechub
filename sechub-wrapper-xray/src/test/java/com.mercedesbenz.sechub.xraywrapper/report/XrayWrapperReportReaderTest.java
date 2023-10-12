@@ -1,18 +1,21 @@
 package com.mercedesbenz.sechub.xraywrapper.report;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-
-import java.io.File;
-import java.io.IOException;
-
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
+import org.cyclonedx.CycloneDxSchema;
+import org.cyclonedx.model.Bom;
 import org.junit.Assert;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ObjectNode;
+import java.io.File;
+import java.io.IOException;
+
+import static org.cyclonedx.BomGeneratorFactory.createJson;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class XrayWrapperReportReaderTest {
 
@@ -77,11 +80,11 @@ class XrayWrapperReportReaderTest {
         ObjectNode expectedNode = (ObjectNode) mapper.readTree(target);
 
         /* execute */
-        ObjectNode root = reportReader.mapVulnerabilities();
+        Bom bom = reportReader.mapVulnerabilities();
 
         /* test */
+        JsonNode root = createJson(CycloneDxSchema.Version.VERSION_14, bom).toJsonNode();
         Assertions.assertEquals(expectedNode.toString(), root.toString());
-
     }
 
     @Test

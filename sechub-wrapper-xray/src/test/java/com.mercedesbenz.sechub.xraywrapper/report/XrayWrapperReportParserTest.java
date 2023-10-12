@@ -12,19 +12,19 @@ import org.junit.jupiter.api.Test;
 
 import com.fasterxml.jackson.databind.JsonNode;
 
-class XrayWrapperReportTransformerTest {
+class XrayWrapperReportParserTest {
 
-    XrayWrapperReportTransformer xrayWrapperReportTransformer;
+    XrayWrapperReportParser xrayWrapperReportParser;
 
     @BeforeEach
     public void beforeEach() {
-        xrayWrapperReportTransformer = new XrayWrapperReportTransformer();
+        xrayWrapperReportParser = new XrayWrapperReportParser();
     }
 
     @Test
     public void test_getRootDataNode_null() {
         /* execute + test */
-        Assert.assertThrows(IllegalArgumentException.class, () -> xrayWrapperReportTransformer.getRootDataNode(null));
+        Assert.assertThrows(IllegalArgumentException.class, () -> xrayWrapperReportParser.getRootDataNode(null));
 
     }
 
@@ -35,7 +35,7 @@ class XrayWrapperReportTransformerTest {
         int numberOfVulnerabilities = 63;
 
         /* execute + test */
-        JsonNode node = xrayWrapperReportTransformer.getRootDataNode(file);
+        JsonNode node = xrayWrapperReportParser.getRootDataNode(file);
         assertEquals(numberOfVulnerabilities, node.size());
     }
 
@@ -43,11 +43,11 @@ class XrayWrapperReportTransformerTest {
     public void test_transformSecurityReport() {
         /* prepare */
         File file = new File("src/test/resources/xray-report-examples/Docker_Security_Export.json");
-        JsonNode node = xrayWrapperReportTransformer.getRootDataNode(file);
+        JsonNode node = xrayWrapperReportParser.getRootDataNode(file);
         int numberOfVulnerabilities = 25;
 
         /* execute */
-        HashMap<String, CycloneDXVulnerabilityBuilder> vulnerabilityHashMap = xrayWrapperReportTransformer.transformSecurityReport(node);
+        HashMap<String, CycloneDXVulnerabilityBuilder> vulnerabilityHashMap = xrayWrapperReportParser.transformSecurityReport(node);
 
         /* test */
         assertEquals(numberOfVulnerabilities, vulnerabilityHashMap.size());
@@ -56,6 +56,6 @@ class XrayWrapperReportTransformerTest {
     @Test
     public void test_transformSecurityReport_null() {
         /* execute + test */
-        assertThrows(NullPointerException.class, () -> xrayWrapperReportTransformer.transformSecurityReport(null));
+        assertThrows(NullPointerException.class, () -> xrayWrapperReportParser.transformSecurityReport(null));
     }
 }

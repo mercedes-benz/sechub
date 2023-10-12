@@ -24,6 +24,8 @@ public enum XrayWrapperExitCode {
 
     FILE_NOT_FOUND(11),
 
+    FILE_NOT_VALID(12),
+
     ;
 
     private final int exitCode;
