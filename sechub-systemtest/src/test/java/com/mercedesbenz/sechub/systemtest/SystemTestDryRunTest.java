@@ -7,6 +7,8 @@ import static org.junit.jupiter.api.Assertions.*;
 
 import java.io.IOException;
 import java.nio.file.Path;
+import java.util.List;
+import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -16,7 +18,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.mercedesbenz.sechub.commons.model.JSONConverter;
+import com.mercedesbenz.sechub.systemtest.config.LocalSetupDefinition;
+import com.mercedesbenz.sechub.systemtest.config.ProjectDefinition;
 import com.mercedesbenz.sechub.systemtest.config.RuntimeVariable;
+import com.mercedesbenz.sechub.systemtest.config.SecHubConfigurationDefinition;
 import com.mercedesbenz.sechub.systemtest.config.SystemTestConfiguration;
 import com.mercedesbenz.sechub.systemtest.runtime.SystemTestResult;
 import com.mercedesbenz.sechub.systemtest.runtime.SystemTestRuntimeException;
@@ -45,6 +50,43 @@ class SystemTestDryRunTest {
         LOG.info("--------------------------------------------------------------------------------------------------------------------------------");
         LOG.info("Systemtest: {}", info.getDisplayName());
         LOG.info("--------------------------------------------------------------------------------------------------------------------------------");
+    }
+
+    @Test
+    void faked_webscan_can_be_executed_without_errors_and_contains_expected_data_in_configuration() throws IOException {
+
+        /* @formatter:off */
+
+        /* prepare*/
+        SystemTestConfiguration configuration = configure().
+                localSetup().
+                    secHub().
+                        project().
+                            addURItoWhiteList("https://example.com/app-to-test").
+                        endProject().
+                    endSecHub().
+                endLocalSetup().
+                build();
+        /* @formatter:on */
+
+        /* execute */
+        SystemTestResult result = systemTestApi.runSystemTests(params().localRun().dryRun().testConfiguration(configuration)
+                .additionalResourcesPath(ADDITIONAL_RESOURCES_PATH).pdsSolutionPath(FAKED_PDS_SOLUTIONS_PATH).build());
+
+        /* test */
+        if (result.hasFailedTests()) {
+            fail("The execution failed:" + result.toString());
+        }
+
+        Optional<LocalSetupDefinition> localSetup = configuration.getSetup().getLocal();
+        SecHubConfigurationDefinition configure = localSetup.get().getSecHub().getConfigure();
+        Optional<List<ProjectDefinition>> projectsOpt = configure.getProjects();
+
+        List<ProjectDefinition> projects = projectsOpt.get();
+        assertEquals(1, projects.size());
+        ProjectDefinition project = projects.iterator().next();
+        assertTrue(project.getWhitelistedURIs().contains("https://example.com/app-to-test"));
+
     }
 
     @Test

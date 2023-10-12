@@ -168,6 +168,7 @@ public class ArchiveSupport {
                 @SuppressWarnings("resource")
                 TarArchiveOutputStream tarOutputStream = (TarArchiveOutputStream) outputStream;
                 tarOutputStream.setLongFileMode(TarArchiveOutputStream.LONGFILE_POSIX);
+                tarOutputStream.setBigNumberMode(TarArchiveOutputStream.BIGNUMBER_POSIX);
             }
 
             Map<String, CreationPathContext> uniqueNameToPaths = creationContext.getUniqueToPathsMap();

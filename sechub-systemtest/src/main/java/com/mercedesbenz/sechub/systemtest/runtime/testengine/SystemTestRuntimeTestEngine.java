@@ -15,7 +15,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.mercedesbenz.sechub.api.SecHubClient;
-import com.mercedesbenz.sechub.api.SecHubClientException;
 import com.mercedesbenz.sechub.api.SecHubReport;
 import com.mercedesbenz.sechub.commons.model.JSONConverter;
 import com.mercedesbenz.sechub.commons.model.SecHubConfigurationModel;
@@ -55,6 +54,7 @@ public class SystemTestRuntimeTestEngine {
 
     RunSecHubJobDefinitionTransformer runSecHubJobTransformer = new RunSecHubJobDefinitionTransformer();
     SystemTestRuntimeTestAssertion testAssertion = new SystemTestRuntimeTestAssertion();
+    CurrentTestVariableCalculatorFactory currentTestVariableCalculatorFactory = new DefaultCurrentTestVariableCalculatorFactory();
 
     public SystemTestRuntimeTestEngine(ExecutionSupport execSupport) {
         this.execSupport = execSupport;
@@ -63,10 +63,7 @@ public class SystemTestRuntimeTestEngine {
     public void runTest(TestDefinition test, SystemTestRuntimeContext runtimeContext) {
         TestEngineTestContext testContext = createTestContext(test, runtimeContext);
 
-        if (!prepareTest(testContext)) {
-            /* preparation failed */
-            return;
-        }
+        prepareTest(testContext);
 
         executeTest(testContext);
 
@@ -81,29 +78,38 @@ public class SystemTestRuntimeTestEngine {
     }
 
     private void assertTest(TestEngineTestContext testContext) {
+        if (testContext.hasFailed()) {
+            // already marked as failed
+            return;
+        }
         List<TestAssertDefinition> asserts = testContext.getTest().getAssert();
         for (TestAssertDefinition assertDef : asserts) {
             testAssertion.assertTest(assertDef, testContext);
         }
     }
 
-    private boolean prepareTest(TestEngineTestContext testContext) {
-        boolean prepared = false;
+    private void prepareTest(TestEngineTestContext testContext) {
+        if (testContext.hasFailed()) {
+            // already marked as failed
+            return;
+        }
         try {
             executePreparationSteps("Prepare", testContext);
-            prepared = true;
-        } catch (SystemTestScriptExecutionException e) {
+        } catch (Exception e) {
             testContext.markAsFailed("Was not able to prepare test", e);
         }
-        return prepared;
     }
 
     private void executeTest(TestEngineTestContext testContext) {
+        if (testContext.hasFailed()) {
+            // already marked as failed
+            return;
+        }
         /* mark current test - fail if not supported */
         if (testContext.isSecHubTest()) {
             try {
                 launchSecHubJob(testContext);
-            } catch (SecHubClientException e) {
+            } catch (Exception e) {
                 testContext.markAsFailed("Was not able to launch SecHub job", e);
             }
         } else {
@@ -113,7 +119,7 @@ public class SystemTestRuntimeTestEngine {
         }
     }
 
-    private void launchSecHubJob(TestEngineTestContext testContext) throws SecHubClientException {
+    private void launchSecHubJob(TestEngineTestContext testContext) throws Exception {
         SecHubClient clientForScheduling = null;
 
         SystemTestRuntimeContext runtimeContext = testContext.getRuntimeContext();
@@ -228,8 +234,8 @@ public class SystemTestRuntimeTestEngine {
         String from = copyDirectoriesDefinition.getFrom();
         String to = copyDirectoriesDefinition.getTo();
 
-        from = testContext.dynamicVariableGenerator.calculateValue(from);
-        to = testContext.dynamicVariableGenerator.calculateValue(to);
+        from = testContext.currentTestVariableCalculator.calculateValue(from);
+        to = testContext.currentTestVariableCalculator.calculateValue(to);
 
         try {
             Path source = Paths.get(from).toRealPath();
@@ -251,7 +257,8 @@ public class SystemTestRuntimeTestEngine {
 
     private void executePreparationScript(TestEngineTestContext testContext, ScriptDefinition scriptDefinition) throws SystemTestScriptExecutionException {
 
-        ProcessContainer processContainer = execSupport.execute(scriptDefinition, testContext.getDynamicVariableGenerator(), SystemTestExecutionState.PREPARE);
+        ProcessContainer processContainer = execSupport.execute(scriptDefinition, testContext.getCurrentTestVariableCalculator(),
+                SystemTestExecutionState.PREPARE);
 
         long startTime = System.currentTimeMillis();
         long diffTime = startTime;
@@ -307,25 +314,34 @@ public class SystemTestRuntimeTestEngine {
 
     }
 
+    class DefaultCurrentTestVariableCalculatorFactory implements CurrentTestVariableCalculatorFactory {
+
+        @Override
+        public CurrentTestVariableCalculator create(TestDefinition test, SystemTestRuntimeContext runtimeContext) {
+            return new CurrentTestVariableCalculator(test, runtimeContext);
+        }
+
+    }
+
     class TestEngineTestContext {
 
         private final SystemTestRuntimeTestEngine systemTestRuntimeTestEngine;
         private SecHubRunData secHubRunData;
         SystemTestRuntimeContext runtimeContext;
         TestDefinition test;
-        private CurrentTestVariableCalculator dynamicVariableGenerator;
+        private CurrentTestVariableCalculator currentTestVariableCalculator;
 
         TestEngineTestContext(SystemTestRuntimeTestEngine systemTestRuntimeTestEngine, TestDefinition test, SystemTestRuntimeContext runtimeContext) {
             this.systemTestRuntimeTestEngine = systemTestRuntimeTestEngine;
             this.test = test;
             this.runtimeContext = runtimeContext;
-            this.dynamicVariableGenerator = new CurrentTestVariableCalculator(test, runtimeContext);
+            this.currentTestVariableCalculator = currentTestVariableCalculatorFactory.create(test, runtimeContext);
 
             appendSecHubRunData();
         }
 
-        public VariableCalculator getDynamicVariableGenerator() {
-            return dynamicVariableGenerator;
+        public VariableCalculator getCurrentTestVariableCalculator() {
+            return currentTestVariableCalculator;
         }
 
         public TestDefinition getTest() {
@@ -361,7 +377,7 @@ public class SystemTestRuntimeTestEngine {
 
             String configurationAsJson = converter.toJSON(secHubConfiguration);
 
-            String changedConfigurationAsJson = dynamicVariableGenerator.replace(configurationAsJson);
+            String changedConfigurationAsJson = currentTestVariableCalculator.replace(configurationAsJson);
 
             secHubRunData.secHubConfiguration = converter.fromJSON(SecHubConfigurationModel.class, changedConfigurationAsJson);
         }
@@ -383,6 +399,10 @@ public class SystemTestRuntimeTestEngine {
             failure.setDetails(createDetails(hint, e));
 
             runtimeContext.getCurrentResult().setFailure(failure);
+        }
+
+        public boolean hasFailed() {
+            return runtimeContext.getCurrentResult().hasFailed();
         }
 
         private String createDetails(String hint, Exception e) {

@@ -39,11 +39,11 @@ COPY packages.txt $TOOL_FOLDER/packages.txt
 # Interesting idea, but not as useful inside a container, which in essence is already a virtual environment.
 # Use `--break-system-packages` to let the Python package manager `pip` mix packages from Debian and Python
 RUN pip install --break-system-packages -r $TOOL_FOLDER/packages.txt
-# The pip -e option seems to be broken in recent versions of setuptools
-# when it comes to installing modules from the local filesystem,
-# see: https://github.com/pypa/setuptools/issues/3301
-# this is why we download the plugin using a GIT http call and not use GIT submodules
-RUN pip install --break-system-packages -e "git+https://github.com/alexdd/bandit-sarif-formatter#egg=bandit-sarif-formatter"
+# pip --editable option allows for installing from VCS Urls
+# https://pip.pypa.io/en/stable/cli/pip_install/#cmdoption-e
+# It is possible to specify a GIT ref in a VCS Url using @ delimeter
+# https://pip.pypa.io/en/stable/topics/vcs-support/
+RUN pip install --break-system-packages --editable "git+https://github.com/alexdd/bandit-sarif-formatter@main#egg=bandit-sarif-formatter"
 
 # Create the PDS workspace
 WORKDIR "$WORKSPACE"
