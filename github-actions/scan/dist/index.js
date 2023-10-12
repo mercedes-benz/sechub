@@ -23700,7 +23700,8 @@ function scan(parameter, format) {
  * @param format format in which the report should be downloaded
  */
 function getReport(jobUUID, projectName, format) {
-    return shelljs_shell.exec(`${secHubCli} -jobUUID ${jobUUID} -project ${projectName} --reportformat ${format} getReport`);
+    const result = shelljs_shell.exec(`${secHubCli} -jobUUID ${jobUUID} -project ${projectName} --reportformat ${format} getReport`);
+    return result.stdout;
 }
 /**
  * Executes the markFalsePositives method of the SecHub CLI.
@@ -23767,7 +23768,7 @@ function createSecHubJson(includeFolders, excludeFolders) {
  */
 function logExitCode(code) {
     const prefix = 'Exit code: ';
-    if (code === 0) {
+    if (code === '0') {
         core.info(prefix + code);
     }
     else {
@@ -23895,14 +23896,34 @@ function downloadReports(formats) {
         lib_core.info('No more formats');
         return;
     }
-    const jobUUID = getFieldFromJsonReport('jobUUID');
-    lib_core.debug('JobUUID: ' + jobUUID);
-    formats.forEach((format) => {
-        lib_core.info(`Get Report as ${format}`);
-        const exitCode = getReport(jobUUID, projectName, format).code;
-        logExitCode(exitCode);
-    });
+    const json = loadJsonReport();
+    if (json) {
+        const jobUUID = getFieldFromJsonReport('jobUUID', json);
+        lib_core.debug('JobUUID: ' + jobUUID);
+        formats.forEach((format) => {
+            lib_core.info(`Get Report as ${format}`);
+            const exitCode = getReport(jobUUID, projectName, format);
+            logExitCode(exitCode);
+        });
+    }
     lib_core.endGroup();
+    return json;
+}
+/**
+ * Load and parse the SecHub JSON report.
+ * @returns {object | undefined} - The parsed JSON report or undefined if not found or there was an error.
+ */
+function loadJsonReport() {
+    const fileName = getJsonReportFileName();
+    const filePath = `${getWorkspaceDir()}/${fileName}`;
+    try {
+        const jsonData = JSON.parse(external_fs_.readFileSync(filePath, 'utf8'));
+        return jsonData;
+    }
+    catch (error) {
+        lib_core.warning(`Error reading or parsing JSON file: ${error}`);
+        return undefined;
+    }
 }
 /**
  * Uploads all given files as artifact
@@ -23930,27 +23951,16 @@ async function uploadArtifact(name, paths) {
 /**
  * Reads the given field from the SecHub JSON report.
  * @param {string} field - The field relative to root, where the value should be found. The field can be a nested field, e.g. result.count.
+ * @param jsonData - The json data to read the field from.
  * @returns {*} - The value found for the given field or undefined if not found.
  */
-function getFieldFromJsonReport(field) {
-    // Construct the full file path of the JSON report
-    const fileName = getJsonReportFileName();
-    const filePath = `${getWorkspaceDir()}/${fileName}`;
-    // Read and parse the JSON data from the file
-    let jsonData;
-    try {
-        jsonData = JSON.parse(external_fs_.readFileSync(filePath, 'utf8'));
-    }
-    catch (error) {
-        lib_core.warning(`Error reading or parsing JSON file: ${error}`);
-        return undefined;
-    }
+function getFieldFromJsonReport(field, jsonData) {
     // Split the given field into individual keys
     const keys = field.split('.');
     // Traverse the JSON object to find the requested field
     let currentKey = jsonData;
     for (const key of keys) {
-        if (currentKey.hasOwnProperty(key)) {
+        if (currentKey && currentKey.hasOwnProperty && typeof currentKey.hasOwnProperty === 'function' && currentKey.hasOwnProperty(key)) {
             currentKey = currentKey[key];
         }
         else {
@@ -23978,18 +23988,18 @@ function getJsonReportFileName() {
 /**
  * Reports specific outputs to GitHub Actions based on the SecHub result.
  */
-function reportOutputs() {
+function reportOutputs(jsonData) {
     lib_core.startGroup('Reporting outputs to GitHub');
-    const findings = analyzeFindings();
-    const trafficLight = getFieldFromJsonReport('trafficLight');
-    const totalFindings = getFieldFromJsonReport('result.count');
+    const findings = analyzeFindings(jsonData);
+    const trafficLight = getFieldFromJsonReport('trafficLight', jsonData);
+    const totalFindings = getFieldFromJsonReport('result.count', jsonData);
     const humanReadableSummary = buildSummary(trafficLight, totalFindings, findings);
-    setOutput("scan-trafficlight", trafficLight, 'string');
-    setOutput("scan-findings-count", totalFindings, 'number');
-    setOutput("scan-findings-high", findings.highCount, 'number');
-    setOutput("scan-findings-medium", findings.mediumCount, 'number');
-    setOutput("scan-findings-low", findings.lowCount, 'number');
-    setOutput("scan-readable-summary", humanReadableSummary, 'string');
+    setOutput('scan-trafficlight', trafficLight, 'string');
+    setOutput('scan-findings-count', totalFindings, 'number');
+    setOutput('scan-findings-high', findings.highCount, 'number');
+    setOutput('scan-findings-medium', findings.mediumCount, 'number');
+    setOutput('scan-findings-low', findings.lowCount, 'number');
+    setOutput('scan-readable-summary', humanReadableSummary, 'string');
     lib_core.endGroup();
 }
 /**
@@ -23997,8 +24007,8 @@ function reportOutputs() {
  * If no findings were reported, it returns 0 for each severity.
  * @returns {{mediumCount: number, highCount: number, lowCount: number}}
  */
-function analyzeFindings() {
-    const findings = getFieldFromJsonReport('result.findings');
+function analyzeFindings(jsonData) {
+    const findings = getFieldFromJsonReport('result.findings', jsonData);
     // if no findings were reported.
     if (findings === undefined) {
         lib_core.debug('No findings reported to be categorized.');
@@ -24014,13 +24024,13 @@ function analyzeFindings() {
     let unmapped = 0;
     findings.forEach((finding) => {
         switch (finding.severity) {
-            case "MEDIUM":
+            case 'MEDIUM':
                 mediumCount++;
                 break;
-            case "HIGH":
+            case 'HIGH':
                 highCount++;
                 break;
-            case "LOW":
+            case 'LOW':
                 lowCount++;
                 break;
             default:
@@ -24028,7 +24038,9 @@ function analyzeFindings() {
                 break;
         }
     });
-    lib_core.debug('Unmapped findings: ${unmapped}');
+    if (unmapped > 0) {
+        lib_core.debug('Unmapped findings: ${unmapped}');
+    }
     return {
         mediumCount,
         highCount,
@@ -24124,7 +24136,7 @@ function initScan() {
  */
 function executeScan(configParameter, format) {
     const exitCode = scan(configParameter, format).code;
-    logExitCode(exitCode);
+    logExitCode(exitCode.toString());
     return exitCode;
 }
 /**
@@ -24133,8 +24145,8 @@ function executeScan(configParameter, format) {
  * @param exitCode exit code from the scan
  */
 async function postScan(reportFormats, exitCode) {
-    downloadReports(reportFormats.slice(1));
-    reportOutputs();
+    const jsonReport = downloadReports(reportFormats.slice(1));
+    reportOutputs(jsonReport);
     await uploadArtifact(src_settings_namespaceObject_0.vz, getFiles(src_settings_namespaceObject_0.nl));
     if (exitCode !== 0 && failJobOnFindings === 'true') {
         failAction(exitCode);

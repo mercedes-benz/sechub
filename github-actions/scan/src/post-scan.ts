@@ -13,23 +13,42 @@ import * as fs from 'fs';
  * Downloads the reports for the given formats.
  * @param formats formats in which the report should be downloaded
  */
-export function downloadReports(formats: string[]): void {
+export function downloadReports(formats: string[]): object | undefined {
     core.startGroup('Download Reports');
     if (formats.length === 0) {
         core.info('No more formats');
         return;
     }
-
-    const jobUUID = getFieldFromJsonReport('jobUUID');
-    core.debug('JobUUID: ' + jobUUID);
-    formats.forEach((format) => {
-        core.info(`Get Report as ${format}`);
-        const exitCode = getReport(jobUUID, input.projectName, format).code;
-        logExitCode(exitCode);
-    });
+    const json = loadJsonReport();
+    if (json) {
+        const jobUUID = getFieldFromJsonReport('jobUUID', json);
+        core.debug('JobUUID: ' + jobUUID);
+        formats.forEach((format) => {
+            core.info(`Get Report as ${format}`);
+            const exitCode = getReport(jobUUID, input.projectName, format);
+            logExitCode(exitCode);
+        });
+    }
     core.endGroup();
+    return json;
 }
 
+/**
+ * Load and parse the SecHub JSON report.
+ * @returns {object | undefined} - The parsed JSON report or undefined if not found or there was an error.
+ */
+function loadJsonReport(): object | undefined {
+    const fileName = getJsonReportFileName();
+    const filePath = `${getWorkspaceDir()}/${fileName}`;
+
+    try {
+        const jsonData = JSON.parse(fs.readFileSync(filePath, 'utf8'));
+        return jsonData;
+    } catch (error) {
+        core.warning(`Error reading or parsing JSON file: ${error}`);
+        return undefined;
+    }
+}
 
 /**
  * Uploads all given files as artifact
@@ -59,29 +78,17 @@ export async function uploadArtifact(name: string, paths: string[]) {
 /**
  * Reads the given field from the SecHub JSON report.
  * @param {string} field - The field relative to root, where the value should be found. The field can be a nested field, e.g. result.count.
+ * @param jsonData - The json data to read the field from.
  * @returns {*} - The value found for the given field or undefined if not found.
  */
-function getFieldFromJsonReport(field: string): any {
-    // Construct the full file path of the JSON report
-    const fileName = getJsonReportFileName();
-    const filePath = `${getWorkspaceDir()}/${fileName}`;
-
-    // Read and parse the JSON data from the file
-    let jsonData;
-    try {
-        jsonData = JSON.parse(fs.readFileSync(filePath, 'utf8'));
-    } catch (error) {
-        core.warning(`Error reading or parsing JSON file: ${error}`);
-        return undefined;
-    }
-
+function getFieldFromJsonReport(field: string, jsonData: any): any {
     // Split the given field into individual keys
     const keys = field.split('.');
 
     // Traverse the JSON object to find the requested field
     let currentKey = jsonData;
     for (const key of keys) {
-        if (currentKey.hasOwnProperty(key)) {
+        if (currentKey && currentKey.hasOwnProperty && typeof currentKey.hasOwnProperty === 'function' && currentKey.hasOwnProperty(key)) {
             currentKey = currentKey[key];
         } else {
             core.warning(`Field "${key}" not found in the JSON report.`);
@@ -113,18 +120,18 @@ function getJsonReportFileName(): string {
 /**
  * Reports specific outputs to GitHub Actions based on the SecHub result.
  */
-export function reportOutputs(): void {
+export function reportOutputs(jsonData: any): void {
     core.startGroup('Reporting outputs to GitHub');
-    const findings = analyzeFindings();
-    const trafficLight = getFieldFromJsonReport('trafficLight');
-    const totalFindings = getFieldFromJsonReport('result.count');
+    const findings = analyzeFindings(jsonData);
+    const trafficLight = getFieldFromJsonReport('trafficLight', jsonData);
+    const totalFindings = getFieldFromJsonReport('result.count', jsonData);
     const humanReadableSummary = buildSummary(trafficLight, totalFindings, findings);
-    setOutput("scan-trafficlight", trafficLight, 'string');
-    setOutput("scan-findings-count", totalFindings, 'number');
-    setOutput("scan-findings-high", findings.highCount, 'number');
-    setOutput("scan-findings-medium", findings.mediumCount, 'number');
-    setOutput("scan-findings-low", findings.lowCount, 'number');
-    setOutput("scan-readable-summary", humanReadableSummary, 'string');
+    setOutput('scan-trafficlight', trafficLight, 'string');
+    setOutput('scan-findings-count', totalFindings, 'number');
+    setOutput('scan-findings-high', findings.highCount, 'number');
+    setOutput('scan-findings-medium', findings.mediumCount, 'number');
+    setOutput('scan-findings-low', findings.lowCount, 'number');
+    setOutput('scan-readable-summary', humanReadableSummary, 'string');
     core.endGroup();
 }
 
@@ -134,8 +141,8 @@ export function reportOutputs(): void {
  * If no findings were reported, it returns 0 for each severity.
  * @returns {{mediumCount: number, highCount: number, lowCount: number}}
  */
-function analyzeFindings(): { mediumCount: number; highCount: number; lowCount: number } {
-    const findings = getFieldFromJsonReport('result.findings');
+function analyzeFindings(jsonData: any): { mediumCount: number; highCount: number; lowCount: number } {
+    const findings = getFieldFromJsonReport('result.findings', jsonData);
 
     // if no findings were reported.
     if (findings === undefined) {
@@ -154,22 +161,25 @@ function analyzeFindings(): { mediumCount: number; highCount: number; lowCount: 
 
     findings.forEach((finding: { severity: string; }) => {
         switch (finding.severity) {
-            case "MEDIUM":
-                mediumCount++;
-                break;
-            case "HIGH":
-                highCount++;
-                break;
-            case "LOW":
-                lowCount++;
-                break;
-            default:
-                unmapped++;
-                break;
+        case 'MEDIUM':
+            mediumCount++;
+            break;
+        case 'HIGH':
+            highCount++;
+            break;
+        case 'LOW':
+            lowCount++;
+            break;
+        default:
+            unmapped++;
+            break;
         }
     });
 
-    core.debug('Unmapped findings: ${unmapped}');
+    if (unmapped > 0) {
+        core.debug('Unmapped findings: ${unmapped}');
+    }
+
     return {
         mediumCount,
         highCount,

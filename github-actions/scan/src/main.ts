@@ -43,7 +43,7 @@ function initScan(): ScanSettings {
  */
 export function executeScan(configParameter: string | null, format: string): number {
     const exitCode = scan(configParameter, format).code;
-    logExitCode(exitCode);
+    logExitCode(exitCode.toString());
     return exitCode;
 }
 
@@ -53,8 +53,8 @@ export function executeScan(configParameter: string | null, format: string): num
  * @param exitCode exit code from the scan
  */
 export async function postScan(reportFormats: string[], exitCode: number): Promise<void> {
-    downloadReports(reportFormats.slice(1));
-    reportOutputs();
+    const jsonReport = downloadReports(reportFormats.slice(1));
+    reportOutputs(jsonReport);
     await uploadArtifact(settingsFile.artifactName, getFiles(settingsFile.filePattern));
 
     if (exitCode !== 0 && input.failJobOnFindings === 'true') {
