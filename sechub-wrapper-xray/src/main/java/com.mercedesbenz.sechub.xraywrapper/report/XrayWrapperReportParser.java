@@ -1,16 +1,16 @@
 package com.mercedesbenz.sechub.xraywrapper.report;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ArrayNode;
-import com.mercedesbenz.sechub.xraywrapper.cli.XrayWrapperExitCode;
+import static java.lang.Double.parseDouble;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
 
-import static java.lang.Double.parseDouble;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.mercedesbenz.sechub.xraywrapper.cli.XrayWrapperExitCode;
 
 /**
  * parses the xray security report vulnerabilities to cycloneDX vulnerabilities

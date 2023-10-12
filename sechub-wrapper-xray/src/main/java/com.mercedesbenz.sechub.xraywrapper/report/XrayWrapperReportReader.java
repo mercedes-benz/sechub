@@ -1,8 +1,7 @@
 package com.mercedesbenz.sechub.xraywrapper.report;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.mercedesbenz.sechub.xraywrapper.cli.XrayWrapperExitCode;
-import org.cyclonedx.model.Bom;
+import static com.mercedesbenz.sechub.xraywrapper.util.ZipFileExtractor.fileExists;
+import static com.mercedesbenz.sechub.xraywrapper.util.ZipFileExtractor.unzipFile;
 
 import java.io.File;
 import java.io.IOException;
@@ -13,8 +12,10 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import static com.mercedesbenz.sechub.xraywrapper.util.ZipFileExtractor.fileExists;
-import static com.mercedesbenz.sechub.xraywrapper.util.ZipFileExtractor.unzipFile;
+import org.cyclonedx.model.Bom;
+
+import com.fasterxml.jackson.databind.JsonNode;
+import com.mercedesbenz.sechub.xraywrapper.cli.XrayWrapperExitCode;
 
 public class XrayWrapperReportReader {
 

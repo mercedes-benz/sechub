@@ -1,18 +1,19 @@
 package com.mercedesbenz.sechub.xraywrapper.report;
 
+import static org.cyclonedx.BomGeneratorFactory.createJson;
+
+import java.io.File;
+import java.io.IOException;
+
+import org.cyclonedx.CycloneDxSchema;
+import org.cyclonedx.model.Bom;
+import org.cyclonedx.parsers.JsonParser;
+
 import com.fasterxml.jackson.core.util.DefaultPrettyPrinter;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
 import com.mercedesbenz.sechub.xraywrapper.cli.XrayWrapperExitCode;
-import org.cyclonedx.CycloneDxSchema;
-import org.cyclonedx.model.Bom;
-import org.cyclonedx.parsers.JsonParser;
-
-import java.io.File;
-import java.io.IOException;
-
-import static org.cyclonedx.BomGeneratorFactory.createJson;
 
 public class XrayWrapperReportWriter {
 
