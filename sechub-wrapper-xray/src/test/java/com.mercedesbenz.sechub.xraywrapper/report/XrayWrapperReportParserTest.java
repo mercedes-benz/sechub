@@ -47,7 +47,7 @@ class XrayWrapperReportParserTest {
         int numberOfVulnerabilities = 25;
 
         /* execute */
-        HashMap<String, CycloneDXVulnerabilityBuilder> vulnerabilityHashMap = xrayWrapperReportParser.transformSecurityReport(node);
+        HashMap<String, CycloneDXVulnerabilityHelper> vulnerabilityHashMap = xrayWrapperReportParser.transformSecurityReport(node);
 
         /* test */
         assertEquals(numberOfVulnerabilities, vulnerabilityHashMap.size());

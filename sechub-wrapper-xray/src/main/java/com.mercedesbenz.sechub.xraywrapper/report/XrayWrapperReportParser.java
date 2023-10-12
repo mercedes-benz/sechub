@@ -12,6 +12,10 @@ import java.util.HashMap;
 
 import static java.lang.Double.parseDouble;
 
+/**
+ * parses the xray security report vulnerabilities to cycloneDX vulnerabilities
+ */
+
 public class XrayWrapperReportParser {
     public JsonNode getRootDataNode(File xraySecurityReport) throws XrayWrapperReportException {
         try {
@@ -21,11 +25,11 @@ public class XrayWrapperReportParser {
         }
     }
 
-    public HashMap<String, CycloneDXVulnerabilityBuilder> transformSecurityReport(JsonNode rootDataNode) throws XrayWrapperReportException {
-        HashMap<String, CycloneDXVulnerabilityBuilder> vulnerabilityHashMap = new HashMap<>();
+    public HashMap<String, CycloneDXVulnerabilityHelper> transformSecurityReport(JsonNode rootDataNode) throws XrayWrapperReportException {
+        HashMap<String, CycloneDXVulnerabilityHelper> vulnerabilityHashMap = new HashMap<>();
 
         for (JsonNode node : rootDataNode) {
-            CycloneDXVulnerabilityBuilder vulnerability = new CycloneDXVulnerabilityBuilder();
+            CycloneDXVulnerabilityHelper vulnerability = new CycloneDXVulnerabilityHelper();
             setBomRef(node, vulnerability);
             String cvssString;
             try {
@@ -44,7 +48,7 @@ public class XrayWrapperReportParser {
         return vulnerabilityHashMap;
     }
 
-    private void setBomRef(JsonNode node, CycloneDXVulnerabilityBuilder vulnerability) {
+    private void setBomRef(JsonNode node, CycloneDXVulnerabilityHelper vulnerability) {
         String bomRef = node.get("id").asText();
         if (bomRef != null) {
             // set bomRef as ID if vulnerability does not have CVE ID
@@ -54,7 +58,7 @@ public class XrayWrapperReportParser {
         }
     }
 
-    private String getAndSetCveDetails(JsonNode node, CycloneDXVulnerabilityBuilder vulnerability) throws JsonProcessingException {
+    private String getAndSetCveDetails(JsonNode node, CycloneDXVulnerabilityHelper vulnerability) throws JsonProcessingException {
         final JsonNode cveDetailsNode = new ObjectMapper().readTree(String.valueOf(node)).get("component_versions").get("more_details").get("cves");
         String cvssString = "";
         JsonNode cvssNode;
@@ -76,7 +80,7 @@ public class XrayWrapperReportParser {
         return cvssString;
     }
 
-    private void setSource(JsonNode node, CycloneDXVulnerabilityBuilder vulnerability) {
+    private void setSource(JsonNode node, CycloneDXVulnerabilityHelper vulnerability) {
         String name = node.get("provider").asText();
         String url = "";
         if (name != null) {
@@ -84,7 +88,7 @@ public class XrayWrapperReportParser {
         }
     }
 
-    private void setRatingFromString(JsonNode node, CycloneDXVulnerabilityBuilder vulnerability, String cvssString) {
+    private void setRatingFromString(JsonNode node, CycloneDXVulnerabilityHelper vulnerability, String cvssString) {
         String[] cvssArray = cvssString.split("/", 3);
         String score = cvssArray[0];
         Double scoreDouble = parseDouble(score);
@@ -100,17 +104,16 @@ public class XrayWrapperReportParser {
         }
     }
 
-    private void setDescription(JsonNode node, CycloneDXVulnerabilityBuilder vulnerability) {
+    private void setDescription(JsonNode node, CycloneDXVulnerabilityHelper vulnerability) {
         String description = node.get("component_versions").get("more_details").get("description").asText();
         if (description != null) {
             vulnerability.getVulnerability().setDescription(description);
         }
     }
 
-    private void addAffects(JsonNode node, CycloneDXVulnerabilityBuilder vulnerability) {
+    private void addAffects(JsonNode node, CycloneDXVulnerabilityHelper vulnerability) {
         String ref = node.get("source_comp_id").asText();
         vulnerability.getVulnerability().setBomRef(ref);
-        String purls = node.get("source_id").asText();
         ArrayNode vulnerableVersions = (ArrayNode) node.get("component_versions").get("vulnerable_versions");
         ArrayNode fixedVersions = (ArrayNode) node.get("component_versions").get("fixed_versions");
         vulnerability.addAffects(ref, vulnerableVersions, fixedVersions);

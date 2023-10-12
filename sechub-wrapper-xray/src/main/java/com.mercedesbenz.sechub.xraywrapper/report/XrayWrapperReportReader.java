@@ -1,7 +1,8 @@
 package com.mercedesbenz.sechub.xraywrapper.report;
 
-import static com.mercedesbenz.sechub.xraywrapper.util.ZipFileExtractor.fileExists;
-import static com.mercedesbenz.sechub.xraywrapper.util.ZipFileExtractor.unzipFile;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.mercedesbenz.sechub.xraywrapper.cli.XrayWrapperExitCode;
+import org.cyclonedx.model.Bom;
 
 import java.io.File;
 import java.io.IOException;
@@ -12,10 +13,8 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import org.cyclonedx.model.Bom;
-
-import com.fasterxml.jackson.databind.JsonNode;
-import com.mercedesbenz.sechub.xraywrapper.cli.XrayWrapperExitCode;
+import static com.mercedesbenz.sechub.xraywrapper.util.ZipFileExtractor.fileExists;
+import static com.mercedesbenz.sechub.xraywrapper.util.ZipFileExtractor.unzipFile;
 
 public class XrayWrapperReportReader {
 
@@ -23,10 +22,7 @@ public class XrayWrapperReportReader {
     File securityReport;
     File sechubReport;
 
-    // private HashMap<String, CycloneDXVulnerabilityBuilder>
-    // cycloneDXVulnerabilityBuilderHashMap;
-
-    private HashMap<String, CycloneDXVulnerabilityBuilder> cycloneDXVulnerabilityHashMap;
+    private HashMap<String, CycloneDXVulnerabilityHelper> cycloneDXVulnerabilityHashMap;
 
     public void getFiles(String unzippedArchive, String pdsResultFile) throws XrayWrapperReportException {
         sechubReport = new File(pdsResultFile);
@@ -64,29 +60,6 @@ public class XrayWrapperReportReader {
         return paths;
     }
 
-    /*
-     * DEPRECATED public void readSecurityReport() throws XrayWrapperReportException
-     * { XrayWrapperReportTransformer xrayWrapperReportTransformer = new
-     * XrayWrapperReportTransformer(); JsonNode rootNode =
-     * xrayWrapperReportTransformer.getRootDataNode(securityReport);
-     * vulnerabilityHashMap =
-     * xrayWrapperReportTransformer.transformSecurityReport(rootNode); }
-     *
-     */
-
-    /*
-     * DEPRECATED public ObjectNode mapVulnerabilities() throws
-     * XrayWrapperReportException { return
-     * XrayWrapperReportVulnerabilityMapper.mapVulnerabilities(cycloneReport,
-     * cycloneDXVulnerabilityHashMap); }
-     *
-     */
-    /*
-     * public void writeReport(ObjectNode rootNode) throws
-     * XrayWrapperReportException { XrayWrapperReportWriter.writeReport(rootNode,
-     * sechubReport); }
-     *
-     */
     public void readSecurityReport() throws XrayWrapperReportException {
         XrayWrapperReportParser xrayWrapperReportParser = new XrayWrapperReportParser();
         JsonNode rootNode = xrayWrapperReportParser.getRootDataNode(securityReport);
