@@ -1,8 +1,6 @@
 // SPDX-License-Identifier: MIT
 
 import * as core from '@actions/core';
-import * as fs from 'fs';
-import * as path from 'path';
 import { downloadReports, reportOutputs } from '../src/post-scan';
 import { getReport } from '../../shared/src/sechub-cli';
 

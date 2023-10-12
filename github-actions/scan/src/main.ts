@@ -43,7 +43,7 @@ function initScan(): ScanSettings {
  */
 export function executeScan(configParameter: string | null, format: string): number {
     const exitCode = scan(configParameter, format).code;
-    logExitCode(exitCode.toString());
+    logExitCode(exitCode);
     return exitCode;
 }
 

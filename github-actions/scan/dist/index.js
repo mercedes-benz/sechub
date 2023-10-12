@@ -23700,8 +23700,7 @@ function scan(parameter, format) {
  * @param format format in which the report should be downloaded
  */
 function getReport(jobUUID, projectName, format) {
-    const result = shelljs_shell.exec(`${secHubCli} -jobUUID ${jobUUID} -project ${projectName} --reportformat ${format} getReport`);
-    return result.stdout;
+    return shelljs_shell.exec(`${secHubCli} -jobUUID ${jobUUID} -project ${projectName} --reportformat ${format} getReport`);
 }
 /**
  * Executes the markFalsePositives method of the SecHub CLI.
@@ -23768,7 +23767,7 @@ function createSecHubJson(includeFolders, excludeFolders) {
  */
 function logExitCode(code) {
     const prefix = 'Exit code: ';
-    if (code === '0') {
+    if (code === 0) {
         core.info(prefix + code);
     }
     else {
@@ -23903,7 +23902,7 @@ function downloadReports(formats) {
         formats.forEach((format) => {
             lib_core.info(`Get Report as ${format}`);
             const exitCode = getReport(jobUUID, projectName, format);
-            logExitCode(exitCode);
+            logExitCode(exitCode ? exitCode.code : 0);
         });
     }
     lib_core.endGroup();
@@ -24136,7 +24135,7 @@ function initScan() {
  */
 function executeScan(configParameter, format) {
     const exitCode = scan(configParameter, format).code;
-    logExitCode(exitCode.toString());
+    logExitCode(exitCode);
     return exitCode;
 }
 /**

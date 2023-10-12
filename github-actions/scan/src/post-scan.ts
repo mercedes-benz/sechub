@@ -26,7 +26,7 @@ export function downloadReports(formats: string[]): object | undefined {
         formats.forEach((format) => {
             core.info(`Get Report as ${format}`);
             const exitCode = getReport(jobUUID, input.projectName, format);
-            logExitCode(exitCode);
+            logExitCode(exitCode ? exitCode.code : 0);
         });
     }
     core.endGroup();

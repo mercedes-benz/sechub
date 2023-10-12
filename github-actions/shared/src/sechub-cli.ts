@@ -21,9 +21,8 @@ export function scan(parameter: string | null, format: string): ShellString {
  * @param projectName name of the project for which the report should be downloaded
  * @param format format in which the report should be downloaded
  */
-export function getReport(jobUUID: string, projectName: string, format: string): string {
-    const result = shell.exec(`${secHubCli} -jobUUID ${jobUUID} -project ${projectName} --reportformat ${format} getReport`);
-    return result.stdout;
+export function getReport(jobUUID: string, projectName: string, format: string): ShellString {
+    return shell.exec(`${secHubCli} -jobUUID ${jobUUID} -project ${projectName} --reportformat ${format} getReport`);
 }
 
 /**
