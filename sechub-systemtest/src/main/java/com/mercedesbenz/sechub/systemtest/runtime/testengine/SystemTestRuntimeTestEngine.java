@@ -16,6 +16,7 @@ import org.slf4j.LoggerFactory;
 
 import com.mercedesbenz.sechub.api.SecHubClient;
 import com.mercedesbenz.sechub.api.SecHubReport;
+import com.mercedesbenz.sechub.commons.core.util.SimpleStringUtils;
 import com.mercedesbenz.sechub.commons.model.JSONConverter;
 import com.mercedesbenz.sechub.commons.model.SecHubConfigurationModel;
 import com.mercedesbenz.sechub.systemtest.config.CopyDefinition;
@@ -110,7 +111,7 @@ public class SystemTestRuntimeTestEngine {
             try {
                 launchSecHubJob(testContext);
             } catch (Exception e) {
-                testContext.markAsFailed("Was not able to launch SecHub job", e);
+                testContext.markAsFailed("Was not able to launch SecHub job. Reason: " + SimpleStringUtils.truncateWhenTooLong(e.getMessage(), 150), e);
             }
         } else {
             // currently we do only support SecHub runs
