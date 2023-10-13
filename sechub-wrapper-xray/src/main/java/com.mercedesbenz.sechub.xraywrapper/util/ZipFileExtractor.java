@@ -1,8 +1,5 @@
 package com.mercedesbenz.sechub.xraywrapper.util;
 
-import com.mercedesbenz.sechub.xraywrapper.cli.XrayWrapperExitCode;
-import com.mercedesbenz.sechub.xraywrapper.report.XrayWrapperReportException;
-
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -11,6 +8,9 @@ import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
+
+import com.mercedesbenz.sechub.xraywrapper.cli.XrayWrapperExitCode;
+import com.mercedesbenz.sechub.xraywrapper.report.XrayWrapperReportException;
 
 public class ZipFileExtractor {
 

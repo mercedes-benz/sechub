@@ -1,12 +1,13 @@
 package com.mercedesbenz.sechub.xraywrapper.util;
 
-import com.mercedesbenz.sechub.xraywrapper.report.XrayWrapperReportException;
-import org.junit.jupiter.api.Test;
+import static com.mercedesbenz.sechub.xraywrapper.util.ZipFileExtractor.unzipFile;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.io.File;
 
-import static com.mercedesbenz.sechub.xraywrapper.util.ZipFileExtractor.unzipFile;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import org.junit.jupiter.api.Test;
+
+import com.mercedesbenz.sechub.xraywrapper.report.XrayWrapperReportException;
 
 class ZipFileExtractorTest {
 
