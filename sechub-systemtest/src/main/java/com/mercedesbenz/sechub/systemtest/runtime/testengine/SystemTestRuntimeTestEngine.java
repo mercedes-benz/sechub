@@ -111,7 +111,11 @@ public class SystemTestRuntimeTestEngine {
             try {
                 launchSecHubJob(testContext);
             } catch (Exception e) {
-                testContext.markAsFailed("Was not able to launch SecHub job. Reason: " + SimpleStringUtils.truncateWhenTooLong(e.getMessage(), 150), e);
+                String reason = e.getMessage();
+                if (reason == null) {
+                    reason = e.getClass().getSimpleName();
+                }
+                testContext.markAsFailed("Was not able to launch SecHub job. Reason: " + SimpleStringUtils.truncateWhenTooLong(reason, 150), e);
             }
         } else {
             // currently we do only support SecHub runs

@@ -117,7 +117,7 @@ class SystemTestRuntimeTestEngineTest {
         engineToTest.runTest(test, runtimeContext);
 
         /* test */
-        assertEquals("Was not able to launch SecHub job", currentTestResult.getFailure().getMessage());
+        assertEquals("Was not able to launch SecHub job. Reason: no job createable", currentTestResult.getFailure().getMessage());
         assertTrue(currentTestResult.getFailure().getDetails().contains("no job createable"));
         assertTrue(currentTestResult.hasFailed());
         verifyNoInteractions(assertDefinition);
@@ -136,7 +136,7 @@ class SystemTestRuntimeTestEngineTest {
         engineToTest.runTest(test, runtimeContext);
 
         /* test */
-        assertEquals("Was not able to launch SecHub job", currentTestResult.getFailure().getMessage());
+        assertEquals("Was not able to launch SecHub job. Reason: NullPointerException", currentTestResult.getFailure().getMessage());
         assertTrue(currentTestResult.getFailure().getDetails().contains("java.lang.NullPointerException"));
         assertTrue(currentTestResult.hasFailed());
     }
@@ -152,7 +152,7 @@ class SystemTestRuntimeTestEngineTest {
         engineToTest.runTest(test, runtimeContext);
 
         /* test */
-        assertEquals("Was not able to launch SecHub job", currentTestResult.getFailure().getMessage());
+        assertEquals("Was not able to launch SecHub job. Reason: no status readable", currentTestResult.getFailure().getMessage());
         assertTrue(currentTestResult.getFailure().getDetails().contains("no status readable"));
         assertTrue(currentTestResult.hasFailed());
     }
