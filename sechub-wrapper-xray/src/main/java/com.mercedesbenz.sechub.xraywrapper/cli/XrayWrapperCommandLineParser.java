@@ -9,7 +9,7 @@ public class XrayWrapperCommandLineParser {
 
     private JCommander commander;
 
-    public record Arguments(String name, String sha256, String scantype, String tag, String outputFile) {
+    public record Arguments(String name, String sha256, XrayWrapperScanTypes scanType, String tag, String outputFile) {
     }
 
     public Arguments parseCommandLineArgs(String[] args) throws XrayWrapperCommandLineParserException {
@@ -21,19 +21,18 @@ public class XrayWrapperCommandLineParser {
 
         String name = xrayArgs.getName();
         String tag = "";
-        if (xrayArgs.getScanType().equals("docker")) {
+        XrayWrapperScanTypes type = XrayWrapperScanTypes.fromString(xrayArgs.getScanType());
+        if (type.equals(XrayWrapperScanTypes.DOCKER)) {
             String[] image = parseImage(xrayArgs.getName());
             if (image != null) {
                 name = image[0];
                 tag = image[1];
             }
-        } else {
-            throw new XrayWrapperCommandLineParserException("Scan type is not supported: " + xrayArgs.getScanType());
         }
 
         String sha256 = parseSha256(xrayArgs.getSha256());
 
-        return new Arguments(name, sha256, xrayArgs.getScanType(), tag, xrayArgs.getOutputFile());
+        return new Arguments(name, sha256, type, tag, xrayArgs.getOutputFile());
     }
 
     private XrayWrapperCommandLineArgs buildArguments(String[] args) throws XrayWrapperCommandLineParserException {

@@ -11,10 +11,8 @@ import org.junit.jupiter.api.Test;
 
 class XrayAPIResponseTest {
 
-    // TODO
-
     @Test
-    public void test_xrayAPIResponseEmpty() {
+    public void test_xrayAPIResponse_empty() {
         /* prepare */
         XrayAPIResponse response;
 

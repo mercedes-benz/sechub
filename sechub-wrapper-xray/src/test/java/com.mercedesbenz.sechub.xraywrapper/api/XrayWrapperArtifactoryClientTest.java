@@ -12,6 +12,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mercedesbenz.sechub.xraywrapper.cli.XrayWrapperRuntimeException;
+import com.mercedesbenz.sechub.xraywrapper.cli.XrayWrapperScanTypes;
 import com.mercedesbenz.sechub.xraywrapper.config.XrayWrapperArtifact;
 import com.mercedesbenz.sechub.xraywrapper.config.XrayWrapperConfiguration;
 
@@ -25,7 +26,7 @@ class XrayWrapperArtifactoryClientTest {
 
     @BeforeEach
     public void beforeEach() {
-        XrayWrapperArtifact artifact = mock(XrayWrapperArtifact.class);
+        XrayWrapperArtifact artifact = new XrayWrapperArtifact("name", "sha256", "tag", XrayWrapperScanTypes.DOCKER);
         XrayWrapperConfiguration configuration = mock(XrayWrapperConfiguration.class);
         xrayAPIArtifactoryClient = new XrayAPIArtifactoryClient(artifact, configuration);
         xrayAPIArtifactoryClientSpy = Mockito.spy(xrayAPIArtifactoryClient);
@@ -159,7 +160,7 @@ class XrayWrapperArtifactoryClientTest {
     }
 
     @Test
-    public void test_ddeleteUploads_xrayWrapperException() {
+    public void test_deleteUploads_xrayWrapperException() {
         /* prepare */
         response.setStatus_code(401);
 

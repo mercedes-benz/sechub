@@ -22,7 +22,11 @@ class XrayAPIAuthenticationHeaderTest {
             String auth = buildAuthHeader();
             assertEquals("Basic bnVsbDpudWxs", auth);
         }
-        ;
+    }
 
+    @Test
+    public void test_setAuthHeader_null() {
+        /* execute + test */
+        String auth = buildAuthHeader();
     }
 }

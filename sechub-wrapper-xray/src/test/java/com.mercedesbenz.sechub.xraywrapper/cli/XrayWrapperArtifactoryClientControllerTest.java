@@ -1,5 +1,6 @@
 package com.mercedesbenz.sechub.xraywrapper.cli;
 
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -38,5 +39,14 @@ class XrayWrapperArtifactoryClientControllerTest {
             controller = new XrayWrapperArtifactoryClientController(configuration, artifact);
             controller.waitForScansToFinishAndDownloadReport();
         }
+    }
+
+    @Test
+    public void test_waitForScansToFinishAndDownloadReport_XrayWrapperRuntimeException() {
+        /* prepare */
+        controller = new XrayWrapperArtifactoryClientController(configuration, artifact);
+
+        /* test + execute */
+        assertThrows(XrayWrapperRuntimeException.class, () -> controller.waitForScansToFinishAndDownloadReport());
     }
 }

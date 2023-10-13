@@ -17,7 +17,7 @@ public class XrayAPIResponseBuilder {
 
     /**
      * extracts response from http url connection code similar to @see <a href=
-     * "https://github.com/eugenp/tutorials/blob/master/core-java-modules/core-java-networking-2/src/main/java/com/baeldung/httprequest/FullResponseBuilder.java">...</a>
+     * "https://github.com/eugenp/tutorials/blob/master/core-java-modules/core-java-networking-2/src/main/java/com/baeldung/httprequest/FullResponseBuilder.java"/a>
      *
      * @param con        httpUrl connection
      * @param zipArchive file name to save zip content

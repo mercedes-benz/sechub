@@ -1,6 +1,9 @@
 package com.mercedesbenz.sechub.xraywrapper.api;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+
+import java.net.MalformedURLException;
 
 import org.junit.jupiter.api.Test;
 
@@ -25,4 +28,12 @@ class XrayAPIRequestTest {
         assertEquals(XrayAPIRequest.RequestMethodEnum.GET, xrayAPIRequest.getRequestMethodEnum());
     }
 
+    @Test
+    public void test_getUrl_null() {
+        /* prepare */
+        xrayAPIRequest = new XrayAPIRequest(null, null, false, null);
+
+        /* execute + test */
+        assertThrows(MalformedURLException.class, () -> xrayAPIRequest.getUrl());
+    }
 }

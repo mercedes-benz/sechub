@@ -2,7 +2,6 @@ package com.mercedesbenz.sechub.xraywrapper.api;
 
 import com.mercedesbenz.sechub.xraywrapper.config.XrayWrapperArtifact;
 
-// This class creates POST and GET request to access the JFrog Artifactory and Xray
 public class XrayAPIRequestBuilder {
 
     public static XrayAPIRequest buildGetXrayVersion(String baseUrl) {
@@ -20,15 +19,15 @@ public class XrayAPIRequestBuilder {
 
     public static XrayAPIRequest buildScanArtifact(String baseUrl, XrayWrapperArtifact artifact, String repository) {
         String url = baseUrl + "/xray/api/v1/scanArtifact";
-        String data = "{\"componentID\": \"" + artifact.getArtifactType() + "://" + artifact.getName() + ":" + artifact.getTag() + "\"," + "\"path\": \""
-                + repository + "/" + artifact.getName() + "/" + artifact.getTag() + "/manifest.json\"}";
+        String data = "{\"componentID\": \"" + artifact.getArtifactType().getType() + "://" + artifact.getName() + ":" + artifact.getTag() + "\","
+                + "\"path\": \"" + repository + "/" + artifact.getName() + "/" + artifact.getTag() + "/manifest.json\"}";
         return new XrayAPIRequest(url, XrayAPIRequest.RequestMethodEnum.POST, true, data);
     }
 
     public static XrayAPIRequest buildGetScanStatus(String baseUrl, XrayWrapperArtifact artifact, String repository) {
         String url = baseUrl + "/xray/api/v1/scan/status/artifact";
         String data = "{\"path\": \"" + repository + "/" + artifact.getName() + "/" + artifact.getTag() + "/manifest.json\", " + "\"repository_pkg_type\":\""
-                + artifact.getArtifactType() + "\", \"sha256\": \"" + artifact.getSha256() + "\"}";
+                + artifact.getArtifactType().getType() + "\", \"sha256\": \"" + artifact.getSha256() + "\"}";
         return new XrayAPIRequest(url, XrayAPIRequest.RequestMethodEnum.POST, true, data);
     }
 
@@ -36,7 +35,7 @@ public class XrayAPIRequestBuilder {
         String url = baseUrl + "/xray/api/v1/component/exportDetails";
         String data = """
                 {"component_name": \"""" + artifact.getName() + ":" + artifact.getTag() + """
-                ","package_type": \"""" + artifact.getArtifactType() + """
+                ","package_type": \"""" + artifact.getArtifactType().getType() + """
                 ","sha_256": \"""" + artifact.getSha256() + """
                 ","violations": true,\
                 "include_ignored_violations": true,\

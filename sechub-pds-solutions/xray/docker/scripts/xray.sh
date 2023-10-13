@@ -12,6 +12,7 @@ echo ""
 
 SKOPEO_AUTH="auth.json"
 UPLOAD_DIR=$PDS_JOB_EXTRACTED_BINARIES_FOLDER
+REGISTER=$DOCKER_REGISTER
 # UPLOAD_DIR=$PDS_JOB_EXTRACTED_SOURCES_FOLDER
 
 check_valid_upload () {
@@ -27,6 +28,7 @@ skopeo_login () {
   LOGIN=$(skopeo login "$ARTIFACTORY" --username "$XRAY_USERNAME" --password "$XRAY_PASSWORD" --authfile "$WORKSPACE/$SKOPEO_AUTH")
   if [ "$LOGIN" = "Login Succeeded!" ]
   then
+    echo "Successfully logged into $ARTIFACTORY"
     continue
   else
     echo "Error: Skopeo could not login to $ARTIFACTORY with user $XRAY_USERNAME"

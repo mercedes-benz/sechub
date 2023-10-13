@@ -26,6 +26,8 @@ public enum XrayWrapperExitCode {
 
     FILE_NOT_VALID(12),
 
+    UNSUPPORTED_SCAN_TYPE(13),
+
     ;
 
     private final int exitCode;

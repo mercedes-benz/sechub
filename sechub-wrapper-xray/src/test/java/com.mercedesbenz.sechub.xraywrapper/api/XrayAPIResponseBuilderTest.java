@@ -13,6 +13,9 @@ import java.net.HttpURLConnection;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
+import org.mockito.Mockito;
+
+import com.mercedesbenz.sechub.xraywrapper.cli.XrayWrapperRuntimeException;
 
 class XrayAPIResponseBuilderTest {
 
@@ -79,5 +82,16 @@ class XrayAPIResponseBuilderTest {
         /* test */
         assertEquals("Error", response.getBody());
         assertEquals(404, response.getStatus_code());
+    }
+
+    @Test
+    public void test_getHttpResponseFromConnection_XrayWrapperRuntimeException() throws IOException {
+        /* prepare */
+        HttpURLConnection con = mock(HttpURLConnection.class);
+        IOException e = new IOException("error");
+        Mockito.when(con.getResponseCode()).thenThrow(e);
+
+        /* execute + test */
+        assertThrows(XrayWrapperRuntimeException.class, () -> getHttpResponseFromConnection(con, null));
     }
 }

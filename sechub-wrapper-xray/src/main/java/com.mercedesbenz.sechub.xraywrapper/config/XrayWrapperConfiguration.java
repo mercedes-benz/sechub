@@ -6,8 +6,6 @@ public class XrayWrapperConfiguration {
 
     private final String register;
 
-    private final String ScanType;
-
     private final String zipDirectory;
 
     private final String secHubReport;
@@ -21,33 +19,29 @@ public class XrayWrapperConfiguration {
 
         private final String register;
 
-        private final String ScanType;
-
         private final String zipDirectory;
 
         private final String secHubReport;
 
-        private Builder(String artifactory, String register, String ScanType, String zipDirectory, String secHubReport) {
+        private Builder(String artifactory, String register, String zipDirectory, String secHubReport) {
             this.artifactory = artifactory;
             this.register = register;
-            this.ScanType = ScanType;
             this.zipDirectory = zipDirectory;
             this.secHubReport = secHubReport;
         }
 
-        public static Builder create(String artifactory, String register, String ScanType, String zipDirectory, String secHubReport) {
-            return new Builder(artifactory, register, ScanType, zipDirectory, secHubReport);
+        public static Builder create(String artifactory, String register, String zipDirectory, String secHubReport) {
+            return new Builder(artifactory, register, zipDirectory, secHubReport);
         }
 
         public XrayWrapperConfiguration build() {
-            return new XrayWrapperConfiguration(this.artifactory, this.register, this.ScanType, this.zipDirectory, this.secHubReport);
+            return new XrayWrapperConfiguration(this.artifactory, this.register, this.zipDirectory, this.secHubReport);
         }
     }
 
-    private XrayWrapperConfiguration(String artifactory, String register, String ScanType, String zipDirectory, String secHubReport) {
+    private XrayWrapperConfiguration(String artifactory, String register, String zipDirectory, String secHubReport) {
         this.artifactory = artifactory;
         this.register = register;
-        this.ScanType = ScanType;
         this.zipDirectory = zipDirectory;
         this.secHubReport = secHubReport;
     }
@@ -58,10 +52,6 @@ public class XrayWrapperConfiguration {
 
     public String getRegister() {
         return register;
-    }
-
-    public String getScan_type() {
-        return ScanType;
     }
 
     public String getSecHubReport() {

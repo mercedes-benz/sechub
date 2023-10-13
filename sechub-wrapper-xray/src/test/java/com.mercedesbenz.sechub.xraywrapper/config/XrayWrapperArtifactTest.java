@@ -4,6 +4,8 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import org.junit.jupiter.api.Test;
 
+import com.mercedesbenz.sechub.xraywrapper.cli.XrayWrapperScanTypes;
+
 class XrayWrapperArtifactTest {
     @Test
     public void test_xrayArtifact() {
@@ -12,7 +14,7 @@ class XrayWrapperArtifactTest {
         String name = "myartifact";
         String sha256 = "xxx";
         String tag = "1.0";
-        String type = "docker";
+        XrayWrapperScanTypes type = XrayWrapperScanTypes.DOCKER;
 
         /* execute */
         artifact = new XrayWrapperArtifact(name, sha256, tag, type);

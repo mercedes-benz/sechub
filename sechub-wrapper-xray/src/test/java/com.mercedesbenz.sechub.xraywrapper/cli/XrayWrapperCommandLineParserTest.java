@@ -47,4 +47,13 @@ class XrayWrapperCommandLineParserTest {
         /* execute + test */
         assertThrows(XrayWrapperCommandLineParserException.class, () -> parser.parseCommandLineArgs(args));
     }
+
+    @Test
+    public void test_parseCommandLineArgs_invalidScanType() throws XrayWrapperCommandLineParserException {
+        /* prepare */
+        String[] args = { "--sha256", "sha256:xxx", "--scantype", "invalid", "--outputfile", "outfile" };
+
+        /* execute + test */
+        assertThrows(XrayWrapperCommandLineParserException.class, () -> parser.parseCommandLineArgs(args));
+    }
 }

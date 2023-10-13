@@ -24,8 +24,8 @@ public class XrayWrapperCLI {
         final XrayWrapperCommandLineParser.Arguments arguments;
         try {
             arguments = parser.parseCommandLineArgs(args);
-            XrayWrapperConfiguration xrayWrapperConfiguration = createXrayConfiguration(arguments.scantype(), arguments.outputFile());
-            XrayWrapperArtifact artifact = new XrayWrapperArtifact(arguments.name(), arguments.sha256(), arguments.tag(), arguments.scantype());
+            XrayWrapperConfiguration xrayWrapperConfiguration = createXrayConfiguration(arguments.scanType(), arguments.outputFile());
+            XrayWrapperArtifact artifact = new XrayWrapperArtifact(arguments.name(), arguments.sha256(), arguments.tag(), arguments.scanType());
             xrayWrapperArtifactoryClientController = new XrayWrapperArtifactoryClientController(xrayWrapperConfiguration, artifact);
             xrayWrapperArtifactoryClientController.waitForScansToFinishAndDownloadReport();
         } catch (XrayWrapperRuntimeException e) {

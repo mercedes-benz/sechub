@@ -4,9 +4,9 @@ public class EnvironmentVariableConstants {
 
     public static final String ARTIFACTORY_ENV = "ARTIFACTORY";
 
-    public static final String REGISTER_ENV = "REGISTER";
+    public static final String DOCKER_REGISTER_ENV = "DOCKER_REGISTER";
 
-    public static final String WORKSPACE = "WORKSPACE";
+    public static final String WORKSPACE_ENV = "WORKSPACE";
 
     public static final String XRAY_USERNAME_ENV = "XRAY_USERNAME";
 

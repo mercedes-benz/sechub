@@ -52,13 +52,13 @@ public class XrayAPIRequestExecutor {
         }
         if (request.getRequestMethodEnum() == XrayAPIRequest.RequestMethodEnum.POST) {
             con.setDoOutput(true);
-            OutputStream os = null;
+            OutputStream os;
             try {
                 os = con.getOutputStream();
             } catch (IOException e) {
                 throw new XrayWrapperRuntimeException("Could not get Output Stream for api connection", e, XrayWrapperExitCode.IO_ERROR);
             }
-            byte[] input = new byte[0];
+            byte[] input;
             try {
                 input = request.getData().getBytes("utf-8");
             } catch (UnsupportedEncodingException e) {

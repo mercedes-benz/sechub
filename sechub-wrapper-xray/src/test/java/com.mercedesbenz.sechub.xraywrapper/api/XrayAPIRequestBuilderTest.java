@@ -7,6 +7,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import com.mercedesbenz.sechub.xraywrapper.cli.XrayWrapperScanTypes;
 import com.mercedesbenz.sechub.xraywrapper.config.XrayWrapperArtifact;
 
 class XrayAPIRequestBuilderTest {
@@ -19,7 +20,7 @@ class XrayAPIRequestBuilderTest {
     public void beforeEach() {
         url = "http://myurl";
         register = "myregister";
-        artifact = new XrayWrapperArtifact("myname", "sha256", "tag", "docker");
+        artifact = new XrayWrapperArtifact("myname", "sha256", "tag", XrayWrapperScanTypes.DOCKER);
     }
 
     @Test
@@ -39,7 +40,7 @@ class XrayAPIRequestBuilderTest {
     @Test
     public void test_generateGetXrayVersion_null() {
         /* execute + test */
-        // assertThrows(NullPointerException.class, () -> buildGetXrayVersion(null));
+        buildGetXrayVersion(null);
     }
 
     @Test
