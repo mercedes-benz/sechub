@@ -95,6 +95,17 @@ public class PDSWebScanJobScenario12IntTest {
         assertNotNull(webConfiguration.getUrl());
         assertEquals(JSONConverter.get().toJSON(configuration, true), JSONConverter.get().toJSON(returnedConfiguration, true));
 
+        // config must contain the includes/excludes with wildcards
+        assertTrue("The web scan config hould contain includes!", webConfiguration.getIncludes().isPresent());
+        assertTrue("The web scan config hould contain excludes!", webConfiguration.getExcludes().isPresent());
+
+        List<String> includes = webConfiguration.getIncludes().get();
+        List<String> excludes = webConfiguration.getExcludes().get();
+
+        assertTrue(includes.contains("/customer/<*>"));
+        assertTrue(excludes.contains("<*>/admin/<*>"));
+
+        // config must contain the expected headers
         assertExpectedHeaders(webConfiguration);
 
         /* additional testing : messages*/

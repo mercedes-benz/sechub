@@ -179,15 +179,26 @@ include::sechub_config_example2_webscan_anonyous.json[]
 <1> Define web scan
 <2> The `URL` to scan. This `URL` must be whitelisted in `{sechub}` project. Normally without a slash `/` at the end.
 <3> *Optional*: Define includes, if you have a special path that is linked nowhere,
-	so the scanner can not detect it automatically while crawling the application.
-	Always use them starting with a slash (`/`) because they are interpreted relative to the `URL` provided before.
+	so the scanner can not detect it automatically while crawling the application. You can use wildcards by using the symbol `<*>` like in the example above.
+	To make the scan work the target URL will always be implicitly included with `"https://www.gamechanger.example.org<*>"` if no includes are specified. If includes are specified the scan is limited to this includes.
+	- Includes starting with a slash (`/`) like `"includes": [ "/special/include","/special/include/<*>"]` they are interpreted relative to the scan target `URL` provided before. 
+	- Includes not starting with a slash (`/`) like `"includes": [ "<*>/en/contacts/<*>","en/contacts/<*>","en/contacts","en/contacts/"`] are interpreted as enclosed by wildcards like the first include in the list example: `"<*>/en/contacts/<*>"`. 
 <4> *Optional*: Define excludes, if you have a special path you want to exclude, from the scan.
-	Always use them starting with a slash (`/`) because they are interpreted relative to the `URL` provided before.
+	You can use excludes the same way you can use the includes.
+	Excludes do always overwrite includes if the provided patterns for includes and excludes do have intersections.
 <5> *Optional*: Define the maximum duration the scan can take.
     Scanning a "large" web page/application can take several hours or even days.
     This option ensures the scan will only run for a limited time.
 <6> Define the unit of time.
     The unit can be: `millisecond`, `second`, `minute`, `hour`, `day`.
+
+[CAUTION]
+====
+Includes are a different from excludes looking at wildcards, because in includes they might not be resolved properly, if the pages behind the wildcards cannot be detected by a web crawler.
+
+If you only want to scan a specific part of your application e.g only the customers section `https://my-application.com/customer/`,
+you can specify the target URL : `"url": "https://my-application.com"` and the wanted include starting with a slash like this : `"includes": [ "/customer/<*>"]`.
+====
 
 ===== Login
 A web scan does work much better if it has got access to all content
