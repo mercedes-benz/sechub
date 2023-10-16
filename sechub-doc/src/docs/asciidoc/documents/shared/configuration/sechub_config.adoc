@@ -180,7 +180,9 @@ include::sechub_config_example2_webscan_anonyous.json[]
 <2> The `URL` to scan. This `URL` must be whitelisted in `{sechub}` project. Normally without a slash `/` at the end.
 <3> *Optional*: Define includes, if you have a special path that is linked nowhere,
 	so the scanner can not detect it automatically while crawling the application. You can use wildcards by using the symbol `<*>` like in the example above.
-	To make the scan work the target URL will always be implicitly included with `"https://www.gamechanger.example.org<*>"` if no includes are specified. If includes are specified the scan is limited to this includes.
+	To make the scan work the target URL will always be implicitly included with `"https://www.gamechanger.example.org<*>"` if no includes are specified. If includes are specified the scan is limited to these includes.
+	In case you need to include certain parts of your application the scanner cannot detect,
+	but you want everything else to be scanned as well, please specify a wildcard as include explicitly: `"includes": [ "/hidden/from/crawler/", "/<*>" ]`.
 	- Includes starting with a slash (`/`) like `"includes": [ "/special/include","/special/include/<*>"]` they are interpreted relative to the scan target `URL` provided before. 
 	- Includes not starting with a slash (`/`) like `"includes": [ "<*>/en/contacts/<*>","en/contacts/<*>","en/contacts","en/contacts/"`] are interpreted as enclosed by wildcards like the first include in the list example: `"<*>/en/contacts/<*>"`. 
 <4> *Optional*: Define excludes, if you have a special path you want to exclude, from the scan.
