@@ -1,8 +1,10 @@
 {
   "apiVersion" : "1.0",
   "webScan" : {
-    "url" : "https://127.0.0.1:8080",
-    "includes" : [ "/include", "healthcheck" ],
-    "excludes" : [ "/logout/", "/hello/" ]
+    "url" : "https://www.targeturl.com",
+    "includes" : [ "/", "<*>", "/<*>", "<*>/<*>", "/en/contacts", "/en/contacts/<*>", "<*>/en/contacts/<*>", "<*>/en/<*>/contacts/<*>",
+            "<*>/en/<*>/<*>/contacts/<*>", "<*>/en<*><*>contacts/<*>", "en/contacts/<*>", "en/contacts", "en/contacts/" ],
+    "excludes" : [ "/", "<*>", "/<*>", "<*>/<*>", "/en/contacts", "/en/contacts/<*>", "<*>/en/contacts/<*>", "<*>/en/<*>/contacts/<*>",
+            "<*>/en/<*>/<*>/contacts/<*>", "<*>/en<*><*>contacts/<*>", "en/contacts/<*>", "en/contacts", "en/contacts/" ]
   }
 }
