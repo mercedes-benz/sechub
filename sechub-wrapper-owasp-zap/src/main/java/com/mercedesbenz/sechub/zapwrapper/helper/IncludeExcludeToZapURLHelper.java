@@ -5,6 +5,7 @@ import java.net.URL;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Objects;
 
 import com.mercedesbenz.sechub.zapwrapper.util.UrlUtil;
 
@@ -12,17 +13,18 @@ public class IncludeExcludeToZapURLHelper {
     private UrlUtil urlUtil = new UrlUtil();
 
     /**
-     * Combine the targetUrl with all list of subSites.<br>
+     * Combine the targetUrl with the given list of subSites.<br>
      * <br>
      * E.g. for the targetUrl http://localhost:8000 and the sub sites ["/api/v1/",
      * "<*>admin/<*>", "api/users/"], results in ["http://localhost:8000/api/v1",
      * "http://localhost:8000/.*admin/.*", "http://localhost:8000/.*api/users/.*"].
      *
-     * @param targetUrl
+     * @param targetUrl, must never be null
      * @param subSites
      * @return a list of full URLs, or an empty list if subSites was empty.
      */
     public List<String> createListOfUrls(URL targetUrl, List<String> subSites) {
+        Objects.requireNonNull(targetUrl);
         if (subSites == null) {
             return Collections.emptyList();
         }
