@@ -21,7 +21,7 @@ public class IncludeExcludeToZapURLHelper {
      *
      * @param targetUrl, must never be <code>null</code>
      * @param subSites
-     * @return a list of full URLs, or an empty list if subSites was empty.
+     * @return an unmodifiable list of full URLs, or an empty list if subSites was empty.
      */
     public List<String> createListOfUrls(URL targetUrl, List<String> subSites) {
         Objects.requireNonNull(targetUrl);
@@ -48,18 +48,18 @@ public class IncludeExcludeToZapURLHelper {
             if (replacedSubsite.startsWith("/")) {
                 urlBuilder.append(replacedSubsite.substring(1));
             } else {
-                if (!replacedSubsite.startsWith(UrlUtil.PATTERN_STRING_MATCH_ALL)) {
-                    urlBuilder.append(UrlUtil.PATTERN_STRING_MATCH_ALL);
+                if (!replacedSubsite.startsWith(UrlUtil.REGEX_PATTERN_WILDCARD_STRING)) {
+                    urlBuilder.append(UrlUtil.REGEX_PATTERN_WILDCARD_STRING);
                 }
                 urlBuilder.append(replacedSubsite);
 
-                if (!replacedSubsite.endsWith(UrlUtil.PATTERN_STRING_MATCH_ALL)) {
-                    urlBuilder.append(UrlUtil.PATTERN_STRING_MATCH_ALL);
+                if (!replacedSubsite.endsWith(UrlUtil.REGEX_PATTERN_WILDCARD_STRING)) {
+                    urlBuilder.append(UrlUtil.REGEX_PATTERN_WILDCARD_STRING);
                 }
             }
             listOfUrls.add(urlBuilder.toString());
         }
-        return listOfUrls;
+        return Collections.unmodifiableList(listOfUrls);
     }
 
 }
