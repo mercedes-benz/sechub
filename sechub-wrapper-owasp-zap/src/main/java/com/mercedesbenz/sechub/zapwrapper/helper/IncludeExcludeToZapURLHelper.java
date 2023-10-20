@@ -21,7 +21,8 @@ public class IncludeExcludeToZapURLHelper {
      *
      * @param targetUrl, must never be <code>null</code>
      * @param subSites
-     * @return an unmodifiable list of full URLs, or an empty list if subSites was empty.
+     * @return an unmodifiable list of full URLs, or an empty list if subSites was
+     *         empty.
      */
     public List<String> createListOfUrls(URL targetUrl, List<String> subSites) {
         Objects.requireNonNull(targetUrl);
