@@ -19,7 +19,7 @@ public class IncludeExcludeToZapURLHelper {
      * "<*>admin/<*>", "api/users/"], results in ["http://localhost:8000/api/v1",
      * "http://localhost:8000/.*admin/.*", "http://localhost:8000/.*api/users/.*"].
      *
-     * @param targetUrl, must never be null
+     * @param targetUrl, must never be <code>null</code>
      * @param subSites
      * @return a list of full URLs, or an empty list if subSites was empty.
      */
