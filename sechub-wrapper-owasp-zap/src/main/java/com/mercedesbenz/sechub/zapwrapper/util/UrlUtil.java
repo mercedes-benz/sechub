@@ -7,7 +7,7 @@ import com.mercedesbenz.sechub.commons.model.SecHubWebScanConfiguration;
 
 public class UrlUtil {
 
-    public static final String PATTERN_STRING_MATCH_ALL = ".*";
+    public static final String REGEX_PATTERN_WILDCARD_STRING = ".*";
 
     private static final String QUOTED_WEBSCAN_URL_WILDCARD_SYMBOL = Pattern.quote(SecHubWebScanConfiguration.WEBSCAN_URL_WILDCARD_SYMBOL);
     private static final Pattern PATTERN_QUOTED_WEBSCAN_URL_WILDCARD_SYMBOL = Pattern.compile(QUOTED_WEBSCAN_URL_WILDCARD_SYMBOL);

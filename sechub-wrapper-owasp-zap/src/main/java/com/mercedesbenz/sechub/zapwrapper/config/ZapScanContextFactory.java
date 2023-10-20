@@ -219,7 +219,7 @@ public class ZapScanContextFactory {
         }
         // if no includes are specified everything is included
         if (includeSet.isEmpty()) {
-            includeSet.add(targetUrl + UrlUtil.PATTERN_STRING_MATCH_ALL);
+            includeSet.add(targetUrl + UrlUtil.REGEX_PATTERN_WILDCARD_STRING);
         }
         // needed as entry point to start the scan
         includeSet.add(targetUrl.toString());
