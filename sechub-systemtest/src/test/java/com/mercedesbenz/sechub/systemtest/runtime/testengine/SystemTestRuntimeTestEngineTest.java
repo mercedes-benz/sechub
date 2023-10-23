@@ -109,7 +109,7 @@ class SystemTestRuntimeTestEngineTest {
     @Test
     void sechub_job_creation_fails() throws Exception {
         /* prepare */
-        when(secHubClient.createJob(any())).thenThrow(new SecHubClientException("no job createable"));
+        when(secHubClient.createJob(any())).thenThrow(new SecHubClientException("unable to create job"));
 
         TestDefinition test = configureSecHubLocalRunAndReturnTestDefinition();
 
@@ -118,7 +118,7 @@ class SystemTestRuntimeTestEngineTest {
 
         /* test */
         assertEquals("Was not able to launch SecHub job. Reason: unable to create job", currentTestResult.getFailure().getMessage());
-        assertTrue(currentTestResult.getFailure().getDetails().contains("no job createable"));
+        assertTrue(currentTestResult.getFailure().getDetails().contains("unable to create job"));
         assertTrue(currentTestResult.hasFailed());
         verifyNoInteractions(assertDefinition);
     }
