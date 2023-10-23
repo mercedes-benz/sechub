@@ -59,6 +59,15 @@ public class ZipFileExtractor {
         }
     }
 
+    /**
+     * Please see: <a href=https://security.snyk.io/research/zip-slip-vulnerability
+     * /a>
+     *
+     * @param zipEntry
+     * @param targetDir
+     * @return
+     * @throws XrayWrapperReportException
+     */
     private static Path zipSlipProtect(ZipEntry zipEntry, Path targetDir) throws XrayWrapperReportException {
         Path targetDirResolved = targetDir.resolve(zipEntry.getName());
 

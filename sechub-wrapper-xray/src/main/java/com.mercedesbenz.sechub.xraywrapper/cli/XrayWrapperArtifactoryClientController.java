@@ -38,11 +38,11 @@ public class XrayWrapperArtifactoryClientController {
 
         // get xray version from artifactory
         String xray_version = artifactoryClient.getXrayVersion();
-        LOG.info("Info: artifactory available, scan with Xray version: {}", xray_version);
+        LOG.info("Artifactory available, scan with Xray version: {}", xray_version);
 
         // check if artifact is uploaded
         artifactoryClient.checkArtifactoryUpload();
-        LOG.info("Info: artifact successfully uploaded to artifactory");
+        LOG.info("Artifact successfully uploaded to artifactory");
 
         // check scan status
         boolean scanned = false;
@@ -52,7 +52,8 @@ public class XrayWrapperArtifactoryClientController {
 
         // save reports from xray
         if (artifactoryClient.requestScanReports()) {
-            manageReports();
+            // rewrite cycloneDX report with security report information
+            readAndConvertReports();
         }
 
         // delete artifact from artifactory
@@ -60,8 +61,8 @@ public class XrayWrapperArtifactoryClientController {
         artifactoryClient.deleteUploads();
     }
 
-    private void manageReports() throws XrayWrapperReportException {
-        reportReader.getFiles(xrayWrapperConfiguration.getZip_directory(), xrayWrapperConfiguration.getSecHubReport());
+    private void readAndConvertReports() throws XrayWrapperReportException {
+        reportReader.getFiles(xrayWrapperConfiguration.getZipDirectory(), xrayWrapperConfiguration.getSecHubReport());
         reportReader.readSecurityReport();
         Bom cycloneDXBom = reportReader.mapVulnerabilities();
         reportReader.writeReport(cycloneDXBom);
@@ -77,21 +78,16 @@ public class XrayWrapperArtifactoryClientController {
         String status = artifactoryClient.getScanStatus();
         switch (status) {
         case "not scanned" -> {
-            waitSeconds(xrayWrapperConfiguration.getWaitUntilRetrySec());
+            waitSeconds(xrayWrapperConfiguration.getWaitUntilRetrySeconds());
             if (0 >= retries) {
-                LOG.info("Info: started artifact scan external");
-                retries = xrayWrapperConfiguration.getRequestRetries();
-                String started = artifactoryClient.startScanArtifact();
-                if (!Objects.equals(started, "Scan of artifact is in progress")) {
-                    LOG.error("Scan start was not successful");
-                }
+                startNewScan();
             }
             retries--;
             LOG.info("Info: artifact status is not scanned");
             return false;
         }
         case "in progress" -> {
-            waitSeconds(xrayWrapperConfiguration.getWaitUntilRetrySec());
+            waitSeconds(xrayWrapperConfiguration.getWaitUntilRetrySeconds());
             LOG.info("Info: artifact scan in progress");
             return false;
         }
@@ -100,7 +96,7 @@ public class XrayWrapperArtifactoryClientController {
             return true;
         }
         }
-        throw new XrayWrapperRuntimeException("Received unexspected scan status", XrayWrapperExitCode.UNSUPPORTED_API_REQUEST);
+        throw new XrayWrapperRuntimeException("Received unexpected scan status", XrayWrapperExitCode.UNSUPPORTED_API_REQUEST);
     }
 
     private static void waitSeconds(int val) {
@@ -108,6 +104,15 @@ public class XrayWrapperArtifactoryClientController {
             TimeUnit.SECONDS.sleep(val);
         } catch (InterruptedException e) {
             throw new XrayWrapperRuntimeException("Thread interrupted while wait for next scan status request", e, XrayWrapperExitCode.THREAD_INTERRUPTION);
+        }
+    }
+
+    private void startNewScan() {
+        LOG.info("Info: started artifact scan external");
+        retries = xrayWrapperConfiguration.getRequestRetries();
+        String started = artifactoryClient.startScanArtifact();
+        if (!Objects.equals(started, "Scan of artifact is in progress")) {
+            LOG.error("Scan start was not successful");
         }
     }
 

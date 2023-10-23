@@ -1,5 +1,7 @@
 # Xray env file
-ARTIFACTORY=artifacts.i.mercedes-benz.com
-DOCKER_REGISTER=sechubm-dev-docker-local
+# example: artifacts.my-instance.com
+XRAY_ARTIFACTORY=change-me
+# example: my-local-docker-register
+XRAY_DOCKER_REGISTER=change-me
 XRAY_USERNAME=change-me
 XRAY_PASSWORD=change-me

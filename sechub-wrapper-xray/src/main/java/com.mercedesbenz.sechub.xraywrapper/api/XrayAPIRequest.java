@@ -1,28 +1,61 @@
 package com.mercedesbenz.sechub.xraywrapper.api;
 
-import java.net.MalformedURLException;
 import java.net.URL;
+
+import com.mercedesbenz.sechub.xraywrapper.cli.XrayWrapperExitCode;
+import com.mercedesbenz.sechub.xraywrapper.cli.XrayWrapperRuntimeException;
 
 public class XrayAPIRequest {
     public enum RequestMethodEnum {
         GET, POST, DELETE;
     }
 
-    private String stringUrl;
-
     private URL url;
 
     private RequestMethodEnum requestMethodEnum;
 
-    private boolean authentication = false;
+    private boolean authentication;
 
     private String data;
 
-    public XrayAPIRequest() {
+    public static class Builder {
+        private URL url;
+
+        private XrayAPIRequest.RequestMethodEnum requestMethodEnum;
+
+        private boolean authentication = false;
+
+        private String data = "";
+
+        private Builder(URL url, XrayAPIRequest.RequestMethodEnum requestMethodEnum) {
+            this.url = url;
+            this.requestMethodEnum = requestMethodEnum;
+        }
+
+        public static Builder create(URL url, XrayAPIRequest.RequestMethodEnum requestMethodEnum) {
+            if ((url == null) || (requestMethodEnum == null)) {
+                throw new XrayWrapperRuntimeException("Cannot create XrayAPIRequest with null parameters", XrayWrapperExitCode.INVALID_HTTP_REQUEST);
+            }
+            return new Builder(url, requestMethodEnum);
+        }
+
+        public XrayAPIRequest build() {
+            return new XrayAPIRequest(this.url, this.requestMethodEnum, this.authentication, this.data);
+        }
+
+        Builder setData(String data) {
+            this.data = data;
+            return this;
+        }
+
+        Builder setAuthentication(boolean b) {
+            this.authentication = b;
+            return this;
+        }
     }
 
-    public XrayAPIRequest(String stringUrl, RequestMethodEnum requestMethodEnum, boolean authentication, String data) {
-        this.stringUrl = stringUrl;
+    private XrayAPIRequest(URL url, RequestMethodEnum requestMethodEnum, boolean authentication, String data) {
+        this.url = url;
         this.requestMethodEnum = requestMethodEnum;
         this.authentication = authentication;
         this.data = data;
@@ -36,42 +69,15 @@ public class XrayAPIRequest {
         return requestMethodEnum;
     }
 
-    public void setStringUrl(String stringUrl) {
-        this.stringUrl = stringUrl;
-    }
-
-    public String getStringUrl() {
-        return stringUrl;
-    }
-
-    public void setAuthentication(boolean authentication) {
-        this.authentication = authentication;
-    }
-
     public boolean needAuthentication() {
         return authentication;
-    }
-
-    public void setData(String data) {
-        this.data = data;
     }
 
     public String getData() {
         return data;
     }
 
-    public URL getUrl() throws MalformedURLException {
-        if (url == null) {
-            url = stringToUrl();
-        }
+    public URL getUrl() {
         return url;
-    }
-
-    public void setUrl(URL url) {
-        this.url = url;
-    }
-
-    private URL stringToUrl() throws MalformedURLException {
-        return new URL(this.stringUrl);
     }
 }

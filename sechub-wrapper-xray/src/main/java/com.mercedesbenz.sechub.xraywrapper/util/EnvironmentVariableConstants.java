@@ -2,9 +2,9 @@ package com.mercedesbenz.sechub.xraywrapper.util;
 
 public class EnvironmentVariableConstants {
 
-    public static final String ARTIFACTORY_ENV = "ARTIFACTORY";
+    public static final String ARTIFACTORY_ENV = "XRAY_ARTIFACTORY";
 
-    public static final String DOCKER_REGISTER_ENV = "DOCKER_REGISTER";
+    public static final String DOCKER_REGISTRY_ENV = "XRAY_DOCKER_REGISTER";
 
     public static final String WORKSPACE_ENV = "WORKSPACE";
 

@@ -20,46 +20,46 @@ import com.mercedesbenz.sechub.xraywrapper.cli.XrayWrapperRuntimeException;
 class XrayAPIResponseBuilderTest {
 
     @Mock
-    HttpURLConnection con;
-    ByteArrayInputStream is;
+    HttpURLConnection connection;
+    ByteArrayInputStream inputStream;
 
     @BeforeEach
-    public void beforeEach() {
-        con = mock(HttpURLConnection.class);
+    void beforeEach() {
+        connection = mock(HttpURLConnection.class);
     }
 
     @Test
-    public void test_getHttpResponseFromConnection() throws IOException {
+    void test_getHttpResponseFromConnection() throws IOException {
         /* prepare */
         XrayAPIResponse response;
         int statusCode = 200;
-        is = new ByteArrayInputStream("testData".getBytes("UTF-8"));
-        doReturn(is).when(con).getInputStream();
-        doReturn(statusCode).when(con).getResponseCode();
+        inputStream = new ByteArrayInputStream("testData".getBytes("UTF-8"));
+        doReturn(inputStream).when(connection).getInputStream();
+        doReturn(statusCode).when(connection).getResponseCode();
 
         /* execute */
-        response = getHttpResponseFromConnection(con, "filename");
+        response = getHttpResponseFromConnection(connection, "filename");
 
         /* test */
         assertEquals("testData", response.getBody());
-        assertEquals(200, response.getStatus_code());
+        assertEquals(200, response.getStatusCode());
     }
 
     @Test
-    public void test_getHttpResponseFromConnection_empty() throws IOException {
+    void test_getHttpResponseFromConnection_empty() throws IOException {
         /* prepare */
         XrayAPIResponse response;
 
         /* execute */
-        response = getHttpResponseFromConnection(con, "filename");
+        response = getHttpResponseFromConnection(connection, "filename");
 
         /* test */
         assertEquals("", response.getBody());
-        assertEquals(0, response.getStatus_code());
+        assertEquals(0, response.getStatusCode());
     }
 
     @Test
-    public void test_getHttpResponseFromConnection_null() throws IOException {
+    void test_getHttpResponseFromConnection_null() throws IOException {
         /* prepare */
         XrayAPIResponse response;
 
@@ -68,30 +68,29 @@ class XrayAPIResponseBuilderTest {
     }
 
     @Test
-    public void test_getHttpResponseFromConnection_error() throws IOException {
+    void test_getHttpResponseFromConnection_error() throws IOException {
         /* prepare */
         XrayAPIResponse response;
         int statusCode = 404;
-        is = new ByteArrayInputStream("Error".getBytes("UTF-8"));
-        doReturn(is).when(con).getErrorStream();
-        doReturn(statusCode).when(con).getResponseCode();
+        inputStream = new ByteArrayInputStream("Error".getBytes("UTF-8"));
+        doReturn(inputStream).when(connection).getErrorStream();
+        doReturn(statusCode).when(connection).getResponseCode();
 
         /* execute */
-        response = getHttpResponseFromConnection(con, "filename");
+        response = getHttpResponseFromConnection(connection, "filename");
 
         /* test */
         assertEquals("Error", response.getBody());
-        assertEquals(404, response.getStatus_code());
+        assertEquals(404, response.getStatusCode());
     }
 
     @Test
-    public void test_getHttpResponseFromConnection_XrayWrapperRuntimeException() throws IOException {
+    void test_getHttpResponseFromConnection_XrayWrapperRuntimeException() throws IOException {
         /* prepare */
-        HttpURLConnection con = mock(HttpURLConnection.class);
         IOException e = new IOException("error");
-        Mockito.when(con.getResponseCode()).thenThrow(e);
+        Mockito.when(connection.getResponseCode()).thenThrow(e);
 
         /* execute + test */
-        assertThrows(XrayWrapperRuntimeException.class, () -> getHttpResponseFromConnection(con, null));
+        assertThrows(XrayWrapperRuntimeException.class, () -> getHttpResponseFromConnection(connection, null));
     }
 }

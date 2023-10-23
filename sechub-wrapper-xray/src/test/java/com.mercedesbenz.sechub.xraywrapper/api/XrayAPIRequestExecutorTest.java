@@ -1,6 +1,6 @@
 package com.mercedesbenz.sechub.xraywrapper.api;
 
-import static com.mercedesbenz.sechub.xraywrapper.api.XrayAPIRequestExecutor.setUpGetConnection;
+import static com.mercedesbenz.sechub.xraywrapper.api.XrayAPIRequestExecutor.setUpHTTPConnection;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.mock;
@@ -14,66 +14,59 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
-import com.mercedesbenz.sechub.xraywrapper.cli.XrayWrapperRuntimeException;
-
 class XrayAPIRequestExecutorTest {
 
     URL url;
 
     @BeforeEach
-    public void beforeEach() {
+    void beforeEach() {
         url = mock(URL.class);
     }
 
     @Test
-    public void test_setUpGetConnection_GET() throws IOException {
+    void test_setUpGetConnection_GET() throws IOException {
         /* prepare */
-        HttpURLConnection con;
-        String stringUrls = url.toString();
+        HttpURLConnection connection;
         HttpURLConnection mockedCon = mock(HttpURLConnection.class);
         Mockito.when(url.openConnection()).thenReturn(mockedCon);
-        XrayAPIRequest request = new XrayAPIRequest(stringUrls, XrayAPIRequest.RequestMethodEnum.GET, false, "");
-        request.setUrl(url);
+        XrayAPIRequest request = XrayAPIRequest.Builder.create(url, XrayAPIRequest.RequestMethodEnum.GET).build();
 
         /* execute */
-        con = setUpGetConnection(request);
+        connection = setUpHTTPConnection(request);
 
         /* test */
-        assertEquals(0, con.getConnectTimeout());
+        assertEquals(0, connection.getConnectTimeout());
     }
 
     @Test
-    public void test_setUpGetConnection_null() {
-        /* execute */
-        assertThrows(NullPointerException.class, () -> setUpGetConnection(null));
+    void test_setUpGetConnection_null() {
+        /* execute + test */
+        assertThrows(NullPointerException.class, () -> setUpHTTPConnection(null));
     }
 
     @Test
-    public void test_setUpGetConnection_XrayWrapperRuntimeException() {
+    void test_setUpGetConnection_XrayWrapperRuntimeException() {
         /* prepare */
-        XrayAPIRequest request = new XrayAPIRequest();
+        XrayAPIRequest request = XrayAPIRequest.Builder.create(url, XrayAPIRequest.RequestMethodEnum.GET).build();
 
-        /* execute */
-        assertThrows(XrayWrapperRuntimeException.class, () -> setUpGetConnection(request));
+        /* execute + test */
+        assertThrows(NullPointerException.class, () -> setUpHTTPConnection(request));
     }
 
     @Test
-    public void test_setUpGetConnection_POST() throws IOException {
+    void test_setUpGetConnection_POST() throws IOException {
         /* prepare */
-        OutputStream os = mock(OutputStream.class);
-        HttpURLConnection con;
-        String stringUrls = url.toString();
+        OutputStream outputStream = mock(OutputStream.class);
+        HttpURLConnection connection;
         HttpURLConnection mockedCon = mock(HttpURLConnection.class);
         Mockito.when(url.openConnection()).thenReturn(mockedCon);
-        Mockito.when(mockedCon.getOutputStream()).thenReturn(os);
-        XrayAPIRequest request = new XrayAPIRequest(stringUrls, XrayAPIRequest.RequestMethodEnum.POST, false, "");
-        request.setUrl(url);
-        request.setData("{}");
+        Mockito.when(mockedCon.getOutputStream()).thenReturn(outputStream);
+        XrayAPIRequest request = XrayAPIRequest.Builder.create(url, XrayAPIRequest.RequestMethodEnum.POST).setAuthentication(false).setData("{}").build();
 
         /* execute */
-        con = setUpGetConnection(request);
+        connection = setUpHTTPConnection(request);
 
         /* test */
-        assertEquals(0, con.getConnectTimeout());
+        assertEquals(0, connection.getConnectTimeout());
     }
 }

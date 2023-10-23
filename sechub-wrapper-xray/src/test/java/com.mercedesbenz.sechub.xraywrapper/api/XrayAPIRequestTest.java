@@ -2,38 +2,38 @@ package com.mercedesbenz.sechub.xraywrapper.api;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.Mockito.mock;
 
-import java.net.MalformedURLException;
+import java.net.URL;
 
 import org.junit.jupiter.api.Test;
+
+import com.mercedesbenz.sechub.xraywrapper.cli.XrayWrapperRuntimeException;
 
 class XrayAPIRequestTest {
 
     XrayAPIRequest xrayAPIRequest;
 
     @Test
-    public void test_xrayRequest() {
+    void test_xrayRequest() {
         /* prepare */
-        String url = "myurl";
+        URL url = mock(URL.class);
         boolean auth = false;
         String data = "mydata";
 
         /* execute */
-        xrayAPIRequest = new XrayAPIRequest(url, XrayAPIRequest.RequestMethodEnum.GET, auth, data);
+        xrayAPIRequest = XrayAPIRequest.Builder.create(url, XrayAPIRequest.RequestMethodEnum.GET).setAuthentication(auth).setData(data).build();
 
         /* test */
-        assertEquals(url, xrayAPIRequest.getStringUrl());
+        assertEquals(url, xrayAPIRequest.getUrl());
         assertEquals(auth, xrayAPIRequest.needAuthentication());
         assertEquals(data, xrayAPIRequest.getData());
         assertEquals(XrayAPIRequest.RequestMethodEnum.GET, xrayAPIRequest.getRequestMethodEnum());
     }
 
     @Test
-    public void test_getUrl_null() {
-        /* prepare */
-        xrayAPIRequest = new XrayAPIRequest(null, null, false, null);
-
+    void test_getUrl_null() {
         /* execute + test */
-        assertThrows(MalformedURLException.class, () -> xrayAPIRequest.getUrl());
+        assertThrows(XrayWrapperRuntimeException.class, () -> XrayAPIRequest.Builder.create(null, null).build());
     }
 }

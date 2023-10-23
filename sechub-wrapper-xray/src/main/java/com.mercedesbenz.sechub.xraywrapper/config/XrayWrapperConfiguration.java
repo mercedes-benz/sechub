@@ -2,8 +2,16 @@ package com.mercedesbenz.sechub.xraywrapper.config;
 
 public class XrayWrapperConfiguration {
 
+    /**
+     * Artifactory url of the jfrog xray instance example: <a
+     * https://my-url.artifactory.com /a>
+     */
     private final String artifactory;
 
+    /**
+     * Register name in the artifactory where artifacts are stored example:
+     * local-docker-register
+     */
     private final String register;
 
     private final String zipDirectory;
@@ -31,6 +39,9 @@ public class XrayWrapperConfiguration {
         }
 
         public static Builder create(String artifactory, String register, String zipDirectory, String secHubReport) {
+            if (artifactory == null || zipDirectory == null) {
+                throw new NullPointerException("Artifactory URL or Zip file directory cannot be null");
+            }
             return new Builder(artifactory, register, zipDirectory, secHubReport);
         }
 
@@ -58,11 +69,11 @@ public class XrayWrapperConfiguration {
         return secHubReport;
     }
 
-    public String getZip_directory() {
+    public String getZipDirectory() {
         return zipDirectory;
     }
 
-    public int getWaitUntilRetrySec() {
+    public int getWaitUntilRetrySeconds() {
         return waitUntilRetrySec;
     }
 

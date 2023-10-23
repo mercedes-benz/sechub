@@ -1,44 +1,56 @@
 package com.mercedesbenz.sechub.xraywrapper.api;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
 public class XrayAPIResponse {
 
-    private int status_code;
-
+    private int statusCode;
     private Map<String, List<String>> headers;
-
     private String body;
 
-    public XrayAPIResponse() {
-        status_code = 0;
-        headers = Collections.emptyMap();
-        body = "";
+    public static class Builder {
+
+        private int statusCode;
+        private Map<String, List<String>> headers;
+
+        private String body = "";
+
+        private Builder(int statusCode, Map<String, List<String>> headers) {
+            this.statusCode = statusCode;
+            this.headers = headers;
+        }
+
+        public static Builder create(int statusCode, Map<String, List<String>> headers) {
+            return new Builder(statusCode, headers);
+        }
+
+        public XrayAPIResponse build() {
+            return new XrayAPIResponse(this.statusCode, this.headers, this.body);
+        }
+
+        Builder setBody(String body) {
+            this.body = body;
+            return this;
+        }
     }
 
-    public int getStatus_code() {
-        return status_code;
+    private XrayAPIResponse(int statusCode, Map<String, List<String>> headers, String body) {
+        this.statusCode = statusCode;
+        this.headers = headers;
+        this.body = body;
     }
 
-    public void setStatus_code(int status_code) {
-        this.status_code = status_code;
+    public int getStatusCode() {
+        return statusCode;
     }
 
     public Map<String, List<String>> getHeaders() {
         return headers;
     }
 
-    public void setHeaders(Map<String, List<String>> headers) {
-        this.headers = headers;
-    }
-
     public String getBody() {
         return body;
     }
 
-    public void setBody(String body) {
-        this.body = body;
-    }
 }

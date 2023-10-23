@@ -12,7 +12,7 @@
         "jobParameters": [
             {
                 "key": "pds.config.productidentifier",
-                "value": "PDS_XRAY"
+                "value": "PDS_XRAY_MOCK"
             },
             {
                 "key": "pds.config.use.sechub.storage",

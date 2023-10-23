@@ -15,14 +15,14 @@ import com.mercedesbenz.sechub.xraywrapper.config.XrayWrapperConfiguration;
 class XrayWrapperConfigurationHelperTest {
 
     @Test
-    public void test_createXrayConfiguration() {
+    void test_createXrayConfiguration() {
         /* prepare */
         XrayWrapperConfiguration xrayWrapperConfiguration;
 
         /* execute + test */
         try (MockedConstruction<EnvironmentVariableReader> mocked = mockConstruction(EnvironmentVariableReader.class, (mock, context) -> {
             when(mock.readEnvAsString(EnvironmentVariableConstants.ARTIFACTORY_ENV)).thenReturn("artifactoryMock");
-            when(mock.readEnvAsString(EnvironmentVariableConstants.DOCKER_REGISTER_ENV)).thenReturn("registerMock");
+            when(mock.readEnvAsString(EnvironmentVariableConstants.DOCKER_REGISTRY_ENV)).thenReturn("registerMock");
 
         })) {
             xrayWrapperConfiguration = createXrayConfiguration(XrayWrapperScanTypes.DOCKER, "output");
@@ -33,7 +33,7 @@ class XrayWrapperConfigurationHelperTest {
     }
 
     @Test
-    public void test_createXrayConfiguration_null() {
+    void test_createXrayConfiguration_null() {
         /* execute + test */
         assertThrows(NullPointerException.class, () -> createXrayConfiguration(null, null));
     }

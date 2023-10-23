@@ -8,7 +8,7 @@ public class XrayAPIAuthenticationHeader {
     /**
      * builds basic authentication header from username and password
      *
-     * @return basic encoded authentication header
+     * @return base64 encoded header for basic authentication
      */
     public static String buildAuthHeader() {
         EnvironmentVariableReader environmentVariableReader = new EnvironmentVariableReader();

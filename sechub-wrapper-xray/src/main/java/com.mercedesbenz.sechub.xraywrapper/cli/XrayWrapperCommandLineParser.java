@@ -23,7 +23,7 @@ public class XrayWrapperCommandLineParser {
         String tag = "";
         XrayWrapperScanTypes type = XrayWrapperScanTypes.fromString(xrayArgs.getScanType());
         if (type.equals(XrayWrapperScanTypes.DOCKER)) {
-            String[] image = parseImage(xrayArgs.getName());
+            String[] image = splitContainerImage(xrayArgs.getName());
             if (image != null) {
                 name = image[0];
                 tag = image[1];
@@ -46,13 +46,15 @@ public class XrayWrapperCommandLineParser {
         return xrayWrapperCommandLineArgs;
     }
 
-    private String[] parseImage(String image) {
-        String[] s = image.split(":");
-        if (s.length == 1)
-            return new String[] { s[0], "latest" };
-        if (s.length > 2)
+    private String[] splitContainerImage(String image) {
+        String[] splitImage = image.split(":");
+        if (splitImage.length == 1) {
+            return new String[] { splitImage[0], "latest" };
+        }
+        if (splitImage.length > 2) {
             return null;
-        return s;
+        }
+        return splitImage;
     }
 
     private String parseSha256(String sha256) {

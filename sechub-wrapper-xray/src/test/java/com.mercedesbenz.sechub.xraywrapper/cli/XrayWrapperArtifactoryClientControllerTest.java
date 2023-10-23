@@ -22,13 +22,13 @@ class XrayWrapperArtifactoryClientControllerTest {
     XrayWrapperArtifact artifact;
 
     @BeforeEach
-    public void beforeEach() {
+    void beforeEach() {
         configuration = mock(XrayWrapperConfiguration.class);
         artifact = mock(XrayWrapperArtifact.class);
     }
 
     @Test
-    public void test_waitForScansToFinishAndDownloadReport() throws XrayWrapperRuntimeException {
+    void test_waitForScansToFinishAndDownloadReport() throws XrayWrapperRuntimeException {
         /* test + execute */
         try (MockedConstruction<XrayAPIArtifactoryClient> mockedClient = Mockito.mockConstruction(XrayAPIArtifactoryClient.class, (mock, context) -> {
             when(mock.getXrayVersion()).thenReturn("mocked-version");
@@ -42,7 +42,7 @@ class XrayWrapperArtifactoryClientControllerTest {
     }
 
     @Test
-    public void test_waitForScansToFinishAndDownloadReport_XrayWrapperRuntimeException() {
+    void test_waitForScansToFinishAndDownloadReport_XrayWrapperRuntimeException() {
         /* prepare */
         controller = new XrayWrapperArtifactoryClientController(configuration, artifact);
 

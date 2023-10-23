@@ -1,6 +1,6 @@
 package com.mercedesbenz.sechub.xraywrapper.api;
 
-import static com.mercedesbenz.sechub.xraywrapper.util.InputStreamSaver.saveInputStreamToString;
+import static com.mercedesbenz.sechub.xraywrapper.util.InputStreamSaver.readInputStreamAsString;
 import static com.mercedesbenz.sechub.xraywrapper.util.InputStreamSaver.saveInputStreamToZipFile;
 
 import java.io.IOException;
@@ -19,52 +19,51 @@ public class XrayAPIResponseBuilder {
      * extracts response from http url connection code similar to @see <a href=
      * "https://github.com/eugenp/tutorials/blob/master/core-java-modules/core-java-networking-2/src/main/java/com/baeldung/httprequest/FullResponseBuilder.java"/a>
      *
-     * @param con        httpUrl connection
-     * @param zipArchive file name to save zip content
+     * @param httpURLConnection httpUrl connection
+     * @param zipArchive        file name to save zip content
      * @return xray api http response
      * @throws XrayWrapperRuntimeException
      */
-    public static XrayAPIResponse getHttpResponseFromConnection(HttpURLConnection con, String zipArchive) throws XrayWrapperRuntimeException {
-        XrayAPIResponse response = new XrayAPIResponse();
+    public static XrayAPIResponse getHttpResponseFromConnection(HttpURLConnection httpURLConnection, String zipArchive) throws XrayWrapperRuntimeException {
         zipArchive = zipArchive + ".zip";
-        int responseCode = 0;
 
         // read response code
+        int responseCode = 0;
         try {
-            responseCode = con.getResponseCode();
+            responseCode = httpURLConnection.getResponseCode();
         } catch (IOException e) {
             throw new XrayWrapperRuntimeException("Could not get response code from api connection.", e, XrayWrapperExitCode.IO_ERROR);
         }
-        response.setStatus_code(responseCode);
 
-        // append headers
-        Map<String, List<String>> header = con.getHeaderFields();
-        response.setHeaders(header);
+        // read headers
+        Map<String, List<String>> header = httpURLConnection.getHeaderFields();
 
-        // append response body
-        InputStream is;
-
+        // get input stream from response
+        InputStream inputStream;
         if (responseCode > 299) {
-            is = con.getErrorStream();
+            inputStream = httpURLConnection.getErrorStream();
         } else {
             try {
-                is = con.getInputStream();
+                inputStream = httpURLConnection.getInputStream();
             } catch (IOException e) {
                 throw new XrayWrapperRuntimeException("Could not get Input stream from api connection.", e, XrayWrapperExitCode.IO_ERROR);
             }
         }
 
-        if (is != null) {
-            String type = con.getHeaderField("Content-Type");
+        // read content from input stream
+        String content;
+        if (inputStream != null) {
+            String type = httpURLConnection.getHeaderField("Content-Type");
             if (Objects.equals(type, "application/gzip")) {
-                // case application/gzip (report files in zip container)
-                saveInputStreamToZipFile(zipArchive, is);
+                // case application/gzip (need to save report files as zip)
+                saveInputStreamToZipFile(zipArchive, inputStream);
+                content = "";
             } else {
                 // case application/json is saved as string body
-                String content = saveInputStreamToString(is);
-                response.setBody(content);
+                content = readInputStreamAsString(inputStream);
             }
+            return XrayAPIResponse.Builder.create(responseCode, header).setBody(content).build();
         }
-        return response;
+        return XrayAPIResponse.Builder.create(responseCode, header).build();
     }
 }

@@ -8,7 +8,7 @@ import com.mercedesbenz.sechub.xraywrapper.cli.XrayWrapperScanTypes;
 
 class XrayWrapperArtifactTest {
     @Test
-    public void test_xrayArtifact() {
+    void test_xrayArtifact() {
         /* prepare */
         XrayWrapperArtifact artifact;
         String name = "myartifact";
@@ -23,6 +23,6 @@ class XrayWrapperArtifactTest {
         assertEquals(name, artifact.getName());
         assertEquals(tag, artifact.getTag());
         assertEquals(type, artifact.getArtifactType());
-        assertEquals(sha256, artifact.getSha256());
+        assertEquals(sha256, artifact.getSecureHash());
     }
 }

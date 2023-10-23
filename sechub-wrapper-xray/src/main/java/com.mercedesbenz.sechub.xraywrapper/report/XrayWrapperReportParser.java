@@ -13,15 +13,15 @@ import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.mercedesbenz.sechub.xraywrapper.cli.XrayWrapperExitCode;
 
 /**
- * parses the xray security report vulnerabilities to cycloneDX vulnerabilities
+ * Parses the xray security report vulnerabilities and converts them to
+ * cycloneDX vulnerabilities
  */
-
 public class XrayWrapperReportParser {
     public JsonNode getRootDataNode(File xraySecurityReport) throws XrayWrapperReportException {
         try {
             return new ObjectMapper().readTree(xraySecurityReport).get("data");
         } catch (IOException e) {
-            throw new XrayWrapperReportException("Could not read file as json", e, XrayWrapperExitCode.IO_ERROR);
+            throw new XrayWrapperReportException("Could not read file as JSON", e, XrayWrapperExitCode.IO_ERROR);
         }
     }
 
@@ -35,7 +35,7 @@ public class XrayWrapperReportParser {
             try {
                 cvssString = getAndSetCveDetails(node, vulnerability);
             } catch (JsonProcessingException e) {
-                throw new XrayWrapperReportException("Could not process json", e, XrayWrapperExitCode.JSON_NOT_PROCESSABLE);
+                throw new XrayWrapperReportException("Could not process json", e, XrayWrapperExitCode.INVALID_JSON);
             }
             setSource(node, vulnerability);
             if (!cvssString.isEmpty()) {
@@ -60,9 +60,11 @@ public class XrayWrapperReportParser {
 
     private String getAndSetCveDetails(JsonNode node, CycloneDXVulnerabilityHelper vulnerability) throws JsonProcessingException {
         final JsonNode cveDetailsNode = new ObjectMapper().readTree(String.valueOf(node)).get("component_versions").get("more_details").get("cves");
+
         String cvssString = "";
         JsonNode cvssNode;
         JsonNode cveIDNode;
+
         for (JsonNode cveDetail : cveDetailsNode) {
             cvssNode = cveDetail.get("cvss_v3");
             cveIDNode = cveDetail.get("cve");
@@ -89,7 +91,11 @@ public class XrayWrapperReportParser {
     }
 
     private void setRatingFromString(JsonNode node, CycloneDXVulnerabilityHelper vulnerability, String cvssString) {
+        // cvssString from security report contains multiple information fragments
+        // (score, method and vector)
+        // example: "cvss_v3": "9.8/CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:H"
         String[] cvssArray = cvssString.split("/", 3);
+
         String score = cvssArray[0];
         Double scoreDouble = parseDouble(score);
         String method = cvssArray[1];

@@ -6,7 +6,7 @@ public class XrayWrapperArtifact {
 
     private String name;
 
-    private String sha256;
+    private String secureHash;
 
     private String tag;
 
@@ -14,7 +14,7 @@ public class XrayWrapperArtifact {
 
     public XrayWrapperArtifact(String name, String sha256, String tag, XrayWrapperScanTypes artifactType) {
         this.name = name;
-        this.sha256 = sha256;
+        this.secureHash = sha256;
         this.tag = tag;
         this.artifactType = artifactType;
     }
@@ -23,8 +23,8 @@ public class XrayWrapperArtifact {
         return name;
     }
 
-    public String getSha256() {
-        return sha256;
+    public String getSecureHash() {
+        return secureHash;
     }
 
     public String getTag() {

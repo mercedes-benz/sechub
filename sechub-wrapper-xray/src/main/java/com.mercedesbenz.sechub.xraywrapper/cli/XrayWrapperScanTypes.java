@@ -1,5 +1,7 @@
 package com.mercedesbenz.sechub.xraywrapper.cli;
 
+import java.util.Arrays;
+
 public enum XrayWrapperScanTypes {
     DOCKER("docker"),;
 
@@ -19,6 +21,7 @@ public enum XrayWrapperScanTypes {
                 return scanType;
             }
         }
-        throw new XrayWrapperCommandLineParserException("Scan type not supported: " + type + "\n supported types are: docker");
+        throw new XrayWrapperCommandLineParserException(
+                "Scan type not supported: " + type + "\n supported types are: " + Arrays.toString(XrayWrapperScanTypes.values()));
     }
 }

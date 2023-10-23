@@ -21,7 +21,7 @@ public class XrayWrapperConfigurationHelper {
         // get repository according to scan type
         String repository = "";
         if (scanType.equals(XrayWrapperScanTypes.DOCKER)) {
-            repository = environmentVariableReader.readEnvAsString(EnvironmentVariableConstants.DOCKER_REGISTER_ENV);
+            repository = environmentVariableReader.readEnvAsString(EnvironmentVariableConstants.DOCKER_REGISTRY_ENV);
         }
         return XrayWrapperConfiguration.Builder.create(artifactoryUrl, repository, zipDirectory, outputFile).build();
     }

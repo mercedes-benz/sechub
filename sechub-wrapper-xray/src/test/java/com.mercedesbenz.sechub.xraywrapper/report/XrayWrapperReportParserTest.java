@@ -17,19 +17,19 @@ class XrayWrapperReportParserTest {
     XrayWrapperReportParser xrayWrapperReportParser;
 
     @BeforeEach
-    public void beforeEach() {
+    void beforeEach() {
         xrayWrapperReportParser = new XrayWrapperReportParser();
     }
 
     @Test
-    public void test_getRootDataNode_null() {
+    void test_getRootDataNode_null() {
         /* execute + test */
         Assert.assertThrows(IllegalArgumentException.class, () -> xrayWrapperReportParser.getRootDataNode(null));
 
     }
 
     @Test
-    public void test_getRootDataNode() {
+    void test_getRootDataNode() {
         /* prepare */
         File file = new File("src/test/resources/xray-report-examples/Docker_Security_Export.json");
         int numberOfVulnerabilities = 63;
@@ -40,7 +40,7 @@ class XrayWrapperReportParserTest {
     }
 
     @Test
-    public void test_transformSecurityReport() {
+    void test_transformSecurityReport() {
         /* prepare */
         File file = new File("src/test/resources/xray-report-examples/Docker_Security_Export.json");
         JsonNode node = xrayWrapperReportParser.getRootDataNode(file);
@@ -54,7 +54,7 @@ class XrayWrapperReportParserTest {
     }
 
     @Test
-    public void test_transformSecurityReport_null() {
+    void test_transformSecurityReport_null() {
         /* execute + test */
         assertThrows(NullPointerException.class, () -> xrayWrapperReportParser.transformSecurityReport(null));
     }

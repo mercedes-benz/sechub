@@ -14,9 +14,9 @@ public enum XrayWrapperExitCode {
 
     INVALID_HTTP_REQUEST(6),
 
-    UNSUPPORTED_ENCRYPTION(7),
+    UNSUPPORTED_ENCODING(7),
 
-    JSON_NOT_PROCESSABLE(8),
+    INVALID_JSON(8),
 
     ARTIFACT_NOT_FOUND(9),
 
@@ -27,6 +27,8 @@ public enum XrayWrapperExitCode {
     FILE_NOT_VALID(12),
 
     UNSUPPORTED_SCAN_TYPE(13),
+
+    ARTIFACTORY_ERROR_RESPONSE(13),
 
     ;
 

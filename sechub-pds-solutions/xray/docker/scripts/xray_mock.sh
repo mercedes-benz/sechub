@@ -1,4 +1,5 @@
 #!/usr/bin/env sh
 # SPDX-License-Identifier: MIT
 
-# todo: test mock for Xray
+echo "Running PDS Xray Mock"
+cp "$MOCK_FOLDER/mock.json" "$PDS_JOB_RESULT_FILE"

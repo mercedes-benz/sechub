@@ -4,6 +4,10 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -24,21 +28,25 @@ class XrayWrapperArtifactoryClientTest {
 
     XrayAPIResponse response;
 
+    Map<String, List<String>> headers;
+
     @BeforeEach
-    public void beforeEach() {
+    void beforeEach() {
         XrayWrapperArtifact artifact = new XrayWrapperArtifact("name", "sha256", "tag", XrayWrapperScanTypes.DOCKER);
-        XrayWrapperConfiguration configuration = mock(XrayWrapperConfiguration.class);
+        XrayWrapperConfiguration configuration = XrayWrapperConfiguration.Builder
+                .create("http://notmalformed-url-example.com", "example", "zipDirectory", "report").build();
         xrayAPIArtifactoryClient = new XrayAPIArtifactoryClient(artifact, configuration);
         xrayAPIArtifactoryClientSpy = Mockito.spy(xrayAPIArtifactoryClient);
         response = mock(XrayAPIResponse.class);
+        headers = new java.util.HashMap<>(Collections.emptyMap());
     }
 
     @Test
-    public void test_getXrayVersion() throws JsonProcessingException {
+    void test_getXrayVersion() throws JsonProcessingException {
         /* prepare */
         ObjectMapper mapper = new ObjectMapper();
         String jsonString = "{\"xray_version\": \"123\"}";
-        response.setBody(jsonString);
+        response = XrayAPIResponse.Builder.create(200, headers).setBody(jsonString).build();
         JsonNode node = mapper.readTree(jsonString);
         Mockito.doReturn(response).when(xrayAPIArtifactoryClientSpy).send(any());
         Mockito.doReturn(node).when(xrayAPIArtifactoryClientSpy).getBodyAsNode(any());
@@ -51,13 +59,13 @@ class XrayWrapperArtifactoryClientTest {
     }
 
     @Test
-    public void test_getXrayVersion_xrayWrapperException() {
+    void test_getXrayVersion_xrayWrapperException() {
         /* execute + test */
         assertThrows(XrayWrapperRuntimeException.class, () -> xrayAPIArtifactoryClient.getXrayVersion());
     }
 
     @Test
-    public void test_checkArtifactoryUpload() {
+    void test_checkArtifactoryUpload() {
         /* prepare */
         Mockito.doReturn(response).when(xrayAPIArtifactoryClientSpy).send(any());
 
@@ -66,17 +74,17 @@ class XrayWrapperArtifactoryClientTest {
     }
 
     @Test
-    public void test_checkArtifactoryUpload_xrayWrapperException() {
+    void test_checkArtifactoryUpload_xrayWrapperException() {
         /* execute + test */
         assertThrows(XrayWrapperRuntimeException.class, () -> xrayAPIArtifactoryClient.checkArtifactoryUpload());
     }
 
     @Test
-    public void test_getScanStatus() throws JsonProcessingException {
+    void test_getScanStatus() throws JsonProcessingException {
         /* prepare */
         ObjectMapper mapper = new ObjectMapper();
         String jsonString = "{\"status\": \"scanned\"}";
-        response.setBody(jsonString);
+        response = XrayAPIResponse.Builder.create(200, headers).setBody(jsonString).build();
         JsonNode node = mapper.readTree(jsonString);
         Mockito.doReturn(response).when(xrayAPIArtifactoryClientSpy).send(any());
         Mockito.doReturn(node).when(xrayAPIArtifactoryClientSpy).getBodyAsNode(any());
@@ -89,13 +97,13 @@ class XrayWrapperArtifactoryClientTest {
     }
 
     @Test
-    public void test_getScanStatus_xrayWrapperException() {
+    void test_getScanStatus_xrayWrapperException() {
         /* execute + test */
         assertThrows(XrayWrapperRuntimeException.class, () -> xrayAPIArtifactoryClient.getScanStatus());
     }
 
     @Test
-    public void test_requestScanReports() {
+    void test_requestScanReports() {
         /* prepare */
         Mockito.doReturn(response).when(xrayAPIArtifactoryClientSpy).send(any());
 
@@ -104,17 +112,17 @@ class XrayWrapperArtifactoryClientTest {
     }
 
     @Test
-    public void test_requestScanReports_xrayWrapperException() {
+    void test_requestScanReports_xrayWrapperException() {
         /* execute + test */
         assertThrows(XrayWrapperRuntimeException.class, () -> xrayAPIArtifactoryClient.requestScanReports());
     }
 
     @Test
-    public void test_startScanArtifact() throws JsonProcessingException {
+    void test_startScanArtifact() throws JsonProcessingException {
         /* prepare */
         ObjectMapper mapper = new ObjectMapper();
         String jsonString = "{\"info\": \"info_string\"}";
-        response.setBody(jsonString);
+        response = XrayAPIResponse.Builder.create(200, headers).setBody(jsonString).build();
         JsonNode node = mapper.readTree(jsonString);
         Mockito.doReturn(response).when(xrayAPIArtifactoryClientSpy).send(any());
         Mockito.doReturn(node).when(xrayAPIArtifactoryClientSpy).getBodyAsNode(any());
@@ -127,42 +135,42 @@ class XrayWrapperArtifactoryClientTest {
     }
 
     @Test
-    public void test_startScanArtifact_xrayWrapperException() {
+    void test_startScanArtifact_xrayWrapperException() {
         /* execute + test */
         assertThrows(XrayWrapperRuntimeException.class, () -> xrayAPIArtifactoryClient.startScanArtifact());
     }
 
     @Test
-    public void test_deleteArtifact() throws JsonProcessingException {
+    void test_deleteArtifact() throws JsonProcessingException {
         /* prepare */
         Mockito.doReturn(response).when(xrayAPIArtifactoryClientSpy).send(any());
 
         /* execute + test */
-        xrayAPIArtifactoryClientSpy.deleteArtifact();
+        assertTrue(xrayAPIArtifactoryClientSpy.deleteArtifact());
     }
 
     @Test
-    public void test_deleteArtifact_xrayWrapperException() {
+    void test_deleteArtifact_xrayWrapperException() {
         /* prepare */
-        response.setStatus_code(401);
+        response = XrayAPIResponse.Builder.create(401, headers).build();
 
         /* execute + test */
         assertThrows(XrayWrapperRuntimeException.class, () -> xrayAPIArtifactoryClient.deleteArtifact());
     }
 
     @Test
-    public void test_deleteUploads() throws JsonProcessingException {
+    void test_deleteUploads() throws JsonProcessingException {
         /* prepare */
         Mockito.doReturn(response).when(xrayAPIArtifactoryClientSpy).send(any());
 
         /* execute + test */
-        xrayAPIArtifactoryClientSpy.deleteUploads();
+        assertTrue(xrayAPIArtifactoryClientSpy.deleteUploads());
     }
 
     @Test
-    public void test_deleteUploads_xrayWrapperException() {
+    void test_deleteUploads_xrayWrapperException() {
         /* prepare */
-        response.setStatus_code(401);
+        response = XrayAPIResponse.Builder.create(401, headers).build();
 
         /* execute + test */
         assertThrows(XrayWrapperRuntimeException.class, () -> xrayAPIArtifactoryClient.deleteUploads());

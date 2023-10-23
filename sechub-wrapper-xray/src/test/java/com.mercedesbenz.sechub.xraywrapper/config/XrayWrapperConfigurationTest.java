@@ -1,13 +1,14 @@
 package com.mercedesbenz.sechub.xraywrapper.config;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import org.junit.jupiter.api.Test;
 
 class XrayWrapperConfigurationTest {
 
     @Test
-    public void test_XrayWrapperConfiguration() {
+    void test_XrayWrapperConfiguration() {
         /* prepare */
         String artifactory = "myartifactory";
         String register = "register";
@@ -22,9 +23,9 @@ class XrayWrapperConfigurationTest {
     }
 
     @Test
-    public void test_XrayWrapperConfiguration_null() {
+    void test_XrayWrapperConfiguration_null() {
         /* execute + test */
-        XrayWrapperConfiguration configuration = XrayWrapperConfiguration.Builder.create(null, null, null, null).build();
+        assertThrows(NullPointerException.class, () -> XrayWrapperConfiguration.Builder.create(null, null, null, null).build());
     }
 
 }

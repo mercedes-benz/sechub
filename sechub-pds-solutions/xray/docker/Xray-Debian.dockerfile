@@ -9,14 +9,13 @@ FROM ${BASE_IMAGE}
 
 LABEL org.opencontainers.image.source="https://github.com/mercedes-benz/sechub"
 LABEL org.opencontainers.image.title="SecHub Xray+PDS Image"
-LABEL org.opencontainers.image.description="A container which combines Xray with the SecHub Product Delegation Server (PDS)"
+LABEL org.opencontainers.image.description="A container which combines Xray Wrapper with the SecHub Product Delegation Server (PDS)"
 LABEL maintainer="SecHub FOSS Team"
 
 USER root
 
 # Build Args
 ARG XRAY_WRAPPER_VERSION="0.0.0"
-ENV ARTIFACTORY=artifacts.i.mercedes-benz.com
 
 # Copy mock folder
 COPY mocks "$MOCK_FOLDER"
@@ -47,11 +46,6 @@ RUN export DEBIAN_FRONTEND=noninteractive && \
 # workaround until release
 COPY sechub-pds-wrapperxray-$XRAY_WRAPPER_VERSION.jar "$TOOL_FOLDER""/sechub-pds-wrapperxray-$XRAY_WRAPPER_VERSION.jar"
 RUN ln -s "$TOOL_FOLDER""/sechub-pds-wrapperxray-$XRAY_WRAPPER_VERSION.jar" "$TOOL_FOLDER""/wrapperxray.jar"
-
-# creating run directory for skopeo
-# XDG_RUNTIME_DIR might be neeeded
-# RUN mkdir "/run/user/$USER" && \
-#    chown -R "$USER:$USER" "/run/user/$USER"
 
 # Set workspace
 WORKDIR "$WORKSPACE"

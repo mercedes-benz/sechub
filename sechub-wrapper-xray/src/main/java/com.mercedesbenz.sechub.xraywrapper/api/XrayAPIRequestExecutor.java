@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
 import java.net.ProtocolException;
 import java.net.URL;
 
@@ -13,6 +12,8 @@ import com.mercedesbenz.sechub.xraywrapper.cli.XrayWrapperRuntimeException;
 import com.mercedesbenz.sechub.xraywrapper.util.XrayAPIAuthenticationHeader;
 
 public class XrayAPIRequestExecutor {
+
+    private static final int CONNECTION_TIMEOUT_IN_MILLISECONDS = 5000;
 
     static String authenticate() {
         return XrayAPIAuthenticationHeader.buildAuthHeader();
@@ -25,14 +26,10 @@ public class XrayAPIRequestExecutor {
      * @return https connection
      * @throws XrayWrapperRuntimeException
      */
-    public static HttpURLConnection setUpGetConnection(XrayAPIRequest request) throws XrayWrapperRuntimeException {
-        URL url;
-        try {
-            url = request.getUrl();
-        } catch (MalformedURLException e) {
-            throw new XrayWrapperRuntimeException("Url could not be parsed from String", e, XrayWrapperExitCode.MALFORMED_URL);
-        }
+    public static HttpURLConnection setUpHTTPConnection(XrayAPIRequest request) throws XrayWrapperRuntimeException {
+        URL url = request.getUrl();
         HttpURLConnection con = null;
+
         try {
             con = (HttpURLConnection) url.openConnection();
         } catch (IOException e) {
@@ -52,33 +49,38 @@ public class XrayAPIRequestExecutor {
         }
         if (request.getRequestMethodEnum() == XrayAPIRequest.RequestMethodEnum.POST) {
             con.setDoOutput(true);
-            OutputStream os;
-            try {
-                os = con.getOutputStream();
-            } catch (IOException e) {
-                throw new XrayWrapperRuntimeException("Could not get Output Stream for api connection", e, XrayWrapperExitCode.IO_ERROR);
-            }
-            byte[] input;
-            try {
-                input = request.getData().getBytes("utf-8");
-            } catch (UnsupportedEncodingException e) {
-                throw new XrayWrapperRuntimeException("Could not get Encrypt api request", e, XrayWrapperExitCode.UNSUPPORTED_ENCRYPTION);
-            }
-            try {
-                os.write(input, 0, input.length);
-            } catch (IOException e) {
-                throw new XrayWrapperRuntimeException("Could not write Output Stream for api connection", e, XrayWrapperExitCode.IO_ERROR);
-            }
+            // todo: test if cbr works ?
+            setUpPostConnection(con, request);
             return con;
         } else {
-            con.setConnectTimeout(5000);
-            con.setReadTimeout(5000);
+            con.setConnectTimeout(CONNECTION_TIMEOUT_IN_MILLISECONDS);
+            con.setReadTimeout(CONNECTION_TIMEOUT_IN_MILLISECONDS);
             try {
                 con.connect();
             } catch (IOException e) {
                 throw new XrayWrapperRuntimeException("Could not open api connection", e, XrayWrapperExitCode.IO_ERROR);
             }
             return con;
+        }
+    }
+
+    private static void setUpPostConnection(HttpURLConnection con, XrayAPIRequest request) {
+        OutputStream os;
+        try {
+            os = con.getOutputStream();
+        } catch (IOException e) {
+            throw new XrayWrapperRuntimeException("Could not get Output Stream for api connection", e, XrayWrapperExitCode.IO_ERROR);
+        }
+        byte[] input;
+        try {
+            input = request.getData().getBytes("utf-8");
+        } catch (UnsupportedEncodingException e) {
+            throw new XrayWrapperRuntimeException("Could not parse request: ", e, XrayWrapperExitCode.UNSUPPORTED_ENCODING);
+        }
+        try {
+            os.write(input, 0, input.length);
+        } catch (IOException e) {
+            throw new XrayWrapperRuntimeException("Could not write Output Stream for api connection", e, XrayWrapperExitCode.IO_ERROR);
         }
     }
 }

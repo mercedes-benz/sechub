@@ -12,20 +12,21 @@ import org.junit.jupiter.api.Test;
 class XrayAPIResponseTest {
 
     @Test
-    public void test_xrayAPIResponse_empty() {
+    void test_xrayAPIResponse_empty() {
         /* prepare */
         XrayAPIResponse response;
+        int status = 200;
+        Map<String, List<String>> headers = new java.util.HashMap<>(Collections.emptyMap());
 
         /* execute */
-        response = new XrayAPIResponse();
+        response = XrayAPIResponse.Builder.create(status, headers).build();
 
         /* test */
-        assertEquals(0, response.getStatus_code());
         assertEquals("", response.getBody());
     }
 
     @Test
-    public void test_xrayAPIResponse() {
+    void test_xrayAPIResponse() {
         /* prepare */
         XrayAPIResponse response;
         int status = 200;
@@ -35,13 +36,10 @@ class XrayAPIResponseTest {
         headers.put("header", values);
 
         /* execute */
-        response = new XrayAPIResponse();
-        response.setBody(body);
-        response.setStatus_code(status);
-        response.setHeaders(headers);
+        response = XrayAPIResponse.Builder.create(status, headers).setBody(body).build();
 
         /* test */
-        assertEquals(200, response.getStatus_code());
+        assertEquals(200, response.getStatusCode());
         assertEquals("body", response.getBody());
         assertEquals(values, response.getHeaders().get("header"));
     }

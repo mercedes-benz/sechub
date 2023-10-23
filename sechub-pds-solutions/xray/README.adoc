@@ -3,12 +3,17 @@
 :toc:
 :numbered:
 
-= Xray + PDS
+= Xray Wrapper + PDS
 
-JFrog Xray is a universal software composition analysis (SCA) solution that natively integrates with Artifactory, giving developers and DevSecOps teams an easy way to proactively identify vulnerabilities on open source and license compliance violations, before they manifest in production releases.
-Furthermore, the combination of GoSec and PDS makes it possible to run both inside a Kubernetes cluser or virtual machines.
+JFrog Xray is a Software Composition Analysis (SCA) solution integrated with the JFrog Artifactory. Xray can analyze source code, binaries, etc. for vulnerabilities and licenses.
+In addition, the combination of Xray and PDS allows both to run in a Kubernetes cluster or on virtual machines.
+To use the wrapper, a JFrog artifactory instance and the URL and register name is required.
 
-This folder contains the necessary scripts to run Xray+PDS inside a container locally. Additionally, it contains scripts to build and push the PDS + Xray container to your container registry and a Helm chart to install and run Xray+PDS in a Kubernetes cluster.
+This folder contains the scripts necessary to run Xray Wrapper + PDS locally within a container. It also contains scripts to create the PDS + Xray container and push it to your container registry, as well as a helmet diagram to install and run Xray Wrapper + PDS in a Kubernetes cluster.
+
+== Current restrictions
+
+- only docker images uploaded as .tar files can be scanned
 
 == Run Locally
 
@@ -26,11 +31,11 @@ Docker and Docker-Compose need to be installed:
 
 === Single Instance
 
-Start a single instance by using the Bash wrapper script which does setup everything <<_automatic,automatically>> for you.
+Start a single instance by using the Bash wrapper script which does setup everything automatically for you.
 
 ==== Scan script
 
-The folder contains a start script which does the <<_manually, manual>> steps for you:
+The folder contains a start script which does the manual steps for you:
 
 ----
 ./01-start-single-docker-compose.sh
@@ -46,4 +51,28 @@ WARNING: Make sure the SecHub container is running.
 +
 ----
 ./05-start-single-sechub-network-docker-compose.sh
+----
++
+example sechub.json +
++
+[source,json]
+----
+{
+  "apiVersion": "1.0",
+  "licenseScan": {
+    "use": [
+      "test-sources"
+    ]
+  },
+  "data": {
+    "binaries": [
+      {
+        "name": "test-sources",
+        "fileSystem" : {
+        "folders" : [ "my-docker-archive.tar" ]
+      }
+      }
+    ]
+  }
+}
 ----

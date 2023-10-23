@@ -11,13 +11,10 @@ import org.mockito.MockedConstruction;
 class XrayAPIAuthenticationHeaderTest {
 
     @Test
-    public void test_setAuthHeader() {
-        /* prepare */
-        String s = "string";
-
+    void test_setAuthHeader() {
         /* execute + test */
         try (MockedConstruction<EnvironmentVariableReader> mocked = mockConstruction(EnvironmentVariableReader.class, (mock, context) -> {
-            when(mock.readEnvAsString(s)).thenReturn("username");
+            when(mock.readEnvAsString("string")).thenReturn("username");
         })) {
             String auth = buildAuthHeader();
             assertEquals("Basic bnVsbDpudWxs", auth);
@@ -25,7 +22,7 @@ class XrayAPIAuthenticationHeaderTest {
     }
 
     @Test
-    public void test_setAuthHeader_null() {
+    void test_setAuthHeader_null() {
         /* execute + test */
         String auth = buildAuthHeader();
     }

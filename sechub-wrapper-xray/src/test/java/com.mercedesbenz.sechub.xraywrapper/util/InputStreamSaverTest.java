@@ -1,6 +1,6 @@
 package com.mercedesbenz.sechub.xraywrapper.util;
 
-import static com.mercedesbenz.sechub.xraywrapper.util.InputStreamSaver.saveInputStreamToString;
+import static com.mercedesbenz.sechub.xraywrapper.util.InputStreamSaver.readInputStreamAsString;
 import static com.mercedesbenz.sechub.xraywrapper.util.InputStreamSaver.saveInputStreamToZipFile;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -16,44 +16,40 @@ import com.mercedesbenz.sechub.xraywrapper.cli.XrayWrapperRuntimeException;
 
 class InputStreamSaverTest {
 
-    String testinputString;
+    final String testinputString = "test data";
     InputStream is;
 
     @BeforeEach
     void beforeEach() {
-        testinputString = "test data";
         is = new ByteArrayInputStream(testinputString.getBytes());
     }
 
     @Test
-    public void test_saveInputStreamToStringBuilder() throws XrayWrapperRuntimeException {
-        /* prepare */
-        String s;
-
+    void test_saveInputStreamToStringBuilder() throws XrayWrapperRuntimeException {
         /* execute */
-        s = saveInputStreamToString(is);
+        String content = readInputStreamAsString(is);
 
         /* test */
-        assertEquals(testinputString, s);
+        assertEquals(testinputString, content);
     }
 
     @Test
-    public void test_saveInputStreamToStringBuilder_null() {
+    void test_saveInputStreamToStringBuilder_null() {
         /* execute + test */
-        assertThrows(NullPointerException.class, () -> saveInputStreamToString(null));
+        assertThrows(NullPointerException.class, () -> readInputStreamAsString(null));
     }
 
     @Test
-    public void test_saveInputStreamToStringBuilder_ioException() {
+    void test_saveInputStreamToStringBuilder_ioException() {
         /* prepare */
         InputStream mockedIs = mock(InputStream.class);
 
         /* execute + test */
-        assertThrows(XrayWrapperRuntimeException.class, () -> saveInputStreamToString(mockedIs));
+        assertThrows(XrayWrapperRuntimeException.class, () -> readInputStreamAsString(mockedIs));
     }
 
     @Test
-    public void test_saveInputStreamToZipFile_null() {
+    void test_saveInputStreamToZipFile_null() {
         /* execute + test */
         assertThrows(NullPointerException.class, () -> saveInputStreamToZipFile(null, null));
     }

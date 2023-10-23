@@ -24,13 +24,13 @@ class XrayWrapperReportReaderTest {
     ObjectMapper mapper;
 
     @BeforeEach
-    public void beforeEach() {
+    void beforeEach() {
         reportReader = new XrayWrapperReportReader();
         mapper = new ObjectMapper();
     }
 
     @Test
-    public void test_getFiles() throws IOException {
+    void test_getFiles() throws IOException {
         /* prepare */
         String source = "src/test/resources/xray-report-examples";
         String resultFile = "resultfile";
@@ -66,13 +66,13 @@ class XrayWrapperReportReaderTest {
     }
 
     @Test
-    public void test_readSecurityReport_null() {
+    void test_readSecurityReport_null() {
         /* execute + test */
         assertThrows(IllegalArgumentException.class, () -> reportReader.readSecurityReport());
     }
 
     @Test
-    public void test_mapVulnerabilities() throws IOException {
+    void test_mapVulnerabilities() throws IOException {
         /* prepare */
         String source = "src/test/resources/xray-report-examples";
         reportReader.getFiles(source, "");
@@ -89,7 +89,7 @@ class XrayWrapperReportReaderTest {
     }
 
     @Test
-    public void test_mapVulnerabilities_null() {
+    void test_mapVulnerabilities_null() {
         Assert.assertThrows(IllegalArgumentException.class, () -> reportReader.mapVulnerabilities());
     }
 

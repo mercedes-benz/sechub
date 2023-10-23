@@ -17,7 +17,7 @@ public class XrayWrapperCommandLineArgs {
         return name;
     }
 
-    @Parameter(names = { "--sha256", "-s" }, description = "Digest of the docker image you wish to scan example: sha256:xxx")
+    @Parameter(names = { "--sha256", "-s" }, description = "Digest of the docker image you wish to scan example: sha256:8he98dhojw92hodnk")
     private String sha256 = "";
 
     public String getSha256() {

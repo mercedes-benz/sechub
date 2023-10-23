@@ -7,24 +7,25 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import com.mercedesbenz.sechub.xraywrapper.cli.XrayWrapperRuntimeException;
 import com.mercedesbenz.sechub.xraywrapper.cli.XrayWrapperScanTypes;
 import com.mercedesbenz.sechub.xraywrapper.config.XrayWrapperArtifact;
 
 class XrayAPIRequestBuilderTest {
 
     String url;
-    String register;
+    String registry;
     XrayWrapperArtifact artifact;
 
     @BeforeEach
-    public void beforeEach() {
+    void beforeEach() {
         url = "http://myurl";
-        register = "myregister";
+        registry = "myregister";
         artifact = new XrayWrapperArtifact("myname", "sha256", "tag", XrayWrapperScanTypes.DOCKER);
     }
 
     @Test
-    public void test_buildGetXrayVersion() {
+    void test_buildGetXrayVersion() {
         /* prepare */
         XrayAPIRequest request;
         String apiUrl = "/xray/api/v1/system/version";
@@ -34,81 +35,76 @@ class XrayAPIRequestBuilderTest {
 
         /* test */
         assertEquals(XrayAPIRequest.RequestMethodEnum.GET, request.getRequestMethodEnum());
-        assertEquals(url + apiUrl, request.getStringUrl());
+        assertEquals(url + apiUrl, request.getUrl().toString());
     }
 
     @Test
-    public void test_generateGetXrayVersion_null() {
-        /* execute + test */
-        buildGetXrayVersion(null);
-    }
-
-    @Test
-    public void test_buildCheckArtifactUpload() {
+    void test_buildCheckArtifactUpload() {
         /* prepare */
         XrayAPIRequest request;
         String apiUrl = "/artifactory/api/storage/myregister/myname/tag/manifest.json";
 
         /* execute */
-        request = buildCheckArtifactUpload(url, artifact, register);
+        request = buildCheckArtifactUpload(url, artifact, registry);
 
         /* test */
         assertEquals(XrayAPIRequest.RequestMethodEnum.GET, request.getRequestMethodEnum());
-        assertEquals(url + apiUrl, request.getStringUrl());
+        assertEquals(url + apiUrl, request.getUrl().toString());
     }
 
     @Test
-    public void test_buildCheckArtifactUpload_null() {
+    void test_buildCheckArtifactUpload_null() {
         /* execute + test */
         assertThrows(NullPointerException.class, () -> buildCheckArtifactUpload(null, null, null));
     }
 
     @Test
-    public void test_buildScanArtifact() {
+    void test_buildScanArtifact() {
         /* prepare */
         XrayAPIRequest request;
         String apiUrl = "/xray/api/v1/scanArtifact";
-        String data = "{\"componentID\": \"docker://myname:tag\"," + "\"path\": \"myregister/myname/tag/manifest.json\"}";
+        String data = """
+                {"componentID": "docker://myname:tag","path": "myregister/myname/tag/manifest.json"}""";
 
         /* execute */
-        request = buildScanArtifact(url, artifact, register);
+        request = buildScanArtifact(url, artifact, registry);
 
         /* test */
         assertEquals(XrayAPIRequest.RequestMethodEnum.POST, request.getRequestMethodEnum());
-        assertEquals(url + apiUrl, request.getStringUrl());
+        assertEquals(url + apiUrl, request.getUrl().toString());
         assertEquals(data, request.getData());
     }
 
     @Test
-    public void test_buildScanArtifact_null() {
+    void test_buildScanArtifact_null() {
         /* execute + test */
-        assertThrows(NullPointerException.class, () -> buildScanArtifact(null, null, null));
+        assertThrows(XrayWrapperRuntimeException.class, () -> buildScanArtifact(null, null, null));
     }
 
     @Test
-    public void test_buildGetScanStatus() {
+    void test_buildGetScanStatus() {
         /* prepare */
         XrayAPIRequest request;
         String apiUrl = "/xray/api/v1/scan/status/artifact";
         String data = "{\"path\": \"myregister/myname/tag/manifest.json\", \"repository_pkg_type\":\"docker\", \"sha256\": \"sha256\"}";
 
         /* execute */
-        request = buildGetScanStatus(url, artifact, register);
+        request = buildGetScanStatus(url, artifact, registry);
 
         /* test */
         assertEquals(XrayAPIRequest.RequestMethodEnum.POST, request.getRequestMethodEnum());
-        assertEquals(url + apiUrl, request.getStringUrl());
+        assertEquals(url + apiUrl, request.getUrl().toString());
         assertEquals(data, request.getData());
     }
 
     @Test
-    public void test_buildGetScanStatus_null() {
+    void test_buildGetScanStatus_null() {
         /* execute + test */
-        assertThrows(NullPointerException.class, () -> buildGetScanStatus(null, null, null));
+        assertThrows(XrayWrapperRuntimeException.class, () -> buildGetScanStatus(null, null, null));
     }
 
     @Test
-    public void test_buildGetScanReports() {
+    void test_buildGetScanReports() {
         /* prepare */
         XrayAPIRequest request;
         String apiUrl = "/xray/api/v1/component/exportDetails";
@@ -123,13 +119,13 @@ class XrayAPIRequestBuilderTest {
 
         /* test */
         assertEquals(XrayAPIRequest.RequestMethodEnum.POST, request.getRequestMethodEnum());
-        assertEquals(url + apiUrl, request.getStringUrl());
+        assertEquals(url + apiUrl, request.getUrl().toString());
         assertEquals(data, request.getData());
     }
 
     @Test
-    public void test_buildGetScanReports_null() {
+    void test_buildGetScanReports_null() {
         /* execute + test */
-        assertThrows(NullPointerException.class, () -> buildGetScanReports(null, null));
+        assertThrows(XrayWrapperRuntimeException.class, () -> buildGetScanReports(null, null));
     }
 }

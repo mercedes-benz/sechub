@@ -22,18 +22,24 @@ public class XrayWrapperCLI {
     void start(String[] args) {
         XrayWrapperCommandLineParser parser = new XrayWrapperCommandLineParser();
         final XrayWrapperCommandLineParser.Arguments arguments;
+
         try {
             arguments = parser.parseCommandLineArgs(args);
             XrayWrapperConfiguration xrayWrapperConfiguration = createXrayConfiguration(arguments.scanType(), arguments.outputFile());
             XrayWrapperArtifact artifact = new XrayWrapperArtifact(arguments.name(), arguments.sha256(), arguments.tag(), arguments.scanType());
             xrayWrapperArtifactoryClientController = new XrayWrapperArtifactoryClientController(xrayWrapperConfiguration, artifact);
+
+            // execute controller processing main program flow
             xrayWrapperArtifactoryClientController.waitForScansToFinishAndDownloadReport();
+
         } catch (XrayWrapperRuntimeException e) {
             LOG.error("An error occurred during the scan process: {}", e.getMessage(), e);
             System.exit(e.getExitCode().getExitCode());
+
         } catch (XrayWrapperCommandLineParserException e) {
             LOG.error("An error occurred while parsing the command line arguments: {}", e.getMessage(), e);
             System.exit(XrayWrapperExitCode.UNKNOWN_PARAMETERS.getExitCode());
+
         } catch (XrayWrapperReportException e) {
             LOG.error("An error occurred during report generation: {}", e.getMessage(), e);
             System.exit(e.getExitCode().getExitCode());

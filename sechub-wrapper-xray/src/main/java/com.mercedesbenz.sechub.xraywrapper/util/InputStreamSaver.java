@@ -7,24 +7,24 @@ import com.mercedesbenz.sechub.xraywrapper.cli.XrayWrapperRuntimeException;
 
 public class InputStreamSaver {
 
-    public static void saveInputStreamToZipFile(String filename, InputStream is) throws XrayWrapperRuntimeException {
+    public static void saveInputStreamToZipFile(String filename, InputStream inputStream) throws XrayWrapperRuntimeException {
         int read;
         byte[] buffer = new byte[1024];
         File file = new File(filename);
-        FileOutputStream fstream = null;
+        FileOutputStream fileOutputStream = null;
         try {
-            fstream = new FileOutputStream(file);
-            while ((read = is.read(buffer)) != -1) {
-                fstream.write(buffer, 0, read);
+            fileOutputStream = new FileOutputStream(file);
+            while ((read = inputStream.read(buffer)) != -1) {
+                fileOutputStream.write(buffer, 0, read);
             }
-            is.close();
+            inputStream.close();
         } catch (IOException e) {
             throw new XrayWrapperRuntimeException("Could not save https input stream to zip file", e, XrayWrapperExitCode.IO_ERROR);
         }
     }
 
-    public static String saveInputStreamToString(InputStream is) throws XrayWrapperRuntimeException {
-        BufferedReader in = new BufferedReader(new InputStreamReader(is));
+    public static String readInputStreamAsString(InputStream inputStream) throws XrayWrapperRuntimeException {
+        BufferedReader in = new BufferedReader(new InputStreamReader(inputStream));
         String inputLine;
         StringBuilder content = new StringBuilder();
         try {
@@ -33,7 +33,7 @@ public class InputStreamSaver {
             }
             in.close();
         } catch (IOException e) {
-            throw new XrayWrapperRuntimeException("Could not save https input stream as string", e, XrayWrapperExitCode.IO_ERROR);
+            throw new XrayWrapperRuntimeException("Could not read https input stream as string", e, XrayWrapperExitCode.IO_ERROR);
         }
         return content.toString();
     }
