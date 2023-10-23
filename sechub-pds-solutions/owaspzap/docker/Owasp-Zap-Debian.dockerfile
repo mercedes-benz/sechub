@@ -39,15 +39,15 @@ RUN export DEBIAN_FRONTEND=noninteractive && \
 
 # Download ZAP
 RUN cd "$DOWNLOAD_FOLDER" && \
-	# download latest release of zap
-	wget --no-verbose https://github.com/zaproxy/zaproxy/releases/download/v${OWASPZAP_VERSION}/ZAP_${OWASPZAP_VERSION}_Linux.tar.gz && \
-	# verify that the checksum and the checksum of the file are same
+    # download latest release of zap
+    wget --no-verbose https://github.com/zaproxy/zaproxy/releases/download/v${OWASPZAP_VERSION}/ZAP_${OWASPZAP_VERSION}_Linux.tar.gz && \
+    # verify that the checksum and the checksum of the file are same
     echo "${OWASPZAP_SHA256SUM} ZAP_${OWASPZAP_VERSION}_Linux.tar.gz" | sha256sum --check && \
     # install ZAP
-	tar xf ZAP_${OWASPZAP_VERSION}_Linux.tar.gz -C "$TOOL_FOLDER" && \
-	ln -s "$TOOL_FOLDER/ZAP_${OWASPZAP_VERSION}/zap.sh" "/usr/local/bin/zap" && \
-	# remove plugins installed on default
-	rm $TOOL_FOLDER/ZAP_${OWASPZAP_VERSION}/plugin/*.zap
+    tar xf ZAP_${OWASPZAP_VERSION}_Linux.tar.gz -C "$TOOL_FOLDER" && \
+    ln -s "$TOOL_FOLDER/ZAP_${OWASPZAP_VERSION}/zap.sh" "/usr/local/bin/zap" && \
+    # remove plugins installed on default
+    rm $TOOL_FOLDER/ZAP_${OWASPZAP_VERSION}/plugin/*.zap
 
 # Install SecHub OWASP ZAP wrapper
 RUN cd "$TOOL_FOLDER" && \
