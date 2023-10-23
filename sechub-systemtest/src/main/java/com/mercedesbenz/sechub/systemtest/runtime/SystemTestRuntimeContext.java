@@ -65,8 +65,16 @@ public class SystemTestRuntimeContext {
     private SecHubClient remoteUserSecHubClient;
     private SecHubClient localAdminSecHubClient;
     private SystemTestTemplateEngine templateEngine = new SystemTestTemplateEngine();
+    private Set<String> testsToRun = new LinkedHashSet<>();
 
     private Map<String, PDSClient> localTechUserPdsClientMap = new TreeMap<>();
+
+    public void addTestsToRun(Collection<String> testNames) {
+        if (testNames == null) {
+            return;
+        }
+        testsToRun.addAll(testNames);
+    }
 
     public void alterConfguration(SystemTestConfiguration configuration) {
         this.configuration = configuration;
@@ -90,6 +98,18 @@ public class SystemTestRuntimeContext {
 
     public boolean isDryRun() {
         return dryRun;
+    }
+
+    public boolean isRunningAllTests() {
+        return testsToRun.isEmpty();
+    }
+
+    public boolean isRunningTest(String name) {
+        return isRunningAllTests() || testsToRun.contains(name);
+    }
+
+    public Set<String> getTestsToRun() {
+        return Collections.unmodifiableSet(testsToRun);
     }
 
     /* only for tests */
