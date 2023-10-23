@@ -117,7 +117,7 @@ class SystemTestRuntimeTestEngineTest {
         engineToTest.runTest(test, runtimeContext);
 
         /* test */
-        assertEquals("Was not able to launch SecHub job. Reason: no job createable", currentTestResult.getFailure().getMessage());
+        assertEquals("Was not able to launch SecHub job. Reason: unable to create job", currentTestResult.getFailure().getMessage());
         assertTrue(currentTestResult.getFailure().getDetails().contains("no job createable"));
         assertTrue(currentTestResult.hasFailed());
         verifyNoInteractions(assertDefinition);
