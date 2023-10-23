@@ -10,6 +10,7 @@ public class TestDefinition extends AbstractDefinition {
     private List<ExecutionStepDefinition> prepare = new ArrayList<>();
     private List<TestAssertDefinition> _assert = new ArrayList<>();
     private TestExecutionDefinition execute = new TestExecutionDefinition();
+    private List<ExecutionStepDefinition> cleanup = new ArrayList<>();
 
     public void setName(String name) {
         this.name = name;
@@ -21,6 +22,10 @@ public class TestDefinition extends AbstractDefinition {
 
     public List<ExecutionStepDefinition> getPrepare() {
         return prepare;
+    }
+
+    public List<ExecutionStepDefinition> getCleanup() {
+        return cleanup;
     }
 
     public TestExecutionDefinition getExecute() {
