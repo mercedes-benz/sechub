@@ -152,10 +152,6 @@ class SystemTestRuntimePreparatorTest {
 
     private void assertProjectName(RunSecHubJobDefinition job, String expectedProjectName) {
         assertEquals(expectedProjectName, job.getProject());
-
-        if (context.isLocalRun()) {
-
-        }
     }
 
     private void assertUploadRefUsesReferenceId(RunSecHubJobDefinition job, String expectedReferenceId) {
