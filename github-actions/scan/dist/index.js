@@ -23684,7 +23684,7 @@ function getFiles(pattern) {
 // SPDX-License-Identifier: MIT
 
 
-const secHubCli = `${getWorkspaceParentDir()}/platform/linux-amd64/sechub`;
+const secHubCli = `${getWorkspaceParentDir()}/platform/linux-386/sechub`;
 /**
  * Executes the scan method of the SecHub CLI.
  * @param parameter Parameters to execute the scan with

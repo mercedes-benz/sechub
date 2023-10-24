@@ -40,7 +40,7 @@ import com.mercedesbenz.sechub.commons.pds.execution.ExecutionEventDetailIdentif
 import com.mercedesbenz.sechub.commons.pds.execution.ExecutionEventType;
 import com.mercedesbenz.sechub.pds.PDSMustBeDocumented;
 import com.mercedesbenz.sechub.pds.PDSNotFoundException;
-import com.mercedesbenz.sechub.pds.config.PDSProductSetup;
+import com.mercedesbenz.sechub.pds.commons.core.config.PDSProductSetup;
 import com.mercedesbenz.sechub.pds.config.PDSServerConfigurationService;
 import com.mercedesbenz.sechub.pds.storage.PDSMultiStorageService;
 import com.mercedesbenz.sechub.pds.storage.PDSStorageInfoCollector;
@@ -67,11 +67,11 @@ public class PDSWorkspaceService {
     public static final String SYSTEM_ERROR_LOG = "system-error.log";
 
     private static final Logger LOG = LoggerFactory.getLogger(PDSWorkspaceService.class);
-    private static final String WORKSPACE_PARENT_FOLDER_PATH = "./";
+    private static final String DEFAULT_WORKSPACE_ROOTFOLDER_PATH = "./workspace/";
 
-    @PDSMustBeDocumented(value = "Set PDS workspace root folder path. Inside this path the sub directory `workspace` will be created.", scope = "execution")
-    @Value("${sechub.pds.workspace.rootfolder:" + WORKSPACE_PARENT_FOLDER_PATH + "}")
-    String workspaceRootFolderPath = WORKSPACE_PARENT_FOLDER_PATH;
+    @PDSMustBeDocumented(value = "Set PDS workspace root folder path. Each running PDS job will have its own temporary sub directory inside this folder. ", scope = "execution")
+    @Value("${pds.workspace.rootfolder:" + DEFAULT_WORKSPACE_ROOTFOLDER_PATH + "}")
+    String workspaceRootFolderPath = DEFAULT_WORKSPACE_ROOTFOLDER_PATH;
 
     @Autowired
     PDSMultiStorageService storageService;
@@ -98,7 +98,7 @@ public class PDSWorkspaceService {
     PDSWorkspacePreparationResultCalculator preparationResultCalculator;
 
     @PDSMustBeDocumented(value = "Defines if workspace is automatically cleaned when no longer necessary - means launcher script has been executed and finished (failed or done)", scope = "execution")
-    @Value("${sechub.pds.workspace.autoclean.disabled:false}")
+    @Value("${pds.workspace.autoclean.disabled:false}")
     private boolean workspaceAutoCleanDisabled;
 
     private static final ArchiveFilter TAR_FILE_FILTER = new TarFileFilter();
@@ -317,7 +317,7 @@ public class PDSWorkspaceService {
      *                               permissions)
      */
     public File getWorkspaceFolder(UUID jobUUID) {
-        Path jobWorkspacePath = Paths.get(workspaceRootFolderPath, "workspace", jobUUID.toString());
+        Path jobWorkspacePath = Paths.get(workspaceRootFolderPath, jobUUID.toString());
         File jobWorkspaceFolder = jobWorkspacePath.toFile();
 
         if (!jobWorkspaceFolder.exists()) {

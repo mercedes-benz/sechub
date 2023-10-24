@@ -30,7 +30,7 @@ public class PDSCancelService {
     private static final int DEFAULT_TIME_IN_MINUTES_BEFORE_TREATED_AS_ORPHANED_CANCEL = 60;
 
     @PDSMustBeDocumented("The time in minutes after which a cancel job request is treated as orphaned.")
-    @Value("${sechub.pds.config.cancelrequest.minutes.before.treated.orphaned:" + DEFAULT_TIME_IN_MINUTES_BEFORE_TREATED_AS_ORPHANED_CANCEL + "}")
+    @Value("${pds.config.cancelrequest.minutes.before.treated.orphaned:" + DEFAULT_TIME_IN_MINUTES_BEFORE_TREATED_AS_ORPHANED_CANCEL + "}")
     int minutesToWaitBeforeTreatedAsOrphaned = DEFAULT_TIME_IN_MINUTES_BEFORE_TREATED_AS_ORPHANED_CANCEL;
 
     @Autowired

@@ -42,6 +42,8 @@ public abstract class AbstractAllowPDSAPISecurityConfiguration extends WebSecuri
  					permitAll().
  				antMatchers(PDSAPIConstants.ERROR_PAGE).
  				    permitAll().
+ 	 			antMatchers(PDSAPIConstants.ACTUATOR+"**").
+ 					permitAll().
  				/* to prevent configuration failures - I had this issue before -
  				 * all other matchers do deny all. So if not correct
  				 * configured nobody has access - please keep the denyAll parts

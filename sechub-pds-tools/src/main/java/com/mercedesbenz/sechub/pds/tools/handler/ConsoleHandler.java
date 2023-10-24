@@ -1,14 +1,23 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.pds.tools.handler;
 
-public interface ConsoleHandler {
+import com.beust.jcommander.internal.Console;
+
+public interface ConsoleHandler extends Console {
 
     /**
      * Output given text to console
      *
      * @param text
      */
-    public void output(String text);
+    public default void output(String text) {
+        println(text);
+    }
+
+    @Override
+    default void print(String msg) {
+
+    }
 
     /**
      * Show error in console

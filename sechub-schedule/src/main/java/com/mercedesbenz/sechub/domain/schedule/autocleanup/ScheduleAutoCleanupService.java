@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.mercedesbenz.sechub.domain.schedule.config.SchedulerConfigService;
+import com.mercedesbenz.sechub.domain.schedule.job.SecHubJobDataRepository;
 import com.mercedesbenz.sechub.domain.schedule.job.SecHubJobRepository;
 import com.mercedesbenz.sechub.sharedkernel.Step;
 import com.mercedesbenz.sechub.sharedkernel.TimeCalculationService;
@@ -31,6 +32,9 @@ public class ScheduleAutoCleanupService {
     SecHubJobRepository jobRepository;
 
     @Autowired
+    SecHubJobDataRepository jobDataRepository;
+
+    @Autowired
     AutoCleanupResultInspector inspector;
 
     @UseCaseScheduleAutoCleanExecution(@Step(number = 2, name = "Delete old data", description = "deletes old job information"))
@@ -45,6 +49,8 @@ public class ScheduleAutoCleanupService {
 
         /* delete */
         int amount = jobRepository.deleteJobsOlderThan(cleanTimeStamp);
+        jobDataRepository.deleteJobDataOlderThan(cleanTimeStamp);
+
         /* @formatter:off */
         inspector.inspect(AutoCleanupResult.builder().
                     autoCleanup("sechub-jobs",getClass()).

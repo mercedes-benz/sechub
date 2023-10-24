@@ -146,8 +146,8 @@ public class UseCaseRestDocModelAsciiDocGenerator {
         for (SpringRestDocOutput restDocOutput : entry.wanted) {
             if (restDocOutput.isExample()) {
                 File outputFile = map.get(restDocOutput);
-                if (outputFile != null) {
-                    addDescripiton(context, entry, outputFile);
+                if (outputFile != null && outputFile.exists()) {
+                    addDescription(context, entry, outputFile);
                 }
             }
         }
@@ -160,8 +160,8 @@ public class UseCaseRestDocModelAsciiDocGenerator {
         for (SpringRestDocOutput restDocOutput : entry.wanted) {
             if (restDocOutput.isDefinition()) {
                 File outputFile = map.get(restDocOutput);
-                if (outputFile != null) {
-                    addDescripiton(context, entry, outputFile);
+                if (outputFile != null && outputFile.exists()) {
+                    addDescription(context, entry, outputFile);
                 }
             }
         }
@@ -222,7 +222,7 @@ public class UseCaseRestDocModelAsciiDocGenerator {
         return map;
     }
 
-    private void addDescripiton(Context context, UseCaseRestDocEntry entry, File file) {
+    private void addDescription(Context context, UseCaseRestDocEntry entry, File file) {
         context.addLine("");
         String prettyFileName = createPrettyPrintedFileName(file);
         context.addLine("*" + prettyFileName + "*  +");

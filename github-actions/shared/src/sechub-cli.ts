@@ -4,7 +4,7 @@ import * as shell from 'shelljs';
 import { ShellString } from 'shelljs';
 import {getWorkspaceParentDir} from "./fs-helper";
 
-export const secHubCli = `${getWorkspaceParentDir()}/platform/linux-amd64/sechub`;
+export const secHubCli = `${getWorkspaceParentDir()}/platform/linux-386/sechub`;
 
 /**
  * Executes the scan method of the SecHub CLI.

@@ -1,0 +1,8 @@
+ ____  ____  ____  
+|  _ \|  _ \/ ___| 
+| |_) | | | \___ \ 
+|  __/| |_| |___) |
+|_|   |____/|____/ 
+
+:: Product Delegation Server :: ${application.formatted-version} 
+:: Spring Boot               :: ${spring-boot.formatted-version}

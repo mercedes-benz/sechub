@@ -49,7 +49,7 @@ ext {
       apache_commons_io:                       "2.11.0",
       apache_commons_validator:                "1.7",
       apache_commons_fileupload:               "1.5",
-      apache_commons_compress:                 "1.23.0",
+      apache_commons_compress:                 "1.24.0",
       apache_commons_lang3:                    "3.12.0",
 
       /* testing */                            
@@ -68,7 +68,7 @@ ext {
       restDocsApiSpec:                         "0.16.4",  // newest version compatible with Spring Boot 2.x
       
       /* Owasp Zap wrapper */
-      owaspzap_client_api:                     "1.11.0",
+      owaspzap_client_api:                     "1.12.0",
       jcommander:                              "1.82",
       
       thymeleaf_extras_springsecurity5:        "3.1.1.RELEASE",
@@ -90,7 +90,6 @@ ext {
         springboot_starter_security :          "org.springframework.boot:spring-boot-starter-security",
         springboot_starter_web:                "org.springframework.boot:spring-boot-starter-web",
         springboot_starter_test:               "org.springframework.boot:spring-boot-starter-test",
-        springboot_starter_batch:              "org.springframework.boot:spring-boot-starter-batch",
         springboot_starter_json:               "org.springframework.boot:spring-boot-starter-json",
         springboot_starter_actuator:           "org.springframework.boot:spring-boot-starter-actuator",
         springboot_starter_mail:               "org.springframework.boot:spring-boot-starter-mail",
@@ -100,6 +99,8 @@ ext {
         springframework_restdocs:              "org.springframework.restdocs:spring-restdocs-mockmvc",
         springframework_security_test:         "org.springframework.security:spring-security-test", 
         springframework_web:                   "org.springframework:spring-web",
+
+        micrometer_prometheus:                 "io.micrometer:micrometer-registry-prometheus",
 
 
         /* additional (1): version by spring boot dependency management - because inside spring application */

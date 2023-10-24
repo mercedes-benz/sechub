@@ -1,13 +1,10 @@
 {
-    "apiVersion" : "1.0",
-    "serverId" : "PDS_CLUSTER", 
-
-    "products" : [
-        {
-            "id" : "PDS",
-            "path" : "/scripts/pds.sh",
-            "scanType" : "codeScan",
-            "description" : "Test file for PDS"
-        }
-    ]
+  "apiVersion" : "1.0",
+  "serverId" : "PDS_CLUSTER",
+  "products" : [ {
+    "id" : "PDS",
+    "path" : "/pds/scripts/pds.sh",
+    "scanType" : "codeScan",
+    "description" : "Test file for PDS"
+  } ]
 }

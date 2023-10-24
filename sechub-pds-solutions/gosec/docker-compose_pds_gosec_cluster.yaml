@@ -15,8 +15,8 @@ services:
             - "internal"
         volumes:
             - "shared_volume:/shared_volumes/uploads"
-            - ./docker/scripts:/scripts
-        depends_on: 
+            - ./docker/scripts:/pds/scripts
+        depends_on:
             - database
 
     loadbalancer:
@@ -32,7 +32,7 @@ services:
             - pds-gosec
         ports:
             - "127.0.0.1:8444:8444"
-    
+
     database:
         build:
             context: ../shared/docker/database
@@ -42,7 +42,7 @@ services:
             - "internal"
         ports:
             - "127.0.0.1:5432:5432"
-        
+
 networks:
     internal:
 

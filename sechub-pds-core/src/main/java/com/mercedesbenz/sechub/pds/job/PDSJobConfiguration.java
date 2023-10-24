@@ -5,8 +5,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-import com.mercedesbenz.sechub.pds.PDSJSONConverter;
-import com.mercedesbenz.sechub.pds.PDSJSONConverterException;
+import com.mercedesbenz.sechub.pds.commons.core.PDSJSONConverter;
+import com.mercedesbenz.sechub.pds.commons.core.PDSJSONConverterException;
 import com.mercedesbenz.sechub.pds.execution.PDSExecutionParameterEntry;
 
 public class PDSJobConfiguration {

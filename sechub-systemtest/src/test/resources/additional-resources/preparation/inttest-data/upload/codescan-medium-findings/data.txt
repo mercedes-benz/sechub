@@ -1,0 +1,3 @@
+MEDIUM:i am a medium error
+LOW:i am just a low error
+INFO:i am just an information

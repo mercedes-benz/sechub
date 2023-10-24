@@ -50,7 +50,7 @@ func handleHTTPRequestAndResponse(context *Context, request *http.Request, print
 		sechubUtil.LogDebug(true, fmt.Sprintf("HTTP %s %s\n  HTTP Headers: %s\n  Content length of HTTP request: %d bytes",
 			request.Method, request.URL, request.Header, request.ContentLength))
 		if printContentOfRequest {
-			sechubUtil.LogDebug(true, fmt.Sprintf("Content of HTTP request: %q", context.inputForContentProcessing))
+			sechubUtil.LogDebug(true, fmt.Sprintf("Content of HTTP request: %q", request.Body))
 		}
 	} else {
 		sechubUtil.LogDebug(context.config.debug, fmt.Sprintf("HTTP %s %s", request.Method, request.URL))

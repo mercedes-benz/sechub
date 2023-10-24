@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+#!/bin/bash
 # SPDX-License-Identifier: MIT
 
 REGISTRY="$1"
@@ -12,10 +12,11 @@ usage() {
 usage: $0 <docker registry> <version tag> <base image>
 Builds a docker image of SecHub PDS with Checkmarx Wrapper
 for <docker registry> with tag <version tag>.
-Required: <base image> ; Example: ghcr.io/mercedes-benz/sechub/pds-base:v0.32.1
+Required: <base image> ; Example: ghcr.io/mercedes-benz/sechub/pds-base
 
 Additionally these environment variables can be defined:
 - BUILD_TYPE - The build type of the Checkmarx-Wrapper. Defaults to "$DEFAULT_BUILD_TYPE"
+- BUILDER_BASE_IMAGE - Base image for the build containers (see dockerfile)
 - CHECKMARX_WRAPPER_VERSION - Checkmarx Wrapper version to use. Example: 1.0.0
 EOF
 }
@@ -51,6 +52,11 @@ if [[ -z "$BUILD_TYPE" ]] ; then
 fi
 BUILD_ARGS+=" --build-arg BUILD_TYPE=$BUILD_TYPE"
 echo ">> - Build type: $BUILD_TYPE"
+
+if [[ ! -z "$BUILDER_BASE_IMAGE" ]] ; then
+    BUILD_ARGS+=" --build-arg BUILDER_BASE_IMAGE=$BUILDER_BASE_IMAGE"
+    echo ">> - Builder base image: $BUILDER_BASE_IMAGE"
+fi
 
 if [[ ! -z "$CHECKMARX_WRAPPER_VERSION" ]] ; then
     BUILD_ARGS+=" --build-arg CHECKMARX_WRAPPER_VERSION=$CHECKMARX_WRAPPER_VERSION"

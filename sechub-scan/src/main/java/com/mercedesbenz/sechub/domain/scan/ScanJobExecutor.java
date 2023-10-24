@@ -15,6 +15,9 @@ import com.mercedesbenz.sechub.sharedkernel.ProgressMonitor;
  * Finally executes the scan job
  */
 class ScanJobExecutor {
+    private static final String SECHUB_SCAN_THREAD_PREFIX = "sechub-scan:";
+    private static final String SECHUB_SCAN_CANCEL_THREAD_PREFIX = "sechub-scan-cancel:";
+
     /* the absolute minimum of time to wait for next cancel check */
     private static final int MINIMUM_CANCEL_CHECK_TIME_MILLISECONDS = 100;
 
@@ -62,7 +65,7 @@ class ScanJobExecutor {
         ScanJobRunnableData runnableData = new ScanJobRunnableData(sechubJobUUID, executionServiceContainer, context);
 
         ScanJobExecutionRunnable scanJobExecutionRunnable = new ScanJobExecutionRunnable(runnableData);
-        Thread executorThread = new Thread(scanJobExecutionRunnable, "SecHubJob:" + sechubJobUUID + "-exec");
+        Thread executorThread = new Thread(scanJobExecutionRunnable, SECHUB_SCAN_THREAD_PREFIX + sechubJobUUID);
         runnableData.setRunnableThread(executorThread);
 
         try {
@@ -137,7 +140,7 @@ class ScanJobExecutor {
          * its job while being interrupted. So cancel thread necessary.
          */
         ScanJobCancellationRunnable cancelRunnable = new ScanJobCancellationRunnable(data);
-        Thread cancelThread = new Thread(cancelRunnable, "SecHubJob:" + data.getSechubJobUUID() + "-cancel");
+        Thread cancelThread = new Thread(cancelRunnable, SECHUB_SCAN_CANCEL_THREAD_PREFIX + data.getSechubJobUUID());
         data.setRunnableThread(cancelThread);
         cancelThread.start();
     }

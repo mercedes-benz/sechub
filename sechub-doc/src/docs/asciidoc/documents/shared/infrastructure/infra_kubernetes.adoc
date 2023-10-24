@@ -2,7 +2,4 @@
 [[section-infrastructure-setup-kubernetes]]
 === Kubernetes
 
-// TODO de-jcup 2019-05-29: we must adopt this too
-
-TIP: The existing kubernetes deployment must be made more general.
-     When this is done, it can be added to OSS variant as well.
+We provide container images and Helm charts: https://github.com/mercedes-benz/sechub/packages

@@ -46,9 +46,9 @@ public class CPUConsumer {
                 } catch (InterruptedException e) {
                     Thread.currentThread().interrupt();
                 }
-            }, "cpu-harvester-" + (i));
+            }, "sechub-test-cpu-consumer-" + (i));
             t.start();
-            LOG.info("created + starte dthread :" + t.getName());
+            LOG.info("created + started thread :" + t.getName());
         }
     }
 }

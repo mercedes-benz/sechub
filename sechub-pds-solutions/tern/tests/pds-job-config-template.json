@@ -6,6 +6,10 @@
         {
             "key": "pds.scan.configuration",
             "value": "_PDS_SCAN_CONFIGURATION_"
+        },
+        {
+            "key": "scancode.activated",
+            "value": "true"
         }
     ]
 }

@@ -22,7 +22,14 @@ subprojects {
              // creates build-info.properties in META-INF folder which is auto injected in spring
              // see https://docs.spring.io/spring-boot/docs/current/reference/htmlsingle/#howto-build-info
              buildInfo() 
-        }     
+       }
+       
+       bootJar {
+          manifest {
+             attributes 'Implementation-Version': "$project.version"
+          }
+       
+       }
     }
 
 

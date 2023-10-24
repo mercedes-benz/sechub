@@ -1,0 +1,18 @@
+{
+    "apiVersion": "1.0",
+    "serverId": "GOSEC_CLUSTER",
+    "products": [
+        {
+            "id": "PDS_GOSEC",
+            "path": "/scripts/gosec.sh",
+            "scanType": "codeScan",
+            "description": "Runs the Go-code security checker gosec."
+        },
+        {
+            "id": "PDS_GOSEC_MOCK",
+            "path": "/scripts/gosec_mock.sh",
+            "scanType": "codeScan",
+            "description": "Runs GoSec mock. It returns a fixed result file."
+        }
+    ]
+}

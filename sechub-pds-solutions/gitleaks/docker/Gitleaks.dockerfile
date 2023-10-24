@@ -5,7 +5,7 @@ ARG BASE_IMAGE
 
 FROM ${BASE_IMAGE}
 
-ARG GITLEAKS_VERSION
+ARG GITLEAKS_VERSION=8.16.4
 ENV GITLEAKS_VERSION="${GITLEAKS_VERSION}"
 
 USER root
@@ -20,7 +20,7 @@ RUN cd "$DOWNLOAD_FOLDER" && \
     wget "https://github.com/zricethezav/gitleaks/releases/download/v${GITLEAKS_VERSION}/gitleaks_${GITLEAKS_VERSION}_linux_x64.tar.gz" && \
     sha256sum --check --ignore-missing "gitleaks_${GITLEAKS_VERSION}_checksums.txt" && \
     tar --extract --gunzip --file="gitleaks_${GITLEAKS_VERSION}_linux_x64.tar.gz" --directory="$TOOL_FOLDER" && \
-    rm --recursive --force "$DOWNLOAD_FOLDER/*"
+    rm --recursive --force "$DOWNLOAD_FOLDER"/*
 
 # Copy PDS configfile
 COPY pds-config.json "$PDS_FOLDER"/pds-config.json

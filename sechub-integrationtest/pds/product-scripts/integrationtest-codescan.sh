@@ -54,23 +54,47 @@ fi
 # Handle extreaction
 #
 if [[ "$PDS_JOB_HAS_EXTRACTED_SOURCES" = "true" ]]; then
-   mergeFolderFilesRecursivelyIntoResultFile "sources", $PDS_JOB_EXTRACTED_SOURCES_FOLDER ${PDS_JOB_RESULT_FILE} $PDS_DEBUG_ENABLED
+   mergeFolderFilesRecursivelyIntoResultFile "sources", "$PDS_JOB_EXTRACTED_SOURCES_FOLDER" "${PDS_JOB_RESULT_FILE}" "$PDS_DEBUG_ENABLED"
 fi
 
 if [[ "$PDS_JOB_HAS_EXTRACTED_BINARIES" = "true" ]]; then
-   mergeFolderFilesRecursivelyIntoResultFile "binaries" $PDS_JOB_EXTRACTED_BINARIES_FOLDER ${PDS_JOB_RESULT_FILE} $PDS_DEBUG_ENABLED
+   mergeFolderFilesRecursivelyIntoResultFile "binaries" "$PDS_JOB_EXTRACTED_BINARIES_FOLDER" "${PDS_JOB_RESULT_FILE}" "$PDS_DEBUG_ENABLED"
 fi
 
 # Now we add a "header" so identifyable by importer + synthetic info object to check params
 if [[ ! -f "${PDS_JOB_RESULT_FILE}" ]]; then
-    touch ${PDS_JOB_RESULT_FILE}
+    touch "${PDS_JOB_RESULT_FILE}"
     echo "${PDS_JOB_RESULT_FILE} was missing - created empty file"
 fi
 
-echo "#PDS_INTTEST_PRODUCT_CODESCAN
-info:pds.test.key.variantname as PDS_TEST_KEY_VARIANTNAME=$PDS_TEST_KEY_VARIANTNAME,product1.level as PRODUCT1_LEVEL=$PRODUCT1_LEVEL
-$(cat ${PDS_JOB_RESULT_FILE})" > ${PDS_JOB_RESULT_FILE}
+# *******************************************
+#        Post processing of result file
+# *******************************************
+#
+# In the steps before we created a report file. The first step for the report is that the 
+# unit test does upload a archive file (zip or tar) which contains a directory structure with different simple
+# text files. The content of each file consists of single text lines. Each line represents a simple
+# definition for a pseudo vulnerability. After the archive file is extracted by the PDS, the content of the 
+# files were merged to one single report file.
+#
+# Furthermore, we have a special integration test importer in SecHub which can import such reports if they
+# contain the marker #PDS_INTTEST_PRODUCT_CODESCAN in the first line.
+#
+# The second line is an additional pseudo vulnerability which is always inside the SecHub report.
+# It is at info level and contains the parameters `pds.test.key.variantname` and `product1.level` as description.
+# The variant name is used inside the script to have dedicated behaviors for different product executor configurations.
+# For debugging purposes the developer can look into the sechub report and see which variant was used for this test.
 
+mv "${PDS_JOB_RESULT_FILE}" "${PDS_JOB_RESULT_FILE}_tmp"
+ 
+echo "#PDS_INTTEST_PRODUCT_CODESCAN
+info:pds.test.key.variantname as PDS_TEST_KEY_VARIANTNAME=$PDS_TEST_KEY_VARIANTNAME,product1.level as PRODUCT1_LEVEL=$PRODUCT1_LEVEL" > "${PDS_JOB_RESULT_FILE}"
+ 
+cat "${PDS_JOB_RESULT_FILE}_tmp" >> "${PDS_JOB_RESULT_FILE}"
+ 
+rm "${PDS_JOB_RESULT_FILE}_tmp"
+
+# - End of result file post processing
 
 if [[ "$PDS_TEST_KEY_VARIANTNAME" = "f" ]]; then
     produceLargerOutputStreamContent
@@ -127,11 +151,11 @@ if [[ "$PDS_TEST_KEY_VARIANTNAME" = "" ]]; then
     
     echo "After messages were created, I found this inside messages folder:"
     echo "----------------------------------------------------------------------------"
-    ls $PDS_JOB_USER_MESSAGES_FOLDER 
+    ls "$PDS_JOB_USER_MESSAGES_FOLDER" 
     echo "----------------------------------------------------------------------------"
     
     # For direct pds tests, we create a simple metadata.txt when executed:
-    echo "generated meta data for PDS job:$PDS_JOB_UUID" > $PDS_JOB_METADATA_FILE
+    echo "generated meta data for PDS job:$PDS_JOB_UUID" > "$PDS_JOB_METADATA_FILE"
     echo "> Meta data was written..."
     echo "> PDS_JOB_METADATA_FILE=$PDS_JOB_METADATA_FILE"
     

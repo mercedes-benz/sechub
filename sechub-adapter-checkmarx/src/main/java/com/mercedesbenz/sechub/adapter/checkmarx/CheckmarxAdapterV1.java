@@ -74,7 +74,7 @@ public class CheckmarxAdapterV1 extends AbstractAdapter<CheckmarxAdapterContext,
         try {
             uploadSourceCodeAndStartScan(oauthSupport, context);
         } catch (CheckmarxFullScanNecessaryException e) {
-            LOG.info("Full scan necessary bcause of checkmarx message: {}", e.getCheckmarxMessage());
+            LOG.info(CheckmarxAdapter.CHECKMARX_MESSAGE_PREFIX + "{} (full scan necessary)", e.getCheckmarxMessage());
             context.setFullScan(true);
             uploadSourceCodeAndStartScan(oauthSupport, context);
 
@@ -94,7 +94,7 @@ public class CheckmarxAdapterV1 extends AbstractAdapter<CheckmarxAdapterContext,
             metaData.setValue(CheckmarxMetaDataID.KEY_FILEUPLOAD_DONE, true);
             context.getRuntimeContext().getCallback().persist(metaData);
         } else {
-            LOG.info("Reuse existing upload for:{}", context.getTraceID());
+            LOG.info("Reuse existing upload for: {}", context.getTraceID());
         }
         /* start scan */
         CheckmarxScanSupport scanSupport = new CheckmarxScanSupport();

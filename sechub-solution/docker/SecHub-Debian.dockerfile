@@ -8,7 +8,7 @@
 ARG BASE_IMAGE
 
 # Inject the target architecture
-# For more information: 
+# For more information:
 # - https://docs.docker.com/engine/reference/builder/#automatic-platform-args-in-the-global-scope
 ARG TARGETARCH
 
@@ -19,7 +19,7 @@ ARG SECHUB_VERSION="0.35.2"
 ARG TAG=""
 ARG BRANCH=""
 
-ARG GO="go1.20.1.linux-${TARGETARCH}.tar.gz"
+ARG GO="go1.20.4.linux-${TARGETARCH}.tar.gz"
 
 # possible values: temurin, openj9, openjdk
 ARG JAVA_DISTRIBUTION="openjdk"
@@ -149,6 +149,9 @@ FROM builder-${BUILD_TYPE} as builder
 
 FROM ${BASE_IMAGE} AS sechub
 
+LABEL org.opencontainers.image.source="https://github.com/mercedes-benz/sechub"
+LABEL org.opencontainers.image.title="SecHub Debian Image"
+LABEL org.opencontainers.image.description="A container for SecHub based on Debian"
 LABEL maintainer="SecHub FOSS Team"
 
 ARG SECHUB_ARTIFACT_FOLDER

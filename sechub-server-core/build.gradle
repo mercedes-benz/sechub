@@ -1,11 +1,9 @@
 // SPDX-License-Identifier: MIT
 dependencies {
 
-    api(library.springboot_starter_batch)
-    
-    implementation 'org.springframework.boot:spring-boot-starter-actuator'
-    implementation 'io.micrometer:micrometer-registry-prometheus'
-    
+    implementation library.springboot_starter_actuator
+    implementation library.micrometer_prometheus
+
     api project(':sechub-shared-kernel')
     api project(':sechub-schedule')
     api project(':sechub-authorization')
@@ -20,7 +18,6 @@ dependencies {
     
     api project(':deprecated-sechub-scan-product-netsparker')
     api project(':deprecated-sechub-scan-product-nessus')
-
 
     testImplementation project(':sechub-testframework')
 }

@@ -4,6 +4,5 @@
 DATABASE_START_MODE=server
 POSTGRES_ENABLED=true
 DATABASE_CONNECTION=jdbc:postgresql://database:5432/pds?currentSchema=checkmarx
-DATABASE_PASSWORD=top$ecret
+DATABASE_PASSWORD='top$ecret'
 DATABASE_USERNAME=checkmarx
-

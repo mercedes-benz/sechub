@@ -5,7 +5,7 @@ services:
   pds:
     build:
       args:
-        - BASE_IMAGE=debian:11-slim
+        - BASE_IMAGE=${BASE_IMAGE}
         - BUILD_TYPE=${BUILD_TYPE}
         - PDS_VERSION=${PDS_VERSION}
         - JAVA_VERSION=${JAVA_VERSION}
@@ -24,7 +24,8 @@ services:
     networks:
       - "internal"
     volumes:
-      - ./docker/scripts:/scripts
-      - ./docker/mocks:/mocks
+      - ./docker/scripts:/pds/scripts
+      - ./docker/mocks:/pds/mocks
+
 networks:
   internal:

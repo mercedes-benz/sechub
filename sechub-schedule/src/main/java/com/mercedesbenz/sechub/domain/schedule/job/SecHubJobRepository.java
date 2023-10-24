@@ -9,14 +9,15 @@ import java.util.Optional;
 import java.util.UUID;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.mercedesbenz.sechub.domain.schedule.ExecutionState;
+import com.mercedesbenz.sechub.commons.model.job.ExecutionState;
 
-public interface SecHubJobRepository extends JpaRepository<ScheduleSecHubJob, UUID>, SecHubJobRepositoryCustom {
+public interface SecHubJobRepository extends JpaRepository<ScheduleSecHubJob, UUID>, SecHubJobRepositoryCustom, JpaSpecificationExecutor<ScheduleSecHubJob> {
 
     @Query(value = "SELECT * FROM " + TABLE_NAME + " where " + COLUMN_PROJECT_ID + " = ?1 and " + COLUMN_UUID + " = ?2", nativeQuery = true)
     public Optional<ScheduleSecHubJob> findForProject(String projectId, UUID jobUUID);
@@ -29,13 +30,9 @@ public interface SecHubJobRepository extends JpaRepository<ScheduleSecHubJob, UU
             + " is :executionState", nativeQuery = false)
     public long countJobsInExecutionState(@Param("executionState") ExecutionState state);
 
-    @Modifying
-    @Query(value = "DELETE FROM " + ScheduleSecHubJob.CLASS_NAME + " t where t." + PROPERTY_STARTED + " is NULL", nativeQuery = false)
-    public void deleteWaitingJobs();
-
     @Transactional
     @Modifying
-    @Query(ScheduleSecHubJob.QUERY_DELETE_JOBINFORMATION_OLDER_THAN)
+    @Query(ScheduleSecHubJob.QUERY_DELETE_JOB_OLDER_THAN)
     public int deleteJobsOlderThan(@Param("cleanTimeStamp") LocalDateTime cleanTimeStamp);
 
 }

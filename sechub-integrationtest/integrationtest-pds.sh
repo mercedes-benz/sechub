@@ -162,24 +162,24 @@ function startServer(){
     export SERVER_PORT=$PDS_PORT
     export SPRING_PROFILES_ACTIVE=pds_integrationtest,pds_h2
     export SECHUB_SERVER_DEBUG=true
-    export SECHUB_PDS_STORAGE_SHAREDVOLUME_UPLOAD_DIR="$SHARED_VOLUME_BASEDIR"
+    export PDS_STORAGE_SHAREDVOLUME_UPLOAD_DIR="$SHARED_VOLUME_BASEDIR"
 
     pathToJar="../sechub-pds/build/libs/sechub-pds-$PDS_VERSION.jar"
-    if [ ! -f $pathToJar ]; then
+    if [ ! -f "$pathToJar" ]; then
         log ">> FAILURE: version not build:$PDS_VERSION, looked into $pathToJar"
         log ">> Found content inside library folder:"
         ls -al "../sechub-pds/build/libs/"
         exit 1
     fi
     pathToLog="$currentDir/integrationtest-pds.log"
-    if [ -f $pathToLog ]; then
+    if [ -f "$pathToLog" ]; then
         log ">> INFO: removing old logfile: $pathToLog"
-        rm $pathToLog
+        rm "$pathToLog"
     fi
     # Unset proxy so e.g. S3 access will be done without proxy
     export http_proxy=""
     export https_proxy=""
-    java -jar $pathToJar > $pathToLog 2>&1 &
+    java -jar "$pathToJar" > "$pathToLog" 2>&1 &
     log ">> INFO: Integration test PDS has been started"
     log "         logfiles can be found at: $pathToLog"
     log "         ... waiting for PDS to be up and running ..."

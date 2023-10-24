@@ -12,8 +12,6 @@ include::../shared/infrastructure/infra_localdevelopment.adoc[]
 
 include::../shared/infrastructure/infra_security_products.adoc[]
 
-include::../shared/infrastructure/infra_docker.adoc[]
-
 include::../shared/infrastructure/infra_kubernetes.adoc[]
 
-
+include::../shared/infrastructure/infra_docker.adoc[]

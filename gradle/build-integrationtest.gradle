@@ -1,0 +1,24 @@
+// SPDX-License-Identifier: MIT
+subprojects {
+
+    if (! projectType.integrationTestProjects.contains(project)){
+        return;
+    }
+    
+    task copyIntegrationTestResults(type: Copy) {
+            with{
+                from "${project.projectDir}/build/test-results/integrationtest"
+                into "${combined_report_junit_tmp}"
+                include "*.xml"
+            }
+    }
+    task copyIntegrationServerLogs(type: Copy) {
+            with{
+                from "${project.projectDir}"
+                into "${combined_report_target}"
+                include "integrationtest-*.log"
+            }
+    }
+    copyTestResults.dependsOn copyIntegrationTestResults
+    copyTestResults.dependsOn copyIntegrationServerLogs
+}
