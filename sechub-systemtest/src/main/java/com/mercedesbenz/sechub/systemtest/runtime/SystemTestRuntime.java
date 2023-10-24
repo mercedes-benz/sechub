@@ -182,7 +182,7 @@ public class SystemTestRuntime {
         }
         if (!atLeastOneTestExecuted) {
             SystemTestRunResult missingTestsResult = new SystemTestRunResult("");
-            missingTestsResult.setFailure(new SystemTestFailure("No tests were executed", "From " + workingList.size() + " defined tests no one was executed"));
+            missingTestsResult.setFailure(new SystemTestFailure("No tests were executed", "From " + workingList.size() + " defined tests none was executed"));
             context.getResults().add(missingTestsResult);
         }
 
