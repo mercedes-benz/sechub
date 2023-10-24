@@ -37,9 +37,9 @@ RUN export DEBIAN_FRONTEND=noninteractive && \
     apt-get install --assume-yes openjdk-17-jre firefox-esr wget && \
     apt-get clean
 
-# Download ZAP
+# Install ZAP
 RUN cd "$DOWNLOAD_FOLDER" && \
-    # download latest release of zap
+    # download latest release of ZAP
     wget --no-verbose https://github.com/zaproxy/zaproxy/releases/download/v${OWASPZAP_VERSION}/ZAP_${OWASPZAP_VERSION}_Linux.tar.gz && \
     # verify that the checksum and the checksum of the file are same
     echo "${OWASPZAP_SHA256SUM} ZAP_${OWASPZAP_VERSION}_Linux.tar.gz" | sha256sum --check && \
@@ -67,7 +67,7 @@ COPY zap-addons.txt "$TOOL_FOLDER/zap-addons.txt"
 
 # Install OWASP ZAP addons
 # see: https://www.zaproxy.org/addons/
-# via addon manager: owasp-zap -cmd -addoninstall webdriverlinux
+# via addon manager: zap -cmd -addoninstall webdriverlinux
 RUN mkdir --parents "/home/$USER/.ZAP/plugin" && \
     chown --recursive "$USER:$USER" "/home/$USER/" && \
     cd "/home/$USER/.ZAP/plugin" && \
