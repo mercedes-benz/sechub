@@ -7,7 +7,7 @@ https://github.com/zaproxy/zap-extensions/releases/download/retire-v0.26.0/retir
 https://github.com/zaproxy/zap-extensions/releases/download/domxss-v18/domxss-release-18.zap
 https://github.com/zaproxy/zap-extensions/releases/download/webdriverlinux-v64/webdriverlinux-release-64.zap
 https://github.com/zaproxy/zap-extensions/releases/download/network-v0.12.0/network-beta-0.12.0.zap
-https://github.com/zaproxy/zap-extensions/releases/download/openapi-v37/openapi-beta-37.zap
+https://github.com/zaproxy/zap-extensions/releases/download/openapi-v38/openapi-beta-38.zap
 https://github.com/zaproxy/zap-extensions/releases/download/callhome-v0.8.0/callhome-release-0.8.0.zap
 https://github.com/zaproxy/zap-extensions/releases/download/spider-v0.7.0/spider-release-0.7.0.zap
 https://github.com/zaproxy/zap-extensions/releases/download/database-v0.3.0/database-alpha-0.3.0.zap
