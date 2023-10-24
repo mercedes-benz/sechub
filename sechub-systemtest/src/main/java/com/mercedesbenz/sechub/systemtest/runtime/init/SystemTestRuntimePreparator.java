@@ -73,6 +73,7 @@ public class SystemTestRuntimePreparator {
         initializeAlteredConfiguration(context);
 
         prepareLocal(context);
+        prepareRemote(context);
 
         prepareTests(context);
     }
@@ -127,7 +128,10 @@ public class SystemTestRuntimePreparator {
         }
         SecHubWebScanConfiguration webScan = webScanOpt.get();
         LOG.warn("Web scan found, but no special preparation done for url: {}", webScan.getUrl());
-
+        if (webScan.getApi().isEmpty()) {
+            return;
+        }
+        handleUsedDataConfigurationObjects(webScan.getApi().get(), test, context);
     }
 
     private void handleInfraScan(TestDefinition test, SystemTestRuntimeContext context, RunSecHubJobDefinition runSecHubJob) {
@@ -256,6 +260,14 @@ public class SystemTestRuntimePreparator {
 
     }
 
+    private void prepareRemote(SystemTestRuntimeContext context) {
+        if (context.isLocalRun()) {
+            LOG.debug("Skip remote preparation - run is not remote");
+            return;
+        }
+        /* currently no special remote preparation at all */
+    }
+
     private void addFallbackDefaultProfileToExecutorsWithoutProfile(SystemTestRuntimeContext context) {
         SecHubConfigurationDefinition sechubConfig = context.getLocalSecHubConfigurationOrFail();
         List<SecHubExecutorConfigDefinition> executors = sechubConfig.getExecutors();
@@ -320,7 +332,6 @@ public class SystemTestRuntimePreparator {
                 executor.setName(newName);
             }
         }
-
     }
 
     private void createFallbacksForPDSSolutions(SystemTestRuntimeContext context) {
