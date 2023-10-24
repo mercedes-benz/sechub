@@ -43,7 +43,7 @@ class SystemTestRuntimeContextTest {
     }
 
     @Test
-    void initial_context_with_one_testentry_to_run_runs_only_defined_one() {
+    void initial_context_with_one_test_entry_to_run_runs_only_defined_one() {
         /* prepare */
         List<String> testNames = new ArrayList<>();
         testNames.add("defined-testname");
@@ -56,7 +56,7 @@ class SystemTestRuntimeContextTest {
     }
 
     @Test
-    void initial_context_with_two_testentries_to_run_runs_only_defined_ones() {
+    void initial_context_with_two_test_entries_to_run_runs_only_defined_ones() {
         /* prepare */
         List<String> testNames = new ArrayList<>();
         testNames.add("defined-testname1");

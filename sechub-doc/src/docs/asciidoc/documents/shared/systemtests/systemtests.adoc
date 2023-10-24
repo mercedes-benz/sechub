@@ -325,7 +325,7 @@ Tests are defined at root level of the configuration file. It is possible to def
 multiple tests in one configurationfile.
 
 ===== Prepare
-A test can have one ore more `preparation` steps where following commands can be executed:
+A test can have one or more `preparation` steps where following commands can be executed:
 
 - `copy` +
   Provides parameters "from" and "to" and enables users to copy folders or files to other locations
@@ -359,7 +359,7 @@ Asserts are done after the execution phase. Following steps are possible
     . `{*:n}` - `n` represents the number for characters to be ignored.
 
 ===== Cleanup
-A test can have one ore more `cleanup` steps where following commands can be executed:
+A test can have one or more `cleanup` steps where following commands can be executed:
 
 - `copy` +
   Provides parameters "from" and "to" and enables users to copy folders or files to other locations
