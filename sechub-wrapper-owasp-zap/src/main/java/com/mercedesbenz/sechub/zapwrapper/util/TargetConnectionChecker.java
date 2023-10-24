@@ -51,7 +51,7 @@ public class TargetConnectionChecker {
                 isReachable = isSiteCurrentlyReachable(scanContext, url, scanContext.getMaxNumberOfConnectionRetries(),
                         scanContext.getRetryWaittimeInMilliseconds());
             } catch (MalformedURLException e) {
-                throw new ZapWrapperRuntimeException("URL: " + nextUrl + " is incalid. Cannot check if URL is reachable.",
+                throw new ZapWrapperRuntimeException("URL: " + nextUrl + " is invalid. Cannot check if URL is reachable.",
                         ZapWrapperExitCode.TARGET_URL_INVALID);
             }
         }
