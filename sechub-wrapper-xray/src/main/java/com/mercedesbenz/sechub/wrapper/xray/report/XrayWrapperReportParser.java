@@ -1,16 +1,16 @@
 package com.mercedesbenz.sechub.wrapper.xray.report;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ArrayNode;
-import com.mercedesbenz.sechub.wrapper.xray.cli.XrayWrapperExitCode;
+import static java.lang.Double.parseDouble;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
 
-import static java.lang.Double.parseDouble;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.mercedesbenz.sechub.wrapper.xray.cli.XrayWrapperExitCode;
 
 /**
  * Parses the xray security report vulnerabilities and converts them to
@@ -72,7 +72,7 @@ public class XrayWrapperReportParser {
             cvssNode = cveDetail.get("cvss_v3");
             cveIDNode = cveDetail.get("cve");
             ArrayNode cwe = (ArrayNode) cveDetail.get("cwe");
-            
+
             if (cvssNode != null) {
                 cvssString = cvssNode.asText();
             }
