@@ -26,10 +26,10 @@ version = VersionData.getXrayWrapperVersion()
 task buildWrapperXray(type: Jar, dependsOn: build) {
     group 'sechub'
     description 'Builds the SecHub Xray Wrapper CLI tool.'
-    archiveBaseName = 'sechub-pds-wrapperxray'
+    archiveBaseName = 'sechub-pds-wrapper-xray'
 
     manifest {
-        attributes 'Main-Class': 'com.mercedesbenz.sechub.xraywrapper.cli.XrayWrapperCLI'
+        attributes 'Main-Class': 'com.mercedesbenz.sechub.wrapper.xray.cli.XrayWrapperCLI'
     }
 
     from {

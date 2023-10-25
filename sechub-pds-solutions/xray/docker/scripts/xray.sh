@@ -36,7 +36,8 @@ login_into_artifactory () {
 }
 
 clean_workspace () {
-  rm -rf "$WORKSPACE/"*
+  rm -rf "$WORKSPACE/"*.json
+    rm -rf "$WORKSPACE/"*.zip
   rm -rf "$UPLOAD_DIR/"*
 }
 
@@ -63,7 +64,7 @@ do
   skopeo inspect "docker://${XRAY_ARTIFACTORY}/${REGISTER}/${IMAGE}" --authfile "$WORKSPACE/auth.json" > "$WORKSPACE/inspect.json"
   SHA256=$(jq '.Digest' "$WORKSPACE/inspect.json" | tr -d \")
 
-  java -jar "$TOOL_FOLDER/wrapperxray.jar" "--name" "$IMAGE" "--checksum" "$SHA256" "--scantype" "docker" "--outputfile" "$PDS_JOB_RESULT_FILE"
+  java -jar "$TOOL_FOLDER/wrapper-xray.jar" "--name" "$IMAGE" "--checksum" "$SHA256" "--scantype" "docker" "--outputfile" "$PDS_JOB_RESULT_FILE"
   
   # SPDX report can be returned as followed - SPDX does not contain vulnerabilities
   cp "$WORKSPACE/XrayArtifactoryReports/"*SPDX.json "$PDS_JOB_RESULT_FILE"
