@@ -70,10 +70,7 @@ public class DefaultSecHubClient extends AbstractSecHubClient {
     }
 
     public DefaultSecHubClient(URI serverUri, String username, String apiToken, boolean trustAll) {
-        setUsername(username);
-        setApiToken(apiToken);
-        setServerUri(serverUri);
-        setTrustAll(trustAll);
+        super(serverUri, username, apiToken, trustAll);
 
         apiClient = new ApiClientBuilder().createApiClient(this, mapper);
 
@@ -442,27 +439,21 @@ public class DefaultSecHubClient extends AbstractSecHubClient {
     private void runOrFail(RunOrFail<ApiException> failable, String failureMessage) throws SecHubClientException {
         try {
             failable.runOrFail();
-        } catch (ApiException e) {
+        } catch (Exception e) {
+            throw createClientException(failureMessage, e);
+        }
+    }
+
+    private <T> T runOrFail(Callable<T> callable, String failureMessage) throws SecHubClientException {
+        try {
+            return callable.call();
+        } catch (Exception e) {
             throw createClientException(failureMessage, e);
         }
     }
 
     private SecHubClientException createClientException(String message, Exception cause) throws SecHubClientException {
         return new SecHubClientException(message + " - " + cause.getMessage(), cause);
-    }
-
-    private <T> T runOrFail(Callable<T> callable, String failureMessage) throws SecHubClientException {
-        try {
-            return callable.call();
-        } catch (ApiException e) {
-            throw createClientException(failureMessage, e);
-        } catch (Exception e) {
-            if (e instanceof RuntimeException) {
-                RuntimeException re = (RuntimeException) e;
-                throw re;
-            }
-            throw new IllegalStateException("Unhandled exception - should not happen", e);
-        }
     }
 
 }

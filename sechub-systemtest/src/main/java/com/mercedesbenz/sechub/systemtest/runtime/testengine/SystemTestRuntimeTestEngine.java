@@ -15,8 +15,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.mercedesbenz.sechub.api.SecHubClient;
-import com.mercedesbenz.sechub.api.SecHubClientException;
 import com.mercedesbenz.sechub.api.SecHubReport;
+import com.mercedesbenz.sechub.commons.core.util.SimpleStringUtils;
 import com.mercedesbenz.sechub.commons.model.JSONConverter;
 import com.mercedesbenz.sechub.commons.model.SecHubConfigurationModel;
 import com.mercedesbenz.sechub.systemtest.config.CopyDefinition;
@@ -55,6 +55,7 @@ public class SystemTestRuntimeTestEngine {
 
     RunSecHubJobDefinitionTransformer runSecHubJobTransformer = new RunSecHubJobDefinitionTransformer();
     SystemTestRuntimeTestAssertion testAssertion = new SystemTestRuntimeTestAssertion();
+    CurrentTestVariableCalculatorFactory currentTestVariableCalculatorFactory = new DefaultCurrentTestVariableCalculatorFactory();
 
     public SystemTestRuntimeTestEngine(ExecutionSupport execSupport) {
         this.execSupport = execSupport;
@@ -62,15 +63,17 @@ public class SystemTestRuntimeTestEngine {
 
     public void runTest(TestDefinition test, SystemTestRuntimeContext runtimeContext) {
         TestEngineTestContext testContext = createTestContext(test, runtimeContext);
-
-        if (!prepareTest(testContext)) {
-            /* preparation failed */
+        if (testContext.hasFailed()) {
             return;
         }
+        prepareTest(testContext);
+        try {
+            executeTest(testContext);
 
-        executeTest(testContext);
-
-        assertTest(testContext);
+            assertTest(testContext);
+        } finally {
+            cleanupTest(testContext);
+        }
 
     }
 
@@ -81,30 +84,53 @@ public class SystemTestRuntimeTestEngine {
     }
 
     private void assertTest(TestEngineTestContext testContext) {
+        if (testContext.hasFailed()) {
+            // already marked as failed
+            return;
+        }
         List<TestAssertDefinition> asserts = testContext.getTest().getAssert();
         for (TestAssertDefinition assertDef : asserts) {
             testAssertion.assertTest(assertDef, testContext);
         }
     }
 
-    private boolean prepareTest(TestEngineTestContext testContext) {
-        boolean prepared = false;
+    private void prepareTest(TestEngineTestContext testContext) {
         try {
             executePreparationSteps("Prepare", testContext);
-            prepared = true;
-        } catch (SystemTestScriptExecutionException e) {
+        } catch (Exception e) {
+            LOG.error("Preparation for test '{}' failed!", testContext.getTestName(), e);
             testContext.markAsFailed("Was not able to prepare test", e);
         }
-        return prepared;
+    }
+
+    private void cleanupTest(TestEngineTestContext testContext) {
+        try {
+            executeCleanupSteps("Cleanup", testContext);
+        } catch (Exception e) {
+            LOG.error("Cleanup for test '{}' failed!", testContext.getTestName(), e);
+            if (!testContext.hasFailed()) {
+                /* only when not already failed we add the cleanup step failure */
+                testContext.markAsFailed("Was not able to cleanup test", e);
+            }
+        }
+
     }
 
     private void executeTest(TestEngineTestContext testContext) {
+        if (testContext.hasFailed()) {
+            // already marked as failed
+            return;
+        }
         /* mark current test - fail if not supported */
         if (testContext.isSecHubTest()) {
             try {
                 launchSecHubJob(testContext);
-            } catch (SecHubClientException e) {
-                testContext.markAsFailed("Was not able to launch SecHub job", e);
+            } catch (Exception e) {
+                String reason = e.getMessage();
+                if (reason == null) {
+                    reason = e.getClass().getSimpleName();
+                }
+                testContext.markAsFailed("Was not able to launch SecHub job. Reason: " + SimpleStringUtils.truncateWhenTooLong(reason, 150), e);
             }
         } else {
             // currently we do only support SecHub runs
@@ -113,7 +139,7 @@ public class SystemTestRuntimeTestEngine {
         }
     }
 
-    private void launchSecHubJob(TestEngineTestContext testContext) throws SecHubClientException {
+    private void launchSecHubJob(TestEngineTestContext testContext) throws Exception {
         SecHubClient clientForScheduling = null;
 
         SystemTestRuntimeContext runtimeContext = testContext.getRuntimeContext();
@@ -207,8 +233,15 @@ public class SystemTestRuntimeTestEngine {
 
     private void executePreparationSteps(String name, TestEngineTestContext testContext) throws SystemTestScriptExecutionException {
         TestDefinition test = testContext.getTest();
+        executeSteps(name, testContext, test.getPrepare());
+    }
 
-        List<ExecutionStepDefinition> steps = test.getPrepare();
+    private void executeCleanupSteps(String name, TestEngineTestContext testContext) throws SystemTestScriptExecutionException {
+        TestDefinition test = testContext.getTest();
+        executeSteps(name, testContext, test.getCleanup());
+    }
+
+    private void executeSteps(String name, TestEngineTestContext testContext, List<ExecutionStepDefinition> steps) throws SystemTestScriptExecutionException {
         if (steps.isEmpty()) {
             return;
         }
@@ -216,20 +249,20 @@ public class SystemTestRuntimeTestEngine {
         for (ExecutionStepDefinition step : steps) {
             LOG.trace("Enter: {} - step: {}", name, step.getComment());
             if (step.getCopy().isPresent()) {
-                executePreparationCopy(testContext, step.getCopy().get());
+                executeCopyStep(testContext, step.getCopy().get());
             }
             if (step.getScript().isPresent()) {
-                executePreparationScript(testContext, step.getScript().get());
+                executeScript(testContext, step.getScript().get());
             }
         }
     }
 
-    private void executePreparationCopy(TestEngineTestContext testContext, CopyDefinition copyDirectoriesDefinition) {
+    private void executeCopyStep(TestEngineTestContext testContext, CopyDefinition copyDirectoriesDefinition) {
         String from = copyDirectoriesDefinition.getFrom();
         String to = copyDirectoriesDefinition.getTo();
 
-        from = testContext.dynamicVariableGenerator.calculateValue(from);
-        to = testContext.dynamicVariableGenerator.calculateValue(to);
+        from = testContext.currentTestVariableCalculator.calculateValue(from);
+        to = testContext.currentTestVariableCalculator.calculateValue(to);
 
         try {
             Path source = Paths.get(from).toRealPath();
@@ -249,9 +282,10 @@ public class SystemTestRuntimeTestEngine {
         }
     }
 
-    private void executePreparationScript(TestEngineTestContext testContext, ScriptDefinition scriptDefinition) throws SystemTestScriptExecutionException {
+    private void executeScript(TestEngineTestContext testContext, ScriptDefinition scriptDefinition) throws SystemTestScriptExecutionException {
 
-        ProcessContainer processContainer = execSupport.execute(scriptDefinition, testContext.getDynamicVariableGenerator(), SystemTestExecutionState.PREPARE);
+        ProcessContainer processContainer = execSupport.execute(scriptDefinition, testContext.getCurrentTestVariableCalculator(),
+                SystemTestExecutionState.PREPARE);
 
         long startTime = System.currentTimeMillis();
         long diffTime = startTime;
@@ -264,7 +298,7 @@ public class SystemTestRuntimeTestEngine {
                     diffTime = System.currentTimeMillis();
                     long secondsWaited = (System.currentTimeMillis() - startTime) / 1000;
 
-                    LOG.info("Waiting now for test prepare script: {} - {} seconds waited at all", scriptDefinition.getPath(), secondsWaited);
+                    LOG.info("Waiting now for test script: {} - {} seconds waited at all", scriptDefinition.getPath(), secondsWaited);
                 }
                 Thread.sleep(300);
             } catch (InterruptedException e) {
@@ -307,25 +341,41 @@ public class SystemTestRuntimeTestEngine {
 
     }
 
+    class DefaultCurrentTestVariableCalculatorFactory implements CurrentTestVariableCalculatorFactory {
+
+        @Override
+        public CurrentTestVariableCalculator create(TestDefinition test, SystemTestRuntimeContext runtimeContext) {
+            return new CurrentTestVariableCalculator(test, runtimeContext);
+        }
+
+    }
+
     class TestEngineTestContext {
 
         private final SystemTestRuntimeTestEngine systemTestRuntimeTestEngine;
         private SecHubRunData secHubRunData;
         SystemTestRuntimeContext runtimeContext;
         TestDefinition test;
-        private CurrentTestVariableCalculator dynamicVariableGenerator;
+        private CurrentTestVariableCalculator currentTestVariableCalculator;
 
         TestEngineTestContext(SystemTestRuntimeTestEngine systemTestRuntimeTestEngine, TestDefinition test, SystemTestRuntimeContext runtimeContext) {
             this.systemTestRuntimeTestEngine = systemTestRuntimeTestEngine;
             this.test = test;
             this.runtimeContext = runtimeContext;
-            this.dynamicVariableGenerator = new CurrentTestVariableCalculator(test, runtimeContext);
+            this.currentTestVariableCalculator = currentTestVariableCalculatorFactory.create(test, runtimeContext);
 
             appendSecHubRunData();
         }
 
-        public VariableCalculator getDynamicVariableGenerator() {
-            return dynamicVariableGenerator;
+        public String getTestName() {
+            if (test == null) {
+                return "";
+            }
+            return test.getName();
+        }
+
+        public VariableCalculator getCurrentTestVariableCalculator() {
+            return currentTestVariableCalculator;
         }
 
         public TestDefinition getTest() {
@@ -361,7 +411,7 @@ public class SystemTestRuntimeTestEngine {
 
             String configurationAsJson = converter.toJSON(secHubConfiguration);
 
-            String changedConfigurationAsJson = dynamicVariableGenerator.replace(configurationAsJson);
+            String changedConfigurationAsJson = currentTestVariableCalculator.replace(configurationAsJson);
 
             secHubRunData.secHubConfiguration = converter.fromJSON(SecHubConfigurationModel.class, changedConfigurationAsJson);
         }
@@ -383,6 +433,10 @@ public class SystemTestRuntimeTestEngine {
             failure.setDetails(createDetails(hint, e));
 
             runtimeContext.getCurrentResult().setFailure(failure);
+        }
+
+        public boolean hasFailed() {
+            return runtimeContext.getCurrentResult().hasFailed();
         }
 
         private String createDetails(String hint, Exception e) {

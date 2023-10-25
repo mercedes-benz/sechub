@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 import com.mercedesbenz.sechub.api.SecHubReport;
@@ -24,17 +25,30 @@ public class SystemTestRuntimeTestAssertion {
     }
 
     private void handleSecHubAsserts(TestAssertDefinition assertDefinition, TestEngineTestContext testContext) {
+        if (testContext.hasFailed()) {
+            // already marked as failed - e.g. by other test asserts
+            return;
+        }
+
         if (!testContext.isSecHubTest()) {
             return;
         }
-        if (assertDefinition.getSechubResult().isEmpty()) {
+
+        Optional<AssertSechubResultDefinition> sechubResult = assertDefinition.getSechubResult();
+        if (sechubResult.isEmpty()) {
             return;
         }
-        handleSecHubAssert(assertDefinition.getSechubResult().get(), testContext);
+
+        handleSecHubAssert(sechubResult.get(), testContext);
     }
 
     private void handleSecHubAssert(AssertSechubResultDefinition sechubResultAssert, TestEngineTestContext testContext) {
         SecHubReport report = testContext.getSecHubRunData().getReport();
+        if (report == null) {
+            testContext.markAsFailed("Sechub report not available",
+                    "This should not happen. Please look at the unit test console log and inside SecHub server log for details");
+            return;
+        }
         String reportAsJson = JSONConverter.get().toJSON(report, true);
 
         if (sechubResultAssert.getHasTrafficLight().isPresent()) {

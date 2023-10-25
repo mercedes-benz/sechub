@@ -168,6 +168,7 @@ class PDSToolsCLITest {
         assertEquals(true, systemTestCommand.isDryRun());
         assertEquals(false, systemTestCommand.isRemoteRun());
         assertEquals(null, systemTestCommand.getWorkspaceFolder());
+        assertTrue(systemTestCommand.getTestsToRun().isEmpty());
 
     }
 
@@ -180,7 +181,7 @@ class PDSToolsCLITest {
         /* execute */
         cliToTest.start(new String[] { "systemtest", "--workspace-rootfolder", "/path/to/workspace", "--file", "/absolute/testfile.json",
                 "--additional-resources-folder", "./additionalResources/path", "--pds-solutions-rootfolder", "/path/to/pds-solution",
-                "--sechub-solution-rootfolder", "/path/to/sechub-solution" });
+                "--sechub-solution-rootfolder", "/path/to/sechub-solution", "--run-tests", "test1,test2" });
 
         /* test */
         ArgumentCaptor<SystemTestCommand> captor = ArgumentCaptor.forClass(SystemTestCommand.class);
@@ -194,6 +195,9 @@ class PDSToolsCLITest {
         assertEquals(false, systemTestCommand.isDryRun());
         assertEquals(false, systemTestCommand.isRemoteRun());
         assertEquals("/path/to/workspace", systemTestCommand.getWorkspaceFolder());
+        assertEquals(2, systemTestCommand.getTestsToRun().size());
+        assertTrue(systemTestCommand.getTestsToRun().contains("test1"));
+        assertTrue(systemTestCommand.getTestsToRun().contains("test2"));
 
     }
 

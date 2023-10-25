@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.api;
 
 import java.net.URI;
@@ -18,8 +19,14 @@ public abstract class AbstractSecHubClient implements SecHubClient {
 
     private Set<SecHubClientListener> secHubClientListeners;
 
-    public AbstractSecHubClient() {
-        secHubClientListeners = new LinkedHashSet<>();
+    public AbstractSecHubClient(URI serverUri, String username, String apiToken, boolean trustAll) {
+        this.serverUri = serverUri;
+        this.trustAll = trustAll;
+
+        this.secHubClientListeners = new LinkedHashSet<>();
+
+        setUsername(username);
+        setApiToken(apiToken);
     }
 
     public void setUsername(String username) {
@@ -28,14 +35,6 @@ public abstract class AbstractSecHubClient implements SecHubClient {
 
     public void setApiToken(String apiToken) {
         this.sealedApiToken = apiTokenAccess.seal(apiToken);
-    }
-
-    public void setServerUri(URI serverUri) {
-        this.serverUri = serverUri;
-    }
-
-    public void setTrustAll(boolean trustAll) {
-        this.trustAll = trustAll;
     }
 
     @Override
