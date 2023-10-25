@@ -109,7 +109,7 @@ class SystemTestRuntimeTestEngineTest {
     @Test
     void sechub_job_creation_fails() throws Exception {
         /* prepare */
-        when(secHubClient.createJob(any())).thenThrow(new SecHubClientException("no job createable"));
+        when(secHubClient.createJob(any())).thenThrow(new SecHubClientException("unable to create job"));
 
         TestDefinition test = configureSecHubLocalRunAndReturnTestDefinition();
 
@@ -117,8 +117,8 @@ class SystemTestRuntimeTestEngineTest {
         engineToTest.runTest(test, runtimeContext);
 
         /* test */
-        assertEquals("Was not able to launch SecHub job", currentTestResult.getFailure().getMessage());
-        assertTrue(currentTestResult.getFailure().getDetails().contains("no job createable"));
+        assertEquals("Was not able to launch SecHub job. Reason: unable to create job", currentTestResult.getFailure().getMessage());
+        assertTrue(currentTestResult.getFailure().getDetails().contains("unable to create job"));
         assertTrue(currentTestResult.hasFailed());
         verifyNoInteractions(assertDefinition);
     }
@@ -136,7 +136,7 @@ class SystemTestRuntimeTestEngineTest {
         engineToTest.runTest(test, runtimeContext);
 
         /* test */
-        assertEquals("Was not able to launch SecHub job", currentTestResult.getFailure().getMessage());
+        assertEquals("Was not able to launch SecHub job. Reason: NullPointerException", currentTestResult.getFailure().getMessage());
         assertTrue(currentTestResult.getFailure().getDetails().contains("java.lang.NullPointerException"));
         assertTrue(currentTestResult.hasFailed());
     }
@@ -152,7 +152,7 @@ class SystemTestRuntimeTestEngineTest {
         engineToTest.runTest(test, runtimeContext);
 
         /* test */
-        assertEquals("Was not able to launch SecHub job", currentTestResult.getFailure().getMessage());
+        assertEquals("Was not able to launch SecHub job. Reason: no status readable", currentTestResult.getFailure().getMessage());
         assertTrue(currentTestResult.getFailure().getDetails().contains("no status readable"));
         assertTrue(currentTestResult.hasFailed());
     }

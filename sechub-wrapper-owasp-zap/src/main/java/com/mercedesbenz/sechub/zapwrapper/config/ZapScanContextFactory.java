@@ -4,7 +4,6 @@ package com.mercedesbenz.sechub.zapwrapper.config;
 import java.io.File;
 import java.net.URL;
 import java.util.HashSet;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
@@ -12,7 +11,6 @@ import java.util.UUID;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.mercedesbenz.sechub.commons.model.SecHubMessage;
 import com.mercedesbenz.sechub.commons.model.SecHubScanConfiguration;
 import com.mercedesbenz.sechub.commons.model.SecHubWebScanConfiguration;
 import com.mercedesbenz.sechub.zapwrapper.cli.CommandLineSettings;
@@ -27,9 +25,9 @@ import com.mercedesbenz.sechub.zapwrapper.helper.IncludeExcludeToZapURLHelper;
 import com.mercedesbenz.sechub.zapwrapper.helper.SecHubWebScanConfigurationHelper;
 import com.mercedesbenz.sechub.zapwrapper.helper.ZapPDSEventHandler;
 import com.mercedesbenz.sechub.zapwrapper.helper.ZapProductMessageHelper;
-import com.mercedesbenz.sechub.zapwrapper.helper.ZapURLType;
 import com.mercedesbenz.sechub.zapwrapper.util.EnvironmentVariableConstants;
 import com.mercedesbenz.sechub.zapwrapper.util.EnvironmentVariableReader;
+import com.mercedesbenz.sechub.zapwrapper.util.UrlUtil;
 
 public class ZapScanContextFactory {
     private static final Logger LOG = LoggerFactory.getLogger(ZapScanContextFactory.class);
@@ -87,14 +85,11 @@ public class ZapScanContextFactory {
             LOG.warn("The job UUID was not set. Using randomly generated UUID: {} as fallback.", contextName);
         }
 
-        List<SecHubMessage> userMessages = new LinkedList<>();
-        Set<URL> includeSet = createUrlsIncludedInContext(targetUrl, sechubWebConfig, userMessages);
-        Set<URL> excludeSet = createUrlsExcludedFromContext(targetUrl, sechubWebConfig, userMessages);
+        Set<String> includeSet = createUrlsIncludedInContext(targetUrl, sechubWebConfig);
+        Set<String> excludeSet = createUrlsExcludedFromContext(targetUrl, sechubWebConfig);
 
         ZapProductMessageHelper productMessagehelper = createZapProductMessageHelper(settings);
         ZapPDSEventHandler zapEventHandler = createZapEventhandler(settings);
-
-        checkForIncludeExcludeErrors(userMessages, productMessagehelper);
 
         /* @formatter:off */
 		ZapScanContext scanContext = ZapScanContext.builder()
@@ -217,19 +212,24 @@ public class ZapScanContextFactory {
         return apiDefinitionFileProvider.fetchApiDefinitionFiles(extractedSourcesFolderPath, sechubScanConfig);
     }
 
-    private Set<URL> createUrlsIncludedInContext(URL targetUrl, SecHubWebScanConfiguration sechubWebConfig, List<SecHubMessage> userMessages) {
-        Set<URL> includeSet = new HashSet<>();
-        includeSet.add(targetUrl);
+    private Set<String> createUrlsIncludedInContext(URL targetUrl, SecHubWebScanConfiguration sechubWebConfig) {
+        Set<String> includeSet = new HashSet<>();
         if (sechubWebConfig.getIncludes().isPresent()) {
-            includeSet.addAll(includeExcludeToZapURLHelper.createListOfUrls(ZapURLType.INCLUDE, targetUrl, sechubWebConfig.getIncludes().get(), userMessages));
+            includeSet.addAll(includeExcludeToZapURLHelper.createListOfUrls(targetUrl, sechubWebConfig.getIncludes().get()));
         }
+        // if no includes are specified everything is included
+        if (includeSet.isEmpty()) {
+            includeSet.add(targetUrl + UrlUtil.REGEX_PATTERN_WILDCARD_STRING);
+        }
+        // needed as entry point to start the scan
+        includeSet.add(targetUrl.toString());
         return includeSet;
     }
 
-    private Set<URL> createUrlsExcludedFromContext(URL targetUrl, SecHubWebScanConfiguration sechubWebConfig, List<SecHubMessage> userMessages) {
-        Set<URL> excludeSet = new HashSet<>();
+    private Set<String> createUrlsExcludedFromContext(URL targetUrl, SecHubWebScanConfiguration sechubWebConfig) {
+        Set<String> excludeSet = new HashSet<>();
         if (sechubWebConfig.getExcludes().isPresent()) {
-            excludeSet.addAll(includeExcludeToZapURLHelper.createListOfUrls(ZapURLType.EXCLUDE, targetUrl, sechubWebConfig.getExcludes().get(), userMessages));
+            excludeSet.addAll(includeExcludeToZapURLHelper.createListOfUrls(targetUrl, sechubWebConfig.getExcludes().get()));
         }
         return excludeSet;
     }
@@ -257,15 +257,5 @@ public class ZapScanContextFactory {
                     + EnvironmentVariableConstants.PDS_JOB_EVENTS_FOLDER + " is not set.", ZapWrapperExitCode.PDS_CONFIGURATION_ERROR);
         }
         return new ZapPDSEventHandler(pdsJobEventsFolder);
-    }
-
-    private void checkForIncludeExcludeErrors(List<SecHubMessage> userMessages, ZapProductMessageHelper productMessageHelper) {
-        if (userMessages == null) {
-            return;
-        }
-        if (userMessages.isEmpty()) {
-            return;
-        }
-        productMessageHelper.writeProductMessages(userMessages);
     }
 }

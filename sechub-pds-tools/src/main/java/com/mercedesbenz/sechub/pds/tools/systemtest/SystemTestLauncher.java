@@ -6,6 +6,7 @@ import static com.mercedesbenz.sechub.commons.core.util.SimpleStringUtils.*;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.List;
 
 import com.mercedesbenz.sechub.commons.TextFileReader;
 import com.mercedesbenz.sechub.commons.model.JSONConverter;
@@ -31,6 +32,7 @@ public class SystemTestLauncher {
 
         handleAdditionalResources(systemTestCommand, builder);
         handleRunModes(systemTestCommand, builder);
+        handleTestsToRun(systemTestCommand, builder);
         handleSolutions(systemTestCommand, builder);
         handleWorkspace(systemTestCommand, builder);
 
@@ -71,6 +73,14 @@ public class SystemTestLauncher {
             builder.remoteRun();
         } else {
             builder.localRun();
+        }
+    }
+
+    private void handleTestsToRun(SystemTestCommand systemTestCommand, SystemTestParametersBuilder builder) {
+
+        List<String> testsToRun = systemTestCommand.getTestsToRun();
+        if (testsToRun != null) {
+            builder.testsToRun(testsToRun.toArray(new String[testsToRun.size()]));
         }
     }
 

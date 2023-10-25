@@ -46,8 +46,8 @@ public class ZapScanContext {
     private List<File> apiDefinitionFiles = new ArrayList<>();
 
     // Using Set here to avoid duplicates
-    private Set<URL> zapURLsIncludeSet = new HashSet<>();
-    private Set<URL> zapURLsExcludeSet = new HashSet<>();
+    private Set<String> zapURLsIncludeSet = new HashSet<>();
+    private Set<String> zapURLsExcludeSet = new HashSet<>();
 
     private boolean connectionCheckEnabled;
 
@@ -129,14 +129,14 @@ public class ZapScanContext {
         return apiDefinitionFiles;
     }
 
-    public Set<URL> getZapURLsIncludeSet() {
+    public Set<String> getZapURLsIncludeSet() {
         if (zapURLsIncludeSet == null) {
             return Collections.emptySet();
         }
         return zapURLsIncludeSet;
     }
 
-    public Set<URL> getZapURLsExcludeSet() {
+    public Set<String> getZapURLsExcludeSet() {
         if (zapURLsExcludeSet == null) {
             return Collections.emptySet();
         }
@@ -196,8 +196,8 @@ public class ZapScanContext {
         private List<File> apiDefinitionFiles = new LinkedList<>();
 
         // Using Set here to avoid duplicates
-        private Set<URL> zapURLsIncludeSet = new HashSet<>();
-        private Set<URL> zapURLsExcludeSet = new HashSet<>();
+        private Set<String> zapURLsIncludeSet = new HashSet<>();
+        private Set<String> zapURLsExcludeSet = new HashSet<>();
 
         private boolean connectionCheckEnabled;
 
@@ -278,12 +278,12 @@ public class ZapScanContext {
             return this;
         }
 
-        public ZapBasicScanContextBuilder addZapURLsIncludeSet(Set<URL> zapURLsIncludeList) {
+        public ZapBasicScanContextBuilder addZapURLsIncludeSet(Set<String> zapURLsIncludeList) {
             this.zapURLsIncludeSet.addAll(zapURLsIncludeList);
             return this;
         }
 
-        public ZapBasicScanContextBuilder addZapURLsExcludeSet(Set<URL> zapURLsExcludeList) {
+        public ZapBasicScanContextBuilder addZapURLsExcludeSet(Set<String> zapURLsExcludeList) {
             this.zapURLsExcludeSet.addAll(zapURLsExcludeList);
             return this;
         }
