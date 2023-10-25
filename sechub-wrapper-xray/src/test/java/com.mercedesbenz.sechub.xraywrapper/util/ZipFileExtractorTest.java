@@ -12,18 +12,17 @@ import com.mercedesbenz.sechub.xraywrapper.report.XrayWrapperReportException;
 class ZipFileExtractorTest {
 
     @Test
-    void test_unzipFile_null() {
+    void unzipFile_throws_xrayWrapperReportException() {
         /* execute + test */
         assertThrows(XrayWrapperReportException.class, () -> unzipFile(null, null));
     }
 
     @Test
-    void test_unzipFile_invalidFile() {
+    void unzipFile_throws_rayWrapperReportException_with_invalid_file() {
         /* prepare */
         File file = new File("file");
 
         /* execute + test */
         assertThrows(XrayWrapperReportException.class, () -> unzipFile(file.toPath(), file.toPath()));
     }
-
 }

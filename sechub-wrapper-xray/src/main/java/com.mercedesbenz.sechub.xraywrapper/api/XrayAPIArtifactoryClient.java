@@ -94,7 +94,7 @@ public class XrayAPIArtifactoryClient {
         return node.get("info").asText();
     }
 
-    public boolean deleteArtifact() throws XrayWrapperRuntimeException {
+    public void deleteArtifact() throws XrayWrapperRuntimeException {
         // Xray deletes empty folders with auto cleanup
         // deletes artifact folder in artifactory
         XrayAPIRequest request = XrayAPIRequestBuilder.buildDeleteArtifact(xrayWrapperConfiguration.getArtifactory(), artifact,
@@ -106,10 +106,9 @@ public class XrayAPIArtifactoryClient {
                     "Could not delete artifact from artifactory. Status Code: " + response.getStatusCode() + "Error Message: " + response.getBody(),
                     XrayWrapperExitCode.ARTIFACTORY_ERROR_RESPONSE);
         }
-        return true;
     }
 
-    public boolean deleteUploads() throws XrayWrapperRuntimeException {
+    public void deleteUploads() throws XrayWrapperRuntimeException {
         // deletes _uploads folder in artifactory
         // the _uploads folder is created when any artifact is uploaded to the
         // artifactory
@@ -122,7 +121,6 @@ public class XrayAPIArtifactoryClient {
                     "Could not delete _uploads folder from artifactory. Status Code: " + response.getStatusCode() + "Error Message: " + response.getBody(),
                     XrayWrapperExitCode.ARTIFACTORY_ERROR_RESPONSE);
         }
-        return true;
     }
 
     JsonNode getBodyAsNode(String body) throws XrayWrapperRuntimeException {

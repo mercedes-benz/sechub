@@ -3,6 +3,9 @@ package com.mercedesbenz.sechub.xraywrapper.api;
 import java.util.List;
 import java.util.Map;
 
+import com.mercedesbenz.sechub.xraywrapper.cli.XrayWrapperExitCode;
+import com.mercedesbenz.sechub.xraywrapper.cli.XrayWrapperRuntimeException;
+
 public class XrayAPIResponse {
 
     private int statusCode;
@@ -22,6 +25,9 @@ public class XrayAPIResponse {
         }
 
         public static Builder create(int statusCode, Map<String, List<String>> headers) {
+            if (headers == null) {
+                throw new XrayWrapperRuntimeException("HTTP response headers cannot be null!", XrayWrapperExitCode.INVALID_HTTP_RESPONSE);
+            }
             return new Builder(statusCode, headers);
         }
 

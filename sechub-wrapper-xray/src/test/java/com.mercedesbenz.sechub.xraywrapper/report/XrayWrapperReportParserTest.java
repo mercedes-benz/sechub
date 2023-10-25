@@ -22,16 +22,24 @@ class XrayWrapperReportParserTest {
     }
 
     @Test
-    void test_getRootDataNode_null() {
+    void getRootDataNode_throws_illegalArgumentException() {
         /* execute + test */
         Assert.assertThrows(IllegalArgumentException.class, () -> xrayWrapperReportParser.getRootDataNode(null));
-
     }
 
     @Test
-    void test_getRootDataNode() {
+    void getRootDataNode_throws_xrayWrapperReportException() {
+        /* prepare */
+        File file = new File("src/test/resources/invalid-json-examples/invalid_json.json");
+        /* execute + test */
+        Assert.assertThrows(XrayWrapperReportException.class, () -> xrayWrapperReportParser.getRootDataNode(file));
+    }
+
+    @Test
+    void getRootDataNode_return_size_of_node() {
         /* prepare */
         File file = new File("src/test/resources/xray-report-examples/Docker_Security_Export.json");
+        // some vulnerabilities appear multiple times
         int numberOfVulnerabilities = 63;
 
         /* execute + test */
@@ -40,7 +48,7 @@ class XrayWrapperReportParserTest {
     }
 
     @Test
-    void test_transformSecurityReport() {
+    void transformSecurityReport_number_of_vulnerabilities() {
         /* prepare */
         File file = new File("src/test/resources/xray-report-examples/Docker_Security_Export.json");
         JsonNode node = xrayWrapperReportParser.getRootDataNode(file);
@@ -54,7 +62,7 @@ class XrayWrapperReportParserTest {
     }
 
     @Test
-    void test_transformSecurityReport_null() {
+    void transformSecurityReport_throws_nullPointerException() {
         /* execute + test */
         assertThrows(NullPointerException.class, () -> xrayWrapperReportParser.transformSecurityReport(null));
     }

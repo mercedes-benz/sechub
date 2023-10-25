@@ -24,7 +24,7 @@ class XrayAPIRequestExecutorTest {
     }
 
     @Test
-    void test_setUpGetConnection_GET() throws IOException {
+    void setUpHTTPConnection_GET_request() throws IOException {
         /* prepare */
         HttpURLConnection connection;
         HttpURLConnection mockedCon = mock(HttpURLConnection.class);
@@ -39,13 +39,13 @@ class XrayAPIRequestExecutorTest {
     }
 
     @Test
-    void test_setUpGetConnection_null() {
+    void setUpHTTPConnection_throws_nullPointerException() {
         /* execute + test */
         assertThrows(NullPointerException.class, () -> setUpHTTPConnection(null));
     }
 
     @Test
-    void test_setUpGetConnection_XrayWrapperRuntimeException() {
+    void setUpHTTPConnection_throws_xrayWrapperRuntimeException() {
         /* prepare */
         XrayAPIRequest request = XrayAPIRequest.Builder.create(url, XrayAPIRequest.RequestMethodEnum.GET).build();
 
@@ -54,7 +54,7 @@ class XrayAPIRequestExecutorTest {
     }
 
     @Test
-    void test_setUpGetConnection_POST() throws IOException {
+    void setUpHTTPConnection_POST_request() throws IOException {
         /* prepare */
         OutputStream outputStream = mock(OutputStream.class);
         HttpURLConnection connection;

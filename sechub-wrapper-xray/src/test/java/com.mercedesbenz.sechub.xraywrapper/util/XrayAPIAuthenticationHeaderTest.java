@@ -2,28 +2,32 @@ package com.mercedesbenz.sechub.xraywrapper.util;
 
 import static com.mercedesbenz.sechub.xraywrapper.util.XrayAPIAuthenticationHeader.buildAuthHeader;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mockConstruction;
 import static org.mockito.Mockito.when;
 
 import org.junit.jupiter.api.Test;
 import org.mockito.MockedConstruction;
 
+import com.mercedesbenz.sechub.xraywrapper.cli.XrayWrapperRuntimeException;
+
 class XrayAPIAuthenticationHeaderTest {
 
     @Test
-    void test_setAuthHeader() {
+    void buildAuthHeader_with_valid_input() {
         /* execute + test */
         try (MockedConstruction<EnvironmentVariableReader> mocked = mockConstruction(EnvironmentVariableReader.class, (mock, context) -> {
-            when(mock.readEnvAsString("string")).thenReturn("username");
+            when(mock.readEnvAsString(any())).thenReturn("username");
         })) {
             String auth = buildAuthHeader();
-            assertEquals("Basic bnVsbDpudWxs", auth);
+            assertEquals("Basic dXNlcm5hbWU6dXNlcm5hbWU=", auth);
         }
     }
 
     @Test
-    void test_setAuthHeader_null() {
+    void setAuthHeader_throws_xrayWrapperRuntimeException() {
         /* execute + test */
-        String auth = buildAuthHeader();
+        assertThrows(XrayWrapperRuntimeException.class, () -> buildAuthHeader());
     }
 }

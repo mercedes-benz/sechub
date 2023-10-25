@@ -9,8 +9,6 @@ import java.io.IOException;
 
 import org.cyclonedx.CycloneDxSchema;
 import org.cyclonedx.model.Bom;
-import org.junit.Assert;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -30,7 +28,7 @@ class XrayWrapperReportReaderTest {
     }
 
     @Test
-    void test_getFiles() throws IOException {
+    void getReportFiles_get_valid_reports() {
         /* prepare */
         String source = "src/test/resources/xray-report-examples";
         String resultFile = "resultfile";
@@ -38,7 +36,7 @@ class XrayWrapperReportReaderTest {
         String securityReport = "Docker_Security_Export.json";
 
         /* execute */
-        reportReader.getFiles(source, resultFile);
+        reportReader.getReportFiles(source, resultFile);
 
         /* test */
         String cycloneName = reportReader.cycloneReport.getName();
@@ -50,32 +48,35 @@ class XrayWrapperReportReaderTest {
     }
 
     @Test
-    void test_getFile_null() throws IOException {
+    void getReportFile_throws_nullPointerException() {
         /* execute + test */
-        assertThrows(NullPointerException.class, () -> reportReader.getFiles(null, null));
+        assertThrows(NullPointerException.class, () -> reportReader.getReportFiles(null, null));
     }
 
     @Test
-    void test_readSecurityReport() throws IOException {
+    void readSecurityReport_read_vulnerabilities_from_security_report() {
         /* prepare */
         String source = "src/test/resources/xray-report-examples";
-        reportReader.getFiles(source, "");
+        reportReader.getReportFiles(source, "");
 
-        /* execute + test */
+        /* execute */
         reportReader.readSecurityReport();
+
+        /* test */
+        assertEquals(25, reportReader.getCycloneDXVulnerabilityHashMap().size());
     }
 
     @Test
-    void test_readSecurityReport_null() {
+    void readSecurityReport_throws_illegalArgumentException() {
         /* execute + test */
         assertThrows(IllegalArgumentException.class, () -> reportReader.readSecurityReport());
     }
 
     @Test
-    void test_mapVulnerabilities() throws IOException {
+    void mapVulnerabilities_valid_vulnerabilities() throws IOException {
         /* prepare */
         String source = "src/test/resources/xray-report-examples";
-        reportReader.getFiles(source, "");
+        reportReader.getReportFiles(source, "");
         reportReader.readSecurityReport();
         File target = new File("src/test/resources/xray-sechub-report-examples/Docker_SBOM_Export_CycloneDX.json");
         ObjectNode expectedNode = (ObjectNode) mapper.readTree(target);
@@ -85,12 +86,12 @@ class XrayWrapperReportReaderTest {
 
         /* test */
         JsonNode root = createJson(CycloneDxSchema.Version.VERSION_14, bom).toJsonNode();
-        Assertions.assertEquals(expectedNode.toString(), root.toString());
+        assertEquals(expectedNode.toString(), root.toString());
     }
 
     @Test
-    void test_mapVulnerabilities_null() {
-        Assert.assertThrows(IllegalArgumentException.class, () -> reportReader.mapVulnerabilities());
+    void mapVulnerabilities_throws_illegalArgumentException() {
+        assertThrows(IllegalArgumentException.class, () -> reportReader.mapVulnerabilities());
     }
 
 }

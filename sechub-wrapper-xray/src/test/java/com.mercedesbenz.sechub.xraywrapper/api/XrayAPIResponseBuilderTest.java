@@ -29,7 +29,7 @@ class XrayAPIResponseBuilderTest {
     }
 
     @Test
-    void test_getHttpResponseFromConnection() throws IOException {
+    void getHttpResponseFromConnection_get_valid_http_response() throws IOException {
         /* prepare */
         XrayAPIResponse response;
         int statusCode = 200;
@@ -46,7 +46,7 @@ class XrayAPIResponseBuilderTest {
     }
 
     @Test
-    void test_getHttpResponseFromConnection_empty() throws IOException {
+    void getHttpResponseFromConnection_get_default_response() throws IOException {
         /* prepare */
         XrayAPIResponse response;
 
@@ -59,16 +59,13 @@ class XrayAPIResponseBuilderTest {
     }
 
     @Test
-    void test_getHttpResponseFromConnection_null() throws IOException {
-        /* prepare */
-        XrayAPIResponse response;
-
+    void getHttpResponseFromConnection_throws_nullPointerException() {
         /* execute + test */
         assertThrows(NullPointerException.class, () -> getHttpResponseFromConnection(null, null));
     }
 
     @Test
-    void test_getHttpResponseFromConnection_error() throws IOException {
+    void getHttpResponseFromConnection_get_valid_error_http_response() throws IOException {
         /* prepare */
         XrayAPIResponse response;
         int statusCode = 404;
@@ -85,7 +82,7 @@ class XrayAPIResponseBuilderTest {
     }
 
     @Test
-    void test_getHttpResponseFromConnection_XrayWrapperRuntimeException() throws IOException {
+    void getHttpResponseFromConnection_throws_xrayWrapperRuntimeException() throws IOException {
         /* prepare */
         IOException e = new IOException("error");
         Mockito.when(connection.getResponseCode()).thenThrow(e);

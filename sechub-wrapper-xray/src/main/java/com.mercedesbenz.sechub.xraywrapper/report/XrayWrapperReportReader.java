@@ -25,7 +25,7 @@ public class XrayWrapperReportReader {
 
     private HashMap<String, CycloneDXVulnerabilityHelper> cycloneDXVulnerabilityHashMap;
 
-    public void getFiles(String unzippedArchive, String pdsResultFile) throws XrayWrapperReportException {
+    public void getReportFiles(String unzippedArchive, String pdsResultFile) throws XrayWrapperReportException {
         sechubReport = new File(pdsResultFile);
         if (!fileExists(unzippedArchive)) {
             // folder with reports is zipped
@@ -75,4 +75,7 @@ public class XrayWrapperReportReader {
         XrayWrapperReportWriter.writeReport(sbom, sechubReport);
     }
 
+    public HashMap<String, CycloneDXVulnerabilityHelper> getCycloneDXVulnerabilityHashMap() {
+        return cycloneDXVulnerabilityHashMap;
+    }
 }

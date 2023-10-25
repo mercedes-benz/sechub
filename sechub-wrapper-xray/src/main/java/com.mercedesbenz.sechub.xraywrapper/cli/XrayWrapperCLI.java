@@ -26,7 +26,7 @@ public class XrayWrapperCLI {
         try {
             arguments = parser.parseCommandLineArgs(args);
             XrayWrapperConfiguration xrayWrapperConfiguration = createXrayConfiguration(arguments.scanType(), arguments.outputFile());
-            XrayWrapperArtifact artifact = new XrayWrapperArtifact(arguments.name(), arguments.sha256(), arguments.tag(), arguments.scanType());
+            XrayWrapperArtifact artifact = new XrayWrapperArtifact(arguments.name(), arguments.checksum(), arguments.tag(), arguments.scanType());
             xrayWrapperArtifactoryClientController = new XrayWrapperArtifactoryClientController(xrayWrapperConfiguration, artifact);
 
             // execute controller processing main program flow

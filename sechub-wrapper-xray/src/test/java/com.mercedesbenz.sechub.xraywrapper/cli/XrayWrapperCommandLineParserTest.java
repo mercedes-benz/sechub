@@ -16,9 +16,9 @@ class XrayWrapperCommandLineParserTest {
     }
 
     @Test
-    void test_parseCommandLineArgs() throws XrayWrapperCommandLineParserException {
+    void parseCommandLineArgs_valid_arguments() throws XrayWrapperCommandLineParserException {
         /* prepare */
-        String[] args = { "--name", "myname", "--sha256", "sha256:123", "--scantype", "docker", "--outputfile", "outfile" };
+        String[] args = { "--name", "myname", "--checksum", "sha256:123", "--scantype", "docker", "--outputfile", "outfile" };
         XrayWrapperCommandLineParser.Arguments arguments;
 
         /* execute */
@@ -26,21 +26,21 @@ class XrayWrapperCommandLineParserTest {
 
         /* test */
         assertEquals("myname", arguments.name());
-        assertEquals("123", arguments.sha256());
+        assertEquals("123", arguments.checksum());
         assertEquals("latest", arguments.tag());
     }
 
     @Test
-    void test_parseCommandLineArgs_invalid() throws XrayWrapperCommandLineParserException {
+    void parseCommandLineArgs_missing_required_arguments() throws XrayWrapperCommandLineParserException {
         /* prepare */
-        String[] args = { "--sha256", "sha256:123", "--scantype", "docker", "--outputfile", "outfile" };
+        String[] args = { "--checksum", "sha256:123", "--scantype", "docker", "--outputfile", "outfile" };
 
         /* execute + test */
         assertThrows(XrayWrapperCommandLineParserException.class, () -> parser.parseCommandLineArgs(args));
     }
 
     @Test
-    void test_parseCommandLineArgs_empty() throws XrayWrapperCommandLineParserException {
+    void parseCommandLineArgs_missing_all_arguments() throws XrayWrapperCommandLineParserException {
         /* prepare */
         String[] args = { "" };
 
@@ -49,9 +49,9 @@ class XrayWrapperCommandLineParserTest {
     }
 
     @Test
-    void test_parseCommandLineArgs_invalidScanType() throws XrayWrapperCommandLineParserException {
+    void parseCommandLineArgs_invalid_scanType_parameter() throws XrayWrapperCommandLineParserException {
         /* prepare */
-        String[] args = { "--sha256", "sha256:123", "--scantype", "invalid", "--outputfile", "outfile" };
+        String[] args = { "--checksum", "sha256:123", "--scantype", "invalid", "--outputfile", "outfile" };
 
         /* execute + test */
         assertThrows(XrayWrapperCommandLineParserException.class, () -> parser.parseCommandLineArgs(args));

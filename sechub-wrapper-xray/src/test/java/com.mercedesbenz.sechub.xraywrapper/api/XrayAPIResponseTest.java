@@ -1,6 +1,7 @@
 package com.mercedesbenz.sechub.xraywrapper.api;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -9,10 +10,12 @@ import java.util.Map;
 
 import org.junit.jupiter.api.Test;
 
+import com.mercedesbenz.sechub.xraywrapper.cli.XrayWrapperRuntimeException;
+
 class XrayAPIResponseTest {
 
     @Test
-    void test_xrayAPIResponse_empty() {
+    void xrayAPIResponse_create_empty_body_response() {
         /* prepare */
         XrayAPIResponse response;
         int status = 200;
@@ -26,7 +29,7 @@ class XrayAPIResponseTest {
     }
 
     @Test
-    void test_xrayAPIResponse() {
+    void xrayAPIResponse_create_valid_response_with_elements() {
         /* prepare */
         XrayAPIResponse response;
         int status = 200;
@@ -42,5 +45,11 @@ class XrayAPIResponseTest {
         assertEquals(200, response.getStatusCode());
         assertEquals("body", response.getBody());
         assertEquals(values, response.getHeaders().get("header"));
+    }
+
+    @Test
+    void xrayAPIResponse_throws_xrayWrapperRuntimeException() {
+        /* execute + test */
+        assertThrows(XrayWrapperRuntimeException.class, () -> XrayAPIResponse.Builder.create(1, null).build());
     }
 }

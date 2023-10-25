@@ -11,13 +11,13 @@ import org.junit.jupiter.api.Test;
 class XrayWrapperReportWriterTest {
 
     @Test
-    void test_writeReport_null() {
+    void writeReport_throws_nullPointerException() {
         /* execute + test */
         assertThrows(NullPointerException.class, () -> writeReport(null, null));
     }
 
     @Test
-    void test_writeReport_XrayWrapperReportException() {
+    void writeReport_throws_xrayWrapperReportException() {
         /* prepare */
         Bom sbom = new Bom();
         File file = new File("");

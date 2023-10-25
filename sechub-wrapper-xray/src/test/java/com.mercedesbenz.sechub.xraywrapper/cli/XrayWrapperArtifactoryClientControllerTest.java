@@ -28,7 +28,7 @@ class XrayWrapperArtifactoryClientControllerTest {
     }
 
     @Test
-    void test_waitForScansToFinishAndDownloadReport() throws XrayWrapperRuntimeException {
+    void waitForScansToFinishAndDownloadReport_valid_execution_without_report_transformation() throws XrayWrapperRuntimeException {
         /* test + execute */
         try (MockedConstruction<XrayAPIArtifactoryClient> mockedClient = Mockito.mockConstruction(XrayAPIArtifactoryClient.class, (mock, context) -> {
             when(mock.getXrayVersion()).thenReturn("mocked-version");
@@ -42,7 +42,7 @@ class XrayWrapperArtifactoryClientControllerTest {
     }
 
     @Test
-    void test_waitForScansToFinishAndDownloadReport_XrayWrapperRuntimeException() {
+    void waitForScansToFinishAndDownloadReport_throws_XrayWrapperRuntimeException() {
         /* prepare */
         controller = new XrayWrapperArtifactoryClientController(configuration, artifact);
 

@@ -16,16 +16,16 @@ class XrayWrapperCLITest {
     }
 
     @Test
-    void test_start_null() {
+    void start_throws_nullPointerException() {
         /* execute + test */
         assertThrows(NullPointerException.class, () -> cli.start(null));
     }
 
     @Test
-    void test_start() {
+    void start_valid_parameters() {
         /* prepare */
         mockConstruction(XrayWrapperArtifactoryClientController.class);
-        String[] args = { "--name", "myname", "--sha256", "sha256:xxx", "--scantype", "docker", "--outputfile", "outfile" };
+        String[] args = { "--name", "myname", "--checksum", "sha256:xxx", "--scantype", "docker", "--outputfile", "outfile" };
 
         /* execute + test */
         cli.start(args);

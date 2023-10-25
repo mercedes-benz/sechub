@@ -9,12 +9,12 @@ public class XrayWrapperCommandLineParser {
 
     private JCommander commander;
 
-    public record Arguments(String name, String sha256, XrayWrapperScanTypes scanType, String tag, String outputFile) {
+    public record Arguments(String name, String checksum, XrayWrapperScanTypes scanType, String tag, String outputFile) {
     }
 
     public Arguments parseCommandLineArgs(String[] args) throws XrayWrapperCommandLineParserException {
         XrayWrapperCommandLineArgs xrayArgs = buildArguments(args);
-        if (xrayArgs.isHelpRequired() || xrayArgs.getName().isEmpty() || xrayArgs.getSha256().isEmpty()) {
+        if (xrayArgs.isHelpRequired() || xrayArgs.getName().isEmpty() || xrayArgs.getChecksum().isEmpty()) {
             commander.usage();
             throw new XrayWrapperCommandLineParserException("Required parameters were empty" + Arrays.toString(args));
         }
@@ -30,9 +30,9 @@ public class XrayWrapperCommandLineParser {
             }
         }
 
-        String sha256 = parseSha256(xrayArgs.getSha256());
+        String checksum = extractChecksum(xrayArgs.getChecksum());
 
-        return new Arguments(name, sha256, type, tag, xrayArgs.getOutputFile());
+        return new Arguments(name, checksum, type, tag, xrayArgs.getOutputFile());
     }
 
     private XrayWrapperCommandLineArgs buildArguments(String[] args) throws XrayWrapperCommandLineParserException {
@@ -57,7 +57,7 @@ public class XrayWrapperCommandLineParser {
         return splitImage;
     }
 
-    private String parseSha256(String sha256) {
-        return sha256.split(":")[1];
+    private String extractChecksum(String checksum) {
+        return checksum.split(":")[1];
     }
 }

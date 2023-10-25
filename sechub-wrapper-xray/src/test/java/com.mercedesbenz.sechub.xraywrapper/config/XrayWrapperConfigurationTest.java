@@ -8,7 +8,7 @@ import org.junit.jupiter.api.Test;
 class XrayWrapperConfigurationTest {
 
     @Test
-    void test_XrayWrapperConfiguration() {
+    void xrayWrapperConfiguration_create_valid_configuration() {
         /* prepare */
         String artifactory = "myartifactory";
         String register = "register";
@@ -23,7 +23,7 @@ class XrayWrapperConfigurationTest {
     }
 
     @Test
-    void test_XrayWrapperConfiguration_null() {
+    void xrayWrapperConfiguration_throws_nullPointerException() {
         /* execute + test */
         assertThrows(NullPointerException.class, () -> XrayWrapperConfiguration.Builder.create(null, null, null, null).build());
     }

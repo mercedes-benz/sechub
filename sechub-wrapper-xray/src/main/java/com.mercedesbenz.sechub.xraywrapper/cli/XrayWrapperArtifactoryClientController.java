@@ -62,7 +62,7 @@ public class XrayWrapperArtifactoryClientController {
     }
 
     private void readAndConvertReports() throws XrayWrapperReportException {
-        reportReader.getFiles(xrayWrapperConfiguration.getZipDirectory(), xrayWrapperConfiguration.getSecHubReport());
+        reportReader.getReportFiles(xrayWrapperConfiguration.getZipDirectory(), xrayWrapperConfiguration.getSecHubReport());
         reportReader.readSecurityReport();
         Bom cycloneDXBom = reportReader.mapVulnerabilities();
         reportReader.writeReport(cycloneDXBom);

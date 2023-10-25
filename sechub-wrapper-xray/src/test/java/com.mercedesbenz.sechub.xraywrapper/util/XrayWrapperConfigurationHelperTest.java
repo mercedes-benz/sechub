@@ -15,7 +15,7 @@ import com.mercedesbenz.sechub.xraywrapper.config.XrayWrapperConfiguration;
 class XrayWrapperConfigurationHelperTest {
 
     @Test
-    void test_createXrayConfiguration() {
+    void createXrayConfiguration_with_valid_parameters() {
         /* prepare */
         XrayWrapperConfiguration xrayWrapperConfiguration;
 
@@ -33,7 +33,7 @@ class XrayWrapperConfigurationHelperTest {
     }
 
     @Test
-    void test_createXrayConfiguration_null() {
+    void createXrayConfiguration_throws_nullPointerException() {
         /* execute + test */
         assertThrows(NullPointerException.class, () -> createXrayConfiguration(null, null));
     }

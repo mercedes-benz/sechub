@@ -15,7 +15,7 @@ class XrayAPIRequestTest {
     XrayAPIRequest xrayAPIRequest;
 
     @Test
-    void test_xrayRequest() {
+    void xrayRequest_create_valid_request() {
         /* prepare */
         URL url = mock(URL.class);
         boolean auth = false;
@@ -32,7 +32,7 @@ class XrayAPIRequestTest {
     }
 
     @Test
-    void test_getUrl_null() {
+    void xrayRequest_throws_xrayWrapperRuntimeException() {
         /* execute + test */
         assertThrows(XrayWrapperRuntimeException.class, () -> XrayAPIRequest.Builder.create(null, null).build());
     }

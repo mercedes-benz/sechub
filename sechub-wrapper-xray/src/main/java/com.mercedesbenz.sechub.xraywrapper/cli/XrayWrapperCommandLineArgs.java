@@ -17,11 +17,11 @@ public class XrayWrapperCommandLineArgs {
         return name;
     }
 
-    @Parameter(names = { "--sha256", "-s" }, description = "Digest of the docker image you wish to scan example: sha256:8he98dhojw92hodnk")
-    private String sha256 = "";
+    @Parameter(names = { "--checksum", "-cs" }, description = "SHA256 digest of the docker image you wish to scan example: sha256:8he98dhojw92hodnk")
+    private String checksum = "";
 
-    public String getSha256() {
-        return sha256;
+    public String getChecksum() {
+        return checksum;
     }
 
     @Parameter(names = { "--scantype" }, description = "Scan type of the xray scan, need to be one of the following: docker")

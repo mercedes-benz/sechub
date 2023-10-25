@@ -25,7 +25,7 @@ class InputStreamSaverTest {
     }
 
     @Test
-    void test_saveInputStreamToStringBuilder() throws XrayWrapperRuntimeException {
+    void readInputStreamAsString_return_content_as_string() throws XrayWrapperRuntimeException {
         /* execute */
         String content = readInputStreamAsString(is);
 
@@ -34,13 +34,13 @@ class InputStreamSaverTest {
     }
 
     @Test
-    void test_saveInputStreamToStringBuilder_null() {
+    void readInputStreamAsString_throws_nullPointerException() {
         /* execute + test */
         assertThrows(NullPointerException.class, () -> readInputStreamAsString(null));
     }
 
     @Test
-    void test_saveInputStreamToStringBuilder_ioException() {
+    void readInputStreamAsString_throws_xrayWrapperRuntimeException() {
         /* prepare */
         InputStream mockedIs = mock(InputStream.class);
 
@@ -49,7 +49,7 @@ class InputStreamSaverTest {
     }
 
     @Test
-    void test_saveInputStreamToZipFile_null() {
+    void saveInputStreamToZipFile_throws_nullPointerException() {
         /* execute + test */
         assertThrows(NullPointerException.class, () -> saveInputStreamToZipFile(null, null));
     }

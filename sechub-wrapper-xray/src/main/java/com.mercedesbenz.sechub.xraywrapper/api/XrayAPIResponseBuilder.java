@@ -55,11 +55,11 @@ public class XrayAPIResponseBuilder {
         if (inputStream != null) {
             String type = httpURLConnection.getHeaderField("Content-Type");
             if (Objects.equals(type, "application/gzip")) {
-                // case application/gzip (need to save report files as zip)
+                // server returns application/gzip as body which needs to be stored in zip file
                 saveInputStreamToZipFile(zipArchive, inputStream);
                 content = "";
             } else {
-                // case application/json is saved as string body
+                // server returns application/json body which can be saved as string body
                 content = readInputStreamAsString(inputStream);
             }
             return XrayAPIResponse.Builder.create(responseCode, header).setBody(content).build();

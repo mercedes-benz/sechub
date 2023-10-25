@@ -37,7 +37,7 @@ public class XrayAPIRequestBuilder {
         String stringUrl = baseUrl + xrayAPI + "/scan/status/artifact";
         URL url = parseStringToUrl(stringUrl);
         String data = "{\"path\": \"" + repository + "/" + artifact.getName() + "/" + artifact.getTag() + "/manifest.json\", " + "\"repository_pkg_type\":\""
-                + artifact.getArtifactType().getType() + "\", \"sha256\": \"" + artifact.getSecureHash() + "\"}";
+                + artifact.getArtifactType().getType() + "\", \"sha256\": \"" + artifact.getChecksum() + "\"}";
         return XrayAPIRequest.Builder.create(url, XrayAPIRequest.RequestMethodEnum.POST).setAuthentication(true).setData(data).build();
     }
 
@@ -47,7 +47,7 @@ public class XrayAPIRequestBuilder {
         String data = """
                 {"component_name": \"""" + artifact.getName() + ":" + artifact.getTag() + """
                 ","package_type": \"""" + artifact.getArtifactType().getType() + """
-                ","sha_256": \"""" + artifact.getSecureHash() + """
+                ","sha_256": \"""" + artifact.getChecksum() + """
                 ","violations": true,\
                 "include_ignored_violations": true,\
                 "license": true,\
