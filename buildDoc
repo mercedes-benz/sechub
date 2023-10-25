@@ -1,24 +1,6 @@
-#!/bin/bash 
+#!/bin/bash
 set -e
 cd `dirname $0`
 
-# This script build full documentation and also creates all precondition parts
-# So users can checkout from github and call this.
-# 
-# You can either call this script directly or use gradle : "./gradlew buildDoc" from
-# repository root folder. 
-# 
-
-./buildExecutables
-
-echo 
-echo "********************************************************************"
-echo "* Collect runtime information about some started artefacts" 
-echo "********************************************************************"
-./gradlew integrationtest
-
-echo
-echo "********************************************************************"
-echo "* Build documents + pages by using static and former collected info" 
-echo "********************************************************************"
-./gradlew documentation-with-pages
+# Build everything including documentation
+sechub-developertools/scripts/sdc.sh -b
