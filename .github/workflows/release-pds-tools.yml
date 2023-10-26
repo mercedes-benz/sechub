@@ -99,6 +99,7 @@ jobs:
           git restore sechub-api-java/src/main/resources/reduced-openapi3.json
           mkdir -p build/reports
           git status > build/reports/git-status.txt
+          git describe --tags >> build/reports/git-status.txt
 
       - name: Archive GIT status
         if: always()
