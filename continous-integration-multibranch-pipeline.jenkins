@@ -132,7 +132,7 @@ pipeline {
         stage('Build Documentation') {
             steps {
                 script{
-                    callGradleWrapper('documentation -Dsechub.build.stage=all')
+                    callGradleWrapper("documentation -Dsechub.build.stage=all --console=plain")
                 }
             }
         }
