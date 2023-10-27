@@ -210,10 +210,10 @@ task assertReleaseable {
     doLast {
         /* we only assert at execution phase - means when this task is really executed and not only configured...*/
         if (VersionData.isContainingAtLeastOneDirtyReleaseVersion()){
-            throw new IllegalStateException("At least one version contains uncommitted changes and is marked for release! See git-status.txt artifact.")
+            throw new IllegalStateException("At least one version contains uncommitted changes and is marked for release! See git-status.txt artifact.\n"+VersionData.getDebugInfo())
         }
         if (!VersionData.isContainingAtLeastOneRealReleaseVersion()){
-            throw new IllegalStateException("There is not at least one version defined which can be released! 0.0.0 is not an acceptable release version!")
+            throw new IllegalStateException("There is not at least one version defined which can be released! 0.0.0 is not an acceptable release version!\n"+VersionData.getDebugInfo())
         }
     }
 
