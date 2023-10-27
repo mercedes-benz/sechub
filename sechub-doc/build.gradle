@@ -73,9 +73,9 @@ def asciidocBuildDir="$buildDir/docs/asciidoc";
 def imagesBuildDir="$buildDir/docs/asciidoc/images";
 def finalHTMLDir = "$buildDir/docs/final-html"
 
-def clientVersion = VersionData.getClientVersion()
-def pdsVersion = VersionData.getPdsVersion()
-def serverVersion = VersionData.getServerVersion()
+def clientVersion = versionData.getClientVersion()
+def pdsVersion = versionData.getPdsVersion()
+def serverVersion = versionData.getServerVersion()
 
 task dropOldGeneratedAsciidoc(dependsOn: 'test'){
     doFirst {
@@ -283,6 +283,6 @@ openapi3 {
     title = 'SecHub API'
     description = 'SecHub API description'
     tagDescriptionsPropertiesFile = 'src/test/resources/openapi/tags.yaml'
-    version = "${VersionData.getServerVersion()}" // Set the OpenAPI version to the SecHub server version
+    version = "${versionData.getServerVersion()}" // Set the OpenAPI version to the SecHub server version
     format = 'json'
 }

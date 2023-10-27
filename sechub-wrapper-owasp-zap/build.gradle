@@ -22,7 +22,7 @@ dependencies {
     testImplementation spring_boot_dependency.mockito_core
 }
 
-version = VersionData.getOwaspzapWrapperVersion()
+version = versionData.getOwaspzapWrapperVersion()
 
 task buildWrapperOwaspZap(type: Jar, dependsOn: build) {
     group 'sechub'
