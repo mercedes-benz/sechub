@@ -58,6 +58,10 @@ public class FalsePositiveJobDataConfigMerger {
         config.getFalsePositives().remove(entry);
     }
 
+    public boolean isFalsePositiveEntryAlreadyExisting(FalsePositiveProjectConfiguration config, FalsePositiveJobData falsePositiveJobData) {
+        return findExistingFalsePositiveEntryInConfig(config, falsePositiveJobData) != null;
+    }
+
     private FalsePositiveEntry findExistingFalsePositiveEntryInConfig(FalsePositiveProjectConfiguration config, FalsePositiveJobData falsePositiveJobData) {
         for (FalsePositiveEntry existingFPEntry : config.getFalsePositives()) {
             FalsePositiveJobData jobData = existingFPEntry.getJobData();

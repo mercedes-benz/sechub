@@ -53,7 +53,6 @@ import com.mercedesbenz.sechub.zapwrapper.config.data.ZapFullRuleset;
 import com.mercedesbenz.sechub.zapwrapper.helper.IncludeExcludeToZapURLHelper;
 import com.mercedesbenz.sechub.zapwrapper.helper.ZapPDSEventHandler;
 import com.mercedesbenz.sechub.zapwrapper.helper.ZapProductMessageHelper;
-import com.mercedesbenz.sechub.zapwrapper.helper.ZapURLType;
 import com.mercedesbenz.sechub.zapwrapper.internal.scan.ClientApiFacade;
 import com.mercedesbenz.sechub.zapwrapper.scan.ZapScanner.UserInformation;
 import com.mercedesbenz.sechub.zapwrapper.util.SystemUtil;
@@ -280,11 +279,11 @@ class ZapScannerTest {
 
         URL targetUrl = sechubWebScanConfig.getUrl().toURL();
         List<String> includesList = sechubWebScanConfig.getIncludes().get();
-        Set<URL> includes = new HashSet<>(helper.createListOfUrls(ZapURLType.INCLUDE, targetUrl, includesList, new ArrayList<>()));
+        Set<String> includes = new HashSet<>(helper.createListOfUrls(targetUrl, includesList));
         when(scanContext.getZapURLsIncludeSet()).thenReturn(includes);
 
         List<String> excludesList = sechubWebScanConfig.getExcludes().get();
-        Set<URL> excludes = new HashSet<>(helper.createListOfUrls(ZapURLType.EXCLUDE, targetUrl, excludesList, new ArrayList<>()));
+        Set<String> excludes = new HashSet<>(helper.createListOfUrls(targetUrl, excludesList));
         when(scanContext.getZapURLsExcludeSet()).thenReturn(excludes);
 
         ApiResponse response = mock(ApiResponse.class);

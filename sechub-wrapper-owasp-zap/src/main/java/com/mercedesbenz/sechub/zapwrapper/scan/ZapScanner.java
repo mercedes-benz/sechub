@@ -4,7 +4,6 @@ package com.mercedesbenz.sechub.zapwrapper.scan;
 import java.io.File;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
-import java.net.URL;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
@@ -217,7 +216,7 @@ public class ZapScanner implements ZapScan {
                 for (String onlyForUrl : httpHeader.getOnlyForUrls().get()) {
                     // we need to create a rule for each onlyForUrl pattern on each header
                     description = onlyForUrl;
-                    url = urlUtil.replaceWildCardsWithRegexInUrl(onlyForUrl);
+                    url = urlUtil.replaceWebScanWildCardsWithRegexInString(onlyForUrl);
                     clientApiFacade.addReplacerRule(description, enabled, matchtype, matchregex, matchstring, replacement, initiators, url);
                 }
             }
@@ -231,15 +230,15 @@ public class ZapScanner implements ZapScan {
      */
     void addIncludedAndExcludedUrlsToContext() throws ClientApiException {
         LOG.info("For scan {}: Adding include parts.", scanContext.getContextName());
-        for (URL url : scanContext.getZapURLsIncludeSet()) {
-            clientApiFacade.addIncludeUrlPatternToContext(scanContext.getContextName(), url + ".*");
-            String followRedirects = "false";
-            clientApiFacade.accessUrlViaZap(url.toString(), followRedirects);
+        String followRedirects = "false";
+        for (String url : scanContext.getZapURLsIncludeSet()) {
+            clientApiFacade.addIncludeUrlPatternToContext(scanContext.getContextName(), url);
+            clientApiFacade.accessUrlViaZap(url, followRedirects);
         }
 
         LOG.info("For scan {}: Adding exclude parts.", scanContext.getContextName());
-        for (URL url : scanContext.getZapURLsExcludeSet()) {
-            clientApiFacade.addExcludeUrlPatternToContext(scanContext.getContextName(), url + ".*");
+        for (String url : scanContext.getZapURLsExcludeSet()) {
+            clientApiFacade.addExcludeUrlPatternToContext(scanContext.getContextName(), url);
         }
     }
 

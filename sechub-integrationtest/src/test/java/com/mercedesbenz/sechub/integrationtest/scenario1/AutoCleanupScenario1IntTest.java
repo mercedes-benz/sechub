@@ -54,8 +54,9 @@ public class AutoCleanupScenario1IntTest {
             /* schedule domain */
             addExpectedDeleteInspection("sechub-jobs","com.mercedesbenz.sechub.domain.schedule.autocleanup.ScheduleAutoCleanupService",0).
             addExpectedDeleteInspection("product-results","com.mercedesbenz.sechub.domain.scan.autocleanup.ScanAutoCleanupService",0).
+            addExpectedDeleteInspection("scan-reports","com.mercedesbenz.sechub.domain.scan.autocleanup.ScanAutoCleanupService",0).
 
-            addExpectedDifferentKindOfDeleteInspections(4).
+            addExpectedDifferentKindOfDeleteInspections(5).
 
             assertAsExpectedWithTimeOut(15);
 

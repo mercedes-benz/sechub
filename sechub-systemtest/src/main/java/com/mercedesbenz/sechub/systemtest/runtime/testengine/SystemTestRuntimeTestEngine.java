@@ -16,6 +16,7 @@ import org.slf4j.LoggerFactory;
 
 import com.mercedesbenz.sechub.api.SecHubClient;
 import com.mercedesbenz.sechub.api.SecHubReport;
+import com.mercedesbenz.sechub.commons.core.util.SimpleStringUtils;
 import com.mercedesbenz.sechub.commons.model.JSONConverter;
 import com.mercedesbenz.sechub.commons.model.SecHubConfigurationModel;
 import com.mercedesbenz.sechub.systemtest.config.CopyDefinition;
@@ -62,12 +63,17 @@ public class SystemTestRuntimeTestEngine {
 
     public void runTest(TestDefinition test, SystemTestRuntimeContext runtimeContext) {
         TestEngineTestContext testContext = createTestContext(test, runtimeContext);
-
+        if (testContext.hasFailed()) {
+            return;
+        }
         prepareTest(testContext);
+        try {
+            executeTest(testContext);
 
-        executeTest(testContext);
-
-        assertTest(testContext);
+            assertTest(testContext);
+        } finally {
+            cleanupTest(testContext);
+        }
 
     }
 
@@ -89,15 +95,25 @@ public class SystemTestRuntimeTestEngine {
     }
 
     private void prepareTest(TestEngineTestContext testContext) {
-        if (testContext.hasFailed()) {
-            // already marked as failed
-            return;
-        }
         try {
             executePreparationSteps("Prepare", testContext);
         } catch (Exception e) {
+            LOG.error("Preparation for test '{}' failed!", testContext.getTestName(), e);
             testContext.markAsFailed("Was not able to prepare test", e);
         }
+    }
+
+    private void cleanupTest(TestEngineTestContext testContext) {
+        try {
+            executeCleanupSteps("Cleanup", testContext);
+        } catch (Exception e) {
+            LOG.error("Cleanup for test '{}' failed!", testContext.getTestName(), e);
+            if (!testContext.hasFailed()) {
+                /* only when not already failed we add the cleanup step failure */
+                testContext.markAsFailed("Was not able to cleanup test", e);
+            }
+        }
+
     }
 
     private void executeTest(TestEngineTestContext testContext) {
@@ -110,7 +126,11 @@ public class SystemTestRuntimeTestEngine {
             try {
                 launchSecHubJob(testContext);
             } catch (Exception e) {
-                testContext.markAsFailed("Was not able to launch SecHub job", e);
+                String reason = e.getMessage();
+                if (reason == null) {
+                    reason = e.getClass().getSimpleName();
+                }
+                testContext.markAsFailed("Was not able to launch SecHub job. Reason: " + SimpleStringUtils.truncateWhenTooLong(reason, 150), e);
             }
         } else {
             // currently we do only support SecHub runs
@@ -213,8 +233,15 @@ public class SystemTestRuntimeTestEngine {
 
     private void executePreparationSteps(String name, TestEngineTestContext testContext) throws SystemTestScriptExecutionException {
         TestDefinition test = testContext.getTest();
+        executeSteps(name, testContext, test.getPrepare());
+    }
 
-        List<ExecutionStepDefinition> steps = test.getPrepare();
+    private void executeCleanupSteps(String name, TestEngineTestContext testContext) throws SystemTestScriptExecutionException {
+        TestDefinition test = testContext.getTest();
+        executeSteps(name, testContext, test.getCleanup());
+    }
+
+    private void executeSteps(String name, TestEngineTestContext testContext, List<ExecutionStepDefinition> steps) throws SystemTestScriptExecutionException {
         if (steps.isEmpty()) {
             return;
         }
@@ -222,15 +249,15 @@ public class SystemTestRuntimeTestEngine {
         for (ExecutionStepDefinition step : steps) {
             LOG.trace("Enter: {} - step: {}", name, step.getComment());
             if (step.getCopy().isPresent()) {
-                executePreparationCopy(testContext, step.getCopy().get());
+                executeCopyStep(testContext, step.getCopy().get());
             }
             if (step.getScript().isPresent()) {
-                executePreparationScript(testContext, step.getScript().get());
+                executeScript(testContext, step.getScript().get());
             }
         }
     }
 
-    private void executePreparationCopy(TestEngineTestContext testContext, CopyDefinition copyDirectoriesDefinition) {
+    private void executeCopyStep(TestEngineTestContext testContext, CopyDefinition copyDirectoriesDefinition) {
         String from = copyDirectoriesDefinition.getFrom();
         String to = copyDirectoriesDefinition.getTo();
 
@@ -255,7 +282,7 @@ public class SystemTestRuntimeTestEngine {
         }
     }
 
-    private void executePreparationScript(TestEngineTestContext testContext, ScriptDefinition scriptDefinition) throws SystemTestScriptExecutionException {
+    private void executeScript(TestEngineTestContext testContext, ScriptDefinition scriptDefinition) throws SystemTestScriptExecutionException {
 
         ProcessContainer processContainer = execSupport.execute(scriptDefinition, testContext.getCurrentTestVariableCalculator(),
                 SystemTestExecutionState.PREPARE);
@@ -271,7 +298,7 @@ public class SystemTestRuntimeTestEngine {
                     diffTime = System.currentTimeMillis();
                     long secondsWaited = (System.currentTimeMillis() - startTime) / 1000;
 
-                    LOG.info("Waiting now for test prepare script: {} - {} seconds waited at all", scriptDefinition.getPath(), secondsWaited);
+                    LOG.info("Waiting now for test script: {} - {} seconds waited at all", scriptDefinition.getPath(), secondsWaited);
                 }
                 Thread.sleep(300);
             } catch (InterruptedException e) {
@@ -338,6 +365,13 @@ public class SystemTestRuntimeTestEngine {
             this.currentTestVariableCalculator = currentTestVariableCalculatorFactory.create(test, runtimeContext);
 
             appendSecHubRunData();
+        }
+
+        public String getTestName() {
+            if (test == null) {
+                return "";
+            }
+            return test.getName();
         }
 
         public VariableCalculator getCurrentTestVariableCalculator() {
