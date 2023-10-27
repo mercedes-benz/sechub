@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
+import com.mercedesbenz.sechub.commons.model.job.ExecutionState;
 import com.mercedesbenz.sechub.domain.schedule.config.SchedulerConfigService;
 import com.mercedesbenz.sechub.domain.schedule.job.SecHubJobRepository;
 import com.mercedesbenz.sechub.sharedkernel.messaging.DomainMessage;
@@ -34,15 +35,26 @@ public class SchedulerStatusService {
         SchedulerMessage sm = new SchedulerMessage();
 
         long amountOfJobsAll = jobRepository.count();
-        long amountOfRunningJobs = jobRepository.countRunningJobs();
-        long amountOfWaitingJobs = jobRepository.countWaitingJobs();
+
+        long amountOfInitializingJobs = jobRepository.countJobsInExecutionState(ExecutionState.INITIALIZING);
+        long amountOfJobsReadyToStart = jobRepository.countJobsInExecutionState(ExecutionState.READY_TO_START);
+        long amountOfJobsStarted = jobRepository.countJobsInExecutionState(ExecutionState.STARTED);
+        long amountOfJobsCancelRequested = jobRepository.countJobsInExecutionState(ExecutionState.CANCEL_REQUESTED);
+        long amountOfJobsCanceled = jobRepository.countJobsInExecutionState(ExecutionState.CANCELED);
+        long amountOfJobsEnded = jobRepository.countJobsInExecutionState(ExecutionState.ENDED);
 
         boolean processingEnabled = configService.isJobProcessingEnabled();
 
-        sm.setAmountOfJobsAll(amountOfJobsAll);
-        sm.setAmountOfRunningJobs(amountOfRunningJobs);
-        sm.setAmountOfWaitingJobs(amountOfWaitingJobs);
         sm.setJobProcessingEnabled(processingEnabled);
+
+        sm.setAmountOfAllJobs(amountOfJobsAll);
+
+        sm.setAmountOfInitializingJobs(amountOfInitializingJobs);
+        sm.setAmountOfJobsReadyToStart(amountOfJobsReadyToStart);
+        sm.setAmountOfJobsStarted(amountOfJobsStarted);
+        sm.setAmountOfJobsCancelRequested(amountOfJobsCancelRequested);
+        sm.setAmountOfJobsCanceled(amountOfJobsCanceled);
+        sm.setAmountOfJobsEnded(amountOfJobsEnded);
 
         message.set(MessageDataKeys.SCHEDULER_STATUS_DATA, sm);
 

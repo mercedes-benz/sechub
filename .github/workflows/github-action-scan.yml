@@ -1,0 +1,30 @@
+# SPDX-License-Identifier: MIT
+name: Build SecHub GitHub Action
+
+on: workflow_dispatch
+
+jobs:
+  build-scan:
+    runs-on: ubuntu-latest
+    # Let's set the scan action folder as the working directory for all "run" steps:
+    working-directory: ./github-actions/scan
+    
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      
+      - name: Use Node.js
+        # We do not define a dedicated node version here, we just use the default environment
+        # which should be the default environment for the github actions runtime as well
+        uses: actions/setup-node@v3 
+    
+      - name: Clean install
+        run: npm ci 
+        
+      - name: Build
+        run: npm run build --if-present
+        
+      - name: Run tests
+        run: npm test
+    
+      

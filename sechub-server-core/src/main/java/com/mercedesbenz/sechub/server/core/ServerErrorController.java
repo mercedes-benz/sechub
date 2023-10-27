@@ -28,7 +28,7 @@ public class ServerErrorController implements ErrorController {
 
     @MustBeDocumented("When debug flag is set, rest call reponse error messages do also contain stacktraces.")
     @Value("${sechub.server.debug:false}")
-    private boolean debug;
+    boolean debug;
 
     @Autowired
     ErrorAttributes errorAttributes;
@@ -68,6 +68,7 @@ public class ServerErrorController implements ErrorController {
 
             if (httpStatusEnum.is4xxClientError()) {
                 options = options.including(ErrorAttributeOptions.Include.MESSAGE);
+                options = options.including(ErrorAttributeOptions.Include.BINDING_ERRORS);
             }
 
         } catch (RuntimeException e) {

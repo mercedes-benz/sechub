@@ -10,6 +10,7 @@ import com.mercedesbenz.sechub.commons.core.environment.SystemEnvironmentVariabl
 import com.mercedesbenz.sechub.commons.core.security.CheckSumSupport;
 import com.mercedesbenz.sechub.commons.model.CodeScanPathCollector;
 import com.mercedesbenz.sechub.commons.model.SecHubConfigurationModelSupport;
+import com.mercedesbenz.sechub.commons.model.SecHubConfigurationModelValidator;
 import com.mercedesbenz.sechub.commons.model.TrafficLightSupport;
 
 /**
@@ -51,5 +52,10 @@ public class SecHubServerPojoFactory {
     @Bean
     SecHubConfigurationModelSupport createSecHubConfigurationModelSupport() {
         return new SecHubConfigurationModelSupport();
+    }
+
+    @Bean
+    SecHubConfigurationModelValidator createSecHubConfigurationValidator() {
+        return new SecHubConfigurationModelValidator();
     }
 }

@@ -15,4 +15,3 @@ case "$PMD_RULESET" in
             echo "Scanned with option ALL"
             cp "$MOCK_FOLDER/mock-option-all.sarif.json" "$PDS_JOB_RESULT_FILE"
 esac
-

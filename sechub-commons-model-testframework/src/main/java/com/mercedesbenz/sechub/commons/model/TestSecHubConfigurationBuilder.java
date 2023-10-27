@@ -97,6 +97,25 @@ public class TestSecHubConfigurationBuilder {
             return TestSecHubConfigurationBuilder.this.build();
         }
 
+        public class TestWebApiConfigBuilder {
+            SecHubWebScanApiConfiguration api = new SecHubWebScanApiConfiguration();
+
+            public TestWebApiConfigBuilder type(SecHubWebScanApiType type) {
+                this.api.setType(type);
+                return this;
+            }
+
+            public TestWebApiConfigBuilder useDataReferences(String... referenceNames) {
+                this.api.getNamesOfUsedDataConfigurationObjects().addAll(Arrays.asList(referenceNames));
+                return this;
+            }
+
+            public TestWebConfigurationBuilder and() {
+                testData.webConfig.setApi(Optional.of(api));
+                return TestWebConfigurationBuilder.this;
+            }
+        }
+
         public TestSecHubConfigurationBuilder and() {
             return TestSecHubConfigurationBuilder.this;
         }
@@ -126,6 +145,11 @@ public class TestSecHubConfigurationBuilder {
             return this;
         }
 
+        public TestWebConfigurationBuilder addHeaders(List<HTTPHeaderConfiguration> headers) {
+            TestSecHubConfigurationBuilder.this.testData.webConfig.headers = Optional.ofNullable(headers);
+            return this;
+        }
+
         public TestWebLoginConfigurationBuilder login(String loginURL) {
             return new TestWebLoginConfigurationBuilder(loginURL, this);
         }
@@ -147,6 +171,11 @@ public class TestSecHubConfigurationBuilder {
 
         public TestSecHubConfigurationBuilder and() {
             return TestSecHubConfigurationBuilder.this;
+        }
+
+        public TestCodeSCanConfigurationBuilder useDataReferences(String... referenceName) {
+            testData.codeScanConfig.getNamesOfUsedDataConfigurationObjects().addAll(Arrays.asList(referenceName));
+            return this;
         }
 
         public TestCodeSCanConfigurationBuilder setFileSystemFolders(String... folders) {
@@ -189,12 +218,12 @@ public class TestSecHubConfigurationBuilder {
             return TestSecHubConfigurationBuilder.this;
         }
 
-        protected abstract class TestDataDataBuilder {
+        public abstract class TestDataDataBuilder {
             private String name;
             private SecHubFileSystemConfiguration fileSystem;
 
             private TestDataDataBuilder() {
-
+                this.fileSystem = new SecHubFileSystemConfiguration();
             }
 
             public TestDataDataBuilder uniqueName(String name) {
@@ -203,8 +232,12 @@ public class TestSecHubConfigurationBuilder {
             }
 
             public TestDataDataBuilder fileSystemFolders(String... folders) {
-                this.fileSystem = new SecHubFileSystemConfiguration();
                 fileSystem.getFolders().addAll(Arrays.asList(folders));
+                return this;
+            }
+
+            public TestDataDataBuilder fileSystemFiles(String... files) {
+                fileSystem.getFiles().addAll(Arrays.asList(files));
                 return this;
             }
 

@@ -1,3 +1,0 @@
-{
-    "apiVersion" : "{{ .USED_API_VERSION }}"
-}

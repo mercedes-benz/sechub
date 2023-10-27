@@ -59,6 +59,15 @@ public class FalsePositivesScenario3IntTest {
             finding().id(1).name("Absolute Path Traversal").isNotContained().
             hasTrafficLight(TrafficLight.GREEN);
 
+        /* execute 2 - duplicate call to mark false positives*/
+        as(USER_1).withSecHubClient().startFalsePositiveDefinition(project,location).add(1, jobUUID).markAsFalsePositive();
+
+        /* test 2 - false positive works also after second call*/
+        ExecutionResult result3 = as(USER_1).withSecHubClient().startSynchronScanFor(project, location);
+        assertReportUnordered(result3).
+            finding().id(1).name("Absolute Path Traversal").isNotContained().
+            hasTrafficLight(TrafficLight.GREEN);
+
         /* @formatter:on */
     }
 
@@ -204,36 +213,7 @@ public class FalsePositivesScenario3IntTest {
     }
 
     @Test
-    public void REST_API_direct_fetch_fp_config_when_one_entry_added() throws Exception {
-        /* @formatter:off */
-        /***********/
-        /* prepare */
-        /***********/
-        IntegrationTestJSONLocation location = IntegrationTestJSONLocation.CLIENT_JSON_SOURCESCAN_YELLOW_ZERO_WAIT;
-        ExecutionResult result = as(USER_1).withSecHubClient().startSynchronScanFor(project, location);
-        assertReportUnordered(result).
-            finding().id(1).name("Absolute Path Traversal").isContained().
-            hasTrafficLight(TrafficLight.YELLOW);
-
-        UUID jobUUID = result.getSechubJobUUID();
-
-        as(USER_1).startFalsePositiveDefinition(project).add(1, jobUUID).markAsFalsePositive();
-
-        /***********/
-        /* execute */
-        /***********/
-        ProjectFalsePositivesDefinition configuration = as(USER_1).getFalsePositiveConfigurationOfProject(project);
-
-        /********/
-        /* test */
-        /********/
-        assertTrue(configuration.isContaining(1, jobUUID));
-
-        /* @formatter:on */
-    }
-
-    @Test
-    public void with_sechubclient_fetch_fp_config_when_one_entry_added() throws Exception {
+    public void with_sechubclient_fetch_fp_config_when_one_code_scan_entry_added() throws Exception {
         /* @formatter:off */
         /***********/
         /* prepare */

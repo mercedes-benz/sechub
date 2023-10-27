@@ -10,12 +10,12 @@ ARG BASE_IMAGE
 # Build args
 ARG PDS_VERSION
 ARG BUILD_TYPE
-ARG GO="go1.19.linux-amd64.tar.gz"
+ARG GO="go1.20.4.linux-amd64.tar.gz"
 
-# possible values are 11, 17
-ARG JAVA_VERSION="11"
+# possible values: 17
+ARG JAVA_VERSION="17"
 
-# Artifact folder 
+# Artifact folder
 ARG PDS_ARTIFACT_FOLDER="/artifacts"
 
 #-------------------
@@ -41,6 +41,7 @@ RUN mkdir --parent "$PDS_ARTIFACT_FOLDER" "$DOWNLOAD_FOLDER"
 
 RUN export DEBIAN_FRONTEND=noninteractive && \
     apt-get update && \
+    apt-get upgrade --assume-yes --quiet && \
     apt-get install --quiet --assume-yes wget w3m git "openjdk-$JAVA_VERSION-jdk-headless" && \
     apt-get clean
 
@@ -124,7 +125,7 @@ RUN echo "build stage"
 
 FROM ${BASE_IMAGE} AS sechub
 
-# Annotations according to the Open Containers Image Spec: 
+# Annotations according to the Open Containers Image Spec:
 #  https://github.com/opencontainers/image-spec/blob/main/annotations.md
 
 # Required by GitHub to link repository and image
@@ -145,11 +146,11 @@ ENV SHARED_VOLUMES="/shared_volumes"
 ENV SHARED_VOLUME_UPLOAD_DIR="$SHARED_VOLUMES/uploads"
 ENV PDS_VERSION="${PDS_VERSION}"
 ENV PDS_FOLDER="/pds"
-ENV SCRIPT_FOLDER="/scripts"
-ENV HELPER_FOLDER="/helper"
-ENV DOWNLOAD_FOLDER="/downloads"
-ENV MOCK_FOLDER="/mocks"
-ENV TOOL_FOLDER="/tools"
+ENV DOWNLOAD_FOLDER="$PDS_FOLDER/downloads"
+ENV HELPER_FOLDER="$PDS_FOLDER/helper"
+ENV MOCK_FOLDER="$PDS_FOLDER/mocks"
+ENV SCRIPT_FOLDER="$PDS_FOLDER/scripts"
+ENV TOOL_FOLDER="$PDS_FOLDER/tools"
 ENV WORKSPACE="/workspace"
 
 # non-root user

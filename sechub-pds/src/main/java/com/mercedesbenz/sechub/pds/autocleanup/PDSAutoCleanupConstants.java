@@ -16,8 +16,8 @@ public class PDSAutoCleanupConstants {
             + "As initial delay " + DEFAULT_INITIAL_DELAY_MILLIS
             + " milliseconds are defined. It can be configured differently. This is useful when you need to startup a cluster. Simply change the initial delay values in to allow the cluster to startup.";
 
-    public static final String TRIGGER_INITIAL_DELAY_STRING = "${sechub.pds.config.trigger.autoclean.initialdelay:" + DEFAULT_INITIAL_DELAY_MILLIS + "}";
-    public static final String TRIGGER_FIXED_DELAY_STRING = "${sechub.pds.config.trigger.autoclean.delay:" + DEFAULT_FIXED_DELAY_MILLIS + "}";
+    public static final String TRIGGER_INITIAL_DELAY_STRING = "${pds.config.trigger.autoclean.initialdelay:" + DEFAULT_INITIAL_DELAY_MILLIS + "}";
+    public static final String TRIGGER_FIXED_DELAY_STRING = "${pds.config.trigger.autoclean.delay:" + DEFAULT_FIXED_DELAY_MILLIS + "}";
 
     public static final String GENERAL_END_OF_USECASE_DOMAIN_DESCRIPTION = " does auto cleanup old data. This is done periodically. The time period is defined by auto cleanup configuration.";
 

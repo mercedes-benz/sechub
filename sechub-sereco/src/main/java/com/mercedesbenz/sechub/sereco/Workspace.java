@@ -20,9 +20,11 @@ import com.mercedesbenz.sechub.sereco.importer.ProductFailureMetaDataBuilder;
 import com.mercedesbenz.sechub.sereco.importer.ProductImportAbility;
 import com.mercedesbenz.sechub.sereco.importer.ProductResultImporter;
 import com.mercedesbenz.sechub.sereco.importer.ProductSuccessMetaDataBuilder;
+import com.mercedesbenz.sechub.sereco.importer.SensitiveDataMaskingService;
 import com.mercedesbenz.sechub.sereco.metadata.SerecoAnnotation;
 import com.mercedesbenz.sechub.sereco.metadata.SerecoMetaData;
 import com.mercedesbenz.sechub.sereco.metadata.SerecoVulnerability;
+import com.mercedesbenz.sechub.sharedkernel.configuration.SecHubConfiguration;
 
 @Component
 @Scope(value = ConfigurableBeanFactory.SCOPE_PROTOTYPE)
@@ -34,6 +36,9 @@ public class Workspace {
 
     @Autowired
     ImporterRegistry registry;
+
+    @Autowired
+    SensitiveDataMaskingService maskingService;
 
     private String id;
 
@@ -57,7 +62,7 @@ public class Workspace {
         return id;
     }
 
-    public void doImport(ImportParameter param) throws IOException {
+    public void doImport(SecHubConfiguration sechubConfig, ImportParameter param) throws IOException {
         if (param == null) {
             throw new IllegalArgumentException("param may not be null!");
         }
@@ -82,7 +87,7 @@ public class Workspace {
                  */
                 ProductFailureMetaDataBuilder builder = new ProductFailureMetaDataBuilder();
                 SerecoMetaData failureMetaData = builder.forParam(param).build();
-                mergeWithWorkspaceData(failureMetaData);
+                mergeWithWorkspaceData(sechubConfig, failureMetaData);
 
                 mergeWithWorkspaceData(param.getProductMessages());
 
@@ -97,12 +102,12 @@ public class Workspace {
                             importer.getClass().getSimpleName(), param.getImportId(), param.getScanType());
                     return;
                 }
-                mergeWithWorkspaceData(importedMetaData);
+                mergeWithWorkspaceData(sechubConfig, importedMetaData);
 
                 /* add now success meta data */
                 ProductSuccessMetaDataBuilder builder = new ProductSuccessMetaDataBuilder();
                 SerecoMetaData successMetaData = builder.forParam(param).build();
-                mergeWithWorkspaceData(successMetaData);
+                mergeWithWorkspaceData(sechubConfig, successMetaData);
 
                 mergeWithWorkspaceData(param.getProductMessages());
 
@@ -140,9 +145,11 @@ public class Workspace {
         }
     }
 
-    private void mergeWithWorkspaceData(SerecoMetaData metaData) {
+    private void mergeWithWorkspaceData(SecHubConfiguration sechubConfig, SerecoMetaData metaData) {
+        List<SerecoVulnerability> maskedSerecoVulnerabilities = maskingService.maskSensitiveData(sechubConfig, metaData.getVulnerabilities());
+
         /* currently a very simple approach for vulnerabilities: */
-        workspaceMetaData.getVulnerabilities().addAll(metaData.getVulnerabilities());
+        workspaceMetaData.getVulnerabilities().addAll(maskedSerecoVulnerabilities);
 
         workspaceMetaData.getAnnotations().addAll(metaData.getAnnotations());
 

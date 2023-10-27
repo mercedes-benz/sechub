@@ -369,7 +369,26 @@ public class TestAPI {
                     boolean statusIsFailed = status.contains(PDSJobStatusState.FAILED.toString());
                     if (statusIsFailed) {
                         /* it has failed and failed is not expected - so this is a problem! */
-                        fail("The status of PDS job:" + pdsJobUUID + " is " + status + " - wanted was " + wantedState);
+                        String outputStreamText = asPDSUser(PDS_ADMIN).getJobOutputStreamText(pdsJobUUID);
+                        String errorStreamText = asPDSUser(PDS_ADMIN).getJobErrorStreamText(pdsJobUUID);
+
+                        String message = """
+                                PDS job: %s status not as expected
+                                - actual: %s
+                                - expected: %s
+
+                                Output stream:
+                                ----------------------
+                                %s
+
+                                Error stream:
+                                ----------------------
+                                %s
+
+                                """.formatted(pdsJobUUID, status, wantedState, outputStreamText, errorStreamText);
+
+                        fail(message);
+
                     }
                 }
                 return wantedStateFound;

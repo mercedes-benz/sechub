@@ -1,0 +1,91 @@
+{
+  "setup" : {
+    "local" : {
+      "secHub" : {
+        "admin" : {
+          "userId" : "${secretEnv.TEST_ADMIN_USERID}",
+          "apiToken" : "${secretEnv.TEST_ADMIN_APITOKEN}"
+        },
+        "start" : [ {
+          "script" : {
+            "path" : "./01-start-single-docker-compose.sh"
+          }
+        } ],
+        "configure" : {
+          "executors" : [ {
+            "pdsProductId" : "PDS_GOSEC_MOCK",
+            "name" : "system-test-codescan-gosec",
+            "parameters" : {
+                // we enhance pds adapter resilience here, because we have no access to
+                // the pds solution (port not forwarded), so not able to wait
+                // that PDS becomes available (see "waitAvailable:false" below).
+                // This means, that the test will fail because PDS server is starting but
+                // SecHub tests that PDS solution is available
+                // but we can use the resilience feature from sechub to handle this.
+                "sechub.productexecutor.pds.adapter.resilience.retry.wait.milliseconds" : 3000,
+                "sechub.productexecutor.pds.adapter.resilience.retry.max": 20,
+                "pds.config.use.sechub.storage": false
+            }
+            
+          } ]
+        },
+        "stop" : [ {
+          "script" : {
+            "path" : "./01-stop-single-docker-compose.sh"
+          }
+        } ]
+      },
+      "pdsSolutions" : [ {
+        "name" : "gosec",
+        "url" : "${env.TEST_PDS_SERVER}",
+        
+        // we set this, because the PDS solution is not reachable from localhost
+        // (port not forwarded)
+        "waitForAvailable" : false,
+        
+        "start" : [ {
+          "script" : {
+            "path" : "./05-start-single-sechub-network-docker-compose.sh"
+          }
+        } ],
+        "stop" : [ {
+          "script" : {
+            "path" : "./05-stop-single-sechub-network-docker-compose.sh"
+          }
+        } ],
+        "techUser" : {
+          "userId" : "${secretEnv.TEST_PDS_USERID}",
+          "apiToken" : "${secretEnv.TEST_PDS_APITOKEN}"
+        }
+      } ]
+    }
+  },
+  "tests" : [ {
+    "name" : "test1",
+    "prepare" : [ {
+      "copy" : {
+        // copy sources to test folder location 
+        "from" : "./../sechub-cli/src/mercedes-benz.com/sechub/main",
+        "to" : "${runtime.currentTestFolder}/testsources/src"
+      }
+    } ],
+    "execute" : {
+      "runSecHubJob" : {
+        "uploads" : [ {
+          // we must (at least currently) use ony relative paths inside upload definitions.
+          // base directory is always the current test folder
+          "sourceFolder" : "./testsources/src"
+        } ],
+        "codeScan" : { }
+      }
+    },
+    "assert" : [ {
+      "sechubResult" : {
+        "hasTrafficLight" : "RED",
+        "containsStrings" : {
+          "values" : [ "Potential file inclusion via variable", "go-test-bench/internal/injection/cmdi/cmd-injection.go" ]
+        }
+      } 
+    } ]
+  } ]
+}

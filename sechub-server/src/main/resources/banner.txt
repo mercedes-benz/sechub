@@ -1,0 +1,8 @@
+ ____            _   _       _                                 
+/ ___|  ___  ___| | | |_   _| |__   
+\___ \ / _ \/ __| |_| | | | | '_ \  
+ ___) |  __/ (__|  _  | |_| | |_) | 
+|____/ \___|\___|_| |_|\__,_|_.__/  
+
+:: SecHub Server :: ${application.formatted-version} 
+:: Spring Boot   :: ${spring-boot.formatted-version}

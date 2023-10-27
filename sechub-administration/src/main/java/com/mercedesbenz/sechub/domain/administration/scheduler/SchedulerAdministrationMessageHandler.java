@@ -66,25 +66,34 @@ public class SchedulerAdministrationMessageHandler implements AsynchronMessageHa
     }
 
     private void updateSchedulerJobProcessingEnabled(boolean processingEnabled) {
-        StatusEntry enabled = fetchOrCreateEntry(SchedulerStatusEntryKeys.SCHEDULER_ENABLED);
-        enabled.setValue(Boolean.toString(processingEnabled));
-        repository.save(enabled);
+        saveStatusEntry(SchedulerStatusEntryKeys.SCHEDULER_ENABLED, processingEnabled);
     }
 
     private void updateSchedulerJobInformation(SchedulerMessage status) {
-        StatusEntry jobsAll = fetchOrCreateEntry(SchedulerStatusEntryKeys.SCHEDULER_JOBS_ALL);
-        jobsAll.setValue(Long.toString(status.getAmountOfAllJobs()));
+        saveStatusEntry(SchedulerStatusEntryKeys.SCHEDULER_JOBS_ALL, status.getAmountOfAllJobs());
 
-        StatusEntry jobsRunning = fetchOrCreateEntry(SchedulerStatusEntryKeys.SCHEDULER_JOBS_RUNNING);
-        jobsRunning.setValue(Long.toString(status.getAmountOfRunningJobs()));
+        saveStatusEntry(SchedulerStatusEntryKeys.SCHEDULER_JOBS_INITIALIZING, status.getAmountOfInitializingJobs());
+        saveStatusEntry(SchedulerStatusEntryKeys.SCHEDULER_JOBS_READY_TO_START, status.getAmountOfJobsReadyToStart());
+        saveStatusEntry(SchedulerStatusEntryKeys.SCHEDULER_JOBS_STARTED, status.getAmountOfJobsStarted());
+        saveStatusEntry(SchedulerStatusEntryKeys.SCHEDULER_JOBS_CANCEL_REQUESTED, status.getAmountOfJobsCancelRequested());
+        saveStatusEntry(SchedulerStatusEntryKeys.SCHEDULER_JOBS_CANCELED, status.getAmountOfJobsCanceled());
+        saveStatusEntry(SchedulerStatusEntryKeys.SCHEDULER_JOBS_ENDED, status.getAmountOfJobsEnded());
 
-        StatusEntry jobsWaiting = fetchOrCreateEntry(SchedulerStatusEntryKeys.SCHEDULER_JOBS_WAITING);
-        jobsWaiting.setValue(Long.toString(status.getAmountOfWaitingJobs()));
+    }
 
-        /* persist */
-        repository.save(jobsAll);
-        repository.save(jobsRunning);
-        repository.save(jobsWaiting);
+    private void saveStatusEntry(SchedulerStatusEntryKeys key, long value) {
+        saveStatusEntry(key, Long.toString(value));
+    }
+
+    private void saveStatusEntry(SchedulerStatusEntryKeys key, boolean value) {
+        saveStatusEntry(key, Boolean.toString(value));
+    }
+
+    private void saveStatusEntry(SchedulerStatusEntryKeys key, String value) {
+        StatusEntry statusEntry = fetchOrCreateEntry(key);
+        statusEntry.setValue(value);
+
+        repository.save(statusEntry);
     }
 
     private StatusEntry fetchOrCreateEntry(SchedulerStatusEntryKeys key) {

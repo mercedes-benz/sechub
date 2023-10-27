@@ -41,6 +41,9 @@ spring:
           jdbc.lob.non_contextual_creation: true
   datasource:
     initialization-mode: always
+    hikari:
+      minimumidle: 1
+      maximumpoolsize: 2
   main:
     # see https://github.com/spring-projects/spring-boot/wiki/Spring-Boot-2.1-Release-Notes#bean-overriding
     allow-bean-definition-overriding: true
@@ -92,3 +95,24 @@ server:
      - ECDHE-RSA-AES256-GCM-SHA384
      - ECDHE-RSA-AES128-GCM-SHA256
      
+# Spring Boot Actuators and Metrics
+management:
+  server:
+    port:
+       10251
+    ssl:
+      enabled:
+         false
+  endpoints:
+    web:
+      exposure:
+        include: "prometheus,health"
+  endpoint:
+    metrics:
+      enabled: true
+    prometheus:
+      enabled: true
+  metrics:
+    export:
+      prometheus:
+        enabled: true

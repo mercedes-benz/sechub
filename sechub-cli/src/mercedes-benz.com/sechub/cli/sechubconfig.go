@@ -6,11 +6,11 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
-	"html/template"
 	"io"
 	"io/ioutil"
 	"os"
 	"strings"
+	"text/template"
 
 	sechubUtil "mercedes-benz.com/sechub/util"
 )
@@ -23,8 +23,8 @@ type SecHubConfig struct {
 	User       string                `json:"user"`
 	ProjectID  string                `json:"project"`
 	Server     string                `json:"server"`
-	Data       DataSectionScanConfig `json:"data"`
 	CodeScan   CodeScanConfig        `json:"codeScan"`
+	Data       DataSectionScanConfig `json:"data"`
 }
 
 type DataSectionScanConfig struct {
@@ -93,7 +93,7 @@ func newSecHubConfigFromBytes(bytes []byte) SecHubConfig {
 }
 
 func showHelpHint() {
-	fmt.Fprint(os.Stderr, "\nHint: Call sechub with -help option to show usage and examples\n")
+	fmt.Fprint(os.Stderr, "\nHint: Call sechub with \"help\" to show usage options.\n")
 }
 
 func newSecHubConfigurationFromFile(context *Context, filePath string) (SecHubConfig, bool) {
@@ -102,12 +102,11 @@ func newSecHubConfigurationFromFile(context *Context, filePath string) (SecHubCo
 	/* open file and check exists */
 	sechubUtil.LogDebug(context.config.debug, fmt.Sprintf("Loading config file: '%s'", filePath))
 	jsonFile, err := os.Open(filePath)
-	defer jsonFile.Close()
-
 	if err != nil {
 		emptyConfig := SecHubConfig{}
 		return emptyConfig, fileWasRead
 	}
+	defer jsonFile.Close()
 
 	/* read text content as "unfilled byte value". This will be used for debug outputs,
 	   so we do not have passwords etc. accidently leaked. We limit read to maximum allowed bytes */
@@ -123,7 +122,7 @@ func newSecHubConfigurationFromFile(context *Context, filePath string) (SecHubCo
 		os.Exit(ExitCodeInvalidConfigFile)
 	}
 
-	if !sechubUtil.IsValidJSON(context.inputForContentProcessing) {
+	if !json.Valid(context.inputForContentProcessing) {
 		sechubUtil.LogError("Given SecHub config file '" + context.config.configFilePath + "' is not correct JSON!")
 		os.Exit(ExitCodeInvalidConfigFile)
 	} else {

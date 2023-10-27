@@ -7,16 +7,9 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.fasterxml.jackson.annotation.JsonInclude.Include;
-import com.fasterxml.jackson.core.JsonFactory;
-import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.DeserializationFeature;
-import com.fasterxml.jackson.databind.MapperFeature;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.databind.json.JsonMapper;
 import com.fasterxml.jackson.databind.type.CollectionType;
-import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
 import com.mercedesbenz.sechub.commons.core.util.SimpleStringUtils;
 
 public class JSONConverter {
@@ -31,40 +24,10 @@ public class JSONConverter {
         return INSTANCE;
     }
 
-    private ObjectMapper mapper;
+    private JsonMapper mapper;
 
     public JSONConverter() {
-        // https://github.com/FasterXML/jackson-core/wiki/JsonParser-Features
-        JsonFactory jsonFactory = new JsonFactory();
-        jsonFactory.enable(JsonParser.Feature.ALLOW_COMMENTS);
-        jsonFactory.enable(JsonParser.Feature.ALLOW_SINGLE_QUOTES);
-
-        mapper = new ObjectMapper(jsonFactory);
-        /*
-         * next line will write single element array as simple strings. There was an
-         * issue with this when serializing/deserializing SimpleMailMessage class from
-         * spring when only one "to" defined but was an array - jackson had problems see
-         * also: https://github.com/FasterXML/jackson-databind/issues/720 and
-         * https://stackoverflow.com/questions/39041496/how-to-enforce-accept-single-
-         * value-as-array-in-jacksons-deserialization-process
-         */
-        mapper.enable(DeserializationFeature.ACCEPT_SINGLE_VALUE_AS_ARRAY);
-
-        /*
-         * we accept enums also case insensitive - e.g Traffic light shall be accesible
-         * by "GREEN" but also "green"...
-         */
-        mapper.enable(MapperFeature.ACCEPT_CASE_INSENSITIVE_ENUMS);
-
-        // but we do NOT use SerializationFeature.WRITE_SINGLE_ELEM_ARRAYS_UNWRAPPED !
-        // reason: otherwise jackson does all single ones write as not being an array
-        // which comes up to problems agani
-        mapper.disable(SerializationFeature.WRITE_SINGLE_ELEM_ARRAYS_UNWRAPPED);
-
-        mapper.setSerializationInclusion(Include.NON_ABSENT);
-        // http://www.baeldung.com/jackson-optional
-        mapper.registerModule(new Jdk8Module());
-
+        mapper = JsonMapperFactory.createMapper();
     }
 
     public String toJSON(Object object) throws JSONConverterException {
@@ -72,8 +35,15 @@ public class JSONConverter {
     }
 
     public String toJSON(Object object, boolean prettyPrinted) throws JSONConverterException {
+        return toJSON(object, prettyPrinted, null);
+    }
+
+    public String toJSON(Object object, boolean prettyPrinted, JsonMapper mapper) throws JSONConverterException {
         if (object == null) {
             return "null";
+        }
+        if (mapper == null) {
+            mapper = this.mapper;
         }
         try {
             byte[] bytes;

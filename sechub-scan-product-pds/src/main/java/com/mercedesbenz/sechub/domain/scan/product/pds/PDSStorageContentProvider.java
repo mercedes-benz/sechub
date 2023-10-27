@@ -37,10 +37,24 @@ public class PDSStorageContentProvider {
         return secHubStorageReused;
     }
 
+    /**
+     * Resolves if the SecHub configuration model needs a source upload for the
+     * defined scan type
+     *
+     * @return <code>true</code> when source upload is necessary otherwise
+     *         <code>false</code>
+     */
     public boolean isSourceRequired() {
         return sourceRequired;
     }
 
+    /**
+     * Resolves if the SecHub configuration model needs a binary upload for the
+     * defined scan type
+     *
+     * @return <code>true</code> when binary upload is necessary otherwise
+     *         <code>false</code>
+     */
     public boolean isBinaryRequired() {
         return binaryRequired;
     }

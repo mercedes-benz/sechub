@@ -4,7 +4,6 @@ package com.mercedesbenz.sechub.restdoc;
 import static com.mercedesbenz.sechub.restdoc.RestDocumentation.*;
 import static com.mercedesbenz.sechub.test.SecHubTestURLBuilder.*;
 import static org.mockito.Mockito.*;
-import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
 import static org.springframework.restdocs.headers.HeaderDocumentation.requestHeaders;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.*;
 import static org.springframework.restdocs.payload.PayloadDocumentation.*;
@@ -64,27 +63,28 @@ public class MappingAdministrationRestControllerRestDocTest implements TestIsNec
     @Before
     public void before() {
         List<StatusEntry> list = new ArrayList<StatusEntry>();
-        StatusEntry enabled = new StatusEntry(SchedulerStatusEntryKeys.SCHEDULER_ENABLED);
-        enabled.setValue("true");
-        list.add(enabled);
+        addStatusEntry(list, SchedulerStatusEntryKeys.SCHEDULER_ENABLED, "true");
 
-        StatusEntry allJobs = new StatusEntry(SchedulerStatusEntryKeys.SCHEDULER_JOBS_ALL);
-        allJobs.setValue("200");
-        list.add(allJobs);
+        addStatusEntry(list, SchedulerStatusEntryKeys.SCHEDULER_JOBS_ALL, "100");
 
-        StatusEntry runningJobs = new StatusEntry(SchedulerStatusEntryKeys.SCHEDULER_JOBS_RUNNING);
-        runningJobs.setValue("3");
-        list.add(runningJobs);
-
-        StatusEntry waitingJobs = new StatusEntry(SchedulerStatusEntryKeys.SCHEDULER_JOBS_WAITING);
-        waitingJobs.setValue("42");
-        list.add(waitingJobs);
+        addStatusEntry(list, SchedulerStatusEntryKeys.SCHEDULER_JOBS_INITIALIZING, "1");
+        addStatusEntry(list, SchedulerStatusEntryKeys.SCHEDULER_JOBS_READY_TO_START, "19");
+        addStatusEntry(list, SchedulerStatusEntryKeys.SCHEDULER_JOBS_STARTED, "20");
+        addStatusEntry(list, SchedulerStatusEntryKeys.SCHEDULER_JOBS_ENDED, "50");
+        addStatusEntry(list, SchedulerStatusEntryKeys.SCHEDULER_JOBS_CANCEL_REQUESTED, "2");
+        addStatusEntry(list, SchedulerStatusEntryKeys.SCHEDULER_JOBS_CANCELED, "8");
 
         /*
          * there could be more status examples in future - currently only scheduler
          * status info available
          */
         when(listStatusService.fetchAllStatusEntries()).thenReturn(list);
+    }
+
+    private void addStatusEntry(List<StatusEntry> list, SchedulerStatusEntryKeys key, String value) {
+        StatusEntry entry = new StatusEntry(key);
+        entry.setValue(value);
+        list.add(entry);
     }
 
     @Test
@@ -110,7 +110,7 @@ public class MappingAdministrationRestControllerRestDocTest implements TestIsNec
                 and().
                 document(
                 		requestHeaders(
-                				headerWithName(AuthenticationHelper.HEADER_NAME).description(AuthenticationHelper.HEADER_DESCRIPTION)
+
                 		),
                             responseFields(
                                     fieldWithPath("[]."+StatusEntry.PROPERTY_KEY).description("Status key identifier"),

@@ -24,19 +24,16 @@ public class FalsePositiveJobDataListTest {
         /* test */
         assertEquals(FalsePositiveJobDataList.ACCEPTED_TYPE, dataList.getType());
         List<FalsePositiveJobData> jobData = dataList.getJobData();
-        assertEquals(3, jobData.size());
+        assertEquals(2, jobData.size());
         Iterator<FalsePositiveJobData> it = jobData.iterator();
         FalsePositiveJobData jd1 = it.next();
         FalsePositiveJobData jd2 = it.next();
-        FalsePositiveJobData jd3 = it.next();
         assertEquals(1, jd1.getFindingId());
         assertEquals("6cfa2ccf-da13-4dee-b529-0225ed9661bd", jd1.getJobUUID().toString());
-        assertEquals("Absolute Path Traversal, can be ignored, because not in deployment", jd1.getComment());
-        assertEquals(2, jd2.getFindingId());
+        assertEquals("Absolute Path Traversal, can be ignored because not in deployment", jd1.getComment());
+        assertEquals(15, jd2.getFindingId());
         assertEquals("6cfa2ccf-da13-4dee-b529-0225ed9661bd", jd2.getJobUUID().toString());
-        assertEquals(15, jd3.getFindingId());
-        assertEquals("6cfa2ccf-da13-4dee-b529-0225ed9661bd", jd3.getJobUUID().toString());
-        assertNull(jd3.getComment());
+        assertNull(jd2.getComment());
     }
 
 }

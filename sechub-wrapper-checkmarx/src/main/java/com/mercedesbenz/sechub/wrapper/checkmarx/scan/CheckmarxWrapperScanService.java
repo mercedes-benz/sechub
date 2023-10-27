@@ -69,7 +69,7 @@ public class CheckmarxWrapperScanService {
                 setProductBaseUrl(environment.getCheckmarxProductBaseURL()).
 
                 setAlwaysFullScan(environment.isAlwaysFullScanEnabled()).
-                setTimeToWaitForNextCheckOperationInMinutes(environment.getScanResultCheckPeriodInMinutes()).
+                setTimeToWaitForNextCheckOperationInMilliseconds(environment.getScanResultCheckPeriodInMilliseconds()).
                 setTimeOutInMinutes(environment.getScanResultCheckTimeOutInMinutes()).
                 setMockDataIdentifier(context.createMockDataIdentifier()).
                 setSourceCodeZipFileInputStream(context.createSourceCodeZipFileInputStream()).

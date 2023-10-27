@@ -2,12 +2,21 @@
   "apiVersion" : "1.0",
   "webScan" : {
     "url" : "https://demo.example.org/myapp",
-    "includes": [ "/portal/admin", "/abc.html", "/hidden" ],
-    "excludes": [ "/public/media", "/contact.html", "/static" ],
+    "includes": [ "/portal/admin", "/abc.html", "/hidden", "/customer/<*>" ],
+    "excludes": [ "/public/media", "/contact.html", "/static", "<*>/admin/<*>" ],
     "maxScanDuration" : {
       "duration" : 35,
       "unit" : "minutes"
     },
+    "headers" : [{
+      "name" : "Authorization",
+      "value" : "Bearer secret-token"
+    }, {
+      "name" : "x-file-size",
+      "value" : "123456",
+      "onlyForUrls" : [ "https://demo.example.org/myapp/admin", "https://demo.example.org/myapp/upload/<*>", "https://demo.example.org/myapp/<*>/special/" ],
+      "sensitive" : false
+    }],
     "login" : {
       "url" : "https://demo.example.org/myapp/login",
       "basic" : {

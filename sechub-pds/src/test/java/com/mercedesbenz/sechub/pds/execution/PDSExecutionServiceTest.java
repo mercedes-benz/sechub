@@ -1,21 +1,24 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.pds.execution;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
 
+import java.util.Arrays;
 import java.util.Iterator;
+import java.util.LinkedHashSet;
 import java.util.Optional;
 import java.util.UUID;
 
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.mercedesbenz.sechub.commons.pds.data.PDSJobStatusState;
 import com.mercedesbenz.sechub.commons.pds.execution.ExecutionEventData;
 import com.mercedesbenz.sechub.commons.pds.execution.ExecutionEventType;
 import com.mercedesbenz.sechub.pds.job.PDSCheckJobStatusService;
@@ -40,8 +43,8 @@ public class PDSExecutionServiceTest {
 
     private PDSExecutionCallableServiceCollection serviceCollection;
 
-    @Before
-    public void before() throws Exception {
+    @BeforeEach
+    void before() throws Exception {
         repository = mock(PDSJobRepository.class);
         executionCallableFactory = mock(PDSExecutionCallableFactory.class);
         jobTransactionService = mock(PDSJobTransactionService.class);
@@ -65,8 +68,8 @@ public class PDSExecutionServiceTest {
 
     }
 
-    @After
-    public void after() {
+    @AfterEach
+    void after() {
         /*
          * destroy executor service - to prevent too much memory/thread consumption in
          * tests, not necessary in real world
@@ -76,7 +79,44 @@ public class PDSExecutionServiceTest {
     }
 
     @Test
-    public void when_service_queuemax_is_zero_queue_is_always_full() {
+    void predestroy_sets_all_jobs_in_queue_back_to_state_ready() {
+        /* prepare */
+        serviceToTest.queueMax = 5;
+        serviceToTest.postConstruct(); // simulate spring boot container...
+        UUID uuid1 = UUID.randomUUID();
+        PDSJob job1 = PDSJobTestHelper.createTestJobStartedNowCreated3SecondsBefore(uuid1);
+        TestPDSExecutionCallable callable1 = createTestCallable(uuid1, 500, result1);
+
+        UUID uuid2 = UUID.randomUUID();
+        PDSJob job2 = PDSJobTestHelper.createTestJobStartedNowCreated3SecondsBefore(uuid2);
+        TestPDSExecutionCallable callable2 = createTestCallable(uuid2, 500, result1);
+
+        UUID uuid3 = UUID.randomUUID();
+        PDSJob job3 = PDSJobTestHelper.createTestJobStartedNowCreated3SecondsBefore(uuid3);
+        TestPDSExecutionCallable callable3 = createTestCallable(uuid3, 500, result1);
+
+        when(executionCallableFactory.createCallable(uuid1)).thenReturn(callable1);
+        when(executionCallableFactory.createCallable(uuid2)).thenReturn(callable2);
+        when(executionCallableFactory.createCallable(uuid3)).thenReturn(callable3);
+
+        when(repository.findById(uuid1)).thenReturn(Optional.of(job1));
+        when(repository.findById(uuid2)).thenReturn(Optional.of(job2));
+        when(repository.findById(uuid3)).thenReturn(Optional.of(job3));
+
+        serviceToTest.addToExecutionQueueAsynchron(uuid1);
+        serviceToTest.addToExecutionQueueAsynchron(uuid2);
+        serviceToTest.addToExecutionQueueAsynchron(uuid3);
+
+        /* execute */
+        serviceToTest.preDestroy();
+
+        /* test */
+        verify(serviceToTest.jobTransactionService).forceStateResetInOwnTransaction(new LinkedHashSet<>(Arrays.asList(uuid1, uuid2, uuid3)),
+                PDSJobStatusState.READY_TO_START);
+    }
+
+    @Test
+    void when_service_queuemax_is_zero_queue_is_always_full() {
         /* prepare */
         serviceToTest.queueMax = 0;
         serviceToTest.postConstruct(); // simulate spring boot container...
@@ -86,7 +126,7 @@ public class PDSExecutionServiceTest {
     }
 
     @Test
-    public void when_service_queuemax_is_1_queue_having_no_entries_is_not_full() {
+    void when_service_queuemax_is_1_queue_having_no_entries_is_not_full() {
         /* prepare */
         serviceToTest.queueMax = 1;
         serviceToTest.postConstruct(); // simulate spring boot container...
@@ -96,7 +136,7 @@ public class PDSExecutionServiceTest {
     }
 
     @Test
-    public void when_service_queuemax_is_1_queue_having_one_entry_is_full_after_work_is_done_queue_no_longer_full() throws Exception {
+    void when_service_queuemax_is_1_queue_having_one_entry_is_full_after_work_is_done_queue_no_longer_full() throws Exception {
         /* prepare */
         serviceToTest.queueMax = 1;
         serviceToTest.watcherDisabled = false; // enable watcher
@@ -117,7 +157,7 @@ public class PDSExecutionServiceTest {
     }
 
     @Test
-    public void adding_jobs_to_queue_status_contains_expected_values() throws Exception {
+    void adding_jobs_to_queue_status_contains_expected_values() throws Exception {
         /* prepare */
         serviceToTest.queueMax = 5;
         serviceToTest.postConstruct(); // simulate spring boot container...

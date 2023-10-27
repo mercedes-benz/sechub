@@ -3,7 +3,7 @@
   "data" : { 
     "sources" : [ {
       "name" : "open-api-file-reference", //<1>
-      "fileystem" : {
+      "fileSystem" : {
         "files" : [ "gamechanger-webapp/src/main/resources/openapi3.json" ]
       }
     } ]

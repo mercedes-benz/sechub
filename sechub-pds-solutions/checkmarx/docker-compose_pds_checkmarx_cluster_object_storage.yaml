@@ -20,7 +20,7 @@ services:
       - database
       - object-storage
     volumes:
-      - ./docker/scripts:/scripts
+      - ./docker/scripts:/pds/scripts
 
   loadbalancer:
     build:

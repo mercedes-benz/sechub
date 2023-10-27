@@ -41,8 +41,6 @@ public class ScanAutoCleanupService {
     @Autowired
     AutoCleanupResultInspector inspector;
 
-    private static boolean statistic_feature_1010_implemented = false;
-
     @UseCaseScanAutoCleanExecution(@Step(number = 2, name = "Delete old data", description = "deletes old job information"))
     public void cleanup() {
         /* calculate */
@@ -75,9 +73,6 @@ public class ScanAutoCleanupService {
 
     private void deleteScanResults(long days, LocalDateTime cleanTimeStamp) {
         /* @formatter:off */
-        if (! statistic_feature_1010_implemented) {
-            return;
-        }
         int amount = scanReportRepository.deleteReportsOlderThan(cleanTimeStamp);
         inspector.inspect(AutoCleanupResult.builder().
                 autoCleanup("scan-reports",getClass()).

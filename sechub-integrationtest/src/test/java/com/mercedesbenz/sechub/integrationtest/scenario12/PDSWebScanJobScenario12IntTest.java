@@ -6,12 +6,15 @@ import static com.mercedesbenz.sechub.integrationtest.scenario12.Scenario12.*;
 import static org.junit.Assert.*;
 
 import java.util.Arrays;
+import java.util.Iterator;
+import java.util.List;
 import java.util.UUID;
 
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.Timeout;
 
+import com.mercedesbenz.sechub.commons.model.HTTPHeaderConfiguration;
 import com.mercedesbenz.sechub.commons.model.JSONConverter;
 import com.mercedesbenz.sechub.commons.model.SecHubMessageType;
 import com.mercedesbenz.sechub.commons.model.SecHubScanConfiguration;
@@ -22,7 +25,7 @@ import com.mercedesbenz.sechub.integrationtest.api.TestProject;
 import com.mercedesbenz.sechub.integrationtest.internal.IntegrationTestFileSupport;
 
 /**
- * Integration test doing code scans by integration test servers (sechub server,
+ * Integration test doing web scans by integration test servers (sechub server,
  * pds server)
  *
  * @author Albert Tregnaghi
@@ -48,12 +51,9 @@ public class PDSWebScanJobScenario12IntTest {
         TestProject project = PROJECT_1;
         String targetURL = configuration.getWebScan().get().getUrl().toString();
         as(SUPER_ADMIN).updateWhiteListForProject(project, Arrays.asList(targetURL));
-        UUID jobUUID = as(USER_1).createJobAndReturnJobUUID(project, configuration);
 
         /* execute */
-        as(USER_1).
-            approveJob(project, jobUUID);
-
+        UUID jobUUID = as(USER_1).withSecHubClient().startAsynchronScanFor(project, configuration).getJobUUID();
         waitForJobDone(project, jobUUID, 30, true);
 
         /* test */
@@ -95,6 +95,19 @@ public class PDSWebScanJobScenario12IntTest {
         assertNotNull(webConfiguration.getUrl());
         assertEquals(JSONConverter.get().toJSON(configuration, true), JSONConverter.get().toJSON(returnedConfiguration, true));
 
+        // config must contain the includes/excludes with wildcards
+        assertTrue("The web scan config hould contain includes!", webConfiguration.getIncludes().isPresent());
+        assertTrue("The web scan config hould contain excludes!", webConfiguration.getExcludes().isPresent());
+
+        List<String> includes = webConfiguration.getIncludes().get();
+        List<String> excludes = webConfiguration.getExcludes().get();
+
+        assertTrue(includes.contains("/customer/<*>"));
+        assertTrue(excludes.contains("<*>/admin/<*>"));
+
+        // config must contain the expected headers
+        assertExpectedHeaders(webConfiguration);
+
         /* additional testing : messages*/
 
         assertJobStatus(project, jobUUID).
@@ -104,6 +117,29 @@ public class PDSWebScanJobScenario12IntTest {
             hasMessage(SecHubMessageType.ERROR,"error from webscan by PDS for sechub job uuid: "+jobUUID);
 
         /* @formatter:on */
+    }
+
+    private void assertExpectedHeaders(SecHubWebScanConfiguration webConfiguration) {
+        assertTrue(webConfiguration.getHeaders().isPresent());
+
+        List<HTTPHeaderConfiguration> headers = webConfiguration.getHeaders().get();
+        assertEquals(2, headers.size());
+
+        Iterator<HTTPHeaderConfiguration> iterator = headers.iterator();
+        assertTrue(iterator.hasNext());
+
+        HTTPHeaderConfiguration firstHeader = iterator.next();
+        assertEquals("Authorization", firstHeader.getName());
+        assertEquals("Bearer secret-token", firstHeader.getValue());
+        assertTrue(firstHeader.getOnlyForUrls().isEmpty());
+        assertTrue(firstHeader.isSensitive());
+
+        HTTPHeaderConfiguration secondHeader = iterator.next();
+        assertEquals("x-file-size", secondHeader.getName());
+        assertEquals("123456", secondHeader.getValue());
+        assertFalse(secondHeader.getOnlyForUrls().isEmpty());
+        assertEquals(3, secondHeader.getOnlyForUrls().get().size());
+        assertFalse(secondHeader.isSensitive());
     }
 
 }

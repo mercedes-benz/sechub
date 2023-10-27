@@ -109,23 +109,39 @@ public class FalsePositiveJobDataService {
     private void addJobDataListToConfiguration(FalsePositiveProjectConfiguration config, FalsePositiveJobDataList jobDataList) {
         List<FalsePositiveJobData> list = jobDataList.getJobData();
 
-        /* we want to load reports only one time, so sort by report job UUID... */
+        /*
+         * Reason for sorting: we want to load reports only one time, so sort by report
+         * job UUID is necessary for method "fetchReportIfNotAlreadyLoaded"
+         */
         list.sort(Comparator.comparing(FalsePositiveJobData::getJobUUID));
 
-        ScanSecHubReport report = null;
-        for (FalsePositiveJobData data : list) {
-            UUID jobUUID = data.getJobUUID();
+        ScanSecHubReport currentReport = null;
 
-            if (report == null || !jobUUID.equals(report.getJobUUID())) {
-                ScanReport scanReport = scanReportRepository.findBySecHubJobUUID(jobUUID);
-                if (scanReport == null) {
-                    throw new NotFoundException("No report found for job " + jobUUID);
-                }
-                report = new ScanSecHubReport(scanReport);
+        for (FalsePositiveJobData data : list) {
+            if (merger.isFalsePositiveEntryAlreadyExisting(config, data)) {
+                LOG.debug("Skip processing because FP already defined: {}", data);
+                continue;
             }
-            merger.addJobDataWithMetaDataToConfig(report, config, data, userContextService.getUserId());
+
+            UUID jobUUID = data.getJobUUID();
+            currentReport = fetchReportIfNotAlreadyLoaded(jobUUID, currentReport);
+
+            merger.addJobDataWithMetaDataToConfig(currentReport, config, data, userContextService.getUserId());
         }
 
+    }
+
+    private ScanSecHubReport fetchReportIfNotAlreadyLoaded(UUID jobUUID, ScanSecHubReport currentReport) {
+
+        /* load report if it is not the current report */
+        if (currentReport == null || !jobUUID.equals(currentReport.getJobUUID())) {
+            ScanReport scanReport = scanReportRepository.findBySecHubJobUUID(jobUUID);
+            if (scanReport == null) {
+                throw new NotFoundException("No report found for job " + jobUUID);
+            }
+            currentReport = new ScanSecHubReport(scanReport);
+        }
+        return currentReport;
     }
 
     private FalsePositiveProjectConfiguration fetchOrCreateConfiguration(String projectId) {

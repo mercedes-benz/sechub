@@ -1,0 +1,24 @@
+# SPDX-License-Identifier: MIT
+
+version: "3"
+services:
+    pds-loc:
+        build:
+            args:
+                - BASE_IMAGE=${BASE_IMAGE}
+            context: docker/
+            dockerfile: loc-Debian.dockerfile
+        container_name: pds-loc
+        hostname: pds-loc
+        env_file:
+            - .env
+            - .env-single
+        networks:
+            - "sechub"
+        volumes:
+          - ./docker/scripts:/pds/scripts
+
+networks:
+    sechub:
+        external: true
+        name: "sechub"

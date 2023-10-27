@@ -305,9 +305,9 @@ public class NessusAdapterV1WireMockTest {
         ;
         stubFor(get(
                 urlEqualTo(history.rememberGET(apiURLSupport.assertCheck(expectedCheckIndex).nextURL("/scans/" + scanId + "/export/" + fileId + "/status"))))
-                        // .inScenario(chain.getScenario()).whenScenarioStateIs(chain.getStateBefore())
-                        .withHeader("X-Cookie", equalTo("token=" + sessionToken)).withHeader("Content-Type", equalTo(APPLICATION_JSON))
-                        .willReturn(aResponse().withStatus(HttpStatus.OK.value()).withHeader("Content-Type", APPLICATION_JSON).withBody(resultExport))
+                // .inScenario(chain.getScenario()).whenScenarioStateIs(chain.getStateBefore())
+                .withHeader("X-Cookie", equalTo("token=" + sessionToken)).withHeader("Content-Type", equalTo(APPLICATION_JSON))
+                .willReturn(aResponse().withStatus(HttpStatus.OK.value()).withHeader("Content-Type", APPLICATION_JSON).withBody(resultExport))
 //                    ).
 //                willSetStateTo(chain.getStateAfter())
         );

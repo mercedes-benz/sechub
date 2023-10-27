@@ -10,9 +10,9 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import com.mercedesbenz.sechub.pds.PDSNotAcceptableException;
+import com.mercedesbenz.sechub.pds.commons.core.config.PDSProductParameterDefinition;
+import com.mercedesbenz.sechub.pds.commons.core.config.PDSProductSetup;
 import com.mercedesbenz.sechub.pds.config.PDSProductIdentifierValidator;
-import com.mercedesbenz.sechub.pds.config.PDSProductParameterDefinition;
-import com.mercedesbenz.sechub.pds.config.PDSProductSetup;
 import com.mercedesbenz.sechub.pds.config.PDSServerConfigurationService;
 
 public class PDSJobConfigurationValidatorTest {

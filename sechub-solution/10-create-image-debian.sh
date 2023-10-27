@@ -15,7 +15,7 @@ usage: $0 <docker registry> <version tag> <Debian base image> <SecHub server rel
 Builds a docker image of SecHub server
 for <docker registry> with tag <version tag>.
 Required:
-- <base image> ; A Debian based image Example: debian:11-slim
+- <base image> ; A Debian based image Example: debian:12-slim
 - <SecHub server release version> ; see https://github.com/mercedes-benz/sechub/releases
   Example: 0.37.0 (The server .jar will be downloaded from the release)
 EOF

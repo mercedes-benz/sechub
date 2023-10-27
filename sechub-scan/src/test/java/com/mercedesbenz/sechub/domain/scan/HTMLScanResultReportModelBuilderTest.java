@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.domain.scan;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 import java.io.ByteArrayInputStream;
@@ -10,20 +10,22 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.UUID;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.springframework.core.io.Resource;
 
 import com.mercedesbenz.sechub.commons.model.SecHubCodeCallStack;
 import com.mercedesbenz.sechub.commons.model.SecHubFinding;
+import com.mercedesbenz.sechub.commons.model.SecHubReportMetaData;
 import com.mercedesbenz.sechub.commons.model.SecHubResult;
 import com.mercedesbenz.sechub.commons.model.SecHubResultTrafficLightFilter;
 import com.mercedesbenz.sechub.commons.model.TrafficLight;
 import com.mercedesbenz.sechub.domain.scan.report.ScanSecHubReport;
 
-public class HTMLScanResultReportModelBuilderTest {
+class HTMLScanResultReportModelBuilderTest {
 
     /*
      * we use own variables here and not the constants from class to test, to
@@ -40,8 +42,8 @@ public class HTMLScanResultReportModelBuilderTest {
     private List<SecHubFinding> redList;
     private List<SecHubFinding> yellowList;
 
-    @Before
-    public void before() throws Exception {
+    @BeforeEach
+    void beforeEach() throws Exception {
         builderToTest = new HTMLScanResultReportModelBuilder();
 
         trafficLightFilter = mock(SecHubResultTrafficLightFilter.class);
@@ -66,7 +68,40 @@ public class HTMLScanResultReportModelBuilderTest {
     }
 
     @Test
-    public void test_all_parameters_build_webdesignmode_false() {
+    void metaData_set_as_optional_not_present_when_configuration_has_metadata_optional_null() {
+        /* prepare */
+        when(scanSecHubReport.getTrafficLight()).thenReturn(TrafficLight.YELLOW); // traffic light necessary to avoid illegal state exception
+        when(scanSecHubReport.getMetaData()).thenReturn(Optional.ofNullable(null));
+
+        /* execute */
+        Map<String, Object> map = builderToTest.build(scanSecHubReport);
+
+        /* test */
+        @SuppressWarnings("unchecked")
+        Optional<SecHubReportMetaData> metaData = (Optional<SecHubReportMetaData>) map.get("metaData");
+        assertNotNull(metaData);
+        assertFalse(metaData.isPresent());
+    }
+
+    @Test
+    void metaData_set_as_optional_not_present_when_configuration_has_metadata_optional_defined() {
+        /* prepare */
+        when(scanSecHubReport.getTrafficLight()).thenReturn(TrafficLight.YELLOW); // traffic light necessary to avoid illegal state exception
+        SecHubReportMetaData reportMetaData = mock(SecHubReportMetaData.class);
+        when(scanSecHubReport.getMetaData()).thenReturn(Optional.ofNullable(reportMetaData));
+
+        /* execute */
+        Map<String, Object> map = builderToTest.build(scanSecHubReport);
+
+        /* test */
+        @SuppressWarnings("unchecked")
+        Optional<SecHubReportMetaData> metaData = (Optional<SecHubReportMetaData>) map.get("metaData");
+        assertNotNull(metaData);
+        assertTrue(metaData.isPresent());
+    }
+
+    @Test
+    void all_parameters_build_webdesignmode_false() {
         /* prepare */
         UUID uuid = UUID.randomUUID();
 
@@ -95,7 +130,7 @@ public class HTMLScanResultReportModelBuilderTest {
     }
 
     @Test
-    public void test_all_parameters_build_webdesignmode_true() throws Exception {
+    void all_parameters_build_webdesignmode_true() throws Exception {
         /* prepare */
         UUID uuid = UUID.randomUUID();
 
@@ -134,7 +169,7 @@ public class HTMLScanResultReportModelBuilderTest {
     }
 
     @Test
-    public void trafficlight_red_set_display_block__others_are_none() {
+    void trafficlight_red_set_display_block__others_are_none() {
         when(scanSecHubReport.getTrafficLight()).thenReturn(TrafficLight.RED);
 
         Map<String, Object> map = builderToTest.build(scanSecHubReport);
@@ -154,7 +189,7 @@ public class HTMLScanResultReportModelBuilderTest {
     }
 
     @Test
-    public void trafficlight_green_set_display_block__others_are_none() {
+    void trafficlight_green_set_display_block__others_are_none() {
         when(scanSecHubReport.getTrafficLight()).thenReturn(TrafficLight.GREEN);
 
         Map<String, Object> map = builderToTest.build(scanSecHubReport);
@@ -164,7 +199,7 @@ public class HTMLScanResultReportModelBuilderTest {
     }
 
     @Test
-    public void code_scan_entries_set_and_right_amount_of_call_stacks_populated() {
+    void code_scan_entries_set_and_right_amount_of_call_stacks_populated() {
 
         /* prepare */
         SecHubFinding finding = mock(SecHubFinding.class);
@@ -194,7 +229,7 @@ public class HTMLScanResultReportModelBuilderTest {
     }
 
     @Test
-    public void code_scan_support_set_and_not_null() {
+    void code_scan_support_set_and_not_null() {
         /* prepare */
         when(scanSecHubReport.getTrafficLight()).thenReturn(TrafficLight.RED);
 

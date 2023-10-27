@@ -1,12 +1,12 @@
 # SPDX-License-Identifier: MIT
 
-FROM debian:11-slim
+FROM debian:12-slim
 
 ENV STORAGE_USER=seaweedfs
 ENV STORAGE_FOLDER=/storage
-ENV SEAWEEDFS_VERSION=3.16
+ENV SEAWEEDFS_VERSION=3.44
 # MD5 checksum from SeaweedFS
-ENV SEAWEEDFS_CHECKSUM=311fa5a52509fb901cd501ea9456ccc1
+ENV SEAWEEDFS_CHECKSUM=e4b7d3ce45bd3d7c0978c82c2da19959
 ENV BUCKET_FOLDER=/buckets
 
 # non-root user
@@ -40,7 +40,9 @@ RUN cd /tmp && \
     # verify checksum
     md5sum -c linux_amd64.tar.gz.md5sum && \
     # extract seaweedfs executable
-    tar -xvzf "linux_amd64.tar.gz" -C "/usr/local/bin/"
+    tar -xvzf "linux_amd64.tar.gz" -C "/usr/local/bin/" && \
+    # delete the archive
+    rm "linux_amd64.tar.gz"
 
 # switch from root to non-root user
 USER $STORAGE_USER

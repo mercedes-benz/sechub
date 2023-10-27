@@ -1,65 +1,53 @@
 // SPDX-License-Identifier: MIT
+
 [[section-sechub-reporting]]
-
 == Reporting
-This chapter describes the different {sechub} reports and how to read them.
+This chapter describes the different {sechub} report types and how to read them.
 
-At the moment {sechub} only provides job reports and no cumulated reports.
 Job reports do only contain information of exact one scan job done by {sechub}.
 
-TIP: If you want to have management summaries you could store downloaded JSON job reports
- , process data and provide those reports by your own - or you wait while this
- becomes part of {sechub}.
 
 === Job reports
-With {sechub} users are able to download their scan results for finished project jobs. We provide following
-formats:
+Users can download the results of their finished scan jobs. {sechub} provides these
+report formats:
 
 - HTML +
   human friendly report variant with less details
 - JSON +
-  as a machine readable format, usable for {sechub} client to determine to break build. Will also be
-  the base for planned development of IDE plugins (`Eclipse`, `IntelliJ`, `VSCode`)
-
-ifdef::techdoc[]
-NOTE: If you are interested in technical details/ development situation you can take a look at https://github.com/mercedes-benz/sechub/issues/68. Newer changes
-      /additions in report should normally reference this base issue always, so it is a good starting point.
-endif::techdoc[]
+  as an also machine readable format. It can be directly used by the {sechub} IDE plugins (https://github.com/mercedes-benz/sechub-plugin-eclipse[Eclipse], https://github.com/mercedes-benz/sechub-plugin-intellij[IntelliJ], https://github.com/mercedes-benz/sechub-plugin-vscode[VSCode/Codium])
+- SPDX JSON
 
 
 ==== HTML
 
-The main purpose for the HTML report is to have a human friendly report which gives you a fast overview
-to your current situation.
+The main purpose for the HTML report is to have a human friendly report which gives you a fast overview.
 
-* At the left top corner you see a traffic light showing either
-** GREEN
-** YELLOW or
-** RED.
+At the top left corner you see a traffic light showing either
 
-===== Example code scan report with red traffic light
-The next picture shows a report which resulted in a red traffic light.
-
-At the top of the report you will find the most critical parts - in our example it is a red finding which is a `Command Injection`. If available for this type of finding, you can find the corresponding CWE-Id (Common Weakness Enumeration) as a link to the knowledge base of MITRE in the `Type` column.
-
-The data sink with Id 9 (where the command injection could lead to problems at the end) is at the top of the Description field.
+* GREEN
+* YELLOW or
+* RED.
 
 [NOTE]
 ====
 
-You can open the complete call hierarchy by clicking on "Open full callstack". This allows you to see the full hierarchy from entry point up to data sink and can help you in analyzing this finding.
+You can open the details by clicking on "Open details". This allows you to see the full hierarchy from entry point down to data sink and can help you in analyzing this finding. It also shows a description and a possible solution (if there is one).
 
 ====
 
-There are other findings (yellow and green) which are less problematic.
-
-TIP: {sechub} client will break your build per default only at a RED traffic light, but you can also
-configure the client to do this also on color YELLOW. Only Green is always accepted.
+The next picture shows a report which resulted in a red traffic light.
 
 image::sechub-report-html-example1.png[]
 
-===== What about descriptions and mitigation suggestions?
-At the moment {sechub} does not contain this inside it's reports, but this feature will come in future
+At the top of the report you find the most critical parts - in this example it is a "red" finding with finding ID 19 which is a "Stored XSS". +
+The second finding with ID 20 is of the same type. Here the details view is opened so more details can be seen.
+
+If available, you can find the corresponding CWE-Id (Common Weakness Enumeration)
+as a link to the knowledge base of MITRE in the `Type` column.
+
+TIP: The {sechub} client will exit with a non-zero return code per default only at a RED traffic light, but you can also
+configure the client to do this on color YELLOW.
+
 
 ==== JSON
 
@@ -71,22 +59,20 @@ This is the machine readable report format.
 include::sechub_codescan_report_json_example_1.json[]
 ----
 <1> SecHub job UUID
-<2> Finding ID inside report
-<3> The name of the vulnerability +
+<2> Traffic light color of report - here YELLOW
+<3> Finding ID inside report
+<4> The name of the vulnerability +
      _in our case an `Absolute path traversal` where attackers could try to manipulate path input, so output could contain unwanted content/wrong file (e.g. a passwd file etc.)_
-<4> The severity of the report +
+<5> The severity of this finding +
     _(will be used to calculate the traffic light color)_
-<5> Entry point location +
+<6> Entry point location +
     _in this case the Java class where the potential malicious input starts_
-<6> Line number of entry point
-<7> Next call hierarchy element +
+<7> Line number of entry point
+<8> Next call hierarchy element +
     _this is the next element of the call hierarchy, means what is called by_
     _entry point with potential malicious content as parameter. This is ongoing_
     _until last entry inside call hierarchy which is the so called "data sink"_
-<8> Data sink location
-<9> Line number inside data sink
-<10> Source snippet
-<11> Relevant code part where the found vulnerability lies/could be exploited
-<12> More findings - in example this was cut
-<13> Last finding with ID - format explanation see points above.
-<14> Traffic light color of report - here YELLOW
+<9> Data sink location
+<10> Line number inside data sink
+<11> Source snippet
+<12> Relevant code part where the found vulnerability lies/could be exploited

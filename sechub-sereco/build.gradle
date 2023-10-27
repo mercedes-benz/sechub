@@ -15,9 +15,10 @@ dependencies {
 
 	    
     implementation project(':sechub-shared-kernel')
-    implementation project(':sechub-sarif')
 
     implementation project(':sechub-shared-kernel')
+    
+    implementation library.sarif_210
     
     testImplementation project(':sechub-testframework')
 }
