@@ -9,6 +9,7 @@ class VersionData{
     private static final String ID_WEBSITE = "website"
     private static final String ID_WRAPPER_CHECKMARX = "checkmarx wrapper"
     private static final String ID_WRAPPER_OWASPZAP = "owasp-zap wrapper"
+    private static final StringBuilder debugInfo = new StringBuilder();
 
     private static Map<String,VersionInfo> map = new HashMap<>();
 
@@ -56,7 +57,7 @@ class VersionData{
         if (info==null){
             throw new IllegalArgumentException("unsupported version type:"+versionType);
         }
-        inspectReleaseVersion(fullVersion);
+        inspectReleaseVersion(versionType, fullVersion);
         info.shortVersion = simplifiedVersion(fullVersion);
         info.fullVersion= fullVersion
 
@@ -98,18 +99,30 @@ class VersionData{
     public static String getWebsiteVersion(){
         return map.get(ID_WEBSITE).getShortVersion()
     }
+    
+    public static String getDebugInfo(){
+        
+        return "Debug info:\ncontainingAtLeastOneDirtyReleaseVersion=$containingAtLeastOneDirtyReleaseVersion\ncontainingAtLeastOneRealReleaseVersion=$containingAtLeastOneRealReleaseVersion\n\n$debugInfo";                
+    }
+
 
     /**
      * Inspect version - if not starting with 0.0.0 this means it's a release, so
      *                   a "dirty" may not be contained inside long version name
      */
-    private static void inspectReleaseVersion(String longVersionName){
+    private static void inspectReleaseVersion(String versionType, String longVersionName){
+        debugInfo.append("\ninspect $versionType release version: long version=$longVersionName\n")
+        debugInfo.append("- at least one release found : $containingAtLeastOneRealReleaseVersion, one release dirty: $containingAtLeastOneDirtyReleaseVersion\n")
+        
         if (longVersionName.startsWith("0.0.0")){
             /* not a correct release version so ignore */
             return
         }
         containingAtLeastOneDirtyReleaseVersion=containingAtLeastOneDirtyReleaseVersion || longVersionName.contains("dirty")
         containingAtLeastOneRealReleaseVersion=true
+        
+        debugInfo.append("- updated data")
+        debugInfo.append("- at least one release found : $containingAtLeastOneRealReleaseVersion, one release dirty: $containingAtLeastOneDirtyReleaseVersion\n")
     }
 
     /**
