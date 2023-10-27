@@ -27,7 +27,6 @@ public class XrayAPIResponseFactory {
     public XrayAPIResponse createHttpResponseFromConnection(HttpURLConnection httpURLConnection, String zipArchive) throws XrayWrapperException {
         zipArchive = zipArchive + ".zip";
 
-        // todo: not static?
         // read response code
         int responseCode = 0;
         try {

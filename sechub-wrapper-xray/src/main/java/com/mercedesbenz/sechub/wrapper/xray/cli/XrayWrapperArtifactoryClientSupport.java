@@ -13,7 +13,6 @@ import com.mercedesbenz.sechub.wrapper.xray.config.XrayWrapperArtifact;
 import com.mercedesbenz.sechub.wrapper.xray.config.XrayWrapperConfiguration;
 import com.mercedesbenz.sechub.wrapper.xray.report.XrayWrapperReportReader;
 
-// todo: rename controller -> support
 public class XrayWrapperArtifactoryClientSupport {
 
     private static final Logger LOG = LoggerFactory.getLogger(XrayWrapperArtifactoryClientSupport.class);
