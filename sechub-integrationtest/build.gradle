@@ -36,8 +36,8 @@ import java.nio.file.Paths;
 def integrationTestServerPortValue = 8443;
 def integrationTestPDSPortValue = 8444;
 
-def pdsVersion = VersionData.getPdsVersion()
-def serverVersion = VersionData.getServerVersion()
+def pdsVersion = versionData.getPdsVersion()
+def serverVersion = versionData.getServerVersion()
 
 // initialize shared volume path (but not force directory creation, will be done later)
 long nanoTime = System.nanoTime()
