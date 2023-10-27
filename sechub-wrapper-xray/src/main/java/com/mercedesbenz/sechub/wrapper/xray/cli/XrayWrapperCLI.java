@@ -5,9 +5,9 @@ import static com.mercedesbenz.sechub.wrapper.xray.util.XrayWrapperConfiguration
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.mercedesbenz.sechub.wrapper.xray.XrayWrapperException;
 import com.mercedesbenz.sechub.wrapper.xray.config.XrayWrapperArtifact;
 import com.mercedesbenz.sechub.wrapper.xray.config.XrayWrapperConfiguration;
-import com.mercedesbenz.sechub.wrapper.xray.report.XrayWrapperReportException;
 
 public class XrayWrapperCLI {
 
@@ -17,7 +17,7 @@ public class XrayWrapperCLI {
         new XrayWrapperCLI().start(args);
     }
 
-    XrayWrapperArtifactoryClientController xrayWrapperArtifactoryClientController;
+    XrayWrapperArtifactoryClientSupport xrayWrapperArtifactoryClientSupport;
 
     void start(String[] args) {
         XrayWrapperCommandLineParser parser = new XrayWrapperCommandLineParser();
@@ -27,22 +27,18 @@ public class XrayWrapperCLI {
             arguments = parser.parseCommandLineArgs(args);
             XrayWrapperConfiguration xrayWrapperConfiguration = createXrayConfiguration(arguments.scanType(), arguments.outputFile());
             XrayWrapperArtifact artifact = new XrayWrapperArtifact(arguments.name(), arguments.checksum(), arguments.tag(), arguments.scanType());
-            xrayWrapperArtifactoryClientController = new XrayWrapperArtifactoryClientController(xrayWrapperConfiguration, artifact);
+            xrayWrapperArtifactoryClientSupport = new XrayWrapperArtifactoryClientSupport(xrayWrapperConfiguration, artifact);
 
             // execute controller processing main program flow
-            xrayWrapperArtifactoryClientController.waitForScansToFinishAndDownloadReport();
+            xrayWrapperArtifactoryClientSupport.waitForScansToFinishAndDownloadReport();
 
-        } catch (XrayWrapperRuntimeException e) {
-            LOG.error("An error occurred during the scan process: {}", e.getMessage(), e);
+        } catch (XrayWrapperException e) {
+            LOG.error("An error occurred during the Wrapper execution: {}", e.getMessage(), e);
             System.exit(e.getExitCode().getExitCode());
 
         } catch (XrayWrapperCommandLineParserException e) {
             LOG.error("An error occurred while parsing the command line arguments: {}", e.getMessage(), e);
             System.exit(XrayWrapperExitCode.UNKNOWN_PARAMETERS.getExitCode());
-
-        } catch (XrayWrapperReportException e) {
-            LOG.error("An error occurred during report generation: {}", e.getMessage(), e);
-            System.exit(e.getExitCode().getExitCode());
         }
     }
 }

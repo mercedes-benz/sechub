@@ -37,7 +37,7 @@ login_into_artifactory () {
 
 clean_workspace () {
   rm -rf "$WORKSPACE/"*.json
-    rm -rf "$WORKSPACE/"*.zip
+  rm -rf "$WORKSPACE/"*.zip
   rm -rf "$UPLOAD_DIR/"*
 }
 
@@ -47,27 +47,28 @@ login_into_artifactory
 
 # Get docker archives from binary upload folder
 TAR_FILES=$(find $UPLOAD_DIR -type f -name "*.tar")
-for UPLOAD_FILE in "$TAR_FILES"
-do
-  echo "---------"
-  echo "Processing Xray upload and docker scan for file ${UPLOAD_FILE}"
-  echo "---------"
 
-  # get image name and tag
-  skopeo list-tags "docker-archive:$UPLOAD_FILE" > "$WORKSPACE/tags.json"
-  IMAGE=$(jq '.Tags[0]' "$WORKSPACE/tags.json"| tr -d \")
+# Get first element in list
+UPLOAD_FILE=$(echo $TAR_FILES | cut -d" " -f1)
 
-  # copy local docker archive as docker image to artifactory register
-  skopeo copy "docker-archive:${UPLOAD_FILE}" "docker://${XRAY_ARTIFACTORY}/${REGISTER}/${IMAGE}" --authfile "$WORKSPACE/$SKOPEO_AUTH"
+echo "---------"
+echo "Processing Xray upload and docker scan for file ${UPLOAD_FILE}"
+echo "---------"
 
-  # get checksum from the docker image
-  skopeo inspect "docker://${XRAY_ARTIFACTORY}/${REGISTER}/${IMAGE}" --authfile "$WORKSPACE/auth.json" > "$WORKSPACE/inspect.json"
-  SHA256=$(jq '.Digest' "$WORKSPACE/inspect.json" | tr -d \")
+# get image name and tag
+skopeo list-tags "docker-archive:$UPLOAD_FILE" > "$WORKSPACE/tags.json"
+IMAGE=$(jq '.Tags[0]' "$WORKSPACE/tags.json"| tr -d \")
 
-  java -jar "$TOOL_FOLDER/wrapper-xray.jar" "--name" "$IMAGE" "--checksum" "$SHA256" "--scantype" "docker" "--outputfile" "$PDS_JOB_RESULT_FILE"
-  
-  # SPDX report can be returned as followed - SPDX does not contain vulnerabilities
-  cp "$WORKSPACE/XrayArtifactoryReports/"*SPDX.json "$PDS_JOB_RESULT_FILE"
-done
+# copy local docker archive as docker image to artifactory register
+skopeo copy "docker-archive:${UPLOAD_FILE}" "docker://${XRAY_ARTIFACTORY}/${REGISTER}/${IMAGE}" --authfile "$WORKSPACE/$SKOPEO_AUTH"
+
+# get checksum from the docker image
+skopeo inspect "docker://${XRAY_ARTIFACTORY}/${REGISTER}/${IMAGE}" --authfile "$WORKSPACE/auth.json" > "$WORKSPACE/inspect.json"
+SHA256=$(jq '.Digest' "$WORKSPACE/inspect.json" | tr -d \")
+
+java -jar "$TOOL_FOLDER/wrapper-xray.jar" "--name" "$IMAGE" "--checksum" "$SHA256" "--scantype" "docker" "--outputfile" "$PDS_JOB_RESULT_FILE"
+
+# SPDX report can be returned as followed - SPDX does not contain vulnerabilities
+cp "$WORKSPACE/XrayArtifactoryReports/"*SPDX.json "$PDS_JOB_RESULT_FILE"
 
 clean_workspace

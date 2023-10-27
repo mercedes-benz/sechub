@@ -1,15 +1,14 @@
 package com.mercedesbenz.sechub.wrapper.xray.api;
 
 import java.net.HttpURLConnection;
+import java.util.Objects;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.mercedesbenz.sechub.wrapper.xray.cli.XrayWrapperExitCode;
-import com.mercedesbenz.sechub.wrapper.xray.cli.XrayWrapperRuntimeException;
+import com.mercedesbenz.sechub.wrapper.xray.XrayWrapperException;
+import com.mercedesbenz.sechub.wrapper.xray.XrayWrapperJSONConverter;
 import com.mercedesbenz.sechub.wrapper.xray.config.XrayWrapperArtifact;
 import com.mercedesbenz.sechub.wrapper.xray.config.XrayWrapperConfiguration;
 
@@ -17,140 +16,99 @@ public class XrayAPIArtifactoryClient {
 
     private static final Logger LOG = LoggerFactory.getLogger(XrayAPIArtifactoryClient.class);
 
-    private XrayWrapperArtifact artifact;
+    private final XrayWrapperArtifact artifact;
 
-    private XrayWrapperConfiguration xrayWrapperConfiguration;
+    private final XrayWrapperConfiguration xrayWrapperConfiguration;
 
     public XrayAPIArtifactoryClient(XrayWrapperArtifact artifact, XrayWrapperConfiguration xrayWrapperConfiguration) {
         this.artifact = artifact;
         this.xrayWrapperConfiguration = xrayWrapperConfiguration;
     }
 
-    public String getXrayVersion() throws XrayWrapperRuntimeException {
-        XrayAPIRequest request = XrayAPIRequestBuilder.buildGetXrayVersion(xrayWrapperConfiguration.getArtifactory());
+    public String getXrayVersion() throws XrayWrapperException {
+        XrayAPIRequest request = XrayAPIRequestFactory.createGetXrayVersionRequest(xrayWrapperConfiguration.getArtifactory());
         XrayAPIResponse response = send(request);
-        if (isErrorResponse(response)) {
-            LOG.error("Could not get Xray Version from Artifactory");
-            throw new XrayWrapperRuntimeException(
-                    "Could not get Xray version from artifactory. Status Code: " + response.getStatusCode() + "Error Message: " + response.getBody(),
-                    XrayWrapperExitCode.ARTIFACTORY_ERROR_RESPONSE);
-        } else {
-            JsonNode node = getBodyAsNode(response.getBody());
-            return node.get("xray_version").asText();
-        }
+        assertNoError(response, "Could not get Xray Version from Artifactory");
+        JsonNode node = XrayWrapperJSONConverter.get().readJSONFromString(response.getBody());
+        return node.get("xray_version").asText();
     }
 
-    public boolean checkArtifactoryUpload() throws XrayWrapperRuntimeException {
-        XrayAPIRequest request = XrayAPIRequestBuilder.buildCheckArtifactUpload(xrayWrapperConfiguration.getArtifactory(), artifact,
+    public boolean checkArtifactoryUploadSuccess() throws XrayWrapperException {
+        XrayAPIRequest request = XrayAPIRequestFactory.createCheckArtifactUploadRequest(xrayWrapperConfiguration.getArtifactory(), artifact,
                 xrayWrapperConfiguration.getRegister());
         XrayAPIResponse response = send(request);
-
-        if (isErrorResponse(response)) {
-            LOG.error("Artifact was not uploaded to artifactory");
-            throw new XrayWrapperRuntimeException(
-                    "Artifact object not found in artifactory. Status Code: " + response.getStatusCode() + "Error Message: " + response.getBody(),
-                    XrayWrapperExitCode.ARTIFACTORY_ERROR_RESPONSE);
-        }
+        assertNoError(response, "Artifact was not uploaded to artifactory");
         return true;
     }
 
-    public String getScanStatus() throws XrayWrapperRuntimeException {
-        XrayAPIRequest request = XrayAPIRequestBuilder.buildGetScanStatus(xrayWrapperConfiguration.getArtifactory(), artifact,
+    public String getScanStatus() throws XrayWrapperException {
+        XrayAPIRequest request = XrayAPIRequestFactory.createGetScanStatusRequest(xrayWrapperConfiguration.getArtifactory(), artifact,
                 xrayWrapperConfiguration.getRegister());
         XrayAPIResponse response = send(request);
-        if (isErrorResponse(response)) {
-            LOG.error("Scan status could not be retrieved");
-            throw new XrayWrapperRuntimeException(
-                    "Scan status not available. Status Code: " + response.getStatusCode() + "Error Message: " + response.getBody(),
-                    XrayWrapperExitCode.ARTIFACTORY_ERROR_RESPONSE);
-        }
-        JsonNode node = getBodyAsNode(response.getBody());
+        assertNoError(response, "Scan status could not be retrieved");
+        JsonNode node = XrayWrapperJSONConverter.get().readJSONFromString(response.getBody());
         return node.get("status").asText();
     }
 
-    public boolean requestScanReports() throws XrayWrapperRuntimeException {
-        XrayAPIRequest request = XrayAPIRequestBuilder.buildGetScanReports(xrayWrapperConfiguration.getArtifactory(), artifact);
+    public boolean requestScanReports() throws XrayWrapperException {
+        XrayAPIRequest request = XrayAPIRequestFactory.createGetScanReportsRequest(xrayWrapperConfiguration.getArtifactory(), artifact);
         XrayAPIResponse response = send(request);
-        if (isErrorResponse(response)) {
-            LOG.error("Could not get report from artifactory");
-            throw new XrayWrapperRuntimeException(
-                    "Could not get reports from artifactory. Status Code: " + response.getStatusCode() + "Error Message: " + response.getBody(),
-                    XrayWrapperExitCode.ARTIFACTORY_ERROR_RESPONSE);
-        }
+        assertNoError(response, "Could not get report from artifactory");
         return true;
     }
 
-    public String startScanArtifact() throws XrayWrapperRuntimeException {
-        XrayAPIRequest request = XrayAPIRequestBuilder.buildScanArtifact(xrayWrapperConfiguration.getArtifactory(), artifact,
+    public void startArtifactScan() throws XrayWrapperException {
+        XrayAPIRequest request = XrayAPIRequestFactory.createScanArtifactRequest(xrayWrapperConfiguration.getArtifactory(), artifact,
                 xrayWrapperConfiguration.getRegister());
         XrayAPIResponse response = send(request);
-        if (isErrorResponse(response)) {
-            LOG.error("Could not start external Xray scan");
-            throw new XrayWrapperRuntimeException(
-                    "Could not start Xray scan. Status Code: " + response.getStatusCode() + "Error Message: " + response.getBody(),
-                    XrayWrapperExitCode.ARTIFACTORY_ERROR_RESPONSE);
+        assertNoError(response, "Could not start external Xray scan");
+        JsonNode node = XrayWrapperJSONConverter.get().readJSONFromString(response.getBody());
+        String result = node.get("info").asText();
+        if (!Objects.equals(result, "Scan of artifact is in progress")) {
+            throw new XrayAPIException("Start of scan was not successful: " + result, response.getStatusCode(), response.getResponseMessage(),
+                    response.getBody());
         }
-        JsonNode node = getBodyAsNode(response.getBody());
-        return node.get("info").asText();
     }
 
-    public void deleteArtifact() throws XrayWrapperRuntimeException {
+    public void deleteArtifact() throws XrayWrapperException {
         // Xray deletes empty folders with auto cleanup
         // deletes artifact folder in artifactory
-        XrayAPIRequest request = XrayAPIRequestBuilder.buildDeleteArtifact(xrayWrapperConfiguration.getArtifactory(), artifact,
+        XrayAPIRequest request = XrayAPIRequestFactory.createDeleteArtifactRequest(xrayWrapperConfiguration.getArtifactory(), artifact,
                 xrayWrapperConfiguration.getRegister());
         XrayAPIResponse response = send(request);
-        if (isErrorResponse(response)) {
-            LOG.error("Could not delete artifact from artifactory");
-            throw new XrayWrapperRuntimeException(
-                    "Could not delete artifact from artifactory. Status Code: " + response.getStatusCode() + "Error Message: " + response.getBody(),
-                    XrayWrapperExitCode.ARTIFACTORY_ERROR_RESPONSE);
-        }
+        assertNoError(response, "Could not delete artifact from repo");
     }
 
-    public void deleteUploads() throws XrayWrapperRuntimeException {
+    public void deleteUploads() throws XrayWrapperException {
         // deletes _uploads folder in artifactory
         // the _uploads folder is created when any artifact is uploaded to the
         // artifactory
-        XrayAPIRequest request = XrayAPIRequestBuilder.buildDeleteUploads(xrayWrapperConfiguration.getArtifactory(), artifact,
+        XrayAPIRequest request = XrayAPIRequestFactory.createDeleteUploadsRequest(xrayWrapperConfiguration.getArtifactory(), artifact,
                 xrayWrapperConfiguration.getRegister());
         XrayAPIResponse response = send(request);
-        if (isErrorResponse(response)) {
-            LOG.error("Could not delete _uploads from artifactory");
-            throw new XrayWrapperRuntimeException(
-                    "Could not delete _uploads folder from artifactory. Status Code: " + response.getStatusCode() + "Error Message: " + response.getBody(),
-                    XrayWrapperExitCode.ARTIFACTORY_ERROR_RESPONSE);
-        }
+        assertNoError(response, "Could not delete _uploads from artifactory");
     }
 
-    JsonNode getBodyAsNode(String body) throws XrayWrapperRuntimeException {
-        ObjectMapper mapper = new ObjectMapper();
-        try {
-            return mapper.readTree(body);
-        } catch (JsonProcessingException e) {
-            throw new XrayWrapperRuntimeException("Cannot parse provided string into JSON", e, XrayWrapperExitCode.INVALID_JSON);
-        }
-    }
-
-    XrayAPIResponse send(XrayAPIRequest request) throws XrayWrapperRuntimeException {
-        HttpURLConnection con = XrayAPIRequestExecutor.setUpHTTPConnection(request);
-        return XrayAPIResponseBuilder.getHttpResponseFromConnection(con, xrayWrapperConfiguration.getZipDirectory());
+    XrayAPIResponse send(XrayAPIRequest request) throws XrayWrapperException {
+        XrayAPIHTTPUrlConnectionFactory apiHttpUrlConnectionFactory = new XrayAPIHTTPUrlConnectionFactory();
+        XrayAPIResponseFactory xrayAPIResponseFactory = new XrayAPIResponseFactory();
+        HttpURLConnection con = apiHttpUrlConnectionFactory.create(request);
+        return xrayAPIResponseFactory.createHttpResponseFromConnection(con, xrayWrapperConfiguration.getZipDirectory());
     }
 
     private boolean isErrorResponse(XrayAPIResponse response) {
         int statusCode = response.getStatusCode();
-        if (statusCode > 399) {
-            LOG.error("Received Error Code from Artifactory: {}", statusCode);
-            LOG.error("Received Error Message: {}", response.getResponseMessage());
-            LOG.error("Response Headers: {}", response.getHeaders().toString());
-            LOG.error("Response Body: {}", response.getBody());
-            return true;
-        }
-        LOG.info("Response Code: {}", statusCode);
-        LOG.info("Response Message: {}", response.getResponseMessage());
-        LOG.info("Response Headers: {}", response.getHeaders().toString());
-        LOG.info("Response Body: {}", response.getBody());
-        return false;
+        LOG.debug("Response Code: {}", statusCode);
+        LOG.debug("Response Message: {}", response.getResponseMessage());
+        LOG.debug("Response Headers: {}", response.getHeaders().toString());
+        LOG.debug("Response Body: {}", response.getBody());
+        return statusCode > 399;
     }
 
+    private void assertNoError(XrayAPIResponse response, String errorMessage) throws XrayWrapperException {
+        if (!isErrorResponse(response)) {
+            return;
+        }
+        throw new XrayAPIException(errorMessage, response.getStatusCode(), response.getResponseMessage(), response.getBody());
+    }
 }

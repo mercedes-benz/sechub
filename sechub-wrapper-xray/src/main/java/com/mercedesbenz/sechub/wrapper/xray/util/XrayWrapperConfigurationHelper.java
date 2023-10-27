@@ -23,6 +23,6 @@ public class XrayWrapperConfigurationHelper {
         if (scanType.equals(XrayWrapperScanTypes.DOCKER)) {
             repository = environmentVariableReader.readEnvAsString(EnvironmentVariableConstants.DOCKER_REGISTRY_ENV);
         }
-        return XrayWrapperConfiguration.Builder.create(artifactoryUrl, repository, zipDirectory, outputFile).build();
+        return XrayWrapperConfiguration.Builder.builder(artifactoryUrl, repository, zipDirectory, outputFile).build();
     }
 }

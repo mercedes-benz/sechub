@@ -8,32 +8,31 @@ import java.net.URL;
 
 import org.junit.jupiter.api.Test;
 
-import com.mercedesbenz.sechub.wrapper.xray.cli.XrayWrapperRuntimeException;
+import com.mercedesbenz.sechub.wrapper.xray.XrayWrapperException;
 
 class XrayAPIRequestTest {
 
-    XrayAPIRequest xrayAPIRequest;
-
     @Test
-    void xrayRequest_create_valid_request() {
+    void xrayRequest_create_valid_request() throws XrayWrapperException {
         /* prepare */
         URL url = mock(URL.class);
         boolean auth = false;
         String data = "mydata";
 
         /* execute */
-        xrayAPIRequest = XrayAPIRequest.Builder.create(url, XrayAPIRequest.RequestMethodEnum.GET).setAuthentication(auth).setData(data).build();
+        XrayAPIRequest request = XrayAPIRequest.Builder.builder(url, XrayAPIRequest.RequestMethodEnum.GET).isAuthenticationNeeded(auth).buildJSONBody(data)
+                .build();
 
         /* test */
-        assertEquals(url, xrayAPIRequest.getUrl());
-        assertEquals(auth, xrayAPIRequest.needAuthentication());
-        assertEquals(data, xrayAPIRequest.getData());
-        assertEquals(XrayAPIRequest.RequestMethodEnum.GET, xrayAPIRequest.getRequestMethodEnum());
+        assertEquals(url, request.getUrl());
+        assertEquals(auth, request.isAuthenticationNeeded());
+        assertEquals(data, request.getData());
+        assertEquals(XrayAPIRequest.RequestMethodEnum.GET, request.getRequestMethodEnum());
     }
 
     @Test
-    void xrayRequest_throws_xrayWrapperRuntimeException() {
+    void xrayRequest_throws_xrayWrapperException() {
         /* execute + test */
-        assertThrows(XrayWrapperRuntimeException.class, () -> XrayAPIRequest.Builder.create(null, null).build());
+        assertThrows(XrayWrapperException.class, () -> XrayAPIRequest.Builder.builder(null, null).build());
     }
 }

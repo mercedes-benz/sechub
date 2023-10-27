@@ -12,7 +12,7 @@ public class XrayWrapperCommandLineParser {
     public record Arguments(String name, String checksum, XrayWrapperScanTypes scanType, String tag, String outputFile) {
     }
 
-    public Arguments parseCommandLineArgs(String[] args) throws XrayWrapperCommandLineParserException {
+    public Arguments parseCommandLineArgs(String[] args) {
         XrayWrapperCommandLineArgs xrayArgs = buildArguments(args);
         if (xrayArgs.isHelpRequired() || xrayArgs.getName().isEmpty() || xrayArgs.getChecksum().isEmpty()) {
             commander.usage();
@@ -35,7 +35,7 @@ public class XrayWrapperCommandLineParser {
         return new Arguments(name, checksum, type, tag, xrayArgs.getOutputFile());
     }
 
-    private XrayWrapperCommandLineArgs buildArguments(String[] args) throws XrayWrapperCommandLineParserException {
+    private XrayWrapperCommandLineArgs buildArguments(String[] args) {
         XrayWrapperCommandLineArgs xrayWrapperCommandLineArgs = new XrayWrapperCommandLineArgs();
         try {
             commander = JCommander.newBuilder().addObject(xrayWrapperCommandLineArgs).acceptUnknownOptions(false).build();

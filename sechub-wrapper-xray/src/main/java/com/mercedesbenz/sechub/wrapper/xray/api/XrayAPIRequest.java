@@ -2,8 +2,8 @@ package com.mercedesbenz.sechub.wrapper.xray.api;
 
 import java.net.URL;
 
+import com.mercedesbenz.sechub.wrapper.xray.XrayWrapperException;
 import com.mercedesbenz.sechub.wrapper.xray.cli.XrayWrapperExitCode;
-import com.mercedesbenz.sechub.wrapper.xray.cli.XrayWrapperRuntimeException;
 
 public class XrayAPIRequest {
     public enum RequestMethodEnum {
@@ -32,9 +32,9 @@ public class XrayAPIRequest {
             this.requestMethodEnum = requestMethodEnum;
         }
 
-        public static Builder create(URL url, XrayAPIRequest.RequestMethodEnum requestMethodEnum) {
+        public static Builder builder(URL url, XrayAPIRequest.RequestMethodEnum requestMethodEnum) throws XrayWrapperException {
             if ((url == null) || (requestMethodEnum == null)) {
-                throw new XrayWrapperRuntimeException("Cannot create XrayAPIRequest with null parameters", XrayWrapperExitCode.INVALID_HTTP_REQUEST);
+                throw new XrayWrapperException("Cannot create XrayAPIRequest with null parameters", XrayWrapperExitCode.INVALID_HTTP_REQUEST);
             }
             return new Builder(url, requestMethodEnum);
         }
@@ -43,12 +43,12 @@ public class XrayAPIRequest {
             return new XrayAPIRequest(this.url, this.requestMethodEnum, this.authentication, this.data);
         }
 
-        Builder setData(String data) {
+        Builder buildJSONBody(String data) {
             this.data = data;
             return this;
         }
 
-        Builder setAuthentication(boolean b) {
+        Builder isAuthenticationNeeded(boolean b) {
             this.authentication = b;
             return this;
         }
@@ -61,15 +61,11 @@ public class XrayAPIRequest {
         this.data = data;
     }
 
-    public void setRequestMethodEnum(RequestMethodEnum requestMethodEnum) {
-        this.requestMethodEnum = requestMethodEnum;
-    }
-
     public RequestMethodEnum getRequestMethodEnum() {
         return requestMethodEnum;
     }
 
-    public boolean needAuthentication() {
+    public boolean isAuthenticationNeeded() {
         return authentication;
     }
 

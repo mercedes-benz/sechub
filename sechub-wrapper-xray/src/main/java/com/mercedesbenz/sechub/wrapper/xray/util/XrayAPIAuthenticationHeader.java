@@ -3,8 +3,8 @@ package com.mercedesbenz.sechub.wrapper.xray.util;
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 
+import com.mercedesbenz.sechub.wrapper.xray.XrayWrapperException;
 import com.mercedesbenz.sechub.wrapper.xray.cli.XrayWrapperExitCode;
-import com.mercedesbenz.sechub.wrapper.xray.cli.XrayWrapperRuntimeException;
 
 public class XrayAPIAuthenticationHeader {
 
@@ -13,13 +13,13 @@ public class XrayAPIAuthenticationHeader {
      *
      * @return base64 encoded header for basic authentication
      */
-    public static String buildAuthHeader() {
+    public static String buildBasicAuthHeader() throws XrayWrapperException {
         EnvironmentVariableReader environmentVariableReader = new EnvironmentVariableReader();
         String username = environmentVariableReader.readEnvAsString(EnvironmentVariableConstants.XRAY_USERNAME_ENV);
         String pwd = environmentVariableReader.readEnvAsString(EnvironmentVariableConstants.XRAY_PASSWORD_ENV);
         String auth = (username + ":" + pwd);
         if (username == null || pwd == null) {
-            throw new XrayWrapperRuntimeException("Authentication not possible because of missing environment variables XRAY_USER and XRAY_PASSWORD",
+            throw new XrayWrapperException("Authentication not possible because of missing environment variables XRAY_USER and XRAY_PASSWORD",
                     XrayWrapperExitCode.NOT_NULLABLE);
         }
         byte[] encodedAuth = Base64.getEncoder().encode(auth.getBytes(StandardCharsets.UTF_8));

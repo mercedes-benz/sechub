@@ -15,6 +15,8 @@ import org.junit.jupiter.api.Test;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.mercedesbenz.sechub.wrapper.xray.XrayWrapperException;
+import com.mercedesbenz.sechub.wrapper.xray.XrayWrapperJSONConverter;
 
 class XrayWrapperReportReaderTest {
 
@@ -24,11 +26,11 @@ class XrayWrapperReportReaderTest {
     @BeforeEach
     void beforeEach() {
         reportReader = new XrayWrapperReportReader();
-        mapper = new ObjectMapper();
+        mapper = XrayWrapperJSONConverter.get().getMapper();
     }
 
     @Test
-    void getReportFiles_get_valid_reports() {
+    void getReportFiles_get_valid_reports() throws XrayWrapperReportException {
         /* prepare */
         String source = "src/test/resources/xray-report-examples";
         String resultFile = "resultfile";
@@ -54,7 +56,7 @@ class XrayWrapperReportReaderTest {
     }
 
     @Test
-    void readSecurityReport_read_vulnerabilities_from_security_report() {
+    void readSecurityReport_read_vulnerabilities_from_security_report() throws XrayWrapperException {
         /* prepare */
         String source = "src/test/resources/xray-report-examples";
         reportReader.getReportFiles(source, "");
@@ -73,7 +75,7 @@ class XrayWrapperReportReaderTest {
     }
 
     @Test
-    void mapVulnerabilities_valid_vulnerabilities() throws IOException {
+    void mapVulnerabilities_valid_vulnerabilities() throws IOException, XrayWrapperException {
         /* prepare */
         String source = "src/test/resources/xray-report-examples";
         reportReader.getReportFiles(source, "");

@@ -16,7 +16,7 @@ class XrayWrapperConfigurationTest {
         String secHubReport = "sechubReport";
 
         /* execute */
-        XrayWrapperConfiguration configuration = XrayWrapperConfiguration.Builder.create(artifactory, register, zipDir, secHubReport).build();
+        XrayWrapperConfiguration configuration = XrayWrapperConfiguration.Builder.builder(artifactory, register, zipDir, secHubReport).build();
 
         /* test */
         assertEquals(artifactory, configuration.getArtifactory());
@@ -25,7 +25,7 @@ class XrayWrapperConfigurationTest {
     @Test
     void xrayWrapperConfiguration_throws_nullPointerException() {
         /* execute + test */
-        assertThrows(NullPointerException.class, () -> XrayWrapperConfiguration.Builder.create(null, null, null, null).build());
+        assertThrows(NullPointerException.class, () -> XrayWrapperConfiguration.Builder.builder(null, null, null, null).build());
     }
 
 }

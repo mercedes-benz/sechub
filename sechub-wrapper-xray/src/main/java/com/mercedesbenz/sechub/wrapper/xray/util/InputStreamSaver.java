@@ -2,12 +2,12 @@ package com.mercedesbenz.sechub.wrapper.xray.util;
 
 import java.io.*;
 
+import com.mercedesbenz.sechub.wrapper.xray.XrayWrapperException;
 import com.mercedesbenz.sechub.wrapper.xray.cli.XrayWrapperExitCode;
-import com.mercedesbenz.sechub.wrapper.xray.cli.XrayWrapperRuntimeException;
 
 public class InputStreamSaver {
 
-    public static void saveInputStreamToZipFile(String filename, InputStream inputStream) throws XrayWrapperRuntimeException {
+    public static void saveInputStreamToZipFile(String filename, InputStream inputStream) throws XrayWrapperException {
         int read;
         byte[] buffer = new byte[1024];
         File file = new File(filename);
@@ -19,11 +19,11 @@ public class InputStreamSaver {
             }
             inputStream.close();
         } catch (IOException e) {
-            throw new XrayWrapperRuntimeException("Could not save https input stream to zip file", e, XrayWrapperExitCode.IO_ERROR);
+            throw new XrayWrapperException("Could not save https input stream to zip file", XrayWrapperExitCode.IO_ERROR, e);
         }
     }
 
-    public static String readInputStreamAsString(InputStream inputStream) throws XrayWrapperRuntimeException {
+    public static String readInputStreamAsString(InputStream inputStream) throws XrayWrapperException {
         BufferedReader in = new BufferedReader(new InputStreamReader(inputStream));
         String inputLine;
         StringBuilder content = new StringBuilder();
@@ -33,7 +33,7 @@ public class InputStreamSaver {
             }
             in.close();
         } catch (IOException e) {
-            throw new XrayWrapperRuntimeException("Could not read https input stream as string", e, XrayWrapperExitCode.IO_ERROR);
+            throw new XrayWrapperException("Could not read https input stream as string", XrayWrapperExitCode.IO_ERROR, e);
         }
         return content.toString();
     }

@@ -3,14 +3,12 @@ package com.mercedesbenz.sechub.wrapper.xray.report;
 import static java.lang.Double.parseDouble;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.HashMap;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
-import com.mercedesbenz.sechub.wrapper.xray.cli.XrayWrapperExitCode;
+import com.mercedesbenz.sechub.wrapper.xray.XrayWrapperException;
+import com.mercedesbenz.sechub.wrapper.xray.XrayWrapperJSONConverter;
 
 /**
  * Parses the xray security report vulnerabilities and converts them to
@@ -20,26 +18,18 @@ public class XrayWrapperReportParser {
     public record RatingRecord(double scoreDouble, String severity, String method, String vector, String severitySource) {
     }
 
-    public JsonNode getRootDataNode(File xraySecurityReport) throws XrayWrapperReportException {
-        try {
-            return new ObjectMapper().readTree(xraySecurityReport).get("data");
-        } catch (IOException e) {
-            throw new XrayWrapperReportException("Could not read file as JSON", e, XrayWrapperExitCode.IO_ERROR);
-        }
+    public JsonNode getRootDataNode(File xraySecurityReport) throws XrayWrapperException {
+        return XrayWrapperJSONConverter.get().readJSONFromFile(xraySecurityReport).get("data");
     }
 
-    public HashMap<String, CycloneDXVulnerabilityHelper> transformSecurityReport(JsonNode rootDataNode) throws XrayWrapperReportException {
+    public HashMap<String, CycloneDXVulnerabilityHelper> transformSecurityReport(JsonNode rootDataNode) throws XrayWrapperException {
         HashMap<String, CycloneDXVulnerabilityHelper> vulnerabilityHashMap = new HashMap<>();
 
         for (JsonNode node : rootDataNode) {
             CycloneDXVulnerabilityHelper vulnerability = new CycloneDXVulnerabilityHelper();
             setBomRef(node, vulnerability);
             String cvssString;
-            try {
-                cvssString = getAndSetCveDetails(node, vulnerability);
-            } catch (JsonProcessingException e) {
-                throw new XrayWrapperReportException("Could not process json", e, XrayWrapperExitCode.INVALID_JSON);
-            }
+            cvssString = getAndSetCveDetails(node, vulnerability);
             setSource(node, vulnerability);
             if (!cvssString.isEmpty()) {
                 setRatingFromString(node, vulnerability, cvssString);
@@ -61,8 +51,9 @@ public class XrayWrapperReportParser {
         }
     }
 
-    private String getAndSetCveDetails(JsonNode node, CycloneDXVulnerabilityHelper vulnerability) throws JsonProcessingException {
-        final JsonNode cveDetailsNode = new ObjectMapper().readTree(String.valueOf(node)).get("component_versions").get("more_details").get("cves");
+    private String getAndSetCveDetails(JsonNode node, CycloneDXVulnerabilityHelper vulnerability) throws XrayWrapperException {
+        JsonNode cveDetailsNode = XrayWrapperJSONConverter.get().readJSONFromString(String.valueOf(node)).get("component_versions").get("more_details")
+                .get("cves");
 
         String cvssString = "";
         JsonNode cvssNode;

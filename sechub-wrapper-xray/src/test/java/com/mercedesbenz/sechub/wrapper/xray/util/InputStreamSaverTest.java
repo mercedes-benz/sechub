@@ -10,22 +10,22 @@ import java.io.InputStream;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import com.mercedesbenz.sechub.wrapper.xray.cli.XrayWrapperRuntimeException;
+import com.mercedesbenz.sechub.wrapper.xray.XrayWrapperException;
 
 class InputStreamSaverTest {
 
     final String testinputString = "test data";
-    InputStream is;
+    InputStream inputStream;
 
     @BeforeEach
     void beforeEach() {
-        is = new ByteArrayInputStream(testinputString.getBytes());
+        inputStream = new ByteArrayInputStream(testinputString.getBytes());
     }
 
     @Test
-    void readInputStreamAsString_return_content_as_string() throws XrayWrapperRuntimeException {
+    void readInputStreamAsString_return_content_as_string() throws XrayWrapperException {
         /* execute */
-        String content = InputStreamSaver.readInputStreamAsString(is);
+        String content = InputStreamSaver.readInputStreamAsString(inputStream);
 
         /* test */
         assertEquals(testinputString, content);
@@ -38,12 +38,12 @@ class InputStreamSaverTest {
     }
 
     @Test
-    void readInputStreamAsString_throws_xrayWrapperRuntimeException() {
+    void readInputStreamAsString_throws_xrayWrapperException() {
         /* prepare */
         InputStream mockedIs = mock(InputStream.class);
 
         /* execute + test */
-        assertThrows(XrayWrapperRuntimeException.class, () -> InputStreamSaver.readInputStreamAsString(mockedIs));
+        assertThrows(XrayWrapperException.class, () -> InputStreamSaver.readInputStreamAsString(mockedIs));
     }
 
     @Test

@@ -9,7 +9,6 @@ import java.nio.file.StandardCopyOption;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
-import com.mercedesbenz.sechub.wrapper.xray.cli.XrayWrapperExitCode;
 import com.mercedesbenz.sechub.wrapper.xray.report.XrayWrapperReportException;
 
 public class ZipFileExtractor {
@@ -55,18 +54,13 @@ public class ZipFileExtractor {
             }
             zis.closeEntry();
         } catch (IOException | NullPointerException e) {
-            throw new XrayWrapperReportException("Could not extract zip file.", e, XrayWrapperExitCode.IO_ERROR);
+            throw new XrayWrapperReportException("Could not extract zip file.", e);
         }
     }
 
-    /**
+    /*
      * Please see: <a href=https://security.snyk.io/research/zip-slip-vulnerability
      * /a>
-     *
-     * @param zipEntry
-     * @param targetDir
-     * @return
-     * @throws XrayWrapperReportException
      */
     private static Path zipSlipProtect(ZipEntry zipEntry, Path targetDir) throws XrayWrapperReportException {
         Path targetDirResolved = targetDir.resolve(zipEntry.getName());
@@ -75,7 +69,7 @@ public class ZipFileExtractor {
         // else throws exception
         Path normalizePath = targetDirResolved.normalize();
         if (!normalizePath.startsWith(targetDir)) {
-            throw new XrayWrapperReportException("Bad zip entry: " + zipEntry.getName(), XrayWrapperExitCode.IO_ERROR);
+            throw new XrayWrapperReportException("Bad zip entry: " + zipEntry.getName());
         }
 
         return normalizePath;

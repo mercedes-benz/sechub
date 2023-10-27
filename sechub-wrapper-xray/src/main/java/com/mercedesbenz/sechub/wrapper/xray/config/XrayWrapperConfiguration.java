@@ -22,6 +22,8 @@ public class XrayWrapperConfiguration {
 
     private int requestRetries = 10;
 
+    private long maxScanDurationHours = 5;
+
     public static class Builder {
         private final String artifactory;
 
@@ -38,7 +40,7 @@ public class XrayWrapperConfiguration {
             this.secHubReport = secHubReport;
         }
 
-        public static Builder create(String artifactory, String register, String zipDirectory, String secHubReport) {
+        public static Builder builder(String artifactory, String register, String zipDirectory, String secHubReport) {
             if (artifactory == null || zipDirectory == null) {
                 throw new NullPointerException("Artifactory URL or Zip file directory cannot be null");
             }
@@ -79,5 +81,9 @@ public class XrayWrapperConfiguration {
 
     public int getRequestRetries() {
         return requestRetries;
+    }
+
+    public long getMaxScanDurationHours() {
+        return maxScanDurationHours;
     }
 }

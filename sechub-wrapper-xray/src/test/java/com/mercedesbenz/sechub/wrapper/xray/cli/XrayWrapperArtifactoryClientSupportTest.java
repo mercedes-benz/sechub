@@ -9,13 +9,14 @@ import org.junit.jupiter.api.Test;
 import org.mockito.MockedConstruction;
 import org.mockito.Mockito;
 
+import com.mercedesbenz.sechub.wrapper.xray.XrayWrapperException;
 import com.mercedesbenz.sechub.wrapper.xray.api.XrayAPIArtifactoryClient;
 import com.mercedesbenz.sechub.wrapper.xray.config.XrayWrapperArtifact;
 import com.mercedesbenz.sechub.wrapper.xray.config.XrayWrapperConfiguration;
 
-class XrayWrapperArtifactoryClientControllerTest {
+class XrayWrapperArtifactoryClientSupportTest {
 
-    XrayWrapperArtifactoryClientController controller;
+    XrayWrapperArtifactoryClientSupport controller;
 
     XrayWrapperConfiguration configuration;
 
@@ -28,25 +29,25 @@ class XrayWrapperArtifactoryClientControllerTest {
     }
 
     @Test
-    void waitForScansToFinishAndDownloadReport_valid_execution_without_report_transformation() throws XrayWrapperRuntimeException {
+    void waitForScansToFinishAndDownloadReport_valid_execution_without_report_transformation() throws XrayWrapperException {
         /* test + execute */
         try (MockedConstruction<XrayAPIArtifactoryClient> mockedClient = Mockito.mockConstruction(XrayAPIArtifactoryClient.class, (mock, context) -> {
             when(mock.getXrayVersion()).thenReturn("mocked-version");
-            when(mock.checkArtifactoryUpload()).thenReturn(true);
+            when(mock.checkArtifactoryUploadSuccess()).thenReturn(true);
             when(mock.getScanStatus()).thenReturn("scanned");
             when(mock.requestScanReports()).thenReturn(false);
         })) {
-            controller = new XrayWrapperArtifactoryClientController(configuration, artifact);
+            controller = new XrayWrapperArtifactoryClientSupport(configuration, artifact);
             controller.waitForScansToFinishAndDownloadReport();
         }
     }
 
     @Test
-    void waitForScansToFinishAndDownloadReport_throws_XrayWrapperRuntimeException() {
+    void waitForScansToFinishAndDownloadReport_throws_XrayWrapperException() {
         /* prepare */
-        controller = new XrayWrapperArtifactoryClientController(configuration, artifact);
+        controller = new XrayWrapperArtifactoryClientSupport(configuration, artifact);
 
         /* test + execute */
-        assertThrows(XrayWrapperRuntimeException.class, () -> controller.waitForScansToFinishAndDownloadReport());
+        assertThrows(XrayWrapperException.class, () -> controller.waitForScansToFinishAndDownloadReport());
     }
 }

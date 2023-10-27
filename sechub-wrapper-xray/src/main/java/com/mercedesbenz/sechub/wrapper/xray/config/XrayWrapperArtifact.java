@@ -1,7 +1,5 @@
 package com.mercedesbenz.sechub.wrapper.xray.config;
 
-import com.mercedesbenz.sechub.wrapper.xray.cli.XrayWrapperExitCode;
-import com.mercedesbenz.sechub.wrapper.xray.cli.XrayWrapperRuntimeException;
 import com.mercedesbenz.sechub.wrapper.xray.cli.XrayWrapperScanTypes;
 
 public class XrayWrapperArtifact {
@@ -15,9 +13,6 @@ public class XrayWrapperArtifact {
     private XrayWrapperScanTypes artifactType;
 
     public XrayWrapperArtifact(String name, String checksum, String tag, XrayWrapperScanTypes artifactType) {
-        if (artifactType == null) {
-            throw new XrayWrapperRuntimeException("Artifact scan type cannot be null!", XrayWrapperExitCode.NOT_NULLABLE);
-        }
         this.name = name;
         this.checksum = checksum;
         this.tag = tag;

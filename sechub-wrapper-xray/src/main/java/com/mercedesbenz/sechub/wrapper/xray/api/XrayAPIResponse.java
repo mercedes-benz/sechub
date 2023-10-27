@@ -3,8 +3,8 @@ package com.mercedesbenz.sechub.wrapper.xray.api;
 import java.util.List;
 import java.util.Map;
 
+import com.mercedesbenz.sechub.wrapper.xray.XrayWrapperException;
 import com.mercedesbenz.sechub.wrapper.xray.cli.XrayWrapperExitCode;
-import com.mercedesbenz.sechub.wrapper.xray.cli.XrayWrapperRuntimeException;
 
 public class XrayAPIResponse {
 
@@ -26,9 +26,9 @@ public class XrayAPIResponse {
             this.headers = headers;
         }
 
-        public static Builder create(int statusCode, Map<String, List<String>> headers) {
+        public static Builder builder(int statusCode, Map<String, List<String>> headers) throws XrayWrapperException {
             if (headers == null) {
-                throw new XrayWrapperRuntimeException("HTTP response headers cannot be null!", XrayWrapperExitCode.INVALID_HTTP_RESPONSE);
+                throw new XrayWrapperException("HTTP response headers cannot be null!", XrayWrapperExitCode.INVALID_HTTP_RESPONSE);
             }
             return new Builder(statusCode, headers);
         }
@@ -37,12 +37,12 @@ public class XrayAPIResponse {
             return new XrayAPIResponse(this.statusCode, this.headers, this.body);
         }
 
-        Builder setBody(String body) {
+        Builder addResponseBody(String body) {
             this.body = body;
             return this;
         }
 
-        Builder setResponseMessage(String responseMessage) {
+        Builder addResponseMessage(String responseMessage) {
             this.responseMessage = responseMessage;
             return this;
         }

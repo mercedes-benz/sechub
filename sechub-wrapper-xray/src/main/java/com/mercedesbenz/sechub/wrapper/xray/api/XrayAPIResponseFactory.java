@@ -10,10 +10,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
+import com.mercedesbenz.sechub.wrapper.xray.XrayWrapperException;
 import com.mercedesbenz.sechub.wrapper.xray.cli.XrayWrapperExitCode;
-import com.mercedesbenz.sechub.wrapper.xray.cli.XrayWrapperRuntimeException;
 
-public class XrayAPIResponseBuilder {
+public class XrayAPIResponseFactory {
 
     /**
      * extracts response from http url connection code similar to @see <a href=
@@ -22,17 +22,18 @@ public class XrayAPIResponseBuilder {
      * @param httpURLConnection httpUrl connection
      * @param zipArchive        file name to save zip content
      * @return xray api http response
-     * @throws XrayWrapperRuntimeException
+     * @throws XrayWrapperException
      */
-    public static XrayAPIResponse getHttpResponseFromConnection(HttpURLConnection httpURLConnection, String zipArchive) throws XrayWrapperRuntimeException {
+    public XrayAPIResponse createHttpResponseFromConnection(HttpURLConnection httpURLConnection, String zipArchive) throws XrayWrapperException {
         zipArchive = zipArchive + ".zip";
 
+        // todo: not static?
         // read response code
         int responseCode = 0;
         try {
             responseCode = httpURLConnection.getResponseCode();
         } catch (IOException e) {
-            throw new XrayWrapperRuntimeException("Could not get response code from HTTP connection.", e, XrayWrapperExitCode.IO_ERROR);
+            throw new XrayWrapperException("Could not get response code from HTTP connection.", XrayWrapperExitCode.IO_ERROR, e);
         }
 
         // red response Message
@@ -40,7 +41,7 @@ public class XrayAPIResponseBuilder {
         try {
             responseMessage = httpURLConnection.getResponseMessage();
         } catch (IOException e) {
-            throw new XrayWrapperRuntimeException("Could not read Response Message from HTTP connection.", e, XrayWrapperExitCode.IO_ERROR);
+            throw new XrayWrapperException("Could not read Response Message from HTTP connection.", XrayWrapperExitCode.IO_ERROR, e);
         }
 
         // read headers
@@ -54,7 +55,7 @@ public class XrayAPIResponseBuilder {
             try {
                 inputStream = httpURLConnection.getInputStream();
             } catch (IOException e) {
-                throw new XrayWrapperRuntimeException("Could not get Input stream from HTTP connection.", e, XrayWrapperExitCode.IO_ERROR);
+                throw new XrayWrapperException("Could not get Input stream from HTTP connection.", XrayWrapperExitCode.IO_ERROR, e);
             }
         }
 
@@ -70,8 +71,8 @@ public class XrayAPIResponseBuilder {
                 // server returns application/json body which can be saved as string body
                 content = readInputStreamAsString(inputStream);
             }
-            return XrayAPIResponse.Builder.create(responseCode, header).setBody(content).setResponseMessage(responseMessage).build();
+            return XrayAPIResponse.Builder.builder(responseCode, header).addResponseBody(content).addResponseMessage(responseMessage).build();
         }
-        return XrayAPIResponse.Builder.create(responseCode, header).setResponseMessage(responseMessage).build();
+        return XrayAPIResponse.Builder.builder(responseCode, header).addResponseMessage(responseMessage).build();
     }
 }

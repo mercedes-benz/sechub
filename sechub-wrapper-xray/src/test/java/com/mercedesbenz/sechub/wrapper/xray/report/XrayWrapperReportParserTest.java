@@ -11,6 +11,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import com.mercedesbenz.sechub.wrapper.xray.XrayWrapperException;
 
 class XrayWrapperReportParserTest {
 
@@ -32,11 +33,11 @@ class XrayWrapperReportParserTest {
         /* prepare */
         File file = new File("src/test/resources/invalid-json-examples/invalid_json.json");
         /* execute + test */
-        Assert.assertThrows(XrayWrapperReportException.class, () -> xrayWrapperReportParser.getRootDataNode(file));
+        Assert.assertThrows(XrayWrapperException.class, () -> xrayWrapperReportParser.getRootDataNode(file));
     }
 
     @Test
-    void getRootDataNode_return_size_of_node() {
+    void getRootDataNode_return_size_of_node() throws XrayWrapperException {
         /* prepare */
         File file = new File("src/test/resources/xray-report-examples/Docker_Security_Export.json");
         // some vulnerabilities appear multiple times
@@ -48,7 +49,7 @@ class XrayWrapperReportParserTest {
     }
 
     @Test
-    void transformSecurityReport_number_of_vulnerabilities() {
+    void transformSecurityReport_number_of_vulnerabilities() throws XrayWrapperException {
         /* prepare */
         File file = new File("src/test/resources/xray-report-examples/Docker_Security_Export.json");
         JsonNode node = xrayWrapperReportParser.getRootDataNode(file);

@@ -1,20 +1,15 @@
 package com.mercedesbenz.sechub.wrapper.xray.report;
 
+import com.mercedesbenz.sechub.wrapper.xray.XrayWrapperException;
 import com.mercedesbenz.sechub.wrapper.xray.cli.XrayWrapperExitCode;
 
-public class XrayWrapperReportException extends RuntimeException {
-    private final XrayWrapperExitCode exitCode;
+public class XrayWrapperReportException extends XrayWrapperException {
 
-    public XrayWrapperReportException(String message, XrayWrapperExitCode exitCode) {
-        this(message, null, exitCode);
+    public XrayWrapperReportException(String message) {
+        this("Error occurred during report handling: " + message, null);
     }
 
-    public XrayWrapperReportException(String message, Throwable cause, XrayWrapperExitCode exitCode) {
-        super(message, cause);
-        this.exitCode = exitCode;
-    }
-
-    public XrayWrapperExitCode getExitCode() {
-        return exitCode;
+    public XrayWrapperReportException(String message, Throwable cause) {
+        super(message, XrayWrapperExitCode.CREATE_CYCLONEDX_REPORT_ERROR, cause);
     }
 }

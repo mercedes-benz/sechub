@@ -6,11 +6,11 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import com.mercedesbenz.sechub.wrapper.xray.cli.XrayWrapperRuntimeException;
+import com.mercedesbenz.sechub.wrapper.xray.XrayWrapperException;
 import com.mercedesbenz.sechub.wrapper.xray.cli.XrayWrapperScanTypes;
 import com.mercedesbenz.sechub.wrapper.xray.config.XrayWrapperArtifact;
 
-class XrayAPIRequestBuilderTest {
+class XrayAPIRequestFactoryTest {
 
     String url;
     String registry;
@@ -24,13 +24,13 @@ class XrayAPIRequestBuilderTest {
     }
 
     @Test
-    void buildGetXrayVersion_returns_http_request() {
+    void createGetXrayVersionRequest_returns_http_request() throws XrayWrapperException {
         /* prepare */
         XrayAPIRequest request;
         String apiUrl = "/xray/api/v1/system/version";
 
         /* execute */
-        request = XrayAPIRequestBuilder.buildGetXrayVersion(url);
+        request = XrayAPIRequestFactory.createGetXrayVersionRequest(url);
 
         /* test */
         assertEquals(XrayAPIRequest.RequestMethodEnum.GET, request.getRequestMethodEnum());
@@ -38,22 +38,22 @@ class XrayAPIRequestBuilderTest {
     }
 
     @Test
-    void buildGetXrayVersion_throws_xrayRuntimeException() {
+    void createGetXrayVersionRequest_throws_xrayWrapperException() {
         /* prepare */
         String invalidUrl = "invalid url";
 
         /* execute + test */
-        assertThrows(XrayWrapperRuntimeException.class, () -> XrayAPIRequestBuilder.buildGetXrayVersion(invalidUrl));
+        assertThrows(XrayWrapperException.class, () -> XrayAPIRequestFactory.createGetXrayVersionRequest(invalidUrl));
     }
 
     @Test
-    void buildCheckArtifactUpload_returns_http_request() {
+    void createCheckArtifactUploadRequest_returns_http_request() throws XrayWrapperException {
         /* prepare */
         XrayAPIRequest request;
         String apiUrl = "/artifactory/api/storage/myregister/myname/tag/manifest.json";
 
         /* execute */
-        request = XrayAPIRequestBuilder.buildCheckArtifactUpload(url, artifact, registry);
+        request = XrayAPIRequestFactory.createCheckArtifactUploadRequest(url, artifact, registry);
 
         /* test */
         assertEquals(XrayAPIRequest.RequestMethodEnum.GET, request.getRequestMethodEnum());
@@ -61,22 +61,22 @@ class XrayAPIRequestBuilderTest {
     }
 
     @Test
-    void buildCheckArtifactUpload_throws_nullPointerException() {
+    void createCheckArtifactUploadRequest_throws_nullPointerException() {
         /* execute + test */
-        assertThrows(NullPointerException.class, () -> XrayAPIRequestBuilder.buildCheckArtifactUpload(null, null, null));
+        assertThrows(NullPointerException.class, () -> XrayAPIRequestFactory.createCheckArtifactUploadRequest(null, null, null));
     }
 
     @Test
-    void buildCheckArtifactUpload_throws_xrayRuntimeException() {
+    void createCheckArtifactUploadRequest_throws_xrayWrapperException() {
         /* prepare */
         String invalidUrl = "invalid url";
 
         /* execute + test */
-        assertThrows(XrayWrapperRuntimeException.class, () -> XrayAPIRequestBuilder.buildCheckArtifactUpload(invalidUrl, artifact, registry));
+        assertThrows(XrayWrapperException.class, () -> XrayAPIRequestFactory.createCheckArtifactUploadRequest(invalidUrl, artifact, registry));
     }
 
     @Test
-    void buildScanArtifact_returns_http_request() {
+    void createScanArtifactRequest_returns_http_request() throws XrayWrapperException {
         /* prepare */
         XrayAPIRequest request;
         String apiUrl = "/xray/api/v1/scanArtifact";
@@ -84,7 +84,7 @@ class XrayAPIRequestBuilderTest {
                 {"componentID": "docker://myname:tag","path": "myregister/myname/tag/manifest.json"}""";
 
         /* execute */
-        request = XrayAPIRequestBuilder.buildScanArtifact(url, artifact, registry);
+        request = XrayAPIRequestFactory.createScanArtifactRequest(url, artifact, registry);
 
         /* test */
         assertEquals(XrayAPIRequest.RequestMethodEnum.POST, request.getRequestMethodEnum());
@@ -93,23 +93,23 @@ class XrayAPIRequestBuilderTest {
     }
 
     @Test
-    void buildScanArtifact_throws_xrayWrapperRuntimeException() {
+    void createScanArtifactRequest_throws_xrayWrapperException() {
         /* prepare */
         String invalidUrl = "invalid url";
 
         /* execute + test */
-        assertThrows(XrayWrapperRuntimeException.class, () -> XrayAPIRequestBuilder.buildScanArtifact(invalidUrl, null, null));
+        assertThrows(XrayWrapperException.class, () -> XrayAPIRequestFactory.createScanArtifactRequest(invalidUrl, null, null));
     }
 
     @Test
-    void buildGetScanStatus_returns_http_request() {
+    void createGetScanStatusRequest_returns_http_request() throws XrayWrapperException {
         /* prepare */
         XrayAPIRequest request;
         String apiUrl = "/xray/api/v1/scan/status/artifact";
-        String data = "{\"path\": \"myregister/myname/tag/manifest.json\", \"repository_pkg_type\":\"docker\", \"sha256\": \"sha256\"}";
+        String data = "{\"path\": \"myregister/myname/tag/manifest.json\", \"repository_pkg_type\": \"docker\", \"sha256\": \"sha256\"}";
 
         /* execute */
-        request = XrayAPIRequestBuilder.buildGetScanStatus(url, artifact, registry);
+        request = XrayAPIRequestFactory.createGetScanStatusRequest(url, artifact, registry);
 
         /* test */
         assertEquals(XrayAPIRequest.RequestMethodEnum.POST, request.getRequestMethodEnum());
@@ -118,13 +118,13 @@ class XrayAPIRequestBuilderTest {
     }
 
     @Test
-    void buildGetScanStatus_throws_xrayWrapperRuntimeException() {
+    void createGetScanStatusRequest_throws_xrayWrapperException() {
         /* execute + test */
-        assertThrows(XrayWrapperRuntimeException.class, () -> XrayAPIRequestBuilder.buildGetScanStatus(null, null, null));
+        assertThrows(XrayWrapperException.class, () -> XrayAPIRequestFactory.createGetScanStatusRequest(null, null, null));
     }
 
     @Test
-    void buildGetScanReports_returns_http_request() {
+    void createGetScanReportsRequest_returns_http_request() throws XrayWrapperException {
         /* prepare */
         XrayAPIRequest request;
         String apiUrl = "/xray/api/v1/component/exportDetails";
@@ -135,7 +135,7 @@ class XrayAPIRequestBuilderTest {
                 + "\"spdx\": true," + "\"spdx_format\": \"json\"," + "\"cyclonedx\": true," + "\"cyclonedx_format\": \"json\"}";
 
         /* execute */
-        request = XrayAPIRequestBuilder.buildGetScanReports(url, artifact);
+        request = XrayAPIRequestFactory.createGetScanReportsRequest(url, artifact);
 
         /* test */
         assertEquals(XrayAPIRequest.RequestMethodEnum.POST, request.getRequestMethodEnum());
@@ -144,19 +144,19 @@ class XrayAPIRequestBuilderTest {
     }
 
     @Test
-    void buildGetScanReports_throws_xrayWrapperRuntimeException() {
+    void createGetScanReportsRequest_throws_xrayWrapperException() {
         /* execute + test */
-        assertThrows(XrayWrapperRuntimeException.class, () -> XrayAPIRequestBuilder.buildGetScanReports(null, null));
+        assertThrows(XrayWrapperException.class, () -> XrayAPIRequestFactory.createGetScanReportsRequest(null, null));
     }
 
     @Test
-    void buildDeleteArtifact_returns_http_request() {
+    void createDeleteArtifactRequest_returns_http_request() throws XrayWrapperException {
         /* prepare */
         XrayAPIRequest request;
         String stringUrl = "http://myurl/artifactory/" + registry + "/" + artifact.getName() + "/" + artifact.getTag();
 
         /* execute */
-        request = XrayAPIRequestBuilder.buildDeleteArtifact(url, artifact, registry);
+        request = XrayAPIRequestFactory.createDeleteArtifactRequest(url, artifact, registry);
 
         /* test */
         assertEquals(XrayAPIRequest.RequestMethodEnum.DELETE, request.getRequestMethodEnum());
@@ -164,28 +164,28 @@ class XrayAPIRequestBuilderTest {
     }
 
     @Test
-    void buildDeleteArtifact_throws_xrayWrapperRuntimeException() {
+    void createDeleteArtifactRequest_throws_xrayWrapperException() {
         /* prepare */
         String invalidUrl = "invalid url";
 
         /* execute + test */
-        assertThrows(XrayWrapperRuntimeException.class, () -> XrayAPIRequestBuilder.buildDeleteArtifact(invalidUrl, artifact, null));
+        assertThrows(XrayWrapperException.class, () -> XrayAPIRequestFactory.createDeleteArtifactRequest(invalidUrl, artifact, null));
     }
 
     @Test
-    void buildDeleteArtifact_throws_nullPointerException() {
+    void createDeleteArtifactRequest_throws_nullPointerException() {
         /* execute + test */
-        assertThrows(NullPointerException.class, () -> XrayAPIRequestBuilder.buildDeleteArtifact(null, null, null));
+        assertThrows(NullPointerException.class, () -> XrayAPIRequestFactory.createDeleteArtifactRequest(null, null, null));
     }
 
     @Test
-    void buildDeleteUploads_returns_http_request() {
+    void createDeleteUploadsRequest_returns_http_request() throws XrayWrapperException {
         /* prepare */
         XrayAPIRequest request;
         String stringUrl = "http://myurl/artifactory/" + registry + "/" + artifact.getName() + "/_uploads";
 
         /* execute */
-        request = XrayAPIRequestBuilder.buildDeleteUploads(url, artifact, registry);
+        request = XrayAPIRequestFactory.createDeleteUploadsRequest(url, artifact, registry);
 
         /* test */
         assertEquals(XrayAPIRequest.RequestMethodEnum.DELETE, request.getRequestMethodEnum());
@@ -193,17 +193,17 @@ class XrayAPIRequestBuilderTest {
     }
 
     @Test
-    void buildDeleteUploads_throws_xrayWrapperRuntimeException() {
+    void createDeleteUploadsRequest_throws_xrayWrapperException() {
         /* prepare */
         String invalidUrl = "invalid url";
 
         /* execute + test */
-        assertThrows(XrayWrapperRuntimeException.class, () -> XrayAPIRequestBuilder.buildDeleteUploads(invalidUrl, artifact, null));
+        assertThrows(XrayWrapperException.class, () -> XrayAPIRequestFactory.createDeleteUploadsRequest(invalidUrl, artifact, null));
     }
 
     @Test
-    void buildDeleteUploads_throws_nullPointerException() {
+    void createDeleteUploadsRequest_throws_nullPointerException() {
         /* execute + test */
-        assertThrows(NullPointerException.class, () -> XrayAPIRequestBuilder.buildDeleteUploads(null, null, null));
+        assertThrows(NullPointerException.class, () -> XrayAPIRequestFactory.createDeleteUploadsRequest(null, null, null));
     }
 }

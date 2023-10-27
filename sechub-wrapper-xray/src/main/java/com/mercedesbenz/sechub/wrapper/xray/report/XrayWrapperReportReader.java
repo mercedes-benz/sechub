@@ -12,7 +12,7 @@ import java.util.HashMap;
 import org.cyclonedx.model.Bom;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import com.mercedesbenz.sechub.wrapper.xray.cli.XrayWrapperExitCode;
+import com.mercedesbenz.sechub.wrapper.xray.XrayWrapperException;
 import com.mercedesbenz.sechub.wrapper.xray.util.ZipFileExtractor;
 
 public class XrayWrapperReportReader {
@@ -31,7 +31,7 @@ public class XrayWrapperReportReader {
             if (ZipFileExtractor.fileExists(zipArchive)) {
                 ZipFileExtractor.unzipFile(Paths.get(zipArchive), Paths.get(unzippedArchive));
             } else {
-                throw new XrayWrapperReportException("File with reports does not exist", XrayWrapperExitCode.FILE_NOT_FOUND);
+                throw new XrayWrapperReportException("File with reports does not exist");
             }
         }
 
@@ -54,12 +54,12 @@ public class XrayWrapperReportReader {
         try (DirectoryStream<Path> dirStream = Files.newDirectoryStream(Paths.get(dir), ("*" + filename + "*.json"))) {
             dirStream.forEach(paths::add);
         } catch (IOException e) {
-            throw new XrayWrapperReportException("Could not find Security and CycloneDX reports", e, XrayWrapperExitCode.IO_ERROR);
+            throw new XrayWrapperReportException("Could not find Security and CycloneDX reports", e);
         }
         return paths;
     }
 
-    public void readSecurityReport() throws XrayWrapperReportException {
+    public void readSecurityReport() throws XrayWrapperException {
         XrayWrapperReportParser xrayWrapperReportParser = new XrayWrapperReportParser();
         JsonNode rootNode = xrayWrapperReportParser.getRootDataNode(securityReport);
         cycloneDXVulnerabilityHashMap = xrayWrapperReportParser.transformSecurityReport(rootNode);
