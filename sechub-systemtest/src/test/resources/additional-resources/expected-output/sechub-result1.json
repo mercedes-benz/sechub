@@ -55,6 +55,46 @@
   },
   "status" : "SUCCESS",
   "reportVersion" : "1.0",
+    "metaData" : {
+    "labels" : { },
+    "summary" : {
+      "codeScan" : {
+        "total" : 4,
+        "red" : 0,
+        "yellow" : 1,
+        "green" : 3,
+        "details" : { }
+      },
+      "infraScan" : {
+        "total" : 0,
+        "red" : 0,
+        "yellow" : 0,
+        "green" : 0,
+        "details" : { }
+      },
+      "licenseScan" : {
+        "total" : 0,
+        "red" : 0,
+        "yellow" : 0,
+        "green" : 0,
+        "details" : { }
+      },
+      "secretScan" : {
+        "total" : 0,
+        "red" : 0,
+        "yellow" : 0,
+        "green" : 0,
+        "details" : { }
+      },
+      "webScan" : {
+        "total" : 0,
+        "red" : 0,
+        "yellow" : 0,
+        "green" : 0,
+        "details" : { }
+      }
+    }
+  },
   "messages" : [ {
     "type" : "ERROR",
     "text" : "error for PDS job: {*:36} but with\n    a multine ....\n    "
