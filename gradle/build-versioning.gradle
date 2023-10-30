@@ -16,17 +16,24 @@ import groovy.time.TimeDuration
 /*
  * We do always build the files. See description in headline comment.
  */
+ext.versionData=new VersionData()
+
 buildVersionFiles()
+
+/* the former call to buildVersionFiles() did setup our version data - now we 
+ * can fetch the server version and all other versions */
+version = versionData.getServerVersion()
 
 allprojects{
         // normal gradle build is for server so we use server image version
         // go client uses generated version.go file for runtime info
-        project.version=VersionData.getServerVersion()
+        project.version=versionData.getServerVersion()
 }
 
 
 def buildVersionFiles(){
     println("BUILD versioning")
+    
     def start = new Date()
     // This file contains some logic for calculation of the version number
 
@@ -60,7 +67,7 @@ def buildVersionFiles(){
     // write version code for go client
     String clientGoVersionTemplate = new File('./sechub-cli/src/mercedes-benz.com/sechub/cli/version.go.template').getText('UTF-8')
 
-    def clientVersionInfo = VersionData.defineVersion("Client",buildVersionString(clientVersionCommitTag, hasChanged,buildNumber))
+    def clientVersionInfo = versionData.defineVersion("Client",buildVersionString(clientVersionCommitTag, hasChanged,buildNumber))
 
     String clientGoVersionCode = clientGoVersionTemplate.replaceAll("__version__",clientVersionInfo.getFullVersion())
     def clientVersionFile = new File('./sechub-cli/src/mercedes-benz.com/sechub/cli/version.go')
@@ -73,7 +80,7 @@ def buildVersionFiles(){
     // ------------------------
     // - Server
     // ------------------------
-    def serverVersionInfo =  VersionData.defineVersion("Server",buildVersionString(serverVersionCommitTag, hasChanged,buildNumber))
+    def serverVersionInfo =  versionData.defineVersion("Server",buildVersionString(serverVersionCommitTag, hasChanged,buildNumber))
 
      /* write version info also as asciidoc file*/
     def serverVersionAsciiDocFile = new File('./sechub-doc/src/docs/asciidoc/documents/gen/server-version.adoc')
@@ -82,7 +89,7 @@ def buildVersionFiles(){
     // ------------------------
     // - PDS
     // ------------------------
-    def pdsVersionInfo = VersionData.defineVersion("PDS",buildVersionString(pdsVersionCommitTag, hasChanged,buildNumber))
+    def pdsVersionInfo = versionData.defineVersion("PDS",buildVersionString(pdsVersionCommitTag, hasChanged,buildNumber))
      /* write version info also as asciidoc file*/
     def pdsVersionAsciiDocFile = new File('./sechub-doc/src/docs/asciidoc/documents/gen/pds-version.adoc')
     pdsVersionAsciiDocFile.write("// SPDX-License-Identifier: MIT\n:revnumber: PDS "+pdsVersionInfo.getShortVersion()+"\n:longrevnumber: PDS "+pdsVersionInfo.getFullVersion()+"\n")
@@ -90,22 +97,22 @@ def buildVersionFiles(){
     // ------------------------
     // - PDS tools
     // ------------------------
-    def pdsToolsVersionInfo = VersionData.defineVersion("PDS-Tools",buildVersionString(pdsToolsVersionCommitTag, hasChanged,buildNumber))
+    def pdsToolsVersionInfo = versionData.defineVersion("PDS-Tools",buildVersionString(pdsToolsVersionCommitTag, hasChanged,buildNumber))
 
     // ------------------------
     // - Libraries
     // ------------------------
-    def librariesVersionInfo =  VersionData.defineVersion("Libraries",buildVersionString(librariesVersionCommitTag, hasChanged,buildNumber))
+    def librariesVersionInfo =  versionData.defineVersion("Libraries",buildVersionString(librariesVersionCommitTag, hasChanged,buildNumber))
 
     // ------------------------
     // - Checkmarx wrapper
     // ------------------------
-    def checkmarxWrapperVersionInfo = VersionData.defineVersion("Checkmarx Wrapper",buildVersionString(checkmarxWrapperVersionCommitTag, hasChanged, buildNumber))
+    def checkmarxWrapperVersionInfo = versionData.defineVersion("Checkmarx Wrapper",buildVersionString(checkmarxWrapperVersionCommitTag, hasChanged, buildNumber))
 
     // ------------------------
     // - OWASP-ZAP wrapper
     // ------------------------
-    def owaspzapWrapperVersionInfo = VersionData.defineVersion("OWASP-ZAP Wrapper",buildVersionString(owaspzapWrapperVersionCommitTag, hasChanged, buildNumber))
+    def owaspzapWrapperVersionInfo = versionData.defineVersion("OWASP-ZAP Wrapper",buildVersionString(owaspzapWrapperVersionCommitTag, hasChanged, buildNumber))
 
     // ------------------------
     // - XRAY wrapper
@@ -217,11 +224,11 @@ task assertReleaseable {
 
     doLast {
         /* we only assert at execution phase - means when this task is really executed and not only configured...*/
-        if (VersionData.isContainingAtLeastOneDirtyReleaseVersion()){
-            throw new IllegalStateException("At least one version contains uncommitted changes and is marked for release! See git-status.txt artifact.")
+        if (versionData.isContainingAtLeastOneDirtyReleaseVersion()){
+            throw new IllegalStateException("At least one version contains uncommitted changes and is marked for release! See git-status.txt artifact.\n"+versionData.getDebugInfo())
         }
-        if (!VersionData.isContainingAtLeastOneRealReleaseVersion()){
-            throw new IllegalStateException("There is not at least one version defined which can be released! 0.0.0 is not an acceptable release version!")
+        if (!versionData.isContainingAtLeastOneRealReleaseVersion()){
+            throw new IllegalStateException("There is not at least one version defined which can be released! 0.0.0 is not an acceptable release version!\n"+versionData.getDebugInfo())
         }
     }
 

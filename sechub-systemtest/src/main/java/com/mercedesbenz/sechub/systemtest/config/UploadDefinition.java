@@ -9,6 +9,9 @@ public class UploadDefinition extends AbstractDefinition {
     private Optional<String> sourceFolder = Optional.ofNullable(null);
     private Optional<String> referenceId = Optional.ofNullable(null);
 
+    private Optional<String> binaryFile = Optional.ofNullable(null);
+    private Optional<String> sourceFile = Optional.ofNullable(null);
+
     public Optional<String> getBinariesFolder() {
         return binariesFolder;
     }
@@ -32,4 +35,21 @@ public class UploadDefinition extends AbstractDefinition {
     public void setReferenceId(Optional<String> referenceId) {
         this.referenceId = referenceId;
     }
+
+    public Optional<String> getBinaryFile() {
+        return binaryFile;
+    }
+
+    public void setBinaryFile(Optional<String> binaryFile) {
+        this.binaryFile = binaryFile;
+    }
+
+    public Optional<String> getSourceFile() {
+        return sourceFile;
+    }
+
+    public void setSourceFile(Optional<String> sourceFile) {
+        this.sourceFile = sourceFile;
+    }
+
 }

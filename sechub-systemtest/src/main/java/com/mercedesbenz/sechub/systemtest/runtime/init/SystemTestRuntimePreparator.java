@@ -72,11 +72,8 @@ public class SystemTestRuntimePreparator {
 
         initializeAlteredConfiguration(context);
 
-        if (!context.isLocalRun()) {
-            LOG.debug("Skip preparation - run is not local");
-            return;
-        }
         prepareLocal(context);
+        prepareRemote(context);
 
         prepareTests(context);
     }
@@ -131,7 +128,10 @@ public class SystemTestRuntimePreparator {
         }
         SecHubWebScanConfiguration webScan = webScanOpt.get();
         LOG.warn("Web scan found, but no special preparation done for url: {}", webScan.getUrl());
-
+        if (webScan.getApi().isEmpty()) {
+            return;
+        }
+        handleUsedDataConfigurationObjects(webScan.getApi().get(), test, context);
     }
 
     private void handleInfraScan(TestDefinition test, SystemTestRuntimeContext context, RunSecHubJobDefinition runSecHubJob) {
@@ -244,6 +244,10 @@ public class SystemTestRuntimePreparator {
     }
 
     private void prepareLocal(SystemTestRuntimeContext context) {
+        if (!context.isLocalRun()) {
+            LOG.debug("Skip local preparation - run is not local");
+            return;
+        }
         createDefaultsWhereNothingDefined(context);
 
         prepareScripts(context);
@@ -254,6 +258,14 @@ public class SystemTestRuntimePreparator {
         addFallbackExecutorConfigurationCredentials(context);
         addExecutorDefaultsForMissingParts(context);
 
+    }
+
+    private void prepareRemote(SystemTestRuntimeContext context) {
+        if (context.isLocalRun()) {
+            LOG.debug("Skip remote preparation - run is not remote");
+            return;
+        }
+        /* currently no special remote preparation at all */
     }
 
     private void addFallbackDefaultProfileToExecutorsWithoutProfile(SystemTestRuntimeContext context) {
@@ -267,29 +279,38 @@ public class SystemTestRuntimePreparator {
         }
     }
 
-    private void createFallbackDefaultProjectWhenNoProjectsDefined(SystemTestRuntimeContext context) {
+    private void addFallbackDefaultProjectAndProfilesWhenNotDefined(SystemTestRuntimeContext context) {
         SecHubConfigurationDefinition sechubConfig = context.getLocalSecHubConfigurationOrFail();
-        Optional<List<ProjectDefinition>> projects = sechubConfig.getProjects();
-        if (!projects.isPresent()) {
+        Optional<List<ProjectDefinition>> projectsOpt = sechubConfig.getProjects();
+        if (!projectsOpt.isPresent()) {
             sechubConfig.setProjects(Optional.of(new ArrayList<>()));
         }
 
-        List<ProjectDefinition> projectDefinitions = sechubConfig.getProjects().get();
-        if (projectDefinitions.isEmpty()) {
+        List<ProjectDefinition> projects = sechubConfig.getProjects().get();
 
-            ProjectDefinition fallback = new ProjectDefinition();
+        /* handle missing project definitions */
+        if (projects.isEmpty()) {
+            ProjectDefinition fallbackProject = new ProjectDefinition();
 
-            fallback.setName(FALLBACK_PROJECT_NAME.getValue());
-            fallback.setComment("Auto created fallback default project");
-            fallback.getProfiles().add(FALLBACK_PROFILE_ID.getValue());
-            projectDefinitions.add(fallback);
+            fallbackProject.setName(FALLBACK_PROJECT_NAME.getValue());
+            fallbackProject.setComment("Auto created fallback default project");
+
+            projects.add(fallbackProject);
+        }
+
+        /* handle missing profile definitions for projects */
+        for (ProjectDefinition projectDefinition : projects) {
+            List<String> profiles = projectDefinition.getProfiles();
+            if (profiles.isEmpty()) {
+                profiles.add(FALLBACK_PROFILE_ID.getValue());
+            }
         }
     }
 
     private void createDefaultsWhereNothingDefined(SystemTestRuntimeContext context) {
 
         createFallbackSecHubSetupParts(context);
-        createFallbackDefaultProjectWhenNoProjectsDefined(context);
+        addFallbackDefaultProjectAndProfilesWhenNotDefined(context);
         createFallbackNamesForExecutorsWithoutName(context);
         addFallbackDefaultProfileToExecutorsWithoutProfile(context);
 
@@ -311,7 +332,6 @@ public class SystemTestRuntimePreparator {
                 executor.setName(newName);
             }
         }
-
     }
 
     private void createFallbacksForPDSSolutions(SystemTestRuntimeContext context) {
