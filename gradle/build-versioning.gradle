@@ -117,7 +117,7 @@ def buildVersionFiles(){
     // ------------------------
     // - XRAY wrapper
     // ------------------------
-    def xrayWrapperVersionInfo = VersionData.defineVersion("XRAY Wrapper",buildVersionString(xrayWrapperVersionCommitTag, hasChanged, buildNumber))
+    def xrayWrapperVersionInfo = versionData.defineVersion("XRAY Wrapper",buildVersionString(xrayWrapperVersionCommitTag, hasChanged, buildNumber))
 
 
     def stop = new Date()

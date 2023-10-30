@@ -20,7 +20,7 @@ dependencies {
 
 }
 
-version = VersionData.getXrayWrapperVersion()
+version = versionData.getXrayWrapperVersion()
 
 
 task buildWrapperXray(type: Jar, dependsOn: build) {

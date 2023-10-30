@@ -93,7 +93,7 @@ class VersionData{
         return map.get(ID_WRAPPER_OWASPZAP).getShortVersion()
     }
 
-    public static String getXrayWrapperVersion(){
+    public String getXrayWrapperVersion(){
         return map.get(ID_WRAPPER_XRAY).getShortVersion()
     }
 
