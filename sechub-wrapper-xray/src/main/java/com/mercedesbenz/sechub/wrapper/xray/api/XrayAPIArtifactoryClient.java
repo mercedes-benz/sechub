@@ -9,6 +9,7 @@ import org.slf4j.LoggerFactory;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.mercedesbenz.sechub.wrapper.xray.XrayWrapperException;
 import com.mercedesbenz.sechub.wrapper.xray.XrayWrapperJSONConverter;
+import com.mercedesbenz.sechub.wrapper.xray.cli.XrayWrapperArtifactoryClientSupport;
 import com.mercedesbenz.sechub.wrapper.xray.config.XrayWrapperArtifact;
 import com.mercedesbenz.sechub.wrapper.xray.config.XrayWrapperConfiguration;
 
@@ -41,13 +42,13 @@ public class XrayAPIArtifactoryClient {
         return true;
     }
 
-    public String getScanStatus() throws XrayWrapperException {
+    public XrayWrapperArtifactoryClientSupport.ScanStatus getScanStatus() throws XrayWrapperException {
         XrayAPIRequest request = XrayAPIRequestFactory.createGetScanStatusRequest(xrayWrapperConfiguration.getArtifactory(), artifact,
                 xrayWrapperConfiguration.getRegister());
         XrayAPIResponse response = send(request);
         assertNoError(response, "Scan status could not be retrieved");
         JsonNode node = XrayWrapperJSONConverter.get().readJSONFromString(response.getBody());
-        return node.get("status").asText();
+        return XrayWrapperArtifactoryClientSupport.ScanStatus.fromString(node.get("status").asText());
     }
 
     public boolean requestScanReports() throws XrayWrapperException {

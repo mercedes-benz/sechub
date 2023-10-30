@@ -34,7 +34,7 @@ class XrayWrapperArtifactoryClientSupportTest {
         try (MockedConstruction<XrayAPIArtifactoryClient> mockedClient = Mockito.mockConstruction(XrayAPIArtifactoryClient.class, (mock, context) -> {
             when(mock.getXrayVersion()).thenReturn("mocked-version");
             when(mock.checkArtifactoryUploadSuccess()).thenReturn(true);
-            when(mock.getScanStatus()).thenReturn("scanned");
+            when(mock.getScanStatus()).thenReturn(XrayWrapperArtifactoryClientSupport.ScanStatus.SCANNED);
             when(mock.requestScanReports()).thenReturn(false);
         })) {
             controller = new XrayWrapperArtifactoryClientSupport(configuration, artifact);

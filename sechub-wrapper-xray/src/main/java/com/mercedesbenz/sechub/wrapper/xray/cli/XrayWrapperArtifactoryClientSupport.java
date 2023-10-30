@@ -21,6 +21,31 @@ public class XrayWrapperArtifactoryClientSupport {
 
     XrayWrapperReportReader reportReader;
 
+    public enum ScanStatus {
+        SCANNED("scanned"), IN_PROGRESS("in progress"),
+
+        NOT_SCANNED("not scanned");
+
+        private String status;
+
+        ScanStatus(String status) {
+            this.status = status;
+        }
+
+        public String getStatus() {
+            return this.status;
+        }
+
+        public static ScanStatus fromString(String stringStatus) throws XrayWrapperException {
+            for (ScanStatus status : ScanStatus.values()) {
+                if (status.status.equals(stringStatus)) {
+                    return status;
+                }
+            }
+            throw new XrayWrapperException("Received unexpected scan status", XrayWrapperExitCode.UNSUPPORTED_API_REQUEST);
+        }
+    }
+
     public XrayWrapperArtifactoryClientSupport(XrayWrapperConfiguration xrayWrapperConfiguration, XrayWrapperArtifact artifact) {
         this.xrayWrapperConfiguration = xrayWrapperConfiguration;
         this.artifactoryClient = new XrayAPIArtifactoryClient(artifact, xrayWrapperConfiguration);
@@ -74,14 +99,14 @@ public class XrayWrapperArtifactoryClientSupport {
      * @throws XrayWrapperException
      */
     private boolean handleScanStatus(ClientControllerContext context) throws XrayWrapperException {
-        String status = artifactoryClient.getScanStatus();
-        LOG.debug("Artifact status is: " + status);
+        ScanStatus status = artifactoryClient.getScanStatus();
+        LOG.debug("Artifact status is: " + status.getStatus());
         if (context.isTimeoutReached()) {
             throw new XrayWrapperException("Reached maximum scan timeout of " + xrayWrapperConfiguration.getMaxScanDurationHours() + " hours. "
                     + "Started scan at: " + context.startTime, XrayWrapperExitCode.TIMEOUT_REACHED);
         }
         switch (status) {
-        case "not scanned" -> {
+        case NOT_SCANNED -> {
             waitSeconds(xrayWrapperConfiguration.getWaitUntilRetrySeconds());
             if (context.isMaximumRetriesReached()) {
                 context.resetRetries();
@@ -90,11 +115,11 @@ public class XrayWrapperArtifactoryClientSupport {
             context.markNextRetry();
             return false;
         }
-        case "in progress" -> {
+        case IN_PROGRESS -> {
             waitSeconds(xrayWrapperConfiguration.getWaitUntilRetrySeconds());
             return false;
         }
-        case "scanned" -> {
+        case SCANNED -> {
             return true;
         }
         }

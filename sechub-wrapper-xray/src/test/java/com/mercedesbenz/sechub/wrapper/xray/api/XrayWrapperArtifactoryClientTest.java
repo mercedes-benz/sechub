@@ -85,7 +85,7 @@ class XrayWrapperArtifactoryClientTest {
         Mockito.doReturn(response).when(xrayAPIArtifactoryClientSpy).send(any());
 
         /* execute */
-        String status = xrayAPIArtifactoryClientSpy.getScanStatus();
+        String status = xrayAPIArtifactoryClientSpy.getScanStatus().getStatus();
 
         /* test */
         assertEquals("scanned", status);
