@@ -11,112 +11,111 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.deser.std.StdDeserializer;
-import com.fasterxml.jackson.databind.DeserializationContext;
 
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class SecHubReportMetaDataSummaryDetails {
-	
-	private static final Logger LOG = LoggerFactory.getLogger(SecHubReportMetaDataSummaryDetails.class);
 
-	@JsonDeserialize(using = TreeMapDeserializer.class)
-	Map<String, SeverityDetails> high = new TreeMap<>();
-	
-	@JsonDeserialize(using = TreeMapDeserializer.class)
-	Map<String, SeverityDetails> medium = new TreeMap<>();
-	
-	@JsonDeserialize(using = TreeMapDeserializer.class)
-	Map<String, SeverityDetails> low = new TreeMap<>();
+    private static final Logger LOG = LoggerFactory.getLogger(SecHubReportMetaDataSummaryDetails.class);
 
-	public void detailsHelper(SecHubFinding finding) {
-		switch (finding.getSeverity()) {
-		case HIGH -> detailsFiller(high, finding);
-		case MEDIUM -> detailsFiller(medium, finding);
-		case LOW, INFO -> detailsFiller(low, finding);
-		}
-	}
+    @JsonDeserialize(using = TreeMapDeserializer.class)
+    Map<String, SeverityDetails> high = new TreeMap<>();
 
-	protected void detailsFiller(Map<String, SeverityDetails> helperMap, SecHubFinding finding) {
-		Integer cweId = finding.getCweId();
-		String name = finding.getName();
-		SeverityDetails severityDetails = helperMap.get(name);
-		if (severityDetails != null) {
-			severityDetails.incrementCount();
-		} else {
-			helperMap.put(name, new SeverityDetails(cweId, name));
-		}
-	}
+    @JsonDeserialize(using = TreeMapDeserializer.class)
+    Map<String, SeverityDetails> medium = new TreeMap<>();
 
-	public List<SeverityDetails> getHigh() {
-		return new ArrayList<>(high.values());
-	}
+    @JsonDeserialize(using = TreeMapDeserializer.class)
+    Map<String, SeverityDetails> low = new TreeMap<>();
 
-	public List<SeverityDetails> getMedium() {
-		return new ArrayList<>(medium.values());
-	}
+    public void detailsHelper(SecHubFinding finding) {
+        switch (finding.getSeverity()) {
+        case HIGH -> detailsFiller(high, finding);
+        case MEDIUM -> detailsFiller(medium, finding);
+        case LOW, INFO -> detailsFiller(low, finding);
+        }
+    }
 
-	public List<SeverityDetails> getLow() {
-		return new ArrayList<>(low.values());
-	}
+    protected void detailsFiller(Map<String, SeverityDetails> helperMap, SecHubFinding finding) {
+        Integer cweId = finding.getCweId();
+        String name = finding.getName() != null ? finding.getName() : "no_name";
+        SeverityDetails severityDetails = helperMap.get(name);
+        if (severityDetails != null) {
+            severityDetails.incrementCount();
+        } else {
+            helperMap.put(name, new SeverityDetails(cweId, name));
+        }
+    }
 
-	@JsonIgnoreProperties(ignoreUnknown = true)
-	public class SeverityDetails {
-		private Integer cweId;
-		private String name;
-		private long count;
-		
-		SeverityDetails(Integer cweId, String name) {
-			this.cweId = cweId;
-			this.name = name;
-			this.count = 1;
-		}
+    public List<SeverityDetails> getHigh() {
+        return new ArrayList<>(high.values());
+    }
 
-		public void incrementCount() {
-			this.count++;
-		}
+    public List<SeverityDetails> getMedium() {
+        return new ArrayList<>(medium.values());
+    }
 
-		public Integer getCweId() {
-			return cweId;
-		}
+    public List<SeverityDetails> getLow() {
+        return new ArrayList<>(low.values());
+    }
 
-		public String getName() {
-			return name;
-		}
+    @JsonIgnoreProperties(ignoreUnknown = true)
+    public class SeverityDetails {
+        private Integer cweId;
+        private String name;
+        private long count;
 
-		public long getCount() {
-			return count;
-		}
-	}
+        SeverityDetails(Integer cweId, String name) {
+            this.cweId = cweId;
+            this.name = name;
+            this.count = 1;
+        }
 
-	private static class TreeMapDeserializer extends StdDeserializer<Map<String, SeverityDetails>> {
+        public void incrementCount() {
+            this.count++;
+        }
 
-		public TreeMapDeserializer() {
-			this(null);
-		}
+        public Integer getCweId() {
+            return cweId;
+        }
 
-		protected TreeMapDeserializer(Class<?> vc) {
-			super(vc);
-		}
+        public String getName() {
+            return name;
+        }
 
-		@Override
-		public TreeMap<String, SeverityDetails> deserialize(JsonParser jsonParser,
-				DeserializationContext deserializationContext) throws IOException, JsonProcessingException {
-			TreeMap<String, SeverityDetails> treeMap = new TreeMap<>();
-			JsonNode node = jsonParser.getCodec().readTree(jsonParser);
-			node.fields().forEachRemaining(entry -> {
-				try {
-					String key = entry.getKey();
-					SeverityDetails value = entry.getValue().traverse(jsonParser.getCodec())
-							.readValueAs(SeverityDetails.class);
-					treeMap.put(key, value);
-				} catch (IOException e) {
-					LOG.debug("JSON deserialization failed \n" + e);
-				}
-			});
-			return treeMap;
-		}
-	}
+        public long getCount() {
+            return count;
+        }
+    }
+
+    private static class TreeMapDeserializer extends StdDeserializer<Map<String, SeverityDetails>> {
+
+        public TreeMapDeserializer() {
+            this(null);
+        }
+
+        protected TreeMapDeserializer(Class<?> vc) {
+            super(vc);
+        }
+
+        @Override
+        public TreeMap<String, SeverityDetails> deserialize(JsonParser jsonParser, DeserializationContext deserializationContext)
+                throws IOException, JsonProcessingException {
+            TreeMap<String, SeverityDetails> treeMap = new TreeMap<>();
+            JsonNode node = jsonParser.getCodec().readTree(jsonParser);
+            node.fields().forEachRemaining(entry -> {
+                try {
+                    String key = entry.getKey();
+                    SeverityDetails value = entry.getValue().traverse(jsonParser.getCodec()).readValueAs(SeverityDetails.class);
+                    treeMap.put(key, value);
+                } catch (IOException e) {
+                    LOG.debug("JSON deserialization failed \n" + e);
+                }
+            });
+            return treeMap;
+        }
+    }
 }

@@ -3387,6 +3387,16 @@
                 "title": "ServerVersion",
                 "type": "object"
             },
+            "JobId": {
+                "title": "JobId",
+                "type": "object",
+                "properties": {
+                    "jobId": {
+                        "type": "string",
+                        "description": "A unique job id"
+                    }
+                }
+            },
             "ExecutionProfileCreate": {
                 "title": "ExecutionProfileCreate",
                 "type": "object",
@@ -3434,16 +3444,6 @@
                                 }
                             }
                         }
-                    }
-                }
-            },
-            "JobId": {
-                "title": "JobId",
-                "type": "object",
-                "properties": {
-                    "jobId": {
-                        "type": "string",
-                        "description": "A unique job id"
                     }
                 }
             },

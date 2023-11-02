@@ -99,7 +99,7 @@ public class PDSCodeScanSarifJobScenario10IntTest {
             containsAtLeastOneOpenDetailsBlock().
             hasHTMLString("<td><a href=\"#redCodeScanTable\">28</a></td>").
             hasHTMLString("<td><a href=\"#yellowCodeScanTable\">2</a></td>").
-            hasHTMLString("<td><a href=\"#greenCodeScanTable\">2</a></td>").            
+            hasHTMLString("<td><a href=\"#greenCodeScanTable\">2</a></td>").
             hasHTMLString(" <tr>\n"
             		+ "            <td>CWE-null</td>\n"
             		+ "            <td>BRAKE0000</td>\n"
