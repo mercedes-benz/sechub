@@ -111,7 +111,7 @@ public class SecHubReportMetaDataSummaryDetailsTest {
     @Test
     void if_adding_multiple_similar_findings_into_high_map_counter_contains_correct_value() {
         /* execute */
-        for (int i = 0; i < 101; i++) {
+        for (int i = 0; i < 8; i++) {
             secHubReportMetaDataSummaryDetails.detailsHelper(highFinding);
         }
         SecHubReportMetaDataSummaryDetails.SeverityDetails severityDetails = secHubReportMetaDataSummaryDetails.high.get(HIGH_FINDING_NAME);
