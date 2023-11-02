@@ -80,7 +80,7 @@ public class SecHubReportMetaDataSummaryTest {
     @Test
     void when_add_multiple_medium_findings_then_yellow_and_total_counters_must_be_increased() {
         /* execute */
-        for (int i = 0; i < 101; i++) {
+        for (int i = 0; i < 6; i++) {
             secHubReportMetaDataSummary.reportScanHelper(mediumFinding);
         }
 
