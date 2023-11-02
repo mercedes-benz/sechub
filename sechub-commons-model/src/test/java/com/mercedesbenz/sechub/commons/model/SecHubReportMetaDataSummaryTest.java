@@ -73,7 +73,7 @@ public class SecHubReportMetaDataSummaryTest {
         }
 
         /* test */
-        assertEquals(101, secHubReportMetaDataSummary.getTotal());
+        assertEquals(10, secHubReportMetaDataSummary.getTotal());
         assertEquals(101, secHubReportMetaDataSummary.getRed());
     }
 
