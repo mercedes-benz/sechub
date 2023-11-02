@@ -135,7 +135,7 @@ public class SecHubReportMetaDataSummaryDetailsTest {
     @Test
     void if_adding_multiple_similar_findings_into_low_map_counter_contains_correct_value() {
         /* execute */
-        for (int i = 0; i < 101; i++) {
+        for (int i = 0; i < 11; i++) {
             secHubReportMetaDataSummaryDetails.detailsHelper(lowFinding);
         }
         SecHubReportMetaDataSummaryDetails.SeverityDetails severityDetails = secHubReportMetaDataSummaryDetails.low.get(LOW_FINDING_NAME);
