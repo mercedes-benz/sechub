@@ -1,10 +1,10 @@
 package com.mercedesbenz.sechub.wrapper.xray.util;
 
-import com.mercedesbenz.sechub.wrapper.xray.XrayWrapperException;
-import com.mercedesbenz.sechub.wrapper.xray.cli.XrayWrapperExitCode;
-
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
+
+import com.mercedesbenz.sechub.wrapper.xray.XrayWrapperException;
+import com.mercedesbenz.sechub.wrapper.xray.cli.XrayWrapperExitCode;
 
 public class XrayAPIAuthenticationHeader {
 

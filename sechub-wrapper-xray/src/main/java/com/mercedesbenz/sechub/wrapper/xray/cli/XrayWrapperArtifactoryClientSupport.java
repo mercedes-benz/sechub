@@ -1,16 +1,17 @@
 package com.mercedesbenz.sechub.wrapper.xray.cli;
 
+import java.time.LocalDateTime;
+import java.util.concurrent.TimeUnit;
+
+import org.cyclonedx.model.Bom;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.mercedesbenz.sechub.wrapper.xray.XrayWrapperException;
 import com.mercedesbenz.sechub.wrapper.xray.api.XrayAPIArtifactoryClient;
 import com.mercedesbenz.sechub.wrapper.xray.config.XrayWrapperArtifact;
 import com.mercedesbenz.sechub.wrapper.xray.config.XrayWrapperConfiguration;
 import com.mercedesbenz.sechub.wrapper.xray.report.XrayWrapperReportReader;
-import org.cyclonedx.model.Bom;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import java.time.LocalDateTime;
-import java.util.concurrent.TimeUnit;
 
 public class XrayWrapperArtifactoryClientSupport {
 
@@ -52,9 +53,10 @@ public class XrayWrapperArtifactoryClientSupport {
     }
 
     /**
-     * Controls which http requests are send to the xray artifactory, downloads
-     * the reports after a successful scan and add security information from Security report to the cycloneDX report
-     * further the artifacts are deleted from the artifactory
+     * Controls which http requests are send to the xray artifactory, downloads the
+     * reports after a successful scan and add security information from Security
+     * report to the cycloneDX report further the artifacts are deleted from the
+     * artifactory
      *
      * @throws XrayWrapperException
      */
@@ -87,7 +89,7 @@ public class XrayWrapperArtifactoryClientSupport {
     }
 
     private void readAndConvertReports() throws XrayWrapperException {
-        reportReader.getReportFiles(xrayWrapperConfiguration.getZipDirectory(), xrayWrapperConfiguration.getSecHubReport());
+        reportReader.findXrayReportsInArchive(xrayWrapperConfiguration.getZipDirectory(), xrayWrapperConfiguration.getSecHubReport());
         reportReader.readSecurityReport();
         Bom cycloneDXBom = reportReader.mapVulnerabilities();
         reportReader.writeReport(cycloneDXBom);

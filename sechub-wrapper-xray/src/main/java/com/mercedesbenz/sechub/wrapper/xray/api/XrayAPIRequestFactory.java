@@ -1,11 +1,11 @@
 package com.mercedesbenz.sechub.wrapper.xray.api;
 
+import java.net.MalformedURLException;
+import java.net.URL;
+
 import com.mercedesbenz.sechub.wrapper.xray.XrayWrapperException;
 import com.mercedesbenz.sechub.wrapper.xray.cli.XrayWrapperExitCode;
 import com.mercedesbenz.sechub.wrapper.xray.config.XrayWrapperArtifact;
-
-import java.net.MalformedURLException;
-import java.net.URL;
 
 public class XrayAPIRequestFactory {
     private static final String XRAY_API = "/xray/api/v1";

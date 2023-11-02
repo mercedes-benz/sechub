@@ -38,7 +38,7 @@ class XrayWrapperReportReaderTest {
         String securityReport = "Docker_Security_Export.json";
 
         /* execute */
-        reportReader.getReportFiles(source, resultFile);
+        reportReader.findXrayReportsInArchive(source, resultFile);
 
         /* test */
         String cycloneName = reportReader.cycloneReport.getName();
@@ -52,14 +52,14 @@ class XrayWrapperReportReaderTest {
     @Test
     void getReportFile_throws_nullPointerException() {
         /* execute + test */
-        assertThrows(NullPointerException.class, () -> reportReader.getReportFiles(null, null));
+        assertThrows(NullPointerException.class, () -> reportReader.findXrayReportsInArchive(null, null));
     }
 
     @Test
     void readSecurityReport_read_vulnerabilities_from_security_report() throws XrayWrapperException {
         /* prepare */
         String source = "src/test/resources/xray-report-examples";
-        reportReader.getReportFiles(source, "");
+        reportReader.findXrayReportsInArchive(source, "");
 
         /* execute */
         reportReader.readSecurityReport();
@@ -78,7 +78,7 @@ class XrayWrapperReportReaderTest {
     void mapVulnerabilities_valid_vulnerabilities() throws IOException, XrayWrapperException {
         /* prepare */
         String source = "src/test/resources/xray-report-examples";
-        reportReader.getReportFiles(source, "");
+        reportReader.findXrayReportsInArchive(source, "");
         reportReader.readSecurityReport();
         File target = new File("src/test/resources/xray-sechub-report-examples/Docker_SBOM_Export_CycloneDX.json");
         ObjectNode expectedNode = (ObjectNode) mapper.readTree(target);

@@ -1,16 +1,17 @@
 package com.mercedesbenz.sechub.wrapper.xray.api;
 
+import java.net.HttpURLConnection;
+import java.util.Objects;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.fasterxml.jackson.databind.JsonNode;
 import com.mercedesbenz.sechub.wrapper.xray.XrayWrapperException;
 import com.mercedesbenz.sechub.wrapper.xray.XrayWrapperJSONConverter;
 import com.mercedesbenz.sechub.wrapper.xray.cli.XrayWrapperArtifactoryClientSupport;
 import com.mercedesbenz.sechub.wrapper.xray.config.XrayWrapperArtifact;
 import com.mercedesbenz.sechub.wrapper.xray.config.XrayWrapperConfiguration;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import java.net.HttpURLConnection;
-import java.util.Objects;
 
 public class XrayAPIArtifactoryClient {
 

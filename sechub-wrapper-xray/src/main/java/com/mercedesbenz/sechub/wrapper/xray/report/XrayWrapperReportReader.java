@@ -1,10 +1,5 @@
 package com.mercedesbenz.sechub.wrapper.xray.report;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.mercedesbenz.sechub.wrapper.xray.XrayWrapperException;
-import com.mercedesbenz.sechub.wrapper.xray.util.ZipFileExtractor;
-import org.cyclonedx.model.Bom;
-
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.DirectoryStream;
@@ -14,6 +9,12 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import org.cyclonedx.model.Bom;
+
+import com.fasterxml.jackson.databind.JsonNode;
+import com.mercedesbenz.sechub.wrapper.xray.XrayWrapperException;
+import com.mercedesbenz.sechub.wrapper.xray.util.ZipFileExtractor;
+
 public class XrayWrapperReportReader {
 
     File cycloneReport;
@@ -22,7 +23,7 @@ public class XrayWrapperReportReader {
 
     private HashMap<String, CycloneDXVulnerabilityHelper> cycloneDXVulnerabilityHashMap;
 
-    public void getReportFiles(String unzippedArchive, String pdsResultFile) throws XrayWrapperReportException {
+    public void findXrayReportsInArchive(String unzippedArchive, String pdsResultFile) throws XrayWrapperReportException {
         xrayPdsReport = new File(pdsResultFile);
         if (!ZipFileExtractor.fileExists(unzippedArchive)) {
             // folder with reports is zipped
