@@ -8,7 +8,7 @@
 ARG BASE_IMAGE
 
 # Inject the target architecture
-# For more information: 
+# For more information:
 # - https://docs.docker.com/engine/reference/builder/#automatic-platform-args-in-the-global-scope
 ARG TARGETARCH
 
