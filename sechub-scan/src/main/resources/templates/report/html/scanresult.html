@@ -271,7 +271,7 @@
         <table class='messagesTable'>
             <tbody>
             <tr th:each="message : ${messages}">
-                <td th:utext="${reportHelper.getMessageTypeAsHTMLIcon(message.type)}">&#128711;</td>
+                <td th:utext="${reportHelper.getMessageTypeAsHTMLIcon(message.type)}">🛇</td>
                 <td th:text="${message.text}">This is an error message text</td>
             </tr>
             <tr th:remove="all">
