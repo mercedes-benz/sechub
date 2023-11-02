@@ -177,7 +177,7 @@ public class SecHubReportMetaDataSummaryDetailsTest {
     }
 
     @Test
-    void correct_list_must_be_get_from_low_map() {
+    void must_get_correct_list_from_low_map() {
         /* prepare */
         secHubReportMetaDataSummaryDetails.detailsHelper(lowFinding);
 
