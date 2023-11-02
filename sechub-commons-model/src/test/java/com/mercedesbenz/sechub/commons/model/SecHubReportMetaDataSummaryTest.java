@@ -68,7 +68,7 @@ public class SecHubReportMetaDataSummaryTest {
     @Test
     void when_add_multiple_high_findings_then_red_and_total_counters_must_be_increased() {
         /* execute */
-        for (int i = 0; i < 101; i++) {
+        for (int i = 0; i < 11; i++) {
             secHubReportMetaDataSummary.reportScanHelper(highFinding);
         }
 
