@@ -1,12 +1,12 @@
 package com.mercedesbenz.sechub.wrapper.xray.report;
 
-import static com.mercedesbenz.sechub.wrapper.xray.report.XrayWrapperReportWriter.writeReport;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import org.cyclonedx.model.Bom;
+import org.junit.jupiter.api.Test;
 
 import java.io.File;
 
-import org.cyclonedx.model.Bom;
-import org.junit.jupiter.api.Test;
+import static com.mercedesbenz.sechub.wrapper.xray.report.XrayWrapperReportWriter.writeReport;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class XrayWrapperReportWriterTest {
 
@@ -17,7 +17,7 @@ class XrayWrapperReportWriterTest {
     }
 
     @Test
-    void writeReport_throws_xrayWrapperReportException() {
+    void writeReport_to_empty_file_throws_xrayWrapperReportException() {
         /* prepare */
         Bom sbom = new Bom();
         File file = new File("");

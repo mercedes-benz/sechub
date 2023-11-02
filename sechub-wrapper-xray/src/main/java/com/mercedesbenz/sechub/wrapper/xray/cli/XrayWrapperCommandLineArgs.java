@@ -24,7 +24,7 @@ public class XrayWrapperCommandLineArgs {
         return checksum;
     }
 
-    @Parameter(names = { "--scantype" }, description = "Scan type of the xray scan, need to be one of the following: docker")
+    @Parameter(names = { "--scantype" }, description = "Scan type of the Xray scan, need to be one of the following: docker")
     private String scanType = "";
 
     public String getScanType() {

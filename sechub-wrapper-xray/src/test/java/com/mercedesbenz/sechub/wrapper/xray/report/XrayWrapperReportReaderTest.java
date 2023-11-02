@@ -43,7 +43,7 @@ class XrayWrapperReportReaderTest {
         /* test */
         String cycloneName = reportReader.cycloneReport.getName();
         String securityName = reportReader.securityReport.getName();
-        String sechubReport = reportReader.sechubReport.getName();
+        String sechubReport = reportReader.xrayPdsReport.getName();
         assertEquals(resultFile, sechubReport);
         assertEquals(cycloneReport, cycloneName);
         assertEquals(securityReport, securityName);

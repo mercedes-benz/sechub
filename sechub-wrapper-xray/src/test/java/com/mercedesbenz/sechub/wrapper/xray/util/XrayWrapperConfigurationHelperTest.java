@@ -1,16 +1,15 @@
 package com.mercedesbenz.sechub.wrapper.xray.util;
 
+import com.mercedesbenz.sechub.wrapper.xray.cli.XrayWrapperScanTypes;
+import com.mercedesbenz.sechub.wrapper.xray.config.XrayWrapperConfiguration;
+import org.junit.jupiter.api.Test;
+import org.mockito.MockedConstruction;
+
 import static com.mercedesbenz.sechub.wrapper.xray.util.XrayWrapperConfigurationHelper.createXrayConfiguration;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.mockConstruction;
 import static org.mockito.Mockito.when;
-
-import org.junit.jupiter.api.Test;
-import org.mockito.MockedConstruction;
-
-import com.mercedesbenz.sechub.wrapper.xray.cli.XrayWrapperScanTypes;
-import com.mercedesbenz.sechub.wrapper.xray.config.XrayWrapperConfiguration;
 
 class XrayWrapperConfigurationHelperTest {
 
@@ -28,7 +27,7 @@ class XrayWrapperConfigurationHelperTest {
             xrayWrapperConfiguration = createXrayConfiguration(XrayWrapperScanTypes.DOCKER, "output");
             assertEquals("output", xrayWrapperConfiguration.getSecHubReport());
             assertEquals("https://artifactoryMock", xrayWrapperConfiguration.getArtifactory());
-            assertEquals("registerMock", xrayWrapperConfiguration.getRegister());
+            assertEquals("registerMock", xrayWrapperConfiguration.getRegistry());
         }
     }
 

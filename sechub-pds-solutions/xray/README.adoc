@@ -45,7 +45,7 @@ The folder contains a start script which does the manual steps for you:
 
 The container will be started and attached to the `sechub` Network.
 
-WARNING: Make sure the SecHub container is running.
+WARNING: Make sure the SecHub container is running and executor for xray is set up.
 
 . Start container:
 +
@@ -53,7 +53,13 @@ WARNING: Make sure the SecHub container is running.
 ./05-start-single-sechub-network-docker-compose.sh
 ----
 +
-example sechub.json +
+You can now scan with the SecHub client downloaded from the SecHub release page on GitHub.
+Example sechub.json, the xray wrapper takes docker images saved as tar archives +
+You can save docker images with the command "save" to a tar file. +
++
+----
+docker save <image_name:tag> -o <some_filename.tar>
+----
 +
 [source,json]
 ----

@@ -1,50 +1,50 @@
 package com.mercedesbenz.sechub.wrapper.xray.api;
 
-import java.net.MalformedURLException;
-import java.net.URL;
-
 import com.mercedesbenz.sechub.wrapper.xray.XrayWrapperException;
 import com.mercedesbenz.sechub.wrapper.xray.cli.XrayWrapperExitCode;
 import com.mercedesbenz.sechub.wrapper.xray.config.XrayWrapperArtifact;
 
+import java.net.MalformedURLException;
+import java.net.URL;
+
 public class XrayAPIRequestFactory {
-    private static final String xrayAPI = "/xray/api/v1";
-    private static final String artifactoryAPI = "/artifactory";
+    private static final String XRAY_API = "/xray/api/v1";
+    private static final String ARTIFACTORY_API = "/artifactory";
 
     public static XrayAPIRequest createGetXrayVersionRequest(String baseUrl) throws XrayWrapperException {
-        String stringUrl = baseUrl + xrayAPI + "/system/version";
+        String stringUrl = baseUrl + XRAY_API + "/system/version";
         URL url = parseStringToUrl(stringUrl);
         return XrayAPIRequest.Builder.builder(url, XrayAPIRequest.RequestMethodEnum.GET).build();
     }
 
-    public static XrayAPIRequest createCheckArtifactUploadRequest(String baseUrl, XrayWrapperArtifact artifact, String repository) throws XrayWrapperException {
-        String stringUrl = baseUrl + artifactoryAPI + "/api/storage/" + repository + "/" + artifact.getName() + "/" + artifact.getTag() + "/manifest.json";
+    public static XrayAPIRequest createCheckArtifactUploadRequest(String baseUrl, XrayWrapperArtifact artifact, String registry) throws XrayWrapperException {
+        String stringUrl = baseUrl + ARTIFACTORY_API + "/api/storage/" + registry + "/" + artifact.getName() + "/" + artifact.getTag() + "/manifest.json";
         URL url = parseStringToUrl(stringUrl);
         return XrayAPIRequest.Builder.builder(url, XrayAPIRequest.RequestMethodEnum.GET).isAuthenticationNeeded(true).build();
     }
 
-    public static XrayAPIRequest createScanArtifactRequest(String baseUrl, XrayWrapperArtifact artifact, String repository) throws XrayWrapperException {
-        String stringUrl = baseUrl + xrayAPI + "/scanArtifact";
+    public static XrayAPIRequest createScanArtifactRequest(String baseUrl, XrayWrapperArtifact artifact, String registry) throws XrayWrapperException {
+        String stringUrl = baseUrl + XRAY_API + "/scanArtifact";
         URL url = parseStringToUrl(stringUrl);
         String data = """
                 {"componentID": "%s://%s:%s",\
-                "path": "%s/%s/%s/manifest.json"}""".formatted(artifact.getArtifactType().getType(), artifact.getName(), artifact.getTag(), repository,
+                "path": "%s/%s/%s/manifest.json"}""".formatted(artifact.getArtifactType().getType(), artifact.getName(), artifact.getTag(), registry,
                 artifact.getName(), artifact.getTag());
         return XrayAPIRequest.Builder.builder(url, XrayAPIRequest.RequestMethodEnum.POST).isAuthenticationNeeded(true).buildJSONBody(data).build();
     }
 
-    public static XrayAPIRequest createGetScanStatusRequest(String baseUrl, XrayWrapperArtifact artifact, String repository) throws XrayWrapperException {
-        String stringUrl = baseUrl + xrayAPI + "/scan/status/artifact";
+    public static XrayAPIRequest createGetScanStatusRequest(String baseUrl, XrayWrapperArtifact artifact, String registry) throws XrayWrapperException {
+        String stringUrl = baseUrl + XRAY_API + "/scan/status/artifact";
         URL url = parseStringToUrl(stringUrl);
         String data = """
                 {"path": "%s/%s/%s/manifest.json",\
                  "repository_pkg_type": "%s",\
-                 "sha256": "%s"}""".formatted(repository, artifact.getName(), artifact.getTag(), artifact.getArtifactType().getType(), artifact.getChecksum());
+                 "sha256": "%s"}""".formatted(registry, artifact.getName(), artifact.getTag(), artifact.getArtifactType().getType(), artifact.getChecksum());
         return XrayAPIRequest.Builder.builder(url, XrayAPIRequest.RequestMethodEnum.POST).isAuthenticationNeeded(true).buildJSONBody(data).build();
     }
 
     public static XrayAPIRequest createGetScanReportsRequest(String baseUrl, XrayWrapperArtifact artifact) throws XrayWrapperException {
-        String stringUrl = baseUrl + xrayAPI + "/component/exportDetails";
+        String stringUrl = baseUrl + XRAY_API + "/component/exportDetails";
         URL url = parseStringToUrl(stringUrl);
         String data = """
                 {"component_name": "%s:%s",\
@@ -67,14 +67,14 @@ public class XrayAPIRequestFactory {
         return XrayAPIRequest.Builder.builder(url, XrayAPIRequest.RequestMethodEnum.POST).isAuthenticationNeeded(true).buildJSONBody(data).build();
     }
 
-    public static XrayAPIRequest createDeleteArtifactRequest(String baseUrl, XrayWrapperArtifact artifact, String repository) throws XrayWrapperException {
-        String stringUrl = baseUrl + artifactoryAPI + "/" + repository + "/" + artifact.getName() + "/" + artifact.getTag();
+    public static XrayAPIRequest createDeleteArtifactRequest(String baseUrl, XrayWrapperArtifact artifact, String registry) throws XrayWrapperException {
+        String stringUrl = baseUrl + ARTIFACTORY_API + "/" + registry + "/" + artifact.getName() + "/" + artifact.getTag();
         URL url = parseStringToUrl(stringUrl);
         return XrayAPIRequest.Builder.builder(url, XrayAPIRequest.RequestMethodEnum.DELETE).isAuthenticationNeeded(true).build();
     }
 
-    public static XrayAPIRequest createDeleteUploadsRequest(String baseUrl, XrayWrapperArtifact artifact, String repository) throws XrayWrapperException {
-        String stringUrl = baseUrl + artifactoryAPI + "/" + repository + "/" + artifact.getName() + "/_uploads";
+    public static XrayAPIRequest createDeleteUploadsRequest(String baseUrl, XrayWrapperArtifact artifact, String registry) throws XrayWrapperException {
+        String stringUrl = baseUrl + ARTIFACTORY_API + "/" + registry + "/" + artifact.getName() + "/_uploads";
         URL url = parseStringToUrl(stringUrl);
         return XrayAPIRequest.Builder.builder(url, XrayAPIRequest.RequestMethodEnum.DELETE).isAuthenticationNeeded(true).build();
     }

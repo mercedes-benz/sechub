@@ -44,8 +44,8 @@ RUN export DEBIAN_FRONTEND=noninteractive && \
         #    ln -s sechub-pds-wrapperxray-$XRAY_WRAPPER_VERSION.jar wrapperxray.jar
 
 # workaround until release
-COPY sechub-pds-wrapper-xray-$XRAY_WRAPPER_VERSION.jar "$TOOL_FOLDER""/sechub-pds-wrapper-xray-$XRAY_WRAPPER_VERSION.jar"
-RUN ln -s "$TOOL_FOLDER""/sechub-pds-wrapper-xray-$XRAY_WRAPPER_VERSION.jar" "$TOOL_FOLDER""/wrapper-xray.jar"
+COPY sechub-pds-wrapper-xray-$XRAY_WRAPPER_VERSION.jar "$TOOL_FOLDER/sechub-pds-wrapper-xray-$XRAY_WRAPPER_VERSION.jar"
+RUN ln -s "$TOOL_FOLDER/sechub-pds-wrapper-xray-$XRAY_WRAPPER_VERSION.jar" "$TOOL_FOLDER/wrapper-xray.jar"
 
 # Set workspace
 WORKDIR "$WORKSPACE"

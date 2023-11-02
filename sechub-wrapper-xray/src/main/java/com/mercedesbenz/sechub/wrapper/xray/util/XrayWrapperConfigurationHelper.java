@@ -19,10 +19,10 @@ public class XrayWrapperConfigurationHelper {
         String zipDirectory = environmentVariableReader.readEnvAsString(EnvironmentVariableConstants.WORKSPACE_ENV) + "/XrayArtifactoryReports";
 
         // get repository according to scan type
-        String repository = "";
+        String registry = "";
         if (scanType.equals(XrayWrapperScanTypes.DOCKER)) {
-            repository = environmentVariableReader.readEnvAsString(EnvironmentVariableConstants.DOCKER_REGISTRY_ENV);
+            registry = environmentVariableReader.readEnvAsString(EnvironmentVariableConstants.DOCKER_REGISTRY_ENV);
         }
-        return XrayWrapperConfiguration.Builder.builder(artifactoryUrl, repository, zipDirectory, outputFile).build();
+        return XrayWrapperConfiguration.Builder.builder(artifactoryUrl, registry, zipDirectory, outputFile).build();
     }
 }

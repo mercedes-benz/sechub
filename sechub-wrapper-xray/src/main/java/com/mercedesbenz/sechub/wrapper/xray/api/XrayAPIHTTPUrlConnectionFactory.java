@@ -1,15 +1,15 @@
 package com.mercedesbenz.sechub.wrapper.xray.api;
 
+import com.mercedesbenz.sechub.wrapper.xray.XrayWrapperException;
+import com.mercedesbenz.sechub.wrapper.xray.cli.XrayWrapperExitCode;
+import com.mercedesbenz.sechub.wrapper.xray.util.XrayAPIAuthenticationHeader;
+
 import java.io.IOException;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.ProtocolException;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
-
-import com.mercedesbenz.sechub.wrapper.xray.XrayWrapperException;
-import com.mercedesbenz.sechub.wrapper.xray.cli.XrayWrapperExitCode;
-import com.mercedesbenz.sechub.wrapper.xray.util.XrayAPIAuthenticationHeader;
 
 public class XrayAPIHTTPUrlConnectionFactory {
 
@@ -54,11 +54,10 @@ public class XrayAPIHTTPUrlConnectionFactory {
     }
 
     private void addAuthentication(HttpURLConnection connection, boolean requiresAuthentication) throws XrayWrapperException {
-        if (!requiresAuthentication) {
-            return;
+        if (requiresAuthentication) {
+            String authHeader = XrayAPIAuthenticationHeader.buildBasicAuthHeader();
+            connection.setRequestProperty("Authorization", authHeader);
         }
-        String authHeader = XrayAPIAuthenticationHeader.buildBasicAuthHeader();
-        connection.setRequestProperty("Authorization", authHeader);
     }
 
     private void createHTTPConnection(HttpURLConnection connection) throws XrayWrapperException {

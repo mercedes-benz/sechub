@@ -1,17 +1,16 @@
 package com.mercedesbenz.sechub.wrapper.xray.api;
 
-import java.net.HttpURLConnection;
-import java.util.Objects;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.fasterxml.jackson.databind.JsonNode;
 import com.mercedesbenz.sechub.wrapper.xray.XrayWrapperException;
 import com.mercedesbenz.sechub.wrapper.xray.XrayWrapperJSONConverter;
 import com.mercedesbenz.sechub.wrapper.xray.cli.XrayWrapperArtifactoryClientSupport;
 import com.mercedesbenz.sechub.wrapper.xray.config.XrayWrapperArtifact;
 import com.mercedesbenz.sechub.wrapper.xray.config.XrayWrapperConfiguration;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.net.HttpURLConnection;
+import java.util.Objects;
 
 public class XrayAPIArtifactoryClient {
 
@@ -36,7 +35,7 @@ public class XrayAPIArtifactoryClient {
 
     public boolean checkArtifactoryUploadSuccess() throws XrayWrapperException {
         XrayAPIRequest request = XrayAPIRequestFactory.createCheckArtifactUploadRequest(xrayWrapperConfiguration.getArtifactory(), artifact,
-                xrayWrapperConfiguration.getRegister());
+                xrayWrapperConfiguration.getRegistry());
         XrayAPIResponse response = send(request);
         assertNoError(response, "Artifact was not uploaded to artifactory");
         return true;
@@ -44,7 +43,7 @@ public class XrayAPIArtifactoryClient {
 
     public XrayWrapperArtifactoryClientSupport.ScanStatus getScanStatus() throws XrayWrapperException {
         XrayAPIRequest request = XrayAPIRequestFactory.createGetScanStatusRequest(xrayWrapperConfiguration.getArtifactory(), artifact,
-                xrayWrapperConfiguration.getRegister());
+                xrayWrapperConfiguration.getRegistry());
         XrayAPIResponse response = send(request);
         assertNoError(response, "Scan status could not be retrieved");
         JsonNode node = XrayWrapperJSONConverter.get().readJSONFromString(response.getBody());
@@ -60,7 +59,7 @@ public class XrayAPIArtifactoryClient {
 
     public void startArtifactScan() throws XrayWrapperException {
         XrayAPIRequest request = XrayAPIRequestFactory.createScanArtifactRequest(xrayWrapperConfiguration.getArtifactory(), artifact,
-                xrayWrapperConfiguration.getRegister());
+                xrayWrapperConfiguration.getRegistry());
         XrayAPIResponse response = send(request);
         assertNoError(response, "Could not start external Xray scan");
         JsonNode node = XrayWrapperJSONConverter.get().readJSONFromString(response.getBody());
@@ -75,7 +74,7 @@ public class XrayAPIArtifactoryClient {
         // Xray deletes empty folders with auto cleanup
         // deletes artifact folder in artifactory
         XrayAPIRequest request = XrayAPIRequestFactory.createDeleteArtifactRequest(xrayWrapperConfiguration.getArtifactory(), artifact,
-                xrayWrapperConfiguration.getRegister());
+                xrayWrapperConfiguration.getRegistry());
         XrayAPIResponse response = send(request);
         assertNoError(response, "Could not delete artifact from repo");
     }
@@ -85,7 +84,7 @@ public class XrayAPIArtifactoryClient {
         // the _uploads folder is created when any artifact is uploaded to the
         // artifactory
         XrayAPIRequest request = XrayAPIRequestFactory.createDeleteUploadsRequest(xrayWrapperConfiguration.getArtifactory(), artifact,
-                xrayWrapperConfiguration.getRegister());
+                xrayWrapperConfiguration.getRegistry());
         XrayAPIResponse response = send(request);
         assertNoError(response, "Could not delete _uploads from artifactory");
     }
@@ -107,9 +106,8 @@ public class XrayAPIArtifactoryClient {
     }
 
     private void assertNoError(XrayAPIResponse response, String errorMessage) throws XrayWrapperException {
-        if (!isErrorResponse(response)) {
-            return;
+        if (isErrorResponse(response)) {
+            throw new XrayAPIException(errorMessage, response.getStatusCode(), response.getResponseMessage(), response.getBody());
         }
-        throw new XrayAPIException(errorMessage, response.getStatusCode(), response.getResponseMessage(), response.getBody());
     }
 }

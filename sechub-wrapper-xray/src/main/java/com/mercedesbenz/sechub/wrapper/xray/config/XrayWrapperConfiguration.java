@@ -12,7 +12,7 @@ public class XrayWrapperConfiguration {
      * Register name in the artifactory where artifacts are stored example:
      * local-docker-register
      */
-    private final String register;
+    private final String registry;
 
     private final String zipDirectory;
 
@@ -27,15 +27,15 @@ public class XrayWrapperConfiguration {
     public static class Builder {
         private final String artifactory;
 
-        private final String register;
+        private final String registry;
 
         private final String zipDirectory;
 
         private final String secHubReport;
 
-        private Builder(String artifactory, String register, String zipDirectory, String secHubReport) {
+        private Builder(String artifactory, String registry, String zipDirectory, String secHubReport) {
             this.artifactory = artifactory;
-            this.register = register;
+            this.registry = registry;
             this.zipDirectory = zipDirectory;
             this.secHubReport = secHubReport;
         }
@@ -48,13 +48,13 @@ public class XrayWrapperConfiguration {
         }
 
         public XrayWrapperConfiguration build() {
-            return new XrayWrapperConfiguration(this.artifactory, this.register, this.zipDirectory, this.secHubReport);
+            return new XrayWrapperConfiguration(this.artifactory, this.registry, this.zipDirectory, this.secHubReport);
         }
     }
 
-    private XrayWrapperConfiguration(String artifactory, String register, String zipDirectory, String secHubReport) {
+    private XrayWrapperConfiguration(String artifactory, String registry, String zipDirectory, String secHubReport) {
         this.artifactory = artifactory;
-        this.register = register;
+        this.registry = registry;
         this.zipDirectory = zipDirectory;
         this.secHubReport = secHubReport;
     }
@@ -63,8 +63,8 @@ public class XrayWrapperConfiguration {
         return artifactory;
     }
 
-    public String getRegister() {
-        return register;
+    public String getRegistry() {
+        return registry;
     }
 
     public String getSecHubReport() {
