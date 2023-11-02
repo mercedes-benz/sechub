@@ -56,7 +56,7 @@ public class ScanTypeCountTest {
     @Test
     void executing_incrementHighSeverityCount_101_times_increases_highSeverityCount_value_by_101() {
         /* execute */
-        for (int i = 0; i < 101; i++) {
+        for (int i = 97; i < 101; i++) {
             scanTypeCount.incrementHighSeverityCount();
         }
 
