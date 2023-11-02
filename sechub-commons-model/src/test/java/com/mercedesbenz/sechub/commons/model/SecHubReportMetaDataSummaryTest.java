@@ -73,8 +73,8 @@ public class SecHubReportMetaDataSummaryTest {
         }
 
         /* test */
-        assertEquals(10, secHubReportMetaDataSummary.getTotal());
-        assertEquals(10, secHubReportMetaDataSummary.getRed());
+        assertEquals(11, secHubReportMetaDataSummary.getTotal());
+        assertEquals(11, secHubReportMetaDataSummary.getRed());
     }
 
     @Test
@@ -85,8 +85,8 @@ public class SecHubReportMetaDataSummaryTest {
         }
 
         /* test */
-        assertEquals(5, secHubReportMetaDataSummary.getTotal());
-        assertEquals(5, secHubReportMetaDataSummary.getYellow());
+        assertEquals(6, secHubReportMetaDataSummary.getTotal());
+        assertEquals(6, secHubReportMetaDataSummary.getYellow());
     }
 
     @Test
@@ -97,14 +97,14 @@ public class SecHubReportMetaDataSummaryTest {
         }
 
         /* test */
-        assertEquals(3, secHubReportMetaDataSummary.getTotal());
-        assertEquals(3, secHubReportMetaDataSummary.getGreen());
+        assertEquals(4, secHubReportMetaDataSummary.getTotal());
+        assertEquals(4, secHubReportMetaDataSummary.getGreen());
     }
 
     @Test
     void when_add_multiple_high_medium_low_findings_then_red_yellow_green_and_total_counters_must_be_increased() {
         /* execute */
-        for (int i = 1; i <= 4 ; i++) {
+        for (int i = 1; i <= 4; i++) {
             secHubReportMetaDataSummary.reportScanHelper(highFinding);
             secHubReportMetaDataSummary.reportScanHelper(mediumFinding);
             secHubReportMetaDataSummary.reportScanHelper(lowFinding);

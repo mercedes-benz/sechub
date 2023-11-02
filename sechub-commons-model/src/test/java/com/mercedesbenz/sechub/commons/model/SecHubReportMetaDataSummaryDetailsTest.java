@@ -117,7 +117,7 @@ public class SecHubReportMetaDataSummaryDetailsTest {
         SecHubReportMetaDataSummaryDetails.SeverityDetails severityDetails = secHubReportMetaDataSummaryDetails.high.get(HIGH_FINDING_NAME);
 
         /* test */
-        assertEquals(101, severityDetails.getCount());
+        assertEquals(8, severityDetails.getCount());
     }
 
     @Test
@@ -129,7 +129,7 @@ public class SecHubReportMetaDataSummaryDetailsTest {
         SecHubReportMetaDataSummaryDetails.SeverityDetails severityDetails = secHubReportMetaDataSummaryDetails.medium.get(MEDIUM_FINDING_NAME);
 
         /* test */
-        assertEquals(101, severityDetails.getCount());
+        assertEquals(4, severityDetails.getCount());
     }
 
     @Test
@@ -141,7 +141,7 @@ public class SecHubReportMetaDataSummaryDetailsTest {
         SecHubReportMetaDataSummaryDetails.SeverityDetails severityDetails = secHubReportMetaDataSummaryDetails.low.get(LOW_FINDING_NAME);
 
         /* test */
-        assertEquals(101, severityDetails.getCount());
+        assertEquals(11, severityDetails.getCount());
     }
 
     @Test

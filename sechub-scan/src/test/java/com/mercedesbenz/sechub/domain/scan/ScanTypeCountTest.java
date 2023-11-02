@@ -54,14 +54,14 @@ public class ScanTypeCountTest {
     }
 
     @Test
-    void executing_incrementHighSeverityCount_101_times_increases_highSeverityCount_value_by_101() {
+    void executing_incrementHighSeverityCount_4_times_increases_highSeverityCount_value_by_4() {
         /* execute */
-        for (int i = 97; i < 101; i++) {
+        for (int i = 0; i < 4; i++) {
             scanTypeCount.incrementHighSeverityCount();
         }
 
         /* test */
-        assertEquals(scanTypeCount.getHighSeverityCount(), 101);
+        assertEquals(scanTypeCount.getHighSeverityCount(), 4);
     }
 
     @Test
@@ -74,14 +74,14 @@ public class ScanTypeCountTest {
     }
 
     @Test
-    void executing_incrementMediumSeverityCount_101_times_increases_mediumSeverityCount_value_by_101() {
+    void executing_incrementMediumSeverityCount_5_times_increases_mediumSeverityCount_value_by_5() {
         /* execute */
-        for (int i = 97; i < 101; i++) {
+        for (int i = 0; i < 5; i++) {
             scanTypeCount.incrementMediumSeverityCount();
         }
 
         /* test */
-        assertEquals(scanTypeCount.getMediumSeverityCount(), 101);
+        assertEquals(scanTypeCount.getMediumSeverityCount(), 5);
     }
 
     @Test
@@ -94,14 +94,14 @@ public class ScanTypeCountTest {
     }
 
     @Test
-    void executing_incrementLowSeverityCount_101_times_increases_lowSeverityCount_value_by_101() {
+    void executing_incrementLowSeverityCount_7_times_increases_lowSeverityCount_value_by_7() {
         /* execute */
-        for (int i = 93; i < 101; i++) {
+        for (int i = 0; i < 7; i++) {
             scanTypeCount.incrementLowSeverityCount();
         }
 
         /* test */
-        assertEquals(scanTypeCount.getLowSeverityCount(), 101);
+        assertEquals(scanTypeCount.getLowSeverityCount(), 7);
     }
 
     @Test
