@@ -15,7 +15,7 @@ ARG TAG=""
 ARG BRANCH=""
 
 # possible values: temurin, openj9, openjdk
-ARG JAVA_DISTRIBUTION="openjdk"
+ARG JAVA_DISTRIBUTION="temurin"
 
 # possible values: 17
 ARG JAVA_VERSION="17"
