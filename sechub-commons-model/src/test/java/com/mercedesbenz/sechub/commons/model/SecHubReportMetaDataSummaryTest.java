@@ -111,7 +111,7 @@ public class SecHubReportMetaDataSummaryTest {
         }
 
         /* test */
-        assertEquals(303, secHubReportMetaDataSummary.getTotal());
+        assertEquals(12, secHubReportMetaDataSummary.getTotal());
         assertEquals(4, secHubReportMetaDataSummary.getRed());
         assertEquals(4, secHubReportMetaDataSummary.getYellow());
         assertEquals(4, secHubReportMetaDataSummary.getGreen());
