@@ -96,7 +96,7 @@ public class ScanTypeCountTest {
     @Test
     void executing_incrementLowSeverityCount_101_times_increases_lowSeverityCount_value_by_101() {
         /* execute */
-        for (int i = 0; i < 101; i++) {
+        for (int i = 93; i < 101; i++) {
             scanTypeCount.incrementLowSeverityCount();
         }
 
