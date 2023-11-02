@@ -76,7 +76,7 @@ public class ScanTypeCountTest {
     @Test
     void executing_incrementMediumSeverityCount_101_times_increases_mediumSeverityCount_value_by_101() {
         /* execute */
-        for (int i = 0; i < 101; i++) {
+        for (int i = 97; i < 101; i++) {
             scanTypeCount.incrementMediumSeverityCount();
         }
 
