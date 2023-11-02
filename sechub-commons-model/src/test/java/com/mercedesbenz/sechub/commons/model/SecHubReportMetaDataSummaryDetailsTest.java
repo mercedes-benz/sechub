@@ -186,7 +186,7 @@ public class SecHubReportMetaDataSummaryDetailsTest {
 
         /* test */
         assertTrue(!list.isEmpty());
-        assertTrue(1 == list.size());
+        assertEquals(1, list.size());
         assertEquals(lowFinding.getCweId(), list.get(0).getCweId());
         assertEquals(lowFinding.getName(), list.get(0).getName());
         assertEquals(1, list.get(0).getCount());
