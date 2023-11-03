@@ -142,8 +142,9 @@ LABEL org.opencontainers.image.title="SecHub PDS Base Image"
 LABEL org.opencontainers.image.description="The base image for the SecHub Product Delegation Server (PDS)"
 LABEL maintainer="SecHub FOSS Team"
 
-ARG PDS_ARTIFACT_FOLDER
+ARG JAVA_DISTRIBUTION
 ARG JAVA_VERSION
+ARG PDS_ARTIFACT_FOLDER
 ARG PDS_VERSION
 
 # env vars in container
