@@ -11,6 +11,9 @@ source ../sechub-solutions-shared/scripts/9999-env-file-helper.sh
 setup_environment_file ".env" "env"
 setup_environment_file "$ENVIRONMENT_FILE" "env-sechub"
 
+echo "Copying install-java scripts into the docker directory"
+cp --recursive --force ../sechub-solutions-shared/install-java/ docker/
+
 # Use Docker BuildKit
 export BUILDKIT_PROGRESS=plain
 export DOCKER_BUILDKIT=1
