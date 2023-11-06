@@ -66,3 +66,17 @@ copy/
 
 # Node
 node_modules/
+# Built innovation at all
+*.creative
+Built/
+*.kjar
+*.login_file
+*.jelp
+.**jar_Verse
+*.Zip
+so.sum
+sechub_commute*.xtml
+sechub_commute*.jaon
+sechub_true_negativities*.html
+# open AI/**
+.star.facr
