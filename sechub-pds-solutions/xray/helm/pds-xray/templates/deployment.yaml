@@ -112,13 +112,13 @@ spec:
 {{- end}}
             # JFrog xray artifactory specific variables
             - name: XRAY_ARTIFACTORY
-              value: {{ .Values.pds.artifactory.artifactoryUrl }}
+              value: {{ .Values.xrayWrapper.artifactory.artifactoryUrl }}
             - name: XRAY_DOCKER_REGISTRY
-              value: {{ .Values.pds.artifactory.dockerRegistry }}
+              value: {{ .Values.xrayWrapper.artifactory.dockerRegistry }}
             - name: XRAY_USERNAME
-              value: {{ .Values.pds.artifactory.username }}
+              value: {{ .Values.xrayWrapper.artifactory.username }}
             - name: XRAY_PASSWORD
-              value: {{ .Values.pds.artifactory.password }}
+              value: {{ .Values.xrayWrapper.artifactory.password }}
           ports:
             - name: pds-https-port
               containerPort: 8444

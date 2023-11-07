@@ -5,7 +5,7 @@
 replicaCount: 1
 
 image:
-  registry: "registry-emea.app.corpintra.net/sechub/pds_xray"
+  registry: "ghcr.io/mercedes-benz/sechub/pds-xray"
   tag: "latest"
 
 resources:
@@ -41,6 +41,8 @@ pds:
   javaDebug:
     enabled: false
   keepContainerAliveAfterPDSCrashed: false
+
+xrayWrapper:
   artifactory:
     artifactoryUrl: "<Jfrog artifactory url>"
     dockerRegistry: "<Jfrog registry name>"
