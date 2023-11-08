@@ -40,8 +40,6 @@ clean_workspace () {
 }
 
 # main program
-# make sure workspace is clean before starting new job
-rm -rf "$WORKSPACE"/*
 check_valid_upload
 login_into_artifactory
 
