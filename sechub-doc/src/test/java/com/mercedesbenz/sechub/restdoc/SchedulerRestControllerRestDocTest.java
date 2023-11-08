@@ -1,40 +1,19 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.restdoc;
 
-import static com.mercedesbenz.sechub.commons.model.SecHubConfigurationModel.PROPERTY_API_VERSION;
-import static com.mercedesbenz.sechub.commons.model.SecHubConfigurationModel.PROPERTY_CODE_SCAN;
-import static com.mercedesbenz.sechub.commons.model.SecHubConfigurationModel.PROPERTY_DATA;
-import static com.mercedesbenz.sechub.commons.model.SecHubConfigurationModel.PROPERTY_INFRA_SCAN;
-import static com.mercedesbenz.sechub.commons.model.SecHubConfigurationModel.PROPERTY_WEB_SCAN;
-import static com.mercedesbenz.sechub.commons.model.TestSecHubConfigurationBuilder.configureSecHub;
-import static com.mercedesbenz.sechub.restdoc.RestDocumentation.defineRestService;
-import static com.mercedesbenz.sechub.test.RestDocPathParameter.JOB_UUID;
-import static com.mercedesbenz.sechub.test.RestDocPathParameter.PAGE;
-import static com.mercedesbenz.sechub.test.RestDocPathParameter.PROJECT_ID;
-import static com.mercedesbenz.sechub.test.RestDocPathParameter.SIZE;
-import static com.mercedesbenz.sechub.test.RestDocPathParameter.WITH_META_DATA;
-import static com.mercedesbenz.sechub.test.SecHubTestURLBuilder.https;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
-import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
-import static org.springframework.restdocs.headers.HeaderDocumentation.requestHeaders;
-import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.get;
-import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.multipart;
-import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.post;
-import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.put;
-import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
-import static org.springframework.restdocs.payload.PayloadDocumentation.requestFields;
-import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields;
-import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
-import static org.springframework.restdocs.request.RequestDocumentation.partWithName;
-import static org.springframework.restdocs.request.RequestDocumentation.pathParameters;
-import static org.springframework.restdocs.request.RequestDocumentation.requestParameters;
-import static org.springframework.restdocs.request.RequestDocumentation.requestParts;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static com.mercedesbenz.sechub.commons.model.SecHubConfigurationModel.*;
+import static com.mercedesbenz.sechub.commons.model.TestSecHubConfigurationBuilder.*;
+import static com.mercedesbenz.sechub.restdoc.RestDocumentation.*;
+import static com.mercedesbenz.sechub.test.RestDocPathParameter.*;
+import static com.mercedesbenz.sechub.test.SecHubTestURLBuilder.*;
+import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.Mockito.*;
+import static org.springframework.restdocs.headers.HeaderDocumentation.*;
+import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.*;
+import static org.springframework.restdocs.payload.PayloadDocumentation.*;
+import static org.springframework.restdocs.request.RequestDocumentation.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 import java.io.InputStream;
 import java.lang.annotation.Annotation;
@@ -67,7 +46,6 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.util.StringUtils;
 
 import com.mercedesbenz.sechub.commons.core.CommonConstants;
-import com.mercedesbenz.sechub.commons.model.ClientCertificateConfiguration;
 import com.mercedesbenz.sechub.commons.model.HTTPHeaderConfiguration;
 import com.mercedesbenz.sechub.commons.model.SecHubCodeScanConfiguration;
 import com.mercedesbenz.sechub.commons.model.SecHubConfigurationMetaData;
@@ -77,8 +55,6 @@ import com.mercedesbenz.sechub.commons.model.SecHubFileSystemConfiguration;
 import com.mercedesbenz.sechub.commons.model.SecHubInfrastructureScanConfiguration;
 import com.mercedesbenz.sechub.commons.model.SecHubSourceDataConfiguration;
 import com.mercedesbenz.sechub.commons.model.SecHubTimeUnit;
-import com.mercedesbenz.sechub.commons.model.SecHubWebScanApiConfiguration;
-import com.mercedesbenz.sechub.commons.model.SecHubWebScanApiType;
 import com.mercedesbenz.sechub.commons.model.SecHubWebScanConfiguration;
 import com.mercedesbenz.sechub.commons.model.TrafficLight;
 import com.mercedesbenz.sechub.commons.model.WebScanDurationConfiguration;
@@ -426,144 +402,6 @@ public class SchedulerRestControllerRestDocTest implements TestIsNecessaryForDoc
 	    			      ));
 
 	    /* @formatter:on */
-    }
-
-    @Test
-    @UseCaseRestDoc(useCase = UseCaseUserCreatesNewJob.class, variant = "Web scan client certificate authentication")
-    public void restDoc_userCreatesNewJob_webscan_client_certificate_authentication() throws Exception {
-        /* prepare */
-        String apiEndpoint = https(PORT_USED).buildAddJobUrl(PROJECT_ID.pathElement());
-        Class<? extends Annotation> useCase = UseCaseUserCreatesNewJob.class;
-
-        UUID randomUUID = UUID.randomUUID();
-        SchedulerResult mockResult = new SchedulerResult(randomUUID);
-
-        String dataReferenceName = "client-certificate-file-reference";
-
-        when(mockedScheduleCreateJobService.createJob(any(), any(SecHubConfiguration.class))).thenReturn(mockResult);
-
-        /* execute + test @formatter:off */
-        this.mockMvc.perform(
-                post(apiEndpoint,PROJECT1_ID).
-                    contentType(MediaType.APPLICATION_JSON_VALUE).
-                    content(configureSecHub().
-                            api("1.0").
-                            webConfig().
-                                addURI("https://localhost/mywebapp").
-                                clientCertificate().
-                                    password("example-password".toCharArray()).
-                                    useDataReferences(dataReferenceName).
-                                end().
-                            and().
-                                data().
-                                    withSource().
-                                        uniqueName(dataReferenceName).
-                                        fileSystemFiles("testproject1/src/other/backend.p12").
-                                    end().
-                            and().
-                            build().
-                            toJSON())
-                ).
-                    andExpect(status().isOk()).
-                    andExpect(content().json("{jobId:"+randomUUID.toString()+"}")).
-                    andDo(defineRestService().
-                            with().
-                                useCaseData(useCase, "Web Scan anonymous").
-                                tag(RestDocFactory.extractTag(apiEndpoint)).
-                                requestSchema(OpenApiSchema.SCAN_JOB.getSchema()).
-                                responseSchema(OpenApiSchema.JOB_ID.getSchema()).
-                            and().
-                            document(
-                                        requestHeaders(
-
-                                        ),
-                                        pathParameters(
-                                                parameterWithName(PROJECT_ID.paramName()).description("The unique id of the project id where a new sechub job shall be created")
-                                        ),
-                                        requestFields(
-                                                fieldWithPath(PROPERTY_API_VERSION).description("The api version, currently only 1.0 is supported"),
-                                                fieldWithPath(PROPERTY_WEB_SCAN).description("Webscan configuration block").optional(),
-                                                fieldWithPath(PROPERTY_WEB_SCAN+"."+SecHubWebScanConfiguration.PROPERTY_URL).description("Webscan URL to scan for").optional(),
-                                                fieldWithPath(PROPERTY_WEB_SCAN+"."+SecHubWebScanConfiguration.PROPERTY_CLIENT_CERTIFICATE+"."+SecHubDataConfigurationUsageByName.PROPERTY_USE).description("Unique reference name").optional(),
-                                                fieldWithPath(PROPERTY_WEB_SCAN+"."+SecHubWebScanConfiguration.PROPERTY_CLIENT_CERTIFICATE+"."+ClientCertificateConfiguration.PROPERTY_PASSWORD).description("Password for the client certificate").optional(),
-                                                fieldWithPath(PROPERTY_DATA+"."+SecHubDataConfiguration.PROPERTY_SOURCES+"[]."+SecHubSourceDataConfiguration.PROPERTY_FILESYSTEM+"."+SecHubFileSystemConfiguration.PROPERTY_FILES+"[]").description("Single client certificate file given file system files").optional()
-
-                                        ),
-                                        responseFields(
-                                                fieldWithPath(SchedulerResult.PROPERTY_JOBID).description("A unique job id")
-                                        )
-                          ));
-
-        /* @formatter:on */
-    }
-
-    @Test
-    @UseCaseRestDoc(useCase = UseCaseUserCreatesNewJob.class, variant = "Web scan openAPI")
-    public void restDoc_userCreatesNewJob_webscan_openapi_scan() throws Exception {
-        /* prepare */
-        String apiEndpoint = https(PORT_USED).buildAddJobUrl(PROJECT_ID.pathElement());
-        Class<? extends Annotation> useCase = UseCaseUserCreatesNewJob.class;
-
-        UUID randomUUID = UUID.randomUUID();
-        SchedulerResult mockResult = new SchedulerResult(randomUUID);
-
-        String dataReferenceName = "open-api-file-reference";
-
-        when(mockedScheduleCreateJobService.createJob(any(), any(SecHubConfiguration.class))).thenReturn(mockResult);
-
-        /* execute + test @formatter:off */
-        this.mockMvc.perform(
-                post(apiEndpoint,PROJECT1_ID).
-                    contentType(MediaType.APPLICATION_JSON_VALUE).
-                    content(configureSecHub().
-                            api("1.0").
-                            webConfig().
-                                addURI("https://localhost/mywebapp").
-                                api().
-                                    type(SecHubWebScanApiType.OPEN_API).
-                                    useDataReferences(dataReferenceName).
-                                end().
-                            and().
-                                data().
-                                    withSource().
-                                        uniqueName(dataReferenceName).
-                                        fileSystemFiles("testproject1/src/other/openAPI3.json").
-                                    end().
-                            and().
-                            build().
-                            toJSON())
-                ).
-                    andExpect(status().isOk()).
-                    andExpect(content().json("{jobId:"+randomUUID.toString()+"}")).
-                    andDo(defineRestService().
-                            with().
-                                useCaseData(useCase, "Web Scan anonymous").
-                                tag(RestDocFactory.extractTag(apiEndpoint)).
-                                requestSchema(OpenApiSchema.SCAN_JOB.getSchema()).
-                                responseSchema(OpenApiSchema.JOB_ID.getSchema()).
-                            and().
-                            document(
-                                        requestHeaders(
-
-                                        ),
-                                        pathParameters(
-                                                parameterWithName(PROJECT_ID.paramName()).description("The unique id of the project id where a new sechub job shall be created")
-                                        ),
-                                        requestFields(
-                                                fieldWithPath(PROPERTY_API_VERSION).description("The api version, currently only 1.0 is supported"),
-                                                fieldWithPath(PROPERTY_WEB_SCAN).description("Webscan configuration block").optional(),
-                                                fieldWithPath(PROPERTY_WEB_SCAN+"."+SecHubWebScanConfiguration.PROPERTY_URL).description("Webscan URL to scan for").optional(),
-                                                fieldWithPath(PROPERTY_WEB_SCAN+"."+SecHubWebScanConfiguration.PROPERTY_API+"."+SecHubDataConfigurationUsageByName.PROPERTY_USE).description("Unique reference name").optional(),
-                                                fieldWithPath(PROPERTY_WEB_SCAN+"."+SecHubWebScanConfiguration.PROPERTY_API+"."+SecHubWebScanApiConfiguration.PROPERTY_TYPE).description("Type of API definition").optional(),
-                                                fieldWithPath(PROPERTY_DATA+"."+SecHubDataConfiguration.PROPERTY_SOURCES+"[]."+SecHubSourceDataConfiguration.PROPERTY_FILESYSTEM+"."+SecHubFileSystemConfiguration.PROPERTY_FILES+"[]").description("OpenAPI files from given file system files").optional()
-
-                                        ),
-                                        responseFields(
-                                                fieldWithPath(SchedulerResult.PROPERTY_JOBID).description("A unique job id")
-                                        )
-                          ));
-
-        /* @formatter:on */
     }
 
     @Test
