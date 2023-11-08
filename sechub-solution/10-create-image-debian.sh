@@ -55,6 +55,9 @@ Building SecHub server image
   based on image: $BASE_IMAGE
 EOF
 
+echo "Copying install-java scripts into the docker directory"
+cp --recursive --force ../sechub-solutions-shared/install-java/ docker/
+
 # Docker BuildKit settings
 export BUILDKIT_PROGRESS=plain
 export DOCKER_BUILDKIT=1
