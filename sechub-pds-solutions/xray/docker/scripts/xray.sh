@@ -25,7 +25,6 @@ check_valid_upload () {
 
 login_into_artifactory () {
   # login to JFROG artifactory
-clean_workspace
   LOGIN=$(skopeo login "$XRAY_ARTIFACTORY" --username "$XRAY_USERNAME" --password "$XRAY_PASSWORD" --authfile "$PDS_JOB_WORKSPACE_LOCATION/$SKOPEO_AUTH")
   if [ "$LOGIN" != "Login Succeeded!" ]
   then
@@ -37,6 +36,7 @@ clean_workspace
 # main program
 check_valid_upload
 login_into_artifactory
+cd "$PDS_JOB_WORKSPACE_LOCATION"
 
 # Get docker archives from binary upload folder
 TAR_FILES=$(find $UPLOAD_DIR -type f -name "*.tar")
