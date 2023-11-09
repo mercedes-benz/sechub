@@ -25,7 +25,8 @@ check_valid_upload () {
 
 login_into_artifactory () {
   # login to JFROG artifactory
-  LOGIN=$(skopeo login "$XRAY_ARTIFACTORY" --username "$XRAY_USERNAME" --password "$XRAY_PASSWORD" --authfile "$WORKSPACE/$SKOPEO_AUTH")
+clean_workspace
+  LOGIN=$(skopeo login "$XRAY_ARTIFACTORY" --username "$XRAY_USERNAME" --password "$XRAY_PASSWORD" --authfile "$PDS_JOB_WORKSPACE_LOCATION/$SKOPEO_AUTH")
   if [ "$LOGIN" != "Login Succeeded!" ]
   then
     echo "Error: Skopeo could not login to $XRAY_ARTIFACTORY with user $XRAY_USERNAME"
@@ -33,15 +34,7 @@ login_into_artifactory () {
   fi
 }
 
-clean_workspace () {
-  rm -rf "$WORKSPACE/"*.json
-  rm -rf "$WORKSPACE/"*.zip
-  rm -rf "$UPLOAD_DIR/"*
-}
-
 # main program
-# make sure workspace is empty
-rm -rf "$WORKSPACE"/*
 check_valid_upload
 login_into_artifactory
 
@@ -56,19 +49,17 @@ echo "Processing Xray upload and docker scan for file ${UPLOAD_FILE}"
 echo "---------"
 
 # get image name and tag
-skopeo list-tags "docker-archive:$UPLOAD_FILE" > "$WORKSPACE/tags.json"
-IMAGE=$(jq '.Tags[0]' "$WORKSPACE/tags.json"| tr --delete \")
+skopeo list-tags "docker-archive:$UPLOAD_FILE" > "$PDS_JOB_WORKSPACE_LOCATION/tags.json"
+IMAGE=$(jq '.Tags[0]' "$PDS_JOB_WORKSPACE_LOCATION/tags.json"| tr --delete \")
 
 # copy local docker archive as docker image to artifactory register
-skopeo copy "docker-archive:${UPLOAD_FILE}" "docker://${XRAY_ARTIFACTORY}/${REGISTRY}/${IMAGE}" --authfile "$WORKSPACE/$SKOPEO_AUTH"
+skopeo copy "docker-archive:${UPLOAD_FILE}" "docker://${XRAY_ARTIFACTORY}/${REGISTRY}/${IMAGE}" --authfile "$PDS_JOB_WORKSPACE_LOCATION/$SKOPEO_AUTH"
 
 # get checksum from the docker image
-skopeo inspect "docker://${XRAY_ARTIFACTORY}/${REGISTRY}/${IMAGE}" --authfile "$WORKSPACE/auth.json" > "$WORKSPACE/inspect.json"
-SHA256=$(jq '.Digest' "$WORKSPACE/inspect.json" | tr --delete \")
+skopeo inspect "docker://${XRAY_ARTIFACTORY}/${REGISTRY}/${IMAGE}" --authfile "$PDS_JOB_WORKSPACE_LOCATION/auth.json" > "$PDS_JOB_WORKSPACE_LOCATION/inspect.json"
+SHA256=$(jq '.Digest' "$PDS_JOB_WORKSPACE_LOCATION/inspect.json" | tr --delete \")
 
 java -jar "$TOOL_FOLDER/wrapper-xray.jar" "--name" "$IMAGE" "--checksum" "$SHA256" "--scantype" "docker" "--outputfile" "$PDS_JOB_RESULT_FILE"
 
 # SPDX report can be returned as followed - SPDX does not contain vulnerabilities
-cp "$WORKSPACE/XrayArtifactoryReports/"*SPDX.json "$PDS_JOB_RESULT_FILE"
-
-clean_workspace
+cp "$PDS_JOB_WORKSPACE_LOCATION/XrayArtifactoryReports/"*SPDX.json "$PDS_JOB_RESULT_FILE"
