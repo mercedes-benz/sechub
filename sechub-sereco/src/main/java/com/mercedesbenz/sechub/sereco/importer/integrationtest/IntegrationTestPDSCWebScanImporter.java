@@ -69,7 +69,7 @@ public class IntegrationTestPDSCWebScanImporter implements ProductResultImporter
             return ProductImportAbility.NOT_ABLE_TO_IMPORT;
         }
         if (data.contains(ID_PDS_INTTEST_PRODUCT_WEBSCAN_FAILED)) {
-            return ProductImportAbility.PRODUCT_FAILED;
+            return ProductImportAbility.PRODUCT_FAILED_OR_CANCELED;
         }
         return ProductImportAbility.ABLE_TO_IMPORT;
     }
