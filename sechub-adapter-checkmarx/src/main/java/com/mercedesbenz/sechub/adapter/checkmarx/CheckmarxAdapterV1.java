@@ -15,6 +15,7 @@ import com.mercedesbenz.sechub.adapter.AdapterRuntimeContext;
 import com.mercedesbenz.sechub.adapter.AdapterRuntimeContext.ExecutionType;
 import com.mercedesbenz.sechub.adapter.checkmarx.support.CheckmarxFullScanNecessaryException;
 import com.mercedesbenz.sechub.adapter.checkmarx.support.CheckmarxOAuthSupport;
+import com.mercedesbenz.sechub.adapter.checkmarx.support.CheckmarxOnlyUnsupportedFilesException;
 import com.mercedesbenz.sechub.adapter.checkmarx.support.CheckmarxProjectSupport;
 import com.mercedesbenz.sechub.adapter.checkmarx.support.CheckmarxScanReportSupport;
 import com.mercedesbenz.sechub.adapter.checkmarx.support.CheckmarxScanSupport;
@@ -64,7 +65,13 @@ public class CheckmarxAdapterV1 extends AbstractAdapter<CheckmarxAdapterContext,
             scanReportSupport.startFetchReport(oauthSupport, context);
 
             return new AdapterExecutionResult(context.getResult());
-
+            
+        } catch (CheckmarxOnlyUnsupportedFilesException e) {
+            
+            LOG.info("Checkmarx was not able to handle the uploaded files, will mark result as canceled");
+            
+            return AdapterExecutionResult.createCancelResult();
+            
         } catch (Exception e) {
             throw asAdapterException("Was not able to perform scan!", e, config);
         }
