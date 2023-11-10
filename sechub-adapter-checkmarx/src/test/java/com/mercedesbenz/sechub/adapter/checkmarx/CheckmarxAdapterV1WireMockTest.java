@@ -102,7 +102,7 @@ public class CheckmarxAdapterV1WireMockTest {
     @Test
     public void when_checkmarx_has_only_unsupported_files_the_result_is_canceled() throws Exception {
         when(config.getTimeOutInMilliseconds()).thenReturn(1000 * 1000* 5);
-        
+
         /* prepare */
         LinkedHashMap<String, String> loginResponse = login(3600);
         /* project creation */
@@ -188,7 +188,7 @@ public class CheckmarxAdapterV1WireMockTest {
         simulateDownloadReportSuccesful();
 
         /* execute */
-        AdapterExecutionResult adapterResult = executeAndLogHistoryOnFailure(()->adapterToTest.start(config, callback));
+        AdapterExecutionResult adapterResult = executeAndLogHistoryOnFailure(() -> adapterToTest.start(config, callback));
 
         /* test */
         assertEquals(CONTENT_FROM_CHECKMARX, adapterResult.getProductResult());
@@ -264,7 +264,7 @@ public class CheckmarxAdapterV1WireMockTest {
         simulateDownloadReportSuccesful();
 
         /* execute */
-        AdapterExecutionResult adapterResult = executeAndLogHistoryOnFailure(()->adapterToTest.start(config, callback));
+        AdapterExecutionResult adapterResult = executeAndLogHistoryOnFailure(() -> adapterToTest.start(config, callback));
 
         /* @formatter:on */
         /* test */
@@ -299,7 +299,7 @@ public class CheckmarxAdapterV1WireMockTest {
         simulateDownloadReportSuccesful();
 
         /* execute */
-        AdapterExecutionResult adapterResult = executeAndLogHistoryOnFailure(()->adapterToTest.start(config, callback));
+        AdapterExecutionResult adapterResult = executeAndLogHistoryOnFailure(() -> adapterToTest.start(config, callback));
 
         /* @formatter:on */
         /* test */
@@ -351,7 +351,7 @@ public class CheckmarxAdapterV1WireMockTest {
         simulateDownloadReportSuccesful();
 
         /* execute */
-        AdapterExecutionResult adapterResult = executeAndLogHistoryOnFailure(()->adapterToTest.start(config, callback));
+        AdapterExecutionResult adapterResult = executeAndLogHistoryOnFailure(() -> adapterToTest.start(config, callback));
 
         /* @formatter:on */
         /* test */
@@ -486,7 +486,7 @@ public class CheckmarxAdapterV1WireMockTest {
         /* we send 404, because project not found */
         stubFor(get(
                 urlEqualTo(history.rememberGET(apiURLSupport.nextURL("/cxrestapi/projects?" + WireMockUtil.toFormUrlEncoded(checkProjectExistingMap, true)))))
-                        .willReturn(aResponse().withStatus(HttpStatus.NOT_FOUND.value())));
+                .willReturn(aResponse().withStatus(HttpStatus.NOT_FOUND.value())));
     }
 
     private void simulateCheckProjectExistsReturnsTrue(LinkedHashMap<String, String> checkProjectExistingMap) {
@@ -558,27 +558,27 @@ public class CheckmarxAdapterV1WireMockTest {
                         .withBody(JSONTestUtil.toJSONContainingNullValues(reportStatus))));
 
     }
-    
+
     private void simulateWaitForQueingDoneReturns(String value) {
         simulateWaitForQueingDoneReturns(value, null);
     }
-    
+
     private void simulateWaitForQueingDoneReturnsFailureWithText(String failureText) {
         simulateWaitForQueingDoneReturns("Failed", failureText);
     }
-    
+
     private void simulateWaitForQueingDoneReturns(String value, String failureText) {
         LinkedHashMap<String,Object> queueStatus = new LinkedHashMap<>();
         LinkedHashMap<String,Object> stageMap = new LinkedHashMap<>();
         queueStatus.put("stage",stageMap);
         stageMap.put("value", value);
-        
+
         if (failureText!=null) {
             queueStatus.put("stageDetails", failureText);
         }
 
         String json = JSONTestUtil.toJSONContainingNullValues(queueStatus);
-        
+
         stubFor(get(urlEqualTo(history.rememberGET(apiURLSupport.nextURL("/cxrestapi/sast/scansQueue/"+CHECKMARX_SCAN_ID)))).
                 willReturn(aResponse()
                     .withStatus(HttpStatus.OK.value())
@@ -592,7 +592,7 @@ public class CheckmarxAdapterV1WireMockTest {
         LinkedHashMap<String,Object> stageMap = new LinkedHashMap<>();
         scanStatus.put("status",stageMap);
         stageMap.put("name", statusName);
-        
+
         stubFor(get(urlEqualTo(history.rememberGET(apiURLSupport.nextURL("/cxrestapi/sast/scans/"+CHECKMARX_SCAN_ID)))).
                 willReturn(aResponse()
                     .withStatus(HttpStatus.OK.value())
@@ -612,7 +612,7 @@ public class CheckmarxAdapterV1WireMockTest {
 
         return result;
     }
-    
+
     private AdapterExecutionResult executeAndLogHistoryOnFailure(Callable<AdapterExecutionResult> executor) throws Exception {
         try {
             return executor.call();
