@@ -13,28 +13,28 @@ public class WiremockUrlHistory {
     private List<String> deleteURLs = new ArrayList<>();
 
     private List<String> logged = new ArrayList<>();
-    
+
     public String rememberPOST(String url) {
         postURLs.add(url);
-        logged.add("POST  : "+url);
+        logged.add("POST  : " + url);
         return url;
     }
 
     public String rememberGET(String url) {
         getURLs.add(url);
-        logged.add("GET   : "+url);
+        logged.add("GET   : " + url);
         return url;
     }
 
     public String rememberPUT(String url) {
         putURLs.add(url);
-        logged.add("PUT   : "+url);
+        logged.add("PUT   : " + url);
         return url;
     }
 
     public String rememberDELETE(String url) {
         deleteURLs.add(url);
-        logged.add("DELETE: "+url);
+        logged.add("DELETE: " + url);
         return url;
     }
 
@@ -52,10 +52,10 @@ public class WiremockUrlHistory {
             verify(deleteRequestedFor(urlEqualTo(getURL)));
         }
     }
-    
+
     public String toString() {
         StringBuilder sb = new StringBuilder();
-        for (String logEntry: logged) {
+        for (String logEntry : logged) {
             sb.append(logEntry);
             sb.append("\n");
         }
