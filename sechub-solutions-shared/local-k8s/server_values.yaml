@@ -1,0 +1,325 @@
+# SPDX-License-Identifier: MIT
+
+# This is a sample values file containing the defaults.
+
+# Number of SecHub server instances to spin up
+replicaCount: 1
+
+image:
+  registry: "ghcr.io/mercedes-benz/sechub/server"
+  tag: "latest"
+  # Optional: If your image is in a private registry, you can specify pull secrets defined in k8s
+  #   Docs: https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/
+  #   Example:
+  # imagePullSecrets: |-
+  #   - name: sechub-pull-secret
+  #   - name: sps2
+
+name: sechub-server
+
+memory:
+  # Memory for the SecHub server container (increase to e.g. 3Gi for larger installations)
+  container: 1Gi
+  # Maximum memory usage in percent. The SecHub server will stop scheduling new jobs if the percent of memory is exceeded.
+  # Can be a value from 50 up to 100 for 100%
+  maxPercentage: 95
+
+server:
+  # email address of the SecHub administrators. Informations about scheduler stop/start, new users etc. will go there.
+  adminEmail: mail@to.be.defined
+  baseURL:
+    # Base url for SecHub administration server instance (with Spring profile `admin_access`)
+    adminAccess: https://to.be.defined
+    # SecHub base url for users. Can also be an ip address like https://10.10.10.10
+    userAccess: https://to.be.defined
+  # db connection - can be omitted when using spring profile `h2` (in-memory db)
+  # ! But caution: You can only use `h2` with _one_ SecHub server (replicaCount=1)!
+  # !              As soon as you deploy a cluster, you must set up a shared database.
+  # Put the database user id  in k8s secret secret-database:spring_datasource_username
+  # Put the database password in k8s secret secret-database:spring_datasource_password
+  databaseConnection: "jdbc:postgresql://postgres-db:5432/sechub"
+  # Configure emails sent from SecHub server:
+  email:
+    from: sechub@to.be.defined
+    replyTo: sechub@to.be.defined
+    smtp:
+      host: mailhost.to.be.defined
+      port: 25
+  initialAdminUser:
+    # Define initial admin user. The link to get the api token will be sent to this email address.
+    id: sechubadm
+    email: mail@to.be.defined
+  jobScheduling:
+    # Job scheduling is activated in intervals (2000=every 2s)
+    activationIntervalInMilliseconds: 2000
+    # Job scheduling strategy - Possible values:
+    # - first-come-first-serve (one project can have multiple scan jobs running in parallel
+    # - only-one-scan-per-project-at-a-time (one project can only have one running scan job at a time)
+    # - only-one-scan-per-project-and-module-group (enable parallel scans, but not in same module group)
+    strategy: only-one-scan-per-project-and-module-group
+  # loggingType (optional): See https://mercedes-benz.github.io/sechub/latest/sechub-operations.html#logging-2
+  #                         https://github.com/mercedes-benz/sechub/blob/develop/sechub-server/src/main/resources/logback-spring.xml
+  loggingType: LOGSTASH_JSON
+  # Time in milliseconds how long the download of an api token is possible. (86400000 = 24h)
+  validityOnetimetokenInMilliseconds: 86400000
+
+  spring:
+    # Set server profiles (See https://mercedes-benz.github.io/sechub/latest/sechub-techdoc.html#section-sechub-spring-profiles)
+    # You should avoid `admin_access` on internet facing production systems. See above docs.
+    profiles: prod,admin_access
+    # Configure Hikari database connection pooling
+    hikariPool:
+      loglevel: WARN
+      configLogLevel: WARN
+      size:
+        minimumIdle: 5
+        maximum: 30
+    # Configure Spring Boot's embadded Tomcat
+    embeddedTomcat:
+      logging:
+        enabled: false
+        accessLogFormat: "[ACCESS] %a %{org.apache.catalina.AccessLog.RemoteAddr}r %{X-Forwarded-For}i %{X-Forwarded-Host}i %l %t %D %F %B %S %u %r %s %b %{User-Agent}i"
+  ssl:
+    # Alias in .p12 keystore.
+    # - On `undefined`, a self-signed certificate will be created.
+    # - otherwise, k8s secret `secret-ssl` must be defined containing
+    #   - `sechub_server_ssl_keystore_file` (containing the ssl certificate chain)
+    #     and `sechub_server_ssl_keystore_password`
+    #   - inside the .p12 keystore, an alias with this name is expected
+    #     pointing to the ssl certificate to use
+    keystoreAlias: undefined
+
+  # Define limits and features of SecHub's handling of uploads
+  uploads:
+    sources:
+      # Maximum size of source uploads
+      maxUploadSize: 20MB
+      # Verify checksum of source uploads
+      validateChecksum: true
+      # Check if a source upload is a valid .zip file
+      validateZIP: true
+    binaries:
+      # Maximum size in bytes of binary uploads (100MB=100x1024x1024=104857600)
+      maxUploadBytes: 104857600
+
+  # Development settings:
+  development:
+    # keepContainerAliveAfterCrash:
+    # When set to true, then the container's run.sh script will keep running for 2h after java call exited.
+    # This is useful for analyzing server crashes. In all other cases: set to `false`.
+    keepContainerAliveAfterCrash: false
+    # When `true` then Port 5005 will be opened for Java debugging.
+    enableJavaDebugging: false
+
+service:
+  loadbalancer:
+    ip: ""
+    port:
+      name: https
+      number: 443
+  # optional: Add annotations (goes to metadata.annotations)
+  #           Can contain multiple lines. Example:
+  # annotations: |-
+  #   loadbalancer.openstack.org/keep-floatingip: true
+  #
+  # optional: Add finalizers (goes to metadata.finalizers)
+  #           Can contain multiple lines. Example:
+  # finalizers: |-
+  #   - service.kubernetes.io/load-balancer-cleanup
+
+# optional: Add annotations to template.metadata.annotations
+#           Can contain multiple lines. Example for Prometheus actuator:
+# templateMetadataAnnotations: |-
+#   prometheus.io/scrape: "true"
+#   prometheus.io/probe: "true"
+#   prometheus.io/port: "10250"
+#   prometheus.io/path: "/actuator/prometheus"
+
+storage:
+  local:
+    # No shared storage - only for standalone SecHub server (stores into local /tmp)
+    enabled: true
+  s3:
+    # Use S3 as shared storage backend
+    enabled: false
+    endpoint: "https://to.be.defined:<port>"
+    bucketname: "<my-bucketname>"
+    # Defines the access key for used S3 bucket
+    # Put the S3 access key in k8s secret secret-storage:sechub_storage_s3_accesskey
+    # Put the S3 secret key in k8s secret secret-storage:sechub_storage_s3_secretkey
+    connectionPool:
+      # Maximum idle time (in milliseconds) for a connection in the connection pool.
+      maxIdleTimeInMilliseconds: 60000
+      # maximum size of connection pool
+      maxPoolSize: 50
+      # Time (in milliseconds) a connection can be idle in the connection pool before it must be validated that it’s still open.
+      revalidationIntervalInMilliseconds: 5000
+      # Time to live for a pool connection (in milliseconds). -1 means deactivated
+      ttlInMilliseconds: -1
+    timeouts:
+      # Timeout for creating new connections (in milliseconds)
+      newConnectionTimeoutInMilliseconds: 10000
+      # Timeout for execution (in milliseconds). 0 means it is disabled.
+      executionTimeoutInMilliseconds: 0
+      # Timeout for a request (in milliseconds). 0 means it is disabled.
+      requestTimeoutInMilliseconds: 0
+      # Timeout for reading from a connected socket (in milliseconds).
+      socketTimeoutInMilliseconds: 50000
+  sharedVolume:
+    # Use a shared filesystem as storage backend
+    enabled: false
+    dir: "/nfs/sechub-share"
+
+volumes:
+  tmpVolume:
+    enabled: false
+    # Size of /tmp in container
+    size: 10Gi
+    # Storage type to use
+    # Possible values:
+    # - emptyDir (See https://kubernetes.io/docs/concepts/storage/volumes/#emptydir)
+    # - genericEphemeral (See https://kubernetes.io/docs/concepts/storage/ephemeral-volumes/#generic-ephemeral-volumes)
+    type: genericEphemeral
+
+webScan:
+  # Strategy to distinguish intranet/internet targets for DAST/ web scans
+  intranetDetection:
+    # Example: Intranet host names end with `.local` or with `.intranet.example.org`. E.g. https://myhost.local
+    uriPattern: "intranet-hostname-ends-with:.local,.intranet.example.org"
+    # Example: Intranet host's ipv4 range is 192.168.0.0/16 or ipv6 range 2001:db8:85a3:0:0:8a2e:370:*
+    ipPattern: "intranet-ip-pattern:192.168.*.*,[2001:db8:85a3:0:0:8a2e:370:*]"
+
+# deploymentComment (optional):
+#  When setting to a different value than before, it forces k8s to spin up a new container.
+#  This way, you can force deployments e.g. when only secrets have changed.
+deploymentComment: "my deployment comment"
+
+# ----------------------------------------------------------------------------------------------#
+# Settings for Scan Backends (at least one should be enabled)
+#   For activation: set enabled: true
+# --------------------------------------------------------------------------------------------- #
+
+# ------------------------------------------------------------------------------------- #
+# Checkmarx adapter (Deprecation warning: Please use PDS-Checkmarx instead)
+# ------------------------------------------------------------------------------------- #
+adapterCheckmarx:
+  enabled: false
+  # Base url of your Checkmarx server
+  baseURL: https://to.be.defined
+  # Put the user id  of Checkmarx user in k8s secret secret-checkmarx:sechub_adapter_checkmarx_userid
+  # Put the password of Checkmarx user in k8s secret secret-checkmarx:sechub_adapter_checkmarx_password
+  #
+  # Interval in minutes when SecHub checks if the scan has finished on Checkmarx side
+  checkIntervalInMinutes: 1
+  # Time in minutes when adapter result check will be canceled/time out. When -1 timeout is 7200 minutes
+  timeoutInMinutes: 600
+  # Checkmarx Team ID of a newly created project.
+  # This value is a fallback if scan config is not set (scan config does this in a dynamic way by inspecting project names)
+  newProjectCheckmarxTeamID: 2
+  # Turns off ssl certificate validation. Should only be used in test or development environments!
+  trustAnyCertificate: false
+
+# ------------------------------------------------------------------------------------- #
+# Nessus adapter (Deprecation warning: this adapter is not being developed further)
+# ------------------------------------------------------------------------------------- #
+adapterNessus:
+  enabled: false
+  baseURL:
+    # Base url of your internet-facing Nessus
+    internet: https://to.be.defined
+    # Put the user id  of Nessus-Internet user in k8s secret secret-nessus:sechub_adapter_nessus_internet_userid
+    # Put the password of Nessus-Internet user in k8s secret secret-nessus:sechub_adapter_nessus_internet_password
+    #
+    # Base url of your intranet-facing Nessus
+    intranet: https://to.be.defined
+    # Put the user id  of Nessus-Intranet user in k8s secret secret-nessus:sechub_adapter_nessus_intranet_userid
+    # Put the password of Nessus-Intranet user in k8s secret secret-nessus:sechub_adapter_nessus_intranet_password
+
+
+# ------------------------------------------------------------------------------------- #
+# Netsparker adapter (Deprecation warning: this adapter is not being developed further)
+# ------------------------------------------------------------------------------------- #
+adapterNetsparker:
+  enabled: false
+  # Base url of your Netsparker server
+  baseURL: https://to.be.defined
+  # Put the user id   of Netsparker user in k8s secret secret-netsparker:sechub_adapter_netsparker_userid
+  # Put the api token of Netsparker user in k8s secret secret-netsparker:sechub_adapter_netsparker_apitoken
+  defaultPolicyID: to.be.defined
+  internetAgentGroupName: sechub-internet
+  intranetAgentGroupName: sechub-intranet
+  licenseID: to.be.defined
+
+# ------------------------------------------------------------------------------------- #
+# PDS-Checkmarx adapter
+# ------------------------------------------------------------------------------------- #
+# Using this adapter, you can integrate a Checkmarx server for code scans into SecHub.
+# Please refer to `sechub-pds-solutions/checkmarx/` on how to configure the PDS-Checkmarx adapter.
+pdsCheckmarx:
+  enabled: false
+  # Put the user id  of PDS-Checkmarx in k8s secret secret-pds-checkmarx:techuser_username
+  # Put the password of PDS-Checkmarx in k8s secret secret-pds-checkmarx:techuser_password
+
+# ------------------------------------------------------------------------------------- #
+# PDS-Coverity adapter
+# ------------------------------------------------------------------------------------- #
+pdsCoverity:
+  enabled: false
+  # Put the user id  of PDS-Coverity in k8s secret secret-pds-coverity:techuser_username
+  # Put the password of PDS-Coverity in k8s secret secret-pds-coverity:techuser_password
+
+# ------------------------------------------------------------------------------------- #
+# PDS-FindSecurityBugs adapter
+# ------------------------------------------------------------------------------------- #
+pdsFindSecurityBugs:
+  enabled: false
+  # Put the user id  of PDS-FindSecurityBugs in k8s secret secret-pds-findsecuritybugs:techuser_username
+  # Put the password of PDS-FindSecurityBugs in k8s secret secret-pds-findsecuritybugs:techuser_password
+
+# ------------------------------------------------------------------------------------- #
+# PDS-GoSec adapter
+# ------------------------------------------------------------------------------------- #
+pdsGoSec:
+  enabled: false
+  # Put the user id  of PDS-GoSec in k8s secret secret-pds-gosec:techuser_username
+  # Put the password of PDS-GoSec in k8s secret secret-pds-gosec:techuser_password
+
+# ------------------------------------------------------------------------------------- #
+# PDS-Loc analytics adapter
+# ------------------------------------------------------------------------------------- #
+pdsLoc:
+  enabled: false
+  # Put the user id  of PDS-Loc in k8s secret secret-pds-loc:techuser_username
+  # Put the password of PDS-Loc in k8s secret secret-pds-loc:techuser_password
+
+# ------------------------------------------------------------------------------------- #
+# PDS-Multi adapter
+# ------------------------------------------------------------------------------------- #
+pdsMulti:
+  enabled: false
+  # Put the user id  of PDS-Multi in k8s secret secret-pds-multi:techuser_username
+  # Put the password of PDS-Multi in k8s secret secret-pds-multi:techuser_password
+
+# ------------------------------------------------------------------------------------- #
+# PDS-OWASP ZAP adapter
+# ------------------------------------------------------------------------------------- #
+pdsOWASPZAP:
+  enabled: false
+  # Put the user id  of PDS-OWASP ZAP in k8s secret secret-pds-owaspzap:techuser_username
+  # Put the password of PDS-OWASP ZAP in k8s secret secret-pds-owaspzap:techuser_password
+
+# ------------------------------------------------------------------------------------- #
+# PDS-Scancode adapter
+# ------------------------------------------------------------------------------------- #
+pdsScancode:
+  enabled: false
+  # Put the user id  of PDS-Scancode in k8s secret secret-pds-scancode:techuser_username
+  # Put the password of PDS-Scancode in k8s secret secret-pds-scancode:techuser_password
+
+# ------------------------------------------------------------------------------------- #
+# PDS-SecretScanner adapter
+# ------------------------------------------------------------------------------------- #
+pdsSecretScanner:
+  enabled: false
+  # Put the user id  of PDS-SecretScanner in k8s secret secret-pds-secretscanner:techuser_username
+  # Put the password of PDS-SecretScanner in k8s secret secret-pds-secretscanner:techuser_password
