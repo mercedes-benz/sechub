@@ -14,6 +14,7 @@ public class SecHubWebScanConfiguration {
     public static final String PROPERTY_URL = "url";
     public static final String PROPERTY_LOGIN = "login";
     public static final String PROPERTY_MAX_SCAN_DURATION = "maxScanDuration";
+    public static final String PROPERTY_API = "api";
     public static final String PROPERTY_INCLUDES = "includes";
     public static final String PROPERTY_EXCLUDES = "excludes";
     public static final String PROPERTY_HEADERS = "headers";
