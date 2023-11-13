@@ -2,7 +2,6 @@
 package com.mercedesbenz.sechub.commons.model;
 
 import java.util.LinkedHashSet;
-import java.util.Optional;
 import java.util.Set;
 
 import javax.crypto.SealedObject;
@@ -16,7 +15,7 @@ public class ClientCertificateConfiguration implements SecHubDataConfigurationUs
 
     private CryptoAccess<char[]> cryptoAccess = CryptoAccess.CRYPTO_CHAR_ARRAY;
 
-    private Optional<SealedObject> password = Optional.empty();
+    private SealedObject password;
     private Set<String> namesOfUsedDataConfigurationObjects = new LinkedHashSet<>();
 
     @Override
@@ -25,14 +24,11 @@ public class ClientCertificateConfiguration implements SecHubDataConfigurationUs
     }
 
     public void setPassword(char[] password) {
-        this.password = Optional.ofNullable(cryptoAccess.seal(password));
+        this.password = cryptoAccess.seal(password);
     }
 
     public char[] getPassword() {
-        if (password.isEmpty()) {
-            return null;
-        }
-        return cryptoAccess.unseal(password.get());
+        return cryptoAccess.unseal(password);
     }
 
 }
