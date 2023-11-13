@@ -12,8 +12,10 @@ import com.mercedesbenz.sechub.adapter.AdapterExecutionResult;
 import com.mercedesbenz.sechub.adapter.AdapterMetaData;
 import com.mercedesbenz.sechub.adapter.AdapterProfiles;
 import com.mercedesbenz.sechub.adapter.AdapterRuntimeContext;
+import com.mercedesbenz.sechub.adapter.AdapterRuntimeContext.ExecutionType;
 import com.mercedesbenz.sechub.adapter.checkmarx.support.CheckmarxFullScanNecessaryException;
 import com.mercedesbenz.sechub.adapter.checkmarx.support.CheckmarxOAuthSupport;
+import com.mercedesbenz.sechub.adapter.checkmarx.support.CheckmarxOnlyUnsupportedFilesException;
 import com.mercedesbenz.sechub.adapter.checkmarx.support.CheckmarxProjectSupport;
 import com.mercedesbenz.sechub.adapter.checkmarx.support.CheckmarxScanReportSupport;
 import com.mercedesbenz.sechub.adapter.checkmarx.support.CheckmarxScanSupport;
@@ -36,6 +38,11 @@ public class CheckmarxAdapterV1 extends AbstractAdapter<CheckmarxAdapterContext,
 
     @Override
     public AdapterExecutionResult execute(CheckmarxAdapterConfig config, AdapterRuntimeContext runtimeContext) throws AdapterException {
+
+        if (ExecutionType.CANCEL.equals(runtimeContext.getType())) {
+            return AdapterExecutionResult.createCancelResult();
+        }
+
         try {
             assertThreadNotInterrupted();
 
@@ -59,6 +66,12 @@ public class CheckmarxAdapterV1 extends AbstractAdapter<CheckmarxAdapterContext,
 
             return new AdapterExecutionResult(context.getResult());
 
+        } catch (CheckmarxOnlyUnsupportedFilesException e) {
+
+            LOG.info("Checkmarx was not able to handle the uploaded files, will mark result as canceled");
+
+            return AdapterExecutionResult.createCancelResult();
+
         } catch (Exception e) {
             throw asAdapterException("Was not able to perform scan!", e, config);
         }
@@ -71,14 +84,20 @@ public class CheckmarxAdapterV1 extends AbstractAdapter<CheckmarxAdapterContext,
     }
 
     private void handleUploadSourceCodeAndStartScan(CheckmarxOAuthSupport oauthSupport, CheckmarxContext context) throws AdapterException {
+
         try {
+
             uploadSourceCodeAndStartScan(oauthSupport, context);
+
         } catch (CheckmarxFullScanNecessaryException e) {
+
             LOG.info(CheckmarxAdapter.CHECKMARX_MESSAGE_PREFIX + "{} (full scan necessary)", e.getCheckmarxMessage());
+
             context.setFullScan(true);
             uploadSourceCodeAndStartScan(oauthSupport, context);
 
         }
+
     }
 
     private void uploadSourceCodeAndStartScan(CheckmarxOAuthSupport oauthSupport, CheckmarxContext context) throws AdapterException {
