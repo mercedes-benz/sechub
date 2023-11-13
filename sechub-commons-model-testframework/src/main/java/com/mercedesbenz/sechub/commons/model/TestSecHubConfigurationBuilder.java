@@ -97,25 +97,6 @@ public class TestSecHubConfigurationBuilder {
             return TestSecHubConfigurationBuilder.this.build();
         }
 
-        public class TestWebApiConfigBuilder {
-            SecHubWebScanApiConfiguration api = new SecHubWebScanApiConfiguration();
-
-            public TestWebApiConfigBuilder type(SecHubWebScanApiType type) {
-                this.api.setType(type);
-                return this;
-            }
-
-            public TestWebApiConfigBuilder useDataReferences(String... referenceNames) {
-                this.api.getNamesOfUsedDataConfigurationObjects().addAll(Arrays.asList(referenceNames));
-                return this;
-            }
-
-            public TestWebConfigurationBuilder and() {
-                testData.webConfig.setApi(Optional.of(api));
-                return TestWebConfigurationBuilder.this;
-            }
-        }
-
         public TestSecHubConfigurationBuilder and() {
             return TestSecHubConfigurationBuilder.this;
         }
@@ -152,6 +133,16 @@ public class TestSecHubConfigurationBuilder {
 
         public TestWebLoginConfigurationBuilder login(String loginURL) {
             return new TestWebLoginConfigurationBuilder(loginURL, this);
+        }
+
+        public TestWebConfigurationBuilder addApiConfig(SecHubWebScanApiConfiguration apiConfig) {
+            TestSecHubConfigurationBuilder.this.testData.webConfig.api = Optional.ofNullable(apiConfig);
+            return this;
+        }
+
+        public TestWebConfigurationBuilder addClientCertificateConfig(ClientCertificateConfiguration clientCertificateConfig) {
+            TestSecHubConfigurationBuilder.this.testData.webConfig.clientCertificate = Optional.ofNullable(clientCertificateConfig);
+            return this;
         }
     }
 
