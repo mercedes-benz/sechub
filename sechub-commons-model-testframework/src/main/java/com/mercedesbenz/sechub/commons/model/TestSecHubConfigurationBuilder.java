@@ -139,6 +139,11 @@ public class TestSecHubConfigurationBuilder {
             TestSecHubConfigurationBuilder.this.testData.webConfig.api = Optional.ofNullable(apiConfig);
             return this;
         }
+
+        public TestWebConfigurationBuilder addClientCertificateConfig(ClientCertificateConfiguration clientCertificateConfig) {
+            TestSecHubConfigurationBuilder.this.testData.webConfig.clientCertificate = Optional.ofNullable(clientCertificateConfig);
+            return this;
+        }
     }
 
     public TestCodeSCanConfigurationBuilder codeScanConfig() {
