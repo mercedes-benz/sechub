@@ -11,12 +11,12 @@ usage() {
   cat - <<EOF
 
 usage: $0 <docker registry> <version tag> <base image>
-Builds a docker image of SecHub PDS with GoSec
+Builds a docker image of SecHub PDS with IaC
 for <docker registry> with tag <version tag>.
 Required: <base image> ; for example ghcr.io/mercedes-benz/sechub/pds-base:v0.32.1
 
 Additionally these environment variables can be defined:
-- GOSEC_VERSION - GoSec version to use. E.g. 2.9.5
+- IAC_VERSION - IaC version to use. E.g. 2.9.5
 EOF
 }
 
@@ -44,17 +44,17 @@ fi
 BUILD_ARGS="--build-arg BASE_IMAGE=$BASE_IMAGE"
 echo ">> Base image: $BASE_IMAGE"
 
-if [[ ! -z "$GOSEC_VERSION" ]] ; then
-    echo ">> GoSec version: $GOSEC_VERSION"
-    BUILD_ARGS="$BUILD_ARGS --build-arg GOSEC_VERSION=$GOSEC_VERSION"
+if [[ ! -z "$IAC_VERSION" ]] ; then
+    echo ">> IaC version: $IAC_VERSION"
+    BUILD_ARGS="$BUILD_ARGS --build-arg IAC_VERSION=$IAC_VERSION"
 fi
 
 # Use Docker BuildKit
 export BUILDKIT_PROGRESS=plain
 export DOCKER_BUILDKIT=1
 
-echo "docker build --pull --no-cache $BUILD_ARGS --tag "$REGISTRY:$VERSION" --file docker/GoSec-Debian.dockerfile docker/"
+echo "docker build --pull --no-cache $BUILD_ARGS --tag "$REGISTRY:$VERSION" --file docker/IaC-Debian.dockerfile docker/"
 docker build --pull --no-cache $BUILD_ARGS \
        --tag "$REGISTRY:$VERSION" \
-       --file docker/GoSec-Debian.dockerfile docker/
+       --file docker/IaC-Debian.dockerfile docker/
 docker tag "$REGISTRY:$VERSION" "$REGISTRY:latest"

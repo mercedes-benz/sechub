@@ -2,18 +2,18 @@
 
 version: "3"
 services:
-    pds-gosec:
+    pds-iac:
         build:
             args:
                 - BASE_IMAGE=${BASE_IMAGE}
             context: docker/
-            dockerfile: GoSec-Debian.dockerfile
+            dockerfile: IaC-Debian.dockerfile
         env_file:
             - .env
             - .env-cluster-object-storage
         networks:
             - internal
-        depends_on: 
+        depends_on:
             - database
             - object-storage
         volumes:
@@ -23,16 +23,16 @@ services:
         build:
             context: ../shared/docker/loadbalancer
             args:
-                - PDS_SOLUTION=pds-gosec
+                - PDS_SOLUTION=pds-iac
         env_file:
             - .env-cluster-object-storage
         networks:
             - internal
         depends_on:
-            - pds-gosec
+            - pds-iac
         ports:
             - "127.0.0.1:8444:8444"
-    
+
     database:
         build:
             context: ../shared/docker/database
@@ -42,7 +42,7 @@ services:
             - internal
         ports:
             - "127.0.0.1:5432:5432"
-        
+
     object-storage:
         build:
             context: ../shared/docker/object-storage

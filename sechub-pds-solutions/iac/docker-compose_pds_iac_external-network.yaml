@@ -2,14 +2,14 @@
 
 version: "3"
 services:
-    pds-gosec:
+    pds-iac:
         build:
             args:
                 - BASE_IMAGE=${BASE_IMAGE}
             context: docker/
-            dockerfile: GoSec-Debian.dockerfile
-        container_name: pds-gosec
-        hostname: pds-gosec
+            dockerfile: IaC-Debian.dockerfile
+        container_name: pds-iac
+        hostname: pds-iac
         env_file:
             - .env
             - .env-single

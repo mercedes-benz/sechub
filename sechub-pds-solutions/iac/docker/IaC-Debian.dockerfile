@@ -94,10 +94,10 @@ ARG PDS_ARTIFACT_FOLDER
 ENV PATH "$TOOL_FOLDER/kics:$PATH"
 # Build args
 #ARG GO="go1.20.4.linux-amd64.tar.gz"
-#ARG GOSEC_VERSION="2.13.1"
+#ARG IAC_VERSION="2.13.1"
 
 # Environment variables in container
-#ENV GOSEC_VERSION="${GOSEC_VERSION}"
+#ENV IAC_VERSION="${IAC_VERSION}"
 
 USER root
 

@@ -3,4 +3,4 @@
 
 cd "$(dirname "$0")" || exit 1
 
-docker compose --file docker-compose_pds_gosec_external-network.yaml down --remove-orphans
+docker compose --file docker-compose_pds_iac_external-network.yaml down --remove-orphans

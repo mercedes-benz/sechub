@@ -1146,8 +1146,8 @@
 			"tool": {
 				"driver": {
 					"guid": "8b518d5f-906d-39f9-894b-d327b1a421c5",
-					"informationUri": "https://github.com/securego/gosec/",
-					"name": "gosec",
+					"informationUri": "https://github.com/securego/iac/",
+					"name": "iac",
 					"rules": [
 						{
 							"defaultConfiguration": {

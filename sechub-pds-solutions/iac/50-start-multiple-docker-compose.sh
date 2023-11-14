@@ -26,4 +26,4 @@ fi
 export BUILDKIT_PROGRESS=plain
 export DOCKER_BUILDKIT=1
 
-docker compose --file docker-compose_pds_gosec_cluster.yaml up --scale pds-gosec=$REPLICAS --build --remove-orphans
+docker compose --file docker-compose_pds_iac_cluster.yaml up --scale pds-iac=$REPLICAS --build --remove-orphans

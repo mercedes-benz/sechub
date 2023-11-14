@@ -5,7 +5,7 @@
 replicaCount: 1
 
 image:
-    registry: "ghcr.io/mercedes-benz/sechub/pds-gosec:latest"
+    registry: "ghcr.io/mercedes-benz/sechub/pds-iac:latest"
     tag: "latest"
 
 resources:
@@ -63,7 +63,7 @@ database:
     postgres:
         enabled: false
         connection: "jdbc:postgresql://database:5432/pds"
-        username: "gosec"
+        username: "iac"
         password: "<password-of-db-user>"
 
 networkPolicy:
