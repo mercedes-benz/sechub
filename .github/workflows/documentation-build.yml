@@ -1,0 +1,14 @@
+# SPDX-License-Identifier: MIT
+name: Documentation build
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build-documentation:
+    name: build documentation
+    runs-on: ubuntu-latest
+    steps:
+      - name: "Hello world"
+        run: |
+          echo "Hello world"
