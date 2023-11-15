@@ -79,7 +79,8 @@ server:
       logging:
         enabled: false
         accessLogFormat: "[ACCESS] %a %{org.apache.catalina.AccessLog.RemoteAddr}r %{X-Forwarded-For}i %{X-Forwarded-Host}i %l %t %D %F %B %S %u %r %s %b %{User-Agent}i"
-  ssl:
+  #TODO: commented out ssl and keystoreAlias
+  #ssl:
     # Alias in .p12 keystore.
     # - On `undefined`, a self-signed certificate will be created.
     # - otherwise, k8s secret `secret-ssl` must be defined containing
@@ -87,7 +88,7 @@ server:
     #     and `sechub_server_ssl_keystore_password`
     #   - inside the .p12 keystore, an alias with this name is expected
     #     pointing to the ssl certificate to use
-    keystoreAlias: undefined
+    #keystoreAlias: undefined
 
   # Define limits and features of SecHub's handling of uploads
   uploads:

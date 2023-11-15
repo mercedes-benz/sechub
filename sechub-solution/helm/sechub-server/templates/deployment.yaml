@@ -30,11 +30,12 @@ spec:
         runAsGroup: 7474 # gid of the application group. (should be same as in the Dockerfile)
         fsGroup: 7474    # This gid has write access to the mounted volumes.
       volumes:
-{{- if ne .Values.server.ssl.keystoreAlias "undefined" }}
-        - name: secret-ssl
+        # TODO: commented out with /* ... */ -
+        {{- /* if ne .Values.server.ssl.keystoreAlias "undefined" }}
+- name: secret-ssl
           secret:
             secretName: secret-ssl
-{{- end }}
+{{- end */ -}}
 {{- if .Values.volumes.tmpVolume.enabled }}
         - name: tmp-volume
   {{- if eq .Values.volumes.tmpVolume.type "genericEphemeral" }}
@@ -89,10 +90,11 @@ spec:
           successThreshold: 1
           timeoutSeconds: 3
         volumeMounts:
-{{- if ne .Values.server.ssl.keystoreAlias "undefined" }}
+        # TODO: commented out with /* ... */ -
+          {{- /* if ne .Values.server.ssl.keystoreAlias "undefined" }}
           - mountPath: /sechub/secrets/secret-ssl
             name: secret-ssl
-{{- end }}
+          {{- end */ -}}
 {{- if .Values.volumes.tmpVolume.enabled }}
           - mountPath: "/tmp"
             name: tmp-volume
@@ -146,17 +148,18 @@ spec:
 # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
 # + SSL certificate
 # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
-        - name: SECHUB_SERVER_SSL_KEYSTORE_TYPE
-          value: "PKCS12"
-        - name: SECHUB_SERVER_SSL_KEYSTORE_LOCATION
-          value: "/sechub/{{ .Values.server.ssl.keystoreAlias }}.p12"
-        - name: SECHUB_SERVER_SSL_KEYSTORE_ALIAS
-          value: "{{ .Values.server.ssl.keystoreAlias }}"
-        - name: SECHUB_SERVER_SSL_KEYSTORE_PASSWORD
-          valueFrom:
-            secretKeyRef:
-               name: secret-ssl
-               key: sechub_server_ssl_keystore_password
+# TODO: commented out whole section and inside {{ }} with - /* ... */ -
+#- name: SECHUB_SERVER_SSL_KEYSTORE_TYPE
+#          value: "PKCS12"
+#        - name: SECHUB_SERVER_SSL_KEYSTORE_LOCATION
+#          value: "/sechub/{{- /* .Values.server.ssl.keystoreAlias */ -}}.p12"
+#        - name: SECHUB_SERVER_SSL_KEYSTORE_ALIAS
+#          value: "{{- /* .Values.server.ssl.keystoreAlias */ -}}"
+#        - name: SECHUB_SERVER_SSL_KEYSTORE_PASSWORD
+#          valueFrom:
+#            secretKeyRef:
+#               name: secret-ssl
+#               key: sechub_server_ssl_keystore_password
 # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
 # + Initial user setup
 # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
