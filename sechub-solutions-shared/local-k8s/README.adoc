@@ -1,0 +1,15 @@
+= Deploy Sechub in local Minikube environment (Work in Progress)
+
+== Reproduce wrong behaviour
+
+[source, shell]
+--
+# Start Minikube
+minikube start
+
+# Helm install
+helm install sechub ../../sechub-solution/helm/sechub-server/ --version 1.1.0 -f test_server_values.yaml
+
+# Check logs of pod
+watch kubectl logs [pod_id]
+--
