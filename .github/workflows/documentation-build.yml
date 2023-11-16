@@ -5,7 +5,7 @@ on:
   workflow_dispatch:
     inputs:
       publish-documentation:
-        description: \"yes\" Will create a pull request for gh pages docs update
+        description: yes -> Will additionally create a PR for Github pages update
         required: false
 
 jobs:
