@@ -32,6 +32,13 @@ allprojects{
 
 
 def buildVersionFiles(){
+    def tagListCmd = [
+      'sh',
+      '-c',
+      'git tag -l --sort=-creatordate'
+    ]
+    println(tagListCmd.execute().text)
+
     println("BUILD versioning:")
 
     def start = new Date()
