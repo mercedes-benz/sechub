@@ -37,7 +37,7 @@ def buildVersionFiles(){
       '-c',
       'git status ; echo "-1-" ; git tag --points-at HEAD ; echo "-2-" ; git tag -l --sort=-creatordate'
     ]
-    println("git infos\n--------------\n"tagListCmd.execute().text)
+    println('git infos\n--------------\n'+tagListCmd.execute().text)
 
     println("BUILD versioning:")
 
