@@ -35,7 +35,7 @@ def buildVersionFiles(){
     def tagListCmd = [
       'sh',
       '-c',
-      'git status ; echo "-1-" ; git tag --points-at HEAD ; echo "-2-" ; git tag -l --sort=-creatordate'
+      'echo $PATH ; which git ; ls -al /usr/bin/git ; apt show git ; git status ; echo "-1-" ; git tag --points-at HEAD ; echo "-2-" ; git tag -l --sort=-creatordate'
     ]
     println('git infos\n--------------\n'+tagListCmd.execute().text)
 
