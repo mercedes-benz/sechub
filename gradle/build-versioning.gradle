@@ -32,12 +32,6 @@ allprojects{
 
 
 def buildVersionFiles(){
-    def tagListCmd = [
-      'sh',
-      '-c',
-      'echo $PATH ; which git ; ls -al /usr/bin/git ; apt show git ; echo "-0-" ; git status ; echo "-1-" ; git tag --points-at HEAD 2>&1 ; echo "-2-" ; git tag -l --sort=-creatordate 2>&1'
-    ]
-    println('git infos\n--------------\n'+tagListCmd.execute().text)
 
     println("BUILD versioning:")
 
