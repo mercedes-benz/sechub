@@ -50,11 +50,6 @@ jobs:
       # -----------------------------------------
       # Build documentation
       # -----------------------------------------
-      - name: List git tags
-        run: |
-          git --version
-          git tag
-
       - name: Complete build with documentation
         run: ./buildDoc
 
