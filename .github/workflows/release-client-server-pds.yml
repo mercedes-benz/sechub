@@ -293,9 +293,6 @@ jobs:
           title: '1 - Release documentation [auto-generated]'
           body: |
             Release of SecHub documentation
-            - Server "${{ inputs.server-version }}"
-            - Client "${{ inputs.client-version }}"
-            - PDS "${{ inputs.pds-version }}"
 
             -> Please review and merge **before** publishing the release.
 
