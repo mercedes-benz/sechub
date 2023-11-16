@@ -32,7 +32,7 @@ allprojects{
 
 
 def buildVersionFiles(){
-    println("BUILD versioning")
+    println("BUILD versioning:")
 
     def start = new Date()
     // This file contains some logic for calculation of the version number
@@ -59,6 +59,7 @@ def buildVersionFiles(){
     def hasChanged = !noUnstagedChanges || !noStagedChanges
     def buildNumber = getBuildNr()
     def docsTimeStamp = getLocalBuildNr()
+    def currentGitCommit = git.head().abbreviatedId
 
     // ------------------------
     // - Client
@@ -82,8 +83,12 @@ def buildVersionFiles(){
     def latestClientTag = latestClientTagCmd.execute().text.trim()
     def latestClientVersion = latestClientTag - 'v'
     latestClientVersion = latestClientVersion - "-client"
+    // Mark as modified when built after release
+    if (latestClientVersion != clientVersionInfo.getShortVersion()) {
+      latestClientVersion = latestClientVersion + " modified (commit " + currentGitCommit + ")"
+    }
     def clientVersionAsciiDocFile = new File('./sechub-doc/src/docs/asciidoc/documents/gen/client-version.adoc')
-    clientVersionAsciiDocFile.write("// SPDX-License-Identifier: MIT\n:revnumber: Client "+latestClientVersion+"\n:longrevnumber: Client "+latestClientVersion+"-"+docsTimeStamp+"\n")
+    clientVersionAsciiDocFile.write("// SPDX-License-Identifier: MIT\n:revnumber: Client "+latestClientVersion+"\n:longrevnumber: Client "+latestClientVersion+" - Build date: "+docsTimeStamp+"\n")
 
     // ------------------------
     // - Server
@@ -100,8 +105,12 @@ def buildVersionFiles(){
     def latestServerTag = latestServerTagCmd.execute().text.trim()
     def latestServerVersion = latestServerTag - 'v'
     latestServerVersion = latestServerVersion - "-server"
+    // Mark as modified when built after release
+    if (latestServerVersion != serverVersionInfo.getShortVersion()) {
+      latestServerVersion = latestServerVersion + " modified (commit " + currentGitCommit + ")"
+    }
     def serverVersionAsciiDocFile = new File('./sechub-doc/src/docs/asciidoc/documents/gen/server-version.adoc')
-    serverVersionAsciiDocFile.write("// SPDX-License-Identifier: MIT\n:revnumber: Server "+latestServerVersion+"\n:longrevnumber: Server "+latestServerVersion+"-"+docsTimeStamp+"\n")
+    serverVersionAsciiDocFile.write("// SPDX-License-Identifier: MIT\n:revnumber: Server "+latestServerVersion+"\n:longrevnumber: Server "+latestServerVersion+" - Build date: "+docsTimeStamp+"\n")
 
     // ------------------------
     // - PDS
@@ -118,8 +127,12 @@ def buildVersionFiles(){
     def latestPDSTag = latestPDSTagCmd.execute().text.trim()
     def latestPDSVersion = latestPDSTag - 'v'
     latestPDSVersion = latestPDSVersion - "-pds"
+    // Mark as modified when built after release
+    if (latestPDSVersion != pdsVersionInfo.getShortVersion()) {
+      latestPDSVersion = latestPDSVersion + " modified (commit " + currentGitCommit + ")"
+    }
     def pdsVersionAsciiDocFile = new File('./sechub-doc/src/docs/asciidoc/documents/gen/pds-version.adoc')
-    pdsVersionAsciiDocFile.write("// SPDX-License-Identifier: MIT\n:revnumber: PDS "+latestPDSVersion+"\n:longrevnumber: PDS "+latestPDSVersion+"-"+docsTimeStamp+"\n")
+    pdsVersionAsciiDocFile.write("// SPDX-License-Identifier: MIT\n:revnumber: PDS "+latestPDSVersion+"\n:longrevnumber: PDS "+latestPDSVersion+" - Build date: "+docsTimeStamp+"\n")
 
     // ------------------------
     // - PDS tools
