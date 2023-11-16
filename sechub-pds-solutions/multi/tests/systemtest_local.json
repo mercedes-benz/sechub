@@ -1,0 +1,77 @@
+{
+  "setup" : {
+    "local" : {
+      "secHub" : {
+        "admin" : {
+          "userId" : "admin",
+          "apiToken" : "myTop$ecret!"
+        },
+        "start" : [ {
+          "script" : {
+            "path" : "./01-start-single-docker-compose.sh"
+          }
+        } ],
+        "configure" : {
+          "executors" : [ {
+            "pdsProductId" : "PDS_BANDIT",
+            "name" : "system-test-codescan-bandit",
+            "parameters" : {
+              "sechub.productexecutor.pds.adapter.resilience.retry.wait.milliseconds" : 3000,
+              "sechub.productexecutor.pds.adapter.resilience.retry.max" : 20,
+              "pds.config.use.sechub.storage" : false
+            }
+          } ]
+        },
+        "stop" : [ {
+          "script" : {
+            "path" : "./01-stop-single-docker-compose.sh"
+          }
+        } ]
+      },
+      "pdsSolutions" : [ {
+        "name" : "multi",
+        "url" : "https://pds-multi:8444/",
+        "waitForAvailable" : false,
+        "start" : [ {
+          "script" : {
+            "path" : "./05-start-single-sechub-network-docker-compose.sh"
+          }
+        } ],
+        "stop" : [ {
+          "script" : {
+            "path" : "./05-stop-single-sechub-network-docker-compose.sh"
+          }
+        } ],
+        "techUser" : {
+          "userId" : "techuser",
+          "apiToken" : "pds-apitoken"
+        }
+      } ]
+    }
+  },
+  "tests" : [ {
+    "name" : "vulnerable-python",
+    "prepare" : [ {
+      "script" : {
+        "arguments" : [ "${runtime.currentTestFolder}", "https://github.com/alexdd/vulnerable-python.git" ],
+        "path" : "./clone_repo.sh"
+      }
+    } ],
+    "execute" : {
+      "runSecHubJob" : {
+        "uploads" : [ {
+          "sourceFolder" : "."
+        } ],
+        "codeScan" : { }
+      }
+    },
+    "assert" : [ {
+      "sechubResult" : {
+        "hasTrafficLight" : "YELLOW",
+        "containsStrings" : {
+          "values" : [ "result", "SUCCESS", "jobUUID", "reportVersion", "MEDIUM", "severity", "sql_injection.py" ]
+        }
+      }
+    } ]
+  } ]
+}
