@@ -23,7 +23,7 @@ class UrlUtilTest {
     @EmptySource
     void null_or_empty_url_leads_to_empty_result(String url) {
         /* execute */
-        String result = urlUtilToTest.replaceWildCardsWithRegexInUrl(url);
+        String result = urlUtilToTest.replaceWebScanWildCardsWithRegexInString(url);
 
         /* test */
         assertEquals("", result);
@@ -36,7 +36,7 @@ class UrlUtilTest {
         String expectedUrl = "https://localhost/admin/.*/profile/.*";
 
         /* execute */
-        String result = urlUtilToTest.replaceWildCardsWithRegexInUrl(url);
+        String result = urlUtilToTest.replaceWebScanWildCardsWithRegexInString(url);
 
         /* test */
         assertEquals(expectedUrl, result);
@@ -49,7 +49,7 @@ class UrlUtilTest {
         String expectedUrl = "https://localhost/admin/profile";
 
         /* execute */
-        String result = urlUtilToTest.replaceWildCardsWithRegexInUrl(url);
+        String result = urlUtilToTest.replaceWebScanWildCardsWithRegexInString(url);
 
         /* test */
         assertEquals(expectedUrl, result);

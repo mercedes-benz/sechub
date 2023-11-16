@@ -2,16 +2,18 @@
 package com.mercedesbenz.sechub.zapwrapper.config;
 
 import java.io.File;
-import java.nio.file.Path;
+import java.util.Collections;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Set;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.mercedesbenz.sechub.commons.model.SecHubScanConfiguration;
 import com.mercedesbenz.sechub.commons.model.SecHubSourceDataConfiguration;
-import com.mercedesbenz.sechub.zapwrapper.cli.ZapWrapperExitCode;
-import com.mercedesbenz.sechub.zapwrapper.cli.ZapWrapperRuntimeException;
+import com.mercedesbenz.sechub.commons.model.SecHubWebScanApiConfiguration;
+import com.mercedesbenz.sechub.commons.model.SecHubWebScanConfiguration;
 
 public class ApiDefinitionFileProvider {
     private static final Logger LOG = LoggerFactory.getLogger(ApiDefinitionFileProvider.class);
@@ -19,47 +21,74 @@ public class ApiDefinitionFileProvider {
     /**
      *
      * This method takes the extracted sources folder path and the SecHub scan
-     * configuration (both usually provided by SecHub). It makes sure, that exactly
-     * one file is provided to use as file containing the API definition, since we
-     * currently allow only a single file.
+     * configuration (both usually provided by SecHub) and fetches all API
+     * definitions files uploaded for the current scan.
      *
      * @param extractedSourcesFolderPath
      * @param sechubConfig
-     * @return Path to API definition file or <code>null</code> if parameters are
-     *         null or no data section is found
+     * @return Unmodifiable list of API definition files or an unmodifiable empty
+     *         list no API definition files where found.
      */
-    public Path fetchApiDefinitionFile(String extractedSourcesFolderPath, SecHubScanConfiguration sechubConfig) {
+    public List<File> fetchApiDefinitionFiles(String extractedSourcesFolderPath, SecHubScanConfiguration sechubConfig) {
+
         if (extractedSourcesFolderPath == null) {
             LOG.info("Extracted sources folder path env variable was not set.");
-            return null;
+            return Collections.emptyList();
         }
+        if (!isValidWebScanConfigWithDataSection(sechubConfig)) {
+            return Collections.emptyList();
+        }
+
+        SecHubWebScanConfiguration secHubWebScanConfiguration = sechubConfig.getWebScan().get();
+        if (secHubWebScanConfiguration.getApi().isEmpty()) {
+            LOG.info("No API definition was configured for the webscan. Continuing without API definition");
+            return Collections.emptyList();
+        }
+
+        SecHubWebScanApiConfiguration secHubWebScanApiConfiguration = secHubWebScanConfiguration.getApi().get();
+
+        Set<String> namesOfUsedDataConfigurationObjects = secHubWebScanApiConfiguration.getNamesOfUsedDataConfigurationObjects();
+        List<SecHubSourceDataConfiguration> sourceData = sechubConfig.getData().get().getSources();
+
+        List<File> apiFiles = new LinkedList<>();
+        LOG.info("Collecting all {} definitions files.", secHubWebScanApiConfiguration.getType().name());
+        for (String use : namesOfUsedDataConfigurationObjects) {
+            if (use == null) {
+                continue;
+            }
+            for (SecHubSourceDataConfiguration dataConfig : sourceData) {
+                // Continue if this is NOT the correct data section
+                if (!use.equals(dataConfig.getUniqueName())) {
+                    continue;
+                }
+
+                if (dataConfig.getFileSystem().isEmpty()) {
+                    continue;
+                }
+                List<String> files = dataConfig.getFileSystem().get().getFiles();
+                for (String file : files) {
+                    // Add all files to the list of API definition files
+                    apiFiles.add(new File(extractedSourcesFolderPath, file));
+                }
+            }
+        }
+        return Collections.unmodifiableList(apiFiles);
+    }
+
+    private boolean isValidWebScanConfigWithDataSection(SecHubScanConfiguration sechubConfig) {
         if (sechubConfig == null) {
             LOG.info("SecHub scan configuration was not set.");
-            return null;
+            return false;
         }
-
-        if (!sechubConfig.getData().isPresent()) {
-            LOG.info("No data section was found. Continuing without searching for API definition.");
-            return null;
+        if (sechubConfig.getWebScan().isEmpty()) {
+            LOG.info("Cannot read API definition, because no webscan was configured.");
+            return false;
         }
-
-        List<SecHubSourceDataConfiguration> sourceData = sechubConfig.getData().get().getSources();
-        if (sourceData.size() != 1) {
-            throw new ZapWrapperRuntimeException("Sources must contain exactly 1 entry.", ZapWrapperExitCode.API_DEFINITION_CONFIG_INVALID);
+        if (sechubConfig.getData().isEmpty()) {
+            LOG.info("No data section was found. Continuing without API definition.");
+            return false;
         }
-
-        if (!sourceData.get(0).getFileSystem().isPresent()) {
-            throw new ZapWrapperRuntimeException("Sources filesystem part must be set at this stage.", ZapWrapperExitCode.API_DEFINITION_CONFIG_INVALID);
-        }
-
-        List<String> files = sourceData.get(0).getFileSystem().get().getFiles();
-        if (files.size() != 1) {
-            throw new ZapWrapperRuntimeException("Sources filesystem files part must contain exactly 1 entry.",
-                    ZapWrapperExitCode.API_DEFINITION_CONFIG_INVALID);
-        }
-
-        File result = new File(extractedSourcesFolderPath, files.get(0));
-        return result.toPath();
+        return true;
     }
 
 }

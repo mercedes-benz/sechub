@@ -17,6 +17,7 @@ import java.util.TreeMap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.mercedesbenz.sechub.api.DefaultSecHubClient;
 import com.mercedesbenz.sechub.api.SecHubClient;
 import com.mercedesbenz.sechub.commons.model.ScanType;
 import com.mercedesbenz.sechub.pds.commons.core.config.PDSProductSetup;
@@ -55,7 +56,7 @@ public class SystemTestRuntimeContext {
     Path additionalResourcesRoot;
 
     private SystemTestConfiguration configuration;
-    private SystemTestRunResult currentResult;
+    private SystemTestRunResult currentResult = new SystemTestRunResult("no-test-fallback-" + System.nanoTime());
     private Set<SystemTestRunResult> results = new LinkedHashSet<>();
     private SystemTestRuntimeMetaData runtimeMetaData = new SystemTestRuntimeMetaData();
     private Map<PDSSolutionDefinition, PDSSolutionRuntimeData> pdsSolutionRuntimeDataMap = new LinkedHashMap<>();
@@ -64,8 +65,16 @@ public class SystemTestRuntimeContext {
     private SecHubClient remoteUserSecHubClient;
     private SecHubClient localAdminSecHubClient;
     private SystemTestTemplateEngine templateEngine = new SystemTestTemplateEngine();
+    private Set<String> testsToRun = new LinkedHashSet<>();
 
     private Map<String, PDSClient> localTechUserPdsClientMap = new TreeMap<>();
+
+    public void addTestsToRun(Collection<String> testNames) {
+        if (testNames == null) {
+            return;
+        }
+        testsToRun.addAll(testNames);
+    }
 
     public void alterConfguration(SystemTestConfiguration configuration) {
         this.configuration = configuration;
@@ -89,6 +98,18 @@ public class SystemTestRuntimeContext {
 
     public boolean isDryRun() {
         return dryRun;
+    }
+
+    public boolean isRunningAllTests() {
+        return testsToRun.isEmpty();
+    }
+
+    public boolean isRunningTest(String name) {
+        return isRunningAllTests() || testsToRun.contains(name);
+    }
+
+    public Set<String> getTestsToRun() {
+        return Collections.unmodifiableSet(testsToRun);
     }
 
     /* only for tests */
@@ -296,7 +317,7 @@ public class SystemTestRuntimeContext {
             String userId = getTemplateEngine().replaceSecretEnvironmentVariablesWithValues(credentials.getUserId(), getEnvironmentProvider());
             String apiToken = getTemplateEngine().replaceSecretEnvironmentVariablesWithValues(credentials.getApiToken(), getEnvironmentProvider());
 
-            client = new SecHubClient(serverUri, userId, apiToken, TRUST_ALL);
+            client = new DefaultSecHubClient(serverUri, userId, apiToken, TRUST_ALL);
             client.addListener(new ArtifactStorageSecHubClientListener(this));
             LOG.info("Created SecHub client for user: '{}', apiToken: '{}'", client.getUsername(), "*".repeat(client.getSealedApiToken().length()));
         } catch (RuntimeException e) {

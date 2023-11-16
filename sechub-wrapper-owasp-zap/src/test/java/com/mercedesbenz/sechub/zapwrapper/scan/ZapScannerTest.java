@@ -14,11 +14,13 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URL;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -51,7 +53,6 @@ import com.mercedesbenz.sechub.zapwrapper.config.data.ZapFullRuleset;
 import com.mercedesbenz.sechub.zapwrapper.helper.IncludeExcludeToZapURLHelper;
 import com.mercedesbenz.sechub.zapwrapper.helper.ZapPDSEventHandler;
 import com.mercedesbenz.sechub.zapwrapper.helper.ZapProductMessageHelper;
-import com.mercedesbenz.sechub.zapwrapper.helper.ZapURLType;
 import com.mercedesbenz.sechub.zapwrapper.internal.scan.ClientApiFacade;
 import com.mercedesbenz.sechub.zapwrapper.scan.ZapScanner.UserInformation;
 import com.mercedesbenz.sechub.zapwrapper.util.SystemUtil;
@@ -278,11 +279,11 @@ class ZapScannerTest {
 
         URL targetUrl = sechubWebScanConfig.getUrl().toURL();
         List<String> includesList = sechubWebScanConfig.getIncludes().get();
-        Set<URL> includes = new HashSet<>(helper.createListOfUrls(ZapURLType.INCLUDE, targetUrl, includesList, new ArrayList<>()));
+        Set<String> includes = new HashSet<>(helper.createListOfUrls(targetUrl, includesList));
         when(scanContext.getZapURLsIncludeSet()).thenReturn(includes);
 
         List<String> excludesList = sechubWebScanConfig.getExcludes().get();
-        Set<URL> excludes = new HashSet<>(helper.createListOfUrls(ZapURLType.EXCLUDE, targetUrl, excludesList, new ArrayList<>()));
+        Set<String> excludes = new HashSet<>(helper.createListOfUrls(targetUrl, excludesList));
         when(scanContext.getZapURLsExcludeSet()).thenReturn(excludes);
 
         ApiResponse response = mock(ApiResponse.class);
@@ -303,7 +304,7 @@ class ZapScannerTest {
     void import_openapi_file_but_api_file_is_null_api_facade_is_never_called() throws ClientApiException {
         /* prepare */
         String contextId = "context-id";
-        when(scanContext.getApiDefinitionFile()).thenReturn(null);
+        when(scanContext.getApiDefinitionFiles()).thenReturn(Collections.emptyList());
 
         ApiResponse response = mock(ApiResponse.class);
         when(clientApiFacade.importOpenApiFile(any(), any(), any())).thenReturn(response);
@@ -323,7 +324,10 @@ class ZapScannerTest {
         String json = TestFileReader.loadTextFile(sechubConfigFile);
         SecHubWebScanConfiguration sechubWebScanConfig = SecHubScanConfiguration.createFromJSON(json).getWebScan().get();
 
-        when(scanContext.getApiDefinitionFile()).thenReturn(Paths.get(sechubConfigFile));
+        List<File> apiFiles = new ArrayList<>();
+        apiFiles.add(new File("examplefile.json"));
+
+        when(scanContext.getApiDefinitionFiles()).thenReturn(apiFiles);
         when(scanContext.getSecHubWebScanConfiguration()).thenReturn(sechubWebScanConfig);
 
         ApiResponse response = mock(ApiResponse.class);

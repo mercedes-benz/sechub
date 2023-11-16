@@ -87,6 +87,9 @@ if [ -n "$SECHUB_SERVER_VERSION" ] ; then
   echo "  from released version: v${SECHUB_SERVER_VERSION}-server"
 fi
 
+echo "Copying install-java scripts into the docker directory"
+cp --recursive --force ../sechub-solutions-shared/install-java/ docker/
+
 # Docker BuildKit settings
 export BUILDKIT_PROGRESS=plain
 export DOCKER_BUILDKIT=1

@@ -9,7 +9,7 @@ plugins {
     id 'java-library'
 }
 
-version = VersionData.getServerVersion()
+version = versionData.getServerVersion()
 
 dependencies {
 

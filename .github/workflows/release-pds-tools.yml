@@ -28,7 +28,7 @@ jobs:
           exit 1
 
       - name: Checkout master
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           ref: master
 
@@ -99,6 +99,8 @@ jobs:
           git restore sechub-api-java/src/main/resources/reduced-openapi3.json
           mkdir -p build/reports
           git status > build/reports/git-status.txt
+          echo "--- git tags:" >> build/reports/git-status.txt
+          git tag --points-at HEAD >> build/reports/git-status.txt
 
       - name: Archive GIT status
         if: always()

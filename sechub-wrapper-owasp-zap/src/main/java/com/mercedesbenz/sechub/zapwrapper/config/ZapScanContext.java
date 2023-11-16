@@ -1,9 +1,14 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.zapwrapper.config;
 
+import java.io.File;
 import java.net.URL;
 import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Set;
 
 import com.mercedesbenz.sechub.commons.model.SecHubWebScanConfiguration;
@@ -38,11 +43,11 @@ public class ZapScanContext {
 
     private DeactivatedRuleReferences deactivatedRuleReferences;
 
-    private Path apiDefinitionFile;
+    private List<File> apiDefinitionFiles = new ArrayList<>();
 
     // Using Set here to avoid duplicates
-    private Set<URL> zapURLsIncludeSet = new HashSet<>();
-    private Set<URL> zapURLsExcludeSet = new HashSet<>();
+    private Set<String> zapURLsIncludeSet = new HashSet<>();
+    private Set<String> zapURLsExcludeSet = new HashSet<>();
 
     private boolean connectionCheckEnabled;
 
@@ -117,19 +122,24 @@ public class ZapScanContext {
         return deactivatedRuleReferences;
     }
 
-    /**
-     *
-     * @return api defintion file or <code>null</code> if not available
-     */
-    public Path getApiDefinitionFile() {
-        return apiDefinitionFile;
+    public List<File> getApiDefinitionFiles() {
+        if (apiDefinitionFiles == null) {
+            return Collections.emptyList();
+        }
+        return apiDefinitionFiles;
     }
 
-    public Set<URL> getZapURLsIncludeSet() {
+    public Set<String> getZapURLsIncludeSet() {
+        if (zapURLsIncludeSet == null) {
+            return Collections.emptySet();
+        }
         return zapURLsIncludeSet;
     }
 
-    public Set<URL> getZapURLsExcludeSet() {
+    public Set<String> getZapURLsExcludeSet() {
+        if (zapURLsExcludeSet == null) {
+            return Collections.emptySet();
+        }
         return zapURLsExcludeSet;
     }
 
@@ -183,11 +193,11 @@ public class ZapScanContext {
 
         private DeactivatedRuleReferences deactivatedRuleReferences;
 
-        private Path apiDefinitionFile;
+        private List<File> apiDefinitionFiles = new LinkedList<>();
 
         // Using Set here to avoid duplicates
-        private Set<URL> zapURLsIncludeSet = new HashSet<>();
-        private Set<URL> zapURLsExcludeSet = new HashSet<>();
+        private Set<String> zapURLsIncludeSet = new HashSet<>();
+        private Set<String> zapURLsExcludeSet = new HashSet<>();
 
         private boolean connectionCheckEnabled;
 
@@ -263,17 +273,17 @@ public class ZapScanContext {
             return this;
         }
 
-        public ZapBasicScanContextBuilder setApiDefinitionFile(Path apiDefinitionFile) {
-            this.apiDefinitionFile = apiDefinitionFile;
+        public ZapBasicScanContextBuilder addApiDefinitionFiles(List<File> apiDefinitionFiles) {
+            this.apiDefinitionFiles.addAll(apiDefinitionFiles);
             return this;
         }
 
-        public ZapBasicScanContextBuilder setZapURLsIncludeSet(Set<URL> zapURLsIncludeList) {
+        public ZapBasicScanContextBuilder addZapURLsIncludeSet(Set<String> zapURLsIncludeList) {
             this.zapURLsIncludeSet.addAll(zapURLsIncludeList);
             return this;
         }
 
-        public ZapBasicScanContextBuilder setZapURLsExcludeSet(Set<URL> zapURLsExcludeList) {
+        public ZapBasicScanContextBuilder addZapURLsExcludeSet(Set<String> zapURLsExcludeList) {
             this.zapURLsExcludeSet.addAll(zapURLsExcludeList);
             return this;
         }
@@ -323,7 +333,7 @@ public class ZapScanContext {
             zapBasicScanConfiguration.fullRuleset = this.fullRuleset;
             zapBasicScanConfiguration.deactivatedRuleReferences = this.deactivatedRuleReferences;
 
-            zapBasicScanConfiguration.apiDefinitionFile = this.apiDefinitionFile;
+            zapBasicScanConfiguration.apiDefinitionFiles = this.apiDefinitionFiles;
 
             zapBasicScanConfiguration.zapURLsIncludeSet.addAll(this.zapURLsIncludeSet);
             zapBasicScanConfiguration.zapURLsExcludeSet.addAll(this.zapURLsExcludeSet);

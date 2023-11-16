@@ -55,6 +55,8 @@ import com.mercedesbenz.sechub.commons.model.SecHubFileSystemConfiguration;
 import com.mercedesbenz.sechub.commons.model.SecHubInfrastructureScanConfiguration;
 import com.mercedesbenz.sechub.commons.model.SecHubSourceDataConfiguration;
 import com.mercedesbenz.sechub.commons.model.SecHubTimeUnit;
+import com.mercedesbenz.sechub.commons.model.SecHubWebScanApiConfiguration;
+import com.mercedesbenz.sechub.commons.model.SecHubWebScanApiType;
 import com.mercedesbenz.sechub.commons.model.SecHubWebScanConfiguration;
 import com.mercedesbenz.sechub.commons.model.TrafficLight;
 import com.mercedesbenz.sechub.commons.model.WebScanDurationConfiguration;
@@ -402,6 +404,65 @@ public class SchedulerRestControllerRestDocTest implements TestIsNecessaryForDoc
 	    			      ));
 
 	    /* @formatter:on */
+    }
+
+    @Test
+    @UseCaseRestDoc(useCase = UseCaseUserCreatesNewJob.class, variant = "Web scan with api definition")
+    public void restDoc_userCreatesNewJob_webscan_with_api_definition() throws Exception {
+        /* prepare */
+        String apiEndpoint = https(PORT_USED).buildAddJobUrl(PROJECT_ID.pathElement());
+        Class<? extends Annotation> useCase = UseCaseUserCreatesNewJob.class;
+
+        UUID randomUUID = UUID.randomUUID();
+        SchedulerResult mockResult = new SchedulerResult(randomUUID);
+
+        SecHubWebScanApiConfiguration apiConfig = new SecHubWebScanApiConfiguration();
+        apiConfig.setType(SecHubWebScanApiType.OPEN_API);
+        apiConfig.getNamesOfUsedDataConfigurationObjects().add("openApi-file-reference");
+
+        when(mockedScheduleCreateJobService.createJob(any(), any(SecHubConfiguration.class))).thenReturn(mockResult);
+
+        /* execute + test @formatter:off */
+        this.mockMvc.perform(
+                post(apiEndpoint,PROJECT1_ID).
+                    contentType(MediaType.APPLICATION_JSON_VALUE).
+                    content(configureSecHub().
+                            api("1.0").
+                            webConfig().
+                                addURI("https://localhost/mywebapp/login").
+                                addApiConfig(apiConfig).
+                            build().
+                            toJSON())
+                ).
+                    andExpect(status().isOk()).
+                    andExpect(content().json("{jobId:"+randomUUID.toString()+"}")).
+                    andDo(defineRestService().
+                            with().
+                                useCaseData(useCase, "Web scan with api definition").
+                                tag(RestDocFactory.extractTag(apiEndpoint)).
+                                requestSchema(OpenApiSchema.SCAN_JOB.getSchema()).
+                                responseSchema(OpenApiSchema.JOB_ID.getSchema()).
+                            and().
+                            document(
+                                        requestHeaders(
+
+                                        ),
+                                        pathParameters(
+                                                parameterWithName(PROJECT_ID.paramName()).description("The unique id of the project id where a new sechub job shall be created")
+                                        ),
+                                        requestFields(
+                                                fieldWithPath(PROPERTY_API_VERSION).description("The api version, currently only 1.0 is supported"),
+                                                fieldWithPath(PROPERTY_WEB_SCAN).description("Webscan configuration block").optional(),
+                                                fieldWithPath(PROPERTY_WEB_SCAN+"."+SecHubWebScanConfiguration.PROPERTY_URL).description("Webscan URI to scan for").optional(),
+                                                fieldWithPath(PROPERTY_WEB_SCAN+"."+SecHubWebScanConfiguration.PROPERTY_API+"."+SecHubWebScanApiConfiguration.PROPERTY_TYPE).description("Type of the API definition files that will be provided").optional(),
+                                                fieldWithPath(PROPERTY_WEB_SCAN+"."+SecHubWebScanConfiguration.PROPERTY_API+"."+SecHubDataConfigurationUsageByName.PROPERTY_USE).description("Reference to the data section containing the API definition files. Always use 'sources' with 'files' instead 'folders'.").optional()
+                                        ),
+                                        responseFields(
+                                                fieldWithPath(SchedulerResult.PROPERTY_JOBID).description("A unique job id")
+                                        )
+                          ));
+
+        /* @formatter:on */
     }
 
     @Test
