@@ -112,35 +112,12 @@ jobs:
           path: sechub-cli/build/go
           retention-days: 14
 
-      - name: Install graphviz (asciidoc diagrams)
-        run: sudo apt-get -qq --assume-yes install graphviz
+      - name: Check if openAPI3 are present
+        run: ls -al sechub-doc/build/api-spec/
 
-      # -----------------------------------------
-      # Build Documentation
-      # -----------------------------------------
-      - name: Create documentation
-        run: ./gradlew documentation -Dsechub.build.stage=all
-
-      # -----------------------------------------
-      # Upload documentation
-      # -----------------------------------------
-      - name: Archive documentation HTML
-        uses: actions/upload-artifact@v3
-        with:
-          name: sechub-docs-html
-          path: sechub-doc/build/docs/final-html/
-          retention-days: 14
-
-      - name: Archive documentation PDF
-        uses: actions/upload-artifact@v3
-        with:
-          name: sechub-docs-pdf
-          path: sechub-doc/build/docs/asciidoc/*.pdf
-          retention-days: 14
-
-      - name: Archive documentation openAPI3
-        uses: actions/upload-artifact@v3
-        with:
-          name: sechub-api-spec
-          path: sechub-doc/build/api-spec/
-          retention-days: 14
+      # - name: Archive openAPI3 JSON files
+      #   uses: actions/upload-artifact@v3
+      #   with:
+      #     name: sechub-api-spec
+      #     path: sechub-doc/build/api-spec/
+      #     retention-days: 14
