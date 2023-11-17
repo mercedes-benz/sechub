@@ -5,7 +5,7 @@ on:
   workflow_dispatch:
     inputs:
       publish-documentation:
-        description: Insert your email address here to create a PR for Github pages update (branch `master`)
+        description: Insert your email address here if you want to create a PR for Github pages update (branch `master`)
         required: false
 
 env:
@@ -67,22 +67,6 @@ jobs:
       - name: Complete build with documentation
         run: ./buildDoc
 
-      # We use 'if: always()' to run a step even if a previous step failed
-      - name: Create combined test report
-        if: always()
-        run: ./gradlew createCombinedTestReport -Dsechub.build.stage=all
-
-      # -----------------------------------------
-      # Upload Build Artifacts
-      # -----------------------------------------
-      - name: Archive combined test report
-        if: always()
-        uses: actions/upload-artifact@v3
-        with:
-          name: combined-sechub-testreport
-          path: build/reports/combined-report
-          retention-days: 14
-
       # -----------------------------------------
       # Upload documentation
       # -----------------------------------------
@@ -100,24 +84,17 @@ jobs:
           path: sechub-doc/build/docs/asciidoc/*.pdf
           retention-days: 14
 
-      - name: Archive documentation openAPI3
-        uses: actions/upload-artifact@v3
-        with:
-          name: sechub-api-spec
-          path: sechub-doc/build/api-spec/
-          retention-days: 14
-
       # -----------------------------------------
       # Update and commit documentation for https://mercedes-benz.github.io/sechub/
       # -----------------------------------------
       - name: Update documentation - publish and commit
         if: (inputs.publish-documentation != '') && (github.ref_name == env.ACTIONS_SECHUB_DOC_RELEASE_BRANCH)
         run: |
-          git config user.name "SecHub ${{ github.action }} job (github-actions)"
+          git config user.name "$GITHUB_TRIGGERING_ACTOR (via github-actions)"
           git config user.email "${{ inputs.publish-documentation }}"
           git reset --hard
           sechub-doc/helperscripts/publish+git-add-releasedocs.sh
-          git commit -m "docs update by SecHub '${{ github.action }}' job @github-actions"
+          git commit -m "docs update by '$GITHUB_TRIGGERING_ACTOR' (via github-actions)"
 
       # -----------------------------------------
       # Create pull request for documentation update
