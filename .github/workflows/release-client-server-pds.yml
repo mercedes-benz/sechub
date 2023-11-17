@@ -264,7 +264,7 @@ jobs:
           path: sechub-doc/build/docs/asciidoc/*.pdf
           retention-days: 14
 
-      - name: Archive documentation openAPI3
+      - name: Archive openAPI3 JSON files
         uses: actions/upload-artifact@v3
         with:
           name: sechub-api-spec
