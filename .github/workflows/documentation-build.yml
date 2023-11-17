@@ -108,17 +108,17 @@ jobs:
           retention-days: 14
 
       # -----------------------------------------
-      # Update and commit release documentation for https://mercedes-benz.github.io/sechub/
+      # Update and commit documentation for https://mercedes-benz.github.io/sechub/
       # -----------------------------------------
-      - name: Update documentation - copy to latest
+      - name: Update documentation - publish and commit
         if: (inputs.publish-documentation == 'yes') && (github.ref_name == env.ACTIONS_SECHUB_DOC_RELEASE_BRANCH)
         run: |
           git reset --hard
           sechub-doc/helperscripts/publish+git-add-releasedocs.sh
-          git commit -m "docs update by SecHub release job @github-actions"
+          git commit -m "docs update by SecHub '${{ github.action }}' job @github-actions"
 
       # -----------------------------------------
-      # Create pull request for release documentation
+      # Create pull request for documentation update
       # -----------------------------------------
       - name: Update documentation - Create pull request
         if: (inputs.publish-documentation == 'yes') && (github.ref_name == env.ACTIONS_SECHUB_DOC_RELEASE_BRANCH)
