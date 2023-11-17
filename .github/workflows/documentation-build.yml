@@ -9,7 +9,8 @@ on:
         required: false
 
 env:
-  ACTIONS_SECHUB_DOC_RELEASE_BRANCH: master
+  ACTIONS_SECHUB_DOC_RELEASE_BRANCH: feature-2285-improve-documentation-builds
+  # ACTIONS_SECHUB_DOC_RELEASE_BRANCH: master
 
 jobs:
   build-documentation:
@@ -110,8 +111,31 @@ jobs:
       # Update and commit release documentation for https://mercedes-benz.github.io/sechub/
       # -----------------------------------------
       - name: Update release documentation
-        if: inputs.publish-documentation == 'yes' && github.ref_name == 'master'
+        if: inputs.publish-documentation == 'yes' && github.ref_name == env.ACTIONS_SECHUB_DOC_RELEASE_BRANCH
         run: |
           git reset --hard
           sechub-doc/helperscripts/publish+git-add-releasedocs.sh
           git commit -m "docs update by SecHub release job @github-actions"
+
+      # -----------------------------------------
+      # Create pull request for release documentation
+      # -----------------------------------------
+      - name: Create pull request for release documentation
+        if: inputs.publish-documentation == 'yes' && github.ref_name == env.ACTIONS_SECHUB_DOC_RELEASE_BRANCH
+        id: pr_release_documentation
+        uses: peter-evans/create-pull-request@v5.0.2
+        with:
+          branch: release-documentation
+          branch-suffix: short-commit-hash
+          delete-branch: true
+          title: '1 - Release documentation [auto-generated]'
+          body: |
+            Release of SecHub documentation
+
+            -> Please review before merge.
+
+      - name: Print PR infos
+        if: inputs.publish-documentation == 'yes' && github.ref_name == env.ACTIONS_SECHUB_DOC_RELEASE_BRANCH
+        run: |
+          echo "Pull Request Number - ${{ steps.pr_release_documentation.outputs.pull-request-number }}"
+          echo "Pull Request URL - ${{ steps.pr_release_documentation.outputs.pull-request-url }}"
