@@ -8,6 +8,9 @@ on:
         description: yes -> Will additionally create a PR for Github pages update when on branch `master`
         required: false
 
+env:
+  ACTIONS_SECHUB_DOC_RELEASE_BRANCH: master
+
 jobs:
   build-documentation:
     name: build documentation
@@ -17,6 +20,11 @@ jobs:
         run: |
           echo "git branch: '${{ github.ref_name }}'"
           echo "publish-documentation: '${{ inputs.publish-documentation }}'"
+          if [ '${{ inputs.publish-documentation }}' == 'yes' -a '${{ github.ref_name }}' != "$ACTIONS_SECHUB_DOC_RELEASE_BRANCH" ] ; then
+            echo "Aborting run because publishing the documentation must be done on branch '$ACTIONS_SECHUB_DOC_RELEASE_BRANCH'"
+            echo "Tip: Run this action again and select branch '$ACTIONS_SECHUB_DOC_RELEASE_BRANCH'"
+            exit 1
+          fi
 
       - name: Git checkout
         uses: actions/checkout@v4
