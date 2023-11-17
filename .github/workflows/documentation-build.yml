@@ -42,7 +42,7 @@ jobs:
           java-version: 17
           distribution: temurin
 
-      - name: Setup Gradle
+      - name: Set up Gradle
         uses: gradle/gradle-build-action@v2
         with:
           cache-read-only: false
