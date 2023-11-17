@@ -4,6 +4,8 @@ name: Release Checkmarx wrapper
 on:
   workflow_dispatch:
     inputs:
+      actor-email:
+        description: Insert your email address here. It will be used in the generated pull requests
       checkmarx-wrapper-version:
         description: Checkmarx-wrapper Version (e.g. 1.0.0)
         required: true
@@ -17,6 +19,7 @@ jobs:
     steps:
       - name: "Show Inputs"
         run: |
+          echo "actor-email: '${{ inputs.actor-email }}'"
           echo "Checkmarx-wrapper '${{ inputs.checkmarx-wrapper-version }}' - Milestone '${{ inputs.checkmarx-wrapper-milestone-number }}'"
 
       - name: Checkout branch master
@@ -49,8 +52,8 @@ jobs:
       - name: run apply-headers.sh
         id: apply-headers
         run: |
-          git config user.name "SecHub release job (github-actions)"
-          git config user.email github-actions-sechub@users.noreply.github.com
+          git config user.name "$GITHUB_TRIGGERING_ACTOR (via github-actions)"
+          git config user.email "${{ inputs.actor-email }}"
           ./apply-headers.sh
           git commit -am "SPDX headers added by SecHub release job @github-actions" || true
           COMMITS=`git log --oneline --branches --not --remotes`

@@ -4,6 +4,8 @@ name: Release
 on:
   workflow_dispatch:
     inputs:
+      actor-email:
+        description: Insert your email address here. It will be used in the generated pull requests
       server-version:
         description: Server Version (e.g. 0.27.0)
         required: false
@@ -42,6 +44,7 @@ jobs:
     steps:
       - name: "Show Inputs"
         run: |
+          echo "actor-email: '${{ inputs.actor-email }}'"
           echo "Server '${{ inputs.server-version }}' - Milestone '${{ inputs.server-milestone-number }}'"
           echo "Client '${{ inputs.client-version }}' - Milestone '${{ inputs.client-milestone-number }}'"
           echo "PDS '${{ inputs.pds-version }}' - Milestone '${{ inputs.pds-milestone-number }}'"
@@ -127,8 +130,8 @@ jobs:
       - name: run apply-headers.sh
         id: apply-headers
         run: |
-          git config user.name "SecHub release job (github-actions)"
-          git config user.email github-actions-sechub@users.noreply.github.com
+          git config user.name "$GITHUB_TRIGGERING_ACTOR (via github-actions)"
+          git config user.email "${{ inputs.actor-email }}"
           ./apply-headers.sh
           git commit -am "SPDX headers added by SecHub release job @github-actions" || true
           COMMITS=`git log --oneline --branches --not --remotes`
