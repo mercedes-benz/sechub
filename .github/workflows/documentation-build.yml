@@ -5,7 +5,7 @@ on:
   workflow_dispatch:
     inputs:
       publish-documentation:
-        description: yes -> Will additionally create a PR for Github pages update when on branch `master`
+        description: yes -> Will additionally create a PR for Github pages update (branch `master`)
         required: false
 
 env:
@@ -110,8 +110,8 @@ jobs:
       # -----------------------------------------
       # Update and commit release documentation for https://mercedes-benz.github.io/sechub/
       # -----------------------------------------
-      - name: Update release documentation
-        if: inputs.publish-documentation == 'yes' && github.ref_name == env.ACTIONS_SECHUB_DOC_RELEASE_BRANCH
+      - name: Update documentation - copy to latest
+        if: (inputs.publish-documentation == 'yes') && (github.ref_name == env.ACTIONS_SECHUB_DOC_RELEASE_BRANCH)
         run: |
           git reset --hard
           sechub-doc/helperscripts/publish+git-add-releasedocs.sh
@@ -120,8 +120,8 @@ jobs:
       # -----------------------------------------
       # Create pull request for release documentation
       # -----------------------------------------
-      - name: Create pull request for release documentation
-        if: inputs.publish-documentation == 'yes' && github.ref_name == env.ACTIONS_SECHUB_DOC_RELEASE_BRANCH
+      - name: Update documentation - Create pull request
+        if: (inputs.publish-documentation == 'yes') && (github.ref_name == env.ACTIONS_SECHUB_DOC_RELEASE_BRANCH)
         id: pr_release_documentation
         uses: peter-evans/create-pull-request@v5.0.2
         with:
@@ -134,8 +134,8 @@ jobs:
 
             -> Please review before merge.
 
-      - name: Print PR infos
-        if: inputs.publish-documentation == 'yes' && github.ref_name == env.ACTIONS_SECHUB_DOC_RELEASE_BRANCH
+      - name: Update documentation - Print PR infos
+        if: (inputs.publish-documentation == 'yes') && (github.ref_name == env.ACTIONS_SECHUB_DOC_RELEASE_BRANCH)
         run: |
           echo "Pull Request Number - ${{ steps.pr_release_documentation.outputs.pull-request-number }}"
           echo "Pull Request URL - ${{ steps.pr_release_documentation.outputs.pull-request-url }}"
