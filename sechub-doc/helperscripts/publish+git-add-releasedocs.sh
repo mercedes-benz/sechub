@@ -5,8 +5,7 @@ FILE_LIST=""
 SOURCE_DIR="build/docs/final-html"
 DEST_DIR="../docs/latest"
 IMAGE_DIR="images"
-# GIT_RELEASE_BRANCH="master"
-GIT_RELEASE_BRANCH="feature-2285-improve-documentation-builds"
+GIT_RELEASE_BRANCH="master"
 
 function add_changed_images {
   pushd "$SOURCE_DIR/" >/dev/null 2>&1
