@@ -5,7 +5,7 @@ on:
   workflow_dispatch:
     inputs:
       publish-documentation:
-        description: yes -> Will additionally create a PR for Github pages update
+        description: yes -> Will additionally create a PR for Github pages update when on branch `master`
         required: false
 
 jobs:
@@ -13,6 +13,11 @@ jobs:
     name: build documentation
     runs-on: ubuntu-latest
     steps:
+      - name: "Show + check Input and git branch"
+        run: |
+          echo "git branch: '${{ github.ref_name }}'"
+          echo "publish-documentation: '${{ inputs.publish-documentation }}'"
+
       - name: Git checkout
         uses: actions/checkout@v4
         with:
@@ -92,3 +97,13 @@ jobs:
           name: sechub-api-spec
           path: sechub-doc/build/api-spec/
           retention-days: 14
+
+      # -----------------------------------------
+      # Update and commit release documentation for https://mercedes-benz.github.io/sechub/
+      # -----------------------------------------
+      - name: Update release documentation
+        if: inputs.publish-documentation == 'yes' && github.ref_name == 'master'
+        run: |
+          git reset --hard
+          sechub-doc/helperscripts/publish+git-add-releasedocs.sh
+          git commit -m "docs update by SecHub release job @github-actions"
