@@ -187,9 +187,14 @@ public class SecHubExecutionScenarioSecHubClientIntTest {
         as(user).
             withSecHubClient().
             startDownloadJobReport(project, jobUUID, location).
-            hasTrafficLight(TrafficLight.GREEN)
+            hasTrafficLight(TrafficLight.GREEN);
 
-            ;
+        /* store webscan reports as example */
+        String jsonReport = as(user).getJobReport(project, jobUUID);
+        storeTestReport("report_webscan-1.json", jsonReport);
+
+        String htmlReport = as(user).getHTMLJobReport(project, jobUUID);
+        storeTestReport("report_webscan-1.html", htmlReport);
         /* @formatter:on */
     }
 

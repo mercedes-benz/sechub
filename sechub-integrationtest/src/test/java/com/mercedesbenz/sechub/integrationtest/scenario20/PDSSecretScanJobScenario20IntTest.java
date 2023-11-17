@@ -44,6 +44,8 @@ public class PDSSecretScanJobScenario20IntTest {
 
         /* test 1 */
         String secretScanReport = as(USER_1).getJobReport(project, jobUUID);
+        storeTestReport("report_pds_secretscan-1.json", secretScanReport);
+
         int expectedFindingId = 1;
 
         /* @formatter:off */
@@ -68,6 +70,7 @@ public class PDSSecretScanJobScenario20IntTest {
         String htmlReport = as(USER_1).
                     enableAutoDumpForHTMLReports().
                     getHTMLJobReport(project, jobUUID);
+        storeTestReport("report_pds_secretscan-1.html", htmlReport);
 
         assertHTMLReport(htmlReport).
             containsAtLeastOneOpenDetailsBlock();
