@@ -39,6 +39,8 @@ public class TestSecHubConfigurationBuilder {
         result.setWebScan(testData.webConfig);
         result.setProjectId(testData.projectId);
         result.setCodeScan(testData.codeScanConfig);
+        result.setSecretScan(testData.secretScanConfig);
+        result.setLicenseScan(testData.licenseScanConfig);
 
         if (testData.data != null) {
 
@@ -75,6 +77,8 @@ public class TestSecHubConfigurationBuilder {
         private SecHubWebScanConfiguration webConfig;
         private SecHubInfrastructureScanConfiguration infraConfig;
         private SecHubCodeScanConfiguration codeScanConfig;
+        private SecHubLicenseScanConfiguration licenseScanConfig;
+        private SecHubSecretScanConfiguration secretScanConfig;
         private String projectId;
     }
 
@@ -141,13 +145,13 @@ public class TestSecHubConfigurationBuilder {
         }
     }
 
-    public TestCodeSCanConfigurationBuilder codeScanConfig() {
-        return new TestCodeSCanConfigurationBuilder();
+    public TestCodeScanConfigurationBuilder codeScanConfig() {
+        return new TestCodeScanConfigurationBuilder();
     }
 
-    public class TestCodeSCanConfigurationBuilder {
+    public class TestCodeScanConfigurationBuilder {
 
-        private TestCodeSCanConfigurationBuilder() {
+        private TestCodeScanConfigurationBuilder() {
             TestSecHubConfigurationBuilder.this.testData.codeScanConfig = new SecHubCodeScanConfiguration();
         }
 
@@ -159,15 +163,63 @@ public class TestSecHubConfigurationBuilder {
             return TestSecHubConfigurationBuilder.this;
         }
 
-        public TestCodeSCanConfigurationBuilder useDataReferences(String... referenceName) {
+        public TestCodeScanConfigurationBuilder useDataReferences(String... referenceName) {
             testData.codeScanConfig.getNamesOfUsedDataConfigurationObjects().addAll(Arrays.asList(referenceName));
             return this;
         }
 
-        public TestCodeSCanConfigurationBuilder setFileSystemFolders(String... folders) {
+        public TestCodeScanConfigurationBuilder setFileSystemFolders(String... folders) {
             SecHubFileSystemConfiguration fileSystem = new SecHubFileSystemConfiguration();
             TestSecHubConfigurationBuilder.this.testData.codeScanConfig.setFileSystem(fileSystem);
             fileSystem.getFolders().addAll(Arrays.asList(folders));
+            return this;
+        }
+    }
+
+    public TestSecretScanConfigurationBuilder secretScanConfig() {
+        return new TestSecretScanConfigurationBuilder();
+    }
+
+    public class TestSecretScanConfigurationBuilder {
+
+        private TestSecretScanConfigurationBuilder() {
+            TestSecHubConfigurationBuilder.this.testData.secretScanConfig = new SecHubSecretScanConfiguration();
+        }
+
+        public SecHubScanConfiguration build() {
+            return TestSecHubConfigurationBuilder.this.build();
+        }
+
+        public TestSecHubConfigurationBuilder and() {
+            return TestSecHubConfigurationBuilder.this;
+        }
+
+        public TestSecretScanConfigurationBuilder useDataReferences(String... referenceName) {
+            testData.secretScanConfig.getNamesOfUsedDataConfigurationObjects().addAll(Arrays.asList(referenceName));
+            return this;
+        }
+    }
+
+    public TestLicenseScanConfigurationBuilder licenseScanConfig() {
+        return new TestLicenseScanConfigurationBuilder();
+    }
+
+    public class TestLicenseScanConfigurationBuilder {
+
+        private TestLicenseScanConfigurationBuilder() {
+            TestSecHubConfigurationBuilder.this.testData.licenseScanConfig = new SecHubLicenseScanConfiguration();
+        }
+
+        public SecHubScanConfiguration build() {
+            return TestSecHubConfigurationBuilder.this.build();
+        }
+
+        public TestSecHubConfigurationBuilder and() {
+            return TestSecHubConfigurationBuilder.this;
+        }
+
+        public TestLicenseScanConfigurationBuilder useDataReferences(String... referenceName) {
+            testData.licenseScanConfig.getNamesOfUsedDataConfigurationObjects().addAll(Arrays.asList(referenceName));
             return this;
         }
     }
