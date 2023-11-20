@@ -116,6 +116,14 @@ jobs:
           path: sechub-cli/build/go
           retention-days: 14
 
+      - name: Archive sechub integration test report artifacts
+        if: always()
+        uses: actions/upload-artifact@v3
+        with:
+          name: sechub-integrationtest-test-reports
+          path: sechub-integrationtest/build/sechub-test-reports
+          retention-days: 14
+          
       - name: Archive openAPI3 JSON files
         uses: actions/upload-artifact@v3
         with:
