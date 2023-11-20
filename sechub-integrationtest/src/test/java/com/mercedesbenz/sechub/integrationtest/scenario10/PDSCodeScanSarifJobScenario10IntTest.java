@@ -67,6 +67,7 @@ public class PDSCodeScanSarifJobScenario10IntTest {
 
         // test content as expected
         String report = as(USER_1).getJobReport(project, jobUUID);
+        storeTestReport("report_pds_codescan_sarif-1.json", report);
 
         assertReport(report).
             hasStatus(SecHubStatus.SUCCESS).
@@ -95,6 +96,7 @@ public class PDSCodeScanSarifJobScenario10IntTest {
         String htmlReport = as(USER_1).
                 enableAutoDumpForHTMLReports().
                 getHTMLJobReport(project, jobUUID);
+        storeTestReport("report_pds_codescan_sarif-1.html", htmlReport);
 
         assertHTMLReport(htmlReport).
             containsAtLeastOneOpenDetailsBlock().
