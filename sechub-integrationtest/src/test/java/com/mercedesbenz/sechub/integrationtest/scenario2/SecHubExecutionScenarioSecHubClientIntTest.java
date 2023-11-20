@@ -497,7 +497,7 @@ public class SecHubExecutionScenarioSecHubClientIntTest {
 
         /* prepare */
         TestProject project = PROJECT_1;
-        
+
         as(SUPER_ADMIN).assignUserToProject(USER_1, project);
 
         /* @formatter:off */
@@ -532,7 +532,7 @@ public class SecHubExecutionScenarioSecHubClientIntTest {
         /* @formatter:off */
 		/* prepare */
 		TestProject project = PROJECT_1;
-		
+
         as(SUPER_ADMIN).
 			assignUserToProject(USER_1, project);
 
@@ -550,7 +550,7 @@ public class SecHubExecutionScenarioSecHubClientIntTest {
 			isRed().
 			hasExitCode(1);
 
-		
+
 		 /* store webscan reports as example */
         String jsonReport = as(USER_1).getJobReport(project, result.getSechubJobUUID());
         storeTestReport("report_webscan-3-red.json", jsonReport);
