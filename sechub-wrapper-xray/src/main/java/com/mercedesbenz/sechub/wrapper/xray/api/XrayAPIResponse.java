@@ -21,20 +21,28 @@ public class XrayAPIResponse {
 
         private String body = "";
 
-        private Builder(int statusCode, Map<String, List<String>> headers) {
-            this.statusCode = statusCode;
-            this.headers = headers;
+        private Builder() {
         }
 
-        public static Builder builder(int statusCode, Map<String, List<String>> headers) throws XrayWrapperException {
-            if (headers == null) {
+        public static Builder builder() {
+            return new Builder();
+        }
+
+        public XrayAPIResponse build() throws XrayWrapperException {
+            if (this.headers == null) {
                 throw new XrayWrapperException("HTTP response headers cannot be null!", XrayWrapperExitCode.INVALID_HTTP_RESPONSE);
             }
-            return new Builder(statusCode, headers);
+            return new XrayAPIResponse(this.statusCode, this.headers, this.body);
         }
 
-        public XrayAPIResponse build() {
-            return new XrayAPIResponse(this.statusCode, this.headers, this.body);
+        Builder statusCode(int statusCode) {
+            this.statusCode = statusCode;
+            return this;
+        }
+
+        Builder headers(Map<String, List<String>> headers) {
+            this.headers = headers;
+            return this;
         }
 
         Builder addResponseBody(String body) {

@@ -6,8 +6,6 @@ public class EnvironmentVariableConstants {
 
     public static final String DOCKER_REGISTRY_ENV = "XRAY_DOCKER_REGISTRY";
 
-    public static final String WORKSPACE_ENV = "PDS_JOB_WORKSPACE_LOCATION";
-
     public static final String XRAY_USERNAME_ENV = "XRAY_USERNAME";
 
     public static final String XRAY_PASSWORD_ENV = "XRAY_PASSWORD";

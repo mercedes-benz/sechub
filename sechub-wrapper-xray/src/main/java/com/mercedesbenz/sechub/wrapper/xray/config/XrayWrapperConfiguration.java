@@ -16,7 +16,7 @@ public class XrayWrapperConfiguration {
 
     private final String zipDirectory;
 
-    private final String secHubReport;
+    private final String xrayPdsReport;
 
     private int waitUntilRetrySec = 10;
 
@@ -25,38 +25,54 @@ public class XrayWrapperConfiguration {
     private long maxScanDurationHours = 5;
 
     public static class Builder {
-        private final String artifactory;
+        private String artifactory;
 
-        private final String registry;
+        private String registry;
 
-        private final String zipDirectory;
+        private String zipDirectory;
 
-        private final String secHubReport;
+        private String xrayPdsReport;
 
-        private Builder(String artifactory, String registry, String zipDirectory, String secHubReport) {
-            this.artifactory = artifactory;
-            this.registry = registry;
-            this.zipDirectory = zipDirectory;
-            this.secHubReport = secHubReport;
+        private Builder() {
         }
 
-        public static Builder builder(String artifactory, String register, String zipDirectory, String secHubReport) {
-            if (artifactory == null || zipDirectory == null) {
-                throw new NullPointerException("Artifactory URL or Zip file directory cannot be null");
-            }
-            return new Builder(artifactory, register, zipDirectory, secHubReport);
+        public static Builder builder() {
+            return new Builder();
         }
 
         public XrayWrapperConfiguration build() {
-            return new XrayWrapperConfiguration(this.artifactory, this.registry, this.zipDirectory, this.secHubReport);
+            if (artifactory == null || zipDirectory == null) {
+                throw new IllegalStateException("Artifactory URL or Zip file directory cannot be null");
+            }
+            return new XrayWrapperConfiguration(this.artifactory, this.registry, this.zipDirectory, this.xrayPdsReport);
+        }
+
+        public Builder artifactory(String artifactory) {
+            this.artifactory = artifactory;
+            return this;
+        }
+
+        public Builder registry(String registry) {
+            this.registry = registry;
+            return this;
+        }
+
+        public Builder zipDirectory(String zipDirectory) {
+            this.zipDirectory = zipDirectory;
+            return this;
+        }
+
+        public Builder xrayPdsReport(String xrayPdsReport) {
+            this.xrayPdsReport = xrayPdsReport;
+            return this;
         }
     }
 
-    private XrayWrapperConfiguration(String artifactory, String registry, String zipDirectory, String secHubReport) {
+    private XrayWrapperConfiguration(String artifactory, String registry, String zipDirectory, String xrayPdsReport) {
         this.artifactory = artifactory;
         this.registry = registry;
         this.zipDirectory = zipDirectory;
-        this.secHubReport = secHubReport;
+        this.xrayPdsReport = xrayPdsReport;
     }
 
     public String getArtifactory() {
@@ -67,8 +83,8 @@ public class XrayWrapperConfiguration {
         return registry;
     }
 
-    public String getSecHubReport() {
-        return secHubReport;
+    public String getXrayPdsReport() {
+        return xrayPdsReport;
     }
 
     public String getZipDirectory() {

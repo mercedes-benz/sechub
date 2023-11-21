@@ -489,7 +489,7 @@ spec:
                name: secret-pds-secretscanner
                key: techuser_password
 {{- end }}
-{{- if .Values.pdsSecretScanner.enabled }}
+{{- if .Values.pdsXray.enabled }}
 # ----------------------------------------------------------------------------------------------#
 # - Scope: PDS-Xray
 # --------------------------------------------------------------------------------------------- #

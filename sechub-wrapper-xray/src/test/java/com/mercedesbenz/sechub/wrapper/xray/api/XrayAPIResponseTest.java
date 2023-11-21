@@ -17,12 +17,11 @@ class XrayAPIResponseTest {
     @Test
     void xrayAPIResponse_create_empty_body_response() throws XrayWrapperException {
         /* prepare */
-        XrayAPIResponse response;
         int status = 200;
         Map<String, List<String>> headers = new java.util.HashMap<>(Collections.emptyMap());
 
         /* execute */
-        response = XrayAPIResponse.Builder.builder(status, headers).build();
+        XrayAPIResponse response = XrayAPIResponse.Builder.builder().statusCode(status).headers(headers).build();
 
         /* test */
         assertEquals("", response.getBody());
@@ -31,7 +30,6 @@ class XrayAPIResponseTest {
     @Test
     void xrayAPIResponse_create_valid_response_with_elements() throws XrayWrapperException {
         /* prepare */
-        XrayAPIResponse response;
         int status = 200;
         String body = "body";
         Map<String, List<String>> headers = new java.util.HashMap<>(Collections.emptyMap());
@@ -39,7 +37,7 @@ class XrayAPIResponseTest {
         headers.put("header", values);
 
         /* execute */
-        response = XrayAPIResponse.Builder.builder(status, headers).addResponseBody(body).build();
+        XrayAPIResponse response = XrayAPIResponse.Builder.builder().statusCode(status).headers(headers).addResponseBody(body).build();
 
         /* test */
         assertEquals(200, response.getStatusCode());
@@ -50,6 +48,6 @@ class XrayAPIResponseTest {
     @Test
     void xrayAPIResponse_throws_xrayWrapperException() {
         /* execute + test */
-        assertThrows(XrayWrapperException.class, () -> XrayAPIResponse.Builder.builder(1, null).build());
+        assertThrows(XrayWrapperException.class, () -> XrayAPIResponse.Builder.builder().statusCode(1).build());
     }
 }

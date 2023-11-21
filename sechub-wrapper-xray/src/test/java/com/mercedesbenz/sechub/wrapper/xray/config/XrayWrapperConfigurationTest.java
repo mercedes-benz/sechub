@@ -13,10 +13,11 @@ class XrayWrapperConfigurationTest {
         String artifactory = "myartifactory";
         String register = "register";
         String zipDir = "zipDir";
-        String secHubReport = "sechubReport";
+        String xrayPdsReport = "xrayPdsReport";
 
         /* execute */
-        XrayWrapperConfiguration configuration = XrayWrapperConfiguration.Builder.builder(artifactory, register, zipDir, secHubReport).build();
+        XrayWrapperConfiguration configuration = XrayWrapperConfiguration.Builder.builder().artifactory(artifactory).registry(register).zipDirectory(zipDir)
+                .xrayPdsReport(xrayPdsReport).build();
 
         /* test */
         assertEquals(artifactory, configuration.getArtifactory());
@@ -25,7 +26,7 @@ class XrayWrapperConfigurationTest {
     @Test
     void xrayWrapperConfiguration_throws_nullPointerException() {
         /* execute + test */
-        assertThrows(NullPointerException.class, () -> XrayWrapperConfiguration.Builder.builder(null, null, null, null).build());
+        assertThrows(IllegalStateException.class, () -> XrayWrapperConfiguration.Builder.builder().build());
     }
 
 }

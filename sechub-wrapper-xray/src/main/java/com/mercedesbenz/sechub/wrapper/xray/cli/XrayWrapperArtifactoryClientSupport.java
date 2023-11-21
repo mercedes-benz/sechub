@@ -1,9 +1,12 @@
 package com.mercedesbenz.sechub.wrapper.xray.cli;
 
+import java.io.File;
 import java.time.LocalDateTime;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 import org.cyclonedx.model.Bom;
+import org.cyclonedx.model.vulnerability.Vulnerability;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -11,7 +14,7 @@ import com.mercedesbenz.sechub.wrapper.xray.XrayWrapperException;
 import com.mercedesbenz.sechub.wrapper.xray.api.XrayAPIArtifactoryClient;
 import com.mercedesbenz.sechub.wrapper.xray.config.XrayWrapperArtifact;
 import com.mercedesbenz.sechub.wrapper.xray.config.XrayWrapperConfiguration;
-import com.mercedesbenz.sechub.wrapper.xray.report.XrayWrapperReportReader;
+import com.mercedesbenz.sechub.wrapper.xray.report.XrayWrapperReportSupport;
 
 public class XrayWrapperArtifactoryClientSupport {
 
@@ -19,26 +22,31 @@ public class XrayWrapperArtifactoryClientSupport {
     private final XrayWrapperConfiguration xrayWrapperConfiguration;
     private final XrayAPIArtifactoryClient artifactoryClient;
 
-    XrayWrapperReportReader reportReader;
+    XrayWrapperReportSupport reportReader;
 
     public enum ScanStatus {
-        SCANNED("scanned"), IN_PROGRESS("in progress"),
+        SCANNED("scanned"),
+
+        IN_PROGRESS("in progress"),
 
         NOT_SCANNED("not scanned");
 
-        private String status;
+        private String statusValue;
 
         ScanStatus(String status) {
-            this.status = status.toLowerCase();
+            this.statusValue = status.toLowerCase();
         }
 
-        public String getStatus() {
-            return this.status;
+        public String getStatusValue() {
+            return this.statusValue;
         }
 
         public static ScanStatus fromString(String stringStatus) throws XrayWrapperException {
+            if (stringStatus == null) {
+                throw new XrayWrapperException("Scan status is NULL", XrayWrapperExitCode.UNKNOWN_ERROR);
+            }
             for (ScanStatus status : ScanStatus.values()) {
-                if (status.status.equals(stringStatus.toLowerCase())) {
+                if (status.statusValue.equals(stringStatus.toLowerCase())) {
                     return status;
                 }
             }
@@ -49,7 +57,7 @@ public class XrayWrapperArtifactoryClientSupport {
     public XrayWrapperArtifactoryClientSupport(XrayWrapperConfiguration xrayWrapperConfiguration, XrayWrapperArtifact artifact) {
         this.xrayWrapperConfiguration = xrayWrapperConfiguration;
         this.artifactoryClient = new XrayAPIArtifactoryClient(artifact, xrayWrapperConfiguration);
-        this.reportReader = new XrayWrapperReportReader();
+        this.reportReader = new XrayWrapperReportSupport();
     }
 
     /**
@@ -64,7 +72,7 @@ public class XrayWrapperArtifactoryClientSupport {
         ClientControllerContext context = new ClientControllerContext();
 
         // get xray version from artifactory
-        String xray_version = artifactoryClient.getXrayVersion();
+        String xray_version = artifactoryClient.requestXrayVersion();
         LOG.debug("Artifactory available, scan with Xray version: {}", xray_version);
 
         // check if artifact is uploaded
@@ -89,10 +97,18 @@ public class XrayWrapperArtifactoryClientSupport {
     }
 
     private void readAndConvertReports() throws XrayWrapperException {
-        reportReader.findXrayReportsInArchive(xrayWrapperConfiguration.getZipDirectory(), xrayWrapperConfiguration.getSecHubReport());
-        reportReader.readSecurityReport();
-        Bom cycloneDXBom = reportReader.mapVulnerabilities();
-        reportReader.writeReport(cycloneDXBom);
+        XrayWrapperReportData xrayWrapperReportData = new XrayWrapperReportData();
+
+        XrayWrapperReportSupport.XrayReportFiles reportFiles = reportReader.collectXrayReportsInArchive(xrayWrapperConfiguration.getZipDirectory(),
+                xrayWrapperConfiguration.getXrayPdsReport());
+        xrayWrapperReportData.setSecurityReport(reportFiles.securityReport());
+        xrayWrapperReportData.setCycloneReport(reportFiles.cycloneReport());
+        xrayWrapperReportData.setXrayPdsReport(reportFiles.xrayPdsReport());
+
+        xrayWrapperReportData.setCycloneDXVulnerabilityHashMap(reportReader.readSecurityReport(xrayWrapperReportData.getSecurityReport()));
+        xrayWrapperReportData
+                .setSbom(reportReader.mapVulnerabilities(xrayWrapperReportData.getCycloneReport(), xrayWrapperReportData.cycloneDXVulnerabilityHashMap));
+        reportReader.writeReport(xrayWrapperReportData.getSbom(), xrayWrapperReportData.getXrayPdsReport());
     }
 
     /**
@@ -103,7 +119,7 @@ public class XrayWrapperArtifactoryClientSupport {
      */
     private boolean handleScanStatus(ClientControllerContext context) throws XrayWrapperException {
         ScanStatus status = artifactoryClient.getScanStatus();
-        LOG.debug("Artifact status is: " + status.getStatus());
+        LOG.debug("Artifact status is: " + status.getStatusValue());
         if (context.isTimeoutReached()) {
             throw new XrayWrapperException("Reached maximum scan timeout of " + xrayWrapperConfiguration.getMaxScanDurationHours() + " hours. "
                     + "Started scan at: " + context.startTime, XrayWrapperExitCode.TIMEOUT_REACHED);
@@ -166,6 +182,55 @@ public class XrayWrapperArtifactoryClientSupport {
             LocalDateTime now = LocalDateTime.now();
             LocalDateTime timer = now.plusHours(xrayWrapperConfiguration.getMaxScanDurationHours());
             return startTime.isAfter(timer);
+        }
+    }
+
+    private class XrayWrapperReportData {
+        private File cycloneReport;
+        private File securityReport;
+        private File xrayPdsReport;
+        private Map<String, Vulnerability> cycloneDXVulnerabilityHashMap;
+
+        private Bom sbom;
+
+        public File getCycloneReport() {
+            return cycloneReport;
+        }
+
+        public void setCycloneReport(File cycloneReport) {
+            this.cycloneReport = cycloneReport;
+        }
+
+        public File getSecurityReport() {
+            return securityReport;
+        }
+
+        public void setSecurityReport(File securityReport) {
+            this.securityReport = securityReport;
+        }
+
+        public File getXrayPdsReport() {
+            return xrayPdsReport;
+        }
+
+        public void setXrayPdsReport(File xrayPdsReport) {
+            this.xrayPdsReport = xrayPdsReport;
+        }
+
+        public Map<String, Vulnerability> getCycloneDXVulnerabilityHashMap() {
+            return cycloneDXVulnerabilityHashMap;
+        }
+
+        public void setCycloneDXVulnerabilityHashMap(Map<String, Vulnerability> cycloneDXVulnerabilityHashMap) {
+            this.cycloneDXVulnerabilityHashMap = cycloneDXVulnerabilityHashMap;
+        }
+
+        public Bom getSbom() {
+            return sbom;
+        }
+
+        public void setSbom(Bom sbom) {
+            this.sbom = sbom;
         }
     }
 

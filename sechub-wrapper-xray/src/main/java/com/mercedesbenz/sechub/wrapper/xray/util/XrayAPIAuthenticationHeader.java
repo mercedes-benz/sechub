@@ -15,13 +15,15 @@ public class XrayAPIAuthenticationHeader {
      */
     public static String buildBasicAuthHeader() throws XrayWrapperException {
         EnvironmentVariableReader environmentVariableReader = new EnvironmentVariableReader();
+
         String username = environmentVariableReader.readEnvAsString(EnvironmentVariableConstants.XRAY_USERNAME_ENV);
         String password = environmentVariableReader.readEnvAsString(EnvironmentVariableConstants.XRAY_PASSWORD_ENV);
-        String auth = (username + ":" + password);
         if (username == null || password == null) {
             throw new XrayWrapperException("Authentication not possible because of missing environment variables XRAY_USER and XRAY_PASSWORD",
                     XrayWrapperExitCode.NOT_NULLABLE);
         }
+
+        String auth = username + ":" + password;
         byte[] encodedAuth = Base64.getEncoder().encode(auth.getBytes(StandardCharsets.UTF_8));
         return "Basic " + new String(encodedAuth);
     }

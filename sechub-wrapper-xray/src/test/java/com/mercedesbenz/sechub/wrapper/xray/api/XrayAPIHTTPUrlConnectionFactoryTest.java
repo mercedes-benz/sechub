@@ -19,55 +19,54 @@ class XrayAPIHTTPUrlConnectionFactoryTest {
 
     URL url;
 
-    XrayAPIHTTPUrlConnectionFactory factory;
+    XrayAPIHTTPUrlConnectionFactory factoryToTest;
 
     @BeforeEach
     void beforeEach() {
         url = mock(URL.class);
-        factory = new XrayAPIHTTPUrlConnectionFactory();
+        factoryToTest = new XrayAPIHTTPUrlConnectionFactory();
     }
 
     @Test
-    void setUpHTTPConnection_GET_request() throws IOException, XrayWrapperException {
+    void factoryHTTPConnection_GET_request() throws IOException, XrayWrapperException {
         /* prepare */
         HttpURLConnection mockedCon = mock(HttpURLConnection.class);
         Mockito.when(url.openConnection()).thenReturn(mockedCon);
-        XrayAPIRequest request = XrayAPIRequest.Builder.builder(url, XrayAPIRequest.RequestMethodEnum.GET).build();
+        XrayAPIRequest request = XrayAPIRequest.Builder.builder().url(url).build();
 
         /* execute */
-        HttpURLConnection connection = factory.create(request);
+        HttpURLConnection connection = factoryToTest.create(request);
 
         /* test */
         assertEquals(0, connection.getConnectTimeout());
     }
 
     @Test
-    void setUpHTTPConnection_throws_nullPointerException() {
+    void factoryHTTPConnection_throws_nullPointerException() {
         /* execute + test */
-        assertThrows(NullPointerException.class, () -> factory.create(null));
+        assertThrows(NullPointerException.class, () -> factoryToTest.create(null));
     }
 
     @Test
-    void setUpHTTPConnection_throws_xrayWrapperException() throws XrayWrapperException {
+    void factoryHTTPConnection_throws_xrayWrapperException() throws XrayWrapperException {
         /* prepare */
-        XrayAPIRequest request = XrayAPIRequest.Builder.builder(url, XrayAPIRequest.RequestMethodEnum.GET).build();
+        XrayAPIRequest request = XrayAPIRequest.Builder.builder().url(url).build();
 
         /* execute + test */
-        assertThrows(NullPointerException.class, () -> factory.create(request));
+        assertThrows(NullPointerException.class, () -> factoryToTest.create(request));
     }
 
     @Test
-    void setUpHTTPConnection_POST_request() throws IOException, XrayWrapperException {
+    void factoryHTTPConnection_POST_request() throws IOException, XrayWrapperException {
         /* prepare */
         OutputStream outputStream = mock(OutputStream.class);
         HttpURLConnection mockedCon = mock(HttpURLConnection.class);
         Mockito.when(url.openConnection()).thenReturn(mockedCon);
         Mockito.when(mockedCon.getOutputStream()).thenReturn(outputStream);
-        XrayAPIRequest request = XrayAPIRequest.Builder.builder(url, XrayAPIRequest.RequestMethodEnum.POST).isAuthenticationNeeded(false).buildJSONBody("{}")
-                .build();
+        XrayAPIRequest request = XrayAPIRequest.Builder.builder().url(url).requestMethod(XrayAPIRequest.RequestMethodEnum.POST).jSONBody("{}").build();
 
         /* execute */
-        HttpURLConnection connection = factory.create(request);
+        HttpURLConnection connection = factoryToTest.create(request);
 
         /* test */
         assertEquals(0, connection.getConnectTimeout());

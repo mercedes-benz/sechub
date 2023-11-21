@@ -21,35 +21,43 @@ public class XrayAPIRequest {
     public static class Builder {
         private URL url;
 
-        private XrayAPIRequest.RequestMethodEnum requestMethodEnum;
+        private XrayAPIRequest.RequestMethodEnum requestMethodEnum = RequestMethodEnum.GET;
 
-        private boolean authentication = false;
+        private boolean authenticationNeeded;
 
-        private String data = "";
+        private String json = "";
 
-        private Builder(URL url, XrayAPIRequest.RequestMethodEnum requestMethodEnum) {
-            this.url = url;
-            this.requestMethodEnum = requestMethodEnum;
+        private Builder() {
         }
 
-        public static Builder builder(URL url, XrayAPIRequest.RequestMethodEnum requestMethodEnum) throws XrayWrapperException {
-            if ((url == null) || (requestMethodEnum == null)) {
+        public static Builder builder() {
+            return new Builder();
+        }
+
+        public XrayAPIRequest build() throws XrayWrapperException {
+            if (url == null) {
                 throw new XrayWrapperException("Cannot create XrayAPIRequest with null parameters", XrayWrapperExitCode.INVALID_HTTP_REQUEST);
             }
-            return new Builder(url, requestMethodEnum);
+            return new XrayAPIRequest(this.url, this.requestMethodEnum, this.authenticationNeeded, this.json);
         }
 
-        public XrayAPIRequest build() {
-            return new XrayAPIRequest(this.url, this.requestMethodEnum, this.authentication, this.data);
-        }
-
-        Builder buildJSONBody(String data) {
-            this.data = data;
+        Builder url(URL url) {
+            this.url = url;
             return this;
         }
 
-        Builder isAuthenticationNeeded(boolean b) {
-            this.authentication = b;
+        Builder requestMethod(XrayAPIRequest.RequestMethodEnum requestMethodEnum) {
+            this.requestMethodEnum = requestMethodEnum;
+            return this;
+        }
+
+        Builder jSONBody(String json) {
+            this.json = json;
+            return this;
+        }
+
+        Builder authenticationNeeded(boolean authenticationNeeded) {
+            this.authenticationNeeded = authenticationNeeded;
             return this;
         }
     }

@@ -2,6 +2,8 @@ package com.mercedesbenz.sechub.wrapper.xray.cli;
 
 import java.util.Arrays;
 
+import com.mercedesbenz.sechub.wrapper.xray.XrayWrapperException;
+
 public enum XrayWrapperScanTypes {
     DOCKER("docker"),;
 
@@ -15,7 +17,10 @@ public enum XrayWrapperScanTypes {
         return this.type;
     }
 
-    public static XrayWrapperScanTypes fromString(String type) {
+    public static XrayWrapperScanTypes fromString(String type) throws XrayWrapperException {
+        if (type == null) {
+            throw new XrayWrapperException("Scan status is NULL", XrayWrapperExitCode.UNKNOWN_ERROR);
+        }
         for (XrayWrapperScanTypes scanType : XrayWrapperScanTypes.values()) {
             if (scanType.type.equals(type)) {
                 return scanType;

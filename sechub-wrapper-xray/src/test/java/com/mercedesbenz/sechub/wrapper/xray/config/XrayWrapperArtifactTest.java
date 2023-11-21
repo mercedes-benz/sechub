@@ -11,14 +11,13 @@ class XrayWrapperArtifactTest {
     @Test
     void xrayArtifact_create_valid_artifact() {
         /* prepare */
-        XrayWrapperArtifact artifact;
         String name = "myartifact";
         String sha256 = "xxx";
         String tag = "1.0";
         XrayWrapperScanTypes type = XrayWrapperScanTypes.DOCKER;
 
         /* execute */
-        artifact = new XrayWrapperArtifact(name, sha256, tag, type);
+        XrayWrapperArtifact artifact = new XrayWrapperArtifact(name, sha256, tag, type);
 
         /* test */
         assertEquals(name, artifact.getName());

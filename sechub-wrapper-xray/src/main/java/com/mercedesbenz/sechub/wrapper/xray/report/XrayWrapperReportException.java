@@ -6,10 +6,10 @@ import com.mercedesbenz.sechub.wrapper.xray.cli.XrayWrapperExitCode;
 public class XrayWrapperReportException extends XrayWrapperException {
 
     public XrayWrapperReportException(String message) {
-        this("Error occurred during report handling: " + message, null);
+        this("Error occurred during report handling: " + message, XrayWrapperExitCode.UNKNOWN_ERROR, null);
     }
 
-    public XrayWrapperReportException(String message, Throwable cause) {
-        super(message, XrayWrapperExitCode.CREATE_CYCLONEDX_REPORT_ERROR, cause);
+    public XrayWrapperReportException(String message, XrayWrapperExitCode exitCode, Throwable cause) {
+        super(message, exitCode, cause);
     }
 }

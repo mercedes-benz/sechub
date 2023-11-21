@@ -20,8 +20,7 @@ class XrayAPIRequestTest {
         String data = "mydata";
 
         /* execute */
-        XrayAPIRequest request = XrayAPIRequest.Builder.builder(url, XrayAPIRequest.RequestMethodEnum.GET).isAuthenticationNeeded(auth).buildJSONBody(data)
-                .build();
+        XrayAPIRequest request = XrayAPIRequest.Builder.builder().url(url).authenticationNeeded(auth).jSONBody(data).build();
 
         /* test */
         assertEquals(url, request.getUrl());
@@ -33,6 +32,6 @@ class XrayAPIRequestTest {
     @Test
     void xrayRequest_throws_xrayWrapperException() {
         /* execute + test */
-        assertThrows(XrayWrapperException.class, () -> XrayAPIRequest.Builder.builder(null, null).build());
+        assertThrows(XrayWrapperException.class, () -> XrayAPIRequest.Builder.builder().build());
     }
 }

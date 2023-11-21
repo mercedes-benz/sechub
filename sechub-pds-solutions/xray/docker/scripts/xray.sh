@@ -59,7 +59,7 @@ skopeo copy "docker-archive:${UPLOAD_FILE}" "docker://${XRAY_ARTIFACTORY}/${REGI
 skopeo inspect "docker://${XRAY_ARTIFACTORY}/${REGISTRY}/${IMAGE}" --authfile "$PDS_JOB_WORKSPACE_LOCATION/auth.json" > "$PDS_JOB_WORKSPACE_LOCATION/inspect.json"
 SHA256=$(jq '.Digest' "$PDS_JOB_WORKSPACE_LOCATION/inspect.json" | tr --delete \")
 
-java -jar "$TOOL_FOLDER/wrapper-xray.jar" "--name" "$IMAGE" "--checksum" "$SHA256" "--scantype" "docker" "--outputfile" "$PDS_JOB_RESULT_FILE"
+java -jar "$TOOL_FOLDER/wrapper-xray.jar" "--name" "$IMAGE" "--checksum" "$SHA256" "--scantype" "docker" "--outputfile" "$PDS_JOB_RESULT_FILE" "--workspace" "$PDS_JOB_WORKSPACE_LOCATION"
 
 # SPDX report can be returned as followed - SPDX does not contain vulnerabilities
 cp "$PDS_JOB_WORKSPACE_LOCATION/XrayArtifactoryReports/"*SPDX.json "$PDS_JOB_RESULT_FILE"

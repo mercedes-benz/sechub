@@ -9,13 +9,14 @@ import static org.mockito.Mockito.when;
 import org.junit.jupiter.api.Test;
 import org.mockito.MockedConstruction;
 
+import com.mercedesbenz.sechub.wrapper.xray.XrayWrapperException;
 import com.mercedesbenz.sechub.wrapper.xray.cli.XrayWrapperScanTypes;
 import com.mercedesbenz.sechub.wrapper.xray.config.XrayWrapperConfiguration;
 
 class XrayWrapperConfigurationHelperTest {
 
     @Test
-    void createXrayConfiguration_with_valid_parameters() {
+    void createXrayConfiguration_with_valid_parameters() throws XrayWrapperException {
         /* prepare */
         XrayWrapperConfiguration xrayWrapperConfiguration;
 
@@ -25,8 +26,8 @@ class XrayWrapperConfigurationHelperTest {
             when(mock.readEnvAsString(EnvironmentVariableConstants.DOCKER_REGISTRY_ENV)).thenReturn("registerMock");
 
         })) {
-            xrayWrapperConfiguration = createXrayConfiguration(XrayWrapperScanTypes.DOCKER, "output");
-            assertEquals("output", xrayWrapperConfiguration.getSecHubReport());
+            xrayWrapperConfiguration = createXrayConfiguration(XrayWrapperScanTypes.DOCKER, "output", "workspace");
+            assertEquals("output", xrayWrapperConfiguration.getXrayPdsReport());
             assertEquals("https://artifactoryMock", xrayWrapperConfiguration.getArtifactory());
             assertEquals("registerMock", xrayWrapperConfiguration.getRegistry());
         }
@@ -35,6 +36,6 @@ class XrayWrapperConfigurationHelperTest {
     @Test
     void createXrayConfiguration_throws_nullPointerException() {
         /* execute + test */
-        assertThrows(NullPointerException.class, () -> createXrayConfiguration(null, null));
+        assertThrows(NullPointerException.class, () -> createXrayConfiguration(null, null, null));
     }
 }

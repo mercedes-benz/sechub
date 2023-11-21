@@ -14,7 +14,7 @@ class ZipFileExtractorTest {
     @Test
     void unzipFile_throws_xrayWrapperReportException() {
         /* execute + test */
-        assertThrows(XrayWrapperReportException.class, () -> unzipFile(null, null));
+        assertThrows(NullPointerException.class, () -> unzipFile(null, null));
     }
 
     @Test

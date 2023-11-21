@@ -4,35 +4,43 @@ import java.util.Arrays;
 
 import com.beust.jcommander.JCommander;
 import com.beust.jcommander.ParameterException;
+import com.mercedesbenz.sechub.wrapper.xray.XrayWrapperException;
 
 public class XrayWrapperCommandLineParser {
 
     private JCommander commander;
 
-    public record Arguments(String name, String checksum, XrayWrapperScanTypes scanType, String tag, String outputFile) {
+    public record Arguments(String name, String checksum, XrayWrapperScanTypes scanType, String tag, String outputFile, String workspace) {
     }
 
-    public Arguments parseCommandLineArgs(String[] args) {
+    private record DockerImage(String name, String tag) {
+    }
+
+    public Arguments parseCommandLineArgs(String[] args) throws XrayWrapperException {
         XrayWrapperCommandLineArgs xrayArgs = buildArguments(args);
-        if (xrayArgs.isHelpRequired() || xrayArgs.getName().isEmpty() || xrayArgs.getChecksum().isEmpty()) {
+        if (xrayArgs.isHelpRequired()) {
+            commander.usage();
+            throw new XrayWrapperCommandLineParserException("Required parameters were empty" + Arrays.toString(args));
+        }
+        if (xrayArgs.getName() == null || xrayArgs.getChecksum() == null || xrayArgs.getScanType() == null) {
             commander.usage();
             throw new XrayWrapperCommandLineParserException("Required parameters were empty" + Arrays.toString(args));
         }
 
+        // default artifact name and tag
         String name = xrayArgs.getName();
         String tag = "";
+
         XrayWrapperScanTypes type = XrayWrapperScanTypes.fromString(xrayArgs.getScanType());
         if (type.equals(XrayWrapperScanTypes.DOCKER)) {
-            String[] image = splitContainerImage(xrayArgs.getName());
-            if (image != null) {
-                name = image[0];
-                tag = image[1];
-            }
+            DockerImage dockerImage = splitContainerImageName(xrayArgs.getName());
+            name = dockerImage.name();
+            tag = dockerImage.tag();
         }
 
         String checksum = extractChecksum(xrayArgs.getChecksum());
 
-        return new Arguments(name, checksum, type, tag, xrayArgs.getOutputFile());
+        return new Arguments(name, checksum, type, tag, xrayArgs.getOutputFile(), xrayArgs.getWorkspace());
     }
 
     private XrayWrapperCommandLineArgs buildArguments(String[] args) {
@@ -46,15 +54,18 @@ public class XrayWrapperCommandLineParser {
         return xrayWrapperCommandLineArgs;
     }
 
-    private String[] splitContainerImage(String image) {
-        String[] splitImage = image.split(":");
+    private DockerImage splitContainerImageName(String imageName) {
+        if (imageName == null) {
+            throw new XrayWrapperCommandLineParserException("Docker image name can not be null");
+        }
+        String[] splitImage = imageName.split(":");
         if (splitImage.length == 1) {
-            return new String[] { splitImage[0], "latest" };
+            return new DockerImage(splitImage[0], "latest");
         }
         if (splitImage.length > 2) {
-            return null;
+            throw new IllegalStateException("Docker Image NAme is invalid");
         }
-        return splitImage;
+        return new DockerImage(splitImage[0], splitImage[1]);
     }
 
     private String extractChecksum(String checksum) {

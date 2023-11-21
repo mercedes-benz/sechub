@@ -6,23 +6,25 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import com.mercedesbenz.sechub.wrapper.xray.XrayWrapperException;
+
 class XrayWrapperCommandLineParserTest {
 
-    XrayWrapperCommandLineParser parser;
+    XrayWrapperCommandLineParser parserToTest;
 
     @BeforeEach
     void beforeEach() {
-        parser = new XrayWrapperCommandLineParser();
+        parserToTest = new XrayWrapperCommandLineParser();
     }
 
     @Test
-    void parseCommandLineArgs_valid_arguments() throws XrayWrapperCommandLineParserException {
+    void parseCommandLineArgs_valid_arguments() throws XrayWrapperCommandLineParserException, XrayWrapperException {
         /* prepare */
         String[] args = { "--name", "myname", "--checksum", "sha256:123", "--scantype", "docker", "--outputfile", "outfile" };
         XrayWrapperCommandLineParser.Arguments arguments;
 
         /* execute */
-        arguments = parser.parseCommandLineArgs(args);
+        arguments = parserToTest.parseCommandLineArgs(args);
 
         /* test */
         assertEquals("myname", arguments.name());
@@ -36,7 +38,7 @@ class XrayWrapperCommandLineParserTest {
         String[] args = { "--checksum", "sha256:123", "--scantype", "docker", "--outputfile", "outfile" };
 
         /* execute + test */
-        assertThrows(XrayWrapperCommandLineParserException.class, () -> parser.parseCommandLineArgs(args));
+        assertThrows(XrayWrapperCommandLineParserException.class, () -> parserToTest.parseCommandLineArgs(args));
     }
 
     @Test
@@ -45,7 +47,7 @@ class XrayWrapperCommandLineParserTest {
         String[] args = { "" };
 
         /* execute + test */
-        assertThrows(XrayWrapperCommandLineParserException.class, () -> parser.parseCommandLineArgs(args));
+        assertThrows(XrayWrapperCommandLineParserException.class, () -> parserToTest.parseCommandLineArgs(args));
     }
 
     @Test
@@ -54,6 +56,6 @@ class XrayWrapperCommandLineParserTest {
         String[] args = { "--checksum", "sha256:123", "--scantype", "invalid", "--outputfile", "outfile" };
 
         /* execute + test */
-        assertThrows(XrayWrapperCommandLineParserException.class, () -> parser.parseCommandLineArgs(args));
+        assertThrows(XrayWrapperCommandLineParserException.class, () -> parserToTest.parseCommandLineArgs(args));
     }
 }

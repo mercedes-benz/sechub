@@ -22,25 +22,26 @@ class XrayAPIResponseFactoryTest {
     HttpURLConnection connection;
     ByteArrayInputStream inputStream;
 
-    XrayAPIResponseFactory xrayAPIResponseFactory;
+    XrayAPIResponseFactory xrayAPIResponseFactoryToTest;
 
     @BeforeEach
     void beforeEach() {
         connection = mock(HttpURLConnection.class);
-        xrayAPIResponseFactory = new XrayAPIResponseFactory();
+        xrayAPIResponseFactoryToTest = new XrayAPIResponseFactory();
     }
 
     @Test
-    void getHttpResponseFromConnection_get_valid_http_response() throws IOException, XrayWrapperException {
+    void factoryHttpResponseFromConnection_get_valid_http_response() throws IOException, XrayWrapperException {
         /* prepare */
         XrayAPIResponse response;
         int statusCode = 200;
         inputStream = new ByteArrayInputStream("testData".getBytes("UTF-8"));
         doReturn(inputStream).when(connection).getInputStream();
+        doReturn(inputStream).when(connection).getErrorStream();
         doReturn(statusCode).when(connection).getResponseCode();
 
         /* execute */
-        response = xrayAPIResponseFactory.createHttpResponseFromConnection(connection, "filename");
+        response = xrayAPIResponseFactoryToTest.createHttpResponseFromConnection(connection, "filename");
 
         /* test */
         assertEquals("testData", response.getBody());
@@ -48,26 +49,13 @@ class XrayAPIResponseFactoryTest {
     }
 
     @Test
-    void getHttpResponseFromConnection_get_default_response() throws IOException, XrayWrapperException {
-        /* prepare */
-        XrayAPIResponse response;
-
-        /* execute */
-        response = xrayAPIResponseFactory.createHttpResponseFromConnection(connection, "filename");
-
-        /* test */
-        assertEquals("", response.getBody());
-        assertEquals(0, response.getStatusCode());
-    }
-
-    @Test
-    void getHttpResponseFromConnection_throws_nullPointerException() {
+    void factoryHttpResponseFromConnection_throws_nullPointerException() {
         /* execute + test */
-        assertThrows(NullPointerException.class, () -> xrayAPIResponseFactory.createHttpResponseFromConnection(null, null));
+        assertThrows(NullPointerException.class, () -> xrayAPIResponseFactoryToTest.createHttpResponseFromConnection(null, null));
     }
 
     @Test
-    void getHttpResponseFromConnection_get_valid_error_http_response() throws IOException, XrayWrapperException {
+    void factoryHttpResponseFromConnection_get_valid_error_http_response() throws IOException, XrayWrapperException {
         /* prepare */
         XrayAPIResponse response;
         int statusCode = 404;
@@ -76,7 +64,7 @@ class XrayAPIResponseFactoryTest {
         doReturn(statusCode).when(connection).getResponseCode();
 
         /* execute */
-        response = xrayAPIResponseFactory.createHttpResponseFromConnection(connection, "filename");
+        response = xrayAPIResponseFactoryToTest.createHttpResponseFromConnection(connection, "filename");
 
         /* test */
         assertEquals("Error", response.getBody());
@@ -84,12 +72,12 @@ class XrayAPIResponseFactoryTest {
     }
 
     @Test
-    void getHttpResponseFromConnection_throws_xrayWrapperException() throws IOException {
+    void factoryHttpResponseFromConnection_throws_xrayWrapperException() throws IOException {
         /* prepare */
         IOException e = new IOException("error");
         Mockito.when(connection.getResponseCode()).thenThrow(e);
 
         /* execute + test */
-        assertThrows(XrayWrapperException.class, () -> xrayAPIResponseFactory.createHttpResponseFromConnection(connection, null));
+        assertThrows(XrayWrapperException.class, () -> xrayAPIResponseFactoryToTest.createHttpResponseFromConnection(connection, null));
     }
 }

@@ -16,7 +16,7 @@ import com.mercedesbenz.sechub.wrapper.xray.config.XrayWrapperConfiguration;
 
 class XrayWrapperArtifactoryClientSupportTest {
 
-    XrayWrapperArtifactoryClientSupport controller;
+    XrayWrapperArtifactoryClientSupport clientSupportToTest;
 
     XrayWrapperConfiguration configuration;
 
@@ -32,22 +32,22 @@ class XrayWrapperArtifactoryClientSupportTest {
     void waitForScansToFinishAndDownloadReport_valid_execution_without_report_transformation() throws XrayWrapperException {
         /* test + execute */
         try (MockedConstruction<XrayAPIArtifactoryClient> mockedClient = Mockito.mockConstruction(XrayAPIArtifactoryClient.class, (mock, context) -> {
-            when(mock.getXrayVersion()).thenReturn("mocked-version");
+            when(mock.requestXrayVersion()).thenReturn("mocked-version");
             when(mock.checkArtifactoryUploadSuccess()).thenReturn(true);
             when(mock.getScanStatus()).thenReturn(XrayWrapperArtifactoryClientSupport.ScanStatus.SCANNED);
             when(mock.requestScanReports()).thenReturn(false);
         })) {
-            controller = new XrayWrapperArtifactoryClientSupport(configuration, artifact);
-            controller.waitForScansToFinishAndDownloadReport();
+            clientSupportToTest = new XrayWrapperArtifactoryClientSupport(configuration, artifact);
+            clientSupportToTest.waitForScansToFinishAndDownloadReport();
         }
     }
 
     @Test
     void waitForScansToFinishAndDownloadReport_throws_XrayWrapperException() {
         /* prepare */
-        controller = new XrayWrapperArtifactoryClientSupport(configuration, artifact);
+        clientSupportToTest = new XrayWrapperArtifactoryClientSupport(configuration, artifact);
 
         /* test + execute */
-        assertThrows(XrayWrapperException.class, () -> controller.waitForScansToFinishAndDownloadReport());
+        assertThrows(XrayWrapperException.class, () -> clientSupportToTest.waitForScansToFinishAndDownloadReport());
     }
 }

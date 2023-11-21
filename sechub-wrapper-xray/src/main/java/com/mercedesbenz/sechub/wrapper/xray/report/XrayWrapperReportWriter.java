@@ -17,7 +17,7 @@ import com.mercedesbenz.sechub.wrapper.xray.XrayWrapperJSONConverter;
 
 public class XrayWrapperReportWriter {
 
-    public static void writeReport(Bom sbom, File report) throws XrayWrapperReportException {
+    public void writeReport(Bom sbom, File report) throws XrayWrapperReportException {
         JsonNode jsonNode = createJson(CycloneDxSchema.Version.VERSION_14, sbom).toJsonNode();
         JsonParser jsonParser = new JsonParser();
         ObjectMapper mapper = XrayWrapperJSONConverter.get().getMapper();
@@ -25,14 +25,14 @@ public class XrayWrapperReportWriter {
         try {
             writer.writeValue(new File(report.toURI()), jsonNode);
         } catch (IOException e) {
-            throw new XrayWrapperReportException("Could not write final xray report to file", e);
+            throw new XrayWrapperCreateCycloneDXReportException("Could not write final xray report to file", e);
         }
         try {
             if (!jsonParser.isValid(report)) {
-                throw new XrayWrapperReportException("CycloneDX report is not valid");
+                throw new XrayWrapperCreateCycloneDXReportException("CycloneDX report is not valid");
             }
         } catch (IOException e) {
-            throw new XrayWrapperReportException("Could not validate report file", e);
+            throw new XrayWrapperCreateCycloneDXReportException("Could not validate report file", e);
         }
     }
 }

@@ -12,7 +12,16 @@
       "id": "PDS_XRAY_MOCK",
       "path": "/pds/scripts/xray_mock.sh",
       "scanType": "licenseScan",
-      "description": "Runs Xray mock report. It returns a fixed result file."
+      "description": "Runs Xray mock report. It returns a fixed result file.",
+      "parameters" : {
+        "optional" : [
+          {
+            "key" : "pds.xray.mock.type",
+            "description" : "Type of the returned mock data, options: spdx, cycloneDX",
+            "default" : "spdx"
+          }
+        ]
+      }
     }
   ]
 }

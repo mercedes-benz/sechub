@@ -9,6 +9,7 @@ import java.nio.file.StandardCopyOption;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
+import com.mercedesbenz.sechub.wrapper.xray.cli.XrayWrapperExitCode;
 import com.mercedesbenz.sechub.wrapper.xray.report.XrayWrapperReportException;
 
 public class ZipFileExtractor {
@@ -53,8 +54,8 @@ public class ZipFileExtractor {
 
             }
             zis.closeEntry();
-        } catch (IOException | NullPointerException e) {
-            throw new XrayWrapperReportException("Could not extract zip file.", e);
+        } catch (IOException e) {
+            throw new XrayWrapperReportException("Could not extract zip file.", XrayWrapperExitCode.IO_ERROR, e);
         }
     }
 

@@ -21,12 +21,16 @@ public class XrayAPIArtifactoryClient {
 
     private final XrayWrapperConfiguration xrayWrapperConfiguration;
 
+    XrayAPIHTTPUrlConnectionFactory apiHttpUrlConnectionFactory = new XrayAPIHTTPUrlConnectionFactory();
+
+    XrayAPIResponseFactory xrayAPIResponseFactory = new XrayAPIResponseFactory();
+
     public XrayAPIArtifactoryClient(XrayWrapperArtifact artifact, XrayWrapperConfiguration xrayWrapperConfiguration) {
         this.artifact = artifact;
         this.xrayWrapperConfiguration = xrayWrapperConfiguration;
     }
 
-    public String getXrayVersion() throws XrayWrapperException {
+    public String requestXrayVersion() throws XrayWrapperException {
         XrayAPIRequest request = XrayAPIRequestFactory.createGetXrayVersionRequest(xrayWrapperConfiguration.getArtifactory());
         XrayAPIResponse response = send(request);
         assertNoError(response, "Could not get Xray Version from Artifactory");
@@ -90,9 +94,7 @@ public class XrayAPIArtifactoryClient {
         assertNoError(response, "Could not delete _uploads from artifactory");
     }
 
-    XrayAPIResponse send(XrayAPIRequest request) throws XrayWrapperException {
-        XrayAPIHTTPUrlConnectionFactory apiHttpUrlConnectionFactory = new XrayAPIHTTPUrlConnectionFactory();
-        XrayAPIResponseFactory xrayAPIResponseFactory = new XrayAPIResponseFactory();
+    private XrayAPIResponse send(XrayAPIRequest request) throws XrayWrapperException {
         HttpURLConnection con = apiHttpUrlConnectionFactory.create(request);
         return xrayAPIResponseFactory.createHttpResponseFromConnection(con, xrayWrapperConfiguration.getZipDirectory());
     }

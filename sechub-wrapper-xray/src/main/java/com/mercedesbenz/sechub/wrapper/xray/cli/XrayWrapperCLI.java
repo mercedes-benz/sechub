@@ -17,19 +17,18 @@ public class XrayWrapperCLI {
         new XrayWrapperCLI().start(args);
     }
 
-    XrayWrapperArtifactoryClientSupport xrayWrapperArtifactoryClientSupport;
-
     void start(String[] args) {
         XrayWrapperCommandLineParser parser = new XrayWrapperCommandLineParser();
         final XrayWrapperCommandLineParser.Arguments arguments;
 
         try {
             arguments = parser.parseCommandLineArgs(args);
-            XrayWrapperConfiguration xrayWrapperConfiguration = createXrayConfiguration(arguments.scanType(), arguments.outputFile());
+            XrayWrapperConfiguration xrayWrapperConfiguration = createXrayConfiguration(arguments.scanType(), arguments.outputFile(), arguments.workspace());
             XrayWrapperArtifact artifact = new XrayWrapperArtifact(arguments.name(), arguments.checksum(), arguments.tag(), arguments.scanType());
-            xrayWrapperArtifactoryClientSupport = new XrayWrapperArtifactoryClientSupport(xrayWrapperConfiguration, artifact);
+            XrayWrapperArtifactoryClientSupport xrayWrapperArtifactoryClientSupport = new XrayWrapperArtifactoryClientSupport(xrayWrapperConfiguration,
+                    artifact);
 
-            // execute controller processing main program flow
+            // execute support processing main program flow
             xrayWrapperArtifactoryClientSupport.waitForScansToFinishAndDownloadReport();
 
         } catch (XrayWrapperException e) {
