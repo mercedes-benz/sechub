@@ -28,7 +28,7 @@ If you would like to contribute code you can do so through Mercedes-Benz GitHub 
 
 When submitting code, please follow the existing conventions and style in order to keep the code as readable as possible.
 
-Please sign our [Contributor's License Agreement](https://github.com/mercedes-benz/foss/blob/master/CONTRIBUTORS_LICENSE_AGREEMENT.md) otherwise we cannot accept your contribution.
+Before you can contribute, you will need to sign our Contributor License Agreement (CLA). When you create your first pull request, you will be requested by our CLA-assistant to sign this CLA.
 
 If you are new to contributing in Github, [First Contributions](https://github.com/firstcontributions/first-contributions) might be a good starting point.
 
