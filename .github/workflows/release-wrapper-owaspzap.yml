@@ -24,7 +24,7 @@ jobs:
           echo "OWASP-ZAP Wrapper '${{ inputs.owaspzap-wrapper-version }}' - Milestone '${{ inputs.owaspzap-wrapper-milestone-number }}'"
 
       - name: Checkout branch master
-        uses: actions/checkout@v4
+        uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11
         with:
           ref: master
 
