@@ -323,7 +323,7 @@ jobs:
       - name: Create server release ${{ inputs.server-version }}
         id: create_server_release
         if: inputs.server-version != ''
-        uses: actions/create-release@v1
+        uses: actions/create-release@0cb9c9b65d5d1901c1f53e5e66eaf4afd303e70e
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # This token is provided by Actions, you do not need to create your own token
         with:
@@ -495,7 +495,7 @@ jobs:
       - name: Create client release ${{ inputs.client-version }}
         id: create_client_release
         if: inputs.client-version != ''
-        uses: actions/create-release@v1
+        uses: actions/create-release@0cb9c9b65d5d1901c1f53e5e66eaf4afd303e70e
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # This token is provided by Actions, you do not need to create your own token
         with:
@@ -570,7 +570,7 @@ jobs:
       - name: Create PDS release ${{ inputs.pds-version }}
         id: create_pds_release
         if: inputs.pds-version != ''
-        uses: actions/create-release@v1
+        uses: actions/create-release@0cb9c9b65d5d1901c1f53e5e66eaf4afd303e70e
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # This token is provided by Actions, you do not need to create your own token
         with:
