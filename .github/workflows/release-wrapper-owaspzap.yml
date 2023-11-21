@@ -150,7 +150,7 @@ jobs:
           sha256sum sechub-pds-wrapperowaspzap-${{ inputs.owaspzap-wrapper-version }}.jar > sechub-pds-wrapperowaspzap-${{ inputs.owaspzap-wrapper-version }}.jar.sha256sum
 
       - name: Upload asset sechub-pds-wrapperowaspzap-${{ inputs.owaspzap-wrapper-version }}.jar
-        uses: actions/upload-release-asset@v1
+        uses: actions/upload-release-asset@e8f9f06c4b078e705bd2ea027f0926603fc9b4d5
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
@@ -160,7 +160,7 @@ jobs:
           asset_content_type: application/zip
 
       - name: Upload asset sechub-pds-wrapperowaspzap-${{ inputs.owaspzap-wrapper-version }}.jar.sha256sum
-        uses: actions/upload-release-asset@v1
+        uses: actions/upload-release-asset@e8f9f06c4b078e705bd2ea027f0926603fc9b4d5
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:

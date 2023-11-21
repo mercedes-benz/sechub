@@ -352,7 +352,7 @@ jobs:
 
       - name: Upload Server release asset sechub-server-${{ inputs.server-version }}.jar
         if: inputs.server-version != ''
-        uses: actions/upload-release-asset@v1
+        uses: actions/upload-release-asset@e8f9f06c4b078e705bd2ea027f0926603fc9b4d5
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
@@ -363,7 +363,7 @@ jobs:
 
       - name: Upload Server release asset sechub-server-${{ inputs.server-version }}.jar.sha256sum
         if: inputs.server-version != ''
-        uses: actions/upload-release-asset@v1
+        uses: actions/upload-release-asset@e8f9f06c4b078e705bd2ea027f0926603fc9b4d5
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
@@ -374,7 +374,7 @@ jobs:
 
       - name: Upload SecHub release asset sechub-developer-admin-ui-${{ inputs.server-version }}.jar
         if: inputs.server-version != ''
-        uses: actions/upload-release-asset@v1
+        uses: actions/upload-release-asset@e8f9f06c4b078e705bd2ea027f0926603fc9b4d5
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
@@ -385,7 +385,7 @@ jobs:
 
       - name: Upload Server release asset sechub-developer-admin-ui-${{ inputs.server-version }}.jar.sha256sum
         if: inputs.server-version != ''
-        uses: actions/upload-release-asset@v1
+        uses: actions/upload-release-asset@e8f9f06c4b078e705bd2ea027f0926603fc9b4d5
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
@@ -397,7 +397,7 @@ jobs:
       # Server documentation:
       - name: Upload sechub-architecture.pdf release asset
         if: inputs.server-version != ''
-        uses: actions/upload-release-asset@v1
+        uses: actions/upload-release-asset@e8f9f06c4b078e705bd2ea027f0926603fc9b4d5
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
@@ -408,7 +408,7 @@ jobs:
 
       - name: Upload sechub-operations.pdf release asset
         if: inputs.server-version != ''
-        uses: actions/upload-release-asset@v1
+        uses: actions/upload-release-asset@e8f9f06c4b078e705bd2ea027f0926603fc9b4d5
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
@@ -419,7 +419,7 @@ jobs:
 
       - name: Upload sechub-developer-quickstart-guide.pdf release asset
         if: inputs.server-version != ''
-        uses: actions/upload-release-asset@v1
+        uses: actions/upload-release-asset@e8f9f06c4b078e705bd2ea027f0926603fc9b4d5
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
@@ -430,7 +430,7 @@ jobs:
 
       - name: Upload sechub-restapi.pdf release asset
         if: inputs.server-version != ''
-        uses: actions/upload-release-asset@v1
+        uses: actions/upload-release-asset@e8f9f06c4b078e705bd2ea027f0926603fc9b4d5
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
@@ -441,7 +441,7 @@ jobs:
 
       - name: Upload sechub-openapi3.json release asset
         if: inputs.server-version != ''
-        uses: actions/upload-release-asset@v1
+        uses: actions/upload-release-asset@e8f9f06c4b078e705bd2ea027f0926603fc9b4d5
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
@@ -519,7 +519,7 @@ jobs:
 
       - name: Upload Client release asset sechub-cli-${{ inputs.client-version }}.zip
         if: inputs.client-version != ''
-        uses: actions/upload-release-asset@v1
+        uses: actions/upload-release-asset@e8f9f06c4b078e705bd2ea027f0926603fc9b4d5
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
@@ -530,7 +530,7 @@ jobs:
 
       - name: Upload Client release asset sechub-cli-${{ inputs.client-version }}.zip.sha256
         if: inputs.client-version != ''
-        uses: actions/upload-release-asset@v1
+        uses: actions/upload-release-asset@e8f9f06c4b078e705bd2ea027f0926603fc9b4d5
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
@@ -542,7 +542,7 @@ jobs:
       - name: Upload sechub-client.pdf release asset
         id: upload-sechub-doc-client-release-asset
         if: inputs.client-version != ''
-        uses: actions/upload-release-asset@v1
+        uses: actions/upload-release-asset@e8f9f06c4b078e705bd2ea027f0926603fc9b4d5
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
@@ -593,7 +593,7 @@ jobs:
 
       - name: Upload PDS release asset sechub-pds-${{ inputs.pds-version }}.jar
         if: inputs.pds-version != ''
-        uses: actions/upload-release-asset@v1
+        uses: actions/upload-release-asset@e8f9f06c4b078e705bd2ea027f0926603fc9b4d5
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
@@ -604,7 +604,7 @@ jobs:
 
       - name: Upload PDS release asset sechub-pds-${{ inputs.pds-version }}.jar.sha256sum
         if: inputs.pds-version != ''
-        uses: actions/upload-release-asset@v1
+        uses: actions/upload-release-asset@e8f9f06c4b078e705bd2ea027f0926603fc9b4d5
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
@@ -616,7 +616,7 @@ jobs:
       # sechub-product-delegation-server.pdf
       - name: Upload PDS release asset sechub-product-delegation-server-${{ inputs.pds-version }}.pdf
         if: inputs.pds-version != ''
-        uses: actions/upload-release-asset@v1
+        uses: actions/upload-release-asset@e8f9f06c4b078e705bd2ea027f0926603fc9b4d5
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
