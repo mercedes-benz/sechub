@@ -188,7 +188,7 @@ jobs:
       - name: pull-request master to develop
         id: pr_master_to_develop
         continue-on-error: true
-        uses: repo-sync/pull-request@v2
+        uses: repo-sync/pull-request@7e79a9f5dc3ad0ce53138f01df2fad14a04831c5
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           source_branch: "master"
