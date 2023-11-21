@@ -21,6 +21,9 @@ class XrayWrapperConfigurationTest {
 
         /* test */
         assertEquals(artifactory, configuration.getArtifactory());
+        assertEquals(register, configuration.getRegistry());
+        assertEquals(zipDir, configuration.getZipDirectory());
+        assertEquals(xrayPdsReport, configuration.getXrayPdsReport());
     }
 
     @Test

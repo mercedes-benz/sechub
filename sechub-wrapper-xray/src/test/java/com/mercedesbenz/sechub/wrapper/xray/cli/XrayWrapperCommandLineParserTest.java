@@ -21,10 +21,9 @@ class XrayWrapperCommandLineParserTest {
     void parseCommandLineArgs_valid_arguments() throws XrayWrapperCommandLineParserException, XrayWrapperException {
         /* prepare */
         String[] args = { "--name", "myname", "--checksum", "sha256:123", "--scantype", "docker", "--outputfile", "outfile" };
-        XrayWrapperCommandLineParser.Arguments arguments;
 
         /* execute */
-        arguments = parserToTest.parseCommandLineArgs(args);
+        XrayWrapperCommandLineParser.Arguments arguments = parserToTest.parseCommandLineArgs(args);
 
         /* test */
         assertEquals("myname", arguments.name());

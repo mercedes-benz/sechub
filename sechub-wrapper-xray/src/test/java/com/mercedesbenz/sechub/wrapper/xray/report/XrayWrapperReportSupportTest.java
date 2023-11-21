@@ -78,10 +78,8 @@ class XrayWrapperReportSupportTest {
     @Test
     void mapVulnerabilities_valid_vulnerabilities() throws IOException, XrayWrapperException {
         /* prepare */
-        String secReportFileName = "src/test/resources/xray-report-examples/Docker_Security_Export.json";
-        String cycloneDXReportFilename = "src/test/resources/xray-report-examples/Docker_SBOM_Export_CycloneDX.json";
-        File securityReport = new File(secReportFileName);
-        File cycloneDXReport = new File(cycloneDXReportFilename);
+        File securityReport = new File("src/test/resources/xray-report-examples/Docker_Security_Export.json");
+        File cycloneDXReport = new File("src/test/resources/xray-report-examples/Docker_SBOM_Export_CycloneDX.json");
         Map vulnerabiliityMap = reportSupportToTest.readSecurityReport(securityReport);
         File target = new File("src/test/resources/xray-sechub-report-examples/Docker_SBOM_Export_CycloneDX.json");
         ObjectNode expectedNode = (ObjectNode) mapper.readTree(target);

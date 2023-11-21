@@ -63,12 +63,19 @@ public class XrayWrapperCommandLineParser {
             return new DockerImage(splitImage[0], "latest");
         }
         if (splitImage.length > 2) {
-            throw new IllegalStateException("Docker Image NAme is invalid");
+            throw new XrayWrapperCommandLineParserException("Docker Image Name is invalid");
         }
         return new DockerImage(splitImage[0], splitImage[1]);
     }
 
     private String extractChecksum(String checksum) {
-        return checksum.split(":")[1];
+        if (checksum == null) {
+            throw new XrayWrapperCommandLineParserException("Checksum can not be null");
+        }
+        try {
+            return checksum.split(":")[1];
+        } catch (ArrayIndexOutOfBoundsException e) {
+            throw new XrayWrapperCommandLineParserException("Invalid Checksum", e);
+        }
     }
 }

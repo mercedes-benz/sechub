@@ -29,7 +29,7 @@ class XrayWrapperCLITest {
     @Test
     void start_valid_parameters() {
         /* prepare */
-        mockConstruction(XrayWrapperArtifactoryClientSupport.class);
+        MockedConstruction<XrayWrapperArtifactoryClientSupport> mockConstruction = mockConstruction(XrayWrapperArtifactoryClientSupport.class);
         String[] args = { "--name", "myname", "--checksum", "sha256:123", "--scantype", "docker", "--outputfile", "outfile" };
         try (MockedConstruction<EnvironmentVariableReader> mocked = mockConstruction(EnvironmentVariableReader.class, (mock, context) -> {
             when(mock.readEnvAsString(any())).thenReturn("username");
@@ -37,5 +37,6 @@ class XrayWrapperCLITest {
             /* execute + test */
             cliToTest.start(args);
         }
+        mockConstruction.close();
     }
 }

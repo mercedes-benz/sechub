@@ -13,11 +13,11 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 
 /**
- * Parses the xray security report vulnerabilities and converts them to
- * cycloneDX vulnerabilities
+ * TTransforms the xray security report vulnerabilities and to cycloneDX
+ * vulnerabilities
  */
 public class XrayWrapperReportTransformer {
-    public record RatingRecord(double scoreDouble, String severity, String method, String vector, String severitySource) {
+    private record RatingRecord(double scoreDouble, String severity, String method, String vector, String severitySource) {
     }
 
     public Map<String, Vulnerability> transformVulnerabilitiesFromSecurityReport(JsonNode xraySecurityReportRootNode) throws XrayWrapperReportException {
@@ -135,7 +135,7 @@ public class XrayWrapperReportTransformer {
         }
     }
 
-    private void addRatingToVulnerability(XrayWrapperReportTransformer.RatingRecord ratingRecord, Vulnerability vulnerability) {
+    private void addRatingToVulnerability(RatingRecord ratingRecord, Vulnerability vulnerability) {
         Vulnerability.Rating rating = new Vulnerability.Rating();
 
         String sourceUrl = "";

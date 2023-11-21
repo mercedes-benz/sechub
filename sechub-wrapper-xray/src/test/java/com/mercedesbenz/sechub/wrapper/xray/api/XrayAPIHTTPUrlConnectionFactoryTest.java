@@ -19,12 +19,12 @@ class XrayAPIHTTPUrlConnectionFactoryTest {
 
     URL url;
 
-    XrayAPIHTTPUrlConnectionFactory factoryToTest;
+    XrayAPIHTTPUrlConnectionFactory urlConnectionfactoryToTest;
 
     @BeforeEach
     void beforeEach() {
         url = mock(URL.class);
-        factoryToTest = new XrayAPIHTTPUrlConnectionFactory();
+        urlConnectionfactoryToTest = new XrayAPIHTTPUrlConnectionFactory();
     }
 
     @Test
@@ -35,7 +35,7 @@ class XrayAPIHTTPUrlConnectionFactoryTest {
         XrayAPIRequest request = XrayAPIRequest.Builder.builder().url(url).build();
 
         /* execute */
-        HttpURLConnection connection = factoryToTest.create(request);
+        HttpURLConnection connection = urlConnectionfactoryToTest.create(request);
 
         /* test */
         assertEquals(0, connection.getConnectTimeout());
@@ -44,7 +44,7 @@ class XrayAPIHTTPUrlConnectionFactoryTest {
     @Test
     void factoryHTTPConnection_throws_nullPointerException() {
         /* execute + test */
-        assertThrows(NullPointerException.class, () -> factoryToTest.create(null));
+        assertThrows(NullPointerException.class, () -> urlConnectionfactoryToTest.create(null));
     }
 
     @Test
@@ -53,7 +53,7 @@ class XrayAPIHTTPUrlConnectionFactoryTest {
         XrayAPIRequest request = XrayAPIRequest.Builder.builder().url(url).build();
 
         /* execute + test */
-        assertThrows(NullPointerException.class, () -> factoryToTest.create(request));
+        assertThrows(NullPointerException.class, () -> urlConnectionfactoryToTest.create(request));
     }
 
     @Test
@@ -66,7 +66,7 @@ class XrayAPIHTTPUrlConnectionFactoryTest {
         XrayAPIRequest request = XrayAPIRequest.Builder.builder().url(url).requestMethod(XrayAPIRequest.RequestMethodEnum.POST).jSONBody("{}").build();
 
         /* execute */
-        HttpURLConnection connection = factoryToTest.create(request);
+        HttpURLConnection connection = urlConnectionfactoryToTest.create(request);
 
         /* test */
         assertEquals(0, connection.getConnectTimeout());

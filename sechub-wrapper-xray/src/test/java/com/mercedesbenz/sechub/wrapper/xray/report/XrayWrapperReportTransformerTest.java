@@ -28,7 +28,6 @@ class XrayWrapperReportTransformerTest {
         /* prepare */
         File file = new File("src/test/resources/xray-report-examples/Docker_Security_Export.json");
         JsonNode node = XrayWrapperJSONConverter.get().readJSONFromFile(file).get("data");
-
         int numberOfVulnerabilities = 25;
 
         /* execute */

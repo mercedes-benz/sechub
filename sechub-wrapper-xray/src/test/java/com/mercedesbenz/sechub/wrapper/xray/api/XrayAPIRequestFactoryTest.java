@@ -26,11 +26,10 @@ class XrayAPIRequestFactoryTest {
     @Test
     void createGetXrayVersionRequest_returns_http_request() throws XrayWrapperException {
         /* prepare */
-        XrayAPIRequest request;
         String apiUrl = "/xray/api/v1/system/version";
 
         /* execute */
-        request = XrayAPIRequestFactory.createGetXrayVersionRequest(url);
+        XrayAPIRequest request = XrayAPIRequestFactory.createGetXrayVersionRequest(url);
 
         /* test */
         assertEquals(XrayAPIRequest.RequestMethodEnum.GET, request.getRequestMethodEnum());
@@ -49,11 +48,10 @@ class XrayAPIRequestFactoryTest {
     @Test
     void createCheckArtifactUploadRequest_returns_http_request() throws XrayWrapperException {
         /* prepare */
-        XrayAPIRequest request;
         String apiUrl = "/artifactory/api/storage/myregister/myname/tag/manifest.json";
 
         /* execute */
-        request = XrayAPIRequestFactory.createCheckArtifactUploadRequest(url, artifact, registry);
+        XrayAPIRequest request = XrayAPIRequestFactory.createCheckArtifactUploadRequest(url, artifact, registry);
 
         /* test */
         assertEquals(XrayAPIRequest.RequestMethodEnum.GET, request.getRequestMethodEnum());
@@ -78,13 +76,12 @@ class XrayAPIRequestFactoryTest {
     @Test
     void createScanArtifactRequest_returns_http_request() throws XrayWrapperException {
         /* prepare */
-        XrayAPIRequest request;
         String apiUrl = "/xray/api/v1/scanArtifact";
         String data = """
                 {"componentID": "docker://myname:tag","path": "myregister/myname/tag/manifest.json"}""";
 
         /* execute */
-        request = XrayAPIRequestFactory.createScanArtifactRequest(url, artifact, registry);
+        XrayAPIRequest request = XrayAPIRequestFactory.createScanArtifactRequest(url, artifact, registry);
 
         /* test */
         assertEquals(XrayAPIRequest.RequestMethodEnum.POST, request.getRequestMethodEnum());
@@ -104,12 +101,11 @@ class XrayAPIRequestFactoryTest {
     @Test
     void createGetScanStatusRequest_returns_http_request() throws XrayWrapperException {
         /* prepare */
-        XrayAPIRequest request;
         String apiUrl = "/xray/api/v1/scan/status/artifact";
         String data = "{\"path\": \"myregister/myname/tag/manifest.json\", \"repository_pkg_type\": \"docker\", \"sha256\": \"sha256\"}";
 
         /* execute */
-        request = XrayAPIRequestFactory.createGetScanStatusRequest(url, artifact, registry);
+        XrayAPIRequest request = XrayAPIRequestFactory.createGetScanStatusRequest(url, artifact, registry);
 
         /* test */
         assertEquals(XrayAPIRequest.RequestMethodEnum.POST, request.getRequestMethodEnum());
@@ -126,7 +122,6 @@ class XrayAPIRequestFactoryTest {
     @Test
     void createGetScanReportsRequest_returns_http_request() throws XrayWrapperException {
         /* prepare */
-        XrayAPIRequest request;
         String apiUrl = "/xray/api/v1/component/exportDetails";
         // without java text blocks (this version works)
         String data = "{\"component_name\": \"myname:tag\"," + "\"package_type\": \"docker\"," + "\"sha_256\": \"sha256\"," + "\"violations\": true,"
@@ -135,7 +130,7 @@ class XrayAPIRequestFactoryTest {
                 + "\"spdx\": true," + "\"spdx_format\": \"json\"," + "\"cyclonedx\": true," + "\"cyclonedx_format\": \"json\"}";
 
         /* execute */
-        request = XrayAPIRequestFactory.createGetScanReportsRequest(url, artifact);
+        XrayAPIRequest request = XrayAPIRequestFactory.createGetScanReportsRequest(url, artifact);
 
         /* test */
         assertEquals(XrayAPIRequest.RequestMethodEnum.POST, request.getRequestMethodEnum());
@@ -152,11 +147,10 @@ class XrayAPIRequestFactoryTest {
     @Test
     void createDeleteArtifactRequest_returns_http_request() throws XrayWrapperException {
         /* prepare */
-        XrayAPIRequest request;
         String stringUrl = "http://myurl/artifactory/" + registry + "/" + artifact.getName() + "/" + artifact.getTag();
 
         /* execute */
-        request = XrayAPIRequestFactory.createDeleteArtifactRequest(url, artifact, registry);
+        XrayAPIRequest request = XrayAPIRequestFactory.createDeleteArtifactRequest(url, artifact, registry);
 
         /* test */
         assertEquals(XrayAPIRequest.RequestMethodEnum.DELETE, request.getRequestMethodEnum());
@@ -181,11 +175,10 @@ class XrayAPIRequestFactoryTest {
     @Test
     void createDeleteUploadsRequest_returns_http_request() throws XrayWrapperException {
         /* prepare */
-        XrayAPIRequest request;
         String stringUrl = "http://myurl/artifactory/" + registry + "/" + artifact.getName() + "/_uploads";
 
         /* execute */
-        request = XrayAPIRequestFactory.createDeleteUploadsRequest(url, artifact, registry);
+        XrayAPIRequest request = XrayAPIRequestFactory.createDeleteUploadsRequest(url, artifact, registry);
 
         /* test */
         assertEquals(XrayAPIRequest.RequestMethodEnum.DELETE, request.getRequestMethodEnum());

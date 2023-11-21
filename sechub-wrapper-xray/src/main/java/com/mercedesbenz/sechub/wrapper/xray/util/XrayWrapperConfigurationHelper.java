@@ -21,7 +21,7 @@ public class XrayWrapperConfigurationHelper {
         String artifactoryUrl = "https://" + environmentVariableReader.readEnvAsString(EnvironmentVariableConstants.ARTIFACTORY_ENV);
         String zipDirectory = workspace + "/XrayArtifactoryReports";
 
-        // get repository according to scan type
+        // get registry according to scan type
         String registry = null;
         if (scanType.equals(XrayWrapperScanTypes.DOCKER)) {
             registry = environmentVariableReader.readEnvAsString(EnvironmentVariableConstants.DOCKER_REGISTRY_ENV);

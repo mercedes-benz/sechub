@@ -69,7 +69,7 @@ public class XrayWrapperArtifactoryClientSupport {
      * @throws XrayWrapperException
      */
     public void waitForScansToFinishAndDownloadReport() throws XrayWrapperException {
-        ClientControllerContext context = new ClientControllerContext();
+        ClientSupportContext context = new ClientSupportContext();
 
         // get xray version from artifactory
         String xray_version = artifactoryClient.requestXrayVersion();
@@ -117,7 +117,7 @@ public class XrayWrapperArtifactoryClientSupport {
      * @return true if the artifact is scanned
      * @throws XrayWrapperException
      */
-    private boolean handleScanStatus(ClientControllerContext context) throws XrayWrapperException {
+    private boolean handleScanStatus(ClientSupportContext context) throws XrayWrapperException {
         ScanStatus status = artifactoryClient.getScanStatus();
         LOG.debug("Artifact status is: " + status.getStatusValue());
         if (context.isTimeoutReached()) {
@@ -158,11 +158,11 @@ public class XrayWrapperArtifactoryClientSupport {
         artifactoryClient.startArtifactScan();
     }
 
-    private class ClientControllerContext {
+    private class ClientSupportContext {
         private final LocalDateTime startTime;
         private int retryCount;
 
-        public ClientControllerContext() {
+        public ClientSupportContext() {
             startTime = LocalDateTime.now();
         }
 

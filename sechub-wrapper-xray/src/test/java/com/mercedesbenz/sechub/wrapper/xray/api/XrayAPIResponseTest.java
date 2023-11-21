@@ -40,8 +40,8 @@ class XrayAPIResponseTest {
         XrayAPIResponse response = XrayAPIResponse.Builder.builder().statusCode(status).headers(headers).addResponseBody(body).build();
 
         /* test */
-        assertEquals(200, response.getStatusCode());
-        assertEquals("body", response.getBody());
+        assertEquals(status, response.getStatusCode());
+        assertEquals(body, response.getBody());
         assertEquals(values, response.getHeaders().get("header"));
     }
 
