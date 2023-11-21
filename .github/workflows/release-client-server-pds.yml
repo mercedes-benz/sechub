@@ -94,7 +94,7 @@ jobs:
           distribution: temurin
 
       - name: Set up Gradle
-        uses: gradle/gradle-build-action@v2
+        uses: gradle/gradle-build-action@842c587ad8aa4c68eeba24c396e15af4c2e9f30a
         with:
           cache-read-only: false
 
