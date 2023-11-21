@@ -20,7 +20,7 @@ ext.versionData=new VersionData()
 
 buildVersionFiles()
 
-/* the former call to buildVersionFiles() did setup our version data - now we 
+/* the former call to buildVersionFiles() did setup our version data - now we
  * can fetch the server version and all other versions */
 version = versionData.getServerVersion()
 
@@ -32,8 +32,9 @@ allprojects{
 
 
 def buildVersionFiles(){
-    println("BUILD versioning")
-    
+
+    println("BUILD versioning:")
+
     def start = new Date()
     // This file contains some logic for calculation of the version number
 
@@ -58,7 +59,9 @@ def buildVersionFiles(){
     def noUnstagedChanges = unstagedChanges.getAllChanges().isEmpty()
     def noStagedChanges = stagedChanges.getAllChanges().isEmpty()
     def hasChanged = !noUnstagedChanges || !noStagedChanges
-    def buildNumber= getBuildNr()
+    def buildNumber = getBuildNr()
+    def docsTimeStamp = getLocalBuildNr()
+    def currentGitCommit = git.head().abbreviatedId
 
     // ------------------------
     // - Client
@@ -73,26 +76,65 @@ def buildVersionFiles(){
     def clientVersionFile = new File('./sechub-cli/src/mercedes-benz.com/sechub/cli/version.go')
     clientVersionFile.write(clientGoVersionCode)
 
-    /* write version info also as asciidoc file*/
+    /* Latest tagged client version as asciidoc file (#2285) */
+    def latestClientTagCmd = [
+      'sh',
+      '-c',
+      'git tag -l --sort=-creatordate | grep -e \'^v.*-client$\' | head -1'
+    ]
+    def latestClientTag = latestClientTagCmd.execute().text.trim()
+    def latestClientVersion = latestClientTag - 'v'
+    latestClientVersion = latestClientVersion - "-client"
+    // Mark as modified when built after release
+    if (latestClientVersion != clientVersionInfo.getShortVersion()) {
+      latestClientVersion = latestClientVersion + " modified (commit " + currentGitCommit + ")"
+    }
     def clientVersionAsciiDocFile = new File('./sechub-doc/src/docs/asciidoc/documents/gen/client-version.adoc')
-    clientVersionAsciiDocFile.write("// SPDX-License-Identifier: MIT\n:revnumber: Client "+clientVersionInfo.getShortVersion()+"\n:longrevnumber: Client "+clientVersionInfo.getFullVersion()+"\n")
+    clientVersionAsciiDocFile.write("// SPDX-License-Identifier: MIT\n:revnumber: Client "+latestClientVersion+"\n:longrevnumber: Client "+latestClientVersion+" - Build date: "+docsTimeStamp+"\n")
 
     // ------------------------
     // - Server
     // ------------------------
+
     def serverVersionInfo =  versionData.defineVersion("Server",buildVersionString(serverVersionCommitTag, hasChanged,buildNumber))
 
-     /* write version info also as asciidoc file*/
+    /* Latest tagged server version as asciidoc file (#2285) */
+    def latestServerTagCmd = [
+      'sh',
+      '-c',
+      'git tag -l --sort=-creatordate | grep -e \'^v.*-server$\' | head -1'
+    ]
+    def latestServerTag = latestServerTagCmd.execute().text.trim()
+    def latestServerVersion = latestServerTag - 'v'
+    latestServerVersion = latestServerVersion - "-server"
+    // Mark as modified when built after release
+    if (latestServerVersion != serverVersionInfo.getShortVersion()) {
+      latestServerVersion = latestServerVersion + " modified (commit " + currentGitCommit + ")"
+    }
     def serverVersionAsciiDocFile = new File('./sechub-doc/src/docs/asciidoc/documents/gen/server-version.adoc')
-    serverVersionAsciiDocFile.write("// SPDX-License-Identifier: MIT\n:revnumber: Server "+serverVersionInfo.getShortVersion()+"\n:longrevnumber: Server "+serverVersionInfo.getFullVersion()+"\n")
+    serverVersionAsciiDocFile.write("// SPDX-License-Identifier: MIT\n:revnumber: Server "+latestServerVersion+"\n:longrevnumber: Server "+latestServerVersion+" - Build date: "+docsTimeStamp+"\n")
 
     // ------------------------
     // - PDS
     // ------------------------
+
     def pdsVersionInfo = versionData.defineVersion("PDS",buildVersionString(pdsVersionCommitTag, hasChanged,buildNumber))
-     /* write version info also as asciidoc file*/
+
+    /* Latest tagged pds version as asciidoc file (#2285) */
+    def latestPDSTagCmd = [
+      'sh',
+      '-c',
+      'git tag -l --sort=-creatordate | grep -e \'^v.*-pds$\' | head -1'
+    ]
+    def latestPDSTag = latestPDSTagCmd.execute().text.trim()
+    def latestPDSVersion = latestPDSTag - 'v'
+    latestPDSVersion = latestPDSVersion - "-pds"
+    // Mark as modified when built after release
+    if (latestPDSVersion != pdsVersionInfo.getShortVersion()) {
+      latestPDSVersion = latestPDSVersion + " modified (commit " + currentGitCommit + ")"
+    }
     def pdsVersionAsciiDocFile = new File('./sechub-doc/src/docs/asciidoc/documents/gen/pds-version.adoc')
-    pdsVersionAsciiDocFile.write("// SPDX-License-Identifier: MIT\n:revnumber: PDS "+pdsVersionInfo.getShortVersion()+"\n:longrevnumber: PDS "+pdsVersionInfo.getFullVersion()+"\n")
+    pdsVersionAsciiDocFile.write("// SPDX-License-Identifier: MIT\n:revnumber: PDS "+latestPDSVersion+"\n:longrevnumber: PDS "+latestPDSVersion+" - Build date: "+docsTimeStamp+"\n")
 
     // ------------------------
     // - PDS tools

@@ -10,7 +10,7 @@ class VersionData{
     private static final String ID_WRAPPER_CHECKMARX = "checkmarx wrapper"
     private static final String ID_WRAPPER_OWASPZAP = "owasp-zap wrapper"
     private static final String ID_WRAPPER_XRAY= "xray wrapper"
-    
+
     private StringBuilder debugInfo = new StringBuilder();
 
     private Map<String,VersionInfo> map = new HashMap<>();
@@ -19,13 +19,13 @@ class VersionData{
     boolean containingAtLeastOneRealReleaseVersion
 
     public VersionData(){
-    
+
         /* initialize */
-        initialize(ID_CLIENT,   "Client ")
+        initialize(ID_CLIENT,   "Client")
         initialize(ID_LIBRARIES,"Libraries")
-        initialize(ID_PDS,      "PDS    ")
+        initialize(ID_PDS,      "PDS")
         initialize(ID_PDS_TOOLS,"PDS-Tools")
-        initialize(ID_SERVER,   "Server ")
+        initialize(ID_SERVER,   "Server")
         initialize(ID_WEBSITE,  "Website")
         initialize(ID_WRAPPER_CHECKMARX, "Checkmarx Wrapper")
         initialize(ID_WRAPPER_OWASPZAP, "OWASP-ZAP Wrapper")
@@ -33,22 +33,22 @@ class VersionData{
     }
 
     public class VersionInfo{
-    
+
         String fullVersion
         String shortVersion
         String id
         String text
 
         public String describe(){
-            return "- "+text+" :"+shortVersion+" ["+fullVersion+"]"
+            return text.padLeft(17)+": "+shortVersion+" ("+fullVersion+")"
         }
 
     }
 
     void initialize(String id,String text){
-        
+
         VersionInfo info = new VersionInfo()
-        
+
         info.id=id;
         info.text=text;
         info.fullVersion="undefined-long-"+id+"version"
@@ -108,10 +108,10 @@ class VersionData{
     public String getWebsiteVersion(){
         return map.get(ID_WEBSITE).getShortVersion()
     }
-    
+
     public String getDebugInfo(){
-        
-        return "Debug info:\ncontainingAtLeastOneDirtyReleaseVersion=$containingAtLeastOneDirtyReleaseVersion\ncontainingAtLeastOneRealReleaseVersion=$containingAtLeastOneRealReleaseVersion\n\n$debugInfo";                
+
+        return "Debug info:\ncontainingAtLeastOneDirtyReleaseVersion=$containingAtLeastOneDirtyReleaseVersion\ncontainingAtLeastOneRealReleaseVersion=$containingAtLeastOneRealReleaseVersion\n\n$debugInfo";
     }
 
 
@@ -122,14 +122,14 @@ class VersionData{
     private void inspectReleaseVersion(String versionType, String longVersionName){
         debugInfo.append("\ninspect $versionType release version: long version=$longVersionName\n")
         debugInfo.append("- at least one release found : $containingAtLeastOneRealReleaseVersion, one release dirty: $containingAtLeastOneDirtyReleaseVersion\n")
-        
+
         if (longVersionName.startsWith("0.0.0")){
             /* not a correct release version so ignore */
             return
         }
         containingAtLeastOneDirtyReleaseVersion=containingAtLeastOneDirtyReleaseVersion || longVersionName.contains("dirty")
         containingAtLeastOneRealReleaseVersion=true
-        
+
         debugInfo.append("- updated data")
         debugInfo.append("- at least one release found : $containingAtLeastOneRealReleaseVersion, one release dirty: $containingAtLeastOneDirtyReleaseVersion\n")
     }

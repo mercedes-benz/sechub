@@ -26,7 +26,11 @@ jobs:
         with:
           java-version: 17
           distribution: temurin
-          cache: gradle
+
+      - name: Set up Gradle
+        uses: gradle/gradle-build-action@v2
+        with:
+          cache-read-only: false
 
       - name: Set up Go
         uses: actions/setup-go@v4
@@ -112,33 +116,15 @@ jobs:
           path: sechub-cli/build/go
           retention-days: 14
 
-      - name: Install graphviz (asciidoc diagrams)
-        run: sudo apt-get -qq --assume-yes install graphviz
-
-      # -----------------------------------------
-      # Build Documentation
-      # -----------------------------------------
-      - name: Create documentation
-        run: ./gradlew documentation -Dsechub.build.stage=all
-
-      # -----------------------------------------
-      # Upload documentation
-      # -----------------------------------------
-      - name: Archive documentation HTML
+      - name: Archive sechub integration test report artifacts
+        if: always()
         uses: actions/upload-artifact@v3
         with:
-          name: sechub-docs-html
-          path: sechub-doc/build/docs/final-html/
+          name: sechub-integrationtest-test-reports
+          path: sechub-integrationtest/build/sechub-test-reports
           retention-days: 14
-
-      - name: Archive documentation PDF
-        uses: actions/upload-artifact@v3
-        with:
-          name: sechub-docs-pdf
-          path: sechub-doc/build/docs/asciidoc/*.pdf
-          retention-days: 14
-
-      - name: Archive documentation openAPI3
+          
+      - name: Archive openAPI3 JSON files
         uses: actions/upload-artifact@v3
         with:
           name: sechub-api-spec
