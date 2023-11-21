@@ -14,7 +14,7 @@ import com.mercedesbenz.sechub.wrapper.xray.report.XrayWrapperReportException;
 
 public class ZipFileExtractor {
 
-    public static boolean fileExists(String filename) {
+    public boolean fileExists(String filename) {
         return Files.exists(Path.of(filename));
     }
 
@@ -26,7 +26,7 @@ public class ZipFileExtractor {
      * @param target target folder
      * @throws IOException
      */
-    public static void unzipFile(Path source, Path target) throws XrayWrapperReportException {
+    public void unzipFile(Path source, Path target) throws XrayWrapperReportException {
         try (ZipInputStream zis = new ZipInputStream(new FileInputStream(source.toFile()))) {
             ZipEntry zipEntry = zis.getNextEntry();
 

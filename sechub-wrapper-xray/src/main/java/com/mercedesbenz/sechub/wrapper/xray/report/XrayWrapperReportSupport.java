@@ -23,14 +23,15 @@ public class XrayWrapperReportSupport {
 
     public XrayReportFiles collectXrayReportsInArchive(String unzippedArchive, String pdsResultFile) throws XrayWrapperReportException {
         File xrayPdsReport = new File(pdsResultFile);
+        ZipFileExtractor zipFileExtractor = new ZipFileExtractor();
         File cycloneReport;
         File securityReport;
 
-        if (!ZipFileExtractor.fileExists(unzippedArchive)) {
+        if (!zipFileExtractor.fileExists(unzippedArchive)) {
             // folder with reports is zipped
             String zipArchive = unzippedArchive + ".zip";
-            if (ZipFileExtractor.fileExists(zipArchive)) {
-                ZipFileExtractor.unzipFile(Paths.get(zipArchive), Paths.get(unzippedArchive));
+            if (zipFileExtractor.fileExists(zipArchive)) {
+                zipFileExtractor.unzipFile(Paths.get(zipArchive), Paths.get(unzippedArchive));
             } else {
                 throw new XrayWrapperReportException("File with reports does not exist");
             }
