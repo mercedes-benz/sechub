@@ -208,7 +208,8 @@ deploymentComment: "my deployment comment"
 # Checkmarx adapter (Deprecation warning: Please use PDS-Checkmarx instead)
 # ------------------------------------------------------------------------------------- #
 adapterCheckmarx:
-  enabled: false
+  # TODO: enabled changed from false to true
+  enabled: true
   # Base url of your Checkmarx server
   baseURL: https://to.be.defined
   # Put the user id  of Checkmarx user in k8s secret secret-checkmarx:sechub_adapter_checkmarx_userid
