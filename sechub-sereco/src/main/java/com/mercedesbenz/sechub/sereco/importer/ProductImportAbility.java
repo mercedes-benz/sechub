@@ -14,9 +14,9 @@ public enum ProductImportAbility {
     NOT_ABLE_TO_IMPORT,
 
     /**
-     * The importer would potentially be able to import, but product failed (means
-     * an empty string as result)
+     * The importer would potentially be able to import, but product failed or was
+     * canceled (in both cases an empty string is used as product result)
      */
-    PRODUCT_FAILED,
+    PRODUCT_FAILED_OR_CANCELED,
 
 }

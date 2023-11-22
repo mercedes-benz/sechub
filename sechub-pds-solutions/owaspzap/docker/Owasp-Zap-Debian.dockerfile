@@ -34,7 +34,7 @@ COPY pds-config.json "$PDS_FOLDER/pds-config.json"
 RUN export DEBIAN_FRONTEND=noninteractive && \
     apt-get update && \
     apt-get upgrade --assume-yes && \
-    apt-get install --assume-yes openjdk-17-jre firefox-esr wget && \
+    apt-get install --assume-yes firefox-esr wget && \
     apt-get clean
 
 # Install ZAP
