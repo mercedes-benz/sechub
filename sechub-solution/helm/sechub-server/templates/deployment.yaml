@@ -148,7 +148,7 @@ spec:
 # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
 # + SSL certificate
 # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
-# TODO: commented out whole section and inside {{ }} with - /* ... */ -
+# TODO: commented out whole section and inside double curly brackets
 #- name: SECHUB_SERVER_SSL_KEYSTORE_TYPE
 #          value: "PKCS12"
 #        - name: SECHUB_SERVER_SSL_KEYSTORE_LOCATION
