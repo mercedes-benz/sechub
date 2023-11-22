@@ -29,7 +29,9 @@ public class XrayWrapperArtifactoryClientSupport {
 
         IN_PROGRESS("in progress"),
 
-        NOT_SCANNED("not scanned");
+        NOT_SCANNED("not scanned"),
+
+        UNKNOWN("unknown");
 
         private String statusValue;
 
@@ -99,15 +101,21 @@ public class XrayWrapperArtifactoryClientSupport {
     private void readAndConvertReports() throws XrayWrapperException {
         XrayWrapperReportData xrayWrapperReportData = new XrayWrapperReportData();
 
+        // get relevant xray report files
         XrayWrapperReportSupport.XrayReportFiles reportFiles = reportReader.collectXrayReportsInArchive(xrayWrapperConfiguration.getZipDirectory(),
                 xrayWrapperConfiguration.getXrayPdsReport());
         xrayWrapperReportData.setSecurityReport(reportFiles.securityReport());
         xrayWrapperReportData.setCycloneReport(reportFiles.cycloneReport());
         xrayWrapperReportData.setXrayPdsReport(reportFiles.xrayPdsReport());
 
+        // extract vulnerabilities from security report
         xrayWrapperReportData.setCycloneDXVulnerabilityHashMap(reportReader.readSecurityReport(xrayWrapperReportData.getSecurityReport()));
+
+        // add extracted vulnerability information to the CycloneDX SBOM
         xrayWrapperReportData
-                .setSbom(reportReader.mapVulnerabilities(xrayWrapperReportData.getCycloneReport(), xrayWrapperReportData.cycloneDXVulnerabilityHashMap));
+                .setSbom(reportReader.mapVulnerabilities(xrayWrapperReportData.getCycloneReport(), xrayWrapperReportData.getCycloneDXVulnerabilityHashMap()));
+
+        // write new SBOM to file
         reportReader.writeReport(xrayWrapperReportData.getSbom(), xrayWrapperReportData.getXrayPdsReport());
     }
 
@@ -118,13 +126,13 @@ public class XrayWrapperArtifactoryClientSupport {
      * @throws XrayWrapperException
      */
     private boolean handleScanStatus(ClientSupportContext context) throws XrayWrapperException {
-        ScanStatus status = artifactoryClient.getScanStatus();
-        LOG.debug("Artifact status is: " + status.getStatusValue());
+        context.setStatus(artifactoryClient.getScanStatus());
+        LOG.debug("Artifact status is: " + context.getStatus().getStatusValue());
         if (context.isTimeoutReached()) {
             throw new XrayWrapperException("Reached maximum scan timeout of " + xrayWrapperConfiguration.getMaxScanDurationHours() + " hours. "
                     + "Started scan at: " + context.startTime, XrayWrapperExitCode.TIMEOUT_REACHED);
         }
-        switch (status) {
+        switch (context.getStatus()) {
         case NOT_SCANNED -> {
             waitSeconds(xrayWrapperConfiguration.getWaitUntilRetrySeconds());
             if (context.isMaximumRetriesReached()) {
@@ -145,11 +153,12 @@ public class XrayWrapperArtifactoryClientSupport {
         throw new XrayWrapperException("Received unexpected scan status", XrayWrapperExitCode.UNSUPPORTED_API_REQUEST);
     }
 
-    private static void waitSeconds(int val) throws XrayWrapperException {
+    private void waitSeconds(int val) {
         try {
             TimeUnit.SECONDS.sleep(val);
         } catch (InterruptedException e) {
-            throw new XrayWrapperException("Thread interrupted while wait for next scan status request", XrayWrapperExitCode.THREAD_INTERRUPTION, e);
+            Thread.currentThread().interrupt();
+            LOG.info("Thread was interrupted while wait for next scan status request");
         }
     }
 
@@ -158,7 +167,8 @@ public class XrayWrapperArtifactoryClientSupport {
         artifactoryClient.startArtifactScan();
     }
 
-    private class ClientSupportContext {
+    class ClientSupportContext {
+        ScanStatus status;
         private final LocalDateTime startTime;
         private int retryCount;
 
@@ -182,6 +192,14 @@ public class XrayWrapperArtifactoryClientSupport {
             LocalDateTime now = LocalDateTime.now();
             LocalDateTime timer = now.plusHours(xrayWrapperConfiguration.getMaxScanDurationHours());
             return startTime.isAfter(timer);
+        }
+
+        public ScanStatus getStatus() {
+            return status;
+        }
+
+        public void setStatus(ScanStatus status) {
+            this.status = status;
         }
     }
 

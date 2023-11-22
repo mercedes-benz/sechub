@@ -18,13 +18,13 @@ class XrayWrapperReportWriterTest {
     }
 
     @Test
-    void writeReport_throws_nullPointerException() {
+    void writeReport_null_arguments_throws_illegalStateException() {
         /* execute + test */
-        assertThrows(NullPointerException.class, () -> reportWriterToTest.writeReport(null, null));
+        assertThrows(IllegalStateException.class, () -> reportWriterToTest.writeReport(null, null));
     }
 
     @Test
-    void writeReport_to_empty_file_throws_xrayWrapperReportException() {
+    void writeReport_to_empty_filename_throws_xrayWrapperReportException() {
         /* prepare */
         Bom sbom = new Bom();
         File file = new File("");

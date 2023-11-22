@@ -37,7 +37,7 @@ class XrayAPIRequestFactoryTest {
     }
 
     @Test
-    void createGetXrayVersionRequest_throws_xrayWrapperException() {
+    void createGetXrayVersionRequest_invalid_url_throws_xrayWrapperException() {
         /* prepare */
         String invalidUrl = "invalid url";
 
@@ -59,13 +59,13 @@ class XrayAPIRequestFactoryTest {
     }
 
     @Test
-    void createCheckArtifactUploadRequest_throws_nullPointerException() {
+    void createCheckArtifactUploadRequest_null_parameter_throws_nullPointerException() {
         /* execute + test */
         assertThrows(NullPointerException.class, () -> XrayAPIRequestFactory.createCheckArtifactUploadRequest(null, null, null));
     }
 
     @Test
-    void createCheckArtifactUploadRequest_throws_xrayWrapperException() {
+    void createCheckArtifactUploadRequest_invalid_url_throws_xrayWrapperException() {
         /* prepare */
         String invalidUrl = "invalid url";
 
@@ -90,7 +90,7 @@ class XrayAPIRequestFactoryTest {
     }
 
     @Test
-    void createScanArtifactRequest_throws_xrayWrapperException() {
+    void createScanArtifactRequest_invalid_url_throws_xrayWrapperException() {
         /* prepare */
         String invalidUrl = "invalid url";
 
@@ -114,7 +114,7 @@ class XrayAPIRequestFactoryTest {
     }
 
     @Test
-    void createGetScanStatusRequest_throws_xrayWrapperException() {
+    void createGetScanStatusRequest_null_parameters_throws_xrayWrapperException() {
         /* execute + test */
         assertThrows(XrayWrapperException.class, () -> XrayAPIRequestFactory.createGetScanStatusRequest(null, null, null));
     }
@@ -139,7 +139,7 @@ class XrayAPIRequestFactoryTest {
     }
 
     @Test
-    void createGetScanReportsRequest_throws_xrayWrapperException() {
+    void createGetScanReportsRequest_null_parameter_throws_xrayWrapperException() {
         /* execute + test */
         assertThrows(XrayWrapperException.class, () -> XrayAPIRequestFactory.createGetScanReportsRequest(null, null));
     }
@@ -158,7 +158,7 @@ class XrayAPIRequestFactoryTest {
     }
 
     @Test
-    void createDeleteArtifactRequest_throws_xrayWrapperException() {
+    void createDeleteArtifactRequest_invalid_url_throws_xrayWrapperException() {
         /* prepare */
         String invalidUrl = "invalid url";
 
@@ -167,7 +167,7 @@ class XrayAPIRequestFactoryTest {
     }
 
     @Test
-    void createDeleteArtifactRequest_throws_nullPointerException() {
+    void createDeleteArtifactRequest_null_parameter_throws_nullPointerException() {
         /* execute + test */
         assertThrows(NullPointerException.class, () -> XrayAPIRequestFactory.createDeleteArtifactRequest(null, null, null));
     }
@@ -186,7 +186,7 @@ class XrayAPIRequestFactoryTest {
     }
 
     @Test
-    void createDeleteUploadsRequest_throws_xrayWrapperException() {
+    void createDeleteUploadsRequest_invalid_url_throws_xrayWrapperException() {
         /* prepare */
         String invalidUrl = "invalid url";
 
@@ -195,7 +195,7 @@ class XrayAPIRequestFactoryTest {
     }
 
     @Test
-    void createDeleteUploadsRequest_throws_nullPointerException() {
+    void createDeleteUploadsRequest_null_parameter_throws_nullPointerException() {
         /* execute + test */
         assertThrows(NullPointerException.class, () -> XrayAPIRequestFactory.createDeleteUploadsRequest(null, null, null));
     }

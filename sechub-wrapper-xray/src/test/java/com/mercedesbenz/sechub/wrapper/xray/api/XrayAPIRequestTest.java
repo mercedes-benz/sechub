@@ -30,7 +30,7 @@ class XrayAPIRequestTest {
     }
 
     @Test
-    void xrayRequest_throws_xrayWrapperException() {
+    void xrayRequest_throws_rayRequest_builder_throws_xrayWrapperException_when_parameters_not_defined() {
         /* execute + test */
         assertThrows(XrayWrapperException.class, () -> XrayAPIRequest.Builder.builder().build());
     }

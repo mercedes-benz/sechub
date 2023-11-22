@@ -21,7 +21,7 @@ class XrayWrapperCLITest {
     }
 
     @Test
-    void start_throws_nullPointerException() {
+    void start_with_null_args_throws_nullPointerException() {
         /* execute + test */
         assertThrows(NullPointerException.class, () -> cliToTest.start(null));
     }

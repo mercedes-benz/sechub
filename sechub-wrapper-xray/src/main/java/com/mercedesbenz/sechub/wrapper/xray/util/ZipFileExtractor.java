@@ -63,7 +63,7 @@ public class ZipFileExtractor {
      * Please see: <a href=https://security.snyk.io/research/zip-slip-vulnerability
      * /a>
      */
-    private static Path zipSlipProtect(ZipEntry zipEntry, Path targetDir) throws XrayWrapperReportException {
+    private Path zipSlipProtect(ZipEntry zipEntry, Path targetDir) throws XrayWrapperReportException {
         Path targetDirResolved = targetDir.resolve(zipEntry.getName());
 
         // make sure normalized file still has targetDir as its prefix

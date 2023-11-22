@@ -1,5 +1,6 @@
 package com.mercedesbenz.sechub.wrapper.xray.report;
 
+import static com.mercedesbenz.sechub.wrapper.xray.report.XrayWrapperReportConstants.*;
 import static java.lang.Double.parseDouble;
 
 import java.util.ArrayList;
@@ -42,7 +43,7 @@ public class XrayWrapperReportTransformer {
     }
 
     private void addBomRefToVulnerability(JsonNode node, Vulnerability vulnerability) {
-        String bomRef = node.get("id").asText();
+        String bomRef = node.get(ID).asText();
         if (bomRef != null) {
             // set bomRef as ID if vulnerability does not have CVE ID
             // cycloneDX vulnerabilities also have XRAY ID as ID (mapping works)
@@ -52,12 +53,12 @@ public class XrayWrapperReportTransformer {
     }
 
     private void extractCVEDetails(JsonNode securityReportVulnerabilityNode, Vulnerability vulnerability) {
-        JsonNode cveDetailsNode = securityReportVulnerabilityNode.get("component_versions").get("more_details").get("cves");
+        JsonNode cveDetailsNode = securityReportVulnerabilityNode.get(COMPONENT_VERSION).get(MORE_DETAILS).get(CVES);
 
         for (JsonNode cveDetail : cveDetailsNode) {
-            JsonNode cvssNode = cveDetail.get("cvss_v3");
-            JsonNode cveIDNode = cveDetail.get("cve");
-            ArrayNode cwe = (ArrayNode) cveDetail.get("cwe");
+            JsonNode cvssNode = cveDetail.get(CVSS_V3);
+            JsonNode cveIDNode = cveDetail.get(CVE);
+            ArrayNode cwe = (ArrayNode) cveDetail.get(CWE);
 
             if (cveIDNode != null) {
                 // ID can be empty when vulnerability has only Jfrog ID
@@ -99,7 +100,7 @@ public class XrayWrapperReportTransformer {
     }
 
     private void extractSourceInformation(JsonNode node, Vulnerability vulnerability) {
-        String name = node.get("provider").asText();
+        String name = node.get(PROVIDER).asText();
         String url = "";
         if (name != null) {
             addSourceToVulnerability(url, name, vulnerability);
@@ -126,8 +127,8 @@ public class XrayWrapperReportTransformer {
         method = method.replace(":", "v");
         method = method.replace(".", "");
         method = method.replace("0", "");
-        String severity = node.get("severity").asText().toLowerCase();
-        String severitySource = node.get("severity_source").asText().toUpperCase();
+        String severity = node.get(SEVERITY).asText().toLowerCase();
+        String severitySource = node.get(SEVERITY_SOURCE).asText().toUpperCase();
 
         if (severity != null && severitySource != null && method != null && vector != null && score != null) {
             RatingRecord ratingRecord = new RatingRecord(scoreDouble, severity, method, vector, severitySource);
@@ -161,17 +162,17 @@ public class XrayWrapperReportTransformer {
     }
 
     private void addDescriptionToVulnerability(JsonNode node, Vulnerability vulnerability) {
-        String description = node.get("component_versions").get("more_details").get("description").asText();
+        String description = node.get(COMPONENT_VERSION).get(MORE_DETAILS).get(DESCRIPTION).asText();
         if (description != null) {
             vulnerability.setDescription(description);
         }
     }
 
     private void extractComponentVersions(JsonNode node, Vulnerability vulnerability) {
-        String ref = node.get("source_comp_id").asText();
+        String ref = node.get(SOURCE_COMP_ID).asText();
         vulnerability.setBomRef(ref);
-        ArrayNode vulnerableVersions = (ArrayNode) node.get("component_versions").get("vulnerable_versions");
-        ArrayNode fixedVersions = (ArrayNode) node.get("component_versions").get("fixed_versions");
+        ArrayNode vulnerableVersions = (ArrayNode) node.get(COMPONENT_VERSION).get(VULNERABLE_VERSION);
+        ArrayNode fixedVersions = (ArrayNode) node.get(COMPONENT_VERSION).get(FIXED_VERSION);
         addComponentVersionsToVulnerability(vulnerability, ref, vulnerableVersions, fixedVersions);
     }
 

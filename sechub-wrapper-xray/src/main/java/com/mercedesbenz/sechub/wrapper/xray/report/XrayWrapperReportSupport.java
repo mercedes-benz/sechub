@@ -7,6 +7,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 import org.cyclonedx.model.Bom;
@@ -37,8 +38,8 @@ public class XrayWrapperReportSupport {
             }
         }
 
-        ArrayList<Path> cyclones = getFilesByName(unzippedArchive, "CycloneDX");
-        ArrayList<Path> securityPath = getFilesByName(unzippedArchive, "Security");
+        List<Path> cyclones = getFilesByName(unzippedArchive, "CycloneDX");
+        List<Path> securityPath = getFilesByName(unzippedArchive, "Security");
         if (cyclones.isEmpty() || securityPath.isEmpty()) {
             throw new XrayWrapperReportException("Report Path cannot be empty, Could not find Xray Reports for cycloneDX and Security Report");
         }
@@ -70,8 +71,8 @@ public class XrayWrapperReportSupport {
         reportWriter.writeReport(sbom, xrayPdsReport);
     }
 
-    private ArrayList<Path> getFilesByName(String dir, String filename) throws XrayWrapperReportException {
-        ArrayList<Path> paths = new ArrayList<>();
+    private List<Path> getFilesByName(String dir, String filename) throws XrayWrapperReportException {
+        List<Path> paths = new ArrayList<>();
         try (DirectoryStream<Path> dirStream = Files.newDirectoryStream(Paths.get(dir), ("*" + filename + "*.json"))) {
             dirStream.forEach(paths::add);
         } catch (IOException e) {

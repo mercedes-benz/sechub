@@ -1,13 +1,12 @@
 package com.mercedesbenz.sechub.wrapper.xray.cli;
 
-import static com.mercedesbenz.sechub.wrapper.xray.util.XrayWrapperConfigurationHelper.createXrayConfiguration;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.mercedesbenz.sechub.wrapper.xray.XrayWrapperException;
 import com.mercedesbenz.sechub.wrapper.xray.config.XrayWrapperArtifact;
 import com.mercedesbenz.sechub.wrapper.xray.config.XrayWrapperConfiguration;
+import com.mercedesbenz.sechub.wrapper.xray.util.XrayWrapperConfigurationHelper;
 
 public class XrayWrapperCLI {
 
@@ -23,7 +22,9 @@ public class XrayWrapperCLI {
 
         try {
             arguments = parser.parseCommandLineArgs(args);
-            XrayWrapperConfiguration xrayWrapperConfiguration = createXrayConfiguration(arguments.scanType(), arguments.outputFile(), arguments.workspace());
+            XrayWrapperConfigurationHelper xrayWrapperConfigurationHelper = new XrayWrapperConfigurationHelper();
+            XrayWrapperConfiguration xrayWrapperConfiguration = xrayWrapperConfigurationHelper.createXrayConfiguration(arguments.scanType(),
+                    arguments.outputFile(), arguments.workspace());
             XrayWrapperArtifact artifact = new XrayWrapperArtifact(arguments.name(), arguments.checksum(), arguments.tag(), arguments.scanType());
             XrayWrapperArtifactoryClientSupport xrayWrapperArtifactoryClientSupport = new XrayWrapperArtifactoryClientSupport(xrayWrapperConfiguration,
                     artifact);

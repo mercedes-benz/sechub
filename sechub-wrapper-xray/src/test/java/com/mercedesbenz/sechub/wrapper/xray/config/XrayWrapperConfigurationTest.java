@@ -27,7 +27,7 @@ class XrayWrapperConfigurationTest {
     }
 
     @Test
-    void xrayWrapperConfiguration_throws_nullPointerException() {
+    void xrayWrapperConfiguration_builder_without_parameters_throws_IllegalStateException() {
         /* execute + test */
         assertThrows(IllegalStateException.class, () -> XrayWrapperConfiguration.Builder.builder().build());
     }

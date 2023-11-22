@@ -1,11 +1,16 @@
 package com.mercedesbenz.sechub.wrapper.xray.util;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.Mockito.*;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.nio.file.Path;
+import java.util.zip.ZipInputStream;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.MockedConstruction;
 
 import com.mercedesbenz.sechub.wrapper.xray.report.XrayWrapperReportException;
 
@@ -31,5 +36,19 @@ class ZipFileExtractorTest {
 
         /* execute + test */
         assertThrows(XrayWrapperReportException.class, () -> zipFileExtractorToTest.unzipFile(file.toPath(), file.toPath()));
+    }
+
+    @Test
+    void unzipFile_with_mocked_paths_and_ZipInputStream() throws XrayWrapperReportException {
+        Path source = mock(Path.class);
+        Path target = mock(Path.class);
+        MockedConstruction<FileInputStream> mockFileInput = mockConstruction(FileInputStream.class);
+
+        try (MockedConstruction<ZipInputStream> mockedClient = mockConstruction(ZipInputStream.class, (mock, context) -> {
+            when(mock.getNextEntry()).thenReturn(null);
+        })) {
+            zipFileExtractorToTest.unzipFile(source, target);
+        }
+        mockFileInput.close();
     }
 }

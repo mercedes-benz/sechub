@@ -70,7 +70,7 @@ class XrayAPIResponseFactoryTest {
     }
 
     @Test
-    void factoryHttpResponseFromConnection_throws_xrayWrapperException() throws IOException {
+    void factoryHttpResponseFromConnection_io_error_throws_xrayWrapperException() throws IOException {
         /* prepare */
         IOException e = new IOException("error");
         Mockito.when(connection.getResponseCode()).thenThrow(e);

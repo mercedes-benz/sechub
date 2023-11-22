@@ -18,6 +18,9 @@ import com.mercedesbenz.sechub.wrapper.xray.XrayWrapperJSONConverter;
 public class XrayWrapperReportWriter {
 
     public void writeReport(Bom sbom, File report) throws XrayWrapperReportException {
+        if (sbom == null || report == null) {
+            throw new IllegalStateException("SBOM or report file can not be NULL");
+        }
         JsonNode jsonNode = createJson(CycloneDxSchema.Version.VERSION_14, sbom).toJsonNode();
         JsonParser jsonParser = new JsonParser();
         ObjectMapper mapper = XrayWrapperJSONConverter.get().getMapper();

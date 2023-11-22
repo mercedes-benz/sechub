@@ -25,6 +25,7 @@ public class XrayAPIResponseFactory {
      * @throws XrayWrapperException
      */
     public XrayAPIResponse createHttpResponseFromConnection(HttpURLConnection httpURLConnection, String zipArchive) throws XrayWrapperException {
+        File zipFileArchive = new File(zipArchive + ".zip");
 
         // read response code
         int responseCode = 0;
@@ -46,42 +47,50 @@ public class XrayAPIResponseFactory {
         Map<String, List<String>> header = httpURLConnection.getHeaderFields();
 
         // get input stream from response, client accept status codes 3xx
+        String content = "";
         if (responseCode > 399) {
             try (InputStream inputStream = httpURLConnection.getErrorStream()) {
                 if (inputStream != null) {
-                    String content = saveOrReadHTTPContent(httpURLConnection, zipArchive, inputStream);
-                    return XrayAPIResponse.Builder.builder().statusCode(responseCode).headers(header).addResponseBody(content)
-                            .addResponseMessage(responseMessage).build();
+                    if (isZipBody(httpURLConnection)) {
+                        saveHTTPContentToZip(zipFileArchive, inputStream);
+                    } else {
+                        content = readHTTPContentAsString(inputStream);
+                    }
+                }
+            } catch (IOException e) {
+                throw new XrayWrapperException("Could not save https error stream to zip file", XrayWrapperExitCode.IO_ERROR, e);
+            }
+        } else {
+            try (InputStream inputStream = httpURLConnection.getInputStream()) {
+                if (isZipBody(httpURLConnection)) {
+                    saveHTTPContentToZip(zipFileArchive, inputStream);
+                } else {
+                    content = readHTTPContentAsString(inputStream);
                 }
             } catch (IOException e) {
                 throw new XrayWrapperException("Could not save https input stream to zip file", XrayWrapperExitCode.IO_ERROR, e);
             }
-
-        } else {
-            try (InputStream inputStream = httpURLConnection.getInputStream()) {
-                String content = saveOrReadHTTPContent(httpURLConnection, zipArchive, inputStream);
-                return XrayAPIResponse.Builder.builder().statusCode(responseCode).headers(header).addResponseBody(content).addResponseMessage(responseMessage)
-                        .build();
-            } catch (IOException e) {
-                throw new XrayWrapperException("Could not save https input stream to zip file", XrayWrapperExitCode.IO_ERROR, e);
-            }
         }
-
-        return XrayAPIResponse.Builder.builder().statusCode(responseCode).headers(header).addResponseMessage(responseMessage).build();
+        // if input stream is null, we return a response with empty body
+        // null input-stream occurred during tests with Xray Artifactory, but still had
+        // message and statuscode
+        return XrayAPIResponse.Builder.builder().statusCode(responseCode).headers(header).addResponseBody(content).addResponseMessage(responseMessage).build();
     }
 
-    private String saveOrReadHTTPContent(HttpURLConnection httpURLConnection, String zipArchive, InputStream inputStream) throws XrayWrapperException {
-        File zipFileArchive = new File(zipArchive + ".zip");
-        ZipFileCreator zipFileCreator = new ZipFileCreator();
-        IOHelper streamStringReader = new IOHelper();
+    private boolean isZipBody(HttpURLConnection httpURLConnection) {
         String type = httpURLConnection.getHeaderField("Content-Type");
-        if (Objects.equals(type, "application/gzip")) {
-            // server returns application/gzip as body which needs to be stored in zip file
-            zipFileCreator.zip(zipFileArchive, inputStream);
-            return "";
-        } else {
-            // server returns application/json body which can be saved as string body
-            return streamStringReader.readInputStreamAsString(inputStream);
-        }
+        // server returns application/gzip as body which needs to be stored in zip file
+        // or server returns application/json body which can be saved as string body
+        return Objects.equals(type, "application/gzip");
+    }
+
+    private String readHTTPContentAsString(InputStream inputStream) throws XrayWrapperException {
+        IOHelper ioHelper = new IOHelper();
+        return ioHelper.readInputStreamAsString(inputStream);
+    }
+
+    private void saveHTTPContentToZip(File zipFileArchive, InputStream inputStream) throws XrayWrapperException {
+        ZipFileCreator zipFileCreator = new ZipFileCreator();
+        zipFileCreator.zip(zipFileArchive, inputStream);
     }
 }

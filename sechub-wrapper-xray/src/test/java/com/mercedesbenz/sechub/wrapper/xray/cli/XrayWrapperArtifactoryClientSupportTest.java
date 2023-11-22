@@ -43,11 +43,16 @@ class XrayWrapperArtifactoryClientSupportTest {
     }
 
     @Test
-    void waitForScansToFinishAndDownloadReport_throws_XrayWrapperException() {
-        /* prepare */
-        clientSupportToTest = new XrayWrapperArtifactoryClientSupport(configuration, artifact);
-
+    void waitForScansToFinishAndDownloadReport_artifact_not_uploaded_throws_XrayWrapperException() {
         /* test + execute */
-        assertThrows(XrayWrapperException.class, () -> clientSupportToTest.waitForScansToFinishAndDownloadReport());
+        try (MockedConstruction<XrayAPIArtifactoryClient> mockedClient = Mockito.mockConstruction(XrayAPIArtifactoryClient.class, (mock, context) -> {
+            when(mock.requestXrayVersion()).thenReturn("mocked-version");
+            when(mock.checkArtifactoryUploadSuccess()).thenReturn(true);
+            when(mock.getScanStatus()).thenReturn(XrayWrapperArtifactoryClientSupport.ScanStatus.UNKNOWN);
+            when(mock.requestScanReports()).thenReturn(false);
+        })) {
+            clientSupportToTest = new XrayWrapperArtifactoryClientSupport(configuration, artifact);
+            assertThrows(XrayWrapperException.class, () -> clientSupportToTest.waitForScansToFinishAndDownloadReport());
+        }
     }
 }

@@ -15,10 +15,16 @@ public class XrayWrapperConfigurationHelper {
      * @param outputFile output filename for xray report
      * @return xray scan configuration
      */
-    public static XrayWrapperConfiguration createXrayConfiguration(XrayWrapperScanTypes scanType, String outputFile, String workspace)
-            throws XrayWrapperException {
+    public XrayWrapperConfiguration createXrayConfiguration(XrayWrapperScanTypes scanType, String outputFile, String workspace) throws XrayWrapperException {
         EnvironmentVariableReader environmentVariableReader = new EnvironmentVariableReader();
-        String artifactoryUrl = "https://" + environmentVariableReader.readEnvAsString(EnvironmentVariableConstants.ARTIFACTORY_ENV);
+
+        // get artifactory url from ENV
+        String artifactoryUrl = environmentVariableReader.readEnvAsString(EnvironmentVariableConstants.ARTIFACTORY_ENV);
+        if (artifactoryUrl == null || artifactoryUrl.isEmpty()) {
+            throw new XrayWrapperException("Artifactory variable cannot be null or empty!", XrayWrapperExitCode.UNKNOWN_PARAMETERS);
+        }
+        artifactoryUrl = "https://" + artifactoryUrl;
+
         String zipDirectory = workspace + "/XrayArtifactoryReports";
 
         // get registry according to scan type
@@ -26,8 +32,8 @@ public class XrayWrapperConfigurationHelper {
         if (scanType.equals(XrayWrapperScanTypes.DOCKER)) {
             registry = environmentVariableReader.readEnvAsString(EnvironmentVariableConstants.DOCKER_REGISTRY_ENV);
         }
-        if (registry == null) {
-            throw new XrayWrapperException("Registry variable cannot be null!", XrayWrapperExitCode.UNKNOWN_PARAMETERS);
+        if (registry == null || registry.isEmpty()) {
+            throw new XrayWrapperException("Registry variable cannot be null or empty!", XrayWrapperExitCode.UNKNOWN_PARAMETERS);
         }
         return XrayWrapperConfiguration.Builder.builder().artifactory(artifactoryUrl).registry(registry).xrayPdsReport(outputFile).zipDirectory(zipDirectory)
                 .build();

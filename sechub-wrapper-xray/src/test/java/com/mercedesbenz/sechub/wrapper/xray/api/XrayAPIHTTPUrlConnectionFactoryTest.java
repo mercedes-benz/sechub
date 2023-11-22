@@ -42,13 +42,13 @@ class XrayAPIHTTPUrlConnectionFactoryTest {
     }
 
     @Test
-    void factoryHTTPConnection_throws_nullPointerException() {
+    void factoryHTTPConnection_create_null_params_throws_nullPointerException() {
         /* execute + test */
         assertThrows(NullPointerException.class, () -> urlConnectionfactoryToTest.create(null));
     }
 
     @Test
-    void factoryHTTPConnection_throws_xrayWrapperException() throws XrayWrapperException {
+    void factoryHTTPConnection_create_invalid_throws_xrayWrapperException() throws XrayWrapperException {
         /* prepare */
         XrayAPIRequest request = XrayAPIRequest.Builder.builder().url(url).build();
 
