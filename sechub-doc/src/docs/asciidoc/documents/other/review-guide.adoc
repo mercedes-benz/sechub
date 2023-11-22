@@ -1,0 +1,487 @@
+:toc: left
+== Reviewers guide
+
+At {sechub} we have some quality aspects for pull requests.
+This document describes how to check quality aspects in SecHub PRs from the point of a reviewer. Of course the document can be read also by contributors to know which different parts will be at least inspected by a review.
+
+
+=== General
+==== Understand and reflect
+- *PR content check* +
+  A PR must have at least one issue which is referenced by the PR. T
+- *Understand* +
+  Read the referenced issues and think about the expected output.
+ 
+- *Reflect the issue*
+  * *What would you do?* +
+    Always try to think: "... if I would implement this issue, what would I need to do?". Then make a list (or just think about it) for yourself and test later if the reviewed implementation does handle all of your thoughts before.
+  
+  * *What would you NOT do?* +
+    Also think about this later in the opposite way: Was a part of the implementation outside of the wanted issues of the PR? If so, was it a big change which should be documented or have it's own issue? Here we start thinking about ""change management": We want to know what's happening between our versions by just knowing which GitHub issues are released!
+  
+  * *Is something important missing?* +
+    Maybe something is missing? Also think about if something important was not described in the issue, which should be handled as well?
+  
+
+==== Decide way of review
+Think about if the complete Review can be done by simply checking the PR at 
+https://github.com/mercedes-benz/ UI or if it is necessary to checkout the code in your IDE locally? 
+
+  - When the PR is bigger or difficult to understand you should always checkout the PR branch locally and walk over the changes there. It is easier to understand what is going on
+  - When the PR build output does not provide you with the necessary artifact outputs for a feature and you cannot rely 100% to the unit tests you should also check the results locally
+
+==== Follow up issues
+If there is a finding inside the review which is not critical but the fix/changes would take too much time, at least ensure there is a follow up issue created were
+the problem is described/addressed. 
+
+NOTE: It should not be the standard way to create follow up issues
+
+==== Result as expected 
+Last but not least - it works and has the expected result.
+
+If the result is an artifact it should be tested via an integration test which analyzes the 
+result in a safe way to ensure output is as expected.  +
+If this is not possible/done or the reviewer is not 100% sure, the reviewer should download the artifact (e.g. a report) and inspects it 
+manually to ensure the working result is as expected.
+
+
+
+=== Code
+
+The main purpose here is
+
+- readability (others shall understand the code easily)
+- maintainability (it shall be clear how the code works and how a change can be made)
+- security aspects
+- no typical flaws
+- common style
+
+==== Naming
+[IMPORTANT]
+====
+A good naming for variables, methods and classes is extremely important!
+====
+
+Always think about
+
+- *Purpose* +
+  What is the main reason for this class/method/field/parameter? What is its exact purpose? What is the result? 
+  Does the name reflect the purpose really? If it's not clear, it is often a hint that the class should be separated
+  into different classes...
+
+- *Clear at first sight* +
+  It is named in such clear way that there is just no need to document "what it does".
+
+
+Example:
+When something has got a method `createCustomerSurvey` it looks like the factory pattern and the class should 
+be named like `CustomerSurveyFactory`.
+If a class is called `CustomerSurveyBuilder` we expect the builder pattern - and of course a method `build()`.
+Etc. etc.
+
+TIP: We have naming conventions in our technical documentation.
+
+==== Maintainability
+
+[NOTE]
+====
+When we talk about maintainability, this includes
+
+- production code
+- test code (any kind of tests, but also the test frameworks)
+- documentation
+- helm charts
+- helper scripts
+- ...
+====
+
+===== General
+The code shall be as easy as possible to maintain - also for people who did not write the code.
+Of course this is always a personal question and not 100% bias safe, but some things should become
+clear when you ask yourself following questions:
+
+- do I (and others) understand the code without additional explanations ? 
+- could the code (e.g. a method in a library) be used in the wrong way accidently?
+- are changes in future easy to do? Do I need to change multiple parts or
+  is there a central place?
+- if it is more complex or part of a concept, is it documented inside architecture or technical documentation
+
+Additionally we have documented conventions which should adhered to. 
+
+===== Examples
+====== Big methods
+If a method is very big it becomes hard to read. A developer should split in this case the
+method into smaller methods and call them instead.
+
+====== Chaining methods vs. local variables and behaviors
+
+NOTE: Remark next code is only a example and represents no real {sechub} code.
+
+[source,java]
+----
+String firstProjectName = userService().finduser(userId).getProjects()[0].getName();
+----
+
+is a bad idea.
+Instead we would excpect something like this:
+
+[source,java]
+----
+User user = userService().finduser(userId);
+if (user==null){
+    throw new UserNotFoundException("user: "+userId+" does not exist!");
+}
+Project[] projects = user.getProjects();
+if (projects==null || projects.length==0){
+    throw new IllegalStateException("User has no projects!"); 
+}
+String firstProjectName = projects[0].getName();
+----
+
+====== Parameter hell versus parameter objects
+If a method needs many parameters with same type, refactoring can be difficult and there is 
+a risk of mixing up the order on the caller's side.In this case a parameter object makes more sense.
+
+TIP: Context object classes are used often in {sechub}. They are also kind of parameter object but 
+provide often additional methods for convenience and to get the current state. But their main purpose
+is also: Avoid parameter hell and just use the object between the method calls. 
+
+Example:
+[source,java]
+----
+public String createHappyWelcome(String firstName, String lastName, String city, String salutation, String birthName, boolean manager, boolean developer, boolean happy){
+  //... 
+}
+
+----
+is very error prone to use. When using a dedicated `WellcomeData` object instead,  
+
+[source,java]
+----
+public class WellcomeData { <1>
+    private String firstName;
+    //...
+    public void setFirstName(String firstName){
+        this.firstname=firstName;
+    }
+}
+
+public String createHappyWelcome(WellcomeData wellcomeData){
+  //...
+}
+
+----
+<1> Of course you could use here also a record. Records are great, but when they are used, you have to
+    check that callers do not use auto constructors but use received setters to create the object. 
+    Otherwise it can become error prone again when record constructors have multiple arguments of the
+    same type.
+
+TIP: If the build of the parameter (or context) object is not very simple and there are some caveats, it can be also
+a good option to provide a builder for such objects.
+
+
+====== KISS pattern - Keep it simple stupid
+If something can implemented simple and there is no need to do it in a complex variant - than it should be done the simple way.
+Premature optimization is often not necessary - as well as too complex code/architecture.
+
+====== YAGNI pattern - you aint gonna need it
+Always think about if a public method is really needed to be public. Reason: Public methods represent a contract between caller and implemntation side
+and must be kept stable. Also for public methods there is a need to write unit tests. 
+
+And of course: Unused classes, or things that are "nice to have but currently not used" shall not appear at all.
+
+
+TIP: We have test conventions in our technical documentation.
+
+====== DRY pattern - don't repeat yourself
+Is the code written in a way that it does repeat the same stuff ("copy waste").
+In this case it should become more generic (e.g. by introducing a method) but still in a way where it is good
+readable!
+
+TIP: More information at https://en.wikipedia.org/wiki/Don%27t_repeat_yourself
+
+====== Green IT /Resource hungriness
+
+Does the code has unnecessary resource access/ unnecesary calculations?
+
+An example:  +
+Somebody wrote a method that reads a configuration JSON file from disk and fetches an element
+by its key. But the method is used 20 times so we have 20 reads of the json file. This is unnecessary and 
+can be fixed by changing the method to return an object instead, which can be used by the code instead.
+
+[source,java]
+----
+public class ConfigurationAccess { 
+    
+    public static String getValue(Path pathToConfig, String key){
+        Configuration config = readJsonFromFileAndMapToObject(pathToConfigFile);
+        return resolveValueBy(config,key); 
+    }
+}
+----
+
+should be replaced by something like this:
+
+[source,java]
+----
+public class ConfigurationAccess {
+    private Configuration config;
+    
+    public ConfigurationAccess(Path pathToConfigFile){
+        this.config=readJsonFromFileAndMapToObject(pathToConfigFile);
+    }
+    
+    //...
+    public String getValue(String key){
+        return resolveValueBy(config, key); 
+    }
+}
+----
+
+====== New operator vs. injection
+When the new operator is used, we cannot simply mock the created instance inside tests and test
+their implementation as well.  
+
+Sometimes it can make sense to use not spring injection but to create an object with the new operator.
+But there should be always the question: Why not by injection?
+
+==== Architecture
+
+===== Logic locations
+- Is too much logic inside thyme leaf templates? The main logic shall be in classes - and having unit tests!
+- Is logic inside REST controllers? Move it to a service which can be tested by simple unit tests (without running spring boot container) 
+
+===== Domain driven design
+There shall be never a direct communication between
+===== Composition over inheritance
+Sometimes we need extra features for a class ... but only for special purposes and not the normal one.
+Be aware about too much eager usage of inheritance! Often it is much better to provide a class which does NOT inherit
+but just use the existing ones.
+
+An example: 
+
+Somebody needs a more details for a SecHubfinding object - e.g. to represent it in a report.
+One way could be:
+
+[source,java]
+----
+class ReportXYZDetailedSecHubFinding extends SecHubfinding {
+    private String additionalDetailsForFinding;
+    // ... more special stuff which is not supported by parent class
+
+    public String getAddtionalDetailsForFinding(){
+        return additionalDetailsForFinding;
+    }
+
+}
+----
+
+but... the questions from a reviewer side shall be here:
+ 
+- Why do we have 2 implementations for a SecHubFinding now?
+- Is the ReportXYZDetailedSecHubFinding really a finding or has it another purpose? +
+  _E.g. only additional information for rendering_
+- How would I use the class from outside?
+- How would we write good atomic unit tests for this class? 
+- What would I test in unit tests for this class?
+
+
+In this case a good alternative would be:
+
+[source,java]
+----
+class ReportXYZDetail {
+    private SecHubfinding finding;
+
+    private String detailsForFinding;
+    // ... more special stuff which is not supported by finding object
+   
+    public SecHubfinding getSecHubFinding(){
+        return finding;
+    }
+
+    public String getAddtionalDetailsForFinding(){
+        return additionalDetailsForFinding;
+    }
+
+}
+----
+
+It is now clear that
+
+- this is only a detail  +
+  _(class name was changed and ends now with "Detail")_
+- there is a separation +
+  _the detail contains a finding and an additional information as a string (composition...)_
+
+We have now at least following benefits:
+
+- mockability +
+  we can mock the `SecHubFinding` inside tests or just use an instance
+- test separation +
+  a test of `ReportXYZDetail` should only need to check if finding and description can be set/get 
+  (if there is really need for testing getters... most time not... ) BUT NOT the implemantation for `SecHubfinding` again! Also there is no possiblity to change the behavior of the finding logic by overriding methods (as it can be done in inheritance).
+
+
+TIP: More information  at https://en.wikipedia.org/wiki/Composition_over_inheritance
+
+==== Security
+===== User input
+Check user input is validated and handled as "untrusted input". Think like an attacker: "What
+ could I do here..."
+
+===== Sensitive information storage
+Check that sensitive information is stored in a secure way. This belongs to database storage
+but also in memory handling. E.g the usage of `CryptoAccess` objects in configuration objects
+for credentials.
+
+===== Access control
+- who shall have access to the resources (e.g. a new REST method)? 
+- is it documented?
+- is authentication/access control implemented correctly, is it still valid ?
+
+
+===== Standard security flaws
+Check for standard security flaws (e.g. SQL injections, XSS attacks etc.)
+
+==== GDPR
+===== Sensitive data
+Is there an unnecessary hold or logging of sensitive data ?
+
+===== Data deletion process
+Can the data be deleted easily if a project/user wants it? 
+  
+===== Audit logging  
+Audit logging shall only contain the user id but not other personal information.
+[TIP]
+====
+Audit logging is NOT deleted by auto cleanup process for security purposes 
+====
+
+=== New Features
+==== Cross site effects
+- Are there any cross site effects by the new feature (e.g. auto cleanup should delete new data)
+
+==== Check usecase
+- Check if the new Feature is a new usecase. For example when we have a new REST endpoint available, this would be a new usecase.
+  * *UsecaseIdentifier + Annotation* +
+      New usecases must have their own identifiers in `UsecaseIdentifier` enumeration + a dedicated usecase annotation +
+      The usecase annotations should be defined on important code parts: At least at REST controllers and used main service.
+      It is part of the auto generation of documentation and also our reference point when we search in our IDE for relevant code
+      parts for a usecase!
+      
+  * *RestDoc* +
+      If the usecase is a REST service endpoint, the annotation at the REST controller must define "needsRestDoc=true" and there must exist a REST doc test with uses the annotation - e.g. `@UseCaseRestDoc(useCase = UseCaseAdminChecksServerVersion.class)`
+
+  * *System usecase* +
+      System usecases shall be documented as well! Here an example: `UseCaseScanAutoCleanExecution`
+  
+==== Tests
+We always expect
+
+- unit tests
+  * for all/most introduced classes, but...
+  * not for standard CRUD parts done by Spring automatically
+  * not for simle beans only having getter/setters
+  * no 100% test coverage necessary, but the positive ways and some of the the negative ways shall be tested
+  * if possible, simple unit tests without spring extension (no spring container start necessary) - to have very
+    fast tests
+  * are not duplicated
+    
+- integration tests
+  * at least one integration test shall exist which includes runtime execution of the new feature/feature change. 
+    It gives us the chance to have good overall test coverage even
+    when we have not enough test coverage from some unit tests and to test the "works together"
+  * it is okay to reuse an existing integration test and to add some new test asserts if it makes sense and does
+    not change the existing integration test too much. This helps to reduce build times and is okay, because integration
+    tests are not atomic at all. If not possible otherwise, a new integration test has to be written.
+
+- system tests
+  * if new PDS solution has been implemented in this PR there shall be either a working system test inside the PR 
+    or there is a follow up issue on github issue tracker created for implementing such a system test
+
+=== Change existing feature
+==== Cross site effects
+- Are there any cross site effects by the feature change (e.g. auto cleanup)
+
+==== Tests 
+- unit tests +
+  * unit tests for the new features are added, positive but also negative test scenarios are handled
+  * existing unit tests are only changed/removed when really necessary, 
+  * are not duplicated
+  
+- integration tests +
+  * an integration test should be either created or an existing shall be reused when possible
+  * existing integration test assertions are only removed when really necessary
+
+- system tests +
+  * think about if an existing system test could be influenced by the feature change 
+
+=== Bugfixes
+
+==== Tests
+A developer should always try to write at least one unit test to reproduce the problem and have it 
+failing before starting to implement the bugfix. After the bugfix the new regression test(s) must become "green".
+
+Inside a bugfix review a reviewer must check if this has been done. If not at least it must discussed
+with the committer why this is missing. Maybe there are reasons (e.g. to complex to test etc.). But
+in most cases a test to reproduce a problem/bug is possible and must be done to ensure this happens
+not again.
+
+=== Documentation
+[NOTE]
+====
+For every documentation change we need to think about
+
+- Who is the target audience? 
+- is it easy to read ?
+- is it complete ? 
+- is it understandable for the target audience ? 
+====
+
+==== Architecture changes
+  * new architectural concepts documented ?
+  * new architectural guide lines documented ?
+  
+==== Technical changes
+  * are new technical concepts documented ?
+  * are new technical guide lines documented ?
+  
+==== Operational changes
+  * new parameters ?
+  * environment changes ?
+  
+==== REST endpoint changes
+  * documentation done by RESTDoc tests correctly? Any new fields / rest calls missing ?
+  * generated open api file correct ?
+  * client documentation up to date ?
+  * does it influence the client or its documentation? 
+      
+==== Go Client changes
+  * new job configuration elements for client side only? 
+  * is client documentation up to date ? 
+
+==== PDS solution changes
+  * installation setup up to date ?
+  * module descriptions in git repository up to date?
+  * usage description available ? 
+
+=== Special
+==== Event trace integration tests
+Every event is automatically documented, but in a very lean way. When it comes to details about a 
+special event and what exactly is produced/happening after the trigger, the information must be gathered
+by special integration tests.
+
+Such tests are producing meta information which is used inside gradle build to generate plantuml diagrams
+for our documentation automatically. An example can be found at `AutoCleanupEventTraceScenario1IntTest`.
+
+WARNING: Because of time consumption and potential efforts for race conditions/flaky tests they should
+only be used for good reasons!
+
+*Reasons for an event trace test*
+ 
+- *DDD event has complex character* +
+  When there have been added new domain events for an existing or a new feature and it becomes difficult
+  to understand how the communication between the domains does work exactly, a special integration test
+  for event tracing of this situation must be added. 
+ 

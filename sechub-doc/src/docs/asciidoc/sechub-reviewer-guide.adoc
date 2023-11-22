@@ -1,0 +1,23 @@
+// SPDX-License-Identifier: MIT
+// ====================================
+// SecHub Client Documentation
+// ====================================
+
+include::documents/config.adoc[]
+
+== About
+include::documents/shared/about_sechub.adoc[]
+
+include::documents/shared/about_documentation_all.adoc[]
+
+// horizontal line
+***
+
+// numbering from here on
+:numbered:
+
+<<<<
+// 1. SecHub review guide
+include::documents/other/review-guide.adoc[]
+
+
