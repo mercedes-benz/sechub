@@ -12,6 +12,8 @@ ARG PDS_VERSION
 ARG BUILD_TYPE
 ARG GO="go1.20.4.linux-amd64.tar.gz"
 
+# possible values: temurin, openj9, openjdk
+ARG JAVA_DISTRIBUTION="temurin"
 # possible values: 17
 ARG JAVA_VERSION="17"
 
@@ -42,7 +44,7 @@ RUN mkdir --parent "$PDS_ARTIFACT_FOLDER" "$DOWNLOAD_FOLDER"
 RUN export DEBIAN_FRONTEND=noninteractive && \
     apt-get update && \
     apt-get upgrade --assume-yes --quiet && \
-    apt-get install --quiet --assume-yes wget w3m git "openjdk-$JAVA_VERSION-jdk-headless" && \
+    apt-get install --quiet --assume-yes wget w3m git && \
     apt-get clean
 
 # Install Go
@@ -59,6 +61,12 @@ RUN cd "$DOWNLOAD_FOLDER" && \
     tar --extract --file "$GO" --directory /usr/local/ && \
     # remove go tar.gz
     rm "$GO"
+
+COPY --chmod=755 install-java/debian "$DOWNLOAD_FOLDER/install-java/"
+
+# Install Java
+RUN cd "$DOWNLOAD_FOLDER/install-java/" && \
+    ./install-java.sh "$JAVA_DISTRIBUTION" "$JAVA_VERSION" jdk
 
 # Copy clone script
 COPY --chmod=755 clone.sh "$BUILD_FOLDER/clone.sh"
@@ -134,8 +142,9 @@ LABEL org.opencontainers.image.title="SecHub PDS Base Image"
 LABEL org.opencontainers.image.description="The base image for the SecHub Product Delegation Server (PDS)"
 LABEL maintainer="SecHub FOSS Team"
 
-ARG PDS_ARTIFACT_FOLDER
+ARG JAVA_DISTRIBUTION
 ARG JAVA_VERSION
+ARG PDS_ARTIFACT_FOLDER
 ARG PDS_VERSION
 
 # env vars in container
@@ -169,8 +178,14 @@ COPY --from=builder "$PDS_ARTIFACT_FOLDER" "$PDS_FOLDER"
 RUN export DEBIAN_FRONTEND=noninteractive && \
     apt-get update && \
     apt-get upgrade --assume-yes --quiet && \
-    apt-get install --assume-yes --quiet "openjdk-$JAVA_VERSION-jre-headless" tree && \
+    apt-get install --assume-yes --quiet tree && \
     apt-get clean
+
+COPY --chmod=755 install-java/debian "$DOWNLOAD_FOLDER/install-java/"
+
+# Install Java
+RUN cd "$DOWNLOAD_FOLDER/install-java/" && \
+    ./install-java.sh "$JAVA_DISTRIBUTION" "$JAVA_VERSION" jre
 
 # Copy run script into the container
 COPY run.sh /run.sh
