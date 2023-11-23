@@ -70,7 +70,7 @@ public class XrayAPIArtifactoryClient {
         JsonNode node = XrayWrapperJSONConverter.get().readJSONFromString(response.getBody());
         String result = node.get("info").asText();
         if (!Objects.equals(result, "Scan of artifact is in progress")) {
-            throw new XrayAPIException("Start of scan was not successful: " + result, response.getStatusCode(), response.getResponseMessage(),
+            throw new XrayAPIException("Start of scan was not successful: " + result, response.getHttpStatusCode(), response.getResponseMessage(),
                     response.getBody());
         }
     }
@@ -100,7 +100,7 @@ public class XrayAPIArtifactoryClient {
     }
 
     private boolean isErrorResponse(XrayAPIResponse response) {
-        int statusCode = response.getStatusCode();
+        int statusCode = response.getHttpStatusCode();
         LOG.debug("Response Code: {}", statusCode);
         LOG.debug("Response Message: {}", response.getResponseMessage());
         LOG.debug("Response Headers: {}", response.getHeaders().toString());
@@ -110,7 +110,7 @@ public class XrayAPIArtifactoryClient {
 
     private void assertNoError(XrayAPIResponse response, String errorMessage) throws XrayWrapperException {
         if (isErrorResponse(response)) {
-            throw new XrayAPIException(errorMessage, response.getStatusCode(), response.getResponseMessage(), response.getBody());
+            throw new XrayAPIException(errorMessage, response.getHttpStatusCode(), response.getResponseMessage(), response.getBody());
         }
     }
 }

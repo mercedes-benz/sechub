@@ -20,7 +20,7 @@ class XrayAPIRequestTest {
         String data = "mydata";
 
         /* execute */
-        XrayAPIRequest request = XrayAPIRequest.Builder.builder().url(url).authenticationNeeded(auth).jSONBody(data).build();
+        XrayAPIRequest request = XrayAPIRequest.Builder.builder().url(url).authenticationNeeded(auth).jsonBody(data).build();
 
         /* test */
         assertEquals(url, request.getUrl());
@@ -30,7 +30,7 @@ class XrayAPIRequestTest {
     }
 
     @Test
-    void xrayRequest_throws_rayRequest_builder_throws_xrayWrapperException_when_parameters_not_defined() {
+    void xrayRequest_builder_throws_xrayWrapperException_when_parameters_not_defined() {
         /* execute + test */
         assertThrows(XrayWrapperException.class, () -> XrayAPIRequest.Builder.builder().build());
     }

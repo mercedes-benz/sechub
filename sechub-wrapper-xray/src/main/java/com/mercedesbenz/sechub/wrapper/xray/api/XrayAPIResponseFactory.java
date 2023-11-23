@@ -74,7 +74,8 @@ public class XrayAPIResponseFactory {
         // if input stream is null, we return a response with empty body
         // null input-stream occurred during tests with Xray Artifactory, but still had
         // message and statuscode
-        return XrayAPIResponse.Builder.builder().statusCode(responseCode).headers(header).addResponseBody(content).addResponseMessage(responseMessage).build();
+        return XrayAPIResponse.Builder.builder().httpStatusCode(responseCode).headers(header).addResponseBody(content).addResponseMessage(responseMessage)
+                .build();
     }
 
     private boolean isZipBody(HttpURLConnection httpURLConnection) {

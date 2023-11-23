@@ -56,22 +56,34 @@ public class XrayWrapperReportTransformer {
         JsonNode cveDetailsNode = securityReportVulnerabilityNode.get(COMPONENT_VERSION).get(MORE_DETAILS).get(CVES);
 
         for (JsonNode cveDetail : cveDetailsNode) {
-            JsonNode cvssNode = cveDetail.get(CVSS_V3);
-            JsonNode cveIDNode = cveDetail.get(CVE);
-            ArrayNode cwe = (ArrayNode) cveDetail.get(CWE);
-
-            if (cveIDNode != null) {
+            JsonNode cveIdNode = cveDetail.get(CVE);
+            if (cveIdNode != null) {
                 // ID can be empty when vulnerability has only Jfrog ID
-                vulnerability.setId(cveIDNode.asText());
+                vulnerability.setId(cveIdNode.asText());
             }
+
+            ArrayNode cwe = (ArrayNode) cveDetail.get(CWE);
             if (cwe != null) {
                 // CWE can be empty
                 addCWEToVulnerability(cwe, vulnerability);
             }
-            if (cvssNode != null) {
-                // CVSS can be empty
-                String cvssString = cvssNode.asText();
-                extractRatingFromString(securityReportVulnerabilityNode, vulnerability, cvssString);
+
+            // CVSS can be empty and different versions are available
+            // current standard is V3
+            JsonNode cvssNode_v3 = cveDetail.get(CVSS_V3);
+            JsonNode cvssNode_v2 = cveDetail.get(CVSS_V2);
+            JsonNode cvssNode_v4 = cveDetail.get(CVSS_V4);
+            String cvssString = null;
+
+            if (cvssNode_v3 != null) {
+                cvssString = cvssNode_v3.asText();
+            } else if (cvssNode_v2 != null) {
+                cvssString = cvssNode_v2.asText();
+            } else if (cvssNode_v4 != null) {
+                cvssString = cvssNode_v4.asText();
+            }
+            if (cvssString != null) {
+                extractRatingFromCVSSString(securityReportVulnerabilityNode, vulnerability, cvssString);
             }
         }
     }
@@ -114,7 +126,7 @@ public class XrayWrapperReportTransformer {
         vulnerability.setSource(source);
     }
 
-    private void extractRatingFromString(JsonNode node, Vulnerability vulnerability, String cvssString) {
+    private void extractRatingFromCVSSString(JsonNode node, Vulnerability vulnerability, String cvssString) {
         // cvssString from security report contains multiple information fragments
         // (score, method and vector)
         // example: "cvss_v3": "9.8/CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:H"
@@ -142,7 +154,7 @@ public class XrayWrapperReportTransformer {
         String sourceUrl = "";
         String id = vulnerability.getId();
         if (!id.contains("XRAY")) {
-            sourceUrl = "https://nvd.nist.gov/vuln/detail/" + id;
+            sourceUrl = NVD_URL + id;
         }
 
         Vulnerability.Source source = new Vulnerability.Source();

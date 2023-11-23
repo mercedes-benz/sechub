@@ -8,14 +8,14 @@ import com.mercedesbenz.sechub.wrapper.xray.cli.XrayWrapperExitCode;
 
 public class XrayAPIResponse {
 
-    private int statusCode;
+    private int httpStatusCode;
     private Map<String, List<String>> headers;
     private String responseMessage;
     private String body;
 
     public static class Builder {
 
-        private int statusCode;
+        private int httpStatusCode;
         private Map<String, List<String>> headers;
         private String responseMessage = "";
 
@@ -32,12 +32,15 @@ public class XrayAPIResponse {
             if (this.headers == null) {
                 throw new XrayWrapperException("HTTP response headers cannot be null!", XrayWrapperExitCode.INVALID_HTTP_RESPONSE);
             }
-            return new XrayAPIResponse(this.statusCode, this.headers, this.body);
+            return new XrayAPIResponse(this.httpStatusCode, this.headers, this.body);
         }
 
-        Builder statusCode(int statusCode) {
-            this.statusCode = statusCode;
-            return this;
+        Builder httpStatusCode(int httpStatusCode) throws XrayWrapperException {
+            if (httpStatusCode > 0 && httpStatusCode < 600) {
+                this.httpStatusCode = httpStatusCode;
+                return this;
+            }
+            throw new XrayWrapperException("HTTP status code is out of range. Must be between 0 and 600.", XrayWrapperExitCode.UNKNOWN_ERROR);
         }
 
         Builder headers(Map<String, List<String>> headers) {
@@ -56,14 +59,14 @@ public class XrayAPIResponse {
         }
     }
 
-    private XrayAPIResponse(int statusCode, Map<String, List<String>> headers, String body) {
-        this.statusCode = statusCode;
+    private XrayAPIResponse(int httpStatusCode, Map<String, List<String>> headers, String body) {
+        this.httpStatusCode = httpStatusCode;
         this.headers = headers;
         this.body = body;
     }
 
-    public int getStatusCode() {
-        return statusCode;
+    public int getHttpStatusCode() {
+        return httpStatusCode;
     }
 
     public Map<String, List<String>> getHeaders() {

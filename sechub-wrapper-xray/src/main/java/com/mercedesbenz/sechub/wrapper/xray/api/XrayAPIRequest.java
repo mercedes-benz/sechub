@@ -51,7 +51,7 @@ public class XrayAPIRequest {
             return this;
         }
 
-        Builder jSONBody(String json) {
+        Builder jsonBody(String json) {
             this.json = json;
             return this;
         }

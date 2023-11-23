@@ -82,10 +82,10 @@ public class XrayWrapperArtifactoryClientSupport {
         LOG.debug("Artifact successfully uploaded to artifactory");
 
         // check scan status
-        boolean scanned = false;
-        while (!scanned) {
-            scanned = handleScanStatus(context);
-        }
+        boolean scanned;
+        do {
+            scanned = requestAndHandleScanStatus(context);
+        } while (!scanned);
 
         // save reports from xray
         if (artifactoryClient.requestScanReports()) {
@@ -119,23 +119,23 @@ public class XrayWrapperArtifactoryClientSupport {
         reportReader.writeReport(xrayWrapperReportData.getSbom(), xrayWrapperReportData.getXrayPdsReport());
     }
 
-    /**
-     * checks on the scan status of the artifact in periodically
-     *
-     * @return true if the artifact is scanned
-     * @throws XrayWrapperException
-     */
-    private boolean handleScanStatus(ClientSupportContext context) throws XrayWrapperException {
-        context.setStatus(artifactoryClient.getScanStatus());
-        LOG.debug("Artifact status is: " + context.getStatus().getStatusValue());
+    private boolean requestAndHandleScanStatus(ClientSupportContext context) throws XrayWrapperException {
+        ScanStatus status = artifactoryClient.getScanStatus();
+
+        context.setStatus(status);
+        LOG.debug("Artifact status is: " + status.getStatusValue());
         if (context.isTimeoutReached()) {
-            throw new XrayWrapperException("Reached maximum scan timeout of " + xrayWrapperConfiguration.getMaxScanDurationHours() + " hours. "
+            throw new XrayWrapperException("Reached maximum scan timeout of " + xrayWrapperConfiguration.getMaxScanDurationMinutes() + " minutes. "
                     + "Started scan at: " + context.startTime, XrayWrapperExitCode.TIMEOUT_REACHED);
         }
-        switch (context.getStatus()) {
+
+        switch (status) {
         case NOT_SCANNED -> {
+            // check status periodically
+            // note: delay between not scanned and in progress
             waitSeconds(xrayWrapperConfiguration.getWaitUntilRetrySeconds());
             if (context.isMaximumRetriesReached()) {
+                // start new scan
                 context.resetRetries();
                 startNewScan();
             }
@@ -143,6 +143,7 @@ public class XrayWrapperArtifactoryClientSupport {
             return false;
         }
         case IN_PROGRESS -> {
+            // check status periodically
             waitSeconds(xrayWrapperConfiguration.getWaitUntilRetrySeconds());
             return false;
         }
@@ -150,6 +151,7 @@ public class XrayWrapperArtifactoryClientSupport {
             return true;
         }
         }
+
         throw new XrayWrapperException("Received unexpected scan status", XrayWrapperExitCode.UNSUPPORTED_API_REQUEST);
     }
 
@@ -190,7 +192,7 @@ public class XrayWrapperArtifactoryClientSupport {
 
         public boolean isTimeoutReached() {
             LocalDateTime now = LocalDateTime.now();
-            LocalDateTime timer = now.plusHours(xrayWrapperConfiguration.getMaxScanDurationHours());
+            LocalDateTime timer = now.plusMinutes(xrayWrapperConfiguration.getMaxScanDurationMinutes());
             return startTime.isAfter(timer);
         }
 

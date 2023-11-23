@@ -21,7 +21,7 @@ class XrayWrapperCLITest {
     }
 
     @Test
-    void start_with_null_args_throws_nullPointerException() {
+    void start_with_null_throws_nullPointerException() {
         /* execute + test */
         assertThrows(NullPointerException.class, () -> cliToTest.start(null));
     }
@@ -30,7 +30,8 @@ class XrayWrapperCLITest {
     void start_valid_parameters() {
         /* prepare */
         MockedConstruction<XrayWrapperArtifactoryClientSupport> mockConstruction = mockConstruction(XrayWrapperArtifactoryClientSupport.class);
-        String[] args = { "--name", "myname", "--checksum", "sha256:123", "--scantype", "docker", "--outputfile", "outfile" };
+        String[] args = { "--name", "myname", "--checksum", "sha256:5bfba04ea0d437b9d579f4978ffa0f81008e77abf875f38933fb56af845c7ddc", "--scantype", "docker",
+                "--outputfile", "outfile" };
 
         /* execute + test */
         try (MockedConstruction<EnvironmentVariableReader> mocked = mockConstruction(EnvironmentVariableReader.class, (mock, context) -> {

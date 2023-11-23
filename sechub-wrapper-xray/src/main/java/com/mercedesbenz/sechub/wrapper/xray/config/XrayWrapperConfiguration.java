@@ -22,7 +22,7 @@ public class XrayWrapperConfiguration {
 
     private int requestRetries = 10;
 
-    private long maxScanDurationHours = 5;
+    private long maxScanDurationMinutes = 120;
 
     public static class Builder {
         private String artifactory;
@@ -99,7 +99,7 @@ public class XrayWrapperConfiguration {
         return requestRetries;
     }
 
-    public long getMaxScanDurationHours() {
-        return maxScanDurationHours;
+    public long getMaxScanDurationMinutes() {
+        return maxScanDurationMinutes;
     }
 }

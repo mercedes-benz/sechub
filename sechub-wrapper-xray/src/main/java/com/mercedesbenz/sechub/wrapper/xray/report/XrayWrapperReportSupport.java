@@ -38,18 +38,18 @@ public class XrayWrapperReportSupport {
             }
         }
 
-        List<Path> cyclones = getFilesByName(unzippedArchive, "CycloneDX");
-        List<Path> securityPath = getFilesByName(unzippedArchive, "Security");
-        if (cyclones.isEmpty() || securityPath.isEmpty()) {
-            throw new XrayWrapperReportException("Report Path cannot be empty, Could not find Xray Reports for cycloneDX and Security Report");
+        List<Path> cycloneDXReportPaths = getFilesByName(unzippedArchive, "CycloneDX");
+        List<Path> securityReportsPaths = getFilesByName(unzippedArchive, "Security");
+        if (cycloneDXReportPaths.isEmpty() || securityReportsPaths.isEmpty()) {
+            throw new XrayWrapperReportException("Report path cannot be empty, Could not find Xray reports for CycloneDX and Security report");
         }
-        securityReport = securityPath.get(0).toFile();
-        cycloneReport = cyclones.get(0).toFile();
+        securityReport = securityReportsPaths.get(0).toFile();
+        cycloneReport = cycloneDXReportPaths.get(0).toFile();
 
         // if no report was set for the generated report a new filename is created
         if (pdsResultFile.isEmpty()) {
-            String s = cycloneReport.toString().split("\\.")[0];
-            xrayPdsReport = new File(s + "-SecHub.json");
+            String fileName = cycloneReport.toString().split("\\.")[0];
+            xrayPdsReport = new File(fileName + "-SecHub.json");
         }
 
         return new XrayReportFiles(xrayPdsReport, cycloneReport, securityReport);

@@ -44,7 +44,7 @@ class XrayAPIResponseFactoryTest {
 
         /* test */
         assertEquals("testData", response.getBody());
-        assertEquals(200, response.getStatusCode());
+        assertEquals(200, response.getHttpStatusCode());
     }
 
     @Test
@@ -66,7 +66,7 @@ class XrayAPIResponseFactoryTest {
 
         /* test */
         assertEquals("Error", response.getBody());
-        assertEquals(404, response.getStatusCode());
+        assertEquals(404, response.getHttpStatusCode());
     }
 
     @Test

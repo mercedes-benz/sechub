@@ -20,11 +20,11 @@ public class XrayWrapperCommandLineParser {
         XrayWrapperCommandLineArgs xrayArgs = buildArguments(args);
         if (xrayArgs.isHelpRequired()) {
             commander.usage();
-            throw new XrayWrapperCommandLineParserException("Required parameters were empty" + Arrays.toString(args));
+            throw new XrayWrapperCommandLineParserException("Required parameters were empty: " + Arrays.toString(args));
         }
         if (xrayArgs.getName() == null || xrayArgs.getChecksum() == null || xrayArgs.getScanType() == null) {
             commander.usage();
-            throw new XrayWrapperCommandLineParserException("Required parameters were empty" + Arrays.toString(args));
+            throw new XrayWrapperCommandLineParserException("Required parameters were empty: " + Arrays.toString(args));
         }
 
         // default artifact name and tag
@@ -39,6 +39,9 @@ public class XrayWrapperCommandLineParser {
         }
 
         String checksum = extractChecksum(xrayArgs.getChecksum());
+        if (!checksum.matches("^[a-fA-F0-9]{64}$")) {
+            throw new XrayWrapperCommandLineParserException("Checksum is not valid: " + checksum);
+        }
 
         return new Arguments(name, checksum, type, tag, xrayArgs.getOutputFile(), xrayArgs.getWorkspace());
     }

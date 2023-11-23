@@ -29,7 +29,7 @@ public class XrayWrapperCLI {
             XrayWrapperArtifactoryClientSupport xrayWrapperArtifactoryClientSupport = new XrayWrapperArtifactoryClientSupport(xrayWrapperConfiguration,
                     artifact);
 
-            // execute support processing main program flow
+            // main program flow
             xrayWrapperArtifactoryClientSupport.waitForScansToFinishAndDownloadReport();
 
         } catch (XrayWrapperException e) {

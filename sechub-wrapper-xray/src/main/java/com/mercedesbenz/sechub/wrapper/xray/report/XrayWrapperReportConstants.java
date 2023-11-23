@@ -9,6 +9,10 @@ public class XrayWrapperReportConstants {
 
     public static final String CVSS_V3 = "cvss_v3";
 
+    public static final String CVSS_V2 = "cvss_v2";
+
+    public static final String CVSS_V4 = "cvss_v4";
+
     public static final String CVE = "cve";
 
     public static final String CWE = "cwe";
@@ -26,4 +30,6 @@ public class XrayWrapperReportConstants {
     public static final String VULNERABLE_VERSION = "vulnerable_versions";
 
     public static final String FIXED_VERSION = "fixed_versions";
+
+    public static final String NVD_URL = "https://nvd.nist.gov/vuln/detail/";
 }

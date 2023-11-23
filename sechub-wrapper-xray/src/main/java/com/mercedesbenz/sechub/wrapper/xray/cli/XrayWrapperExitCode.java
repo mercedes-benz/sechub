@@ -26,7 +26,7 @@ public enum XrayWrapperExitCode {
 
     INVALID_HTTP_RESPONSE(12),
 
-    UNKNOWN_ERROR(13),;
+    UNKNOWN_ERROR(13);
 
     private final int exitCode;
 

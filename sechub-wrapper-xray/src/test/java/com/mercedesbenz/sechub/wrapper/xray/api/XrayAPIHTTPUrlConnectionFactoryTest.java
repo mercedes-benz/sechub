@@ -63,7 +63,7 @@ class XrayAPIHTTPUrlConnectionFactoryTest {
         HttpURLConnection mockedCon = mock(HttpURLConnection.class);
         Mockito.when(url.openConnection()).thenReturn(mockedCon);
         Mockito.when(mockedCon.getOutputStream()).thenReturn(outputStream);
-        XrayAPIRequest request = XrayAPIRequest.Builder.builder().url(url).requestMethod(XrayAPIRequest.RequestMethodEnum.POST).jSONBody("{}").build();
+        XrayAPIRequest request = XrayAPIRequest.Builder.builder().url(url).requestMethod(XrayAPIRequest.RequestMethodEnum.POST).jsonBody("{}").build();
 
         /* execute */
         HttpURLConnection connection = urlConnectionfactoryToTest.create(request);

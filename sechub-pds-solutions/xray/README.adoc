@@ -7,13 +7,13 @@
 
 JFrog Xray is a Software Composition Analysis (SCA) solution integrated with the JFrog Artifactory. Xray can analyze source code, binaries, etc. for vulnerabilities and licenses.
 In addition, the combination of Xray and PDS allows both to run in a Kubernetes cluster or on virtual machines.
-To use the wrapper, a JFrog artifactory instance and the URL and register name is required.
+To use the wrapper, a JFrog artifactory instance and the URL and registry name is required.
 
-This folder contains the scripts necessary to run Xray Wrapper + PDS locally within a container. It also contains scripts to create the PDS + Xray container and push it to your container registry, as well as a helmet diagram to install and run Xray Wrapper + PDS in a Kubernetes cluster.
+This folder contains the scripts necessary to run Xray Wrapper + PDS locally within a container. It also contains scripts to create the PDS + Xray container and push it to your container registry, as well as a helm chart to install and run Xray Wrapper + PDS in a Kubernetes cluster.
 
-== Current restrictions
+== Current limitations
 
-- only docker images uploaded as .tar files can be scanned
+- only docker images uploaded as `.tar` files can be scanned
 
 == Run Locally
 
@@ -43,9 +43,9 @@ The folder contains a start script which does the manual steps for you:
 
 ==== Together with SecHub
 
-The container will be started and attached to the `sechub` Network.
+The container will be started and attached to the `sechub` network.
 
-WARNING: Make sure the SecHub container is running and executor for xray is set up.
+WARNING: Make sure the SecHub container is running and executor for Xray is set up.
 
 . Start container:
 +

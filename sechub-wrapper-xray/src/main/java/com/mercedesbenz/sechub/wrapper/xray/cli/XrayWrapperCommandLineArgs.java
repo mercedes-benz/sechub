@@ -18,7 +18,7 @@ public class XrayWrapperCommandLineArgs {
     @Parameter(names = { "--outputfile", "-o" }, description = "Name of the CycloneDX outputfile")
     private String outputFile = "";
 
-    @Parameter(names = { "--workspace", "-w" }, description = "Workspace where to save the JFrogs reports to")
+    @Parameter(names = { "--workspace", "-w" }, description = "Workspace for Xray wrapper")
     private String workspace = "";
 
     public boolean isHelpRequired() {

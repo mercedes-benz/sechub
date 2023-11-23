@@ -48,7 +48,7 @@ class XrayWrapperArtifactoryClientTest {
     void getXrayVersion_return_version() throws XrayWrapperException {
         /* prepare */
         String jsonString = "{\"xray_version\": \"123\"}";
-        response = XrayAPIResponse.Builder.builder().statusCode(200).headers(headers).addResponseBody(jsonString).addResponseMessage("Message").build();
+        response = XrayAPIResponse.Builder.builder().httpStatusCode(200).headers(headers).addResponseBody(jsonString).addResponseMessage("Message").build();
         when(clientToTest.xrayAPIResponseFactory.createHttpResponseFromConnection(any(), any())).thenReturn(response);
 
         /* execute */
@@ -62,7 +62,7 @@ class XrayWrapperArtifactoryClientTest {
     void getXrayVersion_throws_xrayWrapperException() throws XrayWrapperException {
         /* prepare */
         String jsonString = "{\"xray_version\": \"1";
-        response = XrayAPIResponse.Builder.builder().statusCode(200).headers(headers).addResponseBody(jsonString).addResponseMessage("Message").build();
+        response = XrayAPIResponse.Builder.builder().httpStatusCode(200).headers(headers).addResponseBody(jsonString).addResponseMessage("Message").build();
         when(clientToTest.xrayAPIResponseFactory.createHttpResponseFromConnection(any(), any())).thenReturn(response);
 
         /* execute + test */
@@ -70,9 +70,9 @@ class XrayWrapperArtifactoryClientTest {
     }
 
     @Test
-    void checkArtifactoryUpload_return_true() throws XrayWrapperException {
+    void checkArtifactoryUpload_returns_true() throws XrayWrapperException {
         /* prepare */
-        response = XrayAPIResponse.Builder.builder().statusCode(200).headers(headers).addResponseBody("").addResponseMessage("Message").build();
+        response = XrayAPIResponse.Builder.builder().httpStatusCode(200).headers(headers).addResponseBody("").addResponseMessage("Message").build();
         when(clientToTest.xrayAPIResponseFactory.createHttpResponseFromConnection(any(), any())).thenReturn(response);
 
         /* execute + test */
@@ -82,7 +82,7 @@ class XrayWrapperArtifactoryClientTest {
     @Test
     void checkArtifactoryUpload_throws_xrayWrapperException() throws XrayWrapperException {
         /* prepare */
-        XrayAPIResponse response = XrayAPIResponse.Builder.builder().statusCode(500).headers(headers).build();
+        XrayAPIResponse response = XrayAPIResponse.Builder.builder().httpStatusCode(500).headers(headers).build();
         when(clientToTest.xrayAPIResponseFactory.createHttpResponseFromConnection(any(), any())).thenReturn(response);
 
         /* execute + test */
@@ -93,7 +93,7 @@ class XrayWrapperArtifactoryClientTest {
     void getScanStatus_return_status_scanned() throws XrayWrapperException {
         /* prepare */
         String jsonString = "{\"status\": \"scanned\"}";
-        response = XrayAPIResponse.Builder.builder().statusCode(200).headers(headers).addResponseBody(jsonString).addResponseMessage("Message").build();
+        response = XrayAPIResponse.Builder.builder().httpStatusCode(200).headers(headers).addResponseBody(jsonString).addResponseMessage("Message").build();
         when(clientToTest.xrayAPIResponseFactory.createHttpResponseFromConnection(any(), any())).thenReturn(response);
 
         /* execute */
@@ -107,7 +107,7 @@ class XrayWrapperArtifactoryClientTest {
     void getScanStatus_throws_xrayWrapperException() throws XrayWrapperException {
         /* prepare */
         String jsonString = "{\"xray_version\": \"1";
-        response = XrayAPIResponse.Builder.builder().statusCode(200).headers(headers).addResponseBody(jsonString).addResponseMessage("Message").build();
+        response = XrayAPIResponse.Builder.builder().httpStatusCode(200).headers(headers).addResponseBody(jsonString).addResponseMessage("Message").build();
         when(clientToTest.xrayAPIResponseFactory.createHttpResponseFromConnection(any(), any())).thenReturn(response);
 
         /* execute + test */
@@ -117,7 +117,7 @@ class XrayWrapperArtifactoryClientTest {
     @Test
     void requestScanReports_return_true() throws XrayWrapperException {
         /* prepare */
-        response = XrayAPIResponse.Builder.builder().statusCode(200).headers(headers).addResponseBody("").addResponseMessage("Message").build();
+        response = XrayAPIResponse.Builder.builder().httpStatusCode(200).headers(headers).addResponseBody("").addResponseMessage("Message").build();
         when(clientToTest.xrayAPIResponseFactory.createHttpResponseFromConnection(any(), any())).thenReturn(response);
 
         /* execute + test */
@@ -127,7 +127,7 @@ class XrayWrapperArtifactoryClientTest {
     @Test
     void requestScanReports_throws_xrayWrapperException() throws XrayWrapperException {
         /* prepare */
-        response = XrayAPIResponse.Builder.builder().statusCode(500).headers(headers).addResponseBody("").addResponseMessage("Message").build();
+        response = XrayAPIResponse.Builder.builder().httpStatusCode(500).headers(headers).addResponseBody("").addResponseMessage("Message").build();
         when(clientToTest.xrayAPIResponseFactory.createHttpResponseFromConnection(any(), any())).thenReturn(response);
 
         /* execute + test */
@@ -138,7 +138,7 @@ class XrayWrapperArtifactoryClientTest {
     void startScanArtifact_return_valid() throws XrayWrapperException {
         /* prepare */
         String jsonString = "{\"info\": \"Scan of artifact is in progress\"}";
-        response = XrayAPIResponse.Builder.builder().statusCode(200).headers(headers).addResponseBody(jsonString).addResponseMessage("Message").build();
+        response = XrayAPIResponse.Builder.builder().httpStatusCode(200).headers(headers).addResponseBody(jsonString).addResponseMessage("Message").build();
         when(clientToTest.xrayAPIResponseFactory.createHttpResponseFromConnection(any(), any())).thenReturn(response);
 
         /* execute + test */
@@ -149,7 +149,7 @@ class XrayWrapperArtifactoryClientTest {
     void startScanArtifact_throws_xrayWrapperException() throws XrayWrapperException {
         /* prepare */
         String jsonString = "{\"xray_version\": \"1";
-        response = XrayAPIResponse.Builder.builder().statusCode(200).headers(headers).addResponseBody(jsonString).addResponseMessage("Message").build();
+        response = XrayAPIResponse.Builder.builder().httpStatusCode(200).headers(headers).addResponseBody(jsonString).addResponseMessage("Message").build();
         when(clientToTest.xrayAPIResponseFactory.createHttpResponseFromConnection(any(), any())).thenReturn(response);
 
         /* execute + test */
@@ -159,7 +159,7 @@ class XrayWrapperArtifactoryClientTest {
     @Test
     void deleteArtifact_valid() throws XrayWrapperException {
         /* prepare */
-        response = XrayAPIResponse.Builder.builder().statusCode(200).headers(headers).addResponseBody("").addResponseMessage("Message").build();
+        response = XrayAPIResponse.Builder.builder().httpStatusCode(200).headers(headers).addResponseBody("").addResponseMessage("Message").build();
         when(clientToTest.xrayAPIResponseFactory.createHttpResponseFromConnection(any(), any())).thenReturn(response);
 
         /* execute + test */
@@ -170,7 +170,7 @@ class XrayWrapperArtifactoryClientTest {
     @Test
     void deleteArtifact_throws_xrayWrapperException() throws XrayWrapperException {
         /* prepare */
-        response = XrayAPIResponse.Builder.builder().statusCode(401).headers(headers).build();
+        response = XrayAPIResponse.Builder.builder().httpStatusCode(401).headers(headers).build();
         when(clientToTest.xrayAPIResponseFactory.createHttpResponseFromConnection(any(), any())).thenReturn(response);
 
         /* execute + test */
@@ -180,7 +180,7 @@ class XrayWrapperArtifactoryClientTest {
     @Test
     void deleteUploads_valid() throws XrayWrapperException {
         /* prepare */
-        response = XrayAPIResponse.Builder.builder().statusCode(200).headers(headers).addResponseBody("").addResponseMessage("Message").build();
+        response = XrayAPIResponse.Builder.builder().httpStatusCode(200).headers(headers).addResponseBody("").addResponseMessage("Message").build();
         when(clientToTest.xrayAPIResponseFactory.createHttpResponseFromConnection(any(), any())).thenReturn(response);
 
         /* execute + test */
@@ -191,7 +191,7 @@ class XrayWrapperArtifactoryClientTest {
     @Test
     void deleteUploads_throws_xrayWrapperException() throws XrayWrapperException {
         /* prepare */
-        response = XrayAPIResponse.Builder.builder().statusCode(401).headers(headers).build();
+        response = XrayAPIResponse.Builder.builder().httpStatusCode(401).headers(headers).build();
         when(clientToTest.xrayAPIResponseFactory.createHttpResponseFromConnection(any(), any())).thenReturn(response);
 
         /* execute + test */

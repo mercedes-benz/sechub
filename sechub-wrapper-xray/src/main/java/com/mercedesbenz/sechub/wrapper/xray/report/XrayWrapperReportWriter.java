@@ -28,7 +28,7 @@ public class XrayWrapperReportWriter {
         try {
             writer.writeValue(new File(report.toURI()), jsonNode);
         } catch (IOException e) {
-            throw new XrayWrapperCreateCycloneDXReportException("Could not write final xray report to file", e);
+            throw new XrayWrapperCreateCycloneDXReportException("Could not write final Xray report to file", e);
         }
         try {
             if (!jsonParser.isValid(report)) {

@@ -30,7 +30,7 @@ public class XrayAPIRequestFactory {
                 {"componentID": "%s://%s:%s",\
                 "path": "%s/%s/%s/manifest.json"}""".formatted(artifact.getArtifactType().getType(), artifact.getName(), artifact.getTag(), registry,
                 artifact.getName(), artifact.getTag());
-        return XrayAPIRequest.Builder.builder().url(url).requestMethod(XrayAPIRequest.RequestMethodEnum.POST).authenticationNeeded(true).jSONBody(data).build();
+        return XrayAPIRequest.Builder.builder().url(url).requestMethod(XrayAPIRequest.RequestMethodEnum.POST).authenticationNeeded(true).jsonBody(data).build();
     }
 
     public static XrayAPIRequest createGetScanStatusRequest(String baseUrl, XrayWrapperArtifact artifact, String registry) throws XrayWrapperException {
@@ -40,7 +40,7 @@ public class XrayAPIRequestFactory {
                 {"path": "%s/%s/%s/manifest.json",\
                  "repository_pkg_type": "%s",\
                  "sha256": "%s"}""".formatted(registry, artifact.getName(), artifact.getTag(), artifact.getArtifactType().getType(), artifact.getChecksum());
-        return XrayAPIRequest.Builder.builder().url(url).requestMethod(XrayAPIRequest.RequestMethodEnum.POST).authenticationNeeded(true).jSONBody(data).build();
+        return XrayAPIRequest.Builder.builder().url(url).requestMethod(XrayAPIRequest.RequestMethodEnum.POST).authenticationNeeded(true).jsonBody(data).build();
     }
 
     public static XrayAPIRequest createGetScanReportsRequest(String baseUrl, XrayWrapperArtifact artifact) throws XrayWrapperException {
@@ -64,7 +64,7 @@ public class XrayAPIRequestFactory {
                 "spdx_format": "json",\
                 "cyclonedx": true,\
                 "cyclonedx_format": "json"}""".formatted(artifact.getName(), artifact.getTag(), artifact.getArtifactType().getType(), artifact.getChecksum());
-        return XrayAPIRequest.Builder.builder().url(url).requestMethod(XrayAPIRequest.RequestMethodEnum.POST).authenticationNeeded(true).jSONBody(data).build();
+        return XrayAPIRequest.Builder.builder().url(url).requestMethod(XrayAPIRequest.RequestMethodEnum.POST).authenticationNeeded(true).jsonBody(data).build();
     }
 
     public static XrayAPIRequest createDeleteArtifactRequest(String baseUrl, XrayWrapperArtifact artifact, String registry) throws XrayWrapperException {

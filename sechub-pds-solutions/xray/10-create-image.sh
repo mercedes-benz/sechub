@@ -16,7 +16,7 @@ for <docker registry> with tag <version tag>.
 Required: <base image> ; for example ghcr.io/mercedes-benz/sechub/pds-base
 
 Additionally these environment variables can be defined:
-- XRAY_VERSION - xray version to use. E.g. 2.9.5
+- XRAY_WRAPPER_VERSION - xray version to use. E.g. 2.9.5
 EOF
 }
 
@@ -44,9 +44,9 @@ fi
 BUILD_ARGS="--build-arg BASE_IMAGE=$BASE_IMAGE"
 echo ">> Base image: $BASE_IMAGE"
 
-if [[ ! -z "$XRAY_VERSION" ]] ; then
-    echo ">> Xray version: $XRAY_VERSION"
-    BUILD_ARGS="$BUILD_ARGS --build-arg XRAY_VERSION=$XRAY_VERSION"
+if [[ ! -z "$XRAY_WRAPPER_VERSION" ]] ; then
+    echo ">> Xray version: $XRAY_WRAPPER_VERSION"
+    BUILD_ARGS="$BUILD_ARGS --build-arg XRAY_WRAPPER_VERSION=$XRAY_WRAPPER_VERSION"
 fi
 
 # Use Docker BuildKit
