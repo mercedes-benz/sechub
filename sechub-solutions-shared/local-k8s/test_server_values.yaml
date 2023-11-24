@@ -6,7 +6,7 @@
 replicaCount: 1
 
 image:
-  registry: "ghcr.io/mercedes-benz/sechub/server"
+  registry: "ghcr.io/mercedes-benz/sechub/sechub-server"
   tag: "latest"
   # Optional: If your image is in a private registry, you can specify pull secrets defined in k8s
   #   Docs: https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/
@@ -25,6 +25,8 @@ memory:
   maxPercentage: 95
 
 server:
+  # TODO: added line "startMode: localserver"
+  startMode: localserver
   # email address of the SecHub administrators. Informations about scheduler stop/start, new users etc. will go there.
   adminEmail: mail@to.be.defined
   baseURL:
@@ -37,7 +39,8 @@ server:
   # !              As soon as you deploy a cluster, you must set up a shared database.
   # Put the database user id  in k8s secret secret-database:spring_datasource_username
   # Put the database password in k8s secret secret-database:spring_datasource_password
-  databaseConnection: "jdbc:postgresql://postgres-db:5432/sechub"
+  # TODO: changed databaseConnection
+  databaseConnection: "" #"jdbc:postgresql://postgres-db:5432/sechub"
   # Configure emails sent from SecHub server:
   email:
     from: sechub@to.be.defined
@@ -66,7 +69,8 @@ server:
   spring:
     # Set server profiles (See https://mercedes-benz.github.io/sechub/latest/sechub-techdoc.html#section-sechub-spring-profiles)
     # You should avoid `admin_access` on internet facing production systems. See above docs.
-    profiles: prod,admin_access
+    # TODO: changed profiles to integrationtest
+    profiles: integrationtest #prod,admin_access
     # Configure Hikari database connection pooling
     hikariPool:
       loglevel: WARN
@@ -79,7 +83,7 @@ server:
       logging:
         enabled: false
         accessLogFormat: "[ACCESS] %a %{org.apache.catalina.AccessLog.RemoteAddr}r %{X-Forwarded-For}i %{X-Forwarded-Host}i %l %t %D %F %B %S %u %r %s %b %{User-Agent}i"
-  #TODO: commented out ssl and keystoreAlias
+  # TODO: Commented out ssl and keystoreAlias
   #ssl:
     # Alias in .p12 keystore.
     # - On `undefined`, a self-signed certificate will be created.
@@ -204,7 +208,8 @@ deploymentComment: "my deployment comment"
 # Checkmarx adapter (Deprecation warning: Please use PDS-Checkmarx instead)
 # ------------------------------------------------------------------------------------- #
 adapterCheckmarx:
-  enabled: false
+  # TODO: enabled changed from false to true
+  enabled: true
   # Base url of your Checkmarx server
   baseURL: https://to.be.defined
   # Put the user id  of Checkmarx user in k8s secret secret-checkmarx:sechub_adapter_checkmarx_userid
