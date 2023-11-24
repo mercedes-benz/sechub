@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.api;
 
+import java.io.File;
 import java.net.URI;
 import java.nio.file.Path;
 import java.util.ArrayList;
@@ -260,6 +261,14 @@ public class MockedSecHubClient extends AbstractSecHubClient {
     @Override
     public void upload(String projectId, UUID jobUUID, SecHubConfigurationModel configuration, Path workingDirectory) throws SecHubClientException {
         informNothingDoneButOnlySimulated("upload");
+    }
+
+    @Override
+    public Path downloadFullScanLog(UUID sechubJobUUID, Path downloadFilePath) throws SecHubClientException {
+        informNothingDoneButOnlySimulated("download full scan log for sechub job: " + sechubJobUUID + " into path:" + downloadFilePath);
+        final File targetFile = calculateFullScanLogFile(sechubJobUUID, downloadFilePath);
+        return targetFile.toPath();
+
     }
 
     private User createUser(OpenUserSignup found) {

@@ -14,6 +14,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 
 /**
  * A simple meta data model which can be converted by json converter
+ *
  * @author Albert Tregnaghi
  *
  */
@@ -143,15 +144,18 @@ public class MetaDataModel {
     }
 
     /**
-     * Checks if a value exists for given key. Empty values are handled as non existing.
+     * Checks if a value exists for given key. Empty values are handled as non
+     * existing.
+     *
      * @param key
-     * @return  <code>true</code> when data for key exists, means not <code>null</code> or empty.
+     * @return <code>true</code> when data for key exists, means not
+     *         <code>null</code> or empty.
      */
     public boolean isExisting(String key) {
         String data = metaData.get(key);
         return data != null && !data.trim().isEmpty();
     }
-    
+
     private String failSafeKey(String key) {
         if (key == null) {
             return "null";

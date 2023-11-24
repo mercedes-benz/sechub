@@ -20,8 +20,13 @@ public class TestConfigConstants {
     public static final String DEFAULT_SECHUB_TESTUSER_USERID = "testuser";
     public static final String DEFAULT_SECHUB_SOLUTION_ADMIN_APITOKEN = "myTop$ecret!";
     public static final String DEFAULT_SECHUB_SOLUTION_ADMIN_USERID = "admin";
+
     public static final String DEFAULT_INTTEST_PDS_TECHUSER_USERID = "pds-inttest-techuser";
     public static final String DEFAULT_INTTEST_PDS_TECHUSER_APITOKEN = "pds-inttest-apitoken";
+
+    public static final String DEFAULT_INTTEST_PDS_ADMIN_USERID = "pds-inttest-admin";
+    public static final String DEFAULT_INTTEST_PDS_ADMIN_APITOKEN = "pds-inttest-apitoken";
+
     public static final String DEFAULT_INTTEST_ADMIN_APITOKEN = "int-test_superadmin-pwd";
     public static final String DEFAULT_INTTEST_ADMIN_USERID = "int-test_superadmin";
 
@@ -30,8 +35,13 @@ public class TestConfigConstants {
     /* ++++++++++++++++++++++++++++++++++++++++++++++++++++ */
     public static final String SYSTEM_PROPERTY_SECHUB_INTTEST_PORT = "sechub.integrationtest.serverport";
     public static final String SYSTEM_PROPERTY_PDS_INTTEST_PORT = "sechub.integrationtest.pdsport";
+
     public static final String SYSTEM_PROPERTY_PDS_TECHUSER_APITOKEN = "pds.techuser.apitoken";
     public static final String SYSTEM_PROPERTY_PDS_TECHUSER_USERNAME = "pds.techuser.username";
+
+    public static final String SYSTEM_PROPERTY_PDS_ADMIN_APITOKEN = "pds.admin.apitoken";
+    public static final String SYSTEM_PROPERTY_PDS_ADMIN_USERNAME = "pds.admin.username";
+
     public static final String SYSTEM_PROPERTY_SECHUB_USER_APITOKEN = "sechub.user.apitoken";
     public static final String SYSTEM_PROPERTY_SECHUB_USER_USERID = "sechub.user.userid";
     public static final String SYSTEM_PROPERTY_SECHUB_INITIALADMIN_APITOKEN = "sechub.initialadmin.apitoken";
@@ -116,6 +126,29 @@ public class TestConfigConstants {
      * mapping details
      */
     public static final String ENV_TEST_INTTEST_PDS_TECHUSER_USERID = "TEST_INTTEST_PDS_TECHUSER_USERID";
+
+    /**
+     * Per default
+     * {@value TestConfigConstants#DEFAULT_INTTEST_PDS_TECHUSER_APITOKEN} will be
+     * used. You can change via system property:
+     * {@value TestConfigConstants#SYSTEM_PROPERTY_PDS_TECHUSER_APITOKEN}. <br>
+     * <br>
+     * Please look into
+     * {@linkplain TestConfigUtil#createEnvironmentProviderForSecrets() } for
+     * mapping details
+     */
+    public static final String ENV_TEST_INTTEST_PDS_ADMIN_APITOKEN = "TEST_INTTEST_PDS_ADMIN_APITOKEN";
+
+    /**
+     * Per default {@value TestConfigConstants#DEFAULT_INTTEST_PDS_TECHUSER_USERID}
+     * will be used. You can change via system property:
+     * {@value TestConfigConstants#SYSTEM_PROPERTY_PDS_TECHUSER_USERNAME}. <br>
+     * <br>
+     * Please look into
+     * {@linkplain TestConfigUtil#createEnvironmentProviderForSecrets() } for
+     * mapping details
+     */
+    public static final String ENV_TEST_INTTEST_PDS_ADMIN_USERID = "TEST_INTTEST_PDS_ADMIN_USERID";
 
     /**
      * Per default {@value TestConfigConstants#DEFAULT_INTTEST_ADMIN_APITOKEN} will
