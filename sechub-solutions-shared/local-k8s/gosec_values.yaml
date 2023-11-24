@@ -5,7 +5,7 @@
 replicaCount: 1
 
 image:
-  registry: "ghcr.io/mercedes-benz/sechub/pds-gosec:latest"
+  registry: "ghcr.io/mercedes-benz/sechub/pds-gosec"
   tag: "latest"
 
 resources:
