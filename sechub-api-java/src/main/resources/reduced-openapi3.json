@@ -3081,6 +3081,55 @@
                     }
                 }
             },
+            "ExecutionProfileFetch": {
+                "title": "ExecutionProfileFetch",
+                "type": "object",
+                "properties": {
+                    "configurations": {
+                        "type": "array",
+                        "items": {
+                            "type": "object",
+                            "properties": {
+                                "productIdentifier": {
+                                    "type": "string",
+                                    "description": "executed product"
+                                },
+                                "name": {
+                                    "type": "string",
+                                    "description": "name of configuration"
+                                },
+                                "executorVersion": {
+                                    "type": "number",
+                                    "description": "executor version"
+                                },
+                                "uuid": {
+                                    "type": "string",
+                                    "description": "uuid of configuration"
+                                },
+                                "enabled": {
+                                    "type": "boolean",
+                                    "description": "enabled state of this config"
+                                }
+                            }
+                        }
+                    },
+                    "description": {
+                        "type": "string",
+                        "description": "A short description for the profile"
+                    },
+                    "projectIds": {
+                        "type": "array",
+                        "description": "Projects can be linked by their ids here",
+                        "items": {
+                            "type": "string"
+                        }
+                    },
+                    "enabled": {
+                        "type": "boolean",
+                        "description": "Enabled state of profile, default is false"
+                    }
+                }
+            },
             "FullScanDataZIP": {
                 "title": "FullScanDataZIP",
                 "type": "object"
@@ -3120,304 +3169,6 @@
             "ServerVersion": {
                 "title": "ServerVersion",
                 "type": "object"
-            },
-            "ScanJob": {
-                "title": "ScanJob",
-                "type": "object",
-                "properties": {
-                    "apiVersion": {
-                        "type": "string",
-                        "description": "The api version, currently only 1.0 is supported"
-                    },
-                    "data": {
-                        "type": "object",
-                        "properties": {
-                            "sources": {
-                                "type": "array",
-                                "items": {
-                                    "type": "object",
-                                    "properties": {
-                                        "fileSystem": {
-                                            "type": "object",
-                                            "properties": {
-                                                "folders": {
-                                                    "type": "array",
-                                                    "description": "Sources from given file system folders",
-                                                    "items": {
-                                                        "type": "string"
-                                                    }
-                                                },
-                                                "files": {
-                                                    "type": "array",
-                                                    "description": "Sources from given file system files",
-                                                    "items": {
-                                                        "type": "string"
-                                                    }
-                                                }
-                                            }
-                                        },
-                                        "name": {
-                                            "type": "string",
-                                            "description": "Unique reference name"
-                                        }
-                                    }
-                                }
-                            },
-                            "binaries": {
-                                "type": "array",
-                                "items": {
-                                    "type": "object",
-                                    "properties": {
-                                        "fileSystem": {
-                                            "type": "object",
-                                            "properties": {
-                                                "folders": {
-                                                    "type": "array",
-                                                    "description": "Binaries from given file system folders",
-                                                    "items": {
-                                                        "type": "string"
-                                                    }
-                                                },
-                                                "files": {
-                                                    "type": "array",
-                                                    "description": "Binaries from given file system files",
-                                                    "items": {
-                                                        "type": "string"
-                                                    }
-                                                }
-                                            }
-                                        },
-                                        "name": {
-                                            "type": "string",
-                                            "description": "Unique reference name"
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    },
-                    "infraScan": {
-                        "type": "object",
-                        "properties": {
-                            "uris": {
-                                "type": "array",
-                                "description": "Infrastructure URIs to scan for",
-                                "items": {
-                                    "type": "string"
-                                }
-                            },
-                            "ips": {
-                                "type": "array",
-                                "description": "Infrastructure IPs to scan for",
-                                "items": {
-                                    "type": "string"
-                                }
-                            }
-                        },
-                        "description": "Infrastructure configuration block"
-                    },
-                    "codeScan": {
-                        "type": "object",
-                        "properties": {
-                            "fileSystem": {
-                                "type": "object",
-                                "properties": {
-                                    "folders": {
-                                        "type": "array",
-                                        "description": "Code scan sources from given file system folders",
-                                        "items": {
-                                            "type": "string"
-                                        }
-                                    },
-                                    "files": {
-                                        "type": "array",
-                                        "description": "Code scan sources from given file system files",
-                                        "items": {
-                                            "type": "string"
-                                        }
-                                    }
-                                }
-                            },
-                            "use": {
-                                "type": "array",
-                                "description": "Referenced data configuration objects by their unique names",
-                                "items": {
-                                    "type": "string"
-                                }
-                            }
-                        },
-                        "description": "Code scan configuration block"
-                    },
-                    "webScan": {
-                        "type": "object",
-                        "properties": {
-                            "maxScanDuration": {
-                                "type": "object",
-                                "properties": {
-                                    "duration": {
-                                        "type": "number",
-                                        "description": "Duration of the scan as integer"
-                                    },
-                                    "unit": {
-                                        "type": "string",
-                                        "description": "Unit of the duration. Possible values are: millisecond(s), second(s), minute(s), hour(s), day(s)"
-                                    }
-                                }
-                            },
-                            "headers": {
-                                "type": "array",
-                                "description": "List of HTTP headers. Can be used for authentication or anything else.",
-                                "items": {
-                                    "type": "object",
-                                    "properties": {
-                                        "onlyForUrls": {
-                                            "type": "array",
-                                            "description": "Optional list of URLs this header shall be used for like: https://mywebapp.com/path/. Can contain wildcards like: https://mywebapp.com/path/<*>/with/wildcard",
-                                            "items": {
-                                                "type": "string"
-                                            }
-                                        },
-                                        "name": {
-                                            "type": "string",
-                                            "description": "Name of the defined HTTP header."
-                                        },
-                                        "sensitive": {
-                                            "type": "boolean",
-                                            "description": "Defines header masking. If 'true' the header value will be replaced with '********' inside the report, 'false' will show the value as is. Default is set to 'true'."
-                                        },
-                                        "value": {
-                                            "type": "string",
-                                            "description": "Value of the defined HTTP header."
-                                        }
-                                    }
-                                }
-                            },
-                            "clientCertificate": {
-                                "type": "object",
-                                "properties": {
-                                    "password": {
-                                        "type": "string",
-                                        "description": "Password the client certificate file is protected with"
-                                    },
-                                    "use": {
-                                        "type": "array",
-                                        "description": "Reference to the data section containing the client certificate definition file. Always use 'sources' with a single 'file' instead 'folders'.",
-                                        "items": {
-                                            "type": "string"
-                                        }
-                                    }
-                                }
-                            },
-                            "excludes": {
-                                "type": "array",
-                                "description": "Exclude URL sub-paths to scan. Example: /admin",
-                                "items": {
-                                    "type": "string"
-                                }
-                            },
-                            "includes": {
-                                "type": "array",
-                                "description": "Include URL sub-paths to scan. Example: /hidden",
-                                "items": {
-                                    "type": "string"
-                                }
-                            },
-                            "api": {
-                                "type": "object",
-                                "properties": {
-                                    "use": {
-                                        "type": "array",
-                                        "description": "Reference to the data section containing the API definition files. Always use 'sources' with 'files' instead 'folders'.",
-                                        "items": {
-                                            "type": "string"
-                                        }
-                                    },
-                                    "type": {
-                                        "type": "string",
-                                        "description": "Type of the API definition files that will be provided"
-                                    }
-                                }
-                            },
-                            "login": {
-                                "type": "object",
-                                "properties": {
-                                    "form": {
-                                        "type": "object",
-                                        "properties": {
-                                            "script": {
-                                                "type": "object",
-                                                "properties": {
-                                                    "pages": {
-                                                        "type": "array",
-                                                        "items": {
-                                                            "type": "object",
-                                                            "properties": {
-                                                                "actions": {
-                                                                    "type": "array",
-                                                                    "items": {
-                                                                        "type": "object",
-                                                                        "properties": {
-                                                                            "unit": {
-                                                                                "type": "string",
-                                                                                "description": "the time unit to wait: millisecond, second, minute, hour, day."
-                                                                            },
-                                                                            "description": {
-                                                                                "type": "string",
-                                                                                "description": "description"
-                                                                            },
-                                                                            "selector": {
-                                                                                "type": "string",
-                                                                                "description": "css selector"
-                                                                            },
-                                                                            "type": {
-                                                                                "type": "string",
-                                                                                "description": "action type: username, password, input, click, wait"
-                                                                            },
-                                                                            "value": {
-                                                                                "type": "string",
-                                                                                "description": "value"
-                                                                            }
-                                                                        }
-                                                                    }
-                                                                }
-                                                            }
-                                                        }
-                                                    }
-                                                },
-                                                "description": "script"
-                                            }
-                                        },
-                                        "description": "form login definition"
-                                    },
-                                    "basic": {
-                                        "type": "object",
-                                        "properties": {
-                                            "password": {
-                                                "type": "string",
-                                                "description": "password"
-                                            },
-                                            "user": {
-                                                "type": "string",
-                                                "description": "username"
-                                            }
-                                        },
-                                        "description": "basic login definition"
-                                    },
-                                    "url": {
-                                        "type": "string",
-                                        "description": "Login URL"
-                                    }
-                                },
-                                "description": "Webscan login definition"
-                            },
-                            "url": {
-                                "type": "string",
-                                "description": "Webscan URI to scan for"
-                            }
-                        },
-                        "description": "Webscan configuration block"
-                    }
-                }
             },
             "JobId": {
                 "title": "JobId",
@@ -3594,6 +3345,343 @@
                 "description": "List of project Ids",
                 "items": {
                     "type": "string"
+                }
+            },
+            "ScanJob": {
+                "title": "ScanJob",
+                "type": "object",
+                "properties": {
+                    "apiVersion": {
+                        "type": "string",
+                        "description": "The api version, currently only 1.0 is supported"
+                    },
+                    "data": {
+                        "type": "object",
+                        "properties": {
+                            "sources": {
+                                "type": "array",
+                                "items": {
+                                    "type": "object",
+                                    "properties": {
+                                        "fileSystem": {
+                                            "type": "object",
+                                            "properties": {
+                                                "folders": {
+                                                    "type": "array",
+                                                    "description": "Sources from given file system folders",
+                                                    "items": {
+                                                        "type": "string"
+                                                    }
+                                                },
+                                                "files": {
+                                                    "type": "array",
+                                                    "description": "Sources from given file system files",
+                                                    "items": {
+                                                        "type": "string"
+                                                    }
+                                                }
+                                            }
+                                        },
+                                        "name": {
+                                            "type": "string",
+                                            "description": "Unique reference name"
+                                        }
+                                    }
+                                }
+                            },
+                            "binaries": {
+                                "type": "array",
+                                "items": {
+                                    "type": "object",
+                                    "properties": {
+                                        "fileSystem": {
+                                            "type": "object",
+                                            "properties": {
+                                                "folders": {
+                                                    "type": "array",
+                                                    "description": "Binaries from given file system folders",
+                                                    "items": {
+                                                        "type": "string"
+                                                    }
+                                                },
+                                                "files": {
+                                                    "type": "array",
+                                                    "description": "Binaries from given file system files",
+                                                    "items": {
+                                                        "type": "string"
+                                                    }
+                                                }
+                                            }
+                                        },
+                                        "name": {
+                                            "type": "string",
+                                            "description": "Unique reference name"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "secretScan": {
+                        "type": "object",
+                        "properties": {
+                            "use": {
+                                "type": "array",
+                                "description": "Referenced data configuration objects by their unique names",
+                                "items": {
+                                    "type": "string"
+                                }
+                            }
+                        },
+                        "description": "Secret scan configuration block"
+                    },
+                    "licenseScan": {
+                        "type": "object",
+                        "properties": {
+                            "use": {
+                                "type": "array",
+                                "description": "Referenced data configuration objects by their unique names",
+                                "items": {
+                                    "type": "string"
+                                }
+                            }
+                        },
+                        "description": "License scan configuration block"
+                    },
+                    "infraScan": {
+                        "type": "object",
+                        "properties": {
+                            "uris": {
+                                "type": "array",
+                                "description": "Infrastructure URIs to scan for",
+                                "items": {
+                                    "type": "string"
+                                }
+                            },
+                            "ips": {
+                                "type": "array",
+                                "description": "Infrastructure IPs to scan for",
+                                "items": {
+                                    "type": "string"
+                                }
+                            }
+                        },
+                        "description": "Infrastructure configuration block"
+                    },
+                    "codeScan": {
+                        "type": "object",
+                        "properties": {
+                            "fileSystem": {
+                                "type": "object",
+                                "properties": {
+                                    "folders": {
+                                        "type": "array",
+                                        "description": "Code scan sources from given file system folders",
+                                        "items": {
+                                            "type": "string"
+                                        }
+                                    },
+                                    "files": {
+                                        "type": "array",
+                                        "description": "Code scan sources from given file system files",
+                                        "items": {
+                                            "type": "string"
+                                        }
+                                    }
+                                }
+                            },
+                            "use": {
+                                "type": "array",
+                                "description": "Referenced data configuration objects by their unique names",
+                                "items": {
+                                    "type": "string"
+                                }
+                            }
+                        },
+                        "description": "Code scan configuration block"
+                    },
+                    "webScan": {
+                        "type": "object",
+                        "properties": {
+                            "maxScanDuration": {
+                                "type": "object",
+                                "properties": {
+                                    "duration": {
+                                        "type": "number",
+                                        "description": "Duration of the scan as integer"
+                                    },
+                                    "unit": {
+                                        "type": "string",
+                                        "description": "Unit of the duration. Possible values are: millisecond(s), second(s), minute(s), hour(s), day(s)"
+                                    }
+                                }
+                            },
+                            "headers": {
+                                "type": "array",
+                                "description": "List of HTTP headers. Can be used for authentication or anything else.",
+                                "items": {
+                                    "type": "object",
+                                    "properties": {
+                                        "onlyForUrls": {
+                                            "type": "array",
+                                            "description": "Optional list of URLs this header shall be used for like: https://mywebapp.com/path/. Can contain wildcards like: https://mywebapp.com/path/<*>/with/wildcard",
+                                            "items": {
+                                                "type": "string"
+                                            }
+                                        },
+                                        "name": {
+                                            "type": "string",
+                                            "description": "Name of the defined HTTP header."
+                                        },
+                                        "sensitive": {
+                                            "type": "boolean",
+                                            "description": "Defines header masking. If 'true' the header value will be replaced with '********' inside the report, 'false' will show the value as is. Default is set to 'true'."
+                                        },
+                                        "value": {
+                                            "type": "string",
+                                            "description": "Value of the defined HTTP header."
+                                        }
+                                    }
+                                }
+                            },
+                            "maxScanDuration": {
+                                "type": "object",
+                                "properties": {
+                                    "duration": {
+                                        "type": "number",
+                                        "description": "Duration of the scan as integer"
+                                    },
+                                    "unit": {
+                                        "type": "string",
+                                        "description": "Unit of the duration. Possible values are: millisecond(s), second(s), minute(s), hour(s), day(s)"
+                                    }
+                                }
+                            },
+                            "clientCertificate": {
+                                "type": "object",
+                                "properties": {
+                                    "password": {
+                                        "type": "string",
+                                        "description": "Password the client certificate file is protected with"
+                                    },
+                                    "use": {
+                                        "type": "array",
+                                        "description": "Reference to the data section containing the client certificate definition file. Always use 'sources' with a single 'file' instead 'folders'.",
+                                        "items": {
+                                            "type": "string"
+                                        }
+                                    }
+                                }
+                            },
+                            "excludes": {
+                                "type": "array",
+                                "description": "Exclude URL sub-paths to scan. Example: /admin",
+                                "items": {
+                                    "type": "string"
+                                }
+                            },
+                            "includes": {
+                                "type": "array",
+                                "description": "Include URL sub-paths to scan. Example: /hidden",
+                                "items": {
+                                    "type": "string"
+                                }
+                            },
+                            "api": {
+                                "type": "object",
+                                "properties": {
+                                    "use": {
+                                        "type": "array",
+                                        "description": "Reference to the data section containing the API definition files. Always use 'sources' with 'files' instead 'folders'.",
+                                        "items": {
+                                            "type": "string"
+                                        }
+                                    },
+                                    "type": {
+                                        "type": "string",
+                                        "description": "Type of the API definition files that will be provided"
+                                    }
+                                }
+                            },
+                            "login": {
+                                "type": "object",
+                                "properties": {
+                                    "form": {
+                                        "type": "object",
+                                        "properties": {
+                                            "script": {
+                                                "type": "object",
+                                                "properties": {
+                                                    "pages": {
+                                                        "type": "array",
+                                                        "items": {
+                                                            "type": "object",
+                                                            "properties": {
+                                                                "actions": {
+                                                                    "type": "array",
+                                                                    "items": {
+                                                                        "type": "object",
+                                                                        "properties": {
+                                                                            "unit": {
+                                                                                "type": "string",
+                                                                                "description": "the time unit to wait: millisecond, second, minute, hour, day."
+                                                                            },
+                                                                            "description": {
+                                                                                "type": "string",
+                                                                                "description": "description"
+                                                                            },
+                                                                            "selector": {
+                                                                                "type": "string",
+                                                                                "description": "css selector"
+                                                                            },
+                                                                            "type": {
+                                                                                "type": "string",
+                                                                                "description": "action type: username, password, input, click, wait"
+                                                                            },
+                                                                            "value": {
+                                                                                "type": "string",
+                                                                                "description": "value"
+                                                                            }
+                                                                        }
+                                                                    }
+                                                                }
+                                                            }
+                                                        }
+                                                    }
+                                                },
+                                                "description": "script"
+                                            }
+                                        },
+                                        "description": "form login definition"
+                                    },
+                                    "basic": {
+                                        "type": "object",
+                                        "properties": {
+                                            "password": {
+                                                "type": "string",
+                                                "description": "password"
+                                            },
+                                            "user": {
+                                                "type": "string",
+                                                "description": "username"
+                                            }
+                                        },
+                                        "description": "basic login definition"
+                                    },
+                                    "url": {
+                                        "type": "string",
+                                        "description": "Login URL"
+                                    }
+                                },
+                                "description": "Webscan login definition"
+                            },
+                            "url": {
+                                "type": "string",
+                                "description": "Webscan URI to scan for"
+                            }
+                        },
+                        "description": "Webscan configuration block"
+                    }
                 }
             },
             "SecHubReport": {
