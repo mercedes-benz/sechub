@@ -14,8 +14,8 @@ import com.mercedesbenz.sechub.commons.model.MetaDataModel;
  *
  */
 @JsonAutoDetect(fieldVisibility = Visibility.NON_PRIVATE)
-@JsonPropertyOrder(alphabetic=true)
-public class AdapterMetaData extends MetaDataModel{
+@JsonPropertyOrder(alphabetic = true)
+public class AdapterMetaData extends MetaDataModel {
 
     int adapterVersion;
 

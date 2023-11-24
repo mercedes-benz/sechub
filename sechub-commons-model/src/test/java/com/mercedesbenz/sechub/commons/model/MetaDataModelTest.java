@@ -122,20 +122,20 @@ class MetaDataModelTest {
         assertEquals(true, result.getValueAsBoolean("key3"));
 
     }
-    
+
     @Test
     void metadata_as_json_with_unknown_property_can_be_read_via_json_converter() {
         /* prepare */
         String json = "{\"unknown-property\" : true, \"metaData\":{\"key1\":\"1\",\"key2\":\"i-am-a-string\",\"key3\":\"true\"}}";
-        
+
         /* execute */
         MetaDataModel result = JSONConverter.get().fromJSON(MetaDataModel.class, json);
-        
+
         /* test */
         assertEquals(Long.valueOf(1), result.getValueAsLongOrNull("key1"));
         assertEquals("i-am-a-string", result.getValueAsStringOrNull("key2"));
         assertEquals(true, result.getValueAsBoolean("key3"));
-        
+
     }
 
 }

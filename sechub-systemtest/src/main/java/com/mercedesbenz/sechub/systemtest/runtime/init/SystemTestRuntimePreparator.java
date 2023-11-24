@@ -352,7 +352,16 @@ public class SystemTestRuntimePreparator {
                 localPDSSolutionTechUser.setUserId(DefaultFallback.FALLBACK_PDS_TECH_USER.getValue());
                 localPDSSolutionTechUser.setApiToken(DefaultFallback.FALLBACK_PDS_TECH_TOKEN.getValue());
 
-                LOG.debug("No credentials set for solution: '{}', added defaults");
+                LOG.debug("No tech user credentials set for solution: '{}', added defaults");
+            }
+
+            CredentialsDefinition localPDSSolutionAdminUser = localPdsSolution.getAdmin();
+            if (localPDSSolutionAdminUser.getUserId() == null || localPDSSolutionAdminUser.getUserId().isEmpty()) {
+
+                localPDSSolutionAdminUser.setUserId(DefaultFallback.FALLBACK_PDS_ADMIN_USER.getValue());
+                localPDSSolutionAdminUser.setApiToken(DefaultFallback.FALLBACK_PDS_ADMIN_TOKEN.getValue());
+
+                LOG.debug("No admin credentials set for solution: '{}', added defaults");
             }
         }
     }

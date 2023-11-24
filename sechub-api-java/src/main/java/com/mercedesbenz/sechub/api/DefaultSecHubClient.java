@@ -3,6 +3,7 @@ package com.mercedesbenz.sechub.api;
 
 import static java.util.Objects.*;
 
+import java.io.File;
 import java.io.IOException;
 import java.net.URI;
 import java.nio.file.Files;
@@ -430,6 +431,13 @@ public class DefaultSecHubClient extends AbstractSecHubClient {
     @Override
     public void approveJob(String projectId, UUID jobUUID) throws SecHubClientException {
         runOrFail(() -> projectApi.userApprovesJob(projectId, jobUUID.toString()), "Job approve");
+    }
+
+    @Override
+    public Path downloadFullScanLog(UUID sechubJobUUID, Path downloadFilePath) throws SecHubClientException {
+        final File targetFile = calculateFullScanLogFile(sechubJobUUID, downloadFilePath);
+        runOrFail(() -> workaroundAdminApi.adminDownloadsFullScanDataForJob(sechubJobUUID.toString(), targetFile), "Download full scan log");
+        return targetFile.toPath();
     }
 
     /* ++++++++++++++++++++++++++++++++++++++++++++++++++++ */
