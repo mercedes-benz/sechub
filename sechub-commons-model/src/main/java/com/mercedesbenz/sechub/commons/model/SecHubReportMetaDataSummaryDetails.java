@@ -33,9 +33,9 @@ public class SecHubReportMetaDataSummaryDetails {
 
     public void detailsHelper(SecHubFinding finding) {
         switch (finding.getSeverity()) {
-        case HIGH -> detailsFiller(high, finding);
+        case HIGH, CRITICAL -> detailsFiller(high, finding);
         case MEDIUM -> detailsFiller(medium, finding);
-        case LOW, INFO -> detailsFiller(low, finding);
+        case UNCLASSIFIED, LOW, INFO -> detailsFiller(low, finding);
         }
     }
 

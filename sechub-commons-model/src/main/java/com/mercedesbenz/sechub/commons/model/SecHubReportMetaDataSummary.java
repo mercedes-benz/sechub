@@ -20,9 +20,9 @@ public class SecHubReportMetaDataSummary {
     protected void incrementColors(SecHubFinding finding) {
         Severity severity = finding.getSeverity();
         switch (severity) {
-        case HIGH -> incrementRedCount();
+        case HIGH, CRITICAL -> incrementRedCount();
         case MEDIUM -> incrementYellowCount();
-        case LOW, INFO -> incrementGreenCount();
+        case UNCLASSIFIED, INFO, LOW -> incrementGreenCount();
         }
         incrementTotalCount();
     }

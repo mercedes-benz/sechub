@@ -142,9 +142,9 @@ public class HTMLScanResultReportModelBuilder {
 
     protected void incrementScanCount(Severity severity, ScanTypeCount scanTypeCount) {
         switch (severity) {
-        case HIGH -> scanTypeCount.incrementHighSeverityCount();
+        case HIGH, CRITICAL -> scanTypeCount.incrementHighSeverityCount();
         case MEDIUM -> scanTypeCount.incrementMediumSeverityCount();
-        case LOW, INFO -> scanTypeCount.incrementLowSeverityCount();
+        case UNCLASSIFIED, INFO, LOW -> scanTypeCount.incrementLowSeverityCount();
         }
     }
 

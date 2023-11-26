@@ -230,6 +230,15 @@ class HTMLScanResultReportModelBuilderTest {
     }
 
     @Test
+    void when_severity_is_critical_then_highSeverityCount_should_be_incremented() {
+        /* execute */
+        builderToTest.incrementScanCount(Severity.CRITICAL, scanTypeCount);
+
+        /* test */
+        assertEquals(1, scanTypeCount.getHighSeverityCount());
+    }
+
+    @Test
     void when_severity_is_high_then_highSeverityCount_should_be_incremented() {
         /* execute */
         builderToTest.incrementScanCount(Severity.HIGH, scanTypeCount);
@@ -251,6 +260,24 @@ class HTMLScanResultReportModelBuilderTest {
     void when_severity_is_low_then_lowSeverityCount_should_be_incremented() {
         /* execute */
         builderToTest.incrementScanCount(Severity.LOW, scanTypeCount);
+
+        /* test */
+        assertEquals(1, scanTypeCount.getLowSeverityCount());
+    }
+
+    @Test
+    void when_severity_is_info_then_lowSeverityCount_should_be_incremented() {
+        /* execute */
+        builderToTest.incrementScanCount(Severity.INFO, scanTypeCount);
+
+        /* test */
+        assertEquals(1, scanTypeCount.getLowSeverityCount());
+    }
+
+    @Test
+    void when_severity_is_unclassified_then_lowSeverityCount_should_be_incremented() {
+        /* execute */
+        builderToTest.incrementScanCount(Severity.UNCLASSIFIED, scanTypeCount);
 
         /* test */
         assertEquals(1, scanTypeCount.getLowSeverityCount());

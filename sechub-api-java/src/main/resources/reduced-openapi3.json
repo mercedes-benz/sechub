@@ -2919,55 +2919,6 @@
                     }
                 }
             },
-            "ExecutionProfileFetch": {
-                "title": "ExecutionProfileFetch",
-                "type": "object",
-                "properties": {
-                    "configurations": {
-                        "type": "array",
-                        "items": {
-                            "type": "object",
-                            "properties": {
-                                "productIdentifier": {
-                                    "type": "string",
-                                    "description": "executed product"
-                                },
-                                "name": {
-                                    "type": "string",
-                                    "description": "name of configuration"
-                                },
-                                "executorVersion": {
-                                    "type": "number",
-                                    "description": "executor version"
-                                },
-                                "uuid": {
-                                    "type": "string",
-                                    "description": "uuid of configuration"
-                                },
-                                "enabled": {
-                                    "type": "boolean",
-                                    "description": "enabled state of this config"
-                                }
-                            }
-                        }
-                    },
-                    "description": {
-                        "type": "string",
-                        "description": "A short description for the profile"
-                    },
-                    "projectIds": {
-                        "type": "array",
-                        "description": "Projects can be linked by their ids here",
-                        "items": {
-                            "type": "string"
-                        }
-                    },
-                    "enabled": {
-                        "type": "boolean",
-                        "description": "Enabled state of profile, default is false"
-                    }
-                }
-            },
             "FalsePositives": {
                 "title": "FalsePositives",
                 "type": "object",
@@ -3078,6 +3029,55 @@
                                 }
                             }
                         }
+                    }
+                }
+            },
+            "ExecutionProfileFetch": {
+                "title": "ExecutionProfileFetch",
+                "type": "object",
+                "properties": {
+                    "configurations": {
+                        "type": "array",
+                        "items": {
+                            "type": "object",
+                            "properties": {
+                                "productIdentifier": {
+                                    "type": "string",
+                                    "description": "executed product"
+                                },
+                                "name": {
+                                    "type": "string",
+                                    "description": "name of configuration"
+                                },
+                                "executorVersion": {
+                                    "type": "number",
+                                    "description": "executor version"
+                                },
+                                "uuid": {
+                                    "type": "string",
+                                    "description": "uuid of configuration"
+                                },
+                                "enabled": {
+                                    "type": "boolean",
+                                    "description": "enabled state of this config"
+                                }
+                            }
+                        }
+                    },
+                    "description": {
+                        "type": "string",
+                        "description": "A short description for the profile"
+                    },
+                    "projectIds": {
+                        "type": "array",
+                        "description": "Projects can be linked by their ids here",
+                        "items": {
+                            "type": "string"
+                        }
+                    },
+                    "enabled": {
+                        "type": "boolean",
+                        "description": "Enabled state of profile, default is false"
                     }
                 }
             },
@@ -3251,19 +3251,6 @@
                     "webScan": {
                         "type": "object",
                         "properties": {
-                            "maxScanDuration": {
-                                "type": "object",
-                                "properties": {
-                                    "duration": {
-                                        "type": "number",
-                                        "description": "Duration of the scan as integer"
-                                    },
-                                    "unit": {
-                                        "type": "string",
-                                        "description": "Unit of the duration. Possible values are: millisecond(s), second(s), minute(s), hour(s), day(s)"
-                                    }
-                                }
-                            },
                             "headers": {
                                 "type": "array",
                                 "description": "List of HTTP headers. Can be used for authentication or anything else.",
@@ -3289,6 +3276,19 @@
                                             "type": "string",
                                             "description": "Value of the defined HTTP header."
                                         }
+                                    }
+                                }
+                            },
+                            "maxScanDuration": {
+                                "type": "object",
+                                "properties": {
+                                    "duration": {
+                                        "type": "number",
+                                        "description": "Duration of the scan as integer"
+                                    },
+                                    "unit": {
+                                        "type": "string",
+                                        "description": "Unit of the duration. Possible values are: millisecond(s), second(s), minute(s), hour(s), day(s)"
                                     }
                                 }
                             },
