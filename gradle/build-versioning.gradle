@@ -48,6 +48,7 @@ def buildVersionFiles(){
     def librariesVersionCommitTag = versionCommitTags.find{ it.name.endsWith("-libraries") }
     def checkmarxWrapperVersionCommitTag = versionCommitTags.find{ it.name.endsWith("-checkmarx-wrapper") }
     def owaspzapWrapperVersionCommitTag = versionCommitTags.find{ it.name.endsWith("-owaspzap-wrapper") }
+    def xrayWrapperVersionCommitTag = versionCommitTags.find{ it.name.endsWith("-xray-wrapper") }
     def pdsVersionCommitTag = versionCommitTags.find{ it.name.endsWith("-pds") }
     def pdsToolsVersionCommitTag = versionCommitTags.find{ it.name.endsWith("-pds-tools") }
     def serverVersionCommitTag = versionCommitTags.find{ it.name.endsWith("-server") }
@@ -155,6 +156,11 @@ def buildVersionFiles(){
     // ------------------------
     def owaspzapWrapperVersionInfo = versionData.defineVersion("OWASP-ZAP Wrapper",buildVersionString(owaspzapWrapperVersionCommitTag, hasChanged, buildNumber))
 
+    // ------------------------
+    // - XRAY wrapper
+    // ------------------------
+    def xrayWrapperVersionInfo = versionData.defineVersion("XRAY Wrapper",buildVersionString(xrayWrapperVersionCommitTag, hasChanged, buildNumber))
+
 
     def stop = new Date()
 
@@ -165,6 +171,7 @@ def buildVersionFiles(){
     println(librariesVersionInfo.describe())
     println(checkmarxWrapperVersionInfo.describe())
     println(owaspzapWrapperVersionInfo.describe())
+    println(xrayWrapperVersionInfo.describe())
 
     TimeDuration td = TimeCategory.minus( stop, start )
     println("\nTime elapsed to build versions: "+td)
@@ -215,6 +222,7 @@ def buildVersionString(commitTag, boolean hasChanged, buildNumber){
         calcversion=calcversion-"-server"
         calcversion=calcversion-"-checkmarx-wrapper"
         calcversion=calcversion-"-owaspzap-wrapper"
+        calcversion=calcversion-"-xray-wrapper"
 
     }
     if (hasChanged){

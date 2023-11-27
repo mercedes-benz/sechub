@@ -1,0 +1,4725 @@
+{
+	"SPDXID": "SPDXRef-DOCUMENT",
+	"creationInfo": {
+		"created": "2023-11-02T11:51:21Z",
+		"creators": [
+			"Tool: JFrog Xray - 3.67.9",
+			"Organization: JFrog Inc.",
+			"Person: lbottne"
+		]
+	},
+	"dataLicense": "CC0-1.0",
+	"documentDescribes": [
+		"SPDXRef-Package-Structures-Graph-1.0.3.tgz",
+		"SPDXRef-Package-debian-bookworm-adduser-3.134",
+		"SPDXRef-Package-debian-bookworm-apache2-2.4.57-2",
+		"SPDXRef-Package-debian-bookworm-apache2-bin-2.4.57-2",
+		"SPDXRef-Package-debian-bookworm-apache2-data-2.4.57-2",
+		"SPDXRef-Package-debian-bookworm-apache2-utils-2.4.57-2",
+		"SPDXRef-Package-debian-bookworm-apt-2.6.1",
+		"SPDXRef-Package-debian-bookworm-autoconf-2.71-3",
+		"SPDXRef-Package-debian-bookworm-base-files-12.4-deb12u1",
+		"SPDXRef-Package-debian-bookworm-base-passwd-3.6.1",
+		"SPDXRef-Package-debian-bookworm-bash-5.2.15-2-b2",
+		"SPDXRef-Package-debian-bookworm-binutils-2.40-2",
+		"SPDXRef-Package-debian-bookworm-binutils-common-2.40-2",
+		"SPDXRef-Package-debian-bookworm-binutils-x86-64-linux-gnu-2.40-2",
+		"SPDXRef-Package-debian-bookworm-bsdutils-1-2.38.1-5-b1",
+		"SPDXRef-Package-debian-bookworm-bzip2-1.0.8-5-b1",
+		"SPDXRef-Package-debian-bookworm-ca-certificates-20230311",
+		"SPDXRef-Package-debian-bookworm-coreutils-9.1-1",
+		"SPDXRef-Package-debian-bookworm-cpp-12-12.2.0-14",
+		"SPDXRef-Package-debian-bookworm-cpp-4-12.2.0-3",
+		"SPDXRef-Package-debian-bookworm-curl-7.88.1-10-deb12u1",
+		"SPDXRef-Package-debian-bookworm-dash-0.5.12-2",
+		"SPDXRef-Package-debian-bookworm-debconf-1.5.82",
+		"SPDXRef-Package-debian-bookworm-debian-archive-keyring-2023.3",
+		"SPDXRef-Package-debian-bookworm-debianutils-5.7-0.4",
+		"SPDXRef-Package-debian-bookworm-diffutils-1-3.8-4",
+		"SPDXRef-Package-debian-bookworm-dpkg-1.21.22",
+		"SPDXRef-Package-debian-bookworm-dpkg-dev-1.21.22",
+		"SPDXRef-Package-debian-bookworm-e2fsprogs-1.47.0-2",
+		"SPDXRef-Package-debian-bookworm-file-1-5.44-3",
+		"SPDXRef-Package-debian-bookworm-findutils-4.9.0-4",
+		"SPDXRef-Package-debian-bookworm-g---12-12.2.0-14",
+		"SPDXRef-Package-debian-bookworm-g---4-12.2.0-3",
+		"SPDXRef-Package-debian-bookworm-gcc-12-12.2.0-14",
+		"SPDXRef-Package-debian-bookworm-gcc-12-base-12.2.0-14",
+		"SPDXRef-Package-debian-bookworm-gcc-4-12.2.0-3",
+		"SPDXRef-Package-debian-bookworm-gpgv-2.2.40-1.1",
+		"SPDXRef-Package-debian-bookworm-grep-3.8-5",
+		"SPDXRef-Package-debian-bookworm-gzip-1.12-1",
+		"SPDXRef-Package-debian-bookworm-hostname-3.23-nmu1",
+		"SPDXRef-Package-debian-bookworm-init-system-helpers-1.65.2",
+		"SPDXRef-Package-debian-bookworm-iputils-ping-3-20221126-1",
+		"SPDXRef-Package-debian-bookworm-libacl1-2.3.1-3",
+		"SPDXRef-Package-debian-bookworm-libapr1-1.7.2-3",
+		"SPDXRef-Package-debian-bookworm-libaprutil1-1.6.3-1",
+		"SPDXRef-Package-debian-bookworm-libaprutil1-dbd-sqlite3-1.6.3-1",
+		"SPDXRef-Package-debian-bookworm-libaprutil1-ldap-1.6.3-1",
+		"SPDXRef-Package-debian-bookworm-libapt-pkg6.0-2.6.1",
+		"SPDXRef-Package-debian-bookworm-libargon2-1-0-20171227-0.3-deb12u1",
+		"SPDXRef-Package-debian-bookworm-libasan8-12.2.0-14",
+		"SPDXRef-Package-debian-bookworm-libatomic1-12.2.0-14",
+		"SPDXRef-Package-debian-bookworm-libattr1-1-2.5.1-4",
+		"SPDXRef-Package-debian-bookworm-libaudit-common-1-3.0.9-1",
+		"SPDXRef-Package-debian-bookworm-libaudit1-1-3.0.9-1",
+		"SPDXRef-Package-debian-bookworm-libbinutils-2.40-2",
+		"SPDXRef-Package-debian-bookworm-libblkid1-2.38.1-5-b1",
+		"SPDXRef-Package-debian-bookworm-libbrotli-dev-1.0.9-2-b6",
+		"SPDXRef-Package-debian-bookworm-libbrotli1-1.0.9-2-b6",
+		"SPDXRef-Package-debian-bookworm-libbz2-1.0-1.0.8-5-b1",
+		"SPDXRef-Package-debian-bookworm-libc-bin-2.36-9-deb12u1",
+		"SPDXRef-Package-debian-bookworm-libc-dev-bin-2.36-9-deb12u1",
+		"SPDXRef-Package-debian-bookworm-libc6-2.36-9-deb12u1",
+		"SPDXRef-Package-debian-bookworm-libc6-dev-2.36-9-deb12u1",
+		"SPDXRef-Package-debian-bookworm-libcap-ng0-0.8.3-1-b3",
+		"SPDXRef-Package-debian-bookworm-libcap2-1-2.66-4",
+		"SPDXRef-Package-debian-bookworm-libcap2-bin-1-2.66-4",
+		"SPDXRef-Package-debian-bookworm-libcc1-0-12.2.0-14",
+		"SPDXRef-Package-debian-bookworm-libcom-err2-1.47.0-2",
+		"SPDXRef-Package-debian-bookworm-libcrypt-dev-1-4.4.33-2",
+		"SPDXRef-Package-debian-bookworm-libcrypt1-1-4.4.33-2",
+		"SPDXRef-Package-debian-bookworm-libctf-nobfd0-2.40-2",
+		"SPDXRef-Package-debian-bookworm-libctf0-2.40-2",
+		"SPDXRef-Package-debian-bookworm-libcurl4-7.88.1-10-deb12u1",
+		"SPDXRef-Package-debian-bookworm-libdb5.3-5.3.28-dfsg2-1",
+		"SPDXRef-Package-debian-bookworm-libdebconfclient0-0.270",
+		"SPDXRef-Package-debian-bookworm-libdpkg-perl-1.21.22",
+		"SPDXRef-Package-debian-bookworm-libexpat1-2.5.0-1",
+		"SPDXRef-Package-debian-bookworm-libext2fs2-1.47.0-2",
+		"SPDXRef-Package-debian-bookworm-libffi8-3.4.4-1",
+		"SPDXRef-Package-debian-bookworm-libfreetype-dev-2.12.1-dfsg-5",
+		"SPDXRef-Package-debian-bookworm-libfreetype6-2.12.1-dfsg-5",
+		"SPDXRef-Package-debian-bookworm-libfreetype6-dev-2.12.1-dfsg-5",
+		"SPDXRef-Package-debian-bookworm-libgcc-12-dev-12.2.0-14",
+		"SPDXRef-Package-debian-bookworm-libgcc-s1-12.2.0-14",
+		"SPDXRef-Package-debian-bookworm-libgcrypt20-1.10.1-3",
+		"SPDXRef-Package-debian-bookworm-libgdbm-compat4-1.23-3",
+		"SPDXRef-Package-debian-bookworm-libgdbm6-1.23-3",
+		"SPDXRef-Package-debian-bookworm-libgmp10-2-6.2.1-dfsg1-1.1",
+		"SPDXRef-Package-debian-bookworm-libgnutls30-3.7.9-2",
+		"SPDXRef-Package-debian-bookworm-libgomp1-12.2.0-14",
+		"SPDXRef-Package-debian-bookworm-libgpg-error0-1.46-1",
+		"SPDXRef-Package-debian-bookworm-libgprofng0-2.40-2",
+		"SPDXRef-Package-debian-bookworm-libgssapi-krb5-2-1.20.1-2",
+		"SPDXRef-Package-debian-bookworm-libhogweed6-3.8.1-2",
+		"SPDXRef-Package-debian-bookworm-libicu72-72.1-3",
+		"SPDXRef-Package-debian-bookworm-libidn2-0-2.3.3-1-b1",
+		"SPDXRef-Package-debian-bookworm-libisl23-0.25-1",
+		"SPDXRef-Package-debian-bookworm-libitm1-12.2.0-14",
+		"SPDXRef-Package-debian-bookworm-libjansson4-2.14-2",
+		"SPDXRef-Package-debian-bookworm-libjpeg-dev-1-2.1.5-2",
+		"SPDXRef-Package-debian-bookworm-libjpeg62-turbo-1-2.1.5-2",
+		"SPDXRef-Package-debian-bookworm-libjpeg62-turbo-dev-1-2.1.5-2",
+		"SPDXRef-Package-debian-bookworm-libk5crypto3-1.20.1-2",
+		"SPDXRef-Package-debian-bookworm-libkeyutils1-1.6.3-2",
+		"SPDXRef-Package-debian-bookworm-libkrb5-3-1.20.1-2",
+		"SPDXRef-Package-debian-bookworm-libkrb5support0-1.20.1-2",
+		"SPDXRef-Package-debian-bookworm-libldap-2.5-0-2.5.13-dfsg-5",
+		"SPDXRef-Package-debian-bookworm-liblsan0-12.2.0-14",
+		"SPDXRef-Package-debian-bookworm-liblua5.3-0-5.3.6-2",
+		"SPDXRef-Package-debian-bookworm-liblz4-1-1.9.4-1",
+		"SPDXRef-Package-debian-bookworm-liblzma5-5.4.1-0.2",
+		"SPDXRef-Package-debian-bookworm-libmagic-mgc-1-5.44-3",
+		"SPDXRef-Package-debian-bookworm-libmagic1-1-5.44-3",
+		"SPDXRef-Package-debian-bookworm-libmd0-1.0.4-2",
+		"SPDXRef-Package-debian-bookworm-libmount1-2.38.1-5-b1",
+		"SPDXRef-Package-debian-bookworm-libmpc3-1.3.1-1",
+		"SPDXRef-Package-debian-bookworm-libmpfr6-4.2.0-1",
+		"SPDXRef-Package-debian-bookworm-libncursesw6-6.4-4",
+		"SPDXRef-Package-debian-bookworm-libnettle8-3.8.1-2",
+		"SPDXRef-Package-debian-bookworm-libnghttp2-14-1.52.0-1",
+		"SPDXRef-Package-debian-bookworm-libnsl-dev-1.3.0-2",
+		"SPDXRef-Package-debian-bookworm-libnsl2-1.3.0-2",
+		"SPDXRef-Package-debian-bookworm-libonig5-6.9.8-1",
+		"SPDXRef-Package-debian-bookworm-libp11-kit0-0.24.1-2",
+		"SPDXRef-Package-debian-bookworm-libpam-cap-1-2.66-4",
+		"SPDXRef-Package-debian-bookworm-libpam-modules-1.5.2-6",
+		"SPDXRef-Package-debian-bookworm-libpam-modules-bin-1.5.2-6",
+		"SPDXRef-Package-debian-bookworm-libpam-runtime-1.5.2-6",
+		"SPDXRef-Package-debian-bookworm-libpam0g-1.5.2-6",
+		"SPDXRef-Package-debian-bookworm-libpcre2-8-0-10.42-1",
+		"SPDXRef-Package-debian-bookworm-libperl5.36-5.36.0-7",
+		"SPDXRef-Package-debian-bookworm-libpkgconf3-1.8.1-1",
+		"SPDXRef-Package-debian-bookworm-libpng-dev-1.6.39-2",
+		"SPDXRef-Package-debian-bookworm-libpng-tools-1.6.39-2",
+		"SPDXRef-Package-debian-bookworm-libpng16-16-1.6.39-2",
+		"SPDXRef-Package-debian-bookworm-libproc2-0-2-4.0.2-3",
+		"SPDXRef-Package-debian-bookworm-libpsl5-0.21.2-1",
+		"SPDXRef-Package-debian-bookworm-libquadmath0-12.2.0-14",
+		"SPDXRef-Package-debian-bookworm-libreadline8-8.2-1.3",
+		"SPDXRef-Package-debian-bookworm-librtmp1-2.4-20151223.gitfa8646d.1-2-b2",
+		"SPDXRef-Package-debian-bookworm-libsasl2-2-2.1.28-dfsg-10",
+		"SPDXRef-Package-debian-bookworm-libsasl2-modules-db-2.1.28-dfsg-10",
+		"SPDXRef-Package-debian-bookworm-libseccomp2-2.5.4-1-b3",
+		"SPDXRef-Package-debian-bookworm-libselinux1-3.4-1-b6",
+		"SPDXRef-Package-debian-bookworm-libsemanage-common-3.4-1",
+		"SPDXRef-Package-debian-bookworm-libsemanage2-3.4-1-b5",
+		"SPDXRef-Package-debian-bookworm-libsepol2-3.4-2.1",
+		"SPDXRef-Package-debian-bookworm-libsmartcols1-2.38.1-5-b1",
+		"SPDXRef-Package-debian-bookworm-libsodium23-1.0.18-1",
+		"SPDXRef-Package-debian-bookworm-libsqlite3-0-3.40.1-2",
+		"SPDXRef-Package-debian-bookworm-libss2-1.47.0-2",
+		"SPDXRef-Package-debian-bookworm-libssh2-1-1.10.0-3-b1",
+		"SPDXRef-Package-debian-bookworm-libssl3-3.0.9-1",
+		"SPDXRef-Package-debian-bookworm-libstdc---12-dev-12.2.0-14",
+		"SPDXRef-Package-debian-bookworm-libstdc--6-12.2.0-14",
+		"SPDXRef-Package-debian-bookworm-libsystemd0-252.12-1-deb12u1",
+		"SPDXRef-Package-debian-bookworm-libtasn1-6-4.19.0-2",
+		"SPDXRef-Package-debian-bookworm-libtinfo6-6.4-4",
+		"SPDXRef-Package-debian-bookworm-libtirpc-common-1.3.3-ds-1",
+		"SPDXRef-Package-debian-bookworm-libtirpc-dev-1.3.3-ds-1",
+		"SPDXRef-Package-debian-bookworm-libtirpc3-1.3.3-ds-1",
+		"SPDXRef-Package-debian-bookworm-libtsan2-12.2.0-14",
+		"SPDXRef-Package-debian-bookworm-libubsan1-12.2.0-14",
+		"SPDXRef-Package-debian-bookworm-libudev1-252.12-1-deb12u1",
+		"SPDXRef-Package-debian-bookworm-libunistring2-1.0-2",
+		"SPDXRef-Package-debian-bookworm-libuuid1-2.38.1-5-b1",
+		"SPDXRef-Package-debian-bookworm-libxml2-2.9.14-dfsg-1.3-deb12u1",
+		"SPDXRef-Package-debian-bookworm-libxxhash0-0.8.1-1",
+		"SPDXRef-Package-debian-bookworm-libzstd1-1.5.4-dfsg2-5",
+		"SPDXRef-Package-debian-bookworm-linux-libc-dev-6.1.52-1",
+		"SPDXRef-Package-debian-bookworm-login-1-4.13-dfsg1-1-b1",
+		"SPDXRef-Package-debian-bookworm-logsave-1.47.0-2",
+		"SPDXRef-Package-debian-bookworm-m4-1.4.19-3",
+		"SPDXRef-Package-debian-bookworm-make-4.3-4.1",
+		"SPDXRef-Package-debian-bookworm-mawk-1.3.4.20200120-3.1",
+		"SPDXRef-Package-debian-bookworm-media-types-10.0.0",
+		"SPDXRef-Package-debian-bookworm-mount-2.38.1-5-b1",
+		"SPDXRef-Package-debian-bookworm-ncurses-base-6.4-4",
+		"SPDXRef-Package-debian-bookworm-ncurses-bin-6.4-4",
+		"SPDXRef-Package-debian-bookworm-openssl-3.0.9-1",
+		"SPDXRef-Package-debian-bookworm-passwd-1-4.13-dfsg1-1-b1",
+		"SPDXRef-Package-debian-bookworm-patch-2.7.6-7",
+		"SPDXRef-Package-debian-bookworm-perl-5.36.0-7",
+		"SPDXRef-Package-debian-bookworm-perl-base-5.36.0-7",
+		"SPDXRef-Package-debian-bookworm-perl-modules-5.36-5.36.0-7",
+		"SPDXRef-Package-debian-bookworm-pkg-config-1.8.1-1",
+		"SPDXRef-Package-debian-bookworm-pkgconf-1.8.1-1",
+		"SPDXRef-Package-debian-bookworm-pkgconf-bin-1.8.1-1",
+		"SPDXRef-Package-debian-bookworm-procps-2-4.0.2-3",
+		"SPDXRef-Package-debian-bookworm-re2c-3.0-2",
+		"SPDXRef-Package-debian-bookworm-readline-common-8.2-1.3",
+		"SPDXRef-Package-debian-bookworm-rpcsvc-proto-1.4.3-1",
+		"SPDXRef-Package-debian-bookworm-sed-4.9-1",
+		"SPDXRef-Package-debian-bookworm-sysvinit-utils-3.06-4",
+		"SPDXRef-Package-debian-bookworm-tar-1.34-dfsg-1.2",
+		"SPDXRef-Package-debian-bookworm-tzdata-2023c-5",
+		"SPDXRef-Package-debian-bookworm-usr-is-merged-35",
+		"SPDXRef-Package-debian-bookworm-util-linux-2.38.1-5-b1",
+		"SPDXRef-Package-debian-bookworm-util-linux-extra-2.38.1-5-b1",
+		"SPDXRef-Package-debian-bookworm-xz-utils-5.4.1-0.2",
+		"SPDXRef-Package-debian-bookworm-zlib1g-1-1.2.13.dfsg-1",
+		"SPDXRef-Package-debian-bookworm-zlib1g-dev-1-1.2.13.dfsg-1",
+		"SPDXRef-Package-digininja-dvwa-9b787fc",
+		"SPDXRef-Package-php.tar.xz"
+	],
+	"documentNamespace": "https://jfrog.com/xray/docker_digininja/dvwa_9b787fc_1698922281_spdx",
+	"hasExtractedLicensingInfos": [
+		{
+			"comment": "Represents the license 'OpenVision' which is not on the SPDX License List",
+			"extractedText": "OpenVision",
+			"licenseId": "LicenseRef-OpenVision",
+			"name": "OpenVision"
+		},
+		{
+			"comment": "Represents the license 'OpenLDAP' which is not on the SPDX License List",
+			"extractedText": "OpenLDAP",
+			"licenseId": "LicenseRef-OpenLDAP",
+			"name": "OpenLDAP"
+		}
+	],
+	"name": "docker_digininja/dvwa_9b787fc_1698922281_spdx",
+	"packages": [
+		{
+			"SPDXID": "SPDXRef-Package-Structures-Graph-1.0.3.tgz",
+			"checksums": [
+				{
+					"algorithm": "SHA256",
+					"checksumValue": "b6dd79b7cf1cad547581db3e71405b98bc3fa8e99a3a86a34fb6b2fc5a64d90d"
+				}
+			],
+			"copyrightText": "NOASSERTION",
+			"downloadLocation": "NOASSERTION",
+			"filesAnalyzed": false,
+			"homepage": "NOASSERTION",
+			"licenseConcluded": "(LGPL-2.0 AND LGPL-2.1)",
+			"licenseDeclared": "NOASSERTION",
+			"name": "Structures_Graph-1.0.3.tgz"
+		},
+		{
+			"SPDXID": "SPDXRef-Package-debian-bookworm-adduser-3.134",
+			"checksums": [
+				{
+					"algorithm": "SHA256",
+					"checksumValue": "148837641d413e6c1c5f7a5a1a258c68a7a1c6ed24b9859efea0939d98daffba"
+				}
+			],
+			"copyrightText": "NOASSERTION",
+			"downloadLocation": "NOASSERTION",
+			"filesAnalyzed": false,
+			"homepage": "NOASSERTION",
+			"licenseConcluded": "GPL-2.0-or-later",
+			"licenseDeclared": "NOASSERTION",
+			"name": "debian:bookworm:adduser",
+			"versionInfo": "3.134"
+		},
+		{
+			"SPDXID": "SPDXRef-Package-debian-bookworm-apache2-2.4.57-2",
+			"checksums": [
+				{
+					"algorithm": "SHA256",
+					"checksumValue": "04730c5f32698ef07563e9c1399a902f5c7b33b9cef8910fa7c29236e88709c6"
+				}
+			],
+			"copyrightText": "NOASSERTION",
+			"downloadLocation": "NOASSERTION",
+			"filesAnalyzed": false,
+			"homepage": "NOASSERTION",
+			"licenseConcluded": "(Apache-2.0 AND BSD-2-Clause AND GPL-2.0 AND GPL-3.0)",
+			"licenseDeclared": "NOASSERTION",
+			"name": "debian:bookworm:apache2",
+			"versionInfo": "2.4.57-2"
+		},
+		{
+			"SPDXID": "SPDXRef-Package-debian-bookworm-apache2-bin-2.4.57-2",
+			"checksums": [
+				{
+					"algorithm": "SHA256",
+					"checksumValue": "f0891d5f428b51ae4fdbea5f49a9f0eff8e1f79fa0426e863e14e02d13091c1b"
+				}
+			],
+			"copyrightText": "NOASSERTION",
+			"downloadLocation": "NOASSERTION",
+			"filesAnalyzed": false,
+			"homepage": "NOASSERTION",
+			"licenseConcluded": "(GPL-2.0 AND GPL-3.0 AND Apache-2.0 AND BSD-2-Clause)",
+			"licenseDeclared": "NOASSERTION",
+			"name": "debian:bookworm:apache2-bin",
+			"versionInfo": "2.4.57-2"
+		},
+		{
+			"SPDXID": "SPDXRef-Package-debian-bookworm-apache2-data-2.4.57-2",
+			"checksums": [
+				{
+					"algorithm": "SHA256",
+					"checksumValue": "b3a169c0d17f0d95cae8ef03ef12472ea38d0a07ff51cf9db5009a8789d30dcd"
+				}
+			],
+			"copyrightText": "NOASSERTION",
+			"downloadLocation": "NOASSERTION",
+			"filesAnalyzed": false,
+			"homepage": "NOASSERTION",
+			"licenseConcluded": "(GPL-2.0 AND GPL-3.0 AND Apache-2.0 AND BSD-2-Clause)",
+			"licenseDeclared": "NOASSERTION",
+			"name": "debian:bookworm:apache2-data",
+			"versionInfo": "2.4.57-2"
+		},
+		{
+			"SPDXID": "SPDXRef-Package-debian-bookworm-apache2-utils-2.4.57-2",
+			"checksums": [
+				{
+					"algorithm": "SHA256",
+					"checksumValue": "d438a4c27b0156fdf69068a8eba55aff4accf615c47f9e98b418da5cf7fe4d50"
+				}
+			],
+			"copyrightText": "NOASSERTION",
+			"downloadLocation": "NOASSERTION",
+			"filesAnalyzed": false,
+			"homepage": "NOASSERTION",
+			"licenseConcluded": "(GPL-2.0 AND GPL-3.0 AND Apache-2.0 AND BSD-2-Clause)",
+			"licenseDeclared": "NOASSERTION",
+			"name": "debian:bookworm:apache2-utils",
+			"versionInfo": "2.4.57-2"
+		},
+		{
+			"SPDXID": "SPDXRef-Package-debian-bookworm-apt-2.6.1",
+			"checksums": [
+				{
+					"algorithm": "SHA256",
+					"checksumValue": "97193f01c770a989eecdfd9c23706ff417b87a1558e6522cd8cff8ffc16e247e"
+				}
+			],
+			"copyrightText": "NOASSERTION",
+			"downloadLocation": "NOASSERTION",
+			"filesAnalyzed": false,
+			"homepage": "NOASSERTION",
+			"licenseConcluded": "(BSD-3-Clause AND GPL-2.0-only AND GPL-2.0-or-later)",
+			"licenseDeclared": "NOASSERTION",
+			"name": "debian:bookworm:apt",
+			"versionInfo": "2.6.1"
+		},
+		{
+			"SPDXID": "SPDXRef-Package-debian-bookworm-autoconf-2.71-3",
+			"checksums": [
+				{
+					"algorithm": "SHA256",
+					"checksumValue": "49e2ad7a6c2a940d26ccd03d3a4b37e1dfbc7b552cc2bf137758636089f40950"
+				}
+			],
+			"copyrightText": "NOASSERTION",
+			"downloadLocation": "NOASSERTION",
+			"filesAnalyzed": false,
+			"homepage": "NOASSERTION",
+			"licenseConcluded": "(GPL-2.0 AND GPL-3.0 AND MIT)",
+			"licenseDeclared": "NOASSERTION",
+			"name": "debian:bookworm:autoconf",
+			"versionInfo": "2.71-3"
+		},
+		{
+			"SPDXID": "SPDXRef-Package-debian-bookworm-base-files-12.4-deb12u1",
+			"checksums": [
+				{
+					"algorithm": "SHA256",
+					"checksumValue": "c77e8072105e1033e5da4f92fc71596f512a5d9323cb0551ce60e593f87513e0"
+				}
+			],
+			"copyrightText": "NOASSERTION",
+			"downloadLocation": "NOASSERTION",
+			"filesAnalyzed": false,
+			"homepage": "NOASSERTION",
+			"licenseConcluded": "GPL-3.0",
+			"licenseDeclared": "NOASSERTION",
+			"name": "debian:bookworm:base-files",
+			"versionInfo": "12.4+deb12u1"
+		},
+		{
+			"SPDXID": "SPDXRef-Package-debian-bookworm-base-passwd-3.6.1",
+			"checksums": [
+				{
+					"algorithm": "SHA256",
+					"checksumValue": "77e1dd7d4339aa73614d2e851829e3e79261921ce8b71bde2af6e72ff734cba1"
+				}
+			],
+			"copyrightText": "NOASSERTION",
+			"downloadLocation": "NOASSERTION",
+			"filesAnalyzed": false,
+			"homepage": "NOASSERTION",
+			"licenseConcluded": "GPL-2.0",
+			"licenseDeclared": "NOASSERTION",
+			"name": "debian:bookworm:base-passwd",
+			"versionInfo": "3.6.1"
+		},
+		{
+			"SPDXID": "SPDXRef-Package-debian-bookworm-bash-5.2.15-2-b2",
+			"checksums": [
+				{
+					"algorithm": "SHA256",
+					"checksumValue": "9dc0a9aab2989d4bdb2cb2facaa1217337927d4dc1c3a3a96cdac7bd755f2d5d"
+				}
+			],
+			"copyrightText": "NOASSERTION",
+			"downloadLocation": "NOASSERTION",
+			"filesAnalyzed": false,
+			"homepage": "NOASSERTION",
+			"licenseConcluded": "(GPL-3.0-or-later AND Latex2e AND MIT AND BSD-4-Clause-UC AND GPL-2.0-or-later)",
+			"licenseDeclared": "NOASSERTION",
+			"name": "debian:bookworm:bash",
+			"versionInfo": "5.2.15-2+b2"
+		},
+		{
+			"SPDXID": "SPDXRef-Package-debian-bookworm-binutils-2.40-2",
+			"checksums": [
+				{
+					"algorithm": "SHA256",
+					"checksumValue": "f398eefa8f6144ccf58b154501644c73e8b801ca8abb27e7af2e6b27308a4eb7"
+				}
+			],
+			"copyrightText": "NOASSERTION",
+			"downloadLocation": "NOASSERTION",
+			"filesAnalyzed": false,
+			"homepage": "NOASSERTION",
+			"licenseConcluded": "GPL-2.0-only",
+			"licenseDeclared": "NOASSERTION",
+			"name": "debian:bookworm:binutils",
+			"versionInfo": "2.40-2"
+		},
+		{
+			"SPDXID": "SPDXRef-Package-debian-bookworm-binutils-common-2.40-2",
+			"checksums": [
+				{
+					"algorithm": "SHA256",
+					"checksumValue": "2be58e4643e750ebb1fe1e9f022ac33d1e11b2e75674a95a3ac0b3de1f3e5b16"
+				}
+			],
+			"copyrightText": "NOASSERTION",
+			"downloadLocation": "NOASSERTION",
+			"filesAnalyzed": false,
+			"homepage": "NOASSERTION",
+			"licenseConcluded": "GPL-2.0-only",
+			"licenseDeclared": "NOASSERTION",
+			"name": "debian:bookworm:binutils-common",
+			"versionInfo": "2.40-2"
+		},
+		{
+			"SPDXID": "SPDXRef-Package-debian-bookworm-binutils-x86-64-linux-gnu-2.40-2",
+			"checksums": [
+				{
+					"algorithm": "SHA256",
+					"checksumValue": "331228bbf9a294c5812962bd2949431f468bd6d1c1a2dbb9be88cc5573be811d"
+				}
+			],
+			"copyrightText": "NOASSERTION",
+			"downloadLocation": "NOASSERTION",
+			"filesAnalyzed": false,
+			"homepage": "NOASSERTION",
+			"licenseConcluded": "GPL-2.0",
+			"licenseDeclared": "NOASSERTION",
+			"name": "debian:bookworm:binutils-x86-64-linux-gnu",
+			"versionInfo": "2.40-2"
+		},
+		{
+			"SPDXID": "SPDXRef-Package-debian-bookworm-bsdutils-1-2.38.1-5-b1",
+			"checksums": [
+				{
+					"algorithm": "SHA256",
+					"checksumValue": "9ec9346ef78d9d0d5a730edb88dfdb6c5fc7bb5ff27c69282b7e939332632cbd"
+				}
+			],
+			"copyrightText": "NOASSERTION",
+			"downloadLocation": "NOASSERTION",
+			"filesAnalyzed": false,
+			"homepage": "NOASSERTION",
+			"licenseConcluded": "NOASSERTION",
+			"licenseDeclared": "NOASSERTION",
+			"name": "debian:bookworm:bsdutils",
+			"versionInfo": "1:2.38.1-5+b1"
+		},
+		{
+			"SPDXID": "SPDXRef-Package-debian-bookworm-bzip2-1.0.8-5-b1",
+			"checksums": [
+				{
+					"algorithm": "SHA256",
+					"checksumValue": "14d209927c9499cdb4fb4b9311353801cdf6c70eede97c8ca1d6cc72aac7bb2b"
+				}
+			],
+			"copyrightText": "NOASSERTION",
+			"downloadLocation": "NOASSERTION",
+			"filesAnalyzed": false,
+			"homepage": "NOASSERTION",
+			"licenseConcluded": "GPL-2.0-only",
+			"licenseDeclared": "NOASSERTION",
+			"name": "debian:bookworm:bzip2",
+			"versionInfo": "1.0.8-5+b1"
+		},
+		{
+			"SPDXID": "SPDXRef-Package-debian-bookworm-ca-certificates-20230311",
+			"checksums": [
+				{
+					"algorithm": "SHA256",
+					"checksumValue": "cd05adfad4fd185dbdeed32bed0ccf70675eca558c9c052a5ed422ccc7dfa5d5"
+				}
+			],
+			"copyrightText": "NOASSERTION",
+			"downloadLocation": "NOASSERTION",
+			"filesAnalyzed": false,
+			"homepage": "NOASSERTION",
+			"licenseConcluded": "NOASSERTION",
+			"licenseDeclared": "NOASSERTION",
+			"name": "debian:bookworm:ca-certificates",
+			"versionInfo": "20230311"
+		},
+		{
+			"SPDXID": "SPDXRef-Package-debian-bookworm-coreutils-9.1-1",
+			"checksums": [
+				{
+					"algorithm": "SHA256",
+					"checksumValue": "a9469acf34e9b4d63d5795effffd94448d82bb8ffa8667e24462464c067ac3f4"
+				}
+			],
+			"copyrightText": "NOASSERTION",
+			"downloadLocation": "NOASSERTION",
+			"filesAnalyzed": false,
+			"homepage": "NOASSERTION",
+			"licenseConcluded": "(GPL-2.0-only AND GPL-3.0-only AND ISC AND BSD-3-Clause)",
+			"licenseDeclared": "NOASSERTION",
+			"name": "debian:bookworm:coreutils",
+			"versionInfo": "9.1-1"
+		},
+		{
+			"SPDXID": "SPDXRef-Package-debian-bookworm-cpp-12-12.2.0-14",
+			"checksums": [
+				{
+					"algorithm": "SHA256",
+					"checksumValue": "13ae0a50bce702db248b731e2a0e4cb444af771f169d3bbe6261f814ceb34d3c"
+				}
+			],
+			"copyrightText": "NOASSERTION",
+			"downloadLocation": "NOASSERTION",
+			"filesAnalyzed": false,
+			"homepage": "NOASSERTION",
+			"licenseConcluded": "(LGPL-3.0-only AND MIT-feh AND Mup AND Spencer-94 AND Zlib AND BSD-2-Clause AND BSD-3-Clause-No-Nuclear-License-2014 AND LGPL-2.1-only AND MIT AND Unicode-DFS-2015 AND BSD-3-Clause AND BSD-4-Clause-UC)",
+			"licenseDeclared": "NOASSERTION",
+			"name": "debian:bookworm:cpp-12",
+			"versionInfo": "12.2.0-14"
+		},
+		{
+			"SPDXID": "SPDXRef-Package-debian-bookworm-cpp-4-12.2.0-3",
+			"checksums": [
+				{
+					"algorithm": "SHA256",
+					"checksumValue": "c6522f54f9a88a2020a5b23cc7325b24d721580cffc8156cf09a8537caa4aa4a"
+				}
+			],
+			"copyrightText": "NOASSERTION",
+			"downloadLocation": "NOASSERTION",
+			"filesAnalyzed": false,
+			"homepage": "NOASSERTION",
+			"licenseConcluded": "BSD-2-Clause",
+			"licenseDeclared": "NOASSERTION",
+			"name": "debian:bookworm:cpp",
+			"versionInfo": "4:12.2.0-3"
+		},
+		{
+			"SPDXID": "SPDXRef-Package-debian-bookworm-curl-7.88.1-10-deb12u1",
+			"checksums": [
+				{
+					"algorithm": "SHA256",
+					"checksumValue": "4da8e04198173ed12bd2c654e0ac42fbb0c3323fbc8758131c78ef6c6b153368"
+				}
+			],
+			"copyrightText": "NOASSERTION",
+			"downloadLocation": "NOASSERTION",
+			"filesAnalyzed": false,
+			"homepage": "NOASSERTION",
+			"licenseConcluded": "(X11 AND BSD-3-Clause AND BSD-4-Clause-UC AND curl AND FSFULLR AND GPL-2.0-or-later AND GPL-3.0-or-later AND ISC)",
+			"licenseDeclared": "NOASSERTION",
+			"name": "debian:bookworm:curl",
+			"versionInfo": "7.88.1-10+deb12u1"
+		},
+		{
+			"SPDXID": "SPDXRef-Package-debian-bookworm-dash-0.5.12-2",
+			"checksums": [
+				{
+					"algorithm": "SHA256",
+					"checksumValue": "e8f5de1edb84507b5dbaac2ad11f973459c1c8b99ff5b985469728b1219db630"
+				}
+			],
+			"copyrightText": "NOASSERTION",
+			"downloadLocation": "NOASSERTION",
+			"filesAnalyzed": false,
+			"homepage": "NOASSERTION",
+			"licenseConcluded": "(BSD-3-Clause AND FSFUL AND FSFULLR AND GPL-2.0-or-later)",
+			"licenseDeclared": "NOASSERTION",
+			"name": "debian:bookworm:dash",
+			"versionInfo": "0.5.12-2"
+		},
+		{
+			"SPDXID": "SPDXRef-Package-debian-bookworm-debconf-1.5.82",
+			"checksums": [
+				{
+					"algorithm": "SHA256",
+					"checksumValue": "17f0a59d1b1b177cefe58fa37d273f7f2f5fbfcb59dae7c425c1d44b6eaf57d4"
+				}
+			],
+			"copyrightText": "NOASSERTION",
+			"downloadLocation": "NOASSERTION",
+			"filesAnalyzed": false,
+			"homepage": "NOASSERTION",
+			"licenseConcluded": "BSD-2-Clause",
+			"licenseDeclared": "NOASSERTION",
+			"name": "debian:bookworm:debconf",
+			"versionInfo": "1.5.82"
+		},
+		{
+			"SPDXID": "SPDXRef-Package-debian-bookworm-debian-archive-keyring-2023.3",
+			"checksums": [
+				{
+					"algorithm": "SHA256",
+					"checksumValue": "f35ee6f2aaeba280bc9bf97902381b4fbf0941d2af746ca4931d28119e935624"
+				}
+			],
+			"copyrightText": "NOASSERTION",
+			"downloadLocation": "NOASSERTION",
+			"filesAnalyzed": false,
+			"homepage": "NOASSERTION",
+			"licenseConcluded": "NOASSERTION",
+			"licenseDeclared": "NOASSERTION",
+			"name": "debian:bookworm:debian-archive-keyring",
+			"versionInfo": "2023.3"
+		},
+		{
+			"SPDXID": "SPDXRef-Package-debian-bookworm-debianutils-5.7-0.4",
+			"checksums": [
+				{
+					"algorithm": "SHA256",
+					"checksumValue": "e9b755d3467705dbc054140bc2ada6d48017706bb3483307d895d52b7095267d"
+				}
+			],
+			"copyrightText": "NOASSERTION",
+			"downloadLocation": "NOASSERTION",
+			"filesAnalyzed": false,
+			"homepage": "NOASSERTION",
+			"licenseConcluded": "NOASSERTION",
+			"licenseDeclared": "NOASSERTION",
+			"name": "debian:bookworm:debianutils",
+			"versionInfo": "5.7-0.4"
+		},
+		{
+			"SPDXID": "SPDXRef-Package-debian-bookworm-diffutils-1-3.8-4",
+			"checksums": [
+				{
+					"algorithm": "SHA256",
+					"checksumValue": "7eda0d4ccf2ec31b1a7785d16a274d4ba40f92c3b8bca04e537b60d5cc74f19e"
+				}
+			],
+			"copyrightText": "NOASSERTION",
+			"downloadLocation": "NOASSERTION",
+			"filesAnalyzed": false,
+			"homepage": "NOASSERTION",
+			"licenseConcluded": "NOASSERTION",
+			"licenseDeclared": "NOASSERTION",
+			"name": "debian:bookworm:diffutils",
+			"versionInfo": "1:3.8-4"
+		},
+		{
+			"SPDXID": "SPDXRef-Package-debian-bookworm-dpkg-1.21.22",
+			"checksums": [
+				{
+					"algorithm": "SHA256",
+					"checksumValue": "58a8547381a9b45597275fdded9c3cb4fe1635d246d13e2784e63a6d56378582"
+				}
+			],
+			"copyrightText": "NOASSERTION",
+			"downloadLocation": "NOASSERTION",
+			"filesAnalyzed": false,
+			"homepage": "NOASSERTION",
+			"licenseConcluded": "(GPL-2.0-only AND GPL-2.0-or-later AND BSD-2-Clause)",
+			"licenseDeclared": "NOASSERTION",
+			"name": "debian:bookworm:dpkg",
+			"versionInfo": "1.21.22"
+		},
+		{
+			"SPDXID": "SPDXRef-Package-debian-bookworm-dpkg-dev-1.21.22",
+			"checksums": [
+				{
+					"algorithm": "SHA256",
+					"checksumValue": "8c901a7ca711ccc63e9ec3cc3698518e20bd0672446cc827b114a5001d325c04"
+				}
+			],
+			"copyrightText": "NOASSERTION",
+			"downloadLocation": "NOASSERTION",
+			"filesAnalyzed": false,
+			"homepage": "NOASSERTION",
+			"licenseConcluded": "(BSD-2-Clause AND GPL-2.0-only AND GPL-2.0-or-later)",
+			"licenseDeclared": "NOASSERTION",
+			"name": "debian:bookworm:dpkg-dev",
+			"versionInfo": "1.21.22"
+		},
+		{
+			"SPDXID": "SPDXRef-Package-debian-bookworm-e2fsprogs-1.47.0-2",
+			"checksums": [
+				{
+					"algorithm": "SHA256",
+					"checksumValue": "258e6cfff6a1b06770b353cc073901aec60ddf658cdf66a3c45a507327a93154"
+				}
+			],
+			"copyrightText": "NOASSERTION",
+			"downloadLocation": "NOASSERTION",
+			"filesAnalyzed": false,
+			"homepage": "NOASSERTION",
+			"licenseConcluded": "BSD-3-Clause",
+			"licenseDeclared": "NOASSERTION",
+			"name": "debian:bookworm:e2fsprogs",
+			"versionInfo": "1.47.0-2"
+		},
+		{
+			"SPDXID": "SPDXRef-Package-debian-bookworm-file-1-5.44-3",
+			"checksums": [
+				{
+					"algorithm": "SHA256",
+					"checksumValue": "2d5404987ed1c7481053ca65b781d3518a628797044f440d56f0b33ff97397fe"
+				}
+			],
+			"copyrightText": "NOASSERTION",
+			"downloadLocation": "NOASSERTION",
+			"filesAnalyzed": false,
+			"homepage": "NOASSERTION",
+			"licenseConcluded": "(BSD-2-Clause AND MIT)",
+			"licenseDeclared": "NOASSERTION",
+			"name": "debian:bookworm:file",
+			"versionInfo": "1:5.44-3"
+		},
+		{
+			"SPDXID": "SPDXRef-Package-debian-bookworm-findutils-4.9.0-4",
+			"checksums": [
+				{
+					"algorithm": "SHA256",
+					"checksumValue": "d280964dcd99089323b703fceda9bad82944c5e3d642fedf85c0c9ee885c93a5"
+				}
+			],
+			"copyrightText": "NOASSERTION",
+			"downloadLocation": "NOASSERTION",
+			"filesAnalyzed": false,
+			"homepage": "NOASSERTION",
+			"licenseConcluded": "NOASSERTION",
+			"licenseDeclared": "NOASSERTION",
+			"name": "debian:bookworm:findutils",
+			"versionInfo": "4.9.0-4"
+		},
+		{
+			"SPDXID": "SPDXRef-Package-debian-bookworm-g---12-12.2.0-14",
+			"checksums": [
+				{
+					"algorithm": "SHA256",
+					"checksumValue": "12a2adf4d5750630302ccd966628636a5b4021b278215c9e2ece0e62fe8b4218"
+				}
+			],
+			"copyrightText": "NOASSERTION",
+			"downloadLocation": "NOASSERTION",
+			"filesAnalyzed": false,
+			"homepage": "NOASSERTION",
+			"licenseConcluded": "(BSD-3-Clause AND BSD-3-Clause-No-Nuclear-License-2014 AND BSD-4-Clause-UC AND LGPL-2.1-only AND LGPL-3.0-only AND Unicode-DFS-2015 AND BSD-2-Clause AND MIT AND MIT-feh AND Mup AND Spencer-94 AND Zlib)",
+			"licenseDeclared": "NOASSERTION",
+			"name": "debian:bookworm:g++-12",
+			"versionInfo": "12.2.0-14"
+		},
+		{
+			"SPDXID": "SPDXRef-Package-debian-bookworm-g---4-12.2.0-3",
+			"checksums": [
+				{
+					"algorithm": "SHA256",
+					"checksumValue": "cf326989ceb22a6d7e82ce4749e7356e52a72da1fd93bf8f630c00c80452bfa5"
+				}
+			],
+			"copyrightText": "NOASSERTION",
+			"downloadLocation": "NOASSERTION",
+			"filesAnalyzed": false,
+			"homepage": "NOASSERTION",
+			"licenseConcluded": "NOASSERTION",
+			"licenseDeclared": "NOASSERTION",
+			"name": "debian:bookworm:g++",
+			"versionInfo": "4:12.2.0-3"
+		},
+		{
+			"SPDXID": "SPDXRef-Package-debian-bookworm-gcc-12-12.2.0-14",
+			"checksums": [
+				{
+					"algorithm": "SHA256",
+					"checksumValue": "5b293e392ffbb49aef0618520be65ea01393e2538cde889b794ec3eef64446f7"
+				}
+			],
+			"copyrightText": "NOASSERTION",
+			"downloadLocation": "NOASSERTION",
+			"filesAnalyzed": false,
+			"homepage": "NOASSERTION",
+			"licenseConcluded": "(Mup AND Unicode-DFS-2015 AND BSD-2-Clause AND BSD-3-Clause AND BSD-3-Clause-No-Nuclear-License-2014 AND BSD-4-Clause-UC AND LGPL-2.1-only AND MIT AND LGPL-3.0-only AND MIT-feh AND Spencer-94 AND Zlib)",
+			"licenseDeclared": "NOASSERTION",
+			"name": "debian:bookworm:gcc-12",
+			"versionInfo": "12.2.0-14"
+		},
+		{
+			"SPDXID": "SPDXRef-Package-debian-bookworm-gcc-12-base-12.2.0-14",
+			"checksums": [
+				{
+					"algorithm": "SHA256",
+					"checksumValue": "3dd09888c33917365878c026931665799dc28719939a0d7df52b9223c29cbd3c"
+				}
+			],
+			"copyrightText": "NOASSERTION",
+			"downloadLocation": "NOASSERTION",
+			"filesAnalyzed": false,
+			"homepage": "NOASSERTION",
+			"licenseConcluded": "(Unicode-DFS-2015 AND BSD-2-Clause AND BSD-3-Clause-No-Nuclear-License-2014 AND LGPL-2.1-only AND LGPL-3.0-only AND Mup AND Zlib AND BSD-3-Clause AND BSD-4-Clause-UC AND MIT AND MIT-feh AND Spencer-94)",
+			"licenseDeclared": "NOASSERTION",
+			"name": "debian:bookworm:gcc-12-base",
+			"versionInfo": "12.2.0-14"
+		},
+		{
+			"SPDXID": "SPDXRef-Package-debian-bookworm-gcc-4-12.2.0-3",
+			"checksums": [
+				{
+					"algorithm": "SHA256",
+					"checksumValue": "7942e0355255cb34b03c091b6342bd7d95b1a34ddb860415d57833decaea814a"
+				}
+			],
+			"copyrightText": "NOASSERTION",
+			"downloadLocation": "NOASSERTION",
+			"filesAnalyzed": false,
+			"homepage": "NOASSERTION",
+			"licenseConcluded": "NOASSERTION",
+			"licenseDeclared": "NOASSERTION",
+			"name": "debian:bookworm:gcc",
+			"versionInfo": "4:12.2.0-3"
+		},
+		{
+			"SPDXID": "SPDXRef-Package-debian-bookworm-gpgv-2.2.40-1.1",
+			"checksums": [
+				{
+					"algorithm": "SHA256",
+					"checksumValue": "9452cd915b0e5ab8f851097ab522a8b59252fde7811d9340bc9da77ebd586baf"
+				}
+			],
+			"copyrightText": "NOASSERTION",
+			"downloadLocation": "NOASSERTION",
+			"filesAnalyzed": false,
+			"homepage": "NOASSERTION",
+			"licenseConcluded": "(BSD-3-Clause AND CC0-1.0 AND GPL-3.0-or-later)",
+			"licenseDeclared": "NOASSERTION",
+			"name": "debian:bookworm:gpgv",
+			"versionInfo": "2.2.40-1.1"
+		},
+		{
+			"SPDXID": "SPDXRef-Package-debian-bookworm-grep-3.8-5",
+			"checksums": [
+				{
+					"algorithm": "SHA256",
+					"checksumValue": "3011e01eaff6ac883783bd5e010597d04caab0d6b4a2b3916eaa93e19121ee2a"
+				}
+			],
+			"copyrightText": "NOASSERTION",
+			"downloadLocation": "NOASSERTION",
+			"filesAnalyzed": false,
+			"homepage": "NOASSERTION",
+			"licenseConcluded": "GPL-3.0",
+			"licenseDeclared": "NOASSERTION",
+			"name": "debian:bookworm:grep",
+			"versionInfo": "3.8-5"
+		},
+		{
+			"SPDXID": "SPDXRef-Package-debian-bookworm-gzip-1.12-1",
+			"checksums": [
+				{
+					"algorithm": "SHA256",
+					"checksumValue": "5de887315c49c042688a216564b41fef96f3f751f29c707cafb722dc844b7284"
+				}
+			],
+			"copyrightText": "NOASSERTION",
+			"downloadLocation": "NOASSERTION",
+			"filesAnalyzed": false,
+			"homepage": "NOASSERTION",
+			"licenseConcluded": "NOASSERTION",
+			"licenseDeclared": "NOASSERTION",
+			"name": "debian:bookworm:gzip",
+			"versionInfo": "1.12-1"
+		},
+		{
+			"SPDXID": "SPDXRef-Package-debian-bookworm-hostname-3.23-nmu1",
+			"checksums": [
+				{
+					"algorithm": "SHA256",
+					"checksumValue": "dacf3f735bf16aaad81c2f0f0b76a1ca0ae57609b80859564a191efb413029c7"
+				}
+			],
+			"copyrightText": "NOASSERTION",
+			"downloadLocation": "NOASSERTION",
+			"filesAnalyzed": false,
+			"homepage": "NOASSERTION",
+			"licenseConcluded": "NOASSERTION",
+			"licenseDeclared": "NOASSERTION",
+			"name": "debian:bookworm:hostname",
+			"versionInfo": "3.23+nmu1"
+		},
+		{
+			"SPDXID": "SPDXRef-Package-debian-bookworm-init-system-helpers-1.65.2",
+			"checksums": [
+				{
+					"algorithm": "SHA256",
+					"checksumValue": "ca759a5096a467ea7697abb85dd12c55473845f09d05401eb35aaf77f8337155"
+				}
+			],
+			"copyrightText": "NOASSERTION",
+			"downloadLocation": "NOASSERTION",
+			"filesAnalyzed": false,
+			"homepage": "NOASSERTION",
+			"licenseConcluded": "(BSD-2-Clause AND GPL-2.0)",
+			"licenseDeclared": "NOASSERTION",
+			"name": "debian:bookworm:init-system-helpers",
+			"versionInfo": "1.65.2"
+		},
+		{
+			"SPDXID": "SPDXRef-Package-debian-bookworm-iputils-ping-3-20221126-1",
+			"checksums": [
+				{
+					"algorithm": "SHA256",
+					"checksumValue": "936ea2e8514380ad03914a8c47865e62c6d151afdf215e970595f536586cf954"
+				}
+			],
+			"copyrightText": "NOASSERTION",
+			"downloadLocation": "NOASSERTION",
+			"filesAnalyzed": false,
+			"homepage": "NOASSERTION",
+			"licenseConcluded": "NOASSERTION",
+			"licenseDeclared": "NOASSERTION",
+			"name": "debian:bookworm:iputils-ping",
+			"versionInfo": "3:20221126-1"
+		},
+		{
+			"SPDXID": "SPDXRef-Package-debian-bookworm-libacl1-2.3.1-3",
+			"checksums": [
+				{
+					"algorithm": "SHA256",
+					"checksumValue": "24c223136c039f4abd7c1f76c76f00ad77a12a5ab601f7d763c9eacd852d8f03"
+				}
+			],
+			"copyrightText": "NOASSERTION",
+			"downloadLocation": "NOASSERTION",
+			"filesAnalyzed": false,
+			"homepage": "NOASSERTION",
+			"licenseConcluded": "(LGPL-3.0 AND GPL-2.0)",
+			"licenseDeclared": "NOASSERTION",
+			"name": "debian:bookworm:libacl1",
+			"versionInfo": "2.3.1-3"
+		},
+		{
+			"SPDXID": "SPDXRef-Package-debian-bookworm-libapr1-1.7.2-3",
+			"checksums": [
+				{
+					"algorithm": "SHA256",
+					"checksumValue": "3e944a7506e647e521a10ae703de04589605113b47f49c5b384b7f3767857aae"
+				}
+			],
+			"copyrightText": "NOASSERTION",
+			"downloadLocation": "NOASSERTION",
+			"filesAnalyzed": false,
+			"homepage": "NOASSERTION",
+			"licenseConcluded": "(BSD-2-Clause AND ISC AND Zlib)",
+			"licenseDeclared": "NOASSERTION",
+			"name": "debian:bookworm:libapr1",
+			"versionInfo": "1.7.2-3"
+		},
+		{
+			"SPDXID": "SPDXRef-Package-debian-bookworm-libaprutil1-1.6.3-1",
+			"checksums": [
+				{
+					"algorithm": "SHA256",
+					"checksumValue": "b4af16f66440befb6210c5f4eff8fe80e5ac9961627294b81ef9db6aff1f31f5"
+				}
+			],
+			"copyrightText": "NOASSERTION",
+			"downloadLocation": "NOASSERTION",
+			"filesAnalyzed": false,
+			"homepage": "NOASSERTION",
+			"licenseConcluded": "NOASSERTION",
+			"licenseDeclared": "NOASSERTION",
+			"name": "debian:bookworm:libaprutil1",
+			"versionInfo": "1.6.3-1"
+		},
+		{
+			"SPDXID": "SPDXRef-Package-debian-bookworm-libaprutil1-dbd-sqlite3-1.6.3-1",
+			"checksums": [
+				{
+					"algorithm": "SHA256",
+					"checksumValue": "40459220cf6e28a92dd8a18ee65846469e3d511b47c6f8526a910d931c99e828"
+				}
+			],
+			"copyrightText": "NOASSERTION",
+			"downloadLocation": "NOASSERTION",
+			"filesAnalyzed": false,
+			"homepage": "NOASSERTION",
+			"licenseConcluded": "NOASSERTION",
+			"licenseDeclared": "NOASSERTION",
+			"name": "debian:bookworm:libaprutil1-dbd-sqlite3",
+			"versionInfo": "1.6.3-1"
+		},
+		{
+			"SPDXID": "SPDXRef-Package-debian-bookworm-libaprutil1-ldap-1.6.3-1",
+			"checksums": [
+				{
+					"algorithm": "SHA256",
+					"checksumValue": "d7343d8ddbb5be9e1f203a888290e80fa64703753c7214b69fdf252a29ad2702"
+				}
+			],
+			"copyrightText": "NOASSERTION",
+			"downloadLocation": "NOASSERTION",
+			"filesAnalyzed": false,
+			"homepage": "NOASSERTION",
+			"licenseConcluded": "NOASSERTION",
+			"licenseDeclared": "NOASSERTION",
+			"name": "debian:bookworm:libaprutil1-ldap",
+			"versionInfo": "1.6.3-1"
+		},
+		{
+			"SPDXID": "SPDXRef-Package-debian-bookworm-libapt-pkg6.0-2.6.1",
+			"checksums": [
+				{
+					"algorithm": "SHA256",
+					"checksumValue": "3ffda4c4fede0fcf07370a65013040d02ab805f1ea87f94aad9e0f0314142901"
+				}
+			],
+			"copyrightText": "NOASSERTION",
+			"downloadLocation": "NOASSERTION",
+			"filesAnalyzed": false,
+			"homepage": "NOASSERTION",
+			"licenseConcluded": "(BSD-3-Clause AND GPL-2.0-only AND GPL-2.0-or-later)",
+			"licenseDeclared": "NOASSERTION",
+			"name": "debian:bookworm:libapt-pkg6.0",
+			"versionInfo": "2.6.1"
+		},
+		{
+			"SPDXID": "SPDXRef-Package-debian-bookworm-libargon2-1-0-20171227-0.3-deb12u1",
+			"checksums": [
+				{
+					"algorithm": "SHA256",
+					"checksumValue": "3f15112ad0c3fef69d628ec27841d9c3c0c4c1b71a8bb63300faef4fd9c933e8"
+				}
+			],
+			"copyrightText": "NOASSERTION",
+			"downloadLocation": "NOASSERTION",
+			"filesAnalyzed": false,
+			"homepage": "NOASSERTION",
+			"licenseConcluded": "(Apache-2.0 AND CC0-1.0)",
+			"licenseDeclared": "NOASSERTION",
+			"name": "debian:bookworm:libargon2-1",
+			"versionInfo": "0~20171227-0.3+deb12u1"
+		},
+		{
+			"SPDXID": "SPDXRef-Package-debian-bookworm-libasan8-12.2.0-14",
+			"checksums": [
+				{
+					"algorithm": "SHA256",
+					"checksumValue": "e6bd694c8448884363f88e881cd55aedb5bace439cd74c21960fd229bfe6e68d"
+				}
+			],
+			"copyrightText": "NOASSERTION",
+			"downloadLocation": "NOASSERTION",
+			"filesAnalyzed": false,
+			"homepage": "NOASSERTION",
+			"licenseConcluded": "(LGPL-3.0-only AND Zlib AND LGPL-2.1-only AND BSD-3-Clause AND BSD-3-Clause-No-Nuclear-License-2014 AND BSD-4-Clause-UC AND MIT AND MIT-feh AND Mup AND Spencer-94 AND BSD-2-Clause AND Unicode-DFS-2015)",
+			"licenseDeclared": "NOASSERTION",
+			"name": "debian:bookworm:libasan8",
+			"versionInfo": "12.2.0-14"
+		},
+		{
+			"SPDXID": "SPDXRef-Package-debian-bookworm-libatomic1-12.2.0-14",
+			"checksums": [
+				{
+					"algorithm": "SHA256",
+					"checksumValue": "c51000fddff1f340d8a028dd7ee67084f641bbc2885c95427443f12d994c2d78"
+				}
+			],
+			"copyrightText": "NOASSERTION",
+			"downloadLocation": "NOASSERTION",
+			"filesAnalyzed": false,
+			"homepage": "NOASSERTION",
+			"licenseConcluded": "(Zlib AND BSD-3-Clause-No-Nuclear-License-2014 AND MIT-feh AND Mup AND Spencer-94 AND Unicode-DFS-2015 AND MIT AND BSD-2-Clause AND BSD-3-Clause AND BSD-4-Clause-UC AND LGPL-2.1-only AND LGPL-3.0-only)",
+			"licenseDeclared": "NOASSERTION",
+			"name": "debian:bookworm:libatomic1",
+			"versionInfo": "12.2.0-14"
+		},
+		{
+			"SPDXID": "SPDXRef-Package-debian-bookworm-libattr1-1-2.5.1-4",
+			"checksums": [
+				{
+					"algorithm": "SHA256",
+					"checksumValue": "ddf3d8c5b5fcc2d01cdd23e555f5f3f8727cee3b595bd2561d7123d85e6e17a4"
+				}
+			],
+			"copyrightText": "NOASSERTION",
+			"downloadLocation": "NOASSERTION",
+			"filesAnalyzed": false,
+			"homepage": "NOASSERTION",
+			"licenseConcluded": "(GPL-2.0 AND LGPL-3.0)",
+			"licenseDeclared": "NOASSERTION",
+			"name": "debian:bookworm:libattr1",
+			"versionInfo": "1:2.5.1-4"
+		},
+		{
+			"SPDXID": "SPDXRef-Package-debian-bookworm-libaudit-common-1-3.0.9-1",
+			"checksums": [
+				{
+					"algorithm": "SHA256",
+					"checksumValue": "1b3e34e154c6647c720574b1643c724e1623872043c894c3f5778707dd7cd605"
+				}
+			],
+			"copyrightText": "NOASSERTION",
+			"downloadLocation": "NOASSERTION",
+			"filesAnalyzed": false,
+			"homepage": "NOASSERTION",
+			"licenseConcluded": "(GPL-2.0 AND LGPL-2.1)",
+			"licenseDeclared": "NOASSERTION",
+			"name": "debian:bookworm:libaudit-common",
+			"versionInfo": "1:3.0.9-1"
+		},
+		{
+			"SPDXID": "SPDXRef-Package-debian-bookworm-libaudit1-1-3.0.9-1",
+			"checksums": [
+				{
+					"algorithm": "SHA256",
+					"checksumValue": "dcdc1db34e21e3a514c57b130497f4b13daf93dc95649fd6e9f236e1911bec10"
+				}
+			],
+			"copyrightText": "NOASSERTION",
+			"downloadLocation": "NOASSERTION",
+			"filesAnalyzed": false,
+			"homepage": "NOASSERTION",
+			"licenseConcluded": "(GPL-2.0-only AND LGPL-2.1-only)",
+			"licenseDeclared": "NOASSERTION",
+			"name": "debian:bookworm:libaudit1",
+			"versionInfo": "1:3.0.9-1"
+		},
+		{
+			"SPDXID": "SPDXRef-Package-debian-bookworm-libbinutils-2.40-2",
+			"checksums": [
+				{
+					"algorithm": "SHA256",
+					"checksumValue": "22ba9be31c019ba46ac562f2894a6b454671079b7124f2065c169d305b6dd7e0"
+				}
+			],
+			"copyrightText": "NOASSERTION",
+			"downloadLocation": "NOASSERTION",
+			"filesAnalyzed": false,
+			"homepage": "NOASSERTION",
+			"licenseConcluded": "GPL-2.0-only",
+			"licenseDeclared": "NOASSERTION",
+			"name": "debian:bookworm:libbinutils",
+			"versionInfo": "2.40-2"
+		},
+		{
+			"SPDXID": "SPDXRef-Package-debian-bookworm-libblkid1-2.38.1-5-b1",
+			"checksums": [
+				{
+					"algorithm": "SHA256",
+					"checksumValue": "f27df446c091e009536b1973fb4e2669faaaa5972ed06a625bc26eb24b88301c"
+				}
+			],
+			"copyrightText": "NOASSERTION",
+			"downloadLocation": "NOASSERTION",
+			"filesAnalyzed": false,
+			"homepage": "NOASSERTION",
+			"licenseConcluded": "NOASSERTION",
+			"licenseDeclared": "NOASSERTION",
+			"name": "debian:bookworm:libblkid1",
+			"versionInfo": "2.38.1-5+b1"
+		},
+		{
+			"SPDXID": "SPDXRef-Package-debian-bookworm-libbrotli-dev-1.0.9-2-b6",
+			"checksums": [
+				{
+					"algorithm": "SHA256",
+					"checksumValue": "b573823472af4877bde3c3008279dc43779d18e170e8e7efdec959be2a50d3ca"
+				}
+			],
+			"copyrightText": "NOASSERTION",
+			"downloadLocation": "NOASSERTION",
+			"filesAnalyzed": false,
+			"homepage": "NOASSERTION",
+			"licenseConcluded": "MIT",
+			"licenseDeclared": "NOASSERTION",
+			"name": "debian:bookworm:libbrotli-dev",
+			"versionInfo": "1.0.9-2+b6"
+		},
+		{
+			"SPDXID": "SPDXRef-Package-debian-bookworm-libbrotli1-1.0.9-2-b6",
+			"checksums": [
+				{
+					"algorithm": "SHA256",
+					"checksumValue": "682a2b93dec545916cafdff868be5ca8529af98b549dc27db32f990f89fb9e8e"
+				}
+			],
+			"copyrightText": "NOASSERTION",
+			"downloadLocation": "NOASSERTION",
+			"filesAnalyzed": false,
+			"homepage": "NOASSERTION",
+			"licenseConcluded": "MIT",
+			"licenseDeclared": "NOASSERTION",
+			"name": "debian:bookworm:libbrotli1",
+			"versionInfo": "1.0.9-2+b6"
+		},
+		{
+			"SPDXID": "SPDXRef-Package-debian-bookworm-libbz2-1.0-1.0.8-5-b1",
+			"checksums": [
+				{
+					"algorithm": "SHA256",
+					"checksumValue": "2a522a8abfa83820582d65bcddc9e0de0941e182af210fd8901f582f7d7b9104"
+				}
+			],
+			"copyrightText": "NOASSERTION",
+			"downloadLocation": "NOASSERTION",
+			"filesAnalyzed": false,
+			"homepage": "NOASSERTION",
+			"licenseConcluded": "GPL-2.0-only",
+			"licenseDeclared": "NOASSERTION",
+			"name": "debian:bookworm:libbz2-1.0",
+			"versionInfo": "1.0.8-5+b1"
+		},
+		{
+			"SPDXID": "SPDXRef-Package-debian-bookworm-libc-bin-2.36-9-deb12u1",
+			"checksums": [
+				{
+					"algorithm": "SHA256",
+					"checksumValue": "112407ffc0f33dded5c20e38e1d4e393686e2ef3d988a2a07d80ffb398103b99"
+				}
+			],
+			"copyrightText": "NOASSERTION",
+			"downloadLocation": "NOASSERTION",
+			"filesAnalyzed": false,
+			"homepage": "NOASSERTION",
+			"licenseConcluded": "(BSD-4-Clause-UC AND GPL-2.0-or-later AND Intel AND MIT AND MIT-CMU AND Spencer-94 AND BSD-3-Clause AND ISC AND LGPL-2.1-or-later)",
+			"licenseDeclared": "NOASSERTION",
+			"name": "debian:bookworm:libc-bin",
+			"versionInfo": "2.36-9+deb12u1"
+		},
+		{
+			"SPDXID": "SPDXRef-Package-debian-bookworm-libc-dev-bin-2.36-9-deb12u1",
+			"checksums": [
+				{
+					"algorithm": "SHA256",
+					"checksumValue": "bac6604563d0e08c5d494bc77513e7383a638f84ed213c83b835b19ae46115d4"
+				}
+			],
+			"copyrightText": "NOASSERTION",
+			"downloadLocation": "NOASSERTION",
+			"filesAnalyzed": false,
+			"homepage": "NOASSERTION",
+			"licenseConcluded": "(BSD-3-Clause AND BSD-4-Clause-UC AND Intel AND MIT AND Spencer-94 AND GPL-2.0-or-later AND ISC AND LGPL-2.1-or-later AND MIT-CMU)",
+			"licenseDeclared": "NOASSERTION",
+			"name": "debian:bookworm:libc-dev-bin",
+			"versionInfo": "2.36-9+deb12u1"
+		},
+		{
+			"SPDXID": "SPDXRef-Package-debian-bookworm-libc6-2.36-9-deb12u1",
+			"checksums": [
+				{
+					"algorithm": "SHA256",
+					"checksumValue": "8ff3514074a27f72eb6373f1669e923f9457ad6e8f249990f993c1eaccceb2bc"
+				}
+			],
+			"copyrightText": "NOASSERTION",
+			"downloadLocation": "NOASSERTION",
+			"filesAnalyzed": false,
+			"homepage": "NOASSERTION",
+			"licenseConcluded": "(BSD-3-Clause AND GPL-2.0-or-later AND ISC AND MIT AND Spencer-94 AND BSD-4-Clause-UC AND Intel AND LGPL-2.1-or-later AND MIT-CMU)",
+			"licenseDeclared": "NOASSERTION",
+			"name": "debian:bookworm:libc6",
+			"versionInfo": "2.36-9+deb12u1"
+		},
+		{
+			"SPDXID": "SPDXRef-Package-debian-bookworm-libc6-dev-2.36-9-deb12u1",
+			"checksums": [
+				{
+					"algorithm": "SHA256",
+					"checksumValue": "6f0bafd8ef2f7df37429377f4a32f9c93c8ecbae8a2317957890d93ce55e800d"
+				}
+			],
+			"copyrightText": "NOASSERTION",
+			"downloadLocation": "NOASSERTION",
+			"filesAnalyzed": false,
+			"homepage": "NOASSERTION",
+			"licenseConcluded": "(LGPL-2.1-or-later AND MIT AND MIT-CMU AND Spencer-94 AND BSD-3-Clause AND BSD-4-Clause-UC AND GPL-2.0-or-later AND Intel AND ISC)",
+			"licenseDeclared": "NOASSERTION",
+			"name": "debian:bookworm:libc6-dev",
+			"versionInfo": "2.36-9+deb12u1"
+		},
+		{
+			"SPDXID": "SPDXRef-Package-debian-bookworm-libcap-ng0-0.8.3-1-b3",
+			"checksums": [
+				{
+					"algorithm": "SHA256",
+					"checksumValue": "1769b6f15f3156e40cb43875e8edb55a8689f28c0725d082df29fee35b92f8fc"
+				}
+			],
+			"copyrightText": "NOASSERTION",
+			"downloadLocation": "NOASSERTION",
+			"filesAnalyzed": false,
+			"homepage": "NOASSERTION",
+			"licenseConcluded": "(GPL-2.0-or-later AND GPL-3.0-only)",
+			"licenseDeclared": "NOASSERTION",
+			"name": "debian:bookworm:libcap-ng0",
+			"versionInfo": "0.8.3-1+b3"
+		},
+		{
+			"SPDXID": "SPDXRef-Package-debian-bookworm-libcap2-1-2.66-4",
+			"checksums": [
+				{
+					"algorithm": "SHA256",
+					"checksumValue": "eac8e4c324c3bf1cabe6bbeddb6733cd59d2f9cbeb50ea81760cd973c29a34aa"
+				}
+			],
+			"copyrightText": "NOASSERTION",
+			"downloadLocation": "NOASSERTION",
+			"filesAnalyzed": false,
+			"homepage": "NOASSERTION",
+			"licenseConcluded": "(BSD-3-Clause AND GPL-2.0-only AND GPL-2.0-or-later)",
+			"licenseDeclared": "NOASSERTION",
+			"name": "debian:bookworm:libcap2",
+			"versionInfo": "1:2.66-4"
+		},
+		{
+			"SPDXID": "SPDXRef-Package-debian-bookworm-libcap2-bin-1-2.66-4",
+			"checksums": [
+				{
+					"algorithm": "SHA256",
+					"checksumValue": "ce7f349237e1976749323a8c983774a01f13363e47d8c899006a07073c860926"
+				}
+			],
+			"copyrightText": "NOASSERTION",
+			"downloadLocation": "NOASSERTION",
+			"filesAnalyzed": false,
+			"homepage": "NOASSERTION",
+			"licenseConcluded": "(GPL-2.0-only AND GPL-2.0-or-later AND BSD-3-Clause)",
+			"licenseDeclared": "NOASSERTION",
+			"name": "debian:bookworm:libcap2-bin",
+			"versionInfo": "1:2.66-4"
+		},
+		{
+			"SPDXID": "SPDXRef-Package-debian-bookworm-libcc1-0-12.2.0-14",
+			"checksums": [
+				{
+					"algorithm": "SHA256",
+					"checksumValue": "1f0e0efeb1407216f3752349dc8d50a6577e01ccb302e8cc8780cda386781d09"
+				}
+			],
+			"copyrightText": "NOASSERTION",
+			"downloadLocation": "NOASSERTION",
+			"filesAnalyzed": false,
+			"homepage": "NOASSERTION",
+			"licenseConcluded": "(BSD-3-Clause-No-Nuclear-License-2014 AND BSD-4-Clause-UC AND LGPL-2.1-only AND LGPL-3.0-only AND MIT AND Mup AND BSD-2-Clause AND MIT-feh AND Spencer-94 AND Unicode-DFS-2015 AND Zlib AND BSD-3-Clause)",
+			"licenseDeclared": "NOASSERTION",
+			"name": "debian:bookworm:libcc1-0",
+			"versionInfo": "12.2.0-14"
+		},
+		{
+			"SPDXID": "SPDXRef-Package-debian-bookworm-libcom-err2-1.47.0-2",
+			"checksums": [
+				{
+					"algorithm": "SHA256",
+					"checksumValue": "ca644d7c7c77c8a04cc64bd0a55cf68c6cd599f98e8766cb4d8f44b1fbb0da89"
+				}
+			],
+			"copyrightText": "NOASSERTION",
+			"downloadLocation": "NOASSERTION",
+			"filesAnalyzed": false,
+			"homepage": "NOASSERTION",
+			"licenseConcluded": "BSD-3-Clause",
+			"licenseDeclared": "NOASSERTION",
+			"name": "debian:bookworm:libcom-err2",
+			"versionInfo": "1.47.0-2"
+		},
+		{
+			"SPDXID": "SPDXRef-Package-debian-bookworm-libcrypt-dev-1-4.4.33-2",
+			"checksums": [
+				{
+					"algorithm": "SHA256",
+					"checksumValue": "2d964fb38f0d0e85cc1159053e0fd9a1a57283ec14034a7a59810aa467473c46"
+				}
+			],
+			"copyrightText": "NOASSERTION",
+			"downloadLocation": "NOASSERTION",
+			"filesAnalyzed": false,
+			"homepage": "NOASSERTION",
+			"licenseConcluded": "NOASSERTION",
+			"licenseDeclared": "NOASSERTION",
+			"name": "debian:bookworm:libcrypt-dev",
+			"versionInfo": "1:4.4.33-2"
+		},
+		{
+			"SPDXID": "SPDXRef-Package-debian-bookworm-libcrypt1-1-4.4.33-2",
+			"checksums": [
+				{
+					"algorithm": "SHA256",
+					"checksumValue": "f2d352cd468c2183647a7b27099f93076bdeb745df42177af26719fadb9ef9f4"
+				}
+			],
+			"copyrightText": "NOASSERTION",
+			"downloadLocation": "NOASSERTION",
+			"filesAnalyzed": false,
+			"homepage": "NOASSERTION",
+			"licenseConcluded": "NOASSERTION",
+			"licenseDeclared": "NOASSERTION",
+			"name": "debian:bookworm:libcrypt1",
+			"versionInfo": "1:4.4.33-2"
+		},
+		{
+			"SPDXID": "SPDXRef-Package-debian-bookworm-libctf-nobfd0-2.40-2",
+			"checksums": [
+				{
+					"algorithm": "SHA256",
+					"checksumValue": "21a9cb33bd4eb3feb65ab9847ec5def88c85dd2677c2e9ceab45775ce251413d"
+				}
+			],
+			"copyrightText": "NOASSERTION",
+			"downloadLocation": "NOASSERTION",
+			"filesAnalyzed": false,
+			"homepage": "NOASSERTION",
+			"licenseConcluded": "GPL-2.0-only",
+			"licenseDeclared": "NOASSERTION",
+			"name": "debian:bookworm:libctf-nobfd0",
+			"versionInfo": "2.40-2"
+		},
+		{
+			"SPDXID": "SPDXRef-Package-debian-bookworm-libctf0-2.40-2",
+			"checksums": [
+				{
+					"algorithm": "SHA256",
+					"checksumValue": "31608b3b26b466d8bf567357de3101bfa958389eedaf76c8cf9cb1528f79194e"
+				}
+			],
+			"copyrightText": "NOASSERTION",
+			"downloadLocation": "NOASSERTION",
+			"filesAnalyzed": false,
+			"homepage": "NOASSERTION",
+			"licenseConcluded": "GPL-2.0-only",
+			"licenseDeclared": "NOASSERTION",
+			"name": "debian:bookworm:libctf0",
+			"versionInfo": "2.40-2"
+		},
+		{
+			"SPDXID": "SPDXRef-Package-debian-bookworm-libcurl4-7.88.1-10-deb12u1",
+			"checksums": [
+				{
+					"algorithm": "SHA256",
+					"checksumValue": "74cbba517ca2134d91c1aa1f1e768b569f19abc80aa87a7cbf5d8af234553770"
+				}
+			],
+			"copyrightText": "NOASSERTION",
+			"downloadLocation": "NOASSERTION",
+			"filesAnalyzed": false,
+			"homepage": "NOASSERTION",
+			"licenseConcluded": "(GPL-3.0-or-later AND ISC AND X11 AND BSD-3-Clause AND BSD-4-Clause-UC AND curl AND FSFULLR AND GPL-2.0-or-later)",
+			"licenseDeclared": "NOASSERTION",
+			"name": "debian:bookworm:libcurl4",
+			"versionInfo": "7.88.1-10+deb12u1"
+		},
+		{
+			"SPDXID": "SPDXRef-Package-debian-bookworm-libdb5.3-5.3.28-dfsg2-1",
+			"checksums": [
+				{
+					"algorithm": "SHA256",
+					"checksumValue": "6037833d99bf6279f4e91d95db7307af766383f8a812239374229286712b4841"
+				}
+			],
+			"copyrightText": "NOASSERTION",
+			"downloadLocation": "NOASSERTION",
+			"filesAnalyzed": false,
+			"homepage": "NOASSERTION",
+			"licenseConcluded": "NOASSERTION",
+			"licenseDeclared": "NOASSERTION",
+			"name": "debian:bookworm:libdb5.3",
+			"versionInfo": "5.3.28+dfsg2-1"
+		},
+		{
+			"SPDXID": "SPDXRef-Package-debian-bookworm-libdebconfclient0-0.270",
+			"checksums": [
+				{
+					"algorithm": "SHA256",
+					"checksumValue": "7a5bfcbfa42fa104e0227d0139d2237f83cb86fe18754f948e572932832a5581"
+				}
+			],
+			"copyrightText": "NOASSERTION",
+			"downloadLocation": "NOASSERTION",
+			"filesAnalyzed": false,
+			"homepage": "NOASSERTION",
+			"licenseConcluded": "(BSD-2-Clause AND GPL-2.0-or-later)",
+			"licenseDeclared": "NOASSERTION",
+			"name": "debian:bookworm:libdebconfclient0",
+			"versionInfo": "0.270"
+		},
+		{
+			"SPDXID": "SPDXRef-Package-debian-bookworm-libdpkg-perl-1.21.22",
+			"checksums": [
+				{
+					"algorithm": "SHA256",
+					"checksumValue": "1e99cedcc6f75f2441120aaf4420408d532da86dd79d0a0b31e67bd824eb8434"
+				}
+			],
+			"copyrightText": "NOASSERTION",
+			"downloadLocation": "NOASSERTION",
+			"filesAnalyzed": false,
+			"homepage": "NOASSERTION",
+			"licenseConcluded": "(BSD-2-Clause AND GPL-2.0-only AND GPL-2.0-or-later)",
+			"licenseDeclared": "NOASSERTION",
+			"name": "debian:bookworm:libdpkg-perl",
+			"versionInfo": "1.21.22"
+		},
+		{
+			"SPDXID": "SPDXRef-Package-debian-bookworm-libexpat1-2.5.0-1",
+			"checksums": [
+				{
+					"algorithm": "SHA256",
+					"checksumValue": "48532fb5bb743918453bdfa907d4b7e2051eddae46f74241d8fc5cd0c5e85d96"
+				}
+			],
+			"copyrightText": "NOASSERTION",
+			"downloadLocation": "NOASSERTION",
+			"filesAnalyzed": false,
+			"homepage": "NOASSERTION",
+			"licenseConcluded": "MIT",
+			"licenseDeclared": "NOASSERTION",
+			"name": "debian:bookworm:libexpat1",
+			"versionInfo": "2.5.0-1"
+		},
+		{
+			"SPDXID": "SPDXRef-Package-debian-bookworm-libext2fs2-1.47.0-2",
+			"checksums": [
+				{
+					"algorithm": "SHA256",
+					"checksumValue": "fedfbafd1ccbdf95efc1b5a869f7a854d1d49b604b83007fa2e7b7158851eaad"
+				}
+			],
+			"copyrightText": "NOASSERTION",
+			"downloadLocation": "NOASSERTION",
+			"filesAnalyzed": false,
+			"homepage": "NOASSERTION",
+			"licenseConcluded": "BSD-3-Clause",
+			"licenseDeclared": "NOASSERTION",
+			"name": "debian:bookworm:libext2fs2",
+			"versionInfo": "1.47.0-2"
+		},
+		{
+			"SPDXID": "SPDXRef-Package-debian-bookworm-libffi8-3.4.4-1",
+			"checksums": [
+				{
+					"algorithm": "SHA256",
+					"checksumValue": "0d33cdff7b7ce0c3c398b5e09f3e5b84cc13b7583278ec541c2acb9a10d18d6a"
+				}
+			],
+			"copyrightText": "NOASSERTION",
+			"downloadLocation": "NOASSERTION",
+			"filesAnalyzed": false,
+			"homepage": "NOASSERTION",
+			"licenseConcluded": "MIT",
+			"licenseDeclared": "NOASSERTION",
+			"name": "debian:bookworm:libffi8",
+			"versionInfo": "3.4.4-1"
+		},
+		{
+			"SPDXID": "SPDXRef-Package-debian-bookworm-libfreetype-dev-2.12.1-dfsg-5",
+			"checksums": [
+				{
+					"algorithm": "SHA256",
+					"checksumValue": "00f13b150356c1198ca3a264ae7f7fea6e1ab425b9c2b7c365c7dc6c54dee846"
+				}
+			],
+			"copyrightText": "NOASSERTION",
+			"downloadLocation": "NOASSERTION",
+			"filesAnalyzed": false,
+			"homepage": "NOASSERTION",
+			"licenseConcluded": "(MIT AND Zlib AND BSD-3-Clause AND BSL-1.0 AND FSFAP AND FTL AND GPL-2.0-or-later AND GPL-3.0-or-later)",
+			"licenseDeclared": "NOASSERTION",
+			"name": "debian:bookworm:libfreetype-dev",
+			"versionInfo": "2.12.1+dfsg-5"
+		},
+		{
+			"SPDXID": "SPDXRef-Package-debian-bookworm-libfreetype6-2.12.1-dfsg-5",
+			"checksums": [
+				{
+					"algorithm": "SHA256",
+					"checksumValue": "4b8ef9c136bf0035eee4c9c7971fa3732583fa6fc460a71ebf20493fcb2ba3b9"
+				}
+			],
+			"copyrightText": "NOASSERTION",
+			"downloadLocation": "NOASSERTION",
+			"filesAnalyzed": false,
+			"homepage": "NOASSERTION",
+			"licenseConcluded": "(GPL-2.0-or-later AND GPL-3.0-or-later AND MIT AND Zlib AND BSD-3-Clause AND BSL-1.0 AND FSFAP AND FTL)",
+			"licenseDeclared": "NOASSERTION",
+			"name": "debian:bookworm:libfreetype6",
+			"versionInfo": "2.12.1+dfsg-5"
+		},
+		{
+			"SPDXID": "SPDXRef-Package-debian-bookworm-libfreetype6-dev-2.12.1-dfsg-5",
+			"checksums": [
+				{
+					"algorithm": "SHA256",
+					"checksumValue": "668c6f6f6649b6a837d106def93ffe23717e442d96864e7650ee84d216d4181b"
+				}
+			],
+			"copyrightText": "NOASSERTION",
+			"downloadLocation": "NOASSERTION",
+			"filesAnalyzed": false,
+			"homepage": "NOASSERTION",
+			"licenseConcluded": "(BSL-1.0 AND FSFAP AND FTL AND GPL-2.0-or-later AND GPL-3.0-or-later AND MIT AND Zlib AND BSD-3-Clause)",
+			"licenseDeclared": "NOASSERTION",
+			"name": "debian:bookworm:libfreetype6-dev",
+			"versionInfo": "2.12.1+dfsg-5"
+		},
+		{
+			"SPDXID": "SPDXRef-Package-debian-bookworm-libgcc-12-dev-12.2.0-14",
+			"checksums": [
+				{
+					"algorithm": "SHA256",
+					"checksumValue": "8917f1703fe345f80e2d8a0e4b931693e7201e18a798f01be8baebe29564106b"
+				}
+			],
+			"copyrightText": "NOASSERTION",
+			"downloadLocation": "NOASSERTION",
+			"filesAnalyzed": false,
+			"homepage": "NOASSERTION",
+			"licenseConcluded": "(BSD-4-Clause-UC AND LGPL-2.1-only AND LGPL-3.0-only AND MIT AND Mup AND Spencer-94 AND Unicode-DFS-2015 AND Zlib AND BSD-2-Clause AND BSD-3-Clause AND BSD-3-Clause-No-Nuclear-License-2014 AND MIT-feh)",
+			"licenseDeclared": "NOASSERTION",
+			"name": "debian:bookworm:libgcc-12-dev",
+			"versionInfo": "12.2.0-14"
+		},
+		{
+			"SPDXID": "SPDXRef-Package-debian-bookworm-libgcc-s1-12.2.0-14",
+			"checksums": [
+				{
+					"algorithm": "SHA256",
+					"checksumValue": "b15653ed852f89743610dd83bca511c87f3c848a0a8f6dd238a6af204f4b9c7d"
+				}
+			],
+			"copyrightText": "NOASSERTION",
+			"downloadLocation": "NOASSERTION",
+			"filesAnalyzed": false,
+			"homepage": "NOASSERTION",
+			"licenseConcluded": "(BSD-4-Clause-UC AND LGPL-3.0-only AND MIT-feh AND Spencer-94 AND Zlib AND BSD-2-Clause AND BSD-3-Clause-No-Nuclear-License-2014 AND MIT AND Mup AND Unicode-DFS-2015 AND BSD-3-Clause AND LGPL-2.1-only)",
+			"licenseDeclared": "NOASSERTION",
+			"name": "debian:bookworm:libgcc-s1",
+			"versionInfo": "12.2.0-14"
+		},
+		{
+			"SPDXID": "SPDXRef-Package-debian-bookworm-libgcrypt20-1.10.1-3",
+			"checksums": [
+				{
+					"algorithm": "SHA256",
+					"checksumValue": "e2ce9974853e7d69c2846c6920668c581a0109e6dc882d6bf3480c56405ae93c"
+				}
+			],
+			"copyrightText": "NOASSERTION",
+			"downloadLocation": "NOASSERTION",
+			"filesAnalyzed": false,
+			"homepage": "NOASSERTION",
+			"licenseConcluded": "(BSD-2-Clause AND LGPL-3.0 AND MIT AND X11)",
+			"licenseDeclared": "NOASSERTION",
+			"name": "debian:bookworm:libgcrypt20",
+			"versionInfo": "1.10.1-3"
+		},
+		{
+			"SPDXID": "SPDXRef-Package-debian-bookworm-libgdbm-compat4-1.23-3",
+			"checksums": [
+				{
+					"algorithm": "SHA256",
+					"checksumValue": "e66f9f1c536401c708fc62448627aed31b7c2f774613cebc8abca2501114205b"
+				}
+			],
+			"copyrightText": "NOASSERTION",
+			"downloadLocation": "NOASSERTION",
+			"filesAnalyzed": false,
+			"homepage": "NOASSERTION",
+			"licenseConcluded": "(GPL-2.0-or-later AND GPL-3.0-or-later)",
+			"licenseDeclared": "NOASSERTION",
+			"name": "debian:bookworm:libgdbm-compat4",
+			"versionInfo": "1.23-3"
+		},
+		{
+			"SPDXID": "SPDXRef-Package-debian-bookworm-libgdbm6-1.23-3",
+			"checksums": [
+				{
+					"algorithm": "SHA256",
+					"checksumValue": "c35f5478b4f7d46df9039c07269ca4511e4d35cbe1236809229cdd648aaae60f"
+				}
+			],
+			"copyrightText": "NOASSERTION",
+			"downloadLocation": "NOASSERTION",
+			"filesAnalyzed": false,
+			"homepage": "NOASSERTION",
+			"licenseConcluded": "(GPL-2.0-or-later AND GPL-3.0-or-later)",
+			"licenseDeclared": "NOASSERTION",
+			"name": "debian:bookworm:libgdbm6",
+			"versionInfo": "1.23-3"
+		},
+		{
+			"SPDXID": "SPDXRef-Package-debian-bookworm-libgmp10-2-6.2.1-dfsg1-1.1",
+			"checksums": [
+				{
+					"algorithm": "SHA256",
+					"checksumValue": "26589f168b9c84556e643f20f069fac3720cd4bfb2758f18abfeb8b70837a968"
+				}
+			],
+			"copyrightText": "NOASSERTION",
+			"downloadLocation": "NOASSERTION",
+			"filesAnalyzed": false,
+			"homepage": "NOASSERTION",
+			"licenseConcluded": "(GPL-2.0 AND GPL-3.0 AND LGPL-3.0)",
+			"licenseDeclared": "NOASSERTION",
+			"name": "debian:bookworm:libgmp10",
+			"versionInfo": "2:6.2.1+dfsg1-1.1"
+		},
+		{
+			"SPDXID": "SPDXRef-Package-debian-bookworm-libgnutls30-3.7.9-2",
+			"checksums": [
+				{
+					"algorithm": "SHA256",
+					"checksumValue": "7dcc3e9b20d74a100581f17095f85e4f022d85a4154998155bd430c249e9c684"
+				}
+			],
+			"copyrightText": "NOASSERTION",
+			"downloadLocation": "NOASSERTION",
+			"filesAnalyzed": false,
+			"homepage": "NOASSERTION",
+			"licenseConcluded": "(Apache-2.0 AND BSD-2-Clause AND GPL-3.0 AND ISC AND MIT)",
+			"licenseDeclared": "NOASSERTION",
+			"name": "debian:bookworm:libgnutls30",
+			"versionInfo": "3.7.9-2"
+		},
+		{
+			"SPDXID": "SPDXRef-Package-debian-bookworm-libgomp1-12.2.0-14",
+			"checksums": [
+				{
+					"algorithm": "SHA256",
+					"checksumValue": "f522452192e66e8dadda95160c48b311dc422f1c3d15c5ebd6f532506781985b"
+				}
+			],
+			"copyrightText": "NOASSERTION",
+			"downloadLocation": "NOASSERTION",
+			"filesAnalyzed": false,
+			"homepage": "NOASSERTION",
+			"licenseConcluded": "(BSD-2-Clause AND BSD-3-Clause AND BSD-3-Clause-No-Nuclear-License-2014 AND MIT-feh AND Unicode-DFS-2015 AND Zlib AND BSD-4-Clause-UC AND LGPL-2.1-only AND LGPL-3.0-only AND MIT AND Mup AND Spencer-94)",
+			"licenseDeclared": "NOASSERTION",
+			"name": "debian:bookworm:libgomp1",
+			"versionInfo": "12.2.0-14"
+		},
+		{
+			"SPDXID": "SPDXRef-Package-debian-bookworm-libgpg-error0-1.46-1",
+			"checksums": [
+				{
+					"algorithm": "SHA256",
+					"checksumValue": "c56e261cea752d92619cf426033673d1dcfaae0f60d88d64a7de5cd28dbf36c3"
+				}
+			],
+			"copyrightText": "NOASSERTION",
+			"downloadLocation": "NOASSERTION",
+			"filesAnalyzed": false,
+			"homepage": "NOASSERTION",
+			"licenseConcluded": "(BSD-2-Clause AND GPL-3.0 AND LGPL-3.0)",
+			"licenseDeclared": "NOASSERTION",
+			"name": "debian:bookworm:libgpg-error0",
+			"versionInfo": "1.46-1"
+		},
+		{
+			"SPDXID": "SPDXRef-Package-debian-bookworm-libgprofng0-2.40-2",
+			"checksums": [
+				{
+					"algorithm": "SHA256",
+					"checksumValue": "542e029f2fcf0c6d8f9fa9ec00946b74854be9881caef119fb1539325098f384"
+				}
+			],
+			"copyrightText": "NOASSERTION",
+			"downloadLocation": "NOASSERTION",
+			"filesAnalyzed": false,
+			"homepage": "NOASSERTION",
+			"licenseConcluded": "GPL-2.0-only",
+			"licenseDeclared": "NOASSERTION",
+			"name": "debian:bookworm:libgprofng0",
+			"versionInfo": "2.40-2"
+		},
+		{
+			"SPDXID": "SPDXRef-Package-debian-bookworm-libgssapi-krb5-2-1.20.1-2",
+			"checksums": [
+				{
+					"algorithm": "SHA256",
+					"checksumValue": "d64d578fcceab84174e44b8fbe45d4efc55bde319d4882b08043b869cfda6143"
+				}
+			],
+			"copyrightText": "NOASSERTION",
+			"downloadLocation": "NOASSERTION",
+			"filesAnalyzed": false,
+			"homepage": "NOASSERTION",
+			"licenseConcluded": "(ISC AND LicenseRef-OpenVision AND BSD-2-Clause AND BSD-4-Clause-UC AND HPND AND JSON AND MIT AND OLDAP-2.8 AND RSA-MD AND BSD-3-Clause)",
+			"licenseDeclared": "NOASSERTION",
+			"name": "debian:bookworm:libgssapi-krb5-2",
+			"versionInfo": "1.20.1-2"
+		},
+		{
+			"SPDXID": "SPDXRef-Package-debian-bookworm-libhogweed6-3.8.1-2",
+			"checksums": [
+				{
+					"algorithm": "SHA256",
+					"checksumValue": "1fc84928cf7318d920126472db4cf1a92e37e4adcf585e8f525156cb4b823c5d"
+				}
+			],
+			"copyrightText": "NOASSERTION",
+			"downloadLocation": "NOASSERTION",
+			"filesAnalyzed": false,
+			"homepage": "NOASSERTION",
+			"licenseConcluded": "NOASSERTION",
+			"licenseDeclared": "NOASSERTION",
+			"name": "debian:bookworm:libhogweed6",
+			"versionInfo": "3.8.1-2"
+		},
+		{
+			"SPDXID": "SPDXRef-Package-debian-bookworm-libicu72-72.1-3",
+			"checksums": [
+				{
+					"algorithm": "SHA256",
+					"checksumValue": "703ddb4949a8cffbc26dda4c4a4db6394ee933925b051d818e31404afb3dfe0c"
+				}
+			],
+			"copyrightText": "NOASSERTION",
+			"downloadLocation": "NOASSERTION",
+			"filesAnalyzed": false,
+			"homepage": "NOASSERTION",
+			"licenseConcluded": "NOASSERTION",
+			"licenseDeclared": "NOASSERTION",
+			"name": "debian:bookworm:libicu72",
+			"versionInfo": "72.1-3"
+		},
+		{
+			"SPDXID": "SPDXRef-Package-debian-bookworm-libidn2-0-2.3.3-1-b1",
+			"checksums": [
+				{
+					"algorithm": "SHA256",
+					"checksumValue": "c926d55fd2139c2e57f0b102aeda418d050f0e2a0ca6aea29a61a6b842eedede"
+				}
+			],
+			"copyrightText": "NOASSERTION",
+			"downloadLocation": "NOASSERTION",
+			"filesAnalyzed": false,
+			"homepage": "NOASSERTION",
+			"licenseConcluded": "(GPL-2.0-or-later AND GPL-3.0-or-later)",
+			"licenseDeclared": "NOASSERTION",
+			"name": "debian:bookworm:libidn2-0",
+			"versionInfo": "2.3.3-1+b1"
+		},
+		{
+			"SPDXID": "SPDXRef-Package-debian-bookworm-libisl23-0.25-1",
+			"checksums": [
+				{
+					"algorithm": "SHA256",
+					"checksumValue": "a86d6d24471eac5a500cc160e8d31b221fb6ad3dc7043d8fcf422bc532b35da3"
+				}
+			],
+			"copyrightText": "NOASSERTION",
+			"downloadLocation": "NOASSERTION",
+			"filesAnalyzed": false,
+			"homepage": "NOASSERTION",
+			"licenseConcluded": "(LGPL-3.0 AND MIT AND BSD-2-Clause)",
+			"licenseDeclared": "NOASSERTION",
+			"name": "debian:bookworm:libisl23",
+			"versionInfo": "0.25-1"
+		},
+		{
+			"SPDXID": "SPDXRef-Package-debian-bookworm-libitm1-12.2.0-14",
+			"checksums": [
+				{
+					"algorithm": "SHA256",
+					"checksumValue": "7e6a04b1206fd77dddfd3ee61283de3d83f0441f3ca0f8878f3210e97a8f7ed2"
+				}
+			],
+			"copyrightText": "NOASSERTION",
+			"downloadLocation": "NOASSERTION",
+			"filesAnalyzed": false,
+			"homepage": "NOASSERTION",
+			"licenseConcluded": "(Zlib AND BSD-2-Clause AND GPL-3.0 AND LGPL-2.1 AND MIT)",
+			"licenseDeclared": "NOASSERTION",
+			"name": "debian:bookworm:libitm1",
+			"versionInfo": "12.2.0-14"
+		},
+		{
+			"SPDXID": "SPDXRef-Package-debian-bookworm-libjansson4-2.14-2",
+			"checksums": [
+				{
+					"algorithm": "SHA256",
+					"checksumValue": "c3cabc28912b709a0a0aec5e179a551ef3974bbf6008fe4d77b58a55bbb1dfeb"
+				}
+			],
+			"copyrightText": "NOASSERTION",
+			"downloadLocation": "NOASSERTION",
+			"filesAnalyzed": false,
+			"homepage": "NOASSERTION",
+			"licenseConcluded": "NOASSERTION",
+			"licenseDeclared": "NOASSERTION",
+			"name": "debian:bookworm:libjansson4",
+			"versionInfo": "2.14-2"
+		},
+		{
+			"SPDXID": "SPDXRef-Package-debian-bookworm-libjpeg-dev-1-2.1.5-2",
+			"checksums": [
+				{
+					"algorithm": "SHA256",
+					"checksumValue": "a8444e89121b7427301d4ea210760c1abcaca5d450df27b08fae045755f06bc2"
+				}
+			],
+			"copyrightText": "NOASSERTION",
+			"downloadLocation": "NOASSERTION",
+			"filesAnalyzed": false,
+			"homepage": "NOASSERTION",
+			"licenseConcluded": "(BSD-3-Clause AND NTP AND Zlib)",
+			"licenseDeclared": "NOASSERTION",
+			"name": "debian:bookworm:libjpeg-dev",
+			"versionInfo": "1:2.1.5-2"
+		},
+		{
+			"SPDXID": "SPDXRef-Package-debian-bookworm-libjpeg62-turbo-1-2.1.5-2",
+			"checksums": [
+				{
+					"algorithm": "SHA256",
+					"checksumValue": "7d8114a02ae075a71bc2fdbcbc69493324e7a50896292587a07ff677b3bd4243"
+				}
+			],
+			"copyrightText": "NOASSERTION",
+			"downloadLocation": "NOASSERTION",
+			"filesAnalyzed": false,
+			"homepage": "NOASSERTION",
+			"licenseConcluded": "(BSD-3-Clause AND NTP AND Zlib)",
+			"licenseDeclared": "NOASSERTION",
+			"name": "debian:bookworm:libjpeg62-turbo",
+			"versionInfo": "1:2.1.5-2"
+		},
+		{
+			"SPDXID": "SPDXRef-Package-debian-bookworm-libjpeg62-turbo-dev-1-2.1.5-2",
+			"checksums": [
+				{
+					"algorithm": "SHA256",
+					"checksumValue": "98e165b2aa182b65f07b9b9e1352d8ee77743d47ee6c06e1618ff98d6daaf6d4"
+				}
+			],
+			"copyrightText": "NOASSERTION",
+			"downloadLocation": "NOASSERTION",
+			"filesAnalyzed": false,
+			"homepage": "NOASSERTION",
+			"licenseConcluded": "(Zlib AND BSD-3-Clause AND NTP)",
+			"licenseDeclared": "NOASSERTION",
+			"name": "debian:bookworm:libjpeg62-turbo-dev",
+			"versionInfo": "1:2.1.5-2"
+		},
+		{
+			"SPDXID": "SPDXRef-Package-debian-bookworm-libk5crypto3-1.20.1-2",
+			"checksums": [
+				{
+					"algorithm": "SHA256",
+					"checksumValue": "1499e6c9ffc195d0aa70dc77dbd299953e9650dba68fab37feffecf1359dfa95"
+				}
+			],
+			"copyrightText": "NOASSERTION",
+			"downloadLocation": "NOASSERTION",
+			"filesAnalyzed": false,
+			"homepage": "NOASSERTION",
+			"licenseConcluded": "(RSA-MD AND BSD-4-Clause-UC AND HPND AND ISC AND OLDAP-2.8 AND LicenseRef-OpenVision AND BSD-2-Clause AND BSD-3-Clause AND JSON AND MIT)",
+			"licenseDeclared": "NOASSERTION",
+			"name": "debian:bookworm:libk5crypto3",
+			"versionInfo": "1.20.1-2"
+		},
+		{
+			"SPDXID": "SPDXRef-Package-debian-bookworm-libkeyutils1-1.6.3-2",
+			"checksums": [
+				{
+					"algorithm": "SHA256",
+					"checksumValue": "077840b4b263d81811ef52ea17d4b2edfec1a568a15437b60bcd9e81dd324ab9"
+				}
+			],
+			"copyrightText": "NOASSERTION",
+			"downloadLocation": "NOASSERTION",
+			"filesAnalyzed": false,
+			"homepage": "NOASSERTION",
+			"licenseConcluded": "NOASSERTION",
+			"licenseDeclared": "NOASSERTION",
+			"name": "debian:bookworm:libkeyutils1",
+			"versionInfo": "1.6.3-2"
+		},
+		{
+			"SPDXID": "SPDXRef-Package-debian-bookworm-libkrb5-3-1.20.1-2",
+			"checksums": [
+				{
+					"algorithm": "SHA256",
+					"checksumValue": "c517f6345d2d0eba0f376b353f46a04f48667992d1b1efaf3e061bfb1d03e0c5"
+				}
+			],
+			"copyrightText": "NOASSERTION",
+			"downloadLocation": "NOASSERTION",
+			"filesAnalyzed": false,
+			"homepage": "NOASSERTION",
+			"licenseConcluded": "(ISC AND MIT AND BSD-2-Clause AND HPND AND JSON AND OLDAP-2.8 AND LicenseRef-OpenVision AND RSA-MD AND BSD-3-Clause AND BSD-4-Clause-UC)",
+			"licenseDeclared": "NOASSERTION",
+			"name": "debian:bookworm:libkrb5-3",
+			"versionInfo": "1.20.1-2"
+		},
+		{
+			"SPDXID": "SPDXRef-Package-debian-bookworm-libkrb5support0-1.20.1-2",
+			"checksums": [
+				{
+					"algorithm": "SHA256",
+					"checksumValue": "adf4f7f034abfd79e50c1a29d7f3c4a8b24e728933cb5d06159f51c06fbaac2c"
+				}
+			],
+			"copyrightText": "NOASSERTION",
+			"downloadLocation": "NOASSERTION",
+			"filesAnalyzed": false,
+			"homepage": "NOASSERTION",
+			"licenseConcluded": "(BSD-3-Clause AND OLDAP-2.8 AND LicenseRef-OpenVision AND BSD-2-Clause AND HPND AND ISC AND JSON AND MIT AND RSA-MD AND BSD-4-Clause-UC)",
+			"licenseDeclared": "NOASSERTION",
+			"name": "debian:bookworm:libkrb5support0",
+			"versionInfo": "1.20.1-2"
+		},
+		{
+			"SPDXID": "SPDXRef-Package-debian-bookworm-libldap-2.5-0-2.5.13-dfsg-5",
+			"checksums": [
+				{
+					"algorithm": "SHA256",
+					"checksumValue": "ba34df526c9142392077da57630c164c134c35d08525e38feaca18760638365c"
+				}
+			],
+			"copyrightText": "NOASSERTION",
+			"downloadLocation": "NOASSERTION",
+			"filesAnalyzed": false,
+			"homepage": "NOASSERTION",
+			"licenseConcluded": "NOASSERTION",
+			"licenseDeclared": "NOASSERTION",
+			"name": "debian:bookworm:libldap-2.5-0",
+			"versionInfo": "2.5.13+dfsg-5"
+		},
+		{
+			"SPDXID": "SPDXRef-Package-debian-bookworm-liblsan0-12.2.0-14",
+			"checksums": [
+				{
+					"algorithm": "SHA256",
+					"checksumValue": "e2506fba815d56d262d98eadf4b12c1c4037fce808478b2e25f7e8d9d76094f3"
+				}
+			],
+			"copyrightText": "NOASSERTION",
+			"downloadLocation": "NOASSERTION",
+			"filesAnalyzed": false,
+			"homepage": "NOASSERTION",
+			"licenseConcluded": "(BSD-2-Clause AND GPL-3.0 AND LGPL-2.1 AND MIT AND Zlib)",
+			"licenseDeclared": "NOASSERTION",
+			"name": "debian:bookworm:liblsan0",
+			"versionInfo": "12.2.0-14"
+		},
+		{
+			"SPDXID": "SPDXRef-Package-debian-bookworm-liblua5.3-0-5.3.6-2",
+			"checksums": [
+				{
+					"algorithm": "SHA256",
+					"checksumValue": "c21263bcb5b09c2fa9a094a94c7d9cc46562b4601d5cce46fd762e22ff07811e"
+				}
+			],
+			"copyrightText": "NOASSERTION",
+			"downloadLocation": "NOASSERTION",
+			"filesAnalyzed": false,
+			"homepage": "NOASSERTION",
+			"licenseConcluded": "NOASSERTION",
+			"licenseDeclared": "NOASSERTION",
+			"name": "debian:bookworm:liblua5.3-0",
+			"versionInfo": "5.3.6-2"
+		},
+		{
+			"SPDXID": "SPDXRef-Package-debian-bookworm-liblz4-1-1.9.4-1",
+			"checksums": [
+				{
+					"algorithm": "SHA256",
+					"checksumValue": "5993648e21ee2663ab3842fd51243dd34825356e421a5ec54ce54bb558974749"
+				}
+			],
+			"copyrightText": "NOASSERTION",
+			"downloadLocation": "NOASSERTION",
+			"filesAnalyzed": false,
+			"homepage": "NOASSERTION",
+			"licenseConcluded": "NOASSERTION",
+			"licenseDeclared": "NOASSERTION",
+			"name": "debian:bookworm:liblz4-1",
+			"versionInfo": "1.9.4-1"
+		},
+		{
+			"SPDXID": "SPDXRef-Package-debian-bookworm-liblzma5-5.4.1-0.2",
+			"checksums": [
+				{
+					"algorithm": "SHA256",
+					"checksumValue": "11f4612fd5e0800c9afe688c380c220a01574175b26a7ec67e0873b1246b50a1"
+				}
+			],
+			"copyrightText": "NOASSERTION",
+			"downloadLocation": "NOASSERTION",
+			"filesAnalyzed": false,
+			"homepage": "NOASSERTION",
+			"licenseConcluded": "NOASSERTION",
+			"licenseDeclared": "NOASSERTION",
+			"name": "debian:bookworm:liblzma5",
+			"versionInfo": "5.4.1-0.2"
+		},
+		{
+			"SPDXID": "SPDXRef-Package-debian-bookworm-libmagic-mgc-1-5.44-3",
+			"checksums": [
+				{
+					"algorithm": "SHA256",
+					"checksumValue": "137e4eda7117b5921fc5c6772a08a12ae31886f58b9b8309b5780ae962be095b"
+				}
+			],
+			"copyrightText": "NOASSERTION",
+			"downloadLocation": "NOASSERTION",
+			"filesAnalyzed": false,
+			"homepage": "NOASSERTION",
+			"licenseConcluded": "(BSD-2-Clause AND MIT)",
+			"licenseDeclared": "NOASSERTION",
+			"name": "debian:bookworm:libmagic-mgc",
+			"versionInfo": "1:5.44-3"
+		},
+		{
+			"SPDXID": "SPDXRef-Package-debian-bookworm-libmagic1-1-5.44-3",
+			"checksums": [
+				{
+					"algorithm": "SHA256",
+					"checksumValue": "7d39c5ccfa526d95d81217cc42f9391af2f2008d008dbbf1c1e483b2cf1da9f1"
+				}
+			],
+			"copyrightText": "NOASSERTION",
+			"downloadLocation": "NOASSERTION",
+			"filesAnalyzed": false,
+			"homepage": "NOASSERTION",
+			"licenseConcluded": "(BSD-2-Clause AND MIT)",
+			"licenseDeclared": "NOASSERTION",
+			"name": "debian:bookworm:libmagic1",
+			"versionInfo": "1:5.44-3"
+		},
+		{
+			"SPDXID": "SPDXRef-Package-debian-bookworm-libmd0-1.0.4-2",
+			"checksums": [
+				{
+					"algorithm": "SHA256",
+					"checksumValue": "e40901e64d1145e87f70d45e87ced54be01fe75d7d5d350bc4781d0401a3f36e"
+				}
+			],
+			"copyrightText": "NOASSERTION",
+			"downloadLocation": "NOASSERTION",
+			"filesAnalyzed": false,
+			"homepage": "NOASSERTION",
+			"licenseConcluded": "(BSD-2-Clause AND ISC)",
+			"licenseDeclared": "NOASSERTION",
+			"name": "debian:bookworm:libmd0",
+			"versionInfo": "1.0.4-2"
+		},
+		{
+			"SPDXID": "SPDXRef-Package-debian-bookworm-libmount1-2.38.1-5-b1",
+			"checksums": [
+				{
+					"algorithm": "SHA256",
+					"checksumValue": "5625a8fe13f9c4ea9d87285b0ef916495306cb6d89d8f609e2bc517f379b719b"
+				}
+			],
+			"copyrightText": "NOASSERTION",
+			"downloadLocation": "NOASSERTION",
+			"filesAnalyzed": false,
+			"homepage": "NOASSERTION",
+			"licenseConcluded": "NOASSERTION",
+			"licenseDeclared": "NOASSERTION",
+			"name": "debian:bookworm:libmount1",
+			"versionInfo": "2.38.1-5+b1"
+		},
+		{
+			"SPDXID": "SPDXRef-Package-debian-bookworm-libmpc3-1.3.1-1",
+			"checksums": [
+				{
+					"algorithm": "SHA256",
+					"checksumValue": "e286ba7a0e599d661ef6aef9765fea8fcce592b4b95b5c5024ba5ead20d72bce"
+				}
+			],
+			"copyrightText": "NOASSERTION",
+			"downloadLocation": "NOASSERTION",
+			"filesAnalyzed": false,
+			"homepage": "NOASSERTION",
+			"licenseConcluded": "LGPL-3.0",
+			"licenseDeclared": "NOASSERTION",
+			"name": "debian:bookworm:libmpc3",
+			"versionInfo": "1.3.1-1"
+		},
+		{
+			"SPDXID": "SPDXRef-Package-debian-bookworm-libmpfr6-4.2.0-1",
+			"checksums": [
+				{
+					"algorithm": "SHA256",
+					"checksumValue": "d6c9e2cec864380d5a387c9afe813cd43bf3e176abf091a9dad9f359c988b30a"
+				}
+			],
+			"copyrightText": "NOASSERTION",
+			"downloadLocation": "NOASSERTION",
+			"filesAnalyzed": false,
+			"homepage": "NOASSERTION",
+			"licenseConcluded": "NOASSERTION",
+			"licenseDeclared": "NOASSERTION",
+			"name": "debian:bookworm:libmpfr6",
+			"versionInfo": "4.2.0-1"
+		},
+		{
+			"SPDXID": "SPDXRef-Package-debian-bookworm-libncursesw6-6.4-4",
+			"checksums": [
+				{
+					"algorithm": "SHA256",
+					"checksumValue": "d18b17d97d34c2203cc900104fae1a35eb1a8f9dfb6b7314380a4d59e19d5ded"
+				}
+			],
+			"copyrightText": "NOASSERTION",
+			"downloadLocation": "NOASSERTION",
+			"filesAnalyzed": false,
+			"homepage": "NOASSERTION",
+			"licenseConcluded": "(X11 AND BSD-3-Clause)",
+			"licenseDeclared": "NOASSERTION",
+			"name": "debian:bookworm:libncursesw6",
+			"versionInfo": "6.4-4"
+		},
+		{
+			"SPDXID": "SPDXRef-Package-debian-bookworm-libnettle8-3.8.1-2",
+			"checksums": [
+				{
+					"algorithm": "SHA256",
+					"checksumValue": "0300aff2369026e867908be6c48691b73575daa54d38b363e5715e766db5eb55"
+				}
+			],
+			"copyrightText": "NOASSERTION",
+			"downloadLocation": "NOASSERTION",
+			"filesAnalyzed": false,
+			"homepage": "NOASSERTION",
+			"licenseConcluded": "NOASSERTION",
+			"licenseDeclared": "NOASSERTION",
+			"name": "debian:bookworm:libnettle8",
+			"versionInfo": "3.8.1-2"
+		},
+		{
+			"SPDXID": "SPDXRef-Package-debian-bookworm-libnghttp2-14-1.52.0-1",
+			"checksums": [
+				{
+					"algorithm": "SHA256",
+					"checksumValue": "d4279eb0b3eaef84e14fc46b8be0ec3eb473ddd10464b83d0bfd996b6d01270a"
+				}
+			],
+			"copyrightText": "NOASSERTION",
+			"downloadLocation": "NOASSERTION",
+			"filesAnalyzed": false,
+			"homepage": "NOASSERTION",
+			"licenseConcluded": "(BSD-2-Clause AND GPL-3.0-or-later AND MIT)",
+			"licenseDeclared": "NOASSERTION",
+			"name": "debian:bookworm:libnghttp2-14",
+			"versionInfo": "1.52.0-1"
+		},
+		{
+			"SPDXID": "SPDXRef-Package-debian-bookworm-libnsl-dev-1.3.0-2",
+			"checksums": [
+				{
+					"algorithm": "SHA256",
+					"checksumValue": "e8721b6f486539ec527ec21a3b9ab5e3a09f961d11fc471fa9bc34dff3df213f"
+				}
+			],
+			"copyrightText": "NOASSERTION",
+			"downloadLocation": "NOASSERTION",
+			"filesAnalyzed": false,
+			"homepage": "NOASSERTION",
+			"licenseConcluded": "(BSD-2-Clause AND GPL-2.0 AND GPL-3.0 AND LGPL-2.1 AND LGPL-3.0 AND MIT)",
+			"licenseDeclared": "NOASSERTION",
+			"name": "debian:bookworm:libnsl-dev",
+			"versionInfo": "1.3.0-2"
+		},
+		{
+			"SPDXID": "SPDXRef-Package-debian-bookworm-libnsl2-1.3.0-2",
+			"checksums": [
+				{
+					"algorithm": "SHA256",
+					"checksumValue": "9ff9e7541866154642cb8f9a49c2536d20eecf7000fc13178bfdfde5841fa582"
+				}
+			],
+			"copyrightText": "NOASSERTION",
+			"downloadLocation": "NOASSERTION",
+			"filesAnalyzed": false,
+			"homepage": "NOASSERTION",
+			"licenseConcluded": "(GPL-2.0 AND GPL-3.0 AND LGPL-2.1 AND LGPL-3.0 AND MIT AND BSD-2-Clause)",
+			"licenseDeclared": "NOASSERTION",
+			"name": "debian:bookworm:libnsl2",
+			"versionInfo": "1.3.0-2"
+		},
+		{
+			"SPDXID": "SPDXRef-Package-debian-bookworm-libonig5-6.9.8-1",
+			"checksums": [
+				{
+					"algorithm": "SHA256",
+					"checksumValue": "ecb571b0ab0f6f7c0cf257d0a655be3cd8bcdda15011d964641d05cbd94e0e8f"
+				}
+			],
+			"copyrightText": "NOASSERTION",
+			"downloadLocation": "NOASSERTION",
+			"filesAnalyzed": false,
+			"homepage": "NOASSERTION",
+			"licenseConcluded": "BSD-2-Clause",
+			"licenseDeclared": "NOASSERTION",
+			"name": "debian:bookworm:libonig5",
+			"versionInfo": "6.9.8-1"
+		},
+		{
+			"SPDXID": "SPDXRef-Package-debian-bookworm-libp11-kit0-0.24.1-2",
+			"checksums": [
+				{
+					"algorithm": "SHA256",
+					"checksumValue": "c344e1556e102e5d25efe58522c159b3ffa79be55d594d41e13076d592b21172"
+				}
+			],
+			"copyrightText": "NOASSERTION",
+			"downloadLocation": "NOASSERTION",
+			"filesAnalyzed": false,
+			"homepage": "NOASSERTION",
+			"licenseConcluded": "(BSD-2-Clause AND ISC AND LGPL-3.0 AND Apache-2.0)",
+			"licenseDeclared": "NOASSERTION",
+			"name": "debian:bookworm:libp11-kit0",
+			"versionInfo": "0.24.1-2"
+		},
+		{
+			"SPDXID": "SPDXRef-Package-debian-bookworm-libpam-cap-1-2.66-4",
+			"checksums": [
+				{
+					"algorithm": "SHA256",
+					"checksumValue": "d46f6156118c287073b1615cb3ad3f93e02e8a147f6a626481a600f419426bb9"
+				}
+			],
+			"copyrightText": "NOASSERTION",
+			"downloadLocation": "NOASSERTION",
+			"filesAnalyzed": false,
+			"homepage": "NOASSERTION",
+			"licenseConcluded": "(BSD-3-Clause AND GPL-2.0-only AND GPL-2.0-or-later)",
+			"licenseDeclared": "NOASSERTION",
+			"name": "debian:bookworm:libpam-cap",
+			"versionInfo": "1:2.66-4"
+		},
+		{
+			"SPDXID": "SPDXRef-Package-debian-bookworm-libpam-modules-1.5.2-6",
+			"checksums": [
+				{
+					"algorithm": "SHA256",
+					"checksumValue": "296ddf714f48ca8e20a8e4cdc412dea2d10356e3cb9b52f374b772e0aea8694a"
+				}
+			],
+			"copyrightText": "NOASSERTION",
+			"downloadLocation": "NOASSERTION",
+			"filesAnalyzed": false,
+			"homepage": "NOASSERTION",
+			"licenseConcluded": "GPL-3.0",
+			"licenseDeclared": "NOASSERTION",
+			"name": "debian:bookworm:libpam-modules",
+			"versionInfo": "1.5.2-6"
+		},
+		{
+			"SPDXID": "SPDXRef-Package-debian-bookworm-libpam-modules-bin-1.5.2-6",
+			"checksums": [
+				{
+					"algorithm": "SHA256",
+					"checksumValue": "13532b66f428f7c0250aee04542a5c5b54f4cf3222a23523f942088d25792c66"
+				}
+			],
+			"copyrightText": "NOASSERTION",
+			"downloadLocation": "NOASSERTION",
+			"filesAnalyzed": false,
+			"homepage": "NOASSERTION",
+			"licenseConcluded": "GPL-3.0",
+			"licenseDeclared": "NOASSERTION",
+			"name": "debian:bookworm:libpam-modules-bin",
+			"versionInfo": "1.5.2-6"
+		},
+		{
+			"SPDXID": "SPDXRef-Package-debian-bookworm-libpam-runtime-1.5.2-6",
+			"checksums": [
+				{
+					"algorithm": "SHA256",
+					"checksumValue": "ac89a7ff370d1e6e7f90916e0df4ac0224ff307ff873f04cdc38b35715c7c8a0"
+				}
+			],
+			"copyrightText": "NOASSERTION",
+			"downloadLocation": "NOASSERTION",
+			"filesAnalyzed": false,
+			"homepage": "NOASSERTION",
+			"licenseConcluded": "GPL-3.0",
+			"licenseDeclared": "NOASSERTION",
+			"name": "debian:bookworm:libpam-runtime",
+			"versionInfo": "1.5.2-6"
+		},
+		{
+			"SPDXID": "SPDXRef-Package-debian-bookworm-libpam0g-1.5.2-6",
+			"checksums": [
+				{
+					"algorithm": "SHA256",
+					"checksumValue": "fd1ad62ea01815ee99fad0864ccbfacb1e39d60f20b29a650de0b5fbd90dc7d2"
+				}
+			],
+			"copyrightText": "NOASSERTION",
+			"downloadLocation": "NOASSERTION",
+			"filesAnalyzed": false,
+			"homepage": "NOASSERTION",
+			"licenseConcluded": "GPL-3.0",
+			"licenseDeclared": "NOASSERTION",
+			"name": "debian:bookworm:libpam0g",
+			"versionInfo": "1.5.2-6"
+		},
+		{
+			"SPDXID": "SPDXRef-Package-debian-bookworm-libpcre2-8-0-10.42-1",
+			"checksums": [
+				{
+					"algorithm": "SHA256",
+					"checksumValue": "3a9634b2f5c7ca055865f2be3bdcff2afebced61b1226e5bdc301f9bcb1ded01"
+				}
+			],
+			"copyrightText": "NOASSERTION",
+			"downloadLocation": "NOASSERTION",
+			"filesAnalyzed": false,
+			"homepage": "NOASSERTION",
+			"licenseConcluded": "BSD-2-Clause",
+			"licenseDeclared": "NOASSERTION",
+			"name": "debian:bookworm:libpcre2-8-0",
+			"versionInfo": "10.42-1"
+		},
+		{
+			"SPDXID": "SPDXRef-Package-debian-bookworm-libperl5.36-5.36.0-7",
+			"checksums": [
+				{
+					"algorithm": "SHA256",
+					"checksumValue": "9a0f0048d961de2ae5b9a891effe666ad06b91762dae86778b56ed96789af30e"
+				}
+			],
+			"copyrightText": "NOASSERTION",
+			"downloadLocation": "NOASSERTION",
+			"filesAnalyzed": false,
+			"homepage": "NOASSERTION",
+			"licenseConcluded": "(GPL-3.0 AND Zlib AND Artistic-2.0 AND BSD-2-Clause AND CC0-1.0 AND GPL-2.0)",
+			"licenseDeclared": "NOASSERTION",
+			"name": "debian:bookworm:libperl5.36",
+			"versionInfo": "5.36.0-7"
+		},
+		{
+			"SPDXID": "SPDXRef-Package-debian-bookworm-libpkgconf3-1.8.1-1",
+			"checksums": [
+				{
+					"algorithm": "SHA256",
+					"checksumValue": "8ae2abef86c732a8698d21d87b9bbad74be719cae8ee30daddf53636bd822b8a"
+				}
+			],
+			"copyrightText": "NOASSERTION",
+			"downloadLocation": "NOASSERTION",
+			"filesAnalyzed": false,
+			"homepage": "NOASSERTION",
+			"licenseConcluded": "(BSD-2-Clause AND GPL-2.0 AND ISC AND X11)",
+			"licenseDeclared": "NOASSERTION",
+			"name": "debian:bookworm:libpkgconf3",
+			"versionInfo": "1.8.1-1"
+		},
+		{
+			"SPDXID": "SPDXRef-Package-debian-bookworm-libpng-dev-1.6.39-2",
+			"checksums": [
+				{
+					"algorithm": "SHA256",
+					"checksumValue": "0cae73be5eed7af8f32ab02c496621234b16b70927908448f9ff2841ffbbd4c4"
+				}
+			],
+			"copyrightText": "NOASSERTION",
+			"downloadLocation": "NOASSERTION",
+			"filesAnalyzed": false,
+			"homepage": "NOASSERTION",
+			"licenseConcluded": "NOASSERTION",
+			"licenseDeclared": "NOASSERTION",
+			"name": "debian:bookworm:libpng-dev",
+			"versionInfo": "1.6.39-2"
+		},
+		{
+			"SPDXID": "SPDXRef-Package-debian-bookworm-libpng-tools-1.6.39-2",
+			"checksums": [
+				{
+					"algorithm": "SHA256",
+					"checksumValue": "4520e2148337ea7430a3d3326de2eab1452f18f079b828cfb0f25fff0880ecb5"
+				}
+			],
+			"copyrightText": "NOASSERTION",
+			"downloadLocation": "NOASSERTION",
+			"filesAnalyzed": false,
+			"homepage": "NOASSERTION",
+			"licenseConcluded": "NOASSERTION",
+			"licenseDeclared": "NOASSERTION",
+			"name": "debian:bookworm:libpng-tools",
+			"versionInfo": "1.6.39-2"
+		},
+		{
+			"SPDXID": "SPDXRef-Package-debian-bookworm-libpng16-16-1.6.39-2",
+			"checksums": [
+				{
+					"algorithm": "SHA256",
+					"checksumValue": "dae8fa1bc252d77a26b4835897e7f4a6b417d902fb869f0780ada9a8127a2e83"
+				}
+			],
+			"copyrightText": "NOASSERTION",
+			"downloadLocation": "NOASSERTION",
+			"filesAnalyzed": false,
+			"homepage": "NOASSERTION",
+			"licenseConcluded": "NOASSERTION",
+			"licenseDeclared": "NOASSERTION",
+			"name": "debian:bookworm:libpng16-16",
+			"versionInfo": "1.6.39-2"
+		},
+		{
+			"SPDXID": "SPDXRef-Package-debian-bookworm-libproc2-0-2-4.0.2-3",
+			"checksums": [
+				{
+					"algorithm": "SHA256",
+					"checksumValue": "fa43b37b5301bba5d45510d6881963bee642f61699ec05a0abca0e23a05b1087"
+				}
+			],
+			"copyrightText": "NOASSERTION",
+			"downloadLocation": "NOASSERTION",
+			"filesAnalyzed": false,
+			"homepage": "NOASSERTION",
+			"licenseConcluded": "NOASSERTION",
+			"licenseDeclared": "NOASSERTION",
+			"name": "debian:bookworm:libproc2-0",
+			"versionInfo": "2:4.0.2-3"
+		},
+		{
+			"SPDXID": "SPDXRef-Package-debian-bookworm-libpsl5-0.21.2-1",
+			"checksums": [
+				{
+					"algorithm": "SHA256",
+					"checksumValue": "b1506b780879280bae1d042ff4c0fd5272dc6d51777a0f5fb39eaaf0a07829ae"
+				}
+			],
+			"copyrightText": "NOASSERTION",
+			"downloadLocation": "NOASSERTION",
+			"filesAnalyzed": false,
+			"homepage": "NOASSERTION",
+			"licenseConcluded": "NOASSERTION",
+			"licenseDeclared": "NOASSERTION",
+			"name": "debian:bookworm:libpsl5",
+			"versionInfo": "0.21.2-1"
+		},
+		{
+			"SPDXID": "SPDXRef-Package-debian-bookworm-libquadmath0-12.2.0-14",
+			"checksums": [
+				{
+					"algorithm": "SHA256",
+					"checksumValue": "39f7f1e32aedfd620fb25780e78f8a4710e24fa649c8013a229d6f2845444a44"
+				}
+			],
+			"copyrightText": "NOASSERTION",
+			"downloadLocation": "NOASSERTION",
+			"filesAnalyzed": false,
+			"homepage": "NOASSERTION",
+			"licenseConcluded": "(BSD-2-Clause AND GPL-3.0 AND LGPL-2.1 AND MIT AND Zlib)",
+			"licenseDeclared": "NOASSERTION",
+			"name": "debian:bookworm:libquadmath0",
+			"versionInfo": "12.2.0-14"
+		},
+		{
+			"SPDXID": "SPDXRef-Package-debian-bookworm-libreadline8-8.2-1.3",
+			"checksums": [
+				{
+					"algorithm": "SHA256",
+					"checksumValue": "ae4dccbb256916f54f28084ee17a17d90705eacff01e44ba718fe46928036f03"
+				}
+			],
+			"copyrightText": "NOASSERTION",
+			"downloadLocation": "NOASSERTION",
+			"filesAnalyzed": false,
+			"homepage": "NOASSERTION",
+			"licenseConcluded": "NOASSERTION",
+			"licenseDeclared": "NOASSERTION",
+			"name": "debian:bookworm:libreadline8",
+			"versionInfo": "8.2-1.3"
+		},
+		{
+			"SPDXID": "SPDXRef-Package-debian-bookworm-librtmp1-2.4-20151223.gitfa8646d.1-2-b2",
+			"checksums": [
+				{
+					"algorithm": "SHA256",
+					"checksumValue": "6a0c8d1b26b06235e320e173edfdc79184d378cea415704be37f4dbc7857ef5e"
+				}
+			],
+			"copyrightText": "NOASSERTION",
+			"downloadLocation": "NOASSERTION",
+			"filesAnalyzed": false,
+			"homepage": "NOASSERTION",
+			"licenseConcluded": "(GPL-2.0 AND GPL-3.0)",
+			"licenseDeclared": "NOASSERTION",
+			"name": "debian:bookworm:librtmp1",
+			"versionInfo": "2.4+20151223.gitfa8646d.1-2+b2"
+		},
+		{
+			"SPDXID": "SPDXRef-Package-debian-bookworm-libsasl2-2-2.1.28-dfsg-10",
+			"checksums": [
+				{
+					"algorithm": "SHA256",
+					"checksumValue": "e247b1b19efd99dd9e5b4662662764fd98b75c11b193912e6bceb962254adee9"
+				}
+			],
+			"copyrightText": "NOASSERTION",
+			"downloadLocation": "NOASSERTION",
+			"filesAnalyzed": false,
+			"homepage": "NOASSERTION",
+			"licenseConcluded": "(BSD-2-Clause AND GPL-3.0 AND MIT AND LicenseRef-OpenLDAP AND OpenSSL)",
+			"licenseDeclared": "NOASSERTION",
+			"name": "debian:bookworm:libsasl2-2",
+			"versionInfo": "2.1.28+dfsg-10"
+		},
+		{
+			"SPDXID": "SPDXRef-Package-debian-bookworm-libsasl2-modules-db-2.1.28-dfsg-10",
+			"checksums": [
+				{
+					"algorithm": "SHA256",
+					"checksumValue": "1b5aa3268d2c6363460d1a38ecaa09ef4cb9b1e2517f58456ae297fabc07a6db"
+				}
+			],
+			"copyrightText": "NOASSERTION",
+			"downloadLocation": "NOASSERTION",
+			"filesAnalyzed": false,
+			"homepage": "NOASSERTION",
+			"licenseConcluded": "(GPL-3.0 AND MIT AND LicenseRef-OpenLDAP AND OpenSSL AND BSD-2-Clause)",
+			"licenseDeclared": "NOASSERTION",
+			"name": "debian:bookworm:libsasl2-modules-db",
+			"versionInfo": "2.1.28+dfsg-10"
+		},
+		{
+			"SPDXID": "SPDXRef-Package-debian-bookworm-libseccomp2-2.5.4-1-b3",
+			"checksums": [
+				{
+					"algorithm": "SHA256",
+					"checksumValue": "e1cfd76ef42e8ff89730e44c14e29414b6dbbaf6427adbc39df2441c7ec8e19a"
+				}
+			],
+			"copyrightText": "NOASSERTION",
+			"downloadLocation": "NOASSERTION",
+			"filesAnalyzed": false,
+			"homepage": "NOASSERTION",
+			"licenseConcluded": "LGPL-2.1-only",
+			"licenseDeclared": "NOASSERTION",
+			"name": "debian:bookworm:libseccomp2",
+			"versionInfo": "2.5.4-1+b3"
+		},
+		{
+			"SPDXID": "SPDXRef-Package-debian-bookworm-libselinux1-3.4-1-b6",
+			"checksums": [
+				{
+					"algorithm": "SHA256",
+					"checksumValue": "8c039c1251742a2152969006e582efedd377ae8a9d114d4b57dff6ff6eb87c30"
+				}
+			],
+			"copyrightText": "NOASSERTION",
+			"downloadLocation": "NOASSERTION",
+			"filesAnalyzed": false,
+			"homepage": "NOASSERTION",
+			"licenseConcluded": "(GPL-2.0-only AND LGPL-2.1-only)",
+			"licenseDeclared": "NOASSERTION",
+			"name": "debian:bookworm:libselinux1",
+			"versionInfo": "3.4-1+b6"
+		},
+		{
+			"SPDXID": "SPDXRef-Package-debian-bookworm-libsemanage-common-3.4-1",
+			"checksums": [
+				{
+					"algorithm": "SHA256",
+					"checksumValue": "63b851d3186a7b5eaec63802e129c8d1e71eac01edda705797bb8c3dcbc79c68"
+				}
+			],
+			"copyrightText": "NOASSERTION",
+			"downloadLocation": "NOASSERTION",
+			"filesAnalyzed": false,
+			"homepage": "NOASSERTION",
+			"licenseConcluded": "LGPL-2.1",
+			"licenseDeclared": "NOASSERTION",
+			"name": "debian:bookworm:libsemanage-common",
+			"versionInfo": "3.4-1"
+		},
+		{
+			"SPDXID": "SPDXRef-Package-debian-bookworm-libsemanage2-3.4-1-b5",
+			"checksums": [
+				{
+					"algorithm": "SHA256",
+					"checksumValue": "43b8bcddca3e02895da9fa704895760110f17e5a2ee2ac8e177ef44e82ac2c13"
+				}
+			],
+			"copyrightText": "NOASSERTION",
+			"downloadLocation": "NOASSERTION",
+			"filesAnalyzed": false,
+			"homepage": "NOASSERTION",
+			"licenseConcluded": "LGPL-2.1-only",
+			"licenseDeclared": "NOASSERTION",
+			"name": "debian:bookworm:libsemanage2",
+			"versionInfo": "3.4-1+b5"
+		},
+		{
+			"SPDXID": "SPDXRef-Package-debian-bookworm-libsepol2-3.4-2.1",
+			"checksums": [
+				{
+					"algorithm": "SHA256",
+					"checksumValue": "6cd5a313d370a959af429e2a57c04fe7122892b54c570ac353c73ae6aa6af38c"
+				}
+			],
+			"copyrightText": "NOASSERTION",
+			"downloadLocation": "NOASSERTION",
+			"filesAnalyzed": false,
+			"homepage": "NOASSERTION",
+			"licenseConcluded": "(GPL-2.0-or-later AND Zlib AND GPL-2.0-only)",
+			"licenseDeclared": "NOASSERTION",
+			"name": "debian:bookworm:libsepol2",
+			"versionInfo": "3.4-2.1"
+		},
+		{
+			"SPDXID": "SPDXRef-Package-debian-bookworm-libsmartcols1-2.38.1-5-b1",
+			"checksums": [
+				{
+					"algorithm": "SHA256",
+					"checksumValue": "725e966ddceee10e9549c0780444f22c2b5be6bbd6532dd4222af234dad2b9dd"
+				}
+			],
+			"copyrightText": "NOASSERTION",
+			"downloadLocation": "NOASSERTION",
+			"filesAnalyzed": false,
+			"homepage": "NOASSERTION",
+			"licenseConcluded": "NOASSERTION",
+			"licenseDeclared": "NOASSERTION",
+			"name": "debian:bookworm:libsmartcols1",
+			"versionInfo": "2.38.1-5+b1"
+		},
+		{
+			"SPDXID": "SPDXRef-Package-debian-bookworm-libsodium23-1.0.18-1",
+			"checksums": [
+				{
+					"algorithm": "SHA256",
+					"checksumValue": "cc79317ab292180e6b6585e98d079fea46cde20b24661a031459c37210bf77d6"
+				}
+			],
+			"copyrightText": "NOASSERTION",
+			"downloadLocation": "NOASSERTION",
+			"filesAnalyzed": false,
+			"homepage": "NOASSERTION",
+			"licenseConcluded": "(GPL-2.0 AND ISC AND MIT AND BSD-2-Clause AND CC0-1.0)",
+			"licenseDeclared": "NOASSERTION",
+			"name": "debian:bookworm:libsodium23",
+			"versionInfo": "1.0.18-1"
+		},
+		{
+			"SPDXID": "SPDXRef-Package-debian-bookworm-libsqlite3-0-3.40.1-2",
+			"checksums": [
+				{
+					"algorithm": "SHA256",
+					"checksumValue": "9aee8dd279fce3d776ca9e23ecad1eba5e9279e70ea311928290371b23eb278d"
+				}
+			],
+			"copyrightText": "NOASSERTION",
+			"downloadLocation": "NOASSERTION",
+			"filesAnalyzed": false,
+			"homepage": "NOASSERTION",
+			"licenseConcluded": "NOASSERTION",
+			"licenseDeclared": "NOASSERTION",
+			"name": "debian:bookworm:libsqlite3-0",
+			"versionInfo": "3.40.1-2"
+		},
+		{
+			"SPDXID": "SPDXRef-Package-debian-bookworm-libss2-1.47.0-2",
+			"checksums": [
+				{
+					"algorithm": "SHA256",
+					"checksumValue": "7e1ad4cc2c2a44052464442e64cf25941bfae519a2356b14067c2695e226b73f"
+				}
+			],
+			"copyrightText": "NOASSERTION",
+			"downloadLocation": "NOASSERTION",
+			"filesAnalyzed": false,
+			"homepage": "NOASSERTION",
+			"licenseConcluded": "BSD-3-Clause",
+			"licenseDeclared": "NOASSERTION",
+			"name": "debian:bookworm:libss2",
+			"versionInfo": "1.47.0-2"
+		},
+		{
+			"SPDXID": "SPDXRef-Package-debian-bookworm-libssh2-1-1.10.0-3-b1",
+			"checksums": [
+				{
+					"algorithm": "SHA256",
+					"checksumValue": "63bc8b28080e25aa4943d5edb992784958202bcfa07f04f4f2cdcbf5009aac0c"
+				}
+			],
+			"copyrightText": "NOASSERTION",
+			"downloadLocation": "NOASSERTION",
+			"filesAnalyzed": false,
+			"homepage": "NOASSERTION",
+			"licenseConcluded": "BSD-2-Clause",
+			"licenseDeclared": "NOASSERTION",
+			"name": "debian:bookworm:libssh2-1",
+			"versionInfo": "1.10.0-3+b1"
+		},
+		{
+			"SPDXID": "SPDXRef-Package-debian-bookworm-libssl3-3.0.9-1",
+			"checksums": [
+				{
+					"algorithm": "SHA256",
+					"checksumValue": "7581aa4dc16786daca0449d8b0c86305c6440d05e312fa4deae161d52ade32bc"
+				}
+			],
+			"copyrightText": "NOASSERTION",
+			"downloadLocation": "NOASSERTION",
+			"filesAnalyzed": false,
+			"homepage": "NOASSERTION",
+			"licenseConcluded": "(Apache-2.0 AND Artistic-2.0)",
+			"licenseDeclared": "NOASSERTION",
+			"name": "debian:bookworm:libssl3",
+			"versionInfo": "3.0.9-1"
+		},
+		{
+			"SPDXID": "SPDXRef-Package-debian-bookworm-libstdc---12-dev-12.2.0-14",
+			"checksums": [
+				{
+					"algorithm": "SHA256",
+					"checksumValue": "7f66a289441138c1d786a0b8179f29c03a65f64108e30dd66023dd5174650e7c"
+				}
+			],
+			"copyrightText": "NOASSERTION",
+			"downloadLocation": "NOASSERTION",
+			"filesAnalyzed": false,
+			"homepage": "NOASSERTION",
+			"licenseConcluded": "(MIT-feh AND Mup AND Unicode-DFS-2015 AND Zlib AND BSD-3-Clause-No-Nuclear-License-2014 AND BSD-4-Clause-UC AND MIT AND LGPL-3.0-only AND Spencer-94 AND BSD-2-Clause AND BSD-3-Clause AND LGPL-2.1-only)",
+			"licenseDeclared": "NOASSERTION",
+			"name": "debian:bookworm:libstdc++-12-dev",
+			"versionInfo": "12.2.0-14"
+		},
+		{
+			"SPDXID": "SPDXRef-Package-debian-bookworm-libstdc--6-12.2.0-14",
+			"checksums": [
+				{
+					"algorithm": "SHA256",
+					"checksumValue": "a610db4ada3e734aac34dce52bda86d1d264935f2ee9fb18ad337ee9fb78951f"
+				}
+			],
+			"copyrightText": "NOASSERTION",
+			"downloadLocation": "NOASSERTION",
+			"filesAnalyzed": false,
+			"homepage": "NOASSERTION",
+			"licenseConcluded": "(BSD-3-Clause AND BSD-3-Clause-No-Nuclear-License-2014 AND MIT AND MIT-feh AND Mup AND Spencer-94 AND BSD-2-Clause AND BSD-4-Clause-UC AND LGPL-2.1-only AND LGPL-3.0-only AND Unicode-DFS-2015 AND Zlib)",
+			"licenseDeclared": "NOASSERTION",
+			"name": "debian:bookworm:libstdc++6",
+			"versionInfo": "12.2.0-14"
+		},
+		{
+			"SPDXID": "SPDXRef-Package-debian-bookworm-libsystemd0-252.12-1-deb12u1",
+			"checksums": [
+				{
+					"algorithm": "SHA256",
+					"checksumValue": "7f5247a90e4129610d93cba61f350b4f675f934a9893947a5e5aa1ab6fd42ed5"
+				}
+			],
+			"copyrightText": "NOASSERTION",
+			"downloadLocation": "NOASSERTION",
+			"filesAnalyzed": false,
+			"homepage": "NOASSERTION",
+			"licenseConcluded": "NOASSERTION",
+			"licenseDeclared": "NOASSERTION",
+			"name": "debian:bookworm:libsystemd0",
+			"versionInfo": "252.12-1~deb12u1"
+		},
+		{
+			"SPDXID": "SPDXRef-Package-debian-bookworm-libtasn1-6-4.19.0-2",
+			"checksums": [
+				{
+					"algorithm": "SHA256",
+					"checksumValue": "850dcd42c17afc8b9d56f4d64d3f5b8f7b45db8a80a9feeceab6e7c02541b591"
+				}
+			],
+			"copyrightText": "NOASSERTION",
+			"downloadLocation": "NOASSERTION",
+			"filesAnalyzed": false,
+			"homepage": "NOASSERTION",
+			"licenseConcluded": "(GPL-3.0 AND LGPL-2.1)",
+			"licenseDeclared": "NOASSERTION",
+			"name": "debian:bookworm:libtasn1-6",
+			"versionInfo": "4.19.0-2"
+		},
+		{
+			"SPDXID": "SPDXRef-Package-debian-bookworm-libtinfo6-6.4-4",
+			"checksums": [
+				{
+					"algorithm": "SHA256",
+					"checksumValue": "f20172f0fbb037b87490baa936a5f40c07f88defde2556646c41f6779713b841"
+				}
+			],
+			"copyrightText": "NOASSERTION",
+			"downloadLocation": "NOASSERTION",
+			"filesAnalyzed": false,
+			"homepage": "NOASSERTION",
+			"licenseConcluded": "(BSD-3-Clause AND X11)",
+			"licenseDeclared": "NOASSERTION",
+			"name": "debian:bookworm:libtinfo6",
+			"versionInfo": "6.4-4"
+		},
+		{
+			"SPDXID": "SPDXRef-Package-debian-bookworm-libtirpc-common-1.3.3-ds-1",
+			"checksums": [
+				{
+					"algorithm": "SHA256",
+					"checksumValue": "a15cb371524e64ae1ff4296a0fd54dccbb1cd815a832befa3a5b4e4ca9559bd0"
+				}
+			],
+			"copyrightText": "NOASSERTION",
+			"downloadLocation": "NOASSERTION",
+			"filesAnalyzed": false,
+			"homepage": "NOASSERTION",
+			"licenseConcluded": "NOASSERTION",
+			"licenseDeclared": "NOASSERTION",
+			"name": "debian:bookworm:libtirpc-common",
+			"versionInfo": "1.3.3+ds-1"
+		},
+		{
+			"SPDXID": "SPDXRef-Package-debian-bookworm-libtirpc-dev-1.3.3-ds-1",
+			"checksums": [
+				{
+					"algorithm": "SHA256",
+					"checksumValue": "3350a138733bbc4bbc65059d1106edf997e2298be2364baa091d550d15d4452b"
+				}
+			],
+			"copyrightText": "NOASSERTION",
+			"downloadLocation": "NOASSERTION",
+			"filesAnalyzed": false,
+			"homepage": "NOASSERTION",
+			"licenseConcluded": "NOASSERTION",
+			"licenseDeclared": "NOASSERTION",
+			"name": "debian:bookworm:libtirpc-dev",
+			"versionInfo": "1.3.3+ds-1"
+		},
+		{
+			"SPDXID": "SPDXRef-Package-debian-bookworm-libtirpc3-1.3.3-ds-1",
+			"checksums": [
+				{
+					"algorithm": "SHA256",
+					"checksumValue": "eb2102233b200bfbb61bbd520f5e9455730c086a370e9b7b6340d19ffb7f211e"
+				}
+			],
+			"copyrightText": "NOASSERTION",
+			"downloadLocation": "NOASSERTION",
+			"filesAnalyzed": false,
+			"homepage": "NOASSERTION",
+			"licenseConcluded": "NOASSERTION",
+			"licenseDeclared": "NOASSERTION",
+			"name": "debian:bookworm:libtirpc3",
+			"versionInfo": "1.3.3+ds-1"
+		},
+		{
+			"SPDXID": "SPDXRef-Package-debian-bookworm-libtsan2-12.2.0-14",
+			"checksums": [
+				{
+					"algorithm": "SHA256",
+					"checksumValue": "ae6307812241457e08a936d85552082b2a936e531f986ba40e3d01cbe02c28b6"
+				}
+			],
+			"copyrightText": "NOASSERTION",
+			"downloadLocation": "NOASSERTION",
+			"filesAnalyzed": false,
+			"homepage": "NOASSERTION",
+			"licenseConcluded": "(BSD-3-Clause-No-Nuclear-License-2014 AND MIT AND MIT-feh AND Mup AND Spencer-94 AND Zlib AND BSD-2-Clause AND BSD-3-Clause AND BSD-4-Clause-UC AND LGPL-2.1-only AND LGPL-3.0-only AND Unicode-DFS-2015)",
+			"licenseDeclared": "NOASSERTION",
+			"name": "debian:bookworm:libtsan2",
+			"versionInfo": "12.2.0-14"
+		},
+		{
+			"SPDXID": "SPDXRef-Package-debian-bookworm-libubsan1-12.2.0-14",
+			"checksums": [
+				{
+					"algorithm": "SHA256",
+					"checksumValue": "4c6539ab43fd2a5c013270d3119b164d63e451324dc92dea85a00fb70f20d9cf"
+				}
+			],
+			"copyrightText": "NOASSERTION",
+			"downloadLocation": "NOASSERTION",
+			"filesAnalyzed": false,
+			"homepage": "NOASSERTION",
+			"licenseConcluded": "(BSD-2-Clause AND GPL-3.0 AND LGPL-2.1 AND MIT AND Zlib)",
+			"licenseDeclared": "NOASSERTION",
+			"name": "debian:bookworm:libubsan1",
+			"versionInfo": "12.2.0-14"
+		},
+		{
+			"SPDXID": "SPDXRef-Package-debian-bookworm-libudev1-252.12-1-deb12u1",
+			"checksums": [
+				{
+					"algorithm": "SHA256",
+					"checksumValue": "eeabf1f002cc7361cc806518075463daddc95e168aac36b5a7585c46346a678d"
+				}
+			],
+			"copyrightText": "NOASSERTION",
+			"downloadLocation": "NOASSERTION",
+			"filesAnalyzed": false,
+			"homepage": "NOASSERTION",
+			"licenseConcluded": "NOASSERTION",
+			"licenseDeclared": "NOASSERTION",
+			"name": "debian:bookworm:libudev1",
+			"versionInfo": "252.12-1~deb12u1"
+		},
+		{
+			"SPDXID": "SPDXRef-Package-debian-bookworm-libunistring2-1.0-2",
+			"checksums": [
+				{
+					"algorithm": "SHA256",
+					"checksumValue": "3336db27385041ecbf7b85e3a4f5c7478f1c647548c64a8410ca969571434559"
+				}
+			],
+			"copyrightText": "NOASSERTION",
+			"downloadLocation": "NOASSERTION",
+			"filesAnalyzed": false,
+			"homepage": "NOASSERTION",
+			"licenseConcluded": "NOASSERTION",
+			"licenseDeclared": "NOASSERTION",
+			"name": "debian:bookworm:libunistring2",
+			"versionInfo": "1.0-2"
+		},
+		{
+			"SPDXID": "SPDXRef-Package-debian-bookworm-libuuid1-2.38.1-5-b1",
+			"checksums": [
+				{
+					"algorithm": "SHA256",
+					"checksumValue": "130f7819b7110cd32c96053ae8e881df96e713ca3fa8e5b776cbd597f9356a44"
+				}
+			],
+			"copyrightText": "NOASSERTION",
+			"downloadLocation": "NOASSERTION",
+			"filesAnalyzed": false,
+			"homepage": "NOASSERTION",
+			"licenseConcluded": "NOASSERTION",
+			"licenseDeclared": "NOASSERTION",
+			"name": "debian:bookworm:libuuid1",
+			"versionInfo": "2.38.1-5+b1"
+		},
+		{
+			"SPDXID": "SPDXRef-Package-debian-bookworm-libxml2-2.9.14-dfsg-1.3-deb12u1",
+			"checksums": [
+				{
+					"algorithm": "SHA256",
+					"checksumValue": "4f2d96c03553bbf97bc6693be27b2e96292f6349b7a6fbe5f74aa765d1112011"
+				}
+			],
+			"copyrightText": "NOASSERTION",
+			"downloadLocation": "NOASSERTION",
+			"filesAnalyzed": false,
+			"homepage": "NOASSERTION",
+			"licenseConcluded": "(ISC AND MIT)",
+			"licenseDeclared": "NOASSERTION",
+			"name": "debian:bookworm:libxml2",
+			"versionInfo": "2.9.14+dfsg-1.3~deb12u1"
+		},
+		{
+			"SPDXID": "SPDXRef-Package-debian-bookworm-libxxhash0-0.8.1-1",
+			"checksums": [
+				{
+					"algorithm": "SHA256",
+					"checksumValue": "56c3b651e86c9e0c0e2e71190abde96d053b87477412c56205a3c48d33c01ba5"
+				}
+			],
+			"copyrightText": "NOASSERTION",
+			"downloadLocation": "NOASSERTION",
+			"filesAnalyzed": false,
+			"homepage": "NOASSERTION",
+			"licenseConcluded": "NOASSERTION",
+			"licenseDeclared": "NOASSERTION",
+			"name": "debian:bookworm:libxxhash0",
+			"versionInfo": "0.8.1-1"
+		},
+		{
+			"SPDXID": "SPDXRef-Package-debian-bookworm-libzstd1-1.5.4-dfsg2-5",
+			"checksums": [
+				{
+					"algorithm": "SHA256",
+					"checksumValue": "5571afeaa66c4f7379e396d1a20e9a0e3b1752829a144215cb221604a71b6397"
+				}
+			],
+			"copyrightText": "NOASSERTION",
+			"downloadLocation": "NOASSERTION",
+			"filesAnalyzed": false,
+			"homepage": "NOASSERTION",
+			"licenseConcluded": "(BSD-2-Clause AND GPL-2.0 AND LGPL-3.0)",
+			"licenseDeclared": "NOASSERTION",
+			"name": "debian:bookworm:libzstd1",
+			"versionInfo": "1.5.4+dfsg2-5"
+		},
+		{
+			"SPDXID": "SPDXRef-Package-debian-bookworm-linux-libc-dev-6.1.52-1",
+			"checksums": [
+				{
+					"algorithm": "SHA256",
+					"checksumValue": "4849cc99cae0ff5f2795707fdd36e372d7600df1f4dbc64da90ca5027220326f"
+				}
+			],
+			"copyrightText": "NOASSERTION",
+			"downloadLocation": "NOASSERTION",
+			"filesAnalyzed": false,
+			"homepage": "NOASSERTION",
+			"licenseConcluded": "(BSD-2-Clause AND GPL-2.0-only AND GPL-2.0-or-later AND LGPL-2.1-only AND X11)",
+			"licenseDeclared": "NOASSERTION",
+			"name": "debian:bookworm:linux-libc-dev",
+			"versionInfo": "6.1.52-1"
+		},
+		{
+			"SPDXID": "SPDXRef-Package-debian-bookworm-login-1-4.13-dfsg1-1-b1",
+			"checksums": [
+				{
+					"algorithm": "SHA256",
+					"checksumValue": "fee0f0efbfaa5bd80222b547eb2b4cc8bbb9c7e2a2d10ab443403e5db83af72b"
+				}
+			],
+			"copyrightText": "NOASSERTION",
+			"downloadLocation": "NOASSERTION",
+			"filesAnalyzed": false,
+			"homepage": "NOASSERTION",
+			"licenseConcluded": "NOASSERTION",
+			"licenseDeclared": "NOASSERTION",
+			"name": "debian:bookworm:login",
+			"versionInfo": "1:4.13+dfsg1-1+b1"
+		},
+		{
+			"SPDXID": "SPDXRef-Package-debian-bookworm-logsave-1.47.0-2",
+			"checksums": [
+				{
+					"algorithm": "SHA256",
+					"checksumValue": "34b293218b6720f191babbf72769f95e5675b54fe98be646a0a3ded0878f5ed7"
+				}
+			],
+			"copyrightText": "NOASSERTION",
+			"downloadLocation": "NOASSERTION",
+			"filesAnalyzed": false,
+			"homepage": "NOASSERTION",
+			"licenseConcluded": "BSD-3-Clause",
+			"licenseDeclared": "NOASSERTION",
+			"name": "debian:bookworm:logsave",
+			"versionInfo": "1.47.0-2"
+		},
+		{
+			"SPDXID": "SPDXRef-Package-debian-bookworm-m4-1.4.19-3",
+			"checksums": [
+				{
+					"algorithm": "SHA256",
+					"checksumValue": "8b7d82e11f588d920c239d0d678e443a3619fec5854a70eb4e5c98a99a461a54"
+				}
+			],
+			"copyrightText": "NOASSERTION",
+			"downloadLocation": "NOASSERTION",
+			"filesAnalyzed": false,
+			"homepage": "NOASSERTION",
+			"licenseConcluded": "NOASSERTION",
+			"licenseDeclared": "NOASSERTION",
+			"name": "debian:bookworm:m4",
+			"versionInfo": "1.4.19-3"
+		},
+		{
+			"SPDXID": "SPDXRef-Package-debian-bookworm-make-4.3-4.1",
+			"checksums": [
+				{
+					"algorithm": "SHA256",
+					"checksumValue": "b6ffcf798efb38bc3c7518e0255e2fe873bdaaa1dbc58333855947196f245f5a"
+				}
+			],
+			"copyrightText": "NOASSERTION",
+			"downloadLocation": "NOASSERTION",
+			"filesAnalyzed": false,
+			"homepage": "NOASSERTION",
+			"licenseConcluded": "GPL-3.0",
+			"licenseDeclared": "NOASSERTION",
+			"name": "debian:bookworm:make",
+			"versionInfo": "4.3-4.1"
+		},
+		{
+			"SPDXID": "SPDXRef-Package-debian-bookworm-mawk-1.3.4.20200120-3.1",
+			"checksums": [
+				{
+					"algorithm": "SHA256",
+					"checksumValue": "c9da38bfb6eda5ad397252d530dc258bd8fa1e2537c05c3171c11566d546facd"
+				}
+			],
+			"copyrightText": "NOASSERTION",
+			"downloadLocation": "NOASSERTION",
+			"filesAnalyzed": false,
+			"homepage": "NOASSERTION",
+			"licenseConcluded": "NOASSERTION",
+			"licenseDeclared": "NOASSERTION",
+			"name": "debian:bookworm:mawk",
+			"versionInfo": "1.3.4.20200120-3.1"
+		},
+		{
+			"SPDXID": "SPDXRef-Package-debian-bookworm-media-types-10.0.0",
+			"checksums": [
+				{
+					"algorithm": "SHA256",
+					"checksumValue": "5143a83fa0f1e5f2243709283b066c59a73ea79cfd69417524951d6f8361e835"
+				}
+			],
+			"copyrightText": "NOASSERTION",
+			"downloadLocation": "NOASSERTION",
+			"filesAnalyzed": false,
+			"homepage": "NOASSERTION",
+			"licenseConcluded": "NOASSERTION",
+			"licenseDeclared": "NOASSERTION",
+			"name": "debian:bookworm:media-types",
+			"versionInfo": "10.0.0"
+		},
+		{
+			"SPDXID": "SPDXRef-Package-debian-bookworm-mount-2.38.1-5-b1",
+			"checksums": [
+				{
+					"algorithm": "SHA256",
+					"checksumValue": "4caf8947123c74db9e1fbf619c90fcd206da016ec37b2c887777b326128de93c"
+				}
+			],
+			"copyrightText": "NOASSERTION",
+			"downloadLocation": "NOASSERTION",
+			"filesAnalyzed": false,
+			"homepage": "NOASSERTION",
+			"licenseConcluded": "NOASSERTION",
+			"licenseDeclared": "NOASSERTION",
+			"name": "debian:bookworm:mount",
+			"versionInfo": "2.38.1-5+b1"
+		},
+		{
+			"SPDXID": "SPDXRef-Package-debian-bookworm-ncurses-base-6.4-4",
+			"checksums": [
+				{
+					"algorithm": "SHA256",
+					"checksumValue": "52213b577f98ff6df168f7b8c723d9ef6b617f88d395546a9c16e1b606ebcf97"
+				}
+			],
+			"copyrightText": "NOASSERTION",
+			"downloadLocation": "NOASSERTION",
+			"filesAnalyzed": false,
+			"homepage": "NOASSERTION",
+			"licenseConcluded": "(BSD-3-Clause AND X11)",
+			"licenseDeclared": "NOASSERTION",
+			"name": "debian:bookworm:ncurses-base",
+			"versionInfo": "6.4-4"
+		},
+		{
+			"SPDXID": "SPDXRef-Package-debian-bookworm-ncurses-bin-6.4-4",
+			"checksums": [
+				{
+					"algorithm": "SHA256",
+					"checksumValue": "eac7e01c4270acbd4d60106f3e90b1de58ad33fb4106c1fb38c1f1c6e35dae95"
+				}
+			],
+			"copyrightText": "NOASSERTION",
+			"downloadLocation": "NOASSERTION",
+			"filesAnalyzed": false,
+			"homepage": "NOASSERTION",
+			"licenseConcluded": "(BSD-3-Clause AND X11)",
+			"licenseDeclared": "NOASSERTION",
+			"name": "debian:bookworm:ncurses-bin",
+			"versionInfo": "6.4-4"
+		},
+		{
+			"SPDXID": "SPDXRef-Package-debian-bookworm-openssl-3.0.9-1",
+			"checksums": [
+				{
+					"algorithm": "SHA256",
+					"checksumValue": "6a076cfeb18536ae2970934eeeb16f1220a1dc8106fd8dadb20ba31d8e1330d6"
+				}
+			],
+			"copyrightText": "NOASSERTION",
+			"downloadLocation": "NOASSERTION",
+			"filesAnalyzed": false,
+			"homepage": "NOASSERTION",
+			"licenseConcluded": "(Apache-2.0 AND Artistic-2.0)",
+			"licenseDeclared": "NOASSERTION",
+			"name": "debian:bookworm:openssl",
+			"versionInfo": "3.0.9-1"
+		},
+		{
+			"SPDXID": "SPDXRef-Package-debian-bookworm-passwd-1-4.13-dfsg1-1-b1",
+			"checksums": [
+				{
+					"algorithm": "SHA256",
+					"checksumValue": "d5ab44f906067e58ff059bfef80c9857d3e9ed80dcad5fe53a84a26bf7eeae68"
+				}
+			],
+			"copyrightText": "NOASSERTION",
+			"downloadLocation": "NOASSERTION",
+			"filesAnalyzed": false,
+			"homepage": "NOASSERTION",
+			"licenseConcluded": "NOASSERTION",
+			"licenseDeclared": "NOASSERTION",
+			"name": "debian:bookworm:passwd",
+			"versionInfo": "1:4.13+dfsg1-1+b1"
+		},
+		{
+			"SPDXID": "SPDXRef-Package-debian-bookworm-patch-2.7.6-7",
+			"checksums": [
+				{
+					"algorithm": "SHA256",
+					"checksumValue": "730ad68fae32aee12bdbfcd32b303ee405a2ece3a4de7852bc98b7b8a44e3269"
+				}
+			],
+			"copyrightText": "NOASSERTION",
+			"downloadLocation": "NOASSERTION",
+			"filesAnalyzed": false,
+			"homepage": "NOASSERTION",
+			"licenseConcluded": "GPL-3.0",
+			"licenseDeclared": "NOASSERTION",
+			"name": "debian:bookworm:patch",
+			"versionInfo": "2.7.6-7"
+		},
+		{
+			"SPDXID": "SPDXRef-Package-debian-bookworm-perl-5.36.0-7",
+			"checksums": [
+				{
+					"algorithm": "SHA256",
+					"checksumValue": "bf00e08e2759104dc2b82879cc624af2af79e8b825f900ca7b787f4713d90fe8"
+				}
+			],
+			"copyrightText": "NOASSERTION",
+			"downloadLocation": "NOASSERTION",
+			"filesAnalyzed": false,
+			"homepage": "NOASSERTION",
+			"licenseConcluded": "(Artistic-2.0 AND BSD-2-Clause AND CC0-1.0 AND GPL-2.0 AND GPL-3.0 AND Zlib)",
+			"licenseDeclared": "NOASSERTION",
+			"name": "debian:bookworm:perl",
+			"versionInfo": "5.36.0-7"
+		},
+		{
+			"SPDXID": "SPDXRef-Package-debian-bookworm-perl-base-5.36.0-7",
+			"checksums": [
+				{
+					"algorithm": "SHA256",
+					"checksumValue": "5b3a23a709c187f977e685a943d94fa97f3c202850d5da81edf20ea8693e928a"
+				}
+			],
+			"copyrightText": "NOASSERTION",
+			"downloadLocation": "NOASSERTION",
+			"filesAnalyzed": false,
+			"homepage": "NOASSERTION",
+			"licenseConcluded": "(GPL-3.0 AND Zlib AND Artistic-2.0 AND BSD-2-Clause AND CC0-1.0 AND GPL-2.0)",
+			"licenseDeclared": "NOASSERTION",
+			"name": "debian:bookworm:perl-base",
+			"versionInfo": "5.36.0-7"
+		},
+		{
+			"SPDXID": "SPDXRef-Package-debian-bookworm-perl-modules-5.36-5.36.0-7",
+			"checksums": [
+				{
+					"algorithm": "SHA256",
+					"checksumValue": "142367a60ddaa51f3c741de4c694899ca755e19f6a78af5ed9cfa105d966fc85"
+				}
+			],
+			"copyrightText": "NOASSERTION",
+			"downloadLocation": "NOASSERTION",
+			"filesAnalyzed": false,
+			"homepage": "NOASSERTION",
+			"licenseConcluded": "(GPL-3.0 AND Zlib AND Artistic-2.0 AND BSD-2-Clause AND CC0-1.0 AND GPL-2.0)",
+			"licenseDeclared": "NOASSERTION",
+			"name": "debian:bookworm:perl-modules-5.36",
+			"versionInfo": "5.36.0-7"
+		},
+		{
+			"SPDXID": "SPDXRef-Package-debian-bookworm-pkg-config-1.8.1-1",
+			"checksums": [
+				{
+					"algorithm": "SHA256",
+					"checksumValue": "7b3d670effcb10fab128e0b4212b636f34b66b5e18478ae4e4401895475e5d1b"
+				}
+			],
+			"copyrightText": "NOASSERTION",
+			"downloadLocation": "NOASSERTION",
+			"filesAnalyzed": false,
+			"homepage": "NOASSERTION",
+			"licenseConcluded": "(ISC AND X11 AND BSD-2-Clause AND GPL-2.0)",
+			"licenseDeclared": "NOASSERTION",
+			"name": "debian:bookworm:pkg-config",
+			"versionInfo": "1.8.1-1"
+		},
+		{
+			"SPDXID": "SPDXRef-Package-debian-bookworm-pkgconf-1.8.1-1",
+			"checksums": [
+				{
+					"algorithm": "SHA256",
+					"checksumValue": "fd6438dad0f8f27c0032cef87fe6232c707c81a868fc3a04f44e8287456a1379"
+				}
+			],
+			"copyrightText": "NOASSERTION",
+			"downloadLocation": "NOASSERTION",
+			"filesAnalyzed": false,
+			"homepage": "NOASSERTION",
+			"licenseConcluded": "(BSD-2-Clause AND GPL-2.0 AND ISC AND X11)",
+			"licenseDeclared": "NOASSERTION",
+			"name": "debian:bookworm:pkgconf",
+			"versionInfo": "1.8.1-1"
+		},
+		{
+			"SPDXID": "SPDXRef-Package-debian-bookworm-pkgconf-bin-1.8.1-1",
+			"checksums": [
+				{
+					"algorithm": "SHA256",
+					"checksumValue": "9c9ac531bfe7b7576f297cce375aff8d54d699faa09caf3b173eb0d6e536e598"
+				}
+			],
+			"copyrightText": "NOASSERTION",
+			"downloadLocation": "NOASSERTION",
+			"filesAnalyzed": false,
+			"homepage": "NOASSERTION",
+			"licenseConcluded": "(BSD-2-Clause AND GPL-2.0 AND ISC AND X11)",
+			"licenseDeclared": "NOASSERTION",
+			"name": "debian:bookworm:pkgconf-bin",
+			"versionInfo": "1.8.1-1"
+		},
+		{
+			"SPDXID": "SPDXRef-Package-debian-bookworm-procps-2-4.0.2-3",
+			"checksums": [
+				{
+					"algorithm": "SHA256",
+					"checksumValue": "b735600a4b4fa4ef30879cda2e2320e3d4da50fe6d84fe1e7e6db35b3fcbf72c"
+				}
+			],
+			"copyrightText": "NOASSERTION",
+			"downloadLocation": "NOASSERTION",
+			"filesAnalyzed": false,
+			"homepage": "NOASSERTION",
+			"licenseConcluded": "NOASSERTION",
+			"licenseDeclared": "NOASSERTION",
+			"name": "debian:bookworm:procps",
+			"versionInfo": "2:4.0.2-3"
+		},
+		{
+			"SPDXID": "SPDXRef-Package-debian-bookworm-re2c-3.0-2",
+			"checksums": [
+				{
+					"algorithm": "SHA256",
+					"checksumValue": "5954bdac26c5a55dd22568b921ea024c42f258b3b70472561521c34bb9b60b4a"
+				}
+			],
+			"copyrightText": "NOASSERTION",
+			"downloadLocation": "NOASSERTION",
+			"filesAnalyzed": false,
+			"homepage": "NOASSERTION",
+			"licenseConcluded": "NOASSERTION",
+			"licenseDeclared": "NOASSERTION",
+			"name": "debian:bookworm:re2c",
+			"versionInfo": "3.0-2"
+		},
+		{
+			"SPDXID": "SPDXRef-Package-debian-bookworm-readline-common-8.2-1.3",
+			"checksums": [
+				{
+					"algorithm": "SHA256",
+					"checksumValue": "c5885d5da2f6958573dc36aed92ab3cfab8d5fd92b036f174c3eca4a0da15f41"
+				}
+			],
+			"copyrightText": "NOASSERTION",
+			"downloadLocation": "NOASSERTION",
+			"filesAnalyzed": false,
+			"homepage": "NOASSERTION",
+			"licenseConcluded": "NOASSERTION",
+			"licenseDeclared": "NOASSERTION",
+			"name": "debian:bookworm:readline-common",
+			"versionInfo": "8.2-1.3"
+		},
+		{
+			"SPDXID": "SPDXRef-Package-debian-bookworm-rpcsvc-proto-1.4.3-1",
+			"checksums": [
+				{
+					"algorithm": "SHA256",
+					"checksumValue": "82961b3e533b2015af6d1fb1b29dfa15b688424b4f61ab527eca866eca081595"
+				}
+			],
+			"copyrightText": "NOASSERTION",
+			"downloadLocation": "NOASSERTION",
+			"filesAnalyzed": false,
+			"homepage": "NOASSERTION",
+			"licenseConcluded": "BSD-2-Clause",
+			"licenseDeclared": "NOASSERTION",
+			"name": "debian:bookworm:rpcsvc-proto",
+			"versionInfo": "1.4.3-1"
+		},
+		{
+			"SPDXID": "SPDXRef-Package-debian-bookworm-sed-4.9-1",
+			"checksums": [
+				{
+					"algorithm": "SHA256",
+					"checksumValue": "c74248c4e00027394389497999e0f3ab11a97614378fb53e98fccfcb63b92978"
+				}
+			],
+			"copyrightText": "NOASSERTION",
+			"downloadLocation": "NOASSERTION",
+			"filesAnalyzed": false,
+			"homepage": "NOASSERTION",
+			"licenseConcluded": "NOASSERTION",
+			"licenseDeclared": "NOASSERTION",
+			"name": "debian:bookworm:sed",
+			"versionInfo": "4.9-1"
+		},
+		{
+			"SPDXID": "SPDXRef-Package-debian-bookworm-sysvinit-utils-3.06-4",
+			"checksums": [
+				{
+					"algorithm": "SHA256",
+					"checksumValue": "27617ee1c898d2d6e78aae17d2f8cd5eba3a3be49e5fa9f79f91a87f57bff097"
+				}
+			],
+			"copyrightText": "NOASSERTION",
+			"downloadLocation": "NOASSERTION",
+			"filesAnalyzed": false,
+			"homepage": "NOASSERTION",
+			"licenseConcluded": "NOASSERTION",
+			"licenseDeclared": "NOASSERTION",
+			"name": "debian:bookworm:sysvinit-utils",
+			"versionInfo": "3.06-4"
+		},
+		{
+			"SPDXID": "SPDXRef-Package-debian-bookworm-tar-1.34-dfsg-1.2",
+			"checksums": [
+				{
+					"algorithm": "SHA256",
+					"checksumValue": "64cae55692a0d6534b51d2f0d17434707d062a52aeca39c44065bc7dd6b28865"
+				}
+			],
+			"copyrightText": "NOASSERTION",
+			"downloadLocation": "NOASSERTION",
+			"filesAnalyzed": false,
+			"homepage": "NOASSERTION",
+			"licenseConcluded": "NOASSERTION",
+			"licenseDeclared": "NOASSERTION",
+			"name": "debian:bookworm:tar",
+			"versionInfo": "1.34+dfsg-1.2"
+		},
+		{
+			"SPDXID": "SPDXRef-Package-debian-bookworm-tzdata-2023c-5",
+			"checksums": [
+				{
+					"algorithm": "SHA256",
+					"checksumValue": "c22430b2a70e0cd08b4c32992a45e09a31ea707e9f69a539c3d8f99c691e6618"
+				}
+			],
+			"copyrightText": "NOASSERTION",
+			"downloadLocation": "NOASSERTION",
+			"filesAnalyzed": false,
+			"homepage": "NOASSERTION",
+			"licenseConcluded": "NOASSERTION",
+			"licenseDeclared": "NOASSERTION",
+			"name": "debian:bookworm:tzdata",
+			"versionInfo": "2023c-5"
+		},
+		{
+			"SPDXID": "SPDXRef-Package-debian-bookworm-usr-is-merged-35",
+			"checksums": [
+				{
+					"algorithm": "SHA256",
+					"checksumValue": "7e6d710a6806ceecae24078f06988e50159acab1be3fa22df644c778076ab2af"
+				}
+			],
+			"copyrightText": "NOASSERTION",
+			"downloadLocation": "NOASSERTION",
+			"filesAnalyzed": false,
+			"homepage": "NOASSERTION",
+			"licenseConcluded": "NOASSERTION",
+			"licenseDeclared": "NOASSERTION",
+			"name": "debian:bookworm:usr-is-merged",
+			"versionInfo": "35"
+		},
+		{
+			"SPDXID": "SPDXRef-Package-debian-bookworm-util-linux-2.38.1-5-b1",
+			"checksums": [
+				{
+					"algorithm": "SHA256",
+					"checksumValue": "0f45550e19b90805716cc067e768b01e83b7a3c3a21ade6d7e3ba6ce9ef04268"
+				}
+			],
+			"copyrightText": "NOASSERTION",
+			"downloadLocation": "NOASSERTION",
+			"filesAnalyzed": false,
+			"homepage": "NOASSERTION",
+			"licenseConcluded": "NOASSERTION",
+			"licenseDeclared": "NOASSERTION",
+			"name": "debian:bookworm:util-linux",
+			"versionInfo": "2.38.1-5+b1"
+		},
+		{
+			"SPDXID": "SPDXRef-Package-debian-bookworm-util-linux-extra-2.38.1-5-b1",
+			"checksums": [
+				{
+					"algorithm": "SHA256",
+					"checksumValue": "06867c548ca325596dbc37f4e99920276008f2a96e9e8479954ce9f439950314"
+				}
+			],
+			"copyrightText": "NOASSERTION",
+			"downloadLocation": "NOASSERTION",
+			"filesAnalyzed": false,
+			"homepage": "NOASSERTION",
+			"licenseConcluded": "NOASSERTION",
+			"licenseDeclared": "NOASSERTION",
+			"name": "debian:bookworm:util-linux-extra",
+			"versionInfo": "2.38.1-5+b1"
+		},
+		{
+			"SPDXID": "SPDXRef-Package-debian-bookworm-xz-utils-5.4.1-0.2",
+			"checksums": [
+				{
+					"algorithm": "SHA256",
+					"checksumValue": "cc7bea0b05dc52895d009408955fe437cfa5ca72d86073f814da7f83b769abbc"
+				}
+			],
+			"copyrightText": "NOASSERTION",
+			"downloadLocation": "NOASSERTION",
+			"filesAnalyzed": false,
+			"homepage": "NOASSERTION",
+			"licenseConcluded": "NOASSERTION",
+			"licenseDeclared": "NOASSERTION",
+			"name": "debian:bookworm:xz-utils",
+			"versionInfo": "5.4.1-0.2"
+		},
+		{
+			"SPDXID": "SPDXRef-Package-debian-bookworm-zlib1g-1-1.2.13.dfsg-1",
+			"checksums": [
+				{
+					"algorithm": "SHA256",
+					"checksumValue": "e666bf16f9650136a92715bdaae3e2e01a4cb5a67b7eccf78dbd0a99eb110350"
+				}
+			],
+			"copyrightText": "NOASSERTION",
+			"downloadLocation": "NOASSERTION",
+			"filesAnalyzed": false,
+			"homepage": "NOASSERTION",
+			"licenseConcluded": "NOASSERTION",
+			"licenseDeclared": "NOASSERTION",
+			"name": "debian:bookworm:zlib1g",
+			"versionInfo": "1:1.2.13.dfsg-1"
+		},
+		{
+			"SPDXID": "SPDXRef-Package-debian-bookworm-zlib1g-dev-1-1.2.13.dfsg-1",
+			"checksums": [
+				{
+					"algorithm": "SHA256",
+					"checksumValue": "1a4eeaabb124fe661d8c7948c003e55449c636793fa7f8e5d2aa764cda298133"
+				}
+			],
+			"copyrightText": "NOASSERTION",
+			"downloadLocation": "NOASSERTION",
+			"filesAnalyzed": false,
+			"homepage": "NOASSERTION",
+			"licenseConcluded": "NOASSERTION",
+			"licenseDeclared": "NOASSERTION",
+			"name": "debian:bookworm:zlib1g-dev",
+			"versionInfo": "1:1.2.13.dfsg-1"
+		},
+		{
+			"SPDXID": "SPDXRef-Package-digininja-dvwa-9b787fc",
+			"checksums": [
+				{
+					"algorithm": "SHA256",
+					"checksumValue": "ab341dbad7565b93982a0d336da43e01033a27bf2b66beeef338d51265c07bb1"
+				}
+			],
+			"copyrightText": "NOASSERTION",
+			"downloadLocation": "NOASSERTION",
+			"filesAnalyzed": false,
+			"homepage": "NOASSERTION",
+			"licenseConcluded": "NOASSERTION",
+			"licenseDeclared": "NOASSERTION",
+			"name": "digininja/dvwa",
+			"versionInfo": "9b787fc"
+		},
+		{
+			"SPDXID": "SPDXRef-Package-php.tar.xz",
+			"checksums": [
+				{
+					"algorithm": "SHA256",
+					"checksumValue": "29af82e4f7509831490552918aad502697453f0869a579ee1b80b08f9112c5b8"
+				}
+			],
+			"copyrightText": "NOASSERTION",
+			"downloadLocation": "NOASSERTION",
+			"filesAnalyzed": false,
+			"homepage": "NOASSERTION",
+			"licenseConcluded": "(BSD-2-Clause AND BSD-3-Clause AND BSL-1.0 AND LGPL-2.0 AND LGPL-2.1 AND PHP-3.01 AND Zend-2.0)",
+			"licenseDeclared": "NOASSERTION",
+			"name": "php.tar.xz"
+		}
+	],
+	"relationships": [
+		{
+			"relatedSpdxElement": "SPDXRef-Package-Structures-Graph-1.0.3.tgz",
+			"relationshipType": "DESCRIBES",
+			"spdxElementId": "SPDXRef-DOCUMENT"
+		},
+		{
+			"relatedSpdxElement": "SPDXRef-Package-debian-bookworm-adduser-3.134",
+			"relationshipType": "DESCRIBES",
+			"spdxElementId": "SPDXRef-DOCUMENT"
+		},
+		{
+			"relatedSpdxElement": "SPDXRef-Package-debian-bookworm-apache2-2.4.57-2",
+			"relationshipType": "DESCRIBES",
+			"spdxElementId": "SPDXRef-DOCUMENT"
+		},
+		{
+			"relatedSpdxElement": "SPDXRef-Package-debian-bookworm-apache2-bin-2.4.57-2",
+			"relationshipType": "DESCRIBES",
+			"spdxElementId": "SPDXRef-DOCUMENT"
+		},
+		{
+			"relatedSpdxElement": "SPDXRef-Package-debian-bookworm-apache2-data-2.4.57-2",
+			"relationshipType": "DESCRIBES",
+			"spdxElementId": "SPDXRef-DOCUMENT"
+		},
+		{
+			"relatedSpdxElement": "SPDXRef-Package-debian-bookworm-apache2-utils-2.4.57-2",
+			"relationshipType": "DESCRIBES",
+			"spdxElementId": "SPDXRef-DOCUMENT"
+		},
+		{
+			"relatedSpdxElement": "SPDXRef-Package-debian-bookworm-apt-2.6.1",
+			"relationshipType": "DESCRIBES",
+			"spdxElementId": "SPDXRef-DOCUMENT"
+		},
+		{
+			"relatedSpdxElement": "SPDXRef-Package-debian-bookworm-autoconf-2.71-3",
+			"relationshipType": "DESCRIBES",
+			"spdxElementId": "SPDXRef-DOCUMENT"
+		},
+		{
+			"relatedSpdxElement": "SPDXRef-Package-debian-bookworm-base-files-12.4-deb12u1",
+			"relationshipType": "DESCRIBES",
+			"spdxElementId": "SPDXRef-DOCUMENT"
+		},
+		{
+			"relatedSpdxElement": "SPDXRef-Package-debian-bookworm-base-passwd-3.6.1",
+			"relationshipType": "DESCRIBES",
+			"spdxElementId": "SPDXRef-DOCUMENT"
+		},
+		{
+			"relatedSpdxElement": "SPDXRef-Package-debian-bookworm-bash-5.2.15-2-b2",
+			"relationshipType": "DESCRIBES",
+			"spdxElementId": "SPDXRef-DOCUMENT"
+		},
+		{
+			"relatedSpdxElement": "SPDXRef-Package-debian-bookworm-binutils-2.40-2",
+			"relationshipType": "DESCRIBES",
+			"spdxElementId": "SPDXRef-DOCUMENT"
+		},
+		{
+			"relatedSpdxElement": "SPDXRef-Package-debian-bookworm-binutils-common-2.40-2",
+			"relationshipType": "DESCRIBES",
+			"spdxElementId": "SPDXRef-DOCUMENT"
+		},
+		{
+			"relatedSpdxElement": "SPDXRef-Package-debian-bookworm-binutils-x86-64-linux-gnu-2.40-2",
+			"relationshipType": "DESCRIBES",
+			"spdxElementId": "SPDXRef-DOCUMENT"
+		},
+		{
+			"relatedSpdxElement": "SPDXRef-Package-debian-bookworm-bsdutils-1-2.38.1-5-b1",
+			"relationshipType": "DESCRIBES",
+			"spdxElementId": "SPDXRef-DOCUMENT"
+		},
+		{
+			"relatedSpdxElement": "SPDXRef-Package-debian-bookworm-bzip2-1.0.8-5-b1",
+			"relationshipType": "DESCRIBES",
+			"spdxElementId": "SPDXRef-DOCUMENT"
+		},
+		{
+			"relatedSpdxElement": "SPDXRef-Package-debian-bookworm-ca-certificates-20230311",
+			"relationshipType": "DESCRIBES",
+			"spdxElementId": "SPDXRef-DOCUMENT"
+		},
+		{
+			"relatedSpdxElement": "SPDXRef-Package-debian-bookworm-coreutils-9.1-1",
+			"relationshipType": "DESCRIBES",
+			"spdxElementId": "SPDXRef-DOCUMENT"
+		},
+		{
+			"relatedSpdxElement": "SPDXRef-Package-debian-bookworm-cpp-4-12.2.0-3",
+			"relationshipType": "DESCRIBES",
+			"spdxElementId": "SPDXRef-DOCUMENT"
+		},
+		{
+			"relatedSpdxElement": "SPDXRef-Package-debian-bookworm-cpp-12-12.2.0-14",
+			"relationshipType": "DESCRIBES",
+			"spdxElementId": "SPDXRef-DOCUMENT"
+		},
+		{
+			"relatedSpdxElement": "SPDXRef-Package-debian-bookworm-curl-7.88.1-10-deb12u1",
+			"relationshipType": "DESCRIBES",
+			"spdxElementId": "SPDXRef-DOCUMENT"
+		},
+		{
+			"relatedSpdxElement": "SPDXRef-Package-debian-bookworm-dash-0.5.12-2",
+			"relationshipType": "DESCRIBES",
+			"spdxElementId": "SPDXRef-DOCUMENT"
+		},
+		{
+			"relatedSpdxElement": "SPDXRef-Package-debian-bookworm-debconf-1.5.82",
+			"relationshipType": "DESCRIBES",
+			"spdxElementId": "SPDXRef-DOCUMENT"
+		},
+		{
+			"relatedSpdxElement": "SPDXRef-Package-debian-bookworm-debian-archive-keyring-2023.3",
+			"relationshipType": "DESCRIBES",
+			"spdxElementId": "SPDXRef-DOCUMENT"
+		},
+		{
+			"relatedSpdxElement": "SPDXRef-Package-debian-bookworm-debianutils-5.7-0.4",
+			"relationshipType": "DESCRIBES",
+			"spdxElementId": "SPDXRef-DOCUMENT"
+		},
+		{
+			"relatedSpdxElement": "SPDXRef-Package-debian-bookworm-diffutils-1-3.8-4",
+			"relationshipType": "DESCRIBES",
+			"spdxElementId": "SPDXRef-DOCUMENT"
+		},
+		{
+			"relatedSpdxElement": "SPDXRef-Package-debian-bookworm-dpkg-1.21.22",
+			"relationshipType": "DESCRIBES",
+			"spdxElementId": "SPDXRef-DOCUMENT"
+		},
+		{
+			"relatedSpdxElement": "SPDXRef-Package-debian-bookworm-dpkg-dev-1.21.22",
+			"relationshipType": "DESCRIBES",
+			"spdxElementId": "SPDXRef-DOCUMENT"
+		},
+		{
+			"relatedSpdxElement": "SPDXRef-Package-debian-bookworm-e2fsprogs-1.47.0-2",
+			"relationshipType": "DESCRIBES",
+			"spdxElementId": "SPDXRef-DOCUMENT"
+		},
+		{
+			"relatedSpdxElement": "SPDXRef-Package-debian-bookworm-file-1-5.44-3",
+			"relationshipType": "DESCRIBES",
+			"spdxElementId": "SPDXRef-DOCUMENT"
+		},
+		{
+			"relatedSpdxElement": "SPDXRef-Package-debian-bookworm-findutils-4.9.0-4",
+			"relationshipType": "DESCRIBES",
+			"spdxElementId": "SPDXRef-DOCUMENT"
+		},
+		{
+			"relatedSpdxElement": "SPDXRef-Package-debian-bookworm-g---4-12.2.0-3",
+			"relationshipType": "DESCRIBES",
+			"spdxElementId": "SPDXRef-DOCUMENT"
+		},
+		{
+			"relatedSpdxElement": "SPDXRef-Package-debian-bookworm-g---12-12.2.0-14",
+			"relationshipType": "DESCRIBES",
+			"spdxElementId": "SPDXRef-DOCUMENT"
+		},
+		{
+			"relatedSpdxElement": "SPDXRef-Package-debian-bookworm-gcc-4-12.2.0-3",
+			"relationshipType": "DESCRIBES",
+			"spdxElementId": "SPDXRef-DOCUMENT"
+		},
+		{
+			"relatedSpdxElement": "SPDXRef-Package-debian-bookworm-gcc-12-12.2.0-14",
+			"relationshipType": "DESCRIBES",
+			"spdxElementId": "SPDXRef-DOCUMENT"
+		},
+		{
+			"relatedSpdxElement": "SPDXRef-Package-debian-bookworm-gcc-12-base-12.2.0-14",
+			"relationshipType": "DESCRIBES",
+			"spdxElementId": "SPDXRef-DOCUMENT"
+		},
+		{
+			"relatedSpdxElement": "SPDXRef-Package-debian-bookworm-gpgv-2.2.40-1.1",
+			"relationshipType": "DESCRIBES",
+			"spdxElementId": "SPDXRef-DOCUMENT"
+		},
+		{
+			"relatedSpdxElement": "SPDXRef-Package-debian-bookworm-grep-3.8-5",
+			"relationshipType": "DESCRIBES",
+			"spdxElementId": "SPDXRef-DOCUMENT"
+		},
+		{
+			"relatedSpdxElement": "SPDXRef-Package-debian-bookworm-gzip-1.12-1",
+			"relationshipType": "DESCRIBES",
+			"spdxElementId": "SPDXRef-DOCUMENT"
+		},
+		{
+			"relatedSpdxElement": "SPDXRef-Package-debian-bookworm-hostname-3.23-nmu1",
+			"relationshipType": "DESCRIBES",
+			"spdxElementId": "SPDXRef-DOCUMENT"
+		},
+		{
+			"relatedSpdxElement": "SPDXRef-Package-debian-bookworm-init-system-helpers-1.65.2",
+			"relationshipType": "DESCRIBES",
+			"spdxElementId": "SPDXRef-DOCUMENT"
+		},
+		{
+			"relatedSpdxElement": "SPDXRef-Package-debian-bookworm-iputils-ping-3-20221126-1",
+			"relationshipType": "DESCRIBES",
+			"spdxElementId": "SPDXRef-DOCUMENT"
+		},
+		{
+			"relatedSpdxElement": "SPDXRef-Package-debian-bookworm-libacl1-2.3.1-3",
+			"relationshipType": "DESCRIBES",
+			"spdxElementId": "SPDXRef-DOCUMENT"
+		},
+		{
+			"relatedSpdxElement": "SPDXRef-Package-debian-bookworm-libapr1-1.7.2-3",
+			"relationshipType": "DESCRIBES",
+			"spdxElementId": "SPDXRef-DOCUMENT"
+		},
+		{
+			"relatedSpdxElement": "SPDXRef-Package-debian-bookworm-libaprutil1-1.6.3-1",
+			"relationshipType": "DESCRIBES",
+			"spdxElementId": "SPDXRef-DOCUMENT"
+		},
+		{
+			"relatedSpdxElement": "SPDXRef-Package-debian-bookworm-libaprutil1-dbd-sqlite3-1.6.3-1",
+			"relationshipType": "DESCRIBES",
+			"spdxElementId": "SPDXRef-DOCUMENT"
+		},
+		{
+			"relatedSpdxElement": "SPDXRef-Package-debian-bookworm-libaprutil1-ldap-1.6.3-1",
+			"relationshipType": "DESCRIBES",
+			"spdxElementId": "SPDXRef-DOCUMENT"
+		},
+		{
+			"relatedSpdxElement": "SPDXRef-Package-debian-bookworm-libapt-pkg6.0-2.6.1",
+			"relationshipType": "DESCRIBES",
+			"spdxElementId": "SPDXRef-DOCUMENT"
+		},
+		{
+			"relatedSpdxElement": "SPDXRef-Package-debian-bookworm-libargon2-1-0-20171227-0.3-deb12u1",
+			"relationshipType": "DESCRIBES",
+			"spdxElementId": "SPDXRef-DOCUMENT"
+		},
+		{
+			"relatedSpdxElement": "SPDXRef-Package-debian-bookworm-libasan8-12.2.0-14",
+			"relationshipType": "DESCRIBES",
+			"spdxElementId": "SPDXRef-DOCUMENT"
+		},
+		{
+			"relatedSpdxElement": "SPDXRef-Package-debian-bookworm-libatomic1-12.2.0-14",
+			"relationshipType": "DESCRIBES",
+			"spdxElementId": "SPDXRef-DOCUMENT"
+		},
+		{
+			"relatedSpdxElement": "SPDXRef-Package-debian-bookworm-libattr1-1-2.5.1-4",
+			"relationshipType": "DESCRIBES",
+			"spdxElementId": "SPDXRef-DOCUMENT"
+		},
+		{
+			"relatedSpdxElement": "SPDXRef-Package-debian-bookworm-libaudit-common-1-3.0.9-1",
+			"relationshipType": "DESCRIBES",
+			"spdxElementId": "SPDXRef-DOCUMENT"
+		},
+		{
+			"relatedSpdxElement": "SPDXRef-Package-debian-bookworm-libaudit1-1-3.0.9-1",
+			"relationshipType": "DESCRIBES",
+			"spdxElementId": "SPDXRef-DOCUMENT"
+		},
+		{
+			"relatedSpdxElement": "SPDXRef-Package-debian-bookworm-libbinutils-2.40-2",
+			"relationshipType": "DESCRIBES",
+			"spdxElementId": "SPDXRef-DOCUMENT"
+		},
+		{
+			"relatedSpdxElement": "SPDXRef-Package-debian-bookworm-libblkid1-2.38.1-5-b1",
+			"relationshipType": "DESCRIBES",
+			"spdxElementId": "SPDXRef-DOCUMENT"
+		},
+		{
+			"relatedSpdxElement": "SPDXRef-Package-debian-bookworm-libbrotli-dev-1.0.9-2-b6",
+			"relationshipType": "DESCRIBES",
+			"spdxElementId": "SPDXRef-DOCUMENT"
+		},
+		{
+			"relatedSpdxElement": "SPDXRef-Package-debian-bookworm-libbrotli1-1.0.9-2-b6",
+			"relationshipType": "DESCRIBES",
+			"spdxElementId": "SPDXRef-DOCUMENT"
+		},
+		{
+			"relatedSpdxElement": "SPDXRef-Package-debian-bookworm-libbz2-1.0-1.0.8-5-b1",
+			"relationshipType": "DESCRIBES",
+			"spdxElementId": "SPDXRef-DOCUMENT"
+		},
+		{
+			"relatedSpdxElement": "SPDXRef-Package-debian-bookworm-libc-bin-2.36-9-deb12u1",
+			"relationshipType": "DESCRIBES",
+			"spdxElementId": "SPDXRef-DOCUMENT"
+		},
+		{
+			"relatedSpdxElement": "SPDXRef-Package-debian-bookworm-libc-dev-bin-2.36-9-deb12u1",
+			"relationshipType": "DESCRIBES",
+			"spdxElementId": "SPDXRef-DOCUMENT"
+		},
+		{
+			"relatedSpdxElement": "SPDXRef-Package-debian-bookworm-libc6-2.36-9-deb12u1",
+			"relationshipType": "DESCRIBES",
+			"spdxElementId": "SPDXRef-DOCUMENT"
+		},
+		{
+			"relatedSpdxElement": "SPDXRef-Package-debian-bookworm-libc6-dev-2.36-9-deb12u1",
+			"relationshipType": "DESCRIBES",
+			"spdxElementId": "SPDXRef-DOCUMENT"
+		},
+		{
+			"relatedSpdxElement": "SPDXRef-Package-debian-bookworm-libcap-ng0-0.8.3-1-b3",
+			"relationshipType": "DESCRIBES",
+			"spdxElementId": "SPDXRef-DOCUMENT"
+		},
+		{
+			"relatedSpdxElement": "SPDXRef-Package-debian-bookworm-libcap2-1-2.66-4",
+			"relationshipType": "DESCRIBES",
+			"spdxElementId": "SPDXRef-DOCUMENT"
+		},
+		{
+			"relatedSpdxElement": "SPDXRef-Package-debian-bookworm-libcap2-bin-1-2.66-4",
+			"relationshipType": "DESCRIBES",
+			"spdxElementId": "SPDXRef-DOCUMENT"
+		},
+		{
+			"relatedSpdxElement": "SPDXRef-Package-debian-bookworm-libcc1-0-12.2.0-14",
+			"relationshipType": "DESCRIBES",
+			"spdxElementId": "SPDXRef-DOCUMENT"
+		},
+		{
+			"relatedSpdxElement": "SPDXRef-Package-debian-bookworm-libcom-err2-1.47.0-2",
+			"relationshipType": "DESCRIBES",
+			"spdxElementId": "SPDXRef-DOCUMENT"
+		},
+		{
+			"relatedSpdxElement": "SPDXRef-Package-debian-bookworm-libcrypt-dev-1-4.4.33-2",
+			"relationshipType": "DESCRIBES",
+			"spdxElementId": "SPDXRef-DOCUMENT"
+		},
+		{
+			"relatedSpdxElement": "SPDXRef-Package-debian-bookworm-libcrypt1-1-4.4.33-2",
+			"relationshipType": "DESCRIBES",
+			"spdxElementId": "SPDXRef-DOCUMENT"
+		},
+		{
+			"relatedSpdxElement": "SPDXRef-Package-debian-bookworm-libctf-nobfd0-2.40-2",
+			"relationshipType": "DESCRIBES",
+			"spdxElementId": "SPDXRef-DOCUMENT"
+		},
+		{
+			"relatedSpdxElement": "SPDXRef-Package-debian-bookworm-libctf0-2.40-2",
+			"relationshipType": "DESCRIBES",
+			"spdxElementId": "SPDXRef-DOCUMENT"
+		},
+		{
+			"relatedSpdxElement": "SPDXRef-Package-debian-bookworm-libcurl4-7.88.1-10-deb12u1",
+			"relationshipType": "DESCRIBES",
+			"spdxElementId": "SPDXRef-DOCUMENT"
+		},
+		{
+			"relatedSpdxElement": "SPDXRef-Package-debian-bookworm-libdb5.3-5.3.28-dfsg2-1",
+			"relationshipType": "DESCRIBES",
+			"spdxElementId": "SPDXRef-DOCUMENT"
+		},
+		{
+			"relatedSpdxElement": "SPDXRef-Package-debian-bookworm-libdebconfclient0-0.270",
+			"relationshipType": "DESCRIBES",
+			"spdxElementId": "SPDXRef-DOCUMENT"
+		},
+		{
+			"relatedSpdxElement": "SPDXRef-Package-debian-bookworm-libdpkg-perl-1.21.22",
+			"relationshipType": "DESCRIBES",
+			"spdxElementId": "SPDXRef-DOCUMENT"
+		},
+		{
+			"relatedSpdxElement": "SPDXRef-Package-debian-bookworm-libexpat1-2.5.0-1",
+			"relationshipType": "DESCRIBES",
+			"spdxElementId": "SPDXRef-DOCUMENT"
+		},
+		{
+			"relatedSpdxElement": "SPDXRef-Package-debian-bookworm-libext2fs2-1.47.0-2",
+			"relationshipType": "DESCRIBES",
+			"spdxElementId": "SPDXRef-DOCUMENT"
+		},
+		{
+			"relatedSpdxElement": "SPDXRef-Package-debian-bookworm-libffi8-3.4.4-1",
+			"relationshipType": "DESCRIBES",
+			"spdxElementId": "SPDXRef-DOCUMENT"
+		},
+		{
+			"relatedSpdxElement": "SPDXRef-Package-debian-bookworm-libfreetype-dev-2.12.1-dfsg-5",
+			"relationshipType": "DESCRIBES",
+			"spdxElementId": "SPDXRef-DOCUMENT"
+		},
+		{
+			"relatedSpdxElement": "SPDXRef-Package-debian-bookworm-libfreetype6-2.12.1-dfsg-5",
+			"relationshipType": "DESCRIBES",
+			"spdxElementId": "SPDXRef-DOCUMENT"
+		},
+		{
+			"relatedSpdxElement": "SPDXRef-Package-debian-bookworm-libfreetype6-dev-2.12.1-dfsg-5",
+			"relationshipType": "DESCRIBES",
+			"spdxElementId": "SPDXRef-DOCUMENT"
+		},
+		{
+			"relatedSpdxElement": "SPDXRef-Package-debian-bookworm-libgcc-12-dev-12.2.0-14",
+			"relationshipType": "DESCRIBES",
+			"spdxElementId": "SPDXRef-DOCUMENT"
+		},
+		{
+			"relatedSpdxElement": "SPDXRef-Package-debian-bookworm-libgcc-s1-12.2.0-14",
+			"relationshipType": "DESCRIBES",
+			"spdxElementId": "SPDXRef-DOCUMENT"
+		},
+		{
+			"relatedSpdxElement": "SPDXRef-Package-debian-bookworm-libgcrypt20-1.10.1-3",
+			"relationshipType": "DESCRIBES",
+			"spdxElementId": "SPDXRef-DOCUMENT"
+		},
+		{
+			"relatedSpdxElement": "SPDXRef-Package-debian-bookworm-libgdbm-compat4-1.23-3",
+			"relationshipType": "DESCRIBES",
+			"spdxElementId": "SPDXRef-DOCUMENT"
+		},
+		{
+			"relatedSpdxElement": "SPDXRef-Package-debian-bookworm-libgdbm6-1.23-3",
+			"relationshipType": "DESCRIBES",
+			"spdxElementId": "SPDXRef-DOCUMENT"
+		},
+		{
+			"relatedSpdxElement": "SPDXRef-Package-debian-bookworm-libgmp10-2-6.2.1-dfsg1-1.1",
+			"relationshipType": "DESCRIBES",
+			"spdxElementId": "SPDXRef-DOCUMENT"
+		},
+		{
+			"relatedSpdxElement": "SPDXRef-Package-debian-bookworm-libgnutls30-3.7.9-2",
+			"relationshipType": "DESCRIBES",
+			"spdxElementId": "SPDXRef-DOCUMENT"
+		},
+		{
+			"relatedSpdxElement": "SPDXRef-Package-debian-bookworm-libgomp1-12.2.0-14",
+			"relationshipType": "DESCRIBES",
+			"spdxElementId": "SPDXRef-DOCUMENT"
+		},
+		{
+			"relatedSpdxElement": "SPDXRef-Package-debian-bookworm-libgpg-error0-1.46-1",
+			"relationshipType": "DESCRIBES",
+			"spdxElementId": "SPDXRef-DOCUMENT"
+		},
+		{
+			"relatedSpdxElement": "SPDXRef-Package-debian-bookworm-libgprofng0-2.40-2",
+			"relationshipType": "DESCRIBES",
+			"spdxElementId": "SPDXRef-DOCUMENT"
+		},
+		{
+			"relatedSpdxElement": "SPDXRef-Package-debian-bookworm-libgssapi-krb5-2-1.20.1-2",
+			"relationshipType": "DESCRIBES",
+			"spdxElementId": "SPDXRef-DOCUMENT"
+		},
+		{
+			"relatedSpdxElement": "SPDXRef-Package-debian-bookworm-libhogweed6-3.8.1-2",
+			"relationshipType": "DESCRIBES",
+			"spdxElementId": "SPDXRef-DOCUMENT"
+		},
+		{
+			"relatedSpdxElement": "SPDXRef-Package-debian-bookworm-libicu72-72.1-3",
+			"relationshipType": "DESCRIBES",
+			"spdxElementId": "SPDXRef-DOCUMENT"
+		},
+		{
+			"relatedSpdxElement": "SPDXRef-Package-debian-bookworm-libidn2-0-2.3.3-1-b1",
+			"relationshipType": "DESCRIBES",
+			"spdxElementId": "SPDXRef-DOCUMENT"
+		},
+		{
+			"relatedSpdxElement": "SPDXRef-Package-debian-bookworm-libisl23-0.25-1",
+			"relationshipType": "DESCRIBES",
+			"spdxElementId": "SPDXRef-DOCUMENT"
+		},
+		{
+			"relatedSpdxElement": "SPDXRef-Package-debian-bookworm-libitm1-12.2.0-14",
+			"relationshipType": "DESCRIBES",
+			"spdxElementId": "SPDXRef-DOCUMENT"
+		},
+		{
+			"relatedSpdxElement": "SPDXRef-Package-debian-bookworm-libjansson4-2.14-2",
+			"relationshipType": "DESCRIBES",
+			"spdxElementId": "SPDXRef-DOCUMENT"
+		},
+		{
+			"relatedSpdxElement": "SPDXRef-Package-debian-bookworm-libjpeg-dev-1-2.1.5-2",
+			"relationshipType": "DESCRIBES",
+			"spdxElementId": "SPDXRef-DOCUMENT"
+		},
+		{
+			"relatedSpdxElement": "SPDXRef-Package-debian-bookworm-libjpeg62-turbo-1-2.1.5-2",
+			"relationshipType": "DESCRIBES",
+			"spdxElementId": "SPDXRef-DOCUMENT"
+		},
+		{
+			"relatedSpdxElement": "SPDXRef-Package-debian-bookworm-libjpeg62-turbo-dev-1-2.1.5-2",
+			"relationshipType": "DESCRIBES",
+			"spdxElementId": "SPDXRef-DOCUMENT"
+		},
+		{
+			"relatedSpdxElement": "SPDXRef-Package-debian-bookworm-libk5crypto3-1.20.1-2",
+			"relationshipType": "DESCRIBES",
+			"spdxElementId": "SPDXRef-DOCUMENT"
+		},
+		{
+			"relatedSpdxElement": "SPDXRef-Package-debian-bookworm-libkeyutils1-1.6.3-2",
+			"relationshipType": "DESCRIBES",
+			"spdxElementId": "SPDXRef-DOCUMENT"
+		},
+		{
+			"relatedSpdxElement": "SPDXRef-Package-debian-bookworm-libkrb5-3-1.20.1-2",
+			"relationshipType": "DESCRIBES",
+			"spdxElementId": "SPDXRef-DOCUMENT"
+		},
+		{
+			"relatedSpdxElement": "SPDXRef-Package-debian-bookworm-libkrb5support0-1.20.1-2",
+			"relationshipType": "DESCRIBES",
+			"spdxElementId": "SPDXRef-DOCUMENT"
+		},
+		{
+			"relatedSpdxElement": "SPDXRef-Package-debian-bookworm-libldap-2.5-0-2.5.13-dfsg-5",
+			"relationshipType": "DESCRIBES",
+			"spdxElementId": "SPDXRef-DOCUMENT"
+		},
+		{
+			"relatedSpdxElement": "SPDXRef-Package-debian-bookworm-liblsan0-12.2.0-14",
+			"relationshipType": "DESCRIBES",
+			"spdxElementId": "SPDXRef-DOCUMENT"
+		},
+		{
+			"relatedSpdxElement": "SPDXRef-Package-debian-bookworm-liblua5.3-0-5.3.6-2",
+			"relationshipType": "DESCRIBES",
+			"spdxElementId": "SPDXRef-DOCUMENT"
+		},
+		{
+			"relatedSpdxElement": "SPDXRef-Package-debian-bookworm-liblz4-1-1.9.4-1",
+			"relationshipType": "DESCRIBES",
+			"spdxElementId": "SPDXRef-DOCUMENT"
+		},
+		{
+			"relatedSpdxElement": "SPDXRef-Package-debian-bookworm-liblzma5-5.4.1-0.2",
+			"relationshipType": "DESCRIBES",
+			"spdxElementId": "SPDXRef-DOCUMENT"
+		},
+		{
+			"relatedSpdxElement": "SPDXRef-Package-debian-bookworm-libmagic-mgc-1-5.44-3",
+			"relationshipType": "DESCRIBES",
+			"spdxElementId": "SPDXRef-DOCUMENT"
+		},
+		{
+			"relatedSpdxElement": "SPDXRef-Package-debian-bookworm-libmagic1-1-5.44-3",
+			"relationshipType": "DESCRIBES",
+			"spdxElementId": "SPDXRef-DOCUMENT"
+		},
+		{
+			"relatedSpdxElement": "SPDXRef-Package-debian-bookworm-libmd0-1.0.4-2",
+			"relationshipType": "DESCRIBES",
+			"spdxElementId": "SPDXRef-DOCUMENT"
+		},
+		{
+			"relatedSpdxElement": "SPDXRef-Package-debian-bookworm-libmount1-2.38.1-5-b1",
+			"relationshipType": "DESCRIBES",
+			"spdxElementId": "SPDXRef-DOCUMENT"
+		},
+		{
+			"relatedSpdxElement": "SPDXRef-Package-debian-bookworm-libmpc3-1.3.1-1",
+			"relationshipType": "DESCRIBES",
+			"spdxElementId": "SPDXRef-DOCUMENT"
+		},
+		{
+			"relatedSpdxElement": "SPDXRef-Package-debian-bookworm-libmpfr6-4.2.0-1",
+			"relationshipType": "DESCRIBES",
+			"spdxElementId": "SPDXRef-DOCUMENT"
+		},
+		{
+			"relatedSpdxElement": "SPDXRef-Package-debian-bookworm-libncursesw6-6.4-4",
+			"relationshipType": "DESCRIBES",
+			"spdxElementId": "SPDXRef-DOCUMENT"
+		},
+		{
+			"relatedSpdxElement": "SPDXRef-Package-debian-bookworm-libnettle8-3.8.1-2",
+			"relationshipType": "DESCRIBES",
+			"spdxElementId": "SPDXRef-DOCUMENT"
+		},
+		{
+			"relatedSpdxElement": "SPDXRef-Package-debian-bookworm-libnghttp2-14-1.52.0-1",
+			"relationshipType": "DESCRIBES",
+			"spdxElementId": "SPDXRef-DOCUMENT"
+		},
+		{
+			"relatedSpdxElement": "SPDXRef-Package-debian-bookworm-libnsl-dev-1.3.0-2",
+			"relationshipType": "DESCRIBES",
+			"spdxElementId": "SPDXRef-DOCUMENT"
+		},
+		{
+			"relatedSpdxElement": "SPDXRef-Package-debian-bookworm-libnsl2-1.3.0-2",
+			"relationshipType": "DESCRIBES",
+			"spdxElementId": "SPDXRef-DOCUMENT"
+		},
+		{
+			"relatedSpdxElement": "SPDXRef-Package-debian-bookworm-libonig5-6.9.8-1",
+			"relationshipType": "DESCRIBES",
+			"spdxElementId": "SPDXRef-DOCUMENT"
+		},
+		{
+			"relatedSpdxElement": "SPDXRef-Package-debian-bookworm-libp11-kit0-0.24.1-2",
+			"relationshipType": "DESCRIBES",
+			"spdxElementId": "SPDXRef-DOCUMENT"
+		},
+		{
+			"relatedSpdxElement": "SPDXRef-Package-debian-bookworm-libpam-cap-1-2.66-4",
+			"relationshipType": "DESCRIBES",
+			"spdxElementId": "SPDXRef-DOCUMENT"
+		},
+		{
+			"relatedSpdxElement": "SPDXRef-Package-debian-bookworm-libpam-modules-1.5.2-6",
+			"relationshipType": "DESCRIBES",
+			"spdxElementId": "SPDXRef-DOCUMENT"
+		},
+		{
+			"relatedSpdxElement": "SPDXRef-Package-debian-bookworm-libpam-modules-bin-1.5.2-6",
+			"relationshipType": "DESCRIBES",
+			"spdxElementId": "SPDXRef-DOCUMENT"
+		},
+		{
+			"relatedSpdxElement": "SPDXRef-Package-debian-bookworm-libpam-runtime-1.5.2-6",
+			"relationshipType": "DESCRIBES",
+			"spdxElementId": "SPDXRef-DOCUMENT"
+		},
+		{
+			"relatedSpdxElement": "SPDXRef-Package-debian-bookworm-libpam0g-1.5.2-6",
+			"relationshipType": "DESCRIBES",
+			"spdxElementId": "SPDXRef-DOCUMENT"
+		},
+		{
+			"relatedSpdxElement": "SPDXRef-Package-debian-bookworm-libpcre2-8-0-10.42-1",
+			"relationshipType": "DESCRIBES",
+			"spdxElementId": "SPDXRef-DOCUMENT"
+		},
+		{
+			"relatedSpdxElement": "SPDXRef-Package-debian-bookworm-libperl5.36-5.36.0-7",
+			"relationshipType": "DESCRIBES",
+			"spdxElementId": "SPDXRef-DOCUMENT"
+		},
+		{
+			"relatedSpdxElement": "SPDXRef-Package-debian-bookworm-libpkgconf3-1.8.1-1",
+			"relationshipType": "DESCRIBES",
+			"spdxElementId": "SPDXRef-DOCUMENT"
+		},
+		{
+			"relatedSpdxElement": "SPDXRef-Package-debian-bookworm-libpng-dev-1.6.39-2",
+			"relationshipType": "DESCRIBES",
+			"spdxElementId": "SPDXRef-DOCUMENT"
+		},
+		{
+			"relatedSpdxElement": "SPDXRef-Package-debian-bookworm-libpng-tools-1.6.39-2",
+			"relationshipType": "DESCRIBES",
+			"spdxElementId": "SPDXRef-DOCUMENT"
+		},
+		{
+			"relatedSpdxElement": "SPDXRef-Package-debian-bookworm-libpng16-16-1.6.39-2",
+			"relationshipType": "DESCRIBES",
+			"spdxElementId": "SPDXRef-DOCUMENT"
+		},
+		{
+			"relatedSpdxElement": "SPDXRef-Package-debian-bookworm-libproc2-0-2-4.0.2-3",
+			"relationshipType": "DESCRIBES",
+			"spdxElementId": "SPDXRef-DOCUMENT"
+		},
+		{
+			"relatedSpdxElement": "SPDXRef-Package-debian-bookworm-libpsl5-0.21.2-1",
+			"relationshipType": "DESCRIBES",
+			"spdxElementId": "SPDXRef-DOCUMENT"
+		},
+		{
+			"relatedSpdxElement": "SPDXRef-Package-debian-bookworm-libquadmath0-12.2.0-14",
+			"relationshipType": "DESCRIBES",
+			"spdxElementId": "SPDXRef-DOCUMENT"
+		},
+		{
+			"relatedSpdxElement": "SPDXRef-Package-debian-bookworm-libreadline8-8.2-1.3",
+			"relationshipType": "DESCRIBES",
+			"spdxElementId": "SPDXRef-DOCUMENT"
+		},
+		{
+			"relatedSpdxElement": "SPDXRef-Package-debian-bookworm-librtmp1-2.4-20151223.gitfa8646d.1-2-b2",
+			"relationshipType": "DESCRIBES",
+			"spdxElementId": "SPDXRef-DOCUMENT"
+		},
+		{
+			"relatedSpdxElement": "SPDXRef-Package-debian-bookworm-libsasl2-2-2.1.28-dfsg-10",
+			"relationshipType": "DESCRIBES",
+			"spdxElementId": "SPDXRef-DOCUMENT"
+		},
+		{
+			"relatedSpdxElement": "SPDXRef-Package-debian-bookworm-libsasl2-modules-db-2.1.28-dfsg-10",
+			"relationshipType": "DESCRIBES",
+			"spdxElementId": "SPDXRef-DOCUMENT"
+		},
+		{
+			"relatedSpdxElement": "SPDXRef-Package-debian-bookworm-libseccomp2-2.5.4-1-b3",
+			"relationshipType": "DESCRIBES",
+			"spdxElementId": "SPDXRef-DOCUMENT"
+		},
+		{
+			"relatedSpdxElement": "SPDXRef-Package-debian-bookworm-libselinux1-3.4-1-b6",
+			"relationshipType": "DESCRIBES",
+			"spdxElementId": "SPDXRef-DOCUMENT"
+		},
+		{
+			"relatedSpdxElement": "SPDXRef-Package-debian-bookworm-libsemanage-common-3.4-1",
+			"relationshipType": "DESCRIBES",
+			"spdxElementId": "SPDXRef-DOCUMENT"
+		},
+		{
+			"relatedSpdxElement": "SPDXRef-Package-debian-bookworm-libsemanage2-3.4-1-b5",
+			"relationshipType": "DESCRIBES",
+			"spdxElementId": "SPDXRef-DOCUMENT"
+		},
+		{
+			"relatedSpdxElement": "SPDXRef-Package-debian-bookworm-libsepol2-3.4-2.1",
+			"relationshipType": "DESCRIBES",
+			"spdxElementId": "SPDXRef-DOCUMENT"
+		},
+		{
+			"relatedSpdxElement": "SPDXRef-Package-debian-bookworm-libsmartcols1-2.38.1-5-b1",
+			"relationshipType": "DESCRIBES",
+			"spdxElementId": "SPDXRef-DOCUMENT"
+		},
+		{
+			"relatedSpdxElement": "SPDXRef-Package-debian-bookworm-libsodium23-1.0.18-1",
+			"relationshipType": "DESCRIBES",
+			"spdxElementId": "SPDXRef-DOCUMENT"
+		},
+		{
+			"relatedSpdxElement": "SPDXRef-Package-debian-bookworm-libsqlite3-0-3.40.1-2",
+			"relationshipType": "DESCRIBES",
+			"spdxElementId": "SPDXRef-DOCUMENT"
+		},
+		{
+			"relatedSpdxElement": "SPDXRef-Package-debian-bookworm-libss2-1.47.0-2",
+			"relationshipType": "DESCRIBES",
+			"spdxElementId": "SPDXRef-DOCUMENT"
+		},
+		{
+			"relatedSpdxElement": "SPDXRef-Package-debian-bookworm-libssh2-1-1.10.0-3-b1",
+			"relationshipType": "DESCRIBES",
+			"spdxElementId": "SPDXRef-DOCUMENT"
+		},
+		{
+			"relatedSpdxElement": "SPDXRef-Package-debian-bookworm-libssl3-3.0.9-1",
+			"relationshipType": "DESCRIBES",
+			"spdxElementId": "SPDXRef-DOCUMENT"
+		},
+		{
+			"relatedSpdxElement": "SPDXRef-Package-debian-bookworm-libstdc---12-dev-12.2.0-14",
+			"relationshipType": "DESCRIBES",
+			"spdxElementId": "SPDXRef-DOCUMENT"
+		},
+		{
+			"relatedSpdxElement": "SPDXRef-Package-debian-bookworm-libstdc--6-12.2.0-14",
+			"relationshipType": "DESCRIBES",
+			"spdxElementId": "SPDXRef-DOCUMENT"
+		},
+		{
+			"relatedSpdxElement": "SPDXRef-Package-debian-bookworm-libsystemd0-252.12-1-deb12u1",
+			"relationshipType": "DESCRIBES",
+			"spdxElementId": "SPDXRef-DOCUMENT"
+		},
+		{
+			"relatedSpdxElement": "SPDXRef-Package-debian-bookworm-libtasn1-6-4.19.0-2",
+			"relationshipType": "DESCRIBES",
+			"spdxElementId": "SPDXRef-DOCUMENT"
+		},
+		{
+			"relatedSpdxElement": "SPDXRef-Package-debian-bookworm-libtinfo6-6.4-4",
+			"relationshipType": "DESCRIBES",
+			"spdxElementId": "SPDXRef-DOCUMENT"
+		},
+		{
+			"relatedSpdxElement": "SPDXRef-Package-debian-bookworm-libtirpc-common-1.3.3-ds-1",
+			"relationshipType": "DESCRIBES",
+			"spdxElementId": "SPDXRef-DOCUMENT"
+		},
+		{
+			"relatedSpdxElement": "SPDXRef-Package-debian-bookworm-libtirpc-dev-1.3.3-ds-1",
+			"relationshipType": "DESCRIBES",
+			"spdxElementId": "SPDXRef-DOCUMENT"
+		},
+		{
+			"relatedSpdxElement": "SPDXRef-Package-debian-bookworm-libtirpc3-1.3.3-ds-1",
+			"relationshipType": "DESCRIBES",
+			"spdxElementId": "SPDXRef-DOCUMENT"
+		},
+		{
+			"relatedSpdxElement": "SPDXRef-Package-debian-bookworm-libtsan2-12.2.0-14",
+			"relationshipType": "DESCRIBES",
+			"spdxElementId": "SPDXRef-DOCUMENT"
+		},
+		{
+			"relatedSpdxElement": "SPDXRef-Package-debian-bookworm-libubsan1-12.2.0-14",
+			"relationshipType": "DESCRIBES",
+			"spdxElementId": "SPDXRef-DOCUMENT"
+		},
+		{
+			"relatedSpdxElement": "SPDXRef-Package-debian-bookworm-libudev1-252.12-1-deb12u1",
+			"relationshipType": "DESCRIBES",
+			"spdxElementId": "SPDXRef-DOCUMENT"
+		},
+		{
+			"relatedSpdxElement": "SPDXRef-Package-debian-bookworm-libunistring2-1.0-2",
+			"relationshipType": "DESCRIBES",
+			"spdxElementId": "SPDXRef-DOCUMENT"
+		},
+		{
+			"relatedSpdxElement": "SPDXRef-Package-debian-bookworm-libuuid1-2.38.1-5-b1",
+			"relationshipType": "DESCRIBES",
+			"spdxElementId": "SPDXRef-DOCUMENT"
+		},
+		{
+			"relatedSpdxElement": "SPDXRef-Package-debian-bookworm-libxml2-2.9.14-dfsg-1.3-deb12u1",
+			"relationshipType": "DESCRIBES",
+			"spdxElementId": "SPDXRef-DOCUMENT"
+		},
+		{
+			"relatedSpdxElement": "SPDXRef-Package-debian-bookworm-libxxhash0-0.8.1-1",
+			"relationshipType": "DESCRIBES",
+			"spdxElementId": "SPDXRef-DOCUMENT"
+		},
+		{
+			"relatedSpdxElement": "SPDXRef-Package-debian-bookworm-libzstd1-1.5.4-dfsg2-5",
+			"relationshipType": "DESCRIBES",
+			"spdxElementId": "SPDXRef-DOCUMENT"
+		},
+		{
+			"relatedSpdxElement": "SPDXRef-Package-debian-bookworm-linux-libc-dev-6.1.52-1",
+			"relationshipType": "DESCRIBES",
+			"spdxElementId": "SPDXRef-DOCUMENT"
+		},
+		{
+			"relatedSpdxElement": "SPDXRef-Package-debian-bookworm-login-1-4.13-dfsg1-1-b1",
+			"relationshipType": "DESCRIBES",
+			"spdxElementId": "SPDXRef-DOCUMENT"
+		},
+		{
+			"relatedSpdxElement": "SPDXRef-Package-debian-bookworm-logsave-1.47.0-2",
+			"relationshipType": "DESCRIBES",
+			"spdxElementId": "SPDXRef-DOCUMENT"
+		},
+		{
+			"relatedSpdxElement": "SPDXRef-Package-debian-bookworm-m4-1.4.19-3",
+			"relationshipType": "DESCRIBES",
+			"spdxElementId": "SPDXRef-DOCUMENT"
+		},
+		{
+			"relatedSpdxElement": "SPDXRef-Package-debian-bookworm-make-4.3-4.1",
+			"relationshipType": "DESCRIBES",
+			"spdxElementId": "SPDXRef-DOCUMENT"
+		},
+		{
+			"relatedSpdxElement": "SPDXRef-Package-debian-bookworm-mawk-1.3.4.20200120-3.1",
+			"relationshipType": "DESCRIBES",
+			"spdxElementId": "SPDXRef-DOCUMENT"
+		},
+		{
+			"relatedSpdxElement": "SPDXRef-Package-debian-bookworm-media-types-10.0.0",
+			"relationshipType": "DESCRIBES",
+			"spdxElementId": "SPDXRef-DOCUMENT"
+		},
+		{
+			"relatedSpdxElement": "SPDXRef-Package-debian-bookworm-mount-2.38.1-5-b1",
+			"relationshipType": "DESCRIBES",
+			"spdxElementId": "SPDXRef-DOCUMENT"
+		},
+		{
+			"relatedSpdxElement": "SPDXRef-Package-debian-bookworm-ncurses-base-6.4-4",
+			"relationshipType": "DESCRIBES",
+			"spdxElementId": "SPDXRef-DOCUMENT"
+		},
+		{
+			"relatedSpdxElement": "SPDXRef-Package-debian-bookworm-ncurses-bin-6.4-4",
+			"relationshipType": "DESCRIBES",
+			"spdxElementId": "SPDXRef-DOCUMENT"
+		},
+		{
+			"relatedSpdxElement": "SPDXRef-Package-debian-bookworm-openssl-3.0.9-1",
+			"relationshipType": "DESCRIBES",
+			"spdxElementId": "SPDXRef-DOCUMENT"
+		},
+		{
+			"relatedSpdxElement": "SPDXRef-Package-debian-bookworm-passwd-1-4.13-dfsg1-1-b1",
+			"relationshipType": "DESCRIBES",
+			"spdxElementId": "SPDXRef-DOCUMENT"
+		},
+		{
+			"relatedSpdxElement": "SPDXRef-Package-debian-bookworm-patch-2.7.6-7",
+			"relationshipType": "DESCRIBES",
+			"spdxElementId": "SPDXRef-DOCUMENT"
+		},
+		{
+			"relatedSpdxElement": "SPDXRef-Package-debian-bookworm-perl-5.36.0-7",
+			"relationshipType": "DESCRIBES",
+			"spdxElementId": "SPDXRef-DOCUMENT"
+		},
+		{
+			"relatedSpdxElement": "SPDXRef-Package-debian-bookworm-perl-base-5.36.0-7",
+			"relationshipType": "DESCRIBES",
+			"spdxElementId": "SPDXRef-DOCUMENT"
+		},
+		{
+			"relatedSpdxElement": "SPDXRef-Package-debian-bookworm-perl-modules-5.36-5.36.0-7",
+			"relationshipType": "DESCRIBES",
+			"spdxElementId": "SPDXRef-DOCUMENT"
+		},
+		{
+			"relatedSpdxElement": "SPDXRef-Package-debian-bookworm-pkg-config-1.8.1-1",
+			"relationshipType": "DESCRIBES",
+			"spdxElementId": "SPDXRef-DOCUMENT"
+		},
+		{
+			"relatedSpdxElement": "SPDXRef-Package-debian-bookworm-pkgconf-1.8.1-1",
+			"relationshipType": "DESCRIBES",
+			"spdxElementId": "SPDXRef-DOCUMENT"
+		},
+		{
+			"relatedSpdxElement": "SPDXRef-Package-debian-bookworm-pkgconf-bin-1.8.1-1",
+			"relationshipType": "DESCRIBES",
+			"spdxElementId": "SPDXRef-DOCUMENT"
+		},
+		{
+			"relatedSpdxElement": "SPDXRef-Package-debian-bookworm-procps-2-4.0.2-3",
+			"relationshipType": "DESCRIBES",
+			"spdxElementId": "SPDXRef-DOCUMENT"
+		},
+		{
+			"relatedSpdxElement": "SPDXRef-Package-debian-bookworm-re2c-3.0-2",
+			"relationshipType": "DESCRIBES",
+			"spdxElementId": "SPDXRef-DOCUMENT"
+		},
+		{
+			"relatedSpdxElement": "SPDXRef-Package-debian-bookworm-readline-common-8.2-1.3",
+			"relationshipType": "DESCRIBES",
+			"spdxElementId": "SPDXRef-DOCUMENT"
+		},
+		{
+			"relatedSpdxElement": "SPDXRef-Package-debian-bookworm-rpcsvc-proto-1.4.3-1",
+			"relationshipType": "DESCRIBES",
+			"spdxElementId": "SPDXRef-DOCUMENT"
+		},
+		{
+			"relatedSpdxElement": "SPDXRef-Package-debian-bookworm-sed-4.9-1",
+			"relationshipType": "DESCRIBES",
+			"spdxElementId": "SPDXRef-DOCUMENT"
+		},
+		{
+			"relatedSpdxElement": "SPDXRef-Package-debian-bookworm-sysvinit-utils-3.06-4",
+			"relationshipType": "DESCRIBES",
+			"spdxElementId": "SPDXRef-DOCUMENT"
+		},
+		{
+			"relatedSpdxElement": "SPDXRef-Package-debian-bookworm-tar-1.34-dfsg-1.2",
+			"relationshipType": "DESCRIBES",
+			"spdxElementId": "SPDXRef-DOCUMENT"
+		},
+		{
+			"relatedSpdxElement": "SPDXRef-Package-debian-bookworm-tzdata-2023c-5",
+			"relationshipType": "DESCRIBES",
+			"spdxElementId": "SPDXRef-DOCUMENT"
+		},
+		{
+			"relatedSpdxElement": "SPDXRef-Package-debian-bookworm-usr-is-merged-35",
+			"relationshipType": "DESCRIBES",
+			"spdxElementId": "SPDXRef-DOCUMENT"
+		},
+		{
+			"relatedSpdxElement": "SPDXRef-Package-debian-bookworm-util-linux-2.38.1-5-b1",
+			"relationshipType": "DESCRIBES",
+			"spdxElementId": "SPDXRef-DOCUMENT"
+		},
+		{
+			"relatedSpdxElement": "SPDXRef-Package-debian-bookworm-util-linux-extra-2.38.1-5-b1",
+			"relationshipType": "DESCRIBES",
+			"spdxElementId": "SPDXRef-DOCUMENT"
+		},
+		{
+			"relatedSpdxElement": "SPDXRef-Package-debian-bookworm-xz-utils-5.4.1-0.2",
+			"relationshipType": "DESCRIBES",
+			"spdxElementId": "SPDXRef-DOCUMENT"
+		},
+		{
+			"relatedSpdxElement": "SPDXRef-Package-debian-bookworm-zlib1g-1-1.2.13.dfsg-1",
+			"relationshipType": "DESCRIBES",
+			"spdxElementId": "SPDXRef-DOCUMENT"
+		},
+		{
+			"relatedSpdxElement": "SPDXRef-Package-debian-bookworm-zlib1g-dev-1-1.2.13.dfsg-1",
+			"relationshipType": "DESCRIBES",
+			"spdxElementId": "SPDXRef-DOCUMENT"
+		},
+		{
+			"relatedSpdxElement": "SPDXRef-Package-digininja-dvwa-9b787fc",
+			"relationshipType": "DESCRIBES",
+			"spdxElementId": "SPDXRef-DOCUMENT"
+		},
+		{
+			"relatedSpdxElement": "SPDXRef-Package-php.tar.xz",
+			"relationshipType": "DESCRIBES",
+			"spdxElementId": "SPDXRef-DOCUMENT"
+		}
+	],
+	"spdxVersion": "SPDX-2.2"
+}
