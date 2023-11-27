@@ -323,3 +323,11 @@ pdsSecretScanner:
   enabled: false
   # Put the user id  of PDS-SecretScanner in k8s secret secret-pds-secretscanner:techuser_username
   # Put the password of PDS-SecretScanner in k8s secret secret-pds-secretscanner:techuser_password
+
+# ------------------------------------------------------------------------------------- #
+# PDS-Xray adapter
+# ------------------------------------------------------------------------------------- #
+pdsXray:
+  enabled: false
+  # Put the user id  of PDS-Xray in k8s secret secret-pds-xray:techuser_username
+  # Put the password of PDS-Xray in k8s secret secret-pds-xray:techuser_password
