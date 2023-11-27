@@ -38,8 +38,12 @@ class XrayWrapperReportTransformerTest {
     }
 
     @Test
-    void transformSecurityReport_throws_xrayWrapperReportException() {
-        /* execute + test */
-        assertThrows(XrayWrapperReportException.class, () -> xrayWrapperReportTransformerToTest.transformVulnerabilitiesFromSecurityReport(null));
+    void transformSecurityReport_null_securityReport_throws_xrayWrapperReportException() {
+        /* execute */
+        XrayWrapperException exception = assertThrows(XrayWrapperReportException.class,
+                () -> xrayWrapperReportTransformerToTest.transformVulnerabilitiesFromSecurityReport(null));
+
+        /* test */
+        assertEquals("Error occurred during report handling: Xray Security Report node was NULL", exception.getMessage());
     }
 }

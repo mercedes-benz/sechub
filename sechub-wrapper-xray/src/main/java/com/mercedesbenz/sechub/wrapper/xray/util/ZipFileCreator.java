@@ -9,7 +9,7 @@ import com.mercedesbenz.sechub.wrapper.xray.XrayWrapperException;
 import com.mercedesbenz.sechub.wrapper.xray.cli.XrayWrapperExitCode;
 
 public class ZipFileCreator {
-    public void zip(File file, InputStream inputStream) throws XrayWrapperException {
+    public void createZipFromZipInputStream(File file, InputStream inputStream) throws XrayWrapperException {
         int read;
         byte[] buffer = new byte[1024];
         try (FileOutputStream fileOutputStream = new FileOutputStream(file)) {

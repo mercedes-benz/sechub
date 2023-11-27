@@ -11,17 +11,14 @@ import java.net.HttpURLConnection;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mock;
 import org.mockito.Mockito;
 
 import com.mercedesbenz.sechub.wrapper.xray.XrayWrapperException;
 
 class XrayAPIResponseFactoryTest {
 
-    @Mock
     HttpURLConnection connection;
     ByteArrayInputStream inputStream;
-
     XrayAPIResponseFactory xrayAPIResponseFactoryToTest;
 
     @BeforeEach
@@ -48,12 +45,6 @@ class XrayAPIResponseFactoryTest {
     }
 
     @Test
-    void factoryHttpResponseFromConnection_throws_nullPointerException() {
-        /* execute + test */
-        assertThrows(NullPointerException.class, () -> xrayAPIResponseFactoryToTest.createHttpResponseFromConnection(null, null));
-    }
-
-    @Test
     void factoryHttpResponseFromConnection_get_valid_error_http_response() throws IOException, XrayWrapperException {
         /* prepare */
         int statusCode = 404;
@@ -70,12 +61,48 @@ class XrayAPIResponseFactoryTest {
     }
 
     @Test
-    void factoryHttpResponseFromConnection_io_error_throws_xrayWrapperException() throws IOException {
+    void factoryHttpResponseFromConnection_io_error_responseCode_throws_xrayWrapperException() throws IOException {
         /* prepare */
         IOException e = new IOException("error");
         Mockito.when(connection.getResponseCode()).thenThrow(e);
 
-        /* execute + test */
-        assertThrows(XrayWrapperException.class, () -> xrayAPIResponseFactoryToTest.createHttpResponseFromConnection(connection, null));
+        /* execute */
+        XrayWrapperException exception = assertThrows(XrayWrapperException.class,
+                () -> xrayAPIResponseFactoryToTest.createHttpResponseFromConnection(connection, null));
+
+        /* test */
+        assertEquals("Could not get response code from HTTP connection.", exception.getMessage());
     }
+
+    @Test
+    void factoryHttpResponseFromConnection_io_error_getResponseMessage_throws_xrayWrapperException() throws IOException {
+        /* prepare */
+        IOException e = new IOException("error");
+        Mockito.when(connection.getResponseCode()).thenReturn(200);
+        Mockito.when(connection.getResponseMessage()).thenThrow(e);
+
+        /* execute */
+        XrayWrapperException exception = assertThrows(XrayWrapperException.class,
+                () -> xrayAPIResponseFactoryToTest.createHttpResponseFromConnection(connection, null));
+
+        /* test */
+        assertEquals("Could not read Response Message from HTTP connection.", exception.getMessage());
+    }
+
+    @Test
+    void factoryHttpResponseFromConnection_io_error_getInputStream_throws_xrayWrapperException() throws IOException {
+        /* prepare */
+        IOException e = new IOException("error");
+        Mockito.when(connection.getResponseCode()).thenReturn(200);
+        Mockito.when(connection.getResponseMessage()).thenReturn("Message");
+        Mockito.when(connection.getInputStream()).thenThrow(e);
+
+        /* execute */
+        XrayWrapperException exception = assertThrows(XrayWrapperException.class,
+                () -> xrayAPIResponseFactoryToTest.createHttpResponseFromConnection(connection, null));
+
+        /* test */
+        assertEquals("Could not save https input stream", exception.getMessage());
+    }
+
 }

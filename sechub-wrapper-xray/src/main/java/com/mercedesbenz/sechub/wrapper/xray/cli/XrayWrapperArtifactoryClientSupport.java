@@ -21,8 +21,7 @@ public class XrayWrapperArtifactoryClientSupport {
     private static final Logger LOG = LoggerFactory.getLogger(XrayWrapperArtifactoryClientSupport.class);
     private final XrayWrapperConfiguration xrayWrapperConfiguration;
     private final XrayAPIArtifactoryClient artifactoryClient;
-
-    XrayWrapperReportSupport reportReader;
+    XrayWrapperReportSupport reportSupport;
 
     public enum ScanStatus {
         SCANNED("scanned"),
@@ -59,7 +58,7 @@ public class XrayWrapperArtifactoryClientSupport {
     public XrayWrapperArtifactoryClientSupport(XrayWrapperConfiguration xrayWrapperConfiguration, XrayWrapperArtifact artifact) {
         this.xrayWrapperConfiguration = xrayWrapperConfiguration;
         this.artifactoryClient = new XrayAPIArtifactoryClient(artifact, xrayWrapperConfiguration);
-        this.reportReader = new XrayWrapperReportSupport();
+        this.reportSupport = new XrayWrapperReportSupport();
     }
 
     /**
@@ -78,7 +77,7 @@ public class XrayWrapperArtifactoryClientSupport {
         LOG.debug("Artifactory available, scan with Xray version: {}", xray_version);
 
         // check if artifact is uploaded
-        artifactoryClient.checkArtifactoryUploadSuccess();
+        artifactoryClient.assertArtifactoryUploadSuccess();
         LOG.debug("Artifact successfully uploaded to artifactory");
 
         // check scan status
@@ -102,21 +101,21 @@ public class XrayWrapperArtifactoryClientSupport {
         XrayWrapperReportData xrayWrapperReportData = new XrayWrapperReportData();
 
         // get relevant xray report files
-        XrayWrapperReportSupport.XrayReportFiles reportFiles = reportReader.collectXrayReportsInArchive(xrayWrapperConfiguration.getZipDirectory(),
+        XrayWrapperReportSupport.XrayReportFiles reportFiles = reportSupport.collectXrayReportsInArchive(xrayWrapperConfiguration.getZipDirectory(),
                 xrayWrapperConfiguration.getXrayPdsReport());
         xrayWrapperReportData.setSecurityReport(reportFiles.securityReport());
         xrayWrapperReportData.setCycloneReport(reportFiles.cycloneReport());
         xrayWrapperReportData.setXrayPdsReport(reportFiles.xrayPdsReport());
 
         // extract vulnerabilities from security report
-        xrayWrapperReportData.setCycloneDXVulnerabilityHashMap(reportReader.readSecurityReport(xrayWrapperReportData.getSecurityReport()));
+        xrayWrapperReportData.setCycloneDXVulnerabilityHashMap(reportSupport.readSecurityReport(xrayWrapperReportData.getSecurityReport()));
 
         // add extracted vulnerability information to the CycloneDX SBOM
         xrayWrapperReportData
-                .setSbom(reportReader.mapVulnerabilities(xrayWrapperReportData.getCycloneReport(), xrayWrapperReportData.getCycloneDXVulnerabilityHashMap()));
+                .setSbom(reportSupport.mapVulnerabilities(xrayWrapperReportData.getCycloneReport(), xrayWrapperReportData.getCycloneDXVulnerabilityHashMap()));
 
         // write new SBOM to file
-        reportReader.writeReport(xrayWrapperReportData.getSbom(), xrayWrapperReportData.getXrayPdsReport());
+        reportSupport.writeReport(xrayWrapperReportData.getSbom(), xrayWrapperReportData.getXrayPdsReport());
     }
 
     private boolean requestAndHandleScanStatus(ClientSupportContext context) throws XrayWrapperException {
@@ -131,8 +130,8 @@ public class XrayWrapperArtifactoryClientSupport {
 
         switch (status) {
         case NOT_SCANNED -> {
-            // check status periodically
-            // note: delay between not scanned and in progress
+            // note: after start scan there is a Xray delay between NOT_SCANNED and
+            // IN_PROGRESS
             waitSeconds(xrayWrapperConfiguration.getWaitUntilRetrySeconds());
             if (context.isMaximumRetriesReached()) {
                 // start new scan
@@ -143,7 +142,6 @@ public class XrayWrapperArtifactoryClientSupport {
             return false;
         }
         case IN_PROGRESS -> {
-            // check status periodically
             waitSeconds(xrayWrapperConfiguration.getWaitUntilRetrySeconds());
             return false;
         }

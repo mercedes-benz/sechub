@@ -28,8 +28,11 @@ class XrayWrapperConfigurationTest {
 
     @Test
     void xrayWrapperConfiguration_builder_without_parameters_throws_IllegalStateException() {
-        /* execute + test */
-        assertThrows(IllegalStateException.class, () -> XrayWrapperConfiguration.Builder.builder().build());
+        /* execute */
+        IllegalStateException exception = assertThrows(IllegalStateException.class, () -> XrayWrapperConfiguration.Builder.builder().build());
+
+        /* test */
+        assertEquals("Artifactory URL or Zip file directory cannot be null", exception.getMessage());
     }
 
 }

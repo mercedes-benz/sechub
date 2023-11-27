@@ -58,17 +58,19 @@ public class XrayAPIResponseFactory {
                     }
                 }
             } catch (IOException e) {
-                throw new XrayWrapperException("Could not save https error stream to zip file", XrayWrapperExitCode.IO_ERROR, e);
+                throw new XrayWrapperException("Could not save https error stream", XrayWrapperExitCode.IO_ERROR, e);
             }
         } else {
             try (InputStream inputStream = httpURLConnection.getInputStream()) {
-                if (isZipBody(httpURLConnection)) {
-                    saveHTTPContentToZip(zipFileArchive, inputStream);
-                } else {
-                    content = readHTTPContentAsString(inputStream);
+                if (inputStream != null) {
+                    if (isZipBody(httpURLConnection)) {
+                        saveHTTPContentToZip(zipFileArchive, inputStream);
+                    } else {
+                        content = readHTTPContentAsString(inputStream);
+                    }
                 }
             } catch (IOException e) {
-                throw new XrayWrapperException("Could not save https input stream to zip file", XrayWrapperExitCode.IO_ERROR, e);
+                throw new XrayWrapperException("Could not save https input stream", XrayWrapperExitCode.IO_ERROR, e);
             }
         }
         // if input stream is null, we return a response with empty body
@@ -92,6 +94,6 @@ public class XrayAPIResponseFactory {
 
     private void saveHTTPContentToZip(File zipFileArchive, InputStream inputStream) throws XrayWrapperException {
         ZipFileCreator zipFileCreator = new ZipFileCreator();
-        zipFileCreator.zip(zipFileArchive, inputStream);
+        zipFileCreator.createZipFromZipInputStream(zipFileArchive, inputStream);
     }
 }

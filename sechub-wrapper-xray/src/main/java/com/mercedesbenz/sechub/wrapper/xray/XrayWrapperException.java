@@ -4,6 +4,7 @@ import com.mercedesbenz.sechub.wrapper.xray.cli.XrayWrapperExitCode;
 
 public class XrayWrapperException extends Exception {
 
+    private static final long serialVersionUID = 1L;
     private final XrayWrapperExitCode exitCode;
 
     public XrayWrapperException(String message, XrayWrapperExitCode exitCode) {

@@ -1,12 +1,12 @@
 package com.mercedesbenz.sechub.wrapper.xray.api;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import com.mercedesbenz.sechub.wrapper.xray.XrayWrapperException;
+import com.mercedesbenz.sechub.wrapper.xray.cli.XrayWrapperExitCode;
 import com.mercedesbenz.sechub.wrapper.xray.cli.XrayWrapperScanTypes;
 import com.mercedesbenz.sechub.wrapper.xray.config.XrayWrapperArtifact;
 
@@ -19,7 +19,7 @@ class XrayAPIRequestFactoryTest {
     @BeforeEach
     void beforeEach() {
         url = "http://myurl";
-        registry = "myregister";
+        registry = "registry";
         artifact = new XrayWrapperArtifact("myname", "sha256", "tag", XrayWrapperScanTypes.DOCKER);
     }
 
@@ -41,14 +41,18 @@ class XrayAPIRequestFactoryTest {
         /* prepare */
         String invalidUrl = "invalid url";
 
-        /* execute + test */
-        assertThrows(XrayWrapperException.class, () -> XrayAPIRequestFactory.createGetXrayVersionRequest(invalidUrl));
+        /* execute */
+        XrayWrapperException exception = assertThrows(XrayWrapperException.class, () -> XrayAPIRequestFactory.createGetXrayVersionRequest(invalidUrl));
+
+        /* test */
+        assertTrue(exception.getMessage().contains("Could not parse String to URL:invalid url"));
+        assertEquals(XrayWrapperExitCode.MALFORMED_URL, exception.getExitCode());
     }
 
     @Test
     void createCheckArtifactUploadRequest_returns_http_request() throws XrayWrapperException {
         /* prepare */
-        String apiUrl = "/artifactory/api/storage/myregister/myname/tag/manifest.json";
+        String apiUrl = "/artifactory/api/storage/registry/myname/tag/manifest.json";
 
         /* execute */
         XrayAPIRequest request = XrayAPIRequestFactory.createCheckArtifactUploadRequest(url, artifact, registry);
@@ -59,18 +63,17 @@ class XrayAPIRequestFactoryTest {
     }
 
     @Test
-    void createCheckArtifactUploadRequest_null_parameter_throws_nullPointerException() {
-        /* execute + test */
-        assertThrows(NullPointerException.class, () -> XrayAPIRequestFactory.createCheckArtifactUploadRequest(null, null, null));
-    }
-
-    @Test
     void createCheckArtifactUploadRequest_invalid_url_throws_xrayWrapperException() {
         /* prepare */
         String invalidUrl = "invalid url";
 
-        /* execute + test */
-        assertThrows(XrayWrapperException.class, () -> XrayAPIRequestFactory.createCheckArtifactUploadRequest(invalidUrl, artifact, registry));
+        /* execute */
+        XrayWrapperException exception = assertThrows(XrayWrapperException.class,
+                () -> XrayAPIRequestFactory.createCheckArtifactUploadRequest(invalidUrl, artifact, registry));
+
+        /* test */
+        assertTrue(exception.getMessage().contains("Could not parse String to URL:invalid url"));
+        assertEquals(XrayWrapperExitCode.MALFORMED_URL, exception.getExitCode());
     }
 
     @Test
@@ -78,7 +81,7 @@ class XrayAPIRequestFactoryTest {
         /* prepare */
         String apiUrl = "/xray/api/v1/scanArtifact";
         String data = """
-                {"componentID": "docker://myname:tag","path": "myregister/myname/tag/manifest.json"}""";
+                {"componentID": "docker://myname:tag","path": "registry/myname/tag/manifest.json"}""";
 
         /* execute */
         XrayAPIRequest request = XrayAPIRequestFactory.createScanArtifactRequest(url, artifact, registry);
@@ -94,15 +97,20 @@ class XrayAPIRequestFactoryTest {
         /* prepare */
         String invalidUrl = "invalid url";
 
-        /* execute + test */
-        assertThrows(XrayWrapperException.class, () -> XrayAPIRequestFactory.createScanArtifactRequest(invalidUrl, null, null));
+        /* execute */
+        XrayWrapperException exception = assertThrows(XrayWrapperException.class,
+                () -> XrayAPIRequestFactory.createScanArtifactRequest(invalidUrl, null, null));
+
+        /* test */
+        assertTrue(exception.getMessage().contains("Could not parse String to URL:invalid url"));
+        assertEquals(XrayWrapperExitCode.MALFORMED_URL, exception.getExitCode());
     }
 
     @Test
     void createGetScanStatusRequest_returns_http_request() throws XrayWrapperException {
         /* prepare */
         String apiUrl = "/xray/api/v1/scan/status/artifact";
-        String data = "{\"path\": \"myregister/myname/tag/manifest.json\", \"repository_pkg_type\": \"docker\", \"sha256\": \"sha256\"}";
+        String data = "{\"path\": \"registry/myname/tag/manifest.json\", \"repository_pkg_type\": \"docker\", \"sha256\": \"sha256\"}";
 
         /* execute */
         XrayAPIRequest request = XrayAPIRequestFactory.createGetScanStatusRequest(url, artifact, registry);
@@ -114,9 +122,17 @@ class XrayAPIRequestFactoryTest {
     }
 
     @Test
-    void createGetScanStatusRequest_null_parameters_throws_xrayWrapperException() {
-        /* execute + test */
-        assertThrows(XrayWrapperException.class, () -> XrayAPIRequestFactory.createGetScanStatusRequest(null, null, null));
+    void createGetScanStatusRequest_invalid_url_throws_xrayWrapperException() {
+        /* prepare */
+        String invalidUrl = "invalid url";
+
+        /* execute */
+        XrayWrapperException exception = assertThrows(XrayWrapperException.class,
+                () -> XrayAPIRequestFactory.createGetScanStatusRequest(invalidUrl, artifact, registry));
+
+        /* test */
+        assertTrue(exception.getMessage().contains("Could not parse String to URL:invalid url"));
+        assertEquals(XrayWrapperExitCode.MALFORMED_URL, exception.getExitCode());
     }
 
     @Test
@@ -140,8 +156,16 @@ class XrayAPIRequestFactoryTest {
 
     @Test
     void createGetScanReportsRequest_null_parameter_throws_xrayWrapperException() {
-        /* execute + test */
-        assertThrows(XrayWrapperException.class, () -> XrayAPIRequestFactory.createGetScanReportsRequest(null, null));
+        /* prepare */
+        String invalidUrl = "invalid url";
+
+        /* execute */
+        XrayWrapperException exception = assertThrows(XrayWrapperException.class,
+                () -> XrayAPIRequestFactory.createGetScanReportsRequest(invalidUrl, artifact));
+
+        /* test */
+        assertTrue(exception.getMessage().contains("Could not parse String to URL:invalid url"));
+        assertEquals(XrayWrapperExitCode.MALFORMED_URL, exception.getExitCode());
     }
 
     @Test
@@ -162,14 +186,13 @@ class XrayAPIRequestFactoryTest {
         /* prepare */
         String invalidUrl = "invalid url";
 
-        /* execute + test */
-        assertThrows(XrayWrapperException.class, () -> XrayAPIRequestFactory.createDeleteArtifactRequest(invalidUrl, artifact, null));
-    }
+        /* execute */
+        XrayWrapperException exception = assertThrows(XrayWrapperException.class,
+                () -> XrayAPIRequestFactory.createDeleteArtifactRequest(invalidUrl, artifact, null));
 
-    @Test
-    void createDeleteArtifactRequest_null_parameter_throws_nullPointerException() {
-        /* execute + test */
-        assertThrows(NullPointerException.class, () -> XrayAPIRequestFactory.createDeleteArtifactRequest(null, null, null));
+        /* test */
+        assertTrue(exception.getMessage().contains("Could not parse String to URL:invalid url"));
+        assertEquals(XrayWrapperExitCode.MALFORMED_URL, exception.getExitCode());
     }
 
     @Test
@@ -190,13 +213,12 @@ class XrayAPIRequestFactoryTest {
         /* prepare */
         String invalidUrl = "invalid url";
 
-        /* execute + test */
-        assertThrows(XrayWrapperException.class, () -> XrayAPIRequestFactory.createDeleteUploadsRequest(invalidUrl, artifact, null));
-    }
+        /* execute */
+        XrayWrapperException exception = assertThrows(XrayWrapperException.class,
+                () -> XrayAPIRequestFactory.createDeleteUploadsRequest(invalidUrl, artifact, null));
 
-    @Test
-    void createDeleteUploadsRequest_null_parameter_throws_nullPointerException() {
-        /* execute + test */
-        assertThrows(NullPointerException.class, () -> XrayAPIRequestFactory.createDeleteUploadsRequest(null, null, null));
+        /* test */
+        assertTrue(exception.getMessage().contains("Could not parse String to URL:invalid url"));
+        assertEquals(XrayWrapperExitCode.MALFORMED_URL, exception.getExitCode());
     }
 }

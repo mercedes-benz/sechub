@@ -11,32 +11,28 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import com.mercedesbenz.sechub.wrapper.xray.XrayWrapperException;
+import com.mercedesbenz.sechub.wrapper.xray.cli.XrayWrapperExitCode;
 
 public class IOHelperTest {
 
-    final String testinputString = "test data";
-    InputStream inputStream;
+    String testinputString;
+    InputStream testInputStream;
     IOHelper IOHelperToTest;
 
     @BeforeEach
     void beforeEach() {
-        inputStream = new ByteArrayInputStream(testinputString.getBytes());
+        testinputString = "test data";
+        testInputStream = new ByteArrayInputStream(testinputString.getBytes());
         IOHelperToTest = new IOHelper();
     }
 
     @Test
     void readInputStreamAsString_return_content_as_string() throws XrayWrapperException {
         /* execute */
-        String content = IOHelperToTest.readInputStreamAsString(inputStream);
+        String content = IOHelperToTest.readInputStreamAsString(testInputStream);
 
         /* test */
         assertEquals(testinputString, content);
-    }
-
-    @Test
-    void readInputStreamAsString_throws_nullPointerException() {
-        /* execute + test */
-        assertThrows(NullPointerException.class, () -> IOHelperToTest.readInputStreamAsString(null));
     }
 
     @Test
@@ -44,7 +40,12 @@ public class IOHelperTest {
         /* prepare */
         InputStream mockedIs = mock(InputStream.class);
 
-        /* execute + test */
-        assertThrows(XrayWrapperException.class, () -> IOHelperToTest.readInputStreamAsString(mockedIs));
+        /* execute */
+        XrayWrapperException exception = assertThrows(XrayWrapperException.class, () -> IOHelperToTest.readInputStreamAsString(mockedIs));
+
+        /* test */
+        assertEquals("Could not read https input stream as string", exception.getMessage());
+        assertEquals(XrayWrapperExitCode.IO_ERROR, exception.getExitCode());
     }
+
 }

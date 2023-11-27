@@ -1,5 +1,6 @@
 package com.mercedesbenz.sechub.wrapper.xray.api;
 
+import static com.mercedesbenz.sechub.wrapper.xray.api.XrayAPIConstants.*;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
@@ -13,6 +14,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import com.mercedesbenz.sechub.wrapper.xray.XrayWrapperException;
+import com.mercedesbenz.sechub.wrapper.xray.cli.XrayWrapperExitCode;
 import com.mercedesbenz.sechub.wrapper.xray.cli.XrayWrapperScanTypes;
 import com.mercedesbenz.sechub.wrapper.xray.config.XrayWrapperArtifact;
 import com.mercedesbenz.sechub.wrapper.xray.config.XrayWrapperConfiguration;
@@ -47,7 +49,7 @@ class XrayWrapperArtifactoryClientTest {
     @Test
     void getXrayVersion_return_version() throws XrayWrapperException {
         /* prepare */
-        String jsonString = "{\"xray_version\": \"123\"}";
+        String jsonString = "{\"" + XRAY_VERSION + "\": \"123\"}";
         response = XrayAPIResponse.Builder.builder().httpStatusCode(200).headers(headers).addResponseBody(jsonString).addResponseMessage("Message").build();
         when(clientToTest.xrayAPIResponseFactory.createHttpResponseFromConnection(any(), any())).thenReturn(response);
 
@@ -59,14 +61,18 @@ class XrayWrapperArtifactoryClientTest {
     }
 
     @Test
-    void getXrayVersion_throws_xrayWrapperException() throws XrayWrapperException {
+    void getXrayVersion_invalid_json_throws_xrayWrapperException() throws XrayWrapperException {
         /* prepare */
-        String jsonString = "{\"xray_version\": \"1";
+        String jsonString = "{\"" + XRAY_VERSION + "\": \"1";
         response = XrayAPIResponse.Builder.builder().httpStatusCode(200).headers(headers).addResponseBody(jsonString).addResponseMessage("Message").build();
         when(clientToTest.xrayAPIResponseFactory.createHttpResponseFromConnection(any(), any())).thenReturn(response);
 
-        /* execute + test */
-        assertThrows(XrayWrapperException.class, () -> clientToTest.requestXrayVersion());
+        /* execute */
+        XrayWrapperException exception = assertThrows(XrayWrapperException.class, () -> clientToTest.requestXrayVersion());
+
+        /* test */
+        assertEquals("Cannot parse provided string into JSON", exception.getMessage());
+        assertEquals(XrayWrapperExitCode.INVALID_JSON, exception.getExitCode());
     }
 
     @Test
@@ -75,24 +81,31 @@ class XrayWrapperArtifactoryClientTest {
         response = XrayAPIResponse.Builder.builder().httpStatusCode(200).headers(headers).addResponseBody("").addResponseMessage("Message").build();
         when(clientToTest.xrayAPIResponseFactory.createHttpResponseFromConnection(any(), any())).thenReturn(response);
 
-        /* execute + test */
-        assertTrue(clientToTest.checkArtifactoryUploadSuccess());
+        /* execute */
+        clientToTest.assertArtifactoryUploadSuccess();
+
+        /* test */
+        verify(clientToTest.xrayAPIResponseFactory, times(1)).createHttpResponseFromConnection(any(), any());
     }
 
     @Test
-    void checkArtifactoryUpload_throws_xrayWrapperException() throws XrayWrapperException {
+    void checkArtifactoryUpload_error_response_throws_xrayWrapperException() throws XrayWrapperException {
         /* prepare */
         XrayAPIResponse response = XrayAPIResponse.Builder.builder().httpStatusCode(500).headers(headers).build();
         when(clientToTest.xrayAPIResponseFactory.createHttpResponseFromConnection(any(), any())).thenReturn(response);
 
-        /* execute + test */
-        assertThrows(XrayWrapperException.class, () -> clientToTest.checkArtifactoryUploadSuccess());
+        /* execute */
+        XrayWrapperException exception = assertThrows(XrayWrapperException.class, () -> clientToTest.assertArtifactoryUploadSuccess());
+
+        /* test */
+        assertEquals("Artifact was not uploaded to artifactory, status code: 500, serverMessage: null, errorBody: ", exception.getMessage());
+        assertEquals(XrayWrapperExitCode.ARTIFACTORY_ERROR_RESPONSE, exception.getExitCode());
     }
 
     @Test
     void getScanStatus_return_status_scanned() throws XrayWrapperException {
         /* prepare */
-        String jsonString = "{\"status\": \"scanned\"}";
+        String jsonString = "{\"" + XRAY_STATUS + "\": \"scanned\"}";
         response = XrayAPIResponse.Builder.builder().httpStatusCode(200).headers(headers).addResponseBody(jsonString).addResponseMessage("Message").build();
         when(clientToTest.xrayAPIResponseFactory.createHttpResponseFromConnection(any(), any())).thenReturn(response);
 
@@ -104,14 +117,32 @@ class XrayWrapperArtifactoryClientTest {
     }
 
     @Test
-    void getScanStatus_throws_xrayWrapperException() throws XrayWrapperException {
+    void getScanStatus_return_unexpected_status_scanned() throws XrayWrapperException {
         /* prepare */
-        String jsonString = "{\"xray_version\": \"1";
+        String jsonString = "{\"" + XRAY_STATUS + "\": \"unexpected\"}";
+        response = XrayAPIResponse.Builder.builder().httpStatusCode(200).headers(headers).addResponseBody(jsonString).addResponseMessage("Message").build();
+        when(clientToTest.xrayAPIResponseFactory.createHttpResponseFromConnection(any(), any())).thenReturn(response);
+
+        /* execute */
+        XrayWrapperException exception = assertThrows(XrayWrapperException.class, () -> clientToTest.getScanStatus().getStatusValue());
+
+        /* test */
+        assertEquals("Received unexpected scan status", exception.getMessage());
+    }
+
+    @Test
+    void getScanStatus_invalid_json_throws_xrayWrapperException() throws XrayWrapperException {
+        /* prepare */
+        String jsonString = "{\"" + XRAY_VERSION + "\": \"1";
         response = XrayAPIResponse.Builder.builder().httpStatusCode(200).headers(headers).addResponseBody(jsonString).addResponseMessage("Message").build();
         when(clientToTest.xrayAPIResponseFactory.createHttpResponseFromConnection(any(), any())).thenReturn(response);
 
         /* execute + test */
-        assertThrows(XrayWrapperException.class, () -> clientToTest.getScanStatus());
+        XrayWrapperException exception = assertThrows(XrayWrapperException.class, () -> clientToTest.getScanStatus());
+
+        /* test */
+        assertEquals("Cannot parse provided string into JSON", exception.getMessage());
+        assertEquals(XrayWrapperExitCode.INVALID_JSON, exception.getExitCode());
     }
 
     @Test
@@ -120,8 +151,11 @@ class XrayWrapperArtifactoryClientTest {
         response = XrayAPIResponse.Builder.builder().httpStatusCode(200).headers(headers).addResponseBody("").addResponseMessage("Message").build();
         when(clientToTest.xrayAPIResponseFactory.createHttpResponseFromConnection(any(), any())).thenReturn(response);
 
-        /* execute + test */
+        /* execute */
         assertTrue(clientToTest.requestScanReports());
+
+        /* test */
+        verify(clientToTest.xrayAPIResponseFactory, times(1)).createHttpResponseFromConnection(any(), any());
     }
 
     @Test
@@ -130,30 +164,41 @@ class XrayWrapperArtifactoryClientTest {
         response = XrayAPIResponse.Builder.builder().httpStatusCode(500).headers(headers).addResponseBody("").addResponseMessage("Message").build();
         when(clientToTest.xrayAPIResponseFactory.createHttpResponseFromConnection(any(), any())).thenReturn(response);
 
-        /* execute + test */
-        assertThrows(XrayWrapperException.class, () -> clientToTest.requestScanReports());
+        /* execute */
+        XrayWrapperException exception = assertThrows(XrayWrapperException.class, () -> clientToTest.requestScanReports());
+
+        /* test */
+        assertEquals("Could not get report from artifactory, status code: 500, serverMessage: null, errorBody: ", exception.getMessage());
+        assertEquals(XrayWrapperExitCode.ARTIFACTORY_ERROR_RESPONSE, exception.getExitCode());
     }
 
     @Test
     void startScanArtifact_return_valid() throws XrayWrapperException {
         /* prepare */
-        String jsonString = "{\"info\": \"Scan of artifact is in progress\"}";
+        String jsonString = "{\"" + XRAY_INFO + "\": \"Scan of artifact is in progress\"}";
         response = XrayAPIResponse.Builder.builder().httpStatusCode(200).headers(headers).addResponseBody(jsonString).addResponseMessage("Message").build();
         when(clientToTest.xrayAPIResponseFactory.createHttpResponseFromConnection(any(), any())).thenReturn(response);
 
-        /* execute + test */
+        /* execute */
         clientToTest.startArtifactScan();
+
+        /* test */
+        verify(clientToTest.xrayAPIResponseFactory, times(1)).createHttpResponseFromConnection(any(), any());
     }
 
     @Test
-    void startScanArtifact_throws_xrayWrapperException() throws XrayWrapperException {
+    void startScanArtifact_invalid_json_throws_xrayWrapperException() throws XrayWrapperException {
         /* prepare */
-        String jsonString = "{\"xray_version\": \"1";
+        String jsonString = "{\"" + XRAY_VERSION + "\": \"1";
         response = XrayAPIResponse.Builder.builder().httpStatusCode(200).headers(headers).addResponseBody(jsonString).addResponseMessage("Message").build();
         when(clientToTest.xrayAPIResponseFactory.createHttpResponseFromConnection(any(), any())).thenReturn(response);
 
-        /* execute + test */
-        assertThrows(XrayWrapperException.class, () -> clientToTest.startArtifactScan());
+        /* execute */
+        XrayWrapperException exception = assertThrows(XrayWrapperException.class, () -> clientToTest.startArtifactScan());
+
+        /* test */
+        assertEquals("Cannot parse provided string into JSON", exception.getMessage());
+        assertEquals(XrayWrapperExitCode.INVALID_JSON, exception.getExitCode());
     }
 
     @Test
@@ -162,19 +207,26 @@ class XrayWrapperArtifactoryClientTest {
         response = XrayAPIResponse.Builder.builder().httpStatusCode(200).headers(headers).addResponseBody("").addResponseMessage("Message").build();
         when(clientToTest.xrayAPIResponseFactory.createHttpResponseFromConnection(any(), any())).thenReturn(response);
 
-        /* execute + test */
+        /* execute */
         // method does not return value
         clientToTest.deleteArtifact();
+
+        /* test */
+        verify(clientToTest.xrayAPIResponseFactory, times(1)).createHttpResponseFromConnection(any(), any());
     }
 
     @Test
-    void deleteArtifact_throws_xrayWrapperException() throws XrayWrapperException {
+    void deleteArtifact_error_message_throws_xrayWrapperException() throws XrayWrapperException {
         /* prepare */
         response = XrayAPIResponse.Builder.builder().httpStatusCode(401).headers(headers).build();
         when(clientToTest.xrayAPIResponseFactory.createHttpResponseFromConnection(any(), any())).thenReturn(response);
 
-        /* execute + test */
-        assertThrows(XrayWrapperException.class, () -> clientToTest.deleteArtifact());
+        /* execute */
+        XrayWrapperException exception = assertThrows(XrayWrapperException.class, () -> clientToTest.deleteArtifact());
+
+        /* test */
+        assertEquals("Could not delete artifact from repo, status code: 401, serverMessage: null, errorBody: ", exception.getMessage());
+        assertEquals(XrayWrapperExitCode.ARTIFACTORY_ERROR_RESPONSE, exception.getExitCode());
     }
 
     @Test
@@ -183,19 +235,26 @@ class XrayWrapperArtifactoryClientTest {
         response = XrayAPIResponse.Builder.builder().httpStatusCode(200).headers(headers).addResponseBody("").addResponseMessage("Message").build();
         when(clientToTest.xrayAPIResponseFactory.createHttpResponseFromConnection(any(), any())).thenReturn(response);
 
-        /* execute + test */
+        /* execute */
         // method does not return value
         clientToTest.deleteUploads();
+
+        /* test */
+        verify(clientToTest.xrayAPIResponseFactory, times(1)).createHttpResponseFromConnection(any(), any());
     }
 
     @Test
-    void deleteUploads_throws_xrayWrapperException() throws XrayWrapperException {
+    void deleteUploads_error_response_throws_xrayWrapperException() throws XrayWrapperException {
         /* prepare */
         response = XrayAPIResponse.Builder.builder().httpStatusCode(401).headers(headers).build();
         when(clientToTest.xrayAPIResponseFactory.createHttpResponseFromConnection(any(), any())).thenReturn(response);
 
-        /* execute + test */
-        assertThrows(XrayWrapperException.class, () -> clientToTest.deleteUploads());
+        /* execute */
+        XrayWrapperException exception = assertThrows(XrayWrapperException.class, () -> clientToTest.deleteUploads());
+
+        /* test */
+        assertEquals("Could not delete _uploads from artifactory, status code: 401, serverMessage: null, errorBody: ", exception.getMessage());
+        assertEquals(XrayWrapperExitCode.ARTIFACTORY_ERROR_RESPONSE, exception.getExitCode());
     }
 
 }

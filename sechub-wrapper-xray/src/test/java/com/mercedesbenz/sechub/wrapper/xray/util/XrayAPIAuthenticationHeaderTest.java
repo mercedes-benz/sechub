@@ -10,23 +10,31 @@ import org.junit.jupiter.api.Test;
 import org.mockito.MockedConstruction;
 
 import com.mercedesbenz.sechub.wrapper.xray.XrayWrapperException;
+import com.mercedesbenz.sechub.wrapper.xray.cli.XrayWrapperExitCode;
 
 class XrayAPIAuthenticationHeaderTest {
 
     @Test
     void buildAuthHeader_with_valid_input() throws XrayWrapperException {
-        /* execute + test */
+        /* prepare */
         try (MockedConstruction<EnvironmentVariableReader> mocked = mockConstruction(EnvironmentVariableReader.class, (mock, context) -> {
             when(mock.readEnvAsString(any())).thenReturn("username");
         })) {
+            /* execute */
             String auth = XrayAPIAuthenticationHeader.buildBasicAuthHeader();
+
+            /* test */
             assertEquals("Basic dXNlcm5hbWU6dXNlcm5hbWU=", auth);
         }
     }
 
     @Test
     void setAuthHeader_throws_xrayWrapperException() {
-        /* execute + test */
-        assertThrows(XrayWrapperException.class, () -> XrayAPIAuthenticationHeader.buildBasicAuthHeader());
+        /* execute */
+        XrayWrapperException exception = assertThrows(XrayWrapperException.class, () -> XrayAPIAuthenticationHeader.buildBasicAuthHeader());
+
+        /* test */
+        assertEquals("Authentication not possible because of missing environment variables XRAY_USER and XRAY_PASSWORD", exception.getMessage());
+        assertEquals(XrayWrapperExitCode.NOT_NULLABLE, exception.getExitCode());
     }
 }

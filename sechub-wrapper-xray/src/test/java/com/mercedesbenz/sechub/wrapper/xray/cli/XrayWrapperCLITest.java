@@ -1,9 +1,7 @@
 package com.mercedesbenz.sechub.wrapper.xray.cli;
 
-import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.mockConstruction;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -21,24 +19,21 @@ class XrayWrapperCLITest {
     }
 
     @Test
-    void start_with_null_throws_nullPointerException() {
-        /* execute + test */
-        assertThrows(NullPointerException.class, () -> cliToTest.start(null));
-    }
-
-    @Test
     void start_valid_parameters() {
         /* prepare */
         MockedConstruction<XrayWrapperArtifactoryClientSupport> mockConstruction = mockConstruction(XrayWrapperArtifactoryClientSupport.class);
         String[] args = { "--name", "myname", "--checksum", "sha256:5bfba04ea0d437b9d579f4978ffa0f81008e77abf875f38933fb56af845c7ddc", "--scantype", "docker",
                 "--outputfile", "outfile" };
-
-        /* execute + test */
+        final EnvironmentVariableReader[] env = new EnvironmentVariableReader[1];
         try (MockedConstruction<EnvironmentVariableReader> mocked = mockConstruction(EnvironmentVariableReader.class, (mock, context) -> {
+            env[0] = mock;
             when(mock.readEnvAsString(any())).thenReturn("username");
         })) {
+
+            /* execute */
             cliToTest.start(args);
         }
+        verify(env[0], times(2)).readEnvAsString(any());
         mockConstruction.close();
     }
 }

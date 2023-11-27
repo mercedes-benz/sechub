@@ -6,6 +6,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Collections;
 import java.util.Map;
 
 import org.cyclonedx.CycloneDxSchema;
@@ -51,9 +52,13 @@ class XrayWrapperReportSupportTest {
     }
 
     @Test
-    void collectReportFile_throws_nullPointerException() {
-        /* execute + test */
-        assertThrows(NullPointerException.class, () -> reportSupportToTest.collectXrayReportsInArchive(null, null));
+    void collectReportFile_file_not_exist_throws_xrayWrapperReportException() {
+        /* execute */
+        XrayWrapperReportException exception = assertThrows(XrayWrapperReportException.class,
+                () -> reportSupportToTest.collectXrayReportsInArchive("invalid", ""));
+
+        /* test */
+        assertEquals("Could not find Security and CycloneDX reports", exception.getMessage());
     }
 
     @Test
@@ -70,9 +75,12 @@ class XrayWrapperReportSupportTest {
     }
 
     @Test
-    void readSecurityReport_throws_illegalArgumentException() {
-        /* execute + test */
-        assertThrows(IllegalArgumentException.class, () -> reportSupportToTest.readSecurityReport(null));
+    void readSecurityReport_security_report_null_throws_illegalArgumentException() {
+        /* execute */
+        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> reportSupportToTest.readSecurityReport(null));
+
+        /* test */
+        assertEquals("argument \"file\" is null", exception.getMessage());
     }
 
     @Test
@@ -93,7 +101,16 @@ class XrayWrapperReportSupportTest {
     }
 
     @Test
-    void mapVulnerabilities_throws_illegalArgumentException() {
-        assertThrows(IllegalArgumentException.class, () -> reportSupportToTest.mapVulnerabilities(null, null));
+    void mapVulnerabilities_null_cycloneDX_report_throws_xrayWrapperReportException() throws XrayWrapperReportException {
+        /* prepare */
+        Map vulnerabiliityMap = Collections.emptyMap();
+
+        /* execute */
+        XrayWrapperReportException exception = assertThrows(XrayWrapperReportException.class,
+                () -> reportSupportToTest.mapVulnerabilities(null, vulnerabiliityMap));
+
+        /* test */
+        assertEquals("Error occurred during report handling: Cannot parse JSON: argument \"src\" is null", exception.getMessage());
+
     }
 }

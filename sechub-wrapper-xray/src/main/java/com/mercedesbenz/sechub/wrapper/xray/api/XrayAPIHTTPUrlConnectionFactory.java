@@ -66,7 +66,7 @@ public class XrayAPIHTTPUrlConnectionFactory {
         try {
             connection.connect();
         } catch (IOException e) {
-            throw new XrayWrapperException("Could not open api connection", XrayWrapperExitCode.IO_ERROR, e);
+            throw new XrayWrapperException("Could not open connection to Artifactory", XrayWrapperExitCode.IO_ERROR, e);
         }
     }
 

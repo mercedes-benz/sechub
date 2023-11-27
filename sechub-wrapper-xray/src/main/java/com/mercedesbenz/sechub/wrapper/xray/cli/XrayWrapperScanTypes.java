@@ -19,7 +19,7 @@ public enum XrayWrapperScanTypes {
 
     public static XrayWrapperScanTypes fromString(String type) throws XrayWrapperException {
         if (type == null) {
-            throw new XrayWrapperException("Scan status is NULL", XrayWrapperExitCode.UNKNOWN_ERROR);
+            throw new XrayWrapperCommandLineParserException("Scan status is NULL");
         }
         for (XrayWrapperScanTypes scanType : XrayWrapperScanTypes.values()) {
             if (scanType.type.equals(type)) {

@@ -7,6 +7,7 @@ import static org.mockito.Mockito.mock;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
 import java.net.URL;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -42,18 +43,27 @@ class XrayAPIHTTPUrlConnectionFactoryTest {
     }
 
     @Test
-    void factoryHTTPConnection_create_null_params_throws_nullPointerException() {
-        /* execute + test */
-        assertThrows(NullPointerException.class, () -> urlConnectionfactoryToTest.create(null));
+    void factoryHTTPConnection_create_invalid_GET_throws_xrayWrapperException() throws XrayWrapperException, MalformedURLException {
+        /* prepare */
+        URL myUrl = new URL("https://invalid-url-example.com");
+        XrayAPIRequest request = XrayAPIRequest.Builder.builder().url(myUrl).build();
+
+        /* execute */
+        XrayWrapperException exception = assertThrows(XrayWrapperException.class, () -> urlConnectionfactoryToTest.create(request));
+
+        assertEquals("Could not open connection to Artifactory", exception.getMessage());
     }
 
     @Test
-    void factoryHTTPConnection_create_invalid_throws_xrayWrapperException() throws XrayWrapperException {
+    void factoryHTTPConnection_create_invalid_POST_throws_xrayWrapperException() throws XrayWrapperException, MalformedURLException {
         /* prepare */
-        XrayAPIRequest request = XrayAPIRequest.Builder.builder().url(url).build();
+        URL myUrl = new URL("https://invalid-url-example.com");
+        XrayAPIRequest request = XrayAPIRequest.Builder.builder().url(myUrl).requestMethod(XrayAPIRequest.RequestMethodEnum.POST).build();
 
-        /* execute + test */
-        assertThrows(NullPointerException.class, () -> urlConnectionfactoryToTest.create(request));
+        /* execute */
+        XrayWrapperException exception = assertThrows(XrayWrapperException.class, () -> urlConnectionfactoryToTest.create(request));
+
+        assertEquals("Could not get Output Stream for api connection", exception.getMessage());
     }
 
     @Test

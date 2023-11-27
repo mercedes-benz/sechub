@@ -31,7 +31,10 @@ class XrayAPIRequestTest {
 
     @Test
     void xrayRequest_builder_throws_xrayWrapperException_when_parameters_not_defined() {
-        /* execute + test */
-        assertThrows(XrayWrapperException.class, () -> XrayAPIRequest.Builder.builder().build());
+        /* execute */
+        XrayWrapperException exception = assertThrows(XrayWrapperException.class, () -> XrayAPIRequest.Builder.builder().build());
+
+        /* test */
+        assertEquals("Cannot create XrayAPIRequest with null parameters", exception.getMessage());
     }
 }
