@@ -58,7 +58,7 @@ class XrayWrapperReportSupportTest {
                 () -> reportSupportToTest.collectXrayReportsInArchive("invalid", ""));
 
         /* test */
-        assertEquals("Could not find Security and CycloneDX reports", exception.getMessage());
+        assertEquals("Error occurred during report handling: File with reports does not exist", exception.getMessage());
     }
 
     @Test
