@@ -34,10 +34,10 @@ class XrayWrapperArtifactoryClientSupportTest {
     @Test
     void waitForScansToFinishAndDownloadReport_valid_execution() throws XrayWrapperException {
         /* prepare */
-        final XrayAPIArtifactoryClient[] artifactoryClient = new XrayAPIArtifactoryClient[1];
+        final XrayAPIArtifactoryClient[] lamdaReference = new XrayAPIArtifactoryClient[1];
         XrayWrapperReportSupport.XrayReportFiles files = new XrayWrapperReportSupport.XrayReportFiles(new File("any"), new File("any"), new File("any"));
         try (MockedConstruction<XrayAPIArtifactoryClient> mockedClient = Mockito.mockConstruction(XrayAPIArtifactoryClient.class, (mock, context) -> {
-            artifactoryClient[0] = mock;
+            lamdaReference[0] = mock;
             when(mock.requestXrayVersion()).thenReturn("mocked-version");
             when(mock.getScanStatus()).thenReturn(XrayWrapperArtifactoryClientSupport.ScanStatus.SCANNED);
             when(mock.requestScanReports()).thenReturn(true);
@@ -52,9 +52,9 @@ class XrayWrapperArtifactoryClientSupportTest {
             clientSupportToTest.waitForScansToFinishAndDownloadReport();
 
             /* test */
-            verify(artifactoryClient[0], times(1)).assertArtifactoryUploadSuccess();
-            verify(artifactoryClient[0], times(1)).deleteArtifact();
-            verify(artifactoryClient[0], times(1)).deleteUploads();
+            verify(lamdaReference[0], times(1)).assertArtifactoryUploadSuccess();
+            verify(lamdaReference[0], times(1)).deleteArtifact();
+            verify(lamdaReference[0], times(1)).deleteUploads();
             verify(reportSupport, times(1)).writeReport(any(), any());
         }
     }
@@ -62,9 +62,9 @@ class XrayWrapperArtifactoryClientSupportTest {
     @Test
     void waitForScansToFinishAndDownloadReport_valid_execution_without_report_transformation() throws XrayWrapperException {
         /* prepare */
-        final XrayAPIArtifactoryClient[] artifactoryClient = new XrayAPIArtifactoryClient[1];
+        final XrayAPIArtifactoryClient[] lamdaReference = new XrayAPIArtifactoryClient[1];
         try (MockedConstruction<XrayAPIArtifactoryClient> mockedClient = Mockito.mockConstruction(XrayAPIArtifactoryClient.class, (mock, context) -> {
-            artifactoryClient[0] = mock;
+            lamdaReference[0] = mock;
             when(mock.requestXrayVersion()).thenReturn("mocked-version");
             when(mock.getScanStatus()).thenReturn(XrayWrapperArtifactoryClientSupport.ScanStatus.SCANNED);
             when(mock.requestScanReports()).thenReturn(false);
@@ -77,9 +77,9 @@ class XrayWrapperArtifactoryClientSupportTest {
             clientSupportToTest.waitForScansToFinishAndDownloadReport();
 
             /* test */
-            verify(artifactoryClient[0], times(1)).assertArtifactoryUploadSuccess();
-            verify(artifactoryClient[0], times(1)).deleteArtifact();
-            verify(artifactoryClient[0], times(1)).deleteUploads();
+            verify(lamdaReference[0], times(1)).assertArtifactoryUploadSuccess();
+            verify(lamdaReference[0], times(1)).deleteArtifact();
+            verify(lamdaReference[0], times(1)).deleteUploads();
             verify(reportSupport, never()).writeReport(any(), any());
         }
     }

@@ -21,19 +21,19 @@ class XrayWrapperCLITest {
     @Test
     void start_valid_parameters() {
         /* prepare */
-        MockedConstruction<XrayWrapperArtifactoryClientSupport> mockConstruction = mockConstruction(XrayWrapperArtifactoryClientSupport.class);
-        String[] args = { "--name", "myname", "--checksum", "sha256:5bfba04ea0d437b9d579f4978ffa0f81008e77abf875f38933fb56af845c7ddc", "--scantype", "docker",
-                "--outputfile", "outfile" };
-        final EnvironmentVariableReader[] env = new EnvironmentVariableReader[1];
-        try (MockedConstruction<EnvironmentVariableReader> mocked = mockConstruction(EnvironmentVariableReader.class, (mock, context) -> {
-            env[0] = mock;
-            when(mock.readEnvAsString(any())).thenReturn("username");
-        })) {
+        try (MockedConstruction<XrayWrapperArtifactoryClientSupport> mockConstruction = mockConstruction(XrayWrapperArtifactoryClientSupport.class)) {
+            String[] args = { "--name", "myname", "--checksum", "sha256:5bfba04ea0d437b9d579f4978ffa0f81008e77abf875f38933fb56af845c7ddc", "--scantype",
+                    "docker", "--outputfile", "outfile" };
+            final EnvironmentVariableReader[] lamdaReference = new EnvironmentVariableReader[1];
+            try (MockedConstruction<EnvironmentVariableReader> mocked = mockConstruction(EnvironmentVariableReader.class, (mock, context) -> {
+                lamdaReference[0] = mock;
+                when(mock.readEnvAsString(any())).thenReturn("username");
+            })) {
 
-            /* execute */
-            cliToTest.start(args);
+                /* execute */
+                cliToTest.start(args);
+            }
+            verify(lamdaReference[0], times(2)).readEnvAsString(any());
         }
-        verify(env[0], times(2)).readEnvAsString(any());
-        mockConstruction.close();
     }
 }
