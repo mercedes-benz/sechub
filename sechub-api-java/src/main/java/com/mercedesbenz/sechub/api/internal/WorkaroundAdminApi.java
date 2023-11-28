@@ -13,6 +13,8 @@
 
 package com.mercedesbenz.sechub.api.internal;
 
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
@@ -122,6 +124,65 @@ public class WorkaroundAdminApi {
             Thread.currentThread().interrupt();
             throw new ApiException(e);
         }
+    }
+
+    /**
+     * Admin downloads all details about a scan job An administrator downloads a ZIP
+     * file containing full details of a scan. Main reason for this use case is for
+     * debugging when there are problems with security products. Another reason is
+     * for developers to adopt new security products easier.
+     *
+     * @param jobUUID        The job UUID (required)
+     * @param targetLocation
+     * @return Object
+     * @throws ApiException if fails to make API call
+     */
+    public void adminDownloadsFullScanDataForJob(String jobUUID, File targetFile) throws ApiException {
+        HttpRequest.Builder localVarRequestBuilder = adminDownloadsFullScanDataForJobRequestBuilder(jobUUID);
+        try {
+            HttpResponse<InputStream> localVarResponse = memberVarHttpClient.send(localVarRequestBuilder.build(), HttpResponse.BodyHandlers.ofInputStream());
+            if (memberVarResponseInterceptor != null) {
+                memberVarResponseInterceptor.accept(localVarResponse);
+            }
+            try {
+                if (localVarResponse.statusCode() / 100 != 2) {
+                    throw getApiException("adminDownloadsFullScanDataForJob", localVarResponse);
+                }
+                try (FileOutputStream out = new FileOutputStream(targetFile)) {
+                    localVarResponse.body().transferTo(out);
+                }
+            } finally {
+            }
+        } catch (IOException e) {
+            throw new ApiException(e);
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+            throw new ApiException(e);
+        }
+    }
+
+    private HttpRequest.Builder adminDownloadsFullScanDataForJobRequestBuilder(String jobUUID) throws ApiException {
+        // verify the required parameter 'jobUUID' is set
+        if (jobUUID == null) {
+            throw new ApiException(400, "Missing the required parameter 'jobUUID' when calling adminDownloadsFullScanDataForJob");
+        }
+
+        HttpRequest.Builder localVarRequestBuilder = HttpRequest.newBuilder();
+
+        String localVarPath = "/api/admin/scan/download/{jobUUID}".replace("{jobUUID}", ApiClient.urlEncode(jobUUID.toString()));
+
+        localVarRequestBuilder.uri(URI.create(memberVarBaseUri + localVarPath));
+
+        localVarRequestBuilder.header("Accept", "application/zip");
+
+        localVarRequestBuilder.method("GET", HttpRequest.BodyPublishers.noBody());
+        if (memberVarReadTimeout != null) {
+            localVarRequestBuilder.timeout(memberVarReadTimeout);
+        }
+        if (memberVarInterceptor != null) {
+            memberVarInterceptor.accept(localVarRequestBuilder);
+        }
+        return localVarRequestBuilder;
     }
 
     /* ++++++++++++++++++++++++++++++++++++++++++++++++++++ */

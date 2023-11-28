@@ -379,13 +379,19 @@ class SystemTestDryRunTest {
             fail("The execution has not failed:"+result.toString());
         }
         Set<SystemTestRunResult> runs = result.getRuns();
-        assertEquals(2, runs.size());
+        assertEquals(1, runs.size());
         Iterator<SystemTestRunResult> iterator = runs.iterator();
-        SystemTestRunResult run1 = iterator.next();
-        assertEquals("No tests were executed", run1.getFailure().getMessage());
 
-        SystemTestRunResult run2 = iterator.next();
-        assertEquals("Test 'wrong-testname' is not defined!", run2.getFailure().getMessage());
+        // check test result
+        SystemTestRunResult run1 = iterator.next();
+        assertEquals("Test 'wrong-testname' is not defined!", run1.getFailure().getMessage());
+
+        // check problem
+        assertTrue(result.hasProblems());
+        Set<String> problems = result.getProblems();
+        assertEquals(1, problems.size());
+        String problem1 = problems.iterator().next();
+        assertEquals("No tests were executed (0/1)", problem1);
 
         /* @formatter:on */
     }
