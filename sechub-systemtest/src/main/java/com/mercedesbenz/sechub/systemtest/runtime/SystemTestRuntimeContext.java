@@ -70,6 +70,8 @@ public class SystemTestRuntimeContext {
     private Map<String, PDSClient> localTechUserPdsClientMap = new TreeMap<>();
     private Map<String, PDSClient> localAdminUserPdsClientMap = new TreeMap<>();
 
+    private Set<String> problems = new LinkedHashSet<>();
+
     public void addTestsToRun(Collection<String> testNames) {
         if (testNames == null) {
             return;
@@ -180,6 +182,10 @@ public class SystemTestRuntimeContext {
 
     public Set<SystemTestRunResult> getResults() {
         return results;
+    }
+
+    public Set<String> getProblems() {
+        return problems;
     }
 
     public void testStarted(TestDefinition test) {
