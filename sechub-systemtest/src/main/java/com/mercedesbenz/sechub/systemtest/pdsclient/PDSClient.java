@@ -84,7 +84,9 @@ public class PDSClient {
             return true;
 
         } catch (ApiException e) {
-            throw new PDSClientException("Cannot check if job " + pdsJobUUID + " exists or not. Maybe PDS admin credentials not set or wrong ?", e);
+            throw new PDSClientException("Cannot check if job " + pdsJobUUID
+                    + " exists or not. Either your PDS solution is not accessible from this network, or your PDS admin credentials are not set or wrong ? Used user: '"
+                    + getUsername(), e);
         }
     }
 
