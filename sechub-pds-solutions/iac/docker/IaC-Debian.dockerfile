@@ -66,12 +66,8 @@ RUN mkdir --parent "$BUILD_FOLDER" && \
     # copy kics binary
     mkdir --parents "$PDS_ARTIFACT_FOLDER/kics/" && \
     cp bin/kics --target-directory "$PDS_ARTIFACT_FOLDER/kics/" && \
-    # copy queries
-    mkdir --parents "$PDS_ARTIFACT_FOLDER/kics/assets/queries" && \
-    cp --recursive assets/queries --target-directory "$PDS_ARTIFACT_FOLDER/kics/assets/queries" && \
-    # copy rego rules
-    mkdir --parents "$PDS_ARTIFACT_FOLDER/kics/assets/libraries/" && \
-    cp --recursive assets/libraries/* --target-directory "$PDS_ARTIFACT_FOLDER/kics/assets/libraries/"
+    # copy assets
+    cp --recursive assets --target-directory "$PDS_ARTIFACT_FOLDER/kics/"
 
 #-------------------
 # PDS Image
