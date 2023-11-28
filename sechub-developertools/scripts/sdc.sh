@@ -267,6 +267,7 @@ if [[ "$START_SYSTEMTEST_SANITYCHECK_GOSEC" = "YES" ]]; then
     startJob "Start systemtest 'sanity-check' for GoSec"
     cd $SECHUB_ROOT_DIR
     cd sechub-pds-solutions/gosec/tests
+    #java -Djdk.httpclient.HttpClient.log=requests,headers,errors -jar $SECHUB_ROOT_DIR/sechub-pds-tools/build/libs/sechub-pds-tools-cli-0.0.0.jar systemtest --file systemtest_local.json --pds-solutions-rootfolder ../../ --sechub-solution-rootfolder ../../../sechub-solution --run-tests sanity-check
     java -jar $SECHUB_ROOT_DIR/sechub-pds-tools/build/libs/sechub-pds-tools-cli-0.0.0.jar systemtest --file systemtest_local.json --pds-solutions-rootfolder ../../ --sechub-solution-rootfolder ../../../sechub-solution --run-tests sanity-check
     cd $SECHUB_ROOT_DIR 
 fi
