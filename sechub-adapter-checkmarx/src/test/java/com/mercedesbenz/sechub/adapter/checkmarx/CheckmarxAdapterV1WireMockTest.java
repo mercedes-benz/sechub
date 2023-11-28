@@ -12,6 +12,7 @@ import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.Callable;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -99,6 +100,43 @@ public class CheckmarxAdapterV1WireMockTest {
     }
 
     @Test
+    public void when_checkmarx_has_only_unsupported_files_the_result_is_canceled() throws Exception {
+        when(config.getTimeOutInMilliseconds()).thenReturn(1000 * 1000* 5);
+
+        /* prepare */
+        LinkedHashMap<String, String> loginResponse = login(3600);
+        /* project creation */
+        simulateCheckProjectExistsReturnsFalse(loginResponse);
+        simulateCreateProjectWasSuccessful();
+
+        /* update scan settings */
+        LinkedHashMap<String, Object> fetchScanSettingsResultMap = simulateFetchScanSettingsForProject();
+        List<Map<String, Object>> fetchEngineConfigurationsMap = simulateFetchEngineConfigurations();
+        Map<String, Object> multiLanguageEngineConfiguration = findMapByValue(CHECKMARX_ENGINE_CONFIGURATION_NAME, fetchEngineConfigurationsMap);
+        long serverReturnedEngineConfigurationId = Long.valueOf(multiLanguageEngineConfiguration.get("id").toString());
+
+        simulateUpdateScanSettingsForProjectWereSuccessful(fetchScanSettingsResultMap, serverReturnedEngineConfigurationId);
+
+        /* upload */
+        simulateUploadZipFileWasSuccesful();
+
+        /* scan start */
+        simulateStartScanAccepted();
+
+        simulateWaitForQueingDoneReturns("New");
+        simulateWaitForQueingDoneReturnsFailureWithText("source folder is empty, all source files are of an unsupported language or file format");
+
+        /* execute */
+        AdapterExecutionResult adapterResult = executeAndLogHistoryOnFailure(()->adapterToTest.start(config, callback));
+
+        /* @formatter:on */
+        /* test */
+        assertEquals("", adapterResult.getProductResult()); // empty result because canceled
+        assertEquals(true,adapterResult.hasBeenCanceled());
+        history.assertAllRememberedUrlsWereRequested();
+    }
+
+    @Test
     public void simulate_start__create_new_project_and_scan_token_expires_very_often() throws Exception {
         /* prepare */
 
@@ -150,10 +188,11 @@ public class CheckmarxAdapterV1WireMockTest {
         simulateDownloadReportSuccesful();
 
         /* execute */
-        AdapterExecutionResult adapterResult = adapterToTest.start(config, callback);
+        AdapterExecutionResult adapterResult = executeAndLogHistoryOnFailure(() -> adapterToTest.start(config, callback));
 
         /* test */
         assertEquals(CONTENT_FROM_CHECKMARX, adapterResult.getProductResult());
+        assertEquals(false, adapterResult.hasBeenCanceled());
         history.assertAllRememberedUrlsWereRequested();
 
     }
@@ -225,11 +264,12 @@ public class CheckmarxAdapterV1WireMockTest {
         simulateDownloadReportSuccesful();
 
         /* execute */
-        AdapterExecutionResult adapterResult = adapterToTest.start(config, callback);
+        AdapterExecutionResult adapterResult = executeAndLogHistoryOnFailure(() -> adapterToTest.start(config, callback));
 
         /* @formatter:on */
         /* test */
         assertEquals(CONTENT_FROM_CHECKMARX, adapterResult.getProductResult());
+        assertEquals(false, adapterResult.hasBeenCanceled());
         history.assertAllRememberedUrlsWereRequested();
 
     }
@@ -259,11 +299,12 @@ public class CheckmarxAdapterV1WireMockTest {
         simulateDownloadReportSuccesful();
 
         /* execute */
-        AdapterExecutionResult adapterResult = adapterToTest.start(config, callback);
+        AdapterExecutionResult adapterResult = executeAndLogHistoryOnFailure(() -> adapterToTest.start(config, callback));
 
         /* @formatter:on */
         /* test */
         assertEquals(CONTENT_FROM_CHECKMARX, adapterResult.getProductResult());
+        assertEquals(false, adapterResult.hasBeenCanceled());
         history.assertAllRememberedUrlsWereRequested();
 
     }
@@ -310,11 +351,12 @@ public class CheckmarxAdapterV1WireMockTest {
         simulateDownloadReportSuccesful();
 
         /* execute */
-        AdapterExecutionResult adapterResult = adapterToTest.start(config, callback);
+        AdapterExecutionResult adapterResult = executeAndLogHistoryOnFailure(() -> adapterToTest.start(config, callback));
 
         /* @formatter:on */
         /* test */
         assertEquals(CONTENT_FROM_CHECKMARX, adapterResult.getProductResult());
+        assertEquals(false, adapterResult.hasBeenCanceled());
         history.assertAllRememberedUrlsWereRequested();
 
     }
@@ -518,16 +560,30 @@ public class CheckmarxAdapterV1WireMockTest {
     }
 
     private void simulateWaitForQueingDoneReturns(String value) {
+        simulateWaitForQueingDoneReturns(value, null);
+    }
+
+    private void simulateWaitForQueingDoneReturnsFailureWithText(String failureText) {
+        simulateWaitForQueingDoneReturns("Failed", failureText);
+    }
+
+    private void simulateWaitForQueingDoneReturns(String value, String failureText) {
         LinkedHashMap<String,Object> queueStatus = new LinkedHashMap<>();
         LinkedHashMap<String,Object> stageMap = new LinkedHashMap<>();
         queueStatus.put("stage",stageMap);
         stageMap.put("value", value);
 
+        if (failureText!=null) {
+            queueStatus.put("stageDetails", failureText);
+        }
+
+        String json = JSONTestUtil.toJSONContainingNullValues(queueStatus);
+
         stubFor(get(urlEqualTo(history.rememberGET(apiURLSupport.nextURL("/cxrestapi/sast/scansQueue/"+CHECKMARX_SCAN_ID)))).
                 willReturn(aResponse()
                     .withStatus(HttpStatus.OK.value())
                     .withHeader("Content-Type", APPLICATION_JSON)
-                    .withBody(JSONTestUtil.toJSONContainingNullValues(queueStatus)))
+                    .withBody(json))
                 );
     }
 
@@ -555,6 +611,18 @@ public class CheckmarxAdapterV1WireMockTest {
         }
 
         return result;
+    }
+
+    private AdapterExecutionResult executeAndLogHistoryOnFailure(Callable<AdapterExecutionResult> executor) throws Exception {
+        try {
+            return executor.call();
+        } catch (Exception e) {
+            System.out.println("--------------------------HISTORY------------------------");
+            System.out.println(history.toString());
+            System.out.println("--------------------------HISTORY (END)------------------");
+
+            throw e;
+        }
     }
 
 }

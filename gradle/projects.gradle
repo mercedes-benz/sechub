@@ -19,7 +19,7 @@ projectType = [
                project(':sechub-storage-core'),
                project(':sechub-wrapper-owasp-zap'),
                project(':sechub-pds-commons-core'),
-               
+               project(':sechub-wrapper-xray'),
             ],
             
             publishedLibraries: [

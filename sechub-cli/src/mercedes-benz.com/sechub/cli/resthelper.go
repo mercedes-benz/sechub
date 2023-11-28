@@ -135,14 +135,6 @@ func newFileUploadRequestViaPipe(uploadToURL string, params map[string]string, p
 func computeContentLengthOfFileUpload(params map[string]string, paramName, filename string, filesize int64) (contentLength int64) {
 	/* Real world example of multipart content sent to SecHub server when uploading:
 	--f76dd0c1a814e0af2f4d197827fd9caa1e9636276e064454356141ae1347
-	Content-Disposition: form-data; name="title"
-
-	Sourcecode zipped
-	--f76dd0c1a814e0af2f4d197827fd9caa1e9636276e064454356141ae1347
-	Content-Disposition: form-data; name="author"
-
-	Sechub client 0.0.0-285d1b6-dirty-20220324161639
-	--f76dd0c1a814e0af2f4d197827fd9caa1e9636276e064454356141ae1347
 	Content-Disposition: form-data; name="checkSum"
 
 	ccdcf7c07a8461f8aeb44f6bbd2166d184c79f7acfd86cb3415dcb452f274a63
