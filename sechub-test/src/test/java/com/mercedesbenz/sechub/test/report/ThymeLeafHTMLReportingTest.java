@@ -111,6 +111,7 @@ public class ThymeLeafHTMLReportingTest {
         assertNotNull(htmlResult);
 
         assertTrue(htmlResult.contains(context.sechubJobUUID));
+        assertTrue(htmlResult.contains("XSS"), "The report must at least contain a cross site scripting vulnerability!");
         assertTrue(htmlResult.contains("CWE-614"), "The report must at least contain the CWE-614 vulnerability!");
         assertTrue(htmlResult.contains("Cross Site Scripting (Reflected)"), "The report must at least contain a cross site scripting reflected vulnerability!");
 

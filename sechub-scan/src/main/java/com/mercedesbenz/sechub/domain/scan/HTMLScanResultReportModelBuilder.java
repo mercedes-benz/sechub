@@ -150,16 +150,16 @@ public class HTMLScanResultReportModelBuilder {
 
     public Map<String, List<SecHubFinding>> filterFindingsForWebScan(List<SecHubFinding> findings, List<Severity> severities) {
         Map<String, List<SecHubFinding>> groupedFindingsByName = findings.stream().filter(finding -> severities.contains(finding.getSeverity()))
-                .filter(finding -> finding.hasScanType("webScan")).collect(groupingBy(SecHubFinding::getName));
+                .filter(finding -> finding.hasScanType(ScanType.WEB_SCAN.getId())).collect(groupingBy(SecHubFinding::getName));
         Map<String, List<SecHubFinding>> groupedAndSortedFindingsByName = new TreeMap<>();
         groupedAndSortedFindingsByName.putAll(groupedFindingsByName);
         return groupedAndSortedFindingsByName;
     }
 
     public List<HTMLSecHubFinding> filterFindingsForGeneralScan(List<SecHubFinding> findings, Map<Integer, List<HTMLScanResultCodeScanEntry>> codeScanEntries,
-            List<Severity> severities) {
+            List<Severity> severitiesToShow) {
         List<HTMLSecHubFinding> htmlSecHubFindings = new LinkedList<>();
-        Map<String, List<SecHubFinding>> groupedFindingsByName = findings.stream().filter(finding -> severities.contains(finding.getSeverity()))
+        Map<String, List<SecHubFinding>> groupedFindingsByName = findings.stream().filter(finding -> severitiesToShow.contains(finding.getSeverity()))
                 .collect(groupingBy(SecHubFinding::getName));
 
         Map<String, List<SecHubFinding>> groupedAndSortedFindingsByName = new TreeMap<>();
@@ -174,7 +174,7 @@ public class HTMLScanResultReportModelBuilder {
                 htmlSecHubFinding.setId(0);
                 List<HTMLScanResultCodeScanEntry> entryList = htmlSecHubFinding.getEntryList();
                 for (SecHubFinding finding : findingList) {
-                    if (!finding.hasScanType("webScan")) {
+                    if (!finding.hasScanType(ScanType.WEB_SCAN.getId())) {
                         List<HTMLScanResultCodeScanEntry> codeScanEntryList = codeScanEntries.get(finding.getId());
                         for (HTMLScanResultCodeScanEntry htmlScanResultCodeScanEntry : codeScanEntryList) {
                             entryList.add(htmlScanResultCodeScanEntry);

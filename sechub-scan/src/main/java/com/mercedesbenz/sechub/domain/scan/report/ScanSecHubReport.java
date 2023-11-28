@@ -107,11 +107,12 @@ public class ScanSecHubReport implements SecHubReportData, JSONable<ScanSecHubRe
     }
 
     protected void calculateSummary() {
-        SecHubReportMetaDataSummary codeScan = model.getMetaData().get().getSummary().getCodeScan();
-        SecHubReportMetaDataSummary infraScan = model.getMetaData().get().getSummary().getInfraScan();
-        SecHubReportMetaDataSummary licenseScan = model.getMetaData().get().getSummary().getLicenseScan();
-        SecHubReportMetaDataSummary secretScan = model.getMetaData().get().getSummary().getSecretScan();
-        SecHubReportMetaDataSummary webScan = model.getMetaData().get().getSummary().getWebScan();
+        var summary = model.getMetaData().get().getSummary();
+        SecHubReportMetaDataSummary codeScan = summary.getCodeScan();
+        SecHubReportMetaDataSummary infraScan = summary.getInfraScan();
+        SecHubReportMetaDataSummary licenseScan = summary.getLicenseScan();
+        SecHubReportMetaDataSummary secretScan = summary.getSecretScan();
+        SecHubReportMetaDataSummary webScan = summary.getWebScan();
 
         for (SecHubFinding finding : model.getResult().getFindings()) {
             ScanType scanType = finding.getType();
