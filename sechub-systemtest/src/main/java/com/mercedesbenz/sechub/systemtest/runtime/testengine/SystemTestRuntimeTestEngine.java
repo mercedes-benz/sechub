@@ -97,19 +97,25 @@ public class SystemTestRuntimeTestEngine {
     private void postProcessingAfterTestDone(TestEngineTestContext testContext) {
 
         try {
-            // we try to download the PDS job data (error and output streams etc.)
-            // this is very useful for debugging PDS problems
-            downloadPdsJobData(testContext);
+            downloadDebugInformationAfterTestDone(testContext);
 
         } catch (Exception e) {
-            LOG.error("TEST POST processing failed!", e);
+            LOG.error(
+                    "Download of debug information after test done failed. Will not additionally mark test as failed because only debug information - but should not happen.",
+                    e);
         }
 
         /* last but not least - cleanup test */
         cleanupTest(testContext);
     }
 
-    private void downloadPdsJobData(final TestEngineTestContext testContext) {
+    private void downloadDebugInformationAfterTestDone(TestEngineTestContext testContext) throws CannotProvideDebugInformationException {
+        // we try to download the PDS job data (error and output streams etc.)
+        // this is very useful for debugging PDS problems
+        downloadPdsJobDataForDebugging(testContext);
+    }
+
+    private void downloadPdsJobDataForDebugging(final TestEngineTestContext testContext) throws CannotProvideDebugInformationException {
         if (!testContext.isSecHubTest()) {
             return;
         }
@@ -141,36 +147,46 @@ public class SystemTestRuntimeTestEngine {
             Path scanLogFolder = sechubJobFolder.resolve("scanlog");
             Path extractedScanLogFolder = scanLogFolder.resolve("extracted-scanlog");
             Files.createDirectories(extractedScanLogFolder);
-
-            Path jobFullScanLogFile = adminClient.downloadFullScanLog(secHubJobUUID, scanLogFolder);
-
+            Path jobFullScanLogFile;
+            try {
+                jobFullScanLogFile = adminClient.downloadFullScanLog(secHubJobUUID, scanLogFolder);
+            } catch (SecHubClientException e) {
+                throw new CannotProvideDebugInformationException("Was not able to download full scan log file for sechub job:" + secHubJobUUID
+                        + ". Used SecHub admin user: " + adminClient.getUsername(), e);
+            }
             LOG.debug("Full scan downloaded to {}", jobFullScanLogFile);
 
-            /* extract scan log zip file */
-            try (BufferedFileChannelInputStream downloadInputStream = new BufferedFileChannelInputStream(jobFullScanLogFile)) {
-                archiveSupport.extract(ArchiveType.ZIP, downloadInputStream, jobFullScanLogFile.toString(), extractedScanLogFolder.toFile(), null);
-            } catch (IOException e) {
-                throw new SystemTestRuntimeException(
-                        "Zip extraction of full scan log failed.\nZip file path:" + jobFullScanLogFile + "\nTarget folder:" + sechubJobFolder, e);
+            extractScanLogZipFileAndHandlEntries(testContext, sechubJobFolder, extractedScanLogFolder, jobFullScanLogFile);
+
+        } catch (Exception e) {
+            if (e instanceof CannotProvideDebugInformationException) {
+                throw (CannotProvideDebugInformationException) e;
             }
+            throw new CannotProvideDebugInformationException("Was not able to download PDS job data", e);
+        }
+    }
 
-            /* inspect meta data for PDS entries */
-            try (Stream<Path> paths = Files.walk(extractedScanLogFolder)) {
-                paths.forEach((metaDatafile) -> {
-                    try {
-                        handleScanLogFile(metaDatafile, testContext, sechubJobFolder);
-                    } catch (IOException e) {
-                        throw new SystemTestRuntimeException("Inspection of PDS meta data file: " + metaDatafile + " failed.", e);
-                    }
-                });
-            } catch (IOException e) {
-                throw new SystemTestRuntimeException("Inspection of PDS meta data files failed.", e);
+    private void extractScanLogZipFileAndHandlEntries(final TestEngineTestContext testContext, Path sechubJobFolder, Path extractedScanLogFolder,
+            Path jobFullScanLogFile) throws CannotProvideDebugInformationException {
+        /* extract scan log zip file */
+        try (BufferedFileChannelInputStream downloadInputStream = new BufferedFileChannelInputStream(jobFullScanLogFile)) {
+            archiveSupport.extract(ArchiveType.ZIP, downloadInputStream, jobFullScanLogFile.toString(), extractedScanLogFolder.toFile(), null);
+        } catch (IOException e) {
+            throw new CannotProvideDebugInformationException(
+                    "Zip extraction of full scan log failed.\nZip file path:" + jobFullScanLogFile + "\nTarget folder:" + sechubJobFolder, e);
+        }
 
-            }
-
-        } catch (SecHubClientException | IOException e) {
-            testContext.markAsFailed("Was not able to download full scan log", e);
-            return;
+        /* inspect meta data for PDS entries */
+        try (Stream<Path> paths = Files.walk(extractedScanLogFolder)) {
+            paths.forEach((metaDatafile) -> {
+                try {
+                    handleScanLogFile(metaDatafile, testContext, sechubJobFolder);
+                } catch (IOException e) {
+                    throw new SystemTestRuntimeException("Inspection of PDS meta data file: " + metaDatafile + " failed.", e);
+                }
+            });
+        } catch (IOException e) {
+            throw new CannotProvideDebugInformationException("Inspection of PDS meta data files failed.", e);
         }
     }
 
@@ -200,32 +216,7 @@ public class SystemTestRuntimeTestEngine {
             PDSClient client = runtimeContext.getLocalAdminPDSClient(solution);
             try {
                 if (client.isJobExisting(pdsJobUUID)) {
-                    Path sechubMessagesFile = pdsJobFolder.resolve("sechub-messages.json");
-                    Path outputStreamFile = pdsJobFolder.resolve("output-stream.txt");
-                    Path errorStreamFile = pdsJobFolder.resolve("error-stream.txt");
-                    Path resultFile = pdsJobFolder.resolve("result.txt");
-                    Path jobMetaDataFile = pdsJobFolder.resolve("metadata.txt");
-                    Path systemtestInfoFile = pdsJobFolder.resolve("systemtest-info.txt");
-
-                    String output = client.fetchJobOutputStreamContentAsText(pdsJobUUID);
-                    textFileWriter.save(outputStreamFile.toFile(), output, true);
-
-                    String error = client.fetchJobErrorStreamContentAsText(pdsJobUUID);
-                    textFileWriter.save(errorStreamFile.toFile(), error, true);
-
-                    String result = client.fetchJobResultAsText(pdsJobUUID);
-                    textFileWriter.save(resultFile.toFile(), result, true);
-
-                    String jobMetaData = client.fetchJobMetaDataAsText(pdsJobUUID);
-                    textFileWriter.save(jobMetaDataFile.toFile(), jobMetaData, true);
-
-                    SecHubMessagesList messages = client.fetchJobMessages(pdsJobUUID);
-                    String messagesAsString = JSONConverter.get().toJSON(messages, true);
-                    textFileWriter.save(sechubMessagesFile.toFile(), messagesAsString, true);
-
-                    StringBuilder sb = new StringBuilder();
-                    sb.append("Solution name: ").append(solution.getName());
-                    textFileWriter.save(systemtestInfoFile.toFile(), sb.toString(), true);
+                    storePdsJobData(pdsJobUUID, pdsJobFolder, solution, client);
 
                 }
             } catch (PDSClientException e) {
@@ -233,6 +224,36 @@ public class SystemTestRuntimeTestEngine {
             }
 
         }
+    }
+
+    private void storePdsJobData(String pdsJobUUID, Path pdsJobFolder, PDSSolutionDefinition solution, PDSClient client)
+            throws PDSClientException, IOException {
+        Path sechubMessagesFile = pdsJobFolder.resolve("sechub-messages.json");
+        Path outputStreamFile = pdsJobFolder.resolve("output-stream.txt");
+        Path errorStreamFile = pdsJobFolder.resolve("error-stream.txt");
+        Path resultFile = pdsJobFolder.resolve("result.txt");
+        Path jobMetaDataFile = pdsJobFolder.resolve("metadata.txt");
+        Path systemtestInfoFile = pdsJobFolder.resolve("systemtest-info.txt");
+
+        String output = client.fetchJobOutputStreamContentAsText(pdsJobUUID);
+        textFileWriter.save(outputStreamFile.toFile(), output, true);
+
+        String error = client.fetchJobErrorStreamContentAsText(pdsJobUUID);
+        textFileWriter.save(errorStreamFile.toFile(), error, true);
+
+        String result = client.fetchJobResultAsText(pdsJobUUID);
+        textFileWriter.save(resultFile.toFile(), result, true);
+
+        String jobMetaData = client.fetchJobMetaDataAsText(pdsJobUUID);
+        textFileWriter.save(jobMetaDataFile.toFile(), jobMetaData, true);
+
+        SecHubMessagesList messages = client.fetchJobMessages(pdsJobUUID);
+        String messagesAsString = JSONConverter.get().toJSON(messages, true);
+        textFileWriter.save(sechubMessagesFile.toFile(), messagesAsString, true);
+
+        StringBuilder sb = new StringBuilder();
+        sb.append("Solution name: ").append(solution.getName());
+        textFileWriter.save(systemtestInfoFile.toFile(), sb.toString(), true);
     }
 
     private TestEngineTestContext createTestContext(TestDefinition test, SystemTestRuntimeContext runtimeContext) {
@@ -473,6 +494,25 @@ public class SystemTestRuntimeTestEngine {
             throw new SystemTestScriptExecutionException(scriptDefinition.getPath(), processContainer, SystemTestExecutionScope.TEST,
                     SystemTestExecutionState.PREPARE);
         }
+    }
+
+    /**
+     * If this exception happens, some additional debug information cannot be
+     * provided - e.g. when PDS administrator account was not defined etc. Those
+     * exception shall not influence the test results itself, because they normally
+     * only necessary for debugging purposes.
+     *
+     * @author Albert Tregnaghi
+     *
+     */
+    class CannotProvideDebugInformationException extends Exception {
+
+        private static final long serialVersionUID = 1L;
+
+        public CannotProvideDebugInformationException(String message, Exception cause) {
+            super(message, cause);
+        }
+
     }
 
     class SecHubRunData {
