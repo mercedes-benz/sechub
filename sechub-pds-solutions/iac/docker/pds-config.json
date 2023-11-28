@@ -4,13 +4,13 @@
     "products": [
         {
             "id": "PDS_KICS",
-            "path": "/scripts/kics.sh",
+            "path": "/pds/scripts/kics.sh",
             "scanType": "codeScan",
             "description": "Runs the Infrastructure-as-Code security checker Kics."
         },
         {
             "id": "PDS_KICS_MOCK",
-            "path": "/scripts/kics_mock.sh",
+            "path": "/pds/scripts/kics_mock.sh",
             "scanType": "codeScan",
             "description": "Runs Kics mock. It returns a fixed result file."
         }
