@@ -537,11 +537,17 @@ public class SystemTestRuntimePreparator {
 
     private Path resolvePdsSolutionWorkingDirectory(PDSSolutionDefinition solution, SystemTestRuntimeContext context) {
         Path pdsSolutionsRootFolder = context.getLocationSupport().getPDSSolutionRoot();
-
+        if (pdsSolutionsRootFolder == null) {
+            throw new WrongConfigurationException("PDS solutions root folder is not defined - but must!", context);
+        }
+        String solutionName = solution.getName();
+        if (solutionName == null) {
+            throw new WrongConfigurationException("At least one solution name is not set", context);
+        }
         String pdsBaseDirAsString = solution.getBaseDir();
         if (pdsBaseDirAsString == null) {
-            pdsBaseDirAsString = pdsSolutionsRootFolder.resolve(solution.getName()).toAbsolutePath().toString();
-            LOG.debug("Base dir not set for pds solution:{}, so calculate base dir by name and root dir to:{}", solution.getName(), pdsBaseDirAsString);
+            pdsBaseDirAsString = pdsSolutionsRootFolder.resolve(solutionName).toAbsolutePath().toString();
+            LOG.debug("Base dir not set for PDS solution: {}, so calculate base dir by name and root dir to: {}", solutionName, pdsBaseDirAsString);
         }
         Path pdsWorkingDirectory = Paths.get(pdsBaseDirAsString);
         return pdsWorkingDirectory;
