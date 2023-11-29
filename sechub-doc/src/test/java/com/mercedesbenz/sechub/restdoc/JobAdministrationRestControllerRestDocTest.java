@@ -5,7 +5,7 @@ import static com.mercedesbenz.sechub.restdoc.RestDocumentation.*;
 import static com.mercedesbenz.sechub.test.RestDocPathParameter.*;
 import static com.mercedesbenz.sechub.test.SecHubTestURLBuilder.*;
 import static org.mockito.Mockito.*;
-import static org.springframework.restdocs.headers.HeaderDocumentation.requestHeaders;
+import static org.springframework.restdocs.headers.HeaderDocumentation.*;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.*;
 import static org.springframework.restdocs.payload.PayloadDocumentation.*;
 import static org.springframework.restdocs.request.RequestDocumentation.*;
@@ -35,7 +35,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import com.mercedesbenz.sechub.docgen.util.RestDocFactory;
 import com.mercedesbenz.sechub.domain.administration.job.JobAdministrationRestController;
 import com.mercedesbenz.sechub.domain.administration.job.JobCancelService;
-import com.mercedesbenz.sechub.domain.administration.job.JobInformation;
+import com.mercedesbenz.sechub.domain.administration.job.JobInformationListEntry;
 import com.mercedesbenz.sechub.domain.administration.job.JobInformationListService;
 import com.mercedesbenz.sechub.domain.administration.job.JobRestartRequestService;
 import com.mercedesbenz.sechub.domain.administration.job.JobStatus;
@@ -75,15 +75,9 @@ public class JobAdministrationRestControllerRestDocTest implements TestIsNecessa
 
     @Before
     public void before() {
-        List<JobInformation> list = new ArrayList<>();
+        List<JobInformationListEntry> list = new ArrayList<>();
 
-        JobInformation info = new JobInformation(UUID.randomUUID());
-
-        info.setStatus(JobStatus.RUNNING);
-        info.setProjectId("project-name");
-        info.setConfiguration("{ config data }");
-        info.setOwner("owner-userid");
-        info.setSince(LocalDateTime.now());
+        JobInformationListEntry info = new JobInformationListEntry(UUID.randomUUID(), LocalDateTime.now(), JobStatus.RUNNING, "project-id");
 
         list.add(info);
 
@@ -115,12 +109,10 @@ public class JobAdministrationRestControllerRestDocTest implements TestIsNecessa
 
 	                		),
 	                        responseFields(
-	                                    fieldWithPath(inArray(JobInformation.PROPERTY_JOB_UUID)).description("The uuid of the running job"),
-	                                    fieldWithPath(inArray(JobInformation.PROPERTY_PROJECT_ID)).description("The name of the project the job is running for"),
-	                                    fieldWithPath(inArray(JobInformation.PROPERTY_OWNER)).description("Owner of the job - means user which triggered it"),
-	                                    fieldWithPath(inArray(JobInformation.PROPERTY_STATUS)).description("A status information "),
-	                                    fieldWithPath(inArray(JobInformation.PROPERTY_SINCE)).description("Timestamp since when job has been started"),
-	                                    fieldWithPath(inArray(JobInformation.PROPERTY_CONFIGURATION)).description("Configuration used for this job")
+	                                    fieldWithPath(inArray(JobInformationListEntry.PROPERTY_JOB_UUID)).description("The uuid of the running job"),
+	                                    fieldWithPath(inArray(JobInformationListEntry.PROPERTY_SINCE)).description("Timestamp since when job has been started"),
+	                                    fieldWithPath(inArray(JobInformationListEntry.PROPERTY_STATUS)).description("A status information "),
+	                                    fieldWithPath(inArray(JobInformationListEntry.PROPERTY_PROJECT_ID)).description("The name of the project the job is running for")
 	                         )
 				));
 
