@@ -56,6 +56,33 @@ class SystemTestDryRunTest {
     }
 
     @Test
+    void faked_xray_can_be_executed_without_errors() throws IOException {
+        String path = "./src/test/resources/systemtest_xray_licensescan_example.json";
+        String json = TestFileReader.loadTextFile(path);
+        
+        SystemTestConfiguration configuration = JSONConverter.get().fromJSON(SystemTestConfiguration.class, json);
+     
+        /* @formatter:off */
+
+        /* execute */
+        SystemTestResult result = systemTestApi.
+                    runSystemTests(params().
+                                        localRun().
+                                        dryRun().
+                                        testConfiguration(configuration).
+                                        additionalResourcesPath(ADDITIONAL_RESOURCES_PATH).
+                                        pdsSolutionPath(FAKED_PDS_SOLUTIONS_PATH).
+                                    build());
+        /* @formatter:on */
+
+        /* test */
+        if (result.hasFailedTests()) {
+            fail("The execution failed:" + result.toString());
+        }
+    }
+    
+    
+    @Test
     void faked_webscan_can_be_executed_without_errors_and_contains_expected_data_in_configuration() throws IOException {
 
         /* @formatter:off */
