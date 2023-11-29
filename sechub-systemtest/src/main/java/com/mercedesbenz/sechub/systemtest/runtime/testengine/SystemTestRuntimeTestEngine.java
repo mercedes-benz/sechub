@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.systemtest.runtime.testengine;
 
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -612,6 +613,8 @@ public class SystemTestRuntimeTestEngine {
             String changedConfigurationAsJson = currentTestVariableCalculator.replace(configurationAsJson);
 
             secHubRunData.secHubConfiguration = converter.fromJSON(SecHubConfigurationModel.class, changedConfigurationAsJson);
+
+            storeSecHubConfigFile(secHubRunData.secHubConfiguration);
         }
 
         public void markAsFailed(String message, Exception e) {
@@ -651,6 +654,20 @@ public class SystemTestRuntimeTestEngine {
 
         public void markCurrentSecHubJob(UUID sechubJobUUID) {
             runtimeContext.getCurrentResult().setSecHubJobUUID(sechubJobUUID);
+        }
+
+        private void storeSecHubConfigFile(SecHubConfigurationModel configuration) {
+            Path targetFolder = resolveWorkingDirectoryRealPathForCurrentTest(this);
+
+            String prettyPrintedJson = JSONConverter.get().toJSON(configuration, true);
+
+            File targetFile = new File(targetFolder.toFile(), "sechub-config.json");
+
+            try {
+                textFileWriter.save(targetFile, prettyPrintedJson, true);
+            } catch (IOException e) {
+                LOG.error("Was not able to store sechub config file: {}", targetFile, e);
+            }
         }
 
         private String safeString(Object obj) {
