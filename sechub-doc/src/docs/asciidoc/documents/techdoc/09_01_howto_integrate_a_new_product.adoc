@@ -31,7 +31,6 @@ Only when a product result is not already supported by SERECO ({sechub} report c
 we must write a special `ProductResultImporter`.
 ====
 
-
 ==== Implement Wrapper or Product
 
 Depending on the scan tool you want to add, you might need to implement a wrapper (o.a.) to communicate with the tool.
