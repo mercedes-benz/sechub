@@ -100,28 +100,29 @@ class SecHubConfigurationModelValidatorTest {
         /* test */
         assertHasNotError(result, CONTAINS_NO_SCAN_CONFIGURATION);
     }
-    
+
     @Test
     void when_scan_type_secretscan_validation_fails_NOT_with_CONTAINS_NO_SCAN_CONFIGURATION() {
         /* prepare */
         SecHubConfigurationModel model = new SecHubConfigurationModel();
         model.setSecretScan(new SecHubSecretScanConfiguration());
-        
+
         /* execute */
         SecHubConfigurationModelValidationResult result = validatorToTest.validate(model);
-        
+
         /* test */
         assertHasNotError(result, CONTAINS_NO_SCAN_CONFIGURATION);
     }
+
     @Test
     void when_scan_type_infrascan_validation_fails_NOT_with_CONTAINS_NO_SCAN_CONFIGURATION() {
         /* prepare */
         SecHubConfigurationModel model = new SecHubConfigurationModel();
         model.setInfraScan(new SecHubInfrastructureScanConfiguration());
-        
+
         /* execute */
         SecHubConfigurationModelValidationResult result = validatorToTest.validate(model);
-        
+
         /* test */
         assertHasNotError(result, CONTAINS_NO_SCAN_CONFIGURATION);
     }

@@ -29,27 +29,26 @@ class SystemTestConfigurationTest {
     private static final String DEFINED_PROFILE = "a-defined-profile-when-not-default-used";
 
     private static final String DEFINED_REFERENCE_ID = "an-upload-reference-id";
-    
+
     @Test
     void xray_license_config_can_be_read_and_contains_license_check() throws Exception {
         /* prepare */
         String path = "./src/test/resources/systemtest_xray_licensescan_example.json";
         String json = TestFileReader.loadTextFile(path);
-        
+
         /* execute */
         SystemTestConfiguration result = JSONConverter.get().fromJSON(SystemTestConfiguration.class, json);
-        
-        /* test*/
+
+        /* test */
         List<TestDefinition> tests = result.getTests();
         assertEquals(1, tests.size());
         TestDefinition test = tests.iterator().next();
         TestExecutionDefinition exec = test.getExecute();
         RunSecHubJobDefinition sechubJob = exec.getRunSecHubJob().get();
         assertTrue(sechubJob.getLicenseScan().isPresent());
-        
-        
+
     }
-    
+
     @Test
     void a_full_blown_setup_can_be_serialized_and_deserialized() throws Exception {
 
