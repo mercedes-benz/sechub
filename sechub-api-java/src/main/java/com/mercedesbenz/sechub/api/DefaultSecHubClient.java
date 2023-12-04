@@ -42,7 +42,6 @@ import com.mercedesbenz.sechub.commons.archive.ArchiveSupport;
 import com.mercedesbenz.sechub.commons.archive.ArchiveSupport.ArchivesCreationResult;
 import com.mercedesbenz.sechub.commons.core.RunOrFail;
 import com.mercedesbenz.sechub.commons.core.security.CheckSumSupport;
-import com.mercedesbenz.sechub.commons.model.JSONConverter;
 import com.mercedesbenz.sechub.commons.model.JsonMapperFactory;
 import com.mercedesbenz.sechub.commons.model.SecHubConfigurationModel;
 
@@ -83,7 +82,7 @@ public class DefaultSecHubClient extends AbstractSecHubClient {
         projectApi = new ProjectApi(getApiClient());
         workaroundProjectApi = new WorkaroundProjectApi(getApiClient());
 
-        conversionHelper = new OpenApiSecHubClientConversionHelper(adminApi);
+        conversionHelper = new OpenApiSecHubClientConversionHelper();
 
     }
 
@@ -343,7 +342,7 @@ public class DefaultSecHubClient extends AbstractSecHubClient {
         requireNonNull(profileId, "profileId may not be null!");
 
         runOrFail(() -> {
-            OpenApiExecutionProfileUpdate update = conversionHelper.fetchProfileAndConvertToUpdateObject(profileId);
+            OpenApiExecutionProfileUpdate update = conversionHelper.fetchProfileAndConvertToUpdateObject(profileId, adminApi);
 
             OpenApiExecutionProfileUpdateConfigurationsInner newItem = new OpenApiExecutionProfileUpdateConfigurationsInner();
             newItem.setUuid(uuidOfExecutorConfigToAdd.toString());
@@ -390,14 +389,7 @@ public class DefaultSecHubClient extends AbstractSecHubClient {
             throw new IllegalStateException("Project id missing inside configuration!");
         }
 
-        String configAsJson = JSONConverter.get().toJSON(configuration, true);
-        LOG.debug("configAsJson=\n{}", configAsJson);
-
-        OpenApiScanJob openApiScanJob = JSONConverter.get().fromJSON(OpenApiScanJob.class, configAsJson);
-        if (LOG.isDebugEnabled()) {
-            String openApiJSON = JSONConverter.get().toJSON(openApiScanJob, true);
-            LOG.debug("openApiJSON=\n{}", openApiJSON);
-        }
+        OpenApiScanJob openApiScanJob = conversionHelper.convertToOpenApiScanJob(configuration);
         OpenApiJobId openApiJobId = runOrFail(() -> projectApi.userCreatesNewJob(projectId, openApiScanJob),
                 "Was not able to create a SecHub job for project:" + projectId);
         String jobIdAsString = openApiJobId.getJobId();
