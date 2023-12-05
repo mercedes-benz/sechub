@@ -1216,6 +1216,46 @@
                 ]
             }
         },
+        "/api/admin/job/{jobUUID}/details": {
+            "get": {
+                "tags": [
+                    "admin"
+                ],
+                "summary": "Admin shows job details",
+                "description": "An administrator fetches job details.",
+                "operationId": "adminShowsJobDetails",
+                "parameters": [
+                    {
+                        "name": "jobUUID",
+                        "in": "path",
+                        "description": "The job UUID",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "200",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/JobDetails"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "basic": [
+                            
+                        ]
+                    }
+                ]
+            }
+        },
         "/api/admin/jobs/cancel/{jobUUID}": {
             "post": {
                 "tags": [
@@ -3121,6 +3161,213 @@
                 "title": "ServerVersion",
                 "type": "object"
             },
+            "JobDetails": {
+                "title": "JobDetails",
+                "type": "object",
+                "properties": {
+                    "owner": {
+                        "type": "string",
+                        "description": "The owner of the job - means the account which started the job"
+                    },
+                    "jobUUID": {
+                        "type": "string",
+                        "description": "The uuid of the running job"
+                    },
+                    "configuration": {
+                        "type": "string",
+                        "description": "The sechub job configuration"
+                    },
+                    "projectId": {
+                        "type": "string",
+                        "description": "The name of the project the job is running for"
+                    },
+                    "status": {
+                        "type": "string",
+                        "description": "A status information "
+                    },
+                    "since": {
+                        "type": "string",
+                        "description": "Timestamp since when job has been started"
+                    }
+                }
+            },
+            "JobId": {
+                "title": "JobId",
+                "type": "object",
+                "properties": {
+                    "jobId": {
+                        "type": "string",
+                        "description": "A unique job id"
+                    }
+                }
+            },
+            "ExecutionProfileCreate": {
+                "title": "ExecutionProfileCreate",
+                "type": "object",
+                "properties": {
+                    "configurations": {
+                        "type": "array",
+                        "description": "Configurations can be linked at creation time as well - see update description",
+                        "items": {
+                            "type": "string"
+                        }
+                    },
+                    "description": {
+                        "type": "string",
+                        "description": "A short description for the profile"
+                    },
+                    "projectIds": {
+                        "type": "array",
+                        "description": "Projects can be linked by their ids at creation time as well - see update description",
+                        "items": {
+                            "type": "string"
+                        }
+                    },
+                    "enabled": {
+                        "type": "boolean",
+                        "description": "Enabled state of profile, default is false"
+                    }
+                }
+            },
+            "ProjectWhitelistUpdate": {
+                "title": "ProjectWhitelistUpdate",
+                "type": "object",
+                "properties": {
+                    "apiVersion": {
+                        "type": "string",
+                        "description": "The api version, currently only 1.0 is supported"
+                    },
+                    "whiteList": {
+                        "type": "object",
+                        "properties": {
+                            "uris": {
+                                "type": "array",
+                                "description": "All URIS used now for whitelisting. Former parts will be replaced completely!",
+                                "items": {
+                                    "type": "string"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "JobStatus": {
+                "title": "JobStatus",
+                "type": "object",
+                "properties": {
+                    "result": {
+                        "type": "string",
+                        "description": "Result of job"
+                    },
+                    "owner": {
+                        "type": "string",
+                        "description": "Owner / initiator of job"
+                    },
+                    "jobUUID": {
+                        "type": "string",
+                        "description": "The job uuid"
+                    },
+                    "created": {
+                        "type": "string",
+                        "description": "Creation timestamp of job"
+                    },
+                    "ended": {
+                        "type": "string",
+                        "description": "End timestamp of job execution"
+                    },
+                    "started": {
+                        "type": "string",
+                        "description": "Start timestamp of job execution"
+                    },
+                    "state": {
+                        "type": "string",
+                        "description": "State of job"
+                    },
+                    "trafficLight": {
+                        "type": "string",
+                        "description": "Trafficlight of job - but only available when job has been done. Possible states are GREEN, YELLOW, RED, OFF"
+                    }
+                }
+            },
+            "ProjectMetaData": {
+                "title": "ProjectMetaData",
+                "type": "object",
+                "properties": {
+                    "metaData": {
+                        "type": "object",
+                        "properties": {
+                            "key1": {
+                                "type": "string",
+                                "description": "An arbitrary metadata key."
+                            }
+                        },
+                        "description": "Metadata object. Contains key-value pairs."
+                    },
+                    "apiVersion": {
+                        "type": "string",
+                        "description": "The api version, currently only 1.0 is supported"
+                    }
+                }
+            },
+            "ListOfSignups": {
+                "title": "ListOfSignups",
+                "type": "array",
+                "description": "List of user signups",
+                "items": {
+                    "type": "object",
+                    "properties": {
+                        "emailAdress": {
+                            "type": "string",
+                            "description": "The email address"
+                        },
+                        "userId": {
+                            "type": "string",
+                            "description": "The user id"
+                        }
+                    },
+                    "description": "List of user signups"
+                }
+            },
+            "ListOfRunningJobs": {
+                "title": "ListOfRunningJobs",
+                "type": "array",
+                "items": {
+                    "type": "object",
+                    "properties": {
+                        "owner": {
+                            "type": "string",
+                            "description": "Owner of the job - means user which triggered it"
+                        },
+                        "jobUUID": {
+                            "type": "string",
+                            "description": "The uuid of the running job"
+                        },
+                        "configuration": {
+                            "type": "string",
+                            "description": "Configuration used for this job"
+                        },
+                        "projectId": {
+                            "type": "string",
+                            "description": "The name of the project the job is running for"
+                        },
+                        "since": {
+                            "type": "string",
+                            "description": "Timestamp since when job has been started"
+                        },
+                        "status": {
+                            "type": "string",
+                            "description": "A status information "
+                        }
+                    }
+                }
+            },
+            "ListOfProjects": {
+                "type": "array",
+                "description": "List of project Ids",
+                "items": {
+                    "type": "string"
+                }
+            },
             "ScanJob": {
                 "title": "ScanJob",
                 "type": "object",
@@ -3195,6 +3442,32 @@
                                 }
                             }
                         }
+                    },
+                    "secretScan": {
+                        "type": "object",
+                        "properties": {
+                            "use": {
+                                "type": "array",
+                                "description": "Referenced data configuration objects by their unique names",
+                                "items": {
+                                    "type": "string"
+                                }
+                            }
+                        },
+                        "description": "Secret scan configuration block"
+                    },
+                    "licenseScan": {
+                        "type": "object",
+                        "properties": {
+                            "use": {
+                                "type": "array",
+                                "description": "Referenced data configuration objects by their unique names",
+                                "items": {
+                                    "type": "string"
+                                }
+                            }
+                        },
+                        "description": "License scan configuration block"
                     },
                     "infraScan": {
                         "type": "object",
@@ -3417,183 +3690,6 @@
                         },
                         "description": "Webscan configuration block"
                     }
-                }
-            },
-            "JobId": {
-                "title": "JobId",
-                "type": "object",
-                "properties": {
-                    "jobId": {
-                        "type": "string",
-                        "description": "A unique job id"
-                    }
-                }
-            },
-            "ExecutionProfileCreate": {
-                "title": "ExecutionProfileCreate",
-                "type": "object",
-                "properties": {
-                    "configurations": {
-                        "type": "array",
-                        "description": "Configurations can be linked at creation time as well - see update description",
-                        "items": {
-                            "type": "string"
-                        }
-                    },
-                    "description": {
-                        "type": "string",
-                        "description": "A short description for the profile"
-                    },
-                    "projectIds": {
-                        "type": "array",
-                        "description": "Projects can be linked by their ids at creation time as well - see update description",
-                        "items": {
-                            "type": "string"
-                        }
-                    },
-                    "enabled": {
-                        "type": "boolean",
-                        "description": "Enabled state of profile, default is false"
-                    }
-                }
-            },
-            "ProjectWhitelistUpdate": {
-                "title": "ProjectWhitelistUpdate",
-                "type": "object",
-                "properties": {
-                    "apiVersion": {
-                        "type": "string",
-                        "description": "The api version, currently only 1.0 is supported"
-                    },
-                    "whiteList": {
-                        "type": "object",
-                        "properties": {
-                            "uris": {
-                                "type": "array",
-                                "description": "All URIS used now for whitelisting. Former parts will be replaced completely!",
-                                "items": {
-                                    "type": "string"
-                                }
-                            }
-                        }
-                    }
-                }
-            },
-            "JobStatus": {
-                "title": "JobStatus",
-                "type": "object",
-                "properties": {
-                    "result": {
-                        "type": "string",
-                        "description": "Result of job"
-                    },
-                    "owner": {
-                        "type": "string",
-                        "description": "Owner / initiator of job"
-                    },
-                    "jobUUID": {
-                        "type": "string",
-                        "description": "The job uuid"
-                    },
-                    "created": {
-                        "type": "string",
-                        "description": "Creation timestamp of job"
-                    },
-                    "ended": {
-                        "type": "string",
-                        "description": "End timestamp of job execution"
-                    },
-                    "started": {
-                        "type": "string",
-                        "description": "Start timestamp of job execution"
-                    },
-                    "state": {
-                        "type": "string",
-                        "description": "State of job"
-                    },
-                    "trafficLight": {
-                        "type": "string",
-                        "description": "Trafficlight of job - but only available when job has been done. Possible states are GREEN, YELLOW, RED, OFF"
-                    }
-                }
-            },
-            "ProjectMetaData": {
-                "title": "ProjectMetaData",
-                "type": "object",
-                "properties": {
-                    "metaData": {
-                        "type": "object",
-                        "properties": {
-                            "key1": {
-                                "type": "string",
-                                "description": "An arbitrary metadata key."
-                            }
-                        },
-                        "description": "Metadata object. Contains key-value pairs."
-                    },
-                    "apiVersion": {
-                        "type": "string",
-                        "description": "The api version, currently only 1.0 is supported"
-                    }
-                }
-            },
-            "ListOfSignups": {
-                "title": "ListOfSignups",
-                "type": "array",
-                "description": "List of user signups",
-                "items": {
-                    "type": "object",
-                    "properties": {
-                        "emailAdress": {
-                            "type": "string",
-                            "description": "The email address"
-                        },
-                        "userId": {
-                            "type": "string",
-                            "description": "The user id"
-                        }
-                    },
-                    "description": "List of user signups"
-                }
-            },
-            "ListOfRunningJobs": {
-                "title": "ListOfRunningJobs",
-                "type": "array",
-                "items": {
-                    "type": "object",
-                    "properties": {
-                        "owner": {
-                            "type": "string",
-                            "description": "Owner of the job - means user which triggered it"
-                        },
-                        "jobUUID": {
-                            "type": "string",
-                            "description": "The uuid of the running job"
-                        },
-                        "configuration": {
-                            "type": "string",
-                            "description": "Configuration used for this job"
-                        },
-                        "projectId": {
-                            "type": "string",
-                            "description": "The name of the project the job is running for"
-                        },
-                        "since": {
-                            "type": "string",
-                            "description": "Timestamp since when job has been started"
-                        },
-                        "status": {
-                            "type": "string",
-                            "description": "A status information "
-                        }
-                    }
-                }
-            },
-            "ListOfProjects": {
-                "type": "array",
-                "description": "List of project Ids",
-                "items": {
-                    "type": "string"
                 }
             },
             "SecHubReport": {
