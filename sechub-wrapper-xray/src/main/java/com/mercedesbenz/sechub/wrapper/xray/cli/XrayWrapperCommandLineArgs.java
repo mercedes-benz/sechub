@@ -3,7 +3,15 @@ package com.mercedesbenz.sechub.wrapper.xray.cli;
 import com.beust.jcommander.Parameter;
 
 public class XrayWrapperCommandLineArgs {
-    @Parameter(names = { "--help", "-h" }, description = "Shows help and provides information on how to use the Xray wrapper.", help = true)
+    @Parameter(names = { "--help",
+            "-h" }, description = """
+                    The Xray wrapper communicates with an instance of a Jfrog artifactory. The wrapper can check the scan status, download required reports and delete artifacts. The Wrapper can transform additional information from the Security Report into the CycloneDX report.
+                    \t\tMake sure that the following environment variables are set as required:
+                    \t\tXRAY_ARTIFACTORY=example-artifactory-url.com
+                    \t\tXRAY_DOCKER_REGISTRY=example-name
+                    \t\tXRAY_USERNAME=user
+                    \t\tXRAY_PASSWORD=password
+                    """, help = true)
     private boolean help;
 
     @Parameter(names = { "--name", "-n" }, description = "Name of the image or artifact you wish to scan example: my_image:1.0")
