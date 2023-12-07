@@ -5,10 +5,10 @@ import com.beust.jcommander.Parameter;
 public class XrayWrapperCommandLineArgs {
     @Parameter(names = { "--help",
             "-h" }, description = """
-                    The Xray wrapper communicates with an instance of a Jfrog artifactory. The wrapper can check the scan status, download required reports and delete artifacts. The Wrapper can transform additional information from the Security Report into the CycloneDX report.
-                    \t\tMake sure that the following environment variables are set as required:
+                    The Xray wrapper communicates with an instance of a Jfrog artifactory with Xray installed. The wrapper can check the scan status, download required reports and delete artifacts. The Wrapper can transform additional information from the Security Report into the CycloneDX report.
+                    \t\tPlease ensure that the following required environment variables are set:
                     \t\tXRAY_ARTIFACTORY=example-artifactory-url.com
-                    \t\tXRAY_DOCKER_REGISTRY=example-name
+                    \t\tXRAY_DOCKER_REGISTRY=example-artifactory-docker-registry-name
                     \t\tXRAY_USERNAME=user
                     \t\tXRAY_PASSWORD=password
                     """, help = true)
