@@ -89,6 +89,8 @@ void handleOneOfForScanJobSchema(jsonObject){
     scanJobSchema.properties.webScan.properties.api.properties.use.items = stringType
     scanJobSchema.properties.webScan.properties.clientCertificate.properties.use.items = stringType
     scanJobSchema.properties.codeScan.properties.use.items = stringType
+    scanJobSchema.properties.licenseScan.properties.use.items = stringType
+    scanJobSchema.properties.secretScan.properties.use.items = stringType
     
     handleOneOfForFileSystem(scanJobSchema.properties.codeScan.properties.fileSystem)
     

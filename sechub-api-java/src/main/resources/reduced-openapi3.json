@@ -889,6 +889,32 @@
                             }
                         }
                     },
+                    "secretScan": {
+                        "type": "object",
+                        "properties": {
+                            "use": {
+                                "type": "array",
+                                "description": "Referenced data configuration objects by their unique names",
+                                "items": {
+                                    "type": "string"
+                                }
+                            }
+                        },
+                        "description": "Secret scan configuration block"
+                    },
+                    "licenseScan": {
+                        "type": "object",
+                        "properties": {
+                            "use": {
+                                "type": "array",
+                                "description": "Referenced data configuration objects by their unique names",
+                                "items": {
+                                    "type": "string"
+                                }
+                            }
+                        },
+                        "description": "License scan configuration block"
+                    },
                     "infraScan": {
                         "type": "object",
                         "properties": {
