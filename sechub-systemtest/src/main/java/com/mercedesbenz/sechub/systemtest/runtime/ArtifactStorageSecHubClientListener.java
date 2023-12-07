@@ -41,7 +41,6 @@ class ArtifactStorageSecHubClientListener implements SecHubClientListener {
         Path targetFolder = ensureArtifactsFolderForTest();
 
         storeSecHubJobUUIDFile(secHubJobUUID, targetFolder);
-        storeSecHubConfigFile(model, targetFolder);
 
         copySourceCodeZipFile(archiveCreationResult, targetFolder);
         copyBinaryArchiveFile(archiveCreationResult, targetFolder);
@@ -104,17 +103,6 @@ class ArtifactStorageSecHubClientListener implements SecHubClientListener {
             LOG.error("Was not able to store sechub job uuid file: {}", targetFile, e);
         }
 
-    }
-
-    private void storeSecHubConfigFile(SecHubConfigurationModel model, Path targetFolder) {
-        String prettyPrintedJson = JSONConverter.get().toJSON(model, true);
-
-        File targetFile = new File(targetFolder.toFile(), "sechub-config.json");
-        try {
-            textFileWriter.save(targetFile, prettyPrintedJson, true);
-        } catch (IOException e) {
-            LOG.error("Was not able to store sechub config file: {}", targetFile, e);
-        }
     }
 
 }

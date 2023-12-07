@@ -130,6 +130,7 @@ public class SystemTestRuntime {
             /* fetch results from context and publish only this */
             result = new SystemTestResult();
             result.getRuns().addAll(context.getResults());
+            result.getProblems().addAll(context.getProblems());
 
             endCurrentStage(context);
 
@@ -181,9 +182,7 @@ public class SystemTestRuntime {
             }
         }
         if (!atLeastOneTestExecuted) {
-            SystemTestRunResult missingTestsResult = new SystemTestRunResult("");
-            missingTestsResult.setFailure(new SystemTestFailure("No tests were executed", "From " + workingList.size() + " defined tests none was executed"));
-            context.getResults().add(missingTestsResult);
+            context.getProblems().add("No tests were executed (0/" + workingList.size() + ")");
         }
 
         if (!context.isRunningAllTests()) {
@@ -204,6 +203,7 @@ public class SystemTestRuntime {
         int testsFailed = 0;
         int testsRun = 0;
         String failedTestsOutput = "";
+        String problemsOutput = "";
 
         if (result != null) {
             if (!result.hasFailedTests()) {
@@ -211,6 +211,19 @@ public class SystemTestRuntime {
             }
             testsFailed = result.getAmountOfFailedTests();
             testsRun = result.getAmountOfAllTests();
+
+            if (result.hasProblems()) {
+
+                StringBuilder sb = new StringBuilder();
+                sb.append("Problems detected:\n");
+                for (String problem : result.getProblems()) {
+                    sb.append("  - ");
+                    sb.append(problem);
+                    sb.append("\n");
+                }
+                problemsOutput = sb.toString();
+            }
+
         }
 
         if (testsFailed > 0) {
@@ -223,7 +236,6 @@ public class SystemTestRuntime {
                     sb.append("\n");
                 }
             }
-            sb.append("\n");
             failedTestsOutput = sb.toString();
         }
 
@@ -235,8 +247,9 @@ public class SystemTestRuntime {
                  - Tests run   : %d
                  - Tests failed: %d
                  %s
+                 %s
                  Workspace: %s
-                """.formatted(resultStatus, testsRun, testsFailed, failedTestsOutput, context.getLocationSupport().getWorkspaceRoot());
+                """.formatted(resultStatus, testsRun, testsFailed, failedTestsOutput, problemsOutput, context.getLocationSupport().getWorkspaceRoot());
 
         LOG.info(info);
     }

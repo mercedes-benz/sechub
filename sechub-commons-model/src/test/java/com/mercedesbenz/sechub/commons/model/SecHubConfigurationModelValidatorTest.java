@@ -1,15 +1,10 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.commons.model;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.junit.jupiter.api.Assertions.fail;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import static com.mercedesbenz.sechub.commons.model.SecHubConfigurationModelValidationError.*;
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.Mockito.*;
 
 import java.net.InetAddress;
 import java.net.URI;
@@ -52,6 +47,84 @@ class SecHubConfigurationModelValidatorTest {
         validatorToTest.modelSupport = modelSupport;
 
         when(modelSupport.collectPublicScanTypes(any(SecHubConfigurationModel.class))).thenReturn(modelSupportCollectedScanTypes);
+    }
+
+    @Test
+    void when_no_scan_type_is_set_validation_fails_with_CONTAINS_NO_SCAN_CONFIGURATION() {
+        /* prepare */
+        SecHubConfigurationModel model = new SecHubConfigurationModel();
+        model.setApiVersion("1.0");
+
+        /* execute */
+        SecHubConfigurationModelValidationResult result = validatorToTest.validate(model);
+
+        /* test */
+        assertHasError(result, CONTAINS_NO_SCAN_CONFIGURATION);
+    }
+
+    @Test
+    void when_scan_type_codescan_validation_fails_NOT_with_CONTAINS_NO_SCAN_CONFIGURATION() {
+        /* prepare */
+        SecHubConfigurationModel model = new SecHubConfigurationModel();
+        model.setCodeScan(new SecHubCodeScanConfiguration());
+
+        /* execute */
+        SecHubConfigurationModelValidationResult result = validatorToTest.validate(model);
+
+        /* test */
+        assertHasNotError(result, CONTAINS_NO_SCAN_CONFIGURATION);
+    }
+
+    @Test
+    void when_scan_type_licensescan_validation_fails_NOT_with_CONTAINS_NO_SCAN_CONFIGURATION() {
+        /* prepare */
+        SecHubConfigurationModel model = new SecHubConfigurationModel();
+        model.setLicenseScan(new SecHubLicenseScanConfiguration());
+
+        /* execute */
+        SecHubConfigurationModelValidationResult result = validatorToTest.validate(model);
+
+        /* test */
+        assertHasNotError(result, CONTAINS_NO_SCAN_CONFIGURATION);
+    }
+
+    @Test
+    void when_scan_type_webscan_validation_fails_NOT_with_CONTAINS_NO_SCAN_CONFIGURATION() {
+        /* prepare */
+        SecHubConfigurationModel model = new SecHubConfigurationModel();
+        model.setWebScan(new SecHubWebScanConfiguration());
+
+        /* execute */
+        SecHubConfigurationModelValidationResult result = validatorToTest.validate(model);
+
+        /* test */
+        assertHasNotError(result, CONTAINS_NO_SCAN_CONFIGURATION);
+    }
+
+    @Test
+    void when_scan_type_secretscan_validation_fails_NOT_with_CONTAINS_NO_SCAN_CONFIGURATION() {
+        /* prepare */
+        SecHubConfigurationModel model = new SecHubConfigurationModel();
+        model.setSecretScan(new SecHubSecretScanConfiguration());
+
+        /* execute */
+        SecHubConfigurationModelValidationResult result = validatorToTest.validate(model);
+
+        /* test */
+        assertHasNotError(result, CONTAINS_NO_SCAN_CONFIGURATION);
+    }
+
+    @Test
+    void when_scan_type_infrascan_validation_fails_NOT_with_CONTAINS_NO_SCAN_CONFIGURATION() {
+        /* prepare */
+        SecHubConfigurationModel model = new SecHubConfigurationModel();
+        model.setInfraScan(new SecHubInfrastructureScanConfiguration());
+
+        /* execute */
+        SecHubConfigurationModelValidationResult result = validatorToTest.validate(model);
+
+        /* test */
+        assertHasNotError(result, CONTAINS_NO_SCAN_CONFIGURATION);
     }
 
     @Test
@@ -1559,6 +1632,12 @@ class SecHubConfigurationModelValidatorTest {
             sb.append("\n");
         }
         fail(sb.toString());
+    }
+
+    private void assertHasNotError(SecHubConfigurationModelValidationResult result, SecHubConfigurationModelValidationError expectedToBeNotContained) {
+        if (result.hasError(expectedToBeNotContained)) {
+            fail("The result DOES contain error:" + expectedToBeNotContained);
+        }
     }
 
     private void assertHasError(SecHubConfigurationModelValidationResult result, SecHubConfigurationModelValidationError error) {

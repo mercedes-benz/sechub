@@ -39,8 +39,8 @@ public class TestSecHubConfigurationBuilder {
         result.setWebScan(testData.webConfig);
         result.setProjectId(testData.projectId);
         result.setCodeScan(testData.codeScanConfig);
-        result.setSecretScan(testData.secretScanConfig);
         result.setLicenseScan(testData.licenseScanConfig);
+        result.setSecretScan(testData.secretScanConfig);
 
         if (testData.data != null) {
 
@@ -77,8 +77,8 @@ public class TestSecHubConfigurationBuilder {
         private SecHubWebScanConfiguration webConfig;
         private SecHubInfrastructureScanConfiguration infraConfig;
         private SecHubCodeScanConfiguration codeScanConfig;
-        private SecHubLicenseScanConfiguration licenseScanConfig;
         private SecHubSecretScanConfiguration secretScanConfig;
+        private SecHubLicenseScanConfiguration licenseScanConfig;
         private String projectId;
     }
 
@@ -150,37 +150,6 @@ public class TestSecHubConfigurationBuilder {
         }
     }
 
-    public TestCodeScanConfigurationBuilder codeScanConfig() {
-        return new TestCodeScanConfigurationBuilder();
-    }
-
-    public class TestCodeScanConfigurationBuilder {
-
-        private TestCodeScanConfigurationBuilder() {
-            TestSecHubConfigurationBuilder.this.testData.codeScanConfig = new SecHubCodeScanConfiguration();
-        }
-
-        public SecHubScanConfiguration build() {
-            return TestSecHubConfigurationBuilder.this.build();
-        }
-
-        public TestSecHubConfigurationBuilder and() {
-            return TestSecHubConfigurationBuilder.this;
-        }
-
-        public TestCodeScanConfigurationBuilder useDataReferences(String... referenceName) {
-            testData.codeScanConfig.getNamesOfUsedDataConfigurationObjects().addAll(Arrays.asList(referenceName));
-            return this;
-        }
-
-        public TestCodeScanConfigurationBuilder setFileSystemFolders(String... folders) {
-            SecHubFileSystemConfiguration fileSystem = new SecHubFileSystemConfiguration();
-            TestSecHubConfigurationBuilder.this.testData.codeScanConfig.setFileSystem(fileSystem);
-            fileSystem.getFolders().addAll(Arrays.asList(folders));
-            return this;
-        }
-    }
-
     public TestSecretScanConfigurationBuilder secretScanConfig() {
         return new TestSecretScanConfigurationBuilder();
     }
@@ -203,6 +172,7 @@ public class TestSecHubConfigurationBuilder {
             testData.secretScanConfig.getNamesOfUsedDataConfigurationObjects().addAll(Arrays.asList(referenceName));
             return this;
         }
+
     }
 
     public TestLicenseScanConfigurationBuilder licenseScanConfig() {
@@ -225,6 +195,38 @@ public class TestSecHubConfigurationBuilder {
 
         public TestLicenseScanConfigurationBuilder useDataReferences(String... referenceName) {
             testData.licenseScanConfig.getNamesOfUsedDataConfigurationObjects().addAll(Arrays.asList(referenceName));
+            return this;
+        }
+
+    }
+
+    public TestCodeSCanConfigurationBuilder codeScanConfig() {
+        return new TestCodeSCanConfigurationBuilder();
+    }
+
+    public class TestCodeSCanConfigurationBuilder {
+
+        private TestCodeSCanConfigurationBuilder() {
+            TestSecHubConfigurationBuilder.this.testData.codeScanConfig = new SecHubCodeScanConfiguration();
+        }
+
+        public SecHubScanConfiguration build() {
+            return TestSecHubConfigurationBuilder.this.build();
+        }
+
+        public TestSecHubConfigurationBuilder and() {
+            return TestSecHubConfigurationBuilder.this;
+        }
+
+        public TestCodeSCanConfigurationBuilder useDataReferences(String... referenceName) {
+            testData.codeScanConfig.getNamesOfUsedDataConfigurationObjects().addAll(Arrays.asList(referenceName));
+            return this;
+        }
+
+        public TestCodeSCanConfigurationBuilder setFileSystemFolders(String... folders) {
+            SecHubFileSystemConfiguration fileSystem = new SecHubFileSystemConfiguration();
+            TestSecHubConfigurationBuilder.this.testData.codeScanConfig.setFileSystem(fileSystem);
+            fileSystem.getFolders().addAll(Arrays.asList(folders));
             return this;
         }
     }
@@ -266,7 +268,6 @@ public class TestSecHubConfigurationBuilder {
             private SecHubFileSystemConfiguration fileSystem;
 
             private TestDataDataBuilder() {
-                this.fileSystem = new SecHubFileSystemConfiguration();
             }
 
             public TestDataDataBuilder uniqueName(String name) {
@@ -274,13 +275,20 @@ public class TestSecHubConfigurationBuilder {
                 return this;
             }
 
+            private SecHubFileSystemConfiguration ensureFileSystem() {
+                if (fileSystem == null) {
+                    fileSystem = new SecHubFileSystemConfiguration();
+                }
+                return fileSystem;
+            }
+
             public TestDataDataBuilder fileSystemFolders(String... folders) {
-                fileSystem.getFolders().addAll(Arrays.asList(folders));
+                ensureFileSystem().getFolders().addAll(Arrays.asList(folders));
                 return this;
             }
 
             public TestDataDataBuilder fileSystemFiles(String... files) {
-                fileSystem.getFiles().addAll(Arrays.asList(files));
+                ensureFileSystem().getFiles().addAll(Arrays.asList(files));
                 return this;
             }
 

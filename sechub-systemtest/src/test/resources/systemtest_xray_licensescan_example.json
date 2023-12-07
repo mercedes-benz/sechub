@@ -1,0 +1,63 @@
+{
+  "setup" : {
+    "local" : {
+      "secHub" : {
+        "admin" : {
+          "userId" : "admin",
+          "apiToken" : "the-test-secret"
+        },
+        "start" : [ {
+          "script" : {
+            "path" : "./01-start-single-docker-compose.sh"
+          }
+        } ],
+        "configure" : {
+          "executors" : [ {
+            "pdsProductId" : "PDS_XRAY_MOCK",
+            "name" : "system-test-licenseScan-xray",
+            "parameters" : {
+              "sechub.productexecutor.pds.adapter.resilience.retry.wait.milliseconds" : 3000,
+              "sechub.productexecutor.pds.adapter.resilience.retry.max" : 20,
+              "pds.config.use.sechub.storage" : false
+            }
+          } ]
+        },
+        "stop" : [ {
+          "script" : {
+            "path" : "./01-stop-single-docker-compose.sh"
+          }
+        } ]
+      },
+      "pdsSolutions" : [ {
+        "name" : "faked-xray",
+        "url" : "https://pds-xray:8444/",
+        "waitForAvailable" : false,
+        "start" : [ {
+          "script" : {
+            "path" : "./05-start-single-sechub-network-docker-compose.sh"
+          }
+        } ],
+        "stop" : [ {
+          "script" : {
+            "path" : "./05-stop-single-sechub-network-docker-compose.sh"
+          }
+        } ],
+        "techUser" : {
+          "userId" : "techuser",
+          "apiToken" : "the-test-pds-apitoken"
+        }
+      } ]
+    }
+  },
+  "tests" : [ {
+  "name" : "test-mock-script",
+    "execute" : {
+      "runSecHubJob" : {
+        "uploads" : [ {
+          "binariesFolder" : "test_files.tar"  
+        } ],
+        "licenseScan" : { }
+      }
+    }
+} ]
+}

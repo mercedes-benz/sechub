@@ -485,6 +485,15 @@ public class SystemTestConfigurationBuilder {
                 return this;
             }
 
+            public SolutionSetupBuilder adminUser(String userId, String apiToken) {
+
+                CredentialsDefinition credentials = setup.getAdmin();
+                credentials.setUserId(userId);
+                credentials.setApiToken(apiToken);
+
+                return this;
+            }
+
         }
 
     }
