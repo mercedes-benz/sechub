@@ -150,7 +150,16 @@ void provideReducedOpenApiFile(){
             reduceRecursive(it)
         }
         
-        def parsedJsonDiff = new JsonBuilder(slurped)
+        TreeMap<String,?> sortedMap = new TreeMap<>();
+        sortedMap.openapi=slurped.openapi
+        sortedMap.info=slurped.info
+        sortedMap.servers=slurped.servers
+        sortedMap.tags=slurped.tags
+        sortedMap.components=new TreeMap(slurped.components);
+        sortedMap.components.schemas=new TreeMap(slurped.components.schemas);
+        sortedMap.paths=new TreeMap(slurped.paths)
+        
+        def parsedJsonDiff = new JsonBuilder(sortedMap)
         
         new File(reducedOpenApiFile).write(parsedJsonDiff.toPrettyString())
         
