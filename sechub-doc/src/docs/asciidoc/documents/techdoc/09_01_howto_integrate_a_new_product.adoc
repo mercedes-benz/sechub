@@ -2,14 +2,14 @@
 [[section-howto-integrate-a-new-product]]
 === Howto integrate a new product
 
-At the beginning of {sechub} it was always necessary to implement a new product adapter (in Java), create 
+At the beginning of {sechub} it was always necessary to implement a new product adapter (in Java), create
 a new product executor (in Java) and create new product result importer (also in Java).
 
 *Those days are gone*. Nowadays we are shifting every new product into a {pds} (product delegation server)
- solution. For {pds} we have an already existing {pds} adapter (the logic to communicate with {pds})
- which is used always.
- 
- 
+solution. For {pds} we have an already existing {pds} adapter (the logic to communicate with {pds})
+which is used always.
+
+
 [IMPORTANT]
 ====
 At the moment we have still some direct product adapters. Some are marked as deprecated and will
@@ -17,8 +17,8 @@ vanish. Others will be replaced by PDS solutions.
 
 In the future there shall be only two products which have dedicated adapter implementations: SERECO and {pds}.
 ====
- 
-For every existing type of scan there is a dedicated {pds} product executor available. When the security 
+
+For every existing type of scan there is a dedicated {pds} product executor available. When the security
 product is able to produce SARIF output, we are able to import this already.
 You can find multiple existing solutions and more details at {pds-solutions-projectsite}.
 
@@ -26,51 +26,76 @@ You can find multiple existing solutions and more details at {pds-solutions-proj
 ====
 In the best case scenario there is no need to write anything in Java - we copy an existing
 pds-solution to a new folder name, make some necessary adjustments, change the caller script and we are done...
- 
-Only when a product result is not already supported by SERECO ({sechub} report collector), 
+
+Only when a product result is not already supported by SERECO ({sechub} report collector),
 we must write a special `ProductResultImporter`.
 ====
 
-==== Implement Wrapper or Product
+==== Integrate new SecHub module
+[NOTE]
+====
+In the following the necessary steps to integrate a new module in the SecHub project are described.
+SecHub uses Gradle and the Gradle wrapper.
+====
 
-Depending on the scan tool you want to add, you might need to implement a wrapper (o.a.) to communicate with the tool.
-
-==== Create new Module and Integrate your code
-
-. Create new gradle module
+. Create new SecHub module
 +
-your project should look like sechub/your-new-module-name/src/main/java/com.mercedesbenz.sechub.yourpackagename/programm
+Create your project structure like this: sechub/<your module name>/src/main/java/com.mercedesbenz.sechub.<your ackage name>/<your source code> analogue your test are placed in the test directory
 
-. modify your gradle.build file
+. Modify your build.gradle file
 +
+Copy the build.gradle code from another similar project (e.g. a wrapper module) +
+Add your main class to the manifest and modify all project specific variables. +
 
-dependencies are global managed in sechub/gradle/wrapper, you can add new dependencies to libraries.gradle or use existing dependencies +
+. Modify dependencies in your build.gradle +
+Add the dependencies you need, they are global managed in sechub/gradle/libraries.gradle, you can add new dependencies to the libraries.gradle or use existing dependencies +
 
-. add module and version to buildSrc/src/main/groovy/VersionData.groovy (to use getVersion function in your build.gradle)
+. Create a getVersion method if needed +
+The getVersion Method needs to be implemented in buildSrc/src/main/groovy/VersionData.groovy +
+Then you can use it in your build.gradle eg.: version = versionData.getMyNewProductVersion()
 
-. define your version in gradle/build-versioning.gradle
+. Implement your build tasks in sechub/gradle/build-versioning.gradle
 
-. include your module in sechub/settings.gradle
+. Include your task in sechub/settings.gradle
 
-finally you should be able to run your task defined in your build.gradle with ./gradlew yourTask
+. Test if your task is listed with executing ./gradlew tasks +
+You should see your newly created task now +
 
-==== PDS solution for your module
+. Build your module +
+Run your task defined in your build.gradle with ./gradlew <my new task>
+
+==== Create a PDS solution for a product
+
+[NOTE]
+====
+The following user guide is an instruction create a PDS solution for a new module eg. a scan tool or a wrapper.
+====
 
 . Install docker compose as plugin https://www.digitalocean.com/community/tutorials/how-to-install-and-use-docker-compose-on-ubuntu-22-04[ubuntu22.04 install docker compose]
 
-. copy all files from another PDS-solution +
-throw everything away except the docker folder, the 01 script and the docker compose yaml used in the 01 script and the env file (if needed)
+. Create a new folder in sechub/pds-solutions/<your pds solution>
 
-. rename all files to fit your modul name
+. Copy following files/ folders from another PDS-solution: +
+The README.md, the 01-script, The docker folder, the docker compose yaml used in the 01-script and the env file (if your product requires environment variables are needed)
 
-. modify all files (Dockerfile, scripts, yaml, env ... ) to fit your modul
+. Rename all folders to fit your product name
 
-==== PDS standalone tests with pds-tools
+. Modify all files (Dockerfile, scripts, yaml, env ... ) to fit your product needs
+
+. Modify the sechub/sechub-pds-solutions/xray/docker/scripts/<your product>.sh +
+This script is executed when a job is transferred to your PDS solution you have to execute your product here. The script is referenced in your pds-config.json.
+
+. Modify your pds-config.json +
+You can add additional optional or required parameters. They have the form pds.productname.variablename and readable as environment variables like this PDS_PRODUCTNAME_VARIABLENAME +
+
+===== Test PDS standalone with pds-tools
 
 Requires: sechub-solution-shared/scripts/01-test-pds.sh +
-(example with licenseScan and tar upload)
+(example with licenseScan and tar file upload)
 
-. Export your variables
+. Start your PDS solution with the 01-start-single-docker-compose.sh
+
+. Export environment variables
 +
 ----
 export PDS_SERVER=https://localhost:8444; export PDS_USERID=admin; export PDS_APITOKEN="pds-apitoken"; export PDS_PRODUCT_IDENTFIER=PDS_YOURPRODUCT
@@ -78,7 +103,7 @@ export PDS_SERVER=https://localhost:8444; export PDS_USERID=admin; export PDS_AP
 
 . Download PDS-Tools from release page https://github.com/mercedes-benz/sechub/releases
 
-. create a sechub.json
+. Create a sechub.json like the following
 +
 [source,json]
 ----
@@ -94,7 +119,7 @@ export PDS_SERVER=https://localhost:8444; export PDS_USERID=admin; export PDS_AP
       {
         "name": "test-sources",
         "fileSystem" : {
-        "folders" : [ "some-binary.tar" ]
+        "folders" : [ "some-binary" ]
       }
       }
     ]
@@ -102,15 +127,9 @@ export PDS_SERVER=https://localhost:8444; export PDS_USERID=admin; export PDS_AP
 }
 ----
 
-. create for this example a .tar file
+. Create "some-binary" file you want to test your product
 
-. put both in a test folder
-
-. run pds-tools
-+
-    java -jar sechub-pds-tools-cli-<version>.jar generate -p <testfolder>/sechub.json -s licenseScan
-
-. create a pds-config.json
+. Create a pds-config.json like the following
 +
 [source,json]
 ----
@@ -124,46 +143,70 @@ export PDS_SERVER=https://localhost:8444; export PDS_USERID=admin; export PDS_AP
   } ]
 }
 ----
+
+. Put the sechub.json and the "some-binary" file in a new folder <testfolder>
+
+. Execute the pds-tools
 +
-. Paste from created folder in /tmp/pds_solution_genxxx/pdsJobData the key values in your pds-config.json
-
-. Copy the sourcecode.zip into your directory
-
-. execute 01 script with your sourcode.zip your pds-cofig.json
+----
+java -jar sechub-pds-tools-cli-<version>.jar generate -p <testfolder>/sechub.json -s licenseScan
+----
 +
-    ./01-test-pds.sh sourcecode.zip pds-config.json
+The pds-tools will create a tmp folder for you in /tmp/pds_solution_genxxx/pdsJobData
 
-==== PDS and SecHub Server tests with SecHub Client
+. Copy from /tmp/pds_solution_genxxx/pdsJobData the parameter and overwrite it in your pds-config.json
 
-. create json product executor in sechub-solution/setup-pds/executors
+. Copy the /tmp/pds_solution_genxxx/sourcecode.zip into your directory
 
-. create setup-<your product>.sh in sechub-solution/setup-pds/
-
-. create 05 scripts in sechub-pds-solutions/<your product>/
-
-. start sechub in sechub-solution/ with
-
-    ./01-start-single-docker-compose.sh
+. Execute 01-test-pds.sh with your sourcode.zip your pds-cofig.json
 +
+----
+./01-test-pds.sh sourcecode.zip pds-config.json
+----
 
-. start <your product> pds with 05 script ind sechub-pds-solutions/
+===== Test PDS solution with SecHub Server and Client
 
-    ./05-start-single-sechub-network-docker-compose.sh
+. Create json product executor for your product in sechub-solution/setup-pds/executors +
+Tip: you can copy another executor and modify it to your needs
 
-. export SecHub environment variables
+. Create setup-<your product>.sh in sechub-solution/setup-pds/ +
+Tip: copy another setup script and modify
+
+. Create 05-start-single-sechub-network-docker-compose.sh and 05-stort-single-sechub-network-docker-compose.sh in your sechub solution directory sechub-pds-solutions/<your product>/ +
+Tip: copy file from another pds solution and modify
+
+. Create the docker-compose_pds_xray_external-network.yaml file
+Tip: copy files from another pds solution and modify
+
+. Start a SecHub Server in sechub-solution/ with the 01-script
++
+----
+cd sechub-solution/
+./01-start-single-docker-compose.sh
+----
+
+. Start your PDS solution with 05-start-single-sechub-network-docker-compose.sh in your PDS solution
++
+----
+./05-start-single-sechub-network-docker-compose.sh
+----
+
+. Export SecHub environment variables
 +
 ----
 export SECHUB_USERID=admin; export SECHUB_APITOKEN='myTop$ecret!'; export SECHUB_SERVER=https://localhost:8443; export SECHUB_TRUSTALL=true; export SECHUB_WAITTIME_DEFAULT=3
 ----
 
-. run the setup pds script in sechub-solution/setup-pds/
-
-    ./setup-pds/<your product>.sh
+. Run the setup pds script in sechub-solution/setup-pds/
 +
+----
+cd sechub-solution/
+./setup-pds/<your product>.sh
+----
 
-. Download sechub client from release page https://github.com/mercedes-benz/sechub/releases/[releases]
+. Download SecHub Client from the release page https://github.com/mercedes-benz/sechub/releases/[releases]
 
-. create sechub.json
+. Create sechub.json like the following
 +
 [source,json]
 ----
@@ -179,13 +222,22 @@ export SECHUB_USERID=admin; export SECHUB_APITOKEN='myTop$ecret!'; export SECHUB
       {
         "name": "test-binaries",
         "fileSystem" : {
-        "folders" : [ "some-binary.tar" ]
+        "folders" : [ "some-binary" ]
       }
       }
     ]
   }
 }
 ----
-. execute scan with SecHub Client and test archive some-binary.tar and sechub.json
 
-    sechub -project <project_name> scan
+. Execute a scan with SecHub Client and test file "some-binary" and sechub.json
++
+----
+sechub -project <project_name> scan
+----
+
+. Download latest report with the client
++
+----
+sechub -project <project_name> getReport
+----
