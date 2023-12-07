@@ -103,7 +103,7 @@ COPY --from=builder "$PDS_ARTIFACT_FOLDER" "$TOOL_FOLDER"
 COPY mocks "$MOCK_FOLDER"
 
 # Copy PDS configfile
-COPY pds-config.json "$PDS_FOLDER"/pds-config.json
+COPY pds-config.json "$PDS_FOLDER/pds-config.json"
 
 RUN export DEBIAN_FRONTEND=noninteractive && \
     apt-get update && \
