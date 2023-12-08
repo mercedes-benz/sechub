@@ -37,6 +37,7 @@ You are going to need:
 * docker (Version 23.0.0 used in the tutorial, newer versions will also work) (e. g. https://docs.docker.com/engine/install/debian/[Debian],  / https://docs.docker.com/engine/install/ubuntu/[Ubuntu])
 * docker compose (v2.15.1 or newer)
 * git
+* jq
 
 Optional:
 
@@ -83,7 +84,7 @@ This will prepare some environment files and will start a container based on Sec
 ==== Setup Project
 
 After starting all servers, some environment variables have to be set. Specifically `SECHUB_SERVER`, `SECHUB_USERID`, `SECHUB_APITOKEN`, `SECHUB_TRUSTALL` and SecHub's CLI tools have to be added to the `PATH` variable to be able to do scans.
-In another, we set local credentials  because everything is hosted locally:
+In another, we set local credentials because everything is hosted locally:
 
 [source, shell]
 --
