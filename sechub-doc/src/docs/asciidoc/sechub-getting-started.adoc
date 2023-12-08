@@ -70,6 +70,8 @@ This starts the server.
 ==== Start GoSec+PDS Server
 The PDS server, which contains the security tool https://securego.io/[GoSec], will check the actual code for vulnerabilities and output a result of them.
 
+Start another terminal in the root directory of SecHub and type: 
+
 [source, shell]
 --
 include::sechub-getting-started/start-pds-gosec.sh[lines=2]
@@ -81,7 +83,7 @@ This will prepare some environment files and will start a container based on Sec
 ==== Setup Project
 
 After starting all servers, some environment variables have to be set. Specifically `SECHUB_SERVER`, `SECHUB_USERID`, `SECHUB_APITOKEN`, `SECHUB_TRUSTALL` and SecHub's CLI tools have to be added to the `PATH` variable to be able to do scans.
-Here we set local credentials because everything is hosted locally:
+In another, we set local credentials  because everything is hosted locally:
 
 [source, shell]
 --
