@@ -1,0 +1,38 @@
+// SPDX-License-Identifier: MIT
+// ====================================
+// SecHub user Tutorials
+// ====================================
+// enable tutorial content
+:tutorials:
+
+include::documents/gen/server-version.adoc[]
+
+include::documents/config.adoc[]
+
+= image:sechub-logo.png[link="{webPage}"] SecHub Tutorials
+
+== About
+include::documents/shared/about_sechub.adoc[]
+
+include::documents/shared/about_documentation_all.adoc[]
+
+Target audience for this document are *SecHub Developers* only!
+
+
+// horizontal line
+***
+
+:showhintaboutgenerated: true
+
+
+// numbering from here on
+:numbered:
+
+<<<<
+// Tutorials are currently not structured
+// should be structured in a logical way when more tutorials are written
+include::documents/tutorials/00_tutorials.adoc[]
+
+
+<<<
+

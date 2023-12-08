@@ -1,0 +1,177 @@
+== Create a PDS solution for a product
+
+[NOTE]
+====
+The following user guide is an instruction create a PDS solution for a new module eg. a scan tool or a wrapper.
+====
+
+. Install docker compose as plugin https://www.digitalocean.com/community/tutorials/how-to-install-and-use-docker-compose-on-ubuntu-22-04[ubuntu22.04 install docker compose]
+
+. Create a new folder in sechub/pds-solutions/<your pds solution>
+
+. Copy following files/ folders from another PDS-solution: +
+The README.md, the 01-script, The docker folder, the docker compose yaml used in the 01-script and the env file (if your product requires environment variables are needed)
+
+. Rename all folders to fit your product name
+
+. Modify all files (Dockerfile, scripts, yaml, env ... ) to fit your product needs
+
+. Modify the sechub/sechub-pds-solutions/xray/docker/scripts/<your product>.sh +
+This script is executed when a job is transferred to your PDS solution you have to execute your product here. The script is referenced in your pds-config.json.
+
+. Modify your pds-config.json +
+You can add additional optional or required parameters. They have the form pds.productname.variablename and readable as environment variables like this PDS_PRODUCTNAME_VARIABLENAME +
+
+=== Test PDS standalone with pds-tools
+
+Requires: sechub-solution-shared/scripts/01-test-pds.sh +
+(example with licenseScan and tar file upload)
+
+. Start your PDS solution with the 01-start-single-docker-compose.sh
+
+. Export environment variables
++
+----
+export PDS_SERVER=https://localhost:8444; export PDS_USERID=admin; export PDS_APITOKEN="pds-apitoken"; export PDS_PRODUCT_IDENTFIER=PDS_YOURPRODUCT
+----
+
+. Download PDS-Tools from release page https://github.com/mercedes-benz/sechub/releases
+
+. Create a sechub.json like the following
++
+[source,json]
+----
+{
+  "apiVersion": "1.0",
+  "licenseScan": {
+    "use": [
+      "test-sources"
+    ]
+  },
+  "data": {
+    "binaries": [
+      {
+        "name": "test-sources",
+        "fileSystem" : {
+        "folders" : [ "some-binary" ]
+      }
+      }
+    ]
+  }
+}
+----
+
+. Create "some-binary" file you want to test your product
+
+. Create a pds-config.json like the following
++
+[source,json]
+----
+{
+    "apiVersion" : "1.0",
+    "sechubJobUUID": "288607bf-ac81-4088-842c-005d5702a9e9",
+    "productId": "PDS_YOURPRODUCT",
+    "parameters" : [ {
+      "key" : "pds.scan.configuration",
+      "value" : "{\n  \"licenseScan\" : {\n    \"use\" : [ \"test-sources\" ]\n  },\n  \"data\" : {\n    \"sources\" : [ ],\n    \"binaries\" : [ {\n      \"fileSystem\" : {\n        \"files\" : [ ],\n        \"folders\" : [ \"some-binary.tar\" ]\n      },\n      \"name\" : \"test-sources\"\n    } ]\n  },\n  \"apiVersion\" : \"1.0\"\n}"
+  } ]
+}
+----
+
+. Put the sechub.json and the "some-binary" file in a new folder <testfolder>
+
+. Execute the pds-tools
++
+----
+java -jar sechub-pds-tools-cli-<version>.jar generate -p <testfolder>/sechub.json -s licenseScan
+----
++
+The pds-tools will create a tmp folder for you in /tmp/pds_solution_genxxx/pdsJobData
+
+. Copy from /tmp/pds_solution_genxxx/pdsJobData the parameter and overwrite it in your pds-config.json
+
+. Copy the /tmp/pds_solution_genxxx/sourcecode.zip into your directory
+
+. Execute 01-test-pds.sh with your sourcode.zip your pds-cofig.json
++
+----
+./01-test-pds.sh sourcecode.zip pds-config.json
+----
+
+=== Test PDS solution with SecHub Server and Client
+
+. Create json product executor for your product in sechub-solution/setup-pds/executors +
+Tip: you can copy another executor and modify it to your needs
+
+. Create setup-<your product>.sh in sechub-solution/setup-pds/ +
+Tip: copy another setup script and modify
+
+. Create 05-start-single-sechub-network-docker-compose.sh and 05-stort-single-sechub-network-docker-compose.sh in your sechub solution directory sechub-pds-solutions/<your product>/ +
+Tip: copy file from another pds solution and modify
+
+. Create the docker-compose_pds_xray_external-network.yaml file
+Tip: copy files from another pds solution and modify
+
+. Start a SecHub Server in sechub-solution/ with the 01-script
++
+----
+cd sechub-solution/
+./01-start-single-docker-compose.sh
+----
+
+. Start your PDS solution with 05-start-single-sechub-network-docker-compose.sh in your PDS solution
++
+----
+./05-start-single-sechub-network-docker-compose.sh
+----
+
+. Export SecHub environment variables
++
+----
+export SECHUB_USERID=admin; export SECHUB_APITOKEN='myTop$ecret!'; export SECHUB_SERVER=https://localhost:8443; export SECHUB_TRUSTALL=true; export SECHUB_WAITTIME_DEFAULT=3
+----
+
+. Run the setup pds script in sechub-solution/setup-pds/
++
+----
+cd sechub-solution/
+./setup-pds/<your product>.sh
+----
+
+. Download SecHub Client from the release page https://github.com/mercedes-benz/sechub/releases/[releases]
+
+. Create sechub.json like the following
++
+[source,json]
+----
+{
+  "apiVersion": "1.0",
+  "licenseScan": {
+    "use": [
+      "test-binaries"
+    ]
+  },
+  "data": {
+    "binaries": [
+      {
+        "name": "test-binaries",
+        "fileSystem" : {
+        "folders" : [ "some-binary" ]
+      }
+      }
+    ]
+  }
+}
+----
+
+. Execute a scan with SecHub Client and test file "some-binary" and sechub.json
++
+----
+sechub -project <project_name> scan
+----
+
+. Download latest report with the client
++
+----
+sechub -project <project_name> getReport
+----
