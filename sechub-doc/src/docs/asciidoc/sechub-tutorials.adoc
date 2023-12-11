@@ -16,9 +16,6 @@ include::documents/shared/about_sechub.adoc[]
 
 include::documents/shared/about_documentation_all.adoc[]
 
-Target audience for this document are *SecHub Developers* only!
-
-
 // horizontal line
 ***
 

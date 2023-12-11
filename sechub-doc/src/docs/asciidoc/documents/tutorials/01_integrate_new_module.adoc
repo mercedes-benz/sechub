@@ -7,7 +7,7 @@ SecHub uses Gradle and the Gradle wrapper.
 
 . Create new SecHub module
 +
-Create your project structure like this: sechub/<your module name>/src/main/java/com.mercedesbenz.sechub.<your ackage name>/<your source code> analogue your test are placed in the test directory
+Create your project structure like this: sechub/<your module name>/src/main/java/com.mercedesbenz.sechub.<your package name>/<your source code> analogue your test are placed in the test directory
 
 . Modify your build.gradle file
 +
