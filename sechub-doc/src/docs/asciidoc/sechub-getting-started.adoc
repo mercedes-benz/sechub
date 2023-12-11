@@ -313,7 +313,7 @@ The output you get, should be simillar to this(if you choose JSON output):
 --
 
 ==== Install SecHub's VSCodium Plugin (OPTIONAL)
-SecHub's VSCodium Plugin helps you better visualize where the vulnerabilities in your code are located.
+SecHub's VSCodium Plugin helps you to work faster with the SecHub report.
 You can go to the exact code line and fix the problem.
 
 You can get the plugin from https://open-vsx.org/extension/mercedes-benz/sechub[here].
