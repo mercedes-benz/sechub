@@ -203,7 +203,14 @@ sha256sum --check sechub-cli.zip.sha256
 
 # Extract 
 unzip sechub-cli.zip
+
+# Depending on your architecture and OS, you will have to copy a different binary file:
+# For linux x86-64
 sudo cp platform/linux-amd64/sechub /usr/local/bin
+
+# For linux arm-64
+sudo cp platform/linux-arm64/sechub /usr/local/bin
+
 
 # Cleanup
 rm -rf sechub-cli.zip.sha256 sechub-cli.zip platform/
