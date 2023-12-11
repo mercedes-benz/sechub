@@ -187,7 +187,7 @@ Setup of GoSec complete:
 Now you are ready to do scans!
 
 ==== Install SecHub client 
-The SecHub client is needed to initiate scans. In later sections of this tutorial, the client is used to do an example scan. In case you don't have it, you cannot continue with the tutorial. The command below, will download the latest version and put it in your `/usr/local/bin` folder.
+The SecHub client is needed to scan. In later sections of this guide, the client is used to scan an example. The command below, will download the latest version and put it in your `/usr/local/bin` folder.
 
 [source, bash]
 --
