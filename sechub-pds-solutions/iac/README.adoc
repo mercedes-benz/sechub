@@ -63,7 +63,7 @@ It is recommended to start with a manual <<_scan>> the first time using the PDS.
 export PDS_SERVER=https://<pds-host>:<port>
 export PDS_USERID=admin
 export PDS_APITOKEN="<pds-admin-apitoken>"
-export PDS_PRODUCT_IDENTFIER=PDS_IAC
+export PDS_PRODUCT_IDENTFIER=PDS_KICS
 ----
 +
 For example:
@@ -72,7 +72,7 @@ For example:
 export PDS_SERVER=https://localhost:8444
 export PDS_USERID=admin
 export PDS_APITOKEN="pds-apitoken"
-export PDS_PRODUCT_IDENTFIER=PDS_IAC
+export PDS_PRODUCT_IDENTFIER=PDS_KICS
 ----
 +
 [NOTE]
