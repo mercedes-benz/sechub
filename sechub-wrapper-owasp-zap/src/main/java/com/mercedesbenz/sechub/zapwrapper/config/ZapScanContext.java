@@ -57,6 +57,8 @@ public class ZapScanContext {
     private ZapProductMessageHelper zapProductMessageHelper;
     private ZapPDSEventHandler zapPDSEventHandler;
 
+    private File clientCertificateFile;
+
     private ZapScanContext() {
     }
 
@@ -163,11 +165,15 @@ public class ZapScanContext {
         return zapPDSEventHandler;
     }
 
-    public static ZapBasicScanContextBuilder builder() {
-        return new ZapBasicScanContextBuilder();
+    public File getClientCertificateFile() {
+        return clientCertificateFile;
     }
 
-    public static class ZapBasicScanContextBuilder {
+    public static ZapScanContextBuilder builder() {
+        return new ZapScanContextBuilder();
+    }
+
+    public static class ZapScanContextBuilder {
         private ZapServerConfiguration serverConfig;
 
         private boolean verboseOutput = false;
@@ -208,146 +214,155 @@ public class ZapScanContext {
 
         private ZapPDSEventHandler zapPDSEventHandler;
 
-        public ZapBasicScanContextBuilder setServerConfig(ZapServerConfiguration serverConfig) {
+        private File clientCertificateFile;
+
+        public ZapScanContextBuilder setServerConfig(ZapServerConfiguration serverConfig) {
             this.serverConfig = serverConfig;
             return this;
         }
 
-        public ZapBasicScanContextBuilder setVerboseOutput(boolean verboseOutput) {
+        public ZapScanContextBuilder setVerboseOutput(boolean verboseOutput) {
             this.verboseOutput = verboseOutput;
             return this;
         }
 
-        public ZapBasicScanContextBuilder setAjaxSpiderEnabled(boolean ajaxSpiderEnabled) {
+        public ZapScanContextBuilder setAjaxSpiderEnabled(boolean ajaxSpiderEnabled) {
             this.ajaxSpiderEnabled = ajaxSpiderEnabled;
             return this;
         }
 
-        public ZapBasicScanContextBuilder setActiveScanEnabled(boolean activeScanEnabled) {
+        public ZapScanContextBuilder setActiveScanEnabled(boolean activeScanEnabled) {
             this.activeScanEnabled = activeScanEnabled;
             return this;
         }
 
-        public ZapBasicScanContextBuilder setReportFile(Path reportFile) {
+        public ZapScanContextBuilder setReportFile(Path reportFile) {
             this.reportFile = reportFile;
             return this;
         }
 
-        public ZapBasicScanContextBuilder setContextName(String contextName) {
+        public ZapScanContextBuilder setContextName(String contextName) {
             this.contextName = contextName;
             return this;
         }
 
-        public ZapBasicScanContextBuilder setTargetUrl(URL targetUrl) {
+        public ZapScanContextBuilder setTargetUrl(URL targetUrl) {
             this.targetUrl = targetUrl;
             return this;
         }
 
-        public ZapBasicScanContextBuilder setAuthenticationType(AuthenticationType authenticationType) {
+        public ZapScanContextBuilder setAuthenticationType(AuthenticationType authenticationType) {
             this.authenticationType = authenticationType;
             return this;
         }
 
-        public ZapBasicScanContextBuilder setMaxScanDurationInMilliSeconds(long maxScanDurationInMilliSeconds) {
+        public ZapScanContextBuilder setMaxScanDurationInMilliSeconds(long maxScanDurationInMilliSeconds) {
             this.maxScanDurationInMilliSeconds = maxScanDurationInMilliSeconds;
             return this;
         }
 
-        public ZapBasicScanContextBuilder setSecHubWebScanConfiguration(SecHubWebScanConfiguration secHubWebScanConfiguration) {
+        public ZapScanContextBuilder setSecHubWebScanConfiguration(SecHubWebScanConfiguration secHubWebScanConfiguration) {
             this.secHubWebScanConfiguration = secHubWebScanConfiguration;
             return this;
         }
 
-        public ZapBasicScanContextBuilder setProxyInformation(ProxyInformation proxyInformation) {
+        public ZapScanContextBuilder setProxyInformation(ProxyInformation proxyInformation) {
             this.proxyInformation = proxyInformation;
             return this;
         }
 
-        public ZapBasicScanContextBuilder setFullRuleset(ZapFullRuleset fullRuleset) {
+        public ZapScanContextBuilder setFullRuleset(ZapFullRuleset fullRuleset) {
             this.fullRuleset = fullRuleset;
             return this;
         }
 
-        public ZapBasicScanContextBuilder setDeactivatedRuleReferences(DeactivatedRuleReferences deactivatedRuleReferences) {
+        public ZapScanContextBuilder setDeactivatedRuleReferences(DeactivatedRuleReferences deactivatedRuleReferences) {
             this.deactivatedRuleReferences = deactivatedRuleReferences;
             return this;
         }
 
-        public ZapBasicScanContextBuilder addApiDefinitionFiles(List<File> apiDefinitionFiles) {
+        public ZapScanContextBuilder addApiDefinitionFiles(List<File> apiDefinitionFiles) {
             this.apiDefinitionFiles.addAll(apiDefinitionFiles);
             return this;
         }
 
-        public ZapBasicScanContextBuilder addZapURLsIncludeSet(Set<String> zapURLsIncludeList) {
+        public ZapScanContextBuilder addZapURLsIncludeSet(Set<String> zapURLsIncludeList) {
             this.zapURLsIncludeSet.addAll(zapURLsIncludeList);
             return this;
         }
 
-        public ZapBasicScanContextBuilder addZapURLsExcludeSet(Set<String> zapURLsExcludeList) {
+        public ZapScanContextBuilder addZapURLsExcludeSet(Set<String> zapURLsExcludeList) {
             this.zapURLsExcludeSet.addAll(zapURLsExcludeList);
             return this;
         }
 
-        public ZapBasicScanContextBuilder setConnectionCheckEnabled(boolean connectionCheckEnabled) {
+        public ZapScanContextBuilder setConnectionCheckEnabled(boolean connectionCheckEnabled) {
             this.connectionCheckEnabled = connectionCheckEnabled;
             return this;
         }
 
-        public ZapBasicScanContextBuilder setMaxNumberOfConnectionRetries(int maxNumberOfConnectionRetries) {
+        public ZapScanContextBuilder setMaxNumberOfConnectionRetries(int maxNumberOfConnectionRetries) {
             this.maxNumberOfConnectionRetries = maxNumberOfConnectionRetries;
             return this;
         }
 
-        public ZapBasicScanContextBuilder setRetryWaittimeInMilliseconds(int retryWaittimeInMilliseconds) {
+        public ZapScanContextBuilder setRetryWaittimeInMilliseconds(int retryWaittimeInMilliseconds) {
             this.setRetryWaittimeInMilliseconds = retryWaittimeInMilliseconds;
             return this;
         }
 
-        public ZapBasicScanContextBuilder setZapProductMessageHelper(ZapProductMessageHelper zapProductMessageHelper) {
+        public ZapScanContextBuilder setZapProductMessageHelper(ZapProductMessageHelper zapProductMessageHelper) {
             this.zapProductMessageHelper = zapProductMessageHelper;
             return this;
         }
 
-        public ZapBasicScanContextBuilder setZapPDSEventHandler(ZapPDSEventHandler zapPDSEventHandler) {
+        public ZapScanContextBuilder setZapPDSEventHandler(ZapPDSEventHandler zapPDSEventHandler) {
             this.zapPDSEventHandler = zapPDSEventHandler;
             return this;
         }
 
+        public ZapScanContextBuilder setClientCertificateFile(File clientCertificateFile) {
+            this.clientCertificateFile = clientCertificateFile;
+            return this;
+        }
+
         public ZapScanContext build() {
-            ZapScanContext zapBasicScanConfiguration = new ZapScanContext();
-            zapBasicScanConfiguration.serverConfig = this.serverConfig;
-            zapBasicScanConfiguration.verboseOutput = this.verboseOutput;
-            zapBasicScanConfiguration.ajaxSpiderEnabled = this.ajaxSpiderEnabled;
-            zapBasicScanConfiguration.activeScanEnabled = this.activeScanEnabled;
-            zapBasicScanConfiguration.reportFile = this.reportFile;
-            zapBasicScanConfiguration.contextName = this.contextName;
-            zapBasicScanConfiguration.targetUrl = this.targetUrl;
-            zapBasicScanConfiguration.authenticationType = this.authenticationType;
+            ZapScanContext zapScanConfiguration = new ZapScanContext();
+            zapScanConfiguration.serverConfig = this.serverConfig;
+            zapScanConfiguration.verboseOutput = this.verboseOutput;
+            zapScanConfiguration.ajaxSpiderEnabled = this.ajaxSpiderEnabled;
+            zapScanConfiguration.activeScanEnabled = this.activeScanEnabled;
+            zapScanConfiguration.reportFile = this.reportFile;
+            zapScanConfiguration.contextName = this.contextName;
+            zapScanConfiguration.targetUrl = this.targetUrl;
+            zapScanConfiguration.authenticationType = this.authenticationType;
 
-            zapBasicScanConfiguration.maxScanDurationInMilliSeconds = this.maxScanDurationInMilliSeconds;
+            zapScanConfiguration.maxScanDurationInMilliSeconds = this.maxScanDurationInMilliSeconds;
 
-            zapBasicScanConfiguration.secHubWebScanConfiguration = this.secHubWebScanConfiguration;
+            zapScanConfiguration.secHubWebScanConfiguration = this.secHubWebScanConfiguration;
 
-            zapBasicScanConfiguration.proxyInformation = this.proxyInformation;
+            zapScanConfiguration.proxyInformation = this.proxyInformation;
 
-            zapBasicScanConfiguration.fullRuleset = this.fullRuleset;
-            zapBasicScanConfiguration.deactivatedRuleReferences = this.deactivatedRuleReferences;
+            zapScanConfiguration.fullRuleset = this.fullRuleset;
+            zapScanConfiguration.deactivatedRuleReferences = this.deactivatedRuleReferences;
 
-            zapBasicScanConfiguration.apiDefinitionFiles = this.apiDefinitionFiles;
+            zapScanConfiguration.apiDefinitionFiles = this.apiDefinitionFiles;
 
-            zapBasicScanConfiguration.zapURLsIncludeSet.addAll(this.zapURLsIncludeSet);
-            zapBasicScanConfiguration.zapURLsExcludeSet.addAll(this.zapURLsExcludeSet);
+            zapScanConfiguration.zapURLsIncludeSet.addAll(this.zapURLsIncludeSet);
+            zapScanConfiguration.zapURLsExcludeSet.addAll(this.zapURLsExcludeSet);
 
-            zapBasicScanConfiguration.connectionCheckEnabled = this.connectionCheckEnabled;
+            zapScanConfiguration.connectionCheckEnabled = this.connectionCheckEnabled;
 
-            zapBasicScanConfiguration.maxNumberOfConnectionRetries = this.maxNumberOfConnectionRetries;
-            zapBasicScanConfiguration.retryWaittimeInMilliseconds = this.setRetryWaittimeInMilliseconds;
+            zapScanConfiguration.maxNumberOfConnectionRetries = this.maxNumberOfConnectionRetries;
+            zapScanConfiguration.retryWaittimeInMilliseconds = this.setRetryWaittimeInMilliseconds;
 
-            zapBasicScanConfiguration.zapProductMessageHelper = this.zapProductMessageHelper;
+            zapScanConfiguration.zapProductMessageHelper = this.zapProductMessageHelper;
 
-            zapBasicScanConfiguration.zapPDSEventHandler = this.zapPDSEventHandler;
+            zapScanConfiguration.zapPDSEventHandler = this.zapPDSEventHandler;
 
-            return zapBasicScanConfiguration;
+            zapScanConfiguration.clientCertificateFile = this.clientCertificateFile;
+
+            return zapScanConfiguration;
         }
 
     }
