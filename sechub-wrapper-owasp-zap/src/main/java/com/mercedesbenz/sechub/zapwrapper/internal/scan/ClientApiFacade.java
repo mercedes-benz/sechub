@@ -235,6 +235,27 @@ public class ClientApiFacade {
     }
 
     /**
+     * Import the given PKCS12 client certificate using the optional client
+     * certificates password if necessary.
+     *
+     * @param filepath
+     * @param password
+     * @return
+     * @throws ClientApiException
+     */
+    public ApiResponse importPkcs12ClientCertificate(String filepath, String password) throws ClientApiException {
+        return clientApi.network.addPkcs12ClientCertificate(filepath, password, "0");
+    }
+
+    public ApiResponse enableClientCertificate() throws ClientApiException {
+        return clientApi.network.setUseClientCertificate("true");
+    }
+
+    public ApiResponse disableClientCertificate() throws ClientApiException {
+        return clientApi.network.setUseClientCertificate("false");
+    }
+
+    /**
      * This method checks if the site tree is empty. The ZAP creates the site tree
      * while crawling and detecting pages. The method is necessary since the active
      * scanner exits with an exception if the site tree is empty, when starting an

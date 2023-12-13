@@ -36,7 +36,7 @@ public class ZapScanContextFactory {
     EnvironmentVariableReader environmentVariableReader;
     BaseTargetUriFactory targetUriFactory;
     RuleProvider ruleProvider;
-    ApiDefinitionFileProvider apiDefinitionFileProvider;
+    ZapWrapperDataSectionFileProvider dataSectionFileProvider;
     SecHubScanConfigProvider secHubScanConfigProvider;
     IncludeExcludeToZapURLHelper includeExcludeToZapURLHelper;
 
@@ -45,7 +45,7 @@ public class ZapScanContextFactory {
         environmentVariableReader = new EnvironmentVariableReader();
         targetUriFactory = new BaseTargetUriFactory();
         ruleProvider = new RuleProvider();
-        apiDefinitionFileProvider = new ApiDefinitionFileProvider();
+        dataSectionFileProvider = new ZapWrapperDataSectionFileProvider();
         secHubScanConfigProvider = new SecHubScanConfigProvider();
         includeExcludeToZapURLHelper = new IncludeExcludeToZapURLHelper();
     }
@@ -78,6 +78,8 @@ public class ZapScanContextFactory {
 
         List<File> apiDefinitionFiles = fetchApiDefinitionFiles(sechubScanConfig);
 
+        File clientCertificateFile = fetchClientCertificateFile(sechubScanConfig);
+
         /* we always use the SecHub job UUID as Zap context name */
         String contextName = settings.getJobUUID();
         if (contextName == null) {
@@ -107,6 +109,7 @@ public class ZapScanContextFactory {
 												.setFullRuleset(fullRuleset)
 												.setDeactivatedRuleReferences(deactivatedRuleReferences)
 												.addApiDefinitionFiles(apiDefinitionFiles)
+												.setClientCertificateFile(clientCertificateFile)
 												.addZapURLsIncludeSet(includeSet)
 												.addZapURLsExcludeSet(excludeSet)
 												.setConnectionCheckEnabled(settings.isConnectionCheckEnabled())
@@ -209,7 +212,14 @@ public class ZapScanContextFactory {
         // use the extracted sources folder path, where all text files are uploaded and
         // extracted
         String extractedSourcesFolderPath = environmentVariableReader.readAsString(EnvironmentVariableConstants.PDS_JOB_EXTRACTED_SOURCES_FOLDER);
-        return apiDefinitionFileProvider.fetchApiDefinitionFiles(extractedSourcesFolderPath, sechubScanConfig);
+        return dataSectionFileProvider.fetchApiDefinitionFiles(extractedSourcesFolderPath, sechubScanConfig);
+    }
+
+    private File fetchClientCertificateFile(SecHubScanConfiguration sechubScanConfig) {
+        // use the extracted sources folder path, where all text files are uploaded and
+        // extracted
+        String extractedSourcesFolderPath = environmentVariableReader.readAsString(EnvironmentVariableConstants.PDS_JOB_EXTRACTED_SOURCES_FOLDER);
+        return dataSectionFileProvider.fetchClientCertificateFile(extractedSourcesFolderPath, sechubScanConfig);
     }
 
     private Set<String> createUrlsIncludedInContext(URL targetUrl, SecHubWebScanConfiguration sechubWebConfig) {

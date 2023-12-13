@@ -17,6 +17,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.zaproxy.clientapi.core.ClientApiException;
 
+import com.mercedesbenz.sechub.commons.model.ClientCertificateConfiguration;
 import com.mercedesbenz.sechub.commons.model.HTTPHeaderConfiguration;
 import com.mercedesbenz.sechub.commons.model.SecHubMessage;
 import com.mercedesbenz.sechub.commons.model.SecHubMessageType;
@@ -93,6 +94,7 @@ public class ZapScanner implements ZapScan {
             /* ZAP setup with access to target */
             addIncludedAndExcludedUrlsToContext();
             loadApiDefinitions(zapContextId);
+            importClientCertificate();
 
             /* ZAP scan */
             executeScan(zapContextId);
@@ -268,6 +270,28 @@ public class ZapScanner implements ZapScan {
         }
     }
 
+    void importClientCertificate() throws ClientApiException {
+        if (scanContext.getClientCertificateFile() == null) {
+            LOG.info("For scan {}: No client certificate file was found!", scanContext.getContextName());
+            return;
+        }
+        Optional<ClientCertificateConfiguration> optionalClientCertConfig = scanContext.getSecHubWebScanConfiguration().getClientCertificate();
+        if (optionalClientCertConfig.isEmpty()) {
+            LOG.info("For scan {}: No client certificate configuration was found!", scanContext.getContextName());
+            return;
+        }
+
+        ClientCertificateConfiguration clientCertificateConfig = optionalClientCertConfig.get();
+        File clientCertififacteFile = scanContext.getClientCertificateFile();
+
+        String password = null;
+        if (clientCertificateConfig.getPassword() != null) {
+            password = new String(clientCertificateConfig.getPassword());
+        }
+        clientApiFacade.importPkcs12ClientCertificate(clientCertififacteFile.getAbsolutePath(), password);
+        clientApiFacade.enableClientCertificate();
+    }
+
     void executeScan(String zapContextId) throws ClientApiException {
         UserInformation userInfo = configureLoginInsideZapContext(zapContextId);
         if (userInfo != null) {
@@ -357,8 +381,7 @@ public class ZapScanner implements ZapScan {
 		/* @formatter:on */
 
         // rename is necessary if the file extension is not .json, because Zap
-        // adds the file extension .json since we create a json report. Might not be
-        // necessary anymore if we have the sarif support
+        // adds the file extension .json since we create a SARIF json report.
         renameReportFileToOriginalNameIfNecessary();
 
         LOG.info("For scan {}: Report can be found at {}", scanContext.getContextName(), reportFile.toFile().getAbsolutePath());
@@ -375,6 +398,12 @@ public class ZapScanner implements ZapScan {
             // This means we need to cleanUp after every scan.
             LOG.info("Start cleaning up replacer rules.");
             cleanUpReplacerRules();
+
+            // disable client certificate here, the imported client certificate will be
+            // removed on shutdown automatically anyway
+            LOG.info("Disable client certificate if one was used for the scan.");
+            clientApiFacade.disableClientCertificate();
+
             LOG.info("Cleanup successful.");
         } catch (ClientApiException e) {
             LOG.error("For scan: {}. An error occurred during the clean up, because: {}", scanContext.getContextName(), e.getMessage());
