@@ -32,15 +32,15 @@ public class InternalAccessOpenUserSignup {
     }
 
     public String getEmailAdress() {
-        return delegate.getEmailAdress();
+        return delegate.getEmailAddress();
     }
 
     public String getUserId() {
         return delegate.getUserId();
     }
 
-    public void setEmailAdress(String emailAdress) {
-        delegate.setEmailAdress(emailAdress);
+    public void setEmailAdress(String emailAddress) {
+        delegate.setEmailAddress(emailAddress);
     }
 
     public void setUserId(String userId) {

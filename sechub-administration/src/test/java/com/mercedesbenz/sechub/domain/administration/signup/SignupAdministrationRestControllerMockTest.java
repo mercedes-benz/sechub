@@ -69,11 +69,11 @@ public class SignupAdministrationRestControllerMockTest {
         /* prepare */
         List<Signup> list = new ArrayList<>();
         Signup signup1 = new Signup();
-        signup1.setEmailAdress("sechub.test1@example.org");
+        signup1.setEmailAddress("sechub.test1@example.org");
         signup1.setUserId("sechub.test1");
 
         Signup signup2 = new Signup();
-        signup2.setEmailAdress("sechub.test2@example.org");
+        signup2.setEmailAddress("sechub.test2@example.org");
         signup2.setUserId("sechub.test2");
 
         list.add(signup1);
@@ -86,10 +86,10 @@ public class SignupAdministrationRestControllerMockTest {
         		).
         			andExpect(status().isOk()).
         			andExpect(jsonPath("$.[0].userId", equalTo("sechub.test1"))).
-        			andExpect(jsonPath("$.[0].emailAdress", equalTo("sechub.test1@example.org"))).
+        			andExpect(jsonPath("$.[0].emailAddress", equalTo("sechub.test1@example.org"))).
 
         			andExpect(jsonPath("$.[1].userId", equalTo("sechub.test2"))).
-        			andExpect(jsonPath("$.[1].emailAdress", equalTo("sechub.test2@example.org"))
+        			andExpect(jsonPath("$.[1].emailAddress", equalTo("sechub.test2@example.org"))
 
         		);
 

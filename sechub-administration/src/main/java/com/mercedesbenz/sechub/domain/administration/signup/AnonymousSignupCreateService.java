@@ -54,23 +54,23 @@ public class AnonymousSignupCreateService {
     @UseCaseUserSignup(@Step(number = 2, name = "Persistence", description = "Valid self registration input will be persisted to database."))
     public void register(@Valid SignupJsonInput userSelfRegistrationInput) {
         String userId = userSelfRegistrationInput.getUserId();
-        String emailAdress = userSelfRegistrationInput.getEmailAdress();
+        String emailAddress = userSelfRegistrationInput.getEmailAdress();
 
-        LOG.debug("user tries to register himself:{},mail:{}", userId, emailAdress);
+        LOG.debug("user tries to register himself:{},mail:{}", userId, emailAddress);
 
         assertion.assertIsValidUserId(userId);
-        assertion.assertIsValidEmailAddress(emailAdress);
+        assertion.assertIsValidEmailAddress(emailAddress);
 
-        assertNotAlreadySignedIn(userId, emailAdress);
-        assertUsernameNotUsedAlready(userId, emailAdress);
-        assertEmailAdressNotUsedAlready(userId, emailAdress);
+        assertNotAlreadySignedIn(userId, emailAddress);
+        assertUsernameNotUsedAlready(userId, emailAddress);
+        assertEmailAdressNotUsedAlready(userId, emailAddress);
 
         Signup entity = new Signup();
 
-        entity.setEmailAdress(emailAdress);
+        entity.setEmailAddress(emailAddress);
         entity.setUserId(userId);
         userSelfRegistrationRepository.save(entity);
-        LOG.debug("Added registration entry for user:{},mail:{}", entity.getUserId(), entity.getEmailAdress());
+        LOG.debug("Added registration entry for user:{},mail:{}", entity.getUserId(), entity.getEmailAddress());
 
         /* trigger event */
         informAboutSignupRequest(entity);
@@ -81,7 +81,7 @@ public class AnonymousSignupCreateService {
         DomainMessage infoRequest = new DomainMessage(MessageID.USER_SIGNUP_REQUESTED);
 
         UserMessage userMessage = new UserMessage();
-        userMessage.setEmailAdress(signup.getEmailAdress());
+        userMessage.setEmailAdress(signup.getEmailAddress());
         userMessage.setUserId(signup.getUserId());
 
         infoRequest.set(MessageDataKeys.USER_SIGNUP_DATA, userMessage);
