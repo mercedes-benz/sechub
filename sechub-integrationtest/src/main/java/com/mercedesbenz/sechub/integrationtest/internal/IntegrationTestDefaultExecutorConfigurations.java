@@ -233,8 +233,8 @@ public class IntegrationTestDefaultExecutorConfigurations {
     public static final TestExecutorConfig PDS_V1_PDS_SOLUTION_CHECKMARX_MOCKED = definePDSSolutionMockScan(
             PDSIntTestProductIdentifier.PDS_SOLUTION_CHECKMARX_MOCKED, PDS_CODESCAN);
 
-    public static final TestExecutorConfig PDS_V1_PDS_SOLUTION_SCANCODE_SPDX_MOCKED = definePDSSolutionMockScan(
-            PDSIntTestProductIdentifier.PDS_SOLUTION_SCANCODE_SPDX_MOCKED, PDS_LICENSESCAN);
+    public static final TestExecutorConfig PDS_V1_PDS_SOLUTION_SCANCODE_SPDX_JSON_MOCKED = definePDSSolutionMockScan(
+            PDSIntTestProductIdentifier.PDS_SOLUTION_SCANCODE_SPDX_JSON_MOCKED, PDS_LICENSESCAN);
 
     public static final TestExecutorConfig PDS_V1_PDS_SOLUTION_FINDSECURITYBUGS_MOCKED = definePDSSolutionMockScan(
             PDSIntTestProductIdentifier.PDS_SOLUTION_FINDSECURITYBUGS_MOCKED, PDS_CODESCAN);

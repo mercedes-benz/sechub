@@ -88,6 +88,10 @@ public class PDSSolutionMockModeScenario21IntTest {
     @Test
     @Ignore("Test is correct, but CycloneDX currently not by SecHub. Test should be re-activated when CycloneDX import is implemented")
     public void pds_solution_xray_cyclonedx_mocked_report_in_json_and_html_available() throws Exception {
+        /*
+         * TODO Albert Tregnaghi, 2023-12-14: Enable the test when we support CycloneDX
+         * in SecHub
+         */
         executePDSSolutionJobAndStoreReports(ScanType.LICENSE_SCAN, PROJECT_9, "xray_cyclonedx");
     }
 

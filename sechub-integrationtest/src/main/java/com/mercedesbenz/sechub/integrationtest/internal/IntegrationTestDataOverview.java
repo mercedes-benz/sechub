@@ -74,7 +74,7 @@ import com.mercedesbenz.sechub.integrationtest.scenario9.Scenario9;
  * <li>{@link IntegrationTestDefaultProfiles#PROFILE_19_PDS_SOLUTION_CHECKMARX_MOCK_MODE Profile 19} - PDS solutions scan mock mode (checkmarx)</li>
  * <li>{@link IntegrationTestDefaultProfiles#PROFILE_20_PDS_SOLUTION_MULTI_BANDIT_MOCKED Profile 20} - PDS solutions scan mock mode (multi, bandit)</li>
  * <li>{@link IntegrationTestDefaultProfiles#PROFILE_21_PDS_SOLUTION_ZAP_MOCKED Profile 21} - PDS solutions scan mock mode (zap)</li>
- * <li>{@link IntegrationTestDefaultProfiles#PROFILE_22_PDS_SOLUTION_SCANCODE_SPDX_MOCKED Profile 22} - PDS solutions scan mock mode (scancode)</li>
+ * <li>{@link IntegrationTestDefaultProfiles#PROFILE_22_PDS_SOLUTION_SCANCODE_SPDX_JSON_MOCKED Profile 22} - PDS solutions scan mock mode (scancode)</li>
  * <li>{@link IntegrationTestDefaultProfiles#PROFILE_23_PDS_SOLUTION_GITLEAKS_MOCKED Profile 23} - PDS solutions scan mock mode (gitleaks)</li>
  * <li>{@link IntegrationTestDefaultProfiles#PROFILE_24_PDS_SOLUTION_TERN_MOCKED Profile 24} - PDS solutions scan mock mode (tern)</li>
  * <li>{@link IntegrationTestDefaultProfiles#PROFILE_25_PDS_SOLUTION_XRAY_SPDX_MOCKED Profile 25} - PDS solutions scan mock mode (xray spdx)</li>

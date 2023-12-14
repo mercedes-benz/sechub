@@ -26,7 +26,7 @@ public class IntegrationTestDefaultProfiles {
      * <h4>Short description</h4> Standard profile for Nessus, Netsparker and
      * Checkmarx
      *
-     * <h4>Overview</h4> For a glance over all scenarios, look at
+     * <h4>Overview</h4> For an overview over all scenarios, look at
      * {@link com.mercedesbenz.sechub.integrationtest.internal.IntegrationTestDataOverview
      * Overview}
      *
@@ -57,7 +57,7 @@ public class IntegrationTestDefaultProfiles {
      * <h3>Profile 2</h3>
      * <h4>Short description</h4>PDS scan profile
      *
-     * <h4>Overview</h4> For a glance over all scenarios, look at
+     * <h4>Overview</h4> For an overview over all scenarios, look at
      * {@link com.mercedesbenz.sechub.integrationtest.internal.IntegrationTestDataOverview
      * Overview}
      *
@@ -81,7 +81,7 @@ public class IntegrationTestDefaultProfiles {
      * <h4>Short description</h4>PDS scan profile for SARIF code scan, storage
      * reused
      *
-     * <h4>Overview</h4> For a glance over all scenarios, look at
+     * <h4>Overview</h4> For an overview over all scenarios, look at
      * {@link com.mercedesbenz.sechub.integrationtest.internal.IntegrationTestDataOverview
      * Overview}
      *
@@ -106,7 +106,7 @@ public class IntegrationTestDefaultProfiles {
      * <h3>Profile 4</h3>
      * <h4>Short description</h4>PDS scan profile for SARIF code scan
      *
-     * <h4>Overview</h4> For a glance over all scenarios, look at
+     * <h4>Overview</h4> For an overview over all scenarios, look at
      * {@link com.mercedesbenz.sechub.integrationtest.internal.IntegrationTestDataOverview
      * Overview}
      *
@@ -130,7 +130,7 @@ public class IntegrationTestDefaultProfiles {
      * <h4>Short description</h4>PDS scan profile code scan with lazy message
      * streams
      *
-     * <h4>Overview</h4> For a glance over all scenarios, look at
+     * <h4>Overview</h4> For an overview over all scenarios, look at
      * {@link com.mercedesbenz.sechub.integrationtest.internal.IntegrationTestDataOverview
      * Overview}
      *
@@ -168,7 +168,7 @@ public class IntegrationTestDefaultProfiles {
      * <h3>Profile 6</h3>
      * <h4>Short description</h4>PDS scan profile which does always fail
      *
-     * <h4>Overview</h4> For a glance over all scenarios, look at
+     * <h4>Overview</h4> For an overview over all scenarios, look at
      * {@link com.mercedesbenz.sechub.integrationtest.internal.IntegrationTestDataOverview
      * Overview}
      *
@@ -186,7 +186,7 @@ public class IntegrationTestDefaultProfiles {
      * <h3>Profile 7</h3>
      * <h4>Short description</h4>PDS scan profile for web scan
      *
-     * <h4>Overview</h4> For a glance over all scenarios, look at
+     * <h4>Overview</h4> For an overview over all scenarios, look at
      * {@link com.mercedesbenz.sechub.integrationtest.internal.IntegrationTestDataOverview
      * Overview}
      *
@@ -204,7 +204,7 @@ public class IntegrationTestDefaultProfiles {
      * <h3>Profile 8</h3>
      * <h4>Short description</h4>PDS scan profile for OWASP Zap web scans
      *
-     * <h4>Overview</h4> For a glance over all scenarios, look at
+     * <h4>Overview</h4> For an overview over all scenarios, look at
      * {@link com.mercedesbenz.sechub.integrationtest.internal.IntegrationTestDataOverview
      * Overview}
      *
@@ -224,7 +224,7 @@ public class IntegrationTestDefaultProfiles {
      * <h3>Profile 9</h3>
      * <h4>Short description</h4>PDS scan profile for license scans
      *
-     * <h4>Overview</h4> For a glance over all scenarios, look at
+     * <h4>Overview</h4> For an overview over all scenarios, look at
      * {@link com.mercedesbenz.sechub.integrationtest.internal.IntegrationTestDataOverview
      * Overview}
      *
@@ -241,7 +241,7 @@ public class IntegrationTestDefaultProfiles {
      * <h4>Short description</h4>PDS scan profile code scan with include exclude
      * settings
      *
-     * <h4>Overview</h4> For a glance over all scenarios, look at
+     * <h4>Overview</h4> For an overview over all scenarios, look at
      * {@link com.mercedesbenz.sechub.integrationtest.internal.IntegrationTestDataOverview
      * Overview}
      *
@@ -314,7 +314,7 @@ public class IntegrationTestDefaultProfiles {
      * <h4>Short description</h4>PDS scan profile code scan for PDS cancellation by
      * SecHub
      *
-     * <h4>Overview</h4> For a glance over all scenarios, look at
+     * <h4>Overview</h4> For an overview over all scenarios, look at
      * {@link com.mercedesbenz.sechub.integrationtest.internal.IntegrationTestDataOverview
      * Overview}
      *
@@ -381,7 +381,7 @@ public class IntegrationTestDefaultProfiles {
      * <h3>Profile 17</h3>
      * <h4>Short description</h4>PDS scan profile for secret scans
      *
-     * <h4>Overview</h4> For a glance over all scenarios, look at
+     * <h4>Overview</h4> For an overview over all scenarios, look at
      * {@link com.mercedesbenz.sechub.integrationtest.internal.IntegrationTestDataOverview
      * Overview}
      *
@@ -398,7 +398,7 @@ public class IntegrationTestDefaultProfiles {
      * <h4>Short description</h4>PDS scan profile for PDS solution mock code scan
      * (gosec)
      *
-     * <h4>Overview</h4> For a glance over all scenarios, look at
+     * <h4>Overview</h4> For an overview over all scenarios, look at
      * {@link com.mercedesbenz.sechub.integrationtest.internal.IntegrationTestDataOverview
      * Overview}
      *
@@ -416,7 +416,7 @@ public class IntegrationTestDefaultProfiles {
      * <h4>Short description</h4>PDS scan profile for PDS solution mock code scan
      * (checkmarx)
      *
-     * <h4>Overview</h4> For a glance over all scenarios, look at
+     * <h4>Overview</h4> For an overview over all scenarios, look at
      * {@link com.mercedesbenz.sechub.integrationtest.internal.IntegrationTestDataOverview
      * Overview}
      *
@@ -434,7 +434,7 @@ public class IntegrationTestDefaultProfiles {
      * <h4>Short description</h4>PDS scan profile for PDS solution mock code scan
      * (bandit)
      *
-     * <h4>Overview</h4> For a glance over all scenarios, look at
+     * <h4>Overview</h4> For an overview over all scenarios, look at
      * {@link com.mercedesbenz.sechub.integrationtest.internal.IntegrationTestDataOverview
      * Overview}
      *
@@ -452,7 +452,7 @@ public class IntegrationTestDefaultProfiles {
      * <h4>Short description</h4>PDS scan profile for PDS solution mock web scan
      * (zap)
      *
-     * <h4>Overview</h4> For a glance over all scenarios, look at
+     * <h4>Overview</h4> For an overview over all scenarios, look at
      * {@link com.mercedesbenz.sechub.integrationtest.internal.IntegrationTestDataOverview
      * Overview}
      *
@@ -468,9 +468,9 @@ public class IntegrationTestDefaultProfiles {
     /**
      * <h3>Profile 22</h3>
      * <h4>Short description</h4>PDS scan profile for PDS solution mock license scan
-     * (scancode spdx)
+     * (scancode spdx json)
      *
-     * <h4>Overview</h4> For a glance over all scenarios, look at
+     * <h4>Overview</h4> For an overview over all scenarios, look at
      * {@link com.mercedesbenz.sechub.integrationtest.internal.IntegrationTestDataOverview
      * Overview}
      *
@@ -480,15 +480,15 @@ public class IntegrationTestDefaultProfiles {
      * <li>{@link Scenario21}</li>
      * </ul>
      */
-    public static final DefaultTestExecutionProfile PROFILE_22_PDS_SOLUTION_SCANCODE_SPDX_MOCKED = defineProfileForPdsSolutionMockMode(22,
-            IntegrationTestDefaultExecutorConfigurations.PDS_V1_PDS_SOLUTION_SCANCODE_SPDX_MOCKED);
+    public static final DefaultTestExecutionProfile PROFILE_22_PDS_SOLUTION_SCANCODE_SPDX_JSON_MOCKED = defineProfileForPdsSolutionMockMode(22,
+            IntegrationTestDefaultExecutorConfigurations.PDS_V1_PDS_SOLUTION_SCANCODE_SPDX_JSON_MOCKED);
 
     /**
      * <h3>Profile 23</h3>
      * <h4>Short description</h4>PDS scan profile for PDS solution mock secret scan
      * (gitleaks)
      *
-     * <h4>Overview</h4> For a glance over all scenarios, look at
+     * <h4>Overview</h4> For an overview over all scenarios, look at
      * {@link com.mercedesbenz.sechub.integrationtest.internal.IntegrationTestDataOverview
      * Overview}
      *
@@ -506,7 +506,7 @@ public class IntegrationTestDefaultProfiles {
      * <h4>Short description</h4>PDS scan profile for PDS solution mock license scan
      * (tern)
      *
-     * <h4>Overview</h4> For a glance over all scenarios, look at
+     * <h4>Overview</h4> For an overview over all scenarios, look at
      * {@link com.mercedesbenz.sechub.integrationtest.internal.IntegrationTestDataOverview
      * Overview}
      *
@@ -524,7 +524,7 @@ public class IntegrationTestDefaultProfiles {
      * <h4>Short description</h4>PDS scan profile for PDS solution mock license scan
      * (xray spdx)
      *
-     * <h4>Overview</h4> For a glance over all scenarios, look at
+     * <h4>Overview</h4> For an overview over all scenarios, look at
      * {@link com.mercedesbenz.sechub.integrationtest.internal.IntegrationTestDataOverview
      * Overview}
      *
@@ -542,7 +542,7 @@ public class IntegrationTestDefaultProfiles {
      * <h4>Short description</h4>PDS scan profile for PDS solution mock license scan
      * (xray cyclonedx)
      *
-     * <h4>Overview</h4> For a glance over all scenarios, look at
+     * <h4>Overview</h4> For an overview over all scenarios, look at
      * {@link com.mercedesbenz.sechub.integrationtest.internal.IntegrationTestDataOverview
      * Overview}
      *
@@ -559,7 +559,7 @@ public class IntegrationTestDefaultProfiles {
      * <h4>Short description</h4>PDS scan profile for PDS solution mock code scan
      * (findsecuritybugs)
      *
-     * <h4>Overview</h4> For a glance over all scenarios, look at
+     * <h4>Overview</h4> For an overview over all scenarios, look at
      * {@link com.mercedesbenz.sechub.integrationtest.internal.IntegrationTestDataOverview
      * Overview}
      *
@@ -756,12 +756,12 @@ public class IntegrationTestDefaultProfiles {
         return profile;
     }
 
-    private static DefaultTestExecutionProfile defineProfileForPdsSolutionMockMode(int nr, TestExecutorConfig config) {
+    private static DefaultTestExecutionProfile defineProfileForPdsSolutionMockMode(int number, TestExecutorConfig config) {
 
         DefaultTestExecutionProfile profile = new DefaultTestExecutionProfile();
         profile.initialConfigurationsWithoutUUID.add(config);
-        profile.id = "inttest-p" + nr + "-pds-solution";
-        profile.description = "Profile " + nr + ": PDS solution mock mode scan, reused storage, real product result returned";
+        profile.id = "inttest-p" + number + "-pds-solution";
+        profile.description = "Profile " + number + ": PDS solution mock mode scan, reused storage, real product result returned";
         profile.enabled = true;
         return profile;
     }

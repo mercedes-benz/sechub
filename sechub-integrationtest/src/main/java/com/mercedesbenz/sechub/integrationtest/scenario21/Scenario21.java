@@ -16,7 +16,7 @@ import com.mercedesbenz.sechub.integrationtest.internal.PDSTestScenario;
  * <h4>Short description</h4> PDS solutions mock scenario for multiple PDS
  * solutions
  *
- * <h4>Overview</h4> For a glance over all scenarios, look at
+ * <h4>Overview</h4> For an overview over all scenarios, look at
  * {@link com.mercedesbenz.sechub.integrationtest.internal.IntegrationTestDataOverview
  * Overview}
  *
@@ -50,7 +50,7 @@ import com.mercedesbenz.sechub.integrationtest.internal.PDSTestScenario;
  * - has execution {@link IntegrationTestDefaultProfiles#PROFILE_21_PDS_SOLUTION_ZAP_MOCKED profile 21} assigned
  *
  * PROJECT_5 is automatically created
- * - has execution {@link IntegrationTestDefaultProfiles#PROFILE_22_PDS_SOLUTION_SCANCODE_SPDX_MOCKED profile 22} assigned
+ * - has execution {@link IntegrationTestDefaultProfiles#PROFILE_22_PDS_SOLUTION_SCANCODE_SPDX_JSON_MOCKED profile 22} assigned
  *
  * PROJECT_6 is automatically created
  * - has execution {@link IntegrationTestDefaultProfiles#PROFILE_23_PDS_SOLUTION_GITLEAKS_MOCKED profile 23} assigned
@@ -153,7 +153,7 @@ public class Scenario21 extends AbstractGrowingSecHubServerTestScenario implemen
             addProjectIdsToDefaultExecutionProfile(PROFILE_19_PDS_SOLUTION_CHECKMARX_MOCK_MODE, PROJECT_2).
             addProjectIdsToDefaultExecutionProfile(PROFILE_20_PDS_SOLUTION_MULTI_BANDIT_MOCKED, PROJECT_3).
             addProjectIdsToDefaultExecutionProfile(PROFILE_21_PDS_SOLUTION_ZAP_MOCKED, PROJECT_4).
-            addProjectIdsToDefaultExecutionProfile(PROFILE_22_PDS_SOLUTION_SCANCODE_SPDX_MOCKED, PROJECT_5).
+            addProjectIdsToDefaultExecutionProfile(PROFILE_22_PDS_SOLUTION_SCANCODE_SPDX_JSON_MOCKED, PROJECT_5).
             addProjectIdsToDefaultExecutionProfile(PROFILE_23_PDS_SOLUTION_GITLEAKS_MOCKED, PROJECT_6).
             addProjectIdsToDefaultExecutionProfile(PROFILE_24_PDS_SOLUTION_TERN_MOCKED, PROJECT_7).
             addProjectIdsToDefaultExecutionProfile(PROFILE_25_PDS_SOLUTION_XRAY_SPDX_MOCKED, PROJECT_8).

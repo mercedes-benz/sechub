@@ -205,8 +205,8 @@
     "scanType" : "codeScan",
     "description" : "Returns mock data, but from real product"
   }, {
-    "id" : "PDS_SOLUTION_SCANCODE_SPDX_MOCKED",
-    "path" : "./../sechub-integrationtest/pds/product-scripts/pds-solutions-scancode_spdx-mocked.sh",
+    "id" : "PDS_SOLUTION_SCANCODE_SPDX_JSON_MOCKED",
+    "path" : "./../sechub-integrationtest/pds/product-scripts/pds-solutions-scancode_spdx_json-mocked.sh",
     "scanType" : "licenseScan",
     "description" : "Returns mock data, but from real product"
   }, {
