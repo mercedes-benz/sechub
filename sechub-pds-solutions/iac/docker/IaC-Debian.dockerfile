@@ -108,7 +108,7 @@ COPY pds-config.json "$PDS_FOLDER/pds-config.json"
 RUN export DEBIAN_FRONTEND=noninteractive && \
     apt-get update && \
     apt-get --assume-yes upgrade && \
-    apt-get --assume-yes install w3m wget && \
+    apt-get --assume-yes install w3m wget jq && \
     apt-get --assume-yes clean
 
 # Copy scripts
