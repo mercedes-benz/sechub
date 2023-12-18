@@ -84,7 +84,15 @@ public abstract class AbstractSourceCodeBasedFalsePositiveStrategy implements Se
             return false;
         }
         FalsePositiveCodePartMetaData end = metaDataCode.getEnd();
+        if (end == null) {
+            /* only first element defined - so use this as last element */
+            end = start;
+        }
         SerecoCodeCallStackElement serecoLastElement = findLastElement(serecoFirstElement);
+        if (serecoLastElement == null) {
+            /* only first element defined - so use this as last element */
+            serecoLastElement = serecoFirstElement;
+        }
         if (isLocationDifferent(end, serecoLastElement)) {
             return false;
         }
