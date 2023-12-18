@@ -29,8 +29,8 @@ echo "-------------"
 echo ""
 
 echo "Starting Kics"
-
-kics scan --ci --exclude-categories "Best practices" --disable-full-descriptions --report-formats "sarif" --output-path "$scan_results_folder" --path "$PDS_JOB_SOURCECODE_UNZIPPED_FOLDER/"
+cd $PDS_JOB_SOURCECODE_UNZIPPED_FOLDER
+kics scan --ci --exclude-categories "Best practices" --disable-full-descriptions --report-formats "sarif" --output-path "$scan_results_folder" --path "."
 
 #######################################################################################################################
 # Workaround: Since there are no CWEs we add a fixed CWE taxonomy to the SARIF report for false-positive handling     #
