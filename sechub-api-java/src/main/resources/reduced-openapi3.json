@@ -231,7 +231,7 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "$ref": "#/components/schemas/api-admin-project-projectId-104816866"
+                                    "$ref": "#/components/schemas/api-admin-config-autoclean-638361826"
                                 }
                             }
                         }
@@ -256,7 +256,7 @@
                     "content": {
                         "application/json;charset=UTF-8": {
                             "schema": {
-                                "$ref": "#/components/schemas/api-admin-project-projectId-104816866"
+                                "$ref": "#/components/schemas/api-admin-config-autoclean-638361826"
                             }
                         }
                     }
@@ -461,7 +461,7 @@
                     "content": {
                         "application/json;charset=UTF-8": {
                             "schema": {
-                                "$ref": "#/components/schemas/api-admin-project-projectId-104816866"
+                                "$ref": "#/components/schemas/api-admin-config-autoclean-638361826"
                             }
                         }
                     }
@@ -2319,6 +2319,48 @@
     },
     "components": {
         "schemas": {
+            "ListOfUsers": {
+                "type": "array",
+                "description": "List of user Ids",
+                "nullable": true,
+                "items": {
+                    "type": "string"
+                }
+            },
+            "ExecutionProfileCreate": {
+                "title": "ExecutionProfileCreate",
+                "required": [
+                    "description"
+                ],
+                "type": "object",
+                "properties": {
+                    "configurations": {
+                        "type": "array",
+                        "description": "Configurations can be linked at creation time as well - see update description",
+                        "nullable": true,
+                        "items": {
+                            "type": "string"
+                        }
+                    },
+                    "description": {
+                        "type": "string",
+                        "description": "A short description for the profile"
+                    },
+                    "projectIds": {
+                        "type": "array",
+                        "description": "Projects can be linked by their ids at creation time as well - see update description",
+                        "nullable": true,
+                        "items": {
+                            "type": "string"
+                        }
+                    },
+                    "enabled": {
+                        "type": "boolean",
+                        "description": "Enabled state of profile, default is false",
+                        "nullable": true
+                    }
+                }
+            },
             "ProjectJobList": {
                 "title": "ProjectJobList",
                 "required": [
@@ -2397,49 +2439,143 @@
                     }
                 }
             },
-            "FalsePositivesForJob": {
-                "title": "FalsePositivesForJob",
+            "ServerVersion": {
+                "title": "ServerVersion",
+                "type": "object"
+            },
+            "UserDetails": {
+                "title": "UserDetails",
                 "required": [
-                    "apiVersion",
-                    "jobData",
-                    "type"
+                    "email",
+                    "ownedProjects",
+                    "projects",
+                    "superAdmin",
+                    "userId"
                 ],
                 "type": "object",
                 "properties": {
-                    "apiVersion": {
-                        "type": "string",
-                        "description": "The api version, currently only 1.0 is supported"
-                    },
-                    "jobData": {
+                    "projects": {
                         "type": "array",
-                        "description": "Job data list containing false positive setup based on former jobs",
+                        "description": "The projects the user has access to",
                         "items": {
-                            "required": [
-                                "findingId",
-                                "jobUUID"
-                            ],
-                            "type": "object",
-                            "properties": {
-                                "jobUUID": {
-                                    "type": "string",
-                                    "description": "SecHub job uuid where finding was"
-                                },
-                                "findingId": {
-                                    "type": "number",
-                                    "description": "SecHub finding identifier - identifies problem inside the job which shall be markeda as a false positive. *ATTENTION*: at the moment only code scan false positive handling is supported. Infra and web scan findings will lead to a non accepted error!"
-                                },
-                                "comment": {
-                                    "type": "string",
-                                    "description": "A comment describing why this is a false positive",
-                                    "nullable": true
-                                }
-                            }
+                            "type": "string"
                         }
                     },
-                    "type": {
+                    "superAdmin": {
+                        "type": "boolean",
+                        "description": "True, when this user is a super administrator"
+                    },
+                    "userId": {
                         "type": "string",
-                        "description": "The type of the json content. Currently only accepted value is 'falsePositiveJobDataList'."
+                        "description": "The name of the user"
+                    },
+                    "email": {
+                        "type": "string",
+                        "description": "The mail adress of the user"
+                    },
+                    "ownedProjects": {
+                        "type": "array",
+                        "description": "The projects the user is owner of",
+                        "items": {
+                            "type": "string"
+                        }
                     }
+                }
+            },
+            "ProjectDetails": {
+                "title": "ProjectDetails",
+                "required": [
+                    "accessLevel",
+                    "description",
+                    "metaData",
+                    "owner",
+                    "projectId",
+                    "users",
+                    "whiteList"
+                ],
+                "type": "object",
+                "properties": {
+                    "owner": {
+                        "type": "string",
+                        "description": "Username of the owner of this project. An owner is the person in charge."
+                    },
+                    "metaData": {
+                        "required": [
+                            "key1"
+                        ],
+                        "type": "object",
+                        "properties": {
+                            "key1": {
+                                "type": "string",
+                                "description": "An arbitrary metadata key"
+                            }
+                        },
+                        "description": "An JSON object containing metadata key-value pairs defined for this project."
+                    },
+                    "accessLevel": {
+                        "type": "string",
+                        "description": "The project access level"
+                    },
+                    "description": {
+                        "type": "string",
+                        "description": "The project description."
+                    },
+                    "whiteList": {
+                        "type": "array",
+                        "description": "A list of all whitelisted URIs. Only these ones can be scanned for the project!",
+                        "items": {
+                            "type": "string"
+                        }
+                    },
+                    "projectId": {
+                        "type": "string",
+                        "description": "The name of the project"
+                    },
+                    "users": {
+                        "type": "array",
+                        "description": "A list of all users having access to the project",
+                        "items": {
+                            "type": "string"
+                        }
+                    }
+                }
+            },
+            "ProjectScanLogs": {
+                "title": "ProjectScanLogs",
+                "type": "array",
+                "description": "An array of scan log summary entries",
+                "items": {
+                    "required": [
+                        "ended",
+                        "executedBy",
+                        "sechubJobUUID",
+                        "started",
+                        "status"
+                    ],
+                    "type": "object",
+                    "properties": {
+                        "executedBy": {
+                            "type": "string",
+                            "description": "The user id of the user which executed the scan"
+                        },
+                        "sechubJobUUID": {
+                            "type": "string",
+                            "description": "The uuid of corresponding sechub Job."
+                        },
+                        "ended": {
+                            "type": "string",
+                            "description": "The timestamp when the scan was ended"
+                        },
+                        "started": {
+                            "type": "string",
+                            "description": "The timestamp when the scan was started"
+                        },
+                        "status": {
+                            "type": "string",
+                            "description": "A status field about scan situation"
+                        }
+                    },
+                    "description": "An array of scan log summary entries"
                 }
             },
             "ExecutorConfiguration": {
@@ -2515,429 +2651,6 @@
                         "description": "Enabled state of executor, per default false",
                         "nullable": true
                     }
-                }
-            },
-            "ProjectScanLogs": {
-                "title": "ProjectScanLogs",
-                "type": "array",
-                "description": "An array of scan log summary entries",
-                "items": {
-                    "required": [
-                        "ended",
-                        "executedBy",
-                        "sechubJobUUID",
-                        "started",
-                        "status"
-                    ],
-                    "type": "object",
-                    "properties": {
-                        "executedBy": {
-                            "type": "string",
-                            "description": "The user id of the user which executed the scan"
-                        },
-                        "sechubJobUUID": {
-                            "type": "string",
-                            "description": "The uuid of corresponding sechub Job."
-                        },
-                        "ended": {
-                            "type": "string",
-                            "description": "The timestamp when the scan was ended"
-                        },
-                        "started": {
-                            "type": "string",
-                            "description": "The timestamp when the scan was started"
-                        },
-                        "status": {
-                            "type": "string",
-                            "description": "A status field about scan situation"
-                        }
-                    },
-                    "description": "An array of scan log summary entries"
-                }
-            },
-            "ProjectMetaData": {
-                "title": "ProjectMetaData",
-                "required": [
-                    "apiVersion",
-                    "metaData"
-                ],
-                "type": "object",
-                "properties": {
-                    "metaData": {
-                        "required": [
-                            "key1"
-                        ],
-                        "type": "object",
-                        "properties": {
-                            "key1": {
-                                "type": "string",
-                                "description": "An arbitrary metadata key."
-                            }
-                        },
-                        "description": "Metadata object. Contains key-value pairs."
-                    },
-                    "apiVersion": {
-                        "type": "string",
-                        "description": "The api version, currently only 1.0 is supported"
-                    }
-                }
-            },
-            "ListOfExecutorConfigurations": {
-                "title": "ListOfExecutorConfigurations",
-                "required": [
-                    "type"
-                ],
-                "type": "object",
-                "properties": {
-                    "type": {
-                        "type": "string",
-                        "description": "Always `executorConfigurationList` as an identifier for the list"
-                    },
-                    "executorConfigurations": {
-                        "type": "array",
-                        "items": {
-                            "required": [
-                                "enabled",
-                                "name",
-                                "uuid"
-                            ],
-                            "type": "object",
-                            "properties": {
-                                "name": {
-                                    "type": "string",
-                                    "description": "The configuration name"
-                                },
-                                "uuid": {
-                                    "type": "string",
-                                    "description": "The uuid of the configuration"
-                                },
-                                "enabled": {
-                                    "type": "boolean",
-                                    "description": "Enabled state of configuration"
-                                }
-                            }
-                        }
-                    }
-                }
-            },
-            "MappingConfiguration": {
-                "title": "MappingConfiguration",
-                "type": "object",
-                "properties": {
-                    "entries": {
-                        "type": "array",
-                        "items": {
-                            "required": [
-                                "comment",
-                                "pattern",
-                                "replacement"
-                            ],
-                            "type": "object",
-                            "properties": {
-                                "pattern": {
-                                    "type": "string",
-                                    "description": "Pattern"
-                                },
-                                "comment": {
-                                    "type": "string",
-                                    "description": "Comment"
-                                },
-                                "replacement": {
-                                    "type": "string",
-                                    "description": "Replacement"
-                                }
-                            }
-                        }
-                    }
-                }
-            },
-            "ListOfProjects": {
-                "type": "array",
-                "description": "List of project Ids",
-                "nullable": true,
-                "items": {
-                    "type": "string"
-                }
-            },
-            "ExecutorConfigurationId": {
-                "title": "ExecutorConfigurationId",
-                "type": "object"
-            },
-            "ListOfSignups": {
-                "title": "ListOfSignups",
-                "type": "array",
-                "description": "List of user signups",
-                "items": {
-                    "required": [
-                        "emailAdress",
-                        "userId"
-                    ],
-                    "type": "object",
-                    "properties": {
-                        "emailAdress": {
-                            "type": "string",
-                            "description": "The email address"
-                        },
-                        "userId": {
-                            "type": "string",
-                            "description": "The user id"
-                        }
-                    },
-                    "description": "List of user signups"
-                }
-            },
-            "ProjectDetails": {
-                "title": "ProjectDetails",
-                "required": [
-                    "accessLevel",
-                    "description",
-                    "metaData",
-                    "owner",
-                    "projectId",
-                    "users",
-                    "whiteList"
-                ],
-                "type": "object",
-                "properties": {
-                    "owner": {
-                        "type": "string",
-                        "description": "Username of the owner of this project. An owner is the person in charge."
-                    },
-                    "metaData": {
-                        "required": [
-                            "key1"
-                        ],
-                        "type": "object",
-                        "properties": {
-                            "key1": {
-                                "type": "string",
-                                "description": "An arbitrary metadata key."
-                            }
-                        },
-                        "description": "An JSON object containing metadata key-value pairs defined for this project."
-                    },
-                    "accessLevel": {
-                        "type": "string",
-                        "description": "The project access level"
-                    },
-                    "description": {
-                        "type": "string",
-                        "description": "The project description."
-                    },
-                    "whiteList": {
-                        "type": "array",
-                        "description": "A list of all whitelisted URIs. Only these ones can be scanned for the project!",
-                        "items": {
-                            "type": "string"
-                        }
-                    },
-                    "projectId": {
-                        "type": "string",
-                        "description": "The name of the project."
-                    },
-                    "users": {
-                        "type": "array",
-                        "description": "A list of all users having access to the project.",
-                        "items": {
-                            "type": "string"
-                        }
-                    }
-                }
-            },
-            "MockDataConfiguration": {
-                "title": "MockDataConfiguration",
-                "type": "object"
-            },
-            "JobStatus": {
-                "title": "JobStatus",
-                "required": [
-                    "created",
-                    "ended",
-                    "jobUUID",
-                    "owner",
-                    "result",
-                    "started",
-                    "state",
-                    "trafficLight"
-                ],
-                "type": "object",
-                "properties": {
-                    "result": {
-                        "type": "string",
-                        "description": "Result of job"
-                    },
-                    "owner": {
-                        "type": "string",
-                        "description": "Owner / initiator of job"
-                    },
-                    "jobUUID": {
-                        "type": "string",
-                        "description": "The job uuid"
-                    },
-                    "created": {
-                        "type": "string",
-                        "description": "Creation timestamp of job"
-                    },
-                    "ended": {
-                        "type": "string",
-                        "description": "End timestamp of job execution"
-                    },
-                    "started": {
-                        "type": "string",
-                        "description": "Start timestamp of job execution"
-                    },
-                    "state": {
-                        "type": "string",
-                        "description": "State of job"
-                    },
-                    "trafficLight": {
-                        "type": "string",
-                        "description": "Trafficlight of job - but only available when job has been done. Possible states are GREEN, YELLOW, RED, OFF"
-                    }
-                }
-            },
-            "ExecutionProfileCreate": {
-                "title": "ExecutionProfileCreate",
-                "required": [
-                    "description"
-                ],
-                "type": "object",
-                "properties": {
-                    "configurations": {
-                        "type": "array",
-                        "description": "Configurations can be linked at creation time as well - see update description",
-                        "nullable": true,
-                        "items": {
-                            "type": "string"
-                        }
-                    },
-                    "description": {
-                        "type": "string",
-                        "description": "A short description for the profile"
-                    },
-                    "projectIds": {
-                        "type": "array",
-                        "description": "Projects can be linked by their ids at creation time as well - see update description",
-                        "nullable": true,
-                        "items": {
-                            "type": "string"
-                        }
-                    },
-                    "enabled": {
-                        "type": "boolean",
-                        "description": "Enabled state of profile, default is false",
-                        "nullable": true
-                    }
-                }
-            },
-            "api-admin-project-projectId-104816866": {
-                "type": "object"
-            },
-            "ListOfExecutionProfiles": {
-                "title": "ListOfExecutionProfiles",
-                "required": [
-                    "type"
-                ],
-                "type": "object",
-                "properties": {
-                    "executionProfiles": {
-                        "type": "array",
-                        "items": {
-                            "required": [
-                                "description",
-                                "enabled",
-                                "id"
-                            ],
-                            "type": "object",
-                            "properties": {
-                                "description": {
-                                    "type": "string",
-                                    "description": "A profile description"
-                                },
-                                "id": {
-                                    "type": "string",
-                                    "description": "The profile id"
-                                },
-                                "enabled": {
-                                    "type": "boolean",
-                                    "description": "Enabled state of profile"
-                                }
-                            }
-                        }
-                    },
-                    "type": {
-                        "type": "string",
-                        "description": "Always `executorProfileList` as an identifier for the list"
-                    }
-                }
-            },
-            "ExecutionProfileFetch": {
-                "title": "ExecutionProfileFetch",
-                "required": [
-                    "description",
-                    "projectIds"
-                ],
-                "type": "object",
-                "properties": {
-                    "configurations": {
-                        "type": "array",
-                        "items": {
-                            "required": [
-                                "enabled",
-                                "executorVersion",
-                                "name",
-                                "productIdentifier",
-                                "uuid"
-                            ],
-                            "type": "object",
-                            "properties": {
-                                "productIdentifier": {
-                                    "type": "string",
-                                    "description": "executed product"
-                                },
-                                "name": {
-                                    "type": "string",
-                                    "description": "name of configuration"
-                                },
-                                "executorVersion": {
-                                    "type": "number",
-                                    "description": "executor version"
-                                },
-                                "uuid": {
-                                    "type": "string",
-                                    "description": "uuid of configuration"
-                                },
-                                "enabled": {
-                                    "type": "boolean",
-                                    "description": "enabled state of this config"
-                                }
-                            }
-                        }
-                    },
-                    "description": {
-                        "type": "string",
-                        "description": "A short description for the profile"
-                    },
-                    "projectIds": {
-                        "type": "array",
-                        "description": "Projects can be linked by their ids here",
-                        "items": {
-                            "type": "string"
-                        }
-                    },
-                    "enabled": {
-                        "type": "boolean",
-                        "description": "Enabled state of profile, default is false",
-                        "nullable": true
-                    }
-                }
-            },
-            "ListOfUsers": {
-                "type": "array",
-                "description": "List of user Ids",
-                "nullable": true,
-                "items": {
-                    "type": "string"
                 }
             },
             "ScanJob": {
@@ -3255,101 +2968,44 @@
                     }
                 }
             },
-            "FullScanDataZIP": {
-                "title": "FullScanDataZIP",
-                "type": "object"
-            },
-            "StatusInformation": {
-                "title": "StatusInformation",
+            "ListOfRunningJobs": {
+                "title": "ListOfRunningJobs",
                 "type": "array",
                 "items": {
                     "required": [
-                        "key",
-                        "value"
+                        "configuration",
+                        "jobUUID",
+                        "owner",
+                        "projectId",
+                        "since",
+                        "status"
                     ],
                     "type": "object",
                     "properties": {
-                        "value": {
+                        "owner": {
                             "type": "string",
-                            "description": "Status value"
+                            "description": "Owner of the job - means user which triggered it"
                         },
-                        "key": {
+                        "jobUUID": {
                             "type": "string",
-                            "description": "Status key identifier"
+                            "description": "The uuid of the running job"
+                        },
+                        "configuration": {
+                            "type": "string",
+                            "description": "Configuration used for this job"
+                        },
+                        "projectId": {
+                            "type": "string",
+                            "description": "The name of the project the job is running for"
+                        },
+                        "since": {
+                            "type": "string",
+                            "description": "Timestamp since when job has been started"
+                        },
+                        "status": {
+                            "type": "string",
+                            "description": "A status information "
                         }
-                    }
-                }
-            },
-            "ServerVersion": {
-                "title": "ServerVersion",
-                "type": "object"
-            },
-            "JobId": {
-                "title": "JobId",
-                "required": [
-                    "jobId"
-                ],
-                "type": "object",
-                "properties": {
-                    "jobId": {
-                        "type": "string",
-                        "description": "A unique job id"
-                    }
-                }
-            },
-            "UserSignup": {
-                "title": "UserSignup",
-                "required": [
-                    "apiVersion",
-                    "emailAdress",
-                    "userId"
-                ],
-                "type": "object",
-                "properties": {
-                    "apiVersion": {
-                        "type": "string",
-                        "description": "The api version, currently only 1.0 is supported"
-                    },
-                    "emailAdress": {
-                        "type": "string",
-                        "description": "Email adress"
-                    },
-                    "userId": {
-                        "type": "string",
-                        "description": "Wanted userid, the userid must be lowercase only!"
-                    }
-                }
-            },
-            "ExecutionProfileUpdate": {
-                "title": "ExecutionProfileUpdate",
-                "required": [
-                    "description"
-                ],
-                "type": "object",
-                "properties": {
-                    "configurations": {
-                        "type": "array",
-                        "items": {
-                            "required": [
-                                "uuid"
-                            ],
-                            "type": "object",
-                            "properties": {
-                                "uuid": {
-                                    "type": "string",
-                                    "description": "Add uuid for configuration to use here"
-                                }
-                            }
-                        }
-                    },
-                    "description": {
-                        "type": "string",
-                        "description": "A short description for the profile"
-                    },
-                    "enabled": {
-                        "type": "boolean",
-                        "description": "Enabled state of profile, default is false",
-                        "nullable": true
                     }
                 }
             },
@@ -3373,6 +3029,214 @@
                             "uris": {
                                 "type": "array",
                                 "description": "All URIS used now for whitelisting. Former parts will be replaced completely!",
+                                "items": {
+                                    "type": "string"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "ListOfSignups": {
+                "title": "ListOfSignups",
+                "type": "array",
+                "description": "List of user signups",
+                "items": {
+                    "required": [
+                        "emailAdress",
+                        "userId"
+                    ],
+                    "type": "object",
+                    "properties": {
+                        "emailAdress": {
+                            "type": "string",
+                            "description": "The email address"
+                        },
+                        "userId": {
+                            "type": "string",
+                            "description": "The user id"
+                        }
+                    },
+                    "description": "List of user signups"
+                }
+            },
+            "JobStatus": {
+                "title": "JobStatus",
+                "required": [
+                    "created",
+                    "ended",
+                    "jobUUID",
+                    "owner",
+                    "result",
+                    "started",
+                    "state",
+                    "trafficLight"
+                ],
+                "type": "object",
+                "properties": {
+                    "result": {
+                        "type": "string",
+                        "description": "Result of job"
+                    },
+                    "owner": {
+                        "type": "string",
+                        "description": "Owner / initiator of job"
+                    },
+                    "jobUUID": {
+                        "type": "string",
+                        "description": "The job uuid"
+                    },
+                    "created": {
+                        "type": "string",
+                        "description": "Creation timestamp of job"
+                    },
+                    "ended": {
+                        "type": "string",
+                        "description": "End timestamp of job execution"
+                    },
+                    "started": {
+                        "type": "string",
+                        "description": "Start timestamp of job execution"
+                    },
+                    "state": {
+                        "type": "string",
+                        "description": "State of job"
+                    },
+                    "trafficLight": {
+                        "type": "string",
+                        "description": "Trafficlight of job - but only available when job has been done. Possible states are GREEN, YELLOW, RED, OFF"
+                    }
+                }
+            },
+            "StatusInformation": {
+                "title": "StatusInformation",
+                "type": "array",
+                "items": {
+                    "required": [
+                        "key",
+                        "value"
+                    ],
+                    "type": "object",
+                    "properties": {
+                        "value": {
+                            "type": "string",
+                            "description": "Status value"
+                        },
+                        "key": {
+                            "type": "string",
+                            "description": "Status key identifier"
+                        }
+                    }
+                }
+            },
+            "FalsePositivesForJob": {
+                "title": "FalsePositivesForJob",
+                "required": [
+                    "apiVersion",
+                    "jobData",
+                    "type"
+                ],
+                "type": "object",
+                "properties": {
+                    "apiVersion": {
+                        "type": "string",
+                        "description": "The api version, currently only 1.0 is supported"
+                    },
+                    "jobData": {
+                        "type": "array",
+                        "description": "Job data list containing false positive setup based on former jobs",
+                        "items": {
+                            "required": [
+                                "findingId",
+                                "jobUUID"
+                            ],
+                            "type": "object",
+                            "properties": {
+                                "jobUUID": {
+                                    "type": "string",
+                                    "description": "SecHub job uuid where finding was"
+                                },
+                                "findingId": {
+                                    "type": "number",
+                                    "description": "SecHub finding identifier - identifies problem inside the job which shall be markeda as a false positive. *ATTENTION*: at the moment only code scan false positive handling is supported. Infra and web scan findings will lead to a non accepted error!"
+                                },
+                                "comment": {
+                                    "type": "string",
+                                    "description": "A comment describing why this is a false positive",
+                                    "nullable": true
+                                }
+                            }
+                        }
+                    },
+                    "type": {
+                        "type": "string",
+                        "description": "The type of the json content. Currently only accepted value is 'falsePositiveJobDataList'."
+                    }
+                }
+            },
+            "FullScanDataZIP": {
+                "title": "FullScanDataZIP",
+                "type": "object"
+            },
+            "JobId": {
+                "title": "JobId",
+                "required": [
+                    "jobId"
+                ],
+                "type": "object",
+                "properties": {
+                    "jobId": {
+                        "type": "string",
+                        "description": "A unique job id"
+                    }
+                }
+            },
+            "Project": {
+                "title": "Project",
+                "required": [
+                    "apiVersion",
+                    "name",
+                    "owner"
+                ],
+                "type": "object",
+                "properties": {
+                    "owner": {
+                        "type": "string",
+                        "description": "Username of the owner of this project. An owner is the person in charge"
+                    },
+                    "metaData": {
+                        "type": "object",
+                        "properties": {
+                            "*": {
+                                "type": "string",
+                                "description": "An arbitrary metadata key-value pair",
+                                "nullable": true
+                            }
+                        },
+                        "description": "An JSON object containing metadata key-value pairs defined for this project"
+                    },
+                    "apiVersion": {
+                        "type": "string",
+                        "description": "The api version, currently only 1.0 is supported"
+                    },
+                    "name": {
+                        "type": "string",
+                        "description": "Name of the project to create. Is also used as a unique ID!"
+                    },
+                    "description": {
+                        "type": "string",
+                        "description": "The description of the project.",
+                        "nullable": true
+                    },
+                    "whiteList": {
+                        "required": [
+                            "uris"
+                        ],
+                        "type": "object",
+                        "properties": {
+                            "uris": {
+                                "type": "array",
+                                "description": "All URIs used now for whitelisting. Former parts will be replaced completely!",
                                 "items": {
                                     "type": "string"
                                 }
@@ -3529,143 +3393,8 @@
                     }
                 }
             },
-            "Project": {
-                "title": "Project",
-                "required": [
-                    "apiVersion",
-                    "name",
-                    "owner"
-                ],
-                "type": "object",
-                "properties": {
-                    "owner": {
-                        "type": "string",
-                        "description": "Username of the owner of this project. An owner is the person in charge"
-                    },
-                    "metaData": {
-                        "type": "object",
-                        "properties": {
-                            "*": {
-                                "type": "string",
-                                "description": "An arbitrary metadata key-value pair",
-                                "nullable": true
-                            }
-                        },
-                        "description": "An JSON object containing metadata key-value pairs defined for this project"
-                    },
-                    "apiVersion": {
-                        "type": "string",
-                        "description": "The api version, currently only 1.0 is supported"
-                    },
-                    "name": {
-                        "type": "string",
-                        "description": "Name of the project to create. Is also used as a unique ID!"
-                    },
-                    "description": {
-                        "type": "string",
-                        "description": "The description of the project.",
-                        "nullable": true
-                    },
-                    "whiteList": {
-                        "required": [
-                            "uris"
-                        ],
-                        "type": "object",
-                        "properties": {
-                            "uris": {
-                                "type": "array",
-                                "description": "All URIs used now for whitelisting. Former parts will be replaced completely!",
-                                "items": {
-                                    "type": "string"
-                                }
-                            }
-                        }
-                    }
-                }
-            },
-            "ListOfRunningJobs": {
-                "title": "ListOfRunningJobs",
-                "type": "array",
-                "items": {
-                    "required": [
-                        "configuration",
-                        "jobUUID",
-                        "owner",
-                        "projectId",
-                        "since",
-                        "status"
-                    ],
-                    "type": "object",
-                    "properties": {
-                        "owner": {
-                            "type": "string",
-                            "description": "Owner of the job - means user which triggered it"
-                        },
-                        "jobUUID": {
-                            "type": "string",
-                            "description": "The uuid of the running job"
-                        },
-                        "configuration": {
-                            "type": "string",
-                            "description": "Configuration used for this job"
-                        },
-                        "projectId": {
-                            "type": "string",
-                            "description": "The name of the project the job is running for"
-                        },
-                        "since": {
-                            "type": "string",
-                            "description": "Timestamp since when job has been started"
-                        },
-                        "status": {
-                            "type": "string",
-                            "description": "A status information "
-                        }
-                    }
-                }
-            },
-            "SecHubReport": {
-                "title": "SecHubReport",
+            "api-admin-config-autoclean-638361826": {
                 "type": "object"
-            },
-            "UserDetails": {
-                "title": "UserDetails",
-                "required": [
-                    "email",
-                    "ownedProjects",
-                    "projects",
-                    "superAdmin",
-                    "userId"
-                ],
-                "type": "object",
-                "properties": {
-                    "projects": {
-                        "type": "array",
-                        "description": "The projects the user has access to",
-                        "items": {
-                            "type": "string"
-                        }
-                    },
-                    "superAdmin": {
-                        "type": "boolean",
-                        "description": "True, when this user is a super administrator"
-                    },
-                    "userId": {
-                        "type": "string",
-                        "description": "The name of the user"
-                    },
-                    "email": {
-                        "type": "string",
-                        "description": "The mail adress of the user"
-                    },
-                    "ownedProjects": {
-                        "type": "array",
-                        "description": "The projects the user is owner of",
-                        "items": {
-                            "type": "string"
-                        }
-                    }
-                }
             },
             "ExecutorConfigurationWithUUID": {
                 "title": "ExecutorConfigurationWithUUID",
@@ -3744,6 +3473,277 @@
                         "type": "boolean",
                         "description": "Enabled state of executor",
                         "nullable": true
+                    }
+                }
+            },
+            "ExecutorConfigurationId": {
+                "title": "ExecutorConfigurationId",
+                "type": "object"
+            },
+            "ExecutionProfileUpdate": {
+                "title": "ExecutionProfileUpdate",
+                "required": [
+                    "description"
+                ],
+                "type": "object",
+                "properties": {
+                    "configurations": {
+                        "type": "array",
+                        "items": {
+                            "required": [
+                                "uuid"
+                            ],
+                            "type": "object",
+                            "properties": {
+                                "uuid": {
+                                    "type": "string",
+                                    "description": "Add uuid for configuration to use here"
+                                }
+                            }
+                        }
+                    },
+                    "description": {
+                        "type": "string",
+                        "description": "A short description for the profile"
+                    },
+                    "enabled": {
+                        "type": "boolean",
+                        "description": "Enabled state of profile, default is false",
+                        "nullable": true
+                    }
+                }
+            },
+            "ExecutionProfileFetch": {
+                "title": "ExecutionProfileFetch",
+                "required": [
+                    "description",
+                    "projectIds"
+                ],
+                "type": "object",
+                "properties": {
+                    "configurations": {
+                        "type": "array",
+                        "items": {
+                            "required": [
+                                "enabled",
+                                "executorVersion",
+                                "name",
+                                "productIdentifier",
+                                "uuid"
+                            ],
+                            "type": "object",
+                            "properties": {
+                                "productIdentifier": {
+                                    "type": "string",
+                                    "description": "executed product"
+                                },
+                                "name": {
+                                    "type": "string",
+                                    "description": "name of configuration"
+                                },
+                                "executorVersion": {
+                                    "type": "number",
+                                    "description": "executor version"
+                                },
+                                "uuid": {
+                                    "type": "string",
+                                    "description": "uuid of configuration"
+                                },
+                                "enabled": {
+                                    "type": "boolean",
+                                    "description": "enabled state of this config"
+                                }
+                            }
+                        }
+                    },
+                    "description": {
+                        "type": "string",
+                        "description": "A short description for the profile"
+                    },
+                    "projectIds": {
+                        "type": "array",
+                        "description": "Projects can be linked by their ids here",
+                        "items": {
+                            "type": "string"
+                        }
+                    },
+                    "enabled": {
+                        "type": "boolean",
+                        "description": "Enabled state of profile, default is false",
+                        "nullable": true
+                    }
+                }
+            },
+            "UserSignup": {
+                "title": "UserSignup",
+                "required": [
+                    "apiVersion",
+                    "emailAdress",
+                    "userId"
+                ],
+                "type": "object",
+                "properties": {
+                    "apiVersion": {
+                        "type": "string",
+                        "description": "The api version, currently only 1.0 is supported"
+                    },
+                    "emailAdress": {
+                        "type": "string",
+                        "description": "Email adress"
+                    },
+                    "userId": {
+                        "type": "string",
+                        "description": "Wanted userid, the userid must be lowercase only!"
+                    }
+                }
+            },
+            "ProjectMetaData": {
+                "title": "ProjectMetaData",
+                "required": [
+                    "apiVersion",
+                    "metaData"
+                ],
+                "type": "object",
+                "properties": {
+                    "metaData": {
+                        "required": [
+                            "key1"
+                        ],
+                        "type": "object",
+                        "properties": {
+                            "key1": {
+                                "type": "string",
+                                "description": "An arbitrary metadata key."
+                            }
+                        },
+                        "description": "Metadata object. Contains key-value pairs."
+                    },
+                    "apiVersion": {
+                        "type": "string",
+                        "description": "The api version, currently only 1.0 is supported"
+                    }
+                }
+            },
+            "ListOfExecutorConfigurations": {
+                "title": "ListOfExecutorConfigurations",
+                "required": [
+                    "type"
+                ],
+                "type": "object",
+                "properties": {
+                    "type": {
+                        "type": "string",
+                        "description": "Always `executorConfigurationList` as an identifier for the list"
+                    },
+                    "executorConfigurations": {
+                        "type": "array",
+                        "items": {
+                            "required": [
+                                "enabled",
+                                "name",
+                                "uuid"
+                            ],
+                            "type": "object",
+                            "properties": {
+                                "name": {
+                                    "type": "string",
+                                    "description": "The configuration name"
+                                },
+                                "uuid": {
+                                    "type": "string",
+                                    "description": "The uuid of the configuration"
+                                },
+                                "enabled": {
+                                    "type": "boolean",
+                                    "description": "Enabled state of configuration"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "ListOfExecutionProfiles": {
+                "title": "ListOfExecutionProfiles",
+                "required": [
+                    "type"
+                ],
+                "type": "object",
+                "properties": {
+                    "executionProfiles": {
+                        "type": "array",
+                        "items": {
+                            "required": [
+                                "description",
+                                "enabled",
+                                "id"
+                            ],
+                            "type": "object",
+                            "properties": {
+                                "description": {
+                                    "type": "string",
+                                    "description": "A profile description"
+                                },
+                                "id": {
+                                    "type": "string",
+                                    "description": "The profile id"
+                                },
+                                "enabled": {
+                                    "type": "boolean",
+                                    "description": "Enabled state of profile"
+                                }
+                            }
+                        }
+                    },
+                    "type": {
+                        "type": "string",
+                        "description": "Always `executorProfileList` as an identifier for the list"
+                    }
+                }
+            },
+            "ListOfProjects": {
+                "type": "array",
+                "description": "List of project Ids",
+                "nullable": true,
+                "items": {
+                    "type": "string"
+                }
+            },
+            "MockDataConfiguration": {
+                "title": "MockDataConfiguration",
+                "type": "object"
+            },
+            "SecHubReport": {
+                "title": "SecHubReport",
+                "type": "object"
+            },
+            "MappingConfiguration": {
+                "title": "MappingConfiguration",
+                "type": "object",
+                "properties": {
+                    "entries": {
+                        "type": "array",
+                        "items": {
+                            "required": [
+                                "comment",
+                                "pattern",
+                                "replacement"
+                            ],
+                            "type": "object",
+                            "properties": {
+                                "pattern": {
+                                    "type": "string",
+                                    "description": "Pattern"
+                                },
+                                "comment": {
+                                    "type": "string",
+                                    "description": "Comment"
+                                },
+                                "replacement": {
+                                    "type": "string",
+                                    "description": "Replacement"
+                                }
+                            }
+                        }
                     }
                 }
             }
