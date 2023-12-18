@@ -27,7 +27,7 @@ public interface SecHubJobRepository extends JpaRepository<ScheduleSecHubJob, UU
     public List<ScheduleSecHubJob> findAllRunningJobsStartedBefore(@Param("untilLocalDateTime") LocalDateTime untilLocalDateTime);
 
     @Query(value = "SELECT COUNT(t) FROM " + ScheduleSecHubJob.CLASS_NAME + " t where t." + PROPERTY_EXECUTION_STATE
-            + " is :executionState", nativeQuery = false)
+            + " = :executionState", nativeQuery = false)
     public long countJobsInExecutionState(@Param("executionState") ExecutionState state);
 
     @Transactional
