@@ -400,7 +400,7 @@ public class ZapScanner implements ZapScan {
             cleanUpReplacerRules();
 
             // disable client certificate here, the imported client certificate will be
-            // removed on shutdown automatically anyway
+            // removed on ZAP shutdown automatically anyway
             LOG.info("Disable client certificate if one was used for the scan.");
             clientApiFacade.disableClientCertificate();
 

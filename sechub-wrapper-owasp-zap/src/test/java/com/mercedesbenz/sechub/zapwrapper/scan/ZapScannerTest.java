@@ -398,6 +398,7 @@ class ZapScannerTest {
                   }
                 }
                 """;
+
         SecHubWebScanConfiguration sechubWebScanConfig = SecHubScanConfiguration.createFromJSON(jsonWithCertPassword).getWebScan().get();
 
         File clientCertificateFile = new File("backend-cert.p12");
@@ -430,6 +431,7 @@ class ZapScannerTest {
                   }
                 }
                 """;
+
         SecHubWebScanConfiguration sechubWebScanConfig = SecHubScanConfiguration.createFromJSON(jsonWithoutCertPassword).getWebScan().get();
 
         File clientCertificateFile = new File("backend-cert.p12");
