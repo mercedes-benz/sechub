@@ -31,7 +31,7 @@ class ZapWrapperDataSectionFileProviderTest {
     }
 
     @Test
-    void client_cert_sources_folder_is_null_results_in_null_as_cert_file() {
+    void client_cert_sources_folder_is_null_results_in_cert_file_is_null() {
         /* execute */
         File certificateFile = providerToTest.fetchClientCertificateFile(null, new SecHubScanConfiguration());
 
@@ -49,7 +49,7 @@ class ZapWrapperDataSectionFileProviderTest {
     }
 
     @Test
-    void client_cert_sechub_scan_config_is_null_results_in_null_as_cert_file() {
+    void client_cert_sechub_scan_config_is_null_results_in_cert_file_is_null() {
         /* execute */
         File certificateFile = providerToTest.fetchClientCertificateFile("/example/path/to/extracted/sources", null);
 
@@ -61,7 +61,18 @@ class ZapWrapperDataSectionFileProviderTest {
     void open_api_missing_data_section_part_results_in_empty_list() {
         /* prepare */
         String openApiSechubScanConfigJSON = """
-                {"apiVersion":"1.0","webScan":{"url":"https://localhost:8443","api":{"type":"openApi","use":["open-api-file-reference"]}}}""";
+                {
+                  "apiVersion" : "1.0",
+                  "webScan" : {
+                    "url" : "https://localhost:8443",
+                    "api" : {
+                      "type" : "openApi",
+                      "use" : [ "open-api-file-reference" ]
+                    }
+                  }
+                }
+                """;
+
         SecHubScanConfiguration openApiSechubScanConfiguration = SecHubScanConfiguration.createFromJSON(openApiSechubScanConfigJSON);
 
         /* execute */
@@ -72,10 +83,21 @@ class ZapWrapperDataSectionFileProviderTest {
     }
 
     @Test
-    void client_cert_missing_data_section_part_results_in_null_as_cert_file() {
+    void client_cert_missing_data_section_part_results_in_cert_file_is_null() {
         /* prepare */
         String clientCertSechubScanConfigJSON = """
-                {"apiVersion":"1.0","webScan":{"url":"https://localhost:8443","clientCertificate":{"password":"secret","use":["client-cert-file-reference"]}}}""";
+                {
+                  "apiVersion" : "1.0",
+                  "webScan" : {
+                    "url" : "https://localhost:8443",
+                    "clientCertificate" : {
+                      "password" : "secret",
+                      "use" : [ "client-cert-file-reference" ]
+                    }
+                  }
+                }
+                """;
+
         SecHubScanConfiguration clientCertSechubScanConfiguration = SecHubScanConfiguration.createFromJSON(clientCertSechubScanConfigJSON);
 
         /* execute */
@@ -89,8 +111,21 @@ class ZapWrapperDataSectionFileProviderTest {
     void open_api_empty_sources_section_in_sechub_configuration_results_in_empty_list() {
         /* prepare */
         String openApiSechubScanConfigJSON = """
-                {"apiVersion":"1.0","data":{"sources":[]},
-                "webScan":{"url":"https://localhost:8443","api":{"type":"openApi","use":["open-api-file-reference"]}}}""";
+                {
+                  "apiVersion" : "1.0",
+                  "data" : {
+                    "sources" : [ ]
+                  },
+                  "webScan" : {
+                    "url" : "https://localhost:8443",
+                    "api" : {
+                      "type" : "openApi",
+                      "use" : [ "open-api-file-reference" ]
+                    }
+                  }
+                }
+                """;
+
         SecHubScanConfiguration openApiSechubScanConfiguration = SecHubScanConfiguration.createFromJSON(openApiSechubScanConfigJSON);
 
         /* execute */
@@ -101,11 +136,24 @@ class ZapWrapperDataSectionFileProviderTest {
     }
 
     @Test
-    void client_cert_empty_sources_section_in_sechub_configuration_results_in_null_as_cert_file() {
+    void client_cert_empty_sources_section_in_sechub_configuration_results_in_cert_file_is_null() {
         /* prepare */
         String clientCertSechubScanConfigJSON = """
-                {"apiVersion":"1.0","data":{"sources":[]},
-                "webScan":{"url":"https://localhost:8443","clientCertificate":{"password":"secret","use":["client-cert-file-reference"]}}}""";
+                {
+                  "apiVersion" : "1.0",
+                  "data" : {
+                    "sources" : [ ]
+                  },
+                  "webScan" : {
+                    "url" : "https://localhost:8443",
+                    "clientCertificate" : {
+                      "password" : "secret",
+                      "use" : [ "client-cert-file-reference" ]
+                    }
+                  }
+                }
+                """;
+
         SecHubScanConfiguration clientCertSechubScanConfiguration = SecHubScanConfiguration.createFromJSON(clientCertSechubScanConfigJSON);
 
         /* execute */
@@ -119,8 +167,23 @@ class ZapWrapperDataSectionFileProviderTest {
     void open_api_missing_filesystem_part_in_sechub_configuration_results_in_empty_list() {
         /* prepare */
         String openApiSechubScanConfigJSON = """
-                {"apiVersion":"1.0","data":{"sources":[{"name":"open-api-file-reference"}]},
-                "webScan":{"url":"https://localhost:8443","api":{"type":"openApi","use":["open-api-file-reference"]}}}""";
+                {
+                  "apiVersion" : "1.0",
+                  "data" : {
+                    "sources" : [ {
+                      "name" : "open-api-file-reference"
+                    } ]
+                  },
+                  "webScan" : {
+                    "url" : "https://localhost:8443",
+                    "api" : {
+                      "type" : "openApi",
+                      "use" : [ "open-api-file-reference" ]
+                    }
+                  }
+                }
+                """;
+
         SecHubScanConfiguration openApiSechubScanConfiguration = SecHubScanConfiguration.createFromJSON(openApiSechubScanConfigJSON);
 
         /* execute */
@@ -131,11 +194,26 @@ class ZapWrapperDataSectionFileProviderTest {
     }
 
     @Test
-    void client_cert_missing_filesystem_part_in_sechub_configuration_results_in_null_as_cert_file() {
+    void client_cert_missing_filesystem_part_in_sechub_configuration_results_in_cert_file_is_null() {
         /* prepare */
         String clientCertSechubScanConfigJSON = """
-                {"apiVersion":"1.0","data":{"sources":[{"name":"client-cert-file-reference"}]},
-                "webScan":{"url":"https://localhost:8443","clientCertificate":{"password":"secret","use":["client-cert-file-reference"]}}}""";
+                {
+                  "apiVersion" : "1.0",
+                  "data" : {
+                    "sources" : [ {
+                      "name" : "client-cert-file-reference"
+                    } ]
+                  },
+                  "webScan" : {
+                    "url" : "https://localhost:8443",
+                    "clientCertificate" : {
+                      "password" : "secret",
+                      "use" : [ "client-cert-file-reference" ]
+                    }
+                  }
+                }
+                """;
+
         SecHubScanConfiguration clientCertSechubScanConfiguration = SecHubScanConfiguration.createFromJSON(clientCertSechubScanConfigJSON);
 
         /* execute */
@@ -149,8 +227,24 @@ class ZapWrapperDataSectionFileProviderTest {
     void open_api_empty_filesystem_part_in_sechub_configuration_results_in_empty_list() {
         /* prepare */
         String openApiSechubScanConfigJSON = """
-                {"apiVersion":"1.0","data":{"sources":[{"name":"open-api-file-reference","fileSystem":{}}]},
-                "webScan":{"url":"https://localhost:8443","api":{"type":"openApi","use":["open-api-file-reference"]}}}""";
+                {
+                  "apiVersion" : "1.0",
+                  "data" : {
+                    "sources" : [ {
+                      "name" : "open-api-file-reference",
+                      "fileSystem" : { }
+                    } ]
+                  },
+                  "webScan" : {
+                    "url" : "https://localhost:8443",
+                    "api" : {
+                      "type" : "openApi",
+                      "use" : [ "open-api-file-reference" ]
+                    }
+                  }
+                }
+                """;
+
         SecHubScanConfiguration openApiSechubScanConfiguration = SecHubScanConfiguration.createFromJSON(openApiSechubScanConfigJSON);
 
         /* execute */
@@ -161,11 +255,27 @@ class ZapWrapperDataSectionFileProviderTest {
     }
 
     @Test
-    void client_cert_empty_filesystem_part_in_sechub_configuration_results_in_null_as_cert_file() {
+    void client_cert_empty_filesystem_part_in_sechub_configuration_results_in_cert_file_is_null() {
         /* prepare */
         String clientCertSechubScanConfigJSON = """
-                {"apiVersion":"1.0","data":{"sources":[{"name":"client-cert-file-reference","fileSystem":{}}]},
-                "webScan":{"url":"https://localhost:8443","clientCertificate":{"password":"secret","use":["client-cert-file-reference"]}}}""";
+                {
+                  "apiVersion" : "1.0",
+                  "data" : {
+                    "sources" : [ {
+                      "name" : "client-cert-file-reference",
+                      "fileSystem" : { }
+                    } ]
+                  },
+                  "webScan" : {
+                    "url" : "https://localhost:8443",
+                    "clientCertificate" : {
+                      "password" : "secret",
+                      "use" : [ "client-cert-file-reference" ]
+                    }
+                  }
+                }
+                """;
+
         SecHubScanConfiguration clientCertSechubScanConfiguration = SecHubScanConfiguration.createFromJSON(clientCertSechubScanConfigJSON);
 
         /* execute */
@@ -179,8 +289,23 @@ class ZapWrapperDataSectionFileProviderTest {
     void open_api_binaries_instead_of_sources_results_in_empty_list() {
         /* prepare */
         String sechubScanConfigJSON = """
-                {"apiVersion":"1.0","data":{"binaries":[{"name":"open-api-file-reference"}]},
-                "webScan":{"url":"https://localhost:8443","api":{"type":"openApi","use":["open-api-file-reference"]}}}""";
+                {
+                  "apiVersion" : "1.0",
+                  "data" : {
+                    "binaries" : [ {
+                      "name" : "open-api-file-reference"
+                    } ]
+                  },
+                  "webScan" : {
+                    "url" : "https://localhost:8443",
+                    "api" : {
+                      "type" : "openApi",
+                      "use" : [ "open-api-file-reference" ]
+                    }
+                  }
+                }
+                """;
+
         SecHubScanConfiguration sechubScanConfiguration = SecHubScanConfiguration.createFromJSON(sechubScanConfigJSON);
 
         /* execute */
@@ -191,11 +316,26 @@ class ZapWrapperDataSectionFileProviderTest {
     }
 
     @Test
-    void client_cert_binaries_instead_of_sources_results_in_null_as_cert_file() {
+    void client_cert_binaries_instead_of_sources_results_in_cert_file_is_null() {
         /* prepare */
         String sechubScanConfigJSON = """
-                {"apiVersion":"1.0","data":{"binaries":[{"name":"client-cert-file-reference"}]},
-                "webScan":{"url":"https://localhost:8443","clientCertificate":{"password":"secret","use":["client-cert-file-reference"]}}}""";
+                {
+                  "apiVersion" : "1.0",
+                  "data" : {
+                    "binaries" : [ {
+                      "name" : "client-cert-file-reference"
+                    } ]
+                  },
+                  "webScan" : {
+                    "url" : "https://localhost:8443",
+                    "clientCertificate" : {
+                      "password" : "secret",
+                      "use" : [ "client-cert-file-reference" ]
+                    }
+                  }
+                }
+                """;
+
         SecHubScanConfiguration sechubScanConfiguration = SecHubScanConfiguration.createFromJSON(sechubScanConfigJSON);
 
         /* execute */
@@ -209,8 +349,26 @@ class ZapWrapperDataSectionFileProviderTest {
     void open_api_folders_instead_of_files_inside_filesystem_results_in_empty_list() {
         /* prepare */
         String sechubScanConfigJSON = """
-                {"apiVersion":"1.0","data":{"sources":[{"name":"open-api-file-reference","fileSystem":{"folders":["openapifolder/"]}}]},
-                "webScan":{"url":"https://localhost:8443","api":{"type":"openApi","use":["open-api-file-reference"]}}}""";
+                {
+                  "apiVersion" : "1.0",
+                  "data" : {
+                    "sources" : [ {
+                      "name" : "open-api-file-reference",
+                      "fileSystem" : {
+                        "folders" : [ "openapifolder/" ]
+                      }
+                    } ]
+                  },
+                  "webScan" : {
+                    "url" : "https://localhost:8443",
+                    "api" : {
+                      "type" : "openApi",
+                      "use" : [ "open-api-file-reference" ]
+                    }
+                  }
+                }
+                """;
+
         SecHubScanConfiguration sechubScanConfiguration = SecHubScanConfiguration.createFromJSON(sechubScanConfigJSON);
 
         /* execute */
@@ -221,11 +379,29 @@ class ZapWrapperDataSectionFileProviderTest {
     }
 
     @Test
-    void client_cert_folders_instead_of_files_inside_filesystem_results_in_null_as_cert_file() {
+    void client_cert_folders_instead_of_files_inside_filesystem_results_in_cert_file_is_null() {
         /* prepare */
         String sechubScanConfigJSON = """
-                {"apiVersion":"1.0","data":{"sources":[{"name":"client-cert-file-reference","fileSystem":{"folders":["clientCertfolder/"]}}]},
-                "webScan":{"url":"https://localhost:8443","clientCertificate":{"password":"secret","use":["client-cert-file-reference"]}}}""";
+                {
+                  "apiVersion" : "1.0",
+                  "data" : {
+                    "sources" : [ {
+                      "name" : "client-cert-file-reference",
+                      "fileSystem" : {
+                        "folders" : [ "clientCertfolder/" ]
+                      }
+                    } ]
+                  },
+                  "webScan" : {
+                    "url" : "https://localhost:8443",
+                    "clientCertificate" : {
+                      "password" : "secret",
+                      "use" : [ "client-cert-file-reference" ]
+                    }
+                  }
+                }
+                """;
+
         SecHubScanConfiguration sechubScanConfiguration = SecHubScanConfiguration.createFromJSON(sechubScanConfigJSON);
 
         /* execute */
@@ -239,8 +415,26 @@ class ZapWrapperDataSectionFileProviderTest {
     void open_api_data_section_name_differs_from_use_part_inside_openapi_definition_results_in_empty_list() {
         /* prepare */
         String sechubScanConfigJSON = """
-                {"apiVersion":"1.0","data":{"sources":[{"name":"open-api-file-reference","fileSystem":{"files":["openapi3.json"]}}]},
-                "webScan":{"url":"https://localhost:8443","api":{"type":"openApi","use":["no-existing-reference"]}}}""";
+                {
+                  "apiVersion" : "1.0",
+                  "data" : {
+                    "sources" : [ {
+                      "name" : "open-api-file-reference",
+                      "fileSystem" : {
+                        "files" : [ "openapi3.json" ]
+                      }
+                    } ]
+                  },
+                  "webScan" : {
+                    "url" : "https://localhost:8443",
+                    "api" : {
+                      "type" : "openApi",
+                      "use" : [ "no-existing-reference" ]
+                    }
+                  }
+                }
+                """;
+
         SecHubScanConfiguration sechubScanConfiguration = SecHubScanConfiguration.createFromJSON(sechubScanConfigJSON);
 
         /* execute */
@@ -251,11 +445,29 @@ class ZapWrapperDataSectionFileProviderTest {
     }
 
     @Test
-    void client_cert_data_section_name_differs_from_use_part_inside_openapi_definition_results_in_null_as_cert_file() {
+    void client_cert_data_section_name_differs_from_use_part_inside_openapi_definition_results_in_cert_file_is_null() {
         /* prepare */
         String sechubScanConfigJSON = """
-                {"apiVersion":"1.0","data":{"sources":[{"name":"client-cert-file-reference","fileSystem":{"files":["clientCert.p12"]}}]},
-                "webScan":{"url":"https://localhost:8443","clientCertificate":{"password":"secret","use":["no-existing-reference"]}}}""";
+                {
+                  "apiVersion" : "1.0",
+                  "data" : {
+                    "sources" : [ {
+                      "name" : "client-cert-file-reference",
+                      "fileSystem" : {
+                        "files" : [ "clientCert.p12" ]
+                      }
+                    } ]
+                  },
+                  "webScan" : {
+                    "url" : "https://localhost:8443",
+                    "clientCertificate" : {
+                      "password" : "secret",
+                      "use" : [ "no-existing-reference" ]
+                    }
+                  }
+                }
+                """;
+
         SecHubScanConfiguration sechubScanConfiguration = SecHubScanConfiguration.createFromJSON(sechubScanConfigJSON);
 
         /* execute */
@@ -269,8 +481,26 @@ class ZapWrapperDataSectionFileProviderTest {
     void open_api_valid_sechub_scan_config_with_openapi_definition_file_results_in_list_with_one_file() {
         /* prepare */
         String sechubScanConfigJSON = """
-                {"apiVersion":"1.0","data":{"sources":[{"name":"open-api-file-reference","fileSystem":{"files":["openapi3.json"]}}]},
-                "webScan":{"url":"https://localhost:8443","api":{"type":"openApi","use":["open-api-file-reference"]}}}""";
+                {
+                  "apiVersion" : "1.0",
+                  "data" : {
+                    "sources" : [ {
+                      "name" : "open-api-file-reference",
+                      "fileSystem" : {
+                        "files" : [ "openapi3.json" ]
+                      }
+                    } ]
+                  },
+                  "webScan" : {
+                    "url" : "https://localhost:8443",
+                    "api" : {
+                      "type" : "openApi",
+                      "use" : [ "open-api-file-reference" ]
+                    }
+                  }
+                }
+                """;
+
         SecHubScanConfiguration sechubScanConfiguration = SecHubScanConfiguration.createFromJSON(sechubScanConfigJSON);
 
         /* execute */
@@ -284,8 +514,26 @@ class ZapWrapperDataSectionFileProviderTest {
     void client_cert_valid_sechub_scan_config_with_openapi_definition_file_results_in_client_cert_file() {
         /* prepare */
         String sechubScanConfigJSON = """
-                {"apiVersion":"1.0","data":{"sources":[{"name":"client-cert-file-reference","fileSystem":{"files":["clientCert.p12"]}}]},
-                "webScan":{"url":"https://localhost:8443","clientCertificate":{"password":"secret","use":["client-cert-file-reference"]}}}""";
+                {
+                  "apiVersion" : "1.0",
+                  "data" : {
+                    "sources" : [ {
+                      "name" : "client-cert-file-reference",
+                      "fileSystem" : {
+                        "files" : [ "clientCert.p12" ]
+                      }
+                    } ]
+                  },
+                  "webScan" : {
+                    "url" : "https://localhost:8443",
+                    "clientCertificate" : {
+                      "password" : "secret",
+                      "use" : [ "client-cert-file-reference" ]
+                    }
+                  }
+                }
+                """;
+
         SecHubScanConfiguration sechubScanConfiguration = SecHubScanConfiguration.createFromJSON(sechubScanConfigJSON);
 
         /* execute */
@@ -297,7 +545,7 @@ class ZapWrapperDataSectionFileProviderTest {
 
     @ParameterizedTest
     @MethodSource("multipleFilesTestNamedArguments")
-    void open_api_mutliple_files_result_in_correct_list_of_files(String sechubScanConfigJSON) {
+    void multiple_open_api_files_result_in_multiple_open_api_files_available(String sechubScanConfigJSON) {
         /* prepare */
         SecHubScanConfiguration sechubScanConfiguration = SecHubScanConfiguration.createFromJSON(sechubScanConfigJSON);
 
@@ -312,9 +560,30 @@ class ZapWrapperDataSectionFileProviderTest {
     void client_cert_sechub_config_with_more_than_one_data_section_results_in_first_client_cert_file() {
         /* prepare */
         String sechubConfigWithmoreThanOneDataSection = """
-                {"apiVersion":"1.0","data":{"sources":[{"name":"client-cert-file-reference","fileSystem":{"files":["clientCert.p12"]}},
-                {"name":"other-client-cert-file-reference","fileSystem":{"files":["other-clientCert.p12"]}}]},
-                "webScan":{"url":"https://localhost:8443","clientCertificate":{"password":"secret","use":["client-cert-file-reference", "other-client-cert-file-reference"]}}}""";
+                {
+                  "apiVersion" : "1.0",
+                  "data" : {
+                    "sources" : [ {
+                      "name" : "client-cert-file-reference",
+                      "fileSystem" : {
+                        "files" : [ "clientCert.p12" ]
+                      }
+                    }, {
+                      "name" : "other-client-cert-file-reference",
+                      "fileSystem" : {
+                        "files" : [ "other-clientCert.p12" ]
+                      }
+                    } ]
+                  },
+                  "webScan" : {
+                    "url" : "https://localhost:8443",
+                    "clientCertificate" : {
+                      "password" : "secret",
+                      "use" : [ "client-cert-file-reference", "other-client-cert-file-reference" ]
+                    }
+                  }
+                }
+                """;
 
         SecHubScanConfiguration sechubScanConfiguration = SecHubScanConfiguration.createFromJSON(sechubConfigWithmoreThanOneDataSection);
 
@@ -329,8 +598,26 @@ class ZapWrapperDataSectionFileProviderTest {
     void client_cert_sechub_config_with_filesystem_part_has_more_than_one_file_results_in_first_client_cert_file() {
         /* prepare */
         String sechubConfigWithfilesystemPartHasMoreThanOneFile = """
-                {"apiVersion":"1.0","data":{"sources":[{"name":"client-cert-file-reference","fileSystem":{"files":["clientCert.p12", "second-clientCert.p12"]}}]},
-                "webScan":{"url":"https://localhost:8443","clientCertificate":{"password":"secret","use":["client-cert-file-reference"]}}}""";
+                {
+                  "apiVersion" : "1.0",
+                  "data" : {
+                    "sources" : [ {
+                      "name" : "client-cert-file-reference",
+                      "fileSystem" : {
+                        "files" : [ "clientCert.p12", "second-clientCert.p12" ]
+                      }
+                    } ]
+                  },
+                  "webScan" : {
+                    "url" : "https://localhost:8443",
+                    "clientCertificate" : {
+                      "password" : "secret",
+                      "use" : [ "client-cert-file-reference" ]
+                    }
+                  }
+                }
+                """;
+
         SecHubScanConfiguration sechubScanConfiguration = SecHubScanConfiguration.createFromJSON(sechubConfigWithfilesystemPartHasMoreThanOneFile);
 
         /* execute */
@@ -344,14 +631,52 @@ class ZapWrapperDataSectionFileProviderTest {
         /* @formatter:off */
         String moreThanOneDataSectionName = "Sources part more than one file in 2 data sections";
         String sechubConfigWithmoreThanOneDataSection = """
-                {"apiVersion":"1.0","data":{"sources":[{"name":"open-api-file-reference","fileSystem":{"files":["openapi3.json"]}},
-                {"name":"second-reference","fileSystem":{"files":["second-openapi-file.json"]}}]},
-                "webScan":{"url":"https://localhost:8443","api":{"type":"openApi","use":["open-api-file-reference","second-reference"]}}}""";
+                {
+                  "apiVersion" : "1.0",
+                  "data" : {
+                    "sources" : [ {
+                      "name" : "open-api-file-reference",
+                      "fileSystem" : {
+                        "files" : [ "openapi3.json" ]
+                      }
+                    }, {
+                      "name" : "second-reference",
+                      "fileSystem" : {
+                        "files" : [ "second-openapi-file.json" ]
+                      }
+                    } ]
+                  },
+                  "webScan" : {
+                    "url" : "https://localhost:8443",
+                    "api" : {
+                      "type" : "openApi",
+                      "use" : [ "open-api-file-reference", "second-reference" ]
+                    }
+                  }
+                }
+                """;
 
         String filesystemPartHasMoreThanOneFileName = "Filesystem files part more than one file";
         String sechubConfigWithfilesystemPartHasMoreThanOneFile = """
-                {"apiVersion":"1.0","data":{"sources":[{"name":"open-api-file-reference","fileSystem":{"files":["openapi3.json", "second-file.json"]}}]},
-                "webScan":{"url":"https://localhost:8443","api":{"type":"openApi","use":["open-api-file-reference"]}}}""";
+                {
+                  "apiVersion" : "1.0",
+                  "data" : {
+                    "sources" : [ {
+                      "name" : "open-api-file-reference",
+                      "fileSystem" : {
+                        "files" : [ "openapi3.json", "second-file.json" ]
+                      }
+                    } ]
+                  },
+                  "webScan" : {
+                    "url" : "https://localhost:8443",
+                    "api" : {
+                      "type" : "openApi",
+                      "use" : [ "open-api-file-reference" ]
+                    }
+                  }
+                }
+                """;
 
         return Stream.of(
               Arguments.of(

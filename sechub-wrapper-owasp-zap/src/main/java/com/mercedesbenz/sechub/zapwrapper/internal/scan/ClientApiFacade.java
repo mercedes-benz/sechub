@@ -244,6 +244,9 @@ public class ClientApiFacade {
      * @throws ClientApiException
      */
     public ApiResponse importPkcs12ClientCertificate(String filepath, String password) throws ClientApiException {
+        // add the client certificate to the list ZAP keeps inside the network add-on
+        // the third parameter here always "0" is the index where to import inside the
+        // ZAP internal list
         return clientApi.network.addPkcs12ClientCertificate(filepath, password, "0");
     }
 

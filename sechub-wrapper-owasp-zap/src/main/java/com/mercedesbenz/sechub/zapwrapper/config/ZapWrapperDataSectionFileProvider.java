@@ -118,12 +118,13 @@ public class ZapWrapperDataSectionFileProvider {
                 if (dataConfig.getFileSystem().isEmpty()) {
                     continue;
                 }
-                List<String> files = dataConfig.getFileSystem().get().getFiles();
-                for (String file : files) {
-                    // we can only handle a single client certificate file, so we take the first one
-                    // we get
-                    return new File(extractedSourcesFolderPath, file);
+
+                if (dataConfig.getFileSystem().get().getFiles().isEmpty()) {
+                    continue;
                 }
+
+                String file = dataConfig.getFileSystem().get().getFiles().get(0);
+                return new File(extractedSourcesFolderPath, file);
             }
         }
         return null;
