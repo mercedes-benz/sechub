@@ -3,8 +3,7 @@
 
 skinparam actorStyle awesome
 actor User
-participant "Product + PDS" as pds
-
+participant "PDS + MyProduct" as pds
 User -> pds : Uploads files
 pds -> User : Gets result
 

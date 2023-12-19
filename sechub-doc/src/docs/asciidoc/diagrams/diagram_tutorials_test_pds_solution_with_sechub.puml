@@ -4,7 +4,7 @@
 skinparam actorStyle awesome
 actor User
 participant "SecHub" as secuhb
-participant "Product + PDS" as pds
+participant "PDS + MyProduct" as pds
 
 User -> secuhb : Uploads files
 secuhb -> pds : Uploads files
