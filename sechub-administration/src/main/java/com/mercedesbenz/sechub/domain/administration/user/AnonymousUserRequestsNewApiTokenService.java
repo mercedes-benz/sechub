@@ -49,7 +49,7 @@ public class AnonymousUserRequestsNewApiTokenService {
 
         assertion.assertIsValidEmailAddress(userEmail);
 
-        Optional<User> found = userRepository.findByEmailAdress(userEmail);
+        Optional<User> found = userRepository.findByEmailAddress(userEmail);
         if (!found.isPresent()) {
             /* we just do nothing here - prevent user enumeration by hacking... */
             LOG.warn("Anonymous request to get new api token, but user unknown: {})", logSanitizer.sanitize(userEmail, 50));

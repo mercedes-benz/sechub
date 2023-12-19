@@ -60,7 +60,7 @@ public class AnonymousUserRequestsNewApiTokenServiceTest {
     public void when_emailadress_not_found_no_exception_is_thrown() throws Exception {
 
         /* prepare */
-        when(mockedUserRepository.findByEmailAdress("user@test.com")).thenReturn(Optional.empty());
+        when(mockedUserRepository.findByEmailAddress("user@test.com")).thenReturn(Optional.empty());
 
         /* execute */
         serviceToTest.anonymousRequestToGetNewApiTokenForUserMailAdress("user@test.com");
@@ -71,11 +71,11 @@ public class AnonymousUserRequestsNewApiTokenServiceTest {
     public void when_emailadress_found_a_new_async_event_is_sent_eventbus() throws Exception {
 
         User user = new User();
-        user.emailAdress = "user@test.com";
+        user.emailAddress = "user@test.com";
         user.name = "testuser";
 
         /* prepare */
-        when(mockedUserRepository.findByEmailAdress("user@test.com")).thenReturn(Optional.of(user));
+        when(mockedUserRepository.findByEmailAddress("user@test.com")).thenReturn(Optional.of(user));
 
         /* execute */
         serviceToTest.anonymousRequestToGetNewApiTokenForUserMailAdress("user@test.com");
@@ -98,11 +98,11 @@ public class AnonymousUserRequestsNewApiTokenServiceTest {
     public void when_emailadress_found__onetimetoken_created_and_persisted() throws Exception {
 
         User user = new User();
-        user.emailAdress = "user@test.com";
+        user.emailAddress = "user@test.com";
         user.name = "testuser";
 
         /* prepare */
-        when(mockedUserRepository.findByEmailAdress("user@test.com")).thenReturn(Optional.of(user));
+        when(mockedUserRepository.findByEmailAddress("user@test.com")).thenReturn(Optional.of(user));
 
         /* execute */
         serviceToTest.anonymousRequestToGetNewApiTokenForUserMailAdress("user@test.com");

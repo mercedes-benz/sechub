@@ -90,7 +90,7 @@ public class AnonymousSignupCreateService {
     }
 
     private void assertEmailAdressNotUsedAlready(String userId, String emailAdress) {
-        Optional<User> foundUserByMail = userRepository.findByEmailAdress(emailAdress);
+        Optional<User> foundUserByMail = userRepository.findByEmailAddress(emailAdress);
 
         if (foundUserByMail.isPresent()) {
             LOG.warn("Self registration coming in for emailadress:{} and user:{} but an existing user does already have this email adress. So not accepted",
