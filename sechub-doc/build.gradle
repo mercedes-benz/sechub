@@ -158,6 +158,7 @@ asciidoctor {
         'sechub-restapi.adoc',
         'sechub-developer-quickstart-guide.adoc',
         'sechub-product-delegation-server.adoc',
+        'sechub-reviewer-guide.adoc',
         'sechub-getting-started.adoc'
     }
 
