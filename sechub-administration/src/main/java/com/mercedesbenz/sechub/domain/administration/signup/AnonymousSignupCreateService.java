@@ -81,7 +81,7 @@ public class AnonymousSignupCreateService {
         DomainMessage infoRequest = new DomainMessage(MessageID.USER_SIGNUP_REQUESTED);
 
         UserMessage userMessage = new UserMessage();
-        userMessage.setEmailAdress(signup.getEmailAddress());
+        userMessage.setEmailAddress(signup.getEmailAddress());
         userMessage.setUserId(signup.getUserId());
 
         infoRequest.set(MessageDataKeys.USER_SIGNUP_DATA, userMessage);

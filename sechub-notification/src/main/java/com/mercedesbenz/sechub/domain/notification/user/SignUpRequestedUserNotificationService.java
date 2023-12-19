@@ -31,7 +31,7 @@ public class SignUpRequestedUserNotificationService {
 
         /* send mail */
         SimpleMailMessage message1 = factory.createMessage("Successful registration in SecHub");
-        message1.setTo(userMessage.getEmailAdress());
+        message1.setTo(userMessage.getEmailAddress());
         message1.setText(emailContent.toString());
 
         emailService.send(message1);

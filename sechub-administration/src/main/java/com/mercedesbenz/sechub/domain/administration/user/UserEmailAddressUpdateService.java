@@ -69,7 +69,7 @@ public class UserEmailAddressUpdateService {
         /* create message containing data before user email has changed */
         UserMessage message = new UserMessage();
         message.setUserId(user.getName());
-        message.setEmailAdress(user.getEmailAddress());
+        message.setEmailAddress(user.getEmailAddress());
         message.setFormerEmailAddress(formerEmailAddress);
         message.setSubject("A SecHub administrator has changed your email address");
 

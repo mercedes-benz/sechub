@@ -39,7 +39,7 @@ class UserEmailAddressChangedNotificationServiceTest {
         String formerEmailAddress = "former_email.adress@example.org";
 
         UserMessage userMessage = new UserMessage();
-        userMessage.setEmailAdress(emailAddress);
+        userMessage.setEmailAddress(emailAddress);
         userMessage.setFormerEmailAddress(formerEmailAddress);
         userMessage.setSubject("Your mail adress has changed by a test");
 

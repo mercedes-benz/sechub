@@ -189,7 +189,7 @@ class UserEmailAddressUpdateServiceTest {
         assertNotNull(userMessage);
 
         assertEquals(KNOWN_USER1, userMessage.getUserId());
-        assertEquals("new.user1@example.com", userMessage.getEmailAdress());
+        assertEquals("new.user1@example.com", userMessage.getEmailAddress());
         assertEquals("former.user1@example.com", userMessage.getFormerEmailAddress());
     }
 

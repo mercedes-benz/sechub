@@ -46,7 +46,7 @@ public class SignUpRequestedAdminNotificationServiceTest {
         // message to receive from event bus
         UserMessage message = mock(UserMessage.class);
         when(message.getUserId()).thenReturn("schlaubi");
-        when(message.getEmailAdress()).thenReturn("schlau.schlumpf@schlumpfhausen.de");
+        when(message.getEmailAddress()).thenReturn("schlau.schlumpf@schlumpfhausen.de");
 
         /* execute */
         serviceToTest.notify(message);

@@ -66,7 +66,7 @@ public class AnonymousUserRequestsNewApiTokenService {
         /* we just send info about new api token */
         DomainMessage infoRequest = new DomainMessage(MessageID.USER_NEW_API_TOKEN_REQUESTED);
         UserMessage userMessage = new UserMessage();
-        userMessage.setEmailAdress(userEmail);
+        userMessage.setEmailAddress(userEmail);
 
         /*
          * Security: we do NOT use userid inside this link - if some body got

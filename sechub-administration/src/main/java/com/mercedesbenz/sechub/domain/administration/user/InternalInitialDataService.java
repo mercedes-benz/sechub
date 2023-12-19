@@ -174,7 +174,7 @@ public class InternalInitialDataService {
         UserMessage authDataHashed = new UserMessage();
 
         authDataHashed.setUserId(user.getName());
-        authDataHashed.setEmailAdress(user.getEmailAddress());
+        authDataHashed.setEmailAddress(user.getEmailAddress());
 
         return authDataHashed;
     }

@@ -132,7 +132,7 @@ public class UserCreationService {
         /* we just send info about new api token */
         DomainMessage infoRequest = new DomainMessage(MessageID.USER_NEW_API_TOKEN_REQUESTED);
         UserMessage userMessage = new UserMessage();
-        userMessage.setEmailAdress(user.getEmailAddress());
+        userMessage.setEmailAddress(user.getEmailAddress());
 
         /*
          * Security: we do NOT use userid inside this link - if some body got
@@ -153,7 +153,7 @@ public class UserCreationService {
         UserMessage authDataHashed = new UserMessage();
 
         authDataHashed.setUserId(user.getName());
-        authDataHashed.setEmailAdress(user.getEmailAddress());
+        authDataHashed.setEmailAddress(user.getEmailAddress());
 
         return authDataHashed;
     }

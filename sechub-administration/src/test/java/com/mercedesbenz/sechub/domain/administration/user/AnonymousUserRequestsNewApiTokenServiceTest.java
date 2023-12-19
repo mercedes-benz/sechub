@@ -90,7 +90,7 @@ public class AnonymousUserRequestsNewApiTokenServiceTest {
         assertNotNull("no refersh api key data inside message!", refreshApiKeyMessage);
         // check event contains expected data
         assertNull(refreshApiKeyMessage.getUserId()); // user id not inside
-        assertEquals("user@test.com", refreshApiKeyMessage.getEmailAdress());
+        assertEquals("user@test.com", refreshApiKeyMessage.getEmailAddress());
 
     }
 
