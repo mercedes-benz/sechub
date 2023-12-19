@@ -46,7 +46,7 @@ public class IntegrationTestDefaultExecutorConfigurations {
 
     }
 
-    private static final String INTTEST_NAME_PREFIX = "INTTEST_";
+    private static final String INTTEST_NAME_PREFIX = "IT_";
 
     public static final TestExecutorConfig NETSPARKER_V1 = defineNetsparkerConfig();
     public static final TestExecutorConfig CHECKMARX_V1 = defineCheckmarxConfig();
@@ -218,6 +218,39 @@ public class IntegrationTestDefaultExecutorConfigurations {
             PDS_ANALYTICS);
 
 
+    /* ----------------------------------------------------------------*/
+    /* ---------------PDS solutions mocked-----------------------------*/
+    /* ----------------------------------------------------------------*/
+    public static final TestExecutorConfig PDS_V1_PDS_SOLUTION_GOSEC_MOCKED = definePDSSolutionMockScan(
+            PDSIntTestProductIdentifier.PDS_SOLUTION_GOSEC_MOCKED, PDS_CODESCAN);
+
+    public static final TestExecutorConfig PDS_V1_PDS_SOLUTION_GITLEAKS_MOCKED = definePDSSolutionMockScan(
+            PDSIntTestProductIdentifier.PDS_SOLUTION_GITLEAKS_MOCKED, PDS_SECRETSCAN);
+
+    public static final TestExecutorConfig PDS_V1_PDS_SOLUTION_ZAP_MOCKED = definePDSSolutionMockScan(
+            PDSIntTestProductIdentifier.PDS_SOLUTION_ZAP_MOCKED, PDS_WEBSCAN);
+
+    public static final TestExecutorConfig PDS_V1_PDS_SOLUTION_CHECKMARX_MOCKED = definePDSSolutionMockScan(
+            PDSIntTestProductIdentifier.PDS_SOLUTION_CHECKMARX_MOCKED, PDS_CODESCAN);
+
+    public static final TestExecutorConfig PDS_V1_PDS_SOLUTION_SCANCODE_SPDX_JSON_MOCKED = definePDSSolutionMockScan(
+            PDSIntTestProductIdentifier.PDS_SOLUTION_SCANCODE_SPDX_JSON_MOCKED, PDS_LICENSESCAN);
+
+    public static final TestExecutorConfig PDS_V1_PDS_SOLUTION_FINDSECURITYBUGS_MOCKED = definePDSSolutionMockScan(
+            PDSIntTestProductIdentifier.PDS_SOLUTION_FINDSECURITYBUGS_MOCKED, PDS_CODESCAN);
+
+    public static final TestExecutorConfig PDS_V1_PDS_SOLUTION_TERN_MOCKED = definePDSSolutionMockScan(
+            PDSIntTestProductIdentifier.PDS_SOLUTION_TERN_MOCKED, PDS_LICENSESCAN);
+
+    public static final TestExecutorConfig PDS_V1_PDS_SOLUTION_XRAY_SPDX_MOCKED = definePDSSolutionMockScan(
+            PDSIntTestProductIdentifier.PDS_SOLUTION_XRAY_SPDX_MOCKED, PDS_LICENSESCAN);
+
+    public static final TestExecutorConfig PDS_V1_PDS_SOLUTION_XRAY_CYCLONEDX_MOCKED = definePDSSolutionMockScan(
+            PDSIntTestProductIdentifier.PDS_SOLUTION_XRAY_CYCLONEDX_MOCKED, PDS_LICENSESCAN);
+
+    public static final TestExecutorConfig PDS_V1_PDS_SOLUTION_MULTI_BANDIT_MOCKED = definePDSSolutionMockScan(
+            PDSIntTestProductIdentifier.PDS_SOLUTION_MULTI_BANDIT_MOCKED, PDS_CODESCAN);
+
     /* @formatter:on */
 
     public static final String PDS_ENV_VARIABLENAME_TECHUSER_ID = "TEST_PDS_TECHUSER_ID";
@@ -296,6 +329,11 @@ public class IntegrationTestDefaultExecutorConfigurations {
         return pdsProductIdentifier != null ? pdsProductIdentifier.getId() : null;
     }
 
+    private static TestExecutorConfig definePDSSolutionMockScan(PDSIntTestProductIdentifier pdsProductIdentifier,
+            TestProductExecutorIdentifier sechubProductIdentifier) {
+        return definePDSScan("a", false, pdsProductIdentifier, StorageType.REUSE_SECHUB_DATA, sechubProductIdentifier, null);
+    }
+
     private static TestExecutorConfig definePDSScan(String variant, boolean credentialsAsEnvEntries, PDSIntTestProductIdentifier pdsProductIdentifier,
             StorageType storageType, TestProductExecutorIdentifier sechubProductIdentifier) {
         return definePDSScan(variant, credentialsAsEnvEntries, pdsProductIdentifier, storageType, sechubProductIdentifier, null);
@@ -313,7 +351,6 @@ public class IntegrationTestDefaultExecutorConfigurations {
         config.executorVersion = 1;
         config.productIdentifier = sechubProductIdentifier.name();
         config.name = INTTEST_NAME_PREFIX + middleConfigName + variant;
-
         config.setup.baseURL = PDSTestURLBuilder.https(TestPortProvider.DEFAULT_INSTANCE.getIntegrationTestPDSPort()).buildBaseUrl();
         config.uuid = null;// not initialized - is done at creation time by scenario initializer!
 
