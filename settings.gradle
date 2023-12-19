@@ -81,7 +81,7 @@ include 'sechub-cli',
 // Wrapper checkmarx
 'sechub-wrapper-checkmarx',
 
-// Wrapper OWASP ZAP
+// Wrapper Xray
 'sechub-wrapper-xray',
 
 // WebUI
