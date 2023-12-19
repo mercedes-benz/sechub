@@ -2,14 +2,14 @@
 [[section-howto-integrate-a-new-product]]
 === Howto integrate a new product
 
-At the beginning of {sechub} it was always necessary to implement a new product adapter (in Java), create 
+At the beginning of {sechub} it was always necessary to implement a new product adapter (in Java), create
 a new product executor (in Java) and create new product result importer (also in Java).
 
 *Those days are gone*. Nowadays we are shifting every new product into a {pds} (product delegation server)
- solution. For {pds} we have an already existing {pds} adapter (the logic to communicate with {pds})
- which is used always.
- 
- 
+solution. For {pds} we have an already existing {pds} adapter (the logic to communicate with {pds})
+which is used always.
+
+
 [IMPORTANT]
 ====
 At the moment we have still some direct product adapters. Some are marked as deprecated and will
@@ -17,8 +17,8 @@ vanish. Others will be replaced by PDS solutions.
 
 In the future there shall be only two products which have dedicated adapter implementations: SERECO and {pds}.
 ====
- 
-For every existing type of scan there is a dedicated {pds} product executor available. When the security 
+
+For every existing type of scan there is a dedicated {pds} product executor available. When the security
 product is able to produce SARIF output, we are able to import this already.
 You can find multiple existing solutions and more details at {pds-solutions-projectsite}.
 
@@ -26,8 +26,7 @@ You can find multiple existing solutions and more details at {pds-solutions-proj
 ====
 In the best case scenario there is no need to write anything in Java - we copy an existing
 pds-solution to a new folder name, make some necessary adjustments, change the caller script and we are done...
- 
-Only when a product result is not already supported by SERECO ({sechub} report collector), 
+
+Only when a product result is not already supported by SERECO ({sechub} report collector),
 we must write a special `ProductResultImporter`.
 ====
-
