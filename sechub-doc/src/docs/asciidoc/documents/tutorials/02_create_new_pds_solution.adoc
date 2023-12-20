@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: MIT
 == Create a PDS solution for a product
 
 The following user guide is an instruction to create and test a PDS solution
