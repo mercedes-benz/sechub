@@ -504,6 +504,21 @@ spec:
                name: secret-pds-secretscanner
                key: techuser_password
 {{- end }}
+{{- if .Values.pdsXray.enabled }}
+# ----------------------------------------------------------------------------------------------#
+# - Scope: PDS-Xray
+# --------------------------------------------------------------------------------------------- #
+        - name: SECHUB_PDS_XRAY_USERID
+          valueFrom:
+            secretKeyRef:
+              name: secret-pds-xray
+              key: techuser_username
+        - name: SECHUB_PDS_XRAY_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: secret-pds-xray
+              key: techuser_password
+{{- end }}
 # ----------------------------------------------------------------------------------------------#
 # - Scope: emails from SecHub server
 # --------------------------------------------------------------------------------------------- #

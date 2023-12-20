@@ -13,7 +13,7 @@ import com.mercedesbenz.sechub.integrationtest.internal.GrowingScenario;
  * job information list fetching, one user, one project, but no execution
  * profiles.
  *
- * <h4>Overview</h4> For a glance over all scenarios, look at
+ * <h4>Overview</h4> For an overview over all scenarios, look at
  * {@link com.mercedesbenz.sechub.integrationtest.internal.IntegrationTestDataOverview
  * Overview}
  *
