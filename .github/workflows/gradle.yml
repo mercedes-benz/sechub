@@ -72,7 +72,7 @@ jobs:
       # -----------------------------------------
       - name: Archive combined test report
         if: always()
-        uses: actions/upload-artifact@a8a3f3ad30e3422c9c7b888a15615d19a852ae32
+        uses: actions/upload-artifact@c7d193f32edcb7bfad88892161225aeda64e9392
         with:
           name: combined-sechub-testreport
           path: build/reports/combined-report
@@ -80,7 +80,7 @@ jobs:
 
       - name: Archive sechub server artifacts
         if: always()
-        uses: actions/upload-artifact@a8a3f3ad30e3422c9c7b888a15615d19a852ae32
+        uses: actions/upload-artifact@c7d193f32edcb7bfad88892161225aeda64e9392
         with:
           name: sechub-server
           path: sechub-server/build/libs
@@ -88,21 +88,21 @@ jobs:
 
       - name: Archive pds server artifacts
         if: always()
-        uses: actions/upload-artifact@a8a3f3ad30e3422c9c7b888a15615d19a852ae32
+        uses: actions/upload-artifact@c7d193f32edcb7bfad88892161225aeda64e9392
         with:
           name: sechub-pds
           path: sechub-pds/build/libs
 
       - name: Archive pds tools artifacts
         if: always()
-        uses: actions/upload-artifact@a8a3f3ad30e3422c9c7b888a15615d19a852ae32
+        uses: actions/upload-artifact@c7d193f32edcb7bfad88892161225aeda64e9392
         with:
           name: sechub-pds-tools
           path: sechub-pds-tools/build/libs
 
       - name: Archive developer tools artifacts
         if: always()
-        uses: actions/upload-artifact@a8a3f3ad30e3422c9c7b888a15615d19a852ae32
+        uses: actions/upload-artifact@c7d193f32edcb7bfad88892161225aeda64e9392
         with:
           name: sechub-developertools
           path: sechub-developertools/build/libs
@@ -110,7 +110,7 @@ jobs:
 
       - name: Archive sechub client artifacts
         if: always()
-        uses: actions/upload-artifact@a8a3f3ad30e3422c9c7b888a15615d19a852ae32
+        uses: actions/upload-artifact@c7d193f32edcb7bfad88892161225aeda64e9392
         with:
           name: sechub-client
           path: sechub-cli/build/go
@@ -118,14 +118,14 @@ jobs:
 
       - name: Archive sechub integration test report artifacts
         if: always()
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: sechub-integrationtest-test-reports
           path: sechub-integrationtest/build/sechub-test-reports
           retention-days: 14
           
       - name: Archive openAPI3 JSON files
-        uses: actions/upload-artifact@a8a3f3ad30e3422c9c7b888a15615d19a852ae32
+        uses: actions/upload-artifact@c7d193f32edcb7bfad88892161225aeda64e9392
         with:
           name: sechub-api-spec
           path: sechub-doc/build/api-spec/
