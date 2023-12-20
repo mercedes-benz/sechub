@@ -1,5 +1,5 @@
 # SPDX-License-Identifier: MIT
-name: Release Xray wrapper
+name: Release wrapper for Xray
 
 on:
   workflow_dispatch:
