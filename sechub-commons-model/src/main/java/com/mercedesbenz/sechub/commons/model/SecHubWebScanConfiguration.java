@@ -18,6 +18,7 @@ public class SecHubWebScanConfiguration {
     public static final String PROPERTY_INCLUDES = "includes";
     public static final String PROPERTY_EXCLUDES = "excludes";
     public static final String PROPERTY_HEADERS = "headers";
+    public static final String PROPERTY_CLIENT_CERTIFICATE = "clientCertificate";
 
     public static final String WEBSCAN_URL_WILDCARD_SYMBOL = "<*>";
 
@@ -32,6 +33,8 @@ public class SecHubWebScanConfiguration {
     Optional<List<String>> excludes = Optional.empty();
 
     Optional<List<HTTPHeaderConfiguration>> headers = Optional.empty();
+
+    Optional<ClientCertificateConfiguration> clientCertificate = Optional.empty();
 
     public URI getUrl() {
         return url;
@@ -55,6 +58,14 @@ public class SecHubWebScanConfiguration {
 
     public Optional<List<String>> getExcludes() {
         return excludes;
+    }
+
+    public Optional<List<HTTPHeaderConfiguration>> getHeaders() {
+        return headers;
+    }
+
+    public Optional<ClientCertificateConfiguration> getClientCertificate() {
+        return clientCertificate;
     }
 
     public void setLogin(Optional<WebLoginConfiguration> login) {
@@ -81,8 +92,8 @@ public class SecHubWebScanConfiguration {
         this.excludes = excludes;
     }
 
-    public Optional<List<HTTPHeaderConfiguration>> getHeaders() {
-        return headers;
+    public void setClientCertificate(Optional<ClientCertificateConfiguration> clientCertificate) {
+        this.clientCertificate = clientCertificate;
     }
 
 }
