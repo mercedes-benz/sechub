@@ -86,7 +86,7 @@ jobs:
       # Build SecHub Xray Wrapper
       # -----------------------------------------
       - name: Build Xray Wrapper
-        run: ./gradlew :sechub-wrapper-xray
+        run: ./gradlew :sechub-wrapper-xray:buildWrapperXray
 
       # -----------------------------------------
       # Upload build artifacts
