@@ -184,5 +184,55 @@
     "path" : "./../sechub-integrationtest/pds/product-scripts/integrationtest-secretscan.sh",
     "scanType" : "secretScan",
     "description" : "This is only a fake secret scan - used by integration tests."
+  }, {
+    "id" : "PDS_SOLUTION_GOSEC_MOCKED",
+    "path" : "./../sechub-integrationtest/pds/product-scripts/pds-solutions-gosec-mocked.sh",
+    "scanType" : "codeScan",
+    "description" : "Returns mock data, but from real product"
+  }, {
+    "id" : "PDS_SOLUTION_GITLEAKS_MOCKED",
+    "path" : "./../sechub-integrationtest/pds/product-scripts/pds-solutions-gitleaks-mocked.sh",
+    "scanType" : "secretSCan",
+    "description" : "Returns mock data, but from real product"
+  }, {
+    "id" : "PDS_SOLUTION_ZAP_MOCKED",
+    "path" : "./../sechub-integrationtest/pds/product-scripts/pds-solutions-zap-mocked.sh",
+    "scanType" : "webScan",
+    "description" : "Returns mock data, but from real product"
+  }, {
+    "id" : "PDS_SOLUTION_CHECKMARX_MOCKED",
+    "path" : "./../sechub-integrationtest/pds/product-scripts/pds-solutions-checkmarx-mocked.sh",
+    "scanType" : "codeScan",
+    "description" : "Returns mock data, but from real product"
+  }, {
+    "id" : "PDS_SOLUTION_SCANCODE_SPDX_JSON_MOCKED",
+    "path" : "./../sechub-integrationtest/pds/product-scripts/pds-solutions-scancode_spdx_json-mocked.sh",
+    "scanType" : "licenseScan",
+    "description" : "Returns mock data, but from real product"
+  }, {
+    "id" : "PDS_SOLUTION_FINDSECURITYBUGS_MOCKED",
+    "path" : "./../sechub-integrationtest/pds/product-scripts/pds-solutions-findsecuritybugs-mocked.sh",
+    "scanType" : "licenseScan",
+    "description" : "Returns mock data, but from real product"
+  }, {
+    "id" : "PDS_SOLUTION_TERN_MOCKED",
+    "path" : "./../sechub-integrationtest/pds/product-scripts/pds-solutions-tern-mocked.sh",
+    "scanType" : "licenseScan",
+    "description" : "Returns mock data, but from real product"
+  }, {
+    "id" : "PDS_SOLUTION_XRAY_CYCLONEDX_MOCKED",
+    "path" : "./../sechub-integrationtest/pds/product-scripts/pds-solutions-xray_cyclonedx-mocked.sh",
+    "scanType" : "licenseScan",
+    "description" : "Returns mock data, but from real product"
+  }, {
+    "id" : "PDS_SOLUTION_XRAY_SPDX_MOCKED",
+    "path" : "./../sechub-integrationtest/pds/product-scripts/pds-solutions-xray_spdx-mocked.sh",
+    "scanType" : "licenseScan",
+    "description" : "Returns mock data, but from real product"
+  }, {
+    "id" : "PDS_SOLUTION_MULTI_BANDIT_MOCKED",
+    "path" : "./../sechub-integrationtest/pds/product-scripts/pds-solutions-multi_bandit-mocked.sh",
+    "scanType" : "codeScan",
+    "description" : "Returns mock data, but from real product"
   } ]
 }

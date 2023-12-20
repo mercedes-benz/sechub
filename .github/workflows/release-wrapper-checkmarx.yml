@@ -1,5 +1,5 @@
 # SPDX-License-Identifier: MIT
-name: Release Checkmarx wrapper
+name: Release wrapper for Checkmarx
 
 on:
   workflow_dispatch:
