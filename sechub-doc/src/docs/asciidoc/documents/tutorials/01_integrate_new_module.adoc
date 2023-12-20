@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: MIT
 == Integrate new SecHub module
 [NOTE]
 ====
