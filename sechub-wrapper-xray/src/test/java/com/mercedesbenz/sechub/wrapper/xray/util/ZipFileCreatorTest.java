@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.wrapper.xray.util;
 
 import static com.mercedesbenz.sechub.test.TestUtil.createTempDirectoryInBuildFolder;
