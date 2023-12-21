@@ -5,11 +5,15 @@
 
 = IaC + PDS
 
-https://securego.io/[IaC] is a free and open source static application security testing tool. IaC is a command line interface (CLI) tool. By combining IaC with the SecHub https://mercedes-benz.github.io/sechub/latest/sechub-product-delegation-server.html[Product Delegation Server (PDS)] in a container, IaC can be used with SecHub. Another scenario is to use IaC+PDS standalone.
+Infrastructure as Code (IaC) is the practice of defining and managing computing infrastructure using code, which enables developers to automate the creation, configuration, and management of infrastructure resources. By combining IaC with the SecHub https://mercedes-benz.github.io/sechub/latest/sechub-product-delegation-server.html[Product Delegation Server (PDS)] in a container, IaC can be used with SecHub. Another scenario is to use IaC+PDS standalone.
 
-Furthermore, the combination of IaC and PDS makes it possible to run both inside a Kubernetes cluser or virtual machines.
+The combination of IaC and PDS makes it possible to run both inside a Kubernetes cluser or virtual machines.
 
 This folder contains the necessary scripts to run IaC+PDS inside a container locally. Additionally, it contains scripts to build and push the PDS + IaC container to your container registry and a Helm chart to install and run IaC+PDS in a Kubernetes cluster.
+
+== Currently used tools
+=== KICS
+https://github.com/Checkmarx/kics[KICS] is a free and open source IaC commandline scanning tool
 
 == Run Locally
 
