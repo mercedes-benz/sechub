@@ -73,8 +73,6 @@ RUN mkdir --parent "$BUILD_FOLDER" && \
 # PDS Image
 #-------------------
 
-# The image argument needs to be placed on top
-ARG BASE_IMAGE
 FROM ${BASE_IMAGE}
 
 # The remaining arguments need to be placed after the `FROM`
