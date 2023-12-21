@@ -12,7 +12,7 @@ spec:
 
   {{- if .Values.networkPolicy.ingress }}
     ingress:
-{{ .Values.networkPolicy.ingress | toYaml | indent 4 }}
+    {{ .Values.networkPolicy.ingress | toYaml | indent 4 | trim }}
   {{- end }}
 
 {{- end }}

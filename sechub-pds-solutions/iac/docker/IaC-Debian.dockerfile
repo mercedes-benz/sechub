@@ -24,7 +24,7 @@ ARG GO
 ARG PDS_ARTIFACT_FOLDER
 
 ARG BUILD_FOLDER="/build"
-ARG GIT_URL="https://github.com/Checkmarx/kics.git"
+ARG GIT_URL_KICS="https://github.com/Checkmarx/kics.git"
 
 ENV DOWNLOAD_FOLDER="/downloads"
 ENV PATH="/usr/local/go/bin:$PATH"
@@ -57,7 +57,7 @@ RUN cd "$DOWNLOAD_FOLDER" && \
 RUN mkdir --parent "$BUILD_FOLDER" && \
     cd "$BUILD_FOLDER" && \
     # Clone Kics
-    git clone "$GIT_URL" && \
+    git clone "$GIT_URL_KICS" --depth 1 --branch "$GIT_BRANCH_KICS" && \
     cd "kics" && \
     # Downloads Go packages
     go mod vendor && \
@@ -86,7 +86,6 @@ LABEL maintainer="SecHub FOSS Team"
 ARG PDS_ARTIFACT_FOLDER
 
 ENV PATH "$TOOL_FOLDER/kics:$PATH"
-# Build args
 #ARG GO="go1.20.4.linux-amd64.tar.gz"
 #ARG IAC_VERSION="2.13.1"
 
