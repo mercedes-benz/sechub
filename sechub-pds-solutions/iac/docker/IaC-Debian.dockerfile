@@ -25,6 +25,7 @@ ARG PDS_ARTIFACT_FOLDER
 
 ARG BUILD_FOLDER="/build"
 ARG GIT_URL_KICS="https://github.com/Checkmarx/kics.git"
+ARG GIT_BRANCH_KICS="master"
 
 ENV DOWNLOAD_FOLDER="/downloads"
 ENV PATH="/usr/local/go/bin:$PATH"
