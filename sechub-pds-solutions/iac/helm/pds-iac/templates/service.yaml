@@ -1,0 +1,13 @@
+# SPDX-License-Identifier: MIT
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Chart.Name }}
+spec:
+  selector:
+    name: {{ .Chart.Name }}
+  ports:
+    - protocol: TCP
+      port: 8444
+      targetPort: 8444

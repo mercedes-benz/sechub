@@ -414,6 +414,21 @@ spec:
                name: secret-pds-gosec
                key: techuser_password
 {{- end }}
+{{- if .Values.pdsIaC.enabled }}
+# ----------------------------------------------------------------------------------------------#
+# - Scope: PDS-IaC
+# --------------------------------------------------------------------------------------------- #
+        - name: SECHUB_PDS_IAC_USERID
+          valueFrom:
+            secretKeyRef:
+               name: secret-pds-iac
+               key: techuser_username
+        - name: SECHUB_PDS_IAC_PASSWORD
+          valueFrom:
+            secretKeyRef:
+               name: secret-pds-iac
+               key: techuser_password
+{{- end }}
 {{- if .Values.pdsLoc.enabled }}
 # ----------------------------------------------------------------------------------------------#
 # - Scope: PDS-Loc
