@@ -70,6 +70,7 @@ jobs:
           export SCANCODE_VERSION
           export SPDX_TOOL_VERSION
           export TERN_VERSION
+          export XRAY_WRAPPER_VERSION
           export DOCKER_REGISTRY="${ACTIONS_SECHUB_REGISTRY}/pds-${PDS_SOLUTION}"
           export VERSION_TAG=`./09-compute-image-tag.sh ${PDS_VERSION}`
           export BASE_IMAGE="${ACTIONS_SECHUB_REGISTRY}/pds-base:${PDS_VERSION}"

@@ -74,3 +74,9 @@ jobs:
     with:
       pds-solution: tern
       pds-version: ${{ inputs.pds-version }}
+
+  call_build_pds-xray:
+    uses: mercedes-benz/sechub/.github/workflows/_build+publish-pds-solution.yml@develop
+    with:
+      pds-solution: xray
+      pds-version: ${{ inputs.pds-version }}

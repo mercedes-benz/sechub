@@ -5,3 +5,13 @@ XRAY_ARTIFACTORY=change-me
 XRAY_DOCKER_REGISTRY=change-me
 XRAY_USERNAME=change-me
 XRAY_PASSWORD=change-me
+
+# The build type of the Xray-Wrapper
+# Possible values are:
+# - copy (copies jar into container)
+# - download (downloads the jar from github.com releases)
+BUILD_TYPE=download
+
+# The Xray Wrapper version to use
+# See: https://github.com/mercedes-benz/sechub/releases
+XRAY_WRAPPER_VERSION="1.0.0"
