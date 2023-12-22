@@ -37,7 +37,7 @@ public class SignupCreateServiceTest {
         /* prepare */
         SignupJsonInput userSelfRegistrationInput = mock(SignupJsonInput.class);
         when(userSelfRegistrationInput.getUserId()).thenReturn("schlaubi");
-        when(userSelfRegistrationInput.getEmailAdress()).thenReturn("schlaubi@schlumpfhausen.de");
+        when(userSelfRegistrationInput.getEmailAddress()).thenReturn("schlaubi@schlumpfhausen.de");
 
         /* execute */
         serviceToTest.register(userSelfRegistrationInput);
