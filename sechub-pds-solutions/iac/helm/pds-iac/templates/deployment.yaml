@@ -3,7 +3,7 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ .Chart.Nme }}
+  name: {{ .Chart.Name }}
   labels:
     name: {{ .Chart.Name }}
 spec:
