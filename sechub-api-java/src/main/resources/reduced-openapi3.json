@@ -3438,6 +3438,16 @@
                     }
                 }
             },
+            "JobId": {
+                "title": "JobId",
+                "type": "object",
+                "properties": {
+                    "jobId": {
+                        "type": "string",
+                        "description": "A unique job id"
+                    }
+                }
+            },
             "ExecutionProfileCreate": {
                 "title": "ExecutionProfileCreate",
                 "type": "object",
@@ -3463,16 +3473,6 @@
                     "enabled": {
                         "type": "boolean",
                         "description": "Enabled state of profile, default is false"
-                    }
-                }
-            },
-            "JobId": {
-                "title": "JobId",
-                "type": "object",
-                "properties": {
-                    "jobId": {
-                        "type": "string",
-                        "description": "A unique job id"
                     }
                 }
             },
