@@ -50,25 +50,25 @@ public class AnonymousUserRequestsNewApiTokenServiceTest {
     @Test
     public void service_uses_assertion_validate_mail() throws Exception {
         /* execute */
-        serviceToTest.anonymousRequestToGetNewApiTokenForUserMailAdress("user@test.com");
+        serviceToTest.anonymousRequestToGetNewApiTokenForUserMailAddress("user@test.com");
 
         /* test */
         verify(mockedUserAssertion).assertIsValidEmailAddress("user@test.com");
     }
 
     @Test
-    public void when_emailadress_not_found_no_exception_is_thrown() throws Exception {
+    public void when_emailaddress_not_found_no_exception_is_thrown() throws Exception {
 
         /* prepare */
         when(mockedUserRepository.findByEmailAddress("user@test.com")).thenReturn(Optional.empty());
 
         /* execute */
-        serviceToTest.anonymousRequestToGetNewApiTokenForUserMailAdress("user@test.com");
+        serviceToTest.anonymousRequestToGetNewApiTokenForUserMailAddress("user@test.com");
 
     }
 
     @Test
-    public void when_emailadress_found_a_new_async_event_is_sent_eventbus() throws Exception {
+    public void when_emailaddress_found_a_new_async_event_is_sent_eventbus() throws Exception {
 
         User user = new User();
         user.emailAddress = "user@test.com";
@@ -78,7 +78,7 @@ public class AnonymousUserRequestsNewApiTokenServiceTest {
         when(mockedUserRepository.findByEmailAddress("user@test.com")).thenReturn(Optional.of(user));
 
         /* execute */
-        serviceToTest.anonymousRequestToGetNewApiTokenForUserMailAdress("user@test.com");
+        serviceToTest.anonymousRequestToGetNewApiTokenForUserMailAddress("user@test.com");
 
         /* test */
         ArgumentCaptor<DomainMessage> domainMessageCaptor = ArgumentCaptor.forClass(DomainMessage.class);
@@ -95,7 +95,7 @@ public class AnonymousUserRequestsNewApiTokenServiceTest {
     }
 
     @Test
-    public void when_emailadress_found__onetimetoken_created_and_persisted() throws Exception {
+    public void when_emailaddress_found__onetimetoken_created_and_persisted() throws Exception {
 
         User user = new User();
         user.emailAddress = "user@test.com";
@@ -105,7 +105,7 @@ public class AnonymousUserRequestsNewApiTokenServiceTest {
         when(mockedUserRepository.findByEmailAddress("user@test.com")).thenReturn(Optional.of(user));
 
         /* execute */
-        serviceToTest.anonymousRequestToGetNewApiTokenForUserMailAdress("user@test.com");
+        serviceToTest.anonymousRequestToGetNewApiTokenForUserMailAddress("user@test.com");
 
         /* test */
         assertEquals(FAKE_ONE_TIME_TOKEN, user.oneTimeToken);

@@ -136,7 +136,7 @@ public class UserMessage implements JSONable<UserMessage> {
     /**
      * Set the former email address of an user. Should only be called for user
      * events when an email address has changed. The {@link #getEmailAddress()}
-     * shall contain the new mail address in this case.
+     * shall contain the new email address in this case.
      *
      * @param formerEmailAddress
      */

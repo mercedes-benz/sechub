@@ -116,7 +116,7 @@ class UserEmailAddressUpdateServiceTest {
         doThrow(TestCanaryException.class).when(assertion).assertIsValidEmailAddress(any());
 
         /* execute + test */
-        assertThrows(TestCanaryException.class, () -> serviceToTest.updateUserEmailAddress("notfound", "not-a-valid-email-adress"));
+        assertThrows(TestCanaryException.class, () -> serviceToTest.updateUserEmailAddress("notfound", "not-a-valid-email-address"));
     }
 
     @Test
@@ -138,7 +138,7 @@ class UserEmailAddressUpdateServiceTest {
     }
 
     @Test
-    void throws_not_acceptable_when_same_mail_adress_as_before() {
+    void throws_not_acceptable_when_same_mail_address_as_before() {
         /* prepare */
         User knownUser1 = createKnownUser1();
         when(userRepository.findOrFailUser(KNOWN_USER1)).thenReturn(knownUser1);

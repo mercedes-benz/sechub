@@ -24,7 +24,7 @@ public class InitialAdminInitializer {
 
     @Value("${sechub.initialadmin.email}")
     @MustBeDocumented(value = "Mail of initial administrator")
-    String initialAdminEmailAdress;
+    String initialAdminEmailAddress;
 
     @Value("${sechub.initialadmin.apitoken:}") // : so default is empty, making this optional.
     @MustBeDocumented(value = "An apitoken for initial admin, will only be used in DEV and INTEGRATIONTEST profiles and is optional!")
@@ -44,7 +44,7 @@ public class InitialAdminInitializer {
              * production data and also run only on a non productive system, so in this case
              * the usage is okay, because automated integration tests run much faster.
              */
-            internalService.createInitialAdmin(initialAdminUserid, initialAdminEmailAdress, "{noop}" + initialAdminApiToken);
+            internalService.createInitialAdmin(initialAdminUserid, initialAdminEmailAddress, "{noop}" + initialAdminApiToken);
             /*
              * an additional test user, has no rights initial. Only for integration tests,
              * so password here plain and not configurable
@@ -58,7 +58,7 @@ public class InitialAdminInitializer {
     @Profile({ Profiles.INITIAL_ADMIN_PREDEFINED }) // used in DEV profile
     public CommandLineRunner initialSecHubAdmDevelopmentOnly(InternalInitialDataService internalService) {
         return args -> {
-            internalService.createInitialAdmin(initialAdminUserid, initialAdminEmailAdress, initialAdminApiToken);
+            internalService.createInitialAdmin(initialAdminUserid, initialAdminEmailAddress, initialAdminApiToken);
         };
     }
 
@@ -67,7 +67,7 @@ public class InitialAdminInitializer {
     @Profile({ Profiles.INITIAL_ADMIN_CREATED }) // used inside PROD profile
     public CommandLineRunner initialSecHubAdm(InternalInitialDataService internalService) {
         return args -> {
-            internalService.createInitialAdmin(initialAdminUserid, initialAdminEmailAdress, UUID.randomUUID().toString()); // uses SecureRandom
+            internalService.createInitialAdmin(initialAdminUserid, initialAdminEmailAddress, UUID.randomUUID().toString()); // uses SecureRandom
         };
     }
 

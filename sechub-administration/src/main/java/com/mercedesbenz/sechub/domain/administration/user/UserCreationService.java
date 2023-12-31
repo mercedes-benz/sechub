@@ -87,8 +87,8 @@ public class UserCreationService {
         found = userRepository.findByEmailAddress(emailAddress);
 
         if (found.isPresent()) {
-            LOG.warn("Self registration coming in for user:{} but mailaddress {} already exists. So just removing self registration entry", sanitizedLogUserId,
-                    emailAddress);
+            LOG.warn("Self registration coming in for user:{} but email address {} already exists. So just removing self registration entry",
+                    sanitizedLogUserId, emailAddress);
             selfRegistrationRepository.deleteById(userId);
             return;
         }
