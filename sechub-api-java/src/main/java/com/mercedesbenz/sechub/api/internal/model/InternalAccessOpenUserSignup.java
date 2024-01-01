@@ -31,7 +31,7 @@ public class InternalAccessOpenUserSignup {
         /* child classes can override this */
     }
 
-    public String getEmailAdress() {
+    public String getEmailAddress() {
         return delegate.getEmailAddress();
     }
 
@@ -39,7 +39,7 @@ public class InternalAccessOpenUserSignup {
         return delegate.getUserId();
     }
 
-    public void setEmailAdress(String emailAddress) {
+    public void setEmailAddress(String emailAddress) {
         delegate.setEmailAddress(emailAddress);
     }
 

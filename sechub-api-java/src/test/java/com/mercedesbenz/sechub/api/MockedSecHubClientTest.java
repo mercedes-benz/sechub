@@ -68,7 +68,7 @@ class MockedSecHubClientTest {
         /* execute */
         UserSignup signup = new UserSignup();
         signup.setUserId("somebody");
-        signup.setEmailAdress("somebody@example.org");
+        signup.setEmailAddress("somebody@example.org");
 
         clientToTest.createSignup(signup);
 
