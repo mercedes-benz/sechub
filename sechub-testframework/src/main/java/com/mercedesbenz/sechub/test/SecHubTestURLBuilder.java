@@ -472,8 +472,8 @@ public class SecHubTestURLBuilder extends AbstractTestURLBuilder {
         return buildUrl(API_ANONYMOUS, "integrationtest/project/" + projectId + "/scan/report/count");
     }
 
-    public String buildFetchEmailsFromMockMailServiceUrl(String emailAdress) {
-        return buildUrl(API_ANONYMOUS, "integrationtest/mock/emails/to", emailAdress);
+    public String buildFetchEmailsFromMockMailServiceUrl(String emailAddress) {
+        return buildUrl(API_ANONYMOUS, "integrationtest/mock/emails/to", emailAddress);
     }
 
     public String buildResetAllMockMailsUrl() {

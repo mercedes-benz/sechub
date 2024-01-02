@@ -19,11 +19,11 @@ public class FetchMockMailsAction extends IntegrationTestAction {
 
     @Override
     protected void executeImplAfterRestHelperSwitched(ActionEvent e) {
-        Optional<String> emailAdress = getUserInput("Please enter userid to fetch mock mails", InputCacheIdentifier.EMAILADRESS);
-        if (!emailAdress.isPresent()) {
+        Optional<String> emailAddress = getUserInput("Please enter userid to fetch mock mails", InputCacheIdentifier.EMAILADDRESS);
+        if (!emailAddress.isPresent()) {
             return;
         }
-        List<MockEmailEntry> data = IntegrationTestContext.get().emailAccess().getMockMailListFor(emailAdress.get());
+        List<MockEmailEntry> data = IntegrationTestContext.get().emailAccess().getMockMailListFor(emailAddress.get());
         for (MockEmailEntry entry : data) {
             outputAsTextOnSuccess(entry.fullToString());
         }

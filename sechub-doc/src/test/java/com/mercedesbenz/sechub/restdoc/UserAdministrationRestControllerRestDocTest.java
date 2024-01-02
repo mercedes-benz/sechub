@@ -127,7 +127,7 @@ public class UserAdministrationRestControllerRestDocTest implements TestIsNecess
 
 	                		),
                             pathParameters(
-                                    parameterWithName(USER_ID.paramName()).description("The userId of the user whose email adress will be changed"),
+                                    parameterWithName(USER_ID.paramName()).description("The userId of the user whose email address will be changed"),
                                     parameterWithName(EMAIL_ADDRESS.paramName()).description("The new email address")
 
                         )
@@ -368,7 +368,7 @@ public class UserAdministrationRestControllerRestDocTest implements TestIsNecess
         	                            ),
         	                            responseFields(
         	                                    fieldWithPath(UserDetailInformation.PROPERTY_USERNAME).description("The name of the user"),
-        	                                    fieldWithPath(UserDetailInformation.PROPERTY_EMAIL).description("The mail adress of the user"),
+        	                                    fieldWithPath(UserDetailInformation.PROPERTY_EMAIL).description("The mail address of the user"),
         	                                    fieldWithPath(UserDetailInformation.PROPERTY_SUPERADMIN).description("True, when this user is a super administrator"),
         	                                    fieldWithPath(UserDetailInformation.PROPERTY_PROJECTS).description("The projects the user has access to"),
         	                                    fieldWithPath(UserDetailInformation.PROPERTY_OWNED_PROJECTS).description("The projects the user is owner of")
@@ -424,7 +424,7 @@ public class UserAdministrationRestControllerRestDocTest implements TestIsNecess
                                 ),
                         responseFields(
                                 fieldWithPath(UserDetailInformation.PROPERTY_USERNAME).description("The name of the user"),
-                                fieldWithPath(UserDetailInformation.PROPERTY_EMAIL).description("The mail adress of the user"),
+                                fieldWithPath(UserDetailInformation.PROPERTY_EMAIL).description("The mail address of the user"),
                                 fieldWithPath(UserDetailInformation.PROPERTY_SUPERADMIN).description("True, when this user is a super administrator"),
                                 fieldWithPath(UserDetailInformation.PROPERTY_PROJECTS).description("The projects the user has access to"),
                                 fieldWithPath(UserDetailInformation.PROPERTY_OWNED_PROJECTS).description("The projects the user is owner of")

@@ -148,7 +148,7 @@ public class AdminApiPlayground {
 
         UserSignup signUp = new UserSignup();
         signUp.setApiVersion("1.0");
-        signUp.setEmailAdress(userName + "@example.com");
+        signUp.setEmailAddress(userName + "@example.com");
         signUp.setUserId(userName);
         client.createSignup(signUp);
 

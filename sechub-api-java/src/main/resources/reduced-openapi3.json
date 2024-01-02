@@ -2029,7 +2029,7 @@
                     {
                         "name": "userId",
                         "in": "path",
-                        "description": "The userId of the user whose email adress will be changed",
+                        "description": "The userId of the user whose email address will be changed",
                         "required": true,
                         "schema": {
                             "type": "string"
@@ -2883,6 +2883,38 @@
                     }
                 }
             },
+            "UserDetails": {
+                "title": "UserDetails",
+                "type": "object",
+                "properties": {
+                    "projects": {
+                        "type": "array",
+                        "description": "The projects the user has access to",
+                        "items": {
+                            "type": "string"
+                        }
+                    },
+                    "superAdmin": {
+                        "type": "boolean",
+                        "description": "True, when this user is a super administrator"
+                    },
+                    "userId": {
+                        "type": "string",
+                        "description": "The name of the user"
+                    },
+                    "email": {
+                        "type": "string",
+                        "description": "The mail address of the user"
+                    },
+                    "ownedProjects": {
+                        "type": "array",
+                        "description": "The projects the user is owner of",
+                        "items": {
+                            "type": "string"
+                        }
+                    }
+                }
+            },
             "api-admin-project-projectId-104816866": {
                 "type": "object"
             },
@@ -3103,38 +3135,6 @@
             "FullScanDataZIP": {
                 "title": "FullScanDataZIP",
                 "type": "object"
-            },
-            "UserDetails": {
-                "title": "UserDetails",
-                "type": "object",
-                "properties": {
-                    "projects": {
-                        "type": "array",
-                        "description": "The projects the user has access to",
-                        "items": {
-                            "type": "string"
-                        }
-                    },
-                    "superAdmin": {
-                        "type": "boolean",
-                        "description": "True, when this user is a super administrator"
-                    },
-                    "userId": {
-                        "type": "string",
-                        "description": "The name of the user"
-                    },
-                    "email": {
-                        "type": "string",
-                        "description": "The mail adress of the user"
-                    },
-                    "ownedProjects": {
-                        "type": "array",
-                        "description": "The projects the user is owner of",
-                        "items": {
-                            "type": "string"
-                        }
-                    }
-                }
             },
             "ServerVersion": {
                 "title": "ServerVersion",
@@ -3438,16 +3438,6 @@
                     }
                 }
             },
-            "JobId": {
-                "title": "JobId",
-                "type": "object",
-                "properties": {
-                    "jobId": {
-                        "type": "string",
-                        "description": "A unique job id"
-                    }
-                }
-            },
             "ExecutionProfileCreate": {
                 "title": "ExecutionProfileCreate",
                 "type": "object",
@@ -3495,6 +3485,16 @@
                                 }
                             }
                         }
+                    }
+                }
+            },
+            "JobId": {
+                "title": "JobId",
+                "type": "object",
+                "properties": {
+                    "jobId": {
+                        "type": "string",
+                        "description": "A unique job id"
                     }
                 }
             },

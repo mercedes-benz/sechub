@@ -82,7 +82,7 @@ public class AnonymousSignupRestControllerMockTest {
         this.mockMvc.perform(
         		post(https(PORT_USED).buildUserSignUpUrl()).
         			contentType(MediaType.APPLICATION_JSON_VALUE).
-        			content("{\"apiVersion\":\"X.0\",\"userId\":\"\",\"emailAdress\":\"test@test.com\"}")
+        			content("{\"apiVersion\":\"X.0\",\"userId\":\"\",\"emailAddress\":\"test@test.com\"}")
         		).
         			andExpect(status().isBadRequest()
         		);

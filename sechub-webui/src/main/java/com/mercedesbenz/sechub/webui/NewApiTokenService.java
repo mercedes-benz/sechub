@@ -22,7 +22,7 @@ public class NewApiTokenService {
      *
      * <pre>
      *  curl
-     * 'https://sechub.example.com/api/anonymous/refresh/apitoken/emailAdress@test.
+     * 'https://sechub.example.com/api/anonymous/refresh/apitoken/emailAddress@test.
      * com' -i -X POST -H 'Content-Type: application/json;charset=UTF-8'
      * </pre>
      */

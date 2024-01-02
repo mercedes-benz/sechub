@@ -114,10 +114,10 @@ public class CreateOverviewCSVExportAction extends AbstractUIAction {
         while (iditerator.hasNext()) {
             JsonNode dNode = iditerator.next();
             String userId = dNode.get("userId").asText();
-            String emailAdress = dNode.get("emailAdress").asText();
-            ids.add(userId + " <" + emailAdress + ">");
+            String emailAddress = dNode.get("emailAddress").asText();
+            ids.add(userId + " <" + emailAddress + ">");
         }
-        outputAsTextOnSuccess("Found " + ids.size() + " watting signups.");
+        outputAsTextOnSuccess("Found " + ids.size() + " waiting signups.");
         return ids;
     }
 
