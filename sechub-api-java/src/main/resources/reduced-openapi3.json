@@ -2578,6 +2578,47 @@
                     "description": "An array of scan log summary entries"
                 }
             },
+            "ListOfRunningJobs": {
+                "title": "ListOfRunningJobs",
+                "type": "array",
+                "items": {
+                    "required": [
+                        "configuration",
+                        "jobUUID",
+                        "owner",
+                        "projectId",
+                        "since",
+                        "status"
+                    ],
+                    "type": "object",
+                    "properties": {
+                        "owner": {
+                            "type": "string",
+                            "description": "Owner of the job - means user which triggered it"
+                        },
+                        "jobUUID": {
+                            "type": "string",
+                            "description": "The uuid of the running job"
+                        },
+                        "configuration": {
+                            "type": "string",
+                            "description": "Configuration used for this job"
+                        },
+                        "projectId": {
+                            "type": "string",
+                            "description": "The name of the project the job is running for"
+                        },
+                        "since": {
+                            "type": "string",
+                            "description": "Timestamp since when job has been started"
+                        },
+                        "status": {
+                            "type": "string",
+                            "description": "A status information "
+                        }
+                    }
+                }
+            },
             "ExecutorConfiguration": {
                 "title": "ExecutorConfiguration",
                 "required": [
@@ -2965,47 +3006,6 @@
                             }
                         },
                         "description": "Webscan configuration block"
-                    }
-                }
-            },
-            "ListOfRunningJobs": {
-                "title": "ListOfRunningJobs",
-                "type": "array",
-                "items": {
-                    "required": [
-                        "configuration",
-                        "jobUUID",
-                        "owner",
-                        "projectId",
-                        "since",
-                        "status"
-                    ],
-                    "type": "object",
-                    "properties": {
-                        "owner": {
-                            "type": "string",
-                            "description": "Owner of the job - means user which triggered it"
-                        },
-                        "jobUUID": {
-                            "type": "string",
-                            "description": "The uuid of the running job"
-                        },
-                        "configuration": {
-                            "type": "string",
-                            "description": "Configuration used for this job"
-                        },
-                        "projectId": {
-                            "type": "string",
-                            "description": "The name of the project the job is running for"
-                        },
-                        "since": {
-                            "type": "string",
-                            "description": "Timestamp since when job has been started"
-                        },
-                        "status": {
-                            "type": "string",
-                            "description": "A status information "
-                        }
                     }
                 }
             },

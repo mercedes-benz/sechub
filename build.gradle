@@ -19,7 +19,7 @@ buildscript{
 		classpath "org.ajoberstar.grgit:grgit-gradle:${libraryVersion.grgit}" // necessary for version calculation
 		classpath "com.epages:restdocs-api-spec-gradle-plugin:${libraryVersion.restDocsApiSpec}"
         classpath "org.owasp:dependency-check-gradle:${libraryVersion.dependency_check}"
-        classpath "org.cyclonedx:cyclonedx-gradle-plugin:1.7.4"
+        classpath "org.cyclonedx:cyclonedx-gradle-plugin:${libraryVersion.cyclonedx}"
 	}
 }
 
@@ -30,10 +30,10 @@ plugins {
     id 'org.asciidoctor.jvm.pdf' version '3.3.2'
     
     // open api
-    id 'org.openapi.generator' version '7.1.0'
+    id 'org.openapi.generator' version '7.2.0'
     
     // spring
-    id 'org.springframework.boot' version '3.2.0' apply false
+    id 'org.springframework.boot' version '3.2.1' apply false
     
     // spotless code formatter
     // (see https://github.com/diffplug/spotless)
@@ -42,7 +42,7 @@ plugins {
     // versions plugin for checking new available library versions etc. 
     // (see https://github.com/ben-manes/gradle-versions-plugin)
     id 'com.github.ben-manes.versions' version '0.50.0'
-    
+       
     // Details about every gradle plugin can be found at 
     // https://plugins.gradle.org/plugin/${pluginId}
 }
