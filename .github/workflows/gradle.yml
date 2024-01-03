@@ -118,12 +118,12 @@ jobs:
 
       - name: Archive sechub integration test report artifacts
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@c7d193f32edcb7bfad88892161225aeda64e9392
         with:
           name: sechub-integrationtest-test-reports
           path: sechub-integrationtest/build/sechub-test-reports
           retention-days: 14
-          
+
       - name: Archive openAPI3 JSON files
         uses: actions/upload-artifact@c7d193f32edcb7bfad88892161225aeda64e9392
         with:
