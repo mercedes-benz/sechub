@@ -2578,47 +2578,6 @@
                     "description": "An array of scan log summary entries"
                 }
             },
-            "ListOfRunningJobs": {
-                "title": "ListOfRunningJobs",
-                "type": "array",
-                "items": {
-                    "required": [
-                        "configuration",
-                        "jobUUID",
-                        "owner",
-                        "projectId",
-                        "since",
-                        "status"
-                    ],
-                    "type": "object",
-                    "properties": {
-                        "owner": {
-                            "type": "string",
-                            "description": "Owner of the job - means user which triggered it"
-                        },
-                        "jobUUID": {
-                            "type": "string",
-                            "description": "The uuid of the running job"
-                        },
-                        "configuration": {
-                            "type": "string",
-                            "description": "Configuration used for this job"
-                        },
-                        "projectId": {
-                            "type": "string",
-                            "description": "The name of the project the job is running for"
-                        },
-                        "since": {
-                            "type": "string",
-                            "description": "Timestamp since when job has been started"
-                        },
-                        "status": {
-                            "type": "string",
-                            "description": "A status information "
-                        }
-                    }
-                }
-            },
             "ExecutorConfiguration": {
                 "title": "ExecutorConfiguration",
                 "required": [
@@ -2691,6 +2650,47 @@
                         "type": "boolean",
                         "description": "Enabled state of executor, per default false",
                         "nullable": true
+                    }
+                }
+            },
+            "ListOfRunningJobs": {
+                "title": "ListOfRunningJobs",
+                "type": "array",
+                "items": {
+                    "required": [
+                        "configuration",
+                        "jobUUID",
+                        "owner",
+                        "projectId",
+                        "since",
+                        "status"
+                    ],
+                    "type": "object",
+                    "properties": {
+                        "owner": {
+                            "type": "string",
+                            "description": "Owner of the job - means user which triggered it"
+                        },
+                        "jobUUID": {
+                            "type": "string",
+                            "description": "The uuid of the running job"
+                        },
+                        "configuration": {
+                            "type": "string",
+                            "description": "Configuration used for this job"
+                        },
+                        "projectId": {
+                            "type": "string",
+                            "description": "The name of the project the job is running for"
+                        },
+                        "since": {
+                            "type": "string",
+                            "description": "Timestamp since when job has been started"
+                        },
+                        "status": {
+                            "type": "string",
+                            "description": "A status information "
+                        }
                     }
                 }
             },
@@ -3060,6 +3060,27 @@
                     "description": "List of user signups"
                 }
             },
+            "StatusInformation": {
+                "title": "StatusInformation",
+                "type": "array",
+                "items": {
+                    "required": [
+                        "key",
+                        "value"
+                    ],
+                    "type": "object",
+                    "properties": {
+                        "value": {
+                            "type": "string",
+                            "description": "Status value"
+                        },
+                        "key": {
+                            "type": "string",
+                            "description": "Status key identifier"
+                        }
+                    }
+                }
+            },
             "JobStatus": {
                 "title": "JobStatus",
                 "required": [
@@ -3105,27 +3126,6 @@
                     "trafficLight": {
                         "type": "string",
                         "description": "Trafficlight of job - but only available when job has been done. Possible states are GREEN, YELLOW, RED, OFF"
-                    }
-                }
-            },
-            "StatusInformation": {
-                "title": "StatusInformation",
-                "type": "array",
-                "items": {
-                    "required": [
-                        "key",
-                        "value"
-                    ],
-                    "type": "object",
-                    "properties": {
-                        "value": {
-                            "type": "string",
-                            "description": "Status value"
-                        },
-                        "key": {
-                            "type": "string",
-                            "description": "Status key identifier"
-                        }
                     }
                 }
             },
@@ -3396,6 +3396,10 @@
             "api-admin-config-autoclean-638361826": {
                 "type": "object"
             },
+            "ExecutorConfigurationId": {
+                "title": "ExecutorConfigurationId",
+                "type": "object"
+            },
             "ExecutorConfigurationWithUUID": {
                 "title": "ExecutorConfigurationWithUUID",
                 "required": [
@@ -3475,10 +3479,6 @@
                         "nullable": true
                     }
                 }
-            },
-            "ExecutorConfigurationId": {
-                "title": "ExecutorConfigurationId",
-                "type": "object"
             },
             "ExecutionProfileUpdate": {
                 "title": "ExecutionProfileUpdate",
