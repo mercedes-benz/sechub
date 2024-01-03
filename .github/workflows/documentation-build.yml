@@ -74,14 +74,14 @@ jobs:
       # Upload documentation
       # -----------------------------------------
       - name: Archive documentation HTML
-        uses: actions/upload-artifact@a8a3f3ad30e3422c9c7b888a15615d19a852ae32
+        uses: actions/upload-artifact@c7d193f32edcb7bfad88892161225aeda64e9392
         with:
           name: sechub-docs-html
           path: sechub-doc/build/docs/final-html/
           retention-days: 14
 
       - name: Archive documentation PDF
-        uses: actions/upload-artifact@a8a3f3ad30e3422c9c7b888a15615d19a852ae32
+        uses: actions/upload-artifact@c7d193f32edcb7bfad88892161225aeda64e9392
         with:
           name: sechub-docs-pdf
           path: sechub-doc/build/docs/asciidoc/*.pdf
