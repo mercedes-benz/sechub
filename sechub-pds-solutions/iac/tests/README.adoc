@@ -1,0 +1,14 @@
+// SPDX-License-Identifier: MIT
+= System Tests
+
+== Steps
+
+. Download `sechub-pds-tools-cli-x.y.z.jar` from the releases: https://github.com/mercedes-benz/sechub/releases/.
+. Copy `sechub-pds-tools-cli-x.y.z.jar` into this folder.
+. Run system tests
++
+Run all system tests example:
++
+----
+java -jar sechub-pds-tools-cli-1.2.0.jar systemtest --file systemtest_local_kics.json --pds-solutions-rootfolder ../../ --sechub-solution-rootfolder ../../../sechub-solution
+----
