@@ -13,7 +13,7 @@ fi
 if [[ -z "$vulnerable_repo" ]]
 then
 	echo "No vulnerable application repository provided"
-	exit 1
+	exit 2
 fi
 
 cd "$current_test_folder"
