@@ -44,7 +44,7 @@ public class AnonymousUserRequestsNewApiTokenService {
     @Autowired
     UserInputAssertion assertion;
 
-    public void anonymousRequestToGetNewApiTokenForUserMailAddress(String userEmail) {
+    public void anonymousRequestToGetNewApiTokenForUserEmailAddress(String userEmail) {
         LOG.info("New api token requested for email address: {})", logSanitizer.sanitize(userEmail, 50));
 
         assertion.assertIsValidEmailAddress(userEmail);

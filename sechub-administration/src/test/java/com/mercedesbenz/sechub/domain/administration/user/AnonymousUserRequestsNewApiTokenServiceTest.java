@@ -50,7 +50,7 @@ public class AnonymousUserRequestsNewApiTokenServiceTest {
     @Test
     public void service_uses_assertion_validate_mail() throws Exception {
         /* execute */
-        serviceToTest.anonymousRequestToGetNewApiTokenForUserMailAddress("user@test.com");
+        serviceToTest.anonymousRequestToGetNewApiTokenForUserEmailAddress("user@test.com");
 
         /* test */
         verify(mockedUserAssertion).assertIsValidEmailAddress("user@test.com");
@@ -63,7 +63,7 @@ public class AnonymousUserRequestsNewApiTokenServiceTest {
         when(mockedUserRepository.findByEmailAddress("user@test.com")).thenReturn(Optional.empty());
 
         /* execute */
-        serviceToTest.anonymousRequestToGetNewApiTokenForUserMailAddress("user@test.com");
+        serviceToTest.anonymousRequestToGetNewApiTokenForUserEmailAddress("user@test.com");
 
     }
 
@@ -78,7 +78,7 @@ public class AnonymousUserRequestsNewApiTokenServiceTest {
         when(mockedUserRepository.findByEmailAddress("user@test.com")).thenReturn(Optional.of(user));
 
         /* execute */
-        serviceToTest.anonymousRequestToGetNewApiTokenForUserMailAddress("user@test.com");
+        serviceToTest.anonymousRequestToGetNewApiTokenForUserEmailAddress("user@test.com");
 
         /* test */
         ArgumentCaptor<DomainMessage> domainMessageCaptor = ArgumentCaptor.forClass(DomainMessage.class);
@@ -105,7 +105,7 @@ public class AnonymousUserRequestsNewApiTokenServiceTest {
         when(mockedUserRepository.findByEmailAddress("user@test.com")).thenReturn(Optional.of(user));
 
         /* execute */
-        serviceToTest.anonymousRequestToGetNewApiTokenForUserMailAddress("user@test.com");
+        serviceToTest.anonymousRequestToGetNewApiTokenForUserEmailAddress("user@test.com");
 
         /* test */
         assertEquals(FAKE_ONE_TIME_TOKEN, user.oneTimeToken);

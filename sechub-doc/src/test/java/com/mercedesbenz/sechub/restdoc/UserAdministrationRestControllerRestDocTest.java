@@ -368,7 +368,7 @@ public class UserAdministrationRestControllerRestDocTest implements TestIsNecess
         	                            ),
         	                            responseFields(
         	                                    fieldWithPath(UserDetailInformation.PROPERTY_USERNAME).description("The name of the user"),
-        	                                    fieldWithPath(UserDetailInformation.PROPERTY_EMAIL).description("The mail address of the user"),
+        	                                    fieldWithPath(UserDetailInformation.PROPERTY_EMAIL).description("The email address of the user"),
         	                                    fieldWithPath(UserDetailInformation.PROPERTY_SUPERADMIN).description("True, when this user is a super administrator"),
         	                                    fieldWithPath(UserDetailInformation.PROPERTY_PROJECTS).description("The projects the user has access to"),
         	                                    fieldWithPath(UserDetailInformation.PROPERTY_OWNED_PROJECTS).description("The projects the user is owner of")

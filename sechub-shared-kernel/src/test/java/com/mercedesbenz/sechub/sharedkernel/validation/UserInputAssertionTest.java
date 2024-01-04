@@ -24,17 +24,17 @@ public class UserInputAssertionTest {
     @Test
     public void only_emailvalidation_is_used_when_email_is_asserted() {
         /* prepare */
-        String validMailAddress = "mymail@example.com";
+        String validEmailAddress = "myemail@example.com";
 
         EmailValidation mockedEmailValidation = mock(EmailValidation.class);
-        when(mockedEmailValidation.validate(validMailAddress)).thenReturn(new ValidationResult());
+        when(mockedEmailValidation.validate(validEmailAddress)).thenReturn(new ValidationResult());
         assertToTest.emailValidation = mockedEmailValidation;
 
         /* execute */
-        assertToTest.assertIsValidEmailAddress(validMailAddress);
+        assertToTest.assertIsValidEmailAddress(validEmailAddress);
 
         /* test */
-        verify(mockedEmailValidation).validate(validMailAddress);
+        verify(mockedEmailValidation).validate(validEmailAddress);
     }
 
 }

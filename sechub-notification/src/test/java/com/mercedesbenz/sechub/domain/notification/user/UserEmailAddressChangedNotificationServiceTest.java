@@ -41,7 +41,7 @@ class UserEmailAddressChangedNotificationServiceTest {
         UserMessage userMessage = new UserMessage();
         userMessage.setEmailAddress(emailAddress);
         userMessage.setFormerEmailAddress(formerEmailAddress);
-        userMessage.setSubject("Your mail address has changed by a test");
+        userMessage.setSubject("Your email address has been changed by a test");
 
         SimpleMailMessage simpleMailmessageFormer = new SimpleMailMessage();
         simpleMailmessageFormer.setSubject("<former>");
@@ -68,11 +68,11 @@ class UserEmailAddressChangedNotificationServiceTest {
         String receivedFormerText = mails.receivedFormer.getText();
         String receivedNewText = mails.receivedNew.getText();
 
-        assertEquals("Your mail address has changed by a test and it will not be used any longer for SecHub.\n"
+        assertEquals("Your email address has been changed by a test and it will not be used any longer for SecHub.\n"
                 + "\n"
                 + "In case you do not receive a follow up notification to the new email address, please inform your SecHub administrator!",
                 receivedFormerText);
-        assertEquals("Your mail address has changed by a test from former_email.address@example.org to email.address@example.org. \n"
+        assertEquals("Your email address has been changed by a test from former_email.address@example.org to email.address@example.org. \n"
                 + "Your old email address is not used in SecHub any longer.",
                 receivedNewText);
         /* @formatter:on */

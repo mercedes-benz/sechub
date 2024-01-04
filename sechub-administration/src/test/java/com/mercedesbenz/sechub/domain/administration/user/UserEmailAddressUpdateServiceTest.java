@@ -138,7 +138,7 @@ class UserEmailAddressUpdateServiceTest {
     }
 
     @Test
-    void throws_not_acceptable_when_same_mail_address_as_before() {
+    void throws_not_acceptable_when_same_email_address_as_before() {
         /* prepare */
         User knownUser1 = createKnownUser1();
         when(userRepository.findOrFailUser(KNOWN_USER1)).thenReturn(knownUser1);

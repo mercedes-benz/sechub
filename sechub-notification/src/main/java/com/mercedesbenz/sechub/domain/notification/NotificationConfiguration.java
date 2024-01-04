@@ -15,7 +15,7 @@ import com.mercedesbenz.sechub.sharedkernel.MustBeDocumented;
 @Component
 public class NotificationConfiguration {
 
-    @MustBeDocumented(value = "Single mail address used for emails to administrators. This should an NPM (non personalized mailbox)")
+    @MustBeDocumented(value = "Single email address used for emails to administrators. This should be a NPM (non personalized mailbox)")
     @Value("${sechub.notification.email.administrators}")
     private String emailAdministrators;
 
