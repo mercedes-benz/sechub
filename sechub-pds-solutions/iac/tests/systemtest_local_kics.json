@@ -12,8 +12,8 @@
                 "configure": {
                     "executors": [
                         {
-                            "pdsProductId": "PDS_GITLEAKS",
-                            "name": "system-test-gitleakes",
+                            "pdsProductId": "PDS_KICS",
+                            "name": "system-test-codescan-gosec",
                             "parameters": {
                                 "sechub.productexecutor.pds.adapter.resilience.retry.wait.milliseconds": 3000,
                                 "sechub.productexecutor.pds.adapter.resilience.retry.max": 20,
@@ -32,8 +32,8 @@
             },
             "pdsSolutions": [
                 {
-                    "name": "gitleaks",
-                    "url": "https://pds-gitleaks:8444/",
+                    "name": "iac",
+                    "url": "https://pds-iac:8444/",
                     "waitForAvailable": false,
                     "start": [
                         {
@@ -71,30 +71,56 @@
                 "runSecHubJob": {
                     "uploads": [
                         {
-                            "sourceFolder": "sanity-check",
-                            "referenceId": "files"
+                            "sourceFolder": "sanity-check"
                         }
                     ],
-                    "secretScan": {
-                        "use": [
-                            "files"
-                        ]
-                    }
+                    "codeScan": {}
                 }
             },
             "assert": [
                 {
                     "sechubResult": {
-                        "hasTrafficLight": "YELLOW",
+                        "hasTrafficLight": "GREEN"
+                    }
+                }
+            ]
+        },
+        {
+            "name": "terragoat",
+            "prepare": [
+                {
+                    "script": {
+                        "arguments": [
+                            "${runtime.currentTestFolder}",
+                            "https://github.com/bridgecrewio/terragoat"
+                        ],
+                        "path": "./clone_repo.sh"
+                    }
+                }
+            ],
+            "execute": {
+                "runSecHubJob": {
+                    "uploads": [
+                        {
+                            "sourceFolder": "terragoat"
+                        }
+                    ],
+                    "codeScan": {}
+                }
+            },
+            "assert": [
+                {
+                    "sechubResult": {
+                        "hasTrafficLight": "RED",
                         "containsStrings": {
                             "values": [
                                 "result",
                                 "SUCCESS",
                                 "jobUUID",
                                 "reportVersion",
-                                "MEDIUM",
+                                "HIGH",
                                 "severity",
-                                "my-readme.md"
+                                "terragoat/terraform/azure/sql.tf"
                             ]
                         }
                     }
@@ -118,81 +144,26 @@
                 "runSecHubJob": {
                     "uploads": [
                         {
-                            "sourceFolder": "wrongsecrets",
-                            "referenceId": "application"
+                            "sourceFolder": "wrongsecrets"
                         }
                     ],
-                    "secretScan": {
-                        "use": [
-                            "application"
-                        ]
-                    }
+                    "codeScan": {}
                 }
             },
             "assert": [
                 {
                     "sechubResult": {
-                        "hasTrafficLight": "YELLOW",
+                        "hasTrafficLight": "RED",
                         "containsStrings": {
                             "values": [
                                 "result",
                                 "SUCCESS",
                                 "jobUUID",
                                 "reportVersion",
-                                "MEDIUM",
+                                "HIGH",
                                 "severity",
-                                "wrongsecrets/src/main/resources/application.properties"
+                                "wrongsecrets/okteto/k8s/secret-challenge-ctf-deployment.yml"
                             ]
-                        }
-                    }
-                }
-            ]
-        },
-        {
-            "name": "unsafe-bank",
-            "prepare": [
-                {
-                    "script": {
-                        "arguments": [
-                            "${runtime.currentTestFolder}",
-                            "https://github.com/lucideus-repo/UnSAFE_Bank"
-                        ],
-                        "path": "./clone_repo.sh"
-                    }
-                }
-            ],
-            "execute": {
-                "runSecHubJob": {
-                    "uploads": [
-                        {
-                            "sourceFolder": "UnSAFE_Bank",
-                            "referenceId": "code"
-                        }
-                    ],
-                    "secretScan": {
-                        "use": [
-                            "code"
-                        ]
-                    }
-                }
-            },
-            "assert": [
-                {
-                    "sechubResult": {
-                        "hasTrafficLight": "YELLOW",
-                        "containsStrings": {
-                            "values": [
-                                "result",
-                                "SUCCESS",
-                                "jobUUID",
-                                "reportVersion",
-                                "MEDIUM",
-                                "severity",
-                                "UnSAFE_Bank/Backend/src/api/application/config/database.php"
-                            ]
-                        },
-                        "equalsFile": {
-                            "path": "sechub-report-UnSAFE_Bank.json"
                         }
                     }
                 }
