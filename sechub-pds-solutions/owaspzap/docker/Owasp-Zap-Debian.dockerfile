@@ -10,10 +10,11 @@ LABEL org.opencontainers.image.description="A container which combines OWASP ZAP
 LABEL maintainer="SecHub FOSS Team"
 
 # Build args
+# ZAP (Zed Attack Proxy) version. See https://github.com/zaproxy/zaproxy
 ARG OWASPZAP_VERSION="2.14.0"
 ARG OWASPZAP_SHA256SUM="219d7f25bbe25247713805ab02cc12279898c870743c1aae3c2b0b1882191960"
 
-ARG OWASPZAP_WRAPPER_VERSION="1.4.0"
+ARG OWASPZAP_WRAPPER_VERSION="1.5.0"
 
 # OWASP ZAP host and port
 ENV ZAP_HOST="127.0.0.1"
