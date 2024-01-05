@@ -73,9 +73,9 @@ def asciidocBuildDir="$buildDir/docs/asciidoc";
 def imagesBuildDir="$buildDir/docs/asciidoc/images";
 def finalHTMLDir = "$buildDir/docs/final-html"
 
-def clientVersion = versionData.getClientVersion()
-def pdsVersion = versionData.getPdsVersion()
-def serverVersion = versionData.getServerVersion()
+def clientVersion = versionData.getClientDocsVersion()
+def pdsVersion = versionData.getPdsDocsVersion()
+def serverVersion = versionData.getServerDocsVersion()
 
 task dropOldGeneratedAsciidoc(dependsOn: 'test'){
     doFirst {
