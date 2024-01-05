@@ -34,13 +34,14 @@ class VersionData{
 
     public class VersionInfo{
 
-        String fullVersion
-        String shortVersion
         String id
         String text
+        String fullVersion
+        String shortVersion
+        String shortVersionForDocs
 
         public String describe(){
-            return text.padLeft(17)+": "+shortVersion+" ("+fullVersion+")"
+            return text.padLeft(17)+": "+shortVersion+" ("+fullVersion+") docs: "+shortVersionForDocs
         }
 
     }
@@ -49,14 +50,15 @@ class VersionData{
 
         VersionInfo info = new VersionInfo()
 
-        info.id=id;
-        info.text=text;
-        info.fullVersion="undefined-long-"+id+"version"
-        info.shortVersion="undefined-"+id+"version"
+        info.id = id;
+        info.text = text;
+        info.fullVersion = "undefined-long-"+id+"version"
+        info.shortVersion = "undefined-"+id+"version"
+        info.shortVersionForDocs = info.shortVersion
         map.put(id, info)
     }
 
-    public VersionInfo defineVersion(String versionType, String fullVersion){
+    public VersionInfo defineVersion(String versionType, String fullVersion, String shortVersionForDocs){
 
         VersionInfo info = map.get(versionType.toLowerCase());
         if (info==null){
@@ -64,7 +66,8 @@ class VersionData{
         }
         inspectReleaseVersion(versionType, fullVersion);
         info.shortVersion = simplifiedVersion(fullVersion);
-        info.fullVersion= fullVersion
+        info.fullVersion = fullVersion
+        info.shortVersionForDocs = shortVersionForDocs
 
         return info;
     }
@@ -73,40 +76,49 @@ class VersionData{
      * Convenience methods: return short version
      */
 
-    public String getLibrariesVersion(){
-        return map.get(ID_LIBRARIES).getShortVersion()
-    }
-
-    public String getServerVersion(){
-        return map.get(ID_SERVER).getShortVersion()
+    public String getCheckmarxWrapperVersion(){
+        return map.get(ID_WRAPPER_CHECKMARX).getShortVersion()
     }
 
     public String getClientVersion(){
         return map.get(ID_CLIENT).getShortVersion()
     }
+    public String getClientDocsVersion(){
+        return map.get(ID_CLIENT).getShortVersionForDocs()
+    }
 
-    public String getCheckmarxWrapperVersion(){
-        return map.get(ID_WRAPPER_CHECKMARX).getShortVersion()
+    public String getLibrariesVersion(){
+        return map.get(ID_LIBRARIES).getShortVersion()
     }
 
     public String getOwaspzapWrapperVersion(){
         return map.get(ID_WRAPPER_OWASPZAP).getShortVersion()
     }
 
-    public String getXrayWrapperVersion(){
-        return map.get(ID_WRAPPER_XRAY).getShortVersion()
-    }
-
     public String getPdsVersion(){
         return map.get(ID_PDS).getShortVersion()
+    }
+    public String getPdsDocsVersion(){
+        return map.get(ID_PDS).getShortVersionForDocs()
     }
 
     public String getPdsToolsVersion(){
         return map.get(ID_PDS_TOOLS).getShortVersion()
     }
 
+    public String getServerVersion(){
+        return map.get(ID_SERVER).getShortVersion()
+    }
+    public String getServerDocsVersion(){
+        return map.get(ID_SERVER).getShortVersionForDocs()
+    }
+
     public String getWebsiteVersion(){
         return map.get(ID_WEBSITE).getShortVersion()
+    }
+
+    public String getXrayWrapperVersion(){
+        return map.get(ID_WRAPPER_XRAY).getShortVersion()
     }
 
     public String getDebugInfo(){

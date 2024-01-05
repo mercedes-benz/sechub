@@ -69,6 +69,8 @@ jobs:
         uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11
         with:
           ref: master
+          fetch-tags: true
+          fetch-depth: 0
       # Create temporary local tags, so we build documentation for this tag...
       # The final tag on git server side will be done by the release when the draft is saved as "real" release
       # automatically.
