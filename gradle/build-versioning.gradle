@@ -67,16 +67,7 @@ def buildVersionFiles(){
     // - Client
     // ------------------------
 
-    // write version code for go client
-    String clientGoVersionTemplate = new File('./sechub-cli/src/mercedes-benz.com/sechub/cli/version.go.template').getText('UTF-8')
-
-    def clientVersionInfo = versionData.defineVersion("Client",buildVersionString(clientVersionCommitTag, hasChanged,buildNumber))
-
-    String clientGoVersionCode = clientGoVersionTemplate.replaceAll("__version__",clientVersionInfo.getFullVersion())
-    def clientVersionFile = new File('./sechub-cli/src/mercedes-benz.com/sechub/cli/version.go')
-    clientVersionFile.write(clientGoVersionCode)
-
-    /* Latest tagged client version as asciidoc file (#2285) */
+    // Get latest tagged client version
     def latestClientTagCmd = [
       'sh',
       '-c',
@@ -85,20 +76,29 @@ def buildVersionFiles(){
     def latestClientTag = latestClientTagCmd.execute().text.trim()
     def latestClientVersion = latestClientTag - 'v'
     latestClientVersion = latestClientVersion - "-client"
+
+    def clientVersionInfo = versionData.defineVersion("Client",buildVersionString(clientVersionCommitTag, hasChanged,buildNumber),latestClientVersion)
+
+    // write version code for go client
+    String clientGoVersionTemplate = new File('./sechub-cli/src/mercedes-benz.com/sechub/cli/version.go.template').getText('UTF-8')
+    String clientGoVersionCode = clientGoVersionTemplate.replaceAll("__version__",clientVersionInfo.getFullVersion())
+    def clientVersionFile = new File('./sechub-cli/src/mercedes-benz.com/sechub/cli/version.go')
+    clientVersionFile.write(clientGoVersionCode)
+
+    // Latest tagged client version as asciidoc file (#2285)
+    def latestClientVersionText = latestClientVersion
     // Mark as modified when built after release
     if (latestClientVersion != clientVersionInfo.getShortVersion()) {
-      latestClientVersion = latestClientVersion + " modified (commit " + currentGitCommit + ")"
+      latestClientVersionText = latestClientVersion + " modified (commit " + currentGitCommit + ")"
     }
     def clientVersionAsciiDocFile = new File('./sechub-doc/src/docs/asciidoc/documents/gen/client-version.adoc')
-    clientVersionAsciiDocFile.write("// SPDX-License-Identifier: MIT\n:revnumber: Client "+latestClientVersion+"\n:longrevnumber: Client "+latestClientVersion+" - Build date: "+docsTimeStamp+"\n")
+    clientVersionAsciiDocFile.write("// SPDX-License-Identifier: MIT\n:revnumber: Client "+latestClientVersionText+"\n:longrevnumber: Client "+latestClientVersionText+" - Build date: "+docsTimeStamp+"\n")
 
     // ------------------------
     // - Server
     // ------------------------
 
-    def serverVersionInfo =  versionData.defineVersion("Server",buildVersionString(serverVersionCommitTag, hasChanged,buildNumber))
-
-    /* Latest tagged server version as asciidoc file (#2285) */
+    // Get latest tagged server version
     def latestServerTagCmd = [
       'sh',
       '-c',
@@ -107,18 +107,21 @@ def buildVersionFiles(){
     def latestServerTag = latestServerTagCmd.execute().text.trim()
     def latestServerVersion = latestServerTag - 'v'
     latestServerVersion = latestServerVersion - "-server"
+
+    def serverVersionInfo =  versionData.defineVersion("Server",buildVersionString(serverVersionCommitTag, hasChanged,buildNumber),latestServerVersion)
+
+    // Latest tagged server version as asciidoc file (#2285)
+    def latestServerVersionText = latestServerVersion
     // Mark as modified when built after release
     if (latestServerVersion != serverVersionInfo.getShortVersion()) {
-      latestServerVersion = latestServerVersion + " modified (commit " + currentGitCommit + ")"
+      latestServerVersionText = latestServerVersion + " modified (commit " + currentGitCommit + ")"
     }
     def serverVersionAsciiDocFile = new File('./sechub-doc/src/docs/asciidoc/documents/gen/server-version.adoc')
-    serverVersionAsciiDocFile.write("// SPDX-License-Identifier: MIT\n:revnumber: Server "+latestServerVersion+"\n:longrevnumber: Server "+latestServerVersion+" - Build date: "+docsTimeStamp+"\n")
+    serverVersionAsciiDocFile.write("// SPDX-License-Identifier: MIT\n:revnumber: Server "+latestServerVersionText+"\n:longrevnumber: Server "+latestServerVersionText+" - Build date: "+docsTimeStamp+"\n")
 
     // ------------------------
     // - PDS
     // ------------------------
-
-    def pdsVersionInfo = versionData.defineVersion("PDS",buildVersionString(pdsVersionCommitTag, hasChanged,buildNumber))
 
     /* Latest tagged pds version as asciidoc file (#2285) */
     def latestPDSTagCmd = [
@@ -129,37 +132,42 @@ def buildVersionFiles(){
     def latestPDSTag = latestPDSTagCmd.execute().text.trim()
     def latestPDSVersion = latestPDSTag - 'v'
     latestPDSVersion = latestPDSVersion - "-pds"
+
+    def pdsVersionInfo = versionData.defineVersion("PDS",buildVersionString(pdsVersionCommitTag, hasChanged,buildNumber),latestPDSVersion)
+
+    // Latest tagged pds version as asciidoc file (#2285)
+    def latestPDSVersionText = latestPDSVersion
     // Mark as modified when built after release
     if (latestPDSVersion != pdsVersionInfo.getShortVersion()) {
-      latestPDSVersion = latestPDSVersion + " modified (commit " + currentGitCommit + ")"
+      latestPDSVersionText = latestPDSVersion + " modified (commit " + currentGitCommit + ")"
     }
     def pdsVersionAsciiDocFile = new File('./sechub-doc/src/docs/asciidoc/documents/gen/pds-version.adoc')
-    pdsVersionAsciiDocFile.write("// SPDX-License-Identifier: MIT\n:revnumber: PDS "+latestPDSVersion+"\n:longrevnumber: PDS "+latestPDSVersion+" - Build date: "+docsTimeStamp+"\n")
+    pdsVersionAsciiDocFile.write("// SPDX-License-Identifier: MIT\n:revnumber: PDS "+latestPDSVersionText+"\n:longrevnumber: PDS "+latestPDSVersionText+" - Build date: "+docsTimeStamp+"\n")
 
     // ------------------------
     // - PDS tools
     // ------------------------
-    def pdsToolsVersionInfo = versionData.defineVersion("PDS-Tools",buildVersionString(pdsToolsVersionCommitTag, hasChanged,buildNumber))
+    def pdsToolsVersionInfo = versionData.defineVersion("PDS-Tools",buildVersionString(pdsToolsVersionCommitTag, hasChanged,buildNumber),pdsToolsVersionCommitTag)
 
     // ------------------------
     // - Libraries
     // ------------------------
-    def librariesVersionInfo =  versionData.defineVersion("Libraries",buildVersionString(librariesVersionCommitTag, hasChanged,buildNumber))
+    def librariesVersionInfo =  versionData.defineVersion("Libraries",buildVersionString(librariesVersionCommitTag, hasChanged,buildNumber),librariesVersionCommitTag)
 
     // ------------------------
     // - Checkmarx wrapper
     // ------------------------
-    def checkmarxWrapperVersionInfo = versionData.defineVersion("Checkmarx Wrapper",buildVersionString(checkmarxWrapperVersionCommitTag, hasChanged, buildNumber))
+    def checkmarxWrapperVersionInfo = versionData.defineVersion("Checkmarx Wrapper",buildVersionString(checkmarxWrapperVersionCommitTag, hasChanged, buildNumber),checkmarxWrapperVersionCommitTag)
 
     // ------------------------
     // - OWASP-ZAP wrapper
     // ------------------------
-    def owaspzapWrapperVersionInfo = versionData.defineVersion("OWASP-ZAP Wrapper",buildVersionString(owaspzapWrapperVersionCommitTag, hasChanged, buildNumber))
+    def owaspzapWrapperVersionInfo = versionData.defineVersion("OWASP-ZAP Wrapper",buildVersionString(owaspzapWrapperVersionCommitTag, hasChanged, buildNumber),owaspzapWrapperVersionCommitTag)
 
     // ------------------------
     // - XRAY wrapper
     // ------------------------
-    def xrayWrapperVersionInfo = versionData.defineVersion("XRAY Wrapper",buildVersionString(xrayWrapperVersionCommitTag, hasChanged, buildNumber))
+    def xrayWrapperVersionInfo = versionData.defineVersion("XRAY Wrapper",buildVersionString(xrayWrapperVersionCommitTag, hasChanged, buildNumber),xrayWrapperVersionCommitTag)
 
 
     def stop = new Date()
