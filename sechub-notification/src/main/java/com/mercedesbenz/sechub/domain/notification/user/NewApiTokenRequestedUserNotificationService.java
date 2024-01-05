@@ -44,7 +44,7 @@ public class NewApiTokenRequestedUserNotificationService {
         emailContent.append("\n");
 
         SimpleMailMessage message1 = factory.createMessage(userMessage.getSubject());
-        message1.setTo(userMessage.getEmailAdress());
+        message1.setTo(userMessage.getEmailAddress());
         message1.setText(emailContent.toString());
 
         emailService.send(message1);

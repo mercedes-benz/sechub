@@ -69,7 +69,7 @@ public class AnonymousSignupRestControllerRestDocTest implements TestIsNecessary
         this.mockMvc.perform(
         		post(apiEndpoint).
         			contentType(MediaType.APPLICATION_JSON_VALUE).
-        			content("{\"apiVersion\":\"1.0\",\"userId\":\"valid_userid\",\"emailAdress\":\"valid_mailadress@test.com\"}")
+        			content("{\"apiVersion\":\"1.0\",\"userId\":\"valid_userid\",\"emailAddress\":\"valid_mailaddress@test.com\"}")
         		)./*andDo(print()).*/
         			andExpect(status().isOk()).
         			andDo(defineRestService().
@@ -84,7 +84,7 @@ public class AnonymousSignupRestControllerRestDocTest implements TestIsNecessary
         	                    requestFields(
         	                            fieldWithPath("apiVersion").description("The api version, currently only 1.0 is supported"),
         	                            fieldWithPath("userId").description("Wanted userid, the userid must be lowercase only!"),
-        	                            fieldWithPath("emailAdress").description("Email adress")
+        	                            fieldWithPath("emailAddress").description("Email address")
         	                    )
         			        )
 

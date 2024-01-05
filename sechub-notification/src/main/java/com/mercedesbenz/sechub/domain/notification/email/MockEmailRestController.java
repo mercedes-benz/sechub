@@ -39,13 +39,13 @@ public class MockEmailRestController {
 
     /* @formatter:off */
 	@RequestMapping(
-			path = APIConstants.API_ANONYMOUS+"integrationtest/mock/emails/to/{emailAdress}",
+			path = APIConstants.API_ANONYMOUS+"integrationtest/mock/emails/to/{emailAddress}",
 			method = RequestMethod.GET,
 			produces= {MediaType.APPLICATION_JSON_VALUE})
 	@ResponseStatus(HttpStatus.OK)
-	public List<SimpleMailMessage> getMailsFor(@PathVariable(name="emailAdress") String emailAdress) {
+	public List<SimpleMailMessage> getMailsFor(@PathVariable(name="emailAddress") String emailAddress) {
 		/* @formatter:on */
-        return mockMailService.getMailsFor(emailAdress);
+        return mockMailService.getMailsFor(emailAddress);
     }
 
     /* @formatter:off */

@@ -24,7 +24,7 @@ Please make sure that the SQL statements work with both of them.
 * We are using PostgreSQL which does automatically use lower_case names
 * Numbering starts at `01`; maximum is `99`
 * Naming scheme for constraints: `c<number>_<table name>_<constraint title>` +
-  Example: `c01_adm_user_emailadress`
+  Example: `c01_adm_user_emailaddress`
 * Naming scheme for indices: `i<number>_<table name>_<index title>` +
   Example: `i01_statistic_job_run_data_filter`
 

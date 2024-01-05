@@ -6,7 +6,7 @@ public enum InputCacheIdentifier {
 
     USERNAME,
 
-    EMAILADRESS,
+    EMAILADDRESS,
 
     WHITELIST_URI,
 

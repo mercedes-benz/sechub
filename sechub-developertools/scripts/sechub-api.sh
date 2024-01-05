@@ -799,7 +799,7 @@ function generate_sechub_user_signup_data {
 {
   "apiVersion":"$SECHUB_API_VERSION",
   "userId":"$1",
-  "emailAdress":"$2"
+  "emailAddress":"$2"
 }
 EOF
 }

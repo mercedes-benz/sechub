@@ -17,7 +17,7 @@ public class AnonymousRequestNewAPITokenUserAction extends AbstractUIAction {
 
     @Override
     public void execute(ActionEvent e) {
-        Optional<String> email = getUserInput("Email of user requesting new API token", InputCacheIdentifier.EMAILADRESS);
+        Optional<String> email = getUserInput("Email of user requesting new API token", InputCacheIdentifier.EMAILADDRESS);
         if (!email.isPresent()) {
             return;
         }

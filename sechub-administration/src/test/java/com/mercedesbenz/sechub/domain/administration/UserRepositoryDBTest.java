@@ -60,19 +60,19 @@ public class UserRepositoryDBTest {
     }
 
     @Test
-    public void findOrFailUserByEmailAdress_user_found_by_email_address() {
+    public void findOrFailUserByEmailAddress_user_found_by_email_address() {
         /* execute */
-        User user = userRepository.findOrFailUserByEmailAdress("db_test_testuser1@example.org");
+        User user = userRepository.findOrFailUserByEmailAddress("db_test_testuser1@example.org");
 
         /* test */
         assertEquals(user1, user);
     }
 
     @Test
-    public void findOrFailUserByEmailAdress_user_NOT_found_by_email_address() {
+    public void findOrFailUserByEmailAddress_user_NOT_found_by_email_address() {
         /* execute */
         NotFoundException exception = assertThrows(NotFoundException.class,
-                () -> userRepository.findOrFailUserByEmailAdress("db_test_testuser_not_existing@example.org"));
+                () -> userRepository.findOrFailUserByEmailAddress("db_test_testuser_not_existing@example.org"));
 
         /* test */
         assertEquals("No user with email address 'db_test_testuser_not_existing@example.org' found!", exception.getMessage());

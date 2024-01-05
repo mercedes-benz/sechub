@@ -31,16 +31,16 @@ public class InternalAccessOpenUserSignup {
         /* child classes can override this */
     }
 
-    public String getEmailAdress() {
-        return delegate.getEmailAdress();
+    public String getEmailAddress() {
+        return delegate.getEmailAddress();
     }
 
     public String getUserId() {
         return delegate.getUserId();
     }
 
-    public void setEmailAdress(String emailAdress) {
-        delegate.setEmailAdress(emailAdress);
+    public void setEmailAddress(String emailAddress) {
+        delegate.setEmailAddress(emailAddress);
     }
 
     public void setUserId(String userId) {

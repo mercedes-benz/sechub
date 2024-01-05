@@ -19,10 +19,10 @@ public interface UserRepository extends JpaRepository<User, String>, UserReposit
         return foundUser.get();
     }
 
-    Optional<User> findByEmailAdress(String emailAdress);
+    Optional<User> findByEmailAddress(String emailAddress);
 
-    public default User findOrFailUserByEmailAdress(String emailAddress) {
-        Optional<User> foundUser = findByEmailAdress(emailAddress);
+    public default User findOrFailUserByEmailAddress(String emailAddress) {
+        Optional<User> foundUser = findByEmailAddress(emailAddress);
         if (!foundUser.isPresent()) {
             throw new NotFoundException("No user with email address '" + emailAddress + "' found!");
         }

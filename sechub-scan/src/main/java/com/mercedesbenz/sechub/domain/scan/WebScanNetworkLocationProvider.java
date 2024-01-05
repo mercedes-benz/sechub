@@ -39,7 +39,7 @@ public class WebScanNetworkLocationProvider implements NetworkLocationProvider {
     }
 
     @Override
-    public List<InetAddress> getInetAdresses() {
+    public List<InetAddress> getInetAddresses() {
         /*
          * SecHubWebScanConfiguration configuration currently has no IPs inside, so we
          * do not provide this

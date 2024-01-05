@@ -54,8 +54,8 @@ public class UserSignup {
         return internalAccess.getApiVersion();
     }
 
-    public String getEmailAdress() {
-        return internalAccess.getEmailAdress();
+    public String getEmailAddress() {
+        return internalAccess.getEmailAddress();
     }
 
     public String getUserId() {
@@ -66,8 +66,8 @@ public class UserSignup {
         internalAccess.setApiVersion(apiVersion);
     }
 
-    public void setEmailAdress(String emailAdress) {
-        internalAccess.setEmailAdress(emailAdress);
+    public void setEmailAddress(String emailAddress) {
+        internalAccess.setEmailAddress(emailAddress);
     }
 
     public void setUserId(String userId) {

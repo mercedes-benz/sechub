@@ -27,7 +27,7 @@ public class JobInformation {
     /* +-----------------------------------------------------------------------+ */
     public static final String TABLE_NAME = "ADM_JOB_INFORMATION";
     /**
-     * Email adress is also the primary key. So no duplicates
+     * Email address is also the primary key. So no duplicates
      */
     public static final String COLUMN_UUID = "UUID";
     public static final String COLUMN_JOB_UUID = "JOB_UUID";

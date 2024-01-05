@@ -81,14 +81,14 @@ public class UserCreationService {
             return;
         }
 
-        String emailAdress = selfRegistration.get().getEmailAdress();
-        assertion.assertIsValidEmailAddress(emailAdress);
+        String emailAddress = selfRegistration.get().getEmailAddress();
+        assertion.assertIsValidEmailAddress(emailAddress);
 
-        found = userRepository.findByEmailAdress(emailAdress);
+        found = userRepository.findByEmailAddress(emailAddress);
 
         if (found.isPresent()) {
-            LOG.warn("Self registration coming in for user:{} but mailadress {} already exists. So just removing self registration entry", sanitizedLogUserId,
-                    emailAdress);
+            LOG.warn("Self registration coming in for user:{} but email address {} already exists. So just removing self registration entry",
+                    sanitizedLogUserId, emailAddress);
             selfRegistrationRepository.deleteById(userId);
             return;
         }
@@ -99,7 +99,7 @@ public class UserCreationService {
         user.name = userId;
         user.hashedApiToken = "";// leave it empty, so API auth is disabled - will be filled later after user has
         // clicked to link
-        user.emailAdress = emailAdress;
+        user.emailAddress = emailAddress;
         user.oneTimeToken = oneTimeToken;
         user.oneTimeTokenDate = new Date();
 
@@ -132,7 +132,7 @@ public class UserCreationService {
         /* we just send info about new api token */
         DomainMessage infoRequest = new DomainMessage(MessageID.USER_NEW_API_TOKEN_REQUESTED);
         UserMessage userMessage = new UserMessage();
-        userMessage.setEmailAdress(user.getEmailAdress());
+        userMessage.setEmailAddress(user.getEmailAddress());
 
         /*
          * Security: we do NOT use userid inside this link - if some body got
@@ -153,7 +153,7 @@ public class UserCreationService {
         UserMessage authDataHashed = new UserMessage();
 
         authDataHashed.setUserId(user.getName());
-        authDataHashed.setEmailAdress(user.getEmailAdress());
+        authDataHashed.setEmailAddress(user.getEmailAddress());
 
         return authDataHashed;
     }
