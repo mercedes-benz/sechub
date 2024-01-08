@@ -28,7 +28,7 @@ include::documents/shared/about_documentation_all.adoc[]
 <<<<
 // Tutorials are currently not structured
 // should be structured in a logical way when more tutorials are written
-include::documents/tutorials/00_tutorials.adoc[]
+include::documents/tutorials/01_tutorials.adoc[]
 
 
 <<<
