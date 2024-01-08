@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-== Create a PDS solution for a product
+=== Create a PDS solution for a product
 
 The following user guide is an instruction to create and test a PDS solution
 for a new module eg. a scan tool or a wrapper. You need to install docker and docker compose.
@@ -75,7 +75,7 @@ Example pds-config.json:
 
 ----
 
-=== Test PDS standalone with pds-tools
+==== Test PDS standalone with pds-tools
 
 Requires: sechub-solution-shared/scripts/01-test-pds.sh +
 (example with codeScan and source upload)
@@ -155,7 +155,7 @@ Single PDS setup: +
 +
 plantuml::diagrams/diagram_tutorials_test_pds_solution_single.puml[format=svg, title="PDS user message handling"]
 
-=== Test PDS solution with SecHub Server and Client
+==== Test PDS solution with SecHub Server and Client
 
 . Create json product executor for your product in sechub-solution/setup-pds/executors +
 Tip: you can copy another executor and modify it to your needs

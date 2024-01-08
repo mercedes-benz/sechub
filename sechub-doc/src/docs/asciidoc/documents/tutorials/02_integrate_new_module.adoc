@@ -1,10 +1,10 @@
 // SPDX-License-Identifier: MIT
-== Integrate new SecHub module
+=== Integrate new SecHub module
 [NOTE]
-====
+=====
 In the following the necessary steps to integrate a new module in the SecHub project are described.
 SecHub uses Gradle and the Gradle wrapper.
-====
+=====
 
 . Create new SecHub module
 +
