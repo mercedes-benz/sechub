@@ -92,6 +92,9 @@ public class ZapScanner implements ZapScan {
             addReplacerRulesForHeaders();
 
             /* ZAP setup with access to target */
+            // The order of the following method calls is important. We want to load the
+            // client certificate first, because it could be needed to access the included
+            // URLs or the URLs from the API definitions.
             importClientCertificate();
             addIncludedAndExcludedUrlsToContext();
             loadApiDefinitions(zapContextId);
