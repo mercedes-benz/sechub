@@ -24,7 +24,7 @@ USER root
 RUN export DEBIAN_FRONTEND=noninteractive && \
     apt-get update && \
     apt-get --assume-yes upgrade  && \
-    apt-get --assume-yes install dos2unix unzip wget libxml2-utils && \
+    apt-get --assume-yes install dos2unix unzip wget libxml2-utils temurin-21-jre && \
     apt-get --assume-yes clean
 
 # Install FindSecurityBugs
