@@ -27,6 +27,8 @@ public enum ZapWrapperExitCode {
 
     INVALID_INCLUDE_OR_EXCLUDE_URLS(9),
 
+    CLIENT_CERTIFICATE_CONFIG_INVALID(10),
+
     ;
 
     private int exitCode;

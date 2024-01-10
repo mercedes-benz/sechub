@@ -401,10 +401,12 @@ class ZapScannerTest {
 
         SecHubWebScanConfiguration sechubWebScanConfig = SecHubScanConfiguration.createFromJSON(jsonWithCertPassword).getWebScan().get();
 
-        File clientCertificateFile = new File("backend-cert.p12");
+        File clientCertificateFile = mock(File.class);
 
         when(scanContext.getClientCertificateFile()).thenReturn(clientCertificateFile);
         when(scanContext.getSecHubWebScanConfiguration()).thenReturn(sechubWebScanConfig);
+
+        when(clientCertificateFile.exists()).thenReturn(true);
 
         ApiResponse response = mock(ApiResponse.class);
         when(clientApiFacade.importPkcs12ClientCertificate(any(), any())).thenReturn(response);
@@ -434,10 +436,11 @@ class ZapScannerTest {
 
         SecHubWebScanConfiguration sechubWebScanConfig = SecHubScanConfiguration.createFromJSON(jsonWithoutCertPassword).getWebScan().get();
 
-        File clientCertificateFile = new File("backend-cert.p12");
+        File clientCertificateFile = mock(File.class);
 
         when(scanContext.getClientCertificateFile()).thenReturn(clientCertificateFile);
         when(scanContext.getSecHubWebScanConfiguration()).thenReturn(sechubWebScanConfig);
+        when(clientCertificateFile.exists()).thenReturn(true);
 
         ApiResponse response = mock(ApiResponse.class);
         when(clientApiFacade.importPkcs12ClientCertificate(any(), any())).thenReturn(response);
