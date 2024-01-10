@@ -1,19 +1,40 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.restdoc;
 
-import static com.mercedesbenz.sechub.commons.model.SecHubConfigurationModel.*;
-import static com.mercedesbenz.sechub.commons.model.TestSecHubConfigurationBuilder.*;
-import static com.mercedesbenz.sechub.restdoc.RestDocumentation.*;
-import static com.mercedesbenz.sechub.test.RestDocPathParameter.*;
-import static com.mercedesbenz.sechub.test.SecHubTestURLBuilder.*;
-import static org.mockito.ArgumentMatchers.*;
-import static org.mockito.Mockito.*;
-import static org.springframework.restdocs.headers.HeaderDocumentation.*;
-import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.*;
-import static org.springframework.restdocs.payload.PayloadDocumentation.*;
-import static org.springframework.restdocs.request.RequestDocumentation.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static com.mercedesbenz.sechub.commons.model.SecHubConfigurationModel.PROPERTY_API_VERSION;
+import static com.mercedesbenz.sechub.commons.model.SecHubConfigurationModel.PROPERTY_CODE_SCAN;
+import static com.mercedesbenz.sechub.commons.model.SecHubConfigurationModel.PROPERTY_DATA;
+import static com.mercedesbenz.sechub.commons.model.SecHubConfigurationModel.PROPERTY_INFRA_SCAN;
+import static com.mercedesbenz.sechub.commons.model.SecHubConfigurationModel.PROPERTY_WEB_SCAN;
+import static com.mercedesbenz.sechub.commons.model.TestSecHubConfigurationBuilder.configureSecHub;
+import static com.mercedesbenz.sechub.restdoc.RestDocumentation.defineRestService;
+import static com.mercedesbenz.sechub.test.RestDocPathParameter.JOB_UUID;
+import static com.mercedesbenz.sechub.test.RestDocPathParameter.PAGE;
+import static com.mercedesbenz.sechub.test.RestDocPathParameter.PROJECT_ID;
+import static com.mercedesbenz.sechub.test.RestDocPathParameter.SIZE;
+import static com.mercedesbenz.sechub.test.RestDocPathParameter.WITH_META_DATA;
+import static com.mercedesbenz.sechub.test.SecHubTestURLBuilder.https;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
+import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
+import static org.springframework.restdocs.headers.HeaderDocumentation.requestHeaders;
+import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.get;
+import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.multipart;
+import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.post;
+import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.put;
+import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
+import static org.springframework.restdocs.payload.PayloadDocumentation.requestFields;
+import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields;
+import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
+import static org.springframework.restdocs.request.RequestDocumentation.partWithName;
+import static org.springframework.restdocs.request.RequestDocumentation.pathParameters;
+import static org.springframework.restdocs.request.RequestDocumentation.queryParameters;
+import static org.springframework.restdocs.request.RequestDocumentation.requestParts;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import java.io.InputStream;
 import java.lang.annotation.Annotation;
@@ -26,9 +47,9 @@ import java.util.Optional;
 import java.util.TreeMap;
 import java.util.UUID;
 
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDocs;
@@ -38,10 +59,10 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Profile;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
+import org.springframework.restdocs.RestDocumentationExtension;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.util.StringUtils;
 
@@ -98,10 +119,10 @@ import com.mercedesbenz.sechub.test.ExampleConstants;
 import com.mercedesbenz.sechub.test.TestIsNecessaryForDocumentation;
 import com.mercedesbenz.sechub.test.TestPortProvider;
 
-@RunWith(SpringRunner.class)
 @WebMvcTest(SchedulerRestController.class)
 @ContextConfiguration(classes = { SchedulerRestController.class, SchedulerRestControllerRestDocTest.SimpleTestConfiguration.class })
 @WithMockUser
+@ExtendWith(RestDocumentationExtension.class)
 @ActiveProfiles(Profiles.TEST)
 @AutoConfigureRestDocs(uriScheme = "https", uriHost = ExampleConstants.URI_SECHUB_SERVER, uriPort = 443)
 public class SchedulerRestControllerRestDocTest implements TestIsNecessaryForDocumentation {
@@ -707,32 +728,34 @@ public class SchedulerRestControllerRestDocTest implements TestIsNecessaryForDoc
 
         InputStream inputStreamTo = RestDocTestFileSupport.getTestfileSupport().getInputStreamTo("upload/zipfile_contains_only_test1.txt.zip");
         MockMultipartFile file1 = new MockMultipartFile("file", inputStreamTo);
-        /* execute + test @formatter:off */
+        MockMultipartFile checkSum = new MockMultipartFile("checkSum", "", "", "mychecksum".getBytes());
+
+        /* execute + test */
+        /* @formatter:off */
         this.mockMvc.perform(
         		multipart(apiEndpoint, PROJECT1_ID, randomUUID).
-        			file(file1).param("checkSum", "mychecksum")
+        			file(file1).
+        			file(checkSum)
         		).
         			andExpect(status().isOk()).
-        					// https://docs.spring.io/spring-restdocs/docs/2.0.2.RELEASE/reference/html5/
+        		    // https://docs.spring.io/spring-restdocs/docs/2.0.2.RELEASE/reference/html5/
         			andDo(defineRestService().
                             with().
                                 useCaseData(useCase).
                                 tag(RestDocFactory.extractTag(apiEndpoint)).
                             and().
                             document(
-                            		requestHeaders(
-
-                            		),
+                            		requestHeaders(),
                                     pathParameters(
                                             parameterWithName("projectId").description("The id of the project where sourcecode shall be uploaded for"),
                                             parameterWithName("jobUUID").description(DESCRIPTION_JOB_UUID)
                                     ),
-                                    formParameters(
-                                            parameterWithName("checkSum").description("A sha256 checksum for file upload validation")
-                                    ),
-                                    // TODO jeeppler, 2020-12-07: It is not possible to document this part properly in OpenAPI.
+                                    // TODO Jeremias Eppler, 2020-12-07: It is not possible to document this part properly in OpenAPI.
                                     // See: https://github.com/ePages-de/restdocs-api-spec/issues/105
-                					requestParts(partWithName("file").description("The sourcecode as zipfile to upload"))
+                					requestParts(
+                							partWithName("file").description("The sourcecode as zipfile to upload"),
+                							partWithName(CommonConstants.MULTIPART_CHECKSUM).description("A sha256 checksum for file upload validation")
+                					)
         			));
 
         /* @formatter:on */
@@ -762,39 +785,39 @@ public class SchedulerRestControllerRestDocTest implements TestIsNecessaryForDoc
         when(mockedScheduleJobStatusService.getJobStatus(PROJECT1_ID, randomUUID)).thenReturn(status);
 
         InputStream inputStreamTo = RestDocTestFileSupport.getTestfileSupport().getInputStreamTo("upload/tarfile_contains_only_test1.txt.tar");
-        MockMultipartFile file1 = new MockMultipartFile("file", inputStreamTo);
-        /* execute + test @formatter:off */
+        MockMultipartFile file = new MockMultipartFile("file", inputStreamTo);
+        MockMultipartFile checkSum = new MockMultipartFile("checkSum", "", "", "mychecksum".getBytes());
+
+        /* execute + test */
+        /* @formatter:off */
         this.mockMvc.perform(
 
                 multipart(apiEndpoint, PROJECT1_ID, randomUUID).
-                    file(file1).
-                    param("checkSum", "mychecksum").
-                    header(CommonConstants.FILE_SIZE_HEADER_FIELD_NAME, file1.getBytes().length)
+                    file(file).
+                    file(checkSum).
+                    header(CommonConstants.FILE_SIZE_HEADER_FIELD_NAME, file.getBytes().length)
                 ).
                     andExpect(status().isOk()).
-                            // https://docs.spring.io/spring-restdocs/docs/2.0.2.RELEASE/reference/html5/
+                    // https://docs.spring.io/spring-restdocs/docs/2.0.2.RELEASE/reference/html5/
                     andDo(defineRestService().
                             with().
                                 useCaseData(useCase).
                                 tag(RestDocFactory.extractTag(apiEndpoint)).
                             and().
                             document(
-                            		requestHeaders(
-
-                            		),
                                     pathParameters(
                                             parameterWithName("projectId").description("The id of the project for which the binaries are uploaded for"),
                                             parameterWithName("jobUUID").description(DESCRIPTION_JOB_UUID)
-                                    ),
-                                    formParameters(
-                                            parameterWithName("checkSum").description("A sha256 checksum for file upload validation")
                                     ),
                                     requestHeaders(
                                     		headerWithName(CommonConstants.FILE_SIZE_HEADER_FIELD_NAME).description("The file size of the tar-archive to upload in bytes. Needs to be a positive integer value.")
                                     ),
                                     // TODO de-jcup, 2022-04-14: It is not possible to document this part properly in OpenAPI.
                                     // See: https://github.com/ePages-de/restdocs-api-spec/issues/105
-                                    requestParts(partWithName("file").description("The binaries as tarfile to upload"))
+                                    requestParts(
+                                    		partWithName("file").description("The binaries as tarfile to upload"),
+                                    		partWithName(CommonConstants.MULTIPART_CHECKSUM).description("A sha256 checksum for file upload validation")
+                                    )
                     ));
 
         /* @formatter:on */
@@ -993,7 +1016,7 @@ public class SchedulerRestControllerRestDocTest implements TestIsNecessaryForDoc
         /* @formatter:on */
     }
 
-    @Before
+    @BeforeEach
     public void before() {
         randomUUID = UUID.randomUUID();
         project1 = mock(ScheduleAccess.class);

@@ -56,14 +56,14 @@ public class CheckSumSupport {
     }
 
     public MessageDigest createSha256MessageDigest() {
-        MessageDigest md;
+        MessageDigest messageDigest;
         String algorithm = "SHA-256";
         try {
-            md = MessageDigest.getInstance(algorithm);
+            messageDigest = MessageDigest.getInstance(algorithm);
         } catch (NoSuchAlgorithmException e) {
             throw new IllegalStateException("Algorithm not supported:" + algorithm);
         }
-        return md;
+        return messageDigest;
     }
 
     public boolean hasCorrectSha256ChecksumFile(String checkSum, String filepath) {

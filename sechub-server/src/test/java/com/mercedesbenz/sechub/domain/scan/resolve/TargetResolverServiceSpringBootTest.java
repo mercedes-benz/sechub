@@ -7,15 +7,15 @@ import java.net.Inet4Address;
 import java.net.InetAddress;
 import java.net.URI;
 
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.TestPropertySource;
-import org.springframework.test.context.junit4.SpringRunner;
 
 import com.mercedesbenz.sechub.domain.scan.NetworkTarget;
 import com.mercedesbenz.sechub.domain.scan.NetworkTargetType;
+import com.mercedesbenz.sechub.sharedkernel.Profiles;
 
 /**
  * Inside application-test.properties we have defined strategies, which will
@@ -26,9 +26,9 @@ import com.mercedesbenz.sechub.domain.scan.NetworkTargetType;
  * @author Albert Tregnaghi
  *
  */
-@RunWith(SpringRunner.class)
 @SpringBootTest
-@TestPropertySource(locations = "classpath:application-test.properties")
+@TestPropertySource(locations = "classpath:application-test.yml")
+@ActiveProfiles(Profiles.TEST)
 public class TargetResolverServiceSpringBootTest {
 
     @Autowired

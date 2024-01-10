@@ -17,6 +17,7 @@ spring:
       pds_debug: "pds_debug"
       pds_dev: "pds_dev,pds_localserver"
       pds_prod: "pds_postgres,pds_server"
+      #pds_test: "pds_test,pds_h2"
 
   jackson:
     # https://docs.spring.io/spring-boot/docs/current/reference/html/howto.html#howto-customize-the-jackson-objectmapper

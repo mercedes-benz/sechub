@@ -27,12 +27,12 @@ public class SecHubAPISecurityConfiguration {
 						requestMatchers(APIConstants.API_PROJECT + "**").hasAnyAuthority(ROLE_USER, ROLE_SUPERADMIN).
 						requestMatchers(APIConstants.API_OWNER + "**").hasAnyAuthority(ROLE_OWNER, ROLE_SUPERADMIN).
 
-						requestMatchers(APIConstants.API_ANONYMOUS+"**").permitAll().
+						requestMatchers(APIConstants.API_ANONYMOUS + "**").permitAll().
 						requestMatchers(APIConstants.ERROR_PAGE).permitAll().
 						requestMatchers(APIConstants.ACTUATOR + "**").permitAll().
 						requestMatchers("/**").denyAll())
 				.csrf((csrf) -> csrf.disable()) // CSRF protection disabled. The CookieServerCsrfTokenRepository does
-												// not work, since Spring Boot 3
+												// not work since Spring Boot 3
 				.httpBasic(Customizer.withDefaults()).headers((headers) -> headers
 						.contentSecurityPolicy((csp) -> csp.policyDirectives("default-src 'none'; style-src 'unsafe-inline'")));
 		/* @formatter:on */

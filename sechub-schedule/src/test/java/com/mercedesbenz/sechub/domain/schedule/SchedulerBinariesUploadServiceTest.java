@@ -1,15 +1,21 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.domain.schedule;
 
-import static com.mercedesbenz.sechub.commons.core.CommonConstants.*;
-import static com.mercedesbenz.sechub.test.JUnitAssertionAddon.*;
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.*;
-import static org.mockito.Mockito.*;
+import static com.mercedesbenz.sechub.commons.core.CommonConstants.FILE_SIZE_HEADER_FIELD_NAME;
+import static com.mercedesbenz.sechub.test.JUnitAssertionAddon.assertThrowsExceptionContainingMessage;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoInteractions;
+import static org.mockito.Mockito.when;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.security.MessageDigest;
 import java.util.UUID;
 
 import org.apache.commons.fileupload2.core.FileItemInput;
@@ -200,7 +206,7 @@ public class SchedulerBinariesUploadServiceTest {
 
         when(configuration.getMaxUploadSizeInBytes()).thenReturn((long) 612);
 
-        JakartaServletFileUpload upload = mock(JakartaServletFileUpload.class);
+        JakartaServletFileUpload<?, ?> upload = mock(JakartaServletFileUpload.class);
         when(servletFileUploadFactory.create()).thenReturn(upload);
 
         FileItemInputIterator itemIterator = mock(FileItemInputIterator.class);
@@ -218,6 +224,7 @@ public class SchedulerBinariesUploadServiceTest {
 
         when(upload.getItemIterator(httpRequest)).thenReturn(itemIterator);
         when(checkSumSupport.convertMessageDigestToHex(any())).thenReturn("1234");
+        when(checkSumSupport.createSha256MessageDigest()).thenReturn(MessageDigest.getInstance("SHA-256"));
 
         /* execute + test (checksum failure) */
         assertThrowsExceptionContainingMessage(BadRequestException.class, "Binaries checksum check failed",

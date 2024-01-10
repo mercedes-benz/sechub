@@ -1,7 +1,10 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.domain.schedule;
 
-import static com.mercedesbenz.sechub.commons.core.CommonConstants.*;
+import static com.mercedesbenz.sechub.commons.core.CommonConstants.FILENAME_BINARIES_TAR;
+import static com.mercedesbenz.sechub.commons.core.CommonConstants.FILENAME_BINARIES_TAR_CHECKSUM;
+import static com.mercedesbenz.sechub.commons.core.CommonConstants.FILENAME_BINARIES_TAR_FILESIZE;
+import static com.mercedesbenz.sechub.commons.core.CommonConstants.FILE_SIZE_HEADER_FIELD_NAME;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -18,7 +21,8 @@ import org.apache.commons.fileupload2.core.FileUploadException;
 import org.apache.commons.fileupload2.core.FileUploadSizeException;
 import org.apache.commons.fileupload2.jakarta.JakartaServletFileUpload;
 import org.apache.commons.io.input.CountingInputStream;
-import org.apache.commons.io.input.MessageDigestCalculatingInputStream;
+import org.apache.commons.io.input.MessageDigestInputStream;
+import org.apache.tomcat.util.http.fileupload.impl.FileSizeLimitExceededException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -110,7 +114,12 @@ public class SchedulerBinariesUploadService {
         } catch (FileUploadSizeException fileUploadSizeException) {
 
             LOG.error("Size limit reached: {}", fileUploadSizeException.getMessage());
-            throw new BadRequestException("Binaries upload maximum reached. Please reduce your upload file size.", fileUploadSizeException);
+            throw new BadRequestException("Binaries upload maximum reached. Please reduce your upload size.", fileUploadSizeException);
+
+        } catch (FileSizeLimitExceededException fileSizeLimitExceededException) {
+
+            LOG.error("Size limit reached: {}", fileSizeLimitExceededException.getMessage());
+            throw new BadRequestException("Binaries upload maximum reached. Please reduce your upload file size.", fileSizeLimitExceededException);
 
         } catch (UnsupportedEncodingException e) {
 
@@ -139,7 +148,7 @@ public class SchedulerBinariesUploadService {
 
         JobStorage jobStorage = storageService.getJobStorage(projectId, jobUUID);
 
-        JakartaServletFileUpload upload = servletFileUploadFactory.create();
+        JakartaServletFileUpload<?, ?> upload = servletFileUploadFactory.create();
 
         long maxUploadSize = configuration.getMaxUploadSizeInBytes();
         long maxUploadSizeWithHeaders = maxUploadSize + 600; // we accept 600 bytes more for header, checksum etc.
@@ -195,7 +204,13 @@ public class SchedulerBinariesUploadService {
 
                     MessageDigest digest = checkSumSupport.createSha256MessageDigest();
 
-                    MessageDigestCalculatingInputStream messageDigestInputStream = new MessageDigestCalculatingInputStream(fileInputstream, digest);
+                    /* @formatter:off */
+					MessageDigestInputStream messageDigestInputStream = MessageDigestInputStream.builder().
+							                                              setInputStream(fileInputstream).
+							                                              setMessageDigest(digest).
+							                                              get();
+					/* @formatter:on */
+
                     CountingInputStream byteCountingInputStream = new CountingInputStream(messageDigestInputStream);
 
                     jobStorage.store(FILENAME_BINARIES_TAR, byteCountingInputStream, binaryFileSizeFromUser);
@@ -280,9 +295,13 @@ public class SchedulerBinariesUploadService {
         return binaryFileSizeFromUser;
     }
 
+    String streamToString(InputStream inputStream) throws IOException {
+        return new String(inputStream.readAllBytes(), StandardCharsets.UTF_8);
+    }
+
     private void assertMultipart(HttpServletRequest request) {
         if (!JakartaServletFileUpload.isMultipartContent(request)) {
-            throw new BadRequestException("The binary upload request did not contain multipart content");
+            throw new BadRequestException("The upload request did not contain multipart content");
         }
     }
 
@@ -301,7 +320,4 @@ public class SchedulerBinariesUploadService {
         }
     }
 
-    String streamToString(InputStream inputStream) throws IOException {
-        return new String(inputStream.readAllBytes(), StandardCharsets.UTF_8);
-    }
 }

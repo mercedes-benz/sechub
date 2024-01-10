@@ -1,9 +1,13 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.pds.job;
 
-import static com.mercedesbenz.sechub.commons.core.CommonConstants.*;
-import static com.mercedesbenz.sechub.pds.job.PDSJobAssert.*;
-import static com.mercedesbenz.sechub.pds.util.PDSAssert.*;
+import static com.mercedesbenz.sechub.commons.core.CommonConstants.DOT_CHECKSUM;
+import static com.mercedesbenz.sechub.commons.core.CommonConstants.FILE_SIZE_HEADER_FIELD_NAME;
+import static com.mercedesbenz.sechub.commons.core.CommonConstants.MULTIPART_CHECKSUM;
+import static com.mercedesbenz.sechub.commons.core.CommonConstants.MULTIPART_FILE;
+import static com.mercedesbenz.sechub.pds.job.PDSJobAssert.assertJobFound;
+import static com.mercedesbenz.sechub.pds.job.PDSJobAssert.assertJobIsInState;
+import static com.mercedesbenz.sechub.pds.util.PDSAssert.notNull;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -19,7 +23,7 @@ import org.apache.commons.fileupload2.core.FileUploadException;
 import org.apache.commons.fileupload2.core.FileUploadSizeException;
 import org.apache.commons.fileupload2.jakarta.JakartaServletFileUpload;
 import org.apache.commons.io.input.CountingInputStream;
-import org.apache.commons.io.input.MessageDigestCalculatingInputStream;
+import org.apache.commons.io.input.MessageDigestInputStream;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -134,7 +138,7 @@ public class PDSFileUploadJobService {
 
         JobStorage jobStorage = storageService.getJobStorage(jobUUID);
 
-        JakartaServletFileUpload upload = servletFileUploadFactory.create();
+        JakartaServletFileUpload<?, ?> upload = servletFileUploadFactory.create();
 
         long maxUploadSize = configuration.getMaxUploadSizeInBytes();
         long maxUploadSizeWithHeaders = maxUploadSize + 600; // we accept 600 bytes more for header, checksum etc.
@@ -193,11 +197,12 @@ public class PDSFileUploadJobService {
 
                     MessageDigest digest = checksumSupport.createSha256MessageDigest();
 
-                    // TODO Jeremias Eppler, 2023-09-08: Constructing the
-                    // MessageDigestCalculatingInputStream
-                    // using the Builder does not work see:
-                    // https://issues.apache.org/jira/browse/IO-809
-                    MessageDigestCalculatingInputStream messageDigestInputStream = new MessageDigestCalculatingInputStream(fileInputstream, digest);
+                    /* @formatter:off */
+					MessageDigestInputStream messageDigestInputStream = MessageDigestInputStream.builder().
+							                                              setInputStream(fileInputstream).
+							                                              setMessageDigest(digest).
+							                                              get();
+					/* @formatter:on */
 
                     CountingInputStream byteCountingInputStream = new CountingInputStream(messageDigestInputStream);
 
