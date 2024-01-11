@@ -296,6 +296,14 @@ pdsGoSec:
   # Put the password of PDS-GoSec in k8s secret secret-pds-gosec:techuser_password
 
 # ------------------------------------------------------------------------------------- #
+# PDS-IaC adapter
+# ------------------------------------------------------------------------------------- #
+pdsIaC:
+  enabled: false
+  # Put the user id  of PDS-IaC in k8s secret secret-pds-iac:techuser_username
+  # Put the password of PDS-IaC in k8s secret secret-pds-iac:techuser_password
+
+# ------------------------------------------------------------------------------------- #
 # PDS-Loc analytics adapter
 # ------------------------------------------------------------------------------------- #
 pdsLoc:
