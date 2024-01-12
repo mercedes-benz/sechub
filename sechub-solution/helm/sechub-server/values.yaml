@@ -328,6 +328,14 @@ pdsOWASPZAP:
   # Put the password of PDS-OWASP ZAP in k8s secret secret-pds-owaspzap:techuser_password
 
 # ------------------------------------------------------------------------------------- #
+# PDS-PMD adapter
+# ------------------------------------------------------------------------------------- #
+pdsPMD:
+  enabled: false
+  # Put the user id  of PDS-PMD in k8s secret secret-pds-pmd:techuser_username
+  # Put the password of PDS-PMD in k8s secret secret-pds-pmd:techuser_password
+
+# ------------------------------------------------------------------------------------- #
 # PDS-Scancode adapter
 # ------------------------------------------------------------------------------------- #
 pdsScancode:
