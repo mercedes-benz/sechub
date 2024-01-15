@@ -508,6 +508,21 @@ spec:
                name: secret-pds-owaspzap
                key: techuser_password
 {{- end }}
+{{- if .Values.pdsPMD.enabled }}
+# ----------------------------------------------------------------------------------------------#
+# - Scope: PDS-PMD
+# --------------------------------------------------------------------------------------------- #
+        - name: SECHUB_PDS_PMD_USERID
+          valueFrom:
+            secretKeyRef:
+               name: secret-pds-pmd
+               key: techuser_username
+        - name: SECHUB_PDS_PMD_PASSWORD
+          valueFrom:
+            secretKeyRef:
+               name: secret-pds-pmd
+               key: techuser_password
+{{- end }}
 {{- if .Values.pdsScancode.enabled }}
 # ----------------------------------------------------------------------------------------------#
 # - Scope: PDS-Scancode
