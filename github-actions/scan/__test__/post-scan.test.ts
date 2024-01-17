@@ -2,12 +2,12 @@
 
 import * as core from '@actions/core';
 import { downloadReports, reportOutputs } from '../src/post-scan';
-import { getReport } from '../../shared/src/sechub-cli';
+import { getReport } from '../src/sechub-cli';
 
 jest.mock('@actions/core');
 const mockedCore = core as jest.Mocked<typeof core>;
 
-jest.mock('../../shared/src/sechub-cli');
+jest.mock('../src/sechub-cli');
 const mockedGetReport = getReport as jest.MockedFunction<typeof getReport>;
 describe('downloadReports', function () {
     afterEach(() => {
@@ -27,7 +27,7 @@ describe('downloadReports', function () {
         const sampleJson = {'test': 'test'};
         const actualJson = downloadReports(formats);
 
-        expect(mockedCore.info).toHaveBeenCalledTimes(2); // Assumes 3 formats, adjust based on the number of formats in the array
+        expect(mockedCore.info).toHaveBeenCalledTimes(4); // Assumes 3 formats, adjust based on the number of formats in the array
         expect(mockedGetReport).toHaveBeenCalledTimes(2);
         expect(actualJson).toEqual(sampleJson);
     });

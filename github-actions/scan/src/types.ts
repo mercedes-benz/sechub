@@ -5,3 +5,17 @@ export type Settings = {
     filePattern: string;
     secHubJsonFileName: string;
 };
+
+export type SecHubJson = {
+    apiVersion: string;
+    codeScan: CodeScan;
+};
+
+type CodeScan = {
+    fileSystem: FileSystem;
+    excludes: string[];
+};
+
+type FileSystem = {
+    folders: string[];
+};
