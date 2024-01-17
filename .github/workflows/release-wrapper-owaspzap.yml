@@ -100,7 +100,7 @@ jobs:
 
       - name: Archive GIT status
         if: always()
-        uses: actions/upload-artifact@c7d193f32edcb7bfad88892161225aeda64e9392
+        uses: actions/upload-artifact@1eb3cb2b3e0f29609092a73eb033bb759a334595
         with:
           name: git-status.txt
           path: build/reports/git-status.txt
@@ -108,7 +108,7 @@ jobs:
 
       - name: Archive OWASP-ZAP Wrapper libs directory
         if: always()
-        uses: actions/upload-artifact@c7d193f32edcb7bfad88892161225aeda64e9392
+        uses: actions/upload-artifact@1eb3cb2b3e0f29609092a73eb033bb759a334595
         with:
           name: sechub-wrapper-owasp-zap
           path: sechub-wrapper-owasp-zap/build/libs
