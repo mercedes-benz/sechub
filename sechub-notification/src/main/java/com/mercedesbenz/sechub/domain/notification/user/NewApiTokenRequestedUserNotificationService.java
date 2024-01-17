@@ -32,7 +32,7 @@ public class NewApiTokenRequestedUserNotificationService {
         String tokenExpireDateTime = serviceHelper.getApiTokenExpireDate();
 
         StringBuilder emailContent = new StringBuilder();
-        emailContent.append("You requested a new API token. The link to retrieve it expires at ");
+        emailContent.append("You requested a new API token.\nThe link to retrieve it expires at ");
         emailContent.append(tokenExpireDateTime + " and can only be used once.\nExisting API tokens will then become invalid.\n");
         emailContent.append("Please use the following link to get the token:\n");
         /*
