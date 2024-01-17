@@ -5,8 +5,8 @@ import * as shell from 'shelljs';
 import * as settingsFile from './settings.json';
 import { SecHubJson } from './types';
 import * as configFile from './sechub.json';
-import {secHubCli} from "./sechub-cli";
-import {getWorkspaceParentDir} from "./fs-helper";
+import { secHubCli } from "./sechub-cli";
+import { getWorkspaceParentDir } from "./fs-helper";
 
 /**
  * Downloads a release for the SecHub CLI.
@@ -28,7 +28,7 @@ export function downloadRelease(version: string): void {
  */
 export function createSecHubJsonFile(includeFolders: string[] | null, excludeFolders: string[] | null) {
     core.info('Config-Path was not found. Config will be manually created...');
-    const secHubJson = createSecHubJson(includeFolders, excludeFolders);
+    const secHubJson = createSecHubConfigModel(includeFolders, excludeFolders);
     const stringifiedSecHubJson = JSON.stringify(secHubJson);
     core.debug('SecHub-Config: ' + stringifiedSecHubJson);
 
@@ -36,11 +36,11 @@ export function createSecHubJsonFile(includeFolders: string[] | null, excludeFol
 }
 
 /**
- * Creates the object for the sechub.json with the given user input values.
+ * Creates the SecHub configuration model with the given user input values.
  * @param includeFolders Which folders should be included
  * @param excludeFolders Which folders should be excluded
  */
-function createSecHubJson(includeFolders: string[] | null, excludeFolders: string[] | null): SecHubJson {
+export function createSecHubConfigModel(includeFolders: string[] | null, excludeFolders: string[] | null): SecHubJson {
     const sechubJson: SecHubJson = configFile;
     if (includeFolders) {
         sechubJson.codeScan.fileSystem.folders = includeFolders;

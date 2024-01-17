@@ -2,8 +2,8 @@
 
 import {initReportFormats, initSecHubJson} from "../src/init-scan";
 
-jest.mock('../../shared/src/cli-helper');
-import {createSecHubJsonFile} from '../../shared/src/cli-helper';
+jest.mock('../src/cli-helper');
+import {createSecHubJsonFile} from '../src/cli-helper';
 
 describe('initSecHubJson', function () {
     it('returns parameter if configPath is set', function () {

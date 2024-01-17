@@ -1,12 +1,12 @@
 // SPDX-License-Identifier: MIT
 
-import {failAction, handleError} from '../../shared/src/action-helper';
-import {downloadRelease} from '../../shared/src/cli-helper';
-import { scan } from '../../shared/src/sechub-cli';
-import { logExitCode } from '../../shared/src/log-helper';
-import { getFiles } from '../../shared/src/fs-helper';
-import {initEnvironmentVariables, initReportFormats, initSecHubJson, ScanSettings} from './init-scan';
-import {downloadReports, uploadArtifact} from './post-scan';
+import { failAction, handleError } from './action-helper';
+import { downloadRelease } from './cli-helper';
+import { scan } from './sechub-cli';
+import { logExitCode } from './log-helper';
+import { getFiles } from './fs-helper';
+import { initEnvironmentVariables, initReportFormats, initSecHubJson, ScanSettings } from './init-scan';
+import { downloadReports, uploadArtifact } from './post-scan';
 import * as input from './input';
 import * as settingsFile from './settings.json';
 

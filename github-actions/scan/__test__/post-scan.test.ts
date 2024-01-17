@@ -4,8 +4,8 @@ import {downloadReports} from "../src/post-scan";
 
 jest.mock('@actions/core');
 import * as core from '@actions/core';
-import { getReport } from '../../shared/src/sechub-cli';
-jest.mock('../../shared/src/sechub-cli');
+import { getReport } from '../src/sechub-cli';
+jest.mock('../src/sechub-cli');
 
 describe('downloadReports', function () {
    it('writes to log if formats is empty', function () {

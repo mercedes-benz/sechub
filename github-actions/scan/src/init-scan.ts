@@ -3,8 +3,8 @@
 import * as shell from 'shelljs';
 import * as input from './input';
 import * as core from '@actions/core';
-import {createSecHubJsonFile} from '../../shared/src/cli-helper';
-import { getValidFormatsFromInput } from '../../shared/src/report-formats';
+import { createSecHubJsonFile } from './cli-helper';
+import { getValidFormatsFromInput } from './report-formats';
 
 export interface ScanSettings {
     configParameter: string | null;

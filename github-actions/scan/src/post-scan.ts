@@ -3,9 +3,9 @@
 import * as core from '@actions/core';
 import * as artifact from '@actions/artifact';
 import * as shell from 'shelljs';
-import { getReport } from '../../shared/src/sechub-cli';
-import {getWorkspaceDir} from '../../shared/src/fs-helper';
-import { logExitCode } from '../../shared/src/log-helper';
+import { getReport } from './sechub-cli';
+import {getWorkspaceDir} from './fs-helper';
+import { logExitCode } from './log-helper';
 import * as input from './input';
 import * as fs from 'fs';
 
