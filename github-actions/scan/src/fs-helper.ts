@@ -3,6 +3,7 @@
 import * as shell from 'shelljs';
 import * as core from '@actions/core';
 import * as path from 'path';
+import { ShellString } from 'shelljs';
 
 /**
  * Get workspace directory.
@@ -31,4 +32,25 @@ export function getFiles(pattern: string): string[] {
     });
 
     return reportFiles;
+}
+
+export class ShellFailedWithExitCodeNotZeroError extends Error {
+    constructor(command: string, shellExecResult: ShellString) {
+        super(`Shell script call failed.\nExit code: ${shellExecResult.code}\nCommand: "${command}"\nStdErr: ${shellExecResult.stderr}`);
+    }
+}
+
+/**
+ * Executes given command by shell - errors are handled
+ * @param command 
+ * @throws ShellFailedWithExitCodeNotZeroError
+ * @returns shellstring 
+ */
+export function shellExecOrFail(command: string): ShellString {
+    const shellExecResult = shell.exec(command);
+
+    if ( shellExecResult.code!=0){
+        throw new ShellFailedWithExitCodeNotZeroError(command, shellExecResult);
+    }
+    return shellExecResult;
 }

@@ -1,45 +1,32 @@
 // SPDX-License-Identifier: MIT
 
-import * as shell from 'shelljs';
-import * as input from './input';
 import * as core from '@actions/core';
-import {createSecHubJsonFile} from './cli-helper';
+import { createSecHubConfigJsonFile as createSecHubConfigJsonFile } from './configuration-builder';
 import { getValidFormatsFromInput } from './report-formats';
-
-export interface ScanSettings {
-    configParameter: string | null;
-    reportFormats: string[];
-}
-
-/**
- * Sets the necessary environment variables with the user input values.
- */
-export function initEnvironmentVariables(): void {
-    shell.env['SECHUB_USERID'] = input.user;
-    shell.env['SECHUB_APITOKEN'] = input.apiToken;
-    shell.env['SECHUB_SERVER'] = input.url;
-    shell.env['SECHUB_PROJECT'] = input.projectName;
-    shell.env['SECHUB_DEBUG'] = input.debug;
-}
 
 /**
  * Returns the parameter to the sechub.json or creates it from the input parameters if configPath is not set.
- * @param configPath Path to the sechub.json
+ * @param customSecHubConfigFilePath Path to the custom sechub.json (if defined)
  * @param includeFolders list of folders to include to the scan
  * @param excludeFolders list of folders to exclude from the scan
+ * 
+ * @returns resulting configuration file path
  */
-export function initSecHubJson(configPath: string, includeFolders: string[], excludeFolders: string[]): string | null {
+export function initSecHubJson(secHubJsonFilePath: string, customSecHubConfigFilePath: string, includeFolders: string[], excludeFolders: string[]): string | null {
     core.startGroup('Set config');
-    if (!configPath) {
-        createSecHubJsonFile(includeFolders, excludeFolders);
-        return null;
-    }
 
-    core.info(`Config-Path was found: ${configPath}`);
-    const configParameter = `-configfile '${configPath}'`;
+    let configFilePath = customSecHubConfigFilePath;
+    if (configFilePath) {
+        core.info(`Config-Path was found: ${customSecHubConfigFilePath}`);
+    }else{
+        createSecHubConfigJsonFile(secHubJsonFilePath, includeFolders, excludeFolders);
+        configFilePath = secHubJsonFilePath;
+    }
     core.endGroup();
-    return configParameter;
+
+    return configFilePath;
 }
+
 
 /**
  * Initializes the report formats and ensures there is at least one valid report format selected.

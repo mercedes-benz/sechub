@@ -1,9 +1,10 @@
 // SPDX-License-Identifier: MIT
 
-import {initReportFormats, initSecHubJson} from "../src/init-scan";
+import {initReportFormats, initSecHubJson} from '../src/init-scan';
 
-jest.mock('./../src/cli-helper');
-import {createSecHubJsonFile} from '../src/cli-helper';
+jest.mock('./../src/configuration-builder');
+import {createSecHubConfigJsonFile} from '../src/configuration-builder';
+
 
 describe('initSecHubJson', function () {
     it('returns parameter if configPath is set', function () {
@@ -11,7 +12,7 @@ describe('initSecHubJson', function () {
         const configPath = 'sechub.json';
 
         /* execute */
-        const parameter = initSecHubJson(configPath, [], []);
+        const parameter = initSecHubJson('runtime/sechub.json', configPath, [], []);
 
         /* test */
         expect(parameter).toContain(configPath);
@@ -19,11 +20,11 @@ describe('initSecHubJson', function () {
 
     it('creates sechub.json if configPath is not set', function () {
         /* execute */
-        const parameter = initSecHubJson('', [], []);
+        const parameter = initSecHubJson('runtime/sechub.json','', [], []);
 
         /* test */
         expect(parameter).toBeNull();
-        expect(createSecHubJsonFile).toHaveBeenCalledTimes(1);
+        expect(createSecHubConfigJsonFile).toHaveBeenCalledTimes(1);
     });
 });
 

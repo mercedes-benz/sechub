@@ -1,19 +1,19 @@
 // SPDX-License-Identifier: MIT
 
-import * as core from '@actions/core';
 import * as artifact from '@actions/artifact';
-import * as shell from 'shelljs';
-import { getReport } from './sechub-cli';
-import { getWorkspaceDir } from './fs-helper';
-import { logExitCode } from './log-helper';
-import * as input from './input';
+import * as core from '@actions/core';
 import * as fs from 'fs';
+import * as shell from 'shelljs';
+import { getWorkspaceDir } from './fs-helper';
+import { LaunchContext } from './launcher';
+import { logExitCode } from './exitcode';
+import { getReport } from './sechub-cli';
 
 /**
  * Downloads the reports for the given formats.
  * @param formats formats in which the report should be downloaded
  */
-export function downloadReports(formats: string[]): object | undefined {
+export function downloadReports(context: LaunchContext, formats: string[]): object | undefined {
     core.startGroup('Download Reports');
     if (formats.length === 0) {
         core.info('No more formats');
@@ -25,8 +25,8 @@ export function downloadReports(formats: string[]): object | undefined {
         core.debug('JobUUID: ' + jobUUID);
         formats.forEach((format) => {
             core.info(`Get Report as ${format}`);
-            const exitCode = getReport(jobUUID, input.projectName, format);
-            logExitCode(exitCode ? exitCode.code : 0);
+            getReport(jobUUID, format,context);
+            logExitCode(context.lastClientExitCode);
         });
     }
     core.endGroup();
@@ -55,19 +55,23 @@ function loadJsonReport(): object | undefined {
  * @param name Name for the zip file.
  * @param paths All file paths to include into the artifact.
  */
-export async function uploadArtifact(name: string, paths: string[]) {
+export async function uploadArtifact(context: LaunchContext, name: string, paths: string[]) {
     core.startGroup('Upload artifacts');
     try {
         const artifactClient = artifact.create();
         const artifactName = name;
         const options = { continueOnError: true };
 
-        const workspace = getWorkspaceDir();
-        shell.exec(`ls ${workspace}`);
-        core.debug('rootDirectory: ' + workspace);
-        core.debug('files: ' + paths);
+        const rootDirectory = context.runtimeFolder;
+        core.debug('rootDirectory: ' + rootDirectory);
+        if (core.isDebug()){
+            shell.exec(`ls ${rootDirectory}`);
+        }
+        core.debug('paths: ' + paths);
 
-        await artifactClient.uploadArtifact(artifactName, paths, workspace, options);
+        await artifactClient.uploadArtifact(artifactName, paths, rootDirectory, options);
+        core.debug('artifact upload done');
+        
     } catch (e: unknown) {
         const message = e instanceof Error ? e.message : 'Unknown error';
         core.error(`ERROR while uploading artifacts: ${message}`);
@@ -88,6 +92,7 @@ function getFieldFromJsonReport(field: string, jsonData: any): any {
     // Traverse the JSON object to find the requested field
     let currentKey = jsonData;
     for (const key of keys) {
+        // eslint-disable-next-line no-prototype-builtins
         if (currentKey && currentKey.hasOwnProperty && typeof currentKey.hasOwnProperty === 'function' && currentKey.hasOwnProperty(key)) {
             currentKey = currentKey[key];
         } else {
@@ -122,16 +127,19 @@ function getJsonReportFileName(): string {
  */
 export function reportOutputs(jsonData: any): void {
     core.startGroup('Reporting outputs to GitHub');
+
     const findings = analyzeFindings(jsonData);
     const trafficLight = getFieldFromJsonReport('trafficLight', jsonData);
     const totalFindings = getFieldFromJsonReport('result.count', jsonData);
     const humanReadableSummary = buildSummary(trafficLight, totalFindings, findings);
+
     setOutput('scan-trafficlight', trafficLight, 'string');
     setOutput('scan-findings-count', totalFindings, 'number');
     setOutput('scan-findings-high', findings.highCount, 'number');
     setOutput('scan-findings-medium', findings.mediumCount, 'number');
     setOutput('scan-findings-low', findings.lowCount, 'number');
     setOutput('scan-readable-summary', humanReadableSummary, 'string');
+
     core.endGroup();
 }
 

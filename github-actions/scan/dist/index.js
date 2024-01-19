@@ -13631,12 +13631,6 @@ var __webpack_exports__ = {};
 // ESM COMPAT FLAG
 __nccwpck_require__.r(__webpack_exports__);
 
-// EXPORTS
-__nccwpck_require__.d(__webpack_exports__, {
-  "executeScan": () => (/* binding */ executeScan),
-  "postScan": () => (/* binding */ postScan)
-});
-
 // EXTERNAL MODULE: ./node_modules/@actions/core/lib/core.js
 var core = __nccwpck_require__(2186);
 ;// CONCATENATED MODULE: ./src/action-helper.ts
@@ -13659,121 +13653,36 @@ function handleError(error) {
 }
 
 // EXTERNAL MODULE: ./node_modules/shelljs/shell.js
-var shelljs_shell = __nccwpck_require__(3516);
-;// CONCATENATED MODULE: ./src/settings.json
-const settings_namespaceObject = JSON.parse('{"vz":"sechub scan-report","nl":"sechub_report_*.*","Pz":"sechub.json"}');
-;// CONCATENATED MODULE: ./src/sechub.json
-const sechub_namespaceObject = JSON.parse('{"apiVersion":"1.0","codeScan":{"fileSystem":{"folders":["."]},"excludes":[]}}');
-var src_sechub_namespaceObject = /*#__PURE__*/__nccwpck_require__.t(sechub_namespaceObject, 2);
-// EXTERNAL MODULE: external "path"
-var external_path_ = __nccwpck_require__(1017);
-;// CONCATENATED MODULE: ./src/fs-helper.ts
-// SPDX-License-Identifier: MIT
-
-
-
-/**
- * Get workspace directory.
- */
-function getWorkspaceDir() {
-    return shelljs_shell.env.GITHUB_WORKSPACE || '';
-}
-/**
- * Get parent folder of workspace directory.
- */
-function getWorkspaceParentDir() {
-    return external_path_.dirname(getWorkspaceDir());
-}
-/**
- * Get all files in current directory for given pattern.
- * @param pattern Used to filter files
- */
-function getFiles(pattern) {
-    const reportFiles = [];
-    shelljs_shell.ls(pattern).forEach(function (file) {
-        core.debug('file: ' + file);
-        reportFiles.push(`${getWorkspaceDir()}/${file}`);
-    });
-    return reportFiles;
-}
-
+var shell = __nccwpck_require__(3516);
 ;// CONCATENATED MODULE: ./src/sechub-cli.ts
 // SPDX-License-Identifier: MIT
 
-
-const secHubCli = `${getWorkspaceParentDir()}/platform/linux-386/sechub`;
 /**
  * Executes the scan method of the SecHub CLI.
  * @param parameter Parameters to execute the scan with
  * @param format Report format that should be fetched
+ * @param context: launch context
  */
-function scan(parameter, format) {
-    return shelljs_shell.exec(`${secHubCli} ${parameter} -reportformat ${format} scan`);
+function scan(format, context) {
+    return shell.exec(`${context.clientExecutablePath} ${context.configParameter} -reportformat ${format} scan`);
 }
 /**
  * Executes the getReport method of the SecHub CLI.
  * @param jobUUID job UUID for which the report should be downloaded
  * @param projectName name of the project for which the report should be downloaded
  * @param format format in which the report should be downloaded
+ * @param context: launch context
  */
-function getReport(jobUUID, projectName, format) {
-    return shelljs_shell.exec(`${secHubCli} -jobUUID ${jobUUID} -project ${projectName} --reportformat ${format} getReport`);
+function getReport(jobUUID, format, context) {
+    return shell.exec(`${context.clientExecutablePath} -jobUUID ${jobUUID} -project ${context.inputData.projectName} --reportformat ${format} getReport`);
 }
-/**
- * Executes the markFalsePositives method of the SecHub CLI.
- * @param falsePositivePath path to the false positive file
- */
-function markFalsePositives(falsePositivePath) {
-    return shell.exec(`${secHubCli} -file ${falsePositivePath} markFalsePositives`);
-}
-
-;// CONCATENATED MODULE: ./src/cli-helper.ts
-// SPDX-License-Identifier: MIT
-
-
-
-
-
-
-/**
- * Downloads a release for the SecHub CLI.
- * @param version The version that should be downloaded
- */
-function downloadRelease(version) {
-    const zipUrl = `https://github.com/mercedes-benz/sechub/releases/download/v${version}-client/sechub-cli-${version}.zip`;
-    core.debug('SecHub-Url: ' + zipUrl);
-    const secHubZip = `${getWorkspaceParentDir()}/sechub.zip`;
-    shelljs_shell.exec(`curl -L ${zipUrl} -o ${secHubZip}`);
-    shelljs_shell.exec(`unzip -o ${secHubZip} -d ${getWorkspaceParentDir()}`);
-    shelljs_shell.exec(`chmod +x ${secHubCli}`);
-}
-/**
- * Creates the sechub.json with the given user input values.
- * @param includeFolders Which folders should be included
- * @param excludeFolders Which folders should be excluded
- */
-function createSecHubJsonFile(includeFolders, excludeFolders) {
-    core.info('Config-Path was not found. Config will be manually created...');
-    const secHubJson = createSecHubJson(includeFolders, excludeFolders);
-    const stringifiedSecHubJson = JSON.stringify(secHubJson);
-    core.debug('SecHub-Config: ' + stringifiedSecHubJson);
-    shelljs_shell.ShellString(stringifiedSecHubJson).to(settings_namespaceObject.Pz);
-}
-/**
- * Creates the object for the sechub.json with the given user input values.
- * @param includeFolders Which folders should be included
- * @param excludeFolders Which folders should be excluded
- */
-function createSecHubJson(includeFolders, excludeFolders) {
-    const sechubJson = src_sechub_namespaceObject;
-    if (includeFolders) {
-        sechubJson.codeScan.fileSystem.folders = includeFolders;
-    }
-    if (excludeFolders) {
-        sechubJson.codeScan.excludes = excludeFolders;
-    }
-    return sechubJson;
-}
+// /**
+//  * Executes the markFalsePositives method of the SecHub CLI.
+//  * @param falsePositivePath path to the false positive file
+//  */
+// export function markFalsePositives(falsePositivePath: string, context: LaunchContext): ShellString {
+//     return shell.exec(`${context.clientExecutablePath} -file ${falsePositivePath} markFalsePositives`);
+// }
 
 ;// CONCATENATED MODULE: ./src/log-helper.ts
 // SPDX-License-Identifier: MIT
@@ -13792,20 +13701,98 @@ function logExitCode(code) {
     }
 }
 
-;// CONCATENATED MODULE: ./src/input.ts
+// EXTERNAL MODULE: external "path"
+var external_path_ = __nccwpck_require__(1017);
+;// CONCATENATED MODULE: ./src/fs-helper.ts
 // SPDX-License-Identifier: MIT
 
-const configPath = core.getInput('config-path');
-const url = core.getInput('url');
-const apiToken = core.getInput('api-token');
-const user = core.getInput('user');
-const projectName = core.getInput('project-name');
-const sechubCLIVersion = core.getInput('version');
-const debug = core.getInput('debug');
-const input_includeFolders = core.getInput('include-folders');
-const input_excludeFolders = core.getInput('exclude-folders');
-const input_reportFormats = core.getInput('report-formats');
-const failJobOnFindings = core.getInput('fail-job-with-findings');
+
+
+/**
+ * Get workspace directory.
+ */
+function getWorkspaceDir() {
+    return shell.env.GITHUB_WORKSPACE || '';
+}
+/**
+ * Get parent folder of workspace directory.
+ */
+function getWorkspaceParentDir() {
+    return external_path_.dirname(getWorkspaceDir());
+}
+/**
+ * Get all files in current directory for given pattern.
+ * @param pattern Used to filter files
+ */
+function getFiles(pattern) {
+    const reportFiles = [];
+    shell.ls(pattern).forEach(function (file) {
+        core.debug('file: ' + file);
+        reportFiles.push(`${getWorkspaceDir()}/${file}`);
+    });
+    return reportFiles;
+}
+class ShellFailedWithExitCodeNotZeroError extends Error {
+    constructor(command, shellExecResult) {
+        super(`Shell script call failed.\nExit code: ${shellExecResult.code}\nCommand: "${command}"\nStdErr: ${shellExecResult.stderr}`);
+    }
+}
+/**
+ * Executes given command by shell - errors are handled
+ * @param command
+ * @throws ShellFailedWithExitCodeNotZeroError
+ * @returns shellstring
+ */
+function shellExecOrFail(command) {
+    const shellExecResult = shell.exec(command);
+    if (shellExecResult.code != 0) {
+        throw new ShellFailedWithExitCodeNotZeroError(command, shellExecResult);
+    }
+    return shellExecResult;
+}
+
+;// CONCATENATED MODULE: ./src/sechub.json
+const sechub_namespaceObject = JSON.parse('{"apiVersion":"1.0","codeScan":{"fileSystem":{"folders":["."]},"excludes":[]}}');
+var src_sechub_namespaceObject = /*#__PURE__*/__nccwpck_require__.t(sechub_namespaceObject, 2);
+;// CONCATENATED MODULE: ./src/settings.json
+const settings_namespaceObject = JSON.parse('{"vz":"sechub scan-report","nl":"sechub_report_*.*","Pz":"sechub.json"}');
+;// CONCATENATED MODULE: ./src/configuration-builder.ts
+// SPDX-License-Identifier: MIT
+
+
+
+
+/**
+ * Creates the sechub.json configuration file with the given user input values.
+ *
+ * @param includeFolders Which folders should be included
+ * @param excludeFolders Which folders should be excluded
+ */
+function createSecHubConfigJsonFile(includeFolders, excludeFolders) {
+    core.info('Config-Path was not found. Config will be manually created...');
+    const secHubJson = createSecHubConfigurationModel(includeFolders, excludeFolders);
+    const stringifiedSecHubJson = JSON.stringify(secHubJson);
+    core.debug('SecHub-Config: ' + stringifiedSecHubJson);
+    shell.ShellString(stringifiedSecHubJson).to(settings_namespaceObject.Pz);
+}
+/**
+ * Creates a sechub configuration model object for given user input values.
+ *
+ * @param includeFolders Which folders should be included
+ * @param excludeFolders Which folders should be excluded
+ *
+ * @returns model
+ */
+function createSecHubConfigurationModel(includeFolders, excludeFolders) {
+    const sechubJson = src_sechub_namespaceObject;
+    if (includeFolders) {
+        sechubJson.codeScan.fileSystem.folders = includeFolders;
+    }
+    if (excludeFolders) {
+        sechubJson.codeScan.excludes = excludeFolders;
+    }
+    return sechubJson;
+}
 
 ;// CONCATENATED MODULE: ./src/report-formats.ts
 // SPDX-License-Identifier: MIT
@@ -13827,28 +13814,18 @@ function getValidFormatsFromInput(inputFormats) {
 
 
 
-
-
-/**
- * Sets the necessary environment variables with the user input values.
- */
-function initEnvironmentVariables() {
-    shelljs_shell.env.SECHUB_USERID = user;
-    shelljs_shell.env.SECHUB_APITOKEN = apiToken;
-    shelljs_shell.env.SECHUB_SERVER = url;
-    shelljs_shell.env.SECHUB_PROJECT = projectName;
-    shelljs_shell.env.SECHUB_DEBUG = debug;
-}
 /**
  * Returns the parameter to the sechub.json or creates it from the input parameters if configPath is not set.
  * @param configPath Path to the sechub.json
  * @param includeFolders list of folders to include to the scan
  * @param excludeFolders list of folders to exclude from the scan
+ *
+ * @returns parameter or null if config path is null
  */
 function initSecHubJson(configPath, includeFolders, excludeFolders) {
     core.startGroup('Set config');
     if (!configPath) {
-        createSecHubJsonFile(includeFolders, excludeFolders);
+        createSecHubConfigJsonFile(includeFolders, excludeFolders);
         return null;
     }
     core.info(`Config-Path was found: ${configPath}`);
@@ -13897,12 +13874,11 @@ var external_fs_ = __nccwpck_require__(7147);
 
 
 
-
 /**
  * Downloads the reports for the given formats.
  * @param formats formats in which the report should be downloaded
  */
-function downloadReports(formats) {
+function downloadReports(context, formats) {
     core.startGroup('Download Reports');
     if (formats.length === 0) {
         core.info('No more formats');
@@ -13914,7 +13890,7 @@ function downloadReports(formats) {
         core.debug('JobUUID: ' + jobUUID);
         formats.forEach((format) => {
             core.info(`Get Report as ${format}`);
-            const exitCode = getReport(jobUUID, projectName, format);
+            const exitCode = getReport(jobUUID, format, context);
             logExitCode(exitCode ? exitCode.code : 0);
         });
     }
@@ -13949,7 +13925,7 @@ async function uploadArtifact(name, paths) {
         const artifactName = name;
         const options = { continueOnError: true };
         const workspace = getWorkspaceDir();
-        shelljs_shell.exec(`ls ${workspace}`);
+        shell.exec(`ls ${workspace}`);
         core.debug('rootDirectory: ' + workspace);
         core.debug('files: ' + paths);
         await artifactClient.uploadArtifact(artifactName, paths, workspace, options);
@@ -13972,6 +13948,7 @@ function getFieldFromJsonReport(field, jsonData) {
     // Traverse the JSON object to find the requested field
     let currentKey = jsonData;
     for (const key of keys) {
+        // eslint-disable-next-line no-prototype-builtins
         if (currentKey && currentKey.hasOwnProperty && typeof currentKey.hasOwnProperty === 'function' && currentKey.hasOwnProperty(key)) {
             currentKey = currentKey[key];
         }
@@ -13988,7 +13965,7 @@ function getFieldFromJsonReport(field, jsonData) {
  */
 function getJsonReportFileName() {
     const workspaceDir = getWorkspaceDir();
-    const filesInWorkspace = shelljs_shell.ls(workspaceDir);
+    const filesInWorkspace = shell.ls(workspaceDir);
     for (const fileName of filesInWorkspace) {
         if (/sechub_report.*\.json$/.test(fileName)) {
             return fileName;
@@ -14106,7 +14083,93 @@ function setOutput(field, value, dataFormat) {
     core.setOutput(field, value.toString()); // Ensure value is converted to a string as GitHub Actions expects output variables to be strings.
 }
 
-;// CONCATENATED MODULE: ./src/main.ts
+;// CONCATENATED MODULE: ./src/input.ts
+// SPDX-License-Identifier: MIT
+
+const PARAM_CONFIG_PATH = 'config-path';
+const PARAM_SECHUB_SERVER_URL = 'url';
+const PARAM_API_TOKEN = 'api-token';
+const PARAM_SECHUB_USER = 'user';
+const PARAM_PROJECT_NAME = 'project-name';
+const PARAM_CLIENT_VERSION = 'version';
+const PARAM_DEBUG = 'debug';
+const PARAM_INCLUDED_FOLDERS = 'include-folders';
+const PARAM_EXCLUDED_FOLDERS = 'exclude-folders';
+const PARAM_REPORT_FORMATS = 'report-formats';
+const PARAM_FAIL_JOB_ON_FINDING = 'fail-job-with-findings';
+const emptyInputDataDefaults = {
+    configPath: '',
+    url: '',
+    apiToken: '',
+    user: '',
+    projectName: '',
+    sechubCLIVersion: '',
+    debug: '',
+    includeFolders: '',
+    excludeFolders: '',
+    reportFormats: '',
+    failJobOnFindings: '',
+};
+function resolveGitHubInputData() {
+    return {
+        configPath: core.getInput(PARAM_CONFIG_PATH),
+        url: core.getInput(PARAM_SECHUB_SERVER_URL),
+        apiToken: core.getInput(PARAM_API_TOKEN),
+        user: core.getInput(PARAM_SECHUB_USER),
+        projectName: core.getInput(PARAM_PROJECT_NAME),
+        sechubCLIVersion: core.getInput(PARAM_CLIENT_VERSION),
+        debug: core.getInput(PARAM_DEBUG),
+        includeFolders: core.getInput(PARAM_INCLUDED_FOLDERS),
+        excludeFolders: core.getInput(PARAM_EXCLUDED_FOLDERS),
+        reportFormats: core.getInput(PARAM_REPORT_FORMATS),
+        failJobOnFindings: core.getInput(PARAM_FAIL_JOB_ON_FINDING),
+    };
+}
+
+;// CONCATENATED MODULE: ./src/environment.ts
+// SPDX-License-Identifier: MIT
+
+/**
+ * Sets the necessary environment variables with the user input values.
+ */
+function initEnvironmentVariables(data) {
+    shell.env.SECHUB_USERID = data.user;
+    shell.env.SECHUB_APITOKEN = data.apiToken;
+    shell.env.SECHUB_SERVER = data.url;
+    shell.env.SECHUB_PROJECT = data.projectName;
+    shell.env.SECHUB_DEBUG = data.debug;
+}
+
+;// CONCATENATED MODULE: ./src/client-download.ts
+// SPDX-License-Identifier: MIT
+
+
+
+/**
+ * Downloads release for the SecHub CLI if not already loaded.
+ *
+ * @param version The version that should be downloaded
+ */
+function downloadClientRelease(context) {
+    const clientVersion = context.inputData.sechubCLIVersion;
+    if (clientVersion == null || clientVersion == '') {
+        throw new Error('No SecHub client version defined!');
+    }
+    if (external_fs_.existsSync(context.clientExecutablePath)) {
+        core.debug(`Client already downloaded - skip download. Path:${context.clientExecutablePath}`);
+        return;
+    }
+    const secHubZipFilePath = `${context.clientDownloadFolder}/sechub.zip`;
+    const zipDownloadUrl = `https://github.com/mercedes-benz/sechub/releases/download/v${clientVersion}-client/sechub-cli-${clientVersion}.zip`;
+    core.debug(`SecHub-Client download URL: ${zipDownloadUrl}`);
+    core.debug(`SecHub-Client download folder: ${context.clientDownloadFolder}`);
+    shellExecOrFail(`mkdir ${context.clientDownloadFolder} -p`);
+    shellExecOrFail(`curl -L ${zipDownloadUrl} -o ${secHubZipFilePath}`);
+    shellExecOrFail(`unzip -o ${secHubZipFilePath} -d ${context.clientDownloadFolder}`);
+    shellExecOrFail(`chmod +x ${secHubZipFilePath}`);
+}
+
+;// CONCATENATED MODULE: ./src/launcher.ts
 // SPDX-License-Identifier: MIT
 
 
@@ -14117,50 +14180,78 @@ function setOutput(field, value, dataFormat) {
 
 
 
-main().catch(handleError);
-async function main() {
-    const scanSettings = initScan();
-    const exitCode = executeScan(scanSettings.configParameter, scanSettings.reportFormats[0]);
-    await postScan(scanSettings.reportFormats, exitCode);
+
+async function launch() {
+    const context = createContext();
+    init(context);
+    const exitCode = executeScan(context);
+    await postScan(context, exitCode);
 }
+const LAUNCHER_CONTEXT_DEFAULTS = {
+    inputData: emptyInputDataDefaults,
+    reportFormats: ['json'],
+    clientDownloadFolder: '',
+    configParameter: null,
+    clientExecutablePath: '',
+};
 /**
- * Initializes the scan and returns required scan settings.
+ * Create scan settings
  */
-function initScan() {
+function createContext() {
     var _a, _b;
-    initEnvironmentVariables();
-    downloadRelease(sechubCLIVersion);
-    const includeFolders = (_a = input_includeFolders) === null || _a === void 0 ? void 0 : _a.split(',');
-    const excludeFolders = (_b = input_excludeFolders) === null || _b === void 0 ? void 0 : _b.split(',');
-    const configParameter = initSecHubJson(configPath, includeFolders, excludeFolders);
-    const reportFormats = initReportFormats(input_reportFormats);
+    const gitHubInputData = resolveGitHubInputData();
+    const clientVersion = gitHubInputData.sechubCLIVersion;
+    // client
+    const expression = /\./gi;
+    const clientVersionSubFolder = clientVersion.replace(expression, '_'); // avoid . inside path from user input
+    const clientDownloadFolder = `${getWorkspaceParentDir()}/runtime/client/${clientVersionSubFolder}`;
+    const clientExecutablePath = `${clientDownloadFolder}/platform/linux-386/sechub`;
+    const includeFolders = (_a = gitHubInputData.includeFolders) === null || _a === void 0 ? void 0 : _a.split(',');
+    const excludeFolders = (_b = gitHubInputData.excludeFolders) === null || _b === void 0 ? void 0 : _b.split(',');
+    const configParameter = initSecHubJson(gitHubInputData.configPath, includeFolders, excludeFolders);
+    const reportFormats = initReportFormats(gitHubInputData.reportFormats);
     return {
         configParameter: configParameter,
         reportFormats: reportFormats,
+        inputData: gitHubInputData,
+        clientDownloadFolder: clientDownloadFolder,
+        clientExecutablePath: clientExecutablePath,
     };
+}
+function init(context) {
+    initEnvironmentVariables(context.inputData);
+    downloadClientRelease(context);
 }
 /**
  * Executes the scan.
  * @param configParameter Parameter for the sechub.json path. Can be null if the file was created by the action.
  * @param format Report format that should be downloaded
  */
-function executeScan(configParameter, format) {
-    const exitCode = scan(configParameter, format).code;
+function executeScan(context) {
+    // TODO 2024-01-19: de-jcup: here only the first report format is used... is this not a bug?
+    const exitCode = scan(context.reportFormats[0], context).code;
     logExitCode(exitCode);
     return exitCode;
 }
-/**
- * Executes several actions after the scan finished.
- * @param reportFormats formats in which the report should be downloaded
- * @param exitCode exit code from the scan
- */
-async function postScan(reportFormats, exitCode) {
-    const jsonReport = downloadReports(reportFormats.slice(1));
+async function postScan(context, exitCode) {
+    const jsonReport = downloadReports(context, context.reportFormats.slice(1));
     reportOutputs(jsonReport);
     await uploadArtifact(settings_namespaceObject.vz, getFiles(settings_namespaceObject.nl));
-    if (exitCode !== 0 && failJobOnFindings === 'true') {
+    if (exitCode !== 0 && context.inputData.failJobOnFindings === 'true') {
         failAction(exitCode);
     }
+}
+
+;// CONCATENATED MODULE: ./src/main.ts
+// SPDX-License-Identifier: MIT
+
+
+main().catch(handleError);
+async function main() {
+    // Seperated launcher and main methd.
+    // Reason: launch mechanism would be loaded on imports
+    //         before we can handle mocking in integration tests!
+    await launch();
 }
 
 })();

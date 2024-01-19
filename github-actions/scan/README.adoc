@@ -88,9 +88,31 @@ It's necessary to execute the build after every change of the sources and you ha
 
 === Test
 
-To run the tests you have to run this command:
+==== Unit tests
+To run the unit tests you have to execute this command:
 
 [source,npm]
 ----
 npm run test
 ----
+
+
+==== Integration-Test
+As a precondition to run the integration tests locally you have to 
+
+- start a new SecHub server in integration test mode
+- execute `__test__/setup-integrationtest.sh`
+
+When this has been done, you can execute this command multiple times:
+
+[source,npm]
+----
+npm run integration-test
+----
+
+To enable full debug output:
+[source,npm]
+----
+export SECHUB_DEBUG=true
+----
+
