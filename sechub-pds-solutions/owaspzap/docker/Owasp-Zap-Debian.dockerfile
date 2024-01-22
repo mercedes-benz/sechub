@@ -48,7 +48,9 @@ RUN cd "$DOWNLOAD_FOLDER" && \
     tar xf ZAP_${OWASPZAP_VERSION}_Linux.tar.gz -C "$TOOL_FOLDER" && \
     ln -s "$TOOL_FOLDER/ZAP_${OWASPZAP_VERSION}/zap.sh" "/usr/local/bin/zap" && \
     # remove plugins installed on default
-    rm $TOOL_FOLDER/ZAP_${OWASPZAP_VERSION}/plugin/*.zap
+    rm $TOOL_FOLDER/ZAP_${OWASPZAP_VERSION}/plugin/*.zap && \
+    # remove ZAP download after installation
+    rm ZAP_${OWASPZAP_VERSION}_Linux.tar.gz
 
 # Install SecHub OWASP ZAP wrapper
 RUN cd "$TOOL_FOLDER" && \
