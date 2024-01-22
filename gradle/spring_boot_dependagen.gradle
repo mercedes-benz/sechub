@@ -1,6 +1,6 @@
 ext {
   spring_boot_dependency = [
-     // Next parts are dependencies used by Spring Boot v 3.2.1
+     // Next parts are dependencies used by Spring Boot v 3.2.2
      // You can use this information to use exact same library version inside
      // your own libraries, where you have no spring boot dependency management
      //
@@ -50,7 +50,7 @@ ext {
      json_path:                              'com.jayway.jsonpath:json-path:2.8.0',
      json_smart:                             'net.minidev:json-smart:2.4.10',
      jsonassert:                             'org.skyscreamer:jsonassert:1.5.1',
-     jul_to_slf4j:                           'org.slf4j:jul-to-slf4j:2.0.9',
+     jul_to_slf4j:                           'org.slf4j:jul-to-slf4j:2.0.11',
      junit_bom:                              'org.junit:junit-bom:5.10.1',
      junit_jupiter:                          'org.junit.jupiter:junit-jupiter:5.10.1',
      junit_jupiter_api:                      'org.junit.jupiter:junit-jupiter-api:5.10.1',
@@ -63,10 +63,10 @@ ext {
      log4j_to_slf4j:                         'org.apache.logging.log4j:log4j-to-slf4j:2.21.1',
      logback_classic:                        'ch.qos.logback:logback-classic:1.4.14',
      logback_core:                           'ch.qos.logback:logback-core:1.4.14',
-     micrometer_commons:                     'io.micrometer:micrometer-commons:1.12.1',
+     micrometer_commons:                     'io.micrometer:micrometer-commons:1.12.2',
      micrometer_core:                        'io.micrometer:micrometer-core:1.12.0',
-     micrometer_jakarta9:                    'io.micrometer:micrometer-jakarta9:1.12.1',
-     micrometer_observation:                 'io.micrometer:micrometer-observation:1.12.1',
+     micrometer_jakarta9:                    'io.micrometer:micrometer-jakarta9:1.12.2',
+     micrometer_observation:                 'io.micrometer:micrometer-observation:1.12.2',
      mockito_core:                           'org.mockito:mockito-core:5.7.0',
      mockito_junit_jupiter:                  'org.mockito:mockito-junit-jupiter:5.7.0',
      objenesis:                              'org.objenesis:objenesis:3.3',
@@ -75,9 +75,9 @@ ext {
      snakeyaml:                              'org.yaml:snakeyaml:2.2',
      thymeleaf:                              'org.thymeleaf:thymeleaf:3.1.2.RELEASE',
      thymeleaf_spring6:                      'org.thymeleaf:thymeleaf-spring6:3.1.2.RELEASE',
-     tomcat_embed_core:                      'org.apache.tomcat.embed:tomcat-embed-core:10.1.17',
-     tomcat_embed_el:                        'org.apache.tomcat.embed:tomcat-embed-el:10.1.17',
-     tomcat_embed_websocket:                 'org.apache.tomcat.embed:tomcat-embed-websocket:10.1.17',
+     tomcat_embed_core:                      'org.apache.tomcat.embed:tomcat-embed-core:10.1.18',
+     tomcat_embed_el:                        'org.apache.tomcat.embed:tomcat-embed-el:10.1.18',
+     tomcat_embed_websocket:                 'org.apache.tomcat.embed:tomcat-embed-websocket:10.1.18',
      txw2:                                   'org.glassfish.jaxb:txw2:4.0.4',
      unbescape:                              'org.unbescape:unbescape:1.1.6.RELEASE',
      xmlunit_core:                           'org.xmlunit:xmlunit-core:2.9.1'
@@ -127,7 +127,7 @@ ext {
      json_path:                              '2.8.0',
      json_smart:                             '2.4.10',
      jsonassert:                             '1.5.1',
-     jul_to_slf4j:                           '2.0.9',
+     jul_to_slf4j:                           '2.0.11',
      junit_bom:                              '5.10.1',
      junit_jupiter:                          '5.10.1',
      junit_jupiter_api:                      '5.10.1',
@@ -140,10 +140,10 @@ ext {
      log4j_to_slf4j:                         '2.21.1',
      logback_classic:                        '1.4.14',
      logback_core:                           '1.4.14',
-     micrometer_commons:                     '1.12.1',
+     micrometer_commons:                     '1.12.2',
      micrometer_core:                        '1.12.0',
-     micrometer_jakarta9:                    '1.12.1',
-     micrometer_observation:                 '1.12.1',
+     micrometer_jakarta9:                    '1.12.2',
+     micrometer_observation:                 '1.12.2',
      mockito_core:                           '5.7.0',
      mockito_junit_jupiter:                  '5.7.0',
      objenesis:                              '3.3',
@@ -152,9 +152,9 @@ ext {
      snakeyaml:                              '2.2',
      thymeleaf:                              '3.1.2.RELEASE',
      thymeleaf_spring6:                      '3.1.2.RELEASE',
-     tomcat_embed_core:                      '10.1.17',
-     tomcat_embed_el:                        '10.1.17',
-     tomcat_embed_websocket:                 '10.1.17',
+     tomcat_embed_core:                      '10.1.18',
+     tomcat_embed_el:                        '10.1.18',
+     tomcat_embed_websocket:                 '10.1.18',
      txw2:                                   '4.0.4',
      unbescape:                              '1.1.6.RELEASE',
      xmlunit_core:                           '2.9.1'

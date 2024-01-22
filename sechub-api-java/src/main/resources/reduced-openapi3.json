@@ -3045,6 +3045,10 @@
                     "type": "string"
                 }
             },
+            "FullScanDataZIP": {
+                "title": "FullScanDataZIP",
+                "type": "object"
+            },
             "ScanJob": {
                 "title": "ScanJob",
                 "required": [
@@ -3360,10 +3364,6 @@
                     }
                 }
             },
-            "FullScanDataZIP": {
-                "title": "FullScanDataZIP",
-                "type": "object"
-            },
             "StatusInformation": {
                 "title": "StatusInformation",
                 "type": "array",
@@ -3402,6 +3402,29 @@
                     }
                 }
             },
+            "UserSignup": {
+                "title": "UserSignup",
+                "required": [
+                    "apiVersion",
+                    "emailAdress",
+                    "userId"
+                ],
+                "type": "object",
+                "properties": {
+                    "apiVersion": {
+                        "type": "string",
+                        "description": "The api version, currently only 1.0 is supported"
+                    },
+                    "emailAdress": {
+                        "type": "string",
+                        "description": "Email adress"
+                    },
+                    "userId": {
+                        "type": "string",
+                        "description": "Wanted userid, the userid must be lowercase only!"
+                    }
+                }
+            },
             "ExecutionProfileUpdate": {
                 "title": "ExecutionProfileUpdate",
                 "required": [
@@ -3432,29 +3455,6 @@
                         "type": "boolean",
                         "description": "Enabled state of profile, default is false",
                         "nullable": true
-                    }
-                }
-            },
-            "UserSignup": {
-                "title": "UserSignup",
-                "required": [
-                    "apiVersion",
-                    "emailAdress",
-                    "userId"
-                ],
-                "type": "object",
-                "properties": {
-                    "apiVersion": {
-                        "type": "string",
-                        "description": "The api version, currently only 1.0 is supported"
-                    },
-                    "emailAdress": {
-                        "type": "string",
-                        "description": "Email adress"
-                    },
-                    "userId": {
-                        "type": "string",
-                        "description": "Wanted userid, the userid must be lowercase only!"
                     }
                 }
             },
