@@ -30,7 +30,7 @@ import com.mercedesbenz.sechub.test.TestPortProvider;
         PDSAnonymousCheckAliveRestController.class,
 		PDSAnonymousCheckAliveRestControllerMockTest.SimpleTestConfiguration.class })
 /* @formatter:on */
-@WithMockUser(authorities = PDSRoleConstants.ROLE_SUPERADMIN)
+@WithMockUser(roles = PDSRoleConstants.ROLE_SUPERADMIN)
 @ActiveProfiles(PDSProfiles.TEST)
 public class PDSAnonymousCheckAliveRestControllerMockTest {
 

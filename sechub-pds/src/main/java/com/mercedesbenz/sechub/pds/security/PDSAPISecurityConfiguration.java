@@ -24,8 +24,8 @@ public class PDSAPISecurityConfiguration {
         /* @formatter:off */
 		httpSecurity.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
 				.authorizeHttpRequests((auth) -> auth.
-						requestMatchers(PDSAPIConstants.API_JOB + "**").hasAnyAuthority(ROLE_USER, ROLE_SUPERADMIN).
-						requestMatchers(PDSAPIConstants.API_ADMIN + "**").hasAnyAuthority(ROLE_USER, ROLE_SUPERADMIN).
+						requestMatchers(PDSAPIConstants.API_JOB + "**").hasAnyRole(ROLE_USER, ROLE_SUPERADMIN).
+						requestMatchers(PDSAPIConstants.API_ADMIN + "**").hasAnyRole(ROLE_USER, ROLE_SUPERADMIN).
 						requestMatchers(PDSAPIConstants.API_ANONYMOUS+"**").permitAll().
 						requestMatchers(PDSAPIConstants.ERROR_PAGE).permitAll().
 						requestMatchers(PDSAPIConstants.ACTUATOR + "**").permitAll().

@@ -52,7 +52,7 @@ import com.mercedesbenz.sechub.test.TestPortProvider;
         PDSGetJobStatusService.class,
         PDSJobRestControllerMockTest.SimpleTestConfiguration.class})
 /* @formatter:on */
-@WithMockUser(authorities = PDSRoleConstants.ROLE_USER)
+@WithMockUser(roles = PDSRoleConstants.ROLE_USER)
 @ActiveProfiles(PDSProfiles.TEST)
 public class PDSJobRestControllerMockTest {
 
