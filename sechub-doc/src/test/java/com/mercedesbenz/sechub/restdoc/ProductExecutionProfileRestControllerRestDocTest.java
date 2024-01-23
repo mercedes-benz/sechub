@@ -72,7 +72,7 @@ import com.mercedesbenz.sechub.test.executorconfig.TestExecutorSetupJobParam;
 @RunWith(SpringRunner.class)
 @WebMvcTest(ProductExecutionProfileRestController.class)
 @ContextConfiguration(classes = { ProductExecutionProfileRestController.class, ProductExecutionProfileRestControllerRestDocTest.SimpleTestConfiguration.class })
-@WithMockUser(authorities = RoleConstants.ROLE_SUPERADMIN)
+@WithMockUser(roles = RoleConstants.ROLE_SUPERADMIN)
 @ActiveProfiles({ Profiles.TEST, Profiles.ADMIN_ACCESS })
 @AutoConfigureRestDocs(uriScheme = "https", uriHost = ExampleConstants.URI_SECHUB_SERVER, uriPort = 443)
 public class ProductExecutionProfileRestControllerRestDocTest implements TestIsNecessaryForDocumentation {

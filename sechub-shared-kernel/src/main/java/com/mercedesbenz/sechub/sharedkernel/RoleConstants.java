@@ -2,22 +2,21 @@
 package com.mercedesbenz.sechub.sharedkernel;
 
 /**
- * Never change the string content of identifiers! Will be used for persistence
- * and also inside code!
+ * SecHub role constants without {@link AuthorityConstants#AUTHORITY_ROLE_PREFIX
+ * authority prefix}. Persistence of role data is NOT done with this values, but
+ * a boolean values inside AuthUser entity (<i>The transformation is done inside
+ * AuthUserUpdateRolesService.</i>)
  *
  * @author Albert Tregnaghi
  *
  */
 public class RoleConstants {
-    /*
-     * Never change the string content of identifiers! Will be used for persistence
-     * and also inside code!
-     */
-    public static final String ROLE_SUPERADMIN = "ROLE_SUPERADMIN";
 
-    public static final String ROLE_USER = "ROLE_USER";
+    public static final String ROLE_SUPERADMIN = "SUPERADMIN";
 
-    public static final String ROLE_OWNER = "ROLE_OWNER";
+    public static final String ROLE_USER = "USER";
+
+    public static final String ROLE_OWNER = "OWNER";
 
     private RoleConstants() {
     }

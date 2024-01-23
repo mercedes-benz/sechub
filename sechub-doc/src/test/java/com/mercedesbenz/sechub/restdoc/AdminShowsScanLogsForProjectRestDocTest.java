@@ -52,7 +52,7 @@ import com.mercedesbenz.sechub.test.TestPortProvider;
 @RunWith(SpringRunner.class)
 @WebMvcTest(ProjectAdministrationRestController.class)
 @ContextConfiguration(classes = { ScanLogRestController.class, AdminShowsScanLogsForProjectRestDocTest.SimpleTestConfiguration.class })
-@WithMockUser(authorities = RoleConstants.ROLE_SUPERADMIN)
+@WithMockUser(roles = RoleConstants.ROLE_SUPERADMIN)
 @ActiveProfiles(Profiles.TEST)
 @AutoConfigureRestDocs(uriScheme = "https", uriHost = ExampleConstants.URI_SECHUB_SERVER, uriPort = 443)
 public class AdminShowsScanLogsForProjectRestDocTest implements TestIsNecessaryForDocumentation {

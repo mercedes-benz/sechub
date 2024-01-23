@@ -41,7 +41,7 @@ import com.mercedesbenz.sechub.test.TestPortProvider;
 @WebMvcTest(ServerInfoAdministrationRestController.class)
 @ContextConfiguration(classes = { ServerInfoAdministrationRestController.class,
         ServerInfoAdministrationRestControllerRestDocTest.SimpleTestConfiguration.class })
-@WithMockUser(authorities = RoleConstants.ROLE_SUPERADMIN)
+@WithMockUser(roles = RoleConstants.ROLE_SUPERADMIN)
 @ActiveProfiles({ Profiles.TEST, Profiles.ADMIN_ACCESS })
 @AutoConfigureRestDocs(uriScheme = "https", uriHost = ExampleConstants.URI_SECHUB_SERVER, uriPort = 443)
 public class ServerInfoAdministrationRestControllerRestDocTest implements TestIsNecessaryForDocumentation {

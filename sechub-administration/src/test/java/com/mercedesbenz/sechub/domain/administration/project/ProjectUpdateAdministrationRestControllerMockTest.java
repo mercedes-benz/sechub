@@ -42,7 +42,7 @@ import com.mercedesbenz.sechub.test.TestPortProvider;
 @WebMvcTest(ProjectUpdateAdministrationRestController.class)
 @ContextConfiguration(classes = { ProjectUpdateAdministrationRestController.class,
         ProjectUpdateAdministrationRestControllerMockTest.SimpleTestConfiguration.class })
-@WithMockUser(authorities = RoleConstants.ROLE_SUPERADMIN)
+@WithMockUser(roles = RoleConstants.ROLE_SUPERADMIN)
 @ActiveProfiles({ Profiles.TEST, Profiles.ADMIN_ACCESS })
 public class ProjectUpdateAdministrationRestControllerMockTest {
 

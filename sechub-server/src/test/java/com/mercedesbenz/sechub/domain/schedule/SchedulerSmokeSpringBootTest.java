@@ -24,7 +24,7 @@ import com.mercedesbenz.sechub.sharedkernel.RoleConstants;
  */
 @SpringBootTest
 @TestPropertySource(locations = "classpath:application-test.yml")
-@WithMockUser(authorities = { RoleConstants.ROLE_USER })
+@WithMockUser(roles = { RoleConstants.ROLE_USER })
 @ActiveProfiles(Profiles.TEST)
 public class SchedulerSmokeSpringBootTest {
 

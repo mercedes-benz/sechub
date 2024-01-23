@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.domain.authorization;
 
+import static com.mercedesbenz.sechub.sharedkernel.AuthorityConstants.*;
 import static org.junit.Assert.*;
 
 import java.util.Collection;
@@ -26,7 +27,8 @@ public class AuthUserRestAPIConfigurationTest {
         UserDetails result = AuthUserRestAPIConfiguration.adoptUser(entity);
 
         /* test */
-        assertHasAuthority(result, RoleConstants.ROLE_USER, RoleConstants.ROLE_SUPERADMIN, RoleConstants.ROLE_OWNER);
+        assertHasAuthority(result, AUTHORITY_ROLE_PREFIX + RoleConstants.ROLE_USER, AUTHORITY_ROLE_PREFIX + RoleConstants.ROLE_SUPERADMIN,
+                AUTHORITY_ROLE_PREFIX + RoleConstants.ROLE_OWNER);
     }
 
     @Test
@@ -41,7 +43,7 @@ public class AuthUserRestAPIConfigurationTest {
         UserDetails result = AuthUserRestAPIConfiguration.adoptUser(entity);
 
         /* test */
-        assertHasAuthority(result, RoleConstants.ROLE_USER);
+        assertHasAuthority(result, AUTHORITY_ROLE_PREFIX + RoleConstants.ROLE_USER);
     }
 
     @Test
@@ -57,7 +59,7 @@ public class AuthUserRestAPIConfigurationTest {
         UserDetails result = AuthUserRestAPIConfiguration.adoptUser(entity);
 
         /* test */
-        assertHasAuthority(result, RoleConstants.ROLE_OWNER);
+        assertHasAuthority(result, AUTHORITY_ROLE_PREFIX + RoleConstants.ROLE_OWNER);
     }
 
     @Test
@@ -72,26 +74,26 @@ public class AuthUserRestAPIConfigurationTest {
         UserDetails result = AuthUserRestAPIConfiguration.adoptUser(entity);
 
         /* test */
-        assertHasAuthority(result, RoleConstants.ROLE_SUPERADMIN);
+        assertHasAuthority(result, AUTHORITY_ROLE_PREFIX + RoleConstants.ROLE_SUPERADMIN);
     }
 
-    private void assertHasAuthority(UserDetails result, String... roles) {
+    private void assertHasAuthority(UserDetails result, String... authorities) {
         Collection<? extends GrantedAuthority> auth = result.getAuthorities();
-        for (String role : roles) {
+        for (String authority : authorities) {
             boolean found = false;
             for (Iterator<? extends GrantedAuthority> it = auth.iterator(); it.hasNext();) {
                 GrantedAuthority ga = it.next();
-                if (role.contentEquals(ga.getAuthority())) {
+                if (authority.contentEquals(ga.getAuthority())) {
                     found = true;
                     break;
                 }
             }
             if (!found) {
-                fail("Did not found role:" + role + " inside " + auth);
+                fail("Did not found role:" + authority + " inside " + auth);
             }
 
         }
-        assertEquals(roles.length, auth.size());
+        assertEquals(authorities.length, auth.size());
 
     }
 

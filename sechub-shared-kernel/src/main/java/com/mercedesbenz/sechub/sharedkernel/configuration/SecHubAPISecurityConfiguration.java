@@ -22,10 +22,10 @@ public class SecHubAPISecurityConfiguration {
         /* @formatter:off */
 		httpSecurity.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
 				.authorizeHttpRequests((auth) -> auth.
-						requestMatchers(APIConstants.API_ADMINISTRATION + "**").hasAnyAuthority(ROLE_SUPERADMIN).
-						requestMatchers(APIConstants.API_USER + "**").hasAnyAuthority(ROLE_USER, ROLE_SUPERADMIN).
-						requestMatchers(APIConstants.API_PROJECT + "**").hasAnyAuthority(ROLE_USER, ROLE_SUPERADMIN).
-						requestMatchers(APIConstants.API_OWNER + "**").hasAnyAuthority(ROLE_OWNER, ROLE_SUPERADMIN).
+						requestMatchers(APIConstants.API_ADMINISTRATION + "**").hasAnyRole(ROLE_SUPERADMIN).
+						requestMatchers(APIConstants.API_USER + "**").hasAnyRole(ROLE_USER, ROLE_SUPERADMIN).
+						requestMatchers(APIConstants.API_PROJECT + "**").hasAnyRole(ROLE_USER, ROLE_SUPERADMIN).
+						requestMatchers(APIConstants.API_OWNER + "**").hasAnyRole(ROLE_OWNER, ROLE_SUPERADMIN).
 
 						requestMatchers(APIConstants.API_ANONYMOUS + "**").permitAll().
 						requestMatchers(APIConstants.ERROR_PAGE).permitAll().

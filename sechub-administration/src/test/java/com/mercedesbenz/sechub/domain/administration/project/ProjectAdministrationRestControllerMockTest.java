@@ -52,7 +52,7 @@ import com.mercedesbenz.sechub.test.TestPortProvider;
 @RunWith(SpringRunner.class)
 @WebMvcTest(ProjectAdministrationRestController.class)
 @ContextConfiguration(classes = { ProjectAdministrationRestController.class, ProjectAdministrationRestControllerMockTest.SimpleTestConfiguration.class })
-@WithMockUser(authorities = RoleConstants.ROLE_SUPERADMIN)
+@WithMockUser(roles = RoleConstants.ROLE_SUPERADMIN)
 @ActiveProfiles({ Profiles.TEST, Profiles.ADMIN_ACCESS })
 public class ProjectAdministrationRestControllerMockTest {
 
