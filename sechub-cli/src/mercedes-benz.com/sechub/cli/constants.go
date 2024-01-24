@@ -130,6 +130,22 @@ const showHelpAction = "help"
 // showVersionAction - name of action to display SecHub client version
 const showVersionAction = "version"
 
+// List of client actions (see above)
+var actionlist = []string{
+	scanAction,
+	scanAsynchronAction,
+	getStatusAction,
+	getReportAction,
+	getFalsePositivesAction,
+	listJobsAction,
+	markFalsePositivesAction,
+	interactiveMarkFalsePositivesAction,
+	unmarkFalsePositivesAction,
+	interactiveUnmarkFalsePositivesAction,
+	showHelpAction,
+	showVersionAction,
+}
+
 /* --------------------------------------- */
 /* -------- File Archive Constants ------- */
 /* --------------------------------------- */
@@ -158,6 +174,27 @@ const timeoutOption = "timeout"
 const userOption = "user"
 const versionOption = "version"
 const waitOption = "wait"
+
+// List of client cmdline options (See above)
+var flaglist = []string{
+	apitokenOption,
+	configfileOption,
+	fileOption,
+	helpOption,
+	jobUUIDOption,
+	labelOption,
+	outputOption,
+	projectOption,
+	quietOption,
+	reportformatOption,
+	serverOption,
+	stopOnYellowOption,
+	tempDirOption,
+	timeoutOption,
+	userOption,
+	versionOption,
+	waitOption,
+}
 
 /* ----------------------------------------- */
 /* -------- Environment variable names ----- */
@@ -207,7 +244,8 @@ const SechubUserIDEnvVar = "SECHUB_USERID"
 const SechubWaittimeDefaultEnvVar = "SECHUB_WAITTIME_DEFAULT"
 
 // SechubWhitelistAllEnvVar - environment variable to make it possible to switch off the default witelist for source code files.
-//   Important: DefaultSourceCodeExcludeDirPatterns still remains active and can be turned off via SECHUB_IGNORE_DEFAULT_EXCLUDES environment variable.
+//
+//	Important: DefaultSourceCodeExcludeDirPatterns still remains active and can be turned off via SECHUB_IGNORE_DEFAULT_EXCLUDES environment variable.
 const SechubWhitelistAllEnvVar = "SECHUB_WHITELIST_ALL"
 
 /* ---------------------------------- */
