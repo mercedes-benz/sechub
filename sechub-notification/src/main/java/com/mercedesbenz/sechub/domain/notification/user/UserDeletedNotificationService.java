@@ -32,7 +32,7 @@ public class UserDeletedNotificationService {
         emailContent.append("\nhas been removed by an administrator.\n");
 
         SimpleMailMessage message = factory.createMessage("SecHub account removed");
-        message.setTo(userMessage.getEmailAdress());
+        message.setTo(userMessage.getEmailAddress());
         message.setText(emailContent.toString());
 
         emailService.send(message);

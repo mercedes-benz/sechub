@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 [[sechub-doclink-uc-user-requests-new-apittoken]]
 It shall be possible to achieve this by calling REST API and also by just visiting
-static sechub website and entering mail adress and post request by simple web form.
+static sechub website and entering email address and post request by simple web form.
 
 When user exists a new one time token will be created and sent to user per email - so same way as done when a new
 user signup is accepted by admin.

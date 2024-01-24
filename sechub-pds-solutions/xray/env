@@ -1,0 +1,7 @@
+# Xray env file
+# example: artifacts.my-instance.com
+XRAY_ARTIFACTORY=change-me
+# example: my-local-docker-register
+XRAY_DOCKER_REGISTRY=change-me
+XRAY_USERNAME=change-me
+XRAY_PASSWORD=change-me

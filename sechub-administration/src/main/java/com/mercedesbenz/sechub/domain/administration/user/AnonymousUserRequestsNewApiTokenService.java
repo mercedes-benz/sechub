@@ -44,12 +44,12 @@ public class AnonymousUserRequestsNewApiTokenService {
     @Autowired
     UserInputAssertion assertion;
 
-    public void anonymousRequestToGetNewApiTokenForUserMailAdress(String userEmail) {
+    public void anonymousRequestToGetNewApiTokenForUserEmailAddress(String userEmail) {
         LOG.info("New api token requested for email address: {})", logSanitizer.sanitize(userEmail, 50));
 
         assertion.assertIsValidEmailAddress(userEmail);
 
-        Optional<User> found = userRepository.findByEmailAdress(userEmail);
+        Optional<User> found = userRepository.findByEmailAddress(userEmail);
         if (!found.isPresent()) {
             /* we just do nothing here - prevent user enumeration by hacking... */
             LOG.warn("Anonymous request to get new api token, but user unknown: {})", logSanitizer.sanitize(userEmail, 50));
@@ -66,7 +66,7 @@ public class AnonymousUserRequestsNewApiTokenService {
         /* we just send info about new api token */
         DomainMessage infoRequest = new DomainMessage(MessageID.USER_NEW_API_TOKEN_REQUESTED);
         UserMessage userMessage = new UserMessage();
-        userMessage.setEmailAdress(userEmail);
+        userMessage.setEmailAddress(userEmail);
 
         /*
          * Security: we do NOT use userid inside this link - if some body got

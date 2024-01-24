@@ -50,11 +50,11 @@ public class UserEmailAddressChangedNotificationService {
         emailContent.append(" from ");
         emailContent.append(userMessage.getFormerEmailAddress());
         emailContent.append(" to ");
-        emailContent.append(userMessage.getEmailAdress());
+        emailContent.append(userMessage.getEmailAddress());
         emailContent.append(". \nYour old email address is not used in SecHub any longer.");
 
         SimpleMailMessage message = factory.createMessage(EMAIL_SUBJECT_NEW_ADDRESS);
-        message.setTo(userMessage.getEmailAdress());
+        message.setTo(userMessage.getEmailAddress());
         message.setText(emailContent.toString());
 
         emailService.send(message);

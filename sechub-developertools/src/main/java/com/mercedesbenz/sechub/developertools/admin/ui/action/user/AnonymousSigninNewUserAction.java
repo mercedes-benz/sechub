@@ -22,7 +22,7 @@ public class AnonymousSigninNewUserAction extends AbstractUIAction {
             return;
         }
 
-        Optional<String> email = getUserInput("Give Email of new user", InputCacheIdentifier.EMAILADRESS);
+        Optional<String> email = getUserInput("Give Email of new user", InputCacheIdentifier.EMAILADDRESS);
         if (!email.isPresent()) {
             return;
         }

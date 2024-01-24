@@ -65,26 +65,26 @@ public class MessageDataKeys {
     public static final MessageDataKey<SchedulerJobMessage> SCHEDULER_JOB_STATUS = createKey("sechub.scheduler.job.status",
             SCHEDULER_JOB_MESSAGE_DATA_PROVIDER);
     /**
-     * Must contain userid, mail adress
+     * Must contain userid, email address
      */
     public static final MessageDataKey<UserMessage> USER_CONTACT_DATA = createUserMessageKey("user.signup.data");
     /**
-     * Must contain userid, mail adress
+     * Must contain userid, email address
      */
     public static final MessageDataKey<UserMessage> USER_SIGNUP_DATA = createUserMessageKey("user.signup.data");
 
     /**
-     * Must contain userid, mail adress and initial roles
+     * Must contain userid, email address and initial roles
      */
     public static final MessageDataKey<UserMessage> USER_CREATION_DATA = createUserMessageKey("user.creation.data");
 
     /**
-     * Must contain userid, hashed api token and email adress
+     * Must contain userid, hashed api token and email address
      */
     public static final MessageDataKey<UserMessage> USER_API_TOKEN_DATA = createUserMessageKey("user.apitoken.data");
 
     /**
-     * Must contain userid and email adress
+     * Must contain userid and email address
      */
     public static final MessageDataKey<UserMessage> USER_DELETE_DATA = createUserMessageKey("user.delete.data");
 

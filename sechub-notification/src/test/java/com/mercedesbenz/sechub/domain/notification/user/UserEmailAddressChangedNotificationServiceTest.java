@@ -35,13 +35,13 @@ class UserEmailAddressChangedNotificationServiceTest {
     @Test
     void sends_emails_to_former_and_new_mail_address_containing_expected_content() {
         /* prepare */
-        String emailAddress = "email.adress@example.org";
-        String formerEmailAddress = "former_email.adress@example.org";
+        String emailAddress = "email.address@example.org";
+        String formerEmailAddress = "former_email.address@example.org";
 
         UserMessage userMessage = new UserMessage();
-        userMessage.setEmailAdress(emailAddress);
+        userMessage.setEmailAddress(emailAddress);
         userMessage.setFormerEmailAddress(formerEmailAddress);
-        userMessage.setSubject("Your mail adress has changed by a test");
+        userMessage.setSubject("Your email address has been changed by a test");
 
         SimpleMailMessage simpleMailmessageFormer = new SimpleMailMessage();
         simpleMailmessageFormer.setSubject("<former>");
@@ -68,18 +68,18 @@ class UserEmailAddressChangedNotificationServiceTest {
         String receivedFormerText = mails.receivedFormer.getText();
         String receivedNewText = mails.receivedNew.getText();
 
-        assertEquals("Your mail adress has changed by a test and it will not be used any longer for SecHub.\n"
+        assertEquals("Your email address has been changed by a test and it will not be used any longer for SecHub.\n"
                 + "\n"
                 + "In case you do not receive a follow up notification to the new email address, please inform your SecHub administrator!",
                 receivedFormerText);
-        assertEquals("Your mail adress has changed by a test from former_email.adress@example.org to email.adress@example.org. \n"
+        assertEquals("Your email address has been changed by a test from former_email.address@example.org to email.address@example.org. \n"
                 + "Your old email address is not used in SecHub any longer.",
                 receivedNewText);
         /* @formatter:on */
 
     }
 
-    private Mails fetchSentMailsFromMockObjects(String emailAdress, String formerEmailAdress) {
+    private Mails fetchSentMailsFromMockObjects(String emailAddress, String formerEmailAddress) {
         ArgumentCaptor<SimpleMailMessage> messageCaptor = ArgumentCaptor.forClass(SimpleMailMessage.class);
         verify(emailService, times(2)).send(messageCaptor.capture());
         List<SimpleMailMessage> messagesSent = messageCaptor.getAllValues();
@@ -87,10 +87,10 @@ class UserEmailAddressChangedNotificationServiceTest {
         assertEquals(2, messagesSent.size());
         Mails data = new Mails();
         for (SimpleMailMessage message : messagesSent) {
-            if (emailAdress.equals(message.getTo()[0])) {
+            if (emailAddress.equals(message.getTo()[0])) {
                 data.receivedNew = message;
             }
-            if (formerEmailAdress.equals(message.getTo()[0])) {
+            if (formerEmailAddress.equals(message.getTo()[0])) {
                 data.receivedFormer = message;
             }
         }

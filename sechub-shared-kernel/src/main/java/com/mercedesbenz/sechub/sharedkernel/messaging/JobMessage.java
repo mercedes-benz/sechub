@@ -96,8 +96,8 @@ public class JobMessage implements JSONable<JobMessage> {
         return jobUUID;
     }
 
-    public void setOwnerEmailAddress(String emailAdress) {
-        this.ownerEmailAddress = emailAdress;
+    public void setOwnerEmailAddress(String emailAddress) {
+        this.ownerEmailAddress = emailAddress;
     }
 
     public String getOwnerEmailAddress() {

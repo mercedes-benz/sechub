@@ -30,7 +30,7 @@ public class NewAPITokenAppliedUserNotificationService {
         emailContent.append("If you have not triggered an api token change please inform administrators.\n");
 
         SimpleMailMessage message1 = factory.createMessage("SecHub API token changed");
-        message1.setTo(userMessage.getEmailAdress());
+        message1.setTo(userMessage.getEmailAddress());
         message1.setText(emailContent.toString());
 
         emailService.send(message1);

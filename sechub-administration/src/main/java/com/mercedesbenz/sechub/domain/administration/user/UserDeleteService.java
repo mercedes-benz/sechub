@@ -68,7 +68,7 @@ public class UserDeleteService {
         /* create message containing data before user is deleted */
         UserMessage message = new UserMessage();
         message.setUserId(user.getName());
-        message.setEmailAdress(user.getEmailAdress());
+        message.setEmailAddress(user.getEmailAddress());
 
         userRepository.deleteUserWithAssociations(user.getName());
 

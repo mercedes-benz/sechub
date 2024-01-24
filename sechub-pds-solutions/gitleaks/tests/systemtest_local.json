@@ -1,0 +1,116 @@
+{
+  "setup": {
+    "local": {
+      "secHub": {
+        "admin": {
+          "userId": "admin",
+          "apiToken": "myTop$ecret!"
+        },
+        "start": [
+          {
+            "script": {
+              "path": "./01-start-single-docker-compose.sh"
+            }
+          }
+        ],
+        "configure": {
+          "executors": [
+            {
+              "pdsProductId": "PDS_GITLEAKS",
+              "name": "system-test-gitleakes",
+              "parameters": {
+                "sechub.productexecutor.pds.adapter.resilience.retry.wait.milliseconds": 3000,
+                "sechub.productexecutor.pds.adapter.resilience.retry.max": 20,
+                "pds.config.use.sechub.storage": false
+              }
+            }
+          ]
+        },
+        "stop": [
+          {
+            "script": {
+              "path": "./01-stop-single-docker-compose.sh"
+            }
+          }
+        ]
+      },
+      "pdsSolutions": [
+        {
+          "name": "gitleaks",
+          "url": "https://pds-gitleaks:8444/",
+          "waitForAvailable": false,
+          "start": [
+            {
+              "script": {
+                "path": "./05-start-single-sechub-network-docker-compose.sh"
+              }
+            }
+          ],
+          "stop": [
+            {
+              "script": {
+                "path": "./05-stop-single-sechub-network-docker-compose.sh"
+              }
+            }
+          ],
+          "techUser": {
+            "userId": "techuser",
+            "apiToken": "pds-apitoken"
+          }
+        }
+      ]
+    }
+  },
+  "tests": [
+    {
+      "name": "unsafe-bank",
+      "prepare": [
+        {
+          "script": {
+            "arguments": [
+              "${runtime.currentTestFolder}",
+              "https://github.com/lucideus-repo/UnSAFE_Bank"
+            ],
+            "path": "./clone_repo.sh"
+          }
+        }
+      ],
+      "execute": {
+        "runSecHubJob": {
+          "uploads": [
+            {
+              "sourceFolder": "UnSAFE_Bank",
+              "referenceId": "code"
+            }
+          ],
+          "secretScan": {
+            "use": [
+              "code"
+            ]
+          }
+        }
+      },
+      "assert": [
+        {
+          "sechubResult": {
+            "hasTrafficLight": "YELLOW",
+            "containsStrings": {
+              "values": [
+                "result",
+                "SUCCESS",
+                "jobUUID",
+                "reportVersion",
+                "MEDIUM",
+                "severity",
+                "UnSAFE_Bank/Backend/src/api/application/config/database.php"
+              ]
+            },
+            "equalsFile": {
+              "path": "sechub-report-UnSAFE_Bank.json"
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

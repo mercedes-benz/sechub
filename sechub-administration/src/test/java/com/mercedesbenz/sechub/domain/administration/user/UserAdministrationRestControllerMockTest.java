@@ -94,7 +94,7 @@ public class UserAdministrationRestControllerMockTest {
         /* prepare */
         User user = mock(User.class);
         when(user.getName()).thenReturn("user1");
-        when(user.getEmailAdress()).thenReturn("user1@example.org");
+        when(user.getEmailAddress()).thenReturn("user1@example.org");
         Set<Project> projects = new LinkedHashSet<>();
 
         Project project1 = mock(Project.class);
@@ -126,7 +126,7 @@ public class UserAdministrationRestControllerMockTest {
 
         User user = mock(User.class);
         when(user.getName()).thenReturn(userId);
-        when(user.getEmailAdress()).thenReturn(emailAddress);
+        when(user.getEmailAddress()).thenReturn(emailAddress);
         Set<Project> projects = new LinkedHashSet<>();
 
         Project project1 = mock(Project.class);

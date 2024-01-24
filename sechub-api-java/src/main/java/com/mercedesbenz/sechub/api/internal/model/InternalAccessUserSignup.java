@@ -35,8 +35,8 @@ public class InternalAccessUserSignup {
         return delegate.getApiVersion();
     }
 
-    public String getEmailAdress() {
-        return delegate.getEmailAdress();
+    public String getEmailAddress() {
+        return delegate.getEmailAddress();
     }
 
     public String getUserId() {
@@ -47,8 +47,8 @@ public class InternalAccessUserSignup {
         delegate.setApiVersion(apiVersion);
     }
 
-    public void setEmailAdress(String emailAdress) {
-        delegate.setEmailAdress(emailAdress);
+    public void setEmailAddress(String emailAddress) {
+        delegate.setEmailAddress(emailAddress);
     }
 
     public void setUserId(String userId) {

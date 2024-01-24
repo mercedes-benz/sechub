@@ -17,7 +17,7 @@ public class ShowUserDetailForEmailAddressAction extends AbstractUIAction {
 
     @Override
     public void execute(ActionEvent e) {
-        Optional<String> emailAddress = getUserInput("Please enter email address", InputCacheIdentifier.EMAILADRESS);
+        Optional<String> emailAddress = getUserInput("Please enter email address", InputCacheIdentifier.EMAILADDRESS);
         if (!emailAddress.isPresent()) {
             return;
         }
