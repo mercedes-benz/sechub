@@ -25,6 +25,7 @@ action
    ` + getStatusAction + ` - fetch current job status and return result as json
    ` + getReportAction + ` - fetch report as json (a report will only exist when job has finished)
    ` + listJobsAction + ` - lists the ` + strconv.Itoa(SizeOfJobList) + ` latest scan jobs
+   ` + defineFalsePositivesAction + ` - define the project's false-positives list from a json file
    ` + getFalsePositivesAction + ` - fetch the project's false-positives list as json
    ` + markFalsePositivesAction + ` - add from a json file to project's false-positives list
    ` + unmarkFalsePositivesAction + ` - remove items from project's false-positives list as defined in json file

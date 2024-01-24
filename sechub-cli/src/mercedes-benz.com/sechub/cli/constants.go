@@ -112,16 +112,19 @@ const getFalsePositivesAction = "getFalsePositives"
 // listJobsAction - name of action to list latest Jobs
 const listJobsAction = "listJobs"
 
-// markFalsePositivesAction - name of action to define false-positives of a project and upload it to SecHub server
+// defineFalsePositivesAction - name of action to define the false-positives of a SecHub project
+const defineFalsePositivesAction = "defineFalsePositives"
+
+// markFalsePositivesAction - name of action to add false-positives to a SecHub project
 const markFalsePositivesAction = "markFalsePositives"
 
-// interactiveMarkFalsePositivesAction - name of action to interactively define false-positives of a project and upload it to SecHub server
+// interactiveMarkFalsePositivesAction - name of action to interactively add false-positives to a SecHub project
 const interactiveMarkFalsePositivesAction = "interactiveMarkFalsePositives"
 
-// unmarkFalsePositivesAction - name of action to undefine false-positives of a project and upload it to SecHub server
+// unmarkFalsePositivesAction - name of action to delete false-positives of a SecHub project
 const unmarkFalsePositivesAction = "unmarkFalsePositives"
 
-// interactiveUnmarkFalsePositivesAction - name of action to interactively remove items from false-positives list of a project and upload it to SecHub server
+// interactiveUnmarkFalsePositivesAction - name of action to interactively delete false-positives of a SecHub project
 const interactiveUnmarkFalsePositivesAction = "interactiveUnmarkFalsePositives"
 
 // showHelpAction - name of action to display SecHub client help
@@ -138,6 +141,7 @@ var actionlist = []string{
 	getReportAction,
 	getFalsePositivesAction,
 	listJobsAction,
+	defineFalsePositivesAction,
 	markFalsePositivesAction,
 	interactiveMarkFalsePositivesAction,
 	unmarkFalsePositivesAction,

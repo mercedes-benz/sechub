@@ -119,6 +119,61 @@ func processContent(context *Context) {
 	context.contentToSend = context.inputForContentProcessing // content data used for TLS encrypted data (currently we do not provide templating for false positive data, so just same)
 }
 
+func defineFalsePositivesFromFile(context *Context) {
+	sechubUtil.LogDebug(context.config.debug, fmt.Sprintf("Action %q: reading file: %s\n", context.config.action, context.config.file))
+
+	/* open file and check exists */
+	jsonFile, err := os.Open(context.config.file)
+	defer jsonFile.Close()
+	failed := sechubUtil.HandleIOError(err)
+
+	context.inputForContentProcessing, err = ioutil.ReadAll(jsonFile)
+	failed = sechubUtil.HandleIOError(err)
+
+	if failed {
+		showHelpHint()
+		os.Exit(ExitCodeIOError)
+	}
+
+	// read json into go struct
+	falsePositivesDefinitionList := newFalsePositivesListFromBytes(context.inputForContentProcessing)
+	sechubUtil.LogDebug(context.config.debug, fmt.Sprintf("False positives to be defined: %+v", falsePositivesDefinitionList))
+
+	// download false-positives list for project from SecHub server
+	jsonFPBlob := FalsePositivesList{serverResult: getFalsePositivesList(context), outputFolder: "", outputFileName: ""}
+	var falsePositivesServerList FalsePositivesDefinition
+	err = json.Unmarshal(jsonFPBlob.serverResult, &falsePositivesServerList)
+	sechubUtil.HandleError(err, ExitCodeFailed)
+
+	// Compute the FPs to add and those to remove
+	var falsePositivesToAdd FalsePositivesConfig
+	var falsePositivesToRemove FalsePositivesConfig
+	falsePositivesToAdd, falsePositivesToRemove, err = defineFalsePositives(falsePositivesDefinitionList, falsePositivesServerList)
+	sechubUtil.LogDebug(context.config.debug, fmt.Sprintf("False positives to be added: %+v\n", falsePositivesToAdd))
+	sechubUtil.LogDebug(context.config.debug, fmt.Sprintf("False positives to be removed: %+v\n", falsePositivesToRemove))
+
+	fmt.Printf("False positives to be added: %+v\n", falsePositivesToAdd)
+	fmt.Printf("False positives to be removed: %+v\n", falsePositivesToRemove)
+	fmt.Printf("err: %+v\n", err)
+}
+
+func defineFalsePositives(newFalsePositives FalsePositivesConfig, currentFalsePositives FalsePositivesDefinition) (
+	falsePositivesToAdd FalsePositivesConfig,
+	falsePositivesToRemove FalsePositivesConfig,
+	err error) {
+	// Initialize structures
+	falsePositivesToAdd.APIVersion = CurrentAPIVersion
+	falsePositivesToAdd.Type = falsePositivesListType
+	falsePositivesToRemove.APIVersion = CurrentAPIVersion
+	falsePositivesToRemove.Type = falsePositivesListType
+
+	// Loop through definition list and figure out, what to add and what to remove
+
+	// ToDo
+
+	return falsePositivesToAdd, falsePositivesToRemove, err
+}
+
 func uploadFalsePositivesFromFile(context *Context) {
 	sechubUtil.LogDebug(context.config.debug, fmt.Sprintf("Action %q: uploading file: %s\n", context.config.action, context.config.file))
 
