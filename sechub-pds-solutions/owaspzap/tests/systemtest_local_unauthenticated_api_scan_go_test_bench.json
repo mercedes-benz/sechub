@@ -1,0 +1,106 @@
+{
+  "setup" : {
+    "local" : {
+      "secHub" : {
+        "start" : [ {
+          "script" : {
+            "path" : "./01-start-single-docker-compose.sh",
+            "process" : {
+              "timeOut" : {
+                "amount" : 100,
+                "unit" : "MINUTES"
+              }
+            }
+          }
+        } ],
+        "configure" : {
+          "executors" : [ {
+            "pdsProductId" : "PDS_OWASP_ZAP",
+            "name" : "system-test-webscan-zap",
+            "parameters" : {
+              "sechub.productexecutor.pds.adapter.resilience.retry.wait.milliseconds" : 5000,
+              "sechub.productexecutor.pds.adapter.resilience.retry.max" : 60,
+              "pds.config.supported.datatypes" : "SOURCE",
+              "pds.config.use.sechub.storage" : false,
+              "pds.scan.target.url" : "http://go-test-bench:8080",
+              "zap.use.proxy" : false,
+              "zap.ajaxcrawler.enabled" : false,
+              "zap.activescan.enabled" : true
+            }
+          } ],
+          "projects" : [ {
+            "name" : "default-test-project",
+            "whitelistedURIs" : [ "http://go-test-bench:8080" ]
+          } ]
+        },
+        "stop" : [ {
+          "script" : {
+            "path" : "./01-stop-single-docker-compose.sh"
+          }
+        } ]
+      },
+      "pdsSolutions" : [ {
+        "name" : "owaspzap",
+        "url" : "https://pds-owaspzap:8444/",
+        "waitForAvailable" : false,
+        "start" : [ {
+          "script" : {
+            "path" : "./05-start-single-sechub-network-docker-compose.sh",
+            "process" : {
+              "timeOut" : {
+                "amount" : 100,
+                "unit" : "MINUTES"
+              }
+            }
+          }
+        } ],
+        "stop" : [ {
+          "script" : {
+            "path" : "./05-stop-single-sechub-network-docker-compose.sh"
+          }
+        } ]
+      } ]
+    }
+  },
+  "tests" : [ {
+    "name" : "go-test-bench",
+    "prepare" : [ {
+      "script" : {
+        "arguments" : [ "${runtime.currentTestFolder}", "go-test-bench/docker-compose-systemtest.yml", "https://github.com/Contrast-Security-OSS/go-test-bench.git" ],
+        "path" : "./clone_and_generate_yaml_and_start_vuln_app.sh",
+        "process" : {
+          "timeOut" : {
+            "amount" : 100,
+            "unit" : "MINUTES"
+          }
+        }
+      }
+    } ],
+    "execute" : {
+      "runSecHubJob" : {
+        "uploads" : [ {
+          "sourceFile" : "go-test-bench/cmd/go-swagger/swagger.yml",
+          "referenceId" : "default-ref"
+        } ],
+        "webScan" : {
+          "url" : "http://go-test-bench:8080",
+          "api" : {
+            "type" : "openApi",
+            "use" : [ "default-ref" ]
+          }
+        }
+      }
+    },
+    "cleanup" : {
+      "script" : {
+        "arguments" : [ "${runtime.currentTestFolder}", "go-test-bench/docker-compose-systemtest.yml" ],
+        "path" : "./shutdown_vuln_app.sh"
+      }
+    },
+    "assert" : [ {
+      "sechubResult" : {
+        "hasTrafficLight" : "RED"
+      }
+    } ]
+  } ]
+}
