@@ -7,7 +7,11 @@ metadata:
 spec:
   ingress:
   - ports:
+{{- if .Values.go_mmproxy.enabled }}
+    - port: 8080
+{{- else }}
     - port: 8443
+{{- end }}
       protocol: TCP
   podSelector:
     matchLabels:

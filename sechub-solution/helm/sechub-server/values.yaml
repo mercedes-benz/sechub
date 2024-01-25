@@ -120,7 +120,8 @@ service:
   # optional: Add annotations (goes to metadata.annotations)
   #           Can contain multiple lines. Example:
   # annotations: |-
-  #   loadbalancer.openstack.org/keep-floatingip: true
+  #   loadbalancer.openstack.org/keep-floatingip: "true"
+  #   loadbalancer.openstack.org/proxy-protocol: "true"
   #
   # optional: Add finalizers (goes to metadata.finalizers)
   #           Can contain multiple lines. Example:
@@ -134,6 +135,16 @@ service:
 #   prometheus.io/probe: "true"
 #   prometheus.io/port: "10250"
 #   prometheus.io/path: "/actuator/prometheus"
+
+go_mmproxy:
+  # Log the real client IP addresses via a go-mmproxy sidecar container
+  # Otherwise one sees only the loadbalancer's IP in the logs.
+  # go-mmproxy -> https://github.com/path-network/go-mmproxy
+  # Spoofs the real client address taken from proxy-protocol so the SecHub server will log correctly.
+  # (needs annotation loadbalancer.openstack.org/proxy-protocol: "true" - see above)
+  enabled: false
+  # Choose a "go-mmproxy" docker image. See e.g. https://hub.docker.com/search?q=go-mmproxy
+  image: "example.org/go-mmproxy:2.1.0"
 
 storage:
   local:
@@ -285,6 +296,14 @@ pdsGoSec:
   # Put the password of PDS-GoSec in k8s secret secret-pds-gosec:techuser_password
 
 # ------------------------------------------------------------------------------------- #
+# PDS-IaC adapter
+# ------------------------------------------------------------------------------------- #
+pdsIaC:
+  enabled: false
+  # Put the user id  of PDS-IaC in k8s secret secret-pds-iac:techuser_username
+  # Put the password of PDS-IaC in k8s secret secret-pds-iac:techuser_password
+
+# ------------------------------------------------------------------------------------- #
 # PDS-Loc analytics adapter
 # ------------------------------------------------------------------------------------- #
 pdsLoc:
@@ -309,6 +328,14 @@ pdsOWASPZAP:
   # Put the password of PDS-OWASP ZAP in k8s secret secret-pds-owaspzap:techuser_password
 
 # ------------------------------------------------------------------------------------- #
+# PDS-PMD adapter
+# ------------------------------------------------------------------------------------- #
+pdsPMD:
+  enabled: false
+  # Put the user id  of PDS-PMD in k8s secret secret-pds-pmd:techuser_username
+  # Put the password of PDS-PMD in k8s secret secret-pds-pmd:techuser_password
+
+# ------------------------------------------------------------------------------------- #
 # PDS-Scancode adapter
 # ------------------------------------------------------------------------------------- #
 pdsScancode:
@@ -323,3 +350,11 @@ pdsSecretScanner:
   enabled: false
   # Put the user id  of PDS-SecretScanner in k8s secret secret-pds-secretscanner:techuser_username
   # Put the password of PDS-SecretScanner in k8s secret secret-pds-secretscanner:techuser_password
+
+# ------------------------------------------------------------------------------------- #
+# PDS-Xray adapter
+# ------------------------------------------------------------------------------------- #
+pdsXray:
+  enabled: false
+  # Put the user id  of PDS-Xray in k8s secret secret-pds-xray:techuser_username
+  # Put the password of PDS-Xray in k8s secret secret-pds-xray:techuser_password

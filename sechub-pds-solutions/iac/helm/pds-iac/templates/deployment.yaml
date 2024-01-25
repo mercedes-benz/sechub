@@ -1,0 +1,124 @@
+# SPDX-License-Identifier: MIT
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Chart.Name }}
+  labels:
+    name: {{ .Chart.Name }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      name: {{ .Chart.Name }}
+  template:
+    metadata:
+      labels:
+        name: {{ .Chart.Name }}
+    spec:
+      securityContext:
+        runAsUser: 2323 # user id of the application user. (overrides settings in the Dockerfile)
+        runAsGroup: 2323 # group id of the application group. (overrides setings in the Dockerfile)
+        fsGroup: 2323 # group id of the application group. Set in the Dockerfile. This group has write access to the volumes.
+      containers:
+        - name: {{ .Chart.Name }}
+          image: "{{ .Values.image.registry }}:{{ .Values.image.tag }}"
+          resources:
+            requests:
+              memory: "{{ .Values.resources.requests.memory }}"
+            limits:
+              memory: "{{ .Values.resources.limits.memory }}"
+          env:
+            - name: PDS_START_MODE
+              value: "{{ .Values.pds.startMode }}"
+            - name: ADMIN_USERID
+              value: "{{ .Values.users.admin.id }}"
+            - name: ADMIN_APITOKEN
+              value: "{{ .Values.users.admin.apiToken }}"
+            - name: TECHUSER_USERID
+              value: "{{ .Values.users.technical.id }}"
+            - name: TECHUSER_APITOKEN
+              value: "{{ .Values.users.technical.apiToken }}"
+            - name: PDS_MAX_FILE_UPLOAD_BYTES
+              value: "{{ .Values.pds.maxFileUploadBytes }}"
+            - name: PDS_CONFIG_EXECUTE_QUEUE_MAX
+              value: "{{ .Values.pds.config.execute.queueMax }}"
+            - name: PDS_CONFIG_EXECUTE_WORKER_THREAD_COUNT
+              value: "{{ .Values.pds.config.execute.workerThreadCount }}"
+            - name: PDS_HEARTBEAT_LOGGING
+              value: "{{ .Values.pds.heartbeatLogging }}"
+{{- if .Values.pds.logging.type.enabled }}
+            - name: LOGGING_TYPE
+              value: {{ .Values.pds.logging.type.appenderName }}
+{{- end }}
+{{- if .Values.pds.debug.keepReportsInWorkspace }}
+            - name: SECHUB_PDS_WORKSPACE_AUTOCLEAN_DISABLED
+              value: "true"
+{{- end }}
+{{- if .Values.pds.javaDebug.enabled }}
+            - name: JAVA_ENABLE_DEBUG
+              value: "true"
+{{- end }}
+{{- if .Values.pds.keepContainerAliveAfterPDSCrashed }}
+            - name: KEEP_CONTAINER_ALIVE_AFTER_PDS_CRASHED
+              value: "true"
+{{- end }}
+{{- if .Values.database.postgres.enabled }}
+            - name: POSTGRES_ENABLED
+              value: "true"
+            - name: DATABASE_CONNECTION
+              value: "{{ .Values.database.postgres.connection }}"
+            - name: DATABASE_USERNAME
+              value: "{{ .Values.database.postgres.username }}"
+            - name: DATABASE_PASSWORD
+              value: "{{ .Values.database.postgres.password }}"
+{{- end }}
+            # limit database connection pool
+            - name: SPRING_DATASOURCE_HIKARI_MINIMUMIDLE
+              value: "1"
+            - name: SPRING_DATASOURCE_HIKARI_MAXIMUMPOOLSIZE
+              value: "2"
+
+            # Storage priority in order: local, s3, shared volume
+            # Meaning if local is enabled local will be used,
+            # regardless of other storage configurations.
+{{- if .Values.storage.local.enabled }}
+            - name: SHARED_VOLUME_UPLOAD_DIR
+              value: "/shared_volumes/uploads"
+{{- else if .Values.storage.s3.enabled }}
+            - name: S3_ENABLED
+              value: "true"
+            - name:  S3_ENDPOINT
+              value: {{ .Values.storage.s3.endpoint }}
+            - name: S3_BUCKETNAME
+              value: {{ .Values.storage.s3.bucketname }}
+            - name: S3_ACCESSKEY
+              value: {{ .Values.storage.s3.accesskey }}
+            - name: S3_SECRETKEY
+              value: {{ .Values.storage.s3.secretkey }}
+{{- else if .Values.storage.sharedVolume.enabled }}
+            - name: SHARED_VOLUME_UPLOAD_DIR
+              value: "{{ .Values.storage.sharedVolume.upload.dir }}"
+{{- end}}
+          ports:
+            - name: pds-https-port
+              containerPort: 8444
+          startupProbe:
+            httpGet:
+              scheme: HTTPS
+              path: /api/anonymous/check/alive
+              port: pds-https-port
+            periodSeconds: 1
+            failureThreshold: 300
+            # probe every 1s x 300 = 5 mins before restart of container
+            successThreshold: 1
+            timeoutSeconds: 1
+          livenessProbe:
+            httpGet:
+              scheme: HTTPS
+              path: /api/anonymous/check/alive
+              port: pds-https-port
+            periodSeconds: 5
+            failureThreshold: 3
+            successThreshold: 1
+            timeoutSeconds: 3

@@ -164,3 +164,18 @@ tasks.named("eclipse") {
     dependsOn("assemble")
 }
 
+/**
+ * Custom gradle task to build a "fatJar".
+ */
+task buildJavaApiAll(type: Jar) {
+    group 'sechub'
+    description 'Builds the java api library as standalone library.'
+    archivesBaseName = 'sechub-java-api-all'
+    from { 
+        configurations.runtimeClasspath.collect { 
+            it.isDirectory() ? it : zipTree(it) 
+        } 
+    }
+    duplicatesStrategy = DuplicatesStrategy.INCLUDE
+    with jar
+}

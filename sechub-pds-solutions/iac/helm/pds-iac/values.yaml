@@ -1,0 +1,78 @@
+# SPDX-License-Identifier: MIT
+
+# This is a sample values file containing the defaults.
+
+replicaCount: 1
+
+image:
+    registry: "ghcr.io/mercedes-benz/sechub/pds-iac"
+    tag: "latest"
+
+resources:
+    requests:
+        # Initial container memory size
+        memory: 256Mi
+    limits:
+        # Maximum container memory size
+        memory: 1Gi
+
+pds:
+    startMode: localserver
+    # Maximum upload size for source code: 50 MiB by default (50 * 1024 * 1024 = 52428800)
+    maxFileUploadBytes: "52428800"
+    config:
+        execute:
+            # Maximal accepted queue size (new job requests will be denied and thus cached on SecHub server)
+            queueMax: 10
+            # Maximum number of jobs that are processed in parallel by PDS
+            workerThreadCount: 10
+    heartbeatLogging: "true"
+    logging:
+        type:
+            enabled: false
+            appenderName: "LOGSTASH_JSON"
+    debug:
+        keepReportsInWorkspace: false
+    javaDebug:
+        enabled: false
+    keepContainerAliveAfterPDSCrashed: false
+
+users:
+    technical:
+        id: "techuser"
+        apiToken: "<api token of techuser>"
+    admin:
+        id: "admin"
+        apiToken: "<api token of admin user>"
+
+storage:
+    local:
+        enabled: true
+    s3:
+        enabled: false
+        endpoint: "https://<minio-or-s3-server>:<port>"
+        bucketname: "<my-bucketname>"
+        accesskey: "<my-accesskey>"
+        secretkey: "<my-secretkey>"
+    sharedVolume:
+        enabled: false
+        upload:
+            dir: "/mount/nfs/shares/<sharename>"
+
+database:
+    postgres:
+        enabled: false
+        connection: "jdbc:postgresql://database:5432/pds"
+        username: "pds_iac"
+        password: "<password-of-db-user>"
+
+networkPolicy:
+    enabled: false
+    ingress:
+        - from:
+            - podSelector:
+                matchLabels:
+                    name: sechub-server
+            - podSelector:
+                matchLabels:
+                    name: sechub-adminserver

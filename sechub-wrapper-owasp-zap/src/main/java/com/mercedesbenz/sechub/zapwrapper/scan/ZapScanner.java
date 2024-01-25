@@ -17,6 +17,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.zaproxy.clientapi.core.ClientApiException;
 
+import com.mercedesbenz.sechub.commons.model.ClientCertificateConfiguration;
 import com.mercedesbenz.sechub.commons.model.HTTPHeaderConfiguration;
 import com.mercedesbenz.sechub.commons.model.SecHubMessage;
 import com.mercedesbenz.sechub.commons.model.SecHubMessageType;
@@ -91,6 +92,10 @@ public class ZapScanner implements ZapScan {
             addReplacerRulesForHeaders();
 
             /* ZAP setup with access to target */
+            // The order of the following method calls is important. We want to load the
+            // client certificate first, because it could be needed to access the included
+            // URLs or the URLs from the API definitions.
+            importClientCertificate();
             addIncludedAndExcludedUrlsToContext();
             loadApiDefinitions(zapContextId);
 
@@ -268,6 +273,36 @@ public class ZapScanner implements ZapScan {
         }
     }
 
+    void importClientCertificate() throws ClientApiException {
+        if (scanContext.getClientCertificateFile() == null) {
+            LOG.info("For scan {}: No client certificate file was found!", scanContext.getContextName());
+            return;
+        }
+        Optional<ClientCertificateConfiguration> optionalClientCertConfig = scanContext.getSecHubWebScanConfiguration().getClientCertificate();
+        if (optionalClientCertConfig.isEmpty()) {
+            LOG.info("For scan {}: No client certificate configuration was found!", scanContext.getContextName());
+            return;
+        }
+        // Should never happen at this point, only if the client certificate file was
+        // not extracted correctly
+        if (!scanContext.getClientCertificateFile().exists()) {
+            throw new ZapWrapperRuntimeException("For scan " + scanContext.getContextName()
+                    + ": A client certificate section was configured inside the sechub configuration, but the client certificate file was not found on the filesystem inside the extracted sources!",
+                    ZapWrapperExitCode.CLIENT_CERTIFICATE_CONFIG_INVALID);
+        }
+
+        ClientCertificateConfiguration clientCertificateConfig = optionalClientCertConfig.get();
+        File clientCertificateFile = scanContext.getClientCertificateFile();
+
+        String password = null;
+        if (clientCertificateConfig.getPassword() != null) {
+            password = new String(clientCertificateConfig.getPassword());
+        }
+        LOG.info("For scan {}: Loading client certificate file: {}", scanContext.getContextName(), clientCertificateFile.getAbsolutePath());
+        clientApiFacade.importPkcs12ClientCertificate(clientCertificateFile.getAbsolutePath(), password);
+        clientApiFacade.enableClientCertificate();
+    }
+
     void executeScan(String zapContextId) throws ClientApiException {
         UserInformation userInfo = configureLoginInsideZapContext(zapContextId);
         if (userInfo != null) {
@@ -357,8 +392,7 @@ public class ZapScanner implements ZapScan {
 		/* @formatter:on */
 
         // rename is necessary if the file extension is not .json, because Zap
-        // adds the file extension .json since we create a json report. Might not be
-        // necessary anymore if we have the sarif support
+        // adds the file extension .json since we create a SARIF json report.
         renameReportFileToOriginalNameIfNecessary();
 
         LOG.info("For scan {}: Report can be found at {}", scanContext.getContextName(), reportFile.toFile().getAbsolutePath());
@@ -375,6 +409,12 @@ public class ZapScanner implements ZapScan {
             // This means we need to cleanUp after every scan.
             LOG.info("Start cleaning up replacer rules.");
             cleanUpReplacerRules();
+
+            // disable client certificate here, the imported client certificate will be
+            // removed on ZAP shutdown automatically anyway
+            LOG.info("Disable client certificate if one was used for the scan.");
+            clientApiFacade.disableClientCertificate();
+
             LOG.info("Cleanup successful.");
         } catch (ClientApiException e) {
             LOG.error("For scan: {}. An error occurred during the clean up, because: {}", scanContext.getContextName(), e.getMessage());

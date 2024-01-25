@@ -342,9 +342,33 @@ func validateRequestedReportFormat(config *Config) bool {
 	return true
 }
 
-// normalizeCMDLineArgs - Make sure that the `action` is last in the argument list. Otherwise flag.Parse() will not work properly.
+func actionSpellCorrection(action string) string {
+	actionLowercase := strings.ToLower(action)
+	for _, clientAction := range actionlist {
+		if strings.ToLower(clientAction) == actionLowercase {
+			return clientAction
+		}
+	}
+	return action
+}
+
+// flagSpellCorrection - returns arg in correct case (if a cmdline option/flag matches)
+func flagSpellCorrection(arg string) string {
+	argLowercase := strings.ToLower(arg)
+	for _, flag := range flaglist {
+		if strings.ToLower(flag) == argLowercase {
+			return flag
+		}
+	}
+	return arg
+}
+
+// normalizeCMDLineArgs
+// - Make sure that the `action` is last in the argument list. Otherwise flag.Parse() will not work properly.
+// - Do a "spell correction" if the upper/lowercase spelling is not correct (action and args)
 func normalizeCMDLineArgs(args []string) []string {
-	if len(args) == 1 {
+	numberOfArgs := len(args)
+	if numberOfArgs == 1 {
 		return args
 	}
 
@@ -372,6 +396,20 @@ func normalizeCMDLineArgs(args []string) []string {
 		}
 		result = append(result, action)
 	}
+
+	// Spell correction (upper/lowercase)
+	for i, arg := range result[1:] {
+		index := i + 1
+		argname, found := strings.CutPrefix(arg, "-")
+		if found {
+			result[index] = "-" + flagSpellCorrection(argname)
+		}
+		// Last argument is the Client action
+		if index == (numberOfArgs - 1) {
+			result[index] = actionSpellCorrection(arg)
+		}
+	}
+
 	return result
 }
 

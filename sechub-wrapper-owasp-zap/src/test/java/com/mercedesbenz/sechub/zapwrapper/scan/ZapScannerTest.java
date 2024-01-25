@@ -340,6 +340,118 @@ class ZapScannerTest {
         verify(clientApiFacade, times(1)).importOpenApiFile(any(), any(), any());
     }
 
+    @Test
+    void import_client_certificate_file_but_client_certificate_file_is_null_api_facade_is_never_called() throws ClientApiException {
+        /* prepare */
+        ApiResponse response = mock(ApiResponse.class);
+        when(clientApiFacade.importPkcs12ClientCertificate(any(), any())).thenReturn(response);
+
+        /* execute */
+        scannerToTest.importClientCertificate();
+
+        /* test */
+        verify(clientApiFacade, never()).importOpenApiFile(any(), any(), any());
+    }
+
+    @Test
+    void try_import_without_client_certificate_file_api_facade_is_never_called() throws ClientApiException {
+        /* prepare */
+        String jsonWithClientCertConfig = """
+                {
+                  "apiVersion" : "1.0",
+                  "project" : "example_project",
+                  "webScan" : {
+                    "url" : "https://my-app.com"
+                  }
+                }
+                """;
+        SecHubWebScanConfiguration sechubWebScanConfig = SecHubScanConfiguration.createFromJSON(jsonWithClientCertConfig).getWebScan().get();
+
+        File clientCertificateFile = new File("backend-cert.p12");
+
+        when(scanContext.getClientCertificateFile()).thenReturn(clientCertificateFile);
+        when(scanContext.getSecHubWebScanConfiguration()).thenReturn(sechubWebScanConfig);
+
+        ApiResponse response = mock(ApiResponse.class);
+        when(clientApiFacade.importPkcs12ClientCertificate(any(), any())).thenReturn(response);
+
+        /* execute */
+        scannerToTest.importClientCertificate();
+
+        /* test */
+        verify(clientApiFacade, never()).importPkcs12ClientCertificate(any(), any());
+    }
+
+    @Test
+    void import_client_certificate_file_api_facade_is_called_once() throws ClientApiException {
+        /* prepare */
+        String jsonWithCertPassword = """
+                {
+                  "apiVersion" : "1.0",
+                  "project" : "example_project",
+                  "webScan" : {
+                    "url" : "https://my-app.com",
+                    "clientCertificate" : {
+                      "password" : "secret-password",
+                      "use" : [ "client-certificate-file-reference" ]
+                    }
+                  }
+                }
+                """;
+
+        SecHubWebScanConfiguration sechubWebScanConfig = SecHubScanConfiguration.createFromJSON(jsonWithCertPassword).getWebScan().get();
+
+        File clientCertificateFile = mock(File.class);
+
+        when(scanContext.getClientCertificateFile()).thenReturn(clientCertificateFile);
+        when(scanContext.getSecHubWebScanConfiguration()).thenReturn(sechubWebScanConfig);
+
+        when(clientCertificateFile.exists()).thenReturn(true);
+
+        ApiResponse response = mock(ApiResponse.class);
+        when(clientApiFacade.importPkcs12ClientCertificate(any(), any())).thenReturn(response);
+
+        /* execute */
+        scannerToTest.importClientCertificate();
+
+        /* test */
+        verify(clientApiFacade, times(1)).importPkcs12ClientCertificate(any(), any());
+    }
+
+    @Test
+    void import_client_certificate_file_but_without_password_api_facade_is_called_once() throws ClientApiException {
+        /* prepare */
+        String jsonWithoutCertPassword = """
+                {
+                  "apiVersion" : "1.0",
+                  "project" : "example_project",
+                  "webScan" : {
+                    "url" : "https://my-app.com",
+                    "clientCertificate" : {
+                      "use" : [ "client-certificate-file-reference" ]
+                    }
+                  }
+                }
+                """;
+
+        SecHubWebScanConfiguration sechubWebScanConfig = SecHubScanConfiguration.createFromJSON(jsonWithoutCertPassword).getWebScan().get();
+
+        File clientCertificateFile = mock(File.class);
+
+        when(scanContext.getClientCertificateFile()).thenReturn(clientCertificateFile);
+        when(scanContext.getSecHubWebScanConfiguration()).thenReturn(sechubWebScanConfig);
+        when(clientCertificateFile.exists()).thenReturn(true);
+
+        ApiResponse response = mock(ApiResponse.class);
+        when(clientApiFacade.importPkcs12ClientCertificate(any(), any())).thenReturn(response);
+
+        /* execute */
+        scannerToTest.importClientCertificate();
+
+        /* test */
+        verify(clientApiFacade, times(1)).importPkcs12ClientCertificate(any(), any());
+    }
+
     @ParameterizedTest
     @ValueSource(strings = { "src/test/resources/sechub-config-examples/no-auth-with-openapi-file.json",
             "src/test/resources/sechub-config-examples/form-based-auth.json" })

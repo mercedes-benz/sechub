@@ -10,7 +10,7 @@ import com.mercedesbenz.sechub.integrationtest.internal.StaticTestScenario;
  * <h3>Scenario 6</h3>
  * <h4>Short description</h4> PDS ONLY integration test scenario.
  *
- * <h4>Overview</h4> For a glance over all scenarios, look at
+ * <h4>Overview</h4> For an overview over all scenarios, look at
  * {@link com.mercedesbenz.sechub.integrationtest.internal.IntegrationTestDataOverview
  * Overview}
  *

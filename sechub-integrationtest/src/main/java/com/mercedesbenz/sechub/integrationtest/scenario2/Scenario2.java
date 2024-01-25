@@ -15,7 +15,7 @@ import com.mercedesbenz.sechub.integrationtest.internal.IntegrationTestDefaultPr
  * <h4>Short description</h4> A simple integration test scenario, multiple user,
  * profiles and projects
  *
- * <h4>Overview</h4> For a glance over all scenarios, look at
+ * <h4>Overview</h4> For an overview over all scenarios, look at
  * {@link com.mercedesbenz.sechub.integrationtest.internal.IntegrationTestDataOverview
  * Overview}
  *

@@ -24,4 +24,8 @@ spec:
     - name: {{ .Values.service.loadbalancer.port.name }}
       port: {{ .Values.service.loadbalancer.port.number }}
       protocol: TCP
+{{- if .Values.go_mmproxy.enabled }}
+      targetPort: 8080
+{{- else }}
       targetPort: 8443
+{{- end }}

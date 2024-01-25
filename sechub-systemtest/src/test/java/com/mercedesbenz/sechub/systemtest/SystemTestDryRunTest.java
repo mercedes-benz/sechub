@@ -56,6 +56,32 @@ class SystemTestDryRunTest {
     }
 
     @Test
+    void faked_xray_can_be_executed_without_errors() throws IOException {
+        String path = "./src/test/resources/systemtest_xray_licensescan_example.json";
+        String json = TestFileReader.loadTextFile(path);
+
+        SystemTestConfiguration configuration = JSONConverter.get().fromJSON(SystemTestConfiguration.class, json);
+
+        /* @formatter:off */
+
+        /* execute */
+        SystemTestResult result = systemTestApi.
+                    runSystemTests(params().
+                                        localRun().
+                                        dryRun().
+                                        testConfiguration(configuration).
+                                        additionalResourcesPath(ADDITIONAL_RESOURCES_PATH).
+                                        pdsSolutionPath(FAKED_PDS_SOLUTIONS_PATH).
+                                    build());
+        /* @formatter:on */
+
+        /* test */
+        if (result.hasFailedTests()) {
+            fail("The execution failed:" + result.toString());
+        }
+    }
+
+    @Test
     void faked_webscan_can_be_executed_without_errors_and_contains_expected_data_in_configuration() throws IOException {
 
         /* @formatter:off */
@@ -379,13 +405,19 @@ class SystemTestDryRunTest {
             fail("The execution has not failed:"+result.toString());
         }
         Set<SystemTestRunResult> runs = result.getRuns();
-        assertEquals(2, runs.size());
+        assertEquals(1, runs.size());
         Iterator<SystemTestRunResult> iterator = runs.iterator();
-        SystemTestRunResult run1 = iterator.next();
-        assertEquals("No tests were executed", run1.getFailure().getMessage());
 
-        SystemTestRunResult run2 = iterator.next();
-        assertEquals("Test 'wrong-testname' is not defined!", run2.getFailure().getMessage());
+        // check test result
+        SystemTestRunResult run1 = iterator.next();
+        assertEquals("Test 'wrong-testname' is not defined!", run1.getFailure().getMessage());
+
+        // check problem
+        assertTrue(result.hasProblems());
+        Set<String> problems = result.getProblems();
+        assertEquals(1, problems.size());
+        String problem1 = problems.iterator().next();
+        assertEquals("No tests were executed (0/1)", problem1);
 
         /* @formatter:on */
     }

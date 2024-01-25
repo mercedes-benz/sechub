@@ -25,6 +25,21 @@ class FalsePositiveMetaDataFactoryTest {
     }
 
     @Test
+    void code_scan_only_one_netry_factory_code_start_set_but_end_is_null() {
+        /* prepare */
+        SecHubFinding codeScanfinding = createCodeFindingOnlyOneCallStackElementOnly();
+
+        /* execute */
+        FalsePositiveMetaData metaData = factoryToTest.createMetaData(codeScanfinding);
+
+        /* test */
+        FalsePositiveCodeMetaData code = metaData.getCode();
+        assertNotNull(code.getStart());
+        assertNull(code.getEnd());
+
+    }
+
+    @Test
     void code_scan_finding_transformed_to_relevant_code_metadata() {
         SecHubFinding codeScanfinding = createCodeFinding();
 
@@ -80,6 +95,19 @@ class FalsePositiveMetaDataFactoryTest {
         assertEquals("evidence-snippet1", response.getEvidence());
         assertEquals(4211, response.getStatusCode());
 
+    }
+
+    private SecHubFinding createCodeFindingOnlyOneCallStackElementOnly() {
+        SecHubFinding finding = createTestFinding();
+        SecHubCodeCallStack codeStart = new SecHubCodeCallStack();
+        codeStart.setRelevantPart("relevant-part-start");
+        codeStart.setLocation("location-start");
+        codeStart.setSource("source-start");
+        codeStart.setSource("source-start");
+
+        finding.setCode(codeStart);
+        finding.setType(ScanType.CODE_SCAN);
+        return finding;
     }
 
     private SecHubFinding createCodeFinding() {

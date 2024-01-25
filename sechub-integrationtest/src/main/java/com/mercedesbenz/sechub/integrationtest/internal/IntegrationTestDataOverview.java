@@ -49,6 +49,7 @@ import com.mercedesbenz.sechub.integrationtest.scenario9.Scenario9;
  * <li>{@link Scenario18 Scenario 18} - PDS scenario for testing PDS cancellation. 1 user, 1 project. Project is assigned to {@link IntegrationTestDefaultProfiles#PROFILE_13_PDS_CANCELLATION Profile 13}</li>
  * <li>{@link Scenario19 Scenario 19} - Simple scenario for testing job information list fetching for user. 1 user, 1 project.</li>
  * <li>{@link Scenario20 Scenario 20} - PDS scenario for secret scan testing. 1 user, 1 project. Project is assigned to {@link IntegrationTestDefaultProfiles#PROFILE_17_PDS_SECRETSCAN Profile 16} (PDS secret scan SARIF)</li>
+ * <li>{@link Scenario21 Scenario 21} - PDS scenario for PDS solution testing. 1 user, 10 projects. For every tested PDS solution an own project is created. PDS will only return mocked results (but from real product).</li>
  * </ul>
  * <b3>Profiles</h3>
  * <ul>
@@ -69,6 +70,16 @@ import com.mercedesbenz.sechub.integrationtest.scenario9.Scenario9;
  * <li>{@link IntegrationTestDefaultProfiles#PROFILE_15_PDS_CHECKMARX_INTEGRATIONTEST_FILTERING_TEXTFILES Profile 15} - PDS code scan for filtering text files
  * <li>{@link IntegrationTestDefaultProfiles#PROFILE_16_PDS_ANALYZE_CLOC_OUTPUT Profile 16} - PDS analyzer profile, with CLOC JSON output as default
  * <li>{@link IntegrationTestDefaultProfiles#PROFILE_17_PDS_SECRETSCAN Profile 17} - PDS secret scan</li>
+ * <li>{@link IntegrationTestDefaultProfiles#PROFILE_18_PDS_SOLUTION_GOSEC_MOCKED Profile 18} - PDS solutions scan mock mode (gosec)</li>
+ * <li>{@link IntegrationTestDefaultProfiles#PROFILE_19_PDS_SOLUTION_CHECKMARX_MOCK_MODE Profile 19} - PDS solutions scan mock mode (checkmarx)</li>
+ * <li>{@link IntegrationTestDefaultProfiles#PROFILE_20_PDS_SOLUTION_MULTI_BANDIT_MOCKED Profile 20} - PDS solutions scan mock mode (multi, bandit)</li>
+ * <li>{@link IntegrationTestDefaultProfiles#PROFILE_21_PDS_SOLUTION_ZAP_MOCKED Profile 21} - PDS solutions scan mock mode (zap)</li>
+ * <li>{@link IntegrationTestDefaultProfiles#PROFILE_22_PDS_SOLUTION_SCANCODE_SPDX_JSON_MOCKED Profile 22} - PDS solutions scan mock mode (scancode)</li>
+ * <li>{@link IntegrationTestDefaultProfiles#PROFILE_23_PDS_SOLUTION_GITLEAKS_MOCKED Profile 23} - PDS solutions scan mock mode (gitleaks)</li>
+ * <li>{@link IntegrationTestDefaultProfiles#PROFILE_24_PDS_SOLUTION_TERN_MOCKED Profile 24} - PDS solutions scan mock mode (tern)</li>
+ * <li>{@link IntegrationTestDefaultProfiles#PROFILE_25_PDS_SOLUTION_XRAY_SPDX_MOCKED Profile 25} - PDS solutions scan mock mode (xray spdx)</li>
+ * <li>{@link IntegrationTestDefaultProfiles#PROFILE_26_PDS_SOLUTION_XRAY_CYCLONEDX_MOCKED Profile 26} - PDS solutions scan mock mode (xray cyclonedx)</li>
+ * <li>{@link IntegrationTestDefaultProfiles#PROFILE_27_PDS_SOLUTION_FINDSECURITYBUGS_MOCKED Profile 27} - PDS solutions scan mock mode (gitleaks)</li>
  * </ul>
  * @author Albert Tregnaghi
  *

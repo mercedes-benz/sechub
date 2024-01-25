@@ -20,12 +20,6 @@ jobs:
       pds-solution: checkmarx
       pds-version: ${{ inputs.pds-version }}
 
-  call_build_pds-loc:
-    uses: mercedes-benz/sechub/.github/workflows/_build+publish-pds-solution.yml@develop
-    with:
-      pds-solution: loc
-      pds-version: ${{ inputs.pds-version }}
-
   # 2023-06-12: findsecuritybugs deactivated due to upstream fix is not yet released
   # call_build_pds-findsecuritybugs:
   #   uses: mercedes-benz/sechub/.github/workflows/_build+publish-pds-solution.yml@develop
@@ -43,6 +37,18 @@ jobs:
     uses: mercedes-benz/sechub/.github/workflows/_build+publish-pds-solution.yml@develop
     with:
       pds-solution: gosec
+      pds-version: ${{ inputs.pds-version }}
+
+  call_build_pds-iac:
+    uses: mercedes-benz/sechub/.github/workflows/_build+publish-pds-solution.yml@develop
+    with:
+      pds-solution: iac
+      pds-version: ${{ inputs.pds-version }}
+
+  call_build_pds-loc:
+    uses: mercedes-benz/sechub/.github/workflows/_build+publish-pds-solution.yml@develop
+    with:
+      pds-solution: loc
       pds-version: ${{ inputs.pds-version }}
 
   call_build_pds-multi:
@@ -73,4 +79,10 @@ jobs:
     uses: mercedes-benz/sechub/.github/workflows/_build+publish-pds-solution.yml@develop
     with:
       pds-solution: tern
+      pds-version: ${{ inputs.pds-version }}
+
+  call_build_pds-xray:
+    uses: mercedes-benz/sechub/.github/workflows/_build+publish-pds-solution.yml@develop
+    with:
+      pds-solution: xray
       pds-version: ${{ inputs.pds-version }}
