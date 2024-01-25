@@ -119,21 +119,26 @@ func processContent(context *Context) {
 	context.contentToSend = context.inputForContentProcessing // content data used for TLS encrypted data (currently we do not provide templating for false positive data, so just same)
 }
 
-func defineFalsePositivesFromFile(context *Context) {
+// readFileIntoContext - reads a file referenced by context.config.file into context.inputForContentProcessing as byte array
+func readFileIntoContext(context *Context) {
 	sechubUtil.Log(fmt.Sprintf("Reading file %q", context.config.file), context.config.quiet)
 
-	/* open file and check exists */
-	jsonFile, err := os.Open(context.config.file)
-	defer jsonFile.Close()
-	failed := sechubUtil.HandleIOError(err)
-
-	context.inputForContentProcessing, err = ioutil.ReadAll(jsonFile)
-	failed = sechubUtil.HandleIOError(err)
-
-	if failed {
+	inputFile, err := os.Open(context.config.file)
+	if sechubUtil.HandleIOError(err) {
 		showHelpHint()
 		os.Exit(ExitCodeIOError)
 	}
+	defer inputFile.Close()
+
+	// read file's content into context.inputForContentProcessing
+	context.inputForContentProcessing, err = ioutil.ReadAll(inputFile)
+	if sechubUtil.HandleIOError(err) {
+		os.Exit(ExitCodeIOError)
+	}
+}
+
+func defineFalsePositivesFromFile(context *Context) {
+	readFileIntoContext(context)
 
 	// read json into go struct
 	falsePositivesDefinitionList := newFalsePositivesListFromBytes(context.inputForContentProcessing)
@@ -142,7 +147,7 @@ func defineFalsePositivesFromFile(context *Context) {
 	// download false-positives list for project from SecHub server
 	jsonFPBlob := FalsePositivesList{serverResult: getFalsePositivesList(context), outputFolder: "", outputFileName: ""}
 	var falsePositivesServerList FalsePositivesDefinition
-	err = json.Unmarshal(jsonFPBlob.serverResult, &falsePositivesServerList)
+	err := json.Unmarshal(jsonFPBlob.serverResult, &falsePositivesServerList)
 	sechubUtil.HandleError(err, ExitCodeFailed)
 
 	// Compute the FPs to add and those to remove
@@ -199,20 +204,8 @@ func defineFalsePositives(newFalsePositives FalsePositivesConfig, currentFalsePo
 func uploadFalsePositivesFromFile(context *Context) {
 	sechubUtil.LogDebug(context.config.debug, fmt.Sprintf("Action %q: uploading file: %s\n", context.config.action, context.config.file))
 
-	/* open file and check exists */
-	jsonFile, err := os.Open(context.config.file)
-	defer jsonFile.Close()
-	failed := sechubUtil.HandleIOError(err)
-
-	context.inputForContentProcessing, err = ioutil.ReadAll(jsonFile)
+	readFileIntoContext(context)
 	processContent(context)
-
-	failed = sechubUtil.HandleIOError(err)
-
-	if failed {
-		showHelpHint()
-		os.Exit(ExitCodeIOError)
-	}
 
 	uploadFalsePositives(context)
 
@@ -220,27 +213,14 @@ func uploadFalsePositivesFromFile(context *Context) {
 }
 
 func uploadFalsePositives(context *Context) {
-	// Send context.inputForContentProcessing to SecHub server
+	// Send context.contentToSend to SecHub server
 	sendWithDefaultHeader("PUT", buildFalsePositivesAPICall(context), context)
 }
 
 func unmarkFalsePositivesFromFile(context *Context) {
 	sechubUtil.LogDebug(context.config.debug, fmt.Sprintf("Action %q: remove false positives - read from file: %s", context.config.action, context.config.file))
 
-	/* open file and check exists */
-	jsonFile, err := os.Open(context.config.file)
-	defer jsonFile.Close()
-	failed := sechubUtil.HandleIOError(err)
-
-	context.inputForContentProcessing, err = ioutil.ReadAll(jsonFile)
-	processContent(context)
-
-	failed = sechubUtil.HandleIOError(err)
-
-	if failed {
-		showHelpHint()
-		os.Exit(ExitCodeIOError)
-	}
+	readFileIntoContext(context)
 
 	// read json into go struct
 	removeFalsePositivesList := newFalsePositivesListFromBytes(context.inputForContentProcessing)
