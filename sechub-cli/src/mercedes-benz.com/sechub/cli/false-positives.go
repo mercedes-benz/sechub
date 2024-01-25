@@ -152,9 +152,7 @@ func defineFalsePositivesFromFile(context *Context) {
 
 	// Compute the FPs to add and those to remove
 	sechubUtil.Log("Computing differences", context.config.quiet)
-	var falsePositivesToAdd FalsePositivesConfig
-	var falsePositivesToRemove FalsePositivesConfig
-	falsePositivesToAdd, falsePositivesToRemove = defineFalsePositives(falsePositivesDefinitionList, falsePositivesServerList.Items)
+	falsePositivesToAdd, falsePositivesToRemove := defineFalsePositives(falsePositivesDefinitionList, falsePositivesServerList.Items)
 	sechubUtil.LogDebug(context.config.debug, fmt.Sprintf("False positives to be added: %+v\n", falsePositivesToAdd))
 	sechubUtil.LogDebug(context.config.debug, fmt.Sprintf("False positives to be removed: %+v\n", falsePositivesToRemove))
 
