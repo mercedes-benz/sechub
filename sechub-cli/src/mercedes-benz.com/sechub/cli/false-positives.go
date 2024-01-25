@@ -82,7 +82,7 @@ func (list *FalsePositivesList) save(context *Context) {
 	if context.config.quiet {
 		fmt.Println(filePath)
 	} else {
-		sechubUtil.Log(fmt.Sprintf("Project %q: false-positives list written to file %q", context.config.projectID, filePath), context.config.quiet)
+		sechubUtil.Log(fmt.Sprintf("Project %q: false-positives list written to file %s", context.config.projectID, filePath), context.config.quiet)
 	}
 }
 
