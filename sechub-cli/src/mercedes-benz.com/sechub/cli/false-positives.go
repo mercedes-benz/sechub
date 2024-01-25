@@ -82,7 +82,7 @@ func (list *FalsePositivesList) save(context *Context) {
 	if context.config.quiet {
 		fmt.Println(filePath)
 	} else {
-		sechubUtil.Log(fmt.Sprintf("Project %q: false-positives list written to file %s", context.config.projectID, filePath), context.config.quiet)
+		sechubUtil.Log(fmt.Sprintf("Project %q: false-positives list written to file %q", context.config.projectID, filePath), context.config.quiet)
 	}
 }
 
@@ -99,7 +99,7 @@ func (list *FalsePositivesList) createFilePath(forceDirectory bool) string {
 }
 
 func getFalsePositivesList(context *Context) []byte {
-	sechubUtil.Log(fmt.Sprintf("Fetching false-positives list for project %q.", context.config.projectID), context.config.quiet)
+	sechubUtil.Log(fmt.Sprintf("Fetching false-positives list for project %q from server.", context.config.projectID), context.config.quiet)
 
 	// we don't want to send content here
 	context.inputForContentProcessing = []byte(``)
@@ -120,7 +120,7 @@ func processContent(context *Context) {
 }
 
 func defineFalsePositivesFromFile(context *Context) {
-	sechubUtil.LogDebug(context.config.debug, fmt.Sprintf("Action %q: reading file: %s\n", context.config.action, context.config.file))
+	sechubUtil.Log(fmt.Sprintf("Reading file %q", context.config.file), context.config.quiet)
 
 	/* open file and check exists */
 	jsonFile, err := os.Open(context.config.file)
@@ -146,21 +146,21 @@ func defineFalsePositivesFromFile(context *Context) {
 	sechubUtil.HandleError(err, ExitCodeFailed)
 
 	// Compute the FPs to add and those to remove
+	sechubUtil.Log("Computing differences", context.config.quiet)
 	var falsePositivesToAdd FalsePositivesConfig
 	var falsePositivesToRemove FalsePositivesConfig
-	falsePositivesToAdd, falsePositivesToRemove, err = defineFalsePositives(falsePositivesDefinitionList, falsePositivesServerList)
+	falsePositivesToAdd, falsePositivesToRemove = defineFalsePositives(falsePositivesDefinitionList, falsePositivesServerList.Items)
 	sechubUtil.LogDebug(context.config.debug, fmt.Sprintf("False positives to be added: %+v\n", falsePositivesToAdd))
 	sechubUtil.LogDebug(context.config.debug, fmt.Sprintf("False positives to be removed: %+v\n", falsePositivesToRemove))
 
-	fmt.Printf("False positives to be added: %+v\n", falsePositivesToAdd)
-	fmt.Printf("False positives to be removed: %+v\n", falsePositivesToRemove)
-	fmt.Printf("err: %+v\n", err)
+	// Apply changes to SecHub server
+	markFalsePositives(context, &falsePositivesToAdd)
+	unmarkFalsePositives(context, &falsePositivesToRemove)
 }
 
-func defineFalsePositives(newFalsePositives FalsePositivesConfig, currentFalsePositives FalsePositivesDefinition) (
+func defineFalsePositives(newFalsePositives FalsePositivesConfig, currentFalsePositives []FalsePositiveDefinition) (
 	falsePositivesToAdd FalsePositivesConfig,
-	falsePositivesToRemove FalsePositivesConfig,
-	err error) {
+	falsePositivesToRemove FalsePositivesConfig) {
 	// Initialize structures
 	falsePositivesToAdd.APIVersion = CurrentAPIVersion
 	falsePositivesToAdd.Type = falsePositivesListType
@@ -168,10 +168,32 @@ func defineFalsePositives(newFalsePositives FalsePositivesConfig, currentFalsePo
 	falsePositivesToRemove.Type = falsePositivesListType
 
 	// Loop through definition list and figure out, what to add and what to remove
+	for _, newFalsePositive := range newFalsePositives.JobData {
+		matched := false
+		for i, falsePositive := range currentFalsePositives {
+			if newFalsePositive.JobUUID == falsePositive.JobData.JobUUID && newFalsePositive.FindingID == falsePositive.JobData.FindingID {
+				matched = true
+				// False positive is already defined. Remove item from list
+				currentFalsePositives[i] = currentFalsePositives[len(currentFalsePositives)-1] // Copy last item to current position
+				currentFalsePositives = currentFalsePositives[:len(currentFalsePositives)-1]   // Truncate slice
+				break
+			}
+		}
+		if !matched {
+			// False positive is to be added
+			falsePositivesToAdd.JobData = append(falsePositivesToAdd.JobData, newFalsePositive)
+		}
+	}
 
-	// ToDo
+	// currentFalsePositives now contains all false positives to remove
+	for _, falsePositiveToBeRemoved := range currentFalsePositives {
+		var fp FalsePositivesJobData
+		fp.JobUUID = falsePositiveToBeRemoved.JobData.JobUUID
+		fp.FindingID = falsePositiveToBeRemoved.JobData.FindingID
+		falsePositivesToRemove.JobData = append(falsePositivesToRemove.JobData, fp)
+	}
 
-	return falsePositivesToAdd, falsePositivesToRemove, err
+	return falsePositivesToAdd, falsePositivesToRemove
 }
 
 func uploadFalsePositivesFromFile(context *Context) {
@@ -193,13 +215,13 @@ func uploadFalsePositivesFromFile(context *Context) {
 	}
 
 	uploadFalsePositives(context)
+
+	sechubUtil.Log("Transfer completed", context.config.quiet)
 }
 
 func uploadFalsePositives(context *Context) {
 	// Send context.inputForContentProcessing to SecHub server
 	sendWithDefaultHeader("PUT", buildFalsePositivesAPICall(context), context)
-
-	sechubUtil.Log(fmt.Sprintf("Successfully uploaded SecHub false-positives list for project %q to server.", context.config.projectID), context.config.quiet)
 }
 
 func unmarkFalsePositivesFromFile(context *Context) {
@@ -228,7 +250,12 @@ func unmarkFalsePositivesFromFile(context *Context) {
 }
 
 func unmarkFalsePositives(context *Context, list *FalsePositivesConfig) {
-	sechubUtil.Log("Applying false-positives to be removed for project '"+context.config.projectID+"'", context.config.quiet)
+	if len(list.JobData) == 0 {
+		sechubUtil.Log("0 false-positives removed from project \""+context.config.projectID+"\"", context.config.quiet)
+		return
+	}
+
+	sechubUtil.Log("Removing as false-positives from project \""+context.config.projectID+"\":", context.config.quiet)
 	// Loop over list and push to SecHub server
 	// Url scheme: curl 'https://sechub.example.com/api/project/project1/false-positive/f1d02a9d-5e1b-4f52-99e5-401854ccf936/42' -i -X DELETE
 	urlPrefix := buildFalsePositiveAPICall(context)
@@ -238,7 +265,7 @@ func unmarkFalsePositives(context *Context, list *FalsePositivesConfig) {
 	processContent(context)
 
 	for _, element := range list.JobData {
-		sechubUtil.Log(fmt.Sprintf("- JobUUID %s: finding #%d", element.JobUUID, element.FindingID), context.config.quiet)
+		sechubUtil.Log(fmt.Sprintf("- JobUUID %s: Finding #%d", element.JobUUID, element.FindingID), context.config.quiet)
 		sendWithDefaultHeader("DELETE", fmt.Sprintf("%s/%s/%d", urlPrefix, element.JobUUID, element.FindingID), context)
 	}
 	sechubUtil.Log("Transfer completed", context.config.quiet)
@@ -267,11 +294,7 @@ func interactiveMarkFalsePositives(context *Context) {
 	// ToDo: Are you sure?
 
 	// upload to server
-	jsonBlob, err := json.Marshal(FalsePositivesList)
-	sechubUtil.HandleError(err, ExitCodeFailed)
-	context.inputForContentProcessing = jsonBlob
-	processContent(context)
-	uploadFalsePositives(context)
+	markFalsePositives(context, &FalsePositivesList)
 }
 
 func newFalsePositivesListFromConsole(context *Context) (list FalsePositivesConfig) {
@@ -309,6 +332,27 @@ func newFalsePositivesListFromConsole(context *Context) (list FalsePositivesConf
 	}
 
 	return list
+}
+
+func markFalsePositives(context *Context, list *FalsePositivesConfig) {
+	if len(list.JobData) == 0 {
+		sechubUtil.Log("0 false-positives added to project \""+context.config.projectID+"\"", context.config.quiet)
+		return
+	}
+
+	sechubUtil.Log("Adding as false-positives to project \""+context.config.projectID+"\":", context.config.quiet)
+	for _, element := range list.JobData {
+		sechubUtil.Log(fmt.Sprintf("- JobUUID %s: Finding #%d, Comment: %s", element.JobUUID, element.FindingID, element.Comment), context.config.quiet)
+	}
+
+	// upload to server
+	jsonBlob, err := json.Marshal(list)
+	sechubUtil.HandleError(err, ExitCodeFailed)
+	context.inputForContentProcessing = jsonBlob
+	processContent(context)
+	uploadFalsePositives(context)
+
+	sechubUtil.Log("Transfer completed", context.config.quiet)
 }
 
 func printFinding(finding *SecHubReportFindings) {
