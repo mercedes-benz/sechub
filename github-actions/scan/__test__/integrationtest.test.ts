@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: MIT
 
 import * as launcher from '../src/launcher';
+import {IntegrationTestContext as IntegrationTestContext} from './integrationtest/testframework';
 import * as shell from 'shelljs';
 import { isDebug, debug, getInput } from '@actions/core';
 import { info } from '@actions/core';
@@ -11,14 +12,30 @@ import { LaunchContext } from '../src/launcher';
 import { create } from '@actions/artifact';
 jest.mock('@actions/core');
 jest.mock('@actions/artifact');
-/*
- * This is an integration test suite for github-action "scan".
- * As precondition you have to start a local sechub server in integration test mode and execute "setup-integrationtest.sh".
- * After this is done, you can execute these tests.
-*/
 
+/*
+* This is an integration test suite for github-action "scan".
+* As precondition you have to call "01-start.sh" (please look into script for an example and more details)
+*
+* After script has finished you can execute the integration tests via "npm run integration-test"
+*
+* At the end the servers can be stopped with  "05-stop.sh" (please look into script for an example and more details)
+* (This is an explanation to start the tests locally - the github action workflow "github-action-scan.yml" does it in exact same way for CI/CD)
+*
+*/
 const sechub_debug = shell.env['SECHUB_DEBUG'];
 const debug_enabled = sechub_debug=='true';
+
+const integrationTestContext = new IntegrationTestContext();
+
+integrationTestContext.serverVersion='1.4.0';
+integrationTestContext.serverPort= 8443;
+integrationTestContext.serverUserId='int-test_superadmin';
+integrationTestContext.serverApiToken='int-test_superadmin-pwd';
+
+integrationTestContext.finish();
+
+const mockedInputMap = new Map();
 
 beforeEach(() => {
     jest.resetAllMocks();
@@ -34,7 +51,6 @@ beforeEach(() => {
             return true;
         });
     }
-    
 
     (info as jest.Mock).mockImplementation((message) => {
         console.log('gh-info: %s', message);
@@ -55,14 +71,13 @@ beforeEach(() => {
 });
 
 
-const mockedInputMap = new Map();
 
 function initInputMap() {
     mockedInputMap.clear();
 
-    mockedInputMap.set(input.PARAM_SECHUB_SERVER_URL, 'https://localhost:8443');
-    mockedInputMap.set(input.PARAM_SECHUB_USER, 'int-test_superadmin');
-    mockedInputMap.set(input.PARAM_API_TOKEN, 'int-test_superadmin-pwd');
+    mockedInputMap.set(input.PARAM_SECHUB_SERVER_URL, `https://localhost:${integrationTestContext.serverPort}`);
+    mockedInputMap.set(input.PARAM_SECHUB_USER, `${integrationTestContext.serverUserId}`);
+    mockedInputMap.set(input.PARAM_API_TOKEN, `${integrationTestContext.serverApiToken}`);
     mockedInputMap.set(input.PARAM_PROJECT_NAME, 'test-project');
 
     mockedInputMap.set(input.PARAM_CLIENT_VERSION, '1.2.0');
@@ -70,7 +85,6 @@ function initInputMap() {
     mockedInputMap.set(input.PARAM_REPORT_FORMATS, 'json');
     mockedInputMap.set(input.PARAM_TRUST_ALL, 'true'); // self signed certificate in test...
 }
-
 
 describe('integrationtest', function () {
     test('integrationtest 1', function () {
@@ -82,14 +96,13 @@ describe('integrationtest', function () {
         const launchPromise = launcher.launch();
 
         /* test */
-        assertExitCode(launchPromise, 0);
+        assertLastClientExitCode(launchPromise, 0);
 
     });
 
 });
 
-async function assertExitCode(launchPromise: Promise<LaunchContext>, exitCode: number) {
+async function assertLastClientExitCode(launchPromise: Promise<LaunchContext>, exitCode: number) {
     const context = await launchPromise;
-
     expect(context.lastClientExitCode).toEqual(exitCode);
 }

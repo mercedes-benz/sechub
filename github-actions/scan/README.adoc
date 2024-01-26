@@ -9,8 +9,8 @@ This GitHub action uses the SecHub cli to scan the repository for security issue
 
 To be able to use this action you need a SecHub project. Check the https://mercedes-benz.github.io/sechub/[documentation] on how to set one up.
 
-```yaml
-
+[source,yaml]
+----
 - uses: mercedes-benz/sechub/github-actions/scan@72a27282da80952e6fadcef452c6a9085971c688
   with:
     # OPTIONAL: Path to sechub.json for manual configuration. If no value is set the input parameters will be used to create it for the scan.'
@@ -100,17 +100,16 @@ npm run test
 ==== Integration-Test
 As a precondition to run the integration tests locally you have to 
 
-- start a new SecHub server in integration test mode
-- execute `__test__/setup-integrationtest.sh`
+- execute `__test__/01-start.sh $secHubServerVersion $sechubServerPortNr $pdsVersion $pdsPortNr`
 
-When this has been done, you can execute this command multiple times:
+After the script has been executed, you can execute integration tests multiple times via following command:
 
 [source,npm]
 ----
 npm run integration-test
 ----
 
-To enable full debug output:
+To enable full debug output in integration tests please execute following before running the integration tests:
 [source,npm]
 ----
 export SECHUB_DEBUG=true

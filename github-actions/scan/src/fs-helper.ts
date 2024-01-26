@@ -3,6 +3,8 @@
 import * as shell from 'shelljs';
 import * as core from '@actions/core';
 import * as path from 'path';
+import * as child from 'child_process';
+
 import { ShellString } from 'shelljs';
 
 /**
@@ -34,23 +36,37 @@ export function getFiles(pattern: string): string[] {
     return reportFiles;
 }
 
-export class ShellFailedWithExitCodeNotZeroError extends Error {
-    constructor(command: string, shellExecResult: ShellString) {
-        super(`Shell script call failed.\nExit code: ${shellExecResult.code}\nCommand: "${command}"\nStdErr: ${shellExecResult.stderr}`);
+export class ShellFailedWithExitCodeNotAcceptedError extends Error {
+    constructor(command: string, shellExecResult: ShellString, acceptedExitCodes: number[]) {
+        super(`Shell script call failed.\nExit code: ${shellExecResult.code} - accepted would be: ${acceptedExitCodes}.\nCommand: "${command}"\nStdErr: ${shellExecResult.stderr}\nStdOut: ${shellExecResult.stdout}`);
     }
 }
 
 /**
- * Executes given command by shell - errors are handled
- * @param command 
+ * Executes given command by shell synchronous - errors are handled.
+ * Attention: This mechanism has problems with script execution where child processes are created!
+ * In this case the script execution by shelljs freezes! Workaround here: Use shellExecAsync(..) in 
+ * this case!
+ * @param command command to execute
+ * @param acceptedExitCodes - an array with accepted exit codes. if not defined only 0 is accepted
  * @throws ShellFailedWithExitCodeNotZeroError
  * @returns shellstring 
  */
-export function shellExecOrFail(command: string): ShellString {
+export function shellExecSynchOrFail(command: string, acceptedExitCodes: number[] = [0]): ShellString {
+
     const shellExecResult = shell.exec(command);
 
-    if ( shellExecResult.code!=0){
-        throw new ShellFailedWithExitCodeNotZeroError(command, shellExecResult);
+    if (! acceptedExitCodes.includes(shellExecResult.code)){
+        throw new ShellFailedWithExitCodeNotAcceptedError(command, shellExecResult, acceptedExitCodes);
     }
     return shellExecResult;
+}
+
+/**
+ * Executes given command asynchronous
+ * @param command command to execute
+ * @returns child process
+ */
+export function shellExecAsync(command: string): child.ChildProcess {
+    return child.exec(command);
 }

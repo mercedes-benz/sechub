@@ -23,7 +23,7 @@ describe('initSecHubJson', function () {
         const parameter = initSecHubJson('runtime/sechub.json','', [], []);
 
         /* test */
-        expect(parameter).toBeNull();
+        expect(parameter).toEqual('runtime/sechub.json');
         expect(createSecHubConfigJsonFile).toHaveBeenCalledTimes(1);
     });
 });

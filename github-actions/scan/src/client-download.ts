@@ -1,8 +1,8 @@
 // SPDX-License-Identifier: MIT
 
-import * as fs from 'fs';
 import * as core from '@actions/core';
-import { shellExecOrFail } from './fs-helper';
+import * as fs from 'fs';
+import { shellExecSynchOrFail } from './fs-helper';
 import { LaunchContext } from './launcher';
 
 /**
@@ -24,10 +24,10 @@ export function downloadClientRelease(context: LaunchContext): void {
     core.debug(`SecHub-Client download URL: ${zipDownloadUrl}`);
     core.debug(`SecHub-Client download folder: ${context.clientDownloadFolder}`);
     
-    shellExecOrFail(`mkdir ${context.clientDownloadFolder} -p`);
+    shellExecSynchOrFail(`mkdir ${context.clientDownloadFolder} -p`);
 
-    shellExecOrFail(`curl -L ${zipDownloadUrl} -o ${secHubZipFilePath}`);
-    shellExecOrFail(`unzip -o ${secHubZipFilePath} -d ${context.clientDownloadFolder}`);
-    shellExecOrFail(`chmod +x ${secHubZipFilePath}`);
+    shellExecSynchOrFail(`curl -L ${zipDownloadUrl} -o ${secHubZipFilePath}`);
+    shellExecSynchOrFail(`unzip -o ${secHubZipFilePath} -d ${context.clientDownloadFolder}`);
+    shellExecSynchOrFail(`chmod +x ${secHubZipFilePath}`);
 }
 

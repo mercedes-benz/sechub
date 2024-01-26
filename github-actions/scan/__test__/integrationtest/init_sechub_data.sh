@@ -20,7 +20,7 @@ if [[ "$SECHUB_APITOKEN" == "" ]]; then
    echo "SECHUB_APITOKEN was not defined - use fallback"
 fi
 echo "----- Prepare sechub api script usage"
-cd ../../..
+cd ../../../..
 # at root level now
 
 cd sechub-developertools/scripts
@@ -40,5 +40,6 @@ echo "----- Create test project:$project for user:$user"
 
 
 
-
-
+# wait a short time - to give SecHub chance to handle events etc.
+sleep 2s
+# now the setup shall be done and effective

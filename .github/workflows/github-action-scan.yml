@@ -1,7 +1,10 @@
 # SPDX-License-Identifier: MIT
-name: Build SecHub GitHub Action
+name: Build SecHub GHA (scan)
 
-on: workflow_dispatch
+on:
+  push:
+    branches:
+      - 'gha_*'
 
 jobs:
   build-scan:
@@ -26,7 +29,14 @@ jobs:
       - name: Build
         run: npm run build --if-present
         
-      - name: Run tests
+      - name: Run unit tests
         run: npm test
     
-      
+      - name: Prepare for integration tests
+        run:  ./__test__/integrationtest/01-start.sh 1.4.1 8443 1.4.0 8444
+        
+      - name: Run integration tests
+        run: npm run integration-test
+        
+      - name: Cleanup integration tests
+        run:  ./__test__/integrationtest/05-stop.sh 8443 8444
