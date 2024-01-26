@@ -69,3 +69,6 @@ copy/
 
 # Node
 node_modules/
+
+# github-action integration test
+.sechub-gha/

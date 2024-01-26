@@ -1,7 +1,10 @@
 # SPDX-License-Identifier: MIT
-name: Build SecHub GitHub Action
+name: Build SecHub GHA (scan)
 
-on: workflow_dispatch
+on:
+  push:
+    branches:
+      - 'gha_*'
 
 jobs:
   build-scan:
@@ -19,14 +22,76 @@ jobs:
         # We do not define a dedicated node version here, we just use the default environment
         # which should be the default environment for the github actions runtime as well
         uses: actions/setup-node@8f152de45cc393bb48ce5d89d36b731f54556e65
-    
+
       - name: Clean install
         run: npm ci 
         
       - name: Build
         run: npm run build --if-present
         
-      - name: Run tests
+      - name: Run unit tests
         run: npm test
-    
+
+      - name: Setup integration test data
+        id : version-selector
+        run: |
+          echo "sechub_server_version=1.4.1" >> "$GITHUB_ENV"
+          echo "sechub_server_port=8443" >> "$GITHUB_ENV"
+          echo "pds_version=1.4.0" >> "$GITHUB_ENV"
+          echo "pds_port=8444" >> "$GITHUB_ENV"
+
+      #- name: Cache SecHub server download    
+      #  # Cache V4 release: 13aacd865c20de90d75de3b17ebe84f7a17d57d2
+      #  uses: actions/cache@13aacd865c20de90d75de3b17ebe84f7a17d57d2 
+      #  with:
+      #    path: ./build/sechub-runtime/server/${{ steps.version-selector.outputs.sechub_server_version }}/
+      #    key: ${{ runner.os }}-sechub-server-${{ steps.version-selector.outputs.sechub_server_version }}
+      # 
+      #- name: Cache PDS download    
+      #  # Cache V4 release: 13aacd865c20de90d75de3b17ebe84f7a17d57d2
+      #  uses: actions/cache@13aacd865c20de90d75de3b17ebe84f7a17d57d2 
+      #  with:
+      #    path: ./build/sechub-runtime/pds/${{ steps.version-selector.outputs.pds_version }}/
+      #    key: ${{ runner.os }}-pds-${{ steps.version-selector.outputs.pds_version }}
+
+      - name: Set up JDK 17 (to run servers)
+        uses: actions/setup-java@387ac29b308b003ca37ba93a6cab5eb57c8f5f93
+        with:
+          java-version: 17
+          distribution: temurin
       
+
+      - name: Start integration test servers
+        working-directory: ./github-actions/scan/__test__/integrationtest/
+        run:  ./01-start.sh $sechub_server_version $sechub_server_port $pds_version $pds_port
+        
+      - name: Init integration test data
+        working-directory: ./github-actions/scan/__test__/integrationtest/
+        run:  ./03-init_sechub_data.sh $sechub_server_port $pds_port
+
+      - name: Run integration tests
+        run: npm run integration-test
+        
+      - name: Cleanup integration tests
+        working-directory: ./github-actions/scan/__test__/integrationtest/
+        run:  ./05-stop.sh $sechub_server_port $pds_port
+
+      # ------------------------------------ Archive runtime logs-------------------
+      - name: Archive runtime logs
+        if: always()
+        uses: actions/upload-artifact@v3
+        with:
+          name: sechub-runtime-logiles
+          path: ./build/sechub-runtime/**/*.log
+          retention-days: 14
+      # ------------------------------------ Archive report  -----------------------
+      - name: Archive report
+        if: always()
+        uses: actions/upload-artifact@v3
+        with:
+          name: sechub-report
+          path: sechub-report*.json
+          retention-days: 14
+      
+      
+

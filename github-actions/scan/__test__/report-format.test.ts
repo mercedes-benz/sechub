@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: MIT
 
-import {getValidFormatsFromInput} from "../src/report-formats";
+import {getValidFormatsFromInput} from '../src/report-formats';
 
 describe('getValidFormatsFromInput', function() {
     it('correctly return report formats for json', function () {

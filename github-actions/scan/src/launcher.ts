@@ -3,15 +3,12 @@
 import { failAction } from './action-helper';
 import { scan } from './sechub-cli';
 import { logExitCode } from './exitcode';
-import { getFiles, getWorkspaceParentDir } from './fs-helper';
+import { getFiles, getWorkspaceDir } from './fs-helper';
 import { initReportFormats, initSecHubJson } from './init-scan';
-import { downloadReports, reportOutputs, uploadArtifact } from './post-scan';
+import { collectReportData, reportOutputs, uploadArtifact } from './post-scan';
 import { GitHubInputData, resolveGitHubInputData, INPUT_DATA_DEFAULTS } from './input';
 import { initEnvironmentVariables } from './environment';
 import { downloadClientRelease } from './client-download';
-import { exit } from 'shelljs';
-
-
 
 /**
  * Starts the launch process
@@ -31,6 +28,8 @@ export async function launch(): Promise<LaunchContext> {
 }
 
 export interface LaunchContext {
+    jobUUID: string|undefined;
+
     inputData: GitHubInputData;
     configFileLocation: string | null;
 
@@ -41,25 +40,32 @@ export interface LaunchContext {
     clientExecutablePath: string;
 
     lastClientExitCode: number;
-    runtimeFolder: string;
+    workspaceFolder: string;
     secHubJsonFilePath: string;
+
+    secHubReportJsonObject: object|undefined;
 }
 
 export const LAUNCHER_CONTEXT_DEFAULTS: LaunchContext = {
+    jobUUID : undefined,
+
     inputData: INPUT_DATA_DEFAULTS,
     reportFormats: ['json'],
     clientDownloadFolder: '',
     configFileLocation: null,
     clientExecutablePath: '',
 
-    lastClientExitCode: -1, 
+    lastClientExitCode: -1,
 
     secHubJsonFilePath: '',
-    runtimeFolder: '',
+    workspaceFolder: '',
+    secHubReportJsonObject: undefined,
 };
 
+
 /**
- * Create scan settings
+ * Create launch context
+ * @returns launch context
  */
 function createContext(): LaunchContext {
 
@@ -74,20 +80,23 @@ function createContext(): LaunchContext {
 
     const expression = /\./gi;
     const clientVersionSubFolder = clientVersion.replace(expression, '_'); // avoid . inside path from user input
-    const runtimeFolder = `${getWorkspaceParentDir()}/runtime`;
-    const clientDownloadFolder = `${runtimeFolder}/client/${clientVersionSubFolder}`;
+    const workspaceFolder = `${getWorkspaceDir()}`;
+    const clientDownloadFolder = `${workspaceFolder}/.sechub-gha/client/${clientVersionSubFolder}`;
     const clientExecutablePath = `${clientDownloadFolder}/platform/linux-386/sechub`;
 
     const includeFolders = gitHubInputData.includeFolders?.split(',');
     const excludeFolders = gitHubInputData.excludeFolders?.split(',');
 
-    const secHubJsonFilePath = `${runtimeFolder}/sechub.json`;
+    const generatedSecHubJsonFilePath = `${workspaceFolder}/sechub.json`;
 
-    const configParameter = initSecHubJson(secHubJsonFilePath, gitHubInputData.configPath, includeFolders, excludeFolders);
+    const configParameter = initSecHubJson(generatedSecHubJsonFilePath, gitHubInputData.configPath, includeFolders, excludeFolders);
 
     const reportFormats = initReportFormats(gitHubInputData.reportFormats);
 
     return {
+        jobUUID: LAUNCHER_CONTEXT_DEFAULTS.jobUUID,
+        secHubReportJsonObject: LAUNCHER_CONTEXT_DEFAULTS.secHubReportJsonObject,
+
         configFileLocation: configParameter,
         reportFormats: reportFormats,
         inputData: gitHubInputData,
@@ -96,8 +105,8 @@ function createContext(): LaunchContext {
 
         lastClientExitCode: LAUNCHER_CONTEXT_DEFAULTS.lastClientExitCode,
 
-        secHubJsonFilePath: secHubJsonFilePath,
-        runtimeFolder:runtimeFolder,
+        secHubJsonFilePath: generatedSecHubJsonFilePath,
+        workspaceFolder:workspaceFolder,
     };
 }
 
@@ -114,8 +123,7 @@ function init(context: LaunchContext) {
  * @param format Report format that should be downloaded
  */
 function executeScan(context: LaunchContext) {
-    // TODO 2024-01-19: de-jcup: here only the first report format is used... is this not a bug?
-    scan(context.reportFormats[0], context);
+    scan(context);
 
     logExitCode(context.lastClientExitCode);
 }
@@ -126,13 +134,14 @@ async function postScan(context: LaunchContext): Promise<void> {
         failAction(context.lastClientExitCode);
         return;
     }
-    const jsonReport = downloadReports(context, context.reportFormats.slice(1));
+
+    collectReportData(context);
 
     /* reporting - analysis etc. */
-    reportOutputs(jsonReport);
+    reportOutputs(context.secHubReportJsonObject);
 
     /* upload artifact */
-    await uploadArtifact(context, 'sechub scan-report', getFiles(`${context.runtimeFolder}/sechub_report_*.*`));
+    await uploadArtifact(context, 'sechub scan-report', getFiles(`${context.workspaceFolder}/sechub_report_*.*`));
 
     if (context.lastClientExitCode !== 0 && context.inputData.failJobOnFindings === 'true') {
         failAction(context.lastClientExitCode);

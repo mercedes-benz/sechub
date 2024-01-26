@@ -13552,53 +13552,6 @@ module.exports = require("zlib");
 /******/ 	}
 /******/ 	
 /************************************************************************/
-/******/ 	/* webpack/runtime/create fake namespace object */
-/******/ 	(() => {
-/******/ 		var getProto = Object.getPrototypeOf ? (obj) => (Object.getPrototypeOf(obj)) : (obj) => (obj.__proto__);
-/******/ 		var leafPrototypes;
-/******/ 		// create a fake namespace object
-/******/ 		// mode & 1: value is a module id, require it
-/******/ 		// mode & 2: merge all properties of value into the ns
-/******/ 		// mode & 4: return value when already ns object
-/******/ 		// mode & 16: return value when it's Promise-like
-/******/ 		// mode & 8|1: behave like require
-/******/ 		__nccwpck_require__.t = function(value, mode) {
-/******/ 			if(mode & 1) value = this(value);
-/******/ 			if(mode & 8) return value;
-/******/ 			if(typeof value === 'object' && value) {
-/******/ 				if((mode & 4) && value.__esModule) return value;
-/******/ 				if((mode & 16) && typeof value.then === 'function') return value;
-/******/ 			}
-/******/ 			var ns = Object.create(null);
-/******/ 			__nccwpck_require__.r(ns);
-/******/ 			var def = {};
-/******/ 			leafPrototypes = leafPrototypes || [null, getProto({}), getProto([]), getProto(getProto)];
-/******/ 			for(var current = mode & 2 && value; typeof current == 'object' && !~leafPrototypes.indexOf(current); current = getProto(current)) {
-/******/ 				Object.getOwnPropertyNames(current).forEach((key) => (def[key] = () => (value[key])));
-/******/ 			}
-/******/ 			def['default'] = () => (value);
-/******/ 			__nccwpck_require__.d(ns, def);
-/******/ 			return ns;
-/******/ 		};
-/******/ 	})();
-/******/ 	
-/******/ 	/* webpack/runtime/define property getters */
-/******/ 	(() => {
-/******/ 		// define getter functions for harmony exports
-/******/ 		__nccwpck_require__.d = (exports, definition) => {
-/******/ 			for(var key in definition) {
-/******/ 				if(__nccwpck_require__.o(definition, key) && !__nccwpck_require__.o(exports, key)) {
-/******/ 					Object.defineProperty(exports, key, { enumerable: true, get: definition[key] });
-/******/ 				}
-/******/ 			}
-/******/ 		};
-/******/ 	})();
-/******/ 	
-/******/ 	/* webpack/runtime/hasOwnProperty shorthand */
-/******/ 	(() => {
-/******/ 		__nccwpck_require__.o = (obj, prop) => (Object.prototype.hasOwnProperty.call(obj, prop))
-/******/ 	})();
-/******/ 	
 /******/ 	/* webpack/runtime/make namespace object */
 /******/ 	(() => {
 /******/ 		// define __esModule on exports
@@ -13657,54 +13610,83 @@ var shell = __nccwpck_require__(3516);
 ;// CONCATENATED MODULE: ./src/sechub-cli.ts
 // SPDX-License-Identifier: MIT
 
+
 /**
- * Executes the scan method of the SecHub CLI.
+ * Executes the scan method of the SecHub CLI. Sets the client exitcode inside context.
  * @param parameter Parameters to execute the scan with
- * @param format Report format that should be fetched
  * @param context: launch context
  */
-function scan(format, context) {
-    return shell.exec(`${context.clientExecutablePath} ${context.configParameter} -reportformat ${format} scan`);
+function scan(context) {
+    const shellString = shell.exec(`${context.clientExecutablePath} -configfile ${context.configFileLocation} -output ${context.workspaceFolder} scan`);
+    context.lastClientExitCode = shellString.code;
+    if (context.lastClientExitCode != 0) {
+        core.error(shellString.stderr);
+    }
+    context.jobUUID = extractJobUUID(shellString.stdout);
+}
+function extractJobUUID(output) {
+    const jobPrefix = 'job:';
+    const index1 = output.indexOf(jobPrefix);
+    if (index1 > -1) {
+        const index2 = output.indexOf('\n', index1);
+        if (index2 > -1) {
+            const extracted = output.substring(index1 + jobPrefix.length, index2);
+            return extracted.trim();
+        }
+    }
+    return '';
 }
 /**
- * Executes the getReport method of the SecHub CLI.
+ * Executes the getReport method of the SecHub CLI. Sets the client exitcode inside context.
  * @param jobUUID job UUID for which the report should be downloaded
  * @param projectName name of the project for which the report should be downloaded
  * @param format format in which the report should be downloaded
  * @param context: launch context
  */
 function getReport(jobUUID, format, context) {
-    return shell.exec(`${context.clientExecutablePath} -jobUUID ${jobUUID} -project ${context.inputData.projectName} --reportformat ${format} getReport`);
+    const shellString = shell.exec(`${context.clientExecutablePath} -jobUUID ${jobUUID} -project ${context.inputData.projectName} --reportformat ${format} getReport`);
+    context.lastClientExitCode = shellString.code;
 }
-// /**
-//  * Executes the markFalsePositives method of the SecHub CLI.
-//  * @param falsePositivePath path to the false positive file
-//  */
-// export function markFalsePositives(falsePositivePath: string, context: LaunchContext): ShellString {
-//     return shell.exec(`${context.clientExecutablePath} -file ${falsePositivePath} markFalsePositives`);
-// }
 
-;// CONCATENATED MODULE: ./src/log-helper.ts
+;// CONCATENATED MODULE: ./src/exitcode.ts
 // SPDX-License-Identifier: MIT
 
+/* ---------------------------------- */
+/* -------- Exit codes -------------- */
+/* ---------------------------------- */
+// This is a mapping for client exit codes - origin can be found at constants.go
+const exitCodeMap = new Map();
+exitCodeMap.set(0, 'OK');
+exitCodeMap.set(1, 'FAILED');
+exitCodeMap.set(3, 'ERROR - Missing parameters');
+exitCodeMap.set(4, 'ERROR - Config file does not exist or is not valid');
+exitCodeMap.set(5, 'ERROR - HTTP error has occurred');
+exitCodeMap.set(6, 'ERROR - Action was illegal');
+exitCodeMap.set(7, 'ERROR - Missing configuration parts');
+exitCodeMap.set(8, 'ERROR - IO error');
+exitCodeMap.set(9, 'ERROR - Config file not in expected format');
+exitCodeMap.set(10, 'ERROR - Job has been canceld on SecHub server');
 /**
- * Logs the exit code and uses error method if not 0.
+ * Creates a log mesage with the exit code and a description. The message will be loged by calling core.info or core.error (when exit code !=0)
  * @param code The given exit code
  */
 function logExitCode(code) {
-    const prefix = 'Exit code: ';
+    const message = 'Exit code: ' + code + ' . Description: ' + exitCodeMap.get(code);
     if (code === 0) {
-        core.info(prefix + code);
+        core.info(message);
     }
     else {
-        core.error(prefix + code);
+        core.error(message);
     }
 }
 
 // EXTERNAL MODULE: external "path"
 var external_path_ = __nccwpck_require__(1017);
+// EXTERNAL MODULE: external "child_process"
+var external_child_process_ = __nccwpck_require__(2081);
 ;// CONCATENATED MODULE: ./src/fs-helper.ts
 // SPDX-License-Identifier: MIT
+
 
 
 
@@ -13712,13 +13694,32 @@ var external_path_ = __nccwpck_require__(1017);
  * Get workspace directory.
  */
 function getWorkspaceDir() {
-    return shell.env.GITHUB_WORKSPACE || '';
+    /* github workspace is something like:
+    * /home/runner/work/sechub/
+     * means we are at root level when the action is used
+     * from outside
+     * Means: we have a /home/runner/work/sechub/runtime folder
+     *                  /home/runner/work/other-repo/runtime
+     *
+     * For local builds/runs this must be done as well.
+     *
+     */
+    const workspace = shell.env.GITHUB_WORKSPACE;
+    if (workspace == null) {
+        /* not set, means local,we are inside github-actions/scan */
+        return '../../';
+    }
+    else {
+        return `${workspace}`;
+    }
 }
 /**
  * Get parent folder of workspace directory.
  */
-function getWorkspaceParentDir() {
-    return external_path_.dirname(getWorkspaceDir());
+function ensuredWorkspaceFolder() {
+    const ensuredWorkspaceFolder = path.dirname(getWorkspaceDir());
+    // TODO check folder exists or fal
+    return ensuredWorkspaceFolder;
 }
 /**
  * Get all files in current directory for given pattern.
@@ -13732,34 +13733,39 @@ function getFiles(pattern) {
     });
     return reportFiles;
 }
-class ShellFailedWithExitCodeNotZeroError extends Error {
-    constructor(command, shellExecResult) {
-        super(`Shell script call failed.\nExit code: ${shellExecResult.code}\nCommand: "${command}"\nStdErr: ${shellExecResult.stderr}`);
+class ShellFailedWithExitCodeNotAcceptedError extends Error {
+    constructor(command, shellExecResult, acceptedExitCodes) {
+        super(`Shell script call failed.\nExit code: ${shellExecResult.code} - accepted would be: ${acceptedExitCodes}.\nCommand: "${command}"\nStdErr: ${shellExecResult.stderr}\nStdOut: ${shellExecResult.stdout}`);
     }
 }
 /**
- * Executes given command by shell - errors are handled
- * @param command
+ * Executes given command by shell synchronous - errors are handled.
+ * Attention: This mechanism has problems with script execution where child processes are created!
+ * In this case the script execution by shelljs freezes! Workaround here: Use shellExecAsync(..) in
+ * this case!
+ * @param command command to execute
+ * @param acceptedExitCodes - an array with accepted exit codes. if not defined only 0 is accepted
  * @throws ShellFailedWithExitCodeNotZeroError
  * @returns shellstring
  */
-function shellExecOrFail(command) {
+function shellExecSynchOrFail(command, acceptedExitCodes = [0]) {
     const shellExecResult = shell.exec(command);
-    if (shellExecResult.code != 0) {
-        throw new ShellFailedWithExitCodeNotZeroError(command, shellExecResult);
+    if (!acceptedExitCodes.includes(shellExecResult.code)) {
+        throw new ShellFailedWithExitCodeNotAcceptedError(command, shellExecResult, acceptedExitCodes);
     }
     return shellExecResult;
 }
+/**
+ * Executes given command asynchronous
+ * @param command command to execute
+ * @returns child process
+ */
+function shellExecAsync(command) {
+    return child.exec(command);
+}
 
-;// CONCATENATED MODULE: ./src/sechub.json
-const sechub_namespaceObject = JSON.parse('{"apiVersion":"1.0","codeScan":{"fileSystem":{"folders":["."]},"excludes":[]}}');
-var src_sechub_namespaceObject = /*#__PURE__*/__nccwpck_require__.t(sechub_namespaceObject, 2);
-;// CONCATENATED MODULE: ./src/settings.json
-const settings_namespaceObject = JSON.parse('{"vz":"sechub scan-report","nl":"sechub_report_*.*","Pz":"sechub.json"}');
 ;// CONCATENATED MODULE: ./src/configuration-builder.ts
 // SPDX-License-Identifier: MIT
-
-
 
 
 /**
@@ -13768,12 +13774,12 @@ const settings_namespaceObject = JSON.parse('{"vz":"sechub scan-report","nl":"se
  * @param includeFolders Which folders should be included
  * @param excludeFolders Which folders should be excluded
  */
-function createSecHubConfigJsonFile(includeFolders, excludeFolders) {
-    core.info('Config-Path was not found. Config will be manually created...');
+function createSecHubConfigJsonFile(secHubJsonFilePath, includeFolders, excludeFolders) {
+    core.info('Config-Path was not found. Config will be created at ' + secHubJsonFilePath);
     const secHubJson = createSecHubConfigurationModel(includeFolders, excludeFolders);
     const stringifiedSecHubJson = JSON.stringify(secHubJson);
     core.debug('SecHub-Config: ' + stringifiedSecHubJson);
-    shell.ShellString(stringifiedSecHubJson).to(settings_namespaceObject.Pz);
+    shell.ShellString(stringifiedSecHubJson).to(secHubJsonFilePath);
 }
 /**
  * Creates a sechub configuration model object for given user input values.
@@ -13784,8 +13790,16 @@ function createSecHubConfigJsonFile(includeFolders, excludeFolders) {
  * @returns model
  */
 function createSecHubConfigurationModel(includeFolders, excludeFolders) {
-    const sechubJson = src_sechub_namespaceObject;
+    const sechubJson = {
+        'apiVersion': '1.0'
+    };
+    if (sechubJson.codeScan == null) {
+        sechubJson.codeScan = {};
+    }
     if (includeFolders) {
+        if (sechubJson.codeScan.fileSystem == null) {
+            sechubJson.codeScan.fileSystem = {};
+        }
         sechubJson.codeScan.fileSystem.folders = includeFolders;
     }
     if (excludeFolders) {
@@ -13816,22 +13830,24 @@ function getValidFormatsFromInput(inputFormats) {
 
 /**
  * Returns the parameter to the sechub.json or creates it from the input parameters if configPath is not set.
- * @param configPath Path to the sechub.json
+ * @param customSecHubConfigFilePath Path to the custom sechub.json (if defined)
  * @param includeFolders list of folders to include to the scan
  * @param excludeFolders list of folders to exclude from the scan
  *
- * @returns parameter or null if config path is null
+ * @returns resulting configuration file path
  */
-function initSecHubJson(configPath, includeFolders, excludeFolders) {
+function initSecHubJson(secHubJsonFilePath, customSecHubConfigFilePath, includeFolders, excludeFolders) {
     core.startGroup('Set config');
-    if (!configPath) {
-        createSecHubConfigJsonFile(includeFolders, excludeFolders);
-        return null;
+    let configFilePath = customSecHubConfigFilePath;
+    if (configFilePath) {
+        core.info(`Config-Path was found: ${customSecHubConfigFilePath}`);
     }
-    core.info(`Config-Path was found: ${configPath}`);
-    const configParameter = `-configfile '${configPath}'`;
+    else {
+        createSecHubConfigJsonFile(secHubJsonFilePath, includeFolders, excludeFolders);
+        configFilePath = secHubJsonFilePath;
+    }
     core.endGroup();
-    return configParameter;
+    return configFilePath;
 }
 /**
  * Initializes the report formats and ensures there is at least one valid report format selected.
@@ -13865,77 +13881,8 @@ function ensureJsonReportAtBeginning(reportFormats) {
 var artifact_client = __nccwpck_require__(2605);
 // EXTERNAL MODULE: external "fs"
 var external_fs_ = __nccwpck_require__(7147);
-;// CONCATENATED MODULE: ./src/post-scan.ts
-// SPDX-License-Identifier: MIT
+;// CONCATENATED MODULE: ./src/json-helper.ts
 
-
-
-
-
-
-
-/**
- * Downloads the reports for the given formats.
- * @param formats formats in which the report should be downloaded
- */
-function downloadReports(context, formats) {
-    core.startGroup('Download Reports');
-    if (formats.length === 0) {
-        core.info('No more formats');
-        return;
-    }
-    const json = loadJsonReport();
-    if (json) {
-        const jobUUID = getFieldFromJsonReport('jobUUID', json);
-        core.debug('JobUUID: ' + jobUUID);
-        formats.forEach((format) => {
-            core.info(`Get Report as ${format}`);
-            const exitCode = getReport(jobUUID, format, context);
-            logExitCode(exitCode ? exitCode.code : 0);
-        });
-    }
-    core.endGroup();
-    return json;
-}
-/**
- * Load and parse the SecHub JSON report.
- * @returns {object | undefined} - The parsed JSON report or undefined if not found or there was an error.
- */
-function loadJsonReport() {
-    const fileName = getJsonReportFileName();
-    const filePath = `${getWorkspaceDir()}/${fileName}`;
-    try {
-        const jsonData = JSON.parse(external_fs_.readFileSync(filePath, 'utf8'));
-        return jsonData;
-    }
-    catch (error) {
-        core.warning(`Error reading or parsing JSON file: ${error}`);
-        return undefined;
-    }
-}
-/**
- * Uploads all given files as artifact
- * @param name Name for the zip file.
- * @param paths All file paths to include into the artifact.
- */
-async function uploadArtifact(name, paths) {
-    core.startGroup('Upload artifacts');
-    try {
-        const artifactClient = artifact_client/* create */.U();
-        const artifactName = name;
-        const options = { continueOnError: true };
-        const workspace = getWorkspaceDir();
-        shell.exec(`ls ${workspace}`);
-        core.debug('rootDirectory: ' + workspace);
-        core.debug('files: ' + paths);
-        await artifactClient.uploadArtifact(artifactName, paths, workspace, options);
-    }
-    catch (e) {
-        const message = e instanceof Error ? e.message : 'Unknown error';
-        core.error(`ERROR while uploading artifacts: ${message}`);
-    }
-    core.endGroup();
-}
 /**
  * Reads the given field from the SecHub JSON report.
  * @param {string} field - The field relative to root, where the value should be found. The field can be a nested field, e.g. result.count.
@@ -13959,15 +13906,112 @@ function getFieldFromJsonReport(field, jsonData) {
     }
     return currentKey;
 }
+
+;// CONCATENATED MODULE: ./src/post-scan.ts
+// SPDX-License-Identifier: MIT
+
+
+
+
+
+
+
+
+/**
+ * Collect all necessary report data, downloads additional report formats (e.g. 'html') if necessary
+ */
+core.startGroup('Collect report data');
+function collectReportData(context) {
+    core.startGroup('Collect report data');
+    collectJsonReportData(context);
+    downloadOtherReportsThanJson(context);
+    core.endGroup();
+}
+function collectJsonReportData(context) {
+    /* json - already downloaded by client on scan, here we just ensure it exists and fetch the data from the model */
+    const fileName = getFirstJsonReportFileName(context);
+    const filePath = `${getWorkspaceDir()}/${fileName}`;
+    let text = '';
+    try {
+        core.info('Get Report as json');
+        text = external_fs_.readFileSync(filePath, 'utf8');
+    }
+    catch (error) {
+        core.warning(`Error reading JSON file: ${error}`);
+        return undefined;
+    }
+    const jsonObject = asJsonObject(text);
+    /* setup data in context */
+    context.secHubReportJsonObject = jsonObject;
+}
+function downloadOtherReportsThanJson(context) {
+    if (context.jobUUID) {
+        const jobUUID = context.jobUUID;
+        core.debug('JobUUID: ' + jobUUID);
+        context.reportFormats.forEach((format) => {
+            if (format != 'json') { // json is skipped, because already downloaded
+                core.info(`Get Report as ${format}`);
+                getReport(jobUUID, format, context);
+                logExitCode(context.lastClientExitCode);
+            }
+        });
+    }
+}
+/**
+ * Parse the SecHub JSON report.
+ * @returns {object | undefined} - The parsed JSON report or undefined if not found or there was an error.
+ */
+function asJsonObject(text) {
+    try {
+        const jsonData = JSON.parse(text);
+        return jsonData;
+    }
+    catch (error) {
+        core.warning(`Error parsing JSON file: ${error}`);
+        return undefined;
+    }
+}
+/**
+ * Uploads all given files as artifact
+ * @param name Name for the zip file.
+ * @param paths All file paths to include into the artifact.
+ */
+async function uploadArtifact(context, name, paths) {
+    core.startGroup('Upload artifacts');
+    try {
+        const artifactClient = artifact_client/* create */.U();
+        const artifactName = name;
+        const options = { continueOnError: true };
+        const rootDirectory = context.workspaceFolder;
+        core.debug('rootDirectory: ' + rootDirectory);
+        if (core.isDebug()) {
+            shell.exec(`ls ${rootDirectory}`);
+        }
+        core.debug('paths: ' + paths);
+        await artifactClient.uploadArtifact(artifactName, paths, rootDirectory, options);
+        core.debug('artifact upload done');
+    }
+    catch (e) {
+        const message = e instanceof Error ? e.message : 'Unknown error';
+        core.error(`ERROR while uploading artifacts: ${message}`);
+    }
+    core.endGroup();
+}
 /**
  * Get the JSON report file name from the workspace directory.
  * @returns {string} - The JSON report file name or an empty string if not found.
  */
-function getJsonReportFileName() {
+function getFirstJsonReportFileName(context) {
     const workspaceDir = getWorkspaceDir();
     const filesInWorkspace = shell.ls(workspaceDir);
+    if (!context.jobUUID) {
+        core.error('Illegal state: No job uuid resolved - not allowed at this point');
+        return '';
+    }
+    const jobUUID = context.jobUUID;
+    const regex = new RegExp(`sechub_report_.*${jobUUID}.*\\.json$`);
     for (const fileName of filesInWorkspace) {
-        if (/sechub_report.*\.json$/.test(fileName)) {
+        if (regex.test(fileName)) {
             return fileName;
         }
     }
@@ -14097,7 +14141,8 @@ const PARAM_INCLUDED_FOLDERS = 'include-folders';
 const PARAM_EXCLUDED_FOLDERS = 'exclude-folders';
 const PARAM_REPORT_FORMATS = 'report-formats';
 const PARAM_FAIL_JOB_ON_FINDING = 'fail-job-with-findings';
-const emptyInputDataDefaults = {
+const PARAM_TRUST_ALL = 'trust-all';
+const INPUT_DATA_DEFAULTS = {
     configPath: '',
     url: '',
     apiToken: '',
@@ -14109,6 +14154,7 @@ const emptyInputDataDefaults = {
     excludeFolders: '',
     reportFormats: '',
     failJobOnFindings: '',
+    trustAll: ''
 };
 function resolveGitHubInputData() {
     return {
@@ -14123,6 +14169,7 @@ function resolveGitHubInputData() {
         excludeFolders: core.getInput(PARAM_EXCLUDED_FOLDERS),
         reportFormats: core.getInput(PARAM_REPORT_FORMATS),
         failJobOnFindings: core.getInput(PARAM_FAIL_JOB_ON_FINDING),
+        trustAll: core.getInput(PARAM_TRUST_ALL),
     };
 }
 
@@ -14138,6 +14185,7 @@ function initEnvironmentVariables(data) {
     shell.env.SECHUB_SERVER = data.url;
     shell.env.SECHUB_PROJECT = data.projectName;
     shell.env.SECHUB_DEBUG = data.debug;
+    shell.env.SECHUB_TRUSTALL = data.trustAll;
 }
 
 ;// CONCATENATED MODULE: ./src/client-download.ts
@@ -14152,9 +14200,6 @@ function initEnvironmentVariables(data) {
  */
 function downloadClientRelease(context) {
     const clientVersion = context.inputData.sechubCLIVersion;
-    if (clientVersion == null || clientVersion == '') {
-        throw new Error('No SecHub client version defined!');
-    }
     if (external_fs_.existsSync(context.clientExecutablePath)) {
         core.debug(`Client already downloaded - skip download. Path:${context.clientExecutablePath}`);
         return;
@@ -14163,10 +14208,10 @@ function downloadClientRelease(context) {
     const zipDownloadUrl = `https://github.com/mercedes-benz/sechub/releases/download/v${clientVersion}-client/sechub-cli-${clientVersion}.zip`;
     core.debug(`SecHub-Client download URL: ${zipDownloadUrl}`);
     core.debug(`SecHub-Client download folder: ${context.clientDownloadFolder}`);
-    shellExecOrFail(`mkdir ${context.clientDownloadFolder} -p`);
-    shellExecOrFail(`curl -L ${zipDownloadUrl} -o ${secHubZipFilePath}`);
-    shellExecOrFail(`unzip -o ${secHubZipFilePath} -d ${context.clientDownloadFolder}`);
-    shellExecOrFail(`chmod +x ${secHubZipFilePath}`);
+    shellExecSynchOrFail(`mkdir ${context.clientDownloadFolder} -p`);
+    shellExecSynchOrFail(`curl -L ${zipDownloadUrl} -o ${secHubZipFilePath}`);
+    shellExecSynchOrFail(`unzip -o ${secHubZipFilePath} -d ${context.clientDownloadFolder}`);
+    shellExecSynchOrFail(`chmod +x ${secHubZipFilePath}`);
 }
 
 ;// CONCATENATED MODULE: ./src/launcher.ts
@@ -14180,42 +14225,62 @@ function downloadClientRelease(context) {
 
 
 
-
+/**
+ * Starts the launch process
+ * @returns launch context
+ */
 async function launch() {
     const context = createContext();
     init(context);
-    const exitCode = executeScan(context);
-    await postScan(context, exitCode);
+    executeScan(context);
+    await postScan(context);
+    return context;
 }
 const LAUNCHER_CONTEXT_DEFAULTS = {
-    inputData: emptyInputDataDefaults,
+    jobUUID: undefined,
+    inputData: INPUT_DATA_DEFAULTS,
     reportFormats: ['json'],
     clientDownloadFolder: '',
-    configParameter: null,
+    configFileLocation: null,
     clientExecutablePath: '',
+    lastClientExitCode: -1,
+    secHubJsonFilePath: '',
+    workspaceFolder: '',
+    secHubReportJsonObject: undefined,
 };
 /**
- * Create scan settings
+ * Create launch context
+ * @returns launch context
  */
 function createContext() {
     var _a, _b;
     const gitHubInputData = resolveGitHubInputData();
-    const clientVersion = gitHubInputData.sechubCLIVersion;
     // client
+    const clientVersion = gitHubInputData.sechubCLIVersion;
+    if (clientVersion == null || clientVersion == '') {
+        throw new Error('No SecHub client version defined!');
+    }
     const expression = /\./gi;
     const clientVersionSubFolder = clientVersion.replace(expression, '_'); // avoid . inside path from user input
-    const clientDownloadFolder = `${getWorkspaceParentDir()}/runtime/client/${clientVersionSubFolder}`;
+    const workspaceFolder = `${getWorkspaceDir()}`;
+    const clientDownloadFolder = `${workspaceFolder}/.sechub-gha/client/${clientVersionSubFolder}`;
     const clientExecutablePath = `${clientDownloadFolder}/platform/linux-386/sechub`;
     const includeFolders = (_a = gitHubInputData.includeFolders) === null || _a === void 0 ? void 0 : _a.split(',');
     const excludeFolders = (_b = gitHubInputData.excludeFolders) === null || _b === void 0 ? void 0 : _b.split(',');
-    const configParameter = initSecHubJson(gitHubInputData.configPath, includeFolders, excludeFolders);
+    const generatedSecHubJsonFilePath = `${workspaceFolder}/sechub.json`;
+    const configParameter = initSecHubJson(generatedSecHubJsonFilePath, gitHubInputData.configPath, includeFolders, excludeFolders);
     const reportFormats = initReportFormats(gitHubInputData.reportFormats);
     return {
-        configParameter: configParameter,
+        jobUUID: LAUNCHER_CONTEXT_DEFAULTS.jobUUID,
+        secHubReportJsonObject: LAUNCHER_CONTEXT_DEFAULTS.secHubReportJsonObject,
+        configFileLocation: configParameter,
         reportFormats: reportFormats,
         inputData: gitHubInputData,
         clientDownloadFolder: clientDownloadFolder,
         clientExecutablePath: clientExecutablePath,
+        lastClientExitCode: LAUNCHER_CONTEXT_DEFAULTS.lastClientExitCode,
+        secHubJsonFilePath: generatedSecHubJsonFilePath,
+        workspaceFolder: workspaceFolder,
     };
 }
 function init(context) {
@@ -14228,17 +14293,22 @@ function init(context) {
  * @param format Report format that should be downloaded
  */
 function executeScan(context) {
-    // TODO 2024-01-19: de-jcup: here only the first report format is used... is this not a bug?
-    const exitCode = scan(context.reportFormats[0], context).code;
-    logExitCode(exitCode);
-    return exitCode;
+    scan(context);
+    logExitCode(context.lastClientExitCode);
 }
-async function postScan(context, exitCode) {
-    const jsonReport = downloadReports(context, context.reportFormats.slice(1));
-    reportOutputs(jsonReport);
-    await uploadArtifact(settings_namespaceObject.vz, getFiles(settings_namespaceObject.nl));
-    if (exitCode !== 0 && context.inputData.failJobOnFindings === 'true') {
-        failAction(exitCode);
+async function postScan(context) {
+    if (context.lastClientExitCode > 1) {
+        // in this case this is an error and we cannot download the report - means fails always
+        failAction(context.lastClientExitCode);
+        return;
+    }
+    collectReportData(context);
+    /* reporting - analysis etc. */
+    reportOutputs(context.secHubReportJsonObject);
+    /* upload artifact */
+    await uploadArtifact(context, 'sechub scan-report', getFiles(`${context.workspaceFolder}/sechub_report_*.*`));
+    if (context.lastClientExitCode !== 0 && context.inputData.failJobOnFindings === 'true') {
+        failAction(context.lastClientExitCode);
     }
 }
 

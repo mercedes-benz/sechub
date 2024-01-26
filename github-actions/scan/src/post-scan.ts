@@ -8,44 +8,68 @@ import { getWorkspaceDir } from './fs-helper';
 import { LaunchContext } from './launcher';
 import { logExitCode } from './exitcode';
 import { getReport } from './sechub-cli';
+import { getFieldFromJsonReport } from './json-helper';
 
 /**
- * Downloads the reports for the given formats.
- * @param formats formats in which the report should be downloaded
+ * Collect all necessary report data, downloads additional report formats (e.g. 'html') if necessary
  */
-export function downloadReports(context: LaunchContext, formats: string[]): object | undefined {
-    core.startGroup('Download Reports');
-    if (formats.length === 0) {
-        core.info('No more formats');
-        return;
+core.startGroup('Collect report data');
+export function collectReportData(context: LaunchContext) {
+    core.startGroup('Collect report data');
+
+    collectJsonReportData(context);
+    downloadOtherReportsThanJson(context);
+
+    core.endGroup();
+}
+
+function collectJsonReportData(context: LaunchContext) {
+
+    /* json - already downloaded by client on scan, here we just ensure it exists and fetch the data from the model */
+    const fileName = getFirstJsonReportFileName(context);
+    const filePath = `${getWorkspaceDir()}/${fileName}`;
+    let text = '';
+    try {
+        core.info('Get Report as json');
+        text = fs.readFileSync(filePath, 'utf8');
+    } catch (error) {
+        core.warning(`Error reading JSON file: ${error}`);
+        return undefined;
     }
-    const json = loadJsonReport();
-    if (json) {
-        const jobUUID = getFieldFromJsonReport('jobUUID', json);
+
+    const jsonObject = asJsonObject(text);
+
+    /* setup data in context */
+    context.secHubReportJsonObject = jsonObject;
+    
+}
+
+
+function downloadOtherReportsThanJson(context: LaunchContext) {
+    if (context.jobUUID) {
+        const jobUUID=context.jobUUID;
         core.debug('JobUUID: ' + jobUUID);
-        formats.forEach((format) => {
-            core.info(`Get Report as ${format}`);
-            getReport(jobUUID, format,context);
-            logExitCode(context.lastClientExitCode);
+
+        context.reportFormats.forEach((format) => {
+            if (format != 'json') { // json is skipped, because already downloaded
+                core.info(`Get Report as ${format}`);
+                getReport(jobUUID, format, context);
+                logExitCode(context.lastClientExitCode);
+            }
         });
     }
-    core.endGroup();
-    return json;
 }
 
 /**
- * Load and parse the SecHub JSON report.
+ * Parse the SecHub JSON report.
  * @returns {object | undefined} - The parsed JSON report or undefined if not found or there was an error.
  */
-function loadJsonReport(): object | undefined {
-    const fileName = getJsonReportFileName();
-    const filePath = `${getWorkspaceDir()}/${fileName}`;
-
+function asJsonObject(text: string): object | undefined {
     try {
-        const jsonData = JSON.parse(fs.readFileSync(filePath, 'utf8'));
+        const jsonData = JSON.parse(text);
         return jsonData;
     } catch (error) {
-        core.warning(`Error reading or parsing JSON file: ${error}`);
+        core.warning(`Error parsing JSON file: ${error}`);
         return undefined;
     }
 }
@@ -62,16 +86,16 @@ export async function uploadArtifact(context: LaunchContext, name: string, paths
         const artifactName = name;
         const options = { continueOnError: true };
 
-        const rootDirectory = context.runtimeFolder;
+        const rootDirectory = context.workspaceFolder;
         core.debug('rootDirectory: ' + rootDirectory);
-        if (core.isDebug()){
+        if (core.isDebug()) {
             shell.exec(`ls ${rootDirectory}`);
         }
         core.debug('paths: ' + paths);
 
         await artifactClient.uploadArtifact(artifactName, paths, rootDirectory, options);
         core.debug('artifact upload done');
-        
+
     } catch (e: unknown) {
         const message = e instanceof Error ? e.message : 'Unknown error';
         core.error(`ERROR while uploading artifacts: ${message}`);
@@ -80,40 +104,22 @@ export async function uploadArtifact(context: LaunchContext, name: string, paths
 }
 
 /**
- * Reads the given field from the SecHub JSON report.
- * @param {string} field - The field relative to root, where the value should be found. The field can be a nested field, e.g. result.count.
- * @param jsonData - The json data to read the field from.
- * @returns {*} - The value found for the given field or undefined if not found.
- */
-function getFieldFromJsonReport(field: string, jsonData: any): any {
-    // Split the given field into individual keys
-    const keys = field.split('.');
-
-    // Traverse the JSON object to find the requested field
-    let currentKey = jsonData;
-    for (const key of keys) {
-        // eslint-disable-next-line no-prototype-builtins
-        if (currentKey && currentKey.hasOwnProperty && typeof currentKey.hasOwnProperty === 'function' && currentKey.hasOwnProperty(key)) {
-            currentKey = currentKey[key];
-        } else {
-            core.warning(`Field "${key}" not found in the JSON report.`);
-            return undefined;
-        }
-    }
-
-    return currentKey;
-}
-
-/**
  * Get the JSON report file name from the workspace directory.
  * @returns {string} - The JSON report file name or an empty string if not found.
  */
-function getJsonReportFileName(): string {
+function getFirstJsonReportFileName(context: LaunchContext): string {
     const workspaceDir = getWorkspaceDir();
     const filesInWorkspace = shell.ls(workspaceDir);
 
+    if (! context.jobUUID){
+        core.error('Illegal state: No job uuid resolved - not allowed at this point');
+        return '';
+    }
+    const jobUUID = context.jobUUID;
+    const regex = new RegExp(`sechub_report_.*${jobUUID}.*\\.json$`);
+
     for (const fileName of filesInWorkspace) {
-        if (/sechub_report.*\.json$/.test(fileName)) {
+        if (regex.test(fileName)) {
             return fileName;
         }
     }
@@ -169,18 +175,18 @@ function analyzeFindings(jsonData: any): { mediumCount: number; highCount: numbe
 
     findings.forEach((finding: { severity: string; }) => {
         switch (finding.severity) {
-        case 'MEDIUM':
-            mediumCount++;
-            break;
-        case 'HIGH':
-            highCount++;
-            break;
-        case 'LOW':
-            lowCount++;
-            break;
-        default:
-            unmapped++;
-            break;
+            case 'MEDIUM':
+                mediumCount++;
+                break;
+            case 'HIGH':
+                highCount++;
+                break;
+            case 'LOW':
+                lowCount++;
+                break;
+            default:
+                unmapped++;
+                break;
         }
     });
 

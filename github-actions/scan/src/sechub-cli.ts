@@ -6,16 +6,29 @@ import * as core from '@actions/core';
 /**
  * Executes the scan method of the SecHub CLI. Sets the client exitcode inside context.
  * @param parameter Parameters to execute the scan with
- * @param format Report format that should be fetched
  * @param context: launch context
  */
-export function scan(format: string, context: LaunchContext) {
-    const shellString =  shell.exec(`${context.clientExecutablePath} -configfile ${context.configFileLocation} -output ${context.runtimeFolder} -reportformat ${format} scan`);
+export function scan(context: LaunchContext) {
+    const shellString =  shell.exec(`${context.clientExecutablePath} -configfile ${context.configFileLocation} -output ${context.workspaceFolder} scan`);
     context.lastClientExitCode= shellString.code;
 
     if (context.lastClientExitCode!=0){
         core.error(shellString.stderr);
     }
+    context.jobUUID=extractJobUUID(shellString.stdout);
+}
+
+export function extractJobUUID(output: string): string{
+    const jobPrefix='job:';
+    const index1 =output.indexOf(jobPrefix);
+    if (index1>-1){
+        const index2 = output.indexOf('\n', index1);
+        if (index2>-1){
+            const extracted=output.substring(index1+jobPrefix.length,index2);
+            return extracted.trim();
+        }
+    }
+    return '';
 }
 
 /**

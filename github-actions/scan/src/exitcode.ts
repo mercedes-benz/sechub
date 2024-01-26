@@ -21,11 +21,11 @@ exitCodeMap.set(10, 'ERROR - Job has been canceld on SecHub server');
 
 
 /**
- * Logs the exit code and uses error method if not 0.
+ * Creates a log mesage with the exit code and a description. The message will be loged by calling core.info or core.error (when exit code !=0)
  * @param code The given exit code
  */
 export function logExitCode(code: number) {
-    const message = 'Exit code: ' + code+' . Description: '+exitCodeMap.get(code);
+    const message = 'Exit code: ' + code + ' . Description: ' + exitCodeMap.get(code);
     if (code === 0) {
         core.info(message);
     } else {

@@ -1,0 +1,24 @@
+{
+  "apiVersion": "1.0",
+  "serverId": "gha_integrationtest_server",
+  "products": [
+    {
+      "id": "codescan_demo_green",
+      "path": "./__test__/integrationtest/test-scripts/pds-codescan-demo-green.sh",
+      "scanType": "codeScan",
+      "description": "This is only a fake code scan - used by integration tests. The code scan will just return one info vulnerability"
+    },
+    {
+      "id": "codescan_demo_yellow",
+      "path": "./__test__/integrationtest/test-scripts/pds-codescan-demo-yellow.sh",
+      "scanType": "codeScan",
+      "description": "This is only a fake code scan - used by integration tests. The code scan will just return one medium vulnerability"
+    },
+    {
+      "id": "codescan_demo_red",
+      "path": "./__test__/integrationtest/test-scripts/pds-codescan-demo-red.sh",
+      "scanType": "codeScan",
+      "description": "This is only a fake code scan - used by integration tests. The code scan will just return one high vulnerability"
+    }
+  ]
+}

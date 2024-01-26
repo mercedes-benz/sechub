@@ -4,12 +4,31 @@
 set -e
 lastCommandHandled=""
 
+RED='\033[0;31m'
+LIGHT_RED='\033[1;31m'
+LIGHT_GREEN='\033[1;32m'
+BROWN='\033[0;33m'
+BLUE='\033[0;34m'
+PURPLE='\033[0;35m'
+
+NC='\033[0m' # No Color
+
+
 function startJob (){
-    echo "**************************************************************************************************"
-    echo "* Start job: $1"
-    echo "**************************************************************************************************"
+    echo -e "${BROWN}---------------------------------------------------${NC}"
+    echo -e "${BROWN} Start job: $1"
+    echo -e "${BROWN}---------------------------------------------------${NC}"
     export lastCommandHandled=$1
 }
+
+function startTask (){
+    echo -e "${BLUE}[ $1 ]${NC}"
+}
+
+function specialTask (){
+    echo -e "${PURPLE}[ $1 ]${NC}"
+}
+
 
 function step (){
     echo "- ++++++++++++++++++++++++++++++++++"
@@ -18,14 +37,15 @@ function step (){
 }
 
 function showHelp () {
-    echo "-------------------------------------" 
-    echo "- SDC - SecHub developer command line"
-    echo "-------------------------------------" 
+    echo -e "${BROWN}---------------------------------------------------${NC}"
+    echo -e "${BROWN}- SDC - SecHub developer command line${NC}"
+    echo -e "${BROWN}---------------------------------------------------${NC}" 
     echo "Usage: Usage sdc"
     echo " Option s: "                                  
     echo "  -f,   --format-all                          : format all source code files"
     echo "  -b,   --build-full                          : full build"
     echo "  -bpt, --build-pds-tools                     : build pds tools"
+    echo "  -bgh, --build-github-action                 : build github action (node js)" 
     echo "  -d,   --document-full                       : full document build"
     echo "  -u,   --unit-tests                          : execute all unit tests"
     echo "  -i,   --integrationtest-all                 : execute all integration tests"
@@ -40,7 +60,9 @@ function showHelp () {
     echo "  -gj,  --generate-java-api                   : generates parts for java api"
     echo ""                                            
     echo "  -syg, --start-systemtest-sanity-check-gosec : start systemtest 'sanity-check' for gosec with local build pds tools (0.0.0)" 
+    echo ""                                            
     echo "  -h,   --help                                : show this help"
+
 }
 
 SCRIPT_DIR="$(dirname -- "$0")"
@@ -106,6 +128,10 @@ do
         ;;
         -bpt|--build-pds-tools)
         PDS_TOOLS_BUILD="YES"
+        shift # past argument
+        ;;
+        -bgh|--build-github-action)
+        GITHUB_ACTION_BUILD="YES"
         shift # past argument
         ;;
         -d|--document-full)
@@ -270,6 +296,67 @@ if [[ "$START_SYSTEMTEST_SANITYCHECK_GOSEC" = "YES" ]]; then
     #java -Djdk.httpclient.HttpClient.log=requests,headers,errors -jar $SECHUB_ROOT_DIR/sechub-pds-tools/build/libs/sechub-pds-tools-cli-0.0.0.jar systemtest --file systemtest_local.json --pds-solutions-rootfolder ../../ --sechub-solution-rootfolder ../../../sechub-solution --run-tests sanity-check
     java -jar $SECHUB_ROOT_DIR/sechub-pds-tools/build/libs/sechub-pds-tools-cli-0.0.0.jar systemtest --file systemtest_local.json --pds-solutions-rootfolder ../../ --sechub-solution-rootfolder ../../../sechub-solution --run-tests sanity-check
     cd $SECHUB_ROOT_DIR 
+fi
+
+# Builds github action ("scan") like done in workflow, means the integration tests are executed as well)
+# We do here the same steps as done in 'github-action-scan.yml'
+if [[ "$GITHUB_ACTION_BUILD" = "YES" ]]; then
+    ### --------------------------
+    ### Build GitHub action "scan"
+    ### --------------------------
+    startJob "Build GitHub action 'scan'"
+
+    # Set working directory (to default)
+    cd $SECHUB_ROOT_DIR
+    cd ./github-actions/scan
+
+    specialTask "Use Node.js"
+    echo "Not done locally. Please setup this on your machine by nvm. For example: 'nvm use node' (sets to latest)"
+
+    startTask "Clean install"
+    npm ci
+
+    startTask "Build"
+    npm run build --if-present
+
+    startTask "Run unit tests"
+    npm test
+    
+    startTask "Setup integration test data"
+    # Define variables
+    sechub_server_version=1.4.1
+    sechub_server_port=8443
+    pds_version=1.4.0
+    pds_port=8444
+    echo "Version and port variables are now defined"
+
+    # Set working directory
+    cd ./__test__/integrationtest/
+    
+    # next lines only for our local build: we stop always former running integration test servers (to call it multiple times)
+    specialTask "Stop former running test servers"
+    ./05-stop.sh $sechub_server_port $pds_port
+
+    # Start integration test servers
+    startTask "Start integration test servers"
+    ./01-start.sh $sechub_server_version $sechub_server_port $pds_version $pds_port
+    
+    # Init integration test data
+    startTask "Init integration test data"
+    ./03-init_sechub_data.sh $sechub_server_port $pds_port
+
+    
+    # Set working directory (to default)
+    cd $SECHUB_ROOT_DIR
+    cd ./github-actions/scan
+
+    # Run integration tests
+    startTask "Run integration tests"
+    npm run integration-test
+
+    # Cleanup integration tests
+    startTask "Cleanup integration tests"
+    ./05-stop.sh $sechub_server_port $pds_port
 fi
 
 

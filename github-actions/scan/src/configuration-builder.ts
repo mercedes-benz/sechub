@@ -11,7 +11,7 @@ import { SecHubConfigurationModel } from './configuration-model';
  * @param excludeFolders Which folders should be excluded
  */
 export function createSecHubConfigJsonFile(secHubJsonFilePath:string, includeFolders: string[] | null, excludeFolders: string[] | null) {
-    core.info('Config-Path was not found. Config will be created.');
+    core.info('Config-Path was not found. Config will be created at '+ secHubJsonFilePath);
     const secHubJson = createSecHubConfigurationModel(includeFolders, excludeFolders);
     const stringifiedSecHubJson = JSON.stringify(secHubJson);
     core.debug('SecHub-Config: ' + stringifiedSecHubJson);
