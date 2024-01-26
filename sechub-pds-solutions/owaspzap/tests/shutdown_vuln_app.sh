@@ -1,20 +1,20 @@
 #!/bin/bash
 # SPDX-License-Identifier: MIT
-current_test_folder="$1"
-path_to_docker_compose_yaml_file="$2"
+CURRENT_TEST_FOLDER="$1"
+PATH_TO_DOCKER_COMPOSE_YAML_FILE="$2"
 	
-if [[ ! -d "$current_test_folder" ]]
+if [[ ! -d "$CURRENT_TEST_FOLDER" ]]
 then
 	echo "Target folder is empty"
 	exit 1
 fi
 
-if [[ -z "$path_to_docker_compose_yaml_file" ]]
+if [[ -z "$PATH_TO_DOCKER_COMPOSE_YAML_FILE" ]]
 then
 	echo "No path to docker-compose yaml file provided"
 	exit 1
 fi
 
-cd "$current_test_folder"
+cd "$CURRENT_TEST_FOLDER"
 
-docker compose --file "$path_to_docker_compose_yaml_file" down --remove-orphans
+docker compose --file "$PATH_TO_DOCKER_COMPOSE_YAML_FILE" down --remove-orphans

@@ -1,32 +1,32 @@
 #!/bin/bash
 # SPDX-License-Identifier: MIT
 
-current_test_folder="$1"
-path_to_docker_compose_yaml_file="$2"
-vulnerable_app_repo_to_clone="$3"
+CURRENT_TEST_FOLDER="$1"
+PATH_TO_DOCKER_COMPOSE_YAML_FILE="$2"
+VULNERABLE_APP_REPO_TO_CLONE="$3"
 	
-if [[ ! -d "$current_test_folder" ]]
+if [[ ! -d "$CURRENT_TEST_FOLDER" ]]
 then
 	echo "Directory does not exist"
 	exit 1
 fi
 
-if [[ -z "$path_to_docker_compose_yaml_file" ]]
+if [[ -z "$PATH_TO_DOCKER_COMPOSE_YAML_FILE" ]]
 then
 	echo "No path to docker-compose yaml file provided"
 	exit 1
 fi
 
-if [[ -z "$vulnerable_app_repo_to_clone" ]]
+if [[ -z "$VULNERABLE_APP_REPO_TO_CLONE" ]]
 then
 	echo "No vulnerable application repository provided"
 	exit 1
 fi
 
-cd "$current_test_folder"
+cd "$CURRENT_TEST_FOLDER"
 
 echo "cloning vulnerable app repo..."
-git clone "$vulnerable_app_repo_to_clone"
+git clone "$VULNERABLE_APP_REPO_TO_CLONE"
 
 echo 'version: "1"
 services:
@@ -40,6 +40,6 @@ services:
 networks:
   sechub:
     external: true
-    name: "sechub"' > "$path_to_docker_compose_yaml_file"
+    name: "sechub"' > "$PATH_TO_DOCKER_COMPOSE_YAML_FILE"
 
-docker compose --file "$path_to_docker_compose_yaml_file" up go-test-bench -d --remove-orphans
+docker compose --file "$PATH_TO_DOCKER_COMPOSE_YAML_FILE" up go-test-bench -d --remove-orphans
