@@ -257,6 +257,10 @@ func assertValidConfig(context *Context) {
 		os.Exit(ExitCodeMissingParameter)
 	}
 
+	// For convenience: lowercase user id and project id if needed
+	context.config.user = lowercaseOrNotice(context.config.user, "user id")
+	context.config.projectID = lowercaseOrNotice(context.config.projectID, "project id")
+
 	// Check mandatory fields for the requested action
 	errorsFound := false
 	if mandatoryFields, ok := checklist[context.config.action]; ok {
@@ -305,10 +309,6 @@ func assertValidConfig(context *Context) {
 		showHelpHint()
 		os.Exit(ExitCodeMissingParameter)
 	}
-
-	// For convenience: lowercase user id and project id if needed
-	context.config.user = lowercaseOrNotice(context.config.user, "user id")
-	context.config.projectID = lowercaseOrNotice(context.config.projectID, "project id")
 
 	// Remove trailing slash from url if present
 	context.config.server = strings.TrimSuffix(context.config.server, "/")

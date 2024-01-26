@@ -504,6 +504,43 @@ func Example_will_reportfile_be_found_in_current_dir() {
 	// Using latest report file "sechub_report_testproject_45cd4f59-4be7-4a86-9bc7-47528ced16c2.json".
 }
 
+func Example_will_uppercase_username_be_corrected() {
+	// PREPARE
+	originalArgs := os.Args
+	os.Args = []string{"sechub", "scan"}
+
+	context := new(Context)
+	config := new(Config)
+	context.config = config
+
+	config.action = interactiveMarkFalsePositivesAction
+	config.projectID = "testproject"
+
+	config.user = "TESTUSER"
+	config.apiToken = "not empty"
+	config.server = "https://test.example.org"
+	config.reportFormat = "json"
+	config.timeOutSeconds = 10
+	config.initialWaitIntervalNanoseconds = int64(2 * float64(time.Second))
+	config.waitSeconds = 60
+
+	// Create report file: sechub_report_testproject_45cd4f59-4be7-4a86-9bc7-47528ced16c2.json
+	reportFileName := "./sechub_report_" + config.projectID + "_45cd4f59-4be7-4a86-9bc7-47528ced16c2.json"
+	ioutil.WriteFile(reportFileName, []byte(""), 0644)
+	defer os.Remove(reportFileName)
+
+	// EXECUTE
+	assertValidConfig(context)
+
+	// TEST
+	// Restore original arguments
+	os.Args = originalArgs
+
+	// Output:
+	// NOTICE: Converted user id 'TESTUSER' to lowercase. Because it contained uppercase characters, which are not accepted by SecHub server.
+	// Using latest report file "sechub_report_testproject_45cd4f59-4be7-4a86-9bc7-47528ced16c2.json".
+}
+
 func Test_check_if_too_many_cmdline_args_get_capped(t *testing.T) {
 	// PREPARE
 	originalArgs := os.Args
