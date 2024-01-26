@@ -119,11 +119,20 @@ func processContent(context *Context) {
 	context.contentToSend = context.inputForContentProcessing // content data used for TLS encrypted data (currently we do not provide templating for false positive data, so just same)
 }
 
-// readFileIntoContext - reads a file referenced by context.config.file into context.inputForContentProcessing as byte array
-func readFileIntoContext(context *Context) {
-	sechubUtil.Log(fmt.Sprintf("Reading file %q", context.config.file), context.config.quiet)
+// readFileIntoContext
+//
+//	  reads a file referenced by context.config.file into context.inputForContentProcessing as byte array
+//		If context.config.file is empty then use fallbackFile
+func readFileIntoContext(context *Context, fallbackFile string) {
+	var file string
+	if context.config.file == "" {
+		file = fallbackFile
+	} else {
+		file = context.config.file
+	}
+	sechubUtil.Log(fmt.Sprintf("Reading file %q", file), context.config.quiet)
 
-	inputFile, err := os.Open(context.config.file)
+	inputFile, err := os.Open(file)
 	if sechubUtil.HandleIOError(err) {
 		showHelpHint()
 		os.Exit(ExitCodeIOError)
@@ -138,7 +147,7 @@ func readFileIntoContext(context *Context) {
 }
 
 func defineFalsePositivesFromFile(context *Context) {
-	readFileIntoContext(context)
+	readFileIntoContext(context, DefaultSecHubFalsePositivesJSONFile)
 
 	// read json into go struct
 	falsePositivesDefinitionList := newFalsePositivesListFromBytes(context.inputForContentProcessing)
@@ -202,7 +211,7 @@ func defineFalsePositives(newFalsePositives FalsePositivesConfig, currentFalsePo
 func uploadFalsePositivesFromFile(context *Context) {
 	sechubUtil.LogDebug(context.config.debug, fmt.Sprintf("Action %q: uploading file: %s\n", context.config.action, context.config.file))
 
-	readFileIntoContext(context)
+	readFileIntoContext(context, DefaultSecHubFalsePositivesJSONFile)
 	processContent(context)
 
 	uploadFalsePositives(context)
@@ -218,7 +227,7 @@ func uploadFalsePositives(context *Context) {
 func unmarkFalsePositivesFromFile(context *Context) {
 	sechubUtil.LogDebug(context.config.debug, fmt.Sprintf("Action %q: remove false positives - read from file: %s", context.config.action, context.config.file))
 
-	readFileIntoContext(context)
+	readFileIntoContext(context, "")
 
 	// read json into go struct
 	removeFalsePositivesList := newFalsePositivesListFromBytes(context.inputForContentProcessing)

@@ -10,6 +10,9 @@ const CurrentAPIVersion = "1.0"
 // DefaultSecHubConfigFile - name of the default SecHub configuration file when no other is set
 const DefaultSecHubConfigFile = "sechub.json"
 
+// DefaultSecHubFalsePositivesJSONFile - name of the default configuration file for defining false-positives
+const DefaultSecHubFalsePositivesJSONFile = "sechub-false-positives.json"
+
 // DefaultReportFormat - Report format if not configured differently
 const DefaultReportFormat = "json"
 
