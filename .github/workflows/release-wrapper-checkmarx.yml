@@ -99,7 +99,7 @@ jobs:
 
       - name: Archive GIT status
         if: always()
-        uses: actions/upload-artifact@694cdabd8bdb0f10b2cea11669e1bf5453eed0a6
+        uses: actions/upload-artifact@26f96dfa697d77e81fd5907df203aa23a56210a8
         with:
           name: git-status.txt
           path: build/reports/git-status.txt
@@ -107,7 +107,7 @@ jobs:
 
       - name: Archive Checkmarx Wrapper libs directory
         if: always()
-        uses: actions/upload-artifact@694cdabd8bdb0f10b2cea11669e1bf5453eed0a6
+        uses: actions/upload-artifact@26f96dfa697d77e81fd5907df203aa23a56210a8
         with:
           name: sechub-wrapper-checkmarx
           path: sechub-wrapper-checkmarx/build/libs
