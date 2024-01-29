@@ -137,7 +137,7 @@ func Example_validateRequestedReportFormatMakesLowercase1() {
 	// TEST
 	fmt.Println(config.reportFormat)
 	// Output:
-	// NOTICE: Converted requested report format 'HTML' to lowercase. Because it contained uppercase characters, which are not accepted by SecHub server.
+	// NOTICE: Converted requested report format 'HTML' to lowercase because it contained uppercase characters, which are not accepted by SecHub server.
 	// html
 }
 
@@ -150,7 +150,7 @@ func Example_validateRequestedReportFormatMakesLowercase2() {
 	// TEST
 	fmt.Println(config.reportFormat)
 	// Output:
-	// NOTICE: Converted requested report format 'Json' to lowercase. Because it contained uppercase characters, which are not accepted by SecHub server.
+	// NOTICE: Converted requested report format 'Json' to lowercase because it contained uppercase characters, which are not accepted by SecHub server.
 	// json
 }
 
@@ -504,7 +504,7 @@ func Example_will_reportfile_be_found_in_current_dir() {
 	// Using latest report file "sechub_report_testproject_45cd4f59-4be7-4a86-9bc7-47528ced16c2.json".
 }
 
-func Example_will_uppercase_username_be_corrected() {
+func Example_check_if_uppercase_username_will_be_corrected() {
 	// PREPARE
 	originalArgs := os.Args
 	os.Args = []string{"sechub", "scan"}
@@ -537,7 +537,7 @@ func Example_will_uppercase_username_be_corrected() {
 	os.Args = originalArgs
 
 	// Output:
-	// NOTICE: Converted user id 'TESTUSER' to lowercase. Because it contained uppercase characters, which are not accepted by SecHub server.
+	// NOTICE: Converted user id 'TESTUSER' to lowercase because it contained uppercase characters, which are not accepted by SecHub server.
 	// Using latest report file "sechub_report_testproject_45cd4f59-4be7-4a86-9bc7-47528ced16c2.json".
 }
 

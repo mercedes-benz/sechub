@@ -66,7 +66,7 @@ func loadConfigFile(context *Context) {
 func lowercaseOrNotice(s string, name string) string {
 	lowercased := strings.ToLower(s)
 	if s != lowercased {
-		sechubUtil.LogNotice("Converted " + name + " '" + s + "' to lowercase. Because it contained uppercase characters, which are not accepted by SecHub server.")
+		sechubUtil.LogNotice("Converted " + name + " '" + s + "' to lowercase because it contained uppercase characters, which are not accepted by SecHub server.")
 	}
 	return lowercased
 }
