@@ -25,6 +25,20 @@ public enum SecHubConfigurationModelValidationError {
 
     WEB_SCAN_URL_HAS_UNSUPPORTED_SCHEMA("The URL for web scan has an unsupported schema!"),
 
+    WEB_SCAN_NO_HEADER_NAME_DEFINED("The name for a HTTP header is not defined!"),
+
+    WEB_SCAN_NO_HEADER_VALUE_DEFINED("The value for a HTTP header is not defined!"),
+
+    WEB_SCAN_INCLUDE_INVALID("The value of an include is invalid!"),
+
+    WEB_SCAN_EXCLUDE_INVALID("The value of an exclude is invalid!"),
+
+    WEB_SCAN_HTTP_HEADER_ONLY_FOR_URL_IS_NOT_A_VALID_URL("The URL for a HTTP header is not a valid URL!"),
+
+    WEB_SCAN_HTTP_HEADER_ONLY_FOR_URL_DOES_NOT_CONTAIN_TARGET_URL("The URL for a HTTP header does not contain the base URL that shall be scanned!"),
+
+    WEB_SCAN_NON_UNIQUE_HEADER_CONFIGURATION("The webscan config contains header configurations that default to the same URL scope!"),
+
     REFERENCED_DATA_CONFIG_OBJECT_NAME_NOT_EXISTING("The referenced config object name was not found in object!"),
 
     NO_DATA_CONFIG_SPECIFIED_FOR_SCAN("No data config was specified for the scan!"),

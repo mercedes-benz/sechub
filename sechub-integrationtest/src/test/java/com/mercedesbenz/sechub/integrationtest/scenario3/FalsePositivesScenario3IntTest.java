@@ -59,6 +59,15 @@ public class FalsePositivesScenario3IntTest {
             finding().id(1).name("Absolute Path Traversal").isNotContained().
             hasTrafficLight(TrafficLight.GREEN);
 
+        /* execute 2 - duplicate call to mark false positives*/
+        as(USER_1).withSecHubClient().startFalsePositiveDefinition(project,location).add(1, jobUUID).markAsFalsePositive();
+
+        /* test 2 - false positive works also after second call*/
+        ExecutionResult result3 = as(USER_1).withSecHubClient().startSynchronScanFor(project, location);
+        assertReportUnordered(result3).
+            finding().id(1).name("Absolute Path Traversal").isNotContained().
+            hasTrafficLight(TrafficLight.GREEN);
+
         /* @formatter:on */
     }
 

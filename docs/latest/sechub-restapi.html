@@ -531,7 +531,7 @@ table.CodeRay td.code{padding:0 0 0 .75em}
 <div id="header">
 <h1><span class="image"><a class="image" href="https://mercedes-benz.github.io/sechub"><img src="images/sechub-logo.png" alt="sechub logo"></a></span> SecHub Server Rest API Documentation</h1>
 <div class="details">
-<span id="revnumber"> Server 0.43.0</span>
+<span id="revnumber"> Server 1.4.1 modified (commit aa28120)</span>
 </div>
 <div id="toc" class="toc2">
 <div id="toctitle">Table of contents</div>
@@ -549,7 +549,7 @@ table.CodeRay td.code{padding:0 0 0 .75em}
 <li><a href="#upload-source-files-from-file-system">2.1.4.1. Upload source files from file system</a>
 <ul class="sectlevel5">
 <li><a href="#using-data-section">2.1.4.1.1. Using <code>data</code> section</a></li>
-<li><a href="#filesystem-inside-the-codescan-section">2.1.4.1.2. <code>fileSystem</code> inside the <code>codeScan</code> section</a></li>
+<li><a href="#filesystem-inside-the-codescan-section-deprecated">2.1.4.1.2. <code>fileSystem</code> inside the <code>codeScan</code> section (deprecated)</a></li>
 </ul>
 </li>
 </ul>
@@ -578,10 +578,12 @@ table.CodeRay td.code{padding:0 0 0 .75em}
 <li><a href="#login">2.1.7.2. Login</a>
 <ul class="sectlevel5">
 <li><a href="#options">2.1.7.2.1. Options</a></li>
-<li><a href="#example-no-authentication">2.1.7.2.2. Example no authentication</a></li>
-<li><a href="#example-basic-authentication">2.1.7.2.3. Example basic authentication</a></li>
+<li><a href="#example-basic-authentication">2.1.7.2.2. Example basic authentication</a></li>
+<li><a href="#example-client-certificate-authentication">2.1.7.2.3. Example client certificate authentication</a></li>
 <li><a href="#example-form-based-login-by-script">2.1.7.2.4. Example form based login by script</a></li>
 <li><a href="#sechub-config-example-webscan-openapi">2.1.7.2.5. Example OpenAPI scan</a></li>
+<li><a href="#sechub-config-openAPI-and-client-certificate">2.1.7.2.6. Example combination of openAPI definition and client certificate authentication</a></li>
+<li><a href="#sechub-config-example-webscan-header">2.1.7.2.7. Example Header scan</a></li>
 </ul>
 </li>
 </ul>
@@ -655,10 +657,16 @@ table.CodeRay td.code{padding:0 0 0 .75em}
 <li><a href="#user-creates-a-new-sechub-job">2.2.25. User creates a new sechub job</a>
 <ul class="sectlevel4">
 <li><a href="#section-ucrestdoc-UC_005-code-scan">2.2.25.1. Code Scan variant</a></li>
-<li><a href="#section-ucrestdoc-UC_005-infrastructure-scan">2.2.25.2. Infrastructure scan variant</a></li>
-<li><a href="#section-ucrestdoc-UC_005-web-scan-anonymous">2.2.25.3. Web scan anonymous variant</a></li>
-<li><a href="#section-ucrestdoc-UC_005-web-scan-login-basic">2.2.25.4. Web Scan login basic variant</a></li>
-<li><a href="#section-ucrestdoc-UC_005-web-scan-login-form-scripted">2.2.25.5. Web Scan login form scripted variant</a></li>
+<li><a href="#section-ucrestdoc-UC_005-code-scan-using-data-section">2.2.25.2. Code Scan using data section variant</a></li>
+<li><a href="#section-ucrestdoc-UC_005-secret-scan">2.2.25.3. Secret scan variant</a></li>
+<li><a href="#section-ucrestdoc-UC_005-license-scan">2.2.25.4. License scan variant</a></li>
+<li><a href="#section-ucrestdoc-UC_005-infrastructure-scan">2.2.25.5. Infrastructure scan variant</a></li>
+<li><a href="#section-ucrestdoc-UC_005-web-scan-anonymous">2.2.25.6. Web scan anonymous variant</a></li>
+<li><a href="#section-ucrestdoc-UC_005-web-scan-with-api-definition">2.2.25.7. Web scan with api definition variant</a></li>
+<li><a href="#section-ucrestdoc-UC_005-web-scan-with-client-certificate-definition">2.2.25.8. Web scan with client certificate definition variant</a></li>
+<li><a href="#section-ucrestdoc-UC_005-web-scan-login-basic">2.2.25.9. Web Scan login basic variant</a></li>
+<li><a href="#section-ucrestdoc-UC_005-web-scan-login-form-scripted">2.2.25.10. Web Scan login form scripted variant</a></li>
+<li><a href="#section-ucrestdoc-UC_005-web-scan-headers">2.2.25.11. Web Scan headers variant</a></li>
 </ul>
 </li>
 <li><a href="#user-uploads-source-code">2.2.26. User uploads source code</a></li>
@@ -976,7 +984,7 @@ build pipeline / contionus integration (CI) and helps to provide
 </tbody>
 </table>
 <div class="paragraph">
-<p>Documentation version: <code>Server 0.43.0-20230602134927</code></p>
+<p>Documentation version: <code>Server 1.4.1 modified (commit aa28120) - Build date: 20240129100221</code></p>
 </div>
 <hr>
 </div>
@@ -1036,24 +1044,6 @@ But this is mentioned inside this documentation
 <h4 id="api-version">2.1.1. API version</h4>
 <div class="paragraph">
 <p><code>apiVersion</code> must be defined (so mandatory). Currently only <code>1.0</code> is valid.</p>
-</div>
-<div class="admonitionblock note">
-<table>
-<tr>
-<td class="icon">
-<i class="fa icon-note" title="Note"></i>
-</td>
-<td class="content">
-<div class="paragraph">
-<p>As long as the SecHub configuration is still strongly developed,
-the API version remains - despite changes - to 1.0.</p>
-</div>
-<div class="paragraph">
-<p>During this time, however, the API always remains backwards compatible!</p>
-</div>
-</td>
-</tr>
-</table>
 </div>
 </div>
 <div class="sect3">
@@ -1140,18 +1130,6 @@ You should call SecHub inside the repository&#8217;s root folder - this is the s
 <p>Define the files and folders in a <code>data</code> section and reference it inside the <code>codeScan</code>.<br>
 This becomes useful e.g. if the same sources are used by different scan types.</p>
 </div>
-<div class="admonitionblock tip">
-<table>
-<tr>
-<td class="icon">
-<i class="fa icon-tip" title="Tip"></i>
-</td>
-<td class="content">
-We <em>recommend</em> using the <code>data</code> section.
-</td>
-</tr>
-</table>
-</div>
 <div class="paragraph">
 <p>Example <code>sechub.json</code> using <code>data</code> section</p>
 </div>
@@ -1235,9 +1213,22 @@ Here we also add ".cplusplus" and ".py9" as additional accepted source file exte
 </div>
 </div>
 <div class="sect5">
-<h6 id="filesystem-inside-the-codescan-section">2.1.4.1.2. <code>fileSystem</code> inside the <code>codeScan</code> section</h6>
+<h6 id="filesystem-inside-the-codescan-section-deprecated">2.1.4.1.2. <code>fileSystem</code> inside the <code>codeScan</code> section (deprecated)</h6>
 <div class="paragraph">
-<p>Define a <code>fileSystem</code> child entry inside the <code>codeScan</code> section for code scanning.</p>
+<p>Define a <code>fileSystem</code> child entry inside the <code>codeScan</code> section for code scanning.<br></p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+This option is deprecated but still supported.<br>
+  Please consider using the <code>data</code> section as described above as it provides more flexibility.
+</td>
+</tr>
+</table>
 </div>
 <div class="paragraph">
 <p>Example <code>sechub.json</code> using <code>fileSystem</code> inside the <code>codeScan</code> section (results in same upload as in above example):</p>
@@ -1538,13 +1529,24 @@ The URL must be whitelisted in your project. Otherwise it will be rejected.
   <span class="key"><span class="delimiter">&quot;</span><span class="content">apiVersion</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">1.0</span><span class="delimiter">&quot;</span></span>,
   <span class="key"><span class="delimiter">&quot;</span><span class="content">webScan</span><span class="delimiter">&quot;</span></span>: { <i class="conum" data-value="1"></i><b>(1)</b>
     <span class="key"><span class="delimiter">&quot;</span><span class="content">url</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">https://www.gamechanger.example.org</span><span class="delimiter">&quot;</span></span>, <i class="conum" data-value="2"></i><b>(2)</b>
-    <span class="key"><span class="delimiter">&quot;</span><span class="content">includes</span><span class="delimiter">&quot;</span></span>: [
-      <span class="string"><span class="delimiter">&quot;</span><span class="content">/special/include</span><span class="delimiter">&quot;</span></span>
-    ], <i class="conum" data-value="3"></i><b>(3)</b>
-    <span class="key"><span class="delimiter">&quot;</span><span class="content">excludes</span><span class="delimiter">&quot;</span></span>: [
+    <span class="key"><span class="delimiter">&quot;</span><span class="content">includes</span><span class="delimiter">&quot;</span></span>: [ <i class="conum" data-value="3"></i><b>(3)</b>
+      <span class="string"><span class="delimiter">&quot;</span><span class="content">/special/include</span><span class="delimiter">&quot;</span></span>,
+      <span class="string"><span class="delimiter">&quot;</span><span class="content">/special/include/&lt;*&gt;</span><span class="delimiter">&quot;</span></span>,
+      <span class="string"><span class="delimiter">&quot;</span><span class="content">&lt;*&gt;/special/&lt;*&gt;/include/&lt;*&gt;</span><span class="delimiter">&quot;</span></span>,
+      <span class="string"><span class="delimiter">&quot;</span><span class="content">&lt;*&gt;/special/include/&lt;*&gt;</span><span class="delimiter">&quot;</span></span>,
+      <span class="string"><span class="delimiter">&quot;</span><span class="content">special/include/&lt;*&gt;</span><span class="delimiter">&quot;</span></span>,
+      <span class="string"><span class="delimiter">&quot;</span><span class="content">special/include</span><span class="delimiter">&quot;</span></span>,
+      <span class="string"><span class="delimiter">&quot;</span><span class="content">special/include/</span><span class="delimiter">&quot;</span></span>
+    ],
+    <span class="key"><span class="delimiter">&quot;</span><span class="content">excludes</span><span class="delimiter">&quot;</span></span>: [ <i class="conum" data-value="4"></i><b>(4)</b>
       <span class="string"><span class="delimiter">&quot;</span><span class="content">/en/contact</span><span class="delimiter">&quot;</span></span>,
-      <span class="string"><span class="delimiter">&quot;</span><span class="content">/contact</span><span class="delimiter">&quot;</span></span>
-    ] <i class="conum" data-value="4"></i><b>(4)</b>
+      <span class="string"><span class="delimiter">&quot;</span><span class="content">/en/contacts/&lt;*&gt;</span><span class="delimiter">&quot;</span></span>,
+      <span class="string"><span class="delimiter">&quot;</span><span class="content">&lt;*&gt;/en/&lt;*&gt;/contacts/&lt;*&gt;</span><span class="delimiter">&quot;</span></span>,
+      <span class="string"><span class="delimiter">&quot;</span><span class="content">&lt;*&gt;/en/contacts/&lt;*&gt;</span><span class="delimiter">&quot;</span></span>,
+      <span class="string"><span class="delimiter">&quot;</span><span class="content">en/contacts/&lt;*&gt;</span><span class="delimiter">&quot;</span></span>,
+      <span class="string"><span class="delimiter">&quot;</span><span class="content">en/contacts</span><span class="delimiter">&quot;</span></span>,
+      <span class="string"><span class="delimiter">&quot;</span><span class="content">en/contacts/</span><span class="delimiter">&quot;</span></span>
+    ]
   },
   <span class="key"><span class="delimiter">&quot;</span><span class="content">maxScanDuration</span><span class="delimiter">&quot;</span></span>: { <i class="conum" data-value="5"></i><b>(5)</b>
     <span class="key"><span class="delimiter">&quot;</span><span class="content">duration</span><span class="delimiter">&quot;</span></span>: <span class="integer">1</span>,
@@ -1566,13 +1568,26 @@ The URL must be whitelisted in your project. Otherwise it will be rejected.
 <tr>
 <td><i class="conum" data-value="3"></i><b>3</b></td>
 <td><strong>Optional</strong>: Define includes, if you have a special path that is linked nowhere,
-so the scanner can not detect it automatically while crawling the application.
-Always use them starting with a slash (<code>/</code>) because they are interpreted relative to the <code>URL</code> provided before.</td>
+so the scanner can not detect it automatically while crawling the application. You can use wildcards by using the symbol <code>&lt;*&gt;</code> like in the example above.
+To make the scan work the target URL will always be implicitly included with <code>"https://www.gamechanger.example.org&lt;*&gt;"</code> if no includes are specified. If includes are specified the scan is limited to these includes.
+In case you need to include certain parts of your application the scanner cannot detect,
+but you want everything else to be scanned as well, please specify a wildcard as include explicitly: <code>"includes": [ "/hidden/from/crawler/", "/&lt;*&gt;" ]</code>.
+<div class="ulist">
+<ul>
+<li>
+<p>Includes starting with a slash (<code>/</code>) like <code>"includes": [ "/special/include","/special/include/&lt;*&gt;"]</code> they are interpreted relative to the scan target <code>URL</code> provided before.</p>
+</li>
+<li>
+<p>Includes not starting with a slash (<code>/</code>) like <code>"includes": [ "&lt;*&gt;/en/contacts/&lt;*&gt;","en/contacts/&lt;*&gt;","en/contacts","en/contacts/"</code>] are interpreted as enclosed by wildcards like the first include in the list example: <code>"&lt;*&gt;/en/contacts/&lt;*&gt;"</code>.</p>
+</li>
+</ul>
+</div></td>
 </tr>
 <tr>
 <td><i class="conum" data-value="4"></i><b>4</b></td>
 <td><strong>Optional</strong>: Define excludes, if you have a special path you want to exclude, from the scan.
-Always use them starting with a slash (<code>/</code>) because they are interpreted relative to the <code>URL</code> provided before.</td>
+You can use excludes the same way you can use the includes.
+Excludes do always overwrite includes if the provided patterns for includes and excludes do have intersections.</td>
 </tr>
 <tr>
 <td><i class="conum" data-value="5"></i><b>5</b></td>
@@ -1584,6 +1599,24 @@ This option ensures the scan will only run for a limited time.</td>
 <td><i class="conum" data-value="6"></i><b>6</b></td>
 <td>Define the unit of time.
 The unit can be: <code>millisecond</code>, <code>second</code>, <code>minute</code>, <code>hour</code>, <code>day</code>.</td>
+</tr>
+</table>
+</div>
+<div class="admonitionblock caution">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-caution" title="Caution"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>Includes are a different from excludes looking at wildcards, because in includes they might not be resolved properly, if the pages behind the wildcards cannot be detected by a web crawler.</p>
+</div>
+<div class="paragraph">
+<p>If you only want to scan a specific part of your application e.g only the customers section <code><a href="https://my-application.com/customer/" class="bare">https://my-application.com/customer/</a></code>,
+you can specify the target URL : <code>"url": "https://my-application.com"</code> and the wanted include starting with a slash like this : <code>"includes": [ "/customer/&lt;*&gt;"]</code>.</p>
+</div>
+</td>
 </tr>
 </table>
 </div>
@@ -1659,7 +1692,7 @@ will have a failure at execution time!</p>
 </div>
 </div>
 <div class="sect5">
-<h6 id="example-no-authentication">2.1.7.2.2. Example no authentication</h6>
+<h6 id="example-basic-authentication">2.1.7.2.2. Example basic authentication</h6>
 <div class="listingblock">
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="json">{
@@ -1686,7 +1719,7 @@ will have a failure at execution time!</p>
 </tr>
 <tr>
 <td><i class="conum" data-value="2"></i><b>2</b></td>
-<td>Basic authentication start, needs user id/name and password.</td>
+<td>Basic authentication, needs user id/name and password.</td>
 </tr>
 <tr>
 <td><i class="conum" data-value="3"></i><b>3</b></td>
@@ -1697,22 +1730,28 @@ this is not necessary.</td>
 </div>
 </div>
 <div class="sect5">
-<h6 id="example-basic-authentication">2.1.7.2.3. Example basic authentication</h6>
+<h6 id="example-client-certificate-authentication">2.1.7.2.3. Example client certificate authentication</h6>
 <div class="listingblock">
+<div class="title">client certificate authentication</div>
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="json">{
-    <span class="key"><span class="delimiter">&quot;</span><span class="content">apiVersion</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">1.0</span><span class="delimiter">&quot;</span></span>,
-    <span class="key"><span class="delimiter">&quot;</span><span class="content">webScan</span><span class="delimiter">&quot;</span></span>: {
-        <span class="key"><span class="delimiter">&quot;</span><span class="content">url</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">https://productfailure.demo.example.org</span><span class="delimiter">&quot;</span></span>,
-        <span class="key"><span class="delimiter">&quot;</span><span class="content">login</span><span class="delimiter">&quot;</span></span>: {
-            <span class="key"><span class="delimiter">&quot;</span><span class="content">url</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">https://productfailure.demo.example.org/login</span><span class="delimiter">&quot;</span></span>,<i class="conum" data-value="1"></i><b>(1)</b>
-            <span class="key"><span class="delimiter">&quot;</span><span class="content">basic</span><span class="delimiter">&quot;</span></span>: {<i class="conum" data-value="2"></i><b>(2)</b>
-                <span class="key"><span class="delimiter">&quot;</span><span class="content">user</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">{{ .LOGIN_USER }}</span><span class="delimiter">&quot;</span></span>,
-                <span class="key"><span class="delimiter">&quot;</span><span class="content">password</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">{{ .LOGIN_PWD }}</span><span class="delimiter">&quot;</span></span>,
-                <span class="key"><span class="delimiter">&quot;</span><span class="content">realm</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">{{ .LOGIN_REALM }}</span><span class="delimiter">&quot;</span></span> <i class="conum" data-value="3"></i><b>(3)</b>
-            }
-        }
+  <span class="key"><span class="delimiter">&quot;</span><span class="content">apiVersion</span><span class="delimiter">&quot;</span></span> : <span class="string"><span class="delimiter">&quot;</span><span class="content">1.0</span><span class="delimiter">&quot;</span></span>,
+  <span class="key"><span class="delimiter">&quot;</span><span class="content">project</span><span class="delimiter">&quot;</span></span> : <span class="string"><span class="delimiter">&quot;</span><span class="content">example_project</span><span class="delimiter">&quot;</span></span>,
+  <span class="key"><span class="delimiter">&quot;</span><span class="content">data</span><span class="delimiter">&quot;</span></span> : {
+    <span class="key"><span class="delimiter">&quot;</span><span class="content">sources</span><span class="delimiter">&quot;</span></span> : [ {
+      <span class="key"><span class="delimiter">&quot;</span><span class="content">name</span><span class="delimiter">&quot;</span></span> : <span class="string"><span class="delimiter">&quot;</span><span class="content">client-certificate-file-reference</span><span class="delimiter">&quot;</span></span>, <i class="conum" data-value="1"></i><b>(1)</b>
+      <span class="key"><span class="delimiter">&quot;</span><span class="content">fileSystem</span><span class="delimiter">&quot;</span></span> : {
+        <span class="key"><span class="delimiter">&quot;</span><span class="content">files</span><span class="delimiter">&quot;</span></span> : [ <span class="string"><span class="delimiter">&quot;</span><span class="content">path/to/backend-cert.p12</span><span class="delimiter">&quot;</span></span> ]
+      }
+    } ]
+  },
+  <span class="key"><span class="delimiter">&quot;</span><span class="content">webScan</span><span class="delimiter">&quot;</span></span> : {
+    <span class="key"><span class="delimiter">&quot;</span><span class="content">url</span><span class="delimiter">&quot;</span></span> : <span class="string"><span class="delimiter">&quot;</span><span class="content">https://my-app.com</span><span class="delimiter">&quot;</span></span>,
+    <span class="key"><span class="delimiter">&quot;</span><span class="content">clientCertificate</span><span class="delimiter">&quot;</span></span> : {
+      <span class="key"><span class="delimiter">&quot;</span><span class="content">password</span><span class="delimiter">&quot;</span></span> : <span class="string"><span class="delimiter">&quot;</span><span class="content">{{ .CERT_PASSWORD }}</span><span class="delimiter">&quot;</span></span>, <i class="conum" data-value="2"></i><b>(2)</b>
+      <span class="key"><span class="delimiter">&quot;</span><span class="content">use</span><span class="delimiter">&quot;</span></span> : [ <span class="string"><span class="delimiter">&quot;</span><span class="content">client-certificate-file-reference</span><span class="delimiter">&quot;</span></span> ] <i class="conum" data-value="3"></i><b>(3)</b>
     }
+  }
 }</code></pre>
 </div>
 </div>
@@ -1720,16 +1759,21 @@ this is not necessary.</td>
 <table>
 <tr>
 <td><i class="conum" data-value="1"></i><b>1</b></td>
-<td>URL for web login</td>
+<td>name of the source <a href="#sechub-config-data-section">data</a> configuration: "client-certificate-file-reference".
+Please use single files only instead of folders to specify the client certificate.
+If you want to combine this with an openAPI definition that must be uploaded for the scan as well,
+please refer to this <a href="#sechub-config-openAPI-and-client-certificate">example</a>.</td>
 </tr>
 <tr>
 <td><i class="conum" data-value="2"></i><b>2</b></td>
-<td>Basic authentication start, needs user id/name and password.</td>
+<td><strong>Optional</strong>: If the client certificate is password protected, the password can be specified here.
+Using our SecHub GO client you can make use of the GO templating engine.
+Like in the example above the you can provide an environment variable containing the password instead of writing the plaintext password in the JSON configuration file.
+In the example above the SecHub GO client will substitute the value of <code>"{{ .CERT_PASSWORD }}"</code> with the value of the environment variable <code>CERT_PASSWORD</code>.</td>
 </tr>
 <tr>
 <td><i class="conum" data-value="3"></i><b>3</b></td>
-<td>You can set the realm used for basic authentication. But normally
-this is not necessary and you can use an empty string.</td>
+<td>web scan uses the referenced <a href="#sechub-config-data-section">data</a> configuration "client-certificate-file-reference", to obtain the client certificate file.</td>
 </tr>
 </table>
 </div>
@@ -1926,6 +1970,121 @@ to obtain the open api configuration file</td>
 </table>
 </div>
 </div>
+<div class="sect5">
+<h6 id="sechub-config-openAPI-and-client-certificate">2.1.7.2.6. Example combination of openAPI definition and client certificate authentication</h6>
+<div class="listingblock">
+<div class="title">Open API scan with client certificate authentication</div>
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="json">{
+  <span class="key"><span class="delimiter">&quot;</span><span class="content">apiVersion</span><span class="delimiter">&quot;</span></span> : <span class="string"><span class="delimiter">&quot;</span><span class="content">1.0</span><span class="delimiter">&quot;</span></span>,
+  <span class="key"><span class="delimiter">&quot;</span><span class="content">data</span><span class="delimiter">&quot;</span></span> : {
+    <span class="key"><span class="delimiter">&quot;</span><span class="content">sources</span><span class="delimiter">&quot;</span></span> : [ {
+      <span class="key"><span class="delimiter">&quot;</span><span class="content">name</span><span class="delimiter">&quot;</span></span> : <span class="string"><span class="delimiter">&quot;</span><span class="content">open-api-file-reference</span><span class="delimiter">&quot;</span></span>, <i class="conum" data-value="1"></i><b>(1)</b>
+      <span class="key"><span class="delimiter">&quot;</span><span class="content">fileSystem</span><span class="delimiter">&quot;</span></span> : {
+        <span class="key"><span class="delimiter">&quot;</span><span class="content">files</span><span class="delimiter">&quot;</span></span> : [ <span class="string"><span class="delimiter">&quot;</span><span class="content">gamechanger-webapp/src/main/resources/openapi3.json</span><span class="delimiter">&quot;</span></span> ]
+      }
+    }, {
+      <span class="key"><span class="delimiter">&quot;</span><span class="content">name</span><span class="delimiter">&quot;</span></span> : <span class="string"><span class="delimiter">&quot;</span><span class="content">client-certificate-file-reference</span><span class="delimiter">&quot;</span></span>, <i class="conum" data-value="2"></i><b>(2)</b>
+      <span class="key"><span class="delimiter">&quot;</span><span class="content">fileSystem</span><span class="delimiter">&quot;</span></span> : {
+        <span class="key"><span class="delimiter">&quot;</span><span class="content">files</span><span class="delimiter">&quot;</span></span> : [ <span class="string"><span class="delimiter">&quot;</span><span class="content">path/to/backend-cert.p12</span><span class="delimiter">&quot;</span></span> ]
+      }
+    } ]
+  },
+  <span class="key"><span class="delimiter">&quot;</span><span class="content">webScan</span><span class="delimiter">&quot;</span></span> : {
+    <span class="key"><span class="delimiter">&quot;</span><span class="content">url</span><span class="delimiter">&quot;</span></span> : <span class="string"><span class="delimiter">&quot;</span><span class="content">https://productfailure.demo.example.org</span><span class="delimiter">&quot;</span></span>,
+    <span class="key"><span class="delimiter">&quot;</span><span class="content">api</span><span class="delimiter">&quot;</span></span> : {
+      <span class="key"><span class="delimiter">&quot;</span><span class="content">type</span><span class="delimiter">&quot;</span></span> : <span class="string"><span class="delimiter">&quot;</span><span class="content">openApi</span><span class="delimiter">&quot;</span></span>,
+      <span class="key"><span class="delimiter">&quot;</span><span class="content">use</span><span class="delimiter">&quot;</span></span> : [ <span class="string"><span class="delimiter">&quot;</span><span class="content">open-api-file-reference</span><span class="delimiter">&quot;</span></span> ] <i class="conum" data-value="3"></i><b>(3)</b>
+    },
+    <span class="key"><span class="delimiter">&quot;</span><span class="content">clientCertificate</span><span class="delimiter">&quot;</span></span> : {
+      <span class="key"><span class="delimiter">&quot;</span><span class="content">password</span><span class="delimiter">&quot;</span></span> : <span class="string"><span class="delimiter">&quot;</span><span class="content">{{ .CERT_PASSWORD }}</span><span class="delimiter">&quot;</span></span>,
+      <span class="key"><span class="delimiter">&quot;</span><span class="content">use</span><span class="delimiter">&quot;</span></span> : [ <span class="string"><span class="delimiter">&quot;</span><span class="content">client-certificate-file-reference</span><span class="delimiter">&quot;</span></span> ] <i class="conum" data-value="4"></i><b>(4)</b>
+    }
+  }
+}</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>Data section with files referenced by the <code>openAPI</code> definition. Multiple files (<strong>NOT</strong> folders) are possible.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>Data section with the file referenced by the <code>clientCertificate</code> definition. Only one single file shall be provided here.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td>Reference to the data section containing files with your openAPI definitions (e.g. swagger.yml or openAPI.json)</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="4"></i><b>4</b></td>
+<td>Reference to the data section containing file with your client certificate for authentication.</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect5">
+<h6 id="sechub-config-example-webscan-header">2.1.7.2.7. Example Header scan</h6>
+<div class="listingblock">
+<div class="title">header scan</div>
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="json">{
+  <span class="key"><span class="delimiter">&quot;</span><span class="content">apiVersion</span><span class="delimiter">&quot;</span></span> : <span class="string"><span class="delimiter">&quot;</span><span class="content">1.0</span><span class="delimiter">&quot;</span></span>,
+  <span class="key"><span class="delimiter">&quot;</span><span class="content">webScan</span><span class="delimiter">&quot;</span></span> : {
+    <span class="key"><span class="delimiter">&quot;</span><span class="content">url</span><span class="delimiter">&quot;</span></span> : <span class="string"><span class="delimiter">&quot;</span><span class="content">https://productfailure.demo.example.org</span><span class="delimiter">&quot;</span></span>,
+    <span class="key"><span class="delimiter">&quot;</span><span class="content">headers</span><span class="delimiter">&quot;</span></span> : [ {
+      <span class="key"><span class="delimiter">&quot;</span><span class="content">name</span><span class="delimiter">&quot;</span></span> : <span class="string"><span class="delimiter">&quot;</span><span class="content">Authorization</span><span class="delimiter">&quot;</span></span>, <i class="conum" data-value="1"></i><b>(1)</b>
+      <span class="key"><span class="delimiter">&quot;</span><span class="content">value</span><span class="delimiter">&quot;</span></span> : <span class="string"><span class="delimiter">&quot;</span><span class="content">{{ .HEADER_VALUE }}</span><span class="delimiter">&quot;</span></span> <i class="conum" data-value="2"></i><b>(2)</b>
+    }, {
+      <span class="key"><span class="delimiter">&quot;</span><span class="content">name</span><span class="delimiter">&quot;</span></span> : <span class="string"><span class="delimiter">&quot;</span><span class="content">x-file-size</span><span class="delimiter">&quot;</span></span>, <i class="conum" data-value="3"></i><b>(3)</b>
+      <span class="key"><span class="delimiter">&quot;</span><span class="content">value</span><span class="delimiter">&quot;</span></span> : <span class="string"><span class="delimiter">&quot;</span><span class="content">123456</span><span class="delimiter">&quot;</span></span>, <i class="conum" data-value="4"></i><b>(4)</b>
+      <span class="key"><span class="delimiter">&quot;</span><span class="content">onlyForUrls</span><span class="delimiter">&quot;</span></span> : [ <span class="string"><span class="delimiter">&quot;</span><span class="content">https://productfailure.demo.example.org/admin</span><span class="delimiter">&quot;</span></span>, <span class="string"><span class="delimiter">&quot;</span><span class="content">https://productfailure.demo.example.org/upload/&lt;*&gt;</span><span class="delimiter">&quot;</span></span>, <span class="string"><span class="delimiter">&quot;</span><span class="content">https://productfailure.demo.example.org/&lt;*&gt;/special/</span><span class="delimiter">&quot;</span></span> ], <i class="conum" data-value="5"></i><b>(5)</b>
+      <span class="key"><span class="delimiter">&quot;</span><span class="content">sensitive</span><span class="delimiter">&quot;</span></span> : <span class="value">false</span> <i class="conum" data-value="6"></i><b>(6)</b>
+    } ]
+  }
+}</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>Name of the specified header. Must not be null or empty.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>Value of the specified header. Must not be null or empty.
+You can use the <code>go template</code> format like above by creating a environment variable like: <code>HEADER_VALUE="Bearer mytoken1234"</code>.
+This might be useful to load the information via the SecHub client dynamically, if the header value you specify contains credentials.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td>Name of the second header. You can specify a list of headers the DAST Scanner needs interact with your application.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="4"></i><b>4</b></td>
+<td>Value of the second header. Here no <code>go template</code> format is used, since in this example there are no credentials but only file size of an upload.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="5"></i><b>5</b></td>
+<td>Optional Parameter: For each header you can specify a list of URLs.
+The header this list belongs to, will only be send when accessing one of the URLs on the list.
+If you do not specify a list of URLs or the list is empty, the header will be send on each request to every URL.
+You can also use wildcards by specifying <code>&lt;*&gt;</code> like in the example above.
+Adding a wildcard to the end of an URL, the header will be sent to all sub URLs as well, otherwise it won&#8217;t be sent to sub URLs.
+Make sure that the header URL combinations are unique. This means do not specify the same header multiple times for the same scope of URLs.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="6"></i><b>6</b></td>
+<td>Optional Parameter to handle sensitive header data: If <code>true</code>, the value of this header will be masked inside the SecHub report to avoid leaking the information.
+But if the parameter is set to <code>false</code> the value will be shown as is.
+The <strong>default</strong> is <code>true</code> if nothing is specified.</td>
+</tr>
+</table>
+</div>
+</div>
 </div>
 </div>
 <div class="sect3">
@@ -2024,8 +2183,8 @@ array attribute <code>"use"</code> with a list of references.</p>
 <div class="listingblock">
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="json">{
-    <span class="error">/</span><span class="error">/</span> <span class="error">.</span><span class="error">.</span><span class="error">s</span><span class="error">c</span><span class="error">a</span><span class="error">n</span> <span class="error">d</span><span class="error">e</span><span class="error">f</span><span class="error">i</span><span class="error">n</span><span class="error">i</span><span class="error">t</span><span class="error">i</span><span class="error">o</span><span class="error">n</span>
-    <span class="key"><span class="delimiter">&quot;</span><span class="content">use</span><span class="delimiter">&quot;</span></span> : [ <span class="string"><span class="delimiter">&quot;</span><span class="content">reference-name-1</span><span class="delimiter">&quot;</span></span>,<span class="string"><span class="delimiter">&quot;</span><span class="content">reference-name-2</span><span class="delimiter">&quot;</span></span>, <span class="error">.</span><span class="error">.</span><span class="error">.</span> ] <i class="conum" data-value="1"></i><b>(1)</b>
+  <span class="error">/</span><span class="error">/</span> <span class="error">.</span><span class="error">.</span><span class="error">s</span><span class="error">c</span><span class="error">a</span><span class="error">n</span> <span class="error">d</span><span class="error">e</span><span class="error">f</span><span class="error">i</span><span class="error">n</span><span class="error">i</span><span class="error">t</span><span class="error">i</span><span class="error">o</span><span class="error">n</span>
+  <span class="key"><span class="delimiter">&quot;</span><span class="content">use</span><span class="delimiter">&quot;</span></span> : [ <span class="string"><span class="delimiter">&quot;</span><span class="content">reference-name-1</span><span class="delimiter">&quot;</span></span>,<span class="string"><span class="delimiter">&quot;</span><span class="content">reference-name-2</span><span class="delimiter">&quot;</span></span>, <span class="error">.</span><span class="error">.</span><span class="error">.</span> ] <i class="conum" data-value="1"></i><b>(1)</b>
 }</code></pre>
 </div>
 </div>
@@ -2161,6 +2320,18 @@ for details about default behaviour for sources.</td>
 <div class="paragraph">
 <p>With labels a user is able to add additional information to the
 scan configuration which end up in the report as key value pairs.</p>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+Using the SecHub client, you can also pass labels via command line or environment variables.
+</td>
+</tr>
+</table>
 </div>
 <div class="paragraph">
 <p>The next figure shows an example which presents all possibilities <em>(for simplicity other configuration
@@ -2680,27 +2851,6 @@ elements are removed)</em>.</p>
 </tbody>
 </table>
 <div class="paragraph">
-<p><strong>Request headers</strong> <br></p>
-</div>
-<table class="tableblock frame-all grid-all stretch">
-<colgroup>
-<col style="width: 50%;">
-<col style="width: 50%;">
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-left valign-top">Name</th>
-<th class="tableblock halign-left valign-top">Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Authorization</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Basic authentication credentials</p></td>
-</tr>
-</tbody>
-</table>
-<div class="paragraph">
 <p><strong>Response fields</strong> <br></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
@@ -2767,7 +2917,7 @@ elements are removed)</em>.</p>
 <tbody>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Path</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">/api/admin/project/{userId}/membership/{projectId}</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">/api/admin/project/{projectId}/membership/{userId}</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Method</p></td>
@@ -2783,7 +2933,7 @@ elements are removed)</em>.</p>
 <p><strong>Path parameters</strong> <br></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 5. https://localhost:8081/api/admin/project/{userId}/membership/{projectId}</caption>
+<caption class="title">Table 5. https://localhost:8081/api/admin/project/{projectId}/membership/{userId}</caption>
 <colgroup>
 <col style="width: 50%;">
 <col style="width: 50%;">
@@ -2819,12 +2969,6 @@ elements are removed)</em>.</p>
 <th class="tableblock halign-left valign-top">Description</th>
 </tr>
 </thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Authorization</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Basic authentication credentials</p></td>
-</tr>
-</tbody>
 </table>
 <div class="paragraph">
 <p><strong class="big">Example</strong></p>
@@ -2866,7 +3010,7 @@ elements are removed)</em>.</p>
 <tbody>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Path</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">/api/admin/project/{userId}/membership/{projectId}</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">/api/admin/project/{projectId}/membership/{userId}</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Method</p></td>
@@ -2882,7 +3026,7 @@ elements are removed)</em>.</p>
 <p><strong>Path parameters</strong> <br></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 7. https://localhost:8081/api/admin/project/{userId}/membership/{projectId}</caption>
+<caption class="title">Table 7. https://localhost:8081/api/admin/project/{projectId}/membership/{userId}</caption>
 <colgroup>
 <col style="width: 50%;">
 <col style="width: 50%;">
@@ -2918,12 +3062,6 @@ elements are removed)</em>.</p>
 <th class="tableblock halign-left valign-top">Description</th>
 </tr>
 </thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Authorization</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Basic authentication credentials</p></td>
-</tr>
-</tbody>
 </table>
 <div class="paragraph">
 <p><strong class="big">Example</strong></p>
@@ -3013,12 +3151,6 @@ elements are removed)</em>.</p>
 <th class="tableblock halign-left valign-top">Description</th>
 </tr>
 </thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Authorization</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Basic authentication credentials</p></td>
-</tr>
-</tbody>
 </table>
 <div class="paragraph">
 <p><strong>Response fields</strong> <br></p>
@@ -3155,12 +3287,6 @@ elements are removed)</em>.</p>
 <th class="tableblock halign-left valign-top">Description</th>
 </tr>
 </thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Authorization</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Basic authentication credentials</p></td>
-</tr>
-</tbody>
 </table>
 <div class="paragraph">
 <p><strong class="big">Example</strong></p>
@@ -3249,12 +3375,6 @@ elements are removed)</em>.</p>
 <th class="tableblock halign-left valign-top">Description</th>
 </tr>
 </thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Authorization</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Basic authentication credentials</p></td>
-</tr>
-</tbody>
 </table>
 <div class="paragraph">
 <p><strong>Response fields</strong> <br></p>
@@ -3401,7 +3521,7 @@ elements are removed)</em>.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/scan/download/41591299-c32a-4a50-b80f-9f670de927b6' -i -u 'user:secret' -X GET \
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/scan/download/1810539f-2d9c-4d14-8ad6-67f2cff81ea9' -i -u 'user:secret' -X GET \
     -H 'Content-Type: application/json;charset=UTF-8'</code></pre>
 </div>
 </div>
@@ -3477,12 +3597,6 @@ elements are removed)</em>.</p>
 <th class="tableblock halign-left valign-top">Description</th>
 </tr>
 </thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Authorization</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Basic authentication credentials</p></td>
-</tr>
-</tbody>
 </table>
 <div class="paragraph">
 <p><strong class="big">Example</strong></p>
@@ -3571,12 +3685,6 @@ elements are removed)</em>.</p>
 <th class="tableblock halign-left valign-top">Description</th>
 </tr>
 </thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Authorization</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Basic authentication credentials</p></td>
-</tr>
-</tbody>
 </table>
 <div class="paragraph">
 <p><strong class="big">Example</strong></p>
@@ -3643,12 +3751,6 @@ elements are removed)</em>.</p>
 <th class="tableblock halign-left valign-top">Description</th>
 </tr>
 </thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Authorization</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Basic authentication credentials</p></td>
-</tr>
-</tbody>
 </table>
 <div class="paragraph">
 <p><strong>Response fields</strong> <br></p>
@@ -3717,7 +3819,7 @@ elements are removed)</em>.</p>
 <tbody>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Path</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">/api/admin/project/{userId}/owner/{projectId}</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">/api/admin/project/{projectId}/owner/{userId}</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Method</p></td>
@@ -3733,7 +3835,7 @@ elements are removed)</em>.</p>
 <p><strong>Path parameters</strong> <br></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 22. https://localhost:8081/api/admin/project/{userId}/owner/{projectId}</caption>
+<caption class="title">Table 22. https://localhost:8081/api/admin/project/{projectId}/owner/{userId}</caption>
 <colgroup>
 <col style="width: 50%;">
 <col style="width: 50%;">
@@ -3769,12 +3871,6 @@ elements are removed)</em>.</p>
 <th class="tableblock halign-left valign-top">Description</th>
 </tr>
 </thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Authorization</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Basic authentication credentials</p></td>
-</tr>
-</tbody>
 </table>
 <div class="paragraph">
 <p><strong class="big">Example</strong></p>
@@ -3868,12 +3964,6 @@ elements are removed)</em>.</p>
 <th class="tableblock halign-left valign-top">Description</th>
 </tr>
 </thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Authorization</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Basic authentication credentials</p></td>
-</tr>
-</tbody>
 </table>
 <div class="paragraph">
 <p><strong class="big">Example</strong></p>
@@ -4082,12 +4172,6 @@ elements are removed)</em>.</p>
 <th class="tableblock halign-left valign-top">Description</th>
 </tr>
 </thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Authorization</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Basic authentication credentials</p></td>
-</tr>
-</tbody>
 </table>
 <div class="paragraph">
 <p><strong>Request fields</strong> <br></p>
@@ -4210,12 +4294,6 @@ elements are removed)</em>.</p>
 <th class="tableblock halign-left valign-top">Description</th>
 </tr>
 </thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Authorization</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Basic authentication credentials</p></td>
-</tr>
-</tbody>
 </table>
 <div class="paragraph">
 <p><strong>Response fields</strong> <br></p>
@@ -4333,12 +4411,6 @@ elements are removed)</em>.</p>
 <th class="tableblock halign-left valign-top">Description</th>
 </tr>
 </thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Authorization</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Basic authentication credentials</p></td>
-</tr>
-</tbody>
 </table>
 <div class="paragraph">
 <p><strong class="big">Example</strong></p>
@@ -4428,12 +4500,6 @@ elements are removed)</em>.</p>
 <th class="tableblock halign-left valign-top">Description</th>
 </tr>
 </thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Authorization</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Basic authentication credentials</p></td>
-</tr>
-</tbody>
 </table>
 <div class="paragraph">
 <p><strong>Request fields</strong> <br></p>
@@ -4553,12 +4619,6 @@ elements are removed)</em>.</p>
 <th class="tableblock halign-left valign-top">Description</th>
 </tr>
 </thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Authorization</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Basic authentication credentials</p></td>
-</tr>
-</tbody>
 </table>
 <div class="paragraph">
 <p><strong>Response fields</strong> <br></p>
@@ -4626,7 +4686,7 @@ elements are removed)</em>.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code>[{&quot;sechubJobUUID&quot;:&quot;d69e8b56-aca9-48e0-b3af-1f710edcf892&quot;,&quot;executedBy&quot;:&quot;spartakus&quot;,&quot;started&quot;:&quot;2023-06-01T13:49:41.289654629&quot;,&quot;ended&quot;:&quot;2023-06-02T13:49:41.289680929&quot;,&quot;status&quot;:&quot;OK&quot;}]</code></pre>
+<pre class="CodeRay highlight nowrap"><code>[{&quot;sechubJobUUID&quot;:&quot;93731fa5-e9d3-44a0-98c9-aae7febc4c42&quot;,&quot;executedBy&quot;:&quot;spartakus&quot;,&quot;started&quot;:&quot;2024-01-28T10:02:31.709399041&quot;,&quot;ended&quot;:&quot;2024-01-29T10:02:31.709432303&quot;,&quot;status&quot;:&quot;OK&quot;}]</code></pre>
 </div>
 </div>
 </div>
@@ -4701,12 +4761,6 @@ elements are removed)</em>.</p>
 <th class="tableblock halign-left valign-top">Description</th>
 </tr>
 </thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Authorization</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Basic authentication credentials</p></td>
-</tr>
-</tbody>
 </table>
 <div class="paragraph">
 <p><strong>Request fields</strong> <br></p>
@@ -4831,12 +4885,6 @@ elements are removed)</em>.</p>
 <th class="tableblock halign-left valign-top">Description</th>
 </tr>
 </thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Authorization</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Basic authentication credentials</p></td>
-</tr>
-</tbody>
 </table>
 <div class="paragraph">
 <p><strong>Response fields</strong> <br></p>
@@ -4996,12 +5044,6 @@ elements are removed)</em>.</p>
 <th class="tableblock halign-left valign-top">Description</th>
 </tr>
 </thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Authorization</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Basic authentication credentials</p></td>
-</tr>
-</tbody>
 </table>
 <div class="paragraph">
 <p><strong class="big">Example</strong></p>
@@ -5167,12 +5209,6 @@ elements are removed)</em>.</p>
 <th class="tableblock halign-left valign-top">Description</th>
 </tr>
 </thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Authorization</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Basic authentication credentials</p></td>
-</tr>
-</tbody>
 </table>
 <div class="paragraph">
 <p><strong>Request fields</strong> <br></p>
@@ -5250,7 +5286,7 @@ elements are removed)</em>.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/job' -i -u 'user:secret' -X POST \
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/job' -i -X POST \
     -H 'Content-Type: application/json;charset=UTF-8' \
     -d '{&quot;codeScan&quot;:{&quot;fileSystem&quot;:{&quot;files&quot;:[],&quot;folders&quot;:[&quot;testproject1/src/main/java&quot;,&quot;testproject2/src/main/java&quot;]},&quot;use&quot;:[]},&quot;apiVersion&quot;:&quot;1.0&quot;}'</code></pre>
 </div>
@@ -5260,12 +5296,12 @@ elements are removed)</em>.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code>{&quot;jobId&quot;:&quot;b203f017-90f4-40d8-b569-b5e7232ac3d4&quot;}</code></pre>
+<pre class="CodeRay highlight nowrap"><code>{&quot;jobId&quot;:&quot;932f31b4-6c95-4194-9911-25d7a20b2ed4&quot;}</code></pre>
 </div>
 </div>
 </div>
 <div class="sect4">
-<h5 id="section-ucrestdoc-UC_005-infrastructure-scan">2.2.25.2. Infrastructure scan variant</h5>
+<h5 id="section-ucrestdoc-UC_005-code-scan-using-data-section">2.2.25.2. Code Scan using data section variant</h5>
 <div class="paragraph">
 <p><strong class="big">Definition</strong></p>
 </div>
@@ -5332,12 +5368,503 @@ elements are removed)</em>.</p>
 <th class="tableblock halign-left valign-top">Description</th>
 </tr>
 </thead>
+</table>
+<div class="paragraph">
+<p><strong>Request fields</strong> <br></p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Path</th>
+<th class="tableblock halign-left valign-top">Type</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
 <tbody>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Authorization</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Basic authentication credentials</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>apiVersion</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The api version, currently only 1.0 is supported</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>codeScan</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Object</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Code scan configuration block</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>codeScan.use</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Array</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Referenced data configuration objects by their unique names</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data.sources[].name</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Unique reference name</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data.sources[].fileSystem.folders[]</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Array</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Sources from given file system folders</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data.sources[].fileSystem.files[]</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Array</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Sources from given file system files</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data.binaries[].name</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Unique reference name</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data.binaries[].fileSystem.folders[]</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Array</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Binaries from given file system folders</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data.binaries[].fileSystem.files[]</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Array</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Binaries from given file system files</p></td>
 </tr>
 </tbody>
+</table>
+<div class="paragraph">
+<p><strong>Response fields</strong> <br></p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Path</th>
+<th class="tableblock halign-left valign-top">Type</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>jobId</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">A unique job id</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p><strong class="big">Example</strong></p>
+</div>
+<div class="paragraph">
+<p><strong>Curl request</strong> <br></p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/job' -i -X POST \
+    -H 'Content-Type: application/json;charset=UTF-8' \
+    -d '{&quot;codeScan&quot;:{&quot;use&quot;:[&quot;source-ref-name&quot;,&quot;bin-ref-name&quot;]},&quot;data&quot;:{&quot;sources&quot;:[{&quot;fileSystem&quot;:{&quot;files&quot;:[&quot;testproject1/src/other/example/php-example.php&quot;],&quot;folders&quot;:[&quot;testproject1/src/main/java&quot;,&quot;testproject2/src/main/java&quot;]},&quot;name&quot;:&quot;source-ref-name&quot;}],&quot;binaries&quot;:[{&quot;fileSystem&quot;:{&quot;files&quot;:[&quot;testproject1/build/other/native.dll&quot;],&quot;folders&quot;:[&quot;testproject1/build/kotlin&quot;,&quot;testproject1/build/kotlin&quot;]},&quot;name&quot;:&quot;bin-ref-name&quot;}]},&quot;apiVersion&quot;:&quot;1.0&quot;}'</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p><strong>Response body</strong> <br></p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight nowrap"><code>{&quot;jobId&quot;:&quot;85e2424e-dada-4c95-bbe9-ad9f941e67e6&quot;}</code></pre>
+</div>
+</div>
+</div>
+<div class="sect4">
+<h5 id="section-ucrestdoc-UC_005-secret-scan">2.2.25.3. Secret scan variant</h5>
+<div class="paragraph">
+<p><strong class="big">Definition</strong></p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 47. General request information</caption>
+<colgroup>
+<col style="width: 14.2857%;">
+<col style="width: 85.7143%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top"></th>
+<th class="tableblock halign-left valign-top">Value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Path</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">/api/project/{projectId}/job</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Method</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">POST</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Status code</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">200 OK</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p><strong>Path parameters</strong> <br></p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 48. https://localhost:8081/api/project/{projectId}/job</caption>
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Parameter</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>projectId</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The unique id of the project id where a new sechub job shall be created</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p><strong>Request headers</strong> <br></p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Name</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+</table>
+<div class="paragraph">
+<p><strong>Request fields</strong> <br></p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Path</th>
+<th class="tableblock halign-left valign-top">Type</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>apiVersion</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The api version, currently only 1.0 is supported</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>secretScan</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Object</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Secret scan configuration block</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>secretScan.use</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Array</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Referenced data configuration objects by their unique names</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data.sources[].name</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Unique reference name</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data.binaries[].name</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Unique reference name</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p><strong>Response fields</strong> <br></p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Path</th>
+<th class="tableblock halign-left valign-top">Type</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>jobId</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">A unique job id</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p><strong class="big">Example</strong></p>
+</div>
+<div class="paragraph">
+<p><strong>Curl request</strong> <br></p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/job' -i -X POST \
+    -H 'Content-Type: application/json;charset=UTF-8' \
+    -d '{&quot;data&quot;:{&quot;sources&quot;:[{&quot;name&quot;:&quot;source-ref-name&quot;}],&quot;binaries&quot;:[{&quot;name&quot;:&quot;bin-ref-name&quot;}]},&quot;secretScan&quot;:{&quot;use&quot;:[&quot;source-ref-name&quot;,&quot;bin-ref-name&quot;]},&quot;apiVersion&quot;:&quot;1.0&quot;}'</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p><strong>Response body</strong> <br></p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight nowrap"><code>{&quot;jobId&quot;:&quot;2e708c69-406f-4925-8384-8eab060e0e29&quot;}</code></pre>
+</div>
+</div>
+</div>
+<div class="sect4">
+<h5 id="section-ucrestdoc-UC_005-license-scan">2.2.25.4. License scan variant</h5>
+<div class="paragraph">
+<p><strong class="big">Definition</strong></p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 49. General request information</caption>
+<colgroup>
+<col style="width: 14.2857%;">
+<col style="width: 85.7143%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top"></th>
+<th class="tableblock halign-left valign-top">Value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Path</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">/api/project/{projectId}/job</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Method</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">POST</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Status code</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">200 OK</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p><strong>Path parameters</strong> <br></p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 50. https://localhost:8081/api/project/{projectId}/job</caption>
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Parameter</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>projectId</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The unique id of the project id where a new sechub job shall be created</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p><strong>Request headers</strong> <br></p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Name</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+</table>
+<div class="paragraph">
+<p><strong>Request fields</strong> <br></p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Path</th>
+<th class="tableblock halign-left valign-top">Type</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>apiVersion</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The api version, currently only 1.0 is supported</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>licenseScan</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Object</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">License scan configuration block</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>licenseScan.use</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Array</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Referenced data configuration objects by their unique names</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data.sources[].name</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Unique reference name</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data.binaries[].name</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Unique reference name</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p><strong>Response fields</strong> <br></p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Path</th>
+<th class="tableblock halign-left valign-top">Type</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>jobId</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">A unique job id</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p><strong class="big">Example</strong></p>
+</div>
+<div class="paragraph">
+<p><strong>Curl request</strong> <br></p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/job' -i -X POST \
+    -H 'Content-Type: application/json;charset=UTF-8' \
+    -d '{&quot;data&quot;:{&quot;sources&quot;:[{&quot;name&quot;:&quot;source-ref-name&quot;}],&quot;binaries&quot;:[{&quot;name&quot;:&quot;bin-ref-name&quot;}]},&quot;licenseScan&quot;:{&quot;use&quot;:[&quot;source-ref-name&quot;,&quot;bin-ref-name&quot;]},&quot;apiVersion&quot;:&quot;1.0&quot;}'</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p><strong>Response body</strong> <br></p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight nowrap"><code>{&quot;jobId&quot;:&quot;cd2aab3d-329e-49dc-bb3f-a46f6ebeb148&quot;}</code></pre>
+</div>
+</div>
+</div>
+<div class="sect4">
+<h5 id="section-ucrestdoc-UC_005-infrastructure-scan">2.2.25.5. Infrastructure scan variant</h5>
+<div class="paragraph">
+<p><strong class="big">Definition</strong></p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 51. General request information</caption>
+<colgroup>
+<col style="width: 14.2857%;">
+<col style="width: 85.7143%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top"></th>
+<th class="tableblock halign-left valign-top">Value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Path</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">/api/project/{projectId}/job</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Method</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">POST</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Status code</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">200 OK</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p><strong>Path parameters</strong> <br></p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 52. https://localhost:8081/api/project/{projectId}/job</caption>
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Parameter</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>projectId</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The unique id of the project id where a new sechub job shall be created</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p><strong>Request headers</strong> <br></p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Name</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
 </table>
 <div class="paragraph">
 <p><strong>Request fields</strong> <br></p>
@@ -5410,7 +5937,7 @@ elements are removed)</em>.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/job' -i -u 'user:secret' -X POST \
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/job' -i -X POST \
     -H 'Content-Type: application/json;charset=UTF-8' \
     -d '{&quot;infraScan&quot;:{&quot;uris&quot;:[&quot;https://localhost&quot;],&quot;ips&quot;:[&quot;127.0.0.1&quot;]},&quot;apiVersion&quot;:&quot;1.0&quot;}'</code></pre>
 </div>
@@ -5420,17 +5947,17 @@ elements are removed)</em>.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code>{&quot;jobId&quot;:&quot;224e371b-6962-4265-930a-20f86880bebb&quot;}</code></pre>
+<pre class="CodeRay highlight nowrap"><code>{&quot;jobId&quot;:&quot;f17036fa-d76f-45c8-b896-1d9820e508d0&quot;}</code></pre>
 </div>
 </div>
 </div>
 <div class="sect4">
-<h5 id="section-ucrestdoc-UC_005-web-scan-anonymous">2.2.25.3. Web scan anonymous variant</h5>
+<h5 id="section-ucrestdoc-UC_005-web-scan-anonymous">2.2.25.6. Web scan anonymous variant</h5>
 <div class="paragraph">
 <p><strong class="big">Definition</strong></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 47. General request information</caption>
+<caption class="title">Table 53. General request information</caption>
 <colgroup>
 <col style="width: 14.2857%;">
 <col style="width: 85.7143%;">
@@ -5460,7 +5987,7 @@ elements are removed)</em>.</p>
 <p><strong>Path parameters</strong> <br></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 48. https://localhost:8081/api/project/{projectId}/job</caption>
+<caption class="title">Table 54. https://localhost:8081/api/project/{projectId}/job</caption>
 <colgroup>
 <col style="width: 50%;">
 <col style="width: 50%;">
@@ -5492,12 +6019,6 @@ elements are removed)</em>.</p>
 <th class="tableblock halign-left valign-top">Description</th>
 </tr>
 </thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Authorization</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Basic authentication credentials</p></td>
-</tr>
-</tbody>
 </table>
 <div class="paragraph">
 <p><strong>Request fields</strong> <br></p>
@@ -5585,7 +6106,7 @@ elements are removed)</em>.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/job' -i -u 'user:secret' -X POST \
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/job' -i -X POST \
     -H 'Content-Type: application/json;charset=UTF-8' \
     -d '{&quot;webScan&quot;:{&quot;maxScanDuration&quot;:{&quot;duration&quot;:1,&quot;unit&quot;:&quot;HOUR&quot;},&quot;url&quot;:&quot;https://localhost/mywebapp/login&quot;,&quot;includes&quot;:[&quot;/admin&quot;,&quot;/hidden&quot;,&quot;/admin.html&quot;],&quot;excludes&quot;:[&quot;/public/media&quot;,&quot;/static&quot;,&quot;/contaxt.html&quot;]},&quot;apiVersion&quot;:&quot;1.0&quot;}'</code></pre>
 </div>
@@ -5595,17 +6116,17 @@ elements are removed)</em>.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code>{&quot;jobId&quot;:&quot;87a1537e-8409-4822-bda8-a357f089d9db&quot;}</code></pre>
+<pre class="CodeRay highlight nowrap"><code>{&quot;jobId&quot;:&quot;58895c15-c1e9-47d8-b98e-817688eaa06e&quot;}</code></pre>
 </div>
 </div>
 </div>
 <div class="sect4">
-<h5 id="section-ucrestdoc-UC_005-web-scan-login-basic">2.2.25.4. Web Scan login basic variant</h5>
+<h5 id="section-ucrestdoc-UC_005-web-scan-with-api-definition">2.2.25.7. Web scan with api definition variant</h5>
 <div class="paragraph">
 <p><strong class="big">Definition</strong></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 49. General request information</caption>
+<caption class="title">Table 55. General request information</caption>
 <colgroup>
 <col style="width: 14.2857%;">
 <col style="width: 85.7143%;">
@@ -5635,7 +6156,7 @@ elements are removed)</em>.</p>
 <p><strong>Path parameters</strong> <br></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 50. https://localhost:8081/api/project/{projectId}/job</caption>
+<caption class="title">Table 56. https://localhost:8081/api/project/{projectId}/job</caption>
 <colgroup>
 <col style="width: 50%;">
 <col style="width: 50%;">
@@ -5667,12 +6188,324 @@ elements are removed)</em>.</p>
 <th class="tableblock halign-left valign-top">Description</th>
 </tr>
 </thead>
+</table>
+<div class="paragraph">
+<p><strong>Request fields</strong> <br></p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Path</th>
+<th class="tableblock halign-left valign-top">Type</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
 <tbody>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Authorization</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Basic authentication credentials</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>apiVersion</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The api version, currently only 1.0 is supported</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>webScan</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Object</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Webscan configuration block</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>webScan.url</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Webscan URI to scan for</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>webScan.api.type</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Type of the API definition files that will be provided</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>webScan.api.use</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Array</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Reference to the data section containing the API definition files. Always use 'sources' with 'files' instead 'folders'.</p></td>
 </tr>
 </tbody>
+</table>
+<div class="paragraph">
+<p><strong>Response fields</strong> <br></p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Path</th>
+<th class="tableblock halign-left valign-top">Type</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>jobId</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">A unique job id</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p><strong class="big">Example</strong></p>
+</div>
+<div class="paragraph">
+<p><strong>Curl request</strong> <br></p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/job' -i -X POST \
+    -H 'Content-Type: application/json;charset=UTF-8' \
+    -d '{&quot;webScan&quot;:{&quot;api&quot;:{&quot;type&quot;:&quot;OPEN_API&quot;,&quot;use&quot;:[&quot;openApi-file-reference&quot;]},&quot;url&quot;:&quot;https://localhost/mywebapp/login&quot;},&quot;apiVersion&quot;:&quot;1.0&quot;}'</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p><strong>Response body</strong> <br></p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight nowrap"><code>{&quot;jobId&quot;:&quot;1fecec4b-2aea-4708-84ef-a56b7424df08&quot;}</code></pre>
+</div>
+</div>
+</div>
+<div class="sect4">
+<h5 id="section-ucrestdoc-UC_005-web-scan-with-client-certificate-definition">2.2.25.8. Web scan with client certificate definition variant</h5>
+<div class="paragraph">
+<p><strong class="big">Definition</strong></p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 57. General request information</caption>
+<colgroup>
+<col style="width: 14.2857%;">
+<col style="width: 85.7143%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top"></th>
+<th class="tableblock halign-left valign-top">Value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Path</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">/api/project/{projectId}/job</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Method</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">POST</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Status code</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">200 OK</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p><strong>Path parameters</strong> <br></p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 58. https://localhost:8081/api/project/{projectId}/job</caption>
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Parameter</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>projectId</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The unique id of the project id where a new sechub job shall be created</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p><strong>Request headers</strong> <br></p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Name</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+</table>
+<div class="paragraph">
+<p><strong>Request fields</strong> <br></p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Path</th>
+<th class="tableblock halign-left valign-top">Type</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>apiVersion</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The api version, currently only 1.0 is supported</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>webScan</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Object</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Webscan configuration block</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>webScan.url</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Webscan URI to scan for</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>webScan.clientCertificate.password</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Password the client certificate file is protected with</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>webScan.clientCertificate.use</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Array</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Reference to the data section containing the client certificate definition file. Always use 'sources' with a single 'file' instead 'folders'.</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p><strong>Response fields</strong> <br></p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Path</th>
+<th class="tableblock halign-left valign-top">Type</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>jobId</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">A unique job id</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p><strong class="big">Example</strong></p>
+</div>
+<div class="paragraph">
+<p><strong>Curl request</strong> <br></p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/job' -i -X POST \
+    -H 'Content-Type: application/json;charset=UTF-8' \
+    -d '{&quot;webScan&quot;:{&quot;url&quot;:&quot;https://localhost/mywebapp&quot;,&quot;clientCertificate&quot;:{&quot;password&quot;:&quot;example-cert-password&quot;,&quot;use&quot;:[&quot;client-certificate-file-reference&quot;]}},&quot;apiVersion&quot;:&quot;1.0&quot;}'</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p><strong>Response body</strong> <br></p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight nowrap"><code>{&quot;jobId&quot;:&quot;df486b82-36fb-40e7-98f5-62aaf1a45144&quot;}</code></pre>
+</div>
+</div>
+</div>
+<div class="sect4">
+<h5 id="section-ucrestdoc-UC_005-web-scan-login-basic">2.2.25.9. Web Scan login basic variant</h5>
+<div class="paragraph">
+<p><strong class="big">Definition</strong></p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 59. General request information</caption>
+<colgroup>
+<col style="width: 14.2857%;">
+<col style="width: 85.7143%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top"></th>
+<th class="tableblock halign-left valign-top">Value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Path</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">/api/project/{projectId}/job</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Method</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">POST</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Status code</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">200 OK</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p><strong>Path parameters</strong> <br></p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 60. https://localhost:8081/api/project/{projectId}/job</caption>
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Parameter</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>projectId</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The unique id of the project id where a new sechub job shall be created</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p><strong>Request headers</strong> <br></p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Name</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
 </table>
 <div class="paragraph">
 <p><strong>Request fields</strong> <br></p>
@@ -5765,7 +6598,7 @@ elements are removed)</em>.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/job' -i -u 'user:secret' -X POST \
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/job' -i -X POST \
     -H 'Content-Type: application/json;charset=UTF-8' \
     -d '{&quot;webScan&quot;:{&quot;login&quot;:{&quot;url&quot;:&quot;https://localhost/mywebapp/login&quot;,&quot;basic&quot;:{&quot;user&quot;:&quot;username1&quot;,&quot;password&quot;:&quot;password1&quot;}},&quot;url&quot;:&quot;https://localhost/mywebapp&quot;},&quot;apiVersion&quot;:&quot;1.0&quot;}'</code></pre>
 </div>
@@ -5775,17 +6608,17 @@ elements are removed)</em>.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code>{&quot;jobId&quot;:&quot;ce85318c-a4dd-4891-a8b5-2d5b2e58550a&quot;}</code></pre>
+<pre class="CodeRay highlight nowrap"><code>{&quot;jobId&quot;:&quot;3e04a336-6636-4db7-8b53-45c79eaee2c7&quot;}</code></pre>
 </div>
 </div>
 </div>
 <div class="sect4">
-<h5 id="section-ucrestdoc-UC_005-web-scan-login-form-scripted">2.2.25.5. Web Scan login form scripted variant</h5>
+<h5 id="section-ucrestdoc-UC_005-web-scan-login-form-scripted">2.2.25.10. Web Scan login form scripted variant</h5>
 <div class="paragraph">
 <p><strong class="big">Definition</strong></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 51. General request information</caption>
+<caption class="title">Table 61. General request information</caption>
 <colgroup>
 <col style="width: 14.2857%;">
 <col style="width: 85.7143%;">
@@ -5815,7 +6648,7 @@ elements are removed)</em>.</p>
 <p><strong>Path parameters</strong> <br></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 52. https://localhost:8081/api/project/{projectId}/job</caption>
+<caption class="title">Table 62. https://localhost:8081/api/project/{projectId}/job</caption>
 <colgroup>
 <col style="width: 50%;">
 <col style="width: 50%;">
@@ -5847,12 +6680,6 @@ elements are removed)</em>.</p>
 <th class="tableblock halign-left valign-top">Description</th>
 </tr>
 </thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Authorization</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Basic authentication credentials</p></td>
-</tr>
-</tbody>
 </table>
 <div class="paragraph">
 <p><strong>Request fields</strong> <br></p>
@@ -5965,7 +6792,7 @@ elements are removed)</em>.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/job' -i -u 'user:secret' -X POST \
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/job' -i -X POST \
     -H 'Content-Type: application/json;charset=UTF-8' \
     -d '{&quot;webScan&quot;:{&quot;login&quot;:{&quot;url&quot;:&quot;https://localhost/mywebapp/login&quot;,&quot;form&quot;:{&quot;script&quot;:{&quot;pages&quot;:[{&quot;actions&quot;:[{&quot;type&quot;:&quot;USERNAME&quot;,&quot;selector&quot;:&quot;#example_login_userid&quot;,&quot;value&quot;:&quot;username1&quot;,&quot;description&quot;:&quot;the username field&quot;},{&quot;type&quot;:&quot;INPUT&quot;,&quot;selector&quot;:&quot;#example_login_email_id&quot;,&quot;value&quot;:&quot;user@example.com&quot;,&quot;description&quot;:&quot;The email id field.&quot;}]},{&quot;actions&quot;:[{&quot;type&quot;:&quot;WAIT&quot;,&quot;value&quot;:&quot;2345&quot;,&quot;unit&quot;:&quot;MILLISECOND&quot;},{&quot;type&quot;:&quot;PASSWORD&quot;,&quot;selector&quot;:&quot;#example_login_pwd&quot;,&quot;value&quot;:&quot;Super$ecret234!&quot;},{&quot;type&quot;:&quot;CLICK&quot;,&quot;selector&quot;:&quot;#example_login_button&quot;}]}]}}},&quot;url&quot;:&quot;https://localhost/mywebapp&quot;},&quot;apiVersion&quot;:&quot;1.0&quot;}'</code></pre>
 </div>
@@ -5975,7 +6802,166 @@ elements are removed)</em>.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code>{&quot;jobId&quot;:&quot;aa36c9ae-5efb-4c7a-b68e-3f1bdf68c9fa&quot;}</code></pre>
+<pre class="CodeRay highlight nowrap"><code>{&quot;jobId&quot;:&quot;d6f1df3b-1561-4f68-b2ac-37d3190c6e13&quot;}</code></pre>
+</div>
+</div>
+</div>
+<div class="sect4">
+<h5 id="section-ucrestdoc-UC_005-web-scan-headers">2.2.25.11. Web Scan headers variant</h5>
+<div class="paragraph">
+<p><strong class="big">Definition</strong></p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 63. General request information</caption>
+<colgroup>
+<col style="width: 14.2857%;">
+<col style="width: 85.7143%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top"></th>
+<th class="tableblock halign-left valign-top">Value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Path</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">/api/project/{projectId}/job</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Method</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">POST</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Status code</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">200 OK</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p><strong>Path parameters</strong> <br></p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 64. https://localhost:8081/api/project/{projectId}/job</caption>
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Parameter</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>projectId</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The unique id of the project id where a new sechub job shall be created</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p><strong>Request fields</strong> <br></p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Path</th>
+<th class="tableblock halign-left valign-top">Type</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>apiVersion</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The api version, currently only 1.0 is supported</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>webScan</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Object</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Webscan configuration block</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>webScan.url</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Webscan URI to scan for</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>webScan.headers</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Array</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">List of HTTP headers. Can be used for authentication or anything else.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>webScan.headers[].name</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Name of the defined HTTP header.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>webScan.headers[].value</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Value of the defined HTTP header.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>webScan.headers[].onlyForUrls[]</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Array</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Optional list of URLs this header shall be used for like: <a href="https://mywebapp.com/path/" class="bare">https://mywebapp.com/path/</a>. Can contain wildcards like: <a href="https://mywebapp.com/path/&lt;*&gt;/with/wildcard" class="bare">https://mywebapp.com/path/&lt;*&gt;/with/wildcard</a></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>webScan.headers[].sensitive</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Boolean</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Defines header masking. If 'true' the header value will be replaced with '<strong><strong></strong></strong>**' inside the report, 'false' will show the value as is. Default is set to 'true'.</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p><strong>Response fields</strong> <br></p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Path</th>
+<th class="tableblock halign-left valign-top">Type</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>jobId</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">A unique job id</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p><strong class="big">Example</strong></p>
+</div>
+<div class="paragraph">
+<p><strong>Curl request</strong> <br></p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/job' -i -X POST \
+    -H 'Content-Type: application/json;charset=UTF-8' \
+    -d '{&quot;webScan&quot;:{&quot;url&quot;:&quot;https://localhost/mywebapp&quot;,&quot;headers&quot;:[{&quot;name&quot;:&quot;api-token&quot;,&quot;value&quot;:&quot;secret&quot;,&quot;onlyForUrls&quot;:[&quot;https://localhost/mywebapp/admin&quot;,&quot;https://localhost/mywebapp/&lt;*&gt;/profile&quot;,&quot;https://localhost/mywebapp/blog/&lt;*&gt;&quot;],&quot;sensitive&quot;:true}]},&quot;apiVersion&quot;:&quot;1.0&quot;}'</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p><strong>Response body</strong> <br></p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight nowrap"><code>{&quot;jobId&quot;:&quot;4b4295be-0e34-4ccc-aba8-1cae4abb01dc&quot;}</code></pre>
 </div>
 </div>
 </div>
@@ -5989,7 +6975,7 @@ elements are removed)</em>.</p>
 <p><strong class="big">Definition</strong></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 53. General request information</caption>
+<caption class="title">Table 65. General request information</caption>
 <colgroup>
 <col style="width: 14.2857%;">
 <col style="width: 85.7143%;">
@@ -6019,7 +7005,7 @@ elements are removed)</em>.</p>
 <p><strong>Path parameters</strong> <br></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 54. https://localhost:8081/api/project/{projectId}/job/{jobUUID}/sourcecode</caption>
+<caption class="title">Table 66. https://localhost:8081/api/project/{projectId}/job/{jobUUID}/sourcecode</caption>
 <colgroup>
 <col style="width: 50%;">
 <col style="width: 50%;">
@@ -6076,12 +7062,6 @@ elements are removed)</em>.</p>
 <th class="tableblock halign-left valign-top">Description</th>
 </tr>
 </thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Authorization</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Basic authentication credentials</p></td>
-</tr>
-</tbody>
 </table>
 <div class="paragraph">
 <p><strong class="big">Example</strong></p>
@@ -6091,7 +7071,7 @@ elements are removed)</em>.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/job/46a84c51-16d5-4640-8d3a-9b7f387bb53a/sourcecode' -i -u 'user:secret' -X POST \
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/job/d13cb902-7e04-4fe5-8a3c-490abe96b840/sourcecode' -i -X POST \
     -H 'Content-Type: multipart/form-data;charset=UTF-8' \
     -F 'file=PK  
       �&lt;M                       test1.txtPK  ?
@@ -6114,7 +7094,7 @@ elements are removed)</em>.</p>
 <p><strong class="big">Definition</strong></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 55. General request information</caption>
+<caption class="title">Table 67. General request information</caption>
 <colgroup>
 <col style="width: 14.2857%;">
 <col style="width: 85.7143%;">
@@ -6144,7 +7124,7 @@ elements are removed)</em>.</p>
 <p><strong>Path parameters</strong> <br></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 56. https://localhost:8081/api/project/{projectId}/job/{jobUUID}/approve</caption>
+<caption class="title">Table 68. https://localhost:8081/api/project/{projectId}/job/{jobUUID}/approve</caption>
 <colgroup>
 <col style="width: 50%;">
 <col style="width: 50%;">
@@ -6180,12 +7160,6 @@ elements are removed)</em>.</p>
 <th class="tableblock halign-left valign-top">Description</th>
 </tr>
 </thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Authorization</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Basic authentication credentials</p></td>
-</tr>
-</tbody>
 </table>
 <div class="paragraph">
 <p><strong class="big">Example</strong></p>
@@ -6195,7 +7169,7 @@ elements are removed)</em>.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/job/5d1fea78-a21e-4a56-9f29-8b38ad8ff246/approve' -i -u 'user:secret' -X PUT \
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/job/9c2168c7-c198-42b4-b155-a587a079b624/approve' -i -X PUT \
     -H 'Content-Type: application/json;charset=UTF-8'</code></pre>
 </div>
 </div>
@@ -6213,7 +7187,7 @@ elements are removed)</em>.</p>
 <p><strong class="big">Definition</strong></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 57. General request information</caption>
+<caption class="title">Table 69. General request information</caption>
 <colgroup>
 <col style="width: 14.2857%;">
 <col style="width: 85.7143%;">
@@ -6243,7 +7217,7 @@ elements are removed)</em>.</p>
 <p><strong>Path parameters</strong> <br></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 58. https://localhost:8081/api/project/{projectId}/job/{jobUUID}</caption>
+<caption class="title">Table 70. https://localhost:8081/api/project/{projectId}/job/{jobUUID}</caption>
 <colgroup>
 <col style="width: 50%;">
 <col style="width: 50%;">
@@ -6279,12 +7253,6 @@ elements are removed)</em>.</p>
 <th class="tableblock halign-left valign-top">Description</th>
 </tr>
 </thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Authorization</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Basic authentication credentials</p></td>
-</tr>
-</tbody>
 </table>
 <div class="paragraph">
 <p><strong>Response fields</strong> <br></p>
@@ -6353,7 +7321,7 @@ elements are removed)</em>.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/job/79784e1a-673d-463d-b6dd-aba123b2a572' -i -u 'user:secret' -X GET \
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/job/edf3d997-1485-4b8b-8dc8-fef182b0d8bc' -i -X GET \
     -H 'Content-Type: application/json;charset=UTF-8'</code></pre>
 </div>
 </div>
@@ -6362,7 +7330,7 @@ elements are removed)</em>.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code>{&quot;jobUUID&quot;:&quot;79784e1a-673d-463d-b6dd-aba123b2a572&quot;,&quot;owner&quot;:&quot;CREATOR1&quot;,&quot;created&quot;:&quot;&quot;,&quot;started&quot;:&quot;2023-06-02T13:34:55.128121386&quot;,&quot;ended&quot;:&quot;2023-06-02T13:49:55.128143086&quot;,&quot;state&quot;:&quot;ENDED&quot;,&quot;result&quot;:&quot;OK&quot;,&quot;trafficLight&quot;:&quot;GREEN&quot;}</code></pre>
+<pre class="CodeRay highlight nowrap"><code>{&quot;jobUUID&quot;:&quot;edf3d997-1485-4b8b-8dc8-fef182b0d8bc&quot;,&quot;owner&quot;:&quot;CREATOR1&quot;,&quot;created&quot;:&quot;&quot;,&quot;started&quot;:&quot;2024-01-29T09:47:46.310020846&quot;,&quot;ended&quot;:&quot;2024-01-29T10:02:46.310043528&quot;,&quot;state&quot;:&quot;ENDED&quot;,&quot;result&quot;:&quot;OK&quot;,&quot;trafficLight&quot;:&quot;GREEN&quot;}</code></pre>
 </div>
 </div>
 </div>
@@ -6377,7 +7345,7 @@ elements are removed)</em>.</p>
 <p><strong class="big">Definition</strong></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 59. General request information</caption>
+<caption class="title">Table 71. General request information</caption>
 <colgroup>
 <col style="width: 14.2857%;">
 <col style="width: 85.7143%;">
@@ -6407,7 +7375,7 @@ elements are removed)</em>.</p>
 <p><strong>Path parameters</strong> <br></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 60. https://localhost:8081/api/project/{projectId}/report/{jobUUID}</caption>
+<caption class="title">Table 72. https://localhost:8081/api/project/{projectId}/report/{jobUUID}</caption>
 <colgroup>
 <col style="width: 50%;">
 <col style="width: 50%;">
@@ -6437,7 +7405,7 @@ elements are removed)</em>.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/report/10bfcb66-9f9e-49a7-9b27-2201397ffd83' -i -u 'user:secret' -X GET \
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/report/488613f9-9531-486a-84c5-cf185b682651' -i -u 'user:secret' -X GET \
     -H 'Content-Type: application/json;charset=UTF-8' \
     -H 'Accept: application/json'</code></pre>
 </div>
@@ -6449,7 +7417,7 @@ elements are removed)</em>.</p>
 <p><strong class="big">Definition</strong></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 61. General request information</caption>
+<caption class="title">Table 73. General request information</caption>
 <colgroup>
 <col style="width: 14.2857%;">
 <col style="width: 85.7143%;">
@@ -6479,7 +7447,7 @@ elements are removed)</em>.</p>
 <p><strong>Path parameters</strong> <br></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 62. https://localhost:8081/api/project/{projectId}/report/{jobUUID}</caption>
+<caption class="title">Table 74. https://localhost:8081/api/project/{projectId}/report/{jobUUID}</caption>
 <colgroup>
 <col style="width: 50%;">
 <col style="width: 50%;">
@@ -6509,7 +7477,7 @@ elements are removed)</em>.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/report/49111cff-5a6b-4e56-92a5-33440440a49a' -i -u 'user:secret' -X GET \
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/report/ceb4a168-d910-4617-8139-668205395c70' -i -u 'user:secret' -X GET \
     -H 'Content-Type: application/json;charset=UTF-8' \
     -H 'Accept: application/xhtml+xml'</code></pre>
 </div>
@@ -6525,7 +7493,7 @@ elements are removed)</em>.</p>
 <p><strong class="big">Definition</strong></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 63. General request information</caption>
+<caption class="title">Table 75. General request information</caption>
 <colgroup>
 <col style="width: 14.2857%;">
 <col style="width: 85.7143%;">
@@ -6555,7 +7523,7 @@ elements are removed)</em>.</p>
 <p><strong>Path parameters</strong> <br></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 64. https://localhost:8081/api/project/{projectId}/false-positives</caption>
+<caption class="title">Table 76. https://localhost:8081/api/project/{projectId}/false-positives</caption>
 <colgroup>
 <col style="width: 50%;">
 <col style="width: 50%;">
@@ -6587,12 +7555,6 @@ elements are removed)</em>.</p>
 <th class="tableblock halign-left valign-top">Description</th>
 </tr>
 </thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Authorization</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Basic authentication credentials</p></td>
-</tr>
-</tbody>
 </table>
 <div class="paragraph">
 <p><strong>Request fields</strong> <br></p>
@@ -6670,7 +7632,7 @@ elements are removed)</em>.</p>
 <p><strong class="big">Definition</strong></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 65. General request information</caption>
+<caption class="title">Table 77. General request information</caption>
 <colgroup>
 <col style="width: 14.2857%;">
 <col style="width: 85.7143%;">
@@ -6700,7 +7662,7 @@ elements are removed)</em>.</p>
 <p><strong>Path parameters</strong> <br></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 66. https://localhost:8081/api/project/{projectId}/false-positive/{jobUUID}/{findingId}</caption>
+<caption class="title">Table 78. https://localhost:8081/api/project/{projectId}/false-positive/{jobUUID}/{findingId}</caption>
 <colgroup>
 <col style="width: 50%;">
 <col style="width: 50%;">
@@ -6740,12 +7702,6 @@ elements are removed)</em>.</p>
 <th class="tableblock halign-left valign-top">Description</th>
 </tr>
 </thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Authorization</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Basic authentication credentials</p></td>
-</tr>
-</tbody>
 </table>
 <div class="paragraph">
 <p><strong class="big">Example</strong></p>
@@ -6772,7 +7728,7 @@ elements are removed)</em>.</p>
 <p><strong class="big">Definition</strong></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 67. General request information</caption>
+<caption class="title">Table 79. General request information</caption>
 <colgroup>
 <col style="width: 14.2857%;">
 <col style="width: 85.7143%;">
@@ -6802,7 +7758,7 @@ elements are removed)</em>.</p>
 <p><strong>Path parameters</strong> <br></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 68. https://localhost:8081/api/project/{projectId}/false-positives</caption>
+<caption class="title">Table 80. https://localhost:8081/api/project/{projectId}/false-positives</caption>
 <colgroup>
 <col style="width: 50%;">
 <col style="width: 50%;">
@@ -6834,12 +7790,6 @@ elements are removed)</em>.</p>
 <th class="tableblock halign-left valign-top">Description</th>
 </tr>
 </thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Authorization</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Basic authentication credentials</p></td>
-</tr>
-</tbody>
 </table>
 <div class="paragraph">
 <p><strong>Response fields</strong> <br></p>
@@ -7004,7 +7954,7 @@ elements are removed)</em>.</p>
 <p><strong class="big">Definition</strong></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 69. General request information</caption>
+<caption class="title">Table 81. General request information</caption>
 <colgroup>
 <col style="width: 14.2857%;">
 <col style="width: 85.7143%;">
@@ -7034,7 +7984,7 @@ elements are removed)</em>.</p>
 <p><strong>Path parameters</strong> <br></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 70. https://localhost:8081/api/project/{projectId}/job/{jobUUID}/binaries</caption>
+<caption class="title">Table 82. https://localhost:8081/api/project/{projectId}/job/{jobUUID}/binaries</caption>
 <colgroup>
 <col style="width: 50%;">
 <col style="width: 50%;">
@@ -7106,7 +8056,7 @@ elements are removed)</em>.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/job/b39262b0-c937-4088-b65c-0c511a2406f9/binaries' -i -u 'user:secret' -X POST \
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/job/8440a2ec-0e6b-41b9-bc7b-5d3bc0bf832c/binaries' -i -X POST \
     -H 'Content-Type: multipart/form-data;charset=UTF-8' \
     -H 'x-file-size: 10240' \
     -F 'file=test1.txt                                                                                           0000664 0001750 0001750 00000000000 13353454574 012170  0                                                                                                    ustar   albert                          albert                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 ' \
@@ -7127,7 +8077,7 @@ elements are removed)</em>.</p>
 <p><strong class="big">Definition</strong></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 71. General request information</caption>
+<caption class="title">Table 83. General request information</caption>
 <colgroup>
 <col style="width: 14.2857%;">
 <col style="width: 85.7143%;">
@@ -7157,7 +8107,7 @@ elements are removed)</em>.</p>
 <p><strong>Path parameters</strong> <br></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 72. https://localhost:8081/api/project/{projectId}/report/spdx/{jobUUID}</caption>
+<caption class="title">Table 84. https://localhost:8081/api/project/{projectId}/report/spdx/{jobUUID}</caption>
 <colgroup>
 <col style="width: 50%;">
 <col style="width: 50%;">
@@ -7187,7 +8137,7 @@ elements are removed)</em>.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/report/spdx/d5717404-916a-45cf-8e0e-57f458bf4d34' -i -u 'user:secret' -X GET \
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/report/spdx/912e57af-5a4b-46ea-a608-986ff352a2fe' -i -u 'user:secret' -X GET \
     -H 'Content-Type: application/json;charset=UTF-8' \
     -H 'Accept: application/json'</code></pre>
 </div>
@@ -7202,7 +8152,7 @@ elements are removed)</em>.</p>
 <p><strong class="big">Definition</strong></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 73. General request information</caption>
+<caption class="title">Table 85. General request information</caption>
 <colgroup>
 <col style="width: 14.2857%;">
 <col style="width: 85.7143%;">
@@ -7289,7 +8239,7 @@ elements are removed)</em>.</p>
 <p><strong class="big">Definition</strong></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 74. General request information</caption>
+<caption class="title">Table 86. General request information</caption>
 <colgroup>
 <col style="width: 14.2857%;">
 <col style="width: 85.7143%;">
@@ -7329,12 +8279,6 @@ elements are removed)</em>.</p>
 <th class="tableblock halign-left valign-top">Description</th>
 </tr>
 </thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Authorization</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Basic authentication credentials</p></td>
-</tr>
-</tbody>
 </table>
 <div class="paragraph">
 <p><strong>Response fields</strong> <br></p>
@@ -7399,7 +8343,7 @@ elements are removed)</em>.</p>
 <p><strong class="big">Definition</strong></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 75. General request information</caption>
+<caption class="title">Table 87. General request information</caption>
 <colgroup>
 <col style="width: 14.2857%;">
 <col style="width: 85.7143%;">
@@ -7429,7 +8373,7 @@ elements are removed)</em>.</p>
 <p><strong>Path parameters</strong> <br></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 76. https://localhost:8081/api/admin/signup/accept/{userId}</caption>
+<caption class="title">Table 88. https://localhost:8081/api/admin/signup/accept/{userId}</caption>
 <colgroup>
 <col style="width: 50%;">
 <col style="width: 50%;">
@@ -7461,12 +8405,6 @@ elements are removed)</em>.</p>
 <th class="tableblock halign-left valign-top">Description</th>
 </tr>
 </thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Authorization</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Basic authentication credentials</p></td>
-</tr>
-</tbody>
 </table>
 <div class="paragraph">
 <p><strong class="big">Example</strong></p>
@@ -7493,7 +8431,7 @@ elements are removed)</em>.</p>
 <p><strong class="big">Definition</strong></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 77. General request information</caption>
+<caption class="title">Table 89. General request information</caption>
 <colgroup>
 <col style="width: 14.2857%;">
 <col style="width: 85.7143%;">
@@ -7523,7 +8461,7 @@ elements are removed)</em>.</p>
 <p><strong>Path parameters</strong> <br></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 78. https://localhost:8081/api/admin/signup/{userId}</caption>
+<caption class="title">Table 90. https://localhost:8081/api/admin/signup/{userId}</caption>
 <colgroup>
 <col style="width: 50%;">
 <col style="width: 50%;">
@@ -7555,12 +8493,6 @@ elements are removed)</em>.</p>
 <th class="tableblock halign-left valign-top">Description</th>
 </tr>
 </thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Authorization</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Basic authentication credentials</p></td>
-</tr>
-</tbody>
 </table>
 <div class="paragraph">
 <p><strong class="big">Example</strong></p>
@@ -7587,7 +8519,7 @@ elements are removed)</em>.</p>
 <p><strong class="big">Definition</strong></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 79. General request information</caption>
+<caption class="title">Table 91. General request information</caption>
 <colgroup>
 <col style="width: 14.2857%;">
 <col style="width: 85.7143%;">
@@ -7617,7 +8549,7 @@ elements are removed)</em>.</p>
 <p><strong>Path parameters</strong> <br></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 80. https://localhost:8081/api/anonymous/refresh/apitoken/{emailAddress}</caption>
+<caption class="title">Table 92. https://localhost:8081/api/anonymous/refresh/apitoken/{emailAddress}</caption>
 <colgroup>
 <col style="width: 50%;">
 <col style="width: 50%;">
@@ -7661,7 +8593,7 @@ elements are removed)</em>.</p>
 <p><strong class="big">Definition</strong></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 81. General request information</caption>
+<caption class="title">Table 93. General request information</caption>
 <colgroup>
 <col style="width: 14.2857%;">
 <col style="width: 85.7143%;">
@@ -7701,12 +8633,6 @@ elements are removed)</em>.</p>
 <th class="tableblock halign-left valign-top">Description</th>
 </tr>
 </thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Authorization</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Basic authentication credentials</p></td>
-</tr>
-</tbody>
 </table>
 <div class="paragraph">
 <p><strong>Response fields</strong> <br></p>
@@ -7774,7 +8700,7 @@ elements are removed)</em>.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code>[{&quot;jobUUID&quot;:&quot;b5afb1d3-bbfb-442d-be2f-143ad4a35d02&quot;,&quot;projectId&quot;:&quot;project-name&quot;,&quot;owner&quot;:&quot;owner-userid&quot;,&quot;status&quot;:&quot;RUNNING&quot;,&quot;since&quot;:&quot;2023-06-02T13:49:47.757571044&quot;,&quot;configuration&quot;:&quot;{ config data }&quot;}]</code></pre>
+<pre class="CodeRay highlight nowrap"><code>[{&quot;jobUUID&quot;:&quot;8f26e54b-4354-4039-9f27-def62aadda5d&quot;,&quot;projectId&quot;:&quot;project-name&quot;,&quot;owner&quot;:&quot;owner-userid&quot;,&quot;status&quot;:&quot;RUNNING&quot;,&quot;since&quot;:&quot;2024-01-29T10:02:38.469335968&quot;,&quot;configuration&quot;:&quot;{ config data }&quot;}]</code></pre>
 </div>
 </div>
 </div>
@@ -7787,7 +8713,7 @@ elements are removed)</em>.</p>
 <p><strong class="big">Definition</strong></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 82. General request information</caption>
+<caption class="title">Table 94. General request information</caption>
 <colgroup>
 <col style="width: 14.2857%;">
 <col style="width: 85.7143%;">
@@ -7817,7 +8743,7 @@ elements are removed)</em>.</p>
 <p><strong>Path parameters</strong> <br></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 83. https://localhost:8081/api/admin/jobs/cancel/{jobUUID}</caption>
+<caption class="title">Table 95. https://localhost:8081/api/admin/jobs/cancel/{jobUUID}</caption>
 <colgroup>
 <col style="width: 50%;">
 <col style="width: 50%;">
@@ -7849,12 +8775,6 @@ elements are removed)</em>.</p>
 <th class="tableblock halign-left valign-top">Description</th>
 </tr>
 </thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Authorization</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Basic authentication credentials</p></td>
-</tr>
-</tbody>
 </table>
 <div class="paragraph">
 <p><strong class="big">Example</strong></p>
@@ -7864,7 +8784,7 @@ elements are removed)</em>.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/jobs/cancel/bda406bd-1852-49c3-bd2c-73fe73f7c510' -i -u 'user:secret' -X POST \
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/jobs/cancel/7a5102d3-7923-4851-b5e6-6c0e5509ecee' -i -u 'user:secret' -X POST \
     -H 'Content-Type: application/json;charset=UTF-8'</code></pre>
 </div>
 </div>
@@ -7882,7 +8802,7 @@ elements are removed)</em>.</p>
 <p><strong class="big">Definition</strong></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 84. General request information</caption>
+<caption class="title">Table 96. General request information</caption>
 <colgroup>
 <col style="width: 14.2857%;">
 <col style="width: 85.7143%;">
@@ -7912,7 +8832,7 @@ elements are removed)</em>.</p>
 <p><strong>Path parameters</strong> <br></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 85. https://localhost:8081/api/admin/jobs/restart/{jobUUID}</caption>
+<caption class="title">Table 97. https://localhost:8081/api/admin/jobs/restart/{jobUUID}</caption>
 <colgroup>
 <col style="width: 50%;">
 <col style="width: 50%;">
@@ -7944,12 +8864,6 @@ elements are removed)</em>.</p>
 <th class="tableblock halign-left valign-top">Description</th>
 </tr>
 </thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Authorization</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Basic authentication credentials</p></td>
-</tr>
-</tbody>
 </table>
 <div class="paragraph">
 <p><strong class="big">Example</strong></p>
@@ -7959,7 +8873,7 @@ elements are removed)</em>.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/jobs/restart/94efe810-27d1-4f5b-854f-ef8d7c793239' -i -u 'user:secret' -X POST \
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/jobs/restart/c8b23b28-c15c-466d-b2db-e9e59168c56c' -i -u 'user:secret' -X POST \
     -H 'Content-Type: application/json;charset=UTF-8'</code></pre>
 </div>
 </div>
@@ -7977,7 +8891,7 @@ elements are removed)</em>.</p>
 <p><strong class="big">Definition</strong></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 86. General request information</caption>
+<caption class="title">Table 98. General request information</caption>
 <colgroup>
 <col style="width: 14.2857%;">
 <col style="width: 85.7143%;">
@@ -8007,7 +8921,7 @@ elements are removed)</em>.</p>
 <p><strong>Path parameters</strong> <br></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 87. https://localhost:8081/api/admin/jobs/restart-hard/{jobUUID}</caption>
+<caption class="title">Table 99. https://localhost:8081/api/admin/jobs/restart-hard/{jobUUID}</caption>
 <colgroup>
 <col style="width: 50%;">
 <col style="width: 50%;">
@@ -8039,12 +8953,6 @@ elements are removed)</em>.</p>
 <th class="tableblock halign-left valign-top">Description</th>
 </tr>
 </thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Authorization</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Basic authentication credentials</p></td>
-</tr>
-</tbody>
 </table>
 <div class="paragraph">
 <p><strong class="big">Example</strong></p>
@@ -8054,7 +8962,7 @@ elements are removed)</em>.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/jobs/restart-hard/ad283edf-350a-4115-9416-6fa5f11bc4b2' -i -u 'user:secret' -X POST \
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/jobs/restart-hard/a9a06985-2200-4d63-bd92-a42a3c827dac' -i -u 'user:secret' -X POST \
     -H 'Content-Type: application/json;charset=UTF-8'</code></pre>
 </div>
 </div>
@@ -8072,7 +8980,7 @@ elements are removed)</em>.</p>
 <p><strong class="big">Definition</strong></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 88. General request information</caption>
+<caption class="title">Table 100. General request information</caption>
 <colgroup>
 <col style="width: 14.2857%;">
 <col style="width: 85.7143%;">
@@ -8112,12 +9020,6 @@ elements are removed)</em>.</p>
 <th class="tableblock halign-left valign-top">Description</th>
 </tr>
 </thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Authorization</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Basic authentication credentials</p></td>
-</tr>
-</tbody>
 </table>
 <div class="paragraph">
 <p><strong class="big">Example</strong></p>
@@ -8147,7 +9049,7 @@ elements are removed)</em>.</p>
 <p><strong class="big">Definition</strong></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 89. General request information</caption>
+<caption class="title">Table 101. General request information</caption>
 <colgroup>
 <col style="width: 14.2857%;">
 <col style="width: 85.7143%;">
@@ -8187,12 +9089,6 @@ elements are removed)</em>.</p>
 <th class="tableblock halign-left valign-top">Description</th>
 </tr>
 </thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Authorization</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Basic authentication credentials</p></td>
-</tr>
-</tbody>
 </table>
 <div class="paragraph">
 <p><strong class="big">Example</strong></p>
@@ -8225,7 +9121,7 @@ elements are removed)</em>.</p>
 <p><strong class="big">Definition</strong></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 90. General request information</caption>
+<caption class="title">Table 102. General request information</caption>
 <colgroup>
 <col style="width: 14.2857%;">
 <col style="width: 85.7143%;">
@@ -8255,7 +9151,7 @@ elements are removed)</em>.</p>
 <p><strong>Path parameters</strong> <br></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 91. https://localhost:8081/api/admin/config/mapping/{mappingId}</caption>
+<caption class="title">Table 103. https://localhost:8081/api/admin/config/mapping/{mappingId}</caption>
 <colgroup>
 <col style="width: 50%;">
 <col style="width: 50%;">
@@ -8287,12 +9183,6 @@ elements are removed)</em>.</p>
 <th class="tableblock halign-left valign-top">Description</th>
 </tr>
 </thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Authorization</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Basic authentication credentials</p></td>
-</tr>
-</tbody>
 </table>
 <div class="paragraph">
 <p><strong>Request fields</strong> <br></p>
@@ -8355,7 +9245,7 @@ elements are removed)</em>.</p>
 <p><strong class="big">Definition</strong></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 92. General request information</caption>
+<caption class="title">Table 104. General request information</caption>
 <colgroup>
 <col style="width: 14.2857%;">
 <col style="width: 85.7143%;">
@@ -8385,7 +9275,7 @@ elements are removed)</em>.</p>
 <p><strong>Path parameters</strong> <br></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 93. https://localhost:8081/api/admin/config/mapping/{mappingId}</caption>
+<caption class="title">Table 105. https://localhost:8081/api/admin/config/mapping/{mappingId}</caption>
 <colgroup>
 <col style="width: 50%;">
 <col style="width: 50%;">
@@ -8417,12 +9307,6 @@ elements are removed)</em>.</p>
 <th class="tableblock halign-left valign-top">Description</th>
 </tr>
 </thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Authorization</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Basic authentication credentials</p></td>
-</tr>
-</tbody>
 </table>
 <div class="paragraph">
 <p><strong>Response fields</strong> <br></p>
@@ -8488,7 +9372,7 @@ elements are removed)</em>.</p>
 <p><strong class="big">Definition</strong></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 94. General request information</caption>
+<caption class="title">Table 106. General request information</caption>
 <colgroup>
 <col style="width: 14.2857%;">
 <col style="width: 85.7143%;">
@@ -8528,12 +9412,6 @@ elements are removed)</em>.</p>
 <th class="tableblock halign-left valign-top">Description</th>
 </tr>
 </thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Authorization</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Basic authentication credentials</p></td>
-</tr>
-</tbody>
 </table>
 <div class="paragraph">
 <p><strong>Request fields</strong> <br></p>
@@ -8617,7 +9495,7 @@ elements are removed)</em>.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code>924e25e2-5a91-4834-908f-b048263f9910</code></pre>
+<pre class="CodeRay highlight nowrap"><code>fa840f0a-0334-44d2-a770-7f6991be7ac6</code></pre>
 </div>
 </div>
 </div>
@@ -8630,7 +9508,7 @@ elements are removed)</em>.</p>
 <p><strong class="big">Definition</strong></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 95. General request information</caption>
+<caption class="title">Table 107. General request information</caption>
 <colgroup>
 <col style="width: 14.2857%;">
 <col style="width: 85.7143%;">
@@ -8660,7 +9538,7 @@ elements are removed)</em>.</p>
 <p><strong>Path parameters</strong> <br></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 96. https://localhost:8081/api/admin/config/executor/{uuid}</caption>
+<caption class="title">Table 108. https://localhost:8081/api/admin/config/executor/{uuid}</caption>
 <colgroup>
 <col style="width: 50%;">
 <col style="width: 50%;">
@@ -8692,12 +9570,6 @@ elements are removed)</em>.</p>
 <th class="tableblock halign-left valign-top">Description</th>
 </tr>
 </thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Authorization</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Basic authentication credentials</p></td>
-</tr>
-</tbody>
 </table>
 <div class="paragraph">
 <p><strong class="big">Example</strong></p>
@@ -8707,7 +9579,7 @@ elements are removed)</em>.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/config/executor/3b1cb42f-d17a-4986-8c27-f9468435d162' -i -u 'user:secret' -X DELETE \
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/config/executor/38c2ba3a-03a9-4636-89a2-00ece5fcda34' -i -u 'user:secret' -X DELETE \
     -H 'Content-Type: application/json;charset=UTF-8'</code></pre>
 </div>
 </div>
@@ -8725,7 +9597,7 @@ elements are removed)</em>.</p>
 <p><strong class="big">Definition</strong></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 97. General request information</caption>
+<caption class="title">Table 109. General request information</caption>
 <colgroup>
 <col style="width: 14.2857%;">
 <col style="width: 85.7143%;">
@@ -8765,12 +9637,6 @@ elements are removed)</em>.</p>
 <th class="tableblock halign-left valign-top">Description</th>
 </tr>
 </thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Authorization</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Basic authentication credentials</p></td>
-</tr>
-</tbody>
 </table>
 <div class="paragraph">
 <p><strong>Response fields</strong> <br></p>
@@ -8828,7 +9694,7 @@ elements are removed)</em>.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code>{&quot;executorConfigurations&quot;:[{&quot;uuid&quot;:&quot;a8749861-2321-48e1-81d8-ea408026dd19&quot;,&quot;name&quot;:&quot;example configuration&quot;,&quot;enabled&quot;:true}],&quot;type&quot;:&quot;executorConfigurationList&quot;}</code></pre>
+<pre class="CodeRay highlight nowrap"><code>{&quot;executorConfigurations&quot;:[{&quot;uuid&quot;:&quot;a8bf31d1-ffc5-48be-9b85-65c076bb5501&quot;,&quot;name&quot;:&quot;example configuration&quot;,&quot;enabled&quot;:true}],&quot;type&quot;:&quot;executorConfigurationList&quot;}</code></pre>
 </div>
 </div>
 </div>
@@ -8841,7 +9707,7 @@ elements are removed)</em>.</p>
 <p><strong class="big">Definition</strong></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 98. General request information</caption>
+<caption class="title">Table 110. General request information</caption>
 <colgroup>
 <col style="width: 14.2857%;">
 <col style="width: 85.7143%;">
@@ -8871,7 +9737,7 @@ elements are removed)</em>.</p>
 <p><strong>Path parameters</strong> <br></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 99. https://localhost:8081/api/admin/config/executor/{uuid}</caption>
+<caption class="title">Table 111. https://localhost:8081/api/admin/config/executor/{uuid}</caption>
 <colgroup>
 <col style="width: 50%;">
 <col style="width: 50%;">
@@ -8903,12 +9769,6 @@ elements are removed)</em>.</p>
 <th class="tableblock halign-left valign-top">Description</th>
 </tr>
 </thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Authorization</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Basic authentication credentials</p></td>
-</tr>
-</tbody>
 </table>
 <div class="paragraph">
 <p><strong>Response fields</strong> <br></p>
@@ -8987,7 +9847,7 @@ elements are removed)</em>.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/config/executor/7184ed22-a95e-4d84-99ee-2c7de7f19cca' -i -u 'user:secret' -X GET \
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/config/executor/60bbb56a-df02-42c6-a17e-f7fd0111632b' -i -u 'user:secret' -X GET \
     -H 'Content-Type: application/json;charset=UTF-8'</code></pre>
 </div>
 </div>
@@ -8996,7 +9856,7 @@ elements are removed)</em>.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code>{&quot;name&quot;:&quot;New name&quot;,&quot;productIdentifier&quot;:&quot;PDS_CODESCAN&quot;,&quot;setup&quot;:{&quot;baseURL&quot;:&quot;https://product.example.com&quot;,&quot;credentials&quot;:{&quot;user&quot;:&quot;env:EXAMPLE_USENAME&quot;,&quot;password&quot;:&quot;env:EXAMPLE_PASSWORD&quot;},&quot;jobParameters&quot;:[{&quot;key&quot;:&quot;example.key1&quot;,&quot;value&quot;:&quot;A value&quot;}]},&quot;executorVersion&quot;:1,&quot;enabled&quot;:false,&quot;uuid&quot;:&quot;7184ed22-a95e-4d84-99ee-2c7de7f19cca&quot;}</code></pre>
+<pre class="CodeRay highlight nowrap"><code>{&quot;name&quot;:&quot;New name&quot;,&quot;productIdentifier&quot;:&quot;PDS_CODESCAN&quot;,&quot;setup&quot;:{&quot;baseURL&quot;:&quot;https://product.example.com&quot;,&quot;credentials&quot;:{&quot;user&quot;:&quot;env:EXAMPLE_USENAME&quot;,&quot;password&quot;:&quot;env:EXAMPLE_PASSWORD&quot;},&quot;jobParameters&quot;:[{&quot;key&quot;:&quot;example.key1&quot;,&quot;value&quot;:&quot;A value&quot;}]},&quot;executorVersion&quot;:1,&quot;enabled&quot;:false,&quot;uuid&quot;:&quot;60bbb56a-df02-42c6-a17e-f7fd0111632b&quot;}</code></pre>
 </div>
 </div>
 </div>
@@ -9009,7 +9869,7 @@ elements are removed)</em>.</p>
 <p><strong class="big">Definition</strong></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 100. General request information</caption>
+<caption class="title">Table 112. General request information</caption>
 <colgroup>
 <col style="width: 14.2857%;">
 <col style="width: 85.7143%;">
@@ -9039,7 +9899,7 @@ elements are removed)</em>.</p>
 <p><strong>Path parameters</strong> <br></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 101. https://localhost:8081/api/admin/config/executor/{uuid}</caption>
+<caption class="title">Table 113. https://localhost:8081/api/admin/config/executor/{uuid}</caption>
 <colgroup>
 <col style="width: 50%;">
 <col style="width: 50%;">
@@ -9071,12 +9931,6 @@ elements are removed)</em>.</p>
 <th class="tableblock halign-left valign-top">Description</th>
 </tr>
 </thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Authorization</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Basic authentication credentials</p></td>
-</tr>
-</tbody>
 </table>
 <div class="paragraph">
 <p><strong>Request fields</strong> <br></p>
@@ -9150,7 +10004,7 @@ elements are removed)</em>.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/config/executor/ae740bb7-153b-459c-a65d-4642bbcfa2e2' -i -u 'user:secret' -X PUT \
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/config/executor/514445eb-cb58-4062-9d66-4504a2a854b2' -i -u 'user:secret' -X PUT \
     -H 'Content-Type: application/json;charset=UTF-8' \
     -d '{&quot;name&quot;:&quot;New name&quot;,&quot;productIdentifier&quot;:&quot;PDS_CODESCAN&quot;,&quot;executorVersion&quot;:1,&quot;enabled&quot;:false,&quot;setup&quot;:{&quot;baseURL&quot;:&quot;https://productNew.example.com&quot;,&quot;credentials&quot;:{&quot;user&quot;:&quot;env:EXAMPLE_NEW_USENAME&quot;,&quot;password&quot;:&quot;env:EXAMPLE_NEW_PASSWORD&quot;},&quot;jobParameters&quot;:[{&quot;key&quot;:&quot;example.key1&quot;,&quot;value&quot;:&quot;A value but changed. Remark: the other parameter (example.key2) has been removed by this call&quot;}]}}'</code></pre>
 </div>
@@ -9169,7 +10023,7 @@ elements are removed)</em>.</p>
 <p><strong class="big">Definition</strong></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 102. General request information</caption>
+<caption class="title">Table 114. General request information</caption>
 <colgroup>
 <col style="width: 14.2857%;">
 <col style="width: 85.7143%;">
@@ -9199,7 +10053,7 @@ elements are removed)</em>.</p>
 <p><strong>Path parameters</strong> <br></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 103. https://localhost:8081/api/admin/config/execution/profile/{profileId}</caption>
+<caption class="title">Table 115. https://localhost:8081/api/admin/config/execution/profile/{profileId}</caption>
 <colgroup>
 <col style="width: 50%;">
 <col style="width: 50%;">
@@ -9231,12 +10085,6 @@ elements are removed)</em>.</p>
 <th class="tableblock halign-left valign-top">Description</th>
 </tr>
 </thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Authorization</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Basic authentication credentials</p></td>
-</tr>
-</tbody>
 </table>
 <div class="paragraph">
 <p><strong>Request fields</strong> <br></p>
@@ -9304,7 +10152,7 @@ elements are removed)</em>.</p>
 <p><strong class="big">Definition</strong></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 104. General request information</caption>
+<caption class="title">Table 116. General request information</caption>
 <colgroup>
 <col style="width: 14.2857%;">
 <col style="width: 85.7143%;">
@@ -9334,7 +10182,7 @@ elements are removed)</em>.</p>
 <p><strong>Path parameters</strong> <br></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 105. https://localhost:8081/api/admin/config/execution/profile/{profileId}</caption>
+<caption class="title">Table 117. https://localhost:8081/api/admin/config/execution/profile/{profileId}</caption>
 <colgroup>
 <col style="width: 50%;">
 <col style="width: 50%;">
@@ -9366,12 +10214,6 @@ elements are removed)</em>.</p>
 <th class="tableblock halign-left valign-top">Description</th>
 </tr>
 </thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Authorization</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Basic authentication credentials</p></td>
-</tr>
-</tbody>
 </table>
 <div class="paragraph">
 <p><strong class="big">Example</strong></p>
@@ -9399,7 +10241,7 @@ elements are removed)</em>.</p>
 <p><strong class="big">Definition</strong></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 106. General request information</caption>
+<caption class="title">Table 118. General request information</caption>
 <colgroup>
 <col style="width: 14.2857%;">
 <col style="width: 85.7143%;">
@@ -9429,7 +10271,7 @@ elements are removed)</em>.</p>
 <p><strong>Path parameters</strong> <br></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 107. https://localhost:8081/api/admin/config/execution/profile/{profileId}</caption>
+<caption class="title">Table 119. https://localhost:8081/api/admin/config/execution/profile/{profileId}</caption>
 <colgroup>
 <col style="width: 50%;">
 <col style="width: 50%;">
@@ -9461,12 +10303,6 @@ elements are removed)</em>.</p>
 <th class="tableblock halign-left valign-top">Description</th>
 </tr>
 </thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Authorization</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Basic authentication credentials</p></td>
-</tr>
-</tbody>
 </table>
 <div class="paragraph">
 <p><strong>Request fields</strong> <br></p>
@@ -9512,7 +10348,7 @@ elements are removed)</em>.</p>
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/config/execution/profile/existing-profile-1' -i -u 'user:secret' -X PUT \
     -H 'Content-Type: application/json;charset=UTF-8' \
-    -d '{&quot;description&quot;:&quot;changed description&quot;,&quot;configurations&quot;:[{&quot;uuid&quot;:&quot;fdbca557-70c0-4d5f-a661-a0bc41e71d98&quot;,&quot;executorVersion&quot;:0,&quot;enabled&quot;:false,&quot;setup&quot;:{&quot;credentials&quot;:{},&quot;jobParameters&quot;:[]}}],&quot;enabled&quot;:true}'</code></pre>
+    -d '{&quot;description&quot;:&quot;changed description&quot;,&quot;configurations&quot;:[{&quot;uuid&quot;:&quot;3eb75177-3572-48cd-bed9-33c049c50287&quot;,&quot;executorVersion&quot;:0,&quot;enabled&quot;:false,&quot;setup&quot;:{&quot;credentials&quot;:{},&quot;jobParameters&quot;:[]}}],&quot;enabled&quot;:true}'</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -9529,7 +10365,7 @@ elements are removed)</em>.</p>
 <p><strong class="big">Definition</strong></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 108. General request information</caption>
+<caption class="title">Table 120. General request information</caption>
 <colgroup>
 <col style="width: 14.2857%;">
 <col style="width: 85.7143%;">
@@ -9559,7 +10395,7 @@ elements are removed)</em>.</p>
 <p><strong>Path parameters</strong> <br></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 109. https://localhost:8081/api/admin/config/execution/profile/{profileId}</caption>
+<caption class="title">Table 121. https://localhost:8081/api/admin/config/execution/profile/{profileId}</caption>
 <colgroup>
 <col style="width: 50%;">
 <col style="width: 50%;">
@@ -9591,12 +10427,6 @@ elements are removed)</em>.</p>
 <th class="tableblock halign-left valign-top">Description</th>
 </tr>
 </thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Authorization</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Basic authentication credentials</p></td>
-</tr>
-</tbody>
 </table>
 <div class="paragraph">
 <p><strong>Response fields</strong> <br></p>
@@ -9674,7 +10504,7 @@ elements are removed)</em>.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code>{&quot;description&quot;:&quot;a description&quot;,&quot;enabled&quot;:true,&quot;configurations&quot;:[{&quot;name&quot;:&quot;New name&quot;,&quot;productIdentifier&quot;:&quot;PDS_CODESCAN&quot;,&quot;setup&quot;:{&quot;baseURL&quot;:&quot;https://product.example.com&quot;,&quot;credentials&quot;:{&quot;user&quot;:&quot;env:EXAMPLE_USENAME&quot;,&quot;password&quot;:&quot;env:EXAMPLE_PASSWORD&quot;},&quot;jobParameters&quot;:[{&quot;key&quot;:&quot;example.key1&quot;,&quot;value&quot;:&quot;A value but changed. Remark: the other parameter (example.key2) has been removed by this call&quot;}]},&quot;executorVersion&quot;:1,&quot;enabled&quot;:false,&quot;uuid&quot;:&quot;a6973fa1-ba6a-401e-99b5-2d7badcbcea8&quot;}],&quot;projectIds&quot;:[&quot;project-1&quot;,&quot;project-2&quot;]}</code></pre>
+<pre class="CodeRay highlight nowrap"><code>{&quot;description&quot;:&quot;a description&quot;,&quot;enabled&quot;:true,&quot;configurations&quot;:[{&quot;name&quot;:&quot;New name&quot;,&quot;productIdentifier&quot;:&quot;PDS_CODESCAN&quot;,&quot;setup&quot;:{&quot;baseURL&quot;:&quot;https://product.example.com&quot;,&quot;credentials&quot;:{&quot;user&quot;:&quot;env:EXAMPLE_USENAME&quot;,&quot;password&quot;:&quot;env:EXAMPLE_PASSWORD&quot;},&quot;jobParameters&quot;:[{&quot;key&quot;:&quot;example.key1&quot;,&quot;value&quot;:&quot;A value but changed. Remark: the other parameter (example.key2) has been removed by this call&quot;}]},&quot;executorVersion&quot;:1,&quot;enabled&quot;:false,&quot;uuid&quot;:&quot;7ce279ba-9519-4d83-b922-9c911abe4613&quot;}],&quot;projectIds&quot;:[&quot;project-1&quot;,&quot;project-2&quot;]}</code></pre>
 </div>
 </div>
 </div>
@@ -9687,7 +10517,7 @@ elements are removed)</em>.</p>
 <p><strong class="big">Definition</strong></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 110. General request information</caption>
+<caption class="title">Table 122. General request information</caption>
 <colgroup>
 <col style="width: 14.2857%;">
 <col style="width: 85.7143%;">
@@ -9727,12 +10557,6 @@ elements are removed)</em>.</p>
 <th class="tableblock halign-left valign-top">Description</th>
 </tr>
 </thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Authorization</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Basic authentication credentials</p></td>
-</tr>
-</tbody>
 </table>
 <div class="paragraph">
 <p><strong>Response fields</strong> <br></p>
@@ -9803,7 +10627,7 @@ elements are removed)</em>.</p>
 <p><strong class="big">Definition</strong></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 111. General request information</caption>
+<caption class="title">Table 123. General request information</caption>
 <colgroup>
 <col style="width: 14.2857%;">
 <col style="width: 85.7143%;">
@@ -9833,7 +10657,7 @@ elements are removed)</em>.</p>
 <p><strong>Path parameters</strong> <br></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 112. https://localhost:8081/api/admin/config/execution/profile/{profileId}/project/{projectId}</caption>
+<caption class="title">Table 124. https://localhost:8081/api/admin/config/execution/profile/{profileId}/project/{projectId}</caption>
 <colgroup>
 <col style="width: 50%;">
 <col style="width: 50%;">
@@ -9869,12 +10693,6 @@ elements are removed)</em>.</p>
 <th class="tableblock halign-left valign-top">Description</th>
 </tr>
 </thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Authorization</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Basic authentication credentials</p></td>
-</tr>
-</tbody>
 </table>
 <div class="paragraph">
 <p><strong class="big">Example</strong></p>
@@ -9902,7 +10720,7 @@ elements are removed)</em>.</p>
 <p><strong class="big">Definition</strong></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 113. General request information</caption>
+<caption class="title">Table 125. General request information</caption>
 <colgroup>
 <col style="width: 14.2857%;">
 <col style="width: 85.7143%;">
@@ -9932,7 +10750,7 @@ elements are removed)</em>.</p>
 <p><strong>Path parameters</strong> <br></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 114. https://localhost:8081/api/admin/config/execution/profile/{profileId}/project/{projectId}</caption>
+<caption class="title">Table 126. https://localhost:8081/api/admin/config/execution/profile/{profileId}/project/{projectId}</caption>
 <colgroup>
 <col style="width: 50%;">
 <col style="width: 50%;">
@@ -9968,12 +10786,6 @@ elements are removed)</em>.</p>
 <th class="tableblock halign-left valign-top">Description</th>
 </tr>
 </thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Authorization</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Basic authentication credentials</p></td>
-</tr>
-</tbody>
 </table>
 <div class="paragraph">
 <p><strong class="big">Example</strong></p>
@@ -10001,7 +10813,7 @@ elements are removed)</em>.</p>
 <p><strong class="big">Definition</strong></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 115. General request information</caption>
+<caption class="title">Table 127. General request information</caption>
 <colgroup>
 <col style="width: 14.2857%;">
 <col style="width: 85.7143%;">
@@ -10041,12 +10853,6 @@ elements are removed)</em>.</p>
 <th class="tableblock halign-left valign-top">Description</th>
 </tr>
 </thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Authorization</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Basic authentication credentials</p></td>
-</tr>
-</tbody>
 </table>
 <div class="paragraph">
 <p><strong class="big">Example</strong></p>
@@ -10078,7 +10884,7 @@ elements are removed)</em>.</p>
 <p><strong class="big">Definition</strong></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 116. General request information</caption>
+<caption class="title">Table 128. General request information</caption>
 <colgroup>
 <col style="width: 14.2857%;">
 <col style="width: 85.7143%;">
@@ -10118,12 +10924,6 @@ elements are removed)</em>.</p>
 <th class="tableblock halign-left valign-top">Description</th>
 </tr>
 </thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Authorization</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Basic authentication credentials</p></td>
-</tr>
-</tbody>
 </table>
 <div class="paragraph">
 <p><strong class="big">Example</strong></p>
@@ -10152,7 +10952,7 @@ elements are removed)</em>.</p>
 <p><strong class="big">Definition</strong></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 117. General request information</caption>
+<caption class="title">Table 129. General request information</caption>
 <colgroup>
 <col style="width: 14.2857%;">
 <col style="width: 85.7143%;">
@@ -10192,12 +10992,6 @@ elements are removed)</em>.</p>
 <th class="tableblock halign-left valign-top">Description</th>
 </tr>
 </thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Authorization</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Basic authentication credentials</p></td>
-</tr>
-</tbody>
 </table>
 <div class="paragraph">
 <p><strong class="big">Example</strong></p>
@@ -10225,7 +11019,7 @@ elements are removed)</em>.</p>
 <p><strong class="big">Definition</strong></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 118. General request information</caption>
+<caption class="title">Table 130. General request information</caption>
 <colgroup>
 <col style="width: 14.2857%;">
 <col style="width: 85.7143%;">
@@ -10265,12 +11059,6 @@ elements are removed)</em>.</p>
 <th class="tableblock halign-left valign-top">Description</th>
 </tr>
 </thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Authorization</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Basic authentication credentials</p></td>
-</tr>
-</tbody>
 </table>
 <div class="paragraph">
 <p><strong class="big">Example</strong></p>
@@ -10298,7 +11086,7 @@ elements are removed)</em>.</p>
 <p><strong class="big">Definition</strong></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 119. General request information</caption>
+<caption class="title">Table 131. General request information</caption>
 <colgroup>
 <col style="width: 14.2857%;">
 <col style="width: 85.7143%;">
@@ -10338,12 +11126,6 @@ elements are removed)</em>.</p>
 <th class="tableblock halign-left valign-top">Description</th>
 </tr>
 </thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Authorization</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Basic authentication credentials</p></td>
-</tr>
-</tbody>
 </table>
 <div class="paragraph">
 <p><strong class="big">Example</strong></p>
@@ -10371,7 +11153,7 @@ elements are removed)</em>.</p>
 <p><strong class="big">Definition</strong></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 120. General request information</caption>
+<caption class="title">Table 132. General request information</caption>
 <colgroup>
 <col style="width: 14.2857%;">
 <col style="width: 85.7143%;">
@@ -10411,12 +11193,6 @@ elements are removed)</em>.</p>
 <th class="tableblock halign-left valign-top">Description</th>
 </tr>
 </thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Authorization</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Basic authentication credentials</p></td>
-</tr>
-</tbody>
 </table>
 <div class="paragraph">
 <p><strong>Response fields</strong> <br></p>
@@ -10477,7 +11253,7 @@ elements are removed)</em>.</p>
 <p><strong class="big">Definition</strong></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 121. General request information</caption>
+<caption class="title">Table 133. General request information</caption>
 <colgroup>
 <col style="width: 14.2857%;">
 <col style="width: 85.7143%;">
@@ -10517,12 +11293,6 @@ elements are removed)</em>.</p>
 <th class="tableblock halign-left valign-top">Description</th>
 </tr>
 </thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Authorization</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Basic authentication credentials</p></td>
-</tr>
-</tbody>
 </table>
 <div class="paragraph">
 <p><strong class="big">Example</strong></p>
@@ -10554,7 +11324,7 @@ elements are removed)</em>.</p>
 <p><strong class="big">Definition</strong></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 122. General request information</caption>
+<caption class="title">Table 134. General request information</caption>
 <colgroup>
 <col style="width: 14.2857%;">
 <col style="width: 85.7143%;">
@@ -10584,7 +11354,7 @@ elements are removed)</em>.</p>
 <p><strong>Path parameters</strong> <br></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 123. https://localhost:8081/api/project/{projectId}/jobs</caption>
+<caption class="title">Table 135. https://localhost:8081/api/project/{projectId}/jobs</caption>
 <colgroup>
 <col style="width: 50%;">
 <col style="width: 50%;">
@@ -10651,12 +11421,6 @@ The filter works as an AND combination: Only jobs having all wanted label key va
 <th class="tableblock halign-left valign-top">Description</th>
 </tr>
 </thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Authorization</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Basic authentication credentials</p></td>
-</tr>
-</tbody>
 </table>
 <div class="paragraph">
 <p><strong>Response fields</strong> <br></p>
@@ -10740,7 +11504,7 @@ The filter works as an AND combination: Only jobs having all wanted label key va
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/jobs?size=1&amp;page=0&amp;withMetaData=true&amp;metadata.labels.stage=testing' -i -u 'user:secret' -X GET \
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/jobs?size=1&amp;page=0&amp;withMetaData=true&amp;metadata.labels.stage=testing' -i -X GET \
     -H 'Content-Type: application/json;charset=UTF-8'</code></pre>
 </div>
 </div>
@@ -10749,7 +11513,7 @@ The filter works as an AND combination: Only jobs having all wanted label key va
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code>{&quot;page&quot;:0,&quot;totalPages&quot;:1,&quot;content&quot;:[{&quot;jobUUID&quot;:&quot;f32cadff-1db8-4686-a3a3-c5ba4b38bc5a&quot;,&quot;executedBy&quot;:&quot;User1&quot;,&quot;created&quot;:&quot;2023-06-02T13:32:55.163755544&quot;,&quot;started&quot;:&quot;2023-06-02T13:34:55.163778544&quot;,&quot;ended&quot;:&quot;2023-06-02T13:49:55.163788644&quot;,&quot;executionState&quot;:&quot;ENDED&quot;,&quot;trafficLight&quot;:&quot;GREEN&quot;,&quot;executionResult&quot;:&quot;OK&quot;,&quot;metaData&quot;:{&quot;labels&quot;:{&quot;stage&quot;:&quot;test&quot;}}}]}</code></pre>
+<pre class="CodeRay highlight nowrap"><code>{&quot;page&quot;:0,&quot;totalPages&quot;:1,&quot;content&quot;:[{&quot;jobUUID&quot;:&quot;1b157009-56eb-46b0-a43f-8f5b88c4fd47&quot;,&quot;executedBy&quot;:&quot;User1&quot;,&quot;created&quot;:&quot;2024-01-29T09:45:46.365530902&quot;,&quot;started&quot;:&quot;2024-01-29T09:47:46.365560697&quot;,&quot;ended&quot;:&quot;2024-01-29T10:02:46.365570876&quot;,&quot;executionState&quot;:&quot;ENDED&quot;,&quot;trafficLight&quot;:&quot;GREEN&quot;,&quot;executionResult&quot;:&quot;OK&quot;,&quot;metaData&quot;:{&quot;labels&quot;:{&quot;stage&quot;:&quot;test&quot;}}}]}</code></pre>
 </div>
 </div>
 <div style="page-break-after: always;"></div>
@@ -10761,30 +11525,15 @@ The filter works as an AND combination: Only jobs having all wanted label key va
 <h2 id="section-sechub-reporting">3. Reporting</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>This chapter describes the different SecHub reports and how to read them.</p>
+<p>This chapter describes the different SecHub report types and how to read them.</p>
 </div>
 <div class="paragraph">
-<p>At the moment SecHub only provides job reports and no cumulated reports.
-Job reports do only contain information of exact one scan job done by SecHub.</p>
-</div>
-<div class="admonitionblock tip">
-<table>
-<tr>
-<td class="icon">
-<i class="fa icon-tip" title="Tip"></i>
-</td>
-<td class="content">
-If you want to have management summaries you could store downloaded JSON job reports
- , process data and provide those reports by your own - or you wait while this
- becomes part of SecHub.
-</td>
-</tr>
-</table>
+<p>Job reports do only contain information of exact one scan job done by SecHub.</p>
 </div>
 <div class="sect2">
 <h3 id="job-reports">3.1. Job reports</h3>
 <div class="paragraph">
-<p>With SecHub users are able to download their results for finished scan jobs. SecHub provides these
+<p>Users can download the results of their finished scan jobs. SecHub provides these
 report formats:</p>
 </div>
 <div class="ulist">
@@ -10795,8 +11544,7 @@ human friendly report variant with less details</p>
 </li>
 <li>
 <p>JSON<br>
-as a machine readable format, usable for SecHub client to determine to break build. Will also be
-the base for planned development of IDE plugins (<code>Eclipse</code>, <code>IntelliJ</code>, <code>VSCode</code>)</p>
+as an also machine readable format. It can be directly used by the SecHub IDE plugins (<a href="https://github.com/mercedes-benz/sechub-plugin-eclipse">Eclipse</a>, <a href="https://github.com/mercedes-benz/sechub-plugin-intellij">IntelliJ</a>, <a href="https://github.com/mercedes-benz/sechub-plugin-vscode">VSCode/Codium</a>)</p>
 </li>
 <li>
 <p>SPDX JSON</p>
@@ -10806,13 +11554,11 @@ the base for planned development of IDE plugins (<code>Eclipse</code>, <code>Int
 <div class="sect3">
 <h4 id="html">3.1.1. HTML</h4>
 <div class="paragraph">
-<p>The main purpose for the HTML report is to have a human friendly report which gives you a fast overview
-to your current situation.</p>
+<p>The main purpose for the HTML report is to have a human friendly report which gives you a fast overview.</p>
 </div>
-<div class="ulist">
-<ul>
-<li>
-<p>At the left top corner you see a traffic light showing either</p>
+<div class="paragraph">
+<p>At the top left corner you see a traffic light showing either</p>
+</div>
 <div class="ulist">
 <ul>
 <li>
@@ -10823,9 +11569,6 @@ to your current situation.</p>
 </li>
 <li>
 <p>RED.</p>
-</li>
-</ul>
-</div>
 </li>
 </ul>
 </div>
@@ -12012,14 +12755,14 @@ build will break.</p>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">2</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">upload binaries</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">upload sourcecode</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">ROLE_SUPERADMIN, ROLE_USER</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">2</p></td>
 <td class="tableblock halign-left valign-top"></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">2</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">upload sourcecode</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">upload binaries</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">ROLE_SUPERADMIN, ROLE_USER</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">3</p></td>
 <td class="tableblock halign-left valign-top"></td>
@@ -12033,14 +12776,14 @@ build will break.</p>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">4</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">get job status</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">download job report and traffic light</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">ROLE_SUPERADMIN, ROLE_USER</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">4</p></td>
 <td class="tableblock halign-left valign-top"></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">4</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">download job report and traffic light</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">get job status</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">ROLE_SUPERADMIN, ROLE_USER</p></td>
 <td class="tableblock halign-left valign-top"></td>
 <td class="tableblock halign-left valign-top"></td>
@@ -12263,17 +13006,17 @@ For example a user must have a project assigned to be able to scan on it!</p>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">2</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Assign user</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">ROLE_SUPERADMIN</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Update schedule authorization parts</p></td>
+<td class="tableblock halign-left valign-top"></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">2</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The service will add the user to the project. If user does not have ROLE_USER it will obtain it</p></td>
+<td class="tableblock halign-left valign-top"></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">2</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Update schedule authorization parts</p></td>
-<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Assign user</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">ROLE_SUPERADMIN</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">3</p></td>
-<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The service will add the user to the project. If user does not have ROLE_USER it will obtain it</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">3</p></td>
@@ -12362,24 +13105,24 @@ For example a user must have a project assigned to be able to scan on it!</p>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">2</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Update authorization parts</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">2</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">2</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Update authorization parts</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">2</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">2</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Unassign user</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">ROLE_SUPERADMIN</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">2</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The service will remove the user to the project. If users has no longer access to projects ROLE_USER will be removed</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">2</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Update authorization parts</p></td>
-<td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">2</p></td>
-<td class="tableblock halign-left valign-top"></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">2</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Update authorization parts</p></td>
-<td class="tableblock halign-left valign-top"></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">4</p></td>
-<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The service will remove the user to the project. If users has no longer access to projects ROLE_USER will be removed</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">4</p></td>
@@ -13192,14 +13935,14 @@ user signup is accepted by admin.</p>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Service call</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">ROLE_SUPERADMIN</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">2</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Sends request to scheduler to send updates about current status.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Sends request to scheduler domain to disable scheduler job processing</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">2</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Service call</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">ROLE_SUPERADMIN</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">3</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Sends request to scheduler domain to disable scheduler job processing</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Sends request to scheduler to send updates about current status.</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">3</p></td>
@@ -15734,7 +16477,7 @@ than one. In this case the returned entries are ordered by creation date.</p>
 <h6 id="diagram">4.1.73.1.1. Diagram</h6>
 <div class="imageblock">
 <div class="content">
-<img src="images/gen_domain_messaging_overview.svg" alt="Sequence diagram of messaging overview" width="921" height="3866">
+<img src="images/gen_domain_messaging_overview.svg" alt="Sequence diagram of messaging overview" width="955" height="3866">
 </div>
 </div>
 </div>
@@ -15911,7 +16654,7 @@ than one. In this case the returned entries are ordered by creation date.</p>
 <h5 id="section-gen-messaging-auto_cleanup_configuration_changed">4.1.73.3. Message AUTO_CLEANUP_CONFIGURATION_CHANGED</h5>
 <div class="imageblock">
 <div class="content">
-<img src="images/gen_domain_messaging_auto_cleanup_configuration_changed.svg" alt="Sequence diagram of messaging AUTO_CLEANUP_CONFIGURATION_CHANGED" width="1119" height="234">
+<img src="images/gen_domain_messaging_auto_cleanup_configuration_changed.svg" alt="Sequence diagram of messaging AUTO_CLEANUP_CONFIGURATION_CHANGED" width="1140" height="234">
 </div>
 </div>
 <div class="admonitionblock note">
@@ -15948,7 +16691,7 @@ than one. In this case the returned entries are ordered by creation date.</p>
 <h5 id="section-gen-messaging-job_cancellation_running">4.1.73.5. Message JOB_CANCELLATION_RUNNING</h5>
 <div class="imageblock">
 <div class="content">
-<img src="images/gen_domain_messaging_job_cancellation_running.svg" alt="Sequence diagram of messaging JOB_CANCELLATION_RUNNING" width="835" height="205">
+<img src="images/gen_domain_messaging_job_cancellation_running.svg" alt="Sequence diagram of messaging JOB_CANCELLATION_RUNNING" width="859" height="205">
 </div>
 </div>
 </div>
@@ -16193,7 +16936,7 @@ than one. In this case the returned entries are ordered by creation date.</p>
 <h5 id="section-gen-messaging-project_access_level_changed">4.1.73.18. Message PROJECT_ACCESS_LEVEL_CHANGED</h5>
 <div class="imageblock">
 <div class="content">
-<img src="images/gen_domain_messaging_project_access_level_changed.svg" alt="Sequence diagram of messaging PROJECT_ACCESS_LEVEL_CHANGED" width="824" height="205">
+<img src="images/gen_domain_messaging_project_access_level_changed.svg" alt="Sequence diagram of messaging PROJECT_ACCESS_LEVEL_CHANGED" width="868" height="205">
 </div>
 </div>
 </div>
@@ -16209,7 +16952,7 @@ than one. In this case the returned entries are ordered by creation date.</p>
 <h5 id="section-gen-messaging-project_deleted">4.1.73.20. Message PROJECT_DELETED</h5>
 <div class="imageblock">
 <div class="content">
-<img src="images/gen_domain_messaging_project_deleted.svg" alt="Sequence diagram of messaging PROJECT_DELETED" width="880" height="234">
+<img src="images/gen_domain_messaging_project_deleted.svg" alt="Sequence diagram of messaging PROJECT_DELETED" width="877" height="234">
 </div>
 </div>
 </div>
@@ -16426,7 +17169,7 @@ than one. In this case the returned entries are ordered by creation date.</p>
 <h5 id="section-gen-messaging-request_user_role_recalculation">4.1.73.31. Message REQUEST_USER_ROLE_RECALCULATION</h5>
 <div class="imageblock">
 <div class="content">
-<img src="images/gen_domain_messaging_request_user_role_recalculation.svg" alt="Sequence diagram of messaging REQUEST_USER_ROLE_RECALCULATION" width="2237" height="380">
+<img src="images/gen_domain_messaging_request_user_role_recalculation.svg" alt="Sequence diagram of messaging REQUEST_USER_ROLE_RECALCULATION" width="2280" height="380">
 </div>
 </div>
 <div class="admonitionblock note">
@@ -16477,7 +17220,7 @@ than one. In this case the returned entries are ordered by creation date.</p>
 <h5 id="section-gen-messaging-scheduler_job_processing_disabled">4.1.73.34. Message SCHEDULER_JOB_PROCESSING_DISABLED</h5>
 <div class="imageblock">
 <div class="content">
-<img src="images/gen_domain_messaging_scheduler_job_processing_disabled.svg" alt="Sequence diagram of messaging SCHEDULER_JOB_PROCESSING_DISABLED" width="912" height="205">
+<img src="images/gen_domain_messaging_scheduler_job_processing_disabled.svg" alt="Sequence diagram of messaging SCHEDULER_JOB_PROCESSING_DISABLED" width="972" height="205">
 </div>
 </div>
 <div class="admonitionblock note">
@@ -16506,7 +17249,7 @@ than one. In this case the returned entries are ordered by creation date.</p>
 <h5 id="section-gen-messaging-scheduler_job_processing_enabled">4.1.73.35. Message SCHEDULER_JOB_PROCESSING_ENABLED</h5>
 <div class="imageblock">
 <div class="content">
-<img src="images/gen_domain_messaging_scheduler_job_processing_enabled.svg" alt="Sequence diagram of messaging SCHEDULER_JOB_PROCESSING_ENABLED" width="908" height="205">
+<img src="images/gen_domain_messaging_scheduler_job_processing_enabled.svg" alt="Sequence diagram of messaging SCHEDULER_JOB_PROCESSING_ENABLED" width="968" height="205">
 </div>
 </div>
 <div class="admonitionblock note">
@@ -16551,7 +17294,7 @@ than one. In this case the returned entries are ordered by creation date.</p>
 <h5 id="section-gen-messaging-scheduler_status_update">4.1.73.38. Message SCHEDULER_STATUS_UPDATE</h5>
 <div class="imageblock">
 <div class="content">
-<img src="images/gen_domain_messaging_scheduler_status_update.svg" alt="Sequence diagram of messaging SCHEDULER_STATUS_UPDATE" width="658" height="176">
+<img src="images/gen_domain_messaging_scheduler_status_update.svg" alt="Sequence diagram of messaging SCHEDULER_STATUS_UPDATE" width="681" height="176">
 </div>
 </div>
 </div>
@@ -16567,7 +17310,7 @@ than one. In this case the returned entries are ordered by creation date.</p>
 <h5 id="section-gen-messaging-start_scan">4.1.73.40. Message START_SCAN</h5>
 <div class="imageblock">
 <div class="content">
-<img src="images/gen_domain_messaging_start_scan.svg" alt="Sequence diagram of messaging START_SCAN" width="485" height="353">
+<img src="images/gen_domain_messaging_start_scan.svg" alt="Sequence diagram of messaging START_SCAN" width="555" height="353">
 </div>
 </div>
 <div class="admonitionblock note">
@@ -16607,7 +17350,7 @@ than one. In this case the returned entries are ordered by creation date.</p>
 <h5 id="section-gen-messaging-user_added_to_project">4.1.73.42. Message USER_ADDED_TO_PROJECT</h5>
 <div class="imageblock">
 <div class="content">
-<img src="images/gen_domain_messaging_user_added_to_project.svg" alt="Sequence diagram of messaging USER_ADDED_TO_PROJECT" width="735" height="205">
+<img src="images/gen_domain_messaging_user_added_to_project.svg" alt="Sequence diagram of messaging USER_ADDED_TO_PROJECT" width="748" height="205">
 </div>
 </div>
 <div class="admonitionblock note">
@@ -16636,7 +17379,7 @@ than one. In this case the returned entries are ordered by creation date.</p>
 <h5 id="section-gen-messaging-user_api_token_changed">4.1.73.43. Message USER_API_TOKEN_CHANGED</h5>
 <div class="imageblock">
 <div class="content">
-<img src="images/gen_domain_messaging_user_api_token_changed.svg" alt="Sequence diagram of messaging USER_API_TOKEN_CHANGED" width="1068" height="234">
+<img src="images/gen_domain_messaging_user_api_token_changed.svg" alt="Sequence diagram of messaging USER_API_TOKEN_CHANGED" width="1153" height="234">
 </div>
 </div>
 </div>
@@ -16681,7 +17424,7 @@ than one. In this case the returned entries are ordered by creation date.</p>
 <h5 id="section-gen-messaging-user_deleted">4.1.73.46. Message USER_DELETED</h5>
 <div class="imageblock">
 <div class="content">
-<img src="images/gen_domain_messaging_user_deleted.svg" alt="Sequence diagram of messaging USER_DELETED" width="1026" height="264">
+<img src="images/gen_domain_messaging_user_deleted.svg" alt="Sequence diagram of messaging USER_DELETED" width="1015" height="264">
 </div>
 </div>
 </div>
@@ -16697,7 +17440,7 @@ than one. In this case the returned entries are ordered by creation date.</p>
 <h5 id="section-gen-messaging-user_new_api_token_requested">4.1.73.48. Message USER_NEW_API_TOKEN_REQUESTED</h5>
 <div class="imageblock">
 <div class="content">
-<img src="images/gen_domain_messaging_user_new_api_token_requested.svg" alt="Sequence diagram of messaging USER_NEW_API_TOKEN_REQUESTED" width="964" height="205">
+<img src="images/gen_domain_messaging_user_new_api_token_requested.svg" alt="Sequence diagram of messaging USER_NEW_API_TOKEN_REQUESTED" width="871" height="205">
 </div>
 </div>
 <div class="admonitionblock note">
@@ -16734,7 +17477,7 @@ than one. In this case the returned entries are ordered by creation date.</p>
 <h5 id="section-gen-messaging-user_removed_from_project">4.1.73.50. Message USER_REMOVED_FROM_PROJECT</h5>
 <div class="imageblock">
 <div class="content">
-<img src="images/gen_domain_messaging_user_removed_from_project.svg" alt="Sequence diagram of messaging USER_REMOVED_FROM_PROJECT" width="780" height="205">
+<img src="images/gen_domain_messaging_user_removed_from_project.svg" alt="Sequence diagram of messaging USER_REMOVED_FROM_PROJECT" width="802" height="205">
 </div>
 </div>
 <div class="admonitionblock note">
@@ -16830,7 +17573,7 @@ than one. In this case the returned entries are ordered by creation date.</p>
 </div>
 <div id="footer">
 <div id="footer-text">
- Server 0.43.0<br>
+ Server 1.4.1 modified (commit aa28120)<br>
 </div>
 </div>
 </body>

@@ -21,8 +21,8 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 
-import com.mercedesbenz.sechub.pds.PDSJSONConverter;
 import com.mercedesbenz.sechub.pds.PDSProfiles;
+import com.mercedesbenz.sechub.pds.commons.core.PDSJSONConverter;
 import com.mercedesbenz.sechub.pds.security.AbstractAllowPDSAPISecurityConfiguration;
 import com.mercedesbenz.sechub.pds.security.PDSRoleConstants;
 import com.mercedesbenz.sechub.test.TestPortProvider;

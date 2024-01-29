@@ -1,0 +1,52 @@
+// SPDX-License-Identifier: MIT
+ /*============================================================================
+ * Build file for subproject sechub-api-java
+ *
+ * Root build file: "${rootProject.projectDir}/build.gradle"
+ * ============================================================================
+ */
+ext {
+    jersey_version = "2.35"
+    jackson_version = "2.13.2"
+    jackson_databind_version = "2.13.2.2"
+    jackson_databind_nullable_version = "0.2.3"
+}
+
+dependencies {
+    // The production code uses the SLF4J logging API at compile time
+    implementation spring_boot_dependency.slf4j_api
+    implementation spring_boot_dependency.jackson_core
+    implementation spring_boot_dependency.jackson_databind
+    
+    implementation project(':sechub-commons-model')
+    
+    implementation library.apache_httpcomponents_client
+
+    testImplementation spring_boot_dependency.junit_jupiter
+
+    testImplementation spring_boot_dependency.mockito_core
+    testImplementation library.mockito_inline
+    testImplementation spring_boot_dependency.hamcrest
+
+    implementation library.jcommander
+    implementation spring_boot_dependency.logback_classic
+    
+    // later we can use here jitpack or other maven dependency (when published)
+	implementation project(':sechub-api-java') 
+}
+
+task buildOpenAPITestTool(type: Jar, dependsOn: build) {
+    group 'sechub'
+    description 'Builds the SecHub Open API CLI test tool.'
+    archiveBaseName = 'sechub-OpenAPI-TestTool'
+
+    manifest {
+        attributes 'Main-Class': 'com.mercedesbenz.sechub.api.java.demo.OpenAPITestTool'
+    }
+
+    from {
+        configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) }
+    }
+    duplicatesStrategy = DuplicatesStrategy.INCLUDE
+    with jar
+}

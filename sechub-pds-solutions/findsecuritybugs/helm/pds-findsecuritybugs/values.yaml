@@ -5,80 +5,80 @@
 replicaCount: 1
 
 image:
-    registry: "my.registry.example.org/pds_findsecuritybugs"
-    tag: "latest"
+  registry: "ghcr.io/mercedes-benz/sechub/pds-findsecuritybugs"
+  tag: "latest"
 
 resources:
-    requests:
-        # Initial container memory size
-        memory: 256Mi
-    limits:
-        # Maximum container memory size
-        memory: 1Gi
+  requests:
+    # Initial container memory size
+    memory: 256Mi
+  limits:
+    # Maximum container memory size
+    memory: 1Gi
 
 pds:
-    startMode: localserver
-    # Maximum upload size: 100 MiB by default (100 * 1024 * 1024 = 104857600)
-    uploadMaximumBytes: "104857600"
-    config:
-        execute:
-            # Maximal accepted queue size (new job requests will be denied and thus cached on SecHub server)
-            queueMax: 10
-            # Maximum number of jobs that are processed in parallel by PDS
-            workerThreadCount: 5
-    volumes:
-        workspace:
-            size: "1Gi"
-    heartbeatLogging: "true"
-    javaDebug:
-        enabled: false
-    keepContainerAliveAfterPDSCrashed: false
-    logging:
-        type:
-            enabled: false
-            appenderName: "LOGSTASH_JSON"
+  startMode: localserver
+  # Maximum upload size: 100 MiB by default (100 * 1024 * 1024 = 104857600)
+  uploadMaximumBytes: "104857600"
+  config:
+    execute:
+      # Maximal accepted queue size (new job requests will be denied and thus cached on SecHub server)
+      queueMax: 10
+      # Maximum number of jobs that are processed in parallel by PDS
+      workerThreadCount: 5
+  volumes:
+    workspace:
+      size: "1Gi"
+  heartbeatLogging: "true"
+  javaDebug:
+    enabled: false
+  keepContainerAliveAfterPDSCrashed: false
+  logging:
+    type:
+      enabled: false
+      appenderName: "LOGSTASH_JSON"
 
 users:
+  technical:
     # PDS user for scanning
-    technical:
-        id: "techuser"
-        apiToken: "<api token of techuser>"
+    id: "techuser"
+    apiToken: "<api token of techuser>"
+  admin:
     # PDS user with admin permissions
-    admin:
-        id: "admin"
-        apiToken: "<api token of admin user>"
+    id: "admin"
+    apiToken: "<api token of admin user>"
 
 storage:
-    local:
-        enabled: true
-    s3:
-        enabled: false
-        endpoint: "https://<minio-or-s3-server>:<port>"
-        bucketname: "<my-bucketname>"
-        accesskey: "<my-accesskey>"
-        secretkey: "<my-secretkey>"
-    sharedVolume:
-        enabled: false
-        upload:
-            dir: "/mount/nfs/shares/<sharename>"
+  local:
+    enabled: true
+  s3:
+    enabled: false
+    endpoint: "https://<minio-or-s3-server>:<port>"
+    bucketname: "<my-bucketname>"
+    accesskey: "<my-accesskey>"
+    secretkey: "<my-secretkey>"
+  sharedVolume:
+    enabled: false
+    upload:
+      dir: "/mount/nfs/shares/<sharename>"
 
 database:
-    postgres:
-        enabled: false
-        connection: "jdbc:postgresql://database:5432/pds"
-        username: "pds_findsecuritybugs"
-        password: "<password-of-db-user>"
+  postgres:
+    enabled: false
+    connection: "jdbc:postgresql://database:5432/pds"
+    username: "pds_findsecuritybugs"
+    password: "<password-of-db-user>"
 
 networkPolicy:
-    enabled: false
-    ingress:
-        - from:
-            - podSelector:
-                matchLabels:
-                    name: sechub-server
-            - podSelector:
-                matchLabels:
-                    name: sechub-adminserver
+  enabled: false
+  ingress:
+    - from:
+      - podSelector:
+          matchLabels:
+            name: sechub-server
+      - podSelector:
+          matchLabels:
+            name: sechub-adminserver
 
 # deploymentComment (optional):
 #  When setting to a different value than before, it forces k8s to spin up a new container.

@@ -11,8 +11,8 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.mercedesbenz.sechub.commons.pds.data.PDSJobStatusState;
-import com.mercedesbenz.sechub.pds.PDSJSONConverter;
-import com.mercedesbenz.sechub.pds.PDSJSONConverterException;
+import com.mercedesbenz.sechub.pds.commons.core.PDSJSONConverter;
+import com.mercedesbenz.sechub.pds.commons.core.PDSJSONConverterException;
 
 /**
  * This class represents the schedule job status which can be obtained by REST

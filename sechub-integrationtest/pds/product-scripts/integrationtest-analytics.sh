@@ -30,5 +30,5 @@ if [[ "$PDS_JOB_HAS_EXTRACTED_SOURCES" = "false" ]]; then
 fi
 
 ## Return a CLOC file as a result
-cp "./../sechub-integrationtest/src/test/resources/pds/analytics/cloc-output-1.json" $PDS_JOB_RESULT_FILE
+cp "./../sechub-integrationtest/src/test/resources/pds/analytics/cloc-output-1.json" "$PDS_JOB_RESULT_FILE"
 

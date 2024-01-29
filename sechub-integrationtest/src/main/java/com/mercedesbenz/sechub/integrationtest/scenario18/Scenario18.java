@@ -16,7 +16,7 @@ import com.mercedesbenz.sechub.integrationtest.internal.PDSTestScenario;
  * from SecHub side to PDS with event handling of CANCEL_REQUESTED on PDS script
  * side.
  *
- * <h4>Overview</h4> For a glance over all scenarios, look at
+ * <h4>Overview</h4> For an overview over all scenarios, look at
  * {@link com.mercedesbenz.sechub.integrationtest.internal.IntegrationTestDataOverview
  * Overview}
  *

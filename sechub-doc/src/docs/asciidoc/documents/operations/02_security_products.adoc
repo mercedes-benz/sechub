@@ -44,9 +44,9 @@ This solution does integrate multiple SAST tools:
 
 It can be found at https://github.com/mercedes-benz/sechub/tree/develop/sechub-pds-solutions/multi
 
-===== Owasp-Zap
+===== OWASP ZAP
 This solution does integrate the https://www.zaproxy.org/ (web application scanner) - please look at
-https://github.com/mercedes-benz/sechub/blob/develop/sechub-pds-solutions/owasp-zap/
+https://github.com/mercedes-benz/sechub/blob/develop/sechub-pds-solutions/owaspzap/
 
 ===== PMD
 https://pmd.github.io/ stand normally for quality checks, but it does also provide some security check mechanism. The integration can be found at

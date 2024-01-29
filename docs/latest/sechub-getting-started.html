@@ -531,7 +531,7 @@ table.CodeRay td.code{padding:0 0 0 .75em}
 <div id="header">
 <h1><span class="image"><img src="images/sechub-logo.png" alt="sechub"></span> SecHub Getting Started Guide</h1>
 <div class="details">
-<span id="revnumber"> Server 0.43.0</span>
+<span id="revnumber"> Server 1.4.1 modified (commit aa28120)</span>
 </div>
 <div id="toc" class="toc2">
 <div id="toctitle">Table of contents</div>
@@ -545,8 +545,9 @@ table.CodeRay td.code{padding:0 0 0 .75em}
 <li><a href="#start-sechub-server">1.2.2. Start SecHub Server</a></li>
 <li><a href="#start-gosecpds-server">1.2.3. Start GoSec+PDS Server</a></li>
 <li><a href="#setup-project">1.2.4. Setup Project</a></li>
-<li><a href="#scanning">1.2.5. Scanning</a></li>
-<li><a href="#install-sechubs-vscodium-plugin-optional">1.2.6. Install Sechub&#8217;s VSCodium Plugin (OPTIONAL)</a></li>
+<li><a href="#install-sechub-client">1.2.5. Install SecHub client</a></li>
+<li><a href="#scanning">1.2.6. Scanning</a></li>
+<li><a href="#install-sechubs-vscodium-plugin-optional">1.2.7. Install SecHub&#8217;s VSCodium Plugin (OPTIONAL)</a></li>
 </ul>
 </li>
 </ul>
@@ -634,7 +635,7 @@ build pipeline / contionus integration (CI) and helps to provide
 </tbody>
 </table>
 <div class="paragraph">
-<p>Documentation version: <code>Server 0.43.0-20230602134927</code></p>
+<p>Documentation version: <code>Server 1.4.1 modified (commit aa28120) - Build date: 20240129100221</code></p>
 </div>
 </div>
 </div>
@@ -667,7 +668,7 @@ build pipeline / contionus integration (CI) and helps to provide
 <div class="title">Figure 1. Setup Overview</div>
 </div>
 <div class="paragraph">
-<p>This Diagram roughly explains how Sechub functions, behind the scenes.</p>
+<p>This Diagram roughly explains how SecHub functions, behind the scenes.</p>
 </div>
 <div class="admonitionblock note">
 <table>
@@ -699,6 +700,12 @@ It should also work on different Linux distributions.</p>
 </li>
 <li>
 <p>git</p>
+</li>
+<li>
+<p>jq</p>
+</li>
+<li>
+<p><a href="https://github.com/mercedes-benz/sechub/releases">SecHub Client</a></p>
 </li>
 </ul>
 </div>
@@ -736,7 +743,7 @@ cd sechub</code></pre>
 <div class="sect3">
 <h4 id="start-sechub-server">1.2.2. Start SecHub Server</h4>
 <div class="paragraph">
-<p>The Sechub server is responsible for taking jobs and passing them to the PDS server for processing. Once the job finishes on the PDS side, they are fetched and processed by SecHub<br></p>
+<p>The SecHub server is responsible for taking jobs and passing them to the PDS server for processing. Once the job finishes on the PDS side, they are fetched and processed by SecHub<br></p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -752,6 +759,9 @@ cd sechub</code></pre>
 <div class="paragraph">
 <p>The PDS server, which contains the security tool <a href="https://securego.io/">GoSec</a>, will check the actual code for vulnerabilities and output a result of them.</p>
 </div>
+<div class="paragraph">
+<p>Start another terminal in the root directory of SecHub and type:</p>
+</div>
 <div class="listingblock">
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="shell">./sechub-pds-solutions/gosec/05-start-single-sechub-network-docker-compose.sh</code></pre>
@@ -765,7 +775,7 @@ cd sechub</code></pre>
 <h4 id="setup-project">1.2.4. Setup Project</h4>
 <div class="paragraph">
 <p>After starting all servers, some environment variables have to be set. Specifically <code>SECHUB_SERVER</code>, <code>SECHUB_USERID</code>, <code>SECHUB_APITOKEN</code>, <code>SECHUB_TRUSTALL</code> and SecHub&#8217;s CLI tools have to be added to the <code>PATH</code> variable to be able to do scans.
-Here we set local credentials because everything is hosted locally:</p>
+In another, we set local credentials because everything is hosted locally:</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -840,15 +850,15 @@ HTTP/1.1 201
             &quot;value&quot;: &quot;true&quot;
           },
           {
-            &quot;key&quot;: &quot;pds.productexecutor.timeout.minutes&quot;,
+            &quot;key&quot;: &quot;sechub.productexecutor.pds.timeout.minutes&quot;,
             &quot;value&quot;: &quot;60&quot;
           },
           {
-            &quot;key&quot;: &quot;pds.productexecutor.timetowait.nextcheck.milliseconds&quot;,
+            &quot;key&quot;: &quot;sechub.productexecutor.pds.timetowait.nextcheck.milliseconds&quot;,
             &quot;value&quot;: &quot;500&quot;
           },
           {
-            &quot;key&quot;: &quot;pds.productexecutor.trustall.certificates&quot;,
+            &quot;key&quot;: &quot;sechub.productexecutor.pds.trustall.certificates&quot;,
             &quot;value&quot;: &quot;true&quot;
           }
         ]
@@ -876,7 +886,40 @@ Setup of GoSec complete:
 </div>
 </div>
 <div class="sect3">
-<h4 id="scanning">1.2.5. Scanning</h4>
+<h4 id="install-sechub-client">1.2.5. Install SecHub client</h4>
+<div class="paragraph">
+<p>The SecHub client is needed to scan. In later sections of this guide, the client is used to scan an example. The command below, will download the latest version and put it in your <code>/usr/local/bin</code> folder.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="bash"># Get latest version
+CLIENT_VERSION=`curl -s https://mercedes-benz.github.io/sechub/latest/client-download.html | grep https://github.com/mercedes-benz/sechub/ | awk -F '-' '{print $NF}' | sed 's/.zip&quot;&gt;//'`
+
+# Download the zipped binary
+curl -L -o sechub-cli.zip https://github.com/mercedes-benz/sechub/releases/download/v$CLIENT_VERSION-client/sechub-cli-$CLIENT_VERSION.zip
+
+# Verify the binary
+curl -L -o sechub-cli.zip.sha256 https://github.com/mercedes-benz/sechub/releases/download/v$CLIENT_VERSION-client/sechub-cli-$CLIENT_VERSION.zip.sha256
+sha256sum --check sechub-cli.zip.sha256
+
+# Extract
+unzip sechub-cli.zip
+
+# Depending on your architecture and OS, you will have to copy a different binary file:
+# For linux x86-64
+sudo cp platform/linux-amd64/sechub /usr/local/bin
+
+# For linux arm-64
+sudo cp platform/linux-arm64/sechub /usr/local/bin
+
+
+# Cleanup
+rm -rf sechub-cli.zip.sha256 sechub-cli.zip platform/</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="scanning">1.2.6. Scanning</h4>
 <div class="paragraph">
 <p>Now you can go to another project&#8217;s directory and do a scan for vulnerabilities.
 In this example, we will use <a href="https://github.com/Jeeppler/vulnerable-go">vulnerable-go</a>, but you are free to use any other project!</p>
@@ -984,9 +1027,9 @@ In this example, we will use <a href="https://github.com/Jeeppler/vulnerable-go"
 </div>
 </div>
 <div class="sect3">
-<h4 id="install-sechubs-vscodium-plugin-optional">1.2.6. Install Sechub&#8217;s VSCodium Plugin (OPTIONAL)</h4>
+<h4 id="install-sechubs-vscodium-plugin-optional">1.2.7. Install SecHub&#8217;s VSCodium Plugin (OPTIONAL)</h4>
 <div class="paragraph">
-<p>Sechub&#8217;s VSCodium Plugin helps you better visualize where the vulnerabilities in your code are located.
+<p>SecHub&#8217;s VSCodium Plugin helps you to work faster with the SecHub report.
 You can go to the exact code line and fix the problem.</p>
 </div>
 <div class="paragraph">
@@ -1002,7 +1045,7 @@ You can go to the exact code line and fix the problem.</p>
 </div>
 <div id="footer">
 <div id="footer-text">
- Server 0.43.0<br>
+ Server 1.4.1 modified (commit aa28120)<br>
 </div>
 </div>
 </body>

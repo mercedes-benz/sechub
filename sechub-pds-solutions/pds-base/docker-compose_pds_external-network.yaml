@@ -1,0 +1,33 @@
+# SPDX-License-Identifier: MIT
+
+version: "3"
+services:
+  pds:
+    build:
+      args:
+        - BASE_IMAGE=${BASE_IMAGE}
+        - BUILD_TYPE=${BUILD_TYPE}
+        - PDS_VERSION=${PDS_VERSION}
+        - JAVA_VERSION=${JAVA_VERSION}
+        - GO=${GO}
+        - TAG=${TAG}
+        - BRANCH=${BRANCH}
+      context: docker/
+      dockerfile: PDS-Debian.dockerfile
+    container_name: pds
+    env_file:
+      - .env
+      - .env-single
+    ports:
+      - "127.0.0.1:8444:8444"
+      - "127.0.0.1:15024:15024"
+    networks:
+      - "sechub"
+    volumes:
+      - ./docker/scripts:/pds/scripts
+      - ./docker/mocks:/pds/mocks
+
+networks:
+  sechub:
+    external: true
+    name: "sechub"

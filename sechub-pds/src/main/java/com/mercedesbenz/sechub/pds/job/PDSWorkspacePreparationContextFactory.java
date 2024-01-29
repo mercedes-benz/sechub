@@ -15,7 +15,7 @@ import com.mercedesbenz.sechub.commons.model.SecHubConfigurationModelSupport;
 import com.mercedesbenz.sechub.commons.model.SecHubDataConfigurationType;
 import com.mercedesbenz.sechub.commons.pds.PDSDefaultParameterKeyConstants;
 import com.mercedesbenz.sechub.commons.pds.PDSDefaultParameterValueConstants;
-import com.mercedesbenz.sechub.pds.config.PDSProductSetup;
+import com.mercedesbenz.sechub.pds.commons.core.config.PDSProductSetup;
 import com.mercedesbenz.sechub.pds.config.PDSServerConfigurationService;
 
 @Component

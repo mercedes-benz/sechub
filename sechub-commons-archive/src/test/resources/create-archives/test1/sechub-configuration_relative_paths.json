@@ -1,0 +1,37 @@
+{
+  "apiVersion" : "1.0",
+  "data" : {
+    "binaries" : [ {
+      "name" : "bin-reference-example2",
+      "fileSystem" : {
+        "folders" : [ "./bin-ref2-folder1" ],
+        "files" : [ "./bin-file-reference.txt" ]
+      }
+    }, {
+      "name" : "bin-reference-example3",
+      "fileSystem" : {
+        "folders" : [ "./bin-ref3-folder1" ],
+        "files" : [ "./bin-file-reference.txt" ]
+      }
+    } ],
+    "sources" : [ {
+      "name" : "source-reference-example1",
+      "fileSystem" : {
+        "folders" : [ "./source-ref1-folder" ],
+        "files" : [ "./src-file-reference1.txt", "./src-file-reference2.txt" ]
+      },
+      "excludes" : [ "**/filtered-folder/**", "must-not-be-contained.*" ]
+    } ]
+  },
+  "codeScan" : {
+    "use" : [ "source-reference-example1" ],
+    "fileSystem" : {
+      "folders" : [ "./legacy", "./legacy2" ],
+      "files" : [ "./legacy-file3.txt" ]
+    },
+    "excludes" : [ "**/filtered-folder/**", "must-not-be-contained.*" ]
+  },
+  "licenseScan" : {
+    "use" : [ "bin-reference-example2" ]
+  }
+}

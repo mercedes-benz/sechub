@@ -76,6 +76,11 @@ subprojects{
     }
     
     test {
+        filter {
+             excludeTestsMatching "*ManualTest"
+             excludeTestsMatching "*IntTest"
+        }
+
 	    /* Per default GRADLE stops the build if one single test fails. We want to have all tests executed. */
         ignoreFailures = true
         
@@ -92,7 +97,7 @@ subprojects{
             'sechub.test.s3mock.https.port' ])
         
         systemProperty 'sechub.build.gradle', 'true' // we can use this to check for gradle build inside java tests
- 
+        
         // add a collection to track failedTests
         ext.failedTests = []
         
@@ -142,8 +147,11 @@ subprojects{
 		archives sourcesJar
 		archives javadocJar
 	}
-
+    
 }
+
+
+
 
 allprojects {
         if(! project.name.equals(rootProject.name) ) {

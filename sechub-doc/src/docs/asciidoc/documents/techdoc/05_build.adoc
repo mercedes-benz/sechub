@@ -12,34 +12,94 @@ We use `github-actions` for CI which gives us a quick response at
 
 include::./../buildserver/jenkins-pipeline.adoc[]
 
+=== Build stages
+Builds stages were introduced because of a problematic build dependency situation when it comes
+to Java API generation. Build stages avoid cyclic build dependencies.
+
+`sechub-api-java` uses a code generator which needs an OpenAPI file. But this file
+is only available when SecHub server and PDS projects are compiled! 
+
+plantuml::diagrams/diagram_build_lifecycle_api_problem.puml[format=svg, title="Stages"]  
+
+To switch between the stages you have to define system property `sechub.build.stage`.
+
+[TIP]
+====
+You do not need to define a build stage for "normal" SecHub development. 
+
+Only when you want to develop/build `sechub-pds-tools`, `sechub-systemtest` or the `sechub-api-java` you need to
+setup the build stage accordingly.
+====
+
+==== Kind of stages
+The build has following stages:
+
+- `without-api` (default) +
+  The build will build everything, except those gradle projects which require the OpenAPI file or the generated
+  and compiled Java API.
+  
+- `api-necessary`
+   The Gradle initialization phase does contain additionally the Gradle projects which rely on an existing OpenAPI definition
+   and/or access to build artifacts of `sechub-api-java`. This means the open file definition does already
+   exist and may not change in the build.
+
+- `all` +
+  Everything is included, no constraints at all.
+  
+  
+The logic is provided inside `BuildStage.groovy` and a snippet inside `settings.gradle`.
+In a nutshell: During the Gradle initialization phase the API related projects are only added 
+if wanted.
+
+==== Special treatment on IDE imports
+Because the API related gradle projects are not initialized per default, the IDE import mechanism
+will not automatically import gradle subprojects like `sechub-systemtest`. 
+
+For the gradle eclipse task there is a special treatment added inside `sechub-developertools/build.gradle`:
+
+===== Eclipse 
+When you execute `./gradlew eclipse` at command line the eclipse files for those projects will be generated.
+As next step import the additionally created projects manually into Eclipse ("Import -> existing projects").
+
+If you are using the Eclipse standard Gradle integration (Eclipse Buildship), the manual import step 
+is probably necessary as well.
+
+Another option is to use the https://marketplace.eclipse.org/content/egradle-ide[`EGradle`] plugin - it uses also
+`./gradlew eclipse` and does the import automatically.
+
+
+===== IntelliJ
+For IntelliJ - similar to the steps for Eclipse - you can use the gradle idea task
+`./gradlew idea -Dsechub.build.stage=all`
+
 === Gradle build commands overview
 
-=== Build Server
+==== Build Server
 Just call
 ----
 ./gradlew build
 ----
 
-=== Build Client
+==== Build Client
 Just call
 ----
 ./gradlew buildGo
 ----
 
-=== Execute integration tests
+==== Execute integration tests
 Just call
 ----
 ./gradlew integrationtest
 ----
 This will start also an integration test server
 
-=== Build Documentation
+==== Build Documentation
 Just call
 ----
 ./gradlew documentation
 ----
 
-=== Publish artefacts
+==== Publish artefacts
 Just call
 ----
 ./gradlew publish

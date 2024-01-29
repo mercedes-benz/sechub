@@ -7,7 +7,7 @@ import org.springframework.stereotype.Component;
 public class UserIdValidationImpl extends AbstractSimpleStringValidation implements UserIdValidation {
 
     public static final int USERNAME_LENGTH_MIN = 5;
-    public static final int USERNAME_LENGTH_MAX = 20;
+    public static final int USERNAME_LENGTH_MAX = 40;
 
     @Override
     protected void setup(ValidationConfig config) {

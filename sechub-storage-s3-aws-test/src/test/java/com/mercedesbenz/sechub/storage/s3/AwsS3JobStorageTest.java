@@ -134,7 +134,7 @@ class AwsS3JobStorageTest {
         IOException exception = assertThrows(IOException.class, () -> jobStorage.store(fileName, inputStream, contentLength));
 
         /* test */
-        assertEquals("Store of " + fileName + " to s3 failed", exception.getMessage());
+        assertEquals("Store of: " + fileName + " to S3 bucket: " + bucketName + " failed", exception.getMessage());
         assertEquals(exception.getCause(), amazonClientException);
 
     }

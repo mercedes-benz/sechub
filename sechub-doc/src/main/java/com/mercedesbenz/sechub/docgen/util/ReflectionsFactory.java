@@ -13,7 +13,7 @@ public class ReflectionsFactory {
 
 /* @formatter:off */
 	public static Reflections create() {
-	    /* we not create but use shard instance */
+	    /* we not create but use shared instance */
 	    return INSTANCE;
 	}
 	/* @formatter:on */

@@ -1,0 +1,74 @@
+{
+  "setup" : {
+    "local" : {
+      "secHub" : {
+        "admin" : {
+          "userId" : "${secretEnv.TEST_INTTEST_ADMIN_USERID}",
+          "apiToken" : "${secretEnv.TEST_INTTEST_ADMIN_APITOKEN}"
+        },
+        "configure" : {
+          "executors" : [ {
+            "pdsProductId" : "PDS_GOSEC",
+            "name" : "system-test-codescan-gosec",
+            "parameters" : {
+              "pds.mocking.disabled" : "true",
+              "pds.config.use.sechub.storage" : "false"
+            }
+          } ]
+        }
+      },
+      "pdsSolutions" : [ {
+        "name" : "gosec",
+        "url" : "${env.TEST_PDS_SERVER}",
+        
+        // we set this, because the PDS solution is not reachable from localhost
+        // (port not forwarded)
+        "waitForAvailable" : false,
+        
+        "start" : [ {
+          "script" : {
+            "path" : "./05-start-single-sechub-network-docker-compose.sh",
+            "arguments" : [ "alpine" ]
+          }
+        } ],
+        "stop" : [ {
+          "script" : {
+            "path" : "./05-stop-single-sechub-network-docker-compose.sh"
+          }
+        } ],
+        "techUser" : {
+          "userId" : "${secretEnv.TEST_PDS_USERID}",
+          "apiToken" : "${secretEnv.TEST_PDS_APITOKEN}"
+        }
+      } ]
+    }
+  },
+  "tests" : [ {
+    "name" : "test1",
+    "prepare" : [ {
+      "copy" : {
+        // copy sources to test folder location 
+        "from" : "./../sechub-cli/src",
+        "to" : "${runtime.currentTestFolder}/testsources/src"
+      }
+    } ],
+    "execute" : {
+      "runSecHubJob" : {
+        "uploads" : [ {
+          // we must (at least currently) use ony relative paths inside upload definitions.
+          // base directory is always the current test folder
+          "sourceFolder" : "./testsources/src"
+        } ],
+        "codeScan" : { }
+      }
+    },
+    "assert" : [ {
+      "sechubResult" : {
+        "hasTrafficLight" : "GREEN",
+        "containsStrings" : {
+          "values" : [ "MEDIUM", "ERROR", "WARNING", "INFO", "SUCCESS", "integration test code only!" ]
+        }
+      } 
+    } ]
+  } ]
+}

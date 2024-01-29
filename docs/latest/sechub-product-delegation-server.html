@@ -531,7 +531,7 @@ table.CodeRay td.code{padding:0 0 0 .75em}
 <div id="header">
 <h1><span class="image"><a class="image" href="https://mercedes-benz.github.io/sechub"><img src="images/sechub-logo.png" alt="sechub logo"></a></span> SecHub PDS Documentation</h1>
 <div class="details">
-<span id="revnumber"> PDS 0.38.0</span>
+<span id="revnumber"> PDS 1.4.0 modified (commit aa28120)</span>
 </div>
 <div id="toc" class="toc2">
 <div id="toctitle">Table of contents</div>
@@ -601,27 +601,33 @@ table.CodeRay td.code{padding:0 0 0 .75em}
 <ul class="sectlevel2">
 <li><a href="#section-pds-configuration">4.1. Configuration</a>
 <ul class="sectlevel3">
-<li><a href="#section-start-configuration">4.1.1. Minimum start configuration</a>
+<li><a href="#section-pds-ops">4.1.1. Operating the SecHub PDS</a>
 <ul class="sectlevel4">
-<li><a href="#prod-profile">4.1.1.1. PROD profile</a></li>
-<li><a href="#logging">4.1.1.2. Logging</a>
+<li><a href="#docker">4.1.1.1. Docker</a></li>
+<li><a href="#kubernetes">4.1.1.2. Kubernetes</a></li>
+</ul>
+</li>
+<li><a href="#section-start-configuration">4.1.2. Profiles / running the SecHub PDS</a>
+<ul class="sectlevel4">
+<li><a href="#production-mode">4.1.2.1. Production mode</a></li>
+<li><a href="#integration-test-mode">4.1.2.2. Integration test mode</a></li>
+<li><a href="#logging">4.1.2.3. Logging</a>
 <ul class="sectlevel5">
-<li><a href="#default-output">4.1.1.2.1. Default output</a></li>
-<li><a href="#logstash-support">4.1.1.2.2. Logstash support</a></li>
+<li><a href="#default-output">4.1.2.3.1. Default output</a></li>
+<li><a href="#logstash-support">4.1.2.3.2. Logstash support</a></li>
 </ul>
 </li>
-<li><a href="#integration-test-mode">4.1.1.3. Integration test mode</a></li>
 </ul>
 </li>
-<li><a href="#section-db-configuration">4.1.2. Database configuration</a>
+<li><a href="#section-db-configuration">4.1.3. Database configuration</a>
 <ul class="sectlevel4">
-<li><a href="#section-postgresql-configuration">4.1.2.1. PostgreSQL</a></li>
+<li><a href="#section-postgresql-configuration">4.1.3.1. PostgreSQL</a></li>
 </ul>
 </li>
-<li><a href="#section-general-configuration">4.1.3. General configuration</a></li>
-<li><a href="#section-pds-solution-configurations">4.1.4. PDS solution configurations</a>
+<li><a href="#section-general-configuration">4.1.4. General configuration</a></li>
+<li><a href="#section-pds-solution-configurations">4.1.5. PDS solution configurations</a>
 <ul class="sectlevel4">
-<li><a href="#section-pds-checkmarx-configuration">4.1.4.1. PDS Checkmarx solution</a></li>
+<li><a href="#section-pds-checkmarx-configuration">4.1.5.1. PDS Checkmarx solution</a></li>
 </ul>
 </li>
 </ul>
@@ -786,23 +792,23 @@ build pipeline / contionus integration (CI) and helps to provide
 </tbody>
 </table>
 <div class="paragraph">
-<p>Documentation version: <code>PDS 0.38.0-20230602134927</code></p>
+<p>Documentation version: <code>PDS 1.4.0 modified (commit aa28120) - Build date: 20240129100221</code></p>
 </div>
 <div class="paragraph">
 <p><strong>About PDS (Product Delegation Server)</strong></p>
 </div>
 <div class="paragraph">
-<p>The product delegation server (<code>PDS</code>) represents a server which is high configurable and
-can execute any command line tool. It has no runtime dependencies to SecHub, so it can be started
-as another server.</p>
+<p>The product delegation server (<code>PDS</code>) represents a server which is highly configurable and
+can execute any command line tool. It has no runtime dependencies to SecHub, so it can be used
+independently.</p>
 </div>
 <div class="paragraph">
 <p>Via <code>PDS</code> it is possible to easily integrate new security products into SecHub without writing
-adapters or executors, because <code>PDS</code> as a part of SecHub is automatically supported.</p>
+adapters or executors, because <code>PDS</code> is automatically supported as it is a part of the SecHub ecosystem.</p>
 </div>
 <div class="paragraph">
-<p>You can use <code>PDS</code> instances also in a clustered way - e.g. by using Kubernetes and define a service
-for the <code>PDS</code> PODs.</p>
+<p>You can use <code>PDS</code> instances also highly available in a clustered way - e.g. by using Kubernetes.<br>
+See <a href="#section-pds-ops">Operating the SecHub PDS</a></p>
 </div>
 <hr>
 <div style="page-break-after: always;"></div>
@@ -1932,9 +1938,64 @@ implementatiion</p>
 <div class="sect2">
 <h3 id="section-pds-configuration">4.1. Configuration</h3>
 <div class="sect3">
-<h4 id="section-start-configuration">4.1.1. Minimum start configuration</h4>
+<h4 id="section-pds-ops">4.1.1. Operating the SecHub PDS</h4>
+<div class="paragraph">
+<p><a href="https://github.com/mercedes-benz/sechub/packages?q=pds">Here</a> you can find ready-to-use container images of the PDS and SecHub&#8217;s <a href="https://github.com/mercedes-benz/sechub/tree/develop/sechub-pds-solutions">PDS solutions</a> (security scan products).</p>
+</div>
 <div class="sect4">
-<h5 id="prod-profile">4.1.1.1. PROD profile</h5>
+<h5 id="docker">4.1.1.1. Docker</h5>
+<div class="paragraph">
+<p>The public Docker images can be found at <a href="https://github.com/mercedes-benz/sechub/packages?q=pds" class="bare">https://github.com/mercedes-benz/sechub/packages?q=pds</a></p>
+</div>
+<div class="paragraph">
+<p>A SecHub PDS solution can be simply run like this (example: pds-gosec solution)</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="bash">docker run ghcr.io/mercedes-benz/sechub/pds-gosec</code></pre>
+</div>
+</div>
+</div>
+<div class="sect4">
+<h5 id="kubernetes">4.1.1.2. Kubernetes</h5>
+<div class="paragraph">
+<p>We also provide <a href="https://github.com/mercedes-benz/sechub/packages?q=helm-charts%2Fpds">Helm charts</a> for above container images.</p>
+</div>
+<div class="paragraph">
+<p>You should use a copy of the <code>values.yaml</code> and adapt it to your needs.</p>
+</div>
+<div class="paragraph">
+<p>Example: pds-gosec solution</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="bash">helm pull oci://ghcr.io/mercedes-benz/sechub/helm-charts/pds-gosec
+tar zxf pds-gosec-*.tgz
+cp pds-gosec/values.yaml pds-gosec.yaml
+# Edit &quot;pds-gosec.yaml&quot; file and change it to suit your needs
+
+# Deploy SecHub server to your Kubernetes:
+helm install pds-gosec pds-gosec/ -f ./pds-gosec.yaml</code></pre>
+</div>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+In order to use the PDS solution from SecHub, you need to activate it in the <a href="https://github.com/mercedes-benz/sechub/blob/develop/sechub-solution/helm/sechub-server/values.yaml"><code>values.yaml</code></a> of SecHub server.
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="section-start-configuration">4.1.2. Profiles / running the SecHub PDS</h4>
+<div class="sect4">
+<h5 id="production-mode">4.1.2.1. Production mode</h5>
 <div class="paragraph">
 <p>You can start a PDS in production profile which requires a running PostgreSQL
 database. Please refer also to <a href="#section-postgresql-configuration">PostgreSQL configuration</a> for
@@ -1962,24 +2023,7 @@ There are some more mandatory parameters, please refer to <a href="#section-gene
 </div>
 </div>
 <div class="sect4">
-<h5 id="logging">4.1.1.2. Logging</h5>
-<div class="sect5">
-<h6 id="default-output">4.1.1.2.1. Default output</h6>
-<div class="paragraph">
-<p>PDS uses per default logging to <code>stdout</code>. In case you are running on Kubernetes or similar platforms you can use
-<code>fluentd</code> to gather the log output.</p>
-</div>
-</div>
-<div class="sect5">
-<h6 id="logstash-support">4.1.1.2.2. Logstash support</h6>
-<div class="paragraph">
-<p>When you want to use <code>logstash</code> you just have to set the environment variable
-<code>LOGGING_TYPE</code> to <code>LOGSTASH_JSON</code> before server starts.</p>
-</div>
-</div>
-</div>
-<div class="sect4">
-<h5 id="integration-test-mode">4.1.1.3. Integration test mode</h5>
+<h5 id="integration-test-mode">4.1.2.2. Integration test mode</h5>
 <div class="paragraph">
 <p>You can start a PDS in integration test mode if you just want to
 test</p>
@@ -1993,11 +2037,28 @@ test</p>
 </div>
 </div>
 </div>
+<div class="sect4">
+<h5 id="logging">4.1.2.3. Logging</h5>
+<div class="sect5">
+<h6 id="default-output">4.1.2.3.1. Default output</h6>
+<div class="paragraph">
+<p>PDS uses per default logging to <code>stdout</code>. In case you are running on Kubernetes or similar platforms you can use
+<code>fluentd</code> to gather the log output.</p>
+</div>
+</div>
+<div class="sect5">
+<h6 id="logstash-support">4.1.2.3.2. Logstash support</h6>
+<div class="paragraph">
+<p>When you want to use <code>logstash</code> you just have to set the environment variable
+<code>LOGGING_TYPE</code> to <code>LOGSTASH_JSON</code> before server starts.</p>
+</div>
+</div>
+</div>
 </div>
 <div class="sect3">
-<h4 id="section-db-configuration">4.1.2. Database configuration</h4>
+<h4 id="section-db-configuration">4.1.3. Database configuration</h4>
 <div class="sect4">
-<h5 id="section-postgresql-configuration">4.1.2.1. PostgreSQL</h5>
+<h5 id="section-postgresql-configuration">4.1.3.1. PostgreSQL</h5>
 <div class="paragraph">
 <p>First of all install a PostgreSQL database.</p>
 </div>
@@ -2031,22 +2092,22 @@ POSTGRES_DB_PASSWORD=a-very-strong-password...</pre>
 </div>
 </div>
 <div class="sect3">
-<h4 id="section-general-configuration">4.1.3. General configuration</h4>
+<h4 id="section-general-configuration">4.1.4. General configuration</h4>
 <div class="paragraph">
-<p>PDS can be configured  by keys on server startup.
+<p>PDS can be configured by keys on server startup.
 Using the spring <code>@Value</code> annotation we are able to
 use these keys as Java system properties but also as environment entries.</p>
 </div>
 <div class="paragraph">
-<p>E.g. a key like <code>sechub.pds.admin.apitoken</code> can be set with</p>
+<p>E.g. a key like <code>pds.admin.apitoken</code> can be set with</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre>java ... -Dsechub.pds.admin.apitoken={noop}12345exampleToken</pre>
+<pre>java ... -Dpds.admin.apitoken={noop}12345exampleToken</pre>
 </div>
 </div>
 <div class="paragraph">
-<p>or with an environment entry <code>SECHUB_PDS_ADMIN_APITOKEN</code> which
+<p>or with an environment entry <code>PDS_ADMIN_APITOKEN</code> which
 is e.g. more suitable for a <code>kubernetes</code> cluster deployment.</p>
 </div>
 <div class="admonitionblock tip">
@@ -2065,7 +2126,7 @@ variables from your SecHub installation.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code>sechub.pds.admin.apitoken=env:PDS_GOSEC_SOLUTION_APITOKEN</code></pre>
+<pre class="CodeRay highlight"><code>pds.admin.apitoken=env:PDS_GOSEC_SOLUTION_APITOKEN</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -2075,7 +2136,7 @@ PDS by SecHub will use</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code>sechub.pds.admin.apitoken=very-secret-apitoken1234</code></pre>
+<pre class="CodeRay highlight"><code>pds.admin.apitoken=very-secret-apitoken1234</code></pre>
 </div>
 </div>
 </td>
@@ -2098,22 +2159,22 @@ PDS by SecHub will use</p>
 </thead>
 <tbody>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">sechub.pds.admin.apitoken</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">pds.admin.apitoken</p></td>
 <td class="tableblock halign-left valign-top"></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Administrator api token</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">sechub.pds.admin.userid</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">pds.admin.userid</p></td>
 <td class="tableblock halign-left valign-top"></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Administrator user id</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">sechub.pds.techuser.apitoken</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">pds.techuser.apitoken</p></td>
 <td class="tableblock halign-left valign-top"></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Techuser user api token</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">sechub.pds.techuser.userid</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">pds.techuser.userid</p></td>
 <td class="tableblock halign-left valign-top"></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Techuser user id</p></td>
 </tr>
@@ -2135,12 +2196,12 @@ PDS by SecHub will use</p>
 </thead>
 <tbody>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">sechub.pds.server.debug</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">pds.server.debug</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">false</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">When enabled, additional debug information are returned in case of failures. Do NOT use this in production.</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">sechub.pds.server.errorcontroller.log.errors</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">pds.server.errorcontroller.log.errors</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">When enabled, additional debug information are returned in case of failures. Do NOT use this in production.</p></td>
 </tr>
@@ -2162,6 +2223,16 @@ PDS by SecHub will use</p>
 </thead>
 <tbody>
 <tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">pds.config.execute.queue.max</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">50</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Set amount of maximum executed parts in queue for same time</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">pds.config.execute.worker.thread.count</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">5</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Set amount of worker threads used for exeuctions</p></td>
+</tr>
+<tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">pds.config.product.timeout.max.configurable.minutes</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">4320</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Set maximum configurable time in minutes for parameter: <code>pds.config.product.timeout.minutes</code>. The minimum time is not configurable. It is a fixed value of 1 minute(s).</p></td>
@@ -2172,22 +2243,12 @@ PDS by SecHub will use</p>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Set maximum time a PDS will wait for a product before canceling execution automatically. This value can be overriden as a job parameter as well.</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">sechub.pds.config.execute.queue.max</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">50</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Set amount of maximum executed parts in queue for same time</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">sechub.pds.config.execute.worker.thread.count</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">5</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Set amount of worker threads used for exeuctions</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">sechub.pds.workspace.autoclean.disabled</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">pds.workspace.autoclean.disabled</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">false</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Defines if workspace is automatically cleaned when no longer necessary - means launcher script has been executed and finished (failed or done)</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">sechub.pds.workspace.rootfolder</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">pds.workspace.rootfolder</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">./workspace/</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Set PDS workspace root folder path. Each running PDS job will have its own temporary sub directory inside this folder.</p></td>
 </tr>
@@ -2231,22 +2292,22 @@ PDS by SecHub will use</p>
 </thead>
 <tbody>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">sechub.pds.config.heartbeat.enabled</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">pds.config.heartbeat.enabled</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Configure if heartbeat checks are enabled</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">sechub.pds.config.heartbeat.verbose.logging.enabled</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">pds.config.heartbeat.verbose.logging.enabled</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Configure if heartbeat verbose logging is enabled</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">sechub.pds.config.trigger.heartbeat.delay</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">pds.config.trigger.heartbeat.delay</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">60000</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Delay for heartbeat checks</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">sechub.pds.config.trigger.heartbeat.initialdelay</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">pds.config.trigger.heartbeat.initialdelay</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">1000</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Initial delay for heartbeat checks</p></td>
 </tr>
@@ -2268,27 +2329,27 @@ PDS by SecHub will use</p>
 </thead>
 <tbody>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">sechub.pds.config.cancelrequest.minutes.before.treated.orphaned</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">pds.config.cancelrequest.minutes.before.treated.orphaned</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">60</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">The time in minutes after which a cancel job request is treated as orphaned.</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">sechub.pds.config.job.stream.cachetime</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">pds.config.job.stream.cachetime</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">2000</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">PDS job stream data caching time in milliseconds. This defines the maximum period of time between an update time stamp and the request timestamp in database where current data is handled as still valid</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">sechub.pds.config.job.stream.check.retries</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">pds.config.job.stream.check.retries</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">10</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Maximum amount of tries to check if a stream data refresh has been handled (stream data has been updated)</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">sechub.pds.config.job.stream.check.timetowait</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">pds.config.job.stream.check.timetowait</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">500</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Defines time in milliseconds for PDS job stream data update checks after job has been marked as necessary to have stream data refresh</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">sechub.pds.config.job.stream.mark.retries</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">pds.config.job.stream.mark.retries</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">3</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Maximum amount of retries to mark job stream data refresh</p></td>
 </tr>
@@ -2310,17 +2371,17 @@ PDS by SecHub will use</p>
 </thead>
 <tbody>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">sechub.pds.config.scheduling.enable</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">pds.config.scheduling.enable</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Set scheduler enabled state</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">sechub.pds.config.trigger.nextjob.delay</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">pds.config.trigger.nextjob.delay</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">5000</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">delay for next job trigger in milliseconds</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">sechub.pds.config.trigger.nextjob.initialdelay</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">pds.config.trigger.nextjob.initialdelay</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">3000</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">initial delay for next job trigger in milliseconds</p></td>
 </tr>
@@ -2364,7 +2425,7 @@ PDS by SecHub will use</p>
 </thead>
 <tbody>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">sechub.pds.config.file</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">pds.config.file</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">./pds-config.json</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Define path to PDS configuration file</p></td>
 </tr>
@@ -2386,72 +2447,72 @@ PDS by SecHub will use</p>
 </thead>
 <tbody>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">sechub.pds.storage.s3.accesskey</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">pds.storage.s3.accesskey</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">undefined</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Defines the access key for used s3 bucket</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">sechub.pds.storage.s3.bucketname</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">pds.storage.s3.bucketname</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">undefined</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Defines the s3 bucket name</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">sechub.pds.storage.s3.connection.idle.max.milliseconds</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">pds.storage.s3.connection.idle.max.milliseconds</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">60000</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">S3 client maximum idle time (in milliseconds) for a connection in the connection pool.</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">sechub.pds.storage.s3.connection.idle.validate.milliseconds</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">pds.storage.s3.connection.idle.validate.milliseconds</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">5000</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">S3 client time (in milliseconds) a connection can be idle in the connection pool before it must be validated that it&#8217;s still open.</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">sechub.pds.storage.s3.connection.max.poolsize</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">pds.storage.s3.connection.max.poolsize</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">50</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">S3 client max connection pool size.</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">sechub.pds.storage.s3.connection.ttl.milliseconds</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">pds.storage.s3.connection.ttl.milliseconds</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">-1</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">S3 client expiration time (in milliseconds) for a connection in the connection pool. -1 means deactivated</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">sechub.pds.storage.s3.endpoint</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">pds.storage.s3.endpoint</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">undefined</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Defines the s3 endpoint - e.g. <a href="https://play.min.io" class="bare">https://play.min.io</a></p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">sechub.pds.storage.s3.secretkey</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">pds.storage.s3.secretkey</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">undefined</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Defines the secret key for used s3 bucket</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">sechub.pds.storage.s3.signer.override</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">pds.storage.s3.signer.override</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">AWSS3V4SignerType</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Can be used to override the default name of the signature algorithm used to sign requests.</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">sechub.pds.storage.s3.timeout.connection.milliseconds</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">pds.storage.s3.timeout.connection.milliseconds</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">10000</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">S3 client timeout (in milliseconds) for creating new connections.</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">sechub.pds.storage.s3.timeout.execution.milliseconds</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">pds.storage.s3.timeout.execution.milliseconds</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">0</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">S3 client timeout (in milliseconds) for execution. 0 means it is disabled.</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">sechub.pds.storage.s3.timeout.request.milliseconds</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">pds.storage.s3.timeout.request.milliseconds</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">0</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">S3 client timeout (in milliseconds) for a request. 0 means it is disabled.</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">sechub.pds.storage.s3.timeout.socket.milliseconds</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">pds.storage.s3.timeout.socket.milliseconds</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">50000</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">S3 client timeout (in milliseconds) for reading from a connected socket.</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">sechub.pds.storage.sharedvolume.upload.dir</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">pds.storage.sharedvolume.upload.dir</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">undefined</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Defines the root path for shared volume uploads - e.g. for sourcecode.zip etc. When using keyword <strong>temp</strong> as path, this will create a temporary directory (for testing).</p></td>
 </tr>
@@ -2481,13 +2542,13 @@ PDS by SecHub will use</p>
 </table>
 </div>
 <div class="sect3">
-<h4 id="section-pds-solution-configurations">4.1.4. PDS solution configurations</h4>
+<h4 id="section-pds-solution-configurations">4.1.5. PDS solution configurations</h4>
 <div class="paragraph">
 <p>Some of the existing PDS solutions do have special configuration parameters which are listed here
 inside the following sub chapters:</p>
 </div>
 <div class="sect4">
-<h5 id="section-pds-checkmarx-configuration">4.1.4.1. PDS Checkmarx solution</h5>
+<h5 id="section-pds-checkmarx-configuration">4.1.5.1. PDS Checkmarx solution</h5>
 <div class="paragraph">
 <p>The PDS checkmarx solution does internally use a <code>sechub-wrapper-checkmarx</code> Spring Boot application.
 The application is able to use all  <a href="#link-gen-pds-systemproperties">PDS job parameters</a>  and some
@@ -2602,8 +2663,8 @@ PDS to Checmarx will use</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre>sechub.pds.techuser.userid
-sechub.pds.techuser.apitoken</pre>
+<pre>pds.techuser.userid
+pds.techuser.apitoken</pre>
 </div>
 </div>
 <div class="paragraph">
@@ -2611,8 +2672,8 @@ sechub.pds.techuser.apitoken</pre>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre>SECHUB_PDS_TECHUSER_USERID
-SECHUB_PDS_TECHUSER_APITOKEN</pre>
+<pre>PDS_TECHUSER_USERID
+PDS_TECHUSER_APITOKEN</pre>
 </div>
 </div>
 <div class="paragraph">
@@ -2627,8 +2688,8 @@ style - e.g. <code>{noop}unencrypted</code>, <code>{bcrypt}crypted</code> &#8230
 </div>
 <div class="listingblock">
 <div class="content">
-<pre>sechub.pds.admin.userid
-sechub.pds.admin.apitoken</pre>
+<pre>pds.admin.userid
+pds.admin.apitoken</pre>
 </div>
 </div>
 <div class="paragraph">
@@ -2636,8 +2697,8 @@ sechub.pds.admin.apitoken</pre>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre>SECHUB_PDS_ADMIN_USERID
-SECHUB_PDS_ADMIN_APITOKEN</pre>
+<pre>PDS_ADMIN_USERID
+PDS_ADMIN_APITOKEN</pre>
 </div>
 </div>
 <div class="paragraph">
@@ -2648,7 +2709,7 @@ style - e.g. <code>{noop}unencrypted</code>, <code>{bcrypt}crypted</code> &#8230
 <div class="sect2">
 <h3 id="workspace-parent-folder">4.4. Workspace parent folder</h3>
 <div class="paragraph">
-<p>With <code>-Dsechub.pds.workspace.rootfolder</code> or using environment variable <code>SECHUB_PDS_WORKSPACE_ROOTFOLDER</code>
+<p>With <code>-Dpds.workspace.rootfolder</code> or using environment variable <code>PDS_WORKSPACE_ROOTFOLDER</code>
 workspace location can be defined</p>
 </div>
 </div>
@@ -2661,7 +2722,7 @@ workspace location can be defined</p>
 <p><strong>Location</strong></p>
 </div>
 <div class="paragraph">
-<p>With <code>-Dsechub.pds.config.file=&#8230;&#8203;</code> or using environment variable <code>SECHUB_PDS_CONFIG_FILE</code>
+<p>With <code>-Dpds.config.file=&#8230;&#8203;</code> or using environment variable <code>PDS_CONFIG_FILE</code>
 its is possible to set config file path ( when not defined fallback is <code>./pds-config.json</code>)</p>
 </div>
 <div class="ulist">
@@ -2958,7 +3019,7 @@ Mandatory parts are always present, optional ones can be empty.</p>
 </thead>
 <tbody>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">pds.productexecutor.forbidden.targettype.internet</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">sechub.productexecutor.pds.forbidden.targettype.internet</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">
 When this key is set to true, then this PDS instance does not scan INTERNET!
 </p></td>
@@ -2971,7 +3032,7 @@ When this key is set to true, then this PDS instance does not scan INTERNET!
 </div></div></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">pds.productexecutor.forbidden.targettype.intranet</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">sechub.productexecutor.pds.forbidden.targettype.intranet</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">
 When this key is set to true, then this PDS instance does not scan INTRANET!
 </p></td>
@@ -2984,7 +3045,7 @@ When this key is set to true, then this PDS instance does not scan INTRANET!
 </div></div></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">pds.productexecutor.timetowait.nextcheck.milliseconds</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">sechub.productexecutor.pds.timetowait.nextcheck.milliseconds</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">
 When this is set, the value will be used to wait for next check on PDS server. If not, the default from PDS install set up is used instead.
 </p></td>
@@ -2997,9 +3058,9 @@ When this is set, the value will be used to wait for next check on PDS server. I
 </div></div></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">pds.productexecutor.timeout.minutes</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">sechub.productexecutor.pds.timeout.minutes</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">
-When this is set, the value will be used to wait before timeout happens happens when no communication with PDS server is possible. If not, the default from PDS install set up is used instead.
+When this is set, the value will be used to wait before timeout happens when no communication with PDS server is possible. If not, the default from PDS install set up is used instead.
 </p></td>
 <td class="tableblock halign-left valign-top"><div class="content"><div class="ulist">
 <ul>
@@ -3010,9 +3071,35 @@ When this is set, the value will be used to wait before timeout happens happens 
 </div></div></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">pds.productexecutor.trustall.certificates</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">sechub.productexecutor.pds.trustall.certificates</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">
 When 'true' then all certificates are accepted. Do not use this in production!
+</p></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="ulist">
+<ul>
+<li>
+<p>Optional</p>
+</li>
+</ul>
+</div></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">sechub.productexecutor.pds.adapter.resilience.retry.max</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">
+Maximum amount of retries to handle resilience. When not defined or smaller than 0 the default will be: 3
+</p></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="ulist">
+<ul>
+<li>
+<p>Optional</p>
+</li>
+</ul>
+</div></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">sechub.productexecutor.pds.adapter.resilience.retry.wait.milliseconds</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">
+Amount of milliseconds the PDS adapter shall wait before doing a next retry to handle resilience. When not defined or smaller than 1 the default will be: 10000
 </p></td>
 <td class="tableblock halign-left valign-top"><div class="content"><div class="ulist">
 <ul>
@@ -4628,7 +4715,7 @@ This will the process hard!
 </div>
 <div id="footer">
 <div id="footer-text">
- PDS 0.38.0<br>
+ PDS 1.4.0 modified (commit aa28120)<br>
 </div>
 </div>
 </body>

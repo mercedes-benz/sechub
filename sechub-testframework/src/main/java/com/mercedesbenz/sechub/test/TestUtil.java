@@ -99,6 +99,18 @@ public class TestUtil {
         return Boolean.parseBoolean(property);
     }
 
+    public static int getSystemPropertyIntOrDefault(String id, int defaultValue) {
+        String sechubPortAsString = System.getProperty(id);
+
+        int value = defaultValue;
+        try {
+            value = Integer.parseInt(sechubPortAsString);
+        } catch (NumberFormatException e) {
+            /* ignore - we use default */
+        }
+        return value;
+    }
+
     public static void dumpSystemProperty(String key) {
         System.out.println("property:" + key + "=" + getSystemProperty(key, "<NOT DEFINED/>"));
     }
@@ -180,16 +192,16 @@ public class TestUtil {
      * be kept when JVM exits. Otherwise, those files will be deleted by JVM on
      * shutdown phase normally.
      *
-     * @param dirName
+     * @param dirNectoryBaseName represents the base name used for the directory
      * @return
      * @throws IOException
      */
-    public static Path createTempDirectoryInBuildFolder(String dirName, FileAttribute<?>... attributes) throws IOException {
+    public static Path createTempDirectoryInBuildFolder(String dirNectoryBaseName, FileAttribute<?>... attributes) throws IOException {
         Path tmpPath = ensureBuildTmpDirAsFile();
 
-        Path dirAsPath = tmpPath.toRealPath().resolve(dirName + "tmp_" + System.nanoTime());
+        Path dirAsPath = tmpPath.toRealPath().resolve(dirNectoryBaseName + "tmp_" + System.nanoTime());
         if (Files.notExists(dirAsPath)) {
-            Files.createDirectory(dirAsPath, attributes);
+            Files.createDirectories(dirAsPath, attributes); // create all missing directories
 
             if (isDeletingTempFiles()) {
                 dirAsPath.toFile().deleteOnExit();

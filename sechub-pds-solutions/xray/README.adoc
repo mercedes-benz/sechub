@@ -1,0 +1,84 @@
+// SPDX-License-Identifier: MIT
+
+:toc:
+:numbered:
+
+= Xray Wrapper + PDS
+
+JFrog Xray is a Software Composition Analysis (SCA) solution integrated with the JFrog Artifactory. Xray can analyze source code, binaries, etc. for vulnerabilities and licenses.
+In addition, the combination of Xray and PDS allows both to run in a Kubernetes cluster or on virtual machines.
+To use the wrapper, a JFrog artifactory instance and the URL and registry name is required.
+
+This folder contains the scripts necessary to run Xray Wrapper + PDS locally within a container. It also contains scripts to create the PDS + Xray container and push it to your container registry, as well as a helm chart to install and run Xray Wrapper + PDS in a Kubernetes cluster.
+
+== Current limitations
+
+- only docker images uploaded as `.tar` files can be scanned
+
+== Run Locally
+
+This is the easiest way to get started.
+
+=== Requirements
+
+Docker and Docker-Compose need to be installed:
+
+. https://docs.docker.com/engine/install/[Install Docker]
+
+. Linux: https://docs.docker.com/engine/install/linux-postinstall/#manage-docker-as-a-non-root-user[Use Docker as non Root user]
+
+. https://docs.docker.com/compose/install/[Install Docker-Compose]
+
+=== Single Instance
+
+Start a single instance by using the Bash wrapper script which does setup everything automatically for you.
+
+==== Scan script
+
+The folder contains a start script which does the manual steps for you:
+
+----
+./01-start-single-docker-compose.sh
+----
+
+==== Together with SecHub
+
+The container will be started and attached to the `sechub` network.
+
+WARNING: Make sure the SecHub container is running and executor for Xray is set up.
+
+. Start container:
++
+----
+./05-start-single-sechub-network-docker-compose.sh
+----
++
+You can now scan with the SecHub client downloaded from the SecHub release page on GitHub.
+Example sechub.json, the xray wrapper takes docker images saved as tar archives +
+You can save docker images with the command "save" to a tar file. +
++
+----
+docker save <image_name:tag> -o <some_filename.tar>
+----
++
+[source,json]
+----
+{
+  "apiVersion": "1.0",
+  "licenseScan": {
+    "use": [
+      "test-sources"
+    ]
+  },
+  "data": {
+    "binaries": [
+      {
+        "name": "test-sources",
+        "fileSystem" : {
+        "folders" : [ "my-docker-archive.tar" ]
+      }
+      }
+    ]
+  }
+}
+----

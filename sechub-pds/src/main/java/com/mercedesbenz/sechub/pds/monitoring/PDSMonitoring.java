@@ -7,8 +7,8 @@ import java.util.List;
 import java.util.Map;
 
 import com.mercedesbenz.sechub.commons.pds.data.PDSJobStatusState;
-import com.mercedesbenz.sechub.pds.PDSJSONConverter;
-import com.mercedesbenz.sechub.pds.PDSJSONConverterException;
+import com.mercedesbenz.sechub.pds.commons.core.PDSJSONConverter;
+import com.mercedesbenz.sechub.pds.commons.core.PDSJSONConverterException;
 
 public class PDSMonitoring {
 

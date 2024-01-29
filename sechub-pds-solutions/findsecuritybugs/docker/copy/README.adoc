@@ -1,9 +1,0 @@
-// SPDX-License-Identifier: MIT
-
-= Instrutions
-
-. Clone Spotbugs Repo
-. Build spotbugs: `./gradlew build`
-. Copy `spotbugs/build/libs/spotbugs.jar` from the spotbugs repository into this folder
-. Copy `spotbugs-annotations/build/libs/spotbugs-annotations.jar` from the spotbugs repository into this folder
-

@@ -3,11 +3,10 @@ package com.mercedesbenz.sechub.sharedkernel.monitoring;
 
 import org.assertj.core.util.Arrays;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.condition.EnabledIfSystemProperty;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.mercedesbenz.sechub.test.TestConstants;
+import com.mercedesbenz.sechub.test.ManualTest;
 
 import ch.qos.logback.classic.Level;
 
@@ -19,7 +18,7 @@ import ch.qos.logback.classic.Level;
  * @author Albert Tregnaghi
  *
  */
-class PerformanceMonitorServiceManualTest {
+class PerformanceMonitorServiceManualTest implements ManualTest {
 
     private static final String MODE_PROPERTY = "sechub.manualtest.performance.monitor.mode";
 
@@ -30,7 +29,6 @@ class PerformanceMonitorServiceManualTest {
     }
 
     @Test
-    @EnabledIfSystemProperty(named = TestConstants.MANUAL_TEST_BY_DEVELOPER, matches = "true", disabledReason = TestConstants.DESCRIPTION_DISABLED_BECAUSE_A_MANUAL_TEST_FOR_GENERATION)
     void manualTestByDeveloper() {
         String testMode = System.getProperty(MODE_PROPERTY);
         if (testMode == null) {

@@ -1,6 +1,6 @@
 # SPDX-License-Identifier: MIT
 
-FROM fedora:36
+FROM fedora:38
 
 ENV DATA="/data"
 

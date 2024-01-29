@@ -93,7 +93,6 @@ public class SecHubConfigurationFailuresScenario4IntTest {
         for (String detail : details) {
 
             JsonNode detailNode = detailsNode.get(index);
-
             String detailText = detailNode.asText();
             if (!detailText.contains(detail)) {
                 // use now assertEquals to have text compare editors inside IDE on test

@@ -39,15 +39,15 @@ public class PDSBatchTriggerService {
     PDSJobTransactionService jobTransactionService;
 
     @PDSMustBeDocumented(value = "initial delay for next job trigger in milliseconds", scope = "scheduler")
-    @Value("${sechub.pds.config.trigger.nextjob.initialdelay:" + DEFAULT_INITIAL_DELAY_MILLIS + "}")
+    @Value("${pds.config.trigger.nextjob.initialdelay:" + DEFAULT_INITIAL_DELAY_MILLIS + "}")
     private String infoInitialDelay; // here only for logging - used in scheduler annotation as well!
 
     @PDSMustBeDocumented(value = "delay for next job trigger in milliseconds", scope = "scheduler")
-    @Value("${sechub.pds.config.trigger.nextjob.delay:" + DEFAULT_FIXED_DELAY_MILLIS + "}")
+    @Value("${pds.config.trigger.nextjob.delay:" + DEFAULT_FIXED_DELAY_MILLIS + "}")
     private String infoFixedDelay; // here only for logging - used in scheduler annotation as well!
 
     @PDSMustBeDocumented(value = "Set scheduler enabled state", scope = "scheduler")
-    @Value("${sechub.pds.config.scheduling.enable:" + DEFAULT_SCHEDULING_ENABLED + "}")
+    @Value("${pds.config.scheduling.enable:" + DEFAULT_SCHEDULING_ENABLED + "}")
     boolean schedulingEnabled = DEFAULT_SCHEDULING_ENABLED;
 
     @PostConstruct
@@ -57,8 +57,8 @@ public class PDSBatchTriggerService {
     }
 
     // default 10 seconds delay and 5 seconds initial
-    @Scheduled(initialDelayString = "${sechub.pds.config.trigger.nextjob.initialdelay:" + DEFAULT_INITIAL_DELAY_MILLIS
-            + "}", fixedDelayString = "${sechub.pds.config.trigger.nextjob.delay:" + DEFAULT_FIXED_DELAY_MILLIS + "}")
+    @Scheduled(initialDelayString = "${pds.config.trigger.nextjob.initialdelay:" + DEFAULT_INITIAL_DELAY_MILLIS
+            + "}", fixedDelayString = "${pds.config.trigger.nextjob.delay:" + DEFAULT_FIXED_DELAY_MILLIS + "}")
     public void triggerExecutionOfNextJob() {
         if (!schedulingEnabled) {
             LOG.trace("Trigger execution of next job canceled, because scheduling disabled.");

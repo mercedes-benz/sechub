@@ -15,7 +15,7 @@ import com.mercedesbenz.sechub.integrationtest.internal.PDSTestScenario;
  *
  * <h4>Short description</h4> PDS secret scan scenario
  *
- * <h4>Overview</h4> For a glance over all scenarios, look at
+ * <h4>Overview</h4> For an overview over all scenarios, look at
  * {@link com.mercedesbenz.sechub.integrationtest.internal.IntegrationTestDataOverview
  * Overview}
  *

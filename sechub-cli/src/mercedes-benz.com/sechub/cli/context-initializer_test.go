@@ -50,7 +50,7 @@ func Example_lowercaseOrNotice() {
 	fmt.Println(result1)
 	fmt.Println(result2)
 	// Output:
-	// NOTICE: Converted text2 'TESTStrinG2' to lowercase. Because it contained uppercase characters, which are not accepted by SecHub server.
+	// NOTICE: Converted text2 'TESTStrinG2' to lowercase because it contained uppercase characters, which are not accepted by SecHub server.
 	// teststring1
 	// teststring2
 }

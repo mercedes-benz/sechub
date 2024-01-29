@@ -25,11 +25,11 @@ public class PDSServerErrorController implements ErrorController {
     private static final Logger LOG = LoggerFactory.getLogger(PDSServerErrorController.class);
 
     @PDSMustBeDocumented(value = "When enabled, additional debug information are returned in case of failures. Do NOT use this in production.", scope = "development")
-    @Value("${sechub.pds.server.debug:false}")
+    @Value("${pds.server.debug:false}")
     private boolean debug;
 
     @PDSMustBeDocumented(value = "When enabled, additional debug information are returned in case of failures. Do NOT use this in production.", scope = "development")
-    @Value("${sechub.pds.server.errorcontroller.log.errors:true}")
+    @Value("${pds.server.errorcontroller.log.errors:true}")
     private boolean logErrors;
 
     @Autowired

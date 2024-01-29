@@ -1,7 +1,8 @@
-# The base image to use
-# uncomment to use local image
-# BASE_IMAGE="pds-base_pds"
-BASE_IMAGE="ghcr.io/mercedes-benz/sechub/pds-base"
-
 # See: https://github.com/tern-tools/tern/releases
-TERN_VERSION="2.12.0"
+TERN_VERSION="2.12.1"
+
+# See: https://github.com/nexB/scancode-toolkit/releases
+SCANCODE_VERSION="32.0.4"
+
+PDS_MAX_FILE_UPLOAD_BYTES=26214400000
+

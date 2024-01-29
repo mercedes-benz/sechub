@@ -1,0 +1,16 @@
+{
+  "apiVersion" : "1.0",
+  "webScan" : {
+    "url" : "https://productfailure.demo.example.org",
+    "headers" : [ {
+      "name" : "Authorization",
+      "value" : "{{ .HEADER_VALUE }}"
+    }, {
+      "name" : "X-FILE-SIZE",
+      "value" : "123456"
+    }, {
+      "name" : "x-file-size",
+      "value" : "97324"
+    } ]
+  }
+}

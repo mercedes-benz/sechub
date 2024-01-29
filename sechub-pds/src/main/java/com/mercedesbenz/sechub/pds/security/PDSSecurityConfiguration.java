@@ -27,11 +27,11 @@ public class PDSSecurityConfiguration extends AbstractAllowPDSAPISecurityConfigu
      */
 
     @PDSMustBeDocumented(value = "Techuser user id", scope = "credentials")
-    @Value("${sechub.pds.techuser.userid}")
+    @Value("${pds.techuser.userid}")
     String techUserId;
 
     @PDSMustBeDocumented(value = "Techuser user api token", scope = "credentials")
-    @Value("${sechub.pds.techuser.apitoken}")
+    @Value("${pds.techuser.apitoken}")
     String techUserApiToken;
 
     /*
@@ -41,11 +41,11 @@ public class PDSSecurityConfiguration extends AbstractAllowPDSAPISecurityConfigu
      */
 
     @PDSMustBeDocumented(value = "Administrator user id", scope = "credentials")
-    @Value("${sechub.pds.admin.userid}")
+    @Value("${pds.admin.userid}")
     String adminUserId;
 
     @PDSMustBeDocumented(value = "Administrator api token", scope = "credentials")
-    @Value("${sechub.pds.admin.apitoken}")
+    @Value("${pds.admin.apitoken}")
     String adminApiToken;
 
     @Bean

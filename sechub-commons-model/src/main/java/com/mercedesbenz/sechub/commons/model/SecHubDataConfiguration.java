@@ -9,6 +9,9 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class SecHubDataConfiguration {
 
+    public static final String PROPERTY_SOURCES = "sources";
+    public static final String PROPERTY_BINARIES = "binaries";
+
     private List<SecHubSourceDataConfiguration> sources = new ArrayList<>();
     private List<SecHubBinaryDataConfiguration> binaries = new ArrayList<>();
 

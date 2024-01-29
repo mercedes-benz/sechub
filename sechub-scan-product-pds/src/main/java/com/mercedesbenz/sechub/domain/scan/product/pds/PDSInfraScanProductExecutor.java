@@ -37,7 +37,8 @@ public class PDSInfraScanProductExecutor extends AbstractPDSProductExecutor {
     }
 
     @Override
-    protected List<ProductResult> executeByAdapter(ProductExecutorData data) throws Exception {
+    protected List<ProductResult> executeByAdapter(ProductExecutorData data, PDSExecutorConfigSupport defaultConfigSupport,
+            PDSStorageContentProvider storageContentProvider) throws Exception {
         NetworkTargetInfo info = data.getCurrentNetworkTargetInfo();
 
         Set<URI> targetURIs = info.getURIs();
@@ -52,10 +53,10 @@ public class PDSInfraScanProductExecutor extends AbstractPDSProductExecutor {
         PDSExecutorConfigSupport configSupport = (PDSExecutorConfigSupport) data.getNetworkTargetDataProvider();
 
         if (configSupport.isTargetTypeForbidden(targetType)) {
-            LOG.info("pds adapter does not accept target type:{} so cancel execution");
+            LOG.info("PDS adapter does not accept target type: {} so cancel execution");
             return Collections.emptyList();
         }
-        LOG.debug("Trigger pds infra scan adapter execution for target {}", targetType);
+        LOG.debug("PDS infra scan adapter execution for target: {}", targetType);
 
         List<ProductResult> results = new ArrayList<>();
 

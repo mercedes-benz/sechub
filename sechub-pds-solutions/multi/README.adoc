@@ -29,7 +29,7 @@ Run multiple free and open source static application security testing tools toge
 |PDS_MOBSFSCAN
 
 |https://github.com/ajinabraham/njsscan[njsscan]
-|NodeJS (JavaScript) 
+|NodeJS (JavaScript)
 |LGPL-3.0
 |PDS_NJSSCAN
 |===
@@ -67,7 +67,7 @@ The folder contains a start script which does the <<manual-start, manual>> steps
 
 The steps required to scan with the PDS.
 
-==== Scan Script 
+==== Scan Script
 
 . Set the environment variables
 +
@@ -198,7 +198,7 @@ Build the container image.
 
 ==== Build Image
 
-. Using the default image: 
+. Using the default image:
 +
 ----
 ./10-create-image.sh my.registry.example.org/sechub/pds_multi v0.1
@@ -207,7 +207,7 @@ Build the container image.
 . Using your own base image:
 +
 ----
-./10-create-image.sh my.registry.example.org/sechub/pds_multi v0.1 "my.registry.example.org/debian:11-slim"
+./10-create-image.sh my.registry.example.org/sechub/pds_multi v0.1 "my.registry.example.org/debian:12-slim"
 ----
 
 === Push Image to Registry
@@ -301,7 +301,7 @@ users:
    technical:
       id: "techuser"
       apiToken: "{noop}<my-technical-password>"
-      
+
 
 database:
     postgres:
@@ -371,14 +371,14 @@ In case, `my-values.yaml` was changed. Simply, use `helm upgrade` to update the 
 helm upgrade --values my-values.yaml pds-multi helm/pds-multi/
 ----
 
-==== Uninstall 
+==== Uninstall
 
 . Helm list
 +
 ----
 helm list
 NAME     	NAMESPACE   	REVISION	UPDATED                                	STATUS  	CHART                          	APP VERSION
-pds-multi	sechub-multi	1       	2022-01-12 14:45:04.019055446 +0100 CET	deployed	pds-multi-0.1.0                	0.24.0 
+pds-multi	sechub-multi	1       	2022-01-12 14:45:04.019055446 +0100 CET	deployed	pds-multi-0.1.0                	0.24.0
 ----
 
 . Helm uninstall

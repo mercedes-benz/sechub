@@ -1,0 +1,12 @@
+{
+    "apiVersion": "1.0",
+    "serverId": "FAIL_ON_START_CLUSTER",
+    "products": [
+        {
+            "id": "PDS_FAIL_ON_START",
+            "path": "/scripts/gosec.sh",
+            "scanType": "codeScan",
+            "description": "Runs the Go-code security checker gosec."
+        }
+    ]
+}

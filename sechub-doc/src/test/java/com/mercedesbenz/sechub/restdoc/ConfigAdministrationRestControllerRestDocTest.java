@@ -4,7 +4,6 @@ package com.mercedesbenz.sechub.restdoc;
 import static com.mercedesbenz.sechub.restdoc.RestDocumentation.*;
 import static com.mercedesbenz.sechub.test.SecHubTestURLBuilder.*;
 import static org.mockito.Mockito.*;
-import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
 import static org.springframework.restdocs.headers.HeaderDocumentation.requestHeaders;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -86,7 +85,7 @@ public class ConfigAdministrationRestControllerRestDocTest implements TestIsNece
                 and().
                 document(
 	                		requestHeaders(
-	                				headerWithName(AuthenticationHelper.HEADER_NAME).description(AuthenticationHelper.HEADER_DESCRIPTION)
+
 	                		)
                 ));
 		/* @formatter:on */
@@ -117,7 +116,7 @@ public class ConfigAdministrationRestControllerRestDocTest implements TestIsNece
                 and().
                 document(
                 		requestHeaders(
-                				headerWithName(AuthenticationHelper.HEADER_NAME).description(AuthenticationHelper.HEADER_DESCRIPTION)
+
                 		)
         ));
 		/* @formatter:on */

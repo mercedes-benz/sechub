@@ -1,0 +1,39 @@
+{
+  "comment" : "This is only to test PDS cli tool is able to call with the correct parameters and tht parameters are given to system test framework. Framework itself is tested by integration and unit tests!",
+  "variables" : {
+    "var_number" : "42",
+    "var_text" : "This text comes from variable named 'var_text'",
+    "a-secret-example" : "${secretEnv.PATH}",
+    "test_var_number" : "2_should_be_2",
+    "test_env_path" : "${env.PATH}",
+    "testSourceUploadFolder" : "${runtime.currentTestFolder}/testsources"
+  },
+  "setup" : {
+    "local" : {
+      "secHub" : {
+        "admin" : { },
+        "start" : [ {
+          "script" : {
+            "envVariables" : {
+              "TEST_NUMBER_LIST" : "1,2,${variables.test_var_number}"
+            },
+            "path" : "./src/test/resources/systemtest/simple-test.sh",
+            "arguments" : [ 
+                            "${runtime.additionalResourcesFolder}",
+                            "additinalResources=${runtime.additionalResourcesFolder}", 
+                            "testSourceUploadFolder=${variables.testSourceUploadFolder}"
+                            ],
+            "process" : {
+              "timeOut" : {
+                "amount" : 5,
+                "unit" : "MINUTES"
+              },
+              "stageWaits" : true
+            }
+          }
+        } ]
+      }
+    }
+  }
+  
+}

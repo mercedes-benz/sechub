@@ -9,6 +9,7 @@ import org.junit.jupiter.params.provider.NullSource;
 import org.junit.jupiter.params.provider.ValueSource;
 
 import com.mercedesbenz.sechub.commons.model.JSONConverter;
+import com.mercedesbenz.sechub.pds.commons.core.config.PDSProductParameterDefinition;
 
 class PDSProductParameterDefinitionTest {
 

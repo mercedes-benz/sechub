@@ -83,7 +83,7 @@ task assembleArtifact(type: Zip, group: 'client') {
     description "Assemble archive $archiveFileName into ${relativePath(destinationDirectory)}"
 }
 
-version =   VersionData.getClientVersion()
+version =   versionData.getClientVersion()
 
 if (buildDoneByGitHubActions ){
     println("publish $project.name will be ignored at github actions at the moment!")

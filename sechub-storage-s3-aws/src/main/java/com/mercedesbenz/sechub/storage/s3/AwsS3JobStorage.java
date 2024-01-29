@@ -77,6 +77,14 @@ public class AwsS3JobStorage implements JobStorage {
     }
 
     @Override
+    public void store(String name, InputStream inputStream) throws IOException {
+        requireNonNull(name, "name may not be null!");
+        requireNonNull(inputStream, "inputStream may not be null!");
+
+        storeInS3(name, inputStream, null);
+    }
+
+    @Override
     public void store(String name, InputStream inputStream, long contentLength) throws IOException {
         requireNonNull(name, "name may not be null!");
         requireNonNull(inputStream, "inputStream may not be null!");
@@ -90,37 +98,36 @@ public class AwsS3JobStorage implements JobStorage {
 
     @Override
     public Set<String> listNames() throws IOException {
-        if (!client.doesBucketExistV2(bucketName)) {
-            return Collections.emptySet();
-        }
-        Set<String> set = new LinkedHashSet<>();
-        ObjectListing data = client.listObjects(bucketName, getObjectPrefix());
-
-        String prefix = getObjectPrefix();
-        int prefixLength = prefix.length();
-
-        List<S3ObjectSummary> summaries = data.getObjectSummaries();
-        for (S3ObjectSummary summary : summaries) {
-            if (summary == null) {
-                continue;
+        try {
+            if (!client.doesBucketExistV2(bucketName)) {
+                return Collections.emptySet();
             }
-            String key = summary.getKey();
-            if (key == null || key.length() <= prefixLength) {
-                continue;
+            Set<String> set = new LinkedHashSet<>();
+            ObjectListing data = client.listObjects(bucketName, getObjectPrefix());
+
+            String prefix = getObjectPrefix();
+            int prefixLength = prefix.length();
+
+            List<S3ObjectSummary> summaries = data.getObjectSummaries();
+            for (S3ObjectSummary summary : summaries) {
+                if (summary == null) {
+                    continue;
+                }
+
+                String key = summary.getKey();
+                if (key == null || key.length() <= prefixLength) {
+                    continue;
+                }
+
+                String filenameOnly = key.substring(prefixLength);
+
+                set.add(filenameOnly);
             }
-            String filenameOnly = key.substring(prefixLength);
+            return set;
 
-            set.add(filenameOnly);
+        } catch (Exception e) {
+            throw new IOException("Was not able to list names for bucket: " + bucketName, e);
         }
-        return set;
-    }
-
-    private String getObjectName(String name) {
-        return getObjectPrefix() + name;
-    }
-
-    private String getObjectPrefix() {
-        return storagePath + "/" + jobUUID + "/";
     }
 
     @Override
@@ -131,35 +138,42 @@ public class AwsS3JobStorage implements JobStorage {
 
             return client.getObject(bucketName, objectName).getObjectContent();
         } catch (Exception e) {
-            throw new IOException("Was not able to fetch object from s3 bucket:" + name);
+            throw new IOException("Was not able to fetch object from bucket:" + name, e);
         }
     }
 
     @Override
     public void deleteAll() throws IOException {
         String objectPrefix = getObjectPrefix();
-        LOG.info("delete all job storage parts from prefix:{}", objectPrefix);
+        LOG.info("delete all job storage parts from prefix: {}", objectPrefix);
 
-        ObjectListing listing = client.listObjects(new ListObjectsRequest().withBucketName(bucketName).withPrefix(objectPrefix));
         try {
+
+            ObjectListing listing = client.listObjects(new ListObjectsRequest().withBucketName(bucketName).withPrefix(objectPrefix));
+
             while (listing != null) {
+
                 List<DeleteObjectsRequest.KeyVersion> keys = new ArrayList<>(listing.getObjectSummaries().size());
+
                 for (S3ObjectSummary summary : listing.getObjectSummaries()) {
                     String key = summary.getKey();
                     LOG.debug("add key to deletion batch, key={}", key);
                     keys.add(new DeleteObjectsRequest.KeyVersion(key));
                 }
+
                 if (!keys.isEmpty()) {
                     LOG.debug("delete key batch");
                     client.deleteObjects(new DeleteObjectsRequest(bucketName).withKeys(keys));
                 }
-                if (!listing.isTruncated())
+
+                if (!listing.isTruncated()) {
                     return;
+                }
 
                 listing = client.listNextBatchOfObjects(listing);
             }
-        } catch (RuntimeException e) {
-            throw new IOException("Cannot delete all parts from prefix:" + objectPrefix, e);
+        } catch (Exception e) {
+            throw new IOException("Cannot delete all parts from prefix: " + objectPrefix, e);
         }
     }
 
@@ -168,23 +182,18 @@ public class AwsS3JobStorage implements JobStorage {
         try {
             return client.doesObjectExist(bucketName, getObjectName(name));
         } catch (RuntimeException e) {
-            throw new IOException("Cannot check existence", e);
+            throw new IOException("Cannot check existence of: " + name, e);
         }
     }
 
-    @Override
-    public void store(String name, InputStream inputStream) throws IOException {
-        requireNonNull(name, "name may not be null!");
-        requireNonNull(inputStream, "inputStream may not be null!");
-
-        storeInS3(name, inputStream, null);
-    }
-
     private void storeInS3(String name, InputStream inputStream, Long contentLength) throws IOException {
+
         try (InputStream stream = inputStream) {
+
             if (!client.doesBucketExistV2(bucketName)) {
                 client.createBucket(bucketName);
             }
+
             ObjectMetadata meta = new ObjectMetadata();
 
             if (contentLength != null) {
@@ -194,11 +203,14 @@ public class AwsS3JobStorage implements JobStorage {
             String objectName = getObjectName(name);
             LOG.debug("Start upload of objectName={} to bucket {}", objectName, bucketName);
 
-            // The Transfer Manager is by default non-blocking, which means it will not wait
-            // for the upload to finish and returns immediately
+            /*
+             * The Transfer Manager is by default non-blocking, which means it will not wait
+             * for the upload to finish and returns immediately - we must wait for
+             * completion later!
+             */
             Upload upload = transferManager.upload(bucketName, objectName, stream, meta);
 
-            ProgressListener progressListener = createProgressListener(upload, name);
+            ProgressListener progressListener = new LogS3ProgressListener(upload, name);
             upload.addProgressListener(progressListener);
 
             try {
@@ -207,73 +219,89 @@ public class AwsS3JobStorage implements JobStorage {
             } catch (AmazonClientException e) {
                 LOG.error("Error while uploading objectName={} to bucket {}", objectName, bucketName);
                 throw e;
+            } finally {
+                /* cleanup */
+                upload.removeProgressListener(progressListener);
             }
 
         } catch (Exception e) {
-            throw new IOException("Store of " + name + " to s3 failed", e);
+            throw new IOException("Store of: " + name + " to S3 bucket: " + bucketName + " failed", e);
         }
     }
 
-    private ProgressListener createProgressListener(Upload upload, String objectName) {
-        ProgressListener progressListener = new ProgressListener() {
-            private int previousPercentTransferred = 0;
+    private String getObjectName(String name) {
+        return getObjectPrefix() + name;
+    }
 
-            private int getPreviousPercentTransferred() {
-                return previousPercentTransferred;
+    private String getObjectPrefix() {
+        return storagePath + "/" + jobUUID + "/";
+    }
+
+    private class LogS3ProgressListener implements ProgressListener {
+
+        private Upload upload;
+        private String objectName;
+
+        private LogS3ProgressListener(Upload upload, String objectName) {
+            this.upload = upload;
+            this.objectName = objectName;
+        }
+
+        private int previousPercentTransferred = 0;
+
+        private int getPreviousPercentTransferred() {
+            return previousPercentTransferred;
+        }
+
+        private void setPreviousPercentTransferred(int previousPercentTransferred) {
+            this.previousPercentTransferred = previousPercentTransferred;
+        }
+
+        private void resetPreviousPercentTransferred() {
+            setPreviousPercentTransferred(0);
+        }
+
+        @Override
+        public void progressChanged(ProgressEvent progressEvent) {
+            if (upload == null) {
+                return;
             }
 
-            private void setPreviousPercentTransferred(int previousPercentTransferred) {
-                this.previousPercentTransferred = previousPercentTransferred;
+            ProgressEventType progressEventType = progressEvent.getEventType();
+
+            if (progressEventType.isByteCountEvent()) {
+                int percentTransferred = (int) upload.getProgress().getPercentTransferred();
+                printStatusMessage(percentTransferred);
             }
 
-            private void resetPreviousPercentTransferred() {
-                setPreviousPercentTransferred(0);
-            }
+            switch (progressEvent.getEventType()) {
+            case TRANSFER_COMPLETED_EVENT:
+                LOG.info("Transfer of {} completed.", objectName);
+                resetPreviousPercentTransferred();
+                break;
+            case TRANSFER_FAILED_EVENT:
+                resetPreviousPercentTransferred();
+                LOG.error("Transfer of {} failed.", objectName);
+                break;
+            case TRANSFER_STARTED_EVENT:
+                LOG.info("Transfer of {} started.", objectName);
+                resetPreviousPercentTransferred();
+                break;
+            default:
+                break;
 
-            @Override
-            public void progressChanged(ProgressEvent progressEvent) {
-                if (upload == null) {
-                    return;
+            }
+        }
+
+        private void printStatusMessage(int percentTransferred) {
+            if (percentTransferred > getPreviousPercentTransferred()) {
+                // print progress only every 10 percent
+                if ((percentTransferred % 10) == 0) {
+                    setPreviousPercentTransferred(percentTransferred);
+                    LOG.debug("Percent transfered: " + percentTransferred);
                 }
-
-                ProgressEventType progressEventType = progressEvent.getEventType();
-
-                if (progressEventType.isByteCountEvent()) {
-                    int percentTransferred = (int) upload.getProgress().getPercentTransferred();
-                    printStatusMessage(percentTransferred);
-                }
-
-                switch (progressEvent.getEventType()) {
-                case TRANSFER_COMPLETED_EVENT:
-                    LOG.info("Transfer of {} completed.", objectName);
-                    resetPreviousPercentTransferred();
-                    break;
-                case TRANSFER_FAILED_EVENT:
-                    resetPreviousPercentTransferred();
-                    LOG.error("Transfer of {} failed.", objectName);
-                    break;
-                case TRANSFER_STARTED_EVENT:
-                    LOG.info("Transfer of {} started.", objectName);
-                    resetPreviousPercentTransferred();
-                    break;
-                default:
-                    break;
-
-                }
             }
+        }
 
-            private void printStatusMessage(int percentTransferred) {
-                if (percentTransferred > getPreviousPercentTransferred()) {
-                    // print progress only every 10 percent
-                    if ((percentTransferred % 10) == 0) {
-                        setPreviousPercentTransferred(percentTransferred);
-                        LOG.debug("Percent transfered: " + percentTransferred);
-                    }
-                }
-            }
-
-        };
-
-        return progressListener;
     }
 }

@@ -20,7 +20,9 @@ dependencies {
     api project(':sechub-commons-model')
     api project(':sechub-commons-archive')
     api project(':sechub-storage-core')
- 
+   
+    api project(':sechub-pds-commons-core')
+
     implementation library.springboot_starter_web  // so we got same jackson dependency...
     implementation library.apache_commons_io
 

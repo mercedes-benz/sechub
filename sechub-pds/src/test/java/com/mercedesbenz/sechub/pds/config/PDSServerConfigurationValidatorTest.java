@@ -8,6 +8,8 @@ import org.junit.Before;
 import org.junit.Test;
 
 import com.mercedesbenz.sechub.commons.model.ScanType;
+import com.mercedesbenz.sechub.pds.commons.core.config.PDSProductSetup;
+import com.mercedesbenz.sechub.pds.commons.core.config.PDSServerConfiguration;
 
 public class PDSServerConfigurationValidatorTest {
 

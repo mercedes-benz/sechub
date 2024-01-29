@@ -9,6 +9,7 @@ import java.util.Set;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.mercedesbenz.sechub.commons.model.ClientCertificateConfiguration;
 import com.mercedesbenz.sechub.commons.model.ScanType;
 import com.mercedesbenz.sechub.commons.model.SecHubConfigurationModel;
 import com.mercedesbenz.sechub.commons.model.SecHubDataConfigurationUsageByName;
@@ -16,6 +17,12 @@ import com.mercedesbenz.sechub.commons.model.SecHubRuntimeException;
 import com.mercedesbenz.sechub.commons.model.SecHubWebScanApiConfiguration;
 import com.mercedesbenz.sechub.commons.model.SecHubWebScanConfiguration;
 
+/**
+ * This builder creates a file structure data object for ONE scan type.
+ *
+ * @author Albert Tregnaghi
+ *
+ */
 public class SecHubFileStructureDataProviderBuilder {
 
     private static final Logger LOG = LoggerFactory.getLogger(SecHubFileStructureDataProviderBuilder.class);
@@ -70,6 +77,7 @@ public class SecHubFileStructureDataProviderBuilder {
         MutableSecHubFileStructureDataProvider data = new MutableSecHubFileStructureDataProvider();
         data.addExcludeFilePatterns(excludePatterns);
         data.addIncludeFilePatterns(includePatterns);
+        data.setScanType(scanType);
 
         switch (scanType) {
         case CODE_SCAN:
@@ -96,6 +104,9 @@ public class SecHubFileStructureDataProviderBuilder {
             SecHubWebScanConfiguration webScan = webScanOpt.get();
             Optional<SecHubWebScanApiConfiguration> apiOpt = webScan.getApi();
             addAllUsages(data, apiOpt, false);
+
+            Optional<ClientCertificateConfiguration> clientCertOpt = webScan.getClientCertificate();
+            addAllUsages(data, clientCertOpt, false);
             break;
         case ANALYTICS:
 

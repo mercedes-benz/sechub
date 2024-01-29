@@ -57,8 +57,8 @@ pipeline {
                             // We do NOT build sechub-integrationtest
                             // Reason: because we do NOT want to have the integration tests executed, otherwise gradle will not execute them
                             // on integration phase again (because nothing has changed, so gradle will cache the results which are ignored ...
-                            callGradleWrapper("ensureLocalhostCertificate build generateOpenapi buildDeveloperAdminUI -x :sechub-integrationtest:test -x :sechub-cli:build -Psechub.test.wiremock.https_port=${env.SECHUB_TEST_WIREMOCK_HTTPS_PORT} -Psechub.test.wiremock.http_port=${env.SECHUB_TEST_WIREMOCK_HTTP_PORT}")
-                            callGradleWrapper(":sechub-api-java:buildAPIJava")
+                            callGradleWrapper("ensureLocalhostCertificate build generateOpenapi buildDeveloperAdminUI -x :sechub-cli:build -Psechub.test.wiremock.https_port=${env.SECHUB_TEST_WIREMOCK_HTTPS_PORT} -Psechub.test.wiremock.http_port=${env.SECHUB_TEST_WIREMOCK_HTTP_PORT} --console=plain")
+                            callGradleWrapper(":sechub-api-java:build :sechub-systemtest:build :sechub-pds-tools:buildPDSToolsCLI -Dsechub.build.stage=api-necessary --console=plain")
                         }
                     }
                 }
@@ -66,7 +66,7 @@ pipeline {
                 stage('Build Client') {
                     steps {
                         script{
-                            callGradleWrapper(':sechub-cli:buildGo :sechub-cli:testGo')
+                            callGradleWrapper(":sechub-cli:buildGo :sechub-cli:testGo --console=plain")
                         }
                     }
                 }
@@ -90,20 +90,18 @@ pipeline {
                         SECHUB_STORAGE_S3_ENDPOINT = getStringCredentialsOrUndefined('sechub-storage-s3-endpoint')
 
                         // we setup PDS storage with same s3 bucket data
-                        SECHUB_PDS_STORAGE_S3_ACCESSKEY = getStringCredentialsOrUndefined('sechub-storage-s3-accesskey')
-                        SECHUB_PDS_STORAGE_S3_SECRETKEY = getStringCredentialsOrUndefined('sechub-storage-s3-secretkey')
-                        SECHUB_PDS_STORAGE_S3_BUCKETNAME = getStringCredentialsOrUndefined('sechub-storage-s3-bucketname')
-                        SECHUB_PDS_STORAGE_S3_ENDPOINT = getStringCredentialsOrUndefined('sechub-storage-s3-endpoint')
-                        
+                        PDS_STORAGE_S3_ACCESSKEY = getStringCredentialsOrUndefined('sechub-storage-s3-accesskey')
+                        PDS_STORAGE_S3_SECRETKEY = getStringCredentialsOrUndefined('sechub-storage-s3-secretkey')
+                        PDS_STORAGE_S3_BUCKETNAME = getStringCredentialsOrUndefined('sechub-storage-s3-bucketname')
+                        PDS_STORAGE_S3_ENDPOINT = getStringCredentialsOrUndefined('sechub-storage-s3-endpoint')
+
                         SECHUB_INTEGRATIONTEST_PREPARE_WAIT_MS=100
-                        
-                        /* avoid race conditions with management port */
-                        MANAGEMENT_SERVER_PORT = getJenkinsExecutorPort(10250)
                     }
                     steps {
                         script{
                             // start integration tests and also create combined test report after all
-                            callGradleWrapper("integrationtest -Psechub.integrationtest.serverport=${env.SERVER_PORT} -Psechub.integrationtest.pdsport=${env.PDS_PORT}")
+                            callGradleWrapper(":sechub-integrationtest:startIntegrationTestInstances :sechub-systemtest:integrationtest :sechub-integrationtest:integrationtest :sechub-integrationtest:stopIntegrationTestInstances -Dsechub.build.stage=all -Psechub.integrationtest.serverport=${env.SERVER_PORT} -Psechub.integrationtest.pdsport=${env.PDS_PORT} --console=plain")
+                            callGradleWrapper("createCombinedTestReport -Dsechub.build.stage=all --console=plain")
                         }
                     }
                 }
@@ -130,11 +128,11 @@ pipeline {
 
             }
         }
-        
+
         stage('Build Documentation') {
             steps {
                 script{
-                    callGradleWrapper('documentation')
+                    callGradleWrapper("documentation -Dsechub.build.stage=all --console=plain")
                 }
             }
         }

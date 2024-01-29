@@ -120,6 +120,14 @@ public abstract class AbstractProductExecutor implements ProductExecutor {
 
     protected abstract void customize(ProductExecutorData data);
 
+    /**
+     * Execute with adapter and given data
+     *
+     * @param data product executor data
+     * @return list of product results or <code>null</code> when product adapter is
+     *         not called/ no result available
+     * @throws Exception
+     */
     protected abstract List<ProductResult> executeByAdapter(ProductExecutorData data) throws Exception;
 
     private List<ProductResult> startExecution(ProductExecutorData data) throws SecHubExecutionException {

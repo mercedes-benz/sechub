@@ -6,17 +6,20 @@ VERSION="$2"
 PDS_VERSION="$3"
 BASE_IMAGE="$4"  # optional
 BUILD_TYPE="$5" # optional
-DEFAULT_BASE_IMAGE="debian:11-slim"
+DEFAULT_BASE_IMAGE="debian:12-slim"
 DEFAULT_BUILD_TYPE="download"
+
+cd `dirname $0`
 
 usage() {
   cat - <<EOF
-usage: $0 <docker registry> <version tag> <pds version> [<base image> [<build type>]]
+usage: $0 <docker registry> <version tag> <pds version>
 Builds a docker image of SecHub PDS <pds version> for <docker registry>
 with tag <version tag>.
 
-Optional: <base image> ; defaults to $DEFAULT_BASE_IMAGE
-Optional: <build type> ; defaults to $DEFAULT_BUILD_TYPE
+Optional environment variables:
+BASE_IMAGE - Base image to build from ; defaults to $DEFAULT_BASE_IMAGE
+BUILD_TYPE - Build type ; defaults to $DEFAULT_BUILD_TYPE
 EOF
 }
 
@@ -57,6 +60,9 @@ echo ">> Build type: $BUILD_TYPE"
 
 BUILD_ARGS+=" --build-arg PDS_VERSION=$PDS_VERSION"
 echo ">> SecHub PDS release version: $PDS_VERSION"
+
+echo "Copying install-java scripts into the docker directory"
+cp --recursive --force ../../sechub-solutions-shared/install-java/ docker/
 
 # Use Docker BuildKit
 # nesessary for switching between build stages

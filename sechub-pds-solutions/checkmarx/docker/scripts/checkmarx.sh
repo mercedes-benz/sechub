@@ -17,7 +17,7 @@ if [[ ! -f "$checkmarx_wrapper" ]]; then
 fi
 
 if [[ "$PDS_DEBUG_ENABLED" = "true" ]]; then
-    options="$options -Dlogging.level.org.springframework=DEBUG"
+    options="$options -Dlogging.level.org.springframework.web=DEBUG -Dlogging.level.com.mercedesbenz=DEBUG"
 
     echo ""
     echo "  PDS DEBUG:"

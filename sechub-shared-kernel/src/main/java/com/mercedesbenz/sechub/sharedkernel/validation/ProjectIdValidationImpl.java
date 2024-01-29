@@ -7,7 +7,7 @@ import org.springframework.stereotype.Component;
 public class ProjectIdValidationImpl extends AbstractSimpleStringValidation implements ProjectIdValidation {
 
     public static final int PROJECTID_LENGTH_MIN = 2;
-    public static final int PROJECTID_LENGTH_MAX = 20;
+    public static final int PROJECTID_LENGTH_MAX = 40;
 
     @Override
     protected void setup(ValidationConfig config) {

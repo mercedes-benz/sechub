@@ -5,7 +5,6 @@ import static com.mercedesbenz.sechub.restdoc.RestDocumentation.*;
 import static com.mercedesbenz.sechub.test.RestDocPathParameter.*;
 import static com.mercedesbenz.sechub.test.SecHubTestURLBuilder.*;
 import static org.mockito.Mockito.*;
-import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
 import static org.springframework.restdocs.headers.HeaderDocumentation.requestHeaders;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.*;
 import static org.springframework.restdocs.payload.PayloadDocumentation.*;
@@ -102,7 +101,7 @@ public class ProjectUpdateAdministrationRestControllerRestDocTest implements Tes
                              and().
                              document(
 		    	                		requestHeaders(
-		    	                				headerWithName(AuthenticationHelper.HEADER_NAME).description(AuthenticationHelper.HEADER_DESCRIPTION)
+
 		    	                		),
                                         pathParameters(
                                                 parameterWithName(PROJECT_ID.paramName()).description("The id of the project for which whitelist shall be updated")
@@ -139,7 +138,7 @@ public class ProjectUpdateAdministrationRestControllerRestDocTest implements Tes
                         and().
                         document(
 	    	                		requestHeaders(
-	    	                				headerWithName(AuthenticationHelper.HEADER_NAME).description(AuthenticationHelper.HEADER_DESCRIPTION)
+
 	    	                		),
                                     pathParameters(
                                             parameterWithName(PROJECT_ID.paramName()).description("The id of the project for which metadata shall be updated")

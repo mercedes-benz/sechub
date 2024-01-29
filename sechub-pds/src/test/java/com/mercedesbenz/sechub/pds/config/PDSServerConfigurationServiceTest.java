@@ -16,6 +16,10 @@ import org.junit.jupiter.params.provider.ValueSource;
 import com.mercedesbenz.sechub.commons.model.ScanType;
 import com.mercedesbenz.sechub.commons.pds.PDSDefaultParameterValueConstants;
 import com.mercedesbenz.sechub.pds.PDSShutdownService;
+import com.mercedesbenz.sechub.pds.commons.core.config.PDSProductParameterDefinition;
+import com.mercedesbenz.sechub.pds.commons.core.config.PDSProductParameterSetup;
+import com.mercedesbenz.sechub.pds.commons.core.config.PDSProductSetup;
+import com.mercedesbenz.sechub.pds.commons.core.config.PDSServerConfiguration;
 
 public class PDSServerConfigurationServiceTest {
 

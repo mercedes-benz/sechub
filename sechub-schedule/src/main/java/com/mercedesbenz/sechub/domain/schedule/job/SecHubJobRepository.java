@@ -15,7 +15,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.mercedesbenz.sechub.domain.schedule.ExecutionState;
+import com.mercedesbenz.sechub.commons.model.job.ExecutionState;
 
 public interface SecHubJobRepository extends JpaRepository<ScheduleSecHubJob, UUID>, SecHubJobRepositoryCustom, JpaSpecificationExecutor<ScheduleSecHubJob> {
 

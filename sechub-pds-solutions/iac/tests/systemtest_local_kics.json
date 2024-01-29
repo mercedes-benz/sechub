@@ -1,0 +1,173 @@
+{
+    "setup": {
+        "local": {
+            "secHub": {
+                "start": [
+                    {
+                        "script": {
+                            "path": "./01-start-single-docker-compose.sh"
+                        }
+                    }
+                ],
+                "configure": {
+                    "executors": [
+                        {
+                            "pdsProductId": "PDS_KICS",
+                            "name": "system-test-codescan-gosec",
+                            "parameters": {
+                                "sechub.productexecutor.pds.adapter.resilience.retry.wait.milliseconds": 3000,
+                                "sechub.productexecutor.pds.adapter.resilience.retry.max": 20,
+                                "pds.config.use.sechub.storage": false
+                            }
+                        }
+                    ]
+                },
+                "stop": [
+                    {
+                        "script": {
+                            "path": "./01-stop-single-docker-compose.sh"
+                        }
+                    }
+                ]
+            },
+            "pdsSolutions": [
+                {
+                    "name": "iac",
+                    "url": "https://pds-iac:8444/",
+                    "waitForAvailable": false,
+                    "start": [
+                        {
+                            "script": {
+                                "path": "./05-start-single-sechub-network-docker-compose.sh"
+                            }
+                        }
+                    ],
+                    "stop": [
+                        {
+                            "script": {
+                                "path": "./05-stop-single-sechub-network-docker-compose.sh"
+                            }
+                        }
+                    ]
+                }
+            ]
+        }
+    },
+    "tests": [
+        {
+            "name": "sanity-check",
+            "comment": "This checks if the solution works at all. It is very fast. Can be used to test if system testframework has some problems at all.",
+            "prepare": [
+                {
+                    "script": {
+                        "arguments": [
+                            "${runtime.currentTestFolder}"
+                        ],
+                        "path": "./copy_sanitycheck_files.sh"
+                    }
+                }
+            ],
+            "execute": {
+                "runSecHubJob": {
+                    "uploads": [
+                        {
+                            "sourceFolder": "sanity-check"
+                        }
+                    ],
+                    "codeScan": {}
+                }
+            },
+            "assert": [
+                {
+                    "sechubResult": {
+                        "hasTrafficLight": "GREEN"
+                    }
+                }
+            ]
+        },
+        {
+            "name": "terragoat",
+            "prepare": [
+                {
+                    "script": {
+                        "arguments": [
+                            "${runtime.currentTestFolder}",
+                            "https://github.com/bridgecrewio/terragoat"
+                        ],
+                        "path": "./clone_repo.sh"
+                    }
+                }
+            ],
+            "execute": {
+                "runSecHubJob": {
+                    "uploads": [
+                        {
+                            "sourceFolder": "terragoat"
+                        }
+                    ],
+                    "codeScan": {}
+                }
+            },
+            "assert": [
+                {
+                    "sechubResult": {
+                        "hasTrafficLight": "RED",
+                        "containsStrings": {
+                            "values": [
+                                "result",
+                                "SUCCESS",
+                                "jobUUID",
+                                "reportVersion",
+                                "HIGH",
+                                "severity",
+                                "terragoat/terraform/azure/sql.tf"
+                            ]
+                        }
+                    }
+                }
+            ]
+        },
+        {
+            "name": "wrongsecrets",
+            "prepare": [
+                {
+                    "script": {
+                        "arguments": [
+                            "${runtime.currentTestFolder}",
+                            "https://github.com/OWASP/wrongsecrets.git"
+                        ],
+                        "path": "./clone_repo.sh"
+                    }
+                }
+            ],
+            "execute": {
+                "runSecHubJob": {
+                    "uploads": [
+                        {
+                            "sourceFolder": "wrongsecrets"
+                        }
+                    ],
+                    "codeScan": {}
+                }
+            },
+            "assert": [
+                {
+                    "sechubResult": {
+                        "hasTrafficLight": "RED",
+                        "containsStrings": {
+                            "values": [
+                                "result",
+                                "SUCCESS",
+                                "jobUUID",
+                                "reportVersion",
+                                "HIGH",
+                                "severity",
+                                "wrongsecrets/okteto/k8s/secret-challenge-ctf-deployment.yml"
+                            ]
+                        }
+                    }
+                }
+            ]
+        }
+    ]
+}

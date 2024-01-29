@@ -1,67 +1,67 @@
 {
-    "name": "pds-owasp-zap",
-    "productIdentifier": "PDS_WEBSCAN",
-    "executorVersion": 1,
-    "enabled": true,
-    "setup": {
-        "baseURL": "https://pds-owasp-zap:8444",
-        "credentials": {
-            "user": "techuser",
-            "password": "pds-apitoken"
-        },
-        "jobParameters": [
-            {
-                "key": "pds.config.productidentifier",
-                "value": "PDS_OWASP_ZAP"
-            },
-            {
-                "key": "pds.config.use.sechub.storage",
-                "value": false
-            },
-            {
-                "key": "pds.mocking.disabled",
-                "value": true
-            },
-            {
-                "key": "pds.productexecutor.timeout.minutes",
-                "value": 180
-            },
-            {
-                "key": "pds.productexecutor.timetowait.nextcheck.milliseconds",
-                "value": 15000
-            },
-            {
-                "key": "pds.productexecutor.trustall.certificates",
-                "value": true
-            },
-            {
-                "key": "zap.activescan.enabled",
-                "value": true
-            },
-            {
-                "key": "zap.ajaxcrawler.enabled",
-                "value": true
-            },
-            {
-                "key": "zap.deactivated.rule.references",
-                "value": "Timestamp-Disclosure-10096,Cross-Site-Scripting-(DOM-Based)-40026"
-            },
-            {
-                "key": "zap.use.proxy",
-                "value": false
-            },
-            {
-                "key": "zap.proxy.for.pds.target.type",
-                "value": "INTRANET"
-            },
-            {
-                "key": "pds.config.cancel.event.checkinterval.milliseconds",
-                "value": 2000
-            },
-            {
-                "key": "pds.config.cancel.maximum.waittime.seconds",
-                "value": 120
-            }
-        ]
-    }
+  "name": "pds-owaspzap",
+  "productIdentifier": "PDS_WEBSCAN",
+  "executorVersion": 1,
+  "enabled": true,
+  "setup": {
+    "baseURL": "https://pds-owaspzap:8444",
+    "credentials": {
+      "user": "techuser",
+      "password": "pds-apitoken"
+    },
+    "jobParameters": [
+      {
+        "key": "pds.config.productidentifier",
+        "value": "PDS_OWASP_ZAP"
+      },
+      {
+        "key": "pds.config.use.sechub.storage",
+        "value": false
+      },
+      {
+        "key": "pds.mocking.disabled",
+        "value": true
+      },
+      {
+        "key": "sechub.productexecutor.pds.timeout.minutes",
+        "value": 180
+      },
+      {
+        "key": "sechub.productexecutor.pds.timetowait.nextcheck.milliseconds",
+        "value": 15000
+      },
+      {
+        "key": "sechub.productexecutor.pds.trustall.certificates",
+        "value": true
+      },
+      {
+        "key": "zap.activescan.enabled",
+        "value": true
+      },
+      {
+        "key": "zap.ajaxcrawler.enabled",
+        "value": true
+      },
+      {
+        "key": "zap.deactivated.rule.references",
+        "value": "Timestamp-Disclosure-10096,Cross-Site-Scripting-(DOM-Based)-40026"
+      },
+      {
+        "key": "zap.use.proxy",
+        "value": false
+      },
+      {
+        "key": "zap.proxy.for.pds.target.type",
+        "value": "INTRANET"
+      },
+      {
+        "key": "pds.config.cancel.event.checkinterval.milliseconds",
+        "value": 2000
+      },
+      {
+        "key": "pds.config.cancel.maximum.waittime.seconds",
+        "value": 120
+      }
+    ]
+  }
 }

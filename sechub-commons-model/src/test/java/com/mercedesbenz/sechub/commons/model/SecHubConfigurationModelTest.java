@@ -86,4 +86,76 @@ class SecHubConfigurationModelTest {
 
     }
 
+    @Test
+    void deserialization_of_a_configuration_with_excludes_includes_contains_them() {
+
+        /* prepare */
+        String json = """
+                {
+                  "apiVersion" : "1.0",
+                  "data" : {
+                    "binaries" : [ {
+                      "name" : "bin-reference-example2",
+                      "fileSystem" : {
+                        "folders" : [ "bin-ref2-folder1" ],
+                        "files" : [ "bin-file-reference.txt" ]
+                      },
+                       "excludes": [
+                          "**/filtered-folder/**",
+                          "must-not-be-contained.*"
+                        ],
+                        "includes": [
+                          "something-important.txt"
+                        ]
+                    }, {
+                      "name" : "bin-reference-example3",
+                      "fileSystem" : {
+                        "folders" : [ "bin-ref3-folder1" ],
+                        "files" : [ "bin-file-reference.txt" ]
+                      }
+                    } ],
+                    "sources" : [ {
+                      "name" : "source-reference-example1",
+                      "fileSystem" : {
+                        "folders" : [ "source-ref1-folder" ],
+                        "files" : [ "src-file-reference1.txt", "src-file-reference2.txt" ]
+                      },
+                      "excludes": [
+                          "**/filtered-folder/**",
+                          "must-not-be-contained.*"
+                        ]
+                    } ]
+                  },
+                  "codeScan" : {
+                    "use" : [ "source-reference-example" ],
+                    "fileSystem" : {
+                      "folders" : [ "legacy", "legacy2" ],
+                      "files" : [ "legacy-file3.txt" ]
+                    },
+                    "excludes" : [ "**/filtered-folder/**", "must-not-be-contained.*" ],
+                    "licenseScan" : {
+                      "use" : [ "bin-ref2" ]
+                    }
+                  }
+                }
+                """;
+
+        /* execute */
+        SecHubConfigurationModel model = JSONConverter.get().fromJSON(SecHubConfigurationModel.class, json);
+
+        /* test */
+        SecHubCodeScanConfiguration codeScan = model.getCodeScan().get();
+        assertTrue(codeScan.getExcludes().contains("**/filtered-folder/**"));
+        assertTrue(codeScan.getExcludes().contains("must-not-be-contained.*"));
+
+        SecHubDataConfiguration data = model.getData().get();
+
+        SecHubBinaryDataConfiguration binReferenceExample2 = data.getBinaries().iterator().next();
+        assertEquals("bin-reference-example2", binReferenceExample2.getUniqueName());
+        assertTrue(binReferenceExample2.getExcludes().contains("**/filtered-folder/**"));
+        assertTrue(binReferenceExample2.getExcludes().contains("must-not-be-contained.*"));
+        assertTrue(binReferenceExample2.getIncludes().contains("something-important.txt"));
+
+    }
+
 }

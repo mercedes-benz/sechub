@@ -1,9 +1,11 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.pds.execution;
 
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.UUID;
 
 import org.slf4j.Logger;
@@ -14,9 +16,9 @@ import org.springframework.stereotype.Service;
 import com.mercedesbenz.sechub.commons.pds.ExecutionPDSKey;
 import com.mercedesbenz.sechub.commons.pds.PDSConfigDataKeyProvider;
 import com.mercedesbenz.sechub.commons.pds.PDSLauncherScriptEnvironmentConstants;
-import com.mercedesbenz.sechub.pds.config.PDSProductParameterDefinition;
-import com.mercedesbenz.sechub.pds.config.PDSProductParameterSetup;
-import com.mercedesbenz.sechub.pds.config.PDSProductSetup;
+import com.mercedesbenz.sechub.pds.commons.core.config.PDSProductParameterDefinition;
+import com.mercedesbenz.sechub.pds.commons.core.config.PDSProductParameterSetup;
+import com.mercedesbenz.sechub.pds.commons.core.config.PDSProductSetup;
 import com.mercedesbenz.sechub.pds.config.PDSServerConfigurationService;
 import com.mercedesbenz.sechub.pds.job.PDSJobConfiguration;
 
@@ -48,7 +50,33 @@ public class PDSExecutionEnvironmentService {
             LOG.error("No product setup found for product id:{}", productId);
         }
         addSecHubJobUUIDAsEnvironmentEntry(config, map);
+
+        replaceNullValuesWithEmptyStrings(map);
+
         return map;
+    }
+
+    /*
+     * Replace null values with empty strings to avoid problems with environment map
+     * of process builder: This map does throw an exception in this case (index of
+     * problems)
+     */
+    private void replaceNullValuesWithEmptyStrings(Map<String, String> map) {
+
+        List<String> keysForEntriesWithNullValue = new ArrayList<>();
+
+        for (Entry<String, String> entry : map.entrySet()) {
+            if (entry.getValue() == null) {
+                keysForEntriesWithNullValue.add(entry.getKey());
+            }
+        }
+
+        for (String keyForEntryWithNullValue : keysForEntriesWithNullValue) {
+            map.put(keyForEntryWithNullValue, "");
+
+            LOG.warn("Replaced null value for key: {} with empty string", keyForEntryWithNullValue);
+        }
+
     }
 
     private void addDefaultsForMissingParameters(PDSProductSetup productSetup, Map<String, String> map) {

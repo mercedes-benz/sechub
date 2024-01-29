@@ -27,15 +27,15 @@
                 "value": true
             },
             {
-                "key": "pds.productexecutor.timeout.minutes",
+                "key": "sechub.productexecutor.pds.timeout.minutes",
                 "value": 60
             },
             {
-                "key": "pds.productexecutor.timetowait.nextcheck.milliseconds",
+                "key": "sechub.productexecutor.pds.timetowait.nextcheck.milliseconds",
                 "value": 500
             },
             {
-                "key": "pds.productexecutor.trustall.certificates",
+                "key": "sechub.productexecutor.pds.trustall.certificates",
                 "value": true
             }
         ]

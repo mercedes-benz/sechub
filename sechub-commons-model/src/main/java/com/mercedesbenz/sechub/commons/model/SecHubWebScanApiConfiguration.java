@@ -10,7 +10,6 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 public class SecHubWebScanApiConfiguration implements SecHubDataConfigurationUsageByName {
 
     public static final String PROPERTY_TYPE = "type";
-    public static final String PROPERTY_LOGIN = "use";
 
     private SecHubWebScanApiType type;
 

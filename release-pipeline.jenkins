@@ -71,7 +71,7 @@ pipeline {
                             * on integration phase again (because nothing has changed, so gradle will cache the results which are ignored ...
                             */
                             callGradleWrapper("ensureLocalhostCertificate build generateOpenapi buildDeveloperAdminUI -x :sechub-integrationtest:test -x :sechub-cli:build -Psechub.test.wiremock.https_port=${env.SECHUB_TEST_WIREMOCK_HTTPS_PORT} -Psechub.test.wiremock.http_port=${env.SECHUB_TEST_WIREMOCK_HTTP_PORT}")
-                            callGradleWrapper(":sechub-api-java:buildAPIJava")
+                            callGradleWrapper(":sechub-api-java:build :sechub-systemtest:build :sechub-pds-tools:buildPDSToolsCLI -Dsechub.build.stage=api-necessary")
                         }
                     }
                 }
@@ -103,10 +103,10 @@ pipeline {
                 SECHUB_STORAGE_S3_ENDPOINT = getStringCredentialsOrUndefined('sechub-storage-s3-endpoint')
 
                 // we setup PDS storage with same s3 bucket data
-                SECHUB_PDS_STORAGE_S3_ACCESSKEY = getStringCredentialsOrUndefined('sechub-storage-s3-accesskey')
-                SECHUB_PDS_STORAGE_S3_SECRETKEY = getStringCredentialsOrUndefined('sechub-storage-s3-secretkey')
-                SECHUB_PDS_STORAGE_S3_BUCKETNAME = getStringCredentialsOrUndefined('sechub-storage-s3-bucketname')
-                SECHUB_PDS_STORAGE_S3_ENDPOINT = getStringCredentialsOrUndefined('sechub-storage-s3-endpoint')
+                PDS_STORAGE_S3_ACCESSKEY = getStringCredentialsOrUndefined('sechub-storage-s3-accesskey')
+                PDS_STORAGE_S3_SECRETKEY = getStringCredentialsOrUndefined('sechub-storage-s3-secretkey')
+                PDS_STORAGE_S3_BUCKETNAME = getStringCredentialsOrUndefined('sechub-storage-s3-bucketname')
+                PDS_STORAGE_S3_ENDPOINT = getStringCredentialsOrUndefined('sechub-storage-s3-endpoint')
 
                 SECHUB_INTEGRATIONTEST_PREPARE_WAIT_MS=100
 
@@ -127,7 +127,7 @@ pipeline {
             }
             steps {
                 script{
-                    callGradleWrapper('documentation')
+                    callGradleWrapper('documentation -Dsechub.build.stage=all')
                 }
             }
         }

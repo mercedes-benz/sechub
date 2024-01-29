@@ -10,8 +10,8 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.mercedesbenz.sechub.commons.model.SecHubLocalDateTimeDeserializer;
 import com.mercedesbenz.sechub.commons.model.SecHubLocalDateTimeSerializer;
-import com.mercedesbenz.sechub.pds.PDSJSONConverter;
-import com.mercedesbenz.sechub.pds.PDSJSONConverterException;
+import com.mercedesbenz.sechub.pds.commons.core.PDSJSONConverter;
+import com.mercedesbenz.sechub.pds.commons.core.PDSJSONConverterException;
 import com.mercedesbenz.sechub.pds.execution.PDSExecutionStatus;
 
 public class PDSClusterMember {

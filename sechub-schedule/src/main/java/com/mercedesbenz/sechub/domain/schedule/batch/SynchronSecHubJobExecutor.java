@@ -17,7 +17,7 @@ import com.mercedesbenz.sechub.commons.model.SecHubMessage;
 import com.mercedesbenz.sechub.commons.model.SecHubMessageType;
 import com.mercedesbenz.sechub.commons.model.SecHubMessagesList;
 import com.mercedesbenz.sechub.commons.model.TrafficLight;
-import com.mercedesbenz.sechub.domain.schedule.ExecutionResult;
+import com.mercedesbenz.sechub.commons.model.job.ExecutionResult;
 import com.mercedesbenz.sechub.domain.schedule.UUIDContainer;
 import com.mercedesbenz.sechub.domain.schedule.job.ScheduleSecHubJob;
 import com.mercedesbenz.sechub.sharedkernel.LogConstants;

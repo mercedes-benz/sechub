@@ -11,7 +11,7 @@ import javax.persistence.LockModeType;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 
-import com.mercedesbenz.sechub.domain.schedule.ExecutionState;
+import com.mercedesbenz.sechub.commons.model.job.ExecutionState;
 import com.mercedesbenz.sechub.sharedkernel.jpa.TypedQuerySupport;
 
 public class SecHubJobRepositoryImpl implements SecHubJobRepositoryCustom {

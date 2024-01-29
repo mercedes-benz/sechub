@@ -17,6 +17,7 @@ import org.springframework.web.client.RestOperations;
 
 import com.mercedesbenz.sechub.adapter.AdapterException;
 import com.mercedesbenz.sechub.adapter.AdapterMetaData;
+import com.mercedesbenz.sechub.adapter.checkmarx.CheckmarxAdapter;
 import com.mercedesbenz.sechub.adapter.checkmarx.CheckmarxAdapterContext;
 import com.mercedesbenz.sechub.adapter.checkmarx.CheckmarxMetaDataID;
 
@@ -81,9 +82,9 @@ public class CheckmarxScanReportSupport {
 
         ReportDetails reportDetails = context.getReportDetails();
         if (reportDetails.isNotFound()) {
-            throw context.asAdapterException("The report cannot be found!", null);
+            throw context.asAdapterException(CheckmarxAdapter.CHECKMARX_MESSAGE_PREFIX + "Report not found (Scan id=" + context.getScanId() + ", report id="
+                    + context.getReportId() + ")", null);
         }
-
     }
 
     // https://checkmarx.atlassian.net/wiki/spaces/KC/pages/223379587/Register+Scan+Report+-+POST+reports+sastScan
@@ -111,8 +112,12 @@ public class CheckmarxScanReportSupport {
             LOG.debug("Sending request for new report generation for scan Id: {}. Trace Id: {}.", scanId, traceId);
             RestOperations restTemplate = context.getRestOperations();
             ResponseEntity<String> result = restTemplate.exchange(url, HttpMethod.POST, request, String.class);
-            if (!result.getStatusCode().equals(HttpStatus.ACCEPTED)) {
-                throw context.asAdapterException("Response HTTP status not as expected: " + result.getStatusCode(), null);
+
+            HttpStatus expected = HttpStatus.ACCEPTED;
+            if (!result.getStatusCode().equals(expected)) {
+                throw context.asAdapterException(
+                        CheckmarxAdapter.CHECKMARX_MESSAGE_PREFIX + "HTTP status=" + result.getStatusCode() + " (expected was HTTP status=" + expected + ")",
+                        null);
             }
             String body = result.getBody();
 

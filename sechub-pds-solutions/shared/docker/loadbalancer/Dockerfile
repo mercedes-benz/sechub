@@ -1,6 +1,6 @@
 # SPDX-License-Identifier: MIT
 
-FROM debian:11-slim
+FROM debian:12-slim
 
 ARG PDS_SOLUTION
 ARG USER=www-data

@@ -54,7 +54,41 @@ spec:
             sizeLimit: "{{ .Values.volumes.tmpVolume.size }}"
   {{- end }}
 {{- end }}
-      containers: # which containers shall be inside my pod...
+{{- if .Values.go_mmproxy.enabled }}
+      initContainers:
+      - name: setup
+        image: "{{ .Values.go_mmproxy.image }}"
+        command:
+        - "/bin/sh"
+        - "-cx"
+        args:
+        - |
+          /sbin/ip rule add from 127.0.0.1/8 iif lo table 123
+          /sbin/ip route add local 0.0.0.0/0 dev lo table 123
+        securityContext:
+          capabilities:
+            add:
+              - NET_ADMIN
+{{- end }}
+      containers:
+{{- if .Values.go_mmproxy.enabled }}
+      # go-mmproxy sidecar container
+      - name: go-mmproxy
+        image: "{{ .Values.go_mmproxy.image }}"
+        ports:
+        - containerPort: 8080
+        securityContext:
+          capabilities:
+            add:
+              - NET_ADMIN
+        args:
+        - "-v=0"           # loglevel 0 - no logging ; 1 - log errors ; 2 - log all state changes
+        - "-l"             # listen
+        - "0.0.0.0:8080"   # on port 8080
+        - "-4"             # tcp v4
+        - "127.0.0.1:8443" # forward to SecHub server container (localhost port 8443)
+{{- end }}
+      # SecHub server container
       - name: sechub-server
         image: {{ .Values.image.registry }}:{{ .Values.image.tag }}
         resources:
@@ -369,21 +403,6 @@ spec:
                name: secret-pds-checkmarx
                key: techuser_password
 {{- end }}
-{{- if .Values.pdsCloc.enabled }}
-# ----------------------------------------------------------------------------------------------#
-# - Scope: PDS-Cloc
-# --------------------------------------------------------------------------------------------- #
-        - name: SECHUB_PDS_CLOC_USERID
-          valueFrom:
-            secretKeyRef:
-               name: secret-pds-cloc
-               key: techuser_username
-        - name: SECHUB_PDS_CLOC_PASSWORD
-          valueFrom:
-            secretKeyRef:
-               name: secret-pds-cloc
-               key: techuser_password
-{{- end }}
 {{- if .Values.pdsCoverity.enabled }}
 # ----------------------------------------------------------------------------------------------#
 # - Scope: PDS-Coverity
@@ -429,6 +448,36 @@ spec:
                name: secret-pds-gosec
                key: techuser_password
 {{- end }}
+{{- if .Values.pdsIaC.enabled }}
+# ----------------------------------------------------------------------------------------------#
+# - Scope: PDS-IaC
+# --------------------------------------------------------------------------------------------- #
+        - name: SECHUB_PDS_IAC_USERID
+          valueFrom:
+            secretKeyRef:
+               name: secret-pds-iac
+               key: techuser_username
+        - name: SECHUB_PDS_IAC_PASSWORD
+          valueFrom:
+            secretKeyRef:
+               name: secret-pds-iac
+               key: techuser_password
+{{- end }}
+{{- if .Values.pdsLoc.enabled }}
+# ----------------------------------------------------------------------------------------------#
+# - Scope: PDS-Loc
+# --------------------------------------------------------------------------------------------- #
+        - name: SECHUB_PDS_LOC_USERID
+          valueFrom:
+            secretKeyRef:
+               name: secret-pds-loc
+               key: techuser_username
+        - name: SECHUB_PDS_LOC_PASSWORD
+          valueFrom:
+            secretKeyRef:
+               name: secret-pds-loc
+               key: techuser_password
+{{- end }}
 {{- if .Values.pdsMulti.enabled }}
 # ----------------------------------------------------------------------------------------------#
 # - Scope: PDS-Multi
@@ -457,6 +506,21 @@ spec:
           valueFrom:
             secretKeyRef:
                name: secret-pds-owaspzap
+               key: techuser_password
+{{- end }}
+{{- if .Values.pdsPMD.enabled }}
+# ----------------------------------------------------------------------------------------------#
+# - Scope: PDS-PMD
+# --------------------------------------------------------------------------------------------- #
+        - name: SECHUB_PDS_PMD_USERID
+          valueFrom:
+            secretKeyRef:
+               name: secret-pds-pmd
+               key: techuser_username
+        - name: SECHUB_PDS_PMD_PASSWORD
+          valueFrom:
+            secretKeyRef:
+               name: secret-pds-pmd
                key: techuser_password
 {{- end }}
 {{- if .Values.pdsScancode.enabled }}
@@ -488,6 +552,21 @@ spec:
             secretKeyRef:
                name: secret-pds-secretscanner
                key: techuser_password
+{{- end }}
+{{- if .Values.pdsXray.enabled }}
+# ----------------------------------------------------------------------------------------------#
+# - Scope: PDS-Xray
+# --------------------------------------------------------------------------------------------- #
+        - name: SECHUB_PDS_XRAY_USERID
+          valueFrom:
+            secretKeyRef:
+              name: secret-pds-xray
+              key: techuser_username
+        - name: SECHUB_PDS_XRAY_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: secret-pds-xray
+              key: techuser_password
 {{- end }}
 # ----------------------------------------------------------------------------------------------#
 # - Scope: emails from SecHub server

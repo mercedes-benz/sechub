@@ -6,7 +6,6 @@ import static com.mercedesbenz.sechub.restdoc.RestDocumentation.*;
 import static com.mercedesbenz.sechub.test.RestDocPathParameter.*;
 import static com.mercedesbenz.sechub.test.SecHubTestURLBuilder.*;
 import static org.mockito.Mockito.*;
-import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
 import static org.springframework.restdocs.headers.HeaderDocumentation.requestHeaders;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.*;
 import static org.springframework.restdocs.payload.PayloadDocumentation.*;
@@ -136,7 +135,7 @@ public class ProductExecutionProfileRestControllerRestDocTest implements TestIsN
                             and().
                             document(
 	                            		requestHeaders(
-	                            				headerWithName(AuthenticationHelper.HEADER_NAME).description(AuthenticationHelper.HEADER_DESCRIPTION)
+
 	                            		),
                                         requestFields(
                                                 fieldWithPath(PROPERTY_DESCRIPTION).description("A short description for the profile"),
@@ -188,7 +187,7 @@ public class ProductExecutionProfileRestControllerRestDocTest implements TestIsN
                             and().
                             document(
 	                            		requestHeaders(
-	                            				headerWithName(AuthenticationHelper.HEADER_NAME).description(AuthenticationHelper.HEADER_DESCRIPTION)
+
 	                            		),
                                         requestFields(
                                                 fieldWithPath(PROPERTY_DESCRIPTION).description("A short description for the profile"),
@@ -232,7 +231,7 @@ public class ProductExecutionProfileRestControllerRestDocTest implements TestIsN
                             and().
                             document(
 	                            		requestHeaders(
-	                            				headerWithName(AuthenticationHelper.HEADER_NAME).description(AuthenticationHelper.HEADER_DESCRIPTION)
+
 	                            		),
 	                                    pathParameters(
 	                                                parameterWithName(PROJECT_ID.paramName()).description("The project id "),
@@ -267,7 +266,7 @@ public class ProductExecutionProfileRestControllerRestDocTest implements TestIsN
                             and().
                             document(
 	                            		requestHeaders(
-	                            				headerWithName(AuthenticationHelper.HEADER_NAME).description(AuthenticationHelper.HEADER_DESCRIPTION)
+
 	                            		),
                                         pathParameters(
                                                 parameterWithName(PROJECT_ID.paramName()).description("The project id "),
@@ -329,7 +328,7 @@ public class ProductExecutionProfileRestControllerRestDocTest implements TestIsN
                             and().
                             document(
 	                            		requestHeaders(
-	                            				headerWithName(AuthenticationHelper.HEADER_NAME).description(AuthenticationHelper.HEADER_DESCRIPTION)
+
 	                            		),
                                         responseFields(
                                                 fieldWithPath(PROPERTY_ID).optional().ignored(),
@@ -377,7 +376,7 @@ public class ProductExecutionProfileRestControllerRestDocTest implements TestIsN
                             and().
                             document(
 	                            		requestHeaders(
-	                            				headerWithName(AuthenticationHelper.HEADER_NAME).description(AuthenticationHelper.HEADER_DESCRIPTION)
+
 	                            		),
                                         pathParameters(
                                                 parameterWithName(PROFILE_ID.paramName()).description("The profile id")
@@ -425,7 +424,7 @@ public class ProductExecutionProfileRestControllerRestDocTest implements TestIsN
                             and().
                             document(
 	                            		requestHeaders(
-	                            				headerWithName(AuthenticationHelper.HEADER_NAME).description(AuthenticationHelper.HEADER_DESCRIPTION)
+
 	                            		),
                                         responseFields(
                                                 fieldWithPath("type").description("Always `executorProfileList` as an identifier for the list"),

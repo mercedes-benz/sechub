@@ -7,8 +7,8 @@ import java.util.UUID;
 
 import com.mercedesbenz.sechub.commons.model.SecHubConfigurationMetaData;
 import com.mercedesbenz.sechub.commons.model.TrafficLight;
-import com.mercedesbenz.sechub.domain.schedule.ExecutionResult;
-import com.mercedesbenz.sechub.domain.schedule.ExecutionState;
+import com.mercedesbenz.sechub.commons.model.job.ExecutionResult;
+import com.mercedesbenz.sechub.commons.model.job.ExecutionState;
 
 public class SecHubJobInfoForUser {
 

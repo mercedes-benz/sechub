@@ -11,7 +11,7 @@ ENVIRONMENT_FILE=".env-single"
 # all other variables are only available in the container
 setup_environment_file ".env" "env"
 setup_environment_file "$ENVIRONMENT_FILE" "$ENVIRONMENT_FILES_FOLDER/env-base"
-
+ 
 # Use Docker BuildKit
 # nesessary for switching between build stages
 export BUILDKIT_PROGRESS=plain

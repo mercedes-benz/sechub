@@ -1,6 +1,5 @@
 // SPDX-License-Identifier: MIT
 buildscript{
-
 	apply from: "${rootProject.projectDir}/gradle/libraries.gradle"
 	apply from: "${rootProject.projectDir}/gradle/projects.gradle"
 
@@ -57,9 +56,6 @@ apply plugin: 'org.cyclonedx.bom'
 cyclonedxBom {
   includeConfigs = ["runtimeClasspath"]
 }
-
-version = VersionData.getServerVersion()
-
 
 /* check buildsystem */
 def githubActor = System.getenv('GITHUB_ACTOR')
@@ -139,3 +135,4 @@ apply from: "${rootProject.projectDir}/gradle/build-spring.gradle"
 apply from: "${rootProject.projectDir}/gradle/build-maven.gradle"
 apply from: "${rootProject.projectDir}/gradle/build-eclipse.gradle"
 apply from: "${rootProject.projectDir}/gradle/build-report.gradle"
+apply from: "${rootProject.projectDir}/gradle/build-integrationtest.gradle"

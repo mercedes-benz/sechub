@@ -32,8 +32,11 @@
           "sechub-cli/pkg/mod/**",
           "sechub-developertools/**",
           "sechub-doc/**",
+          "sechub-examples/**",
           "sechub-integrationtest/**",
           "sechub-other/**",
+          "sechub-storage-s3-aws-test/**",
+          "sechub-systemtest/**",
           "sechub-test/**"
         ]
       }

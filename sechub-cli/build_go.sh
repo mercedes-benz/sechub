@@ -5,14 +5,13 @@ projectDirOSspecific="$1"
 projectDirLinuxPath="$2" #converted part , necessary for mingw on windows...
 package="$3"
 platforms="$4"
-globalBuildDir="$5"
 
 MOD_BASENAME="mercedes-benz.com/sechub"
 SUBMODULES="cli testutil util"  # Space separated list
 SRC_PATH="$projectDirLinuxPath/src/$MOD_BASENAME"
 
 if [[ -z "$package" ]]; then
-    echo "usage: $0 <projectDirOsSpecific> <projectDirLinuxPath> <package-name> [ <platforms> <globalBuildDir>]"
+    echo "usage: $0 <projectDirOsSpecific> <projectDirLinuxPath> <package-name> [ <platforms> ]"
     exit 1
 fi
 
@@ -55,44 +54,41 @@ function init_go_modules() {
 package_split=(${package//\// })
 package_name=${package_split[*]: -1}
 
-echo "Build Go: Building package '$package':"
+echo "Build Go: Building package '$package'"
 
 export GOPATH="$SRC_PATH" # ignore former one, prevents differt of ; and : of pathes...
-
-echo ">>GOPATH=$GOPATH"
+echo "GOPATH=$GOPATH"
 
 init_go_modules
 
-cd $SRC_PATH/main
-for platform in "${platforms[@]}"
-do
+cd "$SRC_PATH/main"
+
+export CGO_ENABLED=0  # This forces statically linked binaries
+GO_LD_FLAGS="-s -w"   # strip (reduce size): disable debug symbol table / disable DWARF generation
+
+for platform in "${platforms[@]}" ; do
     platform_split=(${platform//\// })
-    GOOS=${platform_split[0]}
-    GOARCH=${platform_split[1]}
-    output_name=$package_name'-'$GOOS'-'$GOARCH
-    targetSubFolder='platform/'$GOOS'-'$GOARCH
+    export GOOS=${platform_split[0]}
+    export GOARCH=${platform_split[1]}
+
+    # Create subfolder for platform
+    targetSubFolder="platform/$GOOS-$GOARCH"
+    buildDir="$projectDirLinuxPath/build/go/$targetSubFolder"
+    mkdir -p "$buildDir"
+
+    output_name="$package_name"
     if [ $GOOS = "windows" ]; then
         output_name+='.exe'
     fi
-    echo ">building:$targetSubFolder"
-    env GOOS=$GOOS GOARCH=$GOARCH go build -ldflags="-s -w" -o $output_name .
+
+    echo "> building $targetSubFolder"
+    go build -ldflags="$GO_LD_FLAGS" -o "$buildDir/$output_name" .
     if [ $? -ne 0 ]; then
         echo 'Go build failed because of an error'
         exit 1
     fi
 
-    if [[ -z "$globalBuildDir" ]]; then
-        buildDir="$projectDirLinuxPath/build/go/$targetSubFolder"
-    else
-        buildDir="$globalBuildDir"
-    fi
-    finalOutputName=$package_name
-    if [ $GOOS = "windows" ]; then
-        finalOutputName+='.exe'
-    fi
-    mkdir -p "$buildDir"
-    mv "$output_name" "$buildDir/$finalOutputName"
-    # create sha25 checksum and use only first part (checksum)
-    checksumHash=($(sha256sum "$buildDir/$finalOutputName"))
-    echo "$checksumHash" > "$buildDir/$finalOutputName.sha256"
+    # create sha256 checksum and use only first part (checksum)
+    checksumHash=($(sha256sum "$buildDir/$output_name"))
+    echo "$checksumHash" > "$buildDir/$output_name.sha256"
 done

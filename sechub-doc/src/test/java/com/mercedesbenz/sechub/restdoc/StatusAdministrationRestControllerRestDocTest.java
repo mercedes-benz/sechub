@@ -5,7 +5,6 @@ import static com.mercedesbenz.sechub.restdoc.RestDocumentation.*;
 import static com.mercedesbenz.sechub.test.RestDocPathParameter.*;
 import static com.mercedesbenz.sechub.test.SecHubTestURLBuilder.*;
 import static org.mockito.Mockito.*;
-import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
 import static org.springframework.restdocs.headers.HeaderDocumentation.requestHeaders;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.*;
 import static org.springframework.restdocs.payload.PayloadDocumentation.*;
@@ -107,7 +106,7 @@ public class StatusAdministrationRestControllerRestDocTest implements TestIsNece
                 and().
                 document(
 	                		requestHeaders(
-	                				headerWithName(AuthenticationHelper.HEADER_NAME).description(AuthenticationHelper.HEADER_DESCRIPTION)
+
 	                		),
                             pathParameters(
                                     parameterWithName(MAPPING_ID.paramName()).description("The mapping Id")
@@ -147,7 +146,7 @@ public class StatusAdministrationRestControllerRestDocTest implements TestIsNece
                 and().
                 document(
 	                		requestHeaders(
-	                				headerWithName(AuthenticationHelper.HEADER_NAME).description(AuthenticationHelper.HEADER_DESCRIPTION)
+
 	                		),
                             pathParameters(
                                     parameterWithName(MAPPING_ID.paramName()).description("The mappingID, identifiying which mapping shall be updated")

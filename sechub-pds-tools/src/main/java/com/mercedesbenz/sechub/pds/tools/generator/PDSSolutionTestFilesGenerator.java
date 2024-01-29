@@ -5,31 +5,20 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.file.Files;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
-
-import org.apache.commons.io.FileUtils;
+import java.nio.file.Path;
 
 import com.mercedesbenz.sechub.commons.TextFileReader;
 import com.mercedesbenz.sechub.commons.TextFileWriter;
-import com.mercedesbenz.sechub.commons.archive.ArchiveConstants;
-import com.mercedesbenz.sechub.commons.archive.SecHubFileStructureDataProvider;
-import com.mercedesbenz.sechub.commons.core.CommonConstants;
+import com.mercedesbenz.sechub.commons.archive.ArchiveSupport;
 import com.mercedesbenz.sechub.commons.model.JSONConverter;
 import com.mercedesbenz.sechub.commons.model.JSONConverterException;
 import com.mercedesbenz.sechub.commons.model.ScanType;
-import com.mercedesbenz.sechub.commons.model.SecHubCodeScanConfiguration;
 import com.mercedesbenz.sechub.commons.model.SecHubConfigurationModel;
 import com.mercedesbenz.sechub.commons.model.SecHubConfigurationModelReducedCloningSupport;
-import com.mercedesbenz.sechub.commons.model.SecHubDataConfiguration;
-import com.mercedesbenz.sechub.commons.model.SecHubDataConfigurationObject;
-import com.mercedesbenz.sechub.commons.model.SecHubFileSystemConfiguration;
-import com.mercedesbenz.sechub.commons.model.SecHubFileSystemContainer;
 import com.mercedesbenz.sechub.commons.pds.PDSDefaultParameterKeyConstants;
 import com.mercedesbenz.sechub.commons.pds.data.PDSJobData;
 import com.mercedesbenz.sechub.commons.pds.data.PDSJobParameterEntry;
-import com.mercedesbenz.sechub.pds.tools.archive.DeveloperArchiveSupport;
+import com.mercedesbenz.sechub.pds.tools.GeneratorCommand;
 import com.mercedesbenz.sechub.pds.tools.handler.ConsoleHandler;
 import com.mercedesbenz.sechub.pds.tools.handler.PrintStreamConsoleHandler;
 
@@ -37,57 +26,56 @@ public class PDSSolutionTestFilesGenerator {
 
     private TextFileReader reader = new TextFileReader();
     private TextFileWriter writer = new TextFileWriter();
-    private DeveloperArchiveSupport developerArchiveSupport = new DeveloperArchiveSupport();
+
     private File targetFolder;
     private File originConfigFile;
-    private boolean createPseudoFilesWhenNotExisting = true;
 
-    public static void main(String[] args) throws Exception {
-        PDSSolutionTestFilesGenerator geno = new PDSSolutionTestFilesGenerator();
-        geno.generate(args);
-    }
-
-    private ConsoleHandler outputHandler;
+    private ConsoleHandler consoleHandler;
     private ScanType scanType;
     private SecHubConfigurationModel config;
 
-    ConsoleHandler getOutputHandler() {
-        if (outputHandler == null) {
-            outputHandler = new PrintStreamConsoleHandler();
+    ConsoleHandler getConsoleHandler() {
+        if (consoleHandler == null) {
+            consoleHandler = new PrintStreamConsoleHandler();
         }
-        return outputHandler;
+        return consoleHandler;
     }
 
-    public void setCreatePseudoFilesWhenNotExisting(boolean create) {
-        this.createPseudoFilesWhenNotExisting = create;
+    public void setConsoleHandler(ConsoleHandler consoleHandler) {
+        this.consoleHandler = consoleHandler;
     }
 
-    public void setOutputHandler(ConsoleHandler outputHandler) {
-        this.outputHandler = outputHandler;
-    }
+    public File generate(GeneratorCommand generatorCommand) throws Exception {
 
-    /* only for command line call - so private */
-    private File generate(String[] args) throws Exception {
-        if (args.length != 2) {
-            getOutputHandler().error("please call with ${pathToSechubConfigFile} ${scanType}");
-            throw new IllegalArgumentException("wrong number of parameters");
+        File targetFolder = null;
+        String targetFolderPath = generatorCommand.getTargetFolderPath();
+        if (targetFolderPath != null && !targetFolderPath.isBlank()) {
+            targetFolder = new File(targetFolderPath);
+            if (!targetFolder.exists()) {
+                targetFolder.mkdirs();
+            }
         }
-        return generate(args[0], args[1], null);
+        File workingDirectoryFolder = null;
+        String workingDirectory = generatorCommand.getWorkingDirectory();
+
+        if (workingDirectory != null && !workingDirectory.isBlank()) {
+            workingDirectoryFolder = new File(workingDirectory);
+            if (!workingDirectoryFolder.exists()) {
+                throw new FileNotFoundException("Working directory " + workingDirectoryFolder.getAbsolutePath() + " does not exist!");
+            }
+        }
+        return generate(generatorCommand.getPathToConfigFile(), generatorCommand.getScanType(), targetFolder, workingDirectoryFolder,
+                generatorCommand.isCreateMissingFiles());
     }
 
-    /**
-     * Generates PSD solution files for development
-     *
-     * @param pathToSecHubConfigFile
-     * @param wantedScanType
-     * @return folder where files are generated into
-     * @throws Exception
-     */
-    public File generate(String pathToSecHubConfigFile, String wantedScanType, File targetFolderOrNull) throws Exception {
+    public File generate(String pathToSecHubConfigFile, String wantedScanType, File targetFolderOrNull, File workingDirectory, boolean createMissingFiles)
+            throws Exception {
         try {
 
             ensureScanType(wantedScanType);
             ensureSecHubConfiguration(pathToSecHubConfigFile);
+
+            Path workingDirectoryPath = resolveWorkingDirectory(workingDirectory);
 
             if (targetFolderOrNull != null) {
                 targetFolder = targetFolderOrNull;
@@ -100,118 +88,30 @@ public class PDSSolutionTestFilesGenerator {
             String recucedSecHubConfigJson = writeReducedConfigFile();
             writePDSJobDataFile(recucedSecHubConfigJson);
 
-            writeTarAndZipFilesAsConfiguredInSecHubConfigFile();
+            ArchiveSupport archiveSupport = new ArchiveSupport();
+            archiveSupport.setCreateMissingFiles(createMissingFiles);
 
-            getOutputHandler().output("Written files to:" + targetFolder.getAbsolutePath());
+            archiveSupport.createArchives(config, workingDirectoryPath, targetFolder.toPath());
+
+            getConsoleHandler().output("Written files to: " + targetFolder.getAbsolutePath());
             return targetFolder;
         } catch (Exception e) {
-            getOutputHandler().error("Generation failed:" + e.getMessage());
+            getConsoleHandler().error("Generation failed: " + e.getMessage());
             throw e;
         }
 
     }
 
+    private Path resolveWorkingDirectory(File workingDirectory) {
+        if (workingDirectory != null) {
+            return workingDirectory.toPath();
+        }
+        return originConfigFile.getParentFile().toPath();
+    }
+
     private void writeSecHubConfigurationToTempFolder() throws JSONConverterException, IOException {
         writer.save(new File(targetFolder, "original-used-sechub-configfile.json"), JSONConverter.get().toJSON(config, true), false);
 
-    }
-
-    private void writeTarAndZipFilesAsConfiguredInSecHubConfigFile() throws IOException {
-
-        File extracted = new File(targetFolder, "extracted");
-
-        File binaryCopy = new File(extracted, "binaries");
-        File sourceCopy = new File(extracted, "source");
-
-        copyOriginFilesToExtractedFolder(binaryCopy, sourceCopy);
-
-        developerArchiveSupport.compressToTar(binaryCopy, new File(targetFolder, CommonConstants.FILENAME_BINARIES_TAR));
-        developerArchiveSupport.compressToZip(sourceCopy, new File(targetFolder, CommonConstants.FILENAME_SOURCECODE_ZIP));
-
-        SecHubFileStructureDataProvider.builder().setModel(config).setScanType(scanType).build();
-    }
-
-    private void copyOriginFilesToExtractedFolder(File binaryCopy, File sourceCopy) throws FileNotFoundException, IOException {
-        binaryCopy.mkdirs();
-        sourceCopy.mkdirs();
-
-        /* copy data parts */
-        if (config.getData().isPresent()) {
-            SecHubDataConfiguration data = config.getData().get();
-
-            copy(binaryCopy, data.getBinaries());
-
-            copy(sourceCopy, data.getSources());
-        }
-
-        /* copy embedded parts */
-        Optional<SecHubCodeScanConfiguration> codeScanOpt = config.getCodeScan();
-        if (codeScanOpt.isPresent()) {
-            SecHubCodeScanConfiguration codeScan = codeScanOpt.get();
-            copy(sourceCopy, Arrays.asList(codeScan));
-        }
-    }
-
-    private void copy(File binaryCopy, List<? extends SecHubFileSystemContainer> fileSystemContainers) throws FileNotFoundException, IOException {
-        for (SecHubFileSystemContainer config : fileSystemContainers) {
-            Optional<SecHubFileSystemConfiguration> fileSystemOpt = config.getFileSystem();
-            if (!fileSystemOpt.isPresent()) {
-                continue;
-            }
-            File baseTarget = null;
-            if ((config instanceof SecHubDataConfigurationObject)) {
-                SecHubDataConfigurationObject dataConfigObject = (SecHubDataConfigurationObject) config;
-                String uniqueName = dataConfigObject.getUniqueName();
-                baseTarget = new File(binaryCopy, ArchiveConstants.DATA_SECTION_FOLDER + uniqueName);
-            } else {
-                baseTarget = binaryCopy; // root folder, no data section
-            }
-
-            SecHubFileSystemConfiguration fileSystem = fileSystemOpt.get();
-            copyFileOrFolder(baseTarget, fileSystem.getFiles(), false);
-            copyFileOrFolder(baseTarget, fileSystem.getFolders(), true);
-
-        }
-    }
-
-    private void copyFileOrFolder(File baseTarget, List<String> files, boolean targetIsDirectory) throws FileNotFoundException, IOException {
-        for (String fileName : files) {
-            File file = new File(originConfigFile.getParentFile(), fileName);
-            boolean notExisting = !file.exists();
-
-            File targetFile = new File(baseTarget, fileName);
-            if (targetIsDirectory) {
-                targetFile.mkdirs();
-            } else {
-                targetFile.getParentFile().mkdirs();
-            }
-            if (notExisting) {
-                if (createPseudoFilesWhenNotExisting) {
-                    if (targetIsDirectory) {
-                        File pseudoFile = new File(targetFile, "gen_placeholder_because_origin_not_existing.txt");
-                        pseudoFile.createNewFile();
-                        getOutputHandler().output("WARN: origin folder:" + file.getAbsolutePath() + " did not exist. So created folder at "
-                                + targetFile.getAbsolutePath() + " with place holder file.");
-
-                    } else {
-                        targetFile.createNewFile();
-                        getOutputHandler().output(
-                                "WARN: origin file:" + file.getAbsolutePath() + " did not exist. So created pseudo file:" + targetFile.getAbsolutePath());
-                    }
-                    // we cannot create but have created pseudo-files/empty directories, so stop
-                    // here
-                    continue;
-                } else {
-                    throw new FileNotFoundException("Cannot copy file/folder because it does not exist:" + file.getAbsolutePath());
-                }
-
-            }
-            if (targetIsDirectory) {
-                FileUtils.copyDirectory(file, targetFile);
-            } else {
-                FileUtils.copyFile(file, targetFile);
-            }
-        }
     }
 
     private String writeReducedConfigFile() throws IOException {

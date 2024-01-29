@@ -14,11 +14,14 @@ include::documents/shared/about_documentation_all.adoc[]
 
 == Target audience
 
-This guide is designed to help you if your are a developer or administrator and want to build, start and use the SecHub server either to help you with testing when writing new features or to test the integration into your own environment. If you are a enduser and want to use the SecHub client please have a look at our https://mercedes-benz.github.io/sechub/latest/sechub-client.html[client documentation].
+In case you are a **developer**, this guide is for you.
+
+* Users: In case, you are an enduser and want to use the SecHub client please have a look at our https://mercedes-benz.github.io/sechub/latest/sechub-client.html[client documentation]
+* Operations: In case, you are an administrator or operation engineers, who just wants to run SecHub have a look at the SecHub Getting Started Guide: https://mercedes-benz.github.io/sechub/latest/sechub-getting-started.html
 
 == Guide
 
-This guide describes how to get started with SecHub.
+This guide describes how to get started with SecHub from a developer perspective.
 
 The following topics are covered:
 
@@ -241,3 +244,345 @@ For real results, you have to define an 'execution profile' with a scanner (via 
 ===== Log files
 
 Open the log file `./sechub-integrationtest/integrationtest-server.log` to get more details about the problem.
+
+== Start Contributing
+
+. Fork SecHub: https://github.com/mercedes-benz/sechub/fork
+
+. Select a SecHub issue you want to work on: https://github.com/mercedes-benz/sechub/issues
++
+[TIP] 
+Issues have labels a good way to start is to look for issues with https://github.com/mercedes-benz/sechub/labels/good%20first%20issue[`good first issue`] or https://github.com/mercedes-benz/sechub/labels/help%20wanted[`help wanted`]. 
+Issues with labels https://github.com/mercedes-benz/sechub/labels/beginner[`beginner`], https://github.com/mercedes-benz/sechub/labels/intermediate[`intermediate`], https://github.com/mercedes-benz/sechub/labels/advanced[`advanced`] indicate the level of difficulty. 
+However, not all issues are labeled. In addition, if you like an issue just comment on it, so that we can assign you to it.
+
+** In case, the issue you want to work on does not yet exists, please create an issue.
+
+. Create a new branch on your local fork following the naming pattern `feature-<issue-number>-<short-description>`
++
+TIP: Example: `feature-36-go-client-supports-env-variable`.
+
+. Implement your changes
++
+TIP: In case, you have any questions or need clarification ask inside the issues
+
+. Run the tests locally
+
+** From within the (Eclipse) IDE
+** Using the `sdc.sh` helper script (located in the `sechub` repository folder)
++
+----
+# Run all Unit Tests
+./sechub-developertools/scripts/sdc.sh -u
+
+# Run all Integration Tests
+./sechub-developertools/scripts/sdc.sh -i
+----
++
+NOTE: `sdc.sh` is a convenience wrapper around the `gradlew` tool, which bundles the CLI calls into use cases. 
+
+. Create a pull-request and merge your changes into SecHub
+
+== Setup IDE for SecHub
+
+Our supported setup is:
+
+* Eclipse IDE 
+* Git
+* Debian based GNU/Linux
+* x86 64-bit CPU 
+* Docker
+
+In case your setup differs, please try to adjust the guides to your setup. Any contributions for other setups are welcome. Feel free to create pull requests for this guide with your setup.
+
+=== Setup SecHub in Eclipse IDE
+
+. Please, first create a fork of SecHub on GitHub: https://github.com/mercedes-benz/sechub/fork
++
+image::github-fork-sechub.png[]
+
+. On your local Linux computer create a new folder `Development` in your home folder
++
+----
+$ mkdir "$HOME/Development"
+----
+
+. Change into the `Development` folder
++
+----
+cd "$HOME/Development"
+----
+
+. Download https://www.eclipse.org/downloads/packages/[`Eclipse IDE for Java Developers` or `Eclipse IDE for Enterprise Java and Web Developers`]
++
+----
+# Download Eclipse IDE for Enterprise Java and Web Developers
+wget http://www.mirrorservice.org/sites/download.eclipse.org/eclipseMirror/technology/epp/downloads/release/2023-09/R/eclipse-jee-2023-09-R-linux-gtk-x86_64.tar.gz
+
+# Download checksum
+wget http://www.mirrorservice.org/sites/download.eclipse.org/eclipseMirror/technology/epp/downloads/release/2023-09/R/eclipse-jee-2023-09-R-linux-gtk-x86_64.tar.gz.sha512
+
+# Verify checksum
+sha512sum -c eclipse*.sha512
+
+# Extract archive
+tar -xf eclipse-jee-2023-09-R-linux-gtk-x86_64.tar.gz
+
+# Remove downloaded files
+rm eclipse-jee-*
+----
++
+As end result an `eclipse` folder containing the `eclipse` executable should be available.
++
+NOTE: http://www.mirrorservice.org/[www.mirrorservice.org] is provided by the University of Kent School of Computing.
+
+. Create a `projects` folder
++
+----
+mkdir projects
+----
+
+. Switch into the project folder
++
+----
+mkdir projects
+cd projects/
+----
++
+NOTE: We create a `projects` folder, because there are several SecHub projects. For example, the "sechub-<ide>` plugins are separated into different repositories.
+
+. Clone the SecHub repository (your fork)
++
+----
+git clone https://github.com/<your-github-username>/sechub.git
+----
++
+After, successfully cloning the repository. There should be a folder named `sechub` containing the source code.
+
+. Go one level up into to the `Development` folder
++
+----
+$ cd ..
+$ pwd
+/home/<user>/Development
+$ ls 
+eclipse  projects
+----
++
+
+. Create a `workspaces/sechub` folder for the Eclipse IDE to store settings in
++
+----
+mkdir -p workspaces/sechub
+----
+
+. Check the folder structure
++
+The folder structure should look like this:
++
+----
+$ pwd
+/home/user/Development
+$ tree -L 2
+.
+├── eclipse
+│   ├── artifacts.xml
+│   ├── configuration
+│   ├── dropins
+│   ├── eclipse
+│   ├── eclipse.ini
+│   ├── features
+│   ├── icon.xpm
+│   ├── p2
+│   ├── plugins
+│   └── readme
+├── projects
+│   └── sechub
+└── workspaces
+    └── sechub
+----
+
+. Go into the `eclipse` folder and start `eclipse`
++
+----
+cd eclipse
+./eclipse
+----
+
+. Select the `workspaces/sechub` folder as workspace folder and press the `Launch` button
++
+image::eclipse-choose-workspaces-folder.png[]
+
+. Install the https://marketplace.eclipse.org/content/egradle-ide[EGradle IDE Plugin]
+.. In the Eclipse IDE menu click the help menu and select marketplace
++
+image::eclipse-help-menu-marketplace.png[]
+
+.. To search for the EGradle IDE Plugin, type `egradle ide` into the `Find` intput box and press enter
++
+image::eclipse-marketplace-egradle-ide.png[]
+
+.. Select the EGradle IDE Plugin and press install. Next follow the installation wizard.
++
+[NOTE]
+The creator and developer of the EGradle IDE Plugin is a SecHub developer. 
+However, the EGradle IDE Plugin is a private project and not affiliated with SecHub.
+
+
+. Import the SecHub project into the workspace
+.. Select `Import` from the `File` menu
++
+image::eclipse-import-menu.png[]
+
+.. Select the `EGradle -> Import gradle root project with all subprojects` option and select next
++
+image::eclipse-import-egradle.png[]
+
+.. The EGradle Import Wizard opens up. Next, click `Browse…` after the `Gradle root project path` input box
++
+image::eclipse-import-gradle-projects-wizard.png[]
+
+.. A file dialog opens, select the `Development/projects/sechub` folder (previously cloned)
++
+image::eclipse-egradle-import-file-dialog.png[]
+
+.. The `sechub` folder is selected. Next, click the `Finish` button to import the SecHub project
++
+image::eclipse-import-gradle-projects-sechub-selected.png[]
+
+.. The import will take some time. Once, successfully imported all SecHub sub-projects, a `Virtual Root` and the success message in the console should be visible 
++
+image::eclipse-egradle-sechub-imported.png[]
+
+==== Switch to `Dark` theme (Optional)
+
+Needs to be done for every new workspace.
+
+. Select `Preferences` from the `Window` menu
++
+image::eclipse-preferences.png[]
+ 
+. Search for `Dark` in the input box. The menu point `General -> Appearance` should appear as an option
++
+image::eclipse-dark-theme.png[]
+
+. Select `Dark` from the theme drop-down menu
+
+. Press the `Apply and Close` button
+
+== Run Integration Tests From IDE
+
+We explain the setup based on the Free and Open Source Software (FOSS) https://eclipseide.org/[Eclipse IDE].
+
+=== SecHub Server
+
+Run a SecHub server integration test.
+
+[#configure-sechub-server]
+==== Configure SecHub Server
+
+Download the launch configuration for the Eclipse IDE: https://raw.githubusercontent.com/mercedes-benz/sechub/develop/sechub-examples/eclipse/SecHubServerApplication_(INTEGRATION_TEST-H2).launch[SecHubServerApplication (INTEGRATION TEST - H2)]
+
+. Open the `Run Configurations…` in the toolbar of the Eclipse IDE
++
+image::eclipse-run-configurations.png[]
+
+. Right-click on `Java Application` and select `New Configuration` from the context menu.
++
+image::eclipse-new-configuration.png[]
+
+. Name the new configuration `SecHubServerApplication_(INTEGRATION_TEST-H2)`
+
+. In the tab `Main`:
+** `Project:` Select the `sechub-server` project.
+** `Main class: com.mercedesbenz.sechub.SecHubServerApplication`
++
+image::eclipse-run-configuration-server-main-tab.png[]
+
+. Next open the `Arguments` tab and add the following arguments into the `VM arguments` section:
++
+----
+-Dspring.profiles.active=mocked_products,h2,integrationtest
+-Dsechub.server.debug=true
+-Dsechub.storage.sharedvolume.upload.dir=/home/<user>/.sechub/sharedvolume
+-Dsechub.targettype.detection.intranet.hostname.endswith=intranet.example.org
+-Dsechub.config.trigger.nextjob.initialdelay=0
+----
++
+NOTE: Ensure you replace the `<user>` with your own user. Additionally, set the `sechub.storage.sharedvolume.upload.dir` parameter to a folder with read and write access on the system.
++
+image::eclipse-run-configuration-server-arguments-tab.png[]
+
+==== Run a SecHub server integration test
+
+This section demonstrate how to run an integration test for the SecHub server using `UserRegistrationScenario1IntTest.java` as example.
+Other SecHub server integration tests can be run in the same way. 
+
+. Start SecHub server in integration test mode using the SecHub integration test launch configuration as explained in <<configure-sechub-server>>
+
+. Select `sechub-integrationtest/src/test/java/com/mercedesbenz/sechub/integrationtest/scenario1/UserRegistrationScenario1IntTest.java` in the `Project Explorer`
+
+. Right-click on `UserRegistrationScenario1IntTest.java` to open the context menu and select `Run As` and select `JUnit Test` in the submenu.  
++
+image::eclipse-run-server-integrationtest.png[]
+
+. Check the JUnit tab, the result should be green indicating a successful run.
+
+=== Product Delegation Server (PDS)
+
+Run a Product Delegation Server (PDS) integration test.
+
+[#configure-pds]
+==== Configure Product Delegation Server (PDS)
+
+Download the launch configure for the Eclipse IDE: https://raw.githubusercontent.com/mercedes-benz/sechub/develop/sechub-examples/eclipse/ProductDelegationServerApplication_(INTEGRATION_TEST-H2).launch[ProductDelegationServerApplication (INTEGRATION TEST - H2)]
+
+. Open the `Run Configurations…` in the toolbar of the Eclipse IDE
++
+image::eclipse-run-configurations.png[]
+
+. Right-click on `Java Application` and select `New Configuration` from the context menu.
++
+image::eclipse-new-configuration.png[]
+
+. Name the new configuration `ProductDelegationServerApplication_(INTEGRATION_TEST-H2)`
+
+. In the tab `Main`:
+** `Project:` Select the `sechub-pds` project.
+** `Main class: com.mercedesbenz.sechub.pds.ProductDelegationServerApplication`
+
+. Next open the `Arguments` tab and add the following arguments into the `VM arguments` section:
++
+----
+-Dspring.profiles.active=pds_integrationtest,pds_h2
+-Dpds.storage.sharedvolume.upload.dir=/home/<user>/.sechub/sharedvolume
+-Dpds.workspace.rootfolder=/home/<user>/.pds/workspace
+----
++
+NOTE: Ensure you replace the `<user>` with your own user. It is necessary to set the folder `sechub.pds.storage.sharedvolume.upload.dir` to the same folder as configured for the <<configure-sechub-server, SecHub server>>.
+
+==== Run a PDS integration test
+
+This section demonstrate how to run an integration test for the PDS server using `DirectPDSAPICheckAliveScenario6IntTest.java` as example.
+Other PDS integration tests can be run in the same way. 
+
+. Start PDS in integration test mode using the SecHub integration test launch configuration as explained in <<configure-pds>>
+
+. Select `sechub-integrationtest/src/test/java/com/mercedesbenz/sechub/integrationtest/scenario6/DirectPDSAPICheckAliveScenario6IntTest.java` in the `Project Explorer`
+
+. Right-click on `DirectPDSAPICheckAliveScenario6IntTest.java` to open the context menu and select `Run As` and select `JUnit Test` in the submenu.
+
+. Check the JUnit tab, the result should be green indicating a successful run.
+
+==== Run a SecHub + PDS integration test
+
+This section demonstrate how to run an integration test for the SecHub + PDS server using `PDSCodeScanJobScenario5IntTest.java` as example.
+Other PDS integration tests can be run in the same way. 
+
+. Start PDS and SecHub server in integration test mode using the launch configurations created in <<configure-sechub-server>> and <<configure-pds>>
+
+. Select `sechub-integrationtest/src/test/java/com/mercedesbenz/sechub/integrationtest/scenario5/PDSCodeScanJobScenario5IntTest.java` in the `Project Explorer`
+
+. Right-click on `PDSCodeScanJobScenario5IntTest.java` to open the context menu and select `Run As` and select `JUnit Test` in the submenu.
+
+. Check the JUnit tab, the result should be green indicating a successful run.

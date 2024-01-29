@@ -14,10 +14,10 @@ import com.mercedesbenz.sechub.commons.model.JSONConverterException;
 import com.mercedesbenz.sechub.commons.model.SecHubScanConfiguration;
 import com.mercedesbenz.sechub.commons.model.SecHubWebScanConfiguration;
 import com.mercedesbenz.sechub.commons.pds.PDSDefaultParameterKeyConstants;
-import com.mercedesbenz.sechub.pds.config.PDSProductParameterDefinition;
-import com.mercedesbenz.sechub.pds.config.PDSProductParameterSetup;
-import com.mercedesbenz.sechub.pds.config.PDSProductSetup;
-import com.mercedesbenz.sechub.pds.config.PDSServerConfiguration;
+import com.mercedesbenz.sechub.pds.commons.core.config.PDSProductParameterDefinition;
+import com.mercedesbenz.sechub.pds.commons.core.config.PDSProductParameterSetup;
+import com.mercedesbenz.sechub.pds.commons.core.config.PDSProductSetup;
+import com.mercedesbenz.sechub.pds.commons.core.config.PDSServerConfiguration;
 import com.mercedesbenz.sechub.test.TestFileReader;
 
 /**

@@ -1,7 +1,28 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.adapter;
 
-public interface AdapterConfigBuilder/* <B extends AdapterConfigBuilder<B, C>, C extends AdapterConfig> */ {
+import static com.mercedesbenz.sechub.adapter.TimeConstants.*;
+
+public interface AdapterConfigBuilder {
+
+    public static final int DEFAULT_SCAN_RESULT_CHECK_IN_MILLISECONDS = TIME_1_MINUTE_IN_MILLISECONDS;
+    public static final int MIN_SCAN_RESULT_CHECK_IN_MILLISECONDS = 500;
+    public static final int MAX_SCAN_RESULT_CHECK_IN_MILLISECONDS = TIME_1_HOUR_IN_MILLISECONDS;
+
+    public static final int DEFAULT_TIMEOUT_IN_MINUTES = TIME_5_DAYS_IN_MINUTES;
+    public static final int MAX_SCAN_TIMEOUT_IN_MINUTES = TIME_5_DAYS_IN_MINUTES;
+    public static final int MIN_SCAN_TIMEOUT_IN_MINUTES = 1;
+
+    public static final String DOCUMENT_INFO_TIMEOUT_IN_MINUTES = "Time in minutes when adapter result check will automatically time out and adapter stops execution automatically. When -1 timeout is "
+            + AbstractAdapterConfigBuilder.DEFAULT_TIMEOUT_IN_MINUTES + " minutes";
+
+    public static final String DOCUMENT_INFO_CHECK_IN_MILLISECONDS = "Time in milliseconds when adapter check operation is called next. When -1 value is "
+            + AbstractAdapterConfigBuilder.DEFAULT_SCAN_RESULT_CHECK_IN_MILLISECONDS + " minutes";
+
+    public static final String DOCUMENT_INFO_CHECK_IN_MINUTES = "Time in minutes when adapter check operation is called next. When -1 value is "
+            + (AbstractAdapterConfigBuilder.DEFAULT_SCAN_RESULT_CHECK_IN_MILLISECONDS / 1000 / 60) + " minutes";
+
+    public static final String DOCUMENT_INFO_TRUSTALL = "Turns off certification checks for this product only. Should only be used in test or development environments!";
 
     /**
      * Configure this builder by given strategy

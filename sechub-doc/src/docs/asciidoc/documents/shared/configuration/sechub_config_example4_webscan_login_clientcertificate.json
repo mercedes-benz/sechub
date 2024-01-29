@@ -1,0 +1,19 @@
+{
+  "apiVersion" : "1.0",
+  "project" : "example_project",
+  "data" : {
+    "sources" : [ {
+      "name" : "client-certificate-file-reference", //<1>
+      "fileSystem" : {
+        "files" : [ "path/to/backend-cert.p12" ]
+      }
+    } ]
+  },
+  "webScan" : {
+    "url" : "https://my-app.com",
+    "clientCertificate" : {
+      "password" : "{{ .CERT_PASSWORD }}", //<2>
+      "use" : [ "client-certificate-file-reference" ] //<3>
+    }
+  }
+}

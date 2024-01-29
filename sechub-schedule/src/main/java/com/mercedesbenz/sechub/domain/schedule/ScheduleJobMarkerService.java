@@ -14,6 +14,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.mercedesbenz.sechub.commons.model.SecHubMessage;
 import com.mercedesbenz.sechub.commons.model.SecHubMessageType;
+import com.mercedesbenz.sechub.commons.model.job.ExecutionResult;
+import com.mercedesbenz.sechub.commons.model.job.ExecutionState;
 import com.mercedesbenz.sechub.domain.schedule.job.ScheduleSecHubJob;
 import com.mercedesbenz.sechub.domain.schedule.job.ScheduleSecHubJobMessagesSupport;
 import com.mercedesbenz.sechub.domain.schedule.job.SecHubJobRepository;

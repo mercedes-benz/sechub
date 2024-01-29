@@ -12,6 +12,8 @@ import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
 import com.mercedesbenz.sechub.commons.model.SecHubRuntimeException;
+import com.mercedesbenz.sechub.commons.model.job.ExecutionResult;
+import com.mercedesbenz.sechub.commons.model.job.ExecutionState;
 import com.mercedesbenz.sechub.domain.schedule.job.ScheduleSecHubJob;
 import com.mercedesbenz.sechub.domain.schedule.job.SecHubJobRepository;
 import com.mercedesbenz.sechub.sharedkernel.SecHubEnvironment;

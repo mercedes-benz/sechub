@@ -23,8 +23,8 @@ import org.hibernate.annotations.GenericGenerator;
 
 import com.mercedesbenz.sechub.commons.model.ModuleGroup;
 import com.mercedesbenz.sechub.commons.model.TrafficLight;
-import com.mercedesbenz.sechub.domain.schedule.ExecutionResult;
-import com.mercedesbenz.sechub.domain.schedule.ExecutionState;
+import com.mercedesbenz.sechub.commons.model.job.ExecutionResult;
+import com.mercedesbenz.sechub.commons.model.job.ExecutionState;
 
 /**
  * Represents a JOB in SecHub. We did not name it as Job because of Spring batch

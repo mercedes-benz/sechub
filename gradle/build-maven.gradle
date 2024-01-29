@@ -21,7 +21,7 @@ subprojects {
     // the snapshot itself is related to the spring boot application (server or PDS) which
     // contains the lib (e.g. commons-core, commons-model). So it is clear there
     // could be changes to last published one.
-    version = VersionData.getLibrariesVersion()
+    version = versionData.getLibrariesVersion()
     
     def libraryPublishNecessary = version != "0.0.0";
     if (! libraryPublishNecessary){

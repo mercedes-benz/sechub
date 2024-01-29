@@ -1,0 +1,31 @@
+' SPDX-License-Identifier: MIT
+package "all" {
+    package "without-api (default)" {
+        component sechub_server as "sechub-server"
+        component sechub_doc as "sechub-doc (tests)"
+        component other as "...other" 
+        
+        sechub_doc -> sechub_server: needs classes
+        sechub_doc -> other: needs classes
+    
+    }
+    
+    package "api-necessary" {
+        component sechub_api_java as "sechub-api-java"
+        component sechub_systemtest as "sechub-systemtest"
+        component sechub_example_api_java as "example-sechub-api-java"
+        component sechub_pds_tools as "sechub-pds-tools"
+        
+        sechub_pds_tools -> sechub_systemtest
+        sechub_systemtest -> sechub_api_java
+        sechub_example_api_java -> sechub_api_java
+    }
+}
+
+
+entity open_api as "openApi3.json"
+
+sechub_doc --> open_api: generates 
+
+sechub_api_java --> open_api: needs generated OpenAPI file
+

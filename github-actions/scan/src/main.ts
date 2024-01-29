@@ -6,7 +6,7 @@ import { scan } from '../../shared/src/sechub-cli';
 import { logExitCode } from '../../shared/src/log-helper';
 import { getFiles } from '../../shared/src/fs-helper';
 import {initEnvironmentVariables, initReportFormats, initSecHubJson, ScanSettings} from './init-scan';
-import {downloadReports, uploadArtifact} from './post-scan';
+import { downloadReports, reportOutputs, uploadArtifact } from './post-scan';
 import * as input from './input';
 import * as settingsFile from './settings.json';
 
@@ -53,7 +53,8 @@ export function executeScan(configParameter: string | null, format: string): num
  * @param exitCode exit code from the scan
  */
 export async function postScan(reportFormats: string[], exitCode: number): Promise<void> {
-    downloadReports(reportFormats.slice(1));
+    const jsonReport = downloadReports(reportFormats.slice(1));
+    reportOutputs(jsonReport);
     await uploadArtifact(settingsFile.artifactName, getFiles(settingsFile.filePattern));
 
     if (exitCode !== 0 && input.failJobOnFindings === 'true') {

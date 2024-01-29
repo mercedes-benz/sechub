@@ -48,7 +48,7 @@ function waitForEventAndSendMessage(){
         if [[ counter -ge $MAX_AMOUNT_OF_RETRIES ]]; then
             echo "|"
             echo "FAILED - event folder contains:"
-            ls -l $PDS_JOB_EVENTS_FOLDER
+            ls -l "$PDS_JOB_EVENTS_FOLDER"
             errorMessage "Operation did take too long! Even afer $counter retries the event type: '$EVENT_TYPE' was not recognized!"
             return $FUNCTION_RESULT_FALSE
         fi

@@ -24,7 +24,6 @@ permissions:
 
 env:
   ACTIONS_SECHUB_REGISTRY: ghcr.io/mercedes-benz/sechub
-  ACTIONS_BASE_IMAGE: ghcr.io/mercedes-benz/sechub/pds-base:latest
   ACTIONS_HELM_REGISTRY: "oci://ghcr.io/mercedes-benz/sechub/helm-charts"
 
 jobs:
@@ -38,10 +37,10 @@ jobs:
           echo "pds-version '${{ inputs.pds-version }}'"
 
       - name: Checkout git repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11
 
       - name: Docker login to ghcr.io
-        uses: docker/login-action@v2
+        uses: docker/login-action@343f7c4344506bcbf9b4de18042ae17996df046d
         with:
           registry: ghcr.io
           username: ${{ github.repository_owner }}
@@ -71,6 +70,7 @@ jobs:
           export SCANCODE_VERSION
           export SPDX_TOOL_VERSION
           export TERN_VERSION
+          export XRAY_WRAPPER_VERSION
           export DOCKER_REGISTRY="${ACTIONS_SECHUB_REGISTRY}/pds-${PDS_SOLUTION}"
           export VERSION_TAG=`./09-compute-image-tag.sh ${PDS_VERSION}`
           export BASE_IMAGE="${ACTIONS_SECHUB_REGISTRY}/pds-base:${PDS_VERSION}"

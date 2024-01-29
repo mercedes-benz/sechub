@@ -4,6 +4,7 @@ package com.mercedesbenz.sechub.domain.scan.product.sereco;
 import static com.mercedesbenz.sechub.sereco.ImportParameter.*;
 
 import java.io.IOException;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -28,6 +29,7 @@ import com.mercedesbenz.sechub.sereco.Sereco;
 import com.mercedesbenz.sechub.sereco.Workspace;
 import com.mercedesbenz.sechub.sharedkernel.ProductIdentifier;
 import com.mercedesbenz.sechub.sharedkernel.UUIDTraceLogID;
+import com.mercedesbenz.sechub.sharedkernel.configuration.SecHubConfiguration;
 
 @Component
 public class SerecoReportProductExecutor implements ProductExecutor {
@@ -71,6 +73,7 @@ public class SerecoReportProductExecutor implements ProductExecutor {
     }
 
     private ProductResult createReport(SecHubExecutionContext context, ProductExecutorContext executorContext) {
+        LocalDateTime started = LocalDateTime.now();
         if (context == null) {
             throw new IllegalArgumentException("context may not be null!");
         }
@@ -85,27 +88,33 @@ public class SerecoReportProductExecutor implements ProductExecutor {
         ProductIdentifier[] supportedProducts = getSupportedProducts();
         List<ProductResult> foundProductResults = productResultRepository.findAllProductResults(secHubJobUUID, supportedProducts);
 
+        ProductResult result;
         if (foundProductResults.isEmpty()) {
             LOG.warn("{} no product results for {} found, will return an empty sereco JSON as result! ", traceLogId, getSupportedProducts());
-            return new ProductResult(secHubJobUUID, projectId, executorContext.getExecutorConfig(), "{}");
+            result = new ProductResult(secHubJobUUID, projectId, executorContext.getExecutorConfig(), "{}");
+        } else {
+            result = createReport(projectId, secHubJobUUID, context.getConfiguration(), traceLogId, executorContext, foundProductResults);
         }
 
-        return createReport(projectId, secHubJobUUID, traceLogId, executorContext, foundProductResults);
+        result.setStarted(started);
+        result.setEnded(LocalDateTime.now());
+
+        return result;
     }
 
-    private ProductResult createReport(String projectId, UUID secHubJobUUID, UUIDTraceLogID traceLogId, ProductExecutorContext executorContext,
-            List<ProductResult> foundProductResults) {
+    private ProductResult createReport(String projectId, UUID secHubJobUUID, SecHubConfiguration sechubConfig, UUIDTraceLogID traceLogId,
+            ProductExecutorContext executorContext, List<ProductResult> foundProductResults) {
         Workspace workspace = sechubReportCollector.createWorkspace(projectId);
 
         for (ProductResult productResult : foundProductResults) {
-            importProductResult(traceLogId, workspace, productResult);
+            importProductResult(traceLogId, sechubConfig, workspace, productResult);
         }
         String json = workspace.createReport();
         /* fetch + return all vulnerabilities as JSON */
         return new ProductResult(secHubJobUUID, projectId, executorContext.getExecutorConfig(), json);
     }
 
-    private void importProductResult(UUIDTraceLogID traceLogId, Workspace workspace, ProductResult productResult) {
+    private void importProductResult(UUIDTraceLogID traceLogId, SecHubConfiguration sechubConfig, Workspace workspace, ProductResult productResult) {
         String importData = productResult.getResult();
 
         String productId = productResult.getProductIdentifier().name();
@@ -128,12 +137,12 @@ public class SerecoReportProductExecutor implements ProductExecutor {
         LOG.debug("{} found product result for '{}'", traceLogId, productId);
 
         UUID uuid = productResult.getUUID();
-        String docId = uuid.toString();
+        String docId = uuid != null ? uuid.toString() : "<no uuid set>";
         LOG.debug("{} start to import result '{}' from product '{}' , config:{}", traceLogId, docId, productId, productResult.getProductExecutorConfigUUID());
 
         /* @formatter:off */
 		try {
-			workspace.doImport(builder().
+			workspace.doImport(sechubConfig, builder().
 						productId(productId).
 						importData(importData).
 						importProductMessages(productMessages).
@@ -145,7 +154,7 @@ public class SerecoReportProductExecutor implements ProductExecutor {
 		/* @formatter:on */
     }
 
-    private ProductIdentifier[] getSupportedProducts() {
+    ProductIdentifier[] getSupportedProducts() {
         return supportedProductIdentifiers;
     }
 

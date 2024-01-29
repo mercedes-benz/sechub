@@ -531,7 +531,7 @@ table.CodeRay td.code{padding:0 0 0 .75em}
 <div id="header">
 <h1><span class="image"><a class="image" href="https://mercedes-benz.github.io/sechub"><img src="images/sechub-logo.png" alt="sechub logo"></a></span> SecHub Operations</h1>
 <div class="details">
-<span id="revnumber"> Server 0.43.0</span>
+<span id="revnumber"> Server 1.4.1 modified (commit aa28120)</span>
 </div>
 <div id="toc" class="toc2">
 <div id="toctitle">Table of contents</div>
@@ -578,92 +578,72 @@ table.CodeRay td.code{padding:0 0 0 .75em}
 </ul>
 </li>
 <li><a href="#docker">2.3.3.3. Docker</a></li>
-<li><a href="#kubernetes-3">2.3.3.4. Kubernetes</a>
-<ul class="sectlevel5">
-<li><a href="#generator">2.3.3.4.1. Generator</a></li>
-<li><a href="#logging-2">2.3.3.4.2. Logging</a></li>
+<li><a href="#kubernetes-3">2.3.3.4. Kubernetes</a></li>
 </ul>
 </li>
 </ul>
 </li>
-</ul>
-</li>
-<li><a href="#migration-steps">2.4. Migration steps</a>
+<li><a href="#mapping">2.4. Mapping</a>
 <ul class="sectlevel3">
-<li><a href="#database-2">2.4.1. Database</a>
-<ul class="sectlevel4">
-<li><a href="#section-migration-spring-batch-477">2.4.1.1. Post handle CVE-2020-5411</a>
-<ul class="sectlevel5">
-<li><a href="#update-job-execution-context-to-new-format">2.4.1.1.1. Update job execution context to new format</a></li>
-<li><a href="#update-step-execution-context-to-new-format">2.4.1.1.2. Update step execution context to new format</a></li>
-<li><a href="#cancel-your-old-running-jobs">2.4.1.1.3. Cancel your old running jobs</a></li>
+<li><a href="#rest-api-for-global-mapping">2.4.1. REST API for global mapping</a></li>
+<li><a href="#mapping-json-structure">2.4.2. JSON structure</a></li>
 </ul>
 </li>
-</ul>
-</li>
-</ul>
-</li>
-<li><a href="#mapping">2.5. Mapping</a>
+<li><a href="#section-initial-profile-and-executors">2.5. Execution profiles</a></li>
+<li><a href="#section-executor-configuration">2.6. Executor configuration</a>
 <ul class="sectlevel3">
-<li><a href="#rest-api-for-global-mapping">2.5.1. REST API for global mapping</a></li>
-<li><a href="#mapping-json-structure">2.5.2. JSON structure</a></li>
+<li><a href="#data-structure">2.6.1. Data structure</a>
+<ul class="sectlevel4">
+<li><a href="#name">2.6.1.1. Name</a></li>
+<li><a href="#enabled">2.6.1.2. Enabled</a></li>
+<li><a href="#uuid">2.6.1.3. UUID</a></li>
+<li><a href="#product-identifier">2.6.1.4. Product identifier</a></li>
+<li><a href="#executor-version">2.6.1.5. Executor version</a></li>
+<li><a href="#product-base-url">2.6.1.6. Product base URL</a></li>
+<li><a href="#product-credentials">2.6.1.7. Product credentials</a>
+<ul class="sectlevel5">
+<li><a href="#executor-config-env-variable-references">2.6.1.7.1. Environment variable references</a></li>
+<li><a href="#user">2.6.1.7.2. User</a></li>
+<li><a href="#password-or-api-token">2.6.1.7.3. Password or API token</a></li>
 </ul>
 </li>
-<li><a href="#section-initial-profile-and-executors">2.6. Execution profiles</a></li>
-<li><a href="#section-executor-configuration">2.7. Executor configuration</a>
+<li><a href="#parameters">2.6.1.8. Parameters</a>
+<ul class="sectlevel5">
+<li><a href="#mappings">2.6.1.8.1. Mappings</a></li>
+<li><a href="#key-values">2.6.1.8.2. Key values</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="#product-specific-details">2.6.2. Product specific details</a>
+<ul class="sectlevel4">
+<li><a href="#pds">2.6.2.1. PDS</a></li>
+<li><a href="#checkmarx">2.6.2.2. Checkmarx</a>
+<ul class="sectlevel5">
+<li><a href="#mapping-teams-and-presets-for-new-projects">2.6.2.2.1. Mapping teams and presets for new projects</a></li>
+<li><a href="#how-to-obtain-preset-id">2.6.2.2.2. How to obtain preset id</a></li>
+<li><a href="#how-to-obtain-team-id">2.6.2.2.3. How to obtain team id</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="#examples">2.6.3. Examples</a>
+<ul class="sectlevel4">
+<li><a href="#checkmarx-configuration">2.6.3.1. Checkmarx configuration</a></li>
+<li><a href="#pds-code-scan-configuration">2.6.3.2. PDS code scan configuration</a></li>
+<li><a href="#sereco-configuration">2.6.3.3. Sereco configuration</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="#scan-config-about">2.7. Scan configuration</a>
 <ul class="sectlevel3">
-<li><a href="#data-structure">2.7.1. Data structure</a>
+<li><a href="#general">2.7.1. General</a>
 <ul class="sectlevel4">
-<li><a href="#name">2.7.1.1. Name</a></li>
-<li><a href="#enabled">2.7.1.2. Enabled</a></li>
-<li><a href="#uuid">2.7.1.3. UUID</a></li>
-<li><a href="#product-identifier">2.7.1.4. Product identifier</a></li>
-<li><a href="#executor-version">2.7.1.5. Executor version</a></li>
-<li><a href="#product-base-url">2.7.1.6. Product base URL</a></li>
-<li><a href="#product-credentials">2.7.1.7. Product credentials</a>
-<ul class="sectlevel5">
-<li><a href="#executor-config-env-variable-references">2.7.1.7.1. Environment variable references</a></li>
-<li><a href="#user">2.7.1.7.2. User</a></li>
-<li><a href="#password-or-api-token">2.7.1.7.3. Password or API token</a></li>
+<li><a href="#name-pattern-id-providers">2.7.1.1. Name pattern ID providers</a></li>
 </ul>
 </li>
-<li><a href="#parameters">2.7.1.8. Parameters</a>
-<ul class="sectlevel5">
-<li><a href="#mappings">2.7.1.8.1. Mappings</a></li>
-<li><a href="#key-values">2.7.1.8.2. Key values</a></li>
-</ul>
-</li>
-</ul>
-</li>
-<li><a href="#product-specific-details">2.7.2. Product specific details</a>
-<ul class="sectlevel4">
-<li><a href="#pds">2.7.2.1. PDS</a></li>
-<li><a href="#checkmarx">2.7.2.2. Checkmarx</a>
-<ul class="sectlevel5">
-<li><a href="#mapping-teams-and-presets-for-new-projects">2.7.2.2.1. Mapping teams and presets for new projects</a></li>
-<li><a href="#how-to-obtain-preset-id">2.7.2.2.2. How to obtain preset id</a></li>
-<li><a href="#how-to-obtain-team-id">2.7.2.2.3. How to obtain team id</a></li>
-</ul>
-</li>
-</ul>
-</li>
-<li><a href="#examples">2.7.3. Examples</a>
-<ul class="sectlevel4">
-<li><a href="#checkmarx-configuration">2.7.3.1. Checkmarx configuration</a></li>
-<li><a href="#pds-code-scan-configuration">2.7.3.2. PDS code scan configuration</a></li>
-<li><a href="#sereco-configuration">2.7.3.3. Sereco configuration</a></li>
-</ul>
-</li>
-</ul>
-</li>
-<li><a href="#scan-config-about">2.8. Scan configuration</a>
-<ul class="sectlevel3">
-<li><a href="#general">2.8.1. General</a>
-<ul class="sectlevel4">
-<li><a href="#name-pattern-id-providers">2.8.1.1. Name pattern ID providers</a></li>
-</ul>
-</li>
-<li><a href="#mapping-2">2.8.2. Mapping</a></li>
+<li><a href="#mapping-2">2.7.2. Mapping</a></li>
 </ul>
 </li>
 </ul>
@@ -677,7 +657,7 @@ table.CodeRay td.code{padding:0 0 0 .75em}
 <ul class="sectlevel4">
 <li><a href="#gosec">3.1.2.1. GoSec</a></li>
 <li><a href="#multi">3.1.2.2. Multi</a></li>
-<li><a href="#owasp-zap">3.1.2.3. Owasp-Zap</a></li>
+<li><a href="#owasp-zap">3.1.2.3. OWASP ZAP</a></li>
 <li><a href="#pmd">3.1.2.4. PMD</a></li>
 <li><a href="#scancode">3.1.2.5. ScanCode</a></li>
 </ul>
@@ -811,7 +791,7 @@ build pipeline / contionus integration (CI) and helps to provide
 </tbody>
 </table>
 <div class="paragraph">
-<p>Documentation version: <code>Server 0.43.0-20230602134927</code></p>
+<p>Documentation version: <code>Server 1.4.1 modified (commit aa28120) - Build date: 20240129100221</code></p>
 </div>
 <div class="paragraph">
 <p>Target audience for this document are <strong>SecHub Operators/Administrators</strong>.</p>
@@ -873,7 +853,7 @@ POSTGRES_DB_PASSWORD=a-very-strong-password...</pre>
 <div class="sect3">
 <h4 id="section-general-configuration">2.2.2. General configuration</h4>
 <div class="paragraph">
-<p>SecHub can be configured  by keys on server startup.
+<p>SecHub can be configured by keys on server startup.
 Using the spring <code>@Value</code> annotation we are able to
 use these keys as Java system properties but also as environment entries.</p>
 </div>
@@ -2018,318 +1998,41 @@ for your server when you want to change log output format, location etc.</p>
 <div class="sect4">
 <h5 id="docker">2.3.3.3. Docker</h5>
 <div class="paragraph">
-<p>At the moment there exists no default public docker image. But you can easily create your own one.
-Here an example dockerfile:</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre># +++++++++++++++++++++++++++++++++++++++++++++++++
-# Example for a Dockerfile-template for sechub
-# +++++++++++++++++++++++++++++++++++++++++++++++++
-
-# We use always latest stable jre alpine base image.
-# This includes, that we have always to check the
-# container inside a DEV or INT environment before
-# running inside PROD!
-# Latest means NOT latest stable...
-FROM dockerregistry.example.com/base-images/openjdk:8-jre-alpine-latest-stable
-
-VOLUME /tmp
-
-# start application with javarun-user (technial user...)
-# java.security.edg necessary for optimized random space -&gt; otherwise start is slow because of entropy scanning etc.
-# see run.sh for defails
-ENTRYPOINT [ "/home/javarun/run.sh" ]
-
-# copy build parts to javarun-user (technial user...) home...
-ADD build/docker-dependencies/sechub-server-{{ .SECHUB_SERVER_VERSION }}.jar /home/javarun/app.jar
-
-# add always sechub server certificate into container.
-# we use always user home directory of user creating this container
-# at jenkins this is /var/lib/jenkins !
-#
-# Only prod environment in kubernetes will set spring server location etc. by
-# this values
-ADD build/docker-dependencies/sechub.example.com.p12 /home/javarun/sechub.example.com.p12
-
-# Important:
-# ----------
-# We add this as last docker layer. Reason: sometimes we want change the call
-# done in run.sh (maybe for optimization) or just the unix permissions for script.
-# The big load is the jar before - so we do not want to
-# upload the jar layer all time ...
-ADD build/resources/main/run.sh /home/javarun/run.sh</pre>
-</div>
+<p>The public Docker image can be found at <a href="https://github.com/mercedes-benz/sechub/pkgs/container/sechub%2Fsechub-server" class="bare">https://github.com/mercedes-benz/sechub/pkgs/container/sechub%2Fsechub-server</a></p>
 </div>
 <div class="paragraph">
-<p>An example for the used <code>run.sh</code> could be :</p>
+<p>The SecHub server can be simply run like this</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">#!/bin/bash
-# SPDX-License-Identifier: MIT
-
-echo &quot;Starting run script:run.sh $1 $2&quot;
-# Set debug options if required
-if [ x&quot;${JAVA_ENABLE_DEBUG}&quot; != x ] &amp;&amp; [ &quot;${JAVA_ENABLE_DEBUG}&quot; != &quot;false&quot; ]; then
-    JAVA_DBG_OPTS=&quot;-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=${JAVA_DEBUG_PORT:-5005}&quot;
-fi
-
-if [ -z &quot;$1&quot; ] || [ $1 = &quot;byenv&quot; ]; then
-        PROFILE_TO_USE=$SPRING_PROFILE
-else
-        PROFILE_TO_USE=$1
-fi
-
-if [ -z &quot;$2&quot; ] ; then
-    JAR_LOCATION=&quot;/home/javarun/app.jar&quot;
-else
-    JAR_LOCATION=&quot;$2&quot;
-fi
-
-# java.security.edg necessary for optimized random space -&gt; otherwise start is slow becauase of entropy scanning etc.
-# file encoding per default UTF-8
-java $JAVA_DBG_OPTS -Dfile.encoding=UTF-8 -Djava.security.egd=file:/dev/./urandom $SECHUB_OPTS -jar $JAR_LOCATION</code></pre>
+<pre class="CodeRay highlight"><code data-lang="bash">docker run ghcr.io/mercedes-benz/sechub/sechub-server</code></pre>
 </div>
 </div>
 </div>
 <div class="sect4">
 <h5 id="kubernetes-3">2.3.3.4. Kubernetes</h5>
 <div class="paragraph">
-<p>Create a docker file as described before and upload it to your docker registry available from your kubernetes cluster.</p>
+<p>We provide a Helm chart for the container image above: <a href="https://github.com/mercedes-benz/sechub/pkgs/container/sechub%2Fhelm-charts%2Fsechub-server" class="bare">https://github.com/mercedes-benz/sechub/pkgs/container/sechub%2Fhelm-charts%2Fsechub-server</a></p>
 </div>
 <div class="paragraph">
-<p>Same as before described for plain server, but you should use always environment
-variables here.</p>
+<p>Same as before described for plain server, but you should use a copy of the <code>values.yaml</code> and adapt it to your needs.</p>
 </div>
-<div class="admonitionblock tip">
-<table>
-<tr>
-<td class="icon">
-<i class="fa icon-tip" title="Tip"></i>
-</td>
-<td class="content">
-Provide credentials inside your kubernetes deployment files by at least using
- kubernetes secrets!
-</td>
-</tr>
-</table>
-</div>
-<div class="sect5">
-<h6 id="generator">2.3.3.4.1. Generator</h6>
-<div class="paragraph">
-<p>There exists a class <code>KubernetesTemplateFilesGenerator</code>.
-Starting this class with <code>SECHUB_KUBERNETES_GENO_TARGET_ROOT</code> set to
-your deployment directory you will have following files generated:</p>
-</div>
-<div class="ulist">
-<ul>
-<li>
-<p><code>$genoTargetRoot/build/gen/copy-templates/sechub-server-environment-deployment-parts.gen.yaml</code></p>
-</li>
-<li>
-<p><code>$genoTargetRoot/kubegen/env-setup/secrets</code></p>
-</li>
-</ul>
-</div>
-<div class="paragraph">
-<p><strong>sechub-server-environment-deployment-parts</strong></p>
-</div>
-<div class="paragraph">
-<p>Inside the generated deployment yaml file you will find all
-Spring parts annotated with <code>@Value</code> and <code>@MustBeDocumented</code>.
-If <code>@MustBeDocumented</code> has attribute <code>secret</code> set to <code>true</code> the
-generated yaml part contains a reference to a kubernetes secret instead of
-a fixed value.
-../
-The yaml file can be used when you initally create a deployment file, or
-when new attributes has been added to SecHub, identify missing/new ones
-very fast.</p>
-</div>
-<div class="paragraph">
-<p><strong>secrets</strong></p>
-</div>
-<div class="paragraph">
-<p>There will be some generated install scripts for secrets which do
-reference txt files where you can put secrets inside.</p>
-</div>
-<div class="paragraph">
-<p>So its easy to deploy multiple changes with one command.</p>
-</div>
-<div class="paragraph">
-<p>When Spring parts annotated with <code>@Value</code> and <code>@MustBeDocumented</code>
-has attribute <code>secret</code> set to <code>true</code> there will be a generated entry
-here. So you see automatically what should be a kubernetes secret.</p>
-</div>
-<div class="admonitionblock caution">
-<table>
-<tr>
-<td class="icon">
-<i class="fa icon-caution" title="Caution"></i>
-</td>
-<td class="content">
-<div class="paragraph">
-<p>If you add those generated files inside a GIT repository, please ensure
-that you define a <code>.gitignore</code> file which ignores <code>*.txt</code> files, so you do not
-accidently add the credentials to your repository.</p>
-</div>
-</td>
-</tr>
-</table>
-</div>
-</div>
-<div class="sect5">
-<h6 id="logging-2">2.3.3.4.2. Logging</h6>
-<div class="paragraph">
-<p><strong>Default output</strong></p>
-</div>
-<div class="paragraph">
-<p>SecHub uses per default logging to stdout, so you just need to use something like
-<code>fluentd</code> PODs to gather log output.</p>
-</div>
-<div class="paragraph">
-<p><strong>Logstash support</strong></p>
-</div>
-<div class="paragraph">
-<p>When you want to use <code>logstash</code> (e.g. when using <code>ElasticSearch</code> or <code>OpenSearch</code>) you just have to set the environment variable
-<code>LOGGING_TYPE</code> to <code>LOGSTASH_JSON</code> before server starts.</p>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="bash">helm pull oci://ghcr.io/mercedes-benz/sechub/helm-charts/sechub-server
+tar zxf sechub-server-*.tgz
+cp sechub-server/values.yaml sechub-server.yaml
+# edit &quot;sechub-server.yaml&quot; file and adapt settings
+
+# Deploy SecHub server to your Kubernetes:
+helm install sechub-server sechub-server/ -f ./sechub-server.yaml</code></pre>
 </div>
 </div>
 </div>
 </div>
 </div>
 <div class="sect2">
-<h3 id="migration-steps">2.4. Migration steps</h3>
-<div class="sect3">
-<h4 id="database-2">2.4.1. Database</h4>
-<div class="admonitionblock warning">
-<table>
-<tr>
-<td class="icon">
-<i class="fa icon-warning" title="Warning"></i>
-</td>
-<td class="content">
-<div class="paragraph">
-<p>Normally all updates in database are done by our flyway script automatically!</p>
-</div>
-<div class="paragraph">
-<p>It is very uncommon to do something manually here. Every manual changes will be described why no
-automation was possible!</p>
-</div>
-</td>
-</tr>
-</table>
-</div>
-<table class="tableblock frame-all grid-all stretch">
-<colgroup>
-<col style="width: 8.3333%;">
-<col style="width: 25%;">
-<col style="width: 33.3333%;">
-<col style="width: 33.3334%;">
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-left valign-top">Nr.</th>
-<th class="tableblock halign-left valign-top">What</th>
-<th class="tableblock halign-left valign-top">Why manual?</th>
-<th class="tableblock halign-left valign-top">Apply to version</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">1</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="#section-migration-spring-batch-477">post handle CVE-2020-5411</a></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Table to update does not exist on new started servers</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Initial run &lt; v0.19.0-server</p></td>
-</tr>
-</tbody>
-</table>
-<div class="sect4">
-<h5 id="section-migration-spring-batch-477">2.4.1.1. Post handle CVE-2020-5411</h5>
-<div class="sect5">
-<h6 id="update-job-execution-context-to-new-format">2.4.1.1.1. Update job execution context to new format</h6>
-<div class="paragraph">
-<p>Script to prepare old jobs for Spring batch CVE-2020-5411 changes</p>
-</div>
-<div class="paragraph">
-<p>With Server v0.19.0 we upgraded our Spring Boot dependencies <sup class="footnote" id="_footnote_update_0_19_0">[<a id="_footnoteref_1" class="footnote" href="#_footnotedef_1" title="View footnote.">1</a>]</sup> but this led to cancellation problems on older jobs -
-this led to problems when deleting older jobs still running.<sup class="footnote" id="_footnote_problem_499">[<a id="_footnoteref_2" class="footnote" href="#_footnotedef_2" title="View footnote.">2</a>]</sup></p>
-</div>
-<div class="paragraph">
-<p>The solution is to execute following <code>SQL</code> script on all environments:</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="CodeRay highlight"><code data-lang="sql"><span class="class">UPDATE</span> batch_job_execution_context <span class="class">SET</span> short_context=<span class="string"><span class="delimiter">'</span><span class="content">{&quot;@class&quot;:&quot;java.util.HashMap&quot;}</span><span class="delimiter">'</span></span> <span class="keyword">WHERE</span> short_context =<span class="string"><span class="delimiter">'</span><span class="content">{}</span><span class="delimiter">'</span></span> <i class="conum" data-value="1"></i><b>(1)</b></code></pre>
-</div>
-</div>
-<div class="colist arabic">
-<table>
-<tr>
-<td><i class="conum" data-value="1"></i><b>1</b></td>
-<td>Migrate old execution context JSON to correct format: an empty <code>HashMap</code></td>
-</tr>
-</table>
-</div>
-<div class="paragraph">
-<p>Unfortunately it is not possible to automatically migrate the data by <code>flyway</code> script, because this would fail any new started server, because
-a flyway update script would lead to:</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="CodeRay highlight"><code data-lang="java">Caused by: org.h2.jdbc.JdbcSQLSyntaxErrorException: Table <span class="string"><span class="delimiter">&quot;</span><span class="content">BATCH_JOB_EXECUTION_CONTEXT</span><span class="delimiter">&quot;</span></span> not found; SQL statement:</code></pre>
-</div>
-</div>
-</div>
-<div class="sect5">
-<h6 id="update-step-execution-context-to-new-format">2.4.1.1.2. Update step execution context to new format</h6>
-<div class="paragraph">
-<p>Additionally we need to update the step context data as well</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="CodeRay highlight"><code data-lang="sql"><span class="comment">-- check for entries with old format</span>
-<span class="class">select</span> sc.short_context, <span class="predefined">count</span>(*) <span class="keyword">from</span> batch_job_execution_params p
-<span class="keyword">inner</span> <span class="keyword">join</span> batch_job_execution e <span class="keyword">on</span> e.job_execution_id=p.job_execution_id
-<span class="keyword">inner</span> <span class="keyword">join</span> batch_job_execution_context c <span class="keyword">on</span> c.job_execution_id= e.job_execution_id
-<span class="keyword">inner</span> <span class="keyword">join</span> batch_step_execution se <span class="keyword">on</span> se.job_execution_id = e.job_execution_id
-<span class="keyword">inner</span> <span class="keyword">join</span> batch_step_execution_context sc <span class="keyword">on</span> sc.step_execution_id = se.step_execution_id
-<span class="keyword">group</span> <span class="keyword">by</span> sc.short_context
-
-<span class="comment">--- execute update when former query has old entries...</span>
-<span class="class">update</span> batch_step_execution_context sc <span class="class">set</span> short_context=<span class="string"><span class="delimiter">'</span><span class="content">{&quot;@class&quot;:&quot;java.util.HashMap&quot;,&quot;batch.taskletType&quot;:&quot;com.mercedesbenz.sechub.domain.schedule.batch.ScanExecutionTasklet&quot;,&quot;batch.stepType&quot;:&quot;org.springframework.batch.core.step.tasklet.TaskletStep&quot;}</span><span class="delimiter">'</span></span>
-<span class="keyword">where</span> sc.short_context = <span class="string"><span class="delimiter">'</span><span class="content">{&quot;batch.taskletType&quot;:&quot;com.mercedesbenz.sechub.domain.schedule.batch.ScanExecutionTasklet&quot;,&quot;batch.stepType&quot;:&quot;org.springframework.batch.core.step.tasklet.TaskletStep&quot;}</span><span class="delimiter">'</span></span> <i class="conum" data-value="1"></i><b>(1)</b>
-
-<span class="comment">-- check again for entries in old format</span>
-<span class="class">select</span> sc.short_context, <span class="predefined">count</span>(*) <span class="keyword">from</span> batch_job_execution_params p
-<span class="keyword">inner</span> <span class="keyword">join</span> batch_job_execution e <span class="keyword">on</span> e.job_execution_id=p.job_execution_id
-<span class="keyword">inner</span> <span class="keyword">join</span> batch_job_execution_context c <span class="keyword">on</span> c.job_execution_id= e.job_execution_id
-<span class="keyword">inner</span> <span class="keyword">join</span> batch_step_execution se <span class="keyword">on</span> se.job_execution_id = e.job_execution_id
-<span class="keyword">inner</span> <span class="keyword">join</span> batch_step_execution_context sc <span class="keyword">on</span> sc.step_execution_id = se.step_execution_id
-<span class="keyword">group</span> <span class="keyword">by</span> sc.short_context</code></pre>
-</div>
-</div>
-<div class="colist arabic">
-<table>
-<tr>
-<td><i class="conum" data-value="1"></i><b>1</b></td>
-<td>Migrate old execution context JSON to correct format: with <code>HashMap</code> as class</td>
-</tr>
-</table>
-</div>
-</div>
-<div class="sect5">
-<h6 id="cancel-your-old-running-jobs">2.4.1.1.3. Cancel your old running jobs</h6>
-<div class="paragraph">
-<p>When you have some still running jobs - for example because of a former database connection pool problem -
-you can now cancel the old jobs without any problems.</p>
-</div>
-</div>
-</div>
-</div>
-</div>
-<div class="sect2">
-<h3 id="mapping">2.5. Mapping</h3>
+<h3 id="mapping">2.4. Mapping</h3>
 <div id="mapping-technical-details" class="paragraph">
 <p>Mapping is used for simple key value configuration, but also for more sophisticated
 behaviour like done in <a href="#scan-config-about">scan configuration</a>.</p>
@@ -2339,7 +2042,7 @@ behaviour like done in <a href="#scan-config-about">scan configuration</a>.</p>
  like done for parameter mappings in <a href="#section-executor-configuration">product executor configuration</a> .</p>
 </div>
 <div class="sect3">
-<h4 id="rest-api-for-global-mapping">2.5.1. REST API for global mapping</h4>
+<h4 id="rest-api-for-global-mapping">2.4.1. REST API for global mapping</h4>
 <div class="paragraph">
 <p>A global configuration can be done by REST API. The data is defined in <a href="#mapping-json-structure">JSON</a>.</p>
 </div>
@@ -2355,7 +2058,7 @@ behaviour like done in <a href="#scan-config-about">scan configuration</a>.</p>
 </div>
 </div>
 <div class="sect3">
-<h4 id="mapping-json-structure">2.5.2. JSON structure</h4>
+<h4 id="mapping-json-structure">2.4.2. JSON structure</h4>
 <div class="paragraph">
 <p>Given JSON has following structure:</p>
 </div>
@@ -2402,7 +2105,7 @@ behaviour like done in <a href="#scan-config-about">scan configuration</a>.</p>
 </div>
 </div>
 <div class="sect2">
-<h3 id="section-initial-profile-and-executors">2.6. Execution profiles</h3>
+<h3 id="section-initial-profile-and-executors">2.5. Execution profiles</h3>
 <div class="paragraph">
 <p>An execution profile can contain multiple executor configurations. The configurations can be
 shared between multiple profiles.</p>
@@ -2444,7 +2147,7 @@ otherwise you will have always a "green" scan result.</p>
 </div>
 </div>
 <div class="sect2">
-<h3 id="section-executor-configuration">2.7. Executor configuration</h3>
+<h3 id="section-executor-configuration">2.6. Executor configuration</h3>
 <div class="paragraph">
 <p>SecHub uses <code>product executors</code> to call security products by dedicated <code>product adapters</code>.
 Each used security product has at least one executor configuration.</p>
@@ -2493,43 +2196,34 @@ used by next job execution.</p>
 </table>
 </div>
 <div class="sect3">
-<h4 id="data-structure">2.7.1. Data structure</h4>
+<h4 id="data-structure">2.6.1. Data structure</h4>
 <div class="sect4">
-<h5 id="name">2.7.1.1. Name</h5>
+<h5 id="name">2.6.1.1. Name</h5>
 <div class="paragraph">
 <p>Just the name of the executor configuration. Can be changed.</p>
 </div>
 </div>
 <div class="sect4">
-<h5 id="enabled">2.7.1.2. Enabled</h5>
+<h5 id="enabled">2.6.1.2. Enabled</h5>
 <div class="paragraph">
 <p>Only when the executor configuration is enabled, it will be used (of course
 it has also be added to an enabled profile and this to a project).</p>
 </div>
 </div>
 <div class="sect4">
-<h5 id="uuid">2.7.1.3. UUID</h5>
+<h5 id="uuid">2.6.1.3. UUID</h5>
 <div class="paragraph">
 <p>Unmodifiaable unique ID of an executor configuration. Cannot be changed.</p>
 </div>
 </div>
 <div class="sect4">
-<h5 id="product-identifier">2.7.1.4. Product identifier</h5>
+<h5 id="product-identifier">2.6.1.4. Product identifier</h5>
 <div class="paragraph">
 <p>The product identifier for the product executor to use.
 Examples are:</p>
 </div>
 <div class="ulist">
 <ul>
-<li>
-<p><code>CHECKMARX</code></p>
-</li>
-<li>
-<p><code>NESSUS</code></p>
-</li>
-<li>
-<p><code>NETSPARKER</code></p>
-</li>
 <li>
 <p><code>PDS_CODESCAN</code></p>
 </li>
@@ -2539,11 +2233,14 @@ Examples are:</p>
 <li>
 <p><code>PDS_INFRASCAN</code></p>
 </li>
+<li>
+<p><code>PDS_LICENSESCAN</code></p>
+</li>
 </ul>
 </div>
 </div>
 <div class="sect4">
-<h5 id="executor-version">2.7.1.5. Executor version</h5>
+<h5 id="executor-version">2.6.1.5. Executor version</h5>
 <div class="paragraph">
 <p>At the moment all product executors exists only in version <code>1</code> and as long as there is no
 breaking change the exisitng product executor will be extended and the existing version will be kept.</p>
@@ -2555,7 +2252,7 @@ product executor with another version will be available.</p>
 </div>
 </div>
 <div class="sect4">
-<h5 id="product-base-url">2.7.1.6. Product base URL</h5>
+<h5 id="product-base-url">2.6.1.6. Product base URL</h5>
 <div class="paragraph">
 <p>Here we define the base URL to the security product including port number.</p>
 </div>
@@ -2564,13 +2261,13 @@ product executor with another version will be available.</p>
 </div>
 </div>
 <div class="sect4">
-<h5 id="product-credentials">2.7.1.7. Product credentials</h5>
+<h5 id="product-credentials">2.6.1.7. Product credentials</h5>
 <div class="paragraph">
 <p>To use a security product, we always need login credentials.
 These credentials must be defined inside the configuration.</p>
 </div>
 <div class="sect5">
-<h6 id="executor-config-env-variable-references">2.7.1.7.1. Environment variable references</h6>
+<h6 id="executor-config-env-variable-references">2.6.1.7.1. Environment variable references</h6>
 <div class="paragraph">
 <p>To store no real credentials in SecHub database, you can reference SecHub server environment
 variables instead - just use the pattern <code>env:${variableName}</code>.</p>
@@ -2615,13 +2312,13 @@ API token for communication with this PDS server.</p>
 </div>
 </div>
 <div class="sect5">
-<h6 id="user">2.7.1.7.2. User</h6>
+<h6 id="user">2.6.1.7.2. User</h6>
 <div class="paragraph">
 <p>The user name used by SecHub to authenticate at security product.</p>
 </div>
 </div>
 <div class="sect5">
-<h6 id="password-or-api-token">2.7.1.7.3. Password or API token</h6>
+<h6 id="password-or-api-token">2.6.1.7.3. Password or API token</h6>
 <div class="paragraph">
 <p>The password or API token used by SecHub to authenticate at security product.</p>
 </div>
@@ -2640,13 +2337,13 @@ It is strongly recommended to use <a href="#executor-config-env-variable-referen
 </div>
 </div>
 <div class="sect4">
-<h5 id="parameters">2.7.1.8. Parameters</h5>
+<h5 id="parameters">2.6.1.8. Parameters</h5>
 <div class="paragraph">
 <p>Parameters are used at job execution runtime to setup product adapters and to change security
 product behaviours.</p>
 </div>
 <div class="sect5">
-<h6 id="mappings">2.7.1.8.1. Mappings</h6>
+<h6 id="mappings">2.6.1.8.1. Mappings</h6>
 <div class="paragraph">
 <p>Some product executors do need special mappings - e.g for new project creations. Please look at
 <a href="#mapping-technical-details">mapping</a> for more details about the
@@ -2654,7 +2351,7 @@ concept and the format.</p>
 </div>
 </div>
 <div class="sect5">
-<h6 id="key-values">2.7.1.8.2. Key values</h6>
+<h6 id="key-values">2.6.1.8.2. Key values</h6>
 <div class="paragraph">
 <p>It is also possible to provide just dedicated key value parameters.</p>
 </div>
@@ -2662,9 +2359,9 @@ concept and the format.</p>
 </div>
 </div>
 <div class="sect3">
-<h4 id="product-specific-details">2.7.2. Product specific details</h4>
+<h4 id="product-specific-details">2.6.2. Product specific details</h4>
 <div class="sect4">
-<h5 id="pds">2.7.2.1. PDS</h5>
+<h5 id="pds">2.6.2.1. PDS</h5>
 <div class="paragraph">
 <p>For PDS we have a set of predefined configuration parameters <em>(see next table)</em> and the possibility
 to define custom parameters.</p>
@@ -2690,7 +2387,7 @@ are listed here for the sake of completeness.</p>
 </thead>
 <tbody>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">pds.productexecutor.forbidden.targettype.internet</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">sechub.productexecutor.pds.forbidden.targettype.internet</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">
 When this key is set to true, then this PDS instance does not scan INTERNET!
 </p></td>
@@ -2703,7 +2400,7 @@ When this key is set to true, then this PDS instance does not scan INTERNET!
 </div></div></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">pds.productexecutor.forbidden.targettype.intranet</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">sechub.productexecutor.pds.forbidden.targettype.intranet</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">
 When this key is set to true, then this PDS instance does not scan INTRANET!
 </p></td>
@@ -2716,7 +2413,7 @@ When this key is set to true, then this PDS instance does not scan INTRANET!
 </div></div></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">pds.productexecutor.timetowait.nextcheck.milliseconds</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">sechub.productexecutor.pds.timetowait.nextcheck.milliseconds</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">
 When this is set, the value will be used to wait for next check on PDS server. If not, the default from PDS install set up is used instead.
 </p></td>
@@ -2729,9 +2426,9 @@ When this is set, the value will be used to wait for next check on PDS server. I
 </div></div></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">pds.productexecutor.timeout.minutes</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">sechub.productexecutor.pds.timeout.minutes</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">
-When this is set, the value will be used to wait before timeout happens happens when no communication with PDS server is possible. If not, the default from PDS install set up is used instead.
+When this is set, the value will be used to wait before timeout happens when no communication with PDS server is possible. If not, the default from PDS install set up is used instead.
 </p></td>
 <td class="tableblock halign-left valign-top"><div class="content"><div class="ulist">
 <ul>
@@ -2742,9 +2439,35 @@ When this is set, the value will be used to wait before timeout happens happens 
 </div></div></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">pds.productexecutor.trustall.certificates</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">sechub.productexecutor.pds.trustall.certificates</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">
 When 'true' then all certificates are accepted. Do not use this in production!
+</p></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="ulist">
+<ul>
+<li>
+<p>Optional</p>
+</li>
+</ul>
+</div></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">sechub.productexecutor.pds.adapter.resilience.retry.max</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">
+Maximum amount of retries to handle resilience. When not defined or smaller than 0 the default will be: 3
+</p></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="ulist">
+<ul>
+<li>
+<p>Optional</p>
+</li>
+</ul>
+</div></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">sechub.productexecutor.pds.adapter.resilience.retry.wait.milliseconds</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">
+Amount of milliseconds the PDS adapter shall wait before doing a next retry to handle resilience. When not defined or smaller than 1 the default will be: 10000
 </p></td>
 <td class="tableblock halign-left valign-top"><div class="content"><div class="ulist">
 <ul>
@@ -3047,9 +2770,9 @@ When 'true' any PDS adapter call will use real PDS adapter and not a mocked vari
 </table>
 </div>
 <div class="sect4">
-<h5 id="checkmarx">2.7.2.2. Checkmarx</h5>
+<h5 id="checkmarx">2.6.2.2. Checkmarx</h5>
 <div class="sect5">
-<h6 id="mapping-teams-and-presets-for-new-projects">2.7.2.2.1. Mapping teams and presets for new projects</h6>
+<h6 id="mapping-teams-and-presets-for-new-projects">2.6.2.2.1. Mapping teams and presets for new projects</h6>
 <div class="paragraph">
 <p>When a user starts a scan and a <code>checkmarx</code> project does not already exist, it will be created.</p>
 </div>
@@ -3156,7 +2879,7 @@ as shown in following example:</p>
 </div>
 </div>
 <div class="sect5">
-<h6 id="how-to-obtain-preset-id">2.7.2.2.2. How to obtain preset id</h6>
+<h6 id="how-to-obtain-preset-id">2.6.2.2.2. How to obtain preset id</h6>
 <div class="paragraph">
 <p>Unfortunately the preset ID is necessary for REST calls, but not
 visible at Checkmarx UI.</p>
@@ -3167,7 +2890,7 @@ web tools in you browser (e.g. enable network monitoring and change preset id at
 </div>
 </div>
 <div class="sect5">
-<h6 id="how-to-obtain-team-id">2.7.2.2.3. How to obtain team id</h6>
+<h6 id="how-to-obtain-team-id">2.6.2.2.3. How to obtain team id</h6>
 <div class="paragraph">
 <p>Unfortunately the team ID is necessary for REST calls, but not
 visible at Checkmarx UI.</p>
@@ -3180,7 +2903,7 @@ web tools in you browser <em>(e.g. enable network monitoring and change team at 
 </div>
 </div>
 <div class="sect3">
-<h4 id="examples">2.7.3. Examples</h4>
+<h4 id="examples">2.6.3. Examples</h4>
 <div class="admonitionblock note">
 <table>
 <tr>
@@ -3216,7 +2939,7 @@ in next figure:</p>
 </div>
 </div>
 <div class="sect4">
-<h5 id="checkmarx-configuration">2.7.3.1. Checkmarx configuration</h5>
+<h5 id="checkmarx-configuration">2.6.3.1. Checkmarx configuration</h5>
 <div class="paragraph">
 <p>At the configuration editor dialog you can change the data structure.
 Parameters are inside a simple text field. But there exists also a button "Edit parameters".</p>
@@ -3272,7 +2995,7 @@ format.</p>
 </div>
 </div>
 <div class="sect4">
-<h5 id="pds-code-scan-configuration">2.7.3.2. PDS code scan configuration</h5>
+<h5 id="pds-code-scan-configuration">2.6.3.2. PDS code scan configuration</h5>
 <div class="paragraph">
 <p>Here we got an example for a configuration with selected product identifier <code>PDS_CODESCAN</code>:</p>
 </div>
@@ -3292,7 +3015,7 @@ SecHub and so normally custom parameters.</p>
 </div>
 </div>
 <div class="sect4">
-<h5 id="sereco-configuration">2.7.3.3. Sereco configuration</h5>
+<h5 id="sereco-configuration">2.6.3.3. Sereco configuration</h5>
 <div class="paragraph">
 <p><code>Sereco</code> is <strong>the only product which needs no configuration at all</strong>, because it is an embedded "product".</p>
 </div>
@@ -3308,7 +3031,7 @@ result is created.</p>
 </div>
 </div>
 <div class="sect2">
-<h3 id="scan-config-about">2.8. Scan configuration</h3>
+<h3 id="scan-config-about">2.7. Scan configuration</h3>
 <div class="paragraph">
 <p>Sometimes it is necessary to provide special scan configuration setup, e.g. when
 initializing scan operations at server side.</p>
@@ -3333,9 +3056,9 @@ by profiles and executor configurations was introduced. It is a <strong>global c
 </table>
 </div>
 <div class="sect3">
-<h4 id="general">2.8.1. General</h4>
+<h4 id="general">2.7.1. General</h4>
 <div class="sect4">
-<h5 id="name-pattern-id-providers">2.8.1.1. Name pattern ID providers</h5>
+<h5 id="name-pattern-id-providers">2.7.1.1. Name pattern ID providers</h5>
 <div class="paragraph">
 <p>Currently only <code>namePatternIdProviders</code> are provided, which contain an id and mappings from name patterns
 to identifiers. By this very generic approach dedicated adapters can fetch identifiers for specific name setups.</p>
@@ -3343,7 +3066,7 @@ to identifiers. By this very generic approach dedicated adapters can fetch ident
 </div>
 </div>
 <div class="sect3">
-<h4 id="mapping-2">2.8.2. Mapping</h4>
+<h4 id="mapping-2">2.7.2. Mapping</h4>
 <div class="paragraph">
 <p>Scan configuration can be changed by SecHub <code>mapping</code> - look at <a href="#mapping-technical-details">mapping</a> for more information.</p>
 </div>
@@ -3453,10 +3176,10 @@ into SecHub.</p>
 </div>
 </div>
 <div class="sect4">
-<h5 id="owasp-zap">3.1.2.3. Owasp-Zap</h5>
+<h5 id="owasp-zap">3.1.2.3. OWASP ZAP</h5>
 <div class="paragraph">
 <p>This solution does integrate the <a href="https://www.zaproxy.org/" class="bare">https://www.zaproxy.org/</a> (web application scanner) - please look at
-<a href="https://github.com/mercedes-benz/sechub/blob/develop/sechub-pds-solutions/owasp-zap/" class="bare">https://github.com/mercedes-benz/sechub/blob/develop/sechub-pds-solutions/owasp-zap/</a></p>
+<a href="https://github.com/mercedes-benz/sechub/blob/develop/sechub-pds-solutions/owaspzap/" class="bare">https://github.com/mercedes-benz/sechub/blob/develop/sechub-pds-solutions/owaspzap/</a></p>
 </div>
 </div>
 <div class="sect4">
@@ -3891,18 +3614,9 @@ the assignment to a super administrator. Only with permission of project owner t
 </div>
 </div>
 </div>
-<div id="footnotes">
-<hr>
-<div class="footnote" id="_footnotedef_1">
-<a href="#_footnoteref_1">1</a>. <a href="https://github.com/mercedes-benz/sechub/issues/472" class="bare">https://github.com/mercedes-benz/sechub/issues/472</a>
-</div>
-<div class="footnote" id="_footnotedef_2">
-<a href="#_footnoteref_2">2</a>. <a href="https://github.com/mercedes-benz/sechub/issues/499" class="bare">https://github.com/mercedes-benz/sechub/issues/499</a>
-</div>
-</div>
 <div id="footer">
 <div id="footer-text">
- Server 0.43.0<br>
+ Server 1.4.1 modified (commit aa28120)<br>
 </div>
 </div>
 </body>

@@ -1,21 +1,15 @@
 <!-- SPDX-License-Identifier: MIT --->
-## About sechub-shared-kernel-storage
-This is a special testproject having a dependency to s3mock.
 
-S3mock is itself a spring application. So integrating it for junit tests
-can have very much side effects when starting from an IDE (e.g. eclipse).
+## About sechub-storage-s3-aws-test
+This is a special test project having a dependency to S3mock.
 
-So, this is a dedicated gradle project which has only dependencies to storage
-parts (core, s3-aws) and nothing else.
+S3mock is itself a Spring application, which means that integrating it for "normal" junit tests
+for existing Spring Boot applications (like SecHub server) will lead to side effects when starting 
+from an IDE (e.g. Eclipse) because having multiple Spring Boot Applications inside classpath.
 
-#### What happens with s3mock otherwise
-`S3MockApplication` itself is a spring boot application and will have problems
-to be ready for junit test execution when we got spring stereotypes inside other
-code:
+`sechub-storage-s3-aws-test` is a dedicated gradle project which has only dependencies to storage
+parts (core, s3-aws) and nothing else. The only Spring Boot Application is `S3MockApplication`.
 
-- slow start
-- unexpected behaviours
-- ...
+With this project it is possible to use S3Mock for Junit tests without special processes, docker
+containers etc. but also without any side effects.
 
-So we can simply use s3mocking for junit tests without special processes, docker
-containers etc.

@@ -35,7 +35,7 @@ RUN chmod +x "$SCRIPT_FOLDER"/pmd.sh "$SCRIPT_FOLDER"/pmd_mock.sh
 RUN export DEBIAN_FRONTEND=noninteractive && \
     apt-get update && \
     apt-get --assume-yes upgrade && \
-    apt-get --assume-yes install w3m wget openjdk-11-jre-headless unzip && \
+    apt-get --assume-yes install w3m wget unzip && \
     apt-get --assume-yes clean
 
 # Install PMD

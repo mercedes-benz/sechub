@@ -1,0 +1,68 @@
+{ 
+  "jobUUID" : "{sechub.jobuuid}",
+  "trafficLight" : "YELLOW",
+  "result" : {
+    "count" : 4,
+    "findings" : [ {
+      "id" : 2,
+      "description" : "i am a medium error",
+      "severity" : "MEDIUM",
+      "code" : {
+        "location" : "data.txt",
+        "line" : 3,
+        "column" : 123,
+        "source" : "integration test code only!",
+        "relevantPart" : "integrationtest"
+      },
+      "type" : "codeScan"
+    }, {
+      "id" : 3,
+      "description" : "i am just a low error",
+      "severity" : "LOW",
+      "code" : {
+        "location" : "data.txt",
+        "line" : 4,
+        "column" : 123,
+        "source" : "integration test code only!",
+        "relevantPart" : "integrationtest"
+      },
+      "type" : "codeScan"
+    }, {
+      "id" : 1,
+      "description" : "pds.test.key.variantname as PDS_TEST_KEY_VARIANTNAME=,product1.level as PRODUCT1_LEVEL=A",
+      "severity" : "INFO",
+      "code" : {
+        "location" : "data.txt",
+        "line" : 2,
+        "column" : 123,
+        "source" : "integration test code only!",
+        "relevantPart" : "integrationtest"
+      },
+      "type" : "codeScan"
+    }, {
+      "id" : 4,
+      "description" : "i am just an information",
+      "severity" : "INFO",
+      "code" : {
+        "location" : "data.txt",
+        "line" : 5,
+        "column" : 123,
+        "source" : "integration test code only!",
+        "relevantPart" : "integrationtest"
+      },
+      "type" : "codeScan"
+    } ]
+  },
+  "status" : "SUCCESS",
+  "reportVersion" : "1.0",
+  "messages" : [ {
+    "type" : "ERROR",
+    "text" : "error for PDS job: {*:36} but with\n    a multine ....\n    "
+  }, {
+    "type" : "WARNING",
+    "text" : "warn for PDS job: {*:36}"
+  }, {
+    "type" : "INFO",
+    "text" : "info for PDS job: {*:36}"
+  } ]
+}
