@@ -12,16 +12,7 @@ import org.slf4j.LoggerFactory;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.mercedesbenz.sechub.commons.core.MustBeKeptStable;
-import com.mercedesbenz.sechub.commons.model.JSONConverterException;
-import com.mercedesbenz.sechub.commons.model.JSONable;
-import com.mercedesbenz.sechub.commons.model.SecHubMessage;
-import com.mercedesbenz.sechub.commons.model.SecHubMessageType;
-import com.mercedesbenz.sechub.commons.model.SecHubReportData;
-import com.mercedesbenz.sechub.commons.model.SecHubReportMetaData;
-import com.mercedesbenz.sechub.commons.model.SecHubReportModel;
-import com.mercedesbenz.sechub.commons.model.SecHubResult;
-import com.mercedesbenz.sechub.commons.model.SecHubStatus;
-import com.mercedesbenz.sechub.commons.model.TrafficLight;
+import com.mercedesbenz.sechub.commons.model.*;
 import com.mercedesbenz.sechub.sharedkernel.UUIDTraceLogID;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
@@ -67,7 +58,6 @@ public class ScanSecHubReport implements SecHubReportData, JSONable<ScanSecHubRe
                     LOG.warn("Job uuid not found inside report result JSON, will set Job UUID from entity data");
                     model.setJobUUID(report.getSecHubJobUUID());
                 }
-
             } catch (JSONConverterException e) {
                 LOG.error("FATAL PROBLEM! Failed to create sechub result by model for job:{}", report.getSecHubJobUUID(), e);
 
@@ -100,14 +90,42 @@ public class ScanSecHubReport implements SecHubReportData, JSONable<ScanSecHubRe
             throw new IllegalStateException("Unsupported report result type:" + resultType);
         }
 
+        SecHubReportMetaData reportMetaData = new SecHubReportMetaData();
+        setMetaData(reportMetaData);
+
+        SecHubReportSummary secHubReportSummary = new SecHubReportSummary();
+        reportMetaData.setSummary(secHubReportSummary);
+
         /* calculate data */
         buildCalculatedData(report);
     }
 
     private void buildCalculatedData(ScanReport report) {
-
         model.setTrafficLight(TrafficLight.fromString(report.getTrafficLightAsString()));
         model.getResult().setCount(model.getResult().getFindings().size());
+        calculateSummary();
+    }
+
+    protected void calculateSummary() {
+        var summary = model.getMetaData().get().getSummary();
+        SecHubReportMetaDataSummary codeScan = summary.getCodeScan();
+        SecHubReportMetaDataSummary infraScan = summary.getInfraScan();
+        SecHubReportMetaDataSummary licenseScan = summary.getLicenseScan();
+        SecHubReportMetaDataSummary secretScan = summary.getSecretScan();
+        SecHubReportMetaDataSummary webScan = summary.getWebScan();
+
+        for (SecHubFinding finding : model.getResult().getFindings()) {
+            ScanType scanType = finding.getType();
+            if (scanType != null) {
+                switch (scanType) {
+                case CODE_SCAN -> codeScan.reportScanHelper(finding);
+                case INFRA_SCAN -> infraScan.reportScanHelper(finding);
+                case WEB_SCAN -> webScan.reportScanHelper(finding);
+                case LICENSE_SCAN -> licenseScan.reportScanHelper(finding);
+                case SECRET_SCAN -> secretScan.reportScanHelper(finding);
+                }
+            }
+        }
     }
 
     @Override
