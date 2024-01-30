@@ -50,20 +50,20 @@ public class AnonymousUserRequestsNewApiTokenServiceTest {
     @Test
     public void service_uses_assertion_validate_mail() throws Exception {
         /* execute */
-        serviceToTest.anonymousRequestToGetNewApiTokenForUserEmailAddress("user@test.com");
+        serviceToTest.anonymousRequestToGetNewApiTokenForUserEmailAddress("user@example.org");
 
         /* test */
-        verify(mockedUserAssertion).assertIsValidEmailAddress("user@test.com");
+        verify(mockedUserAssertion).assertIsValidEmailAddress("user@example.org");
     }
 
     @Test
     public void when_emailaddress_not_found_no_exception_is_thrown() throws Exception {
 
         /* prepare */
-        when(mockedUserRepository.findByEmailAddress("user@test.com")).thenReturn(Optional.empty());
+        when(mockedUserRepository.findByEmailAddress("user@example.org")).thenReturn(Optional.empty());
 
         /* execute */
-        serviceToTest.anonymousRequestToGetNewApiTokenForUserEmailAddress("user@test.com");
+        serviceToTest.anonymousRequestToGetNewApiTokenForUserEmailAddress("user@example.org");
 
     }
 
@@ -71,14 +71,14 @@ public class AnonymousUserRequestsNewApiTokenServiceTest {
     public void when_emailaddress_found_a_new_async_event_is_sent_eventbus() throws Exception {
 
         User user = new User();
-        user.emailAddress = "user@test.com";
+        user.emailAddress = "user@example.org";
         user.name = "testuser";
 
         /* prepare */
-        when(mockedUserRepository.findByEmailAddress("user@test.com")).thenReturn(Optional.of(user));
+        when(mockedUserRepository.findByEmailAddress("user@example.org")).thenReturn(Optional.of(user));
 
         /* execute */
-        serviceToTest.anonymousRequestToGetNewApiTokenForUserEmailAddress("user@test.com");
+        serviceToTest.anonymousRequestToGetNewApiTokenForUserEmailAddress("user@example.org");
 
         /* test */
         ArgumentCaptor<DomainMessage> domainMessageCaptor = ArgumentCaptor.forClass(DomainMessage.class);
@@ -90,7 +90,7 @@ public class AnonymousUserRequestsNewApiTokenServiceTest {
         assertNotNull("no refersh api key data inside message!", refreshApiKeyMessage);
         // check event contains expected data
         assertNull(refreshApiKeyMessage.getUserId()); // user id not inside
-        assertEquals("user@test.com", refreshApiKeyMessage.getEmailAddress());
+        assertEquals("user@example.org", refreshApiKeyMessage.getEmailAddress());
 
     }
 
@@ -98,14 +98,14 @@ public class AnonymousUserRequestsNewApiTokenServiceTest {
     public void when_emailaddress_found__onetimetoken_created_and_persisted() throws Exception {
 
         User user = new User();
-        user.emailAddress = "user@test.com";
+        user.emailAddress = "user@example.org";
         user.name = "testuser";
 
         /* prepare */
-        when(mockedUserRepository.findByEmailAddress("user@test.com")).thenReturn(Optional.of(user));
+        when(mockedUserRepository.findByEmailAddress("user@example.org")).thenReturn(Optional.of(user));
 
         /* execute */
-        serviceToTest.anonymousRequestToGetNewApiTokenForUserEmailAddress("user@test.com");
+        serviceToTest.anonymousRequestToGetNewApiTokenForUserEmailAddress("user@example.org");
 
         /* test */
         assertEquals(FAKE_ONE_TIME_TOKEN, user.oneTimeToken);

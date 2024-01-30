@@ -69,7 +69,7 @@ public class AnonymousSignupRestControllerRestDocTest implements TestIsNecessary
         this.mockMvc.perform(
         		post(apiEndpoint).
         			contentType(MediaType.APPLICATION_JSON_VALUE).
-        			content("{\"apiVersion\":\"1.0\",\"userId\":\"valid_userid\",\"emailAddress\":\"valid_mailaddress@test.com\"}")
+        			content("{\"apiVersion\":\"1.0\",\"userId\":\"valid_userid\",\"emailAddress\":\"valid_mailaddress@example.org\"}")
         		)./*andDo(print()).*/
         			andExpect(status().isOk()).
         			andDo(defineRestService().

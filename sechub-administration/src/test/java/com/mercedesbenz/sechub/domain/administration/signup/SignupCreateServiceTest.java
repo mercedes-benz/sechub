@@ -36,8 +36,8 @@ public class SignupCreateServiceTest {
     public void a_created_signup_sends_event_containing_userid_and_email() {
         /* prepare */
         SignupJsonInput userSelfRegistrationInput = mock(SignupJsonInput.class);
-        when(userSelfRegistrationInput.getUserId()).thenReturn("schlaubi");
-        when(userSelfRegistrationInput.getEmailAddress()).thenReturn("schlaubi@schlumpfhausen.de");
+        when(userSelfRegistrationInput.getUserId()).thenReturn("adam42");
+        when(userSelfRegistrationInput.getEmailAddress()).thenReturn("adam42@example.org");
 
         /* execute */
         serviceToTest.register(userSelfRegistrationInput);
@@ -51,8 +51,8 @@ public class SignupCreateServiceTest {
         UserMessage signupDataInMessage = messageSendByService.get(MessageDataKeys.USER_SIGNUP_DATA);
         assertNotNull("no signup data inside message!", signupDataInMessage);
         // check event contains expected data
-        assertEquals("schlaubi", signupDataInMessage.getUserId());
-        assertEquals("schlaubi@schlumpfhausen.de", signupDataInMessage.getEmailAddress());
+        assertEquals("adam42", signupDataInMessage.getUserId());
+        assertEquals("adam42@example.org", signupDataInMessage.getEmailAddress());
     }
 
 }
