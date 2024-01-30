@@ -44,18 +44,11 @@ public class HTMLReportCSSFragementGenerator {
         File scanHTMLFolder = new File("./../sechub-scan/src/main/resources/templates/report/html");
 
         File cssFile = new File(scanHTMLFolder, "scanresult.css");
-        CSSFileToFragementMerger merger = new CSSFileToFragementMerger();
+        File fragmentsFile = new File(scanHTMLFolder, "fragments.html");
 
-        File fragmentsFile = new File(scanHTMLFolder, "fragment-cwe-summary-table.html");
+        CSSFileToFragementMerger merger = new CSSFileToFragementMerger();
         merger.merge(cssFile, fragmentsFile);
-        fragmentsFile = new File(scanHTMLFolder, "fragment-generic-scan-table.html");
-        merger.merge(cssFile, fragmentsFile);
-        fragmentsFile = new File(scanHTMLFolder, "fragment-generic-scan-table-row.html");
-        merger.merge(cssFile, fragmentsFile);
-        fragmentsFile = new File(scanHTMLFolder, "fragment-summary-table-row.html");
-        merger.merge(cssFile, fragmentsFile);
-        fragmentsFile = new File(scanHTMLFolder, "fragment-web-scan-table.html");
-        merger.merge(cssFile, fragmentsFile);
+
     }
 
 }

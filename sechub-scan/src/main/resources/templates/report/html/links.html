@@ -1,7 +1,3 @@
-<th:block th:fragment="cweLinkGeneric(finding)">
+<th:block th:fragment="cweLink(finding)">
     <a  th:if="${finding.cweId != null}" th:href="@{'https://cwe.mitre.org/data/definitions/' + ${finding.cweId} + '.html'}" th:text="'CWE-' + ${finding.cweId}" target="_blank">CWE-77</a>
-</th:block>
-
-<th:block th:fragment="cweLinkWeb(finding)">
-    <a  th:if="${findingEntry.value[0].cweId != null}" th:href="@{'https://cwe.mitre.org/data/definitions/' + ${findingEntry.value[0].cweId} + '.html'}" th:text="'CWE-' + ${findingEntry.value[0].cweId}" target="_blank">CWE-77</a>
 </th:block>

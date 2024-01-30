@@ -12,7 +12,19 @@ import java.util.UUID;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.mercedesbenz.sechub.commons.model.*;
+import com.mercedesbenz.sechub.commons.model.ScanType;
+import com.mercedesbenz.sechub.commons.model.SecHubCodeCallStack;
+import com.mercedesbenz.sechub.commons.model.SecHubFinding;
+import com.mercedesbenz.sechub.commons.model.SecHubMessage;
+import com.mercedesbenz.sechub.commons.model.SecHubMessageType;
+import com.mercedesbenz.sechub.commons.model.SecHubReportData;
+import com.mercedesbenz.sechub.commons.model.SecHubReportMetaData;
+import com.mercedesbenz.sechub.commons.model.SecHubReportModel;
+import com.mercedesbenz.sechub.commons.model.SecHubReportVersion;
+import com.mercedesbenz.sechub.commons.model.SecHubResult;
+import com.mercedesbenz.sechub.commons.model.SecHubStatus;
+import com.mercedesbenz.sechub.commons.model.Severity;
+import com.mercedesbenz.sechub.commons.model.TrafficLight;
 import com.mercedesbenz.sechub.integrationtest.internal.SecHubJobAutoDumper;
 
 public class AssertReport {
@@ -312,48 +324,6 @@ public class AssertReport {
         String foundValue = labels.get(key);
 
         assertEquals(value, foundValue);
-
-        return this;
-    }
-
-    public SecHubReportMetaDataSummary getMetaDataSummaryCodeScan() {
-        Optional<SecHubReportMetaData> metaDataOpt = report.getMetaData();
-        if (metaDataOpt.isEmpty()) {
-            fail("Meta data not found inside report!");
-        }
-        SecHubReportMetaData metaData = metaDataOpt.get();
-
-        return metaData.getSummary().getCodeScan();
-    }
-
-    public AssertReport hasMetaDataSummaryCodeScanTotal(long value) {
-        SecHubReportMetaDataSummary metaDataSummary = getMetaDataSummaryCodeScan();
-
-        assertEquals(value, metaDataSummary.getTotal());
-
-        return this;
-    }
-
-    public AssertReport hasMetaDataSummaryCodeScanRed(long value) {
-        SecHubReportMetaDataSummary metaDataSummary = getMetaDataSummaryCodeScan();
-
-        assertEquals(value, metaDataSummary.getRed());
-
-        return this;
-    }
-
-    public AssertReport hasMetaDataSummaryCodeScanYellow(long value) {
-        SecHubReportMetaDataSummary metaDataSummary = getMetaDataSummaryCodeScan();
-
-        assertEquals(value, metaDataSummary.getYellow());
-
-        return this;
-    }
-
-    public AssertReport hasMetaDataSummaryCodeScanGreen(long value) {
-        SecHubReportMetaDataSummary metaDataSummary = getMetaDataSummaryCodeScan();
-
-        assertEquals(value, metaDataSummary.getGreen());
 
         return this;
     }

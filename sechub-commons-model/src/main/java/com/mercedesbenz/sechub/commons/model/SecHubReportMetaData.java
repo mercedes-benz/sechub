@@ -11,17 +11,7 @@ public class SecHubReportMetaData {
 
     private Map<String, String> labels = new LinkedHashMap<>();
 
-    private SecHubReportSummary summary = new SecHubReportSummary();
-
     public Map<String, String> getLabels() {
         return labels;
-    }
-
-    public SecHubReportSummary getSummary() {
-        return summary;
-    }
-
-    public void setSummary(SecHubReportSummary summary) {
-        this.summary = summary;
     }
 }

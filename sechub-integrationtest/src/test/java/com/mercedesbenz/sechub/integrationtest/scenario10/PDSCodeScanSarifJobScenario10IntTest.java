@@ -73,10 +73,11 @@ public class PDSCodeScanSarifJobScenario10IntTest {
             hasStatus(SecHubStatus.SUCCESS).
             hasMessages(0).
             hasJobUUID(jobUUID).
-            hasMetaDataSummaryCodeScanTotal(32).
-            hasMetaDataSummaryCodeScanRed(28).
-            hasMetaDataSummaryCodeScanYellow(2).
-            hasMetaDataSummaryCodeScanGreen(2).
+            hasMetaDataLabel("quality-level", "high").
+            hasMetaDataLabel("test-label1", "Something special").
+            hasMetaDataLabel("test-label2", "").
+            hasMetaDataLabel("test-label3_with_html", "<html>HTML is allowed, but must always be escaped in reports!</html>").
+            hasMetaDataLabel("test-label4_with_special_chars", "Line1\nLine2\tLine3").
             hasTrafficLight(RED).
                finding(0).
                    hasSeverity(Severity.HIGH).
@@ -99,17 +100,11 @@ public class PDSCodeScanSarifJobScenario10IntTest {
 
         assertHTMLReport(htmlReport).
             containsAtLeastOneOpenDetailsBlock().
-            hasHTMLString("<td><a href=\"#redCodeScanTable\">28</a></td>").
-            hasHTMLString("<td><a href=\"#yellowCodeScanTable\">2</a></td>").
-            hasHTMLString("<td><a href=\"#greenCodeScanTable\">2</a></td>").
-            hasHTMLString(" <tr>\n"
-            		+ "            <td>CWE-null</td>\n"
-            		+ "            <td>BRAKE0000</td>\n"
-            		+ "            <td>2</td>\n"
-            		+ "        </tr>").
-            hasHTMLString("Red findings (Count: 28)").
-            hasHTMLString("Yellow findings (Count: 2)").
-            hasHTMLString("Green findings (Count: 2)");
+            hasMetaDataLabel("quality-level", "high").
+            hasMetaDataLabel("test-label1", "Something special").
+            hasMetaDataLabel("test-label2", "").
+            hasMetaDataLabel("test-label3_with_html", "&lt;html&gt;HTML is allowed, but must always be escaped in reports!&lt;/html&gt;").
+            hasMetaDataLabel("test-label4_with_special_chars", "Line1\nLine2\tLine3");
 
         // try to restart SecHub (will reuse existing PDS job because already done )
         assertSecHubRestartWillNotStartNewJobButReusesExistingBecausePDSJobWasAlreadyDone(project,jobUUID);

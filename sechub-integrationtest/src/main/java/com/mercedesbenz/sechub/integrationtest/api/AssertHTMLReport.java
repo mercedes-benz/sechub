@@ -52,10 +52,4 @@ public class AssertHTMLReport {
         return this;
     }
 
-    public AssertHTMLReport hasHTMLString(String value) {
-        if (!html.contains(value)) {
-            failWithDump("The report does not contain expected HTML string ':" + value + "'");
-        }
-        return this;
-    }
 }

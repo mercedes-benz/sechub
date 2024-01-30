@@ -14,7 +14,11 @@ import static org.springframework.restdocs.request.RequestDocumentation.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 import java.lang.annotation.Annotation;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Optional;
+import java.util.UUID;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -34,7 +38,6 @@ import org.springframework.test.web.servlet.MockMvc;
 import com.mercedesbenz.sechub.commons.model.TrafficLight;
 import com.mercedesbenz.sechub.docgen.util.RestDocFactory;
 import com.mercedesbenz.sechub.domain.scan.HTMLScanResultReportModelBuilder;
-import com.mercedesbenz.sechub.domain.scan.ScanTypeCount;
 import com.mercedesbenz.sechub.domain.scan.report.DownloadScanReportService;
 import com.mercedesbenz.sechub.domain.scan.report.DownloadSpdxScanReportService;
 import com.mercedesbenz.sechub.domain.scan.report.ScanReport;
@@ -238,8 +241,7 @@ public class ScanReportRestControllerRestDocTest implements TestIsNecessaryForDo
         map.put("yellowList", new ArrayList<>());
         map.put("greenList", new ArrayList<>());
         map.put("isWebDesignMode", false);
-        map.put("metaData", null);
-        map.put("scanTypeCountSet", new TreeSet<ScanTypeCount>());
+        map.put("metaData", Optional.ofNullable(null));
         when(modelBuilder.build(any())).thenReturn(map);
     }
 

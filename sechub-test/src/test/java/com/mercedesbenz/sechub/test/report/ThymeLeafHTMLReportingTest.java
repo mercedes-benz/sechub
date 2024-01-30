@@ -10,7 +10,6 @@ import java.nio.file.Path;
 import java.time.LocalDateTime;
 import java.util.Locale;
 import java.util.Map;
-import java.util.Optional;
 import java.util.TreeMap;
 
 import org.junit.jupiter.api.BeforeAll;
@@ -76,19 +75,13 @@ public class ThymeLeafHTMLReportingTest {
         thymeleafTemplateEngine.setTemplateResolver(templateResolver);
 
         if (TestUtil.isAutoCSSFragementGenerationEnabled()) {
-            File scanHTMLFolder = new File("./../sechub-scan/src/main/resources/templates/report/html");
-            File cssFile = new File(scanHTMLFolder, "scanresult.css");
-            CSSFileToFragementMerger merger = new CSSFileToFragementMerger();
 
-            File fragmentsFile = new File(scanHTMLFolder, "fragment-cwe-summary-table.html");
-            merger.merge(cssFile, fragmentsFile);
-            fragmentsFile = new File(scanHTMLFolder, "fragment-generic-scan-table.html");
-            merger.merge(cssFile, fragmentsFile);
-            fragmentsFile = new File(scanHTMLFolder, "fragment-generic-scan-table-row.html");
-            merger.merge(cssFile, fragmentsFile);
-            fragmentsFile = new File(scanHTMLFolder, "fragment-summary-table-row.html");
-            merger.merge(cssFile, fragmentsFile);
-            fragmentsFile = new File(scanHTMLFolder, "fragment-web-scan-table.html");
+            File scanHTMLFolder = new File("./../sechub-scan/src/main/resources/templates/report/html");
+
+            File cssFile = new File(scanHTMLFolder, "scanresult.css");
+            File fragmentsFile = new File(scanHTMLFolder, "fragments.html");
+
+            CSSFileToFragementMerger merger = new CSSFileToFragementMerger();
             merger.merge(cssFile, fragmentsFile);
         } else {
             LOG.info("Skipping CSS auto generation/merging");
@@ -112,7 +105,6 @@ public class ThymeLeafHTMLReportingTest {
 
         assertTrue(htmlResult.contains(context.sechubJobUUID));
         assertTrue(htmlResult.contains("XSS"), "The report must at least contain a cross site scripting vulnerability!");
-        assertTrue(htmlResult.contains("CWE-614"), "The report must at least contain the CWE-614 vulnerability!");
         assertTrue(htmlResult.contains("Cross Site Scripting (Reflected)"), "The report must at least contain a cross site scripting reflected vulnerability!");
 
         assertTrue(htmlResult.contains("Red findings"));
@@ -352,9 +344,9 @@ public class ThymeLeafHTMLReportingTest {
             ScanSecHubReport scanReport = new ScanSecHubReport(report);
             if (getMetaData().isMetaDataNecessaryForReport()) {
 
-                Optional<SecHubReportMetaData> reportMetaData = scanReport.getMetaData();
-                reportMetaData.get().getLabels().putAll(getMetaData().labels);
-                scanReport.setMetaData(reportMetaData.get());
+                SecHubReportMetaData reportMetaData = new SecHubReportMetaData();
+                reportMetaData.getLabels().putAll(getMetaData().labels);
+                scanReport.setMetaData(reportMetaData);
             }
             storeAsJSONFileForDebuggingWhenTempFilesAreKept(JSONConverter.get().toJSON(scanReport, true), this);
             Map<String, Object> tyhmeleafMap = reportModelBuilder.build(scanReport);
