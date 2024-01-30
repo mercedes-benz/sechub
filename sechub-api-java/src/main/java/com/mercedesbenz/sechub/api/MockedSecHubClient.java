@@ -130,7 +130,7 @@ public class MockedSecHubClient extends AbstractSecHubClient {
             throw new SecHubClientException("User already exists!");
         }
         OpenUserSignup openSignup = new OpenUserSignup();
-        openSignup.setEmailAdress(signUp.getEmailAdress());
+        openSignup.setEmailAddress(signUp.getEmailAddress());
         openSignup.setUserId(userId);
         openSignups.put(userId, openSignup);
     }
@@ -272,7 +272,7 @@ public class MockedSecHubClient extends AbstractSecHubClient {
     }
 
     private User createUser(OpenUserSignup found) {
-        return new User(found.getUserId(), found.getEmailAdress());
+        return new User(found.getUserId(), found.getEmailAddress());
     }
 
     private String createUserToProjectUniqueIdentifier(String user, String projectId) {

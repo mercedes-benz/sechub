@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.domain.scan.report;
 
+import static com.mercedesbenz.sechub.commons.model.ScanType.*;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
@@ -287,4 +288,128 @@ class ScanSecHubReportTest {
         assertEquals(1, reportToTest.getResult().getCount());
     }
 
+    @Test
+    void when_finding_is_CODE_SCAN_then_only_relevant_reports_metadata_total_value_should_be_increased() {
+        /* prepare */
+        SecHubReportModel reportModel = new SecHubReportModel();
+        SecHubFinding finding = new SecHubFinding();
+        finding.setName("finding1");
+        finding.setType(CODE_SCAN);
+        finding.setSeverity(Severity.HIGH);
+        reportModel.getResult().getFindings().add(finding);
+
+        ScanReport report = new ScanReport();
+        report.setResult(reportModel.toJSON());
+        report.setResultType(ScanReportResultType.MODEL);
+
+        /* execute */
+        ScanSecHubReport scanSecHubReport = new ScanSecHubReport(report);
+
+        /* test */
+        assertTrue(1 == scanSecHubReport.getMetaData().get().getSummary().getCodeScan().getTotal());
+        assertTrue(0 == scanSecHubReport.getMetaData().get().getSummary().getInfraScan().getTotal());
+        assertTrue(0 == scanSecHubReport.getMetaData().get().getSummary().getLicenseScan().getTotal());
+        assertTrue(0 == scanSecHubReport.getMetaData().get().getSummary().getSecretScan().getTotal());
+        assertTrue(0 == scanSecHubReport.getMetaData().get().getSummary().getWebScan().getTotal());
+    }
+
+    @Test
+    void when_finding_is_INFRA_SCAN_then_only_relevant_reports_metadata_total_value_should_be_increased() {
+        /* prepare */
+        SecHubReportModel reportModel = new SecHubReportModel();
+        SecHubFinding finding = new SecHubFinding();
+        finding.setName("finding1");
+        finding.setType(INFRA_SCAN);
+        finding.setSeverity(Severity.HIGH);
+        reportModel.getResult().getFindings().add(finding);
+
+        ScanReport report = new ScanReport();
+        report.setResult(reportModel.toJSON());
+        report.setResultType(ScanReportResultType.MODEL);
+
+        /* execute */
+        ScanSecHubReport scanSecHubReport = new ScanSecHubReport(report);
+
+        /* test */
+        assertTrue(0 == scanSecHubReport.getMetaData().get().getSummary().getCodeScan().getTotal());
+        assertTrue(1 == scanSecHubReport.getMetaData().get().getSummary().getInfraScan().getTotal());
+        assertTrue(0 == scanSecHubReport.getMetaData().get().getSummary().getLicenseScan().getTotal());
+        assertTrue(0 == scanSecHubReport.getMetaData().get().getSummary().getSecretScan().getTotal());
+        assertTrue(0 == scanSecHubReport.getMetaData().get().getSummary().getWebScan().getTotal());
+    }
+
+    @Test
+    void when_finding_is_LICENSE_SCAN_then_only_relevant_reports_metadata_total_value_should_be_increased() {
+        /* prepare */
+        SecHubReportModel reportModel = new SecHubReportModel();
+        SecHubFinding finding = new SecHubFinding();
+        finding.setName("finding1");
+        finding.setType(LICENSE_SCAN);
+        finding.setSeverity(Severity.HIGH);
+        reportModel.getResult().getFindings().add(finding);
+
+        ScanReport report = new ScanReport();
+        report.setResult(reportModel.toJSON());
+        report.setResultType(ScanReportResultType.MODEL);
+
+        /* execute */
+        ScanSecHubReport scanSecHubReport = new ScanSecHubReport(report);
+
+        /* test */
+        assertTrue(0 == scanSecHubReport.getMetaData().get().getSummary().getCodeScan().getTotal());
+        assertTrue(0 == scanSecHubReport.getMetaData().get().getSummary().getInfraScan().getTotal());
+        assertTrue(1 == scanSecHubReport.getMetaData().get().getSummary().getLicenseScan().getTotal());
+        assertTrue(0 == scanSecHubReport.getMetaData().get().getSummary().getSecretScan().getTotal());
+        assertTrue(0 == scanSecHubReport.getMetaData().get().getSummary().getWebScan().getTotal());
+    }
+
+    @Test
+    void when_finding_is_SECRET_SCAN_then_only_relevant_reports_metadata_total_value_should_be_increased() {
+        /* prepare */
+        SecHubReportModel reportModel = new SecHubReportModel();
+        SecHubFinding finding = new SecHubFinding();
+        finding.setName("finding1");
+        finding.setType(SECRET_SCAN);
+        finding.setSeverity(Severity.HIGH);
+        reportModel.getResult().getFindings().add(finding);
+
+        ScanReport report = new ScanReport();
+        report.setResult(reportModel.toJSON());
+        report.setResultType(ScanReportResultType.MODEL);
+
+        /* execute */
+        ScanSecHubReport scanSecHubReport = new ScanSecHubReport(report);
+
+        /* test */
+        assertTrue(0 == scanSecHubReport.getMetaData().get().getSummary().getCodeScan().getTotal());
+        assertTrue(0 == scanSecHubReport.getMetaData().get().getSummary().getInfraScan().getTotal());
+        assertTrue(0 == scanSecHubReport.getMetaData().get().getSummary().getLicenseScan().getTotal());
+        assertTrue(1 == scanSecHubReport.getMetaData().get().getSummary().getSecretScan().getTotal());
+        assertTrue(0 == scanSecHubReport.getMetaData().get().getSummary().getWebScan().getTotal());
+    }
+
+    @Test
+    void when_finding_is_WEB_SCAN_then_only_relevant_reports_metadata_total_value_should_be_increased() {
+        /* prepare */
+        SecHubReportModel reportModel = new SecHubReportModel();
+        SecHubFinding finding = new SecHubFinding();
+        finding.setName("finding1");
+        finding.setType(WEB_SCAN);
+        finding.setSeverity(Severity.HIGH);
+        reportModel.getResult().getFindings().add(finding);
+
+        ScanReport report = new ScanReport();
+        report.setResult(reportModel.toJSON());
+        report.setResultType(ScanReportResultType.MODEL);
+
+        /* execute */
+        ScanSecHubReport scanSecHubReport = new ScanSecHubReport(report);
+
+        /* test */
+        assertTrue(0 == scanSecHubReport.getMetaData().get().getSummary().getCodeScan().getTotal());
+        assertTrue(0 == scanSecHubReport.getMetaData().get().getSummary().getInfraScan().getTotal());
+        assertTrue(0 == scanSecHubReport.getMetaData().get().getSummary().getLicenseScan().getTotal());
+        assertTrue(0 == scanSecHubReport.getMetaData().get().getSummary().getSecretScan().getTotal());
+        assertTrue(1 == scanSecHubReport.getMetaData().get().getSummary().getWebScan().getTotal());
+    }
 }

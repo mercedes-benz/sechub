@@ -340,7 +340,7 @@ public class DeveloperAdministration {
 
     public String createNewUserSignup(String name, String email) {
 
-        String json = "{\"apiVersion\":\"1.0\",\r\n" + "		\"userId\":\"" + name + "\",\r\n" + "		\"emailAdress\":\"" + email + "\"}";
+        String json = "{\"apiVersion\":\"1.0\",\r\n" + "		\"userId\":\"" + name + "\",\r\n" + "		\"emailAddress\":\"" + email + "\"}";
         return getRestHelper().postJson(getUrlBuilder().buildUserSignUpUrl(), json);
     }
 

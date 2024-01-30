@@ -53,7 +53,7 @@ public class UserAdministrationScenario2IntTest {
     }
 
     @Test
-    public void superadmin_can_change_user_email_adress_of_user2() {
+    public void superadmin_can_change_user_email_address_of_user2() {
         /* prepare */
         TestUserDetailInformation details = as(SUPER_ADMIN).fetchUserDetails(USER_2);
         String formerEmailAddress = details.getEmail();

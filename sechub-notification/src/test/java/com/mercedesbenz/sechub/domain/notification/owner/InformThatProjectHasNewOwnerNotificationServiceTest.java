@@ -59,7 +59,7 @@ public class InformThatProjectHasNewOwnerNotificationServiceTest {
         Set<String> userMails = new HashSet<>();
         userMails.add("user1@example.org");
 
-        when(message.getUserEmailAdresses()).thenReturn(userMails);
+        when(message.getUserEmailAddresses()).thenReturn(userMails);
 
         /* execute */
         serviceToTest.notify(message, "base1");

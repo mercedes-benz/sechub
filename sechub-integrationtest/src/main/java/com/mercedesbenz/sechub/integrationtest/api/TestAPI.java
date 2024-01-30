@@ -1079,7 +1079,7 @@ public class TestAPI {
             @Override
             public void accept(JsonNode node) {
                 JsonNode userAsKey = node.get("userId");
-                JsonNode emailAsValue = node.get("emailAdress");
+                JsonNode emailAsValue = node.get("emailAddress");
                 String keyText = userAsKey.textValue();
                 String valueText = emailAsValue.textValue();
                 map.put(keyText, valueText);

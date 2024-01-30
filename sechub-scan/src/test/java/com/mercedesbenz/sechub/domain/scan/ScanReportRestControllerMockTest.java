@@ -9,12 +9,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -30,17 +25,9 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 
-import com.mercedesbenz.sechub.commons.model.SecHubFinding;
-import com.mercedesbenz.sechub.commons.model.TrafficLight;
-import com.mercedesbenz.sechub.commons.model.TrafficLightCalculator;
+import com.mercedesbenz.sechub.commons.model.*;
 import com.mercedesbenz.sechub.domain.scan.product.ReportProductExecutionService;
-import com.mercedesbenz.sechub.domain.scan.report.CreateScanReportService;
-import com.mercedesbenz.sechub.domain.scan.report.DownloadScanReportService;
-import com.mercedesbenz.sechub.domain.scan.report.DownloadSpdxScanReportService;
-import com.mercedesbenz.sechub.domain.scan.report.ScanReport;
-import com.mercedesbenz.sechub.domain.scan.report.ScanReportRepository;
-import com.mercedesbenz.sechub.domain.scan.report.ScanReportRestController;
-import com.mercedesbenz.sechub.domain.scan.report.ScanSecHubReport;
+import com.mercedesbenz.sechub.domain.scan.report.*;
 import com.mercedesbenz.sechub.test.TestPortProvider;
 
 @ExtendWith(SpringExtension.class)
@@ -130,11 +117,14 @@ class ScanReportRestControllerMockTest {
 
         Integer cweId = Integer.valueOf(77);
 
-        SecHubFinding finding = new SecHubFinding();
+        HTMLSecHubFinding finding = new HTMLSecHubFinding();
         finding.setCweId(cweId);
+        finding.setSeverity(Severity.HIGH);
+        finding.setType(ScanType.CODE_SCAN);
+        finding.setDescription("Potential file inclusion via variable");
 
-        reportModelBuilderResult.put("redList", Arrays.asList(finding));
-        reportModelBuilderResult.put("codeScanEntries", new ArrayList<>());
+        reportModelBuilderResult.put("reportHelper", HTMLReportHelper.DEFAULT);
+        reportModelBuilderResult.put("redHTMLSecHubFindingList", Arrays.asList(finding));
 
         when(modelBuilder.build(any())).thenReturn(reportModelBuilderResult);
 
@@ -264,8 +254,9 @@ class ScanReportRestControllerMockTest {
         reportModelBuilderResult.put("yellowList", new ArrayList<>());
         reportModelBuilderResult.put("greenList", new ArrayList<>());
         reportModelBuilderResult.put("isWebDesignMode", false);
-        reportModelBuilderResult.put("metaData", Optional.ofNullable(null));
+        reportModelBuilderResult.put("metaData", null);
         reportModelBuilderResult.put("codeScanSupport", new HtmlCodeScanDescriptionSupport());
+        reportModelBuilderResult.put("scanTypeCountSet", new TreeSet<ScanTypeCount>());
 
         when(modelBuilder.build(any())).thenReturn(reportModelBuilderResult);
     }

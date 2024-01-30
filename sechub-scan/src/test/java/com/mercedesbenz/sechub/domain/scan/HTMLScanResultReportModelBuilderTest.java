@@ -6,23 +6,13 @@ import static org.mockito.Mockito.*;
 
 import java.io.ByteArrayInputStream;
 import java.io.File;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.core.io.Resource;
 
-import com.mercedesbenz.sechub.commons.model.SecHubCodeCallStack;
-import com.mercedesbenz.sechub.commons.model.SecHubFinding;
-import com.mercedesbenz.sechub.commons.model.SecHubReportMetaData;
-import com.mercedesbenz.sechub.commons.model.SecHubResult;
-import com.mercedesbenz.sechub.commons.model.SecHubResultTrafficLightFilter;
-import com.mercedesbenz.sechub.commons.model.TrafficLight;
+import com.mercedesbenz.sechub.commons.model.*;
 import com.mercedesbenz.sechub.domain.scan.report.ScanSecHubReport;
 
 class HTMLScanResultReportModelBuilderTest {
@@ -41,6 +31,7 @@ class HTMLScanResultReportModelBuilderTest {
     private List<SecHubFinding> greenList;
     private List<SecHubFinding> redList;
     private List<SecHubFinding> yellowList;
+    private ScanTypeCount scanTypeCount;
 
     @BeforeEach
     void beforeEach() throws Exception {
@@ -65,10 +56,11 @@ class HTMLScanResultReportModelBuilderTest {
         when(trafficLightFilter.filterFindingsFor(result, TrafficLight.RED)).thenReturn(redList);
         when(trafficLightFilter.filterFindingsFor(result, TrafficLight.YELLOW)).thenReturn(yellowList);
         when(trafficLightFilter.filterFindingsFor(result, TrafficLight.GREEN)).thenReturn(greenList);
+
+        scanTypeCount = ScanTypeCount.of(ScanType.CODE_SCAN);
     }
 
-    @Test
-    void metaData_set_as_optional_not_present_when_configuration_has_metadata_optional_null() {
+    @Test void metaData_set_as_optional_not_present_when_configuration_has_metadata_optional_null() {
         /* prepare */
         when(scanSecHubReport.getTrafficLight()).thenReturn(TrafficLight.YELLOW); // traffic light necessary to avoid illegal state exception
         when(scanSecHubReport.getMetaData()).thenReturn(Optional.ofNullable(null));
@@ -77,14 +69,12 @@ class HTMLScanResultReportModelBuilderTest {
         Map<String, Object> map = builderToTest.build(scanSecHubReport);
 
         /* test */
-        @SuppressWarnings("unchecked")
-        Optional<SecHubReportMetaData> metaData = (Optional<SecHubReportMetaData>) map.get("metaData");
+        @SuppressWarnings("unchecked") Optional<SecHubReportMetaData> metaData = (Optional<SecHubReportMetaData>) map.get("metaData");
         assertNotNull(metaData);
         assertFalse(metaData.isPresent());
     }
 
-    @Test
-    void metaData_set_as_optional_not_present_when_configuration_has_metadata_optional_defined() {
+    @Test void metaData_set_as_optional_not_present_when_configuration_has_metadata_optional_defined() {
         /* prepare */
         when(scanSecHubReport.getTrafficLight()).thenReturn(TrafficLight.YELLOW); // traffic light necessary to avoid illegal state exception
         SecHubReportMetaData reportMetaData = mock(SecHubReportMetaData.class);
@@ -94,8 +84,7 @@ class HTMLScanResultReportModelBuilderTest {
         Map<String, Object> map = builderToTest.build(scanSecHubReport);
 
         /* test */
-        @SuppressWarnings("unchecked")
-        Optional<SecHubReportMetaData> metaData = (Optional<SecHubReportMetaData>) map.get("metaData");
+        @SuppressWarnings("unchecked") Optional<SecHubReportMetaData> metaData = (Optional<SecHubReportMetaData>) map.get("metaData");
         assertNotNull(metaData);
         assertTrue(metaData.isPresent());
     }
@@ -168,8 +157,7 @@ class HTMLScanResultReportModelBuilderTest {
         assertEquals(HIDE_LIGHT, map.get("styleGreen"));
     }
 
-    @Test
-    void trafficlight_red_set_display_block__others_are_none() {
+    @Test void trafficlight_red_set_display_block__others_are_none() {
         when(scanSecHubReport.getTrafficLight()).thenReturn(TrafficLight.RED);
 
         Map<String, Object> map = builderToTest.build(scanSecHubReport);
@@ -178,8 +166,7 @@ class HTMLScanResultReportModelBuilderTest {
         assertEquals(HIDE_LIGHT, map.get("styleGreen"));
     }
 
-    @Test
-    public void trafficlight_yellow_set_display_block__others_are_none() {
+    @Test public void trafficlight_yellow_set_display_block__others_are_none() {
         when(scanSecHubReport.getTrafficLight()).thenReturn(TrafficLight.YELLOW);
 
         Map<String, Object> map = builderToTest.build(scanSecHubReport);
@@ -188,8 +175,7 @@ class HTMLScanResultReportModelBuilderTest {
         assertEquals(HIDE_LIGHT, map.get("styleGreen"));
     }
 
-    @Test
-    void trafficlight_green_set_display_block__others_are_none() {
+    @Test void trafficlight_green_set_display_block__others_are_none() {
         when(scanSecHubReport.getTrafficLight()).thenReturn(TrafficLight.GREEN);
 
         Map<String, Object> map = builderToTest.build(scanSecHubReport);
@@ -210,6 +196,9 @@ class HTMLScanResultReportModelBuilderTest {
         when(scanSecHubReport.getResult()).thenReturn(result);
         when(result.getFindings()).thenReturn(Arrays.asList(finding));
         when(finding.getCode()).thenReturn(code1);
+        when(finding.getType()).thenReturn(ScanType.CODE_SCAN);
+        when(finding.getSeverity()).thenReturn(Severity.HIGH);
+        when(finding.getName()).thenReturn("some_vulnerability_name");
         when(code1.getCalls()).thenReturn(subCode);
 
         /* execute */
@@ -228,8 +217,7 @@ class HTMLScanResultReportModelBuilderTest {
         assertTrue(scanEntriesList.size() == 2);
     }
 
-    @Test
-    void code_scan_support_set_and_not_null() {
+    @Test void code_scan_support_set_and_not_null() {
         /* prepare */
         when(scanSecHubReport.getTrafficLight()).thenReturn(TrafficLight.RED);
 
@@ -237,10 +225,256 @@ class HTMLScanResultReportModelBuilderTest {
         Map<String, Object> map = builderToTest.build(scanSecHubReport);
 
         /* test */
-
         assertNotNull(map.get("codeScanSupport"));
         assertTrue(map.get("codeScanSupport") instanceof HtmlCodeScanDescriptionSupport);
+    }
 
+    @Test
+    void when_severity_is_critical_then_highSeverityCount_should_be_incremented() {
+        /* execute */
+        builderToTest.incrementScanCount(Severity.CRITICAL, scanTypeCount);
+
+        /* test */
+        assertEquals(1, scanTypeCount.getHighSeverityCount());
+    }
+
+    @Test
+    void when_severity_is_high_then_highSeverityCount_should_be_incremented() {
+        /* execute */
+        builderToTest.incrementScanCount(Severity.HIGH, scanTypeCount);
+
+        /* test */
+        assertEquals(1, scanTypeCount.getHighSeverityCount());
+    }
+
+    @Test
+    void when_severity_is_medium_then_mediumSeverityCount_should_be_incremented() {
+        /* execute */
+        builderToTest.incrementScanCount(Severity.MEDIUM, scanTypeCount);
+
+        /* test */
+        assertEquals(1, scanTypeCount.getMediumSeverityCount());
+    }
+
+    @Test
+    void when_severity_is_low_then_lowSeverityCount_should_be_incremented() {
+        /* execute */
+        builderToTest.incrementScanCount(Severity.LOW, scanTypeCount);
+
+        /* test */
+        assertEquals(1, scanTypeCount.getLowSeverityCount());
+    }
+
+    @Test
+    void when_severity_is_info_then_lowSeverityCount_should_be_incremented() {
+        /* execute */
+        builderToTest.incrementScanCount(Severity.INFO, scanTypeCount);
+
+        /* test */
+        assertEquals(1, scanTypeCount.getLowSeverityCount());
+    }
+
+    @Test
+    void when_severity_is_unclassified_then_lowSeverityCount_should_be_incremented() {
+        /* execute */
+        builderToTest.incrementScanCount(Severity.UNCLASSIFIED, scanTypeCount);
+
+        /* test */
+        assertEquals(1, scanTypeCount.getLowSeverityCount());
+    }
+
+    @Test
+    void when_findings_list_is_empty_then_prepareScanTypesForModel_returns_empty_set() {
+        /* prepare */
+        List<SecHubFinding> findings = new ArrayList<>();
+
+        /* execute */
+        Set<ScanTypeCount> scanTypeCountSet = builderToTest.prepareScanTypesForModel(findings);
+
+        /* test */
+        assertTrue(scanTypeCountSet.isEmpty());
+    }
+
+    @Test
+    void when_findings_list_contains_multiple_CODE_SCAN_findings_only_then_prepareScanTypesForModel_returns_set_with_one_appropriate_element_only() {
+        /* prepare */
+        List<SecHubFinding> findings = new ArrayList<>();
+        SecHubFinding finding = new SecHubFinding();
+        finding.setId(0);
+        finding.setType(ScanType.CODE_SCAN);
+        finding.setSeverity(Severity.LOW);
+        findings.add(finding);
+        finding = new SecHubFinding();
+        finding.setId(1);
+        finding.setType(ScanType.CODE_SCAN);
+        finding.setSeverity(Severity.MEDIUM);
+        findings.add(finding);
+        finding = new SecHubFinding();
+        finding.setId(2);
+        finding.setType(ScanType.CODE_SCAN);
+        finding.setSeverity(Severity.HIGH);
+        findings.add(finding);
+
+        /* execute */
+        Set<ScanTypeCount> scanTypeCountSet = builderToTest.prepareScanTypesForModel(findings);
+        Iterator<ScanTypeCount> iterator = scanTypeCountSet.iterator();
+        ScanTypeCount scanTypeCount = iterator.next();
+
+        /* test */
+        assertTrue(scanTypeCountSet.size() == 1);
+        assertEquals(ScanType.CODE_SCAN, scanTypeCount.getScanType());
+        assertEquals(1, scanTypeCount.getLowSeverityCount());
+        assertEquals(1, scanTypeCount.getMediumSeverityCount());
+        assertEquals(1, scanTypeCount.getHighSeverityCount());
+    }
+
+    @Test
+    void when_findings_list_contains_multiple_findings_of_differernt_ScanType_then_prepareScanTypesForModel_returns_appropriate_set() {
+        /* prepare */
+        List<SecHubFinding> findings = new ArrayList<>();
+        SecHubFinding finding = new SecHubFinding();
+        finding.setId(0);
+        finding.setType(ScanType.CODE_SCAN);
+        finding.setSeverity(Severity.LOW);
+        findings.add(finding);
+        finding = new SecHubFinding();
+        finding.setId(1);
+        finding.setType(ScanType.INFRA_SCAN);
+        finding.setSeverity(Severity.MEDIUM);
+        findings.add(finding);
+        finding = new SecHubFinding();
+        finding.setId(2);
+        finding.setType(ScanType.SECRET_SCAN);
+        finding.setSeverity(Severity.HIGH);
+        findings.add(finding);
+
+        /* execute */
+        Set<ScanTypeCount> scanTypeCountSet = builderToTest.prepareScanTypesForModel(findings);
+        Iterator<ScanTypeCount> iterator = scanTypeCountSet.iterator();
+
+        /* execute + test */
+        assertTrue(scanTypeCountSet.size() == 3);
+
+        while (iterator.hasNext()) {
+            ScanTypeCount scanTypeCount = iterator.next();
+            switch (scanTypeCount.getScanType()) {
+            case CODE_SCAN -> assertEquals(1, scanTypeCount.getLowSeverityCount());
+            case INFRA_SCAN -> assertEquals(1, scanTypeCount.getMediumSeverityCount());
+            case SECRET_SCAN -> assertEquals(1, scanTypeCount.getHighSeverityCount());
+            }
+        }
+    }
+
+    @Test
+    void when_findings_list_is_empty_then_filterFindingsForWebScan_must_return_empty_map() {
+        /* prepare */
+        List<SecHubFinding> findings = new ArrayList<>();
+        List<Severity> severities = List.of(Severity.HIGH);
+
+        /* execute */
+        Map<String, List<SecHubFinding>> groupedAndSortedFindingsByName = builderToTest.filterFindingsForWebScan(findings, severities);
+
+        /* test */
+        assertTrue(groupedAndSortedFindingsByName.isEmpty());
+    }
+
+    @Test
+    void when_findings_list_contains_3_WEB_SCAN_HIGH_findings_then_filterFindingsForWebScan_must_return_appropriate_map() {
+        /* prepare */
+        List<SecHubFinding> findings = new ArrayList<>();
+        SecHubFinding finding = new SecHubFinding();
+        finding.setId(0);
+        finding.setType(ScanType.WEB_SCAN);
+        finding.setSeverity(Severity.HIGH);
+        finding.setName("Cross Site Scripting (Reflected)");
+        findings.add(finding);
+        finding = new SecHubFinding();
+        finding.setId(1);
+        finding.setType(ScanType.WEB_SCAN);
+        finding.setSeverity(Severity.HIGH);
+        finding.setName("Cross Site Scripting (Reflected)");
+        findings.add(finding);
+        finding = new SecHubFinding();
+        finding.setId(2);
+        finding.setType(ScanType.WEB_SCAN);
+        finding.setSeverity(Severity.HIGH);
+        finding.setName("Cross Site Scripting (Reflected)");
+        findings.add(finding);
+
+        List<Severity> severities = List.of(Severity.HIGH);
+
+        /* execute */
+        Map<String, List<SecHubFinding>> groupedAndSortedFindingsByName = builderToTest.filterFindingsForWebScan(findings, severities);
+        List<SecHubFinding> findingList = groupedAndSortedFindingsByName.get("Cross Site Scripting (Reflected)");
+
+        /* test */
+        assertEquals(1, groupedAndSortedFindingsByName.size());
+        assertTrue(groupedAndSortedFindingsByName.containsKey("Cross Site Scripting (Reflected)"));
+        assertEquals(3, findingList.size());
+        for (SecHubFinding secHubFinding : findingList) {
+            assertEquals(ScanType.WEB_SCAN, secHubFinding.getType());
+            assertEquals(Severity.HIGH, secHubFinding.getSeverity());
+            assertEquals("Cross Site Scripting (Reflected)", secHubFinding.getName());
+        }
+    }
+
+    @Test
+    void when_findings_list_is_empty_then_filterFindingsForGeneralScan_must_return_empty_list() {
+        /* prepare */
+        List<SecHubFinding> findings = new ArrayList<>();
+        Map<Integer, List<HTMLScanResultCodeScanEntry>> codeScanEntries = new HashMap<>();
+        List<Severity> severities = List.of(Severity.HIGH);
+
+        /* execute */
+        List<HTMLSecHubFinding> htmlSecHubFindingList = builderToTest.filterFindingsForGeneralScan(findings, codeScanEntries, severities);
+
+        /* test */
+        assertTrue(htmlSecHubFindingList.isEmpty());
+    }
+
+    @Test
+    void when_findings_list_contains_1_CODE_SCAN_HIGH_findings_then_filterFindingsForGeneralScan_must_return_appropriate_list() {
+        /* prepare */
+        List<SecHubFinding> findings = new ArrayList<>();
+        SecHubFinding finding = new SecHubFinding();
+        finding.setId(0);
+        finding.setType(ScanType.CODE_SCAN);
+        finding.setSeverity(Severity.HIGH);
+        finding.setName("Deferring unsafe method \"Close\" on type \"*os.File\"");
+        findings.add(finding);
+        finding = new SecHubFinding();
+        finding.setId(1);
+        finding.setType(ScanType.CODE_SCAN);
+        finding.setSeverity(Severity.HIGH);
+        finding.setName("Deferring unsafe method \"Close\" on type \"*os.File\"");
+        findings.add(finding);
+        finding = new SecHubFinding();
+        finding.setId(2);
+        finding.setType(ScanType.CODE_SCAN);
+        finding.setSeverity(Severity.HIGH);
+        finding.setName("Deferring unsafe method \"Close\" on type \"*os.File\"");
+        findings.add(finding);
+
+        Map<Integer, List<HTMLScanResultCodeScanEntry>> codeScanEntries = new HashMap<>();
+        List<HTMLScanResultCodeScanEntry> list = new ArrayList<>();
+        list.add(new HTMLScanResultCodeScanEntry());
+        codeScanEntries.put(0, list);
+        list = new ArrayList<>();
+        list.add(new HTMLScanResultCodeScanEntry());
+        codeScanEntries.put(1, list);
+        list = new ArrayList<>();
+        list.add(new HTMLScanResultCodeScanEntry());
+        codeScanEntries.put(2, list);
+
+        List<Severity> severities = List.of(Severity.HIGH);
+
+        /* execute */
+        List<HTMLSecHubFinding> htmlSecHubFindingList = builderToTest.filterFindingsForGeneralScan(findings, codeScanEntries, severities);
+
+        /* test */
+        assertEquals(1, htmlSecHubFindingList.size());
+        assertEquals("Deferring unsafe method \"Close\" on type \"*os.File\"", htmlSecHubFindingList.get(0).getName());
+        assertEquals(3, htmlSecHubFindingList.get(0).getEntryList().size());
     }
 
 }
