@@ -42,4 +42,4 @@ networks:
     external: true
     name: "sechub"' > "$PATH_TO_DOCKER_COMPOSE_YAML_FILE"
 
-docker compose --file "$PATH_TO_DOCKER_COMPOSE_YAML_FILE" up go-test-bench -d --remove-orphans
+docker compose --file "$PATH_TO_DOCKER_COMPOSE_YAML_FILE" up go-test-bench --detach --build --remove-orphans
