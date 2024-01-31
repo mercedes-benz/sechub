@@ -42,6 +42,11 @@ public class SignupJsonInput implements JSONable<SignupJsonInput> {
         return emailAddress;
     }
 
+    @Deprecated // This method is only for backward compatibility
+    public void setEmailAdress(String emailAddress) {
+        this.setEmailAddress(emailAddress);
+    }
+
     public void setEmailAddress(String emailAddress) {
         this.emailAddress = emailAddress;
     }
