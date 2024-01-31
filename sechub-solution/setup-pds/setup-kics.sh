@@ -13,7 +13,7 @@ check_sechub_server_setup "$0" "$SCRIPT_PARAMETERS"
 # set variables
 # a username needs to be at least 5 characters in length
 # executor_file_name must be named after your executor file in /executors
-user="kicsuser"
+user="kics-user"
 project="test-kics"
 executor_file_name="kics"
 profile="pds-kics"

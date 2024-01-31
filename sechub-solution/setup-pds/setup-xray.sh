@@ -13,7 +13,7 @@ check_sechub_server_setup "$0" "$SCRIPT_PARAMETERS"
 # set variables
 # a username needs to be at least 5 characters in length
 # executor_file_name must be named after your executor file in /executors
-user="xrayuser"
+user="xray-user"
 project="test-xray"
 executor_file_name="xray"
 profile="pds-xray"
