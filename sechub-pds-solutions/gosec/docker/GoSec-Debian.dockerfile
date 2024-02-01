@@ -13,7 +13,7 @@ LABEL org.opencontainers.image.description="A container which combines GoSec wit
 LABEL maintainer="SecHub FOSS Team"
 
 # Build args
-ARG GO="go1.20.4.linux-amd64.tar.gz"
+ARG GO="go1.21.6.linux-amd64.tar.gz"
 ARG GOSEC_VERSION="2.16.0"
 
 # Environment variables in container
