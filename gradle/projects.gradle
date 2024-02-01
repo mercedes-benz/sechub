@@ -113,6 +113,8 @@ projectType = [
                     project(':sechub-pds-solutions'),
 					project(':sechub-solution'),
 					project(':sechub-solutions-shared'),
+                    project(':sechub-wrapper-xray'),
+
             ],
 
             asciiDoctorProjects: [
