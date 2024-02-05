@@ -87,8 +87,11 @@ pds:
 ----
 
 ==== Templates
-When we define YAML templates - e.g. for HELM charts - the template statement shall
-start at the first column without indention.
+When defining YAML templates - e.g. for HELM charts
+
+- a template statement (e.g. `- if` or `- end`) shall start at the first column without indention
+- nested template statements shall be indented (see example below)
+- place inserted values indented like normal YAML. (Use `| trim` if appropriate)
 
 .Example
 [source,yaml]
@@ -99,19 +102,18 @@ start at the first column without indention.
 apiVersion: networking.k8s.io/v1
 kind: NetworkPolicy
 metadata:
-    name: {{ .Chart.Name }}-policy
+  name: {{ .Chart.Name }}-policy
 spec:
-    podSelector:
-        matchLabels:
-            name: {{ .Chart.Name }}
+  podSelector:
+    matchLabels:
+      name: {{ .Chart.Name }}
 
-{{- if .Values.networkPolicy.ingress }}
-    ingress:
-{{ .Values.networkPolicy.ingress | toYaml | indent 4 }}
+  {{- if .Values.networkPolicy.ingress }}
+  ingress:
+    {{ .Values.networkPolicy.ingress | toYaml | indent 4 | trim }}
   {{- end }}
 
 {{- end }}
-
 ----
 
 

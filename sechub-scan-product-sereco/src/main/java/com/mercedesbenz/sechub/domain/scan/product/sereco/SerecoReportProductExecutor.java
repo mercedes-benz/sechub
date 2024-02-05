@@ -4,6 +4,7 @@ package com.mercedesbenz.sechub.domain.scan.product.sereco;
 import static com.mercedesbenz.sechub.sereco.ImportParameter.*;
 
 import java.io.IOException;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -72,6 +73,7 @@ public class SerecoReportProductExecutor implements ProductExecutor {
     }
 
     private ProductResult createReport(SecHubExecutionContext context, ProductExecutorContext executorContext) {
+        LocalDateTime started = LocalDateTime.now();
         if (context == null) {
             throw new IllegalArgumentException("context may not be null!");
         }
@@ -86,12 +88,18 @@ public class SerecoReportProductExecutor implements ProductExecutor {
         ProductIdentifier[] supportedProducts = getSupportedProducts();
         List<ProductResult> foundProductResults = productResultRepository.findAllProductResults(secHubJobUUID, supportedProducts);
 
+        ProductResult result;
         if (foundProductResults.isEmpty()) {
             LOG.warn("{} no product results for {} found, will return an empty sereco JSON as result! ", traceLogId, getSupportedProducts());
-            return new ProductResult(secHubJobUUID, projectId, executorContext.getExecutorConfig(), "{}");
+            result = new ProductResult(secHubJobUUID, projectId, executorContext.getExecutorConfig(), "{}");
+        } else {
+            result = createReport(projectId, secHubJobUUID, context.getConfiguration(), traceLogId, executorContext, foundProductResults);
         }
 
-        return createReport(projectId, secHubJobUUID, context.getConfiguration(), traceLogId, executorContext, foundProductResults);
+        result.setStarted(started);
+        result.setEnded(LocalDateTime.now());
+
+        return result;
     }
 
     private ProductResult createReport(String projectId, UUID secHubJobUUID, SecHubConfiguration sechubConfig, UUIDTraceLogID traceLogId,
@@ -129,7 +137,7 @@ public class SerecoReportProductExecutor implements ProductExecutor {
         LOG.debug("{} found product result for '{}'", traceLogId, productId);
 
         UUID uuid = productResult.getUUID();
-        String docId = uuid.toString();
+        String docId = uuid != null ? uuid.toString() : "<no uuid set>";
         LOG.debug("{} start to import result '{}' from product '{}' , config:{}", traceLogId, docId, productId, productResult.getProductExecutorConfigUUID());
 
         /* @formatter:off */
@@ -146,7 +154,7 @@ public class SerecoReportProductExecutor implements ProductExecutor {
 		/* @formatter:on */
     }
 
-    private ProductIdentifier[] getSupportedProducts() {
+    ProductIdentifier[] getSupportedProducts() {
         return supportedProductIdentifiers;
     }
 

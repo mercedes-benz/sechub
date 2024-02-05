@@ -5,6 +5,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
 
+import java.nio.file.Paths;
 import java.util.Optional;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -54,6 +55,8 @@ class SystemTestRuntimeTestEngineTest {
 
         engineToTest = new SystemTestRuntimeTestEngine(execSupport);
         engineToTest.currentTestVariableCalculatorFactory = currentTestVariableCalculatorFactory;
+
+        when(locationSupport.ensureTestWorkingDirectoryRealPath(any())).thenReturn(Paths.get("./build/tmp/workingdirectory"));
     }
 
     @Test

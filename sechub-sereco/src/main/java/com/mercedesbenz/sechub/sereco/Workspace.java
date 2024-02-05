@@ -78,8 +78,8 @@ public class Workspace {
         for (ProductResultImporter importer : registry.getImporters()) {
             ProductImportAbility ableToImportForProduct = importer.isAbleToImportForProduct(param);
 
-            if (ProductImportAbility.PRODUCT_FAILED.equals(ableToImportForProduct)) {
-                LOG.debug("Importer {} knows product, but recognized as product failure, so no import possible for {}", importer.getName(),
+            if (ProductImportAbility.PRODUCT_FAILED_OR_CANCELED.equals(ableToImportForProduct)) {
+                LOG.debug("Importer {} knows product, but recognized as product failure or cancellation, so no import possible for {}", importer.getName(),
                         param.getImportId());
                 /*
                  * means the importer would be able to import, but it is sure that the product

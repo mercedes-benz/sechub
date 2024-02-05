@@ -13,6 +13,6 @@ else
 fi
 
 # Use date of build, because there are multiple tools contained
-VERSION_TAG+="_`date +%Y%m%d`"
+VERSION_TAG+="_`date +%Y-%m-%d`"
 
 echo $VERSION_TAG

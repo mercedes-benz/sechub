@@ -16,6 +16,7 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.atLeast;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
@@ -471,8 +472,27 @@ class ZapScanContextFactoryTest {
         ZapScanContext result = factoryToTest.create(settings);
 
         /* test */
-        verify(environmentVariableReader, times(1)).readAsString(PDS_JOB_EXTRACTED_SOURCES_FOLDER);
+        verify(environmentVariableReader, atLeast(1)).readAsString(PDS_JOB_EXTRACTED_SOURCES_FOLDER);
         assertEquals(1, result.getApiDefinitionFiles().size());
+    }
+
+    @Test
+    void client_certificate_file_from_sechub_scan_config_is_inside_result() {
+        /* prepare */
+        when(ruleProvider.fetchDeactivatedRuleReferences(any())).thenReturn(new DeactivatedRuleReferences());
+        CommandLineSettings settings = createSettingsMockWithNecessaryPartsWithoutRuleFiles();
+
+        File sechubScanConfigFile = new File("src/test/resources/sechub-config-examples/client-certificate-auth.json");
+        String extractedSourcesPath = "path/to/extracted/sources";
+        when(settings.getSecHubConfigFile()).thenReturn(sechubScanConfigFile);
+        when(environmentVariableReader.readAsString(PDS_JOB_EXTRACTED_SOURCES_FOLDER)).thenReturn(extractedSourcesPath);
+
+        /* execute */
+        ZapScanContext result = factoryToTest.create(settings);
+
+        /* test */
+        verify(environmentVariableReader, atLeast(1)).readAsString(PDS_JOB_EXTRACTED_SOURCES_FOLDER);
+        assertNotNull(result.getClientCertificateFile());
     }
 
     @Test

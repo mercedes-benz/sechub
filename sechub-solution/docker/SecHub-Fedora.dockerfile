@@ -8,7 +8,7 @@
 ARG BASE_IMAGE
 
 # Inject the target architecture
-# For more information: 
+# For more information:
 # - https://docs.docker.com/engine/reference/builder/#automatic-platform-args-in-the-global-scope
 ARG TARGETARCH
 
@@ -20,7 +20,7 @@ ARG TAG=""
 ARG BRANCH=""
 
 # possible values: temurin, openj9, openjdk
-ARG JAVA_DISTRIBUTION="openjdk"
+ARG JAVA_DISTRIBUTION="temurin"
 # possible values: 17
 ARG JAVA_VERSION="17"
 

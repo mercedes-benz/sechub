@@ -332,7 +332,7 @@ class SarifV1JSONImporterTest {
         ProductImportAbility importAbility = importerToTest.isAbleToImportForProduct(emptyJSONImportParam);
 
         /* test */
-        assertEquals(ProductImportAbility.PRODUCT_FAILED, importAbility, "Not the expected ability!");
+        assertEquals(ProductImportAbility.PRODUCT_FAILED_OR_CANCELED, importAbility, "Not the expected ability!");
     }
 
     @Test

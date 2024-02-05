@@ -15,8 +15,6 @@ func uploadSourceZipFile(context *Context) {
 	}
 
 	extraParams := map[string]string{
-		"title":    "Sourcecode zipped",
-		"author":   "Sechub client " + Version(),
 		"checkSum": context.sourceZipFileChecksum,
 	}
 
@@ -33,8 +31,6 @@ func uploadBinariesTarFile(context *Context) {
 	}
 
 	extraParams := map[string]string{
-		"title":    "Binaries for scan",
-		"author":   "Sechub client " + Version(),
 		"checkSum": context.binariesTarFileChecksum,
 	}
 

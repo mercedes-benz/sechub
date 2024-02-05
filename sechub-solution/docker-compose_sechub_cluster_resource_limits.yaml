@@ -5,7 +5,7 @@ services:
   sechub:
     build:
       args:
-        - BASE_IMAGE=debian:testing-slim
+        - BASE_IMAGE=debian:12-slim
         - BUILD_TYPE=${BUILD_TYPE}
         - JAVA_DISTRIBUTION=${JAVA_DISTRIBUTION}
         - JAVA_VERSION=${JAVA_VERSION}

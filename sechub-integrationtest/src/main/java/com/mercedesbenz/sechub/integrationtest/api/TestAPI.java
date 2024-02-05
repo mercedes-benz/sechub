@@ -35,6 +35,7 @@ import com.fasterxml.jackson.databind.MappingIterator;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectReader;
 import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.mercedesbenz.sechub.commons.TextFileWriter;
 import com.mercedesbenz.sechub.commons.mapping.MappingData;
 import com.mercedesbenz.sechub.commons.mapping.MappingEntry;
 import com.mercedesbenz.sechub.commons.model.JSONConverter;
@@ -96,6 +97,10 @@ public class TestAPI {
     public static final TestUser PDS_ADMIN = new FixedTestUser("pds-inttest-admin", "pds-inttest-apitoken", "pds_admin@" + ExampleConstants.URI_TARGET_SERVER);
 
     private static final long MAXIMUM_WAIT_FOR_RUNNING_JOBS = 300 * 1000;// 300 seconds = 5 minutes max;
+
+    private static File testReportStorageFolder = new File("./build/sechub-test-reports");
+
+    private static TextFileWriter writer = new TextFileWriter();
 
     public static final AsUser as(TestUser user) {
         return new AsUser(user);
@@ -1532,5 +1537,19 @@ public class TestAPI {
         String json = getSuperAdminRestHelper().getJSON(url);
 
         return JSONConverter.get().fromJSONtoListOf(TestJobRunStatisticData.class, json);
+    }
+
+    /**
+     * Stores given report data inside "build/sechub-test-reports"
+     *
+     * @param fileName   the report file name to use for storage
+     * @param reportData the report data to store
+     */
+    public static void storeTestReport(String fileName, String reportData) {
+        try {
+            writer.save(new File(testReportStorageFolder, fileName), reportData, true);
+        } catch (Exception e) {
+            LOG.error("Was not able to store sechub test report: {}", fileName, e);
+        }
     }
 }

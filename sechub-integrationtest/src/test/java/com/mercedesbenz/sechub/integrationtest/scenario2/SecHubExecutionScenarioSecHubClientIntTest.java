@@ -187,9 +187,14 @@ public class SecHubExecutionScenarioSecHubClientIntTest {
         as(user).
             withSecHubClient().
             startDownloadJobReport(project, jobUUID, location).
-            hasTrafficLight(TrafficLight.GREEN)
+            hasTrafficLight(TrafficLight.GREEN);
 
-            ;
+        /* store webscan reports as example */
+        String jsonReport = as(user).getJobReport(project, jobUUID);
+        storeTestReport("report_webscan-1-green.json", jsonReport);
+
+        String htmlReport = as(user).getHTMLJobReport(project, jobUUID);
+        storeTestReport("report_webscan-1-green.html", htmlReport);
         /* @formatter:on */
     }
 
@@ -491,24 +496,32 @@ public class SecHubExecutionScenarioSecHubClientIntTest {
     public void sechub_client_is_able_to_handle_synchronous_and_result_has_trafficlight_yellow_stop_on_yellow_active_so_exit_code1() {
 
         /* prepare */
-        as(SUPER_ADMIN).assignUserToProject(USER_1, PROJECT_1);
+        TestProject project = PROJECT_1;
+
+        as(SUPER_ADMIN).assignUserToProject(USER_1, project);
 
         /* @formatter:off */
 		assertUser(USER_1).
 			doesExist().
-			isAssignedToProject(PROJECT_1);
+			isAssignedToProject(project);
 
 		/* execute */
 		ExecutionResult result = as(USER_1).
 				withSecHubClient().
 				enableStopOnYellow().
-				startSynchronScanFor(PROJECT_1, CLIENT_JSON_SOURCESCAN_YELLOW_ZERO_WAIT);
+				startSynchronScanFor(project, CLIENT_JSON_SOURCESCAN_YELLOW_ZERO_WAIT);
 
 		/* test */
 		assertResult(result).
 			isYellow().
 			hasExitCode(1);
 
+		/* store webscan reports as example */
+        String jsonReport = as(USER_1).getJobReport(project, result.getSechubJobUUID());
+        storeTestReport("report_webscan-2-yellow.json", jsonReport);
+
+        String htmlReport = as(USER_1).getHTMLJobReport(project, result.getSechubJobUUID());
+        storeTestReport("report_webscan-2-yellow.html", htmlReport);
 		/* @formatter:on */
 
     }
@@ -518,23 +531,32 @@ public class SecHubExecutionScenarioSecHubClientIntTest {
 
         /* @formatter:off */
 		/* prepare */
-		as(SUPER_ADMIN).
-			assignUserToProject(USER_1, PROJECT_1);
+		TestProject project = PROJECT_1;
+
+        as(SUPER_ADMIN).
+			assignUserToProject(USER_1, project);
 
 		assertUser(USER_1).
 			doesExist().
-			isAssignedToProject(PROJECT_1);
+			isAssignedToProject(project);
 
 		/* execute */
 		ExecutionResult result = as(USER_1).
 				withSecHubClient().
-				startSynchronScanFor(PROJECT_1, CLIENT_JSON_WEBSCAN_RED_ZERO_WAIT);
+				startSynchronScanFor(project, CLIENT_JSON_WEBSCAN_RED_ZERO_WAIT);
 
 		/* test */
 		assertResult(result).
 			isRed().
 			hasExitCode(1);
 
+
+		 /* store webscan reports as example */
+        String jsonReport = as(USER_1).getJobReport(project, result.getSechubJobUUID());
+        storeTestReport("report_webscan-3-red.json", jsonReport);
+
+        String htmlReport = as(USER_1).getHTMLJobReport(project, result.getSechubJobUUID());
+        storeTestReport("report_webscan-3-red.html", htmlReport);
 		/* @formatter:on */
 
     }

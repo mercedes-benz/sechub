@@ -1,5 +1,5 @@
 # Base Image
-BASE_IMAGE=debian:testing-slim
+BASE_IMAGE=debian:12-slim
 
 # Resource limits
 MEMORY_LIMIT=300M

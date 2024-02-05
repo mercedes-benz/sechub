@@ -79,7 +79,7 @@ func prepareOptionsFromCommandline(config *Config) {
 	flag.StringVar(&config.configFilePath,
 		configfileOption, config.configFilePath, "Path to SecHub config file")
 	flag.StringVar(&config.file,
-		fileOption, "", "Defines file to read from for actions '"+markFalsePositivesAction+"' or '"+interactiveMarkFalsePositivesAction+"' or '"+unmarkFalsePositivesAction+"'")
+		fileOption, "", "Defines file to read from for actions '"+defineFalsePositivesAction+"', '"+markFalsePositivesAction+"', '"+interactiveMarkFalsePositivesAction+"', '"+unmarkFalsePositivesAction+"'")
 	flag.StringVar(&config.secHubJobUUID,
 		jobUUIDOption, "", "SecHub job uuid - Optional for actions '"+getStatusAction+"' or '"+getReportAction+"'")
 	flag.Func(labelOption, "Define a `SecHub label` for the scan job. (Example: \"key1=value1\") Repeat to define multiple labels.", func(s string) error {
@@ -225,6 +225,7 @@ func assertValidConfig(context *Context) {
 		getReportAction:                       {"server", "user", "apiToken", "projectID", "secHubJobUUID"},
 		getFalsePositivesAction:               {"server", "user", "apiToken", "projectID"},
 		listJobsAction:                        {"server", "user", "apiToken", "projectID"},
+		defineFalsePositivesAction:            {"server", "user", "apiToken", "projectID"},
 		markFalsePositivesAction:              {"server", "user", "apiToken", "projectID", "file"},
 		unmarkFalsePositivesAction:            {"server", "user", "apiToken", "projectID", "file"},
 		interactiveMarkFalsePositivesAction:   {"server", "user", "apiToken", "projectID"},
@@ -255,6 +256,10 @@ func assertValidConfig(context *Context) {
 		showHelpHint()
 		os.Exit(ExitCodeMissingParameter)
 	}
+
+	// For convenience: lowercase user id and project id if needed
+	context.config.user = lowercaseOrNotice(context.config.user, "user id")
+	context.config.projectID = lowercaseOrNotice(context.config.projectID, "project id")
 
 	// Check mandatory fields for the requested action
 	errorsFound := false
@@ -305,10 +310,6 @@ func assertValidConfig(context *Context) {
 		os.Exit(ExitCodeMissingParameter)
 	}
 
-	// For convenience: lowercase user id and project id if needed
-	context.config.user = lowercaseOrNotice(context.config.user, "user id")
-	context.config.projectID = lowercaseOrNotice(context.config.projectID, "project id")
-
 	// Remove trailing slash from url if present
 	context.config.server = strings.TrimSuffix(context.config.server, "/")
 
@@ -342,9 +343,33 @@ func validateRequestedReportFormat(config *Config) bool {
 	return true
 }
 
-// normalizeCMDLineArgs - Make sure that the `action` is last in the argument list. Otherwise flag.Parse() will not work properly.
+func actionSpellCorrection(action string) string {
+	actionLowercase := strings.ToLower(action)
+	for _, clientAction := range actionlist {
+		if strings.ToLower(clientAction) == actionLowercase {
+			return clientAction
+		}
+	}
+	return action
+}
+
+// flagSpellCorrection - returns arg in correct case (if a cmdline option/flag matches)
+func flagSpellCorrection(arg string) string {
+	argLowercase := strings.ToLower(arg)
+	for _, flag := range flaglist {
+		if strings.ToLower(flag) == argLowercase {
+			return flag
+		}
+	}
+	return arg
+}
+
+// normalizeCMDLineArgs
+// - Make sure that the `action` is last in the argument list. Otherwise flag.Parse() will not work properly.
+// - Do a "spell correction" if the upper/lowercase spelling is not correct (action and args)
 func normalizeCMDLineArgs(args []string) []string {
-	if len(args) == 1 {
+	numberOfArgs := len(args)
+	if numberOfArgs == 1 {
 		return args
 	}
 
@@ -372,6 +397,20 @@ func normalizeCMDLineArgs(args []string) []string {
 		}
 		result = append(result, action)
 	}
+
+	// Spell correction (upper/lowercase)
+	for i, arg := range result[1:] {
+		index := i + 1
+		argname, found := strings.CutPrefix(arg, "-")
+		if found {
+			result[index] = "-" + flagSpellCorrection(argname)
+		}
+		// Last argument is the Client action
+		if index == (numberOfArgs - 1) {
+			result[index] = actionSpellCorrection(arg)
+		}
+	}
+
 	return result
 }
 

@@ -133,7 +133,7 @@ public class ImportSupport {
             return ProductImportAbility.NOT_ABLE_TO_IMPORT;
         }
         if (isEmpty(parameter.getImportData())) {
-            return ProductImportAbility.PRODUCT_FAILED;
+            return ProductImportAbility.PRODUCT_FAILED_OR_CANCELED;
         }
         if (!isContentIdentified(parameter.getImportData())) {
             return ProductImportAbility.NOT_ABLE_TO_IMPORT;

@@ -46,6 +46,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.util.StringUtils;
 
 import com.mercedesbenz.sechub.commons.core.CommonConstants;
+import com.mercedesbenz.sechub.commons.model.ClientCertificateConfiguration;
 import com.mercedesbenz.sechub.commons.model.HTTPHeaderConfiguration;
 import com.mercedesbenz.sechub.commons.model.SecHubCodeScanConfiguration;
 import com.mercedesbenz.sechub.commons.model.SecHubConfigurationMetaData;
@@ -55,6 +56,8 @@ import com.mercedesbenz.sechub.commons.model.SecHubFileSystemConfiguration;
 import com.mercedesbenz.sechub.commons.model.SecHubInfrastructureScanConfiguration;
 import com.mercedesbenz.sechub.commons.model.SecHubSourceDataConfiguration;
 import com.mercedesbenz.sechub.commons.model.SecHubTimeUnit;
+import com.mercedesbenz.sechub.commons.model.SecHubWebScanApiConfiguration;
+import com.mercedesbenz.sechub.commons.model.SecHubWebScanApiType;
 import com.mercedesbenz.sechub.commons.model.SecHubWebScanConfiguration;
 import com.mercedesbenz.sechub.commons.model.TrafficLight;
 import com.mercedesbenz.sechub.commons.model.WebScanDurationConfiguration;
@@ -105,7 +108,20 @@ import com.mercedesbenz.sechub.test.TestPortProvider;
 public class SchedulerRestControllerRestDocTest implements TestIsNecessaryForDocumentation {
 
     private static final String PROJECT1_ID = "project1";
+
+    private static final String VARIANT_CODE_SCAN = "Code Scan";
     private static final String VARIANT_CODES_SCAN_WITH_FULL_DATA_SECTION = "Code Scan using data section";
+
+    private static final String VARIANT_WEB_SCAN_HEADERS = "Web Scan headers";
+    private static final String VARIANT_WEB_SCAN_LOGIN_FORM_SCRIPTED = "Web Scan login form scripted";
+    private static final String VARIANT_WEB_SCAN_LOGIN_BASIC = "Web Scan login basic";
+    private static final String VARIANT_WEB_SCAN_WITH_CLIENT_CERTIFICATE_DEFINITION = "Web scan with client certificate definition";
+    private static final String VARIANT_WEB_SCAN_WITH_API_DEFINITION = "Web scan with api definition";
+    private static final String VARIANT_WEB_SCAN_ANONYMOUS = "Web scan anonymous";
+
+    private static final String VARIANT_INFRASTRUCTURE_SCAN = "Infrastructure scan";
+    private static final String VARIANT_SECRET_SCAN = "Secret scan";
+    private static final String VARIANT_LICENSE_SCAN = "License scan";
 
     private static final int PORT_USED = TestPortProvider.DEFAULT_INSTANCE.getRestDocTestPort();
 
@@ -148,7 +164,7 @@ public class SchedulerRestControllerRestDocTest implements TestIsNecessaryForDoc
     private UUID randomUUID;
 
     @Test
-    @UseCaseRestDoc(useCase = UseCaseUserCreatesNewJob.class, variant = "Code Scan")
+    @UseCaseRestDoc(useCase = UseCaseUserCreatesNewJob.class, variant = VARIANT_CODE_SCAN)
     public void restDoc_userCreatesNewJob_codescan() throws Exception {
         /* prepare */
         String apiEndpoint = https(PORT_USED).buildAddJobUrl(PROJECT_ID.pathElement());
@@ -175,7 +191,7 @@ public class SchedulerRestControllerRestDocTest implements TestIsNecessaryForDoc
 	    			andDo(print()).
 	    			andDo(defineRestService().
 	    	                with().
-	    	                    useCaseData(useCase, "Code Scan").
+	    	                    useCaseData(useCase, VARIANT_CODE_SCAN).
 	    	                    tag(RestDocFactory.extractTag(apiEndpoint)).
 	    	                    requestSchema(OpenApiSchema.SCAN_JOB.getSchema()).
 	    	                    responseSchema(OpenApiSchema.JOB_ID.getSchema()).
@@ -282,7 +298,143 @@ public class SchedulerRestControllerRestDocTest implements TestIsNecessaryForDoc
     }
 
     @Test
-    @UseCaseRestDoc(useCase = UseCaseUserCreatesNewJob.class, variant = "Infrastructure scan")
+    @UseCaseRestDoc(useCase = UseCaseUserCreatesNewJob.class, variant = VARIANT_SECRET_SCAN)
+    public void restDoc_userCreatesNewJob_secretscan_with_data_section() throws Exception {
+        /* prepare */
+        String apiEndpoint = https(PORT_USED).buildAddJobUrl(PROJECT_ID.pathElement());
+        Class<? extends Annotation> useCase = UseCaseUserCreatesNewJob.class;
+
+        UUID randomUUID = UUID.randomUUID();
+        SchedulerResult mockResult = new SchedulerResult(randomUUID);
+
+        when(mockedScheduleCreateJobService.createJob(any(), any(SecHubConfiguration.class))).thenReturn(mockResult);
+
+        /* execute + test @formatter:off */
+        this.mockMvc.perform(
+                post(apiEndpoint,PROJECT1_ID).
+                    contentType(MediaType.APPLICATION_JSON_VALUE).
+                    content(configureSecHub().
+                            api("1.0").
+                            secretScanConfig().
+                                useDataReferences("source-ref-name","bin-ref-name").
+                            and().
+                            data().
+                                withSource().
+                                    uniqueName("source-ref-name").
+                                end().
+                                withBinary().
+                                    uniqueName("bin-ref-name").
+                                end().
+                            and().
+                            build().
+                            toJSON())
+                ).
+                    andExpect(status().isOk()).
+                    andExpect(content().json("{jobId:"+randomUUID.toString()+"}")).
+                    andDo(print()).
+                    andDo(defineRestService().
+                            with().
+                                useCaseData(useCase, VARIANT_SECRET_SCAN).
+                                tag(RestDocFactory.extractTag(apiEndpoint)).
+                                requestSchema(OpenApiSchema.SCAN_JOB.getSchema()).
+                                responseSchema(OpenApiSchema.JOB_ID.getSchema()).
+                            and().
+                            document(
+                                                requestHeaders(
+
+                                                ),
+                                                pathParameters(
+                                                        parameterWithName(PROJECT_ID.paramName()).description("The unique id of the project id where a new sechub job shall be created")
+                                                ),
+                                                requestFields(
+                                                        fieldWithPath(PROPERTY_API_VERSION).description("The api version, currently only 1.0 is supported"),
+                                                        fieldWithPath(PROPERTY_SECRET_SCAN).description("Secret scan configuration block").optional(),
+                                                        fieldWithPath(PROPERTY_SECRET_SCAN+"."+SecHubDataConfigurationUsageByName.PROPERTY_USE).description("Referenced data configuration objects by their unique names").optional(),
+
+                                                        fieldWithPath(PROPERTY_DATA+"."+SecHubDataConfiguration.PROPERTY_SOURCES +"[]."+SecHubSourceDataConfiguration.PROPERTY_UNIQUENAME_AS_NAME).description("Unique reference name").optional(),
+
+                                                        fieldWithPath(PROPERTY_DATA+"."+SecHubDataConfiguration.PROPERTY_BINARIES+"[]."+SecHubSourceDataConfiguration.PROPERTY_UNIQUENAME_AS_NAME).description("Unique reference name").optional()
+
+
+                                                ),
+                                                responseFields(
+                                                        fieldWithPath(SchedulerResult.PROPERTY_JOBID).description("A unique job id")
+                                                )
+                            ));
+
+        /* @formatter:on */
+    }
+
+    @Test
+    @UseCaseRestDoc(useCase = UseCaseUserCreatesNewJob.class, variant = VARIANT_LICENSE_SCAN)
+    public void restDoc_userCreatesNewJob_licensescan_with_data_section() throws Exception {
+        /* prepare */
+        String apiEndpoint = https(PORT_USED).buildAddJobUrl(PROJECT_ID.pathElement());
+        Class<? extends Annotation> useCase = UseCaseUserCreatesNewJob.class;
+
+        UUID randomUUID = UUID.randomUUID();
+        SchedulerResult mockResult = new SchedulerResult(randomUUID);
+
+        when(mockedScheduleCreateJobService.createJob(any(), any(SecHubConfiguration.class))).thenReturn(mockResult);
+
+        /* execute + test @formatter:off */
+        this.mockMvc.perform(
+                post(apiEndpoint,PROJECT1_ID).
+                contentType(MediaType.APPLICATION_JSON_VALUE).
+                content(configureSecHub().
+                        api("1.0").
+                        licenseScanConfig().
+                            useDataReferences("source-ref-name","bin-ref-name").
+                        and().
+                            data().
+                                withSource().
+                                    uniqueName("source-ref-name").
+                                end().
+                                withBinary().
+                                    uniqueName("bin-ref-name").
+                                end().
+                            and().
+                        build().
+                        toJSON())
+                ).
+        andExpect(status().isOk()).
+        andExpect(content().json("{jobId:"+randomUUID.toString()+"}")).
+        andDo(print()).
+        andDo(defineRestService().
+                with().
+                useCaseData(useCase, VARIANT_LICENSE_SCAN).
+                tag(RestDocFactory.extractTag(apiEndpoint)).
+                requestSchema(OpenApiSchema.SCAN_JOB.getSchema()).
+                responseSchema(OpenApiSchema.JOB_ID.getSchema()).
+                and().
+                document(
+                        requestHeaders(
+
+                                ),
+                        pathParameters(
+                                parameterWithName(PROJECT_ID.paramName()).description("The unique id of the project id where a new sechub job shall be created")
+                                ),
+                        requestFields(
+                                fieldWithPath(PROPERTY_API_VERSION).description("The api version, currently only 1.0 is supported"),
+                                fieldWithPath(PROPERTY_LICENSE_SCAN).description("License scan configuration block").optional(),
+                                fieldWithPath(PROPERTY_LICENSE_SCAN+"."+SecHubDataConfigurationUsageByName.PROPERTY_USE).description("Referenced data configuration objects by their unique names").optional(),
+
+                                fieldWithPath(PROPERTY_DATA+"."+SecHubDataConfiguration.PROPERTY_SOURCES +"[]."+SecHubSourceDataConfiguration.PROPERTY_UNIQUENAME_AS_NAME).description("Unique reference name").optional(),
+
+                                fieldWithPath(PROPERTY_DATA+"."+SecHubDataConfiguration.PROPERTY_BINARIES+"[]."+SecHubSourceDataConfiguration.PROPERTY_UNIQUENAME_AS_NAME).description("Unique reference name").optional()
+
+
+                                ),
+                        responseFields(
+                                fieldWithPath(SchedulerResult.PROPERTY_JOBID).description("A unique job id")
+                                )
+                        ));
+
+        /* @formatter:on */
+    }
+
+    @Test
+    @UseCaseRestDoc(useCase = UseCaseUserCreatesNewJob.class, variant = VARIANT_INFRASTRUCTURE_SCAN)
     public void restDoc_userCreatesNewJob_infrascan() throws Exception {
         /* prepare */
         String apiEndpoint = https(PORT_USED).buildAddJobUrl(PROJECT_ID.pathElement());
@@ -309,7 +461,7 @@ public class SchedulerRestControllerRestDocTest implements TestIsNecessaryForDoc
 	    			andExpect(content().json("{jobId:"+randomUUID.toString()+"}")).
 	    			andDo(defineRestService().
 	    	                with().
-	    	                    useCaseData(useCase, "Infrastructure scan").
+	    	                    useCaseData(useCase, VARIANT_INFRASTRUCTURE_SCAN).
 	    	                    tag(RestDocFactory.extractTag(apiEndpoint)).
 	    	                    requestSchema(OpenApiSchema.SCAN_JOB.getSchema()).
 	    	                    responseSchema(OpenApiSchema.JOB_ID.getSchema()).
@@ -338,7 +490,7 @@ public class SchedulerRestControllerRestDocTest implements TestIsNecessaryForDoc
     }
 
     @Test
-    @UseCaseRestDoc(useCase = UseCaseUserCreatesNewJob.class, variant = "Web scan anonymous")
+    @UseCaseRestDoc(useCase = UseCaseUserCreatesNewJob.class, variant = VARIANT_WEB_SCAN_ANONYMOUS)
     public void restDoc_userCreatesNewJob_webscan_anonymous() throws Exception {
         /* prepare */
         String apiEndpoint = https(PORT_USED).buildAddJobUrl(PROJECT_ID.pathElement());
@@ -405,7 +557,125 @@ public class SchedulerRestControllerRestDocTest implements TestIsNecessaryForDoc
     }
 
     @Test
-    @UseCaseRestDoc(useCase = UseCaseUserCreatesNewJob.class, variant = "Web Scan login basic")
+    @UseCaseRestDoc(useCase = UseCaseUserCreatesNewJob.class, variant = VARIANT_WEB_SCAN_WITH_API_DEFINITION)
+    public void restDoc_userCreatesNewJob_webscan_with_api_definition() throws Exception {
+        /* prepare */
+        String apiEndpoint = https(PORT_USED).buildAddJobUrl(PROJECT_ID.pathElement());
+        Class<? extends Annotation> useCase = UseCaseUserCreatesNewJob.class;
+
+        UUID randomUUID = UUID.randomUUID();
+        SchedulerResult mockResult = new SchedulerResult(randomUUID);
+
+        SecHubWebScanApiConfiguration apiConfig = new SecHubWebScanApiConfiguration();
+        apiConfig.setType(SecHubWebScanApiType.OPEN_API);
+        apiConfig.getNamesOfUsedDataConfigurationObjects().add("openApi-file-reference");
+
+        when(mockedScheduleCreateJobService.createJob(any(), any(SecHubConfiguration.class))).thenReturn(mockResult);
+
+        /* execute + test @formatter:off */
+        this.mockMvc.perform(
+                post(apiEndpoint,PROJECT1_ID).
+                    contentType(MediaType.APPLICATION_JSON_VALUE).
+                    content(configureSecHub().
+                            api("1.0").
+                            webConfig().
+                                addURI("https://localhost/mywebapp/login").
+                                addApiConfig(apiConfig).
+                            build().
+                            toJSON())
+                ).
+                    andExpect(status().isOk()).
+                    andExpect(content().json("{jobId:"+randomUUID.toString()+"}")).
+                    andDo(defineRestService().
+                            with().
+                                useCaseData(useCase, VARIANT_WEB_SCAN_WITH_API_DEFINITION).
+                                tag(RestDocFactory.extractTag(apiEndpoint)).
+                                requestSchema(OpenApiSchema.SCAN_JOB.getSchema()).
+                                responseSchema(OpenApiSchema.JOB_ID.getSchema()).
+                            and().
+                            document(
+                                        requestHeaders(
+
+                                        ),
+                                        pathParameters(
+                                                parameterWithName(PROJECT_ID.paramName()).description("The unique id of the project id where a new sechub job shall be created")
+                                        ),
+                                        requestFields(
+                                                fieldWithPath(PROPERTY_API_VERSION).description("The api version, currently only 1.0 is supported"),
+                                                fieldWithPath(PROPERTY_WEB_SCAN).description("Webscan configuration block").optional(),
+                                                fieldWithPath(PROPERTY_WEB_SCAN+"."+SecHubWebScanConfiguration.PROPERTY_URL).description("Webscan URI to scan for").optional(),
+                                                fieldWithPath(PROPERTY_WEB_SCAN+"."+SecHubWebScanConfiguration.PROPERTY_API+"."+SecHubWebScanApiConfiguration.PROPERTY_TYPE).description("Type of the API definition files that will be provided").optional(),
+                                                fieldWithPath(PROPERTY_WEB_SCAN+"."+SecHubWebScanConfiguration.PROPERTY_API+"."+SecHubDataConfigurationUsageByName.PROPERTY_USE).description("Reference to the data section containing the API definition files. Always use 'sources' with 'files' instead 'folders'.").optional()
+                                        ),
+                                        responseFields(
+                                                fieldWithPath(SchedulerResult.PROPERTY_JOBID).description("A unique job id")
+                                        )
+                          ));
+
+        /* @formatter:on */
+    }
+
+    @Test
+    @UseCaseRestDoc(useCase = UseCaseUserCreatesNewJob.class, variant = VARIANT_WEB_SCAN_WITH_CLIENT_CERTIFICATE_DEFINITION)
+    public void restDoc_userCreatesNewJob_webscan_with_client_certificate_definition() throws Exception {
+        /* prepare */
+        String apiEndpoint = https(PORT_USED).buildAddJobUrl(PROJECT_ID.pathElement());
+        Class<? extends Annotation> useCase = UseCaseUserCreatesNewJob.class;
+
+        UUID randomUUID = UUID.randomUUID();
+        SchedulerResult mockResult = new SchedulerResult(randomUUID);
+
+        ClientCertificateConfiguration clientCertificateConfig = new ClientCertificateConfiguration();
+        clientCertificateConfig.setPassword("example-cert-password".toCharArray());
+        clientCertificateConfig.getNamesOfUsedDataConfigurationObjects().add("client-certificate-file-reference");
+
+        when(mockedScheduleCreateJobService.createJob(any(), any(SecHubConfiguration.class))).thenReturn(mockResult);
+
+        /* execute + test @formatter:off */
+        this.mockMvc.perform(
+                post(apiEndpoint,PROJECT1_ID).
+                    contentType(MediaType.APPLICATION_JSON_VALUE).
+                    content(configureSecHub().
+                            api("1.0").
+                            webConfig().
+                                addURI("https://localhost/mywebapp").
+                                addClientCertificateConfig(clientCertificateConfig).
+                            build().
+                            toJSON())
+                ).
+                    andExpect(status().isOk()).
+                    andExpect(content().json("{jobId:"+randomUUID.toString()+"}")).
+                    andDo(defineRestService().
+                            with().
+                                useCaseData(useCase, VARIANT_WEB_SCAN_WITH_CLIENT_CERTIFICATE_DEFINITION).
+                                tag(RestDocFactory.extractTag(apiEndpoint)).
+                                requestSchema(OpenApiSchema.SCAN_JOB.getSchema()).
+                                responseSchema(OpenApiSchema.JOB_ID.getSchema()).
+                            and().
+                            document(
+                                        requestHeaders(
+
+                                        ),
+                                        pathParameters(
+                                                parameterWithName(PROJECT_ID.paramName()).description("The unique id of the project id where a new sechub job shall be created")
+                                        ),
+                                        requestFields(
+                                                fieldWithPath(PROPERTY_API_VERSION).description("The api version, currently only 1.0 is supported"),
+                                                fieldWithPath(PROPERTY_WEB_SCAN).description("Webscan configuration block").optional(),
+                                                fieldWithPath(PROPERTY_WEB_SCAN+"."+SecHubWebScanConfiguration.PROPERTY_URL).description("Webscan URI to scan for").optional(),
+                                                fieldWithPath(PROPERTY_WEB_SCAN+"."+SecHubWebScanConfiguration.PROPERTY_CLIENT_CERTIFICATE+"."+ClientCertificateConfiguration.PROPERTY_PASSWORD).description("Password the client certificate file is protected with").optional(),
+                                                fieldWithPath(PROPERTY_WEB_SCAN+"."+SecHubWebScanConfiguration.PROPERTY_CLIENT_CERTIFICATE+"."+SecHubDataConfigurationUsageByName.PROPERTY_USE).description("Reference to the data section containing the client certificate definition file. Always use 'sources' with a single 'file' instead 'folders'.").optional()
+                                        ),
+                                        responseFields(
+                                                fieldWithPath(SchedulerResult.PROPERTY_JOBID).description("A unique job id")
+                                        )
+                          ));
+
+        /* @formatter:on */
+    }
+
+    @Test
+    @UseCaseRestDoc(useCase = UseCaseUserCreatesNewJob.class, variant = VARIANT_WEB_SCAN_LOGIN_BASIC)
     public void restDoc_userCreatesNewJob_webscan_login_basic() throws Exception {
         /* prepare */
         String apiEndpoint = https(PORT_USED).buildAddJobUrl(PROJECT_ID.pathElement());
@@ -432,7 +702,7 @@ public class SchedulerRestControllerRestDocTest implements TestIsNecessaryForDoc
 	    			andExpect(content().json("{jobId:"+randomUUID.toString()+"}")).
 	    			andDo(defineRestService().
                             with().
-                                useCaseData(useCase, "Web Scan login basic").
+                                useCaseData(useCase, VARIANT_WEB_SCAN_LOGIN_BASIC).
                                 tag(RestDocFactory.extractTag(apiEndpoint)).
                                 requestSchema(OpenApiSchema.SCAN_JOB.getSchema()).
                                 responseSchema(OpenApiSchema.JOB_ID.getSchema()).
@@ -464,7 +734,7 @@ public class SchedulerRestControllerRestDocTest implements TestIsNecessaryForDoc
     }
 
     @Test
-    @UseCaseRestDoc(useCase = UseCaseUserCreatesNewJob.class, variant = "Web Scan login form scripted")
+    @UseCaseRestDoc(useCase = UseCaseUserCreatesNewJob.class, variant = VARIANT_WEB_SCAN_LOGIN_FORM_SCRIPTED)
     public void restDoc_userCreatesNewJob_webScan_login_form_script() throws Exception {
         /* prepare */
         String apiEndpoint = https(PORT_USED).buildAddJobUrl(PROJECT_ID.pathElement());
@@ -523,7 +793,7 @@ public class SchedulerRestControllerRestDocTest implements TestIsNecessaryForDoc
 	    		andExpect(content().json("{jobId:"+randomUUID.toString()+"}")).
 	    		andDo(defineRestService().
                         with().
-                            useCaseData(useCase, "Web Scan login form scripted").
+                            useCaseData(useCase, VARIANT_WEB_SCAN_LOGIN_FORM_SCRIPTED).
                             tag(RestDocFactory.extractTag(apiEndpoint)).
                             requestSchema(OpenApiSchema.SCAN_JOB.getSchema()).
                             responseSchema(OpenApiSchema.JOB_ID.getSchema()).
@@ -557,7 +827,7 @@ public class SchedulerRestControllerRestDocTest implements TestIsNecessaryForDoc
     }
 
     @Test
-    @UseCaseRestDoc(useCase = UseCaseUserCreatesNewJob.class, variant = "Web Scan headers")
+    @UseCaseRestDoc(useCase = UseCaseUserCreatesNewJob.class, variant = VARIANT_WEB_SCAN_HEADERS)
     public void restDoc_userCreatesNewJob_webscan_with_headers() throws Exception {
         /* prepare */
         String apiEndpoint = https(PORT_USED).buildAddJobUrl(PROJECT_ID.pathElement());
@@ -594,7 +864,7 @@ public class SchedulerRestControllerRestDocTest implements TestIsNecessaryForDoc
 	    			andExpect(content().json("{jobId:"+randomUUID.toString()+"}")).
 	    			andDo(defineRestService().
                             with().
-                                useCaseData(useCase, "Web Scan headers").
+                                useCaseData(useCase, VARIANT_WEB_SCAN_HEADERS).
                                 tag(RestDocFactory.extractTag(apiEndpoint)).
                                 requestSchema(OpenApiSchema.SCAN_JOB.getSchema()).
                                 responseSchema(OpenApiSchema.JOB_ID.getSchema()).

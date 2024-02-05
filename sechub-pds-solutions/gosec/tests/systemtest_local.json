@@ -50,6 +50,28 @@
     }
   },
   "tests" : [ {
+    "name" : "sanity-check",
+    "comment" : "This checks if the solution works at all. It is very fast. Can be used to test if system testframework has some problems at all.",
+    "prepare" : [ {
+      "script" : {
+        "arguments" : [ "${runtime.currentTestFolder}" ],
+        "path" : "./copy_sanitycheck_files.sh"
+      }
+    } ],
+    "execute" : {
+      "runSecHubJob" : {
+        "uploads" : [ {
+          "sourceFolder" : "sanity-check"
+        } ],
+        "codeScan" : { }
+      }
+    },
+     "assert" : [ {
+      "sechubResult" : {
+        "hasTrafficLight" : "GREEN"
+      }
+    } ]
+  }, {
     "name" : "vulnerable-go",
     "prepare" : [ {
       "script" : {

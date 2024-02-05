@@ -39,6 +39,8 @@ public class TestSecHubConfigurationBuilder {
         result.setWebScan(testData.webConfig);
         result.setProjectId(testData.projectId);
         result.setCodeScan(testData.codeScanConfig);
+        result.setLicenseScan(testData.licenseScanConfig);
+        result.setSecretScan(testData.secretScanConfig);
 
         if (testData.data != null) {
 
@@ -75,6 +77,8 @@ public class TestSecHubConfigurationBuilder {
         private SecHubWebScanConfiguration webConfig;
         private SecHubInfrastructureScanConfiguration infraConfig;
         private SecHubCodeScanConfiguration codeScanConfig;
+        private SecHubSecretScanConfiguration secretScanConfig;
+        private SecHubLicenseScanConfiguration licenseScanConfig;
         private String projectId;
     }
 
@@ -95,25 +99,6 @@ public class TestSecHubConfigurationBuilder {
 
         public SecHubScanConfiguration build() {
             return TestSecHubConfigurationBuilder.this.build();
-        }
-
-        public class TestWebApiConfigBuilder {
-            SecHubWebScanApiConfiguration api = new SecHubWebScanApiConfiguration();
-
-            public TestWebApiConfigBuilder type(SecHubWebScanApiType type) {
-                this.api.setType(type);
-                return this;
-            }
-
-            public TestWebApiConfigBuilder useDataReferences(String... referenceNames) {
-                this.api.getNamesOfUsedDataConfigurationObjects().addAll(Arrays.asList(referenceNames));
-                return this;
-            }
-
-            public TestWebConfigurationBuilder and() {
-                testData.webConfig.setApi(Optional.of(api));
-                return TestWebConfigurationBuilder.this;
-            }
         }
 
         public TestSecHubConfigurationBuilder and() {
@@ -153,6 +138,66 @@ public class TestSecHubConfigurationBuilder {
         public TestWebLoginConfigurationBuilder login(String loginURL) {
             return new TestWebLoginConfigurationBuilder(loginURL, this);
         }
+
+        public TestWebConfigurationBuilder addApiConfig(SecHubWebScanApiConfiguration apiConfig) {
+            TestSecHubConfigurationBuilder.this.testData.webConfig.api = Optional.ofNullable(apiConfig);
+            return this;
+        }
+
+        public TestWebConfigurationBuilder addClientCertificateConfig(ClientCertificateConfiguration clientCertificateConfig) {
+            TestSecHubConfigurationBuilder.this.testData.webConfig.clientCertificate = Optional.ofNullable(clientCertificateConfig);
+            return this;
+        }
+    }
+
+    public TestSecretScanConfigurationBuilder secretScanConfig() {
+        return new TestSecretScanConfigurationBuilder();
+    }
+
+    public class TestSecretScanConfigurationBuilder {
+
+        private TestSecretScanConfigurationBuilder() {
+            TestSecHubConfigurationBuilder.this.testData.secretScanConfig = new SecHubSecretScanConfiguration();
+        }
+
+        public SecHubScanConfiguration build() {
+            return TestSecHubConfigurationBuilder.this.build();
+        }
+
+        public TestSecHubConfigurationBuilder and() {
+            return TestSecHubConfigurationBuilder.this;
+        }
+
+        public TestSecretScanConfigurationBuilder useDataReferences(String... referenceName) {
+            testData.secretScanConfig.getNamesOfUsedDataConfigurationObjects().addAll(Arrays.asList(referenceName));
+            return this;
+        }
+
+    }
+
+    public TestLicenseScanConfigurationBuilder licenseScanConfig() {
+        return new TestLicenseScanConfigurationBuilder();
+    }
+
+    public class TestLicenseScanConfigurationBuilder {
+
+        private TestLicenseScanConfigurationBuilder() {
+            TestSecHubConfigurationBuilder.this.testData.licenseScanConfig = new SecHubLicenseScanConfiguration();
+        }
+
+        public SecHubScanConfiguration build() {
+            return TestSecHubConfigurationBuilder.this.build();
+        }
+
+        public TestSecHubConfigurationBuilder and() {
+            return TestSecHubConfigurationBuilder.this;
+        }
+
+        public TestLicenseScanConfigurationBuilder useDataReferences(String... referenceName) {
+            testData.licenseScanConfig.getNamesOfUsedDataConfigurationObjects().addAll(Arrays.asList(referenceName));
+            return this;
+        }
+
     }
 
     public TestCodeSCanConfigurationBuilder codeScanConfig() {
@@ -223,7 +268,6 @@ public class TestSecHubConfigurationBuilder {
             private SecHubFileSystemConfiguration fileSystem;
 
             private TestDataDataBuilder() {
-                this.fileSystem = new SecHubFileSystemConfiguration();
             }
 
             public TestDataDataBuilder uniqueName(String name) {
@@ -231,13 +275,20 @@ public class TestSecHubConfigurationBuilder {
                 return this;
             }
 
+            private SecHubFileSystemConfiguration ensureFileSystem() {
+                if (fileSystem == null) {
+                    fileSystem = new SecHubFileSystemConfiguration();
+                }
+                return fileSystem;
+            }
+
             public TestDataDataBuilder fileSystemFolders(String... folders) {
-                fileSystem.getFolders().addAll(Arrays.asList(folders));
+                ensureFileSystem().getFolders().addAll(Arrays.asList(folders));
                 return this;
             }
 
             public TestDataDataBuilder fileSystemFiles(String... files) {
-                fileSystem.getFiles().addAll(Arrays.asList(files));
+                ensureFileSystem().getFiles().addAll(Arrays.asList(files));
                 return this;
             }
 

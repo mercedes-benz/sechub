@@ -19,21 +19,25 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11
 
       - name: Set up JDK 17
-        uses: actions/setup-java@v3
+        uses: actions/setup-java@387ac29b308b003ca37ba93a6cab5eb57c8f5f93
         with:
           java-version: 17
           distribution: temurin
-          cache: gradle
+
+      - name: Set up Gradle
+        uses: gradle/gradle-build-action@982da8e78c05368c70dac0351bb82647a9e9a5d2
+        with:
+          cache-read-only: false
 
       - name: Set up Go
-        uses: actions/setup-go@v4
+        uses: actions/setup-go@0c52d547c9bc32b1aa3301fd7a9cb496313a4491
         with:
           go-version: 1.20.4
 
-      - uses: actions/cache@v3.3.2
+      - uses: actions/cache@e12d46a63a90f2fae62d114769bbf2a179198b5c
         with:
           path: |
             ~/.cache/go-build
@@ -56,7 +60,7 @@ jobs:
 
       # Integration test
       - name: Integration test
-        run: ./gradlew :sechub-integrationtest:startIntegrationTestInstances :sechub-systemtest:integrationtest :sechub-integrationtest:integrationtest :sechub-integrationtest:stopIntegrationTestInstances -Dsechub.build.stage=all --console=plain
+        run: ./gradlew :sechub-integrationtest:startIntegrationTestInstances :sechub-integrationtest:integrationtest :sechub-systemtest:integrationtest :sechub-integrationtest:stopIntegrationTestInstances -Dsechub.build.stage=all --console=plain
 
       # We use 'if: always()' to run a step even if a previous step failed
       - name: Create combined test report
@@ -68,7 +72,7 @@ jobs:
       # -----------------------------------------
       - name: Archive combined test report
         if: always()
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@1eb3cb2b3e0f29609092a73eb033bb759a334595
         with:
           name: combined-sechub-testreport
           path: build/reports/combined-report
@@ -76,7 +80,7 @@ jobs:
 
       - name: Archive sechub server artifacts
         if: always()
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@1eb3cb2b3e0f29609092a73eb033bb759a334595
         with:
           name: sechub-server
           path: sechub-server/build/libs
@@ -84,21 +88,21 @@ jobs:
 
       - name: Archive pds server artifacts
         if: always()
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@1eb3cb2b3e0f29609092a73eb033bb759a334595
         with:
           name: sechub-pds
           path: sechub-pds/build/libs
 
       - name: Archive pds tools artifacts
         if: always()
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@1eb3cb2b3e0f29609092a73eb033bb759a334595
         with:
           name: sechub-pds-tools
           path: sechub-pds-tools/build/libs
 
       - name: Archive developer tools artifacts
         if: always()
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@1eb3cb2b3e0f29609092a73eb033bb759a334595
         with:
           name: sechub-developertools
           path: sechub-developertools/build/libs
@@ -106,40 +110,22 @@ jobs:
 
       - name: Archive sechub client artifacts
         if: always()
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@1eb3cb2b3e0f29609092a73eb033bb759a334595
         with:
           name: sechub-client
           path: sechub-cli/build/go
           retention-days: 14
 
-      - name: Install graphviz (asciidoc diagrams)
-        run: sudo apt-get -qq --assume-yes install graphviz
-
-      # -----------------------------------------
-      # Build Documentation
-      # -----------------------------------------
-      - name: Create documentation
-        run: ./gradlew documentation -Dsechub.build.stage=all
-
-      # -----------------------------------------
-      # Upload documentation
-      # -----------------------------------------
-      - name: Archive documentation HTML
-        uses: actions/upload-artifact@v3
+      - name: Archive sechub integration test report artifacts
+        if: always()
+        uses: actions/upload-artifact@1eb3cb2b3e0f29609092a73eb033bb759a334595
         with:
-          name: sechub-docs-html
-          path: sechub-doc/build/docs/final-html/
+          name: sechub-integrationtest-test-reports
+          path: sechub-integrationtest/build/sechub-test-reports
           retention-days: 14
 
-      - name: Archive documentation PDF
-        uses: actions/upload-artifact@v3
-        with:
-          name: sechub-docs-pdf
-          path: sechub-doc/build/docs/asciidoc/*.pdf
-          retention-days: 14
-
-      - name: Archive documentation openAPI3
-        uses: actions/upload-artifact@v3
+      - name: Archive openAPI3 JSON files
+        uses: actions/upload-artifact@1eb3cb2b3e0f29609092a73eb033bb759a334595
         with:
           name: sechub-api-spec
           path: sechub-doc/build/api-spec/

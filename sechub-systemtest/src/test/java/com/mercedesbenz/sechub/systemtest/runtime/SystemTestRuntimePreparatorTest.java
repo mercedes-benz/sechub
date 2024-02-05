@@ -26,8 +26,10 @@ import com.mercedesbenz.sechub.commons.model.SecHubLicenseScanConfiguration;
 import com.mercedesbenz.sechub.commons.model.SecHubSecretScanConfiguration;
 import com.mercedesbenz.sechub.commons.model.SecHubWebScanApiConfiguration;
 import com.mercedesbenz.sechub.commons.model.SecHubWebScanConfiguration;
+import com.mercedesbenz.sechub.systemtest.config.CredentialsDefinition;
 import com.mercedesbenz.sechub.systemtest.config.DefaultFallback;
 import com.mercedesbenz.sechub.systemtest.config.LocalSetupDefinition;
+import com.mercedesbenz.sechub.systemtest.config.PDSSolutionDefinition;
 import com.mercedesbenz.sechub.systemtest.config.RemoteSetupDefinition;
 import com.mercedesbenz.sechub.systemtest.config.RunSecHubJobDefinition;
 import com.mercedesbenz.sechub.systemtest.config.SystemTestConfiguration;
@@ -81,6 +83,111 @@ class SystemTestRuntimePreparatorTest {
         /* test */
         assertEquals("This is a comment - even this is replaceable - because we just change the complete JSON... var1=value1",
                 context.getConfiguration().getSetup().getComment());
+
+    }
+
+    @Test
+    void local_run_default_preparation_sechub_admin_has_expected_default_credentials() {
+        /* prepare */
+        SystemTestConfiguration originConfiguration = new SystemTestConfiguration();
+        LocalSetupDefinition localSetup = new LocalSetupDefinition();
+        originConfiguration.getSetup().setLocal(Optional.of(localSetup));
+
+        context.originConfiguration = originConfiguration;
+
+        // setup context - local/remote run. important for preparator!
+        context.localRun = true;
+
+        LOG.debug("originConfiguration for local run: {} \n{}", JSONConverter.get().toJSON(originConfiguration, true));
+
+        /* execute */
+        preparatorToTest.prepare(context);
+
+        /* test */
+        SystemTestConfiguration preparedConfig = context.getConfiguration();
+        LOG.debug("preparedConfig: \n{}", JSONConverter.get().toJSON(preparedConfig, true));
+
+        // check credential defaults defined
+        Optional<LocalSetupDefinition> localOpt2 = preparedConfig.getSetup().getLocal();
+        assertTrue(localOpt2.isPresent());
+        LocalSetupDefinition localSetup2 = localOpt2.get();
+        CredentialsDefinition sechubAdmin2 = localSetup2.getSecHub().getAdmin();
+        assertEquals("admin", sechubAdmin2.getUserId());
+        assertEquals("myTop$ecret!", sechubAdmin2.getApiToken());
+
+    }
+
+    @Test
+    void local_run_default_preparation_pds_techuser_has_expected_default_credentials() {
+        /* prepare */
+        SystemTestConfiguration originConfiguration = new SystemTestConfiguration();
+        LocalSetupDefinition localSetup = new LocalSetupDefinition();
+        originConfiguration.getSetup().setLocal(Optional.of(localSetup));
+
+        PDSSolutionDefinition solution1 = new PDSSolutionDefinition();
+        solution1.setName("solution1");
+        solution1.setBaseDirectory("./src/test/resources/fake-root/sechub-pds-solutions/faked-gosec");
+        localSetup.getPdsSolutions().add(solution1);
+
+        context.originConfiguration = originConfiguration;
+
+        // setup context - local/remote run. important for preparator!
+        context.localRun = true;
+
+        LOG.debug("originConfiguration for local run: {} \n{}", JSONConverter.get().toJSON(originConfiguration, true));
+
+        /* execute */
+        preparatorToTest.prepare(context);
+
+        /* test */
+        SystemTestConfiguration preparedConfig = context.getConfiguration();
+        LOG.debug("preparedConfig: \n{}", JSONConverter.get().toJSON(preparedConfig, true));
+
+        // check credential defaults defined
+        Optional<LocalSetupDefinition> localOpt2 = preparedConfig.getSetup().getLocal();
+        assertTrue(localOpt2.isPresent());
+        LocalSetupDefinition localSetup2 = localOpt2.get();
+        PDSSolutionDefinition solution2 = localSetup2.getPdsSolutions().iterator().next();
+        CredentialsDefinition techUser = solution2.getTechUser();
+        assertEquals("techuser", techUser.getUserId());
+        assertEquals("pds-apitoken", techUser.getApiToken());
+
+    }
+
+    @Test
+    void local_run_default_preparation_pds_adminuser_has_expected_default_credentials() {
+        /* prepare */
+        SystemTestConfiguration originConfiguration = new SystemTestConfiguration();
+        LocalSetupDefinition localSetup = new LocalSetupDefinition();
+        originConfiguration.getSetup().setLocal(Optional.of(localSetup));
+
+        PDSSolutionDefinition solution1 = new PDSSolutionDefinition();
+        solution1.setName("solution1");
+        solution1.setBaseDirectory("./src/test/resources/fake-root/sechub-pds-solutions/faked-gosec");
+        localSetup.getPdsSolutions().add(solution1);
+
+        context.originConfiguration = originConfiguration;
+
+        // setup context - local/remote run. important for preparator!
+        context.localRun = true;
+
+        LOG.debug("originConfiguration for local run: {} \n{}", JSONConverter.get().toJSON(originConfiguration, true));
+
+        /* execute */
+        preparatorToTest.prepare(context);
+
+        /* test */
+        SystemTestConfiguration preparedConfig = context.getConfiguration();
+        LOG.debug("preparedConfig: \n{}", JSONConverter.get().toJSON(preparedConfig, true));
+
+        // check credential defaults defined
+        Optional<LocalSetupDefinition> localOpt2 = preparedConfig.getSetup().getLocal();
+        assertTrue(localOpt2.isPresent());
+        LocalSetupDefinition localSetup2 = localOpt2.get();
+        PDSSolutionDefinition solution2 = localSetup2.getPdsSolutions().iterator().next();
+        CredentialsDefinition techUser = solution2.getAdmin();
+        assertEquals("admin", techUser.getUserId());
+        assertEquals("pds-apitoken", techUser.getApiToken());
 
     }
 

@@ -22,7 +22,7 @@ ARG BRANCH=""
 ARG GO="go1.20.4.linux-${TARGETARCH}.tar.gz"
 
 # possible values: temurin, openj9, openjdk
-ARG JAVA_DISTRIBUTION="openjdk"
+ARG JAVA_DISTRIBUTION="temurin"
 # possible values: 17
 ARG JAVA_VERSION="17"
 

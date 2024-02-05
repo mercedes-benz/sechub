@@ -20325,7 +20325,7 @@ function execSync(cmd, opts, pipe) {
   writeFileLockedDown(paramsFile, JSON.stringify(paramsToSerialize));
 
   var execArgs = [
-    __nccwpck_require__.ab + "exec-child1.js",
+    __nccwpck_require__.ab + "exec-child.js",
     paramsFile,
   ];
 
@@ -23895,26 +23895,34 @@ function downloadReports(formats) {
         lib_core.info('No more formats');
         return;
     }
-    const jobUUID = getJobUUID();
-    lib_core.debug(jobUUID);
-    formats.forEach((format) => {
-        lib_core.info(`Get Report as ${format}`);
-        const exitCode = getReport(jobUUID, projectName, format).code;
-        logExitCode(exitCode);
-    });
+    const json = loadJsonReport();
+    if (json) {
+        const jobUUID = getFieldFromJsonReport('jobUUID', json);
+        lib_core.debug('JobUUID: ' + jobUUID);
+        formats.forEach((format) => {
+            lib_core.info(`Get Report as ${format}`);
+            const exitCode = getReport(jobUUID, projectName, format);
+            logExitCode(exitCode ? exitCode.code : 0);
+        });
+    }
     lib_core.endGroup();
+    return json;
 }
 /**
- * Reads the job uuid from the json report.
+ * Load and parse the SecHub JSON report.
+ * @returns {object | undefined} - The parsed JSON report or undefined if not found or there was an error.
  */
-function getJobUUID() {
-    const fileName = node_modules_shelljs_shell.exec(`ls ${getWorkspaceDir()} | grep sechub_report`).trim();
-    lib_core.debug('File name: ' + fileName);
+function loadJsonReport() {
+    const fileName = getJsonReportFileName();
     const filePath = `${getWorkspaceDir()}/${fileName}`;
-    const json = JSON.parse(external_fs_.readFileSync(filePath, 'utf8'));
-    const jobUUID = json.jobUUID;
-    lib_core.debug('JobUUID: ' + jobUUID);
-    return jobUUID;
+    try {
+        const jsonData = JSON.parse(external_fs_.readFileSync(filePath, 'utf8'));
+        return jsonData;
+    }
+    catch (error) {
+        lib_core.warning(`Error reading or parsing JSON file: ${error}`);
+        return undefined;
+    }
 }
 /**
  * Uploads all given files as artifact
@@ -23938,6 +23946,151 @@ async function uploadArtifact(name, paths) {
         lib_core.error(`ERROR while uploading artifacts: ${message}`);
     }
     lib_core.endGroup();
+}
+/**
+ * Reads the given field from the SecHub JSON report.
+ * @param {string} field - The field relative to root, where the value should be found. The field can be a nested field, e.g. result.count.
+ * @param jsonData - The json data to read the field from.
+ * @returns {*} - The value found for the given field or undefined if not found.
+ */
+function getFieldFromJsonReport(field, jsonData) {
+    // Split the given field into individual keys
+    const keys = field.split('.');
+    // Traverse the JSON object to find the requested field
+    let currentKey = jsonData;
+    for (const key of keys) {
+        if (currentKey && currentKey.hasOwnProperty && typeof currentKey.hasOwnProperty === 'function' && currentKey.hasOwnProperty(key)) {
+            currentKey = currentKey[key];
+        }
+        else {
+            lib_core.warning(`Field "${key}" not found in the JSON report.`);
+            return undefined;
+        }
+    }
+    return currentKey;
+}
+/**
+ * Get the JSON report file name from the workspace directory.
+ * @returns {string} - The JSON report file name or an empty string if not found.
+ */
+function getJsonReportFileName() {
+    const workspaceDir = getWorkspaceDir();
+    const filesInWorkspace = node_modules_shelljs_shell.ls(workspaceDir);
+    for (const fileName of filesInWorkspace) {
+        if (/sechub_report.*\.json$/.test(fileName)) {
+            return fileName;
+        }
+    }
+    lib_core.warning('JSON report file not found in the workspace directory.');
+    return '';
+}
+/**
+ * Reports specific outputs to GitHub Actions based on the SecHub result.
+ */
+function reportOutputs(jsonData) {
+    lib_core.startGroup('Reporting outputs to GitHub');
+    const findings = analyzeFindings(jsonData);
+    const trafficLight = getFieldFromJsonReport('trafficLight', jsonData);
+    const totalFindings = getFieldFromJsonReport('result.count', jsonData);
+    const humanReadableSummary = buildSummary(trafficLight, totalFindings, findings);
+    setOutput('scan-trafficlight', trafficLight, 'string');
+    setOutput('scan-findings-count', totalFindings, 'number');
+    setOutput('scan-findings-high', findings.highCount, 'number');
+    setOutput('scan-findings-medium', findings.mediumCount, 'number');
+    setOutput('scan-findings-low', findings.lowCount, 'number');
+    setOutput('scan-readable-summary', humanReadableSummary, 'string');
+    lib_core.endGroup();
+}
+/**
+ * Analyzes the SecHub JSON report and returns the number of findings for each severity, if any found.
+ * If no findings were reported, it returns 0 for each severity.
+ * @returns {{mediumCount: number, highCount: number, lowCount: number}}
+ */
+function analyzeFindings(jsonData) {
+    const findings = getFieldFromJsonReport('result.findings', jsonData);
+    // if no findings were reported.
+    if (findings === undefined) {
+        lib_core.debug('No findings reported to be categorized.');
+        return {
+            mediumCount: 0,
+            highCount: 0,
+            lowCount: 0,
+        };
+    }
+    let mediumCount = 0;
+    let highCount = 0;
+    let lowCount = 0;
+    let unmapped = 0;
+    findings.forEach((finding) => {
+        switch (finding.severity) {
+            case 'MEDIUM':
+                mediumCount++;
+                break;
+            case 'HIGH':
+                highCount++;
+                break;
+            case 'LOW':
+                lowCount++;
+                break;
+            default:
+                unmapped++;
+                break;
+        }
+    });
+    if (unmapped > 0) {
+        lib_core.debug('Unmapped findings: ${unmapped}');
+    }
+    return {
+        mediumCount,
+        highCount,
+        lowCount,
+    };
+}
+/**
+ * Builds a human-readable summary of the SecHub scan result using the given traffic light, total findings and findings per severity.
+ * @param trafficLight
+ * @param totalFindings
+ * @param findings
+ * @returns String with human-readable description of the scan's outcome, which can be directly useed for a notification mechanism.
+ */
+function buildSummary(trafficLight, totalFindings, findings) {
+    if (trafficLight === undefined) {
+        return 'SecHub scan could not be executed.';
+    }
+    totalFindings = totalFindings !== null && totalFindings !== void 0 ? totalFindings : 0;
+    let output = `SecHub reported traffic light color ${trafficLight} with`;
+    if (totalFindings === 0) {
+        output += 'out findings';
+    }
+    else if (totalFindings === 1) {
+        output += ` ${totalFindings} finding, categorized as follows:`;
+    }
+    else {
+        output += ` ${totalFindings} findings, categorized as follows:`;
+    }
+    if (findings.highCount > 0) {
+        output += ` HIGH (${findings.highCount}),`;
+    }
+    if (findings.mediumCount > 0) {
+        output += ` MEDIUM (${findings.mediumCount}),`;
+    }
+    if (findings.lowCount > 0) {
+        output += ` LOW (${findings.lowCount}),`;
+    }
+    output = output.replace(/,$/, '');
+    return output;
+}
+/**
+ * Sets the value of an output variable for the GitHub Action.
+ * If the provided value is undefined, it sets a default value based on the data format. 'FAILURE' for strings and '0' for numbers.
+ * @param {string} field - The name of the output variable.
+ * @param {*} value - The value to set for the output variable.
+ * @param {string} dataFormat - The desired data format ('string' or 'number').
+ */
+function setOutput(field, value, dataFormat) {
+    value = value !== null && value !== void 0 ? value : (dataFormat === 'number' ? 0 : 'FAILURE');
+    lib_core.debug(`Output ${field} set to ${value}`);
+    lib_core.setOutput(field, value.toString()); // Ensure value is converted to a string as GitHub Actions expects output variables to be strings.
 }
 
 ;// CONCATENATED MODULE: ./src/settings.json
@@ -23991,7 +24144,8 @@ function executeScan(configParameter, format) {
  * @param exitCode exit code from the scan
  */
 async function postScan(reportFormats, exitCode) {
-    downloadReports(reportFormats.slice(1));
+    const jsonReport = downloadReports(reportFormats.slice(1));
+    reportOutputs(jsonReport);
     await uploadArtifact(src_settings_namespaceObject_0.vz, getFiles(src_settings_namespaceObject_0.nl));
     if (exitCode !== 0 && failJobOnFindings === 'true') {
         failAction(exitCode);
