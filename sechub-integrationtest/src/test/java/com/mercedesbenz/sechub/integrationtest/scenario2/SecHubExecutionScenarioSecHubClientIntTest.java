@@ -552,10 +552,10 @@ public class SecHubExecutionScenarioSecHubClientIntTest {
 
 		 /* store webscan reports as example */
         String jsonReport = as(USER_1).getJobReport(project, result.getSechubJobUUID());
-        storeTestReport("report_client-test-3-webscan-one-finding.json", jsonReport);
+        storeTestReport("report_client-test-3-webscan-red-one-finding.json", jsonReport);
 
         String htmlReport = as(USER_1).getHTMLJobReport(project, result.getSechubJobUUID());
-        storeTestReport("report_client-test-3-webscan-one-finding.html", htmlReport);
+        storeTestReport("report_client-test-3-webscan-red-one-finding.html", htmlReport);
 
         /* execute 2 - same setup, but result will have no mutiple entries inside (low, medium, high, criticial )*/
         result = as(USER_1).
@@ -563,17 +563,20 @@ public class SecHubExecutionScenarioSecHubClientIntTest {
                 startSynchronScanFor(project, CLIENT_JSON_WEBSCAN_RED_MANYFINDINGS_ZERO_WAIT);
 
         /* test */
-        assertResult(result).
+        assertResult(result).   
             isRed().
             hasExitCode(1);
 
 
          /* store webscan reports as example */
-        jsonReport = as(USER_1).getJobReport(project, result.getSechubJobUUID());
-        storeTestReport("report_client-test-4-webscan-multiple-findings.json", jsonReport);
+        String jsonReport2  = as(USER_1).getJobReport(project, result.getSechubJobUUID());
+        storeTestReport("report_client-test-4-webscan-red-multiple-findings.json", jsonReport2);
 
-        htmlReport = as(USER_1).getHTMLJobReport(project, result.getSechubJobUUID());
-        storeTestReport("report_client-test-4-webscan-multiple-findings.html", htmlReport);
+        String htmlReport2 = as(USER_1).getHTMLJobReport(project, result.getSechubJobUUID());
+        storeTestReport("report_client-test-4-webscan-red-multiple-findings.html", htmlReport2);
+        
+        /* test */
+        
         /* @formatter:on */
 
     }
