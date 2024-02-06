@@ -4,8 +4,10 @@ package com.mercedesbenz.sechub.domain.scan;
 import org.springframework.http.HttpStatus;
 
 import com.mercedesbenz.sechub.commons.core.util.SimpleStringUtils;
+import com.mercedesbenz.sechub.commons.model.ScanType;
 import com.mercedesbenz.sechub.commons.model.SecHubFinding;
 import com.mercedesbenz.sechub.commons.model.SecHubMessageType;
+import com.mercedesbenz.sechub.commons.model.TrafficLight;
 import com.mercedesbenz.sechub.commons.model.web.SecHubReportWeb;
 import com.mercedesbenz.sechub.commons.model.web.SecHubReportWebAttack;
 import com.mercedesbenz.sechub.commons.model.web.SecHubReportWebBody;
@@ -21,6 +23,34 @@ public class HTMLReportHelper {
     private static final int SHORT_EVIDENCE_SIZE = 80;
 
     public static HTMLReportHelper DEFAULT = new HTMLReportHelper();
+
+    public String createSummaryTableAnkerIdForRed(ScanType scanType) {
+        return createSummaryTableAnkerId(TrafficLight.RED, scanType);
+    }
+
+    public String createSummaryTableAnkerIdForYellow(ScanType scanType) {
+        return createSummaryTableAnkerId(TrafficLight.YELLOW, scanType);
+    }
+
+    public String createSummaryTableAnkerIdForGreen(ScanType scanType) {
+        return createSummaryTableAnkerId(TrafficLight.GREEN, scanType);
+    }
+
+    String createSummaryTableAnkerId(TrafficLight trafficLight, ScanType scanType) {
+        String trafficLightPrefix = "unknown";
+        String scanTypeName = "NoScanType";
+        
+        if (trafficLight != null) {
+            trafficLightPrefix = trafficLight.name().toLowerCase();
+        }
+        
+        if (scanType != null) {
+            scanTypeName = scanType.getId();
+            scanTypeName = scanTypeName.substring(0, 1).toUpperCase() + scanTypeName.substring(1);
+        }
+        
+        return trafficLightPrefix + scanTypeName + "Table";
+    }
 
     public boolean hasDescription(SecHubFinding finding) {
         return SimpleStringUtils.isNotEmpty(getDescription(finding));

@@ -66,6 +66,11 @@
                 <td>Scan result Report for Job:<span th:text="${jobuuid}">job-uuid</span>
                 </td>
             </tr>
+            <!--/*                   
+                ---------------------------------
+                -            Labels             -
+                ---------------------------------
+            */-->
             <tr class="reportlabels" th:if="${metaData!=null && !metaData.get().getLabels().isEmpty()}">
                 <td></td>
                 <td>
@@ -83,6 +88,11 @@
 
         <div th:if="!${scanTypeCountSet.isEmpty()}">
             <h2 class='summaryHeadline'>Summary</h2>
+            <!--/*                   
+                ---------------------------------
+                -            Summary            -
+                ---------------------------------
+            */-->
             <table class='summaryTable'>
                 <thead>
                 <tr>
@@ -95,6 +105,14 @@
                 </thead>
                 <tbody>
                 <tr th:each="scanTypeCount : ${scanTypeCountSet}">
+                <!--/* 
+                   Next code line renders summary row for each contained scan type.
+                   An example:
+                   
+                            Total  Red   Yellow   Green
+                   Web scan   1     1      0       0  
+                   
+                   */-->
                     <div th:replace="report/html/fragment-summary-table-row :: summaryTableRow"></div>
                 </tr>
                 </tbody>
