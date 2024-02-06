@@ -30,6 +30,25 @@ import com.mercedesbenz.sechub.integrationtest.internal.SecHubClientExecutor.Exe
 
 public class SecHubExecutionScenarioSecHubClientIntTest {
 
+    private static final String EXTENSION_JSON = ".json";
+    private static final String EXTENSION_HTML = ".html";
+    
+    private static final String REPORT_CLIENT_TEST_1_CODESCAN_GREEN = "report_client-test-1-codescan-green.html";
+    private static final String REPORT_CLIENT_TEST_1_CODESCAN_GREEN_HTML = REPORT_CLIENT_TEST_1_CODESCAN_GREEN + EXTENSION_HTML;
+    private static final String REPORT_CLIENT_TEST_1_CODESCAN_GREEN_JSON = REPORT_CLIENT_TEST_1_CODESCAN_GREEN + EXTENSION_JSON;
+
+    private static final String REPORT_CLIENT_TEST_2_CODESCAN_YELLOW = "report_client-test-2-codescan-yellow";
+    private static final String REPORT_CLIENT_TEST_2_CODESCAN_YELLOW_JSON = REPORT_CLIENT_TEST_2_CODESCAN_YELLOW + EXTENSION_JSON;
+    private static final String REPORT_CLIENT_TEST_2_CODESCAN_YELLOW_HTML = REPORT_CLIENT_TEST_2_CODESCAN_YELLOW + EXTENSION_HTML;
+
+    private static final String REPORT_CLIENT_TEST_3_WEBSCAN_RED_ONE_FINDING = "report_client-test-3-webscan-red-one-finding";
+    private static final String REPORT_CLIENT_TEST_3_WEBSCAN_RED_ONE_FINDING_JSON = REPORT_CLIENT_TEST_3_WEBSCAN_RED_ONE_FINDING + EXTENSION_JSON;
+    private static final String REPORT_CLIENT_TEST_3_WEBSCAN_RED_ONE_FINDING_HTML = REPORT_CLIENT_TEST_3_WEBSCAN_RED_ONE_FINDING + EXTENSION_HTML;
+
+    private static final String REPORT_CLIENT_TEST_4_WEBSCAN_RED_MULTIPLE_FINDINGS = "report_client-test-4-webscan-red-multiple-findings";
+    private static final String REPORT_CLIENT_TEST_4_WEBSCAN_RED_MULTIPLE_FINDINGS_HTML = REPORT_CLIENT_TEST_4_WEBSCAN_RED_MULTIPLE_FINDINGS + EXTENSION_HTML;
+    private static final String REPORT_CLIENT_TEST_4_WEBSCAN_RED_MULTIPLE_FINDINGS_JSON = REPORT_CLIENT_TEST_4_WEBSCAN_RED_MULTIPLE_FINDINGS + EXTENSION_JSON;
+
     @Rule
     public IntegrationTestSetup setup = IntegrationTestSetup.forScenario(Scenario2.class);
 
@@ -191,10 +210,10 @@ public class SecHubExecutionScenarioSecHubClientIntTest {
 
         /* store webscan reports as example */
         String jsonReport = as(user).getJobReport(project, jobUUID);
-        storeTestReport("report_client-test-1-codescan-green.json", jsonReport);
+        storeTestReport(REPORT_CLIENT_TEST_1_CODESCAN_GREEN_JSON, jsonReport);
 
         String htmlReport = as(user).getHTMLJobReport(project, jobUUID);
-        storeTestReport("report_client-test-1-codescan-green.html", htmlReport);
+        storeTestReport(REPORT_CLIENT_TEST_1_CODESCAN_GREEN_HTML, htmlReport);
         /* @formatter:on */
     }
 
@@ -518,10 +537,10 @@ public class SecHubExecutionScenarioSecHubClientIntTest {
 
 		/* store webscan reports as example */
         String jsonReport = as(USER_1).getJobReport(project, result.getSechubJobUUID());
-        storeTestReport("report_client-test-2-codescan-yellow.json", jsonReport);
+        storeTestReport(REPORT_CLIENT_TEST_2_CODESCAN_YELLOW_JSON, jsonReport);
 
         String htmlReport = as(USER_1).getHTMLJobReport(project, result.getSechubJobUUID());
-        storeTestReport("report_client-test-2-codescan-yellow.html", htmlReport);
+        storeTestReport(REPORT_CLIENT_TEST_2_CODESCAN_YELLOW_HTML, htmlReport);
 		/* @formatter:on */
 
     }
@@ -552,17 +571,17 @@ public class SecHubExecutionScenarioSecHubClientIntTest {
 
 		 /* store webscan reports as example */
         String jsonReport = as(USER_1).getJobReport(project, result.getSechubJobUUID());
-        storeTestReport("report_client-test-3-webscan-red-one-finding.json", jsonReport);
+        storeTestReport(REPORT_CLIENT_TEST_3_WEBSCAN_RED_ONE_FINDING_JSON, jsonReport);
 
         String htmlReport = as(USER_1).getHTMLJobReport(project, result.getSechubJobUUID());
-        storeTestReport("report_client-test-3-webscan-red-one-finding.html", htmlReport);
+        storeTestReport(REPORT_CLIENT_TEST_3_WEBSCAN_RED_ONE_FINDING_HTML, htmlReport);
 
         /* execute 2 - same setup, but result will have no mutiple entries inside (low, medium, high, criticial )*/
         result = as(USER_1).
                 withSecHubClient().
                 startSynchronScanFor(project, CLIENT_JSON_WEBSCAN_RED_MANYFINDINGS_ZERO_WAIT);
 
-        /* test */
+        /* test 2 */
         assertResult(result).   
             isRed().
             hasExitCode(1);
@@ -570,12 +589,14 @@ public class SecHubExecutionScenarioSecHubClientIntTest {
 
          /* store webscan reports as example */
         String jsonReport2  = as(USER_1).getJobReport(project, result.getSechubJobUUID());
-        storeTestReport("report_client-test-4-webscan-red-multiple-findings.json", jsonReport2);
+        storeTestReport(REPORT_CLIENT_TEST_4_WEBSCAN_RED_MULTIPLE_FINDINGS_JSON, jsonReport2);
 
         String htmlReport2 = as(USER_1).getHTMLJobReport(project, result.getSechubJobUUID());
-        storeTestReport("report_client-test-4-webscan-red-multiple-findings.html", htmlReport2);
+        storeTestReport(REPORT_CLIENT_TEST_4_WEBSCAN_RED_MULTIPLE_FINDINGS_HTML, htmlReport2);
         
-        /* test */
+        /* test 3 - check content is as expected */
+        assertHTMLReport(htmlReport2, REPORT_CLIENT_TEST_4_WEBSCAN_RED_MULTIPLE_FINDINGS_HTML).containsAtLeastOneOpenDetailsBlock();
+        assertHTMLReport(htmlReport, REPORT_CLIENT_TEST_3_WEBSCAN_RED_ONE_FINDING_HTML).containsAtLeastOneOpenDetailsBlock();
         
         /* @formatter:on */
 
