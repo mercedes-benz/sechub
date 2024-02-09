@@ -158,4 +158,52 @@ class SecHubConfigurationModelTest {
 
     }
 
+    @Test
+    void serialize_without_config() {
+        /* prepare */
+        SecHubConfigurationModel configuration = new SecHubConfigurationModel();
+        configuration.setApiVersion("1.0");
+
+        /* execute */
+        String json = JSONConverter.get().toJSON(configuration);
+
+        /* test */
+        assertNotNull(json);
+    }
+
+    @Test
+    void serialize_without_codeScan_config() {
+        /* prepare */
+        SecHubConfigurationModel configuration = new SecHubConfigurationModel();
+        configuration.setApiVersion("1.0");
+
+        SecHubCodeScanConfiguration codeScan = new SecHubCodeScanConfiguration();
+        configuration.setCodeScan(codeScan);
+
+        /* execute */
+        String json = JSONConverter.get().toJSON(configuration);
+
+        /* test */
+        assertNotNull(json);
+    }
+
+    @Test
+    void deserialize_codeScan_config_and_empty_use() {
+        /* prepare */
+        String json = """
+                {
+                  "codeScan" : {
+                    "use" : [ ]
+                  },
+                  "apiVersion" : "1.0"
+                }
+        """;
+
+        /* execute */
+        SecHubConfigurationModel model = JSONConverter.get().fromJSON(SecHubConfigurationModel.class, json);
+
+        /* test */
+        SecHubCodeScanConfiguration codeScan = model.getCodeScan().get();
+        assertNotNull(codeScan);
+    }
 }

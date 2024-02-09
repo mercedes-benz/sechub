@@ -70,7 +70,8 @@ ext {
       asciidoctor_j:                           "2.5.2",
       asciidoctor_j_diagram:                   "2.2.1",
       // openapi3-generator, releases see https://github.com/ePages-de/restdocs-api-spec/releases
-      restDocsApiSpec:                         "0.19.0",
+      // TODO: version 17.1+ introduces nullable and required in the spec file which causes issues
+      restDocsApiSpec:                         "0.17.1",
       
       /* Owasp Zap wrapper */
       owaspzap_client_api:                     "1.13.0",

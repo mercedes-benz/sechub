@@ -5,6 +5,8 @@ import static com.mercedesbenz.sechub.commons.model.SecHubConfigurationModel.PRO
 import static com.mercedesbenz.sechub.commons.model.SecHubConfigurationModel.PROPERTY_CODE_SCAN;
 import static com.mercedesbenz.sechub.commons.model.SecHubConfigurationModel.PROPERTY_DATA;
 import static com.mercedesbenz.sechub.commons.model.SecHubConfigurationModel.PROPERTY_INFRA_SCAN;
+import static com.mercedesbenz.sechub.commons.model.SecHubConfigurationModel.PROPERTY_LICENSE_SCAN;
+import static com.mercedesbenz.sechub.commons.model.SecHubConfigurationModel.PROPERTY_SECRET_SCAN;
 import static com.mercedesbenz.sechub.commons.model.SecHubConfigurationModel.PROPERTY_WEB_SCAN;
 import static com.mercedesbenz.sechub.commons.model.TestSecHubConfigurationBuilder.configureSecHub;
 import static com.mercedesbenz.sechub.restdoc.RestDocumentation.defineRestService;
