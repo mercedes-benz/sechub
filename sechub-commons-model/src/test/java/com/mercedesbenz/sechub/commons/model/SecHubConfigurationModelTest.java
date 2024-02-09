@@ -191,13 +191,13 @@ class SecHubConfigurationModelTest {
     void deserialize_codeScan_config_and_empty_use() {
         /* prepare */
         String json = """
-                {
-                  "codeScan" : {
-                    "use" : [ ]
-                  },
-                  "apiVersion" : "1.0"
-                }
-        """;
+                        {
+                          "codeScan" : {
+                            "use" : [ ]
+                          },
+                          "apiVersion" : "1.0"
+                        }
+                """;
 
         /* execute */
         SecHubConfigurationModel model = JSONConverter.get().fromJSON(SecHubConfigurationModel.class, json);
