@@ -76,3 +76,16 @@ networkPolicy:
             - podSelector:
                 matchLabels:
                     name: sechub-adminserver
+
+# deploymentComment (optional):
+#  When setting to a different value than before, it forces k8s to spin up a new container.
+#  This way, you can force deployments e.g. when only secrets have changed.
+deploymentComment: "my deployment comment"
+
+# optional: Add annotations to template.metadata.annotations
+#           Can contain multiple lines. Example for Prometheus actuator:
+# templateMetadataAnnotations: |-
+#   prometheus.io/scrape: "true"
+#   prometheus.io/probe: "true"
+#   prometheus.io/port: "10251"
+#   prometheus.io/path: "/actuator/prometheus"
