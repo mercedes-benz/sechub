@@ -113,15 +113,15 @@ public class HTMLScanResultReportModelBuilder {
         model.put("scanTypeCountSet", createScanTypeCountSet(result.getFindings()));
 
         /* detail data : */
-        model.put("redHTMLSecHubFindingList",
-                createCodeScanDataList(result.getFindings(), findingIdToCodeScanEntriesMap, List.of(Severity.CRITICAL, Severity.HIGH)));
-        model.put("yellowHTMLSecHubFindingList", createCodeScanDataList(result.getFindings(), findingIdToCodeScanEntriesMap, List.of(Severity.MEDIUM)));
+        model.put("redHTMLSecHubFindingList", createCodeScanDataList(result.getFindings(), findingIdToCodeScanEntriesMap, TrafficLight.RED.getSeverities()));
+        model.put("yellowHTMLSecHubFindingList",
+                createCodeScanDataList(result.getFindings(), findingIdToCodeScanEntriesMap, TrafficLight.YELLOW.getSeverities()));
         model.put("greenHTMLSecHubFindingList",
-                createCodeScanDataList(result.getFindings(), findingIdToCodeScanEntriesMap, List.of(Severity.LOW, Severity.UNCLASSIFIED, Severity.INFO)));
+                createCodeScanDataList(result.getFindings(), findingIdToCodeScanEntriesMap, TrafficLight.GREEN.getSeverities()));
 
-        model.put("redHTMLWebScanMap", createWebScanDataForSeverity(result.getFindings(), List.of(Severity.HIGH)));
-        model.put("yellowHTMLWebScanMap", createWebScanDataForSeverity(result.getFindings(), List.of(Severity.MEDIUM)));
-        model.put("greenHTMLWebScanMap", createWebScanDataForSeverity(result.getFindings(), List.of(Severity.LOW, Severity.UNCLASSIFIED, Severity.INFO)));
+        model.put("redHTMLWebScanMap", createWebScanDataForSeverityGroupedAndSortedByName(result.getFindings(), TrafficLight.RED.getSeverities()));
+        model.put("yellowHTMLWebScanMap", createWebScanDataForSeverityGroupedAndSortedByName(result.getFindings(), TrafficLight.YELLOW.getSeverities()));
+        model.put("greenHTMLWebScanMap", createWebScanDataForSeverityGroupedAndSortedByName(result.getFindings(), TrafficLight.GREEN.getSeverities()));
 
         return model;
     }
@@ -153,7 +153,14 @@ public class HTMLScanResultReportModelBuilder {
         scanTypeCount.increment(severity);
     }
 
-    Map<String, List<SecHubFinding>> createWebScanDataForSeverity(List<SecHubFinding> findings, List<Severity> severitiesToShow) {
+    /**
+     * Returns a map
+     * 
+     * @param findings
+     * @param severitiesToShow
+     * @return
+     */
+    Map<String, List<SecHubFinding>> createWebScanDataForSeverityGroupedAndSortedByName(List<SecHubFinding> findings, List<Severity> severitiesToShow) {
         /* @formatter:off */
         Map<String, List<SecHubFinding>> groupedFindingsByName = 
              findings.stream()
@@ -167,8 +174,17 @@ public class HTMLScanResultReportModelBuilder {
         return groupedAndSortedFindingsByName;
     }
 
-    List<HTMLCodeScanEntriesSecHubFindingData> createCodeScanDataList(List<SecHubFinding> findings, Map<Integer, List<HTMLScanResultCodeScanEntry>> codeScanEntries,
-            List<Severity> severitiesToShow) {
+    /**
+     * Returns a list containing HTMLCodeScanEntriesSecHubFindingData for the given
+     * findings.
+     * 
+     * @param findings
+     * @param codeScanEntries
+     * @param severitiesToShow
+     * @return list
+     */
+    List<HTMLCodeScanEntriesSecHubFindingData> createCodeScanDataList(List<SecHubFinding> findings,
+            Map<Integer, List<HTMLScanResultCodeScanEntry>> codeScanEntries, List<Severity> severitiesToShow) {
 
         List<HTMLCodeScanEntriesSecHubFindingData> htmlSecHubFindings = new LinkedList<>();
         /* @formatter:off */

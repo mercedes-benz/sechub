@@ -372,7 +372,7 @@ class HTMLScanResultReportModelBuilderTest {
         List<Severity> severities = List.of(Severity.HIGH);
 
         /* execute */
-        Map<String, List<SecHubFinding>> groupedAndSortedFindingsByName = builderToTest.createWebScanDataForSeverity(findings, severities);
+        Map<String, List<SecHubFinding>> groupedAndSortedFindingsByName = builderToTest.createWebScanDataForSeverityGroupedAndSortedByName(findings, severities);
 
         /* test */
         assertTrue(groupedAndSortedFindingsByName.isEmpty());
@@ -406,7 +406,7 @@ class HTMLScanResultReportModelBuilderTest {
         List<Severity> severities = List.of(Severity.HIGH);
 
         /* execute */
-        Map<String, List<SecHubFinding>> groupedAndSortedFindingsByName = builderToTest.createWebScanDataForSeverity(findings, severities);
+        Map<String, List<SecHubFinding>> groupedAndSortedFindingsByName = builderToTest.createWebScanDataForSeverityGroupedAndSortedByName(findings, severities);
         List<SecHubFinding> findingList = groupedAndSortedFindingsByName.get("Cross Site Scripting (Reflected)");
 
         /* test */
