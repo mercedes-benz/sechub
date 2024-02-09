@@ -27,7 +27,7 @@ public class ScanTypeCountTest {
 
         /* test */
         assertEquals(scanTypeCount.getScanType(), ScanType.CODE_SCAN);
-        
+
         assertEquals(scanTypeCount.getInfoSeverityCount(), 0);
         assertEquals(scanTypeCount.getUnclassifiedSeverityCount(), 0);
         assertEquals(scanTypeCount.getLowSeverityCount(), 0);

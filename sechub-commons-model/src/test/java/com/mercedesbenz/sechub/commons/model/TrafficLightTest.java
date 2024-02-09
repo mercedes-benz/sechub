@@ -91,32 +91,31 @@ public class TrafficLightTest {
             fail("Traffic light " + light + " has an empty severities list! This may not happen");
         }
     }
-    
+
     @Test
     void no_traffic_light_severity_cross_over() {
         List<Severity> severitiesAll = new ArrayList<>();
-        for (TrafficLight trafficLight: TrafficLight.values()) {
+        for (TrafficLight trafficLight : TrafficLight.values()) {
             List<Severity> severities = trafficLight.getSeverities();
-            for (Severity severity: severities) {
+            for (Severity severity : severities) {
                 if (severitiesAll.contains(severity)) {
-                    fail("Severity cross over detected: "+ severity +" is defined in "+trafficLight+" but also in at least one other traffic light");
+                    fail("Severity cross over detected: " + severity + " is defined in " + trafficLight + " but also in at least one other traffic light");
                 }
                 severitiesAll.add(severity);
             }
         }
     }
-    
+
     @Test
     void traffic_lights_contain_all_severities() {
         Set<Severity> severitiesAll = new HashSet<>();
-        for (TrafficLight trafficLight: TrafficLight.values()) {
+        for (TrafficLight trafficLight : TrafficLight.values()) {
             List<Severity> severities = trafficLight.getSeverities();
-            for (Severity severity: severities) {
+            for (Severity severity : severities) {
                 severitiesAll.add(severity);
             }
         }
         assertEquals(Severity.values().length, severitiesAll.size());
     }
-    
 
 }

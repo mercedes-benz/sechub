@@ -32,7 +32,7 @@ public class SecHubExecutionScenarioSecHubClientIntTest {
 
     private static final String EXTENSION_JSON = ".json";
     private static final String EXTENSION_HTML = ".html";
-    
+
     private static final String REPORT_CLIENT_TEST_1_CODESCAN_GREEN = "report_client-test-1-codescan-green.html";
     private static final String REPORT_CLIENT_TEST_1_CODESCAN_GREEN_HTML = REPORT_CLIENT_TEST_1_CODESCAN_GREEN + EXTENSION_HTML;
     private static final String REPORT_CLIENT_TEST_1_CODESCAN_GREEN_JSON = REPORT_CLIENT_TEST_1_CODESCAN_GREEN + EXTENSION_JSON;
@@ -582,7 +582,7 @@ public class SecHubExecutionScenarioSecHubClientIntTest {
                 startSynchronScanFor(project, CLIENT_JSON_WEBSCAN_RED_MANYFINDINGS_ZERO_WAIT);
 
         /* test 2 */
-        assertResult(result).   
+        assertResult(result).
             isRed().
             hasExitCode(1);
 
@@ -593,11 +593,11 @@ public class SecHubExecutionScenarioSecHubClientIntTest {
 
         String htmlReport2 = as(USER_1).getHTMLJobReport(project, result.getSechubJobUUID());
         storeTestReport(REPORT_CLIENT_TEST_4_WEBSCAN_RED_MULTIPLE_FINDINGS_HTML, htmlReport2);
-        
+
         /* test 3 - check content is as expected */
         assertHTMLReport(htmlReport2, REPORT_CLIENT_TEST_4_WEBSCAN_RED_MULTIPLE_FINDINGS_HTML).containsAtLeastOneOpenDetailsBlock();
         assertHTMLReport(htmlReport, REPORT_CLIENT_TEST_3_WEBSCAN_RED_ONE_FINDING_HTML).containsAtLeastOneOpenDetailsBlock();
-        
+
         /* @formatter:on */
 
     }

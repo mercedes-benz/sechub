@@ -24,28 +24,37 @@ class HTMLReportHelperTest {
 
     @Test
     void createSummaryTableAnkerIdForRed_scantype_codescan() {
-        /* just check this works - we use internally another method which is tested in a generic way */
+        /*
+         * just check this works - we use internally another method which is tested in a
+         * generic way
+         */
         assertEquals("#redCodeScanTable", helperToTest.createSummaryTableAnkerLinkForRed(ScanType.CODE_SCAN));
     }
-    
+
     @Test
     void createSummaryTableAnkerIdForYellow_scantype_webscan() {
-        /* just check this works - we use internally another method which is tested in a generic way */
+        /*
+         * just check this works - we use internally another method which is tested in a
+         * generic way
+         */
         assertEquals("#yellowWebScanTable", helperToTest.createSummaryTableAnkerLinkForYellow(ScanType.WEB_SCAN));
     }
-    
+
     @Test
     void createSummaryTableAnkerIdForGreen_scantype_infrascan() {
-        /* just check this works - we use internally another method which is tested in a generic way */
+        /*
+         * just check this works - we use internally another method which is tested in a
+         * generic way
+         */
         assertEquals("#greenInfraScanTable", helperToTest.createSummaryTableAnkerLinkForGreen(ScanType.INFRA_SCAN));
     }
-    
+
     @EnumSource(TrafficLight.class)
     @ParameterizedTest
     void createSummaryTableAnkerId_for_given_traffic_light_and_every_scantype(TrafficLight trafficLight) {
-        
+
         String expectedPrefix = trafficLight.name().toLowerCase();
-        
+
         for (ScanType scanType : ScanType.values()) {
             String scanTypeString = scanType.getId();
             scanTypeString = scanTypeString.substring(0, 1).toUpperCase() + scanTypeString.substring(1);
@@ -58,8 +67,8 @@ class HTMLReportHelperTest {
 
     @Test
     /*
-     * This is an explicit test for dedicated strings - if the parameterized unit tests
-     * would calculate it wrong...
+     * This is an explicit test for dedicated strings - if the parameterized unit
+     * tests would calculate it wrong...
      */
     void createSummaryTableAnkerId_codeScanWithTrafficLights() {
 

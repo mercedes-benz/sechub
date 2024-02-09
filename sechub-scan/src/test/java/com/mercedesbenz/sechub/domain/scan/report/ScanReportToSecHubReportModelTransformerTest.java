@@ -90,7 +90,7 @@ class ScanReportToSecHubReportModelTransformerTest {
         lowInfraScanFinding.setSeverity(Severity.LOW);
         lowInfraScanFinding.setName(LOW_FINDING_NAME);
         lowInfraScanFinding.setType(ScanType.INFRA_SCAN);
-        
+
         lowCodeScanFinding = new SecHubFinding();
         lowCodeScanFinding.setCweId(LOW_FINDING_CWEID);
         lowCodeScanFinding.setSeverity(Severity.LOW);
@@ -109,7 +109,7 @@ class ScanReportToSecHubReportModelTransformerTest {
         unclassifiedFinding.setName(UNCLASSIFIED_FINDING_NAME);
 
     }
-    
+
     @Test
     void report_with_3_finding_is_transformed_to_model_with_3_findings() {
         /* prepare */
@@ -126,7 +126,7 @@ class ScanReportToSecHubReportModelTransformerTest {
         List<SecHubFinding> findings = result.getResult().getFindings();
         assertEquals(3, findings.size());
     }
-    
+
     @Test
     void report_with_no_finding_is_transformed_with_meta_data_details() {
         /* prepare */
@@ -144,7 +144,6 @@ class ScanReportToSecHubReportModelTransformerTest {
         List<ScanTypeSummaryFindingOverviewData> critical = result.getMetaData().get().getSummary().getCodeScan().getDetails().getCritical();
         assertEquals(0, critical.size());
     }
-
 
     @Test
     void report_with_1_critical_codescan_finding_is_transformed_with_meta_data_details() {
@@ -248,7 +247,7 @@ class ScanReportToSecHubReportModelTransformerTest {
         /* prepare */
         /* @formatter:off */
         ScanReport report = buildReport(
-                criticalCodeScanFinding2, 
+                criticalCodeScanFinding2,
                 lowCodeScanFinding,
                 mediumWebScanFinding,
                 mediumWebScanFinding,
@@ -256,7 +255,7 @@ class ScanReportToSecHubReportModelTransformerTest {
                 highSecretScanFinding,
                 infoLicenseFinding,
                 lowInfraScanFinding,
-                criticalCodeScanFinding1, 
+                criticalCodeScanFinding1,
                 criticalCodeScanFinding2,
                 criticalCodeScanFinding2,
                 criticalCodeScanFinding1);
@@ -280,19 +279,19 @@ class ScanReportToSecHubReportModelTransformerTest {
         assertEquals(1, webScan.getRed());
         assertEquals(2, webScan.getYellow());
         assertEquals(3, webScan.getTotal());
-        
+
         SecHubReportScanTypeSummary secretScan = summary.getSecretScan();
         assertEquals(1, secretScan.getRed());
         assertEquals(1, secretScan.getTotal());
-        
+
         SecHubReportScanTypeSummary infraScan = summary.getInfraScan();
         assertEquals(1, infraScan.getGreen());
         assertEquals(1, infraScan.getTotal());
-        
+
         SecHubReportScanTypeSummary licenseScan = summary.getLicenseScan();
         assertEquals(1, licenseScan.getGreen());
         assertEquals(1, licenseScan.getTotal());
-        
+
         assertEquals(12, result.getResult().getCount());
     }
 

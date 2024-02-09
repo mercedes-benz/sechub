@@ -19,8 +19,8 @@ public class ScanTypeCount implements Comparable<ScanTypeCount> {
 
     private ScanTypeCount(ScanType scanType) {
         this.scanType = scanType;
-        
-        /* init atomic long values  */
+
+        /* init atomic long values */
         for (Severity severity : Severity.values()) {
             severityToAtomicLongCountMap.put(severity, new AtomicLong(0));
         }

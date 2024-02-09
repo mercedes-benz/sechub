@@ -155,19 +155,19 @@ public class HTMLScanResultReportModelBuilder {
 
     /**
      * Returns a map
-     * 
+     *
      * @param findings
      * @param severitiesToShow
      * @return
      */
     Map<String, List<SecHubFinding>> createWebScanDataForSeverityGroupedAndSortedByName(List<SecHubFinding> findings, List<Severity> severitiesToShow) {
         /* @formatter:off */
-        Map<String, List<SecHubFinding>> groupedFindingsByName = 
+        Map<String, List<SecHubFinding>> groupedFindingsByName =
              findings.stream()
                 .filter(finding -> severitiesToShow.contains(finding.getSeverity()))
                 .filter(finding -> finding.hasScanType(ScanType.WEB_SCAN.getId()))
                 .collect(groupingBy(SecHubFinding::getName));
-        
+
         /* @formatter:on */
         Map<String, List<SecHubFinding>> groupedAndSortedFindingsByName = new TreeMap<>(groupedFindingsByName);
 
@@ -177,7 +177,7 @@ public class HTMLScanResultReportModelBuilder {
     /**
      * Returns a list containing HTMLCodeScanEntriesSecHubFindingData for the given
      * findings.
-     * 
+     *
      * @param findings
      * @param codeScanEntries
      * @param severitiesToShow
@@ -188,7 +188,7 @@ public class HTMLScanResultReportModelBuilder {
 
         List<HTMLCodeScanEntriesSecHubFindingData> htmlSecHubFindings = new LinkedList<>();
         /* @formatter:off */
-        Map<String, List<SecHubFinding>> groupedFindingsByName = 
+        Map<String, List<SecHubFinding>> groupedFindingsByName =
              findings.stream()
                 .filter(finding -> severitiesToShow.contains(finding.getSeverity()))
                 .collect(groupingBy(SecHubFinding::getName));

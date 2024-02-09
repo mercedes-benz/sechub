@@ -5,9 +5,9 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class SecHubReportSummary {
-    
+
     public SecHubReportSummary() {
-        
+
     }
 
     SecHubReportScanTypeSummary codeScan = new SecHubReportScanTypeSummary();

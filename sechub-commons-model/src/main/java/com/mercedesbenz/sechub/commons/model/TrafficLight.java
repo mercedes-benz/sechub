@@ -23,23 +23,22 @@ public enum TrafficLight {
     /* Traffic light is "turned off" */
     OFF;
 
-    
     private List<Severity> severities;
 
-    private TrafficLight(Severity ...severities) {
+    private TrafficLight(Severity... severities) {
         List<Severity> target = new ArrayList<>(3);
         target.addAll(Arrays.asList(severities));
-        
-        this.severities=Collections.unmodifiableList(target);
+
+        this.severities = Collections.unmodifiableList(target);
     }
-    
+
     /**
      * @return severities which are represented by this traffic light
      */
     public List<Severity> getSeverities() {
         return severities;
     }
-    
+
     /**
      * Tries to identify traffic light from string.
      *

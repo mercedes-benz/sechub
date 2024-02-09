@@ -15,10 +15,11 @@ public class AssertHTMLReport {
     private String htmlLocation;
 
     public static AssertHTMLReport assertHTMLReport(String html) {
-        return new AssertHTMLReport(html,"HTML from memory");
+        return new AssertHTMLReport(html, "HTML from memory");
     }
+
     public static AssertHTMLReport assertHTMLReport(String html, String fileName) {
-        return new AssertHTMLReport(html,"HTML from file: "+fileName);
+        return new AssertHTMLReport(html, "HTML from file: " + fileName);
     }
 
     private AssertHTMLReport(String html, String htmlLocation) {
@@ -26,8 +27,8 @@ public class AssertHTMLReport {
         assertNotNull("HTML location may not be null", htmlLocation);
 
         this.html = html;
-        this.htmlLocation=htmlLocation;
-        
+        this.htmlLocation = htmlLocation;
+
         if (!html.contains("<html")) {
             failWithDump("The report must at least contain a HTML start tag");
         }
@@ -43,7 +44,7 @@ public class AssertHTMLReport {
     }
 
     private void failWithDump(String message) {
-        fail(htmlLocation+" -> " + message + "\n" + html);
+        fail(htmlLocation + " -> " + message + "\n" + html);
     }
 
     public AssertHTMLReport hasMetaDataLabel(String key, String value) {

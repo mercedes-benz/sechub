@@ -6,8 +6,8 @@ import java.util.List;
 import com.mercedesbenz.sechub.commons.model.SecHubFinding;
 
 /**
- * This class represents finding data with additional code entry data.
- * Currently it extends SecHubFinding.
+ * This class represents finding data with additional code entry data. Currently
+ * it extends SecHubFinding.
  */
 public class HTMLCodeScanEntriesSecHubFindingData extends SecHubFinding {
 

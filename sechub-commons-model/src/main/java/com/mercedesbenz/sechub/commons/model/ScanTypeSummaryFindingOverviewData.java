@@ -11,7 +11,7 @@ public class ScanTypeSummaryFindingOverviewData {
     public ScanTypeSummaryFindingOverviewData() {
         /* for serialization */
     }
-    
+
     public ScanTypeSummaryFindingOverviewData(Integer cweId, String name) {
         this.cweId = cweId;
         this.name = name;
@@ -24,11 +24,11 @@ public class ScanTypeSummaryFindingOverviewData {
     public void setCweId(Integer cweId) {
         this.cweId = cweId;
     }
-    
+
     public void setName(String name) {
         this.name = name;
     }
-    
+
     public Integer getCweId() {
         return cweId;
     }

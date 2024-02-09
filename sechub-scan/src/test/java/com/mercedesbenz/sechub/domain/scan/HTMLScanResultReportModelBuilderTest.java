@@ -372,7 +372,8 @@ class HTMLScanResultReportModelBuilderTest {
         List<Severity> severities = List.of(Severity.HIGH);
 
         /* execute */
-        Map<String, List<SecHubFinding>> groupedAndSortedFindingsByName = builderToTest.createWebScanDataForSeverityGroupedAndSortedByName(findings, severities);
+        Map<String, List<SecHubFinding>> groupedAndSortedFindingsByName = builderToTest.createWebScanDataForSeverityGroupedAndSortedByName(findings,
+                severities);
 
         /* test */
         assertTrue(groupedAndSortedFindingsByName.isEmpty());
@@ -388,14 +389,14 @@ class HTMLScanResultReportModelBuilderTest {
         finding1.setSeverity(Severity.HIGH);
         finding1.setName("Cross Site Scripting (Reflected)");
         findings.add(finding1);
-        
+
         SecHubFinding finding2 = new SecHubFinding();
         finding2.setId(1);
         finding2.setType(ScanType.WEB_SCAN);
         finding2.setSeverity(Severity.HIGH);
         finding2.setName("Cross Site Scripting (Reflected)");
         findings.add(finding2);
-        
+
         SecHubFinding finding3 = new SecHubFinding();
         finding3.setId(2);
         finding3.setType(ScanType.WEB_SCAN);
@@ -406,7 +407,8 @@ class HTMLScanResultReportModelBuilderTest {
         List<Severity> severities = List.of(Severity.HIGH);
 
         /* execute */
-        Map<String, List<SecHubFinding>> groupedAndSortedFindingsByName = builderToTest.createWebScanDataForSeverityGroupedAndSortedByName(findings, severities);
+        Map<String, List<SecHubFinding>> groupedAndSortedFindingsByName = builderToTest.createWebScanDataForSeverityGroupedAndSortedByName(findings,
+                severities);
         List<SecHubFinding> findingList = groupedAndSortedFindingsByName.get("Cross Site Scripting (Reflected)");
 
         /* test */
@@ -444,14 +446,14 @@ class HTMLScanResultReportModelBuilderTest {
         finding1.setSeverity(Severity.HIGH);
         finding1.setName("Deferring unsafe method \"Close\" on type \"*os.File\"");
         findings.add(finding1);
-        
+
         SecHubFinding finding2 = new SecHubFinding();
         finding2.setId(1);
         finding2.setType(ScanType.CODE_SCAN);
         finding2.setSeverity(Severity.HIGH);
         finding2.setName("Deferring unsafe method \"Close\" on type \"*os.File\"");
         findings.add(finding2);
-        
+
         SecHubFinding finding3 = new SecHubFinding();
         finding3.setId(2);
         finding3.setType(ScanType.CODE_SCAN);

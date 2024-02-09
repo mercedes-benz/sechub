@@ -145,6 +145,7 @@ public class TestAPI {
     public static AssertHTMLReport assertHTMLReport(String html) {
         return AssertHTMLReport.assertHTMLReport(html);
     }
+
     /**
      * Asserts given report HTML
      *
@@ -152,7 +153,7 @@ public class TestAPI {
      * @return assert object
      */
     public static AssertHTMLReport assertHTMLReport(String html, String fileName) {
-        return AssertHTMLReport.assertHTMLReport(html,fileName);
+        return AssertHTMLReport.assertHTMLReport(html, fileName);
     }
 
     public static AssertFullScanData assertFullScanDataZipFile(File file) {

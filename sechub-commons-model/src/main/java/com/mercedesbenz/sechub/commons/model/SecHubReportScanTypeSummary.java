@@ -4,8 +4,8 @@ package com.mercedesbenz.sechub.commons.model;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 /**
- * Represents the report summary for one dedicated scan type.
- * Just a data representation
+ * Represents the report summary for one dedicated scan type. Just a data
+ * representation
  *
  */
 @JsonIgnoreProperties(ignoreUnknown = true)

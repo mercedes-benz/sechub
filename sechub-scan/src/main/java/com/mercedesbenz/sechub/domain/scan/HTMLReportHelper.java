@@ -39,16 +39,16 @@ public class HTMLReportHelper {
     String createSummaryTableAnkerId(TrafficLight trafficLight, ScanType scanType) {
         String trafficLightPrefix = "unknown";
         String scanTypeName = "NoScanType";
-        
+
         if (trafficLight != null) {
             trafficLightPrefix = trafficLight.name().toLowerCase();
         }
-        
+
         if (scanType != null) {
             scanTypeName = scanType.getId();
             scanTypeName = scanTypeName.substring(0, 1).toUpperCase() + scanTypeName.substring(1);
         }
-        
+
         return trafficLightPrefix + scanTypeName + "Table";
     }
 
