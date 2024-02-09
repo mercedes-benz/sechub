@@ -26,7 +26,7 @@ public class SecHubReportMetaDataSummaryDetailsTest {
     static final String INFO_FINDING_NAME = "Info name";
     static final String UNCLASSIFIED_FINDING_NAME = "Unclassified name";
 
-    SecHubReportMetaDataSummaryDetails secHubReportMetaDataSummaryDetails;
+    ScanTypeSummaryDetailData scanTypeSummaryDetailData;
     SecHubFinding criticalFinding;
     SecHubFinding highFinding;
     SecHubFinding mediumFinding;
@@ -36,7 +36,7 @@ public class SecHubReportMetaDataSummaryDetailsTest {
 
     @BeforeEach
     void beforeEach() {
-        secHubReportMetaDataSummaryDetails = new SecHubReportMetaDataSummaryDetails();
+        scanTypeSummaryDetailData = new ScanTypeSummaryDetailData();
 
         criticalFinding = new SecHubFinding();
         criticalFinding.setCweId(CRITICAL_FINDING_CWEID);
@@ -72,136 +72,136 @@ public class SecHubReportMetaDataSummaryDetailsTest {
     @Test
     void new_element_for_critical_finding_in_high_map_must_be_created() {
         /* execute */
-        secHubReportMetaDataSummaryDetails.detailsHelper(criticalFinding);
+        scanTypeSummaryDetailData.addToCalculation(criticalFinding);
 
         /* test */
-        assertNotNull(secHubReportMetaDataSummaryDetails.high.get(CRITICAL_FINDING_NAME));
+        assertNotNull(scanTypeSummaryDetailData.high.get(CRITICAL_FINDING_NAME));
     }
 
     @Test
     void new_element_for_high_finding_in_high_map_must_be_created() {
         /* execute */
-        secHubReportMetaDataSummaryDetails.detailsHelper(highFinding);
+        scanTypeSummaryDetailData.addToCalculation(highFinding);
 
         /* test */
-        assertNotNull(secHubReportMetaDataSummaryDetails.high.get(HIGH_FINDING_NAME));
+        assertNotNull(scanTypeSummaryDetailData.high.get(HIGH_FINDING_NAME));
     }
 
     @Test
     void new_element_for_medium_finding_in_medium_map_must_be_created() {
         /* execute */
-        secHubReportMetaDataSummaryDetails.detailsHelper(mediumFinding);
+        scanTypeSummaryDetailData.addToCalculation(mediumFinding);
 
         /* test */
-        assertNotNull(secHubReportMetaDataSummaryDetails.medium.get(MEDIUM_FINDING_NAME));
+        assertNotNull(scanTypeSummaryDetailData.medium.get(MEDIUM_FINDING_NAME));
     }
 
     @Test
     void new_element_for_low_finding_in_low_map_must_be_created() {
         /* execute */
-        secHubReportMetaDataSummaryDetails.detailsHelper(lowFinding);
+        scanTypeSummaryDetailData.addToCalculation(lowFinding);
 
         /* test */
-        assertNotNull(secHubReportMetaDataSummaryDetails.low.get(LOW_FINDING_NAME));
+        assertNotNull(scanTypeSummaryDetailData.low.get(LOW_FINDING_NAME));
     }
 
     @Test
     void new_element_for_info_finding_in_low_map_must_be_created() {
         /* execute */
-        secHubReportMetaDataSummaryDetails.detailsHelper(infoFinding);
+        scanTypeSummaryDetailData.addToCalculation(infoFinding);
 
         /* test */
-        assertNotNull(secHubReportMetaDataSummaryDetails.low.get(INFO_FINDING_NAME));
+        assertNotNull(scanTypeSummaryDetailData.low.get(INFO_FINDING_NAME));
     }
 
     @Test
     void new_element_for_unclassified_finding_in_low_map_must_be_created() {
         /* execute */
-        secHubReportMetaDataSummaryDetails.detailsHelper(unclassifiedFinding);
+        scanTypeSummaryDetailData.addToCalculation(unclassifiedFinding);
 
         /* test */
-        assertNotNull(secHubReportMetaDataSummaryDetails.low.get(UNCLASSIFIED_FINDING_NAME));
+        assertNotNull(scanTypeSummaryDetailData.low.get(UNCLASSIFIED_FINDING_NAME));
     }
 
     @Test
     void instance_variables_of_new_element_in_high_map_initialized_correctly() {
         /* execute */
-        secHubReportMetaDataSummaryDetails.detailsHelper(highFinding);
-        SecHubReportMetaDataSummaryDetails.SeverityDetails severityDetails = secHubReportMetaDataSummaryDetails.high.get(HIGH_FINDING_NAME);
+        scanTypeSummaryDetailData.addToCalculation(highFinding);
+        ScanTypeSummaryDetailData.ScanTypeSummaryFindingOverviewData scanTypeSummaryFindingOverviewData = scanTypeSummaryDetailData.high.get(HIGH_FINDING_NAME);
 
         /* test */
-        assertEquals(HIGH_FINDING_CWEID, severityDetails.getCweId());
-        assertEquals(HIGH_FINDING_NAME, severityDetails.getName());
-        assertEquals(1, severityDetails.getCount());
+        assertEquals(HIGH_FINDING_CWEID, scanTypeSummaryFindingOverviewData.getCweId());
+        assertEquals(HIGH_FINDING_NAME, scanTypeSummaryFindingOverviewData.getName());
+        assertEquals(1, scanTypeSummaryFindingOverviewData.getCount());
     }
 
     @Test
     void instance_variables_of_new_element_in_medium_map_initialized_correctly() {
         /* execute */
-        secHubReportMetaDataSummaryDetails.detailsHelper(mediumFinding);
-        SecHubReportMetaDataSummaryDetails.SeverityDetails severityDetails = secHubReportMetaDataSummaryDetails.medium.get(MEDIUM_FINDING_NAME);
+        scanTypeSummaryDetailData.addToCalculation(mediumFinding);
+        ScanTypeSummaryDetailData.ScanTypeSummaryFindingOverviewData scanTypeSummaryFindingOverviewData = scanTypeSummaryDetailData.medium.get(MEDIUM_FINDING_NAME);
 
         /* test */
-        assertEquals(MEDIUM_FINDING_CWEID, severityDetails.getCweId());
-        assertEquals(MEDIUM_FINDING_NAME, severityDetails.getName());
-        assertEquals(1, severityDetails.getCount());
+        assertEquals(MEDIUM_FINDING_CWEID, scanTypeSummaryFindingOverviewData.getCweId());
+        assertEquals(MEDIUM_FINDING_NAME, scanTypeSummaryFindingOverviewData.getName());
+        assertEquals(1, scanTypeSummaryFindingOverviewData.getCount());
     }
 
     @Test
     void instance_variables_of_new_element_in_low_map_initialized_correctly() {
         /* execute */
-        secHubReportMetaDataSummaryDetails.detailsHelper(lowFinding);
-        SecHubReportMetaDataSummaryDetails.SeverityDetails severityDetails = secHubReportMetaDataSummaryDetails.low.get(LOW_FINDING_NAME);
+        scanTypeSummaryDetailData.addToCalculation(lowFinding);
+        ScanTypeSummaryDetailData.ScanTypeSummaryFindingOverviewData scanTypeSummaryFindingOverviewData = scanTypeSummaryDetailData.low.get(LOW_FINDING_NAME);
 
         /* test */
-        assertEquals(LOW_FINDING_CWEID, severityDetails.getCweId());
-        assertEquals(LOW_FINDING_NAME, severityDetails.getName());
-        assertEquals(1, severityDetails.getCount());
+        assertEquals(LOW_FINDING_CWEID, scanTypeSummaryFindingOverviewData.getCweId());
+        assertEquals(LOW_FINDING_NAME, scanTypeSummaryFindingOverviewData.getName());
+        assertEquals(1, scanTypeSummaryFindingOverviewData.getCount());
     }
 
     @Test
     void if_adding_multiple_similar_findings_into_high_map_counter_contains_correct_value() {
         /* execute */
         for (int i = 0; i < 8; i++) {
-            secHubReportMetaDataSummaryDetails.detailsHelper(highFinding);
+            scanTypeSummaryDetailData.addToCalculation(highFinding);
         }
-        SecHubReportMetaDataSummaryDetails.SeverityDetails severityDetails = secHubReportMetaDataSummaryDetails.high.get(HIGH_FINDING_NAME);
+        ScanTypeSummaryDetailData.ScanTypeSummaryFindingOverviewData scanTypeSummaryFindingOverviewData = scanTypeSummaryDetailData.high.get(HIGH_FINDING_NAME);
 
         /* test */
-        assertEquals(8, severityDetails.getCount());
+        assertEquals(8, scanTypeSummaryFindingOverviewData.getCount());
     }
 
     @Test
     void if_adding_multiple_similar_findings_into_medium_map_counter_contains_correct_value() {
         /* execute */
         for (int i = 0; i < 4; i++) {
-            secHubReportMetaDataSummaryDetails.detailsHelper(mediumFinding);
+            scanTypeSummaryDetailData.addToCalculation(mediumFinding);
         }
-        SecHubReportMetaDataSummaryDetails.SeverityDetails severityDetails = secHubReportMetaDataSummaryDetails.medium.get(MEDIUM_FINDING_NAME);
+        ScanTypeSummaryDetailData.ScanTypeSummaryFindingOverviewData scanTypeSummaryFindingOverviewData = scanTypeSummaryDetailData.medium.get(MEDIUM_FINDING_NAME);
 
         /* test */
-        assertEquals(4, severityDetails.getCount());
+        assertEquals(4, scanTypeSummaryFindingOverviewData.getCount());
     }
 
     @Test
     void if_adding_multiple_similar_findings_into_low_map_counter_contains_correct_value() {
         /* execute */
         for (int i = 0; i < 11; i++) {
-            secHubReportMetaDataSummaryDetails.detailsHelper(lowFinding);
+            scanTypeSummaryDetailData.addToCalculation(lowFinding);
         }
-        SecHubReportMetaDataSummaryDetails.SeverityDetails severityDetails = secHubReportMetaDataSummaryDetails.low.get(LOW_FINDING_NAME);
+        ScanTypeSummaryDetailData.ScanTypeSummaryFindingOverviewData scanTypeSummaryFindingOverviewData = scanTypeSummaryDetailData.low.get(LOW_FINDING_NAME);
 
         /* test */
-        assertEquals(11, severityDetails.getCount());
+        assertEquals(11, scanTypeSummaryFindingOverviewData.getCount());
     }
 
     @Test
     void must_get_correct_list_must_from_high_map() {
         /* prepare */
-        secHubReportMetaDataSummaryDetails.detailsHelper(highFinding);
+        scanTypeSummaryDetailData.addToCalculation(highFinding);
 
         /* execute */
-        List<SecHubReportMetaDataSummaryDetails.SeverityDetails> list = secHubReportMetaDataSummaryDetails.getHigh();
+        List<ScanTypeSummaryDetailData.ScanTypeSummaryFindingOverviewData> list = scanTypeSummaryDetailData.getHigh();
 
         /* test */
         assertTrue(!list.isEmpty());
@@ -214,10 +214,10 @@ public class SecHubReportMetaDataSummaryDetailsTest {
     @Test
     void must_get_correct_list_from_medium_map() {
         /* prepare */
-        secHubReportMetaDataSummaryDetails.detailsHelper(mediumFinding);
+        scanTypeSummaryDetailData.addToCalculation(mediumFinding);
 
         /* execute */
-        List<SecHubReportMetaDataSummaryDetails.SeverityDetails> list = secHubReportMetaDataSummaryDetails.getMedium();
+        List<ScanTypeSummaryDetailData.ScanTypeSummaryFindingOverviewData> list = scanTypeSummaryDetailData.getMedium();
 
         /* test */
         assertTrue(!list.isEmpty());
@@ -230,10 +230,10 @@ public class SecHubReportMetaDataSummaryDetailsTest {
     @Test
     void must_get_correct_list_from_low_map() {
         /* prepare */
-        secHubReportMetaDataSummaryDetails.detailsHelper(lowFinding);
+        scanTypeSummaryDetailData.addToCalculation(lowFinding);
 
         /* execute */
-        List<SecHubReportMetaDataSummaryDetails.SeverityDetails> list = secHubReportMetaDataSummaryDetails.getLow();
+        List<ScanTypeSummaryDetailData.ScanTypeSummaryFindingOverviewData> list = scanTypeSummaryDetailData.getLow();
 
         /* test */
         assertTrue(!list.isEmpty());

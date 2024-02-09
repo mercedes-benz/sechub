@@ -93,9 +93,6 @@ public class ScanSecHubReport implements SecHubReportData, JSONable<ScanSecHubRe
         SecHubReportMetaData reportMetaData = new SecHubReportMetaData();
         setMetaData(reportMetaData);
 
-        SecHubReportSummary secHubReportSummary = new SecHubReportSummary();
-        reportMetaData.setSummary(secHubReportSummary);
-
         /* calculate data */
         buildCalculatedData(report);
     }
@@ -108,21 +105,22 @@ public class ScanSecHubReport implements SecHubReportData, JSONable<ScanSecHubRe
 
     protected void calculateSummary() {
         var summary = model.getMetaData().get().getSummary();
-        SecHubReportMetaDataSummary codeScan = summary.getCodeScan();
-        SecHubReportMetaDataSummary infraScan = summary.getInfraScan();
-        SecHubReportMetaDataSummary licenseScan = summary.getLicenseScan();
-        SecHubReportMetaDataSummary secretScan = summary.getSecretScan();
-        SecHubReportMetaDataSummary webScan = summary.getWebScan();
+        
+        SecHubReportScanTypeSummary codeScan = summary.getCodeScan();
+        SecHubReportScanTypeSummary infraScan = summary.getInfraScan();
+        SecHubReportScanTypeSummary licenseScan = summary.getLicenseScan();
+        SecHubReportScanTypeSummary secretScan = summary.getSecretScan();
+        SecHubReportScanTypeSummary webScan = summary.getWebScan();
 
         for (SecHubFinding finding : model.getResult().getFindings()) {
             ScanType scanType = finding.getType();
             if (scanType != null) {
                 switch (scanType) {
-                case CODE_SCAN -> codeScan.reportScanHelper(finding);
-                case INFRA_SCAN -> infraScan.reportScanHelper(finding);
-                case WEB_SCAN -> webScan.reportScanHelper(finding);
-                case LICENSE_SCAN -> licenseScan.reportScanHelper(finding);
-                case SECRET_SCAN -> secretScan.reportScanHelper(finding);
+                case CODE_SCAN -> codeScan.addToCalculation(finding);
+                case INFRA_SCAN -> infraScan.addToCalculation(finding);
+                case WEB_SCAN -> webScan.addToCalculation(finding);
+                case LICENSE_SCAN -> licenseScan.addToCalculation(finding);
+                case SECRET_SCAN -> secretScan.addToCalculation(finding);
                 }
             }
         }

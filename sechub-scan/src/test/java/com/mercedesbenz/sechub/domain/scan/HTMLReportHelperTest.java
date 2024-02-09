@@ -25,19 +25,19 @@ class HTMLReportHelperTest {
     @Test
     void createSummaryTableAnkerIdForRed_scantype_codescan() {
         /* just check this works - we use internally another method which is tested in a generic way */
-        assertEquals("redCodeScanTable", helperToTest.createSummaryTableAnkerIdForRed(ScanType.CODE_SCAN));
+        assertEquals("#redCodeScanTable", helperToTest.createSummaryTableAnkerLinkForRed(ScanType.CODE_SCAN));
     }
     
     @Test
     void createSummaryTableAnkerIdForYellow_scantype_webscan() {
         /* just check this works - we use internally another method which is tested in a generic way */
-        assertEquals("yellowWebScanTable", helperToTest.createSummaryTableAnkerIdForYellow(ScanType.WEB_SCAN));
+        assertEquals("#yellowWebScanTable", helperToTest.createSummaryTableAnkerLinkForYellow(ScanType.WEB_SCAN));
     }
     
     @Test
     void createSummaryTableAnkerIdForGreen_scantype_infrascan() {
         /* just check this works - we use internally another method which is tested in a generic way */
-        assertEquals("greenInfraScanTable", helperToTest.createSummaryTableAnkerIdForGreen(ScanType.INFRA_SCAN));
+        assertEquals("#greenInfraScanTable", helperToTest.createSummaryTableAnkerLinkForGreen(ScanType.INFRA_SCAN));
     }
     
     @EnumSource(TrafficLight.class)

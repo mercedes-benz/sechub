@@ -1,20 +1,29 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.domain.scan;
 
-import com.mercedesbenz.sechub.commons.model.ScanType;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.concurrent.atomic.AtomicLong;
 
+import com.mercedesbenz.sechub.commons.model.ScanType;
+import com.mercedesbenz.sechub.commons.model.Severity;
+
+/**
+ * Provides methods to increment and fetch count information of severities for
+ * defined scan type
+ */
 public class ScanTypeCount implements Comparable<ScanTypeCount> {
 
     private ScanType scanType;
-    protected long highSeverityCount;
-    protected long mediumSeverityCount;
-    protected long lowSeverityCount;
+    Map<Severity, AtomicLong> severityToAtomicLongCountMap = new HashMap<>();
 
     private ScanTypeCount(ScanType scanType) {
         this.scanType = scanType;
-        highSeverityCount = 0;
-        mediumSeverityCount = 0;
-        lowSeverityCount = 0;
+        
+        /* init atomic long values  */
+        for (Severity severity : Severity.values()) {
+            severityToAtomicLongCountMap.put(severity, new AtomicLong(0));
+        }
     }
 
     public static ScanTypeCount of(ScanType scanType) {
@@ -28,28 +37,28 @@ public class ScanTypeCount implements Comparable<ScanTypeCount> {
         return scanType;
     }
 
+    public long getCriticalSeverityCount() {
+        return getCount(Severity.CRITICAL);
+    }
+
     public long getHighSeverityCount() {
-        return highSeverityCount;
+        return getCount(Severity.HIGH);
     }
 
     public long getMediumSeverityCount() {
-        return mediumSeverityCount;
+        return getCount(Severity.MEDIUM);
     }
 
     public long getLowSeverityCount() {
-        return lowSeverityCount;
+        return getCount(Severity.LOW);
     }
 
-    public void incrementHighSeverityCount() {
-        this.highSeverityCount++;
+    public long getInfoSeverityCount() {
+        return getCount(Severity.INFO);
     }
 
-    public void incrementMediumSeverityCount() {
-        this.mediumSeverityCount++;
-    }
-
-    public void incrementLowSeverityCount() {
-        this.lowSeverityCount++;
+    public long getUnclassifiedSeverityCount() {
+        return getCount(Severity.UNCLASSIFIED);
     }
 
     @Override
@@ -59,6 +68,21 @@ public class ScanTypeCount implements Comparable<ScanTypeCount> {
         }
         String descriptionA = this.scanType.getDescription();
         String descriptionB = o.scanType.getDescription();
+
         return descriptionA.compareTo(descriptionB);
+    }
+
+    /*
+     * Why not making this method public but providing explicit getters? Because of
+     * thymeleaf templating. Here usage of enums is sometimes a problem. It is much
+     * easier to have dedicated getters... The setter is different, this is done
+     * outside.
+     */
+    private long getCount(Severity severity) {
+        return severityToAtomicLongCountMap.get(severity).longValue();
+    }
+
+    public void increment(Severity severity) {
+        severityToAtomicLongCountMap.get(severity).incrementAndGet();
     }
 }

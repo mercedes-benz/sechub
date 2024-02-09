@@ -52,7 +52,7 @@ public class HTMLReportCSSFragementGenerator {
         merger.merge(cssFile, fragmentsFile);
         fragmentsFile = new File(scanHTMLFolder, "fragment-generic-scan-table-row.html");
         merger.merge(cssFile, fragmentsFile);
-        fragmentsFile = new File(scanHTMLFolder, "fragment-summary-table-row.html");
+        fragmentsFile = new File(scanHTMLFolder, "fragment-summary.html");
         merger.merge(cssFile, fragmentsFile);
         fragmentsFile = new File(scanHTMLFolder, "fragment-web-scan-table.html");
         merger.merge(cssFile, fragmentsFile);

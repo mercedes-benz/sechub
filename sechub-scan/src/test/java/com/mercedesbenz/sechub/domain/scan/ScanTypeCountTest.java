@@ -3,10 +3,13 @@ package com.mercedesbenz.sechub.domain.scan;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+import java.util.concurrent.atomic.AtomicLong;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import com.mercedesbenz.sechub.commons.model.ScanType;
+import com.mercedesbenz.sechub.commons.model.Severity;
 
 public class ScanTypeCountTest {
 
@@ -24,9 +27,13 @@ public class ScanTypeCountTest {
 
         /* test */
         assertEquals(scanTypeCount.getScanType(), ScanType.CODE_SCAN);
-        assertEquals(scanTypeCount.getHighSeverityCount(), 0);
-        assertEquals(scanTypeCount.getMediumSeverityCount(), 0);
+        
+        assertEquals(scanTypeCount.getInfoSeverityCount(), 0);
+        assertEquals(scanTypeCount.getUnclassifiedSeverityCount(), 0);
         assertEquals(scanTypeCount.getLowSeverityCount(), 0);
+        assertEquals(scanTypeCount.getMediumSeverityCount(), 0);
+        assertEquals(scanTypeCount.getHighSeverityCount(), 0);
+        assertEquals(scanTypeCount.getCriticalSeverityCount(), 0);
     }
 
     @Test
@@ -47,7 +54,7 @@ public class ScanTypeCountTest {
     @Test
     void execute_incrementHighSeverityCount_once_increment_highSeverityCount_value_by_one() {
         /* execute */
-        scanTypeCount.incrementHighSeverityCount();
+        scanTypeCount.increment(Severity.HIGH);
 
         /* test */
         assertEquals(scanTypeCount.getHighSeverityCount(), 1);
@@ -57,7 +64,7 @@ public class ScanTypeCountTest {
     void executing_incrementHighSeverityCount_4_times_increases_highSeverityCount_value_by_4() {
         /* execute */
         for (int i = 0; i < 4; i++) {
-            scanTypeCount.incrementHighSeverityCount();
+            scanTypeCount.increment(Severity.HIGH);
         }
 
         /* test */
@@ -67,7 +74,7 @@ public class ScanTypeCountTest {
     @Test
     void execute_incrementMediumSeverityCount_once_increment_mediumSeverityCount_value_by_one() {
         /* execute */
-        scanTypeCount.incrementMediumSeverityCount();
+        scanTypeCount.increment(Severity.MEDIUM);
 
         /* test */
         assertEquals(scanTypeCount.getMediumSeverityCount(), 1);
@@ -77,7 +84,7 @@ public class ScanTypeCountTest {
     void executing_incrementMediumSeverityCount_5_times_increases_mediumSeverityCount_value_by_5() {
         /* execute */
         for (int i = 0; i < 5; i++) {
-            scanTypeCount.incrementMediumSeverityCount();
+            scanTypeCount.increment(Severity.MEDIUM);
         }
 
         /* test */
@@ -87,7 +94,7 @@ public class ScanTypeCountTest {
     @Test
     void execute_incrementLowSeverityCount_once_increment_lowSeverityCount_value_by_one() {
         /* execute */
-        scanTypeCount.incrementLowSeverityCount();
+        scanTypeCount.increment(Severity.LOW);
 
         /* test */
         assertEquals(scanTypeCount.getLowSeverityCount(), 1);
@@ -97,7 +104,7 @@ public class ScanTypeCountTest {
     void executing_incrementLowSeverityCount_7_times_increases_lowSeverityCount_value_by_7() {
         /* execute */
         for (int i = 0; i < 7; i++) {
-            scanTypeCount.incrementLowSeverityCount();
+            scanTypeCount.increment(Severity.LOW);
         }
 
         /* test */
@@ -159,10 +166,10 @@ public class ScanTypeCountTest {
     @Test
     void when_highSeverityCount_equals_MAX_VALUE_then_after_increasing_it_must_be_less_than_0() {
         /* prepare */
-        scanTypeCount.highSeverityCount = Long.MAX_VALUE;
+        scanTypeCount.severityToAtomicLongCountMap.put(Severity.HIGH, new AtomicLong(Long.MAX_VALUE));
 
         /* execute */
-        scanTypeCount.incrementHighSeverityCount();
+        scanTypeCount.increment(Severity.HIGH);
 
         /* test */
         assertTrue(0 > scanTypeCount.getHighSeverityCount());
@@ -171,10 +178,10 @@ public class ScanTypeCountTest {
     @Test
     void when_mediumSeverityCount_equals_MAX_VALUE_then_after_increasing_it_must_be_less_than_0() {
         /* prepare */
-        scanTypeCount.mediumSeverityCount = Long.MAX_VALUE;
+        scanTypeCount.severityToAtomicLongCountMap.put(Severity.MEDIUM, new AtomicLong(Long.MAX_VALUE));
 
         /* execute */
-        scanTypeCount.incrementMediumSeverityCount();
+        scanTypeCount.increment(Severity.MEDIUM);
 
         /* test */
         assertTrue(0 > scanTypeCount.getMediumSeverityCount());
@@ -183,10 +190,10 @@ public class ScanTypeCountTest {
     @Test
     void when_lowSeverityCount_equals_MAX_VALUE_then_after_increasing_it_must_be_less_than_0() {
         /* prepare */
-        scanTypeCount.lowSeverityCount = Long.MAX_VALUE;
+        scanTypeCount.severityToAtomicLongCountMap.put(Severity.LOW, new AtomicLong(Long.MAX_VALUE));
 
         /* execute */
-        scanTypeCount.incrementLowSeverityCount();
+        scanTypeCount.increment(Severity.LOW);
 
         /* test */
         assertTrue(0 > scanTypeCount.getLowSeverityCount());

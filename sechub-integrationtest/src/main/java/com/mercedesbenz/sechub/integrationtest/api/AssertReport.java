@@ -316,7 +316,7 @@ public class AssertReport {
         return this;
     }
 
-    public SecHubReportMetaDataSummary getMetaDataSummaryCodeScan() {
+    public SecHubReportScanTypeSummary getMetaDataSummaryCodeScan() {
         Optional<SecHubReportMetaData> metaDataOpt = report.getMetaData();
         if (metaDataOpt.isEmpty()) {
             fail("Meta data not found inside report!");
@@ -327,7 +327,7 @@ public class AssertReport {
     }
 
     public AssertReport hasMetaDataSummaryCodeScanTotal(long value) {
-        SecHubReportMetaDataSummary metaDataSummary = getMetaDataSummaryCodeScan();
+        SecHubReportScanTypeSummary metaDataSummary = getMetaDataSummaryCodeScan();
 
         assertEquals(value, metaDataSummary.getTotal());
 
@@ -335,7 +335,7 @@ public class AssertReport {
     }
 
     public AssertReport hasMetaDataSummaryCodeScanRed(long value) {
-        SecHubReportMetaDataSummary metaDataSummary = getMetaDataSummaryCodeScan();
+        SecHubReportScanTypeSummary metaDataSummary = getMetaDataSummaryCodeScan();
 
         assertEquals(value, metaDataSummary.getRed());
 
@@ -343,7 +343,7 @@ public class AssertReport {
     }
 
     public AssertReport hasMetaDataSummaryCodeScanYellow(long value) {
-        SecHubReportMetaDataSummary metaDataSummary = getMetaDataSummaryCodeScan();
+        SecHubReportScanTypeSummary metaDataSummary = getMetaDataSummaryCodeScan();
 
         assertEquals(value, metaDataSummary.getYellow());
 
@@ -351,7 +351,7 @@ public class AssertReport {
     }
 
     public AssertReport hasMetaDataSummaryCodeScanGreen(long value) {
-        SecHubReportMetaDataSummary metaDataSummary = getMetaDataSummaryCodeScan();
+        SecHubReportScanTypeSummary metaDataSummary = getMetaDataSummaryCodeScan();
 
         assertEquals(value, metaDataSummary.getGreen());
 

@@ -21,7 +21,4 @@ public class SecHubReportMetaData {
         return summary;
     }
 
-    public void setSummary(SecHubReportSummary summary) {
-        this.summary = summary;
-    }
 }

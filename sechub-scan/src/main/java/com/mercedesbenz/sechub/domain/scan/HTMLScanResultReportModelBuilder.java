@@ -64,9 +64,9 @@ public class HTMLScanResultReportModelBuilder {
         HtmlCodeScanDescriptionSupport codeScanSupport = new HtmlCodeScanDescriptionSupport();
         SecHubResult result = report.getResult();
 
-        Map<Integer, List<HTMLScanResultCodeScanEntry>> codeScanEntries = new HashMap<>();
+        Map<Integer, List<HTMLScanResultCodeScanEntry>> findingIdToCodeScanEntriesMap = new HashMap<>();
         for (SecHubFinding finding : result.getFindings()) {
-            codeScanEntries.put(finding.getId(), codeScanSupport.buildEntries(finding));
+            findingIdToCodeScanEntriesMap.put(finding.getId(), codeScanSupport.buildEntries(finding));
         }
 
         Map<String, Object> model = new HashMap<>();
@@ -81,7 +81,7 @@ public class HTMLScanResultReportModelBuilder {
         model.put("styleYellow", styleYellow);
         model.put("styleGreen", styleGreen);
         model.put("isWebDesignMode", webDesignMode);
-        model.put("codeScanEntries", codeScanEntries);
+        model.put("codeScanEntries", findingIdToCodeScanEntriesMap);
         model.put("codeScanSupport", codeScanSupport);
         model.put("reportHelper", HTMLReportHelper.DEFAULT);
         model.put("messages", report.getMessages());
@@ -109,81 +109,99 @@ public class HTMLScanResultReportModelBuilder {
             model.put("jobuuid", "none");
         }
 
-        model.put("scanTypeCountSet", prepareScanTypesForModel(result.getFindings()));
+        /* summary data for first table row */
+        model.put("scanTypeCountSet", createScanTypeCountSet(result.getFindings()));
 
-        model.put("redHTMLSecHubFindingList", filterFindingsForGeneralScan(result.getFindings(), codeScanEntries, List.of(Severity.HIGH)));
-        model.put("yellowHTMLSecHubFindingList", filterFindingsForGeneralScan(result.getFindings(), codeScanEntries, List.of(Severity.MEDIUM)));
-        model.put("greenHTMLSecHubFindingList", filterFindingsForGeneralScan(result.getFindings(), codeScanEntries, List.of(Severity.INFO, Severity.LOW)));
+        /* detail data : */
+        model.put("redHTMLSecHubFindingList",
+                createCodeScanDataList(result.getFindings(), findingIdToCodeScanEntriesMap, List.of(Severity.CRITICAL, Severity.HIGH)));
+        model.put("yellowHTMLSecHubFindingList", createCodeScanDataList(result.getFindings(), findingIdToCodeScanEntriesMap, List.of(Severity.MEDIUM)));
+        model.put("greenHTMLSecHubFindingList",
+                createCodeScanDataList(result.getFindings(), findingIdToCodeScanEntriesMap, List.of(Severity.LOW, Severity.UNCLASSIFIED, Severity.INFO)));
 
-        model.put("redHTMLWebScanMap", filterFindingsForWebScan(result.getFindings(), List.of(Severity.HIGH)));
-        model.put("yellowHTMLWebScanMap", filterFindingsForWebScan(result.getFindings(), List.of(Severity.MEDIUM)));
-        model.put("greenHTMLWebScanMap", filterFindingsForWebScan(result.getFindings(), List.of(Severity.INFO, Severity.LOW)));
+        model.put("redHTMLWebScanMap", createWebScanDataForSeverity(result.getFindings(), List.of(Severity.HIGH)));
+        model.put("yellowHTMLWebScanMap", createWebScanDataForSeverity(result.getFindings(), List.of(Severity.MEDIUM)));
+        model.put("greenHTMLWebScanMap", createWebScanDataForSeverity(result.getFindings(), List.of(Severity.LOW, Severity.UNCLASSIFIED, Severity.INFO)));
 
         return model;
     }
 
-    protected Set<ScanTypeCount> prepareScanTypesForModel(List<SecHubFinding> findings) {
-        Map<ScanType, ScanTypeCount> scanSummaryMap = new HashMap<>();
+    protected Set<ScanTypeCount> createScanTypeCountSet(List<SecHubFinding> findings) {
+
+        /* For calculation we use a map: */
+        Map<ScanType, ScanTypeCount> scanTypeToCountMap = new HashMap<>();
         for (SecHubFinding finding : findings) {
+
             ScanType scanType = finding.getType();
             ScanTypeCount scanTypeCount;
-            if (scanSummaryMap.containsKey(scanType)) {
-                scanTypeCount = scanSummaryMap.get(scanType);
+
+            if (scanTypeToCountMap.containsKey(scanType)) {
+                scanTypeCount = scanTypeToCountMap.get(scanType);
             } else {
                 scanTypeCount = ScanTypeCount.of(scanType);
-                scanSummaryMap.put(scanType, scanTypeCount);
+                scanTypeToCountMap.put(scanType, scanTypeCount);
             }
             incrementScanCount(finding.getSeverity(), scanTypeCount);
         }
-        Set<ScanTypeCount> scanTypeCountSet = new TreeSet<>();
-        scanTypeCountSet.addAll(scanSummaryMap.values());
+
+        /* we just need a sorted list of the count entries */
+        Set<ScanTypeCount> scanTypeCountSet = new TreeSet<>(scanTypeToCountMap.values());
         return scanTypeCountSet;
     }
 
     protected void incrementScanCount(Severity severity, ScanTypeCount scanTypeCount) {
-        switch (severity) {
-        case HIGH, CRITICAL -> scanTypeCount.incrementHighSeverityCount();
-        case MEDIUM -> scanTypeCount.incrementMediumSeverityCount();
-        case UNCLASSIFIED, INFO, LOW -> scanTypeCount.incrementLowSeverityCount();
-        }
+        scanTypeCount.increment(severity);
     }
 
-    public Map<String, List<SecHubFinding>> filterFindingsForWebScan(List<SecHubFinding> findings, List<Severity> severities) {
-        Map<String, List<SecHubFinding>> groupedFindingsByName = findings.stream().filter(finding -> severities.contains(finding.getSeverity()))
-                .filter(finding -> finding.hasScanType(ScanType.WEB_SCAN.getId())).collect(groupingBy(SecHubFinding::getName));
-        Map<String, List<SecHubFinding>> groupedAndSortedFindingsByName = new TreeMap<>();
-        groupedAndSortedFindingsByName.putAll(groupedFindingsByName);
+    Map<String, List<SecHubFinding>> createWebScanDataForSeverity(List<SecHubFinding> findings, List<Severity> severitiesToShow) {
+        /* @formatter:off */
+        Map<String, List<SecHubFinding>> groupedFindingsByName = 
+             findings.stream()
+                .filter(finding -> severitiesToShow.contains(finding.getSeverity()))
+                .filter(finding -> finding.hasScanType(ScanType.WEB_SCAN.getId()))
+                .collect(groupingBy(SecHubFinding::getName));
+        
+        /* @formatter:on */
+        Map<String, List<SecHubFinding>> groupedAndSortedFindingsByName = new TreeMap<>(groupedFindingsByName);
+
         return groupedAndSortedFindingsByName;
     }
 
-    public List<HTMLSecHubFinding> filterFindingsForGeneralScan(List<SecHubFinding> findings, Map<Integer, List<HTMLScanResultCodeScanEntry>> codeScanEntries,
+    List<HTMLCodeScanEntriesSecHubFindingData> createCodeScanDataList(List<SecHubFinding> findings, Map<Integer, List<HTMLScanResultCodeScanEntry>> codeScanEntries,
             List<Severity> severitiesToShow) {
-        List<HTMLSecHubFinding> htmlSecHubFindings = new LinkedList<>();
-        Map<String, List<SecHubFinding>> groupedFindingsByName = findings.stream().filter(finding -> severitiesToShow.contains(finding.getSeverity()))
+
+        List<HTMLCodeScanEntriesSecHubFindingData> htmlSecHubFindings = new LinkedList<>();
+        /* @formatter:off */
+        Map<String, List<SecHubFinding>> groupedFindingsByName = 
+             findings.stream()
+                .filter(finding -> severitiesToShow.contains(finding.getSeverity()))
                 .collect(groupingBy(SecHubFinding::getName));
+        /* @formatter:on */
 
-        Map<String, List<SecHubFinding>> groupedAndSortedFindingsByName = new TreeMap<>();
-        groupedAndSortedFindingsByName.putAll(groupedFindingsByName);
+        Map<String, List<SecHubFinding>> groupedAndSortedFindingsByName = new TreeMap<>(groupedFindingsByName);
 
-        groupedAndSortedFindingsByName.entrySet().stream().forEach(entry -> {
-            List<SecHubFinding> findingList = entry.getValue();
-            if (!findingList.isEmpty()) {
-                SecHubFinding firstFinding = findingList.get(0);
-                HTMLSecHubFinding htmlSecHubFinding = new HTMLSecHubFinding();
-                BeanUtils.copyProperties(firstFinding, htmlSecHubFinding);
-                htmlSecHubFinding.setId(0);
-                List<HTMLScanResultCodeScanEntry> entryList = htmlSecHubFinding.getEntryList();
-                for (SecHubFinding finding : findingList) {
-                    if (!finding.hasScanType(ScanType.WEB_SCAN.getId())) {
-                        List<HTMLScanResultCodeScanEntry> codeScanEntryList = codeScanEntries.get(finding.getId());
-                        for (HTMLScanResultCodeScanEntry htmlScanResultCodeScanEntry : codeScanEntryList) {
-                            entryList.add(htmlScanResultCodeScanEntry);
-                        }
+        for (List<SecHubFinding> findingList : groupedAndSortedFindingsByName.values()) {
+            if (findingList.isEmpty()) {
+                continue;
+            }
+            SecHubFinding firstFinding = findingList.get(0);
+
+            HTMLCodeScanEntriesSecHubFindingData htmlSecHubFinding = new HTMLCodeScanEntriesSecHubFindingData();
+            BeanUtils.copyProperties(firstFinding, htmlSecHubFinding);
+            htmlSecHubFinding.setId(0);
+
+            List<HTMLScanResultCodeScanEntry> entryList = htmlSecHubFinding.getEntryList();
+
+            for (SecHubFinding finding : findingList) {
+                if (!finding.hasScanType(ScanType.WEB_SCAN.getId())) {
+                    List<HTMLScanResultCodeScanEntry> codeScanEntryList = codeScanEntries.get(finding.getId());
+                    for (HTMLScanResultCodeScanEntry htmlScanResultCodeScanEntry : codeScanEntryList) {
+                        entryList.add(htmlScanResultCodeScanEntry);
                     }
                 }
-                htmlSecHubFindings.add(htmlSecHubFinding);
             }
-        });
+            htmlSecHubFindings.add(htmlSecHubFinding);
+        }
         return htmlSecHubFindings;
     }
 }

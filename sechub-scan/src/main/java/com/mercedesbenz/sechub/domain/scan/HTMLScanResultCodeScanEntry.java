@@ -1,6 +1,11 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.domain.scan;
 
+/**
+ * A helper object to render a code callstack element in HTML
+ * @author Albert Tregnaghi
+ *
+ */
 public class HTMLScanResultCodeScanEntry {
 
     String location;

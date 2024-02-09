@@ -5,51 +5,35 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class SecHubReportSummary {
+    
+    public SecHubReportSummary() {
+        
+    }
 
-    SecHubReportMetaDataSummary codeScan = new SecHubReportMetaDataSummary();
-    SecHubReportMetaDataSummary infraScan = new SecHubReportMetaDataSummary();
-    SecHubReportMetaDataSummary licenseScan = new SecHubReportMetaDataSummary();
-    SecHubReportMetaDataSummary secretScan = new SecHubReportMetaDataSummary();
-    SecHubReportMetaDataSummary webScan = new SecHubReportMetaDataSummary();
+    SecHubReportScanTypeSummary codeScan = new SecHubReportScanTypeSummary();
+    SecHubReportScanTypeSummary infraScan = new SecHubReportScanTypeSummary();
+    SecHubReportScanTypeSummary licenseScan = new SecHubReportScanTypeSummary();
+    SecHubReportScanTypeSummary secretScan = new SecHubReportScanTypeSummary();
+    SecHubReportScanTypeSummary webScan = new SecHubReportScanTypeSummary();
 
-    public SecHubReportMetaDataSummary getCodeScan() {
+    public SecHubReportScanTypeSummary getCodeScan() {
         return codeScan;
     }
 
-    public void setCodeScan(SecHubReportMetaDataSummary codeScan) {
-        this.codeScan = codeScan;
-    }
-
-    public SecHubReportMetaDataSummary getInfraScan() {
+    public SecHubReportScanTypeSummary getInfraScan() {
         return infraScan;
     }
 
-    public void setInfraScan(SecHubReportMetaDataSummary infraScan) {
-        this.infraScan = infraScan;
-    }
-
-    public SecHubReportMetaDataSummary getWebScan() {
+    public SecHubReportScanTypeSummary getWebScan() {
         return webScan;
     }
 
-    public void setWebScan(SecHubReportMetaDataSummary webScan) {
-        this.webScan = webScan;
-    }
-
-    public SecHubReportMetaDataSummary getLicenseScan() {
+    public SecHubReportScanTypeSummary getLicenseScan() {
         return licenseScan;
     }
 
-    public void setLicenseScan(SecHubReportMetaDataSummary licenseScan) {
-        this.licenseScan = licenseScan;
-    }
-
-    public SecHubReportMetaDataSummary getSecretScan() {
+    public SecHubReportScanTypeSummary getSecretScan() {
         return secretScan;
-    }
-
-    public void setSecretScan(SecHubReportMetaDataSummary secretScan) {
-        this.secretScan = secretScan;
     }
 
 }

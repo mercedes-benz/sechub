@@ -479,9 +479,9 @@ rTableSourceHead,
 
 <!--/* 
  Next code block renders summary row for given scan type. Is used by scanresult.html
- An example:
+ An example: for Webscan with 1 total findings, 1 is high
           
- Web scan   1     1      0       0  
+ Web scan   1  0  1  0  0  0  
  
  */-->
 <th:block th:fragment="summaryTableRow">
@@ -489,13 +489,39 @@ rTableSourceHead,
     <td><strong><span th:text="${scanTypeCount.highSeverityCount + scanTypeCount.mediumSeverityCount + scanTypeCount.lowSeverityCount}"/></strong></td>
     
     <div>
-        <td th:if="${scanTypeCount.highSeverityCount != 0}"><a th:href="${reportHelper.createSummaryTableAnkerIdForRed(scanTypeCount.scanType)}" th:text="${scanTypeCount.highSeverityCount}"/></td>
+        <td th:if="${scanTypeCount.criticalSeverityCount != 0}"><a th:href="${reportHelper.createSummaryTableAnkerLinkForRed(scanTypeCount.scanType)}" th:text="${scanTypeCount.criticalSeverityCount}"/></td>
+        <td th:if="${scanTypeCount.criticalSeverityCount == 0}">0</td>
+        <td th:if="${scanTypeCount.highSeverityCount != 0}"><a th:href="${reportHelper.createSummaryTableAnkerLinkForRed(scanTypeCount.scanType)}" th:text="${scanTypeCount.highSeverityCount}"/></td>
         <td th:if="${scanTypeCount.highSeverityCount == 0}">0</td>
 
-        <td th:if="${scanTypeCount.mediumSeverityCount != 0}"><a th:href="${reportHelper.createSummaryTableAnkerIdForYellow(scanTypeCount.scanType)}" th:text="${scanTypeCount.mediumSeverityCount}"/></td>
+        <td th:if="${scanTypeCount.mediumSeverityCount != 0}"><a th:href="${reportHelper.createSummaryTableAnkerLinkForYellow(scanTypeCount.scanType)}" th:text="${scanTypeCount.mediumSeverityCount}"/></td>
         <td th:if="${scanTypeCount.mediumSeverityCount == 0}">0</td>
 
-        <td th:if="${scanTypeCount.lowSeverityCount != 0}"><a th:href="${reportHelper.createSummaryTableAnkerIdForGreen(scanTypeCount.scanType)}" th:text="${scanTypeCount.lowSeverityCount}"/></td>
+        <td th:if="${scanTypeCount.lowSeverityCount != 0}"><a th:href="${reportHelper.createSummaryTableAnkerLinkForGreen(scanTypeCount.scanType)}" th:text="${scanTypeCount.lowSeverityCount}"/></td>
         <td th:if="${scanTypeCount.lowSeverityCount == 0}">0</td>
+        <td th:if="${scanTypeCount.unclassifiedSeverityCount != 0}"><a th:href="${reportHelper.createSummaryTableAnkerLinkForGreen(scanTypeCount.scanType)}" th:text="${scanTypeCount.unclassifiedSeverityCount}"/></td>
+        <td th:if="${scanTypeCount.unclassifiedSeverityCount == 0}">0</td>
+        <td th:if="${scanTypeCount.infoSeverityCount != 0}"><a th:href="${reportHelper.createSummaryTableAnkerLinkForGreen(scanTypeCount.scanType)}" th:text="${scanTypeCount.infoSeverityCount}"/></td>
+        <td th:if="${scanTypeCount.infoSeverityCount == 0}">0</td>
     </div>
+</th:block>
+
+
+<!--/* 
+ Next code block renders summary detail for given scan type summary detail object. Is used by scanresult.html
+ Parameter: scanTypeSummary which is a SecHubReportScanTypeSummary
+ */-->
+<th:block th:fragment="summaryDetail(scanTypeSummary, scanTypeText)">
+    <details th:if="${scanTypeSummary.getTotal() != 0}">
+                <summary class='summaryScanType' th:text="${scanTypeText}">Scan type text</summary>
+                <div th:if="!${scanTypeSummary.getDetails().getHigh().isEmpty()}">
+                    <div th:replace="report/html/fragment-cwe-summary-table :: cweSummaryTable(severity = 'High', detailsList = ${scanTypeSummary.getDetails().getHigh()})"></div>
+                </div>
+                <div th:if="!${scanTypeSummary.getDetails().getMedium().isEmpty()}">
+                    <div th:replace="report/html/fragment-cwe-summary-table :: cweSummaryTable(severity = 'Medium', detailsList = ${scanTypeSummary.getDetails().getMedium()})"></div>
+                </div>
+                <div th:if="!${scanTypeSummary.getDetails().getLow().isEmpty()}">
+                    <div th:replace="report/html/fragment-cwe-summary-table :: cweSummaryTable(severity = 'Low', detailsList = ${scanTypeSummary.getDetails().getLow()})"></div>
+                </div>
+    </details>
 </th:block>

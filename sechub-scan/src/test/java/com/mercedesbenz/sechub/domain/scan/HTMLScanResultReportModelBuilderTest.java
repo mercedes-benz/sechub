@@ -289,7 +289,7 @@ class HTMLScanResultReportModelBuilderTest {
         List<SecHubFinding> findings = new ArrayList<>();
 
         /* execute */
-        Set<ScanTypeCount> scanTypeCountSet = builderToTest.prepareScanTypesForModel(findings);
+        Set<ScanTypeCount> scanTypeCountSet = builderToTest.createScanTypeCountSet(findings);
 
         /* test */
         assertTrue(scanTypeCountSet.isEmpty());
@@ -316,7 +316,7 @@ class HTMLScanResultReportModelBuilderTest {
         findings.add(finding);
 
         /* execute */
-        Set<ScanTypeCount> scanTypeCountSet = builderToTest.prepareScanTypesForModel(findings);
+        Set<ScanTypeCount> scanTypeCountSet = builderToTest.createScanTypeCountSet(findings);
         Iterator<ScanTypeCount> iterator = scanTypeCountSet.iterator();
         ScanTypeCount scanTypeCount = iterator.next();
 
@@ -349,7 +349,7 @@ class HTMLScanResultReportModelBuilderTest {
         findings.add(finding);
 
         /* execute */
-        Set<ScanTypeCount> scanTypeCountSet = builderToTest.prepareScanTypesForModel(findings);
+        Set<ScanTypeCount> scanTypeCountSet = builderToTest.createScanTypeCountSet(findings);
         Iterator<ScanTypeCount> iterator = scanTypeCountSet.iterator();
 
         /* execute + test */
@@ -372,7 +372,7 @@ class HTMLScanResultReportModelBuilderTest {
         List<Severity> severities = List.of(Severity.HIGH);
 
         /* execute */
-        Map<String, List<SecHubFinding>> groupedAndSortedFindingsByName = builderToTest.filterFindingsForWebScan(findings, severities);
+        Map<String, List<SecHubFinding>> groupedAndSortedFindingsByName = builderToTest.createWebScanDataForSeverity(findings, severities);
 
         /* test */
         assertTrue(groupedAndSortedFindingsByName.isEmpty());
@@ -382,29 +382,31 @@ class HTMLScanResultReportModelBuilderTest {
     void when_findings_list_contains_3_WEB_SCAN_HIGH_findings_then_filterFindingsForWebScan_must_return_appropriate_map() {
         /* prepare */
         List<SecHubFinding> findings = new ArrayList<>();
-        SecHubFinding finding = new SecHubFinding();
-        finding.setId(0);
-        finding.setType(ScanType.WEB_SCAN);
-        finding.setSeverity(Severity.HIGH);
-        finding.setName("Cross Site Scripting (Reflected)");
-        findings.add(finding);
-        finding = new SecHubFinding();
-        finding.setId(1);
-        finding.setType(ScanType.WEB_SCAN);
-        finding.setSeverity(Severity.HIGH);
-        finding.setName("Cross Site Scripting (Reflected)");
-        findings.add(finding);
-        finding = new SecHubFinding();
-        finding.setId(2);
-        finding.setType(ScanType.WEB_SCAN);
-        finding.setSeverity(Severity.HIGH);
-        finding.setName("Cross Site Scripting (Reflected)");
-        findings.add(finding);
+        SecHubFinding finding1 = new SecHubFinding();
+        finding1.setId(0);
+        finding1.setType(ScanType.WEB_SCAN);
+        finding1.setSeverity(Severity.HIGH);
+        finding1.setName("Cross Site Scripting (Reflected)");
+        findings.add(finding1);
+        
+        SecHubFinding finding2 = new SecHubFinding();
+        finding2.setId(1);
+        finding2.setType(ScanType.WEB_SCAN);
+        finding2.setSeverity(Severity.HIGH);
+        finding2.setName("Cross Site Scripting (Reflected)");
+        findings.add(finding2);
+        
+        SecHubFinding finding3 = new SecHubFinding();
+        finding3.setId(2);
+        finding3.setType(ScanType.WEB_SCAN);
+        finding3.setSeverity(Severity.HIGH);
+        finding3.setName("Cross Site Scripting (Reflected)");
+        findings.add(finding3);
 
         List<Severity> severities = List.of(Severity.HIGH);
 
         /* execute */
-        Map<String, List<SecHubFinding>> groupedAndSortedFindingsByName = builderToTest.filterFindingsForWebScan(findings, severities);
+        Map<String, List<SecHubFinding>> groupedAndSortedFindingsByName = builderToTest.createWebScanDataForSeverity(findings, severities);
         List<SecHubFinding> findingList = groupedAndSortedFindingsByName.get("Cross Site Scripting (Reflected)");
 
         /* test */
@@ -426,7 +428,7 @@ class HTMLScanResultReportModelBuilderTest {
         List<Severity> severities = List.of(Severity.HIGH);
 
         /* execute */
-        List<HTMLSecHubFinding> htmlSecHubFindingList = builderToTest.filterFindingsForGeneralScan(findings, codeScanEntries, severities);
+        List<HTMLCodeScanEntriesSecHubFindingData> htmlSecHubFindingList = builderToTest.createCodeScanDataList(findings, codeScanEntries, severities);
 
         /* test */
         assertTrue(htmlSecHubFindingList.isEmpty());
@@ -436,40 +438,36 @@ class HTMLScanResultReportModelBuilderTest {
     void when_findings_list_contains_1_CODE_SCAN_HIGH_findings_then_filterFindingsForGeneralScan_must_return_appropriate_list() {
         /* prepare */
         List<SecHubFinding> findings = new ArrayList<>();
-        SecHubFinding finding = new SecHubFinding();
-        finding.setId(0);
-        finding.setType(ScanType.CODE_SCAN);
-        finding.setSeverity(Severity.HIGH);
-        finding.setName("Deferring unsafe method \"Close\" on type \"*os.File\"");
-        findings.add(finding);
-        finding = new SecHubFinding();
-        finding.setId(1);
-        finding.setType(ScanType.CODE_SCAN);
-        finding.setSeverity(Severity.HIGH);
-        finding.setName("Deferring unsafe method \"Close\" on type \"*os.File\"");
-        findings.add(finding);
-        finding = new SecHubFinding();
-        finding.setId(2);
-        finding.setType(ScanType.CODE_SCAN);
-        finding.setSeverity(Severity.HIGH);
-        finding.setName("Deferring unsafe method \"Close\" on type \"*os.File\"");
-        findings.add(finding);
+        SecHubFinding finding1 = new SecHubFinding();
+        finding1.setId(0);
+        finding1.setType(ScanType.CODE_SCAN);
+        finding1.setSeverity(Severity.HIGH);
+        finding1.setName("Deferring unsafe method \"Close\" on type \"*os.File\"");
+        findings.add(finding1);
+        
+        SecHubFinding finding2 = new SecHubFinding();
+        finding2.setId(1);
+        finding2.setType(ScanType.CODE_SCAN);
+        finding2.setSeverity(Severity.HIGH);
+        finding2.setName("Deferring unsafe method \"Close\" on type \"*os.File\"");
+        findings.add(finding2);
+        
+        SecHubFinding finding3 = new SecHubFinding();
+        finding3.setId(2);
+        finding3.setType(ScanType.CODE_SCAN);
+        finding3.setSeverity(Severity.HIGH);
+        finding3.setName("Deferring unsafe method \"Close\" on type \"*os.File\"");
+        findings.add(finding3);
 
-        Map<Integer, List<HTMLScanResultCodeScanEntry>> codeScanEntries = new HashMap<>();
-        List<HTMLScanResultCodeScanEntry> list = new ArrayList<>();
-        list.add(new HTMLScanResultCodeScanEntry());
-        codeScanEntries.put(0, list);
-        list = new ArrayList<>();
-        list.add(new HTMLScanResultCodeScanEntry());
-        codeScanEntries.put(1, list);
-        list = new ArrayList<>();
-        list.add(new HTMLScanResultCodeScanEntry());
-        codeScanEntries.put(2, list);
+        Map<Integer, List<HTMLScanResultCodeScanEntry>> codeScanEntriesMap = new HashMap<>();
+        codeScanEntriesMap.put(0, Arrays.asList(new HTMLScanResultCodeScanEntry()));
+        codeScanEntriesMap.put(1, Arrays.asList(new HTMLScanResultCodeScanEntry()));
+        codeScanEntriesMap.put(2, Arrays.asList(new HTMLScanResultCodeScanEntry()));
 
         List<Severity> severities = List.of(Severity.HIGH);
 
         /* execute */
-        List<HTMLSecHubFinding> htmlSecHubFindingList = builderToTest.filterFindingsForGeneralScan(findings, codeScanEntries, severities);
+        List<HTMLCodeScanEntriesSecHubFindingData> htmlSecHubFindingList = builderToTest.createCodeScanDataList(findings, codeScanEntriesMap, severities);
 
         /* test */
         assertEquals(1, htmlSecHubFindingList.size());

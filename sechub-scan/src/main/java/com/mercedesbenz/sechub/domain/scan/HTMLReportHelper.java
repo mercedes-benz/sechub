@@ -24,15 +24,15 @@ public class HTMLReportHelper {
 
     public static HTMLReportHelper DEFAULT = new HTMLReportHelper();
 
-    public String createSummaryTableAnkerIdForRed(ScanType scanType) {
+    public String createSummaryTableAnkerLinkForRed(ScanType scanType) {
         return createSummaryTableAnkerId(TrafficLight.RED, scanType);
     }
 
-    public String createSummaryTableAnkerIdForYellow(ScanType scanType) {
+    public String createSummaryTableAnkerLinkForYellow(ScanType scanType) {
         return createSummaryTableAnkerId(TrafficLight.YELLOW, scanType);
     }
 
-    public String createSummaryTableAnkerIdForGreen(ScanType scanType) {
+    public String createSummaryTableAnkerLinkForGreen(ScanType scanType) {
         return createSummaryTableAnkerId(TrafficLight.GREEN, scanType);
     }
 
