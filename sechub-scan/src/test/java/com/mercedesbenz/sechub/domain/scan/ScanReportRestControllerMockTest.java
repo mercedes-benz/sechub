@@ -117,7 +117,7 @@ class ScanReportRestControllerMockTest {
 
         Integer cweId = Integer.valueOf(77);
 
-        HTMLSecHubFinding finding = new HTMLSecHubFinding();
+        HTMLCodeScanEntriesSecHubFindingData finding = new HTMLCodeScanEntriesSecHubFindingData();
         finding.setCweId(cweId);
         finding.setSeverity(Severity.HIGH);
         finding.setType(ScanType.CODE_SCAN);

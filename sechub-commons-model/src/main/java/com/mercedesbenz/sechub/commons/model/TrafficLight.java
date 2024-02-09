@@ -1,6 +1,11 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.commons.model;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+
 /**
  * A simple type representing "GREEN", "YELLOW", "RED"
  *
@@ -9,15 +14,32 @@ package com.mercedesbenz.sechub.commons.model;
  */
 public enum TrafficLight {
 
-    GREEN,
+    GREEN(Severity.LOW, Severity.UNCLASSIFIED, Severity.INFO),
 
-    YELLOW,
+    YELLOW(Severity.MEDIUM),
 
-    RED,
+    RED(Severity.CRITICAL, Severity.HIGH),
 
     /* Traffic light is "turned off" */
     OFF;
 
+    
+    private List<Severity> severities;
+
+    private TrafficLight(Severity ...severities) {
+        List<Severity> target = new ArrayList<>(3);
+        target.addAll(Arrays.asList(severities));
+        
+        this.severities=Collections.unmodifiableList(target);
+    }
+    
+    /**
+     * @return severities which are represented by this traffic light
+     */
+    public List<Severity> getSeverities() {
+        return severities;
+    }
+    
     /**
      * Tries to identify traffic light from string.
      *

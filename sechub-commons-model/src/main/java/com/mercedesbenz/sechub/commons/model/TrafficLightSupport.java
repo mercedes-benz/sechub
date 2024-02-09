@@ -32,16 +32,12 @@ public class TrafficLightSupport implements TrafficLightCalculator, SecHubResult
     }
 
     TrafficLight mapToTrafficLight(Severity severity) {
-        if (Severity.CRITICAL.equals(severity)) {
-            return TrafficLight.RED;
+        for (TrafficLight light: TrafficLight.values()) {
+            if (light.getSeverities().contains(severity)) {
+                return light;
+            }
         }
-        if (Severity.HIGH.equals(severity)) {
-            return TrafficLight.RED;
-        }
-        if (Severity.MEDIUM.equals(severity)) {
-            return TrafficLight.YELLOW;
-        }
-        return TrafficLight.GREEN;
+        throw new IllegalStateException("Severity: "+severity+" is not found by any trafficlight - may not happen.");
     }
 
     public List<SecHubFinding> filterFindingsFor(SecHubResult result, TrafficLight searched) {
