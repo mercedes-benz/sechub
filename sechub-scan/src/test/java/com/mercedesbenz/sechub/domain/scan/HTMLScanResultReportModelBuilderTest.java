@@ -230,12 +230,12 @@ class HTMLScanResultReportModelBuilderTest {
     }
 
     @Test
-    void when_severity_is_critical_then_highSeverityCount_should_be_incremented() {
+    void when_severity_is_critical_then_criticalSeverityCount_should_be_incremented() {
         /* execute */
         builderToTest.incrementScanCount(Severity.CRITICAL, scanTypeCount);
 
         /* test */
-        assertEquals(1, scanTypeCount.getHighSeverityCount());
+        assertEquals(1, scanTypeCount.getCriticalSeverityCount());
     }
 
     @Test
@@ -266,21 +266,21 @@ class HTMLScanResultReportModelBuilderTest {
     }
 
     @Test
-    void when_severity_is_info_then_lowSeverityCount_should_be_incremented() {
+    void when_severity_is_info_then_infoSeverityCount_should_be_incremented() {
         /* execute */
         builderToTest.incrementScanCount(Severity.INFO, scanTypeCount);
 
         /* test */
-        assertEquals(1, scanTypeCount.getLowSeverityCount());
+        assertEquals(1, scanTypeCount.getInfoSeverityCount());
     }
 
     @Test
-    void when_severity_is_unclassified_then_lowSeverityCount_should_be_incremented() {
+    void when_severity_is_unclassified_then_unclassifiedSeverityCount_should_be_incremented() {
         /* execute */
         builderToTest.incrementScanCount(Severity.UNCLASSIFIED, scanTypeCount);
 
         /* test */
-        assertEquals(1, scanTypeCount.getLowSeverityCount());
+        assertEquals(1, scanTypeCount.getUnclassifiedSeverityCount());
     }
 
     @Test
@@ -430,7 +430,7 @@ class HTMLScanResultReportModelBuilderTest {
         List<Severity> severities = List.of(Severity.HIGH);
 
         /* execute */
-        List<HTMLCodeScanEntriesSecHubFindingData> htmlSecHubFindingList = builderToTest.createCodeScanDataList(findings, codeScanEntries, severities);
+        List<HTMLCodeScanEntriesSecHubFindingData> htmlSecHubFindingList = builderToTest.createCodeScanDataListWithAcceptedSeverities(findings, codeScanEntries, severities);
 
         /* test */
         assertTrue(htmlSecHubFindingList.isEmpty());
@@ -469,7 +469,7 @@ class HTMLScanResultReportModelBuilderTest {
         List<Severity> severities = List.of(Severity.HIGH);
 
         /* execute */
-        List<HTMLCodeScanEntriesSecHubFindingData> htmlSecHubFindingList = builderToTest.createCodeScanDataList(findings, codeScanEntriesMap, severities);
+        List<HTMLCodeScanEntriesSecHubFindingData> htmlSecHubFindingList = builderToTest.createCodeScanDataListWithAcceptedSeverities(findings, codeScanEntriesMap, severities);
 
         /* test */
         assertEquals(1, htmlSecHubFindingList.size());

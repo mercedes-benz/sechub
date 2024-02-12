@@ -113,11 +113,12 @@ public class HTMLScanResultReportModelBuilder {
         model.put("scanTypeCountSet", createScanTypeCountSet(result.getFindings()));
 
         /* detail data : */
-        model.put("redHTMLSecHubFindingList", createCodeScanDataList(result.getFindings(), findingIdToCodeScanEntriesMap, TrafficLight.RED.getSeverities()));
+        model.put("redHTMLSecHubFindingList",
+                createCodeScanDataListWithAcceptedSeverities(result.getFindings(), findingIdToCodeScanEntriesMap, TrafficLight.RED.getSeverities()));
         model.put("yellowHTMLSecHubFindingList",
-                createCodeScanDataList(result.getFindings(), findingIdToCodeScanEntriesMap, TrafficLight.YELLOW.getSeverities()));
+                createCodeScanDataListWithAcceptedSeverities(result.getFindings(), findingIdToCodeScanEntriesMap, TrafficLight.YELLOW.getSeverities()));
         model.put("greenHTMLSecHubFindingList",
-                createCodeScanDataList(result.getFindings(), findingIdToCodeScanEntriesMap, TrafficLight.GREEN.getSeverities()));
+                createCodeScanDataListWithAcceptedSeverities(result.getFindings(), findingIdToCodeScanEntriesMap, TrafficLight.GREEN.getSeverities()));
 
         model.put("redHTMLWebScanMap", createWebScanDataForSeverityGroupedAndSortedByName(result.getFindings(), TrafficLight.RED.getSeverities()));
         model.put("yellowHTMLWebScanMap", createWebScanDataForSeverityGroupedAndSortedByName(result.getFindings(), TrafficLight.YELLOW.getSeverities()));
@@ -158,14 +159,15 @@ public class HTMLScanResultReportModelBuilder {
      *
      * @param findings
      * @param severitiesToShow
-     * @return
+     * @return map with key = finding name and value list of web scan findings with
+     *         accepted severities
      */
     Map<String, List<SecHubFinding>> createWebScanDataForSeverityGroupedAndSortedByName(List<SecHubFinding> findings, List<Severity> severitiesToShow) {
         /* @formatter:off */
         Map<String, List<SecHubFinding>> groupedFindingsByName =
              findings.stream()
                 .filter(finding -> severitiesToShow.contains(finding.getSeverity()))
-                .filter(finding -> finding.hasScanType(ScanType.WEB_SCAN.getId()))
+                .filter(finding -> finding.hasScanType(ScanType.WEB_SCAN))
                 .collect(groupingBy(SecHubFinding::getName));
 
         /* @formatter:on */
@@ -179,28 +181,29 @@ public class HTMLScanResultReportModelBuilder {
      * findings.
      *
      * @param findings
-     * @param codeScanEntries
+     * @param findingIdToCodeScanEntriesMap
      * @param severitiesToShow
      * @return list
      */
-    List<HTMLCodeScanEntriesSecHubFindingData> createCodeScanDataList(List<SecHubFinding> findings,
-            Map<Integer, List<HTMLScanResultCodeScanEntry>> codeScanEntries, List<Severity> severitiesToShow) {
+    List<HTMLCodeScanEntriesSecHubFindingData> createCodeScanDataListWithAcceptedSeverities(List<SecHubFinding> findings,
+            Map<Integer, List<HTMLScanResultCodeScanEntry>> findingIdToCodeScanEntriesMap, List<Severity> severitiesToShow) {
 
         List<HTMLCodeScanEntriesSecHubFindingData> htmlSecHubFindings = new LinkedList<>();
         /* @formatter:off */
         Map<String, List<SecHubFinding>> groupedFindingsByName =
              findings.stream()
                 .filter(finding -> severitiesToShow.contains(finding.getSeverity()))
+                .filter(finding -> !finding.hasScanType(ScanType.WEB_SCAN)) // remove web scan results here always, there is another create method for them
                 .collect(groupingBy(SecHubFinding::getName));
         /* @formatter:on */
 
         Map<String, List<SecHubFinding>> groupedAndSortedFindingsByName = new TreeMap<>(groupedFindingsByName);
 
-        for (List<SecHubFinding> findingList : groupedAndSortedFindingsByName.values()) {
-            if (findingList.isEmpty()) {
+        for (List<SecHubFinding> findingListForGroupName : groupedAndSortedFindingsByName.values()) {
+            if (findingListForGroupName.isEmpty()) {
                 continue;
             }
-            SecHubFinding firstFinding = findingList.get(0);
+            SecHubFinding firstFinding = findingListForGroupName.get(0);
 
             HTMLCodeScanEntriesSecHubFindingData htmlSecHubFinding = new HTMLCodeScanEntriesSecHubFindingData();
             BeanUtils.copyProperties(firstFinding, htmlSecHubFinding);
@@ -208,12 +211,10 @@ public class HTMLScanResultReportModelBuilder {
 
             List<HTMLScanResultCodeScanEntry> entryList = htmlSecHubFinding.getEntryList();
 
-            for (SecHubFinding finding : findingList) {
-                if (!finding.hasScanType(ScanType.WEB_SCAN.getId())) {
-                    List<HTMLScanResultCodeScanEntry> codeScanEntryList = codeScanEntries.get(finding.getId());
-                    for (HTMLScanResultCodeScanEntry htmlScanResultCodeScanEntry : codeScanEntryList) {
-                        entryList.add(htmlScanResultCodeScanEntry);
-                    }
+            for (SecHubFinding finding : findingListForGroupName) {
+                List<HTMLScanResultCodeScanEntry> codeScanEntryList = findingIdToCodeScanEntriesMap.get(finding.getId());
+                for (HTMLScanResultCodeScanEntry htmlScanResultCodeScanEntry : codeScanEntryList) {
+                    entryList.add(htmlScanResultCodeScanEntry);
                 }
             }
             htmlSecHubFindings.add(htmlSecHubFinding);

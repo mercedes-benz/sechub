@@ -40,7 +40,7 @@ public class ScanSecHubReport implements SecHubReportData, JSONable<ScanSecHubRe
      * @param report
      */
     public ScanSecHubReport(ScanReport report) {
-        this.model = new ScanReportToSecHubReportModelTransformer().transform(report);
+        this.model = new ScanReportToSecHubReportModelWithSummariesTransformer().transform(report);
     }
 
     @Override

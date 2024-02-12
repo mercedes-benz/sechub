@@ -28,11 +28,16 @@ import com.mercedesbenz.sechub.commons.model.Severity;
 import com.mercedesbenz.sechub.commons.model.TrafficLight;
 import com.mercedesbenz.sechub.sharedkernel.UUIDTraceLogID;
 
-public class ScanReportToSecHubReportModelTransformer {
+/**
+ * This class contains all logic to transform a scan report (without summary
+ * data) to a report model containing summaries
+ *
+ */
+public class ScanReportToSecHubReportModelWithSummariesTransformer {
 
-    private static final Logger LOG = LoggerFactory.getLogger(ScanReportToSecHubReportModelTransformer.class);
+    private static final Logger LOG = LoggerFactory.getLogger(ScanReportToSecHubReportModelWithSummariesTransformer.class);
 
-    public ScanReportToSecHubReportModelTransformer() {
+    public ScanReportToSecHubReportModelWithSummariesTransformer() {
 
     }
 

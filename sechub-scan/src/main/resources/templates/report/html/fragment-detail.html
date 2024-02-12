@@ -1,6 +1,22 @@
+<!-- /* 
+    
+    Called by scanresult.html
+                      
+    For ONE traffic light: (e.g. red)
+    - trafficLightLowerCased: "red", "green", or "yellow" (off is out of topic)
+    - headlineCountMainText: the text before "... (Count: xx) -> means what is counted here
+    - secHubFindingList: list with HTMLCodeScanEntriesSecHubFindingData elements
+    
+    - webScanMap: map with string as key - key is used for grouping. value is the list with sechub findings (normal SecHubFinding)
+    
+*/ -->
 <th:block th:fragment="groupedDetail(secHubFindingList, webScanMap, trafficLightLowerCased, headlineCountMainText)">
+    
     <div th:if="${not #lists.isEmpty(secHubFindingList) or not #maps.isEmpty(webScanMap)}">
+            <!-- /* headline */ -->
             <h2 th:class="${trafficLightLowerCased}+'FindingHeadline'" th:id="${trafficLightLowerCased}+'FindingsBlock'" th:text="${headlineCountMainText} + ' (Count: ' + ${#lists.size(redList)} + ')'"/>
+            
+            <!-- /* secHubFindingList-->
             <div th:if="${not secHubFindingList.?[type == T(com.mercedesbenz.sechub.commons.model.ScanType).CODE_SCAN].isEmpty()}">
                 <span th:id="${trafficLightLowerCased}+'CodeScanTable'"/>
                 <div th:replace="report/html/fragment-generic-scan-table :: scanTable(scanType = 'Code Scan', tableClass = ${trafficLightLowerCased}+'FindingsTable',findingList = ${secHubFindingList})"></div>
@@ -13,6 +29,8 @@
                 <span th:id="${trafficLightLowerCased}+'SecretScanTable'"/>
                 <div th:replace="report/html/fragment-generic-scan-table :: scanTable(scanType = 'Secret Scan', tableClass = ${trafficLightLowerCased}+'FindingsTable',findingList = ${secHubFindingList})"></div>
             </div>
+            
+            <!-- /* web scan map -->
             <div th:if="${not #maps.isEmpty(webScanMap)}">
                 <span th:id="${trafficLightLowerCased}WebScanTable"/>
                 <h2 class='scanTypeHeadline'>Web Scan</h2>

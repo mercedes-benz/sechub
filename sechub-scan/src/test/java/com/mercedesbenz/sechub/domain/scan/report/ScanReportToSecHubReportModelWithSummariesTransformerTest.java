@@ -16,7 +16,7 @@ import com.mercedesbenz.sechub.commons.model.SecHubReportScanTypeSummary;
 import com.mercedesbenz.sechub.commons.model.SecHubReportSummary;
 import com.mercedesbenz.sechub.commons.model.Severity;
 
-class ScanReportToSecHubReportModelTransformerTest {
+class ScanReportToSecHubReportModelWithSummariesTransformerTest {
 
     private static boolean DEBUG = Boolean.valueOf(System.getProperty("sechub.test.debug"));
 
@@ -44,7 +44,7 @@ class ScanReportToSecHubReportModelTransformerTest {
     private SecHubFinding lowInfraScanFinding;
     private SecHubFinding infoLicenseFinding;
     private SecHubFinding unclassifiedFinding;
-    private ScanReportToSecHubReportModelTransformer transformerToTest;
+    private ScanReportToSecHubReportModelWithSummariesTransformer transformerToTest;
 
     private SecHubFinding criticalWebScanFinding1;
 
@@ -53,7 +53,7 @@ class ScanReportToSecHubReportModelTransformerTest {
     @BeforeEach
     void beforeEach() {
 
-        transformerToTest = new ScanReportToSecHubReportModelTransformer();
+        transformerToTest = new ScanReportToSecHubReportModelWithSummariesTransformer();
 
         criticalCodeScanFinding1 = new SecHubFinding();
         criticalCodeScanFinding1.setCweId(CRITICAL_FINDING1_CWEID);

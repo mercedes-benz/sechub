@@ -477,6 +477,15 @@ rTableSourceHead,
 }
 </style>
 
+<!-- /* 
+Called by fragments-detail.html
+
+parameters:
+
+  - finding
+  - findingEntry
+
+ */ -->
 <th:block th:fragment="scanTable(scanType, tableClass, findingList)">
     <h2 class='scanTypeHeadline' th:text="${scanType}">scan_type</h2>
     <table th:class="'findingsTable ' + ${tableClass}">

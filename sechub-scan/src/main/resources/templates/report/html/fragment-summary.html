@@ -491,6 +491,7 @@ rTableSourceHead,
     <div>
         <td th:if="${scanTypeCount.criticalSeverityCount != 0}"><a th:href="${reportHelper.createSummaryTableAnkerLinkForRed(scanTypeCount.scanType)}" th:text="${scanTypeCount.criticalSeverityCount}"/></td>
         <td th:if="${scanTypeCount.criticalSeverityCount == 0}">0</td>
+        
         <td th:if="${scanTypeCount.highSeverityCount != 0}"><a th:href="${reportHelper.createSummaryTableAnkerLinkForRed(scanTypeCount.scanType)}" th:text="${scanTypeCount.highSeverityCount}"/></td>
         <td th:if="${scanTypeCount.highSeverityCount == 0}">0</td>
 
@@ -499,8 +500,10 @@ rTableSourceHead,
 
         <td th:if="${scanTypeCount.lowSeverityCount != 0}"><a th:href="${reportHelper.createSummaryTableAnkerLinkForGreen(scanTypeCount.scanType)}" th:text="${scanTypeCount.lowSeverityCount}"/></td>
         <td th:if="${scanTypeCount.lowSeverityCount == 0}">0</td>
+        
         <td th:if="${scanTypeCount.unclassifiedSeverityCount != 0}"><a th:href="${reportHelper.createSummaryTableAnkerLinkForGreen(scanTypeCount.scanType)}" th:text="${scanTypeCount.unclassifiedSeverityCount}"/></td>
         <td th:if="${scanTypeCount.unclassifiedSeverityCount == 0}">0</td>
+        
         <td th:if="${scanTypeCount.infoSeverityCount != 0}"><a th:href="${reportHelper.createSummaryTableAnkerLinkForGreen(scanTypeCount.scanType)}" th:text="${scanTypeCount.infoSeverityCount}"/></td>
         <td th:if="${scanTypeCount.infoSeverityCount == 0}">0</td>
     </div>
@@ -509,11 +512,19 @@ rTableSourceHead,
 
 <!--/* 
  Next code block renders summary detail for given scan type summary detail object. Is used by scanresult.html
- Parameter: scanTypeSummary which is a SecHubReportScanTypeSummary
+ Parameter: scanTypeSummary which is a SecHubReportScanTypeSummary.
+ 
+ SecHubReportScanTypeSummary contains counts for red, green, yellow and total and additionally the details which are
+ of type:  ScanTypeSummaryDetailData which holds a severity separated lists of ScanTypeSummaryFindingOverviewData - e.g. "getDetails().getCritical()"
+ 
+ ScanTypeSummaryFindingOverviewData contains cweId, name and count for the problem
  */-->
 <th:block th:fragment="summaryDetail(scanTypeSummary, scanTypeText)">
     <details th:if="${scanTypeSummary.getTotal() != 0}">
                 <summary class='summaryScanType' th:text="${scanTypeText}">Scan type text</summary>
+                <div th:if="!${scanTypeSummary.getDetails().getCritical().isEmpty()}">
+                    <div th:replace="report/html/fragment-cwe-summary-table :: cweSummaryTable(severity = 'Critical', detailsList = ${scanTypeSummary.getDetails().getCritical()})"></div>
+                </div>
                 <div th:if="!${scanTypeSummary.getDetails().getHigh().isEmpty()}">
                     <div th:replace="report/html/fragment-cwe-summary-table :: cweSummaryTable(severity = 'High', detailsList = ${scanTypeSummary.getDetails().getHigh()})"></div>
                 </div>
@@ -522,6 +533,12 @@ rTableSourceHead,
                 </div>
                 <div th:if="!${scanTypeSummary.getDetails().getLow().isEmpty()}">
                     <div th:replace="report/html/fragment-cwe-summary-table :: cweSummaryTable(severity = 'Low', detailsList = ${scanTypeSummary.getDetails().getLow()})"></div>
+                </div>
+                <div th:if="!${scanTypeSummary.getDetails().getUnclassified().isEmpty()}">
+                    <div th:replace="report/html/fragment-cwe-summary-table :: cweSummaryTable(severity = 'Low', detailsList = ${scanTypeSummary.getDetails().getUnclassified()})"></div>
+                </div>
+                <div th:if="!${scanTypeSummary.getDetails().getInfo().isEmpty()}">
+                    <div th:replace="report/html/fragment-cwe-summary-table :: cweSummaryTable(severity = 'Low', detailsList = ${scanTypeSummary.getDetails().getInfo()})"></div>
                 </div>
     </details>
 </th:block>

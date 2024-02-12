@@ -477,6 +477,14 @@ rTableSourceHead,
 }
 </style>
 
+<!-- /* 
+Called by fragments-detail.html
+
+parameters:
+  - findingEntry: currently map table entry (key/value) 
+     Key = name of finding, used to group same findings (e.g. "Command injection" as headline, but 5 findings for this
+     Value= List<SecHubFinding> findings
+ */ -->
 <th:block th:fragment="scanTable">
     <td th:text="${findingEntry.value[0].severity}">HIGH</td>
     <td>

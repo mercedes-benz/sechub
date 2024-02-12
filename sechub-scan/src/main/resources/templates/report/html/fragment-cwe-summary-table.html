@@ -476,7 +476,13 @@ rTableSourceHead,
     font-family: monospace;
 }
 </style>
+<!-- /*
+ detailsList is a list of ScanTypeSummaryFindingOverviewData elements
+ 
+ Those elements contains cweId, name and the information how often this finding was 
+ found inside the report.
 
+*/ -->
 <th:block th:fragment="cweSummaryTable(severity, detailsList)">
     <h3 class='summarySeverity' th:text="${severity}"/>
     <table class='summaryScanTypeTable'>
