@@ -29,11 +29,12 @@ import com.mercedesbenz.sechub.commons.model.SecHubReportModel;
 import com.mercedesbenz.sechub.commons.model.TrafficLightSupport;
 import com.mercedesbenz.sechub.docgen.util.TextFileWriter;
 import com.mercedesbenz.sechub.domain.scan.SecHubExecutionException;
-import com.mercedesbenz.sechub.domain.scan.TestHTMLScanResultReportModelBuilder;
 import com.mercedesbenz.sechub.domain.scan.report.ScanReport;
 import com.mercedesbenz.sechub.domain.scan.report.ScanSecHubReport;
+import com.mercedesbenz.sechub.domain.scan.report.TestHTMLScanResultReportModelBuilder;
 import com.mercedesbenz.sechub.sharedkernel.ProductIdentifier;
 import com.mercedesbenz.sechub.test.CSSFileToFragementMerger;
+import com.mercedesbenz.sechub.test.TestFileWriter;
 import com.mercedesbenz.sechub.test.TestUtil;
 
 /**
@@ -109,6 +110,7 @@ public class ThymeLeafHTMLReportingTest {
 
         /* test */
         assertNotNull(htmlResult);
+        storeHTMLOutputAsFile(htmlResult, "example1");
 
         assertTrue(htmlResult.contains(context.sechubJobUUID));
         assertTrue(htmlResult.contains("XSS"), "The report must at least contain a cross site scripting vulnerability!");
@@ -134,6 +136,7 @@ public class ThymeLeafHTMLReportingTest {
 
         /* test */
         assertNotNull(htmlResult);
+        storeHTMLOutputAsFile(htmlResult, "example2");
 
         assertTrue(htmlResult.contains(context.sechubJobUUID));
         assertTrue(htmlResult.contains("testdata.rule1.shortdescription.text"));
@@ -155,6 +158,7 @@ public class ThymeLeafHTMLReportingTest {
 
         /* test */
         assertNotNull(htmlResult);
+        storeHTMLOutputAsFile(htmlResult, "example3");
 
         assertTrue(htmlResult.contains(context.sechubJobUUID));
         assertTrue(htmlResult.contains("Aliasing3.java"));
@@ -178,6 +182,7 @@ public class ThymeLeafHTMLReportingTest {
 
         /* test */
         assertNotNull(htmlResult);
+        storeHTMLOutputAsFile(htmlResult, "example4");
 
         assertTrue(htmlResult.contains(context.sechubJobUUID));
         assertTrue(htmlResult.contains("java/com/mercedesbenz/sechub/docgen/util/TextFileWriter.java"));
@@ -199,7 +204,7 @@ public class ThymeLeafHTMLReportingTest {
 
         /* test */
         assertNotNull(htmlResult);
-
+        storeHTMLOutputAsFile(htmlResult, "example5");
         assertTrue(htmlResult.contains(context.sechubJobUUID));
 
         assertTrue(htmlResult.contains("Red findings"));
@@ -220,6 +225,7 @@ public class ThymeLeafHTMLReportingTest {
 
         /* test */
         assertNotNull(htmlResult);
+        storeHTMLOutputAsFile(htmlResult, "example6");
 
         assertTrue(htmlResult.contains(context.sechubJobUUID));
         assertTrue(htmlResult.contains("Job execution failed because of an internal problem!"));
@@ -232,8 +238,13 @@ public class ThymeLeafHTMLReportingTest {
 
     }
 
+    private void storeHTMLOutputAsFile(String htmlResult, String name) throws IOException {
+        TestFileWriter writer = new TestFileWriter();
+        writer.save(new File("./build/test-data/thymeleaf-test/" + name + ".html"), htmlResult, true);
+    }
+
     private String processThymeLeafTemplates(TestReportContext context) throws IOException, SecHubExecutionException {
-        String htmlResult = thymeleafTemplateEngine.process("report/html/scanresult", context.convertToThymeLeafContext());
+        String htmlResult = thymeleafTemplateEngine.process("report/html/report", context.convertToThymeLeafContext());
 
         storeAsHTMLFileForReportDesignWhenTempFilesAreKept(htmlResult, context);
 

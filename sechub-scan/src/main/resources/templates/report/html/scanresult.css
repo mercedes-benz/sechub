@@ -390,7 +390,7 @@ rTableSourceHead,
 }
 
 .summaryTable {
-    width: 20%;
+    width: 50%;
     padding-bottom: 16px;
     padding-top: 10px;
     border-collapse: separate;
@@ -431,7 +431,7 @@ rTableSourceHead,
 }
 
 .summaryScanTypeTable {
-    width: 40%;
+    width: 100%;
     padding-bottom: 16px;
     padding-top: 10px;
     border-collapse: separate;

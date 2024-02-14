@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-package com.mercedesbenz.sechub.domain.scan;
+package com.mercedesbenz.sechub.domain.scan.report;
 
 import com.mercedesbenz.sechub.commons.model.SecHubResultTrafficLightFilter;
 

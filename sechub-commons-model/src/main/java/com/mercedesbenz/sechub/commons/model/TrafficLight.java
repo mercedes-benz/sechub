@@ -14,22 +14,29 @@ import java.util.List;
  */
 public enum TrafficLight {
 
-    GREEN(Severity.LOW, Severity.UNCLASSIFIED, Severity.INFO),
+    GREEN("Green", Severity.LOW, Severity.UNCLASSIFIED, Severity.INFO),
 
-    YELLOW(Severity.MEDIUM),
+    YELLOW("Yellow", Severity.MEDIUM),
 
-    RED(Severity.CRITICAL, Severity.HIGH),
+    RED("Red", Severity.CRITICAL, Severity.HIGH),
 
     /* Traffic light is "turned off" */
-    OFF;
+    OFF("Off");
 
     private List<Severity> severities;
+    private String text;
 
-    private TrafficLight(Severity... severities) {
+    private TrafficLight(String text, Severity... severities) {
+        this.text = text;
+
         List<Severity> target = new ArrayList<>(3);
         target.addAll(Arrays.asList(severities));
 
         this.severities = Collections.unmodifiableList(target);
+    }
+
+    public String getText() {
+        return text;
     }
 
     /**

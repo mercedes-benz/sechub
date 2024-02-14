@@ -180,7 +180,7 @@ class SecHubFindingTest {
 
         /* test */
         assertNull(finding.getType());
-        assertFalse(finding.hasScanType(null));
+        assertFalse(finding.hasScanType((ScanType) null));
 
         for (ScanType otherScanType : ScanType.values()) {
             assertHasScanTypeReturnsFalseForAnyVariantOf(finding, otherScanType.getId());

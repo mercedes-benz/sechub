@@ -1,7 +1,4 @@
-<th:block th:fragment="cweLinkGeneric(finding)">
-    <a  th:if="${finding.cweId != null}" th:href="@{'https://cwe.mitre.org/data/definitions/' + ${finding.cweId} + '.html'}" th:text="'CWE-' + ${finding.cweId}" target="_blank">CWE-77</a>
-</th:block>
-
-<th:block th:fragment="cweLinkWeb(finding)">
-    <a  th:if="${findingEntry.value[0].cweId != null}" th:href="@{'https://cwe.mitre.org/data/definitions/' + ${findingEntry.value[0].cweId} + '.html'}" th:text="'CWE-' + ${findingEntry.value[0].cweId}" target="_blank">CWE-77</a>
+<!--/* For development just call one ore more tests inside ThymeLeafHTMLReportingTest and check output */-->
+<th:block th:fragment="cweLink(finding)">
+    <a  th:if="${finding.cweId != null}" th:href="${reportHelper.createCweLink(finding)}" th:text="${reportHelper.createCweText(finding)}" target="_blank">CWE-77</a>
 </th:block>

@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+<!--/* For development just call one ore more tests inside ThymeLeafHTMLReportingTest and check output */-->
 <html>
 <head>
     <meta charset="UTF-8">
@@ -7,16 +8,21 @@
         Remark: This comments will be removed at thymeleaf parsing time - means not in HTML output
 
         Important: If you change scanresult.css please always start HTMLReportCSSFragementGenerator to
-                   synch to the fragment part. Details see HTMLReportCSSFragementGenerator.java
+                   synch to the styling.html fragment.
 
     */-->
     <link th:if="${isWebDesignMode}" th:href="${includedCSSRef}"
           rel="stylesheet" type="text/css" href="scanresult.css">
     <style type="text/css" th:if="!${isWebDesignMode}"
-           th:replace="report/html/fragment-generic-scan-table :: styles">
+           th:replace="report/html/styling :: styles">
     </style>
 </head>
 <body>
+     <!--                   
+     ---------------------------------
+     -      Traffic light            -
+     ---------------------------------
+    -->
 	<div class="sidenav">
 	    <div class="trafficlight">
 	        <div class="protector"></div>
@@ -32,11 +38,11 @@
 	        <table>
 	            <tr>
 	                <td>
-	                     <!--/*                   
+	                   <!--                   
 		                ---------------------------------
 		                -      SecHub shield logo       -
 		                ---------------------------------
-	                   */-->
+	                   -->
 	                    <div class="logo">
 	                        <!--
 	                             Link: <https://www.iconfinder.com/icons/1034363/advantage_protect_protection_security_shield_icon#size=128>
@@ -71,11 +77,11 @@
 	                <td>Scan result Report for Job:<span th:text="${jobuuid}">job-uuid</span>
 	                </td>
 	            </tr>
-	            <!--/*                   
+	            <!--                 
 	                ---------------------------------
 	                -            Labels             -
 	                ---------------------------------
-	            */-->
+	            -->
 	            <tr class="reportlabels" th:if="${metaData!=null && !metaData.get().getLabels().isEmpty()}">
 	                <td></td>
 	                <td>
@@ -91,13 +97,13 @@
 	    </div>
 	    <div class="content">
 	
-	        <div th:if="!${scanTypeCountSet.isEmpty()}">
+	        <div th:if="!${scanTypeSummaries.isEmpty()}">
 	            <h2 class='summaryHeadline'>Summary</h2>
-	            <!--/*                   
+	            <!--                   
 	                ---------------------------------
 	                -            Summary            -
 	                ---------------------------------
-	            */-->
+	            -->
 	            <table class='summaryTable'>
 	                <thead>
 	                <tr>
@@ -112,7 +118,7 @@
 	                </tr>
 	                </thead>
 	                <tbody>
-	                <tr th:each="scanTypeCount : ${scanTypeCountSet}">
+	                <tr th:each="scanTypeSummary : ${scanTypeSummaries}">
 	                <!--/* 
 	                   Next fragment line renders summary row for each contained scan type.
 	                   An example:
@@ -121,62 +127,36 @@
 	                   Web scan   1     0        1       0       0       0          0
 	                   
 	                   */-->
-	                    <div th:replace="report/html/fragment-summary :: summaryTableRow"></div>
+	                    <div th:replace="report/html/summary :: renderScanTypeOverviewLine(scanTypeSummary=${scanTypeSummary})"></div>
 	                </tr>
 	                </tbody>
 	            </table>
 	        </div>
-	        <!--/*                   
+	        <!--                   
 	             ---------------------------------
 	             - Summary scan type detail data -
 	             - as overview for scan types    -
 	             - e.g. Web Scan overview > ...  -
 	             ---------------------------------
-	         */-->
-	        <div th:if="${metaData!=null}">
-	            <div th:replace="report/html/fragment-summary :: summaryDetail(${metaData.get().getSummary().getCodeScan()},'Code scan overview')"></div>
-	            <div th:replace="report/html/fragment-summary :: summaryDetail(${metaData.get().getSummary().getInfraScan()},'Infra scan overview')"></div>
-	            <div th:replace="report/html/fragment-summary :: summaryDetail(${metaData.get().getSummary().getLicenseScan()},'License scan overview')"></div>
-	            <div th:replace="report/html/fragment-summary :: summaryDetail(${metaData.get().getSummary().getSecretScan()},'Secret scan overview')"></div>
-	            <div th:replace="report/html/fragment-summary :: summaryDetail(${metaData.get().getSummary().getWebScan()},'Web scan overview')"></div>
-	        </div>
-	        <!--/*                   
+	         -->
+	         <div th:each="scanTypeSummary : ${scanTypeSummaries}">
+                <div th:replace="report/html/summary :: renderScanTypeOverviewDetails(scanTypeSummary=${scanTypeSummary})"></div>
+            </div>
+	        <!--                   
 	             ---------------------------------
-	             - Render details grouped:       -
-	             - RED, YELLOW, GREEN            -
+	             - Findings grouped by traffic   -
+	             - lights:  RED, YELLOW, GREEN   -
 	             ---------------------------------
-	         */-->
-	        <div th:replace="report/html/fragment-detail :: groupedDetail(redHTMLSecHubFindingList,redHTMLWebScanMap, 'red', 'Red findings' )"></div>
-	        <div th:replace="report/html/fragment-detail :: groupedDetail(yellowHTMLSecHubFindingList,yellowHTMLWebScanMap, 'yellow', 'Yellow findings' )"></div>
-	        <div th:replace="report/html/fragment-detail :: groupedDetail(greenHTMLSecHubFindingList,greenHTMLWebScanMap, 'green', 'Green findings' )"></div>
-	         <!--/*                   
+            -->
+            <div th:each="trafficLightGroup : ${trafficLightGroups}">
+               <div th:replace="report/html/findings :: renderTrafficLightGroup(trafficLightGroup=${trafficLightGroup})"></div>
+            </div>
+	         <!--                   
 	             ---------------------------------
-	             - Render messages               -
+	             - Messages                      -
 	             ---------------------------------
-	         */-->
-	        <div class="messages" th:if="${messages!=null && !messages.isEmpty()}">
-		        <h2 class='messagesHeadline'>Messages</h2>
-		        <table class='messagesTable'>
-		            <tbody>
-		            <tr th:each="message : ${messages}">
-		                <td th:utext="${reportHelper.getMessageTypeAsHTMLIcon(message.type)}">🛇</td>
-		                <td th:text="${message.text}">This is an error message text</td>
-		            </tr>
-		            <tr th:remove="all">
-		                <td>⚠</td>
-		                <td>This is a warning message text</td>
-		            </tr>
-		            <tr th:remove="all">
-		                <td>🛈</td>
-		                <td>This is an info message text</td>
-		            </tr>
-		            <tr th:remove="all">
-		                <td></td>
-		                <td>This is a message where message type is null</td>
-		            </tr>
-		            </tbody>
-		        </table>
-		    </div>
+	         -->
+	        <div th:replace="report/html/messages :: renderMessages(messages=${messages})"></div>
 		 </div>
 	</div>
 </body>

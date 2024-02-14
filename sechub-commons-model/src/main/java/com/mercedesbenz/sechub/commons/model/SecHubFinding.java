@@ -262,13 +262,13 @@ public class SecHubFinding implements Comparable<SecHubFinding> {
     }
 
     public boolean hasScanType(ScanType scanType) {
-      String typeAsString= null;
-      if (scanType!=null) {
-          typeAsString = scanType.getId();
-      }
-      return hasScanType(typeAsString);
+        String typeAsString = null;
+        if (scanType != null) {
+            typeAsString = scanType.getId();
+        }
+        return hasScanType(typeAsString);
     }
-    
+
     public boolean hasScanType(String typeAsString) {
         if (typeAsString == null) {
             return false;

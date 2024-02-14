@@ -117,14 +117,21 @@ class ScanReportRestControllerMockTest {
 
         Integer cweId = Integer.valueOf(77);
 
-        HTMLCodeScanEntriesSecHubFindingData finding = new HTMLCodeScanEntriesSecHubFindingData();
+        SecHubFinding finding = new SecHubFinding();
+
         finding.setCweId(cweId);
         finding.setSeverity(Severity.HIGH);
         finding.setType(ScanType.CODE_SCAN);
         finding.setDescription("Potential file inclusion via variable");
 
+        List<HTMLScanTypSummary> scanTypeSummaries = new ArrayList<>();
+        HTMLScanTypSummary summary = new HTMLScanTypSummary(ScanType.CODE_SCAN);
+        summary.add(finding);
+
+        scanTypeSummaries.add(summary);
+
         reportModelBuilderResult.put("reportHelper", HTMLReportHelper.DEFAULT);
-        reportModelBuilderResult.put("redHTMLSecHubFindingList", Arrays.asList(finding));
+        reportModelBuilderResult.put("scanTypeSummaries", Arrays.asList(scanTypeSummaries));
 
         when(modelBuilder.build(any())).thenReturn(reportModelBuilderResult);
 
@@ -255,8 +262,8 @@ class ScanReportRestControllerMockTest {
         reportModelBuilderResult.put("greenList", new ArrayList<>());
         reportModelBuilderResult.put("isWebDesignMode", false);
         reportModelBuilderResult.put("metaData", null);
-        reportModelBuilderResult.put("codeScanSupport", new HtmlCodeScanDescriptionSupport());
-        reportModelBuilderResult.put("scanTypeCountSet", new TreeSet<ScanTypeCount>());
+        reportModelBuilderResult.put("codeScanSupport", new HTMLCodeScanDescriptionSupport());
+        reportModelBuilderResult.put("scanTypeSummaries", new ArrayList<>());
 
         when(modelBuilder.build(any())).thenReturn(reportModelBuilderResult);
     }
