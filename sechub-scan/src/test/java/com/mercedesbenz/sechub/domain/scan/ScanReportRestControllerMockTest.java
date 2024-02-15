@@ -124,27 +124,37 @@ class ScanReportRestControllerMockTest {
         finding.setType(ScanType.CODE_SCAN);
         finding.setDescription("Potential file inclusion via variable");
 
-        List<HTMLScanTypSummary> scanTypeSummaries = new ArrayList<>();
-        HTMLScanTypSummary summary = new HTMLScanTypSummary(ScanType.CODE_SCAN);
-        summary.add(finding);
+        /*
+         * its too complex to mock all parts - so we use simply the real model builder
+         * output here
+         */
+        HTMLScanResultReportModelBuilder realBuilder = new HTMLScanResultReportModelBuilder();
 
-        scanTypeSummaries.add(summary);
+        SecHubReportModel model = new SecHubReportModel();
+        model.getResult().getFindings().add(finding);
 
-        reportModelBuilderResult.put("reportHelper", HTMLReportHelper.DEFAULT);
-        reportModelBuilderResult.put("scanTypeSummaries", Arrays.asList(scanTypeSummaries));
+        ScanReport scanReport = new ScanReport(randomUUID, "project1");
+        scanReport.setTrafficLight(TrafficLight.YELLOW);
+        scanReport.setResultType(ScanReportResultType.MODEL);
+        scanReport.setResult(JSONConverter.get().toJSON(model));
 
-        when(modelBuilder.build(any())).thenReturn(reportModelBuilderResult);
+        ScanSecHubReport report = new ScanSecHubReport(scanReport);
+        Map<String, Object> realModelBuilderResult = realBuilder.build(report);
+
+        when(modelBuilder.build(any())).thenReturn(realModelBuilderResult);
 
         /* execute + test @formatter:off */
         this.mockMvc.perform(
                 get(https(PORT_USED).buildGetJobReportUrl(PROJECT1_ID,randomUUID)).accept(MediaType.TEXT_HTML).
                     contentType(MediaType.APPLICATION_JSON_VALUE)
-                ).  andDo(print()).
+                ).
                     andExpect(status().isOk()).
                     andExpect(content().contentType("text/html;charset=UTF-8")).
                     andExpect(content().encoding("UTF-8")).
                     andExpect(content().string(containsString(randomUUID.toString()))).
-                    andExpect(content().string(containsString("CWE-" + cweId.toString()))).
+                    andExpect(content().string(containsString("CWE-" + cweId.toString()))). /* finding + summary */
+                    andExpect(content().string(containsString("Count"))). /* summary only */
+                    andExpect(content().string(containsString("Potential file inclusion via variable"))). /* finding info */
                     andExpect(content().string(containsString("href=\"https://cwe.mitre.org/data/definitions/" + cweId.toString() + ".html\""))
                 );
 
@@ -165,7 +175,7 @@ class ScanReportRestControllerMockTest {
         this.mockMvc.perform(
                 get(https(PORT_USED).buildGetJobReportUrl(PROJECT1_ID,randomUUID)).accept(MediaType.TEXT_HTML).
                     contentType(MediaType.APPLICATION_JSON_VALUE)
-                ).  andDo(print()).
+                ).
                     andExpect(status().isOk()).
                     andExpect(content().contentType("text/html;charset=UTF-8")).
                     andExpect(content().encoding("UTF-8")).
@@ -228,7 +238,7 @@ class ScanReportRestControllerMockTest {
         this.mockMvc.perform(
         		get(https(PORT_USED).buildGetJobReportUrl(PROJECT1_ID,randomUUID)).accept(acceptedType).
         			contentType(MediaType.APPLICATION_JSON_VALUE)
-        		).  andDo(print()).
+        		).
         			andExpect(status().isOk()).
         			andExpect(content().contentType("text/html;charset=UTF-8")).
         			andExpect(content().encoding("UTF-8")).

@@ -29,9 +29,9 @@ import com.mercedesbenz.sechub.commons.model.SecHubReportModel;
 import com.mercedesbenz.sechub.commons.model.TrafficLightSupport;
 import com.mercedesbenz.sechub.docgen.util.TextFileWriter;
 import com.mercedesbenz.sechub.domain.scan.SecHubExecutionException;
+import com.mercedesbenz.sechub.domain.scan.report.HTMLScanResultReportModelBuilder;
 import com.mercedesbenz.sechub.domain.scan.report.ScanReport;
 import com.mercedesbenz.sechub.domain.scan.report.ScanSecHubReport;
-import com.mercedesbenz.sechub.domain.scan.report.TestHTMLScanResultReportModelBuilder;
 import com.mercedesbenz.sechub.sharedkernel.ProductIdentifier;
 import com.mercedesbenz.sechub.test.CSSFileToFragementMerger;
 import com.mercedesbenz.sechub.test.TestFileWriter;
@@ -353,7 +353,7 @@ public class ThymeLeafHTMLReportingTest {
 
             }
             TrafficLightSupport trafficLightSupport = new TrafficLightSupport();
-            TestHTMLScanResultReportModelBuilder reportModelBuilder = new TestHTMLScanResultReportModelBuilder(trafficLightSupport);
+            HTMLScanResultReportModelBuilder reportModelBuilder = new HTMLScanResultReportModelBuilder();
 
             String sechubReportAsJson = report.getResult();
             SecHubReportModel reportModel = SecHubReportModel.fromJSONString(sechubReportAsJson);

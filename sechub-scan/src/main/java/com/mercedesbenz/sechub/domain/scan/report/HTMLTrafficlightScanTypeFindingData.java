@@ -13,11 +13,11 @@ import com.mercedesbenz.sechub.commons.model.SecHubFinding;
 import com.mercedesbenz.sechub.commons.model.Severity;
 
 public class HTMLTrafficlightScanTypeFindingData implements Comparable<HTMLTrafficlightScanTypeFindingData> {
-    private static SecHubFindingByIdComparator FINDING_ID_COMPARATOR = new SecHubFindingByIdComparator();
+    private static SecHubFindingByIdComparator SEVERITY_THEN_FINDING_ID_COMPARATOR = new SecHubFindingByIdComparator();
     private ScanType scanType;
     private List<SecHubFinding> relatedFindings = new ArrayList<>();
     private Map<Severity, SecHubFinding> firstOfSeverityMap = new LinkedHashMap<>(Severity.values().length);
-    
+
     HTMLTrafficlightScanTypeFindingData(ScanType scanType) {
         Objects.requireNonNull(scanType, "ScanType may not be null!");
         this.scanType = scanType;
@@ -29,7 +29,7 @@ public class HTMLTrafficlightScanTypeFindingData implements Comparable<HTMLTraff
 
     public List<SecHubFinding> getRelatedFindings() {
         List<SecHubFinding> sortedFindingsById = new ArrayList<>(relatedFindings);
-        Collections.sort(sortedFindingsById, FINDING_ID_COMPARATOR);
+        Collections.sort(sortedFindingsById, SEVERITY_THEN_FINDING_ID_COMPARATOR);
         return sortedFindingsById;
     }
 
@@ -43,44 +43,51 @@ public class HTMLTrafficlightScanTypeFindingData implements Comparable<HTMLTraff
         return "HTMLTrafficlightScanTypeFindingData [" + (scanType != null ? "scanType=" + scanType + ", " : "")
                 + (relatedFindings != null ? "relatedFindings=" + relatedFindings : "") + "]";
     }
-    
+
     void addRelatedFinding(SecHubFinding finding) {
-        if (finding==null) {
+        if (finding == null) {
             return;
         }
         relatedFindings.add(finding);
-        
+
         Severity severity = finding.getSeverity();
-        if (severity==null) {
+        if (severity == null) {
             return;
         }
-        /* next line does only create missing key,value entry, when key does not exist,
-         * means: only the first entry is present inside this map!
-         */
-        firstOfSeverityMap.computeIfAbsent(severity, s -> finding);
+        SecHubFinding firstEntry = firstOfSeverityMap.computeIfAbsent(severity, s -> finding);
+        if (firstEntry.getId() > finding.getId()) {
+            firstOfSeverityMap.put(severity, finding);
+        }
     }
-    
+
     public boolean isNotFirstLinkItem(SecHubFinding finding) {
-        return ! isFirstLinkItem(finding);
+        return !isFirstLinkItem(finding);
     }
-    
+
     public boolean isFirstLinkItem(SecHubFinding finding) {
         return firstOfSeverityMap.containsValue(finding);
     }
-    
-    private static class SecHubFindingByIdComparator implements Comparator<SecHubFinding>{
-        
+
+    private static class SecHubFindingByIdComparator implements Comparator<SecHubFinding> {
+
         @Override
         public int compare(SecHubFinding o1, SecHubFinding o2) {
-            if (o1==null) {
+            if (o1 == null) {
                 return -1;
             }
             if (o2 == null) {
                 return 1;
             }
-            return o1.getId()-o2.getId();
+            /* compare severity reverse (CRITICAL on top) */
+            int result = o2.getSeverity().compareTo(o1.getSeverity());
+            if (result != 0) {
+                return result;
+            }
+            /* ids top down */
+            result = o1.getId() - o2.getId();
+            return result;
         }
-        
+
     }
 
 }

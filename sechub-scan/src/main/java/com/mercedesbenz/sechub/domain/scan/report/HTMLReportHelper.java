@@ -8,7 +8,6 @@ import com.mercedesbenz.sechub.commons.model.ScanType;
 import com.mercedesbenz.sechub.commons.model.SecHubCodeCallStack;
 import com.mercedesbenz.sechub.commons.model.SecHubFinding;
 import com.mercedesbenz.sechub.commons.model.SecHubMessageType;
-import com.mercedesbenz.sechub.commons.model.Severity;
 import com.mercedesbenz.sechub.commons.model.web.SecHubReportWeb;
 import com.mercedesbenz.sechub.commons.model.web.SecHubReportWebAttack;
 import com.mercedesbenz.sechub.commons.model.web.SecHubReportWebBody;
@@ -196,7 +195,7 @@ public class HTMLReportHelper {
         }
         return "finding_" + finding.getId();
     }
-    
+
     public String createFirstFindingAnkerId(SecHubFinding finding) {
         return getLinkSupport().createAnkerFirstOf(finding.getType(), finding.getSeverity());
     }
@@ -251,10 +250,9 @@ public class HTMLReportHelper {
         /* fallback always "no icon" */
         return EMPTY_STRING;
     }
-    
+
     private HTMLFirstLinkToSeveritySupport getLinkSupport() {
         return HTMLFirstLinkToSeveritySupport.DEFAULT;
     }
-
 
 }

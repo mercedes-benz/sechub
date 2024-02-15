@@ -9,7 +9,6 @@ import java.util.TreeMap;
 import com.mercedesbenz.sechub.commons.model.ScanType;
 import com.mercedesbenz.sechub.commons.model.SecHubFinding;
 import com.mercedesbenz.sechub.commons.model.TrafficLight;
-import com.mercedesbenz.sechub.sharedkernel.SecHubEnvironment;
 
 /**
  * Represents a group containing findings for one traffic light - e.g. RED

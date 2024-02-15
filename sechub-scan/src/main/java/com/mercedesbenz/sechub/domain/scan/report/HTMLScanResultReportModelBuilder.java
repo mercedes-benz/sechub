@@ -8,15 +8,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Component;
 
 import com.mercedesbenz.sechub.commons.model.ScanType;
 import com.mercedesbenz.sechub.commons.model.SecHubFinding;
 import com.mercedesbenz.sechub.commons.model.SecHubResult;
-import com.mercedesbenz.sechub.commons.model.SecHubResultTrafficLightFilter;
 import com.mercedesbenz.sechub.commons.model.TrafficLight;
 
 @Component
@@ -24,14 +20,6 @@ public class HTMLScanResultReportModelBuilder {
 
     static final String SHOW_LIGHT = "opacity: 1.0";
     static final String HIDE_LIGHT = "opacity: 0.25";
-
-    @Value("classpath:templates/report/html/scanresult.css")
-    Resource cssResource;
-
-    String embeddedCSS;
-
-    @Autowired
-    SecHubResultTrafficLightFilter trafficLightFilter;
 
     public Map<String, Object> build(ScanSecHubReport report) {
         TrafficLight trafficLight = report.getTrafficLight();
@@ -65,11 +53,12 @@ public class HTMLScanResultReportModelBuilder {
             codeScanEntries.put(finding.getId(), codeScanSupport.buildEntries(finding));
         }
 
+        List<HTMLScanTypSummary> scanTypeSummaries = createScanTypeSummaries(findings);
+
+        List<HTMLTrafficlightFindingGroup> trafficLightGroups = createTrafficLightFindingGroups(findings);
+
         Map<String, Object> model = new HashMap<>();
         model.put("result", report.getResult());
-        model.put("redList", trafficLightFilter.filterFindingsFor(result, TrafficLight.RED));
-        model.put("yellowList", trafficLightFilter.filterFindingsFor(result, TrafficLight.YELLOW));
-        model.put("greenList", trafficLightFilter.filterFindingsFor(result, TrafficLight.GREEN));
 
         model.put("trafficlight", trafficLight.name());
 
@@ -78,6 +67,8 @@ public class HTMLScanResultReportModelBuilder {
         model.put("styleGreen", styleGreen);
         model.put("codeScanEntries", codeScanEntries);
         model.put("codeScanSupport", codeScanSupport);
+        model.put("scanTypeSummaries", scanTypeSummaries);
+        model.put("trafficLightGroups", trafficLightGroups);
         model.put("reportHelper", HTMLReportHelper.DEFAULT);
         model.put("messages", report.getMessages());
         model.put("metaData", report.getMetaData());
@@ -88,12 +79,6 @@ public class HTMLScanResultReportModelBuilder {
         } else {
             model.put("jobuuid", "none");
         }
-
-        List<HTMLScanTypSummary> scanTypeSummaries = createScanTypeSummaries(findings);
-        model.put("scanTypeSummaries", scanTypeSummaries);
-
-        List<HTMLTrafficlightFindingGroup> trafficLightGroups = createTrafficLightFindingGroups(findings);
-        model.put("trafficLightGroups", trafficLightGroups);
 
         return model;
     }
@@ -107,7 +92,7 @@ public class HTMLScanResultReportModelBuilder {
      *         type
      *
      */
-    List<HTMLScanTypSummary> createScanTypeSummaries(List<SecHubFinding> findings) {
+    public List<HTMLScanTypSummary> createScanTypeSummaries(List<SecHubFinding> findings) {
 
         Map<ScanType, HTMLScanTypSummary> temporaryMap = new LinkedHashMap<>();
 
@@ -129,7 +114,7 @@ public class HTMLScanResultReportModelBuilder {
      * @param findings
      * @return list
      */
-    List<HTMLTrafficlightFindingGroup> createTrafficLightFindingGroups(List<SecHubFinding> findings) {
+    public List<HTMLTrafficlightFindingGroup> createTrafficLightFindingGroups(List<SecHubFinding> findings) {
 
         List<HTMLTrafficlightFindingGroup> groups = new ArrayList<>();
 

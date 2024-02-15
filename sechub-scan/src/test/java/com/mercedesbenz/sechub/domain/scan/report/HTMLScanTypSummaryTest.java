@@ -152,5 +152,5 @@ class HTMLScanTypSummaryTest {
         assertEquals(3, summary.getTotalCount());
 
     }
-    
+
 }

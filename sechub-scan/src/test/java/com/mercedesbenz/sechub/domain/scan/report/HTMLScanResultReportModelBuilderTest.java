@@ -4,7 +4,6 @@ package com.mercedesbenz.sechub.domain.scan.report;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
-import java.io.ByteArrayInputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -20,14 +19,12 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
-import org.springframework.core.io.Resource;
 
 import com.mercedesbenz.sechub.commons.model.ScanType;
 import com.mercedesbenz.sechub.commons.model.SecHubCodeCallStack;
 import com.mercedesbenz.sechub.commons.model.SecHubFinding;
 import com.mercedesbenz.sechub.commons.model.SecHubReportMetaData;
 import com.mercedesbenz.sechub.commons.model.SecHubResult;
-import com.mercedesbenz.sechub.commons.model.SecHubResultTrafficLightFilter;
 import com.mercedesbenz.sechub.commons.model.Severity;
 import com.mercedesbenz.sechub.commons.model.TrafficLight;
 
@@ -42,36 +39,16 @@ class HTMLScanResultReportModelBuilderTest {
 
     private HTMLScanResultReportModelBuilder builderToTest;
     private ScanSecHubReport scanSecHubReport;
-    private SecHubResultTrafficLightFilter trafficLightFilter;
     private SecHubResult result;
-    private List<SecHubFinding> greenList;
-    private List<SecHubFinding> redList;
-    private List<SecHubFinding> yellowList;
 
     @BeforeEach
     void beforeEach() throws Exception {
         builderToTest = new HTMLScanResultReportModelBuilder();
 
-        trafficLightFilter = mock(SecHubResultTrafficLightFilter.class);
-        Resource cssResource = mock(Resource.class);
-        when(cssResource.getInputStream()).thenReturn(new ByteArrayInputStream("csscontentfromstream".getBytes()));
-
-        builderToTest.cssResource = cssResource;
-        builderToTest.trafficLightFilter = trafficLightFilter;
-
         result = mock(SecHubResult.class);
 
         scanSecHubReport = mock(ScanSecHubReport.class);
         when(scanSecHubReport.getResult()).thenReturn(result);
-
-        greenList = new ArrayList<>();
-        redList = new ArrayList<>();
-        yellowList = new ArrayList<>();
-
-        when(trafficLightFilter.filterFindingsFor(result, TrafficLight.RED)).thenReturn(redList);
-        when(trafficLightFilter.filterFindingsFor(result, TrafficLight.YELLOW)).thenReturn(yellowList);
-        when(trafficLightFilter.filterFindingsFor(result, TrafficLight.GREEN)).thenReturn(greenList);
-
     }
 
     @Test
@@ -115,16 +92,11 @@ class HTMLScanResultReportModelBuilderTest {
         when(scanSecHubReport.getJobUUID()).thenReturn(uuid);
         when(scanSecHubReport.getTrafficLight()).thenReturn(TrafficLight.RED);
 
-        builderToTest.embeddedCSS = "embeddedCssContent";
-
         /* execute */
         Map<String, Object> map = builderToTest.build(scanSecHubReport);
 
         /* test */
         assertSame(result, map.get("result"));
-        assertSame(greenList, map.get("greenList"));
-        assertSame(redList, map.get("redList"));
-        assertSame(yellowList, map.get("yellowList"));
         assertNull(map.get("${includedCSSRef}"));
 
         assertEquals("RED", map.get("trafficlight"));
@@ -145,7 +117,7 @@ class HTMLScanResultReportModelBuilderTest {
     }
 
     @Test
-    public void trafficlight_yellow_set_display_block__others_are_none() {
+    void trafficlight_yellow_set_display_block__others_are_none() {
         when(scanSecHubReport.getTrafficLight()).thenReturn(TrafficLight.YELLOW);
 
         Map<String, Object> map = builderToTest.build(scanSecHubReport);
@@ -162,6 +134,16 @@ class HTMLScanResultReportModelBuilderTest {
         assertEquals(HIDE_LIGHT, map.get("styleRed"));
         assertEquals(HIDE_LIGHT, map.get("styleYellow"));
         assertEquals(SHOW_LIGHT, map.get("styleGreen"));
+    }
+
+    @Test
+    void trafficlight_off_set_all_display_none() {
+        when(scanSecHubReport.getTrafficLight()).thenReturn(TrafficLight.OFF);
+
+        Map<String, Object> map = builderToTest.build(scanSecHubReport);
+        assertEquals(HIDE_LIGHT, map.get("styleRed"));
+        assertEquals(HIDE_LIGHT, map.get("styleYellow"));
+        assertEquals(HIDE_LIGHT, map.get("styleGreen"));
     }
 
     @Test
