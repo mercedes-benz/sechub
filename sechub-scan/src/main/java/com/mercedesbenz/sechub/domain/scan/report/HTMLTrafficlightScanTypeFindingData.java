@@ -2,6 +2,7 @@ package com.mercedesbenz.sechub.domain.scan.report;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -12,6 +13,7 @@ import com.mercedesbenz.sechub.commons.model.SecHubFinding;
 import com.mercedesbenz.sechub.commons.model.Severity;
 
 public class HTMLTrafficlightScanTypeFindingData implements Comparable<HTMLTrafficlightScanTypeFindingData> {
+    private static SecHubFindingByIdComparator FINDING_ID_COMPARATOR = new SecHubFindingByIdComparator();
     private ScanType scanType;
     private List<SecHubFinding> relatedFindings = new ArrayList<>();
     private Map<Severity, SecHubFinding> firstOfSeverityMap = new LinkedHashMap<>(Severity.values().length);
@@ -26,7 +28,9 @@ public class HTMLTrafficlightScanTypeFindingData implements Comparable<HTMLTraff
     }
 
     public List<SecHubFinding> getRelatedFindings() {
-        return Collections.unmodifiableList(relatedFindings);
+        List<SecHubFinding> sortedFindingsById = new ArrayList<>(relatedFindings);
+        Collections.sort(sortedFindingsById, FINDING_ID_COMPARATOR);
+        return sortedFindingsById;
     }
 
     @Override
@@ -62,6 +66,21 @@ public class HTMLTrafficlightScanTypeFindingData implements Comparable<HTMLTraff
     
     public boolean isFirstLinkItem(SecHubFinding finding) {
         return firstOfSeverityMap.containsValue(finding);
+    }
+    
+    private static class SecHubFindingByIdComparator implements Comparator<SecHubFinding>{
+        
+        @Override
+        public int compare(SecHubFinding o1, SecHubFinding o2) {
+            if (o1==null) {
+                return -1;
+            }
+            if (o2 == null) {
+                return 1;
+            }
+            return o1.getId()-o2.getId();
+        }
+        
     }
 
 }
