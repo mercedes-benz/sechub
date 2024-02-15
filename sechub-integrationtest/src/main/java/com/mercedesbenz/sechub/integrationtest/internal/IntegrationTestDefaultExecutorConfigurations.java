@@ -217,6 +217,12 @@ public class IntegrationTestDefaultExecutorConfigurations {
             StorageType.REUSE_SECHUB_DATA,
             PDS_ANALYTICS);
 
+    public static final TestExecutorConfig PDS_V1_PREPARE_INTEGRATIONTEST = definePDSScan(
+            "default", false,
+            PDSIntTestProductIdentifier.PDS_INTTEST_PRODUCT_PREPARE,
+            StorageType.REUSE_SECHUB_DATA,
+            PDS_PREPARE);
+
 
     /* ----------------------------------------------------------------*/
     /* ---------------PDS solutions mocked-----------------------------*/

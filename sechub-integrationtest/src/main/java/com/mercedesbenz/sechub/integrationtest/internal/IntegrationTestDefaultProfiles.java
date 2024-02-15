@@ -377,6 +377,17 @@ public class IntegrationTestDefaultProfiles {
      */
     public static final DefaultTestExecutionProfile PROFILE_16_PDS_ANALYZE_CLOC_OUTPUT = defineProfile16();
 
+    // TODO prepare
+    /**
+     * The profile enables a PDS prepare.
+     *
+     * <h5>Used inside scenarios:</h5>
+     * <ul>
+     * </ul>
+     *
+     */
+    public static final DefaultTestExecutionProfile PROFILE_100_PDS_PREPARE = defineProfile100();
+
     /**
      * <h3>Profile 17</h3>
      * <h4>Short description</h4>PDS scan profile for secret scans
@@ -572,6 +583,7 @@ public class IntegrationTestDefaultProfiles {
     public static final DefaultTestExecutionProfile PROFILE_27_PDS_SOLUTION_FINDSECURITYBUGS_MOCKED = defineProfileForPdsSolutionMockMode(27,
             IntegrationTestDefaultExecutorConfigurations.PDS_V1_PDS_SOLUTION_FINDSECURITYBUGS_MOCKED);
 
+
     /**
      * @return all default profiles
      */
@@ -752,6 +764,16 @@ public class IntegrationTestDefaultProfiles {
         profile.initialConfigurationsWithoutUUID.add(IntegrationTestDefaultExecutorConfigurations.PDS_V1_SECRET_SCAN_A);
         profile.id = "inttest-p17-pds-secretscan";
         profile.description = "Profile 17: PDS secret scan, reused storage, SARIF JSON file returned";
+        profile.enabled = true;
+        return profile;
+    }
+
+    private static DefaultTestExecutionProfile defineProfile100() {
+
+        DefaultTestExecutionProfile profile = new DefaultTestExecutionProfile();
+        profile.initialConfigurationsWithoutUUID.add(IntegrationTestDefaultExecutorConfigurations.PDS_V1_PREPARE_INTEGRATIONTEST);
+        profile.id = "inttest-p100-pds-prepare";
+        profile.description = "Profile 100: PDS prepare, reused storage, dynamic text results";
         profile.enabled = true;
         return profile;
     }

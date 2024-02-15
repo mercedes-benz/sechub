@@ -180,6 +180,11 @@
       } ]
     }
   }, {
+    "id" : "PDS_INTTEST_PRODUCT_PREPARE",
+    "path" : "./../sechub-integrationtest/pds/product-scripts/integrationtest-prepare.sh",
+    "scanType" : "prepare",
+    "description" : "This is a fake prepare scan - used by integration tests."
+  }, {
     "id" : "PDS_TEST_PRODUCT_SECRETSCAN",
     "path" : "./../sechub-integrationtest/pds/product-scripts/integrationtest-secretscan.sh",
     "scanType" : "secretScan",
