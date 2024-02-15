@@ -3,13 +3,11 @@
 <!--/* HTMLTrafficlightFindingGroup */-->
 <th:block th:fragment="renderTrafficLightGroup(trafficLightGroup)">
   <div th:if="${trafficLightGroup.hasEntries}">
-     <!--/* Red/Yellow/Green headline */-->
-     <h2 th:class="${trafficLightGroup.findingHeadlineCssClass}" th:text="${trafficLightGroup.findingHeadlineText}">Red findings</h2>
-     
-     <!--/*Each scan type data . e.g.CodeScan */-->
+     <div th:remove="all"><!--/* Red/Yellow/Green headline */--></div>
+     <h2 th:class="${trafficLightGroup.findingHeadlineCssClass}" th:id="'report' + ${trafficLightGroup.trafficLight.text} + 'Findings'" th:text="${trafficLightGroup.findingHeadlineText}">Red findings</h2>
+     <div th:remove="all"> <!--/*Each scan type data . e.g.CodeScan */--></div>
      <div th:each="scanTypeFindingData : ${trafficLightGroup.scanTypeFindingDataList}">
         <h3 th:class="${trafficLightGroup.findingHeadlineCssClass}" th:text="${scanTypeFindingData.scanType.name}">Code scan</h3>
-   
         <table th:class="'findingsTable '+ ${trafficLightGroup.findingsTableCssClass}">
 	       <thead>
 	           <tr>
@@ -19,7 +17,6 @@
 	               <th>Description</th>
 	           </tr>
 	       </thead>
-	              
 	       <tbody>
 	           <tr th:each="finding : ${scanTypeFindingData.relatedFindings}">
 	                <div th:replace="report/html/findings :: renderFindings(finding=${finding}, scanTypeFindingData=${scanTypeFindingData})"></div>
@@ -40,6 +37,7 @@
      <div th:replace="report/html/links :: cweLink(finding=${finding})"></div>
 </td>
 <td>
+    <div th:remove="all">
     <!--/*
     
         ------------------------------------
@@ -47,7 +45,9 @@
         ------------------------------------
     
     */-->
+    </div>
 	<div th:if="${finding.hasScanType('infraScan')}" th:text="${finding.description}">Description1</div>
+	<div th:remove="all">
     <!--/*
     
         ------------------------------------
@@ -55,6 +55,7 @@
         ------------------------------------
     
     */-->
+    </div>
 	<div class="rTable" th:if="${finding.hasScanType('codeScan') || finding.hasScanType('secretScan')}">
 		<div class="rTableRowHead">
 			<div class="rTableHead" style="width:5%">Call</div>
@@ -73,6 +74,7 @@
 			<div class="rTableCell" th:text="${codeScanEntry.source}" style="width:25%">result= evalCode.execute()</div>
 		</div>
 	</div>
+	<div th:remove="all">
 	<!--/*
     
         ------------------------------------
@@ -80,6 +82,7 @@
         ------------------------------------
     
     */-->
+    </div>
 	<div class="rTable" th:if="${finding.hasScanType('webScan')}">
         <div class="rTable">
             <div class="rTableRowHead">
@@ -94,6 +97,7 @@
             </div>
         </div>
     </div>
+    <div th:remove="all">
      <!--/*
     
         ------------------------------------
@@ -101,6 +105,7 @@
         ------------------------------------
     
     */-->
+    </div>
 	<details th:if="${finding.hasScanType('codeScan') || finding.hasScanType('secretScan')}">
 		<summary data-open="Open details" data-close="Close details"></summary>
 		<div class="rTable">
@@ -123,6 +128,7 @@
 		</div>
         <div th:replace="report/html/findings :: footer(finding=${finding})"></div>
 	</details>
+    <div th:remove="all">
 	<!--/*
     
         ------------------------------------
@@ -130,9 +136,9 @@
         ------------------------------------
     
     */-->
+    </div>
 	<details th:if="${finding.hasScanType('webScan')}" th:with="webRequest=${finding.web.request},webResponse=${finding.web.response}">
         <summary data-open="Open details" data-close="Close details"></summary>
-        
         <!-- REQUEST -->
         <h3 class="rRequestDetailHeadline">Request</h3>
         <div class="rRequestMethod">
@@ -143,14 +149,11 @@
         </div>
         <h4>Attack vector</h4>
         <textarea readonly="true" class="rAttackVectorText" th:text="${reportHelper.getVector(finding.web.attack)}">Attack vector data</textarea>
-        
         <div th:replace="report/html/headers :: headers(headerMap=${webRequest.headers})"></div>
-        
         <h4>Body</h4>
         <div th:if="${reportHelper.hasNoBodyContent(webRequest.body)}">No body content</div>
         <textarea readonly="true" class="rBodyText" th:if="${webRequest.body.text}" th:text="${webRequest.body.text}">Text</textarea>
         <textarea readonly="true"class="rBodyBinary" th:if="${webRequest.body.binary}" th:text="${webRequest.body.binary}">Binary</textarea>
-        
         <!-- RESPONSE -->
         <h3 class="rResponseDetailHeadline">Response</h3>
         <div class="rResponseProtocol">
@@ -162,15 +165,12 @@
         <div class="rEvidenceStartLine" th:if="${reportHelper.hasEvidenceStartLine(finding.web.attack)}">
             <div>Found in response body. Start line: </div><div th:text="${reportHelper.getEvidenceStartLine(finding.web.attack)}"></div>
         </div>
-       
         <div th:replace="report/html/headers :: headers(headerMap=${webResponse.headers})"></div>
         <h4>Body</h4>
         <div th:if="${reportHelper.hasNoBodyContent(webResponse.body)}">No body content</div>
         <textarea readonly="true" class="rBodyText" th:if="${webResponse.body.text}" th:text="${webResponse.body.text}">Text</textarea>
         <textarea readonly="true" class="rBodyBinary" th:if="${webResponse.body.binary}" th:text="${webResponse.body.binary}">Binary</textarea>
-    
         <div th:replace="report/html/findings :: footer(finding=${finding})"></div>
-       
     </details>
 </td>
 
