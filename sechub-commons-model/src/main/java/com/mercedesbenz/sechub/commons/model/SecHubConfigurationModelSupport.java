@@ -78,6 +78,11 @@ public class SecHubConfigurationModelSupport {
             SecHubWebScanConfiguration webScan = webScanOpt.get();
             Optional<SecHubWebScanApiConfiguration> apiOpt = webScan.getApi();
             return isDataTypeContainedOrReferenced(dataType, model, apiOpt, SecHubWebScanApiConfiguration.class);
+
+        case PREPARE:
+            //TODO
+            return false;
+
         default:
             LOG.error("Unsupported scan type: {}", scanType);
             return false;

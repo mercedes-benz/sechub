@@ -261,6 +261,9 @@ public abstract class AbstractProductExecutor implements ProductExecutor {
         case ANALYTICS:
             // will be handled inisde isExecutionNecessary() of executor implementation
             return true;
+        case PREPARE:
+            return true;
+            // TODO prepare ?
         case UNKNOWN:
             return false;
         default:
