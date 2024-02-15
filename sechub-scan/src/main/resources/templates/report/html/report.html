@@ -4,16 +4,8 @@
 <head>
     <meta charset="UTF-8">
     <title>SecHub scan result</title>
-    <!--/*
-        Remark: This comments will be removed at thymeleaf parsing time - means not in HTML output
 
-        Important: If you change scanresult.css please always start HTMLReportCSSFragementGenerator to
-                   synch to the styling.html fragment.
-
-    */-->
-    <link th:if="${isWebDesignMode}" th:href="${includedCSSRef}"
-          rel="stylesheet" type="text/css" href="scanresult.css">
-    <style type="text/css" th:if="!${isWebDesignMode}"
+    <style type="text/css"
            th:replace="report/html/styling :: styles">
     </style>
 </head>

@@ -5,7 +5,6 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 import java.io.ByteArrayInputStream;
-import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -31,7 +30,6 @@ import com.mercedesbenz.sechub.commons.model.SecHubResult;
 import com.mercedesbenz.sechub.commons.model.SecHubResultTrafficLightFilter;
 import com.mercedesbenz.sechub.commons.model.Severity;
 import com.mercedesbenz.sechub.commons.model.TrafficLight;
-import com.mercedesbenz.sechub.domain.scan.ScanDomainTestFileSupport;
 
 class HTMLScanResultReportModelBuilderTest {
 
@@ -110,14 +108,13 @@ class HTMLScanResultReportModelBuilderTest {
     }
 
     @Test
-    void all_parameters_build_webdesignmode_false() {
+    void all_parameters_build() {
         /* prepare */
         UUID uuid = UUID.randomUUID();
 
         when(scanSecHubReport.getJobUUID()).thenReturn(uuid);
         when(scanSecHubReport.getTrafficLight()).thenReturn(TrafficLight.RED);
 
-        builderToTest.webDesignMode = false;
         builderToTest.embeddedCSS = "embeddedCssContent";
 
         /* execute */
@@ -128,52 +125,12 @@ class HTMLScanResultReportModelBuilderTest {
         assertSame(greenList, map.get("greenList"));
         assertSame(redList, map.get("redList"));
         assertSame(yellowList, map.get("yellowList"));
-        assertEquals(false, map.get("isWebDesignMode"));
         assertNull(map.get("${includedCSSRef}"));
 
         assertEquals("RED", map.get("trafficlight"));
         assertEquals(uuid.toString(), map.get("jobuuid"));
         assertEquals(SHOW_LIGHT, map.get("styleRed"));
         assertEquals(HIDE_LIGHT, map.get("styleYellow"));
-        assertEquals(HIDE_LIGHT, map.get("styleGreen"));
-    }
-
-    @Test
-    void all_parameters_build_webdesignmode_true() throws Exception {
-        /* prepare */
-        UUID uuid = UUID.randomUUID();
-
-        when(scanSecHubReport.getJobUUID()).thenReturn(uuid);
-        when(scanSecHubReport.getTrafficLight()).thenReturn(TrafficLight.YELLOW);
-        builderToTest.webDesignMode = true;
-        builderToTest.embeddedCSS = "embeddedCssContent";
-        Resource cssResource = mock(Resource.class);
-        File expectedFile = ScanDomainTestFileSupport.getTestfileSupport()
-                .createFileFromRoot("sechub-scan/src/main/resources/templates/report/html/scanresult.css");
-        when(cssResource.getFile()).thenReturn(expectedFile);
-        builderToTest.cssResource = cssResource;
-
-        /* execute */
-        Map<String, Object> map = builderToTest.build(scanSecHubReport);
-
-        /* test */
-        assertSame(result, map.get("result"));
-        assertSame(greenList, map.get("greenList"));
-        assertSame(redList, map.get("redList"));
-        assertSame(yellowList, map.get("yellowList"));
-        assertEquals(true, map.get("isWebDesignMode"));
-
-        // check css ref for webdesign mode
-        assertNotNull(map.get("includedCSSRef"));
-        String path = (String) map.get("includedCSSRef");
-        File foundFile = new File(path);
-
-        assertEquals(expectedFile.getCanonicalPath(), foundFile.getCanonicalPath());
-
-        assertEquals("YELLOW", map.get("trafficlight"));
-        assertEquals(uuid.toString(), map.get("jobuuid"));
-        assertEquals(HIDE_LIGHT, map.get("styleRed"));
-        assertEquals(SHOW_LIGHT, map.get("styleYellow"));
         assertEquals(HIDE_LIGHT, map.get("styleGreen"));
     }
 

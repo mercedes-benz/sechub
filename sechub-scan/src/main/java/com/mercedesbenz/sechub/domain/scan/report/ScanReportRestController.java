@@ -70,7 +70,7 @@ public class ScanReportRestController {
         ScanSecHubReport scanSecHubReport = fetchScanSecHubReport(projectId, jobUUID);
 
         Map<String, Object> model = htmlModelBuilder.build(scanSecHubReport);
-        return new ModelAndView("report/html/scanresult", model);
+        return new ModelAndView("report/html/report", model);
     }
 
     /* @formatter:off */
