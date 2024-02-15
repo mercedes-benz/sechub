@@ -99,17 +99,14 @@ public class PDSCodeScanSarifJobScenario10IntTest {
 
         assertHTMLReport(htmlReport).
             containsAtLeastOneOpenDetailsBlock().
-            hasHTMLString("<td><a href=\"#redCodeScanTable\">28</a></td>").
-            hasHTMLString("<td><a href=\"#yellowCodeScanTable\">2</a></td>").
-            hasHTMLString("<td><a href=\"#greenCodeScanTable\">2</a></td>").
-            hasHTMLString(" <tr>\n"
-            		+ "            <td>CWE-null</td>\n"
-            		+ "            <td>BRAKE0000</td>\n"
-            		+ "            <td>2</td>\n"
-            		+ "        </tr>").
-            hasHTMLString("Red findings (Count: 28)").
-            hasHTMLString("Yellow findings (Count: 2)").
-            hasHTMLString("Green findings (Count: 2)");
+            hasHTMLString("<a href=\"#first_code_scan_high\">28</a></td>").
+            hasHTMLString("a href=\"#first_code_scan_medium\">2</a>").
+            hasHTMLString("<a href=\"#first_code_scan_low\">2</a>").
+            hasHTMLString("<summary class='summaryFinding'>BRAKE0000</summary>").
+            hasHTMLString("<div>BRAKE0000</div>").
+            hasHTMLString("Red findings").
+            hasHTMLString("Yellow findings").
+            hasHTMLString("Green findings");
 
         // try to restart SecHub (will reuse existing PDS job because already done )
         assertSecHubRestartWillNotStartNewJobButReusesExistingBecausePDSJobWasAlreadyDone(project,jobUUID);
