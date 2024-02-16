@@ -41,7 +41,7 @@ class HTMLScanTypeSummaryTest {
     }
 
     @Test
-    void summary_critical_with_3_finding_summaries_has_severity_count_3() {
+    void summary_critical_with_3_finding_summaries_has_correct_counts() {
         /* prepare */
         HTMLScanTypeSummary summary = new HTMLScanTypeSummary(ScanType.CODE_SCAN);
 
@@ -76,7 +76,7 @@ class HTMLScanTypeSummaryTest {
     }
 
     @Test
-    void summary_low_with_4_finding_summaries_has_severity_count_3() {
+    void summary_low_with_4_finding_summaries_has_correct_counts() {
         /* prepare */
         HTMLScanTypeSummary summary = new HTMLScanTypeSummary(ScanType.WEB_SCAN);
 
@@ -118,7 +118,7 @@ class HTMLScanTypeSummaryTest {
     }
 
     @Test
-    void summary_low_with_3_but_same_findingnames_summaries_has_severity_count_2() {
+    void summary_low_with_3_but_same_findingnames_summaries_has_correct_counts() {
         /* prepare */
         HTMLScanTypeSummary summary = new HTMLScanTypeSummary(ScanType.WEB_SCAN);
 
@@ -151,6 +151,40 @@ class HTMLScanTypeSummaryTest {
         assertEquals(0, summary.getInfoSeverityCount());
         assertEquals(3, summary.getTotalCount());
 
+    }
+
+    @Test
+    void summary_with_different_severities_and_counts() {
+        /* prepare */
+        HTMLScanTypeSummary summary = new HTMLScanTypeSummary(ScanType.WEB_SCAN);
+
+        createAndAppendFindings(summary, Severity.CRITICAL,1);
+        createAndAppendFindings(summary, Severity.HIGH,2);
+        createAndAppendFindings(summary, Severity.MEDIUM,3);
+        createAndAppendFindings(summary, Severity.LOW,4);
+        createAndAppendFindings(summary, Severity.UNCLASSIFIED,5);
+        createAndAppendFindings(summary, Severity.INFO,6);
+
+        /* execute + test */
+        assertEquals(1, summary.getCriticalSeverityCount());
+        assertEquals(2, summary.getHighSeverityCount());
+        assertEquals(3, summary.getMediumSeverityCount());
+        assertEquals(4, summary.getLowSeverityCount());
+        assertEquals(5, summary.getUnclassifiedSeverityCount());
+        assertEquals(6, summary.getInfoSeverityCount());
+        assertEquals(21, summary.getTotalCount());
+
+    }
+
+    private void createAndAppendFindings(HTMLScanTypeSummary summary, Severity severity, int amount) {
+        for (int i = 0; i < amount; i++) {
+            SecHubFinding finding = mock(SecHubFinding.class);
+
+            when(finding.getName()).thenReturn("name1");
+            when(finding.getCweId()).thenReturn(Integer.valueOf(4711));
+            when(finding.getSeverity()).thenReturn(severity);
+            summary.add(finding);
+        }
     }
 
 }
