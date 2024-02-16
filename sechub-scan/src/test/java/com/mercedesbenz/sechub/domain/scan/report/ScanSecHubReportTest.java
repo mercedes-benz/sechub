@@ -15,6 +15,7 @@ import com.mercedesbenz.sechub.commons.model.SecHubFinding;
 import com.mercedesbenz.sechub.commons.model.SecHubMessage;
 import com.mercedesbenz.sechub.commons.model.SecHubMessageType;
 import com.mercedesbenz.sechub.commons.model.SecHubReportModel;
+import com.mercedesbenz.sechub.commons.model.SecHubReportSummary;
 import com.mercedesbenz.sechub.commons.model.SecHubResult;
 import com.mercedesbenz.sechub.commons.model.SecHubStatus;
 import com.mercedesbenz.sechub.commons.model.Severity;
@@ -306,11 +307,14 @@ class ScanSecHubReportTest {
         ScanSecHubReport scanSecHubReport = new ScanSecHubReport(report);
 
         /* test */
-        assertTrue(1 == scanSecHubReport.getMetaData().get().getSummary().getCodeScan().getTotal());
-        assertTrue(0 == scanSecHubReport.getMetaData().get().getSummary().getInfraScan().getTotal());
-        assertTrue(0 == scanSecHubReport.getMetaData().get().getSummary().getLicenseScan().getTotal());
-        assertTrue(0 == scanSecHubReport.getMetaData().get().getSummary().getSecretScan().getTotal());
-        assertTrue(0 == scanSecHubReport.getMetaData().get().getSummary().getWebScan().getTotal());
+        SecHubReportSummary summary = scanSecHubReport.getMetaData().get().getSummary();
+        assertTrue(summary.getCodeScan().isPresent());
+        assertEquals(1, summary.getCodeScan().get().getTotal());
+
+        assertTrue(summary.getInfraScan().isEmpty());
+        assertTrue(summary.getLicenseScan().isEmpty());
+        assertTrue(summary.getSecretScan().isEmpty());
+        assertTrue(summary.getWebScan().isEmpty());
     }
 
     @Test
@@ -331,11 +335,14 @@ class ScanSecHubReportTest {
         ScanSecHubReport scanSecHubReport = new ScanSecHubReport(report);
 
         /* test */
-        assertTrue(0 == scanSecHubReport.getMetaData().get().getSummary().getCodeScan().getTotal());
-        assertTrue(1 == scanSecHubReport.getMetaData().get().getSummary().getInfraScan().getTotal());
-        assertTrue(0 == scanSecHubReport.getMetaData().get().getSummary().getLicenseScan().getTotal());
-        assertTrue(0 == scanSecHubReport.getMetaData().get().getSummary().getSecretScan().getTotal());
-        assertTrue(0 == scanSecHubReport.getMetaData().get().getSummary().getWebScan().getTotal());
+        SecHubReportSummary summary = scanSecHubReport.getMetaData().get().getSummary();
+        assertTrue(summary.getInfraScan().isPresent());
+        assertEquals(1, summary.getInfraScan().get().getTotal());
+
+        assertTrue(summary.getCodeScan().isEmpty());
+        assertTrue(summary.getLicenseScan().isEmpty());
+        assertTrue(summary.getSecretScan().isEmpty());
+        assertTrue(summary.getWebScan().isEmpty());
     }
 
     @Test
@@ -356,11 +363,14 @@ class ScanSecHubReportTest {
         ScanSecHubReport scanSecHubReport = new ScanSecHubReport(report);
 
         /* test */
-        assertTrue(0 == scanSecHubReport.getMetaData().get().getSummary().getCodeScan().getTotal());
-        assertTrue(0 == scanSecHubReport.getMetaData().get().getSummary().getInfraScan().getTotal());
-        assertTrue(1 == scanSecHubReport.getMetaData().get().getSummary().getLicenseScan().getTotal());
-        assertTrue(0 == scanSecHubReport.getMetaData().get().getSummary().getSecretScan().getTotal());
-        assertTrue(0 == scanSecHubReport.getMetaData().get().getSummary().getWebScan().getTotal());
+        SecHubReportSummary summary = scanSecHubReport.getMetaData().get().getSummary();
+        assertTrue(summary.getLicenseScan().isPresent());
+        assertEquals(1, summary.getLicenseScan().get().getTotal());
+
+        assertTrue(summary.getCodeScan().isEmpty());
+        assertTrue(summary.getInfraScan().isEmpty());
+        assertTrue(summary.getSecretScan().isEmpty());
+        assertTrue(summary.getWebScan().isEmpty());
     }
 
     @Test
@@ -381,11 +391,14 @@ class ScanSecHubReportTest {
         ScanSecHubReport scanSecHubReport = new ScanSecHubReport(report);
 
         /* test */
-        assertTrue(0 == scanSecHubReport.getMetaData().get().getSummary().getCodeScan().getTotal());
-        assertTrue(0 == scanSecHubReport.getMetaData().get().getSummary().getInfraScan().getTotal());
-        assertTrue(0 == scanSecHubReport.getMetaData().get().getSummary().getLicenseScan().getTotal());
-        assertTrue(1 == scanSecHubReport.getMetaData().get().getSummary().getSecretScan().getTotal());
-        assertTrue(0 == scanSecHubReport.getMetaData().get().getSummary().getWebScan().getTotal());
+        SecHubReportSummary summary = scanSecHubReport.getMetaData().get().getSummary();
+        assertTrue(summary.getSecretScan().isPresent());
+        assertEquals(1, summary.getSecretScan().get().getTotal());
+
+        assertTrue(summary.getCodeScan().isEmpty());
+        assertTrue(summary.getInfraScan().isEmpty());
+        assertTrue(summary.getLicenseScan().isEmpty());
+        assertTrue(summary.getWebScan().isEmpty());
     }
 
     @Test
@@ -406,10 +419,13 @@ class ScanSecHubReportTest {
         ScanSecHubReport scanSecHubReport = new ScanSecHubReport(report);
 
         /* test */
-        assertTrue(0 == scanSecHubReport.getMetaData().get().getSummary().getCodeScan().getTotal());
-        assertTrue(0 == scanSecHubReport.getMetaData().get().getSummary().getInfraScan().getTotal());
-        assertTrue(0 == scanSecHubReport.getMetaData().get().getSummary().getLicenseScan().getTotal());
-        assertTrue(0 == scanSecHubReport.getMetaData().get().getSummary().getSecretScan().getTotal());
-        assertTrue(1 == scanSecHubReport.getMetaData().get().getSummary().getWebScan().getTotal());
+        SecHubReportSummary summary = scanSecHubReport.getMetaData().get().getSummary();
+        assertTrue(summary.getWebScan().isPresent());
+        assertEquals(1, summary.getWebScan().get().getTotal());
+
+        assertTrue(summary.getCodeScan().isEmpty());
+        assertTrue(summary.getInfraScan().isEmpty());
+        assertTrue(summary.getLicenseScan().isEmpty());
+        assertTrue(summary.getSecretScan().isEmpty());
     }
 }

@@ -323,7 +323,11 @@ public class AssertReport {
         }
         SecHubReportMetaData metaData = metaDataOpt.get();
 
-        return metaData.getSummary().getCodeScan();
+        Optional<SecHubReportScanTypeSummary> codeScanOpt = metaData.getSummary().getCodeScan();
+        if (codeScanOpt.isEmpty()) {
+            fail("No code scan tye summary found inside report!");
+        }
+        return codeScanOpt.get();
     }
 
     public AssertReport hasMetaDataSummaryCodeScanTotal(long value) {

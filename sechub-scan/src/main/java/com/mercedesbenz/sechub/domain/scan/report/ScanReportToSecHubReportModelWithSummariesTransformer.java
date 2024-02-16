@@ -5,7 +5,9 @@ import static com.mercedesbenz.sechub.sharedkernel.util.Assert.*;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -122,11 +124,18 @@ public class ScanReportToSecHubReportModelWithSummariesTransformer {
         calculateSummary(context);
     }
 
-    private class Holder {
+    /**
+     * Internal object while calculation is running - works as a bridge between scan
+     * type and summary until calculation is done. Not part of the JSON result.
+     *
+     * @author Albert Tregnaghi
+     *
+     */
+    private class ScanTypeSummaryCalculationData {
         private SecHubReportScanTypeSummary summary;
         private ScanType scanType;
 
-        public Holder(ScanType scanType, SecHubReportScanTypeSummary summary) {
+        public ScanTypeSummaryCalculationData(ScanType scanType, SecHubReportScanTypeSummary summary) {
             super();
             this.scanType = scanType;
             this.summary = summary;
@@ -142,44 +151,124 @@ public class ScanReportToSecHubReportModelWithSummariesTransformer {
     }
 
     protected void calculateSummary(Context context) {
-        SecHubReportSummary summary = context.model.getMetaData().get().getSummary();
 
-        Map<ScanType, Holder> summaryScanTypeWrapperMap = new LinkedHashMap<>(6);
-        append(summaryScanTypeWrapperMap, ScanType.CODE_SCAN, summary.getCodeScan());
-        append(summaryScanTypeWrapperMap, ScanType.INFRA_SCAN, summary.getInfraScan());
-        append(summaryScanTypeWrapperMap, ScanType.LICENSE_SCAN, summary.getLicenseScan());
-        append(summaryScanTypeWrapperMap, ScanType.SECRET_SCAN, summary.getSecretScan());
-        append(summaryScanTypeWrapperMap, ScanType.WEB_SCAN, summary.getWebScan());
+        Map<ScanType, ScanTypeSummaryCalculationData> calculationMap = createInitialCalculationMap();
 
-        for (SecHubFinding finding : context.model.getResult().getFindings()) {
+        List<SecHubFinding> findings = context.model.getResult().getFindings();
+
+        for (SecHubFinding finding : findings) {
             ScanType scanType = finding.getType();
             if (scanType == null) {
                 LOG.warn("Finding: {} has no scan type!", finding);
                 continue;
             }
-            Holder holder = summaryScanTypeWrapperMap.get(scanType);
-            add(context, holder.getSummary(), finding);
+            ScanTypeSummaryCalculationData scanTypeSummaryCalculationData = calculationMap.get(scanType);
+            if (scanTypeSummaryCalculationData == null) {
+                continue;
+            }
+            add(context, scanTypeSummaryCalculationData.getSummary(), finding);
         }
-        calculateTotals(summaryScanTypeWrapperMap.values());
-        calculateOverviewData(context, summaryScanTypeWrapperMap.values());
+
+        calculateTotals(calculationMap.values());
+        calculateOverviewData(context, calculationMap.values());
+
+        /*
+         * we always replace the summary - means if there was a summary before, it is
+         * new clean calculated here
+         */
+        SecHubReportSummary summary = createSummaryContainingOnlyScanTypeDataWithTotalNotZero(calculationMap);
+        SecHubReportMetaData metaData = ensureMetaDataInModel(context);
+        metaData.setSummary(summary);
+    }
+
+    private Map<ScanType, ScanTypeSummaryCalculationData> createInitialCalculationMap() {
+        Map<ScanType, ScanTypeSummaryCalculationData> tempScanTypeToCalculationDataMap = new LinkedHashMap<>(6);
+        for (ScanType scanType : ScanType.values()) {
+            if (scanType.isInternalScanType()) {
+                continue;
+            }
+            initForCalculation(tempScanTypeToCalculationDataMap, scanType);
+        }
+        return tempScanTypeToCalculationDataMap;
+    }
+
+    private SecHubReportSummary createSummaryContainingOnlyScanTypeDataWithTotalNotZero(
+            Map<ScanType, ScanTypeSummaryCalculationData> tempScanTypeToCalculationMap) {
+        SecHubReportSummary summary = new SecHubReportSummary();
+
+        for (ScanType scanType : tempScanTypeToCalculationMap.keySet()) {
+            ScanTypeSummaryCalculationData data = tempScanTypeToCalculationMap.get(scanType);
+            if (data == null) {
+                continue;
+            }
+            SecHubReportScanTypeSummary scanTypeSummary = data.getSummary();
+            if (scanTypeSummary.getTotal() == 0) {
+                /*
+                 * means we have only empty entries - in this case we keep the origin data
+                 * (which is initially Optional.ofNullable(null) )
+                 */
+                continue;
+            }
+
+            switch (scanType) {
+            case CODE_SCAN:
+                summary.setCodeScan(scanTypeSummary);
+                break;
+            case INFRA_SCAN:
+                summary.setInfraScan(scanTypeSummary);
+                break;
+            case LICENSE_SCAN:
+                summary.setLicenseScan(scanTypeSummary);
+                break;
+            case SECRET_SCAN:
+                summary.setSecretScan(scanTypeSummary);
+                break;
+            case WEB_SCAN:
+                summary.setWebScan(scanTypeSummary);
+                break;
+            case UNKNOWN:
+            case REPORT:
+            case ANALYTICS:
+            default:
+                /* sanity check */
+                if (!scanType.isInternalScanType()) {
+                    throw new IllegalStateException("The non internal scan type: " + scanType + " is not handled.");
+                }
+                break;
+            }
+        }
+        return summary;
+    }
+
+    private SecHubReportMetaData ensureMetaDataInModel(Context context) {
+        Optional<SecHubReportMetaData> metaDataOpt = context.model.getMetaData();
+
+        SecHubReportMetaData metaData = null;
+        if (metaDataOpt.isPresent()) {
+            metaData = metaDataOpt.get();
+        } else {
+            metaData = new SecHubReportMetaData();
+            context.model.setMetaData(metaData);
+        }
+        return metaData;
+    }
+
+    private void initForCalculation(Map<ScanType, ScanTypeSummaryCalculationData> map, ScanType scanType) {
+        map.put(scanType, new ScanTypeSummaryCalculationData(scanType, new SecHubReportScanTypeSummary()));
 
     }
 
-    private void append(Map<ScanType, Holder> map, ScanType scanType, SecHubReportScanTypeSummary summary) {
-        map.put(scanType, new Holder(scanType, summary));
-    }
-
-    private void calculateTotals(Collection<Holder> holders) {
-        for (Holder holder : holders) {
-            SecHubReportScanTypeSummary summary = holder.getSummary();
+    private void calculateTotals(Collection<ScanTypeSummaryCalculationData> scanTypeSummaryCalculationDatas) {
+        for (ScanTypeSummaryCalculationData scanTypeSummaryCalculationData : scanTypeSummaryCalculationDatas) {
+            SecHubReportScanTypeSummary summary = scanTypeSummaryCalculationData.getSummary();
             summary.setTotal(summary.getRed() + summary.getYellow() + summary.getGreen());
         }
     }
 
-    private void calculateOverviewData(Context context, Collection<Holder> holders) {
-        for (Holder holder : holders) {
+    private void calculateOverviewData(Context context, Collection<ScanTypeSummaryCalculationData> scanTypeSummaryCalculationDatas) {
+        for (ScanTypeSummaryCalculationData scanTypeSummaryCalculationData : scanTypeSummaryCalculationDatas) {
 
-            ScanType scanType = holder.getScanType();
+            ScanType scanType = scanTypeSummaryCalculationData.getScanType();
             ScanTypeFindingOverviewContainer overviewContainer = context.overviewContainerMap.get(scanType);
 
             for (Severity severity : Severity.values()) {
@@ -188,7 +277,7 @@ public class ScanReportToSecHubReportModelWithSummariesTransformer {
                 if (overviewDataEntries.isEmpty()) {
                     continue;
                 }
-                SecHubReportScanTypeSummary summary = holder.getSummary();
+                SecHubReportScanTypeSummary summary = scanTypeSummaryCalculationData.getSummary();
                 ScanTypeSummaryDetailData details = summary.getDetails();
 
                 switch (severity) {

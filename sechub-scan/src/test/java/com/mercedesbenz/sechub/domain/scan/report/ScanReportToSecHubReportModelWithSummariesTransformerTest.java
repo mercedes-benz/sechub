@@ -4,6 +4,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 import java.util.Iterator;
 import java.util.List;
+import java.util.Optional;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -11,6 +12,7 @@ import org.junit.jupiter.api.Test;
 import com.mercedesbenz.sechub.commons.model.ScanType;
 import com.mercedesbenz.sechub.commons.model.ScanTypeSummaryFindingOverviewData;
 import com.mercedesbenz.sechub.commons.model.SecHubFinding;
+import com.mercedesbenz.sechub.commons.model.SecHubReportMetaData;
 import com.mercedesbenz.sechub.commons.model.SecHubReportModel;
 import com.mercedesbenz.sechub.commons.model.SecHubReportScanTypeSummary;
 import com.mercedesbenz.sechub.commons.model.SecHubReportSummary;
@@ -128,7 +130,7 @@ class ScanReportToSecHubReportModelWithSummariesTransformerTest {
     }
 
     @Test
-    void report_with_no_finding_is_transformed_with_meta_data_details() {
+    void report_with_no_finding_is_transformed_with_meta_data_but_no_findings() {
         /* prepare */
         ScanReport report = buildReport();
 
@@ -141,8 +143,16 @@ class ScanReportToSecHubReportModelWithSummariesTransformerTest {
             System.out.println(asJson);
         }
         assertEquals(0, result.getResult().getCount());
-        List<ScanTypeSummaryFindingOverviewData> critical = result.getMetaData().get().getSummary().getCodeScan().getDetails().getCritical();
-        assertEquals(0, critical.size());
+
+        Optional<SecHubReportMetaData> metaDataOpt = result.getMetaData();
+        assertTrue(metaDataOpt.isPresent());
+
+        SecHubReportSummary summary = metaDataOpt.get().getSummary();
+        assertTrue(summary.getCodeScan().isEmpty());
+        assertTrue(summary.getInfraScan().isEmpty());
+        assertTrue(summary.getSecretScan().isEmpty());
+        assertTrue(summary.getLicenseScan().isEmpty());
+        assertTrue(summary.getWebScan().isEmpty());
     }
 
     @Test
@@ -159,7 +169,8 @@ class ScanReportToSecHubReportModelWithSummariesTransformerTest {
             String asJson = result.toFormattedJSON();
             System.out.println(asJson);
         }
-        List<ScanTypeSummaryFindingOverviewData> critical = result.getMetaData().get().getSummary().getCodeScan().getDetails().getCritical();
+        SecHubReportSummary summary = result.getMetaData().get().getSummary();
+        List<ScanTypeSummaryFindingOverviewData> critical = summary.getCodeScan().get().getDetails().getCritical();
         assertEquals(1, critical.size());
         ScanTypeSummaryFindingOverviewData criticalCodeScanDetails = critical.iterator().next();
         assertNotNull(criticalCodeScanDetails);
@@ -182,7 +193,8 @@ class ScanReportToSecHubReportModelWithSummariesTransformerTest {
             String asJson = result.toFormattedJSON();
             System.out.println(asJson);
         }
-        List<ScanTypeSummaryFindingOverviewData> critical = result.getMetaData().get().getSummary().getCodeScan().getDetails().getCritical();
+        SecHubReportSummary summary = result.getMetaData().get().getSummary();
+        List<ScanTypeSummaryFindingOverviewData> critical = summary.getCodeScan().get().getDetails().getCritical();
         assertEquals(1, critical.size());
         ScanTypeSummaryFindingOverviewData criticalCodeScanDetails = critical.iterator().next();
         assertNotNull(criticalCodeScanDetails);
@@ -206,7 +218,8 @@ class ScanReportToSecHubReportModelWithSummariesTransformerTest {
             String asJson = result.toFormattedJSON();
             System.out.println(asJson);
         }
-        List<ScanTypeSummaryFindingOverviewData> critical = result.getMetaData().get().getSummary().getCodeScan().getDetails().getCritical();
+        SecHubReportSummary summary = result.getMetaData().get().getSummary();
+        List<ScanTypeSummaryFindingOverviewData> critical = summary.getCodeScan().get().getDetails().getCritical();
         assertEquals(2, critical.size());
 
         Iterator<ScanTypeSummaryFindingOverviewData> iterator = critical.iterator();
@@ -236,7 +249,8 @@ class ScanReportToSecHubReportModelWithSummariesTransformerTest {
             String asJson = result.toFormattedJSON();
             System.out.println(asJson);
         }
-        SecHubReportScanTypeSummary codeScan = result.getMetaData().get().getSummary().getCodeScan();
+        SecHubReportSummary summary = result.getMetaData().get().getSummary();
+        SecHubReportScanTypeSummary codeScan = summary.getCodeScan().get();
         assertEquals(5, codeScan.getRed());
         assertEquals(5, codeScan.getTotal());
     }
@@ -270,25 +284,25 @@ class ScanReportToSecHubReportModelWithSummariesTransformerTest {
             System.out.println(asJson);
         }
         SecHubReportSummary summary = result.getMetaData().get().getSummary();
-        SecHubReportScanTypeSummary codeScan = summary.getCodeScan();
+        SecHubReportScanTypeSummary codeScan = summary.getCodeScan().get();
         assertEquals(5, codeScan.getRed());
         assertEquals(1, codeScan.getGreen());
         assertEquals(6, codeScan.getTotal());
 
-        SecHubReportScanTypeSummary webScan = summary.getWebScan();
+        SecHubReportScanTypeSummary webScan = summary.getWebScan().get();
         assertEquals(1, webScan.getRed());
         assertEquals(2, webScan.getYellow());
         assertEquals(3, webScan.getTotal());
 
-        SecHubReportScanTypeSummary secretScan = summary.getSecretScan();
+        SecHubReportScanTypeSummary secretScan = summary.getSecretScan().get();
         assertEquals(1, secretScan.getRed());
         assertEquals(1, secretScan.getTotal());
 
-        SecHubReportScanTypeSummary infraScan = summary.getInfraScan();
+        SecHubReportScanTypeSummary infraScan = summary.getInfraScan().get();
         assertEquals(1, infraScan.getGreen());
         assertEquals(1, infraScan.getTotal());
 
-        SecHubReportScanTypeSummary licenseScan = summary.getLicenseScan();
+        SecHubReportScanTypeSummary licenseScan = summary.getLicenseScan().get();
         assertEquals(1, licenseScan.getGreen());
         assertEquals(1, licenseScan.getTotal());
 
