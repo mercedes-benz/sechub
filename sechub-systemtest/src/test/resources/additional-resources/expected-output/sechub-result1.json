@@ -1,4 +1,4 @@
-{ 
+{
   "jobUUID" : "{sechub.jobuuid}",
   "trafficLight" : "YELLOW",
   "result" : {
@@ -55,7 +55,7 @@
   },
   "status" : "SUCCESS",
   "reportVersion" : "1.0",
-    "metaData" : {
+  "metaData" : {
     "labels" : { },
     "summary" : {
       "codeScan" : {
@@ -63,35 +63,20 @@
         "red" : 0,
         "yellow" : 1,
         "green" : 3,
-        "details" : { }
-      },
-      "infraScan" : {
-        "total" : 0,
-        "red" : 0,
-        "yellow" : 0,
-        "green" : 0,
-        "details" : { }
-      },
-      "licenseScan" : {
-        "total" : 0,
-        "red" : 0,
-        "yellow" : 0,
-        "green" : 0,
-        "details" : { }
-      },
-      "secretScan" : {
-        "total" : 0,
-        "red" : 0,
-        "yellow" : 0,
-        "green" : 0,
-        "details" : { }
-      },
-      "webScan" : {
-        "total" : 0,
-        "red" : 0,
-        "yellow" : 0,
-        "green" : 0,
-        "details" : { }
+        "details" : {
+          "medium" : [ {
+            "name" : "no_name",
+            "count" : 1
+          } ],
+          "low" : [ {
+            "name" : "no_name",
+            "count" : 1
+          } ],
+          "info" : [ {
+            "name" : "no_name",
+            "count" : 2
+          } ]
+        }
       }
     }
   },
