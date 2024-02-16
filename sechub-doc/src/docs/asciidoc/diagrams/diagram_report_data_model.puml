@@ -48,9 +48,12 @@ class SecHubReportModel implements ReportData
 
 class SecHubReportScanTypeSummary{
     int total
-    int red
-    int green
-    int yellow
+    int critical
+    int high
+    int medium
+    int low
+    int unclassified
+    int info
     ...
     ScanTypeSummaryDetailData getDetails()
     
@@ -58,9 +61,12 @@ class SecHubReportScanTypeSummary{
 
 class ScanTypeSummaryDetailData{
 
-     List<ScanTypeSummaryFindingOverviewData> getLow()
-     List<ScanTypeSummaryFindingOverviewData> getMedium()
+     List<ScanTypeSummaryFindingOverviewData> getCritical()
      List<ScanTypeSummaryFindingOverviewData> getHigh()
+     List<ScanTypeSummaryFindingOverviewData> getMedium()
+     List<ScanTypeSummaryFindingOverviewData> getLow()
+     List<ScanTypeSummaryFindingOverviewData> getUnclassified()
+     List<ScanTypeSummaryFindingOverviewData> getInfo()
 }
 
 class ScanTypeSummaryFindingOverviewData{

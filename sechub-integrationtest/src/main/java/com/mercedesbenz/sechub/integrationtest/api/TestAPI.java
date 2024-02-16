@@ -137,9 +137,9 @@ public class TestAPI {
     }
 
     /**
-     * Asserts given report HTML
+     * Asserts given report HTML (in memory)
      *
-     * @param html
+     * @param html string representation
      * @return assert object
      */
     public static AssertHTMLReport assertHTMLReport(String html) {
@@ -147,13 +147,15 @@ public class TestAPI {
     }
 
     /**
-     * Asserts given report HTML
+     * Asserts given report HTML (from a file). When the html report has failures,
+     * the failure text will provide the file path inside the failure output.
      *
-     * @param html
+     * @param html     string representation
+     * @param filePath the file path where the HTML report comes from
      * @return assert object
      */
-    public static AssertHTMLReport assertHTMLReport(String html, String fileName) {
-        return AssertHTMLReport.assertHTMLReport(html, fileName);
+    public static AssertHTMLReport assertHTMLReport(String html, String filePath) {
+        return AssertHTMLReport.assertHTMLReport(html, filePath);
     }
 
     public static AssertFullScanData assertFullScanDataZipFile(File file) {

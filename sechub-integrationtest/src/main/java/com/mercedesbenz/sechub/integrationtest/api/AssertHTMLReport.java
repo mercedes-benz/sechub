@@ -18,8 +18,8 @@ public class AssertHTMLReport {
         return new AssertHTMLReport(html, "HTML from memory");
     }
 
-    public static AssertHTMLReport assertHTMLReport(String html, String fileName) {
-        return new AssertHTMLReport(html, "HTML from file: " + fileName);
+    public static AssertHTMLReport assertHTMLReport(String html, String filePath) {
+        return new AssertHTMLReport(html, "HTML from file: " + filePath);
     }
 
     private AssertHTMLReport(String html, String htmlLocation) {

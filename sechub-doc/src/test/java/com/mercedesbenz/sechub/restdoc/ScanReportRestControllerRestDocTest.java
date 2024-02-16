@@ -236,9 +236,6 @@ public class ScanReportRestControllerRestDocTest implements TestIsNecessaryForDo
         map.put("styleRed", "theRedStyle");
         map.put("styleGreen", "display:none");
         map.put("styleYellow", "display:none");
-        map.put("redList", new ArrayList<>());
-        map.put("yellowList", new ArrayList<>());
-        map.put("greenList", new ArrayList<>());
         map.put("isWebDesignMode", false);
         map.put("metaData", null);
         map.put("scanTypeSummaries", new ArrayList<>());

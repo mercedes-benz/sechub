@@ -20,9 +20,9 @@ public enum Severity implements Comparable<Severity> {
     private int level;
     private String text;
 
-    private Severity(int level, String name) {
+    private Severity(int level, String text) {
         this.level = level;
-        this.text = name;
+        this.text = text;
     }
 
     public int getLevel() {

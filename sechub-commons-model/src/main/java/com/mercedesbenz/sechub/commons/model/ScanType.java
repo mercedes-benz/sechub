@@ -28,13 +28,13 @@ public enum ScanType {
     private String description;
     private String text;
 
-    private ScanType(String id, String name, String description) {
-        this(id, name, description, false);
+    private ScanType(String id, String text, String description) {
+        this(id, text, description, false);
     }
 
-    private ScanType(String id, String name, String description, boolean internalScanType) {
+    private ScanType(String id, String text, String description, boolean internalScanType) {
         this.id = id;
-        this.text = name;
+        this.text = text;
         this.internalScanType = internalScanType;
         this.description = description;
     }

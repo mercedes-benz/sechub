@@ -401,7 +401,7 @@ public class AssertReport {
 
     private void assertSummary(long expected, long value, String summaryType) {
         if (expected != value) {
-            fail("Summary " + summaryType + " faiure. Expected :" + expected + " but was: " + value + ". ");
+            fail("Summary " + summaryType + " failure. Expected :" + expected + " but was: " + value + ". ");
         }
     }
 
