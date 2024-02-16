@@ -526,6 +526,12 @@ Other SecHub server integration tests can be run in the same way.
 +
 image::eclipse-run-server-integrationtest.png[]
 
+. Your first run will fail, as the run needs to be configured with the variables `-Dsechub.integrationtest.running=true` or `-Dsechub.integrationtest.longrunning=true`.
+Therefor open the run configurations and select the `UserRegistrationScenario1IntTest`.
+Click on the `Arguments` tab and paste the flag `-Dsechub.integrationtest.running=true` in the VM arguments field, click apply and run the test again.
+
+image::eclipse-add-VM-argument-to-UnitTest.png[]
+
 . Check the JUnit tab, the result should be green indicating a successful run.
 
 === Product Delegation Server (PDS)
