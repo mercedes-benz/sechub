@@ -269,8 +269,11 @@ public class SecHubFinding implements Comparable<SecHubFinding> {
         return hasScanType(typeAsString);
     }
 
-    public boolean hasScanType(String typeAsString) {
-        if (typeAsString == null) {
+    public boolean hasScanType(String scanTypeId) {
+        if (scanTypeId == null || scanTypeId.isEmpty()) {
+            if (this.type == null) {
+                return true;
+            }
             return false;
         }
         if (this.type == null) {
@@ -278,7 +281,7 @@ public class SecHubFinding implements Comparable<SecHubFinding> {
         }
 
         String typeId = this.type.getId();
-        return typeAsString.equalsIgnoreCase(typeId);
+        return scanTypeId.equalsIgnoreCase(typeId);
     }
 
     @Override
