@@ -158,12 +158,12 @@ class HTMLScanTypeSummaryTest {
         /* prepare */
         HTMLScanTypeSummary summary = new HTMLScanTypeSummary(ScanType.WEB_SCAN);
 
-        createAndAppendFindings(summary, Severity.CRITICAL,1);
-        createAndAppendFindings(summary, Severity.HIGH,2);
-        createAndAppendFindings(summary, Severity.MEDIUM,3);
-        createAndAppendFindings(summary, Severity.LOW,4);
-        createAndAppendFindings(summary, Severity.UNCLASSIFIED,5);
-        createAndAppendFindings(summary, Severity.INFO,6);
+        createAndAppendFindings(summary, Severity.CRITICAL, 1);
+        createAndAppendFindings(summary, Severity.HIGH, 2);
+        createAndAppendFindings(summary, Severity.MEDIUM, 3);
+        createAndAppendFindings(summary, Severity.LOW, 4);
+        createAndAppendFindings(summary, Severity.UNCLASSIFIED, 5);
+        createAndAppendFindings(summary, Severity.INFO, 6);
 
         /* execute + test */
         assertEquals(1, summary.getCriticalSeverityCount());
