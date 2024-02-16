@@ -317,12 +317,41 @@ public class AssertReport {
     }
 
     private Optional<SecHubReportScanTypeSummary> getMetaDataSummary(ScanType scanType) {
+        if (scanType == null) {
+            throw new IllegalArgumentException("Integration test corrupt: scanType may not be null!");
+        }
         Optional<SecHubReportMetaData> metaDataOpt = report.getMetaData();
         if (metaDataOpt.isEmpty()) {
             fail("Meta data not found inside report");
         }
         SecHubReportMetaData metaData = metaDataOpt.get();
-        return metaData.getSummary().getCodeScan();
+        SecHubReportSummary summary = metaData.getSummary();
+
+        switch (scanType) {
+        case CODE_SCAN:
+            return summary.getCodeScan();
+        case INFRA_SCAN:
+            return summary.getInfraScan();
+        case LICENSE_SCAN:
+            return summary.getLicenseScan();
+        case SECRET_SCAN:
+            return summary.getSecretScan();
+        case WEB_SCAN:
+            return summary.getWebScan();
+        case REPORT:
+        case UNKNOWN:
+        case ANALYTICS:
+        default:
+            throw new IllegalArgumentException("Integration test corrupt: " + scanType + " may not be used here!");
+        }
+
+    }
+
+    public AssertReport hasNoMetaDataSummaryFor(ScanType scanType) {
+        if (getMetaDataSummary(scanType).isPresent()) {
+            fail("Meta data summary for scan type: " + scanType + " found!");
+        }
+        return this;
     }
 
     public AssertReport hasMetaDataSummaryTotal(ScanType scanType, long expectedTotal) {

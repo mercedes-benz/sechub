@@ -108,8 +108,10 @@ public class ScanReportToSecHubReportModelWithSummariesTransformer {
             throw new IllegalStateException("Unsupported report result type:" + resultType);
         }
 
-        SecHubReportMetaData reportMetaData = new SecHubReportMetaData();
-        context.model.setMetaData(reportMetaData);
+        if (context.model.getMetaData().isEmpty()) {
+            SecHubReportMetaData reportMetaData = new SecHubReportMetaData();
+            context.model.setMetaData(reportMetaData);
+        }
 
         /* calculate data */
         buildCalculatedData(context);

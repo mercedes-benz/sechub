@@ -50,13 +50,12 @@ public class PDSCodeScanSarifJobScenario10IntTest {
         TestProject project = PROJECT_1;
         UUID jobUUID = as(USER_1).createCodeScan(project,NOT_MOCKED);// scenario10 uses really integration test pds server! but WITHOUT reusage of sechub storage
 
-
         /* execute */
         as(USER_1).
             uploadSourcecode(project, jobUUID, PATH).
             approveJob(project, jobUUID);
 
-        waitForJobDone(project, jobUUID,10, true);
+        waitForJobDone(project, jobUUID, 10, true);
 
         /* test */
         // test storage is a sechub storage and no PDS storage
@@ -73,10 +72,25 @@ public class PDSCodeScanSarifJobScenario10IntTest {
             hasStatus(SecHubStatus.SUCCESS).
             hasMessages(0).
             hasJobUUID(jobUUID).
+
+            /* check labels are returned */
+            hasMetaDataLabel("quality-level", "high").
+            hasMetaDataLabel("test-label1", "Something special").
+            hasMetaDataLabel("test-label2", "").
+            hasMetaDataLabel("test-label3_with_html", "<html>HTML is allowed, but must always be escaped in reports!</html>").
+            hasMetaDataLabel("test-label4_with_special_chars", "Line1\nLine2\tLine3").
+
+            /* check summaries are calculated as expected */
             hasMetaDataSummaryTotal(ScanType.CODE_SCAN, 32).
             hasMetaDataSummaryHigh(ScanType.CODE_SCAN, 28).
             hasMetaDataSummaryMedium(ScanType.CODE_SCAN, 2).
             hasMetaDataSummaryLow(ScanType.CODE_SCAN, 2).
+
+            hasNoMetaDataSummaryFor(ScanType.WEB_SCAN).
+            hasNoMetaDataSummaryFor(ScanType.INFRA_SCAN).
+            hasNoMetaDataSummaryFor(ScanType.LICENSE_SCAN).
+            hasNoMetaDataSummaryFor(ScanType.SECRET_SCAN).
+
             hasTrafficLight(RED).
                finding(0).
                    hasSeverity(Severity.HIGH).
@@ -99,6 +113,13 @@ public class PDSCodeScanSarifJobScenario10IntTest {
 
         assertHTMLReport(htmlReport).
             containsAtLeastOneOpenDetailsBlock().
+
+            hasMetaDataLabel("quality-level", "high").
+            hasMetaDataLabel("test-label1", "Something special").
+            hasMetaDataLabel("test-label2", "").
+            hasMetaDataLabel("test-label3_with_html", "&lt;html&gt;HTML is allowed, but must always be escaped in reports!&lt;/html&gt;").
+            hasMetaDataLabel("test-label4_with_special_chars", "Line1\nLine2\tLine3").
+
             hasHTMLString("<a href=\"#first_code_scan_high\">28</a></td>").
             hasHTMLString("a href=\"#first_code_scan_medium\">2</a>").
             hasHTMLString("<a href=\"#first_code_scan_low\">2</a>").

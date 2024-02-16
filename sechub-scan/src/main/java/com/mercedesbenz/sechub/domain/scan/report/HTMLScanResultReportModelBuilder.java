@@ -118,7 +118,7 @@ public class HTMLScanResultReportModelBuilder {
 
         List<HTMLTrafficlightFindingGroup> groups = new ArrayList<>();
 
-        /* attention: the list is also the ordering, so please keep RED,YELLOW, GREEN */
+        /* attention: the list is also the ordering, so please keep RED,YELLOW,GREEN */
         groups.add(new HTMLTrafficlightFindingGroup(TrafficLight.RED));
         groups.add(new HTMLTrafficlightFindingGroup(TrafficLight.YELLOW));
         groups.add(new HTMLTrafficlightFindingGroup(TrafficLight.GREEN));
