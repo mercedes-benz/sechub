@@ -12,6 +12,20 @@ import com.mercedesbenz.sechub.commons.model.ScanType;
 import com.mercedesbenz.sechub.commons.model.SecHubFinding;
 import com.mercedesbenz.sechub.commons.model.Severity;
 
+/**
+ * Represents an entry inside a HTMLTrafficlightFindingGroup
+ *
+ * <pre>
+ *
+ *  CodeSCan                    <--- HTMLTrafficlightScanTypeFindingData
+ *     | ID | Severity | Description
+ *     |----------------------------------------
+ *     | 1     Critical    xxx      <---- SecHubFinding
+ *     | 11     High    xxx      <---- SecHubFinding
+ *
+ * </pre>
+ *
+ */
 public class HTMLTrafficlightScanTypeFindingData implements Comparable<HTMLTrafficlightScanTypeFindingData> {
     private static SecHubFindingByIdComparator SEVERITY_THEN_FINDING_ID_COMPARATOR = new SecHubFindingByIdComparator();
     private ScanType scanType;

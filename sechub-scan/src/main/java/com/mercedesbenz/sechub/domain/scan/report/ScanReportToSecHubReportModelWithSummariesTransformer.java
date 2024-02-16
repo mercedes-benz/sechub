@@ -30,8 +30,8 @@ import com.mercedesbenz.sechub.commons.model.TrafficLight;
 import com.mercedesbenz.sechub.sharedkernel.UUIDTraceLogID;
 
 /**
- * This class contains all logic to transform a scan report (without summary
- * data) to a report model containing summaries
+ * This class contains all logic to transform a scan report (summary data is
+ * always recreated) to a report model containing summaries
  *
  */
 public class ScanReportToSecHubReportModelWithSummariesTransformer {
