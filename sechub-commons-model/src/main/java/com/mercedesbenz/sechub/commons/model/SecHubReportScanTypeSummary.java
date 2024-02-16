@@ -13,9 +13,12 @@ public class SecHubReportScanTypeSummary {
 
     private long total;
 
-    private long red;
-    private long yellow;
-    private long green;
+    private long critical;
+    private long high;
+    private long medium;
+    private long low;
+    private long unclassified;
+    private long info;
 
     private ScanTypeSummaryDetailData details = new ScanTypeSummaryDetailData();
 
@@ -31,27 +34,76 @@ public class SecHubReportScanTypeSummary {
         this.total = total;
     }
 
-    public long getRed() {
-        return red;
+    public long getCritical() {
+        return critical;
     }
 
-    public void setRed(long red) {
-        this.red = red;
+    public void setCritical(long critical) {
+        this.critical = critical;
     }
 
-    public long getYellow() {
-        return yellow;
+    public long getHigh() {
+        return high;
     }
 
-    public void setYellow(long yellow) {
-        this.yellow = yellow;
+    public void setHigh(long high) {
+        this.high = high;
     }
 
-    public long getGreen() {
-        return green;
+    public long getMedium() {
+        return medium;
     }
 
-    public void setGreen(long green) {
-        this.green = green;
+    public void setMedium(long medium) {
+        this.medium = medium;
     }
+
+    public long getLow() {
+        return low;
+    }
+
+    public void setLow(long low) {
+        this.low = low;
+    }
+
+    public long getUnclassified() {
+        return unclassified;
+    }
+
+    public void setUnclassified(long unclassified) {
+        this.unclassified = unclassified;
+    }
+
+    public long getInfo() {
+        return info;
+    }
+
+    public void setInfo(long info) {
+        this.info = info;
+    }
+
+    public void incrementCritical() {
+        this.critical++;
+    }
+
+    public void incrementHigh() {
+        this.high++;
+    }
+
+    public void incrementMedium() {
+        this.medium++;
+    }
+
+    public void incrementLow() {
+        this.low++;
+    }
+
+    public void incrementUnclassified() {
+        this.unclassified++;
+    }
+
+    public void incrementInfo() {
+        this.info++;
+    }
+
 }

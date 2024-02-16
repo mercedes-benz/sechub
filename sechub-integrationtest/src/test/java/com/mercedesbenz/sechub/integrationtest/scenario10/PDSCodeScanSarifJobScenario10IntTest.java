@@ -73,10 +73,10 @@ public class PDSCodeScanSarifJobScenario10IntTest {
             hasStatus(SecHubStatus.SUCCESS).
             hasMessages(0).
             hasJobUUID(jobUUID).
-            hasMetaDataSummaryCodeScanTotal(32).
-            hasMetaDataSummaryCodeScanRed(28).
-            hasMetaDataSummaryCodeScanYellow(2).
-            hasMetaDataSummaryCodeScanGreen(2).
+            hasMetaDataSummaryTotal(ScanType.CODE_SCAN, 32).
+            hasMetaDataSummaryHigh(ScanType.CODE_SCAN, 28).
+            hasMetaDataSummaryMedium(ScanType.CODE_SCAN, 2).
+            hasMetaDataSummaryLow(ScanType.CODE_SCAN, 2).
             hasTrafficLight(RED).
                finding(0).
                    hasSeverity(Severity.HIGH).

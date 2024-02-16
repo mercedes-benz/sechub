@@ -251,7 +251,13 @@ class ScanReportToSecHubReportModelWithSummariesTransformerTest {
         }
         SecHubReportSummary summary = result.getMetaData().get().getSummary();
         SecHubReportScanTypeSummary codeScan = summary.getCodeScan().get();
-        assertEquals(5, codeScan.getRed());
+        assertEquals(5, codeScan.getCritical());
+        assertEquals(0, codeScan.getHigh());
+        assertEquals(0, codeScan.getMedium());
+        assertEquals(0, codeScan.getLow());
+        assertEquals(0, codeScan.getUnclassified());
+        assertEquals(0, codeScan.getInfo());
+
         assertEquals(5, codeScan.getTotal());
     }
 
@@ -285,26 +291,54 @@ class ScanReportToSecHubReportModelWithSummariesTransformerTest {
         }
         SecHubReportSummary summary = result.getMetaData().get().getSummary();
         SecHubReportScanTypeSummary codeScan = summary.getCodeScan().get();
-        assertEquals(5, codeScan.getRed());
-        assertEquals(1, codeScan.getGreen());
+        assertEquals(5, codeScan.getCritical());
+        assertEquals(1, codeScan.getLow());
         assertEquals(6, codeScan.getTotal());
 
+        assertEquals(0, codeScan.getHigh());
+        assertEquals(0, codeScan.getMedium());
+        assertEquals(0, codeScan.getUnclassified());
+        assertEquals(0, codeScan.getInfo());
+
         SecHubReportScanTypeSummary webScan = summary.getWebScan().get();
-        assertEquals(1, webScan.getRed());
-        assertEquals(2, webScan.getYellow());
+        assertEquals(1, webScan.getCritical());
+        assertEquals(2, webScan.getMedium());
         assertEquals(3, webScan.getTotal());
 
+        assertEquals(0, webScan.getHigh());
+        assertEquals(0, webScan.getLow());
+        assertEquals(0, webScan.getUnclassified());
+        assertEquals(0, webScan.getInfo());
+
         SecHubReportScanTypeSummary secretScan = summary.getSecretScan().get();
-        assertEquals(1, secretScan.getRed());
+        assertEquals(1, secretScan.getHigh());
         assertEquals(1, secretScan.getTotal());
 
+        assertEquals(0, secretScan.getCritical());
+        assertEquals(0, secretScan.getMedium());
+        assertEquals(0, secretScan.getLow());
+        assertEquals(0, secretScan.getUnclassified());
+        assertEquals(0, secretScan.getInfo());
+
         SecHubReportScanTypeSummary infraScan = summary.getInfraScan().get();
-        assertEquals(1, infraScan.getGreen());
+        assertEquals(1, infraScan.getLow());
         assertEquals(1, infraScan.getTotal());
 
+        assertEquals(0, infraScan.getCritical());
+        assertEquals(0, infraScan.getHigh());
+        assertEquals(0, infraScan.getMedium());
+        assertEquals(0, infraScan.getUnclassified());
+        assertEquals(0, infraScan.getInfo());
+
         SecHubReportScanTypeSummary licenseScan = summary.getLicenseScan().get();
-        assertEquals(1, licenseScan.getGreen());
+        assertEquals(1, licenseScan.getInfo());
         assertEquals(1, licenseScan.getTotal());
+
+        assertEquals(0, licenseScan.getCritical());
+        assertEquals(0, licenseScan.getHigh());
+        assertEquals(0, licenseScan.getMedium());
+        assertEquals(0, licenseScan.getLow());
+        assertEquals(0, licenseScan.getUnclassified());
 
         assertEquals(12, result.getResult().getCount());
     }

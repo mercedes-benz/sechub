@@ -261,7 +261,17 @@ public class ScanReportToSecHubReportModelWithSummariesTransformer {
     private void calculateTotals(Collection<ScanTypeSummaryCalculationData> scanTypeSummaryCalculationDatas) {
         for (ScanTypeSummaryCalculationData scanTypeSummaryCalculationData : scanTypeSummaryCalculationDatas) {
             SecHubReportScanTypeSummary summary = scanTypeSummaryCalculationData.getSummary();
-            summary.setTotal(summary.getRed() + summary.getYellow() + summary.getGreen());
+
+            int total = 0;
+
+            total += summary.getCritical();
+            total += summary.getHigh();
+            total += summary.getMedium();
+            total += summary.getLow();
+            total += summary.getUnclassified();
+            total += summary.getInfo();
+
+            summary.setTotal(total);
         }
     }
 
@@ -302,9 +312,12 @@ public class ScanReportToSecHubReportModelWithSummariesTransformer {
         Severity severity = finding.getSeverity();
 
         switch (severity) {
-        case HIGH, CRITICAL -> scanTypeSummary.setRed(scanTypeSummary.getRed() + 1);
-        case MEDIUM -> scanTypeSummary.setYellow(scanTypeSummary.getYellow() + 1);
-        case UNCLASSIFIED, INFO, LOW -> scanTypeSummary.setGreen(scanTypeSummary.getGreen() + 1);
+        case CRITICAL -> scanTypeSummary.incrementCritical();
+        case HIGH -> scanTypeSummary.incrementHigh();
+        case MEDIUM -> scanTypeSummary.incrementMedium();
+        case LOW -> scanTypeSummary.incrementLow();
+        case UNCLASSIFIED -> scanTypeSummary.incrementUnclassified();
+        case INFO -> scanTypeSummary.incrementInfo();
         }
     }
 

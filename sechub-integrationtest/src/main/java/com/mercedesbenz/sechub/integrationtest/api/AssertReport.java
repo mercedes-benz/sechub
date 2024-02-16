@@ -316,48 +316,67 @@ public class AssertReport {
         return this;
     }
 
-    public SecHubReportScanTypeSummary getMetaDataSummaryCodeScan() {
+    private Optional<SecHubReportScanTypeSummary> getMetaDataSummary(ScanType scanType) {
         Optional<SecHubReportMetaData> metaDataOpt = report.getMetaData();
         if (metaDataOpt.isEmpty()) {
-            fail("Meta data not found inside report!");
+            fail("Meta data not found inside report");
         }
         SecHubReportMetaData metaData = metaDataOpt.get();
-
-        Optional<SecHubReportScanTypeSummary> codeScanOpt = metaData.getSummary().getCodeScan();
-        if (codeScanOpt.isEmpty()) {
-            fail("No code scan tye summary found inside report!");
-        }
-        return codeScanOpt.get();
+        return metaData.getSummary().getCodeScan();
     }
 
-    public AssertReport hasMetaDataSummaryCodeScanTotal(long value) {
-        SecHubReportScanTypeSummary metaDataSummary = getMetaDataSummaryCodeScan();
+    public AssertReport hasMetaDataSummaryTotal(ScanType scanType, long expectedTotal) {
 
-        assertEquals(value, metaDataSummary.getTotal());
+        SecHubReportScanTypeSummary summary = assertSummaryForScanTypeExists(scanType);
+        assertSummary(expectedTotal, summary.getTotal(), "total");
 
         return this;
     }
 
-    public AssertReport hasMetaDataSummaryCodeScanRed(long value) {
-        SecHubReportScanTypeSummary metaDataSummary = getMetaDataSummaryCodeScan();
+    public AssertReport hasMetaDataSummaryCritical(ScanType scanType, long expectedCritical) {
 
-        assertEquals(value, metaDataSummary.getRed());
-
-        return this;
-    }
-
-    public AssertReport hasMetaDataSummaryCodeScanYellow(long value) {
-        SecHubReportScanTypeSummary metaDataSummary = getMetaDataSummaryCodeScan();
-
-        assertEquals(value, metaDataSummary.getYellow());
+        SecHubReportScanTypeSummary summary = assertSummaryForScanTypeExists(scanType);
+        assertSummary(expectedCritical, summary.getCritical(), "critical");
 
         return this;
     }
 
-    public AssertReport hasMetaDataSummaryCodeScanGreen(long value) {
-        SecHubReportScanTypeSummary metaDataSummary = getMetaDataSummaryCodeScan();
+    public AssertReport hasMetaDataSummaryHigh(ScanType scanType, long expectedHigh) {
 
-        assertEquals(value, metaDataSummary.getGreen());
+        SecHubReportScanTypeSummary summary = assertSummaryForScanTypeExists(scanType);
+        assertSummary(expectedHigh, summary.getHigh(), "high");
+
+        return this;
+    }
+
+    public AssertReport hasMetaDataSummaryMedium(ScanType scanType, long expectedMedium) {
+
+        SecHubReportScanTypeSummary summary = assertSummaryForScanTypeExists(scanType);
+        assertSummary(expectedMedium, summary.getMedium(), "medium");
+
+        return this;
+    }
+
+    public AssertReport hasMetaDataSummaryLow(ScanType scanType, long expectedLow) {
+
+        SecHubReportScanTypeSummary summary = assertSummaryForScanTypeExists(scanType);
+        assertSummary(expectedLow, summary.getLow(), "low");
+
+        return this;
+    }
+
+    public AssertReport hasMetaDataSummaryUnclassified(ScanType scanType, long expectedUnclassified) {
+
+        SecHubReportScanTypeSummary summary = assertSummaryForScanTypeExists(scanType);
+        assertSummary(expectedUnclassified, summary.getUnclassified(), "unclassified");
+
+        return this;
+    }
+
+    public AssertReport hasMetaDataSummaryInfo(ScanType scanType, long expectedInfo) {
+
+        SecHubReportScanTypeSummary summary = assertSummaryForScanTypeExists(scanType);
+        assertSummary(expectedInfo, summary.getInfo(), "info");
 
         return this;
     }
@@ -369,6 +388,21 @@ public class AssertReport {
         LOG.info("\n" + report.toFormattedJSON());
         LOG.info("-----------------------------------------------------------");
         return this;
+    }
+
+    private SecHubReportScanTypeSummary assertSummaryForScanTypeExists(ScanType scanType) {
+        Optional<SecHubReportScanTypeSummary> summaryOpt = getMetaDataSummary(scanType);
+        if (summaryOpt.isEmpty()) {
+            fail("No summary for scan type:" + scanType + " found in report!");
+        }
+        SecHubReportScanTypeSummary summary = summaryOpt.get();
+        return summary;
+    }
+
+    private void assertSummary(long expected, long value, String summaryType) {
+        if (expected != value) {
+            fail("Summary " + summaryType + " faiure. Expected :" + expected + " but was: " + value + ". ");
+        }
     }
 
 }
