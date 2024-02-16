@@ -29,9 +29,9 @@ import com.mercedesbenz.sechub.commons.model.Severity;
  * Summary
  *                        Critical High Medium Low Unclassified Info
  * -------------------------------------------------------------------------------------------------
- * ScanType: Web scan   |     0     1     0     1      0        0  <- HTMLScanTypSummary
+ * ScanType: Web scan   |     0     1     0     1      0        0  <- HTMLScanTypeSummary
  * -------------------------------------------------------------------------------------------------
- * v WebScan overview   <------------ HTMLScanTypSummary instance (here scanType: WebScan)
+ * v WebScan overview   <------------ HTMLScanTypeSummary instance (here scanType: WebScan)
  *   ----------------
  *   High                             <---- HTMLScanTypeSeveritySummary
  *     CWE          Name                        count
@@ -50,13 +50,13 @@ import com.mercedesbenz.sechub.commons.model.Severity;
  *      ...
  * </pre>
  */
-public class HTMLScanTypSummary {
+public class HTMLScanTypeSummary {
 
     private Map<Severity, HTMLScanTypeSeveritySummary> severityOverviewMap = new TreeMap<>();
 
     private ScanType scanType;
 
-    public HTMLScanTypSummary(ScanType scanType) {
+    public HTMLScanTypeSummary(ScanType scanType) {
         this.scanType = scanType;
     }
 
@@ -253,8 +253,8 @@ public class HTMLScanTypSummary {
             return severity == other.severity;
         }
 
-        private HTMLScanTypSummary getEnclosingInstance() {
-            return HTMLScanTypSummary.this;
+        private HTMLScanTypeSummary getEnclosingInstance() {
+            return HTMLScanTypeSummary.this;
         }
 
     }

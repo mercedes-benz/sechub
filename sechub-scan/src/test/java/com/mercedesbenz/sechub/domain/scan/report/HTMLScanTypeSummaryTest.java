@@ -10,15 +10,15 @@ import org.junit.jupiter.params.provider.EnumSource;
 import com.mercedesbenz.sechub.commons.model.ScanType;
 import com.mercedesbenz.sechub.commons.model.SecHubFinding;
 import com.mercedesbenz.sechub.commons.model.Severity;
-import com.mercedesbenz.sechub.domain.scan.report.HTMLScanTypSummary.HTMLScanTypeSeveritySummary;
+import com.mercedesbenz.sechub.domain.scan.report.HTMLScanTypeSummary.HTMLScanTypeSeveritySummary;
 
-class HTMLScanTypSummaryTest {
+class HTMLScanTypeSummaryTest {
 
     @ParameterizedTest
     @EnumSource(ScanType.class)
     void scantype_from_constructor_is_used(ScanType scanType) {
         /* execute */
-        HTMLScanTypSummary summary = new HTMLScanTypSummary(scanType);
+        HTMLScanTypeSummary summary = new HTMLScanTypeSummary(scanType);
 
         /* test */
         assertEquals(scanType, summary.getScanType());
@@ -30,7 +30,7 @@ class HTMLScanTypSummaryTest {
     @EnumSource(Severity.class)
     void getSeveritySummary_returns_never_null_for_severity(Severity severity) {
         /* prepare */
-        HTMLScanTypSummary summary = new HTMLScanTypSummary(ScanType.CODE_SCAN);
+        HTMLScanTypeSummary summary = new HTMLScanTypeSummary(ScanType.CODE_SCAN);
 
         /* execute */
         HTMLScanTypeSeveritySummary severitySummary = summary.ensureSeveritySummary(severity);
@@ -43,7 +43,7 @@ class HTMLScanTypSummaryTest {
     @Test
     void summary_critical_with_3_finding_summaries_has_severity_count_3() {
         /* prepare */
-        HTMLScanTypSummary summary = new HTMLScanTypSummary(ScanType.CODE_SCAN);
+        HTMLScanTypeSummary summary = new HTMLScanTypeSummary(ScanType.CODE_SCAN);
 
         SecHubFinding finding1 = mock(SecHubFinding.class);
         when(finding1.getName()).thenReturn("name1");
@@ -78,7 +78,7 @@ class HTMLScanTypSummaryTest {
     @Test
     void summary_low_with_4_finding_summaries_has_severity_count_3() {
         /* prepare */
-        HTMLScanTypSummary summary = new HTMLScanTypSummary(ScanType.WEB_SCAN);
+        HTMLScanTypeSummary summary = new HTMLScanTypeSummary(ScanType.WEB_SCAN);
 
         SecHubFinding finding1 = mock(SecHubFinding.class);
         when(finding1.getName()).thenReturn("name1");
@@ -120,7 +120,7 @@ class HTMLScanTypSummaryTest {
     @Test
     void summary_low_with_3_but_same_findingnames_summaries_has_severity_count_2() {
         /* prepare */
-        HTMLScanTypSummary summary = new HTMLScanTypSummary(ScanType.WEB_SCAN);
+        HTMLScanTypeSummary summary = new HTMLScanTypeSummary(ScanType.WEB_SCAN);
 
         SecHubFinding finding1 = mock(SecHubFinding.class);
         when(finding1.getName()).thenReturn("name1");

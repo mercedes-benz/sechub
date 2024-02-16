@@ -53,7 +53,7 @@ public class HTMLScanResultReportModelBuilder {
             codeScanEntries.put(finding.getId(), codeScanSupport.buildEntries(finding));
         }
 
-        List<HTMLScanTypSummary> scanTypeSummaries = createScanTypeSummaries(findings);
+        List<HTMLScanTypeSummary> scanTypeSummaries = createScanTypeSummaries(findings);
 
         List<HTMLTrafficlightFindingGroup> trafficLightGroups = createTrafficLightFindingGroups(findings);
 
@@ -88,22 +88,22 @@ public class HTMLScanResultReportModelBuilder {
      * rendering summary
      *
      * @param findings
-     * @return a list with elements of {@link HTMLScanTypSummary}, sorted by scan
+     * @return a list with elements of {@link HTMLScanTypeSummary}, sorted by scan
      *         type
      *
      */
-    public List<HTMLScanTypSummary> createScanTypeSummaries(List<SecHubFinding> findings) {
+    public List<HTMLScanTypeSummary> createScanTypeSummaries(List<SecHubFinding> findings) {
 
-        Map<ScanType, HTMLScanTypSummary> temporaryMap = new LinkedHashMap<>();
+        Map<ScanType, HTMLScanTypeSummary> temporaryMap = new LinkedHashMap<>();
 
         for (SecHubFinding finding : findings) {
 
             ScanType type = finding.getType();
-            HTMLScanTypSummary scanTypeSummary = temporaryMap.computeIfAbsent(type, scanType -> new HTMLScanTypSummary(scanType));
+            HTMLScanTypeSummary scanTypeSummary = temporaryMap.computeIfAbsent(type, scanType -> new HTMLScanTypeSummary(scanType));
             scanTypeSummary.add(finding);
 
         }
-        List<HTMLScanTypSummary> summaries = new ArrayList<>();
+        List<HTMLScanTypeSummary> summaries = new ArrayList<>();
         summaries.addAll(temporaryMap.values());
         return summaries;
     }

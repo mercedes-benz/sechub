@@ -32,13 +32,12 @@ class SecHubFinding {
 }
 
 class SecHubReportSummary {
-    ScanTypeSummaryDetailData details 
     
-    SecHubReportScanTypeSummary codeScan
-    SecHubReportScanTypeSummary infraScan
-    SecHubReportScanTypeSummary licenseScan
-    SecHubReportScanTypeSummary secretScan
-    SecHubReportScanTypeSummary webScan
+    Optional<SecHubReportScanTypeSummary> codeScan
+    Optional<SecHubReportScanTypeSummary> infraScan
+    Optional<SecHubReportScanTypeSummary> licenseScan
+    Optional<SecHubReportScanTypeSummary> secretScan
+    Optional<SecHubReportScanTypeSummary> webScan
 }
 class SecHubReportMetaData {
     Map<String,String> labels

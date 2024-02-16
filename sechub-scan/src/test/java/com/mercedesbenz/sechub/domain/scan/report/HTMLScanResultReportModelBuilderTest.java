@@ -340,7 +340,7 @@ class HTMLScanResultReportModelBuilderTest {
         List<SecHubFinding> findings = new ArrayList<>();
 
         /* execute */
-        List<HTMLScanTypSummary> created = builderToTest.createScanTypeSummaries(findings);
+        List<HTMLScanTypeSummary> created = builderToTest.createScanTypeSummaries(findings);
 
         /* test */
         assertTrue(created.isEmpty());
@@ -371,12 +371,12 @@ class HTMLScanResultReportModelBuilderTest {
         findings.add(finding3);
 
         /* execute */
-        List<HTMLScanTypSummary> created = builderToTest.createScanTypeSummaries(findings);
+        List<HTMLScanTypeSummary> created = builderToTest.createScanTypeSummaries(findings);
 
         /* test */
         assertEquals(1, created.size());
-        Iterator<HTMLScanTypSummary> iterator = created.iterator();
-        HTMLScanTypSummary summary1 = iterator.next();
+        Iterator<HTMLScanTypeSummary> iterator = created.iterator();
+        HTMLScanTypeSummary summary1 = iterator.next();
 
         assertEquals(scanType, summary1.getScanType());
 
@@ -415,12 +415,12 @@ class HTMLScanResultReportModelBuilderTest {
         findings.add(finding3);
 
         /* execute */
-        List<HTMLScanTypSummary> created = builderToTest.createScanTypeSummaries(findings);
+        List<HTMLScanTypeSummary> created = builderToTest.createScanTypeSummaries(findings);
 
         /* test */
         assertEquals(1, created.size());
-        Iterator<HTMLScanTypSummary> iterator = created.iterator();
-        HTMLScanTypSummary summary1 = iterator.next();
+        Iterator<HTMLScanTypeSummary> iterator = created.iterator();
+        HTMLScanTypeSummary summary1 = iterator.next();
 
         assertEquals(scanType, summary1.getScanType());
 

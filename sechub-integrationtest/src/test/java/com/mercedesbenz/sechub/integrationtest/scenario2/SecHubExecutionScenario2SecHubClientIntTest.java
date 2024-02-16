@@ -28,12 +28,12 @@ import com.mercedesbenz.sechub.integrationtest.api.TestUser;
 import com.mercedesbenz.sechub.integrationtest.internal.IntegrationTestExampleConstants;
 import com.mercedesbenz.sechub.integrationtest.internal.SecHubClientExecutor.ExecutionResult;
 
-public class SecHubExecutionScenarioSecHubClientIntTest {
+public class SecHubExecutionScenario2SecHubClientIntTest {
 
     private static final String EXTENSION_JSON = ".json";
     private static final String EXTENSION_HTML = ".html";
 
-    private static final String REPORT_CLIENT_TEST_1_CODESCAN_GREEN = "report_client-test-1-codescan-green.html";
+    private static final String REPORT_CLIENT_TEST_1_CODESCAN_GREEN = "report_client-test-1-codescan-green";
     private static final String REPORT_CLIENT_TEST_1_CODESCAN_GREEN_HTML = REPORT_CLIENT_TEST_1_CODESCAN_GREEN + EXTENSION_HTML;
     private static final String REPORT_CLIENT_TEST_1_CODESCAN_GREEN_JSON = REPORT_CLIENT_TEST_1_CODESCAN_GREEN + EXTENSION_JSON;
 
