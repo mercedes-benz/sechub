@@ -7,7 +7,7 @@
      <h2 th:class="${trafficLightGroup.findingHeadlineCssClass}" th:id="'report' + ${trafficLightGroup.trafficLight.text} + 'Findings'" th:text="${trafficLightGroup.findingHeadlineText}">Red findings</h2>
      <div th:remove="all"> <!--/*Each scan type data . e.g.CodeScan */--></div>
      <div th:each="scanTypeFindingData : ${trafficLightGroup.scanTypeFindingDataList}">
-        <h3 th:class="${trafficLightGroup.findingHeadlineCssClass}" th:text="${scanTypeFindingData.scanType.name}">Code scan</h3>
+        <h3 th:class="${trafficLightGroup.findingHeadlineCssClass}" th:text="${scanTypeFindingData.scanType.text}">Code scan</h3>
         <table th:class="'findingsTable '+ ${trafficLightGroup.findingsTableCssClass}">
 	       <thead>
 	           <tr>
@@ -30,7 +30,7 @@
 
 <th:block th:fragment="renderFindings(finding,scanTypeFindingData)">
 <td th:text="${finding.id}" th:id="${reportHelper.createFindingAnkerId(finding)}">4711</td>
-<td th:text="${finding.severity.name}">High</td>
+<td th:text="${finding.severity.text}">High</td>
 <td>
      <div th:if="${scanTypeFindingData.isFirstLinkItem(finding)}" th:id ="${reportHelper.createFirstFindingAnkerId(finding)}" th:text="${finding.name}">Command injection</div>
      <div th:if="${scanTypeFindingData.isNotFirstLinkItem(finding)}" th:text="${finding.name}">Command injection</div>

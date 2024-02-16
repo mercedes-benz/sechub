@@ -33,23 +33,15 @@ import com.mercedesbenz.sechub.domain.scan.report.HTMLScanResultReportModelBuild
 import com.mercedesbenz.sechub.domain.scan.report.ScanReport;
 import com.mercedesbenz.sechub.domain.scan.report.ScanSecHubReport;
 import com.mercedesbenz.sechub.sharedkernel.ProductIdentifier;
-import com.mercedesbenz.sechub.test.CSSFileToFragementMerger;
 import com.mercedesbenz.sechub.test.TestFileWriter;
 import com.mercedesbenz.sechub.test.TestUtil;
 
 /**
  * A special reporting test: Will create "real life" HTML reports very fast (no
  * server or spring boot container start necessary) and test output rudimentary.
- * <br>
- * <br>
- * Does automatically load sarif test data from
- * "src/test/resources/report/input". Also able to store temporary JSON and HTML
- * output files to build when {@link TestUtil#isDeletingTempFiles()} returns
- * <code>true</code> (this is interesting when designing or debugging
- * reporting).
  *
- * When {@link TestUtil#isDeletingTempFiles()} returns <code>true</code> the
- * fragements file will be automatically updated by data from "scanresult.css"
+ * After the tests are executed, you can open the created files in your browser
+ * and check the results. This is very convenient for report development.
  *
  * @author Albert Tregnaghi
  *
@@ -76,24 +68,6 @@ public class ThymeLeafHTMLReportingTest {
 
         thymeleafTemplateEngine.setTemplateResolver(templateResolver);
 
-        if (TestUtil.isAutoCSSFragementGenerationEnabled()) {
-            File scanHTMLFolder = new File("./../sechub-scan/src/main/resources/templates/report/html");
-            File cssFile = new File(scanHTMLFolder, "scanresult.css");
-            CSSFileToFragementMerger merger = new CSSFileToFragementMerger();
-
-            File fragmentsFile = new File(scanHTMLFolder, "fragment-cwe-summary-table.html");
-            merger.merge(cssFile, fragmentsFile);
-            fragmentsFile = new File(scanHTMLFolder, "fragment-generic-scan-table.html");
-            merger.merge(cssFile, fragmentsFile);
-            fragmentsFile = new File(scanHTMLFolder, "fragment-generic-scan-table-row.html");
-            merger.merge(cssFile, fragmentsFile);
-            fragmentsFile = new File(scanHTMLFolder, "fragment-summary-table-row.html");
-            merger.merge(cssFile, fragmentsFile);
-            fragmentsFile = new File(scanHTMLFolder, "fragment-web-scan-table.html");
-            merger.merge(cssFile, fragmentsFile);
-        } else {
-            LOG.info("Skipping CSS auto generation/merging");
-        }
     }
 
     @Test

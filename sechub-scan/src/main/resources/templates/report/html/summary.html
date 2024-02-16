@@ -62,13 +62,13 @@
     <summary class='summaryScanType' th:text="${scanTypeSummary.headline}">Scan type summary headline</summary>
     <div th:each="severitySummary : ${scanTypeSummary.severitySummaries}">
      <!--/* severitySummary=HTMLScanTypeSeveritySummary  */-->
-            <h3 class='summarySeverity' th:text="${severitySummary.severity.name}"/>
+            <h3 class='summarySeverity' th:text="${severitySummary.severity.text}"/>
    <table class='summaryScanTypeTable'>
        <thead>
        <tr>
-           <th style="width:15%">Identifier(s)</th>
+           <th style="width:8%">Identifier(s)</th>
            <th style="width:5%">Count</th>
-           <th>Type</th>
+           <th>Name</th>
        </tr>
        </thead>
        <tbody>
@@ -84,7 +84,7 @@
                           <table class='summaryScanTypeTable'>
                    <thead>
                    <tr>
-                       <th style="width:15%">ID</th>
+                       <th style="width:5%">ID</th>
                        <th>Location</th>
                    </tr>
                    </thead>
