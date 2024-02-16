@@ -18,24 +18,19 @@ public enum Severity implements Comparable<Severity> {
     ;
 
     private int level;
-    private String name;
+    private String text;
 
     private Severity(int level, String name) {
         this.level = level;
-        this.name = name;
+        this.text = name;
     }
 
     public int getLevel() {
         return level;
     }
 
-    /**
-     * Resolves human readable name. Is different to name() method
-     *
-     * @return a human readable name - e.g. CRITCIAL -> "Critical"
-     */
-    public String getName() {
-        return name;
+    public String getText() {
+        return text;
     }
 
 }

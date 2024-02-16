@@ -26,7 +26,7 @@ public enum ScanType {
     private String id;
     private boolean internalScanType;
     private String description;
-    private String name;
+    private String text;
 
     private ScanType(String id, String name, String description) {
         this(id, name, description, false);
@@ -34,7 +34,7 @@ public enum ScanType {
 
     private ScanType(String id, String name, String description, boolean internalScanType) {
         this.id = id;
-        this.name = name;
+        this.text = name;
         this.internalScanType = internalScanType;
         this.description = description;
     }
@@ -44,13 +44,8 @@ public enum ScanType {
         return id;
     }
 
-    /**
-     * @return human readable name of the scan type. Is different to name(). - e.g.
-     *         CODE_SCAN enum has "Code scan" as name by this getter, but name()
-     *         returns "CODE_SCAN"
-     */
-    public String getName() {
-        return name;
+    public String getText() {
+        return text;
     }
 
     public String getDescription() {

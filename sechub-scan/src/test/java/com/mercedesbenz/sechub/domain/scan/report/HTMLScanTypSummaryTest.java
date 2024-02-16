@@ -22,7 +22,7 @@ class HTMLScanTypSummaryTest {
 
         /* test */
         assertEquals(scanType, summary.getScanType());
-        assertEquals(scanType.getName(), summary.getScanTypeName());
+        assertEquals(scanType.getText(), summary.getScanTypeName());
 
     }
 

@@ -61,7 +61,7 @@ public class HTMLScanTypSummary {
     }
 
     public String getScanTypeName() {
-        return scanType.getName();
+        return scanType.getText();
     }
 
     public ScanType getScanType() {
