@@ -16,7 +16,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
 
-import com.mercedesbenz.sechub.domain.scan.HTMLScanResultReportModelBuilder;
 import com.mercedesbenz.sechub.sharedkernel.APIConstants;
 import com.mercedesbenz.sechub.sharedkernel.RoleConstants;
 import com.mercedesbenz.sechub.sharedkernel.Step;
@@ -71,7 +70,7 @@ public class ScanReportRestController {
         ScanSecHubReport scanSecHubReport = fetchScanSecHubReport(projectId, jobUUID);
 
         Map<String, Object> model = htmlModelBuilder.build(scanSecHubReport);
-        return new ModelAndView("report/html/scanresult", model);
+        return new ModelAndView("report/html/report", model);
     }
 
     /* @formatter:off */

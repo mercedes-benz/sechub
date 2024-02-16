@@ -76,7 +76,7 @@ public class UserGrantSuperAdminRightsService {
     @IsSendingAsyncMessage(MessageID.USER_BECOMES_SUPERADMIN)
     private void informUserBecomesSuperadmin(User user) {
         eventBusService
-                .sendAsynchron(DomainMessageFactory.createUserBecomesSuperAdmin(user.getName(), user.getEmailAdress(), sechubEnvironment.getServerBaseUrl()));
+                .sendAsynchron(DomainMessageFactory.createUserBecomesSuperAdmin(user.getName(), user.getEmailAddress(), sechubEnvironment.getServerBaseUrl()));
     }
 
     @IsSendingAsyncMessage(MessageID.REQUEST_USER_ROLE_RECALCULATION)

@@ -1,3 +1,5 @@
+<!--/* For development just call one ore more tests inside ThymeLeafHTMLReportingTest and check output */-->
+<style type="text/css" th:fragment="renderStyles">
 .trafficlight {
     background: #222;
     background-image: linear-gradient(transparent 2%, #111 2%, transparent 3%, #111 30%);
@@ -385,3 +387,84 @@ rTableSourceHead,
    display:flex;
 }
 
+.summaryHeadline {
+    font-family: monospace;
+}
+
+.summaryTable {
+    width: 50%;
+    padding-bottom: 16px;
+    padding-top: 10px;
+    border-collapse: separate;
+    border: solid #cccccc 1px;
+    border-radius: 16px;
+    border-spacing: 0px;
+}
+
+.summaryTable th {
+    padding: 8px;
+    vertical-align: center;
+    text-align: center;
+}
+
+.summaryTable td {
+    padding: 8px;
+    font-family: monospace;
+    vertical-align: center;
+    text-align: center;
+}
+
+.summaryTable td:nth-child(2) {
+    border-left: 1px solid #cccccc;
+}
+
+.summaryTable td:nth-child(3) {
+    border-left: 1px solid #cccccc;
+}
+
+.summaryScanType {
+    font-family: monospace;
+    font-size: 1.5em;
+    font-weight: bold;
+}
+
+.summarySeverity {
+    font-family: monospace;
+}
+
+.summaryScanTypeTable {
+    width: 100%;
+    padding-bottom: 16px;
+    padding-top: 10px;
+    border-collapse: separate;
+    border: solid #cccccc 1px;
+    border-radius: 16px;
+    border-spacing: 0px;
+}
+
+.summaryScanTypeTable th {
+    padding: 8px;
+    vertical-align: center;
+    text-align: left;
+}
+
+.summaryScanTypeTable td {
+    padding: 8px;
+    font-family: monospace;
+    vertical-align: center;
+    text-align: left;
+}
+
+.summaryScanTypeTable td:nth-child(2) {
+    border-left: 1px solid #cccccc;
+}
+
+.summaryScanTypeTable td:nth-child(3) {
+    border-left: 1px solid #cccccc;
+}
+
+.scanTypeHeadline {
+    /*color: #cc0000;*/
+    font-family: monospace;
+}
+</style>

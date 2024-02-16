@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-package com.mercedesbenz.sechub.domain.scan;
+package com.mercedesbenz.sechub.domain.scan.report;
 
 import static java.util.Objects.*;
 
@@ -16,7 +16,7 @@ import com.mercedesbenz.sechub.commons.model.SecHubFinding;
  * @author Albert Tregnaghi
  *
  */
-public class HtmlCodeScanDescriptionSupport {
+public class HTMLCodeScanDescriptionSupport {
 
     public boolean isCodeScan(SecHubFinding finding) {
         SecHubCodeCallStack code = finding.getCode();

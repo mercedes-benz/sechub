@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-package com.mercedesbenz.sechub.domain.scan;
+package com.mercedesbenz.sechub.domain.scan.report;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -12,7 +12,7 @@ import com.mercedesbenz.sechub.commons.model.SecHubFinding;
 
 public class HtmlCodeScanDescriptionSupportTest {
 
-    private HtmlCodeScanDescriptionSupport descriptionSupport = new HtmlCodeScanDescriptionSupport();
+    private HTMLCodeScanDescriptionSupport descriptionSupport = new HTMLCodeScanDescriptionSupport();
 
     @Test
     void test_is_code_scan_with_code_scan_finding() {
