@@ -1,20 +1,18 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.domain.scan;
 
+import com.mercedesbenz.sechub.domain.scan.product.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
 
-import com.mercedesbenz.sechub.domain.scan.product.AnalyticsProductExecutionService;
-import com.mercedesbenz.sechub.domain.scan.product.CodeScanProductExecutionService;
-import com.mercedesbenz.sechub.domain.scan.product.InfrastructureScanProductExecutionService;
-import com.mercedesbenz.sechub.domain.scan.product.LicenseScanProductExecutionService;
-import com.mercedesbenz.sechub.domain.scan.product.SecretScanProductExecutionService;
-import com.mercedesbenz.sechub.domain.scan.product.WebScanProductExecutionService;
 import com.mercedesbenz.sechub.sharedkernel.messaging.DomainMessageService;
 
 @Component
 public class ProductExecutionServiceContainer {
+
+    @Autowired
+    private PrepareProductExecutionService prepareProductExecutionService;
 
     @Autowired
     private AnalyticsProductExecutionService analyticsProductExecutionService;
@@ -37,6 +35,10 @@ public class ProductExecutionServiceContainer {
     @Lazy
     @Autowired
     private DomainMessageService domainMessageService;
+
+    public PrepareProductExecutionService getPrepareProductExecutionService() {
+        return prepareProductExecutionService;
+    }
 
     public AnalyticsProductExecutionService getAnalyticsProductExecutionService() {
         return analyticsProductExecutionService;

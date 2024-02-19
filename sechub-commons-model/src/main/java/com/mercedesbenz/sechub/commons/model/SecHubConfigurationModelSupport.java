@@ -81,7 +81,7 @@ public class SecHubConfigurationModelSupport {
 
         case PREPARE:
             //TODO
-            return false;
+            return true;
 
         default:
             LOG.error("Unsupported scan type: {}", scanType);

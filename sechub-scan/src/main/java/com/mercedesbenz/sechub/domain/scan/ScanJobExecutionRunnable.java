@@ -1,16 +1,11 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.domain.scan;
 
+import com.mercedesbenz.sechub.domain.scan.product.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.MDC;
 
-import com.mercedesbenz.sechub.domain.scan.product.AnalyticsProductExecutionService;
-import com.mercedesbenz.sechub.domain.scan.product.CodeScanProductExecutionService;
-import com.mercedesbenz.sechub.domain.scan.product.InfrastructureScanProductExecutionService;
-import com.mercedesbenz.sechub.domain.scan.product.LicenseScanProductExecutionService;
-import com.mercedesbenz.sechub.domain.scan.product.SecretScanProductExecutionService;
-import com.mercedesbenz.sechub.domain.scan.product.WebScanProductExecutionService;
 import com.mercedesbenz.sechub.sharedkernel.LogConstants;
 
 /**
@@ -44,6 +39,10 @@ class ScanJobExecutionRunnable implements Runnable, CanceableScanJob {
 
             SecHubExecutionContext executionContext = runnableData.getExecutionContext();
             ProductExecutionServiceContainer executionServiceContainer = runnableData.getExecutionServiceContainer();
+
+            /* prepare phase for remote data */
+            PrepareProductExecutionService prepareProductExecutionService = executionServiceContainer.getPrepareProductExecutionService();
+            prepareProductExecutionService.executeProductsAndStoreResults(executionContext);
 
             /* analytics scan phase */
             AnalyticsProductExecutionService analyticsProductExecutionService = executionServiceContainer.getAnalyticsProductExecutionService();

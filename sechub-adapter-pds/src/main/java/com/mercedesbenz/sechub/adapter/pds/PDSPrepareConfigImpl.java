@@ -8,7 +8,7 @@ public class PDSPrepareConfigImpl extends AbstractPrepareAdapterConfig implement
 
     private PDSAdapterConfigData configData;
 
-    private PDSPrepareConfigImpl (){
+    private PDSPrepareConfigImpl() {
     }
 
     @Override
@@ -16,7 +16,9 @@ public class PDSPrepareConfigImpl extends AbstractPrepareAdapterConfig implement
         return configData;
     }
 
-    public static PDSPrepareConfigBuilder builder() { return new PDSPrepareConfigBuilder(); }
+    public static PDSPrepareConfigBuilder builder() {
+        return new PDSPrepareConfigBuilder();
+    }
 
     public static class PDSPrepareConfigBuilder extends AbstractPrepareAdapterConfigBuilder<PDSPrepareConfigBuilder, PDSPrepareConfigImpl>
             implements PDSAdapterConfigBuilder {

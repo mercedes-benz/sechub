@@ -386,7 +386,7 @@ public class IntegrationTestDefaultProfiles {
      * </ul>
      *
      */
-    public static final DefaultTestExecutionProfile PROFILE_100_PDS_PREPARE = defineProfile100();
+    public static final DefaultTestExecutionProfile PROFILE_28_PDS_PREPARE_MOCK = defineProfile28();
 
     /**
      * <h3>Profile 17</h3>
@@ -768,12 +768,12 @@ public class IntegrationTestDefaultProfiles {
         return profile;
     }
 
-    private static DefaultTestExecutionProfile defineProfile100() {
+    private static DefaultTestExecutionProfile defineProfile28() {
 
         DefaultTestExecutionProfile profile = new DefaultTestExecutionProfile();
         profile.initialConfigurationsWithoutUUID.add(IntegrationTestDefaultExecutorConfigurations.PDS_V1_PREPARE_INTEGRATIONTEST);
-        profile.id = "inttest-p100-pds-prepare";
-        profile.description = "Profile 100: PDS prepare, reused storage, dynamic text results";
+        profile.id = "inttest-p28-pds-prepare";
+        profile.description = "Profile 28: PDS prepare, reused storage, dynamic text results";
         profile.enabled = true;
         return profile;
     }

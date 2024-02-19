@@ -26,7 +26,7 @@ public class PDSPrepareExecutor extends AbstractPDSProductExecutor {
 
     @Override
     protected List<ProductResult> executeByAdapter(ProductExecutorData data, PDSExecutorConfigSupport configSupport, PDSStorageContentProvider contentProvider) throws Exception {
-       // TODO prepare
+       // TODO prepare phase
         ProductExecutorContext executorContext = data.getProductExecutorContext();
 
         ProductResult result = resilientActionExecutor.executeResilient(() -> {

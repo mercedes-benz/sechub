@@ -343,7 +343,7 @@ public class TestAPI {
         waitForJobRunning(project, 5, 300, jobUUID);
     }
 
-    public static UUID waitForPDSJobWithIndexOfSecHubJobAndReturnPDSJobUUID(UUID sechubJobUUID, int index) {
+    public static UUID waitForPDSJobOfSecHubJobAtGivenPositionAndReturnPDSJobUUID(UUID sechubJobUUID, int index) {
         String indexNotFoundErrorMessage = "Did not found PDS job [" + index + "] uuid was found for sechub job:" + sechubJobUUID;
         return executeCallableAndAcceptAssertionsMaximumTimes(15, () -> {
 
@@ -354,7 +354,7 @@ public class TestAPI {
     }
 
     public static UUID waitForFirstPDSJobOfSecHubJobAndReturnPDSJobUUID(UUID sechubJobUUID) {
-        return waitForPDSJobWithIndexOfSecHubJobAndReturnPDSJobUUID(sechubJobUUID, 0);
+        return waitForPDSJobOfSecHubJobAtGivenPositionAndReturnPDSJobUUID(sechubJobUUID, 0);
     }
 
     public static void waitForPDSJobInState(PDSJobStatusState wantedState, int timeOutInSeconds, int timeToWaitInMillis, UUID pdsJobUUID,
