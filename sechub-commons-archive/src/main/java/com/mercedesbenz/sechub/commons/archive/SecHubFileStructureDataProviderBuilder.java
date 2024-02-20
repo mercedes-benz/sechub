@@ -10,6 +10,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.mercedesbenz.sechub.commons.model.ClientCertificateConfiguration;
+import com.mercedesbenz.sechub.commons.model.HTTPHeaderConfiguration;
 import com.mercedesbenz.sechub.commons.model.ScanType;
 import com.mercedesbenz.sechub.commons.model.SecHubConfigurationModel;
 import com.mercedesbenz.sechub.commons.model.SecHubDataConfigurationUsageByName;
@@ -107,6 +108,18 @@ public class SecHubFileStructureDataProviderBuilder {
 
             Optional<ClientCertificateConfiguration> clientCertOpt = webScan.getClientCertificate();
             addAllUsages(data, clientCertOpt, false);
+
+            Optional<List<HTTPHeaderConfiguration>> httpHeaderConfigsOpt = webScan.getHeaders();
+            if (httpHeaderConfigsOpt.isEmpty()) {
+                break;
+            }
+            for (HTTPHeaderConfiguration httpHeaderConfig : httpHeaderConfigsOpt.get()) {
+                Set<String> use = httpHeaderConfig.getNamesOfUsedDataConfigurationObjects();
+                // To call Optional.ofNullable() only when it is needed
+                if (use != null && !use.isEmpty()) {
+                    addAllUsages(data, Optional.ofNullable(httpHeaderConfig), false);
+                }
+            }
             break;
         case ANALYTICS:
 

@@ -1317,6 +1317,56 @@ class SecHubConfigurationModelValidatorTest {
     }
 
     @ParameterizedTest
+    @NullSource
+    @EmptySource
+    void model_has_header_value_only_from_file_ref_specified_has_no_error(String explicitHeaderValue) {
+        /* prepare */
+        List<HTTPHeaderConfiguration> httpHeaders = createListWithOneHeaderAndOneOnlyForUrl("Authorization", explicitHeaderValue, "https://mywebapp.com");
+        // add header file ref
+        httpHeaders.get(0).getNamesOfUsedDataConfigurationObjects().add("header-file-ref");
+
+        SecHubWebScanConfiguration webScan = new SecHubWebScanConfiguration();
+        webScan.headers = Optional.ofNullable(httpHeaders);
+        webScan.url = URI.create("https://mywebapp.com");
+
+        SecHubConfigurationModel model = new SecHubConfigurationModel();
+        model.setApiVersion("1.0");
+        model.setWebScan(webScan);
+
+        modelSupportCollectedScanTypes.add(ScanType.WEB_SCAN);
+
+        /* execute */
+        SecHubConfigurationModelValidationResult result = validatorToTest.validate(model);
+
+        /* test */
+        assertHasNoErrors(result);
+    }
+
+    @Test
+    void model_has_multiple_header_values_from_file_ref_and_direct_value_specified_has_error() {
+        /* prepare */
+        List<HTTPHeaderConfiguration> httpHeaders = createListWithOneHeaderAndOneOnlyForUrl("Authorization", "test-value", "https://mywebapp.com");
+        // add header file ref
+        httpHeaders.get(0).getNamesOfUsedDataConfigurationObjects().add("header-file-ref");
+
+        SecHubWebScanConfiguration webScan = new SecHubWebScanConfiguration();
+        webScan.headers = Optional.ofNullable(httpHeaders);
+        webScan.url = URI.create("https://mywebapp.com");
+
+        SecHubConfigurationModel model = new SecHubConfigurationModel();
+        model.setApiVersion("1.0");
+        model.setWebScan(webScan);
+
+        modelSupportCollectedScanTypes.add(ScanType.WEB_SCAN);
+
+        /* execute */
+        SecHubConfigurationModelValidationResult result = validatorToTest.validate(model);
+
+        /* test */
+        assertHasError(result, SecHubConfigurationModelValidationError.WEB_SCAN_MULTIPLE_HEADER_VALUES_DEFINED);
+    }
+
+    @ParameterizedTest
     @ValueSource(strings = { "src/test/resources/sechub_config_web_scan_no_intersection_of_urls_of_same_header.json" })
     void explicit_definitions_for_the_same_header_for_certain_urls_but_list_of_urls_have_no_intersections_has_no_errors(String testFilePath) {
         /* prepare */

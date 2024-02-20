@@ -29,6 +29,9 @@ public enum SecHubConfigurationModelValidationError {
 
     WEB_SCAN_NO_HEADER_VALUE_DEFINED("The value for a HTTP header is not defined!"),
 
+    WEB_SCAN_MULTIPLE_HEADER_VALUES_DEFINED(
+            "The HTTP header has multiple values defined! Use either a file reference or a directly specified value but not both!"),
+
     WEB_SCAN_INCLUDE_INVALID("The value of an include is invalid!"),
 
     WEB_SCAN_EXCLUDE_INVALID("The value of an exclude is invalid!"),

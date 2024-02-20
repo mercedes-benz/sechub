@@ -252,7 +252,13 @@ class SecHubFileStructureDataProviderBuilderTest {
                       "fileSystem" : {
                         "files" : [ "certificate.p12" ]
                       }
-                    } ]
+                    },
+                    {
+                      "name" : "header-file-ref-for-big-tokens",
+                      "fileSystem" : {
+                        "files" : [ "bearer-token.txt" ]
+                      }
+                    }]
                   },
                   "webScan" : {
                     "url" : "https://localhost",
@@ -263,7 +269,11 @@ class SecHubFileStructureDataProviderBuilderTest {
                     "clientCertificate" : {
                       "password" : "secret-password",
                       "use" : [ "client-cert-api-file-reference" ]
-                    }
+                    },
+                    "headers" : [{
+                      "name" : "Authorization",
+                      "use" : [ "header-file-ref-for-big-tokens" ]
+                    }]
                   }
                 }
                 """;
@@ -276,6 +286,7 @@ class SecHubFileStructureDataProviderBuilderTest {
         assertNotNull(dataProvider);
         assertTrue(dataProvider.getUnmodifiableSetOfAcceptedReferenceNames().contains("open-api-file-reference"));
         assertTrue(dataProvider.getUnmodifiableSetOfAcceptedReferenceNames().contains("client-cert-api-file-reference"));
+        assertTrue(dataProvider.getUnmodifiableSetOfAcceptedReferenceNames().contains("header-file-ref-for-big-tokens"));
         assertFalse(dataProvider.isRootFolderAccepted());
     }
 
