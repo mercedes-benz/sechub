@@ -1,25 +1,19 @@
 {
   "apiVersion": "1.0",
-  "codeScan": {
-    "use": [
-      "sechub-sources"
-    ]
-  },
+  "codeScan": { "use": [ "sechub-sources" ] },
+  "secretScan": { "use": [ "sechub-sources" ] },
   "data": {
     "sources": [
       {
         "name": "sechub-sources",
-        "fileSystem": {
-          "folders": [
-            "."
-          ]
-        },
+        "fileSystem": { "folders": [ "." ] },
         "excludes": [
           "**/.project",
           "**/bin/**",
           "**/build/**",
           "**/examples/**",
           "**/gen/**",
+          "**/mockdata/**",
           "**/tests/**",
           "*_test.go",
           "*.gradle",
@@ -29,7 +23,10 @@
           "buildSrc/**",
           "docs/**",
           "gradle/**",
+          "sechub_report_*.html",
+          "sechub_report_*.json",
           "sechub-cli/pkg/mod/**",
+          "sechub-cli/src/mercedes-benz.com/sechub/pkg/mod/**",
           "sechub-developertools/**",
           "sechub-doc/**",
           "sechub-examples/**",
