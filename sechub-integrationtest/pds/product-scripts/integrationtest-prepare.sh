@@ -15,4 +15,4 @@ echo "PREPARE does not do anything yet"
 ## Just add a error message for user in report - we check this in integration test
 errorMessage "Some preperation error message for user in report."
 
-echo "{ \"state\" : \"success\"}" > "$PDS_JOB_RESULT_FILE"
+echo "SECHUB_PREPARE_DONE" > "$PDS_JOB_RESULT_FILE"

@@ -57,9 +57,8 @@ public class SerecoReportProductExecutor implements ProductExecutor {
             switch (productIdentifier) {
             case SERECO:
             case PDS_ANALYTICS:
-            case PDS_PREPARE:
             case UNKNOWN:
-                // we do not support these with SERECO...
+                // we do not support these as findings for SERECO nor user messages in report
                 break;
             default:
                 // everything else is supported

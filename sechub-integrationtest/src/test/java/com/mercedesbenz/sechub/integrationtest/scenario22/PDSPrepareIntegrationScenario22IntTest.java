@@ -28,7 +28,7 @@ public class PDSPrepareIntegrationScenario22IntTest {
     public Timeout timeOut = Timeout.seconds(600);
 
     @Test
-    public void sechub_calls_prepare_pds_and_executes_script() {
+    public void sechub_calls_prepare_pds_executes_script_and_user_message_is_returned() {
 
         TestProject project = PROJECT_1;
         /* @formatter:off */
@@ -65,6 +65,7 @@ public class PDSPrepareIntegrationScenario22IntTest {
                 hasMessage(SecHubMessageType.WARNING,"No results from a security product available for this job!").
                 hasMessage(SecHubMessageType.ERROR,"Some preperation error message for user in report.").
                 hasMessages(2).
+                hasTrafficLight(TrafficLight.OFF).
                 hasFindings(0); // no findings
 
         /* @formatter:on */

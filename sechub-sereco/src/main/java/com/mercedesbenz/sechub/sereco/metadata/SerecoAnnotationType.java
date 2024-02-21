@@ -18,6 +18,11 @@ public enum SerecoAnnotationType {
     /*
      * an internal info message that a product and its result has been successfully
      * imported - NOT suitable to be reported back to user
+     *
+     * Will be used to handle traffic light (OFF): Only when at least one Sereco
+     * annotation of this type is found inside the Sereco report, we assume that we
+     * can calculate a traffic light (red/green/yellow). Otherwise Traffic light
+     * will be OFF
      */
     INTERNAL_INFO_PRODUCT_SUCCESSFUL_IMPORTED(true),
 

@@ -74,6 +74,7 @@ public class Workspace {
             LOG.error("Import data was not null, but import id was not set, so unable to import.");
             return;
         }
+
         boolean atLeastOneImporterWasAbleToImport = false;
         for (ProductResultImporter importer : registry.getImporters()) {
             ProductImportAbility ableToImportForProduct = importer.isAbleToImportForProduct(param);
@@ -86,14 +87,16 @@ public class Workspace {
                  * failed, so we add just a critical finding for the product itself
                  */
                 ProductFailureMetaDataBuilder builder = new ProductFailureMetaDataBuilder();
-                SerecoMetaData failureMetaData = builder.forParam(param).build();
+                SerecoMetaData failureMetaData = builder.forParam(param).forSecurityProduct(importer.isForSecurityProduct()).build();
                 mergeWithWorkspaceData(sechubConfig, failureMetaData);
 
                 mergeWithWorkspaceData(param.getProductMessages());
 
                 atLeastOneImporterWasAbleToImport = true;
+
                 break;
             }
+
             if (ProductImportAbility.ABLE_TO_IMPORT.equals(ableToImportForProduct)) {
                 LOG.debug("Importer {} is able to import {}", importer.getName(), param.getImportId());
                 SerecoMetaData importedMetaData = importer.importResult(param.getImportData(), param.getScanType());
@@ -106,7 +109,7 @@ public class Workspace {
 
                 /* add now success meta data */
                 ProductSuccessMetaDataBuilder builder = new ProductSuccessMetaDataBuilder();
-                SerecoMetaData successMetaData = builder.forParam(param).build();
+                SerecoMetaData successMetaData = builder.forParam(param).forSecurityProduct(importer.isForSecurityProduct()).build();
                 mergeWithWorkspaceData(sechubConfig, successMetaData);
 
                 mergeWithWorkspaceData(param.getProductMessages());
