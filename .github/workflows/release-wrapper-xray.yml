@@ -42,7 +42,7 @@ jobs:
           distribution: temurin
 
       - name: Set up Gradle
-        uses: gradle/gradle-build-action@982da8e78c05368c70dac0351bb82647a9e9a5d2
+        uses: gradle/gradle-build-action@29c0906b64b8fc82467890bfb7a0a7ef34bda89e
         with:
           cache-read-only: false
 
@@ -62,7 +62,7 @@ jobs:
       - name: Create a pull request for SPDX license headers
         id: pr_spdx_headers
         if: steps.apply-headers.outputs.commits != ''
-        uses: peter-evans/create-pull-request@153407881ec5c347639a548ade7d8ad1d6740e38
+        uses: peter-evans/create-pull-request@b1ddad2c994a25fbc81a28b3ec0e368bb2021c50
         with:
           branch: release-spdx-headers
           branch-suffix: short-commit-hash
@@ -99,7 +99,7 @@ jobs:
 
       - name: Archive GIT status
         if: always()
-        uses: actions/upload-artifact@1eb3cb2b3e0f29609092a73eb033bb759a334595
+        uses: actions/upload-artifact@5d5d22a31266ced268874388b861e4b58bb5c2f3
         with:
           name: git-status.txt
           path: build/reports/git-status.txt
@@ -107,7 +107,7 @@ jobs:
 
       - name: Archive Xray Wrapper libs directory
         if: always()
-        uses: actions/upload-artifact@1eb3cb2b3e0f29609092a73eb033bb759a334595
+        uses: actions/upload-artifact@5d5d22a31266ced268874388b861e4b58bb5c2f3
         with:
           name: sechub-wrapper-xray
           path: sechub-wrapper-xray/build/libs

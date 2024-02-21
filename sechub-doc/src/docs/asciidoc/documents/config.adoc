@@ -27,4 +27,4 @@
 :required_java_version: 17
 :required_JDK: JDK {required_java_version}
 
-:required_go_version: 1.20.4
+:required_go_version: 1.21.6

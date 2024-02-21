@@ -63,7 +63,7 @@ public class UserDetailInformationService {
 
         assertion.assertIsValidEmailAddress(emailAddress);
 
-        User user = userRepository.findOrFailUserByEmailAdress(emailAddress);
+        User user = userRepository.findOrFailUserByEmailAddress(emailAddress);
 
         return new UserDetailInformation(user);
     }

@@ -64,7 +64,7 @@ public class AnonymousUserRequestsNewApiTokenRestDocTest implements TestIsNecess
         /* execute */
         /* @formatter:off */
         this.mockMvc.perform(
-        		post(apiEndpoint,"emailAdress@test.com").
+        		post(apiEndpoint,"emailAddress@example.com").
         		contentType(MediaType.APPLICATION_JSON_VALUE)
         		).
         			andExpect(status().isOk()).

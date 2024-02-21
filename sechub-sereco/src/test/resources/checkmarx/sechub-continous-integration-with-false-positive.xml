@@ -5776,13 +5776,13 @@
           <Line>34</Line>
           <Column>106</Column>
           <NodeId>1</NodeId>
-          <Name>emailAdress</Name>
+          <Name>emailAddress</Name>
           <Type></Type>
           <Length>11</Length>
           <Snippet>
             <Line>
               <Number>34</Number>
-              <Code>	public void anonymousRequestToGetNewApiTokenForUserMailAdress(@PathVariable(name="emailAddress") String emailAdress) {</Code>
+              <Code>	public void anonymousRequestToGetNewApiTokenForUserMailAddress(@PathVariable(name="emailAddress") String emailAddress) {</Code>
             </Line>
           </Snippet>
         </PathNode>
@@ -5791,13 +5791,13 @@
           <Line>36</Line>
           <Column>72</Column>
           <NodeId>2</NodeId>
-          <Name>emailAdress</Name>
+          <Name>emailAddress</Name>
           <Type></Type>
           <Length>11</Length>
           <Snippet>
             <Line>
               <Number>36</Number>
-              <Code>		newApiTokenService.anonymousRequestToGetNewApiTokenForUserMailAdress(emailAdress);</Code>
+              <Code>		newApiTokenService.anonymousRequestToGetNewApiTokenForUserMailAddress(emailAddress);</Code>
             </Line>
           </Snippet>
         </PathNode>
@@ -5812,7 +5812,7 @@
           <Snippet>
             <Line>
               <Number>39</Number>
-              <Code>	public void anonymousRequestToGetNewApiTokenForUserMailAdress(String userEmail) {</Code>
+              <Code>	public void anonymousRequestToGetNewApiTokenForUserMailAddress(String userEmail) {</Code>
             </Line>
           </Snippet>
         </PathNode>
@@ -5855,13 +5855,13 @@
           <Line>34</Line>
           <Column>106</Column>
           <NodeId>1</NodeId>
-          <Name>emailAdress</Name>
+          <Name>emailAddress</Name>
           <Type></Type>
           <Length>11</Length>
           <Snippet>
             <Line>
               <Number>34</Number>
-              <Code>	public void anonymousRequestToGetNewApiTokenForUserMailAdress(@PathVariable(name="emailAddress") String emailAdress) {</Code>
+              <Code>	public void anonymousRequestToGetNewApiTokenForUserMailAddress(@PathVariable(name="emailAddress") String emailAddress) {</Code>
             </Line>
           </Snippet>
         </PathNode>
@@ -5870,13 +5870,13 @@
           <Line>36</Line>
           <Column>72</Column>
           <NodeId>2</NodeId>
-          <Name>emailAdress</Name>
+          <Name>emailAddress</Name>
           <Type></Type>
           <Length>11</Length>
           <Snippet>
             <Line>
               <Number>36</Number>
-              <Code>		newApiTokenService.anonymousRequestToGetNewApiTokenForUserMailAdress(emailAdress);</Code>
+              <Code>		newApiTokenService.anonymousRequestToGetNewApiTokenForUserMailAddress(emailAddress);</Code>
             </Line>
           </Snippet>
         </PathNode>
@@ -5891,7 +5891,7 @@
           <Snippet>
             <Line>
               <Number>39</Number>
-              <Code>	public void anonymousRequestToGetNewApiTokenForUserMailAdress(String userEmail) {</Code>
+              <Code>	public void anonymousRequestToGetNewApiTokenForUserMailAddress(String userEmail) {</Code>
             </Line>
           </Snippet>
         </PathNode>
@@ -5906,7 +5906,7 @@
           <Snippet>
             <Line>
               <Number>41</Number>
-              <Code>		Optional&lt;User&gt; found = userRepository.findByEmailAdress(userEmail);</Code>
+              <Code>		Optional&lt;User&gt; found = userRepository.findByemailAddress(userEmail);</Code>
             </Line>
           </Snippet>
         </PathNode>
@@ -5915,13 +5915,13 @@
           <Line>41</Line>
           <Column>58</Column>
           <NodeId>5</NodeId>
-          <Name>findByEmailAdress</Name>
+          <Name>findByemailAddress</Name>
           <Type></Type>
           <Length>1</Length>
           <Snippet>
             <Line>
               <Number>41</Number>
-              <Code>		Optional&lt;User&gt; found = userRepository.findByEmailAdress(userEmail);</Code>
+              <Code>		Optional&lt;User&gt; found = userRepository.findByemailAddress(userEmail);</Code>
             </Line>
           </Snippet>
         </PathNode>
@@ -5936,7 +5936,7 @@
           <Snippet>
             <Line>
               <Number>41</Number>
-              <Code>		Optional&lt;User&gt; found = userRepository.findByEmailAdress(userEmail);</Code>
+              <Code>		Optional&lt;User&gt; found = userRepository.findByemailAddress(userEmail);</Code>
             </Line>
           </Snippet>
         </PathNode>
@@ -6308,7 +6308,7 @@
           <Snippet>
             <Line>
               <Number>82</Number>
-              <Code>					userId, emailAdress);</Code>
+              <Code>					userId, emailAddress);</Code>
             </Line>
           </Snippet>
         </PathNode>
@@ -7869,13 +7869,13 @@
           <Line>44</Line>
           <Column>86</Column>
           <NodeId>1</NodeId>
-          <Name>emailAdress</Name>
+          <Name>emailAddress</Name>
           <Type></Type>
           <Length>11</Length>
           <Snippet>
             <Line>
               <Number>44</Number>
-              <Code>	public List&lt;SimpleMailMessage&gt; getMailsFor(@PathVariable(name="emailAdress") String emailAdress) {</Code>
+              <Code>	public List&lt;SimpleMailMessage&gt; getMailsFor(@PathVariable(name="emailAddress") String emailAddress) {</Code>
             </Line>
           </Snippet>
         </PathNode>
@@ -7884,13 +7884,13 @@
           <Line>46</Line>
           <Column>38</Column>
           <NodeId>2</NodeId>
-          <Name>emailAdress</Name>
+          <Name>emailAddress</Name>
           <Type></Type>
           <Length>11</Length>
           <Snippet>
             <Line>
               <Number>46</Number>
-              <Code>		return mockMailService.getMailsFor(emailAdress);</Code>
+              <Code>		return mockMailService.getMailsFor(emailAddress);</Code>
             </Line>
           </Snippet>
         </PathNode>
@@ -7899,13 +7899,13 @@
           <Line>49</Line>
           <Column>52</Column>
           <NodeId>3</NodeId>
-          <Name>emailAdress</Name>
+          <Name>emailAddress</Name>
           <Type></Type>
           <Length>11</Length>
           <Snippet>
             <Line>
               <Number>49</Number>
-              <Code>	public List&lt;SimpleMailMessage&gt; getMailsFor(String emailAdress) {</Code>
+              <Code>	public List&lt;SimpleMailMessage&gt; getMailsFor(String emailAddress) {</Code>
             </Line>
           </Snippet>
         </PathNode>
@@ -7914,13 +7914,13 @@
           <Line>51</Line>
           <Column>90</Column>
           <NodeId>4</NodeId>
-          <Name>emailAdress</Name>
+          <Name>emailAddress</Name>
           <Type></Type>
           <Length>11</Length>
           <Snippet>
             <Line>
               <Number>51</Number>
-              <Code>			LOG.info("cache eimals is disabled, so returning empty mails list for emailAdress:{}",emailAdress);</Code>
+              <Code>			LOG.info("cache eimals is disabled, so returning empty mails list for emailAddress:{}",emailAddress);</Code>
             </Line>
           </Snippet>
         </PathNode>
@@ -7935,7 +7935,7 @@
           <Snippet>
             <Line>
               <Number>51</Number>
-              <Code>			LOG.info("cache eimals is disabled, so returning empty mails list for emailAdress:{}",emailAdress);</Code>
+              <Code>			LOG.info("cache eimals is disabled, so returning empty mails list for emailAddress:{}",emailAddress);</Code>
             </Line>
           </Snippet>
         </PathNode>
@@ -7948,13 +7948,13 @@
           <Line>44</Line>
           <Column>86</Column>
           <NodeId>1</NodeId>
-          <Name>emailAdress</Name>
+          <Name>emailAddress</Name>
           <Type></Type>
           <Length>11</Length>
           <Snippet>
             <Line>
               <Number>44</Number>
-              <Code>	public List&lt;SimpleMailMessage&gt; getMailsFor(@PathVariable(name="emailAdress") String emailAdress) {</Code>
+              <Code>	public List&lt;SimpleMailMessage&gt; getMailsFor(@PathVariable(name="emailAddress") String emailAddress) {</Code>
             </Line>
           </Snippet>
         </PathNode>
@@ -7963,13 +7963,13 @@
           <Line>46</Line>
           <Column>38</Column>
           <NodeId>2</NodeId>
-          <Name>emailAdress</Name>
+          <Name>emailAddress</Name>
           <Type></Type>
           <Length>11</Length>
           <Snippet>
             <Line>
               <Number>46</Number>
-              <Code>		return mockMailService.getMailsFor(emailAdress);</Code>
+              <Code>		return mockMailService.getMailsFor(emailAddress);</Code>
             </Line>
           </Snippet>
         </PathNode>
@@ -7978,13 +7978,13 @@
           <Line>49</Line>
           <Column>52</Column>
           <NodeId>3</NodeId>
-          <Name>emailAdress</Name>
+          <Name>emailAddress</Name>
           <Type></Type>
           <Length>11</Length>
           <Snippet>
             <Line>
               <Number>49</Number>
-              <Code>	public List&lt;SimpleMailMessage&gt; getMailsFor(String emailAdress) {</Code>
+              <Code>	public List&lt;SimpleMailMessage&gt; getMailsFor(String emailAddress) {</Code>
             </Line>
           </Snippet>
         </PathNode>
@@ -7993,13 +7993,13 @@
           <Line>54</Line>
           <Column>27</Column>
           <NodeId>4</NodeId>
-          <Name>emailAdress</Name>
+          <Name>emailAddress</Name>
           <Type></Type>
           <Length>11</Length>
           <Snippet>
             <Line>
               <Number>54</Number>
-              <Code>		return getMailsInternal(emailAdress);</Code>
+              <Code>		return getMailsInternal(emailAddress);</Code>
             </Line>
           </Snippet>
         </PathNode>
@@ -8008,13 +8008,13 @@
           <Line>57</Line>
           <Column>58</Column>
           <NodeId>5</NodeId>
-          <Name>emailAdress</Name>
+          <Name>emailAddress</Name>
           <Type></Type>
           <Length>11</Length>
           <Snippet>
             <Line>
               <Number>57</Number>
-              <Code>	private List&lt;SimpleMailMessage&gt; getMailsInternal(String emailAdress) {</Code>
+              <Code>	private List&lt;SimpleMailMessage&gt; getMailsInternal(String emailAddress) {</Code>
             </Line>
           </Snippet>
         </PathNode>
@@ -8023,13 +8023,13 @@
           <Line>59</Line>
           <Column>59</Column>
           <NodeId>6</NodeId>
-          <Name>emailAdress</Name>
+          <Name>emailAddress</Name>
           <Type></Type>
           <Length>11</Length>
           <Snippet>
             <Line>
               <Number>59</Number>
-              <Code>		LOG.info("resolved messages:{} for user:{}",list.size(),emailAdress);</Code>
+              <Code>		LOG.info("resolved messages:{} for user:{}",list.size(),emailAddress);</Code>
             </Line>
           </Snippet>
         </PathNode>
@@ -8044,7 +8044,7 @@
           <Snippet>
             <Line>
               <Number>59</Number>
-              <Code>		LOG.info("resolved messages:{} for user:{}",list.size(),emailAdress);</Code>
+              <Code>		LOG.info("resolved messages:{} for user:{}",list.size(),emailAddress);</Code>
             </Line>
           </Snippet>
         </PathNode>
@@ -13929,7 +13929,7 @@
           <Snippet>
             <Line>
               <Number>40</Number>
-              <Code>			path = APIConstants.API_ANONYMOUS+"integrationtest/mock/emails/to/{emailAdress}", </Code>
+              <Code>			path = APIConstants.API_ANONYMOUS+"integrationtest/mock/emails/to/{emailAddress}", </Code>
             </Line>
           </Snippet>
         </PathNode>

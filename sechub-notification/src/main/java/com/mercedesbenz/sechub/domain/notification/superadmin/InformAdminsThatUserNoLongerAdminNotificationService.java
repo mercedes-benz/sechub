@@ -41,7 +41,7 @@ public class InformAdminsThatUserNoLongerAdminNotificationService {
         StringBuilder emailContent = new StringBuilder();
         emailContent.append("User " + userMessage.getUserId() + " left the group of SecHub administrators.\n");
         emailContent.append("She/He will be no longer admin for environment (base url): " + baseUrl + "\n\n");
-        emailContent.append("Email address of colleague was: " + userMessage.getEmailAdress() + "\n");
+        emailContent.append("Email address of colleague was: " + userMessage.getEmailAddress() + "\n");
         emailContent.append("Don't forget to remove that email address from NPM (SecHub administrators) as well.\n");
         String text = emailContent.toString();
         return text;

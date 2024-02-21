@@ -1,0 +1,108 @@
+'Hide empty parts:
+hide empty fields
+hide empty methods
+
+note as N1
+ This is a reduced class model and is just for easier 
+ understanding and overview of the structure of the model. 
+ 
+ It does not claim to be complete
+end note
+
+interface ReportData {
+    SecHubReportMetaData getMetaData() 
+    Set<SecHubMessage> getMessages() 
+    SecHubStatus getStatus()
+    TrafficLight getTrafficLight()
+    SecHubResult getResult()
+    UUID getJobUUID() 
+}
+
+class SecHubResult{
+    List<SecHubFinding> findings
+    List<SecHubFinding> falsePositives
+    int count 
+}
+
+class SecHubFinding {
+    int id
+    String description
+    String name
+    ...
+}
+
+class SecHubReportSummary {
+    
+    Optional<SecHubReportScanTypeSummary> codeScan
+    Optional<SecHubReportScanTypeSummary> infraScan
+    Optional<SecHubReportScanTypeSummary> licenseScan
+    Optional<SecHubReportScanTypeSummary> secretScan
+    Optional<SecHubReportScanTypeSummary> webScan
+}
+class SecHubReportMetaData {
+    Map<String,String> labels
+    SecHubReportSummary summary 
+}
+class SecHubReportModel implements ReportData
+
+class SecHubReportScanTypeSummary{
+    int total
+    int critical
+    int high
+    int medium
+    int low
+    int unclassified
+    int info
+    ...
+    ScanTypeSummaryDetailData getDetails()
+    
+}
+
+class ScanTypeSummaryDetailData{
+
+     List<ScanTypeSummaryFindingOverviewData> getCritical()
+     List<ScanTypeSummaryFindingOverviewData> getHigh()
+     List<ScanTypeSummaryFindingOverviewData> getMedium()
+     List<ScanTypeSummaryFindingOverviewData> getLow()
+     List<ScanTypeSummaryFindingOverviewData> getUnclassified()
+     List<ScanTypeSummaryFindingOverviewData> getInfo()
+}
+
+class ScanTypeSummaryFindingOverviewData{
+     Integer cweId;
+     String name;
+     long count;
+}
+
+enum SecHubStatus {
+    SUCCESS,
+    FAILED
+}
+
+enum TrafficLight{
+    GREEN,
+    YELLOW,
+    RED,
+    OFF,
+}
+
+SecHubReportModel o-- SecHubResult
+SecHubReportModel o-- TrafficLight
+SecHubReportModel o-- SecHubStatus
+SecHubReportModel o-- SecHubReportMetaData
+SecHubReportMetaData o-- SecHubReportSummary
+
+SecHubResult *-- SecHubFinding
+
+SecHubReportSummary "1..5" *- SecHubReportScanTypeSummary
+SecHubReportScanTypeSummary o-- ScanTypeSummaryDetailData
+ScanTypeSummaryDetailData *-- ScanTypeSummaryFindingOverviewData
+
+
+
+note top of SecHubReportScanTypeSummary
+
+This class represents a summary for one dedicated 
+scan type - e.g. "WebScan".
+
+end note

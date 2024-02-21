@@ -8,7 +8,7 @@
 ARG BASE_IMAGE
 
 # Build args
-ARG GO="go1.20.4.linux-amd64.tar.gz"
+ARG GO="go1.21.6.linux-amd64.tar.gz"
 
 # Artifact folder
 ARG PDS_ARTIFACT_FOLDER="/artifacts"
@@ -87,11 +87,6 @@ LABEL maintainer="SecHub FOSS Team"
 ARG PDS_ARTIFACT_FOLDER
 
 ENV PATH "$TOOL_FOLDER/kics:$PATH"
-#ARG GO="go1.20.4.linux-amd64.tar.gz"
-#ARG IAC_VERSION="2.13.1"
-
-# Environment variables in container
-#ENV IAC_VERSION="${IAC_VERSION}"
 
 USER root
 

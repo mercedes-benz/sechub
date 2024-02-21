@@ -539,7 +539,7 @@
                 "items": {
                     "type": "object",
                     "properties": {
-                        "emailAdress": {
+                        "emailAddress": {
                             "type": "string",
                             "description": "The email address"
                         },
@@ -1184,7 +1184,7 @@
                     },
                     "email": {
                         "type": "string",
-                        "description": "The mail adress of the user"
+                        "description": "The mail address of the user"
                     },
                     "ownedProjects": {
                         "type": "array",
@@ -1199,13 +1199,13 @@
                 "title": "UserSignup",
                 "type": "object",
                 "properties": {
+                    "emailAddress": {
+                        "type": "string",
+                        "description": "Email address"
+                    },
                     "apiVersion": {
                         "type": "string",
                         "description": "The api version, currently only 1.0 is supported"
-                    },
-                    "emailAdress": {
-                        "type": "string",
-                        "description": "Email adress"
                     },
                     "userId": {
                         "type": "string",
@@ -2825,7 +2825,7 @@
                     {
                         "name": "userId",
                         "in": "path",
-                        "description": "The userId of the user whose email adress will be changed",
+                        "description": "The userId of the user whose email address will be changed",
                         "required": true,
                         "schema": {
                             "type": "string"
