@@ -48,19 +48,25 @@ public class SerecoReportProductExecutor implements ProductExecutor {
 
     private static final ProductIdentifier PRODUCT_IDENTIFIER = ProductIdentifier.SERECO;
 
-    /* @formatter:off */
-    private static ProductIdentifier[] supportedProductIdentifiers = new ProductIdentifier[] {
-            ProductIdentifier.NESSUS,
-            ProductIdentifier.NETSPARKER,
-            ProductIdentifier.CHECKMARX,
+    private static ProductIdentifier[] supportedProductIdentifiers = createSupportedProductIdentifiers();
 
-            ProductIdentifier.PDS_CODESCAN,
-            ProductIdentifier.PDS_WEBSCAN,
-            ProductIdentifier.PDS_INFRASCAN,
-            ProductIdentifier.PDS_LICENSESCAN,
-    		ProductIdentifier.PDS_SECRETSCAN
-    };
-    /* @formatter:on */
+    private static ProductIdentifier[] createSupportedProductIdentifiers() {
+
+        List<ProductIdentifier> supportedProductIds = new ArrayList<>();
+        for (ProductIdentifier productIdentifier : ProductIdentifier.values()) {
+            switch (productIdentifier) {
+            case SERECO:
+            case UNKNOWN:
+                // we do not support this with SERECO...
+                break;
+            default:
+                // everything else is supported
+                supportedProductIds.add(productIdentifier);
+                break;
+            }
+        }
+        return supportedProductIds.toArray(new ProductIdentifier[supportedProductIds.size()]);
+    }
 
     @Override
     public ProductIdentifier getIdentifier() {

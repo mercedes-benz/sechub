@@ -17,8 +17,7 @@ public enum ScanType {
 
     REPORT("report", "Internal scan type for reporting", true),
 
-    ANALYTICS("analytics", "Internal scan type for analytic phase", true),
-    PREPARE("prepare", "Internal scan type for prepare phase", true),
+    ANALYTICS("analytics", "Internal scan type for analytic phase", true), PREPARE("prepare", "Internal scan type for prepare phase", true),
 
     UNKNOWN("unknown", "Internal scan type for unknown types", true),
 

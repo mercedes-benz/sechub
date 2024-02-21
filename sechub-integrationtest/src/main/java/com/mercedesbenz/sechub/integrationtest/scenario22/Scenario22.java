@@ -3,17 +3,16 @@ package com.mercedesbenz.sechub.integrationtest.scenario22;
 // TODO prepare
 // this scenario needs to be refactored either to 29 or to a scenario before
 
+import static com.mercedesbenz.sechub.integrationtest.internal.IntegrationTestDefaultProfiles.PROFILE_28_PDS_PREPARE_MOCK;
+
 import com.mercedesbenz.sechub.integrationtest.api.TestProject;
 import com.mercedesbenz.sechub.integrationtest.api.TestUser;
 import com.mercedesbenz.sechub.integrationtest.internal.*;
 
-import static com.mercedesbenz.sechub.integrationtest.internal.IntegrationTestDefaultProfiles.PROFILE_28_PDS_PREPARE_MOCK;
-import static com.mercedesbenz.sechub.integrationtest.internal.IntegrationTestDefaultProfiles.PROFILE_12_PDS_CHECKMARX_INTEGRATIONTEST;
-
 /**
  * <h3>Scenario 100</h3>
- * <h4>Short description</h4> A PDS integration test scenario for testing
- * PDS prepare integration.
+ * <h4>Short description</h4> A PDS integration test scenario for testing PDS
+ * prepare integration.
  *
  * <h4>Overview</h4> For an overview over all scenarios, look at
  * {@link com.mercedesbenz.sechub.integrationtest.internal.IntegrationTestDataOverview
@@ -56,11 +55,10 @@ public class Scenario22 extends AbstractGrowingSecHubServerTestScenario implemen
 
     /**
      * Project 1 is created on startup, and has {@link #USER_1} +
-     * {@link IntegrationTestDefaultProfiles#PROFILE_28_PDS_PREPARE_MOCK
-     * profile 28} prepare assigned
+     * {@link IntegrationTestDefaultProfiles#PROFILE_28_PDS_PREPARE_MOCK profile 28}
+     * prepare assigned
      */
     public static final TestProject PROJECT_1 = createTestProject(Scenario22.class, "project1");
-
 
     @Override
     protected void initializeTestData() {

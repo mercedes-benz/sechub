@@ -80,7 +80,7 @@ public class SecHubConfigurationModelSupport {
             return isDataTypeContainedOrReferenced(dataType, model, apiOpt, SecHubWebScanApiConfiguration.class);
 
         case PREPARE:
-            //TODO
+            // TODO
             return true;
 
         default:

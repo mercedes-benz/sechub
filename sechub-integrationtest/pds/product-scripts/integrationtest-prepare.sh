@@ -12,4 +12,7 @@ dumpVariable "PDS_PREPARE_EXECUTED"
 
 echo "PREPARE does not do anything yet"
 
-errorMessage "Preparation was not successful!"
+## Just add a error message for user in report - we check this in integration test
+errorMessage "Some preperation error message for user in report."
+
+echo "{ \"state\" : \"success\"}" > "$PDS_JOB_RESULT_FILE"

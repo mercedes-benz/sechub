@@ -19,8 +19,6 @@ import com.mercedesbenz.sechub.integrationtest.api.TemplateData;
 import com.mercedesbenz.sechub.integrationtest.api.TestProject;
 import com.mercedesbenz.sechub.integrationtest.internal.IntegrationTestTemplateFile;
 
-
-
 public class PDSPrepareIntegrationScenario22IntTest {
 
     @Rule
@@ -29,13 +27,10 @@ public class PDSPrepareIntegrationScenario22IntTest {
     @Rule
     public Timeout timeOut = Timeout.seconds(600);
 
-
     @Test
     public void sechub_calls_prepare_pds_and_executes_script() {
-        testCheckmarxPDSJobWithSourceContentUploadedandPreparePhase(PROJECT_1);
-    }
 
-    private void testCheckmarxPDSJobWithSourceContentUploadedandPreparePhase(TestProject project) {
+        TestProject project = PROJECT_1;
         /* @formatter:off */
         /* prepare */
         UUID jobUUID = as(USER_1).
@@ -55,31 +50,21 @@ public class PDSPrepareIntegrationScenario22IntTest {
 
         /* test */
         waitForJobDone(project, jobUUID, 30, true);
-    
-        // check if PDS prepare was executed
+
+        /* check if PDS prepare was executed */
         UUID pdsJobUUID = waitForFirstPDSJobOfSecHubJobAndReturnPDSJobUUID(jobUUID);
         Map<String, String> variables = fetchPDSVariableTestOutputMap(pdsJobUUID);
         assertEquals("true", variables.get("PDS_PREPARE_EXECUTED"));
-        
-        
-        String report = as(USER_1).getJobReport(project, jobUUID);
-        
-        assertReport(report).
-	        enablePDSAutoDumpOnErrorsForSecHubJob(jobUUID).
-	        hasTrafficLight(TrafficLight.OFF). // traffic light off, because the only report which was executed, but there was no result inside!
-	        hasMessages(1).
-	        hasMessage(SecHubMessageType.ERROR,"Preparation was not successful!").
-	        hasFindings(0); // no finding, because not executed
 
-       /* assertReport(report).
+
+        String report = as(USER_1).getJobReport(project, jobUUID);
+
+       assertReport(report).
                 enablePDSAutoDumpOnErrorsForSecHubJob(jobUUID).
                 hasTrafficLight(TrafficLight.OFF). // traffic light off, because the only report which was executed, but there was no result inside!
-                hasMessages(2).
-                hasMessage(SecHubMessageType.WARNING,"No results from a security product available for this job!").
-                hasMessage(SecHubMessageType.ERROR,"Preparation was not successful!").
-                hasFindings(0); // no finding, because not executed
-
-        */
+                hasMessages(1).
+                hasMessage(SecHubMessageType.ERROR,"Some preperation error message for user in report.").
+                hasFindings(0); // no findings
 
         /* @formatter:on */
     }

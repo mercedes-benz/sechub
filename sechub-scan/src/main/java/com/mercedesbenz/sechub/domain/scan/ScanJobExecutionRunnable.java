@@ -1,11 +1,11 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.domain.scan;
 
-import com.mercedesbenz.sechub.domain.scan.product.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.MDC;
 
+import com.mercedesbenz.sechub.domain.scan.product.*;
 import com.mercedesbenz.sechub.sharedkernel.LogConstants;
 
 /**
