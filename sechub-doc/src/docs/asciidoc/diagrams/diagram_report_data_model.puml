@@ -1,3 +1,4 @@
+' SPDX-License-Identifier: MIT
 'Hide empty parts:
 hide empty fields
 hide empty methods
