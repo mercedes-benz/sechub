@@ -9,6 +9,8 @@ public enum SecHubConfigurationModelValidationError {
 
     API_VERSION_NOT_SUPPORTED("Api version is not supported."),
 
+    SECHUB_CONFIGURATION_TOO_LARGE("The provided SecHub scan configuration JSON is too large."),
+
     DATA_CONFIG_OBJECT_NAME_IS_NULL("One data configuration object has `null` as defined named which is not acceptable."),
 
     DATA_CONFIG_OBJECT_NAME_LENGTH_TOO_SHORT("Data configuration object name length is too small."),

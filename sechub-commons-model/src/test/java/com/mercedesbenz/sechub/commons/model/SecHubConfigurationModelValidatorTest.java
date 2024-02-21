@@ -1589,6 +1589,51 @@ class SecHubConfigurationModelValidatorTest {
         assertHasNoErrors(result);
     }
 
+    @Test
+    void when_sechub_config_too_large_validation_fails_with_SECHUB_CONFIGURATION_TOO_LARGE() {
+        /* prepare */
+        SecHubConfigurationModel model = createSecHubConfigModelWithExactly8193Characters();
+
+        /* execute */
+        SecHubConfigurationModelValidationResult result = validatorToTest.validate(model);
+
+        /* test */
+        assertHasError(result, SECHUB_CONFIGURATION_TOO_LARGE);
+    }
+
+    @Test
+    void when_sechub_config_has_exactly_maximum_size_allowed_error_SECHUB_CONFIGURATION_TOO_LARGE_does_not_occur() {
+        /* prepare */
+        SecHubConfigurationModel model = createSecHubConfigModelWithExactly8193Characters();
+        // remove 1 characters so we are exactly at the limit of
+        model.setApiVersion(model.getApiVersion().substring(1));
+
+        /* execute */
+        SecHubConfigurationModelValidationResult result = validatorToTest.validate(model);
+
+        /* test */
+        assertHasNotError(result, SECHUB_CONFIGURATION_TOO_LARGE);
+    }
+
+    private SecHubConfigurationModel createSecHubConfigModelWithExactly8193Characters() {
+        StringBuilder sb = new StringBuilder();
+
+        // The string we append is always 64 characters long, because 128*64 = 8192, so
+        // we take 127 because of the overhead of the JSON model:
+        // {"apiVersion":""} = 17 characters, so we need to add 48 characters after the
+        // for loop to reach 8193 ad be one above our max size
+        for (int i = 0; i < 127; i++) {
+            sb.append("abcdefghijklmnopqrstuvwxyz012345abcdefghijklmnopqrstuvwxyz012345");
+        }
+        // add the remaining 48 characters to reach 8193
+        sb.append("abcdefghijklmnopqrstuvwxyz012345abcdefghijklmnop");
+
+        SecHubConfigurationModel model = new SecHubConfigurationModel();
+        model.setApiVersion(sb.toString());
+
+        return model;
+    }
+
     private SecHubScanConfiguration createSecHubConfigurationWithWebScanPart() {
         SecHubWebScanConfiguration webScanConfig = new SecHubWebScanConfiguration();
         webScanConfig.url = URI.create("https://www.gamechanger.example.org/");

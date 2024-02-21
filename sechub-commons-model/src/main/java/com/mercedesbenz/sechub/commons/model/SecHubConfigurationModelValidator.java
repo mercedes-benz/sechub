@@ -40,6 +40,8 @@ public class SecHubConfigurationModelValidator {
     private static final int MAX_LIST_SIZE_EXCLUDES = 500;
     private static final int MAX_LENGTH_PATH_SIZE = 2048;
 
+    private static final int MAX_SECHUB_CONFIGURATION_SIZE = 8192;
+
     SecHubConfigurationModelSupport modelSupport = new SecHubConfigurationModelSupport();
 
     private List<String> supportedVersions;
@@ -131,6 +133,13 @@ public class SecHubConfigurationModelValidator {
             context.result.addError(MODEL_NULL);
             return;
         }
+        int modelJsonLength = JSONConverter.get().toJSON(context.model, false).length();
+        if (modelJsonLength > MAX_SECHUB_CONFIGURATION_SIZE) {
+            context.result.addError(SECHUB_CONFIGURATION_TOO_LARGE, "Sechub scan configuration was " + modelJsonLength
+                    + " characters. Maximum sechub scan configuration size is " + MAX_SECHUB_CONFIGURATION_SIZE + " characters.");
+            return;
+        }
+
         String apiVersion = context.model.getApiVersion();
         if (apiVersion == null) {
             context.result.addError(API_VERSION_NULL);
