@@ -1,0 +1,11 @@
+{
+    "apiVersion" : "1.0",
+    "serverId" : "gha_integrationtest_server",
+    "products" : [ {
+      "id" : "codescan_demo",
+      "path" : "./pds-codescan-demo.sh",
+      "scanType" : "codeScan",
+      "description" : "This is only a fake code scan - used by integration tests. The code scan will just return data from uploaded zip file"
+      }
+    ]
+  }

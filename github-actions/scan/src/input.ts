@@ -2,14 +2,66 @@
 
 import * as core from '@actions/core';
 
-export const configPath = core.getInput('config-path');
-export const url = core.getInput('url');
-export const apiToken = core.getInput('api-token');
-export const user = core.getInput('user');
-export const projectName = core.getInput('project-name');
-export const sechubCLIVersion = core.getInput('version');
-export const debug = core.getInput('debug');
-export const includeFolders = core.getInput('include-folders');
-export const excludeFolders = core.getInput('exclude-folders');
-export const reportFormats = core.getInput('report-formats');
-export const failJobOnFindings = core.getInput('fail-job-with-findings');
+export const PARAM_CONFIG_PATH = 'config-path';
+export const PARAM_SECHUB_SERVER_URL = 'url';
+export const PARAM_API_TOKEN= 'api-token';
+export const PARAM_SECHUB_USER = 'user';
+export const PARAM_PROJECT_NAME = 'project-name';
+export const PARAM_CLIENT_VERSION='version';
+export const PARAM_DEBUG='debug';
+export const PARAM_INCLUDED_FOLDERS='include-folders';
+export const PARAM_EXCLUDED_FOLDERS='exclude-folders';
+export const PARAM_REPORT_FORMATS='report-formats';
+export const PARAM_FAIL_JOB_ON_FINDING='fail-job-with-findings';
+export const PARAM_TRUST_ALL='trust-all';
+
+export interface GitHubInputData{
+    configPath: string;
+    url : string;
+    apiToken: string;
+    user: string;
+    projectName: string;
+    sechubCLIVersion: string;
+    debug: string;
+    includeFolders: string;
+    excludeFolders: string;
+    reportFormats: string;
+    failJobOnFindings: string;
+    trustAll:string;
+
+}
+
+export const INPUT_DATA_DEFAULTS: GitHubInputData = {
+    configPath: '',
+    url : '',
+    apiToken: '',
+    user: '',
+    projectName: '',
+    sechubCLIVersion: '',
+    debug: '',
+    includeFolders: '',
+    excludeFolders: '',
+    reportFormats: '',
+    failJobOnFindings: '',
+    trustAll:''
+};
+
+export function resolveGitHubInputData() : GitHubInputData {
+    return {
+        configPath : core.getInput(PARAM_CONFIG_PATH),
+        url : core.getInput(PARAM_SECHUB_SERVER_URL),
+        apiToken : core.getInput(PARAM_API_TOKEN),
+        user : core.getInput(PARAM_SECHUB_USER),
+        projectName : core.getInput(PARAM_PROJECT_NAME),
+        sechubCLIVersion : core.getInput(PARAM_CLIENT_VERSION),
+        debug : core.getInput(PARAM_DEBUG),
+        includeFolders : core.getInput(PARAM_INCLUDED_FOLDERS),
+        excludeFolders : core.getInput(PARAM_EXCLUDED_FOLDERS),
+        reportFormats : core.getInput(PARAM_REPORT_FORMATS),
+        failJobOnFindings : core.getInput(PARAM_FAIL_JOB_ON_FINDING),
+        trustAll : core.getInput(PARAM_TRUST_ALL),
+
+    };
+}
+
+

@@ -2,30 +2,34 @@
 
 import * as core from '@actions/core';
 import { downloadReports, reportOutputs } from '../src/post-scan';
-import { getReport } from '../../shared/src/sechub-cli';
+import { getReport } from '../src/sechub-cli';
+import { LAUNCHER_CONTEXT_DEFAULTS } from '../src/launcher';
 
 jest.mock('@actions/core');
 const mockedCore = core as jest.Mocked<typeof core>;
 
-jest.mock('../../shared/src/sechub-cli');
+jest.mock('../src/sechub-cli');
 const mockedGetReport = getReport as jest.MockedFunction<typeof getReport>;
+
 describe('downloadReports', function () {
     afterEach(() => {
         jest.clearAllMocks();
     });
     it('writes to log if formats is empty', function () {
-        downloadReports([]);
+        downloadReports(LAUNCHER_CONTEXT_DEFAULTS, []);
 
         expect(mockedCore.info).toHaveBeenCalledTimes(1);
         expect(mockedGetReport).toHaveBeenCalledTimes(0);
     });
 
     it('calls getReport with correct parameters for non-empty formats', function () {
+        // eslint-disable-next-line @typescript-eslint/no-var-requires
         const fsMock = require('fs');
+        
         fsMock.readFileSync = jest.fn(() => '{"test": "test"}'); // Mock an empty JSON report
         const formats = ['json', 'html'];
         const sampleJson = {'test': 'test'};
-        const actualJson = downloadReports(formats);
+        const actualJson = downloadReports(LAUNCHER_CONTEXT_DEFAULTS, formats);
 
         expect(mockedCore.info).toHaveBeenCalledTimes(2); // Assumes 3 formats, adjust based on the number of formats in the array
         expect(mockedGetReport).toHaveBeenCalledTimes(2);
