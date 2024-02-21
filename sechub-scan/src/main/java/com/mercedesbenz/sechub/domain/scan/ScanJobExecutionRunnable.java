@@ -5,7 +5,13 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.MDC;
 
-import com.mercedesbenz.sechub.domain.scan.product.*;
+import com.mercedesbenz.sechub.domain.scan.product.AnalyticsProductExecutionService;
+import com.mercedesbenz.sechub.domain.scan.product.CodeScanProductExecutionService;
+import com.mercedesbenz.sechub.domain.scan.product.InfrastructureScanProductExecutionService;
+import com.mercedesbenz.sechub.domain.scan.product.LicenseScanProductExecutionService;
+import com.mercedesbenz.sechub.domain.scan.product.PrepareProductExecutionService;
+import com.mercedesbenz.sechub.domain.scan.product.SecretScanProductExecutionService;
+import com.mercedesbenz.sechub.domain.scan.product.WebScanProductExecutionService;
 import com.mercedesbenz.sechub.sharedkernel.LogConstants;
 
 /**

@@ -318,7 +318,7 @@ public class TestAPI {
                 if (jobMayNeverFail && jobStatus.hasResultFailed()) {
                     String prettyJSON = JSONConverter.get().toJSON(jobStatus, true);
                     fail("The job execution has failed - skip further attempts to check that job will be done.\n-Status data:\n" + prettyJSON
-                            + "\n\n- Please refer to server and/or PDS logs for reason.");
+                            + "\n\n- Please refer to server and/or PDS logs for reason. You can search for the unit test method name inside these logs.");
                 }
                 return jobStatus.hasResultOK();
             }

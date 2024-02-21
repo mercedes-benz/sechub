@@ -10,7 +10,7 @@ import com.mercedesbenz.sechub.integrationtest.api.TestUser;
 import com.mercedesbenz.sechub.integrationtest.internal.*;
 
 /**
- * <h3>Scenario 100</h3>
+ * <h3>Scenario 22</h3>
  * <h4>Short description</h4> A PDS integration test scenario for testing PDS
  * prepare integration.
  *
@@ -19,13 +19,6 @@ import com.mercedesbenz.sechub.integrationtest.internal.*;
  * Overview}
  *
  * <h4>Details</h4> This is a {@link GrowingScenario}.<br>
- * The tests inside the scenario use following default mappings:
- *
- * <ul>
- * <li>{@value IntegrationTestExampleConstants#MAPPING_ID_1_REPLACE_ANY_PROJECT1}</li>
- * <li>{@value IntegrationTestExampleConstants#MAPPING_ID_2_NOT_EXISTING_IN_SECHUB}
- * (referenced, but not existing)</li>
- * </ul>
  *
  * In this scenario following is automatically initialized at start: <br>
  * <br>

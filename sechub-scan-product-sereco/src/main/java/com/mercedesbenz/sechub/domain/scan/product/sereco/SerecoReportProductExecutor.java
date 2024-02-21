@@ -56,8 +56,10 @@ public class SerecoReportProductExecutor implements ProductExecutor {
         for (ProductIdentifier productIdentifier : ProductIdentifier.values()) {
             switch (productIdentifier) {
             case SERECO:
+            case PDS_ANALYTICS:
+            case PDS_PREPARE:
             case UNKNOWN:
-                // we do not support this with SERECO...
+                // we do not support these with SERECO...
                 break;
             default:
                 // everything else is supported

@@ -68,6 +68,9 @@ public class SecHubConfigurationModelSupport {
                             || isDataTypeContainedOrReferenced(dataType, model, model.getLicenseScan(), SecHubLicenseScanConfiguration.class);
 
             return analyticsPossible;
+        case PREPARE:
+            // For preparation phase no source or binary data is required.
+            return false;
         case UNKNOWN:
             return false;
         case WEB_SCAN:
@@ -78,10 +81,6 @@ public class SecHubConfigurationModelSupport {
             SecHubWebScanConfiguration webScan = webScanOpt.get();
             Optional<SecHubWebScanApiConfiguration> apiOpt = webScan.getApi();
             return isDataTypeContainedOrReferenced(dataType, model, apiOpt, SecHubWebScanApiConfiguration.class);
-
-        case PREPARE:
-            // TODO
-            return true;
 
         default:
             LOG.error("Unsupported scan type: {}", scanType);

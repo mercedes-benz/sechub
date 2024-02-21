@@ -59,11 +59,12 @@ public class PDSPrepareIntegrationScenario22IntTest {
 
         String report = as(USER_1).getJobReport(project, jobUUID);
 
-       assertReport(report).
+        assertReport(report).
                 enablePDSAutoDumpOnErrorsForSecHubJob(jobUUID).
                 hasTrafficLight(TrafficLight.OFF). // traffic light off, because the only report which was executed, but there was no result inside!
-                hasMessages(1).
+                hasMessage(SecHubMessageType.WARNING,"No results from a security product available for this job!").
                 hasMessage(SecHubMessageType.ERROR,"Some preperation error message for user in report.").
+                hasMessages(2).
                 hasFindings(0); // no findings
 
         /* @formatter:on */
