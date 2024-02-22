@@ -17,6 +17,7 @@ import com.mercedesbenz.sechub.commons.model.SecHubMessageType;
 import com.mercedesbenz.sechub.commons.model.TrafficLight;
 import com.mercedesbenz.sechub.integrationtest.api.IntegrationTestSetup;
 import com.mercedesbenz.sechub.integrationtest.api.TemplateData;
+import com.mercedesbenz.sechub.integrationtest.api.TestAPI;
 import com.mercedesbenz.sechub.integrationtest.api.TestProject;
 import com.mercedesbenz.sechub.integrationtest.internal.IntegrationTestTemplateFile;
 
@@ -29,9 +30,9 @@ public class PDSPrepareIntegrationScenario22IntTest {
     public Timeout timeOut = Timeout.seconds(600);
 
     /**
-     * This is a multi test. Why? Because it is faster than executing different
-     * tests. When we execute the 4 tests seperate, the tests run 22 seconds on
-     * machine X. On same machine the multi test does the same in 11 seconds!
+     * This is a "multi" test. Why? Because it is faster than executing different
+     * tests. When we execute the 4 tests separately, the tests run 22 seconds on
+     * machine X. On same machine the "multi" test does the same in 11 seconds!
      *
      * If you have a failing test and you want to debug faster, you can remove the
      * comments from the test methods and start the test directly. But after fixing
@@ -48,16 +49,19 @@ public class PDSPrepareIntegrationScenario22IntTest {
 
     // @Test
     public void project1_sechub_calls_prepare_pds_executes_script_and_user_message_is_returned() {
+        /* @formatter:off */
 
+        /* prepare */
         TestProject project = PROJECT_1;
+        TestAPI.logInfoOnServer(">>>>>INFO: Test with PROJECT 1");
         UUID jobUUID = createCodeScanJob(project);
 
         /* execute */
         as(USER_1).
-        /*
-         * no simulated source code here necessary - we test here only preparation
-         * phase, no additional products
-         */
+                /*
+                 * no simulated source code here necessary - we test here only preparation
+                 * phase, no additional products
+                 */
                 approveJob(project, jobUUID);
 
         /* test */
@@ -71,22 +75,24 @@ public class PDSPrepareIntegrationScenario22IntTest {
 
         String report = as(USER_1).getJobReport(project, jobUUID);
 
-        assertReport(report).enablePDSAutoDumpOnErrorsForSecHubJob(jobUUID).hasTrafficLight(TrafficLight.OFF). // traffic light off, because the only report
-                                                                                                               // which was executed, but there was no result
-                                                                                                               // inside!
-                hasMessage(SecHubMessageType.INFO, "Some preperation info message for user in report (always).")
-                .hasMessage(SecHubMessageType.WARNING, "No results from a security product available for this job!").hasMessages(2).hasFindings(0); // no
-                                                                                                                                                    // findings
+        assertReport(report).
+            enablePDSAutoDumpOnErrorsForSecHubJob(jobUUID).
+            hasTrafficLight(TrafficLight.OFF). // traffic light off, because the only report which was executed, but there was no result inside!
+            hasMessage(SecHubMessageType.INFO, "Some preperation info message for user in report (always).").
+            hasMessage(SecHubMessageType.WARNING, "No results from a security product available for this job!").
+            hasMessages(2).
+            hasFindings(0);
 
         /* @formatter:on */
     }
 
     // @Test
     public void project2_sechub_calls_prepare_and_checkmarx() {
-
-        TestProject project = PROJECT_2;
         /* @formatter:off */
+
         /* prepare */
+        TestProject project = PROJECT_2;
+        TestAPI.logInfoOnServer(">>>>>INFO: Test with PROJECT 2");
         UUID jobUUID = createCodeScanJob(project);
 
         approveJobAndSimulateSourceCodeAvailable(project, jobUUID);
@@ -104,19 +110,22 @@ public class PDSPrepareIntegrationScenario22IntTest {
         String report = as(USER_1).getJobReport(project, jobUUID);
 
         assertReport(report).
-                enablePDSAutoDumpOnErrorsForSecHubJob(jobUUID).
-                hasMessage(SecHubMessageType.INFO,"Some preperation info message for user in report (always).").
-                hasMessages(1).
-                hasTrafficLight(TrafficLight.YELLOW). // traffic light not off, because project2 has checkmarx configured as well and prepare did not fail (we used the error message only as additional info for testing)
-                hasFindings(109); // some findings
+            enablePDSAutoDumpOnErrorsForSecHubJob(jobUUID).
+            hasMessage(SecHubMessageType.INFO,"Some preperation info message for user in report (always).").
+            hasMessages(1).
+            hasTrafficLight(TrafficLight.YELLOW). // traffic light yellow, because project2 has checkmarx configured as well and prepare did not fail (we used the error message only as additional info for testing)
+            hasFindings(109); // some findings
 
         /* @formatter:on */
     }
 
     // @Test
     public void project3_sechub_calls_prepare_which_fails_will_not_start_checkmarx() {
+        /* @formatter:off */
 
+        /* prepare */
         TestProject project = PROJECT_3;
+        TestAPI.logInfoOnServer(">>>>>INFO: Test with PROJECT 3");
         UUID jobUUID = createCodeScanJob(project);
 
         /* execute */
@@ -133,20 +142,25 @@ public class PDSPrepareIntegrationScenario22IntTest {
 
         String report = as(USER_1).getJobReport(project, jobUUID);
 
-        assertReport(report).enablePDSAutoDumpOnErrorsForSecHubJob(jobUUID).hasTrafficLight(TrafficLight.OFF). // traffic light off, because preparation failed
-                                                                                                               // and no other product (in this case checkmarx)
-                                                                                                               // may be executed
-                hasMessage(SecHubMessageType.INFO, "Some preperation info message for user in report (always).")
-                .hasMessage(SecHubMessageType.WARNING, "No results from a security product available for this job!")
-                .hasMessage(SecHubMessageType.ERROR, "Some preperation error message for user in report.").hasMessages(3).hasFindings(0); // no findings
+        assertReport(report).
+            enablePDSAutoDumpOnErrorsForSecHubJob(jobUUID).
+            hasTrafficLight(TrafficLight.OFF). // traffic light off, because preparation failed and no other product (in this case checkmarx) may be executed
+            hasMessage(SecHubMessageType.INFO, "Some preperation info message for user in report (always).").
+            hasMessage(SecHubMessageType.WARNING, "No results from a security product available for this job!").
+            hasMessage(SecHubMessageType.ERROR, "Some preperation error message for user in report.").
+            hasMessages(3).
+            hasFindings(0);
 
         /* @formatter:on */
     }
 
     // @Test
     public void project4_sechub_calls_prepare_which_fails_because_internal_failure_will_not_start_checkmarx() {
+        /* @formatter:off */
 
+        /* prepare */
         TestProject project = PROJECT_4;
+        TestAPI.logInfoOnServer(">>>>>INFO: Test with PROJECT 4");
         UUID jobUUID = createCodeScanJob(project);
 
         approveJobAndSimulateSourceCodeAvailable(project, jobUUID);
@@ -162,14 +176,12 @@ public class PDSPrepareIntegrationScenario22IntTest {
 
         String report = as(USER_1).getJobReport(project, jobUUID);
 
-        assertReport(report).enablePDSAutoDumpOnErrorsForSecHubJob(jobUUID).hasTrafficLight(TrafficLight.OFF). // traffic light off, because preparation failed
-                                                                                                               // and no other product (in this case checkmarx)
-                                                                                                               // may be executed!
-                hasMessage(SecHubMessageType.WARNING, "No results from a security product available for this job!").hasMessages(1). // we have an error message,
-                                                                                                                                    // but because of script
-                                                                                                                                    // failure the message is
-                                                                                                                                    // not returned to user
-                hasFindings(0); // no findings
+        assertReport(report).
+            enablePDSAutoDumpOnErrorsForSecHubJob(jobUUID).
+            hasTrafficLight(TrafficLight.OFF). // traffic light off, because preparation failed and no other product (in this case checkmarx) may be executed!
+            hasMessage(SecHubMessageType.WARNING, "No results from a security product available for this job!").
+            hasMessages(1).
+            hasFindings(0);
 
         /* @formatter:on */
     }
