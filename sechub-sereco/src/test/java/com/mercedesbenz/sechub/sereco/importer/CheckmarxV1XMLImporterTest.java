@@ -40,10 +40,10 @@ public class CheckmarxV1XMLImporterTest {
         ImportParameter param = ImportParameter.builder().importData(xml).importId("id1").productId(productIdentifer).build();
 
         /* execute */
-        ProductImportAbility ableToImport = importerToTest.isAbleToImportForProduct(param);
+        boolean ableToImport = importerToTest.isAbleToImportForProduct(param);
 
         /* test */
-        assertEquals(ProductImportAbility.ABLE_TO_IMPORT, ableToImport, "Was NOT able to import valid checkmarx xml for product identifer:" + productIdentifer);
+        assertEquals(true, ableToImport, "Was NOT able to import valid checkmarx xml for product identifer:" + productIdentifer);
     }
 
     @Test
@@ -54,10 +54,10 @@ public class CheckmarxV1XMLImporterTest {
         ImportParameter param = ImportParameter.builder().importData(xml).importId("id1").productId("Checkmarx").build();
 
         /* execute */
-        ProductImportAbility ableToImport = importerToTest.isAbleToImportForProduct(param);
+        boolean ableToImport = importerToTest.isAbleToImportForProduct(param);
 
         /* test */
-        assertEquals(ProductImportAbility.NOT_ABLE_TO_IMPORT, ableToImport, "Was able to import xml!");
+        assertEquals(false, ableToImport, "Was able to import xml!");
     }
 
     @Test
@@ -68,10 +68,10 @@ public class CheckmarxV1XMLImporterTest {
         ImportParameter param = ImportParameter.builder().importData(xml).importId("id1").productId("Checkmarx").build();
 
         /* execute */
-        ProductImportAbility ableToImport = importerToTest.isAbleToImportForProduct(param);
+        boolean ableToImport = importerToTest.isAbleToImportForProduct(param);
 
         /* test */
-        assertEquals(ProductImportAbility.NOT_ABLE_TO_IMPORT, ableToImport, "Was able to import xml!");
+        assertEquals(false, ableToImport, "Was able to import xml!");
     }
 
     @Test

@@ -34,7 +34,7 @@ class PrepareMessagesImporterTest {
         when(param.getImportData()).thenReturn(importData);
 
         /* execute + test */
-        assertEquals(ProductImportAbility.PRODUCT_FAILED_OR_CANCELED, importerToTest.isAbleToImportForProduct(param));
+        assertFalse(importerToTest.isAbleToImportForProduct(param));
     }
 
     @ParameterizedTest
@@ -47,7 +47,7 @@ class PrepareMessagesImporterTest {
         when(param.getImportData()).thenReturn(importData);
 
         /* execute + test */
-        assertEquals(ProductImportAbility.NOT_ABLE_TO_IMPORT, importerToTest.isAbleToImportForProduct(param));
+        assertFalse(importerToTest.isAbleToImportForProduct(param));
     }
 
     @Test
@@ -59,7 +59,7 @@ class PrepareMessagesImporterTest {
         when(param.getImportData()).thenReturn(PrepareConstants.SECHUB_PREPARE_RESULT);
 
         /* execute + test */
-        assertEquals(ProductImportAbility.ABLE_TO_IMPORT, importerToTest.isAbleToImportForProduct(param));
+        assertTrue(importerToTest.isAbleToImportForProduct(param));
     }
 
 }

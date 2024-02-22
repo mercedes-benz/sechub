@@ -180,7 +180,8 @@ public class PDSPrepareIntegrationScenario22IntTest {
             enablePDSAutoDumpOnErrorsForSecHubJob(jobUUID).
             hasTrafficLight(TrafficLight.OFF). // traffic light off, because preparation failed and no other product (in this case checkmarx) may be executed!
             hasMessage(SecHubMessageType.WARNING, "No results from a security product available for this job!").
-            hasMessages(1).
+            hasMessage(SecHubMessageType.ERROR, "Job execution failed because of an internal problem!").
+            hasMessages(2).
             hasFindings(0);
 
         /* @formatter:on */

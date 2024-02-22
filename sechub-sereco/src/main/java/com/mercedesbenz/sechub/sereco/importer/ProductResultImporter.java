@@ -34,9 +34,9 @@ public interface ProductResultImporter {
      * able to import the product result!
      *
      * @param param
-     * @return import ability.
+     * @return <code>true</code> when being able to import
      */
-    public ProductImportAbility isAbleToImportForProduct(ImportParameter param);
+    public boolean isAbleToImportForProduct(ImportParameter param);
 
     /**
      * @return name of this import - normally only the simple class name

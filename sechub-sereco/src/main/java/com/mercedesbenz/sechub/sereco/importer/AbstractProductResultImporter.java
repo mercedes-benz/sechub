@@ -29,7 +29,7 @@ public abstract class AbstractProductResultImporter implements ProductResultImpo
      * override this method.<br>
      * <h3>Originally the interface describes:</h3> {@inheritDoc}
      */
-    public ProductImportAbility isAbleToImportForProduct(ImportParameter param) {
+    public boolean isAbleToImportForProduct(ImportParameter param) {
         return importSupport.isAbleToImport(param);
     }
 
