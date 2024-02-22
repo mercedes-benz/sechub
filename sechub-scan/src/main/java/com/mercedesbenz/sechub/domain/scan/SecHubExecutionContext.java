@@ -46,6 +46,8 @@ public class SecHubExecutionContext {
 
     private AnalyticData analyticData;
 
+    private boolean prepareFAiled;
+
     public SecHubExecutionContext(UUID sechubJobUUID, SecHubConfiguration configuration, String executedBy, UUID executionUUID) {
         this(sechubJobUUID, configuration, executedBy, executionUUID, null);
     }
@@ -169,6 +171,14 @@ public class SecHubExecutionContext {
 
     public AnalyticData getAnalyticData() {
         return analyticData;
+    }
+
+    public void markPrepareFailed() {
+        this.prepareFAiled = true;
+    }
+
+    public boolean hasPrepareFailed() {
+        return prepareFAiled;
     }
 
 }

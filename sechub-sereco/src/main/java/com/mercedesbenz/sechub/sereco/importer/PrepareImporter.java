@@ -8,6 +8,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
+import com.mercedesbenz.sechub.commons.core.prepare.PrepareConstants;
 import com.mercedesbenz.sechub.commons.model.ScanType;
 import com.mercedesbenz.sechub.sereco.metadata.SerecoMetaData;
 
@@ -23,11 +24,9 @@ import com.mercedesbenz.sechub.sereco.metadata.SerecoMetaData;
  *
  */
 @Component
-public class PrepareMessagesImporter extends AbstractProductResultImporter {
+public class PrepareImporter extends AbstractProductResultImporter {
 
-    public static final String SECHUB_PREPARE_DONE = "SECHUB_PREPARE_DONE";
-
-    private static final Logger LOG = LoggerFactory.getLogger(PrepareMessagesImporter.class);
+    private static final Logger LOG = LoggerFactory.getLogger(PrepareImporter.class);
 
     @Override
     public SerecoMetaData importResult(String prepareResultString, ScanType scanType) throws IOException {
@@ -42,7 +41,7 @@ public class PrepareMessagesImporter extends AbstractProductResultImporter {
 
     @Override
     protected ImportSupport createImportSupport() {
-        return ImportSupport.builder().contentIdentifiedBy(PrepareMessagesImporter.SECHUB_PREPARE_DONE).build();
+        return ImportSupport.builder().contentIdentifiedBy(PrepareConstants.SECHUB_PREPARE_RESULT).build();
     }
 
     @Override

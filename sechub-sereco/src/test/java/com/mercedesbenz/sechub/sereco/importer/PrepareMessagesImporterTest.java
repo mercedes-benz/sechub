@@ -9,6 +9,7 @@ import org.junit.jupiter.params.provider.EmptySource;
 import org.junit.jupiter.params.provider.NullSource;
 import org.junit.jupiter.params.provider.ValueSource;
 
+import com.mercedesbenz.sechub.commons.core.prepare.PrepareConstants;
 import com.mercedesbenz.sechub.sereco.ImportParameter;
 
 class PrepareMessagesImporterTest {
@@ -16,7 +17,7 @@ class PrepareMessagesImporterTest {
     @Test
     void isForSecurityProduct_interface_default_is_true() {
         /* prepare */
-        PrepareMessagesImporter importerToTest = spy(PrepareMessagesImporter.class);
+        PrepareImporter importerToTest = spy(PrepareImporter.class);
 
         /* execute + test */
         assertFalse(importerToTest.isForSecurityProduct()); // default implementation overriden
@@ -27,7 +28,7 @@ class PrepareMessagesImporterTest {
     @EmptySource
     void empty_or_null__import_data_cannot_be_imported(String importData) {
         /* prepare */
-        PrepareMessagesImporter importerToTest = new PrepareMessagesImporter();
+        PrepareImporter importerToTest = new PrepareImporter();
 
         ImportParameter param = mock(ImportParameter.class);
         when(param.getImportData()).thenReturn(importData);
@@ -40,7 +41,7 @@ class PrepareMessagesImporterTest {
     @ValueSource(strings = { "prepared", "{}" })
     void existing_but_not_accepted__import_data_cannot_be_imported(String importData) {
         /* prepare */
-        PrepareMessagesImporter importerToTest = new PrepareMessagesImporter();
+        PrepareImporter importerToTest = new PrepareImporter();
 
         ImportParameter param = mock(ImportParameter.class);
         when(param.getImportData()).thenReturn(importData);
@@ -52,10 +53,10 @@ class PrepareMessagesImporterTest {
     @Test
     void containing_key_word_import_data_can_be_imported() {
         /* prepare */
-        PrepareMessagesImporter importerToTest = new PrepareMessagesImporter();
+        PrepareImporter importerToTest = new PrepareImporter();
 
         ImportParameter param = mock(ImportParameter.class);
-        when(param.getImportData()).thenReturn("SECHUB_PREPARE_DONE");
+        when(param.getImportData()).thenReturn(PrepareConstants.SECHUB_PREPARE_RESULT);
 
         /* execute + test */
         assertEquals(ProductImportAbility.ABLE_TO_IMPORT, importerToTest.isAbleToImportForProduct(param));

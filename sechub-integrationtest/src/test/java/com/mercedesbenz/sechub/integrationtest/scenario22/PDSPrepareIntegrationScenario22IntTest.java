@@ -28,26 +28,36 @@ public class PDSPrepareIntegrationScenario22IntTest {
     @Rule
     public Timeout timeOut = Timeout.seconds(600);
 
+    /**
+     * This is a multi test. Why? Because it is faster than executing different
+     * tests. When we execute the 4 tests seperate, the tests run 22 seconds on
+     * machine X. On same machine the multi test does the same in 11 seconds!
+     *
+     * If you have a failing test and you want to debug faster, you can remove the
+     * comments from the test methods and start the test directly. But after fixing
+     * etc. please dont forget to comment the direct test afterwards again.
+     *
+     */
     @Test
+    public void multi_prepare_test() {
+        project1_sechub_calls_prepare_pds_executes_script_and_user_message_is_returned();
+        project2_sechub_calls_prepare_and_checkmarx();
+        project3_sechub_calls_prepare_which_fails_will_not_start_checkmarx();
+        project4_sechub_calls_prepare_which_fails_because_internal_failure_will_not_start_checkmarx();
+    }
+
+    // @Test
     public void project1_sechub_calls_prepare_pds_executes_script_and_user_message_is_returned() {
 
         TestProject project = PROJECT_1;
-        /* @formatter:off */
-        /* prepare */
-        UUID jobUUID = as(USER_1).
-                createCodeScanWithTemplate(
-                        IntegrationTestTemplateFile.CODE_SCAN_3_SOURCES_DATA_ONE_REFERENCE,
-                        project,
-                        NOT_MOCKED,
-                        TemplateData.builder().
-                                setVariable("__folder__",
-                                        CODE_SCAN__CHECKMARX__MULTI__ZERO_WAIT.getMockDataIdentifier()).
-                                addReferenceId("files-b").
-                                build());
+        UUID jobUUID = createCodeScanJob(project);
 
         /* execute */
         as(USER_1).
-                /* no upload - okay, because prepare is currently always executed */
+        /*
+         * no simulated source code here necessary - we test here only preparation
+         * phase, no additional products
+         */
                 approveJob(project, jobUUID);
 
         /* test */
@@ -59,42 +69,27 @@ public class PDSPrepareIntegrationScenario22IntTest {
         assertEquals("a", variables.get("PDS_TEST_KEY_VARIANTNAME"));
         assertEquals("true", variables.get("PDS_PREPARE_EXECUTED"));
 
-
         String report = as(USER_1).getJobReport(project, jobUUID);
 
-        assertReport(report).
-                enablePDSAutoDumpOnErrorsForSecHubJob(jobUUID).
-                hasTrafficLight(TrafficLight.OFF). // traffic light off, because the only report which was executed, but there was no result inside!
-                hasMessage(SecHubMessageType.WARNING,"No results from a security product available for this job!").
-                hasMessage(SecHubMessageType.INFO,"Some preperation info message for user in report.").
-                hasMessages(2).
-                hasFindings(0); // no findings
+        assertReport(report).enablePDSAutoDumpOnErrorsForSecHubJob(jobUUID).hasTrafficLight(TrafficLight.OFF). // traffic light off, because the only report
+                                                                                                               // which was executed, but there was no result
+                                                                                                               // inside!
+                hasMessage(SecHubMessageType.INFO, "Some preperation info message for user in report (always).")
+                .hasMessage(SecHubMessageType.WARNING, "No results from a security product available for this job!").hasMessages(2).hasFindings(0); // no
+                                                                                                                                                    // findings
 
         /* @formatter:on */
     }
 
-    @Test
+    // @Test
     public void project2_sechub_calls_prepare_and_checkmarx() {
 
         TestProject project = PROJECT_2;
         /* @formatter:off */
         /* prepare */
-        UUID jobUUID = as(USER_1).
-                createCodeScanWithTemplate(
-                        IntegrationTestTemplateFile.CODE_SCAN_3_SOURCES_DATA_ONE_REFERENCE,
-                        project,
-                        NOT_MOCKED,
-                        TemplateData.builder().
-                                setVariable("__folder__",
-                                        CODE_SCAN__CHECKMARX__MULTI__ZERO_WAIT.getMockDataIdentifier()).
-                                addReferenceId("files-b").
-                                build());
+        UUID jobUUID = createCodeScanJob(project);
 
-        /* execute */
-        as(USER_1).
-                /* upload - otherwise checkmarx PDS is currently not executed (our prepare does only simulate here)*/
-                uploadSourcecode(project, jobUUID, PATH_TO_ZIPFILE_WITH_PDS_CODESCAN_LOW_FINDINGS).
-                approveJob(project, jobUUID);
+        approveJobAndSimulateSourceCodeAvailable(project, jobUUID);
 
         /* test */
         waitForJobDone(project, jobUUID, 30, true);
@@ -110,7 +105,7 @@ public class PDSPrepareIntegrationScenario22IntTest {
 
         assertReport(report).
                 enablePDSAutoDumpOnErrorsForSecHubJob(jobUUID).
-                hasMessage(SecHubMessageType.INFO,"Some preperation info message for user in report.").
+                hasMessage(SecHubMessageType.INFO,"Some preperation info message for user in report (always).").
                 hasMessages(1).
                 hasTrafficLight(TrafficLight.YELLOW). // traffic light not off, because project2 has checkmarx configured as well and prepare did not fail (we used the error message only as additional info for testing)
                 hasFindings(109); // some findings
@@ -118,27 +113,14 @@ public class PDSPrepareIntegrationScenario22IntTest {
         /* @formatter:on */
     }
 
-    @Test
+    // @Test
     public void project3_sechub_calls_prepare_which_fails_will_not_start_checkmarx() {
 
         TestProject project = PROJECT_3;
-        /* @formatter:off */
-        /* prepare */
-        UUID jobUUID = as(USER_1).
-                createCodeScanWithTemplate(
-                        IntegrationTestTemplateFile.CODE_SCAN_3_SOURCES_DATA_ONE_REFERENCE,
-                        project,
-                        NOT_MOCKED,
-                        TemplateData.builder().
-                        setVariable("__folder__",
-                                CODE_SCAN__CHECKMARX__MULTI__ZERO_WAIT.getMockDataIdentifier()).
-                        addReferenceId("files-b").
-                        build());
+        UUID jobUUID = createCodeScanJob(project);
 
         /* execute */
-        as(USER_1).
-        /* no upload - okay, because prepare is currently always executed */
-        approveJob(project, jobUUID);
+        approveJobAndSimulateSourceCodeAvailable(project, jobUUID);
 
         /* test */
         waitForJobDone(project, jobUUID, 30, true);
@@ -147,43 +129,27 @@ public class PDSPrepareIntegrationScenario22IntTest {
         UUID pdsJobUUID = waitForFirstPDSJobOfSecHubJobAndReturnPDSJobUUID(jobUUID);
         Map<String, String> variables = fetchPDSVariableTestOutputMap(pdsJobUUID);
         assertEquals("b", variables.get("PDS_TEST_KEY_VARIANTNAME"));
-        assertEquals("true", variables.get("PDS_PREPARE_FAILED"));
-
+        assertEquals("true", variables.get("PDS_PREPARE_FAILED_NO_RESULT_FILE_BUT_EXIT_0"));
 
         String report = as(USER_1).getJobReport(project, jobUUID);
 
-        assertReport(report).
-            enablePDSAutoDumpOnErrorsForSecHubJob(jobUUID).
-            hasTrafficLight(TrafficLight.OFF). // traffic light off, because preparation failed and no other product (in this case checkmarx) executed
-            hasMessage(SecHubMessageType.ERROR,"Some preperation error message for user in report.").
-            hasMessage(SecHubMessageType.WARNING,"No results from a security product available for this job!").
-            hasMessages(2).
-            hasFindings(0); // no findings
+        assertReport(report).enablePDSAutoDumpOnErrorsForSecHubJob(jobUUID).hasTrafficLight(TrafficLight.OFF). // traffic light off, because preparation failed
+                                                                                                               // and no other product (in this case checkmarx)
+                                                                                                               // may be executed
+                hasMessage(SecHubMessageType.INFO, "Some preperation info message for user in report (always).")
+                .hasMessage(SecHubMessageType.WARNING, "No results from a security product available for this job!")
+                .hasMessage(SecHubMessageType.ERROR, "Some preperation error message for user in report.").hasMessages(3).hasFindings(0); // no findings
 
         /* @formatter:on */
     }
 
-    @Test
+    // @Test
     public void project4_sechub_calls_prepare_which_fails_because_internal_failure_will_not_start_checkmarx() {
 
         TestProject project = PROJECT_4;
-        /* @formatter:off */
-        /* prepare */
-        UUID jobUUID = as(USER_1).
-                createCodeScanWithTemplate(
-                        IntegrationTestTemplateFile.CODE_SCAN_3_SOURCES_DATA_ONE_REFERENCE,
-                        project,
-                        NOT_MOCKED,
-                        TemplateData.builder().
-                        setVariable("__folder__",
-                                CODE_SCAN__CHECKMARX__MULTI__ZERO_WAIT.getMockDataIdentifier()).
-                        addReferenceId("files-b").
-                        build());
+        UUID jobUUID = createCodeScanJob(project);
 
-        /* execute */
-        as(USER_1).
-        /* no upload - okay, because prepare is currently always executed */
-        approveJob(project, jobUUID);
+        approveJobAndSimulateSourceCodeAvailable(project, jobUUID);
 
         /* test */
         waitForJobDone(project, jobUUID, 30, true);
@@ -192,16 +158,57 @@ public class PDSPrepareIntegrationScenario22IntTest {
         UUID pdsJobUUID = waitForFirstPDSJobOfSecHubJobAndReturnPDSJobUUID(jobUUID);
         Map<String, String> variables = fetchPDSVariableTestOutputMap(pdsJobUUID);
         assertEquals("c", variables.get("PDS_TEST_KEY_VARIANTNAME"));
+        assertEquals("true", variables.get("PDS_PREPARE_FAILED_NO_RESULT_FILE_AND_EXIT_5"));
 
         String report = as(USER_1).getJobReport(project, jobUUID);
 
-        assertReport(report).
-            enablePDSAutoDumpOnErrorsForSecHubJob(jobUUID).
-            hasTrafficLight(TrafficLight.OFF). // traffic light off, because preparation failed and no other product (in this case checkmarx) executed
-            hasMessage(SecHubMessageType.WARNING,"No results from a security product available for this job!").
-            hasMessages(1). // we have an error message, but because of script failure the message is not returned to user
-            hasFindings(0); // no findings
+        assertReport(report).enablePDSAutoDumpOnErrorsForSecHubJob(jobUUID).hasTrafficLight(TrafficLight.OFF). // traffic light off, because preparation failed
+                                                                                                               // and no other product (in this case checkmarx)
+                                                                                                               // may be executed!
+                hasMessage(SecHubMessageType.WARNING, "No results from a security product available for this job!").hasMessages(1). // we have an error message,
+                                                                                                                                    // but because of script
+                                                                                                                                    // failure the message is
+                                                                                                                                    // not returned to user
+                hasFindings(0); // no findings
 
         /* @formatter:on */
     }
+
+    private UUID createCodeScanJob(TestProject project) {
+        /* @formatter:off */
+          UUID jobUUID = as(USER_1).
+                  createCodeScanWithTemplate(
+                          IntegrationTestTemplateFile.CODE_SCAN_3_SOURCES_DATA_ONE_REFERENCE,
+                          project,
+                          NOT_MOCKED,
+                          TemplateData.builder().
+                                  setVariable("__folder__",
+                                          CODE_SCAN__CHECKMARX__MULTI__ZERO_WAIT.getMockDataIdentifier()).
+                                  addReferenceId("files-b").
+                                  build());
+          return jobUUID;
+          /* @formatter:on */
+    }
+
+    private void approveJobAndSimulateSourceCodeAvailable(TestProject project, UUID jobUUID) {
+        /* @formatter:off */
+
+          /**
+           * Here it is only a pseudo upload - why? The product is mocked and the mock
+           * implementation will return not parts from upload, but only by the paths
+           * defined inside the configuration file. But we need the upload to have the
+           * checkmarx adapter working correctly.
+           */
+          String pseudoUpload = PATH_TO_ZIPFILE_WITH_PDS_CODESCAN_LOW_FINDINGS;
+
+          as(USER_1).
+              /* Next line is necessary to simulate preparation done - we just upload "normal" way,
+               * so data is available and checkmarx adapter may not fail because of missing sources...
+               */
+              uploadSourcecode(project, jobUUID, pseudoUpload).
+
+              approveJob(project, jobUUID);
+          /* @formatter:on */
+    }
+
 }

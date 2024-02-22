@@ -7,4 +7,5 @@ public interface PrepareProductExecutionService extends ProductExecutionStoreSer
     default public ScanType getScanType() {
         return ScanType.PREPARE;
     }
+
 }

@@ -46,9 +46,14 @@ class ScanJobExecutionRunnable implements Runnable, CanceableScanJob {
             SecHubExecutionContext executionContext = runnableData.getExecutionContext();
             ProductExecutionServiceContainer executionServiceContainer = runnableData.getExecutionServiceContainer();
 
-            /* prepare phase for remote data */
+            /* prepare phase (e.g. for remote data ) */
             PrepareProductExecutionService prepareProductExecutionService = executionServiceContainer.getPrepareProductExecutionService();
             prepareProductExecutionService.executeProductsAndStoreResults(executionContext);
+
+            if (executionContext.hasPrepareFailed()) {
+                LOG.error("Preparation phase failed");
+                return;
+            }
 
             /* analytics scan phase */
             AnalyticsProductExecutionService analyticsProductExecutionService = executionServiceContainer.getAnalyticsProductExecutionService();

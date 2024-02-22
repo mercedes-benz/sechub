@@ -819,7 +819,7 @@ public class IntegrationTestDefaultProfiles {
         DefaultTestExecutionProfile profile = new DefaultTestExecutionProfile();
         profile.initialConfigurationsWithoutUUID.add(IntegrationTestDefaultExecutorConfigurations.PDS_V1_PREPARE_INTEGRATIONTEST_VARIANT_C);
         profile.id = "inttest-p30-pds-prepare";
-        profile.description = "Profile 30: PDS prepare, reused storage, dynamic text results, variant b - prepare simulated script failure with exit code 5";
+        profile.description = "Profile 30: PDS prepare, reused storage, dynamic text results, variant c - prepare simulated script failure with exit code 5";
         profile.enabled = true;
         return profile;
     }
