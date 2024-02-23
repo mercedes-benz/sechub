@@ -174,12 +174,12 @@ If the client is used to scan asynchronously it will return a `jobUUID` which ca
 (1) Scan asynchronously using `sechub scanAsync`. +
 (2) Get report `sechub -jobUUID <jobUUID> getReport`.
 
-TIP: In general, the `jobUUID` can be used to download the report again and again by different users and in different formats.
+In general, the `jobUUID` can be used to download the report again and again by different users and in different formats.
 
 [[report]]
 === Report
 
-SecHub collects the scan results from various security tools and converts them into a unified reporting format called: SecHub Report. The advantage is that the user needs to learn only one report format. The <<json-report, example JSON report>> below shows how a report can look like:
+SecHub collects the scan results from various security tools and converts them into a unified reporting format called: SecHub Report. The advantage is that the user needs to learn only one report format. The json-report below shows how a report can look like:
 
 .JSON report example based on a scan of the https://securego.io/docs/rules/g101.html[G101], https://securego.io/docs/rules/g103.html[G103], https://securego.io/docs/rules/g304.html[G304] examples from GoSec.
 [[json-report]]
@@ -274,9 +274,9 @@ The SecHub Plugins improve the user experience by enabling the user to work dire
 
 SecHub plugins exist for the following text editors and IDEs:
 
-* https://marketplace.eclipse.org/content/sechub[Eclipse]
-* https://github.com/mercedes-benz/sechub-plugin-intellij[IntelliJ platttform]
-* https://open-vsx.org/extension/mercedes-benz/sechub[VSCode, VSCodium, Eclipse Theia]
+* Plugin for https://marketplace.eclipse.org/content/sechub[Eclipse IDE] (https://github.com/mercedes-benz/sechub-plugin-eclipse[source code])
+* Plugin for https://github.com/mercedes-benz/sechub-plugin-intellij[IntelliJ platttform] (https://github.com/mercedes-benz/sechub-plugin-intellij[source code])
+* Plugin for https://open-vsx.org/extension/mercedes-benz/sechub[VSCode, VSCodium, Eclipse Theia] (https://github.com/mercedes-benz/sechub-plugin-vscode[source code])
 
 All plugins are free and open-source software (FOSS) and can be installed directly from within the IDE or text editors.
 
@@ -304,14 +304,13 @@ The `codeScan` module scans source code or binary artifacts for potential vulner
 
 More details: https://mercedes-benz.github.io/sechub/latest/sechub-client.html#sechub-config-code-scan
 
-PDS-Solutions:
-
-* GoSec
-* PMD
-* FindSecurityBugs
-* Bandit
-* Checkmarx (wrapper only)
-* … and more
+PDS-Solutions: +
+- GoSec +
+- PMD +
+- FindSecurityBugs +
+- Bandit +
+- Checkmarx SAST (wrapper only) +
+- … and more
 
 [[secretscan]]
 ==== secretScan
@@ -320,9 +319,8 @@ PDS-Solutions:
 
 Scans code or artifacts for secrets (API tokens, certificates, passwords).
 
-PDS-Solutions:
-
-* Gitleaks
+PDS-Solutions: +
+- Gitleaks
 
 [[webscan]]
 ==== webScan
@@ -335,9 +333,8 @@ The `webScan` module scans running web applications for vulnerabilities. The onl
 
 More details: https://mercedes-benz.github.io/sechub/latest/sechub-client.html#web-scan
 
-PDS-Solutions:
-
-* OWASP ZAP
+PDS-Solutions: +
+- OWASP ZAP
 
 [[infrascan]]
 ==== infraScan
@@ -355,10 +352,9 @@ More details: https://mercedes-benz.github.io/sechub/latest/sechub-client.html#i
 
 The `licenseScan` module scans code or artifacts for license information.
 
-PDS-Solutions:
-
-* Scancode
-* Tern
+PDS-Solutions: +
+- Scancode +
+- Tern
 
 === Architecture
 

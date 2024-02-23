@@ -9,7 +9,8 @@ By contributing you will agree that your contribution will be put under the same
 ## Table of Contents
 - [Communication](#communication)
 - [Quick start](#quick-start)
-- [Contributions](#contributions)
+- [Contributor License Agreement (CLA)](#contributor-license-agreement-cla)
+- [Create a fork](#create-a-fork)
 - [Quality](#quality)
 
 ## Communication
@@ -51,25 +52,32 @@ This PR
 - closes #868
 ```
 
+### Examples for new contributors
+- With [feature issue #633](https://github.com/mercedes-benz/sechub/issues/633) all commits are in a dedicated ordering and contain detailed information about the different steps which were necessary.
+- Please look also into the PR description at https://github.com/mercedes-benz/sechub/pull/1029
+
 ## Quality
 We assume that for every non-trivial contribution, the project has been built and tested prior to the contribution.
 
 ### Documentation
 Please ensure that for all contributions, the corresponding documentation is in-sync and up-to-date. All documentation is in English language.
 
+Please see [here](https://mercedes-benz.github.io/sechub/latest/sechub-techdoc.html#section-documentation) for details about documentation.
+
+
 ### Commit messages
 GitHub has the possibility to link commits automatically inside issues when mentioned with #${issue number} inside the commit headline.<br>
 To make things easier to follow/maintain, please always provide commit message in following style:
 
 ```
-Dedicated short message what done #${issue number}
+Dedicated short message what was done #${issue number}
 ```
 or
 ```
-Dedicated short message what done #${issue number}
+Dedicated short message what was done #${issue number}
 
 - detail1
-- datail2
+- detail2
 - ...
 ```
 NOTE: Here you MUST add an empty second line between headline and details. It's common practice for GIT.
@@ -82,6 +90,13 @@ Described commit message format #868
 - explained purpose
 ```
 
+### Development tools setup
+Of course it depends on you which kind of IDE you use for development. But we have some defaults defined - e.g. for git configuration which should be used.
 
+Please check our [development-setup documentation](https://mercedes-benz.github.io/sechub/latest/sechub-techdoc.html#development-setup) for details.
 
-Please look into [Quality Wiki page](https://github.com/mercedes-benz/sechub/wiki/Quality) for more details.
+Please look into https://github.com/mercedes-benz/sechub/issues/168 for source formatter config files and description for usage.
+
+### Coding conventions
+
+Please look at our [coding-conventions documentation](https://mercedes-benz.github.io/sechub/latest/sechub-techdoc.html#section-coding-conventions) for details.
