@@ -6,19 +6,17 @@
 
 [[section-documentation-markdown]]
 ==== Markdown
-Simple technical information -e.g. about the content of an folder
-- will be written in a README.md with markdown syntax.
-
-See https://en.wikipedia.org/wiki/Markdown for `markdown` definition
+Simple technical information - e.g. about the content of an folder
+- should be written in a README.md with https://www.markdownguide.org/cheat-sheet/[markdown syntax]. +
 
 
 [[section-documentation-asciidoc]]
 ==== Asciidoc
-When ever writing a full scaled documentation - we do this with Asciidoc. +
+When a full scaled documentation is needed it should be done with Asciidoc. +
 The documentation sources are inside the `sechub-doc/src` folder.
 
-TIP: You can use http://asciidoctor.org/docs/user-manual or
-     look into http://asciidoctor.org/docs/asciidoc-syntax-quick-reference for more information
+TIP: You can use the http://asciidoctor.org/docs/user-manual[Asciidoc user manual] or
+     look into http://asciidoctor.org/docs/asciidoc-syntax-quick-reference[Asciidoc quick reference] for more information
 
 
 [[section-documentation-in-code]]
@@ -48,16 +46,19 @@ to create an automated use case description. It contains also generated
 Using Annotations, which are itself tagged with `@DomainMessaging` annotation, those parts will automatically
 listed inside generated messaging diagram(s) `gen_domain_messaging_overview.plantuml` :
 
+.Click to reveal the diagram
+[%collapsible]
+====
 plantuml::diagrams/gen/gen_domain_messaging_overview.plantuml[format=svg, alt="Sequence diagram of messaging", width=1024]
+====
 
-TIP: For an example look into `@IsReceivingAsyncMessage` and look also for its
-     references.
+TIP: For an example look into `@IsReceivingAsyncMessage` and look also for its references.
 
 [[section-documentation-usecase-event-overview]]
 ===== Usecase event overview diagrams
-For some usecases we got event trace information (from special integration tests). With those informations
-additional diagrams are generated and included at Usecase description level. They show the events happening
-after a usecase has been triggered. See <<section-coding-convention-event-trace, Coding conventions for event trace integration tests>>.
+For some usecases we got event trace information (from special integration tests).
+With this information additional diagrams are generated and included at usecase description level.
+They show the events happening after a usecase has been triggered.
 
 But not every usecase has got such a diagram: Either there are no events (can happen) or just no integration test for this case has been created.
 

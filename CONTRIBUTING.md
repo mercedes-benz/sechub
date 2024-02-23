@@ -16,7 +16,7 @@ By contributing you will agree that your contribution will be put under the same
 ## Communication
 For communication please respect our [FOSS Code of Conduct](https://github.com/mercedes-benz/foss/blob/master/CODE_OF_CONDUCT.md).
 
-IMPORTANT: If you want to contribute or report an issue, then first create an [issue in Github](https://github.com/mercedes-benz/sechub/issues).
+IMPORTANT: For contributions or issue reports, please start by creating an [issue on Github](https://github.com/mercedes-benz/sechub/issues).
 
 Transparent and open communication is important to us.<br>
 Thus, all project-related communication should happen here and in English.<br>
@@ -91,7 +91,7 @@ Described commit message format #868
 ```
 
 ### Development tools setup
-Of course it depends on you which kind of IDE you use for development. But we have some defaults defined - e.g. for git configuration which should be used.
+This depends on you which kind of IDE you use for development. But we have some defaults defined - e.g. for git configuration which should be used.
 
 Please check our [development-setup documentation](https://mercedes-benz.github.io/sechub/latest/sechub-techdoc.html#development-setup) for details.
 

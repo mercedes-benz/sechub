@@ -46,7 +46,7 @@ Please visit https://github.com/mercedes-benz/sechub/wiki/ for detailed informat
 
 === Introduction
 
-SecHub orchestrates various security and vulnerability scanners which can find potential vulnerabilities in the software under test.
+SecHub orchestrates various security and vulnerability scanners which can find potential vulnerabilities in sourcecode, binaries or web applications.
 This enables security, development and operation teams to review and fix security issues. As a result, SecHub improves application security.
 
 .SecHub basic architecture overview
@@ -67,8 +67,7 @@ This enables security, development and operation teams to review and fix securit
 
 The objective of SecHub is to help secure the software development lifecyle (SDLC) phases: development, deployment and maintenance. From the first written line of code to the application being in production. SecHub can be used to scan the software continuously.
 
-To reduce the cognitive load for the user, the security tools are categorized into modules.
-Modules are named after the security testing method they perform: `codeScan`, `licenseScan`, `secretScan`, `webScan` etc.
+The security tools are categorized into modules which are named after the security testing method they perform: `codeScan`, `licenseScan`, `secretScan`, `webScan` etc.
 
 [NOTE]
 --
@@ -77,7 +76,9 @@ The terms SAST (Static Application Security Testing) and DAST (Dynamic Applicati
 
 Because of the modules, the user only needs to understand what security testing a module performs, rather than to know what specific security tools are used for the actual scan. The user describes in a configuration file what module(s) to use. Or in other words, what security testing methods should be used to test the software with.
 
-To start a scan, the user sends the configuration file to the SecHub server via API. Even better, SecHub provides a client which calls the REST API for the user. The SecHub client can be used manually or can be integrated into a continues-integration build pipeline (see below figure).
+To start a scan, the user sends the configuration file to the SecHub server via API.
+For ease of use SecHub offers a https://github.com/mercedes-benz/sechub/releases?q=%22client+version%22&expanded=true[client] which calls the REST API for the user.
+The SecHub client can be used manually or can be integrated into a continuous-integration build pipeline (see below figure).
 
 .CI/CD systems or users can scan with SecHub
 [[figure-cicd-user-sechub]]
@@ -261,9 +262,9 @@ The JSON format is machine readable and can be read by the <<sechub-plugins, Sec
 [[mark-false-positives]]
 ==== Mark Findings as False-Positives
 
-There are two major reasons for marking a security finding as false-positive. +
-- First, it is an actual false-positive. +
-- Second, the finding is a false-positive in the context of the application. For example, the application is never deployed to be reachable from the internet.
+There are two major reasons for marking a security finding as false-positive: +
+- It is an actual false-positive. +
+- The finding is a false-positive in the context of the application. For example, the application is never deployed to be reachable from the internet.
 
 Regardless the reason, https://mercedes-benz.github.io/sechub/latest/sechub-client.html#section-client-false-positives-mark[SecHub supports marking findings as false-positives]. The marking of false-positives is a SecHub feature and is independent of the security tools used to scan.
 
@@ -287,7 +288,8 @@ Security tools are categorized into modules.
 
 Each module performs a different security testing method:
 
-* <<codescan, `codeScan`>> - scans the code for potential vulnerabilities (weaknesses). Also known as SAST or static source code analysis.
+* <<codescan, `codeScan`>> - scans code or binaries for potential vulnerabilities (weaknesses). +
+  This includes SAST (static application security testing) and IaC (infrastructure as code).
 * <<infrascan, `infraScan`>> - scans infrastructure for vulnerabilities.
 * <<licensescan, `licenseScan`>> - scans code or artifacts for license information.
 * <<secretscan, `secretScan`>> - scans code or artifacts for secrets (API tokens, certificates, passwords).
@@ -373,12 +375,8 @@ For more details about the architecture have a look at the architecture document
 
 === Operations Perspective
 
-The operations team has to do most of the work.
-The operations team of SecHub needs to configure the scan tools as well as manage users and projects.
-This is an intentional design choice.
-The idea is, that users like security experts, operations engineers and developers can just scan and therefore focus on their work, rather than take care of SecHub and security scanners.
-
-For more details have a look at the operations guide: https://mercedes-benz.github.io/sechub/latest/sechub-operations.html
+One needs to configure the scan tools as well as manage users and projects. +
+For details please check the https://mercedes-benz.github.io/sechub/latest/sechub-operations.html[operations guide].
 
 === REST API
 
