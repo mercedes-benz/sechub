@@ -18,7 +18,7 @@ public enum SerecoAnnotationType {
     /*
      * an internal info message that a product's result has been successfully
      * imported - NOT suitable to be reported back to user
-     * */
+     */
     INTERNAL_INFO_PRODUCT_SUCCESSFUL_IMPORTED(true),
 
     ;

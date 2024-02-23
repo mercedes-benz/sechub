@@ -1,6 +1,5 @@
 package com.mercedesbenz.sechub.domain.scan.product.pds;
 
-import java.io.InputStream;
 import java.util.Collections;
 import java.util.List;
 
@@ -30,8 +29,7 @@ public class PDSPrepareExecutor extends AbstractPDSProductExecutor {
 
         ProductResult result = resilientActionExecutor.executeResilient(() -> {
 
-
-                /* @formatter:off */
+            /* @formatter:off */
                 PDSPrepareConfig pdsPrepareConfig = PDSPrepareConfigImpl.builder().
                         configure(PDSAdapterConfigurationStrategy.builder().
                                 setScanType(getScanType()).
@@ -43,20 +41,20 @@ public class PDSPrepareExecutor extends AbstractPDSProductExecutor {
                         build();
                 /* @formatter:on */
 
-                /* inspect */
-                MetaDataInspection inspection = scanMetaDataCollector.inspect(ProductIdentifier.PDS_PREPARE.name());
-                inspection.notice(MetaDataInspection.TRACE_ID, pdsPrepareConfig.getTraceID());
+            /* inspect */
+            MetaDataInspection inspection = scanMetaDataCollector.inspect(ProductIdentifier.PDS_PREPARE.name());
+            inspection.notice(MetaDataInspection.TRACE_ID, pdsPrepareConfig.getTraceID());
 
-                /* we temporary store the adapter configuration - necessary for cancellation */
-                data.rememberAdapterConfig(pdsPrepareConfig);
+            /* we temporary store the adapter configuration - necessary for cancellation */
+            data.rememberAdapterConfig(pdsPrepareConfig);
 
-                /* execute PDS by adapter and update product result */
-                AdapterExecutionResult adapterResult = pdsAdapter.start(pdsPrepareConfig, executorContext.getCallback());
+            /* execute PDS by adapter and update product result */
+            AdapterExecutionResult adapterResult = pdsAdapter.start(pdsPrepareConfig, executorContext.getCallback());
 
-                /* cancel not necessary - so forget it */
-                data.forgetRememberedAdapterConfig();
+            /* cancel not necessary - so forget it */
+            data.forgetRememberedAdapterConfig();
 
-                return updateCurrentProductResult(adapterResult, executorContext);
+            return updateCurrentProductResult(adapterResult, executorContext);
 
         });
         return Collections.singletonList(result);

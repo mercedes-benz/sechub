@@ -13,8 +13,8 @@ import com.mercedesbenz.sechub.commons.model.ScanType;
 import com.mercedesbenz.sechub.sereco.metadata.SerecoMetaData;
 
 /**
- * Imported for the prepare phase (PDS_PREPARE). No findings are imported but a {@link #SECHUB_PREPARE_RESULT},
- * with status=ok or status=failed is returned
+ * Imported for the prepare phase (PDS_PREPARE). No findings are imported but a
+ * {@link #SECHUB_PREPARE_RESULT}, with status=ok or status=failed is returned
  *
  * @author Albert Tregnaghi
  *
