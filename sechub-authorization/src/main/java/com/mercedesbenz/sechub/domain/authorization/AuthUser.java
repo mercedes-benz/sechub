@@ -3,17 +3,20 @@ package com.mercedesbenz.sechub.domain.authorization;
 
 import java.util.Objects;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
-import javax.persistence.Version;
+import com.mercedesbenz.sechub.sharedkernel.RoleConstants;
+
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
+import jakarta.persistence.Version;
 
 /**
- * This entity is designed to have a entry wich is collected as fast as possible
- * from database. So it shall have only rudimentary data necessary to get the
- * info into security to identify access and roles. So we do e.g NOT use lists
- * for {@link AuthUserRole} here but use dedicated boolean flags only.
+ * This entity is designed to have a entry which is collected as fast as
+ * possible from database. So it shall have only rudimentary data necessary to
+ * get the info into security to identify access and roles. So we do e.g NOT use
+ * lists for {@link AuthUserRole} or {@link RoleConstants} here but use
+ * dedicated boolean flags only.
  *
  * @author Albert Tregnaghi
  *

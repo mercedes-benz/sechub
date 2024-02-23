@@ -7,9 +7,6 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import javax.annotation.security.RolesAllowed;
-import javax.validation.constraints.NotNull;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,6 +31,9 @@ import com.mercedesbenz.sechub.sharedkernel.messaging.ProjectMessage;
 import com.mercedesbenz.sechub.sharedkernel.usecases.admin.project.UseCaseAdminCreatesProject;
 import com.mercedesbenz.sechub.sharedkernel.validation.URIValidation;
 import com.mercedesbenz.sechub.sharedkernel.validation.UserInputAssertion;
+
+import jakarta.annotation.security.RolesAllowed;
+import jakarta.validation.constraints.NotNull;
 
 @Service
 @RolesAllowed(RoleConstants.ROLE_SUPERADMIN)

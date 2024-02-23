@@ -15,8 +15,6 @@ import java.util.SortedSet;
 import java.util.TreeMap;
 import java.util.TreeSet;
 
-import javax.annotation.security.RolesAllowed;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -29,6 +27,8 @@ import com.mercedesbenz.sechub.sharedkernel.Step;
 import com.mercedesbenz.sechub.sharedkernel.usecases.UseCaseDefinition;
 import com.mercedesbenz.sechub.sharedkernel.usecases.UseCaseGroup;
 import com.mercedesbenz.sechub.sharedkernel.usecases.UseCaseIdentifier;
+
+import jakarta.annotation.security.RolesAllowed;
 
 public class UseCaseModel {
 

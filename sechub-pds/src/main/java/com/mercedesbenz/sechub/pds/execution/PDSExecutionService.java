@@ -21,9 +21,6 @@ import java.util.concurrent.Future;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
-import javax.annotation.PostConstruct;
-import javax.annotation.PreDestroy;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,6 +40,9 @@ import com.mercedesbenz.sechub.pds.job.PDSWorkspaceService;
 import com.mercedesbenz.sechub.pds.usecase.PDSStep;
 import com.mercedesbenz.sechub.pds.usecase.UseCaseAdminFetchesMonitoringStatus;
 import com.mercedesbenz.sechub.pds.usecase.UseCaseSystemHandlesJobCancelRequests;
+
+import jakarta.annotation.PostConstruct;
+import jakarta.annotation.PreDestroy;
 
 /**
  * This class is responsible for all execution queuing parts - it will also know

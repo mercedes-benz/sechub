@@ -1,37 +1,29 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.adapter.support;
 
-import java.io.IOException;
 import java.net.InetAddress;
-import java.net.InetSocketAddress;
-import java.net.Proxy;
-import java.net.Socket;
 import java.net.UnknownHostException;
 import java.security.KeyManagementException;
 import java.security.NoSuchAlgorithmException;
 import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
 
-import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.SSLContext;
-import javax.net.ssl.SSLSession;
 import javax.net.ssl.TrustManager;
 import javax.net.ssl.X509TrustManager;
 
-import org.apache.http.HttpHost;
-import org.apache.http.config.Registry;
-import org.apache.http.config.RegistryBuilder;
-import org.apache.http.conn.DnsResolver;
-import org.apache.http.conn.socket.ConnectionSocketFactory;
-import org.apache.http.conn.socket.PlainConnectionSocketFactory;
-import org.apache.http.conn.ssl.NoopHostnameVerifier;
-import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
-import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.impl.client.HttpClientBuilder;
-import org.apache.http.impl.client.HttpClients;
-import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
-import org.apache.http.protocol.HttpContext;
-import org.apache.http.ssl.SSLContexts;
+import org.apache.hc.client5.http.DnsResolver;
+import org.apache.hc.client5.http.impl.classic.CloseableHttpClient;
+import org.apache.hc.client5.http.impl.classic.HttpClientBuilder;
+import org.apache.hc.client5.http.impl.classic.HttpClients;
+import org.apache.hc.client5.http.impl.io.PoolingHttpClientConnectionManager;
+import org.apache.hc.client5.http.impl.io.PoolingHttpClientConnectionManagerBuilder;
+import org.apache.hc.client5.http.io.HttpClientConnectionManager;
+import org.apache.hc.client5.http.ssl.NoopHostnameVerifier;
+import org.apache.hc.client5.http.ssl.SSLConnectionSocketFactory;
+import org.apache.hc.client5.http.ssl.SSLConnectionSocketFactoryBuilder;
+import org.apache.hc.core5.http.HttpHost;
+import org.apache.hc.core5.ssl.SSLContexts;
 import org.springframework.http.client.ClientHttpRequestFactory;
 import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 
@@ -65,6 +57,7 @@ public class TrustAllSupport {
     public ClientHttpRequestFactory createTrustAllFactory() {
         HttpClientBuilder clientBuilder = HttpClients.custom();
         SSLContext sslContext = null;
+
         if (config.isTrustAllCertificatesEnabled()) {
             try {
                 sslContext = createTrustAllSSLContext(adapter);
@@ -74,23 +67,41 @@ public class TrustAllSupport {
         } else {
             sslContext = SSLContexts.createSystemDefault();
         }
+
         if (config.isProxyDefined()) {
             // proxy with socks not working with standard HTTPHost,
             // clientBuilder.setProxy(..)
             // So own approach necessary, details see
             // https://stackoverflow.com/questions/22937983/how-to-use-socks-5-proxy-with-apache-http-client-4
-            Registry<ConnectionSocketFactory> reg = RegistryBuilder.<ConnectionSocketFactory>create().register("http", new SocksProxyConnectionSocketFactory())
-                    .register("https", new SocksProxySSLConnectionSocketFactory(sslContext)).build();
+            // Registry<ConnectionSocketFactory> reg =
+            // RegistryBuilder.<ConnectionSocketFactory>create()
+            // .register("http", new SocksProxyConnectionSocketFactory())
+            // .register("https", new
+            // SocksProxySSLConnectionSocketFactory(sslContext)).build();
 
-            PoolingHttpClientConnectionManager cm = new PoolingHttpClientConnectionManager(reg, new FakeDnsResolver());
+            // TODO Jeremias Eppler, 2023-09-15: Find a better way to deal with http/https
+            // proxy settings
+            // final HttpHost proxyHTTP = new HttpHost("http", config.getProxyHostname(),
+            // config.getProxyPort());
+
+            // default is the HTTPS proxy
+            final HttpHost proxyHTTPS = new HttpHost("https", config.getProxyHostname(), config.getProxyPort());
+
+            // TODO Jeremias Eppler, 2023-09-15: Use the underlying system proxy settings
+            // clientBuilder.useSystemProperties();
+
+            PoolingHttpClientConnectionManager cm = PoolingHttpClientConnectionManagerBuilder.create().setDnsResolver(new FakeDnsResolver()).build();
             clientBuilder.setConnectionManager(cm);
+            clientBuilder.setProxy(proxyHTTPS);
         } else {
-            clientBuilder.setSSLContext(sslContext);
-            clientBuilder.setSSLHostnameVerifier(new HostnameVerifier() {
-                public boolean verify(String hostname, SSLSession session) {
-                    return /* NOSONAR - we know what we do here! */true;
-                }
-            });
+
+            /* formatter:off */
+            SSLConnectionSocketFactory sslSocketFactory = SSLConnectionSocketFactoryBuilder.create().setSslContext(sslContext)
+                    .setHostnameVerifier(new NoopHostnameVerifier()).build();
+            /* formatter:on */
+
+            HttpClientConnectionManager connectionManager = PoolingHttpClientConnectionManagerBuilder.create().setSSLSocketFactory(sslSocketFactory).build();
+            clientBuilder.setConnectionManager(connectionManager);
         }
 
         CloseableHttpClient httpClient = clientBuilder.build();
@@ -138,46 +149,10 @@ public class TrustAllSupport {
             return new InetAddress[] { InetAddress.getByAddress(new byte[] { 1, 1, 1, 1 }) };
         }
 
+        @Override
+        public String resolveCanonicalHostname(String host) throws UnknownHostException {
+            return "fakeHost";
+        }
+
     }
-
-    private class SocksProxyConnectionSocketFactory extends PlainConnectionSocketFactory {
-        @Override
-        public Socket createSocket(final HttpContext context) throws IOException {
-            InetSocketAddress socksaddr = new InetSocketAddress(config.getProxyHostname(), config.getProxyPort());
-            Proxy proxy = new Proxy(Proxy.Type.SOCKS, socksaddr);
-            return new Socket(proxy);
-        }
-
-        @Override
-        public Socket connectSocket(int connectTimeout, Socket socket, HttpHost host, InetSocketAddress remoteAddress, InetSocketAddress localAddress,
-                HttpContext context) throws IOException {
-            // Convert address to unresolved
-            InetSocketAddress unresolvedRemote = InetSocketAddress.createUnresolved(host.getHostName(), remoteAddress.getPort());
-            return super.connectSocket(connectTimeout, socket, host, unresolvedRemote, localAddress, context);
-        }
-    }
-
-    private class SocksProxySSLConnectionSocketFactory extends SSLConnectionSocketFactory {
-
-        public SocksProxySSLConnectionSocketFactory(final SSLContext sslContext) {
-            // You may need this verifier if target site's certificate is not secure
-            super(sslContext, NoopHostnameVerifier.INSTANCE);
-        }
-
-        @Override
-        public Socket createSocket(final HttpContext context) throws IOException {
-            InetSocketAddress socksaddr = new InetSocketAddress(config.getProxyHostname(), config.getProxyPort());
-            Proxy proxy = new Proxy(Proxy.Type.SOCKS, socksaddr);
-            return new Socket(proxy);
-        }
-
-        @Override
-        public Socket connectSocket(int connectTimeout, Socket socket, HttpHost host, InetSocketAddress remoteAddress, InetSocketAddress localAddress,
-                HttpContext context) throws IOException {
-            // Convert address to unresolved
-            InetSocketAddress unresolvedRemote = InetSocketAddress.createUnresolved(host.getHostName(), remoteAddress.getPort());
-            return super.connectSocket(connectTimeout, socket, host, unresolvedRemote, localAddress, context);
-        }
-    }
-
 }

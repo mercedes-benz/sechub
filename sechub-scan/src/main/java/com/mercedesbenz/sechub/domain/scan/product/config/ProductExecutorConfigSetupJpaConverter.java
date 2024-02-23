@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.domain.scan.product.config;
 
-import javax.persistence.AttributeConverter;
+import jakarta.persistence.AttributeConverter;
 
 public class ProductExecutorConfigSetupJpaConverter implements AttributeConverter<ProductExecutorConfigSetup, String> {
 

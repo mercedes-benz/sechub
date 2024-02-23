@@ -6,8 +6,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
-import javax.annotation.security.RolesAllowed;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.context.annotation.Profile;
@@ -29,6 +27,8 @@ import com.mercedesbenz.sechub.sharedkernel.RoleConstants;
 import com.mercedesbenz.sechub.sharedkernel.Step;
 import com.mercedesbenz.sechub.sharedkernel.usecases.admin.project.UseCaseUpdateProjectMetaData;
 import com.mercedesbenz.sechub.sharedkernel.usecases.admin.project.UseCaseUpdateProjectWhitelist;
+
+import jakarta.annotation.security.RolesAllowed;
 
 /**
  * The rest api for user administration done by a super admin.

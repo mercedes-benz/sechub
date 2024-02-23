@@ -1,10 +1,10 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.pds;
 
-import javax.annotation.PostConstruct;
-
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
+
+import jakarta.annotation.PostConstruct;
 
 /**
  * This component injects some special PDS Spring Boot values into corresponding

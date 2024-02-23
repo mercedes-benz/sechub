@@ -25,6 +25,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.mercedesbenz.sechub.sharedkernel.APIConstants;
+import com.mercedesbenz.sechub.sharedkernel.AuthorityConstants;
 import com.mercedesbenz.sechub.sharedkernel.Profiles;
 import com.mercedesbenz.sechub.sharedkernel.UserContextService;
 import com.mercedesbenz.sechub.sharedkernel.autocleanup.IntegrationTestAutoCleanupResultInspector;
@@ -176,13 +177,15 @@ public class IntegrationTestServerRestController {
     public boolean checkRole(@PathVariable("role") String role) {
         String authories = userContextService.getAuthories();
         String userId = userContextService.getUserId();
+
         LOG.info("Integration test server wants to know if current user '{}' has role '{}'", userId, role);
+
         boolean hasRole = false;
         if (authories != null) {
-            String authRole = "ROLE_" + role.toUpperCase();
-            hasRole = authories.indexOf(authRole) != -1;
+            String authority = AuthorityConstants.AUTHORITY_ROLE_PREFIX + role.toUpperCase();
+            hasRole = authories.indexOf(authority) != -1;
 
-            LOG.debug("Check if authRole '{}' contained in authorities '{}'", authRole, authories);
+            LOG.debug("Check if authRole '{}' contained in authorities '{}'", authority, authories);
         } else {
             LOG.info("No authorities found - return false");
         }

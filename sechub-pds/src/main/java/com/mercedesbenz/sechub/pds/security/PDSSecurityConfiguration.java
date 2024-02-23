@@ -5,20 +5,20 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
-import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
+import org.springframework.security.provisioning.UserDetailsManager;
 
 import com.mercedesbenz.sechub.pds.PDSMustBeDocumented;
 
 @Configuration
-@EnableGlobalMethodSecurity(jsr250Enabled = true)
+@EnableMethodSecurity(jsr250Enabled = true)
 @EnableWebSecurity
 @Order(1)
-public class PDSSecurityConfiguration extends AbstractAllowPDSAPISecurityConfiguration {
+public class PDSSecurityConfiguration {
 
     /*
      * TODO Albert Tregnaghi, 2020-06-18: extreme simple approach: we just allow ONE
@@ -49,8 +49,7 @@ public class PDSSecurityConfiguration extends AbstractAllowPDSAPISecurityConfigu
     String adminApiToken;
 
     @Bean
-    @Override
-    public UserDetailsService userDetailsService() {
+    public UserDetailsManager userDetailsService() {
         /* @formatter:off */
 
         PDSPasswordTransformer pdsPasswordTransformer = new PDSPasswordTransformer();

@@ -5,8 +5,6 @@ import java.time.LocalDateTime;
 import java.util.Optional;
 import java.util.UUID;
 
-import javax.annotation.PostConstruct;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,6 +20,8 @@ import com.mercedesbenz.sechub.pds.execution.PDSExecutionStatus;
 import com.mercedesbenz.sechub.pds.usecase.PDSStep;
 import com.mercedesbenz.sechub.pds.usecase.UseCaseAdminFetchesMonitoringStatus;
 import com.mercedesbenz.sechub.pds.util.PDSLocalhostDataBuilder;
+
+import jakarta.annotation.PostConstruct;
 
 @Service
 public class PDSHeartBeatTriggerService {

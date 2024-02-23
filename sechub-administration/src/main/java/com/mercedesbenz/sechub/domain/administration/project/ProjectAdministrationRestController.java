@@ -7,9 +7,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
-import javax.annotation.security.RolesAllowed;
-import javax.validation.Valid;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.context.annotation.Profile;
@@ -40,6 +37,9 @@ import com.mercedesbenz.sechub.sharedkernel.usecases.admin.project.UseCaseAdmini
 import com.mercedesbenz.sechub.sharedkernel.usecases.admin.user.UseCaseAdminAssignsUserToProject;
 import com.mercedesbenz.sechub.sharedkernel.usecases.admin.user.UseCaseAdminChangesProjectOwner;
 import com.mercedesbenz.sechub.sharedkernel.usecases.admin.user.UseCaseAdminUnassignsUserFromProject;
+
+import jakarta.annotation.security.RolesAllowed;
+import jakarta.validation.Valid;
 
 /**
  * The REST API for project administration done by a super admin.

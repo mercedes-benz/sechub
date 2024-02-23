@@ -1,12 +1,16 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.commons.core.security;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
+import java.security.MessageDigest;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -32,6 +36,13 @@ class CheckSumSupportTest {
         assertEquals("59060b6b4e8d137596dc01ec15d5da1ab4c4ad0d756c780ed88225f082ae87b7", checksum);
 
         inputStream.close();
+    }
+
+    @Test
+    void test_sha256_sum_digest_creation_works() {
+        MessageDigest digest = serviceToTest.createSha256MessageDigest();
+
+        assertNotNull(digest);
     }
 
     @Test

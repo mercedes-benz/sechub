@@ -1,8 +1,6 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.pds.config;
 
-import javax.annotation.security.RolesAllowed;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.http.HttpStatus;
@@ -22,6 +20,8 @@ import com.mercedesbenz.sechub.pds.usecase.PDSStep;
 import com.mercedesbenz.sechub.pds.usecase.UseCaseAdminFetchesAutoCleanupConfiguration;
 import com.mercedesbenz.sechub.pds.usecase.UseCaseAdminFetchesServerConfiguration;
 import com.mercedesbenz.sechub.pds.usecase.UseCaseAdminUpdatesAutoCleanupConfiguration;
+
+import jakarta.annotation.security.RolesAllowed;
 
 /**
  * The REST API for PDS jobs

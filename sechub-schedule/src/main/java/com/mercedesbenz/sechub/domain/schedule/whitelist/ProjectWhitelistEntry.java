@@ -4,12 +4,12 @@ package com.mercedesbenz.sechub.domain.schedule.whitelist;
 import java.io.Serializable;
 import java.net.URI;
 
-import javax.persistence.Column;
-import javax.persistence.Embeddable;
-import javax.persistence.EmbeddedId;
-import javax.persistence.Entity;
-import javax.persistence.Table;
-import javax.persistence.Version;
+import jakarta.persistence.Column;
+import jakarta.persistence.Embeddable;
+import jakarta.persistence.EmbeddedId;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Table;
+import jakarta.persistence.Version;
 
 /**
  * This entity represents only the whitelist uri entries for a project

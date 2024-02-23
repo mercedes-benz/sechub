@@ -3,8 +3,6 @@ package com.mercedesbenz.sechub.domain.administration.user;
 
 import java.util.List;
 
-import javax.annotation.security.RolesAllowed;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.context.annotation.Profile;
@@ -29,6 +27,8 @@ import com.mercedesbenz.sechub.sharedkernel.usecases.admin.user.UseCaseAdminRevo
 import com.mercedesbenz.sechub.sharedkernel.usecases.admin.user.UseCaseAdminShowsUserDetails;
 import com.mercedesbenz.sechub.sharedkernel.usecases.admin.user.UseCaseAdminShowsUserDetailsForEmailAddress;
 import com.mercedesbenz.sechub.sharedkernel.usecases.admin.user.UseCaseAdminUpdatesUserEmailAddress;
+
+import jakarta.annotation.security.RolesAllowed;
 
 /**
  * The rest api for user administration done by a super admin.

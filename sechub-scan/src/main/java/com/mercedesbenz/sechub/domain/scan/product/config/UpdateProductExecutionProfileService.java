@@ -7,9 +7,6 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 
-import javax.annotation.security.RolesAllowed;
-import javax.transaction.Transactional;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,6 +23,9 @@ import com.mercedesbenz.sechub.sharedkernel.usecases.admin.config.UseCaseAdminUn
 import com.mercedesbenz.sechub.sharedkernel.usecases.admin.config.UseCaseAdminUpdatesExecutorConfig;
 import com.mercedesbenz.sechub.sharedkernel.validation.ProductExecutionProfileIdValidation;
 import com.mercedesbenz.sechub.sharedkernel.validation.ProjectIdValidation;
+
+import jakarta.annotation.security.RolesAllowed;
+import jakarta.transaction.Transactional;
 
 @RolesAllowed(RoleConstants.ROLE_SUPERADMIN)
 @Profile(Profiles.ADMIN_ACCESS)

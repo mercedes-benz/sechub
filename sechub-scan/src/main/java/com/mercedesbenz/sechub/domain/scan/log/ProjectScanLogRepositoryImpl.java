@@ -5,9 +5,9 @@ import static com.mercedesbenz.sechub.domain.scan.log.ProjectScanLog.*;
 
 import java.util.List;
 
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
-import javax.persistence.Query;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
+import jakarta.persistence.Query;
 
 public class ProjectScanLogRepositoryImpl implements ProjectScanLogRepositoryCustom {
 

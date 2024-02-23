@@ -3,9 +3,6 @@ package com.mercedesbenz.sechub.server.core;
 
 import java.io.IOException;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 import org.apache.catalina.connector.RequestFacade;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -15,6 +12,9 @@ import org.springframework.security.web.firewall.RequestRejectedException;
 
 import com.mercedesbenz.sechub.sharedkernel.logging.SecurityLogService;
 import com.mercedesbenz.sechub.sharedkernel.logging.SecurityLogType;
+
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
 /**
  * A special request reject handler which logs client IP adresses into security

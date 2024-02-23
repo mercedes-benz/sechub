@@ -1,0 +1,30 @@
+# SPDX-License-Identifier: MIT
+
+pds:
+   server:
+      baseurl: http://localhost
+   config:
+      scheduling:
+         enable: false # scheduler turned off in normal junit tests
+      heartbeat:
+         enable: false # heartbeat turned off in normal junit tests
+      file: "./src/test/resources/config/pds-config-test.json"
+   storage:
+      sharedvolume:
+         upload:
+            dir: temp
+# security credentials for tests
+   techuser:
+      userid: test-techuser
+      apitoken: apitoken-just-for-testing-only
+   admin:
+      userid: test-admin
+      apitoken: apitoken-just-for-testing-only
+spring:
+   jpa:
+      hibernate:
+         ddl-auto: create-drop # always drop and recreate ddl for tests
+   datasource:
+      initialization-mode: never
+   flyway:
+      enabled: false # Flyway turned off for testing!

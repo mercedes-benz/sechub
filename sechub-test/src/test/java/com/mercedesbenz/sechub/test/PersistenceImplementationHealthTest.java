@@ -9,14 +9,14 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
-import javax.persistence.Entity;
-import javax.persistence.Version;
-
 import org.junit.BeforeClass;
 import org.junit.Test;
 
 import com.mercedesbenz.sechub.docgen.reflections.Reflections;
 import com.mercedesbenz.sechub.docgen.util.ReflectionsFactory;
+
+import jakarta.persistence.Entity;
+import jakarta.persistence.Version;
 
 public class PersistenceImplementationHealthTest {
     private static Reflections reflections;

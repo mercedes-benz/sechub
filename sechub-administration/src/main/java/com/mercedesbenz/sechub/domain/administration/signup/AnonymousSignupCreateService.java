@@ -3,8 +3,6 @@ package com.mercedesbenz.sechub.domain.administration.signup;
 
 import java.util.Optional;
 
-import javax.validation.Valid;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,6 +21,8 @@ import com.mercedesbenz.sechub.sharedkernel.messaging.MessageID;
 import com.mercedesbenz.sechub.sharedkernel.messaging.UserMessage;
 import com.mercedesbenz.sechub.sharedkernel.usecases.user.UseCaseUserSignup;
 import com.mercedesbenz.sechub.sharedkernel.validation.UserInputAssertion;
+
+import jakarta.validation.Valid;
 
 @Service
 public class AnonymousSignupCreateService {

@@ -1,14 +1,13 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.pds;
 
-import static org.assertj.core.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
 
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.TestPropertySource;
-import org.springframework.test.context.junit4.SpringRunner;
 
 import com.mercedesbenz.sechub.pds.job.PDSJobRestController;
 
@@ -19,9 +18,9 @@ import com.mercedesbenz.sechub.pds.job.PDSJobRestController;
  * @author Albert Tregnaghi
  *
  */
-@RunWith(SpringRunner.class)
 @SpringBootTest
-@TestPropertySource(locations = "classpath:application-test.properties")
+@TestPropertySource(locations = "classpath:application-pds_test.yml")
+@ActiveProfiles(PDSProfiles.TEST)
 public class PDSJobSchedulerSmokeSpringBootTest {
 
     @Autowired

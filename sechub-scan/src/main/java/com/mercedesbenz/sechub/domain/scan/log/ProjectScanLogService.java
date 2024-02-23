@@ -6,8 +6,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
-import javax.annotation.security.RolesAllowed;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,6 +15,8 @@ import org.springframework.stereotype.Service;
 import com.mercedesbenz.sechub.domain.scan.SecHubExecutionContext;
 import com.mercedesbenz.sechub.sharedkernel.RoleConstants;
 import com.mercedesbenz.sechub.sharedkernel.logging.LogSanitizer;
+
+import jakarta.annotation.security.RolesAllowed;
 
 @Service
 public class ProjectScanLogService {

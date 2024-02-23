@@ -31,7 +31,7 @@ public class AnonymousUserGetApiTokenByOneTimeTokenRestController {
 	@GetMapping(path = AdministrationAPIConstants.API_FETCH_NEW_API_TOKEN_BY_ONE_WAY_TOKEN+"/{oneTimeToken}",
 				produces= {MediaType.TEXT_PLAIN_VALUE})
 	@ResponseBody
-	public String getNewAPITokenByOneTimeToken(@PathVariable String oneTimeToken) {
+	public String getNewAPITokenByOneTimeToken(@PathVariable(name = "oneTimeToken", required = true) String oneTimeToken) {
 		/* @formatter:on */
         return createUserAPITokenByOneTimeTokenService.createNewAPITokenForUserByOneTimeToken(oneTimeToken);
     }

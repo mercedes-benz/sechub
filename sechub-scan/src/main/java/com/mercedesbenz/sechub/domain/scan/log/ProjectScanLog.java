@@ -1,19 +1,13 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.domain.scan.log;
 
+import java.sql.Types;
 import java.time.LocalDateTime;
 import java.util.Objects;
 import java.util.UUID;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.Table;
-import javax.persistence.Version;
-
 import org.hibernate.annotations.GenericGenerator;
-import org.hibernate.annotations.Type;
+import org.hibernate.annotations.JdbcTypeCode;
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility;
@@ -21,6 +15,13 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.mercedesbenz.sechub.commons.model.SecHubLocalDateTimeDeserializer;
 import com.mercedesbenz.sechub.commons.model.SecHubLocalDateTimeSerializer;
+
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
+import jakarta.persistence.Version;
 
 /**
  * Represents a mapping between a scan, job and and job configuration. So its an
@@ -82,7 +83,7 @@ public class ProjectScanLog {
     @Column(name = COLUMN_SECHUB_JOB_UUID, nullable = false, columnDefinition = "UUID")
     UUID sechubJobUUID;
 
-    @Type(type = "text")
+    @JdbcTypeCode(Types.LONGVARCHAR)
     @Column(name = COLUMN_CONFIG)
     String config;
 
