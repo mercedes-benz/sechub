@@ -166,7 +166,7 @@ class DefaultSecurityLogServiceTest {
 
         // basicAuthUser
         JsonNode basicAuthUserNode = jsonNode.get("basicAuthUser");
-        assertEquals("resolved-basic-auth-user", basicAuthUserNode.textValue());
+        assertEquals("sanitizedresolved-basic-auth-user", basicAuthUserNode.textValue());
 
         // http headers from session
         JsonNode httpHeaders = jsonNode.get("httpHeaders");
