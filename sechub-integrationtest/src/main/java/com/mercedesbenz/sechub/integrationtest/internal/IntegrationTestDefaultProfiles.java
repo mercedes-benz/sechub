@@ -572,7 +572,6 @@ public class IntegrationTestDefaultProfiles {
     public static final DefaultTestExecutionProfile PROFILE_27_PDS_SOLUTION_FINDSECURITYBUGS_MOCKED = defineProfileForPdsSolutionMockMode(27,
             IntegrationTestDefaultExecutorConfigurations.PDS_V1_PDS_SOLUTION_FINDSECURITYBUGS_MOCKED);
 
-    // TODO prepare
     /**
      * The profile enables a PDS prepare. Simulated preparation is successful
      *
@@ -584,7 +583,6 @@ public class IntegrationTestDefaultProfiles {
      */
     public static final DefaultTestExecutionProfile PROFILE_28_PDS_PREPARE_MOCKED_SUCCESS = defineProfile28();
 
-    // TODO prepare
     /**
      * The profile enables a PDS prepare. Simulated preparation is failing - exit
      * code 0, but no result file
@@ -597,7 +595,6 @@ public class IntegrationTestDefaultProfiles {
      */
     public static final DefaultTestExecutionProfile PROFILE_29_PDS_PREPARE_FAILING = defineProfile29();
 
-    // TODO prepare
     /**
      * The profile enables a PDS prepare. Simulated preparation is failing with exit
      * code 5

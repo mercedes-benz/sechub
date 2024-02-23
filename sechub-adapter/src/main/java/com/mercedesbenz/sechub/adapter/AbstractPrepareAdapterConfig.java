@@ -4,7 +4,6 @@ public abstract class AbstractPrepareAdapterConfig extends AbstractAdapterConfig
     @Override
     public String getTargetAsString() {
         return null;
-        // TODO ?
         // for prepare we cannot define a target as a string
     }
 }

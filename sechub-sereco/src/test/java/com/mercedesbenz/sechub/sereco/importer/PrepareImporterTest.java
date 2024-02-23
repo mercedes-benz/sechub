@@ -12,7 +12,7 @@ import org.junit.jupiter.params.provider.ValueSource;
 import com.mercedesbenz.sechub.commons.core.prepare.PrepareConstants;
 import com.mercedesbenz.sechub.sereco.ImportParameter;
 
-class PrepareMessagesImporterTest {
+class PrepareImporterTest {
 
     @Test
     void isForSecurityProduct_interface_default_is_true() {

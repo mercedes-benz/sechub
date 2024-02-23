@@ -13,12 +13,8 @@ import com.mercedesbenz.sechub.commons.model.ScanType;
 import com.mercedesbenz.sechub.sereco.metadata.SerecoMetaData;
 
 /**
- * Special imported for prepare phase. Here we do not import any findings, but
- * we provide the possibility to import defined user messages for reporting.
- *
- * The keyword for a sucessful preparation is {@link #SECHUB_PREPARE_DONE} :
- * {@value #SECHUB_PREPARE_DONE} inside the result text file of a PDS job result
- * (or a direct variant if there is any).
+ * Imported for the prepare phase (PDS_PREPARE). No findings are imported but a {@link #SECHUB_PREPARE_RESULT},
+ * with status=ok or status=failed is returned
  *
  * @author Albert Tregnaghi
  *

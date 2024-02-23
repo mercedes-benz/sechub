@@ -263,7 +263,6 @@ public abstract class AbstractProductExecutor implements ProductExecutor {
             return true;
         case PREPARE:
             return true;
-        // TODO prepare ?
         case UNKNOWN:
             return false;
         default:

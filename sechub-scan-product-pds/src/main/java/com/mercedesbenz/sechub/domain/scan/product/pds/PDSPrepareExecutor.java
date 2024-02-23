@@ -26,21 +26,17 @@ public class PDSPrepareExecutor extends AbstractPDSProductExecutor {
     @Override
     protected List<ProductResult> executeByAdapter(ProductExecutorData data, PDSExecutorConfigSupport configSupport, PDSStorageContentProvider contentProvider)
             throws Exception {
-        // TODO prepare phase
         ProductExecutorContext executorContext = data.getProductExecutorContext();
 
         ProductResult result = resilientActionExecutor.executeResilient(() -> {
 
-            try (InputStream sourceCodeZipFileInputStreamOrNull = contentProvider.getSourceZipFileInputStreamOrNull();
-                    InputStream binariesTarFileInputStreamOrNull = contentProvider.getBinariesTarFileInputStreamOrNull()) { /* @formatter:off */
 
+                /* @formatter:off */
                 PDSPrepareConfig pdsPrepareConfig = PDSPrepareConfigImpl.builder().
                         configure(PDSAdapterConfigurationStrategy.builder().
                                 setScanType(getScanType()).
                                 setProductExecutorData(data).
                                 setConfigSupport(configSupport).
-                                setSourceCodeZipFileInputStreamOrNull(sourceCodeZipFileInputStreamOrNull).
-                                setBinariesTarFileInputStreamOrNull(binariesTarFileInputStreamOrNull).
                                 setContentProvider(contentProvider).
                                 setInstallSetup(installSetup).
                                 build()).
@@ -61,7 +57,7 @@ public class PDSPrepareExecutor extends AbstractPDSProductExecutor {
                 data.forgetRememberedAdapterConfig();
 
                 return updateCurrentProductResult(adapterResult, executorContext);
-            }
+
         });
         return Collections.singletonList(result);
 
