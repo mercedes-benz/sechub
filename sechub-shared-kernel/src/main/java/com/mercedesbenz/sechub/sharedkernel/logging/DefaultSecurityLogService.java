@@ -154,8 +154,8 @@ public class DefaultSecurityLogService implements SecurityLogService {
 
         logData.userId = userContextService.getUserId();
 
-        String authHeader = request.getHeader("authorization");
-        logData.basicAuthUser = basicAuthUserExtraction.extractUserFromAuthHeader(authHeader);
+        String userFromAuthHeader = basicAuthUserExtraction.extractUserFromAuthHeader(request.getHeader("authorization"));
+        logData.basicAuthUser = logSanititzer.sanitize(userFromAuthHeader, 100, false); // without log forgery handling, we want the origin output
 
         return logData;
     }
