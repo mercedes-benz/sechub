@@ -44,12 +44,15 @@ class DefaultSecurityLogServiceTest {
     private HttpSession httpSession;
     private HttpServletRequest request;
     private AuthorizeValueObfuscator authorizedValueObfuscator;
+    private BasicAuthUserExtraction basicAuthUserExtraction;
 
     @BeforeEach
     void beforeEach() {
         logger = mock(Logger.class);
 
         userContextService = mock(UserContextService.class);
+        basicAuthUserExtraction = mock(BasicAuthUserExtraction.class);
+        when(basicAuthUserExtraction.extractUserFromAuthHeader(VALUE_AUTHORIZE)).thenReturn("resolved-basic-auth-user");
 
         // mock logsanitizer
         logsanitzer = mock(LogSanitizer.class);
@@ -65,6 +68,7 @@ class DefaultSecurityLogServiceTest {
         request = mock(HttpServletRequest.class);
         ServletRequestAttributes attributes = new ServletRequestAttributes(request); // final methods, so not by mockito
         httpSession = mock(HttpSession.class);
+        when(request.getHeader("authorization")).thenReturn(VALUE_AUTHORIZE);
         when(request.getRemoteAddr()).thenReturn("fake-remote-addr");
         when(httpSession.getId()).thenReturn("fake-http-session-id");
         when(request.getRequestURI()).thenReturn("fake-request-uri");
@@ -107,7 +111,7 @@ class DefaultSecurityLogServiceTest {
         serviceToTest.userContextService = userContextService;
         serviceToTest.requestAttributesProvider = requestAttributesProvider;
         serviceToTest.authorizedValueObfuscator = authorizedValueObfuscator;
-
+        serviceToTest.basicAuthUserExtraction = basicAuthUserExtraction;
     }
 
     @Test
@@ -159,6 +163,10 @@ class DefaultSecurityLogServiceTest {
         // type
         JsonNode typeNode = jsonNode.get("type");
         assertEquals(SecurityLogType.POTENTIAL_INTRUSION.name(), typeNode.textValue());
+
+        // basicAuthUser
+        JsonNode basicAuthUserNode = jsonNode.get("basicAuthUser");
+        assertEquals("resolved-basic-auth-user", basicAuthUserNode.textValue());
 
         // http headers from session
         JsonNode httpHeaders = jsonNode.get("httpHeaders");
