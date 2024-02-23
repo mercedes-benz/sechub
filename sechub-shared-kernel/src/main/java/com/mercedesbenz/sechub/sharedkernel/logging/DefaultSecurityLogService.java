@@ -31,7 +31,7 @@ import com.mercedesbenz.sechub.sharedkernel.UserContextService;
  *
  */
 @Service
-@Profile("!" + Profiles.INTEGRATIONTEST)
+@Profile("!" + Profiles.INTEGRATIONTEST) // For integration testing we extend this service! See hierarchy
 public class DefaultSecurityLogService implements SecurityLogService {
 
     private static final int MINIMUM_LENGTH_TO_SHOW_PWD_INT = 52;
@@ -47,6 +47,9 @@ public class DefaultSecurityLogService implements SecurityLogService {
 
     @Autowired
     AuthorizeValueObfuscator authorizedValueObfuscator;
+
+    @Autowired
+    BasicAuthUserExtraction basicAuthUserExtraction;
 
     private int MAXIMUM_HEADER_AMOUNT_TO_SHOW = 300;
 
@@ -114,7 +117,8 @@ public class DefaultSecurityLogService implements SecurityLogService {
         paramList.add(logData.getType().getTypeId());
 
         try {
-            paramList.add(objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(logData));
+            String logDataAsJson = objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(logData);
+            paramList.add(logDataAsJson);
         } catch (JsonProcessingException e) {
             getLogger().error("Was not able to write security log data as json - will fallback to empty JSON", e);
 
@@ -149,6 +153,9 @@ public class DefaultSecurityLogService implements SecurityLogService {
         collectRequestInfo(request, logData);
 
         logData.userId = userContextService.getUserId();
+
+        String authHeader = request.getHeader("authorization");
+        logData.basicAuthUser = basicAuthUserExtraction.extractUserFromAuthHeader(authHeader);
 
         return logData;
     }
