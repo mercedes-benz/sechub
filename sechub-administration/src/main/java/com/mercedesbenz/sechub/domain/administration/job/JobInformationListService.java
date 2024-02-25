@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.domain.administration.job;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,9 +17,19 @@ public class JobInformationListService {
     JobInformationRepository repository;
 
     @UseCaseAdminListsAllRunningJobs(@Step(number = 2, name = "Fetchjob information from database", description = "Fetches stored job information from administration database."))
-    public List<JobInformation> fetchRunningJobs() {
+    public List<JobInformationListEntry> fetchRunningJobs() {
 
-        return repository.findAllRunningJobs();
+        List<JobInformation> jobInformationList = repository.findAllRunningJobs();
+
+        List<JobInformationListEntry> result = new ArrayList<>(jobInformationList.size());
+        for (JobInformation jobInformation : jobInformationList) {
+            JobInformationListEntry entry = new JobInformationListEntry(jobInformation.jobUUID, jobInformation.since, jobInformation.status,
+                    jobInformation.projectId);
+            result.add(entry);
+        }
+
+        return result;
+
     }
 
 }
