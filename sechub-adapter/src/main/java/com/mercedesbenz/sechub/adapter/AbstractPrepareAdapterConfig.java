@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.adapter;
 
 public abstract class AbstractPrepareAdapterConfig extends AbstractAdapterConfig implements PrepareAdapterConfig {

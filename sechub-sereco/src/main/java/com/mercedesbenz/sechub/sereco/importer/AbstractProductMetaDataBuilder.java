@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.sereco.importer;
 
 import com.mercedesbenz.sechub.sereco.ImportParameter;
