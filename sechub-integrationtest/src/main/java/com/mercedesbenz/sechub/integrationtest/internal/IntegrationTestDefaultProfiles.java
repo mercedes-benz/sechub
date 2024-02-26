@@ -573,6 +573,41 @@ public class IntegrationTestDefaultProfiles {
             IntegrationTestDefaultExecutorConfigurations.PDS_V1_PDS_SOLUTION_FINDSECURITYBUGS_MOCKED);
 
     /**
+     * The profile enables a PDS prepare. Simulated preparation is successful
+     *
+     * <h5>Used inside scenarios:</h5>
+     * <ul>
+     * <li>{@link Scenario22}</li>
+     * </ul>
+     *
+     */
+    public static final DefaultTestExecutionProfile PROFILE_28_PDS_PREPARE_MOCKED_SUCCESS = defineProfile28();
+
+    /**
+     * The profile enables a PDS prepare. Simulated preparation is failing - exit
+     * code 0, but no result file
+     *
+     * <h5>Used inside scenarios:</h5>
+     * <ul>
+     * <li>{@link Scenario22}</li>
+     * </ul>
+     *
+     */
+    public static final DefaultTestExecutionProfile PROFILE_29_PDS_PREPARE_FAILING = defineProfile29();
+
+    /**
+     * The profile enables a PDS prepare. Simulated preparation is failing with exit
+     * code 5
+     *
+     * <h5>Used inside scenarios:</h5>
+     * <ul>
+     * <li>{@link Scenario22}</li>
+     * </ul>
+     *
+     */
+    public static final DefaultTestExecutionProfile PROFILE_30_PDS_PREPARE_EXIT_5 = defineProfile30();
+
+    /**
      * @return all default profiles
      */
     public static List<DefaultTestExecutionProfile> getAllDefaultProfiles() {
@@ -752,6 +787,36 @@ public class IntegrationTestDefaultProfiles {
         profile.initialConfigurationsWithoutUUID.add(IntegrationTestDefaultExecutorConfigurations.PDS_V1_SECRET_SCAN_A);
         profile.id = "inttest-p17-pds-secretscan";
         profile.description = "Profile 17: PDS secret scan, reused storage, SARIF JSON file returned";
+        profile.enabled = true;
+        return profile;
+    }
+
+    private static DefaultTestExecutionProfile defineProfile28() {
+
+        DefaultTestExecutionProfile profile = new DefaultTestExecutionProfile();
+        profile.initialConfigurationsWithoutUUID.add(IntegrationTestDefaultExecutorConfigurations.PDS_V1_PREPARE_INTEGRATIONTEST_VARIANT_A);
+        profile.id = "inttest-p28-pds-prepare";
+        profile.description = "Profile 28: PDS prepare, reused storage, dynamic text results, variant a - prepare simulated sucessful";
+        profile.enabled = true;
+        return profile;
+    }
+
+    private static DefaultTestExecutionProfile defineProfile29() {
+
+        DefaultTestExecutionProfile profile = new DefaultTestExecutionProfile();
+        profile.initialConfigurationsWithoutUUID.add(IntegrationTestDefaultExecutorConfigurations.PDS_V1_PREPARE_INTEGRATIONTEST_VARIANT_B);
+        profile.id = "inttest-p29-pds-prepare";
+        profile.description = "Profile 29: PDS prepare, reused storage, dynamic text results, variant b - prepare simulated failing with exit code 0, no result file";
+        profile.enabled = true;
+        return profile;
+    }
+
+    private static DefaultTestExecutionProfile defineProfile30() {
+
+        DefaultTestExecutionProfile profile = new DefaultTestExecutionProfile();
+        profile.initialConfigurationsWithoutUUID.add(IntegrationTestDefaultExecutorConfigurations.PDS_V1_PREPARE_INTEGRATIONTEST_VARIANT_C);
+        profile.id = "inttest-p30-pds-prepare";
+        profile.description = "Profile 30: PDS prepare, reused storage, dynamic text results, variant c - prepare simulated script failure with exit code 5";
         profile.enabled = true;
         return profile;
     }

@@ -142,6 +142,7 @@ public class CommandUI {
         register(ShowProductExecutorTemplatesDialogActionFactory.createPDS_WEBSCAN_V1Action(context));
         register(ShowProductExecutorTemplatesDialogActionFactory.createPDS_INFRASCAN_V1Action(context));
         register(ShowProductExecutorTemplatesDialogActionFactory.createPDS_LICENSESCAN_V1Action(context));
+        register(ShowProductExecutorTemplatesDialogActionFactory.createPDS_PREPARE_V1Action(context));
         register(ShowProductExecutorTemplatesDialogActionFactory.createPDS_ANALYTICS_V1Action(context));
 
         panel = new JPanel(new BorderLayout());

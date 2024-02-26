@@ -7,7 +7,6 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
-import org.junit.jupiter.params.provider.EnumSource.Mode;
 
 import com.mercedesbenz.sechub.api.internal.gen.model.OpenApiScanJob;
 import com.mercedesbenz.sechub.commons.model.JSONConverter;
@@ -33,8 +32,8 @@ class OpenApiSecHubClientConversionHelperTest {
     }
 
     @ParameterizedTest
-    @EnumSource(value = ScanType.class, names = { "REPORT", "ANALYTICS", "UNKNOWN" }, mode = Mode.EXCLUDE)
-    void scanTypes_are_available_in_origin_config_also_converted_json(ScanType type) throws Exception {
+    @EnumSource(value = ScanType.class)
+    void scantype_is_either_internal_or_public_but_available_in_origin_config_also_converted_json(ScanType type) throws Exception {
 
         /* prepare */
         SecHubConfigurationModel configuration = new SecHubConfigurationModel();
@@ -62,7 +61,11 @@ class OpenApiSecHubClientConversionHelperTest {
             configuration.setWebScan(webScan);
             break;
         default:
-            throw new IllegalStateException("Not tested scan type: " + type + ". Must be implemented inside this test");
+            if (type.isInternalScanType()) {
+                /* we just ignore internal scan types - they are not configurable inside json */
+                return;
+            }
+            throw new IllegalStateException("Not tested public scan type: " + type + ". Must be implemented inside this test");
         }
 
         /* execute */

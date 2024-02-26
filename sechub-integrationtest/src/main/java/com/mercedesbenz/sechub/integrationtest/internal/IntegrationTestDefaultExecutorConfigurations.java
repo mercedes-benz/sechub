@@ -66,6 +66,10 @@ public class IntegrationTestDefaultExecutorConfigurations {
     public static final String PDS_WEBSCAN_VARIANT_A = "a";
     public static final String PDS_WEBSCAN_VARIANT_B = "b";
 
+    public static final String PDS_PREPARE_VARIANT_A = "a";
+    public static final String PDS_PREPARE_VARIANT_B = "b";
+    public static final String PDS_PREPARE_VARIANT_C = "c";
+
     public static final String PDS_LICENSESCAN_VARIANT_A = "a";
 
     public static final String PDS_SECRETSCAN_VARIANT_A = "a";
@@ -216,6 +220,24 @@ public class IntegrationTestDefaultExecutorConfigurations {
             PDSIntTestProductIdentifier.PDS_INTTEST_PRODUCT_ANALYZE,
             StorageType.REUSE_SECHUB_DATA,
             PDS_ANALYTICS);
+
+    public static final TestExecutorConfig PDS_V1_PREPARE_INTEGRATIONTEST_VARIANT_A = definePDSScan(
+            PDS_PREPARE_VARIANT_A, false,
+            PDSIntTestProductIdentifier.PDS_INTTEST_PRODUCT_PREPARE,
+            StorageType.REUSE_SECHUB_DATA,
+            PDS_PREPARE);
+
+    public static final TestExecutorConfig PDS_V1_PREPARE_INTEGRATIONTEST_VARIANT_B = definePDSScan(
+            PDS_PREPARE_VARIANT_B, false,
+            PDSIntTestProductIdentifier.PDS_INTTEST_PRODUCT_PREPARE,
+            StorageType.REUSE_SECHUB_DATA,
+            PDS_PREPARE);
+
+    public static final TestExecutorConfig PDS_V1_PREPARE_INTEGRATIONTEST_VARIANT_C = definePDSScan(
+            PDS_PREPARE_VARIANT_C, false,
+            PDSIntTestProductIdentifier.PDS_INTTEST_PRODUCT_PREPARE,
+            StorageType.REUSE_SECHUB_DATA,
+            PDS_PREPARE);
 
 
     /* ----------------------------------------------------------------*/
