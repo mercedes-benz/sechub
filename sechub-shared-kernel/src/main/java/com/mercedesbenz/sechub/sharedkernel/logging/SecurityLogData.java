@@ -10,8 +10,10 @@ import java.util.TreeMap;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
+import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 
 @JsonInclude(Include.NON_EMPTY)
+@JsonPropertyOrder(alphabetic = true)
 public class SecurityLogData {
 
     private static final SecurityLogType FALLBACK_TYPE = SecurityLogType.UNKNOWN;
@@ -29,6 +31,8 @@ public class SecurityLogData {
 
     String sessionId;
     boolean afterSessionClosed;
+
+    String basicAuthUser;
 
     public boolean isAfterSessionClosed() {
         return afterSessionClosed;
@@ -78,6 +82,10 @@ public class SecurityLogData {
 
     public List<String> getTraceInformation() {
         return traceInformation;
+    }
+
+    public String getBasicAuthUser() {
+        return basicAuthUser;
     }
 
 }
