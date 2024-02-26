@@ -1,9 +1,11 @@
 // SPDX-License-Identifier: MIT
-package com.mercedesbenz.sechub.domain.scan;
+package com.mercedesbenz.sechub.domain.scan.report;
 
 import org.springframework.http.HttpStatus;
 
 import com.mercedesbenz.sechub.commons.core.util.SimpleStringUtils;
+import com.mercedesbenz.sechub.commons.model.ScanType;
+import com.mercedesbenz.sechub.commons.model.SecHubCodeCallStack;
 import com.mercedesbenz.sechub.commons.model.SecHubFinding;
 import com.mercedesbenz.sechub.commons.model.SecHubMessageType;
 import com.mercedesbenz.sechub.commons.model.web.SecHubReportWeb;
@@ -19,6 +21,7 @@ public class HTMLReportHelper {
     private static final String EMPTY_STRING = "";
     private static final int SHORT_VECTOR_SIZE = 80;
     private static final int SHORT_EVIDENCE_SIZE = 80;
+    private static final int MAX_LOCATION_INFO_STRING_LENTH = 180;
 
     public static HTMLReportHelper DEFAULT = new HTMLReportHelper();
 
@@ -28,6 +31,39 @@ public class HTMLReportHelper {
 
     public boolean hasSolution(SecHubFinding finding) {
         return SimpleStringUtils.isNotEmpty(getSolution(finding));
+    }
+
+    public String createShortLocationInfo(SecHubFinding finding) {
+
+        if (finding == null) {
+            return EMPTY_STRING;
+        }
+        ScanType scanType = finding.getType();
+        if (scanType == null) {
+            return EMPTY_STRING;
+        }
+
+        String locationInfo = "";
+        switch (scanType) {
+        case LICENSE_SCAN:
+        case SECRET_SCAN:
+        case CODE_SCAN:
+            SecHubCodeCallStack code = finding.getCode();
+            if (code != null) {
+                locationInfo = code.getLocation() + ", line:" + code.getLine() + ", column:" + code.getColumn();
+            }
+            break;
+        case INFRA_SCAN:
+            locationInfo = finding.getDescription();
+            break;
+        case WEB_SCAN:
+            locationInfo = createShortTargetLocation(finding.getWeb());
+            break;
+        default:
+            break;
+        }
+        return SimpleStringUtils.truncateWhenTooLong(locationInfo, MAX_LOCATION_INFO_STRING_LENTH);
+
     }
 
     public String getDescription(SecHubFinding finding) {
@@ -104,6 +140,9 @@ public class HTMLReportHelper {
     }
 
     public String createShortTargetLocation(SecHubReportWeb web) {
+        if (web == null) {
+            return EMPTY_STRING;
+        }
         String target = getTargetLocation(web);
         int questionMarkIndex = target.indexOf('?');
         if (questionMarkIndex != LINE_NOT_FOUND) {
@@ -113,6 +152,9 @@ public class HTMLReportHelper {
     }
 
     public String getTargetLocation(SecHubReportWeb web) {
+        if (web == null) {
+            return EMPTY_STRING;
+        }
         String target = web.getRequest().getTarget();
         if (target == null) {
             return EMPTY_STRING;
@@ -121,6 +163,9 @@ public class HTMLReportHelper {
     }
 
     public String createShortEvidence(SecHubReportWebAttack attack) {
+        if (attack == null) {
+            return EMPTY_STRING;
+        }
         String snippet = getEvidence(attack);
         return SimpleStringUtils.truncateWhenTooLong(snippet, SHORT_EVIDENCE_SIZE);
     }
@@ -138,6 +183,49 @@ public class HTMLReportHelper {
 
     public String createShortVector(SecHubReportWebAttack attack) {
         return SimpleStringUtils.truncateWhenTooLong(getVector(attack), SHORT_VECTOR_SIZE);
+    }
+
+    public String createFindingLink(SecHubFinding finding) {
+        return "#" + createFindingAnkerId(finding);
+    }
+
+    public String createFindingAnkerId(SecHubFinding finding) {
+        if (finding == null) {
+            return EMPTY_STRING;
+        }
+        return "finding_" + finding.getId();
+    }
+
+    public String createFirstFindingAnkerId(SecHubFinding finding) {
+        return getLinkSupport().createAnkerFirstOf(finding.getType(), finding.getSeverity());
+    }
+
+    public String createCweLink(SecHubFinding finding) {
+        if (finding == null) {
+            return EMPTY_STRING;
+        }
+        return createCweLink(finding.getCweId());
+    }
+
+    public String createCweLink(Integer cweId) {
+        if (cweId == null) {
+            return EMPTY_STRING;
+        }
+        return "https://cwe.mitre.org/data/definitions/" + cweId + ".html";
+    }
+
+    public String createCweText(SecHubFinding finding) {
+        if (finding == null) {
+            return EMPTY_STRING;
+        }
+        return createCweText(finding.getCweId());
+    }
+
+    public String createCweText(Integer cweId) {
+        if (cweId == null) {
+            return EMPTY_STRING;
+        }
+        return "CWE-" + cweId;
     }
 
     public String getVector(SecHubReportWebAttack attack) {
@@ -160,7 +248,11 @@ public class HTMLReportHelper {
             }
         }
         /* fallback always "no icon" */
-        return "";
+        return EMPTY_STRING;
+    }
+
+    private HTMLFirstLinkToSeveritySupport getLinkSupport() {
+        return HTMLFirstLinkToSeveritySupport.DEFAULT;
     }
 
 }

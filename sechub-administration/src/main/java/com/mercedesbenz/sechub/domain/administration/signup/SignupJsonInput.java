@@ -11,11 +11,11 @@ public class SignupJsonInput implements JSONable<SignupJsonInput> {
 
     public static final String PROPERTY_API_VERSION = "apiVersion";
     public static final String PROPERTY_USER_ID = "userId";
-    public static final String PROPERTY_EMAIL_ADRESS = "emailAdress";
+    public static final String PROPERTY_EMAIL_ADDRESS = "emailAddress";
 
     private String apiVersion;
     private String userId;
-    private String emailAdress;
+    private String emailAddress;
 
     @Override
     public Class<SignupJsonInput> getJSONTargetClass() {
@@ -38,12 +38,17 @@ public class SignupJsonInput implements JSONable<SignupJsonInput> {
         this.userId = userId;
     }
 
-    public String getEmailAdress() {
-        return emailAdress;
+    public String getEmailAddress() {
+        return emailAddress;
     }
 
-    public void setEmailAdress(String emailAdress) {
-        this.emailAdress = emailAdress;
+    @Deprecated // This method is only for backward compatibility
+    public void setEmailAdress(String emailAddress) {
+        this.setEmailAddress(emailAddress);
+    }
+
+    public void setEmailAddress(String emailAddress) {
+        this.emailAddress = emailAddress;
     }
 
 }

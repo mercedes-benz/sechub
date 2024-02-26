@@ -1,0 +1,107 @@
+<!--/* For development just call one ore more tests inside ThymeLeafHTMLReportingTest and check output */-->
+
+<!--/* 
+ Next code block renders summary row for given scan type. Is used by scanresult.html
+ An example: for CodeScan with 1 total findings, 1 is high
+          
+ Code scan   1  0  1  0  0  0  
+ 
+ Parameter: scanTypeSummary instance of HTMLScanTypSummary
+ */-->
+<th:block th:fragment="renderScanTypeOverviewLine(scanTypeSummary)">
+<div>   
+    <td th:text="${scanTypeSummary.scanTypeName}"/>
+    <td th:text="${scanTypeSummary.totalCount}"/>
+
+    <td th:if="${scanTypeSummary.criticalSeverityCount != 0}"><a th:href="${scanTypeSummary.linkToFirstCritical}" th:text="${scanTypeSummary.criticalSeverityCount}"/></td>
+    <td th:if="${scanTypeSummary.criticalSeverityCount == 0}">0</td>
+    
+    <td th:if="${scanTypeSummary.highSeverityCount != 0}"><a th:href="${scanTypeSummary.linkToFirstHigh}" th:text="${scanTypeSummary.highSeverityCount}"/></td>
+    <td th:if="${scanTypeSummary.highSeverityCount == 0}">0</td>
+
+    <td th:if="${scanTypeSummary.mediumSeverityCount != 0}"><a th:href="${scanTypeSummary.linkToFirstMedium}" th:text="${scanTypeSummary.mediumSeverityCount}"/></td>
+    <td th:if="${scanTypeSummary.mediumSeverityCount == 0}">0</td>
+
+    <td th:if="${scanTypeSummary.lowSeverityCount != 0}"><a th:href="${scanTypeSummary.linkToFirstLow}" th:text="${scanTypeSummary.lowSeverityCount}"/></td>
+    <td th:if="${scanTypeSummary.lowSeverityCount == 0}">0</td>
+    
+    <td th:if="${scanTypeSummary.unclassifiedSeverityCount != 0}"><a th:href="${scanTypeSummary.linkToFirstUnclassified}" th:text="${scanTypeSummary.unclassifiedSeverityCount}"/></td>
+    <td th:if="${scanTypeSummary.unclassifiedSeverityCount == 0}">0</td>
+    
+    <td th:if="${scanTypeSummary.infoSeverityCount != 0}"><a th:href="${scanTypeSummary.linkToFirstInfo}" th:text="${scanTypeSummary.infoSeverityCount}"/></td>
+    <td th:if="${scanTypeSummary.infoSeverityCount == 0}">0</td>
+</div>
+     
+    
+</th:block>
+
+
+<!--/* 
+                        
+ v WebScan overview   <------------ HTMLScanTypSummary instance (here scanType: WebScan)
+   ----------------
+   High                             <---- HTMLScanTypeSeveritySummary
+      Identifier  Type                        count
+     --------------------------------------------------------
+      CWE-89      v SQL-Injection SQLite        2    <--- HTMLFindingSummary
+                    -----------------------------------------
+                     Id                 Location
+                     1                  https://localhost:3000  <--- additional
+                     2                  https://localhost:3000
+   Medium
+      ...
+   
+   Low
+      ...
+   Unclassified
+      ...
+ */-->
+<th:block th:fragment="renderScanTypeOverviewDetails(scanTypeSummary)">
+<details>
+    <!--/* summaryScanType=HTMLScanTypSummary  */-->
+    <summary class='summaryScanType' th:text="${scanTypeSummary.headline}">Scan type summary headline</summary>
+    <div th:each="severitySummary : ${scanTypeSummary.severitySummaries}">
+     <!--/* severitySummary=HTMLScanTypeSeveritySummary  */-->
+            <h3 class='summarySeverity' th:text="${severitySummary.severity.text}"/>
+   <table class='summaryScanTypeTable'>
+       <thead>
+       <tr>
+           <th style="width:8%">Identifier(s)</th>
+           <th style="width:5%">Count</th>
+           <th>Name</th>
+       </tr>
+       </thead>
+       <tbody>
+       <tr th:each="findingSummary : ${severitySummary.findingSummaries}">
+        <!--/* findingSummary=HTMLFindingSummary  */-->
+           <td>
+                <a th:href="${reportHelper.createCweLink(findingSummary.cweId)}" th:text="${findingSummary.cweText}" target="_blank">CWE-77</a>
+           </td>
+           <td th:text="${findingSummary.count}"/>
+                    <td>
+           <details>
+                        <summary class='summaryFinding' th:text="${findingSummary.name}">Finding name</summary>
+                          <table class='summaryScanTypeTable'>
+                   <thead>
+                   <tr>
+                       <th style="width:5%">ID</th>
+                       <th>Location</th>
+                   </tr>
+                   </thead>
+                   <tbody th:each="finding : ${findingSummary.relatedFindings}">
+                        <tr>
+                            <td>
+                                <a th:text="${finding.id}" th:href="${reportHelper.createFindingLink(finding)}" >1</a>
+                            </td>
+                            <td th:text="${reportHelper.createShortLocationInfo(finding)}">location</td>
+                        </tr>
+                            </tbody>
+                          </table>
+                        </details>
+                    </td>
+       </tr>
+       </tbody>
+   </table>
+    </div>
+</details>
+</th:block>

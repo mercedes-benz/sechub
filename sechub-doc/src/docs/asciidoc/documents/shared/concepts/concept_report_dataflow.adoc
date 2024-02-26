@@ -2,6 +2,11 @@
 [[section-shared-concepts-report-dataflow]]
 ==== Report data flow
 
+===== Report model
+Here a reduced class model of the report data model:
+
+plantuml::./diagrams/diagram_report_data_model.puml[format=svg, title="Report data model"] 
+
 ===== Creation of ScanReport entities
 Here a graphical overview how the report data is created by the `ScanService` and 
 finally written as `ScanReport` entity into the database:

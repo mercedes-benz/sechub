@@ -32,7 +32,7 @@ public class UserDetailInformation {
 
     public UserDetailInformation(User user) {
         this.userId = user.getName();
-        this.email = user.getEmailAdress();
+        this.email = user.getEmailAddress();
 
         for (Project project : user.getProjects()) {
             this.projects.add(project.getId());

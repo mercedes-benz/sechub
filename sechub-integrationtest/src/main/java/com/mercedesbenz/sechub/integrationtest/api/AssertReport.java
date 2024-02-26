@@ -13,19 +13,7 @@ import java.util.UUID;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.mercedesbenz.sechub.commons.model.ScanType;
-import com.mercedesbenz.sechub.commons.model.SecHubCodeCallStack;
-import com.mercedesbenz.sechub.commons.model.SecHubFinding;
-import com.mercedesbenz.sechub.commons.model.SecHubMessage;
-import com.mercedesbenz.sechub.commons.model.SecHubMessageType;
-import com.mercedesbenz.sechub.commons.model.SecHubReportData;
-import com.mercedesbenz.sechub.commons.model.SecHubReportMetaData;
-import com.mercedesbenz.sechub.commons.model.SecHubReportModel;
-import com.mercedesbenz.sechub.commons.model.SecHubReportVersion;
-import com.mercedesbenz.sechub.commons.model.SecHubResult;
-import com.mercedesbenz.sechub.commons.model.SecHubStatus;
-import com.mercedesbenz.sechub.commons.model.Severity;
-import com.mercedesbenz.sechub.commons.model.TrafficLight;
+import com.mercedesbenz.sechub.commons.model.*;
 import com.mercedesbenz.sechub.integrationtest.internal.SecHubJobAutoDumper;
 
 public class AssertReport {
@@ -353,6 +341,100 @@ public class AssertReport {
         return this;
     }
 
+    private Optional<SecHubReportScanTypeSummary> getMetaDataSummary(ScanType scanType) {
+        if (scanType == null) {
+            throw new IllegalArgumentException("Integration test corrupt: scanType may not be null!");
+        }
+        Optional<SecHubReportMetaData> metaDataOpt = report.getMetaData();
+        if (metaDataOpt.isEmpty()) {
+            fail("Meta data not found inside report");
+        }
+        SecHubReportMetaData metaData = metaDataOpt.get();
+        SecHubReportSummary summary = metaData.getSummary();
+
+        switch (scanType) {
+        case CODE_SCAN:
+            return summary.getCodeScan();
+        case INFRA_SCAN:
+            return summary.getInfraScan();
+        case LICENSE_SCAN:
+            return summary.getLicenseScan();
+        case SECRET_SCAN:
+            return summary.getSecretScan();
+        case WEB_SCAN:
+            return summary.getWebScan();
+        case REPORT:
+        case UNKNOWN:
+        case ANALYTICS:
+        default:
+            throw new IllegalArgumentException("Integration test corrupt: " + scanType + " may not be used here!");
+        }
+
+    }
+
+    public AssertReport hasNoMetaDataSummaryFor(ScanType scanType) {
+        if (getMetaDataSummary(scanType).isPresent()) {
+            fail("Meta data summary for scan type: " + scanType + " found!");
+        }
+        return this;
+    }
+
+    public AssertReport hasMetaDataSummaryTotal(ScanType scanType, long expectedTotal) {
+
+        SecHubReportScanTypeSummary summary = assertSummaryForScanTypeExists(scanType);
+        assertSummary(expectedTotal, summary.getTotal(), "total");
+
+        return this;
+    }
+
+    public AssertReport hasMetaDataSummaryCritical(ScanType scanType, long expectedCritical) {
+
+        SecHubReportScanTypeSummary summary = assertSummaryForScanTypeExists(scanType);
+        assertSummary(expectedCritical, summary.getCritical(), "critical");
+
+        return this;
+    }
+
+    public AssertReport hasMetaDataSummaryHigh(ScanType scanType, long expectedHigh) {
+
+        SecHubReportScanTypeSummary summary = assertSummaryForScanTypeExists(scanType);
+        assertSummary(expectedHigh, summary.getHigh(), "high");
+
+        return this;
+    }
+
+    public AssertReport hasMetaDataSummaryMedium(ScanType scanType, long expectedMedium) {
+
+        SecHubReportScanTypeSummary summary = assertSummaryForScanTypeExists(scanType);
+        assertSummary(expectedMedium, summary.getMedium(), "medium");
+
+        return this;
+    }
+
+    public AssertReport hasMetaDataSummaryLow(ScanType scanType, long expectedLow) {
+
+        SecHubReportScanTypeSummary summary = assertSummaryForScanTypeExists(scanType);
+        assertSummary(expectedLow, summary.getLow(), "low");
+
+        return this;
+    }
+
+    public AssertReport hasMetaDataSummaryUnclassified(ScanType scanType, long expectedUnclassified) {
+
+        SecHubReportScanTypeSummary summary = assertSummaryForScanTypeExists(scanType);
+        assertSummary(expectedUnclassified, summary.getUnclassified(), "unclassified");
+
+        return this;
+    }
+
+    public AssertReport hasMetaDataSummaryInfo(ScanType scanType, long expectedInfo) {
+
+        SecHubReportScanTypeSummary summary = assertSummaryForScanTypeExists(scanType);
+        assertSummary(expectedInfo, summary.getInfo(), "info");
+
+        return this;
+    }
+
     public AssertReport dump() {
         LOG.info("-----------------------------------------------------------");
         LOG.info("----------------------------DUMP---------------------------");
@@ -360,6 +442,21 @@ public class AssertReport {
         LOG.info("\n" + report.toFormattedJSON());
         LOG.info("-----------------------------------------------------------");
         return this;
+    }
+
+    private SecHubReportScanTypeSummary assertSummaryForScanTypeExists(ScanType scanType) {
+        Optional<SecHubReportScanTypeSummary> summaryOpt = getMetaDataSummary(scanType);
+        if (summaryOpt.isEmpty()) {
+            fail("No summary for scan type:" + scanType + " found in report!");
+        }
+        SecHubReportScanTypeSummary summary = summaryOpt.get();
+        return summary;
+    }
+
+    private void assertSummary(long expected, long value, String summaryType) {
+        if (expected != value) {
+            fail("Summary " + summaryType + " failure. Expected :" + expected + " but was: " + value + ". ");
+        }
     }
 
 }

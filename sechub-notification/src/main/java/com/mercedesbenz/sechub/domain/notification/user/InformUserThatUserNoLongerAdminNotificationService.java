@@ -25,7 +25,7 @@ public class InformUserThatUserNoLongerAdminNotificationService {
 
         SimpleMailMessage message = factory.createMessage("SecHub administrator privileges revoked");
 
-        message.setTo(userMessage.getEmailAdress());
+        message.setTo(userMessage.getEmailAddress());
         message.setText(createEmailContent(userMessage, baseUrl));
 
         emailService.send(message);
