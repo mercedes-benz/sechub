@@ -5,4 +5,4 @@ BASE_IMAGE="ghcr.io/mercedes-benz/sechub/pds-base"
 
 # The gitleaks version to use
 # See: https://github.com/gitleaks/gitleaks/releases
-GITLEAKS_VERSION="8.18.1"
+GITLEAKS_VERSION="8.18.2"
