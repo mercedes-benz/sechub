@@ -4,7 +4,7 @@ package com.mercedesbenz.sechub.api.java.demo.config;
 import com.beust.jcommander.JCommander;
 import com.beust.jcommander.ParameterException;
 
-public class CommandLineParser {
+public class DemoCommandLineParser {
 
     private JCommander commander;
 
@@ -15,8 +15,8 @@ public class CommandLineParser {
      * @return configuration or <code>null</code> when only help wanted
      * @throws SecHubClientConfigurationRuntimeException
      */
-    public CommandLineSettings parse(String... args) {
-        CommandLineSettings settings = parseCommandLineParameters(args);
+    public DemoCommandLineSettings parse(String... args) {
+        DemoCommandLineSettings settings = parseCommandLineParameters(args);
         if (settings.isHelpRequired()) {
             showHelp();
             return null;
@@ -25,11 +25,11 @@ public class CommandLineParser {
     }
     
 
-    private CommandLineSettings parseCommandLineParameters(String... args) {
-        CommandLineSettings settings = new CommandLineSettings();
+    private DemoCommandLineSettings parseCommandLineParameters(String... args) {
+        DemoCommandLineSettings settings = new DemoCommandLineSettings();
         /* @formatter:off */
         commander = JCommander.newBuilder()
-                                .programName("OpenAPITestTool")
+                                .programName("SecHubJavaApiDemoApplication")
                                 .addObject(settings)
                                 .acceptUnknownOptions(false)
                               .build();

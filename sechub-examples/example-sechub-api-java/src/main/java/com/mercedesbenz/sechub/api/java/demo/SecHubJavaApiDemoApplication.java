@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.api.java.demo;
 
-import static com.mercedesbenz.sechub.api.java.demo.Utils.*;
+import static com.mercedesbenz.sechub.api.java.demo.DemoUtils.*;
 
 import java.net.URI;
 
@@ -10,22 +10,22 @@ import org.slf4j.LoggerFactory;
 
 import com.mercedesbenz.sechub.api.DefaultSecHubClient;
 import com.mercedesbenz.sechub.api.SecHubClient;
-import com.mercedesbenz.sechub.api.java.demo.config.ConfigurationProvider;
-import com.mercedesbenz.sechub.api.java.demo.playground.AdminApiPlayground;
+import com.mercedesbenz.sechub.api.java.demo.config.DemoConfigurationProvider;
+import com.mercedesbenz.sechub.api.java.demo.playground.DemoAdminApiPlayground;
 
-public class OpenAPITestTool {
+public class SecHubJavaApiDemoApplication {
 
-    private static final Logger LOG = LoggerFactory.getLogger(OpenAPITestTool.class);
+    private static final Logger LOG = LoggerFactory.getLogger(SecHubJavaApiDemoApplication.class);
 
     public static void main(String[] args) {
-        new OpenAPITestTool().start(args);
+        new SecHubJavaApiDemoApplication().start(args);
     }
 
     private void start(String[] args) {
         try {
-            ConfigurationProvider configProvider = ConfigurationProvider.create(args);
+            DemoConfigurationProvider configProvider = DemoConfigurationProvider.create(args);
 
-            String userName = configProvider.getUser();
+            String userName = configProvider.getUserId();
             String apiToken = configProvider.getApiToken();
             URI serverUri = configProvider.getServerUri();
             boolean trustAll = configProvider.isTrustAll();
@@ -36,13 +36,14 @@ public class OpenAPITestTool {
             LOG.trace("*** Privileged user's API token: {}", "*".repeat(apiToken.length()));
             LOG.trace("*** trustAll: {}", trustAll);
 
+            /* create the client */
             SecHubClient client = DefaultSecHubClient.builder().server(serverUri).user(userName).apiToken(apiToken).trustAll(trustAll).build();
 
-            // simple test here
+            // test anonymous parts
             testAnonymousApi(client);
 
-            // more sophisticated stuff
-            new AdminApiPlayground(client).run();
+            // test admin parts
+            new DemoAdminApiPlayground(client).run();
 
             LOG.info("Sechub server successfully tested.");
             System.out.println("[ OK ] SecHub was accessible with generated Java API");

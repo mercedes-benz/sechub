@@ -32,10 +32,10 @@ public interface SecHubClient {
      */
     void removeListener(SecHubClientListener listener);
 
-    void setUsername(String userName);
-    
-    String getUsername();
-    
+    void setUserId(String userId);
+
+    String getUserId();
+
     void setApiToken(String apiToken);
 
     String getSealedApiToken();
@@ -100,7 +100,7 @@ public interface SecHubClient {
     /* ++++++++++++++++++++++++++++++++++++++++++++++++++++ */
     /* + ................Assign/Unassign................. + */
     /* ++++++++++++++++++++++++++++++++++++++++++++++++++++ */
-    void acceptOpenSignup(String signupUsername) throws SecHubClientException;
+    void acceptOpenSignup(String signupUserId) throws SecHubClientException;
 
     void assignUserToProject(String userId, String projectId) throws SecHubClientException;
 

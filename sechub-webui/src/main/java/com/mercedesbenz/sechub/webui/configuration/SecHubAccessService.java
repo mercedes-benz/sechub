@@ -36,7 +36,7 @@ public class SecHubAccessService {
         if (useMockedClient) {
             this.client = MockedSecHubClient.from(serverUri, "mocked", "verySecretTrustMe", trustAllCertificates);
         } else {
-            
+
             this.client = DefaultSecHubClient.builder().
                             server(serverUri).
                             user(credentialService.getUserId()).

@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.api.java.demo.config;
 
-public class EnvironmentVariableConstants {
+public class DemoEnvironmentVariableConstants {
 
     public static final String SECHUB_SERVER = "SECHUB_SERVER";
 

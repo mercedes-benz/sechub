@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.api.java.demo.playground;
 
-import static com.mercedesbenz.sechub.api.java.demo.Utils.*;
+import static com.mercedesbenz.sechub.api.java.demo.DemoUtils.*;
 
 import java.util.List;
 import java.util.UUID;
@@ -18,13 +18,13 @@ import com.mercedesbenz.sechub.api.SecHubClientException;
 import com.mercedesbenz.sechub.api.SecHubStatus;
 import com.mercedesbenz.sechub.api.UserSignup;
 
-public class AdminApiPlayground {
+public class DemoAdminApiPlayground {
     SecHubClient client;
     long identifier = System.currentTimeMillis();
     private String userName;
     private String projectName;
 
-    public AdminApiPlayground(SecHubClient access) {
+    public DemoAdminApiPlayground(SecHubClient access) {
         userName = "un" + identifier;
         projectName = "pn" + identifier;
 

@@ -6,9 +6,9 @@ import java.util.Objects;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class Utils {
+public class DemoUtils {
 
-    private static final Logger LOG = LoggerFactory.getLogger(Utils.class);
+    private static final Logger LOG = LoggerFactory.getLogger(DemoUtils.class);
 
     public static void assertEquals(Object obj1, Object obj2, String message) {
         if (!Objects.equals(obj1, obj2)) {

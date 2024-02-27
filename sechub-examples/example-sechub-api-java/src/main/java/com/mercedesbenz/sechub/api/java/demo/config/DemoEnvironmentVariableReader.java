@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.api.java.demo.config;
 
-public class EnvironmentVariableReader {
+public class DemoEnvironmentVariableReader {
 
     /**
      * Reads the value of the environment variable {@link environmentVariable} and

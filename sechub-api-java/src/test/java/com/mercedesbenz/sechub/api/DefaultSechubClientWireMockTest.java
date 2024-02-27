@@ -142,7 +142,7 @@ public class DefaultSechubClientWireMockTest {
 
         /* execute */
         client.setApiToken("other-token");
-        client.setUsername("other-user");
+        client.setUserId("other-user");
 
         /* test */
         SecHubStatus status = client.fetchSecHubStatus();

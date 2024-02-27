@@ -3,29 +3,29 @@ package com.mercedesbenz.sechub.api.java.demo.config;
 
 import java.net.URI;
 
-public class ConfigurationProvider {
+public class DemoConfigurationProvider {
 
-    private EnvironmentVariableReader environmentVariableReader;
-    private CommandLineSettings settings;
+    private DemoEnvironmentVariableReader demoEnvironmentVariableReader;
+    private DemoCommandLineSettings settings;
 
-    public ConfigurationProvider(CommandLineSettings settings, EnvironmentVariableReader environmentVariableReader) {
+    public DemoConfigurationProvider(DemoCommandLineSettings settings, DemoEnvironmentVariableReader demoEnvironmentVariableReader) {
         this.settings = settings;
-        this.environmentVariableReader = environmentVariableReader;
+        this.demoEnvironmentVariableReader = demoEnvironmentVariableReader;
     }
     
-    public static ConfigurationProvider create(String[] args) {
-        CommandLineParser parser = new CommandLineParser();
-        CommandLineSettings commandLineSettings = parser.parse(args);
+    public static DemoConfigurationProvider create(String[] args) {
+        DemoCommandLineParser parser = new DemoCommandLineParser();
+        DemoCommandLineSettings demoCommandLineSettings = parser.parse(args);
         
-        ConfigurationProvider configProvider = new ConfigurationProvider(commandLineSettings, new EnvironmentVariableReader());
+        DemoConfigurationProvider configProvider = new DemoConfigurationProvider(demoCommandLineSettings, new DemoEnvironmentVariableReader());
         
         return configProvider;
     }
 
-    public String getUser() {
+    public String getUserId() {
         String userId = settings.getUserId();
         if (userId == null) {
-            userId = environmentVariableReader.readAsString(EnvironmentVariableConstants.SECHUB_USERID);
+            userId = demoEnvironmentVariableReader.readAsString(DemoEnvironmentVariableConstants.SECHUB_USERID);
         }
 
         if (userId == null) {
@@ -39,7 +39,7 @@ public class ConfigurationProvider {
     public String getApiToken() {
         String apiToken = settings.getApiToken();
         if (apiToken == null) {
-            apiToken = environmentVariableReader.readAsString(EnvironmentVariableConstants.SECHUB_APITOKEN);
+            apiToken = demoEnvironmentVariableReader.readAsString(DemoEnvironmentVariableConstants.SECHUB_APITOKEN);
         }
         if (apiToken == null) {
             throw new IllegalStateException(
@@ -52,7 +52,7 @@ public class ConfigurationProvider {
     public boolean isTrustAll() {
         Boolean trustAll = settings.getTrustAll();
         if (trustAll == null) {
-            trustAll = Boolean.parseBoolean(environmentVariableReader.readAsString(EnvironmentVariableConstants.SECHUB_TRUSTALL));
+            trustAll = Boolean.parseBoolean(demoEnvironmentVariableReader.readAsString(DemoEnvironmentVariableConstants.SECHUB_TRUSTALL));
         }
         return trustAll;
     }
@@ -63,7 +63,7 @@ public class ConfigurationProvider {
             serverUri = URI.create(settings.getServer());
         }
         if (serverUri == null) {
-            String envServerUri = environmentVariableReader.readAsString(EnvironmentVariableConstants.SECHUB_SERVER);
+            String envServerUri = demoEnvironmentVariableReader.readAsString(DemoEnvironmentVariableConstants.SECHUB_SERVER);
             if (envServerUri != null) {
                 serverUri = URI.create(envServerUri);
             }
