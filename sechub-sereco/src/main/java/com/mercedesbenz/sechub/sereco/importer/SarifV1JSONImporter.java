@@ -481,18 +481,16 @@ public class SarifV1JSONImporter extends AbstractProductResultImporter {
     }
 
     @Override
-    public ProductImportAbility isAbleToImportForProduct(ImportParameter param) {
+    public boolean isAbleToImportForProduct(ImportParameter param) {
         /* first we do the simple check... */
-        ProductImportAbility ability = super.isAbleToImportForProduct(param);
-        if (ability != ProductImportAbility.ABLE_TO_IMPORT) {
-            return ability;
+        if (!super.isAbleToImportForProduct(param)) {
+            return false;
         }
-        /* okay, now test if its valid SARIF */
-        if (isValidSarif(param.getImportData())) {
-            return ProductImportAbility.ABLE_TO_IMPORT;
+        boolean validSarif = isValidSarif(param.getImportData());
+        if (!validSarif) {
+            LOG.warn("Simple check accepted data, but was not valid SARIF");
         }
-        LOG.debug("Simple check accepted data, but was not valid SARIF");
-        return ProductImportAbility.NOT_ABLE_TO_IMPORT;
+        return true;
     }
 
     @Override

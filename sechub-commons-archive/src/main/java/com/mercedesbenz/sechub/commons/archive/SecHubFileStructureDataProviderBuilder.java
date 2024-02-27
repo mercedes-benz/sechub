@@ -114,6 +114,11 @@ public class SecHubFileStructureDataProviderBuilder {
             addAllUsages(data, model.getCodeScan(), false);
             addAllUsages(data, model.getLicenseScan(), false);
             break;
+        case PREPARE:
+            data.setRootFolderAccepted(true);
+            addAllUsages(data, model.getCodeScan(), false);
+            addAllUsages(data, model.getLicenseScan(), false);
+            break;
 
         default:
             break;

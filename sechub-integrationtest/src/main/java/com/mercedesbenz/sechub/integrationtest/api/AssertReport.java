@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.Set;
 import java.util.UUID;
 
 import org.slf4j.Logger;
@@ -49,8 +50,32 @@ public class AssertReport {
     }
 
     public AssertReport hasMessages(int expectedAmountOfMessages) {
-        autoDumper.execute(() -> assertEquals(expectedAmountOfMessages, report.getMessages().size()));
+        int size = report.getMessages().size();
+
+        if (expectedAmountOfMessages != size) {
+            dumpMessages(report);
+        }
+
+        autoDumper.execute(() -> {
+            assertEquals(expectedAmountOfMessages, size);
+        });
         return this;
+    }
+
+    private void dumpMessages(SecHubReportModel report) {
+        Set<SecHubMessage> messages = report.getMessages();
+
+        System.out.println("#".repeat(100));
+        System.out.println("# DUMP all Messages for SecHub job: " + report.getJobUUID());
+        System.out.println("#".repeat(100));
+
+        int count = 0;
+        for (SecHubMessage message : messages) {
+            count++;
+            System.out.println(count + ":" + message.toString());
+        }
+        System.out.println("");
+
     }
 
     public AssertReport hasMessage(SecHubMessageType type, String message) {

@@ -330,7 +330,7 @@ public class TestAPI {
                 if (jobMayNeverFail && jobStatus.hasResultFailed()) {
                     String prettyJSON = JSONConverter.get().toJSON(jobStatus, true);
                     fail("The job execution has failed - skip further attempts to check that job will be done.\n-Status data:\n" + prettyJSON
-                            + "\n\n- Please refer to server and/or PDS logs for reason.");
+                            + "\n\n- Please refer to server and/or PDS logs for reason. You can search for the unit test method name inside these logs.");
                 }
                 return jobStatus.hasResultOK();
             }
@@ -355,7 +355,7 @@ public class TestAPI {
         waitForJobRunning(project, 5, 300, jobUUID);
     }
 
-    public static UUID waitForPDSJobWithIndexOfSecHubJobAndReturnPDSJobUUID(UUID sechubJobUUID, int index) {
+    public static UUID waitForPDSJobOfSecHubJobAtGivenPositionAndReturnPDSJobUUID(UUID sechubJobUUID, int index) {
         String indexNotFoundErrorMessage = "Did not found PDS job [" + index + "] uuid was found for sechub job:" + sechubJobUUID;
         return executeCallableAndAcceptAssertionsMaximumTimes(15, () -> {
 
@@ -366,7 +366,7 @@ public class TestAPI {
     }
 
     public static UUID waitForFirstPDSJobOfSecHubJobAndReturnPDSJobUUID(UUID sechubJobUUID) {
-        return waitForPDSJobWithIndexOfSecHubJobAndReturnPDSJobUUID(sechubJobUUID, 0);
+        return waitForPDSJobOfSecHubJobAtGivenPositionAndReturnPDSJobUUID(sechubJobUUID, 0);
     }
 
     public static void waitForPDSJobInState(PDSJobStatusState wantedState, int timeOutInSeconds, int timeToWaitInMillis, UUID pdsJobUUID,
