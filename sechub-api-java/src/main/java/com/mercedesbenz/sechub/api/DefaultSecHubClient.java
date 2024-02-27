@@ -15,6 +15,8 @@ import java.util.TreeMap;
 import java.util.UUID;
 import java.util.concurrent.Callable;
 
+import javax.crypto.SealedObject;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -46,6 +48,7 @@ import com.mercedesbenz.sechub.commons.archive.ArchiveSupport;
 import com.mercedesbenz.sechub.commons.archive.ArchiveSupport.ArchivesCreationResult;
 import com.mercedesbenz.sechub.commons.core.RunOrFail;
 import com.mercedesbenz.sechub.commons.core.security.CheckSumSupport;
+import com.mercedesbenz.sechub.commons.core.security.CryptoAccess;
 import com.mercedesbenz.sechub.commons.model.JsonMapperFactory;
 import com.mercedesbenz.sechub.commons.model.SecHubConfigurationModel;
 
@@ -68,13 +71,53 @@ public class DefaultSecHubClient extends AbstractSecHubClient {
     private OpenApiSecHubClientConversionHelper conversionHelper;
 
     private WorkaroundProjectApi workaroundProjectApi;
-
-    public DefaultSecHubClient from(URI serverUri, String username, String apiToken) {
-        return from(serverUri, username, apiToken, false);
+    
+    public static DefaultSecHubClientBuilder builder() {
+        return new DefaultSecHubClientBuilder();
+    }
+    
+    public static class DefaultSecHubClientBuilder{
+        private URI serverUri;
+        private String userName;
+        private CryptoAccess<String> apiTokenAccess = new CryptoAccess<>();
+        private SealedObject sealedApiToken;
+        private boolean trustAll;
+        
+        public DefaultSecHubClientBuilder server(URI serverUri) {
+            this.serverUri=serverUri;
+            return this;
+        }
+        public DefaultSecHubClientBuilder user(String userId) {
+            this.userName=userId;
+            return this;
+        }
+        public DefaultSecHubClientBuilder apiToken(String token) {
+            sealedApiToken = apiTokenAccess.seal(token);
+            return this;
+        }
+        
+        public DefaultSecHubClientBuilder trustAll(boolean trustAll) {
+            this.trustAll=trustAll;
+            return this;
+        }
+        
+        public SecHubClient build() {
+            if (serverUri==null) {
+                throw new IllegalStateException("server uri is not defined!");
+            }
+            if (userName==null) {
+                throw new IllegalStateException("user name is not defined!");
+            }
+            if (sealedApiToken==null) {
+                throw new IllegalStateException("token is not defined!");
+            }
+            return new DefaultSecHubClient(serverUri, userName, apiTokenAccess.unseal(sealedApiToken), trustAll);
+        }
     }
 
-    private DefaultSecHubClient(URI serverUri, String username, String apiToken, boolean trustAll) {
-        super(serverUri, username, apiToken, trustAll);
+
+    private DefaultSecHubClient(URI serverUri, String userId, String apiToken, boolean trustAll) {
+        super(serverUri, userId, apiToken, trustAll);
 
         apiClient = new ApiClientBuilder().createApiClient(this, mapper);
 
@@ -90,9 +133,6 @@ public class DefaultSecHubClient extends AbstractSecHubClient {
 
     }
 
-    public static DefaultSecHubClient from(URI serverUri, String username, String apiToken, boolean trustAll) {
-        return new DefaultSecHubClient(serverUri, username, apiToken, trustAll);
-    }
 
     private ApiClient getApiClient() {
         return apiClient;

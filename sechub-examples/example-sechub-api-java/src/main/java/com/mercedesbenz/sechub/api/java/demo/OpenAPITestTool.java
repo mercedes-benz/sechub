@@ -36,7 +36,7 @@ public class OpenAPITestTool {
             LOG.trace("*** Privileged user's API token: {}", "*".repeat(apiToken.length()));
             LOG.trace("*** trustAll: {}", trustAll);
 
-            SecHubClient client = DefaultSecHubClient.from(serverUri, userName, apiToken, trustAll);
+            SecHubClient client = DefaultSecHubClient.builder().server(serverUri).user(userName).apiToken(apiToken).trustAll(trustAll).build();
 
             // simple test here
             testAnonymousApi(client);

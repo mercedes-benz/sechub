@@ -32,11 +32,19 @@ public class SecHubAccessService {
     void setupSecHubClient() {
         URI serverUri = URI.create(secHubServerUrl);
 
+        /* @formatter:off */
         if (useMockedClient) {
             this.client = MockedSecHubClient.from(serverUri, "mocked", "verySecretTrustMe", trustAllCertificates);
         } else {
-            this.client = DefaultSecHubClient.from(serverUri, credentialService.getUserId(), credentialService.getApiToken(), trustAllCertificates);
+            
+            this.client = DefaultSecHubClient.builder().
+                            server(serverUri).
+                            user(credentialService.getUserId()).
+                            apiToken(credentialService.getApiToken()).
+                            trustAll(trustAllCertificates).
+                            build();
         }
+        /* @formatter:on */
     }
 
     public SecHubClient getSecHubClient() {

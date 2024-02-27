@@ -32,7 +32,11 @@ public interface SecHubClient {
      */
     void removeListener(SecHubClientListener listener);
 
+    void setUsername(String userName);
+    
     String getUsername();
+    
+    void setApiToken(String apiToken);
 
     String getSealedApiToken();
 

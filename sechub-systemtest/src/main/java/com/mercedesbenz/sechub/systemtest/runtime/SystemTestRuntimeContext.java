@@ -343,7 +343,7 @@ public class SystemTestRuntimeContext {
             String userId = getTemplateEngine().replaceSecretEnvironmentVariablesWithValues(credentials.getUserId(), getEnvironmentProvider());
             String apiToken = getTemplateEngine().replaceSecretEnvironmentVariablesWithValues(credentials.getApiToken(), getEnvironmentProvider());
 
-            client = DefaultSecHubClient.from(serverUri, userId, apiToken, TRUST_ALL);
+            client = DefaultSecHubClient.builder().server(serverUri).user(userId).apiToken(apiToken).trustAll(TRUST_ALL).build();
             client.addListener(new ArtifactStorageSecHubClientListener(this));
             LOG.info("Created SecHub client for user: '{}', apiToken: '{}'", client.getUsername(), "*".repeat(client.getSealedApiToken().length()));
         } catch (RuntimeException e) {

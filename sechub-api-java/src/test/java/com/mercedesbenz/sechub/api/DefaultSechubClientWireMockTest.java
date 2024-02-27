@@ -82,7 +82,7 @@ public class DefaultSechubClientWireMockTest {
         stubFor(get(urlEqualTo("/api/admin/status")).withBasicAuth(EXAMPLE_USER, EXAMPLE_TOKEN)
                 .willReturn(aResponse().withStatus(HttpStatus.SC_OK).withHeader("Content-Type", APPLICATION_JSON).withBody(statusBody)));
 
-        DefaultSecHubClient client = createTestClientWithExampleCredentials();
+        SecHubClient client = createTestClientWithExampleCredentials();
 
         /* execute */
         SecHubStatus status = client.fetchSecHubStatus();
@@ -138,7 +138,7 @@ public class DefaultSechubClientWireMockTest {
         stubFor(get(urlEqualTo("/api/admin/status")).withBasicAuth("other-user", "other-token")
                 .willReturn(aResponse().withStatus(HttpStatus.SC_OK).withHeader("Content-Type", APPLICATION_JSON).withBody(statusBody)));
 
-        DefaultSecHubClient client = createTestClientWithExampleCredentials();
+        SecHubClient client = createTestClientWithExampleCredentials();
 
         /* execute */
         client.setApiToken("other-token");
@@ -152,8 +152,14 @@ public class DefaultSechubClientWireMockTest {
         assertEquals(0, status.jobs().all());
     }
 
-    private DefaultSecHubClient createTestClientWithExampleCredentials() {
-        DefaultSecHubClient client = DefaultSecHubClient.from(URI.create(wireMockRule.baseUrl()), EXAMPLE_USER, EXAMPLE_TOKEN, true);
-        return client;
+    private SecHubClient createTestClientWithExampleCredentials() {
+        /* @formatter:off */
+        return DefaultSecHubClient.builder().
+                server(URI.create(wireMockRule.baseUrl())).
+                user(EXAMPLE_USER).
+                apiToken(EXAMPLE_TOKEN).
+                trustAll(true).
+               build();
+        /* @formatter:on */
     }
 }
