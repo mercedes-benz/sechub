@@ -80,6 +80,14 @@ public class PDSToolsCLI {
                 consoleHandler.error("No system test result available");
                 exitHandler.exit(2);
             }
+
+            if (result.hasProblems()) {
+                consoleHandler.error("Problems detected:");
+                for (String problem : result.getProblems()) {
+                    consoleHandler.error("- " + problem);
+                }
+            }
+
             if (result.hasFailedTests()) {
                 Set<SystemTestRunResult> runs = result.getRuns();
                 for (SystemTestRunResult run : runs) {
@@ -88,8 +96,12 @@ public class PDSToolsCLI {
                         consoleHandler.error(message);
                     }
                 }
+            }
+
+            if (result.hasFailedTests() || result.hasProblems()) {
                 exitHandler.exit(1);
             }
+
         } catch (IOException e) {
             consoleHandler.error("Was not able to launch system test: " + e.getMessage());
             exitHandler.exit(1);

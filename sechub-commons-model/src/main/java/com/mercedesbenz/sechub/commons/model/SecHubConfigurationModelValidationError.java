@@ -29,6 +29,10 @@ public enum SecHubConfigurationModelValidationError {
 
     WEB_SCAN_NO_HEADER_VALUE_DEFINED("The value for a HTTP header is not defined!"),
 
+    WEB_SCAN_INCLUDE_INVALID("The value of an include is invalid!"),
+
+    WEB_SCAN_EXCLUDE_INVALID("The value of an exclude is invalid!"),
+
     WEB_SCAN_HTTP_HEADER_ONLY_FOR_URL_IS_NOT_A_VALID_URL("The URL for a HTTP header is not a valid URL!"),
 
     WEB_SCAN_HTTP_HEADER_ONLY_FOR_URL_DOES_NOT_CONTAIN_TARGET_URL("The URL for a HTTP header does not contain the base URL that shall be scanned!"),

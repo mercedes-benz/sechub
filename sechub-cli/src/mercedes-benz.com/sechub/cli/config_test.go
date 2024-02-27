@@ -137,7 +137,7 @@ func Example_validateRequestedReportFormatMakesLowercase1() {
 	// TEST
 	fmt.Println(config.reportFormat)
 	// Output:
-	// NOTICE: Converted requested report format 'HTML' to lowercase. Because it contained uppercase characters, which are not accepted by SecHub server.
+	// NOTICE: Converted requested report format 'HTML' to lowercase because it contained uppercase characters, which are not accepted by SecHub server.
 	// html
 }
 
@@ -150,8 +150,42 @@ func Example_validateRequestedReportFormatMakesLowercase2() {
 	// TEST
 	fmt.Println(config.reportFormat)
 	// Output:
-	// NOTICE: Converted requested report format 'Json' to lowercase. Because it contained uppercase characters, which are not accepted by SecHub server.
+	// NOTICE: Converted requested report format 'Json' to lowercase because it contained uppercase characters, which are not accepted by SecHub server.
 	// json
+}
+
+func Example_actionSpellCorrection() {
+	// PREPARE
+	// EXECUTE
+	fmt.Println(actionSpellCorrection("scan"))
+	fmt.Println(actionSpellCorrection("scanasync"))
+	fmt.Println(actionSpellCorrection("HELP"))
+	fmt.Println(actionSpellCorrection("interactivemarkfalsepositives"))
+	fmt.Println(actionSpellCorrection("getstatuS"))
+	fmt.Println(actionSpellCorrection("interactiveUnmarkFalsepositives"))
+	// Output:
+	// scan
+	// scanAsync
+	// help
+	// interactiveMarkFalsePositives
+	// getStatus
+	// interactiveUnmarkFalsePositives
+}
+
+func Example_flagSpellCorrection() {
+	// PREPARE
+	// EXECUTE
+	fmt.Println(flagSpellCorrection("apiToken"))
+	fmt.Println(flagSpellCorrection("nonExisting"))
+	fmt.Println(flagSpellCorrection("configFile"))
+	fmt.Println(flagSpellCorrection("jobuuid"))
+	fmt.Println(flagSpellCorrection("HELP"))
+	// Output:
+	// apitoken
+	// nonExisting
+	// configfile
+	// jobUUID
+	// help
 }
 
 func Example_normalizeCMDLineArgs() {
@@ -179,6 +213,33 @@ func Example_normalizeCMDLineArgs() {
 	// [./sechub -configfile my-sechub.json -stop-on-yellow scan]
 	// [./sechub -configfile my-sechub.json -wait 30 scan]
 	// [./sechub -version]
+}
+
+func Example_spellCorrectionNormalizeCMDLineArgs() {
+	// PREPARE
+	argList0 := []string{"./sechub", "SCAN"}
+	argList1 := []string{"./sechub", "getfalsepositives"}
+	argList2 := []string{"./sechub", "-jobuuid", "3bdcc5c5-c2b6-4599-be84-f74380680808", "GETREPORT"}
+	argList3 := []string{"./sechub", "getreport", "-JOBUUID", "3bdcc5c5-c2b6-4599-be84-f74380680808"}
+	argList4 := []string{"./sechub", "-configFile", "my-sechub.json", "scan", "-Stop-On-Yellow"}
+	argList5 := []string{"./sechub", "-CONFIGFILE", "my-sechub.json", "scanasync", "-WAIT", "30"}
+	argList6 := []string{"./sechub", "listjobs"}
+	// EXECUTE
+	fmt.Println(normalizeCMDLineArgs(argList0))
+	fmt.Println(normalizeCMDLineArgs(argList1))
+	fmt.Println(normalizeCMDLineArgs(argList2))
+	fmt.Println(normalizeCMDLineArgs(argList3))
+	fmt.Println(normalizeCMDLineArgs(argList4))
+	fmt.Println(normalizeCMDLineArgs(argList5))
+	fmt.Println(normalizeCMDLineArgs(argList6))
+	// Output:
+	// [./sechub scan]
+	// [./sechub getFalsePositives]
+	// [./sechub -jobUUID 3bdcc5c5-c2b6-4599-be84-f74380680808 getReport]
+	// [./sechub -jobUUID 3bdcc5c5-c2b6-4599-be84-f74380680808 getReport]
+	// [./sechub -configfile my-sechub.json -stop-on-yellow scan]
+	// [./sechub -configfile my-sechub.json -wait 30 scanAsync]
+	// [./sechub listJobs]
 }
 
 func Example_tempFile_current_dir() {
@@ -440,6 +501,43 @@ func Example_will_reportfile_be_found_in_current_dir() {
 	os.Args = originalArgs
 
 	// Output:
+	// Using latest report file "sechub_report_testproject_45cd4f59-4be7-4a86-9bc7-47528ced16c2.json".
+}
+
+func Example_check_if_uppercase_username_will_be_corrected() {
+	// PREPARE
+	originalArgs := os.Args
+	os.Args = []string{"sechub", "scan"}
+
+	context := new(Context)
+	config := new(Config)
+	context.config = config
+
+	config.action = interactiveMarkFalsePositivesAction
+	config.projectID = "testproject"
+
+	config.user = "TESTUSER"
+	config.apiToken = "not empty"
+	config.server = "https://test.example.org"
+	config.reportFormat = "json"
+	config.timeOutSeconds = 10
+	config.initialWaitIntervalNanoseconds = int64(2 * float64(time.Second))
+	config.waitSeconds = 60
+
+	// Create report file: sechub_report_testproject_45cd4f59-4be7-4a86-9bc7-47528ced16c2.json
+	reportFileName := "./sechub_report_" + config.projectID + "_45cd4f59-4be7-4a86-9bc7-47528ced16c2.json"
+	ioutil.WriteFile(reportFileName, []byte(""), 0644)
+	defer os.Remove(reportFileName)
+
+	// EXECUTE
+	assertValidConfig(context)
+
+	// TEST
+	// Restore original arguments
+	os.Args = originalArgs
+
+	// Output:
+	// NOTICE: Converted user id 'TESTUSER' to lowercase because it contained uppercase characters, which are not accepted by SecHub server.
 	// Using latest report file "sechub_report_testproject_45cd4f59-4be7-4a86-9bc7-47528ced16c2.json".
 }
 

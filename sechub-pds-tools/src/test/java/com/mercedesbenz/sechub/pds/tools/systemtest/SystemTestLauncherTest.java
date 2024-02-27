@@ -2,10 +2,13 @@
 package com.mercedesbenz.sechub.pds.tools.systemtest;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.List;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -73,7 +76,50 @@ class SystemTestLauncherTest {
     }
 
     @Test
-    void system_test_parameters_are_build_from_command_as_expected() throws Exception {
+    void system_test_parameters_are_build_from_command_as_expected__tests_to_run_set() throws Exception {
+
+        /* prepare */
+        String testAdditionaResourcesPath = "test-additional-resources-path";
+        String testPathToPDSSolution = "test-pds-solution-path";
+        String testPathToSecHub = "test-sechub-path";
+        String testPathToWorkspace = "test-workspace-path";
+
+        String path = "./src/test/resources/systemtest/systemtest_example1.json";
+        String expectedPrettyJson = loadJsonAsPrettyPrinted(path);
+        List<String> testsToRun = Arrays.asList(new String[] { "testA", "testB" });
+
+        when(command.getPathToConfigFile()).thenReturn(path);
+        when(command.getAdditionalResourcesFolder()).thenReturn(testAdditionaResourcesPath);
+        when(command.getPdsSolutionsRootFolder()).thenReturn(testPathToPDSSolution);
+        when(command.getSecHubSolutionRootFolder()).thenReturn(testPathToSecHub);
+        when(command.getWorkspaceFolder()).thenReturn(testPathToWorkspace);
+        when(command.getTestsToRun()).thenReturn(testsToRun);
+
+        /* execute */
+        launcherToTest.launch(command);
+
+        /* test */
+        ArgumentCaptor<SystemTestParameters> paramCaptor = ArgumentCaptor.forClass(SystemTestParameters.class);
+        verify(systemTestApi).runSystemTests(paramCaptor.capture());
+
+        SystemTestParameters parameters = paramCaptor.getValue();
+        assertTrue(parameters.getTestsToRun().contains("testA"));
+        assertTrue(parameters.getTestsToRun().contains("testB"));
+
+        // test configuration is loaded and available
+        SystemTestConfiguration parametersConfiguration = parameters.getConfiguration();
+        String prettyJson = JSONConverter.get().toJSON(parametersConfiguration, true);
+        assertEquals(expectedPrettyJson, prettyJson);
+
+        assertEquals(testAdditionaResourcesPath, parameters.getPathToAdditionalResources());
+        assertEquals(testPathToPDSSolution, parameters.getPathToPdsSolutionsRootFolder());
+        assertEquals(testPathToSecHub, parameters.getPathToSechubSolutionRootFolder());
+        assertEquals(testPathToWorkspace, parameters.getPathToWorkspace());
+
+    }
+
+    @Test
+    void system_test_parameters_are_build_from_command_as_expected__no_tests_to_run_set() throws Exception {
 
         /* prepare */
         String testAdditionaResourcesPath = "test-additional-resources-path";
@@ -96,8 +142,8 @@ class SystemTestLauncherTest {
         /* test */
         ArgumentCaptor<SystemTestParameters> paramCaptor = ArgumentCaptor.forClass(SystemTestParameters.class);
         verify(systemTestApi).runSystemTests(paramCaptor.capture());
-
         SystemTestParameters parameters = paramCaptor.getValue();
+        assertTrue(parameters.getTestsToRun().isEmpty());
 
         // test configuration is loaded and available
         SystemTestConfiguration parametersConfiguration = parameters.getConfiguration();

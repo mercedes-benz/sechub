@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.api;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.*;

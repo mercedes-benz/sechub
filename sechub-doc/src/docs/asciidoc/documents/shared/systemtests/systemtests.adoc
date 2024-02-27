@@ -234,11 +234,15 @@ If not defined, the default credentials for integration test server will be used
 start the tests.
 
 ====== Start
+With a <<systemtests-script-definitions,script definition>> the start process for the {sechub} server
+instance(s) can be defined. 
 
 ====== Stop
+With a <<systemtests-script-definitions,script definition>> the stop process for the {sechub} server
+instance(s) can be defined. 
 
 ====== Configure
-
+The configuration can contain one or more product executor configurations.
 
 ===== Remote
 It is also possible to use an existing real {sechub} platform and run the defined tests there. 
@@ -321,13 +325,13 @@ Tests are defined at root level of the configuration file. It is possible to def
 multiple tests in one configurationfile.
 
 ===== Prepare
-A test can have one ore more preparation steps where following commands can be executed:
+A test can have one or more `preparation` steps where following commands can be executed:
 
 - `copy` +
   Provides parameters "from" and "to" and enables users to copy folders or files to other locations
 
 - `script` +
-  Provides the possibility to execute a script
+  Provides the possibility to execute a <<systemtests-script-definitions,script>>
 
 ===== Execute
 The test execution phase can contain currently:
@@ -353,6 +357,16 @@ Asserts are done after the execution phase. Following steps are possible
     . `{sechub.jobuuid}` - can be used at any location inside the report if there is the job uuid
       inside the report
     . `{*:n}` - `n` represents the number for characters to be ignored.
+
+===== Cleanup
+A test can have one or more `cleanup` steps where following commands can be executed:
+
+- `copy` +
+  Provides parameters "from" and "to" and enables users to copy folders or files to other locations
+
+- `script` +
+  Provides the possibility to execute a <<systemtests-script-definitions,script>>
+
     
 ===== Example snippet
 
@@ -373,7 +387,7 @@ Asserts are done after the execution phase. Following steps are possible
         } ],
         "codeScan" : { }
       }
-    },
+    },    
     "assert" : [ {
       "sechubResult" : { //<3>
         "hasTrafficLight" : "YELLOW",

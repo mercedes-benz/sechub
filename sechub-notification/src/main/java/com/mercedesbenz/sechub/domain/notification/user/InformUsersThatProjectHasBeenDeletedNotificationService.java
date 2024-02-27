@@ -32,9 +32,9 @@ public class InformUsersThatProjectHasBeenDeletedNotificationService {
     public void notify(ProjectMessage projectMessage, String baseUrl) {
         requireNonNull(projectMessage);
 
-        Set<String> mailAdresses = projectMessage.getUserEmailAdresses();
-        if (mailAdresses == null || mailAdresses.isEmpty()) {
-            LOG.info("No users found for project {} so ignore sending info mail about delete", projectMessage.getProjectId());
+        Set<String> emailAddresses = projectMessage.getUserEmailAddresses();
+        if (emailAddresses == null || emailAddresses.isEmpty()) {
+            LOG.info("No users found for project {} so ignore sending info email about delete", projectMessage.getProjectId());
             return;
         }
         SimpleMailMessage message = factory.createMessage("A SecHub project where you have been a user was deleted: " + projectMessage.getProjectId());
@@ -44,10 +44,10 @@ public class InformUsersThatProjectHasBeenDeletedNotificationService {
         emailContent.append("has been deleted.\n\n");
         emailContent.append("This means that all report data has been deleted, and thus sechub scans for this project are no longer accessible.\n");
 
-        String[] userAdresses = projectMessage.getUserEmailAdresses().toArray(new String[mailAdresses.size()]);
+        String[] userAddresses = projectMessage.getUserEmailAddresses().toArray(new String[emailAddresses.size()]);
 
-        message.setBcc(userAdresses); // we do send per BCC so users do not get other email addresses. Maybe necessary
-                                      // because of data protection
+        message.setBcc(userAddresses); // we do send per BCC so users do not get other email addresses. Maybe necessary
+                                       // because of data protection
         message.setText(emailContent.toString());
 
         emailService.send(message);

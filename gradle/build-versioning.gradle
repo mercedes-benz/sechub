@@ -16,17 +16,25 @@ import groovy.time.TimeDuration
 /*
  * We do always build the files. See description in headline comment.
  */
+ext.versionData=new VersionData()
+
 buildVersionFiles()
+
+/* the former call to buildVersionFiles() did setup our version data - now we
+ * can fetch the server version and all other versions */
+version = versionData.getServerVersion()
 
 allprojects{
         // normal gradle build is for server so we use server image version
         // go client uses generated version.go file for runtime info
-        project.version=VersionData.getServerVersion()
+        project.version=versionData.getServerVersion()
 }
 
 
 def buildVersionFiles(){
-    println("BUILD versioning")
+
+    println("BUILD versioning:")
+
     def start = new Date()
     // This file contains some logic for calculation of the version number
 
@@ -40,6 +48,7 @@ def buildVersionFiles(){
     def librariesVersionCommitTag = versionCommitTags.find{ it.name.endsWith("-libraries") }
     def checkmarxWrapperVersionCommitTag = versionCommitTags.find{ it.name.endsWith("-checkmarx-wrapper") }
     def owaspzapWrapperVersionCommitTag = versionCommitTags.find{ it.name.endsWith("-owaspzap-wrapper") }
+    def xrayWrapperVersionCommitTag = versionCommitTags.find{ it.name.endsWith("-xray-wrapper") }
     def pdsVersionCommitTag = versionCommitTags.find{ it.name.endsWith("-pds") }
     def pdsToolsVersionCommitTag = versionCommitTags.find{ it.name.endsWith("-pds-tools") }
     def serverVersionCommitTag = versionCommitTags.find{ it.name.endsWith("-server") }
@@ -50,61 +59,115 @@ def buildVersionFiles(){
     def noUnstagedChanges = unstagedChanges.getAllChanges().isEmpty()
     def noStagedChanges = stagedChanges.getAllChanges().isEmpty()
     def hasChanged = !noUnstagedChanges || !noStagedChanges
-    def buildNumber= getBuildNr()
+    def buildNumber = getBuildNr()
+    def docsTimeStamp = getLocalBuildNr()
+    def currentGitCommit = git.head().abbreviatedId
 
     // ------------------------
     // - Client
     // ------------------------
 
+    // Get latest tagged client version
+    def latestClientTagCmd = [
+      'sh',
+      '-c',
+      'git tag -l --sort=-creatordate | grep -e \'^v.*-client$\' | head -1'
+    ]
+    def latestClientTag = latestClientTagCmd.execute().text.trim()
+    def latestClientVersion = latestClientTag - 'v'
+    latestClientVersion = latestClientVersion - "-client"
+
+    def clientVersionInfo = versionData.defineVersion("Client",buildVersionString(clientVersionCommitTag, hasChanged,buildNumber),latestClientVersion)
+
     // write version code for go client
     String clientGoVersionTemplate = new File('./sechub-cli/src/mercedes-benz.com/sechub/cli/version.go.template').getText('UTF-8')
-
-    def clientVersionInfo = VersionData.defineVersion("Client",buildVersionString(clientVersionCommitTag, hasChanged,buildNumber))
-
     String clientGoVersionCode = clientGoVersionTemplate.replaceAll("__version__",clientVersionInfo.getFullVersion())
     def clientVersionFile = new File('./sechub-cli/src/mercedes-benz.com/sechub/cli/version.go')
     clientVersionFile.write(clientGoVersionCode)
 
-    /* write version info also as asciidoc file*/
+    // Latest tagged client version as asciidoc file (#2285)
+    def latestClientVersionText = latestClientVersion
+    // Mark as modified when built after release
+    if (latestClientVersion != clientVersionInfo.getShortVersion()) {
+      latestClientVersionText = latestClientVersion + " modified (commit " + currentGitCommit + ")"
+    }
     def clientVersionAsciiDocFile = new File('./sechub-doc/src/docs/asciidoc/documents/gen/client-version.adoc')
-    clientVersionAsciiDocFile.write("// SPDX-License-Identifier: MIT\n:revnumber: Client "+clientVersionInfo.getShortVersion()+"\n:longrevnumber: Client "+clientVersionInfo.getFullVersion()+"\n")
+    clientVersionAsciiDocFile.write("// SPDX-License-Identifier: MIT\n:revnumber: Client "+latestClientVersionText+"\n:longrevnumber: Client "+latestClientVersionText+" - Build date: "+docsTimeStamp+"\n")
 
     // ------------------------
     // - Server
     // ------------------------
-    def serverVersionInfo =  VersionData.defineVersion("Server",buildVersionString(serverVersionCommitTag, hasChanged,buildNumber))
 
-     /* write version info also as asciidoc file*/
+    // Get latest tagged server version
+    def latestServerTagCmd = [
+      'sh',
+      '-c',
+      'git tag -l --sort=-creatordate | grep -e \'^v.*-server$\' | head -1'
+    ]
+    def latestServerTag = latestServerTagCmd.execute().text.trim()
+    def latestServerVersion = latestServerTag - 'v'
+    latestServerVersion = latestServerVersion - "-server"
+
+    def serverVersionInfo =  versionData.defineVersion("Server",buildVersionString(serverVersionCommitTag, hasChanged,buildNumber),latestServerVersion)
+
+    // Latest tagged server version as asciidoc file (#2285)
+    def latestServerVersionText = latestServerVersion
+    // Mark as modified when built after release
+    if (latestServerVersion != serverVersionInfo.getShortVersion()) {
+      latestServerVersionText = latestServerVersion + " modified (commit " + currentGitCommit + ")"
+    }
     def serverVersionAsciiDocFile = new File('./sechub-doc/src/docs/asciidoc/documents/gen/server-version.adoc')
-    serverVersionAsciiDocFile.write("// SPDX-License-Identifier: MIT\n:revnumber: Server "+serverVersionInfo.getShortVersion()+"\n:longrevnumber: Server "+serverVersionInfo.getFullVersion()+"\n")
+    serverVersionAsciiDocFile.write("// SPDX-License-Identifier: MIT\n:revnumber: Server "+latestServerVersionText+"\n:longrevnumber: Server "+latestServerVersionText+" - Build date: "+docsTimeStamp+"\n")
 
     // ------------------------
     // - PDS
     // ------------------------
-    def pdsVersionInfo = VersionData.defineVersion("PDS",buildVersionString(pdsVersionCommitTag, hasChanged,buildNumber))
-     /* write version info also as asciidoc file*/
+
+    /* Latest tagged pds version as asciidoc file (#2285) */
+    def latestPDSTagCmd = [
+      'sh',
+      '-c',
+      'git tag -l --sort=-creatordate | grep -e \'^v.*-pds$\' | head -1'
+    ]
+    def latestPDSTag = latestPDSTagCmd.execute().text.trim()
+    def latestPDSVersion = latestPDSTag - 'v'
+    latestPDSVersion = latestPDSVersion - "-pds"
+
+    def pdsVersionInfo = versionData.defineVersion("PDS",buildVersionString(pdsVersionCommitTag, hasChanged,buildNumber),latestPDSVersion)
+
+    // Latest tagged pds version as asciidoc file (#2285)
+    def latestPDSVersionText = latestPDSVersion
+    // Mark as modified when built after release
+    if (latestPDSVersion != pdsVersionInfo.getShortVersion()) {
+      latestPDSVersionText = latestPDSVersion + " modified (commit " + currentGitCommit + ")"
+    }
     def pdsVersionAsciiDocFile = new File('./sechub-doc/src/docs/asciidoc/documents/gen/pds-version.adoc')
-    pdsVersionAsciiDocFile.write("// SPDX-License-Identifier: MIT\n:revnumber: PDS "+pdsVersionInfo.getShortVersion()+"\n:longrevnumber: PDS "+pdsVersionInfo.getFullVersion()+"\n")
+    pdsVersionAsciiDocFile.write("// SPDX-License-Identifier: MIT\n:revnumber: PDS "+latestPDSVersionText+"\n:longrevnumber: PDS "+latestPDSVersionText+" - Build date: "+docsTimeStamp+"\n")
 
     // ------------------------
     // - PDS tools
     // ------------------------
-    def pdsToolsVersionInfo = VersionData.defineVersion("PDS-Tools",buildVersionString(pdsToolsVersionCommitTag, hasChanged,buildNumber))
+    def pdsToolsVersionInfo = versionData.defineVersion("PDS-Tools",buildVersionString(pdsToolsVersionCommitTag, hasChanged,buildNumber),pdsToolsVersionCommitTag)
 
     // ------------------------
     // - Libraries
     // ------------------------
-    def librariesVersionInfo =  VersionData.defineVersion("Libraries",buildVersionString(librariesVersionCommitTag, hasChanged,buildNumber))
+    def librariesVersionInfo =  versionData.defineVersion("Libraries",buildVersionString(librariesVersionCommitTag, hasChanged,buildNumber),librariesVersionCommitTag)
 
     // ------------------------
     // - Checkmarx wrapper
     // ------------------------
-    def checkmarxWrapperVersionInfo = VersionData.defineVersion("Checkmarx Wrapper",buildVersionString(checkmarxWrapperVersionCommitTag, hasChanged, buildNumber))
+    def checkmarxWrapperVersionInfo = versionData.defineVersion("Checkmarx Wrapper",buildVersionString(checkmarxWrapperVersionCommitTag, hasChanged, buildNumber),checkmarxWrapperVersionCommitTag)
 
     // ------------------------
     // - OWASP-ZAP wrapper
     // ------------------------
-    def owaspzapWrapperVersionInfo = VersionData.defineVersion("OWASP-ZAP Wrapper",buildVersionString(owaspzapWrapperVersionCommitTag, hasChanged, buildNumber))
+    def owaspzapWrapperVersionInfo = versionData.defineVersion("OWASP-ZAP Wrapper",buildVersionString(owaspzapWrapperVersionCommitTag, hasChanged, buildNumber),owaspzapWrapperVersionCommitTag)
+
+    // ------------------------
+    // - XRAY wrapper
+    // ------------------------
+    def xrayWrapperVersionInfo = versionData.defineVersion("XRAY Wrapper",buildVersionString(xrayWrapperVersionCommitTag, hasChanged, buildNumber),xrayWrapperVersionCommitTag)
 
 
     def stop = new Date()
@@ -116,6 +179,7 @@ def buildVersionFiles(){
     println(librariesVersionInfo.describe())
     println(checkmarxWrapperVersionInfo.describe())
     println(owaspzapWrapperVersionInfo.describe())
+    println(xrayWrapperVersionInfo.describe())
 
     TimeDuration td = TimeCategory.minus( stop, start )
     println("\nTime elapsed to build versions: "+td)
@@ -166,6 +230,7 @@ def buildVersionString(commitTag, boolean hasChanged, buildNumber){
         calcversion=calcversion-"-server"
         calcversion=calcversion-"-checkmarx-wrapper"
         calcversion=calcversion-"-owaspzap-wrapper"
+        calcversion=calcversion-"-xray-wrapper"
 
     }
     if (hasChanged){
@@ -209,11 +274,11 @@ task assertReleaseable {
 
     doLast {
         /* we only assert at execution phase - means when this task is really executed and not only configured...*/
-        if (VersionData.isContainingAtLeastOneDirtyReleaseVersion()){
-            throw new IllegalStateException("At least one version contains uncommitted changes and is marked for release! See git-status.txt artifact.")
+        if (versionData.isContainingAtLeastOneDirtyReleaseVersion()){
+            throw new IllegalStateException("At least one version contains uncommitted changes and is marked for release! See git-status.txt artifact.\n"+versionData.getDebugInfo())
         }
-        if (!VersionData.isContainingAtLeastOneRealReleaseVersion()){
-            throw new IllegalStateException("There is not at least one version defined which can be released! 0.0.0 is not an acceptable release version!")
+        if (!versionData.isContainingAtLeastOneRealReleaseVersion()){
+            throw new IllegalStateException("There is not at least one version defined which can be released! 0.0.0 is not an acceptable release version!\n"+versionData.getDebugInfo())
         }
     }
 

@@ -14,7 +14,9 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.atLeast;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
@@ -470,8 +472,27 @@ class ZapScanContextFactoryTest {
         ZapScanContext result = factoryToTest.create(settings);
 
         /* test */
-        verify(environmentVariableReader, times(1)).readAsString(PDS_JOB_EXTRACTED_SOURCES_FOLDER);
+        verify(environmentVariableReader, atLeast(1)).readAsString(PDS_JOB_EXTRACTED_SOURCES_FOLDER);
         assertEquals(1, result.getApiDefinitionFiles().size());
+    }
+
+    @Test
+    void client_certificate_file_from_sechub_scan_config_is_inside_result() {
+        /* prepare */
+        when(ruleProvider.fetchDeactivatedRuleReferences(any())).thenReturn(new DeactivatedRuleReferences());
+        CommandLineSettings settings = createSettingsMockWithNecessaryPartsWithoutRuleFiles();
+
+        File sechubScanConfigFile = new File("src/test/resources/sechub-config-examples/client-certificate-auth.json");
+        String extractedSourcesPath = "path/to/extracted/sources";
+        when(settings.getSecHubConfigFile()).thenReturn(sechubScanConfigFile);
+        when(environmentVariableReader.readAsString(PDS_JOB_EXTRACTED_SOURCES_FOLDER)).thenReturn(extractedSourcesPath);
+
+        /* execute */
+        ZapScanContext result = factoryToTest.create(settings);
+
+        /* test */
+        verify(environmentVariableReader, atLeast(1)).readAsString(PDS_JOB_EXTRACTED_SOURCES_FOLDER);
+        assertNotNull(result.getClientCertificateFile());
     }
 
     @Test
@@ -487,8 +508,28 @@ class ZapScanContextFactoryTest {
         ZapScanContext result = factoryToTest.create(settings);
 
         /* test */
-        assertEquals(3, result.getZapURLsIncludeSet().size());
-        assertEquals(2, result.getZapURLsExcludeSet().size());
+        assertEquals(12, result.getZapURLsIncludeSet().size());
+        assertTrue(result.getZapURLsIncludeSet().contains("https://www.targeturl.com"));
+        assertEquals(11, result.getZapURLsExcludeSet().size());
+    }
+
+    @Test
+    void includes_and_excludes_empty_from_sechub_json_result_in_empty_exclude_and_target_url_as_single_include() {
+        /* prepare */
+        when(ruleProvider.fetchDeactivatedRuleReferences(any())).thenReturn(new DeactivatedRuleReferences());
+        CommandLineSettings settings = createSettingsMockWithNecessaryPartsWithoutRuleFiles();
+
+        File sechubScanConfigFile = new File("src/test/resources/sechub-config-examples/no-auth-without-includes-or-excludes.json");
+        when(settings.getSecHubConfigFile()).thenReturn(sechubScanConfigFile);
+
+        /* execute */
+        ZapScanContext result = factoryToTest.create(settings);
+
+        /* test */
+        assertEquals(2, result.getZapURLsIncludeSet().size());
+        assertTrue(result.getZapURLsIncludeSet().contains("https://www.targeturl.com.*"));
+        assertTrue(result.getZapURLsIncludeSet().contains("https://www.targeturl.com"));
+        assertEquals(0, result.getZapURLsExcludeSet().size());
     }
 
     @ParameterizedTest

@@ -1,9 +1,14 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.api;
 
+import java.io.File;
+import java.io.IOException;
 import java.net.URI;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.LinkedHashSet;
 import java.util.Set;
+import java.util.UUID;
 
 import javax.crypto.SealedObject;
 
@@ -55,6 +60,23 @@ public abstract class AbstractSecHubClient implements SecHubClient {
     @Override
     public URI getServerUri() {
         return serverUri;
+    }
+
+    protected File calculateFullScanLogFile(UUID sechubJobUUID, Path downloadFilePath) throws SecHubClientException {
+        File file = null;
+        if (downloadFilePath == null) {
+            try {
+                downloadFilePath = Files.createTempDirectory("sechub-fullscanlog");
+            } catch (IOException e) {
+                throw new SecHubClientException("Was not able to create temp directory", e);
+            }
+        }
+        file = downloadFilePath.toFile();
+        if (file.isDirectory()) {
+            file = new File(file, "SecHub-" + sechubJobUUID + "-scanlog.zip");
+        }
+        file.getParentFile().mkdirs();
+        return file;
     }
 
     /**

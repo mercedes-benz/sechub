@@ -1,0 +1,3535 @@
+{
+   "total_count": 25,
+   "data": [
+      {
+         "id": "XRAY-228473",
+         "severity": "High",
+         "severity_source": "CVSS V3 from NVD",
+         "pkg_type": "debian",
+         "summary": "ncurses 6.3 before patch 20220416 has an out-of-bounds read and segmentation violation in convert_strings in tinfo/read_entry.c in the terminfo library.",
+         "issue_type": "security",
+         "provider": "JFrog",
+         "component": "ubuntu:bionic:ncurses-bin",
+         "source_id": "deb://ubuntu:bionic:ncurses-bin",
+         "source_comp_id": "deb://ubuntu:bionic:ncurses-bin:6.1-1ubuntu1.18.04.1",
+         "component_versions": {
+            "id": "ubuntu:bionic:ncurses",
+            "vulnerable_versions": [
+               "All Versions"
+            ],
+            "more_details": {
+               "cves": [
+                  {
+                     "cve": "CVE-2022-29458",
+                     "cwe": [
+                        "CWE-125"
+                     ],
+                     "cvss_v2": "5.8/CVSS:2.0/AV:N/AC:M/Au:N/C:P/I:N/A:P",
+                     "cvss_v3": "7.1/CVSS:3.1/AV:L/AC:L/PR:N/UI:R/S:U/C:H/I:N/A:H"
+                  }
+               ],
+               "description": "ncurses 6.3 before patch 20220416 has an out-of-bounds read and segmentation violation in convert_strings in tinfo/read_entry.c in the terminfo library.",
+               "provider": "JFrog"
+            }
+         },
+         "edited": "2023-05-19T06:52:42+02:00",
+         "is_source_root": false,
+         "is_high_profile": true,
+         "high_profile_info": {
+            "Id": 1659421838082695168,
+            "PublicVulnsTblID": 0,
+            "VulnId": "XRAY-228473",
+            "VulnerabilityTitle": "",
+            "ShortDescription": "An out-of-bounds read in ncurses terminfo leads to memory leakage.",
+            "FullDescription": "[ncurses](https://invisible-mirror.net/archives/ncurses/) (new curses) is a programming library providing an application programming interface (API) that allows the programmer to write text-based user interfaces (TUI) in a terminal-independent manner. It is a toolkit for developing \"GUI-like\" application software that runs under a terminal emulator.\r\n\r\nThe `convert_strings` function in the `terminfo` module of `ncurses` is vulnerable to an out-of-bounds read, leading to memory leakage. The bug is triggerable by means of the `/progs/tic` tool that ships with ncurses and compiles a terminfo source. An example of running the tic tool - \r\n```\r\n/progs/tic -o /path/to/output/directory/ <TIC_SOURCE_FILEPATH>\r\n```\r\nThe vulnerability can be triggered when the attacker controls the contents of the TIC_SOURCE file.\r\n\r\nThe [PoC](https://lists.gnu.org/archive/html/bug-ncurses/2022-04/msg00014.html) published is a terminfo file with special characters and Unicode characters leading to a memory leakage and a crash when reading a bad address. It is hardly usable by an attacker as the leaked memory either causes a crash - and so the data leaked is not obtainable - or written to a local output file, which doesn't benefit remote attackers.",
+            "Impact": 4,
+            "VulnerabilityType": "Data leakage",
+            "Resolution": "",
+            "ExtendedImpactReasons": [
+               {
+                  "Id": 1659421838120443907,
+                  "PublicVulnsExtendedTblId": 1659421838082695168,
+                  "Name": "The prerequisites for exploiting the issue are extremely unlikely",
+                  "Description": "Remote exploitation is unlikely to happen or to be beneficial for the attacker.\r\n\r\nThe attacker should be able to control the contents of the terminfo source file, when the `tic` command is run -\r\n`/progs/tic -o /path/to/output/directory/ <TIC_SOURCE_FILEPATH>`\r\n\r\nIn addition, the attacker must find a way to get the output file with the leaked memory information, which is very unlikely to happen.",
+                  "IsPositive": 1,
+                  "InsertOrder": 3
+               },
+               {
+                  "Id": 1659421838120443906,
+                  "PublicVulnsExtendedTblId": 1659421838082695168,
+                  "Name": "The issue cannot result in a severe impact (such as remote code execution)",
+                  "Description": "Either leads to a client program DoS or to a memory leak into a local file",
+                  "IsPositive": 1,
+                  "InsertOrder": 2
+               },
+               {
+                  "Id": 1659421838120443905,
+                  "PublicVulnsExtendedTblId": 1659421838082695168,
+                  "Name": "The issue has an exploit published",
+                  "Description": "A PoC has been published to reproduce the bug to leak memory contents",
+                  "IsPositive": 0,
+                  "InsertOrder": 1
+               }
+            ],
+            "ExtendedReferences": [
+               {
+                  "Id": 1659421838120443908,
+                  "PublicVulnsExtendedTblId": 1659421838082695168,
+                  "RefType": "Patch",
+                  "Title": "Patch",
+                  "Url": "https://lists.gnu.org/archive/html/bug-ncurses/2022-04/msg00017.html",
+                  "InsertOrder": 1
+               },
+               {
+                  "Id": 1659421838120443909,
+                  "PublicVulnsExtendedTblId": 1659421838082695168,
+                  "RefType": "Exploit",
+                  "Title": "PoC leading to memory leakage and a crash",
+                  "Url": "https://lists.gnu.org/archive/html/bug-ncurses/2022-04/msg00014.html",
+                  "InsertOrder": 2
+               }
+            ],
+            "ExtendedRelatedVulns": null
+         },
+         "component_physical_paths": [
+            ""
+         ]
+      },
+      {
+         "id": "XRAY-520967",
+         "severity": "High",
+         "severity_source": "CVSS V3 from NVD",
+         "pkg_type": "debian",
+         "summary": "In nghttp2 before version 1.41.0, the overly large HTTP/2 SETTINGS frame payload causes denial of service. The proof of concept attack involves a malicious client constructing a SETTINGS frame with a length of 14,400 bytes (2400 individual settings entries) over and over again. The attack causes the CPU to spike at 100%. nghttp2 v1.41.0 fixes this vulnerability. There is a workaround to this vulnerability. Implement nghttp2_on_frame_recv_callback callback, and if received frame is SETTINGS frame and the number of settings entries are large (e.g., > 32), then drop the connection.",
+         "issue_type": "security",
+         "provider": "JFrog",
+         "component": "ubuntu:bionic:libnghttp2-14",
+         "source_id": "deb://ubuntu:bionic:libnghttp2-14",
+         "source_comp_id": "deb://ubuntu:bionic:libnghttp2-14:1.30.0-1ubuntu1",
+         "component_versions": {
+            "id": "ubuntu:bionic:nghttp2",
+            "vulnerable_versions": [
+               "All Versions"
+            ],
+            "more_details": {
+               "cves": [
+                  {
+                     "cve": "CVE-2020-11080",
+                     "cwe": [
+                        "CWE-707"
+                     ],
+                     "cvss_v2": "5.0/CVSS:2.0/AV:N/AC:L/Au:N/C:N/I:N/A:P",
+                     "cvss_v3": "7.5/CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:H"
+                  }
+               ],
+               "description": "In nghttp2 before version 1.41.0, the overly large HTTP/2 SETTINGS frame payload causes denial of service. The proof of concept attack involves a malicious client constructing a SETTINGS frame with a length of 14,400 bytes (2400 individual settings entries) over and over again. The attack causes the CPU to spike at 100%. nghttp2 v1.41.0 fixes this vulnerability. There is a workaround to this vulnerability. Implement nghttp2_on_frame_recv_callback callback, and if received frame is SETTINGS frame and the number of settings entries are large (e.g., > 32), then drop the connection.",
+               "provider": "JFrog"
+            }
+         },
+         "edited": "2023-06-01T06:41:05+02:00",
+         "is_source_root": false,
+         "is_high_profile": false,
+         "component_physical_paths": [
+            ""
+         ]
+      },
+      {
+         "id": "XRAY-228473",
+         "severity": "High",
+         "severity_source": "CVSS V3 from NVD",
+         "pkg_type": "debian",
+         "summary": "ncurses 6.3 before patch 20220416 has an out-of-bounds read and segmentation violation in convert_strings in tinfo/read_entry.c in the terminfo library.",
+         "issue_type": "security",
+         "provider": "JFrog",
+         "component": "ubuntu:bionic:ncurses-base",
+         "source_id": "deb://ubuntu:bionic:ncurses-base",
+         "source_comp_id": "deb://ubuntu:bionic:ncurses-base:6.1-1ubuntu1.18.04.1",
+         "component_versions": {
+            "id": "ubuntu:bionic:ncurses",
+            "vulnerable_versions": [
+               "All Versions"
+            ],
+            "more_details": {
+               "cves": [
+                  {
+                     "cve": "CVE-2022-29458",
+                     "cwe": [
+                        "CWE-125"
+                     ],
+                     "cvss_v2": "5.8/CVSS:2.0/AV:N/AC:M/Au:N/C:P/I:N/A:P",
+                     "cvss_v3": "7.1/CVSS:3.1/AV:L/AC:L/PR:N/UI:R/S:U/C:H/I:N/A:H"
+                  }
+               ],
+               "description": "ncurses 6.3 before patch 20220416 has an out-of-bounds read and segmentation violation in convert_strings in tinfo/read_entry.c in the terminfo library.",
+               "provider": "JFrog"
+            }
+         },
+         "edited": "2023-05-19T06:52:42+02:00",
+         "is_source_root": false,
+         "is_high_profile": true,
+         "high_profile_info": {
+            "Id": 1659421838082695168,
+            "PublicVulnsTblID": 0,
+            "VulnId": "XRAY-228473",
+            "VulnerabilityTitle": "",
+            "ShortDescription": "An out-of-bounds read in ncurses terminfo leads to memory leakage.",
+            "FullDescription": "[ncurses](https://invisible-mirror.net/archives/ncurses/) (new curses) is a programming library providing an application programming interface (API) that allows the programmer to write text-based user interfaces (TUI) in a terminal-independent manner. It is a toolkit for developing \"GUI-like\" application software that runs under a terminal emulator.\r\n\r\nThe `convert_strings` function in the `terminfo` module of `ncurses` is vulnerable to an out-of-bounds read, leading to memory leakage. The bug is triggerable by means of the `/progs/tic` tool that ships with ncurses and compiles a terminfo source. An example of running the tic tool - \r\n```\r\n/progs/tic -o /path/to/output/directory/ <TIC_SOURCE_FILEPATH>\r\n```\r\nThe vulnerability can be triggered when the attacker controls the contents of the TIC_SOURCE file.\r\n\r\nThe [PoC](https://lists.gnu.org/archive/html/bug-ncurses/2022-04/msg00014.html) published is a terminfo file with special characters and Unicode characters leading to a memory leakage and a crash when reading a bad address. It is hardly usable by an attacker as the leaked memory either causes a crash - and so the data leaked is not obtainable - or written to a local output file, which doesn't benefit remote attackers.",
+            "Impact": 4,
+            "VulnerabilityType": "Data leakage",
+            "Resolution": "",
+            "ExtendedImpactReasons": [
+               {
+                  "Id": 1659421838120443907,
+                  "PublicVulnsExtendedTblId": 1659421838082695168,
+                  "Name": "The prerequisites for exploiting the issue are extremely unlikely",
+                  "Description": "Remote exploitation is unlikely to happen or to be beneficial for the attacker.\r\n\r\nThe attacker should be able to control the contents of the terminfo source file, when the `tic` command is run -\r\n`/progs/tic -o /path/to/output/directory/ <TIC_SOURCE_FILEPATH>`\r\n\r\nIn addition, the attacker must find a way to get the output file with the leaked memory information, which is very unlikely to happen.",
+                  "IsPositive": 1,
+                  "InsertOrder": 3
+               },
+               {
+                  "Id": 1659421838120443906,
+                  "PublicVulnsExtendedTblId": 1659421838082695168,
+                  "Name": "The issue cannot result in a severe impact (such as remote code execution)",
+                  "Description": "Either leads to a client program DoS or to a memory leak into a local file",
+                  "IsPositive": 1,
+                  "InsertOrder": 2
+               },
+               {
+                  "Id": 1659421838120443905,
+                  "PublicVulnsExtendedTblId": 1659421838082695168,
+                  "Name": "The issue has an exploit published",
+                  "Description": "A PoC has been published to reproduce the bug to leak memory contents",
+                  "IsPositive": 0,
+                  "InsertOrder": 1
+               }
+            ],
+            "ExtendedReferences": [
+               {
+                  "Id": 1659421838120443908,
+                  "PublicVulnsExtendedTblId": 1659421838082695168,
+                  "RefType": "Patch",
+                  "Title": "Patch",
+                  "Url": "https://lists.gnu.org/archive/html/bug-ncurses/2022-04/msg00017.html",
+                  "InsertOrder": 1
+               },
+               {
+                  "Id": 1659421838120443909,
+                  "PublicVulnsExtendedTblId": 1659421838082695168,
+                  "RefType": "Exploit",
+                  "Title": "PoC leading to memory leakage and a crash",
+                  "Url": "https://lists.gnu.org/archive/html/bug-ncurses/2022-04/msg00014.html",
+                  "InsertOrder": 2
+               }
+            ],
+            "ExtendedRelatedVulns": null
+         },
+         "component_physical_paths": [
+            ""
+         ]
+      },
+      {
+         "id": "XRAY-228473",
+         "severity": "High",
+         "severity_source": "CVSS V3 from NVD",
+         "pkg_type": "debian",
+         "summary": "ncurses 6.3 before patch 20220416 has an out-of-bounds read and segmentation violation in convert_strings in tinfo/read_entry.c in the terminfo library.",
+         "issue_type": "security",
+         "provider": "JFrog",
+         "component": "ubuntu:bionic:libtinfo5",
+         "source_id": "deb://ubuntu:bionic:libtinfo5",
+         "source_comp_id": "deb://ubuntu:bionic:libtinfo5:6.1-1ubuntu1.18.04.1",
+         "component_versions": {
+            "id": "ubuntu:bionic:ncurses",
+            "vulnerable_versions": [
+               "All Versions"
+            ],
+            "more_details": {
+               "cves": [
+                  {
+                     "cve": "CVE-2022-29458",
+                     "cwe": [
+                        "CWE-125"
+                     ],
+                     "cvss_v2": "5.8/CVSS:2.0/AV:N/AC:M/Au:N/C:P/I:N/A:P",
+                     "cvss_v3": "7.1/CVSS:3.1/AV:L/AC:L/PR:N/UI:R/S:U/C:H/I:N/A:H"
+                  }
+               ],
+               "description": "ncurses 6.3 before patch 20220416 has an out-of-bounds read and segmentation violation in convert_strings in tinfo/read_entry.c in the terminfo library.",
+               "provider": "JFrog"
+            }
+         },
+         "edited": "2023-05-19T06:52:42+02:00",
+         "is_source_root": false,
+         "is_high_profile": true,
+         "high_profile_info": {
+            "Id": 1659421838082695168,
+            "PublicVulnsTblID": 0,
+            "VulnId": "XRAY-228473",
+            "VulnerabilityTitle": "",
+            "ShortDescription": "An out-of-bounds read in ncurses terminfo leads to memory leakage.",
+            "FullDescription": "[ncurses](https://invisible-mirror.net/archives/ncurses/) (new curses) is a programming library providing an application programming interface (API) that allows the programmer to write text-based user interfaces (TUI) in a terminal-independent manner. It is a toolkit for developing \"GUI-like\" application software that runs under a terminal emulator.\r\n\r\nThe `convert_strings` function in the `terminfo` module of `ncurses` is vulnerable to an out-of-bounds read, leading to memory leakage. The bug is triggerable by means of the `/progs/tic` tool that ships with ncurses and compiles a terminfo source. An example of running the tic tool - \r\n```\r\n/progs/tic -o /path/to/output/directory/ <TIC_SOURCE_FILEPATH>\r\n```\r\nThe vulnerability can be triggered when the attacker controls the contents of the TIC_SOURCE file.\r\n\r\nThe [PoC](https://lists.gnu.org/archive/html/bug-ncurses/2022-04/msg00014.html) published is a terminfo file with special characters and Unicode characters leading to a memory leakage and a crash when reading a bad address. It is hardly usable by an attacker as the leaked memory either causes a crash - and so the data leaked is not obtainable - or written to a local output file, which doesn't benefit remote attackers.",
+            "Impact": 4,
+            "VulnerabilityType": "Data leakage",
+            "Resolution": "",
+            "ExtendedImpactReasons": [
+               {
+                  "Id": 1659421838120443907,
+                  "PublicVulnsExtendedTblId": 1659421838082695168,
+                  "Name": "The prerequisites for exploiting the issue are extremely unlikely",
+                  "Description": "Remote exploitation is unlikely to happen or to be beneficial for the attacker.\r\n\r\nThe attacker should be able to control the contents of the terminfo source file, when the `tic` command is run -\r\n`/progs/tic -o /path/to/output/directory/ <TIC_SOURCE_FILEPATH>`\r\n\r\nIn addition, the attacker must find a way to get the output file with the leaked memory information, which is very unlikely to happen.",
+                  "IsPositive": 1,
+                  "InsertOrder": 3
+               },
+               {
+                  "Id": 1659421838120443906,
+                  "PublicVulnsExtendedTblId": 1659421838082695168,
+                  "Name": "The issue cannot result in a severe impact (such as remote code execution)",
+                  "Description": "Either leads to a client program DoS or to a memory leak into a local file",
+                  "IsPositive": 1,
+                  "InsertOrder": 2
+               },
+               {
+                  "Id": 1659421838120443905,
+                  "PublicVulnsExtendedTblId": 1659421838082695168,
+                  "Name": "The issue has an exploit published",
+                  "Description": "A PoC has been published to reproduce the bug to leak memory contents",
+                  "IsPositive": 0,
+                  "InsertOrder": 1
+               }
+            ],
+            "ExtendedReferences": [
+               {
+                  "Id": 1659421838120443908,
+                  "PublicVulnsExtendedTblId": 1659421838082695168,
+                  "RefType": "Patch",
+                  "Title": "Patch",
+                  "Url": "https://lists.gnu.org/archive/html/bug-ncurses/2022-04/msg00017.html",
+                  "InsertOrder": 1
+               },
+               {
+                  "Id": 1659421838120443909,
+                  "PublicVulnsExtendedTblId": 1659421838082695168,
+                  "RefType": "Exploit",
+                  "Title": "PoC leading to memory leakage and a crash",
+                  "Url": "https://lists.gnu.org/archive/html/bug-ncurses/2022-04/msg00014.html",
+                  "InsertOrder": 2
+               }
+            ],
+            "ExtendedRelatedVulns": null
+         },
+         "component_physical_paths": [
+            ""
+         ]
+      },
+      {
+         "id": "XRAY-228473",
+         "severity": "High",
+         "severity_source": "CVSS V3 from NVD",
+         "pkg_type": "debian",
+         "summary": "ncurses 6.3 before patch 20220416 has an out-of-bounds read and segmentation violation in convert_strings in tinfo/read_entry.c in the terminfo library.",
+         "issue_type": "security",
+         "provider": "JFrog",
+         "component": "ubuntu:bionic:libncursesw5",
+         "source_id": "deb://ubuntu:bionic:libncursesw5",
+         "source_comp_id": "deb://ubuntu:bionic:libncursesw5:6.1-1ubuntu1.18.04.1",
+         "component_versions": {
+            "id": "ubuntu:bionic:ncurses",
+            "vulnerable_versions": [
+               "All Versions"
+            ],
+            "more_details": {
+               "cves": [
+                  {
+                     "cve": "CVE-2022-29458",
+                     "cwe": [
+                        "CWE-125"
+                     ],
+                     "cvss_v2": "5.8/CVSS:2.0/AV:N/AC:M/Au:N/C:P/I:N/A:P",
+                     "cvss_v3": "7.1/CVSS:3.1/AV:L/AC:L/PR:N/UI:R/S:U/C:H/I:N/A:H"
+                  }
+               ],
+               "description": "ncurses 6.3 before patch 20220416 has an out-of-bounds read and segmentation violation in convert_strings in tinfo/read_entry.c in the terminfo library.",
+               "provider": "JFrog"
+            }
+         },
+         "edited": "2023-05-19T06:52:42+02:00",
+         "is_source_root": false,
+         "is_high_profile": true,
+         "high_profile_info": {
+            "Id": 1659421838082695168,
+            "PublicVulnsTblID": 0,
+            "VulnId": "XRAY-228473",
+            "VulnerabilityTitle": "",
+            "ShortDescription": "An out-of-bounds read in ncurses terminfo leads to memory leakage.",
+            "FullDescription": "[ncurses](https://invisible-mirror.net/archives/ncurses/) (new curses) is a programming library providing an application programming interface (API) that allows the programmer to write text-based user interfaces (TUI) in a terminal-independent manner. It is a toolkit for developing \"GUI-like\" application software that runs under a terminal emulator.\r\n\r\nThe `convert_strings` function in the `terminfo` module of `ncurses` is vulnerable to an out-of-bounds read, leading to memory leakage. The bug is triggerable by means of the `/progs/tic` tool that ships with ncurses and compiles a terminfo source. An example of running the tic tool - \r\n```\r\n/progs/tic -o /path/to/output/directory/ <TIC_SOURCE_FILEPATH>\r\n```\r\nThe vulnerability can be triggered when the attacker controls the contents of the TIC_SOURCE file.\r\n\r\nThe [PoC](https://lists.gnu.org/archive/html/bug-ncurses/2022-04/msg00014.html) published is a terminfo file with special characters and Unicode characters leading to a memory leakage and a crash when reading a bad address. It is hardly usable by an attacker as the leaked memory either causes a crash - and so the data leaked is not obtainable - or written to a local output file, which doesn't benefit remote attackers.",
+            "Impact": 4,
+            "VulnerabilityType": "Data leakage",
+            "Resolution": "",
+            "ExtendedImpactReasons": [
+               {
+                  "Id": 1659421838120443907,
+                  "PublicVulnsExtendedTblId": 1659421838082695168,
+                  "Name": "The prerequisites for exploiting the issue are extremely unlikely",
+                  "Description": "Remote exploitation is unlikely to happen or to be beneficial for the attacker.\r\n\r\nThe attacker should be able to control the contents of the terminfo source file, when the `tic` command is run -\r\n`/progs/tic -o /path/to/output/directory/ <TIC_SOURCE_FILEPATH>`\r\n\r\nIn addition, the attacker must find a way to get the output file with the leaked memory information, which is very unlikely to happen.",
+                  "IsPositive": 1,
+                  "InsertOrder": 3
+               },
+               {
+                  "Id": 1659421838120443906,
+                  "PublicVulnsExtendedTblId": 1659421838082695168,
+                  "Name": "The issue cannot result in a severe impact (such as remote code execution)",
+                  "Description": "Either leads to a client program DoS or to a memory leak into a local file",
+                  "IsPositive": 1,
+                  "InsertOrder": 2
+               },
+               {
+                  "Id": 1659421838120443905,
+                  "PublicVulnsExtendedTblId": 1659421838082695168,
+                  "Name": "The issue has an exploit published",
+                  "Description": "A PoC has been published to reproduce the bug to leak memory contents",
+                  "IsPositive": 0,
+                  "InsertOrder": 1
+               }
+            ],
+            "ExtendedReferences": [
+               {
+                  "Id": 1659421838120443908,
+                  "PublicVulnsExtendedTblId": 1659421838082695168,
+                  "RefType": "Patch",
+                  "Title": "Patch",
+                  "Url": "https://lists.gnu.org/archive/html/bug-ncurses/2022-04/msg00017.html",
+                  "InsertOrder": 1
+               },
+               {
+                  "Id": 1659421838120443909,
+                  "PublicVulnsExtendedTblId": 1659421838082695168,
+                  "RefType": "Exploit",
+                  "Title": "PoC leading to memory leakage and a crash",
+                  "Url": "https://lists.gnu.org/archive/html/bug-ncurses/2022-04/msg00014.html",
+                  "InsertOrder": 2
+               }
+            ],
+            "ExtendedRelatedVulns": null
+         },
+         "component_physical_paths": [
+            ""
+         ]
+      },
+      {
+         "id": "XRAY-228473",
+         "severity": "High",
+         "severity_source": "CVSS V3 from NVD",
+         "pkg_type": "debian",
+         "summary": "ncurses 6.3 before patch 20220416 has an out-of-bounds read and segmentation violation in convert_strings in tinfo/read_entry.c in the terminfo library.",
+         "issue_type": "security",
+         "provider": "JFrog",
+         "component": "ubuntu:bionic:libncurses5",
+         "source_id": "deb://ubuntu:bionic:libncurses5",
+         "source_comp_id": "deb://ubuntu:bionic:libncurses5:6.1-1ubuntu1.18.04.1",
+         "component_versions": {
+            "id": "ubuntu:bionic:ncurses",
+            "vulnerable_versions": [
+               "All Versions"
+            ],
+            "more_details": {
+               "cves": [
+                  {
+                     "cve": "CVE-2022-29458",
+                     "cwe": [
+                        "CWE-125"
+                     ],
+                     "cvss_v2": "5.8/CVSS:2.0/AV:N/AC:M/Au:N/C:P/I:N/A:P",
+                     "cvss_v3": "7.1/CVSS:3.1/AV:L/AC:L/PR:N/UI:R/S:U/C:H/I:N/A:H"
+                  }
+               ],
+               "description": "ncurses 6.3 before patch 20220416 has an out-of-bounds read and segmentation violation in convert_strings in tinfo/read_entry.c in the terminfo library.",
+               "provider": "JFrog"
+            }
+         },
+         "edited": "2023-05-19T06:52:42+02:00",
+         "is_source_root": false,
+         "is_high_profile": true,
+         "high_profile_info": {
+            "Id": 1659421838082695168,
+            "PublicVulnsTblID": 0,
+            "VulnId": "XRAY-228473",
+            "VulnerabilityTitle": "",
+            "ShortDescription": "An out-of-bounds read in ncurses terminfo leads to memory leakage.",
+            "FullDescription": "[ncurses](https://invisible-mirror.net/archives/ncurses/) (new curses) is a programming library providing an application programming interface (API) that allows the programmer to write text-based user interfaces (TUI) in a terminal-independent manner. It is a toolkit for developing \"GUI-like\" application software that runs under a terminal emulator.\r\n\r\nThe `convert_strings` function in the `terminfo` module of `ncurses` is vulnerable to an out-of-bounds read, leading to memory leakage. The bug is triggerable by means of the `/progs/tic` tool that ships with ncurses and compiles a terminfo source. An example of running the tic tool - \r\n```\r\n/progs/tic -o /path/to/output/directory/ <TIC_SOURCE_FILEPATH>\r\n```\r\nThe vulnerability can be triggered when the attacker controls the contents of the TIC_SOURCE file.\r\n\r\nThe [PoC](https://lists.gnu.org/archive/html/bug-ncurses/2022-04/msg00014.html) published is a terminfo file with special characters and Unicode characters leading to a memory leakage and a crash when reading a bad address. It is hardly usable by an attacker as the leaked memory either causes a crash - and so the data leaked is not obtainable - or written to a local output file, which doesn't benefit remote attackers.",
+            "Impact": 4,
+            "VulnerabilityType": "Data leakage",
+            "Resolution": "",
+            "ExtendedImpactReasons": [
+               {
+                  "Id": 1659421838120443907,
+                  "PublicVulnsExtendedTblId": 1659421838082695168,
+                  "Name": "The prerequisites for exploiting the issue are extremely unlikely",
+                  "Description": "Remote exploitation is unlikely to happen or to be beneficial for the attacker.\r\n\r\nThe attacker should be able to control the contents of the terminfo source file, when the `tic` command is run -\r\n`/progs/tic -o /path/to/output/directory/ <TIC_SOURCE_FILEPATH>`\r\n\r\nIn addition, the attacker must find a way to get the output file with the leaked memory information, which is very unlikely to happen.",
+                  "IsPositive": 1,
+                  "InsertOrder": 3
+               },
+               {
+                  "Id": 1659421838120443906,
+                  "PublicVulnsExtendedTblId": 1659421838082695168,
+                  "Name": "The issue cannot result in a severe impact (such as remote code execution)",
+                  "Description": "Either leads to a client program DoS or to a memory leak into a local file",
+                  "IsPositive": 1,
+                  "InsertOrder": 2
+               },
+               {
+                  "Id": 1659421838120443905,
+                  "PublicVulnsExtendedTblId": 1659421838082695168,
+                  "Name": "The issue has an exploit published",
+                  "Description": "A PoC has been published to reproduce the bug to leak memory contents",
+                  "IsPositive": 0,
+                  "InsertOrder": 1
+               }
+            ],
+            "ExtendedReferences": [
+               {
+                  "Id": 1659421838120443908,
+                  "PublicVulnsExtendedTblId": 1659421838082695168,
+                  "RefType": "Patch",
+                  "Title": "Patch",
+                  "Url": "https://lists.gnu.org/archive/html/bug-ncurses/2022-04/msg00017.html",
+                  "InsertOrder": 1
+               },
+               {
+                  "Id": 1659421838120443909,
+                  "PublicVulnsExtendedTblId": 1659421838082695168,
+                  "RefType": "Exploit",
+                  "Title": "PoC leading to memory leakage and a crash",
+                  "Url": "https://lists.gnu.org/archive/html/bug-ncurses/2022-04/msg00014.html",
+                  "InsertOrder": 2
+               }
+            ],
+            "ExtendedRelatedVulns": null
+         },
+         "component_physical_paths": [
+            ""
+         ]
+      },
+      {
+         "id": "XRAY-210141",
+         "severity": "Medium",
+         "severity_source": "Ubuntu CVE Tracker",
+         "pkg_type": "debian",
+         "summary": "The Key Distribution Center (KDC) in MIT Kerberos 5 (aka krb5) before 1.18.5 and 1.19.x before 1.19.3 has a NULL pointer dereference in kdc/do_tgs_req.c via a FAST inner body that lacks a server field.",
+         "issue_type": "security",
+         "provider": "JFrog",
+         "component": "ubuntu:bionic:libkrb5-3",
+         "source_id": "deb://ubuntu:bionic:libkrb5-3",
+         "source_comp_id": "deb://ubuntu:bionic:libkrb5-3:1.16-2ubuntu0.4",
+         "component_versions": {
+            "id": "ubuntu:bionic:krb5",
+            "vulnerable_versions": [
+               "All Versions"
+            ],
+            "more_details": {
+               "cves": [
+                  {
+                     "cve": "CVE-2021-37750",
+                     "cwe": [
+                        "CWE-476"
+                     ],
+                     "cvss_v2": "4.0/CVSS:2.0/AV:N/AC:L/Au:S/C:N/I:N/A:P",
+                     "cvss_v3": "6.5/CVSS:3.1/AV:N/AC:L/PR:L/UI:N/S:U/C:N/I:N/A:H"
+                  }
+               ],
+               "description": "The Key Distribution Center (KDC) in MIT Kerberos 5 (aka krb5) before 1.18.5 and 1.19.x before 1.19.3 has a NULL pointer dereference in kdc/do_tgs_req.c via a FAST inner body that lacks a server field.",
+               "provider": "JFrog"
+            }
+         },
+         "edited": "2023-01-26T20:35:28+01:00",
+         "is_source_root": false,
+         "is_high_profile": false,
+         "component_physical_paths": [
+            ""
+         ]
+      },
+      {
+         "id": "XRAY-86454",
+         "severity": "Medium",
+         "severity_source": "Ubuntu CVE Tracker",
+         "pkg_type": "debian",
+         "summary": "Some HTTP/2 implementations are vulnerable to resource loops, potentially leading to a denial of service. The attacker creates multiple request streams and continually shuffles the priority of the streams in a way that causes substantial churn to the priority tree. This can consume excess CPU.",
+         "issue_type": "security",
+         "provider": "JFrog",
+         "component": "ubuntu:bionic:libnghttp2-14",
+         "source_id": "deb://ubuntu:bionic:libnghttp2-14",
+         "source_comp_id": "deb://ubuntu:bionic:libnghttp2-14:1.30.0-1ubuntu1",
+         "component_versions": {
+            "id": "ubuntu:bionic:nghttp2",
+            "vulnerable_versions": [
+               "All Versions"
+            ],
+            "more_details": {
+               "cves": [
+                  {
+                     "cve": "CVE-2019-9513",
+                     "cwe": [
+                        "NVD-CWE-Other"
+                     ],
+                     "cvss_v2": "7.8/CVSS:2.0/AV:N/AC:L/Au:N/C:N/I:N/A:C",
+                     "cvss_v3": "7.5/CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:H"
+                  }
+               ],
+               "description": "Some HTTP/2 implementations are vulnerable to resource loops, potentially leading to a denial of service. The attacker creates multiple request streams and continually shuffles the priority of the streams in a way that causes substantial churn to the priority tree. This can consume excess CPU.",
+               "provider": "JFrog"
+            }
+         },
+         "edited": "2023-01-26T20:35:14+01:00",
+         "is_source_root": false,
+         "is_high_profile": false,
+         "component_physical_paths": [
+            ""
+         ]
+      },
+      {
+         "id": "XRAY-100566",
+         "severity": "Medium",
+         "severity_source": "Ubuntu CVE Tracker",
+         "pkg_type": "debian",
+         "summary": "Arm Armv8-A core implementations utilizing speculative execution past unconditional changes in control flow may allow unauthorized disclosure of information to an attacker with local user access via a side-channel analysis, aka \"straight-line speculation.\"",
+         "issue_type": "security",
+         "provider": "JFrog",
+         "component": "ubuntu:bionic:libgcc1",
+         "source_id": "deb://ubuntu:bionic:libgcc1",
+         "source_comp_id": "deb://ubuntu:bionic:libgcc1:1:8.4.0-1ubuntu1~18.04",
+         "component_versions": {
+            "id": "ubuntu:bionic:gcc-8",
+            "vulnerable_versions": [
+               "All Versions"
+            ],
+            "more_details": {
+               "cves": [
+                  {
+                     "cve": "CVE-2020-13844",
+                     "cwe": [
+                        "CWE-203"
+                     ],
+                     "cvss_v2": "2.1/CVSS:2.0/AV:L/AC:L/Au:N/C:P/I:N/A:N",
+                     "cvss_v3": "5.5/CVSS:3.1/AV:L/AC:L/PR:L/UI:N/S:U/C:H/I:N/A:N"
+                  }
+               ],
+               "description": "Arm Armv8-A core implementations utilizing speculative execution past unconditional changes in control flow may allow unauthorized disclosure of information to an attacker with local user access via a side-channel analysis, aka \"straight-line speculation.\"",
+               "provider": "JFrog"
+            }
+         },
+         "edited": "2023-01-26T20:35:20+01:00",
+         "is_source_root": false,
+         "is_high_profile": false,
+         "component_physical_paths": [
+            ""
+         ]
+      },
+      {
+         "id": "XRAY-100566",
+         "severity": "Medium",
+         "severity_source": "Ubuntu CVE Tracker",
+         "pkg_type": "debian",
+         "summary": "Arm Armv8-A core implementations utilizing speculative execution past unconditional changes in control flow may allow unauthorized disclosure of information to an attacker with local user access via a side-channel analysis, aka \"straight-line speculation.\"",
+         "issue_type": "security",
+         "provider": "JFrog",
+         "component": "ubuntu:bionic:libstdc++6",
+         "source_id": "deb://ubuntu:bionic:libstdc++6",
+         "source_comp_id": "deb://ubuntu:bionic:libstdc++6:8.4.0-1ubuntu1~18.04",
+         "component_versions": {
+            "id": "ubuntu:bionic:gcc-8",
+            "vulnerable_versions": [
+               "All Versions"
+            ],
+            "more_details": {
+               "cves": [
+                  {
+                     "cve": "CVE-2020-13844",
+                     "cwe": [
+                        "CWE-203"
+                     ],
+                     "cvss_v2": "2.1/CVSS:2.0/AV:L/AC:L/Au:N/C:P/I:N/A:N",
+                     "cvss_v3": "5.5/CVSS:3.1/AV:L/AC:L/PR:L/UI:N/S:U/C:H/I:N/A:N"
+                  }
+               ],
+               "description": "Arm Armv8-A core implementations utilizing speculative execution past unconditional changes in control flow may allow unauthorized disclosure of information to an attacker with local user access via a side-channel analysis, aka \"straight-line speculation.\"",
+               "provider": "JFrog"
+            }
+         },
+         "edited": "2023-01-26T20:35:20+01:00",
+         "is_source_root": false,
+         "is_high_profile": false,
+         "component_physical_paths": [
+            ""
+         ]
+      },
+      {
+         "id": "XRAY-181589",
+         "severity": "Medium",
+         "severity_source": "Ubuntu CVE Tracker",
+         "pkg_type": "debian",
+         "summary": "ec_verify in kdc/kdc_preauth_ec.c in the Key Distribution Center (KDC) in MIT Kerberos 5 (aka krb5) before 1.18.4 and 1.19.x before 1.19.2 allows remote attackers to cause a NULL pointer dereference and daemon crash. This occurs because a return value is not properly managed in a certain situation.",
+         "issue_type": "security",
+         "provider": "JFrog",
+         "component": "ubuntu:bionic:libk5crypto3",
+         "source_id": "deb://ubuntu:bionic:libk5crypto3",
+         "source_comp_id": "deb://ubuntu:bionic:libk5crypto3:1.16-2ubuntu0.4",
+         "component_versions": {
+            "id": "ubuntu:bionic:krb5",
+            "vulnerable_versions": [
+               "All Versions"
+            ],
+            "more_details": {
+               "cves": [
+                  {
+                     "cve": "CVE-2021-36222",
+                     "cwe": [
+                        "CWE-476"
+                     ],
+                     "cvss_v2": "5.0/CVSS:2.0/AV:N/AC:L/Au:N/C:N/I:N/A:P",
+                     "cvss_v3": "7.5/CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:H"
+                  }
+               ],
+               "description": "ec_verify in kdc/kdc_preauth_ec.c in the Key Distribution Center (KDC) in MIT Kerberos 5 (aka krb5) before 1.18.4 and 1.19.x before 1.19.2 allows remote attackers to cause a NULL pointer dereference and daemon crash. This occurs because a return value is not properly managed in a certain situation.",
+               "provider": "JFrog"
+            }
+         },
+         "edited": "2023-01-26T20:35:05+01:00",
+         "is_source_root": false,
+         "is_high_profile": false,
+         "component_physical_paths": [
+            ""
+         ]
+      },
+      {
+         "id": "XRAY-181589",
+         "severity": "Medium",
+         "severity_source": "Ubuntu CVE Tracker",
+         "pkg_type": "debian",
+         "summary": "ec_verify in kdc/kdc_preauth_ec.c in the Key Distribution Center (KDC) in MIT Kerberos 5 (aka krb5) before 1.18.4 and 1.19.x before 1.19.2 allows remote attackers to cause a NULL pointer dereference and daemon crash. This occurs because a return value is not properly managed in a certain situation.",
+         "issue_type": "security",
+         "provider": "JFrog",
+         "component": "ubuntu:bionic:krb5-locales",
+         "source_id": "deb://ubuntu:bionic:krb5-locales",
+         "source_comp_id": "deb://ubuntu:bionic:krb5-locales:1.16-2ubuntu0.4",
+         "component_versions": {
+            "id": "ubuntu:bionic:krb5",
+            "vulnerable_versions": [
+               "All Versions"
+            ],
+            "more_details": {
+               "cves": [
+                  {
+                     "cve": "CVE-2021-36222",
+                     "cwe": [
+                        "CWE-476"
+                     ],
+                     "cvss_v2": "5.0/CVSS:2.0/AV:N/AC:L/Au:N/C:N/I:N/A:P",
+                     "cvss_v3": "7.5/CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:H"
+                  }
+               ],
+               "description": "ec_verify in kdc/kdc_preauth_ec.c in the Key Distribution Center (KDC) in MIT Kerberos 5 (aka krb5) before 1.18.4 and 1.19.x before 1.19.2 allows remote attackers to cause a NULL pointer dereference and daemon crash. This occurs because a return value is not properly managed in a certain situation.",
+               "provider": "JFrog"
+            }
+         },
+         "edited": "2023-01-26T20:35:05+01:00",
+         "is_source_root": false,
+         "is_high_profile": false,
+         "component_physical_paths": [
+            ""
+         ]
+      },
+      {
+         "id": "XRAY-181589",
+         "severity": "Medium",
+         "severity_source": "Ubuntu CVE Tracker",
+         "pkg_type": "debian",
+         "summary": "ec_verify in kdc/kdc_preauth_ec.c in the Key Distribution Center (KDC) in MIT Kerberos 5 (aka krb5) before 1.18.4 and 1.19.x before 1.19.2 allows remote attackers to cause a NULL pointer dereference and daemon crash. This occurs because a return value is not properly managed in a certain situation.",
+         "issue_type": "security",
+         "provider": "JFrog",
+         "component": "ubuntu:bionic:libkrb5-3",
+         "source_id": "deb://ubuntu:bionic:libkrb5-3",
+         "source_comp_id": "deb://ubuntu:bionic:libkrb5-3:1.16-2ubuntu0.4",
+         "component_versions": {
+            "id": "ubuntu:bionic:krb5",
+            "vulnerable_versions": [
+               "All Versions"
+            ],
+            "more_details": {
+               "cves": [
+                  {
+                     "cve": "CVE-2021-36222",
+                     "cwe": [
+                        "CWE-476"
+                     ],
+                     "cvss_v2": "5.0/CVSS:2.0/AV:N/AC:L/Au:N/C:N/I:N/A:P",
+                     "cvss_v3": "7.5/CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:H"
+                  }
+               ],
+               "description": "ec_verify in kdc/kdc_preauth_ec.c in the Key Distribution Center (KDC) in MIT Kerberos 5 (aka krb5) before 1.18.4 and 1.19.x before 1.19.2 allows remote attackers to cause a NULL pointer dereference and daemon crash. This occurs because a return value is not properly managed in a certain situation.",
+               "provider": "JFrog"
+            }
+         },
+         "edited": "2023-01-26T20:35:05+01:00",
+         "is_source_root": false,
+         "is_high_profile": false,
+         "component_physical_paths": [
+            ""
+         ]
+      },
+      {
+         "id": "XRAY-181589",
+         "severity": "Medium",
+         "severity_source": "Ubuntu CVE Tracker",
+         "pkg_type": "debian",
+         "summary": "ec_verify in kdc/kdc_preauth_ec.c in the Key Distribution Center (KDC) in MIT Kerberos 5 (aka krb5) before 1.18.4 and 1.19.x before 1.19.2 allows remote attackers to cause a NULL pointer dereference and daemon crash. This occurs because a return value is not properly managed in a certain situation.",
+         "issue_type": "security",
+         "provider": "JFrog",
+         "component": "ubuntu:bionic:libkrb5support0",
+         "source_id": "deb://ubuntu:bionic:libkrb5support0",
+         "source_comp_id": "deb://ubuntu:bionic:libkrb5support0:1.16-2ubuntu0.4",
+         "component_versions": {
+            "id": "ubuntu:bionic:krb5",
+            "vulnerable_versions": [
+               "All Versions"
+            ],
+            "more_details": {
+               "cves": [
+                  {
+                     "cve": "CVE-2021-36222",
+                     "cwe": [
+                        "CWE-476"
+                     ],
+                     "cvss_v2": "5.0/CVSS:2.0/AV:N/AC:L/Au:N/C:N/I:N/A:P",
+                     "cvss_v3": "7.5/CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:H"
+                  }
+               ],
+               "description": "ec_verify in kdc/kdc_preauth_ec.c in the Key Distribution Center (KDC) in MIT Kerberos 5 (aka krb5) before 1.18.4 and 1.19.x before 1.19.2 allows remote attackers to cause a NULL pointer dereference and daemon crash. This occurs because a return value is not properly managed in a certain situation.",
+               "provider": "JFrog"
+            }
+         },
+         "edited": "2023-01-26T20:35:05+01:00",
+         "is_source_root": false,
+         "is_high_profile": false,
+         "component_physical_paths": [
+            ""
+         ]
+      },
+      {
+         "id": "XRAY-181589",
+         "severity": "Medium",
+         "severity_source": "Ubuntu CVE Tracker",
+         "pkg_type": "debian",
+         "summary": "ec_verify in kdc/kdc_preauth_ec.c in the Key Distribution Center (KDC) in MIT Kerberos 5 (aka krb5) before 1.18.4 and 1.19.x before 1.19.2 allows remote attackers to cause a NULL pointer dereference and daemon crash. This occurs because a return value is not properly managed in a certain situation.",
+         "issue_type": "security",
+         "provider": "JFrog",
+         "component": "ubuntu:bionic:libgssapi-krb5-2",
+         "source_id": "deb://ubuntu:bionic:libgssapi-krb5-2",
+         "source_comp_id": "deb://ubuntu:bionic:libgssapi-krb5-2:1.16-2ubuntu0.4",
+         "component_versions": {
+            "id": "ubuntu:bionic:krb5",
+            "vulnerable_versions": [
+               "All Versions"
+            ],
+            "more_details": {
+               "cves": [
+                  {
+                     "cve": "CVE-2021-36222",
+                     "cwe": [
+                        "CWE-476"
+                     ],
+                     "cvss_v2": "5.0/CVSS:2.0/AV:N/AC:L/Au:N/C:N/I:N/A:P",
+                     "cvss_v3": "7.5/CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:H"
+                  }
+               ],
+               "description": "ec_verify in kdc/kdc_preauth_ec.c in the Key Distribution Center (KDC) in MIT Kerberos 5 (aka krb5) before 1.18.4 and 1.19.x before 1.19.2 allows remote attackers to cause a NULL pointer dereference and daemon crash. This occurs because a return value is not properly managed in a certain situation.",
+               "provider": "JFrog"
+            }
+         },
+         "edited": "2023-01-26T20:35:05+01:00",
+         "is_source_root": false,
+         "is_high_profile": false,
+         "component_physical_paths": [
+            ""
+         ]
+      },
+      {
+         "id": "XRAY-100566",
+         "severity": "Medium",
+         "severity_source": "Ubuntu CVE Tracker",
+         "pkg_type": "debian",
+         "summary": "Arm Armv8-A core implementations utilizing speculative execution past unconditional changes in control flow may allow unauthorized disclosure of information to an attacker with local user access via a side-channel analysis, aka \"straight-line speculation.\"",
+         "issue_type": "security",
+         "provider": "JFrog",
+         "component": "ubuntu:bionic:gcc-8-base",
+         "source_id": "deb://ubuntu:bionic:gcc-8-base",
+         "source_comp_id": "deb://ubuntu:bionic:gcc-8-base:8.4.0-1ubuntu1~18.04",
+         "component_versions": {
+            "id": "ubuntu:bionic:gcc-8",
+            "vulnerable_versions": [
+               "All Versions"
+            ],
+            "more_details": {
+               "cves": [
+                  {
+                     "cve": "CVE-2020-13844",
+                     "cwe": [
+                        "CWE-203"
+                     ],
+                     "cvss_v2": "2.1/CVSS:2.0/AV:L/AC:L/Au:N/C:P/I:N/A:N",
+                     "cvss_v3": "5.5/CVSS:3.1/AV:L/AC:L/PR:L/UI:N/S:U/C:H/I:N/A:N"
+                  }
+               ],
+               "description": "Arm Armv8-A core implementations utilizing speculative execution past unconditional changes in control flow may allow unauthorized disclosure of information to an attacker with local user access via a side-channel analysis, aka \"straight-line speculation.\"",
+               "provider": "JFrog"
+            }
+         },
+         "edited": "2023-01-26T20:35:20+01:00",
+         "is_source_root": false,
+         "is_high_profile": false,
+         "component_physical_paths": [
+            ""
+         ]
+      },
+      {
+         "id": "XRAY-210141",
+         "severity": "Medium",
+         "severity_source": "Ubuntu CVE Tracker",
+         "pkg_type": "debian",
+         "summary": "The Key Distribution Center (KDC) in MIT Kerberos 5 (aka krb5) before 1.18.5 and 1.19.x before 1.19.3 has a NULL pointer dereference in kdc/do_tgs_req.c via a FAST inner body that lacks a server field.",
+         "issue_type": "security",
+         "provider": "JFrog",
+         "component": "ubuntu:bionic:krb5-locales",
+         "source_id": "deb://ubuntu:bionic:krb5-locales",
+         "source_comp_id": "deb://ubuntu:bionic:krb5-locales:1.16-2ubuntu0.4",
+         "component_versions": {
+            "id": "ubuntu:bionic:krb5",
+            "vulnerable_versions": [
+               "All Versions"
+            ],
+            "more_details": {
+               "cves": [
+                  {
+                     "cve": "CVE-2021-37750",
+                     "cwe": [
+                        "CWE-476"
+                     ],
+                     "cvss_v2": "4.0/CVSS:2.0/AV:N/AC:L/Au:S/C:N/I:N/A:P",
+                     "cvss_v3": "6.5/CVSS:3.1/AV:N/AC:L/PR:L/UI:N/S:U/C:N/I:N/A:H"
+                  }
+               ],
+               "description": "The Key Distribution Center (KDC) in MIT Kerberos 5 (aka krb5) before 1.18.5 and 1.19.x before 1.19.3 has a NULL pointer dereference in kdc/do_tgs_req.c via a FAST inner body that lacks a server field.",
+               "provider": "JFrog"
+            }
+         },
+         "edited": "2023-01-26T20:35:28+01:00",
+         "is_source_root": false,
+         "is_high_profile": false,
+         "component_physical_paths": [
+            ""
+         ]
+      },
+      {
+         "id": "XRAY-86870",
+         "severity": "Medium",
+         "severity_source": "Ubuntu CVE Tracker",
+         "pkg_type": "debian",
+         "summary": "Some HTTP/2 implementations are vulnerable to window size manipulation and stream prioritization manipulation, potentially leading to a denial of service. The attacker requests a large amount of data from a specified resource over multiple streams. They manipulate window size and stream priority to force the server to queue the data in 1-byte chunks. Depending on how efficiently this data is queued, this can consume excess CPU, memory, or both.",
+         "issue_type": "security",
+         "provider": "JFrog",
+         "component": "ubuntu:bionic:libnghttp2-14",
+         "source_id": "deb://ubuntu:bionic:libnghttp2-14",
+         "source_comp_id": "deb://ubuntu:bionic:libnghttp2-14:1.30.0-1ubuntu1",
+         "component_versions": {
+            "id": "ubuntu:bionic:nghttp2",
+            "vulnerable_versions": [
+               "All Versions"
+            ],
+            "more_details": {
+               "cves": [
+                  {
+                     "cve": "CVE-2019-9511",
+                     "cwe": [
+                        "CWE-770"
+                     ],
+                     "cvss_v2": "7.8/CVSS:2.0/AV:N/AC:L/Au:N/C:N/I:N/A:C",
+                     "cvss_v3": "7.5/CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:H"
+                  }
+               ],
+               "description": "Some HTTP/2 implementations are vulnerable to window size manipulation and stream prioritization manipulation, potentially leading to a denial of service. The attacker requests a large amount of data from a specified resource over multiple streams. They manipulate window size and stream priority to force the server to queue the data in 1-byte chunks. Depending on how efficiently this data is queued, this can consume excess CPU, memory, or both.",
+               "provider": "JFrog"
+            }
+         },
+         "edited": "2023-01-26T20:35:12+01:00",
+         "is_source_root": false,
+         "is_high_profile": false,
+         "component_physical_paths": [
+            ""
+         ]
+      },
+      {
+         "id": "XRAY-416480",
+         "severity": "Medium",
+         "severity_source": "Ubuntu CVE Tracker",
+         "pkg_type": "debian",
+         "summary": "processCropSelections in tools/tiffcrop.c in LibTIFF through 4.5.0 has a heap-based buffer overflow (e.g., \"WRITE of size 307203\") via a crafted TIFF image.",
+         "issue_type": "security",
+         "provider": "JFrog",
+         "component": "ubuntu:bionic:libtiff5",
+         "source_id": "deb://ubuntu:bionic:libtiff5",
+         "source_comp_id": "deb://ubuntu:bionic:libtiff5:4.0.9-5ubuntu0.10",
+         "component_versions": {
+            "id": "ubuntu:bionic:tiff",
+            "vulnerable_versions": [
+               "All Versions"
+            ],
+            "more_details": {
+               "cves": [
+                  {
+                     "cve": "CVE-2022-48281",
+                     "cwe": [
+                        "CWE-787"
+                     ],
+                     "cvss_v3": "5.5/CVSS:3.1/AV:L/AC:L/PR:N/UI:R/S:U/C:N/I:N/A:H"
+                  }
+               ],
+               "description": "processCropSelections in tools/tiffcrop.c in LibTIFF through 4.5.0 has a heap-based buffer overflow (e.g., \"WRITE of size 307203\") via a crafted TIFF image.",
+               "provider": "JFrog"
+            }
+         },
+         "edited": "2023-02-04T20:35:18+01:00",
+         "is_source_root": false,
+         "is_high_profile": true,
+         "high_profile_info": {
+            "Id": 1621955621712179233,
+            "PublicVulnsTblID": 0,
+            "VulnId": "XRAY-416480",
+            "VulnerabilityTitle": "",
+            "ShortDescription": "A heap buffer overflow in the tiffcrop utility in libtiff possibly leads to remote code execution when parsing a crafted TIFF file.",
+            "FullDescription": "[libTIFF](http://www.simplesystems.org/libtiff/) is a popular library which provides support for the Tag Image File Format (TIFF), a widely used format for storing image data. One of the utilities that can be provided with libtiff is tiffcrop, which is most often used to extract portions of an image for processing.\r\n\r\n`tiffcrop` can be run with one or more flags. These flags include, but are not limited to:\r\n\r\n* `-Z`: With the `-Z` flag, the user can specify zones of the image designated as position X of Y equal sized portions measured from the reference edge, multiple zones can be specified as a comma separated list but they must reference the same edge.\r\n* `-e`: With the `-e` flag, the user can specify the export mode for images and selections from input images.\r\n\r\nWhen running `tiffcrop` with the `-e` flag set to `divided`, `multiple` or `separate` and also with the `-Z` flag (unless only one zone is specified with the -Z flag), an attacker can provide a crafted TIFF file which will cause a heap overflow in the `processCropSelections()` function.\r\n\r\nAlthough the heap overflow could potentially lead to RCE, no exploit or technical writeup suggested such an impact for this issue.",
+            "Impact": 5,
+            "VulnerabilityType": "Remote code execution",
+            "Resolution": "",
+            "ExtendedImpactReasons": [
+               {
+                  "Id": 1621955621817036800,
+                  "PublicVulnsExtendedTblId": 1621955621712179233,
+                  "Name": "No high-impact exploit or technical writeup were published, and exploitation of the issue with high impact is either non-trivial or completely unproven",
+                  "Description": "Although heap overflow could potentially lead to RCE, no exploit or technical writeup suggested such an impact for this issue.",
+                  "IsPositive": 1,
+                  "InsertOrder": 3
+               },
+               {
+                  "Id": 1621955621812842499,
+                  "PublicVulnsExtendedTblId": 1621955621712179233,
+                  "Name": "The issue has an exploit published",
+                  "Description": "A crafted TIFF file is publicly available that demonstrates crashing `libtiff`.",
+                  "IsPositive": 0,
+                  "InsertOrder": 2
+               },
+               {
+                  "Id": 1621955621812842498,
+                  "PublicVulnsExtendedTblId": 1621955621712179233,
+                  "Name": "The prerequisites for exploiting the issue are extremely unlikely",
+                  "Description": "For an attacker to exploit this vulnerability, `tiffcrop` has to be invoked with specific `-e` and `-Z` flags. In addition to this, the attacker has to be able to supply a crafted TIFF file as input.",
+                  "IsPositive": 1,
+                  "InsertOrder": 1
+               }
+            ],
+            "ExtendedReferences": [
+               {
+                  "Id": 1621955621817036801,
+                  "PublicVulnsExtendedTblId": 1621955621712179233,
+                  "RefType": "Exploit",
+                  "Title": "Original Researcher Report including an exploit",
+                  "Url": "https://gitlab.com/libtiff/libtiff/-/issues/488",
+                  "InsertOrder": 1
+               },
+               {
+                  "Id": 1621955621817036802,
+                  "PublicVulnsExtendedTblId": 1621955621712179233,
+                  "RefType": "Patch",
+                  "Title": "Official Fix Commit",
+                  "Url": "https://gitlab.com/libtiff/libtiff/-/commit/d1b6b9c1b3cae2d9e37754506c1ad8f4f7b646b5",
+                  "InsertOrder": 2
+               }
+            ],
+            "ExtendedRelatedVulns": null
+         },
+         "component_physical_paths": [
+            ""
+         ]
+      },
+      {
+         "id": "XRAY-210141",
+         "severity": "Medium",
+         "severity_source": "Ubuntu CVE Tracker",
+         "pkg_type": "debian",
+         "summary": "The Key Distribution Center (KDC) in MIT Kerberos 5 (aka krb5) before 1.18.5 and 1.19.x before 1.19.3 has a NULL pointer dereference in kdc/do_tgs_req.c via a FAST inner body that lacks a server field.",
+         "issue_type": "security",
+         "provider": "JFrog",
+         "component": "ubuntu:bionic:libkrb5support0",
+         "source_id": "deb://ubuntu:bionic:libkrb5support0",
+         "source_comp_id": "deb://ubuntu:bionic:libkrb5support0:1.16-2ubuntu0.4",
+         "component_versions": {
+            "id": "ubuntu:bionic:krb5",
+            "vulnerable_versions": [
+               "All Versions"
+            ],
+            "more_details": {
+               "cves": [
+                  {
+                     "cve": "CVE-2021-37750",
+                     "cwe": [
+                        "CWE-476"
+                     ],
+                     "cvss_v2": "4.0/CVSS:2.0/AV:N/AC:L/Au:S/C:N/I:N/A:P",
+                     "cvss_v3": "6.5/CVSS:3.1/AV:N/AC:L/PR:L/UI:N/S:U/C:N/I:N/A:H"
+                  }
+               ],
+               "description": "The Key Distribution Center (KDC) in MIT Kerberos 5 (aka krb5) before 1.18.5 and 1.19.x before 1.19.3 has a NULL pointer dereference in kdc/do_tgs_req.c via a FAST inner body that lacks a server field.",
+               "provider": "JFrog"
+            }
+         },
+         "edited": "2023-01-26T20:35:28+01:00",
+         "is_source_root": false,
+         "is_high_profile": false,
+         "component_physical_paths": [
+            ""
+         ]
+      },
+      {
+         "id": "XRAY-210141",
+         "severity": "Medium",
+         "severity_source": "Ubuntu CVE Tracker",
+         "pkg_type": "debian",
+         "summary": "The Key Distribution Center (KDC) in MIT Kerberos 5 (aka krb5) before 1.18.5 and 1.19.x before 1.19.3 has a NULL pointer dereference in kdc/do_tgs_req.c via a FAST inner body that lacks a server field.",
+         "issue_type": "security",
+         "provider": "JFrog",
+         "component": "ubuntu:bionic:libgssapi-krb5-2",
+         "source_id": "deb://ubuntu:bionic:libgssapi-krb5-2",
+         "source_comp_id": "deb://ubuntu:bionic:libgssapi-krb5-2:1.16-2ubuntu0.4",
+         "component_versions": {
+            "id": "ubuntu:bionic:krb5",
+            "vulnerable_versions": [
+               "All Versions"
+            ],
+            "more_details": {
+               "cves": [
+                  {
+                     "cve": "CVE-2021-37750",
+                     "cwe": [
+                        "CWE-476"
+                     ],
+                     "cvss_v2": "4.0/CVSS:2.0/AV:N/AC:L/Au:S/C:N/I:N/A:P",
+                     "cvss_v3": "6.5/CVSS:3.1/AV:N/AC:L/PR:L/UI:N/S:U/C:N/I:N/A:H"
+                  }
+               ],
+               "description": "The Key Distribution Center (KDC) in MIT Kerberos 5 (aka krb5) before 1.18.5 and 1.19.x before 1.19.3 has a NULL pointer dereference in kdc/do_tgs_req.c via a FAST inner body that lacks a server field.",
+               "provider": "JFrog"
+            }
+         },
+         "edited": "2023-01-26T20:35:28+01:00",
+         "is_source_root": false,
+         "is_high_profile": false,
+         "component_physical_paths": [
+            ""
+         ]
+      },
+      {
+         "id": "XRAY-210141",
+         "severity": "Medium",
+         "severity_source": "Ubuntu CVE Tracker",
+         "pkg_type": "debian",
+         "summary": "The Key Distribution Center (KDC) in MIT Kerberos 5 (aka krb5) before 1.18.5 and 1.19.x before 1.19.3 has a NULL pointer dereference in kdc/do_tgs_req.c via a FAST inner body that lacks a server field.",
+         "issue_type": "security",
+         "provider": "JFrog",
+         "component": "ubuntu:bionic:libk5crypto3",
+         "source_id": "deb://ubuntu:bionic:libk5crypto3",
+         "source_comp_id": "deb://ubuntu:bionic:libk5crypto3:1.16-2ubuntu0.4",
+         "component_versions": {
+            "id": "ubuntu:bionic:krb5",
+            "vulnerable_versions": [
+               "All Versions"
+            ],
+            "more_details": {
+               "cves": [
+                  {
+                     "cve": "CVE-2021-37750",
+                     "cwe": [
+                        "CWE-476"
+                     ],
+                     "cvss_v2": "4.0/CVSS:2.0/AV:N/AC:L/Au:S/C:N/I:N/A:P",
+                     "cvss_v3": "6.5/CVSS:3.1/AV:N/AC:L/PR:L/UI:N/S:U/C:N/I:N/A:H"
+                  }
+               ],
+               "description": "The Key Distribution Center (KDC) in MIT Kerberos 5 (aka krb5) before 1.18.5 and 1.19.x before 1.19.3 has a NULL pointer dereference in kdc/do_tgs_req.c via a FAST inner body that lacks a server field.",
+               "provider": "JFrog"
+            }
+         },
+         "edited": "2023-01-26T20:35:28+01:00",
+         "is_source_root": false,
+         "is_high_profile": false,
+         "component_physical_paths": [
+            ""
+         ]
+      },
+      {
+         "id": "XRAY-260680",
+         "severity": "Medium",
+         "severity_source": "Ubuntu CVE Tracker",
+         "pkg_type": "debian",
+         "summary": "An off-by-one Error issue was discovered in Systemd in format_timespan() function of time-util.c. An attacker could supply specific values for time and accuracy that leads to buffer overrun in format_timespan(), leading to a Denial of Service.",
+         "issue_type": "security",
+         "provider": "JFrog",
+         "component": "ubuntu:bionic:libsystemd0",
+         "source_id": "deb://ubuntu:bionic:libsystemd0",
+         "source_comp_id": "deb://ubuntu:bionic:libsystemd0:237-3ubuntu10.57",
+         "component_versions": {
+            "id": "ubuntu:bionic:systemd",
+            "vulnerable_versions": [
+               "All Versions"
+            ],
+            "more_details": {
+               "cves": [
+                  {
+                     "cve": "CVE-2022-3821",
+                     "cwe": [
+                        "CWE-193"
+                     ],
+                     "cvss_v3": "5.5/CVSS:3.1/AV:L/AC:L/PR:L/UI:N/S:U/C:N/I:N/A:H"
+                  }
+               ],
+               "description": "An off-by-one Error issue was discovered in Systemd in format_timespan() function of time-util.c. An attacker could supply specific values for time and accuracy that leads to buffer overrun in format_timespan(), leading to a Denial of Service.",
+               "provider": "JFrog"
+            }
+         },
+         "edited": "2023-01-02T20:35:04+01:00",
+         "is_source_root": false,
+         "is_high_profile": true,
+         "high_profile_info": {
+            "Id": 1609996723258273793,
+            "PublicVulnsTblID": 0,
+            "VulnId": "XRAY-260680",
+            "VulnerabilityTitle": "",
+            "ShortDescription": "An out-of-bounds write in systemd leads to denial of service when formatting timespans.",
+            "FullDescription": "[systemd](https://systemd.io/) is a software suite that provides an array of system components for Linux-based operating systems. Its main aim is to unify service configuration and behavior across Linux distributions.\r\n\r\nIt was discovered that due to an off-by-one error in the `format_timespan` function in `time-util.c`, a 1-byte buffer overflow occurs, which may lead to a denial of service.\r\n\r\nThe issue requires control over both arguments of the vulnerable function: `t` and `accuracy`.\r\n\r\nThe vulnerable function is inside an internal header file, which isn't exported and is only used by the `systemd` utilities.\r\nNo user input is supplied to this function through the default `systemd` utilities.\r\nAlso, developing code and linking with the library `-lsystemd` doesn't give access to this function.\r\nTherefore - on almost all systems there is no way to trigger this issue.",
+            "Impact": 4,
+            "VulnerabilityType": "Denial of service",
+            "Resolution": "",
+            "ExtendedImpactReasons": [
+               {
+                  "Id": 1609996723296022532,
+                  "PublicVulnsExtendedTblId": 1609996723258273793,
+                  "Name": "The prerequisites for exploiting the issue are extremely unlikely",
+                  "Description": "On almost all systems there is no way to trigger this issue, since the vulnerable internal function cannot be called with external input -\r\n1. The vulnerable internal function is not exported\r\n2. All the `systemd` utilities that use this function, do not pass user data to the vulnerable arguments",
+                  "IsPositive": 1,
+                  "InsertOrder": 4
+               },
+               {
+                  "Id": 1609996723296022531,
+                  "PublicVulnsExtendedTblId": 1609996723258273793,
+                  "Name": "The issue has an exploit published",
+                  "Description": "An internal test that overwrites one byte was published on the GitHub Issue.",
+                  "IsPositive": 0,
+                  "InsertOrder": 3
+               },
+               {
+                  "Id": 1609996723296022530,
+                  "PublicVulnsExtendedTblId": 1609996723258273793,
+                  "Name": "The reported CVSS was either wrongly calculated, downgraded by other vendors, or does not reflect the vulnerability's impact",
+                  "Description": "The CVSS does not reflect the contextual prerequisites required to exploit the vulnerability.",
+                  "IsPositive": 1,
+                  "InsertOrder": 2
+               },
+               {
+                  "Id": 1609996723296022529,
+                  "PublicVulnsExtendedTblId": 1609996723258273793,
+                  "Name": "The issue cannot result in a severe impact (such as remote code execution)",
+                  "Description": "The issue causes a 1-byte overflow, which is unlikely to cause a crash or any other impact in real-world environments.",
+                  "IsPositive": 1,
+                  "InsertOrder": 1
+               }
+            ],
+            "ExtendedReferences": [
+               {
+                  "Id": 1609996723296022533,
+                  "PublicVulnsExtendedTblId": 1609996723258273793,
+                  "RefType": "Advisory",
+                  "Title": "Official GitHub Issue",
+                  "Url": "https://github.com/systemd/systemd/issues/23928",
+                  "InsertOrder": 1
+               },
+               {
+                  "Id": 1609996723296022534,
+                  "PublicVulnsExtendedTblId": 1609996723258273793,
+                  "RefType": "Patch",
+                  "Title": "Official Fix Patch",
+                  "Url": "https://github.com/systemd/systemd/commit/9102c625a673a3246d7e73d8737f3494446bad4e",
+                  "InsertOrder": 2
+               }
+            ],
+            "ExtendedRelatedVulns": null
+         },
+         "component_physical_paths": [
+            ""
+         ]
+      },
+      {
+         "id": "XRAY-260680",
+         "severity": "Medium",
+         "severity_source": "Ubuntu CVE Tracker",
+         "pkg_type": "debian",
+         "summary": "An off-by-one Error issue was discovered in Systemd in format_timespan() function of time-util.c. An attacker could supply specific values for time and accuracy that leads to buffer overrun in format_timespan(), leading to a Denial of Service.",
+         "issue_type": "security",
+         "provider": "JFrog",
+         "component": "ubuntu:bionic:libudev1",
+         "source_id": "deb://ubuntu:bionic:libudev1",
+         "source_comp_id": "deb://ubuntu:bionic:libudev1:237-3ubuntu10.57",
+         "component_versions": {
+            "id": "ubuntu:bionic:systemd",
+            "vulnerable_versions": [
+               "All Versions"
+            ],
+            "more_details": {
+               "cves": [
+                  {
+                     "cve": "CVE-2022-3821",
+                     "cwe": [
+                        "CWE-193"
+                     ],
+                     "cvss_v3": "5.5/CVSS:3.1/AV:L/AC:L/PR:L/UI:N/S:U/C:N/I:N/A:H"
+                  }
+               ],
+               "description": "An off-by-one Error issue was discovered in Systemd in format_timespan() function of time-util.c. An attacker could supply specific values for time and accuracy that leads to buffer overrun in format_timespan(), leading to a Denial of Service.",
+               "provider": "JFrog"
+            }
+         },
+         "edited": "2023-01-02T20:35:04+01:00",
+         "is_source_root": false,
+         "is_high_profile": true,
+         "high_profile_info": {
+            "Id": 1609996723258273793,
+            "PublicVulnsTblID": 0,
+            "VulnId": "XRAY-260680",
+            "VulnerabilityTitle": "",
+            "ShortDescription": "An out-of-bounds write in systemd leads to denial of service when formatting timespans.",
+            "FullDescription": "[systemd](https://systemd.io/) is a software suite that provides an array of system components for Linux-based operating systems. Its main aim is to unify service configuration and behavior across Linux distributions.\r\n\r\nIt was discovered that due to an off-by-one error in the `format_timespan` function in `time-util.c`, a 1-byte buffer overflow occurs, which may lead to a denial of service.\r\n\r\nThe issue requires control over both arguments of the vulnerable function: `t` and `accuracy`.\r\n\r\nThe vulnerable function is inside an internal header file, which isn't exported and is only used by the `systemd` utilities.\r\nNo user input is supplied to this function through the default `systemd` utilities.\r\nAlso, developing code and linking with the library `-lsystemd` doesn't give access to this function.\r\nTherefore - on almost all systems there is no way to trigger this issue.",
+            "Impact": 4,
+            "VulnerabilityType": "Denial of service",
+            "Resolution": "",
+            "ExtendedImpactReasons": [
+               {
+                  "Id": 1609996723296022532,
+                  "PublicVulnsExtendedTblId": 1609996723258273793,
+                  "Name": "The prerequisites for exploiting the issue are extremely unlikely",
+                  "Description": "On almost all systems there is no way to trigger this issue, since the vulnerable internal function cannot be called with external input -\r\n1. The vulnerable internal function is not exported\r\n2. All the `systemd` utilities that use this function, do not pass user data to the vulnerable arguments",
+                  "IsPositive": 1,
+                  "InsertOrder": 4
+               },
+               {
+                  "Id": 1609996723296022531,
+                  "PublicVulnsExtendedTblId": 1609996723258273793,
+                  "Name": "The issue has an exploit published",
+                  "Description": "An internal test that overwrites one byte was published on the GitHub Issue.",
+                  "IsPositive": 0,
+                  "InsertOrder": 3
+               },
+               {
+                  "Id": 1609996723296022530,
+                  "PublicVulnsExtendedTblId": 1609996723258273793,
+                  "Name": "The reported CVSS was either wrongly calculated, downgraded by other vendors, or does not reflect the vulnerability's impact",
+                  "Description": "The CVSS does not reflect the contextual prerequisites required to exploit the vulnerability.",
+                  "IsPositive": 1,
+                  "InsertOrder": 2
+               },
+               {
+                  "Id": 1609996723296022529,
+                  "PublicVulnsExtendedTblId": 1609996723258273793,
+                  "Name": "The issue cannot result in a severe impact (such as remote code execution)",
+                  "Description": "The issue causes a 1-byte overflow, which is unlikely to cause a crash or any other impact in real-world environments.",
+                  "IsPositive": 1,
+                  "InsertOrder": 1
+               }
+            ],
+            "ExtendedReferences": [
+               {
+                  "Id": 1609996723296022533,
+                  "PublicVulnsExtendedTblId": 1609996723258273793,
+                  "RefType": "Advisory",
+                  "Title": "Official GitHub Issue",
+                  "Url": "https://github.com/systemd/systemd/issues/23928",
+                  "InsertOrder": 1
+               },
+               {
+                  "Id": 1609996723296022534,
+                  "PublicVulnsExtendedTblId": 1609996723258273793,
+                  "RefType": "Patch",
+                  "Title": "Official Fix Patch",
+                  "Url": "https://github.com/systemd/systemd/commit/9102c625a673a3246d7e73d8737f3494446bad4e",
+                  "InsertOrder": 2
+               }
+            ],
+            "ExtendedRelatedVulns": null
+         },
+         "component_physical_paths": [
+            ""
+         ]
+      },
+      {
+         "id": "XRAY-225378",
+         "severity": "Low",
+         "severity_source": "Ubuntu CVE Tracker",
+         "pkg_type": "debian",
+         "summary": "sha256crypt and sha512crypt through 0.6 allow attackers to cause a denial of service (CPU consumption) because the algorithm's runtime is proportional to the square of the length of the password.",
+         "issue_type": "security",
+         "provider": "JFrog",
+         "component": "ubuntu:bionic:libc-bin",
+         "source_id": "deb://ubuntu:bionic:libc-bin",
+         "source_comp_id": "deb://ubuntu:bionic:libc-bin:2.27-3ubuntu1.6",
+         "component_versions": {
+            "id": "ubuntu:bionic:glibc",
+            "vulnerable_versions": [
+               "All Versions"
+            ],
+            "more_details": {
+               "cves": [
+                  {
+                     "cve": "CVE-2016-20013",
+                     "cwe": [
+                        "CWE-770"
+                     ],
+                     "cvss_v2": "5.0/CVSS:2.0/AV:N/AC:L/Au:N/C:N/I:N/A:P",
+                     "cvss_v3": "7.5/CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:H"
+                  }
+               ],
+               "description": "sha256crypt and sha512crypt through 0.6 allow attackers to cause a denial of service (CPU consumption) because the algorithm's runtime is proportional to the square of the length of the password.",
+               "provider": "JFrog"
+            }
+         },
+         "edited": "2022-10-27T21:36:34+02:00",
+         "is_source_root": false,
+         "is_high_profile": false,
+         "component_physical_paths": [
+            ""
+         ]
+      },
+      {
+         "id": "XRAY-225378",
+         "severity": "Low",
+         "severity_source": "Ubuntu CVE Tracker",
+         "pkg_type": "debian",
+         "summary": "sha256crypt and sha512crypt through 0.6 allow attackers to cause a denial of service (CPU consumption) because the algorithm's runtime is proportional to the square of the length of the password.",
+         "issue_type": "security",
+         "provider": "JFrog",
+         "component": "ubuntu:bionic:multiarch-support",
+         "source_id": "deb://ubuntu:bionic:multiarch-support",
+         "source_comp_id": "deb://ubuntu:bionic:multiarch-support:2.27-3ubuntu1.6",
+         "component_versions": {
+            "id": "ubuntu:bionic:glibc",
+            "vulnerable_versions": [
+               "All Versions"
+            ],
+            "more_details": {
+               "cves": [
+                  {
+                     "cve": "CVE-2016-20013",
+                     "cwe": [
+                        "CWE-770"
+                     ],
+                     "cvss_v2": "5.0/CVSS:2.0/AV:N/AC:L/Au:N/C:N/I:N/A:P",
+                     "cvss_v3": "7.5/CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:H"
+                  }
+               ],
+               "description": "sha256crypt and sha512crypt through 0.6 allow attackers to cause a denial of service (CPU consumption) because the algorithm's runtime is proportional to the square of the length of the password.",
+               "provider": "JFrog"
+            }
+         },
+         "edited": "2022-10-27T21:36:34+02:00",
+         "is_source_root": false,
+         "is_high_profile": false,
+         "component_physical_paths": [
+            ""
+         ]
+      },
+      {
+         "id": "XRAY-91456",
+         "severity": "Low",
+         "severity_source": "Ubuntu CVE Tracker",
+         "pkg_type": "debian",
+         "summary": "There is a heap-based buffer over-read in the _nc_find_entry function in tinfo/comp_hash.c in the terminfo library in ncurses before 6.1-20191012.",
+         "issue_type": "security",
+         "provider": "JFrog",
+         "component": "ubuntu:bionic:ncurses-base",
+         "source_id": "deb://ubuntu:bionic:ncurses-base",
+         "source_comp_id": "deb://ubuntu:bionic:ncurses-base:6.1-1ubuntu1.18.04.1",
+         "component_versions": {
+            "id": "ubuntu:bionic:ncurses",
+            "vulnerable_versions": [
+               "All Versions"
+            ],
+            "more_details": {
+               "cves": [
+                  {
+                     "cve": "CVE-2019-17594",
+                     "cwe": [
+                        "CWE-125"
+                     ],
+                     "cvss_v2": "4.6/CVSS:2.0/AV:L/AC:L/Au:N/C:P/I:P/A:P",
+                     "cvss_v3": "5.3/CVSS:3.1/AV:L/AC:L/PR:L/UI:N/S:U/C:L/I:L/A:L"
+                  }
+               ],
+               "description": "There is a heap-based buffer over-read in the _nc_find_entry function in tinfo/comp_hash.c in the terminfo library in ncurses before 6.1-20191012.",
+               "provider": "JFrog"
+            }
+         },
+         "edited": "2022-10-27T21:35:43+02:00",
+         "is_source_root": false,
+         "is_high_profile": false,
+         "component_physical_paths": [
+            ""
+         ]
+      },
+      {
+         "id": "XRAY-91456",
+         "severity": "Low",
+         "severity_source": "Ubuntu CVE Tracker",
+         "pkg_type": "debian",
+         "summary": "There is a heap-based buffer over-read in the _nc_find_entry function in tinfo/comp_hash.c in the terminfo library in ncurses before 6.1-20191012.",
+         "issue_type": "security",
+         "provider": "JFrog",
+         "component": "ubuntu:bionic:ncurses-bin",
+         "source_id": "deb://ubuntu:bionic:ncurses-bin",
+         "source_comp_id": "deb://ubuntu:bionic:ncurses-bin:6.1-1ubuntu1.18.04.1",
+         "component_versions": {
+            "id": "ubuntu:bionic:ncurses",
+            "vulnerable_versions": [
+               "All Versions"
+            ],
+            "more_details": {
+               "cves": [
+                  {
+                     "cve": "CVE-2019-17594",
+                     "cwe": [
+                        "CWE-125"
+                     ],
+                     "cvss_v2": "4.6/CVSS:2.0/AV:L/AC:L/Au:N/C:P/I:P/A:P",
+                     "cvss_v3": "5.3/CVSS:3.1/AV:L/AC:L/PR:L/UI:N/S:U/C:L/I:L/A:L"
+                  }
+               ],
+               "description": "There is a heap-based buffer over-read in the _nc_find_entry function in tinfo/comp_hash.c in the terminfo library in ncurses before 6.1-20191012.",
+               "provider": "JFrog"
+            }
+         },
+         "edited": "2022-10-27T21:35:43+02:00",
+         "is_source_root": false,
+         "is_high_profile": false,
+         "component_physical_paths": [
+            ""
+         ]
+      },
+      {
+         "id": "XRAY-91456",
+         "severity": "Low",
+         "severity_source": "Ubuntu CVE Tracker",
+         "pkg_type": "debian",
+         "summary": "There is a heap-based buffer over-read in the _nc_find_entry function in tinfo/comp_hash.c in the terminfo library in ncurses before 6.1-20191012.",
+         "issue_type": "security",
+         "provider": "JFrog",
+         "component": "ubuntu:bionic:libncurses5",
+         "source_id": "deb://ubuntu:bionic:libncurses5",
+         "source_comp_id": "deb://ubuntu:bionic:libncurses5:6.1-1ubuntu1.18.04.1",
+         "component_versions": {
+            "id": "ubuntu:bionic:ncurses",
+            "vulnerable_versions": [
+               "All Versions"
+            ],
+            "more_details": {
+               "cves": [
+                  {
+                     "cve": "CVE-2019-17594",
+                     "cwe": [
+                        "CWE-125"
+                     ],
+                     "cvss_v2": "4.6/CVSS:2.0/AV:L/AC:L/Au:N/C:P/I:P/A:P",
+                     "cvss_v3": "5.3/CVSS:3.1/AV:L/AC:L/PR:L/UI:N/S:U/C:L/I:L/A:L"
+                  }
+               ],
+               "description": "There is a heap-based buffer over-read in the _nc_find_entry function in tinfo/comp_hash.c in the terminfo library in ncurses before 6.1-20191012.",
+               "provider": "JFrog"
+            }
+         },
+         "edited": "2022-10-27T21:35:43+02:00",
+         "is_source_root": false,
+         "is_high_profile": false,
+         "component_physical_paths": [
+            ""
+         ]
+      },
+      {
+         "id": "XRAY-102997",
+         "severity": "Low",
+         "severity_source": "Ubuntu CVE Tracker",
+         "pkg_type": "debian",
+         "summary": "In IJG JPEG (aka libjpeg) before 9d, read_*_pixel() in rdtarga.c in cjpeg mishandles EOF.",
+         "issue_type": "security",
+         "provider": "JFrog",
+         "component": "ubuntu:bionic:libjpeg-turbo8",
+         "source_id": "deb://ubuntu:bionic:libjpeg-turbo8",
+         "source_comp_id": "deb://ubuntu:bionic:libjpeg-turbo8:1.5.2-0ubuntu5.18.04.6",
+         "component_versions": {
+            "id": "ubuntu:bionic:libjpeg-turbo",
+            "vulnerable_versions": [
+               "All Versions"
+            ],
+            "more_details": {
+               "cves": [
+                  {
+                     "cve": "CVE-2020-14151"
+                  }
+               ],
+               "description": "In IJG JPEG (aka libjpeg) before 9d, read_*_pixel() in rdtarga.c in cjpeg mishandles EOF.",
+               "provider": "JFrog"
+            }
+         },
+         "edited": "2021-12-16T12:55:58+01:00",
+         "is_source_root": false,
+         "is_high_profile": false,
+         "component_physical_paths": [
+            ""
+         ]
+      },
+      {
+         "id": "XRAY-185864",
+         "severity": "Low",
+         "severity_source": "Ubuntu CVE Tracker",
+         "pkg_type": "debian",
+         "summary": "The GD Graphics Library (aka LibGD) through 2.3.2 has an out-of-bounds read because of the lack of certain gdGetBuf and gdPutBuf return value checks.",
+         "issue_type": "security",
+         "provider": "JFrog",
+         "component": "ubuntu:bionic:libgd3",
+         "source_id": "deb://ubuntu:bionic:libgd3",
+         "source_comp_id": "deb://ubuntu:bionic:libgd3:2.2.5-4ubuntu0.5",
+         "component_versions": {
+            "id": "ubuntu:bionic:libgd2",
+            "vulnerable_versions": [
+               "All Versions"
+            ],
+            "more_details": {
+               "cves": [
+                  {
+                     "cve": "CVE-2021-40812",
+                     "cwe": [
+                        "CWE-125"
+                     ],
+                     "cvss_v2": "4.3/CVSS:2.0/AV:N/AC:M/Au:N/C:N/I:N/A:P",
+                     "cvss_v3": "6.5/CVSS:3.1/AV:N/AC:L/PR:N/UI:R/S:U/C:N/I:N/A:H"
+                  }
+               ],
+               "description": "The GD Graphics Library (aka LibGD) through 2.3.2 has an out-of-bounds read because of the lack of certain gdGetBuf and gdPutBuf return value checks.",
+               "provider": "JFrog"
+            }
+         },
+         "edited": "2022-10-27T21:35:19+02:00",
+         "is_source_root": false,
+         "is_high_profile": false,
+         "component_physical_paths": [
+            ""
+         ]
+      },
+      {
+         "id": "XRAY-22542",
+         "severity": "Low",
+         "severity_source": "Ubuntu CVE Tracker",
+         "pkg_type": "debian",
+         "summary": "shadow: TOCTOU (time-of-check time-of-use) race condition when copying and removing directory trees",
+         "issue_type": "security",
+         "provider": "JFrog",
+         "component": "ubuntu:bionic:login",
+         "source_id": "deb://ubuntu:bionic:login",
+         "source_comp_id": "deb://ubuntu:bionic:login:1:4.5-1ubuntu2.5",
+         "component_versions": {
+            "id": "ubuntu:bionic:shadow",
+            "vulnerable_versions": [
+               "All Versions"
+            ],
+            "more_details": {
+               "cves": [
+                  {
+                     "cve": "CVE-2013-4235",
+                     "cwe": [
+                        "CWE-367"
+                     ],
+                     "cvss_v2": "3.3/CVSS:2.0/AV:L/AC:M/Au:N/C:N/I:P/A:P",
+                     "cvss_v3": "4.7/CVSS:3.1/AV:L/AC:H/PR:L/UI:N/S:U/C:N/I:H/A:N"
+                  }
+               ],
+               "description": "shadow: TOCTOU (time-of-check time-of-use) race condition when copying and removing directory trees",
+               "provider": "JFrog"
+            }
+         },
+         "edited": "2022-11-30T20:35:04+01:00",
+         "is_source_root": false,
+         "is_high_profile": false,
+         "component_physical_paths": [
+            ""
+         ]
+      },
+      {
+         "id": "XRAY-22542",
+         "severity": "Low",
+         "severity_source": "Ubuntu CVE Tracker",
+         "pkg_type": "debian",
+         "summary": "shadow: TOCTOU (time-of-check time-of-use) race condition when copying and removing directory trees",
+         "issue_type": "security",
+         "provider": "JFrog",
+         "component": "ubuntu:bionic:passwd",
+         "source_id": "deb://ubuntu:bionic:passwd",
+         "source_comp_id": "deb://ubuntu:bionic:passwd:1:4.5-1ubuntu2.5",
+         "component_versions": {
+            "id": "ubuntu:bionic:shadow",
+            "vulnerable_versions": [
+               "All Versions"
+            ],
+            "more_details": {
+               "cves": [
+                  {
+                     "cve": "CVE-2013-4235",
+                     "cwe": [
+                        "CWE-367"
+                     ],
+                     "cvss_v2": "3.3/CVSS:2.0/AV:L/AC:M/Au:N/C:N/I:P/A:P",
+                     "cvss_v3": "4.7/CVSS:3.1/AV:L/AC:H/PR:L/UI:N/S:U/C:N/I:H/A:N"
+                  }
+               ],
+               "description": "shadow: TOCTOU (time-of-check time-of-use) race condition when copying and removing directory trees",
+               "provider": "JFrog"
+            }
+         },
+         "edited": "2022-11-30T20:35:04+01:00",
+         "is_source_root": false,
+         "is_high_profile": false,
+         "component_physical_paths": [
+            ""
+         ]
+      },
+      {
+         "id": "XRAY-91456",
+         "severity": "Low",
+         "severity_source": "Ubuntu CVE Tracker",
+         "pkg_type": "debian",
+         "summary": "There is a heap-based buffer over-read in the _nc_find_entry function in tinfo/comp_hash.c in the terminfo library in ncurses before 6.1-20191012.",
+         "issue_type": "security",
+         "provider": "JFrog",
+         "component": "ubuntu:bionic:libncursesw5",
+         "source_id": "deb://ubuntu:bionic:libncursesw5",
+         "source_comp_id": "deb://ubuntu:bionic:libncursesw5:6.1-1ubuntu1.18.04.1",
+         "component_versions": {
+            "id": "ubuntu:bionic:ncurses",
+            "vulnerable_versions": [
+               "All Versions"
+            ],
+            "more_details": {
+               "cves": [
+                  {
+                     "cve": "CVE-2019-17594",
+                     "cwe": [
+                        "CWE-125"
+                     ],
+                     "cvss_v2": "4.6/CVSS:2.0/AV:L/AC:L/Au:N/C:P/I:P/A:P",
+                     "cvss_v3": "5.3/CVSS:3.1/AV:L/AC:L/PR:L/UI:N/S:U/C:L/I:L/A:L"
+                  }
+               ],
+               "description": "There is a heap-based buffer over-read in the _nc_find_entry function in tinfo/comp_hash.c in the terminfo library in ncurses before 6.1-20191012.",
+               "provider": "JFrog"
+            }
+         },
+         "edited": "2022-10-27T21:35:43+02:00",
+         "is_source_root": false,
+         "is_high_profile": false,
+         "component_physical_paths": [
+            ""
+         ]
+      },
+      {
+         "id": "XRAY-230946",
+         "severity": "Low",
+         "severity_source": "Ubuntu CVE Tracker",
+         "pkg_type": "debian",
+         "summary": "A vulnerability classified as problematic was found in LibTIFF 4.3.0. Affected by this vulnerability is the TIFF File Handler of tiff2ps. Opening a malicious file leads to a denial of service. The attack can be launched remotely but requires user interaction. The exploit has been disclosed to the public and may be used.",
+         "issue_type": "security",
+         "provider": "JFrog",
+         "component": "ubuntu:bionic:libtiff5",
+         "source_id": "deb://ubuntu:bionic:libtiff5",
+         "source_comp_id": "deb://ubuntu:bionic:libtiff5:4.0.9-5ubuntu0.10",
+         "component_versions": {
+            "id": "ubuntu:bionic:tiff",
+            "vulnerable_versions": [
+               "All Versions"
+            ],
+            "more_details": {
+               "cves": [
+                  {
+                     "cve": "CVE-2022-1210",
+                     "cwe": [
+                        "CWE-400"
+                     ],
+                     "cvss_v2": "4.3/CVSS:2.0/AV:N/AC:M/Au:N/C:N/I:N/A:P",
+                     "cvss_v3": "6.5/CVSS:3.1/AV:N/AC:L/PR:N/UI:R/S:U/C:N/I:N/A:H"
+                  }
+               ],
+               "description": "A vulnerability classified as problematic was found in LibTIFF 4.3.0. Affected by this vulnerability is the TIFF File Handler of tiff2ps. Opening a malicious file leads to a denial of service. The attack can be launched remotely but requires user interaction. The exploit has been disclosed to the public and may be used.",
+               "provider": "JFrog"
+            }
+         },
+         "edited": "2022-10-27T21:35:05+02:00",
+         "is_source_root": false,
+         "is_high_profile": false,
+         "component_physical_paths": [
+            ""
+         ]
+      },
+      {
+         "id": "XRAY-81559",
+         "severity": "Low",
+         "severity_source": "Ubuntu CVE Tracker",
+         "pkg_type": "debian",
+         "summary": "In the GNU C Library (aka glibc or libc6) before 2.28, parse_reg_exp in posix/regcomp.c misparses alternatives, which allows attackers to cause a denial of service (assertion failure and application exit) or trigger an incorrect result by attempting a regular-expression match.",
+         "issue_type": "security",
+         "provider": "JFrog",
+         "component": "ubuntu:bionic:libc-bin",
+         "source_id": "deb://ubuntu:bionic:libc-bin",
+         "source_comp_id": "deb://ubuntu:bionic:libc-bin:2.27-3ubuntu1.6",
+         "component_versions": {
+            "id": "ubuntu:bionic:glibc",
+            "vulnerable_versions": [
+               "All Versions"
+            ],
+            "more_details": {
+               "cves": [
+                  {
+                     "cve": "CVE-2009-5155",
+                     "cwe": [
+                        "CWE-19"
+                     ],
+                     "cvss_v2": "5.0/CVSS:2.0/AV:N/AC:L/Au:N/C:N/I:N/A:P",
+                     "cvss_v3": "7.5/CVSS:3.0/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:H"
+                  }
+               ],
+               "description": "In the GNU C Library (aka glibc or libc6) before 2.28, parse_reg_exp in posix/regcomp.c misparses alternatives, which allows attackers to cause a denial of service (assertion failure and application exit) or trigger an incorrect result by attempting a regular-expression match.",
+               "provider": "JFrog"
+            }
+         },
+         "edited": "2023-01-26T20:35:18+01:00",
+         "is_source_root": false,
+         "is_high_profile": false,
+         "component_physical_paths": [
+            ""
+         ]
+      },
+      {
+         "id": "XRAY-81559",
+         "severity": "Low",
+         "severity_source": "Ubuntu CVE Tracker",
+         "pkg_type": "debian",
+         "summary": "In the GNU C Library (aka glibc or libc6) before 2.28, parse_reg_exp in posix/regcomp.c misparses alternatives, which allows attackers to cause a denial of service (assertion failure and application exit) or trigger an incorrect result by attempting a regular-expression match.",
+         "issue_type": "security",
+         "provider": "JFrog",
+         "component": "ubuntu:bionic:libc6",
+         "source_id": "deb://ubuntu:bionic:libc6",
+         "source_comp_id": "deb://ubuntu:bionic:libc6:2.27-3ubuntu1.6",
+         "component_versions": {
+            "id": "ubuntu:bionic:glibc",
+            "vulnerable_versions": [
+               "All Versions"
+            ],
+            "more_details": {
+               "cves": [
+                  {
+                     "cve": "CVE-2009-5155",
+                     "cwe": [
+                        "CWE-19"
+                     ],
+                     "cvss_v2": "5.0/CVSS:2.0/AV:N/AC:L/Au:N/C:N/I:N/A:P",
+                     "cvss_v3": "7.5/CVSS:3.0/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:H"
+                  }
+               ],
+               "description": "In the GNU C Library (aka glibc or libc6) before 2.28, parse_reg_exp in posix/regcomp.c misparses alternatives, which allows attackers to cause a denial of service (assertion failure and application exit) or trigger an incorrect result by attempting a regular-expression match.",
+               "provider": "JFrog"
+            }
+         },
+         "edited": "2023-01-26T20:35:18+01:00",
+         "is_source_root": false,
+         "is_high_profile": false,
+         "component_physical_paths": [
+            ""
+         ]
+      },
+      {
+         "id": "XRAY-81559",
+         "severity": "Low",
+         "severity_source": "Ubuntu CVE Tracker",
+         "pkg_type": "debian",
+         "summary": "In the GNU C Library (aka glibc or libc6) before 2.28, parse_reg_exp in posix/regcomp.c misparses alternatives, which allows attackers to cause a denial of service (assertion failure and application exit) or trigger an incorrect result by attempting a regular-expression match.",
+         "issue_type": "security",
+         "provider": "JFrog",
+         "component": "ubuntu:bionic:multiarch-support",
+         "source_id": "deb://ubuntu:bionic:multiarch-support",
+         "source_comp_id": "deb://ubuntu:bionic:multiarch-support:2.27-3ubuntu1.6",
+         "component_versions": {
+            "id": "ubuntu:bionic:glibc",
+            "vulnerable_versions": [
+               "All Versions"
+            ],
+            "more_details": {
+               "cves": [
+                  {
+                     "cve": "CVE-2009-5155",
+                     "cwe": [
+                        "CWE-19"
+                     ],
+                     "cvss_v2": "5.0/CVSS:2.0/AV:N/AC:L/Au:N/C:N/I:N/A:P",
+                     "cvss_v3": "7.5/CVSS:3.0/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:H"
+                  }
+               ],
+               "description": "In the GNU C Library (aka glibc or libc6) before 2.28, parse_reg_exp in posix/regcomp.c misparses alternatives, which allows attackers to cause a denial of service (assertion failure and application exit) or trigger an incorrect result by attempting a regular-expression match.",
+               "provider": "JFrog"
+            }
+         },
+         "edited": "2023-01-26T20:35:18+01:00",
+         "is_source_root": false,
+         "is_high_profile": false,
+         "component_physical_paths": [
+            ""
+         ]
+      },
+      {
+         "id": "XRAY-86241",
+         "severity": "Low",
+         "severity_source": "Ubuntu CVE Tracker",
+         "pkg_type": "debian",
+         "summary": "An issue was discovered in MIT Kerberos 5 (aka krb5) through 1.16. There is a variable \"dbentry->n_key_data\" in kadmin/dbutil/dump.c that can store 16-bit data but unknowingly the developer has assigned a \"u4\" variable to it, which is for 32-bit data. An attacker can use this vulnerability to affect other artifacts of the database as we know that a Kerberos database dump file contains trusted data.",
+         "issue_type": "security",
+         "provider": "JFrog",
+         "component": "ubuntu:bionic:libk5crypto3",
+         "source_id": "deb://ubuntu:bionic:libk5crypto3",
+         "source_comp_id": "deb://ubuntu:bionic:libk5crypto3:1.16-2ubuntu0.4",
+         "component_versions": {
+            "id": "ubuntu:bionic:krb5",
+            "vulnerable_versions": [
+               "All Versions"
+            ],
+            "more_details": {
+               "cves": [
+                  {
+                     "cve": "CVE-2018-5709",
+                     "cwe": [
+                        "CWE-190"
+                     ],
+                     "cvss_v2": "5.0/CVSS:2.0/AV:N/AC:L/Au:N/C:N/I:P/A:N",
+                     "cvss_v3": "7.5/CVSS:3.0/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:H/A:N"
+                  }
+               ],
+               "description": "An issue was discovered in MIT Kerberos 5 (aka krb5) through 1.16. There is a variable \"dbentry->n_key_data\" in kadmin/dbutil/dump.c that can store 16-bit data but unknowingly the developer has assigned a \"u4\" variable to it, which is for 32-bit data. An attacker can use this vulnerability to affect other artifacts of the database as we know that a Kerberos database dump file contains trusted data.",
+               "provider": "JFrog"
+            }
+         },
+         "edited": "2023-05-17T12:32:30+02:00",
+         "is_source_root": false,
+         "is_high_profile": true,
+         "high_profile_info": {
+            "Id": 1658782604195913731,
+            "PublicVulnsTblID": 0,
+            "VulnId": "XRAY-86241",
+            "VulnerabilityTitle": "",
+            "ShortDescription": "(Non-issue) Integer truncation in Kerberos5 leads to no impact when processing a crafted Kerberos5 beta7 format database file.",
+            "FullDescription": "[Kerberos](https://web.mit.edu/kerberos/) is a network authentication protocol. It is designed to provide strong authentication for client/server applications by using secret-key cryptography. A free implementation of this protocol is available from the Massachusetts Institute of Technology. Kerberos is available in many commercial products as well.\r\n\r\nA [Kerberos database](https://web.mit.edu/kerberos/krb5-1.12/doc/admin/database.html) contains all of a realm’s Kerberos principals, their passwords, and other administrative information about each principal. For the most part, you will use the `kdb5_util` program to manipulate the Kerberos database as a whole, and the `kadmin` program to make changes to the entries in the database. \r\n\r\nIn `kdb5_util`, there is a `process_k5beta7_princ` method responsible for adding Kerberos 5 beta 7 format data from a file to the Kerberos database. This function is vulnerable to integer overflow as a Database entry defined on 16-bits is assigned a 32-bits value from the given file. It turns out that it does not have any impact at all and it is not a security flaw.\r\n\r\nOriginally, the vulnerability was mistakenly reported as an Integer Overflow.\r\nThe issue should not affect any other data allocated close to the 16-bit integer in question. Furthermore, a negative value of the 16-bit integer does not impact the flow of the program in any meaningful way.\r\n\r\nTo trigger the integer truncation, an attacker has to get the user to use the `kdb5_util` utility to restore a Kerberos 5 - beta 7 format - database from a crafted malicious file. It can be done using the following command:\r\n```\r\nkdb5_util load -d DB_NAME DB_FILE \r\n```",
+            "Impact": 4,
+            "VulnerabilityType": "Unspecified",
+            "Resolution": "",
+            "ExtendedImpactReasons": [
+               {
+                  "Id": 1658782604283994116,
+                  "PublicVulnsExtendedTblId": 1658782604195913731,
+                  "Name": "The prerequisites for exploiting the issue are extremely unlikely",
+                  "Description": "A Kerberos database is not restored often. The attacker must find a way to get the user to restore the database from a crafted file. If the attacker has access to the backup file, it can be modified even without exploiting this vulnerability. The vulnerability only helps by making the attacker's modifications to the backup file seem legitimate when manually inspected.",
+                  "IsPositive": 1,
+                  "InsertOrder": 4
+               },
+               {
+                  "Id": 1658782604283994115,
+                  "PublicVulnsExtendedTblId": 1658782604195913731,
+                  "Name": "The reported CVSS was either wrongly calculated, downgraded by other vendors, or does not reflect the vulnerability's impact",
+                  "Description": "The CVSS does not reflect the fact that the vulnerability does not have any security impact.",
+                  "IsPositive": 1,
+                  "InsertOrder": 3
+               },
+               {
+                  "Id": 1658782604283994114,
+                  "PublicVulnsExtendedTblId": 1658782604195913731,
+                  "Name": "The issue cannot result in a severe impact (such as remote code execution)",
+                  "Description": "The integer truncation doesn't affect data allocated near the 16-bit integer and doesn't have any meaningful impact.",
+                  "IsPositive": 1,
+                  "InsertOrder": 2
+               },
+               {
+                  "Id": 1658782604283994113,
+                  "PublicVulnsExtendedTblId": 1658782604195913731,
+                  "Name": "Exploiting the issue requires the user to interact with the vulnerable software",
+                  "Description": "Requires the user to restore the Kerberos Database from a crafted malicious file, which is unlikely.",
+                  "IsPositive": 1,
+                  "InsertOrder": 1
+               }
+            ],
+            "ExtendedReferences": [
+               {
+                  "Id": 1658782604283994117,
+                  "PublicVulnsExtendedTblId": 1658782604195913731,
+                  "RefType": "Advisory",
+                  "Title": "Advisory",
+                  "Url": "https://github.com/poojamnit/Kerberos-V5-1.16-Vulnerabilities/blob/master/Integer%20Overflow%20Description",
+                  "InsertOrder": 1
+               },
+               {
+                  "Id": 1658782604283994118,
+                  "PublicVulnsExtendedTblId": 1658782604195913731,
+                  "RefType": "Patch",
+                  "Title": "Patch",
+                  "Url": "https://github.com/krb5/krb5/commit/d15930bec22781473c2eaf72c08a145508b373ba",
+                  "InsertOrder": 2
+               }
+            ],
+            "ExtendedRelatedVulns": null
+         },
+         "component_physical_paths": [
+            ""
+         ]
+      },
+      {
+         "id": "XRAY-86241",
+         "severity": "Low",
+         "severity_source": "Ubuntu CVE Tracker",
+         "pkg_type": "debian",
+         "summary": "An issue was discovered in MIT Kerberos 5 (aka krb5) through 1.16. There is a variable \"dbentry->n_key_data\" in kadmin/dbutil/dump.c that can store 16-bit data but unknowingly the developer has assigned a \"u4\" variable to it, which is for 32-bit data. An attacker can use this vulnerability to affect other artifacts of the database as we know that a Kerberos database dump file contains trusted data.",
+         "issue_type": "security",
+         "provider": "JFrog",
+         "component": "ubuntu:bionic:krb5-locales",
+         "source_id": "deb://ubuntu:bionic:krb5-locales",
+         "source_comp_id": "deb://ubuntu:bionic:krb5-locales:1.16-2ubuntu0.4",
+         "component_versions": {
+            "id": "ubuntu:bionic:krb5",
+            "vulnerable_versions": [
+               "All Versions"
+            ],
+            "more_details": {
+               "cves": [
+                  {
+                     "cve": "CVE-2018-5709",
+                     "cwe": [
+                        "CWE-190"
+                     ],
+                     "cvss_v2": "5.0/CVSS:2.0/AV:N/AC:L/Au:N/C:N/I:P/A:N",
+                     "cvss_v3": "7.5/CVSS:3.0/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:H/A:N"
+                  }
+               ],
+               "description": "An issue was discovered in MIT Kerberos 5 (aka krb5) through 1.16. There is a variable \"dbentry->n_key_data\" in kadmin/dbutil/dump.c that can store 16-bit data but unknowingly the developer has assigned a \"u4\" variable to it, which is for 32-bit data. An attacker can use this vulnerability to affect other artifacts of the database as we know that a Kerberos database dump file contains trusted data.",
+               "provider": "JFrog"
+            }
+         },
+         "edited": "2023-05-17T12:32:30+02:00",
+         "is_source_root": false,
+         "is_high_profile": true,
+         "high_profile_info": {
+            "Id": 1658782604195913731,
+            "PublicVulnsTblID": 0,
+            "VulnId": "XRAY-86241",
+            "VulnerabilityTitle": "",
+            "ShortDescription": "(Non-issue) Integer truncation in Kerberos5 leads to no impact when processing a crafted Kerberos5 beta7 format database file.",
+            "FullDescription": "[Kerberos](https://web.mit.edu/kerberos/) is a network authentication protocol. It is designed to provide strong authentication for client/server applications by using secret-key cryptography. A free implementation of this protocol is available from the Massachusetts Institute of Technology. Kerberos is available in many commercial products as well.\r\n\r\nA [Kerberos database](https://web.mit.edu/kerberos/krb5-1.12/doc/admin/database.html) contains all of a realm’s Kerberos principals, their passwords, and other administrative information about each principal. For the most part, you will use the `kdb5_util` program to manipulate the Kerberos database as a whole, and the `kadmin` program to make changes to the entries in the database. \r\n\r\nIn `kdb5_util`, there is a `process_k5beta7_princ` method responsible for adding Kerberos 5 beta 7 format data from a file to the Kerberos database. This function is vulnerable to integer overflow as a Database entry defined on 16-bits is assigned a 32-bits value from the given file. It turns out that it does not have any impact at all and it is not a security flaw.\r\n\r\nOriginally, the vulnerability was mistakenly reported as an Integer Overflow.\r\nThe issue should not affect any other data allocated close to the 16-bit integer in question. Furthermore, a negative value of the 16-bit integer does not impact the flow of the program in any meaningful way.\r\n\r\nTo trigger the integer truncation, an attacker has to get the user to use the `kdb5_util` utility to restore a Kerberos 5 - beta 7 format - database from a crafted malicious file. It can be done using the following command:\r\n```\r\nkdb5_util load -d DB_NAME DB_FILE \r\n```",
+            "Impact": 4,
+            "VulnerabilityType": "Unspecified",
+            "Resolution": "",
+            "ExtendedImpactReasons": [
+               {
+                  "Id": 1658782604283994116,
+                  "PublicVulnsExtendedTblId": 1658782604195913731,
+                  "Name": "The prerequisites for exploiting the issue are extremely unlikely",
+                  "Description": "A Kerberos database is not restored often. The attacker must find a way to get the user to restore the database from a crafted file. If the attacker has access to the backup file, it can be modified even without exploiting this vulnerability. The vulnerability only helps by making the attacker's modifications to the backup file seem legitimate when manually inspected.",
+                  "IsPositive": 1,
+                  "InsertOrder": 4
+               },
+               {
+                  "Id": 1658782604283994115,
+                  "PublicVulnsExtendedTblId": 1658782604195913731,
+                  "Name": "The reported CVSS was either wrongly calculated, downgraded by other vendors, or does not reflect the vulnerability's impact",
+                  "Description": "The CVSS does not reflect the fact that the vulnerability does not have any security impact.",
+                  "IsPositive": 1,
+                  "InsertOrder": 3
+               },
+               {
+                  "Id": 1658782604283994114,
+                  "PublicVulnsExtendedTblId": 1658782604195913731,
+                  "Name": "The issue cannot result in a severe impact (such as remote code execution)",
+                  "Description": "The integer truncation doesn't affect data allocated near the 16-bit integer and doesn't have any meaningful impact.",
+                  "IsPositive": 1,
+                  "InsertOrder": 2
+               },
+               {
+                  "Id": 1658782604283994113,
+                  "PublicVulnsExtendedTblId": 1658782604195913731,
+                  "Name": "Exploiting the issue requires the user to interact with the vulnerable software",
+                  "Description": "Requires the user to restore the Kerberos Database from a crafted malicious file, which is unlikely.",
+                  "IsPositive": 1,
+                  "InsertOrder": 1
+               }
+            ],
+            "ExtendedReferences": [
+               {
+                  "Id": 1658782604283994117,
+                  "PublicVulnsExtendedTblId": 1658782604195913731,
+                  "RefType": "Advisory",
+                  "Title": "Advisory",
+                  "Url": "https://github.com/poojamnit/Kerberos-V5-1.16-Vulnerabilities/blob/master/Integer%20Overflow%20Description",
+                  "InsertOrder": 1
+               },
+               {
+                  "Id": 1658782604283994118,
+                  "PublicVulnsExtendedTblId": 1658782604195913731,
+                  "RefType": "Patch",
+                  "Title": "Patch",
+                  "Url": "https://github.com/krb5/krb5/commit/d15930bec22781473c2eaf72c08a145508b373ba",
+                  "InsertOrder": 2
+               }
+            ],
+            "ExtendedRelatedVulns": null
+         },
+         "component_physical_paths": [
+            ""
+         ]
+      },
+      {
+         "id": "XRAY-86241",
+         "severity": "Low",
+         "severity_source": "Ubuntu CVE Tracker",
+         "pkg_type": "debian",
+         "summary": "An issue was discovered in MIT Kerberos 5 (aka krb5) through 1.16. There is a variable \"dbentry->n_key_data\" in kadmin/dbutil/dump.c that can store 16-bit data but unknowingly the developer has assigned a \"u4\" variable to it, which is for 32-bit data. An attacker can use this vulnerability to affect other artifacts of the database as we know that a Kerberos database dump file contains trusted data.",
+         "issue_type": "security",
+         "provider": "JFrog",
+         "component": "ubuntu:bionic:libkrb5-3",
+         "source_id": "deb://ubuntu:bionic:libkrb5-3",
+         "source_comp_id": "deb://ubuntu:bionic:libkrb5-3:1.16-2ubuntu0.4",
+         "component_versions": {
+            "id": "ubuntu:bionic:krb5",
+            "vulnerable_versions": [
+               "All Versions"
+            ],
+            "more_details": {
+               "cves": [
+                  {
+                     "cve": "CVE-2018-5709",
+                     "cwe": [
+                        "CWE-190"
+                     ],
+                     "cvss_v2": "5.0/CVSS:2.0/AV:N/AC:L/Au:N/C:N/I:P/A:N",
+                     "cvss_v3": "7.5/CVSS:3.0/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:H/A:N"
+                  }
+               ],
+               "description": "An issue was discovered in MIT Kerberos 5 (aka krb5) through 1.16. There is a variable \"dbentry->n_key_data\" in kadmin/dbutil/dump.c that can store 16-bit data but unknowingly the developer has assigned a \"u4\" variable to it, which is for 32-bit data. An attacker can use this vulnerability to affect other artifacts of the database as we know that a Kerberos database dump file contains trusted data.",
+               "provider": "JFrog"
+            }
+         },
+         "edited": "2023-05-17T12:32:30+02:00",
+         "is_source_root": false,
+         "is_high_profile": true,
+         "high_profile_info": {
+            "Id": 1658782604195913731,
+            "PublicVulnsTblID": 0,
+            "VulnId": "XRAY-86241",
+            "VulnerabilityTitle": "",
+            "ShortDescription": "(Non-issue) Integer truncation in Kerberos5 leads to no impact when processing a crafted Kerberos5 beta7 format database file.",
+            "FullDescription": "[Kerberos](https://web.mit.edu/kerberos/) is a network authentication protocol. It is designed to provide strong authentication for client/server applications by using secret-key cryptography. A free implementation of this protocol is available from the Massachusetts Institute of Technology. Kerberos is available in many commercial products as well.\r\n\r\nA [Kerberos database](https://web.mit.edu/kerberos/krb5-1.12/doc/admin/database.html) contains all of a realm’s Kerberos principals, their passwords, and other administrative information about each principal. For the most part, you will use the `kdb5_util` program to manipulate the Kerberos database as a whole, and the `kadmin` program to make changes to the entries in the database. \r\n\r\nIn `kdb5_util`, there is a `process_k5beta7_princ` method responsible for adding Kerberos 5 beta 7 format data from a file to the Kerberos database. This function is vulnerable to integer overflow as a Database entry defined on 16-bits is assigned a 32-bits value from the given file. It turns out that it does not have any impact at all and it is not a security flaw.\r\n\r\nOriginally, the vulnerability was mistakenly reported as an Integer Overflow.\r\nThe issue should not affect any other data allocated close to the 16-bit integer in question. Furthermore, a negative value of the 16-bit integer does not impact the flow of the program in any meaningful way.\r\n\r\nTo trigger the integer truncation, an attacker has to get the user to use the `kdb5_util` utility to restore a Kerberos 5 - beta 7 format - database from a crafted malicious file. It can be done using the following command:\r\n```\r\nkdb5_util load -d DB_NAME DB_FILE \r\n```",
+            "Impact": 4,
+            "VulnerabilityType": "Unspecified",
+            "Resolution": "",
+            "ExtendedImpactReasons": [
+               {
+                  "Id": 1658782604283994116,
+                  "PublicVulnsExtendedTblId": 1658782604195913731,
+                  "Name": "The prerequisites for exploiting the issue are extremely unlikely",
+                  "Description": "A Kerberos database is not restored often. The attacker must find a way to get the user to restore the database from a crafted file. If the attacker has access to the backup file, it can be modified even without exploiting this vulnerability. The vulnerability only helps by making the attacker's modifications to the backup file seem legitimate when manually inspected.",
+                  "IsPositive": 1,
+                  "InsertOrder": 4
+               },
+               {
+                  "Id": 1658782604283994115,
+                  "PublicVulnsExtendedTblId": 1658782604195913731,
+                  "Name": "The reported CVSS was either wrongly calculated, downgraded by other vendors, or does not reflect the vulnerability's impact",
+                  "Description": "The CVSS does not reflect the fact that the vulnerability does not have any security impact.",
+                  "IsPositive": 1,
+                  "InsertOrder": 3
+               },
+               {
+                  "Id": 1658782604283994114,
+                  "PublicVulnsExtendedTblId": 1658782604195913731,
+                  "Name": "The issue cannot result in a severe impact (such as remote code execution)",
+                  "Description": "The integer truncation doesn't affect data allocated near the 16-bit integer and doesn't have any meaningful impact.",
+                  "IsPositive": 1,
+                  "InsertOrder": 2
+               },
+               {
+                  "Id": 1658782604283994113,
+                  "PublicVulnsExtendedTblId": 1658782604195913731,
+                  "Name": "Exploiting the issue requires the user to interact with the vulnerable software",
+                  "Description": "Requires the user to restore the Kerberos Database from a crafted malicious file, which is unlikely.",
+                  "IsPositive": 1,
+                  "InsertOrder": 1
+               }
+            ],
+            "ExtendedReferences": [
+               {
+                  "Id": 1658782604283994117,
+                  "PublicVulnsExtendedTblId": 1658782604195913731,
+                  "RefType": "Advisory",
+                  "Title": "Advisory",
+                  "Url": "https://github.com/poojamnit/Kerberos-V5-1.16-Vulnerabilities/blob/master/Integer%20Overflow%20Description",
+                  "InsertOrder": 1
+               },
+               {
+                  "Id": 1658782604283994118,
+                  "PublicVulnsExtendedTblId": 1658782604195913731,
+                  "RefType": "Patch",
+                  "Title": "Patch",
+                  "Url": "https://github.com/krb5/krb5/commit/d15930bec22781473c2eaf72c08a145508b373ba",
+                  "InsertOrder": 2
+               }
+            ],
+            "ExtendedRelatedVulns": null
+         },
+         "component_physical_paths": [
+            ""
+         ]
+      },
+      {
+         "id": "XRAY-86241",
+         "severity": "Low",
+         "severity_source": "Ubuntu CVE Tracker",
+         "pkg_type": "debian",
+         "summary": "An issue was discovered in MIT Kerberos 5 (aka krb5) through 1.16. There is a variable \"dbentry->n_key_data\" in kadmin/dbutil/dump.c that can store 16-bit data but unknowingly the developer has assigned a \"u4\" variable to it, which is for 32-bit data. An attacker can use this vulnerability to affect other artifacts of the database as we know that a Kerberos database dump file contains trusted data.",
+         "issue_type": "security",
+         "provider": "JFrog",
+         "component": "ubuntu:bionic:libkrb5support0",
+         "source_id": "deb://ubuntu:bionic:libkrb5support0",
+         "source_comp_id": "deb://ubuntu:bionic:libkrb5support0:1.16-2ubuntu0.4",
+         "component_versions": {
+            "id": "ubuntu:bionic:krb5",
+            "vulnerable_versions": [
+               "All Versions"
+            ],
+            "more_details": {
+               "cves": [
+                  {
+                     "cve": "CVE-2018-5709",
+                     "cwe": [
+                        "CWE-190"
+                     ],
+                     "cvss_v2": "5.0/CVSS:2.0/AV:N/AC:L/Au:N/C:N/I:P/A:N",
+                     "cvss_v3": "7.5/CVSS:3.0/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:H/A:N"
+                  }
+               ],
+               "description": "An issue was discovered in MIT Kerberos 5 (aka krb5) through 1.16. There is a variable \"dbentry->n_key_data\" in kadmin/dbutil/dump.c that can store 16-bit data but unknowingly the developer has assigned a \"u4\" variable to it, which is for 32-bit data. An attacker can use this vulnerability to affect other artifacts of the database as we know that a Kerberos database dump file contains trusted data.",
+               "provider": "JFrog"
+            }
+         },
+         "edited": "2023-05-17T12:32:30+02:00",
+         "is_source_root": false,
+         "is_high_profile": true,
+         "high_profile_info": {
+            "Id": 1658782604195913731,
+            "PublicVulnsTblID": 0,
+            "VulnId": "XRAY-86241",
+            "VulnerabilityTitle": "",
+            "ShortDescription": "(Non-issue) Integer truncation in Kerberos5 leads to no impact when processing a crafted Kerberos5 beta7 format database file.",
+            "FullDescription": "[Kerberos](https://web.mit.edu/kerberos/) is a network authentication protocol. It is designed to provide strong authentication for client/server applications by using secret-key cryptography. A free implementation of this protocol is available from the Massachusetts Institute of Technology. Kerberos is available in many commercial products as well.\r\n\r\nA [Kerberos database](https://web.mit.edu/kerberos/krb5-1.12/doc/admin/database.html) contains all of a realm’s Kerberos principals, their passwords, and other administrative information about each principal. For the most part, you will use the `kdb5_util` program to manipulate the Kerberos database as a whole, and the `kadmin` program to make changes to the entries in the database. \r\n\r\nIn `kdb5_util`, there is a `process_k5beta7_princ` method responsible for adding Kerberos 5 beta 7 format data from a file to the Kerberos database. This function is vulnerable to integer overflow as a Database entry defined on 16-bits is assigned a 32-bits value from the given file. It turns out that it does not have any impact at all and it is not a security flaw.\r\n\r\nOriginally, the vulnerability was mistakenly reported as an Integer Overflow.\r\nThe issue should not affect any other data allocated close to the 16-bit integer in question. Furthermore, a negative value of the 16-bit integer does not impact the flow of the program in any meaningful way.\r\n\r\nTo trigger the integer truncation, an attacker has to get the user to use the `kdb5_util` utility to restore a Kerberos 5 - beta 7 format - database from a crafted malicious file. It can be done using the following command:\r\n```\r\nkdb5_util load -d DB_NAME DB_FILE \r\n```",
+            "Impact": 4,
+            "VulnerabilityType": "Unspecified",
+            "Resolution": "",
+            "ExtendedImpactReasons": [
+               {
+                  "Id": 1658782604283994116,
+                  "PublicVulnsExtendedTblId": 1658782604195913731,
+                  "Name": "The prerequisites for exploiting the issue are extremely unlikely",
+                  "Description": "A Kerberos database is not restored often. The attacker must find a way to get the user to restore the database from a crafted file. If the attacker has access to the backup file, it can be modified even without exploiting this vulnerability. The vulnerability only helps by making the attacker's modifications to the backup file seem legitimate when manually inspected.",
+                  "IsPositive": 1,
+                  "InsertOrder": 4
+               },
+               {
+                  "Id": 1658782604283994115,
+                  "PublicVulnsExtendedTblId": 1658782604195913731,
+                  "Name": "The reported CVSS was either wrongly calculated, downgraded by other vendors, or does not reflect the vulnerability's impact",
+                  "Description": "The CVSS does not reflect the fact that the vulnerability does not have any security impact.",
+                  "IsPositive": 1,
+                  "InsertOrder": 3
+               },
+               {
+                  "Id": 1658782604283994114,
+                  "PublicVulnsExtendedTblId": 1658782604195913731,
+                  "Name": "The issue cannot result in a severe impact (such as remote code execution)",
+                  "Description": "The integer truncation doesn't affect data allocated near the 16-bit integer and doesn't have any meaningful impact.",
+                  "IsPositive": 1,
+                  "InsertOrder": 2
+               },
+               {
+                  "Id": 1658782604283994113,
+                  "PublicVulnsExtendedTblId": 1658782604195913731,
+                  "Name": "Exploiting the issue requires the user to interact with the vulnerable software",
+                  "Description": "Requires the user to restore the Kerberos Database from a crafted malicious file, which is unlikely.",
+                  "IsPositive": 1,
+                  "InsertOrder": 1
+               }
+            ],
+            "ExtendedReferences": [
+               {
+                  "Id": 1658782604283994117,
+                  "PublicVulnsExtendedTblId": 1658782604195913731,
+                  "RefType": "Advisory",
+                  "Title": "Advisory",
+                  "Url": "https://github.com/poojamnit/Kerberos-V5-1.16-Vulnerabilities/blob/master/Integer%20Overflow%20Description",
+                  "InsertOrder": 1
+               },
+               {
+                  "Id": 1658782604283994118,
+                  "PublicVulnsExtendedTblId": 1658782604195913731,
+                  "RefType": "Patch",
+                  "Title": "Patch",
+                  "Url": "https://github.com/krb5/krb5/commit/d15930bec22781473c2eaf72c08a145508b373ba",
+                  "InsertOrder": 2
+               }
+            ],
+            "ExtendedRelatedVulns": null
+         },
+         "component_physical_paths": [
+            ""
+         ]
+      },
+      {
+         "id": "XRAY-86241",
+         "severity": "Low",
+         "severity_source": "Ubuntu CVE Tracker",
+         "pkg_type": "debian",
+         "summary": "An issue was discovered in MIT Kerberos 5 (aka krb5) through 1.16. There is a variable \"dbentry->n_key_data\" in kadmin/dbutil/dump.c that can store 16-bit data but unknowingly the developer has assigned a \"u4\" variable to it, which is for 32-bit data. An attacker can use this vulnerability to affect other artifacts of the database as we know that a Kerberos database dump file contains trusted data.",
+         "issue_type": "security",
+         "provider": "JFrog",
+         "component": "ubuntu:bionic:libgssapi-krb5-2",
+         "source_id": "deb://ubuntu:bionic:libgssapi-krb5-2",
+         "source_comp_id": "deb://ubuntu:bionic:libgssapi-krb5-2:1.16-2ubuntu0.4",
+         "component_versions": {
+            "id": "ubuntu:bionic:krb5",
+            "vulnerable_versions": [
+               "All Versions"
+            ],
+            "more_details": {
+               "cves": [
+                  {
+                     "cve": "CVE-2018-5709",
+                     "cwe": [
+                        "CWE-190"
+                     ],
+                     "cvss_v2": "5.0/CVSS:2.0/AV:N/AC:L/Au:N/C:N/I:P/A:N",
+                     "cvss_v3": "7.5/CVSS:3.0/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:H/A:N"
+                  }
+               ],
+               "description": "An issue was discovered in MIT Kerberos 5 (aka krb5) through 1.16. There is a variable \"dbentry->n_key_data\" in kadmin/dbutil/dump.c that can store 16-bit data but unknowingly the developer has assigned a \"u4\" variable to it, which is for 32-bit data. An attacker can use this vulnerability to affect other artifacts of the database as we know that a Kerberos database dump file contains trusted data.",
+               "provider": "JFrog"
+            }
+         },
+         "edited": "2023-05-17T12:32:30+02:00",
+         "is_source_root": false,
+         "is_high_profile": true,
+         "high_profile_info": {
+            "Id": 1658782604195913731,
+            "PublicVulnsTblID": 0,
+            "VulnId": "XRAY-86241",
+            "VulnerabilityTitle": "",
+            "ShortDescription": "(Non-issue) Integer truncation in Kerberos5 leads to no impact when processing a crafted Kerberos5 beta7 format database file.",
+            "FullDescription": "[Kerberos](https://web.mit.edu/kerberos/) is a network authentication protocol. It is designed to provide strong authentication for client/server applications by using secret-key cryptography. A free implementation of this protocol is available from the Massachusetts Institute of Technology. Kerberos is available in many commercial products as well.\r\n\r\nA [Kerberos database](https://web.mit.edu/kerberos/krb5-1.12/doc/admin/database.html) contains all of a realm’s Kerberos principals, their passwords, and other administrative information about each principal. For the most part, you will use the `kdb5_util` program to manipulate the Kerberos database as a whole, and the `kadmin` program to make changes to the entries in the database. \r\n\r\nIn `kdb5_util`, there is a `process_k5beta7_princ` method responsible for adding Kerberos 5 beta 7 format data from a file to the Kerberos database. This function is vulnerable to integer overflow as a Database entry defined on 16-bits is assigned a 32-bits value from the given file. It turns out that it does not have any impact at all and it is not a security flaw.\r\n\r\nOriginally, the vulnerability was mistakenly reported as an Integer Overflow.\r\nThe issue should not affect any other data allocated close to the 16-bit integer in question. Furthermore, a negative value of the 16-bit integer does not impact the flow of the program in any meaningful way.\r\n\r\nTo trigger the integer truncation, an attacker has to get the user to use the `kdb5_util` utility to restore a Kerberos 5 - beta 7 format - database from a crafted malicious file. It can be done using the following command:\r\n```\r\nkdb5_util load -d DB_NAME DB_FILE \r\n```",
+            "Impact": 4,
+            "VulnerabilityType": "Unspecified",
+            "Resolution": "",
+            "ExtendedImpactReasons": [
+               {
+                  "Id": 1658782604283994116,
+                  "PublicVulnsExtendedTblId": 1658782604195913731,
+                  "Name": "The prerequisites for exploiting the issue are extremely unlikely",
+                  "Description": "A Kerberos database is not restored often. The attacker must find a way to get the user to restore the database from a crafted file. If the attacker has access to the backup file, it can be modified even without exploiting this vulnerability. The vulnerability only helps by making the attacker's modifications to the backup file seem legitimate when manually inspected.",
+                  "IsPositive": 1,
+                  "InsertOrder": 4
+               },
+               {
+                  "Id": 1658782604283994115,
+                  "PublicVulnsExtendedTblId": 1658782604195913731,
+                  "Name": "The reported CVSS was either wrongly calculated, downgraded by other vendors, or does not reflect the vulnerability's impact",
+                  "Description": "The CVSS does not reflect the fact that the vulnerability does not have any security impact.",
+                  "IsPositive": 1,
+                  "InsertOrder": 3
+               },
+               {
+                  "Id": 1658782604283994114,
+                  "PublicVulnsExtendedTblId": 1658782604195913731,
+                  "Name": "The issue cannot result in a severe impact (such as remote code execution)",
+                  "Description": "The integer truncation doesn't affect data allocated near the 16-bit integer and doesn't have any meaningful impact.",
+                  "IsPositive": 1,
+                  "InsertOrder": 2
+               },
+               {
+                  "Id": 1658782604283994113,
+                  "PublicVulnsExtendedTblId": 1658782604195913731,
+                  "Name": "Exploiting the issue requires the user to interact with the vulnerable software",
+                  "Description": "Requires the user to restore the Kerberos Database from a crafted malicious file, which is unlikely.",
+                  "IsPositive": 1,
+                  "InsertOrder": 1
+               }
+            ],
+            "ExtendedReferences": [
+               {
+                  "Id": 1658782604283994117,
+                  "PublicVulnsExtendedTblId": 1658782604195913731,
+                  "RefType": "Advisory",
+                  "Title": "Advisory",
+                  "Url": "https://github.com/poojamnit/Kerberos-V5-1.16-Vulnerabilities/blob/master/Integer%20Overflow%20Description",
+                  "InsertOrder": 1
+               },
+               {
+                  "Id": 1658782604283994118,
+                  "PublicVulnsExtendedTblId": 1658782604195913731,
+                  "RefType": "Patch",
+                  "Title": "Patch",
+                  "Url": "https://github.com/krb5/krb5/commit/d15930bec22781473c2eaf72c08a145508b373ba",
+                  "InsertOrder": 2
+               }
+            ],
+            "ExtendedRelatedVulns": null
+         },
+         "component_physical_paths": [
+            ""
+         ]
+      },
+      {
+         "id": "XRAY-91456",
+         "severity": "Low",
+         "severity_source": "Ubuntu CVE Tracker",
+         "pkg_type": "debian",
+         "summary": "There is a heap-based buffer over-read in the _nc_find_entry function in tinfo/comp_hash.c in the terminfo library in ncurses before 6.1-20191012.",
+         "issue_type": "security",
+         "provider": "JFrog",
+         "component": "ubuntu:bionic:libtinfo5",
+         "source_id": "deb://ubuntu:bionic:libtinfo5",
+         "source_comp_id": "deb://ubuntu:bionic:libtinfo5:6.1-1ubuntu1.18.04.1",
+         "component_versions": {
+            "id": "ubuntu:bionic:ncurses",
+            "vulnerable_versions": [
+               "All Versions"
+            ],
+            "more_details": {
+               "cves": [
+                  {
+                     "cve": "CVE-2019-17594",
+                     "cwe": [
+                        "CWE-125"
+                     ],
+                     "cvss_v2": "4.6/CVSS:2.0/AV:L/AC:L/Au:N/C:P/I:P/A:P",
+                     "cvss_v3": "5.3/CVSS:3.1/AV:L/AC:L/PR:L/UI:N/S:U/C:L/I:L/A:L"
+                  }
+               ],
+               "description": "There is a heap-based buffer over-read in the _nc_find_entry function in tinfo/comp_hash.c in the terminfo library in ncurses before 6.1-20191012.",
+               "provider": "JFrog"
+            }
+         },
+         "edited": "2022-10-27T21:35:43+02:00",
+         "is_source_root": false,
+         "is_high_profile": false,
+         "component_physical_paths": [
+            ""
+         ]
+      },
+      {
+         "id": "XRAY-225378",
+         "severity": "Low",
+         "severity_source": "Ubuntu CVE Tracker",
+         "pkg_type": "debian",
+         "summary": "sha256crypt and sha512crypt through 0.6 allow attackers to cause a denial of service (CPU consumption) because the algorithm's runtime is proportional to the square of the length of the password.",
+         "issue_type": "security",
+         "provider": "JFrog",
+         "component": "ubuntu:bionic:libc6",
+         "source_id": "deb://ubuntu:bionic:libc6",
+         "source_comp_id": "deb://ubuntu:bionic:libc6:2.27-3ubuntu1.6",
+         "component_versions": {
+            "id": "ubuntu:bionic:glibc",
+            "vulnerable_versions": [
+               "All Versions"
+            ],
+            "more_details": {
+               "cves": [
+                  {
+                     "cve": "CVE-2016-20013",
+                     "cwe": [
+                        "CWE-770"
+                     ],
+                     "cvss_v2": "5.0/CVSS:2.0/AV:N/AC:L/Au:N/C:N/I:N/A:P",
+                     "cvss_v3": "7.5/CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:H"
+                  }
+               ],
+               "description": "sha256crypt and sha512crypt through 0.6 allow attackers to cause a denial of service (CPU consumption) because the algorithm's runtime is proportional to the square of the length of the password.",
+               "provider": "JFrog"
+            }
+         },
+         "edited": "2022-10-27T21:36:34+02:00",
+         "is_source_root": false,
+         "is_high_profile": false,
+         "component_physical_paths": [
+            ""
+         ]
+      },
+      {
+         "id": "XRAY-91441",
+         "severity": "Low",
+         "severity_source": "Ubuntu CVE Tracker",
+         "pkg_type": "debian",
+         "summary": "There is a heap-based buffer over-read in the fmt_entry function in tinfo/comp_hash.c in the terminfo library in ncurses before 6.1-20191012.",
+         "issue_type": "security",
+         "provider": "JFrog",
+         "component": "ubuntu:bionic:libtinfo5",
+         "source_id": "deb://ubuntu:bionic:libtinfo5",
+         "source_comp_id": "deb://ubuntu:bionic:libtinfo5:6.1-1ubuntu1.18.04.1",
+         "component_versions": {
+            "id": "ubuntu:bionic:ncurses",
+            "vulnerable_versions": [
+               "All Versions"
+            ],
+            "more_details": {
+               "cves": [
+                  {
+                     "cve": "CVE-2019-17595",
+                     "cwe": [
+                        "CWE-125"
+                     ],
+                     "cvss_v2": "5.8/CVSS:2.0/AV:N/AC:M/Au:N/C:P/I:N/A:P",
+                     "cvss_v3": "5.4/CVSS:3.1/AV:N/AC:L/PR:N/UI:R/S:U/C:L/I:N/A:L"
+                  }
+               ],
+               "description": "There is a heap-based buffer over-read in the fmt_entry function in tinfo/comp_hash.c in the terminfo library in ncurses before 6.1-20191012.",
+               "provider": "JFrog"
+            }
+         },
+         "edited": "2022-10-27T21:35:43+02:00",
+         "is_source_root": false,
+         "is_high_profile": false,
+         "component_physical_paths": [
+            ""
+         ]
+      },
+      {
+         "id": "XRAY-91441",
+         "severity": "Low",
+         "severity_source": "Ubuntu CVE Tracker",
+         "pkg_type": "debian",
+         "summary": "There is a heap-based buffer over-read in the fmt_entry function in tinfo/comp_hash.c in the terminfo library in ncurses before 6.1-20191012.",
+         "issue_type": "security",
+         "provider": "JFrog",
+         "component": "ubuntu:bionic:libncursesw5",
+         "source_id": "deb://ubuntu:bionic:libncursesw5",
+         "source_comp_id": "deb://ubuntu:bionic:libncursesw5:6.1-1ubuntu1.18.04.1",
+         "component_versions": {
+            "id": "ubuntu:bionic:ncurses",
+            "vulnerable_versions": [
+               "All Versions"
+            ],
+            "more_details": {
+               "cves": [
+                  {
+                     "cve": "CVE-2019-17595",
+                     "cwe": [
+                        "CWE-125"
+                     ],
+                     "cvss_v2": "5.8/CVSS:2.0/AV:N/AC:M/Au:N/C:P/I:N/A:P",
+                     "cvss_v3": "5.4/CVSS:3.1/AV:N/AC:L/PR:N/UI:R/S:U/C:L/I:N/A:L"
+                  }
+               ],
+               "description": "There is a heap-based buffer over-read in the fmt_entry function in tinfo/comp_hash.c in the terminfo library in ncurses before 6.1-20191012.",
+               "provider": "JFrog"
+            }
+         },
+         "edited": "2022-10-27T21:35:43+02:00",
+         "is_source_root": false,
+         "is_high_profile": false,
+         "component_physical_paths": [
+            ""
+         ]
+      },
+      {
+         "id": "XRAY-91441",
+         "severity": "Low",
+         "severity_source": "Ubuntu CVE Tracker",
+         "pkg_type": "debian",
+         "summary": "There is a heap-based buffer over-read in the fmt_entry function in tinfo/comp_hash.c in the terminfo library in ncurses before 6.1-20191012.",
+         "issue_type": "security",
+         "provider": "JFrog",
+         "component": "ubuntu:bionic:libncurses5",
+         "source_id": "deb://ubuntu:bionic:libncurses5",
+         "source_comp_id": "deb://ubuntu:bionic:libncurses5:6.1-1ubuntu1.18.04.1",
+         "component_versions": {
+            "id": "ubuntu:bionic:ncurses",
+            "vulnerable_versions": [
+               "All Versions"
+            ],
+            "more_details": {
+               "cves": [
+                  {
+                     "cve": "CVE-2019-17595",
+                     "cwe": [
+                        "CWE-125"
+                     ],
+                     "cvss_v2": "5.8/CVSS:2.0/AV:N/AC:M/Au:N/C:P/I:N/A:P",
+                     "cvss_v3": "5.4/CVSS:3.1/AV:N/AC:L/PR:N/UI:R/S:U/C:L/I:N/A:L"
+                  }
+               ],
+               "description": "There is a heap-based buffer over-read in the fmt_entry function in tinfo/comp_hash.c in the terminfo library in ncurses before 6.1-20191012.",
+               "provider": "JFrog"
+            }
+         },
+         "edited": "2022-10-27T21:35:43+02:00",
+         "is_source_root": false,
+         "is_high_profile": false,
+         "component_physical_paths": [
+            ""
+         ]
+      },
+      {
+         "id": "XRAY-91441",
+         "severity": "Low",
+         "severity_source": "Ubuntu CVE Tracker",
+         "pkg_type": "debian",
+         "summary": "There is a heap-based buffer over-read in the fmt_entry function in tinfo/comp_hash.c in the terminfo library in ncurses before 6.1-20191012.",
+         "issue_type": "security",
+         "provider": "JFrog",
+         "component": "ubuntu:bionic:ncurses-bin",
+         "source_id": "deb://ubuntu:bionic:ncurses-bin",
+         "source_comp_id": "deb://ubuntu:bionic:ncurses-bin:6.1-1ubuntu1.18.04.1",
+         "component_versions": {
+            "id": "ubuntu:bionic:ncurses",
+            "vulnerable_versions": [
+               "All Versions"
+            ],
+            "more_details": {
+               "cves": [
+                  {
+                     "cve": "CVE-2019-17595",
+                     "cwe": [
+                        "CWE-125"
+                     ],
+                     "cvss_v2": "5.8/CVSS:2.0/AV:N/AC:M/Au:N/C:P/I:N/A:P",
+                     "cvss_v3": "5.4/CVSS:3.1/AV:N/AC:L/PR:N/UI:R/S:U/C:L/I:N/A:L"
+                  }
+               ],
+               "description": "There is a heap-based buffer over-read in the fmt_entry function in tinfo/comp_hash.c in the terminfo library in ncurses before 6.1-20191012.",
+               "provider": "JFrog"
+            }
+         },
+         "edited": "2022-10-27T21:35:43+02:00",
+         "is_source_root": false,
+         "is_high_profile": false,
+         "component_physical_paths": [
+            ""
+         ]
+      },
+      {
+         "id": "XRAY-228477",
+         "severity": "Low",
+         "severity_source": "Ubuntu CVE Tracker",
+         "pkg_type": "debian",
+         "summary": "An issue was discovered in ncurses through v6.2-1. _nc_captoinfo in captoinfo.c has a heap-based buffer overflow.",
+         "issue_type": "security",
+         "provider": "JFrog",
+         "component": "ubuntu:bionic:libtinfo5",
+         "source_id": "deb://ubuntu:bionic:libtinfo5",
+         "source_comp_id": "deb://ubuntu:bionic:libtinfo5:6.1-1ubuntu1.18.04.1",
+         "component_versions": {
+            "id": "ubuntu:bionic:ncurses",
+            "vulnerable_versions": [
+               "All Versions"
+            ],
+            "more_details": {
+               "cves": [
+                  {
+                     "cve": "CVE-2021-39537",
+                     "cwe": [
+                        "CWE-787"
+                     ],
+                     "cvss_v2": "6.8/CVSS:2.0/AV:N/AC:M/Au:N/C:P/I:P/A:P",
+                     "cvss_v3": "8.8/CVSS:3.1/AV:N/AC:L/PR:N/UI:R/S:U/C:H/I:H/A:H"
+                  }
+               ],
+               "description": "An issue was discovered in ncurses through v6.2-1. _nc_captoinfo in captoinfo.c has a heap-based buffer overflow.",
+               "provider": "JFrog"
+            }
+         },
+         "edited": "2022-12-13T20:35:04+01:00",
+         "is_source_root": false,
+         "is_high_profile": true,
+         "high_profile_info": {
+            "Id": 1602748990097076224,
+            "PublicVulnsTblID": 0,
+            "VulnId": "XRAY-228477",
+            "VulnerabilityTitle": "",
+            "ShortDescription": "A buffer overread in ncurses might lead to segmentation fault when processing a crafted `termcap` source file with `captoinfo`.",
+            "FullDescription": "[ncurses](https://invisible-mirror.net/archives/ncurses/) (new curses) is a programming library providing an application programming interface (API) that allows the programmer to write text-based user interfaces (TUI) in a terminal-independent manner. It is a toolkit for developing \"GUI-like\" application software that runs under a terminal emulator.\r\n\r\nThe `captoinfo` tool, which is a symbolic link of the `tic` tool but runs with the `-I` option, converts a` termcap` source file to a `terminfo` source file and displays it on the screen. A bug in `termcap` source file parsing could cause a buffer overread that leads to segmentation fault. Originally, the CVE was mistakenly reported as a heap buffer overflow.\r\nTo exploit this issue, the attacker must find an input that propagates to the `captoinfo` utility of the `ncurses` library to exploit this vulnerability.",
+            "Impact": 4,
+            "VulnerabilityType": "Denial of service",
+            "Resolution": "",
+            "ExtendedImpactReasons": [
+               {
+                  "Id": 1602748990134824965,
+                  "PublicVulnsExtendedTblId": 1602748990097076224,
+                  "Name": "The prerequisites for exploiting the issue are extremely unlikely",
+                  "Description": "The attacker must be able to upload a crafted termcap source file and make the user execute the `captoinfo` tool to trigger the vulnerability, which is very unlikely to happen.",
+                  "IsPositive": 1,
+                  "InsertOrder": 4
+               },
+               {
+                  "Id": 1602748990134824964,
+                  "PublicVulnsExtendedTblId": 1602748990097076224,
+                  "Name": "The issue cannot result in a severe impact (such as remote code execution)",
+                  "Description": "Causes a denial of service in a client application",
+                  "IsPositive": 1,
+                  "InsertOrder": 3
+               },
+               {
+                  "Id": 1602748990134824963,
+                  "PublicVulnsExtendedTblId": 1602748990097076224,
+                  "Name": "Exploiting the issue requires the user to interact with the vulnerable software",
+                  "Description": "Requires a user to run the `captoinfo` tool against a malicious terminfo source file",
+                  "IsPositive": 1,
+                  "InsertOrder": 2
+               },
+               {
+                  "Id": 1602748990134824962,
+                  "PublicVulnsExtendedTblId": 1602748990097076224,
+                  "Name": "The issue has an exploit published",
+                  "Description": "The PoC causes a segmentation fault",
+                  "IsPositive": 0,
+                  "InsertOrder": 1
+               }
+            ],
+            "ExtendedReferences": [
+               {
+                  "Id": 1602748990134824966,
+                  "PublicVulnsExtendedTblId": 1602748990097076224,
+                  "RefType": "Exploit",
+                  "Title": "PoC",
+                  "Url": "https://lists.gnu.org/archive/html/bug-ncurses/2020-08/msg00006.html",
+                  "InsertOrder": 1
+               },
+               {
+                  "Id": 1602748990134824967,
+                  "PublicVulnsExtendedTblId": 1602748990097076224,
+                  "RefType": "Patch",
+                  "Title": "Patch",
+                  "Url": "http://cvsweb.netbsd.org/bsdweb.cgi/pkgsrc/devel/ncurses/patches/Attic/patch-ncurses_tinfo_captoinfo.c?rev=1.1&content-type=text/x-cvsweb-markup",
+                  "InsertOrder": 2
+               },
+               {
+                  "Id": 1602748990134824968,
+                  "PublicVulnsExtendedTblId": 1602748990097076224,
+                  "RefType": "Advisory",
+                  "Title": "Clarification of the true cause and impact of this vulnerability",
+                  "Url": "https://lists.gnu.org/archive/html/bug-ncurses/2021-10/msg00023.html",
+                  "InsertOrder": 3
+               }
+            ],
+            "ExtendedRelatedVulns": null
+         },
+         "component_physical_paths": [
+            ""
+         ]
+      },
+      {
+         "id": "XRAY-228477",
+         "severity": "Low",
+         "severity_source": "Ubuntu CVE Tracker",
+         "pkg_type": "debian",
+         "summary": "An issue was discovered in ncurses through v6.2-1. _nc_captoinfo in captoinfo.c has a heap-based buffer overflow.",
+         "issue_type": "security",
+         "provider": "JFrog",
+         "component": "ubuntu:bionic:ncurses-base",
+         "source_id": "deb://ubuntu:bionic:ncurses-base",
+         "source_comp_id": "deb://ubuntu:bionic:ncurses-base:6.1-1ubuntu1.18.04.1",
+         "component_versions": {
+            "id": "ubuntu:bionic:ncurses",
+            "vulnerable_versions": [
+               "All Versions"
+            ],
+            "more_details": {
+               "cves": [
+                  {
+                     "cve": "CVE-2021-39537",
+                     "cwe": [
+                        "CWE-787"
+                     ],
+                     "cvss_v2": "6.8/CVSS:2.0/AV:N/AC:M/Au:N/C:P/I:P/A:P",
+                     "cvss_v3": "8.8/CVSS:3.1/AV:N/AC:L/PR:N/UI:R/S:U/C:H/I:H/A:H"
+                  }
+               ],
+               "description": "An issue was discovered in ncurses through v6.2-1. _nc_captoinfo in captoinfo.c has a heap-based buffer overflow.",
+               "provider": "JFrog"
+            }
+         },
+         "edited": "2022-12-13T20:35:04+01:00",
+         "is_source_root": false,
+         "is_high_profile": true,
+         "high_profile_info": {
+            "Id": 1602748990097076224,
+            "PublicVulnsTblID": 0,
+            "VulnId": "XRAY-228477",
+            "VulnerabilityTitle": "",
+            "ShortDescription": "A buffer overread in ncurses might lead to segmentation fault when processing a crafted `termcap` source file with `captoinfo`.",
+            "FullDescription": "[ncurses](https://invisible-mirror.net/archives/ncurses/) (new curses) is a programming library providing an application programming interface (API) that allows the programmer to write text-based user interfaces (TUI) in a terminal-independent manner. It is a toolkit for developing \"GUI-like\" application software that runs under a terminal emulator.\r\n\r\nThe `captoinfo` tool, which is a symbolic link of the `tic` tool but runs with the `-I` option, converts a` termcap` source file to a `terminfo` source file and displays it on the screen. A bug in `termcap` source file parsing could cause a buffer overread that leads to segmentation fault. Originally, the CVE was mistakenly reported as a heap buffer overflow.\r\nTo exploit this issue, the attacker must find an input that propagates to the `captoinfo` utility of the `ncurses` library to exploit this vulnerability.",
+            "Impact": 4,
+            "VulnerabilityType": "Denial of service",
+            "Resolution": "",
+            "ExtendedImpactReasons": [
+               {
+                  "Id": 1602748990134824965,
+                  "PublicVulnsExtendedTblId": 1602748990097076224,
+                  "Name": "The prerequisites for exploiting the issue are extremely unlikely",
+                  "Description": "The attacker must be able to upload a crafted termcap source file and make the user execute the `captoinfo` tool to trigger the vulnerability, which is very unlikely to happen.",
+                  "IsPositive": 1,
+                  "InsertOrder": 4
+               },
+               {
+                  "Id": 1602748990134824964,
+                  "PublicVulnsExtendedTblId": 1602748990097076224,
+                  "Name": "The issue cannot result in a severe impact (such as remote code execution)",
+                  "Description": "Causes a denial of service in a client application",
+                  "IsPositive": 1,
+                  "InsertOrder": 3
+               },
+               {
+                  "Id": 1602748990134824963,
+                  "PublicVulnsExtendedTblId": 1602748990097076224,
+                  "Name": "Exploiting the issue requires the user to interact with the vulnerable software",
+                  "Description": "Requires a user to run the `captoinfo` tool against a malicious terminfo source file",
+                  "IsPositive": 1,
+                  "InsertOrder": 2
+               },
+               {
+                  "Id": 1602748990134824962,
+                  "PublicVulnsExtendedTblId": 1602748990097076224,
+                  "Name": "The issue has an exploit published",
+                  "Description": "The PoC causes a segmentation fault",
+                  "IsPositive": 0,
+                  "InsertOrder": 1
+               }
+            ],
+            "ExtendedReferences": [
+               {
+                  "Id": 1602748990134824966,
+                  "PublicVulnsExtendedTblId": 1602748990097076224,
+                  "RefType": "Exploit",
+                  "Title": "PoC",
+                  "Url": "https://lists.gnu.org/archive/html/bug-ncurses/2020-08/msg00006.html",
+                  "InsertOrder": 1
+               },
+               {
+                  "Id": 1602748990134824967,
+                  "PublicVulnsExtendedTblId": 1602748990097076224,
+                  "RefType": "Patch",
+                  "Title": "Patch",
+                  "Url": "http://cvsweb.netbsd.org/bsdweb.cgi/pkgsrc/devel/ncurses/patches/Attic/patch-ncurses_tinfo_captoinfo.c?rev=1.1&content-type=text/x-cvsweb-markup",
+                  "InsertOrder": 2
+               },
+               {
+                  "Id": 1602748990134824968,
+                  "PublicVulnsExtendedTblId": 1602748990097076224,
+                  "RefType": "Advisory",
+                  "Title": "Clarification of the true cause and impact of this vulnerability",
+                  "Url": "https://lists.gnu.org/archive/html/bug-ncurses/2021-10/msg00023.html",
+                  "InsertOrder": 3
+               }
+            ],
+            "ExtendedRelatedVulns": null
+         },
+         "component_physical_paths": [
+            ""
+         ]
+      },
+      {
+         "id": "XRAY-228477",
+         "severity": "Low",
+         "severity_source": "Ubuntu CVE Tracker",
+         "pkg_type": "debian",
+         "summary": "An issue was discovered in ncurses through v6.2-1. _nc_captoinfo in captoinfo.c has a heap-based buffer overflow.",
+         "issue_type": "security",
+         "provider": "JFrog",
+         "component": "ubuntu:bionic:ncurses-bin",
+         "source_id": "deb://ubuntu:bionic:ncurses-bin",
+         "source_comp_id": "deb://ubuntu:bionic:ncurses-bin:6.1-1ubuntu1.18.04.1",
+         "component_versions": {
+            "id": "ubuntu:bionic:ncurses",
+            "vulnerable_versions": [
+               "All Versions"
+            ],
+            "more_details": {
+               "cves": [
+                  {
+                     "cve": "CVE-2021-39537",
+                     "cwe": [
+                        "CWE-787"
+                     ],
+                     "cvss_v2": "6.8/CVSS:2.0/AV:N/AC:M/Au:N/C:P/I:P/A:P",
+                     "cvss_v3": "8.8/CVSS:3.1/AV:N/AC:L/PR:N/UI:R/S:U/C:H/I:H/A:H"
+                  }
+               ],
+               "description": "An issue was discovered in ncurses through v6.2-1. _nc_captoinfo in captoinfo.c has a heap-based buffer overflow.",
+               "provider": "JFrog"
+            }
+         },
+         "edited": "2022-12-13T20:35:04+01:00",
+         "is_source_root": false,
+         "is_high_profile": true,
+         "high_profile_info": {
+            "Id": 1602748990097076224,
+            "PublicVulnsTblID": 0,
+            "VulnId": "XRAY-228477",
+            "VulnerabilityTitle": "",
+            "ShortDescription": "A buffer overread in ncurses might lead to segmentation fault when processing a crafted `termcap` source file with `captoinfo`.",
+            "FullDescription": "[ncurses](https://invisible-mirror.net/archives/ncurses/) (new curses) is a programming library providing an application programming interface (API) that allows the programmer to write text-based user interfaces (TUI) in a terminal-independent manner. It is a toolkit for developing \"GUI-like\" application software that runs under a terminal emulator.\r\n\r\nThe `captoinfo` tool, which is a symbolic link of the `tic` tool but runs with the `-I` option, converts a` termcap` source file to a `terminfo` source file and displays it on the screen. A bug in `termcap` source file parsing could cause a buffer overread that leads to segmentation fault. Originally, the CVE was mistakenly reported as a heap buffer overflow.\r\nTo exploit this issue, the attacker must find an input that propagates to the `captoinfo` utility of the `ncurses` library to exploit this vulnerability.",
+            "Impact": 4,
+            "VulnerabilityType": "Denial of service",
+            "Resolution": "",
+            "ExtendedImpactReasons": [
+               {
+                  "Id": 1602748990134824965,
+                  "PublicVulnsExtendedTblId": 1602748990097076224,
+                  "Name": "The prerequisites for exploiting the issue are extremely unlikely",
+                  "Description": "The attacker must be able to upload a crafted termcap source file and make the user execute the `captoinfo` tool to trigger the vulnerability, which is very unlikely to happen.",
+                  "IsPositive": 1,
+                  "InsertOrder": 4
+               },
+               {
+                  "Id": 1602748990134824964,
+                  "PublicVulnsExtendedTblId": 1602748990097076224,
+                  "Name": "The issue cannot result in a severe impact (such as remote code execution)",
+                  "Description": "Causes a denial of service in a client application",
+                  "IsPositive": 1,
+                  "InsertOrder": 3
+               },
+               {
+                  "Id": 1602748990134824963,
+                  "PublicVulnsExtendedTblId": 1602748990097076224,
+                  "Name": "Exploiting the issue requires the user to interact with the vulnerable software",
+                  "Description": "Requires a user to run the `captoinfo` tool against a malicious terminfo source file",
+                  "IsPositive": 1,
+                  "InsertOrder": 2
+               },
+               {
+                  "Id": 1602748990134824962,
+                  "PublicVulnsExtendedTblId": 1602748990097076224,
+                  "Name": "The issue has an exploit published",
+                  "Description": "The PoC causes a segmentation fault",
+                  "IsPositive": 0,
+                  "InsertOrder": 1
+               }
+            ],
+            "ExtendedReferences": [
+               {
+                  "Id": 1602748990134824966,
+                  "PublicVulnsExtendedTblId": 1602748990097076224,
+                  "RefType": "Exploit",
+                  "Title": "PoC",
+                  "Url": "https://lists.gnu.org/archive/html/bug-ncurses/2020-08/msg00006.html",
+                  "InsertOrder": 1
+               },
+               {
+                  "Id": 1602748990134824967,
+                  "PublicVulnsExtendedTblId": 1602748990097076224,
+                  "RefType": "Patch",
+                  "Title": "Patch",
+                  "Url": "http://cvsweb.netbsd.org/bsdweb.cgi/pkgsrc/devel/ncurses/patches/Attic/patch-ncurses_tinfo_captoinfo.c?rev=1.1&content-type=text/x-cvsweb-markup",
+                  "InsertOrder": 2
+               },
+               {
+                  "Id": 1602748990134824968,
+                  "PublicVulnsExtendedTblId": 1602748990097076224,
+                  "RefType": "Advisory",
+                  "Title": "Clarification of the true cause and impact of this vulnerability",
+                  "Url": "https://lists.gnu.org/archive/html/bug-ncurses/2021-10/msg00023.html",
+                  "InsertOrder": 3
+               }
+            ],
+            "ExtendedRelatedVulns": null
+         },
+         "component_physical_paths": [
+            ""
+         ]
+      },
+      {
+         "id": "XRAY-228477",
+         "severity": "Low",
+         "severity_source": "Ubuntu CVE Tracker",
+         "pkg_type": "debian",
+         "summary": "An issue was discovered in ncurses through v6.2-1. _nc_captoinfo in captoinfo.c has a heap-based buffer overflow.",
+         "issue_type": "security",
+         "provider": "JFrog",
+         "component": "ubuntu:bionic:libncurses5",
+         "source_id": "deb://ubuntu:bionic:libncurses5",
+         "source_comp_id": "deb://ubuntu:bionic:libncurses5:6.1-1ubuntu1.18.04.1",
+         "component_versions": {
+            "id": "ubuntu:bionic:ncurses",
+            "vulnerable_versions": [
+               "All Versions"
+            ],
+            "more_details": {
+               "cves": [
+                  {
+                     "cve": "CVE-2021-39537",
+                     "cwe": [
+                        "CWE-787"
+                     ],
+                     "cvss_v2": "6.8/CVSS:2.0/AV:N/AC:M/Au:N/C:P/I:P/A:P",
+                     "cvss_v3": "8.8/CVSS:3.1/AV:N/AC:L/PR:N/UI:R/S:U/C:H/I:H/A:H"
+                  }
+               ],
+               "description": "An issue was discovered in ncurses through v6.2-1. _nc_captoinfo in captoinfo.c has a heap-based buffer overflow.",
+               "provider": "JFrog"
+            }
+         },
+         "edited": "2022-12-13T20:35:04+01:00",
+         "is_source_root": false,
+         "is_high_profile": true,
+         "high_profile_info": {
+            "Id": 1602748990097076224,
+            "PublicVulnsTblID": 0,
+            "VulnId": "XRAY-228477",
+            "VulnerabilityTitle": "",
+            "ShortDescription": "A buffer overread in ncurses might lead to segmentation fault when processing a crafted `termcap` source file with `captoinfo`.",
+            "FullDescription": "[ncurses](https://invisible-mirror.net/archives/ncurses/) (new curses) is a programming library providing an application programming interface (API) that allows the programmer to write text-based user interfaces (TUI) in a terminal-independent manner. It is a toolkit for developing \"GUI-like\" application software that runs under a terminal emulator.\r\n\r\nThe `captoinfo` tool, which is a symbolic link of the `tic` tool but runs with the `-I` option, converts a` termcap` source file to a `terminfo` source file and displays it on the screen. A bug in `termcap` source file parsing could cause a buffer overread that leads to segmentation fault. Originally, the CVE was mistakenly reported as a heap buffer overflow.\r\nTo exploit this issue, the attacker must find an input that propagates to the `captoinfo` utility of the `ncurses` library to exploit this vulnerability.",
+            "Impact": 4,
+            "VulnerabilityType": "Denial of service",
+            "Resolution": "",
+            "ExtendedImpactReasons": [
+               {
+                  "Id": 1602748990134824965,
+                  "PublicVulnsExtendedTblId": 1602748990097076224,
+                  "Name": "The prerequisites for exploiting the issue are extremely unlikely",
+                  "Description": "The attacker must be able to upload a crafted termcap source file and make the user execute the `captoinfo` tool to trigger the vulnerability, which is very unlikely to happen.",
+                  "IsPositive": 1,
+                  "InsertOrder": 4
+               },
+               {
+                  "Id": 1602748990134824964,
+                  "PublicVulnsExtendedTblId": 1602748990097076224,
+                  "Name": "The issue cannot result in a severe impact (such as remote code execution)",
+                  "Description": "Causes a denial of service in a client application",
+                  "IsPositive": 1,
+                  "InsertOrder": 3
+               },
+               {
+                  "Id": 1602748990134824963,
+                  "PublicVulnsExtendedTblId": 1602748990097076224,
+                  "Name": "Exploiting the issue requires the user to interact with the vulnerable software",
+                  "Description": "Requires a user to run the `captoinfo` tool against a malicious terminfo source file",
+                  "IsPositive": 1,
+                  "InsertOrder": 2
+               },
+               {
+                  "Id": 1602748990134824962,
+                  "PublicVulnsExtendedTblId": 1602748990097076224,
+                  "Name": "The issue has an exploit published",
+                  "Description": "The PoC causes a segmentation fault",
+                  "IsPositive": 0,
+                  "InsertOrder": 1
+               }
+            ],
+            "ExtendedReferences": [
+               {
+                  "Id": 1602748990134824966,
+                  "PublicVulnsExtendedTblId": 1602748990097076224,
+                  "RefType": "Exploit",
+                  "Title": "PoC",
+                  "Url": "https://lists.gnu.org/archive/html/bug-ncurses/2020-08/msg00006.html",
+                  "InsertOrder": 1
+               },
+               {
+                  "Id": 1602748990134824967,
+                  "PublicVulnsExtendedTblId": 1602748990097076224,
+                  "RefType": "Patch",
+                  "Title": "Patch",
+                  "Url": "http://cvsweb.netbsd.org/bsdweb.cgi/pkgsrc/devel/ncurses/patches/Attic/patch-ncurses_tinfo_captoinfo.c?rev=1.1&content-type=text/x-cvsweb-markup",
+                  "InsertOrder": 2
+               },
+               {
+                  "Id": 1602748990134824968,
+                  "PublicVulnsExtendedTblId": 1602748990097076224,
+                  "RefType": "Advisory",
+                  "Title": "Clarification of the true cause and impact of this vulnerability",
+                  "Url": "https://lists.gnu.org/archive/html/bug-ncurses/2021-10/msg00023.html",
+                  "InsertOrder": 3
+               }
+            ],
+            "ExtendedRelatedVulns": null
+         },
+         "component_physical_paths": [
+            ""
+         ]
+      },
+      {
+         "id": "XRAY-228477",
+         "severity": "Low",
+         "severity_source": "Ubuntu CVE Tracker",
+         "pkg_type": "debian",
+         "summary": "An issue was discovered in ncurses through v6.2-1. _nc_captoinfo in captoinfo.c has a heap-based buffer overflow.",
+         "issue_type": "security",
+         "provider": "JFrog",
+         "component": "ubuntu:bionic:libncursesw5",
+         "source_id": "deb://ubuntu:bionic:libncursesw5",
+         "source_comp_id": "deb://ubuntu:bionic:libncursesw5:6.1-1ubuntu1.18.04.1",
+         "component_versions": {
+            "id": "ubuntu:bionic:ncurses",
+            "vulnerable_versions": [
+               "All Versions"
+            ],
+            "more_details": {
+               "cves": [
+                  {
+                     "cve": "CVE-2021-39537",
+                     "cwe": [
+                        "CWE-787"
+                     ],
+                     "cvss_v2": "6.8/CVSS:2.0/AV:N/AC:M/Au:N/C:P/I:P/A:P",
+                     "cvss_v3": "8.8/CVSS:3.1/AV:N/AC:L/PR:N/UI:R/S:U/C:H/I:H/A:H"
+                  }
+               ],
+               "description": "An issue was discovered in ncurses through v6.2-1. _nc_captoinfo in captoinfo.c has a heap-based buffer overflow.",
+               "provider": "JFrog"
+            }
+         },
+         "edited": "2022-12-13T20:35:04+01:00",
+         "is_source_root": false,
+         "is_high_profile": true,
+         "high_profile_info": {
+            "Id": 1602748990097076224,
+            "PublicVulnsTblID": 0,
+            "VulnId": "XRAY-228477",
+            "VulnerabilityTitle": "",
+            "ShortDescription": "A buffer overread in ncurses might lead to segmentation fault when processing a crafted `termcap` source file with `captoinfo`.",
+            "FullDescription": "[ncurses](https://invisible-mirror.net/archives/ncurses/) (new curses) is a programming library providing an application programming interface (API) that allows the programmer to write text-based user interfaces (TUI) in a terminal-independent manner. It is a toolkit for developing \"GUI-like\" application software that runs under a terminal emulator.\r\n\r\nThe `captoinfo` tool, which is a symbolic link of the `tic` tool but runs with the `-I` option, converts a` termcap` source file to a `terminfo` source file and displays it on the screen. A bug in `termcap` source file parsing could cause a buffer overread that leads to segmentation fault. Originally, the CVE was mistakenly reported as a heap buffer overflow.\r\nTo exploit this issue, the attacker must find an input that propagates to the `captoinfo` utility of the `ncurses` library to exploit this vulnerability.",
+            "Impact": 4,
+            "VulnerabilityType": "Denial of service",
+            "Resolution": "",
+            "ExtendedImpactReasons": [
+               {
+                  "Id": 1602748990134824965,
+                  "PublicVulnsExtendedTblId": 1602748990097076224,
+                  "Name": "The prerequisites for exploiting the issue are extremely unlikely",
+                  "Description": "The attacker must be able to upload a crafted termcap source file and make the user execute the `captoinfo` tool to trigger the vulnerability, which is very unlikely to happen.",
+                  "IsPositive": 1,
+                  "InsertOrder": 4
+               },
+               {
+                  "Id": 1602748990134824964,
+                  "PublicVulnsExtendedTblId": 1602748990097076224,
+                  "Name": "The issue cannot result in a severe impact (such as remote code execution)",
+                  "Description": "Causes a denial of service in a client application",
+                  "IsPositive": 1,
+                  "InsertOrder": 3
+               },
+               {
+                  "Id": 1602748990134824963,
+                  "PublicVulnsExtendedTblId": 1602748990097076224,
+                  "Name": "Exploiting the issue requires the user to interact with the vulnerable software",
+                  "Description": "Requires a user to run the `captoinfo` tool against a malicious terminfo source file",
+                  "IsPositive": 1,
+                  "InsertOrder": 2
+               },
+               {
+                  "Id": 1602748990134824962,
+                  "PublicVulnsExtendedTblId": 1602748990097076224,
+                  "Name": "The issue has an exploit published",
+                  "Description": "The PoC causes a segmentation fault",
+                  "IsPositive": 0,
+                  "InsertOrder": 1
+               }
+            ],
+            "ExtendedReferences": [
+               {
+                  "Id": 1602748990134824966,
+                  "PublicVulnsExtendedTblId": 1602748990097076224,
+                  "RefType": "Exploit",
+                  "Title": "PoC",
+                  "Url": "https://lists.gnu.org/archive/html/bug-ncurses/2020-08/msg00006.html",
+                  "InsertOrder": 1
+               },
+               {
+                  "Id": 1602748990134824967,
+                  "PublicVulnsExtendedTblId": 1602748990097076224,
+                  "RefType": "Patch",
+                  "Title": "Patch",
+                  "Url": "http://cvsweb.netbsd.org/bsdweb.cgi/pkgsrc/devel/ncurses/patches/Attic/patch-ncurses_tinfo_captoinfo.c?rev=1.1&content-type=text/x-cvsweb-markup",
+                  "InsertOrder": 2
+               },
+               {
+                  "Id": 1602748990134824968,
+                  "PublicVulnsExtendedTblId": 1602748990097076224,
+                  "RefType": "Advisory",
+                  "Title": "Clarification of the true cause and impact of this vulnerability",
+                  "Url": "https://lists.gnu.org/archive/html/bug-ncurses/2021-10/msg00023.html",
+                  "InsertOrder": 3
+               }
+            ],
+            "ExtendedRelatedVulns": null
+         },
+         "component_physical_paths": [
+            ""
+         ]
+      },
+      {
+         "id": "XRAY-231710",
+         "severity": "Low",
+         "severity_source": "Ubuntu CVE Tracker",
+         "pkg_type": "debian",
+         "summary": "JPEGOPTIM v1.4.7 was discovered to contain a segmentation violation which is caused by a READ memory access at jpegoptim.c.",
+         "issue_type": "security",
+         "provider": "JFrog",
+         "component": "ubuntu:bionic:libjpeg-turbo8",
+         "source_id": "deb://ubuntu:bionic:libjpeg-turbo8",
+         "source_comp_id": "deb://ubuntu:bionic:libjpeg-turbo8:1.5.2-0ubuntu5.18.04.6",
+         "component_versions": {
+            "id": "ubuntu:bionic:libjpeg-turbo",
+            "vulnerable_versions": [
+               "All Versions"
+            ],
+            "more_details": {
+               "cves": [
+                  {
+                     "cve": "CVE-2022-32325",
+                     "cwe": [
+                        "CWE-125"
+                     ],
+                     "cvss_v2": "4.3/CVSS:2.0/AV:N/AC:M/Au:N/C:N/I:N/A:P",
+                     "cvss_v3": "6.5/CVSS:3.1/AV:N/AC:L/PR:N/UI:R/S:U/C:N/I:N/A:H"
+                  }
+               ],
+               "description": "JPEGOPTIM v1.4.7 was discovered to contain a segmentation violation which is caused by a READ memory access at jpegoptim.c.",
+               "provider": "JFrog"
+            }
+         },
+         "edited": "2023-01-26T20:35:13+01:00",
+         "is_source_root": false,
+         "is_high_profile": false,
+         "component_physical_paths": [
+            ""
+         ]
+      },
+      {
+         "id": "XRAY-26349",
+         "severity": "Low",
+         "severity_source": "Ubuntu CVE Tracker",
+         "pkg_type": "debian",
+         "summary": "chroot in GNU coreutils, when used with --userspec, allows local users to escape to the parent session via a crafted TIOCSTI ioctl call, which pushes characters to the terminal's input buffer.",
+         "issue_type": "security",
+         "provider": "JFrog",
+         "component": "ubuntu:bionic:coreutils",
+         "source_id": "deb://ubuntu:bionic:coreutils",
+         "source_comp_id": "deb://ubuntu:bionic:coreutils:8.28-1ubuntu1",
+         "component_versions": {
+            "id": "ubuntu:bionic:coreutils",
+            "vulnerable_versions": [
+               "All Versions"
+            ],
+            "more_details": {
+               "cves": [
+                  {
+                     "cve": "CVE-2016-2781",
+                     "cwe": [
+                        "CWE-20"
+                     ],
+                     "cvss_v2": "2.1/CVSS:2.0/AV:L/AC:L/Au:N/C:N/I:P/A:N",
+                     "cvss_v3": "6.5/CVSS:3.0/AV:L/AC:L/PR:L/UI:N/S:C/C:N/I:H/A:N"
+                  }
+               ],
+               "description": "chroot in GNU coreutils, when used with --userspec, allows local users to escape to the parent session via a crafted TIOCSTI ioctl call, which pushes characters to the terminal's input buffer.",
+               "provider": "JFrog"
+            }
+         },
+         "edited": "2022-10-27T21:35:05+02:00",
+         "is_source_root": false,
+         "is_high_profile": false,
+         "component_physical_paths": [
+            ""
+         ]
+      },
+      {
+         "id": "XRAY-76992",
+         "severity": "Low",
+         "severity_source": "Ubuntu CVE Tracker",
+         "pkg_type": "debian",
+         "summary": "An issue has been found in libpng 1.6.34. It is a SEGV in the function png_free_data in png.c, related to the recommended error handling for png_read_image.",
+         "issue_type": "security",
+         "provider": "JFrog",
+         "component": "ubuntu:bionic:libpng16-16",
+         "source_id": "deb://ubuntu:bionic:libpng16-16",
+         "source_comp_id": "deb://ubuntu:bionic:libpng16-16:1.6.34-1ubuntu0.18.04.2",
+         "component_versions": {
+            "id": "ubuntu:bionic:libpng1.6",
+            "vulnerable_versions": [
+               "All Versions"
+            ],
+            "more_details": {
+               "cves": [
+                  {
+                     "cve": "CVE-2018-14048",
+                     "cwe": [
+                        "NVD-CWE-noinfo"
+                     ],
+                     "cvss_v2": "4.3/CVSS:2.0/AV:N/AC:M/Au:N/C:N/I:N/A:P",
+                     "cvss_v3": "6.5/CVSS:3.1/AV:N/AC:L/PR:N/UI:R/S:U/C:N/I:N/A:H"
+                  }
+               ],
+               "description": "An issue has been found in libpng 1.6.34. It is a SEGV in the function png_free_data in png.c, related to the recommended error handling for png_read_image.",
+               "provider": "JFrog"
+            }
+         },
+         "edited": "2023-01-27T20:35:16+01:00",
+         "is_source_root": false,
+         "is_high_profile": false,
+         "component_physical_paths": [
+            ""
+         ]
+      },
+      {
+         "id": "XRAY-91441",
+         "severity": "Low",
+         "severity_source": "Ubuntu CVE Tracker",
+         "pkg_type": "debian",
+         "summary": "There is a heap-based buffer over-read in the fmt_entry function in tinfo/comp_hash.c in the terminfo library in ncurses before 6.1-20191012.",
+         "issue_type": "security",
+         "provider": "JFrog",
+         "component": "ubuntu:bionic:ncurses-base",
+         "source_id": "deb://ubuntu:bionic:ncurses-base",
+         "source_comp_id": "deb://ubuntu:bionic:ncurses-base:6.1-1ubuntu1.18.04.1",
+         "component_versions": {
+            "id": "ubuntu:bionic:ncurses",
+            "vulnerable_versions": [
+               "All Versions"
+            ],
+            "more_details": {
+               "cves": [
+                  {
+                     "cve": "CVE-2019-17595",
+                     "cwe": [
+                        "CWE-125"
+                     ],
+                     "cvss_v2": "5.8/CVSS:2.0/AV:N/AC:M/Au:N/C:P/I:N/A:P",
+                     "cvss_v3": "5.4/CVSS:3.1/AV:N/AC:L/PR:N/UI:R/S:U/C:L/I:N/A:L"
+                  }
+               ],
+               "description": "There is a heap-based buffer over-read in the fmt_entry function in tinfo/comp_hash.c in the terminfo library in ncurses before 6.1-20191012.",
+               "provider": "JFrog"
+            }
+         },
+         "edited": "2022-10-27T21:35:43+02:00",
+         "is_source_root": false,
+         "is_high_profile": false,
+         "component_physical_paths": [
+            ""
+         ]
+      },
+      {
+         "id": "XRAY-86893",
+         "severity": "Low",
+         "severity_source": "Ubuntu CVE Tracker",
+         "pkg_type": "debian",
+         "summary": "In PCRE 8.41, the OP_KETRMAX feature in the match function in pcre_exec.c allows stack exhaustion (uncontrolled recursion) when processing a crafted regular expression.",
+         "issue_type": "security",
+         "provider": "JFrog",
+         "component": "ubuntu:bionic:libpcre3",
+         "source_id": "deb://ubuntu:bionic:libpcre3",
+         "source_comp_id": "deb://ubuntu:bionic:libpcre3:2:8.39-9ubuntu0.1",
+         "component_versions": {
+            "id": "ubuntu:bionic:pcre3",
+            "vulnerable_versions": [
+               "All Versions"
+            ],
+            "more_details": {
+               "cves": [
+                  {
+                     "cve": "CVE-2017-11164",
+                     "cwe": [
+                        "CWE-674"
+                     ],
+                     "cvss_v2": "7.8/CVSS:2.0/AV:N/AC:L/Au:N/C:N/I:N/A:C",
+                     "cvss_v3": "7.5/CVSS:3.0/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:H"
+                  }
+               ],
+               "description": "In PCRE 8.41, the OP_KETRMAX feature in the match function in pcre_exec.c allows stack exhaustion (uncontrolled recursion) when processing a crafted regular expression.",
+               "provider": "JFrog"
+            }
+         },
+         "edited": "2022-10-27T21:35:56+02:00",
+         "is_source_root": false,
+         "is_high_profile": false,
+         "component_physical_paths": [
+            ""
+         ]
+      },
+      {
+         "id": "XRAY-47117",
+         "severity": "Low",
+         "severity_source": "Ubuntu CVE Tracker",
+         "pkg_type": "debian",
+         "summary": "The pop_fail_stack function in the GNU C Library (aka glibc or libc6) allows context-dependent attackers to cause a denial of service (assertion failure and application crash) via vectors related to extended regular expression processing.",
+         "issue_type": "security",
+         "provider": "JFrog",
+         "component": "ubuntu:bionic:libc-bin",
+         "source_id": "deb://ubuntu:bionic:libc-bin",
+         "source_comp_id": "deb://ubuntu:bionic:libc-bin:2.27-3ubuntu1.6",
+         "component_versions": {
+            "id": "ubuntu:bionic:glibc",
+            "vulnerable_versions": [
+               "All Versions"
+            ],
+            "more_details": {
+               "cves": [
+                  {
+                     "cve": "CVE-2015-8985",
+                     "cwe": [
+                        "CWE-19"
+                     ],
+                     "cvss_v2": "4.3/CVSS:2.0/AV:N/AC:M/Au:N/C:N/I:N/A:P",
+                     "cvss_v3": "5.9/CVSS:3.1/AV:N/AC:H/PR:N/UI:N/S:U/C:N/I:N/A:H"
+                  }
+               ],
+               "description": "The pop_fail_stack function in the GNU C Library (aka glibc or libc6) allows context-dependent attackers to cause a denial of service (assertion failure and application crash) via vectors related to extended regular expression processing.",
+               "provider": "JFrog"
+            }
+         },
+         "edited": "2022-06-25T21:35:12+02:00",
+         "is_source_root": false,
+         "is_high_profile": false,
+         "component_physical_paths": [
+            ""
+         ]
+      },
+      {
+         "id": "XRAY-47117",
+         "severity": "Low",
+         "severity_source": "Ubuntu CVE Tracker",
+         "pkg_type": "debian",
+         "summary": "The pop_fail_stack function in the GNU C Library (aka glibc or libc6) allows context-dependent attackers to cause a denial of service (assertion failure and application crash) via vectors related to extended regular expression processing.",
+         "issue_type": "security",
+         "provider": "JFrog",
+         "component": "ubuntu:bionic:libc6",
+         "source_id": "deb://ubuntu:bionic:libc6",
+         "source_comp_id": "deb://ubuntu:bionic:libc6:2.27-3ubuntu1.6",
+         "component_versions": {
+            "id": "ubuntu:bionic:glibc",
+            "vulnerable_versions": [
+               "All Versions"
+            ],
+            "more_details": {
+               "cves": [
+                  {
+                     "cve": "CVE-2015-8985",
+                     "cwe": [
+                        "CWE-19"
+                     ],
+                     "cvss_v2": "4.3/CVSS:2.0/AV:N/AC:M/Au:N/C:N/I:N/A:P",
+                     "cvss_v3": "5.9/CVSS:3.1/AV:N/AC:H/PR:N/UI:N/S:U/C:N/I:N/A:H"
+                  }
+               ],
+               "description": "The pop_fail_stack function in the GNU C Library (aka glibc or libc6) allows context-dependent attackers to cause a denial of service (assertion failure and application crash) via vectors related to extended regular expression processing.",
+               "provider": "JFrog"
+            }
+         },
+         "edited": "2022-06-25T21:35:12+02:00",
+         "is_source_root": false,
+         "is_high_profile": false,
+         "component_physical_paths": [
+            ""
+         ]
+      },
+      {
+         "id": "XRAY-47117",
+         "severity": "Low",
+         "severity_source": "Ubuntu CVE Tracker",
+         "pkg_type": "debian",
+         "summary": "The pop_fail_stack function in the GNU C Library (aka glibc or libc6) allows context-dependent attackers to cause a denial of service (assertion failure and application crash) via vectors related to extended regular expression processing.",
+         "issue_type": "security",
+         "provider": "JFrog",
+         "component": "ubuntu:bionic:multiarch-support",
+         "source_id": "deb://ubuntu:bionic:multiarch-support",
+         "source_comp_id": "deb://ubuntu:bionic:multiarch-support:2.27-3ubuntu1.6",
+         "component_versions": {
+            "id": "ubuntu:bionic:glibc",
+            "vulnerable_versions": [
+               "All Versions"
+            ],
+            "more_details": {
+               "cves": [
+                  {
+                     "cve": "CVE-2015-8985",
+                     "cwe": [
+                        "CWE-19"
+                     ],
+                     "cvss_v2": "4.3/CVSS:2.0/AV:N/AC:M/Au:N/C:N/I:N/A:P",
+                     "cvss_v3": "5.9/CVSS:3.1/AV:N/AC:H/PR:N/UI:N/S:U/C:N/I:N/A:H"
+                  }
+               ],
+               "description": "The pop_fail_stack function in the GNU C Library (aka glibc or libc6) allows context-dependent attackers to cause a denial of service (assertion failure and application crash) via vectors related to extended regular expression processing.",
+               "provider": "JFrog"
+            }
+         },
+         "edited": "2022-06-25T21:35:12+02:00",
+         "is_source_root": false,
+         "is_high_profile": false,
+         "component_physical_paths": [
+            ""
+         ]
+      },
+      {
+         "id": "XRAY-68985",
+         "severity": "Low",
+         "severity_source": "Ubuntu CVE Tracker",
+         "pkg_type": "debian",
+         "summary": "LibTIFF 4.0.9 has a NULL pointer dereference in the jpeg_fdct_16x16 function in jfdctint.c.",
+         "issue_type": "security",
+         "provider": "JFrog",
+         "component": "ubuntu:bionic:libtiff5",
+         "source_id": "deb://ubuntu:bionic:libtiff5",
+         "source_comp_id": "deb://ubuntu:bionic:libtiff5:4.0.9-5ubuntu0.10",
+         "component_versions": {
+            "id": "ubuntu:bionic:tiff",
+            "vulnerable_versions": [
+               "All Versions"
+            ],
+            "more_details": {
+               "cves": [
+                  {
+                     "cve": "CVE-2018-10126",
+                     "cwe": [
+                        "CWE-476"
+                     ],
+                     "cvss_v2": "4.3/CVSS:2.0/AV:N/AC:M/Au:N/C:N/I:N/A:P",
+                     "cvss_v3": "6.5/CVSS:3.1/AV:N/AC:L/PR:N/UI:R/S:U/C:N/I:N/A:H"
+                  }
+               ],
+               "description": "LibTIFF 4.0.9 has a NULL pointer dereference in the jpeg_fdct_16x16 function in jfdctint.c.",
+               "provider": "JFrog"
+            }
+         },
+         "edited": "2022-10-27T21:35:10+02:00",
+         "is_source_root": false,
+         "is_high_profile": false,
+         "component_physical_paths": [
+            ""
+         ]
+      }
+   ]
+}

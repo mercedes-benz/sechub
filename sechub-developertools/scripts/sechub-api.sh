@@ -565,7 +565,14 @@ function sechub_project_delete {
 
 
 function sechub_project_details {
-  curl_with_sechub_auth -i -X GET -H 'Content-Type: application/json' "$SECHUB_SERVER/api/admin/project/$1" | $RESULT_FILTER | $JSON_FORMATTER
+  local project_not_found_pattern="\"status\":404"
+  local result=$(curl_with_sechub_auth -i -X GET -H 'Content-Type: application/json' "$SECHUB_SERVER/api/admin/project/$1" | $RESULT_FILTER)
+  echo "$result" | $JSON_FORMATTER
+
+  if echo $result | grep "$project_not_found_pattern" >/dev/null 2>&1 ; then
+    # Exit with non-zero because project does not exist
+    exit 1
+  fi
 }
 
 
@@ -800,7 +807,7 @@ function generate_sechub_user_signup_data {
 {
   "apiVersion":"$SECHUB_API_VERSION",
   "userId":"$1",
-  "emailAdress":"$2"
+  "emailAddress":"$2"
 }
 EOF
 }

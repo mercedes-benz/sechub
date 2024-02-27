@@ -24,7 +24,7 @@ dependencies {
     testImplementation library.apache_commons_io
 }
 
-version = VersionData.getCheckmarxWrapperVersion()
+version = versionData.getCheckmarxWrapperVersion()
 
 bootJar {
 

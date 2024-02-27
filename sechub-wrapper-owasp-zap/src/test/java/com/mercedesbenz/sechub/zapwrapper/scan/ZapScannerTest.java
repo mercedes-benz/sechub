@@ -53,7 +53,6 @@ import com.mercedesbenz.sechub.zapwrapper.config.data.ZapFullRuleset;
 import com.mercedesbenz.sechub.zapwrapper.helper.IncludeExcludeToZapURLHelper;
 import com.mercedesbenz.sechub.zapwrapper.helper.ZapPDSEventHandler;
 import com.mercedesbenz.sechub.zapwrapper.helper.ZapProductMessageHelper;
-import com.mercedesbenz.sechub.zapwrapper.helper.ZapURLType;
 import com.mercedesbenz.sechub.zapwrapper.internal.scan.ClientApiFacade;
 import com.mercedesbenz.sechub.zapwrapper.scan.ZapScanner.UserInformation;
 import com.mercedesbenz.sechub.zapwrapper.util.SystemUtil;
@@ -280,11 +279,11 @@ class ZapScannerTest {
 
         URL targetUrl = sechubWebScanConfig.getUrl().toURL();
         List<String> includesList = sechubWebScanConfig.getIncludes().get();
-        Set<URL> includes = new HashSet<>(helper.createListOfUrls(ZapURLType.INCLUDE, targetUrl, includesList, new ArrayList<>()));
+        Set<String> includes = new HashSet<>(helper.createListOfUrls(targetUrl, includesList));
         when(scanContext.getZapURLsIncludeSet()).thenReturn(includes);
 
         List<String> excludesList = sechubWebScanConfig.getExcludes().get();
-        Set<URL> excludes = new HashSet<>(helper.createListOfUrls(ZapURLType.EXCLUDE, targetUrl, excludesList, new ArrayList<>()));
+        Set<String> excludes = new HashSet<>(helper.createListOfUrls(targetUrl, excludesList));
         when(scanContext.getZapURLsExcludeSet()).thenReturn(excludes);
 
         ApiResponse response = mock(ApiResponse.class);
@@ -339,6 +338,118 @@ class ZapScannerTest {
 
         /* test */
         verify(clientApiFacade, times(1)).importOpenApiFile(any(), any(), any());
+    }
+
+    @Test
+    void import_client_certificate_file_but_client_certificate_file_is_null_api_facade_is_never_called() throws ClientApiException {
+        /* prepare */
+        ApiResponse response = mock(ApiResponse.class);
+        when(clientApiFacade.importPkcs12ClientCertificate(any(), any())).thenReturn(response);
+
+        /* execute */
+        scannerToTest.importClientCertificate();
+
+        /* test */
+        verify(clientApiFacade, never()).importOpenApiFile(any(), any(), any());
+    }
+
+    @Test
+    void try_import_without_client_certificate_file_api_facade_is_never_called() throws ClientApiException {
+        /* prepare */
+        String jsonWithClientCertConfig = """
+                {
+                  "apiVersion" : "1.0",
+                  "project" : "example_project",
+                  "webScan" : {
+                    "url" : "https://my-app.com"
+                  }
+                }
+                """;
+        SecHubWebScanConfiguration sechubWebScanConfig = SecHubScanConfiguration.createFromJSON(jsonWithClientCertConfig).getWebScan().get();
+
+        File clientCertificateFile = new File("backend-cert.p12");
+
+        when(scanContext.getClientCertificateFile()).thenReturn(clientCertificateFile);
+        when(scanContext.getSecHubWebScanConfiguration()).thenReturn(sechubWebScanConfig);
+
+        ApiResponse response = mock(ApiResponse.class);
+        when(clientApiFacade.importPkcs12ClientCertificate(any(), any())).thenReturn(response);
+
+        /* execute */
+        scannerToTest.importClientCertificate();
+
+        /* test */
+        verify(clientApiFacade, never()).importPkcs12ClientCertificate(any(), any());
+    }
+
+    @Test
+    void import_client_certificate_file_api_facade_is_called_once() throws ClientApiException {
+        /* prepare */
+        String jsonWithCertPassword = """
+                {
+                  "apiVersion" : "1.0",
+                  "project" : "example_project",
+                  "webScan" : {
+                    "url" : "https://my-app.com",
+                    "clientCertificate" : {
+                      "password" : "secret-password",
+                      "use" : [ "client-certificate-file-reference" ]
+                    }
+                  }
+                }
+                """;
+
+        SecHubWebScanConfiguration sechubWebScanConfig = SecHubScanConfiguration.createFromJSON(jsonWithCertPassword).getWebScan().get();
+
+        File clientCertificateFile = mock(File.class);
+
+        when(scanContext.getClientCertificateFile()).thenReturn(clientCertificateFile);
+        when(scanContext.getSecHubWebScanConfiguration()).thenReturn(sechubWebScanConfig);
+
+        when(clientCertificateFile.exists()).thenReturn(true);
+
+        ApiResponse response = mock(ApiResponse.class);
+        when(clientApiFacade.importPkcs12ClientCertificate(any(), any())).thenReturn(response);
+
+        /* execute */
+        scannerToTest.importClientCertificate();
+
+        /* test */
+        verify(clientApiFacade, times(1)).importPkcs12ClientCertificate(any(), any());
+    }
+
+    @Test
+    void import_client_certificate_file_but_without_password_api_facade_is_called_once() throws ClientApiException {
+        /* prepare */
+        String jsonWithoutCertPassword = """
+                {
+                  "apiVersion" : "1.0",
+                  "project" : "example_project",
+                  "webScan" : {
+                    "url" : "https://my-app.com",
+                    "clientCertificate" : {
+                      "use" : [ "client-certificate-file-reference" ]
+                    }
+                  }
+                }
+                """;
+
+        SecHubWebScanConfiguration sechubWebScanConfig = SecHubScanConfiguration.createFromJSON(jsonWithoutCertPassword).getWebScan().get();
+
+        File clientCertificateFile = mock(File.class);
+
+        when(scanContext.getClientCertificateFile()).thenReturn(clientCertificateFile);
+        when(scanContext.getSecHubWebScanConfiguration()).thenReturn(sechubWebScanConfig);
+        when(clientCertificateFile.exists()).thenReturn(true);
+
+        ApiResponse response = mock(ApiResponse.class);
+        when(clientApiFacade.importPkcs12ClientCertificate(any(), any())).thenReturn(response);
+
+        /* execute */
+        scannerToTest.importClientCertificate();
+
+        /* test */
+        verify(clientApiFacade, times(1)).importPkcs12ClientCertificate(any(), any());
     }
 
     @ParameterizedTest

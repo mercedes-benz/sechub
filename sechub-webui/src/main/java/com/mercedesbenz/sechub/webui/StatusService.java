@@ -19,9 +19,9 @@ public class StatusService {
 
         SecHubStatus status = null;
         try {
-        	// refresh the status before retrieving it
+            // refresh the status before retrieving it
             client.triggerRefreshOfSecHubSchedulerStatus();
-            
+
             status = client.fetchSecHubStatus();
         } catch (SecHubClientException e) {
             e.printStackTrace();

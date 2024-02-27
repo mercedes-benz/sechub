@@ -7,8 +7,10 @@ import static org.junit.jupiter.api.Assertions.*;
 
 import java.io.IOException;
 import java.nio.file.Path;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -24,6 +26,7 @@ import com.mercedesbenz.sechub.systemtest.config.RuntimeVariable;
 import com.mercedesbenz.sechub.systemtest.config.SecHubConfigurationDefinition;
 import com.mercedesbenz.sechub.systemtest.config.SystemTestConfiguration;
 import com.mercedesbenz.sechub.systemtest.runtime.SystemTestResult;
+import com.mercedesbenz.sechub.systemtest.runtime.SystemTestRunResult;
 import com.mercedesbenz.sechub.systemtest.runtime.SystemTestRuntimeException;
 import com.mercedesbenz.sechub.systemtest.runtime.launch.ProcessContainerFailedException;
 import com.mercedesbenz.sechub.test.TestFileReader;
@@ -53,6 +56,32 @@ class SystemTestDryRunTest {
     }
 
     @Test
+    void faked_xray_can_be_executed_without_errors() throws IOException {
+        String path = "./src/test/resources/systemtest_xray_licensescan_example.json";
+        String json = TestFileReader.loadTextFile(path);
+
+        SystemTestConfiguration configuration = JSONConverter.get().fromJSON(SystemTestConfiguration.class, json);
+
+        /* @formatter:off */
+
+        /* execute */
+        SystemTestResult result = systemTestApi.
+                    runSystemTests(params().
+                                        localRun().
+                                        dryRun().
+                                        testConfiguration(configuration).
+                                        additionalResourcesPath(ADDITIONAL_RESOURCES_PATH).
+                                        pdsSolutionPath(FAKED_PDS_SOLUTIONS_PATH).
+                                    build());
+        /* @formatter:on */
+
+        /* test */
+        if (result.hasFailedTests()) {
+            fail("The execution failed:" + result.toString());
+        }
+    }
+
+    @Test
     void faked_webscan_can_be_executed_without_errors_and_contains_expected_data_in_configuration() throws IOException {
 
         /* @formatter:off */
@@ -66,12 +95,25 @@ class SystemTestDryRunTest {
                         endProject().
                     endSecHub().
                 endLocalSetup().
+                test("at-least-one-testentry").
+                    runSecHubJob().
+                        secretScan().endScan().
+                        uploads().addBinaryUploadWithDefaultRef("/path").
+                        endUploads().
+                    endRunSecHub().
+                endTest().
                 build();
-        /* @formatter:on */
 
         /* execute */
-        SystemTestResult result = systemTestApi.runSystemTests(params().localRun().dryRun().testConfiguration(configuration)
-                .additionalResourcesPath(ADDITIONAL_RESOURCES_PATH).pdsSolutionPath(FAKED_PDS_SOLUTIONS_PATH).build());
+        SystemTestResult result = systemTestApi.
+                    runSystemTests(params().
+                                        localRun().
+                                        dryRun().
+                                        testConfiguration(configuration).
+                                        additionalResourcesPath(ADDITIONAL_RESOURCES_PATH).
+                                        pdsSolutionPath(FAKED_PDS_SOLUTIONS_PATH).
+                                    build());
+        /* @formatter:on */
 
         /* test */
         if (result.hasFailedTests()) {
@@ -237,6 +279,197 @@ class SystemTestDryRunTest {
         String preparationOutputFileContent = TestFileReader.loadTextFile(preparationOutputFile);
 
         assertEquals("Output from prepare-test1.sh", preparationOutputFileContent);
+
+        /* @formatter:on */
+    }
+
+    @Test
+    void faked_test_can_be_executed_when_testsToRun_not_defined() throws IOException {
+        /* @formatter:off */
+
+        /* prepare */
+        SystemTestConfiguration configuration = configure().
+
+                localSetup().
+                endLocalSetup().
+
+                test("correct-testname").
+                    runSecHubJob().
+                        webScan().
+                            url("https://example.com").
+                        endScan().
+                        uploads().
+
+                        endUploads().
+                    endRunSecHub().
+                endTest().
+
+                build();
+
+
+        /* execute */
+        SystemTestResult result = systemTestApi.runSystemTests(
+                params().
+                    localRun().
+                    dryRun().
+                    testConfiguration(configuration).
+                build()
+         );
+
+        /* test */
+        if (result.hasFailedTests()) {
+            fail("The execution failed:"+result.toString());
+        }
+
+        /* @formatter:on */
+    }
+
+    @Test
+    void faked_test_can_be_executed_when_testsToRun_contains_correct_testname() throws IOException {
+        /* @formatter:off */
+
+        /* prepare */
+        SystemTestConfiguration configuration = configure().
+
+                localSetup().
+                endLocalSetup().
+
+                test("correct-testname").
+                    runSecHubJob().
+                        webScan().
+                            url("https://example.com").
+                        endScan().
+                        uploads().
+
+                        endUploads().
+                    endRunSecHub().
+                endTest().
+
+                build();
+
+
+        /* execute */
+        SystemTestResult result = systemTestApi.runSystemTests(
+                params().
+                localRun().
+                dryRun().
+                testsToRun("correct-testname").
+                testConfiguration(configuration).
+                build()
+                );
+
+        /* test */
+        if (result.hasFailedTests()) {
+            fail("The execution failed:"+result.toString());
+        }
+
+        /* @formatter:on */
+    }
+
+    @Test
+    void faked_test_cannot_be_executed_when_wrong_test_name_used_for_runtests() throws IOException {
+        /* @formatter:off */
+
+        /* prepare */
+        SystemTestConfiguration configuration = configure().
+
+                localSetup().
+                endLocalSetup().
+
+                test("correct-testname").
+                    runSecHubJob().
+                        webScan().
+                        url("https://example.com").
+                        endScan().
+                        uploads().
+
+                        endUploads().
+                    endRunSecHub().
+                endTest().
+
+                build();
+
+
+        /* execute */
+        SystemTestResult result = systemTestApi.runSystemTests(
+                params().
+                localRun().
+                dryRun().
+                testsToRun("wrong-testname").
+                testConfiguration(configuration).
+                build()
+                );
+
+        /* test */
+        if (!result.hasFailedTests()) {
+            fail("The execution has not failed:"+result.toString());
+        }
+        Set<SystemTestRunResult> runs = result.getRuns();
+        assertEquals(1, runs.size());
+        Iterator<SystemTestRunResult> iterator = runs.iterator();
+
+        // check test result
+        SystemTestRunResult run1 = iterator.next();
+        assertEquals("Test 'wrong-testname' is not defined!", run1.getFailure().getMessage());
+
+        // check problem
+        assertTrue(result.hasProblems());
+        Set<String> problems = result.getProblems();
+        assertEquals(1, problems.size());
+        String problem1 = problems.iterator().next();
+        assertEquals("No tests were executed (0/1)", problem1);
+
+        /* @formatter:on */
+    }
+
+    @Test
+    void faked_test_cannot_be_executed_when_one_correct_and_one_wrong_test_name_used_for_runtests() throws IOException {
+        /* @formatter:off */
+
+        /* prepare */
+        SystemTestConfiguration configuration = configure().
+
+                localSetup().
+                endLocalSetup().
+
+                test("correct-testname").
+                runSecHubJob().
+                webScan().
+                url("https://example.com").
+                endScan().
+                uploads().
+
+                endUploads().
+                endRunSecHub().
+                endTest().
+
+                build();
+
+
+        /* execute */
+        SystemTestResult result = systemTestApi.runSystemTests(
+                params().
+                localRun().
+                dryRun().
+                testsToRun("correct-testname", "wrong-testname").
+                testConfiguration(configuration).
+                build()
+                );
+
+        /* test */
+        if (!result.hasFailedTests()) {
+            fail("The execution has not failed:"+result.toString());
+        }
+        Set<SystemTestRunResult> runs = result.getRuns();
+        assertEquals(2, runs.size());
+        Iterator<SystemTestRunResult> iterator = runs.iterator();
+
+        SystemTestRunResult run1 = iterator.next();
+        assertFalse(run1.hasFailed());
+
+        SystemTestRunResult run2 = iterator.next();
+        assertTrue(run2.hasFailed());
+        assertEquals("Test 'wrong-testname' is not defined!", run2.getFailure().getMessage());
 
         /* @formatter:on */
     }

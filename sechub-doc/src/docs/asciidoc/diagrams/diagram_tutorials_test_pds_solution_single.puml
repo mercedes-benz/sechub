@@ -1,0 +1,10 @@
+@startuml
+' SPDX-License-Identifier: MIT
+
+skinparam actorStyle awesome
+actor User
+participant "PDS + MyProduct" as pds
+User -> pds : Uploads files
+pds -> User : Gets result
+
+@enduml

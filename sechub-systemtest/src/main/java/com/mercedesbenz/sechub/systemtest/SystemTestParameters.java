@@ -1,6 +1,9 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.systemtest;
 
+import java.util.LinkedHashSet;
+import java.util.Set;
+
 import com.mercedesbenz.sechub.systemtest.config.SystemTestConfiguration;
 
 public class SystemTestParameters {
@@ -11,6 +14,7 @@ public class SystemTestParameters {
     private String pathToWorkspace;
     private String pathToAdditionalResources;
     private boolean localRun = true;// default always local
+    private Set<String> testsToRun = new LinkedHashSet<>();
 
     private boolean dryRun;
 
@@ -45,6 +49,10 @@ public class SystemTestParameters {
 
     public boolean isDryRun() {
         return dryRun;
+    }
+
+    public Set<String> getTestsToRun() {
+        return testsToRun;
     }
 
     public static SystemTestParametersBuilder builder() {
@@ -112,10 +120,22 @@ public class SystemTestParameters {
             return this;
         }
 
+        public SystemTestParametersBuilder testsToRun(String... testsToRun) {
+            if (testsToRun == null) {
+                return this;
+            }
+            for (String testToRun : testsToRun) {
+                if (testToRun == null) {
+                    continue;
+                }
+                parameter.testsToRun.add(testToRun);
+            }
+            return this;
+        }
+
         public SystemTestParameters build() {
             return parameter;
         }
-
     }
 
 }

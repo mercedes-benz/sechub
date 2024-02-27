@@ -10,6 +10,7 @@ import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -34,6 +35,10 @@ public class SecHubConfigurationModelValidator {
 
     private static final int MAX_METADATA_LABEL_VALUE_LENGTH = 150;
     private static final int MAX_METADATA_LABEL_AMOUNT = 20;
+
+    private static final int MAX_LIST_SIZE_INCLUDES = 500;
+    private static final int MAX_LIST_SIZE_EXCLUDES = 500;
+    private static final int MAX_LENGTH_PATH_SIZE = 2048;
 
     SecHubConfigurationModelSupport modelSupport = new SecHubConfigurationModelSupport();
 
@@ -262,16 +267,34 @@ public class SecHubConfigurationModelValidator {
         if (SimpleNetworkUtils.isURINullOrEmpty(uri)) {
 
             context.result.addError(WEB_SCAN_HAS_NO_URL_DEFINED);
+            return;
 
         } else if (!SimpleNetworkUtils.isHttpProtocol(uri)) {
 
             String schema = SimpleStringUtils.truncateWhenTooLong(uri.getScheme(), 5);
             context.result.addError(WEB_SCAN_URL_HAS_UNSUPPORTED_SCHEMA, "Schema was: " + schema + " but supported is only HTTP/HTTPS");
+            return;
         }
 
+        handleIncludesAndExcludes(context, webScan);
         handleApi(context, webScan);
         handleHTTPHeaders(context, webScan);
 
+    }
+
+    private void handleIncludesAndExcludes(InternalValidationContext context, SecHubWebScanConfiguration webScan) {
+        String targetUrl = webScan.getUrl().toString();
+        WebScanConfigurationModelValidationContext webScanContext = new WebScanConfigurationModelValidationContext(context,
+                addTrailingSlashToUrlWhenMissingAndLowerCase(targetUrl), Collections.emptyList());
+
+        if (webScan.getExcludes().isPresent()) {
+            List<String> excludes = webScan.getExcludes().get();
+            validateExcludesOrIncludes(webScanContext, excludes, false);
+        }
+        if (webScan.getIncludes().isPresent()) {
+            List<String> includes = webScan.getIncludes().get();
+            validateExcludesOrIncludes(webScanContext, includes, true);
+        }
     }
 
     private void handleApi(InternalValidationContext context, SecHubWebScanConfiguration webScan) {
@@ -298,6 +321,66 @@ public class SecHubConfigurationModelValidator {
         validateUrlsAreValid(webScanContext);
 
         validateHeaderOnlyForUrlNotDuplicated(webScanContext);
+    }
+
+    private void validateExcludesOrIncludes(WebScanConfigurationModelValidationContext webScanContext, List<String> urlList, boolean include) {
+        String term = "excludes";
+        SecHubConfigurationModelValidationError validationError = WEB_SCAN_EXCLUDE_INVALID;
+        int maxListSize = MAX_LIST_SIZE_EXCLUDES;
+
+        if (include) {
+            term = "includes";
+            validationError = WEB_SCAN_INCLUDE_INVALID;
+            maxListSize = MAX_LIST_SIZE_INCLUDES;
+        }
+
+        if (urlList.size() > maxListSize) {
+            webScanContext.markAsFailed(validationError, "A maximum of " + maxListSize + " " + term + " are allowed.");
+            return;
+        }
+
+        for (String subUrlPattern : urlList) {
+            if (subUrlPattern.length() > MAX_LENGTH_PATH_SIZE) {
+                subUrlPattern = subUrlPattern.substring(0, MAX_LENGTH_PATH_SIZE);
+                webScanContext.markAsFailed(validationError, "Maximum URL length is " + MAX_LENGTH_PATH_SIZE + " characters. The first " + MAX_LENGTH_PATH_SIZE
+                        + " characters of the URL in question: " + subUrlPattern);
+                return;
+            }
+            // we do not return if one include/exclude was wrong,
+            // to be able to tell the user all wrong includes and excludes
+            validateIncludeOrExcludePattern(webScanContext, subUrlPattern, include);
+        }
+    }
+
+    private void validateIncludeOrExcludePattern(WebScanConfigurationModelValidationContext webScanContext, String subUrlPattern, boolean include) {
+        if (subUrlPattern.contains("//")) {
+            if (include) {
+                webScanContext.markAsFailed(WEB_SCAN_INCLUDE_INVALID, "The include: " + subUrlPattern + " contains '//'!");
+            } else {
+                webScanContext.markAsFailed(WEB_SCAN_EXCLUDE_INVALID, "The exclude: " + subUrlPattern + " contains '//'!");
+            }
+            return;
+        }
+
+        String urlToCheck = webScanContext.sanatizedTargetUrl;
+        if (subUrlPattern.startsWith("/")) {
+            urlToCheck += subUrlPattern.substring(1);
+        } else {
+            urlToCheck += subUrlPattern;
+        }
+
+        String createdIncludeOrExcludeUrl = createUrlWithoutWildCards(urlToCheck);
+        try {
+            new URI(createdIncludeOrExcludeUrl).toURL();
+        } catch (URISyntaxException | MalformedURLException e) {
+            if (include) {
+                webScanContext.markAsFailed(WEB_SCAN_INCLUDE_INVALID,
+                        "The include: " + subUrlPattern + " does create an invalid URL without the wild cards : " + createdIncludeOrExcludeUrl);
+            } else {
+                webScanContext.markAsFailed(WEB_SCAN_EXCLUDE_INVALID,
+                        "The exclude: " + subUrlPattern + " does create an invalid URL without the wild cards : " + createdIncludeOrExcludeUrl);
+            }
+        }
     }
 
     private void validateHeaderOnlyForUrlNotDuplicated(WebScanConfigurationModelValidationContext webScanContext) {
@@ -375,14 +458,14 @@ public class SecHubConfigurationModelValidator {
         return resultUrl.toLowerCase();
     }
 
-    private String createLowerCasedUrlAndAddTrailingSlashIfMissing(String onlyForUrl) {
+    private String createLowerCasedUrlAndAddTrailingSlashIfMissing(String url) {
         // ensure "https://mywebapp.com/" and "https://mywebapp.com" are accepted as the
         // same. This way we can check if this URL contains our scan target URL.
-        return addTrailingSlashToUrlWhenMissingAndLowerCase(onlyForUrl);
+        return addTrailingSlashToUrlWhenMissingAndLowerCase(url);
     }
 
-    private String createUrlWithoutWildCards(String onlyForUrl) {
-        return PATTERN_QUOTED_WEBSCAN_URL_WILDCARD_SYMBOL.matcher(onlyForUrl).replaceAll("");
+    private String createUrlWithoutWildCards(String url) {
+        return PATTERN_QUOTED_WEBSCAN_URL_WILDCARD_SYMBOL.matcher(url).replaceAll("");
     }
 
     private void handleInfraScanConfiguration(InternalValidationContext context) {

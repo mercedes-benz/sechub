@@ -1,0 +1,33 @@
+// SPDX-License-Identifier: MIT
+=== Integrate new SecHub module
+[NOTE]
+=====
+In the following the necessary steps to integrate a new module in the SecHub project are described.
+SecHub uses Gradle and the Gradle wrapper.
+=====
+
+. Create new SecHub module
++
+Create your project structure like this: sechub/<your module name>/src/main/java/com.mercedesbenz.sechub.<your package name>/<your source code> analogue your test are placed in the test directory
+
+. Modify your build.gradle file
++
+Copy the build.gradle code from another similar project (e.g. a wrapper module) +
+Add your main class to the manifest and modify all project specific variables. +
+
+. Modify dependencies in your build.gradle +
+Add the dependencies you need, they are global managed in sechub/gradle/libraries.gradle, you can add new dependencies to the libraries.gradle or use existing dependencies +
+
+. Create a getVersion method if needed +
+The getVersion Method needs to be implemented in buildSrc/src/main/groovy/VersionData.groovy +
+Then you can use it in your build.gradle eg.: version = versionData.getMyNewProductVersion()
+
+. Implement your build tasks in sechub/gradle/build-versioning.gradle
+
+. Include your task in sechub/settings.gradle
+
+. Test if your task is listed with executing ./gradlew tasks +
+You should see your newly created task now +
+
+. Build your module +
+Run your task defined in your build.gradle with ./gradlew <my new task>

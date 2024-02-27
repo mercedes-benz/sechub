@@ -19,7 +19,7 @@ projectType = [
                project(':sechub-storage-core'),
                project(':sechub-wrapper-owasp-zap'),
                project(':sechub-pds-commons-core'),
-               
+               project(':sechub-wrapper-xray'),
             ],
             
             publishedLibraries: [
@@ -92,7 +92,7 @@ projectType = [
                    project(':sechub-wrapper-checkmarx'),
             ],
             
-            springBootWebUIProjects:[],
+            springBootWebUIProjects:[], // is filled later programmatically
 
             /* documentation projects */
             springDocProjects: [
@@ -109,6 +109,7 @@ projectType = [
                     project(':sechub-pds-solutions'),
 					project(':sechub-solution'),
 					project(':sechub-solutions-shared'),
+					project(':sechub-wrapper-xray'),
 					project(':sechub-webui-solution'),
             ],
 

@@ -26,7 +26,6 @@ public class TestUtil {
 
     private static final String SECHUB_KEEP_TEMPFILES = "SECHUB_KEEP_TEMPFILES";
     private static final String SECHUB_TEST_TRACEMODE = "SECHUB_TEST_TRACEMODE";
-    private static final String SECHUB_AUTO_GENERATE_CSS_FRAGMENTS_ON_HTML_TESTS = "SECHUB_AUTO_GENERATE_CSS_FRAGMENTS_ON_HTML_TESTS";
 
     public static <E extends Exception, R> FailUntilAmountOfRunsReached<E, R> createFailUntil(int amount, E failure, R result) {
         return new FailUntilAmountOfRunsReached<>(amount, failure, result);
@@ -122,16 +121,6 @@ public class TestUtil {
             throw new IllegalStateException("Testcase szenario corrupt / should not happen", e);
         }
 
-    }
-
-    /**
-     *
-     * * @return true when environment variable
-     * {@value TestUtil#SECHUB_AUTO_GENERATE_CSS_FRAGMENTS_ON_HTML_TESTS} is set to
-     * `true` otherwise false
-     */
-    public static boolean isAutoCSSFragementGenerationEnabled() {
-        return Boolean.parseBoolean(System.getenv(SECHUB_AUTO_GENERATE_CSS_FRAGMENTS_ON_HTML_TESTS));
     }
 
     /**

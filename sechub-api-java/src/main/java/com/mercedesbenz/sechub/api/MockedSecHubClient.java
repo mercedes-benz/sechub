@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.api;
 
+import java.io.File;
 import java.net.URI;
 import java.nio.file.Path;
 import java.util.ArrayList;
@@ -140,7 +141,7 @@ public class MockedSecHubClient extends AbstractSecHubClient {
             throw new SecHubClientException("User already exists!");
         }
         OpenUserSignup openSignup = new OpenUserSignup();
-        openSignup.setEmailAdress(signUp.getEmailAdress());
+        openSignup.setEmailAddress(signUp.getEmailAddress());
         openSignup.setUserId(userId);
         openSignups.put(userId, openSignup);
     }
@@ -271,8 +272,16 @@ public class MockedSecHubClient extends AbstractSecHubClient {
         informNothingDoneButOnlySimulated("upload");
     }
 
+    @Override
+    public Path downloadFullScanLog(UUID sechubJobUUID, Path downloadFilePath) throws SecHubClientException {
+        informNothingDoneButOnlySimulated("download full scan log for sechub job: " + sechubJobUUID + " into path:" + downloadFilePath);
+        final File targetFile = calculateFullScanLogFile(sechubJobUUID, downloadFilePath);
+        return targetFile.toPath();
+
+    }
+
     private User createUser(OpenUserSignup found) {
-        return new User(found.getUserId(), found.getEmailAdress());
+        return new User(found.getUserId(), found.getEmailAddress());
     }
 
     private String createUserToProjectUniqueIdentifier(String user, String projectId) {

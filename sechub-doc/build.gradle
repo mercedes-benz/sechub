@@ -17,7 +17,7 @@ dependencies {
         'sechub-pds-tools', /* only pds tooling + avoid cycles */
         'sechub-api-java', /* the api project needs sechub-doc tests (and compile) for open api json files. So we may not have this as relation! */
         'sechub-systemtest', /* avoid cyclic dependency, see AdoptedSystemTestDefaultFallbacks javadoc for more information */
-        
+
         ]
     /* fetch all sub projects, except unwanted and all only used for testing */
     for (Project inspectedProject: rootProject.allprojects){
@@ -39,11 +39,11 @@ dependencies {
             continue
         }
         if (projectName.endsWith('testframework')){
-            // testframework projects are always not wanted 
+            // testframework projects are always not wanted
             continue
         }
         if (unwanted.contains(projectName)){
-            // special unwanted - so inore 
+            // special unwanted - so inore
             continue
         }
         wanted << projectName
@@ -51,10 +51,10 @@ dependencies {
     }
     /* all projects are added as implementation, so can be inspected by Reflections */
     for (String wantedProjectName: wanted){
-        implementation project(":${wantedProjectName}") 
+        implementation project(":${wantedProjectName}")
     }
     implementation library.apache_commons_io
-    
+
     testImplementation library.epages_restdoc_api_spec_mockmvc
     testImplementation project(':sechub-commons-model-testframework')
 
@@ -73,18 +73,18 @@ def asciidocBuildDir="$buildDir/docs/asciidoc";
 def imagesBuildDir="$buildDir/docs/asciidoc/images";
 def finalHTMLDir = "$buildDir/docs/final-html"
 
-def clientVersion = VersionData.getClientVersion()
-def pdsVersion = VersionData.getPdsVersion()
-def serverVersion = VersionData.getServerVersion()
+def clientVersion = versionData.getClientDocsVersion()
+def pdsVersion = versionData.getPdsDocsVersion()
+def serverVersion = versionData.getServerDocsVersion()
 
 task dropOldGeneratedAsciidoc(dependsOn: 'test'){
     doFirst {
         //cleanup former old data
         delete fileTree (
-            dir: "${targetAsciiDocGenFolder}", 
-            // *-version.adoc files are generated iniital by each gradle call and may not be deleted 
+            dir: "${targetAsciiDocGenFolder}",
+            // *-version.adoc files are generated iniital by each gradle call and may not be deleted
             exclude: ['README.md','.gitignore','*-version.adoc'])
-    } 
+    }
 }
 
 task generateAsciidoc(type: JavaExec, dependsOn: 'dropOldGeneratedAsciidoc') {
@@ -122,7 +122,7 @@ asciidoctor {
 
     outputOptions {
         backends "html5", "pdf"
-    
+
         separateOutputDirs = false
     }
 
@@ -158,7 +158,8 @@ asciidoctor {
         'sechub-restapi.adoc',
         'sechub-developer-quickstart-guide.adoc',
         'sechub-product-delegation-server.adoc',
-        'sechub-getting-started.adoc'
+        'sechub-getting-started.adoc',
+        'sechub-tutorials.adoc'
     }
 
     // workaround to enable missing includes checking. See https://github.com/asciidoctor/asciidoctor-gradle-plugin/issues/154
@@ -184,12 +185,12 @@ asciidoctor {
 asciidoctorj {
 
     version = "${libraryVersion.asciidoctor_j}"
-    
+
     // Enable jdiagram support (new way)
     // see https://asciidoctor.github.io/asciidoctor-gradle-plugin/development-3.x/user-guide/#diagram
     modules {
-       diagram.use() 
-       diagram.version "${libraryVersion.asciidoctor_j_diagram}" 
+       diagram.use()
+       diagram.version "${libraryVersion.asciidoctor_j_diagram}"
     }
 }
 
@@ -258,7 +259,7 @@ task buildDoc(type: Exec){
 
     workingDir = "${rootProject.projectDir}"
 
-    commandLine = "./buildDoc"         
+    commandLine = "./buildDoc"
 }
 
 task createDownloadLinks(type: Exec) {
@@ -283,6 +284,6 @@ openapi3 {
     title = 'SecHub API'
     description = 'SecHub API description'
     tagDescriptionsPropertiesFile = 'src/test/resources/openapi/tags.yaml'
-    version = "${VersionData.getServerVersion()}" // Set the OpenAPI version to the SecHub server version
+    version = "${versionData.getServerVersion()}" // Set the OpenAPI version to the SecHub server version
     format = 'json'
 }

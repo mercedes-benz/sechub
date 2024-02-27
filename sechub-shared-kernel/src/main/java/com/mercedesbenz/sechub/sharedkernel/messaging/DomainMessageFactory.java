@@ -34,7 +34,7 @@ public class DomainMessageFactory {
         DomainMessage userBecomesSuperAdminInfo = new DomainMessage(MessageID.USER_BECOMES_SUPERADMIN);
         UserMessage userMessage = new UserMessage();
         userMessage.setUserId(userId);
-        userMessage.setEmailAdress(email);
+        userMessage.setEmailAddress(email);
         userBecomesSuperAdminInfo.set(MessageDataKeys.USER_CONTACT_DATA, userMessage);
         userBecomesSuperAdminInfo.set(MessageDataKeys.ENVIRONMENT_BASE_URL, envbaseURL);
 
@@ -45,7 +45,7 @@ public class DomainMessageFactory {
         DomainMessage userBecomesSuperAdminInfo = new DomainMessage(MessageID.USER_NO_LONGER_SUPERADMIN);
         UserMessage userMessage = new UserMessage();
         userMessage.setUserId(userId);
-        userMessage.setEmailAdress(email);
+        userMessage.setEmailAddress(email);
         userBecomesSuperAdminInfo.set(MessageDataKeys.USER_CONTACT_DATA, userMessage);
         userBecomesSuperAdminInfo.set(MessageDataKeys.ENVIRONMENT_BASE_URL, envbaseURL);
 

@@ -12,7 +12,7 @@ ARG BUILD_TYPE
 ARG CHECKMARX_WRAPPER_VERSION=1.1.0
 
 # The base image of the builder
-ARG BUILDER_BASE_IMAGE="debian:testing-slim"
+ARG BUILDER_BASE_IMAGE="debian:12-slim"
 
 # Artifact folder
 ARG ARTIFACT_FOLDER="/artifacts"

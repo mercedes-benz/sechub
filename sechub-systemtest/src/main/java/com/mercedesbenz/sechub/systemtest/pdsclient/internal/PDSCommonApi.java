@@ -19,9 +19,13 @@ import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
+import java.nio.charset.StandardCharsets;
 import java.time.Duration;
+import java.util.List;
+import java.util.Map;
 import java.util.function.Consumer;
 
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mercedesbenz.sechub.api.internal.gen.invoker.ApiClient;
 import com.mercedesbenz.sechub.api.internal.gen.invoker.ApiException;
@@ -193,5 +197,69 @@ public class PDSCommonApi {
             memberVarInterceptor.accept(localVarRequestBuilder);
         }
         return localVarRequestBuilder;
+    }
+
+    private HttpRequest.Builder authorizedRequestBuilder(String url, String accept, String httpMethod) throws ApiException {
+        HttpRequest.Builder localVarRequestBuilder = HttpRequest.newBuilder();
+
+        String localVarPath = url;
+
+        localVarRequestBuilder.uri(URI.create(memberVarBaseUri + localVarPath));
+
+        if (accept != null) {
+            localVarRequestBuilder.header("Accept", accept);
+        }
+
+        localVarRequestBuilder.method(httpMethod, HttpRequest.BodyPublishers.noBody());
+        if (memberVarReadTimeout != null) {
+            localVarRequestBuilder.timeout(memberVarReadTimeout);
+        }
+        if (memberVarInterceptor != null) {
+            memberVarInterceptor.accept(localVarRequestBuilder);
+        }
+        return localVarRequestBuilder;
+    }
+
+    public <T> ApiResponse<T> getAuthorized(String localPath, Class<T> clazz) throws ApiException {
+        return getAuthorized(localPath, clazz, null);
+    }
+
+    @SuppressWarnings("unchecked")
+    public <T> ApiResponse<T> getAuthorized(String localPath, Class<T> clazz, String accept) throws ApiException {
+        HttpRequest.Builder localVarRequestBuilder = authorizedRequestBuilder(localPath, accept, "GET");
+        try {
+            HttpResponse<InputStream> localVarResponse = memberVarHttpClient.send(localVarRequestBuilder.build(), HttpResponse.BodyHandlers.ofInputStream());
+            if (memberVarResponseInterceptor != null) {
+                memberVarResponseInterceptor.accept(localVarResponse);
+            }
+            try {
+                int statusCode = localVarResponse.statusCode();
+                if (statusCode / 100 != 2) {
+                    throw getApiException("getAuthorized:" + localPath, localVarResponse);
+                }
+                InputStream body = localVarResponse.body();
+                Map<String, List<String>> map = localVarResponse.headers().map();
+
+                T data = null;
+                if (clazz.isAssignableFrom(String.class)) {
+                    String text = new String(body.readAllBytes(), StandardCharsets.UTF_8);
+                    data = (T) text;
+                } else {
+                    if (body != null) {
+                        data = memberVarObjectMapper.readValue(body, new TypeReference<T>() {
+                        });
+                    }
+                }
+
+                return new ApiResponse<T>(statusCode, map, data // closes the InputStream
+                );
+            } finally {
+            }
+        } catch (IOException e) {
+            throw new ApiException(e);
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+            throw new ApiException(e);
+        }
     }
 }

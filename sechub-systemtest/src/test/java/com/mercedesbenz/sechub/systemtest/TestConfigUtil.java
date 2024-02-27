@@ -62,6 +62,7 @@ public class TestConfigUtil {
     public static TestEnvironmentProvider createEnvironmentProviderForSecrets() {
         // Setup environment. When not defined, use defaults
 
+        /* @formatter:off */
         TestEnvironmentProvider environmentProvider = new TestEnvironmentProvider();
         environmentProvider.setEnv(ENV_TEST_PDS_SERVER, getSystemProperty(SYSTEM_PROPERTY_PDS_SERVER, DEFAULT_PDS_SERVER));
         environmentProvider.setEnv(ENV_TEST_SECHUB_SERVER, getSystemProperty(SYSTEM_PROPERTY_SECHUB_SERVER, DEFAULT_SECHUB_SERVER));
@@ -71,24 +72,24 @@ public class TestConfigUtil {
 
         /* for tests with integration test server */
         environmentProvider.setEnv(ENV_TEST_INTTEST_ADMIN_USERID, getSystemProperty(SYSTEM_PROPERTY_SECHUB_INITIALADMIN_USERID, DEFAULT_INTTEST_ADMIN_USERID));
-        environmentProvider.setEnv(ENV_TEST_INTTEST_ADMIN_APITOKEN,
-                getSystemProperty(SYSTEM_PROPERTY_SECHUB_INITIALADMIN_APITOKEN, DEFAULT_INTTEST_ADMIN_APITOKEN));
+        environmentProvider.setEnv(ENV_TEST_INTTEST_ADMIN_APITOKEN, getSystemProperty(SYSTEM_PROPERTY_SECHUB_INITIALADMIN_APITOKEN, DEFAULT_INTTEST_ADMIN_APITOKEN));
 
-        environmentProvider.setEnv(ENV_TEST_INTTEST_PDS_TECHUSER_USERID,
-                getSystemProperty(SYSTEM_PROPERTY_PDS_TECHUSER_USERNAME, DEFAULT_INTTEST_PDS_TECHUSER_USERID));
-        environmentProvider.setEnv(ENV_TEST_INTTEST_PDS_TECHUSER_APITOKEN,
-                getSystemProperty(SYSTEM_PROPERTY_PDS_TECHUSER_APITOKEN, DEFAULT_INTTEST_PDS_TECHUSER_APITOKEN));
+        environmentProvider.setEnv(ENV_TEST_INTTEST_PDS_TECHUSER_USERID,getSystemProperty(SYSTEM_PROPERTY_PDS_TECHUSER_USERNAME, DEFAULT_INTTEST_PDS_TECHUSER_USERID));
+        environmentProvider.setEnv(ENV_TEST_INTTEST_PDS_TECHUSER_APITOKEN, getSystemProperty(SYSTEM_PROPERTY_PDS_TECHUSER_APITOKEN, DEFAULT_INTTEST_PDS_TECHUSER_APITOKEN));
+
+        environmentProvider.setEnv(ENV_TEST_INTTEST_PDS_ADMIN_USERID,getSystemProperty(SYSTEM_PROPERTY_PDS_ADMIN_USERNAME, DEFAULT_INTTEST_PDS_ADMIN_USERID));
+        environmentProvider.setEnv(ENV_TEST_INTTEST_PDS_ADMIN_APITOKEN, getSystemProperty(SYSTEM_PROPERTY_PDS_ADMIN_APITOKEN, DEFAULT_INTTEST_PDS_ADMIN_APITOKEN));
 
         /* for other servers (local, remote but no integration test setup) */
         environmentProvider.setEnv(ENV_TEST_ADMIN_USERID, getSystemProperty(SYSTEM_PROPERTY_SECHUB_INITIALADMIN_USERID, DEFAULT_SECHUB_SOLUTION_ADMIN_USERID));
-        environmentProvider.setEnv(ENV_TEST_ADMIN_APITOKEN,
-                getSystemProperty(SYSTEM_PROPERTY_SECHUB_INITIALADMIN_APITOKEN, DEFAULT_SECHUB_SOLUTION_ADMIN_APITOKEN));
+        environmentProvider.setEnv(ENV_TEST_ADMIN_APITOKEN, getSystemProperty(SYSTEM_PROPERTY_SECHUB_INITIALADMIN_APITOKEN, DEFAULT_SECHUB_SOLUTION_ADMIN_APITOKEN));
 
         environmentProvider.setEnv(ENV_TEST_USER_USERID, getSystemProperty(SYSTEM_PROPERTY_SECHUB_USER_USERID, DEFAULT_SECHUB_TESTUSER_USERID));
         environmentProvider.setEnv(ENV_TEST_USER_APITOKEN, getSystemProperty(SYSTEM_PROPERTY_SECHUB_USER_APITOKEN, DEFAULT_SECHUB_TESTUSER_APITOKEN));
 
         environmentProvider.setEnv(ENV_TEST_PDS_USERID, getSystemProperty(SYSTEM_PROPERTY_PDS_TECHUSER_USERNAME, DEFAULT_PDS_SOLUTION_TECHUSER_USERID));
         environmentProvider.setEnv(ENV_TEST_PDS_APITOKEN, getSystemProperty(SYSTEM_PROPERTY_PDS_TECHUSER_APITOKEN, DEFAULT_PDS_SOLUTION_TECHUSER_APITOKEN));
+        /* @formatter:on */
 
         return environmentProvider;
     }

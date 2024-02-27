@@ -57,9 +57,6 @@ cyclonedxBom {
   includeConfigs = ["runtimeClasspath"]
 }
 
-version = VersionData.getServerVersion()
-
-
 /* check buildsystem */
 def githubActor = System.getenv('GITHUB_ACTOR')
 

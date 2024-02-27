@@ -28,7 +28,7 @@ COPY mocks "$MOCK_FOLDER"
 RUN export DEBIAN_FRONTEND=noninteractive && \
     apt-get update && \
     apt-get --assume-yes upgrade  && \
-    apt-get --assume-yes install sed wget pip && \
+    apt-get --assume-yes install sed wget pip git && \
     apt-get --assume-yes clean
 
 # Install Flawfinder, Bandit, njsscan and mobsfscan
@@ -39,6 +39,11 @@ COPY packages.txt $TOOL_FOLDER/packages.txt
 # Interesting idea, but not as useful inside a container, which in essence is already a virtual environment.
 # Use `--break-system-packages` to let the Python package manager `pip` mix packages from Debian and Python
 RUN pip install --break-system-packages -r $TOOL_FOLDER/packages.txt
+# pip --editable option allows for installing from VCS Urls
+# https://pip.pypa.io/en/stable/cli/pip_install/#cmdoption-e
+# It is possible to specify a GIT ref in a VCS Url using @ delimeter
+# https://pip.pypa.io/en/stable/topics/vcs-support/
+RUN pip install --break-system-packages --editable "git+https://github.com/alexdd/bandit-sarif-formatter@main#egg=bandit-sarif-formatter"
 
 # Create the PDS workspace
 WORKDIR "$WORKSPACE"

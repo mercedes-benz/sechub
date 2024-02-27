@@ -9,6 +9,7 @@ import java.util.Set;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.mercedesbenz.sechub.commons.model.ClientCertificateConfiguration;
 import com.mercedesbenz.sechub.commons.model.ScanType;
 import com.mercedesbenz.sechub.commons.model.SecHubConfigurationModel;
 import com.mercedesbenz.sechub.commons.model.SecHubDataConfigurationUsageByName;
@@ -103,9 +104,17 @@ public class SecHubFileStructureDataProviderBuilder {
             SecHubWebScanConfiguration webScan = webScanOpt.get();
             Optional<SecHubWebScanApiConfiguration> apiOpt = webScan.getApi();
             addAllUsages(data, apiOpt, false);
+
+            Optional<ClientCertificateConfiguration> clientCertOpt = webScan.getClientCertificate();
+            addAllUsages(data, clientCertOpt, false);
             break;
         case ANALYTICS:
 
+            data.setRootFolderAccepted(true);
+            addAllUsages(data, model.getCodeScan(), false);
+            addAllUsages(data, model.getLicenseScan(), false);
+            break;
+        case PREPARE:
             data.setRootFolderAccepted(true);
             addAllUsages(data, model.getCodeScan(), false);
             addAllUsages(data, model.getLicenseScan(), false);

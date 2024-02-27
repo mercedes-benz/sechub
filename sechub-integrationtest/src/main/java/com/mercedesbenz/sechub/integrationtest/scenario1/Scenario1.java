@@ -14,7 +14,7 @@ import com.mercedesbenz.sechub.integrationtest.internal.GrowingScenario;
  * <h4>Short description</h4> A very simple integration test scenario. Most
  * parts only available as constants but not really created.
  *
- * <h4>Overview</h4> For a glance over all scenarios, look at
+ * <h4>Overview</h4> For an overview over all scenarios, look at
  * {@link com.mercedesbenz.sechub.integrationtest.internal.IntegrationTestDataOverview
  * Overview}
  *

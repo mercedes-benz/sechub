@@ -1,61 +1,66 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.zapwrapper.helper;
 
-import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Objects;
 
-import com.mercedesbenz.sechub.commons.model.SecHubMessage;
-import com.mercedesbenz.sechub.commons.model.SecHubMessageType;
+import com.mercedesbenz.sechub.zapwrapper.util.UrlUtil;
 
 public class IncludeExcludeToZapURLHelper {
+    private UrlUtil urlUtil = new UrlUtil();
 
     /**
-     * Combine the targetUrl with all list of subSites.<br>
+     * Combine the targetUrl with the given list of subSites.<br>
      * <br>
      * E.g. for the targetUrl http://localhost:8000 and the sub sites ["/api/v1/",
-     * "admin/profile"], results in ["http://localhost:8000/api/v1",
-     * "http://localhost:8000/admin/profile"].
+     * "<*>admin/<*>", "api/users/"], results in ["http://localhost:8000/api/v1",
+     * "http://localhost:8000/.*admin/.*", "http://localhost:8000/.*api/users/.*"].
      *
-     * @param urlType
-     * @param targetUrl
+     * @param targetUrl, must never be <code>null</code>
      * @param subSites
-     * @param userMessages
-     * @return a list of full URLs
+     * @return an unmodifiable list of full URLs, or an empty list if subSites was
+     *         empty.
      */
-    public List<URL> createListOfUrls(ZapURLType urlType, URL targetUrl, List<String> subSites, List<SecHubMessage> userMessages) {
+    public List<String> createListOfUrls(URL targetUrl, List<String> subSites) {
+        Objects.requireNonNull(targetUrl);
         if (subSites == null) {
-            return new LinkedList<URL>();
+            return Collections.emptyList();
         }
 
         String targetUrlAsString = targetUrl.toString();
-        List<URL> listOfUrls = new LinkedList<>();
+        List<String> listOfUrls = new LinkedList<>();
         for (String subSite : subSites) {
             StringBuilder urlBuilder = new StringBuilder();
-
+            // append the base target url first
             if (targetUrlAsString.endsWith("/")) {
-                urlBuilder.append(targetUrlAsString.substring(0, targetUrlAsString.length() - 1));
+                urlBuilder.append(targetUrlAsString);
             } else {
                 urlBuilder.append(targetUrlAsString);
-            }
-
-            if (!subSite.startsWith("/")) {
                 urlBuilder.append("/");
             }
-            if (subSite.endsWith("/")) {
-                urlBuilder.append(subSite.substring(0, subSite.length() - 1));
+
+            // replace wildcards with patterns
+            String replacedSubsite = urlUtil.replaceWebScanWildCardsWithRegexInString(subSite);
+
+            // create include/exclude URL pattern
+            if (replacedSubsite.startsWith("/")) {
+                urlBuilder.append(replacedSubsite.substring(1));
             } else {
-                urlBuilder.append(subSite);
+                if (!replacedSubsite.startsWith(UrlUtil.REGEX_PATTERN_WILDCARD_STRING)) {
+                    urlBuilder.append(UrlUtil.REGEX_PATTERN_WILDCARD_STRING);
+                }
+                urlBuilder.append(replacedSubsite);
+
+                if (!replacedSubsite.endsWith(UrlUtil.REGEX_PATTERN_WILDCARD_STRING)) {
+                    urlBuilder.append(UrlUtil.REGEX_PATTERN_WILDCARD_STRING);
+                }
             }
-            try {
-                listOfUrls.add(new URL(urlBuilder.toString()));
-            } catch (MalformedURLException e) {
-                userMessages.add(new SecHubMessage(SecHubMessageType.ERROR, "The specified " + urlType.getId() + " " + subSite
-                        + " combined with the target URL: " + targetUrl + " formed the invalid URL: " + urlBuilder.toString()));
-            }
+            listOfUrls.add(urlBuilder.toString());
         }
-        return listOfUrls;
+        return Collections.unmodifiableList(listOfUrls);
     }
 
 }

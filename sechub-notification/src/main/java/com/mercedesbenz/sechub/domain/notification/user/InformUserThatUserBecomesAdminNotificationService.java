@@ -25,7 +25,7 @@ public class InformUserThatUserBecomesAdminNotificationService {
 
         SimpleMailMessage message = factory.createMessage("SecHub administrator privileges granted");
 
-        message.setTo(userMessage.getEmailAdress());
+        message.setTo(userMessage.getEmailAddress());
         message.setText(createEmailContent(userMessage, baseUrl));
 
         emailService.send(message);

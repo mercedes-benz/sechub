@@ -531,7 +531,7 @@ table.CodeRay td.code{padding:0 0 0 .75em}
 <div id="header">
 <h1><span class="image"><a class="image" href="https://mercedes-benz.github.io/sechub"><img src="images/sechub-logo.png" alt="sechub logo"></a></span> SecHub TechDoc</h1>
 <div class="details">
-<span id="revnumber"> Server 1.1.0</span>
+<span id="revnumber"> Server 1.6.0</span>
 </div>
 <div id="toc" class="toc2">
 <div id="toctitle">Table of contents</div>
@@ -799,11 +799,10 @@ table.CodeRay td.code{padding:0 0 0 .75em}
 <li><a href="#automated-description-of-important-code-part">8.2.1. Automated description of important code part</a></li>
 <li><a href="#section-documentation-configuration-properties">8.2.2. Automated description of configuration properties</a></li>
 <li><a href="#section-documentation-usecases">8.2.3. Automated description of use cases</a></li>
-<li><a href="#automated-kubernetes-files">8.2.4. Automated Kubernetes files</a></li>
-<li><a href="#automated-diagrams">8.2.5. Automated Diagrams</a>
+<li><a href="#automated-diagrams">8.2.4. Automated Diagrams</a>
 <ul class="sectlevel4">
-<li><a href="#section-documentation-messaging-overview">8.2.5.1. Domain messaging overview</a></li>
-<li><a href="#section-documentation-usecase-event-overview">8.2.5.2. Usecase event overview diagrams</a></li>
+<li><a href="#section-documentation-messaging-overview">8.2.4.1. Domain messaging overview</a></li>
+<li><a href="#section-documentation-usecase-event-overview">8.2.4.2. Usecase event overview diagrams</a></li>
 </ul>
 </li>
 </ul>
@@ -1221,11 +1220,15 @@ table.CodeRay td.code{padding:0 0 0 .75em}
 <ul class="sectlevel4">
 <li><a href="#section-ucrestdoc-UC_005-code-scan">11.1.25.1. Code Scan variant</a></li>
 <li><a href="#section-ucrestdoc-UC_005-code-scan-using-data-section">11.1.25.2. Code Scan using data section variant</a></li>
-<li><a href="#section-ucrestdoc-UC_005-infrastructure-scan">11.1.25.3. Infrastructure scan variant</a></li>
-<li><a href="#section-ucrestdoc-UC_005-web-scan-anonymous">11.1.25.4. Web scan anonymous variant</a></li>
-<li><a href="#section-ucrestdoc-UC_005-web-scan-login-basic">11.1.25.5. Web Scan login basic variant</a></li>
-<li><a href="#section-ucrestdoc-UC_005-web-scan-login-form-scripted">11.1.25.6. Web Scan login form scripted variant</a></li>
-<li><a href="#section-ucrestdoc-UC_005-web-scan-headers">11.1.25.7. Web Scan headers variant</a></li>
+<li><a href="#section-ucrestdoc-UC_005-secret-scan">11.1.25.3. Secret scan variant</a></li>
+<li><a href="#section-ucrestdoc-UC_005-license-scan">11.1.25.4. License scan variant</a></li>
+<li><a href="#section-ucrestdoc-UC_005-infrastructure-scan">11.1.25.5. Infrastructure scan variant</a></li>
+<li><a href="#section-ucrestdoc-UC_005-web-scan-anonymous">11.1.25.6. Web scan anonymous variant</a></li>
+<li><a href="#section-ucrestdoc-UC_005-web-scan-with-api-definition">11.1.25.7. Web scan with api definition variant</a></li>
+<li><a href="#section-ucrestdoc-UC_005-web-scan-with-client-certificate-definition">11.1.25.8. Web scan with client certificate definition variant</a></li>
+<li><a href="#section-ucrestdoc-UC_005-web-scan-login-basic">11.1.25.9. Web Scan login basic variant</a></li>
+<li><a href="#section-ucrestdoc-UC_005-web-scan-login-form-scripted">11.1.25.10. Web Scan login form scripted variant</a></li>
+<li><a href="#section-ucrestdoc-UC_005-web-scan-headers">11.1.25.11. Web Scan headers variant</a></li>
 </ul>
 </li>
 <li><a href="#user-uploads-source-code">11.1.26. User uploads source code</a></li>
@@ -1381,7 +1384,8 @@ table.CodeRay td.code{padding:0 0 0 .75em}
 <li><a href="#prepare">15.2.6.1. Prepare</a></li>
 <li><a href="#execute">15.2.6.2. Execute</a></li>
 <li><a href="#assert">15.2.6.3. Assert</a></li>
-<li><a href="#example-snippet-3">15.2.6.4. Example snippet</a></li>
+<li><a href="#cleanup">15.2.6.4. Cleanup</a></li>
+<li><a href="#example-snippet-3">15.2.6.5. Example snippet</a></li>
 </ul>
 </li>
 </ul>
@@ -1501,7 +1505,7 @@ build pipeline / contionus integration (CI) and helps to provide
 </tbody>
 </table>
 <div class="paragraph">
-<p>Documentation version: <code>Server 1.1.0-dirty-20230814114909</code></p>
+<p>Documentation version: <code>Server 1.6.0 - Build date: 20240226101315</code></p>
 </div>
 <div class="paragraph">
 <p>Target audience for this document are <strong>SecHub Developers</strong> only!</p>
@@ -1526,7 +1530,7 @@ build pipeline / contionus integration (CI) and helps to provide
 <p>JAVA 17 JDK</p>
 </li>
 <li>
-<p>Go Lang (min. 1.20.4)</p>
+<p>Go Lang (min. 1.21.6)</p>
 </li>
 <li>
 <p>GIT</p>
@@ -2035,7 +2039,7 @@ tests we got fix credentials - <strong>so never use in production!</strong></td>
 <h6 id="overview">3.1.1.1.1. Overview</h6>
 <div class="imageblock">
 <div class="content">
-<img src="images/gen_springprofiles.svg" alt="Diagram" width="2425" height="235">
+<img src="images/gen_springprofiles.svg" alt="Diagram" width="2453" height="232">
 </div>
 <div class="title">Figure 1. Spring profiles and their explicit/implicit included parts</div>
 </div>
@@ -2072,7 +2076,7 @@ the profile on this machine. So you prevent illegal administrative access attemp
 <h6 id="dev">3.1.1.1.3. DEV</h6>
 <div class="imageblock">
 <div class="content">
-<img src="images/gen_springprofiles-dev.svg" alt="Diagram" width="1231" height="274">
+<img src="images/gen_springprofiles-dev.svg" alt="Diagram" width="1360" height="274">
 </div>
 <div class="title">Figure 3. Spring profile dev and its explicit/implicit included parts</div>
 </div>
@@ -2318,30 +2322,8 @@ The system properties described here are <strong>automatically</strong>
 </tr>
 </tbody>
 </table>
-<table id="section-gen-config-scope-development" class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 4. Scope 'development'</caption>
-<colgroup>
-<col style="width: 33.3333%;">
-<col style="width: 33.3333%;">
-<col style="width: 33.3334%;">
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-left valign-top">Key</th>
-<th class="tableblock halign-left valign-top">Default</th>
-<th class="tableblock halign-left valign-top">Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">sechub.development.webdesignmode.enabled</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">false</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Developers can turn on this mode to have reports creating with external css. Normally the html model builder will create embedded css content</p></td>
-</tr>
-</tbody>
-</table>
 <table id="section-gen-config-scope-initial" class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 5. Scope 'initial'</caption>
+<caption class="title">Table 4. Scope 'initial'</caption>
 <colgroup>
 <col style="width: 33.3333%;">
 <col style="width: 33.3333%;">
@@ -2373,7 +2355,7 @@ The system properties described here are <strong>automatically</strong>
 </tbody>
 </table>
 <table id="section-gen-config-scope-migration" class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 6. Scope 'migration'</caption>
+<caption class="title">Table 5. Scope 'migration'</caption>
 <colgroup>
 <col style="width: 33.3333%;">
 <col style="width: 33.3333%;">
@@ -2395,7 +2377,7 @@ The system properties described here are <strong>automatically</strong>
 </tbody>
 </table>
 <table id="section-gen-config-scope-mock" class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 7. Scope 'mock'</caption>
+<caption class="title">Table 6. Scope 'mock'</caption>
 <colgroup>
 <col style="width: 33.3333%;">
 <col style="width: 33.3333%;">
@@ -2417,7 +2399,7 @@ The system properties described here are <strong>automatically</strong>
 </tbody>
 </table>
 <table id="section-gen-config-scope-nessus" class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 8. Scope 'nessus'</caption>
+<caption class="title">Table 7. Scope 'nessus'</caption>
 <colgroup>
 <col style="width: 33.3333%;">
 <col style="width: 33.3333%;">
@@ -2494,7 +2476,7 @@ The system properties described here are <strong>automatically</strong>
 </tbody>
 </table>
 <table id="section-gen-config-scope-netsparker" class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 9. Scope 'netsparker'</caption>
+<caption class="title">Table 8. Scope 'netsparker'</caption>
 <colgroup>
 <col style="width: 33.3333%;">
 <col style="width: 33.3333%;">
@@ -2566,7 +2548,7 @@ The system properties described here are <strong>automatically</strong>
 </tbody>
 </table>
 <table id="section-gen-config-scope-new" class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 10. Scope 'new'</caption>
+<caption class="title">Table 9. Scope 'new'</caption>
 <colgroup>
 <col style="width: 33.3333%;">
 <col style="width: 33.3333%;">
@@ -2588,7 +2570,7 @@ The system properties described here are <strong>automatically</strong>
 </tbody>
 </table>
 <table id="section-gen-config-scope-notification" class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 11. Scope 'notification'</caption>
+<caption class="title">Table 10. Scope 'notification'</caption>
 <colgroup>
 <col style="width: 33.3333%;">
 <col style="width: 33.3333%;">
@@ -2605,22 +2587,22 @@ The system properties described here are <strong>automatically</strong>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">sechub.notification.email.administrators</p></td>
 <td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Single mail adress used for emails to administrators. This should an NPM (non personalized mailbox)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Single email address used for emails to administrators. This should be a NPM (non personalized mailbox)</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">sechub.notification.email.from</p></td>
 <td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Adress used for emails sent by sechub system</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Address used for emails sent by sechub system</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">sechub.notification.email.replyto</p></td>
 <td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Adress used for reply when email was sent by sechub system</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Address used for reply when email was sent by sechub system</p></td>
 </tr>
 </tbody>
 </table>
 <table id="section-gen-config-scope-p" class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 12. Scope 'p'</caption>
+<caption class="title">Table 11. Scope 'p'</caption>
 <colgroup>
 <col style="width: 33.3333%;">
 <col style="width: 33.3333%;">
@@ -2667,7 +2649,7 @@ The system properties described here are <strong>automatically</strong>
 </tbody>
 </table>
 <table id="section-gen-config-scope-s" class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 13. Scope 's'</caption>
+<caption class="title">Table 12. Scope 's'</caption>
 <colgroup>
 <col style="width: 33.3333%;">
 <col style="width: 33.3333%;">
@@ -2709,7 +2691,7 @@ The system properties described here are <strong>automatically</strong>
 </tbody>
 </table>
 <table id="section-gen-config-scope-scan" class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 14. Scope 'scan'</caption>
+<caption class="title">Table 13. Scope 'scan'</caption>
 <colgroup>
 <col style="width: 33.3333%;">
 <col style="width: 33.3333%;">
@@ -2741,7 +2723,7 @@ The system properties described here are <strong>automatically</strong>
 </tbody>
 </table>
 <table id="section-gen-config-scope-scheduler" class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 15. Scope 'scheduler'</caption>
+<caption class="title">Table 14. Scope 'scheduler'</caption>
 <colgroup>
 <col style="width: 33.3333%;">
 <col style="width: 33.3333%;">
@@ -2803,7 +2785,7 @@ The system properties described here are <strong>automatically</strong>
 </tbody>
 </table>
 <table id="section-gen-config-scope-sec" class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 16. Scope 'sec'</caption>
+<caption class="title">Table 15. Scope 'sec'</caption>
 <colgroup>
 <col style="width: 33.3333%;">
 <col style="width: 33.3333%;">
@@ -2835,7 +2817,7 @@ The system properties described here are <strong>automatically</strong>
 </tbody>
 </table>
 <table id="section-gen-config-scope-security" class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 17. Scope 'security'</caption>
+<caption class="title">Table 16. Scope 'security'</caption>
 <colgroup>
 <col style="width: 33.3333%;">
 <col style="width: 33.3333%;">
@@ -2857,7 +2839,7 @@ The system properties described here are <strong>automatically</strong>
 </tbody>
 </table>
 <table id="section-gen-config-scope-server" class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 18. Scope 'server'</caption>
+<caption class="title">Table 17. Scope 'server'</caption>
 <colgroup>
 <col style="width: 33.3333%;">
 <col style="width: 33.3333%;">
@@ -2879,7 +2861,7 @@ The system properties described here are <strong>automatically</strong>
 </tbody>
 </table>
 <table id="section-gen-config-scope-storage" class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 19. Scope 'storage'</caption>
+<caption class="title">Table 18. Scope 'storage'</caption>
 <colgroup>
 <col style="width: 33.3333%;">
 <col style="width: 33.3333%;">
@@ -2966,7 +2948,7 @@ The system properties described here are <strong>automatically</strong>
 </tbody>
 </table>
 <table id="section-gen-config-scope-system" class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 20. Scope 'system'</caption>
+<caption class="title">Table 19. Scope 'system'</caption>
 <colgroup>
 <col style="width: 33.3333%;">
 <col style="width: 33.3333%;">
@@ -2998,7 +2980,7 @@ The system properties described here are <strong>automatically</strong>
 </tbody>
 </table>
 <table id="section-gen-config-scope-target" class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 21. Scope 'target'</caption>
+<caption class="title">Table 20. Scope 'target'</caption>
 <colgroup>
 <col style="width: 33.3333%;">
 <col style="width: 33.3333%;">
@@ -3044,7 +3026,7 @@ The schedule setup described here is <a href="#section-documentation-in-code">ge
 </table>
 </div>
 <table id="link-gen-scheduling" class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 22. Scope 'administration'</caption>
+<caption class="title">Table 21. Scope 'administration'</caption>
 <colgroup>
 <col style="width: 7.6923%;">
 <col style="width: 46.1538%;">
@@ -3066,7 +3048,7 @@ The schedule setup described here is <a href="#section-documentation-in-code">ge
 </tbody>
 </table>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 23. Scope 'scan'</caption>
+<caption class="title">Table 22. Scope 'scan'</caption>
 <colgroup>
 <col style="width: 7.6923%;">
 <col style="width: 46.1538%;">
@@ -3088,7 +3070,7 @@ The schedule setup described here is <a href="#section-documentation-in-code">ge
 </tbody>
 </table>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 24. Scope 'schedule'</caption>
+<caption class="title">Table 23. Scope 'schedule'</caption>
 <colgroup>
 <col style="width: 7.6923%;">
 <col style="width: 46.1538%;">
@@ -3134,7 +3116,7 @@ The system properties described here are <strong>automatically</strong>
 </table>
 </div>
 <table id="section-gen-config-scope-abstract" class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 25. Scope 'abstract'</caption>
+<caption class="title">Table 24. Scope 'abstract'</caption>
 <colgroup>
 <col style="width: 33.3333%;">
 <col style="width: 33.3333%;">
@@ -3156,7 +3138,7 @@ The system properties described here are <strong>automatically</strong>
 </tbody>
 </table>
 <table id="section-gen-config-scope-mocked" class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 26. Scope 'mocked'</caption>
+<caption class="title">Table 25. Scope 'mocked'</caption>
 <colgroup>
 <col style="width: 33.3333%;">
 <col style="width: 33.3333%;">
@@ -4135,10 +4117,40 @@ the beginning to have a pretty output in <code>GitHub</code></p>
 </div>
 <div class="sect2">
 <h3 id="database">7.2. Database</h3>
+<div class="admonitionblock important">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-important" title="Important"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>Currently, we use <a href="https://h2database.com/html/main.html">H2</a> and <a href="https://www.postgresql.org/">PostgreSQL</a> in parallel (dev/testing + production).<br>
+Please make sure that the SQL statements work with both of them.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
 <div class="sect3">
 <h4 id="naming-in-db">7.2.1. Naming in DB</h4>
-<div class="paragraph">
+<div class="ulist">
+<ul>
+<li>
 <p>We are using PostgreSQL which does automatically use lower_case names</p>
+</li>
+<li>
+<p>Numbering starts at <code>01</code>; maximum is <code>99</code></p>
+</li>
+<li>
+<p>Naming scheme for constraints: <code>c&lt;number&gt;_&lt;table name&gt;_&lt;constraint title&gt;</code><br>
+Example: <code>c01_adm_user_emailaddress</code></p>
+</li>
+<li>
+<p>Naming scheme for indices: <code>i&lt;number&gt;_&lt;table name&gt;_&lt;index title&gt;</code><br>
+Example: <code>i01_statistic_job_run_data_filter</code></p>
+</li>
+</ul>
 </div>
 </div>
 <div class="sect3">
@@ -4235,8 +4247,20 @@ always the instructions below.</p>
 <div class="sect3">
 <h4 id="templates">7.3.2. Templates</h4>
 <div class="paragraph">
-<p>When we define YAML templates - e.g. for HELM charts - the template statement shall
-start at the first column without indention.</p>
+<p>When defining YAML templates - e.g. for HELM charts</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>a template statement (e.g. <code>- if</code> or <code>- end</code>) shall start at the first column without indention</p>
+</li>
+<li>
+<p>nested template statements shall be indented (see example below)</p>
+</li>
+<li>
+<p>place inserted values indented like normal YAML. (Use <code>| trim</code> if appropriate)</p>
+</li>
+</ul>
 </div>
 <div class="listingblock">
 <div class="title">Example</div>
@@ -4247,15 +4271,15 @@ start at the first column without indention.</p>
 <span class="key">apiVersion</span>: <span class="string"><span class="content">networking.k8s.io/v1</span></span>
 <span class="key">kind</span>: <span class="string"><span class="content">NetworkPolicy</span></span>
 <span class="key">metadata</span>:
-    <span class="key">name</span>: <span class="string"><span class="content">{{ .Chart.Name }}-policy</span></span>
+  <span class="key">name</span>: <span class="string"><span class="content">{{ .Chart.Name }}-policy</span></span>
 <span class="key">spec</span>:
-    <span class="key">podSelector</span>:
-        <span class="key">matchLabels</span>:
-            <span class="key">name</span>: <span class="string"><span class="content">{{ .Chart.Name }}</span></span>
+  <span class="key">podSelector</span>:
+    <span class="key">matchLabels</span>:
+      <span class="key">name</span>: <span class="string"><span class="content">{{ .Chart.Name }}</span></span>
 
-{{- <span class="string"><span class="content">if .Values.networkPolicy.ingress }}</span></span>
-    <span class="key">ingress</span>:
-{{ <span class="error">.Values.networkPolicy.ingress | toYaml | indent 4 }}</span>
+  {{- <span class="string"><span class="content">if .Values.networkPolicy.ingress }}</span></span>
+  <span class="key">ingress</span>:
+    {{ <span class="error">.Values.networkPolicy.ingress | toYaml | indent 4 | trim }}</span>
   {{- <span class="string"><span class="content">end }}</span></span>
 
 {{- <span class="string"><span class="content">end }}</span></span></code></pre>
@@ -4896,42 +4920,15 @@ Having always the Controllers and also the necessary <code>@MockBean</code> anno
 <div class="sect3">
 <h4 id="section-documentation-markdown">8.1.1. Markdown</h4>
 <div class="paragraph">
-<p>Simple technical information -e.g. about the content of an folder
-- will be written in markdown syntax.</p>
-</div>
-<div class="paragraph">
-<p>Normaly we use a README.md file to explain simple things.</p>
-</div>
-<div class="paragraph">
-<p>See <a href="https://en.wikipedia.org/wiki/Markdown" class="bare">https://en.wikipedia.org/wiki/Markdown</a> for <code>markdown</code> definition</p>
-</div>
-<div class="admonitionblock note">
-<table>
-<tr>
-<td class="icon">
-<i class="fa icon-note" title="Note"></i>
-</td>
-<td class="content">
-<div class="paragraph">
-<p>The main purpose of not using AsciiDoc for those parts was, that
-former used git hosting environment (before github.com) was not able
-to show up <code>.adoc</code> files in a appropriate formatted way, but only as plain
-source. So we started to use <code>markdown</code> for files which shall be pretty
-formatted there.</p>
-</div>
-<div class="paragraph">
-<p>Having now moved to <code>github.com</code> we can write those files of course
-also as <code>.adoc</code></p>
-</div>
-</td>
-</tr>
-</table>
+<p>Simple technical information - e.g. about the content of an folder
+- should be written in a README.md with <a href="https://www.markdownguide.org/cheat-sheet/">markdown syntax</a>.<br></p>
 </div>
 </div>
 <div class="sect3">
 <h4 id="section-documentation-asciidoc">8.1.2. Asciidoc</h4>
 <div class="paragraph">
-<p>When ever writing a full scaled documentation - means more than some lines to explain a folder etc. - we do this with Asciidoc.</p>
+<p>When a full scaled documentation is needed it should be done with Asciidoc.<br>
+The documentation sources are inside the <code>sechub-doc/src</code> folder.</p>
 </div>
 <div class="admonitionblock tip">
 <table>
@@ -4940,8 +4937,8 @@ also as <code>.adoc</code></p>
 <i class="fa icon-tip" title="Tip"></i>
 </td>
 <td class="content">
-You can use <a href="http://asciidoctor.org/docs/user-manual" class="bare">http://asciidoctor.org/docs/user-manual</a> or
-     look into <a href="http://asciidoctor.org/docs/asciidoc-syntax-quick-reference" class="bare">http://asciidoctor.org/docs/asciidoc-syntax-quick-reference</a> for more information
+You can use the <a href="http://asciidoctor.org/docs/user-manual">Asciidoc user manual</a> or
+     look into <a href="http://asciidoctor.org/docs/asciidoc-syntax-quick-reference">Asciidoc quick reference</a> for more information
 </td>
 </tr>
 </table>
@@ -4975,25 +4972,23 @@ to create an automated use case description. It contains also generated
 </div>
 </div>
 <div class="sect3">
-<h4 id="automated-kubernetes-files">8.2.4. Automated Kubernetes files</h4>
-<div class="paragraph">
-<p>The <code>@MustBeDocumented</code> annotation is also used for automatic generation of <code>Kubernetes</code> deployment parts. See <a href="#section-infrastructure-kubernetes-files-generator">Kubernetes Files Generator</a> .
-for details.</p>
-</div>
-</div>
-<div class="sect3">
-<h4 id="automated-diagrams">8.2.5. Automated Diagrams</h4>
+<h4 id="automated-diagrams">8.2.4. Automated Diagrams</h4>
 <div class="sect4">
-<h5 id="section-documentation-messaging-overview">8.2.5.1. Domain messaging overview</h5>
+<h5 id="section-documentation-messaging-overview">8.2.4.1. Domain messaging overview</h5>
 <div class="paragraph">
 <p>Using Annotations, which are itself tagged with <code>@DomainMessaging</code> annotation, those parts will automatically
 listed inside generated messaging diagram(s) <code>gen_domain_messaging_overview.plantuml</code> :</p>
 </div>
+<details>
+<summary class="title">Click to reveal the diagram</summary>
+<div class="content">
 <div class="imageblock">
 <div class="content">
 <img src="images/gen_domain_messaging_overview.svg" alt="Sequence diagram of messaging" width="1024" height="3866">
 </div>
 </div>
+</div>
+</details>
 <div class="admonitionblock tip">
 <table>
 <tr>
@@ -5001,20 +4996,18 @@ listed inside generated messaging diagram(s) <code>gen_domain_messaging_overview
 <i class="fa icon-tip" title="Tip"></i>
 </td>
 <td class="content">
-For an example look into <code>@IsReceivingAsyncMessage</code> and look also for its
-     references.
+For an example look into <code>@IsReceivingAsyncMessage</code> and look also for its references.
 </td>
 </tr>
 </table>
 </div>
 </div>
 <div class="sect4">
-<h5 id="section-documentation-usecase-event-overview">8.2.5.2. Usecase event overview diagrams</h5>
+<h5 id="section-documentation-usecase-event-overview">8.2.4.2. Usecase event overview diagrams</h5>
 <div class="paragraph">
-<p>For some usecases we got event trace information (from special integration tests). With those information
-additional diagrams are generated and included at Usecase description level. They show the events happening
-after a usecase has been triggered. See <a href="#section-coding-convention-event-trace">Coding conventions for event trace integration tests</a>
-.</p>
+<p>For some usecases we got event trace information (from special integration tests).
+With this information additional diagrams are generated and included at usecase description level.
+They show the events happening after a usecase has been triggered.</p>
 </div>
 <div class="paragraph">
 <p>But not every usecase has got such a diagram: Either there are no events (can happen) or just no integration test for this case has been created.</p>
@@ -5033,9 +5026,9 @@ be rendered by Asciidoctor afterwards.</p>
 <div class="sect2">
 <h3 id="prerequisites">8.4. Prerequisites</h3>
 <div class="paragraph">
-<p>To have <a href="#section-documentation-usecase-event-overview">Usecase event overview</a> generated, the integrationtests must have called before!
-Otherwise this information will not be shown inside asciidoc output! This was optional to seperate documentation and integration tests.
-But even tracing can only be done at runtime - so it&#8217;s necessary to execute integration tests and then documentation.</p>
+<p>To have <a href="#section-documentation-usecase-event-overview">Usecase event overview</a> generated, the integrationtests must have run before!
+Otherwise this information will not be shown inside the asciidoc output! This was optional to seperate documentation and integration tests.
+But even tracing can only be done at runtime - so it&#8217;s necessary to execute integration tests and then create documentation.</p>
 </div>
 <div class="paragraph">
 <p>Build server and GitHub action do this automatically.</p>
@@ -5044,8 +5037,7 @@ But even tracing can only be done at runtime - so it&#8217;s necessary to execut
 <div class="sect2">
 <h3 id="generation-of-sechub-pages">8.5. Generation of SecHub pages</h3>
 <div class="paragraph">
-<p>just call <code>gradlew documentation-with-pages</code> or if documentation is already generated just call
-<code>gradlew docToPages</code>, so documentation parts will copied into <code>docs</code> folder.</p>
+<p>With each release, the <a href="https://mercedes-benz.github.io/sechub/">github pages documents</a> are being updated automatically by the release action workflow.</p>
 </div>
 <div style="page-break-after: always;"></div>
 </div>
@@ -5891,7 +5883,7 @@ In this case the user cannot define them in the executor configuration, but they
 are listed here for the sake of completeness.</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 27. PDS executor configuration parameters</caption>
+<caption class="title">Table 26. PDS executor configuration parameters</caption>
 <colgroup>
 <col style="width: 33.3333%;">
 <col style="width: 33.3333%;">
@@ -8306,7 +8298,7 @@ one domain calls another one.</p>
 <h5 id="section-gen-messaging-request_user_role_recalculation">10.9.2.31. Message REQUEST_USER_ROLE_RECALCULATION</h5>
 <div class="imageblock">
 <div class="content">
-<img src="images/gen_domain_messaging_request_user_role_recalculation.svg" alt="Sequence diagram of messaging REQUEST_USER_ROLE_RECALCULATION" width="2244" height="380">
+<img src="images/gen_domain_messaging_request_user_role_recalculation.svg" alt="Sequence diagram of messaging REQUEST_USER_ROLE_RECALCULATION" width="2290" height="380">
 </div>
 </div>
 <div class="admonitionblock note">
@@ -8577,7 +8569,7 @@ one domain calls another one.</p>
 <h5 id="section-gen-messaging-user_new_api_token_requested">10.9.2.48. Message USER_NEW_API_TOKEN_REQUESTED</h5>
 <div class="imageblock">
 <div class="content">
-<img src="images/gen_domain_messaging_user_new_api_token_requested.svg" alt="Sequence diagram of messaging USER_NEW_API_TOKEN_REQUESTED" width="964" height="205">
+<img src="images/gen_domain_messaging_user_new_api_token_requested.svg" alt="Sequence diagram of messaging USER_NEW_API_TOKEN_REQUESTED" width="871" height="205">
 </div>
 </div>
 <div class="admonitionblock note">
@@ -9818,17 +9810,17 @@ build will break.</p>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">2</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">upload sourcecode</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">upload binaries</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">ROLE_SUPERADMIN, ROLE_USER</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">2</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><em>This step is defined at method <code>uploadSourceCode</code> in class `com.mercedesbenz.sechub.domain.schedule.SchedulerRestController`</em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>This step is defined at method <code>uploadBinaries</code> in class `com.mercedesbenz.sechub.domain.schedule.SchedulerRestController`</em></p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">2</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">upload binaries</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">upload sourcecode</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">ROLE_SUPERADMIN, ROLE_USER</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">3</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><em>This step is defined at method <code>uploadBinaries</code> in class `com.mercedesbenz.sechub.domain.schedule.SchedulerRestController`</em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>This step is defined at method <code>uploadSourceCode</code> in class `com.mercedesbenz.sechub.domain.schedule.SchedulerRestController`</em></p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">3</p></td>
@@ -9839,17 +9831,17 @@ build will break.</p>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">4</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">get job status</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">download job report and traffic light</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">ROLE_SUPERADMIN, ROLE_USER</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">4</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><em>This step is defined at method <code>getJobStatus</code> in class `com.mercedesbenz.sechub.domain.schedule.SchedulerRestController`</em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>This step is defined at method <code>getScanSecHubReportAsJSON</code> in class `com.mercedesbenz.sechub.domain.scan.report.ScanReportRestController`</em></p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">4</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">download job report and traffic light</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">get job status</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">ROLE_SUPERADMIN, ROLE_USER</p></td>
 <td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><em>This step is defined at method <code>getScanSecHubReportAsJSON</code> in class `com.mercedesbenz.sechub.domain.scan.report.ScanReportRestController`</em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>This step is defined at method <code>getJobStatus</code> in class `com.mercedesbenz.sechub.domain.schedule.SchedulerRestController`</em></p></td>
 </tr>
 </tbody>
 </table>
@@ -10219,6 +10211,13 @@ For example a user must have a project assigned to be able to scan on it!</p>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">2</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Update authorization parts</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">2</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>This step is defined at method <code>revokeUserAccessFromProject</code> in class `com.mercedesbenz.sechub.domain.scan.access.ScanRevokeUserAccessFromProjectService`</em></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">2</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Unassign user</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">ROLE_SUPERADMIN</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">2</p></td>
@@ -10229,15 +10228,8 @@ For example a user must have a project assigned to be able to scan on it!</p>
 <td class="tableblock halign-left valign-top"><p class="tableblock">2</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Update authorization parts</p></td>
 <td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">2</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><em>This step is defined at method <code>revokeUserAccessFromProject</code> in class `com.mercedesbenz.sechub.domain.schedule.access.ScheduleRevokeUserAccessFromProjectService`</em></p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">2</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Update authorization parts</p></td>
-<td class="tableblock halign-left valign-top"></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">4</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><em>This step is defined at method <code>revokeUserAccessFromProject</code> in class `com.mercedesbenz.sechub.domain.scan.access.ScanRevokeUserAccessFromProjectService`</em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>This step is defined at method <code>revokeUserAccessFromProject</code> in class `com.mercedesbenz.sechub.domain.schedule.access.ScheduleRevokeUserAccessFromProjectService`</em></p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">4</p></td>
@@ -10376,14 +10368,14 @@ and that the ownership must be moved before User delete is possible.</p>
 <td class="tableblock halign-left valign-top"><p class="tableblock">revoke user from schedule access</p></td>
 <td class="tableblock halign-left valign-top"></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">3</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><em>This step is defined at method <code>revokeUserAccess</code> in class `com.mercedesbenz.sechub.domain.schedule.access.ScheduleRevokeUserAccessAtAllService`</em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>This step is defined at method <code>revokeUserAccess</code> in class `com.mercedesbenz.sechub.domain.scan.access.ScanRevokeUserAccessAtAllService`</em></p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">3</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">revoke user from schedule access</p></td>
 <td class="tableblock halign-left valign-top"></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">4</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><em>This step is defined at method <code>revokeUserAccess</code> in class `com.mercedesbenz.sechub.domain.scan.access.ScanRevokeUserAccessAtAllService`</em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>This step is defined at method <code>revokeUserAccess</code> in class `com.mercedesbenz.sechub.domain.schedule.access.ScheduleRevokeUserAccessAtAllService`</em></p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">4</p></td>
@@ -10786,7 +10778,7 @@ The list entries do contain</p>
 <h4 id="section-usecase-UC_024">10.10.25. UC_024-User requests new API token</h4>
 <div id="sechub-doclink-uc-user-requests-new-apittoken" class="paragraph">
 <p>It shall be possible to achieve this by calling REST API and also by just visiting
-static sechub website and entering mail adress and post request by simple web form.</p>
+static sechub website and entering email address and post request by simple web form.</p>
 </div>
 <div class="paragraph">
 <p>When user exists a new one time token will be created and sent to user per email - so same way as done when a new
@@ -10828,7 +10820,7 @@ user signup is accepted by admin.</p>
 <td class="tableblock halign-left valign-top"></td>
 <td class="tableblock halign-left valign-top"></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Rest api called to request new user api token. Normally done by user itself</p>
-<p class="tableblock"><em>This step is defined at method <code>anonymousRequestToGetNewApiTokenForUserMailAdress</code> in class `com.mercedesbenz.sechub.domain.administration.user.AnonymousUserRequestNewApiTokenRestController`</em></p></td>
+<p class="tableblock"><em>This step is defined at method <code>anonymousRequestToGetNewApiTokenForUserEmailAddress</code> in class `com.mercedesbenz.sechub.domain.administration.user.AnonymousUserRequestNewApiTokenRestController`</em></p></td>
 </tr>
 </tbody>
 </table>
@@ -11200,16 +11192,16 @@ user signup is accepted by admin.</p>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Service call</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">ROLE_SUPERADMIN</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">2</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Sends request to scheduler to send updates about current status.</p>
-<p class="tableblock"><em>This step is defined at method <code>triggerSchedulerStatusRefresh</code> in class `com.mercedesbenz.sechub.domain.administration.scheduler.TriggerSchedulerStatusRefreshService`</em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Sends request to scheduler domain to disable scheduler job processing</p>
+<p class="tableblock"><em>This step is defined at method <code>disableJobProcessing</code> in class `com.mercedesbenz.sechub.domain.administration.scheduler.SwitchSchedulerJobProcessingService`</em></p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">2</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Service call</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">ROLE_SUPERADMIN</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">3</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Sends request to scheduler domain to disable scheduler job processing</p>
-<p class="tableblock"><em>This step is defined at method <code>disableJobProcessing</code> in class `com.mercedesbenz.sechub.domain.administration.scheduler.SwitchSchedulerJobProcessingService`</em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Sends request to scheduler to send updates about current status.</p>
+<p class="tableblock"><em>This step is defined at method <code>triggerSchedulerStatusRefresh</code> in class `com.mercedesbenz.sechub.domain.administration.scheduler.TriggerSchedulerStatusRefreshService`</em></p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">3</p></td>
@@ -14522,7 +14514,7 @@ The complete documentation about REST API is generated. If you want to change co
 <p><strong class="big">Definition</strong></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 28. General request information</caption>
+<caption class="title">Table 27. General request information</caption>
 <colgroup>
 <col style="width: 14.2857%;">
 <col style="width: 85.7143%;">
@@ -14570,7 +14562,7 @@ The complete documentation about REST API is generated. If you want to change co
 <p><strong class="big">Definition</strong></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 29. General request information</caption>
+<caption class="title">Table 28. General request information</caption>
 <colgroup>
 <col style="width: 14.2857%;">
 <col style="width: 85.7143%;">
@@ -14622,7 +14614,7 @@ The complete documentation about REST API is generated. If you want to change co
 <p><strong class="big">Definition</strong></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 30. General request information</caption>
+<caption class="title">Table 29. General request information</caption>
 <colgroup>
 <col style="width: 14.2857%;">
 <col style="width: 85.7143%;">
@@ -14701,7 +14693,7 @@ The complete documentation about REST API is generated. If you want to change co
 <p><strong class="big">Definition</strong></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 31. General request information</caption>
+<caption class="title">Table 30. General request information</caption>
 <colgroup>
 <col style="width: 14.2857%;">
 <col style="width: 85.7143%;">
@@ -14731,7 +14723,7 @@ The complete documentation about REST API is generated. If you want to change co
 <p><strong>Path parameters</strong> <br></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 32. https://localhost:8081/api/admin/project/{projectId}/membership/{userId}</caption>
+<caption class="title">Table 31. https://localhost:8081/api/admin/project/{projectId}/membership/{userId}</caption>
 <colgroup>
 <col style="width: 50%;">
 <col style="width: 50%;">
@@ -14794,7 +14786,7 @@ The complete documentation about REST API is generated. If you want to change co
 <p><strong class="big">Definition</strong></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 33. General request information</caption>
+<caption class="title">Table 32. General request information</caption>
 <colgroup>
 <col style="width: 14.2857%;">
 <col style="width: 85.7143%;">
@@ -14824,7 +14816,7 @@ The complete documentation about REST API is generated. If you want to change co
 <p><strong>Path parameters</strong> <br></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 34. https://localhost:8081/api/admin/project/{projectId}/membership/{userId}</caption>
+<caption class="title">Table 33. https://localhost:8081/api/admin/project/{projectId}/membership/{userId}</caption>
 <colgroup>
 <col style="width: 50%;">
 <col style="width: 50%;">
@@ -14887,7 +14879,7 @@ The complete documentation about REST API is generated. If you want to change co
 <p><strong class="big">Definition</strong></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 35. General request information</caption>
+<caption class="title">Table 34. General request information</caption>
 <colgroup>
 <col style="width: 14.2857%;">
 <col style="width: 85.7143%;">
@@ -14917,7 +14909,7 @@ The complete documentation about REST API is generated. If you want to change co
 <p><strong>Path parameters</strong> <br></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 36. https://localhost:8081/api/admin/user/{userId}</caption>
+<caption class="title">Table 35. https://localhost:8081/api/admin/user/{userId}</caption>
 <colgroup>
 <col style="width: 50%;">
 <col style="width: 50%;">
@@ -14975,7 +14967,7 @@ The complete documentation about REST API is generated. If you want to change co
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>email</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The mail adress of the user</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The email address of the user</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>superAdmin</code></p></td>
@@ -15023,7 +15015,7 @@ The complete documentation about REST API is generated. If you want to change co
 <p><strong class="big">Definition</strong></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 37. General request information</caption>
+<caption class="title">Table 36. General request information</caption>
 <colgroup>
 <col style="width: 14.2857%;">
 <col style="width: 85.7143%;">
@@ -15053,7 +15045,7 @@ The complete documentation about REST API is generated. If you want to change co
 <p><strong>Path parameters</strong> <br></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 38. https://localhost:8081/api/admin/user/{userId}</caption>
+<caption class="title">Table 37. https://localhost:8081/api/admin/user/{userId}</caption>
 <colgroup>
 <col style="width: 50%;">
 <col style="width: 50%;">
@@ -15111,7 +15103,7 @@ The complete documentation about REST API is generated. If you want to change co
 <p><strong class="big">Definition</strong></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 39. General request information</caption>
+<caption class="title">Table 38. General request information</caption>
 <colgroup>
 <col style="width: 14.2857%;">
 <col style="width: 85.7143%;">
@@ -15141,7 +15133,7 @@ The complete documentation about REST API is generated. If you want to change co
 <p><strong>Path parameters</strong> <br></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 40. https://localhost:8081/api/admin/project/{projectId}</caption>
+<caption class="title">Table 39. https://localhost:8081/api/admin/project/{projectId}</caption>
 <colgroup>
 <col style="width: 50%;">
 <col style="width: 50%;">
@@ -15263,7 +15255,7 @@ The complete documentation about REST API is generated. If you want to change co
 <p><strong class="big">Definition</strong></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 41. General request information</caption>
+<caption class="title">Table 40. General request information</caption>
 <colgroup>
 <col style="width: 14.2857%;">
 <col style="width: 85.7143%;">
@@ -15293,7 +15285,7 @@ The complete documentation about REST API is generated. If you want to change co
 <p><strong>Path parameters</strong> <br></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 42. https://localhost:8081/api/admin/scan/download/{jobUUID}</caption>
+<caption class="title">Table 41. https://localhost:8081/api/admin/scan/download/{jobUUID}</caption>
 <colgroup>
 <col style="width: 50%;">
 <col style="width: 50%;">
@@ -15319,7 +15311,7 @@ The complete documentation about REST API is generated. If you want to change co
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/scan/download/68751919-6190-45c9-b13e-02433a75f920' -i -u 'user:secret' -X GET \
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/scan/download/63e99443-25d3-4314-a8aa-4769acb6cda9' -i -u 'user:secret' -X GET \
     -H 'Content-Type: application/json;charset=UTF-8'</code></pre>
 </div>
 </div>
@@ -15333,7 +15325,7 @@ The complete documentation about REST API is generated. If you want to change co
 <p><strong class="big">Definition</strong></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 43. General request information</caption>
+<caption class="title">Table 42. General request information</caption>
 <colgroup>
 <col style="width: 14.2857%;">
 <col style="width: 85.7143%;">
@@ -15363,7 +15355,7 @@ The complete documentation about REST API is generated. If you want to change co
 <p><strong>Path parameters</strong> <br></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 44. https://localhost:8081/api/admin/user/{userId}/grant/superadmin</caption>
+<caption class="title">Table 43. https://localhost:8081/api/admin/user/{userId}/grant/superadmin</caption>
 <colgroup>
 <col style="width: 50%;">
 <col style="width: 50%;">
@@ -15421,7 +15413,7 @@ The complete documentation about REST API is generated. If you want to change co
 <p><strong class="big">Definition</strong></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 45. General request information</caption>
+<caption class="title">Table 44. General request information</caption>
 <colgroup>
 <col style="width: 14.2857%;">
 <col style="width: 85.7143%;">
@@ -15451,7 +15443,7 @@ The complete documentation about REST API is generated. If you want to change co
 <p><strong>Path parameters</strong> <br></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 46. https://localhost:8081/api/admin/user/{userId}/revoke/superadmin</caption>
+<caption class="title">Table 45. https://localhost:8081/api/admin/user/{userId}/revoke/superadmin</caption>
 <colgroup>
 <col style="width: 50%;">
 <col style="width: 50%;">
@@ -15509,7 +15501,7 @@ The complete documentation about REST API is generated. If you want to change co
 <p><strong class="big">Definition</strong></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 47. General request information</caption>
+<caption class="title">Table 46. General request information</caption>
 <colgroup>
 <col style="width: 14.2857%;">
 <col style="width: 85.7143%;">
@@ -15603,7 +15595,7 @@ The complete documentation about REST API is generated. If you want to change co
 <p><strong class="big">Definition</strong></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 48. General request information</caption>
+<caption class="title">Table 47. General request information</caption>
 <colgroup>
 <col style="width: 14.2857%;">
 <col style="width: 85.7143%;">
@@ -15633,7 +15625,7 @@ The complete documentation about REST API is generated. If you want to change co
 <p><strong>Path parameters</strong> <br></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 49. https://localhost:8081/api/admin/project/{projectId}/owner/{userId}</caption>
+<caption class="title">Table 48. https://localhost:8081/api/admin/project/{projectId}/owner/{userId}</caption>
 <colgroup>
 <col style="width: 50%;">
 <col style="width: 50%;">
@@ -15696,7 +15688,7 @@ The complete documentation about REST API is generated. If you want to change co
 <p><strong class="big">Definition</strong></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 50. General request information</caption>
+<caption class="title">Table 49. General request information</caption>
 <colgroup>
 <col style="width: 14.2857%;">
 <col style="width: 85.7143%;">
@@ -15726,7 +15718,7 @@ The complete documentation about REST API is generated. If you want to change co
 <p><strong>Path parameters</strong> <br></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 51. https://localhost:8081/api/admin/user/{userId}/email/{emailAddress}</caption>
+<caption class="title">Table 50. https://localhost:8081/api/admin/user/{userId}/email/{emailAddress}</caption>
 <colgroup>
 <col style="width: 50%;">
 <col style="width: 50%;">
@@ -15740,7 +15732,7 @@ The complete documentation about REST API is generated. If you want to change co
 <tbody>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>userId</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The userId of the user whose email adress will be changed</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The userId of the user whose email address will be changed</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>emailAddress</code></p></td>
@@ -15788,7 +15780,7 @@ The complete documentation about REST API is generated. If you want to change co
 <p><strong class="big">Definition</strong></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 52. General request information</caption>
+<caption class="title">Table 51. General request information</caption>
 <colgroup>
 <col style="width: 14.2857%;">
 <col style="width: 85.7143%;">
@@ -15818,7 +15810,7 @@ The complete documentation about REST API is generated. If you want to change co
 <p><strong>Path parameters</strong> <br></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 53. https://localhost:8081/api/admin/user-by-email/{emailAddress}</caption>
+<caption class="title">Table 52. https://localhost:8081/api/admin/user-by-email/{emailAddress}</caption>
 <colgroup>
 <col style="width: 50%;">
 <col style="width: 50%;">
@@ -15882,7 +15874,7 @@ The complete documentation about REST API is generated. If you want to change co
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>email</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The mail adress of the user</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The mail address of the user</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>superAdmin</code></p></td>
@@ -15930,7 +15922,7 @@ The complete documentation about REST API is generated. If you want to change co
 <p><strong class="big">Definition</strong></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 54. General request information</caption>
+<caption class="title">Table 53. General request information</caption>
 <colgroup>
 <col style="width: 14.2857%;">
 <col style="width: 85.7143%;">
@@ -16052,7 +16044,7 @@ The complete documentation about REST API is generated. If you want to change co
 <p><strong class="big">Definition</strong></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 55. General request information</caption>
+<caption class="title">Table 54. General request information</caption>
 <colgroup>
 <col style="width: 14.2857%;">
 <col style="width: 85.7143%;">
@@ -16147,7 +16139,7 @@ The complete documentation about REST API is generated. If you want to change co
 <p><strong class="big">Definition</strong></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 56. General request information</caption>
+<caption class="title">Table 55. General request information</caption>
 <colgroup>
 <col style="width: 14.2857%;">
 <col style="width: 85.7143%;">
@@ -16177,7 +16169,7 @@ The complete documentation about REST API is generated. If you want to change co
 <p><strong>Path parameters</strong> <br></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 57. https://localhost:8081/api/admin/project/{projectId}</caption>
+<caption class="title">Table 56. https://localhost:8081/api/admin/project/{projectId}</caption>
 <colgroup>
 <col style="width: 50%;">
 <col style="width: 50%;">
@@ -16236,7 +16228,7 @@ The complete documentation about REST API is generated. If you want to change co
 <p><strong class="big">Definition</strong></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 58. General request information</caption>
+<caption class="title">Table 57. General request information</caption>
 <colgroup>
 <col style="width: 14.2857%;">
 <col style="width: 85.7143%;">
@@ -16266,7 +16258,7 @@ The complete documentation about REST API is generated. If you want to change co
 <p><strong>Path parameters</strong> <br></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 59. https://localhost:8081/api/admin/project/{projectId}/whitelist</caption>
+<caption class="title">Table 58. https://localhost:8081/api/admin/project/{projectId}/whitelist</caption>
 <colgroup>
 <col style="width: 50%;">
 <col style="width: 50%;">
@@ -16355,7 +16347,7 @@ The complete documentation about REST API is generated. If you want to change co
 <p><strong class="big">Definition</strong></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 60. General request information</caption>
+<caption class="title">Table 59. General request information</caption>
 <colgroup>
 <col style="width: 14.2857%;">
 <col style="width: 85.7143%;">
@@ -16385,7 +16377,7 @@ The complete documentation about REST API is generated. If you want to change co
 <p><strong>Path parameters</strong> <br></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 61. https://localhost:8081/api/admin/project/{projectId}/scan/logs</caption>
+<caption class="title">Table 60. https://localhost:8081/api/admin/project/{projectId}/scan/logs</caption>
 <colgroup>
 <col style="width: 50%;">
 <col style="width: 50%;">
@@ -16484,7 +16476,7 @@ The complete documentation about REST API is generated. If you want to change co
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code>[{&quot;sechubJobUUID&quot;:&quot;bd8b1415-529d-439d-98f0-7a7019c957c9&quot;,&quot;executedBy&quot;:&quot;spartakus&quot;,&quot;started&quot;:&quot;2023-08-13T11:49:30.107694225&quot;,&quot;ended&quot;:&quot;2023-08-14T11:49:30.107727725&quot;,&quot;status&quot;:&quot;OK&quot;}]</code></pre>
+<pre class="CodeRay highlight nowrap"><code>[{&quot;sechubJobUUID&quot;:&quot;a6676e74-40b4-4d67-bd74-9664672d5511&quot;,&quot;executedBy&quot;:&quot;spartakus&quot;,&quot;started&quot;:&quot;2024-02-25T10:13:25.558163068&quot;,&quot;ended&quot;:&quot;2024-02-26T10:13:25.558207992&quot;,&quot;status&quot;:&quot;OK&quot;}]</code></pre>
 </div>
 </div>
 </div>
@@ -16497,7 +16489,7 @@ The complete documentation about REST API is generated. If you want to change co
 <p><strong class="big">Definition</strong></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 62. General request information</caption>
+<caption class="title">Table 61. General request information</caption>
 <colgroup>
 <col style="width: 14.2857%;">
 <col style="width: 85.7143%;">
@@ -16527,7 +16519,7 @@ The complete documentation about REST API is generated. If you want to change co
 <p><strong>Path parameters</strong> <br></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 63. https://localhost:8081/api/admin/project/{projectId}/metadata</caption>
+<caption class="title">Table 62. https://localhost:8081/api/admin/project/{projectId}/metadata</caption>
 <colgroup>
 <col style="width: 50%;">
 <col style="width: 50%;">
@@ -16621,7 +16613,7 @@ The complete documentation about REST API is generated. If you want to change co
 <p><strong class="big">Definition</strong></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 64. General request information</caption>
+<caption class="title">Table 63. General request information</caption>
 <colgroup>
 <col style="width: 14.2857%;">
 <col style="width: 85.7143%;">
@@ -16651,7 +16643,7 @@ The complete documentation about REST API is generated. If you want to change co
 <p><strong>Path parameters</strong> <br></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 65. https://localhost:8081/api/admin/project/{projectId}</caption>
+<caption class="title">Table 64. https://localhost:8081/api/admin/project/{projectId}</caption>
 <colgroup>
 <col style="width: 50%;">
 <col style="width: 50%;">
@@ -16776,7 +16768,7 @@ The complete documentation about REST API is generated. If you want to change co
 <p><strong class="big">Definition</strong></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 66. General request information</caption>
+<caption class="title">Table 65. General request information</caption>
 <colgroup>
 <col style="width: 14.2857%;">
 <col style="width: 85.7143%;">
@@ -16806,7 +16798,7 @@ The complete documentation about REST API is generated. If you want to change co
 <p><strong>Path parameters</strong> <br></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 67. https://localhost:8081/api/admin/project/{projectId}/accesslevel/{projectAccessLevel}</caption>
+<caption class="title">Table 66. https://localhost:8081/api/admin/project/{projectId}/accesslevel/{projectAccessLevel}</caption>
 <colgroup>
 <col style="width: 50%;">
 <col style="width: 50%;">
@@ -16869,7 +16861,7 @@ The complete documentation about REST API is generated. If you want to change co
 <p><strong class="big">Definition</strong></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 68. General request information</caption>
+<caption class="title">Table 67. General request information</caption>
 <colgroup>
 <col style="width: 14.2857%;">
 <col style="width: 85.7143%;">
@@ -16899,7 +16891,7 @@ The complete documentation about REST API is generated. If you want to change co
 <p><strong>Path parameters</strong> <br></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 69. https://localhost:8081/api/anonymous/apitoken/{oneTimeToken}</caption>
+<caption class="title">Table 68. https://localhost:8081/api/anonymous/apitoken/{oneTimeToken}</caption>
 <colgroup>
 <col style="width: 50%;">
 <col style="width: 50%;">
@@ -16945,7 +16937,7 @@ The complete documentation about REST API is generated. If you want to change co
 <p><strong class="big">Definition</strong></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 70. General request information</caption>
+<caption class="title">Table 69. General request information</caption>
 <colgroup>
 <col style="width: 14.2857%;">
 <col style="width: 85.7143%;">
@@ -16975,7 +16967,7 @@ The complete documentation about REST API is generated. If you want to change co
 <p><strong>Path parameters</strong> <br></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 71. https://localhost:8081/api/project/{projectId}/job</caption>
+<caption class="title">Table 70. https://localhost:8081/api/project/{projectId}/job</caption>
 <colgroup>
 <col style="width: 50%;">
 <col style="width: 50%;">
@@ -17094,7 +17086,7 @@ The complete documentation about REST API is generated. If you want to change co
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code>{&quot;jobId&quot;:&quot;aae935e1-9e12-410b-a520-0c29f269d176&quot;}</code></pre>
+<pre class="CodeRay highlight nowrap"><code>{&quot;jobId&quot;:&quot;e845b27e-8a88-4698-9e48-dc0d2c08921f&quot;}</code></pre>
 </div>
 </div>
 </div>
@@ -17104,7 +17096,7 @@ The complete documentation about REST API is generated. If you want to change co
 <p><strong class="big">Definition</strong></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 72. General request information</caption>
+<caption class="title">Table 71. General request information</caption>
 <colgroup>
 <col style="width: 14.2857%;">
 <col style="width: 85.7143%;">
@@ -17134,7 +17126,7 @@ The complete documentation about REST API is generated. If you want to change co
 <p><strong>Path parameters</strong> <br></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 73. https://localhost:8081/api/project/{projectId}/job</caption>
+<caption class="title">Table 72. https://localhost:8081/api/project/{projectId}/job</caption>
 <colgroup>
 <col style="width: 50%;">
 <col style="width: 50%;">
@@ -17273,17 +17265,17 @@ The complete documentation about REST API is generated. If you want to change co
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code>{&quot;jobId&quot;:&quot;239d2f50-2ac1-4b59-9a07-acc99e3d047a&quot;}</code></pre>
+<pre class="CodeRay highlight nowrap"><code>{&quot;jobId&quot;:&quot;0ac228d8-586a-4165-aac9-e56635fbd03f&quot;}</code></pre>
 </div>
 </div>
 </div>
 <div class="sect4">
-<h5 id="section-ucrestdoc-UC_005-infrastructure-scan">11.1.25.3. Infrastructure scan variant</h5>
+<h5 id="section-ucrestdoc-UC_005-secret-scan">11.1.25.3. Secret scan variant</h5>
 <div class="paragraph">
 <p><strong class="big">Definition</strong></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 74. General request information</caption>
+<caption class="title">Table 73. General request information</caption>
 <colgroup>
 <col style="width: 14.2857%;">
 <col style="width: 85.7143%;">
@@ -17313,7 +17305,325 @@ The complete documentation about REST API is generated. If you want to change co
 <p><strong>Path parameters</strong> <br></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 75. https://localhost:8081/api/project/{projectId}/job</caption>
+<caption class="title">Table 74. https://localhost:8081/api/project/{projectId}/job</caption>
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Parameter</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>projectId</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The unique id of the project id where a new sechub job shall be created</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p><strong>Request headers</strong> <br></p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Name</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+</table>
+<div class="paragraph">
+<p><strong>Request fields</strong> <br></p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Path</th>
+<th class="tableblock halign-left valign-top">Type</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>apiVersion</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The api version, currently only 1.0 is supported</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>secretScan</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Object</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Secret scan configuration block</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>secretScan.use</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Array</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Referenced data configuration objects by their unique names</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data.sources[].name</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Unique reference name</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data.binaries[].name</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Unique reference name</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p><strong>Response fields</strong> <br></p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Path</th>
+<th class="tableblock halign-left valign-top">Type</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>jobId</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">A unique job id</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p><strong class="big">Example</strong></p>
+</div>
+<div class="paragraph">
+<p><strong>Curl request</strong> <br></p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/job' -i -X POST \
+    -H 'Content-Type: application/json;charset=UTF-8' \
+    -d '{&quot;data&quot;:{&quot;sources&quot;:[{&quot;name&quot;:&quot;source-ref-name&quot;}],&quot;binaries&quot;:[{&quot;name&quot;:&quot;bin-ref-name&quot;}]},&quot;secretScan&quot;:{&quot;use&quot;:[&quot;source-ref-name&quot;,&quot;bin-ref-name&quot;]},&quot;apiVersion&quot;:&quot;1.0&quot;}'</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p><strong>Response body</strong> <br></p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight nowrap"><code>{&quot;jobId&quot;:&quot;93bf29e9-9190-4110-921f-de61e322cc59&quot;}</code></pre>
+</div>
+</div>
+</div>
+<div class="sect4">
+<h5 id="section-ucrestdoc-UC_005-license-scan">11.1.25.4. License scan variant</h5>
+<div class="paragraph">
+<p><strong class="big">Definition</strong></p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 75. General request information</caption>
+<colgroup>
+<col style="width: 14.2857%;">
+<col style="width: 85.7143%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top"></th>
+<th class="tableblock halign-left valign-top">Value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Path</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">/api/project/{projectId}/job</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Method</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">POST</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Status code</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">200 OK</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p><strong>Path parameters</strong> <br></p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 76. https://localhost:8081/api/project/{projectId}/job</caption>
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Parameter</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>projectId</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The unique id of the project id where a new sechub job shall be created</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p><strong>Request headers</strong> <br></p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Name</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+</table>
+<div class="paragraph">
+<p><strong>Request fields</strong> <br></p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Path</th>
+<th class="tableblock halign-left valign-top">Type</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>apiVersion</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The api version, currently only 1.0 is supported</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>licenseScan</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Object</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">License scan configuration block</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>licenseScan.use</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Array</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Referenced data configuration objects by their unique names</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data.sources[].name</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Unique reference name</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data.binaries[].name</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Unique reference name</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p><strong>Response fields</strong> <br></p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Path</th>
+<th class="tableblock halign-left valign-top">Type</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>jobId</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">A unique job id</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p><strong class="big">Example</strong></p>
+</div>
+<div class="paragraph">
+<p><strong>Curl request</strong> <br></p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/job' -i -X POST \
+    -H 'Content-Type: application/json;charset=UTF-8' \
+    -d '{&quot;data&quot;:{&quot;sources&quot;:[{&quot;name&quot;:&quot;source-ref-name&quot;}],&quot;binaries&quot;:[{&quot;name&quot;:&quot;bin-ref-name&quot;}]},&quot;licenseScan&quot;:{&quot;use&quot;:[&quot;source-ref-name&quot;,&quot;bin-ref-name&quot;]},&quot;apiVersion&quot;:&quot;1.0&quot;}'</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p><strong>Response body</strong> <br></p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight nowrap"><code>{&quot;jobId&quot;:&quot;a9164fd3-4791-4132-92f0-1c14daed7fc4&quot;}</code></pre>
+</div>
+</div>
+</div>
+<div class="sect4">
+<h5 id="section-ucrestdoc-UC_005-infrastructure-scan">11.1.25.5. Infrastructure scan variant</h5>
+<div class="paragraph">
+<p><strong class="big">Definition</strong></p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 77. General request information</caption>
+<colgroup>
+<col style="width: 14.2857%;">
+<col style="width: 85.7143%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top"></th>
+<th class="tableblock halign-left valign-top">Value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Path</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">/api/project/{projectId}/job</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Method</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">POST</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Status code</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">200 OK</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p><strong>Path parameters</strong> <br></p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 78. https://localhost:8081/api/project/{projectId}/job</caption>
 <colgroup>
 <col style="width: 50%;">
 <col style="width: 50%;">
@@ -17427,17 +17737,17 @@ The complete documentation about REST API is generated. If you want to change co
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code>{&quot;jobId&quot;:&quot;f8c86cc4-9294-43d9-9690-66491985a6e8&quot;}</code></pre>
+<pre class="CodeRay highlight nowrap"><code>{&quot;jobId&quot;:&quot;d535c54b-5fd3-4da6-a601-9e19530a3f9a&quot;}</code></pre>
 </div>
 </div>
 </div>
 <div class="sect4">
-<h5 id="section-ucrestdoc-UC_005-web-scan-anonymous">11.1.25.4. Web scan anonymous variant</h5>
+<h5 id="section-ucrestdoc-UC_005-web-scan-anonymous">11.1.25.6. Web scan anonymous variant</h5>
 <div class="paragraph">
 <p><strong class="big">Definition</strong></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 76. General request information</caption>
+<caption class="title">Table 79. General request information</caption>
 <colgroup>
 <col style="width: 14.2857%;">
 <col style="width: 85.7143%;">
@@ -17467,7 +17777,7 @@ The complete documentation about REST API is generated. If you want to change co
 <p><strong>Path parameters</strong> <br></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 77. https://localhost:8081/api/project/{projectId}/job</caption>
+<caption class="title">Table 80. https://localhost:8081/api/project/{projectId}/job</caption>
 <colgroup>
 <col style="width: 50%;">
 <col style="width: 50%;">
@@ -17596,17 +17906,17 @@ The complete documentation about REST API is generated. If you want to change co
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code>{&quot;jobId&quot;:&quot;6a37f96b-2400-490f-80c3-3ea33f647fbe&quot;}</code></pre>
+<pre class="CodeRay highlight nowrap"><code>{&quot;jobId&quot;:&quot;3f63b1f2-571a-4b1a-afd7-b3fedcc3d574&quot;}</code></pre>
 </div>
 </div>
 </div>
 <div class="sect4">
-<h5 id="section-ucrestdoc-UC_005-web-scan-login-basic">11.1.25.5. Web Scan login basic variant</h5>
+<h5 id="section-ucrestdoc-UC_005-web-scan-with-api-definition">11.1.25.7. Web scan with api definition variant</h5>
 <div class="paragraph">
 <p><strong class="big">Definition</strong></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 78. General request information</caption>
+<caption class="title">Table 81. General request information</caption>
 <colgroup>
 <col style="width: 14.2857%;">
 <col style="width: 85.7143%;">
@@ -17636,7 +17946,325 @@ The complete documentation about REST API is generated. If you want to change co
 <p><strong>Path parameters</strong> <br></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 79. https://localhost:8081/api/project/{projectId}/job</caption>
+<caption class="title">Table 82. https://localhost:8081/api/project/{projectId}/job</caption>
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Parameter</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>projectId</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The unique id of the project id where a new sechub job shall be created</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p><strong>Request headers</strong> <br></p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Name</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+</table>
+<div class="paragraph">
+<p><strong>Request fields</strong> <br></p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Path</th>
+<th class="tableblock halign-left valign-top">Type</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>apiVersion</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The api version, currently only 1.0 is supported</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>webScan</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Object</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Webscan configuration block</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>webScan.url</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Webscan URI to scan for</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>webScan.api.type</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Type of the API definition files that will be provided</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>webScan.api.use</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Array</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Reference to the data section containing the API definition files. Always use 'sources' with 'files' instead 'folders'.</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p><strong>Response fields</strong> <br></p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Path</th>
+<th class="tableblock halign-left valign-top">Type</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>jobId</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">A unique job id</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p><strong class="big">Example</strong></p>
+</div>
+<div class="paragraph">
+<p><strong>Curl request</strong> <br></p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/job' -i -X POST \
+    -H 'Content-Type: application/json;charset=UTF-8' \
+    -d '{&quot;webScan&quot;:{&quot;api&quot;:{&quot;type&quot;:&quot;OPEN_API&quot;,&quot;use&quot;:[&quot;openApi-file-reference&quot;]},&quot;url&quot;:&quot;https://localhost/mywebapp/login&quot;},&quot;apiVersion&quot;:&quot;1.0&quot;}'</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p><strong>Response body</strong> <br></p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight nowrap"><code>{&quot;jobId&quot;:&quot;ce0dbba0-8df4-4683-b981-39b198fc2ea1&quot;}</code></pre>
+</div>
+</div>
+</div>
+<div class="sect4">
+<h5 id="section-ucrestdoc-UC_005-web-scan-with-client-certificate-definition">11.1.25.8. Web scan with client certificate definition variant</h5>
+<div class="paragraph">
+<p><strong class="big">Definition</strong></p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 83. General request information</caption>
+<colgroup>
+<col style="width: 14.2857%;">
+<col style="width: 85.7143%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top"></th>
+<th class="tableblock halign-left valign-top">Value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Path</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">/api/project/{projectId}/job</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Method</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">POST</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Status code</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">200 OK</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p><strong>Path parameters</strong> <br></p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 84. https://localhost:8081/api/project/{projectId}/job</caption>
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Parameter</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>projectId</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The unique id of the project id where a new sechub job shall be created</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p><strong>Request headers</strong> <br></p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Name</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+</table>
+<div class="paragraph">
+<p><strong>Request fields</strong> <br></p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Path</th>
+<th class="tableblock halign-left valign-top">Type</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>apiVersion</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The api version, currently only 1.0 is supported</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>webScan</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Object</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Webscan configuration block</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>webScan.url</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Webscan URI to scan for</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>webScan.clientCertificate.password</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Password the client certificate file is protected with</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>webScan.clientCertificate.use</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Array</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Reference to the data section containing the client certificate definition file. Always use 'sources' with a single 'file' instead 'folders'.</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p><strong>Response fields</strong> <br></p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Path</th>
+<th class="tableblock halign-left valign-top">Type</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>jobId</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">A unique job id</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p><strong class="big">Example</strong></p>
+</div>
+<div class="paragraph">
+<p><strong>Curl request</strong> <br></p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/job' -i -X POST \
+    -H 'Content-Type: application/json;charset=UTF-8' \
+    -d '{&quot;webScan&quot;:{&quot;url&quot;:&quot;https://localhost/mywebapp&quot;,&quot;clientCertificate&quot;:{&quot;password&quot;:&quot;example-cert-password&quot;,&quot;use&quot;:[&quot;client-certificate-file-reference&quot;]}},&quot;apiVersion&quot;:&quot;1.0&quot;}'</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p><strong>Response body</strong> <br></p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight nowrap"><code>{&quot;jobId&quot;:&quot;9835a031-f1ae-45da-a5cc-61dc8411985e&quot;}</code></pre>
+</div>
+</div>
+</div>
+<div class="sect4">
+<h5 id="section-ucrestdoc-UC_005-web-scan-login-basic">11.1.25.9. Web Scan login basic variant</h5>
+<div class="paragraph">
+<p><strong class="big">Definition</strong></p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 85. General request information</caption>
+<colgroup>
+<col style="width: 14.2857%;">
+<col style="width: 85.7143%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top"></th>
+<th class="tableblock halign-left valign-top">Value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Path</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">/api/project/{projectId}/job</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Method</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">POST</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Status code</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">200 OK</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p><strong>Path parameters</strong> <br></p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 86. https://localhost:8081/api/project/{projectId}/job</caption>
 <colgroup>
 <col style="width: 50%;">
 <col style="width: 50%;">
@@ -17770,17 +18398,17 @@ The complete documentation about REST API is generated. If you want to change co
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code>{&quot;jobId&quot;:&quot;aeb2fa3c-f2e7-4918-bdde-6bfe6ad06042&quot;}</code></pre>
+<pre class="CodeRay highlight nowrap"><code>{&quot;jobId&quot;:&quot;3c7bf60c-d8c8-4567-ae79-ec198ee2b30b&quot;}</code></pre>
 </div>
 </div>
 </div>
 <div class="sect4">
-<h5 id="section-ucrestdoc-UC_005-web-scan-login-form-scripted">11.1.25.6. Web Scan login form scripted variant</h5>
+<h5 id="section-ucrestdoc-UC_005-web-scan-login-form-scripted">11.1.25.10. Web Scan login form scripted variant</h5>
 <div class="paragraph">
 <p><strong class="big">Definition</strong></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 80. General request information</caption>
+<caption class="title">Table 87. General request information</caption>
 <colgroup>
 <col style="width: 14.2857%;">
 <col style="width: 85.7143%;">
@@ -17810,7 +18438,7 @@ The complete documentation about REST API is generated. If you want to change co
 <p><strong>Path parameters</strong> <br></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 81. https://localhost:8081/api/project/{projectId}/job</caption>
+<caption class="title">Table 88. https://localhost:8081/api/project/{projectId}/job</caption>
 <colgroup>
 <col style="width: 50%;">
 <col style="width: 50%;">
@@ -17964,17 +18592,17 @@ The complete documentation about REST API is generated. If you want to change co
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code>{&quot;jobId&quot;:&quot;f63c64fe-ece2-425d-b2b8-ccb31432d570&quot;}</code></pre>
+<pre class="CodeRay highlight nowrap"><code>{&quot;jobId&quot;:&quot;94675c44-8489-42f6-9c08-054c675151bb&quot;}</code></pre>
 </div>
 </div>
 </div>
 <div class="sect4">
-<h5 id="section-ucrestdoc-UC_005-web-scan-headers">11.1.25.7. Web Scan headers variant</h5>
+<h5 id="section-ucrestdoc-UC_005-web-scan-headers">11.1.25.11. Web Scan headers variant</h5>
 <div class="paragraph">
 <p><strong class="big">Definition</strong></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 82. General request information</caption>
+<caption class="title">Table 89. General request information</caption>
 <colgroup>
 <col style="width: 14.2857%;">
 <col style="width: 85.7143%;">
@@ -18004,7 +18632,7 @@ The complete documentation about REST API is generated. If you want to change co
 <p><strong>Path parameters</strong> <br></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 83. https://localhost:8081/api/project/{projectId}/job</caption>
+<caption class="title">Table 90. https://localhost:8081/api/project/{projectId}/job</caption>
 <colgroup>
 <col style="width: 50%;">
 <col style="width: 50%;">
@@ -18123,7 +18751,7 @@ The complete documentation about REST API is generated. If you want to change co
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code>{&quot;jobId&quot;:&quot;6256f7e5-50c3-4c4d-bf92-090a1e39b3d0&quot;}</code></pre>
+<pre class="CodeRay highlight nowrap"><code>{&quot;jobId&quot;:&quot;0553c3e8-b73c-4d09-819d-156ff757150d&quot;}</code></pre>
 </div>
 </div>
 </div>
@@ -18137,7 +18765,7 @@ The complete documentation about REST API is generated. If you want to change co
 <p><strong class="big">Definition</strong></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 84. General request information</caption>
+<caption class="title">Table 91. General request information</caption>
 <colgroup>
 <col style="width: 14.2857%;">
 <col style="width: 85.7143%;">
@@ -18167,7 +18795,7 @@ The complete documentation about REST API is generated. If you want to change co
 <p><strong>Path parameters</strong> <br></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 85. https://localhost:8081/api/project/{projectId}/job/{jobUUID}/sourcecode</caption>
+<caption class="title">Table 92. https://localhost:8081/api/project/{projectId}/job/{jobUUID}/sourcecode</caption>
 <colgroup>
 <col style="width: 50%;">
 <col style="width: 50%;">
@@ -18233,7 +18861,7 @@ The complete documentation about REST API is generated. If you want to change co
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/job/10438068-ae96-4adf-b448-2845d25bf217/sourcecode' -i -X POST \
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/job/ae4350a9-054c-48d7-9ab6-258150fb51fd/sourcecode' -i -X POST \
     -H 'Content-Type: multipart/form-data;charset=UTF-8' \
     -F 'file=PK  
       �&lt;M                       test1.txtPK  ?
@@ -18256,7 +18884,7 @@ The complete documentation about REST API is generated. If you want to change co
 <p><strong class="big">Definition</strong></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 86. General request information</caption>
+<caption class="title">Table 93. General request information</caption>
 <colgroup>
 <col style="width: 14.2857%;">
 <col style="width: 85.7143%;">
@@ -18286,7 +18914,7 @@ The complete documentation about REST API is generated. If you want to change co
 <p><strong>Path parameters</strong> <br></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 87. https://localhost:8081/api/project/{projectId}/job/{jobUUID}/approve</caption>
+<caption class="title">Table 94. https://localhost:8081/api/project/{projectId}/job/{jobUUID}/approve</caption>
 <colgroup>
 <col style="width: 50%;">
 <col style="width: 50%;">
@@ -18331,7 +18959,7 @@ The complete documentation about REST API is generated. If you want to change co
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/job/d32fae0c-1042-4b36-853a-4e42995ec5bc/approve' -i -X PUT \
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/job/0d345759-b607-408d-92f5-2d98d3dc2966/approve' -i -X PUT \
     -H 'Content-Type: application/json;charset=UTF-8'</code></pre>
 </div>
 </div>
@@ -18349,7 +18977,7 @@ The complete documentation about REST API is generated. If you want to change co
 <p><strong class="big">Definition</strong></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 88. General request information</caption>
+<caption class="title">Table 95. General request information</caption>
 <colgroup>
 <col style="width: 14.2857%;">
 <col style="width: 85.7143%;">
@@ -18379,7 +19007,7 @@ The complete documentation about REST API is generated. If you want to change co
 <p><strong>Path parameters</strong> <br></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 89. https://localhost:8081/api/project/{projectId}/job/{jobUUID}</caption>
+<caption class="title">Table 96. https://localhost:8081/api/project/{projectId}/job/{jobUUID}</caption>
 <colgroup>
 <col style="width: 50%;">
 <col style="width: 50%;">
@@ -18483,7 +19111,7 @@ The complete documentation about REST API is generated. If you want to change co
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/job/66bac99d-aa3f-4550-9d70-0c4d7a944398' -i -X GET \
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/job/5f903b1c-f896-4b02-b926-aa4feff6652a' -i -X GET \
     -H 'Content-Type: application/json;charset=UTF-8'</code></pre>
 </div>
 </div>
@@ -18492,7 +19120,7 @@ The complete documentation about REST API is generated. If you want to change co
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code>{&quot;jobUUID&quot;:&quot;66bac99d-aa3f-4550-9d70-0c4d7a944398&quot;,&quot;owner&quot;:&quot;CREATOR1&quot;,&quot;created&quot;:&quot;&quot;,&quot;started&quot;:&quot;2023-08-14T11:34:52.294926354&quot;,&quot;ended&quot;:&quot;2023-08-14T11:49:52.294954854&quot;,&quot;state&quot;:&quot;ENDED&quot;,&quot;result&quot;:&quot;OK&quot;,&quot;trafficLight&quot;:&quot;GREEN&quot;}</code></pre>
+<pre class="CodeRay highlight nowrap"><code>{&quot;jobUUID&quot;:&quot;5f903b1c-f896-4b02-b926-aa4feff6652a&quot;,&quot;owner&quot;:&quot;CREATOR1&quot;,&quot;created&quot;:&quot;&quot;,&quot;started&quot;:&quot;2024-02-26T09:58:38.162853936&quot;,&quot;ended&quot;:&quot;2024-02-26T10:13:38.162883451&quot;,&quot;state&quot;:&quot;ENDED&quot;,&quot;result&quot;:&quot;OK&quot;,&quot;trafficLight&quot;:&quot;GREEN&quot;}</code></pre>
 </div>
 </div>
 </div>
@@ -18507,7 +19135,7 @@ The complete documentation about REST API is generated. If you want to change co
 <p><strong class="big">Definition</strong></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 90. General request information</caption>
+<caption class="title">Table 97. General request information</caption>
 <colgroup>
 <col style="width: 14.2857%;">
 <col style="width: 85.7143%;">
@@ -18537,7 +19165,7 @@ The complete documentation about REST API is generated. If you want to change co
 <p><strong>Path parameters</strong> <br></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 91. https://localhost:8081/api/project/{projectId}/report/{jobUUID}</caption>
+<caption class="title">Table 98. https://localhost:8081/api/project/{projectId}/report/{jobUUID}</caption>
 <colgroup>
 <col style="width: 50%;">
 <col style="width: 50%;">
@@ -18567,7 +19195,7 @@ The complete documentation about REST API is generated. If you want to change co
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/report/812746d9-6c69-4694-a93f-f078ec3cfae4' -i -u 'user:secret' -X GET \
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/report/6b5dbd67-7fcd-4381-a69e-d1af8246cfde' -i -u 'user:secret' -X GET \
     -H 'Content-Type: application/json;charset=UTF-8' \
     -H 'Accept: application/json'</code></pre>
 </div>
@@ -18579,7 +19207,7 @@ The complete documentation about REST API is generated. If you want to change co
 <p><strong class="big">Definition</strong></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 92. General request information</caption>
+<caption class="title">Table 99. General request information</caption>
 <colgroup>
 <col style="width: 14.2857%;">
 <col style="width: 85.7143%;">
@@ -18609,7 +19237,7 @@ The complete documentation about REST API is generated. If you want to change co
 <p><strong>Path parameters</strong> <br></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 93. https://localhost:8081/api/project/{projectId}/report/{jobUUID}</caption>
+<caption class="title">Table 100. https://localhost:8081/api/project/{projectId}/report/{jobUUID}</caption>
 <colgroup>
 <col style="width: 50%;">
 <col style="width: 50%;">
@@ -18639,7 +19267,7 @@ The complete documentation about REST API is generated. If you want to change co
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/report/0de1dc49-988f-4f52-82e3-9a0a90b67bef' -i -u 'user:secret' -X GET \
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/report/30f54abf-8545-45a5-aacb-df304d14ccc1' -i -u 'user:secret' -X GET \
     -H 'Content-Type: application/json;charset=UTF-8' \
     -H 'Accept: application/xhtml+xml'</code></pre>
 </div>
@@ -18655,7 +19283,7 @@ The complete documentation about REST API is generated. If you want to change co
 <p><strong class="big">Definition</strong></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 94. General request information</caption>
+<caption class="title">Table 101. General request information</caption>
 <colgroup>
 <col style="width: 14.2857%;">
 <col style="width: 85.7143%;">
@@ -18685,7 +19313,7 @@ The complete documentation about REST API is generated. If you want to change co
 <p><strong>Path parameters</strong> <br></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 95. https://localhost:8081/api/project/{projectId}/false-positives</caption>
+<caption class="title">Table 102. https://localhost:8081/api/project/{projectId}/false-positives</caption>
 <colgroup>
 <col style="width: 50%;">
 <col style="width: 50%;">
@@ -18794,7 +19422,7 @@ The complete documentation about REST API is generated. If you want to change co
 <p><strong class="big">Definition</strong></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 96. General request information</caption>
+<caption class="title">Table 103. General request information</caption>
 <colgroup>
 <col style="width: 14.2857%;">
 <col style="width: 85.7143%;">
@@ -18824,7 +19452,7 @@ The complete documentation about REST API is generated. If you want to change co
 <p><strong>Path parameters</strong> <br></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 97. https://localhost:8081/api/project/{projectId}/false-positive/{jobUUID}/{findingId}</caption>
+<caption class="title">Table 104. https://localhost:8081/api/project/{projectId}/false-positive/{jobUUID}/{findingId}</caption>
 <colgroup>
 <col style="width: 50%;">
 <col style="width: 50%;">
@@ -18890,7 +19518,7 @@ The complete documentation about REST API is generated. If you want to change co
 <p><strong class="big">Definition</strong></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 98. General request information</caption>
+<caption class="title">Table 105. General request information</caption>
 <colgroup>
 <col style="width: 14.2857%;">
 <col style="width: 85.7143%;">
@@ -18920,7 +19548,7 @@ The complete documentation about REST API is generated. If you want to change co
 <p><strong>Path parameters</strong> <br></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 99. https://localhost:8081/api/project/{projectId}/false-positives</caption>
+<caption class="title">Table 106. https://localhost:8081/api/project/{projectId}/false-positives</caption>
 <colgroup>
 <col style="width: 50%;">
 <col style="width: 50%;">
@@ -19116,7 +19744,7 @@ The complete documentation about REST API is generated. If you want to change co
 <p><strong class="big">Definition</strong></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 100. General request information</caption>
+<caption class="title">Table 107. General request information</caption>
 <colgroup>
 <col style="width: 14.2857%;">
 <col style="width: 85.7143%;">
@@ -19146,7 +19774,7 @@ The complete documentation about REST API is generated. If you want to change co
 <p><strong>Path parameters</strong> <br></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 101. https://localhost:8081/api/project/{projectId}/job/{jobUUID}/binaries</caption>
+<caption class="title">Table 108. https://localhost:8081/api/project/{projectId}/job/{jobUUID}/binaries</caption>
 <colgroup>
 <col style="width: 50%;">
 <col style="width: 50%;">
@@ -19218,7 +19846,7 @@ The complete documentation about REST API is generated. If you want to change co
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/job/447539cf-5cac-4a74-a70f-02903b23a676/binaries' -i -X POST \
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/job/58b082ed-2ae6-4108-99ce-1be64937d256/binaries' -i -X POST \
     -H 'Content-Type: multipart/form-data;charset=UTF-8' \
     -H 'x-file-size: 10240' \
     -F 'file=test1.txt                                                                                           0000664 0001750 0001750 00000000000 13353454574 012170  0                                                                                                    ustar   albert                          albert                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 ' \
@@ -19239,7 +19867,7 @@ The complete documentation about REST API is generated. If you want to change co
 <p><strong class="big">Definition</strong></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 102. General request information</caption>
+<caption class="title">Table 109. General request information</caption>
 <colgroup>
 <col style="width: 14.2857%;">
 <col style="width: 85.7143%;">
@@ -19269,7 +19897,7 @@ The complete documentation about REST API is generated. If you want to change co
 <p><strong>Path parameters</strong> <br></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 103. https://localhost:8081/api/project/{projectId}/report/spdx/{jobUUID}</caption>
+<caption class="title">Table 110. https://localhost:8081/api/project/{projectId}/report/spdx/{jobUUID}</caption>
 <colgroup>
 <col style="width: 50%;">
 <col style="width: 50%;">
@@ -19299,7 +19927,7 @@ The complete documentation about REST API is generated. If you want to change co
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/report/spdx/865391ec-e154-4c8e-9578-d7adbfec8db2' -i -u 'user:secret' -X GET \
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/report/spdx/5ce45cdd-fe68-4946-bc73-3fd902d34476' -i -u 'user:secret' -X GET \
     -H 'Content-Type: application/json;charset=UTF-8' \
     -H 'Accept: application/json'</code></pre>
 </div>
@@ -19314,7 +19942,7 @@ The complete documentation about REST API is generated. If you want to change co
 <p><strong class="big">Definition</strong></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 104. General request information</caption>
+<caption class="title">Table 111. General request information</caption>
 <colgroup>
 <col style="width: 14.2857%;">
 <col style="width: 85.7143%;">
@@ -19368,9 +19996,9 @@ The complete documentation about REST API is generated. If you want to change co
 <td class="tableblock halign-left valign-top"><p class="tableblock">Wanted userid, the userid must be lowercase only!</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>emailAdress</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>emailAddress</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Email adress</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Email address</p></td>
 </tr>
 </tbody>
 </table>
@@ -19384,7 +20012,7 @@ The complete documentation about REST API is generated. If you want to change co
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/anonymous/signup' -i -X POST \
     -H 'Content-Type: application/json;charset=UTF-8' \
-    -d '{&quot;apiVersion&quot;:&quot;1.0&quot;,&quot;userId&quot;:&quot;valid_userid&quot;,&quot;emailAdress&quot;:&quot;valid_mailadress@test.com&quot;}'</code></pre>
+    -d '{&quot;apiVersion&quot;:&quot;1.0&quot;,&quot;userId&quot;:&quot;valid_userid&quot;,&quot;emailAddress&quot;:&quot;valid_mailaddress@example.org&quot;}'</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -19401,7 +20029,7 @@ The complete documentation about REST API is generated. If you want to change co
 <p><strong class="big">Definition</strong></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 105. General request information</caption>
+<caption class="title">Table 112. General request information</caption>
 <colgroup>
 <col style="width: 14.2857%;">
 <col style="width: 85.7143%;">
@@ -19470,7 +20098,7 @@ The complete documentation about REST API is generated. If you want to change co
 <td class="tableblock halign-left valign-top"><p class="tableblock">The user id</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>[].emailAdress</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>[].emailAddress</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">The email address</p></td>
 </tr>
@@ -19492,7 +20120,7 @@ The complete documentation about REST API is generated. If you want to change co
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code>[{&quot;userId&quot;:&quot;johnsmith&quot;,&quot;emailAdress&quot;:&quot;john.smith@example.com&quot;},{&quot;userId&quot;:&quot;janesmith&quot;,&quot;emailAdress&quot;:&quot;jane.smith@example.com&quot;}]</code></pre>
+<pre class="CodeRay highlight nowrap"><code>[{&quot;userId&quot;:&quot;johnsmith&quot;,&quot;emailAddress&quot;:&quot;john.smith@example.com&quot;},{&quot;userId&quot;:&quot;janesmith&quot;,&quot;emailAddress&quot;:&quot;jane.smith@example.com&quot;}]</code></pre>
 </div>
 </div>
 </div>
@@ -19505,7 +20133,7 @@ The complete documentation about REST API is generated. If you want to change co
 <p><strong class="big">Definition</strong></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 106. General request information</caption>
+<caption class="title">Table 113. General request information</caption>
 <colgroup>
 <col style="width: 14.2857%;">
 <col style="width: 85.7143%;">
@@ -19535,7 +20163,7 @@ The complete documentation about REST API is generated. If you want to change co
 <p><strong>Path parameters</strong> <br></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 107. https://localhost:8081/api/admin/signup/accept/{userId}</caption>
+<caption class="title">Table 114. https://localhost:8081/api/admin/signup/accept/{userId}</caption>
 <colgroup>
 <col style="width: 50%;">
 <col style="width: 50%;">
@@ -19593,7 +20221,7 @@ The complete documentation about REST API is generated. If you want to change co
 <p><strong class="big">Definition</strong></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 108. General request information</caption>
+<caption class="title">Table 115. General request information</caption>
 <colgroup>
 <col style="width: 14.2857%;">
 <col style="width: 85.7143%;">
@@ -19623,7 +20251,7 @@ The complete documentation about REST API is generated. If you want to change co
 <p><strong>Path parameters</strong> <br></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 109. https://localhost:8081/api/admin/signup/{userId}</caption>
+<caption class="title">Table 116. https://localhost:8081/api/admin/signup/{userId}</caption>
 <colgroup>
 <col style="width: 50%;">
 <col style="width: 50%;">
@@ -19681,7 +20309,7 @@ The complete documentation about REST API is generated. If you want to change co
 <p><strong class="big">Definition</strong></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 110. General request information</caption>
+<caption class="title">Table 117. General request information</caption>
 <colgroup>
 <col style="width: 14.2857%;">
 <col style="width: 85.7143%;">
@@ -19711,7 +20339,7 @@ The complete documentation about REST API is generated. If you want to change co
 <p><strong>Path parameters</strong> <br></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 111. https://localhost:8081/api/anonymous/refresh/apitoken/{emailAddress}</caption>
+<caption class="title">Table 118. https://localhost:8081/api/anonymous/refresh/apitoken/{emailAddress}</caption>
 <colgroup>
 <col style="width: 50%;">
 <col style="width: 50%;">
@@ -19737,7 +20365,7 @@ The complete documentation about REST API is generated. If you want to change co
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/anonymous/refresh/apitoken/emailAdress@test.com' -i -X POST \
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/anonymous/refresh/apitoken/emailAddress@example.com' -i -X POST \
     -H 'Content-Type: application/json;charset=UTF-8'</code></pre>
 </div>
 </div>
@@ -19755,7 +20383,7 @@ The complete documentation about REST API is generated. If you want to change co
 <p><strong class="big">Definition</strong></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 112. General request information</caption>
+<caption class="title">Table 119. General request information</caption>
 <colgroup>
 <col style="width: 14.2857%;">
 <col style="width: 85.7143%;">
@@ -19862,7 +20490,7 @@ The complete documentation about REST API is generated. If you want to change co
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code>[{&quot;jobUUID&quot;:&quot;4d6af430-a9d0-4cbd-8167-dfdce10d92d6&quot;,&quot;projectId&quot;:&quot;project-name&quot;,&quot;owner&quot;:&quot;owner-userid&quot;,&quot;status&quot;:&quot;RUNNING&quot;,&quot;since&quot;:&quot;2023-08-14T11:49:41.133368851&quot;,&quot;configuration&quot;:&quot;{ config data }&quot;}]</code></pre>
+<pre class="CodeRay highlight nowrap"><code>[{&quot;jobUUID&quot;:&quot;38522d11-e2b8-4d0d-9f72-da239ef53166&quot;,&quot;projectId&quot;:&quot;project-name&quot;,&quot;owner&quot;:&quot;owner-userid&quot;,&quot;status&quot;:&quot;RUNNING&quot;,&quot;since&quot;:&quot;2024-02-26T10:13:31.451656924&quot;,&quot;configuration&quot;:&quot;{ config data }&quot;}]</code></pre>
 </div>
 </div>
 </div>
@@ -19875,7 +20503,7 @@ The complete documentation about REST API is generated. If you want to change co
 <p><strong class="big">Definition</strong></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 113. General request information</caption>
+<caption class="title">Table 120. General request information</caption>
 <colgroup>
 <col style="width: 14.2857%;">
 <col style="width: 85.7143%;">
@@ -19905,7 +20533,7 @@ The complete documentation about REST API is generated. If you want to change co
 <p><strong>Path parameters</strong> <br></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 114. https://localhost:8081/api/admin/jobs/cancel/{jobUUID}</caption>
+<caption class="title">Table 121. https://localhost:8081/api/admin/jobs/cancel/{jobUUID}</caption>
 <colgroup>
 <col style="width: 50%;">
 <col style="width: 50%;">
@@ -19946,7 +20574,7 @@ The complete documentation about REST API is generated. If you want to change co
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/jobs/cancel/0918adee-5673-4fcb-86bc-e1d4e9a1111c' -i -u 'user:secret' -X POST \
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/jobs/cancel/34ce768a-9243-414a-bd2f-ae0a3a661670' -i -u 'user:secret' -X POST \
     -H 'Content-Type: application/json;charset=UTF-8'</code></pre>
 </div>
 </div>
@@ -19964,7 +20592,7 @@ The complete documentation about REST API is generated. If you want to change co
 <p><strong class="big">Definition</strong></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 115. General request information</caption>
+<caption class="title">Table 122. General request information</caption>
 <colgroup>
 <col style="width: 14.2857%;">
 <col style="width: 85.7143%;">
@@ -19994,7 +20622,7 @@ The complete documentation about REST API is generated. If you want to change co
 <p><strong>Path parameters</strong> <br></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 116. https://localhost:8081/api/admin/jobs/restart/{jobUUID}</caption>
+<caption class="title">Table 123. https://localhost:8081/api/admin/jobs/restart/{jobUUID}</caption>
 <colgroup>
 <col style="width: 50%;">
 <col style="width: 50%;">
@@ -20035,7 +20663,7 @@ The complete documentation about REST API is generated. If you want to change co
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/jobs/restart/2085cb3a-7a4e-46b3-a49d-10aa0a960e6a' -i -u 'user:secret' -X POST \
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/jobs/restart/251fbe5a-f4e8-4501-9b4b-243cac5c37b8' -i -u 'user:secret' -X POST \
     -H 'Content-Type: application/json;charset=UTF-8'</code></pre>
 </div>
 </div>
@@ -20053,7 +20681,7 @@ The complete documentation about REST API is generated. If you want to change co
 <p><strong class="big">Definition</strong></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 117. General request information</caption>
+<caption class="title">Table 124. General request information</caption>
 <colgroup>
 <col style="width: 14.2857%;">
 <col style="width: 85.7143%;">
@@ -20083,7 +20711,7 @@ The complete documentation about REST API is generated. If you want to change co
 <p><strong>Path parameters</strong> <br></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 118. https://localhost:8081/api/admin/jobs/restart-hard/{jobUUID}</caption>
+<caption class="title">Table 125. https://localhost:8081/api/admin/jobs/restart-hard/{jobUUID}</caption>
 <colgroup>
 <col style="width: 50%;">
 <col style="width: 50%;">
@@ -20124,7 +20752,7 @@ The complete documentation about REST API is generated. If you want to change co
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/jobs/restart-hard/0c2bc1a7-010d-4fdb-8fbd-cb01d429803a' -i -u 'user:secret' -X POST \
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/jobs/restart-hard/b448dda6-31f0-4174-a282-3961d90df5ac' -i -u 'user:secret' -X POST \
     -H 'Content-Type: application/json;charset=UTF-8'</code></pre>
 </div>
 </div>
@@ -20142,7 +20770,7 @@ The complete documentation about REST API is generated. If you want to change co
 <p><strong class="big">Definition</strong></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 119. General request information</caption>
+<caption class="title">Table 126. General request information</caption>
 <colgroup>
 <col style="width: 14.2857%;">
 <col style="width: 85.7143%;">
@@ -20211,7 +20839,7 @@ The complete documentation about REST API is generated. If you want to change co
 <p><strong class="big">Definition</strong></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 120. General request information</caption>
+<caption class="title">Table 127. General request information</caption>
 <colgroup>
 <col style="width: 14.2857%;">
 <col style="width: 85.7143%;">
@@ -20283,7 +20911,7 @@ The complete documentation about REST API is generated. If you want to change co
 <p><strong class="big">Definition</strong></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 121. General request information</caption>
+<caption class="title">Table 128. General request information</caption>
 <colgroup>
 <col style="width: 14.2857%;">
 <col style="width: 85.7143%;">
@@ -20313,7 +20941,7 @@ The complete documentation about REST API is generated. If you want to change co
 <p><strong>Path parameters</strong> <br></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 122. https://localhost:8081/api/admin/config/mapping/{mappingId}</caption>
+<caption class="title">Table 129. https://localhost:8081/api/admin/config/mapping/{mappingId}</caption>
 <colgroup>
 <col style="width: 50%;">
 <col style="width: 50%;">
@@ -20407,7 +21035,7 @@ The complete documentation about REST API is generated. If you want to change co
 <p><strong class="big">Definition</strong></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 123. General request information</caption>
+<caption class="title">Table 130. General request information</caption>
 <colgroup>
 <col style="width: 14.2857%;">
 <col style="width: 85.7143%;">
@@ -20437,7 +21065,7 @@ The complete documentation about REST API is generated. If you want to change co
 <p><strong>Path parameters</strong> <br></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 124. https://localhost:8081/api/admin/config/mapping/{mappingId}</caption>
+<caption class="title">Table 131. https://localhost:8081/api/admin/config/mapping/{mappingId}</caption>
 <colgroup>
 <col style="width: 50%;">
 <col style="width: 50%;">
@@ -20534,7 +21162,7 @@ The complete documentation about REST API is generated. If you want to change co
 <p><strong class="big">Definition</strong></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 125. General request information</caption>
+<caption class="title">Table 132. General request information</caption>
 <colgroup>
 <col style="width: 14.2857%;">
 <col style="width: 85.7143%;">
@@ -20657,7 +21285,7 @@ The complete documentation about REST API is generated. If you want to change co
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code>7314b5a1-ee83-4e95-9c42-8fb3306e90b0</code></pre>
+<pre class="CodeRay highlight nowrap"><code>c084eeba-77c1-41fc-804c-bb29e41c25d4</code></pre>
 </div>
 </div>
 </div>
@@ -20670,7 +21298,7 @@ The complete documentation about REST API is generated. If you want to change co
 <p><strong class="big">Definition</strong></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 126. General request information</caption>
+<caption class="title">Table 133. General request information</caption>
 <colgroup>
 <col style="width: 14.2857%;">
 <col style="width: 85.7143%;">
@@ -20700,7 +21328,7 @@ The complete documentation about REST API is generated. If you want to change co
 <p><strong>Path parameters</strong> <br></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 127. https://localhost:8081/api/admin/config/executor/{uuid}</caption>
+<caption class="title">Table 134. https://localhost:8081/api/admin/config/executor/{uuid}</caption>
 <colgroup>
 <col style="width: 50%;">
 <col style="width: 50%;">
@@ -20741,7 +21369,7 @@ The complete documentation about REST API is generated. If you want to change co
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/config/executor/54795d36-4368-444b-9eac-b9a6c9df055f' -i -u 'user:secret' -X DELETE \
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/config/executor/97b061a1-bde3-4317-b022-4ba2eb99d2c2' -i -u 'user:secret' -X DELETE \
     -H 'Content-Type: application/json;charset=UTF-8'</code></pre>
 </div>
 </div>
@@ -20759,7 +21387,7 @@ The complete documentation about REST API is generated. If you want to change co
 <p><strong class="big">Definition</strong></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 128. General request information</caption>
+<caption class="title">Table 135. General request information</caption>
 <colgroup>
 <col style="width: 14.2857%;">
 <col style="width: 85.7143%;">
@@ -20856,7 +21484,7 @@ The complete documentation about REST API is generated. If you want to change co
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code>{&quot;executorConfigurations&quot;:[{&quot;uuid&quot;:&quot;78d9337a-1470-4a04-8205-27d19e6e01a2&quot;,&quot;name&quot;:&quot;example configuration&quot;,&quot;enabled&quot;:true}],&quot;type&quot;:&quot;executorConfigurationList&quot;}</code></pre>
+<pre class="CodeRay highlight nowrap"><code>{&quot;executorConfigurations&quot;:[{&quot;uuid&quot;:&quot;a33f5b9c-f605-498c-bf16-ecac4819ed03&quot;,&quot;name&quot;:&quot;example configuration&quot;,&quot;enabled&quot;:true}],&quot;type&quot;:&quot;executorConfigurationList&quot;}</code></pre>
 </div>
 </div>
 </div>
@@ -20869,7 +21497,7 @@ The complete documentation about REST API is generated. If you want to change co
 <p><strong class="big">Definition</strong></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 129. General request information</caption>
+<caption class="title">Table 136. General request information</caption>
 <colgroup>
 <col style="width: 14.2857%;">
 <col style="width: 85.7143%;">
@@ -20899,7 +21527,7 @@ The complete documentation about REST API is generated. If you want to change co
 <p><strong>Path parameters</strong> <br></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 130. https://localhost:8081/api/admin/config/executor/{uuid}</caption>
+<caption class="title">Table 137. https://localhost:8081/api/admin/config/executor/{uuid}</caption>
 <colgroup>
 <col style="width: 50%;">
 <col style="width: 50%;">
@@ -21009,7 +21637,7 @@ The complete documentation about REST API is generated. If you want to change co
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/config/executor/228f7bf7-f4f2-4f6b-b43f-0c85e52266b9' -i -u 'user:secret' -X GET \
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/config/executor/e0c7cc07-9dc1-4b54-bcc6-a2397dd00f98' -i -u 'user:secret' -X GET \
     -H 'Content-Type: application/json;charset=UTF-8'</code></pre>
 </div>
 </div>
@@ -21018,7 +21646,7 @@ The complete documentation about REST API is generated. If you want to change co
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code>{&quot;name&quot;:&quot;New name&quot;,&quot;productIdentifier&quot;:&quot;PDS_CODESCAN&quot;,&quot;setup&quot;:{&quot;baseURL&quot;:&quot;https://product.example.com&quot;,&quot;credentials&quot;:{&quot;user&quot;:&quot;env:EXAMPLE_USENAME&quot;,&quot;password&quot;:&quot;env:EXAMPLE_PASSWORD&quot;},&quot;jobParameters&quot;:[{&quot;key&quot;:&quot;example.key1&quot;,&quot;value&quot;:&quot;A value&quot;}]},&quot;executorVersion&quot;:1,&quot;enabled&quot;:false,&quot;uuid&quot;:&quot;228f7bf7-f4f2-4f6b-b43f-0c85e52266b9&quot;}</code></pre>
+<pre class="CodeRay highlight nowrap"><code>{&quot;name&quot;:&quot;New name&quot;,&quot;productIdentifier&quot;:&quot;PDS_CODESCAN&quot;,&quot;setup&quot;:{&quot;baseURL&quot;:&quot;https://product.example.com&quot;,&quot;credentials&quot;:{&quot;user&quot;:&quot;env:EXAMPLE_USENAME&quot;,&quot;password&quot;:&quot;env:EXAMPLE_PASSWORD&quot;},&quot;jobParameters&quot;:[{&quot;key&quot;:&quot;example.key1&quot;,&quot;value&quot;:&quot;A value&quot;}]},&quot;executorVersion&quot;:1,&quot;enabled&quot;:false,&quot;uuid&quot;:&quot;e0c7cc07-9dc1-4b54-bcc6-a2397dd00f98&quot;}</code></pre>
 </div>
 </div>
 </div>
@@ -21031,7 +21659,7 @@ The complete documentation about REST API is generated. If you want to change co
 <p><strong class="big">Definition</strong></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 131. General request information</caption>
+<caption class="title">Table 138. General request information</caption>
 <colgroup>
 <col style="width: 14.2857%;">
 <col style="width: 85.7143%;">
@@ -21061,7 +21689,7 @@ The complete documentation about REST API is generated. If you want to change co
 <p><strong>Path parameters</strong> <br></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 132. https://localhost:8081/api/admin/config/executor/{uuid}</caption>
+<caption class="title">Table 139. https://localhost:8081/api/admin/config/executor/{uuid}</caption>
 <colgroup>
 <col style="width: 50%;">
 <col style="width: 50%;">
@@ -21166,7 +21794,7 @@ The complete documentation about REST API is generated. If you want to change co
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/config/executor/b4bbf55e-e941-42b8-a24e-545a3fbf91a1' -i -u 'user:secret' -X PUT \
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/config/executor/e5f8b425-6406-4715-8ef8-6e2b7e61a671' -i -u 'user:secret' -X PUT \
     -H 'Content-Type: application/json;charset=UTF-8' \
     -d '{&quot;name&quot;:&quot;New name&quot;,&quot;productIdentifier&quot;:&quot;PDS_CODESCAN&quot;,&quot;executorVersion&quot;:1,&quot;enabled&quot;:false,&quot;setup&quot;:{&quot;baseURL&quot;:&quot;https://productNew.example.com&quot;,&quot;credentials&quot;:{&quot;user&quot;:&quot;env:EXAMPLE_NEW_USENAME&quot;,&quot;password&quot;:&quot;env:EXAMPLE_NEW_PASSWORD&quot;},&quot;jobParameters&quot;:[{&quot;key&quot;:&quot;example.key1&quot;,&quot;value&quot;:&quot;A value but changed. Remark: the other parameter (example.key2) has been removed by this call&quot;}]}}'</code></pre>
 </div>
@@ -21185,7 +21813,7 @@ The complete documentation about REST API is generated. If you want to change co
 <p><strong class="big">Definition</strong></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 133. General request information</caption>
+<caption class="title">Table 140. General request information</caption>
 <colgroup>
 <col style="width: 14.2857%;">
 <col style="width: 85.7143%;">
@@ -21215,7 +21843,7 @@ The complete documentation about REST API is generated. If you want to change co
 <p><strong>Path parameters</strong> <br></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 134. https://localhost:8081/api/admin/config/execution/profile/{profileId}</caption>
+<caption class="title">Table 141. https://localhost:8081/api/admin/config/execution/profile/{profileId}</caption>
 <colgroup>
 <col style="width: 50%;">
 <col style="width: 50%;">
@@ -21314,7 +21942,7 @@ The complete documentation about REST API is generated. If you want to change co
 <p><strong class="big">Definition</strong></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 135. General request information</caption>
+<caption class="title">Table 142. General request information</caption>
 <colgroup>
 <col style="width: 14.2857%;">
 <col style="width: 85.7143%;">
@@ -21344,7 +21972,7 @@ The complete documentation about REST API is generated. If you want to change co
 <p><strong>Path parameters</strong> <br></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 136. https://localhost:8081/api/admin/config/execution/profile/{profileId}</caption>
+<caption class="title">Table 143. https://localhost:8081/api/admin/config/execution/profile/{profileId}</caption>
 <colgroup>
 <col style="width: 50%;">
 <col style="width: 50%;">
@@ -21403,7 +22031,7 @@ The complete documentation about REST API is generated. If you want to change co
 <p><strong class="big">Definition</strong></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 137. General request information</caption>
+<caption class="title">Table 144. General request information</caption>
 <colgroup>
 <col style="width: 14.2857%;">
 <col style="width: 85.7143%;">
@@ -21433,7 +22061,7 @@ The complete documentation about REST API is generated. If you want to change co
 <p><strong>Path parameters</strong> <br></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 138. https://localhost:8081/api/admin/config/execution/profile/{profileId}</caption>
+<caption class="title">Table 145. https://localhost:8081/api/admin/config/execution/profile/{profileId}</caption>
 <colgroup>
 <col style="width: 50%;">
 <col style="width: 50%;">
@@ -21510,7 +22138,7 @@ The complete documentation about REST API is generated. If you want to change co
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/config/execution/profile/existing-profile-1' -i -u 'user:secret' -X PUT \
     -H 'Content-Type: application/json;charset=UTF-8' \
-    -d '{&quot;description&quot;:&quot;changed description&quot;,&quot;configurations&quot;:[{&quot;uuid&quot;:&quot;fc85c60c-d488-4842-9746-da73d2dc2c55&quot;,&quot;executorVersion&quot;:0,&quot;enabled&quot;:false,&quot;setup&quot;:{&quot;credentials&quot;:{},&quot;jobParameters&quot;:[]}}],&quot;enabled&quot;:true}'</code></pre>
+    -d '{&quot;description&quot;:&quot;changed description&quot;,&quot;configurations&quot;:[{&quot;uuid&quot;:&quot;09dd01f1-6fe8-4e68-a686-df7adf8fcae0&quot;,&quot;executorVersion&quot;:0,&quot;enabled&quot;:false,&quot;setup&quot;:{&quot;credentials&quot;:{},&quot;jobParameters&quot;:[]}}],&quot;enabled&quot;:true}'</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -21527,7 +22155,7 @@ The complete documentation about REST API is generated. If you want to change co
 <p><strong class="big">Definition</strong></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 139. General request information</caption>
+<caption class="title">Table 146. General request information</caption>
 <colgroup>
 <col style="width: 14.2857%;">
 <col style="width: 85.7143%;">
@@ -21557,7 +22185,7 @@ The complete documentation about REST API is generated. If you want to change co
 <p><strong>Path parameters</strong> <br></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 140. https://localhost:8081/api/admin/config/execution/profile/{profileId}</caption>
+<caption class="title">Table 147. https://localhost:8081/api/admin/config/execution/profile/{profileId}</caption>
 <colgroup>
 <col style="width: 50%;">
 <col style="width: 50%;">
@@ -21666,7 +22294,7 @@ The complete documentation about REST API is generated. If you want to change co
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code>{&quot;description&quot;:&quot;a description&quot;,&quot;enabled&quot;:true,&quot;configurations&quot;:[{&quot;name&quot;:&quot;New name&quot;,&quot;productIdentifier&quot;:&quot;PDS_CODESCAN&quot;,&quot;setup&quot;:{&quot;baseURL&quot;:&quot;https://product.example.com&quot;,&quot;credentials&quot;:{&quot;user&quot;:&quot;env:EXAMPLE_USENAME&quot;,&quot;password&quot;:&quot;env:EXAMPLE_PASSWORD&quot;},&quot;jobParameters&quot;:[{&quot;key&quot;:&quot;example.key1&quot;,&quot;value&quot;:&quot;A value but changed. Remark: the other parameter (example.key2) has been removed by this call&quot;}]},&quot;executorVersion&quot;:1,&quot;enabled&quot;:false,&quot;uuid&quot;:&quot;922ac9c8-37a8-4fa0-97c3-a1ac9fa35657&quot;}],&quot;projectIds&quot;:[&quot;project-1&quot;,&quot;project-2&quot;]}</code></pre>
+<pre class="CodeRay highlight nowrap"><code>{&quot;description&quot;:&quot;a description&quot;,&quot;enabled&quot;:true,&quot;configurations&quot;:[{&quot;name&quot;:&quot;New name&quot;,&quot;productIdentifier&quot;:&quot;PDS_CODESCAN&quot;,&quot;setup&quot;:{&quot;baseURL&quot;:&quot;https://product.example.com&quot;,&quot;credentials&quot;:{&quot;user&quot;:&quot;env:EXAMPLE_USENAME&quot;,&quot;password&quot;:&quot;env:EXAMPLE_PASSWORD&quot;},&quot;jobParameters&quot;:[{&quot;key&quot;:&quot;example.key1&quot;,&quot;value&quot;:&quot;A value but changed. Remark: the other parameter (example.key2) has been removed by this call&quot;}]},&quot;executorVersion&quot;:1,&quot;enabled&quot;:false,&quot;uuid&quot;:&quot;0b8b3069-a27b-4e11-92e1-c05227f48297&quot;}],&quot;projectIds&quot;:[&quot;project-1&quot;,&quot;project-2&quot;]}</code></pre>
 </div>
 </div>
 </div>
@@ -21679,7 +22307,7 @@ The complete documentation about REST API is generated. If you want to change co
 <p><strong class="big">Definition</strong></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 141. General request information</caption>
+<caption class="title">Table 148. General request information</caption>
 <colgroup>
 <col style="width: 14.2857%;">
 <col style="width: 85.7143%;">
@@ -21789,7 +22417,7 @@ The complete documentation about REST API is generated. If you want to change co
 <p><strong class="big">Definition</strong></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 142. General request information</caption>
+<caption class="title">Table 149. General request information</caption>
 <colgroup>
 <col style="width: 14.2857%;">
 <col style="width: 85.7143%;">
@@ -21819,7 +22447,7 @@ The complete documentation about REST API is generated. If you want to change co
 <p><strong>Path parameters</strong> <br></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 143. https://localhost:8081/api/admin/config/execution/profile/{profileId}/project/{projectId}</caption>
+<caption class="title">Table 150. https://localhost:8081/api/admin/config/execution/profile/{profileId}/project/{projectId}</caption>
 <colgroup>
 <col style="width: 50%;">
 <col style="width: 50%;">
@@ -21882,7 +22510,7 @@ The complete documentation about REST API is generated. If you want to change co
 <p><strong class="big">Definition</strong></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 144. General request information</caption>
+<caption class="title">Table 151. General request information</caption>
 <colgroup>
 <col style="width: 14.2857%;">
 <col style="width: 85.7143%;">
@@ -21912,7 +22540,7 @@ The complete documentation about REST API is generated. If you want to change co
 <p><strong>Path parameters</strong> <br></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 145. https://localhost:8081/api/admin/config/execution/profile/{profileId}/project/{projectId}</caption>
+<caption class="title">Table 152. https://localhost:8081/api/admin/config/execution/profile/{profileId}/project/{projectId}</caption>
 <colgroup>
 <col style="width: 50%;">
 <col style="width: 50%;">
@@ -21975,7 +22603,7 @@ The complete documentation about REST API is generated. If you want to change co
 <p><strong class="big">Definition</strong></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 146. General request information</caption>
+<caption class="title">Table 153. General request information</caption>
 <colgroup>
 <col style="width: 14.2857%;">
 <col style="width: 85.7143%;">
@@ -22046,7 +22674,7 @@ The complete documentation about REST API is generated. If you want to change co
 <p><strong class="big">Definition</strong></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 147. General request information</caption>
+<caption class="title">Table 154. General request information</caption>
 <colgroup>
 <col style="width: 14.2857%;">
 <col style="width: 85.7143%;">
@@ -22114,7 +22742,7 @@ The complete documentation about REST API is generated. If you want to change co
 <p><strong class="big">Definition</strong></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 148. General request information</caption>
+<caption class="title">Table 155. General request information</caption>
 <colgroup>
 <col style="width: 14.2857%;">
 <col style="width: 85.7143%;">
@@ -22181,7 +22809,7 @@ The complete documentation about REST API is generated. If you want to change co
 <p><strong class="big">Definition</strong></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 149. General request information</caption>
+<caption class="title">Table 156. General request information</caption>
 <colgroup>
 <col style="width: 14.2857%;">
 <col style="width: 85.7143%;">
@@ -22248,7 +22876,7 @@ The complete documentation about REST API is generated. If you want to change co
 <p><strong class="big">Definition</strong></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 150. General request information</caption>
+<caption class="title">Table 157. General request information</caption>
 <colgroup>
 <col style="width: 14.2857%;">
 <col style="width: 85.7143%;">
@@ -22315,7 +22943,7 @@ The complete documentation about REST API is generated. If you want to change co
 <p><strong class="big">Definition</strong></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 151. General request information</caption>
+<caption class="title">Table 158. General request information</caption>
 <colgroup>
 <col style="width: 14.2857%;">
 <col style="width: 85.7143%;">
@@ -22415,7 +23043,7 @@ The complete documentation about REST API is generated. If you want to change co
 <p><strong class="big">Definition</strong></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 152. General request information</caption>
+<caption class="title">Table 159. General request information</caption>
 <colgroup>
 <col style="width: 14.2857%;">
 <col style="width: 85.7143%;">
@@ -22486,7 +23114,7 @@ The complete documentation about REST API is generated. If you want to change co
 <p><strong class="big">Definition</strong></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 153. General request information</caption>
+<caption class="title">Table 160. General request information</caption>
 <colgroup>
 <col style="width: 14.2857%;">
 <col style="width: 85.7143%;">
@@ -22516,7 +23144,7 @@ The complete documentation about REST API is generated. If you want to change co
 <p><strong>Path parameters</strong> <br></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 154. https://localhost:8081/api/project/{projectId}/jobs</caption>
+<caption class="title">Table 161. https://localhost:8081/api/project/{projectId}/jobs</caption>
 <colgroup>
 <col style="width: 50%;">
 <col style="width: 50%;">
@@ -22675,7 +23303,7 @@ The filter works as an AND combination: Only jobs having all wanted label key va
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code>{&quot;page&quot;:0,&quot;totalPages&quot;:1,&quot;content&quot;:[{&quot;jobUUID&quot;:&quot;913ae57e-6bea-4bb0-8713-2e75572a2669&quot;,&quot;executedBy&quot;:&quot;User1&quot;,&quot;created&quot;:&quot;2023-08-14T11:32:52.368775622&quot;,&quot;started&quot;:&quot;2023-08-14T11:34:52.368805222&quot;,&quot;ended&quot;:&quot;2023-08-14T11:49:52.368817422&quot;,&quot;executionState&quot;:&quot;ENDED&quot;,&quot;trafficLight&quot;:&quot;GREEN&quot;,&quot;executionResult&quot;:&quot;OK&quot;,&quot;metaData&quot;:{&quot;labels&quot;:{&quot;stage&quot;:&quot;test&quot;}}}]}</code></pre>
+<pre class="CodeRay highlight nowrap"><code>{&quot;page&quot;:0,&quot;totalPages&quot;:1,&quot;content&quot;:[{&quot;jobUUID&quot;:&quot;a93a36eb-b427-433f-8097-317e9a150d49&quot;,&quot;executedBy&quot;:&quot;User1&quot;,&quot;created&quot;:&quot;2024-02-26T09:56:38.22404833&quot;,&quot;started&quot;:&quot;2024-02-26T09:58:38.224073927&quot;,&quot;ended&quot;:&quot;2024-02-26T10:13:38.224083625&quot;,&quot;executionState&quot;:&quot;ENDED&quot;,&quot;trafficLight&quot;:&quot;GREEN&quot;,&quot;executionResult&quot;:&quot;OK&quot;,&quot;metaData&quot;:{&quot;labels&quot;:{&quot;stage&quot;:&quot;test&quot;}}}]}</code></pre>
 </div>
 </div>
 <div style="page-break-after: always;"></div>
@@ -22819,8 +23447,8 @@ a new product executor (in Java) and create new product result importer (also in
 </div>
 <div class="paragraph">
 <p><strong>Those days are gone</strong>. Nowadays we are shifting every new product into a PDS (product delegation server)
- solution. For PDS we have an already existing PDS adapter (the logic to communicate with PDS)
- which is used always.</p>
+solution. For PDS we have an already existing PDS adapter (the logic to communicate with PDS)
+which is used always.</p>
 </div>
 <div class="admonitionblock important">
 <table>
@@ -23765,15 +24393,23 @@ start the tests.</p>
 </div>
 <div class="sect5">
 <h6 id="start">15.2.5.1.1. Start</h6>
-
+<div class="paragraph">
+<p>With a <a href="#systemtests-script-definitions">script definition</a> the start process for the SecHub server
+instance(s) can be defined.</p>
+</div>
 </div>
 <div class="sect5">
 <h6 id="stop">15.2.5.1.2. Stop</h6>
-
+<div class="paragraph">
+<p>With a <a href="#systemtests-script-definitions">script definition</a> the stop process for the SecHub server
+instance(s) can be defined.</p>
+</div>
 </div>
 <div class="sect5">
 <h6 id="configure">15.2.5.1.3. Configure</h6>
-
+<div class="paragraph">
+<p>The configuration can contain one or more product executor configurations.</p>
+</div>
 </div>
 </div>
 <div class="sect4">
@@ -23886,7 +24522,7 @@ multiple tests in one configurationfile.</p>
 <div class="sect4">
 <h5 id="prepare">15.2.6.1. Prepare</h5>
 <div class="paragraph">
-<p>A test can have one ore more preparation steps where following commands can be executed:</p>
+<p>A test can have one or more <code>preparation</code> steps where following commands can be executed:</p>
 </div>
 <div class="ulist">
 <ul>
@@ -23896,7 +24532,7 @@ Provides parameters "from" and "to" and enables users to copy folders or files t
 </li>
 <li>
 <p><code>script</code><br>
-Provides the possibility to execute a script</p>
+Provides the possibility to execute a <a href="#systemtests-script-definitions">script</a></p>
 </li>
 </ul>
 </div>
@@ -23961,7 +24597,25 @@ inside the report</p>
 </div>
 </div>
 <div class="sect4">
-<h5 id="example-snippet-3">15.2.6.4. Example snippet</h5>
+<h5 id="cleanup">15.2.6.4. Cleanup</h5>
+<div class="paragraph">
+<p>A test can have one or more <code>cleanup</code> steps where following commands can be executed:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>copy</code><br>
+Provides parameters "from" and "to" and enables users to copy folders or files to other locations</p>
+</li>
+<li>
+<p><code>script</code><br>
+Provides the possibility to execute a <a href="#systemtests-script-definitions">script</a></p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect4">
+<h5 id="example-snippet-3">15.2.6.5. Example snippet</h5>
 <div class="listingblock">
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="json"><span class="key"><span class="delimiter">&quot;</span><span class="content">tests</span><span class="delimiter">&quot;</span></span> : [ {
@@ -24054,6 +24708,10 @@ traffic light <code>yellow</code> and contains at least one time a string "MEDIU
               <span class="key"><span class="delimiter">&quot;</span><span class="content">product1.level</span><span class="delimiter">&quot;</span></span> : <span class="string"><span class="delimiter">&quot;</span><span class="content">A</span><span class="delimiter">&quot;</span></span>,
               <span class="key"><span class="delimiter">&quot;</span><span class="content">pds.mocking.disabled</span><span class="delimiter">&quot;</span></span> : <span class="string"><span class="delimiter">&quot;</span><span class="content">true</span><span class="delimiter">&quot;</span></span>
             }
+          } ],
+          <span class="key"><span class="delimiter">&quot;</span><span class="content">projects</span><span class="delimiter">&quot;</span></span> : [ {
+            <span class="key"><span class="delimiter">&quot;</span><span class="content">name</span><span class="delimiter">&quot;</span></span> : <span class="string"><span class="delimiter">&quot;</span><span class="content">default-test-project</span><span class="delimiter">&quot;</span></span>,
+            <span class="key"><span class="delimiter">&quot;</span><span class="content">whitelistedURIs</span><span class="delimiter">&quot;</span></span> : [ <span class="string"><span class="delimiter">&quot;</span><span class="content">https://example.org/testproject1</span><span class="delimiter">&quot;</span></span> ]
           } ]
         }
       },
@@ -24065,6 +24723,10 @@ traffic light <code>yellow</code> and contains at least one time a string "MEDIU
         <span class="key"><span class="delimiter">&quot;</span><span class="content">techUser</span><span class="delimiter">&quot;</span></span> : {
           <span class="key"><span class="delimiter">&quot;</span><span class="content">userId</span><span class="delimiter">&quot;</span></span> : <span class="string"><span class="delimiter">&quot;</span><span class="content">${env.TEST_INTTEST_PDS_TECHUSER_USERID}</span><span class="delimiter">&quot;</span></span>,
           <span class="key"><span class="delimiter">&quot;</span><span class="content">apiToken</span><span class="delimiter">&quot;</span></span> : <span class="string"><span class="delimiter">&quot;</span><span class="content">${secretEnv.TEST_INTTEST_PDS_TECHUSER_APITOKEN}</span><span class="delimiter">&quot;</span></span>
+        },
+        <span class="key"><span class="delimiter">&quot;</span><span class="content">admin</span><span class="delimiter">&quot;</span></span> : {
+          <span class="key"><span class="delimiter">&quot;</span><span class="content">userId</span><span class="delimiter">&quot;</span></span> : <span class="string"><span class="delimiter">&quot;</span><span class="content">${env.TEST_INTTEST_PDS_ADMIN_USERID}</span><span class="delimiter">&quot;</span></span>,
+          <span class="key"><span class="delimiter">&quot;</span><span class="content">apiToken</span><span class="delimiter">&quot;</span></span> : <span class="string"><span class="delimiter">&quot;</span><span class="content">${secretEnv.TEST_INTTEST_PDS_ADMIN_APITOKEN}</span><span class="delimiter">&quot;</span></span>
         }
       } ]
     }
@@ -24190,6 +24852,7 @@ used in any real world scenario but only for documentation.</p>
           <span class="key"><span class="delimiter">&quot;</span><span class="content">userId</span><span class="delimiter">&quot;</span></span> : <span class="string"><span class="delimiter">&quot;</span><span class="content">${secretEnv.GOSEC_PDS_TECHUSER_USERID}</span><span class="delimiter">&quot;</span></span>,
           <span class="key"><span class="delimiter">&quot;</span><span class="content">apiToken</span><span class="delimiter">&quot;</span></span> : <span class="string"><span class="delimiter">&quot;</span><span class="content">${secretEnv.GOSEC_PDS_TECHUSER_TOKEN}</span><span class="delimiter">&quot;</span></span>
         },
+        <span class="key"><span class="delimiter">&quot;</span><span class="content">admin</span><span class="delimiter">&quot;</span></span> : { },
         <span class="key"><span class="delimiter">&quot;</span><span class="content">start</span><span class="delimiter">&quot;</span></span> : [ {
           <span class="key"><span class="delimiter">&quot;</span><span class="content">comment</span><span class="delimiter">&quot;</span></span> : <span class="string"><span class="delimiter">&quot;</span><span class="content">In first start step, we build the image</span><span class="delimiter">&quot;</span></span>,
           <span class="key"><span class="delimiter">&quot;</span><span class="content">script</span><span class="delimiter">&quot;</span></span> : {
@@ -24272,10 +24935,16 @@ used in any real world scenario but only for documentation.</p>
         <span class="key"><span class="delimiter">&quot;</span><span class="content">comment</span><span class="delimiter">&quot;</span></span> : <span class="string"><span class="delimiter">&quot;</span><span class="content">If a project is defined, it will be used, otherwise always 'default-test-project' is used as default</span><span class="delimiter">&quot;</span></span>,
         <span class="key"><span class="delimiter">&quot;</span><span class="content">project</span><span class="delimiter">&quot;</span></span> : <span class="string"><span class="delimiter">&quot;</span><span class="content">a-project-id-when-not-default-used</span><span class="delimiter">&quot;</span></span>,
         <span class="key"><span class="delimiter">&quot;</span><span class="content">uploads</span><span class="delimiter">&quot;</span></span> : [ {
-          <span class="key"><span class="delimiter">&quot;</span><span class="content">comment</span><span class="delimiter">&quot;</span></span> : <span class="string"><span class="delimiter">&quot;</span><span class="content">Here we can define either binaries or sources to upload - we define the folders, framework will create tars/zips automatically</span><span class="delimiter">&quot;</span></span>,
+          <span class="key"><span class="delimiter">&quot;</span><span class="content">comment</span><span class="delimiter">&quot;</span></span> : <span class="string"><span class="delimiter">&quot;</span><span class="content">Here we can define either binaries or sources to upload - we define the folders, framework will create tars/zips automatically. When no upload reference id is defined, default-ref is used as default</span><span class="delimiter">&quot;</span></span>,
           <span class="key"><span class="delimiter">&quot;</span><span class="content">sourceFolder</span><span class="delimiter">&quot;</span></span> : <span class="string"><span class="delimiter">&quot;</span><span class="content">./checkout/sources</span><span class="delimiter">&quot;</span></span>,
-          <span class="key"><span class="delimiter">&quot;</span><span class="content">referenceId</span><span class="delimiter">&quot;</span></span> : <span class="string"><span class="delimiter">&quot;</span><span class="content">default-ref</span><span class="delimiter">&quot;</span></span>
-        } ]
+          <span class="key"><span class="delimiter">&quot;</span><span class="content">referenceId</span><span class="delimiter">&quot;</span></span> : <span class="string"><span class="delimiter">&quot;</span><span class="content">an-upload-reference-id</span><span class="delimiter">&quot;</span></span>
+        } ],
+        <span class="key"><span class="delimiter">&quot;</span><span class="content">codeScan</span><span class="delimiter">&quot;</span></span> : {
+          <span class="key"><span class="delimiter">&quot;</span><span class="content">use</span><span class="delimiter">&quot;</span></span> : [ <span class="string"><span class="delimiter">&quot;</span><span class="content">an-upload-reference-id</span><span class="delimiter">&quot;</span></span> ]
+        },
+        <span class="key"><span class="delimiter">&quot;</span><span class="content">secretScan</span><span class="delimiter">&quot;</span></span> : {
+          <span class="key"><span class="delimiter">&quot;</span><span class="content">use</span><span class="delimiter">&quot;</span></span> : [ <span class="string"><span class="delimiter">&quot;</span><span class="content">an-upload-reference-id</span><span class="delimiter">&quot;</span></span> ]
+        }
       }
     },
     <span class="key"><span class="delimiter">&quot;</span><span class="content">assert</span><span class="delimiter">&quot;</span></span> : [ {
@@ -24479,7 +25148,7 @@ one will be deleted.</p>
 </div>
 <div id="footer">
 <div id="footer-text">
- Server 1.1.0<br>
+ Server 1.6.0<br>
 </div>
 </div>
 </body>

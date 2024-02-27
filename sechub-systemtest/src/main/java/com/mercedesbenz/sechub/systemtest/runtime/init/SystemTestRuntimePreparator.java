@@ -73,6 +73,7 @@ public class SystemTestRuntimePreparator {
         initializeAlteredConfiguration(context);
 
         prepareLocal(context);
+        prepareRemote(context);
 
         prepareTests(context);
     }
@@ -127,7 +128,10 @@ public class SystemTestRuntimePreparator {
         }
         SecHubWebScanConfiguration webScan = webScanOpt.get();
         LOG.warn("Web scan found, but no special preparation done for url: {}", webScan.getUrl());
-
+        if (webScan.getApi().isEmpty()) {
+            return;
+        }
+        handleUsedDataConfigurationObjects(webScan.getApi().get(), test, context);
     }
 
     private void handleInfraScan(TestDefinition test, SystemTestRuntimeContext context, RunSecHubJobDefinition runSecHubJob) {
@@ -256,6 +260,14 @@ public class SystemTestRuntimePreparator {
 
     }
 
+    private void prepareRemote(SystemTestRuntimeContext context) {
+        if (context.isLocalRun()) {
+            LOG.debug("Skip remote preparation - run is not remote");
+            return;
+        }
+        /* currently no special remote preparation at all */
+    }
+
     private void addFallbackDefaultProfileToExecutorsWithoutProfile(SystemTestRuntimeContext context) {
         SecHubConfigurationDefinition sechubConfig = context.getLocalSecHubConfigurationOrFail();
         List<SecHubExecutorConfigDefinition> executors = sechubConfig.getExecutors();
@@ -320,7 +332,6 @@ public class SystemTestRuntimePreparator {
                 executor.setName(newName);
             }
         }
-
     }
 
     private void createFallbacksForPDSSolutions(SystemTestRuntimeContext context) {
@@ -341,7 +352,16 @@ public class SystemTestRuntimePreparator {
                 localPDSSolutionTechUser.setUserId(DefaultFallback.FALLBACK_PDS_TECH_USER.getValue());
                 localPDSSolutionTechUser.setApiToken(DefaultFallback.FALLBACK_PDS_TECH_TOKEN.getValue());
 
-                LOG.debug("No credentials set for solution: '{}', added defaults");
+                LOG.debug("No tech user credentials set for solution: '{}', added defaults");
+            }
+
+            CredentialsDefinition localPDSSolutionAdminUser = localPdsSolution.getAdmin();
+            if (localPDSSolutionAdminUser.getUserId() == null || localPDSSolutionAdminUser.getUserId().isEmpty()) {
+
+                localPDSSolutionAdminUser.setUserId(DefaultFallback.FALLBACK_PDS_ADMIN_USER.getValue());
+                localPDSSolutionAdminUser.setApiToken(DefaultFallback.FALLBACK_PDS_ADMIN_TOKEN.getValue());
+
+                LOG.debug("No admin credentials set for solution: '{}', added defaults");
             }
         }
     }
@@ -517,11 +537,17 @@ public class SystemTestRuntimePreparator {
 
     private Path resolvePdsSolutionWorkingDirectory(PDSSolutionDefinition solution, SystemTestRuntimeContext context) {
         Path pdsSolutionsRootFolder = context.getLocationSupport().getPDSSolutionRoot();
-
+        if (pdsSolutionsRootFolder == null) {
+            throw new WrongConfigurationException("PDS solutions root folder is not defined - but must!", context);
+        }
+        String solutionName = solution.getName();
+        if (solutionName == null) {
+            throw new WrongConfigurationException("At least one solution name is not set", context);
+        }
         String pdsBaseDirAsString = solution.getBaseDir();
         if (pdsBaseDirAsString == null) {
-            pdsBaseDirAsString = pdsSolutionsRootFolder.resolve(solution.getName()).toAbsolutePath().toString();
-            LOG.debug("Base dir not set for pds solution:{}, so calculate base dir by name and root dir to:{}", solution.getName(), pdsBaseDirAsString);
+            pdsBaseDirAsString = pdsSolutionsRootFolder.resolve(solutionName).toAbsolutePath().toString();
+            LOG.debug("Base dir not set for PDS solution: {}, so calculate base dir by name and root dir to: {}", solutionName, pdsBaseDirAsString);
         }
         Path pdsWorkingDirectory = Paths.get(pdsBaseDirAsString);
         return pdsWorkingDirectory;

@@ -17,4 +17,4 @@ export BUILDKIT_PROGRESS=plain
 export DOCKER_BUILDKIT=1
 
 echo "Starting single container."
-docker compose --file docker-compose_pds_multi.yaml up --build --remove-orphans
+docker compose --file docker-compose_pds_multi_external-network.yaml up --build --remove-orphans

@@ -12,7 +12,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
-import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -32,6 +31,8 @@ import com.mercedesbenz.sechub.sharedkernel.usecases.admin.project.UseCaseAdminD
 @RolesAllowed({ RoleConstants.ROLE_SUPERADMIN })
 public class FullScanDataRestController {
 
+    private static final String APPLICATION_ZIP = "application/zip";
+
     private static final Logger LOG = LoggerFactory.getLogger(FullScanDataRestController.class);
 
     @Autowired
@@ -45,14 +46,14 @@ public class FullScanDataRestController {
 
     /* @formatter:off */
 	@UseCaseAdminDownloadsFullScanDataForJob(@Step(number=1,next=2,name="REST API call to zip file containing full scan data",needsRestDoc=true))
-	@RequestMapping(path = "/scan/download/{sechubJobUUID}", method = RequestMethod.GET, produces= {MediaType.APPLICATION_JSON_VALUE})
+	@RequestMapping(path = "/scan/download/{sechubJobUUID}", method = RequestMethod.GET, produces= {APPLICATION_ZIP})
 	public void getFullScanZipFileForJob(
 			@PathVariable("sechubJobUUID") UUID sechubJobUUID, HttpServletResponse response
 			) {
 		/* @formatter:on */
         auditLogService.log("Starts downloading full scan logs for sechub job {}", logSanitizer.sanitize(sechubJobUUID, -1));
 
-        response.setContentType("application/zip");
+        response.setContentType(APPLICATION_ZIP);
         response.setHeader("Content-Disposition", "attachment; filename=full_scandata_" + sechubJobUUID.toString() + ".zip");
 
         FullScanData fullScanData = fullScanDataService.getFullScanData(sechubJobUUID);

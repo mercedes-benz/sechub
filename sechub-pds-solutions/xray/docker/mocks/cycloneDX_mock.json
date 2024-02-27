@@ -1,0 +1,4582 @@
+{
+  "bomFormat" : "CycloneDX",
+  "specVersion" : "1.4",
+  "serialNumber" : "urn:uuid:f1f778c5-b2c1-4142-4a68-04719c360404",
+  "version" : 1,
+  "metadata" : {
+    "timestamp" : "2023-10-18T12:08:49Z",
+    "tools" : [ {
+      "vendor" : "JFrog Inc.",
+      "name" : "Xray",
+      "version" : "3.67.9"
+    } ],
+    "authors" : [ {
+      "name" : "lbottne"
+    } ],
+    "component" : {
+      "name" : "digininja/dvwa",
+      "version" : "9b787fc",
+      "type" : "container"
+    }
+  },
+  "components" : [ {
+    "name" : "Structures_Graph-1.0.3.tgz",
+    "hashes" : [ {
+      "alg" : "SHA-256",
+      "content" : "b6dd79b7cf1cad547581db3e71405b98bc3fa8e99a3a86a34fb6b2fc5a64d90d"
+    } ],
+    "licenses" : [ {
+      "license" : {
+        "id" : "LGPL-2.0",
+        "url" : "http://www.gnu.org/licenses/old-licenses/lgpl-2.0-standalone.html"
+      }
+    } ],
+    "type" : "application"
+  }, {
+    "name" : "debian:bookworm:adduser",
+    "version" : "3.134",
+    "hashes" : [ {
+      "alg" : "SHA-256",
+      "content" : "148837641d413e6c1c5f7a5a1a258c68a7a1c6ed24b9859efea0939d98daffba"
+    } ],
+    "licenses" : [ {
+      "license" : {
+        "id" : "GPL-2.0-or-later",
+        "url" : "http://www.gnu.org/licenses/old-licenses/gpl-2.0-standalone.html"
+      }
+    } ],
+    "type" : "application"
+  }, {
+    "name" : "debian:bookworm:apache2",
+    "version" : "2.4.57-2",
+    "hashes" : [ {
+      "alg" : "SHA-256",
+      "content" : "04730c5f32698ef07563e9c1399a902f5c7b33b9cef8910fa7c29236e88709c6"
+    } ],
+    "licenses" : [ {
+      "license" : {
+        "id" : "Apache-2.0",
+        "url" : "http://licenses.nuget.org/Apache-2.0"
+      }
+    } ],
+    "type" : "application"
+  }, {
+    "name" : "debian:bookworm:apache2-bin",
+    "version" : "2.4.57-2",
+    "hashes" : [ {
+      "alg" : "SHA-256",
+      "content" : "f0891d5f428b51ae4fdbea5f49a9f0eff8e1f79fa0426e863e14e02d13091c1b"
+    } ],
+    "licenses" : [ {
+      "license" : {
+        "id" : "Apache-2.0",
+        "url" : "http://licenses.nuget.org/Apache-2.0"
+      }
+    } ],
+    "type" : "application"
+  }, {
+    "name" : "debian:bookworm:apache2-data",
+    "version" : "2.4.57-2",
+    "hashes" : [ {
+      "alg" : "SHA-256",
+      "content" : "b3a169c0d17f0d95cae8ef03ef12472ea38d0a07ff51cf9db5009a8789d30dcd"
+    } ],
+    "licenses" : [ {
+      "license" : {
+        "id" : "Apache-2.0",
+        "url" : "http://licenses.nuget.org/Apache-2.0"
+      }
+    } ],
+    "type" : "application"
+  }, {
+    "name" : "debian:bookworm:apache2-utils",
+    "version" : "2.4.57-2",
+    "hashes" : [ {
+      "alg" : "SHA-256",
+      "content" : "d438a4c27b0156fdf69068a8eba55aff4accf615c47f9e98b418da5cf7fe4d50"
+    } ],
+    "licenses" : [ {
+      "license" : {
+        "id" : "Apache-2.0",
+        "url" : "http://licenses.nuget.org/Apache-2.0"
+      }
+    } ],
+    "type" : "application"
+  }, {
+    "name" : "debian:bookworm:apt",
+    "version" : "2.6.1",
+    "hashes" : [ {
+      "alg" : "SHA-256",
+      "content" : "97193f01c770a989eecdfd9c23706ff417b87a1558e6522cd8cff8ffc16e247e"
+    } ],
+    "licenses" : [ {
+      "license" : {
+        "id" : "BSD-3-Clause",
+        "url" : "http://opensource.org/licenses/BSD-3-Clause"
+      }
+    } ],
+    "type" : "application"
+  }, {
+    "name" : "debian:bookworm:autoconf",
+    "version" : "2.71-3",
+    "hashes" : [ {
+      "alg" : "SHA-256",
+      "content" : "49e2ad7a6c2a940d26ccd03d3a4b37e1dfbc7b552cc2bf137758636089f40950"
+    } ],
+    "licenses" : [ {
+      "license" : {
+        "id" : "GPL-2.0",
+        "url" : "http://www.gnu.org/licenses/old-licenses/gpl-2.0-standalone.html"
+      }
+    } ],
+    "type" : "application"
+  }, {
+    "name" : "debian:bookworm:base-files",
+    "version" : "12.4+deb12u1",
+    "hashes" : [ {
+      "alg" : "SHA-256",
+      "content" : "c77e8072105e1033e5da4f92fc71596f512a5d9323cb0551ce60e593f87513e0"
+    } ],
+    "licenses" : [ {
+      "license" : {
+        "id" : "GPL-3.0",
+        "url" : "http://www.gnu.org/licenses/gpl-3.0-standalone.html"
+      }
+    } ],
+    "type" : "application"
+  }, {
+    "name" : "debian:bookworm:base-passwd",
+    "version" : "3.6.1",
+    "hashes" : [ {
+      "alg" : "SHA-256",
+      "content" : "77e1dd7d4339aa73614d2e851829e3e79261921ce8b71bde2af6e72ff734cba1"
+    } ],
+    "licenses" : [ {
+      "license" : {
+        "id" : "GPL-2.0",
+        "url" : "http://www.gnu.org/licenses/old-licenses/gpl-2.0-standalone.html"
+      }
+    } ],
+    "type" : "application"
+  }, {
+    "name" : "debian:bookworm:bash",
+    "version" : "5.2.15-2+b2",
+    "hashes" : [ {
+      "alg" : "SHA-256",
+      "content" : "9dc0a9aab2989d4bdb2cb2facaa1217337927d4dc1c3a3a96cdac7bd755f2d5d"
+    } ],
+    "licenses" : [ {
+      "license" : {
+        "id" : "BSD-4-Clause-UC",
+        "url" : "http://www.freebsd.org/copyright/license.html"
+      }
+    } ],
+    "type" : "application"
+  }, {
+    "name" : "debian:bookworm:binutils",
+    "version" : "2.40-2",
+    "hashes" : [ {
+      "alg" : "SHA-256",
+      "content" : "f398eefa8f6144ccf58b154501644c73e8b801ca8abb27e7af2e6b27308a4eb7"
+    } ],
+    "licenses" : [ {
+      "license" : {
+        "id" : "GPL-2.0-only",
+        "url" : "http://www.gnu.org/licenses/old-licenses/gpl-2.0-standalone.html"
+      }
+    } ],
+    "type" : "application"
+  }, {
+    "name" : "debian:bookworm:binutils-common",
+    "version" : "2.40-2",
+    "hashes" : [ {
+      "alg" : "SHA-256",
+      "content" : "2be58e4643e750ebb1fe1e9f022ac33d1e11b2e75674a95a3ac0b3de1f3e5b16"
+    } ],
+    "licenses" : [ {
+      "license" : {
+        "id" : "GPL-2.0-only",
+        "url" : "http://www.gnu.org/licenses/old-licenses/gpl-2.0-standalone.html"
+      }
+    } ],
+    "type" : "application"
+  }, {
+    "name" : "debian:bookworm:binutils-x86-64-linux-gnu",
+    "version" : "2.40-2",
+    "hashes" : [ {
+      "alg" : "SHA-256",
+      "content" : "331228bbf9a294c5812962bd2949431f468bd6d1c1a2dbb9be88cc5573be811d"
+    } ],
+    "licenses" : [ {
+      "license" : {
+        "id" : "GPL-2.0",
+        "url" : "http://www.gnu.org/licenses/old-licenses/gpl-2.0-standalone.html"
+      }
+    } ],
+    "type" : "application"
+  }, {
+    "name" : "debian:bookworm:bsdutils",
+    "version" : "1:2.38.1-5+b1",
+    "hashes" : [ {
+      "alg" : "SHA-256",
+      "content" : "9ec9346ef78d9d0d5a730edb88dfdb6c5fc7bb5ff27c69282b7e939332632cbd"
+    } ],
+    "type" : "application"
+  }, {
+    "name" : "debian:bookworm:bzip2",
+    "version" : "1.0.8-5+b1",
+    "hashes" : [ {
+      "alg" : "SHA-256",
+      "content" : "14d209927c9499cdb4fb4b9311353801cdf6c70eede97c8ca1d6cc72aac7bb2b"
+    } ],
+    "licenses" : [ {
+      "license" : {
+        "id" : "GPL-2.0-only",
+        "url" : "http://www.gnu.org/licenses/old-licenses/gpl-2.0-standalone.html"
+      }
+    } ],
+    "type" : "application"
+  }, {
+    "name" : "debian:bookworm:ca-certificates",
+    "version" : "20230311",
+    "hashes" : [ {
+      "alg" : "SHA-256",
+      "content" : "cd05adfad4fd185dbdeed32bed0ccf70675eca558c9c052a5ed422ccc7dfa5d5"
+    } ],
+    "type" : "application"
+  }, {
+    "name" : "debian:bookworm:coreutils",
+    "version" : "9.1-1",
+    "hashes" : [ {
+      "alg" : "SHA-256",
+      "content" : "a9469acf34e9b4d63d5795effffd94448d82bb8ffa8667e24462464c067ac3f4"
+    } ],
+    "licenses" : [ {
+      "license" : {
+        "id" : "BSD-3-Clause",
+        "url" : "http://opensource.org/licenses/BSD-3-Clause"
+      }
+    } ],
+    "type" : "application"
+  }, {
+    "name" : "debian:bookworm:cpp",
+    "version" : "4:12.2.0-3",
+    "hashes" : [ {
+      "alg" : "SHA-256",
+      "content" : "c6522f54f9a88a2020a5b23cc7325b24d721580cffc8156cf09a8537caa4aa4a"
+    } ],
+    "licenses" : [ {
+      "license" : {
+        "id" : "BSD-2-Clause",
+        "url" : "http://directory.fsf.org/wiki/License:BSD_4Clause"
+      }
+    } ],
+    "type" : "application"
+  }, {
+    "name" : "debian:bookworm:cpp-12",
+    "version" : "12.2.0-14",
+    "hashes" : [ {
+      "alg" : "SHA-256",
+      "content" : "13ae0a50bce702db248b731e2a0e4cb444af771f169d3bbe6261f814ceb34d3c"
+    } ],
+    "licenses" : [ {
+      "license" : {
+        "id" : "BSD-2-Clause",
+        "url" : "http://opensource.org/licenses/BSD-2-Clause"
+      }
+    } ],
+    "type" : "application"
+  }, {
+    "name" : "debian:bookworm:curl",
+    "version" : "7.88.1-10+deb12u1",
+    "hashes" : [ {
+      "alg" : "SHA-256",
+      "content" : "4da8e04198173ed12bd2c654e0ac42fbb0c3323fbc8758131c78ef6c6b153368"
+    } ],
+    "licenses" : [ {
+      "license" : {
+        "id" : "BSD-3-Clause",
+        "url" : "http://opensource.org/licenses/BSD-3-Clause"
+      }
+    } ],
+    "type" : "application"
+  }, {
+    "name" : "debian:bookworm:dash",
+    "version" : "0.5.12-2",
+    "hashes" : [ {
+      "alg" : "SHA-256",
+      "content" : "e8f5de1edb84507b5dbaac2ad11f973459c1c8b99ff5b985469728b1219db630"
+    } ],
+    "licenses" : [ {
+      "license" : {
+        "id" : "BSD-3-Clause",
+        "url" : "http://opensource.org/licenses/BSD-3-Clause"
+      }
+    } ],
+    "type" : "application"
+  }, {
+    "name" : "debian:bookworm:debconf",
+    "version" : "1.5.82",
+    "hashes" : [ {
+      "alg" : "SHA-256",
+      "content" : "17f0a59d1b1b177cefe58fa37d273f7f2f5fbfcb59dae7c425c1d44b6eaf57d4"
+    } ],
+    "licenses" : [ {
+      "license" : {
+        "id" : "BSD-2-Clause",
+        "url" : "http://opensource.org/licenses/BSD-2-Clause"
+      }
+    } ],
+    "type" : "application"
+  }, {
+    "name" : "debian:bookworm:debian-archive-keyring",
+    "version" : "2023.3",
+    "hashes" : [ {
+      "alg" : "SHA-256",
+      "content" : "f35ee6f2aaeba280bc9bf97902381b4fbf0941d2af746ca4931d28119e935624"
+    } ],
+    "type" : "application"
+  }, {
+    "name" : "debian:bookworm:debianutils",
+    "version" : "5.7-0.4",
+    "hashes" : [ {
+      "alg" : "SHA-256",
+      "content" : "e9b755d3467705dbc054140bc2ada6d48017706bb3483307d895d52b7095267d"
+    } ],
+    "type" : "application"
+  }, {
+    "name" : "debian:bookworm:diffutils",
+    "version" : "1:3.8-4",
+    "hashes" : [ {
+      "alg" : "SHA-256",
+      "content" : "7eda0d4ccf2ec31b1a7785d16a274d4ba40f92c3b8bca04e537b60d5cc74f19e"
+    } ],
+    "type" : "application"
+  }, {
+    "name" : "debian:bookworm:dpkg",
+    "version" : "1.21.22",
+    "hashes" : [ {
+      "alg" : "SHA-256",
+      "content" : "58a8547381a9b45597275fdded9c3cb4fe1635d246d13e2784e63a6d56378582"
+    } ],
+    "licenses" : [ {
+      "license" : {
+        "id" : "BSD-2-Clause",
+        "url" : "http://opensource.org/licenses/BSD-2-Clause"
+      }
+    } ],
+    "type" : "application"
+  }, {
+    "name" : "debian:bookworm:dpkg-dev",
+    "version" : "1.21.22",
+    "hashes" : [ {
+      "alg" : "SHA-256",
+      "content" : "8c901a7ca711ccc63e9ec3cc3698518e20bd0672446cc827b114a5001d325c04"
+    } ],
+    "licenses" : [ {
+      "license" : {
+        "id" : "BSD-2-Clause",
+        "url" : "http://opensource.org/licenses/BSD-2-Clause"
+      }
+    } ],
+    "type" : "application"
+  }, {
+    "name" : "debian:bookworm:e2fsprogs",
+    "version" : "1.47.0-2",
+    "hashes" : [ {
+      "alg" : "SHA-256",
+      "content" : "258e6cfff6a1b06770b353cc073901aec60ddf658cdf66a3c45a507327a93154"
+    } ],
+    "licenses" : [ {
+      "license" : {
+        "id" : "BSD-3-Clause",
+        "url" : "http://opensource.org/licenses/BSD-3-Clause"
+      }
+    } ],
+    "type" : "application"
+  }, {
+    "name" : "debian:bookworm:file",
+    "version" : "1:5.44-3",
+    "hashes" : [ {
+      "alg" : "SHA-256",
+      "content" : "2d5404987ed1c7481053ca65b781d3518a628797044f440d56f0b33ff97397fe"
+    } ],
+    "licenses" : [ {
+      "license" : {
+        "id" : "BSD-2-Clause",
+        "url" : "http://opensource.org/licenses/BSD-2-Clause"
+      }
+    } ],
+    "type" : "application"
+  }, {
+    "name" : "debian:bookworm:findutils",
+    "version" : "4.9.0-4",
+    "hashes" : [ {
+      "alg" : "SHA-256",
+      "content" : "d280964dcd99089323b703fceda9bad82944c5e3d642fedf85c0c9ee885c93a5"
+    } ],
+    "type" : "application"
+  }, {
+    "name" : "debian:bookworm:g++",
+    "version" : "4:12.2.0-3",
+    "hashes" : [ {
+      "alg" : "SHA-256",
+      "content" : "cf326989ceb22a6d7e82ce4749e7356e52a72da1fd93bf8f630c00c80452bfa5"
+    } ],
+    "type" : "application"
+  }, {
+    "name" : "debian:bookworm:g++-12",
+    "version" : "12.2.0-14",
+    "hashes" : [ {
+      "alg" : "SHA-256",
+      "content" : "12a2adf4d5750630302ccd966628636a5b4021b278215c9e2ece0e62fe8b4218"
+    } ],
+    "licenses" : [ {
+      "license" : {
+        "id" : "BSD-2-Clause",
+        "url" : "http://opensource.org/licenses/BSD-2-Clause"
+      }
+    } ],
+    "type" : "application"
+  }, {
+    "name" : "debian:bookworm:gcc",
+    "version" : "4:12.2.0-3",
+    "hashes" : [ {
+      "alg" : "SHA-256",
+      "content" : "7942e0355255cb34b03c091b6342bd7d95b1a34ddb860415d57833decaea814a"
+    } ],
+    "type" : "application"
+  }, {
+    "name" : "debian:bookworm:gcc-12",
+    "version" : "12.2.0-14",
+    "hashes" : [ {
+      "alg" : "SHA-256",
+      "content" : "5b293e392ffbb49aef0618520be65ea01393e2538cde889b794ec3eef64446f7"
+    } ],
+    "licenses" : [ {
+      "license" : {
+        "id" : "BSD-2-Clause",
+        "url" : "http://opensource.org/licenses/BSD-2-Clause"
+      }
+    } ],
+    "type" : "application"
+  }, {
+    "name" : "debian:bookworm:gcc-12-base",
+    "version" : "12.2.0-14",
+    "hashes" : [ {
+      "alg" : "SHA-256",
+      "content" : "3dd09888c33917365878c026931665799dc28719939a0d7df52b9223c29cbd3c"
+    } ],
+    "licenses" : [ {
+      "license" : {
+        "id" : "BSD-2-Clause",
+        "url" : "http://opensource.org/licenses/BSD-2-Clause"
+      }
+    } ],
+    "type" : "application"
+  }, {
+    "name" : "debian:bookworm:gpgv",
+    "version" : "2.2.40-1.1",
+    "hashes" : [ {
+      "alg" : "SHA-256",
+      "content" : "9452cd915b0e5ab8f851097ab522a8b59252fde7811d9340bc9da77ebd586baf"
+    } ],
+    "licenses" : [ {
+      "license" : {
+        "id" : "BSD-3-Clause",
+        "url" : "http://opensource.org/licenses/BSD-3-Clause"
+      }
+    } ],
+    "type" : "application"
+  }, {
+    "name" : "debian:bookworm:grep",
+    "version" : "3.8-5",
+    "hashes" : [ {
+      "alg" : "SHA-256",
+      "content" : "3011e01eaff6ac883783bd5e010597d04caab0d6b4a2b3916eaa93e19121ee2a"
+    } ],
+    "licenses" : [ {
+      "license" : {
+        "id" : "GPL-3.0",
+        "url" : "http://www.gnu.org/licenses/gpl-3.0-standalone.html"
+      }
+    } ],
+    "type" : "application"
+  }, {
+    "name" : "debian:bookworm:gzip",
+    "version" : "1.12-1",
+    "hashes" : [ {
+      "alg" : "SHA-256",
+      "content" : "5de887315c49c042688a216564b41fef96f3f751f29c707cafb722dc844b7284"
+    } ],
+    "type" : "application"
+  }, {
+    "name" : "debian:bookworm:hostname",
+    "version" : "3.23+nmu1",
+    "hashes" : [ {
+      "alg" : "SHA-256",
+      "content" : "dacf3f735bf16aaad81c2f0f0b76a1ca0ae57609b80859564a191efb413029c7"
+    } ],
+    "type" : "application"
+  }, {
+    "name" : "debian:bookworm:init-system-helpers",
+    "version" : "1.65.2",
+    "hashes" : [ {
+      "alg" : "SHA-256",
+      "content" : "ca759a5096a467ea7697abb85dd12c55473845f09d05401eb35aaf77f8337155"
+    } ],
+    "licenses" : [ {
+      "license" : {
+        "id" : "BSD-2-Clause",
+        "url" : "http://directory.fsf.org/wiki/License:BSD_4Clause"
+      }
+    } ],
+    "type" : "application"
+  }, {
+    "name" : "debian:bookworm:iputils-ping",
+    "version" : "3:20221126-1",
+    "hashes" : [ {
+      "alg" : "SHA-256",
+      "content" : "936ea2e8514380ad03914a8c47865e62c6d151afdf215e970595f536586cf954"
+    } ],
+    "type" : "application"
+  }, {
+    "name" : "debian:bookworm:libacl1",
+    "version" : "2.3.1-3",
+    "hashes" : [ {
+      "alg" : "SHA-256",
+      "content" : "24c223136c039f4abd7c1f76c76f00ad77a12a5ab601f7d763c9eacd852d8f03"
+    } ],
+    "licenses" : [ {
+      "license" : {
+        "id" : "GPL-2.0",
+        "url" : "http://www.gnu.org/licenses/old-licenses/gpl-2.0-standalone.html"
+      }
+    } ],
+    "type" : "application"
+  }, {
+    "name" : "debian:bookworm:libapr1",
+    "version" : "1.7.2-3",
+    "hashes" : [ {
+      "alg" : "SHA-256",
+      "content" : "3e944a7506e647e521a10ae703de04589605113b47f49c5b384b7f3767857aae"
+    } ],
+    "licenses" : [ {
+      "license" : {
+        "id" : "BSD-2-Clause",
+        "url" : "http://directory.fsf.org/wiki/License:BSD_4Clause"
+      }
+    } ],
+    "type" : "application"
+  }, {
+    "name" : "debian:bookworm:libaprutil1",
+    "version" : "1.6.3-1",
+    "hashes" : [ {
+      "alg" : "SHA-256",
+      "content" : "b4af16f66440befb6210c5f4eff8fe80e5ac9961627294b81ef9db6aff1f31f5"
+    } ],
+    "type" : "application"
+  }, {
+    "name" : "debian:bookworm:libaprutil1-dbd-sqlite3",
+    "version" : "1.6.3-1",
+    "hashes" : [ {
+      "alg" : "SHA-256",
+      "content" : "40459220cf6e28a92dd8a18ee65846469e3d511b47c6f8526a910d931c99e828"
+    } ],
+    "type" : "application"
+  }, {
+    "name" : "debian:bookworm:libaprutil1-ldap",
+    "version" : "1.6.3-1",
+    "hashes" : [ {
+      "alg" : "SHA-256",
+      "content" : "d7343d8ddbb5be9e1f203a888290e80fa64703753c7214b69fdf252a29ad2702"
+    } ],
+    "type" : "application"
+  }, {
+    "name" : "debian:bookworm:libapt-pkg6.0",
+    "version" : "2.6.1",
+    "hashes" : [ {
+      "alg" : "SHA-256",
+      "content" : "3ffda4c4fede0fcf07370a65013040d02ab805f1ea87f94aad9e0f0314142901"
+    } ],
+    "licenses" : [ {
+      "license" : {
+        "id" : "BSD-3-Clause",
+        "url" : "http://opensource.org/licenses/BSD-3-Clause"
+      }
+    } ],
+    "type" : "application"
+  }, {
+    "name" : "debian:bookworm:libargon2-1",
+    "version" : "0~20171227-0.3+deb12u1",
+    "hashes" : [ {
+      "alg" : "SHA-256",
+      "content" : "3f15112ad0c3fef69d628ec27841d9c3c0c4c1b71a8bb63300faef4fd9c933e8"
+    } ],
+    "licenses" : [ {
+      "license" : {
+        "id" : "Apache-2.0",
+        "url" : "http://licenses.nuget.org/Apache-2.0"
+      }
+    } ],
+    "type" : "application"
+  }, {
+    "name" : "debian:bookworm:libasan8",
+    "version" : "12.2.0-14",
+    "hashes" : [ {
+      "alg" : "SHA-256",
+      "content" : "e6bd694c8448884363f88e881cd55aedb5bace439cd74c21960fd229bfe6e68d"
+    } ],
+    "licenses" : [ {
+      "license" : {
+        "id" : "BSD-2-Clause",
+        "url" : "http://opensource.org/licenses/BSD-2-Clause"
+      }
+    } ],
+    "type" : "application"
+  }, {
+    "name" : "debian:bookworm:libatomic1",
+    "version" : "12.2.0-14",
+    "hashes" : [ {
+      "alg" : "SHA-256",
+      "content" : "c51000fddff1f340d8a028dd7ee67084f641bbc2885c95427443f12d994c2d78"
+    } ],
+    "licenses" : [ {
+      "license" : {
+        "id" : "BSD-2-Clause",
+        "url" : "http://opensource.org/licenses/BSD-2-Clause"
+      }
+    } ],
+    "type" : "application"
+  }, {
+    "name" : "debian:bookworm:libattr1",
+    "version" : "1:2.5.1-4",
+    "hashes" : [ {
+      "alg" : "SHA-256",
+      "content" : "ddf3d8c5b5fcc2d01cdd23e555f5f3f8727cee3b595bd2561d7123d85e6e17a4"
+    } ],
+    "licenses" : [ {
+      "license" : {
+        "id" : "GPL-2.0",
+        "url" : "http://www.gnu.org/licenses/old-licenses/gpl-2.0-standalone.html"
+      }
+    } ],
+    "type" : "application"
+  }, {
+    "name" : "debian:bookworm:libaudit-common",
+    "version" : "1:3.0.9-1",
+    "hashes" : [ {
+      "alg" : "SHA-256",
+      "content" : "1b3e34e154c6647c720574b1643c724e1623872043c894c3f5778707dd7cd605"
+    } ],
+    "licenses" : [ {
+      "license" : {
+        "id" : "GPL-2.0",
+        "url" : "http://www.gnu.org/licenses/old-licenses/gpl-2.0-standalone.html"
+      }
+    } ],
+    "type" : "application"
+  }, {
+    "name" : "debian:bookworm:libaudit1",
+    "version" : "1:3.0.9-1",
+    "hashes" : [ {
+      "alg" : "SHA-256",
+      "content" : "dcdc1db34e21e3a514c57b130497f4b13daf93dc95649fd6e9f236e1911bec10"
+    } ],
+    "licenses" : [ {
+      "license" : {
+        "id" : "GPL-2.0-only",
+        "url" : "http://www.gnu.org/licenses/old-licenses/gpl-2.0-standalone.html"
+      }
+    } ],
+    "type" : "application"
+  }, {
+    "name" : "debian:bookworm:libbinutils",
+    "version" : "2.40-2",
+    "hashes" : [ {
+      "alg" : "SHA-256",
+      "content" : "22ba9be31c019ba46ac562f2894a6b454671079b7124f2065c169d305b6dd7e0"
+    } ],
+    "licenses" : [ {
+      "license" : {
+        "id" : "GPL-2.0-only",
+        "url" : "http://www.gnu.org/licenses/old-licenses/gpl-2.0-standalone.html"
+      }
+    } ],
+    "type" : "application"
+  }, {
+    "name" : "debian:bookworm:libblkid1",
+    "version" : "2.38.1-5+b1",
+    "hashes" : [ {
+      "alg" : "SHA-256",
+      "content" : "f27df446c091e009536b1973fb4e2669faaaa5972ed06a625bc26eb24b88301c"
+    } ],
+    "type" : "application"
+  }, {
+    "name" : "debian:bookworm:libbrotli-dev",
+    "version" : "1.0.9-2+b6",
+    "hashes" : [ {
+      "alg" : "SHA-256",
+      "content" : "b573823472af4877bde3c3008279dc43779d18e170e8e7efdec959be2a50d3ca"
+    } ],
+    "licenses" : [ {
+      "license" : {
+        "id" : "MIT",
+        "url" : "http://www.opensource.org/licenses/MIT"
+      }
+    } ],
+    "type" : "application"
+  }, {
+    "name" : "debian:bookworm:libbrotli1",
+    "version" : "1.0.9-2+b6",
+    "hashes" : [ {
+      "alg" : "SHA-256",
+      "content" : "682a2b93dec545916cafdff868be5ca8529af98b549dc27db32f990f89fb9e8e"
+    } ],
+    "licenses" : [ {
+      "license" : {
+        "id" : "MIT",
+        "url" : "http://www.opensource.org/licenses/MIT"
+      }
+    } ],
+    "type" : "application"
+  }, {
+    "name" : "debian:bookworm:libbz2-1.0",
+    "version" : "1.0.8-5+b1",
+    "hashes" : [ {
+      "alg" : "SHA-256",
+      "content" : "2a522a8abfa83820582d65bcddc9e0de0941e182af210fd8901f582f7d7b9104"
+    } ],
+    "licenses" : [ {
+      "license" : {
+        "id" : "GPL-2.0-only",
+        "url" : "http://www.gnu.org/licenses/old-licenses/gpl-2.0-standalone.html"
+      }
+    } ],
+    "type" : "application"
+  }, {
+    "name" : "debian:bookworm:libc-bin",
+    "version" : "2.36-9+deb12u1",
+    "hashes" : [ {
+      "alg" : "SHA-256",
+      "content" : "112407ffc0f33dded5c20e38e1d4e393686e2ef3d988a2a07d80ffb398103b99"
+    } ],
+    "licenses" : [ {
+      "license" : {
+        "id" : "BSD-3-Clause",
+        "url" : "http://opensource.org/licenses/BSD-3-Clause"
+      }
+    } ],
+    "type" : "application"
+  }, {
+    "name" : "debian:bookworm:libc-dev-bin",
+    "version" : "2.36-9+deb12u1",
+    "hashes" : [ {
+      "alg" : "SHA-256",
+      "content" : "bac6604563d0e08c5d494bc77513e7383a638f84ed213c83b835b19ae46115d4"
+    } ],
+    "licenses" : [ {
+      "license" : {
+        "id" : "BSD-3-Clause",
+        "url" : "http://opensource.org/licenses/BSD-3-Clause"
+      }
+    } ],
+    "type" : "application"
+  }, {
+    "name" : "debian:bookworm:libc6",
+    "version" : "2.36-9+deb12u1",
+    "hashes" : [ {
+      "alg" : "SHA-256",
+      "content" : "8ff3514074a27f72eb6373f1669e923f9457ad6e8f249990f993c1eaccceb2bc"
+    } ],
+    "licenses" : [ {
+      "license" : {
+        "id" : "BSD-3-Clause",
+        "url" : "http://opensource.org/licenses/BSD-3-Clause"
+      }
+    } ],
+    "type" : "application"
+  }, {
+    "name" : "debian:bookworm:libc6-dev",
+    "version" : "2.36-9+deb12u1",
+    "hashes" : [ {
+      "alg" : "SHA-256",
+      "content" : "6f0bafd8ef2f7df37429377f4a32f9c93c8ecbae8a2317957890d93ce55e800d"
+    } ],
+    "licenses" : [ {
+      "license" : {
+        "id" : "BSD-3-Clause",
+        "url" : "http://opensource.org/licenses/BSD-3-Clause"
+      }
+    } ],
+    "type" : "application"
+  }, {
+    "name" : "debian:bookworm:libcap-ng0",
+    "version" : "0.8.3-1+b3",
+    "hashes" : [ {
+      "alg" : "SHA-256",
+      "content" : "1769b6f15f3156e40cb43875e8edb55a8689f28c0725d082df29fee35b92f8fc"
+    } ],
+    "licenses" : [ {
+      "license" : {
+        "id" : "GPL-2.0-or-later",
+        "url" : "http://www.gnu.org/licenses/old-licenses/gpl-2.0-standalone.html"
+      }
+    } ],
+    "type" : "application"
+  }, {
+    "name" : "debian:bookworm:libcap2",
+    "version" : "1:2.66-4",
+    "hashes" : [ {
+      "alg" : "SHA-256",
+      "content" : "eac8e4c324c3bf1cabe6bbeddb6733cd59d2f9cbeb50ea81760cd973c29a34aa"
+    } ],
+    "licenses" : [ {
+      "license" : {
+        "id" : "BSD-3-Clause",
+        "url" : "http://opensource.org/licenses/BSD-3-Clause"
+      }
+    } ],
+    "type" : "application"
+  }, {
+    "name" : "debian:bookworm:libcap2-bin",
+    "version" : "1:2.66-4",
+    "hashes" : [ {
+      "alg" : "SHA-256",
+      "content" : "ce7f349237e1976749323a8c983774a01f13363e47d8c899006a07073c860926"
+    } ],
+    "licenses" : [ {
+      "license" : {
+        "id" : "BSD-3-Clause",
+        "url" : "http://opensource.org/licenses/BSD-3-Clause"
+      }
+    } ],
+    "type" : "application"
+  }, {
+    "name" : "debian:bookworm:libcc1-0",
+    "version" : "12.2.0-14",
+    "hashes" : [ {
+      "alg" : "SHA-256",
+      "content" : "1f0e0efeb1407216f3752349dc8d50a6577e01ccb302e8cc8780cda386781d09"
+    } ],
+    "licenses" : [ {
+      "license" : {
+        "id" : "BSD-2-Clause",
+        "url" : "http://opensource.org/licenses/BSD-2-Clause"
+      }
+    } ],
+    "type" : "application"
+  }, {
+    "name" : "debian:bookworm:libcom-err2",
+    "version" : "1.47.0-2",
+    "hashes" : [ {
+      "alg" : "SHA-256",
+      "content" : "ca644d7c7c77c8a04cc64bd0a55cf68c6cd599f98e8766cb4d8f44b1fbb0da89"
+    } ],
+    "licenses" : [ {
+      "license" : {
+        "id" : "BSD-3-Clause",
+        "url" : "http://opensource.org/licenses/BSD-3-Clause"
+      }
+    } ],
+    "type" : "application"
+  }, {
+    "name" : "debian:bookworm:libcrypt-dev",
+    "version" : "1:4.4.33-2",
+    "hashes" : [ {
+      "alg" : "SHA-256",
+      "content" : "2d964fb38f0d0e85cc1159053e0fd9a1a57283ec14034a7a59810aa467473c46"
+    } ],
+    "type" : "application"
+  }, {
+    "name" : "debian:bookworm:libcrypt1",
+    "version" : "1:4.4.33-2",
+    "hashes" : [ {
+      "alg" : "SHA-256",
+      "content" : "f2d352cd468c2183647a7b27099f93076bdeb745df42177af26719fadb9ef9f4"
+    } ],
+    "type" : "application"
+  }, {
+    "name" : "debian:bookworm:libctf-nobfd0",
+    "version" : "2.40-2",
+    "hashes" : [ {
+      "alg" : "SHA-256",
+      "content" : "21a9cb33bd4eb3feb65ab9847ec5def88c85dd2677c2e9ceab45775ce251413d"
+    } ],
+    "licenses" : [ {
+      "license" : {
+        "id" : "GPL-2.0-only",
+        "url" : "http://www.gnu.org/licenses/old-licenses/gpl-2.0-standalone.html"
+      }
+    } ],
+    "type" : "application"
+  }, {
+    "name" : "debian:bookworm:libctf0",
+    "version" : "2.40-2",
+    "hashes" : [ {
+      "alg" : "SHA-256",
+      "content" : "31608b3b26b466d8bf567357de3101bfa958389eedaf76c8cf9cb1528f79194e"
+    } ],
+    "licenses" : [ {
+      "license" : {
+        "id" : "GPL-2.0-only",
+        "url" : "http://www.gnu.org/licenses/old-licenses/gpl-2.0-standalone.html"
+      }
+    } ],
+    "type" : "application"
+  }, {
+    "name" : "debian:bookworm:libcurl4",
+    "version" : "7.88.1-10+deb12u1",
+    "hashes" : [ {
+      "alg" : "SHA-256",
+      "content" : "74cbba517ca2134d91c1aa1f1e768b569f19abc80aa87a7cbf5d8af234553770"
+    } ],
+    "licenses" : [ {
+      "license" : {
+        "id" : "BSD-3-Clause",
+        "url" : "http://opensource.org/licenses/BSD-3-Clause"
+      }
+    } ],
+    "type" : "application"
+  }, {
+    "name" : "debian:bookworm:libdb5.3",
+    "version" : "5.3.28+dfsg2-1",
+    "hashes" : [ {
+      "alg" : "SHA-256",
+      "content" : "6037833d99bf6279f4e91d95db7307af766383f8a812239374229286712b4841"
+    } ],
+    "type" : "application"
+  }, {
+    "name" : "debian:bookworm:libdebconfclient0",
+    "version" : "0.270",
+    "hashes" : [ {
+      "alg" : "SHA-256",
+      "content" : "7a5bfcbfa42fa104e0227d0139d2237f83cb86fe18754f948e572932832a5581"
+    } ],
+    "licenses" : [ {
+      "license" : {
+        "id" : "BSD-2-Clause",
+        "url" : "http://opensource.org/licenses/BSD-2-Clause"
+      }
+    } ],
+    "type" : "application"
+  }, {
+    "name" : "debian:bookworm:libdpkg-perl",
+    "version" : "1.21.22",
+    "hashes" : [ {
+      "alg" : "SHA-256",
+      "content" : "1e99cedcc6f75f2441120aaf4420408d532da86dd79d0a0b31e67bd824eb8434"
+    } ],
+    "licenses" : [ {
+      "license" : {
+        "id" : "BSD-2-Clause",
+        "url" : "http://opensource.org/licenses/BSD-2-Clause"
+      }
+    } ],
+    "type" : "application"
+  }, {
+    "name" : "debian:bookworm:libexpat1",
+    "version" : "2.5.0-1",
+    "hashes" : [ {
+      "alg" : "SHA-256",
+      "content" : "48532fb5bb743918453bdfa907d4b7e2051eddae46f74241d8fc5cd0c5e85d96"
+    } ],
+    "licenses" : [ {
+      "license" : {
+        "id" : "MIT",
+        "url" : "http://www.opensource.org/licenses/MIT"
+      }
+    } ],
+    "type" : "application"
+  }, {
+    "name" : "debian:bookworm:libext2fs2",
+    "version" : "1.47.0-2",
+    "hashes" : [ {
+      "alg" : "SHA-256",
+      "content" : "fedfbafd1ccbdf95efc1b5a869f7a854d1d49b604b83007fa2e7b7158851eaad"
+    } ],
+    "licenses" : [ {
+      "license" : {
+        "id" : "BSD-3-Clause",
+        "url" : "http://opensource.org/licenses/BSD-3-Clause"
+      }
+    } ],
+    "type" : "application"
+  }, {
+    "name" : "debian:bookworm:libffi8",
+    "version" : "3.4.4-1",
+    "hashes" : [ {
+      "alg" : "SHA-256",
+      "content" : "0d33cdff7b7ce0c3c398b5e09f3e5b84cc13b7583278ec541c2acb9a10d18d6a"
+    } ],
+    "licenses" : [ {
+      "license" : {
+        "id" : "MIT",
+        "url" : "http://www.opensource.org/licenses/MIT"
+      }
+    } ],
+    "type" : "application"
+  }, {
+    "name" : "debian:bookworm:libfreetype-dev",
+    "version" : "2.12.1+dfsg-5",
+    "hashes" : [ {
+      "alg" : "SHA-256",
+      "content" : "00f13b150356c1198ca3a264ae7f7fea6e1ab425b9c2b7c365c7dc6c54dee846"
+    } ],
+    "licenses" : [ {
+      "license" : {
+        "id" : "BSD-3-Clause",
+        "url" : "http://opensource.org/licenses/BSD-3-Clause"
+      }
+    } ],
+    "type" : "application"
+  }, {
+    "name" : "debian:bookworm:libfreetype6",
+    "version" : "2.12.1+dfsg-5",
+    "hashes" : [ {
+      "alg" : "SHA-256",
+      "content" : "4b8ef9c136bf0035eee4c9c7971fa3732583fa6fc460a71ebf20493fcb2ba3b9"
+    } ],
+    "licenses" : [ {
+      "license" : {
+        "id" : "BSD-3-Clause",
+        "url" : "http://opensource.org/licenses/BSD-3-Clause"
+      }
+    } ],
+    "type" : "application"
+  }, {
+    "name" : "debian:bookworm:libfreetype6-dev",
+    "version" : "2.12.1+dfsg-5",
+    "hashes" : [ {
+      "alg" : "SHA-256",
+      "content" : "668c6f6f6649b6a837d106def93ffe23717e442d96864e7650ee84d216d4181b"
+    } ],
+    "licenses" : [ {
+      "license" : {
+        "id" : "BSD-3-Clause",
+        "url" : "http://opensource.org/licenses/BSD-3-Clause"
+      }
+    } ],
+    "type" : "application"
+  }, {
+    "name" : "debian:bookworm:libgcc-12-dev",
+    "version" : "12.2.0-14",
+    "hashes" : [ {
+      "alg" : "SHA-256",
+      "content" : "8917f1703fe345f80e2d8a0e4b931693e7201e18a798f01be8baebe29564106b"
+    } ],
+    "licenses" : [ {
+      "license" : {
+        "id" : "BSD-2-Clause",
+        "url" : "http://opensource.org/licenses/BSD-2-Clause"
+      }
+    } ],
+    "type" : "application"
+  }, {
+    "name" : "debian:bookworm:libgcc-s1",
+    "version" : "12.2.0-14",
+    "hashes" : [ {
+      "alg" : "SHA-256",
+      "content" : "b15653ed852f89743610dd83bca511c87f3c848a0a8f6dd238a6af204f4b9c7d"
+    } ],
+    "licenses" : [ {
+      "license" : {
+        "id" : "BSD-2-Clause",
+        "url" : "http://opensource.org/licenses/BSD-2-Clause"
+      }
+    } ],
+    "type" : "application"
+  }, {
+    "name" : "debian:bookworm:libgcrypt20",
+    "version" : "1.10.1-3",
+    "hashes" : [ {
+      "alg" : "SHA-256",
+      "content" : "e2ce9974853e7d69c2846c6920668c581a0109e6dc882d6bf3480c56405ae93c"
+    } ],
+    "licenses" : [ {
+      "license" : {
+        "id" : "BSD-2-Clause",
+        "url" : "http://directory.fsf.org/wiki/License:BSD_4Clause"
+      }
+    } ],
+    "type" : "application"
+  }, {
+    "name" : "debian:bookworm:libgdbm-compat4",
+    "version" : "1.23-3",
+    "hashes" : [ {
+      "alg" : "SHA-256",
+      "content" : "e66f9f1c536401c708fc62448627aed31b7c2f774613cebc8abca2501114205b"
+    } ],
+    "licenses" : [ {
+      "license" : {
+        "id" : "GPL-2.0-or-later",
+        "url" : "http://www.gnu.org/licenses/old-licenses/gpl-2.0-standalone.html"
+      }
+    } ],
+    "type" : "application"
+  }, {
+    "name" : "debian:bookworm:libgdbm6",
+    "version" : "1.23-3",
+    "hashes" : [ {
+      "alg" : "SHA-256",
+      "content" : "c35f5478b4f7d46df9039c07269ca4511e4d35cbe1236809229cdd648aaae60f"
+    } ],
+    "licenses" : [ {
+      "license" : {
+        "id" : "GPL-2.0-or-later",
+        "url" : "http://www.gnu.org/licenses/old-licenses/gpl-2.0-standalone.html"
+      }
+    } ],
+    "type" : "application"
+  }, {
+    "name" : "debian:bookworm:libgmp10",
+    "version" : "2:6.2.1+dfsg1-1.1",
+    "hashes" : [ {
+      "alg" : "SHA-256",
+      "content" : "26589f168b9c84556e643f20f069fac3720cd4bfb2758f18abfeb8b70837a968"
+    } ],
+    "licenses" : [ {
+      "license" : {
+        "id" : "GPL-2.0",
+        "url" : "http://www.gnu.org/licenses/old-licenses/gpl-2.0-standalone.html"
+      }
+    } ],
+    "type" : "application"
+  }, {
+    "name" : "debian:bookworm:libgnutls30",
+    "version" : "3.7.9-2",
+    "hashes" : [ {
+      "alg" : "SHA-256",
+      "content" : "7dcc3e9b20d74a100581f17095f85e4f022d85a4154998155bd430c249e9c684"
+    } ],
+    "licenses" : [ {
+      "license" : {
+        "id" : "Apache-2.0",
+        "url" : "http://licenses.nuget.org/Apache-2.0"
+      }
+    } ],
+    "type" : "application"
+  }, {
+    "name" : "debian:bookworm:libgomp1",
+    "version" : "12.2.0-14",
+    "hashes" : [ {
+      "alg" : "SHA-256",
+      "content" : "f522452192e66e8dadda95160c48b311dc422f1c3d15c5ebd6f532506781985b"
+    } ],
+    "licenses" : [ {
+      "license" : {
+        "id" : "BSD-2-Clause",
+        "url" : "http://opensource.org/licenses/BSD-2-Clause"
+      }
+    } ],
+    "type" : "application"
+  }, {
+    "name" : "debian:bookworm:libgpg-error0",
+    "version" : "1.46-1",
+    "hashes" : [ {
+      "alg" : "SHA-256",
+      "content" : "c56e261cea752d92619cf426033673d1dcfaae0f60d88d64a7de5cd28dbf36c3"
+    } ],
+    "licenses" : [ {
+      "license" : {
+        "id" : "BSD-2-Clause",
+        "url" : "http://directory.fsf.org/wiki/License:BSD_4Clause"
+      }
+    } ],
+    "type" : "application"
+  }, {
+    "name" : "debian:bookworm:libgprofng0",
+    "version" : "2.40-2",
+    "hashes" : [ {
+      "alg" : "SHA-256",
+      "content" : "542e029f2fcf0c6d8f9fa9ec00946b74854be9881caef119fb1539325098f384"
+    } ],
+    "licenses" : [ {
+      "license" : {
+        "id" : "GPL-2.0-only",
+        "url" : "http://www.gnu.org/licenses/old-licenses/gpl-2.0-standalone.html"
+      }
+    } ],
+    "type" : "application"
+  }, {
+    "name" : "debian:bookworm:libgssapi-krb5-2",
+    "version" : "1.20.1-2",
+    "hashes" : [ {
+      "alg" : "SHA-256",
+      "content" : "d64d578fcceab84174e44b8fbe45d4efc55bde319d4882b08043b869cfda6143"
+    } ],
+    "licenses" : [ {
+      "license" : {
+        "id" : "BSD-2-Clause",
+        "url" : "http://opensource.org/licenses/BSD-2-Clause"
+      }
+    } ],
+    "type" : "application"
+  }, {
+    "name" : "debian:bookworm:libhogweed6",
+    "version" : "3.8.1-2",
+    "hashes" : [ {
+      "alg" : "SHA-256",
+      "content" : "1fc84928cf7318d920126472db4cf1a92e37e4adcf585e8f525156cb4b823c5d"
+    } ],
+    "type" : "application"
+  }, {
+    "name" : "debian:bookworm:libicu72",
+    "version" : "72.1-3",
+    "hashes" : [ {
+      "alg" : "SHA-256",
+      "content" : "703ddb4949a8cffbc26dda4c4a4db6394ee933925b051d818e31404afb3dfe0c"
+    } ],
+    "type" : "application"
+  }, {
+    "name" : "debian:bookworm:libidn2-0",
+    "version" : "2.3.3-1+b1",
+    "hashes" : [ {
+      "alg" : "SHA-256",
+      "content" : "c926d55fd2139c2e57f0b102aeda418d050f0e2a0ca6aea29a61a6b842eedede"
+    } ],
+    "licenses" : [ {
+      "license" : {
+        "id" : "GPL-2.0-or-later",
+        "url" : "http://www.gnu.org/licenses/old-licenses/gpl-2.0-standalone.html"
+      }
+    } ],
+    "type" : "application"
+  }, {
+    "name" : "debian:bookworm:libisl23",
+    "version" : "0.25-1",
+    "hashes" : [ {
+      "alg" : "SHA-256",
+      "content" : "a86d6d24471eac5a500cc160e8d31b221fb6ad3dc7043d8fcf422bc532b35da3"
+    } ],
+    "licenses" : [ {
+      "license" : {
+        "id" : "BSD-2-Clause",
+        "url" : "http://opensource.org/licenses/BSD-2-Clause"
+      }
+    } ],
+    "type" : "application"
+  }, {
+    "name" : "debian:bookworm:libitm1",
+    "version" : "12.2.0-14",
+    "hashes" : [ {
+      "alg" : "SHA-256",
+      "content" : "7e6a04b1206fd77dddfd3ee61283de3d83f0441f3ca0f8878f3210e97a8f7ed2"
+    } ],
+    "licenses" : [ {
+      "license" : {
+        "id" : "BSD-2-Clause",
+        "url" : "http://directory.fsf.org/wiki/License:BSD_4Clause"
+      }
+    } ],
+    "type" : "application"
+  }, {
+    "name" : "debian:bookworm:libjansson4",
+    "version" : "2.14-2",
+    "hashes" : [ {
+      "alg" : "SHA-256",
+      "content" : "c3cabc28912b709a0a0aec5e179a551ef3974bbf6008fe4d77b58a55bbb1dfeb"
+    } ],
+    "type" : "application"
+  }, {
+    "name" : "debian:bookworm:libjpeg-dev",
+    "version" : "1:2.1.5-2",
+    "hashes" : [ {
+      "alg" : "SHA-256",
+      "content" : "a8444e89121b7427301d4ea210760c1abcaca5d450df27b08fae045755f06bc2"
+    } ],
+    "licenses" : [ {
+      "license" : {
+        "id" : "BSD-3-Clause",
+        "url" : "http://opensource.org/licenses/BSD-3-Clause"
+      }
+    } ],
+    "type" : "application"
+  }, {
+    "name" : "debian:bookworm:libjpeg62-turbo",
+    "version" : "1:2.1.5-2",
+    "hashes" : [ {
+      "alg" : "SHA-256",
+      "content" : "7d8114a02ae075a71bc2fdbcbc69493324e7a50896292587a07ff677b3bd4243"
+    } ],
+    "licenses" : [ {
+      "license" : {
+        "id" : "BSD-3-Clause",
+        "url" : "http://opensource.org/licenses/BSD-3-Clause"
+      }
+    } ],
+    "type" : "application"
+  }, {
+    "name" : "debian:bookworm:libjpeg62-turbo-dev",
+    "version" : "1:2.1.5-2",
+    "hashes" : [ {
+      "alg" : "SHA-256",
+      "content" : "98e165b2aa182b65f07b9b9e1352d8ee77743d47ee6c06e1618ff98d6daaf6d4"
+    } ],
+    "licenses" : [ {
+      "license" : {
+        "id" : "BSD-3-Clause",
+        "url" : "http://opensource.org/licenses/BSD-3-Clause"
+      }
+    } ],
+    "type" : "application"
+  }, {
+    "name" : "debian:bookworm:libk5crypto3",
+    "version" : "1.20.1-2",
+    "hashes" : [ {
+      "alg" : "SHA-256",
+      "content" : "1499e6c9ffc195d0aa70dc77dbd299953e9650dba68fab37feffecf1359dfa95"
+    } ],
+    "licenses" : [ {
+      "license" : {
+        "id" : "BSD-2-Clause",
+        "url" : "http://opensource.org/licenses/BSD-2-Clause"
+      }
+    } ],
+    "type" : "application"
+  }, {
+    "name" : "debian:bookworm:libkeyutils1",
+    "version" : "1.6.3-2",
+    "hashes" : [ {
+      "alg" : "SHA-256",
+      "content" : "077840b4b263d81811ef52ea17d4b2edfec1a568a15437b60bcd9e81dd324ab9"
+    } ],
+    "type" : "application"
+  }, {
+    "name" : "debian:bookworm:libkrb5-3",
+    "version" : "1.20.1-2",
+    "hashes" : [ {
+      "alg" : "SHA-256",
+      "content" : "c517f6345d2d0eba0f376b353f46a04f48667992d1b1efaf3e061bfb1d03e0c5"
+    } ],
+    "licenses" : [ {
+      "license" : {
+        "id" : "BSD-2-Clause",
+        "url" : "http://opensource.org/licenses/BSD-2-Clause"
+      }
+    } ],
+    "type" : "application"
+  }, {
+    "name" : "debian:bookworm:libkrb5support0",
+    "version" : "1.20.1-2",
+    "hashes" : [ {
+      "alg" : "SHA-256",
+      "content" : "adf4f7f034abfd79e50c1a29d7f3c4a8b24e728933cb5d06159f51c06fbaac2c"
+    } ],
+    "licenses" : [ {
+      "license" : {
+        "id" : "BSD-2-Clause",
+        "url" : "http://opensource.org/licenses/BSD-2-Clause"
+      }
+    } ],
+    "type" : "application"
+  }, {
+    "name" : "debian:bookworm:libldap-2.5-0",
+    "version" : "2.5.13+dfsg-5",
+    "hashes" : [ {
+      "alg" : "SHA-256",
+      "content" : "ba34df526c9142392077da57630c164c134c35d08525e38feaca18760638365c"
+    } ],
+    "type" : "application"
+  }, {
+    "name" : "debian:bookworm:liblsan0",
+    "version" : "12.2.0-14",
+    "hashes" : [ {
+      "alg" : "SHA-256",
+      "content" : "e2506fba815d56d262d98eadf4b12c1c4037fce808478b2e25f7e8d9d76094f3"
+    } ],
+    "licenses" : [ {
+      "license" : {
+        "id" : "BSD-2-Clause",
+        "url" : "http://directory.fsf.org/wiki/License:BSD_4Clause"
+      }
+    } ],
+    "type" : "application"
+  }, {
+    "name" : "debian:bookworm:liblua5.3-0",
+    "version" : "5.3.6-2",
+    "hashes" : [ {
+      "alg" : "SHA-256",
+      "content" : "c21263bcb5b09c2fa9a094a94c7d9cc46562b4601d5cce46fd762e22ff07811e"
+    } ],
+    "type" : "application"
+  }, {
+    "name" : "debian:bookworm:liblz4-1",
+    "version" : "1.9.4-1",
+    "hashes" : [ {
+      "alg" : "SHA-256",
+      "content" : "5993648e21ee2663ab3842fd51243dd34825356e421a5ec54ce54bb558974749"
+    } ],
+    "type" : "application"
+  }, {
+    "name" : "debian:bookworm:liblzma5",
+    "version" : "5.4.1-0.2",
+    "hashes" : [ {
+      "alg" : "SHA-256",
+      "content" : "11f4612fd5e0800c9afe688c380c220a01574175b26a7ec67e0873b1246b50a1"
+    } ],
+    "type" : "application"
+  }, {
+    "name" : "debian:bookworm:libmagic-mgc",
+    "version" : "1:5.44-3",
+    "hashes" : [ {
+      "alg" : "SHA-256",
+      "content" : "137e4eda7117b5921fc5c6772a08a12ae31886f58b9b8309b5780ae962be095b"
+    } ],
+    "licenses" : [ {
+      "license" : {
+        "id" : "BSD-2-Clause",
+        "url" : "http://opensource.org/licenses/BSD-2-Clause"
+      }
+    } ],
+    "type" : "application"
+  }, {
+    "name" : "debian:bookworm:libmagic1",
+    "version" : "1:5.44-3",
+    "hashes" : [ {
+      "alg" : "SHA-256",
+      "content" : "7d39c5ccfa526d95d81217cc42f9391af2f2008d008dbbf1c1e483b2cf1da9f1"
+    } ],
+    "licenses" : [ {
+      "license" : {
+        "id" : "BSD-2-Clause",
+        "url" : "http://opensource.org/licenses/BSD-2-Clause"
+      }
+    } ],
+    "type" : "application"
+  }, {
+    "name" : "debian:bookworm:libmd0",
+    "version" : "1.0.4-2",
+    "hashes" : [ {
+      "alg" : "SHA-256",
+      "content" : "e40901e64d1145e87f70d45e87ced54be01fe75d7d5d350bc4781d0401a3f36e"
+    } ],
+    "licenses" : [ {
+      "license" : {
+        "id" : "BSD-2-Clause",
+        "url" : "http://directory.fsf.org/wiki/License:BSD_4Clause"
+      }
+    } ],
+    "type" : "application"
+  }, {
+    "name" : "debian:bookworm:libmount1",
+    "version" : "2.38.1-5+b1",
+    "hashes" : [ {
+      "alg" : "SHA-256",
+      "content" : "5625a8fe13f9c4ea9d87285b0ef916495306cb6d89d8f609e2bc517f379b719b"
+    } ],
+    "type" : "application"
+  }, {
+    "name" : "debian:bookworm:libmpc3",
+    "version" : "1.3.1-1",
+    "hashes" : [ {
+      "alg" : "SHA-256",
+      "content" : "e286ba7a0e599d661ef6aef9765fea8fcce592b4b95b5c5024ba5ead20d72bce"
+    } ],
+    "licenses" : [ {
+      "license" : {
+        "id" : "LGPL-3.0",
+        "url" : "http://www.gnu.org/licenses/lgpl-3.0-standalone.html"
+      }
+    } ],
+    "type" : "application"
+  }, {
+    "name" : "debian:bookworm:libmpfr6",
+    "version" : "4.2.0-1",
+    "hashes" : [ {
+      "alg" : "SHA-256",
+      "content" : "d6c9e2cec864380d5a387c9afe813cd43bf3e176abf091a9dad9f359c988b30a"
+    } ],
+    "type" : "application"
+  }, {
+    "name" : "debian:bookworm:libncursesw6",
+    "version" : "6.4-4",
+    "hashes" : [ {
+      "alg" : "SHA-256",
+      "content" : "d18b17d97d34c2203cc900104fae1a35eb1a8f9dfb6b7314380a4d59e19d5ded"
+    } ],
+    "licenses" : [ {
+      "license" : {
+        "id" : "BSD-3-Clause",
+        "url" : "http://opensource.org/licenses/BSD-3-Clause"
+      }
+    } ],
+    "type" : "application"
+  }, {
+    "name" : "debian:bookworm:libnettle8",
+    "version" : "3.8.1-2",
+    "hashes" : [ {
+      "alg" : "SHA-256",
+      "content" : "0300aff2369026e867908be6c48691b73575daa54d38b363e5715e766db5eb55"
+    } ],
+    "type" : "application"
+  }, {
+    "name" : "debian:bookworm:libnghttp2-14",
+    "version" : "1.52.0-1",
+    "hashes" : [ {
+      "alg" : "SHA-256",
+      "content" : "d4279eb0b3eaef84e14fc46b8be0ec3eb473ddd10464b83d0bfd996b6d01270a"
+    } ],
+    "licenses" : [ {
+      "license" : {
+        "id" : "BSD-2-Clause",
+        "url" : "http://opensource.org/licenses/BSD-2-Clause"
+      }
+    } ],
+    "type" : "application"
+  }, {
+    "name" : "debian:bookworm:libnsl-dev",
+    "version" : "1.3.0-2",
+    "hashes" : [ {
+      "alg" : "SHA-256",
+      "content" : "e8721b6f486539ec527ec21a3b9ab5e3a09f961d11fc471fa9bc34dff3df213f"
+    } ],
+    "licenses" : [ {
+      "license" : {
+        "id" : "BSD-2-Clause",
+        "url" : "http://directory.fsf.org/wiki/License:BSD_4Clause"
+      }
+    } ],
+    "type" : "application"
+  }, {
+    "name" : "debian:bookworm:libnsl2",
+    "version" : "1.3.0-2",
+    "hashes" : [ {
+      "alg" : "SHA-256",
+      "content" : "9ff9e7541866154642cb8f9a49c2536d20eecf7000fc13178bfdfde5841fa582"
+    } ],
+    "licenses" : [ {
+      "license" : {
+        "id" : "BSD-2-Clause",
+        "url" : "http://directory.fsf.org/wiki/License:BSD_4Clause"
+      }
+    } ],
+    "type" : "application"
+  }, {
+    "name" : "debian:bookworm:libonig5",
+    "version" : "6.9.8-1",
+    "hashes" : [ {
+      "alg" : "SHA-256",
+      "content" : "ecb571b0ab0f6f7c0cf257d0a655be3cd8bcdda15011d964641d05cbd94e0e8f"
+    } ],
+    "licenses" : [ {
+      "license" : {
+        "id" : "BSD-2-Clause",
+        "url" : "http://opensource.org/licenses/BSD-2-Clause"
+      }
+    } ],
+    "type" : "application"
+  }, {
+    "name" : "debian:bookworm:libp11-kit0",
+    "version" : "0.24.1-2",
+    "hashes" : [ {
+      "alg" : "SHA-256",
+      "content" : "c344e1556e102e5d25efe58522c159b3ffa79be55d594d41e13076d592b21172"
+    } ],
+    "licenses" : [ {
+      "license" : {
+        "id" : "Apache-2.0",
+        "url" : "http://licenses.nuget.org/Apache-2.0"
+      }
+    } ],
+    "type" : "application"
+  }, {
+    "name" : "debian:bookworm:libpam-cap",
+    "version" : "1:2.66-4",
+    "hashes" : [ {
+      "alg" : "SHA-256",
+      "content" : "d46f6156118c287073b1615cb3ad3f93e02e8a147f6a626481a600f419426bb9"
+    } ],
+    "licenses" : [ {
+      "license" : {
+        "id" : "BSD-3-Clause",
+        "url" : "http://opensource.org/licenses/BSD-3-Clause"
+      }
+    } ],
+    "type" : "application"
+  }, {
+    "name" : "debian:bookworm:libpam-modules",
+    "version" : "1.5.2-6",
+    "hashes" : [ {
+      "alg" : "SHA-256",
+      "content" : "296ddf714f48ca8e20a8e4cdc412dea2d10356e3cb9b52f374b772e0aea8694a"
+    } ],
+    "licenses" : [ {
+      "license" : {
+        "id" : "GPL-3.0",
+        "url" : "http://www.gnu.org/licenses/gpl-3.0-standalone.html"
+      }
+    } ],
+    "type" : "application"
+  }, {
+    "name" : "debian:bookworm:libpam-modules-bin",
+    "version" : "1.5.2-6",
+    "hashes" : [ {
+      "alg" : "SHA-256",
+      "content" : "13532b66f428f7c0250aee04542a5c5b54f4cf3222a23523f942088d25792c66"
+    } ],
+    "licenses" : [ {
+      "license" : {
+        "id" : "GPL-3.0",
+        "url" : "http://www.gnu.org/licenses/gpl-3.0-standalone.html"
+      }
+    } ],
+    "type" : "application"
+  }, {
+    "name" : "debian:bookworm:libpam-runtime",
+    "version" : "1.5.2-6",
+    "hashes" : [ {
+      "alg" : "SHA-256",
+      "content" : "ac89a7ff370d1e6e7f90916e0df4ac0224ff307ff873f04cdc38b35715c7c8a0"
+    } ],
+    "licenses" : [ {
+      "license" : {
+        "id" : "GPL-3.0",
+        "url" : "http://www.gnu.org/licenses/gpl-3.0-standalone.html"
+      }
+    } ],
+    "type" : "application"
+  }, {
+    "name" : "debian:bookworm:libpam0g",
+    "version" : "1.5.2-6",
+    "hashes" : [ {
+      "alg" : "SHA-256",
+      "content" : "fd1ad62ea01815ee99fad0864ccbfacb1e39d60f20b29a650de0b5fbd90dc7d2"
+    } ],
+    "licenses" : [ {
+      "license" : {
+        "id" : "GPL-3.0",
+        "url" : "http://www.gnu.org/licenses/gpl-3.0-standalone.html"
+      }
+    } ],
+    "type" : "application"
+  }, {
+    "name" : "debian:bookworm:libpcre2-8-0",
+    "version" : "10.42-1",
+    "hashes" : [ {
+      "alg" : "SHA-256",
+      "content" : "3a9634b2f5c7ca055865f2be3bdcff2afebced61b1226e5bdc301f9bcb1ded01"
+    } ],
+    "licenses" : [ {
+      "license" : {
+        "id" : "BSD-2-Clause",
+        "url" : "http://directory.fsf.org/wiki/License:BSD_4Clause"
+      }
+    } ],
+    "type" : "application"
+  }, {
+    "name" : "debian:bookworm:libperl5.36",
+    "version" : "5.36.0-7",
+    "hashes" : [ {
+      "alg" : "SHA-256",
+      "content" : "9a0f0048d961de2ae5b9a891effe666ad06b91762dae86778b56ed96789af30e"
+    } ],
+    "licenses" : [ {
+      "license" : {
+        "id" : "Artistic-2.0",
+        "url" : "http://www.opensource.org/licenses/artistic-license-2.0"
+      }
+    } ],
+    "type" : "application"
+  }, {
+    "name" : "debian:bookworm:libpkgconf3",
+    "version" : "1.8.1-1",
+    "hashes" : [ {
+      "alg" : "SHA-256",
+      "content" : "8ae2abef86c732a8698d21d87b9bbad74be719cae8ee30daddf53636bd822b8a"
+    } ],
+    "licenses" : [ {
+      "license" : {
+        "id" : "BSD-2-Clause",
+        "url" : "http://directory.fsf.org/wiki/License:BSD_4Clause"
+      }
+    } ],
+    "type" : "application"
+  }, {
+    "name" : "debian:bookworm:libpng-dev",
+    "version" : "1.6.39-2",
+    "hashes" : [ {
+      "alg" : "SHA-256",
+      "content" : "0cae73be5eed7af8f32ab02c496621234b16b70927908448f9ff2841ffbbd4c4"
+    } ],
+    "type" : "application"
+  }, {
+    "name" : "debian:bookworm:libpng-tools",
+    "version" : "1.6.39-2",
+    "hashes" : [ {
+      "alg" : "SHA-256",
+      "content" : "4520e2148337ea7430a3d3326de2eab1452f18f079b828cfb0f25fff0880ecb5"
+    } ],
+    "type" : "application"
+  }, {
+    "name" : "debian:bookworm:libpng16-16",
+    "version" : "1.6.39-2",
+    "hashes" : [ {
+      "alg" : "SHA-256",
+      "content" : "dae8fa1bc252d77a26b4835897e7f4a6b417d902fb869f0780ada9a8127a2e83"
+    } ],
+    "type" : "application"
+  }, {
+    "name" : "debian:bookworm:libproc2-0",
+    "version" : "2:4.0.2-3",
+    "hashes" : [ {
+      "alg" : "SHA-256",
+      "content" : "fa43b37b5301bba5d45510d6881963bee642f61699ec05a0abca0e23a05b1087"
+    } ],
+    "type" : "application"
+  }, {
+    "name" : "debian:bookworm:libpsl5",
+    "version" : "0.21.2-1",
+    "hashes" : [ {
+      "alg" : "SHA-256",
+      "content" : "b1506b780879280bae1d042ff4c0fd5272dc6d51777a0f5fb39eaaf0a07829ae"
+    } ],
+    "type" : "application"
+  }, {
+    "name" : "debian:bookworm:libquadmath0",
+    "version" : "12.2.0-14",
+    "hashes" : [ {
+      "alg" : "SHA-256",
+      "content" : "39f7f1e32aedfd620fb25780e78f8a4710e24fa649c8013a229d6f2845444a44"
+    } ],
+    "licenses" : [ {
+      "license" : {
+        "id" : "BSD-2-Clause",
+        "url" : "http://directory.fsf.org/wiki/License:BSD_4Clause"
+      }
+    } ],
+    "type" : "application"
+  }, {
+    "name" : "debian:bookworm:libreadline8",
+    "version" : "8.2-1.3",
+    "hashes" : [ {
+      "alg" : "SHA-256",
+      "content" : "ae4dccbb256916f54f28084ee17a17d90705eacff01e44ba718fe46928036f03"
+    } ],
+    "type" : "application"
+  }, {
+    "name" : "debian:bookworm:librtmp1",
+    "version" : "2.4+20151223.gitfa8646d.1-2+b2",
+    "hashes" : [ {
+      "alg" : "SHA-256",
+      "content" : "6a0c8d1b26b06235e320e173edfdc79184d378cea415704be37f4dbc7857ef5e"
+    } ],
+    "licenses" : [ {
+      "license" : {
+        "id" : "GPL-2.0",
+        "url" : "http://www.gnu.org/licenses/old-licenses/gpl-2.0-standalone.html"
+      }
+    } ],
+    "type" : "application"
+  }, {
+    "name" : "debian:bookworm:libsasl2-2",
+    "version" : "2.1.28+dfsg-10",
+    "hashes" : [ {
+      "alg" : "SHA-256",
+      "content" : "e247b1b19efd99dd9e5b4662662764fd98b75c11b193912e6bceb962254adee9"
+    } ],
+    "licenses" : [ {
+      "license" : {
+        "id" : "BSD-2-Clause",
+        "url" : "http://directory.fsf.org/wiki/License:BSD_4Clause"
+      }
+    } ],
+    "type" : "application"
+  }, {
+    "name" : "debian:bookworm:libsasl2-modules-db",
+    "version" : "2.1.28+dfsg-10",
+    "hashes" : [ {
+      "alg" : "SHA-256",
+      "content" : "1b5aa3268d2c6363460d1a38ecaa09ef4cb9b1e2517f58456ae297fabc07a6db"
+    } ],
+    "licenses" : [ {
+      "license" : {
+        "id" : "BSD-2-Clause",
+        "url" : "http://directory.fsf.org/wiki/License:BSD_4Clause"
+      }
+    } ],
+    "type" : "application"
+  }, {
+    "name" : "debian:bookworm:libseccomp2",
+    "version" : "2.5.4-1+b3",
+    "hashes" : [ {
+      "alg" : "SHA-256",
+      "content" : "e1cfd76ef42e8ff89730e44c14e29414b6dbbaf6427adbc39df2441c7ec8e19a"
+    } ],
+    "licenses" : [ {
+      "license" : {
+        "id" : "LGPL-2.1-only",
+        "url" : "http://www.gnu.org/licenses/old-licenses/lgpl-2.1-standalone.html"
+      }
+    } ],
+    "type" : "application"
+  }, {
+    "name" : "debian:bookworm:libselinux1",
+    "version" : "3.4-1+b6",
+    "hashes" : [ {
+      "alg" : "SHA-256",
+      "content" : "8c039c1251742a2152969006e582efedd377ae8a9d114d4b57dff6ff6eb87c30"
+    } ],
+    "licenses" : [ {
+      "license" : {
+        "id" : "GPL-2.0-only",
+        "url" : "http://www.gnu.org/licenses/old-licenses/gpl-2.0-standalone.html"
+      }
+    } ],
+    "type" : "application"
+  }, {
+    "name" : "debian:bookworm:libsemanage-common",
+    "version" : "3.4-1",
+    "hashes" : [ {
+      "alg" : "SHA-256",
+      "content" : "63b851d3186a7b5eaec63802e129c8d1e71eac01edda705797bb8c3dcbc79c68"
+    } ],
+    "licenses" : [ {
+      "license" : {
+        "id" : "LGPL-2.1",
+        "url" : "http://www.gnu.org/licenses/old-licenses/lgpl-2.1-standalone.html"
+      }
+    } ],
+    "type" : "application"
+  }, {
+    "name" : "debian:bookworm:libsemanage2",
+    "version" : "3.4-1+b5",
+    "hashes" : [ {
+      "alg" : "SHA-256",
+      "content" : "43b8bcddca3e02895da9fa704895760110f17e5a2ee2ac8e177ef44e82ac2c13"
+    } ],
+    "licenses" : [ {
+      "license" : {
+        "id" : "LGPL-2.1-only",
+        "url" : "http://www.gnu.org/licenses/old-licenses/lgpl-2.1-standalone.html"
+      }
+    } ],
+    "type" : "application"
+  }, {
+    "name" : "debian:bookworm:libsepol2",
+    "version" : "3.4-2.1",
+    "hashes" : [ {
+      "alg" : "SHA-256",
+      "content" : "6cd5a313d370a959af429e2a57c04fe7122892b54c570ac353c73ae6aa6af38c"
+    } ],
+    "licenses" : [ {
+      "license" : {
+        "id" : "GPL-2.0-only",
+        "url" : "http://www.gnu.org/licenses/old-licenses/gpl-2.0-standalone.html"
+      }
+    } ],
+    "type" : "application"
+  }, {
+    "name" : "debian:bookworm:libsmartcols1",
+    "version" : "2.38.1-5+b1",
+    "hashes" : [ {
+      "alg" : "SHA-256",
+      "content" : "725e966ddceee10e9549c0780444f22c2b5be6bbd6532dd4222af234dad2b9dd"
+    } ],
+    "type" : "application"
+  }, {
+    "name" : "debian:bookworm:libsodium23",
+    "version" : "1.0.18-1",
+    "hashes" : [ {
+      "alg" : "SHA-256",
+      "content" : "cc79317ab292180e6b6585e98d079fea46cde20b24661a031459c37210bf77d6"
+    } ],
+    "licenses" : [ {
+      "license" : {
+        "id" : "BSD-2-Clause",
+        "url" : "http://opensource.org/licenses/BSD-2-Clause"
+      }
+    } ],
+    "type" : "application"
+  }, {
+    "name" : "debian:bookworm:libsqlite3-0",
+    "version" : "3.40.1-2",
+    "hashes" : [ {
+      "alg" : "SHA-256",
+      "content" : "9aee8dd279fce3d776ca9e23ecad1eba5e9279e70ea311928290371b23eb278d"
+    } ],
+    "type" : "application"
+  }, {
+    "name" : "debian:bookworm:libss2",
+    "version" : "1.47.0-2",
+    "hashes" : [ {
+      "alg" : "SHA-256",
+      "content" : "7e1ad4cc2c2a44052464442e64cf25941bfae519a2356b14067c2695e226b73f"
+    } ],
+    "licenses" : [ {
+      "license" : {
+        "id" : "BSD-3-Clause",
+        "url" : "http://opensource.org/licenses/BSD-3-Clause"
+      }
+    } ],
+    "type" : "application"
+  }, {
+    "name" : "debian:bookworm:libssh2-1",
+    "version" : "1.10.0-3+b1",
+    "hashes" : [ {
+      "alg" : "SHA-256",
+      "content" : "63bc8b28080e25aa4943d5edb992784958202bcfa07f04f4f2cdcbf5009aac0c"
+    } ],
+    "licenses" : [ {
+      "license" : {
+        "id" : "BSD-2-Clause",
+        "url" : "http://directory.fsf.org/wiki/License:BSD_4Clause"
+      }
+    } ],
+    "type" : "application"
+  }, {
+    "name" : "debian:bookworm:libssl3",
+    "version" : "3.0.9-1",
+    "hashes" : [ {
+      "alg" : "SHA-256",
+      "content" : "7581aa4dc16786daca0449d8b0c86305c6440d05e312fa4deae161d52ade32bc"
+    } ],
+    "licenses" : [ {
+      "license" : {
+        "id" : "Apache-2.0",
+        "url" : "http://licenses.nuget.org/Apache-2.0"
+      }
+    } ],
+    "type" : "application"
+  }, {
+    "name" : "debian:bookworm:libstdc++-12-dev",
+    "version" : "12.2.0-14",
+    "hashes" : [ {
+      "alg" : "SHA-256",
+      "content" : "7f66a289441138c1d786a0b8179f29c03a65f64108e30dd66023dd5174650e7c"
+    } ],
+    "licenses" : [ {
+      "license" : {
+        "id" : "BSD-2-Clause",
+        "url" : "http://opensource.org/licenses/BSD-2-Clause"
+      }
+    } ],
+    "type" : "application"
+  }, {
+    "name" : "debian:bookworm:libstdc++6",
+    "version" : "12.2.0-14",
+    "hashes" : [ {
+      "alg" : "SHA-256",
+      "content" : "a610db4ada3e734aac34dce52bda86d1d264935f2ee9fb18ad337ee9fb78951f"
+    } ],
+    "licenses" : [ {
+      "license" : {
+        "id" : "BSD-2-Clause",
+        "url" : "http://opensource.org/licenses/BSD-2-Clause"
+      }
+    } ],
+    "type" : "application"
+  }, {
+    "name" : "debian:bookworm:libsystemd0",
+    "version" : "252.12-1~deb12u1",
+    "hashes" : [ {
+      "alg" : "SHA-256",
+      "content" : "7f5247a90e4129610d93cba61f350b4f675f934a9893947a5e5aa1ab6fd42ed5"
+    } ],
+    "type" : "application"
+  }, {
+    "name" : "debian:bookworm:libtasn1-6",
+    "version" : "4.19.0-2",
+    "hashes" : [ {
+      "alg" : "SHA-256",
+      "content" : "850dcd42c17afc8b9d56f4d64d3f5b8f7b45db8a80a9feeceab6e7c02541b591"
+    } ],
+    "licenses" : [ {
+      "license" : {
+        "id" : "GPL-3.0",
+        "url" : "http://www.gnu.org/licenses/gpl-3.0-standalone.html"
+      }
+    } ],
+    "type" : "application"
+  }, {
+    "name" : "debian:bookworm:libtinfo6",
+    "version" : "6.4-4",
+    "hashes" : [ {
+      "alg" : "SHA-256",
+      "content" : "f20172f0fbb037b87490baa936a5f40c07f88defde2556646c41f6779713b841"
+    } ],
+    "licenses" : [ {
+      "license" : {
+        "id" : "BSD-3-Clause",
+        "url" : "http://opensource.org/licenses/BSD-3-Clause"
+      }
+    } ],
+    "type" : "application"
+  }, {
+    "name" : "debian:bookworm:libtirpc-common",
+    "version" : "1.3.3+ds-1",
+    "hashes" : [ {
+      "alg" : "SHA-256",
+      "content" : "a15cb371524e64ae1ff4296a0fd54dccbb1cd815a832befa3a5b4e4ca9559bd0"
+    } ],
+    "type" : "application"
+  }, {
+    "name" : "debian:bookworm:libtirpc-dev",
+    "version" : "1.3.3+ds-1",
+    "hashes" : [ {
+      "alg" : "SHA-256",
+      "content" : "3350a138733bbc4bbc65059d1106edf997e2298be2364baa091d550d15d4452b"
+    } ],
+    "type" : "application"
+  }, {
+    "name" : "debian:bookworm:libtirpc3",
+    "version" : "1.3.3+ds-1",
+    "hashes" : [ {
+      "alg" : "SHA-256",
+      "content" : "eb2102233b200bfbb61bbd520f5e9455730c086a370e9b7b6340d19ffb7f211e"
+    } ],
+    "type" : "application"
+  }, {
+    "name" : "debian:bookworm:libtsan2",
+    "version" : "12.2.0-14",
+    "hashes" : [ {
+      "alg" : "SHA-256",
+      "content" : "ae6307812241457e08a936d85552082b2a936e531f986ba40e3d01cbe02c28b6"
+    } ],
+    "licenses" : [ {
+      "license" : {
+        "id" : "BSD-2-Clause",
+        "url" : "http://opensource.org/licenses/BSD-2-Clause"
+      }
+    } ],
+    "type" : "application"
+  }, {
+    "name" : "debian:bookworm:libubsan1",
+    "version" : "12.2.0-14",
+    "hashes" : [ {
+      "alg" : "SHA-256",
+      "content" : "4c6539ab43fd2a5c013270d3119b164d63e451324dc92dea85a00fb70f20d9cf"
+    } ],
+    "licenses" : [ {
+      "license" : {
+        "id" : "BSD-2-Clause",
+        "url" : "http://directory.fsf.org/wiki/License:BSD_4Clause"
+      }
+    } ],
+    "type" : "application"
+  }, {
+    "name" : "debian:bookworm:libudev1",
+    "version" : "252.12-1~deb12u1",
+    "hashes" : [ {
+      "alg" : "SHA-256",
+      "content" : "eeabf1f002cc7361cc806518075463daddc95e168aac36b5a7585c46346a678d"
+    } ],
+    "type" : "application"
+  }, {
+    "name" : "debian:bookworm:libunistring2",
+    "version" : "1.0-2",
+    "hashes" : [ {
+      "alg" : "SHA-256",
+      "content" : "3336db27385041ecbf7b85e3a4f5c7478f1c647548c64a8410ca969571434559"
+    } ],
+    "type" : "application"
+  }, {
+    "name" : "debian:bookworm:libuuid1",
+    "version" : "2.38.1-5+b1",
+    "hashes" : [ {
+      "alg" : "SHA-256",
+      "content" : "130f7819b7110cd32c96053ae8e881df96e713ca3fa8e5b776cbd597f9356a44"
+    } ],
+    "type" : "application"
+  }, {
+    "name" : "debian:bookworm:libxml2",
+    "version" : "2.9.14+dfsg-1.3~deb12u1",
+    "hashes" : [ {
+      "alg" : "SHA-256",
+      "content" : "4f2d96c03553bbf97bc6693be27b2e96292f6349b7a6fbe5f74aa765d1112011"
+    } ],
+    "licenses" : [ {
+      "license" : {
+        "id" : "ISC",
+        "url" : "http://www.opensource.org/licenses/ISC"
+      }
+    } ],
+    "type" : "application"
+  }, {
+    "name" : "debian:bookworm:libxxhash0",
+    "version" : "0.8.1-1",
+    "hashes" : [ {
+      "alg" : "SHA-256",
+      "content" : "56c3b651e86c9e0c0e2e71190abde96d053b87477412c56205a3c48d33c01ba5"
+    } ],
+    "type" : "application"
+  }, {
+    "name" : "debian:bookworm:libzstd1",
+    "version" : "1.5.4+dfsg2-5",
+    "hashes" : [ {
+      "alg" : "SHA-256",
+      "content" : "5571afeaa66c4f7379e396d1a20e9a0e3b1752829a144215cb221604a71b6397"
+    } ],
+    "licenses" : [ {
+      "license" : {
+        "id" : "BSD-2-Clause",
+        "url" : "http://directory.fsf.org/wiki/License:BSD_4Clause"
+      }
+    } ],
+    "type" : "application"
+  }, {
+    "name" : "debian:bookworm:linux-libc-dev",
+    "version" : "6.1.52-1",
+    "hashes" : [ {
+      "alg" : "SHA-256",
+      "content" : "4849cc99cae0ff5f2795707fdd36e372d7600df1f4dbc64da90ca5027220326f"
+    } ],
+    "licenses" : [ {
+      "license" : {
+        "id" : "BSD-2-Clause",
+        "url" : "http://opensource.org/licenses/BSD-2-Clause"
+      }
+    } ],
+    "type" : "application"
+  }, {
+    "name" : "debian:bookworm:login",
+    "version" : "1:4.13+dfsg1-1+b1",
+    "hashes" : [ {
+      "alg" : "SHA-256",
+      "content" : "fee0f0efbfaa5bd80222b547eb2b4cc8bbb9c7e2a2d10ab443403e5db83af72b"
+    } ],
+    "type" : "application"
+  }, {
+    "name" : "debian:bookworm:logsave",
+    "version" : "1.47.0-2",
+    "hashes" : [ {
+      "alg" : "SHA-256",
+      "content" : "34b293218b6720f191babbf72769f95e5675b54fe98be646a0a3ded0878f5ed7"
+    } ],
+    "licenses" : [ {
+      "license" : {
+        "id" : "BSD-3-Clause",
+        "url" : "http://opensource.org/licenses/BSD-3-Clause"
+      }
+    } ],
+    "type" : "application"
+  }, {
+    "name" : "debian:bookworm:m4",
+    "version" : "1.4.19-3",
+    "hashes" : [ {
+      "alg" : "SHA-256",
+      "content" : "8b7d82e11f588d920c239d0d678e443a3619fec5854a70eb4e5c98a99a461a54"
+    } ],
+    "type" : "application"
+  }, {
+    "name" : "debian:bookworm:make",
+    "version" : "4.3-4.1",
+    "hashes" : [ {
+      "alg" : "SHA-256",
+      "content" : "b6ffcf798efb38bc3c7518e0255e2fe873bdaaa1dbc58333855947196f245f5a"
+    } ],
+    "licenses" : [ {
+      "license" : {
+        "id" : "GPL-3.0",
+        "url" : "http://www.gnu.org/licenses/gpl-3.0-standalone.html"
+      }
+    } ],
+    "type" : "application"
+  }, {
+    "name" : "debian:bookworm:mawk",
+    "version" : "1.3.4.20200120-3.1",
+    "hashes" : [ {
+      "alg" : "SHA-256",
+      "content" : "c9da38bfb6eda5ad397252d530dc258bd8fa1e2537c05c3171c11566d546facd"
+    } ],
+    "type" : "application"
+  }, {
+    "name" : "debian:bookworm:media-types",
+    "version" : "10.0.0",
+    "hashes" : [ {
+      "alg" : "SHA-256",
+      "content" : "5143a83fa0f1e5f2243709283b066c59a73ea79cfd69417524951d6f8361e835"
+    } ],
+    "type" : "application"
+  }, {
+    "name" : "debian:bookworm:mount",
+    "version" : "2.38.1-5+b1",
+    "hashes" : [ {
+      "alg" : "SHA-256",
+      "content" : "4caf8947123c74db9e1fbf619c90fcd206da016ec37b2c887777b326128de93c"
+    } ],
+    "type" : "application"
+  }, {
+    "name" : "debian:bookworm:ncurses-base",
+    "version" : "6.4-4",
+    "hashes" : [ {
+      "alg" : "SHA-256",
+      "content" : "52213b577f98ff6df168f7b8c723d9ef6b617f88d395546a9c16e1b606ebcf97"
+    } ],
+    "licenses" : [ {
+      "license" : {
+        "id" : "BSD-3-Clause",
+        "url" : "http://opensource.org/licenses/BSD-3-Clause"
+      }
+    } ],
+    "type" : "application"
+  }, {
+    "name" : "debian:bookworm:ncurses-bin",
+    "version" : "6.4-4",
+    "hashes" : [ {
+      "alg" : "SHA-256",
+      "content" : "eac7e01c4270acbd4d60106f3e90b1de58ad33fb4106c1fb38c1f1c6e35dae95"
+    } ],
+    "licenses" : [ {
+      "license" : {
+        "id" : "BSD-3-Clause",
+        "url" : "http://opensource.org/licenses/BSD-3-Clause"
+      }
+    } ],
+    "type" : "application"
+  }, {
+    "name" : "debian:bookworm:openssl",
+    "version" : "3.0.9-1",
+    "hashes" : [ {
+      "alg" : "SHA-256",
+      "content" : "6a076cfeb18536ae2970934eeeb16f1220a1dc8106fd8dadb20ba31d8e1330d6"
+    } ],
+    "licenses" : [ {
+      "license" : {
+        "id" : "Apache-2.0",
+        "url" : "http://licenses.nuget.org/Apache-2.0"
+      }
+    } ],
+    "type" : "application"
+  }, {
+    "name" : "debian:bookworm:passwd",
+    "version" : "1:4.13+dfsg1-1+b1",
+    "hashes" : [ {
+      "alg" : "SHA-256",
+      "content" : "d5ab44f906067e58ff059bfef80c9857d3e9ed80dcad5fe53a84a26bf7eeae68"
+    } ],
+    "type" : "application"
+  }, {
+    "name" : "debian:bookworm:patch",
+    "version" : "2.7.6-7",
+    "hashes" : [ {
+      "alg" : "SHA-256",
+      "content" : "730ad68fae32aee12bdbfcd32b303ee405a2ece3a4de7852bc98b7b8a44e3269"
+    } ],
+    "licenses" : [ {
+      "license" : {
+        "id" : "GPL-3.0",
+        "url" : "http://www.gnu.org/licenses/gpl-3.0-standalone.html"
+      }
+    } ],
+    "type" : "application"
+  }, {
+    "name" : "debian:bookworm:perl",
+    "version" : "5.36.0-7",
+    "hashes" : [ {
+      "alg" : "SHA-256",
+      "content" : "bf00e08e2759104dc2b82879cc624af2af79e8b825f900ca7b787f4713d90fe8"
+    } ],
+    "licenses" : [ {
+      "license" : {
+        "id" : "Artistic-2.0",
+        "url" : "http://www.opensource.org/licenses/artistic-license-2.0"
+      }
+    } ],
+    "type" : "application"
+  }, {
+    "name" : "debian:bookworm:perl-base",
+    "version" : "5.36.0-7",
+    "hashes" : [ {
+      "alg" : "SHA-256",
+      "content" : "5b3a23a709c187f977e685a943d94fa97f3c202850d5da81edf20ea8693e928a"
+    } ],
+    "licenses" : [ {
+      "license" : {
+        "id" : "Artistic-2.0",
+        "url" : "http://www.opensource.org/licenses/artistic-license-2.0"
+      }
+    } ],
+    "type" : "application"
+  }, {
+    "name" : "debian:bookworm:perl-modules-5.36",
+    "version" : "5.36.0-7",
+    "hashes" : [ {
+      "alg" : "SHA-256",
+      "content" : "142367a60ddaa51f3c741de4c694899ca755e19f6a78af5ed9cfa105d966fc85"
+    } ],
+    "licenses" : [ {
+      "license" : {
+        "id" : "Artistic-2.0",
+        "url" : "http://www.opensource.org/licenses/artistic-license-2.0"
+      }
+    } ],
+    "type" : "application"
+  }, {
+    "name" : "debian:bookworm:pkg-config",
+    "version" : "1.8.1-1",
+    "hashes" : [ {
+      "alg" : "SHA-256",
+      "content" : "7b3d670effcb10fab128e0b4212b636f34b66b5e18478ae4e4401895475e5d1b"
+    } ],
+    "licenses" : [ {
+      "license" : {
+        "id" : "BSD-2-Clause",
+        "url" : "http://directory.fsf.org/wiki/License:BSD_4Clause"
+      }
+    } ],
+    "type" : "application"
+  }, {
+    "name" : "debian:bookworm:pkgconf",
+    "version" : "1.8.1-1",
+    "hashes" : [ {
+      "alg" : "SHA-256",
+      "content" : "fd6438dad0f8f27c0032cef87fe6232c707c81a868fc3a04f44e8287456a1379"
+    } ],
+    "licenses" : [ {
+      "license" : {
+        "id" : "BSD-2-Clause",
+        "url" : "http://directory.fsf.org/wiki/License:BSD_4Clause"
+      }
+    } ],
+    "type" : "application"
+  }, {
+    "name" : "debian:bookworm:pkgconf-bin",
+    "version" : "1.8.1-1",
+    "hashes" : [ {
+      "alg" : "SHA-256",
+      "content" : "9c9ac531bfe7b7576f297cce375aff8d54d699faa09caf3b173eb0d6e536e598"
+    } ],
+    "licenses" : [ {
+      "license" : {
+        "id" : "BSD-2-Clause",
+        "url" : "http://directory.fsf.org/wiki/License:BSD_4Clause"
+      }
+    } ],
+    "type" : "application"
+  }, {
+    "name" : "debian:bookworm:procps",
+    "version" : "2:4.0.2-3",
+    "hashes" : [ {
+      "alg" : "SHA-256",
+      "content" : "b735600a4b4fa4ef30879cda2e2320e3d4da50fe6d84fe1e7e6db35b3fcbf72c"
+    } ],
+    "type" : "application"
+  }, {
+    "name" : "debian:bookworm:re2c",
+    "version" : "3.0-2",
+    "hashes" : [ {
+      "alg" : "SHA-256",
+      "content" : "5954bdac26c5a55dd22568b921ea024c42f258b3b70472561521c34bb9b60b4a"
+    } ],
+    "type" : "application"
+  }, {
+    "name" : "debian:bookworm:readline-common",
+    "version" : "8.2-1.3",
+    "hashes" : [ {
+      "alg" : "SHA-256",
+      "content" : "c5885d5da2f6958573dc36aed92ab3cfab8d5fd92b036f174c3eca4a0da15f41"
+    } ],
+    "type" : "application"
+  }, {
+    "name" : "debian:bookworm:rpcsvc-proto",
+    "version" : "1.4.3-1",
+    "hashes" : [ {
+      "alg" : "SHA-256",
+      "content" : "82961b3e533b2015af6d1fb1b29dfa15b688424b4f61ab527eca866eca081595"
+    } ],
+    "licenses" : [ {
+      "license" : {
+        "id" : "BSD-2-Clause",
+        "url" : "http://directory.fsf.org/wiki/License:BSD_4Clause"
+      }
+    } ],
+    "type" : "application"
+  }, {
+    "name" : "debian:bookworm:sed",
+    "version" : "4.9-1",
+    "hashes" : [ {
+      "alg" : "SHA-256",
+      "content" : "c74248c4e00027394389497999e0f3ab11a97614378fb53e98fccfcb63b92978"
+    } ],
+    "type" : "application"
+  }, {
+    "name" : "debian:bookworm:sysvinit-utils",
+    "version" : "3.06-4",
+    "hashes" : [ {
+      "alg" : "SHA-256",
+      "content" : "27617ee1c898d2d6e78aae17d2f8cd5eba3a3be49e5fa9f79f91a87f57bff097"
+    } ],
+    "type" : "application"
+  }, {
+    "name" : "debian:bookworm:tar",
+    "version" : "1.34+dfsg-1.2",
+    "hashes" : [ {
+      "alg" : "SHA-256",
+      "content" : "64cae55692a0d6534b51d2f0d17434707d062a52aeca39c44065bc7dd6b28865"
+    } ],
+    "type" : "application"
+  }, {
+    "name" : "debian:bookworm:tzdata",
+    "version" : "2023c-5",
+    "hashes" : [ {
+      "alg" : "SHA-256",
+      "content" : "c22430b2a70e0cd08b4c32992a45e09a31ea707e9f69a539c3d8f99c691e6618"
+    } ],
+    "type" : "application"
+  }, {
+    "name" : "debian:bookworm:usr-is-merged",
+    "version" : "35",
+    "hashes" : [ {
+      "alg" : "SHA-256",
+      "content" : "7e6d710a6806ceecae24078f06988e50159acab1be3fa22df644c778076ab2af"
+    } ],
+    "type" : "application"
+  }, {
+    "name" : "debian:bookworm:util-linux",
+    "version" : "2.38.1-5+b1",
+    "hashes" : [ {
+      "alg" : "SHA-256",
+      "content" : "0f45550e19b90805716cc067e768b01e83b7a3c3a21ade6d7e3ba6ce9ef04268"
+    } ],
+    "type" : "application"
+  }, {
+    "name" : "debian:bookworm:util-linux-extra",
+    "version" : "2.38.1-5+b1",
+    "hashes" : [ {
+      "alg" : "SHA-256",
+      "content" : "06867c548ca325596dbc37f4e99920276008f2a96e9e8479954ce9f439950314"
+    } ],
+    "type" : "application"
+  }, {
+    "name" : "debian:bookworm:xz-utils",
+    "version" : "5.4.1-0.2",
+    "hashes" : [ {
+      "alg" : "SHA-256",
+      "content" : "cc7bea0b05dc52895d009408955fe437cfa5ca72d86073f814da7f83b769abbc"
+    } ],
+    "type" : "application"
+  }, {
+    "name" : "debian:bookworm:zlib1g",
+    "version" : "1:1.2.13.dfsg-1",
+    "hashes" : [ {
+      "alg" : "SHA-256",
+      "content" : "e666bf16f9650136a92715bdaae3e2e01a4cb5a67b7eccf78dbd0a99eb110350"
+    } ],
+    "type" : "application"
+  }, {
+    "name" : "debian:bookworm:zlib1g-dev",
+    "version" : "1:1.2.13.dfsg-1",
+    "hashes" : [ {
+      "alg" : "SHA-256",
+      "content" : "1a4eeaabb124fe661d8c7948c003e55449c636793fa7f8e5d2aa764cda298133"
+    } ],
+    "type" : "application"
+  }, {
+    "name" : "digininja/dvwa",
+    "version" : "9b787fc",
+    "hashes" : [ {
+      "alg" : "SHA-256",
+      "content" : "ab341dbad7565b93982a0d336da43e01033a27bf2b66beeef338d51265c07bb1"
+    } ],
+    "type" : "container"
+  }, {
+    "name" : "php.tar.xz",
+    "hashes" : [ {
+      "alg" : "SHA-256",
+      "content" : "29af82e4f7509831490552918aad502697453f0869a579ee1b80b08f9112c5b8"
+    } ],
+    "licenses" : [ {
+      "license" : {
+        "id" : "BSD-2-Clause",
+        "url" : "http://opensource.org/licenses/BSD-2-Clause"
+      }
+    } ],
+    "type" : "application"
+  } ],
+  "vulnerabilities" : [ {
+    "bom-ref" : "deb://debian:bookworm:libldap-2.5-0:2.5.13+dfsg-5",
+    "id" : "CVE-2023-2953",
+    "source" : {
+      "name" : "JFrog",
+      "url" : ""
+    },
+    "ratings" : [ {
+      "source" : {
+        "name" : "CVSS V3 FROM NVD",
+        "url" : "https://nvd.nist.gov/vuln/detail/CVE-2023-2953"
+      },
+      "score" : 7.5,
+      "severity" : "high",
+      "method" : "CVSSv31",
+      "vector" : "AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:H"
+    } ],
+    "cwes" : [ 476 ],
+    "description" : "A vulnerability was found in openldap. This security flaw causes a null pointer dereference in ber_memalloc_x() function.",
+    "analysis" : {
+      "state" : "in_triage",
+      "detail" : "There are no applicability scanners for this specific CVE"
+    },
+    "affects" : [ {
+      "ref" : "deb://debian:bookworm:libldap-2.5-0:2.5.13+dfsg-5",
+      "versions" : [ {
+        "range" : "vers:deb/>=0.0.0",
+        "status" : "affected"
+      } ]
+    } ]
+  }, {
+    "bom-ref" : "deb://debian:bookworm:curl:7.88.1-10+deb12u1",
+    "id" : "CVE-2023-38039",
+    "source" : {
+      "name" : "JFrog",
+      "url" : ""
+    },
+    "ratings" : [ {
+      "source" : {
+        "name" : "CVSS V3 FROM NVD",
+        "url" : "https://nvd.nist.gov/vuln/detail/CVE-2023-38039"
+      },
+      "score" : 7.5,
+      "severity" : "high",
+      "method" : "CVSSv31",
+      "vector" : "AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:H"
+    } ],
+    "cwes" : [ 770 ],
+    "description" : "When curl retrieves an HTTP response, it stores the incoming headers so thatthey can be accessed later via the libcurl headers API.However, curl did not have a limit in how many or how large headers it wouldaccept in a response, allowing a malicious server to stream an endless seriesof headers and eventually cause curl to run out of heap memory.",
+    "analysis" : {
+      "state" : "in_triage",
+      "detail" : "There are no applicability scanners for this specific CVE"
+    },
+    "affects" : [ {
+      "ref" : "deb://debian:bookworm:curl:7.88.1-10+deb12u1",
+      "versions" : [ {
+        "range" : "vers:deb/<7.88.1-10+deb12u3",
+        "status" : "affected"
+      }, {
+        "version" : "7.88.1-10+deb12u3",
+        "status" : "unaffected"
+      } ]
+    } ]
+  }, {
+    "bom-ref" : "deb://debian:bookworm:perl-base:5.36.0-7",
+    "id" : "CVE-2023-31484",
+    "source" : {
+      "name" : "JFrog",
+      "url" : ""
+    },
+    "ratings" : [ {
+      "source" : {
+        "name" : "CVSS V3 FROM NVD",
+        "url" : "https://nvd.nist.gov/vuln/detail/CVE-2023-31484"
+      },
+      "score" : 8.1,
+      "severity" : "high",
+      "method" : "CVSSv31",
+      "vector" : "AV:N/AC:H/PR:N/UI:N/S:U/C:H/I:H/A:H"
+    } ],
+    "cwes" : [ 295 ],
+    "description" : "CPAN.pm before 2.35 does not verify TLS certificates when downloading distributions over HTTPS.",
+    "analysis" : {
+      "state" : "in_triage",
+      "detail" : "There are no applicability scanners for this specific CVE"
+    },
+    "affects" : [ {
+      "ref" : "deb://debian:bookworm:perl-base:5.36.0-7",
+      "versions" : [ {
+        "range" : "vers:deb/>=0.0.0",
+        "status" : "affected"
+      } ]
+    } ]
+  }, {
+    "bom-ref" : "deb://debian:bookworm:libc-bin:2.36-9+deb12u1",
+    "id" : "CVE-2023-4911",
+    "source" : {
+      "name" : "JFrog",
+      "url" : ""
+    },
+    "ratings" : [ {
+      "source" : {
+        "name" : "CVSS V3 FROM NVD",
+        "url" : "https://nvd.nist.gov/vuln/detail/CVE-2023-4911"
+      },
+      "score" : 7.8,
+      "severity" : "high",
+      "method" : "CVSSv31",
+      "vector" : "AV:L/AC:L/PR:L/UI:N/S:U/C:H/I:H/A:H"
+    } ],
+    "cwes" : [ 787 ],
+    "description" : "A buffer overflow was discovered in the GNU C Library's dynamic loader ld.so while processing the GLIBC_TUNABLES environment variable. This issue could allow a local attacker to use maliciously crafted GLIBC_TUNABLES environment variables when launching binaries with SUID permission to execute code with elevated privileges.",
+    "analysis" : {
+      "state" : "in_triage",
+      "detail" : "There are no applicability scanners for this specific CVE"
+    },
+    "affects" : [ {
+      "ref" : "deb://debian:bookworm:libc-bin:2.36-9+deb12u1",
+      "versions" : [ {
+        "range" : "vers:deb/<2.36-9+deb12u3",
+        "status" : "affected"
+      }, {
+        "version" : "2.36-9+deb12u3",
+        "status" : "unaffected"
+      } ]
+    } ]
+  }, {
+    "bom-ref" : "deb://debian:bookworm:libcc1-0:12.2.0-14",
+    "id" : "CVE-2023-4039",
+    "source" : {
+      "name" : "JFrog",
+      "url" : ""
+    },
+    "ratings" : [ {
+      "source" : {
+        "name" : "CVSS V3 FROM NVD",
+        "url" : "https://nvd.nist.gov/vuln/detail/CVE-2023-4039"
+      },
+      "score" : 4.8,
+      "severity" : "medium",
+      "method" : "CVSSv31",
+      "vector" : "AV:N/AC:H/PR:N/UI:N/S:U/C:L/I:L/A:N"
+    } ],
+    "description" : "A failure in the -fstack-protector feature in GCC-based toolchains that target AArch64 allows an attacker to exploit an existing buffer overflow in dynamically-sized local variables in your application without this being detected. This stack-protector failure only applies to C99-style dynamically-sized local variables or those created using alloca(). The stack-protector operates as intended for statically-sized local variables.The default behavior when the stack-protector detects an overflow is to terminate your application, resulting in controlled loss of availability. An attacker who can exploit a buffer overflow without triggering the stack-protector might be able to change program flow control to cause an uncontrolled loss of availability or to go further and affect confidentiality or integrity.",
+    "analysis" : {
+      "state" : "in_triage",
+      "detail" : "There are no applicability scanners for this specific CVE"
+    },
+    "affects" : [ {
+      "ref" : "deb://debian:bookworm:libcc1-0:12.2.0-14",
+      "versions" : [ {
+        "range" : "vers:deb/>=0.0.0",
+        "status" : "affected"
+      } ]
+    } ]
+  }, {
+    "bom-ref" : "deb://debian:bookworm:openssl:3.0.9-1",
+    "id" : "CVE-2023-2975",
+    "source" : {
+      "name" : "JFrog",
+      "url" : ""
+    },
+    "ratings" : [ {
+      "source" : {
+        "name" : "CVSS V3 FROM NVD",
+        "url" : "https://nvd.nist.gov/vuln/detail/CVE-2023-2975"
+      },
+      "score" : 5.3,
+      "severity" : "medium",
+      "method" : "CVSSv31",
+      "vector" : "AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:L/A:N"
+    } ],
+    "cwes" : [ 287 ],
+    "description" : "Issue summary: The AES-SIV cipher implementation contains a bug that causesit to ignore empty associated data entries which are unauthenticated asa consequence.Impact summary: Applications that use the AES-SIV algorithm and want toauthenticate empty data entries as associated data can be mislead by removingadding or reordering such empty entries as these are ignored by the OpenSSLimplementation. We are currently unaware of any such applications.The AES-SIV algorithm allows for authentication of multiple associateddata entries along with the encryption. To authenticate empty data theapplication has to call EVP_EncryptUpdate() (or EVP_CipherUpdate()) withNULL pointer as the output buffer and 0 as the input buffer length.The AES-SIV implementation in OpenSSL just returns success for such a callinstead of performing the associated data authentication operation.The empty data thus will not be authenticated.As this issue does not affect non-empty associated data authentication andwe expect it to be rare for an application to use empty associated dataentries this is qualified as Low severity issue.",
+    "analysis" : {
+      "state" : "in_triage",
+      "detail" : "There are no applicability scanners for this specific CVE"
+    },
+    "affects" : [ {
+      "ref" : "deb://debian:bookworm:openssl:3.0.9-1",
+      "versions" : [ {
+        "range" : "vers:deb/<3.0.10-1~deb12u1",
+        "status" : "affected"
+      }, {
+        "version" : "3.0.10-1~deb12u1",
+        "status" : "unaffected"
+      } ]
+    } ]
+  }, {
+    "bom-ref" : "deb://debian:bookworm:libproc2-0:2:4.0.2-3",
+    "id" : "CVE-2023-4016",
+    "source" : {
+      "name" : "JFrog",
+      "url" : ""
+    },
+    "ratings" : [ {
+      "source" : {
+        "name" : "CVSS V3 FROM NVD",
+        "url" : "https://nvd.nist.gov/vuln/detail/CVE-2023-4016"
+      },
+      "score" : 5.5,
+      "severity" : "medium",
+      "method" : "CVSSv31",
+      "vector" : "AV:L/AC:L/PR:L/UI:N/S:U/C:N/I:N/A:H"
+    } ],
+    "cwes" : [ 787 ],
+    "description" : "Under some circumstances, this weakness allows a user who has access to run the “ps” utility on a machine, the ability to write almost unlimited amounts of unfiltered data into the process heap.",
+    "analysis" : {
+      "state" : "in_triage",
+      "detail" : "There are no applicability scanners for this specific CVE"
+    },
+    "affects" : [ {
+      "ref" : "deb://debian:bookworm:libproc2-0:2:4.0.2-3",
+      "versions" : [ {
+        "range" : "vers:deb/>=0.0.0",
+        "status" : "affected"
+      } ]
+    } ]
+  }, {
+    "bom-ref" : "deb://debian:bookworm:libgssapi-krb5-2:1.20.1-2",
+    "id" : "CVE-2023-36054",
+    "source" : {
+      "name" : "JFrog",
+      "url" : ""
+    },
+    "ratings" : [ {
+      "source" : {
+        "name" : "CVSS V3 FROM NVD",
+        "url" : "https://nvd.nist.gov/vuln/detail/CVE-2023-36054"
+      },
+      "score" : 6.5,
+      "severity" : "medium",
+      "method" : "CVSSv31",
+      "vector" : "AV:N/AC:L/PR:L/UI:N/S:U/C:N/I:N/A:H"
+    } ],
+    "cwes" : [ 824 ],
+    "description" : "lib/kadm5/kadm_rpc_xdr.c in MIT Kerberos 5 (aka krb5) before 1.20.2 and 1.21.x before 1.21.1 frees an uninitialized pointer. A remote authenticated user can trigger a kadmind crash. This occurs because _xdr_kadm5_principal_ent_rec does not validate the relationship between n_key_data and the key_data array count.",
+    "analysis" : {
+      "state" : "in_triage",
+      "detail" : "There are no applicability scanners for this specific CVE"
+    },
+    "affects" : [ {
+      "ref" : "deb://debian:bookworm:libgssapi-krb5-2:1.20.1-2",
+      "versions" : [ {
+        "range" : "vers:deb/<1.20.1-2+deb12u1",
+        "status" : "affected"
+      }, {
+        "version" : "1.20.1-2+deb12u1",
+        "status" : "unaffected"
+      } ]
+    } ]
+  }, {
+    "bom-ref" : "deb://debian:bookworm:libssl3:3.0.9-1",
+    "id" : "CVE-2023-3446",
+    "source" : {
+      "name" : "JFrog",
+      "url" : ""
+    },
+    "ratings" : [ {
+      "source" : {
+        "name" : "CVSS V3 FROM NVD",
+        "url" : "https://nvd.nist.gov/vuln/detail/CVE-2023-3446"
+      },
+      "score" : 5.3,
+      "severity" : "medium",
+      "method" : "CVSSv31",
+      "vector" : "AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:L"
+    } ],
+    "cwes" : [ 1333 ],
+    "description" : "Issue summary: Checking excessively long DH keys or parameters may be very slow.Impact summary: Applications that use the functions DH_check(), DH_check_ex()or EVP_PKEY_param_check() to check a DH key or DH parameters may experience longdelays. Where the key or parameters that are being checked have been obtainedfrom an untrusted source this may lead to a Denial of Service.The function DH_check() performs various checks on DH parameters. One of thosechecks confirms that the modulus ('p' parameter) is not too large. Trying to usea very large modulus is slow and OpenSSL will not normally use a modulus whichis over 10,000 bits in length.However the DH_check() function checks numerous aspects of the key or parametersthat have been supplied. Some of those checks use the supplied modulus valueeven if it has already been found to be too large.An application that calls DH_check() and supplies a key or parameters obtainedfrom an untrusted source could be vulernable to a Denial of Service attack.The function DH_check() is itself called by a number of other OpenSSL functions.An application calling any of those other functions may similarly be affected.The other functions affected by this are DH_check_ex() andEVP_PKEY_param_check().Also vulnerable are the OpenSSL dhparam and pkeyparam command line applicationswhen using the '-check' option.The OpenSSL SSL/TLS implementation is not affected by this issue.The OpenSSL 3.0 and 3.1 FIPS providers are not affected by this issue.",
+    "analysis" : {
+      "state" : "in_triage",
+      "detail" : "There are no applicability scanners for this specific CVE"
+    },
+    "affects" : [ {
+      "ref" : "deb://debian:bookworm:libssl3:3.0.9-1",
+      "versions" : [ {
+        "range" : "vers:deb/<3.0.10-1~deb12u1",
+        "status" : "affected"
+      }, {
+        "version" : "3.0.10-1~deb12u1",
+        "status" : "unaffected"
+      } ]
+    } ]
+  }, {
+    "bom-ref" : "deb://debian:bookworm:libxml2:2.9.14+dfsg-1.3~deb12u1",
+    "id" : "CVE-2023-45322",
+    "source" : {
+      "name" : "JFrog",
+      "url" : ""
+    },
+    "ratings" : [ {
+      "source" : {
+        "name" : "CVSS V3 FROM NVD",
+        "url" : "https://nvd.nist.gov/vuln/detail/CVE-2023-45322"
+      },
+      "score" : 6.5,
+      "severity" : "medium",
+      "method" : "CVSSv31",
+      "vector" : "AV:N/AC:L/PR:N/UI:R/S:U/C:N/I:N/A:H"
+    } ],
+    "cwes" : [ 416 ],
+    "description" : "** DISPUTED ** libxml2 through 2.11.5 has a use-after-free that can only occur after a certain memory allocation fails. This occurs in xmlUnlinkNode in tree.c. NOTE: the vendor's position is \"I don't think these issues are critical enough to warrant a CVE ID ... because an attacker typically can't control when memory allocations fail.\"",
+    "analysis" : {
+      "state" : "in_triage",
+      "detail" : "There are no applicability scanners for this specific CVE"
+    },
+    "affects" : [ {
+      "ref" : "deb://debian:bookworm:libxml2:2.9.14+dfsg-1.3~deb12u1",
+      "versions" : [ {
+        "range" : "vers:deb/>=0.0.0",
+        "status" : "affected"
+      } ]
+    } ]
+  }, {
+    "bom-ref" : "deb://debian:bookworm:openssl:3.0.9-1",
+    "id" : "CVE-2023-3817",
+    "source" : {
+      "name" : "JFrog",
+      "url" : ""
+    },
+    "ratings" : [ {
+      "source" : {
+        "name" : "CVSS V3 FROM NVD",
+        "url" : "https://nvd.nist.gov/vuln/detail/CVE-2023-3817"
+      },
+      "score" : 5.3,
+      "severity" : "medium",
+      "method" : "CVSSv31",
+      "vector" : "AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:L"
+    } ],
+    "cwes" : [ 834 ],
+    "description" : "Issue summary: Checking excessively long DH keys or parameters may be very slow.Impact summary: Applications that use the functions DH_check(), DH_check_ex()or EVP_PKEY_param_check() to check a DH key or DH parameters may experience longdelays. Where the key or parameters that are being checked have been obtainedfrom an untrusted source this may lead to a Denial of Service.The function DH_check() performs various checks on DH parameters. After fixingCVE-2023-3446 it was discovered that a large q parameter value can also triggeran overly long computation during some of these checks. A correct q value,if present, cannot be larger than the modulus p parameter, thus it isunnecessary to perform these checks if q is larger than p.An application that calls DH_check() and supplies a key or parameters obtainedfrom an untrusted source could be vulnerable to a Denial of Service attack.The function DH_check() is itself called by a number of other OpenSSL functions.An application calling any of those other functions may similarly be affected.The other functions affected by this are DH_check_ex() andEVP_PKEY_param_check().Also vulnerable are the OpenSSL dhparam and pkeyparam command line applicationswhen using the \"-check\" option.The OpenSSL SSL/TLS implementation is not affected by this issue.The OpenSSL 3.0 and 3.1 FIPS providers are not affected by this issue.",
+    "analysis" : {
+      "state" : "in_triage",
+      "detail" : "There are no applicability scanners for this specific CVE"
+    },
+    "affects" : [ {
+      "ref" : "deb://debian:bookworm:openssl:3.0.9-1",
+      "versions" : [ {
+        "range" : "vers:deb/<3.0.10-1~deb12u1",
+        "status" : "affected"
+      }, {
+        "version" : "3.0.10-1~deb12u1",
+        "status" : "unaffected"
+      } ]
+    } ]
+  }, {
+    "bom-ref" : "deb://debian:bookworm:libc6:2.36-9+deb12u1",
+    "id" : "CVE-2023-4806",
+    "source" : {
+      "name" : "JFrog",
+      "url" : ""
+    },
+    "ratings" : [ {
+      "source" : {
+        "name" : "CVSS V3 FROM NVD",
+        "url" : "https://nvd.nist.gov/vuln/detail/CVE-2023-4806"
+      },
+      "score" : 5.9,
+      "severity" : "medium",
+      "method" : "CVSSv31",
+      "vector" : "AV:N/AC:H/PR:N/UI:N/S:U/C:N/I:N/A:H"
+    } ],
+    "cwes" : [ 416 ],
+    "description" : "A flaw was found in glibc. In an extremely rare situation, the getaddrinfo function may access memory that has been freed, resulting in an application crash. This issue is only exploitable when a NSS module implements only the _nss_*_gethostbyname2_r and _nss_*_getcanonname_r hooks without implementing the _nss_*_gethostbyname3_r hook. The resolved name should return a large number of IPv6 and IPv4, and the call to the getaddrinfo function should have the AF_INET6 address family with AI_CANONNAME, AI_ALL and AI_V4MAPPED as flags.",
+    "analysis" : {
+      "state" : "in_triage",
+      "detail" : "There are no applicability scanners for this specific CVE"
+    },
+    "affects" : [ {
+      "ref" : "deb://debian:bookworm:libc6:2.36-9+deb12u1",
+      "versions" : [ {
+        "range" : "vers:deb/<2.36-9+deb12u3",
+        "status" : "affected"
+      }, {
+        "version" : "2.36-9+deb12u3",
+        "status" : "unaffected"
+      } ]
+    } ]
+  }, {
+    "bom-ref" : "deb://debian:bookworm:libc-bin:2.36-9+deb12u1",
+    "id" : "CVE-2023-4527",
+    "source" : {
+      "name" : "JFrog",
+      "url" : ""
+    },
+    "ratings" : [ {
+      "source" : {
+        "name" : "CVSS V3 FROM NVD",
+        "url" : "https://nvd.nist.gov/vuln/detail/CVE-2023-4527"
+      },
+      "score" : 6.5,
+      "severity" : "medium",
+      "method" : "CVSSv31",
+      "vector" : "AV:N/AC:H/PR:N/UI:N/S:U/C:L/I:N/A:H"
+    } ],
+    "cwes" : [ 125 ],
+    "description" : "A flaw was found in glibc. When the getaddrinfo function is called with the AF_UNSPEC address family and the system is configured with no-aaaa mode via /etc/resolv.conf, a DNS response via TCP larger than 2048 bytes can potentially disclose stack contents through the function returned address data, and may cause a crash.",
+    "analysis" : {
+      "state" : "in_triage",
+      "detail" : "There are no applicability scanners for this specific CVE"
+    },
+    "affects" : [ {
+      "ref" : "deb://debian:bookworm:libc-bin:2.36-9+deb12u1",
+      "versions" : [ {
+        "range" : "vers:deb/<2.36-9+deb12u3",
+        "status" : "affected"
+      }, {
+        "version" : "2.36-9+deb12u3",
+        "status" : "unaffected"
+      } ]
+    } ]
+  }, {
+    "bom-ref" : "deb://debian:bookworm:libxml2:2.9.14+dfsg-1.3~deb12u1",
+    "id" : "CVE-2023-39615",
+    "source" : {
+      "name" : "JFrog",
+      "url" : ""
+    },
+    "ratings" : [ {
+      "source" : {
+        "name" : "CVSS V3 FROM NVD",
+        "url" : "https://nvd.nist.gov/vuln/detail/CVE-2023-39615"
+      },
+      "score" : 6.5,
+      "severity" : "medium",
+      "method" : "CVSSv31",
+      "vector" : "AV:N/AC:L/PR:N/UI:R/S:U/C:N/I:N/A:H"
+    } ],
+    "cwes" : [ 119 ],
+    "description" : "** DISPUTED ** Xmlsoft Libxml2 v2.11.0 was discovered to contain an out-of-bounds read via the xmlSAX2StartElement() function at /libxml2/SAX2.c. This vulnerability allows attackers to cause a Denial of Service (DoS) via supplying a crafted XML file. NOTE: the vendor's position is that the product does not support the legacy SAX1 interface with custom callbacks; there is a crash even without crafted input.",
+    "analysis" : {
+      "state" : "in_triage",
+      "detail" : "There are no applicability scanners for this specific CVE"
+    },
+    "affects" : [ {
+      "ref" : "deb://debian:bookworm:libxml2:2.9.14+dfsg-1.3~deb12u1",
+      "versions" : [ {
+        "range" : "vers:deb/>=0.0.0",
+        "status" : "affected"
+      } ]
+    } ]
+  }, {
+    "bom-ref" : "deb://debian:bookworm:libc-dev-bin:2.36-9+deb12u1",
+    "id" : "CVE-2018-20796",
+    "source" : {
+      "name" : "JFrog",
+      "url" : ""
+    },
+    "ratings" : [ {
+      "source" : {
+        "name" : "DEBIAN SECURITY BUG TRACKER",
+        "url" : "https://nvd.nist.gov/vuln/detail/CVE-2018-20796"
+      },
+      "score" : 7.5,
+      "severity" : "low",
+      "method" : "CVSSv3",
+      "vector" : "AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:H"
+    } ],
+    "cwes" : [ 674 ],
+    "description" : "In the GNU C Library (aka glibc or libc6) through 2.29, check_dst_limits_calc_pos_1 in posix/regexec.c has Uncontrolled Recursion, as demonstrated by '(\\227|)(\\\\1\\\\1|t1|\\\\\\2537)+' in grep.",
+    "analysis" : {
+      "state" : "in_triage",
+      "detail" : "There are no applicability scanners for this specific CVE"
+    },
+    "affects" : [ {
+      "ref" : "deb://debian:bookworm:libc-dev-bin:2.36-9+deb12u1",
+      "versions" : [ {
+        "range" : "vers:deb/>=0.0.0",
+        "status" : "affected"
+      } ]
+    } ]
+  }, {
+    "bom-ref" : "deb://debian:bookworm:libubsan1:12.2.0-14",
+    "id" : "CVE-2022-27943",
+    "source" : {
+      "name" : "JFrog",
+      "url" : ""
+    },
+    "ratings" : [ {
+      "source" : {
+        "name" : "DEBIAN SECURITY BUG TRACKER",
+        "url" : "https://nvd.nist.gov/vuln/detail/CVE-2022-27943"
+      },
+      "score" : 5.5,
+      "severity" : "low",
+      "method" : "CVSSv31",
+      "vector" : "AV:L/AC:L/PR:N/UI:R/S:U/C:N/I:N/A:H"
+    } ],
+    "cwes" : [ 674 ],
+    "description" : "libiberty/rust-demangle.c in GNU GCC 11.2 allows stack consumption in demangle_const, as demonstrated by nm-new.",
+    "analysis" : {
+      "state" : "in_triage",
+      "detail" : "There are no applicability scanners for this specific CVE"
+    },
+    "affects" : [ {
+      "ref" : "deb://debian:bookworm:libubsan1:12.2.0-14",
+      "versions" : [ {
+        "range" : "vers:deb/>=0.0.0",
+        "status" : "affected"
+      } ]
+    } ]
+  }, {
+    "bom-ref" : "deb://debian:bookworm:binutils-common:2.40-2",
+    "id" : "CVE-2018-18483",
+    "source" : {
+      "name" : "JFrog",
+      "url" : ""
+    },
+    "ratings" : [ {
+      "source" : {
+        "name" : "DEBIAN SECURITY BUG TRACKER",
+        "url" : "https://nvd.nist.gov/vuln/detail/CVE-2018-18483"
+      },
+      "score" : 7.8,
+      "severity" : "low",
+      "method" : "CVSSv3",
+      "vector" : "AV:L/AC:L/PR:N/UI:R/S:U/C:H/I:H/A:H"
+    } ],
+    "cwes" : [ 190 ],
+    "description" : "The get_count function in cplus-dem.c in GNU libiberty, as distributed in GNU Binutils 2.31, allows remote attackers to cause a denial of service (malloc called with the result of an integer-overflowing calculation) or possibly have unspecified other impact via a crafted string, as demonstrated by c++filt.",
+    "analysis" : {
+      "state" : "in_triage",
+      "detail" : "There are no applicability scanners for this specific CVE"
+    },
+    "affects" : [ {
+      "ref" : "deb://debian:bookworm:binutils-common:2.40-2",
+      "versions" : [ {
+        "range" : "vers:deb/>=0.0.0",
+        "status" : "affected"
+      } ]
+    } ]
+  }, {
+    "bom-ref" : "deb://debian:bookworm:tar:1.34+dfsg-1.2",
+    "id" : "CVE-2005-2541",
+    "source" : {
+      "name" : "JFrog",
+      "url" : ""
+    },
+    "description" : "Tar 1.15.1 does not properly warn the user when extracting setuid or setgid files, which may allow local users or remote attackers to gain privileges.",
+    "analysis" : {
+      "state" : "in_triage",
+      "detail" : "There are no applicability scanners for this specific CVE"
+    },
+    "affects" : [ {
+      "ref" : "deb://debian:bookworm:tar:1.34+dfsg-1.2",
+      "versions" : [ {
+        "range" : "vers:deb/>=0.0.0",
+        "status" : "affected"
+      } ]
+    } ]
+  }, {
+    "bom-ref" : "deb://debian:bookworm:coreutils:9.1-1",
+    "id" : "CVE-2016-2781",
+    "source" : {
+      "name" : "JFrog",
+      "url" : ""
+    },
+    "ratings" : [ {
+      "source" : {
+        "name" : "DEBIAN SECURITY BUG TRACKER",
+        "url" : "https://nvd.nist.gov/vuln/detail/CVE-2016-2781"
+      },
+      "score" : 6.5,
+      "severity" : "low",
+      "method" : "CVSSv3",
+      "vector" : "AV:L/AC:L/PR:L/UI:N/S:C/C:N/I:H/A:N"
+    } ],
+    "cwes" : [ 20 ],
+    "description" : "chroot in GNU coreutils, when used with --userspec, allows local users to escape to the parent session via a crafted TIOCSTI ioctl call, which pushes characters to the terminal's input buffer.",
+    "analysis" : {
+      "state" : "in_triage",
+      "detail" : "There are no applicability scanners for this specific CVE"
+    },
+    "affects" : [ {
+      "ref" : "deb://debian:bookworm:coreutils:9.1-1",
+      "versions" : [ {
+        "range" : "vers:deb/>=0.0.0",
+        "status" : "affected"
+      } ]
+    } ]
+  }, {
+    "bom-ref" : "deb://debian:bookworm:binutils:2.40-2",
+    "id" : "CVE-2021-32256",
+    "source" : {
+      "name" : "JFrog",
+      "url" : ""
+    },
+    "ratings" : [ {
+      "source" : {
+        "name" : "DEBIAN SECURITY BUG TRACKER",
+        "url" : "https://nvd.nist.gov/vuln/detail/CVE-2021-32256"
+      },
+      "score" : 6.5,
+      "severity" : "low",
+      "method" : "CVSSv31",
+      "vector" : "AV:N/AC:L/PR:N/UI:R/S:U/C:N/I:N/A:H"
+    } ],
+    "cwes" : [ 787 ],
+    "description" : "An issue was discovered in GNU libiberty, as distributed in GNU Binutils 2.36. It is a stack-overflow issue in demangle_type in rust-demangle.c.",
+    "analysis" : {
+      "state" : "in_triage",
+      "detail" : "There are no applicability scanners for this specific CVE"
+    },
+    "affects" : [ {
+      "ref" : "deb://debian:bookworm:binutils:2.40-2",
+      "versions" : [ {
+        "range" : "vers:deb/>=0.0.0",
+        "status" : "affected"
+      } ]
+    } ]
+  }, {
+    "bom-ref" : "deb://debian:bookworm:libgprofng0:2.40-2",
+    "id" : "CVE-2023-1972",
+    "source" : {
+      "name" : "JFrog",
+      "url" : ""
+    },
+    "ratings" : [ {
+      "source" : {
+        "name" : "DEBIAN SECURITY BUG TRACKER",
+        "url" : "https://nvd.nist.gov/vuln/detail/CVE-2023-1972"
+      },
+      "score" : 6.5,
+      "severity" : "low",
+      "method" : "CVSSv31",
+      "vector" : "AV:N/AC:L/PR:N/UI:R/S:U/C:N/I:N/A:H"
+    } ],
+    "cwes" : [ 787 ],
+    "description" : "A potential heap based buffer overflow was found in _bfd_elf_slurp_version_tables() in bfd/elf.c. This may lead to loss of availability.",
+    "analysis" : {
+      "state" : "in_triage",
+      "detail" : "There are no applicability scanners for this specific CVE"
+    },
+    "affects" : [ {
+      "ref" : "deb://debian:bookworm:libgprofng0:2.40-2",
+      "versions" : [ {
+        "range" : "vers:deb/>=0.0.0",
+        "status" : "affected"
+      } ]
+    } ]
+  }, {
+    "bom-ref" : "deb://debian:bookworm:openssl:3.0.9-1",
+    "id" : "CVE-2007-6755",
+    "source" : {
+      "name" : "JFrog",
+      "url" : ""
+    },
+    "cwes" : [ 327 ],
+    "description" : "The NIST SP 800-90A default statement of the Dual Elliptic Curve Deterministic Random Bit Generation (Dual_EC_DRBG) algorithm contains point Q constants with a possible relationship to certain \"skeleton key\" values, which might allow context-dependent attackers to defeat cryptographic protection mechanisms by leveraging knowledge of those values. NOTE: this is a preliminary CVE for Dual_EC_DRBG; future research may provide additional details about point Q and associated attacks, and could potentially lead to a RECAST or REJECT of this CVE.",
+    "analysis" : {
+      "state" : "in_triage",
+      "detail" : "There are no applicability scanners for this specific CVE"
+    },
+    "affects" : [ {
+      "ref" : "deb://debian:bookworm:openssl:3.0.9-1",
+      "versions" : [ {
+        "range" : "vers:deb/>=0.0.0",
+        "status" : "affected"
+      } ]
+    } ]
+  }, {
+    "bom-ref" : "deb://debian:bookworm:libudev1:252.12-1~deb12u1",
+    "id" : "CVE-2013-4392",
+    "source" : {
+      "name" : "JFrog",
+      "url" : ""
+    },
+    "cwes" : [ 59 ],
+    "description" : "systemd, when updating file permissions, allows local users to change the permissions and SELinux security contexts for arbitrary files via a symlink attack on unspecified files.",
+    "analysis" : {
+      "state" : "in_triage",
+      "detail" : "There are no applicability scanners for this specific CVE"
+    },
+    "affects" : [ {
+      "ref" : "deb://debian:bookworm:libudev1:252.12-1~deb12u1",
+      "versions" : [ {
+        "range" : "vers:deb/>=0.0.0",
+        "status" : "affected"
+      } ]
+    } ]
+  }, {
+    "bom-ref" : "deb://debian:bookworm:patch:2.7.6-7",
+    "id" : "CVE-2010-4651",
+    "source" : {
+      "name" : "JFrog",
+      "url" : ""
+    },
+    "cwes" : [ 22 ],
+    "description" : "Directory traversal vulnerability in util.c in GNU patch 2.6.1 and earlier allows user-assisted remote attackers to create or overwrite arbitrary files via a filename that is specified with a .. (dot dot) or full pathname, a related issue to CVE-2010-1679.",
+    "analysis" : {
+      "state" : "in_triage",
+      "detail" : "There are no applicability scanners for this specific CVE"
+    },
+    "affects" : [ {
+      "ref" : "deb://debian:bookworm:patch:2.7.6-7",
+      "versions" : [ {
+        "range" : "vers:deb/>=0.0.0",
+        "status" : "affected"
+      } ]
+    } ]
+  }, {
+    "bom-ref" : "deb://debian:bookworm:libc-dev-bin:2.36-9+deb12u1",
+    "id" : "CVE-2019-1010024",
+    "source" : {
+      "name" : "JFrog",
+      "url" : ""
+    },
+    "ratings" : [ {
+      "source" : {
+        "name" : "DEBIAN SECURITY BUG TRACKER",
+        "url" : "https://nvd.nist.gov/vuln/detail/CVE-2019-1010024"
+      },
+      "score" : 5.3,
+      "severity" : "low",
+      "method" : "CVSSv3",
+      "vector" : "AV:N/AC:L/PR:N/UI:N/S:U/C:L/I:N/A:N"
+    } ],
+    "cwes" : [ 200 ],
+    "description" : "** DISPUTED ** GNU Libc current is affected by: Mitigation bypass. The impact is: Attacker may bypass ASLR using cache of thread stack and heap. The component is: glibc. NOTE: Upstream comments indicate \"this is being treated as a non-security bug and no real threat.\"",
+    "analysis" : {
+      "state" : "in_triage",
+      "detail" : "There are no applicability scanners for this specific CVE"
+    },
+    "affects" : [ {
+      "ref" : "deb://debian:bookworm:libc-dev-bin:2.36-9+deb12u1",
+      "versions" : [ {
+        "range" : "vers:deb/>=0.0.0",
+        "status" : "affected"
+      } ]
+    } ]
+  }, {
+    "bom-ref" : "deb://debian:bookworm:libperl5.36:5.36.0-7",
+    "id" : "CVE-2023-31486",
+    "source" : {
+      "name" : "JFrog",
+      "url" : ""
+    },
+    "ratings" : [ {
+      "source" : {
+        "name" : "DEBIAN SECURITY BUG TRACKER",
+        "url" : "https://nvd.nist.gov/vuln/detail/CVE-2023-31486"
+      },
+      "score" : 8.1,
+      "severity" : "low",
+      "method" : "CVSSv31",
+      "vector" : "AV:N/AC:H/PR:N/UI:N/S:U/C:H/I:H/A:H"
+    } ],
+    "cwes" : [ 295 ],
+    "description" : "HTTP::Tiny before 0.083, a Perl core module since 5.13.9 and available standalone on CPAN, has an insecure default TLS configuration where users must opt in to verify certificates.",
+    "analysis" : {
+      "state" : "in_triage",
+      "response" : [ "workaround_available" ],
+      "detail" : "There are no applicability scanners for this specific CVE ##### Development mitigations Enable the `verify_SSL` flag when initializing HTTP::Tiny - ```perl $http = HTTP::Tiny->new(verify_SSL=>1); ```"
+    },
+    "affects" : [ {
+      "ref" : "deb://debian:bookworm:libperl5.36:5.36.0-7",
+      "versions" : [ {
+        "range" : "vers:deb/>=0.0.0",
+        "status" : "affected"
+      } ]
+    } ]
+  }, {
+    "bom-ref" : "deb://debian:bookworm:apt:2.6.1",
+    "id" : "CVE-2011-3374",
+    "source" : {
+      "name" : "JFrog",
+      "url" : ""
+    },
+    "ratings" : [ {
+      "source" : {
+        "name" : "DEBIAN SECURITY BUG TRACKER",
+        "url" : "https://nvd.nist.gov/vuln/detail/CVE-2011-3374"
+      },
+      "score" : 3.7,
+      "severity" : "low",
+      "method" : "CVSSv31",
+      "vector" : "AV:N/AC:H/PR:N/UI:N/S:U/C:N/I:L/A:N"
+    } ],
+    "cwes" : [ 347 ],
+    "description" : "It was found that apt-key in apt, all versions, do not correctly validate gpg keys with the master keyring, leading to a potential man-in-the-middle attack.",
+    "analysis" : {
+      "state" : "in_triage",
+      "response" : [ "workaround_available" ],
+      "detail" : "There are no applicability scanners for this specific CVE ##### Deployment mitigations * Dot not execute `apt-key` command, as it is deprecated. * Remove the URI configured in `ARCHIVE_KEYRING_URI` variable in the file `/usr/bin/apt-key`."
+    },
+    "affects" : [ {
+      "ref" : "deb://debian:bookworm:apt:2.6.1",
+      "versions" : [ {
+        "range" : "vers:deb/>=0.0.0",
+        "status" : "affected"
+      } ]
+    } ]
+  }, {
+    "bom-ref" : "deb://debian:bookworm:libgnutls30:3.7.9-2",
+    "id" : "CVE-2011-3389",
+    "source" : {
+      "name" : "JFrog",
+      "url" : ""
+    },
+    "cwes" : [ 326 ],
+    "description" : "The SSL protocol, as used in certain configurations in Microsoft Windows and Microsoft Internet Explorer, Mozilla Firefox, Google Chrome, Opera, and other products, encrypts data by using CBC mode with chained initialization vectors, which allows man-in-the-middle attackers to obtain plaintext HTTP headers via a blockwise chosen-boundary attack (BCBA) on an HTTPS session, in conjunction with JavaScript code that uses (1) the HTML5 WebSocket API, (2) the Java URLConnection API, or (3) the Silverlight WebClient API, aka a \"BEAST\" attack.",
+    "analysis" : {
+      "state" : "in_triage",
+      "detail" : "There are no applicability scanners for this specific CVE"
+    },
+    "affects" : [ {
+      "ref" : "deb://debian:bookworm:libgnutls30:3.7.9-2",
+      "versions" : [ {
+        "range" : "vers:deb/>=0.0.0",
+        "status" : "affected"
+      } ]
+    } ]
+  }, {
+    "bom-ref" : "deb://debian:bookworm:re2c:3.0-2",
+    "id" : "CVE-2018-21232",
+    "source" : {
+      "name" : "JFrog",
+      "url" : ""
+    },
+    "ratings" : [ {
+      "source" : {
+        "name" : "DEBIAN SECURITY BUG TRACKER",
+        "url" : "https://nvd.nist.gov/vuln/detail/CVE-2018-21232"
+      },
+      "score" : 5.5,
+      "severity" : "low",
+      "method" : "CVSSv31",
+      "vector" : "AV:L/AC:L/PR:N/UI:R/S:U/C:N/I:N/A:H"
+    } ],
+    "cwes" : [ 674 ],
+    "description" : "re2c before 2.0 has uncontrolled recursion that causes stack consumption in find_fixed_tags.",
+    "analysis" : {
+      "state" : "in_triage",
+      "detail" : "There are no applicability scanners for this specific CVE"
+    },
+    "affects" : [ {
+      "ref" : "deb://debian:bookworm:re2c:3.0-2",
+      "versions" : [ {
+        "range" : "vers:deb/>=0.0.0",
+        "status" : "affected"
+      } ]
+    } ]
+  }, {
+    "bom-ref" : "deb://debian:bookworm:apache2-bin:2.4.57-2",
+    "id" : "CVE-2001-1534",
+    "source" : {
+      "name" : "JFrog",
+      "url" : ""
+    },
+    "cwes" : [ 384 ],
+    "description" : "mod_usertrack in Apache 1.3.11 through 1.3.20 generates session ID's using predictable information including host IP address, system time and server process ID, which allows local users to obtain session ID's and bypass authentication when these session ID's are used for authentication.",
+    "analysis" : {
+      "state" : "in_triage",
+      "detail" : "There are no applicability scanners for this specific CVE"
+    },
+    "affects" : [ {
+      "ref" : "deb://debian:bookworm:apache2-bin:2.4.57-2",
+      "versions" : [ {
+        "range" : "vers:deb/>=0.0.0",
+        "status" : "affected"
+      } ]
+    } ]
+  }, {
+    "bom-ref" : "deb://debian:bookworm:libc-dev-bin:2.36-9+deb12u1",
+    "id" : "CVE-2019-9192",
+    "source" : {
+      "name" : "JFrog",
+      "url" : ""
+    },
+    "ratings" : [ {
+      "source" : {
+        "name" : "DEBIAN SECURITY BUG TRACKER",
+        "url" : "https://nvd.nist.gov/vuln/detail/CVE-2019-9192"
+      },
+      "score" : 7.5,
+      "severity" : "low",
+      "method" : "CVSSv3",
+      "vector" : "AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:H"
+    } ],
+    "cwes" : [ 674 ],
+    "description" : "** DISPUTED ** In the GNU C Library (aka glibc or libc6) through 2.29, check_dst_limits_calc_pos_1 in posix/regexec.c has Uncontrolled Recursion, as demonstrated by '(|)(\\\\1\\\\1)*' in grep, a different issue than CVE-2018-20796. NOTE: the software maintainer disputes that this is a vulnerability because the behavior occurs only with a crafted pattern.",
+    "analysis" : {
+      "state" : "in_triage",
+      "detail" : "There are no applicability scanners for this specific CVE"
+    },
+    "affects" : [ {
+      "ref" : "deb://debian:bookworm:libc-dev-bin:2.36-9+deb12u1",
+      "versions" : [ {
+        "range" : "vers:deb/>=0.0.0",
+        "status" : "affected"
+      } ]
+    } ]
+  }, {
+    "bom-ref" : "deb://debian:bookworm:libc-dev-bin:2.36-9+deb12u1",
+    "id" : "CVE-2010-4756",
+    "source" : {
+      "name" : "JFrog",
+      "url" : ""
+    },
+    "cwes" : [ 399 ],
+    "description" : "The glob implementation in the GNU C Library (aka glibc or libc6) allows remote authenticated users to cause a denial of service (CPU and memory consumption) via crafted glob expressions that do not match any pathnames, as demonstrated by glob expressions in STAT commands to an FTP daemon, a different vulnerability than CVE-2010-2632.",
+    "analysis" : {
+      "state" : "in_triage",
+      "detail" : "There are no applicability scanners for this specific CVE"
+    },
+    "affects" : [ {
+      "ref" : "deb://debian:bookworm:libc-dev-bin:2.36-9+deb12u1",
+      "versions" : [ {
+        "range" : "vers:deb/>=0.0.0",
+        "status" : "affected"
+      } ]
+    } ]
+  }, {
+    "bom-ref" : "deb://debian:bookworm:passwd:1:4.13+dfsg1-1+b1",
+    "id" : "CVE-2019-19882",
+    "source" : {
+      "name" : "JFrog",
+      "url" : ""
+    },
+    "ratings" : [ {
+      "source" : {
+        "name" : "DEBIAN SECURITY BUG TRACKER",
+        "url" : "https://nvd.nist.gov/vuln/detail/CVE-2019-19882"
+      },
+      "score" : 7.8,
+      "severity" : "low",
+      "method" : "CVSSv31",
+      "vector" : "AV:L/AC:L/PR:L/UI:N/S:U/C:H/I:H/A:H"
+    } ],
+    "cwes" : [ 732 ],
+    "description" : "shadow 4.8, in certain circumstances affecting at least Gentoo, Arch Linux, and Void Linux, allows local users to obtain root access because setuid programs are misconfigured. Specifically, this affects shadow 4.8 when compiled using --with-libpam but without explicitly passing --disable-account-tools-setuid, and without a PAM configuration suitable for use with setuid account management tools. This combination leads to account management tools (groupadd, groupdel, groupmod, useradd, userdel, usermod) that can easily be used by unprivileged local users to escalate privileges to root in multiple ways. This issue became much more relevant in approximately December 2019 when an unrelated bug was fixed (i.e., the chmod calls to suidusbins were fixed in the upstream Makefile which is now included in the release version 4.8).",
+    "analysis" : {
+      "state" : "in_triage",
+      "detail" : "There are no applicability scanners for this specific CVE"
+    },
+    "affects" : [ {
+      "ref" : "deb://debian:bookworm:passwd:1:4.13+dfsg1-1+b1",
+      "versions" : [ {
+        "range" : "vers:deb/>=0.0.0",
+        "status" : "affected"
+      } ]
+    } ]
+  }, {
+    "bom-ref" : "deb://debian:bookworm:libudev1:252.12-1~deb12u1",
+    "id" : "CVE-2023-31439",
+    "source" : {
+      "name" : "JFrog",
+      "url" : ""
+    },
+    "ratings" : [ {
+      "source" : {
+        "name" : "DEBIAN SECURITY BUG TRACKER",
+        "url" : "https://nvd.nist.gov/vuln/detail/CVE-2023-31439"
+      },
+      "score" : 5.3,
+      "severity" : "low",
+      "method" : "CVSSv31",
+      "vector" : "AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:L/A:N"
+    } ],
+    "cwes" : [ 354 ],
+    "description" : "** DISPUTED ** An issue was discovered in systemd 253. An attacker can modify the contents of past events in a sealed log file and then adjust the file such that checking the integrity shows no error, despite modifications. NOTE: the vendor reportedly sent \"a reply denying that any of the finding was a security vulnerability.\"",
+    "analysis" : {
+      "state" : "in_triage",
+      "detail" : "There are no applicability scanners for this specific CVE"
+    },
+    "affects" : [ {
+      "ref" : "deb://debian:bookworm:libudev1:252.12-1~deb12u1",
+      "versions" : [ {
+        "range" : "vers:deb/>=0.0.0",
+        "status" : "affected"
+      } ]
+    } ]
+  }, {
+    "bom-ref" : "deb://debian:bookworm:libsystemd0:252.12-1~deb12u1",
+    "id" : "CVE-2023-31438",
+    "source" : {
+      "name" : "JFrog",
+      "url" : ""
+    },
+    "ratings" : [ {
+      "source" : {
+        "name" : "DEBIAN SECURITY BUG TRACKER",
+        "url" : "https://nvd.nist.gov/vuln/detail/CVE-2023-31438"
+      },
+      "score" : 5.3,
+      "severity" : "low",
+      "method" : "CVSSv31",
+      "vector" : "AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:L/A:N"
+    } ],
+    "cwes" : [ 354 ],
+    "description" : "** DISPUTED ** An issue was discovered in systemd 253. An attacker can truncate a sealed log file and then resume log sealing such that checking the integrity shows no error, despite modifications. NOTE: the vendor reportedly sent \"a reply denying that any of the finding was a security vulnerability.\"",
+    "analysis" : {
+      "state" : "in_triage",
+      "detail" : "There are no applicability scanners for this specific CVE"
+    },
+    "affects" : [ {
+      "ref" : "deb://debian:bookworm:libsystemd0:252.12-1~deb12u1",
+      "versions" : [ {
+        "range" : "vers:deb/>=0.0.0",
+        "status" : "affected"
+      } ]
+    } ]
+  }, {
+    "bom-ref" : "deb://debian:bookworm:libldap-2.5-0:2.5.13+dfsg-5",
+    "id" : "CVE-2017-14159",
+    "source" : {
+      "name" : "JFrog",
+      "url" : ""
+    },
+    "ratings" : [ {
+      "source" : {
+        "name" : "DEBIAN SECURITY BUG TRACKER",
+        "url" : "https://nvd.nist.gov/vuln/detail/CVE-2017-14159"
+      },
+      "score" : 4.7,
+      "severity" : "low",
+      "method" : "CVSSv31",
+      "vector" : "AV:L/AC:H/PR:L/UI:N/S:U/C:N/I:N/A:H"
+    } ],
+    "cwes" : [ 665 ],
+    "description" : "slapd in OpenLDAP 2.4.45 and earlier creates a PID file after dropping privileges to a non-root account, which might allow local users to kill arbitrary processes by leveraging access to this non-root account for PID file modification before a root script executes a \"kill `cat /pathname`\" command, as demonstrated by openldap-initscript.",
+    "analysis" : {
+      "state" : "in_triage",
+      "detail" : "There are no applicability scanners for this specific CVE"
+    },
+    "affects" : [ {
+      "ref" : "deb://debian:bookworm:libldap-2.5-0:2.5.13+dfsg-5",
+      "versions" : [ {
+        "range" : "vers:deb/>=0.0.0",
+        "status" : "affected"
+      } ]
+    } ]
+  }, {
+    "bom-ref" : "deb://debian:bookworm:binutils-x86-64-linux-gnu:2.40-2",
+    "id" : "CVE-2018-20673",
+    "source" : {
+      "name" : "JFrog",
+      "url" : ""
+    },
+    "ratings" : [ {
+      "source" : {
+        "name" : "DEBIAN SECURITY BUG TRACKER",
+        "url" : "https://nvd.nist.gov/vuln/detail/CVE-2018-20673"
+      },
+      "score" : 5.5,
+      "severity" : "low",
+      "method" : "CVSSv3",
+      "vector" : "AV:L/AC:L/PR:N/UI:R/S:U/C:N/I:N/A:H"
+    } ],
+    "cwes" : [ 787, 190 ],
+    "description" : "The demangle_template function in cplus-dem.c in GNU libiberty, as distributed in GNU Binutils 2.31.1, contains an integer overflow vulnerability (for \"Create an array for saving the template argument values\") that can trigger a heap-based buffer overflow, as demonstrated by nm.",
+    "analysis" : {
+      "state" : "in_triage",
+      "detail" : "There are no applicability scanners for this specific CVE"
+    },
+    "affects" : [ {
+      "ref" : "deb://debian:bookworm:binutils-x86-64-linux-gnu:2.40-2",
+      "versions" : [ {
+        "range" : "vers:deb/>=0.0.0",
+        "status" : "affected"
+      } ]
+    } ]
+  }, {
+    "bom-ref" : "deb://debian:bookworm:apache2-bin:2.4.57-2",
+    "id" : "CVE-2003-1581",
+    "source" : {
+      "name" : "JFrog",
+      "url" : ""
+    },
+    "cwes" : [ 79 ],
+    "description" : "The Apache HTTP Server 2.0.44, when DNS resolution is enabled for client IP addresses, allows remote attackers to inject arbitrary text into log files via an HTTP request in conjunction with a crafted DNS response, as demonstrated by injecting XSS sequences, related to an \"Inverse Lookup Log Corruption (ILLC)\" issue.",
+    "analysis" : {
+      "state" : "in_triage",
+      "detail" : "There are no applicability scanners for this specific CVE"
+    },
+    "affects" : [ {
+      "ref" : "deb://debian:bookworm:apache2-bin:2.4.57-2",
+      "versions" : [ {
+        "range" : "vers:deb/>=0.0.0",
+        "status" : "affected"
+      } ]
+    } ]
+  }, {
+    "bom-ref" : "deb://debian:bookworm:apache2-bin:2.4.57-2",
+    "id" : "CVE-2007-0086",
+    "source" : {
+      "name" : "JFrog",
+      "url" : ""
+    },
+    "cwes" : [ 400 ],
+    "description" : "** DISPUTED ** The Apache HTTP Server, when accessed through a TCP connection with a large window size, allows remote attackers to cause a denial of service (network bandwidth consumption) via a Range header that specifies multiple copies of the same fragment. NOTE: the severity of this issue has been disputed by third parties, who state that the large window size required by the attack is not normally supported or configured by the server, or that a DDoS-style attack would accomplish the same goal.",
+    "analysis" : {
+      "state" : "in_triage",
+      "detail" : "There are no applicability scanners for this specific CVE"
+    },
+    "affects" : [ {
+      "ref" : "deb://debian:bookworm:apache2-bin:2.4.57-2",
+      "versions" : [ {
+        "range" : "vers:deb/>=0.0.0",
+        "status" : "affected"
+      } ]
+    } ]
+  }, {
+    "bom-ref" : "deb://debian:bookworm:openssl:3.0.9-1",
+    "id" : "CVE-2010-0928",
+    "source" : {
+      "name" : "JFrog",
+      "url" : ""
+    },
+    "cwes" : [ 310 ],
+    "description" : "OpenSSL 0.9.8i on the Gaisler Research LEON3 SoC on the Xilinx Virtex-II Pro FPGA uses a Fixed Width Exponentiation (FWE) algorithm for certain signature calculations, and does not verify the signature before providing it to a caller, which makes it easier for physically proximate attackers to determine the private key via a modified supply voltage for the microprocessor, related to a \"fault-based attack.\"",
+    "analysis" : {
+      "state" : "in_triage",
+      "detail" : "There are no applicability scanners for this specific CVE"
+    },
+    "affects" : [ {
+      "ref" : "deb://debian:bookworm:openssl:3.0.9-1",
+      "versions" : [ {
+        "range" : "vers:deb/>=0.0.0",
+        "status" : "affected"
+      } ]
+    } ]
+  }, {
+    "bom-ref" : "deb://debian:bookworm:binutils:2.40-2",
+    "id" : "CVE-2018-9996",
+    "source" : {
+      "name" : "JFrog",
+      "url" : ""
+    },
+    "ratings" : [ {
+      "source" : {
+        "name" : "DEBIAN SECURITY BUG TRACKER",
+        "url" : "https://nvd.nist.gov/vuln/detail/CVE-2018-9996"
+      },
+      "score" : 5.5,
+      "severity" : "low",
+      "method" : "CVSSv3",
+      "vector" : "AV:L/AC:L/PR:N/UI:R/S:U/C:N/I:N/A:H"
+    } ],
+    "cwes" : [ 674 ],
+    "description" : "An issue was discovered in cplus-dem.c in GNU libiberty, as distributed in GNU Binutils 2.30. Stack Exhaustion occurs in the C++ demangling functions provided by libiberty, and there are recursive stack frames: demangle_template_value_parm, demangle_integral_value, and demangle_expression.",
+    "analysis" : {
+      "state" : "in_triage",
+      "detail" : "There are no applicability scanners for this specific CVE"
+    },
+    "affects" : [ {
+      "ref" : "deb://debian:bookworm:binutils:2.40-2",
+      "versions" : [ {
+        "range" : "vers:deb/>=0.0.0",
+        "status" : "affected"
+      } ]
+    } ]
+  }, {
+    "bom-ref" : "deb://debian:bookworm:binutils-common:2.40-2",
+    "id" : "CVE-2018-20712",
+    "source" : {
+      "name" : "JFrog",
+      "url" : ""
+    },
+    "ratings" : [ {
+      "source" : {
+        "name" : "DEBIAN SECURITY BUG TRACKER",
+        "url" : "https://nvd.nist.gov/vuln/detail/CVE-2018-20712"
+      },
+      "score" : 6.5,
+      "severity" : "low",
+      "method" : "CVSSv3",
+      "vector" : "AV:N/AC:L/PR:N/UI:R/S:U/C:N/I:N/A:H"
+    } ],
+    "cwes" : [ 125 ],
+    "description" : "A heap-based buffer over-read exists in the function d_expression_1 in cp-demangle.c in GNU libiberty, as distributed in GNU Binutils 2.31.1. A crafted input can cause segmentation faults, leading to denial-of-service, as demonstrated by c++filt.",
+    "analysis" : {
+      "state" : "in_triage",
+      "detail" : "There are no applicability scanners for this specific CVE"
+    },
+    "affects" : [ {
+      "ref" : "deb://debian:bookworm:binutils-common:2.40-2",
+      "versions" : [ {
+        "range" : "vers:deb/>=0.0.0",
+        "status" : "affected"
+      } ]
+    } ]
+  }, {
+    "bom-ref" : "deb://debian:bookworm:patch:2.7.6-7",
+    "id" : "CVE-2018-6951",
+    "source" : {
+      "name" : "JFrog",
+      "url" : ""
+    },
+    "ratings" : [ {
+      "source" : {
+        "name" : "DEBIAN SECURITY BUG TRACKER",
+        "url" : "https://nvd.nist.gov/vuln/detail/CVE-2018-6951"
+      },
+      "score" : 7.5,
+      "severity" : "low",
+      "method" : "CVSSv3",
+      "vector" : "AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:H"
+    } ],
+    "cwes" : [ 476 ],
+    "description" : "An issue was discovered in GNU patch through 2.7.6. There is a segmentation fault, associated with a NULL pointer dereference, leading to a denial of service in the intuit_diff_type function in pch.c, aka a \"mangled rename\" issue.",
+    "analysis" : {
+      "state" : "in_triage",
+      "detail" : "There are no applicability scanners for this specific CVE"
+    },
+    "affects" : [ {
+      "ref" : "deb://debian:bookworm:patch:2.7.6-7",
+      "versions" : [ {
+        "range" : "vers:deb/>=0.0.0",
+        "status" : "affected"
+      } ]
+    } ]
+  }, {
+    "bom-ref" : "deb://debian:bookworm:gpgv:2.2.40-1.1",
+    "id" : "CVE-2022-3219",
+    "source" : {
+      "name" : "JFrog",
+      "url" : ""
+    },
+    "ratings" : [ {
+      "source" : {
+        "name" : "DEBIAN SECURITY BUG TRACKER",
+        "url" : "https://nvd.nist.gov/vuln/detail/CVE-2022-3219"
+      },
+      "score" : 3.3,
+      "severity" : "low",
+      "method" : "CVSSv31",
+      "vector" : "AV:L/AC:L/PR:L/UI:N/S:U/C:N/I:N/A:L"
+    } ],
+    "cwes" : [ 787 ],
+    "description" : "GnuPG can be made to spin on a relatively small input by (for example) crafting a public key with thousands of signatures attached, compressed down to just a few KB.",
+    "analysis" : {
+      "state" : "in_triage",
+      "detail" : "There are no applicability scanners for this specific CVE"
+    },
+    "affects" : [ {
+      "ref" : "deb://debian:bookworm:gpgv:2.2.40-1.1",
+      "versions" : [ {
+        "range" : "vers:deb/>=0.0.0",
+        "status" : "affected"
+      } ]
+    } ]
+  }, {
+    "bom-ref" : "deb://debian:bookworm:m4:1.4.19-3",
+    "id" : "CVE-2008-1687",
+    "source" : {
+      "name" : "JFrog",
+      "url" : ""
+    },
+    "description" : "The (1) maketemp and (2) mkstemp builtin functions in GNU m4 before 1.4.11 do not quote their output when a file is created, which might allow context-dependent attackers to trigger a macro expansion, leading to unspecified use of an incorrect filename.",
+    "analysis" : {
+      "state" : "in_triage",
+      "detail" : "There are no applicability scanners for this specific CVE"
+    },
+    "affects" : [ {
+      "ref" : "deb://debian:bookworm:m4:1.4.19-3",
+      "versions" : [ {
+        "range" : "vers:deb/>=0.0.0",
+        "status" : "affected"
+      } ]
+    } ]
+  }, {
+    "bom-ref" : "deb://debian:bookworm:libldap-2.5-0:2.5.13+dfsg-5",
+    "id" : "CVE-2015-3276",
+    "source" : {
+      "name" : "JFrog",
+      "url" : ""
+    },
+    "ratings" : [ {
+      "source" : {
+        "name" : "DEBIAN SECURITY BUG TRACKER",
+        "url" : "https://nvd.nist.gov/vuln/detail/CVE-2015-3276"
+      },
+      "score" : 7.5,
+      "severity" : "low",
+      "method" : "CVSSv31",
+      "vector" : "AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:H/A:N"
+    } ],
+    "description" : "The nss_parse_ciphers function in libraries/libldap/tls_m.c in OpenLDAP does not properly parse OpenSSL-style multi-keyword mode cipher strings, which might cause a weaker than intended cipher to be used and allow remote attackers to have unspecified impact via unknown vectors.",
+    "analysis" : {
+      "state" : "in_triage",
+      "detail" : "There are no applicability scanners for this specific CVE"
+    },
+    "affects" : [ {
+      "ref" : "deb://debian:bookworm:libldap-2.5-0:2.5.13+dfsg-5",
+      "versions" : [ {
+        "range" : "vers:deb/>=0.0.0",
+        "status" : "affected"
+      } ]
+    } ]
+  }, {
+    "bom-ref" : "deb://debian:bookworm:libc-bin:2.36-9+deb12u1",
+    "id" : "CVE-2019-1010025",
+    "source" : {
+      "name" : "JFrog",
+      "url" : ""
+    },
+    "ratings" : [ {
+      "source" : {
+        "name" : "DEBIAN SECURITY BUG TRACKER",
+        "url" : "https://nvd.nist.gov/vuln/detail/CVE-2019-1010025"
+      },
+      "score" : 5.3,
+      "severity" : "low",
+      "method" : "CVSSv3",
+      "vector" : "AV:N/AC:L/PR:N/UI:N/S:U/C:L/I:N/A:N"
+    } ],
+    "cwes" : [ 330 ],
+    "description" : "** DISPUTED ** GNU Libc current is affected by: Mitigation bypass. The impact is: Attacker may guess the heap addresses of pthread_created thread. The component is: glibc. NOTE: the vendor's position is \"ASLR bypass itself is not a vulnerability.\"",
+    "analysis" : {
+      "state" : "in_triage",
+      "detail" : "There are no applicability scanners for this specific CVE"
+    },
+    "affects" : [ {
+      "ref" : "deb://debian:bookworm:libc-bin:2.36-9+deb12u1",
+      "versions" : [ {
+        "range" : "vers:deb/>=0.0.0",
+        "status" : "affected"
+      } ]
+    } ]
+  }, {
+    "bom-ref" : "deb://debian:bookworm:patch:2.7.6-7",
+    "id" : "CVE-2021-45261",
+    "source" : {
+      "name" : "JFrog",
+      "url" : ""
+    },
+    "ratings" : [ {
+      "source" : {
+        "name" : "DEBIAN SECURITY BUG TRACKER",
+        "url" : "https://nvd.nist.gov/vuln/detail/CVE-2021-45261"
+      },
+      "score" : 5.5,
+      "severity" : "low",
+      "method" : "CVSSv31",
+      "vector" : "AV:L/AC:L/PR:N/UI:R/S:U/C:N/I:N/A:H"
+    } ],
+    "cwes" : [ 763 ],
+    "description" : "An Invalid Pointer vulnerability exists in GNU patch 2.7 via the another_hunk function, which causes a Denial of Service.",
+    "analysis" : {
+      "state" : "in_triage",
+      "detail" : "There are no applicability scanners for this specific CVE"
+    },
+    "affects" : [ {
+      "ref" : "deb://debian:bookworm:patch:2.7.6-7",
+      "versions" : [ {
+        "range" : "vers:deb/>=0.0.0",
+        "status" : "affected"
+      } ]
+    } ]
+  }, {
+    "bom-ref" : "deb://debian:bookworm:libudev1:252.12-1~deb12u1",
+    "id" : "CVE-2023-31437",
+    "source" : {
+      "name" : "JFrog",
+      "url" : ""
+    },
+    "ratings" : [ {
+      "source" : {
+        "name" : "DEBIAN SECURITY BUG TRACKER",
+        "url" : "https://nvd.nist.gov/vuln/detail/CVE-2023-31437"
+      },
+      "score" : 5.3,
+      "severity" : "low",
+      "method" : "CVSSv31",
+      "vector" : "AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:L/A:N"
+    } ],
+    "cwes" : [ 354 ],
+    "description" : "** DISPUTED ** An issue was discovered in systemd 253. An attacker can modify a sealed log file such that, in some views, not all existing and sealed log messages are displayed. NOTE: the vendor reportedly sent \"a reply denying that any of the finding was a security vulnerability.\"",
+    "analysis" : {
+      "state" : "in_triage",
+      "detail" : "There are no applicability scanners for this specific CVE"
+    },
+    "affects" : [ {
+      "ref" : "deb://debian:bookworm:libudev1:252.12-1~deb12u1",
+      "versions" : [ {
+        "range" : "vers:deb/>=0.0.0",
+        "status" : "affected"
+      } ]
+    } ]
+  }, {
+    "bom-ref" : "deb://debian:bookworm:libgcrypt20:1.10.1-3",
+    "id" : "CVE-2018-6829",
+    "source" : {
+      "name" : "JFrog",
+      "url" : ""
+    },
+    "ratings" : [ {
+      "source" : {
+        "name" : "DEBIAN SECURITY BUG TRACKER",
+        "url" : "https://nvd.nist.gov/vuln/detail/CVE-2018-6829"
+      },
+      "score" : 7.5,
+      "severity" : "low",
+      "method" : "CVSSv3",
+      "vector" : "AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:N/A:N"
+    } ],
+    "cwes" : [ 327 ],
+    "description" : "cipher/elgamal.c in Libgcrypt through 1.8.2, when used to encrypt messages directly, improperly encodes plaintexts, which allows attackers to obtain sensitive information by reading ciphertext data (i.e., it does not have semantic security in face of a ciphertext-only attack). The Decisional Diffie-Hellman (DDH) assumption does not hold for Libgcrypt's ElGamal implementation.",
+    "analysis" : {
+      "state" : "in_triage",
+      "detail" : "There are no applicability scanners for this specific CVE"
+    },
+    "affects" : [ {
+      "ref" : "deb://debian:bookworm:libgcrypt20:1.10.1-3",
+      "versions" : [ {
+        "range" : "vers:deb/>=0.0.0",
+        "status" : "affected"
+      } ]
+    } ]
+  }, {
+    "bom-ref" : "deb://debian:bookworm:apache2-bin:2.4.57-2",
+    "id" : "CVE-2007-1743",
+    "source" : {
+      "name" : "JFrog",
+      "url" : ""
+    },
+    "description" : "suexec in Apache HTTP Server (httpd) 2.2.3 does not verify combinations of user and group IDs on the command line, which might allow local users to leverage other vulnerabilities to create arbitrary UID/GID owned files if /proc is mounted. NOTE: the researcher, who is reliable, claims that the vendor disputes the issue because \"the attacks described rely on an insecure server configuration\" in which the user \"has write access to the document root.\" In addition, because this is dependent on other vulnerabilities, perhaps this is resultant and should not be included in CVE.",
+    "analysis" : {
+      "state" : "in_triage",
+      "detail" : "There are no applicability scanners for this specific CVE"
+    },
+    "affects" : [ {
+      "ref" : "deb://debian:bookworm:apache2-bin:2.4.57-2",
+      "versions" : [ {
+        "range" : "vers:deb/>=0.0.0",
+        "status" : "affected"
+      } ]
+    } ]
+  }, {
+    "bom-ref" : "deb://debian:bookworm:libc-dev-bin:2.36-9+deb12u1",
+    "id" : "CVE-2019-1010023",
+    "source" : {
+      "name" : "JFrog",
+      "url" : ""
+    },
+    "ratings" : [ {
+      "source" : {
+        "name" : "DEBIAN SECURITY BUG TRACKER",
+        "url" : "https://nvd.nist.gov/vuln/detail/CVE-2019-1010023"
+      },
+      "score" : 8.8,
+      "severity" : "low",
+      "method" : "CVSSv3",
+      "vector" : "AV:N/AC:L/PR:N/UI:R/S:U/C:H/I:H/A:H"
+    } ],
+    "description" : "** DISPUTED ** GNU Libc current is affected by: Re-mapping current loaded library with malicious ELF file. The impact is: In worst case attacker may evaluate privileges. The component is: libld. The attack vector is: Attacker sends 2 ELF files to victim and asks to run ldd on it. ldd execute code. NOTE: Upstream comments indicate \"this is being treated as a non-security bug and no real threat.\"",
+    "analysis" : {
+      "state" : "in_triage",
+      "detail" : "There are no applicability scanners for this specific CVE"
+    },
+    "affects" : [ {
+      "ref" : "deb://debian:bookworm:libc-dev-bin:2.36-9+deb12u1",
+      "versions" : [ {
+        "range" : "vers:deb/>=0.0.0",
+        "status" : "affected"
+      } ]
+    } ]
+  }, {
+    "bom-ref" : "deb://debian:bookworm:libldap-2.5-0:2.5.13+dfsg-5",
+    "id" : "CVE-2020-15719",
+    "source" : {
+      "name" : "JFrog",
+      "url" : ""
+    },
+    "ratings" : [ {
+      "source" : {
+        "name" : "DEBIAN SECURITY BUG TRACKER",
+        "url" : "https://nvd.nist.gov/vuln/detail/CVE-2020-15719"
+      },
+      "score" : 4.2,
+      "severity" : "low",
+      "method" : "CVSSv31",
+      "vector" : "AV:N/AC:H/PR:N/UI:R/S:U/C:L/I:L/A:N"
+    } ],
+    "cwes" : [ 295 ],
+    "description" : "libldap in certain third-party OpenLDAP packages has a certificate-validation flaw when the third-party package is asserting RFC6125 support. It considers CN even when there is a non-matching subjectAltName (SAN). This is fixed in, for example, openldap-2.4.46-10.el8 in Red Hat Enterprise Linux.",
+    "analysis" : {
+      "state" : "in_triage",
+      "detail" : "There are no applicability scanners for this specific CVE"
+    },
+    "affects" : [ {
+      "ref" : "deb://debian:bookworm:libldap-2.5-0:2.5.13+dfsg-5",
+      "versions" : [ {
+        "range" : "vers:deb/>=0.0.0",
+        "status" : "affected"
+      } ]
+    } ]
+  }, {
+    "bom-ref" : "deb://debian:bookworm:coreutils:9.1-1",
+    "id" : "CVE-2017-18018",
+    "source" : {
+      "name" : "JFrog",
+      "url" : ""
+    },
+    "ratings" : [ {
+      "source" : {
+        "name" : "DEBIAN SECURITY BUG TRACKER",
+        "url" : "https://nvd.nist.gov/vuln/detail/CVE-2017-18018"
+      },
+      "score" : 4.7,
+      "severity" : "low",
+      "method" : "CVSSv3",
+      "vector" : "AV:L/AC:H/PR:L/UI:N/S:U/C:N/I:H/A:N"
+    } ],
+    "cwes" : [ 362 ],
+    "description" : "In GNU Coreutils through 8.29, chown-core.c in chown and chgrp does not prevent replacement of a plain file with a symlink during use of the POSIX \"-R -L\" options, which allows local users to modify the ownership of arbitrary files by leveraging a race condition.",
+    "analysis" : {
+      "state" : "in_triage",
+      "detail" : "There are no applicability scanners for this specific CVE"
+    },
+    "affects" : [ {
+      "ref" : "deb://debian:bookworm:coreutils:9.1-1",
+      "versions" : [ {
+        "range" : "vers:deb/>=0.0.0",
+        "status" : "affected"
+      } ]
+    } ]
+  }, {
+    "bom-ref" : "deb://debian:bookworm:apache2:2.4.57-2",
+    "id" : "CVE-2003-1307",
+    "source" : {
+      "name" : "JFrog",
+      "url" : ""
+    },
+    "description" : "** DISPUTED ** The mod_php module for the Apache HTTP Server allows local users with write access to PHP scripts to send signals to the server's process group and use the server's file descriptors, as demonstrated by sending a STOP signal, then intercepting incoming connections on the server's TCP port. NOTE: the PHP developer has disputed this vulnerability, saying \"The opened file descriptors are opened by Apache. It is the job of Apache to protect them ... Not a bug in PHP.\"",
+    "analysis" : {
+      "state" : "in_triage",
+      "detail" : "There are no applicability scanners for this specific CVE"
+    },
+    "affects" : [ {
+      "ref" : "deb://debian:bookworm:apache2:2.4.57-2",
+      "versions" : [ {
+        "range" : "vers:deb/>=0.0.0",
+        "status" : "affected"
+      } ]
+    } ]
+  }, {
+    "bom-ref" : "deb://debian:bookworm:apache2-bin:2.4.57-2",
+    "id" : "CVE-2008-0456",
+    "source" : {
+      "name" : "JFrog",
+      "url" : ""
+    },
+    "cwes" : [ 74 ],
+    "description" : "CRLF injection vulnerability in the mod_negotiation module in the Apache HTTP Server 2.2.6 and earlier in the 2.2.x series, 2.0.61 and earlier in the 2.0.x series, and 1.3.39 and earlier in the 1.3.x series allows remote authenticated users to inject arbitrary HTTP headers and conduct HTTP response splitting attacks by uploading a file with a multi-line name containing HTTP header sequences and a file extension, which leads to injection within a (1) \"406 Not Acceptable\" or (2) \"300 Multiple Choices\" HTTP response when the extension is omitted in a request for the file.",
+    "analysis" : {
+      "state" : "in_triage",
+      "detail" : "There are no applicability scanners for this specific CVE"
+    },
+    "affects" : [ {
+      "ref" : "deb://debian:bookworm:apache2-bin:2.4.57-2",
+      "versions" : [ {
+        "range" : "vers:deb/>=0.0.0",
+        "status" : "affected"
+      } ]
+    } ]
+  }, {
+    "bom-ref" : "deb://debian:bookworm:perl-modules-5.36:5.36.0-7",
+    "id" : "CVE-2011-4116",
+    "source" : {
+      "name" : "JFrog",
+      "url" : ""
+    },
+    "ratings" : [ {
+      "source" : {
+        "name" : "DEBIAN SECURITY BUG TRACKER",
+        "url" : "https://nvd.nist.gov/vuln/detail/CVE-2011-4116"
+      },
+      "score" : 7.5,
+      "severity" : "low",
+      "method" : "CVSSv31",
+      "vector" : "AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:H/A:N"
+    } ],
+    "cwes" : [ 59 ],
+    "description" : "_is_safe in the File::Temp module for Perl does not properly handle symlinks.",
+    "analysis" : {
+      "state" : "in_triage",
+      "detail" : "There are no applicability scanners for this specific CVE"
+    },
+    "affects" : [ {
+      "ref" : "deb://debian:bookworm:perl-modules-5.36:5.36.0-7",
+      "versions" : [ {
+        "range" : "vers:deb/>=0.0.0",
+        "status" : "affected"
+      } ]
+    } ]
+  }, {
+    "bom-ref" : "deb://debian:bookworm:apache2-bin:2.4.57-2",
+    "id" : "CVE-2003-1580",
+    "source" : {
+      "name" : "JFrog",
+      "url" : ""
+    },
+    "cwes" : [ 189 ],
+    "description" : "The Apache HTTP Server 2.0.44, when DNS resolution is enabled for client IP addresses, uses a logging format that does not identify whether a dotted quad represents an unresolved IP address, which allows remote attackers to spoof IP addresses via crafted DNS responses containing numerical top-level domains, as demonstrated by a forged 123.123.123.123 domain name, related to an \"Inverse Lookup Log Corruption (ILLC)\" issue.",
+    "analysis" : {
+      "state" : "in_triage",
+      "detail" : "There are no applicability scanners for this specific CVE"
+    },
+    "affects" : [ {
+      "ref" : "deb://debian:bookworm:apache2-bin:2.4.57-2",
+      "versions" : [ {
+        "range" : "vers:deb/>=0.0.0",
+        "status" : "affected"
+      } ]
+    } ]
+  }, {
+    "bom-ref" : "deb://debian:bookworm:libc-dev-bin:2.36-9+deb12u1",
+    "id" : "CVE-2019-1010022",
+    "source" : {
+      "name" : "JFrog",
+      "url" : ""
+    },
+    "ratings" : [ {
+      "source" : {
+        "name" : "DEBIAN SECURITY BUG TRACKER",
+        "url" : "https://nvd.nist.gov/vuln/detail/CVE-2019-1010022"
+      },
+      "score" : 9.8,
+      "severity" : "low",
+      "method" : "CVSSv3",
+      "vector" : "AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:H"
+    } ],
+    "cwes" : [ 119 ],
+    "description" : "** DISPUTED ** GNU Libc current is affected by: Mitigation bypass. The impact is: Attacker may bypass stack guard protection. The component is: nptl. The attack vector is: Exploit stack buffer overflow vulnerability and use this bypass vulnerability to bypass stack guard. NOTE: Upstream comments indicate \"this is being treated as a non-security bug and no real threat.\"",
+    "analysis" : {
+      "state" : "in_triage",
+      "detail" : "There are no applicability scanners for this specific CVE"
+    },
+    "affects" : [ {
+      "ref" : "deb://debian:bookworm:libc-dev-bin:2.36-9+deb12u1",
+      "versions" : [ {
+        "range" : "vers:deb/>=0.0.0",
+        "status" : "affected"
+      } ]
+    } ]
+  }, {
+    "bom-ref" : "deb://debian:bookworm:mount:2.38.1-5+b1",
+    "id" : "CVE-2022-0563",
+    "source" : {
+      "name" : "JFrog",
+      "url" : ""
+    },
+    "ratings" : [ {
+      "source" : {
+        "name" : "DEBIAN SECURITY BUG TRACKER",
+        "url" : "https://nvd.nist.gov/vuln/detail/CVE-2022-0563"
+      },
+      "score" : 5.5,
+      "severity" : "low",
+      "method" : "CVSSv31",
+      "vector" : "AV:L/AC:L/PR:L/UI:N/S:U/C:H/I:N/A:N"
+    } ],
+    "cwes" : [ 209 ],
+    "description" : "A flaw was found in the util-linux chfn and chsh utilities when compiled with Readline support. The Readline library uses an \"INPUTRC\" environment variable to get a path to the library config file. When the library cannot parse the specified file, it prints an error message containing data from the file. This flaw allows an unprivileged user to read root-owned files, potentially leading to privilege escalation. This flaw affects util-linux versions prior to 2.37.4.",
+    "analysis" : {
+      "state" : "in_triage",
+      "response" : [ "workaround_available" ],
+      "detail" : "There are no applicability scanners for this specific CVE ##### Deployment mitigations If a vulnerable version of `util-linux` was compiled manually, remove the SUID bit from the `chsh` and `chfn` tools using the `chmod u-s` command on them."
+    },
+    "affects" : [ {
+      "ref" : "deb://debian:bookworm:mount:2.38.1-5+b1",
+      "versions" : [ {
+        "range" : "vers:deb/>=0.0.0",
+        "status" : "affected"
+      } ]
+    } ]
+  }, {
+    "bom-ref" : "deb://debian:bookworm:libnghttp2-14:1.52.0-1",
+    "id" : "CVE-2023-44487",
+    "source" : {
+      "name" : "JFrog",
+      "url" : ""
+    },
+    "ratings" : [ {
+      "source" : {
+        "name" : "DEBIAN SECURITY BUG TRACKER",
+        "url" : "https://nvd.nist.gov/vuln/detail/CVE-2023-44487"
+      },
+      "score" : 7.5,
+      "severity" : "low",
+      "method" : "CVSSv31",
+      "vector" : "AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:H"
+    } ],
+    "cwes" : [ 400 ],
+    "description" : "The HTTP/2 protocol allows a denial of service (server resource consumption) because request cancellation can reset many streams quickly, as exploited in the wild in August through October 2023.",
+    "analysis" : {
+      "state" : "in_triage",
+      "response" : [ "workaround_available" ],
+      "detail" : "There are no applicability scanners for this specific CVE ##### Development mitigations For netty: ```java import io.netty.handler.codec.http2.Http2FrameListener; import io.netty.handler.codec.http2.Http2FrameStream; import io.netty.handler.codec.http2.Http2ResetFrame; import io.netty.handler.codec.http2.Http2HeadersFrame; public class CustomHttp2FrameListener implements Http2FrameListener { private int rstFrameCount = 0; private int maxRstFrameCount = 10; // Adjust this to your desired limit private long resetTimeMillis = System.currentTimeMillis(); private long resetTimeIntervalMillis = 60000; // 60 seconds @Override public int onDataRead(Http2FrameStream stream, byte[] data, int padding, boolean endOfStream) { // Handle data frames if needed return 0; } @Override public void onHeadersRead(Http2FrameStream stream, Http2HeadersFrame headersFrame) { // Handle headers frames if needed } @Override public void onHeadersRead(Http2FrameStream stream, Http2HeadersFrame headersFrame, boolean endOfStream) { // Handle headers frames if needed } @Override public void onRstStreamRead(Http2FrameStream stream, Http2ResetFrame resetFrame) { long currentTimeMillis = System.currentTimeMillis(); // Check if the reset time interval has passed, and reset the count if needed if (currentTimeMillis - resetTimeMillis >= resetTimeIntervalMillis) { rstFrameCount = 0; resetTimeMillis = currentTimeMillis; } rstFrameCount++; // Check if the count exceeds the limit if (rstFrameCount > maxRstFrameCount) { // Take action, e.g., close the connection, log, or drop frames // You can use stream or resetFrame to get more context if needed. // To close the connection, you can use stream.connection().close(); } } } ``` ##### Development mitigations For Golang: The default stream concurrency limit in `golang` is `250 streams (requests) per HTTP/2 connection`. This value may be adjusted in the `golang.org/x/net/http2` package using the `Server.MaxConcurrentStreams` setting and the `ConfigureServer` function which are available in `golang.org/x/net/http2`. ```go import ( \"fmt\" \"golang.org/x/net/http2\" \"net/http\" ) func main() { // Create an HTTP/2 server instance http2Server := &http2.Server{} // Set the desired stream concurrency limit maxConcurrentStreams := 500 // Change this to your desired limit http2Server.MaxConcurrentStreams = uint32(maxConcurrentStreams) // Configure an HTTP server to use HTTP/2 with the adjusted settings server := &http.Server{ Addr: \":8080\", Handler: http.HandlerFunc(handleRequest), } http2.ConfigureServer(server, http2Server) // Start the HTTP server err := server.ListenAndServeTLS(\"cert.pem\", \"key.pem\") if err != nil { fmt.Println(\"Error:\", err) } } ``` ##### Development mitigations For Nghttp2: Implement `nghttp2_on_frame_recv_callback` callback function, and check and count `RST_STREAM` frames. If an excessive number of `RST_STREAM` frames are received, then take action, such as dropping the connection silently, or calling `nghttp2_submit_goaway` and gracefully terminate the connection. ```c #include <nghttp2/nghttp2.h> // Callback function for handling frame reception int on_frame_recv_callback(nghttp2_session* session, const nghttp2_frame* frame, void* user_data) { // Check if the received frame is an RST_STREAM frame if (frame->hd.type == NGHTTP2_RST_STREAM) { // Increment a counter for RST_STREAM frames int* rst_stream_counter = (int*)user_data; (*rst_stream_counter)++; // Define a threshold for excessive RST_STREAM frames int rst_stream_threshold = 10; // Adjust this value as needed // If the threshold is exceeded, take action (e.g., close the connection) if (*rst_stream_counter > rst_stream_threshold) { // Here, you can choose to close the connection gracefully or drop it // For demonstration purposes, we'll just print a message printf(\"Excessive RST_STREAM frames received. Closing the connection.\\n\"); // You can call nghttp2_submit_goaway() to send a GOAWAY frame if needed. // nghttp2_submit_goaway(session, NGHTTP2_FLAG_NONE, error_code, opaque_data); // Then, close the connection. } } // Continue processing other frames if needed return 0; } int main() { // Initialize nghttp2_session and set up the on_frame_recv_callback nghttp2_session* session; int rst_stream_counter = 0; // Initialize nghttp2_session, set up callbacks, etc. // ... // Set the user data to be passed to the callback nghttp2_session_user_data(session, &rst_stream_counter); // Register the on_frame_recv_callback nghttp2_session_callbacks* callbacks; nghttp2_session_callbacks_new(&callbacks); nghttp2_session_callbacks_set_on_frame_recv_callback(callbacks, on_frame_recv_callback); // Other callback registrations here... // Attach the callbacks to the session nghttp2_session_server_new(&session, callbacks, &rst_stream_counter); // Start processing HTTP/2 frames // ... // Cleanup and finish the program // ... return 0; } ``` ##### Deployment mitigations For NGINX: Disabling HTTP/2 in NGINX is not necessary. Simply ensure you have configured: - `keepalive_requests` should be kept at the default setting of 1000 requests - `http2_max_concurrent_streams` should be kept at the default setting of 128 streams - `limit_conn` and `limit_req` should be set \"with a reasonable setting balancing application performance and security\" ##### Deployment mitigations A possible mitigation is to limit the maximum number of requests that can be made over a single keep-alive connection."
+    },
+    "affects" : [ {
+      "ref" : "deb://debian:bookworm:libnghttp2-14:1.52.0-1",
+      "versions" : [ {
+        "range" : "vers:deb/>=0.0.0",
+        "status" : "affected"
+      } ]
+    } ]
+  }, {
+    "bom-ref" : "deb://debian:bookworm:tar:1.34+dfsg-1.2",
+    "id" : "CVE-2022-48303",
+    "source" : {
+      "name" : "JFrog",
+      "url" : ""
+    },
+    "ratings" : [ {
+      "source" : {
+        "name" : "DEBIAN SECURITY BUG TRACKER",
+        "url" : "https://nvd.nist.gov/vuln/detail/CVE-2022-48303"
+      },
+      "score" : 5.5,
+      "severity" : "low",
+      "method" : "CVSSv31",
+      "vector" : "AV:L/AC:L/PR:N/UI:R/S:U/C:N/I:N/A:H"
+    } ],
+    "cwes" : [ 125 ],
+    "description" : "GNU Tar through 1.34 has a one-byte out-of-bounds read that results in use of uninitialized memory for a conditional jump. Exploitation to change the flow of control has not been demonstrated. The issue occurs in from_header in list.c via a V7 archive in which mtime has approximately 11 whitespace characters.",
+    "analysis" : {
+      "state" : "in_triage",
+      "detail" : "There are no applicability scanners for this specific CVE"
+    },
+    "affects" : [ {
+      "ref" : "deb://debian:bookworm:tar:1.34+dfsg-1.2",
+      "versions" : [ {
+        "range" : "vers:deb/>=0.0.0",
+        "status" : "affected"
+      } ]
+    } ]
+  }, {
+    "bom-ref" : "deb://debian:bookworm:patch:2.7.6-7",
+    "id" : "CVE-2018-6952",
+    "source" : {
+      "name" : "JFrog",
+      "url" : ""
+    },
+    "ratings" : [ {
+      "source" : {
+        "name" : "DEBIAN SECURITY BUG TRACKER",
+        "url" : "https://nvd.nist.gov/vuln/detail/CVE-2018-6952"
+      },
+      "score" : 7.5,
+      "severity" : "low",
+      "method" : "CVSSv3",
+      "vector" : "AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:H"
+    } ],
+    "cwes" : [ 415 ],
+    "description" : "A double free exists in the another_hunk function in pch.c in GNU patch through 2.7.6.",
+    "analysis" : {
+      "state" : "in_triage",
+      "detail" : "There are no applicability scanners for this specific CVE"
+    },
+    "affects" : [ {
+      "ref" : "deb://debian:bookworm:patch:2.7.6-7",
+      "versions" : [ {
+        "range" : "vers:deb/>=0.0.0",
+        "status" : "affected"
+      } ]
+    } ]
+  }, {
+    "bom-ref" : "deb://debian:bookworm:passwd:1:4.13+dfsg1-1+b1",
+    "id" : "CVE-2023-29383",
+    "source" : {
+      "name" : "JFrog",
+      "url" : ""
+    },
+    "ratings" : [ {
+      "source" : {
+        "name" : "CVSS V3 FROM NVD",
+        "url" : "https://nvd.nist.gov/vuln/detail/CVE-2023-29383"
+      },
+      "score" : 3.3,
+      "severity" : "low",
+      "method" : "CVSSv31",
+      "vector" : "AV:L/AC:L/PR:L/UI:N/S:U/C:N/I:L/A:N"
+    } ],
+    "cwes" : [ 74 ],
+    "description" : "In Shadow 4.13, it is possible to inject control characters into fields provided to the SUID program chfn (change finger). Although it is not possible to exploit this directly (e.g., adding a new user fails because \\n is in the block list), it is possible to misrepresent the /etc/passwd file when viewed. Use of \\r manipulations and Unicode characters to work around blocking of the : character make it possible to give the impression that a new user has been added. In other words, an adversary may be able to convince a system administrator to take the system offline (an indirect, social-engineered denial of service) by demonstrating that \"cat /etc/passwd\" shows a rogue user account.",
+    "analysis" : {
+      "state" : "in_triage",
+      "detail" : "There are no applicability scanners for this specific CVE"
+    },
+    "affects" : [ {
+      "ref" : "deb://debian:bookworm:passwd:1:4.13+dfsg1-1+b1",
+      "versions" : [ {
+        "range" : "vers:deb/>=0.0.0",
+        "status" : "affected"
+      } ]
+    } ]
+  }, {
+    "bom-ref" : "deb://debian:bookworm:libsqlite3-0:3.40.1-2",
+    "id" : "CVE-2021-45346",
+    "source" : {
+      "name" : "JFrog",
+      "url" : ""
+    },
+    "ratings" : [ {
+      "source" : {
+        "name" : "DEBIAN SECURITY BUG TRACKER",
+        "url" : "https://nvd.nist.gov/vuln/detail/CVE-2021-45346"
+      },
+      "score" : 4.3,
+      "severity" : "low",
+      "method" : "CVSSv31",
+      "vector" : "AV:N/AC:L/PR:L/UI:N/S:U/C:L/I:N/A:N"
+    } ],
+    "cwes" : [ 401 ],
+    "description" : "** DISPUTED ** A Memory Leak vulnerability exists in SQLite Project SQLite3 3.35.1 and 3.37.0 via maliciously crafted SQL Queries (made via editing the Database File), it is possible to query a record, and leak subsequent bytes of memory that extend beyond the record, which could let a malicious user obtain sensitive information. NOTE: The developer disputes this as a vulnerability stating that If you give SQLite a corrupted database file and submit a query against the database, it might read parts of the database that you did not intend or expect.",
+    "analysis" : {
+      "state" : "in_triage",
+      "detail" : "There are no applicability scanners for this specific CVE"
+    },
+    "affects" : [ {
+      "ref" : "deb://debian:bookworm:libsqlite3-0:3.40.1-2",
+      "versions" : [ {
+        "range" : "vers:deb/>=0.0.0",
+        "status" : "affected"
+      } ]
+    } ]
+  }, {
+    "bom-ref" : "deb://debian:bookworm:libpng-tools:1.6.39-2",
+    "id" : "CVE-2021-4214",
+    "source" : {
+      "name" : "JFrog",
+      "url" : ""
+    },
+    "ratings" : [ {
+      "source" : {
+        "name" : "DEBIAN SECURITY BUG TRACKER",
+        "url" : "https://nvd.nist.gov/vuln/detail/CVE-2021-4214"
+      },
+      "score" : 5.5,
+      "severity" : "low",
+      "method" : "CVSSv31",
+      "vector" : "AV:L/AC:L/PR:N/UI:R/S:U/C:N/I:N/A:H"
+    } ],
+    "cwes" : [ 120 ],
+    "description" : "A heap overflow flaw was found in libpngs' pngimage.c program. This flaw allows an attacker with local network access to pass a specially crafted PNG file to the pngimage utility, causing an application to crash, leading to a denial of service.",
+    "analysis" : {
+      "state" : "in_triage",
+      "detail" : "There are no applicability scanners for this specific CVE"
+    },
+    "affects" : [ {
+      "ref" : "deb://debian:bookworm:libpng-tools:1.6.39-2",
+      "versions" : [ {
+        "range" : "vers:deb/>=0.0.0",
+        "status" : "affected"
+      } ]
+    } ]
+  }, {
+    "bom-ref" : "deb://debian:bookworm:libjansson4:2.14-2",
+    "id" : "CVE-2020-36325",
+    "source" : {
+      "name" : "JFrog",
+      "url" : ""
+    },
+    "ratings" : [ {
+      "source" : {
+        "name" : "DEBIAN SECURITY BUG TRACKER",
+        "url" : "https://nvd.nist.gov/vuln/detail/CVE-2020-36325"
+      },
+      "score" : 7.5,
+      "severity" : "low",
+      "method" : "CVSSv31",
+      "vector" : "AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:H"
+    } ],
+    "cwes" : [ 125 ],
+    "description" : "** DISPUTED ** An issue was discovered in Jansson through 2.13.1. Due to a parsing error in json_loads, there's an out-of-bounds read-access bug. NOTE: the vendor reports that this only occurs when a programmer fails to follow the API specification.",
+    "analysis" : {
+      "state" : "in_triage",
+      "detail" : "There are no applicability scanners for this specific CVE"
+    },
+    "affects" : [ {
+      "ref" : "deb://debian:bookworm:libjansson4:2.14-2",
+      "versions" : [ {
+        "range" : "vers:deb/>=0.0.0",
+        "status" : "affected"
+      } ]
+    } ]
+  }, {
+    "bom-ref" : "deb://debian:bookworm:m4:1.4.19-3",
+    "id" : "CVE-2008-1688",
+    "source" : {
+      "name" : "JFrog",
+      "url" : ""
+    },
+    "description" : "Unspecified vulnerability in GNU m4 before 1.4.11 might allow context-dependent attackers to execute arbitrary code, related to improper handling of filenames specified with the -F option. NOTE: it is not clear when this issue crosses privilege boundaries.",
+    "analysis" : {
+      "state" : "in_triage",
+      "detail" : "There are no applicability scanners for this specific CVE"
+    },
+    "affects" : [ {
+      "ref" : "deb://debian:bookworm:m4:1.4.19-3",
+      "versions" : [ {
+        "range" : "vers:deb/>=0.0.0",
+        "status" : "affected"
+      } ]
+    } ]
+  }, {
+    "bom-ref" : "deb://debian:bookworm:apache2:2.4.57-2",
+    "id" : "CVE-2007-3303",
+    "source" : {
+      "name" : "JFrog",
+      "url" : ""
+    },
+    "cwes" : [ 94 ],
+    "description" : "Apache httpd 2.0.59 and 2.2.4, with the Prefork MPM module, allows local users to cause a denial of service via certain code sequences executed in a worker process that (1) stop request processing by killing all worker processes and preventing creation of replacements or (2) hang the system by forcing the master process to fork an arbitrarily large number of worker processes. NOTE: This might be an inherent design limitation of Apache with respect to worker processes in hosted environments.",
+    "analysis" : {
+      "state" : "in_triage",
+      "detail" : "There are no applicability scanners for this specific CVE"
+    },
+    "affects" : [ {
+      "ref" : "deb://debian:bookworm:apache2:2.4.57-2",
+      "versions" : [ {
+        "range" : "vers:deb/>=0.0.0",
+        "status" : "affected"
+      } ]
+    } ]
+  }, {
+    "bom-ref" : "deb://debian:bookworm:login:1:4.13+dfsg1-1+b1",
+    "id" : "CVE-2007-5686",
+    "source" : {
+      "name" : "JFrog",
+      "url" : ""
+    },
+    "cwes" : [ 264 ],
+    "description" : "initscripts in rPath Linux 1 sets insecure permissions for the /var/log/btmp file, which allows local users to obtain sensitive information regarding authentication attempts. NOTE: because sshd detects the insecure permissions and does not log certain events, this also prevents sshd from logging failed authentication attempts by remote attackers.",
+    "analysis" : {
+      "state" : "in_triage",
+      "detail" : "There are no applicability scanners for this specific CVE"
+    },
+    "affects" : [ {
+      "ref" : "deb://debian:bookworm:login:1:4.13+dfsg1-1+b1",
+      "versions" : [ {
+        "range" : "vers:deb/>=0.0.0",
+        "status" : "affected"
+      } ]
+    } ]
+  }, {
+    "bom-ref" : "deb://debian:bookworm:libgprofng0:2.40-2",
+    "id" : "CVE-2017-13716",
+    "source" : {
+      "name" : "JFrog",
+      "url" : ""
+    },
+    "ratings" : [ {
+      "source" : {
+        "name" : "DEBIAN SECURITY BUG TRACKER",
+        "url" : "https://nvd.nist.gov/vuln/detail/CVE-2017-13716"
+      },
+      "score" : 5.5,
+      "severity" : "low",
+      "method" : "CVSSv3",
+      "vector" : "AV:L/AC:L/PR:N/UI:R/S:U/C:N/I:N/A:H"
+    } ],
+    "cwes" : [ 770 ],
+    "description" : "The C++ symbol demangler routine in cplus-dem.c in libiberty, as distributed in GNU Binutils 2.29, allows remote attackers to cause a denial of service (excessive memory allocation and application crash) via a crafted file, as demonstrated by a call from the Binary File Descriptor (BFD) library (aka libbfd).",
+    "analysis" : {
+      "state" : "in_triage",
+      "detail" : "There are no applicability scanners for this specific CVE"
+    },
+    "affects" : [ {
+      "ref" : "deb://debian:bookworm:libgprofng0:2.40-2",
+      "versions" : [ {
+        "range" : "vers:deb/>=0.0.0",
+        "status" : "affected"
+      } ]
+    } ]
+  }, {
+    "bom-ref" : "deb://debian:bookworm:libldap-2.5-0:2.5.13+dfsg-5",
+    "id" : "CVE-2017-17740",
+    "source" : {
+      "name" : "JFrog",
+      "url" : ""
+    },
+    "ratings" : [ {
+      "source" : {
+        "name" : "DEBIAN SECURITY BUG TRACKER",
+        "url" : "https://nvd.nist.gov/vuln/detail/CVE-2017-17740"
+      },
+      "score" : 7.5,
+      "severity" : "low",
+      "method" : "CVSSv31",
+      "vector" : "AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:H"
+    } ],
+    "cwes" : [ 119 ],
+    "description" : "contrib/slapd-modules/nops/nops.c in OpenLDAP through 2.4.45, when both the nops module and the memberof overlay are enabled, attempts to free a buffer that was allocated on the stack, which allows remote attackers to cause a denial of service (slapd crash) via a member MODDN operation.",
+    "analysis" : {
+      "state" : "in_triage",
+      "detail" : "There are no applicability scanners for this specific CVE"
+    },
+    "affects" : [ {
+      "ref" : "deb://debian:bookworm:libldap-2.5-0:2.5.13+dfsg-5",
+      "versions" : [ {
+        "range" : "vers:deb/>=0.0.0",
+        "status" : "affected"
+      } ]
+    } ]
+  }, {
+    "bom-ref" : "deb://debian:bookworm:libgssapi-krb5-2:1.20.1-2",
+    "id" : "CVE-2018-5709",
+    "source" : {
+      "name" : "JFrog",
+      "url" : ""
+    },
+    "ratings" : [ {
+      "source" : {
+        "name" : "DEBIAN SECURITY BUG TRACKER",
+        "url" : "https://nvd.nist.gov/vuln/detail/CVE-2018-5709"
+      },
+      "score" : 7.5,
+      "severity" : "low",
+      "method" : "CVSSv3",
+      "vector" : "AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:H/A:N"
+    } ],
+    "cwes" : [ 190 ],
+    "description" : "An issue was discovered in MIT Kerberos 5 (aka krb5) through 1.16. There is a variable \"dbentry->n_key_data\" in kadmin/dbutil/dump.c that can store 16-bit data but unknowingly the developer has assigned a \"u4\" variable to it, which is for 32-bit data. An attacker can use this vulnerability to affect other artifacts of the database as we know that a Kerberos database dump file contains trusted data.",
+    "analysis" : {
+      "state" : "in_triage",
+      "detail" : "There are no applicability scanners for this specific CVE"
+    },
+    "affects" : [ {
+      "ref" : "deb://debian:bookworm:libgssapi-krb5-2:1.20.1-2",
+      "versions" : [ {
+        "range" : "vers:deb/>=0.0.0",
+        "status" : "affected"
+      } ]
+    } ]
+  }, {
+    "bom-ref" : "deb://debian:bookworm:libcurl4:7.88.1-10+deb12u1",
+    "id" : "CVE-2023-38545",
+    "source" : {
+      "name" : "JFrog",
+      "url" : ""
+    },
+    "description" : "CVE-2023-38545",
+    "analysis" : {
+      "state" : "in_triage",
+      "response" : [ "workaround_available" ],
+      "detail" : "There are no applicability scanners for this specific CVE ##### Deployment mitigations Force curl to use local hostname resolving instead of remote hostname resolving when connecting to a SOCKS5 proxy For example, replace `socks5h` - `curl -x socks5h://someproxy.com` With `socks5` - `curl -x socks5://someproxy.com`"
+    },
+    "affects" : [ {
+      "ref" : "deb://debian:bookworm:libcurl4:7.88.1-10+deb12u1",
+      "versions" : [ {
+        "range" : "vers:deb/<7.88.1-10+deb12u4",
+        "status" : "affected"
+      }, {
+        "version" : "7.88.1-10+deb12u4",
+        "status" : "unaffected"
+      } ]
+    } ]
+  }, {
+    "bom-ref" : "deb://debian:bookworm:login:1:4.13+dfsg1-1+b1",
+    "id" : "CVE-2023-4641",
+    "source" : {
+      "name" : "JFrog",
+      "url" : ""
+    },
+    "description" : "CVE-2023-4641",
+    "analysis" : {
+      "state" : "in_triage",
+      "detail" : "There are no applicability scanners for this specific CVE"
+    },
+    "affects" : [ {
+      "ref" : "deb://debian:bookworm:login:1:4.13+dfsg1-1+b1",
+      "versions" : [ {
+        "range" : "vers:deb/>=0.0.0",
+        "status" : "affected"
+      } ]
+    } ]
+  }, {
+    "bom-ref" : "deb://debian:bookworm:libcurl4:7.88.1-10+deb12u1",
+    "id" : "CVE-2023-38546",
+    "source" : {
+      "name" : "JFrog",
+      "url" : ""
+    },
+    "description" : "CVE-2023-38546",
+    "analysis" : {
+      "state" : "in_triage",
+      "detail" : "There are no applicability scanners for this specific CVE"
+    },
+    "affects" : [ {
+      "ref" : "deb://debian:bookworm:libcurl4:7.88.1-10+deb12u1",
+      "versions" : [ {
+        "range" : "vers:deb/<7.88.1-10+deb12u4",
+        "status" : "affected"
+      }, {
+        "version" : "7.88.1-10+deb12u4",
+        "status" : "unaffected"
+      } ]
+    } ]
+  } ]
+}

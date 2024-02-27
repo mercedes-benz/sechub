@@ -22,22 +22,25 @@ function showHelp () {
     echo "- SDC - SecHub developer command line"
     echo "-------------------------------------" 
     echo "Usage: Usage sdc"
-    echo " Options: "
-    echo "   -f,  --format-all                     : format all source code files"
-    echo "   -b,  --build-full                     : full build"
-    echo "   -d,  --document-full                  : full document build"
-    echo "   -u,  --unit-tests                     : execute all unit tests"
-    echo "   -i,  --integrationtest-all            : execute all integration tests"
-    echo "   -ii, --integrationtest-integration    : execute integration tests from sechub-integrationtest only"
-    echo "   -is, --integrationtest-systemtest     : execute integration tests from sechub-systemtest only"
-    echo "   -r,  --report-combined-all            : create combined report for all"
-    echo "   -c,  --clean-all                      : clean all"
-    echo "   -ct, --clean-all-tests                : clean all test output"
-    echo "   -cu, --clean-unit-tests               : clean all unit test output"
-    echo "   -ci, --clean-integrationtests         : clean all integrationtest output"
-    echo "   -si, --stop-inttest-server            : stop running integration test servers (SecHub, PDS)"
-    echo "   -gj, --generate-java-api              : generates parts for java api"
-    echo "   -h,  --help                       : show this help"
+    echo " Option s: "                                  
+    echo "  -f,   --format-all                          : format all source code files"
+    echo "  -b,   --build-full                          : full build"
+    echo "  -bpt, --build-pds-tools                     : build pds tools"
+    echo "  -d,   --document-full                       : full document build"
+    echo "  -u,   --unit-tests                          : execute all unit tests"
+    echo "  -i,   --integrationtest-all                 : execute all integration tests"
+    echo "  -ii,  --integrationtest-integration         : execute integration tests from sechub-integrationtest only"
+    echo "  -is,  --integrationtest-systemtest          : execute integration tests from sechub-systemtest only"
+    echo "  -r,   --report-combined-all                 : create combined report for all"
+    echo "  -c,   --clean-all                           : clean all"
+    echo "  -ct,  --clean-all-tests                     : clean all test output"
+    echo "  -cu,  --clean-unit-tests                    : clean all unit test output"
+    echo "  -ci,  --clean-integrationtests              : clean all integrationtest output"
+    echo "  -si,  --stop-inttest-server                 : stop running integration test servers (SecHub, PDS)"
+    echo "  -gj,  --generate-java-api                   : generates parts for java api"
+    echo ""                                            
+    echo "  -syg, --start-systemtest-sanity-check-gosec : start systemtest 'sanity-check' for gosec with local build pds tools (0.0.0)" 
+    echo "  -h,   --help                                : show this help"
 }
 
 SCRIPT_DIR="$(dirname -- "$0")"
@@ -101,6 +104,10 @@ do
         FULL_BUILD="YES"
         shift # past argument
         ;;
+        -bpt|--build-pds-tools)
+        PDS_TOOLS_BUILD="YES"
+        shift # past argument
+        ;;
         -d|--document-full)
         DOCUMENT_FULL="YES"
         shift # past argument
@@ -115,6 +122,10 @@ do
         ;;
         -si|--stop-inttest-server)
         STOP_SERVERS="YES"
+        shift # past argument
+        ;;
+        -syg|--start-systemtest-sanitycheck-gosec)
+        START_SYSTEMTEST_SANITYCHECK_GOSEC="YES"
         shift # past argument
         ;;
         -x|--xsearchpath)
@@ -204,7 +215,7 @@ if [[ "$INTEGRATIONTEST_SYSTEMTEST" = "YES" ]]; then
 fi
 
 if [[ "$FULL_BUILD" = "YES" ]]; then
-    startJob "Execute full build (simulate github actions workflow 'gradle' "
+    startJob "Execute full build (simulate github actions workflow 'gradle' )"
     
     # Simulate github workflow "gradle"
     step "Build Client"
@@ -227,6 +238,13 @@ if [[ "$FULL_BUILD" = "YES" ]]; then
     
 fi
 
+if [[ "$PDS_TOOLS_BUILD" = "YES" ]]; then
+     startJob "Execute build pds tools"
+     step "Generate and build Java projects related to SecHub Java API"
+    ./gradlew :sechub-api-java:build :sechub-systemtest:build :sechub-pds-tools:buildPDSToolsCLI -Dsechub.build.stage=api-necessary
+  
+fi
+
 if [[ "$DOCUMENT_FULL" = "YES" ]]; then
     startJob "Create documentation"
     ./gradlew documentation -Dsechub.build.stage=all
@@ -245,6 +263,14 @@ if [[ "$GENERATE_JAVA_API" = "YES" ]]; then
     cd $SECHUB_ROOT_DIR 
 fi
 
+if [[ "$START_SYSTEMTEST_SANITYCHECK_GOSEC" = "YES" ]]; then
+    startJob "Start systemtest 'sanity-check' for GoSec"
+    cd $SECHUB_ROOT_DIR
+    cd sechub-pds-solutions/gosec/tests
+    #java -Djdk.httpclient.HttpClient.log=requests,headers,errors -jar $SECHUB_ROOT_DIR/sechub-pds-tools/build/libs/sechub-pds-tools-cli-0.0.0.jar systemtest --file systemtest_local.json --pds-solutions-rootfolder ../../ --sechub-solution-rootfolder ../../../sechub-solution --run-tests sanity-check
+    java -jar $SECHUB_ROOT_DIR/sechub-pds-tools/build/libs/sechub-pds-tools-cli-0.0.0.jar systemtest --file systemtest_local.json --pds-solutions-rootfolder ../../ --sechub-solution-rootfolder ../../../sechub-solution --run-tests sanity-check
+    cd $SECHUB_ROOT_DIR 
+fi
 
 
 # -----------------------

@@ -3,8 +3,7 @@
 
 shutdownZAP() {
 	# --full: to specify the process by looking at full command line including the parameters
-	pkill -9 --full "/usr/bin/owasp-zap"
-	pkill -9 --full "/usr/share/zaproxy/zap-"
+	pkill -9 --full "/pds/tools/ZAP_"
 }
 
 # Start OWASP-ZAP server
@@ -13,7 +12,7 @@ echo "Starting up OWASP-ZAP server"
 #   This addon is mandatory now but the telemetry calls can be deactivated.
 #   This feature addtionally disables automated update calls, e.g. to update extensions.
 #   Otherwise, if you want to use a specific versions of extensions e.g. for testing reasons, ZAP would automatically check for updates.
-owasp-zap -daemon -silent -nostdout -host "$ZAP_HOST" -port "$ZAP_PORT" -config "api.key=$ZAP_API_KEY" &
+zap -daemon -silent -nostdout -host "$ZAP_HOST" -port "$ZAP_PORT" -config "api.key=$ZAP_API_KEY" &
 
 echo "Waiting for OWASP-ZAP to start"
 RETRIES=20

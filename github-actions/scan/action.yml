@@ -21,7 +21,7 @@ inputs:
   version:
     description: 'Which version of the SecHub'
     required: false
-    default: '1.0.0'
+    default: '1.2.0'
   include-folders:
     description: 'a list of folders to include'
     required: false
@@ -41,6 +41,20 @@ inputs:
     description: 'job will be marked as failed if sechub finds something'
     required: true
 
+outputs:
+  scan-trafficlight:
+    description: 'Color of the traffic light reported by SecHub'
+  scan-findings-count:
+    description: 'Total number of findings reported by SecHub'
+  scan-findings-high:
+    description: 'Number of high findings reported by SecHub'
+  scan-findings-medium:
+    description: 'Number of medium findings reported by SecHub'
+  scan-findings-low:
+    description: 'Number of low findings reported by SecHub'
+  scan-readable-summary:
+    description: 'Readable summary of the findings reported by SecHub'
+
 runs:
-  using: 'node12'
+  using: 'node16'
   main: './dist/index.js'

@@ -11,9 +11,9 @@ function mergeFolderFilesRecursivelyIntoResultFile(){
    
     debug "> reading $READING_TYPE from: ${FOLDER_TO_READ_AND_MERGE}" $DEBUG
     
-    find ${FOLDER_TO_READ_AND_MERGE} -type f | 
+    find "${FOLDER_TO_READ_AND_MERGE}" -type f | 
     while read src
-     do  cat "${src}" >> ${RESULT_FILE}
+     do  cat "${src}" >> "${RESULT_FILE}"
      debug "> appended '$src' to ${RESULT_FILE}" $DEBUG
     done
 }

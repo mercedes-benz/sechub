@@ -29,8 +29,8 @@ To be able to use this action you need a SecHub project. Check the https://merce
     project-name: ${{ secrets.SECHUB_PROJECT }}
 
     # OPTIONAL: Which version of the SecHub cli to use
-    # DEFAULT: 1.0.0
-    version: '1.0.0'
+    # DEFAULT: 1.2.0
+    version: '1.2.0'
 
     # OPTIONAL: A list of folders to be included. Multiple folders can be separated by ,
     include-folders: 'src,lib'
@@ -50,7 +50,27 @@ To be able to use this action you need a SecHub project. Check the https://merce
     # OPTIONAL: job (pipeline) will be marked as failed if sechub finds something
     # DEFAULT: true
     fail-job-with-findings: true
-```
+----
+
+=== Outputs
+
+The following table lists the output variables available after this SecHub GitHub Action has completed:
+
+[cols="20%,40%,40%"]
+|===
+| Output Name          | Description                                           | Expected Values
+
+| scan-trafficlight    | The color of the traffic light reported by SecHub if the scan ran successfully, otherwise `FAILURE`. | One of `GREEN`, `YELLOW`, `RED`, or `FAILURE`.
+| scan-findings-count  | The total number of findings reported by SecHub. Returns 0 if the scan didn't complete.         | 0
+| scan-findings-high   | The number of high-level findings reported by SecHub.         | 0
+| scan-findings-medium | The number of medium-level findings reported by SecHub.         | 0
+| scan-findings-low    | The number of low-level findings reported by SecHub.         | 0
+| scan-readable-summary| A human-readable summary of the scan outcome, including the traffic light color, findings count, and their distribution.         | For example, `SecHub scan could not be executed` if an error occurred. Otherwise, i.e. `SecHub reported traffic light color YELLOW with 15 findings, categorized as follows: MEDIUM (8), LOW (7)`
+
+|===
+
+
+You can access them after the action has run with `${{ steps.<step-id>.outputs.<output-name> }}`
 
 === Build
 

@@ -47,7 +47,7 @@ public class InputCache {
 	    set(InputCacheIdentifier.PDS_SECHUB_JOBUUID, UUID.randomUUID().toString());
 	    set(InputCacheIdentifier.PDS_PRODUCT_ID, "PDS_INTTEST_PRODUCT_CODESCAN");
 
-	    set(InputCacheIdentifier.EMAILADRESS, "sechub@example.org");
+	    set(InputCacheIdentifier.EMAILADDRESS, "sechub@example.org");
 	    set(InputCacheIdentifier.PROJECT_MOCK_CONFIG_JSON,
                 "{ \n" + "  \"apiVersion\" : \"1.0\",\n" + "\n" + "   \"codeScan\" : {\n" + "         \"result\" : \"yellow\"   \n" + "   },\n"
                         + "   \"webScan\" : {\n" + "         \"result\" : \"green\"   \n" + "   },\n" + "   \"infraScan\" : {\n"

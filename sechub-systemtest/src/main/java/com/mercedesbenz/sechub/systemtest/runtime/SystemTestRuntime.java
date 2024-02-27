@@ -2,17 +2,21 @@
 package com.mercedesbenz.sechub.systemtest.runtime;
 
 import java.util.ArrayList;
+import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.mercedesbenz.sechub.commons.core.RunOrFail;
 import com.mercedesbenz.sechub.commons.model.JSONConverter;
+import com.mercedesbenz.sechub.systemtest.SystemTestParameters;
 import com.mercedesbenz.sechub.systemtest.config.SystemTestConfiguration;
 import com.mercedesbenz.sechub.systemtest.config.TestDefinition;
 import com.mercedesbenz.sechub.systemtest.runtime.config.SystemTestRuntimeLocalSecHubProductConfigurator;
 import com.mercedesbenz.sechub.systemtest.runtime.error.SystemTestErrorException;
+import com.mercedesbenz.sechub.systemtest.runtime.error.SystemTestFailure;
 import com.mercedesbenz.sechub.systemtest.runtime.init.SystemTestRuntimeContextHealthCheck;
 import com.mercedesbenz.sechub.systemtest.runtime.init.SystemTestRuntimePreparator;
 import com.mercedesbenz.sechub.systemtest.runtime.launch.ExecutionSupport;
@@ -66,9 +70,9 @@ public class SystemTestRuntime {
         this.secondsToWaitForRemainingProcesses = getValue("SYSTEMTEST_WAIT_FOR_REMAINING_PROCESSES", DEFAULT_SECONDS_TO_WAIT_FOR_REMAINIG_PROCESSES);
     }
 
-    public SystemTestResult run(SystemTestConfiguration configuration, boolean localRun, boolean isDryRun) {
+    public SystemTestResult run(SystemTestConfiguration configuration, SystemTestParameters parameters) {
 
-        SystemTestRuntimeContext context = initialize(configuration, localRun, isDryRun);
+        SystemTestRuntimeContext context = initialize(configuration, parameters);
 
         return runAfterInitialization(context);
 
@@ -112,15 +116,7 @@ public class SystemTestRuntime {
 
             /* execute tests */
             switchToStage("Test", context);
-
-            /* handle dynamic variables */
-            List<TestDefinition> originTestList = context.getConfiguration().getTests();
-            List<TestDefinition> workingList = new ArrayList<>(originTestList);
-            originTestList.clear();
-
-            for (TestDefinition test : workingList) {
-                testEngine.runTest(test, context);
-            }
+            handleTests(context);
 
             /* shutdown */
             switchToStage("Shutdown", context);
@@ -134,6 +130,7 @@ public class SystemTestRuntime {
             /* fetch results from context and publish only this */
             result = new SystemTestResult();
             result.getRuns().addAll(context.getResults());
+            result.getProblems().addAll(context.getProblems());
 
             endCurrentStage(context);
 
@@ -166,11 +163,47 @@ public class SystemTestRuntime {
         }
     }
 
+    private void handleTests(SystemTestRuntimeContext context) {
+        /* handle dynamic variables */
+        List<TestDefinition> originTestList = context.getConfiguration().getTests();
+        List<TestDefinition> workingList = new ArrayList<>(originTestList);
+        originTestList.clear();
+
+        boolean atLeastOneTestExecuted = false;
+        Set<String> allExistingTestNames = new LinkedHashSet<>();
+        for (TestDefinition test : workingList) {
+            String testName = test.getName();
+
+            allExistingTestNames.add(testName);
+
+            if (context.isRunningTest(testName)) {
+                atLeastOneTestExecuted = true;
+                testEngine.runTest(test, context);
+            }
+        }
+        if (!atLeastOneTestExecuted) {
+            context.getProblems().add("No tests were executed (0/" + workingList.size() + ")");
+        }
+
+        if (!context.isRunningAllTests()) {
+            /* check if the user wanted a test to run which does not exist */
+            for (String testToRun : context.getTestsToRun()) {
+                if (!allExistingTestNames.contains(testToRun)) {
+                    SystemTestRunResult missingTestsResult = new SystemTestRunResult(testToRun);
+                    missingTestsResult.setFailure(
+                            new SystemTestFailure("Test '" + testToRun + "' is not defined!", "Following tests are defined: " + allExistingTestNames));
+                    context.getResults().add(missingTestsResult);
+                }
+            }
+        }
+    }
+
     private void logResult(SystemTestRuntimeContext context, SystemTestResult result) {
         String resultStatus = "FAILED";
         int testsFailed = 0;
         int testsRun = 0;
         String failedTestsOutput = "";
+        String problemsOutput = "";
 
         if (result != null) {
             if (!result.hasFailedTests()) {
@@ -178,6 +211,19 @@ public class SystemTestRuntime {
             }
             testsFailed = result.getAmountOfFailedTests();
             testsRun = result.getAmountOfAllTests();
+
+            if (result.hasProblems()) {
+
+                StringBuilder sb = new StringBuilder();
+                sb.append("Problems detected:\n");
+                for (String problem : result.getProblems()) {
+                    sb.append("  - ");
+                    sb.append(problem);
+                    sb.append("\n");
+                }
+                problemsOutput = sb.toString();
+            }
+
         }
 
         if (testsFailed > 0) {
@@ -190,7 +236,6 @@ public class SystemTestRuntime {
                     sb.append("\n");
                 }
             }
-            sb.append("\n");
             failedTestsOutput = sb.toString();
         }
 
@@ -202,20 +247,22 @@ public class SystemTestRuntime {
                  - Tests run   : %d
                  - Tests failed: %d
                  %s
+                 %s
                  Workspace: %s
-                """.formatted(resultStatus, testsRun, testsFailed, failedTestsOutput, context.getLocationSupport().getWorkspaceRoot());
+                """.formatted(resultStatus, testsRun, testsFailed, failedTestsOutput, problemsOutput, context.getLocationSupport().getWorkspaceRoot());
 
         LOG.info(info);
     }
 
-    private SystemTestRuntimeContext initialize(SystemTestConfiguration configuration, boolean localRun, boolean isDryRun) {
+    private SystemTestRuntimeContext initialize(SystemTestConfiguration configuration, SystemTestParameters parameters) {
         SystemTestRuntimeContext context = new SystemTestRuntimeContext(configuration, locationSupport.getWorkspaceRoot(),
                 locationSupport.getAdditionalResourcesRoot());
 
-        context.localRun = localRun;
-        context.dryRun = isDryRun;
+        context.localRun = parameters.isLocalRun();
+        context.dryRun = parameters.isDryRun();
+        context.addTestsToRun(parameters.getTestsToRun());
 
-        LOG.info("Starting - run {}{}\nWorking directory: {}", isDryRun ? "DRY " : "", localRun ? "LOCAL" : "REMOTE");
+        LOG.info("Starting - run {}{}\nWorking directory: {}", context.dryRun ? "DRY " : "", context.localRun ? "LOCAL" : "REMOTE");
 
         context.locationSupport = locationSupport;
         context.environmentProvider = environmentSupport;

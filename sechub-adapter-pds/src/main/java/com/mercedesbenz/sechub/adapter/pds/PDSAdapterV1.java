@@ -1,6 +1,8 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.adapter.pds;
 
+import static com.mercedesbenz.sechub.commons.pds.PDSMetaDataKeys.*;
+
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Map;
@@ -38,10 +40,6 @@ import com.mercedesbenz.sechub.commons.pds.data.PDSJobStatusState;
 @Component
 @Profile({ AdapterProfiles.REAL_PRODUCTS })
 public class PDSAdapterV1 extends AbstractAdapter<PDSAdapterContext, PDSAdapterConfig> implements PDSAdapter {
-
-    private static final String PDS_JOB_UUID = "PDS_JOB_UUID";
-    private static final String PDS_JOB_UPLOAD_DONE = "PDS_JOB_UPLOAD_DONE";
-    private static final String PDS_JOB_MARKED_AS_READY = "PDS_JOB_MARKED_AS_READY";
 
     private static final Logger LOG = LoggerFactory.getLogger(PDSAdapterV1.class);
 

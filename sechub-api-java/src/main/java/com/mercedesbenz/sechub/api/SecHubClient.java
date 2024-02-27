@@ -132,4 +132,22 @@ public interface SecHubClient {
     String getServerVersion() throws SecHubClientException;
 
     void userRequestsNewApiToken(String emailAddress) throws SecHubClientException;
+
+    /* ++++++++++++++++++++++++++++++++++++++++++++++++++++ */
+    /* + ................Other........................... + */
+    /* ++++++++++++++++++++++++++++++++++++++++++++++++++++ */
+
+    /**
+     * Downloads the full scan log for a given sechub job uuid into wanted target
+     * location. This call can only be done an administrator.
+     *
+     * @param sechubJobUUID
+     * @param downloadFilePath path to download file. If path is a folder the
+     *                         filename will be
+     *                         "SecHub-${sechubJobUUID}-scanlog.zip". When null, a
+     *                         temp folder will be used
+     * @return path to download
+     */
+    Path downloadFullScanLog(UUID sechubJobUUID, Path downloadFilePath) throws SecHubClientException;
+
 }

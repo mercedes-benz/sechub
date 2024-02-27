@@ -62,7 +62,7 @@ public class SystemTestAPI {
 
         SystemTestRuntime runtime = new SystemTestRuntime(locationSupport, execSupport);
 
-        return runtime.run(parameters.getConfiguration(), parameters.isLocalRun(), parameters.isDryRun());
+        return runtime.run(parameters.getConfiguration(), parameters);
     }
 
     private void cleanupOldRuntimeFolderIfExisting(LocationSupport locationSupport) {

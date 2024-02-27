@@ -1,0 +1,115 @@
+{
+  "jobUUID" : "{sechub.jobuuid}",
+  "trafficLight" : "YELLOW",
+  "result" : {
+    "count" : 8,
+    "findings" : [ {
+      "id" : 1,
+      "description" : "generic-api-key has detected secret for file UnSAFE_Bank/Backend/docker-compose.yml.",
+      "name" : "(?i)(?:key|api|token|secret|client|passwd|password|auth|access)(?:[0-9a-z\\-_\\t .]{0,20})(?:[\\s|']|[\\s|\"]){0,3}(?:=|>|:{1,3}=|\\|\\|:|<=|=>|:|\\?=)(?:'|\\\"|\\s|=|\\x60){0,5}([0-9a-z\\-_.=]{10,150})(?:['|\\\"|\\n|\\r|\\s|\\x60|;]|$)",
+      "severity" : "MEDIUM",
+      "code" : {
+        "location" : "UnSAFE_Bank/Backend/docker-compose.yml",
+        "line" : 12,
+        "column" : 14,
+        "source" : "531486b2bf646636a6a1bba61e78ec4a4a54efbd"
+      },
+      "type" : "secretScan",
+      "cweId" : 798
+    }, {
+      "id" : 2,
+      "description" : "generic-api-key has detected secret for file UnSAFE_Bank/Backend/src/api/application/config/database.php.",
+      "name" : "(?i)(?:key|api|token|secret|client|passwd|password|auth|access)(?:[0-9a-z\\-_\\t .]{0,20})(?:[\\s|']|[\\s|\"]){0,3}(?:=|>|:{1,3}=|\\|\\|:|<=|=>|:|\\?=)(?:'|\\\"|\\s|=|\\x60){0,5}([0-9a-z\\-_.=]{10,150})(?:['|\\\"|\\n|\\r|\\s|\\x60|;]|$)",
+      "severity" : "MEDIUM",
+      "code" : {
+        "location" : "UnSAFE_Bank/Backend/src/api/application/config/database.php",
+        "line" : 80,
+        "column" : 7,
+        "source" : "531486b2bf646636a6a1bba61e78ec4a4a54efbd"
+      },
+      "type" : "secretScan",
+      "cweId" : 798
+    }, {
+      "id" : 3,
+      "description" : "generic-api-key has detected secret for file UnSAFE_Bank/Backend/web/src/app/thunks/Authentication/ForgotPassword/handleForgotPasswordGetOTPThunk.tsx.",
+      "name" : "(?i)(?:key|api|token|secret|client|passwd|password|auth|access)(?:[0-9a-z\\-_\\t .]{0,20})(?:[\\s|']|[\\s|\"]){0,3}(?:=|>|:{1,3}=|\\|\\|:|<=|=>|:|\\?=)(?:'|\\\"|\\s|=|\\x60){0,5}([0-9a-z\\-_.=]{10,150})(?:['|\\\"|\\n|\\r|\\s|\\x60|;]|$)",
+      "severity" : "MEDIUM",
+      "code" : {
+        "location" : "UnSAFE_Bank/Backend/web/src/app/thunks/Authentication/ForgotPassword/handleForgotPasswordGetOTPThunk.tsx",
+        "line" : 32,
+        "column" : 14,
+        "source" : "9bbc0d79e686e847bc305c9bd4cc2ea6"
+      },
+      "type" : "secretScan",
+      "cweId" : 798
+    }, {
+      "id" : 4,
+      "description" : "generic-api-key has detected secret for file UnSAFE_Bank/Backend/web/src/app/thunks/OTP/handleGetOTPThunk.tsx.",
+      "name" : "(?i)(?:key|api|token|secret|client|passwd|password|auth|access)(?:[0-9a-z\\-_\\t .]{0,20})(?:[\\s|']|[\\s|\"]){0,3}(?:=|>|:{1,3}=|\\|\\|:|<=|=>|:|\\?=)(?:'|\\\"|\\s|=|\\x60){0,5}([0-9a-z\\-_.=]{10,150})(?:['|\\\"|\\n|\\r|\\s|\\x60|;]|$)",
+      "severity" : "MEDIUM",
+      "code" : {
+        "location" : "UnSAFE_Bank/Backend/web/src/app/thunks/OTP/handleGetOTPThunk.tsx",
+        "line" : 31,
+        "column" : 14,
+        "source" : "9bbc0d79e686e847bc305c9bd4cc2ea6"
+      },
+      "type" : "secretScan",
+      "cweId" : 798
+    }, {
+      "id" : 5,
+      "description" : "generic-api-key has detected secret for file UnSAFE_Bank/iOS/Source Code/Podfile.lock.",
+      "name" : "(?i)(?:key|api|token|secret|client|passwd|password|auth|access)(?:[0-9a-z\\-_\\t .]{0,20})(?:[\\s|']|[\\s|\"]){0,3}(?:=|>|:{1,3}=|\\|\\|:|<=|=>|:|\\?=)(?:'|\\\"|\\s|=|\\x60){0,5}([0-9a-z\\-_.=]{10,150})(?:['|\\\"|\\n|\\r|\\s|\\x60|;]|$)",
+      "severity" : "MEDIUM",
+      "code" : {
+        "location" : "UnSAFE_Bank/iOS/Source Code/Podfile.lock",
+        "line" : 23,
+        "column" : 4,
+        "source" : "b3816fddcf28aa29d94b10ec305cd52be14c472b"
+      },
+      "type" : "secretScan",
+      "cweId" : 798
+    }, {
+      "id" : 6,
+      "description" : "generic-api-key has detected secret for file UnSAFE_Bank/iOS/Source Code/Pods/Manifest.lock.",
+      "name" : "(?i)(?:key|api|token|secret|client|passwd|password|auth|access)(?:[0-9a-z\\-_\\t .]{0,20})(?:[\\s|']|[\\s|\"]){0,3}(?:=|>|:{1,3}=|\\|\\|:|<=|=>|:|\\?=)(?:'|\\\"|\\s|=|\\x60){0,5}([0-9a-z\\-_.=]{10,150})(?:['|\\\"|\\n|\\r|\\s|\\x60|;]|$)",
+      "severity" : "MEDIUM",
+      "code" : {
+        "location" : "UnSAFE_Bank/iOS/Source Code/Pods/Manifest.lock",
+        "line" : 23,
+        "column" : 4,
+        "source" : "b3816fddcf28aa29d94b10ec305cd52be14c472b"
+      },
+      "type" : "secretScan",
+      "cweId" : 798
+    }, {
+      "id" : 7,
+      "description" : "hashicorp-tf-password has detected secret for file UnSAFE_Bank/iOS/Source Code/damnVIA/Helpers/JSONHelpers.swift.",
+      "name" : "(?i)(?:administrator_login_password|password)(?:[0-9a-z\\-_\\t .]{0,20})(?:[\\s|']|[\\s|\"]){0,3}(?:=|>|:{1,3}=|\\|\\|:|<=|=>|:|\\?=)(?:'|\\\"|\\s|=|\\x60){0,5}(\"[a-z0-9=_\\-]{8,20}\")(?:['|\\\"|\\n|\\r|\\s|\\x60|;]|$)",
+      "severity" : "MEDIUM",
+      "code" : {
+        "location" : "UnSAFE_Bank/iOS/Source Code/damnVIA/Helpers/JSONHelpers.swift",
+        "line" : 41,
+        "column" : 20,
+        "source" : "\"new_pass\""
+      },
+      "type" : "secretScan",
+      "cweId" : 798
+    }, {
+      "id" : 8,
+      "description" : "hashicorp-tf-password has detected secret for file UnSAFE_Bank/iOS/Source Code/damnVIA/Strings.swift.",
+      "name" : "(?i)(?:administrator_login_password|password)(?:[0-9a-z\\-_\\t .]{0,20})(?:[\\s|']|[\\s|\"]){0,3}(?:=|>|:{1,3}=|\\|\\|:|<=|=>|:|\\?=)(?:'|\\\"|\\s|=|\\x60){0,5}(\"[a-z0-9=_\\-]{8,20}\")(?:['|\\\"|\\n|\\r|\\s|\\x60|;]|$)",
+      "severity" : "MEDIUM",
+      "code" : {
+        "location" : "UnSAFE_Bank/iOS/Source Code/damnVIA/Strings.swift",
+        "line" : 30,
+        "column" : 24,
+        "source" : "\"ConfirmPasswordSegue\""
+      },
+      "type" : "secretScan",
+      "cweId" : 798
+    } ]
+  },
+  "status" : "SUCCESS",
+  "reportVersion" : "1.0",
+  "messages" : [ ]
+}

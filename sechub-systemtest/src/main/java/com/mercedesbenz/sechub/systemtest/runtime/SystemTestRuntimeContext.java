@@ -56,7 +56,7 @@ public class SystemTestRuntimeContext {
     Path additionalResourcesRoot;
 
     private SystemTestConfiguration configuration;
-    private SystemTestRunResult currentResult;
+    private SystemTestRunResult currentResult = new SystemTestRunResult("no-test-fallback-" + System.nanoTime());
     private Set<SystemTestRunResult> results = new LinkedHashSet<>();
     private SystemTestRuntimeMetaData runtimeMetaData = new SystemTestRuntimeMetaData();
     private Map<PDSSolutionDefinition, PDSSolutionRuntimeData> pdsSolutionRuntimeDataMap = new LinkedHashMap<>();
@@ -65,8 +65,19 @@ public class SystemTestRuntimeContext {
     private SecHubClient remoteUserSecHubClient;
     private SecHubClient localAdminSecHubClient;
     private SystemTestTemplateEngine templateEngine = new SystemTestTemplateEngine();
+    private Set<String> testsToRun = new LinkedHashSet<>();
 
     private Map<String, PDSClient> localTechUserPdsClientMap = new TreeMap<>();
+    private Map<String, PDSClient> localAdminUserPdsClientMap = new TreeMap<>();
+
+    private Set<String> problems = new LinkedHashSet<>();
+
+    public void addTestsToRun(Collection<String> testNames) {
+        if (testNames == null) {
+            return;
+        }
+        testsToRun.addAll(testNames);
+    }
 
     public void alterConfguration(SystemTestConfiguration configuration) {
         this.configuration = configuration;
@@ -90,6 +101,18 @@ public class SystemTestRuntimeContext {
 
     public boolean isDryRun() {
         return dryRun;
+    }
+
+    public boolean isRunningAllTests() {
+        return testsToRun.isEmpty();
+    }
+
+    public boolean isRunningTest(String name) {
+        return isRunningAllTests() || testsToRun.contains(name);
+    }
+
+    public Set<String> getTestsToRun() {
+        return Collections.unmodifiableSet(testsToRun);
     }
 
     /* only for tests */
@@ -161,6 +184,10 @@ public class SystemTestRuntimeContext {
         return results;
     }
 
+    public Set<String> getProblems() {
+        return problems;
+    }
+
     public void testStarted(TestDefinition test) {
         this.currentResult = new SystemTestRunResult(test.getName());
         results.add(currentResult);
@@ -225,12 +252,31 @@ public class SystemTestRuntimeContext {
         if (!isLocalRun()) {
             throw new IllegalStateException(
             /* @formatter:off */
-                      "This is a remote run - which does not need local client..."
+                      "This is a remote run - which does not need a local tech user client..."
                     + "This means the logic inside system test framework has a bug inside!");
             /* @formatter:on */
         }
         final PDSSolutionDefinition pdsSolution = fetchPDSSolutionOrFail(solutionId);
-        return localTechUserPdsClientMap.computeIfAbsent(solutionId, (id) -> createPDSClient(pdsSolution));
+        return localTechUserPdsClientMap.computeIfAbsent(solutionId, (id) -> createPDSClient(pdsSolution, false));
+    }
+
+    public PDSClient getLocalAdminPDSClient(PDSSolutionDefinition solution) {
+        return getLocalAdminPDSClient(solution.getName());
+    }
+
+    public PDSClient getLocalAdminPDSClient(String solutionId) {
+        if (solutionId == null) {
+            throw new IllegalStateException("solution id may not be null!");
+        }
+        if (!isLocalRun()) {
+            throw new IllegalStateException(
+            /* @formatter:off */
+                    "This is a remote run - which does not need a local admin client..."
+                    + "This means the logic inside system test framework has a bug inside!");
+            /* @formatter:on */
+        }
+        final PDSSolutionDefinition pdsSolution = fetchPDSSolutionOrFail(solutionId);
+        return localAdminUserPdsClientMap.computeIfAbsent(solutionId, (id) -> createPDSClient(pdsSolution, true));
     }
 
     public PDSSolutionDefinition fetchPDSSolutionOrFail(String solutionId) {
@@ -306,7 +352,7 @@ public class SystemTestRuntimeContext {
         return client;
     }
 
-    private PDSClient createPDSClient(PDSSolutionDefinition solutionToUse) {
+    private PDSClient createPDSClient(PDSSolutionDefinition solutionToUse, boolean admin) {
 
         PDSClient client = null;
 
@@ -315,7 +361,7 @@ public class SystemTestRuntimeContext {
             throw new WrongConfigurationException("URL not defined for PDS solution: " + solutionToUse.getName(), this);
         }
 
-        CredentialsDefinition credentials = solutionToUse.getTechUser();
+        CredentialsDefinition credentials = admin ? solutionToUse.getAdmin() : solutionToUse.getTechUser();
         try {
             URI serverUri = URI.create(url);
             String userId = getTemplateEngine().replaceSecretEnvironmentVariablesWithValues(credentials.getUserId(), getEnvironmentProvider());

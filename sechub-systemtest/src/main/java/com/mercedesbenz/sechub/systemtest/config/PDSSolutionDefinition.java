@@ -14,6 +14,7 @@ public class PDSSolutionDefinition extends AbstractDefinition {
     private String pathToPdsServerConfigFile;
 
     private CredentialsDefinition techUser = new CredentialsDefinition();
+    private CredentialsDefinition admin = new CredentialsDefinition();
 
     private List<ExecutionStepDefinition> start = new ArrayList<>();
 
@@ -81,5 +82,9 @@ public class PDSSolutionDefinition extends AbstractDefinition {
 
     public CredentialsDefinition getTechUser() {
         return techUser;
+    }
+
+    public CredentialsDefinition getAdmin() {
+        return admin;
     }
 }

@@ -10,10 +10,11 @@ LABEL org.opencontainers.image.description="A container which combines OWASP ZAP
 LABEL maintainer="SecHub FOSS Team"
 
 # Build args
-ARG OWASPZAP_VERSION="2.13.0"
-ARG OWASPZAP_SHA256SUM="24dfba87278515e3dabe8d24c259981cd812a8f6e66808c956104c3283d91d9d"
+# ZAP (Zed Attack Proxy) version. See https://github.com/zaproxy/zaproxy
+ARG OWASPZAP_VERSION="2.14.0"
+ARG OWASPZAP_SHA256SUM="219d7f25bbe25247713805ab02cc12279898c870743c1aae3c2b0b1882191960"
 
-ARG OWASPZAP_WRAPPER_VERSION="1.2.0"
+ARG OWASPZAP_WRAPPER_VERSION="1.5.0"
 
 # OWASP ZAP host and port
 ENV ZAP_HOST="127.0.0.1"
@@ -34,19 +35,22 @@ COPY pds-config.json "$PDS_FOLDER/pds-config.json"
 RUN export DEBIAN_FRONTEND=noninteractive && \
     apt-get update && \
     apt-get upgrade --assume-yes && \
-    apt-get install --assume-yes openjdk-17-jre firefox-esr wget && \
+    apt-get install --assume-yes firefox-esr wget && \
     apt-get clean
 
-# Install OWASP ZAP
+# Install ZAP
 RUN cd "$DOWNLOAD_FOLDER" && \
-	# download latest release of owasp zap
-	wget --no-verbose https://github.com/zaproxy/zaproxy/releases/download/v${OWASPZAP_VERSION}/zaproxy_${OWASPZAP_VERSION}-1_all.deb && \
-	# verify that the checksum and the checksum of the file are same
-    echo "${OWASPZAP_SHA256SUM} zaproxy_${OWASPZAP_VERSION}-1_all.deb" | sha256sum --check && \
-	dpkg -i zaproxy_${OWASPZAP_VERSION}-1_all.deb && \
-	# remove zaproxy deb package
-	rm zaproxy_${OWASPZAP_VERSION}-1_all.deb
-
+    # download latest release of ZAP
+    wget --no-verbose https://github.com/zaproxy/zaproxy/releases/download/v${OWASPZAP_VERSION}/ZAP_${OWASPZAP_VERSION}_Linux.tar.gz && \
+    # verify that the checksum and the checksum of the file are same
+    echo "${OWASPZAP_SHA256SUM} ZAP_${OWASPZAP_VERSION}_Linux.tar.gz" | sha256sum --check && \
+    # install ZAP
+    tar xf ZAP_${OWASPZAP_VERSION}_Linux.tar.gz -C "$TOOL_FOLDER" && \
+    ln -s "$TOOL_FOLDER/ZAP_${OWASPZAP_VERSION}/zap.sh" "/usr/local/bin/zap" && \
+    # remove plugins installed on default
+    rm $TOOL_FOLDER/ZAP_${OWASPZAP_VERSION}/plugin/*.zap && \
+    # remove ZAP download after installation
+    rm ZAP_${OWASPZAP_VERSION}_Linux.tar.gz
 
 # Install SecHub OWASP ZAP wrapper
 RUN cd "$TOOL_FOLDER" && \
@@ -66,7 +70,7 @@ COPY zap-addons.txt "$TOOL_FOLDER/zap-addons.txt"
 
 # Install OWASP ZAP addons
 # see: https://www.zaproxy.org/addons/
-# via addon manager: owasp-zap -cmd -addoninstall webdriverlinux
+# via addon manager: zap -cmd -addoninstall webdriverlinux
 RUN mkdir --parents "/home/$USER/.ZAP/plugin" && \
     chown --recursive "$USER:$USER" "/home/$USER/" && \
     cd "/home/$USER/.ZAP/plugin" && \

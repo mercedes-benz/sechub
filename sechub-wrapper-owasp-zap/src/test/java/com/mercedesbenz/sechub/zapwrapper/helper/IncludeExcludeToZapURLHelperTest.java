@@ -1,12 +1,12 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.zapwrapper.helper;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -14,18 +14,13 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 
-import com.mercedesbenz.sechub.commons.model.SecHubMessage;
-
 class IncludeExcludeToZapURLHelperTest {
 
     private IncludeExcludeToZapURLHelper helperToTest;
 
-    private List<SecHubMessage> userMessages;
-
     @BeforeEach
     void beforeEach() {
         helperToTest = new IncludeExcludeToZapURLHelper();
-        userMessages = new LinkedList<>();
     }
 
     @Test
@@ -35,11 +30,10 @@ class IncludeExcludeToZapURLHelperTest {
         List<String> sites = null;
 
         /* execute */
-        List<URL> urls = helperToTest.createListOfUrls(ZapURLType.INCLUDE, targetUrl, sites, userMessages);
+        List<String> urls = helperToTest.createListOfUrls(targetUrl, sites);
 
         /* test */
         assertTrue(urls.isEmpty());
-        assertTrue(userMessages.isEmpty());
     }
 
     @Test
@@ -49,11 +43,10 @@ class IncludeExcludeToZapURLHelperTest {
         List<String> sites = new ArrayList<>();
 
         /* execute */
-        List<URL> urls = helperToTest.createListOfUrls(ZapURLType.INCLUDE, targetUrl, sites, userMessages);
+        List<String> urls = helperToTest.createListOfUrls(targetUrl, sites);
 
         /* test */
         assertTrue(urls.isEmpty());
-        assertTrue(userMessages.isEmpty());
     }
 
     @ParameterizedTest
@@ -64,16 +57,26 @@ class IncludeExcludeToZapURLHelperTest {
         List<String> sites = createExampleListOfSites();
 
         /* execute */
-        List<URL> urls = helperToTest.createListOfUrls(ZapURLType.EXCLUDE, targetUrl, sites, userMessages);
+        List<String> urls = helperToTest.createListOfUrls(targetUrl, sites);
 
         /* test */
-        assertTrue(urls.contains(new URL("https://127.0.0.1:8080/sub")));
-        assertTrue(urls.contains(new URL("https://127.0.0.1:8080/sub1/directory")));
-        assertTrue(urls.contains(new URL("https://127.0.0.1:8080/sub2/directory")));
-        assertTrue(urls.contains(new URL("https://127.0.0.1:8080/sub3/directory")));
-        assertTrue(urls.contains(new URL("https://127.0.0.1:8080/sub4/directory")));
+        assertEquals(15, urls.size());
+        assertTrue(urls.contains("https://127.0.0.1:8080/sub/"));
+        assertTrue(urls.contains("https://127.0.0.1:8080/sub1/directory/"));
+        assertTrue(urls.contains("https://127.0.0.1:8080/sub2/directory"));
+        assertTrue(urls.contains("https://127.0.0.1:8080/.*sub3/directory/.*"));
+        assertTrue(urls.contains("https://127.0.0.1:8080/.*sub4/directory.*"));
+        assertTrue(urls.contains("https://127.0.0.1:8080/"));
 
-        assertTrue(userMessages.isEmpty());
+        assertTrue(urls.contains("https://127.0.0.1:8080/"));
+        assertTrue(urls.contains("https://127.0.0.1:8080/.*"));
+        assertTrue(urls.contains("https://127.0.0.1:8080/.*"));
+        assertTrue(urls.contains("https://127.0.0.1:8080/.*/.*"));
+        assertTrue(urls.contains("https://127.0.0.1:8080/en/contacts/.*"));
+        assertTrue(urls.contains("https://127.0.0.1:8080/.*/en/contacts/.*"));
+        assertTrue(urls.contains("https://127.0.0.1:8080/.*/en/.*/.*/contacts/.*"));
+        assertTrue(urls.contains("https://127.0.0.1:8080/.*/en.*.*contacts/.*"));
+        assertTrue(urls.contains("https://127.0.0.1:8080/en/contacts/.*"));
     }
 
     private List<String> createExampleListOfSites() {
@@ -83,6 +86,16 @@ class IncludeExcludeToZapURLHelperTest {
         subSites.add("/sub2/directory");
         subSites.add("sub3/directory/");
         subSites.add("sub4/directory");
+        subSites.add("/");
+        subSites.add("<*>");
+        subSites.add("/<*>");
+        subSites.add("<*>/<*>");
+        subSites.add("/en/contacts/<*>");
+        subSites.add("<*>/en/contacts/<*>");
+        subSites.add("<*>/en/<*>/contacts/<*>");
+        subSites.add("<*>/en/<*>/<*>/contacts/<*>");
+        subSites.add("<*>/en<*><*>contacts/<*>");
+        subSites.add("en/contacts/<*>");
         return subSites;
     }
 

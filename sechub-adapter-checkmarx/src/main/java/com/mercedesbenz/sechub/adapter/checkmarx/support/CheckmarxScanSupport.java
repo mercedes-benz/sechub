@@ -73,6 +73,10 @@ public class CheckmarxScanSupport {
             if (context.isIncrementalScan() && failureText.toLowerCase().contains("full scan")) {
                 throw new CheckmarxFullScanNecessaryException(failureText);
             }
+            if (failureText.contains("unsupported language or file format")) {
+                throw new CheckmarxOnlyUnsupportedFilesException(failureText);
+            }
+
             throw context.asAdapterException(CheckmarxAdapter.CHECKMARX_MESSAGE_PREFIX + "Queuing has failed. Details: " + failureText, null);
         }
     }

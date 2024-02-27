@@ -15,7 +15,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.mercedesbenz.sechub.commons.model.JSONConverter;
+import com.mercedesbenz.sechub.commons.model.SecHubCodeScanConfiguration;
+import com.mercedesbenz.sechub.commons.model.SecHubSecretScanConfiguration;
 import com.mercedesbenz.sechub.commons.model.TrafficLight;
+import com.mercedesbenz.sechub.test.TestFileReader;
 
 class SystemTestConfigurationTest {
 
@@ -24,6 +27,27 @@ class SystemTestConfigurationTest {
     private final static String DEFINED_PROJECT_NAME = "a-project-id-when-not-default-used";
 
     private static final String DEFINED_PROFILE = "a-defined-profile-when-not-default-used";
+
+    private static final String DEFINED_REFERENCE_ID = "an-upload-reference-id";
+
+    @Test
+    void xray_license_config_can_be_read_and_contains_license_check() throws Exception {
+        /* prepare */
+        String path = "./src/test/resources/systemtest_xray_licensescan_example.json";
+        String json = TestFileReader.loadTextFile(path);
+
+        /* execute */
+        SystemTestConfiguration result = JSONConverter.get().fromJSON(SystemTestConfiguration.class, json);
+
+        /* test */
+        List<TestDefinition> tests = result.getTests();
+        assertEquals(1, tests.size());
+        TestDefinition test = tests.iterator().next();
+        TestExecutionDefinition exec = test.getExecute();
+        RunSecHubJobDefinition sechubJob = exec.getRunSecHubJob().get();
+        assertTrue(sechubJob.getLicenseScan().isPresent());
+
+    }
 
     @Test
     void a_full_blown_setup_can_be_serialized_and_deserialized() throws Exception {
@@ -254,10 +278,20 @@ class SystemTestConfigurationTest {
         runSecHubJob1.setProject(DEFINED_PROJECT_NAME);
 
         UploadDefinition upload = new UploadDefinition();
-        upload.setComment("Here we can define either binaries or sources to upload - we define the folders, framework will create tars/zips automatically");
+        upload.setComment(
+                "Here we can define either binaries or sources to upload - we define the folders, framework will create tars/zips automatically. When no upload reference id is defined, "
+                        + DefaultFallback.FALLBACK_UPLOAD_REF_ID.getValue() + " is used as default");
         upload.setSourceFolder(Optional.of("./checkout/sources"));
-        upload.setReferenceId(Optional.of(DefaultFallback.FALLBACK_UPLOAD_REF_ID.getValue()));
+        upload.setReferenceId(Optional.of(DEFINED_REFERENCE_ID));
         runSecHubJob1.getUploads().add(upload);
+
+        SecHubCodeScanConfiguration codeScan = new SecHubCodeScanConfiguration();
+        codeScan.getNamesOfUsedDataConfigurationObjects().add(DEFINED_REFERENCE_ID);
+        runSecHubJob1.setCodeScan(Optional.of(codeScan));
+
+        SecHubSecretScanConfiguration secretScan = new SecHubSecretScanConfiguration();
+        secretScan.getNamesOfUsedDataConfigurationObjects().add(DEFINED_REFERENCE_ID);
+        runSecHubJob1.setSecretScan(Optional.of(secretScan));
 
         test1execute1.setRunSecHubJob(Optional.of(runSecHubJob1));
 

@@ -33,7 +33,7 @@ import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.mercedesbenz.sechub.commons.TextFileWriter;
 import com.mercedesbenz.sechub.commons.mapping.MappingData;
 import com.mercedesbenz.sechub.commons.model.JSONConverter;
-import com.mercedesbenz.sechub.commons.model.SecHubScanConfiguration;
+import com.mercedesbenz.sechub.commons.model.SecHubConfigurationModel;
 import com.mercedesbenz.sechub.integrationtest.JSONTestSupport;
 import com.mercedesbenz.sechub.integrationtest.internal.IntegrationTestContext;
 import com.mercedesbenz.sechub.integrationtest.internal.IntegrationTestDefaultExecutorConfigurations;
@@ -167,7 +167,7 @@ public class AsUser {
      */
     public AsUser signUpAs(TestUser user) {
 
-        String json = "{\"apiVersion\":\"1.0\",\r\n" + "		\"userId\":\"" + user.getUserId() + "\",\r\n" + "		\"emailAdress\":\"" + user.getEmail()
+        String json = "{\"apiVersion\":\"1.0\",\r\n" + "		\"userId\":\"" + user.getUserId() + "\",\r\n" + "		\"emailAddress\":\"" + user.getEmail()
                 + "\"}";
         getRestHelper().postJson(getUrlBuilder().buildUserSignUpUrl(), json);
         return this;
@@ -507,16 +507,16 @@ public class AsUser {
         return getRestHelper().postJson(url, json);
     }
 
-    public UUID createJobAndReturnJobUUID(TestProject project, SecHubScanConfiguration config) {
+    public UUID createJobAndReturnJobUUID(TestProject project, SecHubConfigurationModel config) {
         String resultAsString = createJobAndReturnResultAsString(project, config);
         return fetchJobUUID(resultAsString);
     }
 
-    public String createJobAndReturnResultAsString(TestProject project, SecHubScanConfiguration config) {
+    public String createJobAndReturnResultAsString(TestProject project, SecHubConfigurationModel config) {
         String projectId = project.getProjectId();
         config.setProjectId(projectId);
 
-        String json = config.toJSON();
+        String json = JSONConverter.get().toJSON(config);
         String url = getUrlBuilder().buildAddJobUrl(projectId);
         String resultAsString = getRestHelper().postJson(url, json);
         return resultAsString;

@@ -1,6 +1,9 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.pds.tools;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.beust.jcommander.Parameter;
 import com.beust.jcommander.Parameters;
 
@@ -61,6 +64,13 @@ public class SystemTestCommand {
     String pdsSolutionsRootFolder;
 
 
+    @Parameter(
+            names = { "--run-tests", "-rt" },
+            description = "The (comma separated) name(s) of the tests to run. When defined, only those tests are run. When nothing defined, all system tests are executed.",
+            required=false
+          )
+    List<String> testsToRun = new ArrayList<>();
+
     /* @formatter:on */
 
     public String getPdsSolutionsRootFolder() {
@@ -89,6 +99,10 @@ public class SystemTestCommand {
 
     public boolean isRemoteRun() {
         return remoteRun;
+    }
+
+    public List<String> getTestsToRun() {
+        return testsToRun;
     }
 
 }

@@ -6,6 +6,14 @@ public class SystemTestFailure {
     private String message;
     private String details;
 
+    public SystemTestFailure() {
+    }
+
+    public SystemTestFailure(String message, String details) {
+        this.message = message;
+        this.details = details;
+    }
+
     public void setMessage(String message) {
         this.message = message;
     }

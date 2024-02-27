@@ -4,6 +4,7 @@ package com.mercedesbenz.sechub.zapwrapper.util;
 import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.InetSocketAddress;
+import java.net.MalformedURLException;
 import java.net.Proxy;
 import java.net.URL;
 import java.security.KeyManagementException;
@@ -40,12 +41,19 @@ public class TargetConnectionChecker {
 
     public void assertApplicationIsReachable(ZapScanContext scanContext) {
         boolean isReachable = false;
-        Iterator<URL> iterator = scanContext.getZapURLsIncludeSet().iterator();
+        Iterator<String> iterator = scanContext.getZapURLsIncludeSet().iterator();
         while (iterator.hasNext() && isReachable == false) {
             // trying to reach the target URL and all includes until the first reachable
             // URL is found.
-            isReachable = isSiteCurrentlyReachable(scanContext, iterator.next(), scanContext.getMaxNumberOfConnectionRetries(),
-                    scanContext.getRetryWaittimeInMilliseconds());
+            String nextUrl = iterator.next();
+            try {
+                URL url = new URL(nextUrl);
+                isReachable = isSiteCurrentlyReachable(scanContext, url, scanContext.getMaxNumberOfConnectionRetries(),
+                        scanContext.getRetryWaittimeInMilliseconds());
+            } catch (MalformedURLException e) {
+                throw new ZapWrapperRuntimeException("URL: " + nextUrl + " is invalid. Cannot check if URL is reachable.",
+                        ZapWrapperExitCode.TARGET_URL_INVALID);
+            }
         }
         if (!isReachable) {
             // Build error message containing proxy if it was set.

@@ -1,5 +1,4 @@
 flawfinder==2.0.19
 bandit==1.7.5
-bandit-sarif-formatter==1.1.1
 njsscan==0.3.4
 mobsfscan==0.2.0

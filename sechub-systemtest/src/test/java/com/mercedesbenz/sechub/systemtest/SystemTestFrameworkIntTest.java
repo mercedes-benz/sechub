@@ -103,6 +103,7 @@ class SystemTestFrameworkIntTest {
                         url(new URL("https://localhost:"+PDS_PORT)).
                         comment("We do not define start/stop here, because reuse running local PDS server").
                         techUser(toEnvVariable(ENV_TEST_INTTEST_PDS_TECHUSER_USERID), toSecretEnvVariable(ENV_TEST_INTTEST_PDS_TECHUSER_APITOKEN)).
+                        adminUser(toEnvVariable(ENV_TEST_INTTEST_PDS_ADMIN_USERID), toSecretEnvVariable(ENV_TEST_INTTEST_PDS_ADMIN_APITOKEN)).
                         /*
                          * We do not define any steps here - the PDS and SecHub instances
                          * must be started already.
@@ -194,6 +195,8 @@ class SystemTestFrameworkIntTest {
                         url(new URL("https://localhost:"+PDS_PORT)).
 
                         techUser(toEnvVariable(ENV_TEST_INTTEST_PDS_TECHUSER_USERID),toSecretEnvVariable(ENV_TEST_INTTEST_PDS_TECHUSER_APITOKEN)).
+                        adminUser(toEnvVariable(ENV_TEST_INTTEST_PDS_ADMIN_USERID), toSecretEnvVariable(ENV_TEST_INTTEST_PDS_ADMIN_APITOKEN)).
+
                         /*
                          * We do not define any steps here - the PDS and SecHub instances
                          * must be started already.
