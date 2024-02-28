@@ -21,8 +21,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.fasterxml.jackson.databind.json.JsonMapper;
-import com.mercedesbenz.sechub.api.SecHubStatus.Jobs;
-import com.mercedesbenz.sechub.api.SecHubStatus.Scheduler;
 import com.mercedesbenz.sechub.api.internal.ApiClientBuilder;
 import com.mercedesbenz.sechub.api.internal.OpenApiSecHubClientConversionHelper;
 import com.mercedesbenz.sechub.api.internal.WorkaroundAdminApi;
@@ -71,12 +69,13 @@ public class DefaultSecHubClient extends AbstractSecHubClient {
     private OpenApiSecHubClientConversionHelper conversionHelper;
 
     private WorkaroundProjectApi workaroundProjectApi;
+    
+    private SecHubStatusFactory sechubStatusFactory = new SecHubStatusFactory();
 
     public static DefaultSecHubClientBuilder builder() {
         return new DefaultSecHubClientBuilder();
     }
 
-   
     private DefaultSecHubClient(URI serverUri, String userId, String apiToken, boolean trustAll) {
         super(serverUri, userId, apiToken, trustAll);
 
@@ -224,7 +223,6 @@ public class DefaultSecHubClient extends AbstractSecHubClient {
     /* ++++++++++++++++++++++++++++++++++++++++++++++++++++ */
     @Override
     public SecHubStatus fetchSecHubStatus() throws SecHubClientException {
-        SecHubStatus status = null;
 
         Map<String, String> statusInformation = new TreeMap<>();
 
@@ -237,11 +235,8 @@ public class DefaultSecHubClient extends AbstractSecHubClient {
                 }
             }
         }, "Was not able to fetch SecHub status!");
-
-        if (!statusInformation.isEmpty()) {
-            status = convertStatusMapToStatus(statusInformation);
-        }
-
+        
+        SecHubStatus status = sechubStatusFactory.createFromMap(statusInformation);
         return status;
     }
 
@@ -454,18 +449,18 @@ public class DefaultSecHubClient extends AbstractSecHubClient {
     }
 
     @Override
-    public void userRequestsNewApiToken(String emailAddress) throws SecHubClientException {
+    public void requestNewApiToken(String emailAddress) throws SecHubClientException {
         runOrFail(() -> anonymousApi.userRequestsNewApiToken(emailAddress), "User requests a new API Token");
     }
 
     private ApiClient getApiClient() {
         return apiClient;
     }
-    
+
     /* ++++++++++++++++++++++++++++++++++++++++++++++++++++ */
     /* + ................Helpers......................... + */
     /* ++++++++++++++++++++++++++++++++++++++++++++++++++++ */
-    
+
     private void runOrFail(RunOrFail<ApiException> failable, String failureMessage) throws SecHubClientException {
         try {
             failable.runOrFail();
@@ -486,22 +481,6 @@ public class DefaultSecHubClient extends AbstractSecHubClient {
         return new SecHubClientException(message + " - " + cause.getMessage(), cause);
     }
 
-    private SecHubStatus convertStatusMapToStatus(Map<String, String> statusMap) {
-        var schedulerEnabled = Boolean.valueOf(statusMap.get("status.scheduler.enabled")).booleanValue();
-        var jobsAll = Long.valueOf(statusMap.get("status.scheduler.jobs.all"));
-        var jobsCancelRequested = Long.valueOf(statusMap.get("status.scheduler.jobs.cancel_requested"));
-        var jobsCanceled = Long.valueOf(statusMap.get("status.scheduler.jobs.canceled"));
-        var jobsEnded = Long.valueOf(statusMap.get("status.scheduler.jobs.ended"));
-        var jobsInitializing = Long.valueOf(statusMap.get("status.scheduler.jobs.initializing"));
-        var jobsReadyToStart = Long.valueOf(statusMap.get("status.scheduler.jobs.ready_to_start"));
-        var jobsStarted = Long.valueOf(statusMap.get("status.scheduler.jobs.started"));
-
-        SecHubStatus.Scheduler scheduler = new Scheduler(schedulerEnabled);
-        SecHubStatus.Jobs jobs = new Jobs(jobsAll, jobsCancelRequested, jobsCanceled, jobsEnded, jobsInitializing, jobsReadyToStart, jobsStarted);
-
-        return new SecHubStatus(scheduler, jobs);
-    }
-    
     public static class DefaultSecHubClientBuilder {
         private URI serverUri;
         private String userName;

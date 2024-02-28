@@ -16,8 +16,8 @@ import java.util.UUID;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.mercedesbenz.sechub.api.SecHubStatus.Jobs;
-import com.mercedesbenz.sechub.api.SecHubStatus.Scheduler;
+import com.mercedesbenz.sechub.api.internal.DefaultJobOverviewData;
+import com.mercedesbenz.sechub.api.internal.DefaultSchedulerData;
 import com.mercedesbenz.sechub.commons.model.SecHubConfigurationModel;
 import com.mercedesbenz.sechub.commons.model.job.ExecutionState;
 
@@ -41,10 +41,6 @@ public class MockedSecHubClient extends AbstractSecHubClient {
         super(serverUri, username, apiToken, trustAll);
 
         mockDataAccess = new MockDataAccess();
-    }
-
-    public static MockedSecHubClient from(URI serverUri, String username, String apiToken) {
-        return from(serverUri, username, apiToken, false);
     }
 
     public static MockedSecHubClient from(URI serverUri, String username, String apiToken, boolean trustAll) {
@@ -308,7 +304,7 @@ public class MockedSecHubClient extends AbstractSecHubClient {
      *
      */
     public class MockDataAccess {
-
+        
         private SecHubStatus sechubStatus;
         private Map<UUID, SecHubReport> reports = new HashMap<>();
 
@@ -324,10 +320,18 @@ public class MockedSecHubClient extends AbstractSecHubClient {
         }
 
         public MockDataAccess() {
-            SecHubStatus.Scheduler scheduler = new Scheduler(false);
-            SecHubStatus.Jobs jobs = new Jobs(123456, 1, 2, 3, 4, 5, 6);
+            
+            DefaultJobOverviewData jobOverview = new DefaultJobOverviewData();
+            jobOverview.setAll(123456);
+            jobOverview.setCanceled(1);
+            jobOverview.setCanceled(2);
+            jobOverview.setEnded(3);
+            jobOverview.setInitializating(4);
+            jobOverview.setReadyToStart(5);
+            jobOverview.setStarted(6);
 
-            sechubStatus = new SecHubStatus(scheduler, jobs);
+            DefaultSchedulerData scheduler = new DefaultSchedulerData(true, jobOverview);
+            sechubStatus = new SecHubStatus(scheduler);
         }
 
         public SecHubStatus getSecHubStatus() {
@@ -349,7 +353,7 @@ public class MockedSecHubClient extends AbstractSecHubClient {
     }
 
     @Override
-    public void userRequestsNewApiToken(String emailAdress) throws SecHubClientException {
+    public void requestNewApiToken(String emailAdress) throws SecHubClientException {
     }
 
 }

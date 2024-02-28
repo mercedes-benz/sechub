@@ -19,9 +19,6 @@ import wiremock.org.apache.http.HttpStatus;
  * Junit 4 test because of missing official WireMock Junit5 extension - so we
  * use WireMock Rule and Junit4.
  *
- * TODO 2023-09-30, Jeremias Eppler: Rewrite to WireMock JUnit 5+:
- * https://wiremock.org/docs/junit-jupiter/
- *
  * @author Albert Tregnaghi
  *
  */
@@ -90,8 +87,8 @@ public class DefaultSechubClientWireMockTest {
         /* test */
         verify(getRequestedFor(urlEqualTo("/api/admin/status")));
         assertNotNull(status);
-        assertTrue(status.scheduler().isEnabled());
-        assertEquals(2, status.jobs().all());
+        assertTrue(status.getScheduler().isEnabled());
+        assertEquals(2, status.getScheduler().getJobs().getAll());
 
     }
 
@@ -148,8 +145,8 @@ public class DefaultSechubClientWireMockTest {
         SecHubStatus status = client.fetchSecHubStatus();
         verify(getRequestedFor(urlEqualTo("/api/admin/status")));
 
-        assertFalse(status.scheduler().isEnabled());
-        assertEquals(0, status.jobs().all());
+        assertFalse(status.getScheduler().isEnabled());
+        assertEquals(0, status.getScheduler().getJobs().getAll());
     }
 
     private SecHubClient createTestClientWithExampleCredentials() {

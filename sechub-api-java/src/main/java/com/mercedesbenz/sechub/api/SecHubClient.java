@@ -133,9 +133,19 @@ public interface SecHubClient {
      */
     void approveJob(String projectId, UUID jobUUID) throws SecHubClientException;
 
+    /**
+     * Resolve SecHub server version
+     * @return server version as string
+     * @throws SecHubClientException
+     */
     String getServerVersion() throws SecHubClientException;
 
-    void userRequestsNewApiToken(String emailAddress) throws SecHubClientException;
+    /**
+     * Request a new API token for given email address
+     * @param emailAddress
+     * @throws SecHubClientException
+     */
+    void requestNewApiToken(String emailAddress) throws SecHubClientException;
 
     /* ++++++++++++++++++++++++++++++++++++++++++++++++++++ */
     /* + ................Other........................... + */

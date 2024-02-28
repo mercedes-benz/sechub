@@ -3,3 +3,8 @@
 = WebUI Image
 
 The files to create the WebUI image.
+
+[WARNING]
+====
+This is currently only an initial variant and not 100% ready to use. 
+====

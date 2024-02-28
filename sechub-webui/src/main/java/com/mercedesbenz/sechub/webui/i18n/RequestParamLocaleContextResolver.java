@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-package com.mercedesbenz.sechub.webui.configuration;
+package com.mercedesbenz.sechub.webui.i18n;
 
 import java.util.List;
 import java.util.Locale;

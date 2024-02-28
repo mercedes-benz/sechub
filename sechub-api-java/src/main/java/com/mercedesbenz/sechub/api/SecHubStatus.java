@@ -1,11 +1,43 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.api;
 
-public record SecHubStatus(Scheduler scheduler, Jobs jobs) {
-
-    public record Scheduler(boolean isEnabled) {
+public class SecHubStatus {
+    
+    private SchedulerData scheduler;
+    
+    public SecHubStatus(SchedulerData schedulerData) {
+        if (schedulerData==null) {
+            throw new IllegalArgumentException("scheduler may not be null!");
+        }
+        this.scheduler=schedulerData;
     }
 
-    public record Jobs(long all, long cancelRequested, long canceled, long ended, long initializating, long readyToStart, long started) {
+    public SchedulerData getScheduler() {
+        return scheduler;
     }
+
+    public interface SchedulerData {
+        boolean isEnabled();
+
+        public JobsOverviewData getJobs();
+    }
+
+    public interface JobsOverviewData {
+
+        long getAll();
+
+        long getCancelRequested();
+
+        long getCanceled();
+
+        long getEnded();
+
+        long getInitializating();
+
+        long getReadyToStart();
+
+        long getStarted();
+
+    }
+    
 }

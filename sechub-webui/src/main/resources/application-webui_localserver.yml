@@ -9,8 +9,6 @@ server:
     key-alias: 'tomcat'
        
 webui:
-  client:
-     mocked: false
   sechub:
      server-url: "https://localhost:8443"
      trust-all-certificates: true

@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-package com.mercedesbenz.sechub.webui.SecHub.WebUI;
+package com.mercedesbenz.sechub.webui.page;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -7,15 +7,15 @@ import org.springframework.boot.test.autoconfigure.web.reactive.WebFluxTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.web.reactive.server.WebTestClient;
 
-import com.mercedesbenz.sechub.webui.IndexController;
-import com.mercedesbenz.sechub.webui.configuration.SecHubAccessService;
+import com.mercedesbenz.sechub.webui.sechubaccess.SecHubAccessService;
 
 /*
  * No HTTP Server will be started for this test
  * for more details see: https://docs.spring.io/spring-framework/docs/current/reference/html/testing.html#mock-objects-web-reactive
  */
-@WebFluxTest(controllers = IndexController.class)
-public class IndexControllerTest {
+@WebFluxTest(controllers = LoginController.class)
+public class LoginControllerTest {
+
     @Autowired
     private WebTestClient webTestClient;
 
@@ -23,7 +23,7 @@ public class IndexControllerTest {
     private SecHubAccessService mockAccessService;
 
     @Test
-    void index() throws Exception {
-        webTestClient.get().uri("/").exchange().expectStatus().isUnauthorized();
+    void login() throws Exception {
+        webTestClient.get().uri("/login").exchange().expectStatus().isOk();
     }
 }

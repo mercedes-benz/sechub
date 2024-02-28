@@ -13,18 +13,22 @@
 
 		<section>
 			<h2>SecHub Server</h2>
-			<table>
+			<table class="infoTable">
 				<tbody>
 					<tr>
+						<td>URL</td>
+						<td th:text="${sechubServerUrl}">Server URL</td>
+					</tr>
+					<tr>
 						<td>Status</td>
-						<td th:text="${secHubServerAlive} ? 'available' : 'unavailable'">unavailable</td>
+						<td th:text="${sechubServerAlive} ? 'available' : 'unavailable'">unavailable</td>
 					</tr>
-					<tr th:if="${secHubServerAlive}">
+					<tr th:if="${sechubServerAlive}">
 						<td>Scheduler</td>
-						<td th:if="${secHubServerStatus}" th:text="${secHubServerStatus?.scheduler?.enabled} ? 'enabled' : 'disabled'">disabled</td>
-						<td th:unless="${secHubServerStatus}"><span class="error">ERROR: Could not retrive status information!</span></td>
+						<td th:if="${sechubStatus}" th:text="${sechubStatus?.scheduler?.enabled} ? 'enabled' : 'disabled'">disabled</td>
+						<td th:unless="${sechubStatus}"><span class="error">ERROR: No SecHub status available!</span></td>
 					</tr>
-					<tr th:if="${secHubServerAlive}">
+					<tr th:if="${sechubServerAlive}">
 						<td>Version</td>
 						<td th:text="${sechubServerVersion}">0.0.0</td>
 					</tr>
@@ -33,38 +37,38 @@
 		</section>
 
 		<section>
-			<div th:if="${secHubServerStatus}">
+			<div th:if="${sechubStatus}">
 				<h2>Jobs</h2>
 
-				<table>
+				<table class="infoTable">
 					<tbody>
 						<tr>
 							<td>Running</td>
-							<td th:text="${secHubServerStatus.jobs.started}">99</td>
+							<td th:text="${sechubStatus.scheduler.jobs.started}">99</td>
 						</tr>
 						<tr>
 							<td>Waiting</td>
-							<td th:text="${secHubServerStatus.jobs.readyToStart}">99</td>
+							<td th:text="${sechubStatus.scheduler.jobs.readyToStart}">99</td>
 						</tr>
 						<tr>
 							<td>Initializating</td>
-							<td th:text="${secHubServerStatus.jobs.initializating}">99</td>
+							<td th:text="${sechubStatus.scheduler.jobs.initializating}">99</td>
 						</tr>
 						<tr>
 							<td>Cancel requested</td>
-							<td th:text="${secHubServerStatus.jobs.cancelRequested}">9</td>
+							<td th:text="${sechubStatus.scheduler.jobs.cancelRequested}">9</td>
 						</tr>
 						<tr>
 							<td>Canceled</td>
-							<td th:text="${secHubServerStatus.jobs.canceled}">9</td>
+							<td th:text="${sechubStatus.scheduler.jobs.canceled}">9</td>
 						</tr>
 						<tr>
 							<td>Ended</td>
-							<td th:text="${secHubServerStatus.jobs.ended}">9</td>
+							<td th:text="${sechubStatus.scheduler.jobs.ended}">9</td>
 						</tr>
 						<tr>
 							<td>Jobs all</td>
-							<td th:text="${secHubServerStatus.jobs.all}">999</td>
+							<td th:text="${sechubStatus.scheduler.jobs.all}">999</td>
 						</tr>
 					</tbody>
 				</table>

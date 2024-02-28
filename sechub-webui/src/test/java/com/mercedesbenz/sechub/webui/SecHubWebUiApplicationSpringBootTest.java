@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
-package com.mercedesbenz.sechub.webui.SecHub.WebUI;
+package com.mercedesbenz.sechub.webui;
 
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.*;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,8 +13,7 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.reactive.server.WebTestClient;
 
-import com.mercedesbenz.sechub.webui.configuration.CredentialService;
-import com.mercedesbenz.sechub.webui.configuration.SecHubAccessService;
+import com.mercedesbenz.sechub.webui.sechubaccess.SecHubAccessService;
 
 /*
  * This test launches a real HTTP Server (Netty) during the test.
@@ -37,9 +36,6 @@ class SecHubWebUiApplicationSpringBootTest {
 
     @MockBean
     private SecHubAccessService mockAccessService;
-
-    @MockBean
-    private CredentialService mockCredentialService;
 
     @Test
     void contextLoads(ApplicationContext context) {
