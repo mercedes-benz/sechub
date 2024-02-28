@@ -433,6 +433,21 @@ spec:
                name: secret-pds-findsecuritybugs
                key: techuser_password
 {{- end }}
+{{- if .Values.pdsGitleaks.enabled }}
+# ----------------------------------------------------------------------------------------------#
+# - Scope: PDS-Gitleaks
+# --------------------------------------------------------------------------------------------- #
+        - name: SECHUB_PDS_GITLEAKS_USERID
+          valueFrom:
+            secretKeyRef:
+               name: secret-pds-gitleaks
+               key: techuser_username
+        - name: SECHUB_PDS_GITLEAKS_PASSWORD
+          valueFrom:
+            secretKeyRef:
+               name: secret-pds-gitleaks
+               key: techuser_password
+{{- end }}
 {{- if .Values.pdsGoSec.enabled }}
 # ----------------------------------------------------------------------------------------------#
 # - Scope: PDS-GoSec
