@@ -9,13 +9,13 @@ FROM ${BASE_IMAGE}
 
 LABEL org.opencontainers.image.source="https://github.com/mercedes-benz/sechub"
 LABEL org.opencontainers.image.title="SecHub Phan+PDS Image"
-LABEL org.opencontainers.image.description="A container which combines Phan Wrapper with the SecHub Product Delegation Server (PDS)"
+LABEL org.opencontainers.image.description="A container which combines Phan with the SecHub Product Delegation Server (PDS)"
 LABEL maintainer="SecHub FOSS Team"
 
 USER root
 
 # Build Args
-ARG PHAN_WRAPPER_VERSION="5.4.3"
+ARG PHAN_VERSION="5.4.3"
 ARG PHP_VERSION="8.2"
 
 # Copy mock folder
@@ -27,6 +27,10 @@ RUN chmod --recursive +x "$SCRIPT_FOLDER"
 
 # Copy PDS configfile
 COPY pds-config.json "$PDS_FOLDER/pds-config.json"
+
+# Copy and modify composer.json
+COPY composer.json "$PDS_FOLDER/composer.json"
+RUN sed -i "s/PHAN_VERSION/${PHAN_VERSION}/g" "$PDS_FOLDER/composer.json"
 
 RUN export DEBIAN_FRONTEND=noninteractive && \
     apt-get update && \

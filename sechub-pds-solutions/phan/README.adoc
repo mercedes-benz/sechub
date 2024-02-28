@@ -8,11 +8,7 @@
 Phan is a static analyzer for PHP that prefers to minimize false-positives. Phan attempts to prove incorrectness rather than correctness.
 In addition, the combination of Phan and PDS allows both to run in a Kubernetes cluster or on virtual machines.
 
-This folder contains the scripts necessary to run Phan Wrapper + PDS locally within a container. It also contains scripts to create the PDS + Phan container and push it to your container registry, as well as a helm chart to install and run Phan Wrapper + PDS in a Kubernetes cluster.
-
-== Current limitations
-
-- only docker images uploaded as `.tar` files can be scanned
+This folder contains the scripts necessary to run Phan + PDS locally within a container. It also contains scripts to create the PDS + Phan container and push it to your container registry, as well as a helm chart to install and run Phan + PDS in a Kubernetes cluster.
 
 == Run Locally
 
@@ -40,44 +36,39 @@ The folder contains a start script which does the manual steps for you:
 ./01-start-single-docker-compose.sh
 ----
 
-==== Together with SecHub
+=== Scan
 
-The container will be started and attached to the `sechub` network.
+The steps required to scan with the PDS. Scan manually if you are new to the PDS. Use the script, if you are tired of typing the same commands over and over again.
 
-WARNING: Make sure the SecHub container is running and executor for Phan is set up.
+==== Scan Script
 
-. Start container:
+It is recommended to start with a manual <<_scan>> the first time using the PDS. However, after some time typing in the commands becomes very tedious. To improve on the experience you can scan using this script.
+
+. Set the environment variables
 +
 ----
-./05-start-single-sechub-network-docker-compose.sh
+export PDS_SERVER=https://<pds-host>:<port>
+export PDS_USERID=admin
+export PDS_APITOKEN="<pds-admin-apitoken>"
+export PDS_PRODUCT_IDENTFIER=PDS_PHAN
 ----
 +
-You can now scan with the SecHub client downloaded from the SecHub release page on GitHub.
-Example sechub.json, the phan wrapper takes docker images saved as tar archives +
-You can save docker images with the command "save" to a tar file. +
+For example:
 +
 ----
-docker save <image_name:tag> -o <some_filename.tar>
+export PDS_SERVER=https://localhost:8444
+export PDS_USERID=admin
+export PDS_APITOKEN="pds-apitoken"
+export PDS_PRODUCT_IDENTFIER=PDS_PHAN
+----
+----
+cd ../../sechub-solutions-shared/scripts/
+./01-test-pds.sh <path-to-zip-file>
 ----
 +
-[source,json]
+For example:
++
 ----
-{
-  "apiVersion": "1.0",
-  "licenseScan": {
-    "use": [
-      "test-sources"
-    ]
-  },
-  "data": {
-    "binaries": [
-      {
-        "name": "test-sources",
-        "fileSystem" : {
-        "folders" : [ "my-docker-archive.tar" ]
-      }
-      }
-    ]
-  }
-}
+cd ../../sechub-solutions-shared/scripts/
+./01-test-pds.sh ~/myproject.zip
 ----
