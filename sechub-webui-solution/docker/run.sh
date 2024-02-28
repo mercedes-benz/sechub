@@ -1,7 +1,6 @@
 #!/usr/bin/env sh
 # SPDX-License-Identifier: MIT
 
-DEFAULT_PDS_HEARTBEAT_LOGGING="true"
 SLEEP_TIME_IN_WAIT_LOOP="2h"
 
 JAVA_DEBUG_OPTIONS=""
@@ -64,9 +63,9 @@ start_server() {
 }
 
 keep_container_alive_or_exit() {
-    if [ "$KEEP_CONTAINER_ALIVE_AFTER_PDS_CRASHED" = "true" ]
+    if [ "$KEEP_CONTAINER_ALIVE_AFTER_WEBUI_CRASHED" = "true" ]
     then
-        echo "[ERROR] PDS crashed, but keeping the container alive."
+        echo "[ERROR] WEB UI crashed, but keeping the container alive."
         wait_loop
     fi
 }
