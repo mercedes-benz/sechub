@@ -15,12 +15,12 @@ import com.mercedesbenz.sechub.sharedkernel.usecases.UseCaseIdentifier;
 @Target(ElementType.METHOD)
 @Retention(RetentionPolicy.RUNTIME)
 @UseCaseDefinition(
-		id=UseCaseIdentifier.UC_ADMIN_CHECKS_SERVER_VERSION,
+		id=UseCaseIdentifier.UC_ADMIN_FETCHES_SERVER_RUNTIME_DATA,
 		group=UseCaseGroup.OTHER,
-		apiName="adminChecksServerVersion",
-		title="Admin checks server version",
-		description="An administrator checks the current SecHub server version. Only administrators are able to check the server version, because knowing the exact server version makes it easier for penetration tester or attacker to attack the system.")
-public @interface UseCaseAdminChecksServerVersion {
+		apiName="adminFetchesServerRuntimeData",
+		title="Admin fetches server runtime data",
+		description="An administrator fetches the current SecHub server runtime data. Only administrators are allowed to do this because it contains the server version and knowing the exact server version makes it easier for penetration tester or attacker to attack the system.")
+public @interface UseCaseAdminFetchesServerRuntimeData {
 
 	Step value();
 }

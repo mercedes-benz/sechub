@@ -21,7 +21,7 @@ class MockedSecHubClientTest {
 
     @BeforeEach
     void beforeEach() {
-        clientToTest = MockedSecHubClient.from(URI.create("https://localhost"), "i-am-the-token","user1", true);
+        clientToTest = MockedSecHubClient.from(URI.create("https://localhost"), "i-am-the-token", "user1", true);
     }
 
     @Test

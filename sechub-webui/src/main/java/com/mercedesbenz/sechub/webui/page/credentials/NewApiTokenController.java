@@ -18,10 +18,9 @@ public class NewApiTokenController {
 
     @Autowired
     SecHubAccessService accessService;
-    
+
     @Autowired
     UserInfoService userInfoService;
-    
 
     @GetMapping(RequestConstants.REQUEST_NEW_APITOKEN)
     String requestNewApiToken(Model model) {

@@ -135,6 +135,7 @@ public interface SecHubClient {
 
     /**
      * Resolve SecHub server version
+     *
      * @return server version as string
      * @throws SecHubClientException
      */
@@ -142,6 +143,7 @@ public interface SecHubClient {
 
     /**
      * Request a new API token for given email address
+     *
      * @param emailAddress
      * @throws SecHubClientException
      */

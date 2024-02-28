@@ -18,7 +18,7 @@ public class ProjectsController {
     @Autowired
     ProjectInfoService projectInfoService;
 
-    @GetMapping(value = { RequestConstants.ROOT, RequestConstants.PROJECTS})
+    @GetMapping(value = { RequestConstants.ROOT, RequestConstants.PROJECTS })
     String index(Model model) {
         model.addAttribute("sechubServerUrl", accessService.getSecHubServerUri());
         model.addAttribute("projectIds", projectInfoService.fetchProjectIdsForCurrentUser());

@@ -43,7 +43,7 @@ public class SecHubStatusFactory {
     }
 
     private boolean resolveBoolean(Map<String, String> statusMap, String key) {
-        if (statusMap==null){
+        if (statusMap == null) {
             return false;
         }
         String value = statusMap.get(key);
@@ -54,11 +54,11 @@ public class SecHubStatusFactory {
     }
 
     private long resolveLong(Map<String, String> statusMap, String key) {
-        if (statusMap==null){
+        if (statusMap == null) {
             return 0;
         }
         String value = statusMap.get(key);
-        if (value==null) {
+        if (value == null) {
             return 0;
         }
         return Long.valueOf(value);

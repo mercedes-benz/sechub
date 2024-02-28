@@ -304,7 +304,7 @@ public class MockedSecHubClient extends AbstractSecHubClient {
      *
      */
     public class MockDataAccess {
-        
+
         private SecHubStatus sechubStatus;
         private Map<UUID, SecHubReport> reports = new HashMap<>();
 
@@ -320,7 +320,7 @@ public class MockedSecHubClient extends AbstractSecHubClient {
         }
 
         public MockDataAccess() {
-            
+
             DefaultJobOverviewData jobOverview = new DefaultJobOverviewData();
             jobOverview.setAll(123456);
             jobOverview.setCanceled(1);
@@ -353,7 +353,8 @@ public class MockedSecHubClient extends AbstractSecHubClient {
     }
 
     @Override
-    public void requestNewApiToken(String emailAdress) throws SecHubClientException {
+    public void requestNewApiToken(String emailAddress) throws SecHubClientException {
+        LOG.info("new api token was requested for email address: {}", emailAddress);
     }
 
 }

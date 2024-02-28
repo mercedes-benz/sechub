@@ -43,8 +43,8 @@ import com.mercedesbenz.sechub.developertools.admin.ui.action.job.RestartJobActi
 import com.mercedesbenz.sechub.developertools.admin.ui.action.job.RestartJobHardAction;
 import com.mercedesbenz.sechub.developertools.admin.ui.action.job.ShowRunningBatchJobsListAction;
 import com.mercedesbenz.sechub.developertools.admin.ui.action.other.CheckAliveAction;
-import com.mercedesbenz.sechub.developertools.admin.ui.action.other.CheckVersionAction;
 import com.mercedesbenz.sechub.developertools.admin.ui.action.other.FetchGlobalMappingAction;
+import com.mercedesbenz.sechub.developertools.admin.ui.action.other.FetchServerRuntimeData;
 import com.mercedesbenz.sechub.developertools.admin.ui.action.other.UpdateGlobalMappingAction;
 import com.mercedesbenz.sechub.developertools.admin.ui.action.pds.CheckPDSAliveAction;
 import com.mercedesbenz.sechub.developertools.admin.ui.action.pds.CheckPDSJobResultOrErrorAction;
@@ -384,7 +384,7 @@ public class CommandUI {
         add(menu, new ShowRunningBatchJobsListAction(context));
         menu.addSeparator();
         add(menu, new CheckAliveAction(context));
-        add(menu, new CheckVersionAction(context));
+        add(menu, new FetchServerRuntimeData(context));
         add(menu, new ListStatusEntriesAction(context));
         menu.addSeparator();
         add(menu, new ShowAdminListAction(context));

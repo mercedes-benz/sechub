@@ -20,7 +20,7 @@ public class ProjectsControllerTest {
 
     @MockBean
     private SecHubAccessService mockAccessService;
-    
+
     @MockBean
     private ProjectInfoService projectInfoService;
 
@@ -28,7 +28,7 @@ public class ProjectsControllerTest {
     void index() throws Exception {
         webTestClient.get().uri("/").exchange().expectStatus().isUnauthorized();
     }
-    
+
     @Test
     void projects() throws Exception {
         webTestClient.get().uri("/projects").exchange().expectStatus().isUnauthorized();

@@ -832,7 +832,7 @@ public class AsUser {
     }
 
     public String getServerVersion() {
-        return getRestHelper().getStringFromURL(getUrlBuilder().buildGetServerVersionUrl());
+        return getRestHelper().getStringFromURL(getUrlBuilder().buildGetServerRuntimeDataUrl());
     }
 
     public boolean getIsAlive() {

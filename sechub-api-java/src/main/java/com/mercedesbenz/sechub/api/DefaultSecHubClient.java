@@ -69,7 +69,7 @@ public class DefaultSecHubClient extends AbstractSecHubClient {
     private OpenApiSecHubClientConversionHelper conversionHelper;
 
     private WorkaroundProjectApi workaroundProjectApi;
-    
+
     private SecHubStatusFactory sechubStatusFactory = new SecHubStatusFactory();
 
     public static DefaultSecHubClientBuilder builder() {
@@ -235,7 +235,7 @@ public class DefaultSecHubClient extends AbstractSecHubClient {
                 }
             }
         }, "Was not able to fetch SecHub status!");
-        
+
         SecHubStatus status = sechubStatusFactory.createFromMap(statusInformation);
         return status;
     }
@@ -445,7 +445,7 @@ public class DefaultSecHubClient extends AbstractSecHubClient {
 
     @Override
     public String getServerVersion() throws SecHubClientException {
-        return runOrFail(() -> adminApi.adminChecksServerVersion().getServerVersion(), "Get server version");
+        return runOrFail(() -> adminApi.adminFetchesServerRuntimeData().getServerVersion(), "Get server version");
     }
 
     @Override

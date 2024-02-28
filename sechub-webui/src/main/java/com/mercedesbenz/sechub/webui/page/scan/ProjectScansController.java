@@ -24,10 +24,10 @@ public class ProjectScansController {
     UserInputSanitizer sanitizer;
 
     @GetMapping(RequestConstants.PROJECT_SCANS)
-    String scans(Model model, @PathVariable("projectId") String projectId ) {
+    String scans(Model model, @PathVariable("projectId") String projectId) {
 
         model.addAttribute("scanProjectId", sanitizer.sanitizeProjectId(projectId));
-        
+
         return "project-scans";
     }
 }

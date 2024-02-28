@@ -15,7 +15,7 @@ public class SecHubStatusService {
 
     public SecHubStatus getSecHubStatus() {
         /* @formatter:off */
-        
+
         return accessService.createExecutorForResult(SecHubStatus.class).
                 whenDoing("fetching SecHub status").
                 callAndReturn(client->{

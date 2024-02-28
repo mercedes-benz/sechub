@@ -1,6 +1,5 @@
 package com.mercedesbenz.sechub.api.internal;
 
-import com.mercedesbenz.sechub.api.SecHubStatus;
 import com.mercedesbenz.sechub.api.SecHubStatus.JobsOverviewData;
 
 public class DefaultJobOverviewData implements JobsOverviewData {

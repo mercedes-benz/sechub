@@ -7,7 +7,7 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class UserInfoService {
-    
+
     public String getUserId() {
         Authentication authentication = getAuthentication();
         if (authentication == null) {
@@ -18,9 +18,9 @@ public class UserInfoService {
 
     public String getEmailAddress() {
         /* FIXME Albert Tregnaghi, 2024-02-28:implement */
-        return getUserId()+"_calculated@example.org";
+        return getUserId() + "_calculated@example.org";
     }
-    
+
     private Authentication getAuthentication() {
         SecurityContext context = getContext();
         if (context == null) {

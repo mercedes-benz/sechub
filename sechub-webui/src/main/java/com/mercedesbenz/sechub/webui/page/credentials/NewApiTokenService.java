@@ -29,15 +29,15 @@ public class NewApiTokenService {
         /* @formatter:off */
         Boolean succesfulSendNewApiToken = accessService.createExecutorForResult(Boolean.class).
             whenDoing("request a new api token").
-            callAndReturn(client -> { 
+            callAndReturn(client -> {
                 client.requestNewApiToken(emailAddress);
                 return Boolean.TRUE;
             }).
             onErrorReturn(exception -> Boolean.FALSE).
             execute();
-        
+
         return succesfulSendNewApiToken;
-        
+
         /* @formatter:on */
     }
 }

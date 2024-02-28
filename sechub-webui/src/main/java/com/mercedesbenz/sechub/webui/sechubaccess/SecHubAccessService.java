@@ -19,8 +19,8 @@ import com.mercedesbenz.sechub.api.SecHubClientException;
  * not provided directly but via {@link #createExecutorForResult(Class)} and
  * {@link #createExecutorWithoutResult()} methods which provide a fluent and
  * secured access.
- * 
- * 
+ *
+ *
  * @author Albert Tregnaghi
  *
  */
@@ -52,14 +52,15 @@ public class SecHubAccessService {
         /*
          * TODO Albert Tregnaghi, 2024-02-28: currently we have ONE client - maybe this
          * is okay, but when we use real user credentials/are delegate for it etc. it
-         * could become necessary to have different clients ?! Means this is an open question
+         * could become necessary to have different clients ?! Means this is an open
+         * question
          */
         /* @formatter:off */
         try {
             if (useMockedClient) {
                 this.client = MockedSecHubClient.from(serverUri, userId, apiToken, trustAllCertificates);
             } else {
-                
+
                 this.client = DefaultSecHubClient.builder().
                         server(serverUri).
                         user(userId).
@@ -100,7 +101,7 @@ public class SecHubAccessService {
     }
 
     public SecHubClientExecutor<Void> createExecutorWithoutResult() {
-        return new SecHubClientExecutor<>(client,Void.class);
+        return new SecHubClientExecutor<>(client, Void.class);
     }
 
 }

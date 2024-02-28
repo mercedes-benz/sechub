@@ -2,14 +2,14 @@
 package com.mercedesbenz.sechub.api;
 
 public class SecHubStatus {
-    
+
     private SchedulerData scheduler;
-    
+
     public SecHubStatus(SchedulerData schedulerData) {
-        if (schedulerData==null) {
+        if (schedulerData == null) {
             throw new IllegalArgumentException("scheduler may not be null!");
         }
-        this.scheduler=schedulerData;
+        this.scheduler = schedulerData;
     }
 
     public SchedulerData getScheduler() {
@@ -39,5 +39,5 @@ public class SecHubStatus {
         long getStarted();
 
     }
-    
+
 }

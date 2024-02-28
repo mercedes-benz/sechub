@@ -30,12 +30,12 @@ import org.springframework.test.web.servlet.MockMvc;
 import com.mercedesbenz.sechub.docgen.util.RestDocFactory;
 import com.mercedesbenz.sechub.server.core.InfoService;
 import com.mercedesbenz.sechub.server.core.ServerInfoAdministrationRestController;
-import com.mercedesbenz.sechub.server.core.ServerVersion;
+import com.mercedesbenz.sechub.server.core.ServerRuntimeData;
 import com.mercedesbenz.sechub.sharedkernel.Profiles;
 import com.mercedesbenz.sechub.sharedkernel.RoleConstants;
 import com.mercedesbenz.sechub.sharedkernel.configuration.AbstractAllowSecHubAPISecurityConfiguration;
 import com.mercedesbenz.sechub.sharedkernel.usecases.UseCaseRestDoc;
-import com.mercedesbenz.sechub.sharedkernel.usecases.admin.status.UseCaseAdminChecksServerVersion;
+import com.mercedesbenz.sechub.sharedkernel.usecases.admin.status.UseCaseAdminFetchesServerRuntimeData;
 import com.mercedesbenz.sechub.test.ExampleConstants;
 import com.mercedesbenz.sechub.test.TestIsNecessaryForDocumentation;
 import com.mercedesbenz.sechub.test.TestPortProvider;
@@ -52,7 +52,7 @@ public class ServerInfoAdministrationRestControllerRestDocTest implements TestIs
     private static final int PORT_USED = TestPortProvider.DEFAULT_INSTANCE.getRestDocTestPort();
 
     private static final String SECHUB_SERVER_VERSION = "0.12.3";
-    private static final String SERVER_VERSION = "serverVersion";
+    // private static final String SERVER_VERSION = "serverVersion";
 
     @Autowired
     private MockMvc mockMvc;
@@ -61,15 +61,15 @@ public class ServerInfoAdministrationRestControllerRestDocTest implements TestIs
     InfoService serverInfoService;
 
     @Test
-    @UseCaseRestDoc(useCase = UseCaseAdminChecksServerVersion.class)
-    public void restdoc_admin_get_server_version() throws Exception {
+    @UseCaseRestDoc(useCase = UseCaseAdminFetchesServerRuntimeData.class)
+    public void restdoc_admin_get_server_version_as_Json() throws Exception {
         /* prepare */
-        String apiEndpoint = https(PORT_USED).buildGetServerVersionUrl();
-        Class<? extends Annotation> useCase = UseCaseAdminChecksServerVersion.class;
+        String apiEndpoint = https(PORT_USED).buildGetServerRuntimeDataUrl();
+        Class<? extends Annotation> useCase = UseCaseAdminFetchesServerRuntimeData.class;
 
-        when(serverInfoService.getVersionAsString()).thenReturn(new ServerVersion(SECHUB_SERVER_VERSION));
+        when(serverInfoService.getServerRuntimeData()).thenReturn(new ServerRuntimeData(SECHUB_SERVER_VERSION));
 
-        String expectedContent = "{\"" + SERVER_VERSION + "\":\"" + SECHUB_SERVER_VERSION + "\"}";
+        String expectedContent = "{\"serverVersion\":\"" + SECHUB_SERVER_VERSION + "\"}";
 
         /* execute + test @formatter:off */
 		this.mockMvc.perform(
@@ -83,11 +83,11 @@ public class ServerInfoAdministrationRestControllerRestDocTest implements TestIs
 		                        with().
 		                            useCaseData(useCase).
 		                            tag(RestDocFactory.extractTag(apiEndpoint)).
-		                            responseSchema(OpenApiSchema.SERVER_VERSION.getSchema()).
+		                            responseSchema(OpenApiSchema.SERVER_RUNTIME_DATA.getSchema()).
 		                        and().
 		                        document(
         	                            responseFields(
-        	                                    fieldWithPath(SERVER_VERSION).description("The sechub server version.")
+        	                                    fieldWithPath("serverVersion").description("The sechub server version.")
         	                            )
 
 		                        )

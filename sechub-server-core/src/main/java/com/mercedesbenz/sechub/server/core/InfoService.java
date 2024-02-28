@@ -15,11 +15,15 @@ public class InfoService {
     @Autowired(required = false)
     BuildProperties buildProperties;
 
-    /**
-     * @return version as string, always like "major.minor.hotfix{additional chars}"
-     *         - e.g. "1.0.0" or "0.6.0-alpha"
+    public ServerRuntimeData getServerRuntimeData() {
+        return new ServerRuntimeData(getVersionAsString());
+    }
+
+    /*
+     * Returns version as string, always like "major.minor.hotfix{additional chars}"
+     * - e.g. "1.0.0" or "0.6.0-alpha"
      */
-    public ServerVersion getVersionAsString() {
+    private String getVersionAsString() {
         if (buildProperties == null) {
             /*
              * means we got no injection by ProjectInfoAutoConfiguration - means we are not
@@ -27,10 +31,10 @@ public class InfoService {
              */
             buildProperties = buildFallbackProperties();
         }
-        return new ServerVersion(buildProperties.getVersion());
+        return buildProperties.getVersion();
     }
 
-    public BuildProperties buildFallbackProperties() {
+    private BuildProperties buildFallbackProperties() {
 
         Properties properties = new Properties();
         properties.put("version", "0.0.0-development");

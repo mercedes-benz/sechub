@@ -6,11 +6,11 @@ import java.awt.event.ActionEvent;
 import com.mercedesbenz.sechub.developertools.admin.ui.UIContext;
 import com.mercedesbenz.sechub.developertools.admin.ui.action.AbstractUIAction;
 
-public class CheckVersionAction extends AbstractUIAction {
+public class FetchServerRuntimeData extends AbstractUIAction {
     private static final long serialVersionUID = 1L;
 
-    public CheckVersionAction(UIContext context) {
-        super("Check version", context);
+    public FetchServerRuntimeData(UIContext context) {
+        super("Fetch server runtime data", context);
     }
 
     @Override

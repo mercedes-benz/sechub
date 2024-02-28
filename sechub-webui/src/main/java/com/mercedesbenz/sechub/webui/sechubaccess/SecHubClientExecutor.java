@@ -8,7 +8,7 @@ import com.mercedesbenz.sechub.api.SecHubClient;
 /**
  * Provides a fluent api, automated logging and error handling. Also hides
  * client object and client exceptions.
- * 
+ *
  * @author Albert Tregnaghi
  *
  * @param <T>
@@ -22,7 +22,7 @@ public class SecHubClientExecutor<T> {
     protected ClientCaller<T> clientCaller;
     protected ErrorCallback<T> errorCallback;
     protected Class<T> resultClazz;
-    
+
     private T fallbackResult;
     private boolean onErrorReturnFallback;
 
@@ -42,8 +42,8 @@ public class SecHubClientExecutor<T> {
     }
 
     /**
-     * Within this method we can handle errors explicit via an error callback. 
-     * 
+     * Within this method we can handle errors explicit via an error callback.
+     *
      * @param errorCallback
      * @return the object to return in case of an error
      */

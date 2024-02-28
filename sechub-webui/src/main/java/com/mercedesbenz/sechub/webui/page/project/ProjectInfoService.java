@@ -13,16 +13,16 @@ public class ProjectInfoService {
 
     @Autowired
     UserInfoService userInfoService;
-    
+
     public List<String> fetchProjectIdsForUser(String userId) {
         /* @formatter:off */
-        
+
         List<String> fakeList = new ArrayList<>();
-        
+
         fakeList.add("project-Testval1");
         fakeList.add("project-Testval2");
         fakeList.add("project-Testval3");
-        
+
         return fakeList;
         /* @formatter:on */
     }
