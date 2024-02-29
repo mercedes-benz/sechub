@@ -621,7 +621,7 @@ public class DeveloperAdministration {
     }
 
     public String checkVersion() {
-        return getRestHelper().getStringFromURL(getUrlBuilder().buildGetServerVersionUrl());
+        return getRestHelper().getStringFromURL(getUrlBuilder().buildGetServerRuntimeDataUrl());
     }
 
     public String triggerDownloadFullScan(UUID sechubJobUUID) {

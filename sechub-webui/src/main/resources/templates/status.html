@@ -1,33 +1,81 @@
 <!DOCTYPE HTML>
 <html xmlns:th="http://www.thymeleaf.org">
+
 <head th:replace="fragments/header :: header (title='SecHub - Status')">
-<title>Status</title>
+	<title>Status</title>
 </head>
+
 <body class="container-flex flex-column">
 	<section th:replace="fragments/banner"></section>
 	<nav th:replace="fragments/navbar"></nav>
 	<main class="flex-grow padding-thin-all background-light">
 		<h1>Status</h1>
-		<table>
-			<tbody>
-				<tr class="placeholder">
-					<td>Scheduler</td><td>enabled</td>
-				</tr>
-				<tr class="placeholder">
-					<td>Jobs running</td><td>5</td>
-				</tr>
-				<tr class="placeholder">
-					<td>Jobs waiting</td><td>10</td>
-				</tr>
-				<tr class="placeholder">
-					<td>Jobs all</td><td>52 114</td>
-				</tr>
-				<tr>
-					<td>Server version</td><td th:text="${sechubServerVersion}">0.25.0</td>
-				</tr>
-			</tbody>
-		</table>
+
+		<section>
+			<h2>SecHub Server</h2>
+			<table class="infoTable">
+				<tbody>
+					<tr>
+						<td>URL</td>
+						<td th:text="${sechubServerUrl}">Server URL</td>
+					</tr>
+					<tr>
+						<td>Status</td>
+						<td th:text="${sechubServerAlive} ? 'available' : 'unavailable'">unavailable</td>
+					</tr>
+					<tr th:if="${sechubServerAlive}">
+						<td>Scheduler</td>
+						<td th:if="${sechubStatus}" th:text="${sechubStatus?.scheduler?.enabled} ? 'enabled' : 'disabled'">disabled</td>
+						<td th:unless="${sechubStatus}"><span class="error">ERROR: No SecHub status available!</span></td>
+					</tr>
+					<tr th:if="${sechubServerAlive}">
+						<td>Version</td>
+						<td th:text="${sechubServerVersion}">0.0.0</td>
+					</tr>
+				</tbody>
+			</table>
+		</section>
+
+		<section>
+			<div th:if="${sechubStatus}">
+				<h2>Jobs</h2>
+
+				<table class="infoTable">
+					<tbody>
+						<tr>
+							<td>Running</td>
+							<td th:text="${sechubStatus.scheduler.jobs.started}">99</td>
+						</tr>
+						<tr>
+							<td>Waiting</td>
+							<td th:text="${sechubStatus.scheduler.jobs.readyToStart}">99</td>
+						</tr>
+						<tr>
+							<td>Initializating</td>
+							<td th:text="${sechubStatus.scheduler.jobs.initializating}">99</td>
+						</tr>
+						<tr>
+							<td>Cancel requested</td>
+							<td th:text="${sechubStatus.scheduler.jobs.cancelRequested}">9</td>
+						</tr>
+						<tr>
+							<td>Canceled</td>
+							<td th:text="${sechubStatus.scheduler.jobs.canceled}">9</td>
+						</tr>
+						<tr>
+							<td>Ended</td>
+							<td th:text="${sechubStatus.scheduler.jobs.ended}">9</td>
+						</tr>
+						<tr>
+							<td>Jobs all</td>
+							<td th:text="${sechubStatus.scheduler.jobs.all}">999</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+		</section>
 	</main>
 	<footer th:replace="fragments/footer"></footer>
 </body>
+
 </html>
