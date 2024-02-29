@@ -20,6 +20,7 @@ import org.springframework.stereotype.Service;
 import com.mercedesbenz.sechub.adapter.AbstractAdapterConfigBuilder;
 import com.mercedesbenz.sechub.adapter.AdapterExecutionResult;
 import com.mercedesbenz.sechub.adapter.AdapterMetaData;
+import com.mercedesbenz.sechub.adapter.AdapterMetaDataCallback;
 import com.mercedesbenz.sechub.adapter.checkmarx.CheckmarxAdapter;
 import com.mercedesbenz.sechub.adapter.checkmarx.CheckmarxAdapterConfig;
 import com.mercedesbenz.sechub.adapter.checkmarx.CheckmarxConfig;
@@ -95,7 +96,9 @@ public class CheckmarxProductExecutor extends AbstractProductExecutor {
         CheckmarxExecutorConfigSuppport configSupport = CheckmarxExecutorConfigSuppport
                 .createSupportAndAssertConfigValid(data.getProductExecutorContext().getExecutorConfig(), systemEnvironmentVariableSupport);
 
-        CheckmarxResilienceCallback callback = new CheckmarxResilienceCallback(configSupport, data.getProductExecutorContext());
+        AdapterMetaDataCallback metaDataCallback = data.getProductExecutorContext().getCallback();
+        
+        CheckmarxResilienceCallback callback = new CheckmarxResilienceCallback(configSupport.isAlwaysFullScanEnabled(), metaDataCallback);
 
         /* start resilient */
         ProductResult result = resilientActionExecutor.executeResilient(() -> {
@@ -136,7 +139,7 @@ public class CheckmarxProductExecutor extends AbstractProductExecutor {
                 inspection.notice("alwaysFullScanEnabled", checkMarxConfig.isAlwaysFullScanEnabled());
 
                 /* execute checkmarx by adapter and update product result */
-                AdapterExecutionResult adapterResult = checkmarxAdapter.start(checkMarxConfig, data.getProductExecutorContext().getCallback());
+                AdapterExecutionResult adapterResult = checkmarxAdapter.start(checkMarxConfig, metaDataCallback);
 
                 return updateCurrentProductResult(adapterResult, data.getProductExecutorContext());
             }
