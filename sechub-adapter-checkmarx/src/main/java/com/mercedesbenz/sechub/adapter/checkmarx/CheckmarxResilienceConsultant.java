@@ -20,10 +20,14 @@ public class CheckmarxResilienceConsultant implements ResilienceConsultant {
 
     private static final Logger LOG = LoggerFactory.getLogger(CheckmarxResilienceConsultant.class);
 
-    private CheckmarxResilienceConfiguration resilienceConfig;
+    CheckmarxResilienceConfiguration resilienceConfig;
 
     public CheckmarxResilienceConsultant(CheckmarxResilienceConfiguration resilienceConfig) {
         this.resilienceConfig = resilienceConfig;
+    }
+
+    public CheckmarxResilienceConfiguration getResilienceConfig() {
+        return resilienceConfig;
     }
 
     @Override

@@ -38,7 +38,7 @@ public class CheckmarxWrapperScanService {
     public AdapterExecutionResult startScan() throws IOException, AdapterException {
         LOG.info("Start scan");
 
-        ResilientActionExecutor<AdapterExecutionResult> resilientActionExecutor = new ResilientActionExecutor<>();
+        ResilientActionExecutor<AdapterExecutionResult> resilientActionExecutor = createResilientActionExecutor();
         resilientActionExecutor.add(new CheckmarxResilienceConsultant(environment));
 
         CheckmarxAdapterConfig config = createConfig();
@@ -64,6 +64,11 @@ public class CheckmarxWrapperScanService {
             throw AdapterException.asAdapterException(adapter.getAdapterLogId(config), pdsJobMetaDatafile, e);
         }
 
+    }
+
+    /* method is used to have an hook point for unit testing */
+    ResilientActionExecutor<AdapterExecutionResult> createResilientActionExecutor() {
+        return new ResilientActionExecutor<>();
     }
 
     private CheckmarxAdapterConfig createConfig() throws IOException {
