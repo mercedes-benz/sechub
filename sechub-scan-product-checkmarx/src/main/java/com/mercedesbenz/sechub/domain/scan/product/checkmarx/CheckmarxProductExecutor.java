@@ -25,6 +25,8 @@ import com.mercedesbenz.sechub.adapter.checkmarx.CheckmarxAdapter;
 import com.mercedesbenz.sechub.adapter.checkmarx.CheckmarxAdapterConfig;
 import com.mercedesbenz.sechub.adapter.checkmarx.CheckmarxConfig;
 import com.mercedesbenz.sechub.adapter.checkmarx.CheckmarxMetaDataID;
+import com.mercedesbenz.sechub.adapter.checkmarx.CheckmarxResilienceCallback;
+import com.mercedesbenz.sechub.adapter.checkmarx.CheckmarxResilienceConsultant;
 import com.mercedesbenz.sechub.commons.core.environment.SystemEnvironmentVariableSupport;
 import com.mercedesbenz.sechub.commons.core.resilience.ResilientActionExecutor;
 import com.mercedesbenz.sechub.commons.model.ScanType;
@@ -40,6 +42,9 @@ import com.mercedesbenz.sechub.storage.core.JobStorage;
 import com.mercedesbenz.sechub.storage.core.StorageService;
 
 @Service
+@Deprecated // we keep this only to have faster integration tests - normal way is now via
+            // PDS + checkmarx wrapper application! But it still can be used and works.
+            // (but does not provide data referneces inside configuration)
 public class CheckmarxProductExecutor extends AbstractProductExecutor {
 
     static final Logger LOG = LoggerFactory.getLogger(CheckmarxProductExecutor.class);
@@ -68,7 +73,7 @@ public class CheckmarxProductExecutor extends AbstractProductExecutor {
     SystemEnvironmentVariableSupport systemEnvironmentVariableSupport;
 
     @Autowired
-    CheckmarxResilienceConsultant checkmarxResilienceConsultant;
+    SecHubDirectCheckmarxResilienceConfiguration environmentBasedResilienceConfig;
 
     public CheckmarxProductExecutor() {
         super(ProductIdentifier.CHECKMARX, 1, ScanType.CODE_SCAN);
@@ -76,7 +81,7 @@ public class CheckmarxProductExecutor extends AbstractProductExecutor {
 
     @PostConstruct
     protected void postConstruct() {
-        this.resilientActionExecutor.add(checkmarxResilienceConsultant);
+        this.resilientActionExecutor.add(new CheckmarxResilienceConsultant(environmentBasedResilienceConfig));
     }
 
     // just to make it accessible inside test
@@ -97,7 +102,7 @@ public class CheckmarxProductExecutor extends AbstractProductExecutor {
                 .createSupportAndAssertConfigValid(data.getProductExecutorContext().getExecutorConfig(), systemEnvironmentVariableSupport);
 
         AdapterMetaDataCallback metaDataCallback = data.getProductExecutorContext().getCallback();
-        
+
         CheckmarxResilienceCallback callback = new CheckmarxResilienceCallback(configSupport.isAlwaysFullScanEnabled(), metaDataCallback);
 
         /* start resilient */

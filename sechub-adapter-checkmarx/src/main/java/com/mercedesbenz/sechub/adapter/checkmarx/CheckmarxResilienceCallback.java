@@ -1,9 +1,11 @@
 // SPDX-License-Identifier: MIT
-package com.mercedesbenz.sechub.domain.scan.product.checkmarx;
+package com.mercedesbenz.sechub.adapter.checkmarx;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.mercedesbenz.sechub.adapter.AdapterMetaData;
 import com.mercedesbenz.sechub.adapter.AdapterMetaDataCallback;
-import com.mercedesbenz.sechub.adapter.checkmarx.CheckmarxMetaDataID;
 import com.mercedesbenz.sechub.commons.core.resilience.ResilienceCallback;
 import com.mercedesbenz.sechub.commons.core.resilience.ResilienceContext;
 
@@ -13,14 +15,16 @@ import com.mercedesbenz.sechub.commons.core.resilience.ResilienceContext;
  * @author Albert Tregnaghi
  *
  */
-class CheckmarxResilienceCallback implements ResilienceCallback {
+public class CheckmarxResilienceCallback implements ResilienceCallback {
+
+    private static final Logger LOG = LoggerFactory.getLogger(CheckmarxResilienceCallback.class);
 
     private boolean alwaysFullScanEnabled;
     private AdapterMetaDataCallback metaDataCallback;
-    
+
     public CheckmarxResilienceCallback(boolean alwaysFullScanEnabled, AdapterMetaDataCallback metaDataCallback) {
-        this.alwaysFullScanEnabled =alwaysFullScanEnabled;
-        this.metaDataCallback=metaDataCallback;
+        this.alwaysFullScanEnabled = alwaysFullScanEnabled;
+        this.metaDataCallback = metaDataCallback;
     }
 
     @Override
@@ -33,11 +37,11 @@ class CheckmarxResilienceCallback implements ResilienceCallback {
         if (!Boolean.TRUE.equals(fallbackToFullScan)) {
             return;
         }
-        CheckmarxProductExecutor.LOG.debug("fallback to checkmarx fullscan recognized, alwaysFullScanEnabled before:{}", alwaysFullScanEnabled);
+        LOG.debug("fallback to checkmarx fullscan recognized, alwaysFullScanEnabled before:{}", alwaysFullScanEnabled);
 
         alwaysFullScanEnabled = true;
 
-        CheckmarxProductExecutor.LOG.debug("fallback to checkmarx fullscan recognized, alwaysFullScanEnabled now:{}", alwaysFullScanEnabled);
+        LOG.debug("fallback to checkmarx fullscan recognized, alwaysFullScanEnabled now:{}", alwaysFullScanEnabled);
         /*
          * we must remove the the old scan id inside metadata so the restart will do a
          * new scan and not reuse the old one! When we do not reset the file upload as
@@ -47,12 +51,12 @@ class CheckmarxResilienceCallback implements ResilienceCallback {
         if (metaData != null) {
             String keyScanId = CheckmarxMetaDataID.KEY_SCAN_ID;
             String uploadKey = CheckmarxMetaDataID.KEY_FILEUPLOAD_DONE;
-            CheckmarxProductExecutor.LOG.debug("start reset checkmarx adapter meta data for {} and {}", keyScanId, uploadKey);
+            LOG.debug("start reset checkmarx adapter meta data for {} and {}", keyScanId, uploadKey);
             metaData.setValue(keyScanId, null);
             metaData.setValue(uploadKey, null);
 
             metaDataCallback.persist(metaData);
-            CheckmarxProductExecutor.LOG.debug("persisted checkmarx adapter meta data");
+            LOG.debug("persisted checkmarx adapter meta data");
         }
         /*
          * we reset the context information, so former parts will only by triggered

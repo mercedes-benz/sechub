@@ -17,6 +17,8 @@ import com.mercedesbenz.sechub.adapter.FileBasedAdapterMetaDataCallback;
 import com.mercedesbenz.sechub.adapter.checkmarx.CheckmarxAdapter;
 import com.mercedesbenz.sechub.adapter.checkmarx.CheckmarxAdapterConfig;
 import com.mercedesbenz.sechub.adapter.checkmarx.CheckmarxConfig;
+import com.mercedesbenz.sechub.adapter.checkmarx.CheckmarxResilienceConsultant;
+import com.mercedesbenz.sechub.commons.core.resilience.ResilientActionExecutor;
 import com.mercedesbenz.sechub.wrapper.checkmarx.cli.CheckmarxWrapperEnvironment;
 
 @Service
@@ -36,6 +38,9 @@ public class CheckmarxWrapperScanService {
     public AdapterExecutionResult startScan() throws IOException, AdapterException {
         LOG.info("Start scan");
 
+        ResilientActionExecutor<AdapterExecutionResult> resilientActionExecutor = new ResilientActionExecutor<>();
+        resilientActionExecutor.add(new CheckmarxResilienceConsultant(environment));
+
         CheckmarxAdapterConfig config = createConfig();
 
         File metaDataFile;
@@ -53,7 +58,12 @@ public class CheckmarxWrapperScanService {
 
         AdapterMetaDataCallback adapterMetaDataCallBack = new FileBasedAdapterMetaDataCallback(metaDataFile);
 
-        return adapter.start(config, adapterMetaDataCallBack);
+        try {
+            return resilientActionExecutor.executeResilient(() -> adapter.start(config, adapterMetaDataCallBack));
+        } catch (Exception e) {
+            throw AdapterException.asAdapterException(adapter.getAdapterLogId(config), pdsJobMetaDatafile, e);
+        }
+
     }
 
     private CheckmarxAdapterConfig createConfig() throws IOException {
