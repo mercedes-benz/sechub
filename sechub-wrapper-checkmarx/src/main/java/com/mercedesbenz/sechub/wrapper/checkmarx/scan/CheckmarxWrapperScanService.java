@@ -61,7 +61,8 @@ public class CheckmarxWrapperScanService {
         try {
             return resilientActionExecutor.executeResilient(() -> adapter.start(config, adapterMetaDataCallBack));
         } catch (Exception e) {
-            throw AdapterException.asAdapterException(adapter.getAdapterLogId(config), pdsJobMetaDatafile, e);
+            String description = "Checkmarx wrapper scan start failed";
+            throw AdapterException.asAdapterException(adapter.getAdapterLogId(config), description, e);
         }
 
     }

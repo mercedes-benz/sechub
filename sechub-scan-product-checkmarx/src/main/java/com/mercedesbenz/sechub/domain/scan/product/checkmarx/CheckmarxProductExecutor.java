@@ -41,10 +41,20 @@ import com.mercedesbenz.sechub.sharedkernel.metadata.MetaDataInspector;
 import com.mercedesbenz.sechub.storage.core.JobStorage;
 import com.mercedesbenz.sechub.storage.core.StorageService;
 
+/**
+ * This class is marked as deprecated. Why? The product executor shall no longer
+ * be used in production. We use the PDS solution for checkmarx which does a
+ * similar logic inside CheckmarxWrapperScanService.
+ *
+ * We kept this class, because for existing integration tests (scenario 1-3) a
+ * complete migration was much work and would also lead to slower test execution
+ * (because communication with PDS instances take time as well).
+ *
+ * @author Albert Tregnaghi
+ *
+ */
 @Service
-@Deprecated // we keep this only to have faster integration tests - normal way is now via
-            // PDS + checkmarx wrapper application! But it still can be used and works.
-            // (but does not provide data referneces inside configuration)
+@Deprecated
 public class CheckmarxProductExecutor extends AbstractProductExecutor {
 
     static final Logger LOG = LoggerFactory.getLogger(CheckmarxProductExecutor.class);

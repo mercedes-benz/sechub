@@ -2,7 +2,7 @@ package com.mercedesbenz.sechub.adapter.checkmarx;
 
 public interface CheckmarxResilienceConfiguration {
 
-    /**
+    /*
      * Constants shall be in synch with configuration defaults in
      * "/sechub-pds-solutions/checkmarx/docker/pds-config.json".
      *
