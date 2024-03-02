@@ -1,0 +1,73 @@
+// SPDX-License-Identifier: MIT
+
+== GitHub Action for SecHub defineFalsePositives
+
+This GitHub action uses the SecHub cli to define false positives that must be taken into account when scanning your
+repository for security issues.
+
+=== Usage
+
+To be able to use this action you need a SecHub project. Check the
+https://mercedes-benz.github.io/sechub/[documentation] on how to set one up.
+
+[source,yaml]
+----
+- uses: mercedes-benz/sechub/github-actions/defineFalsePositives@72a27282da80952e6fadcef452c6a9085971c688
+  with:
+    # OPTIONAL: Path to sechub.json for manual configuration.
+    # If no value is set the input parameters will be used to create it for defineFalsePositives.
+    config-path: 'sechub.json'
+
+    # OPTIONAL: SecHub server url
+    url: ${{ secrets.SECHUB_SERVER }}
+
+    # OPTIONAL: SecHub api token
+    api-token: ${{ secrets.SECHUB_APITOKEN }}
+
+    # OPTIONAL: SecHub user
+    user: ${{ secrets.SECHUB_USERID }}
+
+    # OPTIONAL: the name of the project registered in SecHub (required if config-path not set)
+    project-name: ${{ secrets.SECHUB_PROJECT }}
+
+    # OPTIONAL: Which version of the SecHub cli to use
+    # DEFAULT: 1.2.0
+    version: '1.2.0'
+
+    # OPTIONAL: SecHub debug output on/off.
+    # DEFAULT: false
+    debug: false
+
+    # OPTIONAL: Path to the file containing the false positives.
+    file: 'sechub-false-positives.json'
+
+    # REQUIRED: The type of the false positives action to be performed.
+    # Possible values are:
+    # - 'DEFINE' - will execute the defineFalsePositives action
+    # - 'MARK' - will execute the markFalsePositives action
+    # - 'UNMARK' - will execute the unmarkFalsePositives action
+    action: 'DEFINE'
+----
+
+=== Build
+
+To build the action locally you have to run this command:
+
+[source,npm]
+----
+npm run build
+----
+
+This will run the `ncc` compiler and transpile the files from the src folder into the files from the dist folder.
+The dist files will be executed by the GitHub Action.
+
+It's necessary to execute the build after every change of the sources and you have to commit the changes in dist to git.
+
+=== Test
+
+To run the tests you have to run this command:
+
+[source,npm]
+----
+npm run test
+----

@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: MIT
 
-import { initSecHubJson } from '../src/init-scan';
+import {initSecHubJson} from '../src/init-operation';
 
 jest.mock('../../shared/src/cli-helper');
 jest.mock('@actions/core');
@@ -12,7 +12,7 @@ describe('initSecHubJson', function () {
         const configPath = 'sechub.json';
 
         /* execute */
-        const parameter = initSecHubJson(configPath, [], []);
+        const parameter = initSecHubJson(configPath);
 
         /* test */
         expect(parameter).toContain(configPath);
@@ -20,7 +20,7 @@ describe('initSecHubJson', function () {
 
     it('creates sechub.json if configPath is not set', function () {
         /* execute */
-        const parameter = initSecHubJson('', [], []);
+        const parameter = initSecHubJson('');
 
         /* test */
         expect(parameter).toBeNull();

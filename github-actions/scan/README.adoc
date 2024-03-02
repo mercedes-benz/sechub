@@ -9,8 +9,8 @@ This GitHub action uses the SecHub cli to scan the repository for security issue
 
 To be able to use this action you need a SecHub project. Check the https://mercedes-benz.github.io/sechub/[documentation] on how to set one up.
 
-```yaml
-
+[source,yaml]
+----
 - uses: mercedes-benz/sechub/github-actions/scan@72a27282da80952e6fadcef452c6a9085971c688
   with:
     # OPTIONAL: Path to sechub.json for manual configuration. If no value is set the input parameters will be used to create it for the scan.'
@@ -40,8 +40,8 @@ To be able to use this action you need a SecHub project. Check the https://merce
     exclude-folders: 'bin,build,dist'
 
     # REQUIRED: The formats in which the report should be downloaded. Multiple values can be separatd by ,
-    # DEFAULT: json,html
-    report-formats: 'json,html'
+    # DEFAULT: json
+    report-format: 'json'
 
     # OPTIONAL: SecHub debug output on/off.
     # DEFAULT: false
