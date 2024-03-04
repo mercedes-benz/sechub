@@ -4,11 +4,8 @@ name: Java & Go CI
 on:
   push:
     branches-ignore:
-      # we do NOT build the documentation branch, because here we only copy build output
-      # of documentation from master branch to the corresponding doc folders -e.g. /docs/latest
-      # So this branch is only for github pages. See https://github.com/mercedes-benz/sechub/issues/481
-      # for details
-      - documentation
+      # We do NOT build github action development branches here (because no Java or Go code is changed)
+      - 'gha_*'
       # We ignore everything where tag starts with v* - this is done by release build!
     tags-ignore:
       - v*
