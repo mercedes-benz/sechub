@@ -14,13 +14,13 @@ import de.jcup.sarif_2_1_0.model.Run;
 import de.jcup.sarif_2_1_0.model.Tool;
 import de.jcup.sarif_2_1_0.model.ToolComponent;
 
-class SarifImportProductWorkaroundComponentTest {
+class SarifImportProductWorkaroundSupportTest {
 
-    private SarifImportProductWorkaroundComponent componentToTest = new SarifImportProductWorkaroundComponent();
+    private SarifImportProductWorkaroundSupport supportToTest = new SarifImportProductWorkaroundSupport();
 
     @BeforeEach
     void beforeEach() {
-        componentToTest.workarounds = new ArrayList<>();
+        supportToTest.workarounds = new ArrayList<>();
     }
 
     @Test
@@ -37,7 +37,7 @@ class SarifImportProductWorkaroundComponentTest {
         rule.setName("Rule name of non-existing rule");
 
         /* execute */
-        String resolvedType = componentToTest.resolveType(rule, run);
+        String resolvedType = supportToTest.resolveType(rule, run);
 
         /* test */
         assertNull(resolvedType);
@@ -46,7 +46,7 @@ class SarifImportProductWorkaroundComponentTest {
     @Test
     void can_resolve_type_results_in_resolved_type_is_rule_name() {
         /* prepare */
-        componentToTest.workarounds.add(new GitleaksSarifImportWorkaround());
+        supportToTest.workarounds.add(new GitleaksSarifImportWorkaround());
 
         Run run = new Run();
         Tool tool = new Tool();
@@ -59,7 +59,7 @@ class SarifImportProductWorkaroundComponentTest {
         rule.setName("GitHub Personal Access Token");
 
         /* execute */
-        String resolvedType = componentToTest.resolveType(rule, run);
+        String resolvedType = supportToTest.resolveType(rule, run);
 
         /* test */
         assertEquals(rule.getName(), resolvedType);

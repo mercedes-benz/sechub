@@ -5,7 +5,6 @@ import static com.mercedesbenz.sechub.sereco.test.AssertVulnerabilities.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -54,8 +53,7 @@ class SarifV1JSONImporterTest {
         importerToTest = new SarifV1JSONImporter();
 
         // initialize workarounds
-        importerToTest.workaroundComponent = new SarifImportProductWorkaroundComponent();
-        importerToTest.workaroundComponent.workarounds = new ArrayList<>();
+        importerToTest.workaroundSupport = new SarifImportProductWorkaroundSupport();
     }
 
     @Test
@@ -270,7 +268,7 @@ class SarifV1JSONImporterTest {
     @Test
     void gitleaks_8_0_example_secretscan__can_be_imported() throws Exception {
         /* prepare */
-        importerToTest.workaroundComponent.workarounds.add(new GitleaksSarifImportWorkaround());
+        importerToTest.workaroundSupport.workarounds.add(new GitleaksSarifImportWorkaround());
         SerecoMetaData result = importerToTest.importResult(sarif_2_1_0_sarif_2_1_0_gitleaks_8_0, ScanType.SECRET_SCAN);
 
         /* execute */

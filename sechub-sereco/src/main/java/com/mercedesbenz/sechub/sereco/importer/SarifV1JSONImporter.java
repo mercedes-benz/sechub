@@ -69,7 +69,7 @@ public class SarifV1JSONImporter extends AbstractProductResultImporter {
     SarifSchema210LogicSupport sarifSchema210LogicSupport;
 
     @Autowired
-    SarifImportProductWorkaroundComponent workaroundComponent;
+    protected SarifImportProductWorkaroundSupport workaroundSupport;
 
     public SarifV1JSONImporter() {
         sarifSchema210ImportExportSupport = new SarifSchema210ImportExportSupport();
@@ -348,7 +348,7 @@ public class SarifV1JSONImporter extends AbstractProductResultImporter {
             return "error:rule==null!";
         }
 
-        String type = workaroundComponent.resolveType(rule, run);
+        String type = workaroundSupport.resolveType(rule, run);
 
         if (type == null) {
             MultiformatMessageString shortDescription = rule.getShortDescription();
