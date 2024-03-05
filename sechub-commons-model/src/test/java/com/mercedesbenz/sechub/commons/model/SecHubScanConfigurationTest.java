@@ -148,4 +148,68 @@ class SecHubScanConfigurationTest {
         assertEquals(1, usedDataConfigurations.size());
         assertEquals("build-artifacts", usedDataConfigurations.iterator().next());
     }
+
+    @Test
+    void sechub_remote_source_code_scan_configuration_contains_location_and_type() {
+
+        /* prepare */
+        String json = TestFileReader.loadTextFile(new File("./src/test/resources/sechub_remote_data_config_source_code_scan_example.json"));
+
+        /* execute + test */
+        SecHubScanConfiguration config = SecHubScanConfiguration.createFromJSON(json);
+        assertNotNull(config);
+
+        // testing the remote configuration for defined codeScan
+        Set<String> usedDataConfigurations = config.getCodeScan().get().getNamesOfUsedDataConfigurationObjects();
+        assertEquals(1, usedDataConfigurations.size());
+        assertEquals("remote_example_name", usedDataConfigurations.iterator().next());
+
+        // testing the remote configuration for defined values
+        Optional<SecHubDataConfiguration> data = config.getData();
+        assertTrue(data.isPresent());
+
+        List<SecHubSourceDataConfiguration> sources = data.get().getSources();
+        assertEquals(1, sources.size());
+
+        SecHubSourceDataConfiguration dataConfiguration = sources.iterator().next();
+        Optional<SecHubRemoteDataConfiguration> remote = dataConfiguration.getRemote();
+        assertTrue(remote.isPresent());
+
+        String location = remote.get().getLocation();
+        assertEquals("remote_example_location", location);
+        String type = remote.get().getType();
+        assertEquals("git", type);
+    }
+
+    @Test
+    void sechub_remote_binary_code_scan_configuration_contains_location_and_type() {
+
+        /* prepare */
+        String json = TestFileReader.loadTextFile(new File("./src/test/resources/sechub_remote_data_config_binary_code_scan_example.json"));
+
+        /* execute + test */
+        SecHubScanConfiguration config = SecHubScanConfiguration.createFromJSON(json);
+        assertNotNull(config);
+
+        // testing the remote configuration for defined codeScan
+        Set<String> usedDataConfigurations = config.getCodeScan().get().getNamesOfUsedDataConfigurationObjects();
+        assertEquals(1, usedDataConfigurations.size());
+        assertEquals("remote_example_name", usedDataConfigurations.iterator().next());
+
+        // testing the remote configuration for defined values
+        Optional<SecHubDataConfiguration> data = config.getData();
+        assertTrue(data.isPresent());
+
+        List<SecHubBinaryDataConfiguration> binaries = data.get().getBinaries();
+        assertEquals(1, binaries.size());
+
+        SecHubBinaryDataConfiguration dataConfiguration = binaries.iterator().next();
+        Optional<SecHubRemoteDataConfiguration> remote = dataConfiguration.getRemote();
+        assertTrue(remote.isPresent());
+
+        String location = remote.get().getLocation();
+        assertEquals("remote_example_location", location);
+        String type = remote.get().getType();
+        assertEquals("docker", type);
+    }
 }

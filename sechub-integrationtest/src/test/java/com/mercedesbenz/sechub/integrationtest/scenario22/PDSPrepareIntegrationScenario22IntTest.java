@@ -7,6 +7,7 @@ import static com.mercedesbenz.sechub.integrationtest.internal.IntegrationTestEx
 import static com.mercedesbenz.sechub.integrationtest.scenario22.Scenario22.*;
 import static org.junit.Assert.*;
 
+import java.io.File;
 import java.util.Map;
 import java.util.UUID;
 
@@ -15,12 +16,14 @@ import org.junit.Test;
 import org.junit.rules.Timeout;
 
 import com.mercedesbenz.sechub.commons.model.SecHubMessageType;
+import com.mercedesbenz.sechub.commons.model.SecHubScanConfiguration;
 import com.mercedesbenz.sechub.commons.model.TrafficLight;
 import com.mercedesbenz.sechub.integrationtest.api.IntegrationTestSetup;
 import com.mercedesbenz.sechub.integrationtest.api.TemplateData;
 import com.mercedesbenz.sechub.integrationtest.api.TestAPI;
 import com.mercedesbenz.sechub.integrationtest.api.TestProject;
 import com.mercedesbenz.sechub.integrationtest.internal.IntegrationTestTemplateFile;
+import com.mercedesbenz.sechub.test.TestFileReader;
 
 public class PDSPrepareIntegrationScenario22IntTest {
 
@@ -223,6 +226,35 @@ public class PDSPrepareIntegrationScenario22IntTest {
 
               approveJob(project, jobUUID);
           /* @formatter:on */
+    }
+
+    @Test
+    public void startPDSPrepareJobFromRemoteCodeScanConfigurationwithoutClient() {
+        /* @formatter:off */
+
+        /* prepare */
+        String configurationAsJson = TestFileReader.loadTextFile(new File("./src/test/resources/sechub-integrationtest-remote-scan-configuration.json"));
+        SecHubScanConfiguration configuration = SecHubScanConfiguration.createFromJSON(configurationAsJson);
+        configuration.setProjectId("project1");
+        TestProject project = PROJECT_1;
+
+        /* execute */
+        UUID jobUUID = as(USER_1).createJobAndReturnJobUUID(project, configuration);
+        as(USER_1).approveJob(project, jobUUID);
+
+        /* test */
+        waitForJobDone(project, jobUUID, 30, true);
+        String report = as(USER_1).getJobReport(project, jobUUID);
+
+        assertReport(report).
+                enablePDSAutoDumpOnErrorsForSecHubJob(jobUUID).
+                hasTrafficLight(TrafficLight.OFF). // traffic light off, because the only report which was executed, but there was no result inside!
+                hasMessage(SecHubMessageType.INFO, "Some preperation info message for user in report (always).").
+                hasMessage(SecHubMessageType.WARNING, "No results from a security product available for this job!").
+                hasMessages(2).
+                hasFindings(0);
+
+        /* @formatter:on */
     }
 
 }
