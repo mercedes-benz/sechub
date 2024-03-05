@@ -1,5 +1,7 @@
 package com.mercedesbenz.sechub.commons.model;
 
+import java.util.Optional;
+
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 // TODO: 04.03.24 lbottne credentials im team klären
@@ -10,6 +12,11 @@ public class SecHubRemoteDataCredentialsConfiguration {
 
     private SecHubRemoteDataUserConfiguration user;
 
-    // TODO: 04.03.24 getter
+    public void setUser(SecHubRemoteDataUserConfiguration user) {
+        this.user = user;
+    }
 
+    public Optional<SecHubRemoteDataUserConfiguration> getUser() {
+        return Optional.ofNullable(user);
+    }
 }
