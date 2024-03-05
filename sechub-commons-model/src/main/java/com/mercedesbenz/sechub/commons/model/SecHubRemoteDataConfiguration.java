@@ -22,18 +22,7 @@ public class SecHubRemoteDataConfiguration {
         return location;
     }
 
-    /* Credentials implementation currently not supported
-
-    public static final String PROPERTY_CREDENTIALS = "credentials";
-    private SecHubRemoteDataCredentialsConfiguration credentials;
-
-    public void setCredentials(SecHubRemoteDataCredentialsConfiguration credentials) {
-        this.credentials = credentials;
-    }
-
-    public Optional<SecHubRemoteDataCredentialsConfiguration> getCredentials() {
-        return Optional.ofNullable(credentials);
-    }
-     */
+    /* Remote usage with user and password or certificate is currently not supported */
+    /* We use our own PID users instead */
 
 }

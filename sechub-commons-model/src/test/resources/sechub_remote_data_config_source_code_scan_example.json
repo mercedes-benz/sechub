@@ -6,13 +6,7 @@
         "name": "remote_example_name",
         "remote": {
           "location": "remote_example_location",
-          "type": "docker",
-          "credentials": {
-            "user": {
-              "name": "example_user",
-              "password": "example_password"
-            }
-          }
+          "type": "git"
         }
       }
     ]
