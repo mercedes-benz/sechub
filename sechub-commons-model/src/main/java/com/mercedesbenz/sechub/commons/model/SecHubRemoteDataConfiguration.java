@@ -15,10 +15,10 @@ public class SecHubRemoteDataConfiguration {
 
     private String location;
 
-    private Optional<SecHubRemoteDataCredentialsConfiguration> credentials = Optional.empty();
+    private SecHubRemoteDataCredentialsConfiguration credentials;
 
     public void setCredentials(SecHubRemoteDataCredentialsConfiguration credentials) {
-        this.credentials = Optional.ofNullable(credentials);
+        this.credentials = credentials;
     }
 
     public String getType() {
@@ -30,7 +30,7 @@ public class SecHubRemoteDataConfiguration {
     }
 
     public Optional<SecHubRemoteDataCredentialsConfiguration> getCredentials() {
-        return credentials;
+        return Optional.ofNullable(credentials);
     }
 
 }
