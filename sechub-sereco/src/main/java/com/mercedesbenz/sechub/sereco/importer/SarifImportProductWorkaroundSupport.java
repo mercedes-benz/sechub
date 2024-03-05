@@ -28,7 +28,6 @@ public class SarifImportProductWorkaroundSupport {
      *         any available workaround.
      */
     public String resolveType(ReportingDescriptor rule, Run run) {
-        // iterate over workarounds, first non null result will be returned
         for (SarifImportProductWorkaround workaround : workarounds) {
             String resolvedType = workaround.resolveType(rule, run);
             if (resolvedType != null) {

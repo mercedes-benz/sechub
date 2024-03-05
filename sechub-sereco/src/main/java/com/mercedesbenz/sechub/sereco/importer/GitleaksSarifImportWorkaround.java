@@ -5,6 +5,7 @@ import org.springframework.stereotype.Component;
 
 import de.jcup.sarif_2_1_0.model.ReportingDescriptor;
 import de.jcup.sarif_2_1_0.model.Run;
+import de.jcup.sarif_2_1_0.model.Tool;
 import de.jcup.sarif_2_1_0.model.ToolComponent;
 
 @Component
@@ -25,13 +26,14 @@ public class GitleaksSarifImportWorkaround implements SarifImportProductWorkarou
         if (run == null) {
             return false;
         }
-        if (run.getTool() == null) {
+        Tool tool = run.getTool();
+        if (tool == null) {
             return false;
         }
-        ToolComponent driver = run.getTool().getDriver();
+        ToolComponent driver = tool.getDriver();
         if (driver == null) {
             return false;
         }
-        return "gitleaks".equals(driver.getName());
+        return "gitleaks".equalsIgnoreCase(driver.getName());
     }
 }
