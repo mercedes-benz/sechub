@@ -50,9 +50,10 @@ RUN mkdir --parent "$BUILD_FOLDER" && \
     cd "$BUILD_FOLDER" && \
     ./clone.sh "$GIT_URL" "$BRANCH" "$TAG" && \
     cd "sechub" && \
-    ./gradlew ensureLocalhostCertificate build generateOpenapi -x :sechub-cli:build && \
-    ./gradlew :sechub-api-java:build :sechub-webui:build -Dsechub.build.stage=api-necessary && \
-    cp sechub-webui/build/libs/sechub-webui-*.jar --target-directory "$WEBUI_ARTIFACT_FOLDER"
+    ./gradlew :sechub-api-java:build :sechub-webui:build -Dsechub.build.stage=api-necessary --console=plain && \
+    cd sechub-webui/build/libs/ && \
+    rm -f *-javadoc.jar *-plain.jar *-sources.jar && \
+    cp sechub-webui-*.jar --target-directory "$WEBUI_ARTIFACT_FOLDER"
 
 #-------------------
 # Builder Download
