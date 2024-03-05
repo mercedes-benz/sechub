@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.webui.sechubaccess;
 
 import org.slf4j.Logger;

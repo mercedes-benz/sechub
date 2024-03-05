@@ -1,3 +1,4 @@
+# SPDX-License-Identifier: MIT
 webui:
    sechub:
       ## Setup integration test sechub user (currently admin, later other role)

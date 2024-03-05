@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.domain.scan.product.checkmarx;
 
 import org.springframework.beans.factory.annotation.Value;
