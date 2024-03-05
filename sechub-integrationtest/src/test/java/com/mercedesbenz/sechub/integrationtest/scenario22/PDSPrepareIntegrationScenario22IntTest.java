@@ -230,6 +230,7 @@ public class PDSPrepareIntegrationScenario22IntTest {
 
     @Test
     public void startPDSPrepareJobFromRemoteCodeScanConfigurationwithoutClient() {
+        /* @formatter:off */
 
         /* prepare */
         String configurationAsJson = TestFileReader.loadTextFile(new File("./src/test/resources/sechub-integrationtest-remote-scan-configuration.json"));
@@ -245,12 +246,15 @@ public class PDSPrepareIntegrationScenario22IntTest {
         waitForJobDone(project, jobUUID, 30, true);
         String report = as(USER_1).getJobReport(project, jobUUID);
 
-        assertReport(report).enablePDSAutoDumpOnErrorsForSecHubJob(jobUUID).hasTrafficLight(TrafficLight.OFF). // traffic light off, because the only report
-                                                                                                               // which was executed, but there was no result
-                                                                                                               // inside!
-                hasMessage(SecHubMessageType.INFO, "Some preperation info message for user in report (always).")
-                .hasMessage(SecHubMessageType.WARNING, "No results from a security product available for this job!").hasMessages(2).hasFindings(0);
+        assertReport(report).
+                enablePDSAutoDumpOnErrorsForSecHubJob(jobUUID).
+                hasTrafficLight(TrafficLight.OFF). // traffic light off, because the only report which was executed, but there was no result inside!
+                hasMessage(SecHubMessageType.INFO, "Some preperation info message for user in report (always).").
+                hasMessage(SecHubMessageType.WARNING, "No results from a security product available for this job!").
+                hasMessages(2).
+                hasFindings(0);
 
+        /* @formatter:on */
     }
 
 }

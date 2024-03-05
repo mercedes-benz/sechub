@@ -162,7 +162,7 @@ class SecHubScanConfigurationTest {
         // testing the remote configuration for defined codeScan
         Set<String> usedDataConfigurations = config.getCodeScan().get().getNamesOfUsedDataConfigurationObjects();
         assertEquals(1, usedDataConfigurations.size());
-        assertEquals("remote_name", usedDataConfigurations.iterator().next());
+        assertEquals("remote_example_name", usedDataConfigurations.iterator().next());
 
         // testing the remote configuration for defined values
         Optional<SecHubDataConfiguration> data = config.getData();
