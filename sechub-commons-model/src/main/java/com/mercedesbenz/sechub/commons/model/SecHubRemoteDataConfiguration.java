@@ -1,7 +1,5 @@
 package com.mercedesbenz.sechub.commons.model;
 
-import java.util.Optional;
-
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
@@ -22,7 +20,9 @@ public class SecHubRemoteDataConfiguration {
         return location;
     }
 
-    /* Remote usage with user and password or certificate is currently not supported */
+    /*
+     * Remote usage with user and password or certificate is currently not supported
+     */
     /* We use our own PID users instead */
 
 }
