@@ -9,17 +9,10 @@ public class SecHubRemoteDataConfiguration {
 
     public static final String PROPERTY_TYPE = "type";
     public static final String PROPERTY_LOCATION = "location";
-    public static final String PROPERTY_CREDENTIALS = "credentials";
 
     private String type;
 
     private String location;
-
-    private SecHubRemoteDataCredentialsConfiguration credentials;
-
-    public void setCredentials(SecHubRemoteDataCredentialsConfiguration credentials) {
-        this.credentials = credentials;
-    }
 
     public String getType() {
         return type;
@@ -29,8 +22,18 @@ public class SecHubRemoteDataConfiguration {
         return location;
     }
 
+    /* Credentials implementation currently not supported
+
+    public static final String PROPERTY_CREDENTIALS = "credentials";
+    private SecHubRemoteDataCredentialsConfiguration credentials;
+
+    public void setCredentials(SecHubRemoteDataCredentialsConfiguration credentials) {
+        this.credentials = credentials;
+    }
+
     public Optional<SecHubRemoteDataCredentialsConfiguration> getCredentials() {
         return Optional.ofNullable(credentials);
     }
+     */
 
 }
