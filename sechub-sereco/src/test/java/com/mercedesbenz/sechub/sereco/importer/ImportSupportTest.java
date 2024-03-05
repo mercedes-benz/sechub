@@ -23,7 +23,7 @@ public class ImportSupportTest {
 				productId("productId").
 				build();
 		/* @formatter:on */
-        assertEquals(ProductImportAbility.PRODUCT_FAILED_OR_CANCELED, ImportSupport.builder().build().isAbleToImport(importParameter));
+        assertEquals(false, ImportSupport.builder().build().isAbleToImport(importParameter));
     }
 
     @Test
@@ -35,7 +35,7 @@ public class ImportSupportTest {
 				productId("productId").
 				build();
 		/* @formatter:on */
-        assertEquals(ProductImportAbility.PRODUCT_FAILED_OR_CANCELED, ImportSupport.builder().build().isAbleToImport(importParameter));
+        assertEquals(false, ImportSupport.builder().build().isAbleToImport(importParameter));
     }
 
     @Test

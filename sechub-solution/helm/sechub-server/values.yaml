@@ -290,6 +290,14 @@ pdsFindSecurityBugs:
 # ------------------------------------------------------------------------------------- #
 # PDS-GoSec adapter
 # ------------------------------------------------------------------------------------- #
+pdsGitleaks:
+  enabled: false
+  # Put the user id  of PDS-Gitleaks in k8s secret secret-pds-gitleaks:techuser_username
+  # Put the password of PDS-Gitleaks in k8s secret secret-pds-gitleaks:techuser_password
+
+# ------------------------------------------------------------------------------------- #
+# PDS-GoSec adapter
+# ------------------------------------------------------------------------------------- #
 pdsGoSec:
   enabled: false
   # Put the user id  of PDS-GoSec in k8s secret secret-pds-gosec:techuser_username

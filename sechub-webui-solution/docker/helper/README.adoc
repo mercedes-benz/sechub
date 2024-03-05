@@ -1,0 +1,4 @@
+[NOTE]
+====
+This folder can container helper files.
+====

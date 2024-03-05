@@ -10,8 +10,12 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
 import java.util.UUID;
 import java.util.concurrent.Callable;
+
+import javax.crypto.SealedObject;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -42,6 +46,7 @@ import com.mercedesbenz.sechub.commons.archive.ArchiveSupport;
 import com.mercedesbenz.sechub.commons.archive.ArchiveSupport.ArchivesCreationResult;
 import com.mercedesbenz.sechub.commons.core.RunOrFail;
 import com.mercedesbenz.sechub.commons.core.security.CheckSumSupport;
+import com.mercedesbenz.sechub.commons.core.security.CryptoAccess;
 import com.mercedesbenz.sechub.commons.model.JsonMapperFactory;
 import com.mercedesbenz.sechub.commons.model.SecHubConfigurationModel;
 
@@ -65,12 +70,14 @@ public class DefaultSecHubClient extends AbstractSecHubClient {
 
     private WorkaroundProjectApi workaroundProjectApi;
 
-    public DefaultSecHubClient(URI serverUri, String username, String apiToken) {
-        this(serverUri, username, apiToken, false);
+    private SecHubStatusFactory sechubStatusFactory = new SecHubStatusFactory();
+
+    public static DefaultSecHubClientBuilder builder() {
+        return new DefaultSecHubClientBuilder();
     }
 
-    public DefaultSecHubClient(URI serverUri, String username, String apiToken, boolean trustAll) {
-        super(serverUri, username, apiToken, trustAll);
+    private DefaultSecHubClient(URI serverUri, String userId, String apiToken, boolean trustAll) {
+        super(serverUri, userId, apiToken, trustAll);
 
         apiClient = new ApiClientBuilder().createApiClient(this, mapper);
 
@@ -84,10 +91,6 @@ public class DefaultSecHubClient extends AbstractSecHubClient {
 
         conversionHelper = new OpenApiSecHubClientConversionHelper();
 
-    }
-
-    private ApiClient getApiClient() {
-        return apiClient;
     }
 
     /* ++++++++++++++++++++++++++++++++++++++++++++++++++++ */
@@ -220,16 +223,20 @@ public class DefaultSecHubClient extends AbstractSecHubClient {
     /* ++++++++++++++++++++++++++++++++++++++++++++++++++++ */
     @Override
     public SecHubStatus fetchSecHubStatus() throws SecHubClientException {
-        SecHubStatus status = new SecHubStatus();
+
+        Map<String, String> statusInformation = new TreeMap<>();
+
         runOrFail(() -> {
             List<OpenApiStatusInformationInner> statusInformationList = adminApi.adminListsStatusInformation();
             for (OpenApiStatusInformationInner info : statusInformationList) {
                 String key = info.getKey();
                 if (key != null) {
-                    status.statusInformation.put(key, info.getValue());
+                    statusInformation.put(key, info.getValue());
                 }
             }
         }, "Was not able to fetch SecHub status!");
+
+        SecHubStatus status = sechubStatusFactory.createFromMap(statusInformation);
         return status;
     }
 
@@ -244,7 +251,7 @@ public class DefaultSecHubClient extends AbstractSecHubClient {
     @Override
     public boolean isServerAlive() throws SecHubClientException {
         try {
-            anonymousApi.anonymousCheckAliveGet();
+            anonymousApi.anonymousCheckAliveHead();
             return true;
         } catch (ApiException e) {
             return false;
@@ -432,6 +439,24 @@ public class DefaultSecHubClient extends AbstractSecHubClient {
         return targetFile.toPath();
     }
 
+    /* +++++++++++++++++++++++++++++++++++++++++++++++++ */
+    /* + ................Version...................... + */
+    /* +++++++++++++++++++++++++++++++++++++++++++++++++ */
+
+    @Override
+    public String getServerVersion() throws SecHubClientException {
+        return runOrFail(() -> adminApi.adminFetchesServerRuntimeData().getServerVersion(), "Get server version");
+    }
+
+    @Override
+    public void requestNewApiToken(String emailAddress) throws SecHubClientException {
+        runOrFail(() -> anonymousApi.userRequestsNewApiToken(emailAddress), "User requests a new API Token");
+    }
+
+    private ApiClient getApiClient() {
+        return apiClient;
+    }
+
     /* ++++++++++++++++++++++++++++++++++++++++++++++++++++ */
     /* + ................Helpers......................... + */
     /* ++++++++++++++++++++++++++++++++++++++++++++++++++++ */
@@ -454,6 +479,47 @@ public class DefaultSecHubClient extends AbstractSecHubClient {
 
     private SecHubClientException createClientException(String message, Exception cause) throws SecHubClientException {
         return new SecHubClientException(message + " - " + cause.getMessage(), cause);
+    }
+
+    public static class DefaultSecHubClientBuilder {
+        private URI serverUri;
+        private String userName;
+        private CryptoAccess<String> apiTokenAccess = new CryptoAccess<>();
+        private SealedObject sealedApiToken;
+        private boolean trustAll;
+
+        public DefaultSecHubClientBuilder server(URI serverUri) {
+            this.serverUri = serverUri;
+            return this;
+        }
+
+        public DefaultSecHubClientBuilder user(String userId) {
+            this.userName = userId;
+            return this;
+        }
+
+        public DefaultSecHubClientBuilder apiToken(String token) {
+            sealedApiToken = apiTokenAccess.seal(token);
+            return this;
+        }
+
+        public DefaultSecHubClientBuilder trustAll(boolean trustAll) {
+            this.trustAll = trustAll;
+            return this;
+        }
+
+        public SecHubClient build() {
+            if (serverUri == null) {
+                throw new IllegalStateException("server uri is not defined!");
+            }
+            if (userName == null) {
+                throw new IllegalStateException("user name is not defined!");
+            }
+            if (sealedApiToken == null) {
+                throw new IllegalStateException("token is not defined!");
+            }
+            return new DefaultSecHubClient(serverUri, userName, apiTokenAccess.unseal(sealedApiToken), trustAll);
+        }
     }
 
 }

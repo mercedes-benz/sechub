@@ -4,11 +4,8 @@ name: Java & Go CI
 on:
   push:
     branches-ignore:
-      # we do NOT build the documentation branch, because here we only copy build output
-      # of documentation from master branch to the corresponding doc folders -e.g. /docs/latest
-      # So this branch is only for github pages. See https://github.com/mercedes-benz/sechub/issues/481
-      # for details
-      - documentation
+      # We do NOT build github action development branches here (because no Java or Go code is changed)
+      - 'gha_*'
       # We ignore everything where tag starts with v* - this is done by release build!
     tags-ignore:
       - v*
@@ -22,7 +19,7 @@ jobs:
       - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11
 
       - name: Set up JDK 17
-        uses: actions/setup-java@387ac29b308b003ca37ba93a6cab5eb57c8f5f93
+        uses: actions/setup-java@9704b39bf258b59bc04b50fa2dd55e9ed76b47a8
         with:
           java-version: 17
           distribution: temurin
@@ -37,7 +34,7 @@ jobs:
         with:
           go-version: 1.21.6
 
-      - uses: actions/cache@13aacd865c20de90d75de3b17ebe84f7a17d57d2
+      - uses: actions/cache@ab5e6d0c87105b4c9c2047343972218f562e4319
         with:
           path: |
             ~/.cache/go-build

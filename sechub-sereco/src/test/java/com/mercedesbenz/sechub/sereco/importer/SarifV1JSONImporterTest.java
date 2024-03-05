@@ -209,10 +209,10 @@ class SarifV1JSONImporterTest {
                 .build();
 
         /* execute */
-        ProductImportAbility ableToImportGosec_2_8_0sarif = importerToTest.isAbleToImportForProduct(paramGoSec);
+        boolean ableToImportGosec_2_8_0sarif = importerToTest.isAbleToImportForProduct(paramGoSec);
 
         /* test */
-        assertEquals(ProductImportAbility.ABLE_TO_IMPORT, ableToImportGosec_2_8_0sarif, "Has NOT the ability to import sarif!");
+        assertTrue(ableToImportGosec_2_8_0sarif, "Has NOT the ability to import sarif!");
     }
 
     @Test
@@ -290,10 +290,10 @@ class SarifV1JSONImporterTest {
         ImportParameter paramBrakeman = ImportParameter.builder().importData(sarif_2_1_0_brakeman).importId("id1").productId("PDS_CODESCAN").build();
 
         /* execute */
-        ProductImportAbility ableToImportBrakemanSarif = importerToTest.isAbleToImportForProduct(paramBrakeman);
+        boolean ableToImportBrakemanSarif = importerToTest.isAbleToImportForProduct(paramBrakeman);
 
         /* test */
-        assertEquals(ProductImportAbility.ABLE_TO_IMPORT, ableToImportBrakemanSarif, "Was NOT able to import sarif!");
+        assertTrue(ableToImportBrakemanSarif, "Was NOT able to import brakeman sarif!");
     }
 
     @Test
@@ -303,10 +303,10 @@ class SarifV1JSONImporterTest {
                 .productId("PDS_CODESCAN").build();
 
         /* execute */
-        ProductImportAbility ableToImportThreadFlowSarif = importerToTest.isAbleToImportForProduct(paramThreadFlows);
+        boolean ableToImportThreadFlowSarif = importerToTest.isAbleToImportForProduct(paramThreadFlows);
 
         /* test */
-        assertEquals(ProductImportAbility.ABLE_TO_IMPORT, ableToImportThreadFlowSarif, "Was NOT able to import sarif!");
+        assertTrue(ableToImportThreadFlowSarif, "Was NOT able to import thread flow sarif!");
     }
 
     @Test
@@ -316,10 +316,10 @@ class SarifV1JSONImporterTest {
         ImportParameter emptyJSONImportParam = ImportParameter.builder().importData("{}").importId("id1").productId("PDS_CODESCAN").build();
 
         /* execute */
-        ProductImportAbility importAbility = importerToTest.isAbleToImportForProduct(emptyJSONImportParam);
+        boolean importAbility = importerToTest.isAbleToImportForProduct(emptyJSONImportParam);
 
         /* test */
-        assertEquals(ProductImportAbility.NOT_ABLE_TO_IMPORT, importAbility, "Not the expected ability!");
+        assertFalse(importAbility, "Empty json should be importable");
     }
 
     @Test
@@ -329,10 +329,10 @@ class SarifV1JSONImporterTest {
         ImportParameter emptyJSONImportParam = ImportParameter.builder().importData("").importId("id1").productId("PDS_CODESCAN").build();
 
         /* execute */
-        ProductImportAbility importAbility = importerToTest.isAbleToImportForProduct(emptyJSONImportParam);
+        boolean importAbility = importerToTest.isAbleToImportForProduct(emptyJSONImportParam);
 
         /* test */
-        assertEquals(ProductImportAbility.PRODUCT_FAILED_OR_CANCELED, importAbility, "Not the expected ability!");
+        assertFalse(importAbility, "Empty string should be importable");
     }
 
     @Test
