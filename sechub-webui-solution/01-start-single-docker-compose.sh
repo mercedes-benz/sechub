@@ -8,7 +8,7 @@ source "../sechub-solutions-shared/scripts/9999-env-file-helper.sh"
 # all other variables are only available in the container
 setup_environment_file ".env" "env"
 setup_environment_file ".env-webui" "env-webui"
- 
+
 # Use Docker BuildKit
 # nesessary for switching between build stages
 export BUILDKIT_PROGRESS=plain

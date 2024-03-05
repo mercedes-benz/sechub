@@ -1,5 +1,5 @@
 # Base Image
-BASE_IMAGE=debian:testing-slim
+BASE_IMAGE=debian:12-slim
 
 # Resource limits
 MEMORY_LIMIT=300M
@@ -10,10 +10,10 @@ CPU_LIMIT=1.0
 # build - clones and build SecHub
 # copy - copies jar into container
 # download - downloads the SecHub jar
-BUILD_TYPE=copy
+BUILD_TYPE=build
 
 # The PDS version used if the BUILD_TYPE is set to `download`
-WEBUI_VERSION="0.0.1"
+WEBUI_VERSION="0.1.0"
 
 # The Java version used
 JAVA_VERSION="17"

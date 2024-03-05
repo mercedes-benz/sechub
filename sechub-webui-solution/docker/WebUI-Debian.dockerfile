@@ -21,64 +21,60 @@ ARG WEBUI_ARTIFACT_FOLDER="/artifacts"
 # Builder Build
 #-------------------
 
-#FROM ${BASE_IMAGE} AS builder-build
+FROM ${BASE_IMAGE} AS builder-build
 
 # Build args
-#ARG JAVA_VERSION
-#ARG TAG
-#ARG BRANCH
-#ARG WEBUI_ARTIFACT_FOLDER
+ARG JAVA_VERSION
+ARG TAG
+ARG BRANCH
+ARG WEBUI_ARTIFACT_FOLDER
 
-#ARG BUILD_FOLDER="/build"
-#ARG GIT_URL="https://github.com/mercedes-benz/sechub.git"
+ARG BUILD_FOLDER="/build"
+ARG GIT_URL="https://github.com/mercedes-benz/sechub.git"
 
-#ENV DOWNLOAD_FOLDER="/downloads"
+ENV DOWNLOAD_FOLDER="/downloads"
 
-#RUN mkdir --parent "$WEBUI_ARTIFACT_FOLDER" "$DOWNLOAD_FOLDER"
+RUN mkdir --parent "$WEBUI_ARTIFACT_FOLDER" "$DOWNLOAD_FOLDER"
 
-#RUN export DEBIAN_FRONTEND=noninteractive && \
-#    apt-get update && \
-#    apt-get upgrade --assume-yes --quiet && \
-#    apt-get install --quiet --assume-yes wget w3m git "openjdk-$JAVA_VERSION-jdk-headless" && \
-#    apt-get clean
+RUN export DEBIAN_FRONTEND=noninteractive && \
+    apt-get update && \
+    apt-get upgrade --assume-yes --quiet && \
+    apt-get install --quiet --assume-yes wget w3m git "openjdk-$JAVA_VERSION-jdk-headless" && \
+    apt-get clean
 
 # Copy clone script
-#COPY --chmod=755 clone.sh "$BUILD_FOLDER/clone.sh"
+COPY --chmod=755 clone.sh "$BUILD_FOLDER/clone.sh"
 
-# Build SecHub
-#RUN mkdir --parent "$BUILD_FOLDER" && \
-#    cd "$BUILD_FOLDER" && \
-    # execute the clone script
-#    ./clone.sh "$GIT_URL" "$BRANCH" "$TAG" && \
-#    cd "sechub" && \
-    # Build PDS
-#    "./buildExecutables" && \
-#    cp sechub-pds/build/libs/sechub-pds-*.jar --target-directory "$WEBUI_ARTIFACT_FOLDER"
+# Clone SecHub repo and build SecHub WebUI jar file
+RUN mkdir --parent "$BUILD_FOLDER" && \
+    cd "$BUILD_FOLDER" && \
+    ./clone.sh "$GIT_URL" "$BRANCH" "$TAG" && \
+    cd "sechub" && \
+    ./gradlew ensureLocalhostCertificate build generateOpenapi -x :sechub-cli:build && \
+    ./gradlew :sechub-api-java:build :sechub-webui:build -Dsechub.build.stage=api-necessary && \
+    cp sechub-webui/build/libs/sechub-webui-*.jar --target-directory "$WEBUI_ARTIFACT_FOLDER"
 
 #-------------------
 # Builder Download
 #-------------------
 
-#FROM ${BASE_IMAGE} AS builder-download
+FROM ${BASE_IMAGE} AS builder-download
 
-#ARG WEBUI_ARTIFACT_FOLDER
-#ARG WEBUI_VERSION
+ARG WEBUI_ARTIFACT_FOLDER
+ARG WEBUI_VERSION
 
-#RUN mkdir --parent "$WEBUI_ARTIFACT_FOLDER"
+RUN mkdir --parent "$WEBUI_ARTIFACT_FOLDER"
 
-#RUN export DEBIAN_FRONTEND=noninteractive && \
-#    apt-get update && \
-#    apt-get install --assume-yes wget && \
-#    apt-get clean
+RUN export DEBIAN_FRONTEND=noninteractive && \
+    apt-get update && \
+    apt-get install --assume-yes wget && \
+    apt-get clean
 
-# Download the PDS
-#RUN cd "$WEBUI_ARTIFACT_FOLDER" && \
-    # download checksum file
-#    wget --no-verbose "https://github.com/mercedes-benz/sechub/releases/download/v$WEBUI_VERSION-pds/sechub-pds-$WEBUI_VERSION.jar.sha256sum" && \
-    # download pds
-#    wget --no-verbose "https://github.com/mercedes-benz/sechub/releases/download/v$WEBUI_VERSION-pds/sechub-pds-$WEBUI_VERSION.jar" && \
-    # verify that the checksum and the checksum of the file are same
-#    sha256sum --check "sechub-pds-$WEBUI_VERSION.jar.sha256sum"
+# Download the SecHub WebUI jar file
+RUN cd "$WEBUI_ARTIFACT_FOLDER" && \
+    wget --no-verbose "https://github.com/mercedes-benz/sechub/releases/download/v$WEBUI_VERSION-pds/sechub-pds-$WEBUI_VERSION.jar.sha256sum" && \
+    wget --no-verbose "https://github.com/mercedes-benz/sechub/releases/download/v$WEBUI_VERSION-pds/sechub-pds-$WEBUI_VERSION.jar" && \
+    sha256sum --check "sechub-pds-$WEBUI_VERSION.jar.sha256sum"
 
 #-------------------
 # Builder Copy Jar
@@ -107,7 +103,7 @@ RUN echo "build stage"
 FROM ${BASE_IMAGE} AS webui
 
 # Annotations according to the Open Containers Image Spec:
-#  https://github.com/opencontainers/image-spec/blob/main/annotations.md
+# https://github.com/opencontainers/image-spec/blob/main/annotations.md
 
 # Required by GitHub to link repository and image
 LABEL org.opencontainers.image.source="https://github.com/mercedes-benz/sechub"
@@ -124,7 +120,7 @@ ENV USER="webui"
 ENV UID="4242"
 ENV GID="${UID}"
 ENV WEBUI_VERSION="${WEBUI_VERSION}"
-ENV WEBUI_FOLDER="/webui"
+ENV WEBUI_FOLDER="/sechub-webui"
 ENV HELPER_FOLDER="$WEBUI_FOLDER/helper"
 
 # non-root user
