@@ -1,0 +1,20 @@
+// SPDX-License-Identifier: MIT
+package com.mercedesbenz.sechub.sereco.importer;
+
+import de.jcup.sarif_2_1_0.model.ReportingDescriptor;
+import de.jcup.sarif_2_1_0.model.Run;
+
+public interface SarifImportProductWorkaround {
+
+    /**
+     * Resolve type from SARIF rule and SARIF run.
+     *
+     * @param rule
+     * @param run
+     * @return Resolve type or <code>null</code> if type could not be resolved by
+     *         this workaround.
+     */
+    public default String resolveType(ReportingDescriptor rule, Run run) {
+        return null;
+    }
+}
