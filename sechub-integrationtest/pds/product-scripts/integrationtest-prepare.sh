@@ -47,7 +47,7 @@ fi
 
 if [[ "$PDS_TEST_KEY_VARIANTNAME" == "d" ]]; then
     # Variant d - returns the sechub scan configuration as INFO message to check if it was handed over correctly
-    infoMessage "info:PDS_SCAN_CONFIGURATION=$PDS_SCAN_CONFIGURATION"
+    dumpVariable "PDS_SCAN_CONFIGURATION"
 fi
 
 # Otherwise - prepare done, write result with status "ok"

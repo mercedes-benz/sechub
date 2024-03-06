@@ -92,8 +92,8 @@ public class Scenario22 extends AbstractGrowingSecHubServerTestScenario implemen
     //
     /**
      * Project 5 is created on startup, and has {@link #USER_1} +
-     * {@link IntegrationTestDefaultProfiles#PROFILE_31_PDS_PREPARE_SCAN_CONFIG_SUCCESS profile
-     * 30 (exit 5 preparation)} assigned
+     * {@link IntegrationTestDefaultProfiles#PROFILE_31_PDS_PREPARE_SCAN_CONFIG_SUCCESS
+     * profile 30 (exit 5 preparation)} assigned
      */
     public static final TestProject PROJECT_5 = createTestProject(Scenario22.class, "project5");
 

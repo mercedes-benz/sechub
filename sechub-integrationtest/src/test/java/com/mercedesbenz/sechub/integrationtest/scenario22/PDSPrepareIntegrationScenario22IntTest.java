@@ -6,19 +6,17 @@ import static com.mercedesbenz.sechub.integrationtest.api.TestAPI.*;
 import static com.mercedesbenz.sechub.integrationtest.internal.IntegrationTestExampleConstants.*;
 import static com.mercedesbenz.sechub.integrationtest.scenario22.Scenario22.*;
 import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.File;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
-import com.mercedesbenz.sechub.commons.model.Severity;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.Timeout;
 
-import com.mercedesbenz.sechub.commons.model.SecHubMessageType;
-import com.mercedesbenz.sechub.commons.model.SecHubScanConfiguration;
-import com.mercedesbenz.sechub.commons.model.TrafficLight;
+import com.mercedesbenz.sechub.commons.model.*;
 import com.mercedesbenz.sechub.integrationtest.api.IntegrationTestSetup;
 import com.mercedesbenz.sechub.integrationtest.api.TemplateData;
 import com.mercedesbenz.sechub.integrationtest.api.TestAPI;
@@ -246,18 +244,39 @@ public class PDSPrepareIntegrationScenario22IntTest {
         /* test */
         waitForJobDone(project, jobUUID, 30, true);
         String report = as(USER_1).getJobReport(project, jobUUID);
-        
-        String projectId = project.getProjectId();
-        
-        // tests if sechub scan configuration was successfully hand over
-        assertReport(report).
-                enablePDSAutoDumpOnErrorsForSecHubJob(jobUUID).
-                hasMessages(3).
-                hasTrafficLight(TrafficLight.OFF).
-                hasMessage(SecHubMessageType.INFO, "Some preperation info message for user in report (always).").
-                hasMessage(SecHubMessageType.INFO, "info:PDS_SCAN_CONFIGURATION={\"codeScan\":{\"use\":[\"remote_example_name\"]},\"data\":{\"sources\":[{\"remote\":{\"type\":\"docker\",\"location\":\"remote_example_location\"},\"name\":\"remote_example_name\"}],\"binaries\":[]},\"apiVersion\":\"1.0\",\"projectId\":\""+ projectId +"\"}").
-                hasFindings(0);
 
+        String projectId = project.getProjectId();
+
+        UUID pdsJobUUID = waitForFirstPDSJobOfSecHubJobAndReturnPDSJobUUID(jobUUID);
+        Map<String, String> variables = fetchPDSVariableTestOutputMap(pdsJobUUID);
+        assertEquals("d", variables.get("PDS_TEST_KEY_VARIANTNAME"));
+        assertEquals("true", variables.get("PDS_PREPARE_EXECUTED"));
+
+        // testing if the returned configuration has the same values as the defined configuration
+        String returnedPdsScanConfigurationJSON = variables.get("PDS_SCAN_CONFIGURATION");
+        SecHubScanConfiguration returnedConfiguration = SecHubScanConfiguration.createFromJSON(returnedPdsScanConfigurationJSON);
+        assertTrue(returnedConfiguration.getCodeScan().isPresent());
+        assertFalse(returnedConfiguration.getInfraScan().isPresent());
+        assertFalse(returnedConfiguration.getWebScan().isPresent());
+
+        Set<String> usedDataConfigurations = returnedConfiguration.getCodeScan().get().getNamesOfUsedDataConfigurationObjects();
+        assertEquals(1, usedDataConfigurations.size());
+        assertEquals("remote_example_name", usedDataConfigurations.iterator().next());
+
+        Optional<SecHubDataConfiguration> data = returnedConfiguration.getData();
+        assertTrue(data.isPresent());
+
+        List<SecHubSourceDataConfiguration> sources = data.get().getSources();
+        assertEquals(1, sources.size());
+
+        SecHubSourceDataConfiguration dataConfiguration = sources.iterator().next();
+        Optional<SecHubRemoteDataConfiguration> remote = dataConfiguration.getRemote();
+        assertTrue(remote.isPresent());
+
+        String location = remote.get().getLocation();
+        assertEquals("remote_example_location", location);
+        String type = remote.get().getType();
+        assertEquals("docker", type);
 
         /* @formatter:on */
     }

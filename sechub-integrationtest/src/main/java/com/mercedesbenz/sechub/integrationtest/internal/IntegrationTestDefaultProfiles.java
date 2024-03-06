@@ -608,7 +608,8 @@ public class IntegrationTestDefaultProfiles {
     public static final DefaultTestExecutionProfile PROFILE_30_PDS_PREPARE_EXIT_5 = defineProfile30();
 
     /**
-     * The profile enables a PDS prepare. PDS is tested for receiving defined sechub scan configuration.
+     * The profile enables a PDS prepare. PDS is tested for receiving defined sechub
+     * scan configuration.
      *
      * <h5>Used inside scenarios:</h5>
      * <ul>
@@ -617,7 +618,6 @@ public class IntegrationTestDefaultProfiles {
      *
      */
     public static final DefaultTestExecutionProfile PROFILE_31_PDS_PREPARE_SCAN_CONFIG_SUCCESS = defineProfile31();
-
 
     /**
      * @return all default profiles
