@@ -11,6 +11,7 @@ import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.mercedesbenz.sechub.commons.core.util.SimpleStringUtils;
@@ -66,6 +67,9 @@ public class SarifV1JSONImporter extends AbstractProductResultImporter {
 
     SarifSchema210ImportExportSupport sarifSchema210ImportExportSupport;
     SarifSchema210LogicSupport sarifSchema210LogicSupport;
+
+    @Autowired
+    protected SarifImportProductWorkaroundSupport workaroundSupport;
 
     public SarifV1JSONImporter() {
         sarifSchema210ImportExportSupport = new SarifSchema210ImportExportSupport();
@@ -343,10 +347,14 @@ public class SarifV1JSONImporter extends AbstractProductResultImporter {
         if (rule == null) {
             return "error:rule==null!";
         }
-        String type = null;
-        MultiformatMessageString shortDescription = rule.getShortDescription();
-        if (shortDescription != null) {
-            type = shortDescription.getText();
+
+        String type = workaroundSupport.resolveType(rule, run);
+
+        if (type == null) {
+            MultiformatMessageString shortDescription = rule.getShortDescription();
+            if (shortDescription != null) {
+                type = shortDescription.getText();
+            }
         }
 
         if (type == null) {

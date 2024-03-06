@@ -59,6 +59,7 @@ public class PDSSecretScanJobScenario20IntTest {
     	          hasId(expectedFindingId).
     	          hasScanType(ScanType.SECRET_SCAN).
     	          hasDescription("generic-api-key has detected secret for file UnSAFE_Bank/Backend/docker-compose.yml.").
+    	          hasName("Generic API Key").
     	          codeCall(0).
     	              hasColumn(14).
     	              hasLine(12).
