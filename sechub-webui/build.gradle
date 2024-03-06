@@ -12,6 +12,7 @@ plugins {
 
 dependencies {
     implementation project(':sechub-commons-core')
+	implementation project(':sechub-api-java')
     implementation library.springboot_starter_security
     implementation library.springboot_starter_thymeleaf
     implementation library.logstashLogbackEncoder
@@ -41,5 +42,46 @@ task ensureLocalhostCertificate(type: Exec) {
         commandLine 'cmd', '/c', 'bash', "${projectDir}/dev-ensure_localhost_certificate.sh"
     }else{
         commandLine "${projectDir}/dev-ensure_localhost_certificate.sh"
+    }
+}
+
+apply plugin: 'maven-publish'
+
+
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+
+            from components.java
+
+            pom {
+                name = 'SecHub WebUI'
+                description = 'SecHub WebUI as a Spring Boot Jar. Ready to use.'
+
+                scm {
+                    url = 'https://github.com/mercedes-benz/sechub'
+                }
+
+                 licenses {
+                    license {
+                        name = 'MIT License'
+                        url = 'https://github.com/mercedes-benz/sechub/blob/master/LICENSE'
+                    }
+                }
+            }
+        }
+    }
+
+    repositories {
+        maven {
+            url =  project.hasProperty("mavenTargetRepoUrl") ? project.properties['mavenTargetRepoUrl'] : System.getProperty("user.home")+"/.m2/repository"
+
+            if (project.hasProperty("mavenRepoUserName") && project.hasProperty("mavenRepoPassword")) {
+                credentials(PasswordCredentials) {
+                    username project.properties['mavenRepoUserName']
+                    password project.properties['mavenRepoPassword']
+                }
+            }
+        }
     }
 }

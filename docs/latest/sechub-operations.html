@@ -531,7 +531,7 @@ table.CodeRay td.code{padding:0 0 0 .75em}
 <div id="header">
 <h1><span class="image"><a class="image" href="https://mercedes-benz.github.io/sechub"><img src="images/sechub-logo.png" alt="sechub logo"></a></span> SecHub Operations</h1>
 <div class="details">
-<span id="revnumber"> Server 1.6.0</span>
+<span id="revnumber"> Server 1.7.0</span>
 </div>
 <div id="toc" class="toc2">
 <div id="toctitle">Table of contents</div>
@@ -791,7 +791,7 @@ build pipeline / contionus integration (CI) and helps to provide
 </tbody>
 </table>
 <div class="paragraph">
-<p>Documentation version: <code>Server 1.6.0 - Build date: 20240226101315</code></p>
+<p>Documentation version: <code>Server 1.7.0 - Build date: 20240305120822</code></p>
 </div>
 <div class="paragraph">
 <p>Target audience for this document are <strong>SecHub Operators/Administrators</strong>.</p>
@@ -937,26 +937,6 @@ is e.g. more suitable for a <code>kubernetes</code> cluster deployment.</p>
 </tr>
 </thead>
 <tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">sechub.adapter.checkmarx.resilience.badrequest.retry.max</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">3</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Amount of retries done when a 400 bad request happened on Checkmarx server</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">sechub.adapter.checkmarx.resilience.badrequest.retry.wait</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">2000</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Time to wait until retry is done when a 400 bad request happened on Checkmarx server</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">sechub.adapter.checkmarx.resilience.servererror.retry.max</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">1</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Amount of retries done when a 500 server internal error happened on Checkmarx server</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">sechub.adapter.checkmarx.resilience.servererror.retry.wait</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">5000</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Time to wait until retry is done when a 500 server internal error happened on Checkmarx server</p></td>
-</tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">sechub.adapter.checkmarx.scanresultcheck.period.minutes</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">-1</p></td>
@@ -1451,6 +1431,36 @@ is e.g. more suitable for a <code>kubernetes</code> cluster deployment.</p>
 </tr>
 </thead>
 <tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">sechub.adapter.checkmarx.resilience.badrequest.retry.max</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">3</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Maximum amount of possible retries for situations when a 400 bad request happened on Checkmarx server</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">sechub.adapter.checkmarx.resilience.badrequest.retry.wait</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">2000</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Time to wait until retry is done when a 400 bad request happened on Checkmarx server</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">sechub.adapter.checkmarx.resilience.networkerror.retry.max</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">100</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Maximum amount of possible retries for situations when a network error happened on communication to Checkmarx server</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">sechub.adapter.checkmarx.resilience.networkerror.retry.wait</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">5000</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Time to wait until retry is done when a network server happened on communication to Checkmarx server</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">sechub.adapter.checkmarx.resilience.servererror.retry.max</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">1</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Maximum amount of possible retries for situations when a 500 server internal error happened on Checkmarx server</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">sechub.adapter.checkmarx.resilience.servererror.retry.wait</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">5000</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Time to wait until retry is done when a 500 server internal error happened on Checkmarx server</p></td>
+</tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">sechub.project.joblist.page.max</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">100</p></td>
@@ -3594,7 +3604,7 @@ the assignment to a super administrator. Only with permission of project owner t
 </div>
 <div id="footer">
 <div id="footer-text">
- Server 1.6.0<br>
+ Server 1.7.0<br>
 </div>
 </div>
 </body>

@@ -90,7 +90,7 @@ jobs:
       # Setup + Caching
       # ----------------------
       - name: Set up JDK 17
-        uses: actions/setup-java@387ac29b308b003ca37ba93a6cab5eb57c8f5f93
+        uses: actions/setup-java@9704b39bf258b59bc04b50fa2dd55e9ed76b47a8
         with:
           java-version: 17
           distribution: temurin
@@ -106,7 +106,7 @@ jobs:
           go-version: 1.21.6
 
       - name: Set up Go caching
-        uses: actions/cache@13aacd865c20de90d75de3b17ebe84f7a17d57d2
+        uses: actions/cache@ab5e6d0c87105b4c9c2047343972218f562e4319
         id: go-cache
         with:
           path: |
@@ -142,7 +142,7 @@ jobs:
       - name: Create pull request for SPDX license headers
         id: pr_spdx_headers
         if: steps.apply-headers.outputs.commits != ''
-        uses: peter-evans/create-pull-request@b1ddad2c994a25fbc81a28b3ec0e368bb2021c50
+        uses: peter-evans/create-pull-request@a4f52f8033a6168103c2538976c07b467e8163bc
         with:
           branch: release-spdx-headers
           branch-suffix: short-commit-hash
@@ -294,7 +294,7 @@ jobs:
       # -----------------------------------------
       - name: Create pull request for release documentation
         id: pr_release_documentation
-        uses: peter-evans/create-pull-request@b1ddad2c994a25fbc81a28b3ec0e368bb2021c50
+        uses: peter-evans/create-pull-request@a4f52f8033a6168103c2538976c07b467e8163bc
         with:
           branch: release-documentation
           branch-suffix: short-commit-hash

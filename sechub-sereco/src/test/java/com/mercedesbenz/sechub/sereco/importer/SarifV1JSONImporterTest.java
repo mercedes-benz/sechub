@@ -51,6 +51,9 @@ class SarifV1JSONImporterTest {
     @BeforeEach
     void beforeEach() {
         importerToTest = new SarifV1JSONImporter();
+
+        // initialize workarounds
+        importerToTest.workaroundSupport = new SarifImportProductWorkaroundSupport();
     }
 
     @Test
@@ -265,6 +268,7 @@ class SarifV1JSONImporterTest {
     @Test
     void gitleaks_8_0_example_secretscan__can_be_imported() throws Exception {
         /* prepare */
+        importerToTest.workaroundSupport.workarounds.add(new GitleaksSarifImportWorkaround());
         SerecoMetaData result = importerToTest.importResult(sarif_2_1_0_sarif_2_1_0_gitleaks_8_0, ScanType.SECRET_SCAN);
 
         /* execute */
@@ -277,6 +281,7 @@ class SarifV1JSONImporterTest {
             verifyVulnerability().
                 classifiedBy().cwe(798).and(). // 798 is our generic fallback for secret scans when no cweId is set by products (gitleaks SARIF does currently not set cweId)
                 withDescriptionContaining("generic-api-key has detected secret for file UnSAFE_Bank/Backend/src/api/application/config/database.php.").
+                withType("Generic API Key").
                 withCodeLocation("UnSAFE_Bank/Backend/src/api/application/config/database.php", 80, 7).containingSource("531486b2bf646636a6a1bba61e78ec4a4a54efbd").done().
             isContained();
 

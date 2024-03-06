@@ -16,6 +16,8 @@ import java.util.UUID;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.mercedesbenz.sechub.api.internal.DefaultJobOverviewData;
+import com.mercedesbenz.sechub.api.internal.DefaultSchedulerData;
 import com.mercedesbenz.sechub.commons.model.SecHubConfigurationModel;
 import com.mercedesbenz.sechub.commons.model.job.ExecutionState;
 
@@ -35,9 +37,14 @@ public class MockedSecHubClient extends AbstractSecHubClient {
 
     private Set<String> userToProjectAssignments = new HashSet<>();
 
-    public MockedSecHubClient() {
-        super(URI.create("https://localhost/mocked-sechub"), "mockuser", "pseudo-token", true);
+    private MockedSecHubClient(URI serverUri, String username, String apiToken, boolean trustAll) {
+        super(serverUri, username, apiToken, trustAll);
+
         mockDataAccess = new MockDataAccess();
+    }
+
+    public static MockedSecHubClient from(URI serverUri, String username, String apiToken, boolean trustAll) {
+        return new MockedSecHubClient(serverUri, username, apiToken, trustAll);
     }
 
     @Override
@@ -218,9 +225,7 @@ public class MockedSecHubClient extends AbstractSecHubClient {
 
     @Override
     public SecHubStatus fetchSecHubStatus() throws SecHubClientException {
-        SecHubStatus statusCopy = new SecHubStatus();
-        statusCopy.statusInformation.putAll(getMockDataAccess().getSecHubStatus().getStatusInformationMap());
-        return statusCopy;
+        return getMockDataAccess().getSecHubStatus();
     }
 
     public MockDataAccess getMockDataAccess() {
@@ -304,9 +309,29 @@ public class MockedSecHubClient extends AbstractSecHubClient {
         private Map<UUID, SecHubReport> reports = new HashMap<>();
 
         private boolean serverAlive;
+        private String serverVersion = "0.0.0-mocked";
+
+        public String getServerVersion() {
+            return serverVersion;
+        }
+
+        public void setServerVersion(String serverVersion) {
+            this.serverVersion = serverVersion;
+        }
 
         public MockDataAccess() {
-            sechubStatus = new SecHubStatus();
+
+            DefaultJobOverviewData jobOverview = new DefaultJobOverviewData();
+            jobOverview.setAll(123456);
+            jobOverview.setCanceled(1);
+            jobOverview.setCanceled(2);
+            jobOverview.setEnded(3);
+            jobOverview.setInitializating(4);
+            jobOverview.setReadyToStart(5);
+            jobOverview.setStarted(6);
+
+            DefaultSchedulerData scheduler = new DefaultSchedulerData(true, jobOverview);
+            sechubStatus = new SecHubStatus(scheduler);
         }
 
         public SecHubStatus getSecHubStatus() {
@@ -320,6 +345,16 @@ public class MockedSecHubClient extends AbstractSecHubClient {
         public void setSecHubReportForJob(UUID jobUUID, SecHubReport report) {
             reports.put(jobUUID, report);
         }
+    }
+
+    @Override
+    public String getServerVersion() throws SecHubClientException {
+        return mockDataAccess.getServerVersion();
+    }
+
+    @Override
+    public void requestNewApiToken(String emailAddress) throws SecHubClientException {
+        LOG.info("new api token was requested for email address: {}", emailAddress);
     }
 
 }

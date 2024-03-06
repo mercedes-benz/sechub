@@ -1,0 +1,5 @@
+// SPDX-License-Identifier: MIT
+[NOTE]
+====
+This folder can container helper files.
+====

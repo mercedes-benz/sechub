@@ -84,8 +84,8 @@ include 'sechub-cli',
 // Wrapper Xray
 'sechub-wrapper-xray',
 
-// WebUI
-'sechub-webui'
+/* webui */
+'sechub-webui-solution'
 
 String buildStage = System.getProperty("sechub.build.stage");
 
@@ -94,7 +94,7 @@ if (buildStage!=null) {
    /* build stage properrty is set */
    if (buildStage.equals("api-necessary") || buildStage.equals("all") ){
     
-      include 'sechub-api-java', /* needs open api file to generate */ 
+        include 'sechub-api-java', /* needs open api file to generate */ 
     
         /* system test - needs java api*/
         'sechub-systemtest',
@@ -103,8 +103,10 @@ if (buildStage!=null) {
         'sechub-pds-tools', 
         
         // Examples (are below 'sechub-examples' folder)
-        'sechub-examples:example-sechub-api-java' 
+        'sechub-examples:example-sechub-api-java',
     
+		/* WebUI - needs the Java API */
+		'sechub-webui'
     }
 }
 

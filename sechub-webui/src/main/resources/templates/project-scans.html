@@ -1,0 +1,40 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragments/header :: header (title='Scans')">
+<title>Projects</title>
+</head>
+<body class="container-flex flex-column">
+	<section th:replace="fragments/banner"></section>
+	<nav th:replace="fragments/navbar"></nav>
+	<main class="flex-grow padding-thin-all background-light">
+		<h1 th:text="#{scans.project-headline-prefix} + ': '+ ${scanProjectId}">Scans: Project 1x</h1>
+		<table class="placeholder">
+			<thead>
+				<tr>
+					<th>Date</th>
+					<th>Job UUID</th>
+					<th>Download</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr>
+					<td>23.04.2022</td>
+					<td>b9738d0e-a913-11ec-bd6c-c3a099311e89</td>
+					<td><a href="b9738d0e-a913-11ec-bd6c-c3a099311e89.zip">Download</a></td>
+				</tr>
+				<tr>
+					<td>22.04.2022</td>
+					<td>f79ba56c-a913-11ec-bb97-93283fb5d88b</td>
+					<td><a href="f79ba56c-a913-11ec-bb97-93283fb5d88b.zip">Download</a></td>
+				</tr>
+				<tr>
+					<td>04.04.2022</td>
+					<td>12c32504-a914-11ec-91ea-6b1199e06e4e</td>
+					<td><a href="12c32504-a914-11ec-91ea-6b1199e06e4e.zip">Download</a></td>
+				</tr>
+			</tbody>
+		</table>
+	</main>
+	<footer th:replace="fragments/footer"></footer>
+</body>
+</html>
