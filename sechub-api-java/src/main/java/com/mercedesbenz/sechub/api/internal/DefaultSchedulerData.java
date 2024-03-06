@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.api.internal;
 
 import com.mercedesbenz.sechub.api.SecHubStatus.JobsOverviewData;
