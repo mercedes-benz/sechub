@@ -45,6 +45,11 @@ if [[ "$PDS_TEST_KEY_VARIANTNAME" == "c" ]]; then
     exit 5
 fi
 
+if [[ "$PDS_TEST_KEY_VARIANTNAME" == "d" ]]; then
+    # Variant d - returns the sechub scan configuration as INFO message to check if it was handed over correctly
+    infoMessage "info:PDS_SCAN_CONFIGURATION=$PDS_SCAN_CONFIGURATION"
+fi
+
 # Otherwise - prepare done, write result with status "ok"
 echo "3.3. Prepare done, write result with state done"
 echo "SECHUB_PREPARE_RESULT;status=ok" > "$PDS_JOB_RESULT_FILE"

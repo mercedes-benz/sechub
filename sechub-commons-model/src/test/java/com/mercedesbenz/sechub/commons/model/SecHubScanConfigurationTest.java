@@ -48,8 +48,10 @@ class SecHubScanConfigurationTest {
         /* prepare */
         String json = TestFileReader.loadTextFile(new File("./src/test/resources/sechub_license_scan_non_existing_key.json"));
 
-        /* execute + test */
+        /* execute */
         SecHubScanConfiguration config = SecHubScanConfiguration.createFromJSON(json);
+
+        /* test */
         assertNotNull(config);
 
         // A configuration is returned - now test some content, so it is clear it is not
@@ -155,8 +157,10 @@ class SecHubScanConfigurationTest {
         /* prepare */
         String json = TestFileReader.loadTextFile(new File("./src/test/resources/sechub_remote_data_config_source_code_scan_example.json"));
 
-        /* execute + test */
+        /* execute */
         SecHubScanConfiguration config = SecHubScanConfiguration.createFromJSON(json);
+
+        /* test */
         assertNotNull(config);
 
         // testing the remote configuration for defined codeScan
@@ -187,8 +191,10 @@ class SecHubScanConfigurationTest {
         /* prepare */
         String json = TestFileReader.loadTextFile(new File("./src/test/resources/sechub_remote_data_config_binary_code_scan_example.json"));
 
-        /* execute + test */
+        /* execute */
         SecHubScanConfiguration config = SecHubScanConfiguration.createFromJSON(json);
+
+        /* test */
         assertNotNull(config);
 
         // testing the remote configuration for defined codeScan

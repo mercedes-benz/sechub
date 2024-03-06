@@ -11,6 +11,7 @@ import java.io.File;
 import java.util.Map;
 import java.util.UUID;
 
+import com.mercedesbenz.sechub.commons.model.Severity;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.Timeout;
@@ -229,14 +230,14 @@ public class PDSPrepareIntegrationScenario22IntTest {
     }
 
     @Test
-    public void startPDSPrepareJobFromRemoteCodeScanConfigurationwithoutClient() {
+    public void start_PDS_prepare_job_from_remote_code_scan_configuration_and_check_for_configuration() {
         /* @formatter:off */
 
         /* prepare */
         String configurationAsJson = TestFileReader.loadTextFile(new File("./src/test/resources/sechub-integrationtest-remote-scan-configuration.json"));
         SecHubScanConfiguration configuration = SecHubScanConfiguration.createFromJSON(configurationAsJson);
-        configuration.setProjectId("project1");
-        TestProject project = PROJECT_1;
+        configuration.setProjectId("project5");
+        TestProject project = PROJECT_5;
 
         /* execute */
         UUID jobUUID = as(USER_1).createJobAndReturnJobUUID(project, configuration);
@@ -245,14 +246,18 @@ public class PDSPrepareIntegrationScenario22IntTest {
         /* test */
         waitForJobDone(project, jobUUID, 30, true);
         String report = as(USER_1).getJobReport(project, jobUUID);
-
+        
+        String projectId = project.getProjectId();
+        
+        // tests if sechub scan configuration was successfully hand over
         assertReport(report).
                 enablePDSAutoDumpOnErrorsForSecHubJob(jobUUID).
-                hasTrafficLight(TrafficLight.OFF). // traffic light off, because the only report which was executed, but there was no result inside!
+                hasMessages(3).
+                hasTrafficLight(TrafficLight.OFF).
                 hasMessage(SecHubMessageType.INFO, "Some preperation info message for user in report (always).").
-                hasMessage(SecHubMessageType.WARNING, "No results from a security product available for this job!").
-                hasMessages(2).
+                hasMessage(SecHubMessageType.INFO, "info:PDS_SCAN_CONFIGURATION={\"codeScan\":{\"use\":[\"remote_example_name\"]},\"data\":{\"sources\":[{\"remote\":{\"type\":\"docker\",\"location\":\"remote_example_location\"},\"name\":\"remote_example_name\"}],\"binaries\":[]},\"apiVersion\":\"1.0\",\"projectId\":\""+ projectId +"\"}").
                 hasFindings(0);
+
 
         /* @formatter:on */
     }
