@@ -147,27 +147,82 @@ def buildVersionFiles(){
     // ------------------------
     // - PDS tools
     // ------------------------
-    def pdsToolsVersionInfo = versionData.defineVersion("PDS-Tools",buildVersionString(pdsToolsVersionCommitTag, hasChanged,buildNumber),pdsToolsVersionCommitTag)
+
+    // Get latest tagged pds-tools version
+    def latestPDSToolsTagCmd = [
+      'sh',
+      '-c',
+      'git tag -l --sort=-creatordate | grep -e \'^v.*-pds-tools$\' | head -1'
+    ]
+    def latestPDSToolsTag = latestPDSToolsTagCmd.execute().text.trim()
+    def latestPDSToolsVersion = latestPDSToolsTag - 'v'
+    latestPDSToolsVersion = latestPDSToolsVersion - "-pds-tools"
+
+    def pdsToolsVersionInfo = versionData.defineVersion("PDS-Tools",buildVersionString(pdsToolsVersionCommitTag, hasChanged,buildNumber),latestPDSToolsVersion)
 
     // ------------------------
     // - Libraries
     // ------------------------
-    def librariesVersionInfo =  versionData.defineVersion("Libraries",buildVersionString(librariesVersionCommitTag, hasChanged,buildNumber),librariesVersionCommitTag)
+
+    // Get latest tagged libraries version
+    def latestLibrariesTagCmd = [
+      'sh',
+      '-c',
+      'git tag -l --sort=-creatordate | grep -e \'^v.*-libraries$\' | head -1'
+    ]
+    def latestLibrariesTag = latestLibrariesTagCmd.execute().text.trim()
+    def latestLibrariesVersion = latestLibrariesTag - 'v'
+    latestLibrariesVersion = latestLibrariesVersion - "-libraries"
+
+    def librariesVersionInfo =  versionData.defineVersion("Libraries",buildVersionString(librariesVersionCommitTag, hasChanged,buildNumber),latestLibrariesVersion)
 
     // ------------------------
     // - Checkmarx wrapper
     // ------------------------
-    def checkmarxWrapperVersionInfo = versionData.defineVersion("Checkmarx Wrapper",buildVersionString(checkmarxWrapperVersionCommitTag, hasChanged, buildNumber),checkmarxWrapperVersionCommitTag)
+
+    // Get latest tagged checkmarx-wrapper version
+    def latestCxWrapperTagCmd = [
+      'sh',
+      '-c',
+      'git tag -l --sort=-creatordate | grep -e \'^v.*-checkmarx-wrapper$\' | head -1'
+    ]
+    def latestCxWrapperTag = latestCxWrapperTagCmd.execute().text.trim()
+    def latestCxWrapperVersion = latestCxWrapperTag - 'v'
+    latestCxWrapperVersion = latestCxWrapperVersion - "-checkmarx-wrapper"
+
+    def checkmarxWrapperVersionInfo = versionData.defineVersion("Checkmarx Wrapper",buildVersionString(checkmarxWrapperVersionCommitTag, hasChanged, buildNumber),latestCxWrapperVersion)
 
     // ------------------------
     // - OWASP-ZAP wrapper
     // ------------------------
-    def owaspzapWrapperVersionInfo = versionData.defineVersion("OWASP-ZAP Wrapper",buildVersionString(owaspzapWrapperVersionCommitTag, hasChanged, buildNumber),owaspzapWrapperVersionCommitTag)
+
+    // Get latest tagged owaspzap-wrapper version
+    def latestZapWrapperTagCmd = [
+      'sh',
+      '-c',
+      'git tag -l --sort=-creatordate | grep -e \'^v.*-zap-wrapper$\' | head -1'
+    ]
+    def latestZapWrapperTag = latestZapWrapperTagCmd.execute().text.trim()
+    def latestZapWrapperVersion = latestZapWrapperTag - 'v'
+    latestZapWrapperVersion = latestZapWrapperVersion - "-owaspzap-wrapper"
+
+    def owaspzapWrapperVersionInfo = versionData.defineVersion("OWASP-ZAP Wrapper",buildVersionString(owaspzapWrapperVersionCommitTag, hasChanged, buildNumber),latestZapWrapperVersion)
 
     // ------------------------
     // - XRAY wrapper
     // ------------------------
-    def xrayWrapperVersionInfo = versionData.defineVersion("XRAY Wrapper",buildVersionString(xrayWrapperVersionCommitTag, hasChanged, buildNumber),xrayWrapperVersionCommitTag)
+
+    // Get latest tagged xray-wrapper version
+    def latestXrayWrapperTagCmd = [
+      'sh',
+      '-c',
+      'git tag -l --sort=-creatordate | grep -e \'^v.*-xray-wrapper$\' | head -1'
+    ]
+    def latestXrayWrapperTag = latestXrayWrapperTagCmd.execute().text.trim()
+    def latestXrayWrapperVersion = latestXrayWrapperTag - 'v'
+    latestXrayWrapperVersion = latestXrayWrapperVersion - "-xray-wrapper"
+
+    def xrayWrapperVersionInfo = versionData.defineVersion("XRAY Wrapper",buildVersionString(xrayWrapperVersionCommitTag, hasChanged, buildNumber),latestXrayWrapperVersion)
 
 
     def stop = new Date()
