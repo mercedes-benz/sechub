@@ -131,7 +131,7 @@ public class PDSCheckmarxIntegrationScenario17IntTest {
         if (withAnalytics) {
             recompressPDSJobIndex=1; // when analytics enabled, we use the second PDS job (which does recompress the file)
         }
-        UUID pdsJobUUID = waitForPDSJobWithIndexOfSecHubJobAndReturnPDSJobUUID(jobUUID,recompressPDSJobIndex);
+        UUID pdsJobUUID = waitForPDSJobOfSecHubJobAtGivenPositionAndReturnPDSJobUUID(jobUUID,recompressPDSJobIndex);
         Map<String, String> variables = fetchPDSVariableTestOutputMap(pdsJobUUID);
 
         String sha256 = variables.get(TEST_RECOMPRESSED_ZIP_DATA_TXT_SHA256);

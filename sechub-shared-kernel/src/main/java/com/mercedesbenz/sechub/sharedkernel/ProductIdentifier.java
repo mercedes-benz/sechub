@@ -59,6 +59,9 @@ public enum ProductIdentifier {
     /** Product delegation server - analytics */
     PDS_ANALYTICS(ScanType.ANALYTICS),
 
+    /** Product delegation server - prepare */
+    PDS_PREPARE(ScanType.PREPARE),
+
     UNKNOWN(ScanType.UNKNOWN);
 
     ;

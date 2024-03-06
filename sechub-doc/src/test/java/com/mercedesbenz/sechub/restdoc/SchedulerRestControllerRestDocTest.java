@@ -941,7 +941,7 @@ public class SchedulerRestControllerRestDocTest implements TestIsNecessaryForDoc
                                     requestParameters(
                                             parameterWithName("checkSum").description("A sha256 checksum for file upload validation")
                                     ),
-                                    // TODO jeeppler, 2020-12-07: It is not possible to document this part properly in OpenAPI.
+                                    // TODO Jeremias Eppler, 2020-12-07: It is not possible to document this part properly in OpenAPI.
                                     // See: https://github.com/ePages-de/restdocs-api-spec/issues/105
                 					requestParts(partWithName("file").description("The sourcecode as zipfile to upload"))
         			));

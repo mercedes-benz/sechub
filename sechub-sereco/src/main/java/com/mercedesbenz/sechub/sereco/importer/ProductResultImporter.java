@@ -34,9 +34,9 @@ public interface ProductResultImporter {
      * able to import the product result!
      *
      * @param param
-     * @return import ability.
+     * @return <code>true</code> when being able to import
      */
-    public ProductImportAbility isAbleToImportForProduct(ImportParameter param);
+    public boolean isAbleToImportForProduct(ImportParameter param);
 
     /**
      * @return name of this import - normally only the simple class name
@@ -44,4 +44,17 @@ public interface ProductResultImporter {
     public default String getName() {
         return getClass().getSimpleName();
     }
+
+    /**
+     * Returns <code>true</code> if this importer is for a security product result
+     * or not. For example: A preparation does not contain findings but only user
+     * messages. In this case the method should return false.
+     *
+     * @return <code>true</code> when the import is for security product, means
+     *         findings, otherwise <code>false</code>
+     */
+    public default boolean isForSecurityProduct() {
+        return true;
+    }
+
 }

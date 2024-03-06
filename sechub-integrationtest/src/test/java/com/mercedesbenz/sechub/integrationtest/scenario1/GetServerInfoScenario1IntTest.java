@@ -10,6 +10,7 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.springframework.http.HttpStatus;
 
+import com.mercedesbenz.sechub.commons.model.JSONConverter;
 import com.mercedesbenz.sechub.integrationtest.api.IntegrationTestSetup;
 
 public class GetServerInfoScenario1IntTest {
@@ -33,18 +34,22 @@ public class GetServerInfoScenario1IntTest {
 
     @Test
     public void get_server_version_as_admin_is_possible() {
+        record ServerVersion(String serverVersion) {
+        }
+        ;
+
         /* execute */
-        String version = as(SUPER_ADMIN).getServerVersion();
+        String json = as(SUPER_ADMIN).getServerVersion();
+
+        ServerVersion serverVersion = JSONConverter.get().fromJSON(ServerVersion.class, json);
 
         /* test */
-        assertNotNull(version);
-        assertFalse(version.isEmpty());
         /* version must be X.Y.Z and not something ala vX.Y.Z or X.Y.Z-server" */
-        assertFalse(version.startsWith("v"));
-        assertFalse(version.endsWith("-server"));
+        assertFalse(serverVersion.serverVersion.startsWith("v"));
+        assertFalse(serverVersion.serverVersion.endsWith("-server"));
         /* check format is like regexp */
-        assertTrue("Given version is not accepted:" + version + "\nExpected format like:" + VERSIONPATTERN_MAJOR_MINOR_HOTFIX,
-                PATTERN_ONLY_MAJOR_MINOR_HOTFIX.matcher(version).matches());
+        assertTrue("Given version is not accepted:" + serverVersion.serverVersion + "\nExpected format like:" + VERSIONPATTERN_MAJOR_MINOR_HOTFIX,
+                PATTERN_ONLY_MAJOR_MINOR_HOTFIX.matcher(serverVersion.serverVersion).matches());
     }
 
 }

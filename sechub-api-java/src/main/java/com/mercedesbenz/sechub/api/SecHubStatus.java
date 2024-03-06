@@ -1,21 +1,43 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.api;
 
-import java.util.Collections;
-import java.util.Map;
-import java.util.TreeMap;
-
 public class SecHubStatus {
 
-    Map<String, String> statusInformation = new TreeMap<>();
+    private SchedulerData scheduler;
 
-    public Map<String, String> getStatusInformationMap() {
-        return Collections.unmodifiableMap(statusInformation);
+    public SecHubStatus(SchedulerData schedulerData) {
+        if (schedulerData == null) {
+            throw new IllegalArgumentException("scheduler may not be null!");
+        }
+        this.scheduler = schedulerData;
     }
 
-    @Override
-    public String toString() {
-        return "SecHubStatus [" + (statusInformation != null ? "statusInformation=" + statusInformation : "") + "]";
+    public SchedulerData getScheduler() {
+        return scheduler;
+    }
+
+    public interface SchedulerData {
+        boolean isEnabled();
+
+        public JobsOverviewData getJobs();
+    }
+
+    public interface JobsOverviewData {
+
+        long getAll();
+
+        long getCancelRequested();
+
+        long getCanceled();
+
+        long getEnded();
+
+        long getInitializating();
+
+        long getReadyToStart();
+
+        long getStarted();
+
     }
 
 }

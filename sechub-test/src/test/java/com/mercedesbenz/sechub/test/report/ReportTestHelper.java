@@ -32,7 +32,7 @@ public class ReportTestHelper {
 
     private static final String REPORT_PATH = "./src/test/resources/report/";
 
-    private static final SarifV1JSONImporter sarifImporter = new SarifV1JSONImporter();
+    private static final SarifV1JSONImporter sarifImporter = new TestSarifV1JSONImporter();
     private static final CheckmarxV1XMLImporter checkmarxImporter = new CheckmarxV1XMLImporter();
     private static final SerecoProductResultTransformer serecoProductResultTransformer = new TestSerecoProductResultTransformer();
 

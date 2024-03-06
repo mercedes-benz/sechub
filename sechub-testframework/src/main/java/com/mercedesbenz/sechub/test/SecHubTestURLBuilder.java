@@ -501,8 +501,8 @@ public class SecHubTestURLBuilder extends AbstractTestURLBuilder {
         return buildUrl(API_ANONYMOUS, "integrationtest/" + projectId + "/" + jobUUID + "/uploaded/" + fileName);
     }
 
-    public String buildGetServerVersionUrl() {
-        return buildUrl(API_ADMIN, "info/version");
+    public String buildGetServerRuntimeDataUrl() {
+        return buildUrl(API_ADMIN, "info/server");
     }
 
     /* +-----------------------------------------------------------------------+ */
