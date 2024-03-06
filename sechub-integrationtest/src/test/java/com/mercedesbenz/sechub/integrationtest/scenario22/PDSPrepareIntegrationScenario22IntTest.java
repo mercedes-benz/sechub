@@ -48,6 +48,7 @@ public class PDSPrepareIntegrationScenario22IntTest {
         project2_sechub_calls_prepare_and_checkmarx();
         project3_sechub_calls_prepare_which_fails_will_not_start_checkmarx();
         project4_sechub_calls_prepare_which_fails_because_internal_failure_will_not_start_checkmarx();
+        start_PDS_prepare_job_from_remote_code_scan_configuration_and_check_for_configuration();
     }
 
     // @Test
@@ -227,7 +228,7 @@ public class PDSPrepareIntegrationScenario22IntTest {
           /* @formatter:on */
     }
 
-    @Test
+    // @Test
     public void start_PDS_prepare_job_from_remote_code_scan_configuration_and_check_for_configuration() {
         /* @formatter:off */
 
@@ -243,9 +244,6 @@ public class PDSPrepareIntegrationScenario22IntTest {
 
         /* test */
         waitForJobDone(project, jobUUID, 30, true);
-        String report = as(USER_1).getJobReport(project, jobUUID);
-
-        String projectId = project.getProjectId();
 
         UUID pdsJobUUID = waitForFirstPDSJobOfSecHubJobAndReturnPDSJobUUID(jobUUID);
         Map<String, String> variables = fetchPDSVariableTestOutputMap(pdsJobUUID);
