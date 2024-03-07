@@ -6,6 +6,7 @@ on:
     inputs:
       actor-email:
         description: Insert your email address here. It will be used in the generated pull requests
+        required: true
       webui-version:
         description: WebUI Version (e.g. 0.1.0)
         required: true
@@ -28,12 +29,6 @@ jobs:
         if: (inputs.webui-version == '') || (inputs.webui-milestone-number == '')
         run: |
           echo "For WebUI release, webui-version and webui-milestone-number must be provided!"
-          exit 1
-
-      - name: "Verify actor-email is not empty"
-        if: (inputs.actor-email == '')
-        run: |
-          echo "actor-email must be provided!"
           exit 1
 
       - name: Checkout master
@@ -96,7 +91,7 @@ jobs:
       # ----------------------
       # Build SecHub WebUI
       # ----------------------
-      - name: Build Server, DAUI and generate OpenAPI file
+      - name: Build WebUI jar files
         run: ./gradlew ensureLocalhostCertificate :sechub-api-java:build :sechub-webui:build -Dsechub.build.stage=api-necessary --console=plain
 
       # To identifiy parts not in git history
