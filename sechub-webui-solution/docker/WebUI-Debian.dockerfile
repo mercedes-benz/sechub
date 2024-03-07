@@ -82,9 +82,9 @@ RUN export DEBIAN_FRONTEND=noninteractive && \
 
 # Download the SecHub WebUI jar file
 RUN cd "$WEBUI_ARTIFACT_FOLDER" && \
-    wget --no-verbose "https://github.com/mercedes-benz/sechub/releases/download/v$WEBUI_VERSION-pds/sechub-pds-$WEBUI_VERSION.jar.sha256sum" && \
-    wget --no-verbose "https://github.com/mercedes-benz/sechub/releases/download/v$WEBUI_VERSION-pds/sechub-pds-$WEBUI_VERSION.jar" && \
-    sha256sum --check "sechub-pds-$WEBUI_VERSION.jar.sha256sum"
+    wget --no-verbose "https://github.com/mercedes-benz/sechub/releases/download/v$WEBUI_VERSION-webui/sechub-webui-$WEBUI_VERSION.jar.sha256sum" && \
+    wget --no-verbose "https://github.com/mercedes-benz/sechub/releases/download/v$WEBUI_VERSION-webui/sechub-webui-$WEBUI_VERSION.jar" && \
+    sha256sum --check "sechub-webui-$WEBUI_VERSION.jar.sha256sum"
 
 #-------------------
 # Builder Copy Jar
