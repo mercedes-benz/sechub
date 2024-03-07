@@ -23,10 +23,10 @@ public class SecHubConfigurationModelReducedCloningSupport {
      * @return JSON representing a reduced {@link SecHubScanConfiguration}
      */
     public String createReducedScanConfigurationCloneJSON(SecHubConfigurationModel model, ScanType scanTypeForClone) {
-        if (ScanType.ANALYTICS.equals(scanTypeForClone)) {
+        if (ScanType.ANALYTICS.equals(scanTypeForClone) || ScanType.PREPARE.equals(scanTypeForClone)) {
             /*
-             * special case: for analytics we want always the complete model, so we just
-             * return JSON for the origin model
+             * special case: for analytics and prepare phase we want always the complete
+             * model, so we just return JSON for the origin model
              */
             return JSONConverter.get().toJSON(model);
         }

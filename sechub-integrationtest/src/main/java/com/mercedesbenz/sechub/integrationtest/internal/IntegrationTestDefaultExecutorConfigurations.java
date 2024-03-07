@@ -69,6 +69,7 @@ public class IntegrationTestDefaultExecutorConfigurations {
     public static final String PDS_PREPARE_VARIANT_A = "a";
     public static final String PDS_PREPARE_VARIANT_B = "b";
     public static final String PDS_PREPARE_VARIANT_C = "c";
+    public static final String PDS_PREPARE_VARIANT_D = "d";
 
     public static final String PDS_LICENSESCAN_VARIANT_A = "a";
 
@@ -235,6 +236,12 @@ public class IntegrationTestDefaultExecutorConfigurations {
 
     public static final TestExecutorConfig PDS_V1_PREPARE_INTEGRATIONTEST_VARIANT_C = definePDSScan(
             PDS_PREPARE_VARIANT_C, false,
+            PDSIntTestProductIdentifier.PDS_INTTEST_PRODUCT_PREPARE,
+            StorageType.REUSE_SECHUB_DATA,
+            PDS_PREPARE);
+
+    public static final TestExecutorConfig PDS_V1_PREPARE_INTEGRATIONTEST_VARIANT_D = definePDSScan(
+            PDS_PREPARE_VARIANT_D, false,
             PDSIntTestProductIdentifier.PDS_INTTEST_PRODUCT_PREPARE,
             StorageType.REUSE_SECHUB_DATA,
             PDS_PREPARE);
