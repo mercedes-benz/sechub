@@ -73,7 +73,7 @@ public class SerecoProductResultTransformerTest {
         assertEquals(Integer.valueOf(1), code1.getLine());
         assertEquals(Integer.valueOf(2), code1.getColumn());
         assertEquals("Location1", code1.getLocation());
-        assertEquals("source1", code1.getSource());
+        assertEquals("*******", code1.getSource());
         assertEquals("relevantPart1", code1.getRelevantPart());
 
         SecHubCodeCallStack code2 = code1.getCalls();
@@ -81,8 +81,41 @@ public class SerecoProductResultTransformerTest {
         assertEquals(Integer.valueOf(3), code2.getLine());
         assertEquals(Integer.valueOf(4), code2.getColumn());
         assertEquals("Location2", code2.getLocation());
-        assertEquals("source2", code2.getSource());
+        assertEquals("*******", code2.getSource());
         assertEquals("relevantPart2", code2.getRelevantPart());
+    }
+
+    @Test
+    public void secrect_scan_visible_characters_obfuscation_length() throws Exception {
+        /* prepare */
+        String converted = createMetaDataWithOneVulnerabilityAsSecretFound();
+
+        /* execute */
+        transformerToTest.sourceVisibleLength = 2;
+        ReportTransformationResult result1 = transformerToTest.transform(createProductResult(converted));
+        transformerToTest.sourceVisibleLength = 4;
+        ReportTransformationResult result2 = transformerToTest.transform(createProductResult(converted));
+        transformerToTest.sourceVisibleLength = 10;
+        ReportTransformationResult result3 = transformerToTest.transform(createProductResult(converted));
+
+        /* test */
+        SecHubResult sechubResult = result1.getResult();
+        SecHubFinding finding1 = sechubResult.getFindings().get(0);
+
+        SecHubCodeCallStack code1 = finding1.getCode();
+        assertEquals("so*****", code1.getSource());
+
+        SecHubResult sechubResult2 = result2.getResult();
+        SecHubFinding finding2 = sechubResult2.getFindings().get(0);
+
+        SecHubCodeCallStack code2 = finding2.getCode();
+        assertEquals("sour***", code2.getSource());
+
+        SecHubResult sechubResult3 = result3.getResult();
+        SecHubFinding finding3 = sechubResult3.getFindings().get(0);
+
+        SecHubCodeCallStack code3 = finding3.getCode();
+        assertEquals("source1", code3.getSource());
 
     }
 

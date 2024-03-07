@@ -56,6 +56,10 @@ public class SerecoProductResultTransformer implements ReportProductResultTransf
     @MustBeDocumented(scope = "administration", value = "Administrators can turn on this mode to allow product links in json and HTML output")
     boolean showProductLineResultLink;
 
+    @Value("${sechub.secretscan.source.visible.length:0}")
+    @MustBeDocumented(scope = "administration", value = "Administrators edit the number of non-obfuscated secret characters.")
+    int sourceVisibleLength;
+
     private static final Logger LOG = LoggerFactory.getLogger(SerecoProductResultTransformer.class);
 
     @Override
@@ -115,8 +119,10 @@ public class SerecoProductResultTransformer implements ReportProductResultTransf
             }
             switch (scanType) {
             case CODE_SCAN:
+                finding.setCode(convert(vulnerability.getCode(), false));
+                break;
             case SECRET_SCAN:
-                finding.setCode(convert(vulnerability.getCode()));
+                finding.setCode(convert(vulnerability.getCode(), true));
                 break;
             case INFRA_SCAN:
                 break;
@@ -267,17 +273,35 @@ public class SerecoProductResultTransformer implements ReportProductResultTransf
         finding.setCveId(clazz.getCve());
     }
 
-    private SecHubCodeCallStack convert(SerecoCodeCallStackElement element) {
+    private String obfuscateSecret(String secret) {
+        // if the visible length is negative or gets greater than the secret, we show
+        // the full secret
+        if (sourceVisibleLength < 0 || sourceVisibleLength > secret.length()) {
+            sourceVisibleLength = secret.length();
+        }
+        String cutSecret = String.format("%." + sourceVisibleLength + "s", secret);
+        return cutSecret + "*".repeat(secret.length() - sourceVisibleLength);
+    }
+
+    private SecHubCodeCallStack convert(SerecoCodeCallStackElement element, boolean obfuscateSource) {
         if (element == null) {
             return null;
+        }
+
+        // obfuscate clear text characters
+        String source;
+        if (obfuscateSource) {
+            source = obfuscateSecret(element.getSource());
+        } else {
+            source = element.getSource();
         }
 
         SecHubCodeCallStack codeCallStack = new SecHubCodeCallStack();
         codeCallStack.setLine(element.getLine());
         codeCallStack.setColumn(element.getColumn());
         codeCallStack.setLocation(element.getLocation());
-        codeCallStack.setSource(element.getSource());
-        codeCallStack.setCalls(convert(element.getCalls()));
+        codeCallStack.setSource(source);
+        codeCallStack.setCalls(convert(element.getCalls(), obfuscateSource));
         codeCallStack.setRelevantPart(element.getRelevantPart());
 
         return codeCallStack;
