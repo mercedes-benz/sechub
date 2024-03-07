@@ -11,6 +11,8 @@ ARG BASE_IMAGE
 ARG WEBUI_VERSION
 ARG BUILD_TYPE
 
+# possible values: temurin, openj9, openjdk
+ARG JAVA_DISTRIBUTION="temurin"
 # possible values: 17
 ARG JAVA_VERSION="17"
 
@@ -24,6 +26,7 @@ ARG WEBUI_ARTIFACT_FOLDER="/artifacts"
 FROM ${BASE_IMAGE} AS builder-build
 
 # Build args
+ARG JAVA_DISTRIBUTION
 ARG JAVA_VERSION
 ARG TAG
 ARG BRANCH
@@ -39,8 +42,14 @@ RUN mkdir --parent "$WEBUI_ARTIFACT_FOLDER" "$DOWNLOAD_FOLDER"
 RUN export DEBIAN_FRONTEND=noninteractive && \
     apt-get update && \
     apt-get upgrade --assume-yes --quiet && \
-    apt-get install --quiet --assume-yes wget w3m git "openjdk-$JAVA_VERSION-jdk-headless" && \
+    apt-get install --assume-yes --quiet git wget && \
     apt-get clean
+
+COPY --chmod=755 install-java/debian "$DOWNLOAD_FOLDER/install-java/"
+
+# Install Java
+RUN cd "$DOWNLOAD_FOLDER/install-java/" && \
+    ./install-java.sh "$JAVA_DISTRIBUTION" "$JAVA_VERSION" jdk
 
 # Copy clone script
 COPY --chmod=755 clone.sh "$BUILD_FOLDER/clone.sh"
@@ -113,6 +122,7 @@ LABEL org.opencontainers.image.description="The SecHub WebUI image"
 LABEL maintainer="SecHub FOSS Team"
 
 ARG WEBUI_ARTIFACT_FOLDER
+ARG JAVA_DISTRIBUTION
 ARG JAVA_VERSION
 ARG WEBUI_VERSION
 
@@ -137,8 +147,14 @@ COPY --from=builder "$WEBUI_ARTIFACT_FOLDER" "$WEBUI_FOLDER"
 RUN export DEBIAN_FRONTEND=noninteractive && \
     apt-get update && \
     apt-get upgrade --assume-yes --quiet && \
-    apt-get install --assume-yes --quiet "openjdk-$JAVA_VERSION-jre-headless" tree && \
+    apt-get install --assume-yes --quiet tree unzip && \
     apt-get clean
+
+COPY --chmod=755 install-java/debian "$DOWNLOAD_FOLDER/install-java/"
+
+# Install Java
+RUN cd "$DOWNLOAD_FOLDER/install-java/" && \
+    ./install-java.sh "$JAVA_DISTRIBUTION" "$JAVA_VERSION" jre
 
 # Copy run script into the container
 COPY run.sh /run.sh
