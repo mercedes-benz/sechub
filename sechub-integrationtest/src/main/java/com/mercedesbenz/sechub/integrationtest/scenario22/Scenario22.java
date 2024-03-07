@@ -82,12 +82,20 @@ public class Scenario22 extends AbstractGrowingSecHubServerTestScenario implemen
     public static final TestProject PROJECT_3 = createTestProject(Scenario22.class, "project3");
 
     /**
-     * Project 3 is created on startup, and has {@link #USER_1} +
+     * Project 4 is created on startup, and has {@link #USER_1} +
      * {@link IntegrationTestDefaultProfiles#PROFILE_30_PDS_PREPARE_EXIT_5 profile
      * 30 (exit 5 preparation)} and {@link IntegrationTestDefaultProfiles#PROFILE_1
      * profile 12 (checkmarx)} prepare assigned
      */
     public static final TestProject PROJECT_4 = createTestProject(Scenario22.class, "project4");
+
+    //
+    /**
+     * Project 5 is created on startup, and has {@link #USER_1} +
+     * {@link IntegrationTestDefaultProfiles#PROFILE_31_PDS_PREPARE_SCAN_CONFIG_SUCCESS
+     * profile 30 (exit 5 preparation)} assigned
+     */
+    public static final TestProject PROJECT_5 = createTestProject(Scenario22.class, "project5");
 
     @Override
     protected void initializeTestData() {
@@ -112,7 +120,11 @@ public class Scenario22 extends AbstractGrowingSecHubServerTestScenario implemen
                 createProject(PROJECT_4, USER_1).
                 addProjectIdsToDefaultExecutionProfile(PROFILE_30_PDS_PREPARE_EXIT_5,PROJECT_4).
                 addProjectIdsToDefaultExecutionProfile(PROFILE_1,PROJECT_4).
-                assignUserToProject(PROJECT_4, USER_1);
+                assignUserToProject(PROJECT_4, USER_1).
+
+                createProject(PROJECT_5, USER_1).
+                addProjectIdsToDefaultExecutionProfile(PROFILE_31_PDS_PREPARE_SCAN_CONFIG_SUCCESS,PROJECT_5).
+                assignUserToProject(PROJECT_5,USER_1);
         ;
         /* @formatter:on */
     }
