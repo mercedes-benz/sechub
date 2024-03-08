@@ -47,9 +47,9 @@ start_server() {
     java $JAVA_DEBUG_OPTIONS \
         -Dfile.encoding=UTF-8 \
         -Dspring.profiles.active="$profiles" \
-        -Dwebui.sechub.apitoken="$SECHUB_APITOKEN" \
-        -Dwebui.sechub.userid="$SECHUB_USERID" \
         -Dwebui.sechub.server-url="$SECHUB_SERVER_URL" \
+        -Dwebui.sechub.userid="$SECHUB_USERID" \
+        -Dwebui.sechub.apitoken="$SECHUB_APITOKEN" \
         -Dserver.port=4443 \
         -Dserver.address=0.0.0.0 \
         -jar $WEBUI_FOLDER/sechub-webui-*.jar &

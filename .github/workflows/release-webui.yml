@@ -206,20 +206,20 @@ jobs:
           milestone: ${{ inputs.webui-milestone-number }}
 
       # Build SecHub WebUI container image + push to ghcr
-      - name: Build webui ${{ inputs.webui-version }} container image + push to ghcr
+      - name: Build sechub-webui ${{ inputs.webui-version }} container image + push to ghcr
         run: |
           WEBUI_VERSION="${{ inputs.webui-version }}"
-          DOCKER_REGISTRY="$ACTIONS_SECHUB_REGISTRY/webui"
+          DOCKER_REGISTRY="$ACTIONS_SECHUB_REGISTRY/sechub-webui"
           VERSION_TAG="${WEBUI_VERSION}"
           cp sechub-webui/build/libs/sechub-webui-${WEBUI_VERSION}.jar sechub-webui-solution/docker/copy/
           cd sechub-webui-solution
           echo "# Building image $DOCKER_REGISTRY:$VERSION_TAG"
           echo "  from $ACTIONS_BASE_IMAGE_DEBIAN"
-          ./10-create-image.sh $DOCKER_REGISTRY $VERSION_TAG $WEBUI_VERSION $ACTIONS_BASE_IMAGE_DEBIAN copy
+          ./10-create-image.sh "$DOCKER_REGISTRY" "$VERSION_TAG" "$WEBUI_VERSION" "$ACTIONS_BASE_IMAGE_DEBIAN" copy
           echo "# Pushing image $DOCKER_REGISTRY:$VERSION_TAG (latest)"
-          ./20-push-image.sh $DOCKER_REGISTRY $VERSION_TAG yes
+          ./20-push-image.sh "$DOCKER_REGISTRY" "$VERSION_TAG" yes
 
-      # - name: Build Server Helm chart + push to ghcr
+      # - name: Build sechub-webui Helm chart + push to ghcr
       #   shell: bash
       #   run: |
       #     cd sechub-webui-solution/helm

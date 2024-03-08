@@ -1,0 +1,17 @@
+# SPDX-License-Identifier: MIT
+
+apiVersion: v2
+name: sechub-webui
+description: SecHub WebUI Helm chart for Kubernetes
+
+type: application
+
+maintainers:
+  - name: Sven Dolderer
+  - name: Rouven Haertel
+
+# This is the chart version.
+# This version number should be incremented each time you make changes to the chart and its templates.
+# Versions are expected to follow Semantic Versioning (https://semver.org/)
+
+version: 0.1.0

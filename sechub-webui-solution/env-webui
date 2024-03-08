@@ -1,6 +1,6 @@
-# Start mode of WebUI. 
+# Start mode of WebUI.
 # Possible values are: localserver, mocked
-# the mocked mode does not require a connection 
+# the mocked mode does not require a connection
 # to the SecHub server
 WEBUI_START_MODE="localserver"
 

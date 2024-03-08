@@ -6,7 +6,7 @@
 replicaCount: 1
 
 image:
-  registry: "ghcr.io/mercedes-benz/sechub/server"
+  registry: "ghcr.io/mercedes-benz/sechub/sechub-server"
   tag: "latest"
   # Optional: If your image is in a private registry, you can specify pull secrets defined in k8s
   #   Docs: https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/
@@ -74,7 +74,7 @@ server:
       size:
         minimumIdle: 5
         maximum: 30
-    # Configure Spring Boot's embadded Tomcat
+    # Configure Spring Boot's embedded Tomcat
     embeddedTomcat:
       logging:
         enabled: false
