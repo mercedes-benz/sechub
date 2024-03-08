@@ -24,6 +24,7 @@ describe('sechub-cli', function() {
         /* test */
         expect(jobUUID).toEqual('6880e518-88db-406a-bc67-851933e7e5b7');
     });
+    
     it('extractJobUUID returns job uuid from string with "job: xxxx"', function () {
         
         const output = `

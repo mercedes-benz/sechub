@@ -13920,7 +13920,6 @@ function getFieldFromJsonReport(field, jsonData) {
 /**
  * Collect all necessary report data, downloads additional report formats (e.g. 'html') if necessary
  */
-core.startGroup('Collect report data');
 function collectReportData(context) {
     core.startGroup('Collect report data');
     collectJsonReportData(context);
@@ -13929,7 +13928,7 @@ function collectReportData(context) {
 }
 function collectJsonReportData(context) {
     /* json - already downloaded by client on scan, here we just ensure it exists and fetch the data from the model */
-    const fileName = getFirstJsonReportFileName(context);
+    const fileName = resolveReportNameForScanJob(context);
     const filePath = `${getWorkspaceDir()}/${fileName}`;
     let text = '';
     try {
@@ -13998,10 +13997,10 @@ async function uploadArtifact(context, name, paths) {
     core.endGroup();
 }
 /**
- * Get the JSON report file name from the workspace directory.
+ * Get the JSON report file name for the scan job from the workspace directory.
  * @returns {string} - The JSON report file name or an empty string if not found.
  */
-function getFirstJsonReportFileName(context) {
+function resolveReportNameForScanJob(context) {
     const workspaceDir = getWorkspaceDir();
     const filesInWorkspace = shell.ls(workspaceDir);
     if (!context.jobUUID) {

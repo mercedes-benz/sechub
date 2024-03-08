@@ -6,9 +6,7 @@ export class IntegrationTestContext {
    
     workspaceDir: string|undefined;
     
-    serverVersion: string|undefined;
     serverPort: number|undefined;
-    
     serverUserId: string|undefined;
     serverApiToken: string|undefined;
     

@@ -13,7 +13,6 @@ import { getFieldFromJsonReport } from './json-helper';
 /**
  * Collect all necessary report data, downloads additional report formats (e.g. 'html') if necessary
  */
-core.startGroup('Collect report data');
 export function collectReportData(context: LaunchContext) {
     core.startGroup('Collect report data');
 
@@ -26,7 +25,7 @@ export function collectReportData(context: LaunchContext) {
 function collectJsonReportData(context: LaunchContext) {
 
     /* json - already downloaded by client on scan, here we just ensure it exists and fetch the data from the model */
-    const fileName = getFirstJsonReportFileName(context);
+    const fileName = resolveReportNameForScanJob(context);
     const filePath = `${getWorkspaceDir()}/${fileName}`;
     let text = '';
     try {
@@ -104,10 +103,10 @@ export async function uploadArtifact(context: LaunchContext, name: string, paths
 }
 
 /**
- * Get the JSON report file name from the workspace directory.
+ * Get the JSON report file name for the scan job from the workspace directory.
  * @returns {string} - The JSON report file name or an empty string if not found.
  */
-function getFirstJsonReportFileName(context: LaunchContext): string {
+function resolveReportNameForScanJob(context: LaunchContext): string {
     const workspaceDir = getWorkspaceDir();
     const filesInWorkspace = shell.ls(workspaceDir);
 
@@ -175,18 +174,18 @@ function analyzeFindings(jsonData: any): { mediumCount: number; highCount: numbe
 
     findings.forEach((finding: { severity: string; }) => {
         switch (finding.severity) {
-            case 'MEDIUM':
-                mediumCount++;
-                break;
-            case 'HIGH':
-                highCount++;
-                break;
-            case 'LOW':
-                lowCount++;
-                break;
-            default:
-                unmapped++;
-                break;
+        case 'MEDIUM':
+            mediumCount++;
+            break;
+        case 'HIGH':
+            highCount++;
+            break;
+        case 'LOW':
+            lowCount++;
+            break;
+        default:
+            unmapped++;
+            break;
         }
     });
 

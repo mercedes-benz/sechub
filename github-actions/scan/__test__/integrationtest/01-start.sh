@@ -19,7 +19,7 @@ set -e
 # Example:
 # ```
 # cd $gitRoot/github-actions/scan
-# ./01-start.sh 1.4.1 8443 1.4.0 8444
+# ./01-start.sh 1.7.0 8443 1.4.0 8444
 # ```
 #
 SERVER_VERSION=$1

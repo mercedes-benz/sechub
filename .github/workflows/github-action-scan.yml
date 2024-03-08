@@ -35,7 +35,7 @@ jobs:
       - name: Setup integration test data
         id : version-selector
         run: |
-          echo "sechub_server_version=1.4.1" >> "$GITHUB_ENV"
+          echo "sechub_server_version=1.7.0" >> "$GITHUB_ENV"
           echo "sechub_server_port=8443" >> "$GITHUB_ENV"
           echo "pds_version=1.4.0" >> "$GITHUB_ENV"
           echo "pds_port=8444" >> "$GITHUB_ENV"

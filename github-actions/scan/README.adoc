@@ -1,8 +1,12 @@
 // SPDX-License-Identifier: MIT
+:toc:
+:toclevels: 5
 
 == GitHub Action for SecHub scan
 
 This GitHub action uses the SecHub cli to scan the repository for security issues.
+
+
 
 
 === Usage
@@ -121,8 +125,7 @@ export SECHUB_DEBUG=true
 The unit and also the integration tests are written with `jest` test framework.
 
 ===== Setup
-
-**VSCodium**
+====== VSCodium
 
 Used extensions
 
@@ -130,17 +133,19 @@ Used extensions
 - Jest Test explorer
 - Jest
 
-In this setup the tests can be executed from sidebar and from links created inside editor.
+In this setup the tests can be executed from sidebar and from links created inside the editor.
 
-But ... unfortunately, the Jest UI integration works only for npm script "test" which is normally not used for
-integration tests (to handle them special). 
+[TIP]
+==== 
+Unfortunately, the Jest UI integration works only for npm script "test". But to handle integration tests different (the tests shall only be executed when all is build and servers are started) they are not executed by "test" script.
 
-If you want to debug an integration test, there is a workaround necessary:
+If you want to **debug an integration test**, there is a temporary workaround necessary while you debug the test:
 
 - open `package.json` and look into section `scripts`
-- switch `test-debug-all` to `test` and name former `test` script entry to `test-debug-not-integrationtest`
+- switch `test-with-integrationtests` to `test` and rename former `test` script entry to something else - e.g. `test-without-integrationtests`
   (but please do not push this - otherwise build will fail on integration test!)
 - restart your VSCode/VSCodium instance (if integration tests are not listed in test explorer)
 - debug the parts, fix it etc.
-- switch `test` script entry to `test-debug-all` and `test-debug-not-integrationtest` to `test`.
+- switch `test` script entry back to `test-with-integrationtests` and `test-without-integrationtests` to `test`.
 - if necessary push fixes/changes to remote...
+==== 

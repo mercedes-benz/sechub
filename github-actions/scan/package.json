@@ -8,7 +8,7 @@
     "cleanBuild": "ncc cache clean;ncc build src/main.ts",
     "lint": "eslint src",
     "prettier": "npx prettier --write src",
-    "test-debug-all": "npx jest",
+    "test-with-integrationtests": "npx jest",
     "test": "npx jest --testPathIgnorePatterns='integrationtest.test.ts'",
     "integration-test": "jest --runInBand --testPathPattern='integrationtest.test.ts'"
   },

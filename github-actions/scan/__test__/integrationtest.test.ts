@@ -19,7 +19,7 @@ jest.mock('@actions/artifact');
 /*
 * This is an integration test suite for github-action "scan".
 * As precondition you have to call "01-start.sh" and "03-init_sechub_data.sh" (please look into scripts for an example and more details, or 
-* call 'sdc -bgh' to do a full build for github action which does automatically execute the scripts and this test)
+* call 'sdc -bgh' to do a full build for github action which does automatically execute the scripts and all integration tests)
 *
 * After start and prepare scripts have finished you can execute the integration tests via "npm run integration-test"
 *
@@ -34,7 +34,6 @@ const integrationTestContext = new IntegrationTestContext();
 
 integrationTestContext.workspaceDir = getWorkspaceDir();
 
-integrationTestContext.serverVersion = '1.4.0'; // TODO make this configurable - in our start script it is already configurable
 integrationTestContext.serverPort = 8443; // TODO make this configurable - in our start script it is already configurable
 integrationTestContext.serverUserId = 'int-test_superadmin'; // TODO make this configurable - in our start script it is already configurable
 integrationTestContext.serverApiToken = 'int-test_superadmin-pwd'; // TODO make this configurable - in our start script it is already configurable
@@ -84,7 +83,7 @@ function initInputMap() {
     mockedInputMap.set(input.PARAM_SECHUB_USER, `${integrationTestContext.serverUserId}`);
     mockedInputMap.set(input.PARAM_API_TOKEN, `${integrationTestContext.serverApiToken}`);
 
-    mockedInputMap.set(input.PARAM_CLIENT_VERSION, '1.2.0');
+    mockedInputMap.set(input.PARAM_CLIENT_VERSION, '1.4.0');
 
     mockedInputMap.set(input.PARAM_REPORT_FORMATS, 'json');
     mockedInputMap.set(input.PARAM_TRUST_ALL, 'true'); // self signed certificate in test...

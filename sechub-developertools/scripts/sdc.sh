@@ -324,7 +324,7 @@ if [[ "$GITHUB_ACTION_BUILD" = "YES" ]]; then
     
     startTask "Setup integration test data"
     # Define variables
-    sechub_server_version=1.4.1
+    sechub_server_version=1.7.0
     sechub_server_port=8443
     pds_version=1.4.0
     pds_port=8444
