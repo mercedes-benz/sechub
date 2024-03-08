@@ -6,6 +6,7 @@ on:
     inputs:
       actor-email:
         description: Insert your email address here. It will be used in the generated pull requests
+        required: true
       pds-tools-version:
         description: PDS-Tools Version (e.g. 0.1.0)
         required: true
