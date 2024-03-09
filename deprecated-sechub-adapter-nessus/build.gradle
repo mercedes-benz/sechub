@@ -1,12 +1,14 @@
 // SPDX-License-Identifier: MIT
- /*============================================================================
+
+/*============================================================================
  * Build file for subproject 
  *
  * Root build file: "${rootProject.projectDir}/build.gradle"
  * ============================================================================
  */
-dependencies {
 
+// Defining dependencies
+dependencies {
+    // Declare dependency on the 'sechub-adapter' subproject
     api project(':sechub-adapter')
 }
- 
