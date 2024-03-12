@@ -26,7 +26,8 @@ class SecHubConfigurationModelSupportTest {
     private static SecHubConfigurationModel sechub_code_scan_config_binary_example;
     private static SecHubConfigurationModel sechub_code_scan_config_source_example;
     private static SecHubConfigurationModel sechub_code_scan_config_source_embedded_def_example;
-    private static SecHubConfigurationModel sechub_web_scan_config_source_example;
+    private static SecHubConfigurationModel sechub_web_scan_openapi_config_source_example;
+    private static SecHubConfigurationModel sechub_web_scan_header_values_from_file_config_source_example;
     private static SecHubConfigurationModel sechub_license_scan_config_source_and_binary_binary_used_example;
     private static SecHubConfigurationModel sechub_license_scan_config_source_and_binary_both_used_example;
     private static SecHubConfigurationModel sechub_license_scan_config_source_and_binary_source_used_example;
@@ -57,7 +58,8 @@ class SecHubConfigurationModelSupportTest {
         sechub_code_scan_config_source_embedded_def_example = loadModel("sechub_code_scan_config_source_embedded_def_example.json");
 
         /* web scan */
-        sechub_web_scan_config_source_example = loadModel("sechub_web_scan_config_source_example.json");
+        sechub_web_scan_openapi_config_source_example = loadModel("sechub_web_scan_openapi_config_source_example.json");
+        sechub_web_scan_header_values_from_file_config_source_example = loadModel("sechub_web_scan_header_values_from_file_config_source_example.json");
 
         /* multi */
         sechub_license_and_code_scan_example1 = loadModel("sechub_license_and_code_scan_example1.json");
@@ -554,10 +556,10 @@ class SecHubConfigurationModelSupportTest {
     /* ++++++++++++++++++++++++++++++++++++++++++++++++++++ */
     @ParameterizedTest
     @EnumSource(ScanType.class)
-    void sechub_web_scan_config_source_examples__binary_required_never(ScanType scanType) {
+    void sechub_web_scan_openapi_config_source_examples__binary_required_never(ScanType scanType) {
 
         /* prepare */
-        SecHubConfigurationModel model = sechub_web_scan_config_source_example;
+        SecHubConfigurationModel model = sechub_web_scan_openapi_config_source_example;
 
         /* execute */
         boolean result = supportToTest.isBinaryRequired(scanType, model);
@@ -569,10 +571,40 @@ class SecHubConfigurationModelSupportTest {
 
     @ParameterizedTest
     @EnumSource(ScanType.class)
-    void sechub_web_scan_config_source_examples__source_required_only_by_web_scan(ScanType scanType) {
+    void sechub_web_scan_header_values_from_file_config_source_example__binary_required_never(ScanType scanType) {
 
         /* prepare */
-        SecHubConfigurationModel model = sechub_web_scan_config_source_example;
+        SecHubConfigurationModel model = sechub_web_scan_header_values_from_file_config_source_example;
+
+        /* execute */
+        boolean result = supportToTest.isBinaryRequired(scanType, model);
+
+        /* test */
+        boolean sourceZipNeeded = false;
+        assertEquals(sourceZipNeeded, result, "Source zip needed must be:" + sourceZipNeeded);
+    }
+
+    @ParameterizedTest
+    @EnumSource(ScanType.class)
+    void sechub_web_scan__openapi_config_source_example__source_required_only_by_web_scan(ScanType scanType) {
+
+        /* prepare */
+        SecHubConfigurationModel model = sechub_web_scan_openapi_config_source_example;
+
+        /* execute */
+        boolean result = supportToTest.isSourceRequired(scanType, model);
+
+        /* test */
+        boolean needed = ScanType.WEB_SCAN.equals(scanType);
+        assertEquals(needed, result, "Needed must be:" + needed);
+    }
+
+    @ParameterizedTest
+    @EnumSource(ScanType.class)
+    void sechub_web_scan_header_values_from_file_config_source_examples__source_required_only_by_web_scan(ScanType scanType) {
+
+        /* prepare */
+        SecHubConfigurationModel model = sechub_web_scan_header_values_from_file_config_source_example;
 
         /* execute */
         boolean result = supportToTest.isSourceRequired(scanType, model);

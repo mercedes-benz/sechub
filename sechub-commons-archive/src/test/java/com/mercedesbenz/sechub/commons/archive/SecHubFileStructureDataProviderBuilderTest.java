@@ -284,9 +284,12 @@ class SecHubFileStructureDataProviderBuilderTest {
 
         /* test */
         assertNotNull(dataProvider);
-        assertTrue(dataProvider.getUnmodifiableSetOfAcceptedReferenceNames().contains("open-api-file-reference"));
-        assertTrue(dataProvider.getUnmodifiableSetOfAcceptedReferenceNames().contains("client-cert-api-file-reference"));
-        assertTrue(dataProvider.getUnmodifiableSetOfAcceptedReferenceNames().contains("header-file-ref-for-big-tokens"));
+
+        Set<String> acceptedReferenceNames = dataProvider.getUnmodifiableSetOfAcceptedReferenceNames();
+
+        assertTrue(acceptedReferenceNames.contains("open-api-file-reference"));
+        assertTrue(acceptedReferenceNames.contains("client-cert-api-file-reference"));
+        assertTrue(acceptedReferenceNames.contains("header-file-ref-for-big-tokens"));
         assertFalse(dataProvider.isRootFolderAccepted());
     }
 

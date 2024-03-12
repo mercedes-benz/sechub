@@ -114,11 +114,7 @@ public class SecHubFileStructureDataProviderBuilder {
                 break;
             }
             for (HTTPHeaderConfiguration httpHeaderConfig : httpHeaderConfigsOpt.get()) {
-                Set<String> use = httpHeaderConfig.getNamesOfUsedDataConfigurationObjects();
-                // To call Optional.ofNullable() only when it is needed
-                if (use != null && !use.isEmpty()) {
-                    addAllUsages(data, Optional.ofNullable(httpHeaderConfig), false);
-                }
+                addAllUsages(data, Optional.ofNullable(httpHeaderConfig), false);
             }
             break;
         case ANALYTICS:
@@ -140,24 +136,30 @@ public class SecHubFileStructureDataProviderBuilder {
         return data;
     }
 
-    private void addAllUsages(MutableSecHubFileStructureDataProvider data, Optional<? extends SecHubDataConfigurationUsageByName> scanDefinitionObject,
+    /*
+     * Adds all usages of the given configUsageByName to the dataProvider. If
+     * mustHave is true a runtime exception is thrown when no configUsageByName is
+     * not present or names are empty.
+     *
+     */
+    private void addAllUsages(MutableSecHubFileStructureDataProvider dataProvider, Optional<? extends SecHubDataConfigurationUsageByName> configUsageByName,
             boolean mustHave) {
-        if (!scanDefinitionObject.isPresent()) {
+        if (!configUsageByName.isPresent()) {
             if (mustHave) {
-                new IllegalStateException("For scanType:" + scanType + " the configuration entry is missing.");
+                new IllegalStateException("For scanType:" + scanType + " the configuration usage by name entry is missing.");
             }
             return;
         }
 
-        SecHubDataConfigurationUsageByName usageByName = scanDefinitionObject.get();
+        SecHubDataConfigurationUsageByName usageByName = configUsageByName.get();
 
         Set<String> names = usageByName.getNamesOfUsedDataConfigurationObjects();
         if (names.isEmpty()) {
             if (mustHave) {
-                new SecHubRuntimeException("Confgiguration file problem. For scanType:" + scanType + " at least one data configuration must be referenced");
+                new SecHubRuntimeException("Configuration file problem. For scanType:" + scanType + " at least one data configuration must be referenced");
             }
         }
-        data.addAcceptedReferenceNames(names);
+        dataProvider.addAcceptedReferenceNames(names);
     }
 
 }
