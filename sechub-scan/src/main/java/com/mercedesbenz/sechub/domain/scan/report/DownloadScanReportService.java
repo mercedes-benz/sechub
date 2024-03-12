@@ -32,8 +32,11 @@ public class DownloadScanReportService {
     @Autowired
     UserInputAssertion assertion;
 
+    @Autowired
+    private ScanReportSensitiveDataObfuscator scanReportSensitiveDataObfuscator;
+
     @UseCaseUserDownloadsJobReport(@Step(number = 3, name = "Resolve scan report result"))
-    public ScanSecHubReport getScanSecHubReport(String projectId, UUID jobUUID) {
+    public ScanSecHubReport getObfuscatedScanSecHubReport(String projectId, UUID jobUUID) {
         /* validate */
         assertion.assertIsValidProjectId(projectId);
         assertion.assertIsValidJobUUID(jobUUID);
@@ -51,7 +54,10 @@ public class DownloadScanReportService {
         }
         scanAssertService.assertUserHasAccessToReport(report);
 
-        return new ScanSecHubReport(report);
+        ScanSecHubReport scanSecHubReport = new ScanSecHubReport(report);
+        scanReportSensitiveDataObfuscator.obfuscate(scanSecHubReport);
+
+        return scanSecHubReport;
     }
 
 }

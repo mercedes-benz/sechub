@@ -18,6 +18,30 @@ import org.junit.jupiter.params.provider.ValueSource;
 
 public class SimpleStringUtilsTest {
 
+    @ValueSource(strings = { "a", "ab", "$*abcdefghiujklmnop" })
+    @ParameterizedTest
+    void obfuscate_always_obfuscated_when_length_0(String text) {
+        assertEquals("*****", SimpleStringUtils.createObfuscatedString(text, 0));
+    }
+
+    @Test
+    void obfuscate_always_obfuscated_when_length_3_but_only_2_chars() {
+        /* prepare */
+        String text = "abc";
+
+        /* execute + test */
+        assertEquals("ab*****", SimpleStringUtils.createObfuscatedString(text, 2));
+    }
+
+    @Test
+    void obfuscate_always_obfuscated_when_length_2_but_only_3_chars() {
+        /* prepare */
+        String text = "ab";
+
+        /* execute + test */
+        assertEquals("ab*****", SimpleStringUtils.createObfuscatedString(text, 3));
+    }
+
     @ValueSource(strings = { "abcdefghijklmnopqrstuvwxyz", "ABCDEFGHIJKLMNOPQRSTUVWXYZ" })
     @ParameterizedTest
     void isLatinLetter_valid_values(String value) {
