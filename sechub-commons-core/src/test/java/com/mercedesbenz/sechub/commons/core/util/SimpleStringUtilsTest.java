@@ -42,6 +42,24 @@ public class SimpleStringUtilsTest {
         assertEquals("ab*****", SimpleStringUtils.createObfuscatedString(text, 3));
     }
 
+    @Test
+    void do_not_obfuscate_when_length_smaller_null() {
+        /* prepare */
+        String text = "ab23zr9hfiedlshfl";
+
+        /* execute + test */
+        assertEquals("ab23zr9hfiedlshfl", SimpleStringUtils.createObfuscatedString(text, -2));
+    }
+
+    @Test
+    void return_null_when_string_parameter_null() {
+        /* prepare */
+        String text = null;
+
+        /* execute + test */
+        assertNull(SimpleStringUtils.createObfuscatedString(text, 0));
+    }
+
     @ValueSource(strings = { "abcdefghijklmnopqrstuvwxyz", "ABCDEFGHIJKLMNOPQRSTUVWXYZ" })
     @ParameterizedTest
     void isLatinLetter_valid_values(String value) {

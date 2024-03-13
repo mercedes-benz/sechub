@@ -119,6 +119,14 @@ public class SimpleStringUtils {
             return null;
         }
 
+        if (string.isEmpty()) {
+            return string;
+        }
+
+        if (nonObfuscatedCharacters < 0) {
+            return string;
+        }
+
         int remaining = nonObfuscatedCharacters;
         if (string.length() < remaining) {
             remaining = string.length();
