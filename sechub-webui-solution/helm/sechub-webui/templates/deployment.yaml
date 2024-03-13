@@ -65,7 +65,7 @@ spec:
         - "-l"             # listen
         - "0.0.0.0:8080"   # on port 8080
         - "-4"             # tcp v4
-        - "127.0.0.1:8443" # forward to SecHub webui container (localhost port 8443)
+        - "127.0.0.1:4443" # forward to SecHub WebUI container (localhost port 4443)
 {{- end }}
       # SecHub webui container
       - name: sechub-webui
