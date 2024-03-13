@@ -95,6 +95,9 @@ public class SecHubConfigurationModelSupport {
         Optional<SecHubWebScanApiConfiguration> apiOpt = webScan.getApi();
         isDataTypeReferenced = isDataTypeReferenced || isDataTypeContainedOrReferenced(dataType, model, apiOpt, SecHubWebScanApiConfiguration.class);
 
+        Optional<ClientCertificateConfiguration> clientCertOpt = webScan.getClientCertificate();
+        isDataTypeReferenced = isDataTypeReferenced || isDataTypeContainedOrReferenced(dataType, model, clientCertOpt, ClientCertificateConfiguration.class);
+
         Optional<List<HTTPHeaderConfiguration>> httpHeaderConfigsOpt = webScan.getHeaders();
         if (httpHeaderConfigsOpt.isEmpty()) {
             return isDataTypeReferenced;
