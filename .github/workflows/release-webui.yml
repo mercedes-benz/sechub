@@ -219,13 +219,13 @@ jobs:
           echo "# Pushing image $DOCKER_REGISTRY:$VERSION_TAG (latest)"
           ./20-push-image.sh "$DOCKER_REGISTRY" "$VERSION_TAG" yes
 
-      # - name: Build sechub-webui Helm chart + push to ghcr
-      #   shell: bash
-      #   run: |
-      #     cd sechub-webui-solution/helm
-      #     echo "# Building Helm chart for SecHub WebUI"
-      #     helm package sechub-webui
-      #     helm push sechub-webui-*.tgz $ACTIONS_HELM_REGISTRY
+      - name: Build sechub-webui Helm chart + push to ghcr
+        shell: bash
+        run: |
+          cd sechub-webui-solution/helm
+          echo "# Building Helm chart for SecHub WebUI"
+          helm package sechub-webui
+          helm push sechub-webui-*.tgz $ACTIONS_HELM_REGISTRY
 
       # -----------------------------------------
       # Create a pull request for merging back `master` into `develop`
