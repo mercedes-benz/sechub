@@ -114,13 +114,22 @@ public class SimpleStringUtils {
         return string.substring(0, maxLength - TRUNCATE_POSTFIX.length()) + TRUNCATE_POSTFIX;
     }
 
+    /**
+     * obfuscates secret strings by showing only the required number of characters,
+     * trunc the rest and add "*****"
+     *
+     * @param string
+     * @param nonObfuscatedCharacters number of characters that should be shown in
+     *                                clear text (eg. 3 -> abc*****), if the value
+     *                                is negative, the original characters are shown
+     *                                without postfix, if the value is greater than
+     *                                the secret length, all characters are shown
+     *                                with the postfix
+     * @return obfuscated string
+     */
     public static String createObfuscatedString(String string, int nonObfuscatedCharacters) {
         if (string == null) {
             return null;
-        }
-
-        if (string.isEmpty()) {
-            return string;
         }
 
         if (nonObfuscatedCharacters < 0) {
