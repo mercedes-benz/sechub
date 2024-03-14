@@ -12,7 +12,7 @@ echo "Starting up OWASP-ZAP server"
 #   This addon is mandatory now but the telemetry calls can be deactivated.
 #   This feature addtionally disables automated update calls, e.g. to update extensions.
 #   Otherwise, if you want to use a specific versions of extensions e.g. for testing reasons, ZAP would automatically check for updates.
-zap -daemon -silent -nostdout -host "$ZAP_HOST" -port "$ZAP_PORT" -config "api.key=$ZAP_API_KEY" &
+zap "$ZAP_JVM_ARGS" -daemon -silent -nostdout -host "$ZAP_HOST" -port "$ZAP_PORT" -config "api.key=$ZAP_API_KEY" &
 
 echo "Waiting for OWASP-ZAP to start"
 RETRIES=20
