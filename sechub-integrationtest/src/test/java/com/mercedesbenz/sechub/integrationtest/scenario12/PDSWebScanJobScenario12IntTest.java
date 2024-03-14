@@ -8,18 +8,14 @@ import static org.junit.Assert.*;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.Timeout;
 
-import com.mercedesbenz.sechub.commons.model.HTTPHeaderConfiguration;
-import com.mercedesbenz.sechub.commons.model.JSONConverter;
-import com.mercedesbenz.sechub.commons.model.SecHubMessageType;
-import com.mercedesbenz.sechub.commons.model.SecHubScanConfiguration;
-import com.mercedesbenz.sechub.commons.model.SecHubWebScanConfiguration;
-import com.mercedesbenz.sechub.commons.model.Severity;
+import com.mercedesbenz.sechub.commons.model.*;
 import com.mercedesbenz.sechub.integrationtest.api.IntegrationTestSetup;
 import com.mercedesbenz.sechub.integrationtest.api.TestProject;
 import com.mercedesbenz.sechub.integrationtest.internal.IntegrationTestFileSupport;
@@ -108,6 +104,12 @@ public class PDSWebScanJobScenario12IntTest {
         // config must contain the expected headers
         assertExpectedHeaders(webConfiguration);
 
+        // config must contain the expected client certificate
+        assertExpectedClientCertificate(webConfiguration);
+
+        // config must contain the expected openApi definition
+        assertExpectedOpenApiDefinition(webConfiguration);
+
         /* additional testing : messages*/
 
         assertJobStatus(project, jobUUID).
@@ -123,14 +125,15 @@ public class PDSWebScanJobScenario12IntTest {
         assertTrue(webConfiguration.getHeaders().isPresent());
 
         List<HTTPHeaderConfiguration> headers = webConfiguration.getHeaders().get();
-        assertEquals(2, headers.size());
+        assertEquals(3, headers.size());
 
         Iterator<HTTPHeaderConfiguration> iterator = headers.iterator();
         assertTrue(iterator.hasNext());
 
         HTTPHeaderConfiguration firstHeader = iterator.next();
         assertEquals("Authorization", firstHeader.getName());
-        assertEquals("Bearer secret-token", firstHeader.getValue());
+        Set<String> firstHeaderReferences = firstHeader.getNamesOfUsedDataConfigurationObjects();
+        assertTrue(firstHeaderReferences.contains("header-file-ref-for-big-token"));
         assertTrue(firstHeader.getOnlyForUrls().isEmpty());
         assertTrue(firstHeader.isSensitive());
 
@@ -140,6 +143,36 @@ public class PDSWebScanJobScenario12IntTest {
         assertFalse(secondHeader.getOnlyForUrls().isEmpty());
         assertEquals(3, secondHeader.getOnlyForUrls().get().size());
         assertFalse(secondHeader.isSensitive());
+
+        HTTPHeaderConfiguration thirdHeader = iterator.next();
+        assertEquals("Key", thirdHeader.getName());
+        Set<String> thirdHeaderReferences = thirdHeader.getNamesOfUsedDataConfigurationObjects();
+        assertTrue(thirdHeaderReferences.contains("another-header-file-ref-for-big-token"));
+        assertTrue(thirdHeader.getOnlyForUrls().isEmpty());
+        assertTrue(thirdHeader.isSensitive());
+    }
+
+    private void assertExpectedClientCertificate(SecHubWebScanConfiguration webConfiguration) {
+        assertTrue(webConfiguration.getClientCertificate().isPresent());
+
+        ClientCertificateConfiguration clientCertificateConfiguration = webConfiguration.getClientCertificate().get();
+
+        assertEquals("secret-password", new String(clientCertificateConfiguration.getPassword()));
+
+        Set<String> namesOfUsedDataConfigurationObjects = clientCertificateConfiguration.getNamesOfUsedDataConfigurationObjects();
+        assertTrue(namesOfUsedDataConfigurationObjects.contains("client-cert-api-file-reference"));
+    }
+
+    private void assertExpectedOpenApiDefinition(SecHubWebScanConfiguration webConfiguration) {
+        assertTrue(webConfiguration.getApi().isPresent());
+
+        SecHubWebScanApiConfiguration secHubWebScanApiConfiguration = webConfiguration.getApi().get();
+
+        assertEquals(SecHubWebScanApiType.OPEN_API, secHubWebScanApiConfiguration.getType());
+
+        Set<String> namesOfUsedDataConfigurationObjects = secHubWebScanApiConfiguration.getNamesOfUsedDataConfigurationObjects();
+        assertTrue(namesOfUsedDataConfigurationObjects.contains("open-api-file-reference"));
+
     }
 
 }
