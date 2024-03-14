@@ -68,7 +68,7 @@ public class PDSWebScanJobScenario12IntTest {
         // finding 2: contains sechub configuration (only web parts)
         String descriptionFinding2WithDataInside = assertReport(sechubReport).
             enablePDSAutoDumpOnErrorsForSecHubJob(jobUUID).
-            hasMessages(3).
+            hasMessages(4).
             finding(0).
                 hasSeverity(Severity.INFO).
                 hasDescriptionContaining("PRODUCT2_LEVEL=4711").// this comes from custom mandatory parameter from PDS config
@@ -116,7 +116,8 @@ public class PDSWebScanJobScenario12IntTest {
             enablePDSAutoDumpOnErrorsForSecHubJob().
             hasMessage(SecHubMessageType.INFO,"info from webscan by PDS for sechub job uuid: "+jobUUID).
             hasMessage(SecHubMessageType.WARNING,"warning from webscan by PDS for sechub job uuid: "+jobUUID).
-            hasMessage(SecHubMessageType.ERROR,"error from webscan by PDS for sechub job uuid: "+jobUUID);
+            hasMessage(SecHubMessageType.ERROR,"error from webscan by PDS for sechub job uuid: "+jobUUID).
+            hasMessage(SecHubMessageType.INFO, "another-token.txtbearer-token.txtcertificate.p12openapi.json");
 
         /* @formatter:on */
     }
