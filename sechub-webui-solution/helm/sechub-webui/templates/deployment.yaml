@@ -105,9 +105,12 @@ spec:
             name: secret-webui-ssl-volume
 {{- end }}
         env:
-        # Server profile definition
+        # Server start mode
         - name: WEBUI_START_MODE
           value: "{{ .Values.webui.startMode }}"
+        # Spring profiles definition
+        - name: SPRING_PROFILES_ACTIVE
+          value: "{{ .Values.webui.spring.profiles }}"
 {{- if .Values.deploymentComment }}
         # Setting DEPLOYMENT_COMMENT to a different value every time forces k8s to spin up a new container.
         # This way, you can force deployments e.g. when secrets have changed.

@@ -24,8 +24,8 @@ resources:
     memory: 1Gi
 
 webui:
-  # Possible values: localserver, mocked
-  startMode: localserver
+  # Possible values: server, development
+  startMode: server
   sechubConnection:
     # "sechub-server:8443" works when the server is deployed in the same k8s cluster
     url: "https://sechub-server:8443/"
@@ -36,6 +36,10 @@ webui:
       enabled: false
       appenderName: "LOGSTASH_JSON"
   spring:
+    # Spring profiles (comma-separated list):
+    # - Server mode: 'webui_localserver' (self-signed cert) or 'webui_server' (provide SSL certificate)
+    # - SecHub connection: 'webui_mocked' or leave empty for connect to configured SecHub server
+    profiles: "webui_localserver"
     # Configure Spring Boot's embedded Tomcat
     embeddedTomcat:
       logging:
