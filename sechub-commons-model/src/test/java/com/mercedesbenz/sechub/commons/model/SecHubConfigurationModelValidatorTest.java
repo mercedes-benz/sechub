@@ -1616,20 +1616,15 @@ class SecHubConfigurationModelValidatorTest {
     }
 
     private SecHubConfigurationModel createSecHubConfigModelWithExactly8193Characters() {
-        StringBuilder sb = new StringBuilder();
+        // 128*64 = 8192, so we take 127 because of the overhead of the JSON model:
+        // {"apiVersion":""} = 17 characters so we need to add 48 characters afterwards
+        String apiVersion = "abcdefghijklmnopqrstuvwxyz012345abcdefghijklmnopqrstuvwxyz012345".repeat(127);
 
-        // The string we append is always 64 characters long, because 128*64 = 8192, so
-        // we take 127 because of the overhead of the JSON model:
-        // {"apiVersion":""} = 17 characters, so we need to add 48 characters after the
-        // for loop to reach 8193 ad be one above our max size
-        for (int i = 0; i < 127; i++) {
-            sb.append("abcdefghijklmnopqrstuvwxyz012345abcdefghijklmnopqrstuvwxyz012345");
-        }
         // add the remaining 48 characters to reach 8193
-        sb.append("abcdefghijklmnopqrstuvwxyz012345abcdefghijklmnop");
+        apiVersion += "abcdefghijklmnopqrstuvwxyz012345abcdefghijklmnop";
 
         SecHubConfigurationModel model = new SecHubConfigurationModel();
-        model.setApiVersion(sb.toString());
+        model.setApiVersion(apiVersion);
 
         return model;
     }
