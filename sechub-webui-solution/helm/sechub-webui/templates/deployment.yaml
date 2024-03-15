@@ -126,6 +126,12 @@ spec:
 # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
         - name: SECHUB_SERVER_URL
           value: "{{ .Values.webui.sechubConnection.url }}"
+        - name: WEBUI_SECHUB_TRUST_ALL_CERTIFICATES
+{{- if .Values.webui.sechubConnection.trustAllCertificates }}
+          value: "true"
+{{- else }}
+          value: "false"
+{{- end }}
         - name: SECHUB_USERID
           valueFrom:
             secretKeyRef:

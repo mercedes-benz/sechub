@@ -51,8 +51,9 @@ start_server() {
     echo "Starting the SecHub WebUI"
     echo "WebUI Version: $WEBUI_VERSION"
     echo "WebUI Spring Server Profiles: \"$SPRING_PROFILES_ACTIVE\""
-    echo "SecHub Server URL: $WEBUI_SECHUB_SERVER_URL"
     echo "SecHub Server UserID: $WEBUI_SECHUB_USERID"
+    echo "SecHub Server URL:    $WEBUI_SECHUB_SERVER_URL"
+    echo "SecHub Server trust all certificates: $WEBUI_SECHUB_TRUST_ALL_CERTIFICATES"
 
     java $JAVA_DEBUG_OPTIONS \
         -Dfile.encoding=UTF-8 \
