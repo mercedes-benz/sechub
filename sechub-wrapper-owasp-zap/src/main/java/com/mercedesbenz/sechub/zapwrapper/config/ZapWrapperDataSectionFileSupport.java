@@ -3,21 +3,24 @@ package com.mercedesbenz.sechub.zapwrapper.config;
 
 import java.io.File;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.mercedesbenz.sechub.commons.model.ClientCertificateConfiguration;
+import com.mercedesbenz.sechub.commons.model.HTTPHeaderConfiguration;
 import com.mercedesbenz.sechub.commons.model.SecHubScanConfiguration;
 import com.mercedesbenz.sechub.commons.model.SecHubSourceDataConfiguration;
 import com.mercedesbenz.sechub.commons.model.SecHubWebScanApiConfiguration;
 import com.mercedesbenz.sechub.commons.model.SecHubWebScanConfiguration;
 
-public class ZapWrapperDataSectionFileProvider {
-    private static final Logger LOG = LoggerFactory.getLogger(ZapWrapperDataSectionFileProvider.class);
+public class ZapWrapperDataSectionFileSupport {
+    private static final Logger LOG = LoggerFactory.getLogger(ZapWrapperDataSectionFileSupport.class);
 
     /**
      *
@@ -105,6 +108,45 @@ public class ZapWrapperDataSectionFileProvider {
         List<SecHubSourceDataConfiguration> sourceData = sechubConfig.getData().get().getSources();
 
         LOG.info("Fetch client certificate file.");
+        return extractFirstFileOfDataSection(extractedSourcesFolderPath, namesOfUsedDataConfigurationObjects, sourceData);
+    }
+
+    public Map<String, File> fetchHeaderValueFiles(String extractedSourcesFolderPath, SecHubScanConfiguration sechubConfig) {
+        if (extractedSourcesFolderPath == null) {
+            LOG.info("Extracted sources folder path env variable was not set.");
+            return Collections.emptyMap();
+        }
+        if (!isValidWebScanConfigWithDataSection(sechubConfig)) {
+            return Collections.emptyMap();
+        }
+
+        SecHubWebScanConfiguration secHubWebScanConfiguration = sechubConfig.getWebScan().get();
+        if (secHubWebScanConfiguration.getHeaders().isEmpty()) {
+            LOG.info("No header value file was configured for the webscan. Continuing without header value file.");
+            return Collections.emptyMap();
+        }
+
+        Map<String, File> headerFileMap = new HashMap<>();
+        List<HTTPHeaderConfiguration> httpHeaders = secHubWebScanConfiguration.getHeaders().get();
+        LOG.info("Collecting all files of all headers.");
+        for (HTTPHeaderConfiguration headerConfig : httpHeaders) {
+
+            Set<String> namesOfUsedDataConfigurationObjects = headerConfig.getNamesOfUsedDataConfigurationObjects();
+            List<SecHubSourceDataConfiguration> sourceData = sechubConfig.getData().get().getSources();
+
+            LOG.info("Fetch header value file for header: {} if available.", headerConfig.getName());
+            File extractedFirstFileOfDataSection = extractFirstFileOfDataSection(extractedSourcesFolderPath, namesOfUsedDataConfigurationObjects, sourceData);
+
+            if (extractedFirstFileOfDataSection != null) {
+                headerFileMap.put(headerConfig.getName(), extractedFirstFileOfDataSection);
+            }
+        }
+        return headerFileMap;
+
+    }
+
+    private File extractFirstFileOfDataSection(String extractedSourcesFolderPath, Set<String> namesOfUsedDataConfigurationObjects,
+            List<SecHubSourceDataConfiguration> sourceData) {
         for (String use : namesOfUsedDataConfigurationObjects) {
             if (use == null) {
                 continue;

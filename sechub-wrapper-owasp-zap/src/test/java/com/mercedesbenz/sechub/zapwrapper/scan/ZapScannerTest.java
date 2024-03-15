@@ -21,8 +21,10 @@ import java.net.URL;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.stream.Stream;
 
@@ -265,6 +267,59 @@ class ZapScannerTest {
             }
         }
         verify(clientApiFacade, times(times)).addReplacerRule(any(), any(), any(), any(), any(), any(), any(), any());
+    }
+
+    @Test
+    void add_replacer_rules_for_headers_with_data_section_results_add_replacer_rule_is_called_once_for_each_header() throws ClientApiException {
+        /* prepare */
+        String sechubConfigWithfilesystemPartHasMoreThanOneFile = """
+                {
+                  "apiVersion" : "1.0",
+                  "data" : {
+                    "sources" : [ {
+                      "name" : "header-file-reference",
+                      "fileSystem" : {
+                        "files" : [ "header-token.txt", "second-header-token.txt" ]
+                      }
+                    },
+                     {
+                      "name" : "another-header-file-reference",
+                      "fileSystem" : {
+                        "files" : [ "token.txt", "second-header-token.txt" ]
+                      }
+                    }]
+                  },
+                  "webScan" : {
+                    "url" : "https://localhost:8443",
+                    "headers" : [{
+                      "name" : "Key",
+                      "use" : [ "header-file-reference" ]
+                    },
+                    {
+                      "name" : "Other",
+                      "use" : [ "another-header-file-reference" ]
+                    }]
+                  }
+                }
+                """;
+        SecHubWebScanConfiguration sechubWebScanConfig = SecHubScanConfiguration.createFromJSON(sechubConfigWithfilesystemPartHasMoreThanOneFile).getWebScan()
+                .get();
+        when(scanContext.getSecHubWebScanConfiguration()).thenReturn(sechubWebScanConfig);
+
+        Map<String, File> headerFiles = new HashMap<>();
+        headerFiles.put("Key", new File("src/test/resources/header-value-files/header-token.txt"));
+        headerFiles.put("Other", new File("src/test/resources/header-value-files/token.txt"));
+        when(scanContext.getHeaderValueFiles()).thenReturn(headerFiles);
+
+        ApiResponse response = mock(ApiResponse.class);
+        when(clientApiFacade.addReplacerRule(any(), any(), any(), any(), any(), any(), any(), any())).thenReturn(response);
+
+        /* execute */
+        scannerToTest.addReplacerRulesForHeaders();
+
+        /* test */
+        verify(clientApiFacade, times(1)).addReplacerRule("Key", "true", "REQ_HEADER", "false", "Key", "header-token", null, null);
+        verify(clientApiFacade, times(1)).addReplacerRule("Other", "true", "REQ_HEADER", "false", "Other", "token", null, null);
     }
 
     @ParameterizedTest

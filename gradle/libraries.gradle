@@ -69,7 +69,7 @@ ext {
       restDocsApiSpec:                         "0.16.4",  // newest version compatible with Spring Boot 2.x
       
       /* Owasp Zap wrapper */
-      owaspzap_client_api:                     "1.12.0",
+      owaspzap_client_api:                     "1.13.0",
       jcommander:                              "1.82",
       
       thymeleaf_extras_springsecurity5:        "3.1.1.RELEASE",

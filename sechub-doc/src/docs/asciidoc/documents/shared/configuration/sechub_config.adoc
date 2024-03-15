@@ -338,6 +338,18 @@ Make sure that the header URL combinations are unique. This means do not specify
 But if the parameter is set to `false` the value will be shown as is.
 The **default** is `true` if nothing is specified.
 
+[[sechub-config-example-webscan-header-value-from-data-section]]
+====== Example Header scan with value from data section
+[source,json,title="header scan with value from data section"]
+----
+include::sechub_config_example17_web_scan_header_value_from_data_section.json[]
+----
+<1> Name of the specified header. Must not be null or empty.
+<2> Name of the source <<sechub-config-data-section,data>> configuration: "header-value-file-reference".
+Please use single files only instead of folders to specify the header value. Use a separate data section for each header. 
+This can be used if you want to provide a large header value, which exceeds the maximum size of the sechub.json configuration file.
+For each header provide either a `value` directly (as shown in <<sechub-config-example-webscan-header,Example Header scan>>) or a data section reference via `use` as shown in this example.
+
 ==== Infrastructure scan
 `infraScan` (optional) defines the infrastructure scan settings.
 
