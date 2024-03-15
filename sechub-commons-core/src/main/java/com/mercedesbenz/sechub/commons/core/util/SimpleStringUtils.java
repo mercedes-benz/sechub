@@ -11,7 +11,11 @@ import org.slf4j.LoggerFactory;
 
 public class SimpleStringUtils {
 
+    private static final String TRUNCATE_POSTFIX = "...";
+    private static final String OBFUSCATE_POSTFIX = "*****";
+
     private static final Logger LOG = LoggerFactory.getLogger(SimpleStringUtils.class);
+    private static final String EMPTY = "";
 
     private SimpleStringUtils() {
     }
@@ -98,16 +102,46 @@ public class SimpleStringUtils {
      * @throws IllegalArgumentException when max length is smaller than 4
      */
     public static String truncateWhenTooLong(String string, int maxLength) {
-        if (string == null) {
-            return null;
-        }
         if (maxLength < 4) {
             throw new IllegalArgumentException("max length must be at least 4!");
+        }
+        if (string == null) {
+            return null;
         }
         if (string.length() <= maxLength) {
             return string;
         }
-        return string.substring(0, maxLength - 3) + "...";
+        return string.substring(0, maxLength - TRUNCATE_POSTFIX.length()) + TRUNCATE_POSTFIX;
+    }
+
+    /**
+     * obfuscates secret strings by showing only the required number of characters,
+     * trunc the rest and add "*****"
+     *
+     * @param string
+     * @param nonObfuscatedCharacters number of characters that should be shown in
+     *                                clear text (eg. 3 -> abc*****), if the value
+     *                                is negative, the original characters are shown
+     *                                without postfix, if the value is greater than
+     *                                the secret length, all characters are shown
+     *                                with the postfix
+     * @return obfuscated string
+     */
+    public static String createObfuscatedString(String string, int nonObfuscatedCharacters) {
+        if (string == null) {
+            return null;
+        }
+
+        if (nonObfuscatedCharacters < 0) {
+            return string;
+        }
+
+        int remaining = nonObfuscatedCharacters;
+        if (string.length() < remaining) {
+            remaining = string.length();
+        }
+
+        return string.substring(0, remaining) + OBFUSCATE_POSTFIX;
     }
 
     /**

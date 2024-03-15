@@ -85,7 +85,7 @@ class ScanReportRestControllerMockTest {
         scanReport.setTrafficLight(TrafficLight.YELLOW);
 
         ScanSecHubReport scanSecHubReport = new ScanSecHubReport(scanReport);
-        when(downloadReportService.getScanSecHubReport(PROJECT1_ID, randomUUID)).thenReturn(scanSecHubReport);
+        when(downloadReportService.getObfuscatedScanSecHubReport(PROJECT1_ID, randomUUID)).thenReturn(scanSecHubReport);
 
         /* execute + test @formatter:off */
         this.mockMvc.perform(
@@ -211,7 +211,7 @@ class ScanReportRestControllerMockTest {
         report.setTrafficLight(TrafficLight.YELLOW);
 
         ScanSecHubReport scanSecHubReport = new ScanSecHubReport(report);
-        when(downloadReportService.getScanSecHubReport(PROJECT1_ID, randomUUID)).thenReturn(scanSecHubReport);
+        when(downloadReportService.getObfuscatedScanSecHubReport(PROJECT1_ID, randomUUID)).thenReturn(scanSecHubReport);
 
         /* execute + test @formatter:off */
 	    this.mockMvc.perform(
@@ -232,7 +232,7 @@ class ScanReportRestControllerMockTest {
         report.setTrafficLight(TrafficLight.YELLOW);
 
         ScanSecHubReport scanSecHubReport = new ScanSecHubReport(report);
-        when(downloadReportService.getScanSecHubReport(PROJECT1_ID, randomUUID)).thenReturn(scanSecHubReport);
+        when(downloadReportService.getObfuscatedScanSecHubReport(PROJECT1_ID, randomUUID)).thenReturn(scanSecHubReport);
 
         /* execute + test @formatter:off */
         this.mockMvc.perform(
