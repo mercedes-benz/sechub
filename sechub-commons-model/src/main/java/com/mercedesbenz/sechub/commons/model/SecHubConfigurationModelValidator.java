@@ -415,21 +415,27 @@ public class SecHubConfigurationModelValidator {
             return;
         }
         for (HTTPHeaderConfiguration sanatizedHttpHeader : webScanContext.sanatizedHttpHeaders) {
-            if (sanatizedHttpHeader.getName() == null || sanatizedHttpHeader.getName().isEmpty()) {
+            String headerName = sanatizedHttpHeader.getName();
+            if (headerName == null || headerName.isEmpty()) {
                 webScanContext.markAsFailed(WEB_SCAN_NO_HEADER_NAME_DEFINED);
                 return;
             }
-            if (sanatizedHttpHeader.getValue() == null || sanatizedHttpHeader.getValue().isEmpty()) {
+            String headerValue = sanatizedHttpHeader.getValue();
+            if (headerValue == null || headerValue.isEmpty()) {
+                // each http header config must have a value or a usage defined - here we have
+                // no value so a usage must be defined!
                 Set<String> use = sanatizedHttpHeader.getNamesOfUsedDataConfigurationObjects();
                 if (use == null || use.isEmpty()) {
-                    webScanContext.markAsFailed(WEB_SCAN_NO_HEADER_VALUE_DEFINED, "The header name is : " + sanatizedHttpHeader.getName());
+                    webScanContext.markAsFailed(WEB_SCAN_NO_HEADER_VALUE_DEFINED, "The header name is : " + headerName);
                     return;
                 }
             }
-            if (sanatizedHttpHeader.getValue() != null && !sanatizedHttpHeader.getValue().isEmpty()) {
+            if (headerValue != null && !headerValue.isEmpty()) {
+                // each http header config must have either a value or a usage defined - here we
+                // have a value defined, so a usage may not be defined!
                 Set<String> use = sanatizedHttpHeader.getNamesOfUsedDataConfigurationObjects();
                 if (use != null && !use.isEmpty()) {
-                    webScanContext.markAsFailed(WEB_SCAN_MULTIPLE_HEADER_VALUES_DEFINED, "The header name is : " + sanatizedHttpHeader.getName());
+                    webScanContext.markAsFailed(WEB_SCAN_MULTIPLE_HEADER_VALUES_DEFINED, "The header name is : " + headerName);
                     return;
                 }
             }

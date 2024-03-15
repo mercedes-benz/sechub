@@ -56,6 +56,7 @@ class HTTPHeaderConfigurationTest {
      */
     @Test
     void json_attribute_use_is_handled_correctly_without_password_set_by_to_json() {
+        /* prepare */
         HTTPHeaderConfiguration config = new HTTPHeaderConfiguration();
         config.getNamesOfUsedDataConfigurationObjects().add("header-file-ref");
 

@@ -113,7 +113,7 @@ public class ZapScanContextFactory {
 												.setDeactivatedRuleReferences(deactivatedRuleReferences)
 												.addApiDefinitionFiles(apiDefinitionFiles)
 												.setClientCertificateFile(clientCertificateFile)
-												.setHeaderValueFiles(headerValueFiles)
+												.addHeaderValueFiles(headerValueFiles)
 												.addZapURLsIncludeSet(includeSet)
 												.addZapURLsExcludeSet(excludeSet)
 												.setConnectionCheckEnabled(settings.isConnectionCheckEnabled())

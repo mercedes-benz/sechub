@@ -335,7 +335,7 @@ public class ZapScanContext {
             return this;
         }
 
-        public ZapScanContextBuilder setHeaderValueFiles(Map<String, File> headerValueFiles) {
+        public ZapScanContextBuilder addHeaderValueFiles(Map<String, File> headerValueFiles) {
             this.headerValueFiles.putAll(headerValueFiles);
             return this;
         }
