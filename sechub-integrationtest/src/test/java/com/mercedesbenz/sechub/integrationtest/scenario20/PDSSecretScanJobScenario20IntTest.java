@@ -63,7 +63,7 @@ public class PDSSecretScanJobScenario20IntTest {
     	          codeCall(0).
     	              hasColumn(14).
     	              hasLine(12).
-    	              hasSource("531486b2bf646636a6a1bba61e78ec4a4a54efbd").
+    	              hasSource("*****").
     	              hasLocation("UnSAFE_Bank/Backend/docker-compose.yml").
     	          andFinding().
     	          hasCweId(798); // gitleak has no cwe id, but importer will do fallback to CWE 798 - see https://cwe.mitre.org/data/definitions/798.html

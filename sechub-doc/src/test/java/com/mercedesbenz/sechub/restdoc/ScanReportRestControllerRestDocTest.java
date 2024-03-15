@@ -93,7 +93,7 @@ public class ScanReportRestControllerRestDocTest implements TestIsNecessaryForDo
         report.setTrafficLight(TrafficLight.YELLOW);
 
         ScanSecHubReport scanSecHubReport = new ScanSecHubReport(report);
-        when(downloadReportService.getScanSecHubReport(PROJECT1_ID, jobUUID)).thenReturn(scanSecHubReport);
+        when(downloadReportService.getObfuscatedScanSecHubReport(PROJECT1_ID, jobUUID)).thenReturn(scanSecHubReport);
 
         /* execute + test @formatter:off */
 	    this.mockMvc.perform(
@@ -143,7 +143,7 @@ public class ScanReportRestControllerRestDocTest implements TestIsNecessaryForDo
 
         ScanSecHubReport scanSecHubReport = new ScanSecHubReport(report);
         assertNotNull(scanSecHubReport.getMetaData());
-        when(downloadReportService.getScanSecHubReport(PROJECT1_ID, jobUUID)).thenReturn(scanSecHubReport);
+        when(downloadReportService.getObfuscatedScanSecHubReport(PROJECT1_ID, jobUUID)).thenReturn(scanSecHubReport);
 
         /* execute + test @formatter:off */
         this.mockMvc.perform(
