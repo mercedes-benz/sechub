@@ -14,14 +14,14 @@ cd `dirname $0`
 usage() {
   cat - <<EOF
 
-usage: $0 <docker registry> <version tag> <webui version>
+usage: $0 <docker registry> <version tag> <webui version> [<base image> <build type>]
 
 Builds a docker image of SecHub WebUI <webui version> for <docker registry>
 with tag <version tag>.
 
-Optional environment variables:
-BASE_IMAGE - Base image to build from ; defaults to $DEFAULT_BASE_IMAGE
-BUILD_TYPE - Build type ; defaults to $DEFAULT_BUILD_TYPE
+Optional environment variables or options:
+BASE_IMAGE - <base image> to build from ; defaults to $DEFAULT_BASE_IMAGE
+BUILD_TYPE - <build type> (one of: build copy download) ; defaults to $DEFAULT_BUILD_TYPE
 EOF
 }
 

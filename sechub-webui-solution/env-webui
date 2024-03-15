@@ -1,8 +1,10 @@
-# Start mode of WebUI. 
-# Possible values are: localserver, mocked
-# the mocked mode does not require a connection 
-# to the SecHub server
-WEBUI_START_MODE="localserver"
+# Start mode of WebUI.
+# Possible values are: server, development
+# The development mode just starts the container and waits
+WEBUI_START_MODE="server"
+
+# Spring profiles:
+SPRING_PROFILES_ACTIVE="webui_localserver"
 
 # SecHub Server
 # For local server: https://localhost:8443
