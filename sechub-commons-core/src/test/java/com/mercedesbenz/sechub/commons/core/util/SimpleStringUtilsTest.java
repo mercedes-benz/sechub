@@ -33,22 +33,24 @@ public class SimpleStringUtilsTest {
         assertEquals("ab*****", SimpleStringUtils.createObfuscatedString(text, 2));
     }
 
-    @Test
-    void obfuscate_always_obfuscated_when_length_2_but_only_3_chars() {
+    @ValueSource(ints = { 3, 5, 100 })
+    @ParameterizedTest
+    void obfuscate_always_obfuscated_when_string_length_smaller_than_obfuscation_length(int length) {
         /* prepare */
         String text = "ab";
 
         /* execute + test */
-        assertEquals("ab*****", SimpleStringUtils.createObfuscatedString(text, 3));
+        assertEquals("ab*****", SimpleStringUtils.createObfuscatedString(text, length));
     }
 
-    @Test
-    void do_not_obfuscate_when_length_smaller_null() {
+    @ValueSource(ints = { -1, -5, -100 })
+    @ParameterizedTest
+    void do_not_obfuscate_when_length_smaller_0(int lenght) {
         /* prepare */
         String text = "ab23zr9hfiedlshfl";
 
         /* execute + test */
-        assertEquals("ab23zr9hfiedlshfl", SimpleStringUtils.createObfuscatedString(text, -2));
+        assertEquals("ab23zr9hfiedlshfl", SimpleStringUtils.createObfuscatedString(text, lenght));
     }
 
     @Test
