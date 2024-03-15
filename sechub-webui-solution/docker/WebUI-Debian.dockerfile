@@ -132,7 +132,6 @@ ENV UID="4242"
 ENV GID="${UID}"
 ENV WEBUI_VERSION="${WEBUI_VERSION}"
 ENV WEBUI_FOLDER="/sechub-webui"
-ENV HELPER_FOLDER="$WEBUI_FOLDER/helper"
 
 # non-root user
 # using fixed group and user ids
@@ -140,7 +139,7 @@ RUN groupadd --gid "$GID" "$USER" && \
     useradd --uid "$UID" --gid "$GID" --no-log-init --create-home "$USER"
 
 # Create folders
-RUN mkdir --parents "$WEBUI_FOLDER" "$HELPER_FOLDER"
+RUN mkdir --parents "$WEBUI_FOLDER"
 
 COPY --from=builder "$WEBUI_ARTIFACT_FOLDER" "$WEBUI_FOLDER"
 
@@ -158,11 +157,6 @@ RUN cd "$DOWNLOAD_FOLDER/install-java/" && \
 
 # Copy run script into the container
 COPY run.sh /run.sh
-
-# Copy run script into the container
-COPY helper/ "$HELPER_FOLDER"
-
-# Set execute permissions for scripts
 RUN chmod +x /run.sh
 
 # Set permissions

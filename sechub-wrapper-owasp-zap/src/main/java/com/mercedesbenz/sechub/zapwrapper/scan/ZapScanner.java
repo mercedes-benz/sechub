@@ -17,6 +17,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.zaproxy.clientapi.core.ClientApiException;
 
+import com.mercedesbenz.sechub.commons.TextFileReader;
 import com.mercedesbenz.sechub.commons.model.ClientCertificateConfiguration;
 import com.mercedesbenz.sechub.commons.model.HTTPHeaderConfiguration;
 import com.mercedesbenz.sechub.commons.model.SecHubMessage;
@@ -53,6 +54,8 @@ public class ZapScanner implements ZapScan {
 
     long remainingScanTime;
 
+    TextFileReader fileReader;
+
     public static ZapScanner from(ClientApiFacade clientApiFacade, ZapScanContext scanContext) {
         if (clientApiFacade == null) {
             throw new ZapWrapperRuntimeException("Cannot create Zap Scanner because ClientApiFacade is null!", ZapWrapperExitCode.UNSUPPORTED_CONFIGURATION);
@@ -79,6 +82,8 @@ public class ZapScanner implements ZapScan {
         this.systemUtil = systemUtil;
 
         this.remainingScanTime = scanContext.getMaxScanDurationInMilliSeconds();
+
+        this.fileReader = new TextFileReader();
     }
 
     @Override
@@ -212,6 +217,10 @@ public class ZapScanner implements ZapScan {
         for (HTTPHeaderConfiguration httpHeader : httpHeaders) {
             matchstring = httpHeader.getName();
             replacement = httpHeader.getValue();
+
+            if (replacement == null) {
+                replacement = readHeaderValueFromFile(httpHeader);
+            }
 
             if (httpHeader.getOnlyForUrls().isEmpty()) {
                 // if there are no onlyForUrl patterns, there is only one rule for each header
@@ -796,6 +805,21 @@ public class ZapScanner implements ZapScan {
                 }
             }
         }
+    }
+
+    private String readHeaderValueFromFile(HTTPHeaderConfiguration httpHeader) {
+        File headerFile = null;
+        headerFile = scanContext.getHeaderValueFiles().getOrDefault(httpHeader.getName(), null);
+        try {
+            if (headerFile != null) {
+                return fileReader.loadTextFile(headerFile.getAbsoluteFile());
+            }
+        } catch (IOException e) {
+            SecHubMessage message = new SecHubMessage(SecHubMessageType.ERROR, "Could not read header value from file: " + headerFile);
+            scanContext.getZapProductMessageHelper().writeSingleProductMessage(message);
+            throw new ZapWrapperRuntimeException(message.getText(), e, ZapWrapperExitCode.IO_ERROR);
+        }
+        return null;
     }
 
     private String urlEncodeUTF8(String stringToEncode) {

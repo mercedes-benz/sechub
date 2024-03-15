@@ -7,6 +7,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.File;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Stream;
 
 import org.junit.jupiter.api.Named;
@@ -17,14 +18,14 @@ import org.junit.jupiter.params.provider.MethodSource;
 
 import com.mercedesbenz.sechub.commons.model.SecHubScanConfiguration;
 
-class ZapWrapperDataSectionFileProviderTest {
+class ZapWrapperDataSectionFileSupportTest {
 
-    private ZapWrapperDataSectionFileProvider providerToTest = new ZapWrapperDataSectionFileProvider();;
+    private ZapWrapperDataSectionFileSupport supportToTest = new ZapWrapperDataSectionFileSupport();;
 
     @Test
     void open_api_sources_folder_is_null_results_in_empty_list() {
         /* execute */
-        List<File> apiDefinitionFiles = providerToTest.fetchApiDefinitionFiles(null, new SecHubScanConfiguration());
+        List<File> apiDefinitionFiles = supportToTest.fetchApiDefinitionFiles(null, new SecHubScanConfiguration());
 
         /* test */
         assertTrue(apiDefinitionFiles.isEmpty());
@@ -33,7 +34,7 @@ class ZapWrapperDataSectionFileProviderTest {
     @Test
     void client_cert_sources_folder_is_null_results_in_cert_file_is_null() {
         /* execute */
-        File certificateFile = providerToTest.fetchClientCertificateFile(null, new SecHubScanConfiguration());
+        File certificateFile = supportToTest.fetchClientCertificateFile(null, new SecHubScanConfiguration());
 
         /* test */
         assertNull(certificateFile);
@@ -42,7 +43,7 @@ class ZapWrapperDataSectionFileProviderTest {
     @Test
     void open_api_sechub_scan_config_is_null_results_in_empty_list() {
         /* execute */
-        List<File> apiDefinitionFiles = providerToTest.fetchApiDefinitionFiles("/example/path/to/extracted/sources", null);
+        List<File> apiDefinitionFiles = supportToTest.fetchApiDefinitionFiles("/example/path/to/extracted/sources", null);
 
         /* test */
         assertTrue(apiDefinitionFiles.isEmpty());
@@ -51,7 +52,7 @@ class ZapWrapperDataSectionFileProviderTest {
     @Test
     void client_cert_sechub_scan_config_is_null_results_in_cert_file_is_null() {
         /* execute */
-        File certificateFile = providerToTest.fetchClientCertificateFile("/example/path/to/extracted/sources", null);
+        File certificateFile = supportToTest.fetchClientCertificateFile("/example/path/to/extracted/sources", null);
 
         /* test */
         assertNull(certificateFile);
@@ -76,7 +77,7 @@ class ZapWrapperDataSectionFileProviderTest {
         SecHubScanConfiguration openApiSechubScanConfiguration = SecHubScanConfiguration.createFromJSON(openApiSechubScanConfigJSON);
 
         /* execute */
-        List<File> apiDefinitionFiles = providerToTest.fetchApiDefinitionFiles("/example/path/to/extracted/sources", openApiSechubScanConfiguration);
+        List<File> apiDefinitionFiles = supportToTest.fetchApiDefinitionFiles("/example/path/to/extracted/sources", openApiSechubScanConfiguration);
 
         /* test */
         assertTrue(apiDefinitionFiles.isEmpty());
@@ -101,7 +102,7 @@ class ZapWrapperDataSectionFileProviderTest {
         SecHubScanConfiguration clientCertSechubScanConfiguration = SecHubScanConfiguration.createFromJSON(clientCertSechubScanConfigJSON);
 
         /* execute */
-        File certificateFile = providerToTest.fetchClientCertificateFile("/example/path/to/extracted/sources", clientCertSechubScanConfiguration);
+        File certificateFile = supportToTest.fetchClientCertificateFile("/example/path/to/extracted/sources", clientCertSechubScanConfiguration);
 
         /* test */
         assertNull(certificateFile);
@@ -129,7 +130,7 @@ class ZapWrapperDataSectionFileProviderTest {
         SecHubScanConfiguration openApiSechubScanConfiguration = SecHubScanConfiguration.createFromJSON(openApiSechubScanConfigJSON);
 
         /* execute */
-        List<File> apiDefinitionFiles = providerToTest.fetchApiDefinitionFiles("/example/path/to/extracted/sources", openApiSechubScanConfiguration);
+        List<File> apiDefinitionFiles = supportToTest.fetchApiDefinitionFiles("/example/path/to/extracted/sources", openApiSechubScanConfiguration);
 
         /* test */
         assertTrue(apiDefinitionFiles.isEmpty());
@@ -157,7 +158,7 @@ class ZapWrapperDataSectionFileProviderTest {
         SecHubScanConfiguration clientCertSechubScanConfiguration = SecHubScanConfiguration.createFromJSON(clientCertSechubScanConfigJSON);
 
         /* execute */
-        File certificateFile = providerToTest.fetchClientCertificateFile("/example/path/to/extracted/sources", clientCertSechubScanConfiguration);
+        File certificateFile = supportToTest.fetchClientCertificateFile("/example/path/to/extracted/sources", clientCertSechubScanConfiguration);
 
         /* test */
         assertNull(certificateFile);
@@ -187,7 +188,7 @@ class ZapWrapperDataSectionFileProviderTest {
         SecHubScanConfiguration openApiSechubScanConfiguration = SecHubScanConfiguration.createFromJSON(openApiSechubScanConfigJSON);
 
         /* execute */
-        List<File> apiDefinitionFiles = providerToTest.fetchApiDefinitionFiles("/example/path/to/extracted/sources", openApiSechubScanConfiguration);
+        List<File> apiDefinitionFiles = supportToTest.fetchApiDefinitionFiles("/example/path/to/extracted/sources", openApiSechubScanConfiguration);
 
         /* test */
         assertTrue(apiDefinitionFiles.isEmpty());
@@ -217,7 +218,7 @@ class ZapWrapperDataSectionFileProviderTest {
         SecHubScanConfiguration clientCertSechubScanConfiguration = SecHubScanConfiguration.createFromJSON(clientCertSechubScanConfigJSON);
 
         /* execute */
-        File certificateFile = providerToTest.fetchClientCertificateFile("/example/path/to/extracted/sources", clientCertSechubScanConfiguration);
+        File certificateFile = supportToTest.fetchClientCertificateFile("/example/path/to/extracted/sources", clientCertSechubScanConfiguration);
 
         /* test */
         assertNull(certificateFile);
@@ -248,7 +249,7 @@ class ZapWrapperDataSectionFileProviderTest {
         SecHubScanConfiguration openApiSechubScanConfiguration = SecHubScanConfiguration.createFromJSON(openApiSechubScanConfigJSON);
 
         /* execute */
-        List<File> apiDefinitionFiles = providerToTest.fetchApiDefinitionFiles("/example/path/to/extracted/sources", openApiSechubScanConfiguration);
+        List<File> apiDefinitionFiles = supportToTest.fetchApiDefinitionFiles("/example/path/to/extracted/sources", openApiSechubScanConfiguration);
 
         /* test */
         assertTrue(apiDefinitionFiles.isEmpty());
@@ -279,7 +280,7 @@ class ZapWrapperDataSectionFileProviderTest {
         SecHubScanConfiguration clientCertSechubScanConfiguration = SecHubScanConfiguration.createFromJSON(clientCertSechubScanConfigJSON);
 
         /* execute */
-        File certificateFile = providerToTest.fetchClientCertificateFile("/example/path/to/extracted/sources", clientCertSechubScanConfiguration);
+        File certificateFile = supportToTest.fetchClientCertificateFile("/example/path/to/extracted/sources", clientCertSechubScanConfiguration);
 
         /* test */
         assertNull(certificateFile);
@@ -309,7 +310,7 @@ class ZapWrapperDataSectionFileProviderTest {
         SecHubScanConfiguration sechubScanConfiguration = SecHubScanConfiguration.createFromJSON(sechubScanConfigJSON);
 
         /* execute */
-        List<File> result = providerToTest.fetchApiDefinitionFiles("/example/path/to/extracted/sources", sechubScanConfiguration);
+        List<File> result = supportToTest.fetchApiDefinitionFiles("/example/path/to/extracted/sources", sechubScanConfiguration);
 
         /* test */
         assertTrue(result.isEmpty());
@@ -339,7 +340,7 @@ class ZapWrapperDataSectionFileProviderTest {
         SecHubScanConfiguration sechubScanConfiguration = SecHubScanConfiguration.createFromJSON(sechubScanConfigJSON);
 
         /* execute */
-        File result = providerToTest.fetchClientCertificateFile("/example/path/to/extracted/sources", sechubScanConfiguration);
+        File result = supportToTest.fetchClientCertificateFile("/example/path/to/extracted/sources", sechubScanConfiguration);
 
         /* test */
         assertNull(result);
@@ -372,7 +373,7 @@ class ZapWrapperDataSectionFileProviderTest {
         SecHubScanConfiguration sechubScanConfiguration = SecHubScanConfiguration.createFromJSON(sechubScanConfigJSON);
 
         /* execute */
-        List<File> result = providerToTest.fetchApiDefinitionFiles("test/path", sechubScanConfiguration);
+        List<File> result = supportToTest.fetchApiDefinitionFiles("test/path", sechubScanConfiguration);
 
         /* test */
         assertTrue(result.isEmpty());
@@ -405,7 +406,7 @@ class ZapWrapperDataSectionFileProviderTest {
         SecHubScanConfiguration sechubScanConfiguration = SecHubScanConfiguration.createFromJSON(sechubScanConfigJSON);
 
         /* execute */
-        File result = providerToTest.fetchClientCertificateFile("test/path", sechubScanConfiguration);
+        File result = supportToTest.fetchClientCertificateFile("test/path", sechubScanConfiguration);
 
         /* test */
         assertNull(result);
@@ -438,7 +439,7 @@ class ZapWrapperDataSectionFileProviderTest {
         SecHubScanConfiguration sechubScanConfiguration = SecHubScanConfiguration.createFromJSON(sechubScanConfigJSON);
 
         /* execute */
-        List<File> result = providerToTest.fetchApiDefinitionFiles("test/path", sechubScanConfiguration);
+        List<File> result = supportToTest.fetchApiDefinitionFiles("test/path", sechubScanConfiguration);
 
         /* test */
         assertTrue(result.isEmpty());
@@ -471,7 +472,7 @@ class ZapWrapperDataSectionFileProviderTest {
         SecHubScanConfiguration sechubScanConfiguration = SecHubScanConfiguration.createFromJSON(sechubScanConfigJSON);
 
         /* execute */
-        File result = providerToTest.fetchClientCertificateFile("test/path", sechubScanConfiguration);
+        File result = supportToTest.fetchClientCertificateFile("test/path", sechubScanConfiguration);
 
         /* test */
         assertNull(result);
@@ -504,7 +505,7 @@ class ZapWrapperDataSectionFileProviderTest {
         SecHubScanConfiguration sechubScanConfiguration = SecHubScanConfiguration.createFromJSON(sechubScanConfigJSON);
 
         /* execute */
-        List<File> result = providerToTest.fetchApiDefinitionFiles("test/path", sechubScanConfiguration);
+        List<File> result = supportToTest.fetchApiDefinitionFiles("test/path", sechubScanConfiguration);
 
         /* test */
         assertEquals(1, result.size());
@@ -537,7 +538,7 @@ class ZapWrapperDataSectionFileProviderTest {
         SecHubScanConfiguration sechubScanConfiguration = SecHubScanConfiguration.createFromJSON(sechubScanConfigJSON);
 
         /* execute */
-        File result = providerToTest.fetchClientCertificateFile("test/path", sechubScanConfiguration);
+        File result = supportToTest.fetchClientCertificateFile("test/path", sechubScanConfiguration);
 
         /* test */
         assertEquals("test/path/clientCert.p12", result.toString());
@@ -550,7 +551,7 @@ class ZapWrapperDataSectionFileProviderTest {
         SecHubScanConfiguration sechubScanConfiguration = SecHubScanConfiguration.createFromJSON(sechubScanConfigJSON);
 
         /* execute */
-        List<File> result = providerToTest.fetchApiDefinitionFiles("test/path", sechubScanConfiguration);
+        List<File> result = supportToTest.fetchApiDefinitionFiles("test/path", sechubScanConfiguration);
 
         /* test */
         assertEquals(2, result.size());
@@ -588,7 +589,7 @@ class ZapWrapperDataSectionFileProviderTest {
         SecHubScanConfiguration sechubScanConfiguration = SecHubScanConfiguration.createFromJSON(sechubConfigWithmoreThanOneDataSection);
 
         /* execute */
-        File result = providerToTest.fetchClientCertificateFile("test/path", sechubScanConfiguration);
+        File result = supportToTest.fetchClientCertificateFile("test/path", sechubScanConfiguration);
 
         /* test */
         assertEquals("test/path/other-clientCert.p12", result.toString());
@@ -621,10 +622,114 @@ class ZapWrapperDataSectionFileProviderTest {
         SecHubScanConfiguration sechubScanConfiguration = SecHubScanConfiguration.createFromJSON(sechubConfigWithfilesystemPartHasMoreThanOneFile);
 
         /* execute */
-        File result = providerToTest.fetchClientCertificateFile("test/path", sechubScanConfiguration);
+        File result = supportToTest.fetchClientCertificateFile("test/path", sechubScanConfiguration);
 
         /* test */
         assertEquals("test/path/clientCert.p12", result.toString());
+    }
+
+    @Test
+    void header_sechub_config_with_filesystem_part_has_more_than_one_file_results_in_first_header_file() {
+        /* prepare */
+        String sechubConfigWithFilesystemPartHasMoreThanOneFile = """
+                {
+                  "apiVersion" : "1.0",
+                  "data" : {
+                    "sources" : [ {
+                      "name" : "header-file-reference",
+                      "fileSystem" : {
+                        "files" : [ "header-token.txt", "second-header-token.txt" ]
+                      }
+                    } ]
+                  },
+                  "webScan" : {
+                    "url" : "https://localhost:8443",
+                    "headers" : [{
+                      "name" : "Key",
+                      "use" : [ "header-file-reference" ]
+                    }]
+                  }
+                }
+                """;
+
+        SecHubScanConfiguration sechubScanConfiguration = SecHubScanConfiguration.createFromJSON(sechubConfigWithFilesystemPartHasMoreThanOneFile);
+
+        /* execute */
+        Map<String, File> headerValueFiles = supportToTest.fetchHeaderValueFiles("test/path", sechubScanConfiguration);
+
+        /* test */
+        assertEquals(1, headerValueFiles.size());
+        assertEquals("test/path/header-token.txt", headerValueFiles.get("Key").toString());
+    }
+
+    @Test
+    void header_sechub_config_with_two_filesystem_parts_results_in_first_header_file_for_each_header() {
+        /* prepare */
+        String sechubConfigWithMultipleFilesystemPartEachHasMoreThanOneFile = """
+                {
+                  "apiVersion" : "1.0",
+                  "data" : {
+                    "sources" : [ {
+                      "name" : "header-file-reference",
+                      "fileSystem" : {
+                        "files" : [ "header-token.txt", "second-header-token.txt" ]
+                      }
+                    },
+                     {
+                      "name" : "another-header-file-reference",
+                      "fileSystem" : {
+                        "files" : [ "token.txt", "second-header-token.txt" ]
+                      }
+                    }]
+                  },
+                  "webScan" : {
+                    "url" : "https://localhost:8443",
+                    "headers" : [{
+                      "name" : "Key",
+                      "use" : [ "header-file-reference" ]
+                    },
+                    {
+                      "name" : "Other",
+                      "use" : [ "another-header-file-reference" ]
+                    }]
+                  }
+                }
+                """;
+
+        SecHubScanConfiguration sechubScanConfiguration = SecHubScanConfiguration.createFromJSON(sechubConfigWithMultipleFilesystemPartEachHasMoreThanOneFile);
+
+        /* execute */
+        Map<String, File> headerValueFiles = supportToTest.fetchHeaderValueFiles("test/path", sechubScanConfiguration);
+
+        /* test */
+        assertEquals(2, headerValueFiles.size());
+        assertEquals("test/path/header-token.txt", headerValueFiles.get("Key").toString());
+        assertEquals("test/path/token.txt", headerValueFiles.get("Other").toString());
+    }
+
+    @Test
+    void header_sechub_config_without_data_reference_results_in_empty_result() {
+        /* prepare */
+        String sechubConfigWithfilesystemPartHasMoreThanOneFile = """
+                {
+                  "apiVersion" : "1.0",
+                  "webScan" : {
+                    "url" : "https://localhost:8443",
+                    "headers" : [{
+                      "name" : "Key",
+                      "value" : "header-value"
+                    }]
+                  }
+                }
+                """;
+
+        SecHubScanConfiguration sechubScanConfiguration = SecHubScanConfiguration.createFromJSON(sechubConfigWithfilesystemPartHasMoreThanOneFile);
+
+        /* execute */
+        Map<String, File> headerValueFiles = supportToTest.fetchHeaderValueFiles("test/path", sechubScanConfiguration);
+
+        /* test */
+        assertEquals(0, headerValueFiles.size());
     }
 
     static Stream<Arguments> multipleFilesTestNamedArguments() {

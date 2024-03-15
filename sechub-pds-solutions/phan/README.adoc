@@ -1,0 +1,74 @@
+// SPDX-License-Identifier: MIT
+
+:toc:
+:numbered:
+
+= Phan + PDS
+
+Phan is a static analyzer for PHP that prefers to minimize false-positives. Phan attempts to prove incorrectness rather than correctness.
+In addition, the combination of Phan and PDS allows both to run in a Kubernetes cluster or on virtual machines.
+
+This folder contains the scripts necessary to run Phan + PDS locally within a container. It also contains scripts to create the PDS + Phan container and push it to your container registry, as well as a helm chart to install and run Phan + PDS in a Kubernetes cluster.
+
+== Run Locally
+
+This is the easiest way to get started.
+
+=== Requirements
+
+Docker and Docker-Compose need to be installed:
+
+. https://docs.docker.com/engine/install/[Install Docker]
+
+. Linux: https://docs.docker.com/engine/install/linux-postinstall/#manage-docker-as-a-non-root-user[Use Docker as non Root user]
+
+. https://docs.docker.com/compose/install/[Install Docker-Compose]
+
+=== Single Instance
+
+Start a single instance by using the Bash wrapper script which does setup everything automatically for you.
+
+==== Scan script
+
+The folder contains a start script which does the manual steps for you:
+
+----
+./01-start-single-docker-compose.sh
+----
+
+=== Scan
+
+The steps required to scan with the PDS. Scan manually if you are new to the PDS. Use the script, if you are tired of typing the same commands over and over again.
+
+==== Scan Script
+
+It is recommended to start with a manual <<_scan>> the first time using the PDS. However, after some time typing in the commands becomes very tedious. To improve on the experience you can scan using this script.
+
+. Set the environment variables
++
+----
+export PDS_SERVER=https://<pds-host>:<port>
+export PDS_USERID=admin
+export PDS_APITOKEN="<pds-admin-apitoken>"
+export PDS_PRODUCT_IDENTFIER=PDS_PHAN
+----
++
+For example:
++
+----
+export PDS_SERVER=https://localhost:8444
+export PDS_USERID=admin
+export PDS_APITOKEN="pds-apitoken"
+export PDS_PRODUCT_IDENTFIER=PDS_PHAN
+----
+----
+cd ../../sechub-solutions-shared/scripts/
+./01-test-pds.sh <path-to-zip-file>
+----
++
+For example:
++
+----
+cd ../../sechub-solutions-shared/scripts/
+./01-test-pds.sh ~/myproject.zip
+----

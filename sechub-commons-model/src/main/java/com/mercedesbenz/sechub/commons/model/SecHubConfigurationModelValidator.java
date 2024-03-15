@@ -40,6 +40,8 @@ public class SecHubConfigurationModelValidator {
     private static final int MAX_LIST_SIZE_EXCLUDES = 500;
     private static final int MAX_LENGTH_PATH_SIZE = 2048;
 
+    private static final int MAX_SECHUB_CONFIGURATION_SIZE = 8192;
+
     SecHubConfigurationModelSupport modelSupport = new SecHubConfigurationModelSupport();
 
     private List<String> supportedVersions;
@@ -131,6 +133,13 @@ public class SecHubConfigurationModelValidator {
             context.result.addError(MODEL_NULL);
             return;
         }
+        int modelJsonLength = JSONConverter.get().toJSON(context.model, false).length();
+        if (modelJsonLength > MAX_SECHUB_CONFIGURATION_SIZE) {
+            context.result.addError(SECHUB_CONFIGURATION_TOO_LARGE, "Sechub scan configuration was " + modelJsonLength
+                    + " characters. Maximum sechub scan configuration size is " + MAX_SECHUB_CONFIGURATION_SIZE + " characters.");
+            return;
+        }
+
         String apiVersion = context.model.getApiVersion();
         if (apiVersion == null) {
             context.result.addError(API_VERSION_NULL);
@@ -406,13 +415,29 @@ public class SecHubConfigurationModelValidator {
             return;
         }
         for (HTTPHeaderConfiguration sanatizedHttpHeader : webScanContext.sanatizedHttpHeaders) {
-            if (sanatizedHttpHeader.getName() == null || sanatizedHttpHeader.getName().isEmpty()) {
+            String headerName = sanatizedHttpHeader.getName();
+            if (headerName == null || headerName.isEmpty()) {
                 webScanContext.markAsFailed(WEB_SCAN_NO_HEADER_NAME_DEFINED);
                 return;
             }
-            if (sanatizedHttpHeader.getValue() == null || sanatizedHttpHeader.getValue().isEmpty()) {
-                webScanContext.markAsFailed(WEB_SCAN_NO_HEADER_VALUE_DEFINED, "The header name is : " + sanatizedHttpHeader.getName());
-                return;
+            String headerValue = sanatizedHttpHeader.getValue();
+            if (headerValue == null || headerValue.isEmpty()) {
+                // each http header config must have a value or a usage defined - here we have
+                // no value so a usage must be defined!
+                Set<String> use = sanatizedHttpHeader.getNamesOfUsedDataConfigurationObjects();
+                if (use == null || use.isEmpty()) {
+                    webScanContext.markAsFailed(WEB_SCAN_NO_HEADER_VALUE_DEFINED, "The header name is : " + headerName);
+                    return;
+                }
+            }
+            if (headerValue != null && !headerValue.isEmpty()) {
+                // each http header config must have either a value or a usage defined - here we
+                // have a value defined, so a usage may not be defined!
+                Set<String> use = sanatizedHttpHeader.getNamesOfUsedDataConfigurationObjects();
+                if (use != null && !use.isEmpty()) {
+                    webScanContext.markAsFailed(WEB_SCAN_MULTIPLE_HEADER_VALUES_DEFINED, "The header name is : " + headerName);
+                    return;
+                }
             }
         }
     }
@@ -578,6 +603,7 @@ public class SecHubConfigurationModelValidator {
                     sanatizedConfig.setName(headerName.toLowerCase());
                 }
                 sanatizedConfig.setValue(httpHeaderConfiguration.getValue());
+                sanatizedConfig.getNamesOfUsedDataConfigurationObjects().addAll(httpHeaderConfiguration.getNamesOfUsedDataConfigurationObjects());
 
                 if (httpHeaderConfiguration.getOnlyForUrls().isPresent()) {
                     List<String> sanatizedOnlyForUrls = new ArrayList<>();
