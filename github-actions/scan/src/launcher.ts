@@ -64,7 +64,7 @@ export const LAUNCHER_CONTEXT_DEFAULTS: LaunchContext = {
 
 
 /**
- * Create launch context
+ * Creates the initial launch context
  * @returns launch context
  */
 function createContext(): LaunchContext {
@@ -89,7 +89,7 @@ function createContext(): LaunchContext {
 
     const generatedSecHubJsonFilePath = `${workspaceFolder}/sechub.json`;
 
-    const configParameter = initSecHubJson(generatedSecHubJsonFilePath, gitHubInputData.configPath, includeFolders, excludeFolders);
+    const configFileLocation = initSecHubJson(generatedSecHubJsonFilePath, gitHubInputData.configPath, includeFolders, excludeFolders);
 
     const reportFormats = initReportFormats(gitHubInputData.reportFormats);
 
@@ -97,7 +97,7 @@ function createContext(): LaunchContext {
         jobUUID: LAUNCHER_CONTEXT_DEFAULTS.jobUUID,
         secHubReportJsonObject: LAUNCHER_CONTEXT_DEFAULTS.secHubReportJsonObject,
 
-        configFileLocation: configParameter,
+        configFileLocation: configFileLocation,
         reportFormats: reportFormats,
         inputData: gitHubInputData,
         clientDownloadFolder: clientDownloadFolder,

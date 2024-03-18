@@ -78,3 +78,6 @@ echo "> Check server alive"
 createData 1 codescan green 
 createData 2 codescan yellow
 createData 3 codescan red
+createData 4 webscan red
+
+./sechub-api.sh project_set_whitelist_uris test-project-4 https://vulnerable.demo.example.com

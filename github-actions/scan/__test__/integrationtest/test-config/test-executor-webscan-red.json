@@ -1,0 +1,39 @@
+{
+    "name": "test-executor-webscan-red",
+    "productIdentifier": "PDS_WEBSCAN",
+    "setup": {
+        "baseURL": "https://localhost:8444",
+        "credentials": {
+            "user": "pds-inttest-techuser",
+            "password": "pds-inttest-apitoken"
+        },
+        "jobParameters": [
+            {
+                "key": "sechub.productexecutor.pds.timetowait.nextcheck.milliseconds",
+                "value": "500"
+            },
+            {
+                "key": "sechub.productexecutor.pds.trustall.certificates",
+                "value": "true"
+            },
+            {
+                "key": "pds.mocking.disabled",
+                "value": "true"
+            },
+            {
+                "key": "pds.config.productidentifier",
+                "value": "webscan_demo_red"
+            },
+            {
+                "key": "pds.config.use.sechub.storage",
+                "value": "true"
+            },
+            {
+                "key": "pds.config.supported.datatypes",
+                "value": "NONE"
+            }
+        ]
+    },
+    "executorVersion": 1,
+    "enabled": true
+}

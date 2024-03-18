@@ -36,7 +36,6 @@ export function getWorkspaceDir(): string {
  */
 export function ensuredWorkspaceFolder() {
     const ensuredWorkspaceFolder= path.dirname(getWorkspaceDir());
-    // TODO check folder exists or fal
     return ensuredWorkspaceFolder;
 }
 

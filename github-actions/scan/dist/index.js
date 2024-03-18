@@ -13823,13 +13823,18 @@ function getValidFormatsFromInput(inputFormats) {
     return formats.filter((item) => availableFormats.includes(item));
 }
 
+// EXTERNAL MODULE: external "fs"
+var external_fs_ = __nccwpck_require__(7147);
 ;// CONCATENATED MODULE: ./src/init-scan.ts
 // SPDX-License-Identifier: MIT
 
 
 
+
 /**
- * Returns the parameter to the sechub.json or creates it from the input parameters if configPath is not set.
+ * Returns the path to the sechub.json. If no custom config-path is defined, a config file wille be
+ * generated from the input parameters and this path will be returned.
+ *
  * @param customSecHubConfigFilePath Path to the custom sechub.json (if defined)
  * @param includeFolders list of folders to include to the scan
  * @param excludeFolders list of folders to exclude from the scan
@@ -13840,7 +13845,12 @@ function initSecHubJson(secHubJsonFilePath, customSecHubConfigFilePath, includeF
     core.startGroup('Set config');
     let configFilePath = customSecHubConfigFilePath;
     if (configFilePath) {
-        core.info(`Config-Path was found: ${customSecHubConfigFilePath}`);
+        if (external_fs_.existsSync(configFilePath)) {
+            core.info(`Config-Path was found: ${configFilePath}`);
+        }
+        else {
+            throw new Error(`Config-Path was defined, but no file exists at: ${configFilePath}`);
+        }
     }
     else {
         createSecHubConfigJsonFile(secHubJsonFilePath, includeFolders, excludeFolders);
@@ -13879,8 +13889,6 @@ function ensureJsonReportAtBeginning(reportFormats) {
 
 // EXTERNAL MODULE: ./node_modules/@actions/artifact/lib/artifact-client.js
 var artifact_client = __nccwpck_require__(2605);
-// EXTERNAL MODULE: external "fs"
-var external_fs_ = __nccwpck_require__(7147);
 ;// CONCATENATED MODULE: ./src/json-helper.ts
 
 /**
@@ -14248,7 +14256,7 @@ const LAUNCHER_CONTEXT_DEFAULTS = {
     secHubReportJsonObject: undefined,
 };
 /**
- * Create launch context
+ * Creates the initial launch context
  * @returns launch context
  */
 function createContext() {
@@ -14267,12 +14275,12 @@ function createContext() {
     const includeFolders = (_a = gitHubInputData.includeFolders) === null || _a === void 0 ? void 0 : _a.split(',');
     const excludeFolders = (_b = gitHubInputData.excludeFolders) === null || _b === void 0 ? void 0 : _b.split(',');
     const generatedSecHubJsonFilePath = `${workspaceFolder}/sechub.json`;
-    const configParameter = initSecHubJson(generatedSecHubJsonFilePath, gitHubInputData.configPath, includeFolders, excludeFolders);
+    const configFileLocation = initSecHubJson(generatedSecHubJsonFilePath, gitHubInputData.configPath, includeFolders, excludeFolders);
     const reportFormats = initReportFormats(gitHubInputData.reportFormats);
     return {
         jobUUID: LAUNCHER_CONTEXT_DEFAULTS.jobUUID,
         secHubReportJsonObject: LAUNCHER_CONTEXT_DEFAULTS.secHubReportJsonObject,
-        configFileLocation: configParameter,
+        configFileLocation: configFileLocation,
         reportFormats: reportFormats,
         inputData: gitHubInputData,
         clientDownloadFolder: clientDownloadFolder,
@@ -14317,7 +14325,7 @@ async function postScan(context) {
 
 main().catch(handleError);
 async function main() {
-    // Seperated launcher and main methd.
+    // Seperated launcher and main method.
     // Reason: launch mechanism would be loaded on imports
     //         before we can handle mocking in integration tests!
     await launch();

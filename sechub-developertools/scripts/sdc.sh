@@ -2,6 +2,8 @@
 # SPDX-License-Identifier: MIT
 
 set -e
+trap handleExitCodes EXIT
+
 lastCommandHandled=""
 
 RED='\033[0;31m'
@@ -12,6 +14,12 @@ BLUE='\033[0;34m'
 PURPLE='\033[0;35m'
 
 NC='\033[0m' # No Color
+
+# Define global variables for GitHub action apts
+gha_sechub_server_version=1.7.0
+gha_sechub_server_port=8443
+gha_pds_version=1.4.0
+gha_pds_port=8444
 
 
 function startJob (){
@@ -43,26 +51,76 @@ function showHelp () {
     echo "Usage: Usage sdc"
     echo " Option s: "                                  
     echo "  -f,   --format-all                          : format all source code files"
+    echo ""                           
     echo "  -b,   --build-full                          : full build"
     echo "  -bpt, --build-pds-tools                     : build pds tools"
-    echo "  -bgh, --build-github-action                 : build github action (node js)" 
     echo "  -d,   --document-full                       : full document build"
+    echo "  -gj,  --generate-java-api                   : generates parts for java api"
+    echo ""                           
     echo "  -u,   --unit-tests                          : execute all unit tests"
-    echo "  -i,   --integrationtest-all                 : execute all integration tests"
+    echo "  -i,   --integrationtest-all                 : execute all integration tests (java)"
     echo "  -ii,  --integrationtest-integration         : execute integration tests from sechub-integrationtest only"
     echo "  -is,  --integrationtest-systemtest          : execute integration tests from sechub-systemtest only"
     echo "  -r,   --report-combined-all                 : create combined report for all"
+    echo ""                           
     echo "  -c,   --clean-all                           : clean all"
     echo "  -ct,  --clean-all-tests                     : clean all test output"
     echo "  -cu,  --clean-unit-tests                    : clean all unit test output"
     echo "  -ci,  --clean-integrationtests              : clean all integrationtest output"
     echo "  -si,  --stop-inttest-server                 : stop running integration test servers (SecHub, PDS)"
-    echo "  -gj,  --generate-java-api                   : generates parts for java api"
+    echo ""                           
+    echo "  -pigh,--prepare-integrationtest-gh-action   : prepare integration test data for github actions ((re)start SecHub, PDS and init data)"                  
+    echo "  -igh, --integrationtest-github-action       : execute integration tests for github action only (nodejs, -pigh initial necessary)"
+    echo "  -bgh, --build-github-action                 : full build of github action with integration tests (prepare etc. is all done automatically)" 
     echo ""                                            
     echo "  -syg, --start-systemtest-sanity-check-gosec : start systemtest 'sanity-check' for gosec with local build pds tools (0.0.0)" 
     echo ""                                            
     echo "  -h,   --help                                : show this help"
 
+}
+
+function prepareGitHubActionIntegrationTest(){
+    # Set working directory (to default)
+    cd $SECHUB_ROOT_DIR
+    cd ./github-actions/scan
+
+    startTask "Setup integration test data"
+    echo "Version and port variables are globally defined"
+
+    # Set working directory
+    cd ./__test__/integrationtest/
+    
+    # next lines only for our local build: we stop always former running integration test servers (to call it multiple times)
+    specialTask "Stop former running test servers"
+    ./05-stop.sh $gha_sechub_server_port $gha_pds_port
+
+    # Start integration test servers
+    startTask "Start integration test servers"
+    ./01-start.sh $gha_sechub_server_version $gha_sechub_server_port $gha_pds_version $gha_pds_port
+    
+    # Init integration test data
+    startTask "Init integration test data"
+    ./03-init_sechub_data.sh $gha_sechub_server_port $gha_pds_port
+}
+
+function runGitHubActionIntegrationTests(){
+    # Set working directory (to default)
+    cd $SECHUB_ROOT_DIR
+    cd ./github-actions/scan
+
+    # Run integration tests
+    startTask "Run integration tests"
+    npm run integration-test
+}
+
+function handleExitCodes(){
+    lastExitCode=$?
+    
+    if [[ "$lastExitCode" = "0" ]]; then
+        echo -e "${LIGHT_GREEN}SUCCESSFUL${NC}"
+    else
+        echo -e "${RED}FAILED${NC} - exit code: $lastExitCode"
+    fi
 }
 
 SCRIPT_DIR="$(dirname -- "$0")"
@@ -132,6 +190,14 @@ do
         ;;
         -bgh|--build-github-action)
         GITHUB_ACTION_BUILD="YES"
+        shift # past argument
+        ;;
+        -pigh|--prepare-integrationtest-gh-action)
+        GITHUB_ACTION_PREPARE_INTEGRATIONTEST="YES"
+        shift # past argument
+        ;;
+        -igh|--integrationtest-github-action)
+        GITHUB_ACTION_START_INTEGRATIONTEST="YES"
         shift # past argument
         ;;
         -d|--document-full)
@@ -298,6 +364,20 @@ if [[ "$START_SYSTEMTEST_SANITYCHECK_GOSEC" = "YES" ]]; then
     cd $SECHUB_ROOT_DIR 
 fi
 
+if [[ "$GITHUB_ACTION_PREPARE_INTEGRATIONTEST" = "YES" ]]; then
+    startJob "Prepare integration test situation for GitHub action"
+    
+    prepareGitHubActionIntegrationTest
+
+fi
+
+if [[ "$GITHUB_ACTION_START_INTEGRATIONTEST" = "YES" ]]; then
+    startJob "Start integration tests for GitHub action"
+    
+    runGitHubActionIntegrationTests
+
+fi
+
 # Builds github action ("scan") like done in workflow, means the integration tests are executed as well)
 # We do here the same steps as done in 'github-action-scan.yml'
 if [[ "$GITHUB_ACTION_BUILD" = "YES" ]]; then
@@ -305,8 +385,9 @@ if [[ "$GITHUB_ACTION_BUILD" = "YES" ]]; then
     ### Build GitHub action "scan"
     ### --------------------------
     startJob "Build GitHub action 'scan'"
-
-    # Set working directory (to default)
+    
+    prepareGitHubActionIntegrationTest
+    
     cd $SECHUB_ROOT_DIR
     cd ./github-actions/scan
 
@@ -322,41 +403,11 @@ if [[ "$GITHUB_ACTION_BUILD" = "YES" ]]; then
     startTask "Run unit tests"
     npm test
     
-    startTask "Setup integration test data"
-    # Define variables
-    sechub_server_version=1.7.0
-    sechub_server_port=8443
-    pds_version=1.4.0
-    pds_port=8444
-    echo "Version and port variables are now defined"
-
-    # Set working directory
-    cd ./__test__/integrationtest/
-    
-    # next lines only for our local build: we stop always former running integration test servers (to call it multiple times)
-    specialTask "Stop former running test servers"
-    ./05-stop.sh $sechub_server_port $pds_port
-
-    # Start integration test servers
-    startTask "Start integration test servers"
-    ./01-start.sh $sechub_server_version $sechub_server_port $pds_version $pds_port
-    
-    # Init integration test data
-    startTask "Init integration test data"
-    ./03-init_sechub_data.sh $sechub_server_port $pds_port
-
-    
-    # Set working directory (to default)
-    cd $SECHUB_ROOT_DIR
-    cd ./github-actions/scan
-
-    # Run integration tests
-    startTask "Run integration tests"
-    npm run integration-test
+    runGitHubActionIntegrationTests
 
     # Cleanup integration tests
     startTask "Cleanup integration tests"
-    ./05-stop.sh $sechub_server_port $pds_port
+    ./05-stop.sh $gha_sechub_server_port $gha_pds_port
 fi
 
 

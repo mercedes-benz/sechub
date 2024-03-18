@@ -2,4 +2,4 @@
 # SPDX-License-Identifier: MIT
 
 echo "#PDS_INTTEST_PRODUCT_CODESCAN
-medium:result2" > "${PDS_JOB_RESULT_FILE}"
+medium:result-yellow" > "${PDS_JOB_RESULT_FILE}"

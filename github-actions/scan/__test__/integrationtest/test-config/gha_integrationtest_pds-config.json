@@ -19,6 +19,12 @@
       "path": "./__test__/integrationtest/test-scripts/pds-codescan-demo-red.sh",
       "scanType": "codeScan",
       "description": "This is only a fake code scan - used by integration tests. The code scan will just return one high vulnerability"
+    },
+    {
+      "id": "webscan_demo_red",
+      "path": "./__test__/integrationtest/test-scripts/pds-webscan-demo-red.sh",
+      "scanType": "webScan",
+      "description": "This is only a fake code scan - used by integration tests. The web scan will return multiple findings one is a high vulnerability"
     }
   ]
 }

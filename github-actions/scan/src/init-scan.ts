@@ -3,9 +3,12 @@
 import * as core from '@actions/core';
 import { createSecHubConfigJsonFile as createSecHubConfigJsonFile } from './configuration-builder';
 import { getValidFormatsFromInput } from './report-formats';
+import * as fs from 'fs';
 
 /**
- * Returns the parameter to the sechub.json or creates it from the input parameters if configPath is not set.
+ * Returns the path to the sechub.json. If no custom config-path is defined, a config file wille be 
+ * generated from the input parameters and this path will be returned.
+ * 
  * @param customSecHubConfigFilePath Path to the custom sechub.json (if defined)
  * @param includeFolders list of folders to include to the scan
  * @param excludeFolders list of folders to exclude from the scan
@@ -17,8 +20,13 @@ export function initSecHubJson(secHubJsonFilePath: string, customSecHubConfigFil
 
     let configFilePath = customSecHubConfigFilePath;
     if (configFilePath) {
-        core.info(`Config-Path was found: ${customSecHubConfigFilePath}`);
-    }else{
+        if (fs.existsSync(configFilePath)) {
+            core.info(`Config-Path was found: ${configFilePath}`);
+        } else {
+            throw new Error(`Config-Path was defined, but no file exists at: ${configFilePath}`);
+        }
+
+    } else {
         createSecHubConfigJsonFile(secHubJsonFilePath, includeFolders, excludeFolders);
         configFilePath = secHubJsonFilePath;
     }
@@ -26,7 +34,6 @@ export function initSecHubJson(secHubJsonFilePath: string, customSecHubConfigFil
 
     return configFilePath;
 }
-
 
 /**
  * Initializes the report formats and ensures there is at least one valid report format selected.

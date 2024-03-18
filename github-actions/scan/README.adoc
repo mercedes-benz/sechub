@@ -142,10 +142,10 @@ Unfortunately, the Jest UI integration works only for npm script "test". But to 
 If you want to **debug an integration test**, there is a temporary workaround necessary while you debug the test:
 
 - open `package.json` and look into section `scripts`
-- switch `test-with-integrationtests` to `test` and rename former `test` script entry to something else - e.g. `test-without-integrationtests`
+- remove 'test' entry + copy `test-with-integrationtests` entry and rename copied part to `test`
   (but please do not push this - otherwise build will fail on integration test!)
-- restart your VSCode/VSCodium instance (if integration tests are not listed in test explorer)
+- restart your VSCode/VSCodium instance (only necessary if integration tests are not listed in test explorer)
 - debug the parts, fix it etc.
-- switch `test` script entry back to `test-with-integrationtests` and `test-without-integrationtests` to `test`.
+- remove 'test' entry + copy `test-without-integrationtests` entry and rename copied part to `test`
 - if necessary push fixes/changes to remote...
 ==== 

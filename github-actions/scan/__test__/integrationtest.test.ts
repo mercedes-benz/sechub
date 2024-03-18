@@ -1,17 +1,14 @@
 // SPDX-License-Identifier: MIT
 
-import * as launcher from '../src/launcher';
-import { IntegrationTestContext as IntegrationTestContext } from './integrationtest/testframework';
-import * as shell from 'shelljs';
-import { isDebug, debug, getInput } from '@actions/core';
-import { info } from '@actions/core';
-import { error } from '@actions/core';
-import { warning } from '@actions/core';
-import * as input from '../src/input';
-import { LaunchContext } from '../src/launcher';
 import { create } from '@actions/artifact';
+import { debug, error, getInput, info, isDebug, warning } from '@actions/core';
+import * as shell from 'shelljs';
 import { getWorkspaceDir } from '../src/fs-helper';
+import * as input from '../src/input';
 import { getFieldFromJsonReport } from '../src/json-helper';
+import * as launcher from '../src/launcher';
+import { LaunchContext } from '../src/launcher';
+import { IntegrationTestContext } from './integrationtest/testframework';
 
 jest.mock('@actions/core');
 jest.mock('@actions/artifact');
@@ -103,6 +100,7 @@ describe('integrationtest codescan generated config', () => {
         /* test */
         assertLastClientExitCode(launchPromise, 0);
         assertTrafficLight(launchPromise, 'GREEN');
+        assertReportContains(launchPromise, 'result-green');
 
     });
     test('codescan yellow', function () {
@@ -118,6 +116,7 @@ describe('integrationtest codescan generated config', () => {
         /* test */
         assertLastClientExitCode(launchPromise, 0);
         assertTrafficLight(launchPromise, 'YELLOW');
+        assertReportContains(launchPromise, 'result-yellow');
 
     });
 
@@ -134,7 +133,46 @@ describe('integrationtest codescan generated config', () => {
         /* test */
         assertLastClientExitCode(launchPromise, 1); // exit code 1, because RED
         assertTrafficLight(launchPromise, 'RED');
+        assertReportContains(launchPromise, 'result-red');
     });
+
+});
+
+
+describe('integrationtest non-generated config', () => {
+    test('config-path defined, but file not found', () => {
+
+        /* prepare */
+        initInputMap();
+        mockedInputMap.set(input.PARAM_PROJECT_NAME, 'test-project-3');
+        mockedInputMap.set(input.PARAM_CONFIG_PATH, 'unknown/not-existing-config.json');
+
+        /* execute + test */
+        launcher.launch().catch(error => console.log(`Error handled : ${error}`));
+
+    });
+
+    test('config-path defined, file available, web scan with red trafficlight', () => {
+
+        /* prepare */
+        initInputMap();
+        mockedInputMap.set(input.PARAM_PROJECT_NAME, 'test-project-4'); // we must set the project name here, even when we have a config! GitHub action needs this always.
+
+        const pwd = shell.pwd();
+        const configDir = `${pwd}/__test__/integrationtest/test-config`;
+
+        mockedInputMap.set(input.PARAM_CONFIG_PATH, `${configDir}/sechub-config-webscan-project-4.json`);
+
+        /* execute */
+        const launchPromise = launcher.launch();
+
+        /* test */
+        assertLastClientExitCode(launchPromise, 1);
+        assertTrafficLight(launchPromise, 'RED');
+        assertReportContains(launchPromise, 'XSS attackable parameter output: </p><script>alert(1)');
+
+    });
+
 
 });
 
@@ -147,5 +185,11 @@ async function assertTrafficLight(launchPromise: Promise<LaunchContext>, traffic
     const context = await launchPromise;
     const found = getFieldFromJsonReport('trafficLight', context.secHubReportJsonObject);
     expect(found).toEqual(trafficLight);
-    
+
+}
+
+async function assertReportContains(launchPromise: Promise<LaunchContext>, textPart: string) {
+    const context = await launchPromise;
+    const text = JSON.stringify(context.secHubReportJsonObject);
+    expect(text).toContain(textPart);
 }

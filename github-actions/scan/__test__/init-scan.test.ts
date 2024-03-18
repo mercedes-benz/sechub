@@ -7,9 +7,17 @@ import {createSecHubConfigJsonFile} from '../src/configuration-builder';
 
 
 describe('initSecHubJson', function () {
-    it('returns parameter if configPath is set', function () {
+    it('throws error if configPath is set, but file does not exist', function () {
         /* prepare */
-        const configPath = 'sechub.json';
+        const configPath = 'not-existing-json.json';
+
+        /* execute + test */
+        expect(() => initSecHubJson('runtime/sechub.json', configPath, [], [])).toThrow(Error);
+    });
+
+    it('returns parameter if configPath is set and file exists', function () {
+        /* prepare */
+        const configPath = '__test__/test-resources/test-config.json';
 
         /* execute */
         const parameter = initSecHubJson('runtime/sechub.json', configPath, [], []);
@@ -29,11 +37,11 @@ describe('initSecHubJson', function () {
 });
 
 describe('initReportFormats', function () {
-    it('throws Error if no valid report formats found', function () {
+    it('throws error if no valid report formats found', function () {
         /* prepare */
         const reportFormats = 'yaml,xml';
 
-        /* execute & test */
+        /* execute + test */
         expect(() => initReportFormats(reportFormats)).toThrow(Error);
     });
 
