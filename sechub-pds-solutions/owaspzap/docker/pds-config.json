@@ -117,6 +117,11 @@
             "description": "Comma separated list of rule references that will be deactivated during the scan."
           },
           {
+            "key": "zap.jvm.args",
+            "description": "JVM arguments passed to ZAP on start up, e.g. to limit resources.",
+            "default": "-Xmx8192m"
+          },
+          {
             "key": "wrapper.connectioncheck.enabled",
             "description": "Enable/disable initial connection done by the Owasp Zap wrapper.",
             "default": false
