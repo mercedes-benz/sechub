@@ -2,7 +2,8 @@
 
 import * as core from '@actions/core';
 import * as shell from 'shelljs';
-import { SecHubConfigurationModel } from './configuration-model';
+import { ScanType, ContentType, SecHubConfigurationModel } from './configuration-model';
+import * as cm from './configuration-model';
 
 /**
  * Creates the sechub.json configuration file with the given user input values.
@@ -10,8 +11,8 @@ import { SecHubConfigurationModel } from './configuration-model';
  * @param includeFolders Which folders should be included
  * @param excludeFolders Which folders should be excluded
  */
-export function createSecHubConfigJsonFile(secHubJsonFilePath:string, data: SecHubConfigurationModelBuilderData) {
-    core.info('Config-Path was not found. Config will be created at '+ secHubJsonFilePath);
+export function createSecHubConfigJsonFile(secHubJsonFilePath: string, data: SecHubConfigurationModelBuilderData) {
+    core.info('Config-Path was not found. Config will be created at ' + secHubJsonFilePath);
     const secHubJson = createSecHubConfigurationModel(data);
     const stringifiedSecHubJson = JSON.stringify(secHubJson);
     core.debug('SecHub-Config: ' + stringifiedSecHubJson);
@@ -19,10 +20,13 @@ export function createSecHubConfigJsonFile(secHubJsonFilePath:string, data: SecH
     shell.ShellString(stringifiedSecHubJson).to(secHubJsonFilePath);
 }
 
-export class SecHubConfigurationModelBuilderData{
+export class SecHubConfigurationModelBuilderData {
 
     includeFolders: string[] = [];
     excludeFolders: string[] = [];
+
+    contentType: ContentType = ContentType.SOURCE; // per default source
+    scanTypes: ScanType[] = [ScanType.CODE_SCAN]; // per default only code scan
 }
 
 /**
@@ -33,27 +37,51 @@ export class SecHubConfigurationModelBuilderData{
  * 
  * @returns model
  */
-export function createSecHubConfigurationModel(data: SecHubConfigurationModelBuilderData): SecHubConfigurationModel {
-    const model: SecHubConfigurationModel = {
-        'apiVersion' : '1.0'
-    };
+export function createSecHubConfigurationModel(builderData: SecHubConfigurationModelBuilderData): SecHubConfigurationModel {
+    const model = new SecHubConfigurationModel();
 
-    if (model.codeScan==null){
-        model.codeScan={
-        };
+    const referenceName = 'reference-data-1';
+
+    createSourceOrBinaryDataReference(referenceName, builderData, model);
+
+    if (builderData.scanTypes?.indexOf(ScanType.CODE_SCAN) != -1) {
+        const codescan = new cm.CodeScan();
+        codescan.use = [referenceName];
+        model.codeScan = codescan;
     }
-    if (data.includeFolders) {
-
-        if (model.codeScan.fileSystem==null){
-            model.codeScan.fileSystem={
-            };
-        }
-
-        model.codeScan.fileSystem.folders = data.includeFolders;
+    if (builderData.scanTypes?.indexOf(ScanType.LICENSE_SCAN) != -1) {
+        const licenseScan = new cm.LicenseScan();
+        licenseScan.use = [referenceName];
+        model.licenseScan = licenseScan;
+    }
+    if (builderData.scanTypes?.indexOf(ScanType.SECRET_SCAN) != -1) {
+        const secretScan = new cm.SecretScan();
+        secretScan.use = [referenceName];
+        model.secretScan = secretScan;
     }
 
-    if (data.excludeFolders) {
-        model.codeScan.excludes = data.excludeFolders;
-    }
     return model;
 }
+
+function createSourceOrBinaryDataReference(referenceName: string, builderData: SecHubConfigurationModelBuilderData, model: SecHubConfigurationModel) {
+    if (builderData.contentType == cm.ContentType.SOURCE) {
+
+        const sourceData1 = new cm.SourceData();
+        sourceData1.name = referenceName;
+
+        sourceData1.fileSystem.folders = builderData.includeFolders;
+        sourceData1.excludes = builderData.excludeFolders;
+
+        model.data.sources = [sourceData1];
+
+    } else if (builderData.contentType == cm.ContentType.BINARIES) {
+        const binaryData1 = new cm.BinaryData();
+        binaryData1.name = referenceName;
+
+        binaryData1.fileSystem.folders = builderData.includeFolders;
+        binaryData1.excludes = builderData.excludeFolders;
+
+        model.data.binaries = [binaryData1];
+    }
+}
+
