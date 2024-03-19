@@ -10,13 +10,19 @@ import { SecHubConfigurationModel } from './configuration-model';
  * @param includeFolders Which folders should be included
  * @param excludeFolders Which folders should be excluded
  */
-export function createSecHubConfigJsonFile(secHubJsonFilePath:string, includeFolders: string[] | null, excludeFolders: string[] | null) {
+export function createSecHubConfigJsonFile(secHubJsonFilePath:string, data: SecHubConfigurationModelBuilderData) {
     core.info('Config-Path was not found. Config will be created at '+ secHubJsonFilePath);
-    const secHubJson = createSecHubConfigurationModel(includeFolders, excludeFolders);
+    const secHubJson = createSecHubConfigurationModel(data);
     const stringifiedSecHubJson = JSON.stringify(secHubJson);
     core.debug('SecHub-Config: ' + stringifiedSecHubJson);
 
     shell.ShellString(stringifiedSecHubJson).to(secHubJsonFilePath);
+}
+
+export class SecHubConfigurationModelBuilderData{
+
+    includeFolders: string[] = [];
+    excludeFolders: string[] = [];
 }
 
 /**
@@ -27,27 +33,27 @@ export function createSecHubConfigJsonFile(secHubJsonFilePath:string, includeFol
  * 
  * @returns model
  */
-export function createSecHubConfigurationModel(includeFolders: string[] | null, excludeFolders: string[] | null): SecHubConfigurationModel {
-    const sechubJson: SecHubConfigurationModel = {
+export function createSecHubConfigurationModel(data: SecHubConfigurationModelBuilderData): SecHubConfigurationModel {
+    const model: SecHubConfigurationModel = {
         'apiVersion' : '1.0'
     };
 
-    if (sechubJson.codeScan==null){
-        sechubJson.codeScan={
+    if (model.codeScan==null){
+        model.codeScan={
         };
     }
-    if (includeFolders) {
+    if (data.includeFolders) {
 
-        if (sechubJson.codeScan.fileSystem==null){
-            sechubJson.codeScan.fileSystem={
+        if (model.codeScan.fileSystem==null){
+            model.codeScan.fileSystem={
             };
         }
 
-        sechubJson.codeScan.fileSystem.folders = includeFolders;
+        model.codeScan.fileSystem.folders = data.includeFolders;
     }
 
-    if (excludeFolders) {
-        sechubJson.codeScan.excludes = excludeFolders;
+    if (data.excludeFolders) {
+        model.codeScan.excludes = data.excludeFolders;
     }
-    return sechubJson;
+    return model;
 }

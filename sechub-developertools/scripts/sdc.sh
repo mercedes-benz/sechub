@@ -67,6 +67,8 @@ function showHelp () {
     echo "  -ct,  --clean-all-tests                     : clean all test output"
     echo "  -cu,  --clean-unit-tests                    : clean all unit test output"
     echo "  -ci,  --clean-integrationtests              : clean all integrationtest output"
+    echo "  -cr,  --clean-reports                       : clean all reports"
+    echo ""                           
     echo "  -si,  --stop-inttest-server                 : stop running integration test servers (SecHub, PDS)"
     echo ""                           
     echo "  -pigh,--prepare-integrationtest-gh-action   : prepare integration test data for github actions ((re)start SecHub, PDS and init data)"                  
@@ -180,6 +182,10 @@ do
         CLEAN_INTEGRATIONTEST="YES"
         shift # past argument
         ;;
+        -cr|--clean-reports)
+        CLEAN_REPORTS="YES"
+        shift # past argument
+        ;;
         -b|--build-full)
         FULL_BUILD="YES"
         shift # past argument
@@ -246,6 +252,10 @@ if [[ "$HELP" = "YES" ]]; then
     exit 0
 fi
 
+function cleanOldReportData() {
+    rm ./sechub_report_*.json -f
+}
+
 
 CMD_EXEC_ALL_INTEGRATIONTESTS="./gradlew :sechub-integrationtest:startIntegrationTestInstances :sechub-systemtest:integrationtest :sechub-integrationtest:integrationtest :sechub-integrationtest:stopIntegrationTestInstances -Dsechub.build.stage=all --console=plain"
 CMD_CREATE_COMBINED_REPORT="./gradlew createCombinedTestReport -Dsechub.build.stage=all"
@@ -258,7 +268,11 @@ if [[ "$STOP_SERVERS" = "YES" ]]; then
 fi
 if [[ "$CLEAN_ALL" = "YES" ]]; then
     startJob "Clean all"
+    step "Clean all gradle parts"
     ./gradlew clean -Dsechub.build.stage=all --console=plain
+    
+    step "Clean old report data"
+    cleanOldReportData
 fi
 if [[ "$CLEAN_ALL_TESTS" = "YES" ]]; then
     startJob "Clean all tests"
@@ -271,6 +285,14 @@ fi
 if [[ "$CLEAN_INTEGRATIONTEST" = "YES" ]]; then
     startJob "Clean all integration tests"
     ./gradlew cleanIntegrationtest -Dsechub.build.stage=all --console=plain
+    
+    step "Clean old report data"
+    cleanOldReportData
+fi
+
+if [[ "$CLEAN_REPORTS" = "YES" ]]; then
+    startJob "Clean all reports"
+    cleanOldReportData
 fi
 
 if [[ "$FORMAT_CODE_ALL" = "YES" ]]; then
@@ -407,6 +429,9 @@ if [[ "$GITHUB_ACTION_BUILD" = "YES" ]]; then
 
     # Cleanup integration tests
     startTask "Cleanup integration tests"
+    cd $SECHUB_ROOT_DIR
+    cd ./github-actions/scan
+    cd ./__test__/integrationtest/
     ./05-stop.sh $gha_sechub_server_port $gha_pds_port
 fi
 

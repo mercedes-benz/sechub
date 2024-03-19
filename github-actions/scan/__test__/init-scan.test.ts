@@ -3,24 +3,26 @@
 import {initReportFormats, initSecHubJson} from '../src/init-scan';
 
 jest.mock('./../src/configuration-builder');
-import {createSecHubConfigJsonFile} from '../src/configuration-builder';
+import {SecHubConfigurationModelBuilderData, createSecHubConfigJsonFile} from '../src/configuration-builder';
 
 
 describe('initSecHubJson', function () {
     it('throws error if configPath is set, but file does not exist', function () {
         /* prepare */
         const configPath = 'not-existing-json.json';
+        const builderData = new SecHubConfigurationModelBuilderData();
 
         /* execute + test */
-        expect(() => initSecHubJson('runtime/sechub.json', configPath, [], [])).toThrow(Error);
+        expect(() => initSecHubJson('runtime/sechub.json', configPath, builderData)).toThrow(Error);
     });
 
     it('returns parameter if configPath is set and file exists', function () {
         /* prepare */
         const configPath = '__test__/test-resources/test-config.json';
+        const builderData = new SecHubConfigurationModelBuilderData();
 
         /* execute */
-        const parameter = initSecHubJson('runtime/sechub.json', configPath, [], []);
+        const parameter = initSecHubJson('runtime/sechub.json', configPath, builderData);
 
         /* test */
         expect(parameter).toContain(configPath);
@@ -28,7 +30,8 @@ describe('initSecHubJson', function () {
 
     it('creates sechub.json if configPath is not set', function () {
         /* execute */
-        const parameter = initSecHubJson('runtime/sechub.json','', [], []);
+        const builderData = new SecHubConfigurationModelBuilderData();
+        const parameter = initSecHubJson('runtime/sechub.json','', builderData);
 
         /* test */
         expect(parameter).toEqual('runtime/sechub.json');

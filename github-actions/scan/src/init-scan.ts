@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 
 import * as core from '@actions/core';
-import { createSecHubConfigJsonFile as createSecHubConfigJsonFile } from './configuration-builder';
+import { SecHubConfigurationModelBuilderData, createSecHubConfigJsonFile as createSecHubConfigJsonFile } from './configuration-builder';
 import { getValidFormatsFromInput } from './report-formats';
 import * as fs from 'fs';
 
@@ -10,12 +10,11 @@ import * as fs from 'fs';
  * generated from the input parameters and this path will be returned.
  * 
  * @param customSecHubConfigFilePath Path to the custom sechub.json (if defined)
- * @param includeFolders list of folders to include to the scan
- * @param excludeFolders list of folders to exclude from the scan
+ * @param builderData contains builder data which is used when no custom sechub configuration file is defined by user
  * 
  * @returns resulting configuration file path
  */
-export function initSecHubJson(secHubJsonFilePath: string, customSecHubConfigFilePath: string, includeFolders: string[], excludeFolders: string[]): string | null {
+export function initSecHubJson(secHubJsonFilePath: string, customSecHubConfigFilePath: string,  builderData: SecHubConfigurationModelBuilderData): string | null {
     core.startGroup('Set config');
 
     let configFilePath = customSecHubConfigFilePath;
@@ -27,7 +26,7 @@ export function initSecHubJson(secHubJsonFilePath: string, customSecHubConfigFil
         }
 
     } else {
-        createSecHubConfigJsonFile(secHubJsonFilePath, includeFolders, excludeFolders);
+        createSecHubConfigJsonFile(secHubJsonFilePath, builderData);
         configFilePath = secHubJsonFilePath;
     }
     core.endGroup();

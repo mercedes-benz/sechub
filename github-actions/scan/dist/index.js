@@ -13718,7 +13718,6 @@ function getWorkspaceDir() {
  */
 function ensuredWorkspaceFolder() {
     const ensuredWorkspaceFolder = path.dirname(getWorkspaceDir());
-    // TODO check folder exists or fal
     return ensuredWorkspaceFolder;
 }
 /**
@@ -13774,12 +13773,18 @@ function shellExecAsync(command) {
  * @param includeFolders Which folders should be included
  * @param excludeFolders Which folders should be excluded
  */
-function createSecHubConfigJsonFile(secHubJsonFilePath, includeFolders, excludeFolders) {
+function createSecHubConfigJsonFile(secHubJsonFilePath, data) {
     core.info('Config-Path was not found. Config will be created at ' + secHubJsonFilePath);
-    const secHubJson = createSecHubConfigurationModel(includeFolders, excludeFolders);
+    const secHubJson = createSecHubConfigurationModel(data);
     const stringifiedSecHubJson = JSON.stringify(secHubJson);
     core.debug('SecHub-Config: ' + stringifiedSecHubJson);
     shell.ShellString(stringifiedSecHubJson).to(secHubJsonFilePath);
+}
+class SecHubConfigurationModelBuilderData {
+    constructor() {
+        this.includeFolders = [];
+        this.excludeFolders = [];
+    }
 }
 /**
  * Creates a sechub configuration model object for given user input values.
@@ -13789,23 +13794,23 @@ function createSecHubConfigJsonFile(secHubJsonFilePath, includeFolders, excludeF
  *
  * @returns model
  */
-function createSecHubConfigurationModel(includeFolders, excludeFolders) {
-    const sechubJson = {
+function createSecHubConfigurationModel(data) {
+    const model = {
         'apiVersion': '1.0'
     };
-    if (sechubJson.codeScan == null) {
-        sechubJson.codeScan = {};
+    if (model.codeScan == null) {
+        model.codeScan = {};
     }
-    if (includeFolders) {
-        if (sechubJson.codeScan.fileSystem == null) {
-            sechubJson.codeScan.fileSystem = {};
+    if (data.includeFolders) {
+        if (model.codeScan.fileSystem == null) {
+            model.codeScan.fileSystem = {};
         }
-        sechubJson.codeScan.fileSystem.folders = includeFolders;
+        model.codeScan.fileSystem.folders = data.includeFolders;
     }
-    if (excludeFolders) {
-        sechubJson.codeScan.excludes = excludeFolders;
+    if (data.excludeFolders) {
+        model.codeScan.excludes = data.excludeFolders;
     }
-    return sechubJson;
+    return model;
 }
 
 ;// CONCATENATED MODULE: ./src/report-formats.ts
@@ -13836,12 +13841,11 @@ var external_fs_ = __nccwpck_require__(7147);
  * generated from the input parameters and this path will be returned.
  *
  * @param customSecHubConfigFilePath Path to the custom sechub.json (if defined)
- * @param includeFolders list of folders to include to the scan
- * @param excludeFolders list of folders to exclude from the scan
+ * @param builderData contains builder data which is used when no custom sechub configuration file is defined by user
  *
  * @returns resulting configuration file path
  */
-function initSecHubJson(secHubJsonFilePath, customSecHubConfigFilePath, includeFolders, excludeFolders) {
+function initSecHubJson(secHubJsonFilePath, customSecHubConfigFilePath, builderData) {
     core.startGroup('Set config');
     let configFilePath = customSecHubConfigFilePath;
     if (configFilePath) {
@@ -13853,7 +13857,7 @@ function initSecHubJson(secHubJsonFilePath, customSecHubConfigFilePath, includeF
         }
     }
     else {
-        createSecHubConfigJsonFile(secHubJsonFilePath, includeFolders, excludeFolders);
+        createSecHubConfigJsonFile(secHubJsonFilePath, builderData);
         configFilePath = secHubJsonFilePath;
     }
     core.endGroup();
@@ -14232,6 +14236,7 @@ function downloadClientRelease(context) {
 
 
 
+
 /**
  * Starts the launch process
  * @returns launch context
@@ -14272,10 +14277,11 @@ function createContext() {
     const workspaceFolder = `${getWorkspaceDir()}`;
     const clientDownloadFolder = `${workspaceFolder}/.sechub-gha/client/${clientVersionSubFolder}`;
     const clientExecutablePath = `${clientDownloadFolder}/platform/linux-386/sechub`;
-    const includeFolders = (_a = gitHubInputData.includeFolders) === null || _a === void 0 ? void 0 : _a.split(',');
-    const excludeFolders = (_b = gitHubInputData.excludeFolders) === null || _b === void 0 ? void 0 : _b.split(',');
     const generatedSecHubJsonFilePath = `${workspaceFolder}/sechub.json`;
-    const configFileLocation = initSecHubJson(generatedSecHubJsonFilePath, gitHubInputData.configPath, includeFolders, excludeFolders);
+    const builderData = new SecHubConfigurationModelBuilderData();
+    builderData.includeFolders = (_a = gitHubInputData.includeFolders) === null || _a === void 0 ? void 0 : _a.split(',');
+    builderData.excludeFolders = (_b = gitHubInputData.excludeFolders) === null || _b === void 0 ? void 0 : _b.split(',');
+    const configFileLocation = initSecHubJson(generatedSecHubJsonFilePath, gitHubInputData.configPath, builderData);
     const reportFormats = initReportFormats(gitHubInputData.reportFormats);
     return {
         jobUUID: LAUNCHER_CONTEXT_DEFAULTS.jobUUID,

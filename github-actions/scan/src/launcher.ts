@@ -9,6 +9,7 @@ import { collectReportData, reportOutputs, uploadArtifact } from './post-scan';
 import { GitHubInputData, resolveGitHubInputData, INPUT_DATA_DEFAULTS } from './input';
 import { initEnvironmentVariables } from './environment';
 import { downloadClientRelease } from './client-download';
+import { SecHubConfigurationModelBuilderData } from './configuration-builder';
 
 /**
  * Starts the launch process
@@ -84,12 +85,13 @@ function createContext(): LaunchContext {
     const clientDownloadFolder = `${workspaceFolder}/.sechub-gha/client/${clientVersionSubFolder}`;
     const clientExecutablePath = `${clientDownloadFolder}/platform/linux-386/sechub`;
 
-    const includeFolders = gitHubInputData.includeFolders?.split(',');
-    const excludeFolders = gitHubInputData.excludeFolders?.split(',');
-
     const generatedSecHubJsonFilePath = `${workspaceFolder}/sechub.json`;
 
-    const configFileLocation = initSecHubJson(generatedSecHubJsonFilePath, gitHubInputData.configPath, includeFolders, excludeFolders);
+    const builderData = new SecHubConfigurationModelBuilderData();
+    builderData.includeFolders = gitHubInputData.includeFolders?.split(',');
+    builderData.excludeFolders = gitHubInputData.excludeFolders?.split(',');
+
+    const configFileLocation = initSecHubJson(generatedSecHubJsonFilePath, gitHubInputData.configPath, builderData);
 
     const reportFormats = initReportFormats(gitHubInputData.reportFormats);
 
