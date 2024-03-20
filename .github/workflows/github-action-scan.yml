@@ -40,19 +40,19 @@ jobs:
           echo "pds_version=1.4.0" >> "$GITHUB_ENV"
           echo "pds_port=8444" >> "$GITHUB_ENV"
 
-      #- name: Cache SecHub server download    
-      #  # Cache V4 release: 13aacd865c20de90d75de3b17ebe84f7a17d57d2
-      #  uses: actions/cache@13aacd865c20de90d75de3b17ebe84f7a17d57d2 
-      #  with:
-      #    path: ./build/sechub-runtime/server/${{ steps.version-selector.outputs.sechub_server_version }}/
-      #    key: ${{ runner.os }}-sechub-server-${{ steps.version-selector.outputs.sechub_server_version }}
-      # 
-      #- name: Cache PDS download    
-      #  # Cache V4 release: 13aacd865c20de90d75de3b17ebe84f7a17d57d2
-      #  uses: actions/cache@13aacd865c20de90d75de3b17ebe84f7a17d57d2 
-      #  with:
-      #    path: ./build/sechub-runtime/pds/${{ steps.version-selector.outputs.pds_version }}/
-      #    key: ${{ runner.os }}-pds-${{ steps.version-selector.outputs.pds_version }}
+      - name: Cache SecHub server download    
+        # Cache V4 release: 13aacd865c20de90d75de3b17ebe84f7a17d57d2
+        uses: actions/cache@13aacd865c20de90d75de3b17ebe84f7a17d57d2 
+        with:
+          path: ./build/sechub-runtime/server/${{ env.sechub_server_version }}/
+          key: ${{ runner.os }}-sechub-server-${{ env.sechub_server_version }}
+       
+      - name: Cache PDS download    
+        # Cache V4 release: 13aacd865c20de90d75de3b17ebe84f7a17d57d2
+        uses: actions/cache@13aacd865c20de90d75de3b17ebe84f7a17d57d2 
+        with:
+          path: ./build/sechub-runtime/pds/${{ env.pds_version }}/
+          key: ${{ runner.os }}-pds-${{ env.pds_version }}
 
       - name: Set up JDK 17 (to run servers)
         uses: actions/setup-java@387ac29b308b003ca37ba93a6cab5eb57c8f5f93
