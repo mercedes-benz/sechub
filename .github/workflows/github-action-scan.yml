@@ -84,13 +84,15 @@ jobs:
           name: sechub-runtime-logiles
           path: ./build/sechub-runtime/**/*.log
           retention-days: 14
-      # ------------------------------------ Archive report  -----------------------
-      - name: Archive report
+      # ------------------------------------ Archive reports  -----------------------
+      - name: Archive reports
         if: always()
         uses: actions/upload-artifact@v3
         with:
-          name: sechub-report
-          path: sechub-report*.json
+          name: sechub-reports
+          path: |
+             ./github-actions/scan/sechub_report*.*
+             ./sechub_report*.*
           retention-days: 14
       
       
