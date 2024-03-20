@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: MIT
 
-import { create } from '@actions/artifact';
+import { ArtifactClient, create } from '@actions/artifact';
 import { debug, error, getInput, info, isDebug, warning, setFailed } from '@actions/core';
 import * as shell from 'shelljs';
 import { getWorkspaceDir } from '../src/fs-helper';
@@ -10,7 +10,7 @@ import * as launcher from '../src/launcher';
 import { LaunchContext } from '../src/launcher';
 import { IntegrationTestContext } from './integrationtest/testframework';
 import * as fs from 'fs';
-
+import { uploadArtifact } from '../src/post-scan';
 jest.mock('@actions/core');
 jest.mock('@actions/artifact');
 
@@ -39,6 +39,8 @@ integrationTestContext.serverApiToken = 'int-test_superadmin-pwd'; // TODO make 
 integrationTestContext.finish();
 
 const mockedInputMap = new Map();
+
+var mockedUploadFunction: jest.Mock;
 
 beforeEach(() => {
     
@@ -71,9 +73,11 @@ beforeEach(() => {
     });
 
     (create as jest.Mock).mockName('artifactClient');
+
+    mockedUploadFunction = jest.fn();
     (create as jest.Mock).mockImplementation(() => {
         return {
-            'uploadArtifact': jest.fn(),
+            'uploadArtifact': mockedUploadFunction,
         };
     });
 });
@@ -109,6 +113,7 @@ describe('integrationtest codescan generated config', () => {
         assertTrafficLight(result, 'GREEN');
         assertActionIsNotMarkedAsFailed();
         assertJsonReportContains(result, 'result-green');
+        assertUploadDone();
 
     });
     test('codescan yellow', async () => {
@@ -126,7 +131,7 @@ describe('integrationtest codescan generated config', () => {
         assertActionIsNotMarkedAsFailed();
         assertTrafficLight(result, 'YELLOW');
         assertJsonReportContains(result, 'result-yellow');
-
+        assertUploadDone();
     });
 
     test('codescan red', async () => {
@@ -144,6 +149,7 @@ describe('integrationtest codescan generated config', () => {
         assertTrafficLight(result, 'RED');
         assertActionIsMarkedAsFailed();
         assertJsonReportContains(result, 'result-red');
+        assertUploadDone();
     });
     test('codescan red - fail-job-with-findings=false', async () => {
 
@@ -161,6 +167,7 @@ describe('integrationtest codescan generated config', () => {
         assertTrafficLight(result, 'RED');
         assertActionIsNotMarkedAsFailed(); // important: exit code 1 but action is NOT marked as failed because fail-job-with-findings=false
         assertJsonReportContains(result, 'result-red');
+        assertUploadDone();
     });
 
 });
@@ -182,9 +189,10 @@ describe('integrationtest secretscan generated config', () => {
         assertLastClientExitCode(result, 0);
         assertActionIsNotMarkedAsFailed();
         assertJsonReportContains(result, 'generic-api-key has detected secret for file UnSAFE_Bank/Backend/docker-compose.yml');
+        assertUploadDone();
         
     });
-    test('secretscan yellow, html', async () => {
+    test('secretscan yellow, html only', async () => {
 
         /* prepare */
         initInputMap();
@@ -201,6 +209,29 @@ describe('integrationtest secretscan generated config', () => {
         assertLastClientExitCode(result, 0);
         assertActionIsNotMarkedAsFailed();
         assertJsonReportContains(result, 'generic-api-key has detected secret for file UnSAFE_Bank/Backend/docker-compose.yml');
+        assertUploadDone();
+
+        loadHTMLReportAndAssertItContains(result, 'generic-api-key has detected secret for file UnSAFE_Bank/Backend/docker-compose.yml');
+        
+    });
+    test('secretscan yellow, json,html', async () => {
+
+        /* prepare */
+        initInputMap();
+        mockedInputMap.set(input.PARAM_INCLUDED_FOLDERS, '__test__/integrationtest/test-sources');
+        mockedInputMap.set(input.PARAM_PROJECT_NAME, 'test-project-5');
+        mockedInputMap.set(input.PARAM_SCAN_TYPES, 'secretScan');
+        mockedInputMap.set(input.PARAM_REPORT_FORMATS, 'json,html');
+
+        /* execute */
+        const result = await launcher.launch();
+
+        /* test */
+        assertTrafficLight(result, 'YELLOW');
+        assertLastClientExitCode(result, 0);
+        assertActionIsNotMarkedAsFailed();
+        assertJsonReportContains(result, 'generic-api-key has detected secret for file UnSAFE_Bank/Backend/docker-compose.yml');
+        assertUploadDone();
        
         loadHTMLReportAndAssertItContains(result, 'generic-api-key has detected secret for file UnSAFE_Bank/Backend/docker-compose.yml');
         
@@ -226,7 +257,8 @@ describe('integrationtest licensescan generated config', () => {
         assertLastClientExitCode(result, 0);
         assertActionIsNotMarkedAsFailed();
         assertJsonReportContains(result, 'findings'); // findings in json available - but green, because only licensescan
-        
+        assertUploadDone();
+
         loadSpdxJsonReportAndAssertItContains(result, 'LGPL');
     });
 
@@ -264,6 +296,7 @@ describe('integrationtest non-generated config', () => {
         assertActionIsMarkedAsFailed();
         assertTrafficLight(result, 'RED');
         assertJsonReportContains(result, 'XSS attackable parameter output: </p><script>alert(1)');
+        assertUploadDone();
 
     });
 
@@ -291,6 +324,10 @@ function assertTrafficLight(context: LaunchContext, trafficLight: string) {
 function assertJsonReportContains(context: LaunchContext, textPart: string) {
     const text = JSON.stringify(context.secHubReportJsonObject);
     expect(text).toContain(textPart);
+}
+
+function assertUploadDone(){
+    expect(mockedUploadFunction).toHaveBeenCalled();
 }
 
 function loadHTMLReportAndAssertItContains(context: LaunchContext, textPart: string) {

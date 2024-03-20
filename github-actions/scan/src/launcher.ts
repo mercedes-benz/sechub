@@ -159,7 +159,7 @@ async function postScan(context: LaunchContext): Promise<void> {
     /* reporting - analysis etc. */
     reportOutputs(context.secHubReportJsonObject);
 
-    /* upload artifact */
+    /* upload artifacts */
     await uploadArtifact(context, 'sechub scan-report', getFiles(`${context.workspaceFolder}/sechub_report_*.*`));
 
     if (context.lastClientExitCode !== 0) {
