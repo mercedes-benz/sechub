@@ -33,8 +33,8 @@ To be able to use this action you need a SecHub project. Check the https://merce
     project-name: ${{ secrets.SECHUB_PROJECT }}
 
     # OPTIONAL: Which version of the SecHub cli to use
-    # DEFAULT: 1.2.0
-    version: '1.2.0'
+    # DEFAULT: 1.4.0
+    version: '1.4.0'
 
     # OPTIONAL: A list of folders to be included. Multiple folders can be separated by ,
     include-folders: 'src,lib'
@@ -45,7 +45,7 @@ To be able to use this action you need a SecHub project. Check the https://merce
 
     # REQUIRED: The formats in which the report should be downloaded. Multiple values can be separatd by ,
     # DEFAULT: json,html
-    report-formats: 'json,html'
+    report-formats: 'json,html,spdx-json'
 
     # OPTIONAL: SecHub debug output on/off.
     # DEFAULT: false
