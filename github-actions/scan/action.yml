@@ -4,7 +4,7 @@ name: sechub scan
 description: 'a GitHub actions wrapper for SecHub security scan.'
 inputs:
   config-path:
-    description: 'Path to sechub.json for manual configuration. If no value is set the input parameters will be used to create it for the scan.'
+    description: 'Path to a custom sechub configuration file. If not set, a temporary file will be generated using the input parameters.'
     required: false
   url:
     description: 'SecHub server URL'
@@ -22,12 +22,16 @@ inputs:
     description: 'Which version of the SecHub'
     required: false
     default: '1.4.0'
+  scan-types: 
+   description: 'Scan types to use for generated sechub configuration file (ignored in the case of a custom configuration file). Supported types are: codeScan, licenseScan and secretScan. Can be combined by ,'
+    required: false
+    default: 'codeScan'
   include-folders:
-    description: 'a list of folders to include'
+    description: 'a list of folders to include (ignored in the case of a custom configuration file)'
     required: false
     default: '.'
   exclude-folders:
-    description: 'a list of folders to exclude'
+    description: 'a list of folders to exclude (ignored in the case of a custom configuration file)'
     required: false
   report-formats:
     description: 'a list of report formats to fetch'

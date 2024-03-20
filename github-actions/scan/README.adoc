@@ -35,11 +35,20 @@ To be able to use this action you need a SecHub project. Check the https://merce
     # OPTIONAL: Which version of the SecHub cli to use
     # DEFAULT: 1.4.0
     version: '1.4.0'
-
+    
+    # OPTIONAL: A list of scan types that shall be used when a sechub configuration file is generated.
+    #           Allowed options: codeScan, secretScan and licenseScan - If you want other scan types you 
+    #           have to create a sechub configuration file and provide it by the config-path attribute
+    #           (ignored in the case of a custom configuration file)
+    # DEFAULT: codeScan
+    scan-types: codeScan, secretScan
+    
     # OPTIONAL: A list of folders to be included. Multiple folders can be separated by ,
+    #           (ignored in the case of a custom configuration file)
     include-folders: 'src,lib'
 
     # OPTIONAL: A list of folders to be excluded. Multiple folders can be separated by ,
+    #           (ignored in the case of a custom configuration file)
     # DEFAULT: empty (see SecHub documentation for default excludes)
     exclude-folders: 'bin,build,dist'
 

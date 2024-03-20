@@ -190,7 +190,7 @@ describe('integrationtest secretscan generated config', () => {
         initInputMap();
         mockedInputMap.set(input.PARAM_INCLUDED_FOLDERS, '__test__/integrationtest/test-sources');
         mockedInputMap.set(input.PARAM_PROJECT_NAME, 'test-project-5');
-        mockedInputMap.set(input.PARAM_SCAN_TYPES, 'secretscan');
+        mockedInputMap.set(input.PARAM_SCAN_TYPES, 'secretScan');
         mockedInputMap.set(input.PARAM_REPORT_FORMATS, 'html');
 
         /* execute */
