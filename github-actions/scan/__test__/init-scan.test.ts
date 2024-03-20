@@ -13,7 +13,7 @@ describe('initSecHubJson', function () {
         const builderData = new SecHubConfigurationModelBuilderData();
 
         /* execute + test */
-        expect(() => initSecHubJson('runtime/sechub.json', configPath, builderData)).toThrow(Error);
+        expect(() => initSecHubJson('somewhere/runtime/sechub.json', configPath, builderData)).toThrow(Error);
     });
 
     it('returns parameter if configPath is set and file exists', function () {
@@ -22,7 +22,7 @@ describe('initSecHubJson', function () {
         const builderData = new SecHubConfigurationModelBuilderData();
 
         /* execute */
-        const parameter = initSecHubJson('runtime/sechub.json', configPath, builderData);
+        const parameter = initSecHubJson('somewhere/runtime/sechub.json', configPath, builderData);
 
         /* test */
         expect(parameter).toContain(configPath);
@@ -31,10 +31,10 @@ describe('initSecHubJson', function () {
     it('creates sechub.json if configPath is not set', function () {
         /* execute */
         const builderData = new SecHubConfigurationModelBuilderData();
-        const parameter = initSecHubJson('runtime/sechub.json','', builderData);
+        const parameter = initSecHubJson('somewhere/runtime/sechub.json','', builderData);
 
         /* test */
-        expect(parameter).toEqual('runtime/sechub.json');
+        expect(parameter).toEqual('somewhere/runtime/sechub.json');
         expect(createSecHubConfigJsonFile).toHaveBeenCalledTimes(1);
     });
 });

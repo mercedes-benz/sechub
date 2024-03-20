@@ -72,3 +72,4 @@ node_modules/
 
 # github-action integration test
 .sechub-gha/
+generated-sechub.json

@@ -90,7 +90,7 @@ function createContext(): LaunchContext {
     const clientDownloadFolder = `${workspaceFolder}/.sechub-gha/client/${clientVersionSubFolder}`;
     const clientExecutablePath = `${clientDownloadFolder}/platform/linux-386/sechub`;
 
-    const generatedSecHubJsonFilePath = `${workspaceFolder}/sechub.json`;
+    const generatedSecHubJsonFilePath = `${workspaceFolder}/generated-sechub.json`;
 
     const builderData = createSafeBuilderData(gitHubInputData);
 

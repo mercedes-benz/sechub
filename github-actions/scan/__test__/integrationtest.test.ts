@@ -16,8 +16,8 @@ jest.mock('@actions/artifact');
 
 /*
 * This is an integration test suite for github-action "scan".
-* As precondition you have to call "01-start.sh" and "03-init_sechub_data.sh" (please look into scripts for an example and more details, or 
-* call 'sdc -bgh' to do a full build for github action which does automatically execute the scripts and all integration tests)
+* As precondition you have to call "01-start.sh" and "03-init_sechub_data.sh"- or call 'sdc -pigh' to do this automatically.
+* (Another option is to call `sdc -bgh' to do a full build for github action which does automatically execute the scripts and all integration tests)
 *
 * After start and prepare scripts have finished you can execute the integration tests via "npm run integration-test"
 *
