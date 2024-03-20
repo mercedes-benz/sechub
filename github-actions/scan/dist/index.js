@@ -14430,7 +14430,7 @@ function createContext() {
     const workspaceFolder = `${getWorkspaceDir()}`;
     const clientDownloadFolder = `${workspaceFolder}/.sechub-gha/client/${clientVersionSubFolder}`;
     const clientExecutablePath = `${clientDownloadFolder}/platform/linux-386/sechub`;
-    const generatedSecHubJsonFilePath = `${workspaceFolder}/sechub.json`;
+    const generatedSecHubJsonFilePath = `${workspaceFolder}/generated-sechub.json`;
     const builderData = createSafeBuilderData(gitHubInputData);
     const configFileLocation = initSecHubJson(generatedSecHubJsonFilePath, gitHubInputData.configPath, builderData);
     const reportFormats = initReportFormats(gitHubInputData.reportFormats);
@@ -14473,17 +14473,19 @@ function executeScan(context) {
 }
 async function postScan(context) {
     if (context.lastClientExitCode > 1) {
-        // in this case this is an error and we cannot download the report - means fails always
+        // in this case (not 0, not 1) this is an error and we cannot download the report - here we fail always!
         failAction(context.lastClientExitCode);
         return;
     }
     collectReportData(context);
     /* reporting - analysis etc. */
     reportOutputs(context.secHubReportJsonObject);
-    /* upload artifact */
+    /* upload artifacts */
     await uploadArtifact(context, 'sechub scan-report', getFiles(`${context.workspaceFolder}/sechub_report_*.*`));
-    if (context.lastClientExitCode !== 0 && context.inputData.failJobOnFindings === 'true') {
-        failAction(context.lastClientExitCode);
+    if (context.lastClientExitCode !== 0) {
+        if (context.inputData.failJobOnFindings === 'true') {
+            failAction(context.lastClientExitCode);
+        }
     }
 }
 
