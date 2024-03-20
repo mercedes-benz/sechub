@@ -10,6 +10,7 @@ import { GitHubInputData, resolveGitHubInputData, INPUT_DATA_DEFAULTS } from './
 import { initEnvironmentVariables } from './environment';
 import { downloadClientRelease } from './client-download';
 import { SecHubConfigurationModelBuilderData } from './configuration-builder';
+import { ContentType, ScanType } from './configuration-model';
 
 /**
  * Starts the launch process
@@ -29,7 +30,8 @@ export async function launch(): Promise<LaunchContext> {
 }
 
 export interface LaunchContext {
-    jobUUID: string|undefined;
+    jobUUID: string | undefined;
+    debug: boolean;
 
     inputData: GitHubInputData;
     configFileLocation: string | null;
@@ -44,11 +46,13 @@ export interface LaunchContext {
     workspaceFolder: string;
     secHubJsonFilePath: string;
 
-    secHubReportJsonObject: object|undefined;
+    secHubReportJsonObject: object | undefined;
+    secHubReportJsonFileName: string;
 }
 
 export const LAUNCHER_CONTEXT_DEFAULTS: LaunchContext = {
-    jobUUID : undefined,
+    jobUUID: undefined,
+    debug: false,
 
     inputData: INPUT_DATA_DEFAULTS,
     reportFormats: ['json'],
@@ -61,6 +65,7 @@ export const LAUNCHER_CONTEXT_DEFAULTS: LaunchContext = {
     secHubJsonFilePath: '',
     workspaceFolder: '',
     secHubReportJsonObject: undefined,
+    secHubReportJsonFileName: '',
 };
 
 
@@ -87,9 +92,7 @@ function createContext(): LaunchContext {
 
     const generatedSecHubJsonFilePath = `${workspaceFolder}/sechub.json`;
 
-    const builderData = new SecHubConfigurationModelBuilderData();
-    builderData.includeFolders = gitHubInputData.includeFolders?.split(',');
-    builderData.excludeFolders = gitHubInputData.excludeFolders?.split(',');
+    const builderData = createSafeBuilderData(gitHubInputData);
 
     const configFileLocation = initSecHubJson(generatedSecHubJsonFilePath, gitHubInputData.configPath, builderData);
 
@@ -98,6 +101,7 @@ function createContext(): LaunchContext {
     return {
         jobUUID: LAUNCHER_CONTEXT_DEFAULTS.jobUUID,
         secHubReportJsonObject: LAUNCHER_CONTEXT_DEFAULTS.secHubReportJsonObject,
+        secHubReportJsonFileName: '',
 
         configFileLocation: configFileLocation,
         reportFormats: reportFormats,
@@ -108,8 +112,21 @@ function createContext(): LaunchContext {
         lastClientExitCode: LAUNCHER_CONTEXT_DEFAULTS.lastClientExitCode,
 
         secHubJsonFilePath: generatedSecHubJsonFilePath,
-        workspaceFolder:workspaceFolder,
+        workspaceFolder: workspaceFolder,
+
+        debug: gitHubInputData.debug=='true',
     };
+}
+
+function createSafeBuilderData(gitHubInputData: GitHubInputData) {
+    const builderData = new SecHubConfigurationModelBuilderData();
+
+    builderData.includeFolders = gitHubInputData.includeFolders?.split(',');
+    builderData.excludeFolders = gitHubInputData.excludeFolders?.split(',');
+
+    builderData.scanTypes = ScanType.ensureAccepted(gitHubInputData.scanTypes?.split(','));
+    builderData.contentType = ContentType.ensureAccepted(gitHubInputData.contentType);
+    return builderData;
 }
 
 function init(context: LaunchContext) {

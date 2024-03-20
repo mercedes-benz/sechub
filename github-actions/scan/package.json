@@ -9,9 +9,9 @@
     "lint": "eslint src",
     "prettier": "npx prettier --write src",
     "test-with-integrationtests": "npx jest",
-    "test-without-integrationtests": "npx jest --testPathIgnorePatterns='integrationtest.test.ts'",
+    "test-without-integrationtests": "npx jest --testPathIgnorePatterns='integrationtest.test.ts' ",
     "test": "npx jest --testPathIgnorePatterns='integrationtest.test.ts'",
-    "testX": "npx jest",
+    "testX": "npx jest --runInBand",
     "integration-test": "jest --runInBand --testPathPattern='integrationtest.test.ts'"
   },
   "license": "MIT",

@@ -40,13 +40,14 @@ function collectJsonReportData(context: LaunchContext) {
 
     /* setup data in context */
     context.secHubReportJsonObject = jsonObject;
-    
+    context.secHubReportJsonFileName = fileName;
+
 }
 
 
 function downloadOtherReportsThanJson(context: LaunchContext) {
     if (context.jobUUID) {
-        const jobUUID=context.jobUUID;
+        const jobUUID = context.jobUUID;
         core.debug('JobUUID: ' + jobUUID);
 
         context.reportFormats.forEach((format) => {
@@ -56,6 +57,8 @@ function downloadOtherReportsThanJson(context: LaunchContext) {
                 logExitCode(context.lastClientExitCode);
             }
         });
+    } else {
+        core.warning('No job uuid available, cannot download other reports!');
     }
 }
 
@@ -110,7 +113,7 @@ function resolveReportNameForScanJob(context: LaunchContext): string {
     const workspaceDir = getWorkspaceDir();
     const filesInWorkspace = shell.ls(workspaceDir);
 
-    if (! context.jobUUID){
+    if (!context.jobUUID) {
         core.error('Illegal state: No job uuid resolved - not allowed at this point');
         return '';
     }

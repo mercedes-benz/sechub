@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: MIT
 
-export const availableFormats = ['json', 'html'];
+export const availableFormats = ['json', 'html', 'spdx-json'];
 
 /**
  * Convert input string to array and filter invalid formats.

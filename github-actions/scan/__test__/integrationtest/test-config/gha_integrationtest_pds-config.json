@@ -25,6 +25,18 @@
       "path": "./__test__/integrationtest/test-scripts/pds-webscan-demo-red.sh",
       "scanType": "webScan",
       "description": "This is only a fake code scan - used by integration tests. The web scan will return multiple findings one is a high vulnerability"
+    },
+    {
+      "id": "licensescan_demo_green",
+      "path": "./__test__/integrationtest/test-scripts/pds-licensescan-demo-green.sh",
+      "scanType": "licenseScan",
+      "description": "This is only a fake license scan - used by integration tests."
+    },
+    {
+      "id": "secretscan_demo_yellow",
+      "path": "./__test__/integrationtest/test-scripts/pds-secretscan-demo-yellow.sh",
+      "scanType": "secretScan",
+      "description": "This is only a fake secret scan - used by integration tests."
     }
   ]
 }

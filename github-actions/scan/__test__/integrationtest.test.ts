@@ -9,6 +9,7 @@ import { getFieldFromJsonReport } from '../src/json-helper';
 import * as launcher from '../src/launcher';
 import { LaunchContext } from '../src/launcher';
 import { IntegrationTestContext } from './integrationtest/testframework';
+import * as fs from 'fs';
 
 jest.mock('@actions/core');
 jest.mock('@actions/artifact');
@@ -40,6 +41,11 @@ integrationTestContext.finish();
 const mockedInputMap = new Map();
 
 beforeEach(() => {
+    
+    shell.echo('----------------------------------------------------------------------------------------------------------------------------------');
+    shell.echo('START Integration test: '+ expect.getState().currentTestName);
+    shell.echo('----------------------------------------------------------------------------------------------------------------------------------');
+
     jest.resetAllMocks();
 
     (getInput as jest.Mock).mockImplementation((name) => {
@@ -87,7 +93,7 @@ function initInputMap() {
 }
 
 describe('integrationtest codescan generated config', () => {
-    test('codescan green', () => {
+    test('codescan green', async () => {
 
         /* prepare */
         initInputMap();
@@ -95,15 +101,15 @@ describe('integrationtest codescan generated config', () => {
         mockedInputMap.set(input.PARAM_PROJECT_NAME, 'test-project-1');
 
         /* execute */
-        const launchPromise = launcher.launch();
+        const result = await launcher.launch();
 
         /* test */
-        assertLastClientExitCode(launchPromise, 0);
-        assertTrafficLight(launchPromise, 'GREEN');
-        assertReportContains(launchPromise, 'result-green');
+        assertLastClientExitCode(result, 0);
+        assertTrafficLight(result, 'GREEN');
+        assertJsonReportContains(result, 'result-green');
 
     });
-    test('codescan yellow', function () {
+    test('codescan yellow', async () => {
 
         /* prepare */
         initInputMap();
@@ -111,16 +117,16 @@ describe('integrationtest codescan generated config', () => {
         mockedInputMap.set(input.PARAM_PROJECT_NAME, 'test-project-2');
 
         /* execute */
-        const launchPromise = launcher.launch();
+        const result = await launcher.launch();
 
         /* test */
-        assertLastClientExitCode(launchPromise, 0);
-        assertTrafficLight(launchPromise, 'YELLOW');
-        assertReportContains(launchPromise, 'result-yellow');
+        assertLastClientExitCode(result, 0);
+        assertTrafficLight(result, 'YELLOW');
+        assertJsonReportContains(result, 'result-yellow');
 
     });
 
-    test('codescan red', function () {
+    test('codescan red', async () => {
 
         /* prepare */
         initInputMap();
@@ -128,19 +134,82 @@ describe('integrationtest codescan generated config', () => {
         mockedInputMap.set(input.PARAM_PROJECT_NAME, 'test-project-3');
 
         /* execute */
-        const launchPromise = launcher.launch();
+        const result = await launcher.launch();
 
         /* test */
-        assertLastClientExitCode(launchPromise, 1); // exit code 1, because RED
-        assertTrafficLight(launchPromise, 'RED');
-        assertReportContains(launchPromise, 'result-red');
+        assertLastClientExitCode(result, 1); // exit code 1, because RED
+        assertTrafficLight(result, 'RED');
+        assertJsonReportContains(result, 'result-red');
     });
 
 });
 
+describe('integrationtest secretscan generated config', () => {
+    test('secretscan yellow, json only', async () => {
+
+        /* prepare */
+        initInputMap();
+        mockedInputMap.set(input.PARAM_INCLUDED_FOLDERS, '__test__/integrationtest/test-sources');
+        mockedInputMap.set(input.PARAM_PROJECT_NAME, 'test-project-5');
+        mockedInputMap.set(input.PARAM_SCAN_TYPES, 'secretscan');
+
+        /* execute */
+        const result = await launcher.launch();
+
+        /* test */
+        assertTrafficLight(result, 'YELLOW');
+        assertLastClientExitCode(result, 0);
+        assertJsonReportContains(result, 'generic-api-key has detected secret for file UnSAFE_Bank/Backend/docker-compose.yml');
+        
+    });
+    test('secretscan yellow, html', async () => {
+
+        /* prepare */
+        initInputMap();
+        mockedInputMap.set(input.PARAM_INCLUDED_FOLDERS, '__test__/integrationtest/test-sources');
+        mockedInputMap.set(input.PARAM_PROJECT_NAME, 'test-project-5');
+        mockedInputMap.set(input.PARAM_SCAN_TYPES, 'secretscan');
+        mockedInputMap.set(input.PARAM_REPORT_FORMATS, 'html');
+
+        /* execute */
+        const result = await launcher.launch();
+
+        /* test */
+        assertTrafficLight(result, 'YELLOW');
+        assertLastClientExitCode(result, 0);
+        assertJsonReportContains(result, 'generic-api-key has detected secret for file UnSAFE_Bank/Backend/docker-compose.yml');
+       
+        loadHTMLReportAndAssertItContains(result, 'generic-api-key has detected secret for file UnSAFE_Bank/Backend/docker-compose.yml');
+        
+    });
+
+});
+
+describe('integrationtest licensescan generated config', () => {
+    test('licensescan green, spdx-json', async () => {
+
+        /* prepare */
+        initInputMap();
+        mockedInputMap.set(input.PARAM_INCLUDED_FOLDERS, '__test__/integrationtest/test-sources');
+        mockedInputMap.set(input.PARAM_PROJECT_NAME, 'test-project-6');
+        mockedInputMap.set(input.PARAM_SCAN_TYPES, 'licensescan');
+        mockedInputMap.set(input.PARAM_REPORT_FORMATS, 'spdx-json');
+
+        /* execute */
+        const result = await launcher.launch();
+        
+        /* test */
+        assertTrafficLight(result, 'GREEN');
+        assertLastClientExitCode(result, 0);
+        assertJsonReportContains(result, 'findings'); // findings in json available - but green, because only licensescan
+        
+        loadSpdxJsonReportAndAssertItContains(result, 'LGPL');
+    });
+
+});
 
 describe('integrationtest non-generated config', () => {
-    test('config-path defined, but file not found', () => {
+    test('config-path defined, but file not found', async () =>  {
 
         /* prepare */
         initInputMap();
@@ -148,11 +217,11 @@ describe('integrationtest non-generated config', () => {
         mockedInputMap.set(input.PARAM_CONFIG_PATH, 'unknown/not-existing-config.json');
 
         /* execute + test */
-        launcher.launch().catch(error => console.log(`Error handled : ${error}`));
+        await launcher.launch().catch(error => console.log(`Error handled : ${error}`));
 
     });
 
-    test('config-path defined, file available, web scan with red trafficlight', () => {
+    test('config-path defined, file available, web scan with red trafficlight', async () =>  {
 
         /* prepare */
         initInputMap();
@@ -164,32 +233,57 @@ describe('integrationtest non-generated config', () => {
         mockedInputMap.set(input.PARAM_CONFIG_PATH, `${configDir}/sechub-config-webscan-project-4.json`);
 
         /* execute */
-        const launchPromise = launcher.launch();
+        const result = await launcher.launch();
 
         /* test */
-        assertLastClientExitCode(launchPromise, 1);
-        assertTrafficLight(launchPromise, 'RED');
-        assertReportContains(launchPromise, 'XSS attackable parameter output: </p><script>alert(1)');
+        assertLastClientExitCode(result, 1);
+        assertTrafficLight(result, 'RED');
+        assertJsonReportContains(result, 'XSS attackable parameter output: </p><script>alert(1)');
 
     });
 
 
 });
 
-async function assertLastClientExitCode(launchPromise: Promise<LaunchContext>, exitCode: number) {
-    const context = await launchPromise;
+function assertLastClientExitCode(context: LaunchContext, exitCode: number) {
     expect(context.lastClientExitCode).toEqual(exitCode);
 }
 
-async function assertTrafficLight(launchPromise: Promise<LaunchContext>, trafficLight: string) {
-    const context = await launchPromise;
+function assertTrafficLight(context: LaunchContext, trafficLight: string) {
     const found = getFieldFromJsonReport('trafficLight', context.secHubReportJsonObject);
     expect(found).toEqual(trafficLight);
 
 }
 
-async function assertReportContains(launchPromise: Promise<LaunchContext>, textPart: string) {
-    const context = await launchPromise;
+function assertJsonReportContains(context: LaunchContext, textPart: string) {
     const text = JSON.stringify(context.secHubReportJsonObject);
     expect(text).toContain(textPart);
+}
+
+function loadHTMLReportAndAssertItContains(context: LaunchContext, textPart: string) {
+    
+    const fileName = context.secHubReportJsonFileName.replace('.json','.html');
+    const htmlPath = `./${fileName}`;
+    if (context.debug){
+        const pwd = shell.pwd();
+        shell.echo('current dir: '+pwd);
+        shell.echo('htmlPath: '+htmlPath);
+    }
+    const html = fs.readFileSync(htmlPath, 'utf8');
+
+    expect(html).toContain(textPart);
+}
+
+function loadSpdxJsonReportAndAssertItContains(context: LaunchContext, textPart: string) {
+    
+    const fileName = context.secHubReportJsonFileName.replace('.json','.spdx.json');
+    const spdxJsonPath = `./${fileName}`;
+    if (context.debug){
+        const pwd = shell.pwd();
+        shell.echo('current dir: '+pwd);
+        shell.echo('spdxJsonPath: '+spdxJsonPath);
+    }
+    const spdxJson = fs.readFileSync(spdxJsonPath, 'utf8');
+
+    expect(spdxJson).toContain(textPart);
 }

@@ -1,6 +1,6 @@
 {
-    "name": "test-executor-webscan-red",
-    "productIdentifier": "PDS_WEBSCAN",
+    "name": "executor-codescan-red",
+    "productIdentifier": "PDS_CODESCAN",
     "setup": {
         "baseURL": "https://localhost:8444",
         "credentials": {
@@ -22,7 +22,7 @@
             },
             {
                 "key": "pds.config.productidentifier",
-                "value": "webscan_demo_red"
+                "value": "codescan_demo_red"
             },
             {
                 "key": "pds.config.use.sechub.storage",
@@ -30,7 +30,7 @@
             },
             {
                 "key": "pds.config.supported.datatypes",
-                "value": "NONE"
+                "value": "SOURCE"
             }
         ]
     },

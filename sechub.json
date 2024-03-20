@@ -1,1 +1,42 @@
-{"apiVersion":"1.0","codeScan":{"fileSystem":{"folders":["__test__/integrationtest/test-sources"]}}}
+{
+  "apiVersion": "1.0",
+  "codeScan": { "use": [ "sechub-sources" ] },
+  "secretScan": { "use": [ "sechub-sources" ] },
+  "data": {
+    "sources": [
+      {
+        "name": "sechub-sources",
+        "fileSystem": { "folders": [ "." ] },
+        "excludes": [
+          "**/.project",
+          "**/bin/**",
+          "**/build/**",
+          "**/examples/**",
+          "**/gen/**",
+          "**/mockdata/**",
+          "**/tests/**",
+          "*_test.go",
+          "*.gradle",
+          "*.json",
+          "*-testframework/**",
+          ".gradle/**",
+          "buildSrc/**",
+          "docs/**",
+          "gradle/**",
+          "sechub_report_*.html",
+          "sechub_report_*.json",
+          "sechub-cli/pkg/mod/**",
+          "sechub-cli/src/mercedes-benz.com/sechub/pkg/mod/**",
+          "sechub-developertools/**",
+          "sechub-doc/**",
+          "sechub-examples/**",
+          "sechub-integrationtest/**",
+          "sechub-other/**",
+          "sechub-storage-s3-aws-test/**",
+          "sechub-systemtest/**",
+          "sechub-test/**"
+        ]
+      }
+    ]
+  }
+}

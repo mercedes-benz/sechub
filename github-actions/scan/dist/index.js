@@ -13763,8 +13763,125 @@ function shellExecAsync(command) {
     return child.exec(command);
 }
 
+;// CONCATENATED MODULE: ./src/configuration-model.ts
+// SPDX-License-Identifier: MIT
+
+class ContentType {
+    static isSource(data) {
+        if (!data) {
+            return false;
+        }
+        return data.toLowerCase() == this.SOURCE;
+    }
+    static isBinary(data) {
+        if (!data) {
+            return false;
+        }
+        return data.toLowerCase() == this.BINARIES;
+    }
+    static ensureAccepted(contentType) {
+        if (ContentType.isSource(contentType)) {
+            return ContentType.SOURCE;
+        }
+        if (ContentType.isBinary(contentType)) {
+            return ContentType.BINARIES;
+        }
+        return SecHubConfigurationModelBuilderData.DEFAULT_CONTENT_TYPE;
+    }
+}
+ContentType.SOURCE = 'source';
+ContentType.BINARIES = 'binaries';
+class ScanType {
+    static isCodeScan(data) {
+        if (!data) {
+            return false;
+        }
+        return data.toLowerCase() == this.CODE_SCAN;
+    }
+    static isLicenseScan(data) {
+        if (!data) {
+            return false;
+        }
+        return data.toLowerCase() == this.LICENSE_SCAN;
+    }
+    static isSecretScan(data) {
+        if (!data) {
+            return false;
+        }
+        return data.toLowerCase() == this.SECRET_SCAN;
+    }
+    static ensureAccepted(data) {
+        const accepted = [];
+        if (data) {
+            for (const entry of data) {
+                if (ScanType.isCodeScan(entry)) {
+                    accepted.push(ScanType.CODE_SCAN);
+                }
+                else if (ScanType.isLicenseScan(entry)) {
+                    accepted.push(ScanType.LICENSE_SCAN);
+                }
+                else if (ScanType.isSecretScan(entry)) {
+                    accepted.push(ScanType.SECRET_SCAN);
+                }
+            }
+        }
+        if (accepted.length == 0) {
+            accepted.push(SecHubConfigurationModelBuilderData.DEFAULT_SCAN_TYPE);
+        }
+        return accepted;
+    }
+}
+ScanType.CODE_SCAN = 'codescan';
+ScanType.LICENSE_SCAN = 'licensescan';
+ScanType.SECRET_SCAN = 'secretscan';
+/**
+ * SecHub configuration model
+ */
+class SecHubConfigurationModel {
+    constructor() {
+        this.apiVersion = '1.0';
+        this.data = new DataSection();
+    }
+}
+class DataSection {
+}
+class SourceData {
+    constructor() {
+        this.name = '';
+        this.fileSystem = new FileSystem();
+    }
+}
+class BinaryData {
+    constructor() {
+        this.name = '';
+        this.fileSystem = new FileSystem();
+    }
+}
+class CodeScan {
+    constructor() {
+        this.use = [];
+    }
+}
+class SecretScan {
+    constructor() {
+        this.use = [];
+    }
+}
+class LicenseScan {
+    constructor() {
+        this.use = [];
+    }
+}
+class FileSystem {
+    constructor() {
+        this.folders = [];
+    }
+}
+
 ;// CONCATENATED MODULE: ./src/configuration-builder.ts
 // SPDX-License-Identifier: MIT
+
+
 
 
 /**
@@ -13784,8 +13901,12 @@ class SecHubConfigurationModelBuilderData {
     constructor() {
         this.includeFolders = [];
         this.excludeFolders = [];
+        this.contentType = SecHubConfigurationModelBuilderData.DEFAULT_CONTENT_TYPE;
+        this.scanTypes = [SecHubConfigurationModelBuilderData.DEFAULT_SCAN_TYPE];
     }
 }
+SecHubConfigurationModelBuilderData.DEFAULT_SCAN_TYPE = ScanType.CODE_SCAN; // per default only code scan
+SecHubConfigurationModelBuilderData.DEFAULT_CONTENT_TYPE = ContentType.SOURCE; // per default source
 /**
  * Creates a sechub configuration model object for given user input values.
  *
@@ -13794,28 +13915,48 @@ class SecHubConfigurationModelBuilderData {
  *
  * @returns model
  */
-function createSecHubConfigurationModel(data) {
-    const model = {
-        'apiVersion': '1.0'
-    };
-    if (model.codeScan == null) {
-        model.codeScan = {};
+function createSecHubConfigurationModel(builderData) {
+    var _a, _b, _c;
+    const model = new SecHubConfigurationModel();
+    const referenceName = 'reference-data-1';
+    createSourceOrBinaryDataReference(referenceName, builderData, model);
+    if (((_a = builderData.scanTypes) === null || _a === void 0 ? void 0 : _a.indexOf(ScanType.CODE_SCAN)) != -1) {
+        const codescan = new CodeScan();
+        codescan.use = [referenceName];
+        model.codeScan = codescan;
     }
-    if (data.includeFolders) {
-        if (model.codeScan.fileSystem == null) {
-            model.codeScan.fileSystem = {};
-        }
-        model.codeScan.fileSystem.folders = data.includeFolders;
+    if (((_b = builderData.scanTypes) === null || _b === void 0 ? void 0 : _b.indexOf(ScanType.LICENSE_SCAN)) != -1) {
+        const licenseScan = new LicenseScan();
+        licenseScan.use = [referenceName];
+        model.licenseScan = licenseScan;
     }
-    if (data.excludeFolders) {
-        model.codeScan.excludes = data.excludeFolders;
+    if (((_c = builderData.scanTypes) === null || _c === void 0 ? void 0 : _c.indexOf(ScanType.SECRET_SCAN)) != -1) {
+        const secretScan = new SecretScan();
+        secretScan.use = [referenceName];
+        model.secretScan = secretScan;
     }
     return model;
+}
+function createSourceOrBinaryDataReference(referenceName, builderData, model) {
+    if (builderData.contentType == ContentType.SOURCE) {
+        const sourceData1 = new SourceData();
+        sourceData1.name = referenceName;
+        sourceData1.fileSystem.folders = builderData.includeFolders;
+        sourceData1.excludes = builderData.excludeFolders;
+        model.data.sources = [sourceData1];
+    }
+    else if (builderData.contentType == ContentType.BINARIES) {
+        const binaryData1 = new BinaryData();
+        binaryData1.name = referenceName;
+        binaryData1.fileSystem.folders = builderData.includeFolders;
+        binaryData1.excludes = builderData.excludeFolders;
+        model.data.binaries = [binaryData1];
+    }
 }
 
 ;// CONCATENATED MODULE: ./src/report-formats.ts
 // SPDX-License-Identifier: MIT
-const availableFormats = ['json', 'html'];
+const availableFormats = ['json', 'html', 'spdx-json'];
 /**
  * Convert input string to array and filter invalid formats.
  * @param inputFormats Formats from the action input
@@ -13954,6 +14095,7 @@ function collectJsonReportData(context) {
     const jsonObject = asJsonObject(text);
     /* setup data in context */
     context.secHubReportJsonObject = jsonObject;
+    context.secHubReportJsonFileName = fileName;
 }
 function downloadOtherReportsThanJson(context) {
     if (context.jobUUID) {
@@ -13966,6 +14108,9 @@ function downloadOtherReportsThanJson(context) {
                 logExitCode(context.lastClientExitCode);
             }
         });
+    }
+    else {
+        core.warning('No job uuid available, cannot download other reports!');
     }
 }
 /**
@@ -14153,6 +14298,8 @@ const PARAM_EXCLUDED_FOLDERS = 'exclude-folders';
 const PARAM_REPORT_FORMATS = 'report-formats';
 const PARAM_FAIL_JOB_ON_FINDING = 'fail-job-with-findings';
 const PARAM_TRUST_ALL = 'trust-all';
+const PARAM_SCAN_TYPES = 'scan-types';
+const PARAM_CONTENT_TYPE = 'content-type';
 const INPUT_DATA_DEFAULTS = {
     configPath: '',
     url: '',
@@ -14165,7 +14312,9 @@ const INPUT_DATA_DEFAULTS = {
     excludeFolders: '',
     reportFormats: '',
     failJobOnFindings: '',
-    trustAll: ''
+    trustAll: '',
+    scanTypes: '',
+    contentType: '',
 };
 function resolveGitHubInputData() {
     return {
@@ -14181,6 +14330,8 @@ function resolveGitHubInputData() {
         reportFormats: core.getInput(PARAM_REPORT_FORMATS),
         failJobOnFindings: core.getInput(PARAM_FAIL_JOB_ON_FINDING),
         trustAll: core.getInput(PARAM_TRUST_ALL),
+        scanTypes: core.getInput(PARAM_SCAN_TYPES),
+        contentType: core.getInput(PARAM_CONTENT_TYPE),
     };
 }
 
@@ -14237,6 +14388,7 @@ function downloadClientRelease(context) {
 
 
 
+
 /**
  * Starts the launch process
  * @returns launch context
@@ -14250,6 +14402,7 @@ async function launch() {
 }
 const LAUNCHER_CONTEXT_DEFAULTS = {
     jobUUID: undefined,
+    debug: false,
     inputData: INPUT_DATA_DEFAULTS,
     reportFormats: ['json'],
     clientDownloadFolder: '',
@@ -14259,13 +14412,13 @@ const LAUNCHER_CONTEXT_DEFAULTS = {
     secHubJsonFilePath: '',
     workspaceFolder: '',
     secHubReportJsonObject: undefined,
+    secHubReportJsonFileName: '',
 };
 /**
  * Creates the initial launch context
  * @returns launch context
  */
 function createContext() {
-    var _a, _b;
     const gitHubInputData = resolveGitHubInputData();
     // client
     const clientVersion = gitHubInputData.sechubCLIVersion;
@@ -14278,14 +14431,13 @@ function createContext() {
     const clientDownloadFolder = `${workspaceFolder}/.sechub-gha/client/${clientVersionSubFolder}`;
     const clientExecutablePath = `${clientDownloadFolder}/platform/linux-386/sechub`;
     const generatedSecHubJsonFilePath = `${workspaceFolder}/sechub.json`;
-    const builderData = new SecHubConfigurationModelBuilderData();
-    builderData.includeFolders = (_a = gitHubInputData.includeFolders) === null || _a === void 0 ? void 0 : _a.split(',');
-    builderData.excludeFolders = (_b = gitHubInputData.excludeFolders) === null || _b === void 0 ? void 0 : _b.split(',');
+    const builderData = createSafeBuilderData(gitHubInputData);
     const configFileLocation = initSecHubJson(generatedSecHubJsonFilePath, gitHubInputData.configPath, builderData);
     const reportFormats = initReportFormats(gitHubInputData.reportFormats);
     return {
         jobUUID: LAUNCHER_CONTEXT_DEFAULTS.jobUUID,
         secHubReportJsonObject: LAUNCHER_CONTEXT_DEFAULTS.secHubReportJsonObject,
+        secHubReportJsonFileName: '',
         configFileLocation: configFileLocation,
         reportFormats: reportFormats,
         inputData: gitHubInputData,
@@ -14294,7 +14446,17 @@ function createContext() {
         lastClientExitCode: LAUNCHER_CONTEXT_DEFAULTS.lastClientExitCode,
         secHubJsonFilePath: generatedSecHubJsonFilePath,
         workspaceFolder: workspaceFolder,
+        debug: gitHubInputData.debug == 'true',
     };
+}
+function createSafeBuilderData(gitHubInputData) {
+    var _a, _b, _c;
+    const builderData = new SecHubConfigurationModelBuilderData();
+    builderData.includeFolders = (_a = gitHubInputData.includeFolders) === null || _a === void 0 ? void 0 : _a.split(',');
+    builderData.excludeFolders = (_b = gitHubInputData.excludeFolders) === null || _b === void 0 ? void 0 : _b.split(',');
+    builderData.scanTypes = ScanType.ensureAccepted((_c = gitHubInputData.scanTypes) === null || _c === void 0 ? void 0 : _c.split(','));
+    builderData.contentType = ContentType.ensureAccepted(gitHubInputData.contentType);
+    return builderData;
 }
 function init(context) {
     initEnvironmentVariables(context.inputData);

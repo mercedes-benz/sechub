@@ -1,5 +1,5 @@
 {
-    "name": "test-executor-codescan-yellow",
+    "name": "executor-codescan-green",
     "productIdentifier": "PDS_CODESCAN",
     "setup": {
         "baseURL": "https://localhost:8444",
@@ -22,7 +22,7 @@
             },
             {
                 "key": "pds.config.productidentifier",
-                "value": "codescan_demo_yellow"
+                "value": "codescan_demo_green"
             },
             {
                 "key": "pds.config.use.sechub.storage",

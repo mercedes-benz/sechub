@@ -49,19 +49,19 @@ function createData(){
 
    project="test-project-$number"
    profile="test-profile-$number"
-   executor="test-executor-$type-$trafficLight"
+   executor="executor-$type-$trafficLight"
    
    echo "> Create test project:$project for user:$user"
    ./sechub-api.sh project_create $project $user "Testproject $number for integration tests"
    ./sechub-api.sh project_assign_user $project $user # assign user to project
 
-   echo "> Create executor config"
+   echo "> Create executor config: '${executor}'"
    ./sechub-api.sh executor_create "$SCRIPT_DIR/test-config/${executor}.json"
 
-   echo "> Create profile"
+   echo "> Create profile: '$profile'"
    ./sechub-api.sh profile_create $profile $executor
 
-   echo "> Assign profile to project"
+   echo "> Assign profile: '$profile' to project: '$project'"
    ./sechub-api.sh project_assign_profile $project $profile
 }
 
@@ -79,5 +79,7 @@ createData 1 codescan green
 createData 2 codescan yellow
 createData 3 codescan red
 createData 4 webscan red
+createData 5 secretscan yellow
+createData 6 licensescan green
 
 ./sechub-api.sh project_set_whitelist_uris test-project-4 https://vulnerable.demo.example.com

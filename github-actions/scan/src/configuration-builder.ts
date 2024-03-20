@@ -20,13 +20,17 @@ export function createSecHubConfigJsonFile(secHubJsonFilePath: string, data: Sec
     shell.ShellString(stringifiedSecHubJson).to(secHubJsonFilePath);
 }
 
+
 export class SecHubConfigurationModelBuilderData {
+
+    static DEFAULT_SCAN_TYPE=ScanType.CODE_SCAN;  // per default only code scan
+    static DEFAULT_CONTENT_TYPE=ContentType.SOURCE;  // per default source
 
     includeFolders: string[] = [];
     excludeFolders: string[] = [];
 
-    contentType: ContentType = ContentType.SOURCE; // per default source
-    scanTypes: ScanType[] = [ScanType.CODE_SCAN]; // per default only code scan
+    contentType: string = SecHubConfigurationModelBuilderData.DEFAULT_CONTENT_TYPE; 
+    scanTypes: string[] = [SecHubConfigurationModelBuilderData.DEFAULT_SCAN_TYPE];
 }
 
 /**
