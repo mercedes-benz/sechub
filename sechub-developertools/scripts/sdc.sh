@@ -74,6 +74,7 @@ function showHelp () {
     echo "  -pigh,--prepare-integrationtest-gh-action   : prepare integration test data for github actions ((re)start SecHub, PDS and init data)"                  
     echo "  -igh, --integrationtest-github-action       : execute integration tests for github action only (nodejs, -pigh initial necessary)"
     echo "  -bgh, --build-github-action                 : full build of github action with integration tests (prepare etc. is all done automatically)" 
+    echo "  -agh  --audit-github-action                 : start audit for github action - checks for newer dependencies/vulnerabilities etc."                                            
     echo ""                                            
     echo "  -syg, --start-systemtest-sanity-check-gosec : start systemtest 'sanity-check' for gosec with local build pds tools (0.0.0)" 
     echo ""                                            
@@ -204,6 +205,10 @@ do
         ;;
         -igh|--integrationtest-github-action)
         GITHUB_ACTION_START_INTEGRATIONTEST="YES"
+        shift # past argument
+        ;;
+        -agh|--audit-github-action)
+        GITHUB_ACTION_START_AUDIT="YES"
         shift # past argument
         ;;
         -d|--document-full)
@@ -391,6 +396,14 @@ if [[ "$GITHUB_ACTION_PREPARE_INTEGRATIONTEST" = "YES" ]]; then
     
     prepareGitHubActionIntegrationTest
 
+fi
+
+if [[ "$GITHUB_ACTION_START_AUDIT" = "YES" ]]; then
+    startJob "Start github action audit"
+    cd $SECHUB_ROOT_DIR
+    cd ./github-actions/scan
+    
+    npm audit fix
 fi
 
 if [[ "$GITHUB_ACTION_START_INTEGRATIONTEST" = "YES" ]]; then
