@@ -11,7 +11,7 @@ fi
 
 echo "[ WAIT ] Until $SERVER_TYPE alive at $CHECK_ALIVE_URL"
 
-declare -i MAX_WAIT_SECONDS=30
+declare -i MAX_WAIT_SECONDS=60
 declare -i waitCount=0
 
 ## Wait until available
