@@ -9,10 +9,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class SecHubRemoteCredentialSupport {
-
+    private final String PDS_PREPARE_REMOTE_CREDENTIAL_LIST = "PDS_PREPARE_REMOTE_CREDENTIAL_LIST";
     private static final Logger LOG = LoggerFactory.getLogger(SecHubRemoteCredentialSupport.class);
 
-    public List<SecHubRemoteCredentialContainer> matchRemoteCredentialsFromLocation(SecHubRemoteCredentialConfiguration configuration, String location) {
+    public List<SecHubRemoteCredentialContainer> matchRemoteCredentialsFromLocationConfiguration(SecHubRemoteCredentialConfiguration configuration,
+            String location) {
         List<SecHubRemoteCredentialContainer> matchedCredentials = new ArrayList<>();
 
         if (location == null) {
@@ -40,13 +41,14 @@ public class SecHubRemoteCredentialSupport {
         return matchedCredentials;
     }
 
-    public List<SecHubRemoteCredentialContainer> matchRemoteCredentialsFromType(SecHubRemoteCredentialConfiguration configuration, String type) {
+    public List<SecHubRemoteCredentialContainer> matchRemoteCredentialsFromTypeConfiguration(SecHubRemoteCredentialConfiguration configuration, String type) {
         List<SecHubRemoteCredentialContainer> matchedCredentials = new ArrayList<>();
-        // TODO: 19.03.24 laura what about ENUM for remote types (GIT, DOCKER etc. )
+        // TODO: 19.03.24 laura Idea: what about ENUM for remote types (GIT, DOCKER etc.
+        // )
         for (SecHubRemoteCredentialContainer credentialContainer : configuration.getCredentials()) {
             String remoteType = credentialContainer.getType();
             if (remoteType == null || remoteType.isEmpty()) {
-                logEmptyOrNUllValue("remote credential type", "null or empty");
+                logEmptyOrNUllValue("type", "null or empty");
                 continue;
             }
 
@@ -69,8 +71,12 @@ public class SecHubRemoteCredentialSupport {
         return SecHubRemoteCredentialConfiguration.fromJSONString(json);
     }
 
+    public String readRemoteCredentialsFromEnv() {
+        return System.getenv(PDS_PREPARE_REMOTE_CREDENTIAL_LIST);
+    }
+
     private void logNoCredentialsFound(String element, String value) {
-        LOG.debug("Could not find credentials for \"{}\": \"{}\"", element, value);
+        LOG.debug("Could not find credentials for remote data configuration \"{}\": \"{}\"", element, value);
     }
 
     private void logEmptyOrNUllValue(String element, String value) {
