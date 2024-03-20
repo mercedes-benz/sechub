@@ -63,25 +63,18 @@ class SecHubRemoteCredentialSupportTest {
         String type = "git";
 
         /* execute */
-        List<SecHubRemoteCredentialContainer> credentialsLocation = supportToTest.matchRemoteCredentialsFromLocationConfiguration(configuration, location);
-        List<SecHubRemoteCredentialContainer> credentialsType = supportToTest.matchRemoteCredentialsFromTypeConfiguration(configuration, type);
+        List<SecHubRemoteCredentialContainer> credentialsLocation = supportToTest.resolveCredentialsForLocation(configuration, location);
+        List<SecHubRemoteCredentialContainer> credentialsType = supportToTest.resolveCredentialsForLocation(configuration, location, type);
 
         /* test */
         assertEquals(1, credentialsLocation.size());
-        assertEquals(2, credentialsType.size());
+        assertEquals(0, credentialsType.size());
 
         SecHubRemoteCredentialContainer container1 = credentialsLocation.get(0);
         assertNotNull(container1);
         assertEquals("userX", container1.getUser());
         assertEquals("tokenX", container1.getPassword());
 
-        SecHubRemoteCredentialContainer container2 = credentialsType.get(0);
-        assertNotNull(container2);
-        assertEquals("example-user", container2.getUser());
-
-        SecHubRemoteCredentialContainer container2b = credentialsType.get(1);
-        assertNotNull(container2b);
-        assertEquals("user2", container2b.getUser());
     }
 
     @Test
@@ -94,13 +87,13 @@ class SecHubRemoteCredentialSupportTest {
         String location3 = "unknown.pattern";
 
         /* execute */
-        List<SecHubRemoteCredentialContainer> credentials1 = supportToTest.matchRemoteCredentialsFromLocationConfiguration(configuration, location1);
-        List<SecHubRemoteCredentialContainer> credentials2 = supportToTest.matchRemoteCredentialsFromLocationConfiguration(configuration, location2);
-        List<SecHubRemoteCredentialContainer> credentials3 = supportToTest.matchRemoteCredentialsFromLocationConfiguration(configuration, location3);
+        List<SecHubRemoteCredentialContainer> credentials1 = supportToTest.resolveCredentialsForLocation(configuration, location1);
+        List<SecHubRemoteCredentialContainer> credentials2 = supportToTest.resolveCredentialsForLocation(configuration, location2);
+        List<SecHubRemoteCredentialContainer> credentials3 = supportToTest.resolveCredentialsForLocation(configuration, location3);
 
         /* test */
         assertEquals(1, credentials1.size());
-        assertEquals(2, credentials2.size());
+        assertEquals(3, credentials2.size());
 
         SecHubRemoteCredentialContainer container1 = credentials1.get(0);
         assertNotNull(container1);
@@ -108,11 +101,15 @@ class SecHubRemoteCredentialSupportTest {
 
         SecHubRemoteCredentialContainer container2 = credentials2.get(0);
         assertNotNull(container2);
-        assertEquals("user3", container2.getUser());
+        assertEquals("user2", container2.getUser());
 
         SecHubRemoteCredentialContainer container2b = credentials2.get(1);
         assertNotNull(container2b);
-        assertEquals("userX", container2b.getUser());
+        assertEquals("user3", container2b.getUser());
+
+        SecHubRemoteCredentialContainer container2c = credentials2.get(2);
+        assertNotNull(container2c);
+        assertEquals("userX", container2c.getUser());
 
         assertTrue(credentials3.isEmpty());
     }
@@ -125,11 +122,12 @@ class SecHubRemoteCredentialSupportTest {
         String type1 = "docker";
         String type2 = "git";
         String type3 = "unknown";
+        String location = "https://example.url.com";
 
         /* execute */
-        List<SecHubRemoteCredentialContainer> credentials1 = supportToTest.matchRemoteCredentialsFromTypeConfiguration(configuration, type1);
-        List<SecHubRemoteCredentialContainer> credentials2 = supportToTest.matchRemoteCredentialsFromTypeConfiguration(configuration, type2);
-        List<SecHubRemoteCredentialContainer> credentials3 = supportToTest.matchRemoteCredentialsFromTypeConfiguration(configuration, type3);
+        List<SecHubRemoteCredentialContainer> credentials1 = supportToTest.resolveCredentialsForLocation(configuration, location, type1);
+        List<SecHubRemoteCredentialContainer> credentials2 = supportToTest.resolveCredentialsForLocation(configuration, location, type2);
+        List<SecHubRemoteCredentialContainer> credentials3 = supportToTest.resolveCredentialsForLocation(configuration, location, type3);
 
         /* test */
         assertEquals(1, credentials1.size());
@@ -160,7 +158,7 @@ class SecHubRemoteCredentialSupportTest {
         SecHubRemoteCredentialConfiguration configuration = supportToTest.getRemoteCredentialConfigurationFromJSONString(json);
 
         /* execute */
-        List<SecHubRemoteCredentialContainer> credentials = supportToTest.matchRemoteCredentialsFromTypeConfiguration(configuration, string);
+        List<SecHubRemoteCredentialContainer> credentials = supportToTest.resolveCredentialsForLocation(configuration, string);
 
         /* test */
         assertTrue(credentials.isEmpty());
@@ -175,7 +173,7 @@ class SecHubRemoteCredentialSupportTest {
         SecHubRemoteCredentialConfiguration configuration = supportToTest.getRemoteCredentialConfigurationFromJSONString(json);
 
         /* execute */
-        List<SecHubRemoteCredentialContainer> credentials = supportToTest.matchRemoteCredentialsFromLocationConfiguration(configuration, string);
+        List<SecHubRemoteCredentialContainer> credentials = supportToTest.resolveCredentialsForLocation(configuration, string);
 
         /* test */
         assertTrue(credentials.isEmpty());

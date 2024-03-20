@@ -12,57 +12,45 @@ public class SecHubRemoteCredentialSupport {
     private final String PDS_PREPARE_REMOTE_CREDENTIAL_LIST = "PDS_PREPARE_REMOTE_CREDENTIAL_LIST";
     private static final Logger LOG = LoggerFactory.getLogger(SecHubRemoteCredentialSupport.class);
 
+    public List<SecHubRemoteCredentialContainer> resolveCredentialsForLocation(SecHubRemoteCredentialConfiguration configuration, String location) {
+        return matchRemoteCredentialsFromLocationConfiguration(configuration, location, null);
+    }
+
+    public List<SecHubRemoteCredentialContainer> resolveCredentialsForLocation(SecHubRemoteCredentialConfiguration configuration, String location,
+            String type) {
+        TypeFilter.AcceptTypeFilter acceptTypeFilter = new TypeFilter.AcceptTypeFilter(type);
+        return matchRemoteCredentialsFromLocationConfiguration(configuration, location, acceptTypeFilter);
+    }
+
     public List<SecHubRemoteCredentialContainer> matchRemoteCredentialsFromLocationConfiguration(SecHubRemoteCredentialConfiguration configuration,
-            String location) {
+            String location, TypeFilter filter) {
+        if (filter == null) {
+            filter = TypeFilter.ACCEPT_ALL;
+        }
         List<SecHubRemoteCredentialContainer> matchedCredentials = new ArrayList<>();
 
         if (location == null) {
-            logEmptyOrNUllValue("location", "null");
+            LOG.debug("Could not match credentials as configured location was null.");
             return matchedCredentials;
         }
 
         for (SecHubRemoteCredentialContainer credentialContainer : configuration.getCredentials()) {
             String stringPattern = credentialContainer.getRemotePattern();
+            String type = credentialContainer.getType();
 
             if (stringPattern == null) {
-                logEmptyOrNUllValue("remotePattern", "null");
+                LOG.debug("Could not match credentials as configured remote pattern was null.");
                 continue;
             }
 
             Pattern pattern = Pattern.compile(stringPattern);
             Matcher matcher = pattern.matcher(location);
-            if (matcher.find()) {
+            if (matcher.find() && filter.isTypeAccepted(type)) {
                 matchedCredentials.add(credentialContainer);
             }
         }
         if (matchedCredentials.isEmpty()) {
-            logNoCredentialsFound("location", location);
-        }
-        return matchedCredentials;
-    }
-
-    public List<SecHubRemoteCredentialContainer> matchRemoteCredentialsFromTypeConfiguration(SecHubRemoteCredentialConfiguration configuration, String type) {
-        List<SecHubRemoteCredentialContainer> matchedCredentials = new ArrayList<>();
-        // TODO: 19.03.24 laura Idea: what about ENUM for remote types (GIT, DOCKER etc.
-        // )
-        for (SecHubRemoteCredentialContainer credentialContainer : configuration.getCredentials()) {
-            String remoteType = credentialContainer.getType();
-            if (remoteType == null || remoteType.isEmpty()) {
-                logEmptyOrNUllValue("type", "null or empty");
-                continue;
-            }
-
-            /* configuration can have more than one type defined: type1,type2 */
-            final String[] splitTypes = remoteType.split(",");
-            for (String splitType : splitTypes) {
-                if (splitType.equals(type)) {
-                    matchedCredentials.add(credentialContainer);
-                }
-            }
-        }
-
-        if (matchedCredentials.isEmpty()) {
-            logNoCredentialsFound("type", type);
+            LOG.debug("Could not match any credentials for configured location {}", location);
         }
         return matchedCredentials;
     }
@@ -73,13 +61,5 @@ public class SecHubRemoteCredentialSupport {
 
     public String readRemoteCredentialsFromEnv() {
         return System.getenv(PDS_PREPARE_REMOTE_CREDENTIAL_LIST);
-    }
-
-    private void logNoCredentialsFound(String element, String value) {
-        LOG.debug("Could not find credentials for remote data configuration \"{}\": \"{}\"", element, value);
-    }
-
-    private void logEmptyOrNUllValue(String element, String value) {
-        LOG.debug("Could not match credentials for {}, as value was {}", element, value);
     }
 }
