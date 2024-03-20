@@ -26,6 +26,10 @@ inputs:
    description: 'Scan types to use for generated sechub configuration file (ignored in the case of a custom configuration file). Supported types are: codeScan, licenseScan and secretScan. Can be combined by ,'
     required: false
     default: 'codeScan'
+  content-type:
+    description: 'Content type to use for generated sechub configuration file (ignored in the case of a custom configuration file). Supported types: source, binaries. Cannot be combined.'
+    required: false
+    default: 'source'  
   include-folders:
     description: 'a list of folders to include (ignored in the case of a custom configuration file)'
     required: false

@@ -37,11 +37,17 @@ To be able to use this action you need a SecHub project. Check the https://merce
     version: '1.4.0'
     
     # OPTIONAL: A list of scan types that shall be used when a sechub configuration file is generated.
-    #           Allowed options: codeScan, secretScan and licenseScan - If you want other scan types you 
+    #           Allowed values: codeScan, secretScan and licenseScan - If you want other scan types you 
     #           have to create a sechub configuration file and provide it by the config-path attribute
     #           (ignored in the case of a custom configuration file)
     # DEFAULT: codeScan
     scan-types: codeScan, secretScan
+
+    # OPTIONAL: A definition of the content type which shall be used for sechub configuration file generation.
+    #           Allowed values: source,binaries. Cannot be combined.
+    #           (ignored in the case of a custom configuration file)
+    # DEFAULT: source
+    content-type: source
     
     # OPTIONAL: A list of folders to be included. Multiple folders can be separated by ,
     #           (ignored in the case of a custom configuration file)
