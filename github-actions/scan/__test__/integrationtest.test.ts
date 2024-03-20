@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 
 import { create } from '@actions/artifact';
-import { debug, error, getInput, info, isDebug, warning } from '@actions/core';
+import { debug, error, getInput, info, isDebug, warning, setFailed } from '@actions/core';
 import * as shell from 'shelljs';
 import { getWorkspaceDir } from '../src/fs-helper';
 import * as input from '../src/input';
@@ -90,6 +90,7 @@ function initInputMap() {
 
     mockedInputMap.set(input.PARAM_REPORT_FORMATS, 'json');
     mockedInputMap.set(input.PARAM_TRUST_ALL, 'true'); // self signed certificate in test...
+    mockedInputMap.set(input.PARAM_FAIL_JOB_ON_FINDING, 'true');
 }
 
 describe('integrationtest codescan generated config', () => {
@@ -106,6 +107,7 @@ describe('integrationtest codescan generated config', () => {
         /* test */
         assertLastClientExitCode(result, 0);
         assertTrafficLight(result, 'GREEN');
+        assertActionIsNotMarkedAsFailed();
         assertJsonReportContains(result, 'result-green');
 
     });
@@ -121,6 +123,7 @@ describe('integrationtest codescan generated config', () => {
 
         /* test */
         assertLastClientExitCode(result, 0);
+        assertActionIsNotMarkedAsFailed();
         assertTrafficLight(result, 'YELLOW');
         assertJsonReportContains(result, 'result-yellow');
 
@@ -139,6 +142,24 @@ describe('integrationtest codescan generated config', () => {
         /* test */
         assertLastClientExitCode(result, 1); // exit code 1, because RED
         assertTrafficLight(result, 'RED');
+        assertActionIsMarkedAsFailed();
+        assertJsonReportContains(result, 'result-red');
+    });
+    test('codescan red - fail-job-with-findings=false', async () => {
+
+        /* prepare */
+        initInputMap();
+        mockedInputMap.set(input.PARAM_INCLUDED_FOLDERS, '__test__/integrationtest/test-sources');
+        mockedInputMap.set(input.PARAM_PROJECT_NAME, 'test-project-3');
+        mockedInputMap.set(input.PARAM_FAIL_JOB_ON_FINDING, 'false');
+
+        /* execute */
+        const result = await launcher.launch();
+
+        /* test */
+        assertLastClientExitCode(result, 1); 
+        assertTrafficLight(result, 'RED');
+        assertActionIsNotMarkedAsFailed(); // important: exit code 1 but action is NOT marked as failed because fail-job-with-findings=false
         assertJsonReportContains(result, 'result-red');
     });
 
@@ -159,6 +180,7 @@ describe('integrationtest secretscan generated config', () => {
         /* test */
         assertTrafficLight(result, 'YELLOW');
         assertLastClientExitCode(result, 0);
+        assertActionIsNotMarkedAsFailed();
         assertJsonReportContains(result, 'generic-api-key has detected secret for file UnSAFE_Bank/Backend/docker-compose.yml');
         
     });
@@ -177,6 +199,7 @@ describe('integrationtest secretscan generated config', () => {
         /* test */
         assertTrafficLight(result, 'YELLOW');
         assertLastClientExitCode(result, 0);
+        assertActionIsNotMarkedAsFailed();
         assertJsonReportContains(result, 'generic-api-key has detected secret for file UnSAFE_Bank/Backend/docker-compose.yml');
        
         loadHTMLReportAndAssertItContains(result, 'generic-api-key has detected secret for file UnSAFE_Bank/Backend/docker-compose.yml');
@@ -201,6 +224,7 @@ describe('integrationtest licensescan generated config', () => {
         /* test */
         assertTrafficLight(result, 'GREEN');
         assertLastClientExitCode(result, 0);
+        assertActionIsNotMarkedAsFailed();
         assertJsonReportContains(result, 'findings'); // findings in json available - but green, because only licensescan
         
         loadSpdxJsonReportAndAssertItContains(result, 'LGPL');
@@ -237,13 +261,22 @@ describe('integrationtest non-generated config', () => {
 
         /* test */
         assertLastClientExitCode(result, 1);
+        assertActionIsMarkedAsFailed();
         assertTrafficLight(result, 'RED');
         assertJsonReportContains(result, 'XSS attackable parameter output: </p><script>alert(1)');
 
     });
 
-
 });
+
+
+function assertActionIsMarkedAsFailed(){
+    expect(setFailed).toHaveBeenCalledTimes(1);
+}
+
+function assertActionIsNotMarkedAsFailed(){
+    expect(setFailed).toHaveBeenCalledTimes(0);
+}
 
 function assertLastClientExitCode(context: LaunchContext, exitCode: number) {
     expect(context.lastClientExitCode).toEqual(exitCode);

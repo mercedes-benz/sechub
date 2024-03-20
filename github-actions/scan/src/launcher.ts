@@ -149,7 +149,7 @@ function executeScan(context: LaunchContext) {
 
 async function postScan(context: LaunchContext): Promise<void> {
     if (context.lastClientExitCode > 1) {
-        // in this case this is an error and we cannot download the report - means fails always
+        // in this case (not 0, not 1) this is an error and we cannot download the report - here we fail always!
         failAction(context.lastClientExitCode);
         return;
     }
@@ -162,8 +162,10 @@ async function postScan(context: LaunchContext): Promise<void> {
     /* upload artifact */
     await uploadArtifact(context, 'sechub scan-report', getFiles(`${context.workspaceFolder}/sechub_report_*.*`));
 
-    if (context.lastClientExitCode !== 0 && context.inputData.failJobOnFindings === 'true') {
-        failAction(context.lastClientExitCode);
+    if (context.lastClientExitCode !== 0) {
+        if (context.inputData.failJobOnFindings === 'true'){
+            failAction(context.lastClientExitCode);
+        }
     }
 }
 
