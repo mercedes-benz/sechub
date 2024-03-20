@@ -60,6 +60,9 @@ server:
   # loggingType (optional): See https://mercedes-benz.github.io/sechub/latest/sechub-operations.html#logging-2
   #                         https://github.com/mercedes-benz/sechub/blob/develop/sechub-server/src/main/resources/logback-spring.xml
   loggingType: LOGSTASH_JSON
+  reports:
+    # maxNonObfuscatedCharacters: 0 = only ***** ; >0 = this number of chars is shown in the report ; <0 = no obfuscation
+    maxNonObfuscatedCharacters: 0
   # Time in milliseconds how long the download of an api token is possible. (86400000 = 24h)
   validityOnetimetokenInMilliseconds: 86400000
 

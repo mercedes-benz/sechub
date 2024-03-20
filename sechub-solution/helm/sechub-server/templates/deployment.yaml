@@ -257,6 +257,11 @@ spec:
 {{- end }}
 {{- if .Values.adapterCheckmarx.enabled }}
 # ----------------------------------------------------------------------------------------------#
+# Scope: Reports
+# --------------------------------------------------------------------------------------------- #
+        - name: SECHUB_REPORT_SENSITIVEDATA_MAX_NONOBFUSCATED_CHARACTERS
+          value: "{{ .Values.server.reports.maxNonObfuscatedCharacters | toString }}"
+# ----------------------------------------------------------------------------------------------#
 # - Scope: Checkmarx (Deprecation warning: Please use PDS-Checkmarx instead)
 # --------------------------------------------------------------------------------------------- #
         # Base url of your Checkmarx server
