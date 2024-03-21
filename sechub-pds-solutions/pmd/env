@@ -1,7 +1,2 @@
-# The base image to use
-# uncomment to use local image
-# BASE_IMAGE="pds-base_pds"
-BASE_IMAGE="ghcr.io/mercedes-benz/sechub/pds-base"
-
 # See: https://github.com/pmd/pmd/releases/
 PMD_VERSION="6.55.0"
