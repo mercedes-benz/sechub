@@ -1,8 +1,3 @@
-# The base image to use
-# uncomment to use local image
-# BASE_IMAGE="pds-base_pds"
-BASE_IMAGE="ghcr.io/mercedes-benz/sechub/pds-base"
-
 # See: https://github.com/AlDanial/cloc/releases
 CLOC_VERSION="1.96"
 

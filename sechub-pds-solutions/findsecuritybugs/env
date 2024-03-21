@@ -1,8 +1,2 @@
 # See: https://github.com/find-sec-bugs/find-sec-bugs/releases
 FINDSECURITYBUGS_VERSION="1.12.0"
-
-# The base image to use
-# uncomment to use local image
-# BASE_IMAGE="pds-base_pds"
-BASE_IMAGE="ghcr.io/mercedes-benz/sechub/pds-base"
-
