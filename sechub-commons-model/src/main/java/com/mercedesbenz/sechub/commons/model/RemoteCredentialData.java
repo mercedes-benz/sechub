@@ -1,14 +1,17 @@
 package com.mercedesbenz.sechub.commons.model;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class SecHubRemoteCredentialContainer {
+public class RemoteCredentialData {
 
     public static final String PROPERTY_USER = "user";
     public static final String PROPERTY_PASSWORD = "password";
     public static final String PROPERTY_REMOTE_PATTERN = "remotePattern";
-    public static final String PROPERTY_TYPE = "type";
+    public static final String PROPERTY_TYPES = "types";
 
     private String user;
 
@@ -16,7 +19,7 @@ public class SecHubRemoteCredentialContainer {
 
     private String remotePattern;
 
-    private String type;
+    private final List<String> types = new ArrayList<>();
 
     public String getUser() {
         return user;
@@ -26,11 +29,15 @@ public class SecHubRemoteCredentialContainer {
         return password;
     }
 
+    /**
+     *
+     * @return regular expression for the remote location
+     */
     public String getRemotePattern() {
         return remotePattern;
     }
 
-    public String getType() {
-        return type;
+    public List<String> getTypes() {
+        return types;
     }
 }
