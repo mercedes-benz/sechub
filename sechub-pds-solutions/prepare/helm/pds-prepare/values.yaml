@@ -5,7 +5,7 @@
 replicaCount: 1
 
 image:
-  registry: "ghcr.io/mercedes-benz/sechub/pds-xray"
+  registry: "ghcr.io/mercedes-benz/sechub/pds-prepare"
   tag: "latest"
 
 resources:
@@ -42,13 +42,6 @@ pds:
     enabled: false
   keepContainerAliveAfterPDSCrashed: false
 
-xrayWrapper:
-  artifactory:
-    artifactoryUrl: "<Jfrog artifactory url>"
-    dockerRegistry: "<Jfrog registry name>"
-    username: "<Jfrog artifactory user>"
-    password: "<Jfrog artifactory token>"
-
 users:
   technical:
     id: "techuser"
@@ -75,7 +68,7 @@ database:
   postgres:
     enabled: false
     connection: "jdbc:postgresql://database:5432/pds"
-    username: "pds_xray"
+    username: "pds_prepare"
     password: "<password-of-db-user>"
 
 networkPolicy:

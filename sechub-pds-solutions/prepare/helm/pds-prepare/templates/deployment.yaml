@@ -110,15 +110,6 @@ spec:
             - name: SHARED_VOLUME_UPLOAD_DIR
               value: "{{ .Values.storage.sharedVolume.upload.dir }}"
 {{- end}}
-            # JFrog xray artifactory specific variables
-            - name: XRAY_ARTIFACTORY
-              value: {{ .Values.xrayWrapper.artifactory.artifactoryUrl }}
-            - name: XRAY_DOCKER_REGISTRY
-              value: {{ .Values.xrayWrapper.artifactory.dockerRegistry }}
-            - name: XRAY_USERNAME
-              value: {{ .Values.xrayWrapper.artifactory.username }}
-            - name: XRAY_PASSWORD
-              value: {{ .Values.xrayWrapper.artifactory.password }}
           ports:
             - name: pds-https-port
               containerPort: 8444

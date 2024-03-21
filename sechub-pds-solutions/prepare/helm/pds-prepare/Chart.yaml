@@ -1,8 +1,8 @@
 # SPDX-License-Identifier: MIT
 
 apiVersion: v2
-name: pds-xray
-description: SecHub PDS + Xray wrapper as Helm chart for Kubernetes
+name: pds-prepare
+description: SecHub PDS + Prepare wrapper as Helm chart for Kubernetes
 
 type: application
 

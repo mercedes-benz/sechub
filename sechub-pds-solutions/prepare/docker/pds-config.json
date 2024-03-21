@@ -12,7 +12,7 @@
       "id": "PDS_PREPARE_MOCK",
       "path": "/pds/scripts/prepare_mock.sh",
       "scanType": "licenseScan",
-      "description": "Runs the prepare mock which returns a success message.",
+      "description": "Runs the prepare mock which returns a success message."
     }
   ]
 }

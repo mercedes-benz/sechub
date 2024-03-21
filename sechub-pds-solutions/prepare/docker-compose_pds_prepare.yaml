@@ -2,13 +2,13 @@
 
 version: "1"
 services:
-    pds-xray:
+    pds-prepare:
         build:
             args:
                 - BASE_IMAGE=${BASE_IMAGE}
             context: docker/
-            dockerfile: Xray-Debian.dockerfile
-        container_name: pds-xray
+            dockerfile: Prepare-Debian.dockerfile
+        container_name: pds-prepare
         env_file:
             - .env
             - .env-single
