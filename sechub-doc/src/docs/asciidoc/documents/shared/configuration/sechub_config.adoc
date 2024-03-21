@@ -260,6 +260,8 @@ include::sechub_config_example4_webscan_login_clientcertificate.json[]
 <3> web scan uses the referenced <<sechub-config-data-section,data>> configuration "client-certificate-file-reference", to obtain the client certificate file.
 
 ====== Example form based login by script
+WARNING: This example [.underline]#currently# [.underline]#only# works with the `Netsparker` DAST module. We the, SecHub team, deprecated the `Netsparker` integration because it is not developed any further from our side. We use and develop the `Zaproxy` integration. As soon as this feature is available for our actively `Zaproxy` DAST module, we will rmeove this important notice. If you hsot SecHub yourself with a `Netsparker` integration, this does not affect you can use this configuration as before.
+
 [source,json]
 ----
 include::sechub_config_example5_webscan_login_from_sript.json[]
