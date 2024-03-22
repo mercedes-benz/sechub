@@ -23,7 +23,7 @@ inputs:
     required: false
     default: '1.4.0'
   scan-types: 
-   description: 'Scan types to use for generated sechub configuration file (ignored in the case of a custom configuration file). Supported types are: codeScan, licenseScan and secretScan. Can be combined by ,'
+    description: 'Scan types to use for generated sechub configuration file (ignored in the case of a custom configuration file). Supported types are: codeScan, licenseScan and secretScan. Can be combined by ,'
     required: false
     default: 'codeScan'
   content-type:

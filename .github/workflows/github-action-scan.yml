@@ -31,8 +31,15 @@ jobs:
         
       - name: Run unit tests
         run: npm test
-
-      - name: Setup integration test data
+        
+      # We store git status - why? Here we see, if index.js has been changed - if so, a developer
+      # forgot to commit the changes - means the action cannot be used productive!  
+      - name: Store git status
+        run: |
+          git status
+          mkdir "${{ github.workspace }}/build" -p
+          git status >> "${{ github.workspace }}/build/git-status.txt"
+      - name: Define integration test setup
         id : version-selector
         run: |
           echo "sechub_server_version=1.8.0" >> "$GITHUB_ENV"
@@ -75,6 +82,15 @@ jobs:
       - name: Cleanup integration tests
         working-directory: ./github-actions/scan/__test__/integrationtest/
         run:  ./05-stop.sh $sechub_server_port $pds_port
+
+      # ------------------------------------ Archive git status-------------------
+      - name: Archive git status
+        if: always()
+        uses: actions/upload-artifact@v3
+        with:
+          name: git-status
+          path: "${{ github.workspace }}/build/git-status.txt"
+          retention-days: 14
 
       # ------------------------------------ Archive runtime logs-------------------
       - name: Archive runtime logs
