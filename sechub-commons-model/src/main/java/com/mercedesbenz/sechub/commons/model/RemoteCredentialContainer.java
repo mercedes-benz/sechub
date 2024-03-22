@@ -44,7 +44,7 @@ public class RemoteCredentialContainer {
         }
 
         if (result.isEmpty()) {
-            LOG.debug("Could not match any credentials for configured location {}", location);
+            LOG.debug("Could not match any credentials for configured location: {}", location);
         }
         return result;
     }
@@ -88,4 +88,11 @@ public class RemoteCredentialContainer {
         }
     }
 
+    public RemoteCredentialConfiguration getConfiguration() {
+        return configuration;
+    }
+
+    public Map<String, Pattern> getPatternMap() {
+        return patternMap;
+    }
 }

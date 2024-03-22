@@ -17,65 +17,9 @@ class RemoteCredentialContainerTest {
     private RemoteCredentialContainer containerToTest;
 
     @Test
-    void credential_configuration_without_location_is_not_resolved() {
+    void resolve_remote_credentials_by_location_and_accept_all_types() {
         /* prepare */
-        String json = """
-                {
-                  "credentials": [
-                  {
-                      "user" : "user2",
-                      "password" : "password2",
-                      "types" : ["git"]
-                    }
-                  ]
-                }
-                """;
-        RemoteCredentialConfiguration configuration = RemoteCredentialConfiguration.fromJSONString(json);
-        containerToTest = new RemoteCredentialContainerFactory().create(configuration);
-        String location = "example";
-        String type = "git";
-
-        /* execute */
-        List<RemoteCredentialData> credentialsLocation = containerToTest.resolveCredentialsForLocation(location, type);
-
-        /* test */
-        assertEquals(0, credentialsLocation.size());
-    }
-
-    @Test
-    void credential_configuration_without_type_is_resolved() {
-        /* prepare */
-        String json = """
-                {
-                  "credentials": [
-                  {
-                      "user" : "user2",
-                      "password" : "password2",
-                      "remotePattern" : ".*example.*"
-                    }
-                  ]
-                }
-                """;
-        RemoteCredentialConfiguration configuration = RemoteCredentialConfiguration.fromJSONString(json);
-        containerToTest = new RemoteCredentialContainerFactory().create(configuration);
-        String location = "example";
-
-        /* execute */
-        List<RemoteCredentialData> credentialsLocation = containerToTest.resolveCredentialsForLocation(location);
-
-        /* test */
-        assertEquals(1, credentialsLocation.size());
-
-        RemoteCredentialData container1 = credentialsLocation.get(0);
-        assertNotNull(container1);
-        assertEquals("user2", container1.getUser());
-        assertEquals("password2", container1.getPassword());
-    }
-
-    @Test
-    void resolve_remote_credentials_pattern_by_location() {
-        /* prepare */
-        String json = TestFileReader.loadTextFile(new File("./src/test/resources/sechub_remote_credentials_complex_config.json"));
+        String json = TestFileReader.loadTextFile(new File("./src/test/resources/sechub_remote_credentials_config.json"));
         RemoteCredentialConfiguration configuration = RemoteCredentialConfiguration.fromJSONString(json);
         containerToTest = new RemoteCredentialContainerFactory().create(configuration);
         String location1 = "https://github.com/username/project";
@@ -111,20 +55,22 @@ class RemoteCredentialContainerTest {
     }
 
     @Test
-    void resolve_remote_credentials_pattern_by_location_and_type() {
+    void resolve_remote_credentials_by_location_and_accept_specific_types() {
         /* prepare */
-        String json = TestFileReader.loadTextFile(new File("./src/test/resources/sechub_remote_credentials_complex_config.json"));
+        String json = TestFileReader.loadTextFile(new File("./src/test/resources/sechub_remote_credentials_config.json"));
         RemoteCredentialConfiguration configuration = RemoteCredentialConfiguration.fromJSONString(json);
         containerToTest = new RemoteCredentialContainerFactory().create(configuration);
         String type1 = "docker";
         String type2 = "git";
         String type3 = "unknown";
+        String type4 = "";
         String location = "https://example.url.com";
 
         /* execute */
         List<RemoteCredentialData> credentials1 = containerToTest.resolveCredentialsForLocation(location, type1);
         List<RemoteCredentialData> credentials2 = containerToTest.resolveCredentialsForLocation(location, type2);
         List<RemoteCredentialData> credentials3 = containerToTest.resolveCredentialsForLocation(location, type3);
+        List<RemoteCredentialData> credentials4 = containerToTest.resolveCredentialsForLocation(location, type4);
 
         /* test */
         assertEquals(1, credentials1.size());
@@ -144,19 +90,79 @@ class RemoteCredentialContainerTest {
         assertEquals("user3", container2b.getUser());
 
         assertTrue(credentials3.isEmpty());
+
+        assertTrue(credentials4.isEmpty());
+    }
+
+    @Test
+    void unable_to_resolve_credentials_from_configuration_where_location_is_not_set_but_type_matches() {
+        /* prepare */
+        String json = """
+                {
+                  "credentials": [
+                  {
+                      "user" : "user2",
+                      "password" : "password2",
+                      "types" : ["git"]
+                      // missing entry for remotePattern
+                    }
+                  ]
+                }
+                """;
+        RemoteCredentialConfiguration configuration = RemoteCredentialConfiguration.fromJSONString(json);
+        containerToTest = new RemoteCredentialContainerFactory().create(configuration);
+        String location = "example";
+        String type = "git";
+
+        /* execute */
+        List<RemoteCredentialData> credentialsLocation = containerToTest.resolveCredentialsForLocation(location, type);
+
+        /* test */
+        assertEquals(0, credentialsLocation.size());
+    }
+
+    @Test
+    void resolve_credentials_from_configuration_where_no_types_are_set_but_all_types_are_accepted() {
+        /* prepare */
+        String json = """
+                {
+                  "credentials": [
+                  {
+                      "user" : "user2",
+                      "password" : "password2",
+                      "remotePattern" : ".*example.*"
+                      // missing entry for types
+                    }
+                  ]
+                }
+                """;
+        RemoteCredentialConfiguration configuration = RemoteCredentialConfiguration.fromJSONString(json);
+        containerToTest = new RemoteCredentialContainerFactory().create(configuration);
+        String location = "example";
+
+        /* execute */
+        List<RemoteCredentialData> credentialsLocation = containerToTest.resolveCredentialsForLocation(location);
+
+        /* test */
+        assertEquals(1, credentialsLocation.size());
+
+        RemoteCredentialData container1 = credentialsLocation.get(0);
+        assertNotNull(container1);
+        assertEquals("user2", container1.getUser());
+        assertEquals("password2", container1.getPassword());
     }
 
     @ParameterizedTest
     @EmptySource
     @NullSource
-    void resolve_remote_credential_pattern_by_type_with_empty_or_null_type(String string) {
+    void resolve_remote_credential_pattern_by_location_with_empty_or_null_location(String location) {
         /* prepare */
-        String json = TestFileReader.loadTextFile(new File("./src/test/resources/sechub_remote_credentials_complex_config.json"));
+        String json = TestFileReader.loadTextFile(new File("./src/test/resources/sechub_remote_credentials_config.json"));
         RemoteCredentialConfiguration configuration = RemoteCredentialConfiguration.fromJSONString(json);
         containerToTest = new RemoteCredentialContainerFactory().create(configuration);
 
         /* execute */
-        List<RemoteCredentialData> credentials = containerToTest.resolveCredentialsForLocation(string);
+        List<RemoteCredentialData> credentials = containerToTest.resolveCredentialsForLocation(location);
 
         /* test */
         assertTrue(credentials.isEmpty());
@@ -165,16 +171,18 @@ class RemoteCredentialContainerTest {
     @ParameterizedTest
     @EmptySource
     @NullSource
-    void resolve_remote_credential_pattern_by_location_with_empty_or_null_location(String string) {
+    void resolve_remote_credential_by_unknown_location_with_empty_or_null_type(String type) {
         /* prepare */
-        String json = TestFileReader.loadTextFile(new File("./src/test/resources/sechub_remote_credentials_complex_config.json"));
+        String json = TestFileReader.loadTextFile(new File("./src/test/resources/sechub_remote_credentials_config.json"));
         RemoteCredentialConfiguration configuration = RemoteCredentialConfiguration.fromJSONString(json);
         containerToTest = new RemoteCredentialContainerFactory().create(configuration);
+        String location = "unknown-location";
 
         /* execute */
-        List<RemoteCredentialData> credentials = containerToTest.resolveCredentialsForLocation(string);
+        List<RemoteCredentialData> credentials = containerToTest.resolveCredentialsForLocation(location, type);
 
         /* test */
         assertTrue(credentials.isEmpty());
     }
+
 }
