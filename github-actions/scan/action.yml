@@ -36,7 +36,7 @@ inputs:
   debug:
     description: 'SecHub debug output on/off'
     required: false
-    default: false
+    default: ${{ runner.debug == 1 }}
   fail-job-with-findings:
     description: 'job will be marked as failed if sechub finds something'
     required: true
