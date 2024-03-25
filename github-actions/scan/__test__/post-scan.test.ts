@@ -1,34 +1,33 @@
 // SPDX-License-Identifier: MIT
 
 import * as core from '@actions/core';
-import { downloadReports, reportOutputs } from '../src/post-scan';
-import { getReport } from '../../shared/src/sechub-cli';
+import {downloadJsonReport, reportOutputs} from '../src/post-scan';
+import {getReport} from '../../shared/src/sechub-cli';
+import {ReportFormat} from "../../shared/src/report-formats";
 
 jest.mock('@actions/core');
 const mockedCore = core as jest.Mocked<typeof core>;
 
 jest.mock('../../shared/src/sechub-cli');
 const mockedGetReport = getReport as jest.MockedFunction<typeof getReport>;
-describe('downloadReports', function () {
+describe('downloadJsonReport', function () {
     afterEach(() => {
         jest.clearAllMocks();
     });
-    it('writes to log if formats is empty', function () {
-        downloadReports([]);
+    it('do not download JSON report if report-format is null or json', function () {
+        downloadJsonReport({reportFormat: null, configPath: null}, 'jobUUID');
 
-        expect(mockedCore.info).toHaveBeenCalledTimes(1);
         expect(mockedGetReport).toHaveBeenCalledTimes(0);
     });
 
-    it('calls getReport with correct parameters for non-empty formats', function () {
+    it('downloads JSON report if report-format is not null and not json', function () {
         const fsMock = require('fs');
         fsMock.readFileSync = jest.fn(() => '{"test": "test"}'); // Mock an empty JSON report
-        const formats = ['json', 'html'];
         const sampleJson = {'test': 'test'};
-        const actualJson = downloadReports(formats);
+        const actualJson = downloadJsonReport({reportFormat: ReportFormat.HTML, configPath: null}, 'jobUUID');
 
-        expect(mockedCore.info).toHaveBeenCalledTimes(2); // Assumes 3 formats, adjust based on the number of formats in the array
-        expect(mockedGetReport).toHaveBeenCalledTimes(2);
+        expect(mockedCore.info).toHaveBeenCalledTimes(1); // Assumes 3 formats, adjust based on the number of formats in the array
+        expect(mockedGetReport).toHaveBeenCalledTimes(1);
         expect(actualJson).toEqual(sampleJson);
     });
 });

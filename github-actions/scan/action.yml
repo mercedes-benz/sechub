@@ -21,7 +21,7 @@ inputs:
   version:
     description: 'Which version of the SecHub'
     required: false
-    default: '1.2.0'
+    default: '1.4.0'
   include-folders:
     description: 'a list of folders to include'
     required: false
@@ -29,17 +29,23 @@ inputs:
   exclude-folders:
     description: 'a list of folders to exclude'
     required: false
-  report-formats:
-    description: 'a list of report formats to fetch'
+
+  action:
+    description: |
+      The report format generated as the scan output.
+      Possible values are: 'json', 'html', 'spdx-json'
     required: true
-    default: 'html,json'
+  report-format:
+    description: 'the report format generated as output for the scan'
+    required: false
+    default: 'json'
   debug:
     description: 'SecHub debug output on/off'
     required: false
-    default: false
   fail-job-with-findings:
     description: 'job will be marked as failed if sechub finds something'
-    required: true
+    required: false
+    default: 'true'
 
 outputs:
   scan-trafficlight:

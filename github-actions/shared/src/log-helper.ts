@@ -7,10 +7,10 @@ import * as core from '@actions/core';
  * @param code The given exit code
  */
 export function logExitCode(code: number) {
-    const prefix = 'Exit code: ';
+    const message = `Exit code: ${code}`;
     if (code === 0) {
-        core.info(prefix + code);
+        core.info(message);
     } else {
-        core.error(prefix + code);
+        core.error(message);
     }
 }

@@ -1,41 +1,30 @@
 // SPDX-License-Identifier: MIT
 
-import {getValidFormatsFromInput} from "../src/report-formats";
+import { checkReportFormat, ReportFormat } from '../src/report-formats';
 
-describe('getValidFormatsFromInput', function() {
-    it('correctly return report formats for json', function () {
+describe('checkReportFormat', function() {
+    it.each(
+        [
+            ['json', ReportFormat.JSON],
+            ['html', ReportFormat.HTML],
+            ['spdx-json', ReportFormat.SPDX_JSON],
+        ]
+    )(
+        'correctly return report formats for %s',
+        function(inputFormat, expectedFormats) {
+            /* execute */
+            const validFormat = checkReportFormat(inputFormat);
+
+            /* test */
+            expect(validFormat).toEqual(expectedFormats);
+        }
+    );
+
+    it('throws exception on invalid report format', function () {
         /* prepare */
-        const inputFormats = 'json';
-        const expectedFormats = ['json'];
+        const inputFormat = 'xml';
 
-        /* execute */
-        const validFormats = getValidFormatsFromInput(inputFormats);
-
-        /* test */
-        expect(validFormats).toEqual(expectedFormats);
-    });
-
-    it('correctly returns report formats for json,html', function () {
-        /* prepare */
-        const inputFormats = 'json,html';
-        const expectedFormats = ['json', 'html'];
-
-        /* execute */
-        const validFormats = getValidFormatsFromInput(inputFormats);
-
-        /* test */
-        expect(validFormats).toEqual(expectedFormats);
-    });
-
-    it('correctly filter invalid report formats', function () {
-        /* prepare */
-        const inputFormats = 'json,xml,yml';
-        const expectedFormats = ['json'];
-
-        /* execute */
-        const validFormats = getValidFormatsFromInput(inputFormats);
-
-        /* test */
-        expect(validFormats).toEqual(expectedFormats);
+        /* execute and test */
+        expect(() => checkReportFormat(inputFormat)).toThrow(Error);
     });
 });

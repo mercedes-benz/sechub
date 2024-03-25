@@ -5,20 +5,46 @@ import * as shell from 'shelljs';
 import * as settingsFile from './settings.json';
 import { SecHubJson } from './types';
 import * as configFile from './sechub.json';
-import {secHubCli} from "./sechub-cli";
-import {getWorkspaceParentDir} from "./fs-helper";
+import * as toolCache from '@actions/tool-cache';
+import * as path from 'path';
+import * as os from 'os';
+
+const SECHUB_TOOL = 'sechub';
+const ARCHIVE_SUBDIR_PATH = 'platform/linux-386';
+
+export async function setupSecHubCli(version: string): Promise<string> {
+    const dir = await findOrDownload(version);
+    core.addPath(dir);
+    core.info(`${SECHUB_TOOL} ${version} is now set up at ${dir}`);
+    return dir;
+}
+
+async function findOrDownload(version: string): Promise<string> {
+    const existingDir = toolCache.find(SECHUB_TOOL, version);
+
+    if (existingDir) {
+        core.debug(`Found cached ${SECHUB_TOOL} at ${existingDir}`);
+        return existingDir;
+    } else {
+        core.debug(`${SECHUB_TOOL} not cached, so attempting to download`);
+        return await downloadRelease(version);
+    }
+}
 
 /**
  * Downloads a release for the SecHub CLI.
  * @param version The version that should be downloaded
  */
-export function downloadRelease(version: string): void {
+async function downloadRelease(version: string): Promise<string> {
     const zipUrl = `https://github.com/mercedes-benz/sechub/releases/download/v${version}-client/sechub-cli-${version}.zip`;
     core.debug('SecHub-Url: ' + zipUrl);
-    const secHubZip = `${getWorkspaceParentDir()}/sechub.zip`;
-    shell.exec(`curl -L ${zipUrl} -o ${secHubZip}`);
-    shell.exec(`unzip -o ${secHubZip} -d ${getWorkspaceParentDir()}`);
-    shell.exec(`chmod +x ${secHubCli}`);
+
+    const archivePath = await toolCache.downloadTool(zipUrl);
+
+    const archiveDest = path.join(os.homedir(), 'tmp');
+    const extracted = await toolCache.extractZip(archivePath, archiveDest);
+    const releaseFolder = path.join(extracted, ARCHIVE_SUBDIR_PATH);
+    return await toolCache.cacheDir(releaseFolder, SECHUB_TOOL, version);
 }
 
 /**

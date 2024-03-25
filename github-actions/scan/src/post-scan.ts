@@ -8,27 +8,22 @@ import { getWorkspaceDir } from '../../shared/src/fs-helper';
 import { logExitCode } from '../../shared/src/log-helper';
 import * as input from './input';
 import * as fs from 'fs';
+import { ReportFormat } from '../../shared/src/report-formats';
+import { ScanSettings } from './init-scan';
 
 /**
  * Downloads the reports for the given formats.
- * @param formats formats in which the report should be downloaded
+ * @param scanSettings The settings for the scan
+ * @param jobUUID The job UUID for which the report should be downloaded
  */
-export function downloadReports(formats: string[]): object | undefined {
-    core.startGroup('Download Reports');
-    if (formats.length === 0) {
-        core.info('No more formats');
-        return;
+export function downloadJsonReport(scanSettings: ScanSettings, jobUUID: string): object | undefined {
+    core.startGroup('Download JSON Report');
+    if (scanSettings.reportFormat !== null && scanSettings.reportFormat !== ReportFormat.JSON) {
+        core.info(`Get Report as ${ReportFormat.JSON}`);
+        const exitCode = getReport(scanSettings.configPath, jobUUID, input.projectName);
+        logExitCode(exitCode ? exitCode.code : 0);
     }
     const json = loadJsonReport();
-    if (json) {
-        const jobUUID = getFieldFromJsonReport('jobUUID', json);
-        core.debug('JobUUID: ' + jobUUID);
-        formats.forEach((format) => {
-            core.info(`Get Report as ${format}`);
-            const exitCode = getReport(jobUUID, input.projectName, format);
-            logExitCode(exitCode ? exitCode.code : 0);
-        });
-    }
     core.endGroup();
     return json;
 }
@@ -42,8 +37,7 @@ function loadJsonReport(): object | undefined {
     const filePath = `${getWorkspaceDir()}/${fileName}`;
 
     try {
-        const jsonData = JSON.parse(fs.readFileSync(filePath, 'utf8'));
-        return jsonData;
+        return JSON.parse(fs.readFileSync(filePath, 'utf8'));
     } catch (error) {
         core.warning(`Error reading or parsing JSON file: ${error}`);
         return undefined;
@@ -201,31 +195,35 @@ function buildSummary(trafficLight: string, totalFindings: number, findings: { m
 
     totalFindings = totalFindings ?? 0;
 
-    let output = `SecHub reported traffic light color ${trafficLight} with`;
+    const reportResult: string[] = [`SecHub reported traffic light color ${trafficLight}`]
 
     if (totalFindings === 0) {
-        output += 'out findings';
+        reportResult.push('without findings');
     } else if (totalFindings === 1) {
-        output += ` ${totalFindings} finding, categorized as follows:`;
+        reportResult.push(`with ${totalFindings} finding, categorized as follows:`);
     } else {
-        output += ` ${totalFindings} findings, categorized as follows:`;
+        reportResult.push(`with ${totalFindings} findings, categorized as follows:`);
     }
 
+    const findingsCategorized = [];
     if (findings.highCount > 0) {
-        output += ` HIGH (${findings.highCount}),`;
+        findingsCategorized.push(`HIGH (${findings.highCount})`);
     }
 
     if (findings.mediumCount > 0) {
-        output += ` MEDIUM (${findings.mediumCount}),`;
+        findingsCategorized.push(`MEDIUM (${findings.mediumCount})`);
     }
 
     if (findings.lowCount > 0) {
-        output += ` LOW (${findings.lowCount}),`;
+        findingsCategorized.push(`LOW (${findings.lowCount})`);
     }
 
-    output = output.replace(/,$/, '');
+    const reportResultString = reportResult.join(' ');
+    const findingsCategorizedString = findingsCategorized.join(', ');
 
-    return output;
+    return [reportResultString, findingsCategorizedString]
+        .filter(x => !!x)
+        .join(' ');
 }
 
 /**

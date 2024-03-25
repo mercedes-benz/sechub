@@ -1,13 +1,22 @@
 // SPDX-License-Identifier: MIT
 
-export const availableFormats = ['json', 'html'];
+export enum ReportFormat {
+    JSON = 'json',
+    HTML = 'html',
+    SPDX_JSON = 'spdx-json',
+}
 
 /**
- * Convert input string to array and filter invalid formats.
- * @param inputFormats Formats from the action input
+ * Checks if the report format is valid ReportFormat and returns it.
+ * @param reportFormat report format from the action input
  */
-export function getValidFormatsFromInput(inputFormats: string): string[] {
-    const formats = inputFormats.split(',');
-    if (formats.length === 0) { return []; }
-    return formats.filter((item) => availableFormats.includes(item));
+export function checkReportFormat(reportFormat: string | null): ReportFormat | null {
+    if (reportFormat === null) {
+        return null;
+    }
+    // check if input.action is a valid FalsePositivesActionType
+    if (!Object.values<string>(ReportFormat).includes(reportFormat)) {
+        throw new Error(`Invalid report format: ${reportFormat}. Valid values are: ${Object.values(ReportFormat)}`);
+    }
+    return reportFormat as ReportFormat;
 }
