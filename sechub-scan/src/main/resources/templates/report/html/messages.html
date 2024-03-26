@@ -1,0 +1,26 @@
+<!--/* For development just call one ore more tests inside ThymeLeafHTMLReportingTest and check output */-->
+<th:block th:fragment="renderMessages(messages)">
+            <div class="messages" th:if="${messages!=null && !messages.isEmpty()}">
+                <h2 class='messagesHeadline'>Messages</h2>
+                <table class='messagesTable'>
+                    <tbody>
+                    <tr th:each="message : ${messages}">
+                        <td th:utext="${reportHelper.getMessageTypeAsHTMLIcon(message.type)}">🛇</td>
+                        <td th:text="${message.text}">This is an error message text</td>
+                    </tr>
+                    <tr th:remove="all">
+                        <td>⚠</td>
+                        <td>This is a warning message text</td>
+                    </tr>
+                    <tr th:remove="all">
+                        <td>🛈</td>
+                        <td>This is an info message text</td>
+                    </tr>
+                    <tr th:remove="all">
+                        <td></td>
+                        <td>This is a message where message type is null</td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+</th:block>&

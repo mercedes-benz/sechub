@@ -9,6 +9,6 @@ public interface NetworkLocationProvider {
 
     List<URI> getURIs();
 
-    List<InetAddress> getInetAdresses();
+    List<InetAddress> getInetAddresses();
 
 }

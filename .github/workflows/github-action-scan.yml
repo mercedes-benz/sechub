@@ -7,11 +7,13 @@ jobs:
   build-scan:
     runs-on: ubuntu-latest
     # Let's set the scan action folder as the working directory for all "run" steps:
-    working-directory: ./github-actions/scan
     
+    defaults:
+      run:
+        working-directory: ./github-actions/scan
     steps:
       - name: Checkout
-        uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11
+        uses: actions/checkout@9bb56186c3b09b4f86b1c65136769dd318469633
       
       - name: Use Node.js
         # We do not define a dedicated node version here, we just use the default environment

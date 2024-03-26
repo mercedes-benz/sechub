@@ -11,6 +11,7 @@ import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.mercedesbenz.sechub.commons.core.util.SimpleStringUtils;
@@ -66,6 +67,9 @@ public class SarifV1JSONImporter extends AbstractProductResultImporter {
 
     SarifSchema210ImportExportSupport sarifSchema210ImportExportSupport;
     SarifSchema210LogicSupport sarifSchema210LogicSupport;
+
+    @Autowired
+    protected SarifImportProductWorkaroundSupport workaroundSupport;
 
     public SarifV1JSONImporter() {
         sarifSchema210ImportExportSupport = new SarifSchema210ImportExportSupport();
@@ -343,10 +347,14 @@ public class SarifV1JSONImporter extends AbstractProductResultImporter {
         if (rule == null) {
             return "error:rule==null!";
         }
-        String type = null;
-        MultiformatMessageString shortDescription = rule.getShortDescription();
-        if (shortDescription != null) {
-            type = shortDescription.getText();
+
+        String type = workaroundSupport.resolveType(rule, run);
+
+        if (type == null) {
+            MultiformatMessageString shortDescription = rule.getShortDescription();
+            if (shortDescription != null) {
+                type = shortDescription.getText();
+            }
         }
 
         if (type == null) {
@@ -481,18 +489,16 @@ public class SarifV1JSONImporter extends AbstractProductResultImporter {
     }
 
     @Override
-    public ProductImportAbility isAbleToImportForProduct(ImportParameter param) {
+    public boolean isAbleToImportForProduct(ImportParameter param) {
         /* first we do the simple check... */
-        ProductImportAbility ability = super.isAbleToImportForProduct(param);
-        if (ability != ProductImportAbility.ABLE_TO_IMPORT) {
-            return ability;
+        if (!super.isAbleToImportForProduct(param)) {
+            return false;
         }
-        /* okay, now test if its valid SARIF */
-        if (isValidSarif(param.getImportData())) {
-            return ProductImportAbility.ABLE_TO_IMPORT;
+        boolean validSarif = isValidSarif(param.getImportData());
+        if (!validSarif) {
+            LOG.warn("Simple check accepted data, but was not valid SARIF");
         }
-        LOG.debug("Simple check accepted data, but was not valid SARIF");
-        return ProductImportAbility.NOT_ABLE_TO_IMPORT;
+        return true;
     }
 
     @Override

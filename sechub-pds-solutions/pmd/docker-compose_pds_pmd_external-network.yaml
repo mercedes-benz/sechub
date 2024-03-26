@@ -5,7 +5,7 @@ services:
     pds-pmd:
         build:
             args:
-                - BASE_IMAGE=debian:12-slim
+                - BASE_IMAGE=${BASE_IMAGE}
             context: docker/
             dockerfile: PMD-Debian.dockerfile
         container_name: pds-pmd
@@ -14,6 +14,7 @@ services:
           - ./docker/scripts:/pds/scripts
         env_file:
             - .env
+            - .env-single
         ports:
             - "127.0.0.1:8444:8444"
             - "127.0.0.1:15024:15024"

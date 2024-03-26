@@ -81,11 +81,12 @@ will print out a simple help of all command line options. At the end you will fi
 Here is an overview of the mandatory parameters for each *action*:
 |===
 | *action* | *mandatory parameters*
-| <<section-client-scan,scan>> |server + user + api token + projectID + configFile
-| <<scanAsync>> |server + user + api token + projectID + configFile
+| <<section-client-scan,scan>> |server + user + api token + projectID + <<section-client-configuration-file,configFile>>
+| <<scanAsync>> |server + user + api token + projectID + <<section-client-configuration-file,configFile>>
 | <<getStatus>> |server + user + api token + projectID
 | <<getReport>> |server + user + api token + projectID
 | <<listJobs>> |server + user + api token + projectID
+| <<defineFalsePositives>> |server + user + api token + projectID
 | <<getFalsePositives>> |server + user + api token + projectID
 | <<interactiveMarkFalsePositives>> |server + user + api token + projectID + (file only if no report file is in current dir)
 | <<interactiveUnmarkFalsePositives>> |server + user + apiToken + projectID
@@ -184,8 +185,26 @@ TIP: This might be useful for an overview or +
      to find out the job UUID of a certain job.
 
 
+===== defineFalsePositives
+This will define the false positives list of your project. +
+Default definition file to read from is `sechub-false-positives.json` - format is same as for <<section-client-false-positives-mark,markFalsePositives>>.
+
+The client will compare against the already defined false-positives on the server and +
+- add missing false-positive definitions +
+- remove the ones which are not in the definition file
+
+**Minimum call syntax**
+----
+sechub defineFalsePositives
+----
+
+TIP: With `-file ${file}` you can define where to read from. +
+     Default: `sechub-false-positives.json` in current directory
+
+TIP: It's a good idea to add your false-positives definition file in your source code repository. So everybody can easily have an overview about the declared false-positives.
+
 ===== getFalsePositives
-This will fetch the false positives list of your project as JSON - format is same as for `markFalsePositives`.
+This will fetch the false positives list of your project as JSON.
 
 **Minimum call syntax**
 ----
@@ -253,9 +272,9 @@ include::../shared/false-positives/false-positives-REST-API-content-example1.jso
 <4> finding ID of finding in the report, which shall be marked as false positive
 <5> Comment (optional) describing the reason why this is a false positive
 
-IMPORTANT: Providing an empty list here does *NOT delete* the already declared false positives! +
-           `markFalsePositives` only adds new false positives. +
-           An empty `jobData` list has no effect at all. (-> don't do this)
+IMPORTANT: `markFalsePositives` only adds new false positives. +
+  Providing an empty list here does *NOT delete* the already declared false positives! +
+  If you want this, please use <<defineFalsePositives>>.
 
 TIP: See also <<interactiveMarkFalsePositives,interactiveMarkFalsePositives>> for an easy way to declare false positives.
 
@@ -320,9 +339,9 @@ In below table, there is an overview of what can be defined where.
 - `-configfile <filepath>` +
   Path to `{sechub}` JSON config file. Defaults to `sechub.json` in current directory.
 - `-file <filepath>` +
-  Defines file to read from for actions `markFalsePositives` or `interactiveMarkFalsePositives` or `unmarkFalsePositives`
+  Defines file to read from for actions <<defineFalsePositives>>, <<markFalsePositives>>, <<interactiveMarkFalsePositives>>, <<unmarkFalsePositives>>
 - `-jobUUID <string>` +
-  `{sechub}` job uuid. Optional for actions 'getStatus' or 'getReport'
+  `{sechub}` job uuid. Optional for actions <<getStatus>> or <<getReport>>
 - `-label <label definition>` +
   Define a SecHub label for the scan job. (Example: "key1=value1") Repeat to define multiple labels.
 - `-output <path to folder or file>` +
@@ -414,7 +433,6 @@ For troubleshooting, you can
 
 
 [[section-client-configuration-file]]
-
 include::../shared/configuration/sechub_config.adoc[]
 
 

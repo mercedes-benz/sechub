@@ -1101,11 +1101,11 @@ class SecHubConfigurationModelValidatorTest {
     }
 
     @ParameterizedTest
-    @ValueSource(strings = { "https://mywebapp.com", "https://mywebapp.com/admin", "https://mywebapp.com/<*>/profile", "https://mywebapp.com/blog/<*>",
-            "https://mywebapp.com/<*>/profile/<*>/test" })
+    @ValueSource(strings = { "https://example.com", "https://example.com/admin", "https://example.com/<*>/profile", "https://example.com/blog/<*>",
+            "https://example.com/<*>/profile/<*>/test" })
     void model_has_valid_urls_for_headers_specified_has_no_error(String onlyForUrl) {
         /* prepare */
-        SecHubWebScanConfiguration webScan = createWebScanConfigurationWithHeader("https://mywebapp.com/", onlyForUrl);
+        SecHubWebScanConfiguration webScan = createWebScanConfigurationWithHeader("https://example.com/", onlyForUrl);
 
         SecHubConfigurationModel model = new SecHubConfigurationModel();
         model.setApiVersion("1.0");
@@ -1121,9 +1121,9 @@ class SecHubConfigurationModelValidatorTest {
     }
 
     @ParameterizedTest
-    @ValueSource(strings = { "https://mywebapp.com,https://mywebapp.com/admin",
-            "https://mywebapp.com,https://mywebapp.com/admin,https://mywebapp.com/admin/search/<*>",
-            "https://mywebapp.com/<*>/profile,https://mywebapp.com/blog/<*>,https://mywebapp.com/<*>/profile/<*>/test" })
+    @ValueSource(strings = { "https://example.com,https://example.com/admin",
+            "https://example.com,https://example.com/admin,https://example.com/admin/search/<*>",
+            "https://example.com/<*>/profile,https://example.com/blog/<*>,https://example.com/<*>/profile/<*>/test" })
     void model_has_valid_only_for_urls_and_multiple_headers_for_headers_specified_has_no_error(String onlyForUrls) {
         /* prepare */
         String[] splittedOnlyForUrls = onlyForUrls.split(",");
@@ -1134,7 +1134,7 @@ class SecHubConfigurationModelValidatorTest {
 
         SecHubWebScanConfiguration webScan = new SecHubWebScanConfiguration();
         webScan.headers = Optional.ofNullable(httpHeaders);
-        webScan.url = URI.create("https://mywebapp.com");
+        webScan.url = URI.create("https://example.com");
 
         SecHubConfigurationModel model = new SecHubConfigurationModel();
         model.setApiVersion("1.0");
@@ -1150,9 +1150,9 @@ class SecHubConfigurationModelValidatorTest {
     }
 
     @ParameterizedTest
-    @ValueSource(strings = { "https://mywebapp.com,https://mywebapp.com/admin",
-            "https://mywebapp.com,https://mywebapp.com/admin,https://mywebapp.com/admin/search/<*>",
-            "https://mywebapp.com/<*>/profile,https://mywebapp.com/blog/<*>,https://mywebapp.com/<*>/profile/<*>/test" })
+    @ValueSource(strings = { "https://example.com,https://example.com/admin",
+            "https://example.com,https://example.com/admin,https://example.com/admin/search/<*>",
+            "https://example.com/<*>/profile,https://example.com/blog/<*>,https://example.com/<*>/profile/<*>/test" })
     void model_has_valid_only_for_urls_and_one_header_for_headers_specified_has_no_error(String onlyForUrls) {
         /* prepare */
         String[] splittedOnlyForUrls = onlyForUrls.split(",");
@@ -1161,7 +1161,7 @@ class SecHubConfigurationModelValidatorTest {
 
         SecHubWebScanConfiguration webScan = new SecHubWebScanConfiguration();
         webScan.headers = Optional.ofNullable(httpHeaders);
-        webScan.url = URI.create("https://mywebapp.com");
+        webScan.url = URI.create("https://example.com");
 
         SecHubConfigurationModel model = new SecHubConfigurationModel();
         model.setApiVersion("1.0");
@@ -1177,7 +1177,7 @@ class SecHubConfigurationModelValidatorTest {
     }
 
     @ParameterizedTest
-    @ValueSource(strings = { "https://mywebapp.com/admin", "https://mywebapp.com/<*>/profile", "https://mywebapp.com/blog/<*>" })
+    @ValueSource(strings = { "https://example.com/admin", "https://example.com/<*>/profile", "https://example.com/blog/<*>" })
     void model_has_valid_urls_for_headers_specified_but_different_target_url_has_error(String onlyForUrl) {
         /* prepare */
         SecHubWebScanConfiguration webScan = createWebScanConfigurationWithHeader("https://otherwebapp.com/", onlyForUrl);
@@ -1196,10 +1196,10 @@ class SecHubConfigurationModelValidatorTest {
     }
 
     @ParameterizedTest
-    @ValueSource(strings = { "https://mywebapp.com/{profile}", "https://mywebapp.com/blog/{}" })
+    @ValueSource(strings = { "https://example.com/{profile}", "https://example.com/blog/{}" })
     void model_has_invalid_url_for_headers_specified_has_error(String onlyForUrl) {
         /* prepare */
-        SecHubWebScanConfiguration webScan = createWebScanConfigurationWithHeader("https://mywebapp.com", onlyForUrl);
+        SecHubWebScanConfiguration webScan = createWebScanConfigurationWithHeader("https://example.com", onlyForUrl);
 
         SecHubConfigurationModel model = new SecHubConfigurationModel();
         model.setApiVersion("1.0");
@@ -1215,8 +1215,8 @@ class SecHubConfigurationModelValidatorTest {
     }
 
     @ParameterizedTest
-    @ValueSource(strings = { "https://mywebapp.com/valid,https://mywebapp.com/blog/{invalid}",
-            "https://mywebapp.com/blog/{invalid},https://mywebapp.com/valid,https://mywebapp.com/blog/another/valid" })
+    @ValueSource(strings = { "https://example.com/valid,https://example.com/blog/{invalid}",
+            "https://example.com/blog/{invalid},https://example.com/valid,https://example.com/blog/another/valid" })
     void model_has_multiple_only_for_urls_with_at_least_one_invalid_for_headers_specified_has_error(String onlyForUrls) {
         /* prepare */
         String[] splittedOnlyForUrls = onlyForUrls.split(",");
@@ -1225,7 +1225,7 @@ class SecHubConfigurationModelValidatorTest {
 
         SecHubWebScanConfiguration webScan = new SecHubWebScanConfiguration();
         webScan.headers = Optional.ofNullable(httpHeaders);
-        webScan.url = URI.create("https://mywebapp.com");
+        webScan.url = URI.create("https://example.com");
 
         SecHubConfigurationModel model = new SecHubConfigurationModel();
         model.setApiVersion("1.0");
@@ -1241,8 +1241,8 @@ class SecHubConfigurationModelValidatorTest {
     }
 
     @ParameterizedTest
-    @ValueSource(strings = { "https://mywebapp.com/valid,https://mywebapp.com/blog/{invalid}",
-            "https://mywebapp.com/blog/{invalid},https://mywebapp.com/valid,https://mywebapp.com/blog/another/valid" })
+    @ValueSource(strings = { "https://example.com/valid,https://example.com/blog/{invalid}",
+            "https://example.com/blog/{invalid},https://example.com/valid,https://example.com/blog/another/valid" })
     void model_has_multiple_only_for_urls_in_multiple_headers_with_at_least_one_invalid_for_headers_specified_has_error(String onlyForUrls) {
         /* prepare */
         String[] splittedOnlyForUrls = onlyForUrls.split(",");
@@ -1253,7 +1253,7 @@ class SecHubConfigurationModelValidatorTest {
 
         SecHubWebScanConfiguration webScan = new SecHubWebScanConfiguration();
         webScan.headers = Optional.ofNullable(httpHeaders);
-        webScan.url = URI.create("https://mywebapp.com");
+        webScan.url = URI.create("https://example.com");
 
         SecHubConfigurationModel model = new SecHubConfigurationModel();
         model.setApiVersion("1.0");
@@ -1273,11 +1273,11 @@ class SecHubConfigurationModelValidatorTest {
     @EmptySource
     void model_has_no_header_names_specified_has_error(String missingHeaderName) {
         /* prepare */
-        List<HTTPHeaderConfiguration> httpHeaders = createListWithOneHeaderAndOneOnlyForUrl(missingHeaderName, "secret-key", "https://mywebapp.com");
+        List<HTTPHeaderConfiguration> httpHeaders = createListWithOneHeaderAndOneOnlyForUrl(missingHeaderName, "secret-key", "https://example.com");
 
         SecHubWebScanConfiguration webScan = new SecHubWebScanConfiguration();
         webScan.headers = Optional.ofNullable(httpHeaders);
-        webScan.url = URI.create("https://mywebapp.com");
+        webScan.url = URI.create("https://example.com");
 
         SecHubConfigurationModel model = new SecHubConfigurationModel();
         model.setApiVersion("1.0");
@@ -1297,11 +1297,11 @@ class SecHubConfigurationModelValidatorTest {
     @EmptySource
     void model_has_no_header_values_specified_has_error(String missingHeaderValue) {
         /* prepare */
-        List<HTTPHeaderConfiguration> httpHeaders = createListWithOneHeaderAndOneOnlyForUrl("Authorization", missingHeaderValue, "https://mywebapp.com");
+        List<HTTPHeaderConfiguration> httpHeaders = createListWithOneHeaderAndOneOnlyForUrl("Authorization", missingHeaderValue, "https://example.com");
 
         SecHubWebScanConfiguration webScan = new SecHubWebScanConfiguration();
         webScan.headers = Optional.ofNullable(httpHeaders);
-        webScan.url = URI.create("https://mywebapp.com");
+        webScan.url = URI.create("https://example.com");
 
         SecHubConfigurationModel model = new SecHubConfigurationModel();
         model.setApiVersion("1.0");
@@ -1314,6 +1314,56 @@ class SecHubConfigurationModelValidatorTest {
 
         /* test */
         assertHasError(result, SecHubConfigurationModelValidationError.WEB_SCAN_NO_HEADER_VALUE_DEFINED);
+    }
+
+    @ParameterizedTest
+    @NullSource
+    @EmptySource
+    void model_has_header_value_only_from_file_ref_specified_has_no_error(String explicitHeaderValue) {
+        /* prepare */
+        List<HTTPHeaderConfiguration> httpHeaders = createListWithOneHeaderAndOneOnlyForUrl("Authorization", explicitHeaderValue, "https://example.com");
+        // add header file ref
+        httpHeaders.get(0).getNamesOfUsedDataConfigurationObjects().add("header-file-ref");
+
+        SecHubWebScanConfiguration webScan = new SecHubWebScanConfiguration();
+        webScan.headers = Optional.ofNullable(httpHeaders);
+        webScan.url = URI.create("https://example.com");
+
+        SecHubConfigurationModel model = new SecHubConfigurationModel();
+        model.setApiVersion("1.0");
+        model.setWebScan(webScan);
+
+        modelSupportCollectedScanTypes.add(ScanType.WEB_SCAN);
+
+        /* execute */
+        SecHubConfigurationModelValidationResult result = validatorToTest.validate(model);
+
+        /* test */
+        assertHasNoErrors(result);
+    }
+
+    @Test
+    void model_has_multiple_header_values_from_file_ref_and_direct_value_specified_has_error() {
+        /* prepare */
+        List<HTTPHeaderConfiguration> httpHeaders = createListWithOneHeaderAndOneOnlyForUrl("Authorization", "test-value", "https://example.com");
+        // add header file ref
+        httpHeaders.get(0).getNamesOfUsedDataConfigurationObjects().add("header-file-ref");
+
+        SecHubWebScanConfiguration webScan = new SecHubWebScanConfiguration();
+        webScan.headers = Optional.ofNullable(httpHeaders);
+        webScan.url = URI.create("https://example.com");
+
+        SecHubConfigurationModel model = new SecHubConfigurationModel();
+        model.setApiVersion("1.0");
+        model.setWebScan(webScan);
+
+        modelSupportCollectedScanTypes.add(ScanType.WEB_SCAN);
+
+        /* execute */
+        SecHubConfigurationModelValidationResult result = validatorToTest.validate(model);
+
+        /* test */
+        assertHasError(result, SecHubConfigurationModelValidationError.WEB_SCAN_MULTIPLE_HEADER_VALUES_DEFINED);
     }
 
     @ParameterizedTest
@@ -1537,6 +1587,46 @@ class SecHubConfigurationModelValidatorTest {
 
         /* test */
         assertHasNoErrors(result);
+    }
+
+    @Test
+    void when_sechub_config_too_large_validation_fails_with_SECHUB_CONFIGURATION_TOO_LARGE() {
+        /* prepare */
+        SecHubConfigurationModel model = createSecHubConfigModelWithExactly8193Characters();
+
+        /* execute */
+        SecHubConfigurationModelValidationResult result = validatorToTest.validate(model);
+
+        /* test */
+        assertHasError(result, SECHUB_CONFIGURATION_TOO_LARGE);
+    }
+
+    @Test
+    void when_sechub_config_has_exactly_maximum_size_allowed_error_SECHUB_CONFIGURATION_TOO_LARGE_does_not_occur() {
+        /* prepare */
+        SecHubConfigurationModel model = createSecHubConfigModelWithExactly8193Characters();
+        // remove 1 characters so we are exactly at the limit of
+        model.setApiVersion(model.getApiVersion().substring(1));
+
+        /* execute */
+        SecHubConfigurationModelValidationResult result = validatorToTest.validate(model);
+
+        /* test */
+        assertHasNotError(result, SECHUB_CONFIGURATION_TOO_LARGE);
+    }
+
+    private SecHubConfigurationModel createSecHubConfigModelWithExactly8193Characters() {
+        // 128*64 = 8192, so we take 127 because of the overhead of the JSON model:
+        // {"apiVersion":""} = 17 characters so we need to add 48 characters afterwards
+        String apiVersion = "abcdefghijklmnopqrstuvwxyz012345abcdefghijklmnopqrstuvwxyz012345".repeat(127);
+
+        // add the remaining 48 characters to reach 8193
+        apiVersion += "abcdefghijklmnopqrstuvwxyz012345abcdefghijklmnop";
+
+        SecHubConfigurationModel model = new SecHubConfigurationModel();
+        model.setApiVersion(apiVersion);
+
+        return model;
     }
 
     private SecHubScanConfiguration createSecHubConfigurationWithWebScanPart() {

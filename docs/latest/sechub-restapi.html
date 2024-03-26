@@ -531,7 +531,7 @@ table.CodeRay td.code{padding:0 0 0 .75em}
 <div id="header">
 <h1><span class="image"><a class="image" href="https://mercedes-benz.github.io/sechub"><img src="images/sechub-logo.png" alt="sechub logo"></a></span> SecHub Server Rest API Documentation</h1>
 <div class="details">
-<span id="revnumber"> Server 1.4.1</span>
+<span id="revnumber"> Server 1.8.0</span>
 </div>
 <div id="toc" class="toc2">
 <div id="toctitle">Table of contents</div>
@@ -584,6 +584,7 @@ table.CodeRay td.code{padding:0 0 0 .75em}
 <li><a href="#sechub-config-example-webscan-openapi">2.1.7.2.5. Example OpenAPI scan</a></li>
 <li><a href="#sechub-config-openAPI-and-client-certificate">2.1.7.2.6. Example combination of openAPI definition and client certificate authentication</a></li>
 <li><a href="#sechub-config-example-webscan-header">2.1.7.2.7. Example Header scan</a></li>
+<li><a href="#sechub-config-example-webscan-header-value-from-data-section">2.1.7.2.8. Example Header scan with value from data section</a></li>
 </ul>
 </li>
 </ul>
@@ -628,8 +629,8 @@ table.CodeRay td.code{padding:0 0 0 .75em}
 </li>
 <li><a href="#check-if-the-server-is-alive-and-running">2.2.2. Check if the server is alive and running.</a>
 <ul class="sectlevel4">
-<li><a href="#section-ucrestdoc-UC_039-head">2.2.2.1. HEAD variant</a></li>
-<li><a href="#section-ucrestdoc-UC_039-get">2.2.2.2. GET variant</a></li>
+<li><a href="#section-ucrestdoc-UC_039-get">2.2.2.1. GET variant</a></li>
+<li><a href="#section-ucrestdoc-UC_039-head">2.2.2.2. HEAD variant</a></li>
 </ul>
 </li>
 <li><a href="#admin-lists-all-users">2.2.3. Admin lists all users</a></li>
@@ -714,7 +715,7 @@ table.CodeRay td.code{padding:0 0 0 .75em}
 <li><a href="#admin-enables-scheduler-job-processing">2.2.63. Admin enables scheduler job processing</a></li>
 <li><a href="#admin-get-scheduler-status">2.2.64. Admin get scheduler status</a></li>
 <li><a href="#admin-lists-status-information">2.2.65. Admin lists status information</a></li>
-<li><a href="#admin-checks-server-version">2.2.66. Admin checks server version</a></li>
+<li><a href="#admin-fetches-server-runtime-data">2.2.66. Admin fetches server runtime data</a></li>
 <li><a href="#user-lists-jobs-for-project">2.2.67. User lists jobs for project</a></li>
 </ul>
 </li>
@@ -792,7 +793,7 @@ table.CodeRay td.code{padding:0 0 0 .75em}
 <li><a href="#section-usecase-UC_037">4.1.38. UC_037-Admin updates mapping configuration</a></li>
 <li><a href="#section-usecase-UC_038">4.1.39. UC_038-Admin fetches mapping configuration</a></li>
 <li><a href="#section-usecase-UC_039">4.1.40. UC_039-Check if the server is alive and running.</a></li>
-<li><a href="#section-usecase-UC_040">4.1.41. UC_040-Admin checks server version</a></li>
+<li><a href="#section-usecase-UC_040">4.1.41. UC_040-Admin fetches server runtime data</a></li>
 <li><a href="#section-usecase-UC_041">4.1.42. UC_041-Admin restarts a job</a></li>
 <li><a href="#section-usecase-UC_042">4.1.43. UC_042-Admin restarts a job (hard)</a></li>
 <li><a href="#section-usecase-UC_043">4.1.44. UC_043-Admin receives notification about start of a new scheduler instance</a></li>
@@ -984,7 +985,7 @@ build pipeline / contionus integration (CI) and helps to provide
 </tbody>
 </table>
 <div class="paragraph">
-<p>Documentation version: <code>Server 1.4.1 - Build date: 20240105143337</code></p>
+<p>Documentation version: <code>Server 1.8.0 - Build date: 20240315161105</code></p>
 </div>
 <hr>
 </div>
@@ -2085,6 +2086,47 @@ The <strong>default</strong> is <code>true</code> if nothing is specified.</td>
 </table>
 </div>
 </div>
+<div class="sect5">
+<h6 id="sechub-config-example-webscan-header-value-from-data-section">2.1.7.2.8. Example Header scan with value from data section</h6>
+<div class="listingblock">
+<div class="title">header scan with value from data section</div>
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="json">{
+  <span class="key"><span class="delimiter">&quot;</span><span class="content">apiVersion</span><span class="delimiter">&quot;</span></span> : <span class="string"><span class="delimiter">&quot;</span><span class="content">1.0</span><span class="delimiter">&quot;</span></span>,
+  <span class="key"><span class="delimiter">&quot;</span><span class="content">data</span><span class="delimiter">&quot;</span></span> : {
+    <span class="key"><span class="delimiter">&quot;</span><span class="content">sources</span><span class="delimiter">&quot;</span></span> : [ {
+      <span class="key"><span class="delimiter">&quot;</span><span class="content">name</span><span class="delimiter">&quot;</span></span> : <span class="string"><span class="delimiter">&quot;</span><span class="content">header-value-file-reference</span><span class="delimiter">&quot;</span></span>, 
+      <span class="key"><span class="delimiter">&quot;</span><span class="content">fileSystem</span><span class="delimiter">&quot;</span></span> : {
+        <span class="key"><span class="delimiter">&quot;</span><span class="content">files</span><span class="delimiter">&quot;</span></span> : [ <span class="string"><span class="delimiter">&quot;</span><span class="content">header_value.txt</span><span class="delimiter">&quot;</span></span> ]
+      }
+    }]
+  },
+  <span class="key"><span class="delimiter">&quot;</span><span class="content">webScan</span><span class="delimiter">&quot;</span></span> : {
+    <span class="key"><span class="delimiter">&quot;</span><span class="content">url</span><span class="delimiter">&quot;</span></span> : <span class="string"><span class="delimiter">&quot;</span><span class="content">https://productfailure.demo.example.org</span><span class="delimiter">&quot;</span></span>,
+    <span class="key"><span class="delimiter">&quot;</span><span class="content">headers</span><span class="delimiter">&quot;</span></span> : [ {
+      <span class="key"><span class="delimiter">&quot;</span><span class="content">name</span><span class="delimiter">&quot;</span></span> : <span class="string"><span class="delimiter">&quot;</span><span class="content">Authorization</span><span class="delimiter">&quot;</span></span>, <i class="conum" data-value="1"></i><b>(1)</b>
+      <span class="key"><span class="delimiter">&quot;</span><span class="content">use</span><span class="delimiter">&quot;</span></span> : [ <span class="string"><span class="delimiter">&quot;</span><span class="content">header-value-file-reference</span><span class="delimiter">&quot;</span></span> ] <i class="conum" data-value="2"></i><b>(2)</b>
+    } ]
+  }
+}</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>Name of the specified header. Must not be null or empty.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>Name of the source <a href="#sechub-config-data-section">data</a> configuration: "header-value-file-reference".
+Please use single files only instead of folders to specify the header value. Use a separate data section for each header.
+This can be used if you want to provide a large header value, which exceeds the maximum size of the sechub.json configuration file.
+For each header provide either a <code>value</code> directly (as shown in <a href="#sechub-config-example-webscan-header">Example Header scan</a>) or a data section reference via <code>use</code> as shown in this example.</td>
+</tr>
+</table>
+</div>
+</div>
 </div>
 </div>
 <div class="sect3">
@@ -2704,7 +2746,7 @@ elements are removed)</em>.</p>
 <p><a href="#section-ucrestdoc-uc-UC_033">REST API for UC_033-Admin lists status information </a></p>
 </li>
 <li>
-<p><a href="#section-ucrestdoc-uc-UC_040">REST API for UC_040-Admin checks server version </a></p>
+<p><a href="#section-ucrestdoc-uc-UC_040">REST API for UC_040-Admin fetches server runtime data </a></p>
 </li>
 <li>
 <p><a href="#section-ucrestdoc-uc-UC_071">REST API for UC_071-User lists jobs for project </a></p>
@@ -2719,60 +2761,12 @@ elements are removed)</em>.</p>
 <p>REST API for usecase <a href="#section-usecase-UC_039">UC_039-Check if the server is alive and running. </a></p>
 </div>
 <div class="sect4">
-<h5 id="section-ucrestdoc-UC_039-head">2.2.2.1. HEAD variant</h5>
+<h5 id="section-ucrestdoc-UC_039-get">2.2.2.1. GET variant</h5>
 <div class="paragraph">
 <p><strong class="big">Definition</strong></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
 <caption class="title">Table 1. General request information</caption>
-<colgroup>
-<col style="width: 14.2857%;">
-<col style="width: 85.7143%;">
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-left valign-top"></th>
-<th class="tableblock halign-left valign-top">Value</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Path</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">/api/anonymous/check/alive</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Method</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">HEAD</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Status code</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">200 OK</p></td>
-</tr>
-</tbody>
-</table>
-<div class="paragraph">
-<p><strong class="big">Example</strong></p>
-</div>
-<div class="paragraph">
-<p><strong>Curl request</strong> <br></p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/anonymous/check/alive' -i -X HEAD</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p><strong>Response body</strong> <br>
-<em>(empty)</em></p>
-</div>
-</div>
-<div class="sect4">
-<h5 id="section-ucrestdoc-UC_039-get">2.2.2.2. GET variant</h5>
-<div class="paragraph">
-<p><strong class="big">Definition</strong></p>
-</div>
-<table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 2. General request information</caption>
 <colgroup>
 <col style="width: 14.2857%;">
 <col style="width: 85.7143%;">
@@ -2807,6 +2801,54 @@ elements are removed)</em>.</p>
 <div class="listingblock">
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/anonymous/check/alive' -i -X GET</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p><strong>Response body</strong> <br>
+<em>(empty)</em></p>
+</div>
+</div>
+<div class="sect4">
+<h5 id="section-ucrestdoc-UC_039-head">2.2.2.2. HEAD variant</h5>
+<div class="paragraph">
+<p><strong class="big">Definition</strong></p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 2. General request information</caption>
+<colgroup>
+<col style="width: 14.2857%;">
+<col style="width: 85.7143%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top"></th>
+<th class="tableblock halign-left valign-top">Value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Path</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">/api/anonymous/check/alive</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Method</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">HEAD</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Status code</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">200 OK</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p><strong class="big">Example</strong></p>
+</div>
+<div class="paragraph">
+<p><strong>Curl request</strong> <br></p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/anonymous/check/alive' -i -X HEAD</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -3177,7 +3219,7 @@ elements are removed)</em>.</p>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>email</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The mail adress of the user</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The email address of the user</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>superAdmin</code></p></td>
@@ -3521,7 +3563,7 @@ elements are removed)</em>.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/scan/download/efe08179-feaf-4991-ab35-5ca21aeb4a05' -i -u 'user:secret' -X GET \
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/scan/download/eba45184-9eb9-4a3d-a606-a6470c745943' -i -u 'user:secret' -X GET \
     -H 'Content-Type: application/json;charset=UTF-8'</code></pre>
 </div>
 </div>
@@ -3942,7 +3984,7 @@ elements are removed)</em>.</p>
 <tbody>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>userId</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The userId of the user whose email adress will be changed</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The userId of the user whose email address will be changed</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>emailAddress</code></p></td>
@@ -4084,7 +4126,7 @@ elements are removed)</em>.</p>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>email</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The mail adress of the user</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The mail address of the user</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>superAdmin</code></p></td>
@@ -4686,7 +4728,7 @@ elements are removed)</em>.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code>[{&quot;sechubJobUUID&quot;:&quot;7c27c1b7-d55f-4182-9417-5455fd570c63&quot;,&quot;executedBy&quot;:&quot;spartakus&quot;,&quot;started&quot;:&quot;2024-01-04T14:33:48.996123977&quot;,&quot;ended&quot;:&quot;2024-01-05T14:33:48.996159242&quot;,&quot;status&quot;:&quot;OK&quot;}]</code></pre>
+<pre class="CodeRay highlight nowrap"><code>[{&quot;sechubJobUUID&quot;:&quot;9694a037-d091-45ee-b8c7-dad84af653e3&quot;,&quot;executedBy&quot;:&quot;spartakus&quot;,&quot;started&quot;:&quot;2024-03-14T16:11:15.379967538&quot;,&quot;ended&quot;:&quot;2024-03-15T16:11:15.380002534&quot;,&quot;status&quot;:&quot;OK&quot;}]</code></pre>
 </div>
 </div>
 </div>
@@ -5296,7 +5338,7 @@ elements are removed)</em>.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code>{&quot;jobId&quot;:&quot;f37bb996-ee49-499f-95b4-f8a246ec1a34&quot;}</code></pre>
+<pre class="CodeRay highlight nowrap"><code>{&quot;jobId&quot;:&quot;9e8c4ff3-aa6b-428d-9af9-c388e7095905&quot;}</code></pre>
 </div>
 </div>
 </div>
@@ -5475,7 +5517,7 @@ elements are removed)</em>.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code>{&quot;jobId&quot;:&quot;8dd4d651-d376-4402-9244-ce0765af387f&quot;}</code></pre>
+<pre class="CodeRay highlight nowrap"><code>{&quot;jobId&quot;:&quot;9342bee3-37fe-4892-b855-c5e5097b73c6&quot;}</code></pre>
 </div>
 </div>
 </div>
@@ -5634,7 +5676,7 @@ elements are removed)</em>.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code>{&quot;jobId&quot;:&quot;abe8ea1f-7f4f-437e-8221-bb269af3c086&quot;}</code></pre>
+<pre class="CodeRay highlight nowrap"><code>{&quot;jobId&quot;:&quot;1769cd18-4515-45f6-a3df-b11483aa5613&quot;}</code></pre>
 </div>
 </div>
 </div>
@@ -5793,7 +5835,7 @@ elements are removed)</em>.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code>{&quot;jobId&quot;:&quot;c027b2fb-3f8a-4ec5-8a54-14d29a0906b0&quot;}</code></pre>
+<pre class="CodeRay highlight nowrap"><code>{&quot;jobId&quot;:&quot;f358a3d5-a871-4505-b337-41690fc952c0&quot;}</code></pre>
 </div>
 </div>
 </div>
@@ -5947,7 +5989,7 @@ elements are removed)</em>.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code>{&quot;jobId&quot;:&quot;6871b4b5-b2f2-41f9-adef-02a028e62c2c&quot;}</code></pre>
+<pre class="CodeRay highlight nowrap"><code>{&quot;jobId&quot;:&quot;6a253b19-6499-48f1-a3e3-457dda69c4bd&quot;}</code></pre>
 </div>
 </div>
 </div>
@@ -6116,7 +6158,7 @@ elements are removed)</em>.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code>{&quot;jobId&quot;:&quot;a7947bab-52c4-4a86-ac06-50eefc5cdf92&quot;}</code></pre>
+<pre class="CodeRay highlight nowrap"><code>{&quot;jobId&quot;:&quot;91d19d7c-6265-4612-8604-593b352da3ab&quot;}</code></pre>
 </div>
 </div>
 </div>
@@ -6275,7 +6317,7 @@ elements are removed)</em>.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code>{&quot;jobId&quot;:&quot;2df06edd-ecf2-432c-bd01-4b705b660d0e&quot;}</code></pre>
+<pre class="CodeRay highlight nowrap"><code>{&quot;jobId&quot;:&quot;db2ad95d-fe39-4d2c-9080-4a26ffeaa275&quot;}</code></pre>
 </div>
 </div>
 </div>
@@ -6434,7 +6476,7 @@ elements are removed)</em>.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code>{&quot;jobId&quot;:&quot;5a060786-e1b0-415f-94b3-05d85162b1d9&quot;}</code></pre>
+<pre class="CodeRay highlight nowrap"><code>{&quot;jobId&quot;:&quot;031a7a67-5db7-40bb-815b-4f601e8dacba&quot;}</code></pre>
 </div>
 </div>
 </div>
@@ -6608,7 +6650,7 @@ elements are removed)</em>.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code>{&quot;jobId&quot;:&quot;ff717649-ee96-473a-8d04-caac856e11ba&quot;}</code></pre>
+<pre class="CodeRay highlight nowrap"><code>{&quot;jobId&quot;:&quot;8907996f-f1fd-403d-9e67-e7286aaeebdb&quot;}</code></pre>
 </div>
 </div>
 </div>
@@ -6802,7 +6844,7 @@ elements are removed)</em>.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code>{&quot;jobId&quot;:&quot;4d79f074-d4ef-45a7-bd32-f8c365d806e4&quot;}</code></pre>
+<pre class="CodeRay highlight nowrap"><code>{&quot;jobId&quot;:&quot;a02188ba-2dc8-45e8-a51f-993624a2123c&quot;}</code></pre>
 </div>
 </div>
 </div>
@@ -6905,7 +6947,12 @@ elements are removed)</em>.</p>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>webScan.headers[].value</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Value of the defined HTTP header.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Value of the defined HTTP header. Either specify the header value directly here or reference a data section with 'use' e.g. if the value is to big, but never specify both.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>webScan.headers[].use</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Array</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Reference to the data section containing a file with the value for this header, e.g if the value is to big for the sechub configuration. Always use 'sources' with a single 'file' instead 'folders'.</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>webScan.headers[].onlyForUrls[]</code></p></td>
@@ -6953,7 +7000,7 @@ elements are removed)</em>.</p>
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/job' -i -X POST \
     -H 'Content-Type: application/json;charset=UTF-8' \
-    -d '{&quot;webScan&quot;:{&quot;url&quot;:&quot;https://localhost/mywebapp&quot;,&quot;headers&quot;:[{&quot;name&quot;:&quot;api-token&quot;,&quot;value&quot;:&quot;secret&quot;,&quot;onlyForUrls&quot;:[&quot;https://localhost/mywebapp/admin&quot;,&quot;https://localhost/mywebapp/&lt;*&gt;/profile&quot;,&quot;https://localhost/mywebapp/blog/&lt;*&gt;&quot;],&quot;sensitive&quot;:true}]},&quot;apiVersion&quot;:&quot;1.0&quot;}'</code></pre>
+    -d '{&quot;webScan&quot;:{&quot;url&quot;:&quot;https://localhost/mywebapp&quot;,&quot;headers&quot;:[{&quot;name&quot;:&quot;api-token&quot;,&quot;value&quot;:&quot;secret&quot;,&quot;onlyForUrls&quot;:[&quot;https://localhost/mywebapp/admin&quot;,&quot;https://localhost/mywebapp/&lt;*&gt;/profile&quot;,&quot;https://localhost/mywebapp/blog/&lt;*&gt;&quot;],&quot;sensitive&quot;:true,&quot;use&quot;:[&quot;header-value-file-ref-for-big-tokens&quot;]}]},&quot;apiVersion&quot;:&quot;1.0&quot;}'</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -6961,7 +7008,7 @@ elements are removed)</em>.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code>{&quot;jobId&quot;:&quot;fe89444e-5eb3-471a-b8f1-b940282986d4&quot;}</code></pre>
+<pre class="CodeRay highlight nowrap"><code>{&quot;jobId&quot;:&quot;8f0195c2-d82d-4bfa-9d19-9cd259ce5b7e&quot;}</code></pre>
 </div>
 </div>
 </div>
@@ -7071,7 +7118,7 @@ elements are removed)</em>.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/job/d4d0e05b-66d9-4023-8807-7bdceaf9aec9/sourcecode' -i -X POST \
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/job/984b92a8-b02c-410a-8201-ac9e4647e5ff/sourcecode' -i -X POST \
     -H 'Content-Type: multipart/form-data;charset=UTF-8' \
     -F 'file=PK  
       �&lt;M                       test1.txtPK  ?
@@ -7169,7 +7216,7 @@ elements are removed)</em>.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/job/32fd5c0f-1d95-4e5c-a47d-bab6e082a587/approve' -i -X PUT \
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/job/63080498-e7a1-45d8-a7fe-a4714fd55183/approve' -i -X PUT \
     -H 'Content-Type: application/json;charset=UTF-8'</code></pre>
 </div>
 </div>
@@ -7321,7 +7368,7 @@ elements are removed)</em>.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/job/f90766aa-e8f0-41cc-8f9f-712a1619a5a4' -i -X GET \
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/job/551241c0-e4e3-4a13-84e9-b183b920575b' -i -X GET \
     -H 'Content-Type: application/json;charset=UTF-8'</code></pre>
 </div>
 </div>
@@ -7330,7 +7377,7 @@ elements are removed)</em>.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code>{&quot;jobUUID&quot;:&quot;f90766aa-e8f0-41cc-8f9f-712a1619a5a4&quot;,&quot;owner&quot;:&quot;CREATOR1&quot;,&quot;created&quot;:&quot;&quot;,&quot;started&quot;:&quot;2024-01-05T14:19:03.431311973&quot;,&quot;ended&quot;:&quot;2024-01-05T14:34:03.431339825&quot;,&quot;state&quot;:&quot;ENDED&quot;,&quot;result&quot;:&quot;OK&quot;,&quot;trafficLight&quot;:&quot;GREEN&quot;}</code></pre>
+<pre class="CodeRay highlight nowrap"><code>{&quot;jobUUID&quot;:&quot;551241c0-e4e3-4a13-84e9-b183b920575b&quot;,&quot;owner&quot;:&quot;CREATOR1&quot;,&quot;created&quot;:&quot;&quot;,&quot;started&quot;:&quot;2024-03-15T15:56:28.42732385&quot;,&quot;ended&quot;:&quot;2024-03-15T16:11:28.42735052&quot;,&quot;state&quot;:&quot;ENDED&quot;,&quot;result&quot;:&quot;OK&quot;,&quot;trafficLight&quot;:&quot;GREEN&quot;}</code></pre>
 </div>
 </div>
 </div>
@@ -7405,7 +7452,7 @@ elements are removed)</em>.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/report/f204dd84-7654-4f7f-b1de-8d36c42a6787' -i -u 'user:secret' -X GET \
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/report/9e88901a-c1ff-4fe2-b5a6-bdf9a70d018b' -i -u 'user:secret' -X GET \
     -H 'Content-Type: application/json;charset=UTF-8' \
     -H 'Accept: application/json'</code></pre>
 </div>
@@ -7477,7 +7524,7 @@ elements are removed)</em>.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/report/06c195cc-95b8-4924-a658-5b09f2aa0feb' -i -u 'user:secret' -X GET \
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/report/e70d3ed5-cab7-4e73-939a-72747c0da07f' -i -u 'user:secret' -X GET \
     -H 'Content-Type: application/json;charset=UTF-8' \
     -H 'Accept: application/xhtml+xml'</code></pre>
 </div>
@@ -8056,7 +8103,7 @@ elements are removed)</em>.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/job/03dc16c9-5ba4-483c-8147-fc0cdfa37e33/binaries' -i -X POST \
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/job/3050520a-abcc-42ac-81ec-2a41183898ea/binaries' -i -X POST \
     -H 'Content-Type: multipart/form-data;charset=UTF-8' \
     -H 'x-file-size: 10240' \
     -F 'file=test1.txt                                                                                           0000664 0001750 0001750 00000000000 13353454574 012170  0                                                                                                    ustar   albert                          albert                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 ' \
@@ -8137,7 +8184,7 @@ elements are removed)</em>.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/report/spdx/e5ebc61a-0164-4b03-9f89-a79bd2bde230' -i -u 'user:secret' -X GET \
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/report/spdx/96e5447e-951a-4369-9bdb-fd0b90fd2417' -i -u 'user:secret' -X GET \
     -H 'Content-Type: application/json;charset=UTF-8' \
     -H 'Accept: application/json'</code></pre>
 </div>
@@ -8206,9 +8253,9 @@ elements are removed)</em>.</p>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Wanted userid, the userid must be lowercase only!</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>emailAdress</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>emailAddress</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Email adress</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Email address</p></td>
 </tr>
 </tbody>
 </table>
@@ -8222,7 +8269,7 @@ elements are removed)</em>.</p>
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/anonymous/signup' -i -X POST \
     -H 'Content-Type: application/json;charset=UTF-8' \
-    -d '{&quot;apiVersion&quot;:&quot;1.0&quot;,&quot;userId&quot;:&quot;valid_userid&quot;,&quot;emailAdress&quot;:&quot;valid_mailadress@test.com&quot;}'</code></pre>
+    -d '{&quot;apiVersion&quot;:&quot;1.0&quot;,&quot;userId&quot;:&quot;valid_userid&quot;,&quot;emailAddress&quot;:&quot;valid_mailaddress@example.org&quot;}'</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -8308,7 +8355,7 @@ elements are removed)</em>.</p>
 <td class="tableblock halign-left valign-top"><p class="tableblock">The user id</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>[].emailAdress</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>[].emailAddress</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">The email address</p></td>
 </tr>
@@ -8330,7 +8377,7 @@ elements are removed)</em>.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code>[{&quot;userId&quot;:&quot;johnsmith&quot;,&quot;emailAdress&quot;:&quot;john.smith@example.com&quot;},{&quot;userId&quot;:&quot;janesmith&quot;,&quot;emailAdress&quot;:&quot;jane.smith@example.com&quot;}]</code></pre>
+<pre class="CodeRay highlight nowrap"><code>[{&quot;userId&quot;:&quot;johnsmith&quot;,&quot;emailAddress&quot;:&quot;john.smith@example.com&quot;},{&quot;userId&quot;:&quot;janesmith&quot;,&quot;emailAddress&quot;:&quot;jane.smith@example.com&quot;}]</code></pre>
 </div>
 </div>
 </div>
@@ -8575,7 +8622,7 @@ elements are removed)</em>.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/anonymous/refresh/apitoken/emailAdress@test.com' -i -X POST \
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/anonymous/refresh/apitoken/emailAddress@example.com' -i -X POST \
     -H 'Content-Type: application/json;charset=UTF-8'</code></pre>
 </div>
 </div>
@@ -8700,7 +8747,7 @@ elements are removed)</em>.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code>[{&quot;jobUUID&quot;:&quot;e90f2f34-949e-4d9a-9e8b-9be893ae2a88&quot;,&quot;projectId&quot;:&quot;project-name&quot;,&quot;owner&quot;:&quot;owner-userid&quot;,&quot;status&quot;:&quot;RUNNING&quot;,&quot;since&quot;:&quot;2024-01-05T14:33:56.135944547&quot;,&quot;configuration&quot;:&quot;{ config data }&quot;}]</code></pre>
+<pre class="CodeRay highlight nowrap"><code>[{&quot;jobUUID&quot;:&quot;8fec5e2a-618a-480e-91ea-07c4081491c6&quot;,&quot;projectId&quot;:&quot;project-name&quot;,&quot;owner&quot;:&quot;owner-userid&quot;,&quot;status&quot;:&quot;RUNNING&quot;,&quot;since&quot;:&quot;2024-03-15T16:11:21.289494909&quot;,&quot;configuration&quot;:&quot;{ config data }&quot;}]</code></pre>
 </div>
 </div>
 </div>
@@ -8784,7 +8831,7 @@ elements are removed)</em>.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/jobs/cancel/c6cde951-5aea-43e4-9872-2e1dcdbf23d8' -i -u 'user:secret' -X POST \
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/jobs/cancel/d28f7856-777c-471e-946d-a4d56043f76a' -i -u 'user:secret' -X POST \
     -H 'Content-Type: application/json;charset=UTF-8'</code></pre>
 </div>
 </div>
@@ -8873,7 +8920,7 @@ elements are removed)</em>.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/jobs/restart/9fc9794b-449c-482c-9f44-86a87926c7db' -i -u 'user:secret' -X POST \
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/jobs/restart/7eb204a2-0ac4-4498-abf6-cc47e778fc31' -i -u 'user:secret' -X POST \
     -H 'Content-Type: application/json;charset=UTF-8'</code></pre>
 </div>
 </div>
@@ -8962,7 +9009,7 @@ elements are removed)</em>.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/jobs/restart-hard/5cc25a3e-a529-45ed-98e0-83d91c38ebba' -i -u 'user:secret' -X POST \
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/jobs/restart-hard/8a2306f6-94a8-4d3a-a50b-f9246d068184' -i -u 'user:secret' -X POST \
     -H 'Content-Type: application/json;charset=UTF-8'</code></pre>
 </div>
 </div>
@@ -9495,7 +9542,7 @@ elements are removed)</em>.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code>efecbd1e-33eb-42c3-98dc-c682a90ac708</code></pre>
+<pre class="CodeRay highlight nowrap"><code>3d70b300-ecbc-4ac6-8b16-29409aeb42e3</code></pre>
 </div>
 </div>
 </div>
@@ -9579,7 +9626,7 @@ elements are removed)</em>.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/config/executor/bc5a73cf-73b7-4524-8c6b-2a556d99a3cd' -i -u 'user:secret' -X DELETE \
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/config/executor/e083f1ba-8973-416a-b984-933f268d1ca1' -i -u 'user:secret' -X DELETE \
     -H 'Content-Type: application/json;charset=UTF-8'</code></pre>
 </div>
 </div>
@@ -9694,7 +9741,7 @@ elements are removed)</em>.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code>{&quot;executorConfigurations&quot;:[{&quot;uuid&quot;:&quot;6e25f896-d869-455c-b6e2-35114dcc639d&quot;,&quot;name&quot;:&quot;example configuration&quot;,&quot;enabled&quot;:true}],&quot;type&quot;:&quot;executorConfigurationList&quot;}</code></pre>
+<pre class="CodeRay highlight nowrap"><code>{&quot;executorConfigurations&quot;:[{&quot;uuid&quot;:&quot;eabfa51a-ea6f-46e5-b02d-44001317bee5&quot;,&quot;name&quot;:&quot;example configuration&quot;,&quot;enabled&quot;:true}],&quot;type&quot;:&quot;executorConfigurationList&quot;}</code></pre>
 </div>
 </div>
 </div>
@@ -9847,7 +9894,7 @@ elements are removed)</em>.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/config/executor/df40460f-5177-4206-bf5b-d3179d3c7682' -i -u 'user:secret' -X GET \
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/config/executor/101802e8-6aca-4ecd-8933-1c59074ff3c1' -i -u 'user:secret' -X GET \
     -H 'Content-Type: application/json;charset=UTF-8'</code></pre>
 </div>
 </div>
@@ -9856,7 +9903,7 @@ elements are removed)</em>.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code>{&quot;name&quot;:&quot;New name&quot;,&quot;productIdentifier&quot;:&quot;PDS_CODESCAN&quot;,&quot;setup&quot;:{&quot;baseURL&quot;:&quot;https://product.example.com&quot;,&quot;credentials&quot;:{&quot;user&quot;:&quot;env:EXAMPLE_USENAME&quot;,&quot;password&quot;:&quot;env:EXAMPLE_PASSWORD&quot;},&quot;jobParameters&quot;:[{&quot;key&quot;:&quot;example.key1&quot;,&quot;value&quot;:&quot;A value&quot;}]},&quot;executorVersion&quot;:1,&quot;enabled&quot;:false,&quot;uuid&quot;:&quot;df40460f-5177-4206-bf5b-d3179d3c7682&quot;}</code></pre>
+<pre class="CodeRay highlight nowrap"><code>{&quot;name&quot;:&quot;New name&quot;,&quot;productIdentifier&quot;:&quot;PDS_CODESCAN&quot;,&quot;setup&quot;:{&quot;baseURL&quot;:&quot;https://product.example.com&quot;,&quot;credentials&quot;:{&quot;user&quot;:&quot;env:EXAMPLE_USENAME&quot;,&quot;password&quot;:&quot;env:EXAMPLE_PASSWORD&quot;},&quot;jobParameters&quot;:[{&quot;key&quot;:&quot;example.key1&quot;,&quot;value&quot;:&quot;A value&quot;}]},&quot;executorVersion&quot;:1,&quot;enabled&quot;:false,&quot;uuid&quot;:&quot;101802e8-6aca-4ecd-8933-1c59074ff3c1&quot;}</code></pre>
 </div>
 </div>
 </div>
@@ -10004,7 +10051,7 @@ elements are removed)</em>.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/config/executor/b8a0a3a6-c7fb-41a5-acc0-8577bf751913' -i -u 'user:secret' -X PUT \
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/config/executor/baba2300-83dc-49c6-84bf-470fcf3746e0' -i -u 'user:secret' -X PUT \
     -H 'Content-Type: application/json;charset=UTF-8' \
     -d '{&quot;name&quot;:&quot;New name&quot;,&quot;productIdentifier&quot;:&quot;PDS_CODESCAN&quot;,&quot;executorVersion&quot;:1,&quot;enabled&quot;:false,&quot;setup&quot;:{&quot;baseURL&quot;:&quot;https://productNew.example.com&quot;,&quot;credentials&quot;:{&quot;user&quot;:&quot;env:EXAMPLE_NEW_USENAME&quot;,&quot;password&quot;:&quot;env:EXAMPLE_NEW_PASSWORD&quot;},&quot;jobParameters&quot;:[{&quot;key&quot;:&quot;example.key1&quot;,&quot;value&quot;:&quot;A value but changed. Remark: the other parameter (example.key2) has been removed by this call&quot;}]}}'</code></pre>
 </div>
@@ -10348,7 +10395,7 @@ elements are removed)</em>.</p>
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/config/execution/profile/existing-profile-1' -i -u 'user:secret' -X PUT \
     -H 'Content-Type: application/json;charset=UTF-8' \
-    -d '{&quot;description&quot;:&quot;changed description&quot;,&quot;configurations&quot;:[{&quot;uuid&quot;:&quot;664b95b2-6d72-452f-a2bc-4d37607226db&quot;,&quot;executorVersion&quot;:0,&quot;enabled&quot;:false,&quot;setup&quot;:{&quot;credentials&quot;:{},&quot;jobParameters&quot;:[]}}],&quot;enabled&quot;:true}'</code></pre>
+    -d '{&quot;description&quot;:&quot;changed description&quot;,&quot;configurations&quot;:[{&quot;uuid&quot;:&quot;367bbe04-7307-4a3a-80ad-f95b04673d9a&quot;,&quot;executorVersion&quot;:0,&quot;enabled&quot;:false,&quot;setup&quot;:{&quot;credentials&quot;:{},&quot;jobParameters&quot;:[]}}],&quot;enabled&quot;:true}'</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -10504,7 +10551,7 @@ elements are removed)</em>.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code>{&quot;description&quot;:&quot;a description&quot;,&quot;enabled&quot;:true,&quot;configurations&quot;:[{&quot;name&quot;:&quot;New name&quot;,&quot;productIdentifier&quot;:&quot;PDS_CODESCAN&quot;,&quot;setup&quot;:{&quot;baseURL&quot;:&quot;https://product.example.com&quot;,&quot;credentials&quot;:{&quot;user&quot;:&quot;env:EXAMPLE_USENAME&quot;,&quot;password&quot;:&quot;env:EXAMPLE_PASSWORD&quot;},&quot;jobParameters&quot;:[{&quot;key&quot;:&quot;example.key1&quot;,&quot;value&quot;:&quot;A value but changed. Remark: the other parameter (example.key2) has been removed by this call&quot;}]},&quot;executorVersion&quot;:1,&quot;enabled&quot;:false,&quot;uuid&quot;:&quot;7cd8a514-bdd9-425e-93d8-65f41b05b749&quot;}],&quot;projectIds&quot;:[&quot;project-1&quot;,&quot;project-2&quot;]}</code></pre>
+<pre class="CodeRay highlight nowrap"><code>{&quot;description&quot;:&quot;a description&quot;,&quot;enabled&quot;:true,&quot;configurations&quot;:[{&quot;name&quot;:&quot;New name&quot;,&quot;productIdentifier&quot;:&quot;PDS_CODESCAN&quot;,&quot;setup&quot;:{&quot;baseURL&quot;:&quot;https://product.example.com&quot;,&quot;credentials&quot;:{&quot;user&quot;:&quot;env:EXAMPLE_USENAME&quot;,&quot;password&quot;:&quot;env:EXAMPLE_PASSWORD&quot;},&quot;jobParameters&quot;:[{&quot;key&quot;:&quot;example.key1&quot;,&quot;value&quot;:&quot;A value but changed. Remark: the other parameter (example.key2) has been removed by this call&quot;}]},&quot;executorVersion&quot;:1,&quot;enabled&quot;:false,&quot;uuid&quot;:&quot;8ff82efd-1b38-425c-a3f7-be6d38b0065a&quot;}],&quot;projectIds&quot;:[&quot;project-1&quot;,&quot;project-2&quot;]}</code></pre>
 </div>
 </div>
 </div>
@@ -11245,9 +11292,9 @@ elements are removed)</em>.</p>
 </div>
 </div>
 <div class="sect3">
-<h4 id="admin-checks-server-version">2.2.66. Admin checks server version</h4>
+<h4 id="admin-fetches-server-runtime-data">2.2.66. Admin fetches server runtime data</h4>
 <div id="section-ucrestdoc-uc-UC_040" class="paragraph">
-<p>REST API for usecase <a href="#section-usecase-UC_040">UC_040-Admin checks server version </a></p>
+<p>REST API for usecase <a href="#section-usecase-UC_040">UC_040-Admin fetches server runtime data </a></p>
 </div>
 <div id="section-ucrestdoc-UC_040-" class="paragraph">
 <p><strong class="big">Definition</strong></p>
@@ -11267,7 +11314,7 @@ elements are removed)</em>.</p>
 <tbody>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Path</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">/api/admin/info/version</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">/api/admin/info/server</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Method</p></td>
@@ -11280,19 +11327,28 @@ elements are removed)</em>.</p>
 </tbody>
 </table>
 <div class="paragraph">
-<p><strong>Request headers</strong> <br></p>
+<p><strong>Response fields</strong> <br></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
-<col style="width: 50%;">
-<col style="width: 50%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
 </colgroup>
 <thead>
 <tr>
-<th class="tableblock halign-left valign-top">Name</th>
+<th class="tableblock halign-left valign-top">Path</th>
+<th class="tableblock halign-left valign-top">Type</th>
 <th class="tableblock halign-left valign-top">Description</th>
 </tr>
 </thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>serverVersion</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The sechub server version.</p></td>
+</tr>
+</tbody>
 </table>
 <div class="paragraph">
 <p><strong class="big">Example</strong></p>
@@ -11302,8 +11358,8 @@ elements are removed)</em>.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/info/version' -i -u 'user:secret' -X GET \
-    -H 'Content-Type: text/plain;charset=UTF-8'</code></pre>
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/info/server' -i -u 'user:secret' -X GET \
+    -H 'Content-Type: application/json;charset=UTF-8'</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -11311,7 +11367,7 @@ elements are removed)</em>.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code>0.12.3</code></pre>
+<pre class="CodeRay highlight nowrap"><code>{&quot;serverVersion&quot;:&quot;0.12.3&quot;}</code></pre>
 </div>
 </div>
 </div>
@@ -11513,7 +11569,7 @@ The filter works as an AND combination: Only jobs having all wanted label key va
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code>{&quot;page&quot;:0,&quot;totalPages&quot;:1,&quot;content&quot;:[{&quot;jobUUID&quot;:&quot;49863da0-d686-46fe-add3-1345f0cbcb84&quot;,&quot;executedBy&quot;:&quot;User1&quot;,&quot;created&quot;:&quot;2024-01-05T14:17:03.493229611&quot;,&quot;started&quot;:&quot;2024-01-05T14:19:03.49326682&quot;,&quot;ended&quot;:&quot;2024-01-05T14:34:03.493280105&quot;,&quot;executionState&quot;:&quot;ENDED&quot;,&quot;trafficLight&quot;:&quot;GREEN&quot;,&quot;executionResult&quot;:&quot;OK&quot;,&quot;metaData&quot;:{&quot;labels&quot;:{&quot;stage&quot;:&quot;test&quot;}}}]}</code></pre>
+<pre class="CodeRay highlight nowrap"><code>{&quot;page&quot;:0,&quot;totalPages&quot;:1,&quot;content&quot;:[{&quot;jobUUID&quot;:&quot;dcc0ec19-7a6b-4674-b572-f568a4cee36f&quot;,&quot;executedBy&quot;:&quot;User1&quot;,&quot;created&quot;:&quot;2024-03-15T15:54:28.490962614&quot;,&quot;started&quot;:&quot;2024-03-15T15:56:28.490996778&quot;,&quot;ended&quot;:&quot;2024-03-15T16:11:28.49100849&quot;,&quot;executionState&quot;:&quot;ENDED&quot;,&quot;trafficLight&quot;:&quot;GREEN&quot;,&quot;executionResult&quot;:&quot;OK&quot;,&quot;metaData&quot;:{&quot;labels&quot;:{&quot;stage&quot;:&quot;test&quot;}}}]}</code></pre>
 </div>
 </div>
 <div style="page-break-after: always;"></div>
@@ -12091,7 +12147,7 @@ configure the client to do this on color YELLOW.
 <p><a href="#section-usecase-UC_033">UC_033-Admin lists status information</a></p>
 </li>
 <li>
-<p><a href="#section-usecase-UC_040">UC_040-Admin checks server version</a></p>
+<p><a href="#section-usecase-UC_040">UC_040-Admin fetches server runtime data</a></p>
 </li>
 <li>
 <p><a href="#section-usecase-UC_071">UC_071-User lists jobs for project</a></p>
@@ -12755,14 +12811,14 @@ build will break.</p>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">2</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">upload binaries</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">upload sourcecode</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">ROLE_SUPERADMIN, ROLE_USER</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">2</p></td>
 <td class="tableblock halign-left valign-top"></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">2</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">upload sourcecode</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">upload binaries</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">ROLE_SUPERADMIN, ROLE_USER</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">3</p></td>
 <td class="tableblock halign-left valign-top"></td>
@@ -12776,14 +12832,14 @@ build will break.</p>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">4</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">download job report and traffic light</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">get job status</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">ROLE_SUPERADMIN, ROLE_USER</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">4</p></td>
 <td class="tableblock halign-left valign-top"></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">4</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">get job status</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">download job report and traffic light</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">ROLE_SUPERADMIN, ROLE_USER</p></td>
 <td class="tableblock halign-left valign-top"></td>
 <td class="tableblock halign-left valign-top"></td>
@@ -13006,17 +13062,17 @@ For example a user must have a project assigned to be able to scan on it!</p>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">2</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Assign user</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">ROLE_SUPERADMIN</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Update schedule authorization parts</p></td>
+<td class="tableblock halign-left valign-top"></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">2</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The service will add the user to the project. If user does not have ROLE_USER it will obtain it</p></td>
+<td class="tableblock halign-left valign-top"></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">2</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Update schedule authorization parts</p></td>
-<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Assign user</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">ROLE_SUPERADMIN</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">3</p></td>
-<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The service will add the user to the project. If user does not have ROLE_USER it will obtain it</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">3</p></td>
@@ -13112,17 +13168,17 @@ For example a user must have a project assigned to be able to scan on it!</p>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">2</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Unassign user</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">ROLE_SUPERADMIN</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Update authorization parts</p></td>
+<td class="tableblock halign-left valign-top"></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">2</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The service will remove the user to the project. If users has no longer access to projects ROLE_USER will be removed</p></td>
+<td class="tableblock halign-left valign-top"></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">2</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Update authorization parts</p></td>
-<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Unassign user</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">ROLE_SUPERADMIN</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">4</p></td>
-<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The service will remove the user to the project. If users has no longer access to projects ROLE_USER will be removed</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">4</p></td>
@@ -13589,7 +13645,7 @@ The list entries do contain</p>
 <h4 id="section-usecase-UC_024">4.1.25. UC_024-User requests new API token</h4>
 <div id="sechub-doclink-uc-user-requests-new-apittoken" class="paragraph">
 <p>It shall be possible to achieve this by calling REST API and also by just visiting
-static sechub website and entering mail adress and post request by simple web form.</p>
+static sechub website and entering email address and post request by simple web form.</p>
 </div>
 <div class="paragraph">
 <p>When user exists a new one time token will be created and sent to user per email - so same way as done when a new
@@ -14502,9 +14558,9 @@ projects by REST API.</p>
 </table>
 </div>
 <div class="sect3">
-<h4 id="section-usecase-UC_040">4.1.41. UC_040-Admin checks server version</h4>
+<h4 id="section-usecase-UC_040">4.1.41. UC_040-Admin fetches server runtime data</h4>
 <div class="paragraph">
-<p>An administrator checks the current SecHub server version. Only administrators are able to check the server version, because knowing the exact server version makes it easier for penetration tester or attacker to attack the system.</p>
+<p>An administrator fetches the current SecHub server runtime data. Only administrators are allowed to do this because it contains the server version and knowing the exact server version makes it easier for penetration tester or attacker to attack the system.</p>
 </div>
 <div class="paragraph">
 <p><strong>Steps</strong></p>
@@ -14532,7 +14588,7 @@ projects by REST API.</p>
 <td class="tableblock halign-left valign-top"><p class="tableblock">REST API Call</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">ROLE_SUPERADMIN</p></td>
 <td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Administrator wants to get the server version of SecHub</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Administrator wants to fetch server runtime data. This data contains for example the server version</p></td>
 </tr>
 </tbody>
 </table>
@@ -14890,13 +14946,6 @@ results because such information was formerly deleted</p>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">3</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Inform sechub admins when job restart was canceled</p></td>
-<td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">3</p></td>
-<td class="tableblock halign-left valign-top"></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">3</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Try to restart job</p></td>
 <td class="tableblock halign-left valign-top"></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">3</p></td>
@@ -14906,8 +14955,15 @@ results because such information was formerly deleted</p>
 <td class="tableblock halign-left valign-top"><p class="tableblock">3</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Try to rstart job (hard)</p></td>
 <td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">4</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">3</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">When job is found, a restart will be triggered. Existing batch jobs will be terminated</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">3</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Inform sechub admins when job restart was canceled</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">4</p></td>
+<td class="tableblock halign-left valign-top"></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">4</p></td>
@@ -16477,7 +16533,7 @@ than one. In this case the returned entries are ordered by creation date.</p>
 <h6 id="diagram">4.1.73.1.1. Diagram</h6>
 <div class="imageblock">
 <div class="content">
-<img src="images/gen_domain_messaging_overview.svg" alt="Sequence diagram of messaging overview" width="875" height="3866">
+<img src="images/gen_domain_messaging_overview.svg" alt="Sequence diagram of messaging overview" width="940" height="3866">
 </div>
 </div>
 </div>
@@ -16654,7 +16710,7 @@ than one. In this case the returned entries are ordered by creation date.</p>
 <h5 id="section-gen-messaging-auto_cleanup_configuration_changed">4.1.73.3. Message AUTO_CLEANUP_CONFIGURATION_CHANGED</h5>
 <div class="imageblock">
 <div class="content">
-<img src="images/gen_domain_messaging_auto_cleanup_configuration_changed.svg" alt="Sequence diagram of messaging AUTO_CLEANUP_CONFIGURATION_CHANGED" width="1140" height="234">
+<img src="images/gen_domain_messaging_auto_cleanup_configuration_changed.svg" alt="Sequence diagram of messaging AUTO_CLEANUP_CONFIGURATION_CHANGED" width="1124" height="234">
 </div>
 </div>
 <div class="admonitionblock note">
@@ -16691,7 +16747,7 @@ than one. In this case the returned entries are ordered by creation date.</p>
 <h5 id="section-gen-messaging-job_cancellation_running">4.1.73.5. Message JOB_CANCELLATION_RUNNING</h5>
 <div class="imageblock">
 <div class="content">
-<img src="images/gen_domain_messaging_job_cancellation_running.svg" alt="Sequence diagram of messaging JOB_CANCELLATION_RUNNING" width="857" height="205">
+<img src="images/gen_domain_messaging_job_cancellation_running.svg" alt="Sequence diagram of messaging JOB_CANCELLATION_RUNNING" width="859" height="205">
 </div>
 </div>
 </div>
@@ -16936,7 +16992,7 @@ than one. In this case the returned entries are ordered by creation date.</p>
 <h5 id="section-gen-messaging-project_access_level_changed">4.1.73.18. Message PROJECT_ACCESS_LEVEL_CHANGED</h5>
 <div class="imageblock">
 <div class="content">
-<img src="images/gen_domain_messaging_project_access_level_changed.svg" alt="Sequence diagram of messaging PROJECT_ACCESS_LEVEL_CHANGED" width="868" height="205">
+<img src="images/gen_domain_messaging_project_access_level_changed.svg" alt="Sequence diagram of messaging PROJECT_ACCESS_LEVEL_CHANGED" width="852" height="205">
 </div>
 </div>
 </div>
@@ -16952,7 +17008,7 @@ than one. In this case the returned entries are ordered by creation date.</p>
 <h5 id="section-gen-messaging-project_deleted">4.1.73.20. Message PROJECT_DELETED</h5>
 <div class="imageblock">
 <div class="content">
-<img src="images/gen_domain_messaging_project_deleted.svg" alt="Sequence diagram of messaging PROJECT_DELETED" width="856" height="234">
+<img src="images/gen_domain_messaging_project_deleted.svg" alt="Sequence diagram of messaging PROJECT_DELETED" width="861" height="234">
 </div>
 </div>
 </div>
@@ -17169,7 +17225,7 @@ than one. In this case the returned entries are ordered by creation date.</p>
 <h5 id="section-gen-messaging-request_user_role_recalculation">4.1.73.31. Message REQUEST_USER_ROLE_RECALCULATION</h5>
 <div class="imageblock">
 <div class="content">
-<img src="images/gen_domain_messaging_request_user_role_recalculation.svg" alt="Sequence diagram of messaging REQUEST_USER_ROLE_RECALCULATION" width="2282" height="380">
+<img src="images/gen_domain_messaging_request_user_role_recalculation.svg" alt="Sequence diagram of messaging REQUEST_USER_ROLE_RECALCULATION" width="2229" height="380">
 </div>
 </div>
 <div class="admonitionblock note">
@@ -17220,7 +17276,7 @@ than one. In this case the returned entries are ordered by creation date.</p>
 <h5 id="section-gen-messaging-scheduler_job_processing_disabled">4.1.73.34. Message SCHEDULER_JOB_PROCESSING_DISABLED</h5>
 <div class="imageblock">
 <div class="content">
-<img src="images/gen_domain_messaging_scheduler_job_processing_disabled.svg" alt="Sequence diagram of messaging SCHEDULER_JOB_PROCESSING_DISABLED" width="958" height="205">
+<img src="images/gen_domain_messaging_scheduler_job_processing_disabled.svg" alt="Sequence diagram of messaging SCHEDULER_JOB_PROCESSING_DISABLED" width="972" height="205">
 </div>
 </div>
 <div class="admonitionblock note">
@@ -17249,7 +17305,7 @@ than one. In this case the returned entries are ordered by creation date.</p>
 <h5 id="section-gen-messaging-scheduler_job_processing_enabled">4.1.73.35. Message SCHEDULER_JOB_PROCESSING_ENABLED</h5>
 <div class="imageblock">
 <div class="content">
-<img src="images/gen_domain_messaging_scheduler_job_processing_enabled.svg" alt="Sequence diagram of messaging SCHEDULER_JOB_PROCESSING_ENABLED" width="954" height="205">
+<img src="images/gen_domain_messaging_scheduler_job_processing_enabled.svg" alt="Sequence diagram of messaging SCHEDULER_JOB_PROCESSING_ENABLED" width="968" height="205">
 </div>
 </div>
 <div class="admonitionblock note">
@@ -17294,7 +17350,7 @@ than one. In this case the returned entries are ordered by creation date.</p>
 <h5 id="section-gen-messaging-scheduler_status_update">4.1.73.38. Message SCHEDULER_STATUS_UPDATE</h5>
 <div class="imageblock">
 <div class="content">
-<img src="images/gen_domain_messaging_scheduler_status_update.svg" alt="Sequence diagram of messaging SCHEDULER_STATUS_UPDATE" width="658" height="176">
+<img src="images/gen_domain_messaging_scheduler_status_update.svg" alt="Sequence diagram of messaging SCHEDULER_STATUS_UPDATE" width="681" height="176">
 </div>
 </div>
 </div>
@@ -17302,7 +17358,7 @@ than one. In this case the returned entries are ordered by creation date.</p>
 <h5 id="section-gen-messaging-source_upload_done">4.1.73.39. Message SOURCE_UPLOAD_DONE</h5>
 <div class="imageblock">
 <div class="content">
-<img src="images/gen_domain_messaging_source_upload_done.svg" alt="Sequence diagram of messaging SOURCE_UPLOAD_DONE" width="616" height="176">
+<img src="images/gen_domain_messaging_source_upload_done.svg" alt="Sequence diagram of messaging SOURCE_UPLOAD_DONE" width="598" height="176">
 </div>
 </div>
 </div>
@@ -17310,7 +17366,7 @@ than one. In this case the returned entries are ordered by creation date.</p>
 <h5 id="section-gen-messaging-start_scan">4.1.73.40. Message START_SCAN</h5>
 <div class="imageblock">
 <div class="content">
-<img src="images/gen_domain_messaging_start_scan.svg" alt="Sequence diagram of messaging START_SCAN" width="555" height="353">
+<img src="images/gen_domain_messaging_start_scan.svg" alt="Sequence diagram of messaging START_SCAN" width="485" height="353">
 </div>
 </div>
 <div class="admonitionblock note">
@@ -17350,7 +17406,7 @@ than one. In this case the returned entries are ordered by creation date.</p>
 <h5 id="section-gen-messaging-user_added_to_project">4.1.73.42. Message USER_ADDED_TO_PROJECT</h5>
 <div class="imageblock">
 <div class="content">
-<img src="images/gen_domain_messaging_user_added_to_project.svg" alt="Sequence diagram of messaging USER_ADDED_TO_PROJECT" width="748" height="205">
+<img src="images/gen_domain_messaging_user_added_to_project.svg" alt="Sequence diagram of messaging USER_ADDED_TO_PROJECT" width="732" height="205">
 </div>
 </div>
 <div class="admonitionblock note">
@@ -17395,7 +17451,7 @@ than one. In this case the returned entries are ordered by creation date.</p>
 <h5 id="section-gen-messaging-user_created">4.1.73.45. Message USER_CREATED</h5>
 <div class="imageblock">
 <div class="content">
-<img src="images/gen_domain_messaging_user_created.svg" alt="Sequence diagram of messaging USER_CREATED" width="625" height="205">
+<img src="images/gen_domain_messaging_user_created.svg" alt="Sequence diagram of messaging USER_CREATED" width="629" height="205">
 </div>
 </div>
 <div class="admonitionblock note">
@@ -17477,7 +17533,7 @@ than one. In this case the returned entries are ordered by creation date.</p>
 <h5 id="section-gen-messaging-user_removed_from_project">4.1.73.50. Message USER_REMOVED_FROM_PROJECT</h5>
 <div class="imageblock">
 <div class="content">
-<img src="images/gen_domain_messaging_user_removed_from_project.svg" alt="Sequence diagram of messaging USER_REMOVED_FROM_PROJECT" width="802" height="205">
+<img src="images/gen_domain_messaging_user_removed_from_project.svg" alt="Sequence diagram of messaging USER_REMOVED_FROM_PROJECT" width="786" height="205">
 </div>
 </div>
 <div class="admonitionblock note">
@@ -17573,7 +17629,7 @@ than one. In this case the returned entries are ordered by creation date.</p>
 </div>
 <div id="footer">
 <div id="footer-text">
- Server 1.4.1<br>
+ Server 1.8.0<br>
 </div>
 </div>
 </body>

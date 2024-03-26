@@ -19,7 +19,7 @@ ARG SECHUB_VERSION="0.35.2"
 ARG TAG=""
 ARG BRANCH=""
 
-ARG GO="go1.20.4.linux-${TARGETARCH}.tar.gz"
+ARG GO="go1.21.6.linux-${TARGETARCH}.tar.gz"
 
 # possible values: temurin, openj9, openjdk
 ARG JAVA_DISTRIBUTION="temurin"

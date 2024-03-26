@@ -15,7 +15,6 @@ import org.junit.jupiter.api.Test;
 import com.mercedesbenz.sechub.commons.model.ScanType;
 import com.mercedesbenz.sechub.commons.model.SecHubMessage;
 import com.mercedesbenz.sechub.commons.model.SecHubMessageType;
-import com.mercedesbenz.sechub.sereco.importer.ProductImportAbility;
 import com.mercedesbenz.sechub.sereco.importer.ProductResultImporter;
 import com.mercedesbenz.sechub.sereco.importer.SensitiveDataMaskingService;
 import com.mercedesbenz.sechub.sereco.metadata.SerecoMetaData;
@@ -108,7 +107,7 @@ public class WorkspaceTest {
         /* @formatter:on */
 
         ProductResultImporter mockedImporter = mock(ProductResultImporter.class);
-        when(mockedImporter.isAbleToImportForProduct(importParameter)).thenReturn(ProductImportAbility.ABLE_TO_IMPORT);
+        when(mockedImporter.isAbleToImportForProduct(importParameter)).thenReturn(true);
         when(mockedImporter.importResult(importData, ScanType.WEB_SCAN)).thenReturn(new SerecoMetaData());
 
         List<ProductResultImporter> importers = new ArrayList<>();

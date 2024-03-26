@@ -167,7 +167,7 @@ public class AsUser {
      */
     public AsUser signUpAs(TestUser user) {
 
-        String json = "{\"apiVersion\":\"1.0\",\r\n" + "		\"userId\":\"" + user.getUserId() + "\",\r\n" + "		\"emailAdress\":\"" + user.getEmail()
+        String json = "{\"apiVersion\":\"1.0\",\r\n" + "		\"userId\":\"" + user.getUserId() + "\",\r\n" + "		\"emailAddress\":\"" + user.getEmail()
                 + "\"}";
         getRestHelper().postJson(getUrlBuilder().buildUserSignUpUrl(), json);
         return this;
@@ -832,7 +832,7 @@ public class AsUser {
     }
 
     public String getServerVersion() {
-        return getRestHelper().getStringFromURL(getUrlBuilder().buildGetServerVersionUrl());
+        return getRestHelper().getStringFromURL(getUrlBuilder().buildGetServerRuntimeDataUrl());
     }
 
     public boolean getIsAlive() {

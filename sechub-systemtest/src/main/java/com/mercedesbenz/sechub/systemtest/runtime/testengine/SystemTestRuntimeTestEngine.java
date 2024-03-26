@@ -152,8 +152,9 @@ public class SystemTestRuntimeTestEngine {
             try {
                 jobFullScanLogFile = adminClient.downloadFullScanLog(secHubJobUUID, scanLogFolder);
             } catch (SecHubClientException e) {
-                throw new CannotProvideDebugInformationException("Was not able to download full scan log file for sechub job:" + secHubJobUUID
-                        + ". Used SecHub admin user: " + adminClient.getUsername(), e);
+                throw new CannotProvideDebugInformationException(
+                        "Was not able to download full scan log file for sechub job:" + secHubJobUUID + ". Used SecHub admin user: " + adminClient.getUserId(),
+                        e);
             }
             LOG.debug("Full scan downloaded to {}", jobFullScanLogFile);
 

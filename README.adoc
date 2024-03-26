@@ -27,6 +27,7 @@ SecHub features:
 Supported security tools:
 
 * <<codescan, Code scanners>>
+* <<secretscan, Secrets scanners>>
 * <<webscan, Web scanners>>
 * <<infrascan, Infrastructure scanners>>
 * <<licensescan, License scanners>>
@@ -45,6 +46,9 @@ Please visit https://github.com/mercedes-benz/sechub/wiki/ for detailed informat
 
 === Introduction
 
+SecHub orchestrates various security and vulnerability scanners which can find potential vulnerabilities in sourcecode, binaries or web applications.
+This enables security, development and operation teams to review and fix security issues. As a result, SecHub improves application security.
+
 .SecHub basic architecture overview
 [[figure-architecture-overview]]
 [ditaa]
@@ -53,27 +57,30 @@ Please visit https://github.com/mercedes-benz/sechub/wiki/ for detailed informat
                                               +--> | PDS + Tool A |
                                               |    +--------------+
 +--------+                     +---------+    |
-| SecHub | ------ scan ------> | SecHub  | <--+
-| Client | <----- report ----- |   API   | <--+
+| SecHub | ---- scan data ---> | SecHub  | <--+
+| Client | <---- report ------ |   API   | <--+
 +--------+                     +---------+    |
                                               |    +--------------+
                                               +--> | PDS + Tool B |
                                                    +--------------+
 ....
 
-SecHub orchestrates various security and vulnerability scanners which can find potential vulnerabilities in the software under test (see: <<figure-architecture-overview, Architecture overview>>). This enables security, development and operation teams to review and fix security issues. As a result, SecHub improves application security.
-
 The objective of SecHub is to help secure the software development lifecyle (SDLC) phases: development, deployment and maintenance. From the first written line of code to the application being in production. SecHub can be used to scan the software continuously.
 
-To reduce the cognitive load for the user, the security tools are categorized into modules. Modules are named after the security testing method they perform: `codeScan`, `webScan`, `infraScan` etc.
+The security tools are categorized into modules which are named after the security testing method they perform: `codeScan`, `licenseScan`, `secretScan`, `webScan` etc.
 
-The terms static application security testing (SAST) and dynamic application security testing (DAST) are intentionally not used for the module names, because the designers feel those terms are vague and difficult to understand for non-security experts. On the other hand, security experts can easily map: `codeScan` to SAST and `webScan` to DAST.
+[NOTE]
+--
+The terms SAST (Static Application Security Testing) and DAST (Dynamic Application Security Testing) are intentionally not used for the module names, because the designers feel those terms are vague and difficult to understand for non-security experts. On the other hand, security experts can easily map: `codeScan` to SAST and `webScan` to DAST.
+--
 
 Because of the modules, the user only needs to understand what security testing a module performs, rather than to know what specific security tools are used for the actual scan. The user describes in a configuration file what module(s) to use. Or in other words, what security testing methods should be used to test the software with.
 
-To start a scan, the user sends the configuration file to the SecHub server via API. Even better, SecHub provides a client which calls the REST API for the user. The SecHub client can be used manually or can be integrated into a continues-integration build pipeline (see: <<figure-cicd-user-sechub, Scan using CI/CD or User>>).
+To start a scan, the user sends the configuration file to the SecHub server via API.
+For ease of use SecHub offers a https://github.com/mercedes-benz/sechub/releases?q=%22client+version%22&expanded=true[client] which calls the REST API for the user.
+The SecHub client can be used manually or can be integrated into a continuous-integration build pipeline (see below figure).
 
-.CI/CD systems or User can scan with SecHub
+.CI/CD systems or users can scan with SecHub
 [[figure-cicd-user-sechub]]
 [ditaa]
 ....
@@ -88,93 +95,92 @@ To start a scan, the user sends the configuration file to the SecHub server via 
 \-------/
 ....
 
-On receiving the user request, SecHub creates a job, delegates it to the security tool, collects the result and converts it into a report. Next, the user can download the <<report,report>> in a JSON or HTML format.
+On receiving the user request, SecHub creates a job, delegates it to one or more security tools, collects the results and converts all into a report.
+Next, the user can download the <<report,report>> in a JSON or HTML format.
 
 [[user-perspective]]
 === User Perspective
 
 SecHub is designed to provide an efficient user workflow. The basic idea of SecHub is, that the user has to do as little as possible to execute a security scan.
-The user has two options: a) to use the https://mercedes-benz.github.io/sechub/latest/sechub-restapi.html[REST API] directly or b) to use the https://mercedes-benz.github.io/sechub/latest/sechub-client.html[SecHub client]. Both can be integrated into a CI/CD pipeline.
+The user has two options: +
+a) to use the https://mercedes-benz.github.io/sechub/latest/sechub-restapi.html[REST API] directly +
+b) to use the https://mercedes-benz.github.io/sechub/latest/sechub-client.html[SecHub client]. +
+Both can be integrated into a CI/CD pipeline.
 
 Using the REST API requires several steps, which is fine if SecHub needs to be integrated into another software or platform.
 
-However, it is recommended to use the SecHub client, if the objective of the user is to: just scan.
-
-The SecHub client reduces the workflow to <<figure-three-steps-to-scan,three steps>>:
+However, it is recommended to use the SecHub client. +
+The SecHub client reduces the workflow to three steps:
 
 .SecHub three steps to scan
 [[figure-three-steps-to-scan]]
 [ditaa]
 ....
 
-1. Create a configuration file  // <1>
+1. Create a configuration file  // (1)
 
 /------+
 | JSON |
 +------/
 
-2. Set Credentials // <2>
+2. Set Credentials // (2)
 
 export SECHUB_USERID=myUserName…
 …
 
-3. Scan // <3>
+3. Scan // (3)
 
 +--------+                 +--------+
-|        | --- scan -----> |        |
+|        | ---- scan ----> |        |
 | Client |                 | SecHub |
-|        | <--- report --- |        |
+|        | <-- report ---- |        |
 +--------+                 +--------+
 ....
 
-<1> Create a https://mercedes-benz.github.io/sechub/latest/sechub-client.html#section-client-configuration-file[SecHub configuration] file. This step only needs to be done the first time.
-<2> Provide the SecHub credentials.
-+
-Example:
-+
-----
-export SECHUB_USERID=myUserName
-export SECHUB_APITOKEN=NTg5YSMkGRkM2Uy00NDJjLTkYTY4NjEXAMPLE
-export SECHUB_SERVER=https://sechub.example.com:8443
-----
-<3> Scan
-+
-----
-sechub scan
-----
+(1) Create a https://mercedes-benz.github.io/sechub/latest/sechub-client.html#section-client-configuration-file[SecHub configuration] file. This step only needs to be done the first time.
 
-Once the scan is finished, the client returns a <<report,report>>. If the client is used to scan asynchronously it will return a `jobUUID` which can be used to get the report (see: <<figure-scan-asynchronously, Scan asynchronously>>).
+(2) Provide the SecHub credentials. +
+Example: +
+`export SECHUB_USERID=myUserName` +
+`export SECHUB_APITOKEN=NTg5YSMkGRkM2Uy00NDJjLTkYTY4NjEXAMPLE` +
+`export SECHUB_SERVER=https://sechub.example.com:8443`
+
+(3) Scan using `sechub scan`
+
+Once the scan is finished, the client returns a <<report,report>>.
+
+If the client is used to scan asynchronously it will return a `jobUUID` which can be used to get the report:
 
 .Scan asynchronously
 [[figure-scan-asynchronously]]
 [ditaa]
 ....
 
-1. Scan asynchronously // <1>
+1. Scan asynchronously // (1)
 
-+--------+                      +--------+
-|        | --- scanAsync -----> |        |
-| Client |                      | SecHub |
-|        | <--- jobUUID ------- |        |
-+--------+                      +--------+
++--------+                     +--------+
+|        | --- scanAsync ----> |        |
+| Client |                     | SecHub |
+|        | <--- jobUUID ------ |        |
++--------+                     +--------+
 
-2. GetReport // <2>
+2. GetReport // (2)
 
-+--------+                      +--------+
-|        | --- getReport -----> |        |
-| Client |                      | SecHub |
-|        | <--- report -------- |        |
-+--------+                      +--------+
++--------+                     +--------+
+|        | --- getReport ----> |        |
+| Client |                     | SecHub |
+|        | <--- report ------- |        |
++--------+                     +--------+
 ....
-<1> Scan asynchronously using `sechub scanAsync`.
-<2> Get report `sechub -jobUUID <jobUUID> getReport`.
+(1) Scan asynchronously using `sechub scanAsync`. +
+(2) Get report `sechub -jobUUID <jobUUID> getReport`.
 
 In general, the `jobUUID` can be used to download the report again and again by different users and in different formats.
 
 [[report]]
 === Report
 
-SecHub collects the scan results from various security tools and converts them into a unified reporting format called: SecHub Report. The advantage is that the user needs to learn only one report format. The <<json-report, example JSON report>> below shows how a report can look like:
+SecHub collects the scan results from various security tools and converts them into a unified reporting format called: SecHub Report. The advantage is that the user needs to learn only one report format. The json-report below shows how a report can look like:
 
 .JSON report example based on a scan of the https://securego.io/docs/rules/g101.html[G101], https://securego.io/docs/rules/g103.html[G103], https://securego.io/docs/rules/g304.html[G304] examples from GoSec.
 [[json-report]]
@@ -250,12 +256,16 @@ SecHub collects the scan results from various security tools and converts them i
 }
 ----
 
-The report can be downloaded in two flavors: JSON and HTML. Both are human readable. The HTML report is self-contained and can be read in any browser. The JSON format is machine readable and can be read by the <<sechub-plugins, SecHub plugins>>.
+The report can be downloaded in two flavors: JSON and HTML. Both are human readable. The HTML report is self-contained and can be read in any browser.
+The JSON format is machine readable and can be read by the <<sechub-plugins, SecHub plugins>>.
 
 [[mark-false-positives]]
 ==== Mark Findings as False-Positives
 
-There are two major reasons for marking a security finding as false-positive. First, it is an actual false-positive. Second, the finding is a false-positive in the context of the application. For example, the application is never deployed to be reachable from the internet.
+There are two major reasons for marking a security finding as false-positive: +
+- It is an actual false-positive. +
+- The finding is a false-positive in the context of the application. For example, the application is never deployed to be reachable from the internet.
+
 Regardless the reason, https://mercedes-benz.github.io/sechub/latest/sechub-client.html#section-client-false-positives-mark[SecHub supports marking findings as false-positives]. The marking of false-positives is a SecHub feature and is independent of the security tools used to scan.
 
 [[sechub-plugins]]
@@ -265,9 +275,9 @@ The SecHub Plugins improve the user experience by enabling the user to work dire
 
 SecHub plugins exist for the following text editors and IDEs:
 
-* https://marketplace.eclipse.org/content/sechub[Eclipse]
-* https://github.com/mercedes-benz/sechub-plugin-intellij[IntelliJ platttform]
-* https://open-vsx.org/extension/mercedes-benz/sechub[VSCode, VSCodium, Eclipse Theia]
+* Plugin for https://marketplace.eclipse.org/content/sechub[Eclipse IDE] (https://github.com/mercedes-benz/sechub-plugin-eclipse[source code])
+* Plugin for https://github.com/mercedes-benz/sechub-plugin-intellij[IntelliJ platttform] (https://github.com/mercedes-benz/sechub-plugin-intellij[source code])
+* Plugin for https://open-vsx.org/extension/mercedes-benz/sechub[VSCode, VSCodium, Eclipse Theia] (https://github.com/mercedes-benz/sechub-plugin-vscode[source code])
 
 All plugins are free and open-source software (FOSS) and can be installed directly from within the IDE or text editors.
 
@@ -278,11 +288,12 @@ Security tools are categorized into modules.
 
 Each module performs a different security testing method:
 
-* <<codescan, `codeScan`>> - scans the code for potential vulnerabilities (weaknesses). Also known as SAST or static source code analysis.
-* <<webscan, `webScan`>> - scans a deployed web application for vulnerabilities. Also knows as DAST.
+* <<codescan, `codeScan`>> - scans code or binaries for potential vulnerabilities (weaknesses). +
+  This includes SAST (static application security testing) and IaC (infrastructure as code).
 * <<infrascan, `infraScan`>> - scans infrastructure for vulnerabilities.
 * <<licensescan, `licenseScan`>> - scans code or artifacts for license information.
 * <<secretscan, `secretScan`>> - scans code or artifacts for secrets (API tokens, certificates, passwords).
+* <<webscan, `webScan`>> - scans a deployed web application for vulnerabilities. Also knows as DAST.
 
 [[codescan]]
 ==== codeScan
@@ -295,14 +306,23 @@ The `codeScan` module scans source code or binary artifacts for potential vulner
 
 More details: https://mercedes-benz.github.io/sechub/latest/sechub-client.html#sechub-config-code-scan
 
-PDS-Solutions:
+PDS-Solutions: +
+- GoSec +
+- PMD +
+- FindSecurityBugs +
+- Bandit +
+- Checkmarx SAST (wrapper only) +
+- … and more
 
-* GoSec
-* PMD
-* FindSecurityBugs
-* Bandit
-* Checkmarx (wrapper only)
-* … and more
+[[secretscan]]
+==== secretScan
+
+**Status: Productive**
+
+Scans code or artifacts for secrets (API tokens, certificates, passwords).
+
+PDS-Solutions: +
+- Gitleaks
 
 [[webscan]]
 ==== webScan
@@ -315,9 +335,8 @@ The `webScan` module scans running web applications for vulnerabilities. The onl
 
 More details: https://mercedes-benz.github.io/sechub/latest/sechub-client.html#web-scan
 
-PDS-Solutions:
-
-* OWASP ZAP
+PDS-Solutions: +
+- OWASP ZAP
 
 [[infrascan]]
 ==== infraScan
@@ -335,21 +354,9 @@ More details: https://mercedes-benz.github.io/sechub/latest/sechub-client.html#i
 
 The `licenseScan` module scans code or artifacts for license information.
 
-PDS-Solutions:
-
-* Scancode
-* Tern
-
-[[secretscan]]
-==== secretScan
-
-**Status: Productive**
-
-Scans code or artifacts for secrets (API tokens, certificates, passwords).
-
-PDS-Solutions:
-
-* Gitleaks
+PDS-Solutions: +
+- Scancode +
+- Tern
 
 === Architecture
 
@@ -357,7 +364,10 @@ SecHub is designed to execute hundreds of scans. It can scale horizontally and v
 
 The smallest useful setup is: a single SecHub server and a single product delegation server (PDS). Those two components are enough to start scanning.
 
-For a larger setup, the number of SecHub server instances can be increased. More PDS instances can be added. The only requirements to scale SecHub are: a PostgreSQL database and an object store or file share. SecHub and PDS instances use the PostgreSQL database to share information between instances. For example, the job queue is kept in PostgreSQL. In addition,an object store or file share is necessary, so that all SecHub or PDS instances can store/read files.
+For a larger setup, the number of SecHub server instances can be increased. More PDS instances can be added. +
+The only requirements to scale SecHub are: a PostgreSQL database and an object store or file share.
+SecHub and PDS instances use the PostgreSQL database to share information between instances.
+For example, the job queue is kept in PostgreSQL. In addition,an object store or file share is necessary, so that all SecHub or PDS instances can store/read files.
 
 Regardless of the backend complexity, whether one SecHub server or many are used the <<user-perspective, workflow for the user>> stays the same.
 
@@ -365,13 +375,12 @@ For more details about the architecture have a look at the architecture document
 
 === Operations Perspective
 
-The operations team has to do most of the work. The operations team of SecHub needs to configure the scan tools as well as manage users and projects. This is an intentional design choice. The idea is, that users like security experts, operations engineers and developers can just scan and therefore focus on their work, rather than take care of SecHub and security scanners.
-
-For more details have a look at the operations guide: https://mercedes-benz.github.io/sechub/latest/sechub-operations.html
+One needs to configure the scan tools as well as manage users and projects. +
+For details please check the https://mercedes-benz.github.io/sechub/latest/sechub-operations.html[operations guide].
 
 === REST API
 
-All user and administrative tasks can be done via https://mercedes-benz.github.io/sechub/latest/sechub-restapi.html[REST API]. SecHub is design as a RESTful server.
+All user and administrative tasks can be done via https://mercedes-benz.github.io/sechub/latest/sechub-restapi.html[REST API]. SecHub is designed as a RESTful server.
 
 === Contributing
 

@@ -16,7 +16,7 @@ public class EmailValidationImplTest {
     }
 
     @Test
-    public void somebody_at_gmail_adress_is_valid() {
+    public void somebody_at_gmail_address_is_valid() {
         assertTrue(validationToTest.validate("somebody@gmail.com").isValid());
     }
 

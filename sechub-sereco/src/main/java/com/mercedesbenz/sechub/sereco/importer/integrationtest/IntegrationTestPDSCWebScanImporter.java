@@ -9,7 +9,6 @@ import org.springframework.stereotype.Component;
 
 import com.mercedesbenz.sechub.commons.model.ScanType;
 import com.mercedesbenz.sechub.sereco.ImportParameter;
-import com.mercedesbenz.sechub.sereco.importer.ProductImportAbility;
 import com.mercedesbenz.sechub.sereco.importer.ProductResultImporter;
 import com.mercedesbenz.sechub.sereco.metadata.SerecoMetaData;
 import com.mercedesbenz.sechub.sereco.metadata.SerecoSeverity;
@@ -62,16 +61,16 @@ public class IntegrationTestPDSCWebScanImporter implements ProductResultImporter
     }
 
     @Override
-    public ProductImportAbility isAbleToImportForProduct(ImportParameter param) {
+    public boolean isAbleToImportForProduct(ImportParameter param) {
 
         String data = param.getImportData();
         if (!data.startsWith(ID_PDS_INTTEST_PRODUCT_WEBSCAN)) {
-            return ProductImportAbility.NOT_ABLE_TO_IMPORT;
+            return false;
         }
         if (data.contains(ID_PDS_INTTEST_PRODUCT_WEBSCAN_FAILED)) {
-            return ProductImportAbility.PRODUCT_FAILED_OR_CANCELED;
+            return false;
         }
-        return ProductImportAbility.ABLE_TO_IMPORT;
+        return true;
     }
 
 }

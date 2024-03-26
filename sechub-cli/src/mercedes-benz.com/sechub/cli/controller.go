@@ -64,6 +64,8 @@ func Execute() {
 		printLatestJobsOfProject(context)
 	case getFalsePositivesAction:
 		downloadFalsePositivesList(context)
+	case defineFalsePositivesAction:
+		defineFalsePositivesFromFile(context)
 	case markFalsePositivesAction:
 		uploadFalsePositivesFromFile(context)
 	case interactiveMarkFalsePositivesAction:

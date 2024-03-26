@@ -9,6 +9,7 @@ import java.util.Set;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import com.mercedesbenz.sechub.commons.model.JSONConverter;
 import com.mercedesbenz.sechub.commons.model.ScanType;
 import com.mercedesbenz.sechub.commons.model.SecHubCodeScanConfiguration;
 import com.mercedesbenz.sechub.commons.model.SecHubConfigurationModel;
@@ -230,6 +231,65 @@ class SecHubFileStructureDataProviderBuilderTest {
         /* test */
         assertNotNull(dataProvider);
         assertTrue(dataProvider.getUnmodifiableSetOfAcceptedReferenceNames().contains("test-ref-1"));
+        assertFalse(dataProvider.isRootFolderAccepted());
+    }
+
+    @Test
+    void for_scantype_webscan_sources_data_section_for_api_and_client_certificate_create_data_provider() {
+        /* prepare */
+        String json = """
+                 {
+                  "apiVersion" : "1.0",
+                  "data" : {
+                    "sources" : [ {
+                      "name" : "open-api-file-reference",
+                      "fileSystem" : {
+                        "files" : [ "openApi.json" ]
+                     }
+                    },
+                   {
+                      "name" : "client-cert-api-file-reference",
+                      "fileSystem" : {
+                        "files" : [ "certificate.p12" ]
+                      }
+                    },
+                    {
+                      "name" : "header-file-ref-for-big-tokens",
+                      "fileSystem" : {
+                        "files" : [ "bearer-token.txt" ]
+                      }
+                    }]
+                  },
+                  "webScan" : {
+                    "url" : "https://localhost",
+                    "api" : {
+                      "type" : "openApi",
+                      "use" : [ "open-api-file-reference" ]
+                    },
+                    "clientCertificate" : {
+                      "password" : "secret-password",
+                      "use" : [ "client-cert-api-file-reference" ]
+                    },
+                    "headers" : [{
+                      "name" : "Authorization",
+                      "use" : [ "header-file-ref-for-big-tokens" ]
+                    }]
+                  }
+                }
+                """;
+        SecHubConfigurationModel model = JSONConverter.get().fromJSON(SecHubConfigurationModel.class, json);
+
+        /* execute */
+        SecHubFileStructureDataProvider dataProvider = builderToTest.setModel(model).setScanType(ScanType.WEB_SCAN).build();
+
+        /* test */
+        assertNotNull(dataProvider);
+
+        Set<String> acceptedReferenceNames = dataProvider.getUnmodifiableSetOfAcceptedReferenceNames();
+
+        assertTrue(acceptedReferenceNames.contains("open-api-file-reference"));
+        assertTrue(acceptedReferenceNames.contains("client-cert-api-file-reference"));
+        assertTrue(acceptedReferenceNames.contains("header-file-ref-for-big-tokens"));
         assertFalse(dataProvider.isRootFolderAccepted());
     }
 

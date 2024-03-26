@@ -531,19 +531,19 @@ table.CodeRay td.code{padding:0 0 0 .75em}
 <div id="header">
 <h1><span class="image"><a class="image" href="https://mercedes-benz.github.io/sechub"><img src="images/sechub-logo.png" alt="sechub logo"></a></span> SecHub Tutorials</h1>
 <div class="details">
-<span id="revnumber"> Server 1.4.1</span>
+<span id="revnumber"> Server 1.8.0</span>
 </div>
 <div id="toc" class="toc2">
 <div id="toctitle">Table of contents</div>
 <ul class="sectlevel1">
 <li><a href="#about">1. About</a></li>
-<li><a href="#section-tutorials">SecHub Tutorials</a>
-<ul class="sectlevel1">
-<li><a href="#integrate-new-sechub-module">1. Integrate new SecHub module</a></li>
-<li><a href="#create-a-pds-solution-for-a-product">2. Create a PDS solution for a product</a>
+<li><a href="#section-tutorials">2. SecHub Tutorials</a>
 <ul class="sectlevel2">
-<li><a href="#test-pds-standalone-with-pds-tools">2.1. Test PDS standalone with pds-tools</a></li>
-<li><a href="#test-pds-solution-with-sechub-server-and-client">2.2. Test PDS solution with SecHub Server and Client</a></li>
+<li><a href="#integrate-new-sechub-module">2.1. Integrate new SecHub module</a></li>
+<li><a href="#create-a-pds-solution-for-a-product">2.2. Create a PDS solution for a product</a>
+<ul class="sectlevel3">
+<li><a href="#test-pds-standalone-with-pds-tools">2.2.1. Test PDS standalone with pds-tools</a></li>
+<li><a href="#test-pds-solution-with-sechub-server-and-client">2.2.2. Test PDS solution with SecHub Server and Client</a></li>
 </ul>
 </li>
 </ul>
@@ -632,20 +632,21 @@ build pipeline / contionus integration (CI) and helps to provide
 </tbody>
 </table>
 <div class="paragraph">
-<p>Documentation version: <code>Server 1.4.1 - Build date: 20240105143337</code></p>
+<p>Documentation version: <code>Server 1.8.0 - Build date: 20240315161105</code></p>
 </div>
 <hr>
 <div style="page-break-after: always;"></div>
 </div>
 </div>
-<h1 id="section-tutorials" class="sect0">SecHub Tutorials</h1>
+<div class="sect1">
+<h2 id="section-tutorials">2. SecHub Tutorials</h2>
+<div class="sectionbody">
 <div class="paragraph">
 <p>The SecHub tutorials are step by step user guides for different tasks.<br>
 Examples show setups and use cases for different purposes. For detailed technical documentation please see the technical documentation.<br></p>
 </div>
-<div class="sect1">
-<h2 id="integrate-new-sechub-module">1. Integrate new SecHub module</h2>
-<div class="sectionbody">
+<div class="sect2">
+<h3 id="integrate-new-sechub-module">2.1. Integrate new SecHub module</h3>
 <div class="admonitionblock note">
 <table>
 <tr>
@@ -702,10 +703,8 @@ Run your task defined in your build.gradle with ./gradlew &lt;my new task&gt;</p
 </ol>
 </div>
 </div>
-</div>
-<div class="sect1">
-<h2 id="create-a-pds-solution-for-a-product">2. Create a PDS solution for a product</h2>
-<div class="sectionbody">
+<div class="sect2">
+<h3 id="create-a-pds-solution-for-a-product">2.2. Create a PDS solution for a product</h3>
 <div class="paragraph">
 <p>The following user guide is an instruction to create and test a PDS solution
 for a new module eg. a scan tool or a wrapper. You need to install docker and docker compose.</p>
@@ -791,8 +790,8 @@ Example pds-config.json:</p>
 </li>
 </ol>
 </div>
-<div class="sect2">
-<h3 id="test-pds-standalone-with-pds-tools">2.1. Test PDS standalone with pds-tools</h3>
+<div class="sect3">
+<h4 id="test-pds-standalone-with-pds-tools">2.2.1. Test PDS standalone with pds-tools</h4>
 <div class="paragraph">
 <p>Requires: sechub-solution-shared/scripts/01-test-pds.sh<br>
 (example with codeScan and source upload)</p>
@@ -897,8 +896,8 @@ Example pds-config.json:</p>
 </ol>
 </div>
 </div>
-<div class="sect2">
-<h3 id="test-pds-solution-with-sechub-server-and-client">2.2. Test PDS solution with SecHub Server and Client</h3>
+<div class="sect3">
+<h4 id="test-pds-solution-with-sechub-server-and-client">2.2.2. Test PDS solution with SecHub Server and Client</h4>
 <div class="olist arabic">
 <ol class="arabic">
 <li>
@@ -1028,9 +1027,10 @@ Tip: copy files from another pds solution and modify</p>
 </div>
 </div>
 </div>
+</div>
 <div id="footer">
 <div id="footer-text">
- Server 1.4.1<br>
+ Server 1.8.0<br>
 </div>
 </div>
 </body>

@@ -32,7 +32,7 @@ public class SignUpRequestedAdminNotificationService {
 
         emailContent.append("A user requested access to SecHub:\n");
         emailContent.append("- Requested user id: " + userMessage.getUserId() + "\n");
-        emailContent.append("- Email address: " + userMessage.getEmailAdress() + "\n");
+        emailContent.append("- Email address: " + userMessage.getEmailAddress() + "\n");
 
         /* send mail */
         SimpleMailMessage message1 = factory.createMessage("SecHub signup requested: " + userMessage.getUserId());
