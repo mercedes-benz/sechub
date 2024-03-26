@@ -57,6 +57,11 @@ if [[ ! -z "$FINDSECURITYBUGS_VERSION" ]] ; then
   BUILD_ARGS+=" --build-arg FINDSECURITYBUGS_SHA256SUM=$FINDSECURITYBUGS_SHA256SUM"
 fi
 
+echo "Copying install-java scripts into the docker directory"
+cp -rf ../../sechub-solutions-shared/install-java/ docker/
+
+export BUILDKIT_PROGRESS=plain
+export DOCKER_BUILDKIT=1
 docker build --pull --no-cache $BUILD_ARGS \
        --tag "$REGISTRY:$VERSION" \
        --file docker/FindSecurityBugs-Debian.dockerfile docker/
