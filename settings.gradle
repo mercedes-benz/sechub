@@ -121,3 +121,5 @@ buildCache {
     }
 
 }
+include 'sechub-wrapper-prepare'
+
