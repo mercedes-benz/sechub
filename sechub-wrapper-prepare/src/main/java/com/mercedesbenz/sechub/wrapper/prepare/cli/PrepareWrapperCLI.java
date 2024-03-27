@@ -1,12 +1,16 @@
 package com.mercedesbenz.sechub.wrapper.prepare.cli;
 
+import java.io.IOException;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 
+import com.mercedesbenz.sechub.adapter.AdapterExecutionResult;
 import com.mercedesbenz.sechub.wrapper.prepare.prepare.PrepareWrapperPreparationService;
+import com.mercedesbenz.sechub.wrapper.prepare.prepare.PrepareWrapperStorageService;
 
 @Component
 public class PrepareWrapperCLI implements CommandLineRunner {
@@ -16,13 +20,28 @@ public class PrepareWrapperCLI implements CommandLineRunner {
     @Autowired
     PrepareWrapperPreparationService preparationService;
 
+    @Autowired
+    PrepareWrapperStorageService storageService;
+
+    @Autowired
+    PrepareWrapperResultStatus status;
+
     @Override
     public void run(String... args) {
         LOG.debug("Prepare wrapper starting");
+        AdapterExecutionResult result;
         try {
-            preparationService.startPreparation();
+            result = preparationService.startPreparation();
         } catch (Exception e) {
-            // TODO: 26.03.24 laura set prepare result to error
+            result = new AdapterExecutionResult(status.getSTATUS_FAILED());
+            LOG.error("Execution failed", e);
         }
+        try {
+            storageService.store(result);
+        } catch (IOException e) {
+            LOG.error("Result storing failed", e);
+            System.exit(2);
+        }
+
     }
 }
