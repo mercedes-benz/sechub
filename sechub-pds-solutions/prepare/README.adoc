@@ -1,0 +1,71 @@
+// SPDX-License-Identifier: MIT
+
+:toc:
+:numbered:
+
+= Prepare Wrapper + PDS
+
+This folder contains the scripts necessary to run Prepare Wrapper + PDS locally within a container. It also contains scripts to create the PDS + Prepare container and push it to your container registry, as well as a helm chart to install and run Prepare Wrapper + PDS in a Kubernetes cluster.
+
+== Run Locally
+
+This is the easiest way to get started.
+
+=== Requirements
+
+Docker and Docker-Compose need to be installed:
+
+. https://docs.docker.com/engine/install/[Install Docker]
+
+. Linux: https://docs.docker.com/engine/install/linux-postinstall/#manage-docker-as-a-non-root-user[Use Docker as non Root user]
+
+. https://docs.docker.com/compose/install/[Install Docker-Compose]
+
+=== Single Instance
+
+Start a single instance by using the Bash wrapper script which does setup everything automatically for you.
+
+==== Scan script
+
+The folder contains a start script which does the manual steps for you:
+
+----
+./01-start-single-docker-compose.sh
+----
+
+==== Together with SecHub
+
+The container will be started and attached to the `sechub` network.
+
+WARNING: Make sure the SecHub container is running and executor for Prepare is set up.
+
+. Start container:
++
+----
+./05-start-single-sechub-network-docker-compose.sh
+----
++
+
++
+[source,json]
+----
+{
+  "apiVersion": "1.0",
+  "licenseScan": {
+    "use": [
+      "test-sources"
+    ]
+  },
+  "data": {
+    "binaries": [
+      {
+        "name": "test-sources",
+        "remote" : {
+            "location" : "https://my-example.com/my-project",
+            "type": "docker"
+        }
+      }
+    ]
+  }
+}
+----

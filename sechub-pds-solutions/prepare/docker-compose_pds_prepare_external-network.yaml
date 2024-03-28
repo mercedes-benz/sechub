@@ -1,0 +1,24 @@
+# SPDX-License-Identifier: MIT
+
+version: "3"
+services:
+    pds-prepare:
+        build:
+            args:
+                - BASE_IMAGE=${BASE_IMAGE}
+            context: docker/
+            dockerfile: Prepare-Debian.dockerfile
+        container_name: pds-prepare
+        hostname: pds-prepare
+        env_file:
+            - .env
+            - .env-single
+        networks:
+            - "sechub"
+        volumes:
+          - ./docker/scripts:/pds/scripts
+
+networks:
+    sechub:
+        external: true
+        name: "sechub"

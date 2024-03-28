@@ -11,8 +11,12 @@
     },
     "jobParameters": [
       {
+        "key": "pds.config.product.timeout.minutes",
+        "value": "30"
+      },
+      {
         "key": "pds.config.productidentifier",
-        "value": "PDS_PREPARE"
+        "value": "PDS_PREPARE_MOCK"
       },
       {
         "key": "pds.config.use.sechub.storage",
@@ -24,11 +28,11 @@
       },
       {
         "key": "sechub.productexecutor.pds.timeout.minutes",
-        "value": 60
+        "value": 180
       },
       {
         "key": "sechub.productexecutor.pds.timetowait.nextcheck.milliseconds",
-        "value": 500
+        "value": 10000
       },
       {
         "key": "sechub.productexecutor.pds.trustall.certificates",
