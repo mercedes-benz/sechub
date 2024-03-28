@@ -89,6 +89,7 @@ class ZapScannerTest {
         when(scanContext.getContextName()).thenReturn(contextName);
         when(scanContext.getZapProductMessageHelper()).thenReturn(helper);
         when(scanContext.getZapPDSEventHandler()).thenReturn(zapPDSEventHandler);
+        when(scanContext.getAjaxSpiderBrowserId()).thenReturn("firefox-headless");
 
         doNothing().when(helper).writeProductError(any());
         doNothing().when(helper).writeProductMessages(any());

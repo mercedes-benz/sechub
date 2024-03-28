@@ -53,6 +53,15 @@ public class CommandLineSettings {
         return ajaxSpiderEnabled;
     }
 
+    @Parameter(names = { "--ajaxSpiderBrowserId" }, description = "Set the browser id you want to use for the AjaxSpider module. "
+            + "Make sure the browser you want to use is installed on the system the scan is running. "
+            + "Supported browser are: [firefox-headless, firefox, chrome-headless, chrome, htmlunit, safari].", required = false)
+    private String ajaxSpiderBrowserId = "firefox-headless";
+
+    public String getAjaxSpiderBrowserId() {
+        return ajaxSpiderBrowserId;
+    }
+
     @Parameter(names = { "--activeScan" }, description = "Set this option to enable Zap active scan.", required = false)
     private boolean activeScanEnabled;
 
