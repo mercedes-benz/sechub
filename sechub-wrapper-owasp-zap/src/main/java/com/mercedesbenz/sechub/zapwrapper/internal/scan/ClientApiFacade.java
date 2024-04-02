@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.zapwrapper.internal.scan;
 
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -232,6 +233,18 @@ public class ClientApiFacade {
      */
     public ApiResponse importOpenApiFile(String openApiFile, String url, String contextId) throws ClientApiException {
         return clientApi.openapi.importFile(openApiFile, url, contextId);
+    }
+
+    /**
+     *
+     * @param apiDefinitionUrl
+     * @param targetUrl
+     * @param contextId
+     * @return
+     * @throws ClientApiException
+     */
+    public ApiResponse importOpenApiDefintionFromUrl(URL apiDefinitionUrl, String targetUrl, String contextId) throws ClientApiException {
+        return clientApi.openapi.importUrl(apiDefinitionUrl.toString(), targetUrl, contextId);
     }
 
     /**
