@@ -306,6 +306,7 @@ include::sechub_config_example8_web_scan_openapi_with_data_reference.json[]
 <2> web scan uses "openApi" as API type
 <3> web scan uses the referenced <<sechub-config-data-section,data>> configuration "open-api-file-reference"
     to obtain the open api configuration file
+<4> you can also use `apiDefinitionUrl` to specify an URL to read the API definition from.
 
 [[sechub-config-openAPI-and-client-certificate]]
 ====== Example combination of openAPI definition and client certificate authentication

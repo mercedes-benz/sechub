@@ -1,8 +1,12 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.commons.model;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.Set;
 
 import org.junit.jupiter.api.Test;
@@ -46,6 +50,22 @@ class SecHubWebScanApiConfigurationTest {
         /* test */
         String expected = "{\"use\":[\"ref1\",\"ref2\"]}";
         assertEquals(expected, json);
+    }
+
+    @Test
+    void api_definition_url_is_handled_correctly() throws MalformedURLException {
+        SecHubWebScanApiConfiguration config = new SecHubWebScanApiConfiguration();
+        URL apiDefinitionUrl = new URL("https://example.com/api/v1/swagger/");
+        config.setApiDefinitionUrl(apiDefinitionUrl);
+
+        /* execute */
+        String json = JSONConverter.get().toJSON(config);
+        SecHubWebScanApiConfiguration apiConfig = JSONConverter.get().fromJSON(SecHubWebScanApiConfiguration.class, json);
+
+        /* test */
+        String expected = "{\"apiDefinitionUrl\":\"https://example.com/api/v1/swagger/\",\"use\":[]}";
+        assertEquals(expected, json);
+        assertEquals(config.getApiDefinitionUrl(), apiConfig.getApiDefinitionUrl());
     }
 
 }
