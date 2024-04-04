@@ -24,10 +24,8 @@ public class PrepareWrapperStorageService {
     PDSUserMessageSupport messageSupport;
 
     public void store(AdapterExecutionResult adapterResult) throws IOException {
-
         writeProductMessages(adapterResult);
         writeProductResult(adapterResult);
-
     }
 
     private void writeProductResult(AdapterExecutionResult adapterResult) throws IOException {
