@@ -48,7 +48,7 @@ export function getFiles(pattern: string): string[] {
 
     shell.ls(pattern).forEach(function (file) {
         core.debug('file: ' + file);
-        reportFiles.push(`${getWorkspaceDir()}/${file}`);
+        reportFiles.push(`${file}`);
     });
 
     return reportFiles;

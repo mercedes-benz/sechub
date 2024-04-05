@@ -13737,7 +13737,7 @@ function getFiles(pattern) {
     const reportFiles = [];
     shell.ls(pattern).forEach(function (file) {
         lib_core.debug('file: ' + file);
-        reportFiles.push(`${getWorkspaceDir()}/${file}`);
+        reportFiles.push(`${file}`);
     });
     return reportFiles;
 }
@@ -14155,7 +14155,7 @@ async function uploadArtifact(context, name, files) {
         if (lib_core.isDebug()) {
             shell.exec(`ls ${rootDirectory}`);
         }
-        lib_core.debug('paths: ' + files);
+        lib_core.debug('files: ' + files);
         await artifactClient.uploadArtifact(artifactName, files, rootDirectory, options);
         lib_core.debug('artifact upload done');
     }
