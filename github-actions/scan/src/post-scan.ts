@@ -79,9 +79,9 @@ function asJsonObject(text: string): object | undefined {
 /**
  * Uploads all given files as artifact
  * @param name Name for the zip file.
- * @param paths All file paths to include into the artifact.
+ * @param files All files to include into the artifact.
  */
-export async function uploadArtifact(context: LaunchContext, name: string, paths: string[]) {
+export async function uploadArtifact(context: LaunchContext, name: string, files: string[]) {
     core.startGroup('Upload artifacts');
     try {
         const artifactClient = artifact.create();
@@ -93,9 +93,9 @@ export async function uploadArtifact(context: LaunchContext, name: string, paths
         if (core.isDebug()) {
             shell.exec(`ls ${rootDirectory}`);
         }
-        core.debug('paths: ' + paths);
+        core.debug('files: ' + files);
 
-        await artifactClient.uploadArtifact(artifactName, paths, rootDirectory, options);
+        await artifactClient.uploadArtifact(artifactName, files, rootDirectory, options);
         core.debug('artifact upload done');
 
     } catch (e: unknown) {
@@ -118,10 +118,14 @@ function resolveReportNameForScanJob(context: LaunchContext): string {
         return '';
     }
     const jobUUID = context.jobUUID;
-    const regex = new RegExp(`sechub_report_.*${jobUUID}.*\\.json$`);
+    const regexString = `sechub_report_.*${jobUUID}.*\\.json$`;
+
+    core.debug(`resolveReportNameForScanJob: regexString='${regexString}'`);
+    const regex = new RegExp(regexString);
 
     for (const fileName of filesInWorkspace) {
         if (regex.test(fileName)) {
+            core.debug(`resolveReportNameForScanJob: regexString matched for file: '${fileName}'`);
             return fileName;
         }
     }

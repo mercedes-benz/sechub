@@ -71,8 +71,10 @@ export class ShellFailedWithExitCodeNotAcceptedError extends Error {
  * @returns shellstring 
  */
 export function shellExecSynchOrFail(command: string, acceptedExitCodes: number[] = [0]): ShellString {
+    core.debug(`shellExecSynchOrFail: ${command}, acceptedExitCodes: ${acceptedExitCodes}`);
 
     const shellExecResult = shell.exec(command);
+    core.debug(`shellExecSynchOrFail: exitCode: ${shellExecResult.code}`);
 
     if (! acceptedExitCodes.includes(shellExecResult.code)){
         throw new ShellFailedWithExitCodeNotAcceptedError(command, shellExecResult, acceptedExitCodes);
@@ -86,5 +88,6 @@ export function shellExecSynchOrFail(command: string, acceptedExitCodes: number[
  * @returns child process
  */
 export function shellExecAsync(command: string): child.ChildProcess {
+    core.debug(`shellExecAsync: ${command}`);
     return child.exec(command);
 }

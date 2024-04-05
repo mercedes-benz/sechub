@@ -11,6 +11,7 @@ import { initEnvironmentVariables } from './environment';
 import { downloadClientRelease } from './client-download';
 import { SecHubConfigurationModelBuilderData } from './configuration-builder';
 import { ContentType, ScanType } from './configuration-model';
+import * as core from '@actions/core';
 
 /**
  * Starts the launch process
@@ -148,6 +149,8 @@ function executeScan(context: LaunchContext) {
 }
 
 async function postScan(context: LaunchContext): Promise<void> {
+    core.debug(`postScan(1): context.lastExitCode=${context.lastClientExitCode}`);
+
     if (context.lastClientExitCode > 1) {
         // in this case (not 0, not 1) this is an error and we cannot download the report - here we fail always!
         failAction(context.lastClientExitCode);
@@ -162,6 +165,7 @@ async function postScan(context: LaunchContext): Promise<void> {
     /* upload artifacts */
     await uploadArtifact(context, 'sechub scan-report', getFiles(`${context.workspaceFolder}/sechub_report_*.*`));
 
+    core.debug(`postScan(2): context.lastExitCode=${context.lastClientExitCode}, context.inputData.failJobOnFindings='${context.inputData.failJobOnFindings}'`);
     if (context.lastClientExitCode !== 0) {
         if (context.inputData.failJobOnFindings === 'true'){
             failAction(context.lastClientExitCode);

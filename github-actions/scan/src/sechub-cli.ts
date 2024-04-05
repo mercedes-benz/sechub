@@ -9,9 +9,14 @@ import * as core from '@actions/core';
  * @param context: launch context
  */
 export function scan(context: LaunchContext) {
-    const shellString =  shell.exec(`${context.clientExecutablePath} -configfile ${context.configFileLocation} -output ${context.workspaceFolder} scan`);
-    context.lastClientExitCode= shellString.code;
+    const shellCommand = `${context.clientExecutablePath} -configfile ${context.configFileLocation} -output ${context.workspaceFolder} scan`;
+    core.debug(`scan shell command: ${shellCommand}`);
 
+    const shellString =  shell.exec(shellCommand);
+
+    core.debug(`scan exit code: ${shellString.code}`);
+    context.lastClientExitCode= shellString.code;
+    
     if (context.lastClientExitCode!=0){
         core.error(shellString.stderr);
     }
@@ -20,14 +25,21 @@ export function scan(context: LaunchContext) {
 
 export function extractJobUUID(output: string): string{
     const jobPrefix='job:';
+
     const index1 =output.indexOf(jobPrefix);
+    
     if (index1>-1){
         const index2 = output.indexOf('\n', index1);
         if (index2>-1){
             const extracted=output.substring(index1+jobPrefix.length,index2);
-            return extracted.trim();
+
+            const jobUUID = extracted.trim();
+            core.debug(`extractJobUUID: ${jobUUID}`);
+            
+            return jobUUID;
         }
     }
+    core.debug('extractJobUUID: no job uuid found!');
     return '';
 }
 
@@ -37,9 +49,14 @@ export function extractJobUUID(output: string): string{
  * @param projectName name of the project for which the report should be downloaded
  * @param format format in which the report should be downloaded
  * @param context: launch context
- */
+*/
 export function getReport(jobUUID: string, format: string, context: LaunchContext) {
-    const shellString =  shell.exec(`${context.clientExecutablePath} -jobUUID ${jobUUID} -project ${context.inputData.projectName} --reportformat ${format} getReport`);
+    const shellCommand = `${context.clientExecutablePath} -jobUUID ${jobUUID} -project ${context.inputData.projectName} --reportformat ${format} getReport`;
+    core.debug(`getReport shell command: ${shellCommand}`);
+    
+    const shellString =  shell.exec(shellCommand);
+    
+    core.debug(`get report exit code: ${shellString.code}`);
     context.lastClientExitCode= shellString.code;
 }
 

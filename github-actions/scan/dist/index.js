@@ -13585,7 +13585,7 @@ var __webpack_exports__ = {};
 __nccwpck_require__.r(__webpack_exports__);
 
 // EXTERNAL MODULE: ./node_modules/@actions/core/lib/core.js
-var core = __nccwpck_require__(2186);
+var lib_core = __nccwpck_require__(2186);
 ;// CONCATENATED MODULE: ./src/action-helper.ts
 // SPDX-License-Identifier: MIT
 
@@ -13594,14 +13594,14 @@ var core = __nccwpck_require__(2186);
  * @param exitCode Exit code returned by the SecHub cli
  */
 function failAction(exitCode) {
-    core.setFailed(`Scan finished with exit code: ${exitCode}. Please check output.`);
+    lib_core.setFailed(`Scan finished with exit code: ${exitCode}. Please check output.`);
 }
 /**
  * Logs the error and sets the action status as failed.
  * @param error Error message that should be logged
  */
 function handleError(error) {
-    core.error(error);
+    lib_core.error(error);
     failAction(1);
 }
 
@@ -13617,10 +13617,13 @@ var shell = __nccwpck_require__(3516);
  * @param context: launch context
  */
 function scan(context) {
-    const shellString = shell.exec(`${context.clientExecutablePath} -configfile ${context.configFileLocation} -output ${context.workspaceFolder} scan`);
+    const shellCommand = `${context.clientExecutablePath} -configfile ${context.configFileLocation} -output ${context.workspaceFolder} scan`;
+    lib_core.debug(`scan shell command: ${shellCommand}`);
+    const shellString = shell.exec(shellCommand);
+    lib_core.debug(`scan exit code: ${shellString.code}`);
     context.lastClientExitCode = shellString.code;
     if (context.lastClientExitCode != 0) {
-        core.error(shellString.stderr);
+        lib_core.error(shellString.stderr);
     }
     context.jobUUID = extractJobUUID(shellString.stdout);
 }
@@ -13631,9 +13634,12 @@ function extractJobUUID(output) {
         const index2 = output.indexOf('\n', index1);
         if (index2 > -1) {
             const extracted = output.substring(index1 + jobPrefix.length, index2);
-            return extracted.trim();
+            const jobUUID = extracted.trim();
+            lib_core.debug(`extractJobUUID: ${jobUUID}`);
+            return jobUUID;
         }
     }
+    lib_core.debug('extractJobUUID: no job uuid found!');
     return '';
 }
 /**
@@ -13642,9 +13648,12 @@ function extractJobUUID(output) {
  * @param projectName name of the project for which the report should be downloaded
  * @param format format in which the report should be downloaded
  * @param context: launch context
- */
+*/
 function getReport(jobUUID, format, context) {
-    const shellString = shell.exec(`${context.clientExecutablePath} -jobUUID ${jobUUID} -project ${context.inputData.projectName} --reportformat ${format} getReport`);
+    const shellCommand = `${context.clientExecutablePath} -jobUUID ${jobUUID} -project ${context.inputData.projectName} --reportformat ${format} getReport`;
+    lib_core.debug(`getReport shell command: ${shellCommand}`);
+    const shellString = shell.exec(shellCommand);
+    lib_core.debug(`get report exit code: ${shellString.code}`);
     context.lastClientExitCode = shellString.code;
 }
 
@@ -13673,10 +13682,10 @@ exitCodeMap.set(10, 'ERROR - Job has been canceld on SecHub server');
 function logExitCode(code) {
     const message = 'Exit code: ' + code + ' . Description: ' + exitCodeMap.get(code);
     if (code === 0) {
-        core.info(message);
+        lib_core.info(message);
     }
     else {
-        core.error(message);
+        lib_core.error(message);
     }
 }
 
@@ -13727,7 +13736,7 @@ function ensuredWorkspaceFolder() {
 function getFiles(pattern) {
     const reportFiles = [];
     shell.ls(pattern).forEach(function (file) {
-        core.debug('file: ' + file);
+        lib_core.debug('file: ' + file);
         reportFiles.push(`${getWorkspaceDir()}/${file}`);
     });
     return reportFiles;
@@ -13748,7 +13757,9 @@ class ShellFailedWithExitCodeNotAcceptedError extends Error {
  * @returns shellstring
  */
 function shellExecSynchOrFail(command, acceptedExitCodes = [0]) {
+    lib_core.debug(`shellExecSynchOrFail: ${command}, acceptedExitCodes: ${acceptedExitCodes}`);
     const shellExecResult = shell.exec(command);
+    lib_core.debug(`shellExecSynchOrFail: exitCode: ${shellExecResult.code}`);
     if (!acceptedExitCodes.includes(shellExecResult.code)) {
         throw new ShellFailedWithExitCodeNotAcceptedError(command, shellExecResult, acceptedExitCodes);
     }
@@ -13760,6 +13771,7 @@ function shellExecSynchOrFail(command, acceptedExitCodes = [0]) {
  * @returns child process
  */
 function shellExecAsync(command) {
+    core.debug(`shellExecAsync: ${command}`);
     return child.exec(command);
 }
 
@@ -13891,10 +13903,10 @@ class FileSystem {
  * @param excludeFolders Which folders should be excluded
  */
 function createSecHubConfigJsonFile(secHubJsonFilePath, data) {
-    core.info('Config-Path was not found. Config will be created at ' + secHubJsonFilePath);
+    lib_core.info('Config-Path was not found. Config will be created at ' + secHubJsonFilePath);
     const secHubJson = createSecHubConfigurationModel(data);
     const stringifiedSecHubJson = JSON.stringify(secHubJson);
-    core.debug('SecHub-Config: ' + stringifiedSecHubJson);
+    lib_core.debug('SecHub-Config: ' + stringifiedSecHubJson);
     shell.ShellString(stringifiedSecHubJson).to(secHubJsonFilePath);
 }
 class SecHubConfigurationModelBuilderData {
@@ -13987,11 +13999,11 @@ var external_fs_ = __nccwpck_require__(7147);
  * @returns resulting configuration file path
  */
 function initSecHubJson(secHubJsonFilePath, customSecHubConfigFilePath, builderData) {
-    core.startGroup('Set config');
+    lib_core.startGroup('Set config');
     let configFilePath = customSecHubConfigFilePath;
     if (configFilePath) {
         if (external_fs_.existsSync(configFilePath)) {
-            core.info(`Config-Path was found: ${configFilePath}`);
+            lib_core.info(`Config-Path was found: ${configFilePath}`);
         }
         else {
             throw new Error(`Config-Path was defined, but no file exists at: ${configFilePath}`);
@@ -14001,7 +14013,7 @@ function initSecHubJson(secHubJsonFilePath, customSecHubConfigFilePath, builderD
         createSecHubConfigJsonFile(secHubJsonFilePath, builderData);
         configFilePath = secHubJsonFilePath;
     }
-    core.endGroup();
+    lib_core.endGroup();
     return configFilePath;
 }
 /**
@@ -14053,7 +14065,7 @@ function getFieldFromJsonReport(field, jsonData) {
             currentKey = currentKey[key];
         }
         else {
-            core.warning(`Field "${key}" not found in the JSON report.`);
+            lib_core.warning(`Field "${key}" not found in the JSON report.`);
             return undefined;
         }
     }
@@ -14074,10 +14086,10 @@ function getFieldFromJsonReport(field, jsonData) {
  * Collect all necessary report data, downloads additional report formats (e.g. 'html') if necessary
  */
 function collectReportData(context) {
-    core.startGroup('Collect report data');
+    lib_core.startGroup('Collect report data');
     collectJsonReportData(context);
     downloadOtherReportsThanJson(context);
-    core.endGroup();
+    lib_core.endGroup();
 }
 function collectJsonReportData(context) {
     /* json - already downloaded by client on scan, here we just ensure it exists and fetch the data from the model */
@@ -14085,11 +14097,11 @@ function collectJsonReportData(context) {
     const filePath = `${getWorkspaceDir()}/${fileName}`;
     let text = '';
     try {
-        core.info('Get Report as json');
+        lib_core.info('Get Report as json');
         text = external_fs_.readFileSync(filePath, 'utf8');
     }
     catch (error) {
-        core.warning(`Error reading JSON file: ${error}`);
+        lib_core.warning(`Error reading JSON file: ${error}`);
         return undefined;
     }
     const jsonObject = asJsonObject(text);
@@ -14100,17 +14112,17 @@ function collectJsonReportData(context) {
 function downloadOtherReportsThanJson(context) {
     if (context.jobUUID) {
         const jobUUID = context.jobUUID;
-        core.debug('JobUUID: ' + jobUUID);
+        lib_core.debug('JobUUID: ' + jobUUID);
         context.reportFormats.forEach((format) => {
             if (format != 'json') { // json is skipped, because already downloaded
-                core.info(`Get Report as ${format}`);
+                lib_core.info(`Get Report as ${format}`);
                 getReport(jobUUID, format, context);
                 logExitCode(context.lastClientExitCode);
             }
         });
     }
     else {
-        core.warning('No job uuid available, cannot download other reports!');
+        lib_core.warning('No job uuid available, cannot download other reports!');
     }
 }
 /**
@@ -14123,35 +14135,35 @@ function asJsonObject(text) {
         return jsonData;
     }
     catch (error) {
-        core.warning(`Error parsing JSON file: ${error}`);
+        lib_core.warning(`Error parsing JSON file: ${error}`);
         return undefined;
     }
 }
 /**
  * Uploads all given files as artifact
  * @param name Name for the zip file.
- * @param paths All file paths to include into the artifact.
+ * @param files All files to include into the artifact.
  */
-async function uploadArtifact(context, name, paths) {
-    core.startGroup('Upload artifacts');
+async function uploadArtifact(context, name, files) {
+    lib_core.startGroup('Upload artifacts');
     try {
         const artifactClient = artifact_client/* create */.U();
         const artifactName = name;
         const options = { continueOnError: true };
         const rootDirectory = context.workspaceFolder;
-        core.debug('rootDirectory: ' + rootDirectory);
-        if (core.isDebug()) {
+        lib_core.debug('rootDirectory: ' + rootDirectory);
+        if (lib_core.isDebug()) {
             shell.exec(`ls ${rootDirectory}`);
         }
-        core.debug('paths: ' + paths);
-        await artifactClient.uploadArtifact(artifactName, paths, rootDirectory, options);
-        core.debug('artifact upload done');
+        lib_core.debug('paths: ' + files);
+        await artifactClient.uploadArtifact(artifactName, files, rootDirectory, options);
+        lib_core.debug('artifact upload done');
     }
     catch (e) {
         const message = e instanceof Error ? e.message : 'Unknown error';
-        core.error(`ERROR while uploading artifacts: ${message}`);
+        lib_core.error(`ERROR while uploading artifacts: ${message}`);
     }
-    core.endGroup();
+    lib_core.endGroup();
 }
 /**
  * Get the JSON report file name for the scan job from the workspace directory.
@@ -14161,24 +14173,27 @@ function resolveReportNameForScanJob(context) {
     const workspaceDir = getWorkspaceDir();
     const filesInWorkspace = shell.ls(workspaceDir);
     if (!context.jobUUID) {
-        core.error('Illegal state: No job uuid resolved - not allowed at this point');
+        lib_core.error('Illegal state: No job uuid resolved - not allowed at this point');
         return '';
     }
     const jobUUID = context.jobUUID;
-    const regex = new RegExp(`sechub_report_.*${jobUUID}.*\\.json$`);
+    const regexString = `sechub_report_.*${jobUUID}.*\\.json$`;
+    lib_core.debug(`resolveReportNameForScanJob: regexString='${regexString}'`);
+    const regex = new RegExp(regexString);
     for (const fileName of filesInWorkspace) {
         if (regex.test(fileName)) {
+            lib_core.debug(`resolveReportNameForScanJob: regexString matched for file: '${fileName}'`);
             return fileName;
         }
     }
-    core.warning('JSON report file not found in the workspace directory.');
+    lib_core.warning('JSON report file not found in the workspace directory.');
     return '';
 }
 /**
  * Reports specific outputs to GitHub Actions based on the SecHub result.
  */
 function reportOutputs(jsonData) {
-    core.startGroup('Reporting outputs to GitHub');
+    lib_core.startGroup('Reporting outputs to GitHub');
     const findings = analyzeFindings(jsonData);
     const trafficLight = getFieldFromJsonReport('trafficLight', jsonData);
     const totalFindings = getFieldFromJsonReport('result.count', jsonData);
@@ -14189,7 +14204,7 @@ function reportOutputs(jsonData) {
     setOutput('scan-findings-medium', findings.mediumCount, 'number');
     setOutput('scan-findings-low', findings.lowCount, 'number');
     setOutput('scan-readable-summary', humanReadableSummary, 'string');
-    core.endGroup();
+    lib_core.endGroup();
 }
 /**
  * Analyzes the SecHub JSON report and returns the number of findings for each severity, if any found.
@@ -14200,7 +14215,7 @@ function analyzeFindings(jsonData) {
     const findings = getFieldFromJsonReport('result.findings', jsonData);
     // if no findings were reported.
     if (findings === undefined) {
-        core.debug('No findings reported to be categorized.');
+        lib_core.debug('No findings reported to be categorized.');
         return {
             mediumCount: 0,
             highCount: 0,
@@ -14228,7 +14243,7 @@ function analyzeFindings(jsonData) {
         }
     });
     if (unmapped > 0) {
-        core.debug('Unmapped findings: ${unmapped}');
+        lib_core.debug('Unmapped findings: ${unmapped}');
     }
     return {
         mediumCount,
@@ -14279,8 +14294,8 @@ function buildSummary(trafficLight, totalFindings, findings) {
  */
 function setOutput(field, value, dataFormat) {
     value = value !== null && value !== void 0 ? value : (dataFormat === 'number' ? 0 : 'FAILURE');
-    core.debug(`Output ${field} set to ${value}`);
-    core.setOutput(field, value.toString()); // Ensure value is converted to a string as GitHub Actions expects output variables to be strings.
+    lib_core.debug(`Output ${field} set to ${value}`);
+    lib_core.setOutput(field, value.toString()); // Ensure value is converted to a string as GitHub Actions expects output variables to be strings.
 }
 
 ;// CONCATENATED MODULE: ./src/input.ts
@@ -14318,20 +14333,20 @@ const INPUT_DATA_DEFAULTS = {
 };
 function resolveGitHubInputData() {
     return {
-        configPath: core.getInput(PARAM_CONFIG_PATH),
-        url: core.getInput(PARAM_SECHUB_SERVER_URL),
-        apiToken: core.getInput(PARAM_API_TOKEN),
-        user: core.getInput(PARAM_SECHUB_USER),
-        projectName: core.getInput(PARAM_PROJECT_NAME),
-        sechubCLIVersion: core.getInput(PARAM_CLIENT_VERSION),
-        debug: core.getInput(PARAM_DEBUG),
-        includeFolders: core.getInput(PARAM_INCLUDED_FOLDERS),
-        excludeFolders: core.getInput(PARAM_EXCLUDED_FOLDERS),
-        reportFormats: core.getInput(PARAM_REPORT_FORMATS),
-        failJobOnFindings: core.getInput(PARAM_FAIL_JOB_ON_FINDING),
-        trustAll: core.getInput(PARAM_TRUST_ALL),
-        scanTypes: core.getInput(PARAM_SCAN_TYPES),
-        contentType: core.getInput(PARAM_CONTENT_TYPE),
+        configPath: lib_core.getInput(PARAM_CONFIG_PATH),
+        url: lib_core.getInput(PARAM_SECHUB_SERVER_URL),
+        apiToken: lib_core.getInput(PARAM_API_TOKEN),
+        user: lib_core.getInput(PARAM_SECHUB_USER),
+        projectName: lib_core.getInput(PARAM_PROJECT_NAME),
+        sechubCLIVersion: lib_core.getInput(PARAM_CLIENT_VERSION),
+        debug: lib_core.getInput(PARAM_DEBUG),
+        includeFolders: lib_core.getInput(PARAM_INCLUDED_FOLDERS),
+        excludeFolders: lib_core.getInput(PARAM_EXCLUDED_FOLDERS),
+        reportFormats: lib_core.getInput(PARAM_REPORT_FORMATS),
+        failJobOnFindings: lib_core.getInput(PARAM_FAIL_JOB_ON_FINDING),
+        trustAll: lib_core.getInput(PARAM_TRUST_ALL),
+        scanTypes: lib_core.getInput(PARAM_SCAN_TYPES),
+        contentType: lib_core.getInput(PARAM_CONTENT_TYPE),
     };
 }
 
@@ -14363,13 +14378,13 @@ function initEnvironmentVariables(data) {
 function downloadClientRelease(context) {
     const clientVersion = context.inputData.sechubCLIVersion;
     if (external_fs_.existsSync(context.clientExecutablePath)) {
-        core.debug(`Client already downloaded - skip download. Path:${context.clientExecutablePath}`);
+        lib_core.debug(`Client already downloaded - skip download. Path:${context.clientExecutablePath}`);
         return;
     }
     const secHubZipFilePath = `${context.clientDownloadFolder}/sechub.zip`;
     const zipDownloadUrl = `https://github.com/mercedes-benz/sechub/releases/download/v${clientVersion}-client/sechub-cli-${clientVersion}.zip`;
-    core.debug(`SecHub-Client download URL: ${zipDownloadUrl}`);
-    core.debug(`SecHub-Client download folder: ${context.clientDownloadFolder}`);
+    lib_core.debug(`SecHub-Client download URL: ${zipDownloadUrl}`);
+    lib_core.debug(`SecHub-Client download folder: ${context.clientDownloadFolder}`);
     shellExecSynchOrFail(`mkdir ${context.clientDownloadFolder} -p`);
     shellExecSynchOrFail(`curl -L ${zipDownloadUrl} -o ${secHubZipFilePath}`);
     shellExecSynchOrFail(`unzip -o ${secHubZipFilePath} -d ${context.clientDownloadFolder}`);
@@ -14378,6 +14393,7 @@ function downloadClientRelease(context) {
 
 ;// CONCATENATED MODULE: ./src/launcher.ts
 // SPDX-License-Identifier: MIT
+
 
 
 
@@ -14472,6 +14488,7 @@ function executeScan(context) {
     logExitCode(context.lastClientExitCode);
 }
 async function postScan(context) {
+    lib_core.debug(`postScan(1): context.lastExitCode=${context.lastClientExitCode}`);
     if (context.lastClientExitCode > 1) {
         // in this case (not 0, not 1) this is an error and we cannot download the report - here we fail always!
         failAction(context.lastClientExitCode);
@@ -14482,6 +14499,7 @@ async function postScan(context) {
     reportOutputs(context.secHubReportJsonObject);
     /* upload artifacts */
     await uploadArtifact(context, 'sechub scan-report', getFiles(`${context.workspaceFolder}/sechub_report_*.*`));
+    lib_core.debug(`postScan(2): context.lastExitCode=${context.lastClientExitCode}, context.inputData.failJobOnFindings='${context.inputData.failJobOnFindings}'`);
     if (context.lastClientExitCode !== 0) {
         if (context.inputData.failJobOnFindings === 'true') {
             failAction(context.lastClientExitCode);
