@@ -51,7 +51,7 @@ export function extractJobUUID(output: string): string{
  * @param context: launch context
 */
 export function getReport(jobUUID: string, format: string, context: LaunchContext) {
-    const shellCommand = `${context.clientExecutablePath} -jobUUID ${jobUUID} -project ${context.inputData.projectName} --reportformat ${format} getReport`;
+    const shellCommand = `${context.clientExecutablePath} -jobUUID ${jobUUID} -project ${context.projectName} --reportformat ${format} getReport`;
     core.debug(`getReport shell command: ${shellCommand}`);
     
     const shellString =  shell.exec(shellCommand);

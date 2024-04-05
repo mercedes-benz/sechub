@@ -89,6 +89,8 @@ export class SecHubConfigurationModel {
 
     data = new DataSection();
 
+    project = '';
+
     codeScan?: CodeScan;
     secretScan?: SecretScan;
     licenseScan?: LicenseScan;

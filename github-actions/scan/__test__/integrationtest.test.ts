@@ -1,16 +1,15 @@
 // SPDX-License-Identifier: MIT
 
-import { ArtifactClient, create } from '@actions/artifact';
-import { debug, error, getInput, info, isDebug, warning, setFailed } from '@actions/core';
+import { create } from '@actions/artifact';
+import { debug, error, getInput, info, isDebug, setFailed, warning } from '@actions/core';
+import * as fs from 'fs';
 import * as shell from 'shelljs';
 import { getWorkspaceDir } from '../src/fs-helper';
-import * as input from '../src/input';
-import { getFieldFromJsonReport } from '../src/json-helper';
+import * as input from '../src/github-input';
+import { getFieldFromJson } from '../src/json-helper';
 import * as launcher from '../src/launcher';
 import { LaunchContext } from '../src/launcher';
 import { IntegrationTestContext } from './integrationtest/testframework';
-import * as fs from 'fs';
-import { uploadArtifact } from '../src/post-scan';
 jest.mock('@actions/core');
 jest.mock('@actions/artifact');
 
@@ -40,7 +39,7 @@ integrationTestContext.finish();
 
 const mockedInputMap = new Map();
 
-var mockedUploadFunction: jest.Mock;
+let mockedUploadFunction: jest.Mock;
 
 beforeEach(() => {
     
@@ -281,12 +280,33 @@ describe('integrationtest non-generated config', () => {
 
         /* prepare */
         initInputMap();
-        mockedInputMap.set(input.PARAM_PROJECT_NAME, 'test-project-4'); // we must set the project name here, even when we have a config! GitHub action needs this always.
+        mockedInputMap.set(input.PARAM_PROJECT_NAME, 'test-project-4'); // we override here the config definition (which is explicit wrong in config file)
 
         const pwd = shell.pwd();
         const configDir = `${pwd}/__test__/integrationtest/test-config`;
 
         mockedInputMap.set(input.PARAM_CONFIG_PATH, `${configDir}/sechub-config-webscan-project-4.json`);
+
+        /* execute */
+        const result = await launcher.launch();
+
+        /* test */
+        assertLastClientExitCode(result, 1);
+        assertActionIsMarkedAsFailed();
+        assertTrafficLight(result, 'RED');
+        assertJsonReportContains(result, 'XSS attackable parameter output: </p><script>alert(1)');
+        assertUploadDone();
+
+    });
+    test('config-path defined, project name only in config file, file available, web scan with red trafficlight', async () =>  {
+
+        /* prepare */
+        initInputMap();
+        
+        const pwd = shell.pwd();
+        const configDir = `${pwd}/__test__/integrationtest/test-config`;
+
+        mockedInputMap.set(input.PARAM_CONFIG_PATH, `${configDir}/sechub-config-webscan-project-4-with-correct-project-name-inside.json`);
 
         /* execute */
         const result = await launcher.launch();
@@ -316,7 +336,7 @@ function assertLastClientExitCode(context: LaunchContext, exitCode: number) {
 }
 
 function assertTrafficLight(context: LaunchContext, trafficLight: string) {
-    const found = getFieldFromJsonReport('trafficLight', context.secHubReportJsonObject);
+    const found = getFieldFromJson('trafficLight', context.secHubReportJsonObject);
     expect(found).toEqual(trafficLight);
 
 }

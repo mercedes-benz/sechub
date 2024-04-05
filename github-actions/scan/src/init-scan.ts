@@ -14,7 +14,7 @@ import * as fs from 'fs';
  * 
  * @returns resulting configuration file path
  */
-export function initSecHubJson(secHubJsonFilePath: string, customSecHubConfigFilePath: string,  builderData: SecHubConfigurationModelBuilderData): string | null {
+export function initSecHubJson(secHubJsonFilePath: string, customSecHubConfigFilePath: string,  builderData: SecHubConfigurationModelBuilderData): string {
     core.startGroup('Set config');
 
     let configFilePath = customSecHubConfigFilePath;

@@ -1,17 +1,18 @@
 // SPDX-License-Identifier: MIT
 
+import * as core from '@actions/core';
 import { failAction } from './action-helper';
-import { scan } from './sechub-cli';
-import { logExitCode } from './exitcode';
-import { getFiles, getWorkspaceDir } from './fs-helper';
-import { initReportFormats, initSecHubJson } from './init-scan';
-import { collectReportData, reportOutputs, uploadArtifact } from './post-scan';
-import { GitHubInputData, resolveGitHubInputData, INPUT_DATA_DEFAULTS } from './input';
-import { initEnvironmentVariables } from './environment';
 import { downloadClientRelease } from './client-download';
 import { SecHubConfigurationModelBuilderData } from './configuration-builder';
 import { ContentType, ScanType } from './configuration-model';
-import * as core from '@actions/core';
+import { initEnvironmentVariables } from './environment';
+import { logExitCode } from './exitcode';
+import { getFiles, getWorkspaceDir } from './fs-helper';
+import { GitHubInputData, INPUT_DATA_DEFAULTS, resolveGitHubInputData } from './github-input';
+import { initReportFormats, initSecHubJson } from './init-scan';
+import { collectReportData, reportOutputs, uploadArtifact } from './post-scan';
+import * as projectNameResolver from './projectname-resolver';
+import { scan } from './sechub-cli';
 
 /**
  * Starts the launch process
@@ -32,6 +33,9 @@ export async function launch(): Promise<LaunchContext> {
 
 export interface LaunchContext {
     jobUUID: string | undefined;
+
+    projectName: string;
+
     debug: boolean;
 
     inputData: GitHubInputData;
@@ -54,6 +58,8 @@ export interface LaunchContext {
 export const LAUNCHER_CONTEXT_DEFAULTS: LaunchContext = {
     jobUUID: undefined,
     debug: false,
+
+    projectName: '',
 
     inputData: INPUT_DATA_DEFAULTS,
     reportFormats: ['json'],
@@ -97,6 +103,8 @@ function createContext(): LaunchContext {
 
     const configFileLocation = initSecHubJson(generatedSecHubJsonFilePath, gitHubInputData.configPath, builderData);
 
+    const projectName = projectNameResolver.resolveProjectName(gitHubInputData, configFileLocation);
+
     const reportFormats = initReportFormats(gitHubInputData.reportFormats);
 
     return {
@@ -110,12 +118,14 @@ function createContext(): LaunchContext {
         clientDownloadFolder: clientDownloadFolder,
         clientExecutablePath: clientExecutablePath,
 
+        projectName: projectName,
+
         lastClientExitCode: LAUNCHER_CONTEXT_DEFAULTS.lastClientExitCode,
 
         secHubJsonFilePath: generatedSecHubJsonFilePath,
         workspaceFolder: workspaceFolder,
 
-        debug: gitHubInputData.debug=='true',
+        debug: gitHubInputData.debug == 'true',
     };
 }
 
@@ -131,8 +141,8 @@ function createSafeBuilderData(gitHubInputData: GitHubInputData) {
 }
 
 function init(context: LaunchContext) {
-
-    initEnvironmentVariables(context.inputData);
+    core.debug(`Init for project : ${context.projectName}`);
+    initEnvironmentVariables(context.inputData, context.projectName);
 
     downloadClientRelease(context);
 }
@@ -167,7 +177,7 @@ async function postScan(context: LaunchContext): Promise<void> {
 
     core.debug(`postScan(2): context.lastExitCode=${context.lastClientExitCode}, context.inputData.failJobOnFindings='${context.inputData.failJobOnFindings}'`);
     if (context.lastClientExitCode !== 0) {
-        if (context.inputData.failJobOnFindings === 'true'){
+        if (context.inputData.failJobOnFindings === 'true') {
             failAction(context.lastClientExitCode);
         }
     }

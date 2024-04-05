@@ -8,7 +8,7 @@ import { getWorkspaceDir } from './fs-helper';
 import { LaunchContext } from './launcher';
 import { logExitCode } from './exitcode';
 import { getReport } from './sechub-cli';
-import { getFieldFromJsonReport } from './json-helper';
+import { getFieldFromJson } from './json-helper';
 
 /**
  * Collect all necessary report data, downloads additional report formats (e.g. 'html') if necessary
@@ -141,8 +141,8 @@ export function reportOutputs(jsonData: any): void {
     core.startGroup('Reporting outputs to GitHub');
 
     const findings = analyzeFindings(jsonData);
-    const trafficLight = getFieldFromJsonReport('trafficLight', jsonData);
-    const totalFindings = getFieldFromJsonReport('result.count', jsonData);
+    const trafficLight = getFieldFromJson('trafficLight', jsonData);
+    const totalFindings = getFieldFromJson('result.count', jsonData);
     const humanReadableSummary = buildSummary(trafficLight, totalFindings, findings);
 
     setOutput('scan-trafficlight', trafficLight, 'string');
@@ -162,7 +162,7 @@ export function reportOutputs(jsonData: any): void {
  * @returns {{mediumCount: number, highCount: number, lowCount: number}}
  */
 function analyzeFindings(jsonData: any): { mediumCount: number; highCount: number; lowCount: number } {
-    const findings = getFieldFromJsonReport('result.findings', jsonData);
+    const findings = getFieldFromJson('result.findings', jsonData);
 
     // if no findings were reported.
     if (findings === undefined) {

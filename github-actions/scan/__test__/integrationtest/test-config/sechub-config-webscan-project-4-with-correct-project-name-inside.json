@@ -2,7 +2,7 @@
 
     "apiVersion": "1.0",
 
-    "project" : "wrong-project-shall-be-overriden-by-env-in-test",
+    "project" : "test-project-4",
 
     "webScan"   : {
         "url": "https://vulnerable.demo.example.com"

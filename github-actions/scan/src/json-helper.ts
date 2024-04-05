@@ -1,12 +1,12 @@
 import * as core from '@actions/core';
 
 /**
- * Reads the given field from the SecHub JSON report.
+ * Reads the given field from JSON.
  * @param {string} field - The field relative to root, where the value should be found. The field can be a nested field, e.g. result.count.
  * @param jsonData - The json data to read the field from.
  * @returns {*} - The value found for the given field or undefined if not found.
  */
-export function getFieldFromJsonReport(field: string, jsonData: any): any {
+export function getFieldFromJson(field: string, jsonData: any): any | undefined {
     // Split the given field into individual keys
     const keys = field.split('.');
 
