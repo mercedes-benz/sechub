@@ -30,12 +30,10 @@ public class PrepareWrapperContextFactory {
         }
         try {
             return JSONConverter.get().fromJSON(SecHubConfigurationModel.class, json);
-
         } catch (JSONConverterException e) {
             LOG.error("Cannot convert given sechub configuration model", e);
+            throw new IllegalStateException("SecHub model JSON found, but invalid", e);
         }
-        LOG.warn("Because not being able to build correct sechub configuration model an empty model will be used as a fallback!");
-        return new SecHubConfigurationModel(); // fallback - empty model
     }
 
     private RemoteCredentialConfiguration createRemoteConfigModel(String json) {

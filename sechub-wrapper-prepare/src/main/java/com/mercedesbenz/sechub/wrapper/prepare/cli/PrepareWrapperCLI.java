@@ -9,6 +9,8 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 
 import com.mercedesbenz.sechub.adapter.AdapterExecutionResult;
+import com.mercedesbenz.sechub.commons.core.prepare.PrepareResult;
+import com.mercedesbenz.sechub.commons.core.prepare.PrepareStatus;
 import com.mercedesbenz.sechub.wrapper.prepare.prepare.PrepareWrapperPreparationService;
 import com.mercedesbenz.sechub.wrapper.prepare.prepare.PrepareWrapperStorageService;
 
@@ -23,9 +25,6 @@ public class PrepareWrapperCLI implements CommandLineRunner {
     @Autowired
     PrepareWrapperStorageService storageService;
 
-    @Autowired
-    PrepareWrapperResultStatus status;
-
     @Override
     public void run(String... args) {
         LOG.debug("Prepare wrapper starting");
@@ -33,7 +32,8 @@ public class PrepareWrapperCLI implements CommandLineRunner {
         try {
             result = preparationService.startPreparation();
         } catch (Exception e) {
-            result = new AdapterExecutionResult(status.getSTATUS_FAILED());
+            PrepareResult prepareResult = new PrepareResult(PrepareStatus.FAILED);
+            result = new AdapterExecutionResult(prepareResult.toString());
             LOG.error("Execution failed", e);
         }
         try {
@@ -42,6 +42,5 @@ public class PrepareWrapperCLI implements CommandLineRunner {
             LOG.error("Result storing failed", e);
             System.exit(2);
         }
-
     }
 }

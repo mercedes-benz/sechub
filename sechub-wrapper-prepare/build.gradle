@@ -7,12 +7,11 @@
 */
 dependencies {
     /* runtime */
-    implementation project(':sechub-commons-archive')
     implementation project(':sechub-commons-model')
     implementation project(':sechub-commons-core')
     implementation project(':sechub-commons-pds')
+    implementation project(':sechub-adapter')
 
-    implementation project(':sechub-adapter-checkmarx')
 
     /* test */
     testImplementation project(':sechub-testframework')
@@ -21,27 +20,7 @@ dependencies {
     testImplementation spring_boot_dependency.junit_jupiter_params
     testImplementation spring_boot_dependency.mockito_core
 
-    testImplementation library.apache_commons_io
 }
 
 version = versionData.getPrepareWrapperVersion()
 
-bootJar {
-
-    doLast {
-        /* Here we copy the created wrapper jar as "sechub-wrapper-prepare.jar" into the
-         * pds-tools folder inside the sechub-integrationtest gradle subproject.
-         */
-        File integratonTestLaunchFile = new File("${rootProject.projectDir}/sechub-integrationtest/build/pds-tools/sechub-wrapper-prepare.jar")
-
-        if (integratonTestLaunchFile.exists()) {
-            java.nio.file.Files.delete(integratonTestLaunchFile.toPath())
-        } else {
-            integratonTestLaunchFile.getParentFile().mkdirs();
-        }
-
-        File buildFile = new File("${project.buildDir}/libs/sechub-wrapper-prepare-${project.version}.jar")
-        java.nio.file.Files.copy(buildFile.toPath(), integratonTestLaunchFile.toPath())
-    }
-
-}

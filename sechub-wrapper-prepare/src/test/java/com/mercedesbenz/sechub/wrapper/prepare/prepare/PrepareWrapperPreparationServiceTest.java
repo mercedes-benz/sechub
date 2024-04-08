@@ -12,11 +12,11 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import com.mercedesbenz.sechub.adapter.AdapterExecutionResult;
+import com.mercedesbenz.sechub.commons.core.prepare.PrepareResult;
 import com.mercedesbenz.sechub.commons.model.RemoteCredentialConfiguration;
 import com.mercedesbenz.sechub.commons.model.RemoteCredentialContainer;
 import com.mercedesbenz.sechub.commons.model.SecHubConfigurationModel;
 import com.mercedesbenz.sechub.wrapper.prepare.cli.PrepareWrapperEnvironment;
-import com.mercedesbenz.sechub.wrapper.prepare.cli.PrepareWrapperResultStatus;
 
 class PrepareWrapperPreparationServiceTest {
 
@@ -26,16 +26,15 @@ class PrepareWrapperPreparationServiceTest {
 
     PrepareWrapperContextFactory factory;
 
-    PrepareWrapperResultStatus status;
-
     PrepareWrapperContext context;
+
+    PrepareResult result;
 
     @BeforeEach
     void beforeEach() {
 
         environment = mock(PrepareWrapperEnvironment.class);
         factory = mock(PrepareWrapperContextFactory.class);
-        status = new PrepareWrapperResultStatus();
         context = mock(PrepareWrapperContext.class);
 
         when(factory.create(environment)).thenReturn(context);
@@ -43,7 +42,6 @@ class PrepareWrapperPreparationServiceTest {
         serviceToTest = new PrepareWrapperPreparationService();
         serviceToTest.environment = environment;
         serviceToTest.factory = factory;
-        serviceToTest.status = status;
 
     }
 
@@ -58,7 +56,7 @@ class PrepareWrapperPreparationServiceTest {
         AdapterExecutionResult result = serviceToTest.startPreparation();
 
         /* test */
-        assertEquals("SECHUB_PREPARE_RESULT;status=ok", result.getProductResult());
+        assertEquals("SECHUB_PREPARE_RESULT;status=OK", result.getProductResult());
     }
 
     @Test

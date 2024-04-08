@@ -16,7 +16,7 @@ public class PrepareWrapperPojoFactory {
     }
 
     @Bean
-    TextFileWriter createTextFilewRiter() {
+    TextFileWriter createTextFileWriter() {
         return new TextFileWriter();
     }
 
