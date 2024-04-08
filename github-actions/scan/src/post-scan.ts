@@ -135,9 +135,10 @@ function resolveReportNameForScanJob(context: LaunchContext): string {
 }
 
 /**
- * Reports specific outputs to GitHub Actions based on the SecHub result.
+ * Reports specific outputs to GitHub Actions based on the SecHub result
+ * @returns traffic light
  */
-export function reportOutputs(jsonData: any): void {
+export function reportOutputs(jsonData: any): string {
     core.startGroup('Reporting outputs to GitHub');
 
     const findings = analyzeFindings(jsonData);
@@ -153,6 +154,8 @@ export function reportOutputs(jsonData: any): void {
     setOutput('scan-readable-summary', humanReadableSummary, 'string');
 
     core.endGroup();
+
+    return trafficLight;
 }
 
 

@@ -14284,7 +14284,8 @@ function resolveReportNameForScanJob(context) {
     return '';
 }
 /**
- * Reports specific outputs to GitHub Actions based on the SecHub result.
+ * Reports specific outputs to GitHub Actions based on the SecHub result
+ * @returns traffic light
  */
 function reportOutputs(jsonData) {
     lib_core.startGroup('Reporting outputs to GitHub');
@@ -14299,6 +14300,7 @@ function reportOutputs(jsonData) {
     setOutput('scan-findings-low', findings.lowCount, 'number');
     setOutput('scan-readable-summary', humanReadableSummary, 'string');
     lib_core.endGroup();
+    return trafficLight;
 }
 /**
  * Analyzes the SecHub JSON report and returns the number of findings for each severity, if any found.
@@ -14467,6 +14469,7 @@ const LAUNCHER_CONTEXT_DEFAULTS = {
     workspaceFolder: '',
     secHubReportJsonObject: undefined,
     secHubReportJsonFileName: '',
+    trafficLight: 'OFF'
 };
 /**
  * Creates the initial launch context
@@ -14502,6 +14505,7 @@ function createContext() {
         lastClientExitCode: LAUNCHER_CONTEXT_DEFAULTS.lastClientExitCode,
         secHubJsonFilePath: generatedSecHubJsonFilePath,
         workspaceFolder: workspaceFolder,
+        trafficLight: LAUNCHER_CONTEXT_DEFAULTS.trafficLight,
         debug: gitHubInputData.debug == 'true',
     };
 }
@@ -14537,13 +14541,13 @@ async function postScan(context) {
     }
     collectReportData(context);
     /* reporting - analysis etc. */
-    reportOutputs(context.secHubReportJsonObject);
+    context.trafficLight = reportOutputs(context.secHubReportJsonObject);
     /* upload artifacts */
     await uploadArtifact(context, 'sechub scan-report', getFiles(`${context.workspaceFolder}/sechub_report_*.*`));
-    lib_core.debug(`postScan(2): context.lastExitCode=${context.lastClientExitCode}, context.inputData.failJobOnFindings='${context.inputData.failJobOnFindings}'`);
-    if (context.lastClientExitCode !== 0) {
-        if (context.inputData.failJobOnFindings === 'true') {
-            failAction(context.lastClientExitCode);
+    lib_core.debug(`postScan(2): context.lastExitCode=${context.lastClientExitCode}, context.trafficLight='${context.trafficLight}', context.inputData.failJobOnFindings='${context.inputData.failJobOnFindings}'`);
+    if (context.trafficLight == 'RED' || context.trafficLight == 'OFF') {
+        if (context.inputData.failJobOnFindings == 'true' || context.inputData.failJobOnFindings == '') {
+            failAction(1);
         }
     }
 }

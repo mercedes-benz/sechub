@@ -32,6 +32,7 @@ export async function launch(): Promise<LaunchContext> {
 }
 
 export interface LaunchContext {
+    trafficLight: string;
     jobUUID: string | undefined;
 
     projectName: string;
@@ -73,6 +74,7 @@ export const LAUNCHER_CONTEXT_DEFAULTS: LaunchContext = {
     workspaceFolder: '',
     secHubReportJsonObject: undefined,
     secHubReportJsonFileName: '',
+    trafficLight: 'OFF'
 };
 
 
@@ -124,7 +126,7 @@ function createContext(): LaunchContext {
 
         secHubJsonFilePath: generatedSecHubJsonFilePath,
         workspaceFolder: workspaceFolder,
-
+        trafficLight: LAUNCHER_CONTEXT_DEFAULTS.trafficLight,
         debug: gitHubInputData.debug == 'true',
     };
 }
@@ -170,15 +172,15 @@ async function postScan(context: LaunchContext): Promise<void> {
     collectReportData(context);
 
     /* reporting - analysis etc. */
-    reportOutputs(context.secHubReportJsonObject);
+    context.trafficLight = reportOutputs(context.secHubReportJsonObject);
 
     /* upload artifacts */
     await uploadArtifact(context, 'sechub scan-report', getFiles(`${context.workspaceFolder}/sechub_report_*.*`));
 
-    core.debug(`postScan(2): context.lastExitCode=${context.lastClientExitCode}, context.inputData.failJobOnFindings='${context.inputData.failJobOnFindings}'`);
-    if (context.lastClientExitCode !== 0) {
-        if (context.inputData.failJobOnFindings === 'true') {
-            failAction(context.lastClientExitCode);
+    core.debug(`postScan(2): context.lastExitCode=${context.lastClientExitCode}, context.trafficLight='${context.trafficLight}', context.inputData.failJobOnFindings='${context.inputData.failJobOnFindings}'`);
+    if (context.trafficLight =='RED' || context.trafficLight == 'OFF') {
+        if (context.inputData.failJobOnFindings == 'true' || context.inputData.failJobOnFindings == '' ) {
+            failAction(1);
         }
     }
 }
