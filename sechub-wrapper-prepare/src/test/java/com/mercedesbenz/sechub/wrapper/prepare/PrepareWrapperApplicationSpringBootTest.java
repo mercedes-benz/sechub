@@ -26,12 +26,13 @@ class PrepareWrapperApplicationSpringBootTest {
     PrepareWrapperPreparationService preparationService;
 
     @Test
-    void start_preparation_with_remote_test_properties_and_empty_modules_result_is_not_null() {
+    void start_preparation_with_remote_test_properties_and_empty_prepare_service_list_is_success() {
         /* execute */
         AdapterExecutionResult result = preparationService.startPreparation();
 
         /* test */
         assertEquals("SECHUB_PREPARE_RESULT;status=OK", result.getProductResult());
+        assertEquals(0, result.getProductMessages().size());
     }
 
 }

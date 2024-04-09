@@ -25,17 +25,6 @@ public class PrepareWrapperEnvironment {
 
     // TODO: 27.03.24 laura environment variable for upload folder
 
-    /**********************************************/
-    /* Prepare wrapper specific environment setup */
-    /**********************************************/
-
-    @Value("${" + PrepareWrapperKeyConstants.KEY_PDS_PREPARE_REMOTE_CREDENTIAL_CONFIGURATION + "}")
-    private String remoteCredentialConfigurationAsJSON;
-
-    public String getRemoteCredentialConfigurationAsJSON() {
-        return remoteCredentialConfigurationAsJSON;
-    }
-
     public String getSechubConfigurationModelAsJson() {
         return sechubConfigurationModelAsJson;
     }

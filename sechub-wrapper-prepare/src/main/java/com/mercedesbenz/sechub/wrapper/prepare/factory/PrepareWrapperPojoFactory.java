@@ -5,15 +5,9 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Component;
 
 import com.mercedesbenz.sechub.commons.TextFileWriter;
-import com.mercedesbenz.sechub.commons.model.RemoteCredentialContainerFactory;
 
 @Component
 public class PrepareWrapperPojoFactory {
-
-    @Bean
-    RemoteCredentialContainerFactory createRemoteCredentialFactory() {
-        return new RemoteCredentialContainerFactory();
-    }
 
     @Bean
     TextFileWriter createTextFileWriter() {

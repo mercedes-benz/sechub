@@ -1,20 +1,14 @@
 package com.mercedesbenz.sechub.wrapper.prepare.prepare;
 
+import static com.mercedesbenz.sechub.commons.model.SecHubScanConfiguration.createFromJSON;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
-
-import java.util.LinkedHashMap;
-import java.util.Map;
-import java.util.regex.Pattern;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import com.mercedesbenz.sechub.adapter.AdapterExecutionResult;
-import com.mercedesbenz.sechub.commons.core.prepare.PrepareResult;
-import com.mercedesbenz.sechub.commons.model.RemoteCredentialConfiguration;
-import com.mercedesbenz.sechub.commons.model.RemoteCredentialContainer;
 import com.mercedesbenz.sechub.commons.model.SecHubConfigurationModel;
 import com.mercedesbenz.sechub.wrapper.prepare.cli.PrepareWrapperEnvironment;
 
@@ -27,8 +21,6 @@ class PrepareWrapperPreparationServiceTest {
     PrepareWrapperContextFactory factory;
 
     PrepareWrapperContext context;
-
-    PrepareResult result;
 
     @BeforeEach
     void beforeEach() {
@@ -46,17 +38,52 @@ class PrepareWrapperPreparationServiceTest {
     }
 
     @Test
-    void when_no_remote_data_was_configured_return_preparation_success(){
+    void when_no_remote_data_was_configured_return_preparation_success_with_warn_message(){
         /* prepare */
         when(context.getSecHubConfiguration()).thenReturn(new SecHubConfigurationModel());
-        Map<String, Pattern> map = new LinkedHashMap<>();
-        when(context.getRemoteCredentialContainer()).thenReturn(new RemoteCredentialContainer(new RemoteCredentialConfiguration(), map));
 
         /* execute */
         AdapterExecutionResult result = serviceToTest.startPreparation();
 
         /* test */
         assertEquals("SECHUB_PREPARE_RESULT;status=OK", result.getProductResult());
+        assertEquals(1, result.getProductMessages().size());
+        assertEquals("No Remote Configuration found", result.getProductMessages().get(0).getText());
+    }
+
+    @Test
+    void when_remote_data_was_configured_return_preparation_success_without_message() {
+        /* prepare */
+        String json = """
+                {
+                  "apiVersion": "1.0",
+                  "data": {
+                    "sources": [
+                      {
+                        "name": "remote_example_name",
+                        "remote": {
+                          "location": "remote_example_location",
+                          "type": "git"
+                        }
+                      }
+                    ]
+                  },
+                  "codeScan": {
+                    "use": [
+                      "remote_example_name"
+                    ]
+                  }
+                }
+                """;
+        SecHubConfigurationModel model = createFromJSON(json);
+        when(context.getSecHubConfiguration()).thenReturn(model);
+
+        /* execute */
+        AdapterExecutionResult result = serviceToTest.startPreparation();
+
+        /* test */
+        assertEquals("SECHUB_PREPARE_RESULT;status=OK", result.getProductResult());
+        assertEquals(0, result.getProductMessages().size());
     }
 
     @Test

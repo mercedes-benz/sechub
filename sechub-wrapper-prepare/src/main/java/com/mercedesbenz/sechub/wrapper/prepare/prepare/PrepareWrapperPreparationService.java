@@ -1,6 +1,7 @@
 package com.mercedesbenz.sechub.wrapper.prepare.prepare;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -33,14 +34,15 @@ public class PrepareWrapperPreparationService {
         LOG.debug("Start preparation");
         PrepareWrapperContext context = factory.create(environment);
         List<SecHubRemoteDataConfiguration> remoteDataConfigurationList = resolveRemoteConfigurationsFromSecHubModel(context);
+
         if (remoteDataConfigurationList.isEmpty()) {
-            // TODO: 27.03.24 laura is it ok that no remote data was configured?
             LOG.warn("No Remote configuration was found");
             PrepareResult result = new PrepareResult(PrepareStatus.OK);
-            return new AdapterExecutionResult(result.toString());
+            SecHubMessage message = new SecHubMessage(SecHubMessageType.WARNING, "No Remote Configuration found");
+            Collection<SecHubMessage> collection = new ArrayList<>();
+            collection.add(message);
+            return new AdapterExecutionResult(result.toString(), collection);
         }
-
-        // TODO: 26.03.24 laura start GIT and SKOPEO Services with model
         for (PrepareWrapperModule module : modules) {
             SecHubConfigurationModel sechubConfiguration = context.getSecHubConfiguration();
             if (module.isAbleToPrepare(sechubConfiguration)) {
@@ -53,8 +55,8 @@ public class PrepareWrapperPreparationService {
 
     private List<SecHubRemoteDataConfiguration> resolveRemoteConfigurationsFromSecHubModel(PrepareWrapperContext context) {
         List<SecHubRemoteDataConfiguration> result = new ArrayList<>();
-        if (context.getSecHubConfiguration() == null || context.getRemoteCredentialContainer() == null) {
-            throw new IllegalStateException("Context was not initialized correctly. SecHub or credential configuration was null");
+        if (context.getSecHubConfiguration() == null) {
+            throw new IllegalStateException("Context was not initialized correctly. SecHub configuration was null");
         }
 
         var dataOpt = context.getSecHubConfiguration().getData();
