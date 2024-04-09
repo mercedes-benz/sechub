@@ -48,7 +48,7 @@ describe('initReportFormats', function () {
         expect(() => initReportFormats(reportFormats)).toThrow(Error);
     });
 
-    it('json rp missing json report at the beginning', function () {
+    it('json always available, even when only html report wanted', function () {
         /* prepare */
         const reportFormats = 'html';
 

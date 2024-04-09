@@ -223,9 +223,6 @@ describe('configuration-builder', function() {
         expect(model.codeScan?.use.length).toEqual(1);
         expect(model.codeScan?.use[0]).toEqual('reference-data-1');
 
-        expect(model.codeScan?.use.length).toEqual(1);
-        expect(model.codeScan?.use[0]).toEqual('reference-data-1');
-        
         expect(model.secretScan).toBeDefined();
         expect(model.secretScan?.use.length).toEqual(1);
         expect(model.secretScan?.use[0]).toEqual('reference-data-1'); // same data refererenced
