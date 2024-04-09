@@ -6,7 +6,14 @@
         "name": "remote_example_name",
         "remote": {
           "location": "remote_example_location",
-          "type": "git"
+          "type": "git",
+          "credentials": {
+            "name": "my-credentials-example",
+            "user": {
+              "name": "my-example-user",
+              "password": "my-example-password"
+            }
+          }
         }
       }
     ]

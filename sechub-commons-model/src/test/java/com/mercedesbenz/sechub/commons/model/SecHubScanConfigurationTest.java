@@ -183,6 +183,14 @@ class SecHubScanConfigurationTest {
         assertEquals("remote_example_location", location);
         String type = remote.get().getType();
         assertEquals("git", type);
+
+        // test defined credentials
+        assertTrue(remote.get().getCredentials().isPresent());
+        SecHubRemoteCredentialData credentials = remote.get().getCredentials().get();
+        assertEquals("my-credentials-example", credentials.getName());
+        assertTrue(credentials.getUser().isPresent());
+        assertEquals("my-example-user", credentials.getUser().get().getName());
+        assertEquals("my-example-password", credentials.getUser().get().getPassword());
     }
 
     @Test
