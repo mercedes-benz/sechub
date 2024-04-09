@@ -61,6 +61,7 @@ jobs:
           export CHECKMARX_WRAPPER_VERSION
           export CLOC_VERSION
           export FINDSECURITYBUGS_VERSION
+          export SPOTBUGS_VERSION
           export GITLEAKS_VERSION
           export GOSEC_VERSION
           export OWASPZAP_VERSION
