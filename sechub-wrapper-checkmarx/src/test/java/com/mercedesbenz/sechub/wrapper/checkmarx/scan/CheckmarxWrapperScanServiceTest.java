@@ -7,16 +7,24 @@ import static org.mockito.Mockito.*;
 
 import java.io.InputStream;
 import java.nio.file.Path;
+import java.util.List;
 
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 import org.mockito.ArgumentCaptor;
+import org.mockito.ArgumentMatchers;
 
 import com.mercedesbenz.sechub.adapter.AdapterExecutionResult;
 import com.mercedesbenz.sechub.adapter.AdapterMetaDataCallback;
 import com.mercedesbenz.sechub.adapter.checkmarx.CheckmarxAdapter;
 import com.mercedesbenz.sechub.adapter.checkmarx.CheckmarxAdapterConfig;
+import com.mercedesbenz.sechub.adapter.checkmarx.CheckmarxResilienceConfiguration;
+import com.mercedesbenz.sechub.adapter.checkmarx.CheckmarxResilienceConsultant;
+import com.mercedesbenz.sechub.commons.core.resilience.ResilienceConsultant;
+import com.mercedesbenz.sechub.commons.core.resilience.ResilientAction;
+import com.mercedesbenz.sechub.commons.core.resilience.ResilientActionExecutor;
 import com.mercedesbenz.sechub.test.TestUtil;
 import com.mercedesbenz.sechub.wrapper.checkmarx.cli.CheckmarxWrapperEnvironment;
 
@@ -50,6 +58,14 @@ class CheckmarxWrapperScanServiceTest {
         serviceToTest.environment = environment;
         serviceToTest.factory = factory;
 
+        when(environment.getCheckmarxProductBaseURL()).thenReturn("product-base-url1");
+        when(environment.getCheckmarxUser()).thenReturn("user1");
+        when(environment.getCheckmarxPassword()).thenReturn("checkmarx-pwd1");
+
+        when(context.getProjectId()).thenReturn("project1");
+        when(context.getTeamIdForNewProjects()).thenReturn("team1");
+        when(context.getPresetIdForNewProjects()).thenReturn(1L);
+
     }
 
     /* @formatter:off */
@@ -70,16 +86,9 @@ class CheckmarxWrapperScanServiceTest {
         when(environment.getScanResultCheckPeriodInMilliseconds()).thenReturn(49152);
         when(environment.getScanResultCheckTimeOutInMinutes()).thenReturn(20);
 
-        when(environment.getCheckmarxProductBaseURL()).thenReturn("product-base-url1");
-        when(environment.getCheckmarxUser()).thenReturn("user1");
-        when(environment.getCheckmarxPassword()).thenReturn("checkmarx-pwd1");
         when((environment.getSecHubJobUUID())).thenReturn("uuid1");
         when(environment.getEngineConfigurationName()).thenReturn("engine1");
         when(environment.getClientSecret()).thenReturn("secret1");
-
-        when(context.getProjectId()).thenReturn("project1");
-        when(context.getTeamIdForNewProjects()).thenReturn("team1");
-        when(context.getPresetIdForNewProjects()).thenReturn(1L);
 
         when(context.createMockDataIdentifier()).thenReturn("folder1;folder2");
 
@@ -114,6 +123,53 @@ class CheckmarxWrapperScanServiceTest {
         assertEquals("engine1", config.getEngineConfigurationName());
         assertEquals("secret1", config.getClientSecret());
         assertEquals("folder1;folder2", config.getMockDataIdentifier());
+    }
+
+    @Test
+    void startScan_triggers_resilient_action_executor_and_returns_result() throws Exception {
+        /* prepare */
+        CheckmarxWrapperScanService spiedServiceToTest = spy(serviceToTest);
+        @SuppressWarnings("unchecked")
+        ResilientActionExecutor<AdapterExecutionResult> executor = (ResilientActionExecutor<AdapterExecutionResult>) mock(ResilientActionExecutor.class);
+        AdapterExecutionResult mockedResult = mock(AdapterExecutionResult.class);
+
+        when(spiedServiceToTest.createResilientActionExecutor()).thenReturn(executor);
+        when(executor.executeResilient(any())).thenReturn(mockedResult);
+
+        /* execute */
+        AdapterExecutionResult result = spiedServiceToTest.startScan();
+
+        /* test */
+        verify(executor).executeResilient(ArgumentMatchers.<ResilientAction<AdapterExecutionResult>>any());
+        assertSame(mockedResult, result);
+    }
+
+    @Test
+    void startScan_created_action_executor_uses_environment_as_config() throws Exception {
+        /* prepare */
+        CheckmarxWrapperScanService spiedServiceToTest = spy(serviceToTest);
+        @SuppressWarnings("unchecked")
+        ResilientActionExecutor<AdapterExecutionResult> executor = (ResilientActionExecutor<AdapterExecutionResult>) mock(ResilientActionExecutor.class);
+
+        when(spiedServiceToTest.createResilientActionExecutor()).thenReturn(executor);
+
+        /* execute */
+        spiedServiceToTest.startScan();
+
+        /* test */
+        ArgumentCaptor<ResilienceConsultant> captor = ArgumentCaptor.forClass(ResilienceConsultant.class);
+        verify(executor).add(captor.capture());
+
+        List<ResilienceConsultant> values = captor.getAllValues();
+        assertEquals(1, values.size());
+        ResilienceConsultant consultant = values.iterator().next();
+        assertTrue(consultant instanceof CheckmarxResilienceConsultant);
+
+        CheckmarxResilienceConsultant checkmarxResilienceConsultant = (CheckmarxResilienceConsultant) consultant;
+        CheckmarxResilienceConfiguration config = checkmarxResilienceConsultant.getResilienceConfig();
+
+        assertSame(environment, config);
+
     }
 
 }

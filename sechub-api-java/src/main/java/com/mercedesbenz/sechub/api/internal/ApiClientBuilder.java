@@ -35,7 +35,7 @@ public class ApiClientBuilder {
     }
 
     private static final String createBasicAuthenticationHeader(SecHubClient client) {
-        String valueToEncode = client.getUsername() + ":" + client.getSealedApiToken();
+        String valueToEncode = client.getUserId() + ":" + client.getSealedApiToken();
         return "Basic " + Base64.getEncoder().encodeToString(valueToEncode.getBytes());
     }
 

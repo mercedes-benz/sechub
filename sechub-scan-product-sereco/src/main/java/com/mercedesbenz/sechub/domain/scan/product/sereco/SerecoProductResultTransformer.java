@@ -64,7 +64,13 @@ public class SerecoProductResultTransformer implements ReportProductResultTransf
         String projectId = serecoProductResult.getProjectId();
         UUID sechubJobUUID = serecoProductResult.getSecHubJobUUID();
 
-        SerecoMetaData data = JSONConverter.get().fromJSON(SerecoMetaData.class, origin);
+        SerecoMetaData data = null;
+        if (origin != null && !origin.isEmpty()) {
+            data = JSONConverter.get().fromJSON(SerecoMetaData.class, origin);
+        } else {
+            data = new SerecoMetaData(); // fallback
+            LOG.warn("No sereco data was available! Did fallback to empty meta data");
+        }
 
         falsePositiveMarker.markFalsePositives(projectId, data.getVulnerabilities());
 

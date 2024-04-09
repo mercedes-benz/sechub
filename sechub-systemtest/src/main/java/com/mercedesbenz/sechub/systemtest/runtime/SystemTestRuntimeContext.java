@@ -323,7 +323,7 @@ public class SystemTestRuntimeContext {
             RemoteSecHubDefinition remoteSecHub = getRemoteSetupOrFail().getSecHub();
             remoteUserSecHubClient = createSecHubClient(remoteSecHub, remoteSecHub.getUser());
 
-            LOG.info("Created remote user client for user: {}, apiToken: '{}'", remoteUserSecHubClient.getUsername(),
+            LOG.info("Created remote user client for user: {}, apiToken: '{}'", remoteUserSecHubClient.getUserId(),
                     "*".repeat(remoteUserSecHubClient.getSealedApiToken().length()));
         }
         return remoteUserSecHubClient;
@@ -343,9 +343,9 @@ public class SystemTestRuntimeContext {
             String userId = getTemplateEngine().replaceSecretEnvironmentVariablesWithValues(credentials.getUserId(), getEnvironmentProvider());
             String apiToken = getTemplateEngine().replaceSecretEnvironmentVariablesWithValues(credentials.getApiToken(), getEnvironmentProvider());
 
-            client = new DefaultSecHubClient(serverUri, userId, apiToken, TRUST_ALL);
+            client = DefaultSecHubClient.builder().server(serverUri).user(userId).apiToken(apiToken).trustAll(TRUST_ALL).build();
             client.addListener(new ArtifactStorageSecHubClientListener(this));
-            LOG.info("Created SecHub client for user: '{}', apiToken: '{}'", client.getUsername(), "*".repeat(client.getSealedApiToken().length()));
+            LOG.info("Created SecHub client for user: '{}', apiToken: '{}'", client.getUserId(), "*".repeat(client.getSealedApiToken().length()));
         } catch (RuntimeException e) {
             throw new WrongConfigurationException("URL not defined correct local sechub server: " + e.getMessage(), this);
         }

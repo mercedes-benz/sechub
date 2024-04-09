@@ -16,7 +16,7 @@ public abstract class AbstractSecHubFileSystemContainer implements SecHubFileSys
     public static final String PROPERTY_INCLUDES = "includes";
     public static final String PROPERTY_EXCLUDES = "excludes";
 
-    private Optional<SecHubFileSystemConfiguration> fileSystem = Optional.empty();
+    private SecHubFileSystemConfiguration fileSystem;
 
     @JsonInclude(Include.NON_EMPTY) // when no excludes defined then they should not appear in payload
     private List<String> excludes = new ArrayList<>();
@@ -25,12 +25,12 @@ public abstract class AbstractSecHubFileSystemContainer implements SecHubFileSys
     private List<String> includes = new ArrayList<>();
 
     public void setFileSystem(SecHubFileSystemConfiguration fileSystem) {
-        this.fileSystem = Optional.ofNullable(fileSystem);
+        this.fileSystem = fileSystem;
     }
 
     @Override
     public Optional<SecHubFileSystemConfiguration> getFileSystem() {
-        return fileSystem;
+        return Optional.ofNullable(fileSystem);
     }
 
     public List<String> getIncludes() {

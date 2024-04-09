@@ -14,7 +14,7 @@ LABEL maintainer="SecHub FOSS Team"
 ARG OWASPZAP_VERSION="2.14.0"
 ARG OWASPZAP_SHA256SUM="219d7f25bbe25247713805ab02cc12279898c870743c1aae3c2b0b1882191960"
 
-ARG OWASPZAP_WRAPPER_VERSION="1.5.0"
+ARG OWASPZAP_WRAPPER_VERSION="1.6.0"
 
 # OWASP ZAP host and port
 ENV ZAP_HOST="127.0.0.1"
@@ -48,7 +48,9 @@ RUN cd "$DOWNLOAD_FOLDER" && \
     tar xf ZAP_${OWASPZAP_VERSION}_Linux.tar.gz -C "$TOOL_FOLDER" && \
     ln -s "$TOOL_FOLDER/ZAP_${OWASPZAP_VERSION}/zap.sh" "/usr/local/bin/zap" && \
     # remove plugins installed on default
-    rm $TOOL_FOLDER/ZAP_${OWASPZAP_VERSION}/plugin/*.zap
+    rm $TOOL_FOLDER/ZAP_${OWASPZAP_VERSION}/plugin/*.zap && \
+    # remove ZAP download after installation
+    rm ZAP_${OWASPZAP_VERSION}_Linux.tar.gz
 
 # Install SecHub OWASP ZAP wrapper
 RUN cd "$TOOL_FOLDER" && \

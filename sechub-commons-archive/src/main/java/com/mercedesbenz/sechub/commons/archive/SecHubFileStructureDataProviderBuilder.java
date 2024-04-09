@@ -9,6 +9,8 @@ import java.util.Set;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.mercedesbenz.sechub.commons.model.ClientCertificateConfiguration;
+import com.mercedesbenz.sechub.commons.model.HTTPHeaderConfiguration;
 import com.mercedesbenz.sechub.commons.model.ScanType;
 import com.mercedesbenz.sechub.commons.model.SecHubConfigurationModel;
 import com.mercedesbenz.sechub.commons.model.SecHubDataConfigurationUsageByName;
@@ -103,9 +105,25 @@ public class SecHubFileStructureDataProviderBuilder {
             SecHubWebScanConfiguration webScan = webScanOpt.get();
             Optional<SecHubWebScanApiConfiguration> apiOpt = webScan.getApi();
             addAllUsages(data, apiOpt, false);
+
+            Optional<ClientCertificateConfiguration> clientCertOpt = webScan.getClientCertificate();
+            addAllUsages(data, clientCertOpt, false);
+
+            Optional<List<HTTPHeaderConfiguration>> httpHeaderConfigsOpt = webScan.getHeaders();
+            if (httpHeaderConfigsOpt.isEmpty()) {
+                break;
+            }
+            for (HTTPHeaderConfiguration httpHeaderConfig : httpHeaderConfigsOpt.get()) {
+                addAllUsages(data, Optional.ofNullable(httpHeaderConfig), false);
+            }
             break;
         case ANALYTICS:
 
+            data.setRootFolderAccepted(true);
+            addAllUsages(data, model.getCodeScan(), false);
+            addAllUsages(data, model.getLicenseScan(), false);
+            break;
+        case PREPARE:
             data.setRootFolderAccepted(true);
             addAllUsages(data, model.getCodeScan(), false);
             addAllUsages(data, model.getLicenseScan(), false);
@@ -118,24 +136,30 @@ public class SecHubFileStructureDataProviderBuilder {
         return data;
     }
 
-    private void addAllUsages(MutableSecHubFileStructureDataProvider data, Optional<? extends SecHubDataConfigurationUsageByName> scanDefinitionObject,
+    /*
+     * Adds all usages of the given configUsageByName to the dataProvider. If
+     * mustHave is true a runtime exception is thrown when no configUsageByName is
+     * not present or names are empty.
+     *
+     */
+    private void addAllUsages(MutableSecHubFileStructureDataProvider dataProvider, Optional<? extends SecHubDataConfigurationUsageByName> configUsageByName,
             boolean mustHave) {
-        if (!scanDefinitionObject.isPresent()) {
+        if (!configUsageByName.isPresent()) {
             if (mustHave) {
-                new IllegalStateException("For scanType:" + scanType + " the configuration entry is missing.");
+                new IllegalStateException("For scanType:" + scanType + " the configuration usage by name entry is missing.");
             }
             return;
         }
 
-        SecHubDataConfigurationUsageByName usageByName = scanDefinitionObject.get();
+        SecHubDataConfigurationUsageByName usageByName = configUsageByName.get();
 
         Set<String> names = usageByName.getNamesOfUsedDataConfigurationObjects();
         if (names.isEmpty()) {
             if (mustHave) {
-                new SecHubRuntimeException("Confgiguration file problem. For scanType:" + scanType + " at least one data configuration must be referenced");
+                new SecHubRuntimeException("Configuration file problem. For scanType:" + scanType + " at least one data configuration must be referenced");
             }
         }
-        data.addAcceptedReferenceNames(names);
+        dataProvider.addAcceptedReferenceNames(names);
     }
 
 }

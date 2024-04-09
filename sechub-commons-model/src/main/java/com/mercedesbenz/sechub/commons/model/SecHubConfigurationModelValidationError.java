@@ -9,6 +9,8 @@ public enum SecHubConfigurationModelValidationError {
 
     API_VERSION_NOT_SUPPORTED("Api version is not supported."),
 
+    SECHUB_CONFIGURATION_TOO_LARGE("The provided SecHub scan configuration JSON is too large."),
+
     DATA_CONFIG_OBJECT_NAME_IS_NULL("One data configuration object has `null` as defined named which is not acceptable."),
 
     DATA_CONFIG_OBJECT_NAME_LENGTH_TOO_SHORT("Data configuration object name length is too small."),
@@ -28,6 +30,9 @@ public enum SecHubConfigurationModelValidationError {
     WEB_SCAN_NO_HEADER_NAME_DEFINED("The name for a HTTP header is not defined!"),
 
     WEB_SCAN_NO_HEADER_VALUE_DEFINED("The value for a HTTP header is not defined!"),
+
+    WEB_SCAN_MULTIPLE_HEADER_VALUES_DEFINED(
+            "The HTTP header has multiple values defined! Use either a file reference or a directly specified value but not both!"),
 
     WEB_SCAN_INCLUDE_INVALID("The value of an include is invalid!"),
 

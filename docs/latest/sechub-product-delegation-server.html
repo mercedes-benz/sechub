@@ -531,7 +531,7 @@ table.CodeRay td.code{padding:0 0 0 .75em}
 <div id="header">
 <h1><span class="image"><a class="image" href="https://mercedes-benz.github.io/sechub"><img src="images/sechub-logo.png" alt="sechub logo"></a></span> SecHub PDS Documentation</h1>
 <div class="details">
-<span id="revnumber"> PDS 1.3.1</span>
+<span id="revnumber"> PDS 1.5.0</span>
 </div>
 <div id="toc" class="toc2">
 <div id="toctitle">Table of contents</div>
@@ -792,7 +792,7 @@ build pipeline / contionus integration (CI) and helps to provide
 </tbody>
 </table>
 <div class="paragraph">
-<p>Documentation version: <code>PDS 1.3.1 - Build date: 20240105143337</code></p>
+<p>Documentation version: <code>PDS 1.5.0 - Build date: 20240315161105</code></p>
 </div>
 <div class="paragraph">
 <p><strong>About PDS (Product Delegation Server)</strong></p>
@@ -2650,6 +2650,36 @@ PDS to Checmarx will use</p>
 <td class="tableblock halign-left valign-top"><p class="tableblock">checkmarx.newproject.presetid.mapping</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Optional</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">If not the default preset Id shall be used, it can be either defined directly as job paramter (json mapping), or we can send it automatically by reusing an existing SecHub mapping. As an example: 'pds.config.use.sechub.mappings=checkmarx.newproject.teamid.mapping,checkmarx.newproject.presetid.mapping'</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">pds.checkmarx.resilience.badrequest.max.retries</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Optional</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Maximum amounts of retries for bad request handling</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">pds.checkmarx.resilience.badrequest.retry.wait.milliseconds</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Optional</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Time in milliseconds to wait before next retry when a bad request happend</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">pds.checkmarx.resilience.servererror.max.retries</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Optional</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Maximum amounts of retries for internal server error handling</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">pds.checkmarx.resilience.servererror.retry.wait.milliseconds</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Optional</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Time in milliseconds to wait before next retry when an internal server error happend</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">pds.checkmarx.resilience.networkerror.max.retries</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Optional</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Maximum amounts of retries for network error handling</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">pds.checkmarx.resilience.networkerror.retry.wait.milliseconds</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Optional</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Time in milliseconds to wait before next retry when a network error happend</p></td>
 </tr>
 </tbody>
 </table>
@@ -4715,7 +4745,7 @@ This will the process hard!
 </div>
 <div id="footer">
 <div id="footer-text">
- PDS 1.3.1<br>
+ PDS 1.5.0<br>
 </div>
 </div>
 </body>

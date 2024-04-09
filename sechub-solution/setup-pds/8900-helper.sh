@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 # SPDX-License-Identifier: MIT
 
+# checks if a string is a json array
 function json_is_element_in_array() {
-# SPDX-License-Identifier: MIT
     local element="$1"
     local elements="$2"
 
@@ -11,6 +11,7 @@ function json_is_element_in_array() {
     echo "$is_element_in_elements"
 }
 
+# prints usage information for environment variables
 function usage() {
     local script_name="$1"
     local parameters="$2"
@@ -39,6 +40,7 @@ function print_error_message() {
     printf "[ERROR] $message\n"
 }
 
+# prints usage message for sechub client if the setup of project, user, profile and executor was successful
 function setup_complete_message_for_tool() {
     local tool="$1"
     local user="$2"
@@ -50,6 +52,8 @@ function setup_complete_message_for_tool() {
     printf "\nsechub -project $project scan\n"
 }
 
+# automatically setting up a project, a user, an executor and a profile at the locally running sechub server
+# after the setup the sechub client can be used to scan
 function setup_project_user_executor_profile() {
     local project="$1"
     local user="$2"

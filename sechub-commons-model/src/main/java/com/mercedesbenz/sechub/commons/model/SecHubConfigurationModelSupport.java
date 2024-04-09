@@ -68,21 +68,45 @@ public class SecHubConfigurationModelSupport {
                             || isDataTypeContainedOrReferenced(dataType, model, model.getLicenseScan(), SecHubLicenseScanConfiguration.class);
 
             return analyticsPossible;
+        case PREPARE:
+            // For preparation phase no source or binary data is required.
+            return false;
         case UNKNOWN:
             return false;
         case WEB_SCAN:
-            Optional<SecHubWebScanConfiguration> webScanOpt = model.getWebScan();
-            if (!webScanOpt.isPresent()) {
-                return false;
-            }
-            SecHubWebScanConfiguration webScan = webScanOpt.get();
-            Optional<SecHubWebScanApiConfiguration> apiOpt = webScan.getApi();
-            return isDataTypeContainedOrReferenced(dataType, model, apiOpt, SecHubWebScanApiConfiguration.class);
+            return isDataTypeReferencedByWebScan(model, dataType);
+
         default:
             LOG.error("Unsupported scan type: {}", scanType);
             return false;
 
         }
+    }
+
+    private boolean isDataTypeReferencedByWebScan(SecHubConfigurationModel model, SecHubDataConfigurationType dataType) {
+        Optional<SecHubWebScanConfiguration> webScanOpt = model.getWebScan();
+        if (!webScanOpt.isPresent()) {
+            return false;
+        }
+
+        boolean isDataTypeReferenced = false;
+
+        SecHubWebScanConfiguration webScan = webScanOpt.get();
+        Optional<SecHubWebScanApiConfiguration> apiOpt = webScan.getApi();
+        isDataTypeReferenced = isDataTypeReferenced || isDataTypeContainedOrReferenced(dataType, model, apiOpt, SecHubWebScanApiConfiguration.class);
+
+        Optional<ClientCertificateConfiguration> clientCertOpt = webScan.getClientCertificate();
+        isDataTypeReferenced = isDataTypeReferenced || isDataTypeContainedOrReferenced(dataType, model, clientCertOpt, ClientCertificateConfiguration.class);
+
+        Optional<List<HTTPHeaderConfiguration>> httpHeaderConfigsOpt = webScan.getHeaders();
+        if (httpHeaderConfigsOpt.isEmpty()) {
+            return isDataTypeReferenced;
+        }
+        for (HTTPHeaderConfiguration httpHeaderConfig : httpHeaderConfigsOpt.get()) {
+            isDataTypeReferenced = isDataTypeReferenced
+                    || isDataTypeContainedOrReferenced(dataType, model, Optional.ofNullable(httpHeaderConfig), HTTPHeaderConfiguration.class);
+        }
+        return isDataTypeReferenced;
     }
 
     private <T extends SecHubDataConfigurationUsageByName> boolean isDataTypeContainedOrReferenced(SecHubDataConfigurationType dataType,

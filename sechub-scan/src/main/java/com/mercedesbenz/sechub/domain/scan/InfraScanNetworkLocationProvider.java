@@ -35,7 +35,7 @@ public class InfraScanNetworkLocationProvider implements NetworkLocationProvider
     }
 
     @Override
-    public List<InetAddress> getInetAdresses() {
+    public List<InetAddress> getInetAddresses() {
         if (config == null) {
             return Collections.emptyList();
         }

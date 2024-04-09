@@ -47,23 +47,23 @@ public class InternalInitialDataService {
      * gained administrator rights
      *
      * @param userId
-     * @param emailAdress
-     * @param fixApiToken - use "{nooop}" as prefix to prevent token encryption
+     * @param emailAddress
+     * @param fixApiToken  - use "{nooop}" as prefix to prevent token encryption
      */
-    public void createInitialAdmin(String userId, String emailAdress, String fixApiToken) {
-        internalCreateInitialUser(userId, emailAdress, fixApiToken, true);
+    public void createInitialAdmin(String userId, String emailAddress, String fixApiToken) {
+        internalCreateInitialUser(userId, emailAddress, fixApiToken, true);
     }
 
     /**
      * Creates an initial test user
      *
      * @param userId
-     * @param emailAdress
+     * @param emailAddress
      * @param unencryptedAPItoken - use "{nooop}" as prefix to prevent token
      *                            encryption
      */
-    public void createInitialTestUser(String userId, String emailAdress, String unencryptedAPItoken) {
-        internalCreateInitialUser(userId, emailAdress, unencryptedAPItoken, false);
+    public void createInitialTestUser(String userId, String emailAddress, String unencryptedAPItoken) {
+        internalCreateInitialUser(userId, emailAddress, unencryptedAPItoken, false);
     }
 
     private void internalCreateInitialUser(String userId, String emailAddress, String unencryptedAPItoken, boolean createAsSuperAdmin) {
@@ -121,7 +121,7 @@ public class InternalInitialDataService {
         } else {
             user.hashedApiToken = encryptPassword(fixApiToken);
         }
-        user.emailAdress = emailAddress;
+        user.emailAddress = emailAddress;
         user.superAdmin = superAdmin;
 
         userRepository.save(user);
@@ -174,7 +174,7 @@ public class InternalInitialDataService {
         UserMessage authDataHashed = new UserMessage();
 
         authDataHashed.setUserId(user.getName());
-        authDataHashed.setEmailAdress(user.getEmailAdress());
+        authDataHashed.setEmailAddress(user.getEmailAddress());
 
         return authDataHashed;
     }

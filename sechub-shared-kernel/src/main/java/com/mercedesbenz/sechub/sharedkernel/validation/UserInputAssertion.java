@@ -97,8 +97,8 @@ public class UserInputAssertion {
      *
      * @param userId
      */
-    public void assertIsValidEmailAddress(String emailAdress) {
-        assertValid(emailAdress, emailValidation, "Email address is not valid");
+    public void assertIsValidEmailAddress(String emailAddress) {
+        assertValid(emailAddress, emailValidation, "Email address is not valid");
     }
 
     /**

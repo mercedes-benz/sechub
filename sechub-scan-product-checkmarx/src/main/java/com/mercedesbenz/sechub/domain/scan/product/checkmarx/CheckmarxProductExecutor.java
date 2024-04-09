@@ -20,10 +20,13 @@ import org.springframework.stereotype.Service;
 import com.mercedesbenz.sechub.adapter.AbstractAdapterConfigBuilder;
 import com.mercedesbenz.sechub.adapter.AdapterExecutionResult;
 import com.mercedesbenz.sechub.adapter.AdapterMetaData;
+import com.mercedesbenz.sechub.adapter.AdapterMetaDataCallback;
 import com.mercedesbenz.sechub.adapter.checkmarx.CheckmarxAdapter;
 import com.mercedesbenz.sechub.adapter.checkmarx.CheckmarxAdapterConfig;
 import com.mercedesbenz.sechub.adapter.checkmarx.CheckmarxConfig;
 import com.mercedesbenz.sechub.adapter.checkmarx.CheckmarxMetaDataID;
+import com.mercedesbenz.sechub.adapter.checkmarx.CheckmarxResilienceCallback;
+import com.mercedesbenz.sechub.adapter.checkmarx.CheckmarxResilienceConsultant;
 import com.mercedesbenz.sechub.commons.core.environment.SystemEnvironmentVariableSupport;
 import com.mercedesbenz.sechub.commons.core.resilience.ResilientActionExecutor;
 import com.mercedesbenz.sechub.commons.model.ScanType;
@@ -38,7 +41,20 @@ import com.mercedesbenz.sechub.sharedkernel.metadata.MetaDataInspector;
 import com.mercedesbenz.sechub.storage.core.JobStorage;
 import com.mercedesbenz.sechub.storage.core.StorageService;
 
+/**
+ * This class is marked as deprecated. Why? The product executor shall no longer
+ * be used in production. We use the PDS solution for checkmarx which does a
+ * similar logic inside CheckmarxWrapperScanService.
+ *
+ * We kept this class, because for existing integration tests (scenario 1-3) a
+ * complete migration was much work and would also lead to slower test execution
+ * (because communication with PDS instances take time as well).
+ *
+ * @author Albert Tregnaghi
+ *
+ */
 @Service
+@Deprecated
 public class CheckmarxProductExecutor extends AbstractProductExecutor {
 
     static final Logger LOG = LoggerFactory.getLogger(CheckmarxProductExecutor.class);
@@ -67,7 +83,7 @@ public class CheckmarxProductExecutor extends AbstractProductExecutor {
     SystemEnvironmentVariableSupport systemEnvironmentVariableSupport;
 
     @Autowired
-    CheckmarxResilienceConsultant checkmarxResilienceConsultant;
+    SecHubDirectCheckmarxResilienceConfiguration environmentBasedResilienceConfig;
 
     public CheckmarxProductExecutor() {
         super(ProductIdentifier.CHECKMARX, 1, ScanType.CODE_SCAN);
@@ -75,7 +91,7 @@ public class CheckmarxProductExecutor extends AbstractProductExecutor {
 
     @PostConstruct
     protected void postConstruct() {
-        this.resilientActionExecutor.add(checkmarxResilienceConsultant);
+        this.resilientActionExecutor.add(new CheckmarxResilienceConsultant(environmentBasedResilienceConfig));
     }
 
     // just to make it accessible inside test
@@ -95,7 +111,9 @@ public class CheckmarxProductExecutor extends AbstractProductExecutor {
         CheckmarxExecutorConfigSuppport configSupport = CheckmarxExecutorConfigSuppport
                 .createSupportAndAssertConfigValid(data.getProductExecutorContext().getExecutorConfig(), systemEnvironmentVariableSupport);
 
-        CheckmarxResilienceCallback callback = new CheckmarxResilienceCallback(configSupport, data.getProductExecutorContext());
+        AdapterMetaDataCallback metaDataCallback = data.getProductExecutorContext().getCallback();
+
+        CheckmarxResilienceCallback callback = new CheckmarxResilienceCallback(configSupport.isAlwaysFullScanEnabled(), metaDataCallback);
 
         /* start resilient */
         ProductResult result = resilientActionExecutor.executeResilient(() -> {
@@ -136,7 +154,7 @@ public class CheckmarxProductExecutor extends AbstractProductExecutor {
                 inspection.notice("alwaysFullScanEnabled", checkMarxConfig.isAlwaysFullScanEnabled());
 
                 /* execute checkmarx by adapter and update product result */
-                AdapterExecutionResult adapterResult = checkmarxAdapter.start(checkMarxConfig, data.getProductExecutorContext().getCallback());
+                AdapterExecutionResult adapterResult = checkmarxAdapter.start(checkMarxConfig, metaDataCallback);
 
                 return updateCurrentProductResult(adapterResult, data.getProductExecutorContext());
             }

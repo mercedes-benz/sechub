@@ -102,11 +102,11 @@ public class ProjectChangeOwnerService {
         DomainMessage request = new DomainMessage(MessageID.PROJECT_OWNER_CHANGED);
         ProjectMessage projectData = new ProjectMessage();
         projectData.setProjectId(project.id);
-        projectData.setPreviousProjectOwnerEmailAddress(previousOwner.getEmailAdress());
-        projectData.setProjectOwnerEmailAddress(newOwner.getEmailAdress());
+        projectData.setPreviousProjectOwnerEmailAddress(previousOwner.getEmailAddress());
+        projectData.setProjectOwnerEmailAddress(newOwner.getEmailAddress());
 
         project.users.forEach(user -> {
-            projectData.addUserEmailAddress(user.getEmailAdress());
+            projectData.addUserEmailAddress(user.getEmailAddress());
         });
 
         request.set(MessageDataKeys.PROJECT_OWNER_CHANGE_DATA, projectData);

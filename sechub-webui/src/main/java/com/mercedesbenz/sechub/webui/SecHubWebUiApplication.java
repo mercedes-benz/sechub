@@ -10,5 +10,4 @@ public class SecHubWebUiApplication {
     public static void main(String[] args) {
         SpringApplication.run(SecHubWebUiApplication.class, args);
     }
-
 }

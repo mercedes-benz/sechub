@@ -3,28 +3,34 @@ package com.mercedesbenz.sechub.commons.model;
 
 public enum Severity implements Comparable<Severity> {
 
-    INFO(10),
+    INFO(10, "Info"),
 
-    UNCLASSIFIED(0),
+    UNCLASSIFIED(0, "Unclassified"),
 
-    LOW(20),
+    LOW(20, "Low"),
 
-    MEDIUM(30),
+    MEDIUM(30, "Medium"),
 
-    HIGH(40),
+    HIGH(40, "High"),
 
-    CRITICAL(50),
+    CRITICAL(50, "Critical"),
 
     ;
 
     private int level;
+    private String text;
 
-    private Severity(int level) {
+    private Severity(int level, String text) {
         this.level = level;
+        this.text = text;
     }
 
     public int getLevel() {
         return level;
+    }
+
+    public String getText() {
+        return text;
     }
 
 }

@@ -22,7 +22,7 @@ import com.mercedesbenz.sechub.commons.model.JSONable;
 @MustBeKeptStable("This configuration is used by communication between (api) authorization domain and administration - and maybe others")
 public class UserMessage implements JSONable<UserMessage> {
 
-    private String emailAdress;
+    private String emailAddress;
 
     private String userId;
 
@@ -47,16 +47,16 @@ public class UserMessage implements JSONable<UserMessage> {
         return userId;
     }
 
-    public void setEmailAdress(String emailAdress) {
-        this.emailAdress = emailAdress;
+    public void setEmailAddress(String emailAddress) {
+        this.emailAddress = emailAddress;
     }
 
     public List<String> getProjectIds() {
         return projectIds;
     }
 
-    public String getEmailAdress() {
-        return emailAdress;
+    public String getEmailAddress() {
+        return emailAddress;
     }
 
     public void setUserId(String userId) {
@@ -135,8 +135,8 @@ public class UserMessage implements JSONable<UserMessage> {
 
     /**
      * Set the former email address of an user. Should only be called for user
-     * events when an email address has changed. The {@link #getEmailAdress()} shall
-     * contain the new mail adress in this case.
+     * events when an email address has changed. The {@link #getEmailAddress()}
+     * shall contain the new email address in this case.
      *
      * @param formerEmailAddress
      */

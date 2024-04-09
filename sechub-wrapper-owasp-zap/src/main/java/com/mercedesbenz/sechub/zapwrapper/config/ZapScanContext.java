@@ -6,9 +6,11 @@ import java.net.URL;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import com.mercedesbenz.sechub.commons.model.SecHubWebScanConfiguration;
@@ -58,6 +60,7 @@ public class ZapScanContext {
     private ZapPDSEventHandler zapPDSEventHandler;
 
     private File clientCertificateFile;
+    private Map<String, File> headerValueFiles;
 
     private ZapScanContext() {
     }
@@ -169,6 +172,10 @@ public class ZapScanContext {
         return clientCertificateFile;
     }
 
+    public Map<String, File> getHeaderValueFiles() {
+        return Collections.unmodifiableMap(headerValueFiles);
+    }
+
     public static ZapScanContextBuilder builder() {
         return new ZapScanContextBuilder();
     }
@@ -215,6 +222,8 @@ public class ZapScanContext {
         private ZapPDSEventHandler zapPDSEventHandler;
 
         private File clientCertificateFile;
+
+        private Map<String, File> headerValueFiles = new HashMap<>();
 
         public ZapScanContextBuilder setServerConfig(ZapServerConfiguration serverConfig) {
             this.serverConfig = serverConfig;
@@ -326,6 +335,11 @@ public class ZapScanContext {
             return this;
         }
 
+        public ZapScanContextBuilder addHeaderValueFiles(Map<String, File> headerValueFiles) {
+            this.headerValueFiles.putAll(headerValueFiles);
+            return this;
+        }
+
         public ZapScanContext build() {
             ZapScanContext zapScanConfiguration = new ZapScanContext();
             zapScanConfiguration.serverConfig = this.serverConfig;
@@ -361,6 +375,8 @@ public class ZapScanContext {
             zapScanConfiguration.zapPDSEventHandler = this.zapPDSEventHandler;
 
             zapScanConfiguration.clientCertificateFile = this.clientCertificateFile;
+
+            zapScanConfiguration.headerValueFiles = this.headerValueFiles;
 
             return zapScanConfiguration;
         }
