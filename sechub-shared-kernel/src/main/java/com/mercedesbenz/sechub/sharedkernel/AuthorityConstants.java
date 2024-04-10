@@ -7,4 +7,5 @@ public class AuthorityConstants {
      * Roles do not have this prefix but authorities have this prefix.
      */
     public static final String AUTHORITY_ROLE_PREFIX = "ROLE_";
+
 }
