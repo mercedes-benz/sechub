@@ -12,6 +12,7 @@ sechub:
 spring:
   profiles:
     group:
+      dev: "localserver, initial_admin_predefined, admin_access"
       integrationtest: "localserver,initial_admin_static,mocked_notifications,admin_access"
       test: "mocked_products,mocked_notifications,h2,test"
     
