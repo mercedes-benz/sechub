@@ -41,7 +41,7 @@ import com.mercedesbenz.sechub.domain.administration.job.JobRestartRequestServic
 import com.mercedesbenz.sechub.domain.administration.job.JobStatus;
 import com.mercedesbenz.sechub.sharedkernel.Profiles;
 import com.mercedesbenz.sechub.sharedkernel.RoleConstants;
-import com.mercedesbenz.sechub.sharedkernel.configuration.SecHubAPISecurityConfiguration;
+import com.mercedesbenz.sechub.sharedkernel.configuration.AbstractSecHubAPISecurityConfiguration;
 import com.mercedesbenz.sechub.sharedkernel.usecases.UseCaseRestDoc;
 import com.mercedesbenz.sechub.sharedkernel.usecases.job.UseCaseAdminCancelsJob;
 import com.mercedesbenz.sechub.sharedkernel.usecases.job.UseCaseAdminListsAllRunningJobs;
@@ -233,7 +233,7 @@ public class JobAdministrationRestControllerRestDocTest implements TestIsNecessa
     }
 
     @EnableAutoConfiguration
-    public static class SimpleTestConfiguration extends SecHubAPISecurityConfiguration {
+    public static class SimpleTestConfiguration extends AbstractSecHubAPISecurityConfiguration {
 
     }
 

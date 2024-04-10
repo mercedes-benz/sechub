@@ -42,7 +42,7 @@ import com.mercedesbenz.sechub.domain.scan.log.ProjectScanLogSummary;
 import com.mercedesbenz.sechub.domain.scan.log.ScanLogRestController;
 import com.mercedesbenz.sechub.sharedkernel.Profiles;
 import com.mercedesbenz.sechub.sharedkernel.RoleConstants;
-import com.mercedesbenz.sechub.sharedkernel.configuration.SecHubAPISecurityConfiguration;
+import com.mercedesbenz.sechub.sharedkernel.configuration.AbstractSecHubAPISecurityConfiguration;
 import com.mercedesbenz.sechub.sharedkernel.usecases.UseCaseRestDoc;
 import com.mercedesbenz.sechub.sharedkernel.usecases.admin.project.UseCaseAdminShowsScanLogsForProject;
 import com.mercedesbenz.sechub.test.ExampleConstants;
@@ -125,7 +125,7 @@ public class AdminShowsScanLogsForProjectRestDocTest implements TestIsNecessaryF
 
     @Profile(Profiles.TEST)
     @EnableAutoConfiguration
-    public static class SimpleTestConfiguration extends SecHubAPISecurityConfiguration {
+    public static class SimpleTestConfiguration extends AbstractSecHubAPISecurityConfiguration {
 
     }
 

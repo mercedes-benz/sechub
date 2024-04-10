@@ -49,7 +49,7 @@ import com.mercedesbenz.sechub.domain.scan.product.config.ProductExecutorConfigS
 import com.mercedesbenz.sechub.domain.scan.resolve.NetworkTargetResolver;
 import com.mercedesbenz.sechub.sharedkernel.ProductIdentifier;
 import com.mercedesbenz.sechub.sharedkernel.Profiles;
-import com.mercedesbenz.sechub.sharedkernel.configuration.SecHubAPISecurityConfiguration;
+import com.mercedesbenz.sechub.sharedkernel.configuration.AbstractSecHubAPISecurityConfiguration;
 import com.mercedesbenz.sechub.sharedkernel.configuration.SecHubConfiguration;
 import com.mercedesbenz.sechub.sharedkernel.mapping.MappingIdentifier;
 import com.mercedesbenz.sechub.sharedkernel.metadata.DefaultMetaDataInspector;
@@ -212,7 +212,7 @@ public class CheckmarxProductExecutorMockTest {
     @TestConfiguration
     @Profile(Profiles.TEST)
     @EnableAutoConfiguration
-    public static class SimpleTestConfiguration extends SecHubAPISecurityConfiguration {
+    public static class SimpleTestConfiguration extends AbstractSecHubAPISecurityConfiguration {
 
     }
 

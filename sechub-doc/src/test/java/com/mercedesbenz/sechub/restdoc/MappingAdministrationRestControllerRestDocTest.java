@@ -37,7 +37,7 @@ import com.mercedesbenz.sechub.domain.administration.status.StatusAdministration
 import com.mercedesbenz.sechub.domain.administration.status.StatusEntry;
 import com.mercedesbenz.sechub.sharedkernel.Profiles;
 import com.mercedesbenz.sechub.sharedkernel.RoleConstants;
-import com.mercedesbenz.sechub.sharedkernel.configuration.SecHubAPISecurityConfiguration;
+import com.mercedesbenz.sechub.sharedkernel.configuration.AbstractSecHubAPISecurityConfiguration;
 import com.mercedesbenz.sechub.sharedkernel.usecases.UseCaseRestDoc;
 import com.mercedesbenz.sechub.sharedkernel.usecases.admin.status.UseCaseAdminListsStatusInformation;
 import com.mercedesbenz.sechub.test.ExampleConstants;
@@ -123,7 +123,7 @@ public class MappingAdministrationRestControllerRestDocTest implements TestIsNec
 
     @Profile(Profiles.TEST)
     @EnableAutoConfiguration
-    public static class SimpleTestConfiguration extends SecHubAPISecurityConfiguration {
+    public static class SimpleTestConfiguration extends AbstractSecHubAPISecurityConfiguration {
 
     }
 

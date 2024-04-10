@@ -38,7 +38,7 @@ import com.mercedesbenz.sechub.domain.administration.signup.SignupDeleteService;
 import com.mercedesbenz.sechub.domain.administration.signup.SignupRepository;
 import com.mercedesbenz.sechub.sharedkernel.Profiles;
 import com.mercedesbenz.sechub.sharedkernel.RoleConstants;
-import com.mercedesbenz.sechub.sharedkernel.configuration.SecHubAPISecurityConfiguration;
+import com.mercedesbenz.sechub.sharedkernel.configuration.AbstractSecHubAPISecurityConfiguration;
 import com.mercedesbenz.sechub.sharedkernel.usecases.UseCaseRestDoc;
 import com.mercedesbenz.sechub.sharedkernel.usecases.admin.signup.UseCaseAdminDeletesSignup;
 import com.mercedesbenz.sechub.sharedkernel.usecases.admin.signup.UseCaseAdminListsOpenUserSignups;
@@ -152,7 +152,7 @@ public class SignupAdministrationRestControllerRestDocTest implements TestIsNece
 
     @Profile(Profiles.TEST)
     @EnableAutoConfiguration
-    public static class SimpleTestConfiguration extends SecHubAPISecurityConfiguration {
+    public static class SimpleTestConfiguration extends AbstractSecHubAPISecurityConfiguration {
 
     }
 

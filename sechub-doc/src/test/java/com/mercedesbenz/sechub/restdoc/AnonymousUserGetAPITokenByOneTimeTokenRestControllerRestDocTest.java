@@ -31,7 +31,7 @@ import com.mercedesbenz.sechub.docgen.util.RestDocFactory;
 import com.mercedesbenz.sechub.domain.administration.user.AnonymousUserGetAPITokenByOneTimeTokenService;
 import com.mercedesbenz.sechub.domain.administration.user.AnonymousUserGetApiTokenByOneTimeTokenRestController;
 import com.mercedesbenz.sechub.sharedkernel.Profiles;
-import com.mercedesbenz.sechub.sharedkernel.configuration.SecHubAPISecurityConfiguration;
+import com.mercedesbenz.sechub.sharedkernel.configuration.AbstractSecHubAPISecurityConfiguration;
 import com.mercedesbenz.sechub.sharedkernel.usecases.UseCaseRestDoc;
 import com.mercedesbenz.sechub.sharedkernel.usecases.user.UseCaseUserClicksLinkToGetNewAPIToken;
 import com.mercedesbenz.sechub.test.ExampleConstants;
@@ -88,7 +88,7 @@ public class AnonymousUserGetAPITokenByOneTimeTokenRestControllerRestDocTest imp
 
     @Profile(Profiles.TEST)
     @EnableAutoConfiguration
-    public static class SimpleTestConfiguration extends SecHubAPISecurityConfiguration {
+    public static class SimpleTestConfiguration extends AbstractSecHubAPISecurityConfiguration {
 
     }
 
