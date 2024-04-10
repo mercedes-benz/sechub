@@ -106,11 +106,11 @@ func prepareCreateApproveJob(context *Context) {
  * --------------------------------------------------
  */
 func handleUploads(context *Context) {
-	if context.sourceZipFileExists() {
-		sechubUtil.Log("Uploading source zip file", context.config.quiet)
+	if context.sourceZipUploadNeeded {
+		sechubUtil.Log("Uploading sources zip file", context.config.quiet)
 		uploadSourceZipFile(context)
 	}
-	if context.binariesTarFileExists() {
+	if context.binariesTarUploadNeeded {
 		sechubUtil.Log("Uploading binaries tar archive", context.config.quiet)
 		uploadBinariesTarFile(context)
 	}
@@ -140,6 +140,8 @@ func prepareScan(context *Context) {
 
 		// calculate checksum for zip file
 		context.sourceZipFileChecksum = sechubUtil.CreateChecksum(context.sourceZipFileName)
+	} else {
+		context.sourceZipUploadNeeded = false
 	}
 
 	if len(context.sechubConfig.Data.Binaries) > 0 {
@@ -156,6 +158,8 @@ func prepareScan(context *Context) {
 
 		// calculate checksum for tar file
 		context.binariesTarFileChecksum = sechubUtil.CreateChecksum(context.binariesTarFileName)
+	} else {
+		context.binariesTarUploadNeeded = false
 	}
 }
 
