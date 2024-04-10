@@ -26,7 +26,7 @@ class PrepareWrapperContextFactoryTest {
     }
 
     @Test
-    void when_sechub_model_and_credential_model_exists_created_context_is_not_null() {
+    void when_sechub_model_exists_created_context_is_not_null() {
         /* prepare */
         String secHubModelJson = createValidSecHubModel();
         when(environment.getSechubConfigurationModelAsJson()).thenReturn(secHubModelJson);
@@ -39,7 +39,7 @@ class PrepareWrapperContextFactoryTest {
     }
 
     @Test
-    void when_sechub_model_and_credential_model_exists_created_context_has_fields() {
+    void when_sechub_model_exists_created_context_has_fields() {
         /* prepare */
         String secHubModelJson = createValidSecHubModel();
 
