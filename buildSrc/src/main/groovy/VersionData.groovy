@@ -10,6 +10,7 @@ class VersionData{
     private static final String ID_WRAPPER_CHECKMARX = "checkmarx wrapper"
     private static final String ID_WRAPPER_OWASPZAP = "owasp-zap wrapper"
     private static final String ID_WRAPPER_XRAY= "xray wrapper"
+    private static final String ID_WRAPPER_PREPARE= "prepare wrapper"
 
     private StringBuilder debugInfo = new StringBuilder();
 
@@ -30,6 +31,7 @@ class VersionData{
         initialize(ID_WRAPPER_CHECKMARX, "Checkmarx Wrapper")
         initialize(ID_WRAPPER_OWASPZAP,  "OWASP-ZAP Wrapper")
         initialize(ID_WRAPPER_XRAY,      "Xray Wrapper")
+        initialize(ID_WRAPPER_PREPARE,   "Prepare Wrapper")
     }
 
     public class VersionInfo{
@@ -119,6 +121,10 @@ class VersionData{
 
     public String getXrayWrapperVersion(){
         return map.get(ID_WRAPPER_XRAY).getShortVersion()
+    }
+
+    public String getPrepareWrapperVersion(){
+        return map.get(ID_WRAPPER_PREPARE).getShortVersion()
     }
 
     public String getDebugInfo(){

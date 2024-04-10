@@ -11,7 +11,7 @@ import com.mercedesbenz.sechub.commons.core.MustBeKeptStable;
 @JsonInclude(value = JsonInclude.Include.NON_ABSENT)
 @MustBeKeptStable
 public class RemoteCredentialConfiguration implements JSONable<RemoteCredentialConfiguration> {
-
+    // TODO: 09.04.24 laura deprecated - decide if we keep credentials on PDS side
     public static final String PROPERTY_CREDENTIALS = "credentials";
 
     private static final RemoteCredentialConfiguration IMPORT = new RemoteCredentialConfiguration();

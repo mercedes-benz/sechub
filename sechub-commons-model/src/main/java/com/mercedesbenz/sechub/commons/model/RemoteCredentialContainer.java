@@ -10,6 +10,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class RemoteCredentialContainer {
+    // TODO: 09.04.24 laura deprecated - decide if we keep credentials on PDS side
     private static final Logger LOG = LoggerFactory.getLogger(RemoteCredentialContainer.class);
 
     private final RemoteCredentialConfiguration configuration;
