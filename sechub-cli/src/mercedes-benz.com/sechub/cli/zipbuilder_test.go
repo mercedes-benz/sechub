@@ -3,6 +3,7 @@
 package cli
 
 import (
+	"io"
 	"os"
 	"testing"
 
@@ -144,4 +145,40 @@ func Test_createSouceCodeZipFile_DataSourcesSectionWorksWithRelativePaths(t *tes
 	list, _ := sechubUtil.ReadContentOfZipFile(context.sourceZipFileName)
 	sechubTestUtil.AssertContains(list, archiveDataPrefix+"/"+namedCodeScanConfig1.Name+"/"+filepath1, t)
 	sechubTestUtil.AssertContains(list, archiveDataPrefix+"/"+namedCodeScanConfig1.Name+"/"+filepath2, t)
+}
+
+func Test_createSouceCodeZipFile_HandleRemoteDataSection(t *testing.T) {
+	/* prepare */
+	var context Context
+	var config Config
+	var sechubConfig SecHubConfig
+	context.config = &config
+	context.sechubConfig = &sechubConfig
+
+	dir := sechubTestUtil.InitializeTestTempDir(t)
+	defer os.RemoveAll(dir)
+	context.sourceZipFileName = dir + "/testoutput.zip"
+	scanConfig := NamedCodeScanConfig{
+		Name: "remote-data-section-test",
+		// Currently the client does not parse the remote data section. So we leave it empty for now.
+	}
+	context.sechubConfig.Data.Sources = []NamedCodeScanConfig{scanConfig}
+
+	/* execute */
+
+	// Capture stdout
+	rescueStdout := os.Stdout
+	r, w, _ := os.Pipe()
+	os.Stdout = w
+
+	err := createSouceCodeZipFile(&context)
+
+	// Stop capturing stdout
+	w.Close()
+	out, _ := io.ReadAll(r)
+	os.Stdout = rescueStdout
+
+	/* test */
+	sechubTestUtil.AssertNoError(err, t)
+	sechubTestUtil.AssertStringContains(string(out), sechubUtil.ZipFileNotCreated, t)
 }
