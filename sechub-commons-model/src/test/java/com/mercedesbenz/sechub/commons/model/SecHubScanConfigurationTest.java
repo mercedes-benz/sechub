@@ -187,9 +187,12 @@ class SecHubScanConfigurationTest {
         // test defined credentials
         assertTrue(remote.get().getCredentials().isPresent());
         SecHubRemoteCredentialConfiguration credentials = remote.get().getCredentials().get();
-        assertTrue(credentials.getUser().isPresent());
-        assertEquals("my-example-user", credentials.getUser().get().getName());
-        assertEquals("my-example-password", credentials.getUser().get().getPassword());
+
+        Optional<SecHubRemoteCredentialUserData> optUser = credentials.getUser();
+        assertTrue(optUser.isPresent());
+        SecHubRemoteCredentialUserData user = optUser.get();
+        assertEquals("my-example-user", user.getName());
+        assertEquals("my-example-password", user.getPassword());
     }
 
     @Test
@@ -228,8 +231,11 @@ class SecHubScanConfigurationTest {
         // test defined credentials
         assertTrue(remote.get().getCredentials().isPresent());
         SecHubRemoteCredentialConfiguration credentials = remote.get().getCredentials().get();
-        assertTrue(credentials.getUser().isPresent());
-        assertEquals("my-example-user", credentials.getUser().get().getName());
-        assertEquals("my-example-password", credentials.getUser().get().getPassword());
+
+        Optional<SecHubRemoteCredentialUserData> optUser = credentials.getUser();
+        assertTrue(optUser.isPresent());
+        SecHubRemoteCredentialUserData user = optUser.get();
+        assertEquals("my-example-user", user.getName());
+        assertEquals("my-example-password", user.getPassword());
     }
 }

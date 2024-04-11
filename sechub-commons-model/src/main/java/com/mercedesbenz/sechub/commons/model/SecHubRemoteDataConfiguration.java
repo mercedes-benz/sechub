@@ -22,8 +22,16 @@ public class SecHubRemoteDataConfiguration {
         return type;
     }
 
+    public void setType(String type) {
+        this.type = type;
+    }
+
     public String getLocation() {
         return location;
+    }
+
+    public void setLocation(String location) {
+        this.location = location;
     }
 
     public Optional<SecHubRemoteCredentialConfiguration> getCredentials() {
