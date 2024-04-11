@@ -8,7 +8,6 @@
           "location": "remote_example_location",
           "type": "git",
           "credentials": {
-            "name": "my-credentials-example",
             "user": {
               "name": "my-example-user",
               "password": "my-example-password"

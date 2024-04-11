@@ -12,7 +12,7 @@ public class SecHubRemoteDataConfiguration {
     public static final String PROPERTY_LOCATION = "location";
     public static final String PROPERTY_CREDENTIALS = "credentials";
 
-    private SecHubRemoteCredentialData credentials;
+    private SecHubRemoteCredentialConfiguration credentials;
 
     private String type;
 
@@ -26,11 +26,11 @@ public class SecHubRemoteDataConfiguration {
         return location;
     }
 
-    public Optional<SecHubRemoteCredentialData> getCredentials() {
+    public Optional<SecHubRemoteCredentialConfiguration> getCredentials() {
         return Optional.ofNullable(credentials);
     }
 
-    public void setCredentials(SecHubRemoteCredentialData credentials) {
+    public void setCredentials(SecHubRemoteCredentialConfiguration credentials) {
         this.credentials = credentials;
     }
 }
