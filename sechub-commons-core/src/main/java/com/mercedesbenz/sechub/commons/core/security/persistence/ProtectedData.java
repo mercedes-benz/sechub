@@ -24,7 +24,7 @@ public class ProtectedData<T extends Serializable> {
         return protectedDataAccess.unseal(protectedData);
     }
     
-    public B64String getBase64EncodedData() {
+    public Base64String getBase64EncodedData() {
         return null;
     }
 }

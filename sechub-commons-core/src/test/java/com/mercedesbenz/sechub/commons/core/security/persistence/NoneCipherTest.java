@@ -11,44 +11,47 @@ import javax.crypto.IllegalBlockSizeException;
 import org.junit.jupiter.api.Test;
 
 public class NoneCipherTest {
+    private BinaryString initializationVector = BinaryStringFactory.create("Hello");
     @Test
     void encrypt_null_iv() throws InvalidKeyException, InvalidAlgorithmParameterException {
-        String plainText = "This is a plaintext";
+        String plaintext = "This is plaintext";
         
         PersistenceCipher cipher = NoneCipher.create(null);
-        B64String cipherText = cipher.encrypt(plainText, null);
+        BinaryString ciphertext = cipher.encrypt(plaintext, null);
         
-        assertEquals(plainText, cipherText);
+        assertEquals(plaintext, ciphertext.toString());
     }
     
     @Test
     void encrypt_with_iv() throws InvalidKeyException, InvalidAlgorithmParameterException {
-        String plainText = "This is a plaintext";
+        String plaintext = "This is plaintext";
         
         PersistenceCipher cipher = NoneCipher.create(null);
-        B64String cipherText = cipher.encrypt(plainText, B64String.from("Hello"));
+        BinaryString ciphertext = cipher.encrypt(plaintext, initializationVector);
         
-        assertEquals(plainText, cipherText);
+        assertEquals(plaintext, ciphertext.toString());
     }
     
     @Test
     void decrypt_null_iv() throws InvalidKeyException, InvalidAlgorithmParameterException, IllegalBlockSizeException, BadPaddingException {
-        B64String cipherText = B64String.from("This is a plaintext");
+        String expectedPlaintext = "This is plaintext";
+        BinaryString ciphertext = new PlainString(expectedPlaintext);
         
         PersistenceCipher cipher = NoneCipher.create(null);
-        String plainText = cipher.decrypt(cipherText, null);
+        String plaintext = cipher.decrypt(ciphertext, null);
         
-        assertEquals(plainText, cipherText);
+        assertEquals(expectedPlaintext, plaintext);
     }
     
     @Test
     void decrypt_with_iv() throws InvalidKeyException, InvalidAlgorithmParameterException, IllegalBlockSizeException, BadPaddingException {
-        B64String cipherText = B64String.from("This is a plaintext");
+        String expectedPlaintext = "This is plaintext with a 🐎!";
+        BinaryString ciphertext = new PlainString(expectedPlaintext);
         
         PersistenceCipher cipher = NoneCipher.create(null);
-        String plainText = cipher.decrypt(cipherText, B64String.from("Hello"));
+        String plaintext = cipher.decrypt(ciphertext, initializationVector);
         
-        assertEquals(plainText, cipherText);
+        assertEquals(expectedPlaintext, plaintext);
     }
     
     @Test
@@ -59,7 +62,7 @@ public class NoneCipherTest {
     
     @Test
     void getCipher_string() throws InvalidKeyException {
-        PersistenceCipher cipher = NoneCipher.create(B64String.from("Hello"));
+        PersistenceCipher cipher = NoneCipher.create(new Base64String("Hello"));
         assertEquals(PersistenceCipherType.NONE, cipher.getCipher());
     }
 }

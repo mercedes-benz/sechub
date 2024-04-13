@@ -6,7 +6,6 @@ import java.security.NoSuchAlgorithmException;
 import java.security.Provider;
 import java.security.SecureRandom;
 import java.security.Security;
-import java.util.Base64;
 
 import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
@@ -29,7 +28,7 @@ import org.bouncycastle.jce.provider.BouncyCastleProvider;
  */
 public class AesGcmSiv implements PersistenceCipher {
     
-    //TODO: Encrypt secret
+    //TODO: Encrypt secret?
     private SecretKey secret;
     private Provider cryptoProvider;
     private static PersistenceCipherType cipherType;
@@ -51,53 +50,45 @@ public class AesGcmSiv implements PersistenceCipher {
         Security.addProvider(cryptoProvider);
     }
 
-    public static AesGcmSiv create(B64String b64Secret) throws InvalidKeyException {
+    public static AesGcmSiv create(BinaryString binaryString) throws InvalidKeyException {
         AesGcmSiv instance = null;
 
-        byte[] rawSecret = b64Secret.getBytes();
+        byte[] rawSecret = binaryString.getBytes();
 
-        if (rawSecret.length == 32 || rawSecret.length == 16) {
+        if (rawSecret.length == 32 || rawSecret.length == 16 || rawSecret.length == 24) {
             SecretKey secret = new SecretKeySpec(rawSecret, 0, rawSecret.length, "AES");
             instance = new AesGcmSiv(secret);
-
-            cipherType = (rawSecret.length == 32) ? PersistenceCipherType.AES_256_GCM_SIV : PersistenceCipherType.AES_128_GCM_SIV;
+           
+            if (rawSecret.length == 32 || rawSecret.length == 16) {
+                cipherType = (rawSecret.length == 32) ? PersistenceCipherType.AES_256_GCM_SIV : PersistenceCipherType.AES_128_GCM_SIV;
+            } else if (rawSecret.length == 24) {
+                cipherType = PersistenceCipherType.AES_192_GCM_SIV;
+            }
         } else {
-            throw new InvalidKeyException("The secret has to be 128 or 256 bits long.");
+            throw new InvalidKeyException("The secret has to be 128, 192 or 256 bits long.");
         }
 
         return instance;
     }
 
-    public static B64String generateNewInitializationVector() {
+    public static BinaryString generateNewInitializationVector() {
+        return generateNewInitializationVector(BinaryStringEncodingType.BASE64);
+    }
+    
+    public static BinaryString generateNewInitializationVector(BinaryStringEncodingType encodingType) {
         byte[] initializationVector = new byte[IV_LENGTH_IN_BYTES];
 
         SecureRandom random = new SecureRandom();
         random.nextBytes(initializationVector);
 
-        return B64String.from(initializationVector);
+        return BinaryStringFactory.create(initializationVector, encodingType);
     }
 
-    public B64String encrypt(String plaintext, B64String b64InitializationVector) throws InvalidAlgorithmParameterException, InvalidKeyException {
-        try {
-            Cipher cipher = Cipher.getInstance(ALGORITHM, cryptoProvider);
-
-            SecretKeySpec keySpec = new SecretKeySpec(secret.getEncoded(), "AES");
-
-            GCMParameterSpec gcmParameterSpec = getParameterSpec(b64InitializationVector.toString());
-
-            cipher.init(Cipher.ENCRYPT_MODE, keySpec, gcmParameterSpec);
-
-            byte[] ciphertext = cipher.doFinal(plaintext.getBytes());
-
-            return B64String.from(ciphertext);
-        } catch (NoSuchAlgorithmException | NoSuchPaddingException providerException) {
-            throw new IllegalStateException("Encryption not possible, please check the provider", providerException);
-        } catch (BadPaddingException | IllegalBlockSizeException paddingBlockException) {
-            throw new IllegalStateException("Should not occure. AES in GCM-SIV mode does not require padding.", paddingBlockException);
-        }
+    public BinaryString encrypt(String plaintext, BinaryString initializationVector) throws InvalidAlgorithmParameterException, InvalidKeyException {
+            return encrypt(plaintext, initializationVector, BinaryStringEncodingType.BASE64);
     }
 
-    public String decrypt(B64String b64Ciphertext, B64String b64InitializationVector)
+    public String decrypt(BinaryString ciphertext, BinaryString initializationVector)
             throws InvalidAlgorithmParameterException, InvalidKeyException, IllegalBlockSizeException, BadPaddingException {
         Cipher cipher;
         try {
@@ -105,13 +96,13 @@ public class AesGcmSiv implements PersistenceCipher {
 
             SecretKeySpec keySpec = new SecretKeySpec(secret.getEncoded(), "AES");
 
-            GCMParameterSpec gcmParameterSpec = getParameterSpec(b64InitializationVector.toString());
+            GCMParameterSpec gcmParameterSpec = new GCMParameterSpec(AUTHENTICATION_TAG_LENGTH_IN_BITS, initializationVector.getBytes());
 
             cipher.init(Cipher.DECRYPT_MODE, keySpec, gcmParameterSpec);
 
-            byte[] ciphertext = b64Ciphertext.getBytes();
+            byte[] ciphertextBytes = ciphertext.getBytes();
 
-            byte[] plaintextBytes = cipher.doFinal(ciphertext);
+            byte[] plaintextBytes = cipher.doFinal(ciphertextBytes);
 
             String plaintext = new String(plaintextBytes);
 
@@ -121,14 +112,30 @@ public class AesGcmSiv implements PersistenceCipher {
         }
     }
 
-    private GCMParameterSpec getParameterSpec(String b64InitializationVector) {
-        byte[] initializationVector = Base64.getDecoder().decode(b64InitializationVector);
-
-        return new GCMParameterSpec(AUTHENTICATION_TAG_LENGTH_IN_BITS, initializationVector);
-    }
-
     @Override
     public PersistenceCipherType getCipher() {
         return cipherType;
+    }
+
+    @Override
+    public BinaryString encrypt(String plaintext, BinaryString initializationVector, BinaryStringEncodingType encodingType)
+            throws InvalidAlgorithmParameterException, InvalidKeyException {
+        try {
+            Cipher cipher = Cipher.getInstance(ALGORITHM, cryptoProvider);
+
+            SecretKeySpec keySpec = new SecretKeySpec(secret.getEncoded(), "AES");
+
+            GCMParameterSpec gcmParameterSpec = new GCMParameterSpec(AUTHENTICATION_TAG_LENGTH_IN_BITS, initializationVector.getBytes());
+
+            cipher.init(Cipher.ENCRYPT_MODE, keySpec, gcmParameterSpec);
+
+            byte[] ciphertext = cipher.doFinal(plaintext.getBytes());
+
+            return BinaryStringFactory.create(ciphertext, encodingType);
+        } catch (NoSuchAlgorithmException | NoSuchPaddingException providerException) {
+            throw new IllegalStateException("Encryption not possible, please check the provider", providerException);
+        } catch (BadPaddingException | IllegalBlockSizeException paddingBlockException) {
+            throw new IllegalStateException("Should not occure. AES in GCM-SIV mode does not require padding.", paddingBlockException);
+        }
     }
 }

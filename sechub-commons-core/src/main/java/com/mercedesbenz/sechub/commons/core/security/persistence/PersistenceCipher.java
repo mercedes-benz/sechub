@@ -7,23 +7,25 @@ import javax.crypto.BadPaddingException;
 import javax.crypto.IllegalBlockSizeException;
 
 /**
- * Interface for crypotgraphic algorithms used to protect data at rest (persistence layer)
+ * Interface for cryptographic algorithms used to protect data at rest (persistence layer)
  * 
  * @author Jeremias Eppler
  */
 public interface PersistenceCipher {
-    public static PersistenceCipher create(B64String secret)  throws InvalidKeyException {
+    public static PersistenceCipher create(BinaryString secret)  throws InvalidKeyException {
         return null;
     }
     
-    public static String generateNewInitializationVector() {
+    public static BinaryString generateNewInitializationVector() {
         return null;
     }
     
-    public B64String encrypt(String plaintext, B64String initializationVector) throws InvalidAlgorithmParameterException, InvalidKeyException;
+    public BinaryString encrypt(String plaintext, BinaryString initializationVector) throws InvalidAlgorithmParameterException, InvalidKeyException;
+    
+    public BinaryString encrypt(String plaintext, BinaryString initializationVector, BinaryStringEncodingType encodingType) throws InvalidAlgorithmParameterException, InvalidKeyException;
 
-    public String decrypt(B64String b64Ciphertext, B64String initializationVector)
-            throws InvalidKeyException, InvalidAlgorithmParameterException, IllegalBlockSizeException, BadPaddingException;
+    public String decrypt(BinaryString ciphertext, BinaryString initializationVector)
+            throws IllegalArgumentException, InvalidKeyException, InvalidAlgorithmParameterException, IllegalBlockSizeException, BadPaddingException;
 
     public PersistenceCipherType getCipher();
 }

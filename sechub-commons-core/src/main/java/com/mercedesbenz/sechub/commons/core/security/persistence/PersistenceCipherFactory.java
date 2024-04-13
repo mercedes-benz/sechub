@@ -3,7 +3,7 @@ package com.mercedesbenz.sechub.commons.core.security.persistence;
 import java.security.InvalidKeyException;
 
 public class PersistenceCipherFactory {
-    public static PersistenceCipher create(PersistenceCipherType cipherType, B64String secret) throws InvalidKeyException {
+    public static PersistenceCipher create(PersistenceCipherType cipherType, BinaryString secret) throws InvalidKeyException {
         PersistenceCipher cipher = null;
 
         switch (cipherType) {

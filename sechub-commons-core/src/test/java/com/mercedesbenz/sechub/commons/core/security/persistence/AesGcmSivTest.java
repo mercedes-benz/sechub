@@ -15,34 +15,61 @@ import org.junit.jupiter.api.Test;
 
 public class AesGcmSivTest {
     private static final String LONG_TEXT = "Hello world, this is long text with different emojis. Today, I had for breakfast two 🥐, 1 🥑 and some 🥪. That made me happy ☺️!";
-    
-    @Test
-    void generate_new_createialization_vector() {
-        B64String initializationVector = AesGcmSiv.generateNewInitializationVector();
 
+    @Test
+    void generate_new_create_initialization_vector() {
+        /* execute */
+        BinaryString initializationVector = AesGcmSiv.generateNewInitializationVector();
+
+        /* test */
         assertEquals(AesGcmSiv.IV_LENGTH_IN_BYTES, initializationVector.getBytes().length);
     }
 
     @Test
     void create_secret_32_bytes() throws InvalidKeyException {
-        B64String secret = B64String.from("a".repeat(32));
+        /* prepare */
+        BinaryString secret = new Base64String("a".repeat(32));
+        
+        /* execute */
         AesGcmSiv crypto = AesGcmSiv.create(secret);
 
+        /* test */
         assertNotNull(crypto);
+        assertEquals(PersistenceCipherType.AES_256_GCM_SIV, crypto.getCipher());
     }
 
     @Test
-    void create_secret_16_bytes() throws InvalidKeyException {
-        B64String secret = B64String.from("a".repeat(16));
+    void create_secret_24_bytes() throws InvalidKeyException {
+        /* prepare */
+        BinaryString secret = new Base64String("a".repeat(24));
+        
+        /* execute */
         AesGcmSiv crypto = AesGcmSiv.create(secret);
 
+        /* test */
         assertNotNull(crypto);
+        assertEquals(PersistenceCipherType.AES_192_GCM_SIV, crypto.getCipher());
+    }
+    
+    @Test
+    void create_secret_16_bytes() throws InvalidKeyException {
+        /* prepare */
+        BinaryString secret = new Base64String("a".repeat(16));
+        
+        /* execute */
+        AesGcmSiv crypto = AesGcmSiv.create(secret);
+
+        /* test */
+        assertNotNull(crypto);
+        assertEquals(PersistenceCipherType.AES_128_GCM_SIV, crypto.getCipher());
     }
 
     @Test
     void create_secret_secret_6_bytes_invalid() {
-        B64String secret = B64String.from("abcdef");
+        /* prepare */
+        BinaryString secret = new Base64String("abcdef");
 
+        /* execute + test */
         assertThrows(InvalidKeyException.class, () -> {
             AesGcmSiv.create(secret);
         });
@@ -50,8 +77,10 @@ public class AesGcmSivTest {
 
     @Test
     void create_secret_secret_31_bytes_invalid() {
-        B64String secret = B64String.from("a".repeat(31));
+        /* prepare */
+        BinaryString secret = new Base64String("a".repeat(31));
 
+        /* execute + test */
         assertThrows(InvalidKeyException.class, () -> {
             AesGcmSiv.create(secret);
         });
@@ -60,197 +89,255 @@ public class AesGcmSivTest {
     @Test
     void encrypt__aes_256() throws InvalidKeyException, NoSuchAlgorithmException, NoSuchPaddingException, InvalidAlgorithmParameterException,
             IllegalBlockSizeException, BadPaddingException {
-        B64String secret = B64String.from("w".repeat(32));
-        String plainText = "bca";
-        String expectedCipherText = "1qKKtEpM2ppl4wWrJxJo0MiFdw==";
-        B64String initializationVector = B64String.from("i".repeat(AesGcmSiv.IV_LENGTH_IN_BYTES));
+        
+        /* prepare */
+        BinaryString secret = new Base64String("w".repeat(32));
+        String plaintext = "bca";
+        String expectedCiphertext = "1qKKtEpM2ppl4wWrJxJo0MiFdw==";
+        BinaryString initializationVector = new Base64String("i".repeat(AesGcmSiv.IV_LENGTH_IN_BYTES));
 
         AesGcmSiv crypto = AesGcmSiv.create(secret);
-        B64String cipherText = crypto.encrypt(plainText, initializationVector);
+        
+        /* execute */
+        BinaryString ciphertext = crypto.encrypt(plaintext, initializationVector);
 
-        assertEquals(expectedCipherText, cipherText.toString());
+        /* test */
+        assertEquals(expectedCiphertext, ciphertext.toString());
     }
 
     @Test
     void encrypt__aes_256_initialization_vector_too_short() throws InvalidKeyException, NoSuchAlgorithmException, NoSuchPaddingException,
             InvalidAlgorithmParameterException, IllegalBlockSizeException, BadPaddingException {
-        B64String secret = B64String.from("w".repeat(32));
-        String plainText = "bca";
-        B64String initializationVector = B64String.from("abc".repeat(2));
+        
+        /* prepare */
+        BinaryString secret = new Base64String("w".repeat(32));
+        String plaintext = "bca";
+        BinaryString initializationVector = new Base64String("abc".repeat(2));
+
 
         AesGcmSiv crypto = AesGcmSiv.create(secret);
 
+        /* execute */
         Exception exception = assertThrows(InvalidAlgorithmParameterException.class, () -> {
-            crypto.encrypt(plainText, initializationVector);
+            crypto.encrypt(plaintext, initializationVector);
         });
 
+        /* test */
         assertEquals("Invalid nonce", exception.getMessage());
     }
 
     @Test
     void encrypt__aes_256_initialization_vector_too_long() throws InvalidKeyException, InvalidAlgorithmParameterException {
-        B64String secret = B64String.from("w".repeat(32));
-        String plainText = "bca";
-        B64String initializationVector = B64String.from("abc".repeat(50));
+        
+        /* prepare */
+        BinaryString secret = new Base64String("w".repeat(32));
+        String plaintext = "bca";
+        BinaryString initializationVector = new Base64String("abc".repeat(50));
 
         AesGcmSiv crypto = AesGcmSiv.create(secret);
 
+        /* execute */
         Exception exception = assertThrows(InvalidAlgorithmParameterException.class, () -> {
-            crypto.encrypt(plainText, initializationVector);
+            crypto.encrypt(plaintext, initializationVector);
         });
 
+        /* test */
         assertEquals("Invalid nonce", exception.getMessage());
     }
 
     @Test
     void decrypt__aes_256() throws InvalidKeyException, NoSuchAlgorithmException, NoSuchPaddingException, InvalidAlgorithmParameterException,
             IllegalBlockSizeException, BadPaddingException {
-        B64String secret = B64String.from("w".repeat(32));
-        String expectedPlainText = "bca";
-        B64String cipherText = B64String.fromBase64String("1qKKtEpM2ppl4wWrJxJo0MiFdw==");
-        B64String initializationVector = B64String.from("i".repeat(AesGcmSiv.IV_LENGTH_IN_BYTES));
+        /* prepare */
+        BinaryString secret = new Base64String("w".repeat(32));
+        String expectedPlaintext = "bca";
+        BinaryString ciphertext = BinaryStringFactory.createFromBase64("1qKKtEpM2ppl4wWrJxJo0MiFdw==", BinaryStringEncodingType.BASE64);
+        BinaryString initializationVector = new Base64String("i".repeat(AesGcmSiv.IV_LENGTH_IN_BYTES));
 
         AesGcmSiv crypto = AesGcmSiv.create(secret);
-        String plainText = crypto.decrypt(cipherText, initializationVector);
+        
+        /* execute */
+        String plaintext = crypto.decrypt(ciphertext, initializationVector);
 
-        assertEquals(expectedPlainText, plainText);
+        /* test */
+        assertEquals(expectedPlaintext, plaintext);
     }
 
     @Test
     void encrypt__aes_128() throws InvalidKeyException, InvalidAlgorithmParameterException {
-        B64String secret = B64String.from("a".repeat(16));
-        String plainText = "bca";
-        String expectedCipherText = "yGcKhuWbewS+R4tlegECshiTSQ==";
-        B64String initializationVector = B64String.from("i".repeat(AesGcmSiv.IV_LENGTH_IN_BYTES));
+        /* prepare */
+        BinaryString secret = new Base64String("a".repeat(16));
+        String plaintext = "bca";
+        String expectedCiphertext = "yGcKhuWbewS+R4tlegECshiTSQ==";
+        BinaryString initializationVector = new Base64String("i".repeat(AesGcmSiv.IV_LENGTH_IN_BYTES));
 
         AesGcmSiv crypto = AesGcmSiv.create(secret);
 
-        B64String cipherText = crypto.encrypt(plainText, initializationVector);
+        /* execute */
+        BinaryString ciphertext = crypto.encrypt(plaintext, initializationVector);
 
-        assertEquals(expectedCipherText, cipherText.toString());
+        /* test */
+        assertEquals(expectedCiphertext, ciphertext.toString());
     }
 
     @Test
     void decrypt__aes_128() throws InvalidKeyException, NoSuchAlgorithmException, NoSuchPaddingException, InvalidAlgorithmParameterException,
             IllegalBlockSizeException, BadPaddingException {
-        B64String secret = B64String.from("a".repeat(16));
-        String expectedPlainText = "bca";
-        B64String b64CipherText = B64String.fromBase64String("yGcKhuWbewS+R4tlegECshiTSQ==");
-        B64String initializationVector = B64String.from("i".repeat(AesGcmSiv.IV_LENGTH_IN_BYTES));
+        /* prepare */
+        BinaryString secret = new Base64String("a".repeat(16));
+        String expectedPlaintext = "bca";
+        BinaryString cipherText = BinaryStringFactory.createFromBase64("yGcKhuWbewS+R4tlegECshiTSQ==", BinaryStringEncodingType.BASE64);
+        BinaryString initializationVector = new Base64String("i".repeat(AesGcmSiv.IV_LENGTH_IN_BYTES));
 
         AesGcmSiv crypto = AesGcmSiv.create(secret);
 
-        String plainText = crypto.decrypt(b64CipherText, initializationVector);
+        /* execute */
+        String plaintext = crypto.decrypt(cipherText, initializationVector);
 
-        assertEquals(expectedPlainText, plainText);
+        /* test */
+        assertEquals(expectedPlaintext, plaintext);
     }
 
     @Test
-    void decrypt__aes_128_wrong_cipher_text() throws InvalidKeyException, NoSuchAlgorithmException, NoSuchPaddingException,
-            InvalidAlgorithmParameterException, IllegalBlockSizeException, BadPaddingException {
-        B64String secret = B64String.from("a".repeat(16));
-        B64String cipherText = B64String.from("hello world, this is base 64 encoded");
-        B64String initializationVector = B64String.from("i".repeat(AesGcmSiv.IV_LENGTH_IN_BYTES));
+    void decrypt__aes_128_wrong_cipher_text() throws InvalidKeyException, NoSuchAlgorithmException, NoSuchPaddingException, InvalidAlgorithmParameterException,
+            IllegalBlockSizeException, BadPaddingException {
+        /* prepare */
+        BinaryString secret = new Base64String("a".repeat(16));
+        BinaryString ciphertext = new Base64String("hello world, this is base 64 encoded");
+        BinaryString initializationVector = new Base64String("i".repeat(AesGcmSiv.IV_LENGTH_IN_BYTES));
 
         AesGcmSiv crypto = AesGcmSiv.create(secret);
 
+        /* execute */
         Exception exception = assertThrows(AEADBadTagException.class, () -> {
-            crypto.decrypt(cipherText, initializationVector);
+            crypto.decrypt(ciphertext, initializationVector);
         });
 
+        /* test */
         assertEquals("mac check failed", exception.getMessage());
     }
 
     @Test
-    void decrypt__aes_256_wrong_cipher_text() throws InvalidKeyException, NoSuchAlgorithmException, NoSuchPaddingException,
-            InvalidAlgorithmParameterException, IllegalBlockSizeException, BadPaddingException {
-        B64String secret = B64String.from("a".repeat(32));
-        B64String cipherText = B64String.from("hello world, this is base 64 encoded");
-        B64String initializationVector = B64String.from("i".repeat(AesGcmSiv.IV_LENGTH_IN_BYTES));
+    void decrypt__aes_256_wrong_cipher_text() throws InvalidKeyException, NoSuchAlgorithmException, NoSuchPaddingException, InvalidAlgorithmParameterException,
+            IllegalBlockSizeException, BadPaddingException {
+        
+        /* prepare */
+        BinaryString secret = new Base64String("a".repeat(32));
+        BinaryString ciphertext = new Base64String("hello world, this is base 64 encoded");
+        BinaryString initializationVector = new Base64String("i".repeat(AesGcmSiv.IV_LENGTH_IN_BYTES));
 
         AesGcmSiv crypto = AesGcmSiv.create(secret);
 
+        /* execute */
         Exception exception = assertThrows(AEADBadTagException.class, () -> {
-            crypto.decrypt(cipherText, initializationVector);
+            crypto.decrypt(ciphertext, initializationVector);
         });
 
+        /* test */
         assertEquals("mac check failed", exception.getMessage());
     }
 
-    
     @Test
     void encrypt__aes_128_long_text_with_emojis() throws InvalidKeyException, NoSuchAlgorithmException, NoSuchPaddingException,
             InvalidAlgorithmParameterException, IllegalBlockSizeException, BadPaddingException {
-        B64String secret = B64String.from("a".repeat(16));
-        String plainText = LONG_TEXT;
-        B64String expectedCipherText = B64String.fromBase64String("28/RdEWgYbpbiraiWcSo58+8sfCRRQpSoZiiFqNsYN8tLLVE6AXeQjxh4zazK65G7T0dmFnqrbyx6aRUB+7I6guFXMxqjRij9HdRkae4OalWZVNtCs2+mjBBMNOB5Ke2bgIcYDZbDMRWceBtJnE5PKg7vxrNFgR+8uFw9ejbRVxzGTbkyNeh48QVT9Knk7LpmqQ/eHFTvsvnD0M=");
-        B64String initializationVector = B64String.from("i".repeat(AesGcmSiv.IV_LENGTH_IN_BYTES));
+        
+        /* prepare */
+        BinaryString secret = new Base64String("a".repeat(16));
+        String plaintext = LONG_TEXT;
+        BinaryString expectedCiphertext = BinaryStringFactory.createFromBase64(
+                "28/RdEWgYbpbiraiWcSo58+8sfCRRQpSoZiiFqNsYN8tLLVE6AXeQjxh4zazK65G7T0dmFnqrbyx6aRUB+7I6guFXMxqjRij9HdRkae4OalWZVNtCs2+mjBBMNOB5Ke2bgIcYDZbDMRWceBtJnE5PKg7vxrNFgR+8uFw9ejbRVxzGTbkyNeh48QVT9Knk7LpmqQ/eHFTvsvnD0M=", BinaryStringEncodingType.BASE64);
+        BinaryString initializationVector = new Base64String("i".repeat(AesGcmSiv.IV_LENGTH_IN_BYTES));
 
         AesGcmSiv crypto = AesGcmSiv.create(secret);
 
-        B64String cipherText = crypto.encrypt(plainText, initializationVector);
+        /* execute */
+        BinaryString ciphertext = crypto.encrypt(plaintext, initializationVector);
 
-        assertEquals(expectedCipherText, cipherText);
+        /* test */
+        assertEquals(expectedCiphertext, ciphertext);
     }
 
     @Test
     void encrypt__aes_256_long_text_with_emojis() throws InvalidKeyException, NoSuchAlgorithmException, NoSuchPaddingException,
             InvalidAlgorithmParameterException, IllegalBlockSizeException, BadPaddingException {
-        B64String secret = B64String.from("a".repeat(32));
-        String plainText = LONG_TEXT;
-        B64String expectedCipherText = B64String.fromBase64String("E2RrqhXtKG39okWxxvw3d4NQ+DXr2+Qa78JvdpHS4+FOckRECTkjoX2JfZNKHP3on0sDO1q8uTc+BY9QJkMK+MsWzp8YT4SR0UxWo7uy5SSPMXOLLcQg0vzTOTdgo00vPQy34vogNYO1V/TTzOzzP6Ng0kT9TDsYUWu+v0y3uZw/ujl2X8bP8Nfrp2ZRMrgfpj7NbjQQd8hD5AY=");
-        B64String initializationVector = B64String.from("i".repeat(AesGcmSiv.IV_LENGTH_IN_BYTES));
+        
+        /* prepare */
+        BinaryString secret = new Base64String("a".repeat(32));
+        String plaintext = LONG_TEXT;
+        BinaryString expectedCiphertext = BinaryStringFactory.createFromBase64(
+                "E2RrqhXtKG39okWxxvw3d4NQ+DXr2+Qa78JvdpHS4+FOckRECTkjoX2JfZNKHP3on0sDO1q8uTc+BY9QJkMK+MsWzp8YT4SR0UxWo7uy5SSPMXOLLcQg0vzTOTdgo00vPQy34vogNYO1V/TTzOzzP6Ng0kT9TDsYUWu+v0y3uZw/ujl2X8bP8Nfrp2ZRMrgfpj7NbjQQd8hD5AY=", BinaryStringEncodingType.BASE64);
+        BinaryString initializationVector = new Base64String("i".repeat(AesGcmSiv.IV_LENGTH_IN_BYTES));
 
         AesGcmSiv crypto = AesGcmSiv.create(secret);
 
-        B64String cipherText = crypto.encrypt(plainText, initializationVector);
+        /* execute */
+        BinaryString ciphertext = crypto.encrypt(plaintext, initializationVector);
 
-        assertEquals(expectedCipherText, cipherText);
+        /* test */
+        assertEquals(expectedCiphertext, ciphertext);
     }
 
     @Test
     void decrypt__aes_128_long_text_with_emojis() throws InvalidKeyException, NoSuchAlgorithmException, NoSuchPaddingException,
             InvalidAlgorithmParameterException, IllegalBlockSizeException, BadPaddingException {
-        B64String secret = B64String.from("a".repeat(16));
-        String expectedPlainText = LONG_TEXT;
-        B64String cipherText = B64String.fromBase64String("28/RdEWgYbpbiraiWcSo58+8sfCRRQpSoZiiFqNsYN8tLLVE6AXeQjxh4zazK65G7T0dmFnqrbyx6aRUB+7I6guFXMxqjRij9HdRkae4OalWZVNtCs2+mjBBMNOB5Ke2bgIcYDZbDMRWceBtJnE5PKg7vxrNFgR+8uFw9ejbRVxzGTbkyNeh48QVT9Knk7LpmqQ/eHFTvsvnD0M=");
-        B64String initializationVector = B64String.from("i".repeat(AesGcmSiv.IV_LENGTH_IN_BYTES));
+        
+        /* prepare */
+        BinaryString secret = new Base64String("a".repeat(16));
+        String expectedPlaintext = LONG_TEXT;
+        BinaryString ciphertext = BinaryStringFactory.createFromBase64(
+                "28/RdEWgYbpbiraiWcSo58+8sfCRRQpSoZiiFqNsYN8tLLVE6AXeQjxh4zazK65G7T0dmFnqrbyx6aRUB+7I6guFXMxqjRij9HdRkae4OalWZVNtCs2+mjBBMNOB5Ke2bgIcYDZbDMRWceBtJnE5PKg7vxrNFgR+8uFw9ejbRVxzGTbkyNeh48QVT9Knk7LpmqQ/eHFTvsvnD0M=", BinaryStringEncodingType.BASE64);
+        BinaryString initializationVector = new Base64String("i".repeat(AesGcmSiv.IV_LENGTH_IN_BYTES));
 
         AesGcmSiv crypto = AesGcmSiv.create(secret);
 
-        String plainText = crypto.decrypt(cipherText, initializationVector);
+        /* execute */
+        String plaintext = crypto.decrypt(ciphertext, initializationVector);
 
-        assertEquals(expectedPlainText, plainText);
+        /* test */
+        assertEquals(expectedPlaintext, plaintext);
     }
 
     @Test
     void decrypt__aes_256_long_text_with_emojis() throws InvalidKeyException, NoSuchAlgorithmException, NoSuchPaddingException,
             InvalidAlgorithmParameterException, IllegalBlockSizeException, BadPaddingException {
-        B64String secret = B64String.from("a".repeat(32));
-        String expectedPlainText = LONG_TEXT;
-        B64String cipherText = B64String.fromBase64String("E2RrqhXtKG39okWxxvw3d4NQ+DXr2+Qa78JvdpHS4+FOckRECTkjoX2JfZNKHP3on0sDO1q8uTc+BY9QJkMK+MsWzp8YT4SR0UxWo7uy5SSPMXOLLcQg0vzTOTdgo00vPQy34vogNYO1V/TTzOzzP6Ng0kT9TDsYUWu+v0y3uZw/ujl2X8bP8Nfrp2ZRMrgfpj7NbjQQd8hD5AY=");
-        B64String initializationVector = B64String.from("i".repeat(AesGcmSiv.IV_LENGTH_IN_BYTES));
+        
+        /* prepare */
+        BinaryString secret = new Base64String("a".repeat(32));
+        String expectedPlaintext = LONG_TEXT;
+        BinaryString ciphertext = BinaryStringFactory.createFromBase64(
+                "E2RrqhXtKG39okWxxvw3d4NQ+DXr2+Qa78JvdpHS4+FOckRECTkjoX2JfZNKHP3on0sDO1q8uTc+BY9QJkMK+MsWzp8YT4SR0UxWo7uy5SSPMXOLLcQg0vzTOTdgo00vPQy34vogNYO1V/TTzOzzP6Ng0kT9TDsYUWu+v0y3uZw/ujl2X8bP8Nfrp2ZRMrgfpj7NbjQQd8hD5AY=", BinaryStringEncodingType.BASE64);
+        BinaryString initializationVector = new Base64String("i".repeat(AesGcmSiv.IV_LENGTH_IN_BYTES));
 
         AesGcmSiv crypto = AesGcmSiv.create(secret);
 
-        String plainText = crypto.decrypt(cipherText, initializationVector);
+        /* execute */
+        String plaintext = crypto.decrypt(ciphertext, initializationVector);
 
-        assertEquals(expectedPlainText, plainText);
+        /* test */
+        assertEquals(expectedPlaintext, plaintext);
     }
-    
+
     @Test
     void getCiphers_aes_256() throws InvalidKeyException {
-        B64String secret = B64String.from("a".repeat(32));
-        AesGcmSiv crypto = AesGcmSiv.create(secret);
+        /* prepare */
+        BinaryString secret = new Base64String("a".repeat(32));
         
+        /* execute */
+        AesGcmSiv crypto = AesGcmSiv.create(secret);
+
+        /* test */
         assertEquals(PersistenceCipherType.AES_256_GCM_SIV, crypto.getCipher());
     }
-    
+
     @Test
     void getCiphers_aes_128() throws InvalidKeyException {
-        B64String secret = B64String.from("a".repeat(16));
-        AesGcmSiv crypto = AesGcmSiv.create(secret);
+        /* prepare */
+        BinaryString secret = new Base64String("a".repeat(16));
         
+        /* execute */
+        AesGcmSiv crypto = AesGcmSiv.create(secret);
+
+        /* test */
         assertEquals(PersistenceCipherType.AES_128_GCM_SIV, crypto.getCipher());
     }
 }

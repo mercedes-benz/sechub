@@ -19,12 +19,12 @@
  * a multi-server database scenario, therefore a nonce misuse-resistant algorithm is required.
  *  
  * In theory one could make sure, that there is a single data entry point which keeps track of the used nonces.
- * Before writing the data to the database, the single data entry point generates a nonce and looks up into the 
+ * Before writing the data to the database, the single data entry point generates a nonce and looks into the 
  * list of used nonces whether the nonce is already used or not. 
  * If the nonce is already used the single data entry point needs to generate a nonce until the nonce is unique 
  * and has never been used before. 
  * The consequence is, that data cannot be written in parallel, which is unacceptable and in the case of a 
- * distributed application like SecHub impossible as it would slow down the rate at which date can be inserted
+ * distributed application impossible as it would slow down the rate at which data can be inserted
  * into the database.
  * 
  * To avoid those problems, a nonce misuse-resistant algorithm is required. A nonce misuse-algorithm provides 
