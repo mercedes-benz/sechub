@@ -1,0 +1,19 @@
+{
+
+    "apiVersion": "1.0",
+
+    "project"   : "__projectname__",
+
+    "webScan"   : {
+        "url": "__acceptedUri1__"
+    },
+    
+    "metaData": {
+    
+     "labels": {
+        "stage": "testing", 
+        "purpose": "security assurance", 
+        "reviewer" : "senior-security-expert-A"
+    }
+  }
+}

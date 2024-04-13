@@ -12,7 +12,8 @@ import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
 import com.mercedesbenz.sechub.commons.model.SecHubRuntimeException;
-import com.mercedesbenz.sechub.domain.schedule.batch.SchedulerCancelBatchJobService;
+import com.mercedesbenz.sechub.commons.model.job.ExecutionResult;
+import com.mercedesbenz.sechub.commons.model.job.ExecutionState;
 import com.mercedesbenz.sechub.domain.schedule.job.ScheduleSecHubJob;
 import com.mercedesbenz.sechub.domain.schedule.job.SecHubJobRepository;
 import com.mercedesbenz.sechub.sharedkernel.SecHubEnvironment;
@@ -61,9 +62,6 @@ public class SchedulerRestartJobService {
 
     @Autowired
     ScheduleAssertService scheduleAssertService;
-
-    @Autowired
-    SchedulerCancelBatchJobService schedulerCancelJobService;
 
     /**
      * This service will restart given JOB. There is NO check if current user has
@@ -114,11 +112,6 @@ public class SchedulerRestartJobService {
             sendJobRestartCanceled(job, ownerEmailAddress, "Restart canceled, because job already finished");
             throw new AlreadyExistsException("Job has already finished - restart not necessary");
         }
-
-        /*
-         * when we have still running batch jobs we must terminate them as well
-         */
-        schedulerCancelJobService.stopAndAbandonAllRunningBatchJobsForSechubJobUUID(jobUUID);
 
         if (hard) {
             sendPurgeJobResultsSynchronousRequest(job);

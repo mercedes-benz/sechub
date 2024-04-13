@@ -15,6 +15,7 @@ import org.springframework.web.client.RestOperations;
 
 import com.mercedesbenz.sechub.adapter.AdapterException;
 import com.mercedesbenz.sechub.adapter.AdapterMetaData;
+import com.mercedesbenz.sechub.adapter.checkmarx.CheckmarxAdapter;
 import com.mercedesbenz.sechub.adapter.checkmarx.CheckmarxAdapterConfig;
 import com.mercedesbenz.sechub.adapter.checkmarx.CheckmarxContext;
 import com.mercedesbenz.sechub.adapter.checkmarx.CheckmarxMetaDataID;
@@ -61,7 +62,7 @@ public class CheckmarxScanSupport {
 
         QueueDetails queueDetails = context.getQueueDetails();
         if (queueDetails.hasNeverRun()) {
-            throw context.asAdapterException("The queuing has never been run ?!!?", null);
+            throw context.asAdapterException(CheckmarxAdapter.CHECKMARX_MESSAGE_PREFIX + "Queuing has never been run", null);
         }
 
         if (queueDetails.hasFailed()) {
@@ -72,7 +73,11 @@ public class CheckmarxScanSupport {
             if (context.isIncrementalScan() && failureText.toLowerCase().contains("full scan")) {
                 throw new CheckmarxFullScanNecessaryException(failureText);
             }
-            throw context.asAdapterException("The queuing has failed:" + failureText, null);
+            if (failureText.contains("unsupported language or file format")) {
+                throw new CheckmarxOnlyUnsupportedFilesException(failureText);
+            }
+
+            throw context.asAdapterException(CheckmarxAdapter.CHECKMARX_MESSAGE_PREFIX + "Queuing has failed. Details: " + failureText, null);
         }
     }
 
@@ -104,8 +109,11 @@ public class CheckmarxScanSupport {
 
             RestOperations restTemplate = context.getRestOperations();
             ResponseEntity<String> result = restTemplate.exchange(url, HttpMethod.POST, request, String.class);
-            if (!result.getStatusCode().equals(HttpStatus.CREATED)) {
-                throw context.asAdapterException("Response HTTP status not as expected: " + result.getStatusCode(), null);
+
+            HttpStatus expectedHttpStatus = HttpStatus.CREATED;
+            if (!result.getStatusCode().equals(expectedHttpStatus)) {
+                throw context.asAdapterException(CheckmarxAdapter.CHECKMARX_MESSAGE_PREFIX + "HTTP status=" + result.getStatusCode()
+                        + " (but expected was HTTP status=" + expectedHttpStatus + ")", null);
             }
             String body = result.getBody();
 

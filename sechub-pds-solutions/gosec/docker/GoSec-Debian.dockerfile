@@ -13,8 +13,8 @@ LABEL org.opencontainers.image.description="A container which combines GoSec wit
 LABEL maintainer="SecHub FOSS Team"
 
 # Build args
-ARG GO="go1.20.4.linux-amd64.tar.gz"
-ARG GOSEC_VERSION="2.13.1"
+ARG GO="go1.21.6.linux-amd64.tar.gz"
+ARG GOSEC_VERSION="2.16.0"
 
 # Environment variables in container
 ENV GOSEC_VERSION="${GOSEC_VERSION}"
@@ -24,8 +24,12 @@ USER root
 # Copy mock folder
 COPY mocks "$MOCK_FOLDER"
 
+# Copy scripts
+COPY scripts "$SCRIPT_FOLDER"
+RUN chmod --recursive +x "$SCRIPT_FOLDER"
+
 # Copy PDS configfile
-COPY pds-config.json "$PDS_FOLDER"/pds-config.json
+COPY pds-config.json "$PDS_FOLDER/pds-config.json"
 
 RUN export DEBIAN_FRONTEND=noninteractive && \
     apt-get update && \
@@ -46,7 +50,7 @@ RUN cd "$DOWNLOAD_FOLDER" && \
     # extract Go
     tar --extract --file "$GO" --directory /usr/local/ && \
     # remove go tar.gz
-    rm "$GO" && \
+    rm "$GO"* && \
     # add Go to path
     echo 'export PATH="/usr/local/go/bin:$PATH":' >> /root/.bashrc
 
@@ -60,14 +64,10 @@ RUN cd "$DOWNLOAD_FOLDER" && \
     sha256sum --check --ignore-missing "gosec_${GOSEC_VERSION}_checksums.txt" && \
     # create gosec folder
     mkdir --parents "$TOOL_FOLDER/gosec" && \
-    # unpack gosec
+    # unpack GoSec into tools folder
     tar --extract --ungzip --file "gosec_${GOSEC_VERSION}_linux_amd64.tar.gz" --directory "$TOOL_FOLDER/gosec" && \
-    # Remove gosec tar.gz
-    rm "gosec_${GOSEC_VERSION}_linux_amd64.tar.gz"
-
-# Copy scripts
-COPY scripts $SCRIPT_FOLDER
-RUN chmod --recursive +x $SCRIPT_FOLDER
+    # Cleanup download folder
+    rm --recursive --force "$DOWNLOAD_FOLDER"/*
 
 # Set workspace
 WORKDIR "$WORKSPACE"

@@ -9,10 +9,10 @@ ARG BASE_IMAGE
 
 # Build args
 ARG BUILD_TYPE
-ARG CHECKMARX_WRAPPER_VERSION
+ARG CHECKMARX_WRAPPER_VERSION=1.3.0
 
 # The base image of the builder
-ARG BUIDLER_BASE_IMAGE="debian:11-slim"
+ARG BUILDER_BASE_IMAGE="debian:12-slim"
 
 # Artifact folder
 ARG ARTIFACT_FOLDER="/artifacts"
@@ -21,7 +21,7 @@ ARG ARTIFACT_FOLDER="/artifacts"
 # Builder Download
 #-------------------
 
-FROM ${BUIDLER_BASE_IMAGE} AS builder-download
+FROM ${BUILDER_BASE_IMAGE} AS builder-download
 
 ARG ARTIFACT_FOLDER
 ARG CHECKMARX_WRAPPER_VERSION
@@ -46,7 +46,7 @@ RUN cd "$ARTIFACT_FOLDER" && \
 # Builder Copy Jar
 #-------------------
 
-FROM ${BUIDLER_BASE_IMAGE} AS builder-copy
+FROM ${BUILDER_BASE_IMAGE} AS builder-copy
 
 ARG ARTIFACT_FOLDER
 

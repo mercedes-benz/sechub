@@ -36,6 +36,10 @@ public class PDSAdapterDataConfigurator implements PDSAdapterConfigData, PDSAdap
 
     private Long sourceCodeZipFileSizeInBytes;
 
+    private int resilienceMaxRetries;
+
+    private long resilienceTimeToWaitBeforeRetryInMilliseconds;
+
     public void setTargetType(String targetType) {
         if (targetType == null) {
             this.targetType = EMPTY_TARGET_TYPE;
@@ -224,6 +228,26 @@ public class PDSAdapterDataConfigurator implements PDSAdapterConfigData, PDSAdap
     @Override
     public Long getSourceCodeZipFileSizeInBytesOrNull() {
         return sourceCodeZipFileSizeInBytes;
+    }
+
+    @Override
+    public void setResilienceMaxRetries(int maxRetries) {
+        this.resilienceMaxRetries = maxRetries;
+    }
+
+    @Override
+    public void setResilienceTimeToWaitBeforeRetryInMilliseconds(long milliseconds) {
+        this.resilienceTimeToWaitBeforeRetryInMilliseconds = milliseconds;
+    }
+
+    @Override
+    public int getResilienceMaxRetries() {
+        return resilienceMaxRetries;
+    }
+
+    @Override
+    public long getResilienceTimeToWaitBeforeRetryInMilliseconds() {
+        return resilienceTimeToWaitBeforeRetryInMilliseconds;
     }
 
 }

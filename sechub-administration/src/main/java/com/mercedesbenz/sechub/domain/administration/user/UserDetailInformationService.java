@@ -13,6 +13,7 @@ import com.mercedesbenz.sechub.sharedkernel.Step;
 import com.mercedesbenz.sechub.sharedkernel.UserContextService;
 import com.mercedesbenz.sechub.sharedkernel.logging.LogSanitizer;
 import com.mercedesbenz.sechub.sharedkernel.usecases.admin.user.UseCaseAdminShowsUserDetails;
+import com.mercedesbenz.sechub.sharedkernel.usecases.admin.user.UseCaseAdminShowsUserDetailsForEmailAddress;
 import com.mercedesbenz.sechub.sharedkernel.validation.UserInputAssertion;
 
 @Service
@@ -38,14 +39,31 @@ public class UserDetailInformationService {
 			@Step(
 				number = 2,
 				name = "Service fetches user details.",
-				description = "The service will fetch user details"))
+				description = "The service will fetch user details for given user id"))
 	/* @formatter:on */
     public UserDetailInformation fetchDetails(String userId) {
-        LOG.debug("User {} is fetching user details for user:{}", userContext.getUserId(), logSanitizer.sanitize(userId, 30));
+        LOG.debug("User {} is fetching user details for user: {}", userContext.getUserId(), logSanitizer.sanitize(userId, 30));
 
         assertion.assertIsValidUserId(userId);
 
         User user = userRepository.findOrFailUser(userId);
+
+        return new UserDetailInformation(user);
+    }
+
+    /* @formatter:off */
+    @UseCaseAdminShowsUserDetailsForEmailAddress(
+            @Step(
+                number = 2,
+                name = "Service fetches user details.",
+                description = "The service will fetch user details for given user email address"))
+    /* @formatter:on */
+    public UserDetailInformation fetchDetailsByEmailAddress(String emailAddress) {
+        LOG.debug("User {} is fetching user details for user email: {}", userContext.getUserId(), logSanitizer.sanitize(emailAddress, 30));
+
+        assertion.assertIsValidEmailAddress(emailAddress);
+
+        User user = userRepository.findOrFailUserByEmailAddress(emailAddress);
 
         return new UserDetailInformation(user);
     }

@@ -26,7 +26,22 @@ public class TestUtil {
 
     private static final String SECHUB_KEEP_TEMPFILES = "SECHUB_KEEP_TEMPFILES";
     private static final String SECHUB_TEST_TRACEMODE = "SECHUB_TEST_TRACEMODE";
-    private static final String SECHUB_AUTO_GENERATE_CSS_FRAGMENTS_ON_HTML_TESTS = "SECHUB_AUTO_GENERATE_CSS_FRAGMENTS_ON_HTML_TESTS";
+
+    public static <E extends Exception, R> FailUntilAmountOfRunsReached<E, R> createFailUntil(int amount, E failure, R result) {
+        return new FailUntilAmountOfRunsReached<>(amount, failure, result);
+    }
+
+    public static <E extends Exception, R> FailUntilAmountOfRunsReached<E, R> createFailUntil(int amount, Class<E> failure, R result) {
+        return new FailUntilAmountOfRunsReached<>(amount, failure, result);
+    }
+
+    public static <E extends Exception> FailUntilAmountOfRunsReached<E, Void> createFailUntil(int amount, E failure) {
+        return new FailUntilAmountOfRunsReached<>(amount, failure, (Void) null);
+    }
+
+    public static <E extends Exception> FailUntilAmountOfRunsReached<E, Void> createFailUntil(int amount, Class<E> failure) {
+        return new FailUntilAmountOfRunsReached<>(amount, failure, (Void) null);
+    }
 
     public static String createRAndomString(int wantedLength) {
         if (wantedLength < 0) {
@@ -83,6 +98,18 @@ public class TestUtil {
         return Boolean.parseBoolean(property);
     }
 
+    public static int getSystemPropertyIntOrDefault(String id, int defaultValue) {
+        String sechubPortAsString = System.getProperty(id);
+
+        int value = defaultValue;
+        try {
+            value = Integer.parseInt(sechubPortAsString);
+        } catch (NumberFormatException e) {
+            /* ignore - we use default */
+        }
+        return value;
+    }
+
     public static void dumpSystemProperty(String key) {
         System.out.println("property:" + key + "=" + getSystemProperty(key, "<NOT DEFINED/>"));
     }
@@ -94,16 +121,6 @@ public class TestUtil {
             throw new IllegalStateException("Testcase szenario corrupt / should not happen", e);
         }
 
-    }
-
-    /**
-     *
-     * * @return true when environment variable
-     * {@value TestUtil#SECHUB_AUTO_GENERATE_CSS_FRAGMENTS_ON_HTML_TESTS} is set to
-     * `true` otherwise false
-     */
-    public static boolean isAutoCSSFragementGenerationEnabled() {
-        return Boolean.parseBoolean(System.getenv(SECHUB_AUTO_GENERATE_CSS_FRAGMENTS_ON_HTML_TESTS));
     }
 
     /**
@@ -164,16 +181,16 @@ public class TestUtil {
      * be kept when JVM exits. Otherwise, those files will be deleted by JVM on
      * shutdown phase normally.
      *
-     * @param dirName
+     * @param dirNectoryBaseName represents the base name used for the directory
      * @return
      * @throws IOException
      */
-    public static Path createTempDirectoryInBuildFolder(String dirName, FileAttribute<?>... attributes) throws IOException {
+    public static Path createTempDirectoryInBuildFolder(String dirNectoryBaseName, FileAttribute<?>... attributes) throws IOException {
         Path tmpPath = ensureBuildTmpDirAsFile();
 
-        Path dirAsPath = tmpPath.toRealPath().resolve(dirName + "tmp_" + System.nanoTime());
+        Path dirAsPath = tmpPath.toRealPath().resolve(dirNectoryBaseName + "tmp_" + System.nanoTime());
         if (Files.notExists(dirAsPath)) {
-            Files.createDirectory(dirAsPath, attributes);
+            Files.createDirectories(dirAsPath, attributes); // create all missing directories
 
             if (isDeletingTempFiles()) {
                 dirAsPath.toFile().deleteOnExit();

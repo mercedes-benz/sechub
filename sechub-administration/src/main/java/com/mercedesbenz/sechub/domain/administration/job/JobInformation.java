@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.domain.administration.job;
 
+import static com.mercedesbenz.sechub.sharedkernel.util.Assert.*;
 import static javax.persistence.EnumType.*;
 
 import java.time.LocalDateTime;
@@ -10,12 +11,9 @@ import java.util.UUID;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Enumerated;
-import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.persistence.Version;
-
-import org.hibernate.annotations.GenericGenerator;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
@@ -29,7 +27,7 @@ public class JobInformation {
     /* +-----------------------------------------------------------------------+ */
     public static final String TABLE_NAME = "ADM_JOB_INFORMATION";
     /**
-     * Email adress is also the primary key. So no duplicates
+     * Email address is also the primary key. So no duplicates
      */
     public static final String COLUMN_UUID = "UUID";
     public static final String COLUMN_JOB_UUID = "JOB_UUID";
@@ -70,13 +68,18 @@ public class JobInformation {
 
     public static final String QUERY_DELETE_JOBINFORMATION_OLDER_THAN = "DELETE FROM JobInformation j WHERE j." + PROPERTY_SINCE + " < :cleanTimeStamp";
 
-    @Id
-    @GeneratedValue(generator = "UUID")
-    @GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
-    @Column(name = COLUMN_UUID, updatable = false, nullable = false, columnDefinition = "UUID")
-    UUID uUID;
+    /* JPA only */
+    JobInformation() {
+    }
 
-    @Column(name = COLUMN_JOB_UUID, unique = true)
+    public JobInformation(UUID jobUUID) {
+        notNull(jobUUID, "SecHub job UUID may not be null!");
+
+        this.jobUUID = jobUUID;
+    }
+
+    @Id
+    @Column(name = COLUMN_JOB_UUID, unique = true, updatable = false, nullable = false, columnDefinition = "UUID")
     UUID jobUUID;
 
     @Column(name = COLUMN_PROJECT_ID, nullable = false)
@@ -102,10 +105,6 @@ public class JobInformation {
     @Column(name = "VERSION")
     Integer version;
 
-    public UUID getUUID() {
-        return uUID;
-    }
-
     public String getOwner() {
         return owner;
     }
@@ -124,10 +123,6 @@ public class JobInformation {
 
     public void setProjectId(String projectId) {
         this.projectId = projectId;
-    }
-
-    public void setJobUUID(UUID jobUUID) {
-        this.jobUUID = jobUUID;
     }
 
     public String getProjectId() {
@@ -171,7 +166,7 @@ public class JobInformation {
             return false;
         }
         JobInformation other = (JobInformation) obj;
-        return Objects.equals(uUID, other.uUID);
+        return Objects.equals(jobUUID, other.jobUUID);
     }
 
 }

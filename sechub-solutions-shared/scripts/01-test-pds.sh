@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+#!/bin/bash
 # SPDX-License-Identifier: MIT
 
 file_to_upload="$1"
@@ -7,7 +7,7 @@ upload_type="source"
 job_start_datetime=""
 
 function usage() {
-   
+
     cat - <<USAGE
 usage: `basename $0` <file-to-upload> [<job-configuration-file>]
 
@@ -88,7 +88,7 @@ function seconds_in_between() {
 
     seconds=$(( end_time - start_time ))
 
-    echo "$seconds" 
+    echo "$seconds"
 }
 
 if [[ -z "$PDS_SERVER" ]]
@@ -133,7 +133,7 @@ fi
 if [[ ! -z "$json_config" ]]
 then
     echo "JSON job configuration provided."
-    
+
     if [[ ! -f "$json_config" ]]
     then
         echo "File $json_config does not exist."
@@ -214,7 +214,7 @@ then
 
     printf "\n# Job output stream\n"
     "$pds_api" job_stream_output "$jobUUID"
-    
+
     printf "\n# Job error stream\n"
     "$pds_api" job_stream_error "$jobUUID"
 

@@ -43,4 +43,7 @@ public interface PDSAdapterConfigData {
 
     Long getSourceCodeZipFileSizeInBytesOrNull();
 
+    int getResilienceMaxRetries();
+
+    long getResilienceTimeToWaitBeforeRetryInMilliseconds();
 }

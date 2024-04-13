@@ -1,88 +1,60 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.adapter;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
+import com.mercedesbenz.sechub.commons.model.JSONConverter;
+import com.mercedesbenz.sechub.commons.model.MetaDataModel;
 
 public class AdapterMetaDataTest {
 
-    AdapterMetaData metaDataToTest;
+    private AdapterMetaData metaDataToTest;
 
-    @Before
-    public void before() {
+    @BeforeEach
+    void before() {
         metaDataToTest = new AdapterMetaData();
     }
 
     @Test
-    public void adapter_version_initial_0() {
+    void adapter_version_initial_0() {
         assertEquals(0, metaDataToTest.getAdapterVersion());
     }
 
     @Test
-    public void adapter_version_set_get_22() {
+    void adapter_version_set_get_22() {
+        /* prepare */
         metaDataToTest.adapterVersion = 22;
+
+        /* execute + test */
         assertEquals(22, metaDataToTest.getAdapterVersion());
     }
 
+    /**
+     * With this test we ensure we have the full functionality of
+     * {@link MetaDataModel} (via inheritance)
+     */
     @Test
-    public void adapter_getvalue_for_unknown_key_returns_null() {
-        assertEquals(null, metaDataToTest.getValueAsStringOrNull("xyz"));
-        assertEquals(null, metaDataToTest.getValueAsStringOrNull(null));
-        assertEquals(0, metaDataToTest.getKeys().size());
+    void adapter_meta_data_extends_metadata_model() {
+        assertTrue(metaDataToTest instanceof MetaDataModel);
     }
 
     @Test
-    public void adapter_getvalue_for_known_key_returns_value() {
-        metaDataToTest.setValue("xyz", "123");
-        assertEquals("123", metaDataToTest.getValueAsStringOrNull("xyz"));
-        assertEquals(1, metaDataToTest.getKeys().size());
-        assertTrue(metaDataToTest.getKeys().contains("xyz"));
+    void metadata_as_json_by_jsonconverter_is_as_expected() {
+        /* prepare */
+        metaDataToTest.adapterVersion = 4711;
+        metaDataToTest.setValue("key1", 1);
+        metaDataToTest.setValue("key2", "i-am-a-string");
+        metaDataToTest.setValue("key3", true);
 
-    }
+        /* execute */
+        String json = JSONConverter.get().toJSON(metaDataToTest);
 
-    @Test
-    public void adapter_setvalue_with_null() {
-        metaDataToTest.setValue("xyz", "123");
-        metaDataToTest.setValue("xyz", null);
-        assertEquals(null, metaDataToTest.getValueAsStringOrNull("xyz"));
-
-    }
-
-    @Test
-    public void adapter_hasvalue_with_xyz_123() {
-        metaDataToTest.setValue("xyz", "123");
-        assertTrue(metaDataToTest.hasValue("xyz", "123"));
-        assertFalse(metaDataToTest.hasValue("xyz", "1234"));
-
-    }
-
-    @Test
-    public void adapter_hasvalue_with_null() {
-        metaDataToTest.setValue("xyz", null);
-        assertTrue(metaDataToTest.hasValue("xyz", null));
-        assertFalse(metaDataToTest.hasValue("xyz", "1234"));
-
-    }
-
-    @Test
-    public void adapter_setvalue_with_key_null_is_same_as_string_null() {
-        assertEquals(null, metaDataToTest.getValueAsStringOrNull(null));
-        assertEquals(0, metaDataToTest.getKeys().size());
-
-        metaDataToTest.setValue(null, "123");
-        assertEquals("123", metaDataToTest.getValueAsStringOrNull(null));
-        assertEquals("123", metaDataToTest.getValueAsStringOrNull("null"));
-        assertEquals(1, metaDataToTest.getKeys().size());
-        assertTrue(metaDataToTest.getKeys().contains("null"));
-
-        metaDataToTest.setValue("null", "456");
-        assertEquals("456", metaDataToTest.getValueAsStringOrNull(null));
-        assertEquals("456", metaDataToTest.getValueAsStringOrNull("null"));
-        assertEquals(1, metaDataToTest.getKeys().size());
-        assertTrue(metaDataToTest.getKeys().contains("null"));
-
+        /* test */
+        String expectedJson = "{\"adapterVersion\":4711,\"metaData\":{\"key1\":\"1\",\"key2\":\"i-am-a-string\",\"key3\":\"true\"}}";
+        assertEquals(expectedJson, json);
     }
 
 }

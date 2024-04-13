@@ -6,6 +6,7 @@ import static org.junit.Assert.*;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.UUID;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -219,7 +220,7 @@ public class JobInformationRepositoryDBTest {
         }
 
         private JobInformation create(LocalDateTime since, JobStatus status) {
-            JobInformation jobInformation = new JobInformation();
+            JobInformation jobInformation = new JobInformation(UUID.randomUUID());
             jobInformation.since = since;
             jobInformation.owner = "owner1";
             jobInformation.projectId = "project1";

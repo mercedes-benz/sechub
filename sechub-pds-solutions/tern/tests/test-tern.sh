@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # SPDX-License-Identifier: MIT
 
-BUILD_FOLDER="build/"
+BUILD_FOLDER="build"
 TOOLS="tools/"
 PDS_TOOLS_CLI_VERSION="0.1.0"
 PDS_API='../../../sechub-developertools/scripts/pds-api.sh'

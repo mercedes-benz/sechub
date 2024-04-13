@@ -19,7 +19,7 @@ services:
         networks:
             - "internal"
         volumes:
-          - ./docker/scripts:/scripts
-          - ./docker/mocks:/mocks
+          - ./docker/scripts:/pds/scripts
+          - ./docker/mocks:/pds/mocks
 networks:
     internal:

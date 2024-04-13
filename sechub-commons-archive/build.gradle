@@ -18,4 +18,5 @@ dependencies{
     
     testImplementation spring_boot_dependency.mockito_core
     testImplementation spring_boot_dependency.hamcrest
+    testImplementation spring_boot_dependency.logback_classic
 }

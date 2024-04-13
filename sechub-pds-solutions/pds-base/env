@@ -1,3 +1,6 @@
+# Base Image
+BASE_IMAGE=debian:12-slim
+
 # Resource limits
 MEMORY_LIMIT=300M
 CPU_LIMIT=1.0
@@ -10,13 +13,13 @@ CPU_LIMIT=1.0
 BUILD_TYPE=download
 
 # The PDS version used if the BUILD_TYPE is set to `download`
-PDS_VERSION="0.34.1"
+PDS_VERSION="1.1.0"
 
 # Go version used
-GO="go1.20.4.linux-amd64.tar.gz"
+GO="go1.21.6.linux-amd64.tar.gz"
 
 # The Java version used
-JAVA_VERSION="11"
+JAVA_VERSION="17"
 
 # Git information if the BUILD_TYPE is set to `build`
 TAG=""

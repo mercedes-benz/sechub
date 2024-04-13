@@ -3,42 +3,44 @@ package com.mercedesbenz.sechub.pds.config;
 
 import static org.junit.Assert.*;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.EmptySource;
+import org.junit.jupiter.params.provider.NullSource;
+import org.junit.jupiter.params.provider.ValueSource;
 
 public class PDSProductIdentifierValidatorTest {
 
+    private static final String VALID_PRODUCT_ID_WITH_MAX_LENGTH_50 = "12345678901234567890123456789012345678901234567890";
     private PDSProductIdentifierValidator validatorToTest;
 
-    @Before
-    public void before() throws Exception {
+    @BeforeEach
+    void beforeEach() {
         validatorToTest = new PDSProductIdentifierValidator();
     }
 
-    @Test
-    public void empty_product_identifiers_return_errormessage() {
-        assertNotNull(validatorToTest.createValidationErrorMessage(null));
-        assertNotNull(validatorToTest.createValidationErrorMessage(""));
+    @ParameterizedTest
+    @ValueSource(strings = { "ABCDE_1234_11", "123456789012345678901234567890", VALID_PRODUCT_ID_WITH_MAX_LENGTH_50 })
+    void valid_pds_product_identifiers(String productId) {
+        /* execute */
+        String errorMessage = validatorToTest.createValidationErrorMessage(productId);
+
+        /* test */
+        if (errorMessage != null) {
+            fail("Expected no error message but got: " + errorMessage);
+        }
     }
 
-    @Test
-    public void product_identifiers_too_long_returns_errormessage() {
-        assertNotNull(validatorToTest.createValidationErrorMessage("123456789012345678901234567890x"));
-    }
+    @ParameterizedTest
+    @NullSource
+    @EmptySource
+    @ValueSource(strings = { "$", "x$", "x-", "-", "!", VALID_PRODUCT_ID_WITH_MAX_LENGTH_50 + "x" })
+    void invalid_pds_product_identifiers(String productId) {
+        /* execute */
+        String errorMessage = validatorToTest.createValidationErrorMessage(productId);
 
-    @Test
-    public void product_identifiers_not_too_long_returns_NO_errormessage() {
-        assertNull(validatorToTest.createValidationErrorMessage("123456789012345678901234567890"));
-        assertNull(validatorToTest.createValidationErrorMessage("ABCDE_1234_11"));
-    }
-
-    @Test
-    public void product_identifiers_containing_non_alphaebtic_digit_and_no_underscore_are_not_accepted() {
-        assertNotNull(validatorToTest.createValidationErrorMessage("$"));
-        assertNotNull(validatorToTest.createValidationErrorMessage("x$"));
-        assertNotNull(validatorToTest.createValidationErrorMessage("x-"));
-        assertNotNull(validatorToTest.createValidationErrorMessage("-"));
-        assertNotNull(validatorToTest.createValidationErrorMessage("!"));
+        /* test */
+        assertNotNull(errorMessage, "Expected an error message but got none!");
     }
 
 }

@@ -5,13 +5,13 @@ services:
     pds-pmd:
         build:
             args:
-                - BASE_IMAGE=debian:11-slim
+                - BASE_IMAGE=debian:12-slim
             context: docker/
             dockerfile: PMD-Debian.dockerfile
         env_file:
             - .env-cluster-object-storage
         volumes:
-          - ./docker/scripts:/scripts
+          - ./docker/scripts:/pds/scripts
         networks:
             - app-network
         depends_on:

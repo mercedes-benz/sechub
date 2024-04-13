@@ -23,4 +23,4 @@ echo "PDS SARIF integrationt test script starting..."
 
 dumpPDSVariables
 
-cp "$PDS_JOB_EXTRACTED_SOURCES_FOLDER/returned_sarif_result.json" $PDS_JOB_RESULT_FILE
+cp "$PDS_JOB_EXTRACTED_SOURCES_FOLDER/returned_sarif_result.json" "$PDS_JOB_RESULT_FILE"

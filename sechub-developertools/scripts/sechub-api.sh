@@ -71,6 +71,7 @@ project_unassign_user <project-id> <user-id> - Unassign user from project (revok
 scheduler_disable - Stop SecHub job scheduler
 scheduler_enable - Continue SecHub job scheduler
 scheduler_status - Get scheduler status
+server_info - Print infos about SecHub server (json format)
 server_status - Get status entries of SecHub server like scheduler, jobs etc. (json format)
 server_version - Print version of SecHub server
 superadmin_grant <user-id> - Grant superadmin role to user <user-id>
@@ -78,7 +79,7 @@ superadmin_list - List all superadmin users (json format)
 superadmin_revoke <user-id> - Revoke superadmin role from user <user-id>
 user_change_email <user-id> <new email address> - Update the email of user <user-id>
 user_delete <user-id> - Delete user <user-id>
-user_details <user-id> - List details of user <user-id> (json format)
+user_details <user-id or email> - List details of user <user-id or email> (json format)
 user_list - List all users (json format)
 user_list_open_signups - List all users waiting to get their signup accepted (json format)
 user_reset_apitoken <email address> - Request new api token for <email address>
@@ -565,7 +566,14 @@ function sechub_project_delete {
 
 
 function sechub_project_details {
-  curl_with_sechub_auth -i -X GET -H 'Content-Type: application/json' "$SECHUB_SERVER/api/admin/project/$1" | $RESULT_FILTER | $JSON_FORMATTER
+  local project_not_found_pattern="\"status\":404"
+  local result=$(curl_with_sechub_auth -i -X GET -H 'Content-Type: application/json' "$SECHUB_SERVER/api/admin/project/$1" | $RESULT_FILTER)
+  echo "$result" | $JSON_FORMATTER
+
+  if echo $result | grep "$project_not_found_pattern" >/dev/null 2>&1 ; then
+    # Exit with non-zero because project does not exist
+    exit 1
+  fi
 }
 
 
@@ -711,6 +719,11 @@ function sechub_scheduler_status {
 }
 
 
+function sechub_server_info {
+  curl_with_sechub_auth -i -X GET -H 'Content-Type: application/json' "$SECHUB_SERVER/api/admin/info/server" | $RESULT_FILTER | $JSON_FORMATTER
+}
+
+
 function sechub_server_status {
   # 1. Update status in admin domain
   curl_with_sechub_auth -i -X POST -H 'Content-Type: application/json' "$SECHUB_SERVER/api/admin/scheduler/status/refresh" > /dev/null 2>&1
@@ -731,7 +744,15 @@ function sechub_server_status {
 
 
 function sechub_server_version {
-  curl_with_sechub_auth -i -X GET -H 'Content-Type: text/plain' "$SECHUB_SERVER/api/admin/info/version" | $RESULT_FILTER
+  local result_json
+  result_json=$(curl_with_sechub_auth -i -X GET -H 'Content-Type: application/json' "$SECHUB_SERVER/api/admin/info/server" | $RESULT_FILTER)
+
+  if [ "$JSON_FORMATTER" != "$NOFORMAT_PIPE" -a "$JQ_INSTALLED" == "true" ] ; then
+    echo $result_json | jq --raw-output '.serverVersion'
+  else
+    # Fallback: Print raw JSON
+    echo -n $result_json | $JSON_FORMATTER
+  fi
 }
 
 
@@ -763,7 +784,12 @@ function sechub_user_delete {
 
 
 function sechub_user_details {
-  curl_with_sechub_auth -i -X GET -H 'Content-Type: application/json' "$SECHUB_SERVER/api/admin/user/$1" | $RESULT_FILTER | $JSON_FORMATTER
+  local sechub_user_or_email="$1"
+  if [[ $sechub_user_or_email =~ ^.+@.+$ ]]; then
+    curl_with_sechub_auth -i -X GET -H 'Content-Type: application/json' "$SECHUB_SERVER/api/admin/user-by-email/$sechub_user_or_email" | $RESULT_FILTER | $JSON_FORMATTER
+  else
+    curl_with_sechub_auth -i -X GET -H 'Content-Type: application/json' "$SECHUB_SERVER/api/admin/user/$sechub_user_or_email" | $RESULT_FILTER | $JSON_FORMATTER
+  fi
 }
 
 
@@ -787,7 +813,7 @@ function generate_sechub_user_signup_data {
 {
   "apiVersion":"$SECHUB_API_VERSION",
   "userId":"$1",
-  "emailAdress":"$2"
+  "emailAddress":"$2"
 }
 EOF
 }
@@ -1096,6 +1122,9 @@ case "$action" in
   scheduler_status)
     $failed || sechub_scheduler_status
     ;;
+  server_info)
+    $failed || sechub_server_info
+    ;;
   server_status)
     $failed || sechub_server_status
     ;;
@@ -1123,8 +1152,8 @@ case "$action" in
     $failed || sechub_user_delete "$SECHUB_USER"
     ;;
   user_details)
-    SECHUB_USER="$1" ; check_parameter SECHUB_USER '<user-id>'
-    $failed || sechub_user_details "$SECHUB_USER"
+    SECHUB_USER_OR_EMAIL="$1" ; check_parameter SECHUB_USER_OR_EMAIL '<user-id or email>'
+    $failed || sechub_user_details "$SECHUB_USER_OR_EMAIL"
     ;;
   user_list)
     $failed || sechub_user_list

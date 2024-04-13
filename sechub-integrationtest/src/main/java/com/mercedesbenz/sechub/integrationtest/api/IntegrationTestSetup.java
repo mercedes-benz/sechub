@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.integrationtest.api;
 
+import java.lang.reflect.InvocationTargetException;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.HashSet;
@@ -117,8 +118,9 @@ public class IntegrationTestSetup implements TestRule {
     public static IntegrationTestSetup forScenario(Class<? extends TestScenario> scenarioClazz) {
         TestScenario scenario = scenarioClassToInstanceMap.computeIfAbsent(scenarioClazz, clazz -> {
             try {
-                return clazz.newInstance();
-            } catch (InstantiationException | IllegalAccessException e) {
+                return clazz.getDeclaredConstructor().newInstance();
+            } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException | NoSuchMethodException
+                    | SecurityException e) {
                 throw new IllegalStateException("Cannot create scenario instance for:" + scenarioClazz, e);
             }
         });
@@ -348,7 +350,7 @@ public class IntegrationTestSetup implements TestRule {
         }
         if (!Boolean.TRUE.equals(testServerStatusCache)) {
             throw new IntegrationTestServerNotFoundException(
-                    createTimeInfo("The integration test sechub server is not running. Cannot execute test. Build is alive url was:" + url));
+                    createTimeInfo("The integration test sechub server is not running. Cannot execute test. Used 'is alive url': " + url));
         }
     }
 

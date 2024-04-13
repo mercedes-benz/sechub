@@ -21,7 +21,7 @@ function createLocalhostCertifcate(){
     #
     # see https://stackoverflow.com/questions/13578134/how-to-automate-keystore-generation-using-the-java-keystore-tool-w-o-user-inter
     echo "Start creating localhost certificate"
-    keytool -genkey -alias tomcat -storetype PKCS12 -keyalg RSA -keysize 2048 -keystore $DEV_CERT_FILE -validity 3650 -storepass $PSEUDO_PWD --dname "CN=localhost, OU=ID"
+    keytool -genkey -alias tomcat -storetype PKCS12 -keyalg RSA -keysize 2048 -keystore "$DEV_CERT_FILE" -validity 3650 -storepass $PSEUDO_PWD --dname "CN=localhost, OU=ID"
     echo "Created file $DEV_CERT_FILE"
 
 }

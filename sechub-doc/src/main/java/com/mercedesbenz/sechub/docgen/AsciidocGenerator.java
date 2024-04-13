@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.util.Map;
 import java.util.Set;
 
+import org.apache.commons.io.FileUtils;
 import org.slf4j.LoggerFactory;
 
 import com.mercedesbenz.sechub.docgen.messaging.DomainMessagingFilesGenerator;
@@ -62,6 +63,9 @@ public class AsciidocGenerator implements Generator {
     /* PDS */
     PDSExecutorConfigurationParameterDescriptionGenerator pdsExecutorConfigParameterGenerator = new PDSExecutorConfigurationParameterDescriptionGenerator();
     CheckmarxWrapperDocumentationGenerator checkmarxWrapperEnvGenerator = new CheckmarxWrapperDocumentationGenerator();
+
+    /* system tests */
+    SystemTestDocGenerator systemTestDocGenerator = new SystemTestDocGenerator();
 
     public static void main(String[] args) throws Exception {
         output(">AsciidocGenerator starting");
@@ -131,6 +135,27 @@ public class AsciidocGenerator implements Generator {
         /* Parts necessary to have special integration tests run */
         generateMessagingFiles(context);
         generateUseCaseFiles(context);
+
+        generateAndCopySystemTestsDocFiles(context);
+    }
+
+    private void generateAndCopySystemTestsDocFiles(GenContext context) throws IOException {
+        String asciidoc = systemTestDocGenerator.generateDefaultFallbackTable();
+        File tableGenFile = new File(context.documentsGenFolder, "gen_systemtests_default_fallbacks_table.adoc");
+        writer.save(tableGenFile, asciidoc);
+
+        asciidoc = systemTestDocGenerator.generateRuntimeVariableTable();
+        tableGenFile = new File(context.documentsGenFolder, "gen_systemtests_runtime_variables_table.adoc");
+        writer.save(tableGenFile, asciidoc);
+
+        /* copy system test example files to doc */
+        File systemTestExampleGenFolder = new File("./../sechub-systemtest/build/gen/example");
+        File fullBlownConfigExample = new File(systemTestExampleGenFolder, "gen_example_systemtest_full_blown_config.json");
+        File useIntegrationTestServersConfigExample = new File(systemTestExampleGenFolder, "gen_example_systemtest_using_local_integrationtestservers.json");
+
+        FileUtils.copyFileToDirectory(fullBlownConfigExample, context.documentsGenFolder);
+        FileUtils.copyFileToDirectory(useIntegrationTestServersConfigExample, context.documentsGenFolder);
+
     }
 
     private void generateModuleAndModuleGroupFiles(GenContext context) throws IOException {

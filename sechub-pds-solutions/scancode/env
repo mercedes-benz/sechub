@@ -1,7 +1,7 @@
+# See: https://pypi.org/project/scancode-toolkit/
+SCANCODE_VERSION="32.0.4"
+
+# See: https://mvnrepository.com/artifact/org.spdx/tools-java
+SPDX_TOOL_VERSION="1.1.7"
+
 PDS_MAX_FILE_UPLOAD_BYTES=26214400000
-
-# The version number can be found at: https://pypi.org/project/scancode-toolkit/
-SCANCODE_VERSION="31.2.4"
-
-# For the version number look at: https://mvnrepository.com/artifact/org.spdx/tools-java
-SPDX_TOOL_VERSION="1.1.5"

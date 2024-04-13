@@ -1,0 +1,524 @@
+// SPDX-License-Identifier: MIT
+[[section-systemtests]]
+
+== System tests
+This chapter describes the system test framework.
+
+=== Purpose
+Integration tests do rely on {sechub} running in integration test mode, using one {pds}
+server in integration test mode. 
+
+In this scenario, the integration test API can fetch internal meta data and is able to check 
+correctness of the logic inside {sechub} and also inside {pds}. But it does not test real product 
+execution - in the end it only uses mocked test scripts and static test data.    
+
+"The system tests are different to integration tests: Their main purpose is to test
+{sechub} server(s) in combination with one or multiple {pds} solutions in real live scenarios.
+This helps developers of {pds} solutions to drastically reduce development time and to write
+automated tests without having to constantly test manually. To run the system tests a command line call in the OS shell or
+calling a unit test is sufficient. 
+
+[TIP]
+====
+The system test framework is designed, to make things easier for developers
+when testing {sechub} / {pds}. It provides as many defaults as possible,
+therefore it is usually not necessary to explicitly define much to have a running system test!
+
+Try to only define the necessary minimum and let the system test framework do the rest.
+
+It is also possible to use already running local servers ({sechub} and/or {pds}). 
+For example: When you are developing a PDS solution you can start a local SecHub server in your IDE 
+and run your tests only with start definitions for your {pds} solution! This will increase
+speed, because the test will not spawn (and also not shutdown) the {sechub} server instance!
+====
+
+=== Write a system test configuration file
+This section describes the different parts inside the test configuration model.
+
+System tests can be written in two ways:
+
+1. Write a JUnit test and use methods provided by `SystemTestAPI` or
+2. Write a JSON file and execute it with `pds-tools`.
+
+It does not matter if you write the configuration directly in JSON or with the Java SystemTestFramework API - 
+the underlying model is the same. 
+
+[[systemtests-script-definitions]]
+==== Script definitions
+At many locations it is possible to define script execution steps 
+(e.g. {sechub} start/stop, {pds} start/stop or at test preparation)
+
+As the name indicates the system test will execute a script.
+
+You can define the following:
+
+- path
+- arguments _(optional)_
+- envVariables _(optional)_ +
+  as a map
+- workingDirectory_(optional)_
+- process _(optional)_
+  * timeout _(optional)_
+- stageWaits _(optional)_ +
+  if `true` the stage will wait until this script is executed and has successfully finished. +
+  The default is `false` - please set this to `true` only when really necessary. E.g. for a prepare +
+  script which must be done before a next step.
+
+===== Example snippet
+[source,json]
+----
+
+"script" : {
+            "path" : "./01-start-single-docker-compose.sh", //<1>
+            "arguments" : [ "alpine" ],//<2>
+            "envVariables" : { //<3>
+                "NAME1" : "value1",
+                "NAME2" : "value2"
+            }
+            "workingDirectory" : "./../my-preparaton-folder1", //<4> 
+            "process" : { //<5>
+              "timeOut" : { 
+                "amount" : 10, //<6>
+                "unit" : "MINUTES"
+              }
+            },
+            "stageWaits" : false //<7>
+          }
+
+----
+<1> The path for the executable script
+<2> Arguments (optional)
+<3> Environment variables (optional)
+<4> The working directory (optional, per default the working directory of system test call)
+<5> The process definition (optional). A user can define here some additional
+    constraints for the created process (currently only a time out is supported).
+<6> Time out definition. When not defined, the default is 5 minutes. When a time out
+    happens, the test will fail and the system test runtime will shutdown.
+<7> Defines if the current stage (e.g. test preparation) needs to wait for this script to be 
+    executed before next stage can be entered (e.g. test execution)
+    
+
+==== Comments
+If you want to comment your configuration file setup, you have different options, depending
+how you use the framework.
+
+===== PDS-Tools using a JSON configuration file
+Here you have two options:
+
+1. Use Javascript comments inside your JSON (the framework just ignores it) - for 
+   example: `// I am comment` or
+   
+2. use the `comment` attribute 
+
+===== JUnit tests
+The `SystemTestAPI` configuration builder provides for many attributes a `comment` method
+as well. Those parts will be transformed to corresponding JSON attribute inside the model.
+
+==== Variables
+
+===== Environment variables
+You can use environment variables inside the test configuration.
+The prefix for those variables is `env`. 
+
+For example, when you want to use the environment variable `USER_NAME` inside the 
+configuration you reference it by `${env.USER_NAME}`.
+
+[WARNING]
+====
+It is forbidden to use environment variables which have `${env.*` as content!
+====
+
+===== Secret environment variables
+When an error appears, the altered configuration model will be logged as JSON to make it
+easier to understand the problem. 
+
+But inside this output, all standard variables (environment, runtime, user variables) are 
+revealed and will be shown in plain text.
+
+To hide sensitive information you can use secret environment variables.
+
+Secret environment variables are hidden in the log output. 
+Use secret information for all sensitive information 
+(secrets, passwords, credentials, personal information etc.).
+
+[WARNING]
+====
+It is forbidden to use secret environment variables which have `${env.*` or `${secretEnv.*` as content!
+====
+The prefix for those variables is `secretEnv`. 
+
+For example, when you want to use the environment variable `USER_PASSWORD` inside the 
+configuration you reference it by `${secretEnv.USER_PASSWORD}`.
+
+[IMPORTANT]
+====
+When you are using secret environment variables but they are not defined at runtime,
+the system test framework will fail with an error about the missing variables.
+====
+
+But those variables can only be used in some locations:
+
+====== Inside script environments 
+[source,json]
+----
+"script" : {
+            "envVariables" : {
+              "D_RESOLVED_SECRET" : "${secretEnv.USER_PASSWORD}" //<1>
+            },
+            "path" : "./05-start-single-sechub-network-docker-compose.sh",
+            "arguments" : [ "will-not-be-revealed-as-argument:${secretEnv.USER_PASSWORD}" ] //<2>
+          }
+----
+<1> This works, at runtime the environment entry for the script will contain `USER_PASSWORD` inside 
+    variable `D_RESOLVED_SECRET`.
+<2> The secret will not be sent as an argument (for security reasons we only allow env entries)
+
+====== Inside credentials
+This is possible for tech users and also for admin credentials.
+
+===== User variables
+You can define your own variables inside the test configuration.
+The prefix for those variables is `variables`. 
+
+For example, if you have defined the variable `uploadFolder` inside the 
+configuration you can reference it by `${variables.uploadFolder}`.
+
+[[systemtests-runtime-variables]]
+===== Runtime variables
+Some variables are created by the test framework and are available at runtime.
+You can use such variables inside the test configuration with the prefix `runtime`.
+include::../../gen/gen_systemtests_runtime_variables_table.adoc[]
+
+====== Workspace root
+A workspace root for a system test means the root folder location where all data 
+for the current system test is stored. This includes test folders and also the `.runtime` folder
+which contains information about processes and their output and error streams.
+
+If not defined a temporary workspace folder will be created and can be used inside the configuration.
+
+====== Test folders
+The test folders are located inside the workspace root folder.
+Every executed test has its own sub folder.
+
+Uploads for SecHub etc. must be done  with relative paths from this location.
+You need to copy necessary parts for testing in a prepare step to the current test folder 
+(see <<systemtests-runtime-variables,runtime variables tables>>  for names etc.)
+
+
+
+==== Default fallbacks
+[[section-systemtests-default-fallbacks]]
+Following parts will be automatically defined in preparation phase when not defined explicit inside system test configuration model:
+
+include::../../gen/gen_systemtests_default_fallbacks_table.adoc[]
+
+==== Setup
+Inside the setup we define things necessary to setup our system test environment.
+
+It is possible to run system tests locally and start & configure {sechub} and 
+{pds} solutions automatically.
+
+But it is also possible to use an existing real {sechub} platform and run the defined
+tests using a remote setup. In this setup it is not possible to change any existing 
+configuration. This means that executor configurations, users, projects, profiles etc. 
+must all be configured on the server side by administrators before the start of the remote tests.
+
+    
+===== Local
+When we run system tests in a local environment, all necessary settings and the setup will be done
+by the system testing framework.
+This means an administrator account is necessary to setup the system.
+
+If not defined, the default credentials for integration test server will be used. If you do not define
+{sechub} or {pds} you can also use a running local servers (for example integration test servers) and only
+start the tests.
+
+====== Start
+With a <<systemtests-script-definitions,script definition>> the start process for the {sechub} server
+instance(s) can be defined. 
+
+====== Stop
+With a <<systemtests-script-definitions,script definition>> the stop process for the {sechub} server
+instance(s) can be defined. 
+
+====== Configure
+The configuration can contain one or more product executor configurations.
+
+===== Remote
+It is also possible to use an existing real {sechub} platform and run the defined tests there. 
+The configuration is *not changed* here - executor configurations, users, projects
+and profiles must be already configured by administrators. A remote setup does not require
+an administrative account, a normal user account which has access to the project is sufficient.
+
+The framework does help you by setting <<section-systemtests-default-fallbacks,fallback default>>
+values when you do not configure some parts. But if those fallbacks are in use, you must 
+ensure that the remote environment can handle it.
+
+An example: if you did not define a project inside the configuration, the default project name
+will be used at system test runtime. In this case you must have created a project with this name
+at your remote {sechub} server before.
+  
+===== Example snippet
+[source,json]
+----
+  setup" : {
+    "local" : {
+      "secHub" : {
+        "admin" : { //<1>
+          "userId" : "${secretEnv.ADMIN_USERID}",
+          "apiToken" : "${secretEnv.ADMIN_APITOKEN}"
+        },
+        "start" : [ {<2>
+          "script" : {
+            "path" : "./01-start-single-docker-compose.sh",
+            "arguments" : [ "alpine" ]
+          }
+        } ],
+        "configure" : {
+          "executors" : [ {<3>
+            "pdsProductId" : "NEW_FANCY_PRODUCT",
+            "name" : "system-test-codescan-new-fancy"
+          } ]
+        },
+        "stop" : [ {//<4>
+          "script" : {
+            "path" : "./01-stop-single-docker-compose.sh"
+          }
+        } ]
+      },
+      "pdsSolutions" : [ {
+        "name" : "new-fancy",//<5>
+        "url" : "${env.PDS_SERVER}",
+        "start" : [ {
+          "script" : {
+            "path" : "./05-start-single-new-fancy-pds-docker-compose.sh",
+            "arguments" : [ "2" ]
+          }
+        } ],
+        "stop" : [ {
+          "script" : {
+            "path" : "./05-stop-single-new-fancy-pds-docker-compose.sh"
+          }
+        } ],
+        "techUser" : {
+          "userId" : "${secretEnv.PDS_USERID}",
+          "apiToken" : "${secretEnv.PDS_APITOKEN}"
+        }
+      } ]
+    }
+    
+----
+
+<1> defines {sechub} administrator credentials to use for communication
+<2> starts the {sechub} server by executing the script
+<3> configures executors and their products to use. It's a good style to define a name here for the executor
+    so restarting the system test will override always the same executor configuration. The scan type 
+    is automatically determined from meta information inside the {pds} configuration file. 
+<4> stop script to shutown the {sechub} server
+<5> define a pds solution defintion for "new-fancy" (not existing, but would be inside a folder `new-fancy` below
+    `sechub-pds-solutions folder`. In this example "new-fancy" would have "NEW_FANCY_PRODUCT" as product identifier inside
+    its {pds} configuration file.
+
+
+==== Tests
+Tests are defined at root level of the configuration file. It is possible to define
+multiple tests in one configurationfile.
+
+===== Prepare
+A test can have one or more `preparation` steps where following commands can be executed:
+
+- `copy` +
+  Provides parameters "from" and "to" and enables users to copy folders or files to other locations
+
+- `script` +
+  Provides the possibility to execute a <<systemtests-script-definitions,script>>
+
+===== Execute
+The test execution phase can contain currently:
+
+- `runSecHubJob` +
+  Here we can define the uploads and also the different scan types. When nothing is defined, the
+  default reference identifier will be used, but it is also possible to define more complex
+  data structures with different content and identifiers.
+  
+===== Assert
+Asserts are done after the execution phase. Following steps are possible
+
+- secHubResult +
+  Here we assert there is a {sechub} result (JSON report) available (the job is automatically
+  started by system test framework). We have following possibilities to check the content:
+  * `hasTrafficLight` +
+    Checks if the report has the expected traffic light
+  * `containsStrings` +
+    Asserts that the JSON report contains all of the defined strings inside the given array
+  * `equalsFile`
+    Loads the given template report file and asserts that if the {sechub} JSON report matches 
+    the template. Following place holders are supported to handle dynamic content:
+    . `{sechub.jobuuid}` - can be used at any location inside the report if there is the job uuid
+      inside the report
+    . `{*:n}` - `n` represents the number for characters to be ignored.
+
+===== Cleanup
+A test can have one or more `cleanup` steps where following commands can be executed:
+
+- `copy` +
+  Provides parameters "from" and "to" and enables users to copy folders or files to other locations
+
+- `script` +
+  Provides the possibility to execute a <<systemtests-script-definitions,script>>
+
+    
+===== Example snippet
+
+[source,json]
+----
+"tests" : [ {
+    "name" : "test1",
+    "prepare" : [ {
+      "copy" : { //<1>
+        "from" : "./../sechub-cli/src",
+        "to" : "${runtime.currentTestFolder}/testsources/src"
+      }
+    } ],
+    "execute" : {
+      "runSecHubJob" : {
+        "uploads" : [ {
+          "sourceFolder" : "./testsources/src"  //<2>
+        } ],
+        "codeScan" : { }
+      }
+    },    
+    "assert" : [ {
+      "sechubResult" : { //<3>
+        "hasTrafficLight" : "YELLOW",
+        "containsStrings" : {
+          "values" : [ "MEDIUM" ]
+        }
+      } 
+    } ]
+  } ]
+----
+<1> copies sources to current test folder at subfolder "testsources"
+<2> uploads source folder (files which were previously copied)
+<3> assert that there is an ended {sechub} job for this test where the {sechub} report has +
+    traffic light `yellow` and contains at least one time a string "MEDIUM" inside JSON report. 
+    
+=== Example configurations
+
+==== Testing with already running integration test servers
+[NOTE]
+====
+This example is being used inside integration test `SystemTestFrameworkIntTest.java`.
+====
+[source,json]
+----
+include::../../gen/gen_example_systemtest_using_local_integrationtestservers.json[]
+----
+==== A full blown example
+[IMPORTANT]
+====
+This example is just an overview what steps could be configured at all. It is not 
+used in any real world scenario but only for documentation.
+====
+[source,json]
+----
+include::../../gen/gen_example_systemtest_full_blown_config.json[]
+----
+
+
+=== How to execute system tests
+
+==== With PDS tools
+As a first step, download the latest release of `pds-tools` from https://github.com/mercedes-benz/sechub/releases.
+
+Execute: 
+`java -jar sechub-pds-tools-cli-<version>.jar systemTest --file ${pathToTestConfigurationJson} --pds-solutions-rootfolder ${pathToPDSSolutions}`
+
+==== JUnit tests
+Just execute the Junit test from your IDE. 
+
+=== Behavior
+
+==== Stages
+We have different stages:
+
+- Setup
+- Test 
+- Shutdown
+
+Every stage can contain different steps inside.
+For example: The setup phase contains start scripts from SecHub and/or PDS solutions. 
+
+Before a stage can be left and another is started, a check is done, if there is a need to wait for any processes
+to be finished. When a script of the stage times out in mean time, the framework will stop with a failure message.
+
+If not explicit defined, the test framework automatically uses dedicated defaults for script steps
+inside the stage, but it is possible to change the defaults inside the configuration. Here is an example:
+
+[source,json]
+----
+{
+  "script" : {
+    "path" : "./01-start-single-docker-compose.sh",
+    "process" : {
+        "timeOut" : { <1>
+           "amount" : 2,  <2>
+           "unit" : "minutes", <3>
+        }
+        "stageWaits" : true <4>
+    }
+  }   
+}
+----
+<1> Defines the timeout before the process will be forcibly terminated. The default is 5 Minutes
+    When a timeout happens, the system test will fail!
+<2> Accepted amount of time before timeout happens
+<3> Time unit, can be `milliseconds`, `seconds`, `minutes`, `hours` 
+<4> When `stageWaits` is `true` the stage will wait for the process to be done. The default is `false`. +
++
+[NOTE]
+====
+The test preparation stage will automatically wait for defined PDS solutions and SecHub server to 
+be up and running - means: 
+
+You only need to setup `stageWaits` to `true` if you have written a special 
+script which must be done (and does automatically end) before a stage shall be left. 
+
+In this case the stage will wait until the script has finished or times out.
+
+====
+
+[TIP]
+====
+You do not need to define `stageWait` in test preparation steps: For those steps the framework
+will always wait before the test is executed.
+====
+
+==== Auto configuration
+===== Remote run
+At a remote run, the configuration of the remote exissting {sechub} and {pds} environments
+will not be changed!
+
+[IMPORTANT]
+====
+There is no auto configuration phase on a remote run. All elements (profiles, executors, project,
+etc. must all be configured before the test is run.
+====
+
+ 
+
+===== Local run
+
+====== Projects
+The defined projects will be created automatically. If a project exists with the defined name (e.g.
+when a system test is restarted locally) the existing project will be deleted!
+
+====== Executor configurations
+Every system test start will just create new executor configurations.
+
+====== Profiles
+The defined profiles inside test configuration model will be created and connected with the created
+executor configurations. If a profile does already exist with the defined project id, the existing 
+one will be deleted.
+
+

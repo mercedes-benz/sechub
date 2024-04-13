@@ -3,6 +3,7 @@ package com.mercedesbenz.sechub.pds.job;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -22,5 +23,10 @@ public interface PDSJobRepository extends JpaRepository<PDSJob, UUID>, PDSJobRep
 
     @Query(PDSJob.QUERY_FIND_JOBS_IN_STATE)
     List<PDSJob> findAllJobsInState(@Param("statusState") PDSJobStatusState statusState);
+
+    @Transactional
+    @Modifying
+    @Query(PDSJob.QUERY_FORCE_JOB_STATE_UPDATE)
+    void forceStateForJobs(@Param("statusState") PDSJobStatusState statusState, @Param("jobUUIDs") Set<UUID> jobUUIDs);
 
 }

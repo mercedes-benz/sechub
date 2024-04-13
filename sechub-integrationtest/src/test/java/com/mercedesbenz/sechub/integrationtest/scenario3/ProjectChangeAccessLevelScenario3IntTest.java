@@ -13,6 +13,7 @@ import org.junit.rules.ExpectedException;
 import org.junit.rules.Timeout;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.client.HttpClientErrorException.Forbidden;
+import org.springframework.web.client.HttpClientErrorException.NotFound;
 
 import com.mercedesbenz.sechub.commons.model.TrafficLight;
 import com.mercedesbenz.sechub.integrationtest.api.AbstractTestExecutable;
@@ -65,7 +66,7 @@ public class ProjectChangeAccessLevelScenario3IntTest {
         // Because the administration domain must send the event to the scheduler domain.
         // and we can have race conditions here (means flaky tests). To avoid this
         // we use TestAPI#executeUntilSuccessOrTimeout
-        executeUntilSuccessOrTimeout(new AbstractTestExecutable(USER_1,3,300, Forbidden.class) {
+        executeUntilSuccessOrTimeout(new AbstractTestExecutable(USER_1,3,300, Forbidden.class, NotFound.class) {
 
             @Override
             public boolean runAndReturnTrueWhenSuccesfulImpl() throws Exception {

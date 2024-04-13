@@ -531,7 +531,7 @@ table.CodeRay td.code{padding:0 0 0 .75em}
 <div id="header">
 <h1><span class="image"><a class="image" href="https://mercedes-benz.github.io/sechub"><img src="images/sechub-logo.png" alt="sechub logo"></a></span> SecHub Client Documentation</h1>
 <div class="details">
-<span id="revnumber"> Client 0.36.0</span>
+<span id="revnumber"> Client 1.4.0 modified (commit 5eb0916)</span>
 </div>
 <div id="toc" class="toc2">
 <div id="toctitle">Table of contents</div>
@@ -545,22 +545,23 @@ table.CodeRay td.code{padding:0 0 0 .75em}
 <li><a href="#usage">2.4. Usage</a>
 <ul class="sectlevel3">
 <li><a href="#show-help">2.4.1. Show help</a></li>
-<li><a href="#actions">2.4.2. Actions</a>
+<li><a href="#actions">2.4.2. Actions</a></li>
+<li><a href="#parameter-overview-for-client-actions">2.4.3. Parameter overview for client actions</a>
 <ul class="sectlevel4">
-<li><a href="#scan">2.4.2.1. scan</a></li>
-<li><a href="#scanasync">2.4.2.2. scanAsync</a></li>
-<li><a href="#getstatus">2.4.2.3. getStatus</a></li>
-<li><a href="#getreport">2.4.2.4. getReport</a></li>
-<li><a href="#listjobs">2.4.2.5. listJobs</a></li>
-<li><a href="#getfalsepositives">2.4.2.6. getFalsePositives</a></li>
-<li><a href="#section-client-false-positives-mark">2.4.2.7. markFalsePositives</a></li>
-<li><a href="#section-client-false-positives-unmark">2.4.2.8. unmarkFalsePositives</a></li>
-<li><a href="#interactivemarkfalsepositives">2.4.2.9. interactiveMarkFalsePositives</a></li>
-<li><a href="#interactiveunmarkfalsepositives">2.4.2.10. interactiveUnmarkFalsePositives</a></li>
+<li><a href="#section-client-scan">2.4.3.1. scan</a></li>
+<li><a href="#scanasync">2.4.3.2. scanAsync</a></li>
+<li><a href="#getstatus">2.4.3.3. getStatus</a></li>
+<li><a href="#getreport">2.4.3.4. getReport</a></li>
+<li><a href="#listjobs">2.4.3.5. listJobs</a></li>
+<li><a href="#definefalsepositives">2.4.3.6. defineFalsePositives</a></li>
+<li><a href="#getfalsepositives">2.4.3.7. getFalsePositives</a></li>
+<li><a href="#interactivemarkfalsepositives">2.4.3.8. interactiveMarkFalsePositives</a></li>
+<li><a href="#interactiveunmarkfalsepositives">2.4.3.9. interactiveUnmarkFalsePositives</a></li>
+<li><a href="#section-client-false-positives-mark">2.4.3.10. markFalsePositives</a></li>
+<li><a href="#section-client-false-positives-unmark">2.4.3.11. unmarkFalsePositives</a></li>
 </ul>
 </li>
-<li><a href="#configuration-overview">2.4.3. Configuration overview</a></li>
-<li><a href="#mandatory-parameters">2.4.4. Mandatory parameters</a></li>
+<li><a href="#configuration-overview">2.4.4. Configuration overview</a></li>
 <li><a href="#commandline-options">2.4.5. Commandline Options</a></li>
 <li><a href="#environment-variables">2.4.6. Environment variables</a></li>
 <li><a href="#proxy-support">2.4.7. Proxy support</a></li>
@@ -577,7 +578,7 @@ table.CodeRay td.code{padding:0 0 0 .75em}
 <li><a href="#upload-source-files-from-file-system">2.5.4.1. Upload source files from file system</a>
 <ul class="sectlevel5">
 <li><a href="#using-data-section">2.5.4.1.1. Using <code>data</code> section</a></li>
-<li><a href="#filesystem-inside-the-codescan-section">2.5.4.1.2. <code>fileSystem</code> inside the <code>codeScan</code> section</a></li>
+<li><a href="#filesystem-inside-the-codescan-section-deprecated">2.5.4.1.2. <code>fileSystem</code> inside the <code>codeScan</code> section (deprecated)</a></li>
 </ul>
 </li>
 </ul>
@@ -606,10 +607,13 @@ table.CodeRay td.code{padding:0 0 0 .75em}
 <li><a href="#login">2.5.7.2. Login</a>
 <ul class="sectlevel5">
 <li><a href="#options">2.5.7.2.1. Options</a></li>
-<li><a href="#example-no-authentication">2.5.7.2.2. Example no authentication</a></li>
-<li><a href="#example-basic-authentication">2.5.7.2.3. Example basic authentication</a></li>
+<li><a href="#example-basic-authentication">2.5.7.2.2. Example basic authentication</a></li>
+<li><a href="#example-client-certificate-authentication">2.5.7.2.3. Example client certificate authentication</a></li>
 <li><a href="#example-form-based-login-by-script">2.5.7.2.4. Example form based login by script</a></li>
 <li><a href="#sechub-config-example-webscan-openapi">2.5.7.2.5. Example OpenAPI scan</a></li>
+<li><a href="#sechub-config-openAPI-and-client-certificate">2.5.7.2.6. Example combination of openAPI definition and client certificate authentication</a></li>
+<li><a href="#sechub-config-example-webscan-header">2.5.7.2.7. Example Header scan</a></li>
+<li><a href="#sechub-config-example-webscan-header-value-from-data-section">2.5.7.2.8. Example Header scan with value from data section</a></li>
 </ul>
 </li>
 </ul>
@@ -758,7 +762,7 @@ build pipeline / contionus integration (CI) and helps to provide
 </tbody>
 </table>
 <div class="paragraph">
-<p>Documentation version: <code>Client 0.36.0-20230503102309</code></p>
+<p>Documentation version: <code>Client 1.4.0 modified (commit 5eb0916) - Build date: 20240315161105</code></p>
 </div>
 <hr>
 <div style="page-break-after: always;"></div>
@@ -882,7 +886,7 @@ For documentation, please look at <a href="https://mercedes-benz.github.io/sechu
 <h4 id="show-help">2.4.1. Show help</h4>
 <div class="listingblock">
 <div class="content">
-<pre>sechub -help</pre>
+<pre>sechub help</pre>
 </div>
 </div>
 <div class="paragraph">
@@ -891,11 +895,79 @@ For documentation, please look at <a href="https://mercedes-benz.github.io/sechu
 </div>
 <div class="sect3">
 <h4 id="actions">2.4.2. Actions</h4>
-<div class="paragraph">
-<p>Following actions are supported:</p>
+
 </div>
+<div class="sect3">
+<h4 id="parameter-overview-for-client-actions">2.4.3. Parameter overview for client actions</h4>
+<div class="paragraph">
+<p>Here is an overview of the mandatory parameters for each <strong>action</strong>:</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>action</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>mandatory parameters</strong></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="#section-client-scan">scan</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">server + user + api token + projectID + <a href="#section-client-configuration-file">configFile</a></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="#scanasync">scanAsync</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">server + user + api token + projectID + <a href="#section-client-configuration-file">configFile</a></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="#getstatus">getStatus</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">server + user + api token + projectID</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="#getreport">getReport</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">server + user + api token + projectID</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="#listjobs">listJobs</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">server + user + api token + projectID</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="#definefalsepositives">defineFalsePositives</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">server + user + api token + projectID</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="#getfalsepositives">getFalsePositives</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">server + user + api token + projectID</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="#interactivemarkfalsepositives">interactiveMarkFalsePositives</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">server + user + api token + projectID + (file only if no report file is in current dir)</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="#interactiveunmarkfalsepositives">interactiveUnmarkFalsePositives</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">server + user + apiToken + projectID</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="#section-client-false-positives-mark">markFalsePositives</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">server + user + api token + projectID + file</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="#section-client-false-positives-unmark">unmarkFalsePositives</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">server + user + api token + projectID + file</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">help</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">version</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+</tbody>
+</table>
 <div class="sect4">
-<h5 id="scan">2.4.2.1. scan</h5>
+<h5 id="section-client-scan">2.4.3.1. scan</h5>
 <div class="paragraph">
 <p>This is the recommended scan action: You only have to make one single client call to trigger a scan and get the report.</p>
 </div>
@@ -986,7 +1058,7 @@ With <code>-output ${file-or-directory}</code> you can define where to place the
 </div>
 </div>
 <div class="sect4">
-<h5 id="scanasync">2.4.2.2. scanAsync</h5>
+<h5 id="scanasync">2.4.3.2. scanAsync</h5>
 <div class="paragraph">
 <p>Does scan asynchronous:</p>
 </div>
@@ -1024,7 +1096,7 @@ This can be interesting if you have long running scans and you want have a fast
 </div>
 </div>
 <div class="sect4">
-<h5 id="getstatus">2.4.2.3. getStatus</h5>
+<h5 id="getstatus">2.4.3.3. getStatus</h5>
 <div class="paragraph">
 <p>Will fetch the job status and return result as json</p>
 </div>
@@ -1051,7 +1123,7 @@ Defaults to latest job.<br>
 </div>
 </div>
 <div class="sect4">
-<h5 id="getreport">2.4.2.4. getReport</h5>
+<h5 id="getreport">2.4.3.4. getReport</h5>
 <div class="paragraph">
 <p>Will fetch the report as json. (result will only exist when job is done)</p>
 </div>
@@ -1092,7 +1164,7 @@ With <code>-output ${file-or-directory}</code> you can define where to place the
 </div>
 </div>
 <div class="sect4">
-<h5 id="listjobs">2.4.2.5. listJobs</h5>
+<h5 id="listjobs">2.4.3.5. listJobs</h5>
 <div class="paragraph">
 <p>Lists the last jobs and their state.</p>
 </div>
@@ -1120,9 +1192,54 @@ This might be useful for an overview or<br>
 </div>
 </div>
 <div class="sect4">
-<h5 id="getfalsepositives">2.4.2.6. getFalsePositives</h5>
+<h5 id="definefalsepositives">2.4.3.6. defineFalsePositives</h5>
 <div class="paragraph">
-<p>This will fetch the false positives list of your project as JSON - format is same as for <code>markFalsePositives</code>.</p>
+<p>This will define the false positives list of your project.<br>
+Default definition file to read from is <code>sechub-false-positives.json</code> - format is same as for <a href="#section-client-false-positives-mark">markFalsePositives</a>.</p>
+</div>
+<div class="paragraph">
+<p>The client will compare against the already defined false-positives on the server and<br>
+- add missing false-positive definitions<br>
+- remove the ones which are not in the definition file</p>
+</div>
+<div class="paragraph">
+<p><strong>Minimum call syntax</strong></p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>sechub defineFalsePositives</pre>
+</div>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+With <code>-file ${file}</code> you can define where to read from.<br>
+     Default: <code>sechub-false-positives.json</code> in current directory
+</td>
+</tr>
+</table>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+It&#8217;s a good idea to add your false-positives definition file in your source code repository. So everybody can easily have an overview about the declared false-positives.
+</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect4">
+<h5 id="getfalsepositives">2.4.3.7. getFalsePositives</h5>
+<div class="paragraph">
+<p>This will fetch the false positives list of your project as JSON.</p>
 </div>
 <div class="paragraph">
 <p><strong>Minimum call syntax</strong></p>
@@ -1148,7 +1265,82 @@ With <code>-output ${file-or-directory}</code> you can define where to place the
 </div>
 </div>
 <div class="sect4">
-<h5 id="section-client-false-positives-mark">2.4.2.7. markFalsePositives</h5>
+<h5 id="interactivemarkfalsepositives">2.4.3.8. interactiveMarkFalsePositives</h5>
+<div class="paragraph">
+<p>Instead of creating a json file to mark false positives, you can also do this interactively:
+Go to the project directory containing <code>sechub.json</code> and a report file from a recent scan and run <code>sechub interactiveMarkFalsePositives</code>.</p>
+</div>
+<div class="paragraph">
+<p>You can select the report file using the <code>-file</code> option of the client. Otherwise the project&#8217;s latest report file in the current directory is automatically selected.</p>
+</div>
+<div class="paragraph">
+<p>For each finding in the reports file, you are prompted: <code>"Add this as false positive?"</code>
+Your choices are:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>y</code> Yes - Mark as false positive. You are prompted for an optional comment line which can help to understand later why this has been marked.</p>
+</li>
+<li>
+<p><code>n</code> No - Do nothing and go to next item.</p>
+</li>
+<li>
+<p><code>s</code> Skip following findings - Finish the marking and add the marked items to the false positives list on the SecHub server.</p>
+</li>
+<li>
+<p><code>c</code> Cancel - Quit and upload nothing</p>
+</li>
+</ul>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+You can download and view your current false positives list with <a href="#getfalsepositives">getFalsePositives</a>
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>See also <a href="#section-client-interactiveMarkFalsePositives-mark">example for interactiveMarkFalsePositives</a></p>
+</div>
+</div>
+<div class="sect4">
+<h5 id="interactiveunmarkfalsepositives">2.4.3.9. interactiveUnmarkFalsePositives</h5>
+<div class="paragraph">
+<p>Instead of creating a json file to unmark false positives, you can also do this interactively:
+Go to the project directory containing <code>sechub.json</code> and run <code>sechub interactiveUnmarkFalsePositives</code></p>
+</div>
+<div class="paragraph">
+<p>SecHub client will download the current false posisitves list and interactively ask each entry: <code>"Do you want to remove this false positive?"</code>
+Your choices are:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>y</code> Yes - Unmark this false positive.</p>
+</li>
+<li>
+<p><code>n</code> No - Do nothing and go to next item.</p>
+</li>
+<li>
+<p><code>s</code> Skip the rest - End the asking here and remove the marked items from the false positives list on the SecHub server.</p>
+</li>
+<li>
+<p><code>c</code> Cancel - Quit and change nothing</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>See also <a href="#section-client-interactiveMarkFalsePositives-mark">example for interactiveMarkFalsePositives</a></p>
+</div>
+</div>
+<div class="sect4">
+<h5 id="section-client-false-positives-mark">2.4.3.10. markFalsePositives</h5>
 <div class="paragraph">
 <p>Read your report carefully and figure out which of the findings are "false positives" (FP).
 After this, create a json file containing jobUUID and ID of the findings you decided to be a FP.
@@ -1216,9 +1408,9 @@ Select this file by the <code>-file</code> argument and start action <code>markF
 <i class="fa icon-important" title="Important"></i>
 </td>
 <td class="content">
-Providing an empty list here does <strong>NOT delete</strong> the already declared false positives!<br>
-           <code>markFalsePositives</code> only adds new false positives.<br>
-           An empty <code>jobData</code> list has no effect at all. (&#8594; don&#8217;t do this)
+<code>markFalsePositives</code> only adds new false positives.<br>
+  Providing an empty list here does <strong>NOT delete</strong> the already declared false positives!<br>
+  If you want this, please use <a href="#definefalsepositives">defineFalsePositives</a>.
 </td>
 </tr>
 </table>
@@ -1237,7 +1429,7 @@ See also <a href="#interactivemarkfalsepositives">interactiveMarkFalsePositives<
 </div>
 </div>
 <div class="sect4">
-<h5 id="section-client-false-positives-unmark">2.4.2.8. unmarkFalsePositives</h5>
+<h5 id="section-client-false-positives-unmark">2.4.3.11. unmarkFalsePositives</h5>
 <div class="paragraph">
 <p>Remove formerly defined false positives.<br>
 It works similar to <code>markFalsePositives</code>: Just define a JSON file, select the file by the <code>-file</code> argument and start
@@ -1285,84 +1477,9 @@ action <code>unmarkFalsePositives</code></p>
 </table>
 </div>
 </div>
-<div class="sect4">
-<h5 id="interactivemarkfalsepositives">2.4.2.9. interactiveMarkFalsePositives</h5>
-<div class="paragraph">
-<p>Instead of creating a json file to mark false positives, you can also do this interactively:
-Go to the project directory containing <code>sechub.json</code> and a report file from a recent scan and run <code>sechub interactiveMarkFalsePositives</code>.</p>
-</div>
-<div class="paragraph">
-<p>You can select the report file using the <code>-file</code> option of the client. Otherwise the project&#8217;s latest report file in the current directory is automatically selected.</p>
-</div>
-<div class="paragraph">
-<p>For each finding in the reports file, you are prompted: <code>"Add this as false positive?"</code>
-Your choices are:</p>
-</div>
-<div class="ulist">
-<ul>
-<li>
-<p><code>y</code> Yes - Mark as false positive. You are prompted for an optional comment line which can help to understand later why this has been marked.</p>
-</li>
-<li>
-<p><code>n</code> No - Do nothing and go to next item.</p>
-</li>
-<li>
-<p><code>s</code> Skip following findings - Finish the marking and add the marked items to the false positives list on the SecHub server.</p>
-</li>
-<li>
-<p><code>c</code> Cancel - Quit and upload nothing</p>
-</li>
-</ul>
-</div>
-<div class="admonitionblock tip">
-<table>
-<tr>
-<td class="icon">
-<i class="fa icon-tip" title="Tip"></i>
-</td>
-<td class="content">
-You can download and view your current false positives list with <a href="#getfalsepositives">getFalsePositives</a>
-</td>
-</tr>
-</table>
-</div>
-<div class="paragraph">
-<p>See also <a href="#section-client-interactiveMarkFalsePositives-mark">example for interactiveMarkFalsePositives</a></p>
-</div>
-</div>
-<div class="sect4">
-<h5 id="interactiveunmarkfalsepositives">2.4.2.10. interactiveUnmarkFalsePositives</h5>
-<div class="paragraph">
-<p>Instead of creating a json file to unmark false positives, you can also do this interactively:
-Go to the project directory containing <code>sechub.json</code> and run <code>sechub interactiveUnmarkFalsePositives</code></p>
-</div>
-<div class="paragraph">
-<p>SecHub client will download the current false posisitves list and interactively ask each entry: <code>"Do you want to remove this false positive?"</code>
-Your choices are:</p>
-</div>
-<div class="ulist">
-<ul>
-<li>
-<p><code>y</code> Yes - Unmark this false positive.</p>
-</li>
-<li>
-<p><code>n</code> No - Do nothing and go to next item.</p>
-</li>
-<li>
-<p><code>s</code> Skip the rest - End the asking here and remove the marked items from the false positives list on the SecHub server.</p>
-</li>
-<li>
-<p><code>c</code> Cancel - Quit and change nothing</p>
-</li>
-</ul>
-</div>
-<div class="paragraph">
-<p>See also <a href="#section-client-interactiveMarkFalsePositives-mark">example for interactiveMarkFalsePositives</a></p>
-</div>
-</div>
 </div>
 <div class="sect3">
-<h4 id="configuration-overview">2.4.3. Configuration overview</h4>
+<h4 id="configuration-overview">2.4.4. Configuration overview</h4>
 <div class="paragraph">
 <p>Basically parameters can be passed to the <code>SecHub</code> client in three ways:</p>
 </div>
@@ -1508,72 +1625,6 @@ Your choices are:</p>
 </table>
 </div>
 <div class="sect3">
-<h4 id="mandatory-parameters">2.4.4. Mandatory parameters</h4>
-<div class="paragraph">
-<p>Here is an overview of mandatory parameter for each <code>action</code>:</p>
-</div>
-<table class="tableblock frame-all grid-all stretch">
-<colgroup>
-<col style="width: 50%;">
-<col style="width: 50%;">
-</colgroup>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>action</strong></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>mandatory parameters</strong></p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">scan</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">server + user + api token + projectID + configFile</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">scanAsync</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">server + user + api token + projectID + configFile</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">getStatus</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">server + user + api token + projectID</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">getReport</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">server + user + api token + projectID</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">listJobs</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">server + user + api token + projectID</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">getFalsePositives</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">server + user + api token + projectID</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">markFalsePositives</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">server + user + api token + projectID + file</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">unmarkFalsePositives</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">server + user + api token + projectID + file</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">interactiveMarkFalsePositives</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">server + user + api token + projectID + (file only if no report file is in current dir)</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">interactiveUnmarkFalsePositives</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">server + user + apiToken + projectID</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">help</p></td>
-<td class="tableblock halign-left valign-top"></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">version</p></td>
-<td class="tableblock halign-left valign-top"></td>
-</tr>
-</tbody>
-</table>
-</div>
-<div class="sect3">
 <h4 id="commandline-options">2.4.5. Commandline Options</h4>
 <div class="ulist">
 <ul>
@@ -1588,15 +1639,11 @@ Path to <code>SecHub</code> JSON config file. Defaults to <code>sechub.json</cod
 </li>
 <li>
 <p><code>-file &lt;filepath&gt;</code><br>
-Defines file to read from for actions <code>markFalsePositives</code> or <code>interactiveMarkFalsePositives</code> or <code>unmarkFalsePositives</code></p>
-</li>
-<li>
-<p><code>-help</code><br>
-Shows help and terminates</p>
+Defines file to read from for actions <a href="#definefalsepositives">defineFalsePositives</a>, <a href="#section-client-false-positives-mark">markFalsePositives</a>, <a href="#interactivemarkfalsepositives">interactiveMarkFalsePositives</a>, <a href="#section-client-false-positives-unmark">unmarkFalsePositives</a></p>
 </li>
 <li>
 <p><code>-jobUUID &lt;string&gt;</code><br>
-<code>SecHub</code> job uuid. Optional for actions 'getStatus' or 'getReport'</p>
+<code>SecHub</code> job uuid. Optional for actions <a href="#getstatus">getStatus</a> or <a href="#getreport">getReport</a></p>
 </li>
 <li>
 <p><code>-label &lt;label definition&gt;</code><br>
@@ -1640,10 +1687,6 @@ Timeout for network communication in seconds. (default 120)</p>
 Username - mandatory, but can also be defined in config file or via environment variable.</p>
 </li>
 <li>
-<p><code>-version</code><br>
-Shows version info and terminates</p>
-</li>
-<li>
 <p><code>-wait &lt;seconds&gt;</code><br>
 Maximum wait time in seconds (default 60).
 Will be used for periodic status checks when action=<code>scan</code> and for retries of HTTP calls.</p>
@@ -1661,6 +1704,11 @@ Will be used for periodic status checks when action=<code>scan</code> and for re
 <li>
 <p><code>SECHUB_APITOKEN</code><br>
 The SecHub api token for <code>SECHUB_USERID</code>. (same as <code>-apitoken</code> option)</p>
+</li>
+<li>
+<p><code>SECHUB_LABELS</code><br>
+Define one or more labels for the scan job. The labels will appear in your SecHub report. Separate multiple labels with ",". (see also <code>-label</code> option)<br>
+Example: <code>export SECHUB_LABELS="key1=test 1,key2=test 2"</code></p>
 </li>
 <li>
 <p><code>SECHUB_PROJECT</code><br>
@@ -1802,24 +1850,6 @@ But this is mentioned inside this documentation
 <div class="paragraph">
 <p><code>apiVersion</code> must be defined (so mandatory). Currently only <code>1.0</code> is valid.</p>
 </div>
-<div class="admonitionblock note">
-<table>
-<tr>
-<td class="icon">
-<i class="fa icon-note" title="Note"></i>
-</td>
-<td class="content">
-<div class="paragraph">
-<p>As long as the SecHub configuration is still strongly developed,
-the API version remains - despite changes - to 1.0.</p>
-</div>
-<div class="paragraph">
-<p>During this time, however, the API always remains backwards compatible!</p>
-</div>
-</td>
-</tr>
-</table>
-</div>
 </div>
 <div class="sect3">
 <h4 id="server">2.5.2. Server</h4>
@@ -1905,18 +1935,6 @@ You should call SecHub inside the repository&#8217;s root folder - this is the s
 <p>Define the files and folders in a <code>data</code> section and reference it inside the <code>codeScan</code>.<br>
 This becomes useful e.g. if the same sources are used by different scan types.</p>
 </div>
-<div class="admonitionblock tip">
-<table>
-<tr>
-<td class="icon">
-<i class="fa icon-tip" title="Tip"></i>
-</td>
-<td class="content">
-We <em>recommend</em> using the <code>data</code> section.
-</td>
-</tr>
-</table>
-</div>
 <div class="paragraph">
 <p>Example <code>sechub.json</code> using <code>data</code> section</p>
 </div>
@@ -2000,9 +2018,22 @@ Here we also add ".cplusplus" and ".py9" as additional accepted source file exte
 </div>
 </div>
 <div class="sect5">
-<h6 id="filesystem-inside-the-codescan-section">2.5.4.1.2. <code>fileSystem</code> inside the <code>codeScan</code> section</h6>
+<h6 id="filesystem-inside-the-codescan-section-deprecated">2.5.4.1.2. <code>fileSystem</code> inside the <code>codeScan</code> section (deprecated)</h6>
 <div class="paragraph">
-<p>Define a <code>fileSystem</code> child entry inside the <code>codeScan</code> section for code scanning.</p>
+<p>Define a <code>fileSystem</code> child entry inside the <code>codeScan</code> section for code scanning.<br></p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+This option is deprecated but still supported.<br>
+  Please consider using the <code>data</code> section as described above as it provides more flexibility.
+</td>
+</tr>
+</table>
 </div>
 <div class="paragraph">
 <p>Example <code>sechub.json</code> using <code>fileSystem</code> inside the <code>codeScan</code> section (results in same upload as in above example):</p>
@@ -2303,13 +2334,24 @@ The URL must be whitelisted in your project. Otherwise it will be rejected.
   <span class="key"><span class="delimiter">&quot;</span><span class="content">apiVersion</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">1.0</span><span class="delimiter">&quot;</span></span>,
   <span class="key"><span class="delimiter">&quot;</span><span class="content">webScan</span><span class="delimiter">&quot;</span></span>: { <i class="conum" data-value="1"></i><b>(1)</b>
     <span class="key"><span class="delimiter">&quot;</span><span class="content">url</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">https://www.gamechanger.example.org</span><span class="delimiter">&quot;</span></span>, <i class="conum" data-value="2"></i><b>(2)</b>
-    <span class="key"><span class="delimiter">&quot;</span><span class="content">includes</span><span class="delimiter">&quot;</span></span>: [
-      <span class="string"><span class="delimiter">&quot;</span><span class="content">/special/include</span><span class="delimiter">&quot;</span></span>
-    ], <i class="conum" data-value="3"></i><b>(3)</b>
-    <span class="key"><span class="delimiter">&quot;</span><span class="content">excludes</span><span class="delimiter">&quot;</span></span>: [
+    <span class="key"><span class="delimiter">&quot;</span><span class="content">includes</span><span class="delimiter">&quot;</span></span>: [ <i class="conum" data-value="3"></i><b>(3)</b>
+      <span class="string"><span class="delimiter">&quot;</span><span class="content">/special/include</span><span class="delimiter">&quot;</span></span>,
+      <span class="string"><span class="delimiter">&quot;</span><span class="content">/special/include/&lt;*&gt;</span><span class="delimiter">&quot;</span></span>,
+      <span class="string"><span class="delimiter">&quot;</span><span class="content">&lt;*&gt;/special/&lt;*&gt;/include/&lt;*&gt;</span><span class="delimiter">&quot;</span></span>,
+      <span class="string"><span class="delimiter">&quot;</span><span class="content">&lt;*&gt;/special/include/&lt;*&gt;</span><span class="delimiter">&quot;</span></span>,
+      <span class="string"><span class="delimiter">&quot;</span><span class="content">special/include/&lt;*&gt;</span><span class="delimiter">&quot;</span></span>,
+      <span class="string"><span class="delimiter">&quot;</span><span class="content">special/include</span><span class="delimiter">&quot;</span></span>,
+      <span class="string"><span class="delimiter">&quot;</span><span class="content">special/include/</span><span class="delimiter">&quot;</span></span>
+    ],
+    <span class="key"><span class="delimiter">&quot;</span><span class="content">excludes</span><span class="delimiter">&quot;</span></span>: [ <i class="conum" data-value="4"></i><b>(4)</b>
       <span class="string"><span class="delimiter">&quot;</span><span class="content">/en/contact</span><span class="delimiter">&quot;</span></span>,
-      <span class="string"><span class="delimiter">&quot;</span><span class="content">/contact</span><span class="delimiter">&quot;</span></span>
-    ] <i class="conum" data-value="4"></i><b>(4)</b>
+      <span class="string"><span class="delimiter">&quot;</span><span class="content">/en/contacts/&lt;*&gt;</span><span class="delimiter">&quot;</span></span>,
+      <span class="string"><span class="delimiter">&quot;</span><span class="content">&lt;*&gt;/en/&lt;*&gt;/contacts/&lt;*&gt;</span><span class="delimiter">&quot;</span></span>,
+      <span class="string"><span class="delimiter">&quot;</span><span class="content">&lt;*&gt;/en/contacts/&lt;*&gt;</span><span class="delimiter">&quot;</span></span>,
+      <span class="string"><span class="delimiter">&quot;</span><span class="content">en/contacts/&lt;*&gt;</span><span class="delimiter">&quot;</span></span>,
+      <span class="string"><span class="delimiter">&quot;</span><span class="content">en/contacts</span><span class="delimiter">&quot;</span></span>,
+      <span class="string"><span class="delimiter">&quot;</span><span class="content">en/contacts/</span><span class="delimiter">&quot;</span></span>
+    ]
   },
   <span class="key"><span class="delimiter">&quot;</span><span class="content">maxScanDuration</span><span class="delimiter">&quot;</span></span>: { <i class="conum" data-value="5"></i><b>(5)</b>
     <span class="key"><span class="delimiter">&quot;</span><span class="content">duration</span><span class="delimiter">&quot;</span></span>: <span class="integer">1</span>,
@@ -2331,13 +2373,26 @@ The URL must be whitelisted in your project. Otherwise it will be rejected.
 <tr>
 <td><i class="conum" data-value="3"></i><b>3</b></td>
 <td><strong>Optional</strong>: Define includes, if you have a special path that is linked nowhere,
-so the scanner can not detect it automatically while crawling the application.
-Always use them starting with a slash (<code>/</code>) because they are interpreted relative to the <code>URL</code> provided before.</td>
+so the scanner can not detect it automatically while crawling the application. You can use wildcards by using the symbol <code>&lt;*&gt;</code> like in the example above.
+To make the scan work the target URL will always be implicitly included with <code>"https://www.gamechanger.example.org&lt;*&gt;"</code> if no includes are specified. If includes are specified the scan is limited to these includes.
+In case you need to include certain parts of your application the scanner cannot detect,
+but you want everything else to be scanned as well, please specify a wildcard as include explicitly: <code>"includes": [ "/hidden/from/crawler/", "/&lt;*&gt;" ]</code>.
+<div class="ulist">
+<ul>
+<li>
+<p>Includes starting with a slash (<code>/</code>) like <code>"includes": [ "/special/include","/special/include/&lt;*&gt;"]</code> they are interpreted relative to the scan target <code>URL</code> provided before.</p>
+</li>
+<li>
+<p>Includes not starting with a slash (<code>/</code>) like <code>"includes": [ "&lt;*&gt;/en/contacts/&lt;*&gt;","en/contacts/&lt;*&gt;","en/contacts","en/contacts/"</code>] are interpreted as enclosed by wildcards like the first include in the list example: <code>"&lt;*&gt;/en/contacts/&lt;*&gt;"</code>.</p>
+</li>
+</ul>
+</div></td>
 </tr>
 <tr>
 <td><i class="conum" data-value="4"></i><b>4</b></td>
 <td><strong>Optional</strong>: Define excludes, if you have a special path you want to exclude, from the scan.
-Always use them starting with a slash (<code>/</code>) because they are interpreted relative to the <code>URL</code> provided before.</td>
+You can use excludes the same way you can use the includes.
+Excludes do always overwrite includes if the provided patterns for includes and excludes do have intersections.</td>
 </tr>
 <tr>
 <td><i class="conum" data-value="5"></i><b>5</b></td>
@@ -2349,6 +2404,24 @@ This option ensures the scan will only run for a limited time.</td>
 <td><i class="conum" data-value="6"></i><b>6</b></td>
 <td>Define the unit of time.
 The unit can be: <code>millisecond</code>, <code>second</code>, <code>minute</code>, <code>hour</code>, <code>day</code>.</td>
+</tr>
+</table>
+</div>
+<div class="admonitionblock caution">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-caution" title="Caution"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>Includes are a different from excludes looking at wildcards, because in includes they might not be resolved properly, if the pages behind the wildcards cannot be detected by a web crawler.</p>
+</div>
+<div class="paragraph">
+<p>If you only want to scan a specific part of your application e.g only the customers section <code><a href="https://my-application.com/customer/" class="bare">https://my-application.com/customer/</a></code>,
+you can specify the target URL : <code>"url": "https://my-application.com"</code> and the wanted include starting with a slash like this : <code>"includes": [ "/customer/&lt;*&gt;"]</code>.</p>
+</div>
+</td>
 </tr>
 </table>
 </div>
@@ -2424,7 +2497,7 @@ will have a failure at execution time!</p>
 </div>
 </div>
 <div class="sect5">
-<h6 id="example-no-authentication">2.5.7.2.2. Example no authentication</h6>
+<h6 id="example-basic-authentication">2.5.7.2.2. Example basic authentication</h6>
 <div class="listingblock">
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="json">{
@@ -2451,7 +2524,7 @@ will have a failure at execution time!</p>
 </tr>
 <tr>
 <td><i class="conum" data-value="2"></i><b>2</b></td>
-<td>Basic authentication start, needs user id/name and password.</td>
+<td>Basic authentication, needs user id/name and password.</td>
 </tr>
 <tr>
 <td><i class="conum" data-value="3"></i><b>3</b></td>
@@ -2462,22 +2535,28 @@ this is not necessary.</td>
 </div>
 </div>
 <div class="sect5">
-<h6 id="example-basic-authentication">2.5.7.2.3. Example basic authentication</h6>
+<h6 id="example-client-certificate-authentication">2.5.7.2.3. Example client certificate authentication</h6>
 <div class="listingblock">
+<div class="title">client certificate authentication</div>
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="json">{
-    <span class="key"><span class="delimiter">&quot;</span><span class="content">apiVersion</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">1.0</span><span class="delimiter">&quot;</span></span>,
-    <span class="key"><span class="delimiter">&quot;</span><span class="content">webScan</span><span class="delimiter">&quot;</span></span>: {
-        <span class="key"><span class="delimiter">&quot;</span><span class="content">url</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">https://productfailure.demo.example.org</span><span class="delimiter">&quot;</span></span>,
-        <span class="key"><span class="delimiter">&quot;</span><span class="content">login</span><span class="delimiter">&quot;</span></span>: {
-            <span class="key"><span class="delimiter">&quot;</span><span class="content">url</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">https://productfailure.demo.example.org/login</span><span class="delimiter">&quot;</span></span>,<i class="conum" data-value="1"></i><b>(1)</b>
-            <span class="key"><span class="delimiter">&quot;</span><span class="content">basic</span><span class="delimiter">&quot;</span></span>: {<i class="conum" data-value="2"></i><b>(2)</b>
-                <span class="key"><span class="delimiter">&quot;</span><span class="content">user</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">{{ .LOGIN_USER }}</span><span class="delimiter">&quot;</span></span>,
-                <span class="key"><span class="delimiter">&quot;</span><span class="content">password</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">{{ .LOGIN_PWD }}</span><span class="delimiter">&quot;</span></span>,
-                <span class="key"><span class="delimiter">&quot;</span><span class="content">realm</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">{{ .LOGIN_REALM }}</span><span class="delimiter">&quot;</span></span> <i class="conum" data-value="3"></i><b>(3)</b>
-            }
-        }
+  <span class="key"><span class="delimiter">&quot;</span><span class="content">apiVersion</span><span class="delimiter">&quot;</span></span> : <span class="string"><span class="delimiter">&quot;</span><span class="content">1.0</span><span class="delimiter">&quot;</span></span>,
+  <span class="key"><span class="delimiter">&quot;</span><span class="content">project</span><span class="delimiter">&quot;</span></span> : <span class="string"><span class="delimiter">&quot;</span><span class="content">example_project</span><span class="delimiter">&quot;</span></span>,
+  <span class="key"><span class="delimiter">&quot;</span><span class="content">data</span><span class="delimiter">&quot;</span></span> : {
+    <span class="key"><span class="delimiter">&quot;</span><span class="content">sources</span><span class="delimiter">&quot;</span></span> : [ {
+      <span class="key"><span class="delimiter">&quot;</span><span class="content">name</span><span class="delimiter">&quot;</span></span> : <span class="string"><span class="delimiter">&quot;</span><span class="content">client-certificate-file-reference</span><span class="delimiter">&quot;</span></span>, <i class="conum" data-value="1"></i><b>(1)</b>
+      <span class="key"><span class="delimiter">&quot;</span><span class="content">fileSystem</span><span class="delimiter">&quot;</span></span> : {
+        <span class="key"><span class="delimiter">&quot;</span><span class="content">files</span><span class="delimiter">&quot;</span></span> : [ <span class="string"><span class="delimiter">&quot;</span><span class="content">path/to/backend-cert.p12</span><span class="delimiter">&quot;</span></span> ]
+      }
+    } ]
+  },
+  <span class="key"><span class="delimiter">&quot;</span><span class="content">webScan</span><span class="delimiter">&quot;</span></span> : {
+    <span class="key"><span class="delimiter">&quot;</span><span class="content">url</span><span class="delimiter">&quot;</span></span> : <span class="string"><span class="delimiter">&quot;</span><span class="content">https://my-app.com</span><span class="delimiter">&quot;</span></span>,
+    <span class="key"><span class="delimiter">&quot;</span><span class="content">clientCertificate</span><span class="delimiter">&quot;</span></span> : {
+      <span class="key"><span class="delimiter">&quot;</span><span class="content">password</span><span class="delimiter">&quot;</span></span> : <span class="string"><span class="delimiter">&quot;</span><span class="content">{{ .CERT_PASSWORD }}</span><span class="delimiter">&quot;</span></span>, <i class="conum" data-value="2"></i><b>(2)</b>
+      <span class="key"><span class="delimiter">&quot;</span><span class="content">use</span><span class="delimiter">&quot;</span></span> : [ <span class="string"><span class="delimiter">&quot;</span><span class="content">client-certificate-file-reference</span><span class="delimiter">&quot;</span></span> ] <i class="conum" data-value="3"></i><b>(3)</b>
     }
+  }
 }</code></pre>
 </div>
 </div>
@@ -2485,16 +2564,21 @@ this is not necessary.</td>
 <table>
 <tr>
 <td><i class="conum" data-value="1"></i><b>1</b></td>
-<td>URL for web login</td>
+<td>name of the source <a href="#sechub-config-data-section">data</a> configuration: "client-certificate-file-reference".
+Please use single files only instead of folders to specify the client certificate.
+If you want to combine this with an openAPI definition that must be uploaded for the scan as well,
+please refer to this <a href="#sechub-config-openAPI-and-client-certificate">example</a>.</td>
 </tr>
 <tr>
 <td><i class="conum" data-value="2"></i><b>2</b></td>
-<td>Basic authentication start, needs user id/name and password.</td>
+<td><strong>Optional</strong>: If the client certificate is password protected, the password can be specified here.
+Using our SecHub GO client you can make use of the GO templating engine.
+Like in the example above the you can provide an environment variable containing the password instead of writing the plaintext password in the JSON configuration file.
+In the example above the SecHub GO client will substitute the value of <code>"{{ .CERT_PASSWORD }}"</code> with the value of the environment variable <code>CERT_PASSWORD</code>.</td>
 </tr>
 <tr>
 <td><i class="conum" data-value="3"></i><b>3</b></td>
-<td>You can set the realm used for basic authentication. But normally
-this is not necessary and you can use an empty string.</td>
+<td>web scan uses the referenced <a href="#sechub-config-data-section">data</a> configuration "client-certificate-file-reference", to obtain the client certificate file.</td>
 </tr>
 </table>
 </div>
@@ -2691,6 +2775,162 @@ to obtain the open api configuration file</td>
 </table>
 </div>
 </div>
+<div class="sect5">
+<h6 id="sechub-config-openAPI-and-client-certificate">2.5.7.2.6. Example combination of openAPI definition and client certificate authentication</h6>
+<div class="listingblock">
+<div class="title">Open API scan with client certificate authentication</div>
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="json">{
+  <span class="key"><span class="delimiter">&quot;</span><span class="content">apiVersion</span><span class="delimiter">&quot;</span></span> : <span class="string"><span class="delimiter">&quot;</span><span class="content">1.0</span><span class="delimiter">&quot;</span></span>,
+  <span class="key"><span class="delimiter">&quot;</span><span class="content">data</span><span class="delimiter">&quot;</span></span> : {
+    <span class="key"><span class="delimiter">&quot;</span><span class="content">sources</span><span class="delimiter">&quot;</span></span> : [ {
+      <span class="key"><span class="delimiter">&quot;</span><span class="content">name</span><span class="delimiter">&quot;</span></span> : <span class="string"><span class="delimiter">&quot;</span><span class="content">open-api-file-reference</span><span class="delimiter">&quot;</span></span>, <i class="conum" data-value="1"></i><b>(1)</b>
+      <span class="key"><span class="delimiter">&quot;</span><span class="content">fileSystem</span><span class="delimiter">&quot;</span></span> : {
+        <span class="key"><span class="delimiter">&quot;</span><span class="content">files</span><span class="delimiter">&quot;</span></span> : [ <span class="string"><span class="delimiter">&quot;</span><span class="content">gamechanger-webapp/src/main/resources/openapi3.json</span><span class="delimiter">&quot;</span></span> ]
+      }
+    }, {
+      <span class="key"><span class="delimiter">&quot;</span><span class="content">name</span><span class="delimiter">&quot;</span></span> : <span class="string"><span class="delimiter">&quot;</span><span class="content">client-certificate-file-reference</span><span class="delimiter">&quot;</span></span>, <i class="conum" data-value="2"></i><b>(2)</b>
+      <span class="key"><span class="delimiter">&quot;</span><span class="content">fileSystem</span><span class="delimiter">&quot;</span></span> : {
+        <span class="key"><span class="delimiter">&quot;</span><span class="content">files</span><span class="delimiter">&quot;</span></span> : [ <span class="string"><span class="delimiter">&quot;</span><span class="content">path/to/backend-cert.p12</span><span class="delimiter">&quot;</span></span> ]
+      }
+    } ]
+  },
+  <span class="key"><span class="delimiter">&quot;</span><span class="content">webScan</span><span class="delimiter">&quot;</span></span> : {
+    <span class="key"><span class="delimiter">&quot;</span><span class="content">url</span><span class="delimiter">&quot;</span></span> : <span class="string"><span class="delimiter">&quot;</span><span class="content">https://productfailure.demo.example.org</span><span class="delimiter">&quot;</span></span>,
+    <span class="key"><span class="delimiter">&quot;</span><span class="content">api</span><span class="delimiter">&quot;</span></span> : {
+      <span class="key"><span class="delimiter">&quot;</span><span class="content">type</span><span class="delimiter">&quot;</span></span> : <span class="string"><span class="delimiter">&quot;</span><span class="content">openApi</span><span class="delimiter">&quot;</span></span>,
+      <span class="key"><span class="delimiter">&quot;</span><span class="content">use</span><span class="delimiter">&quot;</span></span> : [ <span class="string"><span class="delimiter">&quot;</span><span class="content">open-api-file-reference</span><span class="delimiter">&quot;</span></span> ] <i class="conum" data-value="3"></i><b>(3)</b>
+    },
+    <span class="key"><span class="delimiter">&quot;</span><span class="content">clientCertificate</span><span class="delimiter">&quot;</span></span> : {
+      <span class="key"><span class="delimiter">&quot;</span><span class="content">password</span><span class="delimiter">&quot;</span></span> : <span class="string"><span class="delimiter">&quot;</span><span class="content">{{ .CERT_PASSWORD }}</span><span class="delimiter">&quot;</span></span>,
+      <span class="key"><span class="delimiter">&quot;</span><span class="content">use</span><span class="delimiter">&quot;</span></span> : [ <span class="string"><span class="delimiter">&quot;</span><span class="content">client-certificate-file-reference</span><span class="delimiter">&quot;</span></span> ] <i class="conum" data-value="4"></i><b>(4)</b>
+    }
+  }
+}</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>Data section with files referenced by the <code>openAPI</code> definition. Multiple files (<strong>NOT</strong> folders) are possible.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>Data section with the file referenced by the <code>clientCertificate</code> definition. Only one single file shall be provided here.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td>Reference to the data section containing files with your openAPI definitions (e.g. swagger.yml or openAPI.json)</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="4"></i><b>4</b></td>
+<td>Reference to the data section containing file with your client certificate for authentication.</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect5">
+<h6 id="sechub-config-example-webscan-header">2.5.7.2.7. Example Header scan</h6>
+<div class="listingblock">
+<div class="title">header scan</div>
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="json">{
+  <span class="key"><span class="delimiter">&quot;</span><span class="content">apiVersion</span><span class="delimiter">&quot;</span></span> : <span class="string"><span class="delimiter">&quot;</span><span class="content">1.0</span><span class="delimiter">&quot;</span></span>,
+  <span class="key"><span class="delimiter">&quot;</span><span class="content">webScan</span><span class="delimiter">&quot;</span></span> : {
+    <span class="key"><span class="delimiter">&quot;</span><span class="content">url</span><span class="delimiter">&quot;</span></span> : <span class="string"><span class="delimiter">&quot;</span><span class="content">https://productfailure.demo.example.org</span><span class="delimiter">&quot;</span></span>,
+    <span class="key"><span class="delimiter">&quot;</span><span class="content">headers</span><span class="delimiter">&quot;</span></span> : [ {
+      <span class="key"><span class="delimiter">&quot;</span><span class="content">name</span><span class="delimiter">&quot;</span></span> : <span class="string"><span class="delimiter">&quot;</span><span class="content">Authorization</span><span class="delimiter">&quot;</span></span>, <i class="conum" data-value="1"></i><b>(1)</b>
+      <span class="key"><span class="delimiter">&quot;</span><span class="content">value</span><span class="delimiter">&quot;</span></span> : <span class="string"><span class="delimiter">&quot;</span><span class="content">{{ .HEADER_VALUE }}</span><span class="delimiter">&quot;</span></span> <i class="conum" data-value="2"></i><b>(2)</b>
+    }, {
+      <span class="key"><span class="delimiter">&quot;</span><span class="content">name</span><span class="delimiter">&quot;</span></span> : <span class="string"><span class="delimiter">&quot;</span><span class="content">x-file-size</span><span class="delimiter">&quot;</span></span>, <i class="conum" data-value="3"></i><b>(3)</b>
+      <span class="key"><span class="delimiter">&quot;</span><span class="content">value</span><span class="delimiter">&quot;</span></span> : <span class="string"><span class="delimiter">&quot;</span><span class="content">123456</span><span class="delimiter">&quot;</span></span>, <i class="conum" data-value="4"></i><b>(4)</b>
+      <span class="key"><span class="delimiter">&quot;</span><span class="content">onlyForUrls</span><span class="delimiter">&quot;</span></span> : [ <span class="string"><span class="delimiter">&quot;</span><span class="content">https://productfailure.demo.example.org/admin</span><span class="delimiter">&quot;</span></span>, <span class="string"><span class="delimiter">&quot;</span><span class="content">https://productfailure.demo.example.org/upload/&lt;*&gt;</span><span class="delimiter">&quot;</span></span>, <span class="string"><span class="delimiter">&quot;</span><span class="content">https://productfailure.demo.example.org/&lt;*&gt;/special/</span><span class="delimiter">&quot;</span></span> ], <i class="conum" data-value="5"></i><b>(5)</b>
+      <span class="key"><span class="delimiter">&quot;</span><span class="content">sensitive</span><span class="delimiter">&quot;</span></span> : <span class="value">false</span> <i class="conum" data-value="6"></i><b>(6)</b>
+    } ]
+  }
+}</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>Name of the specified header. Must not be null or empty.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>Value of the specified header. Must not be null or empty.
+You can use the <code>go template</code> format like above by creating a environment variable like: <code>HEADER_VALUE="Bearer mytoken1234"</code>.
+This might be useful to load the information via the SecHub client dynamically, if the header value you specify contains credentials.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td>Name of the second header. You can specify a list of headers the DAST Scanner needs interact with your application.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="4"></i><b>4</b></td>
+<td>Value of the second header. Here no <code>go template</code> format is used, since in this example there are no credentials but only file size of an upload.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="5"></i><b>5</b></td>
+<td>Optional Parameter: For each header you can specify a list of URLs.
+The header this list belongs to, will only be send when accessing one of the URLs on the list.
+If you do not specify a list of URLs or the list is empty, the header will be send on each request to every URL.
+You can also use wildcards by specifying <code>&lt;*&gt;</code> like in the example above.
+Adding a wildcard to the end of an URL, the header will be sent to all sub URLs as well, otherwise it won&#8217;t be sent to sub URLs.
+Make sure that the header URL combinations are unique. This means do not specify the same header multiple times for the same scope of URLs.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="6"></i><b>6</b></td>
+<td>Optional Parameter to handle sensitive header data: If <code>true</code>, the value of this header will be masked inside the SecHub report to avoid leaking the information.
+But if the parameter is set to <code>false</code> the value will be shown as is.
+The <strong>default</strong> is <code>true</code> if nothing is specified.</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect5">
+<h6 id="sechub-config-example-webscan-header-value-from-data-section">2.5.7.2.8. Example Header scan with value from data section</h6>
+<div class="listingblock">
+<div class="title">header scan with value from data section</div>
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="json">{
+  <span class="key"><span class="delimiter">&quot;</span><span class="content">apiVersion</span><span class="delimiter">&quot;</span></span> : <span class="string"><span class="delimiter">&quot;</span><span class="content">1.0</span><span class="delimiter">&quot;</span></span>,
+  <span class="key"><span class="delimiter">&quot;</span><span class="content">data</span><span class="delimiter">&quot;</span></span> : {
+    <span class="key"><span class="delimiter">&quot;</span><span class="content">sources</span><span class="delimiter">&quot;</span></span> : [ {
+      <span class="key"><span class="delimiter">&quot;</span><span class="content">name</span><span class="delimiter">&quot;</span></span> : <span class="string"><span class="delimiter">&quot;</span><span class="content">header-value-file-reference</span><span class="delimiter">&quot;</span></span>, 
+      <span class="key"><span class="delimiter">&quot;</span><span class="content">fileSystem</span><span class="delimiter">&quot;</span></span> : {
+        <span class="key"><span class="delimiter">&quot;</span><span class="content">files</span><span class="delimiter">&quot;</span></span> : [ <span class="string"><span class="delimiter">&quot;</span><span class="content">header_value.txt</span><span class="delimiter">&quot;</span></span> ]
+      }
+    }]
+  },
+  <span class="key"><span class="delimiter">&quot;</span><span class="content">webScan</span><span class="delimiter">&quot;</span></span> : {
+    <span class="key"><span class="delimiter">&quot;</span><span class="content">url</span><span class="delimiter">&quot;</span></span> : <span class="string"><span class="delimiter">&quot;</span><span class="content">https://productfailure.demo.example.org</span><span class="delimiter">&quot;</span></span>,
+    <span class="key"><span class="delimiter">&quot;</span><span class="content">headers</span><span class="delimiter">&quot;</span></span> : [ {
+      <span class="key"><span class="delimiter">&quot;</span><span class="content">name</span><span class="delimiter">&quot;</span></span> : <span class="string"><span class="delimiter">&quot;</span><span class="content">Authorization</span><span class="delimiter">&quot;</span></span>, <i class="conum" data-value="1"></i><b>(1)</b>
+      <span class="key"><span class="delimiter">&quot;</span><span class="content">use</span><span class="delimiter">&quot;</span></span> : [ <span class="string"><span class="delimiter">&quot;</span><span class="content">header-value-file-reference</span><span class="delimiter">&quot;</span></span> ] <i class="conum" data-value="2"></i><b>(2)</b>
+    } ]
+  }
+}</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>Name of the specified header. Must not be null or empty.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>Name of the source <a href="#sechub-config-data-section">data</a> configuration: "header-value-file-reference".
+Please use single files only instead of folders to specify the header value. Use a separate data section for each header.
+This can be used if you want to provide a large header value, which exceeds the maximum size of the sechub.json configuration file.
+For each header provide either a <code>value</code> directly (as shown in <a href="#sechub-config-example-webscan-header">Example Header scan</a>) or a data section reference via <code>use</code> as shown in this example.</td>
+</tr>
+</table>
+</div>
+</div>
 </div>
 </div>
 <div class="sect3">
@@ -2789,8 +3029,8 @@ array attribute <code>"use"</code> with a list of references.</p>
 <div class="listingblock">
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="json">{
-    <span class="error">/</span><span class="error">/</span> <span class="error">.</span><span class="error">.</span><span class="error">s</span><span class="error">c</span><span class="error">a</span><span class="error">n</span> <span class="error">d</span><span class="error">e</span><span class="error">f</span><span class="error">i</span><span class="error">n</span><span class="error">i</span><span class="error">t</span><span class="error">i</span><span class="error">o</span><span class="error">n</span>
-    <span class="key"><span class="delimiter">&quot;</span><span class="content">use</span><span class="delimiter">&quot;</span></span> : [ <span class="string"><span class="delimiter">&quot;</span><span class="content">reference-name-1</span><span class="delimiter">&quot;</span></span>,<span class="string"><span class="delimiter">&quot;</span><span class="content">reference-name-2</span><span class="delimiter">&quot;</span></span>, <span class="error">.</span><span class="error">.</span><span class="error">.</span> ] <i class="conum" data-value="1"></i><b>(1)</b>
+  <span class="error">/</span><span class="error">/</span> <span class="error">.</span><span class="error">.</span><span class="error">s</span><span class="error">c</span><span class="error">a</span><span class="error">n</span> <span class="error">d</span><span class="error">e</span><span class="error">f</span><span class="error">i</span><span class="error">n</span><span class="error">i</span><span class="error">t</span><span class="error">i</span><span class="error">o</span><span class="error">n</span>
+  <span class="key"><span class="delimiter">&quot;</span><span class="content">use</span><span class="delimiter">&quot;</span></span> : [ <span class="string"><span class="delimiter">&quot;</span><span class="content">reference-name-1</span><span class="delimiter">&quot;</span></span>,<span class="string"><span class="delimiter">&quot;</span><span class="content">reference-name-2</span><span class="delimiter">&quot;</span></span>, <span class="error">.</span><span class="error">.</span><span class="error">.</span> ] <i class="conum" data-value="1"></i><b>(1)</b>
 }</code></pre>
 </div>
 </div>
@@ -2926,6 +3166,18 @@ for details about default behaviour for sources.</td>
 <div class="paragraph">
 <p>With labels a user is able to add additional information to the
 scan configuration which end up in the report as key value pairs.</p>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+Using the SecHub client, you can also pass labels via command line or environment variables.
+</td>
+</tr>
+</table>
 </div>
 <div class="paragraph">
 <p>The next figure shows an example which presents all possibilities <em>(for simplicity other configuration
@@ -3066,6 +3318,10 @@ But of course you can also define additional source file endings - see <a href="
 .aspx</p></td>
 </tr>
 <tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Azure</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">.bicep</p></td>
+</tr>
+<tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">C/C++</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">.ac<br>
 .am<br>
@@ -3100,6 +3356,27 @@ But of course you can also define additional source file endings - see <a href="
 .vbp<br>
 .vbs<br>
 .xaml</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Certificates for secrets scans</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">.crt,<br>
+.cer,<br>
+.csr,<br>
+.der,<br>
+.pem,<br>
+.pfx,<br>
+.p12,<br>
+.p7b,<br>
+.p7c,<br>
+.CRT,<br>
+.CER,<br>
+.CSR,<br>
+.DER,<br>
+.PEM,<br>
+.PFX,<br>
+.P12,<br>
+.P7B,<br>
+.P7C</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Cobol</p></td>
@@ -3180,6 +3457,10 @@ But of course you can also define additional source file endings - see <a href="
 .tpl</p></td>
 </tr>
 <tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Lua</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">.lua</p></td>
+</tr>
+<tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Objective C, Swift</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">.m<br>
 .plist<br>
@@ -3238,6 +3519,11 @@ But of course you can also define additional source file endings - see <a href="
 .rxml</p></td>
 </tr>
 <tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Rust</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">.rs<br>
+.rlib</p></td>
+</tr>
+<tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Scala</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">.conf<br>
 .sc<br>
@@ -3279,7 +3565,7 @@ template syntax:</p>
 <div class="listingblock">
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="json">{
-    <span class="key"><span class="delimiter">&quot;</span><span class="content">apiVersion</span><span class="delimiter">&quot;</span></span> : <span class="string"><span class="delimiter">&quot;</span><span class="content">{{ .USED_API_VERSION }}</span><span class="delimiter">&quot;</span></span>
+  <span class="key"><span class="delimiter">&quot;</span><span class="content">apiVersion</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">{{ .USED_API_VERSION }}</span><span class="delimiter">&quot;</span></span>
 }</code></pre>
 </div>
 </div>
@@ -3468,30 +3754,15 @@ Transfer completed</code></pre>
 <h2 id="section-sechub-reporting">3. Reporting</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>This chapter describes the different SecHub reports and how to read them.</p>
+<p>This chapter describes the different SecHub report types and how to read them.</p>
 </div>
 <div class="paragraph">
-<p>At the moment SecHub only provides job reports and no cumulated reports.
-Job reports do only contain information of exact one scan job done by SecHub.</p>
-</div>
-<div class="admonitionblock tip">
-<table>
-<tr>
-<td class="icon">
-<i class="fa icon-tip" title="Tip"></i>
-</td>
-<td class="content">
-If you want to have management summaries you could store downloaded JSON job reports
- , process data and provide those reports by your own - or you wait while this
- becomes part of SecHub.
-</td>
-</tr>
-</table>
+<p>Job reports do only contain information of exact one scan job done by SecHub.</p>
 </div>
 <div class="sect2">
 <h3 id="job-reports">3.1. Job reports</h3>
 <div class="paragraph">
-<p>With SecHub users are able to download their results for finished scan jobs. SecHub provides these
+<p>Users can download the results of their finished scan jobs. SecHub provides these
 report formats:</p>
 </div>
 <div class="ulist">
@@ -3502,8 +3773,7 @@ human friendly report variant with less details</p>
 </li>
 <li>
 <p>JSON<br>
-as a machine readable format, usable for SecHub client to determine to break build. Will also be
-the base for planned development of IDE plugins (<code>Eclipse</code>, <code>IntelliJ</code>, <code>VSCode</code>)</p>
+as an also machine readable format. It can be directly used by the SecHub IDE plugins (<a href="https://github.com/mercedes-benz/sechub-plugin-eclipse">Eclipse</a>, <a href="https://github.com/mercedes-benz/sechub-plugin-intellij">IntelliJ</a>, <a href="https://github.com/mercedes-benz/sechub-plugin-vscode">VSCode/Codium</a>)</p>
 </li>
 <li>
 <p>SPDX JSON</p>
@@ -3513,13 +3783,11 @@ the base for planned development of IDE plugins (<code>Eclipse</code>, <code>Int
 <div class="sect3">
 <h4 id="html">3.1.1. HTML</h4>
 <div class="paragraph">
-<p>The main purpose for the HTML report is to have a human friendly report which gives you a fast overview
-to your current situation.</p>
+<p>The main purpose for the HTML report is to have a human friendly report which gives you a fast overview.</p>
 </div>
-<div class="ulist">
-<ul>
-<li>
-<p>At the left top corner you see a traffic light showing either</p>
+<div class="paragraph">
+<p>At the top left corner you see a traffic light showing either</p>
+</div>
 <div class="ulist">
 <ul>
 <li>
@@ -3530,9 +3798,6 @@ to your current situation.</p>
 </li>
 <li>
 <p>RED.</p>
-</li>
-</ul>
-</div>
 </li>
 </ul>
 </div>
@@ -3729,7 +3994,7 @@ configure the client to do this on color YELLOW.
 </div>
 <div id="footer">
 <div id="footer-text">
- Client 0.36.0<br>
+ Client 1.4.0 modified (commit 5eb0916)<br>
 </div>
 </div>
 </body>

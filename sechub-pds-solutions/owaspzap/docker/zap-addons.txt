@@ -1,0 +1,16 @@
+https://github.com/zaproxy/zap-extensions/releases/download/commonlib-v1.18.0/commonlib-release-1.18.0.zap
+https://github.com/zaproxy/zap-extensions/releases/download/ascanrules-v58/ascanrules-release-58.zap
+https://github.com/zaproxy/zap-extensions/releases/download/selenium-v15.15.0/selenium-release-15.15.0.zap
+https://github.com/zaproxy/zap-extensions/releases/download/spiderAjax-v23.17.0/spiderAjax-release-23.17.0.zap
+https://github.com/zaproxy/zap-extensions/releases/download/pscanrules-v52/pscanrules-release-52.zap
+https://github.com/zaproxy/zap-extensions/releases/download/retire-v0.26.0/retire-release-0.26.0.zap
+https://github.com/zaproxy/zap-extensions/releases/download/domxss-v18/domxss-release-18.zap
+https://github.com/zaproxy/zap-extensions/releases/download/webdriverlinux-v64/webdriverlinux-release-64.zap
+https://github.com/zaproxy/zap-extensions/releases/download/network-v0.12.0/network-beta-0.12.0.zap
+https://github.com/zaproxy/zap-extensions/releases/download/openapi-v38/openapi-beta-38.zap
+https://github.com/zaproxy/zap-extensions/releases/download/callhome-v0.8.0/callhome-release-0.8.0.zap
+https://github.com/zaproxy/zap-extensions/releases/download/spider-v0.7.0/spider-release-0.7.0.zap
+https://github.com/zaproxy/zap-extensions/releases/download/database-v0.3.0/database-alpha-0.3.0.zap
+https://github.com/zaproxy/zap-extensions/releases/download/oast-v0.17.0/oast-beta-0.17.0.zap
+https://github.com/zaproxy/zap-extensions/releases/download/reports-v0.26.0/reports-release-0.26.0.zap
+https://github.com/zaproxy/zap-extensions/releases/download/replacer-v15/replacer-release-15.zap

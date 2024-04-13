@@ -91,9 +91,10 @@ public class UserAdministrationRestControllerMockTest {
 
     @Test
     public void show_user_details_returns_result_of_detail_service() throws Exception {
+        /* prepare */
         User user = mock(User.class);
         when(user.getName()).thenReturn("user1");
-        when(user.getEmailAdress()).thenReturn("user1@example.org");
+        when(user.getEmailAddress()).thenReturn("user1@example.org");
         Set<Project> projects = new LinkedHashSet<>();
 
         Project project1 = mock(Project.class);
@@ -113,6 +114,38 @@ public class UserAdministrationRestControllerMockTest {
         			andExpect(jsonPath("$.email", equalTo("user1@example.org"))).
         			andExpect(jsonPath("$.projects", equalTo(Arrays.asList("project1")))
         		);
+
+        /* @formatter:on */
+    }
+
+    @Test
+    public void show_user_details_for_email_address_returns_result_of_detail_service() throws Exception {
+        /* prepare */
+        String emailAddress = "testuser1@example.org";
+        String userId = "user1";
+
+        User user = mock(User.class);
+        when(user.getName()).thenReturn(userId);
+        when(user.getEmailAddress()).thenReturn(emailAddress);
+        Set<Project> projects = new LinkedHashSet<>();
+
+        Project project1 = mock(Project.class);
+        when(project1.getId()).thenReturn("project1");
+        projects.add(project1);
+        when(user.getProjects()).thenReturn(projects);
+        UserDetailInformation info = new UserDetailInformation(user);
+
+        when(mockedUserDetailInformationService.fetchDetailsByEmailAddress(emailAddress)).thenReturn(info);
+
+        /* execute + test @formatter:off */
+        this.mockMvc.perform(
+                get(https(PORT_USED).buildAdminShowsUserDetailsForEmailAddressUrl(emailAddress))
+                ).
+        andExpect(status().isOk()).
+        andExpect(jsonPath("$.userId", equalTo(userId))).
+        andExpect(jsonPath("$.email", equalTo(emailAddress))).
+        andExpect(jsonPath("$.projects", equalTo(Arrays.asList("project1")))
+                );
 
         /* @formatter:on */
     }

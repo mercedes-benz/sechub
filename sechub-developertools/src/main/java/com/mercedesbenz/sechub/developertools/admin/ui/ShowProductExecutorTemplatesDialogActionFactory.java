@@ -40,6 +40,10 @@ public class ShowProductExecutorTemplatesDialogActionFactory {
         return createPDSV1Action(context, ProductIdentifier.PDS_ANALYTICS, 1);
     }
 
+    public static ShowProductExecutorTemplatesDialogAction createPDS_PREPARE_V1Action(UIContext context) {
+        return createPDSV1Action(context, ProductIdentifier.PDS_PREPARE, 1);
+    }
+
     public static ShowProductExecutorTemplatesDialogAction createPDS_WEBSCAN_V1Action(UIContext context) {
         return createPDSV1Action(context, ProductIdentifier.PDS_WEBSCAN, 1);
     }

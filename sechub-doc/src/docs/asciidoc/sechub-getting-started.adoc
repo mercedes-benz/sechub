@@ -23,7 +23,7 @@ You will learn:
 
 plantuml::diagrams/diagram_behind_the_scenes_sechub.plantuml[format=svg, title="Setup Overview"]
 
-This Diagram roughly explains how Sechub functions, behind the scenes.
+This Diagram roughly explains how SecHub functions, behind the scenes.
 [NOTE]
 --
 This tutorial is tested on Debian/Ubuntu! +
@@ -37,6 +37,8 @@ You are going to need:
 * docker (Version 23.0.0 used in the tutorial, newer versions will also work) (e. g. https://docs.docker.com/engine/install/debian/[Debian],  / https://docs.docker.com/engine/install/ubuntu/[Ubuntu])
 * docker compose (v2.15.1 or newer)
 * git
+* jq
+* https://github.com/mercedes-benz/sechub/releases[SecHub Client]
 
 Optional:
 
@@ -58,7 +60,7 @@ This makes a local copy of the SecHub project on your computer and goes to the p
 
 ==== Start SecHub Server
 
-The Sechub server is responsible for taking jobs and passing them to the PDS server for processing. Once the job finishes on the PDS side, they are fetched and processed by SecHub +
+The SecHub server is responsible for taking jobs and passing them to the PDS server for processing. Once the job finishes on the PDS side, they are fetched and processed by SecHub +
 
 [source, shell]
 --
@@ -69,6 +71,8 @@ This starts the server.
 
 ==== Start GoSec+PDS Server
 The PDS server, which contains the security tool https://securego.io/[GoSec], will check the actual code for vulnerabilities and output a result of them.
+
+Start another terminal in the root directory of SecHub and type: 
 
 [source, shell]
 --
@@ -81,7 +85,7 @@ This will prepare some environment files and will start a container based on Sec
 ==== Setup Project
 
 After starting all servers, some environment variables have to be set. Specifically `SECHUB_SERVER`, `SECHUB_USERID`, `SECHUB_APITOKEN`, `SECHUB_TRUSTALL` and SecHub's CLI tools have to be added to the `PATH` variable to be able to do scans.
-Here we set local credentials because everything is hosted locally:
+In another, we set local credentials because everything is hosted locally:
 
 [source, shell]
 --
@@ -149,15 +153,15 @@ HTTP/1.1 201
             "value": "true"
           },
           {
-            "key": "pds.productexecutor.timeout.minutes",
+            "key": "sechub.productexecutor.pds.timeout.minutes",
             "value": "60"
           },
           {
-            "key": "pds.productexecutor.timetowait.nextcheck.milliseconds",
+            "key": "sechub.productexecutor.pds.timetowait.nextcheck.milliseconds",
             "value": "500"
           },
           {
-            "key": "pds.productexecutor.trustall.certificates",
+            "key": "sechub.productexecutor.pds.trustall.certificates",
             "value": "true"
           }
         ]
@@ -181,6 +185,36 @@ Setup of GoSec complete:
 --
 
 Now you are ready to do scans!
+
+==== Install SecHub client 
+The SecHub client is needed to scan. In later sections of this guide, the client is used to scan an example. The command below, will download the latest version and put it in your `/usr/local/bin` folder.
+
+[source, bash]
+--
+# Get latest version
+CLIENT_VERSION=`curl -s https://mercedes-benz.github.io/sechub/latest/client-download.html | grep https://github.com/mercedes-benz/sechub/ | awk -F '-' '{print $NF}' | sed 's/.zip">//'`
+
+# Download the zipped binary
+curl -L -o sechub-cli.zip https://github.com/mercedes-benz/sechub/releases/download/v$CLIENT_VERSION-client/sechub-cli-$CLIENT_VERSION.zip
+
+# Verify the binary
+curl -L -o sechub-cli.zip.sha256 https://github.com/mercedes-benz/sechub/releases/download/v$CLIENT_VERSION-client/sechub-cli-$CLIENT_VERSION.zip.sha256
+sha256sum --check sechub-cli.zip.sha256
+
+# Extract 
+unzip sechub-cli.zip
+
+# Depending on your architecture and OS, you will have to copy a different binary file:
+# For linux x86-64
+sudo cp platform/linux-amd64/sechub /usr/local/bin
+
+# For linux arm-64
+sudo cp platform/linux-arm64/sechub /usr/local/bin
+
+
+# Cleanup
+rm -rf sechub-cli.zip.sha256 sechub-cli.zip platform/
+--
 
 ==== Scanning
 
@@ -285,8 +319,8 @@ The output you get, should be simillar to this(if you choose JSON output):
 }
 --
 
-==== Install Sechub's VSCodium Plugin (OPTIONAL)
-Sechub's VSCodium Plugin helps you better visualize where the vulnerabilities in your code are located.
+==== Install SecHub's VSCodium Plugin (OPTIONAL)
+SecHub's VSCodium Plugin helps you to work faster with the SecHub report.
 You can go to the exact code line and fix the problem.
 
 You can get the plugin from https://open-vsx.org/extension/mercedes-benz/sechub[here].

@@ -1,8 +1,10 @@
 Apex: .apex .apexp .apxc .component .-meta.xml .object .page .report .tgr .trigger .workflow
 ASP (Active Server Pages): .asp
 ASP: .ascx .aspx
+Azure: .bicep
 C/C++: .ac .am .c .c++ .cc .cmake .cpp .cxx .ec .h .h++ .hh .hpp .hxx .pro
 C#, VB.NET, Visual Basic, VB Script: .asax .bas .cls .cs .cshtml .csproj .ctl .dsr .frm .master .sln .vb .vbp .vbs .xaml
+Certificates for secrets scans:	.crt, .cer, .csr, .der, .pem, .pfx, .p12, .p7b, .p7c, .CRT, .CER, .CSR, .DER, .PEM, .PFX, .P12, .P7B, .P7C
 Cobol: .cbl .cob .cpy .eco .pco .sqb
 Docker: Dockerfile .dockerfile
 Go, Protobuf: .go
@@ -12,12 +14,14 @@ Java ecosystem: .app .cmp .evt .gradle .hbs .java .javasln .jsf .jsp .jspf .mf .
 JavaScript: .handlebars .jade .js .json .jsx .pug .vue .xsaccess .xsapp .xsjs .xsjslib
 Kotlin: .ftl .kt .kts ,mustache
 Kubernetes, Helm, Docker-Compose: .yaml .yml .tpl
+Lua: .lua
 Objective C, Swift: .m .plist .swift .xib
 Perl: .pl .plx .pm .psgi
 php: .ctp .php .php3 .php4 .php5 .php5.6 .phtm .phtml .tpl .twig
 PL/SQL: .pck .pkb .pkh .pks .pls .sql
 Python, Django: .csv .gtl .latex .py .py2 .py3 .pyi .python .tex .txt
 Ruby: .erb .lock .rb .rhtml .rjs .rxml
+Rust: .rs .rlib
 Scala: .conf .sc .scala
 Terraform: .tf .tfvars
 Typescript/Angular: .ts .tsx

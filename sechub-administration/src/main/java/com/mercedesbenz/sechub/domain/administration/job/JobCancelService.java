@@ -7,7 +7,6 @@ import java.util.UUID;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Example;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
 
@@ -63,10 +62,7 @@ public class JobCancelService {
 
         message.setJobUUID(jobUUID);
 
-        JobInformation probe = new JobInformation();
-        probe.setJobUUID(jobUUID);
-        Example<JobInformation> example = Example.of(probe);
-        Optional<JobInformation> optJobInfo = repository.findOne(example);
+        Optional<JobInformation> optJobInfo = repository.findById(jobUUID);
         if (!optJobInfo.isPresent()) {
             LOG.warn("Did not found job information, so not able to resolve owner email address");
             return message;
@@ -83,7 +79,7 @@ public class JobCancelService {
             return message;
         }
         message.setOwner(jobInfo.owner);
-        message.setOwnerEmailAddress(optUser.get().getEmailAdress());
+        message.setOwnerEmailAddress(optUser.get().getEmailAddress());
         return message;
     }
 

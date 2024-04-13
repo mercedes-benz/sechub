@@ -31,7 +31,7 @@ import com.mercedesbenz.sechub.sharedkernel.UserContextService;
  *
  */
 @Service
-@Profile("!" + Profiles.INTEGRATIONTEST)
+@Profile("!" + Profiles.INTEGRATIONTEST) // For integration testing we extend this service! See hierarchy
 public class DefaultSecurityLogService implements SecurityLogService {
 
     private static final int MINIMUM_LENGTH_TO_SHOW_PWD_INT = 52;
@@ -47,6 +47,9 @@ public class DefaultSecurityLogService implements SecurityLogService {
 
     @Autowired
     AuthorizeValueObfuscator authorizedValueObfuscator;
+
+    @Autowired
+    BasicAuthUserExtraction basicAuthUserExtraction;
 
     private int MAXIMUM_HEADER_AMOUNT_TO_SHOW = 300;
 
@@ -74,7 +77,7 @@ public class DefaultSecurityLogService implements SecurityLogService {
             }
         }
 
-        doLogging(buildLogData(httpServletRequest, sessionId, type, message, objects));
+        doLogging(buildLogData(httpServletRequest, sessionId, false, type, message, objects));
     }
 
     /**
@@ -94,7 +97,7 @@ public class DefaultSecurityLogService implements SecurityLogService {
      * @param objects
      */
     public final void logAfterSessionClosed(HttpServletRequest request, String httpSessionId, SecurityLogType type, String message, Object... objects) {
-        doLogging(buildLogData(request, httpSessionId, type, message, objects));
+        doLogging(buildLogData(request, httpSessionId, true, type, message, objects));
     }
 
     void doLogging(SecurityLogData logData) {
@@ -114,7 +117,8 @@ public class DefaultSecurityLogService implements SecurityLogService {
         paramList.add(logData.getType().getTypeId());
 
         try {
-            paramList.add(objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(logData));
+            String logDataAsJson = objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(logData);
+            paramList.add(logDataAsJson);
         } catch (JsonProcessingException e) {
             getLogger().error("Was not able to write security log data as json - will fallback to empty JSON", e);
 
@@ -133,7 +137,8 @@ public class DefaultSecurityLogService implements SecurityLogService {
         return LOG;
     }
 
-    private SecurityLogData buildLogData(HttpServletRequest request, String sessionId, SecurityLogType type, String message, Object... objects) {
+    private SecurityLogData buildLogData(HttpServletRequest request, String sessionId, boolean afterSessionClosed, SecurityLogType type, String message,
+            Object... objects) {
         SecurityLogData logData = new SecurityLogData();
         if (type == null) {
             getLogger().warn("Security log service was called with no log type! Using fallback:{}", logData.type);
@@ -143,10 +148,14 @@ public class DefaultSecurityLogService implements SecurityLogService {
         logData.message = message;
         logData.messageParameters = objects;
         logData.sessionId = sessionId;
+        logData.afterSessionClosed = afterSessionClosed;
 
         collectRequestInfo(request, logData);
 
         logData.userId = userContextService.getUserId();
+
+        String userFromAuthHeader = basicAuthUserExtraction.extractUserFromAuthHeader(request.getHeader("authorization"));
+        logData.basicAuthUser = logSanititzer.sanitize(userFromAuthHeader, 100, false); // without log forgery handling, we want the origin output
 
         return logData;
     }
@@ -161,6 +170,7 @@ public class DefaultSecurityLogService implements SecurityLogService {
         }
         logContext.clientIp = logSanititzer.sanitize(request.getRemoteAddr(), 1024);
         logContext.requestURI = logSanititzer.sanitize(request.getRequestURI(), 1024);
+        logContext.method = logSanititzer.sanitize(request.getMethod(), 10);
 
         appendSanitizedHttpHeaders(request, logContext);
 

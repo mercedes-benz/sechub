@@ -118,6 +118,7 @@ public class UseCaseRestDocModelDataCollector {
             UseCaseRestDocEntry restDocEntry = new UseCaseRestDocEntry();
             restDocEntry.variantOriginValue = restDoc.variant();
             restDocEntry.variantId = RestDocFactory.createVariantId(restDocEntry.variantOriginValue);
+            restDocEntry.restDocTestMethod = method;
 
             restDocEntry.usecaseEntry = useCaseEntry;
             String path = RestDocFactory.createPath(useCaseClass, restDocEntry.variantId);
@@ -152,18 +153,65 @@ public class UseCaseRestDocModelDataCollector {
     }
 
     private File scanForSpringRestDocGenFolder(UseCaseRestDocEntry entry) {
-        File lastTry = null;
+        StringBuilder searchedBuildDirsSb = new StringBuilder();
         for (File buildDir : buildDirectories) {
             File expected = new File(buildDir, "generated-snippets/" + entry.path);
             if (expected.exists()) {
                 return expected;
             }
-            lastTry = expected;
+            try {
+                String canonicalPath = expected.getCanonicalPath();
+                if (canonicalPath.contains("sechub-doc")) {
+                    String topCandidate = "Top candidate: " + canonicalPath;
+                    topCandidate = topCandidate + "\n" + ("-".repeat(topCandidate.length())) + "\n\n";
+
+                    searchedBuildDirsSb.insert(0, topCandidate);
+                } else {
+                    searchedBuildDirsSb.append(canonicalPath).append("\n");
+                }
+            } catch (IOException e) {
+                LOG.error("Cannot fetch canonical path for {}", expected);
+            }
         }
-        throw new IllegalStateException("No restdoc found for Usecase:" + entry.usecaseEntry.getAnnotationName()
-                + "\nIt is annotated as @UseCaseRestDoc, but no restdoc files generated!\n"
-                + "Maybe you \n   - executed not `gradlew sechub-doc:test` before\n   - forgot to do the documentation parts for the test, or\n   - you accidently used another class when calling UseCaseRestDoc.Factory.createPath(...) ?\n\nDetails:\nNo rest doc gen folder not found for id:"
-                + entry.path + ",\nlastTry:" + (lastTry != null ? lastTry.getAbsolutePath() : "null"));
+        String annotationName = atLeastEmptyString(entry.usecaseEntry.getAnnotationName());
+        String underlineAnnotationName = "-".repeat(annotationName.length());
+        String variantName = atLeastEmptyString(entry.variantOriginValue);
+
+        String message = """
+                 Missing RESTDOC snippets
+
+                 RESTDOC problem detected for usecase: %s
+                                                       %s
+                                              variant: %s
+
+                                         RestDOC test: %s
+                                               method: %s
+
+                 There is a RESTDOC test which is annotated as @UseCaseRestDoc, but no/not enough RESTDOC snippet files were generated!
+
+                 Maybe you
+                    - forgot to implement the RESTDOC test for the usecase or for one of its variants
+                    - used two differet names for the variant inside your test (annotation + code in test method)
+                    - forgot to add the documentation calls inside a RESTDOC test, or
+                    - you accidently used another class when calling UseCaseRestDoc.Factory.createPath(...) or
+                    - executed not `gradlew sechub-doc:test` before
+
+                Details:
+                No rest doc gen folder found for id: %s
+
+                Searched at following locations:
+                %s
+                """.formatted(annotationName, underlineAnnotationName, variantName, entry.restDocTestMethod.getDeclaringClass().getSimpleName(),
+                entry.restDocTestMethod.getName(), entry.path, searchedBuildDirsSb.toString());
+
+        throw new IllegalStateException(message);
+    }
+
+    private String atLeastEmptyString(String annotationName) {
+        if (annotationName != null) {
+            return annotationName;
+        }
+        return "";
     }
 
 }

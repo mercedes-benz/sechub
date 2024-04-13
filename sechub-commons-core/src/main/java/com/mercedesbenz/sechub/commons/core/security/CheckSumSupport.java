@@ -6,6 +6,7 @@ import static java.util.Objects.*;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.file.Path;
 import java.security.DigestInputStream;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -15,9 +16,21 @@ public class CheckSumSupport {
     /**
      * Creates a SHA256 checksum for given file.
      *
+     * @param path
+     * @return checksum or <code>null</code> when file is not existing
+     */
+    public String createSha256Checksum(Path path) {
+        if (path == null) {
+            return null;
+        }
+        return createSha256Checksum(path.toAbsolutePath().toString());
+    }
+
+    /**
+     * Creates a SHA256 checksum for given file.
+     *
      * @param filepath
      * @return checksum or <code>null</code> when file is not existing
-     * @throws IOException
      */
     public String createSha256Checksum(String filepath) {
         if (filepath == null) {

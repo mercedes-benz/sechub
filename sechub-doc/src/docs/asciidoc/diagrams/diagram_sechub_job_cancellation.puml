@@ -11,23 +11,6 @@ hide empty methods
 !include module_sechub_eventbus.puml
 !include module_sechub_productresult.puml
 
-package org.springframework.batch {
-    class JobExplorer {
-    }
-    class JobOperator {
-    }
-    
-    class SimpleJobLauncher {
-    }
-    
-    database BatchJobs {
-    }
-    
-    JobExplorer --> BatchJobs
-    JobOperator --> BatchJobs
-    
-}
-
 package com.mercedesbenz.sechub.domain.administration {
     
     class JobAdministrationRestController   
@@ -53,25 +36,9 @@ package com.mercedesbenz.sechub.domain.notification {
 
 package com.mercedesbenz.sechub.domain.schedule {
 
- package com.mercedesbenz.sechub.domain.schedule.batch {
     
-        class SchedulerCancelBatchJobService {
-        }
-    
-        class AsyncJobLauncher extends SimpleJobLauncher {
-        }
-        class ScanExecutionTasklet {
-        }
-        
-        class BatchConfiguration {
-        }
-    
-        AsyncJobLauncher --> ScanExecutionTasklet : starts
-       
-        SchedulerCancelBatchJobService  -> JobOperator #blue;line.dashed : stops batch job
-    
-    }   
-
+    class SynchronSecHubJobExecutor {
+    }
    
     
     class SchedulerJobStatusRequestHandler {
@@ -104,15 +71,13 @@ package com.mercedesbenz.sechub.domain.schedule {
             
             The execution state is <b>not</b> inspected.
     end note 
-    BatchConfiguration --> ScanExecutionTasklet : creates
     SchedulerJobBatchTriggerService --> ScheduleSecHubJob : stores result
     SchedulerJobBatchTriggerService --> ScheduleJobLauncherService : uses
-    ScheduleJobLauncherService --> AsyncJobLauncher : uses
     
     ScheduleMessagehandler  --> SchedulerCancelJobService #blue;line.dashed;text:blue : "calls cancel service\nbecause of C2"
     SchedulerCancelJobService --> ScheduleSecHubJob #blue;line.dashed;text:blue : marks as CANCEL_REQUESTED (C3)
     
-    ScheduleJobLauncherService <-> ScanExecutionTasklet
+    ScheduleJobLauncherService -> SynchronSecHubJobExecutor : calls
     
     DomainMessageService <--> SchedulerCancelJobService #green;line.dashed;text:green : sends async CANCELLATION_RUNNING (D1)
     DomainMessageService  --> ScheduleMessagehandler #blue;line.dashed;text:blue : sends async REQUEST_JOB_CANCELLATION (C1)
@@ -247,10 +212,10 @@ package com.mercedesbenz.sechub.domain.scan {
     ScanJobCancellationRunnable --> SecHubExecutionContext : "uses information about \nproduct executors and data"
     ScanJobCancellationRunnable --> CanceableProductExecutor 
 
-    ScanExecutionTasklet <--> DomainMessageService #silver;line.dashed;text:silver  : sends "START_SCAN" (A1) SYNCHRON
+    SynchronSecHubJobExecutor --> DomainMessageService #DarkGray;line.dashed;text:DarkGray  : sends "START_SCAN" (A1) SYNCHRON
     
     ScanProgressMonitor  <--> DomainMessageService #Fuchsia;line.dashed;text:Fuchsia : "sends synchron REQUEST_SCHEDULER_JOB_STATUS (B1)\nand receives job status"
-    ScanService <--> DomainMessageService  #silver;line.dashed;text:silver : recevies "START_SCAN" (A2) SYNCHRON (returns result)
+    DomainMessageService --> ScanService #DarkGray;line.dashed;text:DarkGray : recevies "START_SCAN" (A2) SYNCHRON (returns result)
     
     Adapter ---> Procuct : communication
     

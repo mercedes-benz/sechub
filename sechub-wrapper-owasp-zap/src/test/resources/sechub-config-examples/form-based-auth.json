@@ -1,0 +1,41 @@
+{
+  "apiVersion" : "1.0",
+  "webScan" : {
+    "url" : "https://productfailure.demo.example.org",
+    "login" : {
+      "url" : "https://productfailure.demo.example.org/login",
+      "form" : {
+        "script" : {
+          "pages" : [ {
+            "actions" : [ {
+              "type" : "username",
+              "selector" : "#example_login_userid",
+              "value" : "{{ .LOGIN_USER }}"
+            }, {
+              "type" : "password",
+              "selector" : "#example_login_pwd",
+              "value" : "{{ .LOGIN_PWD }}"
+            }, {
+              "type" : "click",
+              "selector" : "#next",
+              "description" : "Click to go to next page"
+            } ]
+          }, {
+            "actions" : [ {
+              "type" : "input",
+              "selector" : "#example_other_inputfield",
+              "value" : "{{ .OTHER_VALUE }}"
+            }, {
+              "type" : "wait",
+              "value" : "1",
+              "unit" : "second"
+            }, {
+              "type" : "click",
+              "selector" : "#doLogin"
+            } ]
+          } ]
+        }
+      }
+    }
+  }
+}

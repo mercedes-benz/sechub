@@ -1,6 +1,6 @@
 # SPDX-License-Identifier: MIT
 
-FROM debian:11-slim
+FROM debian:12-slim
 
 ARG POSTGRES_VERSION=13
 ARG POSTGRES_CONFIG_FOLDER="/etc/postgresql/${POSTGRES_VERSION}/main/"

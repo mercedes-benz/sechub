@@ -1,0 +1,21 @@
+// SPDX-License-Identifier: MIT
+plugins {
+    id 'java-library'
+}
+
+dependencies{
+    
+    api spring_boot_dependency.jackson_core
+    api spring_boot_dependency.jackson_databind
+    api spring_boot_dependency.jackson_datatype_jdk8
+    api spring_boot_dependency.jackson_datatype_jsr310
+    
+    api project(':sechub-commons-model')
+    
+    testImplementation project(':sechub-testframework')
+    testImplementation spring_boot_dependency.junit_jupiter
+    
+    testImplementation spring_boot_dependency.mockito_core
+    testImplementation library.mockito_inline
+    testImplementation spring_boot_dependency.hamcrest
+}

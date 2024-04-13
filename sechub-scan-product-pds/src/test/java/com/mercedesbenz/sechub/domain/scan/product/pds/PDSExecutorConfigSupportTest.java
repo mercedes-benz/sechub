@@ -11,6 +11,12 @@ import java.util.Optional;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.EmptySource;
+import org.junit.jupiter.params.provider.EnumSource;
+import org.junit.jupiter.params.provider.EnumSource.Mode;
+import org.junit.jupiter.params.provider.NullSource;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 
@@ -18,6 +24,7 @@ import com.mercedesbenz.sechub.commons.core.environment.SystemEnvironmentVariabl
 import com.mercedesbenz.sechub.commons.mapping.MappingData;
 import com.mercedesbenz.sechub.commons.mapping.MappingEntry;
 import com.mercedesbenz.sechub.commons.model.JSONConverter;
+import com.mercedesbenz.sechub.commons.model.SecHubDataConfigurationType;
 import com.mercedesbenz.sechub.commons.pds.PDSConfigDataKeyProvider;
 import com.mercedesbenz.sechub.domain.scan.NetworkTargetType;
 import com.mercedesbenz.sechub.domain.scan.config.ScanMapping;
@@ -85,6 +92,193 @@ public class PDSExecutorConfigSupportTest {
         when(serviceCollection.getScanMappingRepository()).thenReturn(repository);
         when(serviceCollection.getSystemEnvironmentVariableSupport()).thenReturn(systemEnvironmentVariableSupport);
         supportToTest = PDSExecutorConfigSupport.createSupportAndAssertConfigValid(config, serviceCollection);
+    }
+
+    @EnumSource(SecHubDataConfigurationType.class)
+    @ParameterizedTest
+    void isGivenStorageSupportedByPDSProduct_binary_and_source_required_from_model_all_supported(SecHubDataConfigurationType type) {
+        /* prepare */
+        PDSStorageContentProvider contentProvider = mock(PDSStorageContentProvider.class);
+
+        when(contentProvider.isBinaryRequired()).thenReturn(true);
+        when(contentProvider.isSourceRequired()).thenReturn(true);
+
+        jobParameters
+                .add(new ProductExecutorConfigSetupJobParameter(PDSConfigDataKeyProvider.PDS_CONFIG_SUPPORTED_DATATYPES.getKey().getId(), type.toString()));
+
+        // create support again (necessary to have new job parameters included)
+        supportToTest = PDSExecutorConfigSupport.createSupportAndAssertConfigValid(config, serviceCollection);
+
+        /* execute */
+        boolean result = supportToTest.isGivenStorageSupportedByPDSProduct(contentProvider);
+
+        /* test */
+        assertEquals(true, result);
+    }
+
+    @Test
+    void isGivenStorageSupportedByPDSProduct_binary_and_source_required_from_model_no_type_in_jobparameters() {
+        /* prepare */
+        PDSStorageContentProvider contentProvider = mock(PDSStorageContentProvider.class);
+
+        when(contentProvider.isBinaryRequired()).thenReturn(true);
+        when(contentProvider.isSourceRequired()).thenReturn(true);
+
+        /* execute */
+        boolean result = supportToTest.isGivenStorageSupportedByPDSProduct(contentProvider);
+
+        /* test */
+        assertEquals(true, result);
+    }
+
+    @Test
+    void isGivenStorageSupportedByPDSProduct_no_binary_in_model_required_but_product_supports_only_binary() {
+        /* prepare */
+        PDSStorageContentProvider contentProvider = mock(PDSStorageContentProvider.class);
+
+        when(contentProvider.isBinaryRequired()).thenReturn(false);
+        when(contentProvider.isSourceRequired()).thenReturn(true);
+
+        jobParameters.add(new ProductExecutorConfigSetupJobParameter(PDSConfigDataKeyProvider.PDS_CONFIG_SUPPORTED_DATATYPES.getKey().getId(),
+                SecHubDataConfigurationType.BINARY.toString()));
+
+        // create support again (necessary to have new job parameters included)
+        supportToTest = PDSExecutorConfigSupport.createSupportAndAssertConfigValid(config, serviceCollection);
+
+        /* execute */
+        boolean result = supportToTest.isGivenStorageSupportedByPDSProduct(contentProvider);
+
+        /* test */
+        assertEquals(false, result);
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = { "binary,source", "none   , binary", "binary, source", "SOURCE,BINARY" })
+    void isGivenStorageSupportedByPDSProduct_only_source_in_model_required_but_product_supports_binary_and_others(String typesAsString) {
+        /* prepare */
+        PDSStorageContentProvider contentProvider = mock(PDSStorageContentProvider.class);
+
+        when(contentProvider.isBinaryRequired()).thenReturn(false);
+        when(contentProvider.isSourceRequired()).thenReturn(true);
+
+        jobParameters.add(new ProductExecutorConfigSetupJobParameter(PDSConfigDataKeyProvider.PDS_CONFIG_SUPPORTED_DATATYPES.getKey().getId(), typesAsString));
+
+        // create support again (necessary to have new job parameters included)
+        supportToTest = PDSExecutorConfigSupport.createSupportAndAssertConfigValid(config, serviceCollection);
+
+        /* execute */
+        boolean result = supportToTest.isGivenStorageSupportedByPDSProduct(contentProvider);
+
+        /* test */
+        assertEquals(true, result);
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = { "binary,source", "none   , source", "binary, source", "SOURCE,BINARY", "binary,source,none" })
+    void isGivenStorageSupportedByPDSProduct_only_binary_in_model_required_but_product_supports_source_and_others(String typesAsString) {
+        /* prepare */
+        PDSStorageContentProvider contentProvider = mock(PDSStorageContentProvider.class);
+
+        when(contentProvider.isBinaryRequired()).thenReturn(true);
+        when(contentProvider.isSourceRequired()).thenReturn(false);
+
+        jobParameters.add(new ProductExecutorConfigSetupJobParameter(PDSConfigDataKeyProvider.PDS_CONFIG_SUPPORTED_DATATYPES.getKey().getId(), typesAsString));
+
+        // create support again (necessary to have new job parameters included)
+        supportToTest = PDSExecutorConfigSupport.createSupportAndAssertConfigValid(config, serviceCollection);
+
+        /* execute */
+        boolean result = supportToTest.isGivenStorageSupportedByPDSProduct(contentProvider);
+
+        /* test */
+        assertEquals(true, result);
+    }
+
+    @Test
+    void isGivenStorageSupportedByPDSProduct_no_source_in_model_required_but_product_supports_only_source() {
+        /* prepare */
+        PDSStorageContentProvider contentProvider = mock(PDSStorageContentProvider.class);
+
+        when(contentProvider.isBinaryRequired()).thenReturn(true);
+        when(contentProvider.isSourceRequired()).thenReturn(false);
+
+        jobParameters.add(new ProductExecutorConfigSetupJobParameter(PDSConfigDataKeyProvider.PDS_CONFIG_SUPPORTED_DATATYPES.getKey().getId(),
+                SecHubDataConfigurationType.SOURCE.toString()));
+
+        // create support again (necessary to have new job parameters included)
+        supportToTest = PDSExecutorConfigSupport.createSupportAndAssertConfigValid(config, serviceCollection);
+
+        /* execute */
+        boolean result = supportToTest.isGivenStorageSupportedByPDSProduct(contentProvider);
+
+        /* test */
+        assertEquals(false, result);
+    }
+
+    @Test
+    void isGivenStorageSupportedByPDSProduct_no_source_or_binary_in_model_required_but_product_supports_NONE() {
+        /* prepare */
+        PDSStorageContentProvider contentProvider = mock(PDSStorageContentProvider.class);
+
+        when(contentProvider.isBinaryRequired()).thenReturn(false);
+        when(contentProvider.isSourceRequired()).thenReturn(false);
+
+        jobParameters.add(new ProductExecutorConfigSetupJobParameter(PDSConfigDataKeyProvider.PDS_CONFIG_SUPPORTED_DATATYPES.getKey().getId(),
+                SecHubDataConfigurationType.NONE.toString()));
+
+        // create support again (necessary to have new job parameters included)
+        supportToTest = PDSExecutorConfigSupport.createSupportAndAssertConfigValid(config, serviceCollection);
+
+        /* execute */
+        boolean result = supportToTest.isGivenStorageSupportedByPDSProduct(contentProvider);
+
+        /* test */
+        assertEquals(true, result);
+    }
+
+    @EnumSource(value = SecHubDataConfigurationType.class, mode = Mode.EXCLUDE, names = { "NONE" })
+    @ParameterizedTest
+    void isGivenStorageSupportedByPDSProduct_no_source_or_binary_in_model_required_but_product_support_other_except_NONE(SecHubDataConfigurationType type) {
+        /* prepare */
+        PDSStorageContentProvider contentProvider = mock(PDSStorageContentProvider.class);
+
+        when(contentProvider.isBinaryRequired()).thenReturn(false);
+        when(contentProvider.isSourceRequired()).thenReturn(false);
+
+        jobParameters
+                .add(new ProductExecutorConfigSetupJobParameter(PDSConfigDataKeyProvider.PDS_CONFIG_SUPPORTED_DATATYPES.getKey().getId(), type.toString()));
+
+        // create support again (necessary to have new job parameters included)
+        supportToTest = PDSExecutorConfigSupport.createSupportAndAssertConfigValid(config, serviceCollection);
+
+        /* execute */
+        boolean result = supportToTest.isGivenStorageSupportedByPDSProduct(contentProvider);
+
+        /* test */
+        assertEquals(false, result);
+    }
+
+    @ParameterizedTest
+    @EmptySource
+    @NullSource
+    @ValueSource(strings = { "unknown", "source,unknown", "binary,unknown", "unknown,none" })
+    void isGivenStorageSupportedByPDSProduct_no_source_or_binary_in_model_but_wrong_or_missing_supported_datatypes(String typesAsString) {
+        /* prepare */
+        PDSStorageContentProvider contentProvider = mock(PDSStorageContentProvider.class);
+
+        when(contentProvider.isBinaryRequired()).thenReturn(false);
+        when(contentProvider.isSourceRequired()).thenReturn(false);
+
+        jobParameters.add(new ProductExecutorConfigSetupJobParameter(PDSConfigDataKeyProvider.PDS_CONFIG_SUPPORTED_DATATYPES.getKey().getId(), typesAsString));
+
+        // create support again (necessary to have new job parameters included)
+        supportToTest = PDSExecutorConfigSupport.createSupportAndAssertConfigValid(config, serviceCollection);
+
+        /* execute */
+        boolean result = supportToTest.isGivenStorageSupportedByPDSProduct(contentProvider);
+
+        /* test */
+        assertEquals(true, result);
     }
 
     @Test

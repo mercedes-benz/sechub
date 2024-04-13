@@ -16,8 +16,8 @@ services:
         networks:
             - internal
         volumes:
-            - ./docker/scripts:/scripts
-        depends_on: 
+            - ./docker/scripts:/pds/scripts
+        depends_on:
             - database
             - object-storage
 
@@ -34,7 +34,7 @@ services:
             - pds-scancode
         ports:
             - "127.0.0.1:8444:8444"
-    
+
     database:
         build:
             context: ../shared/docker/database
@@ -44,7 +44,7 @@ services:
             - internal
         ports:
             - "127.0.0.1:5432:5432"
-        
+
     object-storage:
         build:
             context: ../shared/docker/object-storage

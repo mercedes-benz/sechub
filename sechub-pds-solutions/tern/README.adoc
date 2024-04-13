@@ -11,7 +11,7 @@ Furthermore, the combination of Tern and PDS makes it possible to run both insid
 
 This folder contains the necessary scripts to run Tern+PDS inside a container locally. Additionally, it contains scripts to build and push the Tern+PDS container to your container registry.
 
-NOTE: The Tern container requires privileged access otherwise Tern will not work 
+NOTE: The Tern container requires privileged access otherwise Tern will not work
 
 [[export-image]]
 == Export Container Image
@@ -71,7 +71,7 @@ WARNING: Make sure the SecHub container is running.
 
 The steps required to scan with the PDS.
 
-==== Scan Script 
+==== Scan Script
 
 . Export a container image as explained in: <<export-image>>
 
@@ -176,10 +176,10 @@ Build the container image.
 
 ==== Debian
 
-. With base image: 
+. With base image:
 +
 ----
-./10-create-image.sh my.registry.example.org/sechub/pds_tern v0.1 ghcr.io/mercedes-benz/sechub/pds-base:v0.32.1
+./10-create-image.sh my.registry.example.org/sechub/pds_tern 0.1 ghcr.io/mercedes-benz/sechub/pds-base
 ----
 
 === Push Image to Registry

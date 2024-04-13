@@ -44,6 +44,8 @@ public class PDSSecretScanJobScenario20IntTest {
 
         /* test 1 */
         String secretScanReport = as(USER_1).getJobReport(project, jobUUID);
+        storeTestReport("report_pds_secretscan-1.json", secretScanReport);
+
         int expectedFindingId = 1;
 
         /* @formatter:off */
@@ -57,10 +59,11 @@ public class PDSSecretScanJobScenario20IntTest {
     	          hasId(expectedFindingId).
     	          hasScanType(ScanType.SECRET_SCAN).
     	          hasDescription("generic-api-key has detected secret for file UnSAFE_Bank/Backend/docker-compose.yml.").
+    	          hasName("Generic API Key").
     	          codeCall(0).
     	              hasColumn(14).
     	              hasLine(12).
-    	              hasSource("531486b2bf646636a6a1bba61e78ec4a4a54efbd").
+    	              hasSource("*****").
     	              hasLocation("UnSAFE_Bank/Backend/docker-compose.yml").
     	          andFinding().
     	          hasCweId(798); // gitleak has no cwe id, but importer will do fallback to CWE 798 - see https://cwe.mitre.org/data/definitions/798.html
@@ -68,6 +71,7 @@ public class PDSSecretScanJobScenario20IntTest {
         String htmlReport = as(USER_1).
                     enableAutoDumpForHTMLReports().
                     getHTMLJobReport(project, jobUUID);
+        storeTestReport("report_pds_secretscan-1.html", htmlReport);
 
         assertHTMLReport(htmlReport).
             containsAtLeastOneOpenDetailsBlock();

@@ -50,6 +50,11 @@ public @interface UseCaseRestDoc {
         /* @formatter:off */
 		SpringRestDocOutput.PATH_PARAMETERS,
 
+
+		SpringRestDocOutput.REQUEST_PARAMETERS,
+
+		SpringRestDocOutput.REQUEST_HEADERS,
+
 		SpringRestDocOutput.REQUEST_FIELDS,
 
 		SpringRestDocOutput.CURL_REQUEST,
@@ -85,6 +90,10 @@ public @interface UseCaseRestDoc {
 		RESPONSE_FIELDS("response-fields.adoc",SpringRestDocType.DEFINITION),
 
 		PATH_PARAMETERS("path-parameters.adoc",SpringRestDocType.DEFINITION),
+
+		REQUEST_PARAMETERS("request-parameters.adoc",SpringRestDocType.DEFINITION),
+
+		REQUEST_HEADERS("request-headers.adoc",SpringRestDocType.DEFINITION),
 
 		RESOURCE("resource.json", SpringRestDocType.RESOURCE_DATA),
 

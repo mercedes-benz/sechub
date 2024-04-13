@@ -14,12 +14,108 @@ When having details we always add an empty new line after summary and list detai
 the beginning to have a pretty output in `GitHub`
 
 === Database
+[IMPORTANT]
+====
+Currently, we use https://h2database.com/html/main.html[H2] and https://www.postgresql.org/[PostgreSQL] in parallel (dev/testing + production). +
+Please make sure that the SQL statements work with both of them.
+====
 
 ==== Naming in DB
-We are using PostgreSQL which does automatically use lower_case names
+* We are using PostgreSQL which does automatically use lower_case names
+* Numbering starts at `01`; maximum is `99`
+* Naming scheme for constraints: `c<number>_<table name>_<constraint title>` +
+  Example: `c01_adm_user_emailaddress`
+* Naming scheme for indices: `i<number>_<table name>_<index title>` +
+  Example: `i01_statistic_job_run_data_filter`
 
 ==== Naming in JPA
 We are using upper cased names
+
+=== YAML
+[NOTE]
+====
+Currently we still have a lot of unconventional YAML files. But there is
+a GitHub issue to adopt them.
+
+If you are writing new YAML files or adding new content to existing files, please follow
+always the instructions below.
+====
+
+==== General
+
+- YAML files have the file ending `.yaml` or `.yml`  +
+  _(but `.yaml` should be preferred when possible)_
+- Define *SPDX header* with MIT license as first line comment
+- Use always *same indention* inside a YAML document +
+  _(*2 spaces* should be preferred)_
+
+- Define *strings* with *single apostrophes* or *double apostrophes* +
+  _(to make it clear that the value is a string)_
+- If possible, define *integers*, *long numbers* etc. as *numbers*
+- Prefer *hierarchical key structure* to long key variants
+- Use comments to explain details (when really necessary)
+- Use *one space* between key and value definitions (e.g. `key-alias: 'tomcat'`)
+
+.Example
+[source,yaml]
+----
+# SPDX-License-Identifier: MIT
+
+# This configuration setup is only for local development and needs
+# a generated certificate which is never shared. Because of this
+# it is valid to define the credentials inside this file.
+
+server:
+  ssl:
+    keyStoreType: 'PKCS12'
+    # we use a keystore location which is never tracked by git.
+    # see dev-create_localhost_certificate.sh and dev-ensure_localhost_certificate.sh
+    key-store: 'classpath:certificates-untracked/generated-dev-localhost-keystore.p12'
+    key-store-password: '123456'
+    key-alias: 'tomcat'
+  port: 8444
+
+pds:
+  server:
+    baseurl: "https://localhost:${server.port}"
+  config:
+    trigger:
+      nextjob:
+        initialdelay: 100
+        delay: 500
+
+----
+
+==== Templates
+When defining YAML templates - e.g. for HELM charts
+
+- a template statement (e.g. `- if` or `- end`) shall start at the first column without indention
+- nested template statements shall be indented (see example below)
+- place inserted values indented like normal YAML. (Use `| trim` if appropriate)
+
+.Example
+[source,yaml]
+----
+# SPDX-License-Identifier: MIT
+
+{{- if .Values.networkPolicy.enabled }}
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: {{ .Chart.Name }}-policy
+spec:
+  podSelector:
+    matchLabels:
+      name: {{ .Chart.Name }}
+
+  {{- if .Values.networkPolicy.ingress }}
+  ingress:
+    {{ .Values.networkPolicy.ingress | toYaml | indent 4 | trim }}
+  {{- end }}
+
+{{- end }}
+----
+
 
 === Java
 

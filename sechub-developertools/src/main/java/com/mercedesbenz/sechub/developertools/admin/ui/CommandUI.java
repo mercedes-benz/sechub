@@ -43,8 +43,8 @@ import com.mercedesbenz.sechub.developertools.admin.ui.action.job.RestartJobActi
 import com.mercedesbenz.sechub.developertools.admin.ui.action.job.RestartJobHardAction;
 import com.mercedesbenz.sechub.developertools.admin.ui.action.job.ShowRunningBatchJobsListAction;
 import com.mercedesbenz.sechub.developertools.admin.ui.action.other.CheckAliveAction;
-import com.mercedesbenz.sechub.developertools.admin.ui.action.other.CheckVersionAction;
 import com.mercedesbenz.sechub.developertools.admin.ui.action.other.FetchGlobalMappingAction;
+import com.mercedesbenz.sechub.developertools.admin.ui.action.other.FetchServerRuntimeData;
 import com.mercedesbenz.sechub.developertools.admin.ui.action.other.UpdateGlobalMappingAction;
 import com.mercedesbenz.sechub.developertools.admin.ui.action.pds.CheckPDSAliveAction;
 import com.mercedesbenz.sechub.developertools.admin.ui.action.pds.CheckPDSJobResultOrErrorAction;
@@ -58,7 +58,6 @@ import com.mercedesbenz.sechub.developertools.admin.ui.action.pds.FetchPDSJobMes
 import com.mercedesbenz.sechub.developertools.admin.ui.action.pds.FetchPDSJobOutputStreamAction;
 import com.mercedesbenz.sechub.developertools.admin.ui.action.pds.FetchPDSJobParameterExampleAction;
 import com.mercedesbenz.sechub.developertools.admin.ui.action.pds.FetchPDSMonitoringStatusAction;
-import com.mercedesbenz.sechub.developertools.admin.ui.action.pds.GeneratePDSSolutionTestFilesAction;
 import com.mercedesbenz.sechub.developertools.admin.ui.action.pds.MarkPDSJobReadyAction;
 import com.mercedesbenz.sechub.developertools.admin.ui.action.pds.ShowPDSConfigurationDialogAction;
 import com.mercedesbenz.sechub.developertools.admin.ui.action.pds.UploadPDSJobFileAction;
@@ -102,6 +101,7 @@ import com.mercedesbenz.sechub.developertools.admin.ui.action.user.DeleteUserAct
 import com.mercedesbenz.sechub.developertools.admin.ui.action.user.ListSignupsAction;
 import com.mercedesbenz.sechub.developertools.admin.ui.action.user.ShowAdminListAction;
 import com.mercedesbenz.sechub.developertools.admin.ui.action.user.ShowUserDetailAction;
+import com.mercedesbenz.sechub.developertools.admin.ui.action.user.ShowUserDetailForEmailAddressAction;
 import com.mercedesbenz.sechub.developertools.admin.ui.action.user.ShowUserListAction;
 import com.mercedesbenz.sechub.developertools.admin.ui.action.user.UpdateUserEmailAction;
 import com.mercedesbenz.sechub.developertools.admin.ui.action.user.privileges.GrantAdminRightsToUserAction;
@@ -142,6 +142,7 @@ public class CommandUI {
         register(ShowProductExecutorTemplatesDialogActionFactory.createPDS_WEBSCAN_V1Action(context));
         register(ShowProductExecutorTemplatesDialogActionFactory.createPDS_INFRASCAN_V1Action(context));
         register(ShowProductExecutorTemplatesDialogActionFactory.createPDS_LICENSESCAN_V1Action(context));
+        register(ShowProductExecutorTemplatesDialogActionFactory.createPDS_PREPARE_V1Action(context));
         register(ShowProductExecutorTemplatesDialogActionFactory.createPDS_ANALYTICS_V1Action(context));
 
         panel = new JPanel(new BorderLayout());
@@ -284,18 +285,8 @@ public class CommandUI {
         add(menu, new FetchPDSJobErrorStreamAction(context));
         add(menu, new FetchPDSJobMessagesAction(context));
         menu.addSeparator();
-        menu.add(createPDSDeveloperToolsMenu());
-        menu.addSeparator();
         menu.add(new ConfigurePDSAutoCleanupAction(context));
 
-    }
-
-    private JMenu createPDSDeveloperToolsMenu() {
-        JMenu menu = new JMenu("PDS-Developertools");
-
-        menu.add(new GeneratePDSSolutionTestFilesAction(context));
-
-        return menu;
     }
 
     private void createUserMenu() {
@@ -309,6 +300,7 @@ public class CommandUI {
         add(menu, new DeleteUserAction(context));
         menu.addSeparator();
         add(menu, new ShowUserDetailAction(context));
+        add(menu, new ShowUserDetailForEmailAddressAction(context));
         add(menu, new UpdateUserEmailAction(context));
         add(menu, new AnonymousRequestNewAPITokenUserAction(context));
         menu.addSeparator();
@@ -392,7 +384,7 @@ public class CommandUI {
         add(menu, new ShowRunningBatchJobsListAction(context));
         menu.addSeparator();
         add(menu, new CheckAliveAction(context));
-        add(menu, new CheckVersionAction(context));
+        add(menu, new FetchServerRuntimeData(context));
         add(menu, new ListStatusEntriesAction(context));
         menu.addSeparator();
         add(menu, new ShowAdminListAction(context));

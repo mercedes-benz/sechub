@@ -1,0 +1,195 @@
+{
+  "setup" : {
+    "local" : {
+      "secHub" : {
+        "admin" : {
+          "userId" : "admin",
+          "apiToken" : "myTop$ecret!"
+        },
+        "start" : [ {
+          "script" : {
+            "path" : "./01-start-single-docker-compose.sh"
+          }
+        } ],
+        "configure" : {
+          "executors" : [ {
+            "pdsProductId" : "PDS_GOSEC",
+            "name" : "system-test-codescan-gosec",
+            "parameters" : {
+              "sechub.productexecutor.pds.adapter.resilience.retry.wait.milliseconds" : 3000,
+              "sechub.productexecutor.pds.adapter.resilience.retry.max" : 20,
+              "pds.config.use.sechub.storage" : false
+            }
+          } ]
+        },
+        "stop" : [ {
+          "script" : {
+            "path" : "./01-stop-single-docker-compose.sh"
+          }
+        } ]
+      },
+      "pdsSolutions" : [ {
+        "name" : "gosec",
+        "url" : "https://pds-gosec:8444/",
+        "waitForAvailable" : false,
+        "start" : [ {
+          "script" : {
+            "path" : "./05-start-single-sechub-network-docker-compose.sh"
+          }
+        } ],
+        "stop" : [ {
+          "script" : {
+            "path" : "./05-stop-single-sechub-network-docker-compose.sh"
+          }
+        } ],
+        "techUser" : {
+          "userId" : "techuser",
+          "apiToken" : "pds-apitoken"
+        }
+      } ]
+    }
+  },
+  "tests" : [ {
+    "name" : "sanity-check",
+    "comment" : "This checks if the solution works at all. It is very fast. Can be used to test if system testframework has some problems at all.",
+    "prepare" : [ {
+      "script" : {
+        "arguments" : [ "${runtime.currentTestFolder}" ],
+        "path" : "./copy_sanitycheck_files.sh"
+      }
+    } ],
+    "execute" : {
+      "runSecHubJob" : {
+        "uploads" : [ {
+          "sourceFolder" : "sanity-check"
+        } ],
+        "codeScan" : { }
+      }
+    },
+     "assert" : [ {
+      "sechubResult" : {
+        "hasTrafficLight" : "GREEN"
+      }
+    } ]
+  }, {
+    "name" : "vulnerable-go",
+    "prepare" : [ {
+      "script" : {
+        "arguments" : [ "${runtime.currentTestFolder}", "https://github.com/Jeeppler/vulnerable-go.git" ],
+        "path" : "./clone_repo.sh"
+      }
+    } ],
+    "execute" : {
+      "runSecHubJob" : {
+        "uploads" : [ {
+          "sourceFolder" : "vulnerable-go"
+        } ],
+        "codeScan" : { }
+      }
+    },
+    "assert" : [ {
+      "sechubResult" : {
+        "hasTrafficLight" : "RED",
+        "containsStrings" : {
+          "values" : [ "result", "SUCCESS", "jobUUID", "reportVersion", "HIGH", "severity", "vulnerable-go/source/app/app.go" ]
+        }
+      }
+    } ]
+  }, {
+    "name" : "go-test-bench",
+    "prepare" : [ {
+      "script" : {
+        "arguments" : [ "${runtime.currentTestFolder}", "https://github.com/Contrast-Security-OSS/go-test-bench.git" ],
+        "path" : "./clone_repo.sh"
+      }
+    } ],
+    "execute" : {
+      "runSecHubJob" : {
+        "uploads" : [ {
+          "sourceFolder" : "go-test-bench"
+        } ],
+        "codeScan" : { }
+      }
+    },
+    "assert" : [ {
+      "sechubResult" : {
+        "hasTrafficLight" : "RED",
+        "containsStrings" : {
+          "values" : [ "result", "SUCCESS", "jobUUID", "reportVersion", "HIGH", "severity", "go-test-bench/internal/injection/sqli/sql-injection.go" ]
+        }
+      }
+    } ]
+  }, {
+    "name" : "Vulnerability-goapp",
+    "prepare" : [ {
+      "script" : {
+        "arguments" : [ "${runtime.currentTestFolder}", "https://github.com/Hardw01f/Vulnerability-goapp.git" ],
+        "path" : "./clone_repo.sh"
+      }
+    } ],
+    "execute" : {
+      "runSecHubJob" : {
+        "uploads" : [ {
+          "sourceFolder" : "Vulnerability-goapp"
+        } ],
+        "codeScan" : { }
+      }
+    },
+    "assert" : [ {
+      "sechubResult" : {
+        "hasTrafficLight" : "RED",
+        "containsStrings" : {
+          "values" : [ "result", "SUCCESS", "jobUUID", "reportVersion", "HIGH", "severity", "Vulnerability-goapp/pkg/search/search.go" ]
+        }
+      }
+    } ]
+  }, {
+    "name" : "authlab",
+    "prepare" : [ {
+      "script" : {
+        "arguments" : [ "${runtime.currentTestFolder}", "https://github.com/digininja/authlab.git" ],
+        "path" : "./clone_repo.sh"
+      }
+    } ],
+    "execute" : {
+      "runSecHubJob" : {
+        "uploads" : [ {
+          "sourceFolder" : "authlab"
+        } ],
+        "codeScan" : { }
+      }
+    },
+    "assert" : [ {
+      "sechubResult" : {
+        "hasTrafficLight" : "RED",
+        "containsStrings" : {
+          "values" : [ "result", "SUCCESS", "jobUUID", "reportVersion", "HIGH", "severity", "authlab/app/controllers/app.go" ]
+        }
+      }
+    } ]
+  }, {
+    "name" : "crAPI",
+    "prepare" : [ {
+      "script" : {
+        "arguments" : [ "${runtime.currentTestFolder}", "https://github.com/OWASP/crAPI.git" ],
+        "path" : "./clone_repo.sh"
+      }
+    } ],
+    "execute" : {
+      "runSecHubJob" : {
+        "uploads" : [ {
+          "sourceFolder" : "crAPI"
+        } ],
+        "codeScan" : { }
+      }
+    },
+    "assert" : [ {
+      "sechubResult" : {
+        "hasTrafficLight" : "RED",
+        "containsStrings" : {
+          "values" : [ "result", "SUCCESS", "jobUUID", "reportVersion", "HIGH", "severity", "crAPI/services/community/api/auth/token.go" ]
+        }
+      }
+    } ]
+  } ]
+}

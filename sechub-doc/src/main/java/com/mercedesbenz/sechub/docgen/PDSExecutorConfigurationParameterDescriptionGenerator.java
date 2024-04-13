@@ -25,7 +25,7 @@ public class PDSExecutorConfigurationParameterDescriptionGenerator {
 
         addLine("", sb);
 
-        List<PDSKeyProvider<? extends PDSKey>> list = PDSExecutorConfigSupport.getUnmodifiableListOfParameterKeyProvidersSentToPDS();
+        List<PDSKeyProvider<? extends PDSKey>> list = PDSExecutorConfigSupport.getUnmodifiableListOfParameterKeyProvidersForPdsExecutorConfiguration();
         for (PDSKeyProvider<? extends PDSKey> provider : list) {
             PDSKey key = provider.getKey();
             addLine("| " + key.getId(), sb);

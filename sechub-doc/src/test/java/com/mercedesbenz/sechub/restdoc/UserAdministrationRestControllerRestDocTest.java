@@ -56,6 +56,7 @@ import com.mercedesbenz.sechub.sharedkernel.usecases.admin.user.UseCaseAdminList
 import com.mercedesbenz.sechub.sharedkernel.usecases.admin.user.UseCaseAdminListsAllUsers;
 import com.mercedesbenz.sechub.sharedkernel.usecases.admin.user.UseCaseAdminRevokesAdminRightsFromAdmin;
 import com.mercedesbenz.sechub.sharedkernel.usecases.admin.user.UseCaseAdminShowsUserDetails;
+import com.mercedesbenz.sechub.sharedkernel.usecases.admin.user.UseCaseAdminShowsUserDetailsForEmailAddress;
 import com.mercedesbenz.sechub.sharedkernel.usecases.admin.user.UseCaseAdminUpdatesUserEmailAddress;
 import com.mercedesbenz.sechub.test.ExampleConstants;
 import com.mercedesbenz.sechub.test.RestDocPathParameter;
@@ -123,10 +124,10 @@ public class UserAdministrationRestControllerRestDocTest implements TestIsNecess
                 and().
                 document(
 	                		requestHeaders(
-	                				headerWithName(AuthenticationHelper.HEADER_NAME).description(AuthenticationHelper.HEADER_DESCRIPTION)
+
 	                		),
                             pathParameters(
-                                    parameterWithName(USER_ID.paramName()).description("The userId of the user whose email adress will be changed"),
+                                    parameterWithName(USER_ID.paramName()).description("The userId of the user whose email address will be changed"),
                                     parameterWithName(EMAIL_ADDRESS.paramName()).description("The new email address")
 
                         )
@@ -155,7 +156,7 @@ public class UserAdministrationRestControllerRestDocTest implements TestIsNecess
                 and().
                 document(
 	                		requestHeaders(
-	                				headerWithName(AuthenticationHelper.HEADER_NAME).description(AuthenticationHelper.HEADER_DESCRIPTION)
+
 	                		),
                          	pathParameters(
                                     parameterWithName(USER_ID.paramName()).description("The userId of the user who becomes admin")
@@ -184,7 +185,7 @@ public class UserAdministrationRestControllerRestDocTest implements TestIsNecess
                 and().
                 document(
 	                		requestHeaders(
-	                				headerWithName(AuthenticationHelper.HEADER_NAME).description(AuthenticationHelper.HEADER_DESCRIPTION)
+
 	                		),
                             pathParameters(
                                     parameterWithName(USER_ID.paramName()).description("The userId of the user who becomes admin")
@@ -214,7 +215,7 @@ public class UserAdministrationRestControllerRestDocTest implements TestIsNecess
                 and().
                 document(
                 		requestHeaders(
-                				headerWithName(AuthenticationHelper.HEADER_NAME).description(AuthenticationHelper.HEADER_DESCRIPTION)
+
                 		),
                         pathParameters(
                                 parameterWithName(USER_ID.paramName()).description("The userId of the user who shall be deleted")
@@ -244,7 +245,7 @@ public class UserAdministrationRestControllerRestDocTest implements TestIsNecess
                             and().
                             document(
                             		requestHeaders(
-                            				headerWithName(AuthenticationHelper.HEADER_NAME).description(AuthenticationHelper.HEADER_DESCRIPTION)
+
                             		),
         	                        pathParameters(
         	                                 parameterWithName(USER_ID.paramName()).description("The userId of the signup which shall be accepted")
@@ -281,9 +282,6 @@ public class UserAdministrationRestControllerRestDocTest implements TestIsNecess
                     responseSchema(OpenApiSchema.USER_LIST.getSchema()).
                 and().
                 document(
-                		requestHeaders(
-                				headerWithName(AuthenticationHelper.HEADER_NAME).description(AuthenticationHelper.HEADER_DESCRIPTION)
-                		),
                             responseFields(
                                     fieldWithPath("[]").description("List of user Ids").optional()
                         )
@@ -319,7 +317,7 @@ public class UserAdministrationRestControllerRestDocTest implements TestIsNecess
                 and().
                 document(
 	                		requestHeaders(
-	                				headerWithName(AuthenticationHelper.HEADER_NAME).description(AuthenticationHelper.HEADER_DESCRIPTION)
+
 	                		),
                             responseFields(
                                     fieldWithPath("[]").description("List of admin Ids").optional()
@@ -338,7 +336,7 @@ public class UserAdministrationRestControllerRestDocTest implements TestIsNecess
 
         User user = mock(User.class);
         when(user.getName()).thenReturn("user1");
-        when(user.getEmailAdress()).thenReturn("user1@example.org");
+        when(user.getEmailAddress()).thenReturn("user1@example.org");
         Set<Project> projects = new LinkedHashSet<>();
 
         Project project1 = mock(Project.class);
@@ -363,14 +361,14 @@ public class UserAdministrationRestControllerRestDocTest implements TestIsNecess
                             and().
                             document(
 	                            		requestHeaders(
-	                            				headerWithName(AuthenticationHelper.HEADER_NAME).description(AuthenticationHelper.HEADER_DESCRIPTION)
+
 	                            		),
         	                            pathParameters(
         	                                    parameterWithName(USER_ID.paramName()).description("The user id of user to show details for")
         	                            ),
         	                            responseFields(
         	                                    fieldWithPath(UserDetailInformation.PROPERTY_USERNAME).description("The name of the user"),
-        	                                    fieldWithPath(UserDetailInformation.PROPERTY_EMAIL).description("The mail adress of the user"),
+        	                                    fieldWithPath(UserDetailInformation.PROPERTY_EMAIL).description("The email address of the user"),
         	                                    fieldWithPath(UserDetailInformation.PROPERTY_SUPERADMIN).description("True, when this user is a super administrator"),
         	                                    fieldWithPath(UserDetailInformation.PROPERTY_PROJECTS).description("The projects the user has access to"),
         	                                    fieldWithPath(UserDetailInformation.PROPERTY_OWNED_PROJECTS).description("The projects the user is owner of")
@@ -378,6 +376,62 @@ public class UserAdministrationRestControllerRestDocTest implements TestIsNecess
 
         					)
         		);
+
+        /* @formatter:on */
+    }
+
+    @Test
+    @UseCaseRestDoc(useCase = UseCaseAdminShowsUserDetailsForEmailAddress.class)
+    public void restdoc_show_user_details_for_email_address() throws Exception {
+        /* prepare */
+        String emailAddress = "user1@example.org";
+        String userId = "user1";
+
+        String apiEndpoint = https(PORT_USED).buildAdminShowsUserDetailsForEmailAddressUrl(EMAIL_ADDRESS.pathElement());
+        Class<? extends Annotation> useCase = UseCaseAdminShowsUserDetailsForEmailAddress.class;
+
+        User user = mock(User.class);
+        when(user.getName()).thenReturn(userId);
+        when(user.getEmailAddress()).thenReturn(emailAddress);
+        Set<Project> projects = new LinkedHashSet<>();
+
+        Project project1 = mock(Project.class);
+        when(project1.getId()).thenReturn("project1");
+        projects.add(project1);
+        when(user.getProjects()).thenReturn(projects);
+        UserDetailInformation info = new UserDetailInformation(user);
+
+        when(userDetailService.fetchDetailsByEmailAddress(emailAddress)).thenReturn(info);
+
+        /* execute + test @formatter:off */
+        this.mockMvc.perform(
+                get(apiEndpoint, emailAddress).
+                header(AuthenticationHelper.HEADER_NAME, AuthenticationHelper.getHeaderValue())
+                ).
+        andExpect(status().isOk()).
+        andDo(defineRestService().
+                with().
+                useCaseData(useCase).
+                tag(RestDocFactory.extractTag(apiEndpoint)).
+                responseSchema(OpenApiSchema.USER_DETAILS.getSchema()).
+                and().
+                document(
+                        requestHeaders(
+                                headerWithName(AuthenticationHelper.HEADER_NAME).description(AuthenticationHelper.HEADER_DESCRIPTION)
+                                ),
+                        pathParameters(
+                                parameterWithName(EMAIL_ADDRESS.paramName()).description("The email address of user to show details for")
+                                ),
+                        responseFields(
+                                fieldWithPath(UserDetailInformation.PROPERTY_USERNAME).description("The name of the user"),
+                                fieldWithPath(UserDetailInformation.PROPERTY_EMAIL).description("The mail address of the user"),
+                                fieldWithPath(UserDetailInformation.PROPERTY_SUPERADMIN).description("True, when this user is a super administrator"),
+                                fieldWithPath(UserDetailInformation.PROPERTY_PROJECTS).description("The projects the user has access to"),
+                                fieldWithPath(UserDetailInformation.PROPERTY_OWNED_PROJECTS).description("The projects the user is owner of")
+                                )
+
+                        )
+                );
 
         /* @formatter:on */
     }

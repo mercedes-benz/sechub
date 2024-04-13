@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.domain.schedule;
 
+import java.util.Map;
 import java.util.UUID;
 
 import javax.annotation.security.RolesAllowed;
@@ -50,6 +51,7 @@ public class SchedulerRestController {
 
     public static final String DEFAULT_JOB_INFORMATION_SIZE = "1";
     public static final String DEFAULT_JOB_INFORMATION_PAGE = "0";
+    public static final String DEFAULT_WITH_METADATA = "false";
 
     @Autowired
     private SchedulerApproveJobService approveJobService;
@@ -142,10 +144,12 @@ public class SchedulerRestController {
     public SecHubJobInfoForUserListPage listJobsForProject(
             @PathVariable("projectId") String projectId,
             @RequestParam(defaultValue = DEFAULT_JOB_INFORMATION_SIZE, name = "size") int size,
-            @RequestParam(defaultValue = DEFAULT_JOB_INFORMATION_PAGE, name = "page") int page
+            @RequestParam(defaultValue = DEFAULT_JOB_INFORMATION_PAGE, name = "page") int page,
+            @RequestParam(defaultValue = DEFAULT_WITH_METADATA, name = "withMetaData") boolean withMetaData,
+            @RequestParam Map<String,String> allParams
             ) {
         /* @formatter:on */
-        return jobInformationService.listJobsForProject(projectId, size, page);
+        return jobInformationService.listJobsForProject(projectId, size, page, withMetaData, allParams);
 
     }
 

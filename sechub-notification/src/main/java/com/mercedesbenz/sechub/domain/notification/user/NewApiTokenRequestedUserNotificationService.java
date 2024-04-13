@@ -32,8 +32,8 @@ public class NewApiTokenRequestedUserNotificationService {
         String tokenExpireDateTime = serviceHelper.getApiTokenExpireDate();
 
         StringBuilder emailContent = new StringBuilder();
-        emailContent.append("You requested a new API token. The token was created for you and expires at ");
-        emailContent.append(tokenExpireDateTime + ".\n");
+        emailContent.append("You requested a new API token.\nThe link to retrieve it expires at ");
+        emailContent.append(tokenExpireDateTime + " and can only be used once.\nExisting API tokens will then become invalid.\n");
         emailContent.append("Please use the following link to get the token:\n");
         /*
          * important link must be at last line for integration testing. if changes here
@@ -44,7 +44,7 @@ public class NewApiTokenRequestedUserNotificationService {
         emailContent.append("\n");
 
         SimpleMailMessage message1 = factory.createMessage(userMessage.getSubject());
-        message1.setTo(userMessage.getEmailAdress());
+        message1.setTo(userMessage.getEmailAddress());
         message1.setText(emailContent.toString());
 
         emailService.send(message1);

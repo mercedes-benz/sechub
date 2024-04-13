@@ -11,6 +11,7 @@ import org.springframework.web.client.RestOperations;
 import com.mercedesbenz.sechub.adapter.Adapter;
 import com.mercedesbenz.sechub.adapter.AdapterException;
 import com.mercedesbenz.sechub.adapter.WaitForStateSupport;
+import com.mercedesbenz.sechub.adapter.checkmarx.CheckmarxAdapter;
 import com.mercedesbenz.sechub.adapter.checkmarx.CheckmarxAdapterConfig;
 import com.mercedesbenz.sechub.adapter.checkmarx.CheckmarxContext;
 import com.mercedesbenz.sechub.adapter.support.JSONAdapterSupport.Access;
@@ -59,7 +60,8 @@ class WaitForScanStateSupport extends WaitForStateSupport<CheckmarxContext, Chec
             if (HttpStatus.NOT_FOUND.equals(e.getStatusCode())) {
                 /* ok just no longer in queue / or never existed */
                 details.notFound = true;
-                LOG.info("Unable to find Checkmarx scan Id: {}. Possible reasons: no longer in queue or never existed.", scanId);
+                LOG.info(CheckmarxAdapter.CHECKMARX_MESSAGE_PREFIX
+                        + "Unable to find Checkmarx scan Id: {}. Possible reasons: no longer in queue or never existed.", scanId);
 
                 return;
             }

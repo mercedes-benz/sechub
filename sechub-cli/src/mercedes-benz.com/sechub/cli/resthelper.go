@@ -50,7 +50,7 @@ func handleHTTPRequestAndResponse(context *Context, request *http.Request, print
 		sechubUtil.LogDebug(true, fmt.Sprintf("HTTP %s %s\n  HTTP Headers: %s\n  Content length of HTTP request: %d bytes",
 			request.Method, request.URL, request.Header, request.ContentLength))
 		if printContentOfRequest {
-			sechubUtil.LogDebug(true, fmt.Sprintf("Content of HTTP request: %q", context.inputForContentProcessing))
+			sechubUtil.LogDebug(true, fmt.Sprintf("Content of HTTP request: %q", request.Body))
 		}
 	} else {
 		sechubUtil.LogDebug(context.config.debug, fmt.Sprintf("HTTP %s %s", request.Method, request.URL))
@@ -134,14 +134,6 @@ func newFileUploadRequestViaPipe(uploadToURL string, params map[string]string, p
 
 func computeContentLengthOfFileUpload(params map[string]string, paramName, filename string, filesize int64) (contentLength int64) {
 	/* Real world example of multipart content sent to SecHub server when uploading:
-	--f76dd0c1a814e0af2f4d197827fd9caa1e9636276e064454356141ae1347
-	Content-Disposition: form-data; name="title"
-
-	Sourcecode zipped
-	--f76dd0c1a814e0af2f4d197827fd9caa1e9636276e064454356141ae1347
-	Content-Disposition: form-data; name="author"
-
-	Sechub client 0.0.0-285d1b6-dirty-20220324161639
 	--f76dd0c1a814e0af2f4d197827fd9caa1e9636276e064454356141ae1347
 	Content-Disposition: form-data; name="checkSum"
 

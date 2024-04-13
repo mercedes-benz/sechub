@@ -14,8 +14,8 @@ services:
         networks:
             - internal-cluster
         volumes:
-          - ./docker/scripts:/scripts
-        depends_on: 
+          - ./docker/scripts:/pds/scripts
+        depends_on:
             - database
             - object-storage
 
@@ -32,7 +32,7 @@ services:
             - pds-findsecuritybugs
         ports:
             - "127.0.0.1:8444:8444"
-    
+
     database:
         build:
             context: ../shared/docker/database
@@ -42,7 +42,7 @@ services:
             - internal-cluster
         ports:
             - "127.0.0.1:5432:5432"
-        
+
     object-storage:
         build:
             context: ../shared/docker/object-storage

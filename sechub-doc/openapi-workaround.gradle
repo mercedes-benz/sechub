@@ -1,0 +1,249 @@
+// SPDX-License-Identifier: MIT
+
+// available in standard library of Groovy
+// http://docs.groovy-lang.org/latest/html/gapi/groovy/json/JsonSlurper.html
+import groovy.json.JsonSlurper
+import groovy.json.JsonOutput
+import groovy.json.JsonBuilder
+
+ext.openApiFile = "$buildDir/api-spec/openapi3.json"
+ext.reducedOpenApiFile = "$buildDir/api-spec/reduced-openapi3.json"
+ext.backupExtension = "origin.json"
+
+ext.stringType = new HashMap<>()
+stringType.put("type", "string")
+      
+/* 
+   Documenting an array of strings in RestDoc is currently not supported
+   - https://github.com/spring-projects/spring-restdocs/issues/505
+   - https://github.com/ePages-de/restdocs-api-spec/issues/147
+   
+   To solve this issue, this task takes the OpenAPI file and adjusts it.
+  
+   The steps are:
+  
+   1. read in the generated OpenAPI file in `/sechub-doc/build/api-spec/openapi3.json`
+   2. get the values which contain a `oneOf` element
+   3. overwrite the `oneOf` with `string`
+   4. write the modified JSON structure back into the generated OpenAPI 3 file
+  
+   This is not a clean solution, but it solves the problem.
+   
+   Remark: if you still find any `oneOf` elements inside the `openApi3.json` file you have
+   to fix another one this inside this gradle file!
+*/
+void postProcessOpenApiGeneration(){
+        
+        // make a backup from origin file so can we check differences via IDE
+        IOUtil.createBackupFile(openApiFile, backupExtension)
+        
+        // Load JSON
+        def jsonSlurper = new JsonSlurper() 
+        File jsonFile = new File(openApiFile)
+        def jsonObject = jsonSlurper.parse(jsonFile)
+
+        writePrettyPrintedFile("${openApiFile}_origin_prettified.json", jsonObject)
+        
+        // Replace oneOf in schemas
+        def projectSchema = jsonObject.components.schemas.Project
+        projectSchema.properties.whiteList.properties.uris.items = stringType
+        
+        def projectDetailsSchema = jsonObject.components.schemas.ProjectDetails
+        projectDetailsSchema.properties.whiteList.items = stringType
+        projectDetailsSchema.properties.users.items = stringType
+        
+        handleOneOfForScanJobSchema(jsonObject)
+        
+        def userDetailsSchema = jsonObject.components.schemas.UserDetails
+        userDetailsSchema.properties.projects.items = stringType
+        userDetailsSchema.properties.ownedProjects.items = stringType
+        
+        def executionProfileCreateSchema = jsonObject.components.schemas.ExecutionProfileCreate
+        executionProfileCreateSchema.properties.configurations.items = stringType
+        executionProfileCreateSchema.properties.projectIds.items = stringType
+        
+        def executionProfileFetchSchema = jsonObject.components.schemas.ExecutionProfileFetch
+        executionProfileFetchSchema.properties.projectIds.items = stringType
+        
+        def listOfProjectsSchema = jsonObject.components.schemas.ListOfProjects
+        listOfProjectsSchema.items = stringType
+        
+        def listOfUsersSchema = jsonObject.components.schemas.ListOfUsers
+        listOfUsersSchema.items = stringType
+
+        def projectWhiteListSchema = jsonObject.components.schemas.ProjectWhitelistUpdate
+        projectWhiteListSchema.properties.whiteList.properties.uris.items=stringType
+        
+        // Write JSON
+        writePrettyPrintedFile(openApiFile, jsonObject)
+}
+
+void handleOneOfForScanJobSchema(jsonObject){
+
+    def scanJobSchema = jsonObject.components.schemas.ScanJob
+    scanJobSchema.properties.infraScan.properties.uris.items = stringType
+    scanJobSchema.properties.infraScan.properties.ips.items = stringType
+    scanJobSchema.properties.webScan.properties.includes.items = stringType
+    scanJobSchema.properties.webScan.properties.excludes.items = stringType
+    scanJobSchema.properties.webScan.properties.headers.items.properties.onlyForUrls.items = stringType
+    scanJobSchema.properties.webScan.properties.headers.items.properties.use.items = stringType
+    scanJobSchema.properties.webScan.properties.api.properties.use.items = stringType
+    scanJobSchema.properties.webScan.properties.clientCertificate.properties.use.items = stringType
+    scanJobSchema.properties.codeScan.properties.use.items = stringType
+    scanJobSchema.properties.licenseScan.properties.use.items = stringType
+    scanJobSchema.properties.secretScan.properties.use.items = stringType
+    
+    handleOneOfForFileSystem(scanJobSchema.properties.codeScan.properties.fileSystem)
+    
+    /* handle the data section */
+    def scanJobDataProperties = scanJobSchema.properties.data.properties
+    handleOneOfForFileSystem(scanJobDataProperties.sources.items.properties.fileSystem)
+    handleOneOfForFileSystem(scanJobDataProperties.binaries.items.properties.fileSystem)
+
+}
+
+void handleOneOfForFileSystem(filesystem){
+    filesystem.properties.folders.items = stringType
+    filesystem.properties.files.items = stringType
+}
+
+
+
+void writePrettyPrintedFile(openApiFile, jsonObject){
+        def json = JsonOutput.toJson(jsonObject)
+        def pretty = JsonOutput.prettyPrint(json)
+        
+        new File(openApiFile).write(pretty)
+}
+
+/*
+ * Provide shrinked api file for SCM (git)
+ */
+void provideReducedOpenApiFile(){
+        // Copy the file to location inside SCM
+        //
+        // Explanation why this is necessary: when a developer does a fresh clone of the github 
+        // repository it shall be possible to import the projects into IDE without any compile errors.
+        // Because the java api client does need generated parts from open api generator it is  
+        // necessary to start the open api client generation to have the generat classes (we do not
+        // add those clasess to our git repo).
+        //
+        // But the open api file itself is also generated: It only exist when all RESTDoc tests 
+        // are executed sucessfully.
+        // 
+        // To have always the possibility to import the projects into our IDE - even when there 
+        // are failing tests - we create a copy of the open api file at another location (inside git)
+        // and use this for the generation.  Because (unfortunately) the open api generator
+        // creates examples with randum uuids inside the generated file, it does always change
+        // and would lead always to (unwanted) git changes.
+        // To handle this, we create a reproducible reduced version, which has no examples inside but 
+        // can be used for generation of java classes.
+        
+        // Load JSON
+        def jsonSlurper = new JsonSlurper() 
+        File jsonFile = new File(openApiFile)
+        
+        def i=0
+        def slurped = jsonSlurper.parse(jsonFile);
+        
+        /* now reduce each entry recursive */
+        slurped.each {
+            reduceRecursive(it)
+        }
+        
+        TreeMap<String,?> sortedMap = new TreeMap<>();
+        sortedMap.openapi=slurped.openapi
+        sortedMap.info=slurped.info
+        sortedMap.servers=slurped.servers
+        sortedMap.tags=slurped.tags
+        sortedMap.components=new TreeMap(slurped.components);
+        sortedMap.components.schemas=new TreeMap(slurped.components.schemas);
+        sortedMap.paths=new TreeMap(slurped.paths)
+        
+        def parsedJsonDiff = new JsonBuilder(sortedMap)
+        
+        new File(reducedOpenApiFile).write(parsedJsonDiff.toPrettyString())
+        
+        IOUtil.copyFile(reducedOpenApiFile, "$rootDir/sechub-api-java/src/main/resources/reduced-openapi3.json")
+    
+}
+
+void reduceRecursiveMap(map){
+        map.removeAll {
+          it.key.equalsIgnoreCase("examples") || it.key.equalsIgnoreCase("example")
+        }
+        map.each { reduceRecursive(it.value) }
+}
+
+void reduceRecursiveList(list){
+    list.each {
+        reduceRecursive(it)
+    }
+
+}
+
+void reduceRecursive(obj){
+    if (obj instanceof java.util.Map.Entry){
+        if (obj.value instanceof Map){
+            reduceRecursiveMap(obj.value)
+        }
+    }else if (obj instanceof java.util.Map){
+         reduceRecursiveMap(obj)
+    }else if (obj instanceof java.util.List){
+         reduceRecursiveList(obj)
+    }
+}
+
+
+// What does this task do?
+// When we have to develop workaround parts it is very annoying when we need to generate the complete
+// open api file again and again. Even when there are only problems with the post processing itself.
+// The origin open file (before postprocessing) needs only ONE generation in this case.
+//
+// In this case just call this task multiple times and the origin generated file will be 
+// restored and reused again. So much more faster to develop...  
+task development_openApiPostprocessing{
+
+    doLast{
+        
+        // restore a backup from origin file if existing, so we do not
+        // need to generate the origin file again and again (faster development lifecycle...)
+        IOUtil.restoreBackupFile(openApiFile, backupExtension)
+        
+        // now starts post processing parts with restored origin file
+        postProcessOpenApiGeneration()
+    }
+
+}
+
+task development_provideReducedOpenApiFile{
+
+    doLast{
+        provideReducedOpenApiFile()
+    }
+}   
+
+
+task generateOpenapi() {
+    /*
+     * Generate the OpenAPI file and perform some post processing steps
+     *
+     * At the moment this is necessary to remove `oneOf` from several schemas.
+     * This is necessary, because arrays cannot be properly declared in Spring RESTDoc:
+     * - https://github.com/ePages-de/restdocs-api-spec/issues/147
+     */
+    group 'sechub'
+    description 'Generate the OpenAPI file'
+    
+    dependsOn 'openapi3'
+    
+    doLast {
+        // Start post processing (workaround)
+        postProcessOpenApiGeneration()
+        
+        // Provide shrinked api file in resources
+        provideReducedOpenApiFile()
+    }
+    
+    
+}

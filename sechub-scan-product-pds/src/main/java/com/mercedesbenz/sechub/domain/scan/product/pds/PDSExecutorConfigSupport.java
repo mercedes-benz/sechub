@@ -7,6 +7,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 import java.util.TreeMap;
 
 import org.slf4j.Logger;
@@ -16,6 +17,8 @@ import com.mercedesbenz.sechub.adapter.DefaultExecutorConfigSupport;
 import com.mercedesbenz.sechub.commons.core.environment.SystemEnvironmentVariableSupport;
 import com.mercedesbenz.sechub.commons.core.util.SecHubStorageUtil;
 import com.mercedesbenz.sechub.commons.core.util.SimpleStringUtils;
+import com.mercedesbenz.sechub.commons.model.SecHubDataConfigurationType;
+import com.mercedesbenz.sechub.commons.model.SecHubDataConfigurationTypeListParser;
 import com.mercedesbenz.sechub.commons.pds.PDSConfigDataKeyProvider;
 import com.mercedesbenz.sechub.commons.pds.PDSDefaultParameterKeyConstants;
 import com.mercedesbenz.sechub.commons.pds.PDSKey;
@@ -37,6 +40,7 @@ public class PDSExecutorConfigSupport extends DefaultExecutorConfigSupport imple
     private static final List<PDSKeyProvider<?>> keyProvidersForSendingParametersToPDS;
 
     private PDSExecutorConfigSuppportServiceCollection serviceCollection;
+    private SecHubDataConfigurationTypeListParser parser = new SecHubDataConfigurationTypeListParser();
 
     static {
         List<PDSKeyProvider<?>> allParameterProviders = new ArrayList<>();
@@ -47,7 +51,7 @@ public class PDSExecutorConfigSupport extends DefaultExecutorConfigSupport imple
 
     }
 
-    public static List<PDSKeyProvider<? extends PDSKey>> getUnmodifiableListOfParameterKeyProvidersSentToPDS() {
+    public static List<PDSKeyProvider<? extends PDSKey>> getUnmodifiableListOfParameterKeyProvidersForPdsExecutorConfiguration() {
         return keyProvidersForSendingParametersToPDS;
     }
 
@@ -267,4 +271,43 @@ public class PDSExecutorConfigSupport extends DefaultExecutorConfigSupport imple
         return getParameterBooleanValue(PDSConfigDataKeyProvider.PDS_CONFIG_SCRIPT_TRUSTALL_CERTIFICATES_ENABLED);
     }
 
+    public int getPDSAdapterResilienceMaxRetries() {
+        return getParameterIntValue(PDSProductExecutorKeyConstants.ADAPTER_RESILIENCE_RETRY_MAX);
+    }
+
+    public long getPDSAdapterResilienceRetryWaitInMilliseconds() {
+        return getParameterLongValue(PDSProductExecutorKeyConstants.ADAPTER_RESILIENCE_RETRY_WAIT_MILLISECONDS);
+    }
+
+    public boolean isGivenStorageSupportedByPDSProduct(PDSStorageContentProvider contentProvider) {
+        String supportedDataTypes = getDataTypesSupportedByPDSAsString();
+        if (SimpleStringUtils.isEmpty(supportedDataTypes)) {
+            LOG.debug("No supported data types defined in executor confguration. Assume supported and return true");
+            return true;
+        }
+        Set<SecHubDataConfigurationType> typesOrNull = parser.fetchTypesAsSetOrNull(supportedDataTypes);
+        if (typesOrNull == null) {
+            LOG.warn("Was not able to determine data configuration types, so return true as fallback!");
+            return true;
+        }
+        if (typesOrNull.contains(SecHubDataConfigurationType.NONE)) {
+            return true;
+        }
+
+        if (contentProvider.isBinaryRequired()) {
+            if (typesOrNull.contains(SecHubDataConfigurationType.BINARY)) {
+                return true;
+            }
+        }
+        if (contentProvider.isSourceRequired()) {
+            if (typesOrNull.contains(SecHubDataConfigurationType.SOURCE)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public String getDataTypesSupportedByPDSAsString() {
+        return getParameter(PDSConfigDataKeyProvider.PDS_CONFIG_SUPPORTED_DATATYPES);
+    }
 }

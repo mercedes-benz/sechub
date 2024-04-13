@@ -141,8 +141,8 @@
         "key" : "pds.checkmarx.mocking.enabled",
         "description" : "When true, a mocked adapter will be used."
       }, {
-        "key" : "pds.checkmarx.result.check.period.minutes",
-        "description" : "The period time in minutes when checkmarx adapter tries to fetch the result from checkmarx server again."
+        "key" : "pds.checkmarx.result.check.period.milliseconds",
+        "description" : "The period time in milliseconds when checkmarx adapter tries to fetch the result from checkmarx server again."
       }, {
         "key" : "pds.checkmarx.result.check.timeout.minutes",
         "description" : "The timout in minutes when checkmarx adapter will stop communictaion with checkmarx server and return an error instead."
@@ -152,6 +152,30 @@
       }, {
         "key" : "pds.checkmarx.always.fullscan.enabled",
         "description" : "When true, full scan is always active."
+      }, {
+        "key" : "pds.checkmarx.resilience.badrequest.max.retries",
+        "description" : "Maximum amount of possible retries for situations when a 400 bad request happened on Checkmarx server.",
+        "default" : 3
+      }, {
+        "key" : "pds.checkmarx.resilience.badrequest.retry.wait.milliseconds",
+        "description" : "Time to wait until retry is done when a 400 bad request happened on Checkmarx server.",
+        "default" : 2000
+      }, {
+        "key" : "pds.checkmarx.resilience.servererror.max.retries",
+        "description" : "Maximum amount of possible retries for situations when a 500 server internal error happened on Checkmarx server.",
+        "default" : 1
+      }, {
+        "key" : "pds.checkmarx.resilience.servererror.retry.wait.milliseconds",
+        "description" : "Time to wait until retry is done when a 500 server internal error happened on Checkmarx server.",
+        "default" : 5000
+      }, {
+        "key" : "pds.checkmarx.resilience.networkerror.max.retries",
+        "description" : "Maximum amount of possible retries for situations when a network error happened on communication to Checkmarx server (means not vailable/ no connection possible). This is interesting for updating Checkmarx servers without stopping PDS jobs, so setup this amount together with the wait for retries in a way, that the update time is inside the given time period!",
+        "default" : 100
+      }, {
+        "key" : "pds.checkmarx.resilience.networkerror.retry.wait.milliseconds",
+        "description" : "Time to wait until retry is done when a network server happened on communication to Checkmarx server. Please look at description of pds.checkmarx.resilience.networkerror.max.retries for more details.",
+        "default" : 5000
       } ]
     }
   }, {
@@ -180,9 +204,70 @@
       } ]
     }
   }, {
+    "id" : "PDS_INTTEST_PRODUCT_PREPARE",
+    "path" : "./../sechub-integrationtest/pds/product-scripts/integrationtest-prepare.sh",
+    "scanType" : "prepare",
+    "description" : "This is a fake prepare scan - used by integration tests.",
+    "parameters" : {
+      "optional" : [ {
+        "key" : "pds.test.key.variantname",
+        "description" : "a parameter from configuration, can be used to handle differerent variants in same script"
+      } ]
+    }
+  }, {
     "id" : "PDS_TEST_PRODUCT_SECRETSCAN",
     "path" : "./../sechub-integrationtest/pds/product-scripts/integrationtest-secretscan.sh",
     "scanType" : "secretScan",
     "description" : "This is only a fake secret scan - used by integration tests."
+  }, {
+    "id" : "PDS_SOLUTION_GOSEC_MOCKED",
+    "path" : "./../sechub-integrationtest/pds/product-scripts/pds-solutions-gosec-mocked.sh",
+    "scanType" : "codeScan",
+    "description" : "Returns mock data, but from real product"
+  }, {
+    "id" : "PDS_SOLUTION_GITLEAKS_MOCKED",
+    "path" : "./../sechub-integrationtest/pds/product-scripts/pds-solutions-gitleaks-mocked.sh",
+    "scanType" : "secretSCan",
+    "description" : "Returns mock data, but from real product"
+  }, {
+    "id" : "PDS_SOLUTION_ZAP_MOCKED",
+    "path" : "./../sechub-integrationtest/pds/product-scripts/pds-solutions-zap-mocked.sh",
+    "scanType" : "webScan",
+    "description" : "Returns mock data, but from real product"
+  }, {
+    "id" : "PDS_SOLUTION_CHECKMARX_MOCKED",
+    "path" : "./../sechub-integrationtest/pds/product-scripts/pds-solutions-checkmarx-mocked.sh",
+    "scanType" : "codeScan",
+    "description" : "Returns mock data, but from real product"
+  }, {
+    "id" : "PDS_SOLUTION_SCANCODE_SPDX_JSON_MOCKED",
+    "path" : "./../sechub-integrationtest/pds/product-scripts/pds-solutions-scancode_spdx_json-mocked.sh",
+    "scanType" : "licenseScan",
+    "description" : "Returns mock data, but from real product"
+  }, {
+    "id" : "PDS_SOLUTION_FINDSECURITYBUGS_MOCKED",
+    "path" : "./../sechub-integrationtest/pds/product-scripts/pds-solutions-findsecuritybugs-mocked.sh",
+    "scanType" : "licenseScan",
+    "description" : "Returns mock data, but from real product"
+  }, {
+    "id" : "PDS_SOLUTION_TERN_MOCKED",
+    "path" : "./../sechub-integrationtest/pds/product-scripts/pds-solutions-tern-mocked.sh",
+    "scanType" : "licenseScan",
+    "description" : "Returns mock data, but from real product"
+  }, {
+    "id" : "PDS_SOLUTION_XRAY_CYCLONEDX_MOCKED",
+    "path" : "./../sechub-integrationtest/pds/product-scripts/pds-solutions-xray_cyclonedx-mocked.sh",
+    "scanType" : "licenseScan",
+    "description" : "Returns mock data, but from real product"
+  }, {
+    "id" : "PDS_SOLUTION_XRAY_SPDX_MOCKED",
+    "path" : "./../sechub-integrationtest/pds/product-scripts/pds-solutions-xray_spdx-mocked.sh",
+    "scanType" : "licenseScan",
+    "description" : "Returns mock data, but from real product"
+  }, {
+    "id" : "PDS_SOLUTION_MULTI_BANDIT_MOCKED",
+    "path" : "./../sechub-integrationtest/pds/product-scripts/pds-solutions-multi_bandit-mocked.sh",
+    "scanType" : "codeScan",
+    "description" : "Returns mock data, but from real product"
   } ]
 }

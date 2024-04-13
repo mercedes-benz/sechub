@@ -42,12 +42,10 @@ Unmodifiaable unique ID of an executor configuration. Cannot be changed.
 The product identifier for the product executor to use.
 Examples are:
 
-- `CHECKMARX`
-- `NESSUS`
-- `NETSPARKER`
 - `PDS_CODESCAN`
 - `PDS_WEBSCAN`
 - `PDS_INFRASCAN`
+- `PDS_LICENSESCAN`
 
 ===== Executor version
 At the moment all product executors exists only in version `1` and as long as there is no

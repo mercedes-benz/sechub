@@ -86,79 +86,27 @@ Please refer spring boot documentation for logging:
 https://docs.spring.io/spring-boot/docs/current/reference/html/boot-features-logging.html
 
 ===== Docker
-At the moment there exists no default public docker image. But you can easily create your own one.
-Here an example dockerfile:
+The public Docker image can be found at https://github.com/mercedes-benz/sechub/pkgs/container/sechub%2Fsechub-server
 
-----
-include::../docker/examples/dockerfile[]
-----
-
-An example for the used `run.sh` could be :
-
+The {sechub} server can be simply run like this
 [source,bash]
 ----
-include::../docker/examples/run.sh[]
+docker run ghcr.io/mercedes-benz/sechub/sechub-server
 ----
-
 
 
 ===== Kubernetes
-Create a docker file as described before and upload it to your docker registry available from your kubernetes cluster.
+We provide a Helm chart for the container image above: https://github.com/mercedes-benz/sechub/pkgs/container/sechub%2Fhelm-charts%2Fsechub-server
 
-Same as before described for plain server, but you should use always environment
-variables here.
+Same as before described for plain server, but you should use a copy of the `values.yaml` and adapt it to your needs.
 
-TIP: Provide credentials inside your kubernetes deployment files by at least using
- kubernetes secrets!
+[source,bash]
+----
+helm pull oci://ghcr.io/mercedes-benz/sechub/helm-charts/sechub-server
+tar zxf sechub-server-*.tgz
+cp sechub-server/values.yaml sechub-server.yaml
+# edit "sechub-server.yaml" file and adapt settings
 
-
-====== Generator
-There exists a class `KubernetesTemplateFilesGenerator`.
-Starting this class with `SECHUB_KUBERNETES_GENO_TARGET_ROOT` set to
-your deployment directory you will have following files generated:
-
-* `$genoTargetRoot/build/gen/copy-templates/sechub-server-environment-deployment-parts.gen.yaml`
-* `$genoTargetRoot/kubegen/env-setup/secrets`
-
-*sechub-server-environment-deployment-parts*
-
-Inside the generated deployment yaml file you will find all
-Spring parts annotated with `@Value` and `@MustBeDocumented`.
-If `@MustBeDocumented` has attribute `secret` set to `true` the
-generated yaml part contains a reference to a kubernetes secret instead of
-a fixed value.
-../
-The yaml file can be used when you initally create a deployment file, or
-when new attributes has been added to {sechub}, identify missing/new ones
-very fast.
-
-*secrets*
-
-There will be some generated install scripts for secrets which do
-reference txt files where you can put secrets inside.
-
-So its easy to deploy multiple changes with one command.
-
-When Spring parts annotated with `@Value` and `@MustBeDocumented`
-has attribute `secret` set to `true` there will be a generated entry
-here. So you see automatically what should be a kubernetes secret.
-
-[CAUTION]
-====
-If you add those generated files inside a GIT repository, please ensure
-that you define a `.gitignore` file which ignores `*.txt` files, so you do not
-accidently add the credentials to your repository.
-====
-
-====== Logging
-*Default output*
-
-{sechub} uses per default logging to stdout, so you just need to use something like
-`fluentd` PODs to gather log output.
-
-*Logstash support*
-
-When you want to use `logstash` (e.g. when using `ElasticSearch` or `OpenSearch`) you just have to set the environment variable
-`LOGGING_TYPE` to `LOGSTASH_JSON` before server starts.
-
-
+# Deploy SecHub server to your Kubernetes:
+helm install sechub-server sechub-server/ -f ./sechub-server.yaml
+----

@@ -19,7 +19,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import com.mercedesbenz.sechub.commons.pds.PDSDefaultParameterKeyConstants;
-import com.mercedesbenz.sechub.pds.config.PDSProductSetup;
+import com.mercedesbenz.sechub.pds.commons.core.config.PDSProductSetup;
 import com.mercedesbenz.sechub.pds.config.PDSServerConfigurationService;
 import com.mercedesbenz.sechub.pds.execution.PDSExecutionParameterEntry;
 import com.mercedesbenz.sechub.pds.storage.PDSMultiStorageService;
@@ -179,7 +179,7 @@ class PDSWorkspaceServiceTest {
         WorkspaceLocationData result = serviceToTest.createLocationData(jobUUID);
 
         /* test */
-        String expectedWorspaceLocation = workspaceRootFolderPath + separatorChar + "workspace" + separatorChar + jobUUID;
+        String expectedWorspaceLocation = workspaceRootFolderPath + separatorChar + jobUUID;
 
         /* @formatter:off */
         assertEquals(expectedWorspaceLocation,result.getWorkspaceLocation());

@@ -1,6 +1,6 @@
 # SPDX-License-Identifier: MIT
 
-FROM alpine:3.16
+FROM alpine:3.18
 
 ENV DATA="/data"
 

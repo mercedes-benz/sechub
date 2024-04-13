@@ -10,8 +10,10 @@ import java.util.TreeMap;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
+import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 
 @JsonInclude(Include.NON_EMPTY)
+@JsonPropertyOrder(alphabetic = true)
 public class SecurityLogData {
 
     private static final SecurityLogType FALLBACK_TYPE = SecurityLogType.UNKNOWN;
@@ -23,10 +25,18 @@ public class SecurityLogData {
     String message;
     Object[] messageParameters;
     List<String> traceInformation = new ArrayList<>();
+    String method;
     String requestURI;
     Map<String, String> httpHeaders = new TreeMap<>(); // we want it sorted, so a tree map
 
     String sessionId;
+    boolean afterSessionClosed;
+
+    String basicAuthUser;
+
+    public boolean isAfterSessionClosed() {
+        return afterSessionClosed;
+    }
 
     public String getSessionId() {
         return sessionId;
@@ -38,6 +48,10 @@ public class SecurityLogData {
 
     public String getRequestURI() {
         return requestURI;
+    }
+
+    public String getMethod() {
+        return method;
     }
 
     public String getUserId() {
@@ -68,6 +82,10 @@ public class SecurityLogData {
 
     public List<String> getTraceInformation() {
         return traceInformation;
+    }
+
+    public String getBasicAuthUser() {
+        return basicAuthUser;
     }
 
 }

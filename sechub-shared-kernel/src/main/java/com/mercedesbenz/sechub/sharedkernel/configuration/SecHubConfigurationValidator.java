@@ -6,8 +6,6 @@ import static com.mercedesbenz.sechub.commons.model.SecHubConfigurationModelVali
 
 import java.util.List;
 
-import javax.annotation.PostConstruct;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,14 +29,7 @@ public class SecHubConfigurationValidator implements Validator {
     UserContextService userContextService;
 
     @Autowired
-    SecHubConfigurationModelValidatorFactory modelValidatorFactory;
-
-    private SecHubConfigurationModelValidator modelValidator;
-
-    @PostConstruct
-    void postConstruct() {
-        modelValidator = modelValidatorFactory.createValidator();
-    }
+    SecHubConfigurationModelValidator modelValidator;
 
     @Override
     public boolean supports(Class<?> clazz) {

@@ -5,7 +5,7 @@ services:
   pds-multi:
     build:
       args:
-        - BASE_IMAGE=debian:11-slim
+        - BASE_IMAGE=${BASE_IMAGE}
       context: docker/
       dockerfile: Multi-Debian.dockerfile
     container_name: pds-multi
@@ -14,6 +14,7 @@ services:
       - ./docker/scripts:/scripts
     env_file:
       - .env
+      - .env-single
     networks:
       - "sechub"
 

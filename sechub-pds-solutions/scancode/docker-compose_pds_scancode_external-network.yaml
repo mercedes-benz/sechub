@@ -13,7 +13,7 @@ services:
         container_name: pds-scancode
         hostname: pds-scancode
         volumes:
-            - ./docker/scripts:/scripts
+            - ./docker/scripts:/pds/scripts
         env_file:
             - .env
             - .env-single

@@ -1,0 +1,43 @@
+{
+    "apiVersion" : "1.0",
+    
+    "serverId" : "unique_id_for_server_or_cluster",
+    
+    "products" : [
+        {
+            "id" : "PRODUCT_1",
+            "path" : "/srv/security/scanner1.sh",
+            "scanType" : "codeScan",
+            "description" : "codescanner script needs environment variable ENV_CODESCAN_LEVEL set containing 1,2,3",
+            
+            "parameters" : {
+                "mandatory" : [
+                    {
+                        "key" : "product1.qualititycheck.enabled",
+                        "description" : "when 'true' quality scan results are added as well"
+                    }  ,
+                    {
+                        "key" : "product1.level",
+                        "description" : "numeric, 1-gets all, 2-only critical,fatal and medium, 3- only critical and fatal",
+                        "default" : "1"
+                    }  
+                ],
+                "optional" : [
+                    {
+                        "key" : "product1.add.tipoftheday",
+                        "description" : "add tip of the day as info",
+                        "default" : "Don't add any secrets/credentials to your repository!"
+                    }  
+                ]
+            }
+            
+        },
+        
+        {
+            "id" : "PRODUCT_2",
+            "path" : "/srv/security/scanner2.sh",
+            "scanType" : "infraScan" ,
+            "extractUploads" : false
+        }
+    ]
+}

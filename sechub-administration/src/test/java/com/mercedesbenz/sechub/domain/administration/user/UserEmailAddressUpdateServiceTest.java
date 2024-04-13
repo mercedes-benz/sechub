@@ -116,7 +116,7 @@ class UserEmailAddressUpdateServiceTest {
         doThrow(TestCanaryException.class).when(assertion).assertIsValidEmailAddress(any());
 
         /* execute + test */
-        assertThrows(TestCanaryException.class, () -> serviceToTest.updateUserEmailAddress("notfound", "not-a-valid-email-adress"));
+        assertThrows(TestCanaryException.class, () -> serviceToTest.updateUserEmailAddress("notfound", "not-a-valid-email-address"));
     }
 
     @Test
@@ -138,7 +138,7 @@ class UserEmailAddressUpdateServiceTest {
     }
 
     @Test
-    void throws_not_acceptable_when_same_mail_adress_as_before() {
+    void throws_not_acceptable_when_same_email_address_as_before() {
         /* prepare */
         User knownUser1 = createKnownUser1();
         when(userRepository.findOrFailUser(KNOWN_USER1)).thenReturn(knownUser1);
@@ -169,7 +169,7 @@ class UserEmailAddressUpdateServiceTest {
         // check the user object has new mail address when saved:
         ArgumentCaptor<User> userCaptor = ArgumentCaptor.forClass(User.class);
         verify(userRepository).save(userCaptor.capture());
-        assertEquals("new.user1@example.com", userCaptor.getValue().getEmailAdress());
+        assertEquals("new.user1@example.com", userCaptor.getValue().getEmailAddress());
     }
 
     @Test
@@ -189,14 +189,14 @@ class UserEmailAddressUpdateServiceTest {
         assertNotNull(userMessage);
 
         assertEquals(KNOWN_USER1, userMessage.getUserId());
-        assertEquals("new.user1@example.com", userMessage.getEmailAdress());
+        assertEquals("new.user1@example.com", userMessage.getEmailAddress());
         assertEquals("former.user1@example.com", userMessage.getFormerEmailAddress());
     }
 
     private User createKnownUser1() {
         User user = new User();
         user.name = KNOWN_USER1;
-        user.emailAdress = "former.user1@example.com";
+        user.emailAddress = "former.user1@example.com";
         return user;
     }
 

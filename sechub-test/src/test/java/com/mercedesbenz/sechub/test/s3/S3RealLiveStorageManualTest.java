@@ -7,14 +7,13 @@ import java.io.InputStreamReader;
 import java.util.UUID;
 
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.condition.EnabledIfSystemProperty;
 
 import com.amazonaws.util.StringInputStream;
 import com.mercedesbenz.sechub.sharedkernel.storage.MultiStorageService;
 import com.mercedesbenz.sechub.storage.core.JobStorage;
 import com.mercedesbenz.sechub.storage.core.S3Setup;
 import com.mercedesbenz.sechub.storage.core.SharedVolumeSetup;
-import com.mercedesbenz.sechub.test.TestConstants;
+import com.mercedesbenz.sechub.test.ManualTest;
 
 /**
  * This is not really a test, but a simple test program where we can check if
@@ -33,12 +32,11 @@ import com.mercedesbenz.sechub.test.TestConstants;
  * @author Albert Tregnaghi
  *
  */
-class S3RealLiveStorageManualTest {
+class S3RealLiveStorageManualTest implements ManualTest {
 
     private static final String S3_OBJECT_NAME = "testdata";
 
     @Test
-    @EnabledIfSystemProperty(named = TestConstants.MANUAL_TEST_BY_DEVELOPER, matches = "true", disabledReason = TestConstants.DESCRIPTION_DISABLED_BECAUSE_A_MANUAL_TEST_FOR_GENERATION)
     void manualTestByDeveloper() throws Exception {
 
         /* setup */

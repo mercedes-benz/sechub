@@ -4,115 +4,175 @@
   "products": [
     {
       "id": "PDS_CHECKMARX",
-      "path": "/scripts/checkmarx.sh",
+      "path": "/pds/scripts/checkmarx.sh",
       "scanType": "codeScan",
       "description": "Runs Checkmarx",
       "parameters": {
         "mandatory": [
-                {
-                  "key": "pds.checkmarx.baseurl",
-                  "description": "The base URL of the checkmarx server."
-                },
-                {
-                  "key": "checkmarx.newproject.teamid.mapping",
-                  "description": "The team id mapping"
-                },
-                {
-                  "key": "pds.checkmarx.user",
-                  "description": "The user (or an env entry) of the checkmarx user."
-                },
-                {
-                  "key": "pds.checkmarx.password",
-                  "description": "The password (or an env entry) of the checkmarx user."
-                }
-              ],
-              "optional": [
-                {
-                  "key": "pds.checkmarx.engine.configuration.name",
-                  "description": "The name of the engine to use. If not set, a default engine will be used. Default: Multi-language Scan."
-                },
-                {
-                  "key": "checkmarx.newproject.presetid.mapping",
-                  "description": "When not set, the default preset will be used"
-                },
-                {
-                  "key": "pds.checkmarx.mocking.enabled",
-                  "description": "When true, a mocked adapter will be used."
-                },
-                {
-                  "key": "pds.checkmarx.result.check.period.minutes",
-                  "description": "The period time in minutes when checkmarx adapter tries to fetch the result from checkmarx server again."
-                },
-                {
-                  "key": "pds.checkmarx.result.check.timeout.minutes",
-                  "description": "The timout in minutes when checkmarx adapter will stop communictaion with checkmarx server and return an error instead."
-                },
-                {
-                  "key": "pds.checkmarx.client.secret",
-                  "description": "This is a standard value and has not to be set. It is NOT a really secret value. But we made this value optional to be safe in future, if the static default value must be changed."
-                },
-                {
-                  "key": "pds.checkmarx.always.fullscan.enabled",
-                  "description": "When true, full scan is always active."
-                }
-              ]
+          {
+            "key": "pds.checkmarx.baseurl",
+            "description": "The base URL of the checkmarx server."
+          },
+          {
+            "key": "checkmarx.newproject.teamid.mapping",
+            "description": "The team id mapping"
+          },
+          {
+            "key": "pds.checkmarx.user",
+            "description": "The user (or an env entry) of the checkmarx user."
+          },
+          {
+            "key": "pds.checkmarx.password",
+            "description": "The password (or an env entry) of the checkmarx user."
+          }
+        ],
+        "optional": [
+          {
+            "key": "pds.checkmarx.engine.configuration.name",
+            "description": "The name of the engine to use. If not set, a default engine will be used. Default: Multi-language Scan."
+          },
+          {
+            "key": "checkmarx.newproject.presetid.mapping",
+            "description": "When not set, the default preset will be used"
+          },
+          {
+            "key": "pds.checkmarx.mocking.enabled",
+            "description": "When true, a mocked adapter will be used."
+          },
+          {
+            "key": "pds.checkmarx.result.check.period.milliseconds",
+            "description": "The period time in milliseconds when checkmarx adapter tries to fetch the result from checkmarx server again."
+          },
+          {
+            "key": "pds.checkmarx.result.check.timeout.minutes",
+            "description": "The timout in minutes when checkmarx adapter will stop communictaion with checkmarx server and return an error instead."
+          },
+          {
+            "key": "pds.checkmarx.client.secret",
+            "description": "This is a standard value and has not to be set. It is NOT a really secret value. But we made this value optional to be safe in future, if the static default value must be changed."
+          },
+          {
+            "key": "pds.checkmarx.always.fullscan.enabled",
+            "description": "When true, full scan is always active."
+          },
+          {
+            "key": "pds.checkmarx.resilience.badrequest.max.retries",
+            "description": "Maximum amount of possible retries for situations when a 400 bad request happened on Checkmarx server.",
+            "default" : 3
+          },
+          {
+            "key": "pds.checkmarx.resilience.badrequest.retry.wait.milliseconds",
+            "description": "Time to wait until retry is done when a 400 bad request happened on Checkmarx server.",
+            "default" : 2000
+          },
+           {
+            "key": "pds.checkmarx.resilience.servererror.max.retries",
+            "description": "Maximum amount of possible retries for situations when a 500 server internal error happened on Checkmarx server.",
+            "default" : 1
+          },
+          {
+            "key": "pds.checkmarx.resilience.servererror.retry.wait.milliseconds",
+            "description": "Time to wait until retry is done when a 500 server internal error happened on Checkmarx server.",
+            "default" : 5000
+          },
+          {
+            "key": "pds.checkmarx.resilience.networkerror.max.retries",
+            "description": "Maximum amount of possible retries for situations when a network error happened on communication to Checkmarx server (means not vailable/ no connection possible). This is interesting for updating Checkmarx servers without stopping PDS jobs, so setup this amount together with the wait for retries in a way, that the update time is inside the given time period!",
+            "default" : 100
+          },
+          {
+            "key": "pds.checkmarx.resilience.networkerror.retry.wait.milliseconds",
+            "description": "Time to wait until retry is done when a network server happened on communication to Checkmarx server. Please look at description of pds.checkmarx.resilience.networkerror.max.retries for more details.",
+            "default" : 5000
+          }
+        ]
       }
     },
     {
-        "id": "PDS_CHECKMARX_MOCK",
-        "path": "/scripts/checkmarx_mock.sh",
-        "scanType": "codeScan",
-        "description": "Runs Checkmarx Mock",
-        "parameters": {
-          "mandatory": [
-                  {
-                    "key": "pds.checkmarx.baseurl",
-                    "description": "The base URL of the checkmarx server."
-                  },
-                  {
-                    "key": "checkmarx.newproject.teamid.mapping",
-                    "description": "The team id mapping"
-                  },
-                  {
-                    "key": "pds.checkmarx.user",
-                    "description": "The user (or an env entry) of the checkmarx user."
-                  },
-                  {
-                    "key": "pds.checkmarx.password",
-                    "description": "The password (or an env entry) of the checkmarx user."
-                  }
-                ],
-                "optional": [
-                {
-                  "key": "pds.checkmarx.engine.configuration.name",
-                  "description": "The name of the engine to use. If not set, a default engine will be used. Default: Multi-language Scan."
-                 },
-                  {
-                    "key": "checkmarx.newproject.presetid.mapping",
-                    "description": "When not set, the default preset will be used"
-                  },
-                  {
-                    "key": "pds.checkmarx.mocking.enabled",
-                    "description": "When true, a mocked adapter will be used."
-                  },
-                  {
-                    "key": "pds.checkmarx.result.check.period.minutes",
-                    "description": "The period time in minutes when checkmarx adapter tries to fetch the result from checkmarx server again."
-                  },
-                  {
-                    "key": "pds.checkmarx.result.check.timeout.minutes",
-                    "description": "The timout in minutes when checkmarx adapter will stop communictaion with checkmarx server and return an error instead."
-                  },
-                  {
-                    "key": "pds.checkmarx.client.secret",
-                    "description": "This is a standard value and has not to be set. It is NOT a really secret value. But we made this value optional to be safe in future, if the static default value must be changed."
-                  },
-                  {
-                    "key": "pds.checkmarx.always.fullscan.enabled",
-                    "description": "When true, full scan is always active."
-                  }
-                ]
-        }
+      "id": "PDS_CHECKMARX_MOCK",
+      "path": "/pds/scripts/checkmarx_mock.sh",
+      "scanType": "codeScan",
+      "description": "Runs Checkmarx Mock",
+      "parameters": {
+        "mandatory": [
+          {
+            "key": "pds.checkmarx.baseurl",
+            "description": "The base URL of the checkmarx server."
+          },
+          {
+            "key": "checkmarx.newproject.teamid.mapping",
+            "description": "The team id mapping"
+          },
+          {
+            "key": "pds.checkmarx.user",
+            "description": "The user (or an env entry) of the checkmarx user."
+          },
+          {
+            "key": "pds.checkmarx.password",
+            "description": "The password (or an env entry) of the checkmarx user."
+          }
+        ],
+        "optional": [
+          {
+            "key": "pds.checkmarx.engine.configuration.name",
+            "description": "The name of the engine to use. If not set, a default engine will be used. Default: Multi-language Scan."
+          },
+          {
+            "key": "checkmarx.newproject.presetid.mapping",
+            "description": "When not set, the default preset will be used"
+          },
+          {
+            "key": "pds.checkmarx.mocking.enabled",
+            "description": "When true, a mocked adapter will be used."
+          },
+          {
+            "key": "pds.checkmarx.result.check.period.milliseconds",
+            "description": "The period time in minutes when checkmarx adapter tries to fetch the result from checkmarx server again."
+          },
+          {
+            "key": "pds.checkmarx.result.check.timeout.minutes",
+            "description": "The timout in minutes when checkmarx adapter will stop communictaion with checkmarx server and return an error instead."
+          },
+          {
+            "key": "pds.checkmarx.client.secret",
+            "description": "This is a standard value and has not to be set. It is NOT a really secret value. But we made this value optional to be safe in future, if the static default value must be changed."
+          },
+          {
+            "key": "pds.checkmarx.always.fullscan.enabled",
+            "description": "When true, full scan is always active."
+          },
+          {
+            "key": "pds.checkmarx.resilience.badrequest.max.retries",
+            "description": "Maximum amount of possible retries for situations when a 400 bad request happened on Checkmarx server.",
+            "default" : 3
+          },
+          {
+            "key": "pds.checkmarx.resilience.badrequest.retry.wait.milliseconds",
+            "description": "Time to wait until retry is done when a 400 bad request happened on Checkmarx server.",
+            "default" : 2000
+          },
+           {
+            "key": "pds.checkmarx.resilience.servererror.max.retries",
+            "description": "Maximum amount of possible retries for situations when a 500 server internal error happened on Checkmarx server.",
+            "default" : 1
+          },
+          {
+            "key": "pds.checkmarx.resilience.servererror.retry.wait.milliseconds",
+            "description": "Time to wait until retry is done when a 500 server internal error happened on Checkmarx server.",
+            "default" : 5000
+          },
+          {
+            "key": "pds.checkmarx.resilience.networkerror.max.retries",
+            "description": "Maximum amount of possible retries for situations when a network error happened on communication to Checkmarx server (means not vailable/ no connection possible). This is interesting for updating Checkmarx servers without stopping PDS jobs, so setup this amount together with the wait for retries in a way, that the update time is inside the given time period!",
+            "default" : 100
+          },
+          {
+            "key": "pds.checkmarx.resilience.networkerror.retry.wait.milliseconds",
+            "description": "Time to wait until retry is done when a network server happened on communication to Checkmarx server. Please look at description of pds.checkmarx.resilience.networkerror.max.retries for more details.",
+            "default" : 5000
+          }
+        ]
       }
+    }
   ]
 }

@@ -102,3 +102,65 @@ body {
 .text-color-white {
 	color: white;
 }
+
+.error {
+	color: darkred;	
+}
+
+/* -----------------
+ *  Info table 
+ * -----------------
+ */
+
+.infoTable {
+    padding-bottom: 16px;
+    padding-top: 10px;
+    border-collapse: separate;
+    border: solid #cccccc 1px;
+    border-radius: 16px;
+    border-spacing: 0px;
+}
+
+.infoTable th {
+    padding: 8px;
+    vertical-align: top;
+    text-align: left;
+}
+
+.infoTable tr:nth-child(even) {
+    background: #f0f0f0;
+}
+
+.infoTable tr:nth-child(odd) {
+    background: #fefefe;
+}
+
+.infoTable td {
+   padding:8px;
+
+   font-family: monospace;
+   vertical-align: top;
+   text-align: left;
+}
+
+.infoTable td:nth-child(1) {
+    width: 150px;
+    padding-left: 10px;
+}
+
+.infoTable td:nth-child(2) {
+    width: 300px;
+    padding-left: 10px;
+    border-left: 1px solid #cccccc;
+}
+
+/* 
+ * Logo
+ */
+.logo {
+   width: 80px;
+   height: 80px;
+}
+ 
+ 
+ 

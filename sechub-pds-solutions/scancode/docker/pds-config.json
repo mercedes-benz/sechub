@@ -1,147 +1,147 @@
 {
-    "apiVersion": "1.0",
-    "serverId": "SCANCODE_TOOL_CLUSTER",
-    "products": [
-        {
-            "id": "PDS_SCANCODE",
-            "path": "/scripts/scancode.sh",
-            "scanType": "licenseScan",
-            "description": "Runs Scancode.",
-            "minutesToWaitForProductResult": "660",
-            "parameters": {
-                "optional": [
-                    {
-                        "key": "scancode.output.format",
-                        "description": "Parameter defining the ScanCode output format. Possible values are: json, json-pp, spdx-tv, spdx-json, spdx-rdf. Json-pp stands for json pretty printed.",
-                        "default": "spdx-json"
-                    },
-                    {
-                        "key": "scancode.license.score",
-                        "description": "A natural number between 0 (low macht accuracy) and 100 (high match accuracy).",
-                        "default": 0
-                    },
-                    {
-                        "key": "scancode.processes",
-                        "description": "The number of processes used by ScanCode. A \"good\" value is the number of CPUs minus 1 (more information: https://github.com/nexB/scancode-toolkit/issues/2980#issuecomment-1146583845).",
-                        "default": 1
-                    },
-                    {
-                        "key": "extractcode.enabled",
-                        "description": "Extractcode is a helper tool, which extracts archives before scanning. Set it to `true` to enable it.",
-                        "default": false
-                    },
-                    {
-                        "key": "scancode.timeout",
-                        "description": "Stop scanning a file if scanning takes longer than a timeout in seconds (as natural number).",
-                        "default": "120"
-                    },
-                    {
-                        "key": "scancode.scan.copyright",
-                        "description": "Scan for copyrights.",
-                        "default": false
-                    },
-                    {
-                        "key": "scancode.scan.license",
-                        "description": "Scan for licenses.",
-                        "default": true
-                    },
-                    {
-                        "key": "scancode.scan.package",
-                        "description": "Scan for packages.",
-                        "default": false
-                    },
-                    {
-                        "key": "scancode.scan.email",
-                        "description": "Scan for emails.",
-                        "default": false
-                    },
-                    {
-                        "key": "scancode.scan.url",
-                        "description": "Scan for urls.",
-                        "default": false
-                    },
-                    {
-                        "key": "scancode.scan.info",
-                        "description": "Include information regarding the scan.",
-                        "default": true
-                    },
-                    {
-                        "key": "scancode.scan.diagnostics",
-                        "description": "Diagnostic information",
-                        "default": false
-                    }
-                ]
-            }
-        },
-        {
-            "id": "PDS_SCANCODE_MOCK",
-            "path": "/scripts/scancode_mock.sh",
-            "scanType": "licenseScan",
-            "description": "Runs ScanCode mock.",
-            "parameters": {
-                "optional": [
-                    {
-                        "key": "scancode.output.format",
-                        "description": "Parameter defining the ScanCode output format. Possible values are: json, json-pp, spdx-tv, spdx-json, spdx-rdf. Json-pp stands for json pretty printed.",
-                        "default": "spdx-json"
-                    },
-                    {
-                        "key": "scancode.license.score",
-                        "description": "A natural number between 0 (low macht accuracy) and 100 (high match accuracy).",
-                        "default": 0
-                    },
-                    {
-                        "key": "scancode.processes",
-                        "description": "The number of processes used by ScanCode. A \"good\" value is the number of CPUs minus 1 (more information: https://github.com/nexB/scancode-toolkit/issues/2980#issuecomment-1146583845).",
-                        "default": 1
-                    },
-                    {
-                        "key": "extractcode.enabled",
-                        "description": "Extractcode is a helper tool, which extracts archives before scanning. Set it to `true` to enable it.",
-                        "default": false
-                    },
-                    {
-                        "key": "scancode.timeout",
-                        "description": "Stop scanning a file if scanning takes longer than a timeout in seconds (as natural number).",
-                        "default": "120"
-                    },
-                    {
-                        "key": "scancode.scan.copyright",
-                        "description": "Scan for copyrights.",
-                        "default": false
-                    },
-                    {
-                        "key": "scancode.scan.license",
-                        "description": "Scan for licenses.",
-                        "default": true
-                    },
-                    {
-                        "key": "scancode.scan.package",
-                        "description": "Scan for packages.",
-                        "default": false
-                    },
-                    {
-                        "key": "scancode.scan.email",
-                        "description": "Scan for emails.",
-                        "default": false
-                    },
-                    {
-                        "key": "scancode.scan.url",
-                        "description": "Scan for urls.",
-                        "default": false
-                    },
-                    {
-                        "key": "scancode.scan.info",
-                        "description": "Include information regarding the scan.",
-                        "default": true
-                    },
-                    {
-                        "key": "scancode.scan.diagnostics",
-                        "description": "Diagnostic information",
-                        "default": false
-                    }
-                ]
-            }
-        }
-    ]
+  "apiVersion": "1.0",
+  "serverId": "SCANCODE_TOOL_CLUSTER",
+  "products": [
+    {
+      "id": "PDS_SCANCODE",
+      "path": "/pds/scripts/scancode.sh",
+      "scanType": "licenseScan",
+      "description": "Runs Scancode.",
+      "minutesToWaitForProductResult": "660",
+      "parameters": {
+        "optional": [
+          {
+            "key": "scancode.output.format",
+            "description": "Parameter defining the ScanCode output format. Possible values are: json, json-pp, spdx-tv, spdx-json, spdx-rdf. Json-pp stands for json pretty printed.",
+            "default": "spdx-json"
+          },
+          {
+            "key": "scancode.license.score",
+            "description": "A natural number between 0 (low macht accuracy) and 100 (high match accuracy).",
+            "default": 0
+          },
+          {
+            "key": "scancode.processes",
+            "description": "The number of processes used by ScanCode. A \"good\" value is the number of CPUs minus 1 (more information: https://github.com/nexB/scancode-toolkit/issues/2980#issuecomment-1146583845).",
+            "default": 1
+          },
+          {
+            "key": "extractcode.enabled",
+            "description": "Extractcode is a helper tool, which extracts archives before scanning. Set it to `true` to enable it.",
+            "default": false
+          },
+          {
+            "key": "scancode.timeout",
+            "description": "Stop scanning a file if scanning takes longer than a timeout in seconds (as natural number).",
+            "default": "120"
+          },
+          {
+            "key": "scancode.scan.copyright",
+            "description": "Scan for copyrights.",
+            "default": false
+          },
+          {
+            "key": "scancode.scan.license",
+            "description": "Scan for licenses.",
+            "default": true
+          },
+          {
+            "key": "scancode.scan.package",
+            "description": "Scan for packages.",
+            "default": false
+          },
+          {
+            "key": "scancode.scan.email",
+            "description": "Scan for emails.",
+            "default": false
+          },
+          {
+            "key": "scancode.scan.url",
+            "description": "Scan for urls.",
+            "default": false
+          },
+          {
+            "key": "scancode.scan.info",
+            "description": "Include information regarding the scan.",
+            "default": true
+          },
+          {
+            "key": "scancode.scan.diagnostics",
+            "description": "Diagnostic information",
+            "default": false
+          }
+        ]
+      }
+    },
+    {
+      "id": "PDS_SCANCODE_MOCK",
+      "path": "/pds/scripts/scancode_mock.sh",
+      "scanType": "licenseScan",
+      "description": "Runs ScanCode mock.",
+      "parameters": {
+        "optional": [
+          {
+            "key": "scancode.output.format",
+            "description": "Parameter defining the ScanCode output format. Possible values are: json, json-pp, spdx-tv, spdx-json, spdx-rdf. Json-pp stands for json pretty printed.",
+            "default": "spdx-json"
+          },
+          {
+            "key": "scancode.license.score",
+            "description": "A natural number between 0 (low macht accuracy) and 100 (high match accuracy).",
+            "default": 0
+          },
+          {
+            "key": "scancode.processes",
+            "description": "The number of processes used by ScanCode. A \"good\" value is the number of CPUs minus 1 (more information: https://github.com/nexB/scancode-toolkit/issues/2980#issuecomment-1146583845).",
+            "default": 1
+          },
+          {
+            "key": "extractcode.enabled",
+            "description": "Extractcode is a helper tool, which extracts archives before scanning. Set it to `true` to enable it.",
+            "default": false
+          },
+          {
+            "key": "scancode.timeout",
+            "description": "Stop scanning a file if scanning takes longer than a timeout in seconds (as natural number).",
+            "default": "120"
+          },
+          {
+            "key": "scancode.scan.copyright",
+            "description": "Scan for copyrights.",
+            "default": false
+          },
+          {
+            "key": "scancode.scan.license",
+            "description": "Scan for licenses.",
+            "default": true
+          },
+          {
+            "key": "scancode.scan.package",
+            "description": "Scan for packages.",
+            "default": false
+          },
+          {
+            "key": "scancode.scan.email",
+            "description": "Scan for emails.",
+            "default": false
+          },
+          {
+            "key": "scancode.scan.url",
+            "description": "Scan for urls.",
+            "default": false
+          },
+          {
+            "key": "scancode.scan.info",
+            "description": "Include information regarding the scan.",
+            "default": true
+          },
+          {
+            "key": "scancode.scan.diagnostics",
+            "description": "Diagnostic information",
+            "default": false
+          }
+        ]
+      }
+    }
+  ]
 }

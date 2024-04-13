@@ -6,6 +6,7 @@ import static com.mercedesbenz.sechub.pds.util.PDSAssert.*;
 
 import java.time.LocalDateTime;
 import java.util.Optional;
+import java.util.Set;
 import java.util.UUID;
 
 import javax.annotation.security.RolesAllowed;
@@ -47,6 +48,11 @@ public class PDSJobTransactionService {
     public void markReadyToStartInOwnTransaction(UUID jobUUID) {
         LOG.info("Mark job {} as ready to start", jobUUID);
         updateJobInOwnTransaction(jobUUID, null, null, null, PDSJobStatusState.READY_TO_START, PDSJobStatusState.CREATED);
+    }
+
+    public void forceStateResetInOwnTransaction(Set<UUID> jobUUIDs, PDSJobStatusState forcedStatusState) {
+        LOG.info("Force state change to '{}' for jobs: {}", forcedStatusState, jobUUIDs);
+        repository.forceStateForJobs(forcedStatusState, jobUUIDs);
     }
 
     /**

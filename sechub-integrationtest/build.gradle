@@ -36,31 +36,14 @@ import java.nio.file.Paths;
 def integrationTestServerPortValue = 8443;
 def integrationTestPDSPortValue = 8444;
 
-def pdsVersion = VersionData.getPdsVersion()
-def serverVersion = VersionData.getServerVersion()
+def pdsVersion = versionData.getPdsVersion()
+def serverVersion = versionData.getServerVersion()
 
 // initialize shared volume path (but not force directory creation, will be done later)
 long nanoTime = System.nanoTime()
 
 File tempFolder = new File("${project.projectDir}/build/tmp/sharedvolume-${nanoTime}")
 def tempDirPath = tempFolder.toPath()
-
-task copyIntegrationTestResults(type: Copy) {
-        with{
-            from "${project.projectDir}/build/test-results/integrationtest"
-            into "${combined_report_junit_tmp}"
-            include "*.xml"
-        }
-}
-task copyIntegrationServerLogs(type: Copy) {
-        with{
-            from "${project.projectDir}"
-            into "${combined_report_target}"
-            include "integrationtest-*.log"
-        }
-}
-copyTestResults.dependsOn copyIntegrationTestResults
-copyTestResults.dependsOn copyIntegrationServerLogs
 
 
 task cleanLogFiles(type: Delete){
@@ -113,13 +96,13 @@ task stopOldIntegrationTestPDS(dependsOn: configureIntegrationTestPDS){
 
 }
 
-/** Starts integraitontestserver
+/** Starts integrationtestserver
  *  If another integration test server runs, the script will terminate the other server automatically - will kill zombies.
  */
 task startIntegrationTestServer(dependsOn: stopOldIntegrationTestServer){
     group 'sechub'
 
-    description 'Starts an integration test server - if already a server is running we will wait until timout (10 minutes). ' +
+    description 'Starts an integration test server - if already a server is running we will wait until timeout (10 minutes). ' +
                 'When timeout build fails but "zombie server" will be stopped too!'
     doLast{
         def pathString = tempDirPath.toString();
@@ -128,7 +111,7 @@ task startIntegrationTestServer(dependsOn: stopOldIntegrationTestServer){
 
 }
 
-/** Starts integraitontestserver
+/** Starts integrationtestserver
  *  If another integration test server runs, the script will terminate the other server automatically - will kill zombies.
  */
 task startIntegrationTestPDS(dependsOn: stopOldIntegrationTestPDS){
@@ -200,6 +183,9 @@ task integrationtest(type: Test, dependsOn: startIntegrationTestInstances) {
    
    finalizedBy "stopIntegrationTestInstances"
    
+   filter {
+         includeTestsMatching "*IntTest"
+   }
 
 }
 
@@ -227,11 +213,11 @@ class IntegrationTestScriptAccess extends CmdExecutor{
             executeScript("stop",workingDir,null,60,port,"")
        }
 
-       public void start(File workingDir, String useVersion,String port,String sharedVolumeBaseDir) throws Exception{
+       public void start(File workingDir, String useVersion, String port, String sharedVolumeBaseDir) throws Exception{
             executeScript("start",workingDir,useVersion,300,port, sharedVolumeBaseDir); /* max 5 minutes */
        }
        
-       private void executeScript(String command, File workingDir, String useVersion, int timeOutInSeconds,String port, String sharedVolumeBaseDir) throws Exception{
+       private void executeScript(String command, File workingDir, String useVersion, int timeOutInSeconds, String port, String sharedVolumeBaseDir) throws Exception{
           CmdExecutor exec = new CmdExecutor();
           exec.setTimeOutInSeconds(timeOutInSeconds);
           

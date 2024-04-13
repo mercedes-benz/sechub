@@ -8,4 +8,4 @@ ls "$PDS_JOB_EXTRACTED_SOURCES_FOLDER/"
 
 dumpPDSVariables
 
-cp "$PDS_JOB_EXTRACTED_SOURCES_FOLDER/gitleaks_sample_sarif.json" $PDS_JOB_RESULT_FILE
+cp "$PDS_JOB_EXTRACTED_SOURCES_FOLDER/gitleaks_sample_sarif.json" "$PDS_JOB_RESULT_FILE"

@@ -6,8 +6,11 @@ import static org.junit.Assert.fail;
 import static org.junit.jupiter.api.Assertions.*;
 
 import java.time.LocalDateTime;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
+import java.util.UUID;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -50,6 +53,44 @@ public class PDSJobRepositoryDBTest {
 
     @Autowired
     private PDSServerConfigurationService serverConfigService;
+
+    @ParameterizedTest
+    @EnumSource(value = PDSJobStatusState.class)
+    void forceStateForJobs(PDSJobStatusState stateBefore) throws Exception {
+        /* prepare */
+        PDSJob pdsJob1 = createJob(stateBefore);
+        PDSJob pdsJob2 = createJob(stateBefore);
+        PDSJob pdsJob3 = createJob(stateBefore);
+
+        entityManager.persist(pdsJob1);
+        entityManager.flush();
+
+        Set<UUID> jobUUIDs = new HashSet<>();
+        jobUUIDs.add(pdsJob1.getUUID());
+        jobUUIDs.add(pdsJob3.getUUID());
+
+        PDSJobStatusState newState = PDSJobStatusState.READY_TO_START;
+        if (stateBefore == PDSJobStatusState.READY_TO_START) {
+            /* in this case we try another target state */
+            newState = PDSJobStatusState.CANCELED;
+        }
+
+        /* execute */
+        repositoryToTest.forceStateForJobs(newState, jobUUIDs);
+
+        /* test */
+        entityManager.flush();
+        entityManager.clear(); // we must clear to avoid caching of old entities in test
+
+        PDSJob pdsJob1b = repositoryToTest.findById(pdsJob1.getUUID()).get();
+        PDSJob pdsJob2b = repositoryToTest.findById(pdsJob2.getUUID()).get();
+        PDSJob pdsJob3b = repositoryToTest.findById(pdsJob3.getUUID()).get();
+
+        assertEquals(newState, pdsJob1b.getState());
+        assertEquals(stateBefore, pdsJob2b.getState()); // was not inside set - means not changed
+        assertEquals(newState, pdsJob3b.getState());
+
+    }
 
     @ParameterizedTest
     @EnumSource(value = PDSJobStatusState.class, mode = Mode.EXCLUDE, names = "CANCEL_REQUESTED")

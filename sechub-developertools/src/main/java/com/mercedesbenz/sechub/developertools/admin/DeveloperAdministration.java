@@ -340,7 +340,7 @@ public class DeveloperAdministration {
 
     public String createNewUserSignup(String name, String email) {
 
-        String json = "{\"apiVersion\":\"1.0\",\r\n" + "		\"userId\":\"" + name + "\",\r\n" + "		\"emailAdress\":\"" + email + "\"}";
+        String json = "{\"apiVersion\":\"1.0\",\r\n" + "		\"userId\":\"" + name + "\",\r\n" + "		\"emailAddress\":\"" + email + "\"}";
         return getRestHelper().postJson(getUrlBuilder().buildUserSignUpUrl(), json);
     }
 
@@ -463,6 +463,10 @@ public class DeveloperAdministration {
 
     public String fetchUserInfo(String userId) {
         return getRestHelper().getStringFromURL(getUrlBuilder().buildAdminShowsUserDetailsUrl(userId));
+    }
+
+    public String fetchUserInfoByEmailAddress(String emailAddress) {
+        return getRestHelper().getStringFromURL(getUrlBuilder().buildAdminShowsUserDetailsForEmailAddressUrl(emailAddress));
     }
 
     public List<String> fetchProjectWhiteList(String projectId) {
@@ -617,7 +621,7 @@ public class DeveloperAdministration {
     }
 
     public String checkVersion() {
-        return getRestHelper().getStringFromURL(getUrlBuilder().buildGetServerVersionUrl());
+        return getRestHelper().getStringFromURL(getUrlBuilder().buildGetServerRuntimeDataUrl());
     }
 
     public String triggerDownloadFullScan(UUID sechubJobUUID) {

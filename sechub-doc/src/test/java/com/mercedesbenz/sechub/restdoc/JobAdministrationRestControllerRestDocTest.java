@@ -5,7 +5,6 @@ import static com.mercedesbenz.sechub.restdoc.RestDocumentation.*;
 import static com.mercedesbenz.sechub.test.RestDocPathParameter.*;
 import static com.mercedesbenz.sechub.test.SecHubTestURLBuilder.*;
 import static org.mockito.Mockito.*;
-import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
 import static org.springframework.restdocs.headers.HeaderDocumentation.requestHeaders;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.*;
 import static org.springframework.restdocs.payload.PayloadDocumentation.*;
@@ -77,8 +76,9 @@ public class JobAdministrationRestControllerRestDocTest implements TestIsNecessa
     @Before
     public void before() {
         List<JobInformation> list = new ArrayList<>();
-        JobInformation info = new JobInformation();
-        info.setJobUUID(UUID.randomUUID());
+
+        JobInformation info = new JobInformation(UUID.randomUUID());
+
         info.setStatus(JobStatus.RUNNING);
         info.setProjectId("project-name");
         info.setConfiguration("{ config data }");
@@ -112,7 +112,7 @@ public class JobAdministrationRestControllerRestDocTest implements TestIsNecessa
                 and().
                 document(
 	                		requestHeaders(
-	                				headerWithName(AuthenticationHelper.HEADER_NAME).description(AuthenticationHelper.HEADER_DESCRIPTION)
+
 	                		),
 	                        responseFields(
 	                                    fieldWithPath(inArray(JobInformation.PROPERTY_JOB_UUID)).description("The uuid of the running job"),
@@ -150,7 +150,7 @@ public class JobAdministrationRestControllerRestDocTest implements TestIsNecessa
                 and().
                 document(
                 		requestHeaders(
-                				headerWithName(AuthenticationHelper.HEADER_NAME).description(AuthenticationHelper.HEADER_DESCRIPTION)
+
                 		),
                         pathParameters(
                                 parameterWithName(JOB_UUID.paramName()).description("The job UUID")
@@ -183,7 +183,7 @@ public class JobAdministrationRestControllerRestDocTest implements TestIsNecessa
                 and().
                 document(
                 		 requestHeaders(
-                				headerWithName(AuthenticationHelper.HEADER_NAME).description(AuthenticationHelper.HEADER_DESCRIPTION)
+
                 		 ),
                          pathParameters(
                                     parameterWithName(JOB_UUID.paramName()).description("The job UUID")
@@ -216,7 +216,7 @@ public class JobAdministrationRestControllerRestDocTest implements TestIsNecessa
                 and().
                 document(
                 		requestHeaders(
-                				headerWithName(AuthenticationHelper.HEADER_NAME).description(AuthenticationHelper.HEADER_DESCRIPTION)
+
                 		),
                         pathParameters(
                                     parameterWithName(JOB_UUID.paramName()).description("The job UUID")

@@ -1,0 +1,9 @@
+# The database start mode
+#   debug - starts only the container
+#   server - initializes and starts the database
+DATABASE_START_MODE=server
+POSTGRES_ENABLED=true
+DATABASE_CONNECTION=jdbc:postgresql://database:5432/pds?currentSchema=iac
+DATABASE_PASSWORD='top$ecret'
+DATABASE_USERNAME=iac
+

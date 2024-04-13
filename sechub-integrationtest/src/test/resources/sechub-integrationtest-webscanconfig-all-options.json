@@ -1,13 +1,56 @@
 {
   "apiVersion" : "1.0",
+  "data" : {
+    "sources" : [ {
+      "name" : "open-api-file-reference",
+      "fileSystem" : {
+        "files" : [ "../../../../../sechub-integrationtest/src/test/resources/pds-webscan-data-ref-files/openapi.json" ]
+      }
+    }, {
+      "name" : "client-cert-api-file-reference",
+      "fileSystem" : {
+        "files" : [ "../../../../../sechub-integrationtest/src/test/resources/pds-webscan-data-ref-files/certificate.p12" ]
+      }
+    }, {
+      "name" : "header-file-ref-for-big-token",
+      "fileSystem" : {
+        "files" : [ "../../../../../sechub-integrationtest/src/test/resources/pds-webscan-data-ref-files/bearer-token.txt" ]
+      }
+    }, {
+      "name" : "another-header-file-ref-for-big-token",
+      "fileSystem" : {
+        "files" : [ "../../../../../sechub-integrationtest/src/test/resources/pds-webscan-data-ref-files/another-token.txt" ]
+      }
+    } ]
+  },
   "webScan" : {
     "url" : "https://demo.example.org/myapp",
-    "includes": [ "/portal/admin", "/abc.html", "/hidden" ],
-    "excludes": [ "/public/media", "/contact.html", "/static" ],
+    "includes": [ "/portal/admin", "/abc.html", "/hidden", "/customer/<*>" ],
+    "excludes": [ "/public/media", "/contact.html", "/static", "<*>/admin/<*>" ],
     "maxScanDuration" : {
       "duration" : 35,
       "unit" : "minutes"
     },
+    "api" : {
+      "type" : "openApi",
+      "use" : [ "open-api-file-reference" ]
+    },
+    "clientCertificate" : {
+      "password" : "secret-password",
+      "use" : [ "client-cert-api-file-reference" ]
+    },
+    "headers" : [{
+      "name" : "Authorization",
+      "use" : [ "header-file-ref-for-big-token" ]
+    }, {
+      "name" : "x-file-size",
+      "value" : "123456",
+      "onlyForUrls" : [ "https://demo.example.org/myapp/admin", "https://demo.example.org/myapp/upload/<*>", "https://demo.example.org/myapp/<*>/special/" ],
+      "sensitive" : false
+    }, {
+      "name" : "Key",
+      "use" : [ "another-header-file-ref-for-big-token" ]
+    }],
     "login" : {
       "url" : "https://demo.example.org/myapp/login",
       "basic" : {

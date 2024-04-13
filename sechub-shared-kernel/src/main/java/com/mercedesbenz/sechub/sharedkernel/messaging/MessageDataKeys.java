@@ -19,7 +19,6 @@ public class MessageDataKeys {
 
     private static final SchedulerJobMessageDataProvider SCHEDULER_JOB_MESSAGE_DATA_PROVIDER = new SchedulerJobMessageDataProvider();
     private static final ClusterMemberMessageDataProvider CLUSTER_MEMBER_MESSAGE_DATA_PROVIDER = new ClusterMemberMessageDataProvider();
-    private static final BatchJobMessageDataProvider BATCH_JOB_MESSAGE_DATA_PROVIDER = new BatchJobMessageDataProvider();
     private static final SecHubConfigurationMessageDataProvider SECHUB_CONFIGURATION_MESSAGE_DATA_PROVIDER = new SecHubConfigurationMessageDataProvider();
     private static final UUIDMessageDataProvider UID_MESSAGE_DATA_PROVIDER = new UUIDMessageDataProvider();
     private static final SecHubMessagesListDataProvider SECHUB_MESSAGES_LIST_MESSAGE_DATA_PROVIDER = new SecHubMessagesListDataProvider();
@@ -59,36 +58,33 @@ public class MessageDataKeys {
     public static final MessageDataKey<LocalDateTime> LOCAL_DATE_TIME_SINCE = createKey("localdatetime.since", LOCAL_DATE_TIME_MESSAGE_DATA_PROVIDER);
 
     public static final MessageDataKey<SecHubConfiguration> SECHUB_CONFIG = createKey("sechub.config", SECHUB_CONFIGURATION_MESSAGE_DATA_PROVIDER);
-    public static final MessageDataKey<BatchJobMessage> BATCH_JOB_ID = createKey("sechub.batchjob.id", BATCH_JOB_MESSAGE_DATA_PROVIDER);
 
-    @Deprecated
-    public static final MessageDataKey<BatchJobMessage> BATCH_JOB_STATUS = createKey("sechub.batchjob.status", BATCH_JOB_MESSAGE_DATA_PROVIDER);
     public static final MessageDataKey<ClusterMemberMessage> ENVIRONMENT_CLUSTER_MEMBER_STATUS = createKey("environment.cluster.member.status",
             CLUSTER_MEMBER_MESSAGE_DATA_PROVIDER);
 
     public static final MessageDataKey<SchedulerJobMessage> SCHEDULER_JOB_STATUS = createKey("sechub.scheduler.job.status",
             SCHEDULER_JOB_MESSAGE_DATA_PROVIDER);
     /**
-     * Must contain userid, mail adress
+     * Must contain userid, email address
      */
     public static final MessageDataKey<UserMessage> USER_CONTACT_DATA = createUserMessageKey("user.signup.data");
     /**
-     * Must contain userid, mail adress
+     * Must contain userid, email address
      */
     public static final MessageDataKey<UserMessage> USER_SIGNUP_DATA = createUserMessageKey("user.signup.data");
 
     /**
-     * Must contain userid, mail adress and initial roles
+     * Must contain userid, email address and initial roles
      */
     public static final MessageDataKey<UserMessage> USER_CREATION_DATA = createUserMessageKey("user.creation.data");
 
     /**
-     * Must contain userid, hashed api token and email adress
+     * Must contain userid, hashed api token and email address
      */
     public static final MessageDataKey<UserMessage> USER_API_TOKEN_DATA = createUserMessageKey("user.apitoken.data");
 
     /**
-     * Must contain userid and email adress
+     * Must contain userid and email address
      */
     public static final MessageDataKey<UserMessage> USER_DELETE_DATA = createUserMessageKey("user.delete.data");
 

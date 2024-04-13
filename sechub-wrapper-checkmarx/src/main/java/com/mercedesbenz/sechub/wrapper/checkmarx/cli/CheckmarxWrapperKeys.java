@@ -46,11 +46,11 @@ public enum CheckmarxWrapperKeys implements PDSSolutionVariableKey {
             PDSSolutionVariableType.OPTIONAL_JOB_PARAMETER,
             "When 'true', Checkmarx will do a full scan and not a delta scan."),
 
-    CHECKMARX_RESULT_CHECK_PERIOD_MINUTES(
-            CheckmarxWrapperKeyConstants.KEY_PDS_CHECKMARX_RESULT_CHECK_PERIOD_MINUTES,
+    CHECKMARX_RESULT_CHECK_PERIOD_MILLISECONDS(
+            CheckmarxWrapperKeyConstants.KEY_PDS_CHECKMARX_RESULT_CHECK_PERIOD_MILLISECONDS,
             PDSSolutionVariableType.OPTIONAL_JOB_PARAMETER,
-            "The time period in minutes when the next check for Checkmarx resuls will be done. An example: If you define `3`,"
-            + "every 3 minutes PDS will check the current state of the job."
+            "The time period in milliseconds when the next check for Checkmarx resuls will be done. An example: If you define `180000`,"
+            + "every 3 minutes (3*60*1000 milliseconds) PDS will check the current state of the job."
             ),
 
     CHECKMARX_RESULT_CHECK_TIMOUT_MINUTES(
@@ -75,6 +75,40 @@ public enum CheckmarxWrapperKeys implements PDSSolutionVariableKey {
             PDSSolutionVariableType.OPTIONAL_JOB_PARAMETER,
             "If not the default preset Id shall be used, it can be either defined directly as job paramter (json mapping), or we can send it automatically by reusing an existing SecHub mapping. As an example: '"+PDSDefaultParameterKeyConstants.PARAM_KEY_PDS_CONFIG_USE_SECHUB_MAPPINGS+"="+
             CheckmarxConstants.MAPPING_CHECKMARX_NEWPROJECT_TEAM_ID+","+CheckmarxConstants.MAPPING_CHECKMARX_NEWPROJECT_PRESET_ID+"'"),
+
+
+    CHECKMARX_RESILIENCE_BAD_REQUEST_MAX_RETRIES(
+            CheckmarxWrapperKeyConstants.KEY_PDS_CHECKMARX_RESILIENCE_BAD_REQUEST_MAX_RETRIES,
+            PDSSolutionVariableType.OPTIONAL_JOB_PARAMETER,
+            "Maximum amounts of retries for bad request handling"),
+
+    CHECKMARX_RESILIENCE_BAD_REQUEST_RETRY_WAIT_MILLISECONDS(
+            CheckmarxWrapperKeyConstants.KEY_PDS_CHECKMARX_RESILIENCE_BAD_REQUEST_RETRY_WAIT_MILLISECONDS,
+            PDSSolutionVariableType.OPTIONAL_JOB_PARAMETER,
+            "Time in milliseconds to wait before next retry when a bad request happend"),
+
+    CHECKMARX_RESILIENCE_SERVER_ERROR_MAX_RETRIES(
+            CheckmarxWrapperKeyConstants.KEY_PDS_CHECKMARX_RESILIENCE_SERVER_ERROR_MAX_RETRIES,
+            PDSSolutionVariableType.OPTIONAL_JOB_PARAMETER,
+            "Maximum amounts of retries for internal server error handling"),
+
+    CHECKMARX_RESILIENCE_SERVER_ERROR_RETRY_WAIT_MILLISECONDS(
+            CheckmarxWrapperKeyConstants.KEY_PDS_CHECKMARX_RESILIENCE_SERVER_ERROR_RETRY_WAIT_MILLISECONDS,
+            PDSSolutionVariableType.OPTIONAL_JOB_PARAMETER,
+            "Time in milliseconds to wait before next retry when an internal server error happend"),
+
+    CHECKMARX_RESILIENCE_NETWORK_ERROR_MAX_RETRIES(
+            CheckmarxWrapperKeyConstants.KEY_PDS_CHECKMARX_RESILIENCE_NETWORK_ERROR_MAX_RETRIES,
+            PDSSolutionVariableType.OPTIONAL_JOB_PARAMETER,
+            "Maximum amounts of retries for network error handling"),
+
+    CHECKMARX_RESILIENCE_NETWORK_EROR_RETRY_WAIT_MILLISECONDS(
+            CheckmarxWrapperKeyConstants.KEY_PDS_CHECKMARX_RESILIENCE_NETWORK_EROR_RETRY_WAIT_MILLISECONDS,
+            PDSSolutionVariableType.OPTIONAL_JOB_PARAMETER,
+            "Time in milliseconds to wait before next retry when a network error happend"),
+
+
+
 
     /* @formatter:on */
     ;

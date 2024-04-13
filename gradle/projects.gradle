@@ -1,5 +1,8 @@
 // SPDX-License-Identifier: MIT
+
+
 ext {
+secHubBuildStage = new BuildStage()
 projectType = [
 
             goProjects: [
@@ -8,7 +11,6 @@ projectType = [
             javaProjects: [
                project(':sechub-testframework'),
                project(':sechub-analyzer-cli'),
-               project(':sechub-api-java'),
                project(':sechub-commons-core'),
                project(':sechub-commons-model'),
                project(':sechub-commons-model-testframework'),
@@ -16,8 +18,8 @@ projectType = [
                project(':sechub-commons-archive'),
                project(':sechub-storage-core'),
                project(':sechub-wrapper-owasp-zap'),
-               project(':sechub-pds-tools'),
-               
+               project(':sechub-pds-commons-core'),
+               project(':sechub-wrapper-xray'),
             ],
             
             publishedLibraries: [
@@ -84,17 +86,13 @@ projectType = [
 
             ],
             
-            /* SecHub frontend projects */
-            springBootWebUiProjects:[
-                   project(':sechub-webui'),
-            ],
-            
             bootableSpringApplicationProjects:[
                    project(':sechub-server'),
                    project(':sechub-pds'),
                    project(':sechub-wrapper-checkmarx'),
-                   project(':sechub-webui'),
             ],
+            
+            springBootWebUIProjects:[], // is filled later programmatically
 
             /* documentation projects */
             springDocProjects: [
@@ -108,22 +106,54 @@ projectType = [
             eclipseProjects: [
                     project(':sechub-doc'),
                     project(':sechub-other'),
-                    project(':sechub-api-java'),
                     project(':sechub-pds-solutions'),
+					project(':sechub-solution'),
+					project(':sechub-solutions-shared'),
+					project(':sechub-wrapper-xray'),
+					project(':sechub-webui-solution'),
             ],
 
             asciiDoctorProjects: [
                     project(':sechub-doc'),
-            ]
+            ],
+            
+            noSpotless : [
+                  
+            ],
+            
+            integrationTestProjects: [
+                    project(':sechub-integrationtest'),
+            ],
     ]
 }
+
+if (secHubBuildStage.providesGeneratedOpenApiFile()){
+    /* add the java projects which need an open api file / compiled java api */
+    projectType.javaProjects.add(project(':sechub-api-java'))
+    
+    projectType.javaProjects.add(project(':sechub-systemtest'))
+    projectType.javaProjects.add(project(':sechub-pds-tools'))
+
+    projectType.javaProjects.add(project(':sechub-examples:example-sechub-api-java'))
+    
+    /* avoid spotless duplication problem in gradle build */
+    projectType.noSpotless.add(project(':sechub-examples:example-sechub-api-java'))
+    
+    /* make it possible to use integration test parts for systemtest (unit tests) as well */
+    projectType.integrationTestProjects.add(project(':sechub-systemtest'))
+
+	/* webui */
+	projectType.bootableSpringApplicationProjects.add(project(':sechub-webui'))
+	projectType.springBootWebUIProjects.add(project(':sechub-webui'))
+}
+
 
 /* dynamically define java projects */
 projectType.springBootProjects.addAll(projectType.springBootSecHubServerProjects)
 projectType.springBootProjects.addAll(projectType.springBootPDSProjects)
 projectType.springBootProjects.addAll(projectType.springBootAdapterProjects)
 projectType.springBootProjects.addAll(projectType.springDocProjects)
-projectType.springBootProjects.addAll(projectType.springBootWebUiProjects)
+projectType.springBootProjects.addAll(projectType.springBootWebUIProjects)
 
 projectType.javaProjects.addAll(projectType.springBootProjects)
 

@@ -1,7 +1,4 @@
 # The base image to use
 # uncomment to use local image
 # BASE_IMAGE="pds-base-pds"
-
-BASE_IMAGE="ghcr.io/mercedes-benz/sechub/pds-base:v0.35.0"
-
-
+BASE_IMAGE="ghcr.io/mercedes-benz/sechub/pds-base"

@@ -5,13 +5,13 @@ services:
     pds-pmd:
         build:
             args:
-                - BASE_IMAGE=debian:11-slim
+                - BASE_IMAGE=debian:12-slim
             context: docker/
             dockerfile: PMD-Debian.dockerfile
         container_name: pds-pmd
         hostname: pds-pmd
         volumes:
-          - ./docker/scripts:/scripts
+          - ./docker/scripts:/pds/scripts
         env_file:
             - .env
         ports:
@@ -24,4 +24,3 @@ networks:
     sechub:
         external: true
         name: "sechub"
-

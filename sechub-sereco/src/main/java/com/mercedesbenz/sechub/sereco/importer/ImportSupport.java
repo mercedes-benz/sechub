@@ -126,26 +126,25 @@ public class ImportSupport {
      * Checks if the given import parameter can be imported or not
      *
      * @param parameter
-     * @return
+     * @return <code>true</code> when import can be done
      */
-    public ProductImportAbility isAbleToImport(ImportParameter parameter) {
+    public boolean isAbleToImport(ImportParameter parameter) {
         if (!isProductIdentified(parameter.getProductId())) {
-            return ProductImportAbility.NOT_ABLE_TO_IMPORT;
-        }
-        if (isEmpty(parameter.getImportData())) {
-            return ProductImportAbility.PRODUCT_FAILED;
+            return false;
         }
         if (!isContentIdentified(parameter.getImportData())) {
-            return ProductImportAbility.NOT_ABLE_TO_IMPORT;
+            return false;
+        }
+        if (isEmpty(parameter.getImportData())) {
+            return false;
         }
         if (checkXML && !isXML(parameter.getImportData())) {
-            return ProductImportAbility.NOT_ABLE_TO_IMPORT;
+            return false;
         }
         if (checkJSON && !isJSON(parameter.getImportData())) {
-            return ProductImportAbility.NOT_ABLE_TO_IMPORT;
+            return false;
         }
-        return ProductImportAbility.ABLE_TO_IMPORT;
-
+        return true;
     }
 
     private boolean isProductIdentified(String productId) {

@@ -8,7 +8,7 @@
 ARG BASE_IMAGE
 
 # Inject the target architecture
-# For more information: 
+# For more information:
 # - https://docs.docker.com/engine/reference/builder/#automatic-platform-args-in-the-global-scope
 ARG TARGETARCH
 
@@ -19,10 +19,10 @@ ARG SECHUB_VERSION="0.35.2"
 ARG TAG=""
 ARG BRANCH=""
 
-ARG GO="go1.20.1.linux-${TARGETARCH}.tar.gz"
+ARG GO="go1.21.6.linux-${TARGETARCH}.tar.gz"
 
 # possible values: temurin, openj9, openjdk
-ARG JAVA_DISTRIBUTION="openjdk"
+ARG JAVA_DISTRIBUTION="temurin"
 # possible values: 17
 ARG JAVA_VERSION="17"
 

@@ -1,7 +1,7 @@
 # The base image to use
 # uncomment to use local image
 # BASE_IMAGE="pds-base_pds"
-BASE_IMAGE="ghcr.io/mercedes-benz/sechub/pds-base:v0.32.1"
+BASE_IMAGE="ghcr.io/mercedes-benz/sechub/pds-base"
 
 # The build type of the Checkmarx-Wrapper
 # Possible values are: copy, download
@@ -10,4 +10,5 @@ BASE_IMAGE="ghcr.io/mercedes-benz/sechub/pds-base:v0.32.1"
 BUILD_TYPE=download
 
 # The Checkmarx Wrapper version to use
-CHECKMARX_WRAPPER_VERSION="0.32.1"
+# See: https://github.com/mercedes-benz/sechub/releases
+CHECKMARX_WRAPPER_VERSION="1.3.0"

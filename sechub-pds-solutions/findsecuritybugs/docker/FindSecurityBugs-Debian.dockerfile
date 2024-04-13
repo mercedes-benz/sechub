@@ -24,7 +24,7 @@ USER root
 RUN export DEBIAN_FRONTEND=noninteractive && \
     apt-get update && \
     apt-get --assume-yes upgrade  && \
-    apt-get --assume-yes install dos2unix unzip wget openjdk-17-jre-headless libxml2-utils && \
+    apt-get --assume-yes install dos2unix unzip wget libxml2-utils && \
     apt-get --assume-yes clean
 
 # Install FindSecurityBugs
@@ -40,27 +40,29 @@ RUN cd "$DOWNLOAD_FOLDER" && \
     # Convert Windows format to Unix
     dos2unix "$TOOL_FOLDER/findsecbugs.sh" && \
     # make FindSecurityBugs executable
-    chmod +x "$TOOL_FOLDER/findsecbugs.sh"
+    chmod +x "$TOOL_FOLDER/findsecbugs.sh" && \
+    # Cleanup download folder
+    rm --recursive --force "$DOWNLOAD_FOLDER"/*
 
 # Copy PDS configfile
-COPY pds-config.json "/$PDS_FOLDER/pds-config.json"
+COPY pds-config.json "$PDS_FOLDER/pds-config.json"
 
 # Copy findsecuritybugs script into container
-COPY findsecbugs_sechub.sh $TOOL_FOLDER/findsecbugs_sechub.sh
-RUN chmod +x $TOOL_FOLDER/findsecbugs_sechub.sh
+COPY findsecbugs_sechub.sh "$TOOL_FOLDER/findsecbugs_sechub.sh"
+RUN chmod +x "$TOOL_FOLDER/findsecbugs_sechub.sh"
 
 # Copy scripts
-COPY scripts $SCRIPT_FOLDER
-RUN chmod --recursive +x $SCRIPT_FOLDER
+COPY scripts "$SCRIPT_FOLDER"
+RUN chmod --recursive +x "$SCRIPT_FOLDER"
 
 # Mock folder
-COPY mocks $MOCK_FOLDER
+COPY mocks "$MOCK_FOLDER"
 
 # TODO: Remove the lines below in the future
 # This is a workaround as long as Spotbugs does not support taxonomies
 # https://github.com/spotbugs/spotbugs/issues/2321
-COPY copy/spotbugs.jar $TOOL_FOLDER/lib/spotbugs.jar
-COPY copy/spotbugs-annotations.jar $TOOL_FOLDER/lib/spotbugs-annotations.jar
+COPY copy/spotbugs.jar "$TOOL_FOLDER/lib/spotbugs.jar"
+COPY copy/spotbugs-annotations.jar "$TOOL_FOLDER/lib/spotbugs-annotations.jar"
 
 # Set workspace
 WORKDIR "$WORKSPACE"

@@ -35,6 +35,8 @@ public enum RestDocPathParameter {
 
     PAGE("page"),
 
+    WITH_META_DATA("withMetaData"),
+
     ;
 
     private String restDocName;

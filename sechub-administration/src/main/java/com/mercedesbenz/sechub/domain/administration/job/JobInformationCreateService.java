@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.domain.administration.job;
 
+import java.util.Optional;
 import java.util.UUID;
 
 import org.slf4j.Logger;
@@ -34,12 +35,21 @@ public class JobInformationCreateService {
         assertion.assertIsValidProjectId(projectId);
         assertion.assertIsValidJobUUID(jobUUID);
 
-        LOG.debug("creating a new job information entry for project={}, job={}", projectId, jobUUID);
+        LOG.debug("Creating a new job information entry for project: {}, SecHub job: {}", projectId, jobUUID);
 
-        JobInformation entity = new JobInformation();
+        JobInformation entity = null;
+
+        Optional<JobInformation> existingInfo = repository.findById(jobUUID);
+        if (existingInfo.isPresent()) {
+            entity = existingInfo.get();
+
+            LOG.warn("There was an existing information entity about SecHub job: {}. The entity will be reused and updated.", jobUUID);
+
+        } else {
+            entity = new JobInformation(jobUUID);
+        }
 
         entity.setProjectId(projectId);
-        entity.setJobUUID(jobUUID);
         entity.setConfiguration(message.getConfiguration());
         entity.setOwner(message.getOwner());
         entity.setSince(message.getSince());
@@ -48,7 +58,7 @@ public class JobInformationCreateService {
 
         entity = repository.save(entity);
 
-        LOG.debug("saved new job information entry uuid={} - for project={}, job={}, ", projectId, jobUUID, entity.getUUID());
+        LOG.debug("Saved job information entry for project: {}, SecHub job: {}, ", projectId, jobUUID);
     }
 
 }

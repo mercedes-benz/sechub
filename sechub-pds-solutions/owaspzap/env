@@ -1,0 +1,24 @@
+# The base image to use
+# uncomment to use local image
+# BASE_IMAGE="pds-base_pds"
+BASE_IMAGE="ghcr.io/mercedes-benz/sechub/pds-base"
+
+# See: https://github.com/mercedes-benz/sechub/releases/
+OWASPZAP_WRAPPER_VERSION="1.6.0"
+# See: https://github.com/zaproxy/zaproxy/releases/latest
+OWASPZAP_VERSION="2.14.0"
+OWASPZAP_SHA256SUM="219d7f25bbe25247713805ab02cc12279898c870743c1aae3c2b0b1882191960"
+
+PDS_START_MODE=localserver
+ADMIN_USERID=admin
+ADMIN_APITOKEN={noop}pds-apitoken
+TECHUSER_USERID=techuser
+TECHUSER_APITOKEN={noop}pds-apitoken
+JAVA_ENABLE_DEBUG=false
+KEEP_CONTAINER_ALIVE_AFTER_PDS_CRASHED=false
+ZAP_API_KEY=change-me
+PDS_CONFIG_EXECUTE_QUEUE_MAX=10
+PDS_CONFIG_EXECUTE_WORKER_THREAD_COUNT=1
+#ZAP_PROXY_HOST=127.0.0.1
+#ZAP_PROXY_PORT=9999
+ZAP_PROXY_FOR_PDS_TARGET_TYPE=INTERNET

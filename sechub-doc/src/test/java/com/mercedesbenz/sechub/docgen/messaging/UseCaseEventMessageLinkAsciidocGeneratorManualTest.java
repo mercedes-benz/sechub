@@ -8,16 +8,14 @@ import java.util.TreeMap;
 import java.util.TreeSet;
 
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.condition.EnabledIfSystemProperty;
 
 import com.mercedesbenz.sechub.sharedkernel.messaging.MessageID;
 import com.mercedesbenz.sechub.sharedkernel.usecases.UseCaseIdentifier;
-import com.mercedesbenz.sechub.test.TestConstants;
+import com.mercedesbenz.sechub.test.ManualTest;
 
-class UseCaseEventMessageLinkAsciidocGeneratorManualTest {
+class UseCaseEventMessageLinkAsciidocGeneratorManualTest implements ManualTest {
 
     @Test
-    @EnabledIfSystemProperty(named = TestConstants.MANUAL_TEST_BY_DEVELOPER, matches = "true", disabledReason = TestConstants.DESCRIPTION_DISABLED_BECAUSE_A_MANUAL_TEST_FOR_GENERATION)
     void manualTestByDeveloper() throws Exception {
         System.setProperty("com.mercedesbenz.sechub.docgen.debug", "true");
 

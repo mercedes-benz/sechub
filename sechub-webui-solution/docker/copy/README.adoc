@@ -1,0 +1,4 @@
+// SPDX-License-Identifier: MIT
+. Place a single WEB UI Jar into this folder. 
+. Name it `sechub-webui-0.0.0.jar`
+. Run `10-create-image.sh` to build the image

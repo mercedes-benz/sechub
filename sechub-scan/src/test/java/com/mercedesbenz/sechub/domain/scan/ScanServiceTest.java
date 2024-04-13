@@ -21,6 +21,7 @@ import com.mercedesbenz.sechub.domain.scan.product.AnalyticsProductExecutionServ
 import com.mercedesbenz.sechub.domain.scan.product.CodeScanProductExecutionService;
 import com.mercedesbenz.sechub.domain.scan.product.InfrastructureScanProductExecutionService;
 import com.mercedesbenz.sechub.domain.scan.product.LicenseScanProductExecutionService;
+import com.mercedesbenz.sechub.domain.scan.product.PrepareProductExecutionService;
 import com.mercedesbenz.sechub.domain.scan.product.WebScanProductExecutionService;
 import com.mercedesbenz.sechub.domain.scan.project.ScanMockData;
 import com.mercedesbenz.sechub.domain.scan.project.ScanProjectConfig;
@@ -32,7 +33,6 @@ import com.mercedesbenz.sechub.domain.scan.report.ScanReport;
 import com.mercedesbenz.sechub.sharedkernel.ProgressMonitor;
 import com.mercedesbenz.sechub.sharedkernel.configuration.SecHubConfiguration;
 import com.mercedesbenz.sechub.sharedkernel.messaging.AsynchronMessageHandler;
-import com.mercedesbenz.sechub.sharedkernel.messaging.BatchJobMessage;
 import com.mercedesbenz.sechub.sharedkernel.messaging.DomainMessage;
 import com.mercedesbenz.sechub.sharedkernel.messaging.DomainMessageService;
 import com.mercedesbenz.sechub.sharedkernel.messaging.DomainMessageSynchronousResult;
@@ -66,6 +66,7 @@ public class ScanServiceTest {
     private LicenseScanProductExecutionService licenseScanProductExecutionService;
     private ProductExecutionServiceContainer productExecutionServiceContainer;
     private AnalyticsProductExecutionService analyticsProductExecutionService;
+    private PrepareProductExecutionService prepareProductExecutionService;
     private static final SecHubConfiguration SECHUB_CONFIG = new SecHubConfiguration();
 
     @Before
@@ -86,6 +87,7 @@ public class ScanServiceTest {
         infrastructureScanProductExecutionService = mock(InfrastructureScanProductExecutionService.class);
         licenseScanProductExecutionService = mock(LicenseScanProductExecutionService.class);
         analyticsProductExecutionService = mock(AnalyticsProductExecutionService.class);
+        prepareProductExecutionService = mock(PrepareProductExecutionService.class);
 
         scanLogService = mock(ProjectScanLogService.class);
 
@@ -103,6 +105,7 @@ public class ScanServiceTest {
         when(productExecutionServiceContainer.getCodeScanProductExecutionService()).thenReturn(codeScanProductExecutionService);
         when(productExecutionServiceContainer.getLicenseScanProductExecutionService()).thenReturn(licenseScanProductExecutionService);
         when(productExecutionServiceContainer.getAnalyticsProductExecutionService()).thenReturn(analyticsProductExecutionService);
+        when(productExecutionServiceContainer.getPrepareProductExecutionService()).thenReturn(prepareProductExecutionService);
 
         serviceToTest.reportService = reportService;
         serviceToTest.storageService = storageService;
@@ -150,6 +153,16 @@ public class ScanServiceTest {
 
         /* test */
         verify(codeScanProductExecutionService).executeProductsAndStoreResults(any());
+    }
+
+    @Test
+    public void scanservice_does_execute_prepare_execution_service() throws Exception {
+
+        /* execute */
+        serviceToTest.receiveSynchronMessage(prepareValidRequest());
+
+        /* test */
+        verify(prepareProductExecutionService).executeProductsAndStoreResults(any());
     }
 
     @Test
@@ -312,15 +325,11 @@ public class ScanServiceTest {
     }
 
     private DomainMessage prepareRequest(SecHubConfiguration configMin) {
-        BatchJobMessage batchJobMessage = new BatchJobMessage();
-        batchJobMessage.setSecHubJobUUID(SECHUB_JOB_UUID);
-        batchJobMessage.setBatchJobId(42);
 
         DomainMessage request = new DomainMessage(MessageID.START_SCAN);
         request.set(MessageDataKeys.SECHUB_JOB_UUID, SECHUB_JOB_UUID);
         request.set(MessageDataKeys.SECHUB_EXECUTION_UUID, EXECUTION_UUID);
         request.set(MessageDataKeys.SECHUB_CONFIG, configMin);
-        request.set(MessageDataKeys.BATCH_JOB_ID, batchJobMessage);
 
         return request;
     }

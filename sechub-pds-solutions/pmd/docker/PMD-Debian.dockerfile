@@ -18,6 +18,8 @@ ARG PMD_VERSION="6.47.0"
 # Environment variables in container
 ENV PMD_VERSION="${PMD_VERSION}"
 
+user root
+
 # Copy mock folder
 COPY mocks "$MOCK_FOLDER"
 
@@ -27,15 +29,13 @@ COPY pds-config.json "$PDS_FOLDER"/pds-config.json
 # Copy PMD scripts and rulesets
 COPY scripts "$SCRIPT_FOLDER"
 
-user root
-
 # Set execute permissions for scripts
 RUN chmod +x "$SCRIPT_FOLDER"/pmd.sh "$SCRIPT_FOLDER"/pmd_mock.sh
 
 RUN export DEBIAN_FRONTEND=noninteractive && \
     apt-get update && \
     apt-get --assume-yes upgrade && \
-    apt-get --assume-yes install w3m wget openjdk-11-jre-headless unzip && \
+    apt-get --assume-yes install w3m wget unzip && \
     apt-get --assume-yes clean
 
 # Install PMD
@@ -47,8 +47,8 @@ RUN cd "$DOWNLOAD_FOLDER" && \
     # unpack pmd
     unzip -j pmd-bin-${PMD_VERSION}.zip pmd-bin-${PMD_VERSION}/bin/* -d "$TOOL_FOLDER/pmd/bin" && \
     unzip -j pmd-bin-${PMD_VERSION}.zip pmd-bin-${PMD_VERSION}/lib/* -d "$TOOL_FOLDER/pmd/lib" && \
-    # Remove pmd zip
-    rm pmd-bin-${PMD_VERSION}.zip
+    # Cleanup download folder
+    rm --recursive --force "$DOWNLOAD_FOLDER"/*
 
 # Set workspace
 WORKDIR "$WORKSPACE"

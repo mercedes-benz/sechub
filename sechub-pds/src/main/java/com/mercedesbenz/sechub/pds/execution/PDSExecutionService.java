@@ -7,10 +7,12 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Optional;
+import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
@@ -70,11 +72,11 @@ public class PDSExecutionService {
     private final Map<UUID, Future<PDSExecutionResult>> jobsInQueue = new LinkedHashMap<>();
 
     @PDSMustBeDocumented(value = "Set amount of worker threads used for exeuctions", scope = "execution")
-    @Value("${sechub.pds.config.execute.worker.thread.count:" + DEFAULT_WORKER_THREAD_COUNT + "}")
+    @Value("${pds.config.execute.worker.thread.count:" + DEFAULT_WORKER_THREAD_COUNT + "}")
     int workerThreadCount = DEFAULT_WORKER_THREAD_COUNT;
 
     @PDSMustBeDocumented(value = "Set amount of maximum executed parts in queue for same time", scope = "execution")
-    @Value("${sechub.pds.config.execute.queue.max:" + DEFAULT_QUEUE_MAX + "}")
+    @Value("${pds.config.execute.queue.max:" + DEFAULT_QUEUE_MAX + "}")
     int queueMax = DEFAULT_QUEUE_MAX;
 
     /* only for tests to turn off watcher */
@@ -106,7 +108,23 @@ public class PDSExecutionService {
          * and not a spring component. Because of this, we listen here to the spring
          * boot destroy signal and shutdown the executor service by our own:
          */
-        scheduler.shutdown();
+        scheduler.shutdown(); // will stop processing new parts!
+
+        LOG.info("Scheduler executor service shutdown done");
+
+        Set<UUID> jobsToRestart = new LinkedHashSet<>();
+        Iterator<Entry<UUID, Future<PDSExecutionResult>>> it = jobsInQueue.entrySet().iterator();
+        while (it.hasNext()) {
+            Entry<UUID, Future<PDSExecutionResult>> entry = it.next();
+            Future<PDSExecutionResult> future = entry.getValue();
+            if (!future.isDone()) {
+                /* still running - must be restarted by next instance */
+                UUID pdsJobUUID = entry.getKey();
+                jobsToRestart.add(pdsJobUUID);
+            }
+        }
+        LOG.info("Handling predestroy for {} jobs in queue.", jobsToRestart.size());
+        jobTransactionService.forceStateResetInOwnTransaction(jobsToRestart, PDSJobStatusState.READY_TO_START);
     }
 
     /**

@@ -1,4 +1,5 @@
 // SPDX-License-Identifier: MIT
+
 include 'sechub-cli',
 /* documentation */
 'sechub-doc',
@@ -17,8 +18,9 @@ include 'sechub-cli',
 'sechub-pds', // pds=product delegation server, executable spring boot jar
 'sechub-pds-core', // core project for test compile dependencies and more
 'sechub-pds-solutions', // our pds ready-to-use solutions / blue prints
-'sechub-pds-tools', // some pds tools
 
+/* PDS commons */
+'sechub-pds-commons-core',
 
 /* integration test*/
 'sechub-integrationtest',
@@ -33,6 +35,10 @@ include 'sechub-cli',
 'sechub-scan-product-pds',
 
 'sechub-statistic',
+
+/* server solutions */
+'sechub-solution',
+'sechub-solutions-shared',
 
 // adapters
 'sechub-adapter',
@@ -69,26 +75,49 @@ include 'sechub-cli',
 // Analyzer CLI
 'sechub-analyzer-cli',
 
-// java API library
- 'sechub-api-java',
-
 // Wrapper OWASP ZAP
 'sechub-wrapper-owasp-zap',
 
 // Wrapper checkmarx
-'sechub-wrapper-checkmarx'
+'sechub-wrapper-checkmarx',
 
-// WebUI
-include 'sechub-webui'
+// Wrapper Xray
+'sechub-wrapper-xray',
+
+/* webui */
+'sechub-webui-solution'
+
+String buildStage = System.getProperty("sechub.build.stage");
+
+if (buildStage!=null) {
+
+   /* build stage properrty is set */
+   if (buildStage.equals("api-necessary") || buildStage.equals("all") ){
+
+        include 'sechub-api-java', /* needs open api file to generate */
+
+        /* system test - needs java api*/
+        'sechub-systemtest',
+
+        /* pds tools - needs java api */
+        'sechub-pds-tools',
+
+        // Examples (are below 'sechub-examples' folder)
+        'sechub-examples:example-sechub-api-java',
+
+        /* WebUI - needs the Java API */
+        'sechub-webui'
+    }
+}
 
 buildCache {
     def useTempCache = System.getenv('SECHUB_BUILD_USE_TMP_CACHE')
-    
+
     if (useTempCache!=null){
         local {
             /* Set local build cache directory. using build/temp-cache let clean destroy the former cache..*/
             directory = "${settingsDir}/build/temp-cache"
         }
     }
-     
+
 }

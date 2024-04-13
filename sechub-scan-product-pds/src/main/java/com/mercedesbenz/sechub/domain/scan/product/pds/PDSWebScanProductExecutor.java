@@ -38,7 +38,8 @@ public class PDSWebScanProductExecutor extends AbstractPDSProductExecutor {
     }
 
     @Override
-    protected List<ProductResult> executeByAdapter(ProductExecutorData data) throws Exception {
+    protected List<ProductResult> executeByAdapter(ProductExecutorData data, PDSExecutorConfigSupport defaultConfigSupport,
+            PDSStorageContentProvider contentProvider) throws Exception {
 
         ProductExecutorContext executorContext = data.getProductExecutorContext();
         SecHubExecutionContext context = data.getSechubExecutionContext();
@@ -63,7 +64,6 @@ public class PDSWebScanProductExecutor extends AbstractPDSProductExecutor {
 
         /* @formatter:off */
         executorContext.useFirstFormerResultHavingMetaData(PDSMetaDataID.KEY_TARGET_URI, targetURI);
-        PDSStorageContentProvider contentProvider = contentProviderFactory.createContentProvider(context, configSupport, getScanType());
 
             ProductResult result = resilientActionExecutor.executeResilient(() -> {
                 try (InputStream sourceCodeZipFileInputStreamOrNull = contentProvider.getSourceZipFileInputStreamOrNull()){

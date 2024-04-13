@@ -2,11 +2,13 @@
 package com.mercedesbenz.sechub.domain.schedule.job;
 
 import java.time.LocalDateTime;
+import java.util.Optional;
 import java.util.UUID;
 
+import com.mercedesbenz.sechub.commons.model.SecHubConfigurationMetaData;
 import com.mercedesbenz.sechub.commons.model.TrafficLight;
-import com.mercedesbenz.sechub.domain.schedule.ExecutionResult;
-import com.mercedesbenz.sechub.domain.schedule.ExecutionState;
+import com.mercedesbenz.sechub.commons.model.job.ExecutionResult;
+import com.mercedesbenz.sechub.commons.model.job.ExecutionState;
 
 public class SecHubJobInfoForUser {
 
@@ -18,6 +20,7 @@ public class SecHubJobInfoForUser {
     public static final String PROPERTY_EXECUTION_STATE = "executionState";
     public static final String PROPERTY_EXECUTION_RESULT = "executionResult";
     public static final String PROPERTY_TRAFFIC_LIGHT = "trafficLight";
+    public static final String PROPERTY_METADATA = "metaData";
 
     private UUID jobUUID;
 
@@ -33,6 +36,8 @@ public class SecHubJobInfoForUser {
     private TrafficLight trafficLight;
 
     private ExecutionResult executionResult;
+
+    private Optional<SecHubConfigurationMetaData> metaData = Optional.empty();
 
     public UUID getJobUUID() {
         return jobUUID;
@@ -96,6 +101,14 @@ public class SecHubJobInfoForUser {
 
     public void setCreated(LocalDateTime created) {
         this.created = created;
+    }
+
+    public Optional<SecHubConfigurationMetaData> getMetaData() {
+        return metaData;
+    }
+
+    public void setMetaData(SecHubConfigurationMetaData metaData) {
+        this.metaData = Optional.ofNullable(metaData);
     }
 
 }

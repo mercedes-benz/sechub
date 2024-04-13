@@ -1,0 +1,93 @@
+# SPDX-License-Identifier: MIT
+name: Build and publish one single PDS solution
+
+on:
+  workflow_dispatch:
+    inputs:
+      pds-solution:
+        description: pds solution to build (e.g. gosec ; see sechub-pds-solutions/)
+        required: true
+      pds-version:
+        description: pds-base version to use (e.g. 1.0.0)
+        required: true
+  workflow_call:
+    inputs:
+      pds-solution:
+        required: true
+        type: string
+      pds-version:
+        required: true
+        type: string
+
+permissions:
+  packages: write
+
+env:
+  ACTIONS_SECHUB_REGISTRY: ghcr.io/mercedes-benz/sechub
+  ACTIONS_HELM_REGISTRY: "oci://ghcr.io/mercedes-benz/sechub/helm-charts"
+
+jobs:
+  build-pds-solution:
+    name: Build and publish pds-${{ inputs.pds-solution }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: "Show Inputs"
+        run: |
+          echo "pds-solution '${{ inputs.pds-solution }}'"
+          echo "pds-version '${{ inputs.pds-version }}'"
+
+      - name: Checkout git repository
+        uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11
+
+      - name: Docker login to ghcr.io
+        uses: docker/login-action@343f7c4344506bcbf9b4de18042ae17996df046d
+        with:
+          registry: ghcr.io
+          username: ${{ github.repository_owner }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      # Build pds solution container image + push to ghcr
+      - name: Build pds-${{ inputs.pds-solution }} container image + push to ghcr
+        shell: bash
+        run: |
+          PDS_SOLUTION="${{ inputs.pds-solution }}"
+          PDS_VERSION="${{ inputs.pds-version }}"
+          if [ ! -d "sechub-pds-solutions/$PDS_SOLUTION" ] ; then
+            echo "Fatal: No directory named \"$PDS_SOLUTION\" found in sechub-pds-solutions/"
+            exit 1
+          fi
+          cd "sechub-pds-solutions/${PDS_SOLUTION}"
+          test -f ./env && source ./env
+          export CHECKMARX_WRAPPER_VERSION
+          export CLOC_VERSION
+          export FINDSECURITYBUGS_VERSION
+          export GITLEAKS_VERSION
+          export GOSEC_VERSION
+          export OWASPZAP_VERSION
+          export OWASPZAP_SHA256SUM
+          export OWASPZAP_WRAPPER_VERSION
+          export PMD_VERSION
+          export SCANCODE_VERSION
+          export SPDX_TOOL_VERSION
+          export TERN_VERSION
+          export XRAY_WRAPPER_VERSION
+          export DOCKER_REGISTRY="${ACTIONS_SECHUB_REGISTRY}/pds-${PDS_SOLUTION}"
+          export VERSION_TAG=`./09-compute-image-tag.sh ${PDS_VERSION}`
+          export BASE_IMAGE="${ACTIONS_SECHUB_REGISTRY}/pds-base:${PDS_VERSION}"
+          echo "# Building image $DOCKER_REGISTRY:$VERSION_TAG from $BASE_IMAGE"
+          ./10-create-image.sh "$DOCKER_REGISTRY" "$VERSION_TAG" "$BASE_IMAGE"
+          ./20-push-image.sh "$DOCKER_REGISTRY" "$VERSION_TAG" yes
+
+      - name: Build pds-${{ inputs.pds-solution }} Helm chart + push to ghcr
+        shell: bash
+        run: |
+          PDS_SOLUTION="${{ inputs.pds-solution }}"
+          HELM_DIR="sechub-pds-solutions/${PDS_SOLUTION}/helm"
+          if [ ! -d "$HELM_DIR" ] ; then
+            echo "No directory named \"$HELM_DIR\" found - skipping Helm chart creation"
+            exit 0
+          fi
+          cd "$HELM_DIR"
+          echo "# Building Helm chart for pds-${PDS_SOLUTION}"
+          helm package pds-${PDS_SOLUTION}
+          helm push pds-${PDS_SOLUTION}-*.tgz $ACTIONS_HELM_REGISTRY

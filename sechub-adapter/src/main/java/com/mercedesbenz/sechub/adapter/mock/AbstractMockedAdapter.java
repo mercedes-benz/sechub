@@ -14,6 +14,7 @@ import com.mercedesbenz.sechub.adapter.AdapterExecutionResult;
 import com.mercedesbenz.sechub.adapter.AdapterMetaData;
 import com.mercedesbenz.sechub.adapter.AdapterRuntimeContext;
 import com.mercedesbenz.sechub.adapter.support.MockSupport;
+import com.mercedesbenz.sechub.commons.core.util.SimpleStringUtils;
 
 /**
  * Abstract base class for mocked adapters. Will rely on
@@ -115,7 +116,10 @@ public abstract class AbstractMockedAdapter<A extends AdapterContext<C>, C exten
 
         assertMetaDataHandledAsExpected(config, runtimeContext);
 
-        LOG.trace("Returning content:{}", result);
+        if (LOG.isDebugEnabled()) {
+            LOG.debug("Return result.length={}, result.truncated={}", (result == null ? 0 : result.length()),
+                    SimpleStringUtils.truncateWhenTooLong(result, 300));
+        }
         return new AdapterExecutionResult(result);
     }
 

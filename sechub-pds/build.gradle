@@ -63,7 +63,7 @@ task ensureLocalhostCertificate(type: Exec) {
 /* make eclipse task depend on ensured local certificate*/
 tasks.eclipse.dependsOn 'ensureLocalhostCertificate'
 
-version =   VersionData.getPdsVersion()
+version =   versionData.getPdsVersion()
 
 if (buildDoneByGitHubActions ){
     println("publish $project.name will be ignored at github actions at the moment!")
@@ -84,7 +84,7 @@ publishing {
 
             pom {
                 name = 'SecHub Product Delegation Server'
-                description = 'SecHub Product Delegation Server as a sprint boot jar. Ready to use.'
+                description = 'SecHub Product Delegation Server as a Spring Boot Jar. Ready to use.'
 
                 scm {
                     url = 'https://github.com/mercedes-benz/sechub'

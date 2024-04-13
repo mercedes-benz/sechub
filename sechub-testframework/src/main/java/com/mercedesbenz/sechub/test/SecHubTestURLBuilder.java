@@ -12,6 +12,8 @@ public class SecHubTestURLBuilder extends AbstractTestURLBuilder {
     private static final String API_ANONYMOUS = "/api/anonymous";
 
     private static final String API_ADMIN_USER = API_ADMIN + "/user";
+    private static final String API_ADMIN_USER_BY_EMAIL = API_ADMIN + "/user-by-email";
+
     private static final String API_ADMIN_PROJECT = API_ADMIN + "/project";
     private static final String API_ADMIN_JOB = API_ADMIN + "/job";
     private static final String API_ADMIN_JOBS = API_ADMIN_JOB + "s";
@@ -97,9 +99,14 @@ public class SecHubTestURLBuilder extends AbstractTestURLBuilder {
         return buildUrl(API_PROJECT, projectId, "false-positives");
     }
 
-    public String buildUserFetchesListOfJobsForProject(String projectId, String size, String page) {
+    public String buildUserFetchesListOfJobsForProject(String projectId, String size, String page, String withMetaData,
+            Map<String, String> additionalParametersOrNull) {
 
-        String url = appendParameters(buildUrl(API_PROJECT, projectId, "jobs"), params().set("size", size).set("page", page).build());
+        String url = appendParameters(buildUrl(API_PROJECT, projectId, "jobs"),
+                params().set("size", size).set("page", page).set("withMetaData", withMetaData).build());
+        if (additionalParametersOrNull != null) {
+            url = appendParameters(url, additionalParametersOrNull);
+        }
         return url;
     }
 
@@ -128,7 +135,11 @@ public class SecHubTestURLBuilder extends AbstractTestURLBuilder {
         if (params == null || params.isEmpty()) {
             return url;
         }
-        sb.append("?");
+        if (url.contains("?")) {
+            sb.append("&");
+        } else {
+            sb.append("?");
+        }
 
         Iterator<String> it = params.keySet().iterator();
         while (it.hasNext()) {
@@ -202,6 +213,10 @@ public class SecHubTestURLBuilder extends AbstractTestURLBuilder {
 
     public String buildAdminShowsUserDetailsUrl(String userId) {
         return buildUrl(API_ADMIN_USER, userId);
+    }
+
+    public String buildAdminShowsUserDetailsForEmailAddressUrl(String emailAddress) {
+        return buildUrl(API_ADMIN_USER_BY_EMAIL, emailAddress);
     }
 
     public String buildAdminChangesUserEmailAddress(String userId, String newEmailAddress) {
@@ -457,8 +472,8 @@ public class SecHubTestURLBuilder extends AbstractTestURLBuilder {
         return buildUrl(API_ANONYMOUS, "integrationtest/project/" + projectId + "/scan/report/count");
     }
 
-    public String buildFetchEmailsFromMockMailServiceUrl(String emailAdress) {
-        return buildUrl(API_ANONYMOUS, "integrationtest/mock/emails/to", emailAdress);
+    public String buildFetchEmailsFromMockMailServiceUrl(String emailAddress) {
+        return buildUrl(API_ANONYMOUS, "integrationtest/mock/emails/to", emailAddress);
     }
 
     public String buildResetAllMockMailsUrl() {
@@ -486,8 +501,8 @@ public class SecHubTestURLBuilder extends AbstractTestURLBuilder {
         return buildUrl(API_ANONYMOUS, "integrationtest/" + projectId + "/" + jobUUID + "/uploaded/" + fileName);
     }
 
-    public String buildGetServerVersionUrl() {
-        return buildUrl(API_ADMIN, "info/version");
+    public String buildGetServerRuntimeDataUrl() {
+        return buildUrl(API_ADMIN, "info/server");
     }
 
     /* +-----------------------------------------------------------------------+ */

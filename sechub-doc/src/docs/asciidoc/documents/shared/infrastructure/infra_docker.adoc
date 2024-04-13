@@ -1,9 +1,12 @@
 // SPDX-License-Identifier: MIT
 [[section-infrastructure-setup-docker]]
 
-=== Docker
+=== Docker-Compose
 
-NOTE:  We use normally not docker directly but instead kubernetes.
-       But we must build the images and upload to registry. Also it's sometimes necessary to start docker containers directly (local...) for debugging
-       purposes.
+Change into the product's folder and issue:
 
+----
+docker-compose up
+----
+
+TIP: Please also see the README file in the respective folder.

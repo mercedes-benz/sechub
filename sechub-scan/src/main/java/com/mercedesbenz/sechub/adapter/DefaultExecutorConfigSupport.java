@@ -123,6 +123,24 @@ public class DefaultExecutorConfigSupport {
     }
 
     /**
+     * Get parameter long value for given key
+     *
+     * @param key
+     * @return long value or -1 if not defined
+     */
+    protected long getParameterLongValue(String key) {
+        String asText = getParameter(key);
+        if (asText == null) {
+            return -1;
+        }
+        try {
+            return Integer.parseInt(asText);
+        } catch (NumberFormatException e) {
+            return -1;
+        }
+    }
+
+    /**
      * Resolves a name pattern provider for given id
      *
      * @param id

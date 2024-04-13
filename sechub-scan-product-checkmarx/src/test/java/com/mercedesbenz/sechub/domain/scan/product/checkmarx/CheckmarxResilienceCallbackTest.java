@@ -11,28 +11,24 @@ import org.junit.Test;
 import com.mercedesbenz.sechub.adapter.AdapterMetaData;
 import com.mercedesbenz.sechub.adapter.AdapterMetaDataCallback;
 import com.mercedesbenz.sechub.adapter.checkmarx.CheckmarxMetaDataID;
-import com.mercedesbenz.sechub.domain.scan.product.ProductExecutorContext;
-import com.mercedesbenz.sechub.sharedkernel.resilience.ResilienceContext;
+import com.mercedesbenz.sechub.adapter.checkmarx.CheckmarxResilienceCallback;
+import com.mercedesbenz.sechub.adapter.checkmarx.CheckmarxResilienceConsultant;
+import com.mercedesbenz.sechub.commons.core.resilience.ResilienceContext;
 
 public class CheckmarxResilienceCallbackTest {
 
     private CheckmarxResilienceCallback callbackToTest;
-    private ProductExecutorContext executorContext;
-    private CheckmarxExecutorConfigSuppport configSupport;
-    private AdapterMetaDataCallback adapterMetaDataCallback;
+    private AdapterMetaDataCallback metaDataCallback;
     private AdapterMetaData metaData;
 
     @Before
     public void before() throws Exception {
-        configSupport = mock(CheckmarxExecutorConfigSuppport.class);
-        executorContext = mock(ProductExecutorContext.class);
-        adapterMetaDataCallback = mock(AdapterMetaDataCallback.class);
+        metaDataCallback = mock(AdapterMetaDataCallback.class);
 
-        when(executorContext.getCallback()).thenReturn(adapterMetaDataCallback);
         metaData = mock(AdapterMetaData.class);
-        when(executorContext.getCurrentMetaDataOrNull()).thenReturn(metaData);
+        when(metaDataCallback.getMetaDataOrNull()).thenReturn(metaData);
 
-        callbackToTest = new CheckmarxResilienceCallback(configSupport, executorContext);
+        callbackToTest = new CheckmarxResilienceCallback(false, metaDataCallback);
 
         /* check precondition */
         assertFalse(callbackToTest.isAlwaysFullScanEnabled());
@@ -41,11 +37,9 @@ public class CheckmarxResilienceCallbackTest {
 
     @Test
     public void callbackToTest_has_initial_value_true_for_is_alwaysFullScanEnabled_when_configSupport_returns_true() {
-        CheckmarxExecutorConfigSuppport configSupport2 = mock(CheckmarxExecutorConfigSuppport.class);
-        when(configSupport2.isAlwaysFullScanEnabled()).thenReturn(true);
 
         /* prepare */
-        callbackToTest = new CheckmarxResilienceCallback(configSupport2, executorContext);
+        callbackToTest = new CheckmarxResilienceCallback(true, metaDataCallback);
 
         /* test */
         assertTrue(callbackToTest.isAlwaysFullScanEnabled());
@@ -67,7 +61,7 @@ public class CheckmarxResilienceCallbackTest {
         verify(metaData).setValue(CheckmarxMetaDataID.KEY_FILEUPLOAD_DONE, null);
         verify(metaData).setValue(CheckmarxMetaDataID.KEY_SCAN_ID, null);
 
-        verify(adapterMetaDataCallback).persist(metaData);
+        verify(metaDataCallback).persist(metaData);
 
         // also we check the callback does a reset of the fallback hint:
         verify(context).setValue(CheckmarxResilienceConsultant.CONTEXT_ID_FALLBACK_CHECKMARX_FULLSCAN, null);
@@ -88,7 +82,7 @@ public class CheckmarxResilienceCallbackTest {
         verify(metaData, never()).setValue(eq(CheckmarxMetaDataID.KEY_FILEUPLOAD_DONE), any());
         verify(metaData, never()).setValue(eq(CheckmarxMetaDataID.KEY_SCAN_ID), any());
 
-        verify(adapterMetaDataCallback, never()).persist(metaData);
+        verify(metaDataCallback, never()).persist(metaData);
 
         // also no reset done:
         verify(context, never()).setValue(eq(CheckmarxResilienceConsultant.CONTEXT_ID_FALLBACK_CHECKMARX_FULLSCAN), any());

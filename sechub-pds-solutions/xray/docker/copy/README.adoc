@@ -1,0 +1,2 @@
+// SPDX-License-Identifier: MIT
+Place a single Xray-Wrapper Jar into this folder.

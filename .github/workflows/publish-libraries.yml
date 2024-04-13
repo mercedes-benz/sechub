@@ -17,7 +17,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout master
-        uses: actions/checkout@v3
+        uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11
         with:
           ref: master
       # Create temporary local tags, so we build documentation for this tag...
@@ -28,11 +28,15 @@ jobs:
 
       # Build
       - name: Set up JDK 17
-        uses: actions/setup-java@v3
+        uses: actions/setup-java@9704b39bf258b59bc04b50fa2dd55e9ed76b47a8
         with:
           java-version: 17
           distribution: temurin
-          cache: gradle
+
+      - name: Set up Gradle
+        uses: gradle/gradle-build-action@29c0906b64b8fc82467890bfb7a0a7ef34bda89e
+        with:
+          cache-read-only: false
 
       - name: Build
         run: ./gradlew clean build -x :sechub-integrationtest:test -x :sechub-cli:build
@@ -51,40 +55,40 @@ jobs:
       # -----------------------------------------
       - name: Archive combined test report
         if: always()
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@5d5d22a31266ced268874388b861e4b58bb5c2f3
         with:
           name: combined-sechub-testreport
           path: build/reports/combined-report
           retention-days: 14
       - name: Archive GIT status
         if: always()
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@5d5d22a31266ced268874388b861e4b58bb5c2f3
         with:
           name: git-status.txt
           path: build/reports/git-status.txt
           retention-days: 14
-      
+
       # -----------------------------------------
       # Assert releaseable, so no dirty flags on releases
       # even when all artifact creation parts are done!
       # -----------------------------------------
       - name: Assert releasable
         run: ./gradlew assertReleaseable
-        
+
       # **************************************************
       # Now let's create + publish a new LIBRARIES release
       # **************************************************
 
-      # Publish to github packages      
+      # Publish to github packages
       - name: Publish
         run: ./gradlew publish
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # This token is provided by Actions, you do not need to create your own token
-      
+
       # Create release
       - name: Create libraries release
         id: create_libraries_release
-        uses: actions/create-release@v1
+        uses: actions/create-release@0cb9c9b65d5d1901c1f53e5e66eaf4afd303e70e
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # This token is provided by Actions, you do not need to create your own token
         with:
@@ -97,4 +101,4 @@ jobs:
             For details about changes look at [Milestone ${{github.event.inputs.milestone-number}}]( https://github.com/mercedes-benz/sechub/milestone/${{github.event.inputs.milestone-number}}?closed=1)
           draft: false
           prerelease: false
-      
+

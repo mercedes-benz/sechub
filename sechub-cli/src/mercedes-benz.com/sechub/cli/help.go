@@ -25,11 +25,14 @@ action
    ` + getStatusAction + ` - fetch current job status and return result as json
    ` + getReportAction + ` - fetch report as json (a report will only exist when job has finished)
    ` + listJobsAction + ` - lists the ` + strconv.Itoa(SizeOfJobList) + ` latest scan jobs
+   ` + defineFalsePositivesAction + ` - define the project's false-positives list from a json file
    ` + getFalsePositivesAction + ` - fetch the project's false-positives list as json
    ` + markFalsePositivesAction + ` - add from a json file to project's false-positives list
    ` + unmarkFalsePositivesAction + ` - remove items from project's false-positives list as defined in json file
    ` + interactiveMarkFalsePositivesAction + ` - interactively define false-positives depending on a json report file
    ` + interactiveUnmarkFalsePositivesAction + ` - interactively remove items from project's false-positives list
+   ` + showHelpAction + ` - shows help and terminates
+   ` + showVersionAction + ` - shows version and terminates
 
 Options:
 `
@@ -40,7 +43,7 @@ But commandline arguments will override environment variables; Environment varia
 `
 
 	example := `
-See https://mercedes-benz.github.io/sechub/latest/sechub-client.html#examples for examples.
+See https://mercedes-benz.github.io/sechub/latest/sechub-client.html#section-client-configuration-file for help on configuration.
 `
 	fmt.Fprint(w, info)
 	flag.PrintDefaults()

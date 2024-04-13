@@ -5,11 +5,12 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import com.mercedesbenz.sechub.adapter.checkmarx.CheckmarxConstants;
+import com.mercedesbenz.sechub.adapter.checkmarx.CheckmarxResilienceConfiguration;
 import com.mercedesbenz.sechub.commons.pds.PDSDefaultParameterKeyConstants;
 import com.mercedesbenz.sechub.commons.pds.PDSDefaultRuntimeKeyConstants;
 
 @Component
-public class CheckmarxWrapperEnvironment {
+public class CheckmarxWrapperEnvironment implements CheckmarxResilienceConfiguration {
 
     /********************************/
     /* PDS common environment setup */
@@ -52,8 +53,8 @@ public class CheckmarxWrapperEnvironment {
     @Value("${" + CheckmarxWrapperKeyConstants.KEY_PDS_CHECKMARX_ALWAYS_FULLSCAN_ENABLED + ":false}")
     private boolean alwaysFullScanEnabled;
 
-    @Value("${" + CheckmarxWrapperKeyConstants.KEY_PDS_CHECKMARX_RESULT_CHECK_PERIOD_MINUTES + ":1}")
-    private int scanResultCheckPeriodInMinutes;
+    @Value("${" + CheckmarxWrapperKeyConstants.KEY_PDS_CHECKMARX_RESULT_CHECK_PERIOD_MILLISECONDS + ":60000}")
+    private int scanResultCheckPeriodInMilliseconds;
 
     @Value("${" + CheckmarxWrapperKeyConstants.KEY_PDS_CHECKMARX_RESULT_CHECK_TIMOUT_MINUTES + ":300}")
     private int scanResultCheckTimoutInMinutes;
@@ -76,6 +77,31 @@ public class CheckmarxWrapperEnvironment {
 
     @Value("${" + CheckmarxConstants.MAPPING_CHECKMARX_NEWPROJECT_PRESET_ID + ":}")
     private String newProjectPresetIdMapping;
+
+    /**************************************************/
+    /* Checkmarx adapter resilience settings */
+    /**************************************************/
+
+    @Value("${" + CheckmarxWrapperKeyConstants.KEY_PDS_CHECKMARX_RESILIENCE_BAD_REQUEST_MAX_RETRIES + ":" + DEFAULT_BADREQUEST_RETRY_MAX + "}")
+    private int badRequestMaxRetries = DEFAULT_BADREQUEST_RETRY_MAX;
+
+    @Value("${" + CheckmarxWrapperKeyConstants.KEY_PDS_CHECKMARX_RESILIENCE_BAD_REQUEST_RETRY_WAIT_MILLISECONDS + ":"
+            + DEFAULT_BADREQUEST_RETRY_TIME_TO_WAIT_MILLISECONDS + "}")
+    private int badRequestRetryTimeToWaitInMilliseconds = DEFAULT_BADREQUEST_RETRY_TIME_TO_WAIT_MILLISECONDS;
+
+    @Value("${" + CheckmarxWrapperKeyConstants.KEY_PDS_CHECKMARX_RESILIENCE_SERVER_ERROR_MAX_RETRIES + ":" + DEFAULT_SERVERERROR_RETRY_MAX + "}")
+    private int internalServerErrortMaxRetries = DEFAULT_SERVERERROR_RETRY_MAX;
+
+    @Value("${" + CheckmarxWrapperKeyConstants.KEY_PDS_CHECKMARX_RESILIENCE_SERVER_ERROR_RETRY_WAIT_MILLISECONDS + ":"
+            + DEFAULT_SERVERERROR_RETRY_TIME_TO_WAIT_MILLISECONDS + "}")
+    private int internalServerErrorTimeToWaitInMilliseconds = DEFAULT_SERVERERROR_RETRY_TIME_TO_WAIT_MILLISECONDS;
+
+    @Value("${" + CheckmarxWrapperKeyConstants.KEY_PDS_CHECKMARX_RESILIENCE_NETWORK_ERROR_MAX_RETRIES + ":" + DEFAULT_NETWORKERROR_RETRY_MAX + "}")
+    private int networkErrorMaxRetries;
+
+    @Value("${" + CheckmarxWrapperKeyConstants.KEY_PDS_CHECKMARX_RESILIENCE_NETWORK_EROR_RETRY_WAIT_MILLISECONDS + ":"
+            + DEFAULT_NETWORKERROR_RETRY_TIME_TO_WAIT_MILLISECONDS + "}")
+    private int networkErrorRetryTimeToWaitInMilliseconds;
 
     public boolean isTrustAllCertificatesEnabled() {
         return trustAllCertificatesEnabled;
@@ -101,8 +127,8 @@ public class CheckmarxWrapperEnvironment {
         return alwaysFullScanEnabled;
     }
 
-    public int getScanResultCheckPeriodInMinutes() {
-        return scanResultCheckPeriodInMinutes;
+    public int getScanResultCheckPeriodInMilliseconds() {
+        return scanResultCheckPeriodInMilliseconds;
     }
 
     public int getScanResultCheckTimeOutInMinutes() {
@@ -149,4 +175,28 @@ public class CheckmarxWrapperEnvironment {
         return pdsResultFile;
     }
 
+    public int getBadRequestMaxRetries() {
+        return badRequestMaxRetries;
+    }
+
+    public int getBadRequestRetryTimeToWaitInMilliseconds() {
+        return badRequestRetryTimeToWaitInMilliseconds;
+    }
+
+    public int getInternalServerErrortMaxRetries() {
+        return internalServerErrortMaxRetries;
+    }
+
+    public int getInternalServerErrorRetryTimeToWaitInMilliseconds() {
+        return internalServerErrorTimeToWaitInMilliseconds;
+    }
+
+    public int getNetworkErrorMaxRetries() {
+        return networkErrorMaxRetries;
+    }
+
+    public int getNetworkErrorRetryTimeToWaitInMilliseconds() {
+        return networkErrorRetryTimeToWaitInMilliseconds;
+
+    }
 }

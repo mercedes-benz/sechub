@@ -10,8 +10,10 @@ ARG BASE_IMAGE
 # Build args
 ARG PDS_VERSION
 ARG BUILD_TYPE
-ARG GO="go1.20.4.linux-amd64.tar.gz"
+ARG GO="go1.21.6.linux-amd64.tar.gz"
 
+# possible values: temurin, openj9, openjdk
+ARG JAVA_DISTRIBUTION="temurin"
 # possible values: 17
 ARG JAVA_VERSION="17"
 
@@ -41,7 +43,8 @@ RUN mkdir --parent "$PDS_ARTIFACT_FOLDER" "$DOWNLOAD_FOLDER"
 
 RUN export DEBIAN_FRONTEND=noninteractive && \
     apt-get update && \
-    apt-get install --quiet --assume-yes wget w3m git "openjdk-$JAVA_VERSION-jdk-headless" && \
+    apt-get upgrade --assume-yes --quiet && \
+    apt-get install --quiet --assume-yes wget w3m git && \
     apt-get clean
 
 # Install Go
@@ -58,6 +61,12 @@ RUN cd "$DOWNLOAD_FOLDER" && \
     tar --extract --file "$GO" --directory /usr/local/ && \
     # remove go tar.gz
     rm "$GO"
+
+COPY --chmod=755 install-java/debian "$DOWNLOAD_FOLDER/install-java/"
+
+# Install Java
+RUN cd "$DOWNLOAD_FOLDER/install-java/" && \
+    ./install-java.sh "$JAVA_DISTRIBUTION" "$JAVA_VERSION" jdk
 
 # Copy clone script
 COPY --chmod=755 clone.sh "$BUILD_FOLDER/clone.sh"
@@ -133,8 +142,9 @@ LABEL org.opencontainers.image.title="SecHub PDS Base Image"
 LABEL org.opencontainers.image.description="The base image for the SecHub Product Delegation Server (PDS)"
 LABEL maintainer="SecHub FOSS Team"
 
-ARG PDS_ARTIFACT_FOLDER
+ARG JAVA_DISTRIBUTION
 ARG JAVA_VERSION
+ARG PDS_ARTIFACT_FOLDER
 ARG PDS_VERSION
 
 # env vars in container
@@ -145,11 +155,11 @@ ENV SHARED_VOLUMES="/shared_volumes"
 ENV SHARED_VOLUME_UPLOAD_DIR="$SHARED_VOLUMES/uploads"
 ENV PDS_VERSION="${PDS_VERSION}"
 ENV PDS_FOLDER="/pds"
-ENV SCRIPT_FOLDER="/scripts"
-ENV HELPER_FOLDER="/helper"
-ENV DOWNLOAD_FOLDER="/downloads"
-ENV MOCK_FOLDER="/mocks"
-ENV TOOL_FOLDER="/tools"
+ENV DOWNLOAD_FOLDER="$PDS_FOLDER/downloads"
+ENV HELPER_FOLDER="$PDS_FOLDER/helper"
+ENV MOCK_FOLDER="$PDS_FOLDER/mocks"
+ENV SCRIPT_FOLDER="$PDS_FOLDER/scripts"
+ENV TOOL_FOLDER="$PDS_FOLDER/tools"
 ENV WORKSPACE="/workspace"
 
 # non-root user
@@ -168,8 +178,14 @@ COPY --from=builder "$PDS_ARTIFACT_FOLDER" "$PDS_FOLDER"
 RUN export DEBIAN_FRONTEND=noninteractive && \
     apt-get update && \
     apt-get upgrade --assume-yes --quiet && \
-    apt-get install --assume-yes --quiet "openjdk-$JAVA_VERSION-jre-headless" tree && \
+    apt-get install --assume-yes --quiet tree && \
     apt-get clean
+
+COPY --chmod=755 install-java/debian "$DOWNLOAD_FOLDER/install-java/"
+
+# Install Java
+RUN cd "$DOWNLOAD_FOLDER/install-java/" && \
+    ./install-java.sh "$JAVA_DISTRIBUTION" "$JAVA_VERSION" jre
 
 # Copy run script into the container
 COPY run.sh /run.sh

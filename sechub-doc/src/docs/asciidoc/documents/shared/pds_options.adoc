@@ -1,18 +1,29 @@
 // SPDX-License-Identifier: MIT
 [[section-start-configuration]]
-==== Minimum start configuration
+==== Profiles / running the {sechub} {pds}
 
-===== PROD profile
+===== Production mode
 You can start a PDS in production profile which requires a running PostgreSQL
 database. Please refer also to <<section-postgresql-configuration,PostgreSQL configuration>> for
-database setup which must be done before. 
+database setup which must be done before.
 
-Example: 
+Example:
 ----
 java -jar Dspring.profiles.active=pds_prod sechub-pds-0.25.0.jar
 ----
 
-NOTE: There are some more mandatory parameters, please refer to <<section-general-configuration,general configuration>> 
+NOTE: There are some more mandatory parameters, please refer to <<section-general-configuration,general configuration>>
+
+===== Integration test mode
+You can start a PDS in integration test mode if you just want to
+test
+
+
+Example:
+----
+java -jar -Dspring.profiles.active=pds_integrationtest,pds_h2 sechub-pds-0.25.0.jar
+----
+
 
 ===== Logging
 ====== Default output
@@ -20,22 +31,12 @@ NOTE: There are some more mandatory parameters, please refer to <<section-genera
 `fluentd` to gather the log output.
 
 ====== Logstash support
-When you want to use `logstash` you just have to set the environment variable 
-`LOGGING_TYPE` to `LOGSTASH_JSON` before server starts. 
+When you want to use `logstash` you just have to set the environment variable
+`LOGGING_TYPE` to `LOGSTASH_JSON` before server starts.
 
-
-===== Integration test mode
-You can start a PDS in integration test mode if you just want to
-test
-
-
-Example: 
-----
-java -jar -Dspring.profiles.active=pds_integrationtest,pds_h2 sechub-pds-0.25.0.jar
-----
 
 [[section-db-configuration]]
-==== Database configuration 
+==== Database configuration
 
 [[section-postgresql-configuration]]
 ===== PostgreSQL
@@ -58,17 +59,17 @@ POSTGRES_DB_PASSWORD=a-very-strong-password...
 
 [[section-general-configuration]]
 ==== General configuration
-{pds} can be configured  by keys on server startup.
+{pds} can be configured by keys on server startup.
 Using the spring `@Value` annotation we are able to
 use these keys as Java system properties but also as environment entries.
 
-E.g. a key like `sechub.pds.admin.apitoken` can be set with
+E.g. a key like `pds.admin.apitoken` can be set with
 
 ----
-java ... -Dsechub.pds.admin.apitoken={noop}12345exampleToken
+java ... -Dpds.admin.apitoken={noop}12345exampleToken
 ----
 
-or with an environment entry `SECHUB_PDS_ADMIN_APITOKEN` which
+or with an environment entry `PDS_ADMIN_APITOKEN` which
 is e.g. more suitable for a `kubernetes` cluster deployment.
 
 [TIP]
@@ -79,17 +80,15 @@ variables from your {sechub} installation.
 An example:
 
 ```
-sechub.pds.admin.apitoken=env:PDS_GOSEC_SOLUTION_APITOKEN
+pds.admin.apitoken=env:PDS_GOSEC_SOLUTION_APITOKEN
 ```
 
 If your SecHub process runs in an environment with variable `PDS_GOSEC_SOLUTION_APITOKEN` set
-to 'very-secret-apitoken1234' _(e.g. by using secrets inside K8s)_, the authentication sent to 
+to 'very-secret-apitoken1234' _(e.g. by using secrets inside K8s)_, the authentication sent to
 {pds} by {sechub} will use
 ```
-sechub.pds.admin.apitoken=very-secret-apitoken1234
+pds.admin.apitoken=very-secret-apitoken1234
 ```
-
-
 ====
 
 ifdef::showhintaboutgenerated[]

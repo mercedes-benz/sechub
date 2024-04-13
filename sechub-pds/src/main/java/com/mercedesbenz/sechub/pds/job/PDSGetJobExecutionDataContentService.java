@@ -38,15 +38,15 @@ public class PDSGetJobExecutionDataContentService {
     private static final int DEFAULT_WATCH_PERIOD_MAX_RETRIES = 10;
 
     @PDSMustBeDocumented("Maximum amount of tries to check if a stream data refresh has been handled (stream data has been updated)")
-    @Value("${sechub.pds.config.job.stream.check.retries:" + DEFAULT_WATCH_PERIOD_MAX_RETRIES + "}")
+    @Value("${pds.config.job.stream.check.retries:" + DEFAULT_WATCH_PERIOD_MAX_RETRIES + "}")
     int maximumRefreshCheckRetries = DEFAULT_WATCH_PERIOD_MAX_RETRIES;
 
     @PDSMustBeDocumented("Defines time in milliseconds for PDS job stream data update checks after job has been marked as necessary to have stream data refresh")
-    @Value("${sechub.pds.config.job.stream.check.timetowait:" + DEFAULT_WATCH_TIME_PERIOD_IN_MILLIS + "}")
+    @Value("${pds.config.job.stream.check.timetowait:" + DEFAULT_WATCH_TIME_PERIOD_IN_MILLIS + "}")
     long timeToWaitForNextCheckInMilliseconds = DEFAULT_WATCH_TIME_PERIOD_IN_MILLIS;
 
     @PDSMustBeDocumented("Maximum amount of retries to mark job stream data refresh")
-    @Value("${sechub.pds.config.job.stream.mark.retries:" + DEFAULT_RESILIENCE_MAX_RETRIES + "}")
+    @Value("${pds.config.job.stream.mark.retries:" + DEFAULT_RESILIENCE_MAX_RETRIES + "}")
     int maximumRefreshRequestRetries = DEFAULT_RESILIENCE_MAX_RETRIES;
 
     private ExceptionThrower<IllegalStateException> streamDataRefreshExceptionThrower;

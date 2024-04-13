@@ -1,0 +1,58 @@
+// SPDX-License-Identifier: MIT
+ /*============================================================================
+ * Build file for subproject
+ *
+ * Root build file: "${rootProject.projectDir}/build.gradle"
+ * ============================================================================
+ */
+plugins {
+    id 'java-library'
+}
+
+version = versionData.getServerVersion()
+
+dependencies {
+
+    implementation project(':sechub-pds-commons-core')
+    implementation project(':sechub-api-java')
+    implementation project(':sechub-commons-pds')
+    implementation project(':sechub-commons-archive')
+
+    implementation library.apache_commons_io
+    implementation library.apache_commons_compress // we need TAR archive support
+    
+    implementation spring_boot_dependency.logback_classic
+    
+    testImplementation spring_boot_dependency.junit_jupiter
+    testImplementation spring_boot_dependency.mockito_core
+    testImplementation project(':sechub-testframework')
+
+}
+
+/**
+ * Own task for integration tests.
+ */
+task integrationtest(type: Test) {
+   description 'Starts integration test server, execute tests and automatically stops server after done or failed'
+   // integration tests seems to be very often  "up-to-date"
+   // but we want them always to be executed, so next line...
+   outputs.upToDateWhen { false }
+   
+   useJUnitPlatform() // we must enable this to execute Junit5 as well - even when already defined for task "test"
+   
+   // we must set the gradle properties as system properties, so available inside test framework
+   systemProperties groovyPropertiesMap(['sechub.integrationtest.serverport', 'sechub.integrationtest.pdsport'])
+   
+   /*
+    *  We must set the system property here - gradle does fork
+    * the jvm on testing and does not add system properties of calling automatically so we set
+    * integration test properties here
+    */
+   systemProperty "sechub.integrationtest.running", "true"
+   
+   filter {
+         includeTestsMatching "*IntTest"
+   }
+   
+}
+

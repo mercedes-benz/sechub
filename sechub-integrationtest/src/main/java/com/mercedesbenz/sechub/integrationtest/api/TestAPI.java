@@ -35,6 +35,7 @@ import com.fasterxml.jackson.databind.MappingIterator;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectReader;
 import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.mercedesbenz.sechub.commons.TextFileWriter;
 import com.mercedesbenz.sechub.commons.mapping.MappingData;
 import com.mercedesbenz.sechub.commons.mapping.MappingEntry;
 import com.mercedesbenz.sechub.commons.model.JSONConverter;
@@ -97,6 +98,10 @@ public class TestAPI {
 
     private static final long MAXIMUM_WAIT_FOR_RUNNING_JOBS = 300 * 1000;// 300 seconds = 5 minutes max;
 
+    private static File testReportStorageFolder = new File("./build/sechub-test-reports");
+
+    private static TextFileWriter writer = new TextFileWriter();
+
     public static final AsUser as(TestUser user) {
         return new AsUser(user);
     }
@@ -132,13 +137,25 @@ public class TestAPI {
     }
 
     /**
-     * Asserts given report HTML
+     * Asserts given report HTML (in memory)
      *
-     * @param html
+     * @param html string representation
      * @return assert object
      */
     public static AssertHTMLReport assertHTMLReport(String html) {
         return AssertHTMLReport.assertHTMLReport(html);
+    }
+
+    /**
+     * Asserts given report HTML (from a file). When the html report has failures,
+     * the failure text will provide the file path inside the failure output.
+     *
+     * @param html     string representation
+     * @param filePath the file path where the HTML report comes from
+     * @return assert object
+     */
+    public static AssertHTMLReport assertHTMLReport(String html, String filePath) {
+        return AssertHTMLReport.assertHTMLReport(html, filePath);
     }
 
     public static AssertFullScanData assertFullScanDataZipFile(File file) {
@@ -313,7 +330,7 @@ public class TestAPI {
                 if (jobMayNeverFail && jobStatus.hasResultFailed()) {
                     String prettyJSON = JSONConverter.get().toJSON(jobStatus, true);
                     fail("The job execution has failed - skip further attempts to check that job will be done.\n-Status data:\n" + prettyJSON
-                            + "\n\n- Please refer to server and/or PDS logs for reason.");
+                            + "\n\n- Please refer to server and/or PDS logs for reason. You can search for the unit test method name inside these logs.");
                 }
                 return jobStatus.hasResultOK();
             }
@@ -338,7 +355,7 @@ public class TestAPI {
         waitForJobRunning(project, 5, 300, jobUUID);
     }
 
-    public static UUID waitForPDSJobWithIndexOfSecHubJobAndReturnPDSJobUUID(UUID sechubJobUUID, int index) {
+    public static UUID waitForPDSJobOfSecHubJobAtGivenPositionAndReturnPDSJobUUID(UUID sechubJobUUID, int index) {
         String indexNotFoundErrorMessage = "Did not found PDS job [" + index + "] uuid was found for sechub job:" + sechubJobUUID;
         return executeCallableAndAcceptAssertionsMaximumTimes(15, () -> {
 
@@ -349,7 +366,7 @@ public class TestAPI {
     }
 
     public static UUID waitForFirstPDSJobOfSecHubJobAndReturnPDSJobUUID(UUID sechubJobUUID) {
-        return waitForPDSJobWithIndexOfSecHubJobAndReturnPDSJobUUID(sechubJobUUID, 0);
+        return waitForPDSJobOfSecHubJobAtGivenPositionAndReturnPDSJobUUID(sechubJobUUID, 0);
     }
 
     public static void waitForPDSJobInState(PDSJobStatusState wantedState, int timeOutInSeconds, int timeToWaitInMillis, UUID pdsJobUUID,
@@ -369,7 +386,26 @@ public class TestAPI {
                     boolean statusIsFailed = status.contains(PDSJobStatusState.FAILED.toString());
                     if (statusIsFailed) {
                         /* it has failed and failed is not expected - so this is a problem! */
-                        fail("The status of PDS job:" + pdsJobUUID + " is " + status + " - wanted was " + wantedState);
+                        String outputStreamText = asPDSUser(PDS_ADMIN).getJobOutputStreamText(pdsJobUUID);
+                        String errorStreamText = asPDSUser(PDS_ADMIN).getJobErrorStreamText(pdsJobUUID);
+
+                        String message = """
+                                PDS job: %s status not as expected
+                                - actual: %s
+                                - expected: %s
+
+                                Output stream:
+                                ----------------------
+                                %s
+
+                                Error stream:
+                                ----------------------
+                                %s
+
+                                """.formatted(pdsJobUUID, status, wantedState, outputStreamText, errorStreamText);
+
+                        fail(message);
+
                     }
                 }
                 return wantedStateFound;
@@ -1055,7 +1091,7 @@ public class TestAPI {
             @Override
             public void accept(JsonNode node) {
                 JsonNode userAsKey = node.get("userId");
-                JsonNode emailAsValue = node.get("emailAdress");
+                JsonNode emailAsValue = node.get("emailAddress");
                 String keyText = userAsKey.textValue();
                 String valueText = emailAsValue.textValue();
                 map.put(keyText, valueText);
@@ -1513,5 +1549,19 @@ public class TestAPI {
         String json = getSuperAdminRestHelper().getJSON(url);
 
         return JSONConverter.get().fromJSONtoListOf(TestJobRunStatisticData.class, json);
+    }
+
+    /**
+     * Stores given report data inside "build/sechub-test-reports"
+     *
+     * @param fileName   the report file name to use for storage
+     * @param reportData the report data to store
+     */
+    public static void storeTestReport(String fileName, String reportData) {
+        try {
+            writer.save(new File(testReportStorageFolder, fileName), reportData, true);
+        } catch (Exception e) {
+            LOG.error("Was not able to store sechub test report: {}", fileName, e);
+        }
     }
 }

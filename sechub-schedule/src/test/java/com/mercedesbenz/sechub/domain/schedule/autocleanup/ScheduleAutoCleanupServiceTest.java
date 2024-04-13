@@ -12,6 +12,7 @@ import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 
 import com.mercedesbenz.sechub.domain.schedule.config.SchedulerConfigService;
+import com.mercedesbenz.sechub.domain.schedule.job.SecHubJobDataRepository;
 import com.mercedesbenz.sechub.domain.schedule.job.SecHubJobRepository;
 import com.mercedesbenz.sechub.sharedkernel.TimeCalculationService;
 import com.mercedesbenz.sechub.sharedkernel.autocleanup.AutoCleanupResult;
@@ -22,6 +23,7 @@ class ScheduleAutoCleanupServiceTest {
     private ScheduleAutoCleanupService serviceToTest;
     private SchedulerConfigService configService;
     private SecHubJobRepository jobRepository;
+    private SecHubJobDataRepository jobDataRepository;
     private TimeCalculationService timeCalculationService;
     private AutoCleanupResultInspector inspector;
 
@@ -31,11 +33,13 @@ class ScheduleAutoCleanupServiceTest {
 
         configService = mock(SchedulerConfigService.class);
         jobRepository = mock(SecHubJobRepository.class);
+        jobDataRepository = mock(SecHubJobDataRepository.class);
         timeCalculationService = mock(TimeCalculationService.class);
         inspector = mock(AutoCleanupResultInspector.class);
 
         serviceToTest.configService = configService;
         serviceToTest.jobRepository = jobRepository;
+        serviceToTest.jobDataRepository = jobDataRepository;
         serviceToTest.timeCalculationService = timeCalculationService;
         serviceToTest.inspector = inspector;
     }
@@ -55,6 +59,7 @@ class ScheduleAutoCleanupServiceTest {
         verify(configService).getAutoCleanupInDays();
         verify(timeCalculationService, never()).calculateNowMinusDays(any());
         verify(jobRepository, never()).deleteJobsOlderThan(any());
+        verify(jobDataRepository, never()).deleteJobDataOlderThan(any());
         // check inspection as expected: never because not executed
         verify(inspector, never()).inspect(any());
     }
@@ -74,6 +79,7 @@ class ScheduleAutoCleanupServiceTest {
         verify(configService).getAutoCleanupInDays();
         verify(timeCalculationService).calculateNowMinusDays(eq(days));
         verify(jobRepository).deleteJobsOlderThan(cleanTime);
+        verify(jobDataRepository).deleteJobDataOlderThan(cleanTime);
 
         // check inspection as expected
         ArgumentCaptor<AutoCleanupResult> captor = ArgumentCaptor.forClass(AutoCleanupResult.class);

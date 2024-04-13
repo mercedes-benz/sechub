@@ -1,21 +1,19 @@
 #!/usr/bin/env bash
 # SPDX-License-Identifier: MIT
 
-SCRIPT_DIR=`dirname $0`
 REPLICAS="$1"
 
+cd $(dirname "$0")
+source "../../sechub-solutions-shared/scripts/9999-env-file-helper.sh"
+
+ENVIRONMENT_FILES_FOLDER="../shared/environment"
 ENVIRONMENT_FILE=".env-cluster-object-storage"
 
-if [[ ! -f  "$ENVIRONMENT_FILE" ]]
-then
-    echo "Environment file does not exist."
-    echo "Creating default environment file $ENVIRONMENT_FILE for you."
+# Only variables from .env can be used in the Docker-Compose file
+# all other variables are only available in the container
+setup_environment_file ".env" "env" "$ENVIRONMENT_FILES_FOLDER/env-base-image"
+setup_environment_file "$ENVIRONMENT_FILE" "$ENVIRONMENT_FILES_FOLDER/env-base" "$ENVIRONMENT_FILES_FOLDER/env-cluster" "$ENVIRONMENT_FILES_FOLDER/env-object-storage" "env-database"
 
-    cp "$SCRIPT_DIR/env-cluster-initial" "$SCRIPT_DIR/$ENVIRONMENT_FILE"
-    sed -i "s/S3_ENABLED=false/S3_ENABLED=true/" "$SCRIPT_DIR/$ENVIRONMENT_FILE"
-else
-    echo "Using existing environment file: $ENVIRONMENT_FILE."
-fi
 
 if [[ -z "$REPLICAS" ]]
 then
@@ -25,4 +23,9 @@ else
     echo "Starting cluster of $REPLICAS containers."
 fi
 
+# Use Docker BuildKit
+export BUILDKIT_PROGRESS=plain
+export DOCKER_BUILDKIT=1
+
 docker compose --file docker-compose_pds_multi_cluster_object_storage.yaml up --scale pds-multi=$REPLICAS --build --remove-orphans
+

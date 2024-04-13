@@ -6,59 +6,68 @@ class VersionData{
     private static final String ID_PDS = "pds";
     private static final String ID_PDS_TOOLS = "pds-tools"
     private static final String ID_SERVER = "server"
-    private static final String ID_WEBSITE = "website"
+    private static final String ID_WEBUI = "webui"
     private static final String ID_WRAPPER_CHECKMARX = "checkmarx wrapper"
     private static final String ID_WRAPPER_OWASPZAP = "owasp-zap wrapper"
+    private static final String ID_WRAPPER_XRAY= "xray wrapper"
 
-    private static Map<String,VersionInfo> map = new HashMap<>();
+    private StringBuilder debugInfo = new StringBuilder();
 
-    public static class VersionInfo{
+    private Map<String,VersionInfo> map = new HashMap<>();
 
-        String fullVersion
-        String shortVersion
+    boolean containingAtLeastOneDirtyReleaseVersion
+    boolean containingAtLeastOneRealReleaseVersion
+
+    public VersionData(){
+
+        /* initialize */
+        initialize(ID_CLIENT,   "Client")
+        initialize(ID_LIBRARIES,"Libraries")
+        initialize(ID_PDS,      "PDS")
+        initialize(ID_PDS_TOOLS,"PDS-Tools")
+        initialize(ID_SERVER,   "Server")
+        initialize(ID_WEBUI,    "WebUI")
+        initialize(ID_WRAPPER_CHECKMARX, "Checkmarx Wrapper")
+        initialize(ID_WRAPPER_OWASPZAP,  "OWASP-ZAP Wrapper")
+        initialize(ID_WRAPPER_XRAY,      "Xray Wrapper")
+    }
+
+    public class VersionInfo{
+
         String id
         String text
+        String fullVersion
+        String shortVersion
+        String shortVersionForDocs
 
         public String describe(){
-            return "- "+text+" :"+shortVersion+" ["+fullVersion+"]"
+            return text.padLeft(17)+": "+shortVersion+" ("+fullVersion+") docs: "+shortVersionForDocs
         }
 
     }
 
-    static{
-        /* initialize */
-        initialize(ID_CLIENT,   "Client ")
-        initialize(ID_LIBRARIES,"Libraries")
-        initialize(ID_PDS,      "PDS    ")
-        initialize(ID_PDS_TOOLS,"PDS-Tools")
-        initialize(ID_SERVER,   "Server ")
-        initialize(ID_WEBSITE,  "Website")
-        initialize(ID_WRAPPER_CHECKMARX, "Checkmarx Wrapper")
-        initialize(ID_WRAPPER_OWASPZAP, "OWASP-ZAP Wrapper")
-    }
+    void initialize(String id,String text){
 
-
-    static void initialize(String id,String text){
         VersionInfo info = new VersionInfo()
-        info.id=id;
-        info.text=text;
-        info.fullVersion="undefined-long-"+id+"version"
-        info.shortVersion="undefined-"+id+"version"
+
+        info.id = id;
+        info.text = text;
+        info.fullVersion = "undefined-long-"+id+"version"
+        info.shortVersion = "undefined-"+id+"version"
+        info.shortVersionForDocs = info.shortVersion
         map.put(id, info)
     }
 
-    static boolean containingAtLeastOneDirtyReleaseVersion
-    static boolean containingAtLeastOneRealReleaseVersion
-
-    public static VersionInfo defineVersion(String versionType, String fullVersion){
+    public VersionInfo defineVersion(String versionType, String fullVersion, String shortVersionForDocs){
 
         VersionInfo info = map.get(versionType.toLowerCase());
         if (info==null){
             throw new IllegalArgumentException("unsupported version type:"+versionType);
         }
-        inspectReleaseVersion(fullVersion);
+        inspectReleaseVersion(versionType, fullVersion);
         info.shortVersion = simplifiedVersion(fullVersion);
-        info.fullVersion= fullVersion
+        info.fullVersion = fullVersion
+        info.shortVersionForDocs = shortVersionForDocs
 
         return info;
     }
@@ -67,55 +76,80 @@ class VersionData{
      * Convenience methods: return short version
      */
 
-    public static String getLibrariesVersion(){
-        return map.get(ID_LIBRARIES).getShortVersion()
-    }
-
-    public static String getServerVersion(){
-        return map.get(ID_SERVER).getShortVersion()
-    }
-
-    public static String getClientVersion(){
-        return map.get(ID_CLIENT).getShortVersion()
-    }
-
-    public static String getCheckmarxWrapperVersion(){
+    public String getCheckmarxWrapperVersion(){
         return map.get(ID_WRAPPER_CHECKMARX).getShortVersion()
     }
 
-    public static String getOwaspzapWrapperVersion(){
+    public String getClientVersion(){
+        return map.get(ID_CLIENT).getShortVersion()
+    }
+    public String getClientDocsVersion(){
+        return map.get(ID_CLIENT).getShortVersionForDocs()
+    }
+
+    public String getLibrariesVersion(){
+        return map.get(ID_LIBRARIES).getShortVersion()
+    }
+
+    public String getOwaspzapWrapperVersion(){
         return map.get(ID_WRAPPER_OWASPZAP).getShortVersion()
     }
 
-    public static String getPdsVersion(){
+    public String getPdsVersion(){
         return map.get(ID_PDS).getShortVersion()
     }
+    public String getPdsDocsVersion(){
+        return map.get(ID_PDS).getShortVersionForDocs()
+    }
 
-    public static String getPdsToolsVersion(){
+    public String getPdsToolsVersion(){
         return map.get(ID_PDS_TOOLS).getShortVersion()
     }
 
-    public static String getWebsiteVersion(){
-        return map.get(ID_WEBSITE).getShortVersion()
+    public String getServerVersion(){
+        return map.get(ID_SERVER).getShortVersion()
     }
+    public String getServerDocsVersion(){
+        return map.get(ID_SERVER).getShortVersionForDocs()
+    }
+
+    public String getWebuiVersion(){
+        return map.get(ID_WEBUI).getShortVersion()
+    }
+
+    public String getXrayWrapperVersion(){
+        return map.get(ID_WRAPPER_XRAY).getShortVersion()
+    }
+
+    public String getDebugInfo(){
+
+        return "Debug info:\ncontainingAtLeastOneDirtyReleaseVersion=$containingAtLeastOneDirtyReleaseVersion\ncontainingAtLeastOneRealReleaseVersion=$containingAtLeastOneRealReleaseVersion\n\n$debugInfo";
+    }
+
 
     /**
      * Inspect version - if not starting with 0.0.0 this means it's a release, so
      *                   a "dirty" may not be contained inside long version name
      */
-    private static void inspectReleaseVersion(String longVersionName){
+    private void inspectReleaseVersion(String versionType, String longVersionName){
+        debugInfo.append("\ninspect $versionType release version: long version=$longVersionName\n")
+        debugInfo.append("- at least one release found : $containingAtLeastOneRealReleaseVersion, one release dirty: $containingAtLeastOneDirtyReleaseVersion\n")
+
         if (longVersionName.startsWith("0.0.0")){
             /* not a correct release version so ignore */
             return
         }
         containingAtLeastOneDirtyReleaseVersion=containingAtLeastOneDirtyReleaseVersion || longVersionName.contains("dirty")
         containingAtLeastOneRealReleaseVersion=true
+
+        debugInfo.append("- updated data")
+        debugInfo.append("- at least one release found : $containingAtLeastOneRealReleaseVersion, one release dirty: $containingAtLeastOneDirtyReleaseVersion\n")
     }
 
     /**
      * Simplifies given version string . e.g. 0.4.1-b74 will be reduced to 0.4.1
      */
-    private static String simplifiedVersion(String fullVersion){
+    private String simplifiedVersion(String fullVersion){
         if (fullVersion==null){
             return "0.0.0";
         }

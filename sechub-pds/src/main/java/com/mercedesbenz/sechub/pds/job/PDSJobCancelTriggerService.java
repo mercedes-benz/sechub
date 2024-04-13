@@ -23,8 +23,8 @@ public class PDSJobCancelTriggerService {
             + DEFAULT_INITIAL_DELAY_MILLIS
             + " milliseconds are defined. It can be configured differently. This is useful when you need to startup a cluster. Simply use some different values for the cluster members, this limit concurrent access.";
 
-    private static final String TRIGGER_INITIAL_DELAY_STRING = "${sechub.pds.config.trigger.jobcancellation.initialdelay:" + DEFAULT_INITIAL_DELAY_MILLIS + "}";
-    private static final String TRIGGER_FIXED_DELAY_STRING = "${sechub.pds.config.trigger.jobcancellation.delay:" + DEFAULT_FIXED_DELAY_MILLIS + "}";
+    private static final String TRIGGER_INITIAL_DELAY_STRING = "${pds.config.trigger.jobcancellation.initialdelay:" + DEFAULT_INITIAL_DELAY_MILLIS + "}";
+    private static final String TRIGGER_FIXED_DELAY_STRING = "${pds.config.trigger.jobcancellation.delay:" + DEFAULT_FIXED_DELAY_MILLIS + "}";
 
     @Autowired
     PDSCancelService cancelService;

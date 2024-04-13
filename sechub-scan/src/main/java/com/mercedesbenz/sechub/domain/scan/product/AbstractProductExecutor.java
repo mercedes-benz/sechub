@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import com.mercedesbenz.sechub.adapter.AdapterExecutionResult;
 import com.mercedesbenz.sechub.adapter.mock.MockDataIdentifierFactory;
+import com.mercedesbenz.sechub.commons.core.resilience.ResilientActionExecutor;
 import com.mercedesbenz.sechub.commons.model.ScanType;
 import com.mercedesbenz.sechub.commons.model.SecHubConfigurationModel;
 import com.mercedesbenz.sechub.commons.model.SecHubMessagesList;
@@ -28,7 +29,6 @@ import com.mercedesbenz.sechub.domain.scan.resolve.NetworkTargetResolver;
 import com.mercedesbenz.sechub.sharedkernel.ProductIdentifier;
 import com.mercedesbenz.sechub.sharedkernel.UUIDTraceLogID;
 import com.mercedesbenz.sechub.sharedkernel.configuration.SecHubConfiguration;
-import com.mercedesbenz.sechub.sharedkernel.resilience.ResilientActionExecutor;
 
 /**
  * An abstract product executor implementation
@@ -120,6 +120,14 @@ public abstract class AbstractProductExecutor implements ProductExecutor {
 
     protected abstract void customize(ProductExecutorData data);
 
+    /**
+     * Execute with adapter and given data
+     *
+     * @param data product executor data
+     * @return list of product results or <code>null</code> when product adapter is
+     *         not called/ no result available
+     * @throws Exception
+     */
     protected abstract List<ProductResult> executeByAdapter(ProductExecutorData data) throws Exception;
 
     private List<ProductResult> startExecution(ProductExecutorData data) throws SecHubExecutionException {
@@ -252,6 +260,8 @@ public abstract class AbstractProductExecutor implements ProductExecutor {
             return config.getSecretScan().isPresent();
         case ANALYTICS:
             // will be handled inisde isExecutionNecessary() of executor implementation
+            return true;
+        case PREPARE:
             return true;
         case UNKNOWN:
             return false;

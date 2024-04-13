@@ -88,6 +88,9 @@ public class PDSJob {
 
     public static final String QUERY_FIND_JOBS_IN_STATE = "SELECT j from PDSJob j WHERE j." + PROPERTY_STATE + "= :statusState";
 
+    public static final String QUERY_FORCE_JOB_STATE_UPDATE = "UPDATE PDSJob j set j." + PROPERTY_STATE + "=:statusState WHERE j." + PROPERTY_UUID
+            + " in :jobUUIDs";
+
     @Id
     @GeneratedValue(generator = "UUID")
     @GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")

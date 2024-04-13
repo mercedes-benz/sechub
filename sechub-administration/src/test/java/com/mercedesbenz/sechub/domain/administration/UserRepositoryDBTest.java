@@ -26,6 +26,7 @@ import com.mercedesbenz.sechub.domain.administration.user.TestUserCreationFactor
 import com.mercedesbenz.sechub.domain.administration.user.User;
 import com.mercedesbenz.sechub.domain.administration.user.UserRepository;
 import com.mercedesbenz.sechub.sharedkernel.error.NotAcceptableException;
+import com.mercedesbenz.sechub.sharedkernel.error.NotFoundException;
 import com.mercedesbenz.sechub.test.junit4.ExpectedExceptionFactory;
 
 @RunWith(SpringRunner.class)
@@ -56,6 +57,25 @@ public class UserRepositoryDBTest {
 
         user2 = TestUserCreationFactory.createUser("db_test_testuser2");
         user2 = entityManager.persistAndFlush(user2);
+    }
+
+    @Test
+    public void findOrFailUserByEmailAddress_user_found_by_email_address() {
+        /* execute */
+        User user = userRepository.findOrFailUserByEmailAddress("db_test_testuser1@example.org");
+
+        /* test */
+        assertEquals(user1, user);
+    }
+
+    @Test
+    public void findOrFailUserByEmailAddress_user_NOT_found_by_email_address() {
+        /* execute */
+        NotFoundException exception = assertThrows(NotFoundException.class,
+                () -> userRepository.findOrFailUserByEmailAddress("db_test_testuser_not_existing@example.org"));
+
+        /* test */
+        assertEquals("No user with email address 'db_test_testuser_not_existing@example.org' found!", exception.getMessage());
     }
 
     @Test

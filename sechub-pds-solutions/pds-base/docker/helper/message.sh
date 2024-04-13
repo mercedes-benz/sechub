@@ -1,14 +1,13 @@
 #!/usr/bin/env bash
 # SPDX-License-Identifier: MIT
 
-# TODO: this script can be moved to the PDS base image
 function writeUniqueMessageFile() {
       MSG_PREFIX="$1"
       MESSAGE="$2"
 
       MESSAGE_FILE_PATH="${PDS_JOB_USER_MESSAGES_FOLDER}/${MSG_PREFIX}_message_$(date +%Y-%m-%d_%H.%M.%S_%N).txt"
       echo "$MESSAGE" > "$MESSAGE_FILE_PATH"
-      
+
       # additionally echo the message to make it part of the output stream:
       echo "$MSG_PREFIX: $MESSAGE"
 }
