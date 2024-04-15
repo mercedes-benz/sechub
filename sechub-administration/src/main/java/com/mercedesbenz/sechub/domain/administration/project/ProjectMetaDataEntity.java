@@ -49,11 +49,6 @@ public class ProjectMetaDataEntity implements Serializable {
     @Column(name = COLUMN_PROJECT_ID)
     String projectId;
 
-    /* FIXME Albert Tregnaghi, 2024-04-15:remove */
-//    @ManyToOne
-//    @JoinColumn(name = COLUMN_PROJECT_ID, nullable = false)
-//    Project project;
-
     @Id
     @Column(name = COLUMN_METADATA_KEY)
     String key;

@@ -6,7 +6,6 @@ import static com.mercedesbenz.sechub.sharedkernel.util.Assert.*;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
@@ -54,8 +53,6 @@ public class SchedulerSourcecodeUploadService {
      */
     private static final long EMPTY_ZIP_FILE_SIZE = 22;
 
-    private static final int SHA256_LENGTH = 64;
-
     @Autowired
     SchedulerSourcecodeUploadConfiguration configuration;
 
@@ -82,33 +79,6 @@ public class SchedulerSourcecodeUploadService {
 
     @Autowired
     DomainMessageService domainMessageService;
-
-    /* FIXME Albert Tregnaghi, 2024-04-15: remove when not necessary! */
-    @Deprecated // we try with string again
-    @UseCaseUserUploadsSourceCode(@Step(number = 2, name = "Try to find project and upload sourcecode as zipfile", description = "When project is found and user has access and job is initializing the sourcecode file will be uploaded"))
-    public void uploadSourceCode(String projectId, UUID jobUUID, MultipartFile file, MultipartFile checkSumFile) {
-        /* assert */
-        assertion.assertIsValidProjectId(projectId);
-        assertion.assertIsValidJobUUID(jobUUID);
-
-        long checkSumFileSize = checkSumFile.getSize();
-        if (checkSumFileSize == 0) {
-            throw new NotAcceptableException("Checksum is empty");
-        }
-
-        if (checkSumFileSize > SHA256_LENGTH) {
-            throw new NotAcceptableException("Checksum to long. Expected " + SHA256_LENGTH + " but was " + checkSumFileSize + ".");
-        }
-
-        String checkSum = "";
-        try {
-
-            checkSum = new String(checkSumFile.getBytes(), StandardCharsets.UTF_8);
-        } catch (IOException e) {
-            throw new SecHubRuntimeException("Unable to convert checksum to string", e);
-        }
-        uploadSourceCode(projectId, jobUUID, file, checkSum);
-    }
 
     @UseCaseUserUploadsSourceCode(@Step(number = 2, name = "Try to find project and upload sourcecode as zipfile", description = "When project is found and user has access and job is initializing the sourcecode file will be uploaded"))
     public void uploadSourceCode(String projectId, UUID jobUUID, MultipartFile file, String checkSum) {

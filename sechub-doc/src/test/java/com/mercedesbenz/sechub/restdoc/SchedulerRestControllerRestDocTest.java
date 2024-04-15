@@ -1,42 +1,20 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.restdoc;
 
-import static com.mercedesbenz.sechub.commons.model.SecHubConfigurationModel.PROPERTY_API_VERSION;
-import static com.mercedesbenz.sechub.commons.model.SecHubConfigurationModel.PROPERTY_CODE_SCAN;
-import static com.mercedesbenz.sechub.commons.model.SecHubConfigurationModel.PROPERTY_DATA;
-import static com.mercedesbenz.sechub.commons.model.SecHubConfigurationModel.PROPERTY_INFRA_SCAN;
-import static com.mercedesbenz.sechub.commons.model.SecHubConfigurationModel.PROPERTY_LICENSE_SCAN;
-import static com.mercedesbenz.sechub.commons.model.SecHubConfigurationModel.PROPERTY_SECRET_SCAN;
-import static com.mercedesbenz.sechub.commons.model.SecHubConfigurationModel.PROPERTY_WEB_SCAN;
-import static com.mercedesbenz.sechub.commons.model.TestSecHubConfigurationBuilder.configureSecHub;
-import static com.mercedesbenz.sechub.restdoc.RestDocumentation.defineRestService;
-import static com.mercedesbenz.sechub.test.RestDocPathParameter.JOB_UUID;
-import static com.mercedesbenz.sechub.test.RestDocPathParameter.PAGE;
-import static com.mercedesbenz.sechub.test.RestDocPathParameter.PROJECT_ID;
-import static com.mercedesbenz.sechub.test.RestDocPathParameter.SIZE;
-import static com.mercedesbenz.sechub.test.RestDocPathParameter.WITH_META_DATA;
-import static com.mercedesbenz.sechub.test.SecHubTestURLBuilder.https;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
-import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
-import static org.springframework.restdocs.headers.HeaderDocumentation.requestHeaders;
-import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.get;
-import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.multipart;
-import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.post;
-import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.put;
-import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
-import static org.springframework.restdocs.payload.PayloadDocumentation.requestFields;
-import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields;
-import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
-import static org.springframework.restdocs.request.RequestDocumentation.partWithName;
-import static org.springframework.restdocs.request.RequestDocumentation.pathParameters;
-import static org.springframework.restdocs.request.RequestDocumentation.queryParameters;
-import static org.springframework.restdocs.request.RequestDocumentation.requestParts;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static com.mercedesbenz.sechub.commons.core.CommonConstants.*;
+import static com.mercedesbenz.sechub.commons.model.SecHubConfigurationModel.*;
+import static com.mercedesbenz.sechub.commons.model.TestSecHubConfigurationBuilder.*;
+import static com.mercedesbenz.sechub.restdoc.RestDocumentation.*;
+import static com.mercedesbenz.sechub.test.RestDocPathParameter.*;
+import static com.mercedesbenz.sechub.test.SecHubTestURLBuilder.*;
+import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.Mockito.*;
+import static org.springframework.restdocs.headers.HeaderDocumentation.*;
+import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.*;
+import static org.springframework.restdocs.payload.PayloadDocumentation.*;
+import static org.springframework.restdocs.request.RequestDocumentation.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 import java.io.InputStream;
 import java.lang.annotation.Annotation;
@@ -939,35 +917,35 @@ public class SchedulerRestControllerRestDocTest implements TestIsNecessaryForDoc
 
         InputStream inputStreamTo = RestDocTestFileSupport.getTestfileSupport().getInputStreamTo("upload/zipfile_contains_only_test1.txt.zip");
         MockMultipartFile file1 = new MockMultipartFile("file", inputStreamTo);
-        MockMultipartFile checkSum = new MockMultipartFile("checkSum", "", "", "mychecksum".getBytes());
-
-        /* execute + test */
-        /* @formatter:off */
+        /* execute + test @formatter:off */
         this.mockMvc.perform(
-        		multipart(apiEndpoint, PROJECT1_ID, randomUUID).
-        			file(file1).
-        			file(checkSum)
-        		).
-        			andExpect(status().isOk()).
-        		    // https://docs.spring.io/spring-restdocs/docs/2.0.2.RELEASE/reference/html5/
-        			andDo(defineRestService().
+                multipart(apiEndpoint, PROJECT1_ID, randomUUID).
+                    file(file1).
+                    queryParam(MULTIPART_CHECKSUM, "checkSumValue")
+                ).
+                    andExpect(status().isOk()).
+                            // https://docs.spring.io/spring-restdocs/docs/2.0.2.RELEASE/reference/html5/
+                    andDo(defineRestService().
                             with().
                                 useCaseData(useCase).
                                 tag(RestDocFactory.extractTag(apiEndpoint)).
                             and().
                             document(
-                            		requestHeaders(),
+                                    requestHeaders(
+                                    ),
                                     pathParameters(
                                             parameterWithName("projectId").description("The id of the project where sourcecode shall be uploaded for"),
                                             parameterWithName("jobUUID").description(DESCRIPTION_JOB_UUID)
                                     ),
+                                    queryParameters(
+                                            parameterWithName(MULTIPART_CHECKSUM).description("A sha256 checksum for file upload validation")
+                                    ),
                                     // TODO Jeremias Eppler, 2020-12-07: It is not possible to document this part properly in OpenAPI.
                                     // See: https://github.com/ePages-de/restdocs-api-spec/issues/105
-                					requestParts(
-                							partWithName("file").description("The sourcecode as zipfile to upload"),
-                							partWithName(CommonConstants.MULTIPART_CHECKSUM).description("A sha256 checksum for file upload validation")
-                					)
-        			));
+                                    requestParts(
+                                            partWithName(MULTIPART_FILE).description("The sourcecode as zipfile to upload")
+                                    )
+                    ));
 
         /* @formatter:on */
     }
@@ -997,7 +975,7 @@ public class SchedulerRestControllerRestDocTest implements TestIsNecessaryForDoc
 
         InputStream inputStreamTo = RestDocTestFileSupport.getTestfileSupport().getInputStreamTo("upload/tarfile_contains_only_test1.txt.tar");
         MockMultipartFile file = new MockMultipartFile("file", inputStreamTo);
-        MockMultipartFile checkSum = new MockMultipartFile("checkSum", "", "", "mychecksum".getBytes());
+        MockMultipartFile checkSum = new MockMultipartFile("checkSum", "", "", "checkSumValue".getBytes());
 
         /* execute + test */
         /* @formatter:off */

@@ -1,6 +1,8 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.domain.schedule;
 
+import static com.mercedesbenz.sechub.commons.core.CommonConstants.*;
+
 import java.util.Map;
 import java.util.UUID;
 
@@ -84,23 +86,6 @@ public class SchedulerRestController {
     }
 
     /* @formatter:off */
-    /* FIXME Albert Tregnaghi, 2024-04-15: remove when not necessary! */
-    @Deprecated // we try string
-	@Validated
-	@RolesAllowed(RoleConstants.ROLE_USER)
-	@UseCaseUserStartsSynchronousScanByClient(@Step(number=2, name="upload sourcecode"))
-	@UseCaseUserUploadsSourceCode(@Step(number=1,name="Authenticated REST call",needsRestDoc=true))
-	@RequestMapping(path = "/job/{jobUUID}/sourcecodeX", method = RequestMethod.POST)
-	public void uploadSourceCodeX(
-				@PathVariable("projectId") String projectId,
-				@PathVariable("jobUUID") UUID jobUUID,
-				@RequestParam("file") MultipartFile file,
-				@RequestParam("checkSum") MultipartFile checkSum
-			) {
-		sourcecodeUploadService.uploadSourceCode(projectId, jobUUID, file, checkSum);
-	}
-	/* @formatter:on */
-    /* @formatter:off */
 	@Validated
 	@RolesAllowed(RoleConstants.ROLE_USER)
 	@UseCaseUserStartsSynchronousScanByClient(@Step(number=2, name="upload sourcecode"))
@@ -109,8 +94,8 @@ public class SchedulerRestController {
 	public void uploadSourceCode(
 	        @PathVariable("projectId") String projectId,
 	        @PathVariable("jobUUID") UUID jobUUID,
-	        @RequestParam("file") MultipartFile file,
-	        @RequestParam("checkSum") String checkSum
+	        @RequestParam(MULTIPART_FILE) MultipartFile file,
+	        @RequestParam(MULTIPART_CHECKSUM) String checkSum
 	        ) {
 	    sourcecodeUploadService.uploadSourceCode(projectId, jobUUID, file, checkSum);
 	}

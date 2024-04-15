@@ -40,7 +40,7 @@ public class SchedulerSourcecodeUploadServiceTest {
     private UUID randomUuid;
     private ScheduleAssertService mockedAssertService;
     private MultipartFile file;
-    private MultipartFile checkSum;
+    private String checkSum = "mychecksum";
 
     private JobStorage storage;
     private ArchiveSupport mockedArchiveSupport;
@@ -63,10 +63,6 @@ public class SchedulerSourcecodeUploadServiceTest {
 
         file = mock(MultipartFile.class);
         when(file.getSize()).thenReturn(1024L); // just not empty
-
-        checkSum = mock(MultipartFile.class);
-        when(checkSum.getBytes()).thenReturn("mychecksum".getBytes());
-        when(checkSum.getSize()).thenReturn(64L);
 
         archiveSupportProvider = mock(ArchiveSupportProvider.class);
         mockedArchiveSupport = mock(ArchiveSupport.class);

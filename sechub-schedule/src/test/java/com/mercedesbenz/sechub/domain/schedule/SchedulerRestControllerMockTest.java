@@ -187,17 +187,16 @@ public class SchedulerRestControllerMockTest {
 
         InputStream inputStreamTo = ScheduleTestFileSupport.getTestfileSupport().getInputStreamTo("upload/zipfile_contains_only_test1.txt.zip");
         MockMultipartFile file1 = new MockMultipartFile("file", inputStreamTo);
-        MockMultipartFile checkSum = new MockMultipartFile("checkSum", "", "", "myChecksum".getBytes());
 
         /* execute + test @formatter:off */
         this.mockMvc.perform(
         		multipart(https(PORT_USED).
         		    buildUploadSourceCodeUrl(PROJECT_ID.pathElement(), JOB_UUID.pathElement()), PROJECT1_ID, randomUUID).
         			file(file1).
-        			file(checkSum)
+        			param("checkSum", "mychecksum")
         		);
 
-        verify(mockedSourcecodeUploadService).uploadSourceCode(PROJECT1_ID, randomUUID, file1, checkSum);
+        verify(mockedSourcecodeUploadService).uploadSourceCode(PROJECT1_ID, randomUUID, file1, "mychecksum");
         /* @formatter:on */
     }
 
