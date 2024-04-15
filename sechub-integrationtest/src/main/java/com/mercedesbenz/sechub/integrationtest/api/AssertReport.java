@@ -63,8 +63,8 @@ public class AssertReport {
     public AssertReport hasMessages(int expectedAmountOfMessages) {
         autoDumper.execute(() -> {
             int amountOfMessages = report.getMessages().size();
-            
-            if (amountOfMessages!=expectedAmountOfMessages) {
+
+            if (amountOfMessages != expectedAmountOfMessages) {
                 StringBuilder sb = new StringBuilder();
                 sb.append("Expected messages count: ").append(expectedAmountOfMessages).append(" but was: ").append(amountOfMessages);
                 sb.append("\n");
