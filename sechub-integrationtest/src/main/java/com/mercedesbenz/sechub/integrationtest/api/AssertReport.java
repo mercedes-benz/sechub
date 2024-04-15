@@ -61,7 +61,20 @@ public class AssertReport {
     }
 
     public AssertReport hasMessages(int expectedAmountOfMessages) {
-        autoDumper.execute(() -> assertEquals(expectedAmountOfMessages, report.getMessages().size()));
+        autoDumper.execute(() -> {
+            int amountOfMessages = report.getMessages().size();
+            
+            if (amountOfMessages!=expectedAmountOfMessages) {
+                StringBuilder sb = new StringBuilder();
+                sb.append("Expected messages count: ").append(expectedAmountOfMessages).append(" but was: ").append(amountOfMessages);
+                sb.append("\n");
+                for (SecHubMessage secHubMessage : report.getMessages()) {
+                    sb.append(secHubMessage);
+                    sb.append("\n");
+                }
+                fail(sb.toString());
+            }
+        });
         return this;
     }
 
