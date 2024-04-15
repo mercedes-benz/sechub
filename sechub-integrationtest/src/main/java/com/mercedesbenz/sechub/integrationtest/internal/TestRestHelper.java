@@ -288,7 +288,6 @@ public class TestRestHelper {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.MULTIPART_FORM_DATA);
 
-        headers.set("", checkSum);
         String fileSize = String.valueOf(file.length());
         headers.set(FILE_SIZE_HEADER_FIELD_NAME, fileSize);
 
