@@ -1241,7 +1241,7 @@ public class TestAPI {
      */
     public static void resetAutoCleanupDays(int wantedFormerDays) {
         ensureAutoCleanupSetToDays(wantedFormerDays);
-        resetIntegrationTestAutoCleanupInspector();
+        resetIntegrationTestAutoCleanupInspectorEvents();
     }
 
     public static void resetPDSAutoCleanupDaysToZero() {
@@ -1250,7 +1250,7 @@ public class TestAPI {
         waitUntilPDSAutoCleanupConfigurationChangedTo(data);
     }
 
-    private static void resetIntegrationTestAutoCleanupInspector() {
+    public static void resetIntegrationTestAutoCleanupInspectorEvents() {
         String url = getURLBuilder().buildIntegrationTestResetAutoCleanupInspectionUrl();
         getSuperAdminRestHelper().post(url);
     }
@@ -1293,7 +1293,6 @@ public class TestAPI {
         executeUntilSuccessOrTimeout(new AbstractTestExecutable(PDS_ADMIN, 2, 200) {
             @Override
             public boolean runAndReturnTrueWhenSuccesfulImpl() throws Exception {
-                asPDSUser(PDS_ADMIN).fetchAutoCleanupConfiguration();
                 TestAutoCleanupData autoCleanupConfig2 = asPDSUser(PDS_ADMIN).fetchAutoCleanupConfiguration();
                 return data.equals(autoCleanupConfig2);
             }
