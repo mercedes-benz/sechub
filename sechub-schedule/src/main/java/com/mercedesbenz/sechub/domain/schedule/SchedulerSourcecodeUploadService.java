@@ -83,6 +83,8 @@ public class SchedulerSourcecodeUploadService {
     @Autowired
     DomainMessageService domainMessageService;
 
+    /* FIXME Albert Tregnaghi, 2024-04-15: remove when not necessary! */
+    @Deprecated // we try with string again
     @UseCaseUserUploadsSourceCode(@Step(number = 2, name = "Try to find project and upload sourcecode as zipfile", description = "When project is found and user has access and job is initializing the sourcecode file will be uploaded"))
     public void uploadSourceCode(String projectId, UUID jobUUID, MultipartFile file, MultipartFile checkSumFile) {
         /* assert */
@@ -105,6 +107,14 @@ public class SchedulerSourcecodeUploadService {
         } catch (IOException e) {
             throw new SecHubRuntimeException("Unable to convert checksum to string", e);
         }
+        uploadSourceCode(projectId, jobUUID, file, checkSum);
+    }
+
+    @UseCaseUserUploadsSourceCode(@Step(number = 2, name = "Try to find project and upload sourcecode as zipfile", description = "When project is found and user has access and job is initializing the sourcecode file will be uploaded"))
+    public void uploadSourceCode(String projectId, UUID jobUUID, MultipartFile file, String checkSum) {
+        /* assert */
+        assertion.assertIsValidProjectId(projectId);
+        assertion.assertIsValidJobUUID(jobUUID);
 
         assertion.assertIsValidSha256Checksum(checkSum);
 
