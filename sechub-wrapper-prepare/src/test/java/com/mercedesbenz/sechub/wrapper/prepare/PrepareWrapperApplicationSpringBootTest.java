@@ -16,6 +16,8 @@ import com.mercedesbenz.sechub.wrapper.prepare.factory.PrepareWrapperPojoFactory
 import com.mercedesbenz.sechub.wrapper.prepare.prepare.PrepareWrapperContextFactory;
 import com.mercedesbenz.sechub.wrapper.prepare.prepare.PrepareWrapperPreparationService;
 
+import java.io.IOException;
+
 @SpringBootTest(classes = { PrepareWrapperContextFactory.class, PrepareWrapperPreparationService.class, PrepareWrapperPojoFactory.class,
         PrepareWrapperEnvironment.class, PrepareWrapperPDSUserMessageSupportPojoFactory.class })
 @ExtendWith(SpringExtension.class)
@@ -26,7 +28,7 @@ class PrepareWrapperApplicationSpringBootTest {
     PrepareWrapperPreparationService preparationService;
 
     @Test
-    void start_preparation_with_remote_test_properties_and_empty_prepare_service_list_is_success() {
+    void start_preparation_with_remote_test_properties_and_empty_prepare_service_list_is_success() throws IOException {
         /* execute */
         AdapterExecutionResult result = preparationService.startPreparation();
 

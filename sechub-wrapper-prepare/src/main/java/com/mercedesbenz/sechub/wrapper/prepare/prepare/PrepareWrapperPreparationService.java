@@ -1,9 +1,11 @@
 package com.mercedesbenz.sechub.wrapper.prepare.prepare;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import com.mercedesbenz.sechub.wrapper.prepare.cli.PrepareWrapperRemoteConfigurationExtractor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,13 +29,16 @@ public class PrepareWrapperPreparationService {
     @Autowired
     PrepareWrapperContextFactory factory;
 
+    @Autowired
+    PrepareWrapperRemoteConfigurationExtractor extractor;
+
     private List<PrepareWrapperModule> modules = new ArrayList<>();
 
-    public AdapterExecutionResult startPreparation() {
+    public AdapterExecutionResult startPreparation() throws IOException {
 
         LOG.debug("Start preparation");
         PrepareWrapperContext context = factory.create(environment);
-        List<SecHubRemoteDataConfiguration> remoteDataConfigurationList = resolveRemoteConfigurationsFromSecHubModel(context);
+        List<SecHubRemoteDataConfiguration> remoteDataConfigurationList = extractor.extractRemoteConfiguration(context.getSecHubConfiguration());
 
         if (remoteDataConfigurationList.isEmpty()) {
             LOG.warn("No Remote configuration was found");
@@ -46,33 +51,11 @@ public class PrepareWrapperPreparationService {
         for (PrepareWrapperModule module : modules) {
             SecHubConfigurationModel sechubConfiguration = context.getSecHubConfiguration();
             if (module.isAbleToPrepare(sechubConfiguration)) {
-                module.prepare(sechubConfiguration, remoteDataConfigurationList);
+                module.prepare(sechubConfiguration, context.getEnvironment().getPdsPrepareUploadFolderDirectory());
             }
         }
         PrepareResult result = new PrepareResult(PrepareStatus.OK);
         return new AdapterExecutionResult(result.toString());
     }
 
-    private List<SecHubRemoteDataConfiguration> resolveRemoteConfigurationsFromSecHubModel(PrepareWrapperContext context) {
-        List<SecHubRemoteDataConfiguration> result = new ArrayList<>();
-        if (context.getSecHubConfiguration() == null) {
-            throw new IllegalStateException("Context was not initialized correctly. SecHub configuration was null");
-        }
-
-        var dataOpt = context.getSecHubConfiguration().getData();
-        if (dataOpt.isPresent()) {
-            var data = dataOpt.get();
-            List<SecHubSourceDataConfiguration> sourceDataList = data.getSources();
-            List<SecHubBinaryDataConfiguration> binaryDataList = data.getBinaries();
-            for (SecHubSourceDataConfiguration sourceData : sourceDataList) {
-                var remoteOpt = sourceData.getRemote();
-                remoteOpt.ifPresent(result::add);
-            }
-            for (SecHubBinaryDataConfiguration binaryData : binaryDataList) {
-                var remoteOpt = binaryData.getRemote();
-                remoteOpt.ifPresent(result::add);
-            }
-        }
-        return result;
-    }
 }

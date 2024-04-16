@@ -5,12 +5,15 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
+import com.mercedesbenz.sechub.wrapper.prepare.cli.PrepareWrapperRemoteConfigurationExtractor;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import com.mercedesbenz.sechub.adapter.AdapterExecutionResult;
 import com.mercedesbenz.sechub.commons.model.SecHubConfigurationModel;
 import com.mercedesbenz.sechub.wrapper.prepare.cli.PrepareWrapperEnvironment;
+
+import java.io.IOException;
 
 class PrepareWrapperPreparationServiceTest {
 
@@ -22,23 +25,26 @@ class PrepareWrapperPreparationServiceTest {
 
     PrepareWrapperContext context;
 
+    PrepareWrapperRemoteConfigurationExtractor extractor;
+
     @BeforeEach
     void beforeEach() {
 
         environment = mock(PrepareWrapperEnvironment.class);
         factory = mock(PrepareWrapperContextFactory.class);
         context = mock(PrepareWrapperContext.class);
-
+        extractor = new PrepareWrapperRemoteConfigurationExtractor();
         when(factory.create(environment)).thenReturn(context);
 
         serviceToTest = new PrepareWrapperPreparationService();
         serviceToTest.environment = environment;
         serviceToTest.factory = factory;
+        serviceToTest.extractor = extractor;
 
     }
 
     @Test
-    void when_no_remote_data_was_configured_return_preparation_success_with_warn_message(){
+    void when_no_remote_data_was_configured_return_preparation_success_with_warn_message() throws IOException {
         /* prepare */
         when(context.getSecHubConfiguration()).thenReturn(new SecHubConfigurationModel());
 
@@ -52,7 +58,7 @@ class PrepareWrapperPreparationServiceTest {
     }
 
     @Test
-    void when_remote_data_was_configured_return_preparation_success_without_message() {
+    void when_remote_data_was_configured_return_preparation_success_without_message() throws IOException {
         /* prepare */
         String json = """
                 {

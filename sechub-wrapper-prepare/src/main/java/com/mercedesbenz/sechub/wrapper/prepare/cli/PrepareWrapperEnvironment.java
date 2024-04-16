@@ -23,7 +23,8 @@ public class PrepareWrapperEnvironment {
     @Value("${" + PDSDefaultRuntimeKeyConstants.RT_KEY_PDS_JOB_USER_MESSAGES_FOLDER + "}")
     private String pdsUserMessagesFolder;
 
-    // TODO: 27.03.24 laura environment variable for upload folder
+    @Value("${" + PDSDefaultRuntimeKeyConstants.PARAM_KEY_PDS_PREPARE_UPLOAD_FOLDER_DIRECTORY + "}")
+    private String pdsPrepareUploadFolderDirectory;
 
     public String getSechubConfigurationModelAsJson() {
         return sechubConfigurationModelAsJson;
@@ -35,6 +36,10 @@ public class PrepareWrapperEnvironment {
 
     public String getPdsUserMessagesFolder() {
         return pdsUserMessagesFolder;
+    }
+
+    public String getPdsPrepareUploadFolderDirectory() {
+        return pdsPrepareUploadFolderDirectory;
     }
 
 }
