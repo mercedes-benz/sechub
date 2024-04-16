@@ -43,7 +43,7 @@ public class AutoCleanupScenario1IntTest {
         /* first we configure and expect events */
         auto_cleanup_executed_in_every_domain_when_admin_configures_cleanupdays_1();
 
-        /* next reset t0 0 and expect no longer events */
+        /* next reset to 0 and expect no longer events */
         auto_cleanup_NEVER_executed_in_any_domain_when_admin_configures_cleanupdays_0();
     }
 
