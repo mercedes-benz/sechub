@@ -531,7 +531,7 @@ table.CodeRay td.code{padding:0 0 0 .75em}
 <div id="header">
 <h1><span class="image"><a class="image" href="https://mercedes-benz.github.io/sechub"><img src="images/sechub-logo.png" alt="sechub logo"></a></span> SecHub Client Documentation</h1>
 <div class="details">
-<span id="revnumber"> Client 1.3.0 modified (commit 6b3c27b)</span>
+<span id="revnumber"> Client 1.4.0 modified (commit 5eb0916)</span>
 </div>
 <div id="toc" class="toc2">
 <div id="toctitle">Table of contents</div>
@@ -553,11 +553,12 @@ table.CodeRay td.code{padding:0 0 0 .75em}
 <li><a href="#getstatus">2.4.3.3. getStatus</a></li>
 <li><a href="#getreport">2.4.3.4. getReport</a></li>
 <li><a href="#listjobs">2.4.3.5. listJobs</a></li>
-<li><a href="#getfalsepositives">2.4.3.6. getFalsePositives</a></li>
-<li><a href="#interactivemarkfalsepositives">2.4.3.7. interactiveMarkFalsePositives</a></li>
-<li><a href="#interactiveunmarkfalsepositives">2.4.3.8. interactiveUnmarkFalsePositives</a></li>
-<li><a href="#section-client-false-positives-mark">2.4.3.9. markFalsePositives</a></li>
-<li><a href="#section-client-false-positives-unmark">2.4.3.10. unmarkFalsePositives</a></li>
+<li><a href="#definefalsepositives">2.4.3.6. defineFalsePositives</a></li>
+<li><a href="#getfalsepositives">2.4.3.7. getFalsePositives</a></li>
+<li><a href="#interactivemarkfalsepositives">2.4.3.8. interactiveMarkFalsePositives</a></li>
+<li><a href="#interactiveunmarkfalsepositives">2.4.3.9. interactiveUnmarkFalsePositives</a></li>
+<li><a href="#section-client-false-positives-mark">2.4.3.10. markFalsePositives</a></li>
+<li><a href="#section-client-false-positives-unmark">2.4.3.11. unmarkFalsePositives</a></li>
 </ul>
 </li>
 <li><a href="#configuration-overview">2.4.4. Configuration overview</a></li>
@@ -612,6 +613,7 @@ table.CodeRay td.code{padding:0 0 0 .75em}
 <li><a href="#sechub-config-example-webscan-openapi">2.5.7.2.5. Example OpenAPI scan</a></li>
 <li><a href="#sechub-config-openAPI-and-client-certificate">2.5.7.2.6. Example combination of openAPI definition and client certificate authentication</a></li>
 <li><a href="#sechub-config-example-webscan-header">2.5.7.2.7. Example Header scan</a></li>
+<li><a href="#sechub-config-example-webscan-header-value-from-data-section">2.5.7.2.8. Example Header scan with value from data section</a></li>
 </ul>
 </li>
 </ul>
@@ -760,7 +762,7 @@ build pipeline / contionus integration (CI) and helps to provide
 </tbody>
 </table>
 <div class="paragraph">
-<p>Documentation version: <code>Client 1.3.0 modified (commit 6b3c27b) - Build date: 20240122155924</code></p>
+<p>Documentation version: <code>Client 1.4.0 modified (commit 5eb0916) - Build date: 20240315161105</code></p>
 </div>
 <hr>
 <div style="page-break-after: always;"></div>
@@ -912,11 +914,11 @@ For documentation, please look at <a href="https://mercedes-benz.github.io/sechu
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><a href="#section-client-scan">scan</a></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">server + user + api token + projectID + configFile</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">server + user + api token + projectID + <a href="#section-client-configuration-file">configFile</a></p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><a href="#scanasync">scanAsync</a></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">server + user + api token + projectID + configFile</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">server + user + api token + projectID + <a href="#section-client-configuration-file">configFile</a></p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><a href="#getstatus">getStatus</a></p></td>
@@ -928,6 +930,10 @@ For documentation, please look at <a href="https://mercedes-benz.github.io/sechu
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><a href="#listjobs">listJobs</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">server + user + api token + projectID</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="#definefalsepositives">defineFalsePositives</a></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">server + user + api token + projectID</p></td>
 </tr>
 <tr>
@@ -1186,9 +1192,54 @@ This might be useful for an overview or<br>
 </div>
 </div>
 <div class="sect4">
-<h5 id="getfalsepositives">2.4.3.6. getFalsePositives</h5>
+<h5 id="definefalsepositives">2.4.3.6. defineFalsePositives</h5>
 <div class="paragraph">
-<p>This will fetch the false positives list of your project as JSON - format is same as for <code>markFalsePositives</code>.</p>
+<p>This will define the false positives list of your project.<br>
+Default definition file to read from is <code>sechub-false-positives.json</code> - format is same as for <a href="#section-client-false-positives-mark">markFalsePositives</a>.</p>
+</div>
+<div class="paragraph">
+<p>The client will compare against the already defined false-positives on the server and<br>
+- add missing false-positive definitions<br>
+- remove the ones which are not in the definition file</p>
+</div>
+<div class="paragraph">
+<p><strong>Minimum call syntax</strong></p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>sechub defineFalsePositives</pre>
+</div>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+With <code>-file ${file}</code> you can define where to read from.<br>
+     Default: <code>sechub-false-positives.json</code> in current directory
+</td>
+</tr>
+</table>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+It&#8217;s a good idea to add your false-positives definition file in your source code repository. So everybody can easily have an overview about the declared false-positives.
+</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect4">
+<h5 id="getfalsepositives">2.4.3.7. getFalsePositives</h5>
+<div class="paragraph">
+<p>This will fetch the false positives list of your project as JSON.</p>
 </div>
 <div class="paragraph">
 <p><strong>Minimum call syntax</strong></p>
@@ -1214,7 +1265,7 @@ With <code>-output ${file-or-directory}</code> you can define where to place the
 </div>
 </div>
 <div class="sect4">
-<h5 id="interactivemarkfalsepositives">2.4.3.7. interactiveMarkFalsePositives</h5>
+<h5 id="interactivemarkfalsepositives">2.4.3.8. interactiveMarkFalsePositives</h5>
 <div class="paragraph">
 <p>Instead of creating a json file to mark false positives, you can also do this interactively:
 Go to the project directory containing <code>sechub.json</code> and a report file from a recent scan and run <code>sechub interactiveMarkFalsePositives</code>.</p>
@@ -1259,7 +1310,7 @@ You can download and view your current false positives list with <a href="#getfa
 </div>
 </div>
 <div class="sect4">
-<h5 id="interactiveunmarkfalsepositives">2.4.3.8. interactiveUnmarkFalsePositives</h5>
+<h5 id="interactiveunmarkfalsepositives">2.4.3.9. interactiveUnmarkFalsePositives</h5>
 <div class="paragraph">
 <p>Instead of creating a json file to unmark false positives, you can also do this interactively:
 Go to the project directory containing <code>sechub.json</code> and run <code>sechub interactiveUnmarkFalsePositives</code></p>
@@ -1289,7 +1340,7 @@ Your choices are:</p>
 </div>
 </div>
 <div class="sect4">
-<h5 id="section-client-false-positives-mark">2.4.3.9. markFalsePositives</h5>
+<h5 id="section-client-false-positives-mark">2.4.3.10. markFalsePositives</h5>
 <div class="paragraph">
 <p>Read your report carefully and figure out which of the findings are "false positives" (FP).
 After this, create a json file containing jobUUID and ID of the findings you decided to be a FP.
@@ -1357,9 +1408,9 @@ Select this file by the <code>-file</code> argument and start action <code>markF
 <i class="fa icon-important" title="Important"></i>
 </td>
 <td class="content">
-Providing an empty list here does <strong>NOT delete</strong> the already declared false positives!<br>
-           <code>markFalsePositives</code> only adds new false positives.<br>
-           An empty <code>jobData</code> list has no effect at all. (&#8594; don&#8217;t do this)
+<code>markFalsePositives</code> only adds new false positives.<br>
+  Providing an empty list here does <strong>NOT delete</strong> the already declared false positives!<br>
+  If you want this, please use <a href="#definefalsepositives">defineFalsePositives</a>.
 </td>
 </tr>
 </table>
@@ -1378,7 +1429,7 @@ See also <a href="#interactivemarkfalsepositives">interactiveMarkFalsePositives<
 </div>
 </div>
 <div class="sect4">
-<h5 id="section-client-false-positives-unmark">2.4.3.10. unmarkFalsePositives</h5>
+<h5 id="section-client-false-positives-unmark">2.4.3.11. unmarkFalsePositives</h5>
 <div class="paragraph">
 <p>Remove formerly defined false positives.<br>
 It works similar to <code>markFalsePositives</code>: Just define a JSON file, select the file by the <code>-file</code> argument and start
@@ -1588,11 +1639,11 @@ Path to <code>SecHub</code> JSON config file. Defaults to <code>sechub.json</cod
 </li>
 <li>
 <p><code>-file &lt;filepath&gt;</code><br>
-Defines file to read from for actions <code>markFalsePositives</code> or <code>interactiveMarkFalsePositives</code> or <code>unmarkFalsePositives</code></p>
+Defines file to read from for actions <a href="#definefalsepositives">defineFalsePositives</a>, <a href="#section-client-false-positives-mark">markFalsePositives</a>, <a href="#interactivemarkfalsepositives">interactiveMarkFalsePositives</a>, <a href="#section-client-false-positives-unmark">unmarkFalsePositives</a></p>
 </li>
 <li>
 <p><code>-jobUUID &lt;string&gt;</code><br>
-<code>SecHub</code> job uuid. Optional for actions 'getStatus' or 'getReport'</p>
+<code>SecHub</code> job uuid. Optional for actions <a href="#getstatus">getStatus</a> or <a href="#getreport">getReport</a></p>
 </li>
 <li>
 <p><code>-label &lt;label definition&gt;</code><br>
@@ -2839,6 +2890,47 @@ The <strong>default</strong> is <code>true</code> if nothing is specified.</td>
 </table>
 </div>
 </div>
+<div class="sect5">
+<h6 id="sechub-config-example-webscan-header-value-from-data-section">2.5.7.2.8. Example Header scan with value from data section</h6>
+<div class="listingblock">
+<div class="title">header scan with value from data section</div>
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="json">{
+  <span class="key"><span class="delimiter">&quot;</span><span class="content">apiVersion</span><span class="delimiter">&quot;</span></span> : <span class="string"><span class="delimiter">&quot;</span><span class="content">1.0</span><span class="delimiter">&quot;</span></span>,
+  <span class="key"><span class="delimiter">&quot;</span><span class="content">data</span><span class="delimiter">&quot;</span></span> : {
+    <span class="key"><span class="delimiter">&quot;</span><span class="content">sources</span><span class="delimiter">&quot;</span></span> : [ {
+      <span class="key"><span class="delimiter">&quot;</span><span class="content">name</span><span class="delimiter">&quot;</span></span> : <span class="string"><span class="delimiter">&quot;</span><span class="content">header-value-file-reference</span><span class="delimiter">&quot;</span></span>, 
+      <span class="key"><span class="delimiter">&quot;</span><span class="content">fileSystem</span><span class="delimiter">&quot;</span></span> : {
+        <span class="key"><span class="delimiter">&quot;</span><span class="content">files</span><span class="delimiter">&quot;</span></span> : [ <span class="string"><span class="delimiter">&quot;</span><span class="content">header_value.txt</span><span class="delimiter">&quot;</span></span> ]
+      }
+    }]
+  },
+  <span class="key"><span class="delimiter">&quot;</span><span class="content">webScan</span><span class="delimiter">&quot;</span></span> : {
+    <span class="key"><span class="delimiter">&quot;</span><span class="content">url</span><span class="delimiter">&quot;</span></span> : <span class="string"><span class="delimiter">&quot;</span><span class="content">https://productfailure.demo.example.org</span><span class="delimiter">&quot;</span></span>,
+    <span class="key"><span class="delimiter">&quot;</span><span class="content">headers</span><span class="delimiter">&quot;</span></span> : [ {
+      <span class="key"><span class="delimiter">&quot;</span><span class="content">name</span><span class="delimiter">&quot;</span></span> : <span class="string"><span class="delimiter">&quot;</span><span class="content">Authorization</span><span class="delimiter">&quot;</span></span>, <i class="conum" data-value="1"></i><b>(1)</b>
+      <span class="key"><span class="delimiter">&quot;</span><span class="content">use</span><span class="delimiter">&quot;</span></span> : [ <span class="string"><span class="delimiter">&quot;</span><span class="content">header-value-file-reference</span><span class="delimiter">&quot;</span></span> ] <i class="conum" data-value="2"></i><b>(2)</b>
+    } ]
+  }
+}</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>Name of the specified header. Must not be null or empty.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>Name of the source <a href="#sechub-config-data-section">data</a> configuration: "header-value-file-reference".
+Please use single files only instead of folders to specify the header value. Use a separate data section for each header.
+This can be used if you want to provide a large header value, which exceeds the maximum size of the sechub.json configuration file.
+For each header provide either a <code>value</code> directly (as shown in <a href="#sechub-config-example-webscan-header">Example Header scan</a>) or a data section reference via <code>use</code> as shown in this example.</td>
+</tr>
+</table>
+</div>
+</div>
 </div>
 </div>
 <div class="sect3">
@@ -3902,7 +3994,7 @@ configure the client to do this on color YELLOW.
 </div>
 <div id="footer">
 <div id="footer-text">
- Client 1.3.0 modified (commit 6b3c27b)<br>
+ Client 1.4.0 modified (commit 5eb0916)<br>
 </div>
 </div>
 </body>

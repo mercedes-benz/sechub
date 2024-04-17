@@ -103,7 +103,7 @@ public class AnonymousUserGetAPITokenByOneTimeTokenService {
     private void sendUserAPITokenChanged(User user) {
         DomainMessage request = new DomainMessage(MessageID.USER_API_TOKEN_CHANGED);
         UserMessage message = new UserMessage();
-        message.setEmailAdress(user.getEmailAdress());
+        message.setEmailAddress(user.getEmailAddress());
         message.setUserId(user.getName());
         message.setHashedApiToken(user.getHashedApiToken());
 

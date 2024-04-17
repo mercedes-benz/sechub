@@ -79,7 +79,7 @@ func prepareOptionsFromCommandline(config *Config) {
 	flag.StringVar(&config.configFilePath,
 		configfileOption, config.configFilePath, "Path to SecHub config file")
 	flag.StringVar(&config.file,
-		fileOption, "", "Defines file to read from for actions '"+markFalsePositivesAction+"' or '"+interactiveMarkFalsePositivesAction+"' or '"+unmarkFalsePositivesAction+"'")
+		fileOption, "", "Defines file to read from for actions '"+defineFalsePositivesAction+"', '"+markFalsePositivesAction+"', '"+interactiveMarkFalsePositivesAction+"', '"+unmarkFalsePositivesAction+"'")
 	flag.StringVar(&config.secHubJobUUID,
 		jobUUIDOption, "", "SecHub job uuid - Optional for actions '"+getStatusAction+"' or '"+getReportAction+"'")
 	flag.Func(labelOption, "Define a `SecHub label` for the scan job. (Example: \"key1=value1\") Repeat to define multiple labels.", func(s string) error {
@@ -225,6 +225,7 @@ func assertValidConfig(context *Context) {
 		getReportAction:                       {"server", "user", "apiToken", "projectID", "secHubJobUUID"},
 		getFalsePositivesAction:               {"server", "user", "apiToken", "projectID"},
 		listJobsAction:                        {"server", "user", "apiToken", "projectID"},
+		defineFalsePositivesAction:            {"server", "user", "apiToken", "projectID"},
 		markFalsePositivesAction:              {"server", "user", "apiToken", "projectID", "file"},
 		unmarkFalsePositivesAction:            {"server", "user", "apiToken", "projectID", "file"},
 		interactiveMarkFalsePositivesAction:   {"server", "user", "apiToken", "projectID"},
@@ -255,6 +256,10 @@ func assertValidConfig(context *Context) {
 		showHelpHint()
 		os.Exit(ExitCodeMissingParameter)
 	}
+
+	// For convenience: lowercase user id and project id if needed
+	context.config.user = lowercaseOrNotice(context.config.user, "user id")
+	context.config.projectID = lowercaseOrNotice(context.config.projectID, "project id")
 
 	// Check mandatory fields for the requested action
 	errorsFound := false
@@ -304,10 +309,6 @@ func assertValidConfig(context *Context) {
 		showHelpHint()
 		os.Exit(ExitCodeMissingParameter)
 	}
-
-	// For convenience: lowercase user id and project id if needed
-	context.config.user = lowercaseOrNotice(context.config.user, "user id")
-	context.config.projectID = lowercaseOrNotice(context.config.projectID, "project id")
 
 	// Remove trailing slash from url if present
 	context.config.server = strings.TrimSuffix(context.config.server, "/")

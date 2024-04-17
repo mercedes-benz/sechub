@@ -1,0 +1,390 @@
+{
+  "SPDXID" : "SPDXRef-DOCUMENT",
+  "spdxVersion" : "SPDX-2.2",
+  "creationInfo" : {
+    "created" : "2022-02-21T16:04:58Z",
+    "creators" : [ "Tool: scancode-toolkit 30.1.0" ],
+    "licenseListVersion" : "3.14"
+  },
+  "name" : "SPDX Document created by ScanCode Toolkit",
+  "dataLicense" : "CC0-1.0",
+  "comment" : "Generated with ScanCode and provided on an \"AS IS\" BASIS, WITHOUT WARRANTIES\nOR CONDITIONS OF ANY KIND, either express or implied. No content created from\nScanCode should be considered or used as legal advice. Consult an Attorney\nfor any legal advice.\nScanCode is a free software code scanning tool from nexB Inc. and others.\nVisit https://github.com/nexB/scancode-toolkit/ for support and download.",
+  "hasExtractedLicensingInfos" : [ {
+    "licenseId" : "LicenseRef-scancode-ada-linking-exception",
+    "comment" : "See details at https://github.com/nexB/scancode-toolkit/blob/develop/src/licensedcode/data/licenses/ada-linking-exception.yml",
+    "extractedText" : "See details at https://github.com/nexB/scancode-toolkit/blob/develop/src/licensedcode/data/licenses/ada-linking-exception.yml",
+    "name" : "Ada linking exception to GPL 2.0 or later"
+  }, {
+    "licenseId" : "LicenseRef-scancode-jboss-eula",
+    "comment" : "See details at https://github.com/nexB/scancode-toolkit/blob/develop/src/licensedcode/data/licenses/jboss-eula.yml",
+    "extractedText" : "See details at https://github.com/nexB/scancode-toolkit/blob/develop/src/licensedcode/data/licenses/jboss-eula.yml",
+    "name" : "JBoss EULA"
+  }, {
+    "licenseId" : "LicenseRef-scancode-mit-old-style",
+    "comment" : "See details at https://github.com/nexB/scancode-toolkit/blob/develop/src/licensedcode/data/licenses/mit-old-style.yml",
+    "extractedText" : "See details at https://github.com/nexB/scancode-toolkit/blob/develop/src/licensedcode/data/licenses/mit-old-style.yml",
+    "name" : "MIT Old Style"
+  }, {
+    "licenseId" : "LicenseRef-scancode-public-domain",
+    "comment" : "See details at https://github.com/nexB/scancode-toolkit/blob/develop/src/licensedcode/data/licenses/public-domain.yml",
+    "extractedText" : "See details at https://github.com/nexB/scancode-toolkit/blob/develop/src/licensedcode/data/licenses/public-domain.yml",
+    "name" : "Public Domain"
+  }, {
+    "licenseId" : "LicenseRef-scancode-unknown-license-reference",
+    "comment" : "See details at https://github.com/nexB/scancode-toolkit/blob/develop/src/licensedcode/data/licenses/unknown-license-reference.yml",
+    "extractedText" : "See details at https://github.com/nexB/scancode-toolkit/blob/develop/src/licensedcode/data/licenses/unknown-license-reference.yml",
+    "name" : "Unknown License file reference"
+  } ],
+  "documentNamespace" : "http://spdx.org/spdxdocs/sourcecode-9006581e-263a-4c8f-b7bc-6bdb705f088c",
+  "documentDescribes" : [ "SPDXRef-001" ],
+  "packages" : [ {
+    "SPDXID" : "SPDXRef-001",
+    "copyrightText" : "(c) Copyright Henrik Ravn 2004\nCopyright (c) 1991, 1999 Free Software Foundation, Inc.\nCopyright (c) 1995-2005, 2010, 2011, 2012 Jean-loup Gailly\nCopyright (c) 1995-2008 Mark Adler\nCopyright (c) 1995-2010 Jean-loup Gailly, Brian Raiter and Gilles Vollant\nCopyright (c) 1995-2011 Mark Adler\nCopyright (c) 1995-2012 Jean-loup Gailly\nCopyright (c) 1995-2013 Jean-loup Gailly\nCopyright (c) 1995-2013 Jean-loup Gailly and Mark Adler\nCopyright (c) 1997 Christian Michelsen Research AS Advanced Computing\nCopyright (c) 2000 - 2006 The Legion Of The Bouncy Castle (http://www.bouncycastle.org)\nCopyright (c) 2000 The Apache Software Foundation\nCopyright (c) 2002-2004 Dmitriy Anisimkov\nCopyright (c) 2003 Mark Adler\nCopyright (c) 2004 by Henrik Ravn\nCopyright (c) 2005 Brian Goetz and Tim Peierls\nCopyright (c) Henrik Ravn 2004\nCopyright 1995-2013 Jean-loup Gailly and Mark Adler\nCopyright 2005, JBoss Inc., and individual contributors\nCopyright 2006 Red Hat, Inc.\nCopyright 2009, Red Hat Middleware LLC, and individual contributors\nCopyright 2010, Red Hat, Inc. and individual contributors\ncopyrighted by the Free Software Foundation",
+    "downloadLocation" : "NOASSERTION",
+    "filesAnalyzed" : true,
+    "hasFiles" : [ "SPDXRef-8", "SPDXRef-9", "SPDXRef-11", "SPDXRef-12", "SPDXRef-13", "SPDXRef-14", "SPDXRef-15", "SPDXRef-17", "SPDXRef-18", "SPDXRef-19", "SPDXRef-20", "SPDXRef-21", "SPDXRef-22", "SPDXRef-23", "SPDXRef-3", "SPDXRef-6", "SPDXRef-4", "SPDXRef-32", "SPDXRef-25", "SPDXRef-26", "SPDXRef-27", "SPDXRef-34", "SPDXRef-35", "SPDXRef-36", "SPDXRef-37", "SPDXRef-39", "SPDXRef-41", "SPDXRef-42", "SPDXRef-44", "SPDXRef-45", "SPDXRef-28", "SPDXRef-29", "SPDXRef-30" ],
+    "licenseConcluded" : "NOASSERTION",
+    "licenseDeclared" : "NOASSERTION",
+    "licenseInfoFromFiles" : [ "Apache-1.1", "Apache-2.0", "BSL-1.0", "CC-BY-2.5", "CPL-1.0", "GPL-2.0-or-later", "LGPL-2.1-only", "LGPL-2.1-or-later", "MIT", "Zlib", "LicenseRef-scancode-ada-linking-exception", "LicenseRef-scancode-jboss-eula", "LicenseRef-scancode-mit-old-style", "LicenseRef-scancode-public-domain", "LicenseRef-scancode-unknown-license-reference" ],
+    "name" : "sourcecode",
+    "packageVerificationCode" : {
+      "packageVerificationCodeValue" : "a16cc075835fbc3a0474c60b4c4314dc37a7dee1"
+    }
+  } ],
+  "files" : [ {
+    "SPDXID" : "SPDXRef-8",
+    "checksums" : [ {
+      "algorithm" : "SHA1",
+      "checksumValue" : "eb232aa0424eca9c4136904e6143b72aaa9cf4de"
+    } ],
+    "copyrightText" : "Copyright 2006 Red Hat, Inc.",
+    "fileName" : "./sourcecode/samples/JGroups/EULA",
+    "licenseConcluded" : "NOASSERTION",
+    "licenseInfoInFiles" : [ "LicenseRef-scancode-jboss-eula" ]
+  }, {
+    "SPDXID" : "SPDXRef-9",
+    "checksums" : [ {
+      "algorithm" : "SHA1",
+      "checksumValue" : "e60c2e780886f95df9c9ee36992b8edabec00bcc"
+    } ],
+    "copyrightText" : "Copyright (c) 1991, 1999 Free Software Foundation, Inc.\ncopyrighted by the Free Software Foundation",
+    "fileName" : "./sourcecode/samples/JGroups/LICENSE",
+    "licenseConcluded" : "NOASSERTION",
+    "licenseInfoInFiles" : [ "LGPL-2.1-only" ]
+  }, {
+    "SPDXID" : "SPDXRef-3",
+    "checksums" : [ {
+      "algorithm" : "SHA1",
+      "checksumValue" : "2e07e32c52d607204fad196052d70e3d18fb8636"
+    } ],
+    "copyrightText" : "NONE",
+    "fileName" : "./sourcecode/samples/README",
+    "licenseConcluded" : "NOASSERTION",
+    "licenseInfoInFiles" : [ "NONE" ]
+  }, {
+    "SPDXID" : "SPDXRef-4",
+    "checksums" : [ {
+      "algorithm" : "SHA1",
+      "checksumValue" : "01ff4b1de0bc6c75c9cca6e46c80c1802d6976d4"
+    } ],
+    "copyrightText" : "NONE",
+    "fileName" : "./sourcecode/samples/screenshot.png",
+    "licenseConcluded" : "NOASSERTION",
+    "licenseInfoInFiles" : [ "NONE" ]
+  }, {
+    "SPDXID" : "SPDXRef-6",
+    "checksums" : [ {
+      "algorithm" : "SHA1",
+      "checksumValue" : "576f0ccfe534d7f5ff5d6400078d3c6586de3abd"
+    } ],
+    "copyrightText" : "NONE",
+    "fileName" : "./sourcecode/samples/arch/zlib.tar.gz",
+    "licenseConcluded" : "NOASSERTION",
+    "licenseInfoInFiles" : [ "NONE" ]
+  }, {
+    "SPDXID" : "SPDXRef-18",
+    "checksums" : [ {
+      "algorithm" : "SHA1",
+      "checksumValue" : "981d67087e65e9a44957c026d4b10817cf77d966"
+    } ],
+    "copyrightText" : "Copyright (c) 2005 Brian Goetz and Tim Peierls",
+    "fileName" : "./sourcecode/samples/JGroups/src/GuardedBy.java",
+    "licenseConcluded" : "NOASSERTION",
+    "licenseInfoInFiles" : [ "CC-BY-2.5" ]
+  }, {
+    "SPDXID" : "SPDXRef-19",
+    "checksums" : [ {
+      "algorithm" : "SHA1",
+      "checksumValue" : "30f56b876d5576d9869e2c5c509b08db57110592"
+    } ],
+    "copyrightText" : "Copyright 2010, Red Hat, Inc. and individual contributors",
+    "fileName" : "./sourcecode/samples/JGroups/src/ImmutableReference.java",
+    "licenseConcluded" : "NOASSERTION",
+    "licenseInfoInFiles" : [ "LGPL-2.1-or-later" ]
+  }, {
+    "SPDXID" : "SPDXRef-17",
+    "checksums" : [ {
+      "algorithm" : "SHA1",
+      "checksumValue" : "5901f73dcc78155a1a2c7b5663a3a11fba400b19"
+    } ],
+    "copyrightText" : "Copyright 2005, JBoss Inc., and individual contributors",
+    "fileName" : "./sourcecode/samples/JGroups/src/FixedMembershipToken.java",
+    "licenseConcluded" : "NOASSERTION",
+    "licenseInfoInFiles" : [ "LGPL-2.1-or-later" ]
+  }, {
+    "SPDXID" : "SPDXRef-14",
+    "checksums" : [ {
+      "algorithm" : "SHA1",
+      "checksumValue" : "681cf776bcd79752543d42490ec7ed22a29fd888"
+    } ],
+    "copyrightText" : "NONE",
+    "fileName" : "./sourcecode/samples/JGroups/licenses/cpl-1.0.txt",
+    "licenseConcluded" : "NOASSERTION",
+    "licenseInfoInFiles" : [ "CPL-1.0" ]
+  }, {
+    "SPDXID" : "SPDXRef-15",
+    "checksums" : [ {
+      "algorithm" : "SHA1",
+      "checksumValue" : "8f1a637d2e2ed1bdb9eb01a7dccb5c12cc0557e1"
+    } ],
+    "copyrightText" : "Copyright (c) 1991, 1999 Free Software Foundation, Inc.\ncopyrighted by the Free Software Foundation",
+    "fileName" : "./sourcecode/samples/JGroups/licenses/lgpl.txt",
+    "licenseConcluded" : "NOASSERTION",
+    "licenseInfoInFiles" : [ "LGPL-2.1-only" ]
+  }, {
+    "SPDXID" : "SPDXRef-12",
+    "checksums" : [ {
+      "algorithm" : "SHA1",
+      "checksumValue" : "47b573e3824cd5e02a1a3ae99e2735b49e0256e4"
+    } ],
+    "copyrightText" : "NONE",
+    "fileName" : "./sourcecode/samples/JGroups/licenses/apache-2.0.txt",
+    "licenseConcluded" : "NOASSERTION",
+    "licenseInfoInFiles" : [ "Apache-2.0" ]
+  }, {
+    "SPDXID" : "SPDXRef-13",
+    "checksums" : [ {
+      "algorithm" : "SHA1",
+      "checksumValue" : "74facb0e9a734479f9cd893b5be3fe1bf651b760"
+    } ],
+    "copyrightText" : "Copyright (c) 2000 - 2006 The Legion Of The Bouncy Castle (http://www.bouncycastle.org)",
+    "fileName" : "./sourcecode/samples/JGroups/licenses/bouncycastle.txt",
+    "licenseConcluded" : "NOASSERTION",
+    "licenseInfoInFiles" : [ "MIT" ]
+  }, {
+    "SPDXID" : "SPDXRef-11",
+    "checksums" : [ {
+      "algorithm" : "SHA1",
+      "checksumValue" : "6b5608d35c3e304532af43db8bbfc5947bef46a6"
+    } ],
+    "copyrightText" : "Copyright (c) 2000 The Apache Software Foundation",
+    "fileName" : "./sourcecode/samples/JGroups/licenses/apache-1.1.txt",
+    "licenseConcluded" : "NOASSERTION",
+    "licenseInfoInFiles" : [ "Apache-1.1" ]
+  }, {
+    "SPDXID" : "SPDXRef-29",
+    "checksums" : [ {
+      "algorithm" : "SHA1",
+      "checksumValue" : "e1af709bff21ae0d4331119a7fc4c19f82932043"
+    } ],
+    "copyrightText" : "Copyright (c) 1995-2005, 2010, 2011, 2012 Jean-loup Gailly",
+    "fileName" : "./sourcecode/samples/zlib/zutil.c",
+    "licenseConcluded" : "NOASSERTION",
+    "licenseInfoInFiles" : [ "Zlib" ]
+  }, {
+    "SPDXID" : "SPDXRef-27",
+    "checksums" : [ {
+      "algorithm" : "SHA1",
+      "checksumValue" : "29ed3b8ca3927576e5889dea5880ca0052942c7d"
+    } ],
+    "copyrightText" : "Copyright (c) 1995-2012 Jean-loup Gailly",
+    "fileName" : "./sourcecode/samples/zlib/deflate.h",
+    "licenseConcluded" : "NOASSERTION",
+    "licenseInfoInFiles" : [ "Zlib" ]
+  }, {
+    "SPDXID" : "SPDXRef-28",
+    "checksums" : [ {
+      "algorithm" : "SHA1",
+      "checksumValue" : "400d35465f179a4acacb5fe749e6ce20a0bbdb84"
+    } ],
+    "copyrightText" : "Copyright (c) 1995-2013 Jean-loup Gailly and Mark Adler",
+    "fileName" : "./sourcecode/samples/zlib/zlib.h",
+    "licenseConcluded" : "NOASSERTION",
+    "licenseInfoInFiles" : [ "Zlib" ]
+  }, {
+    "SPDXID" : "SPDXRef-25",
+    "checksums" : [ {
+      "algorithm" : "SHA1",
+      "checksumValue" : "0cff4808476ce0b5f6f0ebbc69ee2ab2a0eebe43"
+    } ],
+    "copyrightText" : "Copyright (c) 1995-2011 Mark Adler",
+    "fileName" : "./sourcecode/samples/zlib/adler32.c",
+    "licenseConcluded" : "NOASSERTION",
+    "licenseInfoInFiles" : [ "Zlib" ]
+  }, {
+    "SPDXID" : "SPDXRef-26",
+    "checksums" : [ {
+      "algorithm" : "SHA1",
+      "checksumValue" : "7b4ace6d698c5dbbfb9a8f047f63228ca54d2e77"
+    } ],
+    "copyrightText" : "Copyright (c) 1995-2013 Jean-loup Gailly and Mark Adler\nCopyright 1995-2013 Jean-loup Gailly and Mark Adler",
+    "fileName" : "./sourcecode/samples/zlib/deflate.c",
+    "licenseConcluded" : "NOASSERTION",
+    "licenseInfoInFiles" : [ "Zlib" ]
+  }, {
+    "SPDXID" : "SPDXRef-23",
+    "checksums" : [ {
+      "algorithm" : "SHA1",
+      "checksumValue" : "08dba9986f69719970ead3592dc565465164df0d"
+    } ],
+    "copyrightText" : "NONE",
+    "fileName" : "./sourcecode/samples/JGroups/src/S3_PING.java",
+    "licenseConcluded" : "NOASSERTION",
+    "licenseInfoInFiles" : [ "LicenseRef-scancode-public-domain" ]
+  }, {
+    "SPDXID" : "SPDXRef-21",
+    "checksums" : [ {
+      "algorithm" : "SHA1",
+      "checksumValue" : "c1f6818f8ee7bddcc9f444bc94c099729d716d52"
+    } ],
+    "copyrightText" : "NONE",
+    "fileName" : "./sourcecode/samples/JGroups/src/RouterStub.java",
+    "licenseConcluded" : "NOASSERTION",
+    "licenseInfoInFiles" : [ "NONE" ]
+  }, {
+    "SPDXID" : "SPDXRef-22",
+    "checksums" : [ {
+      "algorithm" : "SHA1",
+      "checksumValue" : "eb419dc94cfe11ca318a3e743a7f9f080e70c751"
+    } ],
+    "copyrightText" : "Copyright 2009, Red Hat Middleware LLC, and individual contributors",
+    "fileName" : "./sourcecode/samples/JGroups/src/RouterStubManager.java",
+    "licenseConcluded" : "NOASSERTION",
+    "licenseInfoInFiles" : [ "LGPL-2.1-or-later" ]
+  }, {
+    "SPDXID" : "SPDXRef-20",
+    "checksums" : [ {
+      "algorithm" : "SHA1",
+      "checksumValue" : "a8087e5d50da3273536ebda9b87b77aa4ff55deb"
+    } ],
+    "copyrightText" : "NONE",
+    "fileName" : "./sourcecode/samples/JGroups/src/RATE_LIMITER.java",
+    "licenseConcluded" : "NOASSERTION",
+    "licenseInfoInFiles" : [ "NONE" ]
+  }, {
+    "SPDXID" : "SPDXRef-39",
+    "checksums" : [ {
+      "algorithm" : "SHA1",
+      "checksumValue" : "742603cba1af98a1432cc02efb019b1a5760adf2"
+    } ],
+    "copyrightText" : "Copyright (c) 1995-2010 Jean-loup Gailly, Brian Raiter and Gilles Vollant",
+    "fileName" : "./sourcecode/samples/zlib/gcc_gvmat64/gvmat64.S",
+    "licenseConcluded" : "NOASSERTION",
+    "licenseInfoInFiles" : [ "Zlib" ]
+  }, {
+    "SPDXID" : "SPDXRef-36",
+    "checksums" : [ {
+      "algorithm" : "SHA1",
+      "checksumValue" : "892b34f7865d90a6f949f50d95e49625a10bc7f0"
+    } ],
+    "copyrightText" : "NONE",
+    "fileName" : "./sourcecode/samples/zlib/dotzlib/LICENSE_1_0.txt",
+    "licenseConcluded" : "NOASSERTION",
+    "licenseInfoInFiles" : [ "BSL-1.0" ]
+  }, {
+    "SPDXID" : "SPDXRef-37",
+    "checksums" : [ {
+      "algorithm" : "SHA1",
+      "checksumValue" : "b1229b826f0096808628474538cea8fec2922a9b"
+    } ],
+    "copyrightText" : "Copyright (c) Henrik Ravn 2004",
+    "fileName" : "./sourcecode/samples/zlib/dotzlib/readme.txt",
+    "licenseConcluded" : "NOASSERTION",
+    "licenseInfoInFiles" : [ "BSL-1.0", "LicenseRef-scancode-unknown-license-reference" ]
+  }, {
+    "SPDXID" : "SPDXRef-34",
+    "checksums" : [ {
+      "algorithm" : "SHA1",
+      "checksumValue" : "9f1db1177b2e9a014f72bb3cd80be17133e06d16"
+    } ],
+    "copyrightText" : "Copyright (c) 2004 by Henrik Ravn",
+    "fileName" : "./sourcecode/samples/zlib/dotzlib/AssemblyInfo.cs",
+    "licenseConcluded" : "NOASSERTION",
+    "licenseInfoInFiles" : [ "NONE" ]
+  }, {
+    "SPDXID" : "SPDXRef-35",
+    "checksums" : [ {
+      "algorithm" : "SHA1",
+      "checksumValue" : "3807a0e24a57b92ea301559cab7307b8eab52c51"
+    } ],
+    "copyrightText" : "(c) Copyright Henrik Ravn 2004",
+    "fileName" : "./sourcecode/samples/zlib/dotzlib/ChecksumImpl.cs",
+    "licenseConcluded" : "NOASSERTION",
+    "licenseInfoInFiles" : [ "BSL-1.0" ]
+  }, {
+    "SPDXID" : "SPDXRef-32",
+    "checksums" : [ {
+      "algorithm" : "SHA1",
+      "checksumValue" : "0245a91806d804bf9f0907a3a001a141e9adb61b"
+    } ],
+    "copyrightText" : "Copyright (c) 2002-2004 Dmitriy Anisimkov",
+    "fileName" : "./sourcecode/samples/zlib/ada/zlib.ads",
+    "licenseConcluded" : "NOASSERTION",
+    "licenseInfoInFiles" : [ "GPL-2.0-or-later", "LicenseRef-scancode-ada-linking-exception" ]
+  }, {
+    "SPDXID" : "SPDXRef-30",
+    "checksums" : [ {
+      "algorithm" : "SHA1",
+      "checksumValue" : "b909d27ef9ce51639f76b7ea6b62721e7d1b6bf7"
+    } ],
+    "copyrightText" : "Copyright (c) 1995-2013 Jean-loup Gailly",
+    "fileName" : "./sourcecode/samples/zlib/zutil.h",
+    "licenseConcluded" : "NOASSERTION",
+    "licenseInfoInFiles" : [ "Zlib" ]
+  }, {
+    "SPDXID" : "SPDXRef-45",
+    "checksums" : [ {
+      "algorithm" : "SHA1",
+      "checksumValue" : "e18a6d55cbbd8b832f8d795530553467e5c74fcf"
+    } ],
+    "copyrightText" : "NONE",
+    "fileName" : "./sourcecode/samples/zlib/iostream2/zstream_test.cpp",
+    "licenseConcluded" : "NOASSERTION",
+    "licenseInfoInFiles" : [ "NONE" ]
+  }, {
+    "SPDXID" : "SPDXRef-44",
+    "checksums" : [ {
+      "algorithm" : "SHA1",
+      "checksumValue" : "fca4540d490fff36bb90fd801cf9cd8fc695bb17"
+    } ],
+    "copyrightText" : "Copyright (c) 1997 Christian Michelsen Research AS Advanced Computing",
+    "fileName" : "./sourcecode/samples/zlib/iostream2/zstream.h",
+    "licenseConcluded" : "NOASSERTION",
+    "licenseInfoInFiles" : [ "LicenseRef-scancode-mit-old-style" ]
+  }, {
+    "SPDXID" : "SPDXRef-41",
+    "checksums" : [ {
+      "algorithm" : "SHA1",
+      "checksumValue" : "17fb362c03755b12f2dda5b12a68cf38162674bd"
+    } ],
+    "copyrightText" : "Copyright (c) 1995-2008 Mark Adler",
+    "fileName" : "./sourcecode/samples/zlib/infback9/infback9.c",
+    "licenseConcluded" : "NOASSERTION",
+    "licenseInfoInFiles" : [ "Zlib" ]
+  }, {
+    "SPDXID" : "SPDXRef-42",
+    "checksums" : [ {
+      "algorithm" : "SHA1",
+      "checksumValue" : "d0486a32b558dcaceded5f0746fad62e680a4734"
+    } ],
+    "copyrightText" : "Copyright (c) 2003 Mark Adler",
+    "fileName" : "./sourcecode/samples/zlib/infback9/infback9.h",
+    "licenseConcluded" : "NOASSERTION",
+    "licenseInfoInFiles" : [ "Zlib" ]
+  } ],
+  "relationships" : [ {
+    "spdxElementId" : "SPDXRef-DOCUMENT",
+    "relatedSpdxElement" : "SPDXRef-001",
+    "relationshipType" : "DESCRIBES"
+  } ]
+}

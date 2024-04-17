@@ -14,7 +14,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
 
-import com.mercedesbenz.sechub.domain.scan.HTMLScanResultReportModelBuilder;
 import com.mercedesbenz.sechub.sharedkernel.APIConstants;
 import com.mercedesbenz.sechub.sharedkernel.RoleConstants;
 import com.mercedesbenz.sechub.sharedkernel.Step;
@@ -55,7 +54,7 @@ public class ScanReportRestController {
 			@PathVariable("jobUUID") UUID jobUUID
 			) {
 		/* @formatter:on */
-        return fetchScanSecHubReport(projectId, jobUUID);
+        return fetchObfuscatedScanSecHubReport(projectId, jobUUID);
 
     }
 
@@ -68,10 +67,10 @@ public class ScanReportRestController {
 			@PathVariable("jobUUID") UUID jobUUID
 			) {
 		/* @formatter:on */
-        ScanSecHubReport scanSecHubReport = fetchScanSecHubReport(projectId, jobUUID);
+        ScanSecHubReport scanSecHubReport = fetchObfuscatedScanSecHubReport(projectId, jobUUID);
 
         Map<String, Object> model = htmlModelBuilder.build(scanSecHubReport);
-        return new ModelAndView("report/html/scanresult", model);
+        return new ModelAndView("report/html/report", model);
     }
 
     /* @formatter:off */
@@ -88,8 +87,8 @@ public class ScanReportRestController {
         return spdxDocument;
     }
 
-    private ScanSecHubReport fetchScanSecHubReport(String projectId, UUID jobUUID) {
-        return downloadReportService.getScanSecHubReport(projectId, jobUUID);
+    private ScanSecHubReport fetchObfuscatedScanSecHubReport(String projectId, UUID jobUUID) {
+        return downloadReportService.getObfuscatedScanSecHubReport(projectId, jobUUID);
     }
 
 }

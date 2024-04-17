@@ -88,7 +88,7 @@ publishing {
 
             pom {
                 name = 'SecHub Product Delegation Server'
-                description = 'SecHub Product Delegation Server as a sprint boot jar. Ready to use.'
+                description = 'SecHub Product Delegation Server as a Spring Boot Jar. Ready to use.'
 
                 scm {
                     url = 'https://github.com/mercedes-benz/sechub'

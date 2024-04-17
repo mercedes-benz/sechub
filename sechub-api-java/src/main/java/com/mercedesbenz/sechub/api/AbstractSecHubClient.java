@@ -17,28 +17,34 @@ import com.mercedesbenz.sechub.commons.core.security.CryptoAccess;
 public abstract class AbstractSecHubClient implements SecHubClient {
 
     private boolean trustAll;
-    private String username;
+    private String userId;
     private SealedObject sealedApiToken;
     private URI serverUri;
     private CryptoAccess<String> apiTokenAccess = new CryptoAccess<>();
 
     private Set<SecHubClientListener> secHubClientListeners;
 
-    public AbstractSecHubClient(URI serverUri, String username, String apiToken, boolean trustAll) {
+    protected AbstractSecHubClient(URI serverUri, String userId, String apiToken, boolean trustAll) {
         this.serverUri = serverUri;
         this.trustAll = trustAll;
 
         this.secHubClientListeners = new LinkedHashSet<>();
 
-        setUsername(username);
+        setUserId(userId);
         setApiToken(apiToken);
     }
 
-    public void setUsername(String username) {
-        this.username = username;
+    public void setUserId(String userId) {
+        if (userId == null) {
+            throw new IllegalArgumentException("userId may be not null");
+        }
+        this.userId = userId;
     }
 
     public void setApiToken(String apiToken) {
+        if (apiToken == null) {
+            throw new IllegalArgumentException("api token may be not null");
+        }
         this.sealedApiToken = apiTokenAccess.seal(apiToken);
     }
 
@@ -48,8 +54,8 @@ public abstract class AbstractSecHubClient implements SecHubClient {
     }
 
     @Override
-    public String getUsername() {
-        return username;
+    public String getUserId() {
+        return userId;
     }
 
     @Override
@@ -81,8 +87,8 @@ public abstract class AbstractSecHubClient implements SecHubClient {
 
     /**
      * Adds a listener to the client. For some action on client side the listener
-     * will be informed. A listener can be added only one time no matter how many
-     * times this method is called.
+     * will be informed. Same listener instance can be added only one time no matter
+     * how many times this method is called.
      *
      * @param listener
      */

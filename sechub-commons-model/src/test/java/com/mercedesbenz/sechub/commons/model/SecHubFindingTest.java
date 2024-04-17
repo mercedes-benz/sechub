@@ -10,10 +10,84 @@ import java.util.List;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.EmptySource;
 import org.junit.jupiter.params.provider.EnumSource;
 import org.junit.jupiter.params.provider.NullSource;
 
 class SecHubFindingTest {
+
+    @ParameterizedTest
+    @EnumSource(ScanType.class)
+    void hasScanType(ScanType scanTypeToCheck) {
+        /* prepare */
+        SecHubFinding finding = new SecHubFinding();
+        finding.setType(scanTypeToCheck);
+
+        /* test */
+        assertTrue(finding.hasScanType(scanTypeToCheck));
+
+        for (ScanType scanType : ScanType.values()) {
+            if (!scanType.equals(scanTypeToCheck)) {
+                assertFalse(finding.hasScanType(scanType));
+            }
+        }
+
+    }
+
+    @ParameterizedTest
+    @EnumSource(ScanType.class)
+    void hasScanTypeId(ScanType scanTypeToCheck) {
+        /* prepare */
+        SecHubFinding finding = new SecHubFinding();
+        finding.setType(scanTypeToCheck);
+
+        /* test */
+        assertTrue(finding.hasScanType(scanTypeToCheck.getId()));
+
+        for (ScanType scanType : ScanType.values()) {
+            if (!scanType.equals(scanTypeToCheck)) {
+                assertFalse(finding.hasScanType(scanType.getId()));
+            }
+        }
+    }
+
+    @Test
+    void hasScanType_null() {
+        /* prepare */
+        SecHubFinding finding = new SecHubFinding();
+        finding.setType(null);
+
+        /* test */
+        assertTrue(finding.hasScanType((ScanType) null));
+
+        for (ScanType scanType : ScanType.values()) {
+            assertFalse(finding.hasScanType(scanType));
+        }
+    }
+
+    @ParameterizedTest
+    @NullSource
+    @EmptySource
+    void hasScanTypeId_empty_or_null_when_finding_has_no_type(String scanTypeId) {
+        /* prepare */
+        SecHubFinding finding = new SecHubFinding();
+        finding.setType(null);
+
+        /* test */
+        assertTrue(finding.hasScanType(scanTypeId));
+    }
+
+    @ParameterizedTest
+    @NullSource
+    @EmptySource
+    void hasScanTypeId_empty_or_null_when_finding_has_type(String scanTypeId) {
+        /* prepare */
+        SecHubFinding finding = new SecHubFinding();
+        finding.setType(ScanType.CODE_SCAN);
+
+        /* test */
+        assertFalse(finding.hasScanType(scanTypeId));
+    }
 
     @Test
     void compare_to__an_array_list_containing_findings_can_be_sorted_by_collections_for_severity() {
@@ -180,11 +254,7 @@ class SecHubFindingTest {
 
         /* test */
         assertNull(finding.getType());
-        assertFalse(finding.hasScanType(null));
 
-        for (ScanType otherScanType : ScanType.values()) {
-            assertHasScanTypeReturnsFalseForAnyVariantOf(finding, otherScanType.getId());
-        }
     }
 
     @ParameterizedTest

@@ -195,7 +195,7 @@ Build the container image.
 . Using your own base image:
 +
 ----
-./10-create-image.sh my.registry.example.org/sechub/pds_iac v0.1 "my.registry.example.org/debian:11-slim"
+./10-create-image.sh my.registry.example.org/sechub/pds_iac v0.1 "my.registry.example.org/debian:12-slim"
 ----
 
 === Push Image to Registry

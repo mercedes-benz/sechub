@@ -1,35 +1,35 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.sereco.importer;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import com.mercedesbenz.sechub.sereco.ImportParameter;
 import com.mercedesbenz.sechub.sereco.test.SerecoTestFileSupport;
 
-public class NessusV1XMLImporterTest {
+class NessusV1XMLImporterTest {
 
     private NessusV1XMLImporter importerToTest;
 
-    @Before
-    public void before() {
+    @BeforeEach
+    void before() {
         importerToTest = new NessusV1XMLImporter();
     }
 
     @Test
-    public void xmlReportFromNessus7canBeImported() {
+    void xmlReportFromNessus7canBeImported() {
         /* prepare */
         String xml = SerecoTestFileSupport.INSTANCE.loadTestFile("nessus/nessus_7.0.2.result.xml");
 
         ImportParameter param = ImportParameter.builder().importData(xml).importId("id1").productId("Nessus").build();
 
         /* execute */
-        ProductImportAbility ableToImport = importerToTest.isAbleToImportForProduct(param);
+        boolean ableToImport = importerToTest.isAbleToImportForProduct(param);
 
         /* test */
-        assertEquals("Was not able to import xml!", ProductImportAbility.ABLE_TO_IMPORT, ableToImport);
+        assertTrue(ableToImport, "Was not able to import xml!");
     }
 
 }

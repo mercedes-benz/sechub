@@ -97,7 +97,7 @@ public class JobRestartRequestService {
             return message;
         }
         message.setOwner(jobInfo.owner);
-        message.setOwnerEmailAddress(optUser.get().getEmailAdress());
+        message.setOwnerEmailAddress(optUser.get().getEmailAddress());
         return message;
     }
 

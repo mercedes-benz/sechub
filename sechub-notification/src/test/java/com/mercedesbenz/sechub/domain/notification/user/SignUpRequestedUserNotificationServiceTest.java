@@ -40,7 +40,7 @@ public class SignUpRequestedUserNotificationServiceTest {
 
         // message to receive from event bus
         UserMessage message = mock(UserMessage.class);
-        when(message.getEmailAdress()).thenReturn("schlau.schlumpf@schlumpfhausen.de");
+        when(message.getEmailAddress()).thenReturn("new.user@example.org");
 
         /* execute */
         serviceToTest.notify(message);
@@ -50,7 +50,7 @@ public class SignUpRequestedUserNotificationServiceTest {
         ArgumentCaptor<SimpleMailMessage> mailMessageCaptor = ArgumentCaptor.forClass(SimpleMailMessage.class);
         verify(mockedEmailService).send(mailMessageCaptor.capture());
         assertSame(mockedMailMessage, mailMessageCaptor.getValue());
-        verify(mockedMailMessage).setTo("schlau.schlumpf@schlumpfhausen.de");
+        verify(mockedMailMessage).setTo("new.user@example.org");
 
         // check content
         ArgumentCaptor<String> stringMessageCaptor = ArgumentCaptor.forClass(String.class);

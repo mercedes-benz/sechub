@@ -840,6 +840,7 @@ public class SchedulerRestControllerRestDocTest implements TestIsNecessaryForDoc
         List<String> onlyForUrls = Arrays.asList("https://localhost/mywebapp/admin", "https://localhost/mywebapp/<*>/profile",
                 "https://localhost/mywebapp/blog/<*>");
         header.setOnlyForUrls(Optional.ofNullable(onlyForUrls));
+        header.getNamesOfUsedDataConfigurationObjects().add("header-value-file-ref-for-big-tokens");
 
         List<HTTPHeaderConfiguration> httpHeaders = new ArrayList<>();
         httpHeaders.add(header);
@@ -880,7 +881,8 @@ public class SchedulerRestControllerRestDocTest implements TestIsNecessaryForDoc
                                                 fieldWithPath(PROPERTY_WEB_SCAN+"."+SecHubWebScanConfiguration.PROPERTY_URL).description("Webscan URI to scan for").optional(),
                                                 fieldWithPath(PROPERTY_WEB_SCAN+"."+SecHubWebScanConfiguration.PROPERTY_HEADERS).description("List of HTTP headers. Can be used for authentication or anything else.").optional(),
                                                 fieldWithPath(PROPERTY_WEB_SCAN+"."+SecHubWebScanConfiguration.PROPERTY_HEADERS+"[]."+HTTPHeaderConfiguration.PROPERTY_NAME).description("Name of the defined HTTP header.").optional(),
-                                                fieldWithPath(PROPERTY_WEB_SCAN+"."+SecHubWebScanConfiguration.PROPERTY_HEADERS+"[]."+HTTPHeaderConfiguration.PROPERTY_VALUE).description("Value of the defined HTTP header.").optional(),
+                                                fieldWithPath(PROPERTY_WEB_SCAN+"."+SecHubWebScanConfiguration.PROPERTY_HEADERS+"[]."+HTTPHeaderConfiguration.PROPERTY_VALUE).description("Value of the defined HTTP header. Either specify the header value directly here or reference a data section with 'use' e.g. if the value is to big, but never specify both.").optional(),
+                                                fieldWithPath(PROPERTY_WEB_SCAN+"."+SecHubWebScanConfiguration.PROPERTY_HEADERS+"[]."+SecHubDataConfigurationUsageByName.PROPERTY_USE).description("Reference to the data section containing a file with the value for this header, e.g if the value is to big for the sechub configuration. Always use 'sources' with a single 'file' instead 'folders'.").optional(),
                                                 fieldWithPath(PROPERTY_WEB_SCAN+"."+SecHubWebScanConfiguration.PROPERTY_HEADERS+"[]."+HTTPHeaderConfiguration.PROPERTY_ONLY_FOR_URLS+"[]").description("Optional list of URLs this header shall be used for like: https://mywebapp.com/path/. Can contain wildcards like: https://mywebapp.com/path/<*>/with/wildcard").optional(),
                                                 fieldWithPath(PROPERTY_WEB_SCAN+"."+SecHubWebScanConfiguration.PROPERTY_HEADERS+"[]."+HTTPHeaderConfiguration.PROPERTY_SENSITIVE).description("Defines header masking. If 'true' the header value will be replaced with '********' inside the report, 'false' will show the value as is. Default is set to 'true'.").optional()
                                         ),

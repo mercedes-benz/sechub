@@ -69,6 +69,7 @@ ext {
       /* documentation */
       asciidoctor_j:                           "2.5.2",
       asciidoctor_j_diagram:                   "2.2.1",
+      
       // openapi3-generator, releases see https://github.com/ePages-de/restdocs-api-spec/releases
       // TODO: version 17.1+ introduces nullable and required in the spec file which causes issues
       restDocsApiSpec:                         "0.17.1",
@@ -81,9 +82,10 @@ ext {
       
       /* SARIF */
       sarif_210:                               "1.1.0",
-
+      
       /* cycloneDX core */
-      cycloneDX_core:                           "8.0.0"
+      cycloneDX_core:                          "8.0.0",
+      cyclonedx_gradle_plugin:                 "1.7.4"
     
    ]    
    

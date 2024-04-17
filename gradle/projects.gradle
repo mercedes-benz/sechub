@@ -45,6 +45,7 @@ projectType = [
                     /* special wrapper applications which are also spring boot applications
                        to have dependency injection and access to some other spring boot parts */
                     project(':sechub-wrapper-checkmarx'),
+                    project(':sechub-wrapper-prepare'),
                      
                        
             ],
@@ -86,17 +87,14 @@ projectType = [
 
             ],
             
-            /* SecHub frontend projects */
-            springBootWebUiProjects:[
-                   project(':sechub-webui'),
-            ],
-            
             bootableSpringApplicationProjects:[
                    project(':sechub-server'),
                    project(':sechub-pds'),
                    project(':sechub-wrapper-checkmarx'),
-                   project(':sechub-webui'),
+                   project(':sechub-wrapper-prepare'),
             ],
+            
+            springBootWebUIProjects:[], // is filled later programmatically
 
             /* documentation projects */
             springDocProjects: [
@@ -113,6 +111,8 @@ projectType = [
                     project(':sechub-pds-solutions'),
 					project(':sechub-solution'),
 					project(':sechub-solutions-shared'),
+					project(':sechub-wrapper-xray'),
+					project(':sechub-webui-solution'),
             ],
 
             asciiDoctorProjects: [
@@ -130,7 +130,7 @@ projectType = [
 }
 
 if (secHubBuildStage.providesGeneratedOpenApiFile()){
-    /* add the java projects which need a open api file / compiled java api */
+    /* add the java projects which need an open api file / compiled java api */
     projectType.javaProjects.add(project(':sechub-api-java'))
     
     projectType.javaProjects.add(project(':sechub-systemtest'))
@@ -143,6 +143,10 @@ if (secHubBuildStage.providesGeneratedOpenApiFile()){
     
     /* make it possible to use integration test parts for systemtest (unit tests) as well */
     projectType.integrationTestProjects.add(project(':sechub-systemtest'))
+
+	/* webui */
+	projectType.bootableSpringApplicationProjects.add(project(':sechub-webui'))
+	projectType.springBootWebUIProjects.add(project(':sechub-webui'))
 }
 
 
@@ -151,7 +155,7 @@ projectType.springBootProjects.addAll(projectType.springBootSecHubServerProjects
 projectType.springBootProjects.addAll(projectType.springBootPDSProjects)
 projectType.springBootProjects.addAll(projectType.springBootAdapterProjects)
 projectType.springBootProjects.addAll(projectType.springDocProjects)
-projectType.springBootProjects.addAll(projectType.springBootWebUiProjects)
+projectType.springBootProjects.addAll(projectType.springBootWebUIProjects)
 
 projectType.javaProjects.addAll(projectType.springBootProjects)
 

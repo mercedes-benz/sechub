@@ -99,8 +99,10 @@ public abstract class AbstractProductExecutionService implements ProductExecutio
 
     private static ProductExecutorConfig createFallbackExecutorConfigForSereco() {
         ProductExecutorConfigSetup setup = new ProductExecutorConfigSetup();
+
         ProductExecutorConfig executorConfiguration = new ProductExecutorConfig(ProductIdentifier.SERECO, 1, setup);
         executorConfiguration.getSetup().setBaseURL("embedded");
+
         return executorConfiguration;
     }
 

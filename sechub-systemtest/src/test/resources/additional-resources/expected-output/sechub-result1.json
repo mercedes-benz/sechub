@@ -1,4 +1,4 @@
-{ 
+{
   "jobUUID" : "{sechub.jobuuid}",
   "trafficLight" : "YELLOW",
   "result" : {
@@ -55,6 +55,34 @@
   },
   "status" : "SUCCESS",
   "reportVersion" : "1.0",
+  "metaData" : {
+    "labels" : { },
+    "summary" : {
+      "codeScan" : {
+        "total" : 4,
+        "critical" : 0,
+        "high" : 0,
+        "medium" : 1,
+        "low" : 1,
+        "unclassified" : 0,
+        "info" : 2,
+        "details" : {
+          "medium" : [ {
+            "name" : "no_name",
+            "count" : 1
+          } ],
+          "low" : [ {
+            "name" : "no_name",
+            "count" : 1
+          } ],
+          "info" : [ {
+            "name" : "no_name",
+            "count" : 2
+          } ]
+        }
+      }
+    }
+  },
   "messages" : [ {
     "type" : "ERROR",
     "text" : "error for PDS job: {*:36} but with\n    a multine ....\n    "

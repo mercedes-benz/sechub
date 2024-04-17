@@ -19,7 +19,7 @@ buildscript{
 		classpath "org.ajoberstar.grgit:grgit-gradle:${libraryVersion.grgit}" // necessary for version calculation
 		classpath "com.epages:restdocs-api-spec-gradle-plugin:${libraryVersion.restDocsApiSpec}"
         classpath "org.owasp:dependency-check-gradle:${libraryVersion.dependency_check}"
-        classpath "org.cyclonedx:cyclonedx-gradle-plugin:${libraryVersion.cyclonedx}"
+        classpath "org.cyclonedx:cyclonedx-gradle-plugin:${libraryVersion.cyclonedx_gradle_plugin}"
 	}
 }
 

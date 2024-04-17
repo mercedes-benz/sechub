@@ -539,7 +539,7 @@
                 "items": {
                     "type": "object",
                     "properties": {
-                        "emailAdress": {
+                        "emailAddress": {
                             "type": "string",
                             "description": "The email address"
                         },
@@ -970,6 +970,19 @@
                     "webScan": {
                         "type": "object",
                         "properties": {
+                            "maxScanDuration": {
+                                "type": "object",
+                                "properties": {
+                                    "duration": {
+                                        "type": "number",
+                                        "description": "Duration of the scan as integer"
+                                    },
+                                    "unit": {
+                                        "type": "string",
+                                        "description": "Unit of the duration. Possible values are: millisecond(s), second(s), minute(s), hour(s), day(s)"
+                                    }
+                                }
+                            },
                             "headers": {
                                 "type": "array",
                                 "description": "List of HTTP headers. Can be used for authentication or anything else.",
@@ -979,6 +992,13 @@
                                         "onlyForUrls": {
                                             "type": "array",
                                             "description": "Optional list of URLs this header shall be used for like: https://mywebapp.com/path/. Can contain wildcards like: https://mywebapp.com/path/<*>/with/wildcard",
+                                            "items": {
+                                                "type": "string"
+                                            }
+                                        },
+                                        "use": {
+                                            "type": "array",
+                                            "description": "Reference to the data section containing a file with the value for this header, e.g if the value is to big for the sechub configuration. Always use 'sources' with a single 'file' instead 'folders'.",
                                             "items": {
                                                 "type": "string"
                                             }
@@ -993,21 +1013,8 @@
                                         },
                                         "value": {
                                             "type": "string",
-                                            "description": "Value of the defined HTTP header."
+                                            "description": "Value of the defined HTTP header. Either specify the header value directly here or reference a data section with 'use' e.g. if the value is to big, but never specify both."
                                         }
-                                    }
-                                }
-                            },
-                            "maxScanDuration": {
-                                "type": "object",
-                                "properties": {
-                                    "duration": {
-                                        "type": "number",
-                                        "description": "Duration of the scan as integer"
-                                    },
-                                    "unit": {
-                                        "type": "string",
-                                        "description": "Unit of the duration. Possible values are: millisecond(s), second(s), minute(s), hour(s), day(s)"
                                     }
                                 }
                             },
@@ -1142,9 +1149,15 @@
                 "title": "SecHubReport",
                 "type": "object"
             },
-            "ServerVersion": {
-                "title": "ServerVersion",
-                "type": "object"
+            "ServerRuntimeData": {
+                "title": "ServerRuntimeData",
+                "type": "object",
+                "properties": {
+                    "serverVersion": {
+                        "type": "string",
+                        "description": "The sechub server version."
+                    }
+                }
             },
             "StatusInformation": {
                 "title": "StatusInformation",
@@ -1184,7 +1197,7 @@
                     },
                     "email": {
                         "type": "string",
-                        "description": "The mail adress of the user"
+                        "description": "The mail address of the user"
                     },
                     "ownedProjects": {
                         "type": "array",
@@ -1199,13 +1212,13 @@
                 "title": "UserSignup",
                 "type": "object",
                 "properties": {
+                    "emailAddress": {
+                        "type": "string",
+                        "description": "Email address"
+                    },
                     "apiVersion": {
                         "type": "string",
                         "description": "The api version, currently only 1.0 is supported"
-                    },
-                    "emailAdress": {
-                        "type": "string",
-                        "description": "Email adress"
                     },
                     "userId": {
                         "type": "string",
@@ -1838,21 +1851,21 @@
                 ]
             }
         },
-        "/api/admin/info/version": {
+        "/api/admin/info/server": {
             "get": {
                 "tags": [
                     "admin"
                 ],
-                "summary": "Admin checks server version",
-                "description": "An administrator checks the current SecHub server version. Only administrators are able to check the server version, because knowing the exact server version makes it easier for penetration tester or attacker to attack the system.",
-                "operationId": "adminChecksServerVersion",
+                "summary": "Admin fetches server runtime data",
+                "description": "An administrator fetches the current SecHub server runtime data. Only administrators are allowed to do this because it contains the server version and knowing the exact server version makes it easier for penetration tester or attacker to attack the system.",
+                "operationId": "adminFetchesServerRuntimeData",
                 "responses": {
                     "200": {
                         "description": "200",
                         "content": {
-                            "text/plain;charset=UTF-8": {
+                            "application/json": {
                                 "schema": {
-                                    "$ref": "#/components/schemas/ServerVersion"
+                                    "$ref": "#/components/schemas/ServerRuntimeData"
                                 }
                             }
                         }
@@ -2825,7 +2838,7 @@
                     {
                         "name": "userId",
                         "in": "path",
-                        "description": "The userId of the user whose email adress will be changed",
+                        "description": "The userId of the user whose email address will be changed",
                         "required": true,
                         "schema": {
                             "type": "string"
@@ -3370,6 +3383,15 @@
                         "name": "jobUUID",
                         "in": "path",
                         "description": "The SecHub jobUUID. During the job creation this unique job identifier is automatically generated by SecHub.",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "checkSum",
+                        "in": "query",
+                        "description": "A sha256 checksum for file upload validation",
                         "required": true,
                         "schema": {
                             "type": "string"

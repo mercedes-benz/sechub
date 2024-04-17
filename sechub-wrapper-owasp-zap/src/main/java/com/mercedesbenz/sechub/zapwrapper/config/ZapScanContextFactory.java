@@ -5,6 +5,7 @@ import java.io.File;
 import java.net.URL;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
@@ -36,7 +37,7 @@ public class ZapScanContextFactory {
     EnvironmentVariableReader environmentVariableReader;
     BaseTargetUriFactory targetUriFactory;
     RuleProvider ruleProvider;
-    ZapWrapperDataSectionFileProvider dataSectionFileProvider;
+    ZapWrapperDataSectionFileSupport dataSectionFileSupport;
     SecHubScanConfigProvider secHubScanConfigProvider;
     IncludeExcludeToZapURLHelper includeExcludeToZapURLHelper;
 
@@ -45,7 +46,7 @@ public class ZapScanContextFactory {
         environmentVariableReader = new EnvironmentVariableReader();
         targetUriFactory = new BaseTargetUriFactory();
         ruleProvider = new RuleProvider();
-        dataSectionFileProvider = new ZapWrapperDataSectionFileProvider();
+        dataSectionFileSupport = new ZapWrapperDataSectionFileSupport();
         secHubScanConfigProvider = new SecHubScanConfigProvider();
         includeExcludeToZapURLHelper = new IncludeExcludeToZapURLHelper();
     }
@@ -80,6 +81,8 @@ public class ZapScanContextFactory {
 
         File clientCertificateFile = fetchClientCertificateFile(sechubScanConfig);
 
+        Map<String, File> headerValueFiles = fetchHeaderValueFiles(sechubScanConfig);
+
         /* we always use the SecHub job UUID as Zap context name */
         String contextName = settings.getJobUUID();
         if (contextName == null) {
@@ -110,6 +113,7 @@ public class ZapScanContextFactory {
 												.setDeactivatedRuleReferences(deactivatedRuleReferences)
 												.addApiDefinitionFiles(apiDefinitionFiles)
 												.setClientCertificateFile(clientCertificateFile)
+												.addHeaderValueFiles(headerValueFiles)
 												.addZapURLsIncludeSet(includeSet)
 												.addZapURLsExcludeSet(excludeSet)
 												.setConnectionCheckEnabled(settings.isConnectionCheckEnabled())
@@ -212,14 +216,21 @@ public class ZapScanContextFactory {
         // use the extracted sources folder path, where all text files are uploaded and
         // extracted
         String extractedSourcesFolderPath = environmentVariableReader.readAsString(EnvironmentVariableConstants.PDS_JOB_EXTRACTED_SOURCES_FOLDER);
-        return dataSectionFileProvider.fetchApiDefinitionFiles(extractedSourcesFolderPath, sechubScanConfig);
+        return dataSectionFileSupport.fetchApiDefinitionFiles(extractedSourcesFolderPath, sechubScanConfig);
     }
 
     private File fetchClientCertificateFile(SecHubScanConfiguration sechubScanConfig) {
         // use the extracted sources folder path, where all text files are uploaded and
         // extracted
         String extractedSourcesFolderPath = environmentVariableReader.readAsString(EnvironmentVariableConstants.PDS_JOB_EXTRACTED_SOURCES_FOLDER);
-        return dataSectionFileProvider.fetchClientCertificateFile(extractedSourcesFolderPath, sechubScanConfig);
+        return dataSectionFileSupport.fetchClientCertificateFile(extractedSourcesFolderPath, sechubScanConfig);
+    }
+
+    private Map<String, File> fetchHeaderValueFiles(SecHubScanConfiguration sechubScanConfig) {
+        // use the extracted sources folder path, where all text files are uploaded and
+        // extracted
+        String extractedSourcesFolderPath = environmentVariableReader.readAsString(EnvironmentVariableConstants.PDS_JOB_EXTRACTED_SOURCES_FOLDER);
+        return dataSectionFileSupport.fetchHeaderValueFiles(extractedSourcesFolderPath, sechubScanConfig);
     }
 
     private Set<String> createUrlsIncludedInContext(URL targetUrl, SecHubWebScanConfiguration sechubWebConfig) {

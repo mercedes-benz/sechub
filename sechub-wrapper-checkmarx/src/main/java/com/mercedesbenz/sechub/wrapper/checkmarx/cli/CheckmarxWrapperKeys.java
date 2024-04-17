@@ -76,6 +76,40 @@ public enum CheckmarxWrapperKeys implements PDSSolutionVariableKey {
             "If not the default preset Id shall be used, it can be either defined directly as job paramter (json mapping), or we can send it automatically by reusing an existing SecHub mapping. As an example: '"+PDSDefaultParameterKeyConstants.PARAM_KEY_PDS_CONFIG_USE_SECHUB_MAPPINGS+"="+
             CheckmarxConstants.MAPPING_CHECKMARX_NEWPROJECT_TEAM_ID+","+CheckmarxConstants.MAPPING_CHECKMARX_NEWPROJECT_PRESET_ID+"'"),
 
+
+    CHECKMARX_RESILIENCE_BAD_REQUEST_MAX_RETRIES(
+            CheckmarxWrapperKeyConstants.KEY_PDS_CHECKMARX_RESILIENCE_BAD_REQUEST_MAX_RETRIES,
+            PDSSolutionVariableType.OPTIONAL_JOB_PARAMETER,
+            "Maximum amounts of retries for bad request handling"),
+
+    CHECKMARX_RESILIENCE_BAD_REQUEST_RETRY_WAIT_MILLISECONDS(
+            CheckmarxWrapperKeyConstants.KEY_PDS_CHECKMARX_RESILIENCE_BAD_REQUEST_RETRY_WAIT_MILLISECONDS,
+            PDSSolutionVariableType.OPTIONAL_JOB_PARAMETER,
+            "Time in milliseconds to wait before next retry when a bad request happend"),
+
+    CHECKMARX_RESILIENCE_SERVER_ERROR_MAX_RETRIES(
+            CheckmarxWrapperKeyConstants.KEY_PDS_CHECKMARX_RESILIENCE_SERVER_ERROR_MAX_RETRIES,
+            PDSSolutionVariableType.OPTIONAL_JOB_PARAMETER,
+            "Maximum amounts of retries for internal server error handling"),
+
+    CHECKMARX_RESILIENCE_SERVER_ERROR_RETRY_WAIT_MILLISECONDS(
+            CheckmarxWrapperKeyConstants.KEY_PDS_CHECKMARX_RESILIENCE_SERVER_ERROR_RETRY_WAIT_MILLISECONDS,
+            PDSSolutionVariableType.OPTIONAL_JOB_PARAMETER,
+            "Time in milliseconds to wait before next retry when an internal server error happend"),
+
+    CHECKMARX_RESILIENCE_NETWORK_ERROR_MAX_RETRIES(
+            CheckmarxWrapperKeyConstants.KEY_PDS_CHECKMARX_RESILIENCE_NETWORK_ERROR_MAX_RETRIES,
+            PDSSolutionVariableType.OPTIONAL_JOB_PARAMETER,
+            "Maximum amounts of retries for network error handling"),
+
+    CHECKMARX_RESILIENCE_NETWORK_EROR_RETRY_WAIT_MILLISECONDS(
+            CheckmarxWrapperKeyConstants.KEY_PDS_CHECKMARX_RESILIENCE_NETWORK_EROR_RETRY_WAIT_MILLISECONDS,
+            PDSSolutionVariableType.OPTIONAL_JOB_PARAMETER,
+            "Time in milliseconds to wait before next retry when a network error happend"),
+
+
+
+
     /* @formatter:on */
     ;
 

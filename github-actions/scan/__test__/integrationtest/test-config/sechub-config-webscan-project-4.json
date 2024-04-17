@@ -1,0 +1,10 @@
+{
+
+    "apiVersion": "1.0",
+
+    "project" : "wrong-project-shall-be-overriden-by-env-in-test",
+
+    "webScan"   : {
+        "url": "https://vulnerable.demo.example.com"
+    }
+}

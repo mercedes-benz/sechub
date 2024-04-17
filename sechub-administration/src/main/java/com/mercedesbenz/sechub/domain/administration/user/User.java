@@ -37,7 +37,7 @@ public class User {
     public static final String COLUMN_USER_ONE_TIME_TOKEN_CREATED = "USER_OTT_CREATED";
     public static final String COLUMN_USER_ENABLED = "USER_ENABLED";
 
-    public static final String COLUMN_EMAIL_ADRESS = "USER_EMAIL_ADRESS";
+    public static final String COLUMN_EMAIL_ADDRESS = "USER_EMAIL_ADDRESS";
     public static final String COLUMN_USER_ROLES = "USER_ROLES";
     public static final String COLUMN_USER_SUPERADMIN = "USER_SUPERADMIN";
     public static final String COLUMN_USER_DEACTIVATED = "USER_DEACTIVATED";
@@ -54,8 +54,8 @@ public class User {
     @Column(name = COLUMN_USER_ID, unique = true, nullable = false)
     String name;
 
-    @Column(name = COLUMN_EMAIL_ADRESS, unique = true, nullable = false)
-    String emailAdress;
+    @Column(name = COLUMN_EMAIL_ADDRESS, unique = true, nullable = false)
+    String emailAddress;
 
     @Column(name = COLUMN_USER_HASHED_API_TOKEN, nullable = false)
     String hashedApiToken;
@@ -100,8 +100,8 @@ public class User {
         return deactivated;
     }
 
-    public String getEmailAdress() {
-        return emailAdress;
+    public String getEmailAddress() {
+        return emailAddress;
     }
 
     public String getName() {

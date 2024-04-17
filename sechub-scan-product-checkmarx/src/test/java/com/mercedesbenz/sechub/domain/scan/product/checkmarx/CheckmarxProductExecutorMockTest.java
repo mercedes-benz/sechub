@@ -30,6 +30,7 @@ import com.mercedesbenz.sechub.adapter.AdapterException;
 import com.mercedesbenz.sechub.adapter.AdapterExecutionResult;
 import com.mercedesbenz.sechub.adapter.AdapterLogId;
 import com.mercedesbenz.sechub.adapter.checkmarx.CheckmarxAdapter;
+import com.mercedesbenz.sechub.adapter.checkmarx.CheckmarxResilienceConsultant;
 import com.mercedesbenz.sechub.adapter.mock.MockDataIdentifierFactory;
 import com.mercedesbenz.sechub.commons.core.environment.SystemEnvironmentVariableSupport;
 import com.mercedesbenz.sechub.commons.mapping.MappingData;
@@ -56,6 +57,7 @@ import com.mercedesbenz.sechub.sharedkernel.metadata.DefaultMetaDataInspector;
 import com.mercedesbenz.sechub.storage.core.JobStorage;
 import com.mercedesbenz.sechub.storage.core.StorageService;
 
+@SuppressWarnings("deprecation")
 @RunWith(SpringRunner.class)
 @ContextConfiguration(classes = { CheckmarxProductExecutor.class, CheckmarxResilienceConsultant.class,
         CheckmarxProductExecutorMockTest.SimpleTestConfiguration.class, DefaultMetaDataInspector.class })
@@ -90,6 +92,9 @@ public class CheckmarxProductExecutorMockTest {
 
     @MockBean
     CodeScanPathCollector codeScanPathCollector;
+
+    @MockBean
+    SecHubDirectCheckmarxResilienceConfiguration resilienceConfiguration;
 
     @Before
     public void before() throws Exception {

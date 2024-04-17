@@ -84,8 +84,11 @@ include 'sechub-cli',
 // Wrapper Xray
 'sechub-wrapper-xray',
 
-// WebUI
-'sechub-webui'
+// Wrapper prepare
+'sechub-wrapper-prepare',
+
+/* webui */
+'sechub-webui-solution'
 
 String buildStage = System.getProperty("sechub.build.stage");
 
@@ -93,29 +96,32 @@ if (buildStage!=null) {
 
    /* build stage properrty is set */
    if (buildStage.equals("api-necessary") || buildStage.equals("all") ){
-    
-      include 'sechub-api-java', /* needs open api file to generate */ 
-    
+
+        include 'sechub-api-java', /* needs open api file to generate */
+
         /* system test - needs java api*/
         'sechub-systemtest',
-        
+
         /* pds tools - needs java api */
-        'sechub-pds-tools', 
-        
+        'sechub-pds-tools',
+
         // Examples (are below 'sechub-examples' folder)
-        'sechub-examples:example-sechub-api-java' 
-    
+        'sechub-examples:example-sechub-api-java',
+
+        /* WebUI - needs the Java API */
+        'sechub-webui'
     }
 }
 
 buildCache {
     def useTempCache = System.getenv('SECHUB_BUILD_USE_TMP_CACHE')
-    
+
     if (useTempCache!=null){
         local {
             /* Set local build cache directory. using build/temp-cache let clean destroy the former cache..*/
             directory = "${settingsDir}/build/temp-cache"
         }
     }
-     
+
 }
+

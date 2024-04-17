@@ -62,9 +62,9 @@ public class SignupJsonInputValidator implements Validator {
             return;
         }
 
-        ValidationResult emailValidationResult = emailValidation.validate(selfRegistration.getEmailAdress());
+        ValidationResult emailValidationResult = emailValidation.validate(selfRegistration.getEmailAddress());
         if (!emailValidationResult.isValid()) {
-            errors.rejectValue(PROPERTY_EMAIL_ADRESS, "api.error.email.invalid", "Invalid email adress");
+            errors.rejectValue(PROPERTY_EMAIL_ADDRESS, "api.error.email.invalid", "Invalid email address");
             return;
         }
         LOG.debug("Selfregistration of {} was accepted", selfRegistration.getUserId());
