@@ -23,7 +23,7 @@ public class PrepareWrapperEnvironment {
     @Value("${" + PDSDefaultRuntimeKeyConstants.RT_KEY_PDS_JOB_USER_MESSAGES_FOLDER + "}")
     private String pdsUserMessagesFolder;
 
-    @Value("${" + PDSDefaultRuntimeKeyConstants.PARAM_KEY_PDS_PREPARE_UPLOAD_FOLDER_DIRECTORY + "}")
+    @Value("${" + PDSDefaultRuntimeKeyConstants.RT_KEY_PDS_PREPARE_UPLOAD_FOLDER_DIRECTORY + "}")
     private String pdsPrepareUploadFolderDirectory;
 
     public String getSechubConfigurationModelAsJson() {

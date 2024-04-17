@@ -1,18 +1,19 @@
-package com.mercedesbenz.sechub.wrapper.prepare.cli;
+package com.mercedesbenz.sechub.wrapper.prepare.prepare;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import org.springframework.stereotype.Component;
 
 import com.mercedesbenz.sechub.commons.model.SecHubBinaryDataConfiguration;
 import com.mercedesbenz.sechub.commons.model.SecHubConfigurationModel;
 import com.mercedesbenz.sechub.commons.model.SecHubRemoteDataConfiguration;
 import com.mercedesbenz.sechub.commons.model.SecHubSourceDataConfiguration;
-import org.springframework.stereotype.Component;
-
-import java.util.ArrayList;
-import java.util.List;
 
 @Component
 public class PrepareWrapperRemoteConfigurationExtractor {
 
-    public List<SecHubRemoteDataConfiguration> extractRemoteConfiguration(SecHubConfigurationModel model) {
+    public List<SecHubRemoteDataConfiguration> extract(SecHubConfigurationModel model) {
         List<SecHubRemoteDataConfiguration> remoteDataConfigurationList = new ArrayList<>();
         if (model == null) {
             throw new IllegalStateException("Context was not initialized correctly. SecHub configuration was null");

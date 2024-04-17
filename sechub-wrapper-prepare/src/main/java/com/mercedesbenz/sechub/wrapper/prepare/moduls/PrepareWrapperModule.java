@@ -10,7 +10,10 @@ import com.mercedesbenz.sechub.commons.model.SecHubConfigurationModel;
 @Service
 public interface PrepareWrapperModule {
 
-    public boolean isAbleToPrepare(SecHubConfigurationModel model);
+    boolean isAbleToPrepare(SecHubConfigurationModel model);
 
-    public void prepare(SecHubConfigurationModel model, String pdsPrepareUploadFolderDirectory) throws IOException;
+    void prepare(SecHubConfigurationModel model, String pdsPrepareUploadFolderDirectory) throws IOException;
+
+    void cleanDirectory(String pdsPrepareUploadFolderDirectory) throws IOException;
+
 }

@@ -51,4 +51,6 @@ public class PDSLauncherScriptEnvironmentConstants {
 
     public static final String PDS_JOB_METADATA_FILE = "PDS_JOB_METADATA_FILE";
 
+    // TODO: 17.04.24 laura implement prepare upload folder and upload mechanism
+    public static final String PDS_PREPARE_UPLOAD_FOLDER_DIRECTORY = "PDS_PREPARE_UPLOAD_FOLDER_DIRECTORY";
 }

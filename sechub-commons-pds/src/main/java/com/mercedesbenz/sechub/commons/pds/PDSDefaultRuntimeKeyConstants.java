@@ -51,6 +51,6 @@ public class PDSDefaultRuntimeKeyConstants {
      * Folder for PDS prepare where remote data gets downloaded to be uploaded to
      * the shared storage
      */
-    public static final String PARAM_KEY_PDS_PREPARE_UPLOAD_FOLDER_DIRECTORY = "pds.prepare.upload.folder.directory";
+    public static final String RT_KEY_PDS_PREPARE_UPLOAD_FOLDER_DIRECTORY = "pds.prepare.upload.folder.directory";
 
 }

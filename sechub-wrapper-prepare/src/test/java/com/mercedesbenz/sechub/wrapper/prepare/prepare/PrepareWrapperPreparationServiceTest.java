@@ -5,15 +5,16 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-import com.mercedesbenz.sechub.wrapper.prepare.cli.PrepareWrapperRemoteConfigurationExtractor;
+import java.io.IOException;
+import java.util.ArrayList;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import com.mercedesbenz.sechub.adapter.AdapterExecutionResult;
 import com.mercedesbenz.sechub.commons.model.SecHubConfigurationModel;
 import com.mercedesbenz.sechub.wrapper.prepare.cli.PrepareWrapperEnvironment;
-
-import java.io.IOException;
+import com.mercedesbenz.sechub.wrapper.prepare.moduls.PrepareWrapperGitModule;
 
 class PrepareWrapperPreparationServiceTest {
 
@@ -40,7 +41,7 @@ class PrepareWrapperPreparationServiceTest {
         serviceToTest.environment = environment;
         serviceToTest.factory = factory;
         serviceToTest.extractor = extractor;
-
+        serviceToTest.modules = new ArrayList<>();
     }
 
     @Test
@@ -98,4 +99,40 @@ class PrepareWrapperPreparationServiceTest {
         assertThrows(IllegalStateException.class, () -> serviceToTest.startPreparation());
     }
 
+    @Test
+    void when_remote_data_was_configured_and_git_modul_added_return_preparation_success_without_message() throws IOException {
+        /* prepare */
+        PrepareWrapperGitModule gitModule = mock(PrepareWrapperGitModule.class);
+        serviceToTest.modules.add(gitModule);
+        String json = """
+                {
+                  "apiVersion": "1.0",
+                  "data": {
+                    "sources": [
+                      {
+                        "name": "remote_example_name",
+                        "remote": {
+                          "location": "remote_example_location",
+                          "type": "git"
+                        }
+                      }
+                    ]
+                  },
+                  "codeScan": {
+                    "use": [
+                      "remote_example_name"
+                    ]
+                  }
+                }
+                """;
+        SecHubConfigurationModel model = createFromJSON(json);
+        when(context.getSecHubConfiguration()).thenReturn(model);
+
+        /* execute */
+        AdapterExecutionResult result = serviceToTest.startPreparation();
+
+        /* test */
+        assertEquals("SECHUB_PREPARE_RESULT;status=OK", result.getProductResult());
+        assertEquals(0, result.getProductMessages().size());
+    }
 }
