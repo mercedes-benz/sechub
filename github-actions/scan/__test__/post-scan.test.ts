@@ -1,44 +1,109 @@
 // SPDX-License-Identifier: MIT
 
 import * as core from '@actions/core';
-import { downloadReports, reportOutputs } from '../src/post-scan';
-import { getReport } from '../../shared/src/sechub-cli';
+import { collectReportData, reportOutputs } from '../src/post-scan';
+import { getReport } from '../src/sechub-cli';
+import { LAUNCHER_CONTEXT_DEFAULTS } from '../src/launcher';
 
 jest.mock('@actions/core');
 const mockedCore = core as jest.Mocked<typeof core>;
 
-jest.mock('../../shared/src/sechub-cli');
+jest.mock('../src/sechub-cli');
 const mockedGetReport = getReport as jest.MockedFunction<typeof getReport>;
-describe('downloadReports', function () {
+
+describe('collectReportData', function () {
     afterEach(() => {
         jest.clearAllMocks();
     });
-    it('writes to log if formats is empty', function () {
-        downloadReports([]);
 
+    it('format empty - logs called, getReport not called', function () {
+
+        /* prepare */
+        const testContext = Object.create(LAUNCHER_CONTEXT_DEFAULTS);
+        testContext.reportFormats= [];
+
+        /* execute */
+        collectReportData(testContext);
+
+        /* test */
         expect(mockedCore.info).toHaveBeenCalledTimes(1);
         expect(mockedGetReport).toHaveBeenCalledTimes(0);
     });
 
-    it('calls getReport with correct parameters for non-empty formats', function () {
-        const fsMock = require('fs');
-        fsMock.readFileSync = jest.fn(() => '{"test": "test"}'); // Mock an empty JSON report
-        const formats = ['json', 'html'];
-        const sampleJson = {'test': 'test'};
-        const actualJson = downloadReports(formats);
+    it('format "json" - logs called 1 time , getReport never called', function () {
+        /* prepare */
+        const testContext = Object.create(LAUNCHER_CONTEXT_DEFAULTS);
+        testContext.reportFormats= ['json'];
 
-        expect(mockedCore.info).toHaveBeenCalledTimes(2); // Assumes 3 formats, adjust based on the number of formats in the array
-        expect(mockedGetReport).toHaveBeenCalledTimes(2);
-        expect(actualJson).toEqual(sampleJson);
+        /* execute */
+        collectReportData(testContext);
+
+        /* test */
+        expect(mockedCore.info).toHaveBeenCalledTimes(1);
+        expect(mockedGetReport).toHaveBeenCalledTimes(0);
+    });
+
+    it('format "html" - logs called 2 times, getReport called 1 time', function () {
+
+        /* prepare */
+        const testContext = Object.create(LAUNCHER_CONTEXT_DEFAULTS);
+        testContext.reportFormats= ['json','html'];
+        testContext.jobUUID=1234; // necessary for download
+
+        collectReportData(testContext);
+
+        /* test */
+        expect(mockedCore.info).toHaveBeenCalledTimes(2);
+        expect(mockedGetReport).toHaveBeenCalledTimes(1);
+    });
+
+    it('format "json,html" - logs called 2 times , getReport called 1 time', function () {
+
+        /* prepare */
+        const testContext = Object.create(LAUNCHER_CONTEXT_DEFAULTS);
+        testContext.reportFormats= ['json','html'];
+        testContext.jobUUID=1234; // necessary for download
+
+        /* execute */
+        collectReportData(testContext);
+
+        /* test */
+        expect(mockedCore.info).toHaveBeenCalledTimes(2);
+        expect(mockedGetReport).toHaveBeenCalledTimes(1);
+    });
+
+    it('calls getReport with parameters (except json) and report json object is as expected', function () {
+        // eslint-disable-next-line @typescript-eslint/no-var-requires
+        const fsMock = require('fs');
+
+        /* prepare */
+        const testContext = Object.create(LAUNCHER_CONTEXT_DEFAULTS);
+        testContext.reportFormats= ['json','html','xyz','bla'];
+        testContext.jobUUID=1234; // necessary for download
+        
+        fsMock.readFileSync = jest.fn(() => '{"test": "test"}'); // Mock an empty JSON report
+        const sampleJson = {'test': 'test'};
+
+        /* execute */
+        collectReportData(testContext);
+
+        /* test */
+        expect(mockedCore.info).toHaveBeenCalledTimes(4); // "json, html, xyz, bla" - 4 times logged (valid format check is not done here)
+        expect(mockedGetReport).toHaveBeenCalledTimes(3); // we fetch not json via getReport again (already done before), so only "html, xyz, bla" used
+        
+        expect(testContext.secHubReportJsonObject).toEqual(sampleJson); // json object is available
+
     });
 });
 
 describe('reportOutputs', function () {
+    /* prepare */
     beforeEach(() => {
         jest.clearAllMocks();
     });
 
     it('calls set github output with correct values when JSON report is correct', function () {
+        /* prepare */
         const sampleJson = {
             'result': {
                 'count': 2,
@@ -66,8 +131,10 @@ describe('reportOutputs', function () {
             'messages': []
         };
 
+        /* execute */
         reportOutputs(sampleJson);
 
+        /* test */
         expect(mockedCore.debug).toHaveBeenCalledTimes(6);
         expect(mockedCore.setOutput).toHaveBeenCalledTimes(6);
         expect(mockedCore.setOutput).toBeCalledWith('scan-trafficlight', 'RED');
@@ -79,8 +146,10 @@ describe('reportOutputs', function () {
     });
 
     it('calls set github output with correct values when JSON report did not exist', function () {
+        /* execute */
         reportOutputs(undefined);
 
+        /* test */
         expect(mockedCore.debug).toHaveBeenCalledTimes(7);
         expect(mockedCore.debug).toBeCalledWith('No findings reported to be categorized.');
         expect(mockedCore.setOutput).toHaveBeenCalledTimes(6);
@@ -93,6 +162,7 @@ describe('reportOutputs', function () {
     });
 
     it('calls set github output with correct values when traffic light is green without findings.', function () {
+        /* prepare */
         const sampleJson = {
             'result': {
                 'count': 0,
@@ -105,8 +175,10 @@ describe('reportOutputs', function () {
             'messages': []
         };
 
+        /* execute */
         reportOutputs(sampleJson);
 
+        /* test */
         expect(mockedCore.debug).toHaveBeenCalledTimes(6);
         expect(mockedCore.setOutput).toHaveBeenCalledTimes(6);
         expect(mockedCore.setOutput).toBeCalledWith('scan-trafficlight', 'GREEN');

@@ -3,6 +3,7 @@
 package cli
 
 import (
+	"io"
 	"os"
 	"testing"
 
@@ -148,4 +149,41 @@ func Test_createBinariesTarFile_DataBinariesSectionWorksWithRelativePaths(t *tes
 	sechubTestUtil.AssertSize(list, 2, t)
 	sechubTestUtil.AssertContains(list, archiveDataPrefix+"/"+namedBinariesScanConfig1.Name+"/"+filepath1, t)
 	sechubTestUtil.AssertContains(list, archiveDataPrefix+"/"+namedBinariesScanConfig1.Name+"/"+filepath2, t)
+}
+
+func Test_createBinariesTarFile_HandlesRemoteDataSection(t *testing.T) {
+	/* prepare */
+	var context Context
+	var config Config
+	var sechubConfig SecHubConfig
+
+	context.config = &config
+	context.sechubConfig = &sechubConfig
+
+	dir := sechubTestUtil.InitializeTestTempDir(t)
+	defer os.RemoveAll(dir)
+	context.binariesTarFileName = dir + "/testoutput.tar"
+	scanConfig := NamedBinariesScanConfig{
+		Name: "remote-data-section-test",
+		// Currently the client does not parse the remote data section. So we leave it empty for now.
+	}
+	context.sechubConfig.Data.Binaries = []NamedBinariesScanConfig{scanConfig}
+
+	/* execute */
+
+	// Capture stdout
+	rescueStdout := os.Stdout
+	r, w, _ := os.Pipe()
+	os.Stdout = w
+
+	err := createBinariesTarFile(&context)
+
+	// Stop capturing stdout
+	w.Close()
+	out, _ := io.ReadAll(r)
+	os.Stdout = rescueStdout
+
+	/* test */
+	sechubTestUtil.AssertNoError(err, t)
+	sechubTestUtil.AssertStringContains(string(out), sechubUtil.TarFileNotCreated, t)
 }

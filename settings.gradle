@@ -84,6 +84,9 @@ include 'sechub-cli',
 // Wrapper Xray
 'sechub-wrapper-xray',
 
+// Wrapper prepare
+'sechub-wrapper-prepare',
+
 /* webui */
 'sechub-webui-solution'
 
@@ -121,3 +124,4 @@ buildCache {
     }
 
 }
+

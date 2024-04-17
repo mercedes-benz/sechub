@@ -29,14 +29,15 @@ type ZipConfig struct {
 	Debug              bool
 }
 
-// ZipFileHasNoContent error message saying zip file has no content
-const ZipFileHasNoContent = "Zipfile has no content!"
+const ZipFileHasNoContent = "Zipfile has no content! Please check your \"sources\" section in the config file."
+const ZipFileNotCreated = "No sources zip file created. Assuming \"remote\" section is defined."
 
 // TargetZipFileLoop error message when it comes to an infinite loop because the zip file would be part of its own content
 const TargetZipFileLoop = "Target zipfile would be part of zipped content, leading to infinite loop. Please change target path!"
 
 // Zip - Will zip defined folders and files using given ZipConfig.
-//       Note: ZipConfig.ZipWriter must be created beforehand!
+//
+//	Note: ZipConfig.ZipWriter must be created beforehand!
 func Zip(config *ZipConfig) (err error) {
 
 	// Add defined folders to zip file
