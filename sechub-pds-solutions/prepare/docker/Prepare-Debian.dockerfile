@@ -6,7 +6,7 @@ ARG BASE_IMAGE
 # Build Args
 # Build type can be "copy" or "download"
 ARG BUILD_TYPE
-ARG PREPARE_WRAPPER_VERSION="1.0.0"
+ARG PREPARE_WRAPPER_VERSION="0.0.0"
 
 # The base image of the builder
 ARG BUILDER_BASE_IMAGE="debian:12-slim"
@@ -55,7 +55,7 @@ ARG PREPARE_WRAPPER_VERSION
 RUN mkdir --parent "$ARTIFACT_FOLDER"
 
 # Copy
-COPY copy/sechub-pds-wrapper-prepare-$PREPARE_WRAPPER_VERSION.jar "$ARTIFACT_FOLDER"
+COPY copy/sechub-wrapper-prepare-$PREPARE_WRAPPER_VERSION.jar "$ARTIFACT_FOLDER"
 
 
 #-------------------
@@ -100,7 +100,7 @@ RUN export DEBIAN_FRONTEND=noninteractive && \
 
 # Copy Prepare-Wrapper jar from builder
 COPY --from=builder "$ARTIFACT_FOLDER" "$TOOL_FOLDER"
-RUN ln -s "sechub-pds-wrapper-prepare-$PREPARE_WRAPPER_VERSION.jar" "$TOOL_FOLDER/wrapper-prepare.jar"
+RUN ln -s "sechub-wrapper-prepare-$PREPARE_WRAPPER_VERSION.jar" "$TOOL_FOLDER/sechub-wrapper-prepare.jar"
 
 # Set workspace
 WORKDIR "$WORKSPACE"

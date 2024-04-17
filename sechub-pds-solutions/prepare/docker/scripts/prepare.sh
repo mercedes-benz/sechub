@@ -1,6 +1,8 @@
 #!/usr/bin/bash
 # SPDX-License-Identifier: MIT
 
+prepare_wrapper="$TOOL_FOLDER/sechub-wrapper-prepare.jar"
+
 echo ""
 echo "---------"
 echo "PDS Setup"
@@ -10,7 +12,14 @@ echo "SecHub Job UUID: $SECHUB_JOB_UUID"
 echo "PDS Job UUID: $PDS_JOB_UUID"
 echo ""
 
-echo "SECHUB_PREPARE_RESULT;status=ok" > "$PDS_JOB_RESULT_FILE"
+# check if the Prepare Wrapper exists
+if [[ ! -f "$prepare_wrapper" ]]; then
+    echo "ERROR: The Prepare wrapper file $prepare_wrapper does not exist." 1>&2
+    exit 1
+fi
+
+echo ""
+java -jar "$prepare_wrapper"
 
 
 
