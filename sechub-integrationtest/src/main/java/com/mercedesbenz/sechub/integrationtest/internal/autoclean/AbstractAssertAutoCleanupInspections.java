@@ -70,6 +70,10 @@ public abstract class AbstractAssertAutoCleanupInspections {
      * {@link #addExpectedNeverAnyDeleteInspection()} ) always retries will be done,
      * which means: a timeout is here also the amount of time because always a retry
      * is done!
+     *
+     * Time to wait for next retry is 300 milliseconds.
+     *
+     * @param timeoutInSeconds time out in seconds
      */
     public void assertAsExpectedWithTimeOut(int timeoutInSeconds) {
         assertAsExpectedWithTimeOut(timeoutInSeconds, 300);
@@ -82,6 +86,10 @@ public abstract class AbstractAssertAutoCleanupInspections {
      * {@link #addExpectedNeverAnyDeleteInspection()} ) always retries will be done,
      * which means: a timeout is here also the amount of time because always a retry
      * is done!
+     *
+     * @param timeoutInSeconds         time out in seconds
+     * @param timeToWaitInMilliseconds time in milliseconds to wait before next
+     *                                 retry
      */
     public void assertAsExpectedWithTimeOut(int timeoutInSeconds, int timeToWaitInMilliseconds) {
         TestAutoCleanJsonDeleteCountFetcher fetcher = createFeatcher();
@@ -106,8 +114,7 @@ public abstract class AbstractAssertAutoCleanupInspections {
                             AssertAutoCleanupDeleteCountAction deleteAction = (AssertAutoCleanupDeleteCountAction) action;
                             ActionState state = deleteAction.validate(counts, problemMessageBuilder);
                             /*
-                             * special case when 0 amounts accepted -> always retry until time out. Reason:
-                             * we want to ensure that 0 is really not reached here.
+                             * Special case when ActionState.PLEASE_GO_FURTHER - always retry
                              */
                             atLeastOneWantsToRetry = atLeastOneWantsToRetry || state == ActionState.PLEASE_GO_FURTHER;
                         }

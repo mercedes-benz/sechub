@@ -34,7 +34,7 @@ public class AutoCleanupScenario1IntTest {
     public void auto_cleanup_multi_test() {
         /*
          * why is this a multi test? Because we cannot predict the ordering in different
-         * junit tests and there were flaky test situtions, the both tests are combined
+         * junit tests and there were flaky test situations, the both tests are combined
          * here and run different.
          *
          * Inside the stacktrace we can still see at which "stage" the test fail

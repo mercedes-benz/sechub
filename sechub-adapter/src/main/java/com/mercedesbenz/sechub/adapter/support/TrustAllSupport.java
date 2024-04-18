@@ -81,12 +81,12 @@ public class TrustAllSupport {
             // https://stackoverflow.com/questions/22937983/how-to-use-socks-5-proxy-with-apache-http-client-4
             /* @formatter:off */
                 SocksProxySSLConnectionSocketFactory socksProxySSLSocketFactory = new SocksProxySSLConnectionSocketFactory(sslContext);
-                PoolingHttpClientConnectionManager cm = PoolingHttpClientConnectionManagerBuilder.create().
+                PoolingHttpClientConnectionManager connectionManager = PoolingHttpClientConnectionManagerBuilder.create().
                         setSSLSocketFactory(socksProxySSLSocketFactory).
                         setDnsResolver(new FakeDnsResolver()).
                         build();
                 /* @formatter:on */
-            clientBuilder.setConnectionManager(cm);
+            clientBuilder.setConnectionManager(connectionManager);
 
         } else {
 

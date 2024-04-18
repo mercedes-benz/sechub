@@ -91,7 +91,7 @@ public class JsonErrorFieldNamesAvailableHttpStatusExceptionTestValidator extend
         String error = map.get(FIELD_ERROR);
         assertNotNull("error is null", error);
         // check error contains expected reasonphrase
-        assertEquals("Status code resaonphrase is not used as error inside JSON", "" + HttpStatus.valueOf(exception.getStatusCode().value()).getReasonPhrase(),
+        assertEquals("Status code reason phrase is not used as error inside JSON", "" + HttpStatus.valueOf(exception.getStatusCode().value()).getReasonPhrase(),
                 error);
 
     }

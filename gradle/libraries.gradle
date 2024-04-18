@@ -70,8 +70,8 @@ ext {
       asciidoctor_j:                           "2.5.2",
       asciidoctor_j_diagram:                   "2.2.1",
       
-      // openapi3-generator, releases see https://github.com/ePages-de/restdocs-api-spec/releases
-      // TODO de-jcup, 2024-04-18: Currently we cannot use version 0.17.1+ because it introduces nullable and required in the spec file which causes issues
+      /* openapi3-generator, releases see https://github.com/ePages-de/restdocs-api-spec/releases */
+      // TODO de-jcup, 2024-04-18: Currently we cannot use versions > 0.17.1 because it introduces nullable and required in the spec file which causes issues
       // There exists an issue for it at https://github.com/mercedes-benz/sechub/issues/3080
       restDocsApiSpec:                         "0.17.1",
       
@@ -121,7 +121,6 @@ ext {
 
 
         /* additional (2): version based on other libraries used by spring boot */      
-        //mockito_inline:                        "org.mockito:mockito-inline:${spring_boot_dependency_version.mockito_core}",
         jackson_jr_all:                        "com.fasterxml.jackson.jr:jackson-jr-all:${spring_boot_dependency_version.jackson_core}",
 
 

@@ -1,13 +1,9 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.pds.job;
 
-import static com.mercedesbenz.sechub.commons.core.CommonConstants.DOT_CHECKSUM;
-import static com.mercedesbenz.sechub.commons.core.CommonConstants.FILE_SIZE_HEADER_FIELD_NAME;
-import static com.mercedesbenz.sechub.commons.core.CommonConstants.MULTIPART_CHECKSUM;
-import static com.mercedesbenz.sechub.commons.core.CommonConstants.MULTIPART_FILE;
-import static com.mercedesbenz.sechub.pds.job.PDSJobAssert.assertJobFound;
-import static com.mercedesbenz.sechub.pds.job.PDSJobAssert.assertJobIsInState;
-import static com.mercedesbenz.sechub.pds.util.PDSAssert.notNull;
+import static com.mercedesbenz.sechub.commons.core.CommonConstants.*;
+import static com.mercedesbenz.sechub.pds.job.PDSJobAssert.*;
+import static com.mercedesbenz.sechub.pds.util.PDSAssert.*;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -24,6 +20,7 @@ import org.apache.commons.fileupload2.core.FileUploadSizeException;
 import org.apache.commons.fileupload2.jakarta.JakartaServletFileUpload;
 import org.apache.commons.io.input.CountingInputStream;
 import org.apache.commons.io.input.MessageDigestInputStream;
+import org.apache.tomcat.util.http.fileupload.impl.SizeLimitExceededException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -107,7 +104,12 @@ public class PDSFileUploadJobService {
         } catch (FileUploadSizeException fileUploadSizeException) {
 
             LOG.error("Size limit reached: {}", fileUploadSizeException.getMessage());
-            throw new PDSBadRequestException("Binaries upload maximum reached. Please reduce your upload size.", fileUploadSizeException);
+            throw new PDSBadRequestException("Upload maximum reached. Please reduce your upload size.", fileUploadSizeException);
+
+        } catch (SizeLimitExceededException sizeLimitExceededException) {
+
+            LOG.error("Size limit reached: {}", sizeLimitExceededException.getMessage());
+            throw new PDSBadRequestException("Upload maximum reached. Please reduce your upload size.", sizeLimitExceededException);
 
         } catch (UnsupportedEncodingException e) {
 
