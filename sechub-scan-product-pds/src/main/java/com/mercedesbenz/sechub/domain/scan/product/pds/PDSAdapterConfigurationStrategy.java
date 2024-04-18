@@ -239,19 +239,21 @@ public class PDSAdapterConfigurationStrategy implements AdapterConfigurationStra
 
     private <B extends AdapterConfigBuilder> void handleCommonParts(B configBuilder) {
         /* standard configuration */
-        /*
-         * TODO Albert Tregnaghi, 2022-05-20: We should move the "configBuilder" parts
-         * to another configuration strategy and use this in every adapter not only for
-         * PDS. But we cannot do this as long as the install setup is different and
-         * there are still some static setup - like for checkmarx - and not all
-         * available by configuration support.
-         */
-        configBuilder
-                .configure(new DefaultAdapterConfigurationStrategy(strategyConfig.productExecutorData, strategyConfig.configSupport, strategyConfig.scanType));
+        
+        /* @formatter:off */
+        configBuilder.configure(new DefaultAdapterConfigurationStrategy(
+                                        strategyConfig.productExecutorData, 
+                                        strategyConfig.configSupport, 
+                                        strategyConfig.scanType));
+        
         configBuilder.setTrustAllCertificates(strategyConfig.configSupport.isTrustAllCertificatesEnabled());
-        configBuilder.setTimeToWaitForNextCheckOperationInMilliseconds(
-                strategyConfig.configSupport.getTimeToWaitForNextCheckOperationInMilliseconds(strategyConfig.installSetup));
-        configBuilder.setTimeOutInMinutes(strategyConfig.configSupport.getTimeoutInMinutes(strategyConfig.installSetup));
+        
+        int timeToWaitInMilliseconds = strategyConfig.configSupport.getTimeToWaitForNextCheckOperationInMilliseconds(strategyConfig.installSetup);
+        configBuilder.setTimeToWaitForNextCheckOperationInMilliseconds(timeToWaitInMilliseconds);
+        
+        int timeOutInMinutes = strategyConfig.configSupport.getTimeoutInMinutes(strategyConfig.installSetup);
+        configBuilder.setTimeOutInMinutes(timeOutInMinutes);
+        /* @formatter:on */
     }
 
 }

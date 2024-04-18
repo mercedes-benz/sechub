@@ -71,7 +71,8 @@ ext {
       asciidoctor_j_diagram:                   "2.2.1",
       
       // openapi3-generator, releases see https://github.com/ePages-de/restdocs-api-spec/releases
-      // TODO: version 17.1+ introduces nullable and required in the spec file which causes issues
+      // TODO de-jcup, 2024-04-18: Currently we cannot use version 0.17.1+ because it introduces nullable and required in the spec file which causes issues
+      // There exists an issue for it at https://github.com/mercedes-benz/sechub/issues/3080
       restDocsApiSpec:                         "0.17.1",
       
       /* Owasp Zap wrapper */

@@ -30,14 +30,6 @@ public class MultiStorageService implements StorageService {
 
     private static final Logger LOG = LoggerFactory.getLogger(MultiStorageService.class);
 
-    /*
-     * TODO de-jcup, 2019-11-09: think about decoupling this completely:
-     * List<JobStorageFactory> + @Component in storage factories, maybe with init
-     * method (to avoid missing dependency injection in sechub-storage-aws-s3-test
-     * when s3mock starts...). Benefit would be: change between aws and minio s3
-     * impl would be just a dependency switch and all done. Currently software
-     * changes inside this class are necessary to obtain this.
-     */
     private JobStorageFactory jobStorageFactory;
 
     @Autowired
