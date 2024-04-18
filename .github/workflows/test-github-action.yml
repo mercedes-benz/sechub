@@ -1,0 +1,19 @@
+name: SecHub scan prod
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: [ubuntu-latest]
+
+    steps:
+    - name: SecHub scan action
+      uses: mercedes-benz/sechub/github-actions/scan@develop
+      with:
+        url: ${{ secrets.SECHUB_SERVER }}
+        api-token: ${{ secrets.SECHUB_APITOKEN_PROD }}
+        user: ${{ secrets.SECHUB_USERID_PROD }}
+        project-name: sechub-gha-action
+        include-folders: 'Code'
+        scan-types: codeScan
