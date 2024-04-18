@@ -239,18 +239,18 @@ public class PDSAdapterConfigurationStrategy implements AdapterConfigurationStra
 
     private <B extends AdapterConfigBuilder> void handleCommonParts(B configBuilder) {
         /* standard configuration */
-        
+
         /* @formatter:off */
         configBuilder.configure(new DefaultAdapterConfigurationStrategy(
-                                        strategyConfig.productExecutorData, 
-                                        strategyConfig.configSupport, 
+                                        strategyConfig.productExecutorData,
+                                        strategyConfig.configSupport,
                                         strategyConfig.scanType));
-        
+
         configBuilder.setTrustAllCertificates(strategyConfig.configSupport.isTrustAllCertificatesEnabled());
-        
+
         int timeToWaitInMilliseconds = strategyConfig.configSupport.getTimeToWaitForNextCheckOperationInMilliseconds(strategyConfig.installSetup);
         configBuilder.setTimeToWaitForNextCheckOperationInMilliseconds(timeToWaitInMilliseconds);
-        
+
         int timeOutInMinutes = strategyConfig.configSupport.getTimeoutInMinutes(strategyConfig.installSetup);
         configBuilder.setTimeOutInMinutes(timeOutInMinutes);
         /* @formatter:on */
