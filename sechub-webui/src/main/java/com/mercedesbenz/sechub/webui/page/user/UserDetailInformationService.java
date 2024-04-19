@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.webui.page.user;
 
 import org.springframework.security.core.userdetails.User;
