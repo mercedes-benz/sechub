@@ -1,18 +1,12 @@
 # SPDX-License-Identifier: MIT
-
-spring:
-  ssl:
-    bundle:
-      jks:
-        pds-certificate:
-          key:
-            alias: ${PDS_SSL_KEYSTORE_ALIAS}
-          keystore:
-             # we use a configurable keystore location, e.g. "file:/var/server/certificate/prod-keystore.p12" 
-            location: ${PDS_SSL_KEYSTORE_LOCATION}
-            password: ${PDS_SSL_KEYSTORE_PASSWORD}
-            type: ${PDS_SSL_KEYSTORE_TYPE}
-            
 server:
   ssl:
-    bundle: "pds-certificate"
+    keyStoreType:
+      ${PDS_SSL_KEYSTORE_TYPE}
+    key-store:
+       # we use a configurable keystore location, e.g. "file:/var/server/certificate/prod-keystore.p12" 
+       ${PDS_SSL_KEYSTORE_LOCATION}
+    key-store-password:
+       ${PDS_SSL_KEYSTORE_PASSWORD}
+    key-alias:
+       ${PDS_SSL_KEYSTORE_ALIAS}

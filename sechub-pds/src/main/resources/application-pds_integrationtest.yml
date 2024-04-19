@@ -1,10 +1,4 @@
 # SPDX-License-Identifier: MIT
-
-spring:
-  config:
-    activate:
-      on-profile: "pds_integrationtest"
-
 server:
   address: 127.0.0.1
 

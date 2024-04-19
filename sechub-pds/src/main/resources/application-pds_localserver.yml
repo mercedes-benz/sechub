@@ -3,37 +3,6 @@
 # This configuration setup is only for local development and needs
 # a generated certificate which is never shared. Because of this
 # it is valid to define the credentials inside this file. 
-spring:
-  config:
-    activate:
-      on-profile: "pds_localserver"
-
-###
-### Attention
-### ---------
-### de-jcup, 2024-04-15: Info why not using currently ssl bundles
-### At https://spring.io/blog/2023/06/07/securing-spring-boot-applications-with-ssl#securing-embedded-web-servers
-### it is described, how ssl bundles can be used. The next lines do work,
-### But the ciphter definitions done inside application.yml do not work in this case!
-### Our PDSServerEncryptionIntTest does fail when the bundles are used (lines 21-36), but not when
-### we lines 38-46!
-### Reported at https://github.com/spring-projects/spring-framework - none currently
-#  ssl:
-#    bundle:
-#      jks:
-#        pds-self-signed:
-#          key:
-#            alias: "tomcat"
-#          keystore:
-#            # we use a keystore location which is never tracked by git. 
-#            # see dev-create_localhost_certificate.sh and dev-ensure_localhost_certificate.sh
-#            location: "classpath:certificates-untracked/generated-dev-localhost-keystore.p12"
-#            password: "123456"
-#            type: "PKCS12"
-#server:
-#  ssl:
-#    bundle: "pds-self-signed"
-#  port: 8444
 
 server:
   ssl:
