@@ -131,6 +131,10 @@ include::sechub_config_example11_license_scan_and_code_scan_with_sources_data_re
 ==== Secret scan
 `secretScan` defines the settings for scanning for secrets in your source code.
 
+NOTE: The SecHub client automatically adds every file of the defined source directories. (Not only known programming language file extensions like with `codeScan`)
+
+TIP: SecHub Client: With `-addScmHistory` option, SCM directories like `.git` are also uploaded because secrets could be in the SCM history from previous commits.
+
 [[sechub-config-example-secretscan-sources]]
 ===== Example source secret scan
 [source, json, title="Secret scan configuration for sources"]
@@ -138,7 +142,7 @@ include::sechub_config_example11_license_scan_and_code_scan_with_sources_data_re
 include::sechub_config_example12_secret_scan_with_sources_data_reference.json[]
 ----
 <1> name of the source <<sechub-config-data-section,data>> configuration: "gamechanger-source"
-<2> source code folders to scan.
+<2> source code folder(s) to scan. ("." = current directory)
 <3> secret scan uses the referenced <<sechub-config-data-section,data>> configuration "gamechanger-source"
 
 [[sechub-config-example-secretscan-binary]]
@@ -157,7 +161,7 @@ include::sechub_config_example13_secret_scan_with_binaries_data_reference.json[]
 include::sechub_config_example14_secret_scan_and_code_scan_with_sources_data_reference.json[]
 ----
 <1> name of the source <<sechub-config-data-section,data>> configuration: "gamechanger-source"
-<2> source code folders to scan.
+<2> source code folder(s) to scan.
 <3> secret scan uses the referenced <<sechub-config-data-section,data>> configuration "gamechanger-source"
 <4> code scan uses the referenced <<sechub-config-data-section,data>> configuration "gamechanger-source"
 
@@ -183,8 +187,8 @@ include::sechub_config_example2_webscan_anonymous.json[]
 	To make the scan work the target URL will always be implicitly included with `"https://www.gamechanger.example.org<*>"` if no includes are specified. If includes are specified the scan is limited to these includes.
 	In case you need to include certain parts of your application the scanner cannot detect,
 	but you want everything else to be scanned as well, please specify a wildcard as include explicitly: `"includes": [ "/hidden/from/crawler/", "/<*>" ]`.
-	- Includes starting with a slash (`/`) like `"includes": [ "/special/include","/special/include/<*>"]` they are interpreted relative to the scan target `URL` provided before. 
-	- Includes not starting with a slash (`/`) like `"includes": [ "<*>/en/contacts/<*>","en/contacts/<*>","en/contacts","en/contacts/"`] are interpreted as enclosed by wildcards like the first include in the list example: `"<*>/en/contacts/<*>"`. 
+	- Includes starting with a slash (`/`) like `"includes": [ "/special/include","/special/include/<*>"]` they are interpreted relative to the scan target `URL` provided before.
+	- Includes not starting with a slash (`/`) like `"includes": [ "<*>/en/contacts/<*>","en/contacts/<*>","en/contacts","en/contacts/"`] are interpreted as enclosed by wildcards like the first include in the list example: `"<*>/en/contacts/<*>"`.
 <4> *Optional*: Define excludes, if you have a special path you want to exclude, from the scan.
 	You can use excludes the same way you can use the includes.
 	Excludes do always overwrite includes if the provided patterns for includes and excludes do have intersections.
@@ -251,7 +255,7 @@ include::sechub_config_example4_webscan_login_clientcertificate.json[]
 ----
 <1> name of the source <<sechub-config-data-section,data>> configuration: "client-certificate-file-reference".
     Please use single files only instead of folders to specify the client certificate.
-    If you want to combine this with an openAPI definition that must be uploaded for the scan as well, 
+    If you want to combine this with an openAPI definition that must be uploaded for the scan as well,
     please refer to this <<sechub-config-openAPI-and-client-certificate, example>>.
 <2> *Optional*: If the client certificate is password protected, the password can be specified here.
     Using our SecHub GO client you can make use of the GO templating engine.
@@ -317,7 +321,7 @@ include::sechub_config_example16_webscan_client_certificate_with_openAPI.json[]
 <2> Data section with the file referenced by the `clientCertificate` definition. Only one single file shall be provided here.
 <3> Reference to the data section containing files with your openAPI definitions (e.g. swagger.yml or openAPI.json)
 <4> Reference to the data section containing file with your client certificate for authentication.
-    
+
 [[sechub-config-example-webscan-header]]
 ====== Example Header scan
 [source,json,title="header scan"]
@@ -326,14 +330,14 @@ include::sechub_config_example15_web_scan_header.json[]
 ----
 <1> Name of the specified header. Must not be null or empty.
 <2> Value of the specified header. Must not be null or empty.
-You can use the `go template` format like above by creating a environment variable like: `HEADER_VALUE="Bearer mytoken1234"`. 
-This might be useful to load the information via the SecHub client dynamically, if the header value you specify contains credentials. 
+You can use the `go template` format like above by creating a environment variable like: `HEADER_VALUE="Bearer mytoken1234"`.
+This might be useful to load the information via the SecHub client dynamically, if the header value you specify contains credentials.
 <3> Name of the second header. You can specify a list of headers the DAST Scanner needs interact with your application.
 <4> Value of the second header. Here no `go template` format is used, since in this example there are no credentials but only file size of an upload.
 <5> Optional Parameter: For each header you can specify a list of URLs.
 The header this list belongs to, will only be send when accessing one of the URLs on the list.
 If you do not specify a list of URLs or the list is empty, the header will be send on each request to every URL.
-You can also use wildcards by specifying `<*>` like in the example above. 
+You can also use wildcards by specifying `<*>` like in the example above.
 Adding a wildcard to the end of an URL, the header will be sent to all sub URLs as well, otherwise it won't be sent to sub URLs.
 Make sure that the header URL combinations are unique. This means do not specify the same header multiple times for the same scope of URLs.
 <6> Optional Parameter to handle sensitive header data: If `true`, the value of this header will be masked inside the SecHub report to avoid leaking the information.
@@ -348,7 +352,7 @@ include::sechub_config_example17_web_scan_header_value_from_data_section.json[]
 ----
 <1> Name of the specified header. Must not be null or empty.
 <2> Name of the source <<sechub-config-data-section,data>> configuration: "header-value-file-reference".
-Please use single files only instead of folders to specify the header value. Use a separate data section for each header. 
+Please use single files only instead of folders to specify the header value. Use a separate data section for each header.
 This can be used if you want to provide a large header value, which exceeds the maximum size of the sechub.json configuration file.
 For each header provide either a `value` directly (as shown in <<sechub-config-example-webscan-header,Example Header scan>>) or a data section reference via `use` as shown in this example.
 

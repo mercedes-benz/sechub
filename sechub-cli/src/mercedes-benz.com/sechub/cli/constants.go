@@ -182,6 +182,7 @@ const archiveDataPrefix = "__data__"
 /* -------- Command line options -------- */
 /* -------------------------------------- */
 
+const addSCMHistoryOption = "addScmHistory"
 const apitokenOption = "apitoken"
 const configfileOption = "configfile"
 const fileOption = "file"
@@ -224,6 +225,9 @@ var flaglist = []string{
 /* ----------------------------------------- */
 /* -------- Environment variable names ----- */
 /* ----------------------------------------- */
+
+// SechubAddSCMHistoryEnvVar - environment variable to upload SCM history directories also
+const SechubAddSCMHistoryEnvVar = "SECHUB_ADD_SCM_HISTORY"
 
 // SechubApitokenEnvVar - environment variable to set the SecHub api token
 const SechubApitokenEnvVar = "SECHUB_APITOKEN"

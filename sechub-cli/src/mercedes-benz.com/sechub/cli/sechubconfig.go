@@ -206,7 +206,9 @@ func computeSourceExcludePatterns(context *Context, config NamedCodeScanConfig) 
 	if slices.Contains(context.sechubConfig.SecretScan.Use, config.Name) {
 		// On secrets scan we add a bunch of exclude patterns (binaries, image files etc.)
 		result = DefaultSourceCodeUnwantedDirPatterns
-		result = append(result, DefaultSCMDirPatterns...)
+		if !context.config.addSCMHistory {
+			result = append(result, DefaultSCMDirPatterns...)
+		}
 		result = append(result, DefaultSecretScanUnwantedFilePatterns...)
 	} else if slices.Contains(context.sechubConfig.CodeScan.Use, config.Name) {
 		result = DefaultSourceCodeExcludeDirPatterns
