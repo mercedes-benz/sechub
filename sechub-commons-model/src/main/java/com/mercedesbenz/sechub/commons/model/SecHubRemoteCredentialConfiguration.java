@@ -8,8 +8,6 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 public class SecHubRemoteCredentialConfiguration {
     public static final String PROPERTY_USER = "user";
 
-    private String name;
-
     private SecHubRemoteCredentialUserData user;
 
     public void setUser(SecHubRemoteCredentialUserData user) {

@@ -15,14 +15,16 @@ import com.mercedesbenz.sechub.adapter.AdapterExecutionResult;
 import com.mercedesbenz.sechub.wrapper.prepare.cli.PrepareWrapperEnvironment;
 import com.mercedesbenz.sechub.wrapper.prepare.factory.PrepareWrapperPDSUserMessageSupportPojoFactory;
 import com.mercedesbenz.sechub.wrapper.prepare.factory.PrepareWrapperPojoFactory;
+import com.mercedesbenz.sechub.wrapper.prepare.moduls.PrepareWrapperGIT;
 import com.mercedesbenz.sechub.wrapper.prepare.moduls.PrepareWrapperGitModule;
+import com.mercedesbenz.sechub.wrapper.prepare.moduls.PrepareWrapperModule;
 import com.mercedesbenz.sechub.wrapper.prepare.prepare.PrepareWrapperContextFactory;
 import com.mercedesbenz.sechub.wrapper.prepare.prepare.PrepareWrapperPreparationService;
 import com.mercedesbenz.sechub.wrapper.prepare.prepare.PrepareWrapperRemoteConfigurationExtractor;
 
 @SpringBootTest(classes = { PrepareWrapperContextFactory.class, PrepareWrapperPreparationService.class, PrepareWrapperPojoFactory.class,
         PrepareWrapperEnvironment.class, PrepareWrapperPDSUserMessageSupportPojoFactory.class, PrepareWrapperRemoteConfigurationExtractor.class,
-        PrepareWrapperGitModule.class })
+        PrepareWrapperGitModule.class, PrepareWrapperModule.class, PrepareWrapperGIT.class })
 @ExtendWith(SpringExtension.class)
 @TestPropertySource(locations = "classpath:application-test.properties")
 class PrepareWrapperApplicationSpringBootTest {

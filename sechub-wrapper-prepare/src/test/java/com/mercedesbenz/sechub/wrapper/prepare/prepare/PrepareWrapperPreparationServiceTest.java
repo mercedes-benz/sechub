@@ -1,18 +1,17 @@
 package com.mercedesbenz.sechub.wrapper.prepare.prepare;
 
-import static com.mercedesbenz.sechub.commons.model.SecHubScanConfiguration.createFromJSON;
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import com.mercedesbenz.sechub.adapter.AdapterExecutionResult;
-import com.mercedesbenz.sechub.commons.model.SecHubConfigurationModel;
+import com.mercedesbenz.sechub.commons.model.SecHubRemoteDataConfiguration;
 import com.mercedesbenz.sechub.wrapper.prepare.cli.PrepareWrapperEnvironment;
 import com.mercedesbenz.sechub.wrapper.prepare.moduls.PrepareWrapperGitModule;
 
@@ -26,29 +25,21 @@ class PrepareWrapperPreparationServiceTest {
 
     PrepareWrapperContext context;
 
-    PrepareWrapperRemoteConfigurationExtractor extractor;
-
     @BeforeEach
     void beforeEach() {
-
         environment = mock(PrepareWrapperEnvironment.class);
         factory = mock(PrepareWrapperContextFactory.class);
         context = mock(PrepareWrapperContext.class);
-        extractor = new PrepareWrapperRemoteConfigurationExtractor();
         when(factory.create(environment)).thenReturn(context);
 
         serviceToTest = new PrepareWrapperPreparationService();
         serviceToTest.environment = environment;
         serviceToTest.factory = factory;
-        serviceToTest.extractor = extractor;
         serviceToTest.modules = new ArrayList<>();
     }
 
     @Test
     void when_no_remote_data_was_configured_return_preparation_success_with_warn_message() throws IOException {
-        /* prepare */
-        when(context.getSecHubConfiguration()).thenReturn(new SecHubConfigurationModel());
-
         /* execute */
         AdapterExecutionResult result = serviceToTest.startPreparation();
 
@@ -61,29 +52,12 @@ class PrepareWrapperPreparationServiceTest {
     @Test
     void when_remote_data_was_configured_return_preparation_success_without_message() throws IOException {
         /* prepare */
-        String json = """
-                {
-                  "apiVersion": "1.0",
-                  "data": {
-                    "sources": [
-                      {
-                        "name": "remote_example_name",
-                        "remote": {
-                          "location": "remote_example_location",
-                          "type": "git"
-                        }
-                      }
-                    ]
-                  },
-                  "codeScan": {
-                    "use": [
-                      "remote_example_name"
-                    ]
-                  }
-                }
-                """;
-        SecHubConfigurationModel model = createFromJSON(json);
-        when(context.getSecHubConfiguration()).thenReturn(model);
+        List<SecHubRemoteDataConfiguration> remoteDataConfigurationList = new ArrayList<>();
+        SecHubRemoteDataConfiguration remoteDataConfiguration = new SecHubRemoteDataConfiguration();
+        remoteDataConfiguration.setLocation("my-example_location");
+        remoteDataConfiguration.setType("git");
+        remoteDataConfigurationList.add(remoteDataConfiguration);
+        when(context.getRemoteDataConfigurationList()).thenReturn(remoteDataConfigurationList);
 
         /* execute */
         AdapterExecutionResult result = serviceToTest.startPreparation();
@@ -94,39 +68,21 @@ class PrepareWrapperPreparationServiceTest {
     }
 
     @Test
-    void when_context_was_not_filled_correctly_throws_exception() {
-        /* execution + test */
-        assertThrows(IllegalStateException.class, () -> serviceToTest.startPreparation());
-    }
-
-    @Test
-    void when_remote_data_was_configured_and_git_modul_added_return_preparation_success_without_message() throws IOException {
+    void when_remote_data_was_configured_and_git_module_added_return_preparation_success_without_message() throws IOException {
         /* prepare */
         PrepareWrapperGitModule gitModule = mock(PrepareWrapperGitModule.class);
         serviceToTest.modules.add(gitModule);
-        String json = """
-                {
-                  "apiVersion": "1.0",
-                  "data": {
-                    "sources": [
-                      {
-                        "name": "remote_example_name",
-                        "remote": {
-                          "location": "remote_example_location",
-                          "type": "git"
-                        }
-                      }
-                    ]
-                  },
-                  "codeScan": {
-                    "use": [
-                      "remote_example_name"
-                    ]
-                  }
-                }
-                """;
-        SecHubConfigurationModel model = createFromJSON(json);
-        when(context.getSecHubConfiguration()).thenReturn(model);
+
+        List<SecHubRemoteDataConfiguration> remoteDataConfigurationList = new ArrayList<>();
+        SecHubRemoteDataConfiguration remoteDataConfiguration = new SecHubRemoteDataConfiguration();
+        remoteDataConfiguration.setLocation("my-example_location");
+        remoteDataConfiguration.setType("git");
+        remoteDataConfigurationList.add(remoteDataConfiguration);
+        when(context.getRemoteDataConfigurationList()).thenReturn(remoteDataConfigurationList);
+
+        when(gitModule.isModuleEnabled()).thenReturn(true);
+        when(gitModule.isAbleToPrepare(context)).thenReturn(true);
+        when(gitModule.isDownloadSuccessful(context)).thenReturn(true);
 
         /* execute */
         AdapterExecutionResult result = serviceToTest.startPreparation();
@@ -134,5 +90,33 @@ class PrepareWrapperPreparationServiceTest {
         /* test */
         assertEquals("SECHUB_PREPARE_RESULT;status=OK", result.getProductResult());
         assertEquals(0, result.getProductMessages().size());
+        verify(gitModule).prepare(context);
+        verify(gitModule).cleanup(context);
+        verify(gitModule).isDownloadSuccessful(context);
+    }
+
+    @Test
+    void when_remote_data_was_configured_and_git_module_download_failed_return_preparation_failed() throws IOException {
+        /* prepare */
+        PrepareWrapperGitModule gitModule = mock(PrepareWrapperGitModule.class);
+        when(gitModule.isModuleEnabled()).thenReturn(true);
+        when(gitModule.isAbleToPrepare(context)).thenReturn(true);
+        when(gitModule.isDownloadSuccessful(context)).thenReturn(false);
+        serviceToTest.modules.add(gitModule);
+
+        List<SecHubRemoteDataConfiguration> remoteDataConfigurationList = new ArrayList<>();
+        SecHubRemoteDataConfiguration remoteDataConfiguration = new SecHubRemoteDataConfiguration();
+        remoteDataConfiguration.setLocation("my-example_location");
+        remoteDataConfiguration.setType("git");
+        remoteDataConfigurationList.add(remoteDataConfiguration);
+        when(context.getRemoteDataConfigurationList()).thenReturn(remoteDataConfigurationList);
+
+        /* execute */
+        AdapterExecutionResult result = serviceToTest.startPreparation();
+
+        /* test */
+        assertEquals("SECHUB_PREPARE_RESULT;status=FAILED", result.getProductResult());
+        assertEquals(1, result.getProductMessages().size());
+        assertEquals("Download of configured remote data failed", result.getProductMessages().get(0).getText());
     }
 }

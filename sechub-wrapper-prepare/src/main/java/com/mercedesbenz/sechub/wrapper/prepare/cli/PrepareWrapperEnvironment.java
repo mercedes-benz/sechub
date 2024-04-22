@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.wrapper.prepare.cli;
 
-import static com.mercedesbenz.sechub.wrapper.prepare.cli.PrepareWrapperKeyConstants.KEY_PDS_PREPARE_UPLOAD_FOLDER_DIRECTORY;
+import static com.mercedesbenz.sechub.wrapper.prepare.cli.PrepareWrapperKeyConstants.*;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;

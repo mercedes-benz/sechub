@@ -5,15 +5,19 @@ import java.io.IOException;
 
 import org.springframework.stereotype.Service;
 
-import com.mercedesbenz.sechub.commons.model.SecHubConfigurationModel;
+import com.mercedesbenz.sechub.wrapper.prepare.prepare.PrepareWrapperContext;
 
 @Service
 public interface PrepareWrapperModule {
 
-    boolean isAbleToPrepare(SecHubConfigurationModel model);
+    boolean isAbleToPrepare(PrepareWrapperContext context);
 
-    void prepare(SecHubConfigurationModel model, String pdsPrepareUploadFolderDirectory) throws IOException;
+    void prepare(PrepareWrapperContext context) throws IOException;
 
-    void cleanDirectory(String pdsPrepareUploadFolderDirectory) throws IOException;
+    void cleanup(PrepareWrapperContext contex) throws IOException;
+
+    boolean isDownloadSuccessful(PrepareWrapperContext contex) throws IOException;
+
+    boolean isModuleEnabled();
 
 }
