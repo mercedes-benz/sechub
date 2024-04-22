@@ -1,6 +1,8 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.wrapper.prepare.cli;
 
+import static com.mercedesbenz.sechub.wrapper.prepare.cli.PrepareWrapperKeyConstants.KEY_PDS_PREPARE_UPLOAD_FOLDER_DIRECTORY;
+
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
@@ -23,9 +25,6 @@ public class PrepareWrapperEnvironment {
     @Value("${" + PDSDefaultRuntimeKeyConstants.RT_KEY_PDS_JOB_USER_MESSAGES_FOLDER + "}")
     private String pdsUserMessagesFolder;
 
-    @Value("${" + PDSDefaultRuntimeKeyConstants.RT_KEY_PDS_PREPARE_UPLOAD_FOLDER_DIRECTORY + "}")
-    private String pdsPrepareUploadFolderDirectory;
-
     public String getSechubConfigurationModelAsJson() {
         return sechubConfigurationModelAsJson;
     }
@@ -37,6 +36,13 @@ public class PrepareWrapperEnvironment {
     public String getPdsUserMessagesFolder() {
         return pdsUserMessagesFolder;
     }
+
+    /*********************************/
+    /* PDS prepare environment setup */
+    /*********************************/
+
+    @Value("${" + KEY_PDS_PREPARE_UPLOAD_FOLDER_DIRECTORY + "}")
+    private String pdsPrepareUploadFolderDirectory;
 
     public String getPdsPrepareUploadFolderDirectory() {
         return pdsPrepareUploadFolderDirectory;

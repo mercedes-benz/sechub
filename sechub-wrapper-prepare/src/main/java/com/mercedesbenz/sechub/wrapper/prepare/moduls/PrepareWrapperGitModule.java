@@ -68,15 +68,25 @@ public class PrepareWrapperGitModule implements PrepareWrapperModule {
                 SecHubRemoteCredentialUserData user = optUser.get();
                 String username = user.getName();
                 String password = user.getPassword();
-                if (username == null || password == null) {
-                    throw new IllegalStateException("No username or password found for User: " + user);
+
+                // TODO: 18.04.24 laura does error output become a user message or do i need to
+                // create one?
+                if (username == null || username.isEmpty()) {
+                    LOG.error("No username found for User: " + user);
+                    throw new IllegalStateException("No username found for User: " + user);
                 }
+                if (password == null || password.isEmpty()) {
+                    LOG.error("No password found for User: " + user);
+                    throw new IllegalStateException("No password found for User: " + user);
+                }
+
                 String preparedLocation = prepareLocationForPrivateRepo(location, username, password);
                 cloneRepository(preparedLocation, pdsPrepareUploadFolderDirectory);
                 return;
             }
 
-            throw new IllegalStateException("Defined credentials were empty for location: " + location);
+            LOG.error("Defined credentials have no credential user data for location: " + location);
+            throw new IllegalStateException("Defined credentials have no credential user data for location: " + location);
         }
     }
 
