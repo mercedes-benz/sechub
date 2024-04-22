@@ -172,8 +172,9 @@ func adjustSourceFilterPatterns(context *Context) {
 		}
 
 		if !context.config.ignoreDefaultExcludes {
-			// add default exclude patterns to exclude list
-			context.sechubConfig.Data.Sources[i].Excludes = append(item.Excludes, DefaultSourceCodeExcludeDirPatterns...)
+			excludePatterns := computeSourceExcludePatterns(context, item)
+			// add exclude patterns to exclude list
+			context.sechubConfig.Data.Sources[i].Excludes = append(item.Excludes, excludePatterns...)
 		}
 	}
 
@@ -198,4 +199,17 @@ func adjustSourceFilterPatternsWhitelistAll(sourceCodePatterns []string, whiteli
 
 	// build list of source code file patterns
 	return append(sourceCodePatterns, DefaultSourceCodeAllowedFilePatterns...)
+}
+
+func computeSourceExcludePatterns(context *Context, config NamedCodeScanConfig) []string {
+	var result []string
+	if slices.Contains(context.sechubConfig.SecretScan.Use, config.Name) {
+		// On secrets scan we add a bunch of exclude patterns (binaries, image files etc.)
+		result = DefaultSourceCodeUnwantedDirPatterns
+		result = append(result, DefaultSCMDirPatterns...)
+		result = append(result, DefaultSecretScanUnwantedFilePatterns...)
+	} else if slices.Contains(context.sechubConfig.CodeScan.Use, config.Name) {
+		result = DefaultSourceCodeExcludeDirPatterns
+	}
+	return result
 }
