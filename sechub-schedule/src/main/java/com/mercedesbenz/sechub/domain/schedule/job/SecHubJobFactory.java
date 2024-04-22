@@ -6,8 +6,6 @@ import static com.mercedesbenz.sechub.domain.schedule.ScheduleErrorIDConstants.*
 import java.time.LocalDateTime;
 import java.util.Set;
 
-import javax.validation.Valid;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,6 +18,8 @@ import com.mercedesbenz.sechub.commons.model.ScanType;
 import com.mercedesbenz.sechub.commons.model.SecHubConfigurationModelSupport;
 import com.mercedesbenz.sechub.sharedkernel.UserContextService;
 import com.mercedesbenz.sechub.sharedkernel.configuration.SecHubConfiguration;
+
+import jakarta.validation.Valid;
 
 @Component
 public class SecHubJobFactory {

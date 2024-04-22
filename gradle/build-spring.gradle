@@ -10,8 +10,6 @@ subprojects {
              mavenBom "$springBootMavenBomCoordinates"
          }
     }
-    
-    ext['junit-jupiter.version'] = '5.8.2'
 
     logger.info("found spring boot relevant project:$project")
     

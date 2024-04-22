@@ -30,11 +30,11 @@ ext {
        * management is defined here:
        */                                     
       dom4j:                                   "2.1.4",
-      jsoup:                                   "1.15.4",
+      jsoup:                                   "1.17.2",
       re2j:                                    "1.7",
       logstash_logback_encoder:                "7.3",
-      aws_java_sdk_s3:                         "1.12.453",
-      postgresql:                              "42.6.0",
+      aws_java_sdk_s3:                         "1.12.629",
+      postgresql:                              "42.7.1",
                                               
       /* JDK > 9 needs these ones: */         
       jaxb_api:                                "2.3.1",
@@ -42,37 +42,44 @@ ext {
       xml_bind:                                "2.2.0",
                                               
       /* apache http components*/             
-      apache_httpcomponents_client:            "4.5.14",
+      apache_httpcomponents_client:            "5.2.1",
                                              
       /* apache commons */                   
-      apache_commons_cli:                      "1.5.0",
-      apache_commons_io:                       "2.11.0",
-      apache_commons_validator:                "1.7",
-      apache_commons_fileupload:               "1.5",
-      apache_commons_compress:                 "1.24.0",
-      apache_commons_lang3:                    "3.12.0",
+      apache_commons_cli:                      "1.6.0",
+      apache_commons_io:                       "2.15.1",
+      apache_commons_validator:                "1.8.0",
+
+      // https://mvnrepository.com/artifact/org.apache.commons/commons-fileupload2-core
+      apache_commons_fileupload2_core:         "2.0.0-M2",
+      // https://mvnrepository.com/artifact/org.apache.commons/commons-fileupload2-jakarta
+      apache_commons_fileupload2_jakarta:      "2.0.0-M1",
+      apache_commons_compress:                 "1.25.0",
+      apache_commons_lang3:                    "3.14.0",
 
       /* testing */                            
       junit4:                                  "4.13.2",
-      wiremock:                                "2.27.2",
-      s3mock:                                  "2.11.0",
+      wiremock:                                "3.0.1",
+      s3mock:                                  "3.3.0",
 
       /* gradle plugins */      
-      dependency_check:                        "8.2.1",
-      grgit:                                   "5.0.0",
+      dependency_check:                        "9.0.7",
+      grgit:                                   "5.2.1",
+      cyclonedx:                               "1.8.1",
       
       /* documentation */
       asciidoctor_j:                           "2.5.2",
       asciidoctor_j_diagram:                   "2.2.1",
       
-      // openapi3-generator, releases see https://github.com/ePages-de/restdocs-api-spec/releases
-      restDocsApiSpec:                         "0.16.4",  // newest version compatible with Spring Boot 2.x
+      /* openapi3-generator, releases see https://github.com/ePages-de/restdocs-api-spec/releases */
+      // TODO de-jcup, 2024-04-18: Currently we cannot use versions > 0.17.1 because it introduces nullable and required in the spec file which causes issues
+      // There exists an issue for it at https://github.com/mercedes-benz/sechub/issues/3080
+      restDocsApiSpec:                         "0.17.1",
       
       /* Owasp Zap wrapper */
       owaspzap_client_api:                     "1.13.0",
       jcommander:                              "1.82",
       
-      thymeleaf_extras_springsecurity5:        "3.1.1.RELEASE",
+      thymeleaf_extras_springsecurity5:        "3.1.2.RELEASE",
       
       /* SARIF */
       sarif_210:                               "1.1.0",
@@ -114,7 +121,6 @@ ext {
 
 
         /* additional (2): version based on other libraries used by spring boot */      
-        mockito_inline:                        "org.mockito:mockito-inline:${spring_boot_dependency_version.mockito_core}",
         jackson_jr_all:                        "com.fasterxml.jackson.jr:jackson-jr-all:${spring_boot_dependency_version.jackson_core}",
 
 
@@ -123,12 +129,15 @@ ext {
         amazonaws_sdk:                         "com.amazonaws:aws-java-sdk-s3:${libraryVersion.aws_java_sdk_s3}",
         logstashLogbackEncoder        :        "net.logstash.logback:logstash-logback-encoder:${libraryVersion.logstash_logback_encoder}",
 
-        apache_httpcomponents_client:          "org.apache.httpcomponents:httpclient:${libraryVersion.apache_httpcomponents_client}",
+        apache_httpcomponents_client:          "org.apache.httpcomponents.client5:httpclient5:${libraryVersion.apache_httpcomponents_client}",
 
         apache_commons_validator:              "commons-validator:commons-validator:${libraryVersion.apache_commons_validator}",
         apache_commons_io:                     "commons-io:commons-io:${libraryVersion.apache_commons_io}",
         apache_commons_cli:                    "commons-cli:commons-cli:${libraryVersion.apache_commons_cli}",
-        apache_commons_fileupload:             "commons-fileupload:commons-fileupload:${libraryVersion.apache_commons_fileupload}",
+
+        apache_commons_fileupload2_core:       "org.apache.commons:commons-fileupload2-core:${libraryVersion.apache_commons_fileupload2_core}", 
+        apache_commons_fileupload2_jakarta:    "org.apache.commons:commons-fileupload2-jakarta:${libraryVersion.apache_commons_fileupload2_jakarta}",
+	
         apache_commons_compress:               "org.apache.commons:commons-compress:${libraryVersion.apache_commons_compress}",
         apache_commons_lang3:                  "org.apache.commons:commons-lang3:${libraryVersion.apache_commons_lang3}",
 
@@ -142,7 +151,8 @@ ext {
         junit4:                                "junit:junit:${libraryVersion.junit4}",
         wiremock:                              "com.github.tomakehurst:wiremock-standalone:${libraryVersion.wiremock}",
         s3mock:                                "com.adobe.testing:s3mock:${libraryVersion.s3mock}",
-        s3mock_junit4:                         "com.adobe.testing:s3mock-junit4:${libraryVersion.s3mock}",
+        s3mock_junit5:                         "com.adobe.testing:s3mock-junit5:${libraryVersion.s3mock}",
+        
         /*
          * RE2 is a regular expression engine that runs in time linear in the size of the input.
          * It's the default RegularExpression engine of Go

@@ -4,8 +4,6 @@ package com.mercedesbenz.sechub.domain.schedule;
 import java.util.Optional;
 import java.util.UUID;
 
-import javax.validation.Valid;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
@@ -20,6 +18,8 @@ import com.mercedesbenz.sechub.sharedkernel.error.ForbiddenException;
 import com.mercedesbenz.sechub.sharedkernel.error.NotFoundException;
 import com.mercedesbenz.sechub.sharedkernel.validation.AssertValidation;
 import com.mercedesbenz.sechub.sharedkernel.validation.ProjectIdValidation;
+
+import jakarta.validation.Valid;
 
 @Service
 public class ScheduleAssertService {

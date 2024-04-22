@@ -3,8 +3,6 @@ package com.mercedesbenz.sechub.domain.scan.project;
 
 import java.util.List;
 
-import javax.annotation.PostConstruct;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -13,6 +11,8 @@ import com.mercedesbenz.sechub.sharedkernel.validation.ApiVersionValidation;
 import com.mercedesbenz.sechub.sharedkernel.validation.ApiVersionValidationFactory;
 import com.mercedesbenz.sechub.sharedkernel.validation.ValidationContext;
 import com.mercedesbenz.sechub.sharedkernel.validation.ValidationResult;
+
+import jakarta.annotation.PostConstruct;
 
 @Component
 public class FalsePositiveJobDataListValidationImpl extends AbstractValidation<FalsePositiveJobDataList> implements FalsePositiveJobDataListValidation {

@@ -6,8 +6,6 @@ import static com.mercedesbenz.sechub.sharedkernel.logging.AlertLogType.*;
 
 import java.util.concurrent.ThreadLocalRandom;
 
-import javax.annotation.PostConstruct;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,6 +22,8 @@ import com.mercedesbenz.sechub.sharedkernel.cluster.ClusterEnvironmentService;
 import com.mercedesbenz.sechub.sharedkernel.logging.AlertLogService;
 import com.mercedesbenz.sechub.sharedkernel.monitoring.SystemMonitorService;
 import com.mercedesbenz.sechub.sharedkernel.usecases.job.UseCaseSchedulerStartsJob;
+
+import jakarta.annotation.PostConstruct;
 
 @Service
 public class SchedulerJobBatchTriggerService {

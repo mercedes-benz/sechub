@@ -11,12 +11,9 @@ dependencies {
     implementation project(':sechub-storage-core')
     implementation project(':sechub-storage-s3-aws')
 
-     // https://mvnrepository.com/artifact/com.adobe.testing/s3mock
-    testImplementation library.junit4
     testImplementation library.s3mock
-    testImplementation library.s3mock_junit4
+    testImplementation library.s3mock_junit5
     testImplementation spring_boot_dependency.mockito_core
-    testImplementation library.mockito_inline
     testImplementation project(':sechub-testframework')
 
 }
