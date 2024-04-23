@@ -102,9 +102,11 @@ public class PrepareWrapperGitModule implements PrepareWrapperModule {
         }
     }
 
-    public void cleanup(PrepareWrapperContext context) throws IOException {
+    public void cleanup() throws IOException {
+        git.setEnvironmentVariables(PDS_PREPARE_CREDENTIAL_USERNAME, "");
+        git.setEnvironmentVariables(PDS_PREPARE_CREDENTIAL_PASSWORD, "");
         if (pdsPrepareAutoCleanupGitFolder) {
-            git.cleanGitDirectory(context.getEnvironment().getPdsPrepareUploadFolderDirectory());
+            git.cleanGitDirectory();
         }
     }
 

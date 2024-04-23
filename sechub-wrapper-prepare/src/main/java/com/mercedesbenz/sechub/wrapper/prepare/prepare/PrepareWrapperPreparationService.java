@@ -54,7 +54,7 @@ public class PrepareWrapperPreparationService {
             if (module.isDownloadSuccessful(context)) {
                 // clean directory if download was successful from unwanted files (e.g. .git
                 // files)
-                module.cleanup(context);
+                module.cleanup();
             } else {
                 LOG.error("Download of configured remote data failed");
                 return createAdapterExecutionResult(PrepareStatus.FAILED, SecHubMessageType.ERROR, "Download of configured remote data failed");

@@ -91,7 +91,7 @@ class PrepareWrapperPreparationServiceTest {
         assertEquals("SECHUB_PREPARE_RESULT;status=OK", result.getProductResult());
         assertEquals(0, result.getProductMessages().size());
         verify(gitModule).prepare(context);
-        verify(gitModule).cleanup(context);
+        verify(gitModule).cleanup();
         verify(gitModule).isDownloadSuccessful(context);
     }
 

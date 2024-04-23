@@ -14,7 +14,7 @@ public interface PrepareWrapperModule {
 
     void prepare(PrepareWrapperContext context) throws IOException;
 
-    void cleanup(PrepareWrapperContext contex) throws IOException;
+    void cleanup() throws IOException;
 
     boolean isDownloadSuccessful(PrepareWrapperContext contex) throws IOException;
 
