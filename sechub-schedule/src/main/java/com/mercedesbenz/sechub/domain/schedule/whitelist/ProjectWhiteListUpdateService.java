@@ -4,14 +4,14 @@ package com.mercedesbenz.sechub.domain.schedule.whitelist;
 import java.net.URI;
 import java.util.Set;
 
-import javax.transaction.Transactional;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.mercedesbenz.sechub.sharedkernel.validation.UserInputAssertion;
+
+import jakarta.transaction.Transactional;
 
 @Service
 public class ProjectWhiteListUpdateService {

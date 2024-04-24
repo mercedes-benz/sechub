@@ -10,6 +10,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Profile;
 import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.util.LinkedMultiValueMap;
@@ -98,7 +100,7 @@ public class NetsparkerAdapterV1 extends AbstractAdapter<NetsparkerAdapterContex
         try {
             ResponseEntity<String> response = context.getRestOperations().postForEntity(apiUrl, request, String.class);
             if (!CREATED.equals(response.getStatusCode())) {
-                throw new NetsparkerRESTFailureException(response.getStatusCode(), response.getBody());
+                throw new NetsparkerRESTFailureException(converToHttpStatus(response.getStatusCode()), response.getBody());
             }
         } catch (HttpClientErrorException e) {
             LOG.error(e.getResponseBodyAsString());
@@ -113,7 +115,7 @@ public class NetsparkerAdapterV1 extends AbstractAdapter<NetsparkerAdapterContex
         String apiUrl = createAPIURL(APICALL_GET_SCAN_REPORT + context.getProductContextId() + "?Type=Vulnerabilities&Format=Xml", context.getConfig());
         ResponseEntity<String> response = context.getRestOperations().getForEntity(apiUrl, String.class);
         if (!OK.equals(response.getStatusCode())) {
-            throw new NetsparkerRESTFailureException(response.getStatusCode(), response.getBody());
+            throw new NetsparkerRESTFailureException(converToHttpStatus(response.getStatusCode()), response.getBody());
         }
         String body = response.getBody();
         context.setResult(body);
@@ -188,13 +190,13 @@ public class NetsparkerAdapterV1 extends AbstractAdapter<NetsparkerAdapterContex
             LOG.debug("{} calling api url '{}'", traceID, apiUrl);
             ResponseEntity<String> response = context.getRestOperations().postForEntity(apiUrl, request, String.class);
             if (!CREATED.equals(response.getStatusCode())) {
-                throw new NetsparkerRESTFailureException(response.getStatusCode(), response.getBody());
+                throw new NetsparkerRESTFailureException(converToHttpStatus(response.getStatusCode()), response.getBody());
             }
             context.setProductContextId(extractIDFromScanResult(response.getBody(), context));
             LOG.debug("{} created new scan and got netsparker ID '{}'", traceID, context.getProductContextId());
 
         } catch (HttpClientErrorException e) {
-            throw new NetsparkerRESTFailureException(e.getStatusCode(), e.getResponseBodyAsString());
+            throw new NetsparkerRESTFailureException(converToHttpStatus(e.getStatusCode()), e.getResponseBodyAsString());
         }
 
     }
@@ -274,11 +276,15 @@ public class NetsparkerAdapterV1 extends AbstractAdapter<NetsparkerAdapterContex
 
             ResponseEntity<String> response = context.getRestOperations().getForEntity(apiUrl, String.class);
             if (!OK.equals(response.getStatusCode())) {
-                throw new NetsparkerRESTFailureException(response.getStatusCode(), response.getBody());
+                throw new NetsparkerRESTFailureException(converToHttpStatus(response.getStatusCode()), response.getBody());
             }
             String state = context.json().fetch("State", response).asText();
             LOG.debug("{} state is '{}'", traceID, state);
             return state;
         }
+    }
+
+    private HttpStatus converToHttpStatus(HttpStatusCode code) {
+        return HttpStatus.valueOf(code.value());
     }
 }

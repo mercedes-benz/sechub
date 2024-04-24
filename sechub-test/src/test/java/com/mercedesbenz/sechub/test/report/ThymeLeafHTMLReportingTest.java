@@ -20,7 +20,7 @@ import org.slf4j.LoggerFactory;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.Context;
 import org.thymeleaf.context.IContext;
-import org.thymeleaf.spring5.dialect.SpringStandardDialect;
+import org.thymeleaf.spring6.dialect.SpringStandardDialect;
 import org.thymeleaf.templateresolver.FileTemplateResolver;
 
 import com.mercedesbenz.sechub.commons.model.JSONConverter;

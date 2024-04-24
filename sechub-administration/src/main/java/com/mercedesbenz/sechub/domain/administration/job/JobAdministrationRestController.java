@@ -4,8 +4,6 @@ package com.mercedesbenz.sechub.domain.administration.job;
 import java.util.List;
 import java.util.UUID;
 
-import javax.annotation.security.RolesAllowed;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.context.annotation.Profile;
@@ -25,6 +23,8 @@ import com.mercedesbenz.sechub.sharedkernel.usecases.job.UseCaseAdminCancelsJob;
 import com.mercedesbenz.sechub.sharedkernel.usecases.job.UseCaseAdminListsAllRunningJobs;
 import com.mercedesbenz.sechub.sharedkernel.usecases.job.UseCaseAdminRestartsJob;
 import com.mercedesbenz.sechub.sharedkernel.usecases.job.UseCaseAdminRestartsJobHard;
+
+import jakarta.annotation.security.RolesAllowed;
 
 /**
  * The rest api for job administration done by a super admin.

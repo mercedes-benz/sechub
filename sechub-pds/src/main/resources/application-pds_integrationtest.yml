@@ -1,7 +1,4 @@
 # SPDX-License-Identifier: MIT
-spring.profiles.include:
-- pds_localserver
-
 server:
   address: 127.0.0.1
 

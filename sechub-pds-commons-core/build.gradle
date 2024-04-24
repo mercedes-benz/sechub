@@ -16,6 +16,5 @@ dependencies{
     testImplementation spring_boot_dependency.junit_jupiter
     
     testImplementation spring_boot_dependency.mockito_core
-    testImplementation library.mockito_inline
     testImplementation spring_boot_dependency.hamcrest
 }
