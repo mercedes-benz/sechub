@@ -49,14 +49,14 @@ jobs:
 
       - name: Cache SecHub server download    
         # Cache V4 release: 13aacd865c20de90d75de3b17ebe84f7a17d57d2
-        uses: actions/cache@13aacd865c20de90d75de3b17ebe84f7a17d57d2 
+        uses: actions/cache@0c45773b623bea8c8e75f6c82b208c3cf94ea4f9 
         with:
           path: ./build/sechub-runtime/server/${{ env.sechub_server_version }}/
           key: ${{ runner.os }}-sechub-server-${{ env.sechub_server_version }}
        
       - name: Cache PDS download    
         # Cache V4 release: 13aacd865c20de90d75de3b17ebe84f7a17d57d2
-        uses: actions/cache@13aacd865c20de90d75de3b17ebe84f7a17d57d2 
+        uses: actions/cache@0c45773b623bea8c8e75f6c82b208c3cf94ea4f9 
         with:
           path: ./build/sechub-runtime/pds/${{ env.pds_version }}/
           key: ${{ runner.os }}-pds-${{ env.pds_version }}
