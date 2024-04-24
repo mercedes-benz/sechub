@@ -602,3 +602,50 @@ func Example_adjustSourceFilterPatterns_Secretscan_Excludes() {
 	// Output:
 	// [**/src-exclude1/** **/src-exclude2/** **/test/** **/node_modules/** **/.git/** *.a *.so]
 }
+
+func Example_adjustSourceFilterPatterns_Secretscan_SCMHistory() {
+	/* prepare */
+	var context Context
+	var config Config
+	context.config = &config
+	config.ignoreDefaultExcludes = false
+
+	// This makes `DefaultSCMDirPatterns` NOT being excluded
+	config.addSCMHistory = true
+
+	// Override global definitions to get reproducable results:
+	DefaultSCMDirPatterns = []string{"**/.git/**"}
+	DefaultSourceCodeUnwantedDirPatterns = []string{"**/test/**", "**/node_modules/**"}
+	DefaultSecretScanUnwantedFilePatterns = []string{"*.a", "*.so"}
+
+	sechubJSON := `
+		{
+			"data": {
+				"sources": [
+					{
+						"name": "sources",
+						"fileSystem": { "folders": [ "." ] },
+						"excludes": [
+							"**/src-exclude1/**",
+							"**/src-exclude2/**"
+						]
+					}
+				]
+			},
+			"codeScan": { "use": [ "sources" ] },
+			"secretScan": { "use": [ "sources" ] }
+		}
+	`
+	sechubConfig := newSecHubConfigFromBytes([]byte(sechubJSON))
+	context.sechubConfig = &sechubConfig
+
+	/* execute */
+	adjustSourceFilterPatterns(&context)
+
+	/* test */
+	for _, i := range context.sechubConfig.Data.Sources {
+		fmt.Println(i.Excludes)
+	}
+	// Output:
+	// [**/src-exclude1/** **/src-exclude2/** **/test/** **/node_modules/** *.a *.so]
+}
