@@ -13,6 +13,13 @@
             "key": "pds.config.supported.datatypes",
             "default": "source"
           }
+        ],
+        "optional": [
+          {
+            "key": "gitleaks.history.scan.enabled",
+            "description": "Enable or disable Gitleaks history scan. Enabling a history scan only works if a .git folder is available.",
+            "default": true
+          }
         ]
       }
     },
@@ -24,8 +31,15 @@
       "parameters": {
         "mandatory": [
           {
-            "key": "pds.config.supported.datatypes",
+            "key": "gitleaks.historical.scan.enabled",
             "default": "source"
+          }
+        ],
+        "optional": [
+          {
+            "key": "gitleaks.history.scan.enabled",
+            "description": "Enable or disable Gitleaks history scan. Enabling a history scan only works if a .git folder is available.",
+            "default": true
           }
         ]
       }
