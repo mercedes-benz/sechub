@@ -1,4 +1,4 @@
-#!/usr/bin/env sh
+#!/bin/sh
 # SPDX-License-Identifier: MIT
 
 . "$SCRIPT_FOLDER/common.sh"
