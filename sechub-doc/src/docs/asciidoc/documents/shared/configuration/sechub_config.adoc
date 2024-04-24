@@ -133,7 +133,7 @@ include::sechub_config_example11_license_scan_and_code_scan_with_sources_data_re
 
 NOTE: The SecHub client automatically adds every file of the defined source directories. (Not only known programming language file extensions like with `codeScan`)
 
-TIP: SecHub Client: With `-addScmHistory` option, SCM directories like `.git` are also uploaded because secrets could be in the SCM history from previous commits.
+TIP: SecHub Client: With the `-addScmHistory` option SCM directories like `.git` are also uploaded because secrets could be in the SCM history of previous commits.
 
 [[sechub-config-example-secretscan-sources]]
 ===== Example source secret scan
