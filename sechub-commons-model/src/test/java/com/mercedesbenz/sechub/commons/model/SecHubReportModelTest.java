@@ -13,6 +13,22 @@ import com.mercedesbenz.sechub.test.TestFileReader;
 class SecHubReportModelTest {
 
     @Test
+    void sechub_example_result_5_can_be_loaded_and_transformed_from_json() {
+        /* prepare */
+        String json = TestFileReader.loadTextFile("src/test/resources/report/sechub-testreport5-version-control-data.json");
+
+        /* execute */
+        SecHubReportModel result = SecHubReportModel.fromJSONString(json);
+
+        /* test */
+        SecHubReportMetaData metaData = result.getMetaData().get();
+        SecHubVersionControlData versionControl = metaData.getVersionControl().get();
+        assertEquals("git", versionControl.getType());
+        assertEquals("git@example.org:testuser/testrepo.git", versionControl.getLocation());
+        assertEquals("57adf786209eaf01d9f26beb0a9e9fffdcf5f04b", versionControl.getRevision().get().getId());
+    }
+
+    @Test
     void sechub_example_result_4_can_be_loaded_and_transformed_from_json() {
         /* prepare */
         String json = TestFileReader.loadTextFile("src/test/resources/report/sechub-testreport4-multiple-web-findings.json");

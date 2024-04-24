@@ -1,0 +1,18 @@
+{
+  "jobUUID" : "d47c1e28-9f76-4e43-a879-9af5184d505e",
+  "result" : {
+    "count" : 0,
+    "findings" : [ ]
+  },
+  "trafficLight" : "RED",
+  
+  "metaData": { 
+    "versionControl" : {
+         "type" : "git",
+         "location" : "git@example.org:testuser/testrepo.git",
+         "revision" : {
+             "id" : "57adf786209eaf01d9f26beb0a9e9fffdcf5f04b"
+         }
+    }
+  }
+}
