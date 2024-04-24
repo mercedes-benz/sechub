@@ -4,7 +4,7 @@
     "count" : 0,
     "findings" : [ ]
   },
-  "trafficLight" : "RED",
+  "trafficLight" : "GREEN",
   
   "metaData": { 
     "versionControl" : {
