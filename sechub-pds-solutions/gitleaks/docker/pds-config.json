@@ -31,7 +31,7 @@
       "parameters": {
         "mandatory": [
           {
-            "key": "gitleaks.historical.scan.enabled",
+            "key": "pds.config.supported.datatypes",
             "default": "source"
           }
         ],
