@@ -4,11 +4,11 @@ import java.util.Base64;
 import java.util.HexFormat;
 
 public class BinaryStringFactory {
-    public static BinaryString create(byte[] bytes) {
-        return create(bytes, BinaryStringEncodingType.BASE64);
+    public static BinaryString createFromBytes(byte[] bytes) {
+        return createFromBytes(bytes, BinaryStringEncodingType.BASE64);
     }
     
-    public static BinaryString create(byte[] bytes, BinaryStringEncodingType encodingType) {
+    public static BinaryString createFromBytes(byte[] bytes, BinaryStringEncodingType encodingType) {
         if (bytes == null) {
                 throw new IllegalArgumentException("String cannot be null.");
         }
@@ -32,11 +32,11 @@ public class BinaryStringFactory {
         return binaryString;
     }
     
-    public static BinaryString create(String string) {
-        return create(string, BinaryStringEncodingType.BASE64);
+    public static BinaryString createFromString(String string) {
+        return createFromString(string, BinaryStringEncodingType.BASE64);
     }
    
-    public static BinaryString create(String string, BinaryStringEncodingType encodingType) {
+    public static BinaryString createFromString(String string, BinaryStringEncodingType encodingType) {
         if (string == null) {
             throw new IllegalArgumentException("String cannot be null.");
         }
@@ -68,7 +68,7 @@ public class BinaryStringFactory {
         HexFormat hexFormat = HexFormat.of();
         byte[] hexBytes = hexFormat.parseHex(stringInHexFormat);
         
-        return create(hexBytes, encodingType);
+        return createFromBytes(hexBytes, encodingType);
     }
     
     public static BinaryString createFromBase64(String stringInBase64Format, BinaryStringEncodingType encodingType) {
@@ -80,6 +80,6 @@ public class BinaryStringFactory {
         // it will throw an IllegalArgumentException
         byte[] decoded = Base64.getDecoder().decode(stringInBase64Format);
         
-        return create(decoded, encodingType);
+        return createFromBytes(decoded, encodingType);
     }
 }

@@ -13,33 +13,33 @@ public class PersistenceCipherFactoryTest {
         Base64String secret = new Base64String("topSecret");
         
         PersistenceCipher cipher = PersistenceCipherFactory.create(cipherType, secret);
-        assertEquals(cipher.getCipher(), cipherType);
+        assertEquals(cipher.getCipherType(), cipherType);
     }
     
     @Test
     void create_aes_256_gcm_siv() throws InvalidKeyException {
-        PersistenceCipherType cipherType = PersistenceCipherType.AES_256_GCM_SIV;
+        PersistenceCipherType cipherType = PersistenceCipherType.AES_GCM_SIV_256;
         BinaryString secret = new PlainString("a".repeat(32));
         
         PersistenceCipher cipher = PersistenceCipherFactory.create(cipherType, secret);
-        assertEquals(cipher.getCipher(), cipherType);
+        assertEquals(cipher.getCipherType(), cipherType);
     }
     
     @Test
     void create_aes_192_gcm_siv() throws InvalidKeyException {
-        PersistenceCipherType cipherType = PersistenceCipherType.AES_192_GCM_SIV;
+        PersistenceCipherType cipherType = PersistenceCipherType.AES_GCM_SIV_192;
         BinaryString secret = new Base64String("a".repeat(24));
         
         PersistenceCipher cipher = PersistenceCipherFactory.create(cipherType, secret);
-        assertEquals(cipher.getCipher(), cipherType);
+        assertEquals(cipher.getCipherType(), cipherType);
     }
     
     @Test
     void create_aes_128_gcm_siv() throws InvalidKeyException {
-        PersistenceCipherType cipherType = PersistenceCipherType.AES_128_GCM_SIV;
+        PersistenceCipherType cipherType = PersistenceCipherType.AES_GCM_SIV_128;
         BinaryString secret = new HexString("a".repeat(16));
         
         PersistenceCipher cipher = PersistenceCipherFactory.create(cipherType, secret);
-        assertEquals(cipher.getCipher(), cipherType);
+        assertEquals(cipher.getCipherType(), cipherType);
     }
 }

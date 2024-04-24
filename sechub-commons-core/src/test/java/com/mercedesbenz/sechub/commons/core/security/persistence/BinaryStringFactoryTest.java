@@ -14,7 +14,7 @@ public class BinaryStringFactoryTest {
         String string = "hello";
         
         /* execute */
-        BinaryString binaryString = BinaryStringFactory.create(string);
+        BinaryString binaryString = BinaryStringFactory.createFromString(string);
         
         /* test */
         assertNotNull(binaryString);
@@ -29,7 +29,7 @@ public class BinaryStringFactoryTest {
         String string = "Hello 🌌!";
         
         /* execute */
-        BinaryString binaryString = BinaryStringFactory.create(string, BinaryStringEncodingType.BASE64);
+        BinaryString binaryString = BinaryStringFactory.createFromString(string, BinaryStringEncodingType.BASE64);
         
         /* test */
         assertNotNull(binaryString);
@@ -44,7 +44,7 @@ public class BinaryStringFactoryTest {
         String string = "hello";
         
         /* execute */
-        BinaryString binaryString = BinaryStringFactory.create(string, BinaryStringEncodingType.PLAIN);
+        BinaryString binaryString = BinaryStringFactory.createFromString(string, BinaryStringEncodingType.PLAIN);
         
         /* test */
         assertNotNull(binaryString);
@@ -59,7 +59,7 @@ public class BinaryStringFactoryTest {
         String string = "hello";
         
         /* execute */
-        BinaryString binaryString = BinaryStringFactory.create(string, BinaryStringEncodingType.HEX);
+        BinaryString binaryString = BinaryStringFactory.createFromString(string, BinaryStringEncodingType.HEX);
         
         /* test */
         assertNotNull(binaryString);
@@ -75,7 +75,7 @@ public class BinaryStringFactoryTest {
         
         /* execute */
         Exception exception = assertThrows(IllegalArgumentException.class, () -> {
-            BinaryStringFactory.create(string);
+            BinaryStringFactory.createFromString(string);
         });
         
         /* test */
@@ -88,7 +88,7 @@ public class BinaryStringFactoryTest {
         byte[] bytes = new byte[] { 104, 101, 108, 108, 111};
         
         /* execute */
-        BinaryString binaryString = BinaryStringFactory.create(bytes);
+        BinaryString binaryString = BinaryStringFactory.createFromBytes(bytes);
         
         /* test */
         assertNotNull(binaryString);
@@ -103,7 +103,7 @@ public class BinaryStringFactoryTest {
         byte[] bytes = new byte[] { 104, 101, 108, 108, 111};
         
         /* execute */
-        BinaryString binaryString = BinaryStringFactory.create(bytes, BinaryStringEncodingType.BASE64);
+        BinaryString binaryString = BinaryStringFactory.createFromBytes(bytes, BinaryStringEncodingType.BASE64);
         
         /* test */
         assertNotNull(binaryString);
@@ -118,7 +118,7 @@ public class BinaryStringFactoryTest {
         byte[] bytes = new byte[] { 104, 101, 108, 108, 111};
         
         /* execute */
-        BinaryString binaryString = BinaryStringFactory.create(bytes, BinaryStringEncodingType.PLAIN);
+        BinaryString binaryString = BinaryStringFactory.createFromBytes(bytes, BinaryStringEncodingType.PLAIN);
         
         /* test */
         assertNotNull(binaryString);
@@ -133,7 +133,7 @@ public class BinaryStringFactoryTest {
         byte[] bytes = new byte[] { 104, 101, 108, 108, 111};
         
         /* execute */
-        BinaryString binaryString = BinaryStringFactory.create(bytes, BinaryStringEncodingType.HEX);
+        BinaryString binaryString = BinaryStringFactory.createFromBytes(bytes, BinaryStringEncodingType.HEX);
         
         /* test */
         assertNotNull(binaryString);
@@ -149,7 +149,7 @@ public class BinaryStringFactoryTest {
 
         /* execute */
         Exception exception = assertThrows(IllegalArgumentException.class, () -> {
-            BinaryStringFactory.create(bytes);
+            BinaryStringFactory.createFromBytes(bytes);
         });
 
         /* test */

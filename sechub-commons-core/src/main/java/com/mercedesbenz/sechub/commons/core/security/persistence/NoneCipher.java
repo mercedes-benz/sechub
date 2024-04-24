@@ -17,7 +17,7 @@ public class NoneCipher implements PersistenceCipher {
     private NoneCipher() {}
 
     @Override
-    public PersistenceCipherType getCipher() {
+    public PersistenceCipherType getCipherType() {
         return PersistenceCipherType.NONE;
     }
 
@@ -33,7 +33,7 @@ public class NoneCipher implements PersistenceCipher {
     @Override
     public BinaryString encrypt(String plaintext, BinaryString initializationVector, BinaryStringEncodingType encodingType)
             throws InvalidAlgorithmParameterException, InvalidKeyException {
-        return BinaryStringFactory.create(plaintext, encodingType);
+        return BinaryStringFactory.createFromString(plaintext, encodingType);
     }
     
     @Override

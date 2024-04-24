@@ -1,59 +1,73 @@
 package com.mercedesbenz.sechub.commons.core.security.persistence;
 
-public class RotationStrategy {
-    private PersistenceCipherType currentCipher;
-    private PersistenceCipherType newCipher;
-    private BinaryString currentSecret;
-    private BinaryString newSecret;
-    
-    private RotationStrategy(PersistenceCipherType currentCipher, PersistenceCipherType newCipher, BinaryString currentSecret, BinaryString newSecret) {
+import java.security.InvalidAlgorithmParameterException;
+import java.security.InvalidKeyException;
 
+import javax.crypto.BadPaddingException;
+import javax.crypto.IllegalBlockSizeException;
+
+public class RotationStrategy {
+    private PersistenceCipher currentCipher;
+    private PersistenceCipher newCipher;
+    private boolean performSecretRotation = false;
+    
+    private RotationStrategy(PersistenceCipher currentCipher, PersistenceCipher newCipher, boolean performSecretRotation) {
         this.currentCipher = currentCipher;
         this.newCipher = newCipher;
-        this.currentSecret = currentSecret;
-        this.newSecret = newSecret;
+        this.performSecretRotation = performSecretRotation;
+    }
+    
+    public static RotationStrategy createSecretRotationStrategy(BinaryString currentSecret, BinaryString newSecret, PersistenceCipherType cipher) throws InvalidKeyException {
+        PersistenceCipher currentCipher = PersistenceCipherFactory.create(cipher, currentSecret);
+        PersistenceCipher newCipher = PersistenceCipherFactory.create(cipher, newSecret);
         
-        if (newCipher == null) {
-            this.newCipher = currentCipher;
-        } else {
-            this.newCipher = newCipher;
+        boolean performSecretRotation = true;
+        
+        return new RotationStrategy(currentCipher, newCipher, performSecretRotation);
+    }
+    
+  
+    public static RotationStrategy createCipherAndSecretRotationStrategy(BinaryString currentSecret, BinaryString newSecret, PersistenceCipherType currentCipherType, PersistenceCipherType newCipherType) throws InvalidKeyException {
+        PersistenceCipher currentCipher = PersistenceCipherFactory.create(currentCipherType, currentSecret);
+        PersistenceCipher newCipher = PersistenceCipherFactory.create(newCipherType, newSecret);
+        
+        boolean performSecretRotation = true;
+        
+        return new RotationStrategy(currentCipher, newCipher, performSecretRotation);
+    }
+    
+    public BinaryString rotate(BinaryString cipherText, BinaryString initializationVector) throws InvalidKeyException, IllegalArgumentException, InvalidAlgorithmParameterException, IllegalBlockSizeException, BadPaddingException {
+        return rotate(cipherText, initializationVector, null, cipherText.getType());
+    }
+    
+    public BinaryString rotate(BinaryString cipherText, BinaryString initializationVector, BinaryString newIntializationVector, BinaryStringEncodingType newBinaryStringEncoding) throws InvalidKeyException, IllegalArgumentException, InvalidAlgorithmParameterException, IllegalBlockSizeException, BadPaddingException {
+        if (cipherText == null) {
+            throw new IllegalArgumentException("The ciphertext cannot be null!");
         }
         
-    }
-    
-    public static RotationStrategy createSecretRotationStrategy(PersistenceCipherType cipher, BinaryString currentSecret, BinaryString newSecret) {
-        return new RotationStrategy(cipher, null, currentSecret, newSecret);
-    }
-    
-//    public static RotationStrategy createCipherRotationStrategy(PersistenceCipherType currentCipher, PersistenceCipherType newCipher, String currentSecret) {
-//        return new RotationStrategy(currentCipher, newCipher, currentSecret, newSecret);
-//    }
-//    
-//    public static RotationStrategy createCipherAndSecretRotationStrategy(PersistenceCipherType currentCipher, PersistenceCipherType newCipher, String currentSecret, String newSecret) {
-//        return new RotationStrategy(currentCipher, newCipher, currentSecret, newSecret);
-//    }
-    
-    public BinaryString rotate(BinaryString cipherText, BinaryString initializationVector) {
-        return rotate(cipherText, initializationVector, cipherText.getType());
-    }
-    
-    public BinaryString rotate(BinaryString cipherText, BinaryString initializationVector, BinaryStringEncodingType newBinaryStringEncoding) {
-        return null;
+        if (initializationVector == null) {
+            throw new IllegalArgumentException("The initialization vector (nonce) cannot be null!");
+        }
+        
+        String plainText = currentCipher.decrypt(cipherText, initializationVector);
+        BinaryString newCipherText = newCipher.encrypt(plainText, initializationVector);
+        
+        return newCipherText;
     }
     
     public PersistenceCipherType getCurrentCipher() {
-        return currentCipher;
+        return currentCipher.getCipherType();
     }
 
     public PersistenceCipherType getNewCipher() {
-        return newCipher;
+        return newCipher.getCipherType();
     }
     
     public boolean isSecretRotationStrategy() {
-        return (newCipher == currentCipher) ? true : false;
+        return performSecretRotation;
     }
     
     public boolean isCipherRotationStrategy() {
-        return (currentCipher != newCipher) ? true : false;
+        return (currentCipher.getCipherType() != newCipher.getCipherType()) ? true : false;
     }
 }

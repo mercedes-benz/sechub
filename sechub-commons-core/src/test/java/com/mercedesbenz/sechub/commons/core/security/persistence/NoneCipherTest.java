@@ -11,7 +11,7 @@ import javax.crypto.IllegalBlockSizeException;
 import org.junit.jupiter.api.Test;
 
 public class NoneCipherTest {
-    private BinaryString initializationVector = BinaryStringFactory.create("Hello");
+    private BinaryString initializationVector = BinaryStringFactory.createFromString("Hello");
     @Test
     void encrypt_null_iv() throws InvalidKeyException, InvalidAlgorithmParameterException {
         String plaintext = "This is plaintext";
@@ -57,12 +57,12 @@ public class NoneCipherTest {
     @Test
     void getCipher_null() throws InvalidKeyException {
         PersistenceCipher cipher = NoneCipher.create(null);
-        assertEquals(PersistenceCipherType.NONE, cipher.getCipher());
+        assertEquals(PersistenceCipherType.NONE, cipher.getCipherType());
     }
     
     @Test
     void getCipher_string() throws InvalidKeyException {
         PersistenceCipher cipher = NoneCipher.create(new Base64String("Hello"));
-        assertEquals(PersistenceCipherType.NONE, cipher.getCipher());
+        assertEquals(PersistenceCipherType.NONE, cipher.getCipherType());
     }
 }

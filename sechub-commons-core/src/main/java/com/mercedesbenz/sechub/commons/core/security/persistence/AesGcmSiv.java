@@ -60,9 +60,9 @@ public class AesGcmSiv implements PersistenceCipher {
             instance = new AesGcmSiv(secret);
            
             if (rawSecret.length == 32 || rawSecret.length == 16) {
-                cipherType = (rawSecret.length == 32) ? PersistenceCipherType.AES_256_GCM_SIV : PersistenceCipherType.AES_128_GCM_SIV;
+                cipherType = (rawSecret.length == 32) ? PersistenceCipherType.AES_GCM_SIV_256 : PersistenceCipherType.AES_GCM_SIV_128;
             } else if (rawSecret.length == 24) {
-                cipherType = PersistenceCipherType.AES_192_GCM_SIV;
+                cipherType = PersistenceCipherType.AES_GCM_SIV_192;
             }
         } else {
             throw new InvalidKeyException("The secret has to be 128, 192 or 256 bits long.");
@@ -81,7 +81,7 @@ public class AesGcmSiv implements PersistenceCipher {
         SecureRandom random = new SecureRandom();
         random.nextBytes(initializationVector);
 
-        return BinaryStringFactory.create(initializationVector, encodingType);
+        return BinaryStringFactory.createFromBytes(initializationVector, encodingType);
     }
 
     public BinaryString encrypt(String plaintext, BinaryString initializationVector) throws InvalidAlgorithmParameterException, InvalidKeyException {
@@ -113,7 +113,7 @@ public class AesGcmSiv implements PersistenceCipher {
     }
 
     @Override
-    public PersistenceCipherType getCipher() {
+    public PersistenceCipherType getCipherType() {
         return cipherType;
     }
 
@@ -131,7 +131,7 @@ public class AesGcmSiv implements PersistenceCipher {
 
             byte[] ciphertext = cipher.doFinal(plaintext.getBytes());
 
-            return BinaryStringFactory.create(ciphertext, encodingType);
+            return BinaryStringFactory.createFromBytes(ciphertext, encodingType);
         } catch (NoSuchAlgorithmException | NoSuchPaddingException providerException) {
             throw new IllegalStateException("Encryption not possible, please check the provider", providerException);
         } catch (BadPaddingException | IllegalBlockSizeException paddingBlockException) {

@@ -10,14 +10,15 @@ public class PersistenceCipherFactory {
         case NONE:
             cipher = NoneCipher.create(secret);
             break;
-        case AES_256_GCM_SIV:
-        case AES_128_GCM_SIV:
+        case AES_GCM_SIV_256:
+        case AES_GCM_SIV_192:
+        case AES_GCM_SIV_128:
             cipher = AesGcmSiv.create(secret);
             break;
         default:
-            cipher = AesGcmSiv.create(secret);
-            break;
+            throw new IllegalArgumentException("Unable to create cipher. Unknown cipher.");
         }
+        
         return cipher;
     }
 }

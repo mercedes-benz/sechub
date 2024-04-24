@@ -35,7 +35,7 @@ public class AesGcmSivTest {
 
         /* test */
         assertNotNull(crypto);
-        assertEquals(PersistenceCipherType.AES_256_GCM_SIV, crypto.getCipher());
+        assertEquals(PersistenceCipherType.AES_GCM_SIV_256, crypto.getCipherType());
     }
 
     @Test
@@ -48,7 +48,7 @@ public class AesGcmSivTest {
 
         /* test */
         assertNotNull(crypto);
-        assertEquals(PersistenceCipherType.AES_192_GCM_SIV, crypto.getCipher());
+        assertEquals(PersistenceCipherType.AES_GCM_SIV_192, crypto.getCipherType());
     }
     
     @Test
@@ -61,7 +61,7 @@ public class AesGcmSivTest {
 
         /* test */
         assertNotNull(crypto);
-        assertEquals(PersistenceCipherType.AES_128_GCM_SIV, crypto.getCipher());
+        assertEquals(PersistenceCipherType.AES_GCM_SIV_128, crypto.getCipherType());
     }
 
     @Test
@@ -103,6 +103,7 @@ public class AesGcmSivTest {
 
         /* test */
         assertEquals(expectedCiphertext, ciphertext.toString());
+        assertEquals(PersistenceCipherType.AES_GCM_SIV_256, crypto.getCipherType());
     }
 
     @Test
@@ -178,8 +179,9 @@ public class AesGcmSivTest {
 
         /* test */
         assertEquals(expectedCiphertext, ciphertext.toString());
+        assertEquals(PersistenceCipherType.AES_GCM_SIV_128, crypto.getCipherType());
     }
-
+    
     @Test
     void decrypt__aes_128() throws InvalidKeyException, NoSuchAlgorithmException, NoSuchPaddingException, InvalidAlgorithmParameterException,
             IllegalBlockSizeException, BadPaddingException {
@@ -318,7 +320,7 @@ public class AesGcmSivTest {
     }
 
     @Test
-    void getCiphers_aes_256() throws InvalidKeyException {
+    void getCipherType_aes_256() throws InvalidKeyException {
         /* prepare */
         BinaryString secret = new Base64String("a".repeat(32));
         
@@ -326,11 +328,11 @@ public class AesGcmSivTest {
         AesGcmSiv crypto = AesGcmSiv.create(secret);
 
         /* test */
-        assertEquals(PersistenceCipherType.AES_256_GCM_SIV, crypto.getCipher());
+        assertEquals(PersistenceCipherType.AES_GCM_SIV_256, crypto.getCipherType());
     }
 
     @Test
-    void getCiphers_aes_128() throws InvalidKeyException {
+    void getCiphersType_aes_128() throws InvalidKeyException {
         /* prepare */
         BinaryString secret = new Base64String("a".repeat(16));
         
@@ -338,6 +340,18 @@ public class AesGcmSivTest {
         AesGcmSiv crypto = AesGcmSiv.create(secret);
 
         /* test */
-        assertEquals(PersistenceCipherType.AES_128_GCM_SIV, crypto.getCipher());
+        assertEquals(PersistenceCipherType.AES_GCM_SIV_128, crypto.getCipherType());
+    }
+    
+    @Test
+    void getCiphersType_aes_192() throws InvalidKeyException {
+        /* prepare */
+        BinaryString secret = new Base64String("a".repeat(24));
+        
+        /* execute */
+        AesGcmSiv crypto = AesGcmSiv.create(secret);
+
+        /* test */
+        assertEquals(PersistenceCipherType.AES_GCM_SIV_192, crypto.getCipherType());
     }
 }

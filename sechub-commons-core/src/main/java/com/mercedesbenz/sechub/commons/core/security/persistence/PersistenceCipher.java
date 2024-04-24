@@ -27,5 +27,5 @@ public interface PersistenceCipher {
     public String decrypt(BinaryString ciphertext, BinaryString initializationVector)
             throws IllegalArgumentException, InvalidKeyException, InvalidAlgorithmParameterException, IllegalBlockSizeException, BadPaddingException;
 
-    public PersistenceCipherType getCipher();
+    public PersistenceCipherType getCipherType();
 }
