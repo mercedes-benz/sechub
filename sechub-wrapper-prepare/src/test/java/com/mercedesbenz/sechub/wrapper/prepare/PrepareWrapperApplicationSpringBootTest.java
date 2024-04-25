@@ -26,20 +26,21 @@ import com.mercedesbenz.sechub.wrapper.prepare.prepare.PrepareWrapperRemoteConfi
         PrepareWrapperEnvironment.class, PrepareWrapperPDSUserMessageSupportPojoFactory.class, PrepareWrapperRemoteConfigurationExtractor.class,
         PrepareWrapperGitModule.class, PrepareWrapperModule.class, PrepareWrapperGIT.class })
 @ExtendWith(SpringExtension.class)
-@TestPropertySource(locations = "classpath:application-test.properties")
+@TestPropertySource(locations = "classpath:application-test-fail.properties")
 class PrepareWrapperApplicationSpringBootTest {
 
     @Autowired
     PrepareWrapperPreparationService preparationService;
 
     @Test
-    void start_preparation_with_remote_test_properties_and_empty_prepare_service_list_is_success() throws IOException {
+    void start_preparation_with_remote_test_properties_and_empty_prepare_service_list_fails() throws IOException {
         /* execute */
         AdapterExecutionResult result = preparationService.startPreparation();
 
         /* test */
-        assertEquals("SECHUB_PREPARE_RESULT;status=OK", result.getProductResult());
-        assertEquals(0, result.getProductMessages().size());
+        assertEquals("SECHUB_PREPARE_RESULT;status=FAILED", result.getProductResult());
+        assertEquals(1, result.getProductMessages().size());
+        assertEquals("No module was able to prepare the defined remote data.", result.getProductMessages().get(0).getText());
     }
 
 }

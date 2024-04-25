@@ -46,11 +46,11 @@ class PrepareWrapperPreparationServiceTest {
         /* test */
         assertEquals("SECHUB_PREPARE_RESULT;status=OK", result.getProductResult());
         assertEquals(1, result.getProductMessages().size());
-        assertEquals("No Remote Configuration found", result.getProductMessages().get(0).getText());
+        assertEquals("No Remote Configuration found.", result.getProductMessages().get(0).getText());
     }
 
     @Test
-    void when_remote_data_was_configured_return_preparation_success_without_message() throws IOException {
+    void when_remote_data_was_configured_but_no_module_executed_return_preparation_failed_with_message() throws IOException {
         /* prepare */
         List<SecHubRemoteDataConfiguration> remoteDataConfigurationList = new ArrayList<>();
         SecHubRemoteDataConfiguration remoteDataConfiguration = new SecHubRemoteDataConfiguration();
@@ -63,8 +63,9 @@ class PrepareWrapperPreparationServiceTest {
         AdapterExecutionResult result = serviceToTest.startPreparation();
 
         /* test */
-        assertEquals("SECHUB_PREPARE_RESULT;status=OK", result.getProductResult());
-        assertEquals(0, result.getProductMessages().size());
+        assertEquals("SECHUB_PREPARE_RESULT;status=FAILED", result.getProductResult());
+        assertEquals(1, result.getProductMessages().size());
+        assertEquals("No module was able to prepare the defined remote data.", result.getProductMessages().get(0).getText());
     }
 
     @Test
@@ -90,8 +91,9 @@ class PrepareWrapperPreparationServiceTest {
         /* test */
         assertEquals("SECHUB_PREPARE_RESULT;status=OK", result.getProductResult());
         assertEquals(0, result.getProductMessages().size());
+
         verify(gitModule).prepare(context);
-        verify(gitModule).cleanup();
+        verify(gitModule).cleanup(context);
         verify(gitModule).isDownloadSuccessful(context);
     }
 
@@ -117,6 +119,6 @@ class PrepareWrapperPreparationServiceTest {
         /* test */
         assertEquals("SECHUB_PREPARE_RESULT;status=FAILED", result.getProductResult());
         assertEquals(1, result.getProductMessages().size());
-        assertEquals("Download of configured remote data failed", result.getProductMessages().get(0).getText());
+        assertEquals("Download of configured remote data failed.", result.getProductMessages().get(0).getText());
     }
 }

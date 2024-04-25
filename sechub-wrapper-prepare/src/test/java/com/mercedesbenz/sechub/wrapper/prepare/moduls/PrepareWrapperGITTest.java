@@ -5,14 +5,18 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
+
+import javax.crypto.SealedObject;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
-import org.springframework.test.util.ReflectionTestUtils;
 
+import com.mercedesbenz.sechub.commons.core.security.CryptoAccess;
 import com.mercedesbenz.sechub.commons.pds.PDSProcessAdapterFactory;
 import com.mercedesbenz.sechub.commons.pds.ProcessAdapter;
 
@@ -37,37 +41,25 @@ class PrepareWrapperGITTest {
 
     @ParameterizedTest
     @ValueSource(strings = { "https://host.xz/path/to/repo/.git", "http://myrepo/here/.git", "example.org.git" })
-    void getRepositoryURL_returns_repositoryURL_with_username_and_password(String location) {
-        /* prepare */
-        ReflectionTestUtils.setField(gitToTest, "username", "user");
-        ReflectionTestUtils.setField(gitToTest, "password", "password");
-
+    void getRepositoryURL_returns_repositoryURL_with_username_and_password_from_ENV(String location) {
         /* execute */
         String repositoryUrl = gitToTest.getRepositoryURL(location);
 
         /* test */
-        assertTrue(repositoryUrl.contains("https://user:password@"));
+        assertTrue(repositoryUrl.contains("https://$PDS_PREPARE_CREDENTIAL_USERNAME:$PDS_PREPARE_CREDENTIAL_PASSWORD@"));
     }
 
     @ParameterizedTest
     @ValueSource(strings = { "https://host.xz/path/to/repo/.git", "http://myrepo/here/.git", "example.org.git" })
-    void getRepositoryURL_returns_repositoryURL_when_username_and_password_not_set(String location) {
-        /* execute */
-        String repositoryUrl = gitToTest.getRepositoryURL(location);
-
-        /* test */
-        assertEquals(location, repositoryUrl);
-    }
-
-    @ParameterizedTest
-    @ValueSource(strings = { "https://host.xz/path/to/repo/.git", "http://myrepo/here/.git", "example.org.git" })
-    void cloneRepository_returns_mocked_process(String location) throws IOException {
+    void when_cloneRepository_is_executed_the_processAdapterFactory_starts_one_process(String location) throws IOException {
         /* prepare */
-        ReflectionTestUtils.setField(gitToTest, "username", "user");
-        ReflectionTestUtils.setField(gitToTest, "password", "password");
+        Map<String, SealedObject> credentialMap = new HashMap<>();
+        credentialMap.put("username", CryptoAccess.CRYPTO_STRING.seal("user"));
+        credentialMap.put("password", CryptoAccess.CRYPTO_STRING.seal("password"));
+        GitContext gitContext = gitToTest.createGitContext(location, true, credentialMap, "folder");
 
         /* execute */
-        gitToTest.cloneRepository(location);
+        gitToTest.cloneRepository(gitContext);
 
         /* test */
         verify(processAdapterFactory, times(1)).startProcess(any());
@@ -75,28 +67,28 @@ class PrepareWrapperGITTest {
 
     @ParameterizedTest
     @ValueSource(strings = { "https://host.xz/path/to/repo/.git", "http://myrepo/here/.git", "example.org.git" })
-    void when_startProcess_throws_exception_IOexception_is_thrown(String location) throws IOException {
+    void when_startProcess_throws_exception_IOException_is_thrown(String location) throws IOException {
         /* prepare */
-        ReflectionTestUtils.setField(gitToTest, "username", "user");
-        ReflectionTestUtils.setField(gitToTest, "password", "password");
+        Map<String, SealedObject> credentialMap = new HashMap<>();
+        credentialMap.put("username", CryptoAccess.CRYPTO_STRING.seal("user"));
+        credentialMap.put("password", CryptoAccess.CRYPTO_STRING.seal("password"));
         when(processAdapterFactory.startProcess(any())).thenThrow(IOException.class);
+        GitContext gitContext = new GitContext(location, true, credentialMap, "folder");
 
         /* execute */
-        IOException exception = assertThrows(IOException.class, () -> gitToTest.cloneRepository(location));
+        IOException exception = assertThrows(IOException.class, () -> gitToTest.cloneRepository(gitContext));
 
         /* test */
         assertTrue(exception.getMessage().contains("Error while cloning repository: "));
     }
 
     @Test
-    void cleanGitDirectory_returns_mocked_process() throws IOException {
+    void when_cleanGitDirectory_is_executed_the_processAdapterFactory_starts_one_process() throws IOException {
         /* prepare */
-        ReflectionTestUtils.setField(gitToTest, "username", "user");
-        ReflectionTestUtils.setField(gitToTest, "password", "password");
-        ReflectionTestUtils.setField(gitToTest, "pdsPrepareUploadFolderDirectory", "folder");
+        String directory = "test-upload-folder";
 
         /* execute */
-        gitToTest.cleanGitDirectory();
+        gitToTest.cleanGitDirectory(directory);
 
         /* test */
         verify(processAdapterFactory, times(1)).startProcess(any());
@@ -104,48 +96,15 @@ class PrepareWrapperGITTest {
     }
 
     @Test
-    void when_cleanGitDirectory_throws_exception_IOexception_is_thrown() throws IOException {
+    void when_cleanGitDirectory_throws_exception_IOException_is_thrown() throws IOException {
         /* prepare */
-        ReflectionTestUtils.setField(gitToTest, "username", "user");
-        ReflectionTestUtils.setField(gitToTest, "password", "password");
-        ReflectionTestUtils.setField(gitToTest, "pdsPrepareUploadFolderDirectory", "folder");
         when(processAdapterFactory.startProcess(any())).thenThrow(IOException.class);
+        String directory = "test-upload-folder";
 
         /* execute */
-        IOException exception = assertThrows(IOException.class, () -> gitToTest.cleanGitDirectory());
+        Exception exception = assertThrows(Exception.class, () -> gitToTest.cleanGitDirectory(directory));
 
         /* test */
-        assertTrue(exception.getMessage().contains("Error while cleaning git directory: folder"));
-    }
-
-    @ParameterizedTest
-    @ValueSource(strings = { "var1", "var2", "varXYZ" })
-    void setEnvironmentVariables_returns_mocked_process(String var) throws IOException {
-        /* prepare */
-        ReflectionTestUtils.setField(gitToTest, "username", "user");
-        ReflectionTestUtils.setField(gitToTest, "password", "password");
-        ReflectionTestUtils.setField(gitToTest, "pdsPrepareUploadFolderDirectory", "folder");
-
-        /* execute */
-        gitToTest.setEnvironmentVariables("SOME_ENV", var);
-
-        /* test */
-        verify(processAdapterFactory, times(1)).startProcess(any());
-
-    }
-
-    @Test
-    void when_setEnvironmentVariables_throws_exception_IOexception_is_thrown() throws IOException {
-        /* prepare */
-        ReflectionTestUtils.setField(gitToTest, "username", "user");
-        ReflectionTestUtils.setField(gitToTest, "password", "password");
-        ReflectionTestUtils.setField(gitToTest, "pdsPrepareUploadFolderDirectory", "folder");
-        when(processAdapterFactory.startProcess(any())).thenThrow(IOException.class);
-
-        /* execute */
-        IOException exception = assertThrows(IOException.class, () -> gitToTest.setEnvironmentVariables("KEY", "value"));
-
-        /* test */
-        assertTrue(exception.getMessage().contains("Error while exporting environment variable: KEY:value"));
+        assertTrue(exception.getMessage().contains("Error while cleaning git directory: test-upload-folder"));
     }
 }

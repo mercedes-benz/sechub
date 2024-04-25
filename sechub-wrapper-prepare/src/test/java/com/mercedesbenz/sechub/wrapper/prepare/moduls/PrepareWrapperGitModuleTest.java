@@ -4,7 +4,9 @@ import static com.mercedesbenz.sechub.commons.model.SecHubScanConfiguration.crea
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
+import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -17,6 +19,7 @@ import com.mercedesbenz.sechub.commons.model.SecHubConfigurationModel;
 import com.mercedesbenz.sechub.commons.model.SecHubRemoteCredentialConfiguration;
 import com.mercedesbenz.sechub.commons.model.SecHubRemoteCredentialUserData;
 import com.mercedesbenz.sechub.commons.model.SecHubRemoteDataConfiguration;
+import com.mercedesbenz.sechub.test.TestFileWriter;
 import com.mercedesbenz.sechub.wrapper.prepare.cli.PrepareWrapperEnvironment;
 import com.mercedesbenz.sechub.wrapper.prepare.prepare.PrepareWrapperContext;
 
@@ -26,11 +29,14 @@ class PrepareWrapperGitModuleTest {
 
     private PrepareWrapperGIT git;
 
+    TestFileWriter writer;
+
     @BeforeEach
     void beforeEach() {
         moduleToTest = new PrepareWrapperGitModule();
         git = mock(PrepareWrapperGIT.class);
         moduleToTest.git = git;
+        writer = new TestFileWriter();
     }
 
     @ParameterizedTest
@@ -209,9 +215,7 @@ class PrepareWrapperGitModuleTest {
         moduleToTest.prepare(context);
 
         /* test */
-        verify(git).setEnvironmentVariables("PDS_PREPARE_CREDENTIAL_USERNAME", "my-example-name");
-        verify(git).setEnvironmentVariables("PDS_PREPARE_CREDENTIAL_PASSWORD", "my-example-password");
-        verify(git).cloneRepository("my-example-location");
+        verify(git).cloneRepository(any(GitContext.class));
     }
 
     @Test
@@ -229,8 +233,62 @@ class PrepareWrapperGitModuleTest {
         moduleToTest.prepare(context);
 
         /* test */
-        verify(git).cloneRepository("my-example-location");
-        verify(git, never()).setEnvironmentVariables(anyString(), anyString());
+        verify(git).cloneRepository(any(GitContext.class));
+    }
+
+    @Test
+    void isDownloadSuccessful_returns_true_when_git_file_in_directory() throws IOException {
+        /* prepare */
+        File tempDir = Files.createTempDirectory("upload-folder").toFile();
+        tempDir.deleteOnExit();
+        String filename = ".git";
+        PrepareWrapperContext context = mock(PrepareWrapperContext.class);
+        when(context.getEnvironment()).thenReturn(mock(PrepareWrapperEnvironment.class));
+        writer.save(new File(tempDir, filename), "some text", true);
+        when(context.getEnvironment().getPdsPrepareUploadFolderDirectory()).thenReturn(tempDir.toString());
+
+        /* execute */
+        boolean result = moduleToTest.isDownloadSuccessful(context);
+
+        /* test */
+        assertTrue(result);
+    }
+
+    @Test
+    void isDownloadSuccessful_returns_false_when_no_git_file_in_directory() throws IOException {
+        /* prepare */
+        File tempDir = Files.createTempDirectory("upload-folder").toFile();
+        tempDir.deleteOnExit();
+        writer.save(tempDir, "some text", true);
+        PrepareWrapperContext context = mock(PrepareWrapperContext.class);
+        when(context.getEnvironment()).thenReturn(mock(PrepareWrapperEnvironment.class));
+        when(context.getEnvironment().getPdsPrepareUploadFolderDirectory()).thenReturn(tempDir.toString());
+
+        /* execute */
+        boolean result = moduleToTest.isDownloadSuccessful(context);
+
+        /* test */
+        assertFalse(result);
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = { "git", "GIT", "gIT" })
+    void isMatchingGitType_returns_true_when_git_is_configured(String type) {
+        /* execute */
+        boolean result = moduleToTest.isMatchingGitType(type);
+
+        /* test */
+        assertTrue(result);
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = { "https://my-repo.com.git", "http://my-repo.com.git", "git://host.xz/~user/path/to/repo.git", "git@github.com:my/repo.git" })
+    void isMatchingGitPattern_returns_true_when_git_pattern_is_configured(String location) {
+        /* execute */
+        boolean result = moduleToTest.isMatchingGitPattern(location);
+
+        /* test */
+        assertTrue(result);
     }
 
 }

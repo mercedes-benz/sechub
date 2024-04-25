@@ -33,13 +33,15 @@ public class PrepareWrapperPreparationService {
 
     public AdapterExecutionResult startPreparation() throws IOException {
 
+        boolean isModuleExecuted = false;
+
         LOG.debug("Start preparation");
         PrepareWrapperContext context = factory.create(environment);
         List<SecHubRemoteDataConfiguration> remoteDataConfigurationList = context.getRemoteDataConfigurationList();
 
         if (remoteDataConfigurationList.isEmpty()) {
             LOG.warn("No Remote configuration was found");
-            return createAdapterExecutionResult(PrepareStatus.OK, SecHubMessageType.WARNING, "No Remote Configuration found");
+            return createAdapterExecutionResult(PrepareStatus.OK, SecHubMessageType.WARNING, "No Remote Configuration found.");
         }
 
         for (PrepareWrapperModule module : modules) {
@@ -49,20 +51,26 @@ public class PrepareWrapperPreparationService {
             if (!module.isAbleToPrepare(context)) {
                 continue;
             }
-
+            isModuleExecuted = true;
             module.prepare(context);
+            context.addUserMessage(
+                    new SecHubMessage(SecHubMessageType.INFO, "Execute module for configured remote data: " + module.getClass().getSimpleName()));
             if (module.isDownloadSuccessful(context)) {
                 // clean directory if download was successful from unwanted files (e.g. .git
                 // files)
-                module.cleanup();
+                module.cleanup(context);
             } else {
-                LOG.error("Download of configured remote data failed");
-                return createAdapterExecutionResult(PrepareStatus.FAILED, SecHubMessageType.ERROR, "Download of configured remote data failed");
+                LOG.error("Download of configured remote data failed.");
+                return createAdapterExecutionResult(PrepareStatus.FAILED, SecHubMessageType.ERROR, "Download of configured remote data failed.");
             }
         }
 
+        if (!isModuleExecuted) {
+            return createAdapterExecutionResult(PrepareStatus.FAILED, SecHubMessageType.ERROR, "No module was able to prepare the defined remote data.");
+        }
+
         PrepareResult result = new PrepareResult(PrepareStatus.OK);
-        return new AdapterExecutionResult(result.toString());
+        return new AdapterExecutionResult(result.toString(), context.getUserMessages());
     }
 
     private AdapterExecutionResult createAdapterExecutionResult(PrepareStatus status, SecHubMessageType type, String message) {

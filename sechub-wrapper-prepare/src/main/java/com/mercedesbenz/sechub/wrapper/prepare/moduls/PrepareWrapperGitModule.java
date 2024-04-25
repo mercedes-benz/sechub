@@ -5,13 +5,13 @@ import static com.mercedesbenz.sechub.wrapper.prepare.cli.PrepareWrapperKeyConst
 import static com.mercedesbenz.sechub.wrapper.prepare.cli.PrepareWrapperKeyConstants.KEY_PDS_PREPARE_MODULE_ENABLED_GIT;
 
 import java.io.IOException;
-import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.regex.Pattern;
+
+import javax.crypto.SealedObject;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -19,9 +19,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import com.mercedesbenz.sechub.commons.model.SecHubRemoteCredentialConfiguration;
-import com.mercedesbenz.sechub.commons.model.SecHubRemoteCredentialUserData;
-import com.mercedesbenz.sechub.commons.model.SecHubRemoteDataConfiguration;
+import com.mercedesbenz.sechub.commons.core.security.CryptoAccess;
+import com.mercedesbenz.sechub.commons.model.*;
 import com.mercedesbenz.sechub.wrapper.prepare.prepare.PrepareWrapperContext;
 
 @Service
@@ -49,6 +48,7 @@ public class PrepareWrapperGitModule implements PrepareWrapperModule {
             if (isMatchingGitType(secHubRemoteDataConfiguration.getType())) {
                 LOG.debug("Type is git");
                 if (!isMatchingGitPattern(location)) {
+                    context.addUserMessage(new SecHubMessage(SecHubMessageType.WARNING, "Type is git but location does not match git URL pattern"));
                     LOG.warn("Type is git but location does not match git URL pattern");
                 }
                 return true;
@@ -63,16 +63,23 @@ public class PrepareWrapperGitModule implements PrepareWrapperModule {
 
     public void prepare(PrepareWrapperContext context) throws IOException {
 
-        LOG.debug("Start remote data preparation for git repository");
+        LOG.debug("Start remote data preparation for GIT repository");
 
         List<SecHubRemoteDataConfiguration> remoteDataConfigurationList = context.getRemoteDataConfigurationList();
         for (SecHubRemoteDataConfiguration secHubRemoteDataConfiguration : remoteDataConfigurationList) {
             String location = secHubRemoteDataConfiguration.getLocation();
             Optional<SecHubRemoteCredentialConfiguration> credentials = secHubRemoteDataConfiguration.getCredentials();
 
+            Map<String, SealedObject> credentialMap = new HashMap<>();
+
             if (!credentials.isPresent()) {
                 // public repository does not need credentials
-                git.cloneRepository(location);
+                GitContext gitContext = new GitContext(location, pdsPrepareAutoCleanupGitFolder, credentialMap,
+                        context.getEnvironment().getPdsPrepareUploadFolderDirectory());
+                git.cloneRepository(gitContext);
+                SecHubMessage message = new SecHubMessage(SecHubMessageType.INFO,
+                        "Cloned public repository " + location + " into " + context.getEnvironment().getPdsPrepareUploadFolderDirectory());
+                context.addUserMessage(message);
                 return;
             }
 
@@ -91,9 +98,17 @@ public class PrepareWrapperGitModule implements PrepareWrapperModule {
                     throw new IllegalStateException("No password found for User: " + user);
                 }
 
-                git.setEnvironmentVariables(PDS_PREPARE_CREDENTIAL_USERNAME, username);
-                git.setEnvironmentVariables(PDS_PREPARE_CREDENTIAL_PASSWORD, password);
-                git.cloneRepository(location);
+                SealedObject sealdPassword = CryptoAccess.CRYPTO_STRING.seal(password);
+                SealedObject sealdUsername = CryptoAccess.CRYPTO_STRING.seal(username);
+                credentialMap.put(PDS_PREPARE_CREDENTIAL_USERNAME, sealdUsername);
+                credentialMap.put(PDS_PREPARE_CREDENTIAL_PASSWORD, sealdPassword);
+
+                GitContext gitContext = new GitContext(location, pdsPrepareAutoCleanupGitFolder, credentialMap,
+                        context.getEnvironment().getPdsPrepareUploadFolderDirectory());
+                git.cloneRepository(gitContext);
+                SecHubMessage message = new SecHubMessage(SecHubMessageType.INFO,
+                        "Cloned private repository " + location + " into " + context.getEnvironment().getPdsPrepareUploadFolderDirectory());
+                context.addUserMessage(message);
                 return;
             }
 
@@ -102,21 +117,19 @@ public class PrepareWrapperGitModule implements PrepareWrapperModule {
         }
     }
 
-    public void cleanup() throws IOException {
-        git.setEnvironmentVariables(PDS_PREPARE_CREDENTIAL_USERNAME, "");
-        git.setEnvironmentVariables(PDS_PREPARE_CREDENTIAL_PASSWORD, "");
+    public void cleanup(PrepareWrapperContext context) throws IOException {
         if (pdsPrepareAutoCleanupGitFolder) {
-            git.cleanGitDirectory();
+            git.cleanGitDirectory(context.getEnvironment().getPdsPrepareUploadFolderDirectory());
         }
     }
 
-    public boolean isDownloadSuccessful(PrepareWrapperContext context) throws IOException {
-        // check if download folder is not empty
+    public boolean isDownloadSuccessful(PrepareWrapperContext context) {
+        // check if download folder contains git
         Path path = Paths.get(context.getEnvironment().getPdsPrepareUploadFolderDirectory());
         if (Files.isDirectory(path)) {
-            try (DirectoryStream<Path> directory = Files.newDirectoryStream(path)) {
-                return !directory.iterator().hasNext();
-            }
+            String gitFile = ".git";
+            Path gitPath = Paths.get(path + "/" + gitFile);
+            return Files.exists(gitPath);
         }
         return false;
     }
