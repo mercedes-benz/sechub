@@ -56,7 +56,7 @@ class PrepareWrapperGITTest {
         Map<String, SealedObject> credentialMap = new HashMap<>();
         credentialMap.put("username", CryptoAccess.CRYPTO_STRING.seal("user"));
         credentialMap.put("password", CryptoAccess.CRYPTO_STRING.seal("password"));
-        GitContext gitContext = gitToTest.createGitContext(location, true, credentialMap, "folder");
+        GitContext gitContext = new GitContext(location, true, credentialMap, "folder");
 
         /* execute */
         gitToTest.cloneRepository(gitContext);

@@ -100,11 +100,6 @@ public class PrepareWrapperGIT {
         waitForProcessToFinish();
     }
 
-    public GitContext createGitContext(String location, boolean cloneWithoutHistory, Map<String, SealedObject> credentialMap,
-            String pdsPrepareUploadFolderDirectory) {
-        return new GitContext(location, cloneWithoutHistory, credentialMap, pdsPrepareUploadFolderDirectory);
-    }
-
     String getRepositoryURL(String location) {
         LOG.debug("Prepare location string for private repository");
         String preFix = "https://" + "$" + PDS_PREPARE_CREDENTIAL_USERNAME + ":" + "$" + PDS_PREPARE_CREDENTIAL_PASSWORD + "@";
