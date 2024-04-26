@@ -2,6 +2,7 @@
 package com.mercedesbenz.sechub.sereco.importer;
 
 import java.io.IOException;
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -19,7 +20,9 @@ import com.mercedesbenz.sechub.commons.model.ScanType;
 import com.mercedesbenz.sechub.sereco.ImportParameter;
 import com.mercedesbenz.sechub.sereco.metadata.SerecoCodeCallStackElement;
 import com.mercedesbenz.sechub.sereco.metadata.SerecoMetaData;
+import com.mercedesbenz.sechub.sereco.metadata.SerecoRevisionData;
 import com.mercedesbenz.sechub.sereco.metadata.SerecoSeverity;
+import com.mercedesbenz.sechub.sereco.metadata.SerecoVersionControl;
 import com.mercedesbenz.sechub.sereco.metadata.SerecoVulnerability;
 import com.mercedesbenz.sechub.sereco.metadata.SerecoWeb;
 import com.mercedesbenz.sechub.sereco.metadata.SerecoWebAttack;
@@ -49,6 +52,7 @@ import de.jcup.sarif_2_1_0.model.Run;
 import de.jcup.sarif_2_1_0.model.SarifSchema210;
 import de.jcup.sarif_2_1_0.model.ThreadFlow;
 import de.jcup.sarif_2_1_0.model.ToolComponentReference;
+import de.jcup.sarif_2_1_0.model.VersionControlDetails;
 import de.jcup.sarif_2_1_0.model.WebRequest;
 import de.jcup.sarif_2_1_0.model.WebResponse;
 
@@ -103,6 +107,8 @@ public class SarifV1JSONImporter extends AbstractProductResultImporter {
     }
 
     private void handleEachRun(Run run, SerecoMetaData metaData, ScanType scanType) {
+        extractFirstVersionControlEntry(run, metaData);
+
         List<Result> results = run.getResults();
 
         for (Result result : results) {
@@ -112,6 +118,28 @@ public class SarifV1JSONImporter extends AbstractProductResultImporter {
                 metaData.getVulnerabilities().add(vulnerability);
             }
         }
+    }
+
+    private void extractFirstVersionControlEntry(Run run, SerecoMetaData metaData) {
+        SerecoVersionControl existingVersionControl = metaData.getVersionControl();
+        if (existingVersionControl != null) {
+            return;
+        }
+
+        Set<VersionControlDetails> vcp = run.getVersionControlProvenance();
+        if (vcp.isEmpty()) {
+            return;
+        }
+
+        VersionControlDetails firstSarifRunVersionControl = vcp.iterator().next();
+        SerecoVersionControl serecoVersionControl = new SerecoVersionControl();
+
+        serecoVersionControl.setRevisionId(firstSarifRunVersionControl.getRevisionId());
+        URI repositoryUri = firstSarifRunVersionControl.getRepositoryUri();
+        if (repositoryUri != null) {
+            serecoVersionControl.setLocation(repositoryUri.toString());
+        }
+        metaData.setVersionControl(serecoVersionControl);
     }
 
     private SerecoVulnerability createSerecoVulnerability(Run run, Result result, ScanType scanType) {
@@ -130,6 +158,13 @@ public class SarifV1JSONImporter extends AbstractProductResultImporter {
         vulnerability.setSeverity(resolveSeverity(result, run));
         vulnerability.getClassification().setCwe(resolveCweId(scanType, resultData));
         vulnerability.setScanType(scanType);
+
+        String revisionId = workaroundSupport.resolveFindingRevisionId(result, run);
+        if (revisionId != null) {
+            SerecoRevisionData revision = new SerecoRevisionData();
+            revision.setId(revisionId);
+            vulnerability.setRevision(revision);
+        }
 
         setWebInformationOrCodeFlow(result, vulnerability);
 
