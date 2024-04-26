@@ -6,7 +6,7 @@
     <title>SecHub scan result</title>
 
     <style type="text/css"
-           th:replace="report/html/styles :: renderStyles">
+           th:replace="~{report/html/styles :: renderStyles}">
     </style>
 </head>
 <body>
@@ -154,7 +154,7 @@
                    
                    */-->
                    </div>
-                    <div th:replace="report/html/summary :: renderScanTypeOverviewLine(scanTypeSummary=${scanTypeSummary})"></div>
+                    <div th:replace="~{report/html/summary :: renderScanTypeOverviewLine(scanTypeSummary=${scanTypeSummary})}"></div>
                 </tr>
                 </tbody>
             </table>
@@ -170,7 +170,7 @@
          </div>
          <!--  scan type overviews -->
          <div th:each="scanTypeSummary : ${scanTypeSummaries}">
-               <div th:replace="report/html/summary :: renderScanTypeOverviewDetails(scanTypeSummary=${scanTypeSummary})"></div>
+               <div th:replace="~{report/html/summary :: renderScanTypeOverviewDetails(scanTypeSummary=${scanTypeSummary})}"></div>
          </div>
          <!--                   
              ---------------------------------
@@ -179,14 +179,14 @@
              ---------------------------------
            -->
          <div th:each="trafficLightGroup : ${trafficLightGroups}">
-              <div th:replace="report/html/findings :: renderTrafficLightGroup(trafficLightGroup=${trafficLightGroup})"></div>
+              <div th:replace="~{report/html/findings :: renderTrafficLightGroup(trafficLightGroup=${trafficLightGroup})}"></div>
          </div>
          <!--                   
              ---------------------------------
              - Messages                      -
              ---------------------------------
          -->
-         <div th:replace="report/html/messages :: renderMessages(messages=${messages})"></div>
+         <div th:replace="~{report/html/messages :: renderMessages(messages=${messages})}"></div>
    </div>
 </div>
 </body>
