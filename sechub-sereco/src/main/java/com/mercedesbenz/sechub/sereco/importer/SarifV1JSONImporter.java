@@ -82,10 +82,10 @@ public class SarifV1JSONImporter extends AbstractProductResultImporter {
             data = "";
         }
 
-        SarifSchema210 report = null;
+        SarifSchema210 sarifReport = null;
 
         try {
-            report = sarifSchema210ImportExportSupport.fromJSON(data);
+            sarifReport = sarifSchema210ImportExportSupport.fromJSON(data);
         } catch (Exception e) {
             /*
              * here we can throw the exception - should never happen, because with
@@ -96,7 +96,7 @@ public class SarifV1JSONImporter extends AbstractProductResultImporter {
         }
         SerecoMetaData metaData = new SerecoMetaData();
 
-        for (Run run : report.getRuns()) {
+        for (Run run : sarifReport.getRuns()) {
             handleEachRun(run, metaData, scanType);
         }
         return metaData;

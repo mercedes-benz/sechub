@@ -1,21 +1,25 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.domain.scan.product.sereco;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 import java.util.Iterator;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import com.mercedesbenz.sechub.commons.model.JSONConverter;
 import com.mercedesbenz.sechub.commons.model.ScanType;
 import com.mercedesbenz.sechub.commons.model.SecHubCodeCallStack;
 import com.mercedesbenz.sechub.commons.model.SecHubFinding;
+import com.mercedesbenz.sechub.commons.model.SecHubReportMetaData;
 import com.mercedesbenz.sechub.commons.model.SecHubResult;
+import com.mercedesbenz.sechub.commons.model.SecHubRevisionData;
+import com.mercedesbenz.sechub.commons.model.SecHubVersionControlData;
 import com.mercedesbenz.sechub.commons.model.Severity;
 import com.mercedesbenz.sechub.domain.scan.AssertSecHubResult;
 import com.mercedesbenz.sechub.domain.scan.ReportTransformationResult;
@@ -24,7 +28,9 @@ import com.mercedesbenz.sechub.domain.scan.product.config.WithoutProductExecutor
 import com.mercedesbenz.sechub.sereco.metadata.SerecoClassification;
 import com.mercedesbenz.sechub.sereco.metadata.SerecoCodeCallStackElement;
 import com.mercedesbenz.sechub.sereco.metadata.SerecoMetaData;
+import com.mercedesbenz.sechub.sereco.metadata.SerecoRevisionData;
 import com.mercedesbenz.sechub.sereco.metadata.SerecoSeverity;
+import com.mercedesbenz.sechub.sereco.metadata.SerecoVersionControl;
 import com.mercedesbenz.sechub.sereco.metadata.SerecoVulnerability;
 import com.mercedesbenz.sechub.sharedkernel.ProductIdentifier;
 
@@ -32,16 +38,83 @@ public class SerecoProductResultTransformerTest {
 
     private SerecoProductResultTransformer transformerToTest;
 
-    @Before
-    public void before() {
+    @BeforeEach
+    void before() {
         transformerToTest = new SerecoProductResultTransformer();
         transformerToTest.falsePositiveMarker = mock(SerecoFalsePositiveMarker.class);
     }
 
     @Test
-    public void one_vulnerability_in_meta_results_in_one_finding() throws Exception {
+    void finding_revision_id_inside_sereco_is_transformed_to_sechub_result() throws Exception {
         /* prepare */
-        String converted = createMetaDataWithOneVulnerabilityFound();
+        String converted = createMetaDataWithOneVulnerabilityFoundWithVersionControlData(null, null, "finding-rev1");
+
+        /* execute */
+        ReportTransformationResult result = transformerToTest.transform(createProductResult(converted));
+
+        /* test */
+        Iterator<SecHubFinding> it = result.getResult().getFindings().iterator();
+        assertTrue(it.hasNext(), "no finding found!");
+
+        SecHubFinding finding = it.next();
+        Optional<SecHubRevisionData> revOpt = finding.getRevision();
+        assertTrue(revOpt.isPresent());
+        SecHubRevisionData revisionData = revOpt.get();
+        assertEquals("finding-rev1", revisionData.getId());
+    }
+
+    @Test
+    void version_control_inside_sereco_is_transformed_to_sechub_result() throws Exception {
+        /* prepare */
+        String converted = createMetaDataWithOneVulnerabilityFoundWithVersionControlData("revision1", "location1", null);
+
+        /* execute */
+        ReportTransformationResult result = transformerToTest.transform(createProductResult(converted));
+
+        /* test */
+        Optional<SecHubReportMetaData> metaDataOpt = result.getMetaData();
+        if (metaDataOpt.isEmpty()) {
+            fail("Did not found metadata");
+        }
+        Optional<SecHubVersionControlData> versionControlOpt = metaDataOpt.get().getVersionControl();
+        if (versionControlOpt.isEmpty()) {
+            fail("Did not found version control meta data");
+        }
+        SecHubVersionControlData versionControl = versionControlOpt.get();
+        assertEquals("location1", versionControl.getLocation(), "Version control location is not as expected!");
+        Optional<SecHubRevisionData> revisionOpt = versionControl.getRevision();
+        if (revisionOpt.isEmpty()) {
+            fail("No revision opt found inside version control meta data!");
+        }
+        String revisionId = revisionOpt.get().getId();
+        assertEquals("revision1", revisionId, "Version control revision id not as expected");
+
+    }
+
+    @Test
+    void version_control_missing_inside_sereco_is_transformed_to_missing_sechub_result() throws Exception {
+        /* prepare */
+        String converted = createMetaDataWithOneVulnerabilityFoundNoVersionControlData();
+
+        /* execute */
+        ReportTransformationResult result = transformerToTest.transform(createProductResult(converted));
+
+        /* test */
+        Optional<SecHubReportMetaData> metaDataOpt = result.getMetaData();
+        if (metaDataOpt.isEmpty()) {
+            fail("Did not found metadata");
+        }
+        Optional<SecHubVersionControlData> versionControlOpt = metaDataOpt.get().getVersionControl();
+        if (versionControlOpt.isPresent()) {
+            fail("Did found version control meta data!");
+        }
+
+    }
+
+    @Test
+    void one_vulnerability_in_meta_results_in_one_finding() throws Exception {
+        /* prepare */
+        String converted = createMetaDataWithOneVulnerabilityFoundNoVersionControlData();
 
         /* execute */
         ReportTransformationResult result = transformerToTest.transform(createProductResult(converted));
@@ -51,7 +124,7 @@ public class SerecoProductResultTransformerTest {
     }
 
     @Test
-    public void one_vulnerability_as_secret_in_meta_results_in_one_finding() throws Exception {
+    void one_vulnerability_as_secret_in_meta_results_in_one_finding() throws Exception {
         /* prepare */
         String converted = createMetaDataWithOneVulnerabilityAsSecretFound();
 
@@ -67,6 +140,7 @@ public class SerecoProductResultTransformerTest {
         AssertSecHubResult.assertSecHubResult(sechubResult).hasFindings(1);
         SecHubFinding finding1 = sechubResult.getFindings().get(0);
         assertEquals(Integer.valueOf(4711), finding1.getCweId());
+        assertTrue(finding1.getRevision().isEmpty());// no information available
 
         SecHubCodeCallStack code1 = finding1.getCode();
         assertNotNull(code1);
@@ -87,7 +161,7 @@ public class SerecoProductResultTransformerTest {
     }
 
     @Test
-    public void one_vulnerability_as_code_in_meta_results_in_one_finding() throws Exception {
+    void one_vulnerability_as_code_in_meta_results_in_one_finding() throws Exception {
         /* prepare */
         String converted = createMetaDataWithOneVulnerabilityAsCodeFound();
 
@@ -123,9 +197,9 @@ public class SerecoProductResultTransformerTest {
     }
 
     @Test
-    public void transformation_of_id_finding_description_severity_and_name_are_done() throws Exception {
+    void transformation_of_id_finding_description_severity_and_name_are_done() throws Exception {
         /* prepare */
-        String converted = createMetaDataWithOneVulnerabilityFound();
+        String converted = createMetaDataWithOneVulnerabilityFoundNoVersionControlData();
 
         /* execute */
         ReportTransformationResult result = transformerToTest.transform(createProductResult(converted));
@@ -144,9 +218,9 @@ public class SerecoProductResultTransformerTest {
     }
 
     @Test
-    public void transformation_of_solution_is_done() throws Exception {
+    void transformation_of_solution_is_done() throws Exception {
         /* prepare */
-        String converted = createMetaDataWithOneVulnerabilityFound();
+        String converted = createMetaDataWithOneVulnerabilityFoundNoVersionControlData();
 
         /* execute */
         ReportTransformationResult result = transformerToTest.transform(createProductResult(converted));
@@ -160,7 +234,7 @@ public class SerecoProductResultTransformerTest {
     }
 
     @Test
-    public void transformation_does_sort_findings() throws Exception {
+    void transformation_does_sort_findings() throws Exception {
         /* prepare */
         String converted = createMetaDataWithTwoVulnerabilitiesWrongOrdered();
 
@@ -185,9 +259,14 @@ public class SerecoProductResultTransformerTest {
         return r;
     }
 
-    private String createMetaDataWithOneVulnerabilityFound() {
-        SerecoMetaData data = new SerecoMetaData();
-        List<SerecoVulnerability> vulnerabilities = data.getVulnerabilities();
+    private String createMetaDataWithOneVulnerabilityFoundNoVersionControlData() {
+        return createMetaDataWithOneVulnerabilityFoundWithVersionControlData(null, null, null);
+    }
+
+    private String createMetaDataWithOneVulnerabilityFoundWithVersionControlData(String versionControlRevisionId, String versionControlLocation,
+            String findingRevisionId) {
+        SerecoMetaData serecoMetaData = new SerecoMetaData();
+        List<SerecoVulnerability> vulnerabilities = serecoMetaData.getVulnerabilities();
 
         SerecoVulnerability v1 = new SerecoVulnerability();
         v1.setDescription("desc1");
@@ -195,13 +274,26 @@ public class SerecoProductResultTransformerTest {
         v1.setType("type1");
         v1.setScanType(ScanType.WEB_SCAN);
         v1.setSolution("solution1");
+        if (findingRevisionId != null) {
+            SerecoRevisionData revision = new SerecoRevisionData();
+            revision.setId(findingRevisionId);
+            v1.setRevision(revision);
+        }
 
         SerecoClassification cl = v1.getClassification();
         cl.setCapec("capec1");
 
         vulnerabilities.add(v1);
 
-        String converted = JSONConverter.get().toJSON(data);
+        if (versionControlRevisionId != null) {
+            SerecoVersionControl versionControl = new SerecoVersionControl();
+            versionControl.setLocation(versionControlLocation);
+            versionControl.setRevisionId(versionControlRevisionId);
+
+            serecoMetaData.setVersionControl(versionControl);
+        }
+
+        String converted = JSONConverter.get().toJSON(serecoMetaData);
         return converted;
     }
 

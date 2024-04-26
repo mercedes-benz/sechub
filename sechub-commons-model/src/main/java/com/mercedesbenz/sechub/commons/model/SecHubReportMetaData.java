@@ -31,4 +31,8 @@ public class SecHubReportMetaData {
         return Optional.ofNullable(versionControl);
     }
 
+    public void setVersionControl(SecHubVersionControlData versionControl) {
+        this.versionControl = versionControl;
+    }
+
 }

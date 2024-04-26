@@ -18,8 +18,11 @@ import com.mercedesbenz.sechub.commons.model.SecHubCodeCallStack;
 import com.mercedesbenz.sechub.commons.model.SecHubFinding;
 import com.mercedesbenz.sechub.commons.model.SecHubMessage;
 import com.mercedesbenz.sechub.commons.model.SecHubMessageType;
+import com.mercedesbenz.sechub.commons.model.SecHubReportMetaData;
 import com.mercedesbenz.sechub.commons.model.SecHubReportVersion;
+import com.mercedesbenz.sechub.commons.model.SecHubRevisionData;
 import com.mercedesbenz.sechub.commons.model.SecHubStatus;
+import com.mercedesbenz.sechub.commons.model.SecHubVersionControlData;
 import com.mercedesbenz.sechub.commons.model.Severity;
 import com.mercedesbenz.sechub.commons.model.web.SecHubReportWeb;
 import com.mercedesbenz.sechub.commons.model.web.SecHubReportWebAttack;
@@ -36,6 +39,8 @@ import com.mercedesbenz.sechub.sereco.metadata.SerecoAnnotationType;
 import com.mercedesbenz.sechub.sereco.metadata.SerecoClassification;
 import com.mercedesbenz.sechub.sereco.metadata.SerecoCodeCallStackElement;
 import com.mercedesbenz.sechub.sereco.metadata.SerecoMetaData;
+import com.mercedesbenz.sechub.sereco.metadata.SerecoRevisionData;
+import com.mercedesbenz.sechub.sereco.metadata.SerecoVersionControl;
 import com.mercedesbenz.sechub.sereco.metadata.SerecoVulnerability;
 import com.mercedesbenz.sechub.sereco.metadata.SerecoWeb;
 import com.mercedesbenz.sechub.sereco.metadata.SerecoWebAttack;
@@ -113,6 +118,9 @@ public class SerecoProductResultTransformer implements ReportProductResultTransf
                 scanType = ScanType.UNKNOWN;
                 LOG.debug("Finding:{} '{}' has no scan type set. Use {} as fallback.", findingId, vulnerability.getType(), scanType);
             }
+
+            handleRevisionData(vulnerability, finding);
+
             switch (scanType) {
             case CODE_SCAN:
             case SECRET_SCAN:
@@ -136,12 +144,55 @@ public class SerecoProductResultTransformer implements ReportProductResultTransf
 
         handleAnnotations(sechubJobUUID, data, transformerResult);
 
+        handleMetaData(data, transformerResult);
+
         /* when status is not set already, no failure has appeared and we mark as OK */
         if (transformerResult.getStatus() == null) {
             transformerResult.setStatus(SecHubStatus.SUCCESS);
         }
 
         return transformerResult;
+    }
+
+    private void handleMetaData(SerecoMetaData data, ReportTransformationResult transformerResult) {
+        if (transformerResult.getMetaData().isEmpty()) {
+            SecHubReportMetaData reportMetaData = new SecHubReportMetaData();
+            transformerResult.setMetaData(reportMetaData);
+        }
+
+        SecHubReportMetaData metaData = transformerResult.getMetaData().get();
+        SerecoVersionControl serecoVersionControl = data.getVersionControl();
+        handleVersionControlMetaData(metaData, serecoVersionControl);
+
+    }
+
+    private void handleVersionControlMetaData(SecHubReportMetaData metaData, SerecoVersionControl serecoVersionControl) {
+        if (serecoVersionControl == null) {
+            return;
+        }
+        SecHubVersionControlData versionControlData = new SecHubVersionControlData();
+        metaData.setVersionControl(versionControlData);
+
+        versionControlData.setLocation(serecoVersionControl.getLocation());
+
+        String serecoRevisionId = serecoVersionControl.getRevisionId();
+        if (serecoRevisionId != null) {
+            SecHubRevisionData revisionData = new SecHubRevisionData();
+            revisionData.setId(serecoRevisionId);
+
+            versionControlData.setRevision(revisionData);
+        }
+        versionControlData.setLocation(serecoVersionControl.getLocation());
+    }
+
+    private void handleRevisionData(SerecoVulnerability vulnerability, SecHubFinding finding) {
+        SerecoRevisionData serecoRevision = vulnerability.getRevision();
+        if (serecoRevision != null) {
+            SecHubRevisionData revisionData = new SecHubRevisionData();
+            revisionData.setId(serecoRevision.getId());
+            finding.setRevision(revisionData);
+
+        }
     }
 
     private void appendWebData(UUID sechubJobUUID, SerecoVulnerability vulnerability, SecHubFinding finding) {
