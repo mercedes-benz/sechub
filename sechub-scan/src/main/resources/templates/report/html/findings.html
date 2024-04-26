@@ -178,6 +178,18 @@
 
 
 <th:block th:fragment="footer(finding)">
+    <div th:if="${reportHelper.hasRevisionData(finding)}" th:with="revisionData=${reportHelper.getRevisionData(finding)}">
+        <h3 class="rDetailHeadline1">Revision</h3>
+        <table class="findingRevisionTable">
+           <tbody>
+               <tr>
+                   <td>Id:</td>
+                   <td th:text="${revisionData.id}"></td>
+               </tr>
+           </tbody>
+       </table>
+    </div>
+   
     <h3 class="rDetailHeadline1">Description</h3>
     <div th:if="${reportHelper.hasDescription(finding)}" class="rText" th:text="${reportHelper.getDescription(finding)}">Description1</div>
     <div th:if="${reportHelper.hasDescription(finding) == false AND finding.cweId != null}" class="rCalculatedText">

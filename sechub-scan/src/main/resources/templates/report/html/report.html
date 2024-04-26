@@ -77,6 +77,30 @@
                 <td>Scan result Report for Job:<span th:text="${jobuuid}">job-uuid</span>
                 </td>
             </tr>
+              <!--                 
+                ---------------------------------
+                -            Version control    -
+                ---------------------------------
+            -->
+            <tr class="reportVersionControl" th:if="${reportHelper.hasVersionControl(metaData)}">
+               <td></td>
+               <td>
+                    <table class='reportMetaDataTable' th:with="versionControl=${reportHelper.getVersionControl(metaData)}">
+                        <tr>
+                            <td>Version control:</td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td class="metaDataLabelKey">Location:</td>
+                            <td class="metaDataLabelValue" th:text="${versionControl.location}">value</td>
+                        </tr>
+                        <tr>
+                            <td class="metaDataLabelKey">Revision Id:</td>
+                            <td class="metaDataLabelValue" th:text="${versionControl.revision.isEmpty()} ? 'undefined': ${versionControl.revision.get().id}">value</td>
+                        </tr>
+                    </table>
+                </td>
+            </tr>
             <!--                 
                 ---------------------------------
                 -            Labels             -
