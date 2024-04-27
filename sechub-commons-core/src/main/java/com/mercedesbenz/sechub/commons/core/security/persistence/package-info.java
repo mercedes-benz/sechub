@@ -6,8 +6,10 @@
  *
  * The requirements for the cryptographic algorithms for data at rest are:
  *
- * - authenticated encryption (AE) - nonce (initialization vector)
- * misuse-resistant
+ * <ul>
+ * <li>authenticated encryption (AE)</li>
+ * <li>nonce (initialization vector) misuse-resistant</li>
+ * </ul>
  *
  * Authenticated encryption (AE) provides confidentiality and integrity at the
  * same time. Confidentiality is provided by encrypting and integrity by hashing
@@ -39,7 +41,13 @@
  * There are a number of authenticated encryption algorithms. However only a few
  * are nonce misuse-resistant. Examples for misuse resistant algorithms are:
  *
- * - AES-GCM-SIV - AES-SIV - Deoxys-II - COLM - Romulus-M
+ * <ul>
+ * <li>AES-GCM-SIV</li>
+ * <li>AES-SIV</li>
+ * <li>Deoxys-II</li>
+ * <li>COLM</li>
+ * <li>Romulus-M</li>
+ * </ul>
  *
  * Furthermore, symmetric encryption algorithms are not in danger to be
  * completely broken by quantum computers (see:
@@ -56,9 +64,15 @@
  * This package also contains classes which can help with algorithm, secret and
  * initialization vector rotation:
  *
- * - Initialization vector (or nonce) rotation swaps the nonce used during
- * encryption. - Secret rotation is used to change the secret key. - Algorithm
- * rotation can be used if the algorithms need to be exchanged.
+ * <ul>
+ * <li>Initialization vector (or nonce) rotation swaps the nonce used during
+ * encryption.</li>
+ *
+ * <li>Secret rotation is used to change the secret key.</li>
+ *
+ * <li>Algorithm rotation can be used if the algorithms need to be
+ * exchanged.</li>
+ * </ul>
  *
  * @author Jeremias Eppler
  */
