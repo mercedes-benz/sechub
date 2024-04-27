@@ -3,7 +3,7 @@ package com.mercedesbenz.sechub.commons.core.security.persistence;
 import java.util.Arrays;
 
 /**
- * 
+ * @author Jeremias Eppler
  */
 public abstract class AbstractBinaryString implements BinaryString {
     byte[] bytes;

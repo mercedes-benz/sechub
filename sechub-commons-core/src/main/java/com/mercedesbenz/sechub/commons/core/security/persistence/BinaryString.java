@@ -7,6 +7,8 @@ package com.mercedesbenz.sechub.commons.core.security.persistence;
  * In addition, the binary string knows it's encoding (e.g. base64 etc.).
  * 
  * @see BinaryStringEncodingType
+ * 
+ * @author Jeremias Eppler
  */
 public interface BinaryString {
     public byte[] getBytes();

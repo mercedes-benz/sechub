@@ -39,6 +39,43 @@ public class BinaryStringFactoryTest {
     }
     
     @Test
+    void create_from_base64_no_type_given() {
+        /* prepare */
+        String string = "SGVsbG8g8J+MjCE=";
+        
+        /* execute */
+        BinaryString binaryString = BinaryStringFactory.createFromBase64(string);
+        
+        /* test */
+        assertNotNull(binaryString);
+        assertEquals(binaryString.getType(), BinaryStringEncodingType.BASE64);
+        assertTrue(binaryString instanceof Base64String);
+        assertEquals("SGVsbG8g8J+MjCE=", binaryString.toString());
+    }
+    
+    @Test
+    void createFromBase64_null_input() {
+        /* execute */
+        Exception exception = assertThrows(IllegalArgumentException.class, () -> {
+            BinaryStringFactory.createFromBase64(null);
+        });
+
+        /* test */
+        assertEquals("String cannot be null.", exception.getMessage());
+    }
+    
+    @Test
+    void createFromHex_null_input() {
+        /* execute */
+        Exception exception = assertThrows(IllegalArgumentException.class, () -> {
+            BinaryStringFactory.createFromHex(null);
+        });
+
+        /* test */
+        assertEquals("String cannot be null.", exception.getMessage());
+    }
+    
+    @Test
     void create_from_string_plain_type_given() {
         /* prepare */
         String string = "hello";
@@ -157,7 +194,7 @@ public class BinaryStringFactoryTest {
     }
     
     @Test
-    void createFromHex_from_bytes_plain_type_given() {
+    void createFromHex_from_string_plain_type_given() {
         /* prepare */
         String string = "68656c6c6f";
         
@@ -178,6 +215,21 @@ public class BinaryStringFactoryTest {
         
         /* execute */
         BinaryString binaryString = BinaryStringFactory.createFromHex(string, BinaryStringEncodingType.BASE64);
+        
+        /* test */
+        assertNotNull(binaryString);
+        assertEquals(BinaryStringEncodingType.BASE64, binaryString.getType());
+        assertTrue(binaryString instanceof Base64String);
+        assertEquals("aGVsbG8=", binaryString.toString());
+    }
+    
+    @Test
+    void createFromHex_no_type_given() {
+        /* prepare */
+        String string = "68656c6c6f";
+        
+        /* execute */
+        BinaryString binaryString = BinaryStringFactory.createFromHex(string);
         
         /* test */
         assertNotNull(binaryString);

@@ -10,18 +10,22 @@ import org.junit.jupiter.api.Test;
 public class Base64StringTest {
     @Test
     void from_string() {
+        /* prepare */
         String string = "Hello";
         String expectedString = "SGVsbG8=";
 
+        /* execute + test */
         assertEquals(expectedString, new Base64String(string).toString());
     }
     
     @Test
-    void from_string_null_throw_illegal_argument_exception() {       
+    void from_string_null_throw_illegal_argument_exception() {
+        /* execute */
         Exception exception = assertThrows(IllegalArgumentException.class, () -> {
             new Base64String((String)null);
         });
 
+        /* test */
         assertEquals("String cannot be null.", exception.getMessage());
     }
 

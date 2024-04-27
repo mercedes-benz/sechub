@@ -4,6 +4,8 @@ package com.mercedesbenz.sechub.commons.core.security.persistence;
  * Encoding type of a binary string.
  * 
  * @see BinaryString
+ * 
+ * @author Jeremias Eppler
  */
 public enum BinaryStringEncodingType {
     /**

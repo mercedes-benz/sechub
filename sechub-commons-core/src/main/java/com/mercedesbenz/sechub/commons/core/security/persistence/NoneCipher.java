@@ -9,7 +9,10 @@ import javax.crypto.IllegalBlockSizeException;
 /**
  * A cipher which does not encrypt anything.
  * 
- * However, it can be used to change the encoding.
+ * It can be used during testing or debugging.
+ * 
+ * Furthermore, this cipher can be used to change the encoding of the data.
+ * For example, from plain to Base64.
  * 
  * @author Jeremias Eppler
  */
@@ -41,5 +44,15 @@ public class NoneCipher implements PersistenceCipher {
             throws InvalidKeyException, InvalidAlgorithmParameterException, IllegalBlockSizeException, BadPaddingException {
 
         return ciphertext.toString();
+    }
+
+    @Override
+    public BinaryString generateNewInitializationVector() {
+        return generateNewInitializationVector(BinaryStringEncodingType.PLAIN);
+    }
+
+    @Override
+    public BinaryString generateNewInitializationVector(BinaryStringEncodingType encodingType) {
+        return BinaryStringFactory.createFromString("", encodingType);
     }
 }

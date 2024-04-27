@@ -7,7 +7,9 @@ import javax.crypto.BadPaddingException;
 import javax.crypto.IllegalBlockSizeException;
 
 /**
- * Interface for cryptographic algorithms used to protect data at rest (persistence layer)
+ * Interface for cryptographic algorithms used to protect data at rest.
+ * 
+ * "At rest" refers to data which is usually stored in a database, file or other persistent storage.
  * 
  * @author Jeremias Eppler
  */
@@ -15,10 +17,10 @@ public interface PersistenceCipher {
     public static PersistenceCipher create(BinaryString secret)  throws InvalidKeyException {
         return null;
     }
+
+    public BinaryString generateNewInitializationVector();
     
-    public static BinaryString generateNewInitializationVector() {
-        return null;
-    }
+    public BinaryString generateNewInitializationVector(BinaryStringEncodingType encodingType);
     
     public BinaryString encrypt(String plaintext, BinaryString initializationVector) throws InvalidAlgorithmParameterException, InvalidKeyException;
     
