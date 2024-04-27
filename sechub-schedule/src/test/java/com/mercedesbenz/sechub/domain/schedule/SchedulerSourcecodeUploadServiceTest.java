@@ -5,6 +5,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
 
+import java.io.IOException;
 import java.util.UUID;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -39,6 +40,7 @@ public class SchedulerSourcecodeUploadServiceTest {
     private UUID randomUuid;
     private ScheduleAssertService mockedAssertService;
     private MultipartFile file;
+    private String checkSum = "mychecksum";
 
     private JobStorage storage;
     private ArchiveSupport mockedArchiveSupport;
@@ -47,7 +49,7 @@ public class SchedulerSourcecodeUploadServiceTest {
     private DomainMessageService domainMessageService;
 
     @BeforeEach
-    void beforeEach() {
+    void beforeEach() throws IOException {
         randomUuid = UUID.randomUUID();
 
         checkSumSupport = mock(CheckSumSupport.class);
@@ -97,7 +99,7 @@ public class SchedulerSourcecodeUploadServiceTest {
         when(file.getSize()).thenReturn(fileSize);
 
         /* execute + test */
-        assertThrows(BadRequestException.class, () -> serviceToTest.uploadSourceCode(PROJECT1, randomUuid, file, "mychecksum"));
+        assertThrows(BadRequestException.class, () -> serviceToTest.uploadSourceCode(PROJECT1, randomUuid, file, checkSum));
 
         /* test */
         assertNoUploadEvent();
@@ -113,7 +115,7 @@ public class SchedulerSourcecodeUploadServiceTest {
         when(configuration.isZipValidationEnabled()).thenReturn(true);
 
         /* execute */
-        serviceToTest.uploadSourceCode(PROJECT1, randomUuid, file, "mychecksum");
+        serviceToTest.uploadSourceCode(PROJECT1, randomUuid, file, checkSum);
     }
 
     @Test
@@ -126,7 +128,7 @@ public class SchedulerSourcecodeUploadServiceTest {
         when(configuration.isZipValidationEnabled()).thenReturn(false);
 
         /* execute + test */
-        assertThrows(NotAcceptableException.class, () -> serviceToTest.uploadSourceCode(PROJECT1, randomUuid, file, "mychecksum"));
+        assertThrows(NotAcceptableException.class, () -> serviceToTest.uploadSourceCode(PROJECT1, randomUuid, file, checkSum));
 
         /* test */
         assertNoUploadEvent();
@@ -142,7 +144,7 @@ public class SchedulerSourcecodeUploadServiceTest {
         when(configuration.isZipValidationEnabled()).thenReturn(true);
 
         /* execute + test (no exception) */
-        serviceToTest.uploadSourceCode(PROJECT1, randomUuid, file, "mychecksum");
+        serviceToTest.uploadSourceCode(PROJECT1, randomUuid, file, checkSum);
 
         /* test */
         assertUploadEvent();
@@ -158,7 +160,7 @@ public class SchedulerSourcecodeUploadServiceTest {
         when(configuration.isZipValidationEnabled()).thenReturn(false);
 
         /* execute + test (no exception) */
-        serviceToTest.uploadSourceCode(PROJECT1, randomUuid, file, "mychecksum");
+        serviceToTest.uploadSourceCode(PROJECT1, randomUuid, file, checkSum);
 
         /* test */
         assertUploadEvent();
@@ -174,7 +176,7 @@ public class SchedulerSourcecodeUploadServiceTest {
         when(configuration.isZipValidationEnabled()).thenReturn(true);
 
         /* execute + test */
-        assertThrows(NotAcceptableException.class, () -> serviceToTest.uploadSourceCode(PROJECT1, randomUuid, file, "mychecksum"));
+        assertThrows(NotAcceptableException.class, () -> serviceToTest.uploadSourceCode(PROJECT1, randomUuid, file, checkSum));
     }
 
     private void assertNoUploadEvent() {

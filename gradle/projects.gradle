@@ -45,6 +45,7 @@ projectType = [
                     /* special wrapper applications which are also spring boot applications
                        to have dependency injection and access to some other spring boot parts */
                     project(':sechub-wrapper-checkmarx'),
+                    project(':sechub-wrapper-prepare'),
                      
                        
             ],
@@ -90,6 +91,7 @@ projectType = [
                    project(':sechub-server'),
                    project(':sechub-pds'),
                    project(':sechub-wrapper-checkmarx'),
+                   project(':sechub-wrapper-prepare'),
             ],
             
             springBootWebUIProjects:[], // is filled later programmatically

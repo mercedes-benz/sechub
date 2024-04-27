@@ -3,7 +3,6 @@ package com.mercedesbenz.sechub.integrationtest.scenario4;
 
 import static com.mercedesbenz.sechub.integrationtest.api.TestAPI.*;
 import static com.mercedesbenz.sechub.integrationtest.scenario4.Scenario4.*;
-import static org.junit.Assert.*;
 
 import java.util.UUID;
 

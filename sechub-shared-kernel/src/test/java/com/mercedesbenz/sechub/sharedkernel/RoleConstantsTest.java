@@ -9,18 +9,23 @@ public class RoleConstantsTest {
 
     @Test
     public void isSuperAdminRole_works() {
-        assertTrue(RoleConstants.isSuperAdminRole("ROLE_SUPERADMIN"));
+        assertTrue(RoleConstants.isSuperAdminRole("SUPERADMIN"));
+        assertTrue(RoleConstants.isSuperAdminRole(RoleConstants.ROLE_SUPERADMIN));
 
-        assertFalse(RoleConstants.isSuperAdminRole("ROLE_USER"));
+        assertFalse(RoleConstants.isSuperAdminRole("USER"));
+        assertFalse(RoleConstants.isSuperAdminRole(RoleConstants.ROLE_USER));
+        assertFalse(RoleConstants.isSuperAdminRole(RoleConstants.ROLE_OWNER));
         assertFalse(RoleConstants.isSuperAdminRole(""));
         assertFalse(RoleConstants.isSuperAdminRole("X"));
     }
 
     @Test
     public void isUserRole_works() {
-        assertTrue(RoleConstants.isUserRole("ROLE_USER"));
+        assertTrue(RoleConstants.isUserRole("USER"));
+        assertTrue(RoleConstants.isUserRole(RoleConstants.ROLE_USER));
 
-        assertFalse(RoleConstants.isUserRole("ROLE_SUPERADMIN"));
+        assertFalse(RoleConstants.isUserRole("SUPERADMIN"));
+        assertFalse(RoleConstants.isUserRole(RoleConstants.ROLE_SUPERADMIN));
         assertFalse(RoleConstants.isUserRole(""));
         assertFalse(RoleConstants.isUserRole("X"));
     }

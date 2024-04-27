@@ -34,6 +34,13 @@ func AssertError(err error, t *testing.T) {
 	}
 }
 
+// AssertNoError checks there is no error
+func AssertNoError(err error, t *testing.T) {
+	if err != nil {
+		t.Fatalf("Error occured: \"%s\"", err.Error())
+	}
+}
+
 // AssertContains checks wanted string is inside given list
 func AssertContains(list []string, wanted string, t *testing.T) {
 	if !Contains(list, wanted) {

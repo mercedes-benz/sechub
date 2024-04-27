@@ -3,8 +3,6 @@ package com.mercedesbenz.sechub.domain.notification.email;
 
 import java.util.List;
 
-import javax.annotation.security.RolesAllowed;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.context.annotation.Profile;
@@ -20,6 +18,8 @@ import org.springframework.web.bind.annotation.RestController;
 import com.mercedesbenz.sechub.sharedkernel.APIConstants;
 import com.mercedesbenz.sechub.sharedkernel.Profiles;
 import com.mercedesbenz.sechub.sharedkernel.RoleConstants;
+
+import jakarta.annotation.security.RolesAllowed;
 
 /**
  * This is only availabe in mocked_notification profile. Interesting for

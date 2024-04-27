@@ -13,7 +13,7 @@ import org.junit.Test;
 import com.github.tomakehurst.wiremock.junit.WireMockRule;
 import com.mercedesbenz.sechub.test.TestPortProvider;
 
-import wiremock.org.apache.http.HttpStatus;
+import wiremock.org.apache.hc.core5.http.HttpStatus;
 
 /**
  * Junit 4 test because of missing official WireMock Junit5 extension - so we

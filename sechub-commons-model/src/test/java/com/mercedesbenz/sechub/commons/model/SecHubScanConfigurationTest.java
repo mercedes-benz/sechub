@@ -183,6 +183,16 @@ class SecHubScanConfigurationTest {
         assertEquals("remote_example_location", location);
         String type = remote.get().getType();
         assertEquals("git", type);
+
+        // test defined credentials
+        assertTrue(remote.get().getCredentials().isPresent());
+        SecHubRemoteCredentialConfiguration credentials = remote.get().getCredentials().get();
+
+        Optional<SecHubRemoteCredentialUserData> optUser = credentials.getUser();
+        assertTrue(optUser.isPresent());
+        SecHubRemoteCredentialUserData user = optUser.get();
+        assertEquals("my-example-user", user.getName());
+        assertEquals("my-example-password", user.getPassword());
     }
 
     @Test
@@ -217,5 +227,15 @@ class SecHubScanConfigurationTest {
         assertEquals("remote_example_location", location);
         String type = remote.get().getType();
         assertEquals("docker", type);
+
+        // test defined credentials
+        assertTrue(remote.get().getCredentials().isPresent());
+        SecHubRemoteCredentialConfiguration credentials = remote.get().getCredentials().get();
+
+        Optional<SecHubRemoteCredentialUserData> optUser = credentials.getUser();
+        assertTrue(optUser.isPresent());
+        SecHubRemoteCredentialUserData user = optUser.get();
+        assertEquals("my-example-user", user.getName());
+        assertEquals("my-example-password", user.getPassword());
     }
 }

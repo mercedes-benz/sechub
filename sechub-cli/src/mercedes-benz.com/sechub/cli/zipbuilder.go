@@ -26,10 +26,14 @@ func createSouceCodeZipFile(context *Context) error {
 	zipWriter := zip.NewWriter(newZipFile)
 
 	// Add everything in Data.Sources to zip file
+	zipFileShouldHaveContent := false
 	for _, item := range context.sechubConfig.Data.Sources {
-		err = appendToSourceCodeZipFile(zipFile, zipWriter, item, context.config.quiet, context.config.debug)
-		if err != nil {
-			return err
+		if len(item.FileSystem.Files) > 0 || len(item.FileSystem.Folders) > 0 {
+			err = appendToSourceCodeZipFile(zipFile, zipWriter, item, context.config.quiet, context.config.debug)
+			if err != nil {
+				return err
+			}
+			zipFileShouldHaveContent = true
 		}
 	}
 
@@ -45,6 +49,7 @@ func createSouceCodeZipFile(context *Context) error {
 		if err != nil {
 			return err
 		}
+		zipFileShouldHaveContent = true
 	}
 
 	zipWriter.Close()
@@ -52,11 +57,17 @@ func createSouceCodeZipFile(context *Context) error {
 
 	// Check if context.sourceZipFileName is an empty zip
 	// For performance reasons we only look deeper into very small files
-	if sechubUtil.GetFileSize(zipFile) < 300 {
-		zipFileContent, _ := sechubUtil.ReadContentOfZipFile(zipFile)
-		if len(zipFileContent) == 0 {
-			return errors.New(sechubUtil.ZipFileHasNoContent)
+	if zipFileShouldHaveContent {
+		context.sourceZipUploadNeeded = true
+		if sechubUtil.GetFileSize(zipFile) < 300 {
+			zipFileContent, _ := sechubUtil.ReadContentOfZipFile(zipFile)
+			if len(zipFileContent) == 0 {
+				return errors.New(sechubUtil.ZipFileHasNoContent)
+			}
 		}
+	} else {
+		context.sourceZipUploadNeeded = false
+		sechubUtil.LogNotice(sechubUtil.ZipFileNotCreated)
 	}
 
 	return nil

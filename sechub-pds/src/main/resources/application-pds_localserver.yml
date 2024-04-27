@@ -1,0 +1,25 @@
+# SPDX-License-Identifier: MIT
+
+# This configuration setup is only for local development and needs
+# a generated certificate which is never shared. Because of this
+# it is valid to define the credentials inside this file. 
+
+server:
+  ssl:
+    keyStoreType: 'PKCS12'
+    # we use a keystore location which is never tracked by git. 
+    # see dev-create_localhost_certificate.sh and dev-ensure_localhost_certificate.sh
+    key-store: 'classpath:certificates-untracked/generated-dev-localhost-keystore.p12'
+    key-store-password: '123456'
+    key-alias: 'tomcat'
+  port: 8444
+
+pds:
+  server:
+    baseurl: 'https://localhost:${server.port}'
+  config:
+    trigger:
+      nextjob:
+        initialdelay: 100
+        delay: 500      
+  

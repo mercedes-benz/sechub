@@ -14,4 +14,6 @@
     <rule ref="category/jsp/security.xml" />
     <rule ref="category/vf/security.xml" />
 
+    <rule ref="category/java/bestpractices.xml/AvoidMessageDigestField" />
+
 </ruleset>

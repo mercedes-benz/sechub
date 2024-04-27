@@ -25,14 +25,15 @@ type TarConfig struct {
 	Debug       bool
 }
 
-// TarFileHasNoContent error message saying tar file has no content
-const TarFileHasNoContent = "Tarfile is empty!"
+const TarFileHasNoContent = "Binaries tar file is empty! Please check your \"binaries\" section in the config file."
+const TarFileNotCreated = "No binaries tar file created. Assuming \"remote\" section is defined."
 
 // TargetTarFileLoop error message when it comes to an infinite loop because the tar file would be part of its own content
 const TargetTarFileLoop = "Target tarfile would be part of its own content, leading to infinite loop. Please change target path!"
 
 // Tar - Will tar defined folders and files using given TarConfig.
-//       Note: TarConfig.TarWriter must be created beforehand!
+//
+//	Note: TarConfig.TarWriter must be created beforehand!
 func Tar(config *TarConfig) (err error) {
 	Log(fmt.Sprintf("Creating tar archive for upload (%s)", config.TarFileName), config.Quiet)
 
