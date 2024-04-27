@@ -8,14 +8,12 @@ import javax.crypto.IllegalBlockSizeException;
 
 /**
  * The rotation strategy helps to rotate the cipher text.
- * 
- * It can be used to rotate (re-encrpyt) by using:
- * - different initialization vectors
- * - different secret keys
- * - different algorithms
- * 
+ *
+ * It can be used to rotate (re-encrpyt) by using: - different initialization
+ * vectors - different secret keys - different algorithms
+ *
  * or a combination of the above.
- * 
+ *
  * @author Jeremias Eppler
  */
 public class RotationStrategy {
@@ -32,7 +30,7 @@ public class RotationStrategy {
     /**
      * Create a new rotation strategy which only allows to rotate the initialization
      * vector.
-     * 
+     *
      * @param secret
      * @param cipher
      * @return
@@ -50,9 +48,9 @@ public class RotationStrategy {
 
     /**
      * Create a new rotation strategy which allows to rotate the secret.
-     * 
+     *
      * This is useful in case of a secret leak.
-     * 
+     *
      * @param currentSecret
      * @param newSecret
      * @param cipher
@@ -71,14 +69,14 @@ public class RotationStrategy {
 
     /**
      * Create a new rotation strategy which allows to rotate the secret and ciphers.
-     * 
+     *
      * This is useful if the underling cryptographic cipher or mode of operation is
      * deemed as insecure.
-     * 
+     *
      * For example, this is the case with Data Encryption Standard (DES) and the
      * Triple DES variant.
-     * 
-     * 
+     *
+     *
      * @param currentSecret
      * @param newSecret
      * @param currentCipherType
@@ -98,10 +96,10 @@ public class RotationStrategy {
 
     /**
      * Rotate the encrypted cipher text using the same initialization vector.
-     * 
+     *
      * The given cipher text is decrypted and encrypted again using the given
      * initialization vector the old and the new cipher text.
-     * 
+     *
      * @param cipherText
      * @param initializationVector
      * @return
@@ -118,10 +116,10 @@ public class RotationStrategy {
 
     /**
      * Rotate the encrypted cipher text using different initialization vectors.
-     * 
+     *
      * The given cipher text is decrypted and encrypted again using two different
      * initialization vectors.
-     * 
+     *
      * @param cipherText
      * @param initializationVector
      * @param newIntializationVector
@@ -140,13 +138,13 @@ public class RotationStrategy {
     /**
      * Rotate the encrypted cipher text using different initialization vectors and
      * the given encoding type.
-     * 
+     *
      * The given cipher text is decrypted and encrypted again using two different
      * initialization vectors.
-     * 
+     *
      * The resulting cipher text is returned in the specified
      * {@link BinaryStringEncodingType}.
-     * 
+     *
      * @param cipherText
      * @param initializationVector
      * @param newIntializationVector

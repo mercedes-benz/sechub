@@ -19,29 +19,30 @@ import org.bouncycastle.jce.provider.BouncyCastleProvider;
 
 /**
  * Providing access to AES-GCM-SIV
- * 
+ *
  * AES-GCM-SIV is a nonce misuse-resistant authenticated encryption algorithm.
- * 
- * For more information refer to <a href="https://datatracker.ietf.org/doc/html/rfc8452">RFC 8452</a>
- * 
+ *
+ * For more information refer to
+ * <a href="https://datatracker.ietf.org/doc/html/rfc8452">RFC 8452</a>
+ *
  * @author Jeremias Eppler
  */
 public class AesGcmSiv implements PersistenceCipher {
-    
-    //TODO: Encrypt secret?
+
+    // TODO: Encrypt secret?
     private SecretKey secret;
     private Provider cryptoProvider;
     private PersistenceCipherType cipherType;
 
     private static final String ALGORITHM = "AES/GCM-SIV/NoPadding";
 
-    /** 
+    /**
      * The recommended initialization vector (iv) for AES-GCM-SIV is 12 bytes or 96
      * bits.
-     * 
-     * For an explanation have a look at:
-     * - https://datatracker.ietf.org/doc/html/rfc8452#section-4
-     * - https://crypto.stackexchange.com/questions/41601/aes-gcm-recommended-iv-size-why-12-bytes
+     *
+     * For an explanation have a look at: -
+     * https://datatracker.ietf.org/doc/html/rfc8452#section-4 -
+     * https://crypto.stackexchange.com/questions/41601/aes-gcm-recommended-iv-size-why-12-bytes
      */
     public static final int IV_LENGTH_IN_BYTES = 12;
 
@@ -62,7 +63,7 @@ public class AesGcmSiv implements PersistenceCipher {
         if (rawSecret.length == 32 || rawSecret.length == 16) {
             PersistenceCipherType cipherType = (rawSecret.length == 32) ? PersistenceCipherType.AES_GCM_SIV_256 : PersistenceCipherType.AES_GCM_SIV_128;
             SecretKey secretKey = new SecretKeySpec(rawSecret, 0, rawSecret.length, "AES");
-            
+
             instance = new AesGcmSiv(secretKey, cipherType);
         } else {
             throw new InvalidKeyException("The secret has to be 128, 192 or 256 bits long, but was " + (rawSecret.length * 8) + " bits long.");
@@ -74,7 +75,7 @@ public class AesGcmSiv implements PersistenceCipher {
     public BinaryString generateNewInitializationVector() {
         return generateNewInitializationVector(BinaryStringEncodingType.BASE64);
     }
-    
+
     public BinaryString generateNewInitializationVector(BinaryStringEncodingType encodingType) {
         byte[] initializationVector = new byte[IV_LENGTH_IN_BYTES];
 
@@ -85,7 +86,7 @@ public class AesGcmSiv implements PersistenceCipher {
     }
 
     public BinaryString encrypt(String plaintext, BinaryString initializationVector) throws InvalidAlgorithmParameterException, InvalidKeyException {
-            return encrypt(plaintext, initializationVector, BinaryStringEncodingType.BASE64);
+        return encrypt(plaintext, initializationVector, BinaryStringEncodingType.BASE64);
     }
 
     public String decrypt(BinaryString ciphertext, BinaryString initializationVector)

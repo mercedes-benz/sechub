@@ -4,7 +4,7 @@ import java.util.Base64;
 
 /**
  * A base64 encoded string.
- * 
+ *
  * @author Jeremias Eppler
  *
  */
@@ -13,7 +13,7 @@ public class Base64String extends AbstractBinaryString {
     Base64String(byte[] bytes) {
         super(bytes);
     }
-    
+
     Base64String(String string) {
         super(string);
     }

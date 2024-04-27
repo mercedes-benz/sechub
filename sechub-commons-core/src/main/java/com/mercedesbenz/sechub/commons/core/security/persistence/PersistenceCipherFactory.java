@@ -4,20 +4,20 @@ import java.security.InvalidKeyException;
 
 /**
  * The factory creates persistent ciphers used to protect data at rest.
- * 
+ *
  * The algorithms protect both the confidentiality and integrity of the
  * information at rest.
- * 
- * In addition, the ciphers which it creates are nonce (initialization
- * vector) misuse-resistant.
- * 
+ *
+ * In addition, the ciphers which it creates are nonce (initialization vector)
+ * misuse-resistant.
+ *
  * @author Jeremias Eppler
  */
 public class PersistenceCipherFactory {
 
     /**
      * Creates a new persistent cipher based on the type and secret.
-     * 
+     *
      * @param cipherType
      * @param secret
      * @return

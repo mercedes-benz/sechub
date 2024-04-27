@@ -12,25 +12,25 @@ public abstract class AbstractBinaryString implements BinaryString {
         if (bytes == null) {
             throw new IllegalArgumentException("Byte array cannot be null.");
         }
-        
+
         this.bytes = bytes;
     }
-    
+
     protected AbstractBinaryString(String string) {
         if (string == null) {
             throw new IllegalArgumentException("String cannot be null.");
         }
-        
+
         this.bytes = string.getBytes();
     }
-    
+
     public abstract String toString();
-    
+
     public byte[] getBytes() {
         // deep copy
         return Arrays.copyOf(bytes, bytes.length);
     }
-    
+
     @Override
     public int hashCode() {
         final int prime = 31;

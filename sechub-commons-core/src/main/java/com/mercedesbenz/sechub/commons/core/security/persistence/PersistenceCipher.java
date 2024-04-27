@@ -8,23 +8,25 @@ import javax.crypto.IllegalBlockSizeException;
 
 /**
  * Interface for cryptographic algorithms used to protect data at rest.
- * 
- * "At rest" refers to data which is usually stored in a database, file or other persistent storage.
- * 
+ *
+ * "At rest" refers to data which is usually stored in a database, file or other
+ * persistent storage.
+ *
  * @author Jeremias Eppler
  */
 public interface PersistenceCipher {
-    public static PersistenceCipher create(BinaryString secret)  throws InvalidKeyException {
+    public static PersistenceCipher create(BinaryString secret) throws InvalidKeyException {
         return null;
     }
 
     public BinaryString generateNewInitializationVector();
-    
+
     public BinaryString generateNewInitializationVector(BinaryStringEncodingType encodingType);
-    
+
     public BinaryString encrypt(String plaintext, BinaryString initializationVector) throws InvalidAlgorithmParameterException, InvalidKeyException;
-    
-    public BinaryString encrypt(String plaintext, BinaryString initializationVector, BinaryStringEncodingType encodingType) throws InvalidAlgorithmParameterException, InvalidKeyException;
+
+    public BinaryString encrypt(String plaintext, BinaryString initializationVector, BinaryStringEncodingType encodingType)
+            throws InvalidAlgorithmParameterException, InvalidKeyException;
 
     public String decrypt(BinaryString ciphertext, BinaryString initializationVector)
             throws IllegalArgumentException, InvalidKeyException, InvalidAlgorithmParameterException, IllegalBlockSizeException, BadPaddingException;
