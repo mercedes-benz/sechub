@@ -125,7 +125,6 @@ public class PrepareWrapperModuleGit implements PrepareWrapperModule {
 
     private void prepareRemoteConfiguration(PrepareWrapperContext context, SecHubRemoteDataConfiguration secHubRemoteDataConfiguration) throws IOException {
         String location = secHubRemoteDataConfiguration.getLocation();
-        userInputEscaper.escapeLocation(location, gitLocationPattern);
         Optional<SecHubRemoteCredentialConfiguration> credentials = secHubRemoteDataConfiguration.getCredentials();
 
         if (!credentials.isPresent()) {
