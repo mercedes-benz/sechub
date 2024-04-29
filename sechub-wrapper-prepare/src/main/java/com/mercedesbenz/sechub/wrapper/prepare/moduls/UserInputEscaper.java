@@ -1,5 +1,6 @@
 package com.mercedesbenz.sechub.wrapper.prepare.moduls;
 
+import java.util.List;
 import java.util.regex.Pattern;
 
 import org.springframework.stereotype.Component;
@@ -34,7 +35,7 @@ public class UserInputEscaper {
         return pattern.matcher(location).matches();
     }
 
-    public void validateLocationURL(String url) {
+    public void escapeLocationURL(String url, List<String> forbiddenCharacters) {
         if (url == null || url.isBlank()) {
             throw new IllegalArgumentException("Defined URL must not be null or empty.");
         }
@@ -44,24 +45,16 @@ public class UserInputEscaper {
         if (url.contains(" ")) {
             throw new IllegalArgumentException("Defined URL must not contain whitespaces.");
         }
+        for (String forbiddenCharacter : forbiddenCharacters) {
+            if (url.contains(forbiddenCharacter)) {
+                throw new IllegalArgumentException("Defined URL must not contain forbidden characters: " + forbiddenCharacter);
+            }
+        }
+
         try {
             new java.net.URL(url).toURI();
         } catch (Exception e) {
             throw new IllegalArgumentException("Defined URL is not valid.");
         }
-    }
-
-    public String safeOutput(String location) {
-        /* @formatter:off */
-        location = location.
-                replaceAll(" ", "_").
-                replaceAll("\n", "_").
-                replaceAll("\r", "_").
-                replaceAll("\t", "_").
-                replaceAll("./", "_").
-                replaceAll(";", "_");
-        /* @formatter:on */
-
-        return location;
     }
 }

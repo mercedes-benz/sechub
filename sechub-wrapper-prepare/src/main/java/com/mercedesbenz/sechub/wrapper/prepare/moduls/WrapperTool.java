@@ -4,6 +4,7 @@ import static com.mercedesbenz.sechub.commons.pds.PDSDefaultParameterKeyConstant
 import static com.mercedesbenz.sechub.wrapper.prepare.cli.PrepareWrapperKeyConstants.KEY_PDS_PREPARE_PROCESS_TIMEOUT_SECONDS;
 
 import java.io.IOException;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
@@ -28,7 +29,7 @@ abstract class WrapperTool {
     private int pdsProductTimeoutMinutes;
 
     @Value("${" + KEY_PDS_PREPARE_PROCESS_TIMEOUT_SECONDS + ":-1}")
-    private int pdsPrepareProcessTimeout;
+    private int pdsPrepareProcessTimeoutSeconds;
 
     ProcessAdapter process;
 
@@ -36,12 +37,12 @@ abstract class WrapperTool {
     PDSProcessAdapterFactory processAdapterFactory;
 
     @Autowired
-    UserInputEscaper urlValidator;
+    UserInputEscaper userInputEscaper;
 
     abstract void cleanUploadDirectory(String uploadDirectory) throws IOException;
 
-    void validateRepositoryURL(String repositoryURL) {
-        urlValidator.validateLocationURL(repositoryURL);
+    void escapeRepositoryURL(String repositoryURL, List<String> forbiddenCharacters) {
+        userInputEscaper.escapeLocationURL(repositoryURL, forbiddenCharacters);
     }
 
     void waitForProcessToFinish() {
@@ -57,7 +58,7 @@ abstract class WrapperTool {
         }
 
         if (!exitDoneInTime) {
-            throw new RuntimeException("GIT wrapper could not finish process. Waited " + pdsPrepareProcessTimeout + " minutes.");
+            throw new RuntimeException("GIT wrapper could not finish process. Waited " + pdsPrepareProcessTimeoutSeconds + " minutes.");
         }
     }
 
@@ -75,13 +76,20 @@ abstract class WrapperTool {
     }
 
     private int privateCalculateTimeoutSeconds() {
-        if (pdsPrepareProcessTimeout == -1) {
-            return pdsProductTimeoutMinutes * 60 - 10;
-        } else {
-            LOG.warn("Using custom timeout: {}", pdsPrepareProcessTimeout);
-            LOG.warn("Defined PDS product timeout: {}", pdsProductTimeoutMinutes);
-            return pdsPrepareProcessTimeout;
-        }
-    }
+        int pdsProductTimeoutInSeconds = pdsProductTimeoutMinutes * 60;
 
+        if (pdsPrepareProcessTimeoutSeconds == -1) {
+            return pdsProductTimeoutInSeconds;
+        }
+
+        if (pdsPrepareProcessTimeoutSeconds > pdsProductTimeoutInSeconds) {
+            LOG.warn("Defined PDS product timeout is smaller than defined PDS prepare process timeout.");
+            LOG.warn("Using PDS product timeout in Minutes: {}", pdsProductTimeoutMinutes);
+            return pdsProductTimeoutInSeconds;
+        }
+
+        LOG.warn("Using custom timeout: {} seconds", pdsPrepareProcessTimeoutSeconds);
+        LOG.warn("Defined PDS product timeout: {} seconds", pdsProductTimeoutInSeconds);
+        return pdsPrepareProcessTimeoutSeconds;
+    }
 }

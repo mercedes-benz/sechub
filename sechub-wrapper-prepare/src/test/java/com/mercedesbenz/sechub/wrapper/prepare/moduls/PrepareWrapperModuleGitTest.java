@@ -205,7 +205,15 @@ class PrepareWrapperModuleGitTest {
     @Test
     void prepare_successful_when_user_credentials_are_configured_correctly() throws IOException {
         /* prepare */
-        PrepareWrapperContext context = createContext();
+        File tempDir = Files.createTempDirectory("upload-folder").toFile();
+        tempDir.deleteOnExit();
+        String filename = ".git";
+        writer.save(new File(tempDir, filename), "some text", true);
+
+        PrepareWrapperEnvironment environment = mock(PrepareWrapperEnvironment.class);
+        when(environment.getPdsPrepareUploadFolderDirectory()).thenReturn(tempDir.toString());
+        PrepareWrapperContext context = new PrepareWrapperContext(createFromJSON("{}"), environment);
+
         List<SecHubRemoteDataConfiguration> remoteDataConfigurationList = new ArrayList<>();
         SecHubRemoteDataConfiguration remoteDataConfiguration = new SecHubRemoteDataConfiguration();
         SecHubRemoteCredentialConfiguration credentials = new SecHubRemoteCredentialConfiguration();
@@ -218,6 +226,7 @@ class PrepareWrapperModuleGitTest {
         remoteDataConfiguration.setType("git");
         remoteDataConfigurationList.add(remoteDataConfiguration);
         context.setRemoteDataConfigurationList(remoteDataConfigurationList);
+
         ReflectionTestUtils.setField(moduleToTest, "pdsPrepareModuleGitEnabled", true);
 
         /* execute */
@@ -230,7 +239,15 @@ class PrepareWrapperModuleGitTest {
     @Test
     void prepare_successful_when_no_credentials_are_configured() throws IOException {
         /* prepare */
-        PrepareWrapperContext context = createContext();
+        File tempDir = Files.createTempDirectory("upload-folder").toFile();
+        tempDir.deleteOnExit();
+        String filename = ".git";
+        writer.save(new File(tempDir, filename), "some text", true);
+
+        PrepareWrapperEnvironment environment = mock(PrepareWrapperEnvironment.class);
+        when(environment.getPdsPrepareUploadFolderDirectory()).thenReturn(tempDir.toString());
+        PrepareWrapperContext context = new PrepareWrapperContext(createFromJSON("{}"), environment);
+
         List<SecHubRemoteDataConfiguration> remoteDataConfigurationList = new ArrayList<>();
         SecHubRemoteDataConfiguration remoteDataConfiguration = new SecHubRemoteDataConfiguration();
         remoteDataConfiguration.setLocation("my-example-location");

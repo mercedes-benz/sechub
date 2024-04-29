@@ -40,7 +40,7 @@ class WrapperGitTest {
         when(processAdapter.waitFor(any(Long.class), any(TimeUnit.class))).thenReturn(true);
 
         gitToTest.processAdapterFactory = processAdapterFactory;
-        gitToTest.urlValidator = userInputEscaper;
+        gitToTest.userInputEscaper = userInputEscaper;
     }
 
     @ParameterizedTest

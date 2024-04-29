@@ -6,6 +6,7 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -19,6 +20,7 @@ import org.springframework.stereotype.Component;
 public class WrapperGit extends WrapperTool {
 
     private static final Logger LOG = LoggerFactory.getLogger(WrapperGit.class);
+    private final List<String> forbiddenCharacters = Arrays.asList(">", "<", "!", "?", "*", "'", "\"", ";", "&", "|");
 
     public void downloadRemoteData(ContextGit contextGit) throws IOException {
 
@@ -30,7 +32,7 @@ public class WrapperGit extends WrapperTool {
             repositoryURL = transformGitRepositoryURL(location);
         }
 
-        validateRepositoryURL(repositoryURL);
+        escapeRepositoryURL(repositoryURL, forbiddenCharacters);
 
         final ProcessBuilder builder = buildProcessClone(repositoryURL, contextGit);
         exportEnvironmentVariables(builder, credentialMap);
@@ -50,7 +52,7 @@ public class WrapperGit extends WrapperTool {
 
         try {
             process = processAdapterFactory.startProcess(builder);
-        } catch (Exception e) {
+        } catch (IOException e) {
             throw new IOException("Error while cleaning git directory: " + uploadDirectory, e);
         }
 
@@ -61,16 +63,21 @@ public class WrapperGit extends WrapperTool {
         LOG.debug("Prepare location string for private repository");
         String preFix = "https://" + "$" + PDS_PREPARE_CREDENTIAL_USERNAME + ":" + "$" + PDS_PREPARE_CREDENTIAL_PASSWORD + "@";
 
+        String https = "https://";
+        String git_ssh = "git@";
+        String http = "http://";
+        String git = "git://";
+
         String repositoryURL;
-        if (location.contains("https://")) {
-            repositoryURL = location.replace("https://", preFix);
-        } else if (location.contains("git@")) {
+        if (location.contains(https)) {
+            repositoryURL = location.replace(https, preFix);
+        } else if (location.contains(git_ssh)) {
             location = location.replace(":", "/");
-            repositoryURL = location.replace("git@", preFix);
-        } else if (location.contains("http://")) {
-            repositoryURL = location.replace("http://", preFix);
-        } else if (location.contains("git://")) {
-            repositoryURL = location.replace("git://", preFix);
+            repositoryURL = location.replace(git_ssh, preFix);
+        } else if (location.contains(http)) {
+            repositoryURL = location.replace(http, preFix);
+        } else if (location.contains(git)) {
+            repositoryURL = location.replace(git, preFix);
         } else {
             repositoryURL = preFix + location;
         }

@@ -76,7 +76,7 @@ public class PrepareWrapperModuleGit implements PrepareWrapperModule {
                 LOG.debug("Type is git");
                 if (!userInputEscaper.escapeLocation(location, gitLocationPattern)) {
                     context.getUserMessages().add(new SecHubMessage(SecHubMessageType.WARNING, "Type is git but location does not match git URL pattern"));
-                    LOG.warn("User defined type as 'git', but the defined location was not a valid git location: {}", userInputEscaper.safeOutput(location));
+                    LOG.warn("User defined type as 'git', but the defined location was not a valid git location: {}", location);
                     return false;
                 }
                 return true;
@@ -101,8 +101,10 @@ public class PrepareWrapperModuleGit implements PrepareWrapperModule {
             prepareRemoteConfiguration(context, secHubRemoteDataConfiguration);
         }
 
+        if (!isDownloadSuccessful(context)) {
+            throw new IOException("Download of git repository was not successful.");
+        }
         cleanup(context);
-        isDownloadSuccessful(context);
     }
 
     boolean isMatchingGitType(String type) {
