@@ -13,7 +13,7 @@ import org.junit.jupiter.api.Test;
 import com.mercedesbenz.sechub.adapter.AdapterExecutionResult;
 import com.mercedesbenz.sechub.commons.model.SecHubRemoteDataConfiguration;
 import com.mercedesbenz.sechub.wrapper.prepare.cli.PrepareWrapperEnvironment;
-import com.mercedesbenz.sechub.wrapper.prepare.moduls.PrepareWrapperGitModule;
+import com.mercedesbenz.sechub.wrapper.prepare.moduls.PrepareWrapperModuleGit;
 
 class PrepareWrapperPreparationServiceTest {
 
@@ -71,7 +71,7 @@ class PrepareWrapperPreparationServiceTest {
     @Test
     void when_remote_data_was_configured_and_git_module_added_return_preparation_success_without_message() throws IOException {
         /* prepare */
-        PrepareWrapperGitModule gitModule = mock(PrepareWrapperGitModule.class);
+        PrepareWrapperModuleGit gitModule = mock(PrepareWrapperModuleGit.class);
         serviceToTest.modules.add(gitModule);
 
         List<SecHubRemoteDataConfiguration> remoteDataConfigurationList = new ArrayList<>();
@@ -81,9 +81,7 @@ class PrepareWrapperPreparationServiceTest {
         remoteDataConfigurationList.add(remoteDataConfiguration);
         when(context.getRemoteDataConfigurationList()).thenReturn(remoteDataConfigurationList);
 
-        when(gitModule.isModuleEnabled()).thenReturn(true);
         when(gitModule.isAbleToPrepare(context)).thenReturn(true);
-        when(gitModule.isDownloadSuccessful(context)).thenReturn(true);
 
         /* execute */
         AdapterExecutionResult result = serviceToTest.startPreparation();
@@ -93,32 +91,5 @@ class PrepareWrapperPreparationServiceTest {
         assertEquals(0, result.getProductMessages().size());
 
         verify(gitModule).prepare(context);
-        verify(gitModule).cleanup(context);
-        verify(gitModule).isDownloadSuccessful(context);
-    }
-
-    @Test
-    void when_remote_data_was_configured_and_git_module_download_failed_return_preparation_failed() throws IOException {
-        /* prepare */
-        PrepareWrapperGitModule gitModule = mock(PrepareWrapperGitModule.class);
-        when(gitModule.isModuleEnabled()).thenReturn(true);
-        when(gitModule.isAbleToPrepare(context)).thenReturn(true);
-        when(gitModule.isDownloadSuccessful(context)).thenReturn(false);
-        serviceToTest.modules.add(gitModule);
-
-        List<SecHubRemoteDataConfiguration> remoteDataConfigurationList = new ArrayList<>();
-        SecHubRemoteDataConfiguration remoteDataConfiguration = new SecHubRemoteDataConfiguration();
-        remoteDataConfiguration.setLocation("my-example_location");
-        remoteDataConfiguration.setType("git");
-        remoteDataConfigurationList.add(remoteDataConfiguration);
-        when(context.getRemoteDataConfigurationList()).thenReturn(remoteDataConfigurationList);
-
-        /* execute */
-        AdapterExecutionResult result = serviceToTest.startPreparation();
-
-        /* test */
-        assertEquals("SECHUB_PREPARE_RESULT;status=FAILED", result.getProductResult());
-        assertEquals(1, result.getProductMessages().size());
-        assertEquals("Download of configured remote data failed.", result.getProductMessages().get(0).getText());
     }
 }

@@ -33,7 +33,7 @@ public class PrepareWrapperPreparationService {
 
     public AdapterExecutionResult startPreparation() throws IOException {
 
-        boolean isModuleExecuted = false;
+        boolean atLeastOneModuleExecuted = false;
 
         LOG.debug("Start preparation");
         PrepareWrapperContext context = factory.create(environment);
@@ -45,27 +45,15 @@ public class PrepareWrapperPreparationService {
         }
 
         for (PrepareWrapperModule module : modules) {
-            if (!module.isModuleEnabled()) {
-                continue;
-            }
             if (!module.isAbleToPrepare(context)) {
                 continue;
             }
-            isModuleExecuted = true;
+            atLeastOneModuleExecuted = true;
+            context.getUserMessages().add(new SecHubMessage(SecHubMessageType.INFO, "Execute prepare module: " + module.getClass().getSimpleName()));
             module.prepare(context);
-            context.addUserMessage(
-                    new SecHubMessage(SecHubMessageType.INFO, "Execute module for configured remote data: " + module.getClass().getSimpleName()));
-            if (module.isDownloadSuccessful(context)) {
-                // clean directory if download was successful from unwanted files (e.g. .git
-                // files)
-                module.cleanup(context);
-            } else {
-                LOG.error("Download of configured remote data failed.");
-                return createAdapterExecutionResult(PrepareStatus.FAILED, SecHubMessageType.ERROR, "Download of configured remote data failed.");
-            }
         }
 
-        if (!isModuleExecuted) {
+        if (!atLeastOneModuleExecuted) {
             return createAdapterExecutionResult(PrepareStatus.FAILED, SecHubMessageType.ERROR, "No module was able to prepare the defined remote data.");
         }
 

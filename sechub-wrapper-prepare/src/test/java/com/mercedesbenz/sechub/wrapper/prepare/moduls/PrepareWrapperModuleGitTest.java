@@ -14,6 +14,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
+import org.springframework.test.util.ReflectionTestUtils;
 
 import com.mercedesbenz.sechub.commons.model.SecHubConfigurationModel;
 import com.mercedesbenz.sechub.commons.model.SecHubRemoteCredentialConfiguration;
@@ -23,20 +24,25 @@ import com.mercedesbenz.sechub.test.TestFileWriter;
 import com.mercedesbenz.sechub.wrapper.prepare.cli.PrepareWrapperEnvironment;
 import com.mercedesbenz.sechub.wrapper.prepare.prepare.PrepareWrapperContext;
 
-class PrepareWrapperGitModuleTest {
+class PrepareWrapperModuleGitTest {
 
-    private PrepareWrapperGitModule moduleToTest;
+    private PrepareWrapperModuleGit moduleToTest;
 
-    private PrepareWrapperGIT git;
+    private WrapperGit git;
 
     TestFileWriter writer;
 
+    UserInputEscaper userInputEscaper;
+
     @BeforeEach
     void beforeEach() {
-        moduleToTest = new PrepareWrapperGitModule();
-        git = mock(PrepareWrapperGIT.class);
-        moduleToTest.git = git;
+        moduleToTest = new PrepareWrapperModuleGit();
         writer = new TestFileWriter();
+        userInputEscaper = new UserInputEscaper();
+        git = mock(WrapperGit.class);
+
+        moduleToTest.git = git;
+        moduleToTest.userInputEscaper = userInputEscaper;
     }
 
     @ParameterizedTest
@@ -75,10 +81,10 @@ class PrepareWrapperGitModuleTest {
     }
 
     @ParameterizedTest
-    @ValueSource(strings = { "https://host.xz/path/to/notARepo/", "http://my.eval.com", "example.org" })
-    void isAbleToPrepare_returns_true_when_git_remote_data_type_was_configured(String location) {
+    @ValueSource(strings = { "https://host.xz/path/to/notARepo/", "http://my.eval.com", "example.org", " " })
+    void isAbleToPrepare_returns_false_when_git_remote_data_type_was_configured_but_is_not_git_location(String location) {
         /* prepare */
-        PrepareWrapperContext context = new PrepareWrapperContext(createFromJSON("{}"), mock(PrepareWrapperEnvironment.class));
+        PrepareWrapperContext context = createContext();
         List<SecHubRemoteDataConfiguration> remoteDataConfigurationList = new ArrayList<>();
         SecHubRemoteDataConfiguration remoteDataConfiguration = new SecHubRemoteDataConfiguration();
         remoteDataConfiguration.setLocation(location);
@@ -91,13 +97,13 @@ class PrepareWrapperGitModuleTest {
         boolean ableToPrepare = moduleToTest.isAbleToPrepare(context);
 
         /* test */
-        assertTrue(ableToPrepare);
+        assertFalse(ableToPrepare);
     }
 
     @Test
     void isAbleToPrepare_returns_false_when_configuration_is_empty() {
         /* prepare */
-        PrepareWrapperContext context = new PrepareWrapperContext(createFromJSON("{}"), mock(PrepareWrapperEnvironment.class));
+        PrepareWrapperContext context = createContext();
         List<SecHubRemoteDataConfiguration> remoteDataConfigurationList = new ArrayList<>();
         context.setRemoteDataConfigurationList(remoteDataConfigurationList);
 
@@ -113,13 +119,14 @@ class PrepareWrapperGitModuleTest {
             "git@host.com:my-repo/example.git" })
     void isAbleToPrepare_returns_true_when_git_remote_location_was_configured(String location) {
         /* prepare */
-        PrepareWrapperContext context = new PrepareWrapperContext(createFromJSON("{}"), mock(PrepareWrapperEnvironment.class));
+        PrepareWrapperContext context = createContext();
         List<SecHubRemoteDataConfiguration> remoteDataConfigurationList = new ArrayList<>();
         SecHubRemoteDataConfiguration remoteDataConfiguration = new SecHubRemoteDataConfiguration();
         remoteDataConfiguration.setLocation(location);
         remoteDataConfiguration.setType("");
         remoteDataConfigurationList.add(remoteDataConfiguration);
         context.setRemoteDataConfigurationList(remoteDataConfigurationList);
+        ReflectionTestUtils.setField(moduleToTest, "pdsPrepareModuleGitEnabled", true);
 
         /* execute */
         boolean ableToPrepare = moduleToTest.isAbleToPrepare(context);
@@ -131,7 +138,7 @@ class PrepareWrapperGitModuleTest {
     @Test
     void prepare_throws_exception_when_credentials_are_empty() {
         /* prepare */
-        PrepareWrapperContext context = new PrepareWrapperContext(createFromJSON("{}"), mock(PrepareWrapperEnvironment.class));
+        PrepareWrapperContext context = createContext();
         List<SecHubRemoteDataConfiguration> remoteDataConfigurationList = new ArrayList<>();
         SecHubRemoteDataConfiguration remoteDataConfiguration = new SecHubRemoteDataConfiguration();
         SecHubRemoteCredentialConfiguration credentials = new SecHubRemoteCredentialConfiguration();
@@ -140,6 +147,7 @@ class PrepareWrapperGitModuleTest {
         remoteDataConfiguration.setType("git");
         remoteDataConfigurationList.add(remoteDataConfiguration);
         context.setRemoteDataConfigurationList(remoteDataConfigurationList);
+        ReflectionTestUtils.setField(moduleToTest, "pdsPrepareModuleGitEnabled", true);
 
         /* execute */
         IllegalStateException exception = assertThrows(IllegalStateException.class, () -> moduleToTest.prepare(context));
@@ -151,7 +159,7 @@ class PrepareWrapperGitModuleTest {
     @Test
     void prepare_throws_exception_when_no_username_found() {
         /* prepare */
-        PrepareWrapperContext context = new PrepareWrapperContext(createFromJSON("{}"), mock(PrepareWrapperEnvironment.class));
+        PrepareWrapperContext context = createContext();
         List<SecHubRemoteDataConfiguration> remoteDataConfigurationList = new ArrayList<>();
         SecHubRemoteDataConfiguration remoteDataConfiguration = new SecHubRemoteDataConfiguration();
         SecHubRemoteCredentialConfiguration credentials = new SecHubRemoteCredentialConfiguration();
@@ -168,13 +176,13 @@ class PrepareWrapperGitModuleTest {
         IllegalStateException exception = assertThrows(IllegalStateException.class, () -> moduleToTest.prepare(context));
 
         /* test */
-        assertTrue(exception.getMessage().contains("No username found"));
+        assertTrue(exception.getMessage().contains("Defined username must not be null or empty."));
     }
 
     @Test
     void prepare_throws_exception_when_no_password_found() {
         /* prepare */
-        PrepareWrapperContext context = new PrepareWrapperContext(createFromJSON("{}"), mock(PrepareWrapperEnvironment.class));
+        PrepareWrapperContext context = createContext();
         List<SecHubRemoteDataConfiguration> remoteDataConfigurationList = new ArrayList<>();
         SecHubRemoteDataConfiguration remoteDataConfiguration = new SecHubRemoteDataConfiguration();
         SecHubRemoteCredentialConfiguration credentials = new SecHubRemoteCredentialConfiguration();
@@ -191,37 +199,38 @@ class PrepareWrapperGitModuleTest {
         IllegalStateException exception = assertThrows(IllegalStateException.class, () -> moduleToTest.prepare(context));
 
         /* test */
-        assertTrue(exception.getMessage().contains("No password found"));
+        assertTrue(exception.getMessage().contains("Defined password must not be null or empty."));
     }
 
     @Test
-    void prepare_successful_when_user_credentials_are_configured() throws IOException {
+    void prepare_successful_when_user_credentials_are_configured_correctly() throws IOException {
         /* prepare */
-        PrepareWrapperContext context = new PrepareWrapperContext(createFromJSON("{}"), mock(PrepareWrapperEnvironment.class));
+        PrepareWrapperContext context = createContext();
         List<SecHubRemoteDataConfiguration> remoteDataConfigurationList = new ArrayList<>();
         SecHubRemoteDataConfiguration remoteDataConfiguration = new SecHubRemoteDataConfiguration();
         SecHubRemoteCredentialConfiguration credentials = new SecHubRemoteCredentialConfiguration();
         SecHubRemoteCredentialUserData user = new SecHubRemoteCredentialUserData();
         user.setName("my-example-name");
-        user.setPassword("my-example-password");
+        user.setPassword("ghp_exampleAPITOKEN8ffne3l6g9f393r8fbcsf");
         credentials.setUser(user);
         remoteDataConfiguration.setCredentials(credentials);
         remoteDataConfiguration.setLocation("my-example-location");
         remoteDataConfiguration.setType("git");
         remoteDataConfigurationList.add(remoteDataConfiguration);
         context.setRemoteDataConfigurationList(remoteDataConfigurationList);
+        ReflectionTestUtils.setField(moduleToTest, "pdsPrepareModuleGitEnabled", true);
 
         /* execute */
         moduleToTest.prepare(context);
 
         /* test */
-        verify(git).cloneRepository(any(GitContext.class));
+        verify(git).downloadRemoteData(any(ContextGit.class));
     }
 
     @Test
     void prepare_successful_when_no_credentials_are_configured() throws IOException {
         /* prepare */
-        PrepareWrapperContext context = new PrepareWrapperContext(createFromJSON("{}"), mock(PrepareWrapperEnvironment.class));
+        PrepareWrapperContext context = createContext();
         List<SecHubRemoteDataConfiguration> remoteDataConfigurationList = new ArrayList<>();
         SecHubRemoteDataConfiguration remoteDataConfiguration = new SecHubRemoteDataConfiguration();
         remoteDataConfiguration.setLocation("my-example-location");
@@ -233,7 +242,7 @@ class PrepareWrapperGitModuleTest {
         moduleToTest.prepare(context);
 
         /* test */
-        verify(git).cloneRepository(any(GitContext.class));
+        verify(git).downloadRemoteData(any(ContextGit.class));
     }
 
     @Test
@@ -281,14 +290,10 @@ class PrepareWrapperGitModuleTest {
         assertTrue(result);
     }
 
-    @ParameterizedTest
-    @ValueSource(strings = { "https://my-repo.com.git", "http://my-repo.com.git", "git://host.xz/~user/path/to/repo.git", "git@github.com:my/repo.git" })
-    void isMatchingGitPattern_returns_true_when_git_pattern_is_configured(String location) {
-        /* execute */
-        boolean result = moduleToTest.isMatchingGitPattern(location);
-
-        /* test */
-        assertTrue(result);
+    private PrepareWrapperContext createContext() {
+        PrepareWrapperEnvironment environment = mock(PrepareWrapperEnvironment.class);
+        when(environment.getPdsPrepareUploadFolderDirectory()).thenReturn("test-upload-folder");
+        return new PrepareWrapperContext(createFromJSON("{}"), environment);
     }
 
 }

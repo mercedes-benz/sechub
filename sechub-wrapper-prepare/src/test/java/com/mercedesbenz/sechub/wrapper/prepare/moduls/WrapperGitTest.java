@@ -20,30 +20,34 @@ import com.mercedesbenz.sechub.commons.core.security.CryptoAccess;
 import com.mercedesbenz.sechub.commons.pds.PDSProcessAdapterFactory;
 import com.mercedesbenz.sechub.commons.pds.ProcessAdapter;
 
-class PrepareWrapperGITTest {
+class WrapperGitTest {
 
-    PrepareWrapperGIT gitToTest;
+    WrapperGit gitToTest;
 
     PDSProcessAdapterFactory processAdapterFactory;
 
     ProcessAdapter processAdapter;
 
+    UserInputEscaper userInputEscaper;
+
     @BeforeEach
     void beforeEach() throws IOException, InterruptedException {
-        gitToTest = new PrepareWrapperGIT();
+        gitToTest = new WrapperGit();
         processAdapterFactory = mock(PDSProcessAdapterFactory.class);
         processAdapter = mock(ProcessAdapter.class);
+        userInputEscaper = mock(UserInputEscaper.class);
         when(processAdapterFactory.startProcess(any())).thenReturn(processAdapter);
         when(processAdapter.waitFor(any(Long.class), any(TimeUnit.class))).thenReturn(true);
 
         gitToTest.processAdapterFactory = processAdapterFactory;
+        gitToTest.urlValidator = userInputEscaper;
     }
 
     @ParameterizedTest
     @ValueSource(strings = { "https://host.xz/path/to/repo/.git", "http://myrepo/here/.git", "example.org.git" })
     void getRepositoryURL_returns_repositoryURL_with_username_and_password_from_ENV(String location) {
         /* execute */
-        String repositoryUrl = gitToTest.getRepositoryURL(location);
+        String repositoryUrl = gitToTest.transformGitRepositoryURL(location);
 
         /* test */
         assertTrue(repositoryUrl.contains("https://$PDS_PREPARE_CREDENTIAL_USERNAME:$PDS_PREPARE_CREDENTIAL_PASSWORD@"));
@@ -56,10 +60,11 @@ class PrepareWrapperGITTest {
         Map<String, SealedObject> credentialMap = new HashMap<>();
         credentialMap.put("username", CryptoAccess.CRYPTO_STRING.seal("user"));
         credentialMap.put("password", CryptoAccess.CRYPTO_STRING.seal("password"));
-        GitContext gitContext = new GitContext(location, true, credentialMap, "folder");
+        ContextGit contextGit = (ContextGit) new ContextGit.GitContextBuilder().setCloneWithoutHistory(true).setLocation(location)
+                .setCredentialMap(credentialMap).setUploadDirectory("folder").build();
 
         /* execute */
-        gitToTest.cloneRepository(gitContext);
+        gitToTest.downloadRemoteData(contextGit);
 
         /* test */
         verify(processAdapterFactory, times(1)).startProcess(any());
@@ -73,10 +78,11 @@ class PrepareWrapperGITTest {
         credentialMap.put("username", CryptoAccess.CRYPTO_STRING.seal("user"));
         credentialMap.put("password", CryptoAccess.CRYPTO_STRING.seal("password"));
         when(processAdapterFactory.startProcess(any())).thenThrow(IOException.class);
-        GitContext gitContext = new GitContext(location, true, credentialMap, "folder");
+        ContextGit contextGit = (ContextGit) new ContextGit.GitContextBuilder().setCloneWithoutHistory(true).setLocation(location)
+                .setCredentialMap(credentialMap).setUploadDirectory("folder").build();
 
         /* execute */
-        IOException exception = assertThrows(IOException.class, () -> gitToTest.cloneRepository(gitContext));
+        IOException exception = assertThrows(IOException.class, () -> gitToTest.downloadRemoteData(contextGit));
 
         /* test */
         assertTrue(exception.getMessage().contains("Error while cloning repository: "));
@@ -88,7 +94,7 @@ class PrepareWrapperGITTest {
         String directory = "test-upload-folder";
 
         /* execute */
-        gitToTest.cleanGitDirectory(directory);
+        gitToTest.cleanUploadDirectory(directory);
 
         /* test */
         verify(processAdapterFactory, times(1)).startProcess(any());
@@ -102,9 +108,10 @@ class PrepareWrapperGITTest {
         String directory = "test-upload-folder";
 
         /* execute */
-        Exception exception = assertThrows(Exception.class, () -> gitToTest.cleanGitDirectory(directory));
+        Exception exception = assertThrows(Exception.class, () -> gitToTest.cleanUploadDirectory(directory));
 
         /* test */
         assertTrue(exception.getMessage().contains("Error while cleaning git directory: test-upload-folder"));
     }
+
 }

@@ -36,19 +36,25 @@ public class PrepareWrapperCLI implements CommandLineRunner {
         try {
             result = preparationService.startPreparation();
         } catch (Exception e) {
-            PrepareResult prepareResult = new PrepareResult(PrepareStatus.FAILED);
-            SecHubMessage message = new SecHubMessage(SecHubMessageType.ERROR, e.getMessage());
-            Collection<SecHubMessage> messages = new ArrayList<>();
-            messages.add(message);
-            result = new AdapterExecutionResult(prepareResult.toString(), messages);
+            result = getAdapterExecutionResultFailed(e);
             LOG.error("Preparation of remote data has failed.", e);
-            System.exit(1);
         }
+        storeResultOrFail(result);
+    }
+
+    private static AdapterExecutionResult getAdapterExecutionResultFailed(Exception e) {
+        PrepareResult prepareResult = new PrepareResult(PrepareStatus.FAILED);
+        Collection<SecHubMessage> messages = new ArrayList<>();
+        messages.add(new SecHubMessage(SecHubMessageType.ERROR, e.getMessage()));
+        return new AdapterExecutionResult(prepareResult.toString(), messages);
+    }
+
+    private void storeResultOrFail(AdapterExecutionResult result) {
         try {
             storageService.store(result);
         } catch (IOException e) {
             LOG.error("Storing preparation result has failed.", e);
-            System.exit(2);
+            System.exit(1);
         }
     }
 }

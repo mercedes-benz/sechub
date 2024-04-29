@@ -6,20 +6,17 @@ public class PrepareWrapperKeyConstants {
      * Folder for PDS prepare where remote data gets downloaded to be uploaded to
      * the shared storage
      */
-    public static final String KEY_PDS_PREPARE_UPLOAD_FOLDER_DIRECTORY = "pds.prepare.upload.folder.directory";
+    public static final String KEY_PDS_PREPARE_UPLOAD_DIRECTORY = "pds.prepare.upload.directory";
+
+    public static final String KEY_PDS_PREPARE_PROCESS_TIMEOUT_SECONDS = "pds.prepare.process.timeout.minutes";
 
     /**
-     * Flag to enable different prepare modules
+     * Flag to enable the git prepare module
      */
-    public static final String KEY_PDS_PREPARE_MODULE_ENABLED_GIT = "pds.prepare.module.enabled.git";
+    public static final String KEY_PDS_PREPARE_MODULE_GIT_ENABLED = "pds.prepare.module.git.enabled";
 
     /**
-     * GIT specific variables Flag to enable auto cleanup of the git folder after
-     * the prepare process, if set to false, git folder will not be deleted and
-     * cloned with full history
+     * Flag to clean the git folder from git files and clone without history
      */
     public static final String KEY_PDS_PREPARE_AUTO_CLEANUP_GIT_FOLDER = "pds.prepare.auto.cleanup.git.folder";
-
-    public static final String KEY_PDS_PREPARE_MINUTES_TO_WAIT_PREPARE_PROCESSES = "pds.prepare.wait.for.download.remote.data";
-
 }

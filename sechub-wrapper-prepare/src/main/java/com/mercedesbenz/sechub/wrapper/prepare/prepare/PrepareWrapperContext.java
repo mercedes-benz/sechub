@@ -1,7 +1,6 @@
 package com.mercedesbenz.sechub.wrapper.prepare.prepare;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
 import com.mercedesbenz.sechub.commons.model.SecHubConfigurationModel;
@@ -14,7 +13,7 @@ public class PrepareWrapperContext {
     private SecHubConfigurationModel secHubConfiguration;
     private PrepareWrapperEnvironment environment;
     private List<SecHubRemoteDataConfiguration> remoteDataConfigurationList = new ArrayList<>();
-    private Collection<SecHubMessage> userMessages = new ArrayList<>();
+    private List<SecHubMessage> userMessages = new ArrayList<>();
 
     public PrepareWrapperContext(SecHubConfigurationModel secHubConfiguration, PrepareWrapperEnvironment environment) {
         this.secHubConfiguration = secHubConfiguration;
@@ -23,10 +22,6 @@ public class PrepareWrapperContext {
 
     public void setRemoteDataConfigurationList(List<SecHubRemoteDataConfiguration> remoteDataConfigurationList) {
         this.remoteDataConfigurationList = remoteDataConfigurationList;
-    }
-
-    public void addUserMessage(SecHubMessage message) {
-        userMessages.add(message);
     }
 
     public List<SecHubRemoteDataConfiguration> getRemoteDataConfigurationList() {
@@ -41,7 +36,7 @@ public class PrepareWrapperContext {
         return environment;
     }
 
-    public Collection<SecHubMessage> getUserMessages() {
+    public List<SecHubMessage> getUserMessages() {
         return userMessages;
     }
 }
