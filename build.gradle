@@ -33,16 +33,16 @@ plugins {
     id 'org.openapi.generator' version '6.5.0'
     
     // spring
-    id 'org.springframework.boot' version '2.7.11' apply false
+    id 'org.springframework.boot' version '3.2.2' apply false
     
     // spotless code formatter
     // (see https://github.com/diffplug/spotless)
-    id 'com.diffplug.spotless' version '6.22.0'
+    id 'com.diffplug.spotless' version '6.23.3'
     
     // versions plugin for checking new available library versions etc. 
     // (see https://github.com/ben-manes/gradle-versions-plugin)
-    id 'com.github.ben-manes.versions' version '0.46.0'
-    
+    id 'com.github.ben-manes.versions' version '0.50.0'
+       
     // Details about every gradle plugin can be found at 
     // https://plugins.gradle.org/plugin/${pluginId}
 }

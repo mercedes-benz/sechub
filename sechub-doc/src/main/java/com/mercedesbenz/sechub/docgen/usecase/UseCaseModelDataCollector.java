@@ -10,8 +10,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
-import javax.annotation.security.RolesAllowed;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -20,6 +18,8 @@ import com.mercedesbenz.sechub.docgen.usecase.UseCaseModel.UseCaseEntry;
 import com.mercedesbenz.sechub.docgen.usecase.UseCaseModel.UseCaseModelType;
 import com.mercedesbenz.sechub.sharedkernel.Step;
 import com.mercedesbenz.sechub.sharedkernel.usecases.UseCaseDefinition;
+
+import jakarta.annotation.security.RolesAllowed;
 
 /**
  * Collector - inspired by
