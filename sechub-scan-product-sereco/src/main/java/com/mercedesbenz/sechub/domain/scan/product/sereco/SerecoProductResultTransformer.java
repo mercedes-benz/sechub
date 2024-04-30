@@ -182,7 +182,6 @@ public class SerecoProductResultTransformer implements ReportProductResultTransf
 
             versionControlData.setRevision(revisionData);
         }
-        versionControlData.setLocation(serecoVersionControl.getLocation());
     }
 
     private void handleRevisionData(SerecoVulnerability vulnerability, SecHubFinding finding) {

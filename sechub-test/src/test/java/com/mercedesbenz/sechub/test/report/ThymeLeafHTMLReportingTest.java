@@ -243,7 +243,6 @@ public class ThymeLeafHTMLReportingTest {
         String htmlResult = processThymeLeafTemplates(context);
 
         /* test */
-        /* test */
         assertNotNull(htmlResult);
         storeHTMLOutputAsFile(htmlResult, "example8");
         assertTrue(htmlResult.contains(context.sechubJobUUID));

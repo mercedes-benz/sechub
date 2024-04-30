@@ -74,11 +74,11 @@ public class SerecoProductResultTransformerTest {
         /* test */
         Optional<SecHubReportMetaData> metaDataOpt = result.getMetaData();
         if (metaDataOpt.isEmpty()) {
-            fail("Did not found metadata");
+            fail("Did not find metadata");
         }
         Optional<SecHubVersionControlData> versionControlOpt = metaDataOpt.get().getVersionControl();
         if (versionControlOpt.isEmpty()) {
-            fail("Did not found version control meta data");
+            fail("Did not find version control meta data");
         }
         SecHubVersionControlData versionControl = versionControlOpt.get();
         assertEquals("location1", versionControl.getLocation(), "Version control location is not as expected!");
@@ -102,11 +102,11 @@ public class SerecoProductResultTransformerTest {
         /* test */
         Optional<SecHubReportMetaData> metaDataOpt = result.getMetaData();
         if (metaDataOpt.isEmpty()) {
-            fail("Did not found metadata");
+            fail("Did not find metadata");
         }
         Optional<SecHubVersionControlData> versionControlOpt = metaDataOpt.get().getVersionControl();
         if (versionControlOpt.isPresent()) {
-            fail("Did found version control meta data!");
+            fail("Found version control meta data!");
         }
 
     }
