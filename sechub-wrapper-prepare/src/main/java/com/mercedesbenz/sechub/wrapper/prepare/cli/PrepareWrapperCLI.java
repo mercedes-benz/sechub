@@ -1,6 +1,5 @@
 package com.mercedesbenz.sechub.wrapper.prepare.cli;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 
@@ -52,7 +51,7 @@ public class PrepareWrapperCLI implements CommandLineRunner {
     private void storeResultOrFail(AdapterExecutionResult result) {
         try {
             storageService.store(result);
-        } catch (IOException e) {
+        } catch (Exception e) {
             LOG.error("Storing preparation result has failed.", e);
             System.exit(1);
         }

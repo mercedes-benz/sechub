@@ -1,5 +1,6 @@
 package com.mercedesbenz.sechub.wrapper.prepare.moduls;
 
+import java.util.HashMap;
 import java.util.Map;
 
 import javax.crypto.SealedObject;
@@ -30,7 +31,7 @@ public abstract class ContextTool {
     public abstract static class ToolContextBuilder {
         private String location;
         private String uploadDirectory;
-        private Map<String, SealedObject> credentialMap;
+        private Map<String, SealedObject> credentialMap = new HashMap<>();
 
         public abstract ContextTool build();
 
