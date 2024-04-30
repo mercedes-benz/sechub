@@ -18,6 +18,9 @@ if [[ ! -f "$prepare_wrapper" ]]; then
     exit 1
 fi
 
+# export upload directory
+export PDS_PREPARE_UPLOAD_FOLDER_DIRECTORY="$PDS_JOB_WORKSPACE_LOCATION/remote_data"
+
 echo ""
 java -jar "$prepare_wrapper"
 
