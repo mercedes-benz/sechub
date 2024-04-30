@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.sharedkernel.configuration;
 
 import static com.mercedesbenz.sechub.sharedkernel.RoleConstants.*;
