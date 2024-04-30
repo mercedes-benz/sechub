@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.pds.security;
 
 public class PDSAuthorityConstants {
