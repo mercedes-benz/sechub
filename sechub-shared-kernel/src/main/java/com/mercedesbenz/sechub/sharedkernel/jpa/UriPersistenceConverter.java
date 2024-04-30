@@ -3,10 +3,10 @@ package com.mercedesbenz.sechub.sharedkernel.jpa;
 
 import java.net.URI;
 
-import javax.persistence.AttributeConverter;
-import javax.persistence.Converter;
-
 import org.springframework.util.StringUtils;
+
+import jakarta.persistence.AttributeConverter;
+import jakarta.persistence.Converter;
 
 @Converter(autoApply = true)
 public class UriPersistenceConverter implements AttributeConverter<URI, String> {

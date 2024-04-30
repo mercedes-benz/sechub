@@ -141,7 +141,7 @@ class JsonErrorFieldNamesAvailableHttpStatusExceptionTestValidatorTest {
 
     private HttpStatusCodeException createMockedException(String json, HttpStatus expectedStatus) {
         HttpStatusCodeException exception = mock(HttpStatusCodeException.class);
-        when(exception.getRawStatusCode()).thenReturn(expectedStatus.value());
+        when(exception.getStatusCode()).thenReturn(expectedStatus);
         when(exception.getResponseBodyAsString()).thenReturn(json);
         return exception;
     }

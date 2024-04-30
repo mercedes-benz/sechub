@@ -3,8 +3,6 @@ package com.mercedesbenz.sechub.domain.scan.product.config;
 
 import java.util.UUID;
 
-import javax.annotation.security.RolesAllowed;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.context.annotation.Profile;
@@ -28,6 +26,8 @@ import com.mercedesbenz.sechub.sharedkernel.usecases.admin.config.UseCaseAdminDe
 import com.mercedesbenz.sechub.sharedkernel.usecases.admin.config.UseCaseAdminFetchesExecutorConfiguration;
 import com.mercedesbenz.sechub.sharedkernel.usecases.admin.config.UseCaseAdminFetchesExecutorConfigurationList;
 import com.mercedesbenz.sechub.sharedkernel.usecases.admin.config.UseCaseAdminUpdatesExecutorConfig;
+
+import jakarta.annotation.security.RolesAllowed;
 
 /**
  * The REST API for project executor config done by a super admin.

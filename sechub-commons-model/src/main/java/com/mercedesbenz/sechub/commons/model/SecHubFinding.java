@@ -4,6 +4,7 @@ package com.mercedesbenz.sechub.commons.model;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
@@ -59,6 +60,8 @@ public class SecHubFinding implements Comparable<SecHubFinding> {
     String owasp;
 
     SecHubReportWeb web;
+
+    SecHubRevisionData revision;
 
     public void setType(ScanType scanType) {
         this.type = scanType;
@@ -259,6 +262,14 @@ public class SecHubFinding implements Comparable<SecHubFinding> {
 
     public void setTarget(String target) {
         this.target = target;
+    }
+
+    public Optional<SecHubRevisionData> getRevision() {
+        return Optional.ofNullable(revision);
+    }
+
+    public void setRevision(SecHubRevisionData revision) {
+        this.revision = revision;
     }
 
     public boolean hasScanType(ScanType scanType) {

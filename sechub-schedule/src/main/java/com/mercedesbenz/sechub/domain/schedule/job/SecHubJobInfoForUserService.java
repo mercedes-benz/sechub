@@ -4,8 +4,6 @@ package com.mercedesbenz.sechub.domain.schedule.job;
 import java.util.Map;
 import java.util.Optional;
 
-import javax.annotation.PostConstruct;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,6 +26,8 @@ import com.mercedesbenz.sechub.sharedkernel.Step;
 import com.mercedesbenz.sechub.sharedkernel.configuration.SecHubConfigurationMetaDataMapTransformer;
 import com.mercedesbenz.sechub.sharedkernel.error.BadRequestException;
 import com.mercedesbenz.sechub.sharedkernel.usecases.job.UseCaseUserListsJobsForProject;
+
+import jakarta.annotation.PostConstruct;
 
 @Service
 public class SecHubJobInfoForUserService {

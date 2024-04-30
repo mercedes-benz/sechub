@@ -49,6 +49,7 @@ def buildVersionFiles(){
     def checkmarxWrapperVersionCommitTag = versionCommitTags.find{ it.name.endsWith("-checkmarx-wrapper") }
     def owaspzapWrapperVersionCommitTag = versionCommitTags.find{ it.name.endsWith("-owaspzap-wrapper") }
     def xrayWrapperVersionCommitTag = versionCommitTags.find{ it.name.endsWith("-xray-wrapper") }
+    def prepareWrapperVersionCommitTag = versionCommitTags.find{ it.name.endsWith("-prepare-wrapper") }
     def pdsVersionCommitTag = versionCommitTags.find{ it.name.endsWith("-pds") }
     def pdsToolsVersionCommitTag = versionCommitTags.find{ it.name.endsWith("-pds-tools") }
     def serverVersionCommitTag = versionCommitTags.find{ it.name.endsWith("-server") }
@@ -226,6 +227,23 @@ def buildVersionFiles(){
     def xrayWrapperVersionInfo = versionData.defineVersion("XRAY Wrapper",buildVersionString(xrayWrapperVersionCommitTag, hasChanged, buildNumber),latestXrayWrapperVersion)
 
     // ------------------------
+    // - Prepare wrapper
+    // ------------------------
+
+    // Get latest tagged prepare-wrapper version
+    def latestPrepareWrapperTagCmd = [
+            'sh',
+            '-c',
+            'git tag -l --sort=-creatordate | grep -e \'^v.*-prepare-wrapper$\' | head -1'
+    ]
+    def latestPrepareWrapperTag = latestPrepareWrapperTagCmd.execute().text.trim()
+    def latestPrepareWrapperVersion = latestPrepareWrapperTag - 'v'
+    latestPrepareWrapperVersion = latestPrepareWrapperVersion - "-prepare-wrapper"
+
+    def latestWrapperVersionInfo = versionData.defineVersion("Prepare Wrapper",buildVersionString(prepareWrapperVersionCommitTag, hasChanged, buildNumber),latestPrepareWrapperVersion)
+
+
+    // ------------------------
     // - WebUI
     // ------------------------
 
@@ -252,6 +270,7 @@ def buildVersionFiles(){
     println(checkmarxWrapperVersionInfo.describe())
     println(owaspzapWrapperVersionInfo.describe())
     println(xrayWrapperVersionInfo.describe())
+    println(latestWrapperVersionInfo.describe())
 
     TimeDuration td = TimeCategory.minus( stop, start )
     println("\nTime elapsed to build versions: "+td)

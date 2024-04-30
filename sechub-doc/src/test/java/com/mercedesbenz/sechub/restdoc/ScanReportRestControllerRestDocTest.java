@@ -38,6 +38,7 @@ import com.mercedesbenz.sechub.commons.model.TrafficLight;
 import com.mercedesbenz.sechub.docgen.util.RestDocFactory;
 import com.mercedesbenz.sechub.domain.scan.report.DownloadScanReportService;
 import com.mercedesbenz.sechub.domain.scan.report.DownloadSpdxScanReportService;
+import com.mercedesbenz.sechub.domain.scan.report.HTMLReportHelper;
 import com.mercedesbenz.sechub.domain.scan.report.HTMLScanResultReportModelBuilder;
 import com.mercedesbenz.sechub.domain.scan.report.ScanReport;
 import com.mercedesbenz.sechub.domain.scan.report.ScanReportRestController;
@@ -238,6 +239,7 @@ public class ScanReportRestControllerRestDocTest implements TestIsNecessaryForDo
         map.put("styleYellow", "display:none");
         map.put("isWebDesignMode", false);
         map.put("metaData", null);
+        map.put("reportHelper", new HTMLReportHelper());
         map.put("scanTypeSummaries", new ArrayList<>());
         when(modelBuilder.build(any())).thenReturn(map);
     }

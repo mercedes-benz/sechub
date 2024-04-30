@@ -1,9 +1,4 @@
 # SPDX-License-Identifier: MIT
-spring.profiles.include:
-- localserver
-- initial_admin_static
-- mocked_notifications
-- admin_access
 
 server:
   address: 127.0.0.1

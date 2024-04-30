@@ -8,7 +8,8 @@
 dependencies {
 
     implementation(library.apache_commons_io)
-    implementation(library.apache_commons_fileupload)
+    implementation(library.apache_commons_fileupload2_core)
+    implementation(library.apache_commons_fileupload2_jakarta)
       
     implementation project(':sechub-shared-kernel')
     

@@ -2,21 +2,18 @@
 package com.mercedesbenz.sechub.pds.security;
 
 public enum PDSRoles {
+
     USER(PDSRoleConstants.ROLE_USER),
 
     SUPERADMIN(PDSRoleConstants.ROLE_SUPERADMIN);
 
-    private String id;
+    private String role;
 
-    private PDSRoles(String id) {
-        this.id = id;
-    }
-
-    public String getRoleId() {
-        return id;
+    private PDSRoles(String role) {
+        this.role = role;
     }
 
     public String getRole() {
-        return name();
+        return role;
     }
 }

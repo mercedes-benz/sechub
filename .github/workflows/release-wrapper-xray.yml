@@ -24,7 +24,7 @@ jobs:
           echo "Xray-wrapper '${{ inputs.xray-wrapper-version }}' - Milestone '${{ inputs.xray-wrapper-milestone-number }}'"
 
       - name: Checkout branch master
-        uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11
+        uses: actions/checkout@1d96c772d19495a3b5c517cd2bc0cb401ea0529f
         with:
           ref: master
 
@@ -37,13 +37,13 @@ jobs:
       # Setup + Caching
       # ----------------------
       - name: Set up JDK 17
-        uses: actions/setup-java@9704b39bf258b59bc04b50fa2dd55e9ed76b47a8
+        uses: actions/setup-java@99b8673ff64fbf99d8d325f52d9a5bdedb8483e9
         with:
           java-version: 17
           distribution: temurin
 
       - name: Set up Gradle
-        uses: gradle/gradle-build-action@29c0906b64b8fc82467890bfb7a0a7ef34bda89e
+        uses: gradle/gradle-build-action@e2097ccd7e8ed48671dc068ac4efa86d25745b39
         with:
           cache-read-only: false
 
@@ -63,7 +63,7 @@ jobs:
       - name: Create a pull request for SPDX license headers
         id: pr_spdx_headers
         if: steps.apply-headers.outputs.commits != ''
-        uses: peter-evans/create-pull-request@a4f52f8033a6168103c2538976c07b467e8163bc
+        uses: peter-evans/create-pull-request@9153d834b60caba6d51c9b9510b087acf9f33f83
         with:
           branch: release-spdx-headers
           branch-suffix: short-commit-hash

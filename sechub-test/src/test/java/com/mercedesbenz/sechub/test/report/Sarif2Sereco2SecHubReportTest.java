@@ -47,7 +47,7 @@ public class Sarif2Sereco2SecHubReportTest {
         /* test */
         assertNotEquals(expectedSecHubJson, sechubJson);
         String prettyprinted = prettyPrintJson(sechubJson);
-        assertEquals(expectedSecHubJson, prettyprinted);
+        assertEqualAndDumpToConsoleIfNot(expectedSecHubJson, prettyprinted);
     }
 
     @Test
@@ -66,7 +66,7 @@ public class Sarif2Sereco2SecHubReportTest {
         /* test */
         assertNotEquals(expectedSecHubJson, sechubJson);
         String prettyprinted = prettyPrintJson(sechubJson);
-        assertEquals(expectedSecHubJson, prettyprinted);
+        assertEqualAndDumpToConsoleIfNot(expectedSecHubJson, prettyprinted);
     }
 
     private String prettyPrintJson(String json) {
@@ -78,6 +78,15 @@ public class Sarif2Sereco2SecHubReportTest {
             throw new IllegalStateException("Cannot pretty print", e);
         }
         return read.toPrettyString();
+    }
+
+    private void assertEqualAndDumpToConsoleIfNot(String expectedSecHubJson, String prettyprinted) {
+        if (!expectedSecHubJson.equals(prettyprinted)) {
+            System.out.println("---------- Unexpected (pretty printed) sechub report: -------------------");
+            System.out.println(prettyprinted);
+            System.out.println("-------------------------------------------------------------------------");
+            assertEquals(expectedSecHubJson, prettyprinted, "Sechub report not as expected - please look into console for unexpected (pretty printed) output");
+        }
     }
 
 }

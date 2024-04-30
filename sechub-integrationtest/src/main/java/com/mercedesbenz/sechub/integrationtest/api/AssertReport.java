@@ -7,13 +7,27 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.Set;
 import java.util.UUID;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.mercedesbenz.sechub.commons.model.*;
+import com.mercedesbenz.sechub.commons.model.ScanType;
+import com.mercedesbenz.sechub.commons.model.SecHubCodeCallStack;
+import com.mercedesbenz.sechub.commons.model.SecHubFinding;
+import com.mercedesbenz.sechub.commons.model.SecHubMessage;
+import com.mercedesbenz.sechub.commons.model.SecHubMessageType;
+import com.mercedesbenz.sechub.commons.model.SecHubReportData;
+import com.mercedesbenz.sechub.commons.model.SecHubReportMetaData;
+import com.mercedesbenz.sechub.commons.model.SecHubReportModel;
+import com.mercedesbenz.sechub.commons.model.SecHubReportScanTypeSummary;
+import com.mercedesbenz.sechub.commons.model.SecHubReportSummary;
+import com.mercedesbenz.sechub.commons.model.SecHubReportVersion;
+import com.mercedesbenz.sechub.commons.model.SecHubResult;
+import com.mercedesbenz.sechub.commons.model.SecHubRevisionData;
+import com.mercedesbenz.sechub.commons.model.SecHubStatus;
+import com.mercedesbenz.sechub.commons.model.Severity;
+import com.mercedesbenz.sechub.commons.model.TrafficLight;
 import com.mercedesbenz.sechub.integrationtest.internal.SecHubJobAutoDumper;
 
 public class AssertReport {
@@ -50,32 +64,21 @@ public class AssertReport {
     }
 
     public AssertReport hasMessages(int expectedAmountOfMessages) {
-        int size = report.getMessages().size();
-
-        if (expectedAmountOfMessages != size) {
-            dumpMessages(report);
-        }
-
         autoDumper.execute(() -> {
-            assertEquals(expectedAmountOfMessages, size);
+            int amountOfMessages = report.getMessages().size();
+
+            if (amountOfMessages != expectedAmountOfMessages) {
+                StringBuilder sb = new StringBuilder();
+                sb.append("Expected messages count: ").append(expectedAmountOfMessages).append(" but was: ").append(amountOfMessages);
+                sb.append("\n");
+                for (SecHubMessage secHubMessage : report.getMessages()) {
+                    sb.append(secHubMessage);
+                    sb.append("\n");
+                }
+                fail(sb.toString());
+            }
         });
         return this;
-    }
-
-    private void dumpMessages(SecHubReportModel report) {
-        Set<SecHubMessage> messages = report.getMessages();
-
-        System.out.println("#".repeat(100));
-        System.out.println("# DUMP all Messages for SecHub job: " + report.getJobUUID());
-        System.out.println("#".repeat(100));
-
-        int count = 0;
-        for (SecHubMessage message : messages) {
-            count++;
-            System.out.println(count + ":" + message.toString());
-        }
-        System.out.println("");
-
     }
 
     public AssertReport hasMessage(SecHubMessageType type, String message) {
@@ -238,6 +241,16 @@ public class AssertReport {
                 dump();
                 autoDumper.execute(() -> fail("CWE id found inside finding:" + finding.getCweId()));
             }
+            return this;
+        }
+
+        public AssertFinding hasRevisionId(String revisionId) {
+            if (finding.getRevision().isEmpty()) {
+                fail("No revision id defined at this finding");
+                return this;
+            }
+            SecHubRevisionData revision = finding.getRevision().get();
+            autoDumper.execute(() -> assertEquals(revisionId, revision.getId()));
             return this;
         }
 

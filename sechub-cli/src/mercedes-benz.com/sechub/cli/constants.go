@@ -46,11 +46,29 @@ const MinimalTimeoutInSeconds = 10
 // SizeOfJobList - Number of latest jobs to print
 const SizeOfJobList = 20
 
-// DefaultSourceCodeExcludeDirPatterns - Define directory patterns to exclude from zip file:
-// - code in directories named "test" is not considered to end up in the binary
-// - also ignore ".git" directory
-// - ignore "node_modules" directories which may contain millions of lines of library code
-var DefaultSourceCodeExcludeDirPatterns = []string{"**/test/**", "**/.git/**", "**/node_modules/**"}
+// DefaultSCMDirPatterns - directories containing scm (source code management) data
+var DefaultSCMDirPatterns = []string{"**/.git/**"}
+
+// DefaultSourceCodeExcludeDirPatterns - Define directory patterns to exclude from zip file
+var DefaultSourceCodeUnwantedDirPatterns = []string{
+	"**/test/**",                   /* code in directories named "test" is not considered to end up in the binary */
+	"**/node_modules/**",           /* ignore "node_modules" directories which may contain millions of lines of library code */
+	"**/.gradle/**",                /* ignore Gradle cache */
+	"**/.idea/**", "**/.vscode/**", /* ignore IDE's directories (IntellliJ, VS Code) */
+}
+
+// DefaultSecretScanUnwantedFilePatterns - File patterns (case insensitive) to exclude from secrets scans
+// - we won't catch all, but aim for the most common ones in repos / build artifacts
+var DefaultSecretScanUnwantedFilePatterns = []string{
+	"sechub-false-positives-*.json", "sechub_report_*.json", /* SecHub files */
+	"*.a", "*.so", /* Unix libraries */
+	"*.class", "*.jar", /* Java binaries */
+	"*.gif", "*.jpeg", "*.jpg", "*.png", ".svg", /* Image files */
+	"*.tar", "*.xz", "*.zip", /* Archive files */
+}
+
+// DefaultSourceCodeExcludeDirPatterns - Exclude patterns for SAST / code scans
+var DefaultSourceCodeExcludeDirPatterns = append(DefaultSCMDirPatterns, DefaultSourceCodeUnwantedDirPatterns...)
 
 // SupportedReportFormats - Supported output formats for SecHub reports
 const ReportFormatJSON = "json"
@@ -164,6 +182,7 @@ const archiveDataPrefix = "__data__"
 /* -------- Command line options -------- */
 /* -------------------------------------- */
 
+const addSCMHistoryOption = "addScmHistory"
 const apitokenOption = "apitoken"
 const configfileOption = "configfile"
 const fileOption = "file"
@@ -206,6 +225,9 @@ var flaglist = []string{
 /* ----------------------------------------- */
 /* -------- Environment variable names ----- */
 /* ----------------------------------------- */
+
+// SechubAddSCMHistoryEnvVar - environment variable to upload SCM history directories also
+const SechubAddSCMHistoryEnvVar = "SECHUB_ADD_SCM_HISTORY"
 
 // SechubApitokenEnvVar - environment variable to set the SecHub api token
 const SechubApitokenEnvVar = "SECHUB_APITOKEN"
