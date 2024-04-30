@@ -24,6 +24,7 @@ import com.mercedesbenz.sechub.commons.model.SecHubReportScanTypeSummary;
 import com.mercedesbenz.sechub.commons.model.SecHubReportSummary;
 import com.mercedesbenz.sechub.commons.model.SecHubReportVersion;
 import com.mercedesbenz.sechub.commons.model.SecHubResult;
+import com.mercedesbenz.sechub.commons.model.SecHubRevisionData;
 import com.mercedesbenz.sechub.commons.model.SecHubStatus;
 import com.mercedesbenz.sechub.commons.model.Severity;
 import com.mercedesbenz.sechub.commons.model.TrafficLight;
@@ -240,6 +241,16 @@ public class AssertReport {
                 dump();
                 autoDumper.execute(() -> fail("CWE id found inside finding:" + finding.getCweId()));
             }
+            return this;
+        }
+
+        public AssertFinding hasRevisionId(String revisionId) {
+            if (finding.getRevision().isEmpty()) {
+                fail("No revision id defined at this finding");
+                return this;
+            }
+            SecHubRevisionData revision = finding.getRevision().get();
+            autoDumper.execute(() -> assertEquals(revisionId, revision.getId()));
             return this;
         }
 

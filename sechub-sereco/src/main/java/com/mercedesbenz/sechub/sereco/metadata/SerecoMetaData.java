@@ -12,6 +12,7 @@ public class SerecoMetaData {
     private List<SerecoVulnerability> vulnerabilities = new ArrayList<>();
     private Set<SerecoAnnotation> annotations = new LinkedHashSet<>();
     private List<SerecoLicenseDocument> licenseDocuments = new LinkedList<>();
+    private SerecoVersionControl versionControl;
 
     public List<SerecoLicenseDocument> getLicenseDocuments() {
         return licenseDocuments;
@@ -23,5 +24,13 @@ public class SerecoMetaData {
 
     public List<SerecoVulnerability> getVulnerabilities() {
         return vulnerabilities;
+    }
+
+    public void setVersionControl(SerecoVersionControl versionControl) {
+        this.versionControl = versionControl;
+    }
+
+    public SerecoVersionControl getVersionControl() {
+        return versionControl;
     }
 }
