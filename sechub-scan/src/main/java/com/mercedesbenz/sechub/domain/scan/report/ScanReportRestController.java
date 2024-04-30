@@ -4,8 +4,6 @@ package com.mercedesbenz.sechub.domain.scan.report;
 import java.util.Map;
 import java.util.UUID;
 
-import javax.annotation.security.RolesAllowed;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.http.MediaType;
@@ -22,6 +20,8 @@ import com.mercedesbenz.sechub.sharedkernel.Step;
 import com.mercedesbenz.sechub.sharedkernel.usecases.user.execute.UseCaseUserDownloadsJobReport;
 import com.mercedesbenz.sechub.sharedkernel.usecases.user.execute.UseCaseUserDownloadsSpdxJobReport;
 import com.mercedesbenz.sechub.sharedkernel.usecases.user.execute.UseCaseUserStartsSynchronousScanByClient;
+
+import jakarta.annotation.security.RolesAllowed;
 
 /**
  * The rest API for job scheduling. It shall be same obvious like

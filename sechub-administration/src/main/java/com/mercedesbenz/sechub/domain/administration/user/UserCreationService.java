@@ -4,8 +4,6 @@ package com.mercedesbenz.sechub.domain.administration.user;
 import java.util.Date;
 import java.util.Optional;
 
-import javax.annotation.security.RolesAllowed;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,6 +26,8 @@ import com.mercedesbenz.sechub.sharedkernel.messaging.MessageID;
 import com.mercedesbenz.sechub.sharedkernel.messaging.UserMessage;
 import com.mercedesbenz.sechub.sharedkernel.usecases.admin.signup.UseCaseAdminAcceptsSignup;
 import com.mercedesbenz.sechub.sharedkernel.validation.UserInputAssertion;
+
+import jakarta.annotation.security.RolesAllowed;
 
 @Service
 @RolesAllowed(RoleConstants.ROLE_SUPERADMIN)

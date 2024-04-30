@@ -8,22 +8,19 @@ import static com.mercedesbenz.sechub.pds.util.PDSAssert.*;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
+import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.util.Objects;
 import java.util.UUID;
 
-import javax.annotation.security.RolesAllowed;
-import javax.servlet.http.HttpServletRequest;
-
-import org.apache.commons.fileupload.FileItemIterator;
-import org.apache.commons.fileupload.FileItemStream;
-import org.apache.commons.fileupload.FileUploadBase.FileSizeLimitExceededException;
-import org.apache.commons.fileupload.FileUploadBase.SizeLimitExceededException;
-import org.apache.commons.fileupload.FileUploadException;
-import org.apache.commons.fileupload.servlet.ServletFileUpload;
-import org.apache.commons.fileupload.util.Streams;
+import org.apache.commons.fileupload2.core.FileItemInput;
+import org.apache.commons.fileupload2.core.FileItemInputIterator;
+import org.apache.commons.fileupload2.core.FileUploadException;
+import org.apache.commons.fileupload2.core.FileUploadSizeException;
+import org.apache.commons.fileupload2.jakarta.JakartaServletFileUpload;
 import org.apache.commons.io.input.CountingInputStream;
-import org.apache.commons.io.input.MessageDigestCalculatingInputStream;
+import org.apache.commons.io.input.MessageDigestInputStream;
+import org.apache.tomcat.util.http.fileupload.impl.SizeLimitExceededException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,6 +40,9 @@ import com.mercedesbenz.sechub.pds.usecase.PDSStep;
 import com.mercedesbenz.sechub.pds.usecase.UseCaseUserUploadsJobData;
 import com.mercedesbenz.sechub.pds.util.PDSArchiveSupportProvider;
 import com.mercedesbenz.sechub.storage.core.JobStorage;
+
+import jakarta.annotation.security.RolesAllowed;
+import jakarta.servlet.http.HttpServletRequest;
 
 @Service
 @RolesAllowed({ PDSRoleConstants.ROLE_SUPERADMIN, PDSRoleConstants.ROLE_USER })
@@ -101,15 +101,15 @@ public class PDSFileUploadJobService {
 
             startUpload(jobUUID, request, fileName);
 
+        } catch (FileUploadSizeException fileUploadSizeException) {
+
+            LOG.error("Size limit reached: {}", fileUploadSizeException.getMessage());
+            throw new PDSBadRequestException("Upload maximum reached. Please reduce your upload size.", fileUploadSizeException);
+
         } catch (SizeLimitExceededException sizeLimitExceededException) {
 
             LOG.error("Size limit reached: {}", sizeLimitExceededException.getMessage());
-            throw new PDSBadRequestException("Binaries upload maximum reached. Please reduce your upload size.", sizeLimitExceededException);
-
-        } catch (FileSizeLimitExceededException fileSizeLimitExceededException) {
-
-            LOG.error("Size limit reached: {}", fileSizeLimitExceededException.getMessage());
-            throw new PDSBadRequestException("Binaries upload maximum reached. Please reduce your upload file size.", fileSizeLimitExceededException);
+            throw new PDSBadRequestException("Upload maximum reached. Please reduce your upload size.", sizeLimitExceededException);
 
         } catch (UnsupportedEncodingException e) {
 
@@ -140,7 +140,7 @@ public class PDSFileUploadJobService {
 
         JobStorage jobStorage = storageService.getJobStorage(jobUUID);
 
-        ServletFileUpload upload = servletFileUploadFactory.create();
+        JakartaServletFileUpload<?, ?> upload = servletFileUploadFactory.create();
 
         long maxUploadSize = configuration.getMaxUploadSizeInBytes();
         long maxUploadSizeWithHeaders = maxUploadSize + 600; // we accept 600 bytes more for header, checksum etc.
@@ -174,15 +174,15 @@ public class PDSFileUploadJobService {
          *
          * ------------------------- So please do NOT change! -------------------------
          */
-        FileItemIterator iterStream = upload.getItemIterator(request);
+        FileItemInputIterator iterStream = upload.getItemIterator(request);
 
         while (iterStream.hasNext()) {
-            FileItemStream item = iterStream.next();
+            FileItemInput item = iterStream.next();
             String fieldName = item.getFieldName();
             switch (fieldName) {
             case MULTIPART_CHECKSUM:
-                try (InputStream checkSumInputStream = item.openStream()) {
-                    checksumFromUser = Streams.asString(checkSumInputStream);
+                try (InputStream checkSumInputStream = item.getInputStream()) {
+                    checksumFromUser = streamToString(checkSumInputStream);
 
                     CheckSumValidationResult validationResult = checksumSupport.validateSha256Checksum(checksumFromUser);
                     if (!validationResult.isValid()) {
@@ -195,11 +195,17 @@ public class PDSFileUploadJobService {
                 checkSumDefinedByUser = true;
                 break;
             case MULTIPART_FILE:
-                try (InputStream fileInputstream = item.openStream()) {
+                try (InputStream fileInputstream = item.getInputStream()) {
 
                     MessageDigest digest = checksumSupport.createSha256MessageDigest();
 
-                    MessageDigestCalculatingInputStream messageDigestInputStream = new MessageDigestCalculatingInputStream(fileInputstream, digest);
+                    /* @formatter:off */
+					MessageDigestInputStream messageDigestInputStream = MessageDigestInputStream.builder().
+							                                              setInputStream(fileInputstream).
+							                                              setMessageDigest(digest).
+							                                              get();
+					/* @formatter:on */
+
                     CountingInputStream byteCountingInputStream = new CountingInputStream(messageDigestInputStream);
 
                     if (fileSizeFromUser == null) {
@@ -261,7 +267,7 @@ public class PDSFileUploadJobService {
     }
 
     private void assertMultipart(HttpServletRequest request) {
-        if (!ServletFileUpload.isMultipartContent(request)) {
+        if (!JakartaServletFileUpload.isMultipartContent(request)) {
             throw new PDSBadRequestException("The upload request did not contain multipart content");
         }
     }
@@ -287,5 +293,9 @@ public class PDSFileUploadJobService {
                         "filename contains illegal characters. Allowed is only [a-zA-Z\\.-_] maximum length of " + MAX_FILENAME_LENGTH + " chars");
             }
         }
+    }
+
+    String streamToString(InputStream inputStream) throws IOException {
+        return new String(inputStream.readAllBytes(), StandardCharsets.UTF_8);
     }
 }

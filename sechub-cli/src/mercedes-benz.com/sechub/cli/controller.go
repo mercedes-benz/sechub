@@ -123,13 +123,15 @@ func prepareScan(context *Context) {
 		// Creating sources ZIP file
 		context.sourceZipFileName = tempFile(context, fmt.Sprintf("sourcecode-%s.zip", context.config.projectID))
 
-		// Set source code patterns in
+		// Set sources filter patterns in
 		// - data.sources
 		// - codeScan
 		// depending on
-		// - DefaultSourceCodeAllowedFilePatterns
+		// - scan type
+		//   - codeScan -> DefaultSourceCodeAllowedFilePatterns
+		//   - secretScan -> everything but blacklisted
 		// - context.config.whitelistAll (deactivates all filters)
-		adjustSourceCodePatterns(context)
+		adjustSourceFilterPatterns(context)
 
 		err := createSouceCodeZipFile(context)
 		if err != nil {

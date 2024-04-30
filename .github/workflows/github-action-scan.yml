@@ -16,7 +16,7 @@ jobs:
         working-directory: ./github-actions/scan
     steps:
       - name: Checkout
-        uses: actions/checkout@9bb56186c3b09b4f86b1c65136769dd318469633
+        uses: actions/checkout@1d96c772d19495a3b5c517cd2bc0cb401ea0529f
       
       - name: Use Node.js
         # We do not define a dedicated node version here, we just use the default environment
@@ -49,14 +49,14 @@ jobs:
 
       - name: Cache SecHub server download    
         # Cache V4 release: 13aacd865c20de90d75de3b17ebe84f7a17d57d2
-        uses: actions/cache@13aacd865c20de90d75de3b17ebe84f7a17d57d2 
+        uses: actions/cache@0c45773b623bea8c8e75f6c82b208c3cf94ea4f9 
         with:
           path: ./build/sechub-runtime/server/${{ env.sechub_server_version }}/
           key: ${{ runner.os }}-sechub-server-${{ env.sechub_server_version }}
        
       - name: Cache PDS download    
         # Cache V4 release: 13aacd865c20de90d75de3b17ebe84f7a17d57d2
-        uses: actions/cache@13aacd865c20de90d75de3b17ebe84f7a17d57d2 
+        uses: actions/cache@0c45773b623bea8c8e75f6c82b208c3cf94ea4f9 
         with:
           path: ./build/sechub-runtime/pds/${{ env.pds_version }}/
           key: ${{ runner.os }}-pds-${{ env.pds_version }}

@@ -4,8 +4,6 @@ package com.mercedesbenz.sechub.pds.batch;
 import java.util.Random;
 import java.util.UUID;
 
-import javax.annotation.PostConstruct;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,6 +16,8 @@ import com.mercedesbenz.sechub.pds.PDSMustBeDocumented;
 import com.mercedesbenz.sechub.pds.execution.PDSExecutionService;
 import com.mercedesbenz.sechub.pds.job.PDSJobRepository;
 import com.mercedesbenz.sechub.pds.job.PDSJobTransactionService;
+
+import jakarta.annotation.PostConstruct;
 
 @Service
 public class PDSBatchTriggerService {

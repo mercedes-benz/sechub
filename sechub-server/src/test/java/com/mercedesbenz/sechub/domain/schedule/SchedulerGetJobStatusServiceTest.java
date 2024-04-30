@@ -1,35 +1,34 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.domain.schedule;
 
-import static org.mockito.ArgumentMatchers.*;
-import static org.mockito.Mockito.*;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 import java.util.Optional;
 import java.util.UUID;
 
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.ExpectedException;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.TestPropertySource;
-import org.springframework.test.context.junit4.SpringRunner;
 
 import com.mercedesbenz.sechub.domain.schedule.access.ScheduleAccessRepository;
 import com.mercedesbenz.sechub.domain.schedule.job.ScheduleSecHubJob;
 import com.mercedesbenz.sechub.domain.schedule.job.SecHubJobFactory;
 import com.mercedesbenz.sechub.domain.schedule.job.SecHubJobRepository;
+import com.mercedesbenz.sechub.sharedkernel.Profiles;
 import com.mercedesbenz.sechub.sharedkernel.configuration.SecHubConfiguration;
 import com.mercedesbenz.sechub.sharedkernel.error.NotFoundException;
 import com.mercedesbenz.sechub.sharedkernel.validation.UserInputAssertion;
-import com.mercedesbenz.sechub.test.junit4.ExpectedExceptionFactory;
 
-@RunWith(SpringRunner.class)
 @SpringBootTest
-@TestPropertySource(locations = "classpath:application-test.properties")
+@TestPropertySource(locations = "classpath:application-test.yml")
+@ActiveProfiles(Profiles.TEST)
 public class SchedulerGetJobStatusServiceTest {
 
     private static final String PROJECT_ID = "project1";
@@ -58,11 +57,8 @@ public class SchedulerGetJobStatusServiceTest {
 
     private String projectUUID = "projectId1";
 
-    @Rule
-    public ExpectedException expectedException = ExpectedExceptionFactory.none();
-
-    @Before
-    public void before() {
+    @BeforeEach
+    public void beforeEach() {
         jobUUID = UUID.randomUUID();
         job = mock(ScheduleSecHubJob.class);
         configuration = mock(SecHubConfiguration.class);
@@ -75,23 +71,31 @@ public class SchedulerGetJobStatusServiceTest {
         when(jobFactory.createJob(eq(configuration))).thenReturn(job);
     }
 
-    @Test(expected = NotFoundException.class) // spring boot tests with Rule "ExpectedException" not working.
+    @Test
     public void get_a_job_status_from_an_unexisting_project_throws_NOT_FOUND_exception() {
-        /* execute */
+        /* prepare */
         UUID jobUUID = UUID.randomUUID();
         when(jobRepository.findById(jobUUID)).thenReturn(Optional.of(mock(ScheduleSecHubJob.class)));// should not be necessary, but to
+
+        /* execute + test */
         // prevent dependency to call
         // hierachy... we simulate job can be
         // found
-        serviceToTest.getJobStatus("a-project-not-existing", jobUUID);
+        Assertions.assertThrows(NotFoundException.class, () -> {
+            serviceToTest.getJobStatus("a-project-not-existing", jobUUID);
+        });
     }
 
-    @Test(expected = NotFoundException.class) // spring boot tests with Rule "ExpectedException" not working.
+    @Test
     public void get_a_job_status_from_an_exsting_project_but_no_job_throws_NOT_FOUND_exception() {
-        /* execute */
+        /* prepare */
         UUID jobUUID = UUID.randomUUID();
         when(jobRepository.findById(jobUUID)).thenReturn(Optional.empty()); // not found...
-        serviceToTest.getJobStatus(PROJECT_ID, jobUUID);
+
+        /* execute + test */
+        Assertions.assertThrows(NotFoundException.class, () -> {
+            serviceToTest.getJobStatus(PROJECT_ID, jobUUID);
+        });
     }
 
 }

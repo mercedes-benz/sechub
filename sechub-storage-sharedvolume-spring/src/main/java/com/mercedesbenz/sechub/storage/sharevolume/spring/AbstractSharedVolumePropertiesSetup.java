@@ -57,7 +57,7 @@ public abstract class AbstractSharedVolumePropertiesSetup implements SharedVolum
         /* at this point there is no upload directory defined - so start a fallback */
         try {
             LOG.info(
-                    "Temp upload directy NOT set, so creating a new temp directory. This should be used only on testing or when you just use ONE server instance. Using multiple server instances you need an NFS.");
+                    "Temp upload directory NOT set, so creating a new temp directory. This should be used only on testing or when you just use ONE server instance. Using multiple server instances you need an NFS.");
 
             Path rootPath = Files.createTempDirectory("sechub-fallback-sharedvolume");
             Path uploadPath = rootPath.resolve("upload");

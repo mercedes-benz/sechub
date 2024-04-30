@@ -1,7 +1,9 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.integrationtest.internal;
 
-import static com.mercedesbenz.sechub.commons.core.CommonConstants.*;
+import static com.mercedesbenz.sechub.commons.core.CommonConstants.FILE_SIZE_HEADER_FIELD_NAME;
+import static com.mercedesbenz.sechub.commons.core.CommonConstants.MULTIPART_CHECKSUM;
+import static com.mercedesbenz.sechub.commons.core.CommonConstants.MULTIPART_FILE;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -17,7 +19,7 @@ import org.springframework.core.io.FileSystemResource;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
-import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.client.BufferingClientHttpRequestFactory;
@@ -286,7 +288,6 @@ public class TestRestHelper {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.MULTIPART_FORM_DATA);
 
-        headers.set("", checkSum);
         String fileSize = String.valueOf(file.length());
         headers.set(FILE_SIZE_HEADER_FIELD_NAME, fileSize);
 
@@ -313,7 +314,7 @@ public class TestRestHelper {
     private class ErrorHandler extends DefaultResponseErrorHandler {
 
         @Override
-        protected void handleError(ClientHttpResponse response, HttpStatus statusCode) throws IOException {
+        protected void handleError(ClientHttpResponse response, HttpStatusCode statusCode) throws IOException {
             StringBuilder sb = new StringBuilder();
             try (BufferedReader br = new BufferedReader(new InputStreamReader(response.getBody()))) {
                 String line = null;

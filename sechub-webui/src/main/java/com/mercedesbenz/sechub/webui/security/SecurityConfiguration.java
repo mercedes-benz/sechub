@@ -9,7 +9,6 @@ import org.springframework.security.config.annotation.web.reactive.EnableWebFlux
 import org.springframework.security.config.web.server.ServerHttpSecurity;
 import org.springframework.security.core.userdetails.MapReactiveUserDetailsService;
 import org.springframework.security.web.server.SecurityWebFilterChain;
-import org.springframework.security.web.server.csrf.CookieServerCsrfTokenRepository;
 import org.springframework.security.web.server.util.matcher.ServerWebExchangeMatchers;
 
 import com.mercedesbenz.sechub.webui.page.user.UserDetailInformationService;
@@ -21,28 +20,30 @@ public class SecurityConfiguration {
     UserDetailInformationService userDetailInformationService;
 
     @Bean
-    public SecurityWebFilterChain springSecurityFilterChain(ServerHttpSecurity httpSecurity) throws Exception {
+    public SecurityWebFilterChain springSecurityFilterChain(ServerHttpSecurity httpSecurity) {
 
         /* @formatter:off */
-		httpSecurity.
-			        authorizeExchange().
-					  pathMatchers("/css/**", "/js/**", "/images/**").permitAll().
-					  pathMatchers("/login", "/logout").permitAll().
-					  anyExchange().authenticated().
-					and().
-					  formLogin().loginPage("/login").
-					and().
-					  logout().
-					  requiresLogout(ServerWebExchangeMatchers.pathMatchers(HttpMethod.GET, "/logout")).
-					and().
-					  csrf(csrf -> csrf.csrfTokenRepository(new CookieServerCsrfTokenRepository()));
-		/* @formatter:on */
-
+    	httpSecurity.
+	        authorizeExchange(exchanges -> exchanges.
+	                pathMatchers("/css/**", "/js/**", "/images/**").permitAll().
+	                pathMatchers("/login").permitAll().
+	                anyExchange().authenticated()
+	        ).
+	        formLogin(formLogin -> formLogin.
+	                loginPage("/login")
+	        ).
+			logout(logout -> logout.
+					logoutUrl("/logout").
+					requiresLogout(ServerWebExchangeMatchers.pathMatchers(HttpMethod.GET, "/logout"))
+			).
+			csrf((csrf) -> csrf.disable() // CSRF protection disabled. The CookieServerCsrfTokenRepository does not work, since Spring Boot 3
+        );
+    	/* @formatter:on */
         return httpSecurity.build();
     }
 
     @Bean
     public MapReactiveUserDetailsService userDetailsService() {
-        return new MapReactiveUserDetailsService(userDetailInformationService.getUser());
+        return new MapReactiveUserDetailsService(userDetailInformationService.getUser(), userDetailInformationService.getUser());
     }
 }

@@ -1,0 +1,16 @@
+# SPDX-License-Identifier: MIT
+
+logging:
+   level:
+      org:
+         hibernate:
+            SQL: debug #show sql statement
+            type:
+               descriptor:
+                  sql: trace #show sql values
+
+spring:
+   jpa:
+      properties:
+         hibernate:
+            format_sql: true # format sql output

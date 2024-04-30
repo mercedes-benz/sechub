@@ -31,7 +31,7 @@ jobs:
           fi
 
       - name: Git checkout
-        uses: actions/checkout@9bb56186c3b09b4f86b1c65136769dd318469633
+        uses: actions/checkout@1d96c772d19495a3b5c517cd2bc0cb401ea0529f
         with:
           fetch-tags: true
           fetch-depth: 0
@@ -43,7 +43,7 @@ jobs:
           distribution: temurin
 
       - name: Set up Gradle
-        uses: gradle/gradle-build-action@8baac4c8ef753599f92eeb509c246d09d6250fa6
+        uses: gradle/gradle-build-action@e2097ccd7e8ed48671dc068ac4efa86d25745b39
         with:
           cache-read-only: false
 
@@ -105,7 +105,7 @@ jobs:
       - name: Update documentation - Create pull request
         if: (inputs.publish-documentation != '') && (github.ref_name == env.ACTIONS_SECHUB_DOC_RELEASE_BRANCH)
         id: pr_release_documentation
-        uses: peter-evans/create-pull-request@c55203cfde3e5c11a452d352b4393e68b85b4533
+        uses: peter-evans/create-pull-request@9153d834b60caba6d51c9b9510b087acf9f33f83
         with:
           branch: release-documentation
           branch-suffix: short-commit-hash
