@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.wrapper.prepare.prepare;
 
 import static com.mercedesbenz.sechub.commons.model.SecHubScanConfiguration.createFromJSON;
