@@ -15,6 +15,10 @@
         "value": "PDS_PREPARE"
       },
       {
+        "key": "pds.config.product.timeout.minutes",
+        "value": "30"
+      },
+      {
         "key": "pds.config.use.sechub.storage",
         "value": false
       },

@@ -5,7 +5,7 @@ ARG BASE_IMAGE
 
 # Build Args
 # Build type can be "copy" or "download"
-ARG BUILD_TYPE
+ARG BUILD_TYPE="copy"
 ARG PREPARE_WRAPPER_VERSION="0.0.0"
 
 # The base image of the builder
