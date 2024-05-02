@@ -1,9 +1,10 @@
-package com.mercedesbenz.sechub.wrapper.prepare.moduls;
+package com.mercedesbenz.sechub.wrapper.prepare.modules;
 
 import static com.mercedesbenz.sechub.commons.pds.PDSDefaultParameterKeyConstants.PARAM_KEY_PDS_CONFIG_PRODUCT_TIMEOUT_MINUTES;
 import static com.mercedesbenz.sechub.wrapper.prepare.cli.PrepareWrapperKeyConstants.KEY_PDS_PREPARE_PROCESS_TIMEOUT_SECONDS;
 
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
@@ -39,18 +40,23 @@ abstract class WrapperTool {
     PDSProcessAdapterFactory processAdapterFactory;
 
     @Autowired
-    UserInputEscaper userInputEscaper;
+    UserInputValidator userInputValidator;
+
+    private final List<String> forbiddenCharacters = Arrays.asList(">", "<", "!", "?", "*", "'", "\"", ";", "&", "|", "`", "$", "{", "}");
 
     abstract void cleanUploadDirectory(String uploadDirectory) throws IOException;
 
     void escapeRepositoryURL(String repositoryURL, List<String> forbiddenCharacters) {
-        userInputEscaper.escapeLocationURL(repositoryURL, forbiddenCharacters);
+        if (forbiddenCharacters == null) {
+            forbiddenCharacters = this.forbiddenCharacters;
+        }
+        userInputValidator.validateLocationURL(repositoryURL, forbiddenCharacters);
     }
 
     void waitForProcessToFinish() {
 
         LOG.debug("Wait for wrapper to finish process.");
-        int seconds = privateCalculateTimeoutSeconds();
+        int seconds = calculateTimeoutSeconds();
 
         boolean exitDoneInTime = false;
         try {
@@ -60,7 +66,11 @@ abstract class WrapperTool {
         }
 
         if (!exitDoneInTime) {
-            throw new RuntimeException("GIT wrapper could not finish process. Waited " + pdsPrepareProcessTimeoutSeconds + " minutes.");
+            throw new RuntimeException("GIT wrapper could not finish process. Waited " + pdsPrepareProcessTimeoutSeconds + " seconds.");
+        }
+
+        if (process.exitValue() != 0) {
+            throw new RuntimeException("GIT wrapper process failed with exit code: " + process.exitValue());
         }
     }
 
@@ -77,7 +87,7 @@ abstract class WrapperTool {
         }
     }
 
-    private int privateCalculateTimeoutSeconds() {
+    private int calculateTimeoutSeconds() {
         int pdsProductTimeoutInSeconds = pdsProductTimeoutMinutes * 60;
 
         if (pdsPrepareProcessTimeoutSeconds == -1) {

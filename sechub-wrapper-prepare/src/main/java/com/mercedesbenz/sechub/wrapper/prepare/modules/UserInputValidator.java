@@ -1,4 +1,4 @@
-package com.mercedesbenz.sechub.wrapper.prepare.moduls;
+package com.mercedesbenz.sechub.wrapper.prepare.modules;
 
 import java.util.List;
 import java.util.regex.Pattern;
@@ -6,9 +6,9 @@ import java.util.regex.Pattern;
 import org.springframework.stereotype.Component;
 
 @Component
-public class UserInputEscaper {
+public class UserInputValidator {
 
-    public void escapeUsername(String username, Pattern pattern) {
+    public void validateUsername(String username, Pattern pattern) {
         if (username == null || username.isBlank()) {
             throw new IllegalStateException("Defined username must not be null or empty.");
         }
@@ -18,7 +18,7 @@ public class UserInputEscaper {
         }
     }
 
-    public void escapePassword(String password, Pattern pattern) {
+    public void validatePassword(String password, Pattern pattern) {
         if (password == null || password.isBlank()) {
             throw new IllegalStateException("Defined password must not be null or empty.");
         }
@@ -28,14 +28,14 @@ public class UserInputEscaper {
         }
     }
 
-    public boolean escapeLocation(String location, Pattern pattern) {
+    public boolean validateLocation(String location, Pattern pattern) {
         if (location == null || location.isBlank()) {
             throw new IllegalStateException("Defined location must not be null or empty.");
         }
         return pattern.matcher(location).matches();
     }
 
-    public void escapeLocationURL(String url, List<String> forbiddenCharacters) {
+    public void validateLocationURL(String url, List<String> forbiddenCharacters) {
         if (url == null || url.isBlank()) {
             throw new IllegalArgumentException("Defined URL must not be null or empty.");
         }
@@ -52,7 +52,7 @@ public class UserInputEscaper {
         }
 
         try {
-            new java.net.URL(url).toURI();
+            new java.net.URL(url);
         } catch (Exception e) {
             throw new IllegalArgumentException("Defined URL is not valid.");
         }

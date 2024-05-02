@@ -1,4 +1,4 @@
-package com.mercedesbenz.sechub.wrapper.prepare.moduls;
+package com.mercedesbenz.sechub.wrapper.prepare.modules;
 
 import static com.mercedesbenz.sechub.commons.model.SecHubScanConfiguration.createFromJSON;
 import static org.junit.jupiter.api.Assertions.*;
@@ -32,17 +32,17 @@ class PrepareWrapperModuleGitTest {
 
     TestFileWriter writer;
 
-    UserInputEscaper userInputEscaper;
+    UserInputValidator userInputValidator;
 
     @BeforeEach
     void beforeEach() {
         moduleToTest = new PrepareWrapperModuleGit();
         writer = new TestFileWriter();
-        userInputEscaper = new UserInputEscaper();
+        userInputValidator = new UserInputValidator();
         git = mock(WrapperGit.class);
 
         moduleToTest.git = git;
-        moduleToTest.userInputEscaper = userInputEscaper;
+        moduleToTest.userInputValidator = userInputValidator;
     }
 
     @ParameterizedTest
@@ -233,7 +233,7 @@ class PrepareWrapperModuleGitTest {
         moduleToTest.prepare(context);
 
         /* test */
-        verify(git).downloadRemoteData(any(ContextGit.class));
+        verify(git).downloadRemoteData(any(GitContext.class));
     }
 
     @Test
@@ -259,7 +259,7 @@ class PrepareWrapperModuleGitTest {
         moduleToTest.prepare(context);
 
         /* test */
-        verify(git).downloadRemoteData(any(ContextGit.class));
+        verify(git).downloadRemoteData(any(GitContext.class));
     }
 
     @Test

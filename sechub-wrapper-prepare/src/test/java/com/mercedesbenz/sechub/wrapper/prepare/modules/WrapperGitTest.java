@@ -1,4 +1,4 @@
-package com.mercedesbenz.sechub.wrapper.prepare.moduls;
+package com.mercedesbenz.sechub.wrapper.prepare.modules;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
@@ -28,29 +28,25 @@ class WrapperGitTest {
 
     ProcessAdapter processAdapter;
 
-    UserInputEscaper userInputEscaper;
+    UserInputValidator userInputValidator;
+
+    JGitAdapter jGitAdapter;
 
     @BeforeEach
     void beforeEach() throws IOException, InterruptedException {
         gitToTest = new WrapperGit();
         processAdapterFactory = mock(PDSProcessAdapterFactory.class);
         processAdapter = mock(ProcessAdapter.class);
-        userInputEscaper = mock(UserInputEscaper.class);
+        userInputValidator = mock(UserInputValidator.class);
+        jGitAdapter = mock(JGitAdapter.class);
         when(processAdapterFactory.startProcess(any())).thenReturn(processAdapter);
         when(processAdapter.waitFor(any(Long.class), any(TimeUnit.class))).thenReturn(true);
+        doNothing().when(jGitAdapter).clonePrivate(any(), any(), any());
+        doNothing().when(jGitAdapter).clonePrivate(any(), any(), any());
 
         gitToTest.processAdapterFactory = processAdapterFactory;
-        gitToTest.userInputEscaper = userInputEscaper;
-    }
-
-    @ParameterizedTest
-    @ValueSource(strings = { "https://host.xz/path/to/repo/.git", "http://myrepo/here/.git", "example.org.git" })
-    void getRepositoryURL_returns_repositoryURL_with_username_and_password_from_ENV(String location) {
-        /* execute */
-        String repositoryUrl = gitToTest.transformGitRepositoryURL(location);
-
-        /* test */
-        assertTrue(repositoryUrl.contains("https://$PDS_PREPARE_CREDENTIAL_USERNAME:$PDS_PREPARE_CREDENTIAL_PASSWORD@"));
+        gitToTest.userInputValidator = userInputValidator;
+        gitToTest.JGitAdapter = jGitAdapter;
     }
 
     @ParameterizedTest
@@ -60,32 +56,14 @@ class WrapperGitTest {
         Map<String, SealedObject> credentialMap = new HashMap<>();
         credentialMap.put("username", CryptoAccess.CRYPTO_STRING.seal("user"));
         credentialMap.put("password", CryptoAccess.CRYPTO_STRING.seal("password"));
-        ContextGit contextGit = (ContextGit) new ContextGit.GitContextBuilder().setCloneWithoutHistory(true).setLocation(location)
+        GitContext contextGit = (GitContext) new GitContext.GitContextBuilder().setCloneWithoutHistory(true).setLocation(location)
                 .setCredentialMap(credentialMap).setUploadDirectory("folder").build();
 
         /* execute */
         gitToTest.downloadRemoteData(contextGit);
 
         /* test */
-        verify(processAdapterFactory, times(1)).startProcess(any());
-    }
-
-    @ParameterizedTest
-    @ValueSource(strings = { "https://host.xz/path/to/repo/.git", "http://myrepo/here/.git", "example.org.git" })
-    void when_startProcess_throws_exception_IOException_is_thrown(String location) throws IOException {
-        /* prepare */
-        Map<String, SealedObject> credentialMap = new HashMap<>();
-        credentialMap.put("username", CryptoAccess.CRYPTO_STRING.seal("user"));
-        credentialMap.put("password", CryptoAccess.CRYPTO_STRING.seal("password"));
-        when(processAdapterFactory.startProcess(any())).thenThrow(IOException.class);
-        ContextGit contextGit = (ContextGit) new ContextGit.GitContextBuilder().setCloneWithoutHistory(true).setLocation(location)
-                .setCredentialMap(credentialMap).setUploadDirectory("folder").build();
-
-        /* execute */
-        IOException exception = assertThrows(IOException.class, () -> gitToTest.downloadRemoteData(contextGit));
-
-        /* test */
-        assertTrue(exception.getMessage().contains("Error while cloning repository: "));
+        verify(jGitAdapter, times(1)).clonePrivate(any(), any(), any());
     }
 
     @Test

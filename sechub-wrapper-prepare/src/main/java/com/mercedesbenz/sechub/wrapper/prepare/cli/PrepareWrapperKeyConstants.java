@@ -8,7 +8,12 @@ public class PrepareWrapperKeyConstants {
      */
     public static final String KEY_PDS_PREPARE_UPLOAD_DIRECTORY = "pds.prepare.upload.directory";
 
-    public static final String KEY_PDS_PREPARE_PROCESS_TIMEOUT_SECONDS = "pds.prepare.process.timeout.minutes";
+    /**
+     * Prepare process timeout in seconds for prepare processes started with process
+     * builder, default is -1 prepare process timeout can not be higher than the pds
+     * product timeout
+     */
+    public static final String KEY_PDS_PREPARE_PROCESS_TIMEOUT_SECONDS = "pds.prepare.process.timeout.seconds";
 
     /**
      * Flag to enable the git prepare module

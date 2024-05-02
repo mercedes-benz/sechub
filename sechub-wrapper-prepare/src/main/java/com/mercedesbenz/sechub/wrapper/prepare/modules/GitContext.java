@@ -1,9 +1,9 @@
-package com.mercedesbenz.sechub.wrapper.prepare.moduls;
+package com.mercedesbenz.sechub.wrapper.prepare.modules;
 
-public class ContextGit extends ContextTool {
+public class GitContext extends ToolContext {
     private boolean cloneWithoutHistory;
 
-    private ContextGit(GitContextBuilder builder) {
+    private GitContext(GitContextBuilder builder) {
         super(builder);
         this.cloneWithoutHistory = builder.cloneWithoutHistory;
     }
@@ -21,8 +21,8 @@ public class ContextGit extends ContextTool {
         }
 
         @Override
-        public ContextGit build() {
-            return new ContextGit(this);
+        public GitContext build() {
+            return new GitContext(this);
         }
     }
 }

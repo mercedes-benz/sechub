@@ -1,16 +1,17 @@
-package com.mercedesbenz.sechub.wrapper.prepare.moduls;
+package com.mercedesbenz.sechub.wrapper.prepare.modules;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
 import javax.crypto.SealedObject;
 
-public abstract class ContextTool {
+public abstract class ToolContext {
     private String location;
     private String uploadDirectory;
     private Map<String, SealedObject> credentialMap;
 
-    public ContextTool(ToolContextBuilder builder) {
+    public ToolContext(ToolContextBuilder builder) {
         this.location = builder.location;
         this.uploadDirectory = builder.uploadDirectory;
         this.credentialMap = builder.credentialMap;
@@ -25,7 +26,7 @@ public abstract class ContextTool {
     }
 
     public Map<String, SealedObject> getCredentialMap() {
-        return credentialMap;
+        return Collections.unmodifiableMap(credentialMap);
     }
 
     public abstract static class ToolContextBuilder {
@@ -33,7 +34,7 @@ public abstract class ContextTool {
         private String uploadDirectory;
         private Map<String, SealedObject> credentialMap = new HashMap<>();
 
-        public abstract ContextTool build();
+        public abstract ToolContext build();
 
         public ToolContextBuilder setLocation(String location) {
             if (location == null || location.isEmpty()) {
@@ -52,7 +53,9 @@ public abstract class ContextTool {
         }
 
         public ToolContextBuilder setCredentialMap(Map<String, SealedObject> credentialMap) {
-            this.credentialMap = credentialMap;
+            if (!(credentialMap == null)) {
+                this.credentialMap = credentialMap;
+            }
             return this;
         }
     }

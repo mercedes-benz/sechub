@@ -15,7 +15,7 @@ import com.mercedesbenz.sechub.commons.core.prepare.PrepareResult;
 import com.mercedesbenz.sechub.commons.core.prepare.PrepareStatus;
 import com.mercedesbenz.sechub.commons.model.*;
 import com.mercedesbenz.sechub.wrapper.prepare.cli.PrepareWrapperEnvironment;
-import com.mercedesbenz.sechub.wrapper.prepare.moduls.PrepareWrapperModule;
+import com.mercedesbenz.sechub.wrapper.prepare.modules.PrepareWrapperModule;
 
 @Service
 public class PrepareWrapperPreparationService {

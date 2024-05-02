@@ -1,4 +1,4 @@
-package com.mercedesbenz.sechub.wrapper.prepare.moduls;
+package com.mercedesbenz.sechub.wrapper.prepare.modules;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -11,9 +11,9 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 
-class UserInputEscaperTest {
+class UserInputValidatorTest {
 
-    UserInputEscaper escaperToTest;
+    UserInputValidator escaperToTest;
 
     PrepareWrapperModuleGit gitModule;
 
@@ -25,7 +25,7 @@ class UserInputEscaperTest {
 
     @BeforeEach
     void beforeEach() {
-        escaperToTest = new UserInputEscaper();
+        escaperToTest = new UserInputValidator();
         gitModule = new PrepareWrapperModuleGit();
         forbiddenCharacters = new ArrayList<>();
     }
@@ -33,7 +33,7 @@ class UserInputEscaperTest {
     @Test
     void validateLocationURL_throws_exception_when_url_is_null() {
         /* execute */
-        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> escaperToTest.escapeLocationURL(null, forbiddenCharacters));
+        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> escaperToTest.validateLocationURL(null, forbiddenCharacters));
 
         /* test */
         assertEquals("Defined URL must not be null or empty.", exception.getMessage());
@@ -42,7 +42,7 @@ class UserInputEscaperTest {
     @Test
     void validateLocationURL_throws_exception_when_url_is_empty() {
         /* execute */
-        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> escaperToTest.escapeLocationURL("", forbiddenCharacters));
+        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> escaperToTest.validateLocationURL("", forbiddenCharacters));
 
         /* test */
         assertEquals("Defined URL must not be null or empty.", exception.getMessage());
@@ -52,7 +52,7 @@ class UserInputEscaperTest {
     void validateURL_throws_exception_when_url_does_not_start_with_https() {
         /* execute */
         IllegalArgumentException exception = assertThrows(IllegalArgumentException.class,
-                () -> escaperToTest.escapeLocationURL("http://example.com", forbiddenCharacters));
+                () -> escaperToTest.validateLocationURL("http://example.com", forbiddenCharacters));
 
         /* test */
         assertEquals("Defined URL must start with https://.", exception.getMessage());
@@ -72,7 +72,7 @@ class UserInputEscaperTest {
 
         /* execute */
         IllegalArgumentException exception = assertThrows(IllegalArgumentException.class,
-                () -> escaperToTest.escapeLocationURL(repositoryUrl, forbiddenCharacters));
+                () -> escaperToTest.validateLocationURL(repositoryUrl, forbiddenCharacters));
 
         /* test */
         assertTrue(exception.getMessage().contains("Defined URL must not contain forbidden characters: "));
@@ -83,7 +83,7 @@ class UserInputEscaperTest {
             "https://example.org/some-git-repo.git" })
     void validateURL_does_not_throw_exception_when_url_is_valid(String repositoryUrl) {
         /* execute + test */
-        escaperToTest.escapeLocationURL(repositoryUrl, forbiddenCharacters);
+        assertDoesNotThrow(() -> escaperToTest.validateLocationURL(repositoryUrl, forbiddenCharacters));
     }
 
     @ParameterizedTest
@@ -94,7 +94,7 @@ class UserInputEscaperTest {
         setUpForGit();
 
         /* execute */
-        boolean result = escaperToTest.escapeLocation(location, locationPattern);
+        boolean result = escaperToTest.validateLocation(location, locationPattern);
 
         /* test */
         assertTrue(result);
@@ -108,7 +108,7 @@ class UserInputEscaperTest {
         setUpForGit();
 
         /* execute */
-        boolean result = escaperToTest.escapeLocation(location, locationPattern);
+        boolean result = escaperToTest.validateLocation(location, locationPattern);
 
         /* test */
         assertFalse(result);
@@ -121,7 +121,7 @@ class UserInputEscaperTest {
         setUpForGit();
 
         /* execute + test */
-        escaperToTest.escapeUsername(username, usernamePattern);
+        assertDoesNotThrow(() -> escaperToTest.validateUsername(username, usernamePattern));
     }
 
     @ParameterizedTest
@@ -131,7 +131,7 @@ class UserInputEscaperTest {
         setUpForGit();
 
         /* execute + test */
-        IllegalStateException exception = assertThrows(IllegalStateException.class, () -> escaperToTest.escapeUsername(username, usernamePattern));
+        IllegalStateException exception = assertThrows(IllegalStateException.class, () -> escaperToTest.validateUsername(username, usernamePattern));
         assertEquals("Defined username must match the modules pattern.", exception.getMessage());
     }
 
@@ -143,7 +143,7 @@ class UserInputEscaperTest {
         setUpForGit();
 
         /* execute + test */
-        escaperToTest.escapePassword(password, passwordPattern);
+        assertDoesNotThrow(() -> escaperToTest.validatePassword(password, passwordPattern));
     }
 
     @ParameterizedTest
@@ -154,7 +154,7 @@ class UserInputEscaperTest {
         setUpForGit();
 
         /* execute + test */
-        IllegalStateException exception = assertThrows(IllegalStateException.class, () -> escaperToTest.escapePassword(password, passwordPattern));
+        IllegalStateException exception = assertThrows(IllegalStateException.class, () -> escaperToTest.validatePassword(password, passwordPattern));
         assertEquals("Defined password must match the modules pattern.", exception.getMessage());
     }
 

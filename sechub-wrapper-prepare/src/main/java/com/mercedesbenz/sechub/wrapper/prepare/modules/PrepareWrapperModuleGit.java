@@ -1,4 +1,4 @@
-package com.mercedesbenz.sechub.wrapper.prepare.moduls;
+package com.mercedesbenz.sechub.wrapper.prepare.modules;
 
 import static com.mercedesbenz.sechub.wrapper.prepare.cli.PrepareWrapperEnvironmentVariables.*;
 import static com.mercedesbenz.sechub.wrapper.prepare.cli.PrepareWrapperKeyConstants.KEY_PDS_PREPARE_AUTO_CLEANUP_GIT_FOLDER;
@@ -29,14 +29,14 @@ public class PrepareWrapperModuleGit implements PrepareWrapperModule {
     Logger LOG = LoggerFactory.getLogger(PrepareWrapperModuleGit.class);
 
     private static final String TYPE = "git";
-    private static final String GIT_LOCATION_PATTERN = "((git|ssh|http(s)?)|(git@[\\w\\.]+))(:(//)?)([\\w\\.@\\:/\\-~]+)(\\.git)(/)?$";
-    private static final Pattern gitLocationPattern = Pattern.compile(GIT_LOCATION_PATTERN);
+    private static final String GIT_LOCATION_REGEX = "((git|ssh|http(s)?)|(git@[\\w\\.]+))(:(//)?)([\\w\\.@\\:/\\-~]+)(\\.git)(/)?$";
+    private static final Pattern GIT_LOCATION_PATTERN = Pattern.compile(GIT_LOCATION_REGEX);
 
-    private static final String GIT_USERNAME_PATTERN = "^[a-zA-Z0-9-_\\d](?:[a-zA-Z0-9-_\\d]|(?=[a-zA-Z0-9-_\\d])){0,38}$";
-    private static final Pattern getGitUsernamePattern = Pattern.compile(GIT_USERNAME_PATTERN);
+    private static final String GIT_USERNAME_REGEX = "^[a-zA-Z0-9-_\\d](?:[a-zA-Z0-9-_\\d]|(?=[a-zA-Z0-9-_\\d])){0,38}$";
+    private static final Pattern GIT_USERNAME_PATTERN = Pattern.compile(GIT_USERNAME_REGEX);
 
-    private static final String GIT_PASSWORD_PATTERN = "^(gh[ps]_[a-zA-Z0-9]{36}|github_pat_[a-zA-Z0-9]{22}_[a-zA-Z0-9]{59})$";
-    private static final Pattern getGitPasswordPattern = Pattern.compile(GIT_PASSWORD_PATTERN);
+    private static final String GIT_PASSWORD_REGEX = "^(gh[ps]_[a-zA-Z0-9]{36}|github_pat_[a-zA-Z0-9]{22}_[a-zA-Z0-9]{59})$";
+    private static final Pattern GIT_PASSWORD_PATTERN = Pattern.compile(GIT_PASSWORD_REGEX);
 
     @Value("${" + KEY_PDS_PREPARE_AUTO_CLEANUP_GIT_FOLDER + ":true}")
     private boolean pdsPrepareAutoCleanupGitFolder;
@@ -48,18 +48,18 @@ public class PrepareWrapperModuleGit implements PrepareWrapperModule {
     WrapperGit git;
 
     @Autowired
-    UserInputEscaper userInputEscaper;
+    UserInputValidator userInputValidator;
 
     public String getGitLocationPattern() {
-        return GIT_LOCATION_PATTERN;
+        return GIT_LOCATION_REGEX;
     }
 
     public String getGitUsernamePattern() {
-        return GIT_USERNAME_PATTERN;
+        return GIT_USERNAME_REGEX;
     }
 
     public String getGitPasswordPattern() {
-        return GIT_PASSWORD_PATTERN;
+        return GIT_PASSWORD_REGEX;
     }
 
     public boolean isAbleToPrepare(PrepareWrapperContext context) {
@@ -74,7 +74,7 @@ public class PrepareWrapperModuleGit implements PrepareWrapperModule {
 
             if (isMatchingGitType(secHubRemoteDataConfiguration.getType())) {
                 LOG.debug("Type is git");
-                if (!userInputEscaper.escapeLocation(location, gitLocationPattern)) {
+                if (!userInputValidator.validateLocation(location, GIT_LOCATION_PATTERN)) {
                     context.getUserMessages().add(new SecHubMessage(SecHubMessageType.WARNING, "Type is git but location does not match git URL pattern"));
                     LOG.warn("User defined type as 'git', but the defined location was not a valid git location: {}", location);
                     return false;
@@ -82,7 +82,7 @@ public class PrepareWrapperModuleGit implements PrepareWrapperModule {
                 return true;
             }
 
-            if (userInputEscaper.escapeLocation(location, gitLocationPattern)) {
+            if (userInputValidator.validateLocation(location, GIT_LOCATION_PATTERN)) {
                 LOG.debug("Location is a git URL");
                 return true;
             }
@@ -136,15 +136,15 @@ public class PrepareWrapperModuleGit implements PrepareWrapperModule {
 
         Optional<SecHubRemoteCredentialUserData> optUser = credentials.get().getUser();
         if (optUser.isPresent()) {
-            clonePrivateRepository(context, optUser, location);
+            SecHubRemoteCredentialUserData user = optUser.get();
+            clonePrivateRepository(context, user, location);
             return;
         }
 
         throw new IllegalStateException("Defined credentials have no credential user data for location: " + location);
     }
 
-    private void clonePrivateRepository(PrepareWrapperContext context, Optional<SecHubRemoteCredentialUserData> optUser, String location) throws IOException {
-        SecHubRemoteCredentialUserData user = optUser.get();
+    private void clonePrivateRepository(PrepareWrapperContext context, SecHubRemoteCredentialUserData user, String location) throws IOException {
         String username = user.getName();
         String password = user.getPassword();
 
@@ -154,7 +154,7 @@ public class PrepareWrapperModuleGit implements PrepareWrapperModule {
         addSealedUserCredentials(password, username, credentialMap);
 
         /* @formatter:off */
-        ContextGit contextGit = (ContextGit) new ContextGit.GitContextBuilder().
+        GitContext gitContext = (GitContext) new GitContext.GitContextBuilder().
                 setCloneWithoutHistory(pdsPrepareAutoCleanupGitFolder).
                 setLocation(location)
                 .setCredentialMap(credentialMap).
@@ -162,11 +162,10 @@ public class PrepareWrapperModuleGit implements PrepareWrapperModule {
                 build();
         /* @formatter:on */
 
-        SecHubMessage message = new SecHubMessage(SecHubMessageType.INFO,
-                "Cloned private repository " + location + " into " + context.getEnvironment().getPdsPrepareUploadFolderDirectory());
-        context.getUserMessages().add(message);
+        git.downloadRemoteData(gitContext);
 
-        git.downloadRemoteData(contextGit);
+        SecHubMessage message = new SecHubMessage(SecHubMessageType.INFO, "Cloned public repository: " + location);
+        context.getUserMessages().add(message);
     }
 
     private static void addSealedUserCredentials(String password, String username, HashMap<String, SealedObject> credentialMap) {
@@ -177,24 +176,23 @@ public class PrepareWrapperModuleGit implements PrepareWrapperModule {
     }
 
     private void assertUserCredentials(String username, String password) {
-        userInputEscaper.escapeUsername(username, getGitUsernamePattern);
-        userInputEscaper.escapePassword(password, getGitPasswordPattern);
+        userInputValidator.validateUsername(username, GIT_USERNAME_PATTERN);
+        userInputValidator.validatePassword(password, GIT_PASSWORD_PATTERN);
     }
 
     private void clonePublicRepository(PrepareWrapperContext context, String location) throws IOException {
         /* @formatter:off */
-        ContextGit contextGit = (ContextGit) new ContextGit.GitContextBuilder().
+        GitContext contextGit = (GitContext) new GitContext.GitContextBuilder().
                 setCloneWithoutHistory(pdsPrepareAutoCleanupGitFolder).
                 setLocation(location).
                 setUploadDirectory(context.getEnvironment().getPdsPrepareUploadFolderDirectory()).
                 build();
         /* @formatter:on */
 
-        SecHubMessage message = new SecHubMessage(SecHubMessageType.INFO,
-                "Cloned public repository " + location + " into " + context.getEnvironment().getPdsPrepareUploadFolderDirectory());
-        context.getUserMessages().add(message);
-
         git.downloadRemoteData(contextGit);
+
+        SecHubMessage message = new SecHubMessage(SecHubMessageType.INFO, "Cloned public repository: " + location);
+        context.getUserMessages().add(message);
     }
 
     private void cleanup(PrepareWrapperContext context) throws IOException {

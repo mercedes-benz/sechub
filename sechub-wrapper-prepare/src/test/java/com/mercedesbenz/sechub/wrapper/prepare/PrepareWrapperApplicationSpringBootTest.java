@@ -15,17 +15,14 @@ import com.mercedesbenz.sechub.adapter.AdapterExecutionResult;
 import com.mercedesbenz.sechub.wrapper.prepare.cli.PrepareWrapperEnvironment;
 import com.mercedesbenz.sechub.wrapper.prepare.factory.PrepareWrapperPDSUserMessageSupportPojoFactory;
 import com.mercedesbenz.sechub.wrapper.prepare.factory.PrepareWrapperPojoFactory;
-import com.mercedesbenz.sechub.wrapper.prepare.moduls.PrepareWrapperModule;
-import com.mercedesbenz.sechub.wrapper.prepare.moduls.PrepareWrapperModuleGit;
-import com.mercedesbenz.sechub.wrapper.prepare.moduls.UserInputEscaper;
-import com.mercedesbenz.sechub.wrapper.prepare.moduls.WrapperGit;
+import com.mercedesbenz.sechub.wrapper.prepare.modules.*;
 import com.mercedesbenz.sechub.wrapper.prepare.prepare.PrepareWrapperContextFactory;
 import com.mercedesbenz.sechub.wrapper.prepare.prepare.PrepareWrapperPreparationService;
 import com.mercedesbenz.sechub.wrapper.prepare.prepare.PrepareWrapperRemoteConfigurationExtractor;
 
 @SpringBootTest(classes = { PrepareWrapperContextFactory.class, PrepareWrapperPreparationService.class, PrepareWrapperPojoFactory.class,
         PrepareWrapperEnvironment.class, PrepareWrapperPDSUserMessageSupportPojoFactory.class, PrepareWrapperRemoteConfigurationExtractor.class,
-        PrepareWrapperModuleGit.class, PrepareWrapperModule.class, WrapperGit.class, UserInputEscaper.class })
+        PrepareWrapperModuleGit.class, PrepareWrapperModule.class, WrapperGit.class, UserInputValidator.class, JGitAdapter.class })
 @ExtendWith(SpringExtension.class)
 @TestPropertySource(locations = "classpath:application-test-fail.properties")
 class PrepareWrapperApplicationSpringBootTest {
