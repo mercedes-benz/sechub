@@ -15,7 +15,7 @@ To be able to use this action you need a SecHub project. Check the https://merce
 
 [source,yaml]
 ----
-- uses: mercedes-benz/sechub/github-actions/scan@ae265a7015fcefc89027876029a50c8d149e0e51
+- uses: mercedes-benz/sechub/github-actions/scan@master
   with:
     # OPTIONAL: Path to sechub.json for manual configuration. If no value is set the input parameters will be used to create it for the scan.'
     config-path: 'sechub.json'
@@ -33,11 +33,11 @@ To be able to use this action you need a SecHub project. Check the https://merce
     project-name: ${{ secrets.SECHUB_PROJECT }}
 
     # OPTIONAL: Which version of the SecHub cli to use
-    # DEFAULT: 1.4.0
-    version: '1.4.0'
-    
+    # DEFAULT: 1.5.0
+    version: '1.5.0'
+
     # OPTIONAL: A list of scan types that shall be used when a sechub configuration file is generated.
-    #           Allowed values: codeScan, secretScan and licenseScan - If you want other scan types you 
+    #           Allowed values: codeScan, secretScan and licenseScan - If you want other scan types you
     #           have to create a sechub configuration file and provide it by the config-path attribute
     #           (ignored in the case of a custom configuration file)
     # DEFAULT: codeScan
@@ -48,7 +48,7 @@ To be able to use this action you need a SecHub project. Check the https://merce
     #           (ignored in the case of a custom configuration file)
     # DEFAULT: source
     content-type: source
-    
+
     # OPTIONAL: A list of folders to be included. Multiple folders can be separated by ,
     #           (ignored in the case of a custom configuration file)
     include-folders: 'src,lib'
@@ -93,14 +93,18 @@ You can access them after the action has run with `${{ steps.<step-id>.outputs.<
 
 === Build
 
-To build the action locally you have to run this command:
+Make sure that you have installed https://nodejs.org/en/download/package-manager[Node.js]. +
+To build the action locally you have to run these commands:
 
 [source,npm]
 ----
+# Install dependencies
+npm install
+# Build
 npm run build
 ----
 
-This will run the `ncc` compiler and transpile the files from the src folder into the files from the dist folder.
+This runs the ncc compiler and transpiles the files from the src folder into the `dist/` folder.
 The dist files will be executed by the GitHub Action.
 
 It's necessary to execute the build after every change of the sources and you have to commit the changes in dist to git.
@@ -117,7 +121,7 @@ npm run test
 
 
 ==== Integration-Test
-As a precondition to run the integration tests locally you have to 
+As a precondition to run the integration tests locally you have to
 
 - execute `__test__/01-start.sh $secHubServerVersion $sechubServerPortNr $pdsVersion $pdsPortNr`
 
@@ -136,7 +140,7 @@ To enable full debug output in integration tests please execute following before
 export SECHUB_DEBUG=true
 ----
 
-==== Debug tests
+==== Debugging tests
 The unit and also the integration tests are written with `jest` test framework.
 
 ===== Setup
@@ -151,7 +155,7 @@ Used extensions
 In this setup the tests can be executed from sidebar and from links created inside the editor.
 
 [TIP]
-==== 
+====
 Unfortunately, the Jest UI integration works only for npm script "test". But to handle integration tests different (the tests shall only be executed when all is build and servers are started) they are not executed by "test" script.
 
 If you want to **debug an integration test**, there is a temporary workaround necessary while you debug the test:
@@ -163,4 +167,4 @@ If you want to **debug an integration test**, there is a temporary workaround ne
 - debug the parts, fix it etc.
 - remove 'test' entry + copy `test-without-integrationtests` entry and rename copied part to `test`
 - if necessary push fixes/changes to remote...
-==== 
+====

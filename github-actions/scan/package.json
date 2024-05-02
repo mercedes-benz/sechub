@@ -1,6 +1,6 @@
 {
   "name": "sechub-scan-action",
-  "version": "1.0.0",
+  "version": "2.0.0",
   "description": "GitHub Action for SecHub scan",
   "main": "dist/main.js",
   "scripts": {

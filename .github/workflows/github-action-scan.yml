@@ -10,30 +10,30 @@ jobs:
   build-scan:
     runs-on: ubuntu-latest
     # Let's set the scan action folder as the working directory for all "run" steps:
-    
+
     defaults:
       run:
-        working-directory: ./github-actions/scan
+        working-directory: github-actions/scan
     steps:
       - name: Checkout
         uses: actions/checkout@0ad4b8fadaa221de15dcec353f45205ec38ea70b
-      
+
       - name: Use Node.js
         # We do not define a dedicated node version here, we just use the default environment
         # which should be the default environment for the github actions runtime as well
         uses: actions/setup-node@8f152de45cc393bb48ce5d89d36b731f54556e65
 
       - name: Clean install
-        run: npm ci 
-        
+        run: npm ci
+
       - name: Build
         run: npm run build --if-present
-        
+
       - name: Run unit tests
         run: npm test
-        
-      # We store git status - why? Here we see, if index.js has been changed - if so, a developer
-      # forgot to commit the changes - means the action cannot be used productive!  
+
+      # We store git status - why? Here we see if index.js has been changed - if so, a developer
+      # forgot to commit the changes - means the action cannot be used productive!
       - name: Store git status
         run: |
           git status
@@ -42,21 +42,21 @@ jobs:
       - name: Define integration test setup
         id : version-selector
         run: |
-          echo "sechub_server_version=1.8.0" >> "$GITHUB_ENV"
+          echo "sechub_server_version=1.9.0" >> "$GITHUB_ENV"
           echo "sechub_server_port=8443" >> "$GITHUB_ENV"
-          echo "pds_version=1.5.0" >> "$GITHUB_ENV"
+          echo "pds_version=1.6.0" >> "$GITHUB_ENV"
           echo "pds_port=8444" >> "$GITHUB_ENV"
 
-      - name: Cache SecHub server download    
+      - name: Cache SecHub server download
         # Cache V4 release: 13aacd865c20de90d75de3b17ebe84f7a17d57d2
-        uses: actions/cache@0c45773b623bea8c8e75f6c82b208c3cf94ea4f9 
+        uses: actions/cache@0c45773b623bea8c8e75f6c82b208c3cf94ea4f9
         with:
           path: ./build/sechub-runtime/server/${{ env.sechub_server_version }}/
           key: ${{ runner.os }}-sechub-server-${{ env.sechub_server_version }}
-       
-      - name: Cache PDS download    
+
+      - name: Cache PDS download
         # Cache V4 release: 13aacd865c20de90d75de3b17ebe84f7a17d57d2
-        uses: actions/cache@0c45773b623bea8c8e75f6c82b208c3cf94ea4f9 
+        uses: actions/cache@0c45773b623bea8c8e75f6c82b208c3cf94ea4f9
         with:
           path: ./build/sechub-runtime/pds/${{ env.pds_version }}/
           key: ${{ runner.os }}-pds-${{ env.pds_version }}
@@ -66,19 +66,18 @@ jobs:
         with:
           java-version: 17
           distribution: temurin
-      
 
       - name: Start integration test servers
         working-directory: ./github-actions/scan/__test__/integrationtest/
         run:  ./01-start.sh $sechub_server_version $sechub_server_port $pds_version $pds_port
-        
+
       - name: Init integration test data
         working-directory: ./github-actions/scan/__test__/integrationtest/
         run:  ./03-init_sechub_data.sh $sechub_server_port $pds_port
 
       - name: Run integration tests
         run: npm run integration-test
-        
+
       - name: Cleanup integration tests
         working-directory: ./github-actions/scan/__test__/integrationtest/
         run:  ./05-stop.sh $sechub_server_port $pds_port
@@ -110,6 +109,3 @@ jobs:
              ./github-actions/scan/sechub_report*.*
              ./sechub_report*.*
           retention-days: 14
-      
-      
-
