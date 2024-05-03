@@ -39,13 +39,13 @@ The container will be started and attached to the `sechub` network.
 
 WARNING: Make sure the SecHub container is running and executor for Prepare is set up.
 
-. Start container:
+. Start container in local sechub network:
 +
 ----
 ./05-start-single-sechub-network-docker-compose.sh
 ----
 +
-
+Example sechub.json for prepare a private git repository
 +
 [source,json]
 ----
@@ -61,8 +61,14 @@ WARNING: Make sure the SecHub container is running and executor for Prepare is s
       {
         "name": "test-sources",
         "remote" : {
-            "location" : "https://my-example.com/my-project",
-            "type": "docker"
+            "location" : "https://my-example.com/my-project.git",
+            "type": "git",
+             "credentials": {
+                 "user": {
+                    "name": "my-user",
+                    "password": "my-git-api-token"
+                }
+              }
         }
       }
     ]

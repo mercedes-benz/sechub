@@ -29,7 +29,6 @@ RUN export DEBIAN_FRONTEND=noninteractive && \
     apt-get update && \
     apt-get install --assume-yes wget && \
     apt-get -y install skopeo && \
-    apt-get -y install git && \
     apt-get clean
 
 # Download the prepare Wrapper
