@@ -17,6 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.mercedesbenz.sechub.commons.core.security.CryptoAccess;
+import com.mercedesbenz.sechub.commons.pds.ProcessAdapter;
 
 @Component
 public class WrapperGit extends WrapperTool {
@@ -31,30 +32,26 @@ public class WrapperGit extends WrapperTool {
         String uploadDirectory = gitContext.getUploadDirectory();
         Map<String, SealedObject> credentialMap = gitContext.getCredentialMap();
 
-        escapeRepositoryURL(location, null);
-
-        if (credentialMap != null && !credentialMap.isEmpty()) {
-            String username = "";
-            String password = "";
-
-            for (Map.Entry<String, SealedObject> entry : credentialMap.entrySet()) {
-                if (entry.getKey().equals(PDS_PREPARE_CREDENTIAL_USERNAME)) {
-                    username = CryptoAccess.CRYPTO_STRING.unseal(entry.getValue());
-                } else if (entry.getKey().equals(PDS_PREPARE_CREDENTIAL_PASSWORD)) {
-                    password = CryptoAccess.CRYPTO_STRING.unseal(entry.getValue());
-                }
-            }
-            LOG.debug("Cloning private repository: " + location + " to " + uploadDirectory);
-            JGitAdapter.clonePrivate(gitContext, username, password);
-        } else {
+        if (credentialMap == null | credentialMap.isEmpty()) {
             LOG.debug("Cloning public repository: " + location + " to " + uploadDirectory);
-            JGitAdapter.clonePublic(gitContext);
+            JGitAdapter.clonePublicRepository(gitContext);
+
+        } else {
+
+            String username = CryptoAccess.CRYPTO_STRING.unseal(credentialMap.get(PDS_PREPARE_CREDENTIAL_USERNAME));
+            String password = CryptoAccess.CRYPTO_STRING.unseal(credentialMap.get(PDS_PREPARE_CREDENTIAL_PASSWORD));
+            if (username == null || password == null) {
+                throw new IllegalArgumentException("Username and password must be provided for private repository.");
+            }
+
+            LOG.debug("Cloning private repository: " + location + " to " + uploadDirectory);
+            JGitAdapter.clonePrivateRepository(gitContext, username, password);
         }
     }
 
     public void cleanUploadDirectory(String uploadDirectory) throws IOException {
-
         final ProcessBuilder builder = buildProcessClean(uploadDirectory);
+        ProcessAdapter process = null;
 
         try {
             process = processAdapterFactory.startProcess(builder);
@@ -62,7 +59,7 @@ public class WrapperGit extends WrapperTool {
             throw new IOException("Error while cleaning git directory: " + uploadDirectory, e);
         }
 
-        waitForProcessToFinish();
+        waitForProcessToFinish(process);
     }
 
     private ProcessBuilder buildProcessClean(String pdsPrepareUploadFolderDirectory) {
@@ -73,7 +70,7 @@ public class WrapperGit extends WrapperTool {
 
         File uploadDir = Paths.get(pdsPrepareUploadFolderDirectory).toAbsolutePath().toFile();
 
-        commands.add("bin/bash");
+        commands.add("/bin/bash");
         commands.add("-c");
         commands.add("( find . -type d -name .git && find . -name .gitignore && find . -name .gitattributes ) | xargs rm -rf");
 

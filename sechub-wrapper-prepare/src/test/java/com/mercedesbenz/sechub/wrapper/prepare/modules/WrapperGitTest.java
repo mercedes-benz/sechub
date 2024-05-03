@@ -1,5 +1,7 @@
 package com.mercedesbenz.sechub.wrapper.prepare.modules;
 
+import static com.mercedesbenz.sechub.wrapper.prepare.cli.PrepareWrapperEnvironmentVariables.PDS_PREPARE_CREDENTIAL_PASSWORD;
+import static com.mercedesbenz.sechub.wrapper.prepare.cli.PrepareWrapperEnvironmentVariables.PDS_PREPARE_CREDENTIAL_USERNAME;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
@@ -28,8 +30,6 @@ class WrapperGitTest {
 
     ProcessAdapter processAdapter;
 
-    UserInputValidator userInputValidator;
-
     JGitAdapter jGitAdapter;
 
     @BeforeEach
@@ -37,15 +37,13 @@ class WrapperGitTest {
         gitToTest = new WrapperGit();
         processAdapterFactory = mock(PDSProcessAdapterFactory.class);
         processAdapter = mock(ProcessAdapter.class);
-        userInputValidator = mock(UserInputValidator.class);
         jGitAdapter = mock(JGitAdapter.class);
         when(processAdapterFactory.startProcess(any())).thenReturn(processAdapter);
         when(processAdapter.waitFor(any(Long.class), any(TimeUnit.class))).thenReturn(true);
-        doNothing().when(jGitAdapter).clonePrivate(any(), any(), any());
-        doNothing().when(jGitAdapter).clonePrivate(any(), any(), any());
+        doNothing().when(jGitAdapter).clonePrivateRepository(any(), any(), any());
+        doNothing().when(jGitAdapter).clonePrivateRepository(any(), any(), any());
 
         gitToTest.processAdapterFactory = processAdapterFactory;
-        gitToTest.userInputValidator = userInputValidator;
         gitToTest.JGitAdapter = jGitAdapter;
     }
 
@@ -54,8 +52,8 @@ class WrapperGitTest {
     void when_cloneRepository_is_executed_the_processAdapterFactory_starts_one_process(String location) throws IOException {
         /* prepare */
         Map<String, SealedObject> credentialMap = new HashMap<>();
-        credentialMap.put("username", CryptoAccess.CRYPTO_STRING.seal("user"));
-        credentialMap.put("password", CryptoAccess.CRYPTO_STRING.seal("password"));
+        credentialMap.put(PDS_PREPARE_CREDENTIAL_USERNAME, CryptoAccess.CRYPTO_STRING.seal("user"));
+        credentialMap.put(PDS_PREPARE_CREDENTIAL_PASSWORD, CryptoAccess.CRYPTO_STRING.seal("password"));
         GitContext contextGit = (GitContext) new GitContext.GitContextBuilder().setCloneWithoutHistory(true).setLocation(location)
                 .setCredentialMap(credentialMap).setUploadDirectory("folder").build();
 
@@ -63,7 +61,7 @@ class WrapperGitTest {
         gitToTest.downloadRemoteData(contextGit);
 
         /* test */
-        verify(jGitAdapter, times(1)).clonePrivate(any(), any(), any());
+        verify(jGitAdapter, times(1)).clonePrivateRepository(any(), any(), any());
     }
 
     @Test

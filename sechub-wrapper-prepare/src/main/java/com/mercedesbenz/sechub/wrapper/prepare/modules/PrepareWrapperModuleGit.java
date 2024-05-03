@@ -9,7 +9,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.*;
-import java.util.regex.Pattern;
 
 import javax.crypto.SealedObject;
 
@@ -29,14 +28,6 @@ public class PrepareWrapperModuleGit implements PrepareWrapperModule {
     Logger LOG = LoggerFactory.getLogger(PrepareWrapperModuleGit.class);
 
     private static final String TYPE = "git";
-    private static final String GIT_LOCATION_REGEX = "((git|ssh|http(s)?)|(git@[\\w\\.]+))(:(//)?)([\\w\\.@\\:/\\-~]+)(\\.git)(/)?$";
-    private static final Pattern GIT_LOCATION_PATTERN = Pattern.compile(GIT_LOCATION_REGEX);
-
-    private static final String GIT_USERNAME_REGEX = "^[a-zA-Z0-9-_\\d](?:[a-zA-Z0-9-_\\d]|(?=[a-zA-Z0-9-_\\d])){0,38}$";
-    private static final Pattern GIT_USERNAME_PATTERN = Pattern.compile(GIT_USERNAME_REGEX);
-
-    private static final String GIT_PASSWORD_REGEX = "^(gh[ps]_[a-zA-Z0-9]{36}|github_pat_[a-zA-Z0-9]{22}_[a-zA-Z0-9]{59})$";
-    private static final Pattern GIT_PASSWORD_PATTERN = Pattern.compile(GIT_PASSWORD_REGEX);
 
     @Value("${" + KEY_PDS_PREPARE_AUTO_CLEANUP_GIT_FOLDER + ":true}")
     private boolean pdsPrepareAutoCleanupGitFolder;
@@ -48,19 +39,7 @@ public class PrepareWrapperModuleGit implements PrepareWrapperModule {
     WrapperGit git;
 
     @Autowired
-    UserInputValidator userInputValidator;
-
-    public String getGitLocationPattern() {
-        return GIT_LOCATION_REGEX;
-    }
-
-    public String getGitUsernamePattern() {
-        return GIT_USERNAME_REGEX;
-    }
-
-    public String getGitPasswordPattern() {
-        return GIT_PASSWORD_REGEX;
-    }
+    GitInputValidator gitInputValidator;
 
     public boolean isAbleToPrepare(PrepareWrapperContext context) {
 
@@ -72,9 +51,11 @@ public class PrepareWrapperModuleGit implements PrepareWrapperModule {
         for (SecHubRemoteDataConfiguration secHubRemoteDataConfiguration : context.getRemoteDataConfigurationList()) {
             String location = secHubRemoteDataConfiguration.getLocation();
 
+            gitInputValidator.validateLocationCharacters(location, null);
+
             if (isMatchingGitType(secHubRemoteDataConfiguration.getType())) {
                 LOG.debug("Type is git");
-                if (!userInputValidator.validateLocation(location, GIT_LOCATION_PATTERN)) {
+                if (!gitInputValidator.validateLocation(location)) {
                     context.getUserMessages().add(new SecHubMessage(SecHubMessageType.WARNING, "Type is git but location does not match git URL pattern"));
                     LOG.warn("User defined type as 'git', but the defined location was not a valid git location: {}", location);
                     return false;
@@ -82,7 +63,7 @@ public class PrepareWrapperModuleGit implements PrepareWrapperModule {
                 return true;
             }
 
-            if (userInputValidator.validateLocation(location, GIT_LOCATION_PATTERN)) {
+            if (gitInputValidator.validateLocation(location)) {
                 LOG.debug("Location is a git URL");
                 return true;
             }
@@ -176,8 +157,8 @@ public class PrepareWrapperModuleGit implements PrepareWrapperModule {
     }
 
     private void assertUserCredentials(String username, String password) {
-        userInputValidator.validateUsername(username, GIT_USERNAME_PATTERN);
-        userInputValidator.validatePassword(password, GIT_PASSWORD_PATTERN);
+        gitInputValidator.validateUsername(username);
+        gitInputValidator.validatePassword(password);
     }
 
     private void clonePublicRepository(PrepareWrapperContext context, String location) throws IOException {

@@ -32,17 +32,17 @@ class PrepareWrapperModuleGitTest {
 
     TestFileWriter writer;
 
-    UserInputValidator userInputValidator;
+    GitInputValidator gitInputValidator;
 
     @BeforeEach
     void beforeEach() {
         moduleToTest = new PrepareWrapperModuleGit();
         writer = new TestFileWriter();
-        userInputValidator = new UserInputValidator();
+        gitInputValidator = new GitInputValidator();
         git = mock(WrapperGit.class);
 
         moduleToTest.git = git;
-        moduleToTest.userInputValidator = userInputValidator;
+        moduleToTest.gitInputValidator = gitInputValidator;
     }
 
     @ParameterizedTest

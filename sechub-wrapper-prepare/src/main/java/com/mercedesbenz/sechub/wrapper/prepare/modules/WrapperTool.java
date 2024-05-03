@@ -4,8 +4,6 @@ import static com.mercedesbenz.sechub.commons.pds.PDSDefaultParameterKeyConstant
 import static com.mercedesbenz.sechub.wrapper.prepare.cli.PrepareWrapperKeyConstants.KEY_PDS_PREPARE_PROCESS_TIMEOUT_SECONDS;
 
 import java.io.IOException;
-import java.util.Arrays;
-import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
@@ -34,26 +32,12 @@ abstract class WrapperTool {
     @Value("${" + KEY_PDS_PREPARE_PROCESS_TIMEOUT_SECONDS + ":-1}")
     private int pdsPrepareProcessTimeoutSeconds;
 
-    ProcessAdapter process;
-
     @Autowired
     PDSProcessAdapterFactory processAdapterFactory;
 
-    @Autowired
-    UserInputValidator userInputValidator;
-
-    private final List<String> forbiddenCharacters = Arrays.asList(">", "<", "!", "?", "*", "'", "\"", ";", "&", "|", "`", "$", "{", "}");
-
     abstract void cleanUploadDirectory(String uploadDirectory) throws IOException;
 
-    void escapeRepositoryURL(String repositoryURL, List<String> forbiddenCharacters) {
-        if (forbiddenCharacters == null) {
-            forbiddenCharacters = this.forbiddenCharacters;
-        }
-        userInputValidator.validateLocationURL(repositoryURL, forbiddenCharacters);
-    }
-
-    void waitForProcessToFinish() {
+    void waitForProcessToFinish(ProcessAdapter process) {
 
         LOG.debug("Wait for wrapper to finish process.");
         int seconds = calculateTimeoutSeconds();
