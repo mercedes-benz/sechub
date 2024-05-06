@@ -40,16 +40,15 @@ class WrapperGitTest {
         jGitAdapter = mock(JGitAdapter.class);
         when(processAdapterFactory.startProcess(any())).thenReturn(processAdapter);
         when(processAdapter.waitFor(any(Long.class), any(TimeUnit.class))).thenReturn(true);
-        doNothing().when(jGitAdapter).clonePrivateRepository(any(), any(), any());
-        doNothing().when(jGitAdapter).clonePrivateRepository(any(), any(), any());
+        doNothing().when(jGitAdapter).clone(any());
 
         gitToTest.processAdapterFactory = processAdapterFactory;
-        gitToTest.JGitAdapter = jGitAdapter;
+        gitToTest.jGitAdapter = jGitAdapter;
     }
 
     @ParameterizedTest
     @ValueSource(strings = { "https://host.xz/path/to/repo/.git", "http://myrepo/here/.git", "example.org.git" })
-    void when_cloneRepository_is_executed_the_processAdapterFactory_starts_one_process(String location) throws IOException {
+    void when_cloneRepository_is_executed_the_processAdapterFactory_starts_JGit_clone(String location) throws IOException {
         /* prepare */
         Map<String, SealedObject> credentialMap = new HashMap<>();
         credentialMap.put(PDS_PREPARE_CREDENTIAL_USERNAME, CryptoAccess.CRYPTO_STRING.seal("user"));
@@ -61,7 +60,21 @@ class WrapperGitTest {
         gitToTest.downloadRemoteData(contextGit);
 
         /* test */
-        verify(jGitAdapter, times(1)).clonePrivateRepository(any(), any(), any());
+        verify(jGitAdapter, times(1)).clone(contextGit);
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = { "https://host.xz/path/to/repo/.git", "http://myrepo/here/.git", "example.org.git" })
+    void when_JGit_clone_throws_exception_RuntimeException_is_thrown(String location) {
+        /* prepare */
+        RuntimeException runtimeException = new RuntimeException("Error while cloning from repository: " + location);
+        doThrow(runtimeException).when(jGitAdapter).clone(any());
+
+        /* execute */
+        RuntimeException exception = assertThrows(RuntimeException.class, () -> gitToTest.downloadRemoteData(any()));
+
+        /* test */
+        assertTrue(exception.getMessage().contains("Error while cloning from repository: " + location));
     }
 
     @Test

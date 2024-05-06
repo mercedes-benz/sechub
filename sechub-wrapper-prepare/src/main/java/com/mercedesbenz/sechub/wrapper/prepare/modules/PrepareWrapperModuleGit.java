@@ -126,13 +126,10 @@ public class PrepareWrapperModuleGit implements PrepareWrapperModule {
     }
 
     private void clonePrivateRepository(PrepareWrapperContext context, SecHubRemoteCredentialUserData user, String location) throws IOException {
-        String username = user.getName();
-        String password = user.getPassword();
-
-        assertUserCredentials(username, password);
+        assertUserCredentials(user.getName(), user.getPassword());
 
         HashMap<String, SealedObject> credentialMap = new HashMap<>();
-        addSealedUserCredentials(password, username, credentialMap);
+        addSealedUserCredentials(user.getName(), user.getPassword(), credentialMap);
 
         /* @formatter:off */
         GitContext gitContext = (GitContext) new GitContext.GitContextBuilder().
@@ -145,11 +142,11 @@ public class PrepareWrapperModuleGit implements PrepareWrapperModule {
 
         git.downloadRemoteData(gitContext);
 
-        SecHubMessage message = new SecHubMessage(SecHubMessageType.INFO, "Cloned public repository: " + location);
+        SecHubMessage message = new SecHubMessage(SecHubMessageType.INFO, "Cloned private repository: " + location);
         context.getUserMessages().add(message);
     }
 
-    private static void addSealedUserCredentials(String password, String username, HashMap<String, SealedObject> credentialMap) {
+    private static void addSealedUserCredentials(String username, String password, HashMap<String, SealedObject> credentialMap) {
         SealedObject sealedPassword = CryptoAccess.CRYPTO_STRING.seal(password);
         SealedObject sealedUsername = CryptoAccess.CRYPTO_STRING.seal(username);
         credentialMap.put(PDS_PREPARE_CREDENTIAL_USERNAME, sealedUsername);
