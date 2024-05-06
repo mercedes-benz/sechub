@@ -126,10 +126,10 @@ public class PrepareWrapperModuleGit implements PrepareWrapperModule {
     }
 
     private void clonePrivateRepository(PrepareWrapperContext context, SecHubRemoteCredentialUserData user, String location) throws IOException {
-        assertUserCredentials(user.getName(), user.getPassword());
+        assertUserCredentials(user);
 
         HashMap<String, SealedObject> credentialMap = new HashMap<>();
-        addSealedUserCredentials(user.getName(), user.getPassword(), credentialMap);
+        addSealedUserCredentials(user, credentialMap);
 
         /* @formatter:off */
         GitContext gitContext = (GitContext) new GitContext.GitContextBuilder().
@@ -146,19 +146,19 @@ public class PrepareWrapperModuleGit implements PrepareWrapperModule {
         context.getUserMessages().add(message);
     }
 
-    private static void addSealedUserCredentials(String username, String password, HashMap<String, SealedObject> credentialMap) {
-        SealedObject sealedPassword = CryptoAccess.CRYPTO_STRING.seal(password);
-        SealedObject sealedUsername = CryptoAccess.CRYPTO_STRING.seal(username);
+    private static void addSealedUserCredentials(SecHubRemoteCredentialUserData user, HashMap<String, SealedObject> credentialMap) {
+        SealedObject sealedUsername = CryptoAccess.CRYPTO_STRING.seal(user.getName());
+        SealedObject sealedPassword = CryptoAccess.CRYPTO_STRING.seal(user.getPassword());
         credentialMap.put(PDS_PREPARE_CREDENTIAL_USERNAME, sealedUsername);
         credentialMap.put(PDS_PREPARE_CREDENTIAL_PASSWORD, sealedPassword);
     }
 
-    private void assertUserCredentials(String username, String password) {
-        gitInputValidator.validateUsername(username);
-        gitInputValidator.validatePassword(password);
+    private void assertUserCredentials(SecHubRemoteCredentialUserData user) {
+        gitInputValidator.validateUsername(user.getName());
+        gitInputValidator.validatePassword(user.getPassword());
     }
 
-    private void clonePublicRepository(PrepareWrapperContext context, String location) throws IOException {
+    private void clonePublicRepository(PrepareWrapperContext context, String location) {
         /* @formatter:off */
         GitContext contextGit = (GitContext) new GitContext.GitContextBuilder().
                 setCloneWithoutHistory(pdsPrepareAutoCleanupGitFolder).

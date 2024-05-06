@@ -33,7 +33,7 @@ public class JGitAdapter {
 
         CloneCommand command = Git.cloneRepository().setURI(location).setDirectory(Paths.get(gitContext.getUploadDirectory()).toFile());
 
-        if (!(username == null || password == null)) {
+        if (username != null && password != null) {
             LOG.debug("Cloning private repository: " + location + " with username and password to: " + gitContext.getUploadDirectory());
             command = command.setCredentialsProvider(new UsernamePasswordCredentialsProvider(username, password));
         } else {
@@ -52,16 +52,10 @@ public class JGitAdapter {
     }
 
     private String getUserNameFromMap(Map<String, SealedObject> credentialMap) {
-        if (credentialMap.isEmpty()) {
-            return null;
-        }
         return CryptoAccess.CRYPTO_STRING.unseal(credentialMap.get(PDS_PREPARE_CREDENTIAL_USERNAME));
     }
 
     private String getPasswordFromMap(Map<String, SealedObject> credentialMap) {
-        if (credentialMap.isEmpty()) {
-            return null;
-        }
         return CryptoAccess.CRYPTO_STRING.unseal(credentialMap.get(PDS_PREPARE_CREDENTIAL_PASSWORD));
     }
 
