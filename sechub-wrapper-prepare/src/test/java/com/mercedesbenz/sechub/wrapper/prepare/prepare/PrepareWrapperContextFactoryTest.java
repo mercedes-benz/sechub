@@ -20,10 +20,14 @@ class PrepareWrapperContextFactoryTest {
 
     private PrepareWrapperEnvironment environment;
 
+    private PrepareWrapperRemoteConfigurationExtractor extractor;
+
     @BeforeEach
     void beforeEach() {
         factoryToTest = new PrepareWrapperContextFactory();
         environment = mock(PrepareWrapperEnvironment.class);
+        extractor = mock(PrepareWrapperRemoteConfigurationExtractor.class);
+        factoryToTest.extractor = extractor;
     }
 
     @Test

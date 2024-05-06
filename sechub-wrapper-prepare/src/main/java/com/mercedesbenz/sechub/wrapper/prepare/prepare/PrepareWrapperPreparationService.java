@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.wrapper.prepare.prepare;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -15,7 +16,7 @@ import com.mercedesbenz.sechub.commons.core.prepare.PrepareResult;
 import com.mercedesbenz.sechub.commons.core.prepare.PrepareStatus;
 import com.mercedesbenz.sechub.commons.model.*;
 import com.mercedesbenz.sechub.wrapper.prepare.cli.PrepareWrapperEnvironment;
-import com.mercedesbenz.sechub.wrapper.prepare.moduls.PrepareWrapperModule;
+import com.mercedesbenz.sechub.wrapper.prepare.modules.PrepareWrapperModule;
 
 @Service
 public class PrepareWrapperPreparationService {
@@ -28,52 +29,44 @@ public class PrepareWrapperPreparationService {
     @Autowired
     PrepareWrapperContextFactory factory;
 
-    private List<PrepareWrapperModule> modules = new ArrayList<>();
+    @Autowired
+    List<PrepareWrapperModule> modules = new ArrayList<>();
 
-    public AdapterExecutionResult startPreparation() {
+    public AdapterExecutionResult startPreparation() throws IOException {
+
+        boolean atLeastOneModuleExecuted = false;
 
         LOG.debug("Start preparation");
         PrepareWrapperContext context = factory.create(environment);
-        List<SecHubRemoteDataConfiguration> remoteDataConfigurationList = resolveRemoteConfigurationsFromSecHubModel(context);
+        List<SecHubRemoteDataConfiguration> remoteDataConfigurationList = context.getRemoteDataConfigurationList();
 
         if (remoteDataConfigurationList.isEmpty()) {
             LOG.warn("No Remote configuration was found");
-            PrepareResult result = new PrepareResult(PrepareStatus.OK);
-            SecHubMessage message = new SecHubMessage(SecHubMessageType.WARNING, "No Remote Configuration found");
-            Collection<SecHubMessage> collection = new ArrayList<>();
-            collection.add(message);
-            return new AdapterExecutionResult(result.toString(), collection);
+            return createAdapterExecutionResult(PrepareStatus.OK, SecHubMessageType.WARNING, "No Remote Configuration found.");
         }
+
         for (PrepareWrapperModule module : modules) {
-            SecHubConfigurationModel sechubConfiguration = context.getSecHubConfiguration();
-            if (module.isAbleToPrepare(sechubConfiguration)) {
-                module.prepare(sechubConfiguration, remoteDataConfigurationList);
+            if (!module.isAbleToPrepare(context)) {
+                continue;
             }
+            atLeastOneModuleExecuted = true;
+            context.getUserMessages().add(new SecHubMessage(SecHubMessageType.INFO, "Execute prepare module: " + module.getClass().getSimpleName()));
+            module.prepare(context);
         }
+
+        if (!atLeastOneModuleExecuted) {
+            return createAdapterExecutionResult(PrepareStatus.FAILED, SecHubMessageType.ERROR, "No module was able to prepare the defined remote data.");
+        }
+
         PrepareResult result = new PrepareResult(PrepareStatus.OK);
-        return new AdapterExecutionResult(result.toString());
+        return new AdapterExecutionResult(result.toString(), context.getUserMessages());
     }
 
-    private List<SecHubRemoteDataConfiguration> resolveRemoteConfigurationsFromSecHubModel(PrepareWrapperContext context) {
-        List<SecHubRemoteDataConfiguration> result = new ArrayList<>();
-        if (context.getSecHubConfiguration() == null) {
-            throw new IllegalStateException("Context was not initialized correctly. SecHub configuration was null");
-        }
-
-        var dataOpt = context.getSecHubConfiguration().getData();
-        if (dataOpt.isPresent()) {
-            var data = dataOpt.get();
-            List<SecHubSourceDataConfiguration> sourceDataList = data.getSources();
-            List<SecHubBinaryDataConfiguration> binaryDataList = data.getBinaries();
-            for (SecHubSourceDataConfiguration sourceData : sourceDataList) {
-                var remoteOpt = sourceData.getRemote();
-                remoteOpt.ifPresent(result::add);
-            }
-            for (SecHubBinaryDataConfiguration binaryData : binaryDataList) {
-                var remoteOpt = binaryData.getRemote();
-                remoteOpt.ifPresent(result::add);
-            }
-        }
-        return result;
+    private AdapterExecutionResult createAdapterExecutionResult(PrepareStatus status, SecHubMessageType type, String message) {
+        PrepareResult result = new PrepareResult(status);
+        SecHubMessage secHubMessage = new SecHubMessage(type, message);
+        Collection<SecHubMessage> messages = new ArrayList<>();
+        messages.add(secHubMessage);
+        return new AdapterExecutionResult(result.toString(), messages);
     }
 }
