@@ -26,9 +26,12 @@ if [[ "$PDS_DEBUG_ENABLED" = "true" ]]; then
     echo ""
     echo "  PDS DEBUG:"
     echo "  ******************"
-    echo "  - PDS_SCAN_CONFIGURATION                 : $PDS_SCAN_CONFIGURATION"
+    echo "  - PDS_SCAN_CONFIGURATION                        : $PDS_SCAN_CONFIGURATION"
+    echo "  - PDS_PREPARE_MINUTES_TO_WAIT_PREPARE_PROCESSES : $PDS_PREPARE_MINUTES_TO_WAIT_PREPARE_PROCESSES"
+    echo "  - PDS_PREPARE_MODULE_ENABLED_GIT                : $PDS_PREPARE_MODULE_ENABLED_GIT"
+    echo "  - PDS_PREPARE_AUTO_CLEANUP_GIT_FOLDER           : $PDS_PREPARE_AUTO_CLEANUP_GIT_FOLDER"
     echo ""
-    echo "  - Java jar OPTIONS                       : $options"
+    echo "  - Java jar OPTIONS                              : $options"
 fi
 
 # export upload directory

@@ -45,7 +45,7 @@ WARNING: Make sure the SecHub container is running and executor for Prepare is s
 ./05-start-single-sechub-network-docker-compose.sh
 ----
 +
-Example sechub.json for prepare a private git repository
+Example sechub.json for prepare a private git repository. Public repositories can be cloned without credentials. Hand over the type is optional but helps to choose the correct prepare module.
 +
 [source,json]
 ----
