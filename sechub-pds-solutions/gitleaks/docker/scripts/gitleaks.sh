@@ -18,19 +18,19 @@ gitleaks_options="--log-level debug --config $TOOL_FOLDER/custom-gitleaks.toml -
 if [ "$GITLEAKS_HISTORY_SCAN_ENABLED" = "false" ]
 then
     gitleaks_options="$gitleaks_options --no-git"
-    echo "History scan was disabled by an administrator. Perform secret scan on filesystem without history deepscan." | tee "$PDS_JOB_USER_MESSAGES_FOLDER"/history-scan-disabled.txt
+    echo "History scan was disabled by an administrator. A secret scan on the filesystem without history deepscan will be done instead." | tee "$PDS_JOB_USER_MESSAGES_FOLDER"/history-scan-disabled.txt
     
 # If no '.git' directory was found we cannot scan the git history
 elif [ -z "$git_directory" ]
 then
     gitleaks_options="$gitleaks_options --no-git"
-    echo "No .git folder was uploaded for the secret scan. Perform secret scan on filesystem without history deepscan." | tee "$PDS_JOB_USER_MESSAGES_FOLDER"/no-git.txt
+    echo "No .git folder was uploaded for the secret scan. A secret scan on the filesystem without history deepscan will be done instead." | tee "$PDS_JOB_USER_MESSAGES_FOLDER"/no-git.txt
 
 # If the value of 'git_directory' is not a valid directory there is more than a single result of the find command
 elif [ ! -d "$git_directory" ]
 then
     gitleaks_options="$gitleaks_options --no-git"
-    echo "Multiple .git folders were uploaded for the secret scan. Perform secret scan on filesystem without history deepscan." | tee "$PDS_JOB_USER_MESSAGES_FOLDER"/multiple-git.txt
+    echo "Multiple .git folders were uploaded for the secret scan. This is not supported. A secret scan on the filesystem without history deepscan will be done instead." | tee "$PDS_JOB_USER_MESSAGES_FOLDER"/multiple-git.txt
 
 # If exactly one '.git' directory was found we scan the git history
 else
