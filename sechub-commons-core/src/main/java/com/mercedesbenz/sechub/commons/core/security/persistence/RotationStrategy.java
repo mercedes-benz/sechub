@@ -193,6 +193,6 @@ public class RotationStrategy {
     }
 
     public boolean isCipherRotationStrategy() {
-        return (currentCipher.getCipherType() != newCipher.getCipherType()) ? true : false;
+        return currentCipher.getCipherType() != newCipher.getCipherType();
     }
 }

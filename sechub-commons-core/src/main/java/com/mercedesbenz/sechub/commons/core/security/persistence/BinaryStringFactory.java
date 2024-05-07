@@ -52,7 +52,7 @@ public class BinaryStringFactory {
      * @return
      */
     public static BinaryString createFromString(String string) {
-        return createFromString(string, BinaryStringEncodingType.BASE64);
+        return createFromString(string, DEFAULT_ENCODING_TYPE);
     }
 
     /**

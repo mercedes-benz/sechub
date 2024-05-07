@@ -29,7 +29,6 @@ import org.bouncycastle.jce.provider.BouncyCastleProvider;
  */
 public class AesGcmSiv implements PersistenceCipher {
 
-    // TODO: Encrypt secret?
     private SecretKey secret;
     private Provider cryptoProvider;
     private PersistenceCipherType cipherType;
@@ -66,7 +65,7 @@ public class AesGcmSiv implements PersistenceCipher {
 
             instance = new AesGcmSiv(secretKey, cipherType);
         } else {
-            throw new InvalidKeyException("The secret has to be 128, 192 or 256 bits long, but was " + (rawSecret.length * 8) + " bits long.");
+            throw new InvalidKeyException("The secret has to be 128 or 256 bits long, but was " + (rawSecret.length * 8) + " bits long.");
         }
 
         return instance;

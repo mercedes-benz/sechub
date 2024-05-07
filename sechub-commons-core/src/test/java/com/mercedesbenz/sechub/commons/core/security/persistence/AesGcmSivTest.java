@@ -194,7 +194,7 @@ public class AesGcmSivTest {
     void encrypt__aes_128_base64_format_and_emojis() throws InvalidKeyException, InvalidAlgorithmParameterException {
         /* prepare */
         BinaryString secret = new Base64String("🍐🍌🍓🍉");
-        ;
+
         String plaintext = "Hello 👋, welcome to 🌐.";
         String expectedCiphertext = "Qu7ICJBGMw9dAPPBWx86e5bjOq3YKC+x25n/YkluWZAGdSna08tKaE78pMk=";
         BinaryString initializationVector = new Base64String("🧅".repeat(AesGcmSiv.IV_LENGTH_IN_BYTES / 4));
