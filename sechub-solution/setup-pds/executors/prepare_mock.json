@@ -11,12 +11,12 @@
     },
     "jobParameters": [
       {
-        "key": "pds.config.productidentifier",
-        "value": "PDS_PREPARE"
-      },
-      {
         "key": "pds.config.product.timeout.minutes",
         "value": "30"
+      },
+      {
+        "key": "pds.config.productidentifier",
+        "value": "PDS_PREPARE_MOCK"
       },
       {
         "key": "pds.config.use.sechub.storage",
@@ -28,7 +28,7 @@
       },
       {
         "key": "sechub.productexecutor.pds.timeout.minutes",
-        "value": 60
+        "value": 180
       },
       {
         "key": "sechub.productexecutor.pds.timetowait.nextcheck.milliseconds",
