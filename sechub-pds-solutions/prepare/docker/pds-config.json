@@ -5,13 +5,13 @@
     {
       "id": "PDS_PREPARE",
       "path": "/pds/scripts/prepare.sh",
-      "scanType": "licenseScan",
+      "scanType": "codeScan",
       "description": "Runs the prepare wrapper application to prepare remote data for SecHub scans."
     },
     {
       "id": "PDS_PREPARE_MOCK",
       "path": "/pds/scripts/prepare_mock.sh",
-      "scanType": "licenseScan",
+      "scanType": "codeScan",
       "description": "Runs the prepare mock which returns a success message."
     }
   ]

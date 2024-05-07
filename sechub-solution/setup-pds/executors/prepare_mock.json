@@ -32,7 +32,7 @@
       },
       {
         "key": "sechub.productexecutor.pds.timetowait.nextcheck.milliseconds",
-        "value": 10000
+        "value": 500
       },
       {
         "key": "sechub.productexecutor.pds.trustall.certificates",

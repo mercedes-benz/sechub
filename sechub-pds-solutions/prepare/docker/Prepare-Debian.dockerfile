@@ -5,7 +5,7 @@ ARG BASE_IMAGE
 
 # Build Args
 # Build type can be "copy" or "download"
-ARG BUILD_TYPE="copy"
+ARG BUILD_TYPE
 ARG PREPARE_WRAPPER_VERSION="0.0.0"
 
 # The base image of the builder
@@ -27,8 +27,7 @@ RUN mkdir --parent "$ARTIFACT_FOLDER"
 
 RUN export DEBIAN_FRONTEND=noninteractive && \
     apt-get update && \
-    apt-get install --assume-yes wget && \
-    apt-get -y install skopeo && \
+    apt-get install --assume-yes skopeo wget && \
     apt-get clean
 
 # Download the prepare Wrapper
