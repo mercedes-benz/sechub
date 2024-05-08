@@ -22,13 +22,14 @@ FROM ${BASE_IMAGE} AS builder
 # Build args
 ARG GO
 ARG PDS_ARTIFACT_FOLDER
-
 ARG BUILD_FOLDER="/build"
-ARG GIT_URL_KICS="https://github.com/Checkmarx/kics.git"
-ARG GIT_BRANCH_KICS="master"
+ARG KICS_VERSION="2.0.1"
 
+# Environment variables in container
 ENV DOWNLOAD_FOLDER="/downloads"
 ENV PATH="/usr/local/go/bin:$PATH"
+
+ENV KICS_VERSION="${KICS_VERSION}"
 
 USER root
 
@@ -36,7 +37,7 @@ RUN mkdir --parent "$PDS_ARTIFACT_FOLDER" "$DOWNLOAD_FOLDER"
 
 RUN export DEBIAN_FRONTEND=noninteractive && \
     apt-get update && \
-    apt-get install --quiet --assume-yes wget w3m git && \
+    apt-get install --quiet --assume-yes wget w3m git unzip && \
     apt-get clean
 
 # Install Go
@@ -57,8 +58,10 @@ RUN cd "$DOWNLOAD_FOLDER" && \
 # Build Kics
 RUN mkdir --parent "$BUILD_FOLDER" && \
     cd "$BUILD_FOLDER" && \
-    # Clone Kics
-    git clone "$GIT_URL_KICS" --depth 1 --branch "$GIT_BRANCH_KICS" && \
+    # Download and extract Kics
+    wget --no-verbose https://github.com/Checkmarx/kics/archive/refs/tags/v${KICS_VERSION}.zip && \
+    unzip -q v${KICS_VERSION}.zip && \
+    mv kics-${KICS_VERSION} kics && \
     cd "kics" && \
     # Downloads Go packages
     go mod vendor && \

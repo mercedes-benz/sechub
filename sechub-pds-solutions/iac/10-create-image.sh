@@ -16,7 +16,7 @@ for <docker registry> with tag <version tag>.
 Required: <base image> ; for example ghcr.io/mercedes-benz/sechub/pds-base:v0.32.1
 
 Additionally these environment variables can be defined:
-- IAC_VERSION - IaC version to use. E.g. 2.9.5
+- KICS_VERSION - KICS version to use. E.g. 2.0.0
 EOF
 }
 
@@ -44,9 +44,9 @@ fi
 BUILD_ARGS="--build-arg BASE_IMAGE=$BASE_IMAGE"
 echo ">> Base image: $BASE_IMAGE"
 
-if [[ ! -z "$IAC_VERSION" ]] ; then
-    echo ">> IaC version: $IAC_VERSION"
-    BUILD_ARGS="$BUILD_ARGS --build-arg IAC_VERSION=$IAC_VERSION"
+if [[ ! -z "$KICS_VERSION" ]] ; then
+    echo ">> KICS version: $KICS_VERSION"
+    BUILD_ARGS="$BUILD_ARGS --build-arg KICS_VERSION=$KICS_VERSION"
 fi
 
 # Use Docker BuildKit

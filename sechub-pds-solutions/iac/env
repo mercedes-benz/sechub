@@ -2,3 +2,4 @@
 # uncomment to use local image
 # BASE_IMAGE="pds-base_pds"
 BASE_IMAGE="ghcr.io/mercedes-benz/sechub/pds-base"
+KICS_VERSION="2.0.1"
