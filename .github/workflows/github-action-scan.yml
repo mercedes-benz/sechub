@@ -5,6 +5,8 @@ on:
   push:
     branches:
       - 'gha_*'
+  # enable manual triggering of workflow
+  workflow_dispatch:
 
 jobs:
   build-scan:
