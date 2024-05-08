@@ -147,7 +147,6 @@ class PrepareWrapperModuleGitTest {
         remoteDataConfiguration.setType("git");
         remoteDataConfigurationList.add(remoteDataConfiguration);
         context.setRemoteDataConfigurationList(remoteDataConfigurationList);
-        ReflectionTestUtils.setField(moduleToTest, "pdsPrepareModuleGitEnabled", true);
 
         /* execute */
         IllegalStateException exception = assertThrows(IllegalStateException.class, () -> moduleToTest.prepare(context));

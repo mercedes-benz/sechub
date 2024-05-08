@@ -21,7 +21,9 @@ public class WrapperSkopeo extends WrapperTool {
     String pdsPrepareAuthenticationFileSkopeo;
 
     void download(SkopeoContext context) throws IOException {
-        login(context);
+        if (!context.getCredentialMap().isEmpty()) {
+            login(context);
+        }
 
         ProcessBuilder builder = buildProcessDownload(context);
         ProcessAdapter process = null;
@@ -29,7 +31,7 @@ public class WrapperSkopeo extends WrapperTool {
         try {
             process = processAdapterFactory.startProcess(builder);
         } catch (IOException e) {
-            throw new IOException("Error download with Skopeo from: " + context.getLocation(), e);
+            throw new IOException("Error while download with Skopeo from: " + context.getLocation(), e);
         }
 
         waitForProcessToFinish(process);
@@ -73,15 +75,16 @@ public class WrapperSkopeo extends WrapperTool {
 
         commands.add("/bin/bash");
         commands.add("-c");
-        commands.add("skopeo");
-        commands.add("login");
-        commands.add(location);
-        commands.add("--username");
-        commands.add("$" + PDS_PREPARE_CREDENTIAL_USERNAME);
-        commands.add("--password");
-        commands.add("$" + PDS_PREPARE_CREDENTIAL_PASSWORD);
-        commands.add("--authfile");
-        commands.add(pdsPrepareAuthenticationFileSkopeo);
+        commands.add("skopeo login " + location + " --username $" + PDS_PREPARE_CREDENTIAL_USERNAME + " --password $" + PDS_PREPARE_CREDENTIAL_PASSWORD
+                + " --authfile " + pdsPrepareAuthenticationFileSkopeo);
+
+        /*
+         * commands.add("skopeo"); commands.add("login"); commands.add(location);
+         * commands.add("--username"); commands.add("$" +
+         * PDS_PREPARE_CREDENTIAL_USERNAME); commands.add("--password");
+         * commands.add("$" + PDS_PREPARE_CREDENTIAL_PASSWORD);
+         * commands.add("--authfile"); commands.add(pdsPrepareAuthenticationFileSkopeo);
+         */
 
         ProcessBuilder builder = new ProcessBuilder(commands);
         builder.directory(uploadDir);
@@ -98,14 +101,23 @@ public class WrapperSkopeo extends WrapperTool {
         String location = transformLocationForDownload(context.getLocation());
         File uploadDir = Paths.get(context.getUploadDirectory()).toAbsolutePath().toFile();
 
-        commands.add("/bin/bash");
-        commands.add("-c");
+        /*
+         * commands.add("/bin/bash"); commands.add("-c"); if
+         * (!context.getCredentialMap().isEmpty()){ commands.add("skopeo copy " +
+         * location + " docker-archive:" + context.getFilename()); }else{
+         * commands.add("skopeo copy " + location + " docker-archive:" +
+         * context.getFilename() + " --authfile " + pdsPrepareAuthenticationFileSkopeo);
+         * }
+         */
+
         commands.add("skopeo");
         commands.add("copy");
         commands.add(location);
         commands.add("docker-archive:" + context.getFilename());
-        commands.add("--authfile");
-        commands.add(pdsPrepareAuthenticationFileSkopeo);
+        if (!context.getCredentialMap().isEmpty()) {
+            commands.add("--authfile");
+            commands.add(pdsPrepareAuthenticationFileSkopeo);
+        }
 
         ProcessBuilder builder = new ProcessBuilder(commands);
         builder.directory(uploadDir);
@@ -115,6 +127,7 @@ public class WrapperSkopeo extends WrapperTool {
     }
 
     private ProcessBuilder buildProcessClean(String pdsPrepareUploadFolderDirectory) {
+        // removes authentication file
         List<String> commands = new ArrayList<>();
 
         File uploadDir = Paths.get(pdsPrepareUploadFolderDirectory).toAbsolutePath().toFile();
@@ -151,6 +164,6 @@ public class WrapperSkopeo extends WrapperTool {
         if (location.startsWith("https://")) {
             location = location.replace("https://", "");
         }
-        return location;
+        return location.split("/")[0];
     }
 }

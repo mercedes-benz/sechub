@@ -46,15 +46,17 @@ abstract class WrapperTool {
         try {
             exitDoneInTime = process.waitFor(seconds, TimeUnit.SECONDS);
         } catch (InterruptedException e) {
-            throw new RuntimeException("GIT wrapper could not finish process.", e);
+            throw new RuntimeException("Wrapper for executed modul " + this.getClass().getSimpleName() + " could not finish process.", e);
         }
 
         if (!exitDoneInTime) {
-            throw new RuntimeException("GIT wrapper could not finish process. Waited " + pdsPrepareProcessTimeoutSeconds + " seconds.");
+            throw new RuntimeException("Wrapper for executed modul " + this.getClass().getSimpleName() + " could not finish process. Waited "
+                    + pdsPrepareProcessTimeoutSeconds + " seconds.");
         }
 
         if (process.exitValue() != 0) {
-            throw new RuntimeException("GIT wrapper process failed with exit code: " + process.exitValue());
+            throw new RuntimeException(
+                    "Wrapper for executed modul " + this.getClass().getSimpleName() + " process failed with exit code: " + process.exitValue());
         }
     }
 

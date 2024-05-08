@@ -11,6 +11,7 @@ import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Stream;
 
 import javax.crypto.SealedObject;
 
@@ -50,10 +51,11 @@ public class PrepareWrapperModuleSkopeo implements PrepareWrapperModule {
 
         for (SecHubRemoteDataConfiguration secHubRemoteDataConfiguration : context.getRemoteDataConfigurationList()) {
             String location = secHubRemoteDataConfiguration.getLocation();
+            String type = secHubRemoteDataConfiguration.getType();
 
             skopeoInputValidator.validateLocationCharacters(location, null);
 
-            if (isMatchingSkopeoType(secHubRemoteDataConfiguration.getType())) {
+            if (isMatchingSkopeoType(type)) {
                 LOG.debug("Type is: " + TYPE);
                 if (!skopeoInputValidator.validateLocation(location)) {
                     context.getUserMessages().add(new SecHubMessage(SecHubMessageType.WARNING, "Type is " + TYPE + " but location does not match URL pattern"));
@@ -63,18 +65,22 @@ public class PrepareWrapperModuleSkopeo implements PrepareWrapperModule {
                 return true;
             }
 
+            if (!isTypeNullOrEmpty(type)) {
+                // type was explicitly defined but is not matching
+                return false;
+            }
+
             if (skopeoInputValidator.validateLocation(location)) {
                 LOG.debug("Location is a " + TYPE + " URL");
                 return true;
             }
-
         }
         return false;
     }
 
     @Override
     public void prepare(PrepareWrapperContext context) throws IOException {
-        LOG.debug("Start remote data preparation for GIT repository");
+        LOG.debug("Start remote data preparation for Docker repository");
 
         List<SecHubRemoteDataConfiguration> remoteDataConfigurationList = context.getRemoteDataConfigurationList();
 
@@ -83,19 +89,41 @@ public class PrepareWrapperModuleSkopeo implements PrepareWrapperModule {
         }
 
         if (!isDownloadSuccessful(context)) {
-            throw new IOException("Download of git repository was not successful.");
+            throw new IOException("Download of docker image was not successful.");
         }
+        cleanup(context);
     }
 
     boolean isDownloadSuccessful(PrepareWrapperContext context) {
-        // check if download folder contains docker archive
+        // check if download folder contains a .tar archive
         Path path = Paths.get(context.getEnvironment().getPdsPrepareUploadFolderDirectory());
         if (Files.isDirectory(path)) {
-            String gitFile = "image.tar";
-            Path gitPath = Paths.get(path + "/" + gitFile);
-            return Files.exists(gitPath);
+            try (Stream<Path> walk = Files.walk(path)) {
+                List<String> result = walk.filter(p -> !Files.isDirectory(p)) // not a directory
+                        .map(p -> p.toString().toLowerCase()) // convert path to string
+                        .filter(f -> f.endsWith(".tar")) // check end with
+                        .toList(); // collect all matched to a List
+                return !result.isEmpty();
+            } catch (IOException e) {
+                throw new RuntimeException("Error while checking download of docker image", e);
+            }
         }
         return false;
+    }
+
+    boolean isMatchingSkopeoType(String type) {
+        if (type == null || type.isBlank()) {
+            return false;
+        }
+        return TYPE.equalsIgnoreCase(type);
+    }
+
+    private boolean isTypeNullOrEmpty(String type) {
+        return type == null || type.isBlank();
+    }
+
+    private void cleanup(PrepareWrapperContext context) throws IOException {
+        skopeo.cleanUploadDirectory(context.getEnvironment().getPdsPrepareUploadFolderDirectory());
     }
 
     private void prepareRemoteConfiguration(PrepareWrapperContext context, SecHubRemoteDataConfiguration secHubRemoteDataConfiguration) throws IOException {
@@ -161,12 +189,5 @@ public class PrepareWrapperModuleSkopeo implements PrepareWrapperModule {
 
         SecHubMessage message = new SecHubMessage(SecHubMessageType.INFO, "Cloned public repository: " + location);
         context.getUserMessages().add(message);
-    }
-
-    private boolean isMatchingSkopeoType(String type) {
-        if (type == null || type.isBlank()) {
-            return false;
-        }
-        return TYPE.equalsIgnoreCase(type);
     }
 }

@@ -23,7 +23,8 @@ import com.mercedesbenz.sechub.wrapper.prepare.prepare.PrepareWrapperRemoteConfi
 
 @SpringBootTest(classes = { PrepareWrapperContextFactory.class, PrepareWrapperPreparationService.class, PrepareWrapperPojoFactory.class,
         PrepareWrapperEnvironment.class, PrepareWrapperPDSUserMessageSupportPojoFactory.class, PrepareWrapperRemoteConfigurationExtractor.class,
-        PrepareWrapperModuleGit.class, PrepareWrapperModule.class, WrapperGit.class, GitInputValidator.class, JGitAdapter.class })
+        PrepareWrapperModuleGit.class, PrepareWrapperModule.class, WrapperGit.class, GitInputValidator.class, JGitAdapter.class,
+        PrepareWrapperModuleSkopeo.class, WrapperSkopeo.class, SkopeoInputValidator.class })
 @ExtendWith(SpringExtension.class)
 @TestPropertySource(locations = "classpath:application-test-fail.properties")
 class PrepareWrapperApplicationSpringBootTest {

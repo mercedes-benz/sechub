@@ -50,10 +50,11 @@ public class PrepareWrapperModuleGit implements PrepareWrapperModule {
 
         for (SecHubRemoteDataConfiguration secHubRemoteDataConfiguration : context.getRemoteDataConfigurationList()) {
             String location = secHubRemoteDataConfiguration.getLocation();
+            String type = secHubRemoteDataConfiguration.getType();
 
             gitInputValidator.validateLocationCharacters(location, null);
 
-            if (isMatchingGitType(secHubRemoteDataConfiguration.getType())) {
+            if (isMatchingGitType(type)) {
                 LOG.debug("Type is git");
                 if (!gitInputValidator.validateLocation(location)) {
                     context.getUserMessages().add(new SecHubMessage(SecHubMessageType.WARNING, "Type is git but location does not match git URL pattern"));
@@ -61,6 +62,11 @@ public class PrepareWrapperModuleGit implements PrepareWrapperModule {
                     return false;
                 }
                 return true;
+            }
+
+            if (!isTypeNullOrEmpty(type)) {
+                // type was explicitly defined but is not matching
+                return false;
             }
 
             if (gitInputValidator.validateLocation(location)) {
@@ -104,6 +110,10 @@ public class PrepareWrapperModuleGit implements PrepareWrapperModule {
             return Files.exists(gitPath);
         }
         return false;
+    }
+
+    private boolean isTypeNullOrEmpty(String type) {
+        return type == null || type.isBlank();
     }
 
     private void prepareRemoteConfiguration(PrepareWrapperContext context, SecHubRemoteDataConfiguration secHubRemoteDataConfiguration) throws IOException {
