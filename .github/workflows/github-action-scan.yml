@@ -13,7 +13,7 @@ jobs:
     
     defaults:
       run:
-        working-directory: ./github-actions/scan
+        working-directory: github-actions/scan
     steps:
       - name: Checkout
         uses: actions/checkout@0ad4b8fadaa221de15dcec353f45205ec38ea70b
@@ -32,7 +32,7 @@ jobs:
       - name: Run unit tests
         run: npm test
         
-      # We store git status - why? Here we see, if index.js has been changed - if so, a developer
+      # We store git status - why? Here we see if index.js has been changed - if so, a developer
       # forgot to commit the changes - means the action cannot be used productive!  
       - name: Store git status
         run: |
@@ -42,9 +42,9 @@ jobs:
       - name: Define integration test setup
         id : version-selector
         run: |
-          echo "sechub_server_version=1.8.0" >> "$GITHUB_ENV"
+          echo "sechub_server_version=1.9.0" >> "$GITHUB_ENV"
           echo "sechub_server_port=8443" >> "$GITHUB_ENV"
-          echo "pds_version=1.5.0" >> "$GITHUB_ENV"
+          echo "pds_version=1.6.0" >> "$GITHUB_ENV"
           echo "pds_port=8444" >> "$GITHUB_ENV"
 
       - name: Cache SecHub server download    
@@ -66,7 +66,6 @@ jobs:
         with:
           java-version: 17
           distribution: temurin
-      
 
       - name: Start integration test servers
         working-directory: ./github-actions/scan/__test__/integrationtest/
@@ -110,6 +109,3 @@ jobs:
              ./github-actions/scan/sechub_report*.*
              ./sechub_report*.*
           retention-days: 14
-      
-      
-

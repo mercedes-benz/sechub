@@ -19,9 +19,9 @@ inputs:
     description: 'SecHub project name'
     required: false
   version:
-    description: 'Which version of the SecHub'
+    description: 'Which version of the SecHub client to use'
     required: false
-    default: '1.4.0'
+    default: '1.5.0'
   scan-types: 
     description: 'Scan types to use for generated sechub configuration file (ignored in the case of a custom configuration file). Supported types are: codeScan, licenseScan and secretScan. Can be combined by ,'
     required: false
