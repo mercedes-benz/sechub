@@ -12,6 +12,9 @@ dependencies {
     implementation project(':sechub-commons-pds')
     implementation project(':sechub-adapter')
 
+    implementation spring_boot_dependency.logback_classic
+
+    implementation library.jgit_core
 
     /* test */
     testImplementation project(':sechub-testframework')

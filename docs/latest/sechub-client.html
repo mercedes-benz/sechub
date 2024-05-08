@@ -531,7 +531,7 @@ table.CodeRay td.code{padding:0 0 0 .75em}
 <div id="header">
 <h1><span class="image"><a class="image" href="https://mercedes-benz.github.io/sechub"><img src="images/sechub-logo.png" alt="sechub logo"></a></span> SecHub Client Documentation</h1>
 <div class="details">
-<span id="revnumber"> Client 1.4.0 modified (commit 5eb0916)</span>
+<span id="revnumber"> Client 1.5.0</span>
 </div>
 <div id="toc" class="toc2">
 <div id="toctitle">Table of contents</div>
@@ -762,7 +762,7 @@ build pipeline / contionus integration (CI) and helps to provide
 </tbody>
 </table>
 <div class="paragraph">
-<p>Documentation version: <code>Client 1.4.0 modified (commit 5eb0916) - Build date: 20240315161105</code></p>
+<p>Documentation version: <code>Client 1.5.0 - Build date: 20240430152944</code></p>
 </div>
 <hr>
 <div style="page-break-after: always;"></div>
@@ -1520,6 +1520,12 @@ action <code>unmarkFalsePositives</code></p>
 <td class="tableblock halign-left valign-top"></td>
 </tr>
 <tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">append SCM history</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>-addScmHistory</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>SECHUB_ADD_SCM_HISTORY</code></p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">code scan config</p></td>
 <td class="tableblock halign-left valign-top"></td>
 <td class="tableblock halign-left valign-top"></td>
@@ -1629,6 +1635,11 @@ action <code>unmarkFalsePositives</code></p>
 <div class="ulist">
 <ul>
 <li>
+<p><code>-addScmHistory</code><br>
+Secrets scan only: Upload SCM directories like <code>.git</code> for scanning.<br>
+Can also be defined via environment variable <code>SECHUB_ADD_SCM_HISTORY=true</code>.</p>
+</li>
+<li>
 <p><code>-apitoken &lt;string&gt;</code><br>
 The user&#8217;s api token - mandatory. <em>Please try to avoid <code>-apitoken</code> parameter for security reasons!!</em><br>
 Use environment variable <code>SECHUB_APITOKEN</code> instead! (see: <a href="#environment-variables">Environment variables</a>)</p>
@@ -1701,6 +1712,10 @@ Will be used for periodic status checks when action=<code>scan</code> and for re
 </div>
 <div class="ulist">
 <ul>
+<li>
+<p><code>SECHUB_ADD_SCM_HISTORY</code><br>
+(<code>true</code> or <code>false</code> / unset) Secrets scan only: Upload SCM directories like <code>.git</code> for scanning. (same as <code>-addScmHistory</code> option)</p>
+</li>
 <li>
 <p><code>SECHUB_APITOKEN</code><br>
 The SecHub api token for <code>SECHUB_USERID</code>. (same as <code>-apitoken</code> option)</p>
@@ -2185,23 +2200,49 @@ This option is deprecated but still supported.<br>
 <div class="paragraph">
 <p><code>secretScan</code> defines the settings for scanning for secrets in your source code.</p>
 </div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+The SecHub client automatically adds every file of the defined source directories. (Not only known programming language file extensions like with <code>codeScan</code>)
+</td>
+</tr>
+</table>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+SecHub Client: With the <code>-addScmHistory</code> option SCM directories like <code>.git</code> are also uploaded because secrets could be in the SCM history of previous commits.
+</td>
+</tr>
+</table>
+</div>
 <div class="sect4">
 <h5 id="sechub-config-example-secretscan-sources">2.5.6.1. Example source secret scan</h5>
 <div class="listingblock">
 <div class="title">Secret scan configuration for sources</div>
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="json">{
-  <span class="key"><span class="delimiter">&quot;</span><span class="content">apiVersion</span><span class="delimiter">&quot;</span></span> : <span class="string"><span class="delimiter">&quot;</span><span class="content">1.0</span><span class="delimiter">&quot;</span></span>,
-  <span class="key"><span class="delimiter">&quot;</span><span class="content">data</span><span class="delimiter">&quot;</span></span> : {
-    <span class="key"><span class="delimiter">&quot;</span><span class="content">sources</span><span class="delimiter">&quot;</span></span> : [ {
-      <span class="key"><span class="delimiter">&quot;</span><span class="content">name</span><span class="delimiter">&quot;</span></span> : <span class="string"><span class="delimiter">&quot;</span><span class="content">gamechanger-source</span><span class="delimiter">&quot;</span></span>, <i class="conum" data-value="1"></i><b>(1)</b>
-      <span class="key"><span class="delimiter">&quot;</span><span class="content">fileSystem</span><span class="delimiter">&quot;</span></span> : {
-        <span class="key"><span class="delimiter">&quot;</span><span class="content">folders</span><span class="delimiter">&quot;</span></span> : [ <span class="string"><span class="delimiter">&quot;</span><span class="content">gamechanger-configuration/src</span><span class="delimiter">&quot;</span></span>, <span class="string"><span class="delimiter">&quot;</span><span class="content">gamechanger-app/src</span><span class="delimiter">&quot;</span></span>  ] <i class="conum" data-value="2"></i><b>(2)</b>
+  <span class="key"><span class="delimiter">&quot;</span><span class="content">apiVersion</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">1.0</span><span class="delimiter">&quot;</span></span>,
+  <span class="key"><span class="delimiter">&quot;</span><span class="content">data</span><span class="delimiter">&quot;</span></span>: {
+    <span class="key"><span class="delimiter">&quot;</span><span class="content">sources</span><span class="delimiter">&quot;</span></span>: [
+      {
+        <span class="key"><span class="delimiter">&quot;</span><span class="content">name</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">gamechanger-source</span><span class="delimiter">&quot;</span></span>, <i class="conum" data-value="1"></i><b>(1)</b>
+        <span class="key"><span class="delimiter">&quot;</span><span class="content">fileSystem</span><span class="delimiter">&quot;</span></span>: {
+          <span class="key"><span class="delimiter">&quot;</span><span class="content">folders</span><span class="delimiter">&quot;</span></span>: [ <span class="string"><span class="delimiter">&quot;</span><span class="content">.</span><span class="delimiter">&quot;</span></span> ] <i class="conum" data-value="2"></i><b>(2)</b>
+        }
       }
-    } ]
+    ]
   },
-  <span class="key"><span class="delimiter">&quot;</span><span class="content">secretScan</span><span class="delimiter">&quot;</span></span> : { 
-    <span class="key"><span class="delimiter">&quot;</span><span class="content">use</span><span class="delimiter">&quot;</span></span> : [ <span class="string"><span class="delimiter">&quot;</span><span class="content">gamechanger-source</span><span class="delimiter">&quot;</span></span>] <i class="conum" data-value="3"></i><b>(3)</b>
+  <span class="key"><span class="delimiter">&quot;</span><span class="content">secretScan</span><span class="delimiter">&quot;</span></span>: {
+    <span class="key"><span class="delimiter">&quot;</span><span class="content">use</span><span class="delimiter">&quot;</span></span>: [ <span class="string"><span class="delimiter">&quot;</span><span class="content">gamechanger-source</span><span class="delimiter">&quot;</span></span> ] <i class="conum" data-value="3"></i><b>(3)</b>
   }
 }</code></pre>
 </div>
@@ -2214,7 +2255,7 @@ This option is deprecated but still supported.<br>
 </tr>
 <tr>
 <td><i class="conum" data-value="2"></i><b>2</b></td>
-<td>source code folders to scan.</td>
+<td>source code folder(s) to scan. ("." = current directory)</td>
 </tr>
 <tr>
 <td><i class="conum" data-value="3"></i><b>3</b></td>
@@ -2265,12 +2306,14 @@ This option is deprecated but still supported.<br>
 <pre class="CodeRay highlight"><code data-lang="json">{
   <span class="key"><span class="delimiter">&quot;</span><span class="content">apiVersion</span><span class="delimiter">&quot;</span></span> : <span class="string"><span class="delimiter">&quot;</span><span class="content">1.0</span><span class="delimiter">&quot;</span></span>,
   <span class="key"><span class="delimiter">&quot;</span><span class="content">data</span><span class="delimiter">&quot;</span></span> : {
-    <span class="key"><span class="delimiter">&quot;</span><span class="content">sources</span><span class="delimiter">&quot;</span></span> : [ {
-      <span class="key"><span class="delimiter">&quot;</span><span class="content">name</span><span class="delimiter">&quot;</span></span> : <span class="string"><span class="delimiter">&quot;</span><span class="content">gamechanger-source</span><span class="delimiter">&quot;</span></span>, <i class="conum" data-value="1"></i><b>(1)</b>
-      <span class="key"><span class="delimiter">&quot;</span><span class="content">fileSystem</span><span class="delimiter">&quot;</span></span> : {
-        <span class="key"><span class="delimiter">&quot;</span><span class="content">folders</span><span class="delimiter">&quot;</span></span> : [ <span class="string"><span class="delimiter">&quot;</span><span class="content">gamechanger-configuration/src</span><span class="delimiter">&quot;</span></span>, <span class="string"><span class="delimiter">&quot;</span><span class="content">gamechanger-app/src</span><span class="delimiter">&quot;</span></span>  ] <i class="conum" data-value="2"></i><b>(2)</b>
+    <span class="key"><span class="delimiter">&quot;</span><span class="content">sources</span><span class="delimiter">&quot;</span></span> : [
+      {
+        <span class="key"><span class="delimiter">&quot;</span><span class="content">name</span><span class="delimiter">&quot;</span></span> : <span class="string"><span class="delimiter">&quot;</span><span class="content">gamechanger-source</span><span class="delimiter">&quot;</span></span>, <i class="conum" data-value="1"></i><b>(1)</b>
+        <span class="key"><span class="delimiter">&quot;</span><span class="content">fileSystem</span><span class="delimiter">&quot;</span></span> : {
+          <span class="key"><span class="delimiter">&quot;</span><span class="content">folders</span><span class="delimiter">&quot;</span></span> : [ <span class="string"><span class="delimiter">&quot;</span><span class="content">.</span><span class="delimiter">&quot;</span></span>  ] <i class="conum" data-value="2"></i><b>(2)</b>
+        }
       }
-    } ]
+    ]
   },
   <span class="key"><span class="delimiter">&quot;</span><span class="content">secretScan</span><span class="delimiter">&quot;</span></span> : { 
     <span class="key"><span class="delimiter">&quot;</span><span class="content">use</span><span class="delimiter">&quot;</span></span> : [ <span class="string"><span class="delimiter">&quot;</span><span class="content">gamechanger-source</span><span class="delimiter">&quot;</span></span>] <i class="conum" data-value="3"></i><b>(3)</b>
@@ -2289,7 +2332,7 @@ This option is deprecated but still supported.<br>
 </tr>
 <tr>
 <td><i class="conum" data-value="2"></i><b>2</b></td>
-<td>source code folders to scan.</td>
+<td>source code folder(s) to scan.</td>
 </tr>
 <tr>
 <td><i class="conum" data-value="3"></i><b>3</b></td>
@@ -2585,6 +2628,18 @@ In the example above the SecHub GO client will substitute the value of <code>"{{
 </div>
 <div class="sect5">
 <h6 id="example-form-based-login-by-script">2.5.7.2.4. Example form based login by script</h6>
+<div class="admonitionblock warning">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-warning" title="Warning"></i>
+</td>
+<td class="content">
+This example <span class="underline">currently</span> <span class="underline">only</span> works with the <code>Netsparker</code> DAST module. We deprecated the <code>Netsparker</code> integration because it is not developed any further from our side. We use and develop the <code>Zaproxy</code> integration. As soon as this feature is available for our actively maintained <code>Zaproxy</code> DAST module, we will remove this warning. If you host SecHub yourself with a <code>Netsparker</code> module, this does not affect you. You can use this configuration as before.
+</td>
+</tr>
+</table>
+</div>
 <div class="listingblock">
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="json">{
@@ -3265,7 +3320,8 @@ This is done by inspecting the filename ending. The accepted defaults are shown 
 <i class="fa icon-note" title="Note"></i>
 </td>
 <td class="content">
-<strong>All files having file endings not listed here, will be ignored</strong> and not uploaded to SecHub server.
+<strong>All files having file endings not listed here, will be ignored</strong> and not uploaded to SecHub server.<br>
+      <strong>Except</strong> the source data definition is also used for <strong>secrets scanning</strong>. Then every file is being uploaded.
 </td>
 </tr>
 </table>
@@ -3277,7 +3333,7 @@ This is done by inspecting the filename ending. The accepted defaults are shown 
 <i class="fa icon-tip" title="Tip"></i>
 </td>
 <td class="content">
-But of course you can also define additional source file endings - see <a href="#sechub-config-example-sourcescan">config file example</a> .
+You can also define additional source file endings - see <a href="#sechub-config-example-sourcescan">config file example</a> .
 </td>
 </tr>
 </table>
@@ -3994,7 +4050,7 @@ configure the client to do this on color YELLOW.
 </div>
 <div id="footer">
 <div id="footer-text">
- Client 1.4.0 modified (commit 5eb0916)<br>
+ Client 1.5.0<br>
 </div>
 </div>
 </body>

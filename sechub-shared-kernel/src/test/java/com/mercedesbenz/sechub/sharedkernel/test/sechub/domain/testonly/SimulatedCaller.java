@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.sharedkernel.test.sechub.domain.testonly;
 
 import com.mercedesbenz.sechub.sharedkernel.messaging.DomainMessage;

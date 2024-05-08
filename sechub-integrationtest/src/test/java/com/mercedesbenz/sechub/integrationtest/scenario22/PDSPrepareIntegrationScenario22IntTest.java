@@ -9,7 +9,6 @@ import static org.junit.Assert.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import java.io.File;
 import java.util.*;
 
 import org.junit.Rule;
@@ -17,12 +16,9 @@ import org.junit.Test;
 import org.junit.rules.Timeout;
 
 import com.mercedesbenz.sechub.commons.model.*;
-import com.mercedesbenz.sechub.integrationtest.api.IntegrationTestSetup;
-import com.mercedesbenz.sechub.integrationtest.api.TemplateData;
-import com.mercedesbenz.sechub.integrationtest.api.TestAPI;
-import com.mercedesbenz.sechub.integrationtest.api.TestProject;
+import com.mercedesbenz.sechub.integrationtest.api.*;
 import com.mercedesbenz.sechub.integrationtest.internal.IntegrationTestTemplateFile;
-import com.mercedesbenz.sechub.test.TestFileReader;
+import com.mercedesbenz.sechub.integrationtest.internal.SecHubClientExecutor;
 
 public class PDSPrepareIntegrationScenario22IntTest {
 
@@ -233,14 +229,22 @@ public class PDSPrepareIntegrationScenario22IntTest {
         /* @formatter:off */
 
         /* prepare */
+        IntegrationTestJSONLocation location = IntegrationTestJSONLocation.CLIENT_JSON_REMOTE_SCAN_CONFIGURATION;
+        /*
         String configurationAsJson = TestFileReader.loadTextFile(new File("./src/test/resources/sechub-integrationtest-remote-scan-configuration.json"));
         SecHubScanConfiguration configuration = SecHubScanConfiguration.createFromJSON(configurationAsJson);
         configuration.setProjectId("project5");
+        */
         TestProject project = PROJECT_5;
 
         /* execute */
+        SecHubClientExecutor.ExecutionResult result = as(USER_1).withSecHubClient().startSynchronScanFor(project, location);
+        UUID jobUUID = result.getSechubJobUUID();
+
+        /*
         UUID jobUUID = as(USER_1).createJobAndReturnJobUUID(project, configuration);
         as(USER_1).approveJob(project, jobUUID);
+        */
 
         /* test */
         waitForJobDone(project, jobUUID, 30, true);
@@ -271,10 +275,18 @@ public class PDSPrepareIntegrationScenario22IntTest {
         Optional<SecHubRemoteDataConfiguration> remote = dataConfiguration.getRemote();
         assertTrue(remote.isPresent());
 
-        String location = remote.get().getLocation();
-        assertEquals("remote_example_location", location);
+        String remoteLocation = remote.get().getLocation();
+        assertEquals("remote_example_location", remoteLocation);
         String type = remote.get().getType();
         assertEquals("docker", type);
+
+        Optional<SecHubRemoteCredentialConfiguration> credentials = remote.get().getCredentials();
+        assertTrue(credentials.isPresent());
+
+        Optional<SecHubRemoteCredentialUserData> user = credentials.get().getUser();
+        assertTrue(user.isPresent());
+        assertEquals("remote_example_user", user.get().getName());
+        assertEquals("remote_example_password", user.get().getPassword());
 
         /* @formatter:on */
     }

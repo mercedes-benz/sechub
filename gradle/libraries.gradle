@@ -86,7 +86,10 @@ ext {
       
       /* cycloneDX core */
       cycloneDX_core:                          "8.0.0",
-      cyclonedx_gradle_plugin:                 "1.7.4"
+      cyclonedx_gradle_plugin:                 "1.7.4",
+
+     /* Prepare wrapper */
+     jgit_core:                                "6.9.0.202403050737-r"
     
    ]    
    
@@ -182,7 +185,9 @@ ext {
         sarif_210:                             "de.jcup.sarif.java:sarif-2.1.0:${libraryVersion.sarif_210}",
 
         /* cycloneDX core for Xray and sechub importer */
-        cycloneDX_core:                         "org.cyclonedx:cyclonedx-core-java:${libraryVersion.cycloneDX_core}"
+        cycloneDX_core:                         "org.cyclonedx:cyclonedx-core-java:${libraryVersion.cycloneDX_core}",
+
+        jgit_core:                              "org.eclipse.jgit:org.eclipse.jgit:${libraryVersion.jgit_core}"
    ]
    
 

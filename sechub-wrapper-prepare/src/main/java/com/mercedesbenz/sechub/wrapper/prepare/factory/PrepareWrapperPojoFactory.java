@@ -5,6 +5,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Component;
 
 import com.mercedesbenz.sechub.commons.TextFileWriter;
+import com.mercedesbenz.sechub.commons.pds.PDSProcessAdapterFactory;
 
 @Component
 public class PrepareWrapperPojoFactory {
@@ -12,6 +13,11 @@ public class PrepareWrapperPojoFactory {
     @Bean
     TextFileWriter createTextFileWriter() {
         return new TextFileWriter();
+    }
+
+    @Bean
+    PDSProcessAdapterFactory createPDSProcessAdapterFactory() {
+        return new PDSProcessAdapterFactory();
     }
 
 }

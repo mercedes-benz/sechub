@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.commons.model;
 
 import java.util.Optional;
@@ -7,8 +8,6 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class SecHubRemoteCredentialConfiguration {
     public static final String PROPERTY_USER = "user";
-
-    private String name;
 
     private SecHubRemoteCredentialUserData user;
 
