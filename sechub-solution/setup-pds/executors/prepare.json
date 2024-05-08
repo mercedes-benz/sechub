@@ -1,5 +1,5 @@
 {
-  "name": "pds-cloc",
+  "name": "pds-prepare",
   "productIdentifier": "PDS_PREPARE",
   "executorVersion": 1,
   "enabled": true,
@@ -13,6 +13,10 @@
       {
         "key": "pds.config.productidentifier",
         "value": "PDS_PREPARE"
+      },
+      {
+        "key": "pds.config.product.timeout.minutes",
+        "value": "30"
       },
       {
         "key": "pds.config.use.sechub.storage",

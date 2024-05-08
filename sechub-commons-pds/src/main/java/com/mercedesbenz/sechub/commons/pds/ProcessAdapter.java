@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-package com.mercedesbenz.sechub.pds.execution;
+package com.mercedesbenz.sechub.commons.pds;
 
 import java.util.concurrent.TimeUnit;
 
@@ -41,6 +41,10 @@ public class ProcessAdapter {
             return -1;
         }
         return process.exitValue();
+    }
+
+    public Process getProcess() {
+        return process;
     }
 
 }
