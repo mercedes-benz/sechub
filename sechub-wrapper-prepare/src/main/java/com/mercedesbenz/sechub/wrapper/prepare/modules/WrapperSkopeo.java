@@ -66,25 +66,17 @@ public class WrapperSkopeo extends WrapperTool {
     }
 
     private ProcessBuilder buildProcessLogin(SkopeoContext context) {
-        // skopeo login "$LOCATION" --username "$USERNAME" --password "$PASSWORD"
-        // --authfile "$PDS_JOB_WORKSPACE_LOCATION/$SKOPEO_AUTH"
         List<String> commands = new ArrayList<>();
 
         String location = transformLocationForLogin(context.getLocation());
         File uploadDir = Paths.get(context.getUploadDirectory()).toAbsolutePath().toFile();
 
+        // /bin/bash -c is needed to interpret the $USERNAME and $PASSWORD as
+        // environment variables
         commands.add("/bin/bash");
         commands.add("-c");
         commands.add("skopeo login " + location + " --username $" + PDS_PREPARE_CREDENTIAL_USERNAME + " --password $" + PDS_PREPARE_CREDENTIAL_PASSWORD
                 + " --authfile " + pdsPrepareAuthenticationFileSkopeo);
-
-        /*
-         * commands.add("skopeo"); commands.add("login"); commands.add(location);
-         * commands.add("--username"); commands.add("$" +
-         * PDS_PREPARE_CREDENTIAL_USERNAME); commands.add("--password");
-         * commands.add("$" + PDS_PREPARE_CREDENTIAL_PASSWORD);
-         * commands.add("--authfile"); commands.add(pdsPrepareAuthenticationFileSkopeo);
-         */
 
         ProcessBuilder builder = new ProcessBuilder(commands);
         builder.directory(uploadDir);
@@ -94,21 +86,10 @@ public class WrapperSkopeo extends WrapperTool {
     }
 
     private ProcessBuilder buildProcessDownload(SkopeoContext context) {
-        // skopeo copy docker://$LOCATION
-        // docker-archive:$PDS_JOB_WORKSPACE_LOCATION/$PDS_PREPARE_UPLOAD_FOLDER
         List<String> commands = new ArrayList<>();
 
         String location = transformLocationForDownload(context.getLocation());
         File uploadDir = Paths.get(context.getUploadDirectory()).toAbsolutePath().toFile();
-
-        /*
-         * commands.add("/bin/bash"); commands.add("-c"); if
-         * (!context.getCredentialMap().isEmpty()){ commands.add("skopeo copy " +
-         * location + " docker-archive:" + context.getFilename()); }else{
-         * commands.add("skopeo copy " + location + " docker-archive:" +
-         * context.getFilename() + " --authfile " + pdsPrepareAuthenticationFileSkopeo);
-         * }
-         */
 
         commands.add("skopeo");
         commands.add("copy");
