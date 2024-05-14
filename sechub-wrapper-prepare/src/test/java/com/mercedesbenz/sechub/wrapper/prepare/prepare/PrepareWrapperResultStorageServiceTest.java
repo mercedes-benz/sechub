@@ -1,7 +1,6 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.wrapper.prepare.prepare;
 
-import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 import java.io.File;
@@ -18,8 +17,8 @@ import com.mercedesbenz.sechub.commons.pds.PDSUserMessageSupport;
 import com.mercedesbenz.sechub.test.TestUtil;
 import com.mercedesbenz.sechub.wrapper.prepare.cli.PrepareWrapperEnvironment;
 
-class PrepareWrapperStorageServiceTest {
-    private PrepareWrapperStorageService serviceToTest;
+class PrepareWrapperResultStorageServiceTest {
+    private PrepareWrapperResultStorageService serviceToTest;
     private PrepareWrapperEnvironment environment;
     private TextFileWriter writer;
     private File resultFile;
@@ -32,7 +31,7 @@ class PrepareWrapperStorageServiceTest {
         writer = mock(TextFileWriter.class);
         messageSupport = mock(PDSUserMessageSupport.class);
 
-        serviceToTest = new PrepareWrapperStorageService();
+        serviceToTest = new PrepareWrapperResultStorageService();
 
         serviceToTest.environment = environment;
         serviceToTest.writer = writer;

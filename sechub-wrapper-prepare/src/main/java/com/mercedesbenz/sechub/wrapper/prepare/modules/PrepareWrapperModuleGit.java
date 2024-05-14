@@ -86,6 +86,7 @@ public class PrepareWrapperModuleGit implements PrepareWrapperModule {
             throw new IOException("Download of git repository was not successful.");
         }
         cleanup(context);
+        // TODO: 14.05.24 laura implement upload
     }
 
     boolean isMatchingGitType(String type) {

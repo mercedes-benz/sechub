@@ -10,11 +10,17 @@ dependencies {
     implementation project(':sechub-commons-model')
     implementation project(':sechub-commons-core')
     implementation project(':sechub-commons-pds')
+    implementation project(':sechub-commons-archive')
     implementation project(':sechub-adapter')
+    implementation project(':sechub-storage-core')
+    implementation project(':sechub-storage-sharedvolume-spring')
+    implementation project(':sechub-storage-s3-aws')
 
     implementation spring_boot_dependency.logback_classic
 
     implementation library.jgit_core
+    implementation project(path: ':sechub-pds')
+
 
     /* test */
     testImplementation project(':sechub-testframework')

@@ -16,7 +16,7 @@ import com.mercedesbenz.sechub.commons.core.prepare.PrepareStatus;
 import com.mercedesbenz.sechub.commons.model.SecHubMessage;
 import com.mercedesbenz.sechub.commons.model.SecHubMessageType;
 import com.mercedesbenz.sechub.wrapper.prepare.prepare.PrepareWrapperPreparationService;
-import com.mercedesbenz.sechub.wrapper.prepare.prepare.PrepareWrapperStorageService;
+import com.mercedesbenz.sechub.wrapper.prepare.prepare.PrepareWrapperResultStorageService;
 
 @Component
 public class PrepareWrapperCLI implements CommandLineRunner {
@@ -27,7 +27,7 @@ public class PrepareWrapperCLI implements CommandLineRunner {
     PrepareWrapperPreparationService preparationService;
 
     @Autowired
-    PrepareWrapperStorageService storageService;
+    PrepareWrapperResultStorageService storageService;
 
     @Override
     public void run(String... args) {
