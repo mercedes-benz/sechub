@@ -1,16 +1,21 @@
 package com.mercedesbenz.sechub.wrapper.prepare.upload;
 
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
+import java.util.Objects;
+import java.util.Set;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import org.springframework.stereotype.Component;
 
 @Component
-public class TarFileSupport {
+public class FileSupport {
     public String getTarFileFromFolder(String folder) {
+        // TODO: 15.05.24 laura skopeo tar file
         // check if download folder contains a .tar archive
         Path path = Path.of(folder);
         if (Files.isDirectory(path)) {
@@ -31,4 +36,21 @@ public class TarFileSupport {
             throw new IllegalArgumentException("Folder is not a directory");
         }
     }
+
+    public String getSubfolderFromDirectory(String folder) {
+        // Set<String> files = listFilesUsingJavaIO(folder);
+        Set<String> files = listFilesUsingJavaIO(new File(folder).getAbsolutePath());
+        if (files.size() == 1) {
+            return files.iterator().next();
+        } else if (files.isEmpty()) {
+            throw new IllegalArgumentException("Download directory is empty: " + folder);
+        } else {
+            throw new IllegalArgumentException("Download directory contains more than one subfolder: " + folder);
+        }
+    }
+
+    private Set<String> listFilesUsingJavaIO(String dir) {
+        return Stream.of(Objects.requireNonNull(new File(dir).listFiles())).filter(File::isDirectory).map(File::getName).collect(Collectors.toSet());
+    }
+
 }

@@ -26,18 +26,19 @@ public class JGitAdapter {
 
     public void clone(GitContext gitContext) {
         String location = transformLocationToURL(gitContext.getLocation());
+        String uploadDirectory = gitContext.getUploadDirectory() + "/" + gitContext.getFilename();
         Map<String, SealedObject> credentialMap = gitContext.getCredentialMap();
 
         String username = getUserNameFromMap(credentialMap);
         String password = getPasswordFromMap(credentialMap);
 
-        CloneCommand command = Git.cloneRepository().setURI(location).setDirectory(Paths.get(gitContext.getUploadDirectory()).toFile());
+        CloneCommand command = Git.cloneRepository().setURI(location).setDirectory(Paths.get(uploadDirectory).toFile());
 
         if (username != null && password != null) {
-            LOG.debug("Cloning private repository: " + location + " with username and password to: " + gitContext.getUploadDirectory());
+            LOG.debug("Cloning private repository: " + location + " with username and password to: " + uploadDirectory);
             command = command.setCredentialsProvider(new UsernamePasswordCredentialsProvider(username, password));
         } else {
-            LOG.debug("Cloning public repository: " + location + " to: " + gitContext.getUploadDirectory());
+            LOG.debug("Cloning public repository: " + location + " to: " + uploadDirectory);
         }
 
         if (gitContext.isCloneWithoutHistory()) {
@@ -47,7 +48,7 @@ public class JGitAdapter {
 
         try (Git git = command.call()) {
         } catch (GitAPIException e) {
-            throw new RuntimeException("Error while cloning from repository: " + location + " with " + username + " " + password, e);
+            throw new RuntimeException("Error while cloning from repository: " + location, e);
         }
     }
 

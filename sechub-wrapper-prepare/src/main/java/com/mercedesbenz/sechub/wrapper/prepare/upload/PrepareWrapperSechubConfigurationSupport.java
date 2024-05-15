@@ -13,7 +13,7 @@ import com.mercedesbenz.sechub.wrapper.prepare.prepare.PrepareWrapperContext;
 public class PrepareWrapperSechubConfigurationSupport {
 
     @Autowired
-    TarFileSupport tarFileSupport;
+    FileSupport fileSupport;
 
     private static Logger LOG = LoggerFactory.getLogger(PrepareWrapperSechubConfigurationSupport.class);
 
@@ -41,8 +41,10 @@ public class PrepareWrapperSechubConfigurationSupport {
     }
 
     private SecHubConfigurationModel replaceRemoteBinaries(PrepareWrapperContext context, SecHubConfigurationModel modifiedModel) {
-        String tarFilename = tarFileSupport.getTarFileFromFolder(context.getEnvironment().getPdsPrepareUploadFolderDirectory());
+        String tarFilename = fileSupport.getTarFileFromFolder(context.getEnvironment().getPdsPrepareUploadFolderDirectory());
         SecHubFileSystemConfiguration fileSystemConfiguration = new SecHubFileSystemConfiguration();
+
+        tarFilename = getNameFromPath(tarFilename);
         fileSystemConfiguration.getFolders().add(tarFilename);
 
         modifiedModel.getData().get().getBinaries().forEach(binary -> {
@@ -52,9 +54,12 @@ public class PrepareWrapperSechubConfigurationSupport {
         return modifiedModel;
     }
 
-    private static SecHubConfigurationModel replaceRemoteSources(PrepareWrapperContext context, SecHubConfigurationModel modifiedModel) {
+    private SecHubConfigurationModel replaceRemoteSources(PrepareWrapperContext context, SecHubConfigurationModel modifiedModel) {
+        String repoName = fileSupport.getSubfolderFromDirectory(context.getEnvironment().getPdsPrepareUploadFolderDirectory());
+        repoName = getNameFromPath(repoName);
+
         SecHubFileSystemConfiguration fileSystemConfiguration = new SecHubFileSystemConfiguration();
-        fileSystemConfiguration.getFolders().add(context.getEnvironment().getPdsPrepareUploadFolderDirectory());
+        fileSystemConfiguration.getFolders().add(repoName);
 
         modifiedModel.getData().get().getSources().forEach(source -> {
             source.setRemote(null);
@@ -62,5 +67,9 @@ public class PrepareWrapperSechubConfigurationSupport {
 
         });
         return modifiedModel;
+    }
+
+    private String getNameFromPath(String path) {
+        return path.substring(path.lastIndexOf("/") + 1);
     }
 }

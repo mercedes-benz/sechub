@@ -23,24 +23,38 @@ import com.mercedesbenz.sechub.commons.model.SecHubRemoteDataConfiguration;
 import com.mercedesbenz.sechub.test.TestFileWriter;
 import com.mercedesbenz.sechub.wrapper.prepare.cli.PrepareWrapperEnvironment;
 import com.mercedesbenz.sechub.wrapper.prepare.prepare.PrepareWrapperContext;
+import com.mercedesbenz.sechub.wrapper.prepare.upload.FileSupport;
+import com.mercedesbenz.sechub.wrapper.prepare.upload.PrepareWrapperUploadService;
 
 class PrepareWrapperModuleGitTest {
 
-    private PrepareWrapperModuleGit moduleToTest;
+    PrepareWrapperModuleGit moduleToTest;
 
-    private WrapperGit git;
+    WrapperGit git;
 
     TestFileWriter writer;
 
     GitInputValidator gitInputValidator;
 
+    PrepareWrapperUploadService uploadService;
+
+    FileSupport filesSupport;
+
+    String subfolder = "subfolder";
+
     @BeforeEach
-    void beforeEach() {
+    void beforeEach() throws IOException {
         moduleToTest = new PrepareWrapperModuleGit();
         writer = new TestFileWriter();
         gitInputValidator = new GitInputValidator();
         git = mock(WrapperGit.class);
+        uploadService = mock(PrepareWrapperUploadService.class);
+        filesSupport = mock(FileSupport.class);
 
+        when(filesSupport.getSubfolderFromDirectory(anyString())).thenReturn(subfolder);
+
+        moduleToTest.uploadService = uploadService;
+        moduleToTest.filesSupport = filesSupport;
         moduleToTest.git = git;
         moduleToTest.gitInputValidator = gitInputValidator;
     }
@@ -207,7 +221,7 @@ class PrepareWrapperModuleGitTest {
         /* prepare */
         File tempDir = Files.createTempDirectory("upload-folder").toFile();
         tempDir.deleteOnExit();
-        String filename = ".git";
+        String filename = "/" + subfolder + "/.git";
         writer.save(new File(tempDir, filename), "some text", true);
 
         PrepareWrapperEnvironment environment = mock(PrepareWrapperEnvironment.class);
@@ -241,7 +255,7 @@ class PrepareWrapperModuleGitTest {
         /* prepare */
         File tempDir = Files.createTempDirectory("upload-folder").toFile();
         tempDir.deleteOnExit();
-        String filename = ".git";
+        String filename = "/" + subfolder + "/.git";
         writer.save(new File(tempDir, filename), "some text", true);
 
         PrepareWrapperEnvironment environment = mock(PrepareWrapperEnvironment.class);
@@ -267,7 +281,7 @@ class PrepareWrapperModuleGitTest {
         /* prepare */
         File tempDir = Files.createTempDirectory("upload-folder").toFile();
         tempDir.deleteOnExit();
-        String filename = ".git";
+        String filename = "/" + subfolder + "/.git";
         PrepareWrapperContext context = mock(PrepareWrapperContext.class);
         when(context.getEnvironment()).thenReturn(mock(PrepareWrapperEnvironment.class));
         writer.save(new File(tempDir, filename), "some text", true);
@@ -312,5 +326,4 @@ class PrepareWrapperModuleGitTest {
         when(environment.getPdsPrepareUploadFolderDirectory()).thenReturn("test-upload-folder");
         return new PrepareWrapperContext(createFromJSON("{}"), environment);
     }
-
 }

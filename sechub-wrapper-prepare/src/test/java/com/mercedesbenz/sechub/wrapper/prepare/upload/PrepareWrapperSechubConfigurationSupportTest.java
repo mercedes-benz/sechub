@@ -25,12 +25,12 @@ class PrepareWrapperSechubConfigurationSupportTest {
 
     TestFileWriter writer;
 
-    TarFileSupport tarFileSupport;
+    FileSupport fileSupport;
 
     @BeforeEach
     void beforeEach() {
         supportToTest = new PrepareWrapperSechubConfigurationSupport();
-        supportToTest.tarFileSupport = new TarFileSupport();
+        supportToTest.fileSupport = new FileSupport();
         writer = new TestFileWriter();
     }
 
@@ -72,8 +72,8 @@ class PrepareWrapperSechubConfigurationSupportTest {
 
         String path = tempDir.getAbsolutePath();
         String json = TestFileReader.loadTextFile(new File("./src/test/resources/sechub_remote_data_config_binary_code_scan_example.json"));
-        String testTarFilename = "/test-tar-filename.tar";
-        writer.save(new File(path + testTarFilename), "testText", true);
+        String testTarFilename = "test-tar-filename.tar";
+        writer.save(new File(path + "/" + testTarFilename), "testText", true);
 
         PrepareWrapperContext context = mock(PrepareWrapperContext.class);
         PrepareWrapperEnvironment environment = mock(PrepareWrapperEnvironment.class);
@@ -98,7 +98,7 @@ class PrepareWrapperSechubConfigurationSupportTest {
         assertNotNull(binary.getFileSystem());
         List<String> folders = binary.getFileSystem().get().getFolders();
         assertEquals(1, folders.size());
-        assertEquals(path + testTarFilename, folders.get(0));
+        assertEquals(testTarFilename, folders.get(0));
     }
 
     @Test
@@ -106,8 +106,10 @@ class PrepareWrapperSechubConfigurationSupportTest {
         /* prepare */
         File tempDir = Files.createTempDirectory("sechub_config_support").toFile();
         tempDir.deleteOnExit();
-
         String path = tempDir.getAbsolutePath();
+        String testTarFilename = "/git-repo-name/some-git-files.java";
+        writer.save(new File(path + testTarFilename), "testText", true);
+
         String json = TestFileReader.loadTextFile(new File("./src/test/resources/sechub_remote_data_config_source_code_scan_example.json"));
 
         PrepareWrapperContext context = mock(PrepareWrapperContext.class);
@@ -133,7 +135,7 @@ class PrepareWrapperSechubConfigurationSupportTest {
         assertNotNull(source.getFileSystem());
         List<String> folders = source.getFileSystem().get().getFolders();
         assertEquals(1, folders.size());
-        assertEquals(path, folders.get(0));
+        assertEquals("git-repo-name", folders.get(0));
     }
 
     @Test
@@ -144,8 +146,8 @@ class PrepareWrapperSechubConfigurationSupportTest {
 
         String path = tempDir.getAbsolutePath();
         String json = TestFileReader.loadTextFile(new File("./src/test/resources/sechub_remote_data_config_binary_code_scan_example.json"));
-        String testTarFilename = "/test-tar-filename.tar";
-        writer.save(new File(path + testTarFilename), "testText", true);
+        String testTarFilename = "test-tar-filename.tar";
+        writer.save(new File(path + "/" + testTarFilename), "testText", true);
 
         PrepareWrapperContext context = mock(PrepareWrapperContext.class);
         PrepareWrapperEnvironment environment = mock(PrepareWrapperEnvironment.class);
@@ -160,7 +162,7 @@ class PrepareWrapperSechubConfigurationSupportTest {
         SecHubDataConfiguration data = new SecHubDataConfiguration();
         SecHubBinaryDataConfiguration binary = new SecHubBinaryDataConfiguration();
         SecHubFileSystemConfiguration fileSystemConfiguration = new SecHubFileSystemConfiguration();
-        fileSystemConfiguration.getFolders().add(path + testTarFilename);
+        fileSystemConfiguration.getFolders().add(testTarFilename);
         binary.setFileSystem(fileSystemConfiguration);
         binary.setUniqueName("remote_example_name");
         data.getBinaries().add(binary);
@@ -182,6 +184,9 @@ class PrepareWrapperSechubConfigurationSupportTest {
         tempDir.deleteOnExit();
 
         String path = tempDir.getAbsolutePath();
+        String testFilename = "/git-repo-name/some-git-files.java";
+        writer.save(new File(path + testFilename), "testText", true);
+
         String json = TestFileReader.loadTextFile(new File("./src/test/resources/sechub_remote_data_config_source_code_scan_example.json"));
 
         PrepareWrapperContext context = mock(PrepareWrapperContext.class);
@@ -197,7 +202,7 @@ class PrepareWrapperSechubConfigurationSupportTest {
         SecHubDataConfiguration data = new SecHubDataConfiguration();
         SecHubSourceDataConfiguration source = new SecHubSourceDataConfiguration();
         SecHubFileSystemConfiguration fileSystemConfiguration = new SecHubFileSystemConfiguration();
-        fileSystemConfiguration.getFolders().add(path);
+        fileSystemConfiguration.getFolders().add("git-repo-name");
         source.setFileSystem(fileSystemConfiguration);
         source.setUniqueName("remote_example_name");
         data.getSources().add(source);

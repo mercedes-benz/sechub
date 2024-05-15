@@ -26,28 +26,30 @@ public class PrepareWrapperUploadService {
     PrepareWrapperSechubConfigurationSupport sechubConfigurationSupport;
 
     @Autowired
-    TarFileSupport tarFileSupport;
+    FileSupport fileSupport;
 
     public void upload(PrepareWrapperContext context) throws IOException {
 
+        // creates archives for sourcecode oder binary file
         archiveCreator.create(context);
         String storagePath = context.getEnvironment().getSechubStoragePath();
         UUID sechubJobUUID = UUID.fromString(context.getEnvironment().getSechubJobUUID());
 
         SecHubConfigurationModel model = sechubConfigurationSupport.replaceRemoteDataWithFilesystem(context);
 
-        // TODO: 14.05.24 laura checksum from files
-        String checkSum = "checksum";
-
         if (!model.getData().isPresent()) {
             throw new IllegalArgumentException("SecHubConfigurationModel data is not present");
         }
         if (!model.getData().get().getSources().isEmpty()) {
-            File file = new File(context.getEnvironment().getPdsPrepareUploadFolderDirectory());
+            File file = new File(context.getEnvironment().getPdsPrepareUploadFolderDirectory() + "/sourcecode.zip");
+            // TODO: 14.05.24 laura checksum from files
+            String checkSum = "checksum";
             sourceUploadService.uploadSourceCode(storagePath, sechubJobUUID, file, checkSum);
         }
         if (!model.getData().get().getBinaries().isEmpty()) {
-            File file = new File(tarFileSupport.getTarFileFromFolder(context.getEnvironment().getPdsPrepareUploadFolderDirectory()));
+            File file = new File(context.getEnvironment().getPdsPrepareUploadFolderDirectory() + "/binaries.tar");
+            // TODO: 14.05.24 laura checksum from files
+            String checkSum = "checksum";
             binaryUploadService.uploadBinaries(storagePath, sechubJobUUID, file, checkSum);
         }
     }

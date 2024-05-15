@@ -21,6 +21,8 @@ import org.springframework.stereotype.Service;
 import com.mercedesbenz.sechub.commons.core.security.CryptoAccess;
 import com.mercedesbenz.sechub.commons.model.*;
 import com.mercedesbenz.sechub.wrapper.prepare.prepare.PrepareWrapperContext;
+import com.mercedesbenz.sechub.wrapper.prepare.upload.FileSupport;
+import com.mercedesbenz.sechub.wrapper.prepare.upload.PrepareWrapperUploadService;
 
 @Service
 public class PrepareWrapperModuleGit implements PrepareWrapperModule {
@@ -40,6 +42,12 @@ public class PrepareWrapperModuleGit implements PrepareWrapperModule {
 
     @Autowired
     GitInputValidator gitInputValidator;
+
+    @Autowired
+    PrepareWrapperUploadService uploadService;
+
+    @Autowired
+    FileSupport filesSupport;
 
     public boolean isAbleToPrepare(PrepareWrapperContext context) {
 
@@ -86,7 +94,8 @@ public class PrepareWrapperModuleGit implements PrepareWrapperModule {
             throw new IOException("Download of git repository was not successful.");
         }
         cleanup(context);
-        // TODO: 14.05.24 laura implement upload
+        // TODO: 15.05.24 laura proper upload
+        uploadService.upload(context);
     }
 
     boolean isMatchingGitType(String type) {
@@ -98,11 +107,15 @@ public class PrepareWrapperModuleGit implements PrepareWrapperModule {
 
     boolean isDownloadSuccessful(PrepareWrapperContext context) {
         // check if download folder contains git
-        Path path = Paths.get(context.getEnvironment().getPdsPrepareUploadFolderDirectory());
-        if (Files.isDirectory(path)) {
-            String gitFile = ".git";
-            Path gitPath = Paths.get(path + "/" + gitFile);
-            return Files.exists(gitPath);
+        String uploadFolder = context.getEnvironment().getPdsPrepareUploadFolderDirectory();
+        if (Files.isDirectory(Path.of(uploadFolder))) {
+            String gitRepo = filesSupport.getSubfolderFromDirectory(uploadFolder);
+            Path path = Paths.get(uploadFolder + "/" + gitRepo).toAbsolutePath();
+            if (Files.isDirectory(path)) {
+                String gitFile = ".git";
+                Path gitPath = Paths.get(path + "/" + gitFile);
+                return Files.exists(gitPath);
+            }
         }
         return false;
     }

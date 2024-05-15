@@ -2,6 +2,7 @@ package com.mercedesbenz.sechub.wrapper.prepare.upload;
 
 import static com.mercedesbenz.sechub.commons.model.SecHubScanConfiguration.createFromJSON;
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -25,20 +26,20 @@ class PrepareWrapperArchiveCreatorTest {
 
     ArchiveSupport archiveSupport;
 
-    TarFileSupport tarFileSupport;
+    FileSupport fileSupport;
 
     PrepareWrapperSechubConfigurationSupport sechubConfigurationSupport;
-    private TestFileWriter writer;
+    TestFileWriter writer;
 
     @BeforeEach
     void beforeEach() {
         creatorToTest = new PrepareWrapperArchiveCreator();
         archiveSupport = new ArchiveSupport();
-        tarFileSupport = new TarFileSupport();
+        fileSupport = mock(FileSupport.class);
         sechubConfigurationSupport = new PrepareWrapperSechubConfigurationSupport();
         writer = new TestFileWriter();
 
-        sechubConfigurationSupport.tarFileSupport = tarFileSupport;
+        sechubConfigurationSupport.fileSupport = fileSupport;
         creatorToTest.archiveSupport = archiveSupport;
         creatorToTest.sechubConfigurationSupport = sechubConfigurationSupport;
     }
@@ -60,6 +61,7 @@ class PrepareWrapperArchiveCreatorTest {
         when(environment.getPdsPrepareUploadFolderDirectory()).thenReturn(path);
         when(context.getSecHubConfiguration()).thenReturn(model);
         when(context.getEnvironment()).thenReturn(environment);
+        when(fileSupport.getTarFileFromFolder(anyString())).thenReturn(testTarFilename);
 
         /* execute */
         assertDoesNotThrow(() -> creatorToTest.create(context));
@@ -77,7 +79,8 @@ class PrepareWrapperArchiveCreatorTest {
         String path = tempDir.getAbsolutePath();
         String json = TestFileReader.loadTextFile(new File("./src/test/resources/sechub_remote_data_config_source_code_scan_example.json"));
         String testFile = "/some-test-file.java";
-        writer.save(new File(path + testFile), "testText", true);
+        String repoPath = "/repo";
+        writer.save(new File(path + repoPath + testFile), "testText", true);
 
         PrepareWrapperContext context = mock(PrepareWrapperContext.class);
         PrepareWrapperEnvironment environment = mock(PrepareWrapperEnvironment.class);
@@ -85,6 +88,7 @@ class PrepareWrapperArchiveCreatorTest {
         when(environment.getPdsPrepareUploadFolderDirectory()).thenReturn(path);
         when(context.getSecHubConfiguration()).thenReturn(model);
         when(context.getEnvironment()).thenReturn(environment);
+        when(fileSupport.getSubfolderFromDirectory(anyString())).thenReturn(repoPath);
 
         /* execute */
         assertDoesNotThrow(() -> creatorToTest.create(context));
