@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.wrapper.prepare.factory;
 
+import com.mercedesbenz.sechub.commons.core.security.CheckSumSupport;
 import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Component;
 
@@ -24,6 +25,11 @@ public class PrepareWrapperPojoFactory {
     @Bean
     ArchiveSupport createArchiveSupport() {
         return new ArchiveSupport();
+    }
+
+    @Bean
+    CheckSumSupport createCheckSumSupport() {
+        return new CheckSumSupport();
     }
 
 }

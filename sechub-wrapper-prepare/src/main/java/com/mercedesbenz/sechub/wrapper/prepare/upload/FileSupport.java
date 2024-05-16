@@ -14,9 +14,8 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class FileSupport {
-    public String getTarFileFromFolder(String folder) {
+    public String getTarFileFromDirectory(String folder) {
         // TODO: 15.05.24 laura skopeo tar file
-        // check if download folder contains a .tar archive
         Path path = Path.of(folder);
         if (Files.isDirectory(path)) {
             try (Stream<Path> walk = Files.walk(path)) {
@@ -38,7 +37,6 @@ public class FileSupport {
     }
 
     public String getSubfolderFromDirectory(String folder) {
-        // Set<String> files = listFilesUsingJavaIO(folder);
         Set<String> files = listFilesUsingJavaIO(new File(folder).getAbsolutePath());
         if (files.size() == 1) {
             return files.iterator().next();
@@ -50,7 +48,12 @@ public class FileSupport {
     }
 
     private Set<String> listFilesUsingJavaIO(String dir) {
-        return Stream.of(Objects.requireNonNull(new File(dir).listFiles())).filter(File::isDirectory).map(File::getName).collect(Collectors.toSet());
+        /* @formatter:off */
+        return Stream.of(Objects.requireNonNull(new File(dir).listFiles())).
+                filter(File::isDirectory).
+                map(File::getName).
+                collect(Collectors.toSet());
+        /* @formatter:on */
     }
 
 }

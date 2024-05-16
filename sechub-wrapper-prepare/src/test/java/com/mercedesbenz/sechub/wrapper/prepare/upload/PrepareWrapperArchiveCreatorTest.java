@@ -61,7 +61,7 @@ class PrepareWrapperArchiveCreatorTest {
         when(environment.getPdsPrepareUploadFolderDirectory()).thenReturn(path);
         when(context.getSecHubConfiguration()).thenReturn(model);
         when(context.getEnvironment()).thenReturn(environment);
-        when(fileSupport.getTarFileFromFolder(anyString())).thenReturn(testTarFilename);
+        when(fileSupport.getTarFileFromDirectory(anyString())).thenReturn(testTarFilename);
 
         /* execute */
         assertDoesNotThrow(() -> creatorToTest.create(context));

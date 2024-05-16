@@ -41,7 +41,7 @@ public class PrepareWrapperSechubConfigurationSupport {
     }
 
     private SecHubConfigurationModel replaceRemoteBinaries(PrepareWrapperContext context, SecHubConfigurationModel modifiedModel) {
-        String tarFilename = fileSupport.getTarFileFromFolder(context.getEnvironment().getPdsPrepareUploadFolderDirectory());
+        String tarFilename = fileSupport.getTarFileFromDirectory(context.getEnvironment().getPdsPrepareUploadFolderDirectory());
         SecHubFileSystemConfiguration fileSystemConfiguration = new SecHubFileSystemConfiguration();
 
         tarFilename = getNameFromPath(tarFilename);
