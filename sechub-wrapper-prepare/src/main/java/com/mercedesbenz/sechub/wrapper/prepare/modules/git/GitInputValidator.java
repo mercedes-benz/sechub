@@ -1,9 +1,10 @@
-package com.mercedesbenz.sechub.wrapper.prepare.modules;
+package com.mercedesbenz.sechub.wrapper.prepare.modules.git;
 
 import java.util.Arrays;
 import java.util.List;
 import java.util.regex.Pattern;
 
+import com.mercedesbenz.sechub.wrapper.prepare.modules.InputValidator;
 import org.springframework.stereotype.Component;
 
 @Component

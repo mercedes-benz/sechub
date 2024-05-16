@@ -1,7 +1,8 @@
-package com.mercedesbenz.sechub.wrapper.prepare.modules;
+package com.mercedesbenz.sechub.wrapper.prepare.modules.skopeo;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+import com.mercedesbenz.sechub.wrapper.prepare.modules.skopeo.SkopeoInputValidator;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;

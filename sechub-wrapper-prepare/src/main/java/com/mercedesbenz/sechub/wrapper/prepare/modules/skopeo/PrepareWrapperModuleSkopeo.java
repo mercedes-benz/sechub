@@ -1,4 +1,4 @@
-package com.mercedesbenz.sechub.wrapper.prepare.modules;
+package com.mercedesbenz.sechub.wrapper.prepare.modules.skopeo;
 
 import static com.mercedesbenz.sechub.wrapper.prepare.cli.PrepareWrapperEnvironmentVariables.PDS_PREPARE_CREDENTIAL_PASSWORD;
 import static com.mercedesbenz.sechub.wrapper.prepare.cli.PrepareWrapperEnvironmentVariables.PDS_PREPARE_CREDENTIAL_USERNAME;
@@ -15,6 +15,7 @@ import java.util.stream.Stream;
 
 import javax.crypto.SealedObject;
 
+import com.mercedesbenz.sechub.wrapper.prepare.modules.PrepareWrapperModule;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -55,17 +56,17 @@ public class PrepareWrapperModuleSkopeo implements PrepareWrapperModule {
 
             skopeoInputValidator.validateLocationCharacters(location, null);
 
-            if (isMatchingSkopeoType(type)) {
+            if (isMatchingType(type, TYPE)) {
                 LOG.debug("Type is: " + TYPE);
                 if (!skopeoInputValidator.validateLocation(location)) {
                     context.getUserMessages().add(new SecHubMessage(SecHubMessageType.WARNING, "Type is " + TYPE + " but location does not match URL pattern"));
-                    LOG.warn("User defined type as " + TYPE + ", but the defined location was not a valid location: {}", location);
+                    LOG.warn("User defined type as {}, but the defined location was not a valid location: {}", TYPE, location);
                     return false;
                 }
                 return true;
             }
 
-            if (!isTypeNullOrEmpty(type)) {
+            if (isTypeConfigured(type)) {
                 // type was explicitly defined but is not matching
                 return false;
             }
@@ -85,6 +86,7 @@ public class PrepareWrapperModuleSkopeo implements PrepareWrapperModule {
         List<SecHubRemoteDataConfiguration> remoteDataConfigurationList = context.getRemoteDataConfigurationList();
 
         for (SecHubRemoteDataConfiguration secHubRemoteDataConfiguration : remoteDataConfigurationList) {
+            // TODO: 16.05.24 laura isabletoprepare
             prepareRemoteConfiguration(context, secHubRemoteDataConfiguration);
         }
 
@@ -94,7 +96,7 @@ public class PrepareWrapperModuleSkopeo implements PrepareWrapperModule {
         cleanup(context);
     }
 
-    boolean isDownloadSuccessful(PrepareWrapperContext context) {
+    public boolean isDownloadSuccessful(PrepareWrapperContext context) {
         // check if download folder contains a .tar archive
         Path path = Paths.get(context.getEnvironment().getPdsPrepareUploadFolderDirectory());
         if (Files.isDirectory(path)) {
@@ -111,17 +113,6 @@ public class PrepareWrapperModuleSkopeo implements PrepareWrapperModule {
         return false;
     }
 
-    boolean isMatchingSkopeoType(String type) {
-        if (type == null || type.isBlank()) {
-            return false;
-        }
-        return TYPE.equalsIgnoreCase(type);
-    }
-
-    private boolean isTypeNullOrEmpty(String type) {
-        return type == null || type.isBlank();
-    }
-
     private void cleanup(PrepareWrapperContext context) throws IOException {
         skopeo.cleanUploadDirectory(context.getEnvironment().getPdsPrepareUploadFolderDirectory());
     }
@@ -130,7 +121,7 @@ public class PrepareWrapperModuleSkopeo implements PrepareWrapperModule {
         String location = secHubRemoteDataConfiguration.getLocation();
         Optional<SecHubRemoteCredentialConfiguration> credentials = secHubRemoteDataConfiguration.getCredentials();
 
-        if (!credentials.isPresent()) {
+        if (credentials.isEmpty()) {
             downloadPublicImage(context, location);
             return;
         }
@@ -163,13 +154,6 @@ public class PrepareWrapperModuleSkopeo implements PrepareWrapperModule {
 
         SecHubMessage message = new SecHubMessage(SecHubMessageType.INFO, "Cloned private repository: " + location);
         context.getUserMessages().add(message);
-    }
-
-    private static void addSealedUserCredentials(SecHubRemoteCredentialUserData user, HashMap<String, SealedObject> credentialMap) {
-        SealedObject sealedUsername = CryptoAccess.CRYPTO_STRING.seal(user.getName());
-        SealedObject sealedPassword = CryptoAccess.CRYPTO_STRING.seal(user.getPassword());
-        credentialMap.put(PDS_PREPARE_CREDENTIAL_USERNAME, sealedUsername);
-        credentialMap.put(PDS_PREPARE_CREDENTIAL_PASSWORD, sealedPassword);
     }
 
     private void assertUserCredentials(SecHubRemoteCredentialUserData user) {

@@ -1,4 +1,4 @@
-package com.mercedesbenz.sechub.wrapper.prepare.modules;
+package com.mercedesbenz.sechub.wrapper.prepare.modules.git;
 
 import static com.mercedesbenz.sechub.wrapper.prepare.cli.PrepareWrapperEnvironmentVariables.*;
 import static com.mercedesbenz.sechub.wrapper.prepare.cli.PrepareWrapperKeyConstants.KEY_PDS_PREPARE_AUTO_CLEANUP_GIT_FOLDER;
@@ -12,6 +12,7 @@ import java.util.*;
 
 import javax.crypto.SealedObject;
 
+import com.mercedesbenz.sechub.wrapper.prepare.modules.PrepareWrapperModule;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -54,7 +55,7 @@ public class PrepareWrapperModuleGit implements PrepareWrapperModule {
 
             gitInputValidator.validateLocationCharacters(location, null);
 
-            if (isMatchingGitType(type)) {
+            if (isMatchingType(type, TYPE)) {
                 LOG.debug("Type is git");
                 if (!gitInputValidator.validateLocation(location)) {
                     context.getUserMessages().add(new SecHubMessage(SecHubMessageType.WARNING, "Type is git but location does not match git URL pattern"));
@@ -64,7 +65,7 @@ public class PrepareWrapperModuleGit implements PrepareWrapperModule {
                 return true;
             }
 
-            if (!isTypeNullOrEmpty(type)) {
+            if (isTypeConfigured(type)) {
                 // type was explicitly defined but is not matching
                 return false;
             }
@@ -94,14 +95,7 @@ public class PrepareWrapperModuleGit implements PrepareWrapperModule {
         cleanup(context);
     }
 
-    boolean isMatchingGitType(String type) {
-        if (type == null || type.isBlank()) {
-            return false;
-        }
-        return TYPE.equalsIgnoreCase(type);
-    }
-
-    boolean isDownloadSuccessful(PrepareWrapperContext context) {
+    public boolean isDownloadSuccessful(PrepareWrapperContext context) {
         // check if download folder contains git
         Path path = Paths.get(context.getEnvironment().getPdsPrepareUploadFolderDirectory());
         if (Files.isDirectory(path)) {
@@ -112,15 +106,11 @@ public class PrepareWrapperModuleGit implements PrepareWrapperModule {
         return false;
     }
 
-    private boolean isTypeNullOrEmpty(String type) {
-        return type == null || type.isBlank();
-    }
-
     private void prepareRemoteConfiguration(PrepareWrapperContext context, SecHubRemoteDataConfiguration secHubRemoteDataConfiguration) throws IOException {
         String location = secHubRemoteDataConfiguration.getLocation();
         Optional<SecHubRemoteCredentialConfiguration> credentials = secHubRemoteDataConfiguration.getCredentials();
 
-        if (!credentials.isPresent()) {
+        if (credentials.isEmpty()) {
             clonePublicRepository(context, location);
             return;
         }
@@ -154,13 +144,6 @@ public class PrepareWrapperModuleGit implements PrepareWrapperModule {
 
         SecHubMessage message = new SecHubMessage(SecHubMessageType.INFO, "Cloned private repository: " + location);
         context.getUserMessages().add(message);
-    }
-
-    private static void addSealedUserCredentials(SecHubRemoteCredentialUserData user, HashMap<String, SealedObject> credentialMap) {
-        SealedObject sealedUsername = CryptoAccess.CRYPTO_STRING.seal(user.getName());
-        SealedObject sealedPassword = CryptoAccess.CRYPTO_STRING.seal(user.getPassword());
-        credentialMap.put(PDS_PREPARE_CREDENTIAL_USERNAME, sealedUsername);
-        credentialMap.put(PDS_PREPARE_CREDENTIAL_PASSWORD, sealedPassword);
     }
 
     private void assertUserCredentials(SecHubRemoteCredentialUserData user) {

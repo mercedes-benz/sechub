@@ -1,7 +1,9 @@
-package com.mercedesbenz.sechub.wrapper.prepare.modules;
+package com.mercedesbenz.sechub.wrapper.prepare.modules.git;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+import com.mercedesbenz.sechub.wrapper.prepare.modules.git.GitInputValidator;
+import com.mercedesbenz.sechub.wrapper.prepare.modules.git.PrepareWrapperModuleGit;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;

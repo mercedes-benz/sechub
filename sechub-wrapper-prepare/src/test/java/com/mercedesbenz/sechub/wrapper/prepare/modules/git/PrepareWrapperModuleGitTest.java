@@ -1,8 +1,7 @@
-package com.mercedesbenz.sechub.wrapper.prepare.modules;
+package com.mercedesbenz.sechub.wrapper.prepare.modules.git;
 
 import static com.mercedesbenz.sechub.commons.model.SecHubScanConfiguration.createFromJSON;
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
 import java.io.File;
@@ -11,6 +10,10 @@ import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.mercedesbenz.sechub.wrapper.prepare.modules.git.GitContext;
+import com.mercedesbenz.sechub.wrapper.prepare.modules.git.GitInputValidator;
+import com.mercedesbenz.sechub.wrapper.prepare.modules.git.PrepareWrapperModuleGit;
+import com.mercedesbenz.sechub.wrapper.prepare.modules.git.WrapperGit;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -24,98 +27,128 @@ import com.mercedesbenz.sechub.commons.model.SecHubRemoteDataConfiguration;
 import com.mercedesbenz.sechub.test.TestFileWriter;
 import com.mercedesbenz.sechub.wrapper.prepare.cli.PrepareWrapperEnvironment;
 import com.mercedesbenz.sechub.wrapper.prepare.prepare.PrepareWrapperContext;
-import com.mercedesbenz.sechub.wrapper.prepare.prepare.PrepareWrapperRemoteConfigurationExtractor;
 
-class PrepareWrapperModuleSkopeoTest {
+class PrepareWrapperModuleGitTest {
 
-    PrepareWrapperModuleSkopeo moduleToTest;
-    SkopeoInputValidator skopeoInputValidator;
-    WrapperSkopeo skopeo;
+    private PrepareWrapperModuleGit moduleToTest;
+
+    private WrapperGit git;
 
     TestFileWriter writer;
 
+    GitInputValidator gitInputValidator;
+
     @BeforeEach
     void beforeEach() {
-        moduleToTest = new PrepareWrapperModuleSkopeo();
-        skopeoInputValidator = new SkopeoInputValidator();
+        moduleToTest = new PrepareWrapperModuleGit();
         writer = new TestFileWriter();
-        skopeo = mock(WrapperSkopeo.class);
+        gitInputValidator = new GitInputValidator();
+        git = mock(WrapperGit.class);
 
-        moduleToTest.skopeoInputValidator = skopeoInputValidator;
-        moduleToTest.skopeo = skopeo;
+        moduleToTest.git = git;
+        moduleToTest.gitInputValidator = gitInputValidator;
     }
 
-    // TODO: 07.05.24 laura add tests
-
     @ParameterizedTest
-    @ValueSource(strings = { "ubuntu:22.04", "ubuntu", "docker://ubuntu:22.04", "docker://ubuntu", "oci:busybox_ocilayout:latest", "https://hub.docker.com",
-            "docker://docker.io/library/busybox:latest", "ubuntu@sha256:26c68657ccce2cb0a31b330cb0be2b5e108d467f641c62e13ab40cbec258c68d",
-            "ghcr.io/owner/repo:tag" })
-    void isAbleToPrepare_returnsFalse_whenSkopeoModuleIsDisabled(String location) {
+    @ValueSource(strings = { "https://host.xz/path/to/notARepo/", "http://my.eval.com", "example.org" })
+    void isAbleToPrepare_returns_false_when_no_git_remote_data_was_configured(String location) {
         /* prepare */
-        PrepareWrapperContext context = createContextWithRemoteDataConfig(location);
-        ReflectionTestUtils.setField(moduleToTest, "pdsPrepareModuleSkopeoEnabled", false);
+        String json = """
+                {
+                  "apiVersion": "1.0",
+                  "data": {
+                    "sources": [
+                      {
+                        "name": "remote_example_name",
+                        "remote": {
+                          "location": "$location"
+                        }
+                      }
+                    ]
+                  },
+                  "codeScan": {
+                    "use": [
+                      "remote_example_name"
+                    ]
+                  }
+                }
+                """.replace("$location", location);
+        SecHubConfigurationModel model = createFromJSON(json);
+        PrepareWrapperEnvironment environment = mock(PrepareWrapperEnvironment.class);
+        PrepareWrapperContext context = new PrepareWrapperContext(model, environment);
 
         /* execute */
-        boolean result = moduleToTest.isAbleToPrepare(context);
+        boolean ableToPrepare = moduleToTest.isAbleToPrepare(context);
 
         /* test */
-        assertFalse(result);
+        assertFalse(ableToPrepare);
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = { "https://host.xz/path/to/notARepo/", "http://my.eval.com", "example.org", " " })
+    void isAbleToPrepare_returns_false_when_git_remote_data_type_was_configured_but_is_not_git_location(String location) {
+        /* prepare */
+        PrepareWrapperContext context = createContext();
+        List<SecHubRemoteDataConfiguration> remoteDataConfigurationList = new ArrayList<>();
+        SecHubRemoteDataConfiguration remoteDataConfiguration = new SecHubRemoteDataConfiguration();
+        remoteDataConfiguration.setLocation(location);
+        remoteDataConfiguration.setType("git");
+        remoteDataConfigurationList.add(remoteDataConfiguration);
+
+        context.setRemoteDataConfigurationList(remoteDataConfigurationList);
+
+        /* execute */
+        boolean ableToPrepare = moduleToTest.isAbleToPrepare(context);
+
+        /* test */
+        assertFalse(ableToPrepare);
     }
 
     @Test
-    void isAbleToPrepare_returnsFalse_whenNoRemoteDataConfigurationIsAvailable() {
+    void isAbleToPrepare_returns_false_when_configuration_is_empty() {
         /* prepare */
-        PrepareWrapperContext context = createContextEmptyConfig();
-        ReflectionTestUtils.setField(moduleToTest, "pdsPrepareModuleSkopeoEnabled", true);
+        PrepareWrapperContext context = createContext();
+        List<SecHubRemoteDataConfiguration> remoteDataConfigurationList = new ArrayList<>();
+        context.setRemoteDataConfigurationList(remoteDataConfigurationList);
 
         /* execute */
-        boolean result = moduleToTest.isAbleToPrepare(context);
+        boolean ableToPrepare = moduleToTest.isAbleToPrepare(context);
 
         /* test */
-        assertFalse(result);
+        assertFalse(ableToPrepare);
     }
 
     @ParameterizedTest
-    @ValueSource(strings = { "http://host.xz/path/to/repo.git/", "git://host.xz/path/to/repo.git/", "git@host.com:my-repo/example.git" })
-    void isAbleToPrepare_returnsFalse_whenRemoteDataConfigurationIsNotSkopeo(String location) {
+    @ValueSource(strings = { "https://host.xz/path/to/repo.git/", "http://host.xz/path/to/repo.git/", "git://host.xz/path/to/repo.git/",
+            "git@host.com:my-repo/example.git" })
+    void isAbleToPrepare_returns_true_when_git_remote_location_was_configured(String location) {
         /* prepare */
-        PrepareWrapperContext context = createContextWithRemoteDataConfig(location);
-        ReflectionTestUtils.setField(moduleToTest, "pdsPrepareModuleSkopeoEnabled", true);
+        PrepareWrapperContext context = createContext();
+        List<SecHubRemoteDataConfiguration> remoteDataConfigurationList = new ArrayList<>();
+        SecHubRemoteDataConfiguration remoteDataConfiguration = new SecHubRemoteDataConfiguration();
+        remoteDataConfiguration.setLocation(location);
+        remoteDataConfiguration.setType("");
+        remoteDataConfigurationList.add(remoteDataConfiguration);
+        context.setRemoteDataConfigurationList(remoteDataConfigurationList);
+        ReflectionTestUtils.setField(moduleToTest, "pdsPrepareModuleGitEnabled", true);
 
         /* execute */
-        boolean result = moduleToTest.isAbleToPrepare(context);
+        boolean ableToPrepare = moduleToTest.isAbleToPrepare(context);
 
         /* test */
-        assertFalse(result);
-    }
-
-    @ParameterizedTest
-    @ValueSource(strings = { "ubuntu:22.04", "ubuntu", "docker://ubuntu:22.04", "docker://ubuntu", "oci:busybox_ocilayout:latest", "https://hub.docker.com",
-            "docker://docker.io/library/busybox:latest", "ubuntu@sha256:26c68657ccce2cb0a31b330cb0be2b5e108d467f641c62e13ab40cbec258c68d",
-            "ghcr.io/owner/repo:tag" })
-    void isAbleToPrepare_returnsTrue_whenRemoteDataConfigurationIsSkopeo(String location) {
-        /* prepare */
-        PrepareWrapperContext context = createContextWithRemoteDataConfig(location);
-        ReflectionTestUtils.setField(moduleToTest, "pdsPrepareModuleSkopeoEnabled", true);
-
-        /* execute */
-        boolean result = moduleToTest.isAbleToPrepare(context);
-
-        /* test */
-        assertTrue(result);
+        assertTrue(ableToPrepare);
     }
 
     @Test
     void prepare_throws_exception_when_credentials_are_empty() {
         /* prepare */
-        PrepareWrapperContext context = createContextEmptyConfig();
+        PrepareWrapperContext context = createContext();
         List<SecHubRemoteDataConfiguration> remoteDataConfigurationList = new ArrayList<>();
         SecHubRemoteDataConfiguration remoteDataConfiguration = new SecHubRemoteDataConfiguration();
         SecHubRemoteCredentialConfiguration credentials = new SecHubRemoteCredentialConfiguration();
         remoteDataConfiguration.setCredentials(credentials);
         remoteDataConfiguration.setLocation("my-example-location");
-        remoteDataConfiguration.setType("docker");
+        remoteDataConfiguration.setType("git");
         remoteDataConfigurationList.add(remoteDataConfiguration);
         context.setRemoteDataConfigurationList(remoteDataConfigurationList);
 
@@ -129,7 +162,7 @@ class PrepareWrapperModuleSkopeoTest {
     @Test
     void prepare_throws_exception_when_no_username_found() {
         /* prepare */
-        PrepareWrapperContext context = createContextEmptyConfig();
+        PrepareWrapperContext context = createContext();
         List<SecHubRemoteDataConfiguration> remoteDataConfigurationList = new ArrayList<>();
         SecHubRemoteDataConfiguration remoteDataConfiguration = new SecHubRemoteDataConfiguration();
         SecHubRemoteCredentialConfiguration credentials = new SecHubRemoteCredentialConfiguration();
@@ -138,7 +171,7 @@ class PrepareWrapperModuleSkopeoTest {
         credentials.setUser(user);
         remoteDataConfiguration.setCredentials(credentials);
         remoteDataConfiguration.setLocation("my-example-location");
-        remoteDataConfiguration.setType("docker");
+        remoteDataConfiguration.setType("git");
         remoteDataConfigurationList.add(remoteDataConfiguration);
         context.setRemoteDataConfigurationList(remoteDataConfigurationList);
 
@@ -152,7 +185,7 @@ class PrepareWrapperModuleSkopeoTest {
     @Test
     void prepare_throws_exception_when_no_password_found() {
         /* prepare */
-        PrepareWrapperContext context = createContextEmptyConfig();
+        PrepareWrapperContext context = createContext();
         List<SecHubRemoteDataConfiguration> remoteDataConfigurationList = new ArrayList<>();
         SecHubRemoteDataConfiguration remoteDataConfiguration = new SecHubRemoteDataConfiguration();
         SecHubRemoteCredentialConfiguration credentials = new SecHubRemoteCredentialConfiguration();
@@ -177,7 +210,7 @@ class PrepareWrapperModuleSkopeoTest {
         /* prepare */
         File tempDir = Files.createTempDirectory("upload-folder").toFile();
         tempDir.deleteOnExit();
-        String filename = "testimage.tar";
+        String filename = ".git";
         writer.save(new File(tempDir, filename), "some text", true);
 
         PrepareWrapperEnvironment environment = mock(PrepareWrapperEnvironment.class);
@@ -193,16 +226,17 @@ class PrepareWrapperModuleSkopeoTest {
         credentials.setUser(user);
         remoteDataConfiguration.setCredentials(credentials);
         remoteDataConfiguration.setLocation("my-example-location");
-        remoteDataConfiguration.setType("docker");
+        remoteDataConfiguration.setType("git");
         remoteDataConfigurationList.add(remoteDataConfiguration);
         context.setRemoteDataConfigurationList(remoteDataConfigurationList);
+
+        ReflectionTestUtils.setField(moduleToTest, "pdsPrepareModuleGitEnabled", true);
 
         /* execute */
         moduleToTest.prepare(context);
 
         /* test */
-        verify(skopeo).download(any(SkopeoContext.class));
-        verify(skopeo).cleanUploadDirectory(tempDir.toString());
+        verify(git).downloadRemoteData(any(GitContext.class));
     }
 
     @Test
@@ -210,7 +244,7 @@ class PrepareWrapperModuleSkopeoTest {
         /* prepare */
         File tempDir = Files.createTempDirectory("upload-folder").toFile();
         tempDir.deleteOnExit();
-        String filename = "testimage.tar";
+        String filename = ".git";
         writer.save(new File(tempDir, filename), "some text", true);
 
         PrepareWrapperEnvironment environment = mock(PrepareWrapperEnvironment.class);
@@ -219,11 +253,8 @@ class PrepareWrapperModuleSkopeoTest {
 
         List<SecHubRemoteDataConfiguration> remoteDataConfigurationList = new ArrayList<>();
         SecHubRemoteDataConfiguration remoteDataConfiguration = new SecHubRemoteDataConfiguration();
-        SecHubRemoteCredentialUserData user = new SecHubRemoteCredentialUserData();
-        user.setName("my-example-name");
-        user.setPassword("ghp_exampleAPITOKEN8ffne3l6g9f393r8fbcsf");
         remoteDataConfiguration.setLocation("my-example-location");
-        remoteDataConfiguration.setType("docker");
+        remoteDataConfiguration.setType("git");
         remoteDataConfigurationList.add(remoteDataConfiguration);
         context.setRemoteDataConfigurationList(remoteDataConfigurationList);
 
@@ -231,16 +262,15 @@ class PrepareWrapperModuleSkopeoTest {
         moduleToTest.prepare(context);
 
         /* test */
-        verify(skopeo).download(any(SkopeoContext.class));
-        verify(skopeo).cleanUploadDirectory(tempDir.toString());
+        verify(git).downloadRemoteData(any(GitContext.class));
     }
 
     @Test
-    void isDownloadSuccessful_returns_true_when_tar_file_in_directory() throws IOException {
+    void isDownloadSuccessful_returns_true_when_git_file_in_directory() throws IOException {
         /* prepare */
         File tempDir = Files.createTempDirectory("upload-folder").toFile();
         tempDir.deleteOnExit();
-        String filename = "testimage.tar";
+        String filename = ".git";
         PrepareWrapperContext context = mock(PrepareWrapperContext.class);
         when(context.getEnvironment()).thenReturn(mock(PrepareWrapperEnvironment.class));
         writer.save(new File(tempDir, filename), "some text", true);
@@ -254,7 +284,7 @@ class PrepareWrapperModuleSkopeoTest {
     }
 
     @Test
-    void isDownloadSuccessful_returns_false_when_no_tar_file_in_directory() throws IOException {
+    void isDownloadSuccessful_returns_false_when_no_git_file_in_directory() throws IOException {
         /* prepare */
         File tempDir = Files.createTempDirectory("upload-folder").toFile();
         tempDir.deleteOnExit();
@@ -271,50 +301,19 @@ class PrepareWrapperModuleSkopeoTest {
     }
 
     @ParameterizedTest
-    @ValueSource(strings = { "docker", "DOCKER", "DockEr" })
-    void isMatchingSkopeoType_returns_true_when_docker_is_configured(String type) {
+    @ValueSource(strings = { "git", "GIT", "gIT" })
+    void isMatchingGitType_returns_true_when_git_is_configured(String type) {
         /* execute */
-        boolean result = moduleToTest.isMatchingSkopeoType(type);
+        boolean result = moduleToTest.isMatchingType(type, "git");
 
         /* test */
         assertTrue(result);
     }
 
-    private PrepareWrapperContext createContextEmptyConfig() {
+    private PrepareWrapperContext createContext() {
         PrepareWrapperEnvironment environment = mock(PrepareWrapperEnvironment.class);
         when(environment.getPdsPrepareUploadFolderDirectory()).thenReturn("test-upload-folder");
         return new PrepareWrapperContext(createFromJSON("{}"), environment);
     }
 
-    private PrepareWrapperContext createContextWithRemoteDataConfig(String location) {
-        String json = """
-                {
-                  "apiVersion": "1.0",
-                  "data": {
-                    "sources": [
-                      {
-                        "name": "remote_example_name",
-                        "remote": {
-                          "location": "$location",
-                            "type": "docker"
-                        }
-                      }
-                    ]
-                  },
-                  "codeScan": {
-                    "use": [
-                      "remote_example_name"
-                    ]
-                  }
-                }
-                """.replace("$location", location);
-        SecHubConfigurationModel model = createFromJSON(json);
-        PrepareWrapperEnvironment environment = mock(PrepareWrapperEnvironment.class);
-        PrepareWrapperRemoteConfigurationExtractor extractor = new PrepareWrapperRemoteConfigurationExtractor();
-        List<SecHubRemoteDataConfiguration> creds = extractor.extract(model);
-        when(environment.getPdsPrepareUploadFolderDirectory()).thenReturn("test-upload-folder");
-        PrepareWrapperContext context = new PrepareWrapperContext(model, environment);
-        context.setRemoteDataConfigurationList(creds);
-        return context;
-    }
 }

@@ -5,6 +5,13 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.io.IOException;
 
+import com.mercedesbenz.sechub.wrapper.prepare.modules.git.GitInputValidator;
+import com.mercedesbenz.sechub.wrapper.prepare.modules.git.JGitAdapter;
+import com.mercedesbenz.sechub.wrapper.prepare.modules.git.PrepareWrapperModuleGit;
+import com.mercedesbenz.sechub.wrapper.prepare.modules.git.WrapperGit;
+import com.mercedesbenz.sechub.wrapper.prepare.modules.skopeo.PrepareWrapperModuleSkopeo;
+import com.mercedesbenz.sechub.wrapper.prepare.modules.skopeo.SkopeoInputValidator;
+import com.mercedesbenz.sechub.wrapper.prepare.modules.skopeo.WrapperSkopeo;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -1,4 +1,4 @@
-package com.mercedesbenz.sechub.wrapper.prepare.modules;
+package com.mercedesbenz.sechub.wrapper.prepare.modules.skopeo;
 
 import static com.mercedesbenz.sechub.wrapper.prepare.cli.PrepareWrapperEnvironmentVariables.*;
 import static com.mercedesbenz.sechub.wrapper.prepare.cli.PrepareWrapperKeyConstants.KEY_PDS_PREPARE_AUTHENTICATION_FILE_SKOPEO;
@@ -9,6 +9,8 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.mercedesbenz.sechub.commons.core.security.CryptoAccess;
+import com.mercedesbenz.sechub.wrapper.prepare.modules.WrapperTool;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
@@ -20,7 +22,7 @@ public class WrapperSkopeo extends WrapperTool {
     @Value("${" + KEY_PDS_PREPARE_AUTHENTICATION_FILE_SKOPEO + ":authentication.json}")
     String pdsPrepareAuthenticationFileSkopeo;
 
-    void download(SkopeoContext context) throws IOException {
+    public void download(SkopeoContext context) throws IOException {
         if (!context.getCredentialMap().isEmpty()) {
             login(context);
         }
@@ -38,7 +40,7 @@ public class WrapperSkopeo extends WrapperTool {
     }
 
     @Override
-    void cleanUploadDirectory(String uploadDirectory) throws IOException {
+    public void cleanUploadDirectory(String uploadDirectory) throws IOException {
         ProcessBuilder builder = buildProcessClean(uploadDirectory);
         ProcessAdapter process = null;
 
@@ -53,7 +55,6 @@ public class WrapperSkopeo extends WrapperTool {
 
     private void login(SkopeoContext context) throws IOException {
         ProcessBuilder builder = buildProcessLogin(context);
-        exportEnvironmentVariables(builder, context.getCredentialMap());
         ProcessAdapter process = null;
 
         try {
@@ -71,12 +72,15 @@ public class WrapperSkopeo extends WrapperTool {
         String location = transformLocationForLogin(context.getLocation());
         File uploadDir = Paths.get(context.getUploadDirectory()).toAbsolutePath().toFile();
 
-        // /bin/bash -c is needed to interpret the $USERNAME and $PASSWORD as
-        // environment variables
-        commands.add("/bin/bash");
-        commands.add("-c");
-        commands.add("skopeo login " + location + " --username $" + PDS_PREPARE_CREDENTIAL_USERNAME + " --password $" + PDS_PREPARE_CREDENTIAL_PASSWORD
-                + " --authfile " + pdsPrepareAuthenticationFileSkopeo);
+        commands.add("skopeo");
+        commands.add("login");
+        commands.add(location);
+        commands.add("--username");
+        commands.add(CryptoAccess.CRYPTO_STRING.unseal(context.getCredentialMap().get(PDS_PREPARE_CREDENTIAL_USERNAME)));
+        commands.add("--password");
+        commands.add(CryptoAccess.CRYPTO_STRING.unseal(context.getCredentialMap().get(PDS_PREPARE_CREDENTIAL_PASSWORD)));
+        commands.add("--authfile");
+        commands.add(pdsPrepareAuthenticationFileSkopeo);
 
         ProcessBuilder builder = new ProcessBuilder(commands);
         builder.directory(uploadDir);
@@ -113,9 +117,9 @@ public class WrapperSkopeo extends WrapperTool {
 
         File uploadDir = Paths.get(pdsPrepareUploadFolderDirectory).toAbsolutePath().toFile();
 
-        commands.add("/bin/bash");
-        commands.add("-c");
-        commands.add("rm -rf " + pdsPrepareAuthenticationFileSkopeo);
+        commands.add("rm");
+        commands.add("-rf");
+        commands.add(pdsPrepareAuthenticationFileSkopeo);
 
         ProcessBuilder builder = new ProcessBuilder(commands);
         builder.directory(uploadDir);

@@ -14,7 +14,7 @@ import org.junit.jupiter.api.Test;
 import com.mercedesbenz.sechub.adapter.AdapterExecutionResult;
 import com.mercedesbenz.sechub.commons.model.SecHubRemoteDataConfiguration;
 import com.mercedesbenz.sechub.wrapper.prepare.cli.PrepareWrapperEnvironment;
-import com.mercedesbenz.sechub.wrapper.prepare.modules.PrepareWrapperModuleGit;
+import com.mercedesbenz.sechub.wrapper.prepare.modules.git.PrepareWrapperModuleGit;
 
 class PrepareWrapperPreparationServiceTest {
 

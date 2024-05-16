@@ -1,4 +1,6 @@
-package com.mercedesbenz.sechub.wrapper.prepare.modules;
+package com.mercedesbenz.sechub.wrapper.prepare.modules.skopeo;
+
+import com.mercedesbenz.sechub.wrapper.prepare.modules.ToolContext;
 
 public class SkopeoContext extends ToolContext {
 
@@ -22,7 +24,7 @@ public class SkopeoContext extends ToolContext {
             return new SkopeoContext(this);
         }
 
-        public SkopeoContextBuilder filename(String filename) {
+        public SkopeoContextBuilder setFilename(String filename) {
             if (filename == null || filename.isBlank()) {
                 return this;
             }

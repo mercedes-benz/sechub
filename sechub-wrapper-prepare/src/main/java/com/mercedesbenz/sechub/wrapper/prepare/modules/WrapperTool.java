@@ -21,7 +21,7 @@ import com.mercedesbenz.sechub.commons.pds.PDSProcessAdapterFactory;
 import com.mercedesbenz.sechub.commons.pds.ProcessAdapter;
 
 @Component
-abstract class WrapperTool {
+public abstract class WrapperTool {
 
     private static final Logger LOG = LoggerFactory.getLogger(WrapperTool.class);
     private static final int defaultMinutesToWaitForProduct = PDSDefaultParameterValueConstants.DEFAULT_MINUTES_TO_WAIT_FOR_PRODUCT;
@@ -33,11 +33,11 @@ abstract class WrapperTool {
     private int pdsPrepareProcessTimeoutSeconds;
 
     @Autowired
-    PDSProcessAdapterFactory processAdapterFactory;
+    public PDSProcessAdapterFactory processAdapterFactory;
 
-    abstract void cleanUploadDirectory(String uploadDirectory) throws IOException;
+    protected abstract void cleanUploadDirectory(String uploadDirectory) throws IOException;
 
-    void waitForProcessToFinish(ProcessAdapter process) {
+    protected void waitForProcessToFinish(ProcessAdapter process) {
 
         LOG.debug("Wait for wrapper to finish process.");
         int seconds = calculateTimeoutSeconds();
@@ -57,19 +57,6 @@ abstract class WrapperTool {
         if (process.exitValue() != 0) {
             throw new RuntimeException(
                     "Wrapper for executed modul " + this.getClass().getSimpleName() + " process failed with exit code: " + process.exitValue());
-        }
-    }
-
-    void exportEnvironmentVariables(ProcessBuilder builder, Map<String, SealedObject> credentialMap) throws IOException {
-        Map<String, String> environment = builder.environment();
-        if (credentialMap != null && !credentialMap.isEmpty()) {
-            for (Map.Entry<String, SealedObject> entry : credentialMap.entrySet()) {
-                try {
-                    environment.put(entry.getKey(), CryptoAccess.CRYPTO_STRING.unseal(entry.getValue()));
-                } catch (Exception e) {
-                    throw new IOException("Error while unsealing credential: " + entry.getKey(), e);
-                }
-            }
         }
     }
 

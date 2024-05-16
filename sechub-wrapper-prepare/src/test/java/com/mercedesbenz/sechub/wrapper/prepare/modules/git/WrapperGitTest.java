@@ -1,4 +1,4 @@
-package com.mercedesbenz.sechub.wrapper.prepare.modules;
+package com.mercedesbenz.sechub.wrapper.prepare.modules.git;
 
 import static com.mercedesbenz.sechub.wrapper.prepare.cli.PrepareWrapperEnvironmentVariables.PDS_PREPARE_CREDENTIAL_PASSWORD;
 import static com.mercedesbenz.sechub.wrapper.prepare.cli.PrepareWrapperEnvironmentVariables.PDS_PREPARE_CREDENTIAL_USERNAME;
@@ -13,6 +13,9 @@ import java.util.concurrent.TimeUnit;
 
 import javax.crypto.SealedObject;
 
+import com.mercedesbenz.sechub.wrapper.prepare.modules.git.GitContext;
+import com.mercedesbenz.sechub.wrapper.prepare.modules.git.JGitAdapter;
+import com.mercedesbenz.sechub.wrapper.prepare.modules.git.WrapperGit;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
