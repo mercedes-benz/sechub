@@ -1615,6 +1615,96 @@ class SecHubConfigurationModelValidatorTest {
         assertHasNotError(result, SECHUB_CONFIGURATION_TOO_LARGE);
     }
 
+    @ParameterizedTest
+    @ValueSource(strings = { "src/test/resources/sechub_remote_data_config_binary_code_scan_example.json",
+            "src/test/resources/sechub_remote_data_config_source_code_scan_example.json" })
+    void when_remote_sechub_configuration_is_valid_no_errors_are_reported(String file) {
+        String json = TestFileReader.loadTextFile(file);
+        SecHubScanConfiguration sechubConfiguration = SecHubScanConfiguration.createFromJSON(json);
+        modelSupportCollectedScanTypes.add(ScanType.CODE_SCAN);
+
+        /* execute */
+        SecHubConfigurationModelValidationResult result = validatorToTest.validate(sechubConfiguration);
+
+        /* test */
+        assertHasNoErrors(result);
+    }
+
+    @Test
+    void when_multiple_remote_configurations_are_configured_error_REMOTE_DATA_MULTI_CONFIGURATION_NOT_ALLOWED() {
+        /* prepare */
+        String json = TestFileReader.loadTextFile("src/test/resources/sechub_remote_data_config_invalid_multi_config.json");
+        SecHubScanConfiguration sechubConfiguration = SecHubScanConfiguration.createFromJSON(json);
+        modelSupportCollectedScanTypes.add(ScanType.CODE_SCAN);
+
+        /* execute */
+        SecHubConfigurationModelValidationResult result = validatorToTest.validate(sechubConfiguration);
+
+        /* test */
+        assertTrue(result.hasErrors());
+        assertHasError(result, REMOTE_DATA_MULTI_CONFIGURATION_NOT_ALLOWED);
+    }
+
+    @Test
+    void when_remote_configuration_location_is_not_defined_error_REMOTE_DATA_CONFIGURATION_LOCATION_NOT_DEFINED() {
+        /* prepare */
+        String json = TestFileReader.loadTextFile("src/test/resources/sechub_remote_data_config_invalid_missing_location.json");
+        SecHubScanConfiguration sechubConfiguration = SecHubScanConfiguration.createFromJSON(json);
+        modelSupportCollectedScanTypes.add(ScanType.CODE_SCAN);
+
+        /* execute */
+        SecHubConfigurationModelValidationResult result = validatorToTest.validate(sechubConfiguration);
+
+        /* test */
+        assertTrue(result.hasErrors());
+        assertHasError(result, REMOTE_DATA_CONFIGURATION_LOCATION_NOT_DEFINED);
+    }
+
+    @Test
+    void when_remote_configuration_has_empty_credentials_error_REMOTE_DATA_CONFIGURATION_USER_NOT_DEFINED() {
+        /* prepare */
+        String json = TestFileReader.loadTextFile("src/test/resources/sechub_remote_data_config_invalid_credentials_empty.json");
+        SecHubScanConfiguration sechubConfiguration = SecHubScanConfiguration.createFromJSON(json);
+        modelSupportCollectedScanTypes.add(ScanType.CODE_SCAN);
+
+        /* execute */
+        SecHubConfigurationModelValidationResult result = validatorToTest.validate(sechubConfiguration);
+
+        /* test */
+        assertTrue(result.hasErrors());
+        assertHasError(result, REMOTE_DATA_CONFIGURATION_USER_NOT_DEFINED);
+    }
+
+    @Test
+    void when_remote_configuration_credential_user_has_no_username_error_REMOTE_DATA_CONFIGURATION_USER_NAME_NOT_DEFINED() {
+        /* prepare */
+        String json = TestFileReader.loadTextFile("src/test/resources/sechub_remote_data_config_invalid_user_credential_missing_username.json");
+        SecHubScanConfiguration sechubConfiguration = SecHubScanConfiguration.createFromJSON(json);
+        modelSupportCollectedScanTypes.add(ScanType.CODE_SCAN);
+
+        /* execute */
+        SecHubConfigurationModelValidationResult result = validatorToTest.validate(sechubConfiguration);
+
+        /* test */
+        assertTrue(result.hasErrors());
+        assertHasError(result, REMOTE_DATA_CONFIGURATION_USER_NAME_NOT_DEFINED);
+    }
+
+    @Test
+    void when_remote_configuration_credential_user_has_no_password_error_REMOTE_DATA_CONFIGURATION_USER_PASSWORD_NOT_DEFINED() {
+        /* prepare */
+        String json = TestFileReader.loadTextFile("src/test/resources/sechub_remote_data_config_invalid_user_credential_missing_password.json");
+        SecHubScanConfiguration sechubConfiguration = SecHubScanConfiguration.createFromJSON(json);
+        modelSupportCollectedScanTypes.add(ScanType.CODE_SCAN);
+
+        /* execute */
+        SecHubConfigurationModelValidationResult result = validatorToTest.validate(sechubConfiguration);
+
+        /* test */
+        assertTrue(result.hasErrors());
+        assertHasError(result, REMOTE_DATA_CONFIGURATION_USER_PASSWORD_NOT_DEFINED);
+    }
+
     private SecHubConfigurationModel createSecHubConfigModelWithExactly8193Characters() {
         // 128*64 = 8192, so we take 127 because of the overhead of the JSON model:
         // {"apiVersion":""} = 17 characters so we need to add 48 characters afterwards
