@@ -17,6 +17,8 @@ import com.mercedesbenz.sechub.commons.model.SecHubRemoteCredentialUserData;
 import com.mercedesbenz.sechub.commons.model.SecHubRemoteDataConfiguration;
 import com.mercedesbenz.sechub.test.TestFileWriter;
 import com.mercedesbenz.sechub.wrapper.prepare.cli.PrepareWrapperEnvironment;
+import com.mercedesbenz.sechub.wrapper.prepare.modules.InputValidatorExitcode;
+import com.mercedesbenz.sechub.wrapper.prepare.modules.PrepareWrapperInputValidatorException;
 import com.mercedesbenz.sechub.wrapper.prepare.prepare.PrepareWrapperContext;
 
 class PrepareWrapperModuleGitTest {
@@ -42,25 +44,31 @@ class PrepareWrapperModuleGitTest {
     }
 
     @Test
-    void prepare_throws_exception_when_credentials_are_empty() throws IOException {
+    void when_inputvalidator_throws_InputValidatorException_prepare_return_false() throws IOException, PrepareWrapperInputValidatorException {
         /* prepare */
         PrepareWrapperContext context = createContext();
-        SecHubRemoteDataConfiguration remoteDataConfiguration = new SecHubRemoteDataConfiguration();
-        SecHubRemoteCredentialConfiguration credentials = new SecHubRemoteCredentialConfiguration();
-        remoteDataConfiguration.setCredentials(credentials);
-        remoteDataConfiguration.setLocation("my-example-location");
-        remoteDataConfiguration.setType("git");
-        context.setRemoteDataConfiguration(remoteDataConfiguration);
+        doThrow(new PrepareWrapperInputValidatorException("test", InputValidatorExitcode.LOCATION_NOT_MATCHING_PATTERN)).when(gitInputValidator)
+                .validate(context);
 
         /* execute */
-        IllegalStateException exception = assertThrows(IllegalStateException.class, () -> moduleToTest.prepare(context));
+        boolean result = moduleToTest.prepare(context);
 
         /* test */
-        assertEquals("Defined credentials have no credential user data for location: my-example-location", exception.getMessage());
+        assertFalse(result);
     }
 
     @Test
-    void prepare_successful_when_user_credentials_are_configured_correctly() throws IOException {
+    void when_inputvalidator_throws_exception_prepare_throws_exception() throws PrepareWrapperInputValidatorException {
+        /* prepare */
+        PrepareWrapperContext context = createContext();
+        doThrow(new IllegalStateException("test")).when(gitInputValidator).validate(context);
+
+        /* execute + test */
+        assertThrows(IllegalStateException.class, () -> moduleToTest.prepare(context));
+    }
+
+    @Test
+    void prepare_successful_with_user_credentials_configured() throws IOException {
         /* prepare */
         File tempDir = Files.createTempDirectory("upload-folder").toFile();
         tempDir.deleteOnExit();

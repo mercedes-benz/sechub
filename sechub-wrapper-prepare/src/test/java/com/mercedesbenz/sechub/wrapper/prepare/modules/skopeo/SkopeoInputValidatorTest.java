@@ -109,7 +109,7 @@ class SkopeoInputValidatorTest {
     }
 
     @Test
-    void prepare_throws_exception_when_no_username_found() {
+    void validate_throws_exception_when_no_username_found() {
         /* prepare */
         PrepareWrapperContext context = createContextEmptyConfig();
         SecHubRemoteDataConfiguration remoteDataConfiguration = new SecHubRemoteDataConfiguration();
@@ -130,7 +130,7 @@ class SkopeoInputValidatorTest {
     }
 
     @Test
-    void prepare_throws_exception_when_no_password_found() {
+    void validate_throws_exception_when_no_password_found() {
         /* prepare */
         PrepareWrapperContext context = createContextEmptyConfig();
         SecHubRemoteDataConfiguration remoteDataConfiguration = new SecHubRemoteDataConfiguration();
@@ -152,7 +152,7 @@ class SkopeoInputValidatorTest {
     }
 
     @Test
-    void prepare_successful_when_user_credentials_are_configured_correctly() throws IOException {
+    void validate_successful_when_user_credentials_are_configured_correctly() throws IOException {
         /* prepare */
         File tempDir = Files.createTempDirectory("upload-folder").toFile();
         tempDir.deleteOnExit();
@@ -179,7 +179,7 @@ class SkopeoInputValidatorTest {
     }
 
     @Test
-    void prepare_successful_when_no_credentials_are_configured() throws IOException {
+    void validate_successful_when_no_credentials_are_configured() throws IOException {
         /* prepare */
         File tempDir = Files.createTempDirectory("upload-folder").toFile();
         tempDir.deleteOnExit();

@@ -47,7 +47,6 @@ public class PrepareWrapperPreparationService {
 
         for (PrepareWrapperModule module : modules) {
 
-            // atLeastOneModuleExecuted = true;
             context.getUserMessages().add(new SecHubMessage(SecHubMessageType.INFO, "Execute prepare module: " + module.getClass().getSimpleName()));
             if (module.prepare(context)) {
                 atLeastOneModuleExecuted = true;
