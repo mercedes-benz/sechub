@@ -12,8 +12,6 @@ import java.util.concurrent.TimeUnit;
 
 import javax.crypto.SealedObject;
 
-import com.mercedesbenz.sechub.wrapper.prepare.modules.skopeo.SkopeoContext;
-import com.mercedesbenz.sechub.wrapper.prepare.modules.skopeo.WrapperSkopeo;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 

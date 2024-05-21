@@ -73,6 +73,7 @@ class PrepareWrapperPreparationServiceTest {
     void when_remote_data_was_configured_and_git_module_added_return_preparation_success_without_message() throws IOException {
         /* prepare */
         PrepareWrapperModuleGit gitModule = mock(PrepareWrapperModuleGit.class);
+        when(gitModule.prepare(context)).thenReturn(true);
         serviceToTest.modules.add(gitModule);
 
         List<SecHubRemoteDataConfiguration> remoteDataConfigurationList = new ArrayList<>();
@@ -81,8 +82,6 @@ class PrepareWrapperPreparationServiceTest {
         remoteDataConfiguration.setType("git");
         remoteDataConfigurationList.add(remoteDataConfiguration);
         when(context.getRemoteDataConfigurationList()).thenReturn(remoteDataConfigurationList);
-
-        when(gitModule.isAbleToPrepare(context)).thenReturn(true);
 
         /* execute */
         AdapterExecutionResult result = serviceToTest.startPreparation();

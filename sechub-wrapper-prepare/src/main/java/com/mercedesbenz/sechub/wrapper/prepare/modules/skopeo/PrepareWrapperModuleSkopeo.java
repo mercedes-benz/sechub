@@ -1,7 +1,5 @@
 package com.mercedesbenz.sechub.wrapper.prepare.modules.skopeo;
 
-import static com.mercedesbenz.sechub.wrapper.prepare.cli.PrepareWrapperEnvironmentVariables.PDS_PREPARE_CREDENTIAL_PASSWORD;
-import static com.mercedesbenz.sechub.wrapper.prepare.cli.PrepareWrapperEnvironmentVariables.PDS_PREPARE_CREDENTIAL_USERNAME;
 import static com.mercedesbenz.sechub.wrapper.prepare.cli.PrepareWrapperKeyConstants.KEY_PDS_PREPARE_MODULE_SKOPEO_ENABLED;
 
 import java.io.IOException;
@@ -15,23 +13,21 @@ import java.util.stream.Stream;
 
 import javax.crypto.SealedObject;
 
-import com.mercedesbenz.sechub.wrapper.prepare.modules.PrepareWrapperModule;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import com.mercedesbenz.sechub.commons.core.security.CryptoAccess;
 import com.mercedesbenz.sechub.commons.model.*;
+import com.mercedesbenz.sechub.wrapper.prepare.modules.PrepareWrapperInputValidatorException;
+import com.mercedesbenz.sechub.wrapper.prepare.modules.PrepareWrapperModule;
 import com.mercedesbenz.sechub.wrapper.prepare.prepare.PrepareWrapperContext;
 
 @Service
 public class PrepareWrapperModuleSkopeo implements PrepareWrapperModule {
 
     Logger LOG = LoggerFactory.getLogger(PrepareWrapperModuleSkopeo.class);
-
-    private static final String TYPE = "docker";
 
     @Value("${" + KEY_PDS_PREPARE_MODULE_SKOPEO_ENABLED + ":true}")
     private boolean pdsPrepareModuleSkopeoEnabled;
@@ -43,50 +39,24 @@ public class PrepareWrapperModuleSkopeo implements PrepareWrapperModule {
     WrapperSkopeo skopeo;
 
     @Override
-    public boolean isAbleToPrepare(PrepareWrapperContext context) {
+    public boolean prepare(PrepareWrapperContext context) throws IOException {
+        LOG.debug("Start remote data preparation for Docker repository");
 
         if (!pdsPrepareModuleSkopeoEnabled) {
             LOG.debug("Skopeo module is disabled");
             return false;
         }
 
-        for (SecHubRemoteDataConfiguration secHubRemoteDataConfiguration : context.getRemoteDataConfigurationList()) {
-            String location = secHubRemoteDataConfiguration.getLocation();
-            String type = secHubRemoteDataConfiguration.getType();
-
-            skopeoInputValidator.validateLocationCharacters(location, null);
-
-            if (isMatchingType(type, TYPE)) {
-                LOG.debug("Type is: " + TYPE);
-                if (!skopeoInputValidator.validateLocation(location)) {
-                    context.getUserMessages().add(new SecHubMessage(SecHubMessageType.WARNING, "Type is " + TYPE + " but location does not match URL pattern"));
-                    LOG.warn("User defined type as {}, but the defined location was not a valid location: {}", TYPE, location);
-                    return false;
-                }
-                return true;
-            }
-
-            if (isTypeConfigured(type)) {
-                // type was explicitly defined but is not matching
-                return false;
-            }
-
-            if (skopeoInputValidator.validateLocation(location)) {
-                LOG.debug("Location is a " + TYPE + " URL");
-                return true;
-            }
+        try {
+            skopeoInputValidator.validate(context);
+        } catch (PrepareWrapperInputValidatorException e) {
+            LOG.warn("Module {} could not resolve remote configuration.", getClass().getSimpleName(), e);
+            return false;
         }
-        return false;
-    }
-
-    @Override
-    public void prepare(PrepareWrapperContext context) throws IOException {
-        LOG.debug("Start remote data preparation for Docker repository");
 
         List<SecHubRemoteDataConfiguration> remoteDataConfigurationList = context.getRemoteDataConfigurationList();
 
         for (SecHubRemoteDataConfiguration secHubRemoteDataConfiguration : remoteDataConfigurationList) {
-            // TODO: 16.05.24 laura isabletoprepare
             prepareRemoteConfiguration(context, secHubRemoteDataConfiguration);
         }
 
@@ -94,6 +64,7 @@ public class PrepareWrapperModuleSkopeo implements PrepareWrapperModule {
             throw new IOException("Download of docker image was not successful.");
         }
         cleanup(context);
+        return true;
     }
 
     public boolean isDownloadSuccessful(PrepareWrapperContext context) {
@@ -137,7 +108,6 @@ public class PrepareWrapperModuleSkopeo implements PrepareWrapperModule {
     }
 
     private void downloadPrivateImage(PrepareWrapperContext context, SecHubRemoteCredentialUserData user, String location) throws IOException {
-        assertUserCredentials(user);
 
         HashMap<String, SealedObject> credentialMap = new HashMap<>();
         addSealedUserCredentials(user, credentialMap);
@@ -154,11 +124,6 @@ public class PrepareWrapperModuleSkopeo implements PrepareWrapperModule {
 
         SecHubMessage message = new SecHubMessage(SecHubMessageType.INFO, "Cloned private repository: " + location);
         context.getUserMessages().add(message);
-    }
-
-    private void assertUserCredentials(SecHubRemoteCredentialUserData user) {
-        skopeoInputValidator.validateUsername(user.getName());
-        skopeoInputValidator.validatePassword(user.getPassword());
     }
 
     private void downloadPublicImage(PrepareWrapperContext context, String location) throws IOException {

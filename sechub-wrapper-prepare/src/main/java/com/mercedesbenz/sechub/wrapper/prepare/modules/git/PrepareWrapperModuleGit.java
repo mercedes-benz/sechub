@@ -12,23 +12,21 @@ import java.util.*;
 
 import javax.crypto.SealedObject;
 
-import com.mercedesbenz.sechub.wrapper.prepare.modules.PrepareWrapperModule;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import com.mercedesbenz.sechub.commons.core.security.CryptoAccess;
 import com.mercedesbenz.sechub.commons.model.*;
+import com.mercedesbenz.sechub.wrapper.prepare.modules.PrepareWrapperInputValidatorException;
+import com.mercedesbenz.sechub.wrapper.prepare.modules.PrepareWrapperModule;
 import com.mercedesbenz.sechub.wrapper.prepare.prepare.PrepareWrapperContext;
 
 @Service
 public class PrepareWrapperModuleGit implements PrepareWrapperModule {
 
     Logger LOG = LoggerFactory.getLogger(PrepareWrapperModuleGit.class);
-
-    private static final String TYPE = "git";
 
     @Value("${" + KEY_PDS_PREPARE_AUTO_CLEANUP_GIT_FOLDER + ":true}")
     private boolean pdsPrepareAutoCleanupGitFolder;
@@ -42,46 +40,21 @@ public class PrepareWrapperModuleGit implements PrepareWrapperModule {
     @Autowired
     GitInputValidator gitInputValidator;
 
-    public boolean isAbleToPrepare(PrepareWrapperContext context) {
+    public boolean prepare(PrepareWrapperContext context) throws IOException {
 
         if (!pdsPrepareModuleGitEnabled) {
             LOG.debug("Git module is disabled");
             return false;
         }
 
-        for (SecHubRemoteDataConfiguration secHubRemoteDataConfiguration : context.getRemoteDataConfigurationList()) {
-            String location = secHubRemoteDataConfiguration.getLocation();
-            String type = secHubRemoteDataConfiguration.getType();
-
-            gitInputValidator.validateLocationCharacters(location, null);
-
-            if (isMatchingType(type, TYPE)) {
-                LOG.debug("Type is git");
-                if (!gitInputValidator.validateLocation(location)) {
-                    context.getUserMessages().add(new SecHubMessage(SecHubMessageType.WARNING, "Type is git but location does not match git URL pattern"));
-                    LOG.warn("User defined type as 'git', but the defined location was not a valid git location: {}", location);
-                    return false;
-                }
-                return true;
-            }
-
-            if (isTypeConfigured(type)) {
-                // type was explicitly defined but is not matching
-                return false;
-            }
-
-            if (gitInputValidator.validateLocation(location)) {
-                LOG.debug("Location is a git URL");
-                return true;
-            }
-
+        try {
+            gitInputValidator.validate(context);
+        } catch (PrepareWrapperInputValidatorException e) {
+            LOG.warn("Module {} could not resolve remote configuration.", getClass().getSimpleName(), e);
+            return false;
         }
-        return false;
-    }
 
-    public void prepare(PrepareWrapperContext context) throws IOException {
-
-        LOG.debug("Start remote data preparation for GIT repository");
+        LOG.debug("Module {} resolved remote configuration and will prepare.", getClass().getSimpleName());
 
         List<SecHubRemoteDataConfiguration> remoteDataConfigurationList = context.getRemoteDataConfigurationList();
 
@@ -93,6 +66,7 @@ public class PrepareWrapperModuleGit implements PrepareWrapperModule {
             throw new IOException("Download of git repository was not successful.");
         }
         cleanup(context);
+        return true;
     }
 
     public boolean isDownloadSuccessful(PrepareWrapperContext context) {
@@ -126,8 +100,6 @@ public class PrepareWrapperModuleGit implements PrepareWrapperModule {
     }
 
     private void clonePrivateRepository(PrepareWrapperContext context, SecHubRemoteCredentialUserData user, String location) throws IOException {
-        assertUserCredentials(user);
-
         HashMap<String, SealedObject> credentialMap = new HashMap<>();
         addSealedUserCredentials(user, credentialMap);
 
@@ -144,11 +116,6 @@ public class PrepareWrapperModuleGit implements PrepareWrapperModule {
 
         SecHubMessage message = new SecHubMessage(SecHubMessageType.INFO, "Cloned private repository: " + location);
         context.getUserMessages().add(message);
-    }
-
-    private void assertUserCredentials(SecHubRemoteCredentialUserData user) {
-        gitInputValidator.validateUsername(user.getName());
-        gitInputValidator.validatePassword(user.getPassword());
     }
 
     private void clonePublicRepository(PrepareWrapperContext context, String location) {

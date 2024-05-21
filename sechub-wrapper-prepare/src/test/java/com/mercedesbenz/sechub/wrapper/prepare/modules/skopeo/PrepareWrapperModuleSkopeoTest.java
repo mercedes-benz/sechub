@@ -11,167 +11,35 @@ import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.mercedesbenz.sechub.wrapper.prepare.modules.skopeo.PrepareWrapperModuleSkopeo;
-import com.mercedesbenz.sechub.wrapper.prepare.modules.skopeo.SkopeoContext;
-import com.mercedesbenz.sechub.wrapper.prepare.modules.skopeo.SkopeoInputValidator;
-import com.mercedesbenz.sechub.wrapper.prepare.modules.skopeo.WrapperSkopeo;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.test.util.ReflectionTestUtils;
 
-import com.mercedesbenz.sechub.commons.model.SecHubConfigurationModel;
 import com.mercedesbenz.sechub.commons.model.SecHubRemoteCredentialConfiguration;
 import com.mercedesbenz.sechub.commons.model.SecHubRemoteCredentialUserData;
 import com.mercedesbenz.sechub.commons.model.SecHubRemoteDataConfiguration;
 import com.mercedesbenz.sechub.test.TestFileWriter;
 import com.mercedesbenz.sechub.wrapper.prepare.cli.PrepareWrapperEnvironment;
 import com.mercedesbenz.sechub.wrapper.prepare.prepare.PrepareWrapperContext;
-import com.mercedesbenz.sechub.wrapper.prepare.prepare.PrepareWrapperRemoteConfigurationExtractor;
 
 class PrepareWrapperModuleSkopeoTest {
 
     PrepareWrapperModuleSkopeo moduleToTest;
     SkopeoInputValidator skopeoInputValidator;
     WrapperSkopeo skopeo;
-
     TestFileWriter writer;
 
     @BeforeEach
     void beforeEach() {
         moduleToTest = new PrepareWrapperModuleSkopeo();
-        skopeoInputValidator = new SkopeoInputValidator();
+        skopeoInputValidator = mock(SkopeoInputValidator.class);
         writer = new TestFileWriter();
         skopeo = mock(WrapperSkopeo.class);
 
+        ReflectionTestUtils.setField(moduleToTest, "pdsPrepareModuleSkopeoEnabled", true);
+
         moduleToTest.skopeoInputValidator = skopeoInputValidator;
         moduleToTest.skopeo = skopeo;
-    }
-
-    @ParameterizedTest
-    @ValueSource(strings = { "ubuntu:22.04", "ubuntu", "docker://ubuntu:22.04", "docker://ubuntu", "oci:busybox_ocilayout:latest", "https://hub.docker.com",
-            "docker://docker.io/library/busybox:latest", "ubuntu@sha256:26c68657ccce2cb0a31b330cb0be2b5e108d467f641c62e13ab40cbec258c68d",
-            "ghcr.io/owner/repo:tag" })
-    void isAbleToPrepare_returnsFalse_whenSkopeoModuleIsDisabled(String location) {
-        /* prepare */
-        PrepareWrapperContext context = createContextWithRemoteDataConfig(location);
-        ReflectionTestUtils.setField(moduleToTest, "pdsPrepareModuleSkopeoEnabled", false);
-
-        /* execute */
-        boolean result = moduleToTest.isAbleToPrepare(context);
-
-        /* test */
-        assertFalse(result);
-    }
-
-    @Test
-    void isAbleToPrepare_returnsFalse_whenNoRemoteDataConfigurationIsAvailable() {
-        /* prepare */
-        PrepareWrapperContext context = createContextEmptyConfig();
-        ReflectionTestUtils.setField(moduleToTest, "pdsPrepareModuleSkopeoEnabled", true);
-
-        /* execute */
-        boolean result = moduleToTest.isAbleToPrepare(context);
-
-        /* test */
-        assertFalse(result);
-    }
-
-    @ParameterizedTest
-    @ValueSource(strings = { "http://host.xz/path/to/repo.git/", "git://host.xz/path/to/repo.git/", "git@host.com:my-repo/example.git" })
-    void isAbleToPrepare_returnsFalse_whenRemoteDataConfigurationIsNotSkopeo(String location) {
-        /* prepare */
-        PrepareWrapperContext context = createContextWithRemoteDataConfig(location);
-        ReflectionTestUtils.setField(moduleToTest, "pdsPrepareModuleSkopeoEnabled", true);
-
-        /* execute */
-        boolean result = moduleToTest.isAbleToPrepare(context);
-
-        /* test */
-        assertFalse(result);
-    }
-
-    @ParameterizedTest
-    @ValueSource(strings = { "ubuntu:22.04", "ubuntu", "docker://ubuntu:22.04", "docker://ubuntu", "oci:busybox_ocilayout:latest", "https://hub.docker.com",
-            "docker://docker.io/library/busybox:latest", "ubuntu@sha256:26c68657ccce2cb0a31b330cb0be2b5e108d467f641c62e13ab40cbec258c68d",
-            "ghcr.io/owner/repo:tag" })
-    void isAbleToPrepare_returnsTrue_whenRemoteDataConfigurationIsSkopeo(String location) {
-        /* prepare */
-        PrepareWrapperContext context = createContextWithRemoteDataConfig(location);
-        ReflectionTestUtils.setField(moduleToTest, "pdsPrepareModuleSkopeoEnabled", true);
-
-        /* execute */
-        boolean result = moduleToTest.isAbleToPrepare(context);
-
-        /* test */
-        assertTrue(result);
-    }
-
-    @Test
-    void prepare_throws_exception_when_credentials_are_empty() {
-        /* prepare */
-        PrepareWrapperContext context = createContextEmptyConfig();
-        List<SecHubRemoteDataConfiguration> remoteDataConfigurationList = new ArrayList<>();
-        SecHubRemoteDataConfiguration remoteDataConfiguration = new SecHubRemoteDataConfiguration();
-        SecHubRemoteCredentialConfiguration credentials = new SecHubRemoteCredentialConfiguration();
-        remoteDataConfiguration.setCredentials(credentials);
-        remoteDataConfiguration.setLocation("my-example-location");
-        remoteDataConfiguration.setType("docker");
-        remoteDataConfigurationList.add(remoteDataConfiguration);
-        context.setRemoteDataConfigurationList(remoteDataConfigurationList);
-
-        /* execute */
-        IllegalStateException exception = assertThrows(IllegalStateException.class, () -> moduleToTest.prepare(context));
-
-        /* test */
-        assertTrue(exception.getMessage().contains("Defined credentials have no credential"));
-    }
-
-    @Test
-    void prepare_throws_exception_when_no_username_found() {
-        /* prepare */
-        PrepareWrapperContext context = createContextEmptyConfig();
-        List<SecHubRemoteDataConfiguration> remoteDataConfigurationList = new ArrayList<>();
-        SecHubRemoteDataConfiguration remoteDataConfiguration = new SecHubRemoteDataConfiguration();
-        SecHubRemoteCredentialConfiguration credentials = new SecHubRemoteCredentialConfiguration();
-        SecHubRemoteCredentialUserData user = new SecHubRemoteCredentialUserData();
-        user.setPassword("my-example-password");
-        credentials.setUser(user);
-        remoteDataConfiguration.setCredentials(credentials);
-        remoteDataConfiguration.setLocation("my-example-location");
-        remoteDataConfiguration.setType("docker");
-        remoteDataConfigurationList.add(remoteDataConfiguration);
-        context.setRemoteDataConfigurationList(remoteDataConfigurationList);
-
-        /* execute */
-        IllegalStateException exception = assertThrows(IllegalStateException.class, () -> moduleToTest.prepare(context));
-
-        /* test */
-        assertTrue(exception.getMessage().contains("Defined username must not be null or empty."));
-    }
-
-    @Test
-    void prepare_throws_exception_when_no_password_found() {
-        /* prepare */
-        PrepareWrapperContext context = createContextEmptyConfig();
-        List<SecHubRemoteDataConfiguration> remoteDataConfigurationList = new ArrayList<>();
-        SecHubRemoteDataConfiguration remoteDataConfiguration = new SecHubRemoteDataConfiguration();
-        SecHubRemoteCredentialConfiguration credentials = new SecHubRemoteCredentialConfiguration();
-        SecHubRemoteCredentialUserData user = new SecHubRemoteCredentialUserData();
-        user.setName("my-example-name");
-        credentials.setUser(user);
-        remoteDataConfiguration.setCredentials(credentials);
-        remoteDataConfiguration.setLocation("my-example-location");
-        remoteDataConfiguration.setType("git");
-        remoteDataConfigurationList.add(remoteDataConfiguration);
-        context.setRemoteDataConfigurationList(remoteDataConfigurationList);
-
-        /* execute */
-        IllegalStateException exception = assertThrows(IllegalStateException.class, () -> moduleToTest.prepare(context));
-
-        /* test */
-        assertTrue(exception.getMessage().contains("Defined password must not be null or empty."));
     }
 
     @Test
@@ -267,53 +135,5 @@ class PrepareWrapperModuleSkopeoTest {
 
         /* test */
         assertFalse(result);
-    }
-
-    @ParameterizedTest
-    @ValueSource(strings = { "docker", "DOCKER", "DockEr" })
-    void isMatchingSkopeoType_returns_true_when_docker_is_configured(String type) {
-        /* execute */
-        boolean result = moduleToTest.isMatchingType(type, "docker");
-
-        /* test */
-        assertTrue(result);
-    }
-
-    private PrepareWrapperContext createContextEmptyConfig() {
-        PrepareWrapperEnvironment environment = mock(PrepareWrapperEnvironment.class);
-        when(environment.getPdsPrepareUploadFolderDirectory()).thenReturn("test-upload-folder");
-        return new PrepareWrapperContext(createFromJSON("{}"), environment);
-    }
-
-    private PrepareWrapperContext createContextWithRemoteDataConfig(String location) {
-        String json = """
-                {
-                  "apiVersion": "1.0",
-                  "data": {
-                    "sources": [
-                      {
-                        "name": "remote_example_name",
-                        "remote": {
-                          "location": "$location",
-                            "type": "docker"
-                        }
-                      }
-                    ]
-                  },
-                  "codeScan": {
-                    "use": [
-                      "remote_example_name"
-                    ]
-                  }
-                }
-                """.replace("$location", location);
-        SecHubConfigurationModel model = createFromJSON(json);
-        PrepareWrapperEnvironment environment = mock(PrepareWrapperEnvironment.class);
-        PrepareWrapperRemoteConfigurationExtractor extractor = new PrepareWrapperRemoteConfigurationExtractor();
-        List<SecHubRemoteDataConfiguration> creds = extractor.extract(model);
-        when(environment.getPdsPrepareUploadFolderDirectory()).thenReturn("test-upload-folder");
-        PrepareWrapperContext context = new PrepareWrapperContext(model, environment);
-        context.setRemoteDataConfigurationList(creds);
-        return context;
     }
 }

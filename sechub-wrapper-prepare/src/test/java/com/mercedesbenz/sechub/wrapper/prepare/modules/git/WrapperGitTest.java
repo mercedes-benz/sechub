@@ -13,9 +13,6 @@ import java.util.concurrent.TimeUnit;
 
 import javax.crypto.SealedObject;
 
-import com.mercedesbenz.sechub.wrapper.prepare.modules.git.GitContext;
-import com.mercedesbenz.sechub.wrapper.prepare.modules.git.JGitAdapter;
-import com.mercedesbenz.sechub.wrapper.prepare.modules.git.WrapperGit;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;

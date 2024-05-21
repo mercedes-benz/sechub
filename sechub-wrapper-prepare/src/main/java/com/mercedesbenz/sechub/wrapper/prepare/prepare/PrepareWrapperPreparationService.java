@@ -45,14 +45,13 @@ public class PrepareWrapperPreparationService {
             return createAdapterExecutionResult(PrepareStatus.OK, SecHubMessageType.WARNING, "No Remote Configuration found.");
         }
 
-        // TODO: 16.05.24 laura for each schleife hier und in modulen raus? nur eins möglich?
         for (PrepareWrapperModule module : modules) {
-            if (!module.isAbleToPrepare(context)) {
-                continue;
-            }
-            atLeastOneModuleExecuted = true;
+
+            // atLeastOneModuleExecuted = true;
             context.getUserMessages().add(new SecHubMessage(SecHubMessageType.INFO, "Execute prepare module: " + module.getClass().getSimpleName()));
-            module.prepare(context);
+            if (module.prepare(context)) {
+                atLeastOneModuleExecuted = true;
+            }
         }
 
         if (!atLeastOneModuleExecuted) {

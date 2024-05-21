@@ -9,12 +9,12 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.mercedesbenz.sechub.commons.core.security.CryptoAccess;
-import com.mercedesbenz.sechub.wrapper.prepare.modules.WrapperTool;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
+import com.mercedesbenz.sechub.commons.core.security.CryptoAccess;
 import com.mercedesbenz.sechub.commons.pds.ProcessAdapter;
+import com.mercedesbenz.sechub.wrapper.prepare.modules.WrapperTool;
 
 @Component
 public class WrapperSkopeo extends WrapperTool {
