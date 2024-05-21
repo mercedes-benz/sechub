@@ -1,12 +1,12 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.wrapper.prepare.factory;
 
-import com.mercedesbenz.sechub.commons.core.security.CheckSumSupport;
 import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Component;
 
 import com.mercedesbenz.sechub.commons.TextFileWriter;
 import com.mercedesbenz.sechub.commons.archive.ArchiveSupport;
+import com.mercedesbenz.sechub.commons.core.security.CheckSumSupport;
 import com.mercedesbenz.sechub.commons.pds.PDSProcessAdapterFactory;
 
 @Component

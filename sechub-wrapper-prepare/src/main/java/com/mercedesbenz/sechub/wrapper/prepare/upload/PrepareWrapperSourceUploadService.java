@@ -36,7 +36,22 @@ public class PrepareWrapperSourceUploadService {
     }
 
     private void assertSourceUploadParams(String projectId, UUID jobUUID, File file, String checkSum) {
-        // TODO: 14.05.24 laura
+
+        if (projectId == null || projectId.isEmpty()) {
+            throw new IllegalArgumentException("projectId may not be empty.");
+        }
+
+        if (jobUUID == null) {
+            throw new IllegalArgumentException("jobUUID may not be null.");
+        }
+
+        if (file == null) {
+            throw new IllegalArgumentException("file may not be null.");
+        }
+
+        if (checkSum == null || checkSum.isEmpty()) {
+            throw new IllegalArgumentException("checkSum may not be empty.");
+        }
     }
 
     private void storeUploadFileAndSha256Checksum(String projectId, UUID jobUUID, File file, String checkSum) {

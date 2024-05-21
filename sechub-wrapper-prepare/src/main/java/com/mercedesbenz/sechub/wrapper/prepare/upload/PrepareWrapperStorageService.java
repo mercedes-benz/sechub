@@ -30,9 +30,7 @@ public class PrepareWrapperStorageService implements StorageService {
 
     @Override
     public JobStorage getJobStorage(String storagePath, UUID jobUUID) {
-        JobStorage jobStorage = jobStorageFactory.createJobStorage(storagePath, jobUUID);
-
-        return jobStorage;
+        return jobStorageFactory.createJobStorage(storagePath, jobUUID);
     }
 
 }

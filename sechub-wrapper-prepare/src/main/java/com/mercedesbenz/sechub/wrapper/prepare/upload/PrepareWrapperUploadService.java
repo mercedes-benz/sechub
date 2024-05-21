@@ -4,10 +4,10 @@ import java.io.File;
 import java.io.IOException;
 import java.util.UUID;
 
-import com.mercedesbenz.sechub.commons.core.security.CheckSumSupport;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.mercedesbenz.sechub.commons.core.security.CheckSumSupport;
 import com.mercedesbenz.sechub.commons.model.SecHubConfigurationModel;
 import com.mercedesbenz.sechub.wrapper.prepare.prepare.PrepareWrapperContext;
 
@@ -41,8 +41,8 @@ public class PrepareWrapperUploadService {
 
         SecHubConfigurationModel model = sechubConfigurationSupport.replaceRemoteDataWithFilesystem(context);
 
-        if (!model.getData().isPresent()) {
-            throw new IllegalArgumentException("SecHubConfigurationModel data is not present");
+        if (model.getData().isEmpty()) {
+            throw new IllegalArgumentException("SecHubConfigurationModel data is not configured.");
         }
 
         if (!model.getData().get().getSources().isEmpty()) {

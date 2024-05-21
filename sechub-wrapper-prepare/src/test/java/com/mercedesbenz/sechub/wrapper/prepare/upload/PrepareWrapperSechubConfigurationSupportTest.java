@@ -25,8 +25,6 @@ class PrepareWrapperSechubConfigurationSupportTest {
 
     TestFileWriter writer;
 
-    FileSupport fileSupport;
-
     @BeforeEach
     void beforeEach() {
         supportToTest = new PrepareWrapperSechubConfigurationSupport();
