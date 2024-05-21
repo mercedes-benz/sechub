@@ -7,8 +7,6 @@ import static org.mockito.Mockito.*;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
-import java.util.ArrayList;
-import java.util.List;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -47,14 +45,12 @@ class PrepareWrapperModuleGitTest {
     void prepare_throws_exception_when_credentials_are_empty() throws IOException {
         /* prepare */
         PrepareWrapperContext context = createContext();
-        List<SecHubRemoteDataConfiguration> remoteDataConfigurationList = new ArrayList<>();
         SecHubRemoteDataConfiguration remoteDataConfiguration = new SecHubRemoteDataConfiguration();
         SecHubRemoteCredentialConfiguration credentials = new SecHubRemoteCredentialConfiguration();
         remoteDataConfiguration.setCredentials(credentials);
         remoteDataConfiguration.setLocation("my-example-location");
         remoteDataConfiguration.setType("git");
-        remoteDataConfigurationList.add(remoteDataConfiguration);
-        context.setRemoteDataConfigurationList(remoteDataConfigurationList);
+        context.setRemoteDataConfiguration(remoteDataConfiguration);
 
         /* execute */
         IllegalStateException exception = assertThrows(IllegalStateException.class, () -> moduleToTest.prepare(context));
@@ -75,7 +71,6 @@ class PrepareWrapperModuleGitTest {
         when(environment.getPdsPrepareUploadFolderDirectory()).thenReturn(tempDir.toString());
         PrepareWrapperContext context = new PrepareWrapperContext(createFromJSON("{}"), environment);
 
-        List<SecHubRemoteDataConfiguration> remoteDataConfigurationList = new ArrayList<>();
         SecHubRemoteDataConfiguration remoteDataConfiguration = new SecHubRemoteDataConfiguration();
         SecHubRemoteCredentialConfiguration credentials = new SecHubRemoteCredentialConfiguration();
         SecHubRemoteCredentialUserData user = new SecHubRemoteCredentialUserData();
@@ -85,8 +80,7 @@ class PrepareWrapperModuleGitTest {
         remoteDataConfiguration.setCredentials(credentials);
         remoteDataConfiguration.setLocation("my-example-location");
         remoteDataConfiguration.setType("git");
-        remoteDataConfigurationList.add(remoteDataConfiguration);
-        context.setRemoteDataConfigurationList(remoteDataConfigurationList);
+        context.setRemoteDataConfiguration(remoteDataConfiguration);
 
         ReflectionTestUtils.setField(moduleToTest, "pdsPrepareModuleGitEnabled", true);
 
@@ -110,12 +104,10 @@ class PrepareWrapperModuleGitTest {
         when(environment.getPdsPrepareUploadFolderDirectory()).thenReturn(tempDir.toString());
         PrepareWrapperContext context = new PrepareWrapperContext(createFromJSON("{}"), environment);
 
-        List<SecHubRemoteDataConfiguration> remoteDataConfigurationList = new ArrayList<>();
         SecHubRemoteDataConfiguration remoteDataConfiguration = new SecHubRemoteDataConfiguration();
         remoteDataConfiguration.setLocation("my-example-location");
         remoteDataConfiguration.setType("git");
-        remoteDataConfigurationList.add(remoteDataConfiguration);
-        context.setRemoteDataConfigurationList(remoteDataConfigurationList);
+        context.setRemoteDataConfiguration(remoteDataConfiguration);
 
         /* execute */
         moduleToTest.prepare(context);

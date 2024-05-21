@@ -54,11 +54,8 @@ public class PrepareWrapperModuleSkopeo implements PrepareWrapperModule {
             return false;
         }
 
-        List<SecHubRemoteDataConfiguration> remoteDataConfigurationList = context.getRemoteDataConfigurationList();
-
-        for (SecHubRemoteDataConfiguration secHubRemoteDataConfiguration : remoteDataConfigurationList) {
-            prepareRemoteConfiguration(context, secHubRemoteDataConfiguration);
-        }
+        SecHubRemoteDataConfiguration secHubRemoteDataConfiguration = context.getRemoteDataConfiguration();
+        prepareRemoteConfiguration(context, secHubRemoteDataConfiguration);
 
         if (!isDownloadSuccessful(context)) {
             throw new IOException("Download of docker image was not successful.");

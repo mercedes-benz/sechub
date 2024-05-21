@@ -8,8 +8,6 @@ import static org.mockito.Mockito.*;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
-import java.util.ArrayList;
-import java.util.List;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -54,7 +52,6 @@ class PrepareWrapperModuleSkopeoTest {
         when(environment.getPdsPrepareUploadFolderDirectory()).thenReturn(tempDir.toString());
         PrepareWrapperContext context = new PrepareWrapperContext(createFromJSON("{}"), environment);
 
-        List<SecHubRemoteDataConfiguration> remoteDataConfigurationList = new ArrayList<>();
         SecHubRemoteDataConfiguration remoteDataConfiguration = new SecHubRemoteDataConfiguration();
         SecHubRemoteCredentialConfiguration credentials = new SecHubRemoteCredentialConfiguration();
         SecHubRemoteCredentialUserData user = new SecHubRemoteCredentialUserData();
@@ -64,8 +61,7 @@ class PrepareWrapperModuleSkopeoTest {
         remoteDataConfiguration.setCredentials(credentials);
         remoteDataConfiguration.setLocation("my-example-location");
         remoteDataConfiguration.setType("docker");
-        remoteDataConfigurationList.add(remoteDataConfiguration);
-        context.setRemoteDataConfigurationList(remoteDataConfigurationList);
+        context.setRemoteDataConfiguration(remoteDataConfiguration);
 
         /* execute */
         moduleToTest.prepare(context);
@@ -87,13 +83,10 @@ class PrepareWrapperModuleSkopeoTest {
         when(environment.getPdsPrepareUploadFolderDirectory()).thenReturn(tempDir.toString());
         PrepareWrapperContext context = new PrepareWrapperContext(createFromJSON("{}"), environment);
 
-        List<SecHubRemoteDataConfiguration> remoteDataConfigurationList = new ArrayList<>();
         SecHubRemoteDataConfiguration remoteDataConfiguration = new SecHubRemoteDataConfiguration();
         remoteDataConfiguration.setLocation("my-example-location");
         remoteDataConfiguration.setType("docker");
-        remoteDataConfigurationList.add(remoteDataConfiguration);
-        context.setRemoteDataConfigurationList(remoteDataConfigurationList);
-
+        context.setRemoteDataConfiguration(remoteDataConfiguration);
         /* execute */
         moduleToTest.prepare(context);
 

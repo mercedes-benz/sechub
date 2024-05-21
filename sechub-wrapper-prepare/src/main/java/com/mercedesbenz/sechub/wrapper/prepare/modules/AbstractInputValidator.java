@@ -34,38 +34,36 @@ public class AbstractInputValidator implements InputValidator {
     }
 
     private void validateModule(PrepareWrapperContext context) throws PrepareWrapperInputValidatorException {
-        for (SecHubRemoteDataConfiguration secHubRemoteDataConfiguration : context.getRemoteDataConfigurationList()) {
-            String location = secHubRemoteDataConfiguration.getLocation();
-            String type = secHubRemoteDataConfiguration.getType();
+        SecHubRemoteDataConfiguration secHubRemoteDataConfiguration = context.getRemoteDataConfiguration();
+        String location = secHubRemoteDataConfiguration.getLocation();
+        String type = secHubRemoteDataConfiguration.getType();
 
-            if (isTypeNullOrEmpty(type)) {
-                LOG.debug("Not type defined. Location is: {}", location);
-                validateLocation(location);
-                return;
-            } else if (isMatchingType(type)) {
-                LOG.debug("Type is matching type {}. Location is: {}", TYPE, location);
-                validateLocation(location);
-                return;
-            }
-            throw new PrepareWrapperInputValidatorException("Defined type " + type + " was not modules type " + TYPE + ".", TYPE_NOT_MATCHING_PATTERN);
+        if (isTypeNullOrEmpty(type)) {
+            LOG.debug("Not type defined. Location is: {}", location);
+            validateLocation(location);
+            return;
+        } else if (isMatchingType(type)) {
+            LOG.debug("Type is matching type {}. Location is: {}", TYPE, location);
+            validateLocation(location);
+            return;
         }
+        throw new PrepareWrapperInputValidatorException("Defined type " + type + " was not modules type " + TYPE + ".", TYPE_NOT_MATCHING_PATTERN);
     }
 
     private void validateCredentials(PrepareWrapperContext context) throws PrepareWrapperInputValidatorException {
-        for (SecHubRemoteDataConfiguration secHubRemoteDataConfiguration : context.getRemoteDataConfigurationList()) {
-            if (secHubRemoteDataConfiguration.getCredentials().isEmpty()) {
+        SecHubRemoteDataConfiguration secHubRemoteDataConfiguration = context.getRemoteDataConfiguration();
+        if (secHubRemoteDataConfiguration.getCredentials().isEmpty()) {
+            return;
+        } else {
+            SecHubRemoteCredentialConfiguration remoteCredentialConfiguration = secHubRemoteDataConfiguration.getCredentials().get();
+            if (remoteCredentialConfiguration.getUser().isPresent()) {
+                SecHubRemoteCredentialUserData user = remoteCredentialConfiguration.getUser().get();
+                validateUsername(user.getName());
+                validatePassword(user.getPassword());
                 return;
-            } else {
-                SecHubRemoteCredentialConfiguration remoteCredentialConfiguration = secHubRemoteDataConfiguration.getCredentials().get();
-                if (remoteCredentialConfiguration.getUser().isPresent()) {
-                    SecHubRemoteCredentialUserData user = remoteCredentialConfiguration.getUser().get();
-                    validateUsername(user.getName());
-                    validatePassword(user.getPassword());
-                    return;
-                }
-                // credentials object was empty
-                throw new IllegalStateException("Defined credentials must not be null.");
             }
+            // credentials object was empty
+            throw new IllegalStateException("Defined credentials must not be null.");
         }
     }
 

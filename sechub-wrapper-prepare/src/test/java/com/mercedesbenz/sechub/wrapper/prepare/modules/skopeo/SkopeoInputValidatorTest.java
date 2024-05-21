@@ -7,15 +7,12 @@ import static org.mockito.Mockito.*;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
-import java.util.ArrayList;
-import java.util.List;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 
-import com.mercedesbenz.sechub.commons.model.SecHubConfigurationModel;
 import com.mercedesbenz.sechub.commons.model.SecHubRemoteCredentialConfiguration;
 import com.mercedesbenz.sechub.commons.model.SecHubRemoteCredentialUserData;
 import com.mercedesbenz.sechub.commons.model.SecHubRemoteDataConfiguration;
@@ -23,7 +20,6 @@ import com.mercedesbenz.sechub.test.TestFileWriter;
 import com.mercedesbenz.sechub.wrapper.prepare.cli.PrepareWrapperEnvironment;
 import com.mercedesbenz.sechub.wrapper.prepare.modules.PrepareWrapperInputValidatorException;
 import com.mercedesbenz.sechub.wrapper.prepare.prepare.PrepareWrapperContext;
-import com.mercedesbenz.sechub.wrapper.prepare.prepare.PrepareWrapperRemoteConfigurationExtractor;
 
 class SkopeoInputValidatorTest {
 
@@ -98,14 +94,12 @@ class SkopeoInputValidatorTest {
     void validate_throws_exception_when_credentials_are_empty() {
         /* prepare */
         PrepareWrapperContext context = createContextEmptyConfig();
-        List<SecHubRemoteDataConfiguration> remoteDataConfigurationList = new ArrayList<>();
         SecHubRemoteDataConfiguration remoteDataConfiguration = new SecHubRemoteDataConfiguration();
         SecHubRemoteCredentialConfiguration credentials = new SecHubRemoteCredentialConfiguration();
         remoteDataConfiguration.setCredentials(credentials);
         remoteDataConfiguration.setLocation("my-example-location");
         remoteDataConfiguration.setType("docker");
-        remoteDataConfigurationList.add(remoteDataConfiguration);
-        context.setRemoteDataConfigurationList(remoteDataConfigurationList);
+        context.setRemoteDataConfiguration(remoteDataConfiguration);
 
         /* execute */
         IllegalStateException exception = assertThrows(IllegalStateException.class, () -> validatorToTest.validate(context));
@@ -118,7 +112,6 @@ class SkopeoInputValidatorTest {
     void prepare_throws_exception_when_no_username_found() {
         /* prepare */
         PrepareWrapperContext context = createContextEmptyConfig();
-        List<SecHubRemoteDataConfiguration> remoteDataConfigurationList = new ArrayList<>();
         SecHubRemoteDataConfiguration remoteDataConfiguration = new SecHubRemoteDataConfiguration();
         SecHubRemoteCredentialConfiguration credentials = new SecHubRemoteCredentialConfiguration();
         SecHubRemoteCredentialUserData user = new SecHubRemoteCredentialUserData();
@@ -127,8 +120,7 @@ class SkopeoInputValidatorTest {
         remoteDataConfiguration.setCredentials(credentials);
         remoteDataConfiguration.setLocation("my-example-location");
         remoteDataConfiguration.setType("docker");
-        remoteDataConfigurationList.add(remoteDataConfiguration);
-        context.setRemoteDataConfigurationList(remoteDataConfigurationList);
+        context.setRemoteDataConfiguration(remoteDataConfiguration);
 
         /* execute */
         IllegalStateException exception = assertThrows(IllegalStateException.class, () -> validatorToTest.validate(context));
@@ -141,7 +133,6 @@ class SkopeoInputValidatorTest {
     void prepare_throws_exception_when_no_password_found() {
         /* prepare */
         PrepareWrapperContext context = createContextEmptyConfig();
-        List<SecHubRemoteDataConfiguration> remoteDataConfigurationList = new ArrayList<>();
         SecHubRemoteDataConfiguration remoteDataConfiguration = new SecHubRemoteDataConfiguration();
         SecHubRemoteCredentialConfiguration credentials = new SecHubRemoteCredentialConfiguration();
         SecHubRemoteCredentialUserData user = new SecHubRemoteCredentialUserData();
@@ -150,8 +141,7 @@ class SkopeoInputValidatorTest {
         remoteDataConfiguration.setCredentials(credentials);
         remoteDataConfiguration.setLocation("my-example-location");
         remoteDataConfiguration.setType("docker");
-        remoteDataConfigurationList.add(remoteDataConfiguration);
-        context.setRemoteDataConfigurationList(remoteDataConfigurationList);
+        context.setRemoteDataConfiguration(remoteDataConfiguration);
 
         /* execute */
         IllegalStateException exception = assertThrows(IllegalStateException.class, () -> validatorToTest.validate(context));
@@ -173,7 +163,6 @@ class SkopeoInputValidatorTest {
         when(environment.getPdsPrepareUploadFolderDirectory()).thenReturn(tempDir.toString());
         PrepareWrapperContext context = new PrepareWrapperContext(createFromJSON("{}"), environment);
 
-        List<SecHubRemoteDataConfiguration> remoteDataConfigurationList = new ArrayList<>();
         SecHubRemoteDataConfiguration remoteDataConfiguration = new SecHubRemoteDataConfiguration();
         SecHubRemoteCredentialConfiguration credentials = new SecHubRemoteCredentialConfiguration();
         SecHubRemoteCredentialUserData user = new SecHubRemoteCredentialUserData();
@@ -183,8 +172,7 @@ class SkopeoInputValidatorTest {
         remoteDataConfiguration.setCredentials(credentials);
         remoteDataConfiguration.setLocation("my-example-location");
         remoteDataConfiguration.setType("docker");
-        remoteDataConfigurationList.add(remoteDataConfiguration);
-        context.setRemoteDataConfigurationList(remoteDataConfigurationList);
+        context.setRemoteDataConfiguration(remoteDataConfiguration);
 
         /* execute + test */
         assertDoesNotThrow(() -> validatorToTest.validate(context));
@@ -202,12 +190,10 @@ class SkopeoInputValidatorTest {
         when(environment.getPdsPrepareUploadFolderDirectory()).thenReturn(tempDir.toString());
         PrepareWrapperContext context = new PrepareWrapperContext(createFromJSON("{}"), environment);
 
-        List<SecHubRemoteDataConfiguration> remoteDataConfigurationList = new ArrayList<>();
         SecHubRemoteDataConfiguration remoteDataConfiguration = new SecHubRemoteDataConfiguration();
         remoteDataConfiguration.setLocation("my-example-location");
         remoteDataConfiguration.setType("docker");
-        remoteDataConfigurationList.add(remoteDataConfiguration);
-        context.setRemoteDataConfigurationList(remoteDataConfigurationList);
+        context.setRemoteDataConfiguration(remoteDataConfiguration);
 
         /* execute + test */
         assertDoesNotThrow(() -> validatorToTest.validate(context));
@@ -218,37 +204,5 @@ class SkopeoInputValidatorTest {
         PrepareWrapperEnvironment environment = mock(PrepareWrapperEnvironment.class);
         when(environment.getPdsPrepareUploadFolderDirectory()).thenReturn("test-upload-folder");
         return new PrepareWrapperContext(createFromJSON("{}"), environment);
-    }
-
-    private PrepareWrapperContext createContextWithRemoteDataConfig(String location) {
-        String json = """
-                {
-                  "apiVersion": "1.0",
-                  "data": {
-                    "sources": [
-                      {
-                        "name": "remote_example_name",
-                        "remote": {
-                          "location": "$location",
-                            "type": "docker"
-                        }
-                      }
-                    ]
-                  },
-                  "codeScan": {
-                    "use": [
-                      "remote_example_name"
-                    ]
-                  }
-                }
-                """.replace("$location", location);
-        SecHubConfigurationModel model = createFromJSON(json);
-        PrepareWrapperEnvironment environment = mock(PrepareWrapperEnvironment.class);
-        PrepareWrapperRemoteConfigurationExtractor extractor = new PrepareWrapperRemoteConfigurationExtractor();
-        List<SecHubRemoteDataConfiguration> creds = extractor.extract(model);
-        when(environment.getPdsPrepareUploadFolderDirectory()).thenReturn("test-upload-folder");
-        PrepareWrapperContext context = new PrepareWrapperContext(model, environment);
-        context.setRemoteDataConfigurationList(creds);
-        return context;
     }
 }

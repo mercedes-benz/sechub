@@ -38,9 +38,9 @@ public class PrepareWrapperPreparationService {
 
         LOG.debug("Start preparation");
         PrepareWrapperContext context = factory.create(environment);
-        List<SecHubRemoteDataConfiguration> remoteDataConfigurationList = context.getRemoteDataConfigurationList();
+        SecHubRemoteDataConfiguration remoteDataConfiguration = context.getRemoteDataConfiguration();
 
-        if (remoteDataConfigurationList.isEmpty()) {
+        if (remoteDataConfiguration == null) {
             LOG.warn("No Remote configuration was found");
             return createAdapterExecutionResult(PrepareStatus.OK, SecHubMessageType.WARNING, "No Remote Configuration found.");
         }

@@ -56,11 +56,9 @@ public class PrepareWrapperModuleGit implements PrepareWrapperModule {
 
         LOG.debug("Module {} resolved remote configuration and will prepare.", getClass().getSimpleName());
 
-        List<SecHubRemoteDataConfiguration> remoteDataConfigurationList = context.getRemoteDataConfigurationList();
+        SecHubRemoteDataConfiguration secHubRemoteDataConfiguration = context.getRemoteDataConfiguration();
 
-        for (SecHubRemoteDataConfiguration secHubRemoteDataConfiguration : remoteDataConfigurationList) {
-            prepareRemoteConfiguration(context, secHubRemoteDataConfiguration);
-        }
+        prepareRemoteConfiguration(context, secHubRemoteDataConfiguration);
 
         if (!isDownloadSuccessful(context)) {
             throw new IOException("Download of git repository was not successful.");
