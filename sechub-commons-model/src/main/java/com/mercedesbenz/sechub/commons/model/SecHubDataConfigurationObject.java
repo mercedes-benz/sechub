@@ -18,8 +18,8 @@ public interface SecHubDataConfigurationObject {
      *         <code>null</code>
      */
     @JsonProperty("name")
-    public String getUniqueName();
+    String getUniqueName();
 
-    public Optional<SecHubRemoteDataConfiguration> getRemote();
+    Optional<SecHubRemoteDataConfiguration> getRemote();
 
 }

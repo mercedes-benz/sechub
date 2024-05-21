@@ -569,7 +569,8 @@ public class SecHubConfigurationModelValidator {
             String uniqueName = configurationObject.getUniqueName();
 
             if (configurationObjects.size() > 1) {
-                // remote data is configured with multiple configurations
+                // remote data is configured with multiple configurations (filesystem or second
+                // remote)
                 result.addError(REMOTE_DATA_MULTI_CONFIGURATION_NOT_ALLOWED);
             }
 

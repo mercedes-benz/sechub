@@ -1705,6 +1705,21 @@ class SecHubConfigurationModelValidatorTest {
         assertHasError(result, REMOTE_DATA_CONFIGURATION_USER_PASSWORD_NOT_DEFINED);
     }
 
+    @Test
+    void when_remote_configuration_is_mixed_with_filesystem_REMOTE_DATA_MIXED_CONFIGURATION_NOT_ALLOWED() {
+        /* prepare */
+        String json = TestFileReader.loadTextFile("src/test/resources/sechub_remote_data_config_invalid_config_with_filesystem.json");
+        SecHubScanConfiguration sechubConfiguration = SecHubScanConfiguration.createFromJSON(json);
+        modelSupportCollectedScanTypes.add(ScanType.CODE_SCAN);
+
+        /* execute */
+        SecHubConfigurationModelValidationResult result = validatorToTest.validate(sechubConfiguration);
+
+        /* test */
+        assertTrue(result.hasErrors());
+        assertHasError(result, REMOTE_DATA_MULTI_CONFIGURATION_NOT_ALLOWED);
+    }
+
     private SecHubConfigurationModel createSecHubConfigModelWithExactly8193Characters() {
         // 128*64 = 8192, so we take 127 because of the overhead of the JSON model:
         // {"apiVersion":""} = 17 characters so we need to add 48 characters afterwards
