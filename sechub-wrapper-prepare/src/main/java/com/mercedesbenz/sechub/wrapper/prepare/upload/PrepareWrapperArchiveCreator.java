@@ -20,11 +20,12 @@ public class PrepareWrapperArchiveCreator {
     PrepareWrapperSechubConfigurationSupport sechubConfigurationSupport;
 
     public void create(PrepareWrapperContext context) throws IOException {
-        // Need to replace remote with filesystem entry in model
+        // replace remote with filesystem entry in configuration model
         SecHubConfigurationModel model = sechubConfigurationSupport.replaceRemoteDataWithFilesystem(context);
         String uploadDirectory = context.getEnvironment().getPdsPrepareUploadFolderDirectory();
 
-        archiveSupport.createArchives(model, Path.of(uploadDirectory), Path.of(uploadDirectory));
+        final Path workingDirectory = Path.of(uploadDirectory);
+        archiveSupport.createArchives(model, workingDirectory, workingDirectory);
     }
 
 }

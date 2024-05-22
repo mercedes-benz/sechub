@@ -21,7 +21,7 @@ import org.springframework.stereotype.Service;
 import com.mercedesbenz.sechub.commons.core.security.CryptoAccess;
 import com.mercedesbenz.sechub.commons.model.*;
 import com.mercedesbenz.sechub.wrapper.prepare.prepare.PrepareWrapperContext;
-import com.mercedesbenz.sechub.wrapper.prepare.upload.FileSupport;
+import com.mercedesbenz.sechub.wrapper.prepare.upload.FileNameSupport;
 import com.mercedesbenz.sechub.wrapper.prepare.upload.PrepareWrapperUploadService;
 
 @Service
@@ -47,7 +47,7 @@ public class PrepareWrapperModuleGit implements PrepareWrapperModule {
     PrepareWrapperUploadService uploadService;
 
     @Autowired
-    FileSupport filesSupport;
+    FileNameSupport filesSupport;
 
     public boolean isAbleToPrepare(PrepareWrapperContext context) {
 
@@ -109,7 +109,7 @@ public class PrepareWrapperModuleGit implements PrepareWrapperModule {
         // check if download folder contains git
         String uploadFolder = context.getEnvironment().getPdsPrepareUploadFolderDirectory();
         if (Files.isDirectory(Path.of(uploadFolder))) {
-            String gitRepo = filesSupport.getSubfolderFromDirectory(uploadFolder);
+            String gitRepo = filesSupport.getSubfolderFileNameFromDirectory(uploadFolder);
             Path path = Paths.get(uploadFolder + "/" + gitRepo).toAbsolutePath();
             if (Files.isDirectory(path)) {
                 String gitFile = ".git";

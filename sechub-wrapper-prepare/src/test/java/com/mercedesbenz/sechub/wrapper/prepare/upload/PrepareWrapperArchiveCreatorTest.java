@@ -26,7 +26,7 @@ class PrepareWrapperArchiveCreatorTest {
 
     ArchiveSupport archiveSupport;
 
-    FileSupport fileSupport;
+    FileNameSupport fileNameSupport;
 
     PrepareWrapperSechubConfigurationSupport sechubConfigurationSupport;
     TestFileWriter writer;
@@ -35,11 +35,11 @@ class PrepareWrapperArchiveCreatorTest {
     void beforeEach() {
         creatorToTest = new PrepareWrapperArchiveCreator();
         archiveSupport = new ArchiveSupport();
-        fileSupport = mock(FileSupport.class);
+        fileNameSupport = mock(FileNameSupport.class);
         sechubConfigurationSupport = new PrepareWrapperSechubConfigurationSupport();
         writer = new TestFileWriter();
 
-        sechubConfigurationSupport.fileSupport = fileSupport;
+        sechubConfigurationSupport.fileNameSupport = fileNameSupport;
         creatorToTest.archiveSupport = archiveSupport;
         creatorToTest.sechubConfigurationSupport = sechubConfigurationSupport;
     }
@@ -61,7 +61,7 @@ class PrepareWrapperArchiveCreatorTest {
         when(environment.getPdsPrepareUploadFolderDirectory()).thenReturn(path);
         when(context.getSecHubConfiguration()).thenReturn(model);
         when(context.getEnvironment()).thenReturn(environment);
-        when(fileSupport.getTarFileFromDirectory(anyString())).thenReturn(testTarFilename);
+        when(fileNameSupport.getTarFileNameFromDirectory(anyString())).thenReturn(testTarFilename);
 
         /* execute */
         assertDoesNotThrow(() -> creatorToTest.create(context));
@@ -88,7 +88,7 @@ class PrepareWrapperArchiveCreatorTest {
         when(environment.getPdsPrepareUploadFolderDirectory()).thenReturn(path);
         when(context.getSecHubConfiguration()).thenReturn(model);
         when(context.getEnvironment()).thenReturn(environment);
-        when(fileSupport.getSubfolderFromDirectory(anyString())).thenReturn(repoPath);
+        when(fileNameSupport.getSubfolderFileNameFromDirectory(anyString())).thenReturn(repoPath);
 
         /* execute */
         assertDoesNotThrow(() -> creatorToTest.create(context));

@@ -23,7 +23,7 @@ import com.mercedesbenz.sechub.commons.model.SecHubRemoteDataConfiguration;
 import com.mercedesbenz.sechub.test.TestFileWriter;
 import com.mercedesbenz.sechub.wrapper.prepare.cli.PrepareWrapperEnvironment;
 import com.mercedesbenz.sechub.wrapper.prepare.prepare.PrepareWrapperContext;
-import com.mercedesbenz.sechub.wrapper.prepare.upload.FileSupport;
+import com.mercedesbenz.sechub.wrapper.prepare.upload.FileNameSupport;
 import com.mercedesbenz.sechub.wrapper.prepare.upload.PrepareWrapperUploadService;
 
 class PrepareWrapperModuleGitTest {
@@ -38,7 +38,7 @@ class PrepareWrapperModuleGitTest {
 
     PrepareWrapperUploadService uploadService;
 
-    FileSupport filesSupport;
+    FileNameSupport filesSupport;
 
     String subfolder = "subfolder";
 
@@ -49,9 +49,9 @@ class PrepareWrapperModuleGitTest {
         gitInputValidator = new GitInputValidator();
         git = mock(WrapperGit.class);
         uploadService = mock(PrepareWrapperUploadService.class);
-        filesSupport = mock(FileSupport.class);
+        filesSupport = mock(FileNameSupport.class);
 
-        when(filesSupport.getSubfolderFromDirectory(anyString())).thenReturn(subfolder);
+        when(filesSupport.getSubfolderFileNameFromDirectory(anyString())).thenReturn(subfolder);
 
         moduleToTest.uploadService = uploadService;
         moduleToTest.filesSupport = filesSupport;

@@ -25,13 +25,11 @@ class PrepareWrapperUploadServiceTest {
 
     PrepareWrapperArchiveCreator archiveCreator;
 
-    PrepareWrapperBinaryUploadService binaryUploadService;
-
-    PrepareWrapperSourceUploadService sourceUploadService;
+    PrepareWrapperFileUploadService fileUploadService;
 
     PrepareWrapperSechubConfigurationSupport sechubConfigurationSupport;
 
-    FileSupport fileSupport;
+    FileNameSupport fileNameSupport;
 
     CheckSumSupport checkSumSupport;
 
@@ -40,17 +38,15 @@ class PrepareWrapperUploadServiceTest {
         uploadServiceToTest = new PrepareWrapperUploadService();
 
         archiveCreator = mock(PrepareWrapperArchiveCreator.class);
-        binaryUploadService = mock(PrepareWrapperBinaryUploadService.class);
-        sourceUploadService = mock(PrepareWrapperSourceUploadService.class);
+        fileUploadService = mock(PrepareWrapperFileUploadService.class);
         sechubConfigurationSupport = mock(PrepareWrapperSechubConfigurationSupport.class);
-        fileSupport = mock(FileSupport.class);
+        fileNameSupport = mock(FileNameSupport.class);
         checkSumSupport = mock(CheckSumSupport.class);
 
         uploadServiceToTest.archiveCreator = archiveCreator;
-        uploadServiceToTest.binaryUploadService = binaryUploadService;
-        uploadServiceToTest.sourceUploadService = sourceUploadService;
+        uploadServiceToTest.fileUploadService = fileUploadService;
         uploadServiceToTest.sechubConfigurationSupport = sechubConfigurationSupport;
-        uploadServiceToTest.fileSupport = fileSupport;
+        uploadServiceToTest.fileNameSupport = fileNameSupport;
         uploadServiceToTest.checkSumSupport = checkSumSupport;
     }
 
@@ -76,7 +72,7 @@ class PrepareWrapperUploadServiceTest {
     }
 
     @Test
-    void upload_calls_sourceUploadService_when_sources_are_not_empty() throws Exception {
+    void upload_calls_uploadService_when_sources_are_not_empty() throws Exception {
         /* prepare */
         PrepareWrapperContext context = mock(PrepareWrapperContext.class);
         when(context.getEnvironment()).thenReturn(mock(PrepareWrapperEnvironment.class));
@@ -98,11 +94,11 @@ class PrepareWrapperUploadServiceTest {
         uploadServiceToTest.upload(context);
 
         /* test */
-        verify(sourceUploadService).uploadSourceCode(any(), any(), any(), any());
+        verify(fileUploadService).uploadFile(any(), any(), any(), any());
     }
 
     @Test
-    void upload_calls_binaryUploadService_when_binaries_are_not_empty() throws Exception {
+    void upload_calls_uploadService_when_binaries_are_not_empty() throws Exception {
         /* prepare */
         PrepareWrapperContext context = mock(PrepareWrapperContext.class);
         when(context.getEnvironment()).thenReturn(mock(PrepareWrapperEnvironment.class));
@@ -124,7 +120,7 @@ class PrepareWrapperUploadServiceTest {
         uploadServiceToTest.upload(context);
 
         /* test */
-        verify(binaryUploadService).uploadBinaries(any(), any(), any(), any());
+        verify(fileUploadService).uploadFile(any(), any(), any(), any());
     }
 
 }

@@ -28,8 +28,8 @@ import com.mercedesbenz.sechub.wrapper.prepare.upload.*;
 @SpringBootTest(classes = { PrepareWrapperContextFactory.class, PrepareWrapperPreparationService.class, PrepareWrapperPojoFactory.class,
         PrepareWrapperEnvironment.class, PrepareWrapperPDSUserMessageSupportPojoFactory.class, PrepareWrapperRemoteConfigurationExtractor.class,
         PrepareWrapperModuleGit.class, PrepareWrapperModule.class, WrapperGit.class, GitInputValidator.class, JGitAdapter.class,
-        PrepareWrapperStorageService.class, PrepareWrapperUploadService.class, PrepareWrapperSourceUploadService.class, PrepareWrapperBinaryUploadService.class,
-        PrepareWrapperSechubConfigurationSupport.class, FileSupport.class, PrepareWrapperArchiveCreator.class, ArchiveSupport.class,
+        PrepareWrapperStorageService.class, PrepareWrapperUploadService.class, PrepareWrapperFileUploadService.class,
+        PrepareWrapperSechubConfigurationSupport.class, FileNameSupport.class, PrepareWrapperArchiveCreator.class, ArchiveSupport.class,
         PDSSharedVolumePropertiesSetup.class, PDSS3PropertiesSetup.class })
 @ExtendWith(SpringExtension.class)
 @TestPropertySource(locations = "classpath:application-test-fail.properties")

@@ -13,9 +13,10 @@ import java.util.stream.Stream;
 import org.springframework.stereotype.Component;
 
 @Component
-public class FileSupport {
-    public String getTarFileFromDirectory(String folder) {
-        // TODO: 15.05.24 laura skopeo tar file
+public class FileNameSupport {
+    public String getTarFileNameFromDirectory(String folder) {
+        // TODO: 22.05.24 laura we will use this method in skopeo modul for download
+        // check
         Path path = Path.of(folder);
         if (Files.isDirectory(path)) {
             try (Stream<Path> walk = Files.walk(path)) {
@@ -26,17 +27,17 @@ public class FileSupport {
                 if (result.size() == 1) {
                     return result.get(0);
                 } else {
-                    throw new RuntimeException("Error while checking download of docker image");
+                    throw new RuntimeException("Error while try to find .tar file.");
                 }
             } catch (IOException e) {
-                throw new RuntimeException("Error while checking download of docker image", e);
+                throw new RuntimeException("Error while try to find .tar file.", e);
             }
         } else {
-            throw new IllegalArgumentException("Folder is not a directory");
+            throw new IllegalArgumentException("Parameter " + folder + " is not a directory");
         }
     }
 
-    public String getSubfolderFromDirectory(String folder) {
+    public String getSubfolderFileNameFromDirectory(String folder) {
         Set<String> files = listFilesUsingJavaIO(new File(folder).getAbsolutePath());
         if (files.size() == 1) {
             return files.iterator().next();

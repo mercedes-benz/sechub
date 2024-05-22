@@ -18,24 +18,22 @@ public class PrepareWrapperUploadService {
     PrepareWrapperArchiveCreator archiveCreator;
 
     @Autowired
-    PrepareWrapperBinaryUploadService binaryUploadService;
-
-    @Autowired
-    PrepareWrapperSourceUploadService sourceUploadService;
+    PrepareWrapperFileUploadService fileUploadService;
 
     @Autowired
     PrepareWrapperSechubConfigurationSupport sechubConfigurationSupport;
 
     @Autowired
-    FileSupport fileSupport;
+    FileNameSupport fileNameSupport;
 
     @Autowired
     CheckSumSupport checkSumSupport;
 
     public void upload(PrepareWrapperContext context) throws IOException {
 
-        // creates archives for sourcecode oder binary file
+        // creates archives for sourcecode or binary file
         archiveCreator.create(context);
+
         String storagePath = context.getEnvironment().getSechubStoragePath();
         UUID sechubJobUUID = UUID.fromString(context.getEnvironment().getSechubJobUUID());
 
@@ -49,14 +47,14 @@ public class PrepareWrapperUploadService {
             File file = new File(context.getEnvironment().getPdsPrepareUploadFolderDirectory() + "/sourcecode.zip");
             String checkSum = checkSumSupport.createSha256Checksum(file.getPath());
 
-            sourceUploadService.uploadSourceCode(storagePath, sechubJobUUID, file, checkSum);
+            fileUploadService.uploadFile(storagePath, sechubJobUUID, file, checkSum);
         }
 
         if (!model.getData().get().getBinaries().isEmpty()) {
             File file = new File(context.getEnvironment().getPdsPrepareUploadFolderDirectory() + "/binaries.tar");
             String checkSum = checkSumSupport.createSha256Checksum(file.getPath());
 
-            binaryUploadService.uploadBinaries(storagePath, sechubJobUUID, file, checkSum);
+            fileUploadService.uploadFile(storagePath, sechubJobUUID, file, checkSum);
         }
     }
 

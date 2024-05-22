@@ -13,7 +13,7 @@ import com.mercedesbenz.sechub.wrapper.prepare.prepare.PrepareWrapperContext;
 public class PrepareWrapperSechubConfigurationSupport {
 
     @Autowired
-    FileSupport fileSupport;
+    FileNameSupport fileNameSupport;
 
     private static Logger LOG = LoggerFactory.getLogger(PrepareWrapperSechubConfigurationSupport.class);
 
@@ -29,22 +29,22 @@ public class PrepareWrapperSechubConfigurationSupport {
         }
 
         if (!modifiedModel.getData().get().getSources().isEmpty()) {
-            return replaceRemoteSources(context, modifiedModel);
+            return replaceRemoteSourcesWithFileSystem(context, modifiedModel);
         }
 
         if (!modifiedModel.getData().get().getBinaries().isEmpty()) {
-            return replaceRemoteBinaries(context, modifiedModel);
+            return replaceRemoteBinariesWithFileSystem(context, modifiedModel);
         }
 
         LOG.warn("No sources or binaries found in configuration");
         return modifiedModel;
     }
 
-    private SecHubConfigurationModel replaceRemoteBinaries(PrepareWrapperContext context, SecHubConfigurationModel modifiedModel) {
-        String tarFilename = fileSupport.getTarFileFromDirectory(context.getEnvironment().getPdsPrepareUploadFolderDirectory());
+    private SecHubConfigurationModel replaceRemoteBinariesWithFileSystem(PrepareWrapperContext context, SecHubConfigurationModel modifiedModel) {
+        String tarFilename = fileNameSupport.getTarFileNameFromDirectory(context.getEnvironment().getPdsPrepareUploadFolderDirectory());
         SecHubFileSystemConfiguration fileSystemConfiguration = new SecHubFileSystemConfiguration();
 
-        tarFilename = getNameFromPath(tarFilename);
+        tarFilename = getFileNameFromFullPath(tarFilename);
         fileSystemConfiguration.getFolders().add(tarFilename);
 
         modifiedModel.getData().get().getBinaries().forEach(binary -> {
@@ -54,9 +54,9 @@ public class PrepareWrapperSechubConfigurationSupport {
         return modifiedModel;
     }
 
-    private SecHubConfigurationModel replaceRemoteSources(PrepareWrapperContext context, SecHubConfigurationModel modifiedModel) {
-        String repoName = fileSupport.getSubfolderFromDirectory(context.getEnvironment().getPdsPrepareUploadFolderDirectory());
-        repoName = getNameFromPath(repoName);
+    private SecHubConfigurationModel replaceRemoteSourcesWithFileSystem(PrepareWrapperContext context, SecHubConfigurationModel modifiedModel) {
+        String repoName = fileNameSupport.getSubfolderFileNameFromDirectory(context.getEnvironment().getPdsPrepareUploadFolderDirectory());
+        repoName = getFileNameFromFullPath(repoName);
 
         SecHubFileSystemConfiguration fileSystemConfiguration = new SecHubFileSystemConfiguration();
         fileSystemConfiguration.getFolders().add(repoName);
@@ -69,7 +69,7 @@ public class PrepareWrapperSechubConfigurationSupport {
         return modifiedModel;
     }
 
-    private String getNameFromPath(String path) {
+    private String getFileNameFromFullPath(String path) {
         return path.substring(path.lastIndexOf("/") + 1);
     }
 }

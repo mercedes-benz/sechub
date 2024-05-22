@@ -11,15 +11,15 @@ import org.junit.jupiter.api.Test;
 
 import com.mercedesbenz.sechub.test.TestFileWriter;
 
-class FileSupportTest {
+class FileNameSupportTest {
 
-    FileSupport fileSupportToTest;
+    FileNameSupport fileNameSupportToTest;
 
     TestFileWriter writer;
 
     @BeforeEach
     void beforeEach() {
-        fileSupportToTest = new FileSupport();
+        fileNameSupportToTest = new FileNameSupport();
         writer = new TestFileWriter();
     }
 
@@ -35,7 +35,7 @@ class FileSupportTest {
         writer.save(new File(path + file), "testText", true);
 
         /* execute */
-        String result = fileSupportToTest.getSubfolderFromDirectory(path);
+        String result = fileNameSupportToTest.getSubfolderFileNameFromDirectory(path);
 
         /* test */
         assertEquals(subfolder, "/" + result);
@@ -55,7 +55,7 @@ class FileSupportTest {
 
         /* execute */
         IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {
-            fileSupportToTest.getSubfolderFromDirectory(path);
+            fileNameSupportToTest.getSubfolderFileNameFromDirectory(path);
         });
 
         /* test */
@@ -70,7 +70,7 @@ class FileSupportTest {
 
         /* execute */
         IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {
-            fileSupportToTest.getSubfolderFromDirectory(tempDir.getAbsolutePath());
+            fileNameSupportToTest.getSubfolderFileNameFromDirectory(tempDir.getAbsolutePath());
         });
 
         /* test */
