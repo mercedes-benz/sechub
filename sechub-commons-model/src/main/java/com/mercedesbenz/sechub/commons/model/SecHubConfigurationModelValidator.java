@@ -72,12 +72,12 @@ public class SecHubConfigurationModelValidator {
      * @param model
      * @return validation result
      */
-    public SecHubConfigurationModelValidationResult validateRemoteData(SecHubConfigurationModel model) {
+    public SecHubConfigurationModelValidationResult validate(SecHubConfigurationModel model) {
         SecHubConfigurationModelValidationResult result = new SecHubConfigurationModelValidationResult();
         InternalValidationContext context = new InternalValidationContext();
         context.result = result;
         context.model = model;
-        validateRemoteData(context);
+        validate(context);
         return result;
     }
 
@@ -128,7 +128,7 @@ public class SecHubConfigurationModelValidator {
         }
     }
 
-    private void validateRemoteData(InternalValidationContext context) {
+    private void validate(InternalValidationContext context) {
         if (context.model == null) {
             context.result.addError(MODEL_NULL);
             return;
@@ -563,7 +563,7 @@ public class SecHubConfigurationModelValidator {
 
         validateOnlyOneRemoteSourceOrBinary(sourcesAndBinaries, result);
         validateRemoteAndFileSystemAreNotMixed(sourcesAndBinaries, result);
-        validateRemoteData(sourcesAndBinaries, result);
+        validate(sourcesAndBinaries, result);
     }
 
     private void validateOnlyOneRemoteSourceOrBinary(Collection<? extends SecHubDataConfigurationObject> sourcesAndBinaries,
@@ -603,7 +603,7 @@ public class SecHubConfigurationModelValidator {
         }
     }
 
-    private void validateRemoteData(Collection<? extends SecHubDataConfigurationObject> sourcesAndBinaries, SecHubConfigurationModelValidationResult result) {
+    private void validate(Collection<? extends SecHubDataConfigurationObject> sourcesAndBinaries, SecHubConfigurationModelValidationResult result) {
         for (SecHubDataConfigurationObject sourceOrBinary : sourcesAndBinaries) {
             Optional<SecHubRemoteDataConfiguration> optRemoteData = sourceOrBinary.getRemote();
 

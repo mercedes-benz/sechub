@@ -41,7 +41,7 @@ public class SecHubConfigurationValidator implements Validator {
         LOG.debug("Start validation for: {}", target);
 
         SecHubConfiguration configuration = (SecHubConfiguration) target;
-        SecHubConfigurationModelValidationResult modelValidationResult = modelValidator.validateRemoteData(configuration);
+        SecHubConfigurationModelValidationResult modelValidationResult = modelValidator.validate(configuration);
 
         handleExplicitErrorCodes(errors, modelValidationResult);
         addGenericErrorsWhenNecessary(errors, modelValidationResult);

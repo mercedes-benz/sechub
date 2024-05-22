@@ -46,7 +46,7 @@ public class SecHubConfigurationValidatorTest {
 
         configurationModelValidationResult = mock(SecHubConfigurationModelValidationResult.class);
         modelValidator = mock(SecHubConfigurationModelValidator.class);
-        when(modelValidator.validateRemoteData(any())).thenReturn(configurationModelValidationResult);
+        when(modelValidator.validate(any())).thenReturn(configurationModelValidationResult);
 
         validatorToTest.modelValidator = modelValidator;
 
