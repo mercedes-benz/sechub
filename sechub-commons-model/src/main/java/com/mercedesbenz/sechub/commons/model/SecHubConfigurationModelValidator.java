@@ -72,12 +72,12 @@ public class SecHubConfigurationModelValidator {
      * @param model
      * @return validation result
      */
-    public SecHubConfigurationModelValidationResult validate(SecHubConfigurationModel model) {
+    public SecHubConfigurationModelValidationResult validateRemoteData(SecHubConfigurationModel model) {
         SecHubConfigurationModelValidationResult result = new SecHubConfigurationModelValidationResult();
         InternalValidationContext context = new InternalValidationContext();
         context.result = result;
         context.model = model;
-        validate(context);
+        validateRemoteData(context);
         return result;
     }
 
@@ -128,7 +128,7 @@ public class SecHubConfigurationModelValidator {
         }
     }
 
-    private void validate(InternalValidationContext context) {
+    private void validateRemoteData(InternalValidationContext context) {
         if (context.model == null) {
             context.result.addError(MODEL_NULL);
             return;
@@ -566,41 +566,52 @@ public class SecHubConfigurationModelValidator {
                 return;
             }
 
-            String uniqueName = configurationObject.getUniqueName();
-
             if (configurationObjects.size() > 1) {
                 // remote data is configured with multiple configurations (filesystem or second
                 // remote)
                 result.addError(REMOTE_DATA_MULTI_CONFIGURATION_NOT_ALLOWED);
             }
 
-            SecHubRemoteDataConfiguration remoteData = optRemoteData.get();
-            if (remoteData.getLocation() == null || remoteData.getLocation().isEmpty()) {
-                result.addError(REMOTE_DATA_CONFIGURATION_LOCATION_NOT_DEFINED, "Remote data location is not defined for " + uniqueName);
+            validateRemoteData(configurationObject, result, optRemoteData);
+
+        }
+    }
+
+    private void validateRemoteData(SecHubDataConfigurationObject configurationObject, SecHubConfigurationModelValidationResult result, Optional<SecHubRemoteDataConfiguration> optRemoteData) {
+        String uniqueName = configurationObject.getUniqueName();
+        SecHubRemoteDataConfiguration remoteData = optRemoteData.get();
+
+        if (remoteData.getLocation() == null || remoteData.getLocation().isEmpty()) {
+            result.addError(REMOTE_DATA_CONFIGURATION_LOCATION_NOT_DEFINED, "Remote data location is not defined for " + uniqueName);
+        }
+
+        if (remoteData.getCredentials().isEmpty()) {
+            // credentials don't need to be defined for public accessible remote data
+            return;
+        }
+
+        validateRemoteDataCredentials(result, remoteData, uniqueName);
+    }
+
+    private void validateRemoteDataCredentials(SecHubConfigurationModelValidationResult result, SecHubRemoteDataConfiguration remoteData, String uniqueName) {
+        SecHubRemoteCredentialConfiguration remoteCredential = remoteData.getCredentials().get();
+        if (remoteCredential.getUser().isEmpty()) {
+            result.addError(REMOTE_DATA_CONFIGURATION_USER_NOT_DEFINED, "Remote data configuration credentials: no user is defined for " + uniqueName);
+
+        } else {
+            SecHubRemoteCredentialUserData user = remoteCredential.getUser().get();
+
+            String name = user.getName();
+            if (name == null || name.isBlank()) {
+                result.addError(REMOTE_DATA_CONFIGURATION_USER_NAME_NOT_DEFINED,
+                        "Remote data configuration credentials: user name is not defined for " + uniqueName);
             }
 
-            if (remoteData.getCredentials().isEmpty()) {
-                // credentials don't need to be defined for public accessible remote data
-                return;
+            String password = user.getPassword();
+            if (password == null || password.isBlank()) {
+                result.addError(REMOTE_DATA_CONFIGURATION_USER_PASSWORD_NOT_DEFINED,
+                        "Remote data configuration credentials: user password is not defined for " + uniqueName);
             }
-
-            SecHubRemoteCredentialConfiguration remoteCredential = remoteData.getCredentials().get();
-            if (remoteCredential.getUser().isEmpty()) {
-                result.addError(REMOTE_DATA_CONFIGURATION_USER_NOT_DEFINED, "Remote data configuration credentials: no user is defined for " + uniqueName);
-
-            } else {
-                SecHubRemoteCredentialUserData user = remoteCredential.getUser().get();
-                if (user.getName() == null || user.getName().isEmpty()) {
-                    result.addError(REMOTE_DATA_CONFIGURATION_USER_NAME_NOT_DEFINED,
-                            "Remote data configuration credentials: user name is not defined for " + uniqueName);
-                }
-
-                if (user.getPassword() == null || user.getPassword().isEmpty()) {
-                    result.addError(REMOTE_DATA_CONFIGURATION_USER_PASSWORD_NOT_DEFINED,
-                            "Remote data configuration credentials: user password is not defined for " + uniqueName);
-                }
-            }
-
         }
     }
 

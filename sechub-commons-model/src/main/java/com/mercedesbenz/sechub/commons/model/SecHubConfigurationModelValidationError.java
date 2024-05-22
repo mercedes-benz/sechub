@@ -74,7 +74,7 @@ public enum SecHubConfigurationModelValidationError {
 
     REMOTE_DATA_CONFIGURATION_USER_NAME_NOT_DEFINED("Remote data configuration credentials: user name is not defined."),
 
-    REMOTE_DATA_CONFIGURATION_USER_PASSWORD_NOT_DEFINED("Remote data configuration credentials: user password is not defined."),;
+    REMOTE_DATA_CONFIGURATION_USER_PASSWORD_NOT_DEFINED("Remote data configuration credentials: user password is not defined.");
 
     private String defaultMessage;
 

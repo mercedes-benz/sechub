@@ -56,7 +56,7 @@ class SecHubConfigurationModelValidatorTest {
         model.setApiVersion("1.0");
 
         /* execute */
-        SecHubConfigurationModelValidationResult result = validatorToTest.validate(model);
+        SecHubConfigurationModelValidationResult result = validatorToTest.validateRemoteData(model);
 
         /* test */
         assertHasError(result, CONTAINS_NO_SCAN_CONFIGURATION);
@@ -69,7 +69,7 @@ class SecHubConfigurationModelValidatorTest {
         model.setCodeScan(new SecHubCodeScanConfiguration());
 
         /* execute */
-        SecHubConfigurationModelValidationResult result = validatorToTest.validate(model);
+        SecHubConfigurationModelValidationResult result = validatorToTest.validateRemoteData(model);
 
         /* test */
         assertHasNotError(result, CONTAINS_NO_SCAN_CONFIGURATION);
@@ -82,7 +82,7 @@ class SecHubConfigurationModelValidatorTest {
         model.setLicenseScan(new SecHubLicenseScanConfiguration());
 
         /* execute */
-        SecHubConfigurationModelValidationResult result = validatorToTest.validate(model);
+        SecHubConfigurationModelValidationResult result = validatorToTest.validateRemoteData(model);
 
         /* test */
         assertHasNotError(result, CONTAINS_NO_SCAN_CONFIGURATION);
@@ -95,7 +95,7 @@ class SecHubConfigurationModelValidatorTest {
         model.setWebScan(new SecHubWebScanConfiguration());
 
         /* execute */
-        SecHubConfigurationModelValidationResult result = validatorToTest.validate(model);
+        SecHubConfigurationModelValidationResult result = validatorToTest.validateRemoteData(model);
 
         /* test */
         assertHasNotError(result, CONTAINS_NO_SCAN_CONFIGURATION);
@@ -108,7 +108,7 @@ class SecHubConfigurationModelValidatorTest {
         model.setSecretScan(new SecHubSecretScanConfiguration());
 
         /* execute */
-        SecHubConfigurationModelValidationResult result = validatorToTest.validate(model);
+        SecHubConfigurationModelValidationResult result = validatorToTest.validateRemoteData(model);
 
         /* test */
         assertHasNotError(result, CONTAINS_NO_SCAN_CONFIGURATION);
@@ -121,7 +121,7 @@ class SecHubConfigurationModelValidatorTest {
         model.setInfraScan(new SecHubInfrastructureScanConfiguration());
 
         /* execute */
-        SecHubConfigurationModelValidationResult result = validatorToTest.validate(model);
+        SecHubConfigurationModelValidationResult result = validatorToTest.validateRemoteData(model);
 
         /* test */
         assertHasNotError(result, CONTAINS_NO_SCAN_CONFIGURATION);
@@ -136,7 +136,7 @@ class SecHubConfigurationModelValidatorTest {
         assertNull(ModuleGroup.resolveModuleGroupOrNull(modelSupportCollectedScanTypes));
 
         /* execute */
-        SecHubConfigurationModelValidationResult result = validatorToTest.validate(model);
+        SecHubConfigurationModelValidationResult result = validatorToTest.validateRemoteData(model);
 
         /* test */
         assertHasError(result, SecHubConfigurationModelValidationError.NO_MODULE_GROUP_DETECTED);
@@ -155,7 +155,7 @@ class SecHubConfigurationModelValidatorTest {
         assertNull(ModuleGroup.resolveModuleGroupOrNull(modelSupportCollectedScanTypes));
 
         /* execute */
-        SecHubConfigurationModelValidationResult result = validatorToTest.validate(model);
+        SecHubConfigurationModelValidationResult result = validatorToTest.validateRemoteData(model);
 
         /* test */
         assertHasError(result, SecHubConfigurationModelValidationError.MULTIPLE_MODULE_GROUPS_DETECTED);
@@ -173,7 +173,7 @@ class SecHubConfigurationModelValidatorTest {
         assertNotNull(ModuleGroup.resolveModuleGroupOrNull(modelSupportCollectedScanTypes));
 
         /* execute */
-        SecHubConfigurationModelValidationResult result = validatorToTest.validate(model);
+        SecHubConfigurationModelValidationResult result = validatorToTest.validateRemoteData(model);
 
         /* test */
         assertHasNoErrors(result);
@@ -205,7 +205,7 @@ class SecHubConfigurationModelValidatorTest {
         model.getLicenseScan().get().getNamesOfUsedDataConfigurationObjects().add("config-object-name");
 
         /* execute */
-        SecHubConfigurationModelValidationResult result = validatorToTest.validate(model);
+        SecHubConfigurationModelValidationResult result = validatorToTest.validateRemoteData(model);
 
         /* test */
         assertHasNoErrors(result);
@@ -223,7 +223,7 @@ class SecHubConfigurationModelValidatorTest {
         modelSupportCollectedScanTypes.add(ScanType.WEB_SCAN); // simulate correct module group found
 
         /* execute */
-        SecHubConfigurationModelValidationResult result = validatorToTest.validate(model);
+        SecHubConfigurationModelValidationResult result = validatorToTest.validateRemoteData(model);
 
         /* test */
         assertHasError(result, SecHubConfigurationModelValidationError.WEB_SCAN_HAS_NO_URL_DEFINED);
@@ -242,7 +242,7 @@ class SecHubConfigurationModelValidatorTest {
         modelSupportCollectedScanTypes.add(ScanType.CODE_SCAN); // simulate correct module group found
 
         /* execute */
-        SecHubConfigurationModelValidationResult result = validatorToTest.validate(model);
+        SecHubConfigurationModelValidationResult result = validatorToTest.validateRemoteData(model);
 
         /* test */
         assertHasError(result, SecHubConfigurationModelValidationError.NO_DATA_CONFIG_SPECIFIED_FOR_SCAN);
@@ -271,7 +271,7 @@ class SecHubConfigurationModelValidatorTest {
         modelSupportCollectedScanTypes.add(ScanType.CODE_SCAN); // simulate correct module group found
 
         /* execute */
-        SecHubConfigurationModelValidationResult result = validatorToTest.validate(model);
+        SecHubConfigurationModelValidationResult result = validatorToTest.validateRemoteData(model);
 
         /* test */
         assertHasNoErrors(result);
@@ -291,7 +291,7 @@ class SecHubConfigurationModelValidatorTest {
         modelSupportCollectedScanTypes.add(ScanType.WEB_SCAN); // simulate correct module group found
 
         /* execute */
-        SecHubConfigurationModelValidationResult result = validatorToTest.validate(model);
+        SecHubConfigurationModelValidationResult result = validatorToTest.validateRemoteData(model);
 
         /* test */
         assertFalse(result.hasErrors());
@@ -311,7 +311,7 @@ class SecHubConfigurationModelValidatorTest {
         modelSupportCollectedScanTypes.add(ScanType.WEB_SCAN); // simulate correct module group found
 
         /* execute */
-        SecHubConfigurationModelValidationResult result = validatorToTest.validate(model);
+        SecHubConfigurationModelValidationResult result = validatorToTest.validateRemoteData(model);
 
         /* test */
         assertHasError(result, SecHubConfigurationModelValidationError.WEB_SCAN_URL_HAS_UNSUPPORTED_SCHEMA);
@@ -330,7 +330,7 @@ class SecHubConfigurationModelValidatorTest {
         modelSupportCollectedScanTypes.add(ScanType.INFRA_SCAN); // simulate correct module group found
 
         /* execute */
-        SecHubConfigurationModelValidationResult result = validatorToTest.validate(model);
+        SecHubConfigurationModelValidationResult result = validatorToTest.validateRemoteData(model);
 
         /* test */
         assertHasError(result, SecHubConfigurationModelValidationError.INFRA_SCAN_HAS_NO_URIS_OR_IPS_DEFINED);
@@ -351,7 +351,7 @@ class SecHubConfigurationModelValidatorTest {
         modelSupportCollectedScanTypes.add(ScanType.INFRA_SCAN); // simulate correct module group found
 
         /* execute */
-        SecHubConfigurationModelValidationResult result = validatorToTest.validate(model);
+        SecHubConfigurationModelValidationResult result = validatorToTest.validateRemoteData(model);
 
         /* test */
         assertHasNoErrors(result);
@@ -371,7 +371,7 @@ class SecHubConfigurationModelValidatorTest {
         modelSupportCollectedScanTypes.add(ScanType.INFRA_SCAN); // simulate correct module group found
 
         /* execute */
-        SecHubConfigurationModelValidationResult result = validatorToTest.validate(model);
+        SecHubConfigurationModelValidationResult result = validatorToTest.validateRemoteData(model);
 
         /* test */
         assertFalse(result.hasErrors());
@@ -381,7 +381,7 @@ class SecHubConfigurationModelValidatorTest {
     @Test
     void null_model_results_in_one_error() {
         /* execute */
-        SecHubConfigurationModelValidationResult result = validatorToTest.validate(null);
+        SecHubConfigurationModelValidationResult result = validatorToTest.validateRemoteData(null);
 
         modelSupportCollectedScanTypes.add(ScanType.CODE_SCAN); // simulate correct module group found
 
@@ -399,7 +399,7 @@ class SecHubConfigurationModelValidatorTest {
         modelSupportCollectedScanTypes.add(ScanType.CODE_SCAN); // simulate correct module group found
 
         /* execute */
-        SecHubConfigurationModelValidationResult result = validatorToTest.validate(model);
+        SecHubConfigurationModelValidationResult result = validatorToTest.validateRemoteData(model);
 
         /* test */
         assertHasError(result, SecHubConfigurationModelValidationError.CONTAINS_NO_SCAN_CONFIGURATION);
@@ -415,7 +415,7 @@ class SecHubConfigurationModelValidatorTest {
         modelSupportCollectedScanTypes.add(ScanType.CODE_SCAN); // simulate correct module group found
 
         /* execute */
-        SecHubConfigurationModelValidationResult result = validatorToTest.validate(model);
+        SecHubConfigurationModelValidationResult result = validatorToTest.validateRemoteData(model);
 
         /* test */
         assertHasError(result, SecHubConfigurationModelValidationError.API_VERSION_NULL);
@@ -431,7 +431,7 @@ class SecHubConfigurationModelValidatorTest {
         modelSupportCollectedScanTypes.add(ScanType.CODE_SCAN); // simulate correct module group found
 
         /* execute */
-        SecHubConfigurationModelValidationResult result = validatorToTest.validate(model);
+        SecHubConfigurationModelValidationResult result = validatorToTest.validateRemoteData(model);
 
         /* test */
         assertHasError(result, SecHubConfigurationModelValidationError.API_VERSION_NOT_SUPPORTED);
@@ -455,7 +455,7 @@ class SecHubConfigurationModelValidatorTest {
         modelSupportCollectedScanTypes.add(ScanType.CODE_SCAN); // simulate correct module group found
 
         /* execute + test */
-        SecHubConfigurationModelValidationResult result = validatorToTest.validate(model);
+        SecHubConfigurationModelValidationResult result = validatorToTest.validateRemoteData(model);
 
         /* test */
         assertHasNoErrors(result);
@@ -476,7 +476,7 @@ class SecHubConfigurationModelValidatorTest {
         modelSupportCollectedScanTypes.add(ScanType.CODE_SCAN); // simulate correct module group found
 
         /* execute + test */
-        SecHubConfigurationModelValidationResult result = validatorToTest.validate(model);
+        SecHubConfigurationModelValidationResult result = validatorToTest.validateRemoteData(model);
 
         /* test */
         assertTrue(result.hasErrors());
@@ -498,7 +498,7 @@ class SecHubConfigurationModelValidatorTest {
         modelSupportCollectedScanTypes.add(ScanType.CODE_SCAN); // simulate correct module group found
 
         /* execute + test */
-        SecHubConfigurationModelValidationResult result = validatorToTest.validate(model);
+        SecHubConfigurationModelValidationResult result = validatorToTest.validateRemoteData(model);
 
         /* test */
         assertHasNoErrors(result);
@@ -513,7 +513,7 @@ class SecHubConfigurationModelValidatorTest {
         modelSupportCollectedScanTypes.add(ScanType.CODE_SCAN); // simulate correct module group found
 
         /* execute + test */
-        SecHubConfigurationModelValidationResult result = validatorToTest.validate(model);
+        SecHubConfigurationModelValidationResult result = validatorToTest.validateRemoteData(model);
 
         /* test */
         assertHasError(result, "config-object-not-existing1", SecHubConfigurationModelValidationError.REFERENCED_DATA_CONFIG_OBJECT_NAME_NOT_EXISTING);
@@ -536,7 +536,7 @@ class SecHubConfigurationModelValidatorTest {
         modelSupportCollectedScanTypes.add(ScanType.WEB_SCAN); // simulate correct module group found
 
         /* execute + test */
-        SecHubConfigurationModelValidationResult result = validatorToTest.validate(model);
+        SecHubConfigurationModelValidationResult result = validatorToTest.validateRemoteData(model);
 
         /* test */
         assertHasError(result, "unknown-configuration", SecHubConfigurationModelValidationError.REFERENCED_DATA_CONFIG_OBJECT_NAME_NOT_EXISTING);
@@ -566,7 +566,7 @@ class SecHubConfigurationModelValidatorTest {
         modelSupportCollectedScanTypes.add(ScanType.WEB_SCAN); // simulate correct module group found
 
         /* execute + test */
-        SecHubConfigurationModelValidationResult result = validatorToTest.validate(model);
+        SecHubConfigurationModelValidationResult result = validatorToTest.validateRemoteData(model);
 
         /* test */
         assertFalse(result.hasErrors());
@@ -592,7 +592,7 @@ class SecHubConfigurationModelValidatorTest {
         modelSupportCollectedScanTypes.add(ScanType.CODE_SCAN); // simulate correct module group found
 
         /* execute + test */
-        SecHubConfigurationModelValidationResult result = validatorToTest.validate(model);
+        SecHubConfigurationModelValidationResult result = validatorToTest.validateRemoteData(model);
 
         /* test */
         assertHasError(result, SecHubConfigurationModelValidationError.DATA_CONFIG_OBJECT_NAME_IS_NOT_UNIQUE);
@@ -614,7 +614,7 @@ class SecHubConfigurationModelValidatorTest {
         modelSupportCollectedScanTypes.add(ScanType.CODE_SCAN); // simulate correct module group found
 
         /* execute */
-        SecHubConfigurationModelValidationResult result = validatorToTest.validate(model);
+        SecHubConfigurationModelValidationResult result = validatorToTest.validateRemoteData(model);
 
         /* test */
         assertHasError(result, SecHubConfigurationModelValidationError.DATA_CONFIG_OBJECT_NAME_LENGTH_TOO_LONG);
@@ -636,7 +636,7 @@ class SecHubConfigurationModelValidatorTest {
         modelSupportCollectedScanTypes.add(ScanType.CODE_SCAN); // simulate correct module group found
 
         /* execute */
-        SecHubConfigurationModelValidationResult result = validatorToTest.validate(model);
+        SecHubConfigurationModelValidationResult result = validatorToTest.validateRemoteData(model);
 
         /* test */
         assertHasError(result, SecHubConfigurationModelValidationError.DATA_CONFIG_OBJECT_NAME_LENGTH_TOO_SHORT);
@@ -658,7 +658,7 @@ class SecHubConfigurationModelValidatorTest {
         modelSupportCollectedScanTypes.add(ScanType.CODE_SCAN); // simulate correct module group found
 
         /* execute */
-        SecHubConfigurationModelValidationResult result = validatorToTest.validate(model);
+        SecHubConfigurationModelValidationResult result = validatorToTest.validateRemoteData(model);
 
         /* test */
         assertHasError(result, SecHubConfigurationModelValidationError.DATA_CONFIG_OBJECT_NAME_IS_NULL);
@@ -679,7 +679,7 @@ class SecHubConfigurationModelValidatorTest {
         modelSupportCollectedScanTypes.add(ScanType.CODE_SCAN); // simulate correct module group found
 
         /* execute */
-        SecHubConfigurationModelValidationResult result = validatorToTest.validate(model);
+        SecHubConfigurationModelValidationResult result = validatorToTest.validateRemoteData(model);
 
         /* test */
         assertHasError(result, SecHubConfigurationModelValidationError.DATA_CONFIG_OBJECT_NAME_IS_NULL);
@@ -707,7 +707,7 @@ class SecHubConfigurationModelValidatorTest {
         modelSupportCollectedScanTypes.add(ScanType.CODE_SCAN); // simulate correct module group found
 
         /* execute */
-        SecHubConfigurationModelValidationResult result = validatorToTest.validate(model);
+        SecHubConfigurationModelValidationResult result = validatorToTest.validateRemoteData(model);
 
         /* test */
 
@@ -735,7 +735,7 @@ class SecHubConfigurationModelValidatorTest {
         modelSupportCollectedScanTypes.add(ScanType.CODE_SCAN); // simulate correct module group found
 
         /* execute */
-        SecHubConfigurationModelValidationResult result = validatorToTest.validate(model);
+        SecHubConfigurationModelValidationResult result = validatorToTest.validateRemoteData(model);
 
         /* test */
         assertEquals(1, result.getErrors().size());
@@ -766,7 +766,7 @@ class SecHubConfigurationModelValidatorTest {
         modelSupportCollectedScanTypes.add(ScanType.CODE_SCAN); // simulate correct module group found
 
         /* execute */
-        SecHubConfigurationModelValidationResult result = validatorToTest.validate(model);
+        SecHubConfigurationModelValidationResult result = validatorToTest.validateRemoteData(model);
 
         /* test */
         assertHasNoErrors(result);
@@ -784,7 +784,7 @@ class SecHubConfigurationModelValidatorTest {
         modelSupportCollectedScanTypes.add(ScanType.SECRET_SCAN); // simulate correct module group found
 
         /* execute */
-        SecHubConfigurationModelValidationResult result = validatorToTest.validate(model);
+        SecHubConfigurationModelValidationResult result = validatorToTest.validateRemoteData(model);
 
         /* test */
         assertHasError(result, SecHubConfigurationModelValidationError.NO_DATA_CONFIG_SPECIFIED_FOR_SCAN);
@@ -813,7 +813,7 @@ class SecHubConfigurationModelValidatorTest {
         modelSupportCollectedScanTypes.add(ScanType.SECRET_SCAN); // simulate correct module group found
 
         /* execute */
-        SecHubConfigurationModelValidationResult result = validatorToTest.validate(model);
+        SecHubConfigurationModelValidationResult result = validatorToTest.validateRemoteData(model);
 
         /* test */
         assertFalse(result.hasErrors());
@@ -842,7 +842,7 @@ class SecHubConfigurationModelValidatorTest {
         modelSupportCollectedScanTypes.add(ScanType.CODE_SCAN); // simulate correct module group found
 
         /* execute */
-        SecHubConfigurationModelValidationResult result = validatorToTest.validate(model);
+        SecHubConfigurationModelValidationResult result = validatorToTest.validateRemoteData(model);
 
         /* test */
         assertFalse(result.hasErrors());
@@ -872,7 +872,7 @@ class SecHubConfigurationModelValidatorTest {
         modelSupportCollectedScanTypes.add(ScanType.CODE_SCAN); // simulate correct module group found
 
         /* execute */
-        SecHubConfigurationModelValidationResult result = validatorToTest.validate(model);
+        SecHubConfigurationModelValidationResult result = validatorToTest.validateRemoteData(model);
 
         /* test */
         assertTrue(result.hasErrors());
@@ -900,7 +900,7 @@ class SecHubConfigurationModelValidatorTest {
         modelSupportCollectedScanTypes.add(ScanType.CODE_SCAN); // simulate correct module group found
 
         /* execute */
-        SecHubConfigurationModelValidationResult result = validatorToTest.validate(model);
+        SecHubConfigurationModelValidationResult result = validatorToTest.validateRemoteData(model);
 
         /* test */
         assertHasError(result, SecHubConfigurationModelValidationError.METADATA_LABEL_KEY_TOO_LONG);
@@ -927,7 +927,7 @@ class SecHubConfigurationModelValidatorTest {
         modelSupportCollectedScanTypes.add(ScanType.CODE_SCAN); // simulate correct module group found
 
         /* execute */
-        SecHubConfigurationModelValidationResult result = validatorToTest.validate(model);
+        SecHubConfigurationModelValidationResult result = validatorToTest.validateRemoteData(model);
 
         /* test */
         assertHasNoErrors(result);
@@ -954,7 +954,7 @@ class SecHubConfigurationModelValidatorTest {
         modelSupportCollectedScanTypes.add(ScanType.CODE_SCAN); // simulate correct module group found
 
         /* execute */
-        SecHubConfigurationModelValidationResult result = validatorToTest.validate(model);
+        SecHubConfigurationModelValidationResult result = validatorToTest.validateRemoteData(model);
 
         /* test */
         assertHasError(result, SecHubConfigurationModelValidationError.METADATA_LABEL_VALUE_TOO_LONG);
@@ -982,7 +982,7 @@ class SecHubConfigurationModelValidatorTest {
         modelSupportCollectedScanTypes.add(ScanType.CODE_SCAN); // simulate correct module group found
 
         /* execute */
-        SecHubConfigurationModelValidationResult result = validatorToTest.validate(model);
+        SecHubConfigurationModelValidationResult result = validatorToTest.validateRemoteData(model);
 
         /* test */
         assertHasError(result, SecHubConfigurationModelValidationError.METADATA_LABEL_KEY_CONTAINS_ILLEGAL_CHARACTERS);
@@ -1010,7 +1010,7 @@ class SecHubConfigurationModelValidatorTest {
         modelSupportCollectedScanTypes.add(ScanType.LICENSE_SCAN); // simulate correct module group found
 
         /* execute */
-        SecHubConfigurationModelValidationResult result = validatorToTest.validate(model);
+        SecHubConfigurationModelValidationResult result = validatorToTest.validateRemoteData(model);
 
         /* test */
         assertHasError(result, SecHubConfigurationModelValidationError.METADATA_LABEL_KEY_CONTAINS_ILLEGAL_CHARACTERS);
@@ -1039,7 +1039,7 @@ class SecHubConfigurationModelValidatorTest {
         modelSupportCollectedScanTypes.add(ScanType.CODE_SCAN); // simulate correct module group found
 
         /* execute */
-        SecHubConfigurationModelValidationResult result = validatorToTest.validate(model);
+        SecHubConfigurationModelValidationResult result = validatorToTest.validateRemoteData(model);
 
         /* test */
         assertHasNoErrors(result);
@@ -1067,7 +1067,7 @@ class SecHubConfigurationModelValidatorTest {
         modelSupportCollectedScanTypes.add(ScanType.WEB_SCAN); // simulate correct module group found
 
         /* execute */
-        SecHubConfigurationModelValidationResult result = validatorToTest.validate(model);
+        SecHubConfigurationModelValidationResult result = validatorToTest.validateRemoteData(model);
 
         /* test */
         assertHasNoErrors(result);
@@ -1094,7 +1094,7 @@ class SecHubConfigurationModelValidatorTest {
         modelSupportCollectedScanTypes.add(ScanType.CODE_SCAN); // simulate correct module group found
 
         /* execute */
-        SecHubConfigurationModelValidationResult result = validatorToTest.validate(model);
+        SecHubConfigurationModelValidationResult result = validatorToTest.validateRemoteData(model);
 
         /* test */
         assertHasNoErrors(result);
@@ -1114,7 +1114,7 @@ class SecHubConfigurationModelValidatorTest {
         modelSupportCollectedScanTypes.add(ScanType.WEB_SCAN);
 
         /* execute */
-        SecHubConfigurationModelValidationResult result = validatorToTest.validate(model);
+        SecHubConfigurationModelValidationResult result = validatorToTest.validateRemoteData(model);
 
         /* test */
         assertHasNoErrors(result);
@@ -1143,7 +1143,7 @@ class SecHubConfigurationModelValidatorTest {
         modelSupportCollectedScanTypes.add(ScanType.WEB_SCAN);
 
         /* execute */
-        SecHubConfigurationModelValidationResult result = validatorToTest.validate(model);
+        SecHubConfigurationModelValidationResult result = validatorToTest.validateRemoteData(model);
 
         /* test */
         assertHasNoErrors(result);
@@ -1170,7 +1170,7 @@ class SecHubConfigurationModelValidatorTest {
         modelSupportCollectedScanTypes.add(ScanType.WEB_SCAN);
 
         /* execute */
-        SecHubConfigurationModelValidationResult result = validatorToTest.validate(model);
+        SecHubConfigurationModelValidationResult result = validatorToTest.validateRemoteData(model);
 
         /* test */
         assertHasNoErrors(result);
@@ -1189,7 +1189,7 @@ class SecHubConfigurationModelValidatorTest {
         modelSupportCollectedScanTypes.add(ScanType.WEB_SCAN);
 
         /* execute */
-        SecHubConfigurationModelValidationResult result = validatorToTest.validate(model);
+        SecHubConfigurationModelValidationResult result = validatorToTest.validateRemoteData(model);
 
         /* test */
         assertHasError(result, SecHubConfigurationModelValidationError.WEB_SCAN_HTTP_HEADER_ONLY_FOR_URL_DOES_NOT_CONTAIN_TARGET_URL);
@@ -1208,7 +1208,7 @@ class SecHubConfigurationModelValidatorTest {
         modelSupportCollectedScanTypes.add(ScanType.WEB_SCAN);
 
         /* execute */
-        SecHubConfigurationModelValidationResult result = validatorToTest.validate(model);
+        SecHubConfigurationModelValidationResult result = validatorToTest.validateRemoteData(model);
 
         /* test */
         assertHasError(result, SecHubConfigurationModelValidationError.WEB_SCAN_HTTP_HEADER_ONLY_FOR_URL_IS_NOT_A_VALID_URL);
@@ -1234,7 +1234,7 @@ class SecHubConfigurationModelValidatorTest {
         modelSupportCollectedScanTypes.add(ScanType.WEB_SCAN);
 
         /* execute */
-        SecHubConfigurationModelValidationResult result = validatorToTest.validate(model);
+        SecHubConfigurationModelValidationResult result = validatorToTest.validateRemoteData(model);
 
         /* test */
         assertHasError(result, SecHubConfigurationModelValidationError.WEB_SCAN_HTTP_HEADER_ONLY_FOR_URL_IS_NOT_A_VALID_URL);
@@ -1262,7 +1262,7 @@ class SecHubConfigurationModelValidatorTest {
         modelSupportCollectedScanTypes.add(ScanType.WEB_SCAN);
 
         /* execute */
-        SecHubConfigurationModelValidationResult result = validatorToTest.validate(model);
+        SecHubConfigurationModelValidationResult result = validatorToTest.validateRemoteData(model);
 
         /* test */
         assertHasError(result, SecHubConfigurationModelValidationError.WEB_SCAN_HTTP_HEADER_ONLY_FOR_URL_IS_NOT_A_VALID_URL);
@@ -1286,7 +1286,7 @@ class SecHubConfigurationModelValidatorTest {
         modelSupportCollectedScanTypes.add(ScanType.WEB_SCAN);
 
         /* execute */
-        SecHubConfigurationModelValidationResult result = validatorToTest.validate(model);
+        SecHubConfigurationModelValidationResult result = validatorToTest.validateRemoteData(model);
 
         /* test */
         assertHasError(result, SecHubConfigurationModelValidationError.WEB_SCAN_NO_HEADER_NAME_DEFINED);
@@ -1310,7 +1310,7 @@ class SecHubConfigurationModelValidatorTest {
         modelSupportCollectedScanTypes.add(ScanType.WEB_SCAN);
 
         /* execute */
-        SecHubConfigurationModelValidationResult result = validatorToTest.validate(model);
+        SecHubConfigurationModelValidationResult result = validatorToTest.validateRemoteData(model);
 
         /* test */
         assertHasError(result, SecHubConfigurationModelValidationError.WEB_SCAN_NO_HEADER_VALUE_DEFINED);
@@ -1336,7 +1336,7 @@ class SecHubConfigurationModelValidatorTest {
         modelSupportCollectedScanTypes.add(ScanType.WEB_SCAN);
 
         /* execute */
-        SecHubConfigurationModelValidationResult result = validatorToTest.validate(model);
+        SecHubConfigurationModelValidationResult result = validatorToTest.validateRemoteData(model);
 
         /* test */
         assertHasNoErrors(result);
@@ -1360,7 +1360,7 @@ class SecHubConfigurationModelValidatorTest {
         modelSupportCollectedScanTypes.add(ScanType.WEB_SCAN);
 
         /* execute */
-        SecHubConfigurationModelValidationResult result = validatorToTest.validate(model);
+        SecHubConfigurationModelValidationResult result = validatorToTest.validateRemoteData(model);
 
         /* test */
         assertHasError(result, SecHubConfigurationModelValidationError.WEB_SCAN_MULTIPLE_HEADER_VALUES_DEFINED);
@@ -1376,7 +1376,7 @@ class SecHubConfigurationModelValidatorTest {
         modelSupportCollectedScanTypes.add(ScanType.WEB_SCAN);
 
         /* execute */
-        SecHubConfigurationModelValidationResult result = validatorToTest.validate(sechubConfiguration);
+        SecHubConfigurationModelValidationResult result = validatorToTest.validateRemoteData(sechubConfiguration);
 
         /* test */
         assertHasNoErrors(result);
@@ -1394,7 +1394,7 @@ class SecHubConfigurationModelValidatorTest {
         modelSupportCollectedScanTypes.add(ScanType.WEB_SCAN);
 
         /* execute */
-        SecHubConfigurationModelValidationResult result = validatorToTest.validate(sechubConfiguration);
+        SecHubConfigurationModelValidationResult result = validatorToTest.validateRemoteData(sechubConfiguration);
 
         /* test */
         assertHasNoErrors(result);
@@ -1410,7 +1410,7 @@ class SecHubConfigurationModelValidatorTest {
         modelSupportCollectedScanTypes.add(ScanType.WEB_SCAN);
 
         /* execute */
-        SecHubConfigurationModelValidationResult result = validatorToTest.validate(sechubConfiguration);
+        SecHubConfigurationModelValidationResult result = validatorToTest.validateRemoteData(sechubConfiguration);
 
         /* test */
         assertHasNoErrors(result);
@@ -1427,7 +1427,7 @@ class SecHubConfigurationModelValidatorTest {
         modelSupportCollectedScanTypes.add(ScanType.WEB_SCAN);
 
         /* execute */
-        SecHubConfigurationModelValidationResult result = validatorToTest.validate(sechubConfiguration);
+        SecHubConfigurationModelValidationResult result = validatorToTest.validateRemoteData(sechubConfiguration);
 
         /* test */
         assertHasError(result, SecHubConfigurationModelValidationError.WEB_SCAN_NON_UNIQUE_HEADER_CONFIGURATION);
@@ -1444,7 +1444,7 @@ class SecHubConfigurationModelValidatorTest {
         modelSupportCollectedScanTypes.add(ScanType.WEB_SCAN);
 
         /* execute */
-        SecHubConfigurationModelValidationResult result = validatorToTest.validate(sechubConfiguration);
+        SecHubConfigurationModelValidationResult result = validatorToTest.validateRemoteData(sechubConfiguration);
 
         /* test */
         assertHasError(result, SecHubConfigurationModelValidationError.WEB_SCAN_NON_UNIQUE_HEADER_CONFIGURATION);
@@ -1465,7 +1465,7 @@ class SecHubConfigurationModelValidatorTest {
         modelSupportCollectedScanTypes.add(ScanType.WEB_SCAN);
 
         /* execute */
-        SecHubConfigurationModelValidationResult result = validatorToTest.validate(sechubConfiguration);
+        SecHubConfigurationModelValidationResult result = validatorToTest.validateRemoteData(sechubConfiguration);
 
         /* test */
         assertHasNoErrors(result);
@@ -1483,7 +1483,7 @@ class SecHubConfigurationModelValidatorTest {
         modelSupportCollectedScanTypes.add(ScanType.WEB_SCAN);
 
         /* execute */
-        SecHubConfigurationModelValidationResult result = validatorToTest.validate(sechubConfiguration);
+        SecHubConfigurationModelValidationResult result = validatorToTest.validateRemoteData(sechubConfiguration);
         /* test */
         assertHasError(result, SecHubConfigurationModelValidationError.WEB_SCAN_EXCLUDE_INVALID);
         assertHasError(result, SecHubConfigurationModelValidationError.WEB_SCAN_INCLUDE_INVALID);
@@ -1501,7 +1501,7 @@ class SecHubConfigurationModelValidatorTest {
         modelSupportCollectedScanTypes.add(ScanType.WEB_SCAN);
 
         /* execute */
-        SecHubConfigurationModelValidationResult result = validatorToTest.validate(sechubConfiguration);
+        SecHubConfigurationModelValidationResult result = validatorToTest.validateRemoteData(sechubConfiguration);
         /* test */
         assertHasError(result, SecHubConfigurationModelValidationError.WEB_SCAN_EXCLUDE_INVALID);
         assertHasError(result, SecHubConfigurationModelValidationError.WEB_SCAN_INCLUDE_INVALID);
@@ -1517,7 +1517,7 @@ class SecHubConfigurationModelValidatorTest {
         modelSupportCollectedScanTypes.add(ScanType.WEB_SCAN);
 
         /* execute */
-        SecHubConfigurationModelValidationResult result = validatorToTest.validate(sechubConfiguration);
+        SecHubConfigurationModelValidationResult result = validatorToTest.validateRemoteData(sechubConfiguration);
 
         /* test */
         assertHasError(result, SecHubConfigurationModelValidationError.WEB_SCAN_EXCLUDE_INVALID);
@@ -1534,7 +1534,7 @@ class SecHubConfigurationModelValidatorTest {
         modelSupportCollectedScanTypes.add(ScanType.WEB_SCAN);
 
         /* execute */
-        SecHubConfigurationModelValidationResult result = validatorToTest.validate(sechubConfiguration);
+        SecHubConfigurationModelValidationResult result = validatorToTest.validateRemoteData(sechubConfiguration);
 
         /* test */
         assertHasError(result, SecHubConfigurationModelValidationError.WEB_SCAN_INCLUDE_INVALID);
@@ -1551,7 +1551,7 @@ class SecHubConfigurationModelValidatorTest {
         modelSupportCollectedScanTypes.add(ScanType.WEB_SCAN);
 
         /* execute */
-        SecHubConfigurationModelValidationResult result = validatorToTest.validate(sechubConfiguration);
+        SecHubConfigurationModelValidationResult result = validatorToTest.validateRemoteData(sechubConfiguration);
 
         /* test */
         assertHasError(result, SecHubConfigurationModelValidationError.WEB_SCAN_EXCLUDE_INVALID);
@@ -1568,7 +1568,7 @@ class SecHubConfigurationModelValidatorTest {
         modelSupportCollectedScanTypes.add(ScanType.WEB_SCAN);
 
         /* execute */
-        SecHubConfigurationModelValidationResult result = validatorToTest.validate(sechubConfiguration);
+        SecHubConfigurationModelValidationResult result = validatorToTest.validateRemoteData(sechubConfiguration);
 
         /* test */
         assertHasError(result, SecHubConfigurationModelValidationError.WEB_SCAN_INCLUDE_INVALID);
@@ -1583,7 +1583,7 @@ class SecHubConfigurationModelValidatorTest {
         modelSupportCollectedScanTypes.add(ScanType.WEB_SCAN);
 
         /* execute */
-        SecHubConfigurationModelValidationResult result = validatorToTest.validate(sechubConfiguration);
+        SecHubConfigurationModelValidationResult result = validatorToTest.validateRemoteData(sechubConfiguration);
 
         /* test */
         assertHasNoErrors(result);
@@ -1595,7 +1595,7 @@ class SecHubConfigurationModelValidatorTest {
         SecHubConfigurationModel model = createSecHubConfigModelWithExactly8193Characters();
 
         /* execute */
-        SecHubConfigurationModelValidationResult result = validatorToTest.validate(model);
+        SecHubConfigurationModelValidationResult result = validatorToTest.validateRemoteData(model);
 
         /* test */
         assertHasError(result, SECHUB_CONFIGURATION_TOO_LARGE);
@@ -1609,7 +1609,7 @@ class SecHubConfigurationModelValidatorTest {
         model.setApiVersion(model.getApiVersion().substring(1));
 
         /* execute */
-        SecHubConfigurationModelValidationResult result = validatorToTest.validate(model);
+        SecHubConfigurationModelValidationResult result = validatorToTest.validateRemoteData(model);
 
         /* test */
         assertHasNotError(result, SECHUB_CONFIGURATION_TOO_LARGE);
@@ -1624,7 +1624,7 @@ class SecHubConfigurationModelValidatorTest {
         modelSupportCollectedScanTypes.add(ScanType.CODE_SCAN);
 
         /* execute */
-        SecHubConfigurationModelValidationResult result = validatorToTest.validate(sechubConfiguration);
+        SecHubConfigurationModelValidationResult result = validatorToTest.validateRemoteData(sechubConfiguration);
 
         /* test */
         assertHasNoErrors(result);
@@ -1638,7 +1638,7 @@ class SecHubConfigurationModelValidatorTest {
         modelSupportCollectedScanTypes.add(ScanType.CODE_SCAN);
 
         /* execute */
-        SecHubConfigurationModelValidationResult result = validatorToTest.validate(sechubConfiguration);
+        SecHubConfigurationModelValidationResult result = validatorToTest.validateRemoteData(sechubConfiguration);
 
         /* test */
         assertTrue(result.hasErrors());
@@ -1653,7 +1653,7 @@ class SecHubConfigurationModelValidatorTest {
         modelSupportCollectedScanTypes.add(ScanType.CODE_SCAN);
 
         /* execute */
-        SecHubConfigurationModelValidationResult result = validatorToTest.validate(sechubConfiguration);
+        SecHubConfigurationModelValidationResult result = validatorToTest.validateRemoteData(sechubConfiguration);
 
         /* test */
         assertTrue(result.hasErrors());
@@ -1668,7 +1668,7 @@ class SecHubConfigurationModelValidatorTest {
         modelSupportCollectedScanTypes.add(ScanType.CODE_SCAN);
 
         /* execute */
-        SecHubConfigurationModelValidationResult result = validatorToTest.validate(sechubConfiguration);
+        SecHubConfigurationModelValidationResult result = validatorToTest.validateRemoteData(sechubConfiguration);
 
         /* test */
         assertTrue(result.hasErrors());
@@ -1683,7 +1683,7 @@ class SecHubConfigurationModelValidatorTest {
         modelSupportCollectedScanTypes.add(ScanType.CODE_SCAN);
 
         /* execute */
-        SecHubConfigurationModelValidationResult result = validatorToTest.validate(sechubConfiguration);
+        SecHubConfigurationModelValidationResult result = validatorToTest.validateRemoteData(sechubConfiguration);
 
         /* test */
         assertTrue(result.hasErrors());
@@ -1698,7 +1698,7 @@ class SecHubConfigurationModelValidatorTest {
         modelSupportCollectedScanTypes.add(ScanType.CODE_SCAN);
 
         /* execute */
-        SecHubConfigurationModelValidationResult result = validatorToTest.validate(sechubConfiguration);
+        SecHubConfigurationModelValidationResult result = validatorToTest.validateRemoteData(sechubConfiguration);
 
         /* test */
         assertTrue(result.hasErrors());
@@ -1713,7 +1713,7 @@ class SecHubConfigurationModelValidatorTest {
         modelSupportCollectedScanTypes.add(ScanType.CODE_SCAN);
 
         /* execute */
-        SecHubConfigurationModelValidationResult result = validatorToTest.validate(sechubConfiguration);
+        SecHubConfigurationModelValidationResult result = validatorToTest.validateRemoteData(sechubConfiguration);
 
         /* test */
         assertTrue(result.hasErrors());
