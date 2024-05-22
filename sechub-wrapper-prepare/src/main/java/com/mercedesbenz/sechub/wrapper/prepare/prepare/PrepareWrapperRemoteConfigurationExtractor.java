@@ -13,6 +13,14 @@ import com.mercedesbenz.sechub.commons.model.SecHubSourceDataConfiguration;
 @Component
 public class PrepareWrapperRemoteConfigurationExtractor {
 
+    /**
+     * Extracts the remote data configuration from the SecHub configuration model.
+     * The method returns nul, if no remote configuration could be found. If more
+     * than one remote configuration is found, an exception is thrown.
+     *
+     * @param model sechub configuration model
+     * @return remote data configuration
+     */
     public SecHubRemoteDataConfiguration extract(SecHubConfigurationModel model) {
         List<SecHubRemoteDataConfiguration> remoteDataConfigurationList = new ArrayList<>();
         if (model == null) {

@@ -9,10 +9,12 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import com.mercedesbenz.sechub.commons.core.security.CryptoAccess;
+import com.mercedesbenz.sechub.commons.pds.PDSProcessAdapterFactory;
 import com.mercedesbenz.sechub.commons.pds.ProcessAdapter;
 import com.mercedesbenz.sechub.wrapper.prepare.modules.WrapperTool;
 
@@ -21,6 +23,9 @@ public class WrapperSkopeo extends WrapperTool {
 
     @Value("${" + KEY_PDS_PREPARE_AUTHENTICATION_FILE_SKOPEO + ":authentication.json}")
     String pdsPrepareAuthenticationFileSkopeo;
+
+    @Autowired
+    PDSProcessAdapterFactory processAdapterFactory;
 
     public void download(SkopeoContext context) throws IOException {
         if (!context.getCredentialMap().isEmpty()) {

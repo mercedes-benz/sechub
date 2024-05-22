@@ -105,7 +105,7 @@ class SkopeoInputValidatorTest {
         IllegalStateException exception = assertThrows(IllegalStateException.class, () -> validatorToTest.validate(context));
 
         /* test */
-        assertEquals("Defined credentials must not be null.", exception.getMessage());
+        assertEquals("Defined credentials must contain credential user and can not be empty.", exception.getMessage());
     }
 
     @Test
@@ -147,7 +147,7 @@ class SkopeoInputValidatorTest {
         IllegalStateException exception = assertThrows(IllegalStateException.class, () -> validatorToTest.validate(context));
 
         /* test */
-        assertEquals("Defined password must not be null or empty.", exception.getMessage());
+        assertEquals("Defined password must not be null or empty. Password is required for login.", exception.getMessage());
 
     }
 

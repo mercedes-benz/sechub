@@ -27,7 +27,7 @@ import com.mercedesbenz.sechub.wrapper.prepare.prepare.PrepareWrapperContext;
 @Service
 public class PrepareWrapperModuleSkopeo implements PrepareWrapperModule {
 
-    Logger LOG = LoggerFactory.getLogger(PrepareWrapperModuleSkopeo.class);
+    private static final Logger LOG = LoggerFactory.getLogger(PrepareWrapperModuleSkopeo.class);
 
     @Value("${" + KEY_PDS_PREPARE_MODULE_SKOPEO_ENABLED + ":true}")
     private boolean pdsPrepareModuleSkopeoEnabled;
@@ -58,13 +58,14 @@ public class PrepareWrapperModuleSkopeo implements PrepareWrapperModule {
         prepareRemoteConfiguration(context, secHubRemoteDataConfiguration);
 
         if (!isDownloadSuccessful(context)) {
+            LOG.error("Download of git repository was not successful.");
             throw new IOException("Download of docker image was not successful.");
         }
         cleanup(context);
         return true;
     }
 
-    public boolean isDownloadSuccessful(PrepareWrapperContext context) {
+    protected boolean isDownloadSuccessful(PrepareWrapperContext context) {
         // check if download folder contains a .tar archive
         Path path = Paths.get(context.getEnvironment().getPdsPrepareUploadFolderDirectory());
         if (Files.isDirectory(path)) {
@@ -75,7 +76,7 @@ public class PrepareWrapperModuleSkopeo implements PrepareWrapperModule {
                         .toList(); // collect all matched to a List
                 return !result.isEmpty();
             } catch (IOException e) {
-                throw new RuntimeException("Error while checking download of docker image", e);
+                return false;
             }
         }
         return false;
@@ -95,13 +96,12 @@ public class PrepareWrapperModuleSkopeo implements PrepareWrapperModule {
         }
 
         Optional<SecHubRemoteCredentialUserData> optUser = credentials.get().getUser();
-        if (optUser.isPresent()) {
-            SecHubRemoteCredentialUserData user = optUser.get();
-            downloadPrivateImage(context, user, location);
-            return;
+        if (optUser.isEmpty()) {
+            throw new IllegalStateException("Defined credentials have no credential user data for location: " + location);
         }
 
-        throw new IllegalStateException("Defined credentials have no credential user data for location: " + location);
+        SecHubRemoteCredentialUserData user = optUser.get();
+        downloadPrivateImage(context, user, location);
     }
 
     private void downloadPrivateImage(PrepareWrapperContext context, SecHubRemoteCredentialUserData user, String location) throws IOException {
@@ -119,7 +119,7 @@ public class PrepareWrapperModuleSkopeo implements PrepareWrapperModule {
 
         skopeo.download(skopeoContext);
 
-        SecHubMessage message = new SecHubMessage(SecHubMessageType.INFO, "Cloned private repository: " + location);
+        SecHubMessage message = new SecHubMessage(SecHubMessageType.INFO, "Download private image: " + location);
         context.getUserMessages().add(message);
     }
 
@@ -133,7 +133,7 @@ public class PrepareWrapperModuleSkopeo implements PrepareWrapperModule {
 
         skopeo.download(skopeoContext);
 
-        SecHubMessage message = new SecHubMessage(SecHubMessageType.INFO, "Cloned public repository: " + location);
+        SecHubMessage message = new SecHubMessage(SecHubMessageType.INFO, "Download public image: " + location);
         context.getUserMessages().add(message);
     }
 }

@@ -8,12 +8,10 @@ import java.util.concurrent.TimeUnit;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import com.mercedesbenz.sechub.commons.pds.PDSDefaultParameterValueConstants;
-import com.mercedesbenz.sechub.commons.pds.PDSProcessAdapterFactory;
 import com.mercedesbenz.sechub.commons.pds.ProcessAdapter;
 
 @Component
@@ -27,9 +25,6 @@ public abstract class WrapperTool {
 
     @Value("${" + KEY_PDS_PREPARE_PROCESS_TIMEOUT_SECONDS + ":-1}")
     private int pdsPrepareProcessTimeoutSeconds;
-
-    @Autowired
-    public PDSProcessAdapterFactory processAdapterFactory;
 
     protected abstract void cleanUploadDirectory(String uploadDirectory) throws IOException;
 

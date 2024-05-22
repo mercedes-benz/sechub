@@ -42,7 +42,7 @@ class GitInputValidatorTest {
         IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> gitInputValidatorToTest.validateLocation(repositoryUrl));
 
         /* test */
-        assertTrue(exception.getMessage().contains("Defined URL must not contain forbidden characters: "));
+        assertTrue(exception.getMessage().contains("Defined location URL must not contain forbidden characters: "));
     }
 
     @ParameterizedTest
@@ -121,7 +121,7 @@ class GitInputValidatorTest {
         IllegalStateException exception = assertThrows(IllegalStateException.class, () -> gitInputValidatorToTest.validate(context));
 
         /* test */
-        assertEquals("Defined credentials must not be null.", exception.getMessage());
+        assertEquals("Defined credentials must contain credential user and can not be empty.", exception.getMessage());
     }
 
     @Test
@@ -163,7 +163,7 @@ class GitInputValidatorTest {
         IllegalStateException exception = assertThrows(IllegalStateException.class, () -> gitInputValidatorToTest.validate(context));
 
         /* test */
-        assertEquals("Defined password must not be null or empty.", exception.getMessage());
+        assertEquals("Defined password must not be null or empty. Password is required for login.", exception.getMessage());
 
     }
 

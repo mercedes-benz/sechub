@@ -3,6 +3,7 @@ package com.mercedesbenz.sechub.wrapper.prepare.modules;
 import static com.mercedesbenz.sechub.wrapper.prepare.modules.InputValidatorExitcode.*;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.regex.Pattern;
 
@@ -19,9 +20,17 @@ public class AbstractInputValidator implements InputValidator {
     private final Pattern LOCATION_PATTERN;
     private final Pattern USERNAME_PATTERN;
     private final Pattern PASSWORD_PATTERN;
-    private final List<String> forbiddenCharacters = Arrays.asList(">", "<", "!", "?", "*", "'", "\"", ";", "&", "|", "`", "$", "{", "}");
+    private final List<String> forbiddenCharacters = Collections
+            .unmodifiableList(Arrays.asList(">", "<", "!", "?", "*", "'", "\"", ";", "&", "|", "`", "$", "{", "}"));
 
     public AbstractInputValidator(String type, Pattern locationPattern, Pattern usernamePattern, Pattern passwordPattern) {
+        assertPatternNotNull(locationPattern);
+        assertPatternNotNull(usernamePattern);
+        assertPatternNotNull(passwordPattern);
+        if (isTypeNullOrEmpty(type)) {
+            throw new IllegalArgumentException("Type must not be null or empty.");
+        }
+
         this.TYPE = type;
         this.LOCATION_PATTERN = locationPattern;
         this.USERNAME_PATTERN = usernamePattern;
@@ -39,7 +48,7 @@ public class AbstractInputValidator implements InputValidator {
         String type = secHubRemoteDataConfiguration.getType();
 
         if (isTypeNullOrEmpty(type)) {
-            LOG.debug("Not type defined. Location is: {}", location);
+            LOG.debug("No type defined. Location is: {}", location);
             validateLocation(location);
             return;
         } else if (isMatchingType(type)) {
@@ -52,9 +61,8 @@ public class AbstractInputValidator implements InputValidator {
 
     private void validateCredentials(PrepareWrapperContext context) throws PrepareWrapperInputValidatorException {
         SecHubRemoteDataConfiguration secHubRemoteDataConfiguration = context.getRemoteDataConfiguration();
-        if (secHubRemoteDataConfiguration.getCredentials().isEmpty()) {
-            return;
-        } else {
+
+        if (secHubRemoteDataConfiguration.getCredentials().isPresent()) {
             SecHubRemoteCredentialConfiguration remoteCredentialConfiguration = secHubRemoteDataConfiguration.getCredentials().get();
             if (remoteCredentialConfiguration.getUser().isPresent()) {
                 SecHubRemoteCredentialUserData user = remoteCredentialConfiguration.getUser().get();
@@ -63,13 +71,13 @@ public class AbstractInputValidator implements InputValidator {
                 return;
             }
             // credentials object was empty
-            throw new IllegalStateException("Defined credentials must not be null.");
+            throw new IllegalStateException("Defined credentials must contain credential user and can not be empty.");
         }
     }
 
     public void validateUsername(String username) throws PrepareWrapperInputValidatorException {
         if (username == null || username.isBlank()) {
-            throw new IllegalStateException("Defined username must not be null or empty.");
+            throw new IllegalStateException("Defined username must not be null or empty. Username is required for login.");
         }
 
         if (!USERNAME_PATTERN.matcher(username).matches()) {
@@ -79,7 +87,7 @@ public class AbstractInputValidator implements InputValidator {
 
     public void validatePassword(String password) throws PrepareWrapperInputValidatorException {
         if (password == null || password.isBlank()) {
-            throw new IllegalStateException("Defined password must not be null or empty.");
+            throw new IllegalStateException("Defined password must not be null or empty. Password is required for login.");
         }
 
         if (!PASSWORD_PATTERN.matcher(password).matches()) {
@@ -90,7 +98,7 @@ public class AbstractInputValidator implements InputValidator {
 
     public void validateLocation(String location) throws PrepareWrapperInputValidatorException {
         if (location == null || location.isBlank()) {
-            throw new IllegalStateException("Defined location must not be null or empty.");
+            throw new IllegalStateException("Defined location must not be null or empty. Location is required for download remote data.");
         }
         validateLocationCharacters(location);
         if (!LOCATION_PATTERN.matcher(location).matches()) {
@@ -108,12 +116,18 @@ public class AbstractInputValidator implements InputValidator {
 
     private void validateLocationCharacters(String url) {
         if (url.contains(" ")) {
-            throw new IllegalArgumentException("Defined URL must not contain whitespaces.");
+            throw new IllegalArgumentException("Defined location URL must not contain whitespaces.");
         }
         for (String forbiddenCharacter : forbiddenCharacters) {
             if (url.contains(forbiddenCharacter)) {
-                throw new IllegalArgumentException("Defined URL must not contain forbidden characters: " + forbiddenCharacter);
+                throw new IllegalArgumentException("Defined location URL must not contain forbidden characters: " + forbiddenCharacter);
             }
+        }
+    }
+
+    private void assertPatternNotNull(Pattern pattern) {
+        if (pattern == null) {
+            throw new IllegalArgumentException("Pattern must not be null.");
         }
     }
 }

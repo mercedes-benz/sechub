@@ -96,6 +96,28 @@ class PrepareWrapperModuleSkopeoTest {
     }
 
     @Test
+    void prepare_returns_false_when_modul_is_disabled() throws IOException {
+        /* prepare */
+
+        PrepareWrapperEnvironment environment = mock(PrepareWrapperEnvironment.class);
+        when(environment.getPdsPrepareUploadFolderDirectory()).thenReturn("temp");
+        PrepareWrapperContext context = new PrepareWrapperContext(createFromJSON("{}"), environment);
+
+        SecHubRemoteDataConfiguration remoteDataConfiguration = new SecHubRemoteDataConfiguration();
+        remoteDataConfiguration.setLocation("my-example-location");
+        remoteDataConfiguration.setType("docker");
+        context.setRemoteDataConfiguration(remoteDataConfiguration);
+
+        ReflectionTestUtils.setField(moduleToTest, "pdsPrepareModuleSkopeoEnabled", false);
+
+        /* execute */
+        boolean result = moduleToTest.prepare(context);
+
+        /* test */
+        assertFalse(result);
+    }
+
+    @Test
     void isDownloadSuccessful_returns_true_when_tar_file_in_directory() throws IOException {
         /* prepare */
         File tempDir = Files.createTempDirectory("upload-folder").toFile();

@@ -26,7 +26,7 @@ import com.mercedesbenz.sechub.wrapper.prepare.prepare.PrepareWrapperContext;
 @Service
 public class PrepareWrapperModuleGit implements PrepareWrapperModule {
 
-    Logger LOG = LoggerFactory.getLogger(PrepareWrapperModuleGit.class);
+    private static final Logger LOG = LoggerFactory.getLogger(PrepareWrapperModuleGit.class);
 
     @Value("${" + KEY_PDS_PREPARE_AUTO_CLEANUP_GIT_FOLDER + ":true}")
     private boolean pdsPrepareAutoCleanupGitFolder;
@@ -61,13 +61,14 @@ public class PrepareWrapperModuleGit implements PrepareWrapperModule {
         prepareRemoteConfiguration(context, secHubRemoteDataConfiguration);
 
         if (!isDownloadSuccessful(context)) {
+            LOG.error("Download of git repository was not successful.");
             throw new IOException("Download of git repository was not successful.");
         }
         cleanup(context);
         return true;
     }
 
-    public boolean isDownloadSuccessful(PrepareWrapperContext context) {
+    protected boolean isDownloadSuccessful(PrepareWrapperContext context) {
         // check if download folder contains git
         Path path = Paths.get(context.getEnvironment().getPdsPrepareUploadFolderDirectory());
         if (Files.isDirectory(path)) {
@@ -88,13 +89,12 @@ public class PrepareWrapperModuleGit implements PrepareWrapperModule {
         }
 
         Optional<SecHubRemoteCredentialUserData> optUser = credentials.get().getUser();
-        if (optUser.isPresent()) {
-            SecHubRemoteCredentialUserData user = optUser.get();
-            clonePrivateRepository(context, user, location);
-            return;
+        if (optUser.isEmpty()) {
+            throw new IllegalStateException("Defined credentials have no credential user data for location: " + location);
         }
 
-        throw new IllegalStateException("Defined credentials have no credential user data for location: " + location);
+        SecHubRemoteCredentialUserData user = optUser.get();
+        clonePrivateRepository(context, user, location);
     }
 
     private void clonePrivateRepository(PrepareWrapperContext context, SecHubRemoteCredentialUserData user, String location) throws IOException {
@@ -112,7 +112,7 @@ public class PrepareWrapperModuleGit implements PrepareWrapperModule {
 
         git.downloadRemoteData(gitContext);
 
-        SecHubMessage message = new SecHubMessage(SecHubMessageType.INFO, "Cloned private repository: " + location);
+        SecHubMessage message = new SecHubMessage(SecHubMessageType.INFO, "Cloned private image: " + location);
         context.getUserMessages().add(message);
     }
 

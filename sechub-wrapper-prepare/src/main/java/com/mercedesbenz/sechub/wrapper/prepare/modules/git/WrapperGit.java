@@ -11,6 +11,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import com.mercedesbenz.sechub.commons.pds.PDSProcessAdapterFactory;
 import com.mercedesbenz.sechub.commons.pds.ProcessAdapter;
 import com.mercedesbenz.sechub.wrapper.prepare.modules.WrapperTool;
 
@@ -21,6 +22,9 @@ public class WrapperGit extends WrapperTool {
 
     @Autowired
     JGitAdapter jGitAdapter;
+
+    @Autowired
+    PDSProcessAdapterFactory processAdapterFactory;
 
     public void downloadRemoteData(GitContext gitContext) {
         LOG.debug("Start cloning with JGit.");
