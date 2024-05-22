@@ -48,7 +48,7 @@ class WrapperGitTest {
 
     @ParameterizedTest
     @ValueSource(strings = { "https://host.xz/path/to/repo/.git", "http://myrepo/here/.git", "example.org.git" })
-    void when_cloneRepository_is_executed_the_processAdapterFactory_starts_JGit_clone(String location) throws IOException {
+    void when_cloneRepository_is_executed_the_processAdapterFactory_starts_JGit_clone(String location) {
         /* prepare */
         Map<String, SealedObject> credentialMap = new HashMap<>();
         credentialMap.put(PDS_PREPARE_CREDENTIAL_USERNAME, CryptoAccess.CRYPTO_STRING.seal("user"));

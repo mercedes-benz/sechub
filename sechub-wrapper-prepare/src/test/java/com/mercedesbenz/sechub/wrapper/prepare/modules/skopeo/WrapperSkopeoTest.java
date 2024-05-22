@@ -23,7 +23,6 @@ class WrapperSkopeoTest {
 
     WrapperSkopeo wrapperToTest;
     PDSProcessAdapterFactory processAdapterFactory;
-
     ProcessAdapter processAdapter;
 
     @BeforeEach

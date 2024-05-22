@@ -44,7 +44,7 @@ class PrepareWrapperModuleGitTest {
     }
 
     @Test
-    void when_inputvalidator_throws_InputValidatorException_prepare_return_false() throws IOException, PrepareWrapperInputValidatorException {
+    void when_inputValidator_throws_InputValidatorException_prepare_return_false() throws IOException, PrepareWrapperInputValidatorException {
         /* prepare */
         PrepareWrapperContext context = createContext();
         doThrow(new PrepareWrapperInputValidatorException("test", InputValidatorExitcode.LOCATION_NOT_MATCHING_PATTERN)).when(gitInputValidator)

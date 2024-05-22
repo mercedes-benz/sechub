@@ -18,6 +18,8 @@ import com.mercedesbenz.sechub.commons.model.SecHubRemoteCredentialUserData;
 import com.mercedesbenz.sechub.commons.model.SecHubRemoteDataConfiguration;
 import com.mercedesbenz.sechub.test.TestFileWriter;
 import com.mercedesbenz.sechub.wrapper.prepare.cli.PrepareWrapperEnvironment;
+import com.mercedesbenz.sechub.wrapper.prepare.modules.InputValidatorExitcode;
+import com.mercedesbenz.sechub.wrapper.prepare.modules.PrepareWrapperInputValidatorException;
 import com.mercedesbenz.sechub.wrapper.prepare.prepare.PrepareWrapperContext;
 
 class PrepareWrapperModuleSkopeoTest {
@@ -38,6 +40,30 @@ class PrepareWrapperModuleSkopeoTest {
 
         moduleToTest.skopeoInputValidator = skopeoInputValidator;
         moduleToTest.skopeo = skopeo;
+    }
+
+    @Test
+    void when_inputValidator_throws_InputValidatorException_prepare_return_false() throws IOException, PrepareWrapperInputValidatorException {
+        /* prepare */
+        PrepareWrapperContext context = createContext();
+        doThrow(new PrepareWrapperInputValidatorException("test", InputValidatorExitcode.LOCATION_NOT_MATCHING_PATTERN)).when(skopeoInputValidator)
+                .validate(context);
+
+        /* execute */
+        boolean result = moduleToTest.prepare(context);
+
+        /* test */
+        assertFalse(result);
+    }
+
+    @Test
+    void when_inputvalidator_throws_exception_prepare_throws_exception() throws PrepareWrapperInputValidatorException {
+        /* prepare */
+        PrepareWrapperContext context = createContext();
+        doThrow(new IllegalStateException("test")).when(skopeoInputValidator).validate(context);
+
+        /* execute + test */
+        assertThrows(IllegalStateException.class, () -> moduleToTest.prepare(context));
     }
 
     @Test
@@ -151,4 +177,11 @@ class PrepareWrapperModuleSkopeoTest {
         /* test */
         assertFalse(result);
     }
+
+    private PrepareWrapperContext createContext() {
+        PrepareWrapperEnvironment environment = mock(PrepareWrapperEnvironment.class);
+        when(environment.getPdsPrepareUploadFolderDirectory()).thenReturn("test-upload-folder");
+        return new PrepareWrapperContext(createFromJSON("{}"), environment);
+    }
+
 }
