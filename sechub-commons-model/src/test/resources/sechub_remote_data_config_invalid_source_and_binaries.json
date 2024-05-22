@@ -3,12 +3,6 @@
   "data": {
     "sources": [
       {
-        "name": "filesystem_example_1",
-        "fileSystem" : {
-          "folders" : [ "myProject/src" ]
-        }
-      },
-      {
         "name": "remote_example_name",
         "remote": {
           "location": "remote_example_location",
@@ -20,18 +14,21 @@
             }
           }
         }
-      },
+      }
+    ],
+    "binaries": [
       {
-      "name": "filesystem_example",
-        "fileSystem" : {
-          "folders" : [ "myProject/build" ]
+        "name": "binary_example_name",
+        "remote": {
+          "location": "remote_example_location",
+          "type": "docker"
         }
       }
     ]
   },
   "codeScan": {
     "use": [
-      "remote_example_name"
+      "remote_example_name", "binary_example_name"
     ]
   }
 }

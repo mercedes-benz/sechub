@@ -1631,7 +1631,7 @@ class SecHubConfigurationModelValidatorTest {
     }
 
     @Test
-    void when_multiple_remote_configurations_are_configured_error_REMOTE_DATA_MULTI_CONFIGURATION_NOT_ALLOWED() {
+    void when_multiple_remote_configurations_are_configured_error_REMOTE_DATA_CONFIGURATION_ONLY_FOR_ONE_SOURCE_OR_BINARY() {
         /* prepare */
         String json = TestFileReader.loadTextFile("src/test/resources/sechub_remote_data_config_invalid_multi_config.json");
         SecHubScanConfiguration sechubConfiguration = SecHubScanConfiguration.createFromJSON(json);
@@ -1642,7 +1642,7 @@ class SecHubConfigurationModelValidatorTest {
 
         /* test */
         assertTrue(result.hasErrors());
-        assertHasError(result, REMOTE_DATA_MULTI_CONFIGURATION_NOT_ALLOWED);
+        assertHasError(result, REMOTE_DATA_CONFIGURATION_ONLY_FOR_ONE_SOURCE_OR_BINARY);
     }
 
     @Test
@@ -1706,7 +1706,7 @@ class SecHubConfigurationModelValidatorTest {
     }
 
     @Test
-    void when_remote_configuration_is_mixed_with_filesystem_REMOTE_DATA_MIXED_CONFIGURATION_NOT_ALLOWED() {
+    void when_remote_configuration_is_mixed_with_filesystem_REMOTE_REMOTE_DATA_MIXED_WITH_FILESYSTEM_NOT_ALLOWED() {
         /* prepare */
         String json = TestFileReader.loadTextFile("src/test/resources/sechub_remote_data_config_invalid_config_with_filesystem.json");
         SecHubScanConfiguration sechubConfiguration = SecHubScanConfiguration.createFromJSON(json);
@@ -1717,7 +1717,23 @@ class SecHubConfigurationModelValidatorTest {
 
         /* test */
         assertTrue(result.hasErrors());
-        assertHasError(result, REMOTE_DATA_MULTI_CONFIGURATION_NOT_ALLOWED);
+        assertHasError(result, REMOTE_DATA_MIXED_WITH_FILESYSTEM_NOT_ALLOWED);
+    }
+
+    @Test
+    void when_remote_data_is_configured_for_binaries_and_sources_error() {
+        /* prepare */
+        String json = TestFileReader.loadTextFile("src/test/resources/sechub_remote_data_config_invalid_source_and_binaries.json");
+        SecHubScanConfiguration sechubConfiguration = SecHubScanConfiguration.createFromJSON(json);
+        modelSupportCollectedScanTypes.add(ScanType.CODE_SCAN);
+
+        /* execute */
+        SecHubConfigurationModelValidationResult result = validatorToTest.validateRemoteData(sechubConfiguration);
+
+        /* test */
+        assertTrue(result.hasErrors());
+        assertHasError(result, REMOTE_DATA_CONFIGURATION_ONLY_FOR_ONE_SOURCE_OR_BINARY);
+
     }
 
     private SecHubConfigurationModel createSecHubConfigModelWithExactly8193Characters() {

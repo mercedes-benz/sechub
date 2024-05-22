@@ -66,7 +66,9 @@ public enum SecHubConfigurationModelValidationError {
 
     METADATA_LABEL_KEY_CONTAINS_ILLEGAL_CHARACTERS("Meta data label key contains illegal characters."),
 
-    REMOTE_DATA_MULTI_CONFIGURATION_NOT_ALLOWED("Remote data configuration is not allowed for multiple data configurations."),
+    REMOTE_DATA_CONFIGURATION_ONLY_FOR_ONE_SOURCE_OR_BINARY("Remote data configuration is only allowed for ONE source or for ONE binary."),
+
+    REMOTE_DATA_MIXED_WITH_FILESYSTEM_NOT_ALLOWED("Remote data configuration is not allowed to be mixed with filesystem."),
 
     REMOTE_DATA_CONFIGURATION_LOCATION_NOT_DEFINED("Remote data configuration location is not defined."),
 

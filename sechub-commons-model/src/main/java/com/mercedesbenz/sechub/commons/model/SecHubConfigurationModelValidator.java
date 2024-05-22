@@ -516,8 +516,11 @@ public class SecHubConfigurationModelValidator {
         validateNameUniqueAndNotNull(context, data.getSources());
         validateNameUniqueAndNotNull(context, data.getBinaries());
 
-        validateRemoteDataSection(context, data.getSources());
-        validateRemoteDataSection(context, data.getBinaries());
+        List<SecHubDataConfigurationObject> sourcesAndBinaries = new ArrayList<SecHubDataConfigurationObject>();
+        sourcesAndBinaries.addAll(data.getSources());
+        sourcesAndBinaries.addAll(data.getBinaries());
+
+        validateRemoteDataConfiguration(context, sourcesAndBinaries);
     }
 
     private void validateNameUniqueAndNotNull(InternalValidationContext context, Collection<? extends SecHubDataConfigurationObject> configurationObjects) {
@@ -554,46 +557,77 @@ public class SecHubConfigurationModelValidator {
 
     }
 
-    private void validateRemoteDataSection(InternalValidationContext context, Collection<? extends SecHubDataConfigurationObject> configurationObjects) {
+    private void validateRemoteDataConfiguration(InternalValidationContext context, Collection<? extends SecHubDataConfigurationObject> sourcesAndBinaries) {
 
         SecHubConfigurationModelValidationResult result = context.result;
 
-        for (SecHubDataConfigurationObject configurationObject : configurationObjects) {
-            Optional<SecHubRemoteDataConfiguration> optRemoteData = configurationObject.getRemote();
+        validateOnlyOneRemoteSourceOrBinary(sourcesAndBinaries, result);
+        validateRemoteAndFileSystemAreNotMixed(sourcesAndBinaries, result);
+        validateRemoteData(sourcesAndBinaries, result);
+    }
+
+    private void validateOnlyOneRemoteSourceOrBinary(Collection<? extends SecHubDataConfigurationObject> sourcesAndBinaries,
+            SecHubConfigurationModelValidationResult result) {
+        for (SecHubDataConfigurationObject sourceOrBinary : sourcesAndBinaries) {
+            Optional<SecHubRemoteDataConfiguration> optRemoteData = sourceOrBinary.getRemote();
 
             if (optRemoteData.isEmpty()) {
                 // no remote data is configured
-                return;
+                continue;
             }
 
-            if (configurationObjects.size() > 1) {
-                // remote data is configured with multiple configurations (filesystem or second
-                // remote)
-                result.addError(REMOTE_DATA_MULTI_CONFIGURATION_NOT_ALLOWED);
+            // When using a remote data section it is only possible to define ONE binary or
+            // ONE source definition.
+            // Means also: It is only possible to define ONE remote data section.
+            boolean onlyOneBinaryOrOneSource = sourcesAndBinaries.size() == 1;
+            if (!onlyOneBinaryOrOneSource) {
+                result.addError(REMOTE_DATA_CONFIGURATION_ONLY_FOR_ONE_SOURCE_OR_BINARY);
+                break;
             }
-
-            validateRemoteData(configurationObject, result, optRemoteData);
-
         }
     }
 
-    private void validateRemoteData(SecHubDataConfigurationObject configurationObject, SecHubConfigurationModelValidationResult result, Optional<SecHubRemoteDataConfiguration> optRemoteData) {
-        String uniqueName = configurationObject.getUniqueName();
-        SecHubRemoteDataConfiguration remoteData = optRemoteData.get();
+    private void validateRemoteAndFileSystemAreNotMixed(Collection<? extends SecHubDataConfigurationObject> sourcesAndBinaries,
+            SecHubConfigurationModelValidationResult result) {
+        boolean containsFileSystem = false;
+        boolean containsRemote = false;
 
-        if (remoteData.getLocation() == null || remoteData.getLocation().isEmpty()) {
-            result.addError(REMOTE_DATA_CONFIGURATION_LOCATION_NOT_DEFINED, "Remote data location is not defined for " + uniqueName);
+        for (SecHubDataConfigurationObject sourceOrBinary : sourcesAndBinaries) {
+            containsRemote = containsRemote || sourceOrBinary.getRemote().isPresent();
+            if (sourceOrBinary instanceof SecHubFileSystemContainer) {
+                containsFileSystem = containsFileSystem || ((SecHubFileSystemContainer) sourceOrBinary).getFileSystem().isPresent();
+            }
         }
+        if (containsFileSystem && containsRemote) {
+            result.addError(REMOTE_DATA_MIXED_WITH_FILESYSTEM_NOT_ALLOWED);
+        }
+    }
 
+    private void validateRemoteData(Collection<? extends SecHubDataConfigurationObject> sourcesAndBinaries, SecHubConfigurationModelValidationResult result) {
+        for (SecHubDataConfigurationObject sourceOrBinary : sourcesAndBinaries) {
+            Optional<SecHubRemoteDataConfiguration> optRemoteData = sourceOrBinary.getRemote();
+
+            if (optRemoteData.isEmpty()) {
+                // no remote data is configured
+                continue;
+            }
+
+            String uniqueName = sourceOrBinary.getUniqueName();
+            SecHubRemoteDataConfiguration remoteData = optRemoteData.get();
+
+            if (remoteData.getLocation() == null || remoteData.getLocation().isBlank()) {
+                result.addError(REMOTE_DATA_CONFIGURATION_LOCATION_NOT_DEFINED, "Remote data location is not defined for " + uniqueName);
+            }
+
+            validateRemoteDataCredentials(result, remoteData, uniqueName);
+        }
+    }
+
+    private void validateRemoteDataCredentials(SecHubConfigurationModelValidationResult result, SecHubRemoteDataConfiguration remoteData, String uniqueName) {
         if (remoteData.getCredentials().isEmpty()) {
             // credentials don't need to be defined for public accessible remote data
             return;
         }
-
-        validateRemoteDataCredentials(result, remoteData, uniqueName);
-    }
-
-    private void validateRemoteDataCredentials(SecHubConfigurationModelValidationResult result, SecHubRemoteDataConfiguration remoteData, String uniqueName) {
         SecHubRemoteCredentialConfiguration remoteCredential = remoteData.getCredentials().get();
         if (remoteCredential.getUser().isEmpty()) {
             result.addError(REMOTE_DATA_CONFIGURATION_USER_NOT_DEFINED, "Remote data configuration credentials: no user is defined for " + uniqueName);
