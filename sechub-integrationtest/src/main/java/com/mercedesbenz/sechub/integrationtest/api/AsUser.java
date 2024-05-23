@@ -190,7 +190,19 @@ public class AsUser {
     /**
      * User trigger create of project
      *
-     * @param project
+     * @param project project instance
+     * @param owner   owner of the project
+     * @throws RestClientException
+     */
+    public AsUser createProject(TestProject project, TestUser owner) {
+        return createProject(project, owner.getUserId());
+    }
+
+    /**
+     * User trigger create of project
+     *
+     * @param project     project instance
+     * @param ownerUserId owner of the project
      * @throws RestClientException
      */
     public AsUser createProject(TestProject project, String ownerUserId) {

@@ -45,6 +45,7 @@ import com.mercedesbenz.sechub.domain.scan.admin.FullScanData;
 import com.mercedesbenz.sechub.integrationtest.internal.DefaultTestExecutionProfile;
 import com.mercedesbenz.sechub.integrationtest.internal.IntegrationTestContext;
 import com.mercedesbenz.sechub.integrationtest.internal.IntegrationTestDefaultProfiles;
+import com.mercedesbenz.sechub.integrationtest.internal.SecHubClientExecutor.ExecutionResult;
 import com.mercedesbenz.sechub.integrationtest.internal.TestAutoCleanupData;
 import com.mercedesbenz.sechub.integrationtest.internal.TestAutoCleanupData.TestCleanupTimeUnit;
 import com.mercedesbenz.sechub.integrationtest.internal.TestJSONHelper;
@@ -122,6 +123,10 @@ public class TestAPI {
      */
     public static AssertReportUnordered assertReportUnordered(String json) {
         return AssertReportUnordered.assertReportUnordered(json);
+    }
+
+    public static AssertExecutionResult assertExecutionResult(ExecutionResult result) {
+        return AssertExecutionResult.assertResult(result);
     }
 
     /**
