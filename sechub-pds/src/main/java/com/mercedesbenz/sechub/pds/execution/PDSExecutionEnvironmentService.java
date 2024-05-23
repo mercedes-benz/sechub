@@ -11,6 +11,7 @@ import java.util.UUID;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import com.mercedesbenz.sechub.commons.pds.ExecutionPDSKey;
@@ -22,6 +23,8 @@ import com.mercedesbenz.sechub.pds.commons.core.config.PDSProductSetup;
 import com.mercedesbenz.sechub.pds.config.PDSServerConfigurationService;
 import com.mercedesbenz.sechub.pds.job.PDSJobConfiguration;
 
+import jakarta.annotation.PostConstruct;
+
 @Service
 public class PDSExecutionEnvironmentService {
 
@@ -32,6 +35,20 @@ public class PDSExecutionEnvironmentService {
 
     @Autowired
     PDSServerConfigurationService serverConfigService;
+
+    @Value("${pds.script.env.whitelist:}")
+    String pdsScriptEnvWhitelist;
+
+    PDSScriptEnvironmentCleaner cleaner = new PDSScriptEnvironmentCleaner();
+
+    @PostConstruct
+    void postConstruct() {
+        cleaner.setWhiteListCommaSeparated(pdsScriptEnvWhitelist);
+    }
+
+    public void removeAllNonWhitelistedEnvironmentVariables(Map<String, String> environment) {
+        cleaner.clean(environment);
+    }
 
     public Map<String, String> buildEnvironmentMap(PDSJobConfiguration config) {
         Map<String, String> map = new LinkedHashMap<>();
