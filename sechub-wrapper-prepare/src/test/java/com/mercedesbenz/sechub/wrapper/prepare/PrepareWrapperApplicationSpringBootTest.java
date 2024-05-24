@@ -14,8 +14,6 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import com.mercedesbenz.sechub.adapter.AdapterExecutionResult;
 import com.mercedesbenz.sechub.commons.archive.ArchiveSupport;
-import com.mercedesbenz.sechub.pds.storage.PDSS3PropertiesSetup;
-import com.mercedesbenz.sechub.pds.storage.PDSSharedVolumePropertiesSetup;
 import com.mercedesbenz.sechub.wrapper.prepare.cli.PrepareWrapperEnvironment;
 import com.mercedesbenz.sechub.wrapper.prepare.factory.PrepareWrapperPDSUserMessageSupportPojoFactory;
 import com.mercedesbenz.sechub.wrapper.prepare.factory.PrepareWrapperPojoFactory;
@@ -30,7 +28,7 @@ import com.mercedesbenz.sechub.wrapper.prepare.upload.*;
         PrepareWrapperModuleGit.class, PrepareWrapperModule.class, WrapperGit.class, GitInputValidator.class, JGitAdapter.class,
         PrepareWrapperStorageService.class, PrepareWrapperUploadService.class, PrepareWrapperFileUploadService.class,
         PrepareWrapperSechubConfigurationSupport.class, FileNameSupport.class, PrepareWrapperArchiveCreator.class, ArchiveSupport.class,
-        PDSSharedVolumePropertiesSetup.class, PDSS3PropertiesSetup.class })
+        PrepareWrapperSharedVolumePropertiesSetup.class, PrepareWrapperS3PropertiesSetup.class })
 @ExtendWith(SpringExtension.class)
 @TestPropertySource(locations = "classpath:application-test-fail.properties")
 class PrepareWrapperApplicationSpringBootTest {

@@ -15,12 +15,11 @@ dependencies {
     implementation project(':sechub-storage-core')
     implementation project(':sechub-storage-sharedvolume-spring')
     implementation project(':sechub-storage-s3-aws')
+    implementation project(':sechub-pds-commons-core')
 
     implementation spring_boot_dependency.logback_classic
 
     implementation library.jgit_core
-    implementation project(path: ':sechub-pds')
-
 
     /* test */
     testImplementation project(':sechub-testframework')

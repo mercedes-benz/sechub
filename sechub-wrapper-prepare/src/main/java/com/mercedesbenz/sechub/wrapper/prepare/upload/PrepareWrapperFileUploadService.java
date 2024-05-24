@@ -54,20 +54,20 @@ public class PrepareWrapperFileUploadService {
     private void storeUploadFileAndSha256Checksum(String projectId, UUID jobUUID, File file, String checkSum) {
         JobStorage jobStorage = storageService.getJobStorage(projectId, jobUUID);
 
-        UploadContext uploadContext;
+        UploadFileNameData uploadFileNameData;
 
         if (file.getName().endsWith(".tar")) {
-            uploadContext = new UploadContext(FILENAME_BINARIES_TAR, FILENAME_BINARIES_TAR_FILESIZE, FILENAME_BINARIES_TAR_CHECKSUM);
+            uploadFileNameData = new UploadFileNameData(FILENAME_BINARIES_TAR, FILENAME_BINARIES_TAR_FILESIZE, FILENAME_BINARIES_TAR_CHECKSUM);
         } else if (file.getName().endsWith(".zip")) {
-            uploadContext = new UploadContext(FILENAME_SOURCECODE_ZIP, FILENAME_SOURCECODE_ZIP_FILESIZE, FILENAME_SOURCECODE_ZIP_CHECKSUM);
+            uploadFileNameData = new UploadFileNameData(FILENAME_SOURCECODE_ZIP, FILENAME_SOURCECODE_ZIP_FILESIZE, FILENAME_SOURCECODE_ZIP_CHECKSUM);
         } else {
             throw new IllegalArgumentException("File must be a zip or tar file");
         }
 
-        upload(file, checkSum, jobStorage, uploadContext);
+        upload(file, checkSum, jobStorage, uploadFileNameData);
     }
 
-    private void upload(File file, String checkSum, JobStorage jobStorage, UploadContext uploadContext) {
+    private void upload(File file, String checkSum, JobStorage jobStorage, UploadFileNameData uploadFileNameData) {
         try (InputStream inputStream = new FileInputStream(file)) {
             long fileSize = file.length();
 
@@ -76,25 +76,25 @@ public class PrepareWrapperFileUploadService {
             String fileSizeAsString = "" + fileSize;
             long fileSizeAsStringSizeInBytes = fileSizeAsString.getBytes().length;
 
-            jobStorage.store(uploadContext.filename, inputStream, fileSize);
-            jobStorage.store(uploadContext.filesize, new StringInputStream(fileSizeAsString), fileSizeAsStringSizeInBytes);
-            jobStorage.store(uploadContext.checksum, new StringInputStream(checkSum), checksumSizeInBytes);
+            jobStorage.store(uploadFileNameData.fileFilename, inputStream, fileSize);
+            jobStorage.store(uploadFileNameData.filesizeFilename, new StringInputStream(fileSizeAsString), fileSizeAsStringSizeInBytes);
+            jobStorage.store(uploadFileNameData.checksumFilename, new StringInputStream(checkSum), checksumSizeInBytes);
 
         } catch (IOException e) {
-            LOG.error("Was not able to store file: " + uploadContext.filename, e);
+            LOG.error("Was not able to store file: " + uploadFileNameData.fileFilename, e);
             throw new RuntimeException("Was not able to upload sources");
         }
     }
 
-    private static class UploadContext {
-        String filename;
-        String filesize;
-        String checksum;
+    private static class UploadFileNameData {
+        String fileFilename;
+        String filesizeFilename;
+        String checksumFilename;
 
-        public UploadContext(String filename, String filename_filesize, String filename_checksum) {
-            this.filename = filename;
-            this.filesize = filename_filesize;
-            this.checksum = filename_checksum;
+        public UploadFileNameData(String fileFilename, String filesizeFilename, String checksumFilename) {
+            this.fileFilename = fileFilename;
+            this.filesizeFilename = filesizeFilename;
+            this.checksumFilename = checksumFilename;
         }
     }
 }

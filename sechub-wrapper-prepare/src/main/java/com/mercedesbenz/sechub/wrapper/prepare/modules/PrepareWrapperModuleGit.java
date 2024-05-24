@@ -107,6 +107,7 @@ public class PrepareWrapperModuleGit implements PrepareWrapperModule {
 
     boolean isDownloadSuccessful(PrepareWrapperContext context) {
         // check if download folder contains git
+
         String uploadFolder = context.getEnvironment().getPdsPrepareUploadFolderDirectory();
         if (Files.isDirectory(Path.of(uploadFolder))) {
             String gitRepo = filesSupport.getSubfolderFileNameFromDirectory(uploadFolder);
@@ -158,6 +159,8 @@ public class PrepareWrapperModuleGit implements PrepareWrapperModule {
 
         SecHubMessage message = new SecHubMessage(SecHubMessageType.INFO, "Cloned private repository: " + location);
         context.getUserMessages().add(message);
+        // TODO: 23.05.24 laura isDownloadSuccessful check
+
     }
 
     private static void addSealedUserCredentials(SecHubRemoteCredentialUserData user, HashMap<String, SealedObject> credentialMap) {
@@ -185,6 +188,7 @@ public class PrepareWrapperModuleGit implements PrepareWrapperModule {
 
         SecHubMessage message = new SecHubMessage(SecHubMessageType.INFO, "Cloned public repository: " + location);
         context.getUserMessages().add(message);
+        // TODO: 23.05.24 laura isDownloadSuccessful check
     }
 
     private void cleanup(PrepareWrapperContext context) throws IOException {

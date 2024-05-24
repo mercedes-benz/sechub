@@ -6,6 +6,8 @@ public class PrepareWrapperKeyConstants {
      * Folder for PDS prepare where remote data gets downloaded to be uploaded to
      * the shared storage
      */
+    // TODO: 23.05.24 laura diese variable weg -> ersetzen durch WORKSPACE_DIRECTORY
+    // + xxx
     public static final String KEY_PDS_PREPARE_UPLOAD_DIRECTORY = "pds.prepare.upload.directory";
 
     /**
