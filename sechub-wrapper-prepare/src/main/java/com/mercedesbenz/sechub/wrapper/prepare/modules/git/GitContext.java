@@ -1,4 +1,6 @@
-package com.mercedesbenz.sechub.wrapper.prepare.modules;
+package com.mercedesbenz.sechub.wrapper.prepare.modules.git;
+
+import com.mercedesbenz.sechub.wrapper.prepare.modules.ToolContext;
 
 public class GitContext extends ToolContext {
     private boolean cloneWithoutHistory;

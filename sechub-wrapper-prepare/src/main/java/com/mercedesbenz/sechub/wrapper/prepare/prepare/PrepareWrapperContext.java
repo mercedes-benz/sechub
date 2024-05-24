@@ -13,20 +13,16 @@ public class PrepareWrapperContext {
 
     private SecHubConfigurationModel secHubConfiguration;
     private PrepareWrapperEnvironment environment;
-    private List<SecHubRemoteDataConfiguration> remoteDataConfigurationList = new ArrayList<>();
     private List<SecHubMessage> userMessages = new ArrayList<>();
+    private SecHubRemoteDataConfiguration remoteDataConfiguration;
 
     public PrepareWrapperContext(SecHubConfigurationModel secHubConfiguration, PrepareWrapperEnvironment environment) {
         this.secHubConfiguration = secHubConfiguration;
         this.environment = environment;
     }
 
-    public void setRemoteDataConfigurationList(List<SecHubRemoteDataConfiguration> remoteDataConfigurationList) {
-        this.remoteDataConfigurationList = remoteDataConfigurationList;
-    }
-
-    public List<SecHubRemoteDataConfiguration> getRemoteDataConfigurationList() {
-        return remoteDataConfigurationList;
+    public void setRemoteDataConfiguration(SecHubRemoteDataConfiguration remoteDataConfiguration) {
+        this.remoteDataConfiguration = remoteDataConfiguration;
     }
 
     public SecHubConfigurationModel getSecHubConfiguration() {
@@ -39,5 +35,9 @@ public class PrepareWrapperContext {
 
     public List<SecHubMessage> getUserMessages() {
         return userMessages;
+    }
+
+    public SecHubRemoteDataConfiguration getRemoteDataConfiguration() {
+        return remoteDataConfiguration;
     }
 }

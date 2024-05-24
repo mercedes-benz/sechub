@@ -37,6 +37,6 @@ public class PrepareWrapperContextFactory {
     }
 
     private void addRemoteDataConfiguration(PrepareWrapperContext context) {
-        context.setRemoteDataConfigurationList(extractor.extract(context.getSecHubConfiguration()));
+        context.setRemoteDataConfiguration(extractor.extract(context.getSecHubConfiguration()));
     }
 }

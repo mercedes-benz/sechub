@@ -13,7 +13,15 @@ import com.mercedesbenz.sechub.commons.model.SecHubSourceDataConfiguration;
 @Component
 public class PrepareWrapperRemoteConfigurationExtractor {
 
-    public List<SecHubRemoteDataConfiguration> extract(SecHubConfigurationModel model) {
+    /**
+     * Extracts the remote data configuration from the SecHub configuration model.
+     * The method returns nul, if no remote configuration could be found. If more
+     * than one remote configuration is found, an exception is thrown.
+     *
+     * @param model sechub configuration model
+     * @return remote data configuration
+     */
+    public SecHubRemoteDataConfiguration extract(SecHubConfigurationModel model) {
         List<SecHubRemoteDataConfiguration> remoteDataConfigurationList = new ArrayList<>();
         if (model == null) {
             throw new IllegalStateException("Context was not initialized correctly. SecHub configuration was null");
@@ -33,7 +41,13 @@ public class PrepareWrapperRemoteConfigurationExtractor {
                 remoteOpt.ifPresent(remoteDataConfigurationList::add);
             }
         }
-        return remoteDataConfigurationList;
+        if (remoteDataConfigurationList.isEmpty()) {
+            return null;
+        } else if (remoteDataConfigurationList.size() > 1) {
+            throw new IllegalStateException("Only one remote data configuration is allowed.");
+        } else {
+            return remoteDataConfigurationList.get(0);
+        }
     }
 
 }

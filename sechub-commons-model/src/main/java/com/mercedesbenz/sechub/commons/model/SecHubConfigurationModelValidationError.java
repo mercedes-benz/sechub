@@ -66,7 +66,17 @@ public enum SecHubConfigurationModelValidationError {
 
     METADATA_LABEL_KEY_CONTAINS_ILLEGAL_CHARACTERS("Meta data label key contains illegal characters."),
 
-    ;
+    REMOTE_DATA_CONFIGURATION_ONLY_FOR_ONE_SOURCE_OR_BINARY("Remote data configuration is only allowed for ONE source or for ONE binary."),
+
+    REMOTE_DATA_MIXED_WITH_FILESYSTEM_NOT_ALLOWED("Remote data configuration is not allowed to be mixed with filesystem."),
+
+    REMOTE_DATA_CONFIGURATION_LOCATION_NOT_DEFINED("Remote data configuration location is not defined."),
+
+    REMOTE_DATA_CONFIGURATION_USER_NOT_DEFINED("Remote data configuration credentials: no user is defined."),
+
+    REMOTE_DATA_CONFIGURATION_USER_NAME_NOT_DEFINED("Remote data configuration credentials: user name is not defined."),
+
+    REMOTE_DATA_CONFIGURATION_USER_PASSWORD_NOT_DEFINED("Remote data configuration credentials: user password is not defined.");
 
     private String defaultMessage;
 

@@ -3,8 +3,6 @@ package com.mercedesbenz.sechub.wrapper.prepare.prepare;
 import static com.mercedesbenz.sechub.commons.model.SecHubScanConfiguration.createFromJSON;
 import static org.junit.jupiter.api.Assertions.*;
 
-import java.util.List;
-
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -46,12 +44,11 @@ class PrepareWrapperRemoteConfigurationExtractorTest {
         SecHubConfigurationModel model = createFromJSON(json);
 
         /* execute */
-        List<SecHubRemoteDataConfiguration> result = extractorToTest.extract(model);
+        SecHubRemoteDataConfiguration result = extractorToTest.extract(model);
 
         /* test */
-        assertEquals(1, result.size());
-        assertEquals("remote_example_location", result.get(0).getLocation());
-        assertEquals("git", result.get(0).getType());
+        assertEquals("remote_example_location", result.getLocation());
+        assertEquals("git", result.getType());
     }
 
     @Test
@@ -60,10 +57,10 @@ class PrepareWrapperRemoteConfigurationExtractorTest {
         SecHubConfigurationModel model = new SecHubConfigurationModel();
 
         /* execute */
-        List<SecHubRemoteDataConfiguration> result = extractorToTest.extract(model);
+        SecHubRemoteDataConfiguration result = extractorToTest.extract(model);
 
         /* test */
-        assertTrue(result.isEmpty());
+        assertNull(result);
     }
 
     @Test
@@ -114,18 +111,10 @@ class PrepareWrapperRemoteConfigurationExtractorTest {
         SecHubConfigurationModel model = createFromJSON(json);
 
         /* execute */
-        List<SecHubRemoteDataConfiguration> result = extractorToTest.extract(model);
+        IllegalStateException exception = assertThrows(IllegalStateException.class, () -> extractorToTest.extract(model));
 
         /* test */
-        assertEquals(3, result.size());
-        assertEquals("remote_example_location", result.get(0).getLocation());
-        assertEquals("git", result.get(0).getType());
-
-        assertEquals("remote_example_location2", result.get(1).getLocation());
-        assertEquals("docker", result.get(1).getType());
-
-        assertEquals("remote_example_location3", result.get(2).getLocation());
-        assertEquals("", result.get(2).getType());
+        assertTrue(exception.getMessage().contains("Only one remote data configuration is allowed."));
     }
 
 }

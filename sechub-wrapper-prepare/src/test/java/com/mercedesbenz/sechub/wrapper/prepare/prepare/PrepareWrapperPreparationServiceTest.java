@@ -6,7 +6,6 @@ import static org.mockito.Mockito.*;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.List;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -14,7 +13,7 @@ import org.junit.jupiter.api.Test;
 import com.mercedesbenz.sechub.adapter.AdapterExecutionResult;
 import com.mercedesbenz.sechub.commons.model.SecHubRemoteDataConfiguration;
 import com.mercedesbenz.sechub.wrapper.prepare.cli.PrepareWrapperEnvironment;
-import com.mercedesbenz.sechub.wrapper.prepare.modules.PrepareWrapperModuleGit;
+import com.mercedesbenz.sechub.wrapper.prepare.modules.git.PrepareWrapperModuleGit;
 
 class PrepareWrapperPreparationServiceTest {
 
@@ -53,12 +52,10 @@ class PrepareWrapperPreparationServiceTest {
     @Test
     void when_remote_data_was_configured_but_no_module_executed_return_preparation_failed_with_message() throws IOException {
         /* prepare */
-        List<SecHubRemoteDataConfiguration> remoteDataConfigurationList = new ArrayList<>();
         SecHubRemoteDataConfiguration remoteDataConfiguration = new SecHubRemoteDataConfiguration();
         remoteDataConfiguration.setLocation("my-example_location");
         remoteDataConfiguration.setType("git");
-        remoteDataConfigurationList.add(remoteDataConfiguration);
-        when(context.getRemoteDataConfigurationList()).thenReturn(remoteDataConfigurationList);
+        when(context.getRemoteDataConfiguration()).thenReturn(remoteDataConfiguration);
 
         /* execute */
         AdapterExecutionResult result = serviceToTest.startPreparation();
@@ -73,16 +70,13 @@ class PrepareWrapperPreparationServiceTest {
     void when_remote_data_was_configured_and_git_module_added_return_preparation_success_without_message() throws IOException {
         /* prepare */
         PrepareWrapperModuleGit gitModule = mock(PrepareWrapperModuleGit.class);
+        when(gitModule.prepare(context)).thenReturn(true);
         serviceToTest.modules.add(gitModule);
 
-        List<SecHubRemoteDataConfiguration> remoteDataConfigurationList = new ArrayList<>();
         SecHubRemoteDataConfiguration remoteDataConfiguration = new SecHubRemoteDataConfiguration();
         remoteDataConfiguration.setLocation("my-example_location");
         remoteDataConfiguration.setType("git");
-        remoteDataConfigurationList.add(remoteDataConfiguration);
-        when(context.getRemoteDataConfigurationList()).thenReturn(remoteDataConfigurationList);
-
-        when(gitModule.isAbleToPrepare(context)).thenReturn(true);
+        when(context.getRemoteDataConfiguration()).thenReturn(remoteDataConfiguration);
 
         /* execute */
         AdapterExecutionResult result = serviceToTest.startPreparation();

@@ -20,6 +20,14 @@ public class TestProject {
         all.add(this);
     }
 
+    /**
+     * Creates a test project without a whitelist. Description is automatically
+     * generated and contains the project id as well
+     *
+     * @param projectIdPart name of the project if {@link #prepare(TestScenario)} is
+     *                      not called, otherwise it will be the part after the
+     *                      scenario prefix
+     */
     public TestProject(String projectIdPart) {
         this(projectIdPart, false);
     }
@@ -31,6 +39,16 @@ public class TestProject {
         this.withWhiteList = withWhiteList;
     }
 
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    /**
+     * Prepare the test project for the given scenario. Calculates the prefix for
+     * the project id from the scenario name.
+     *
+     * @param scenario
+     */
     public void prepare(TestScenario scenario) {
         this.prefix = scenario.getName().toLowerCase();
         whiteListUrls.clear();
