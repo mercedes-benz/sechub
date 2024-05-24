@@ -11,16 +11,20 @@ import java.util.UUID;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import com.mercedesbenz.sechub.commons.pds.ExecutionPDSKey;
 import com.mercedesbenz.sechub.commons.pds.PDSConfigDataKeyProvider;
 import com.mercedesbenz.sechub.commons.pds.PDSLauncherScriptEnvironmentConstants;
+import com.mercedesbenz.sechub.pds.PDSMustBeDocumented;
 import com.mercedesbenz.sechub.pds.commons.core.config.PDSProductParameterDefinition;
 import com.mercedesbenz.sechub.pds.commons.core.config.PDSProductParameterSetup;
 import com.mercedesbenz.sechub.pds.commons.core.config.PDSProductSetup;
 import com.mercedesbenz.sechub.pds.config.PDSServerConfigurationService;
 import com.mercedesbenz.sechub.pds.job.PDSJobConfiguration;
+
+import jakarta.annotation.PostConstruct;
 
 @Service
 public class PDSExecutionEnvironmentService {
@@ -32,6 +36,26 @@ public class PDSExecutionEnvironmentService {
 
     @Autowired
     PDSServerConfigurationService serverConfigService;
+
+    @PDSMustBeDocumented(value = "A comma separated list of environment variable names which are white listed from PDS script environment cleanup. "
+            + "Entries can also end with an asterisk, in this case every variable name starting with this entry will be whitelisted (e.g. PDS_STORAGE_* will whitelist PDS_STORAGE_S3_USER etc.)\n\n"
+            + "The cleanup process prevents inheritage of environment variables from PDS parent process. "
+            + "There are some default whitelist entries which are automatically added (e.g. HOME, PATH, ..) "
+            + "but additional whitelist entries are added by this property/environment entry on PDS startup.", scope = "execution")
+    @Value("${pds.script.env.whitelist:}")
+    String pdsScriptEnvWhitelist;
+
+    PDSScriptEnvironmentCleaner cleaner = new PDSScriptEnvironmentCleaner();
+
+    @PostConstruct
+    void postConstruct() {
+        LOG.info("PDS script environment variable white list: '{}'", pdsScriptEnvWhitelist);
+        cleaner.setWhiteListCommaSeparated(pdsScriptEnvWhitelist);
+    }
+
+    public void removeAllNonWhitelistedEnvironmentVariables(Map<String, String> environment) {
+        cleaner.clean(environment);
+    }
 
     public Map<String, String> buildEnvironmentMap(PDSJobConfiguration config) {
         Map<String, String> map = new LinkedHashMap<>();
