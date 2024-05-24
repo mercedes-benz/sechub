@@ -1365,6 +1365,12 @@ public class TestAPI {
         return jobUUIDS;
     }
 
+    public static String getPDSServerEnvironmentVariableValue(String environmentVariableName) {
+        String url = getPDSURLBuilder().buildIntegrationTestFetchEnvironmentVariableValue(environmentVariableName);
+        String value = getPDSAdminRestHelper().getStringFromURL(url);
+        return value;
+    }
+
     public static void dumpAllPDSJobOutputsForSecHubJob(UUID sechubJobUUID) {
         dumpAllPDSJobOutputsForSecHubJob(sechubJobUUID, null);
     }

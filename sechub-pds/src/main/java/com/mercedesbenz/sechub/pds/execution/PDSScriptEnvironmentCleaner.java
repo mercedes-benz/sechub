@@ -11,6 +11,14 @@ public class PDSScriptEnvironmentCleaner {
 
     private Set<String> whiteList = new HashSet<>();
 
+    /**
+     * Removes all environment variables from given environment map, except default
+     * and explicit white listed variable names. Default variable names are inside
+     * {@link PDSDefaulScriptEnvironmentVariableWhitelist}, set explicit white
+     * listed names are set via {@link #setWhiteListCommaSeparated(String)}
+     *
+     * @param environment the environment map to clean
+     */
     public void clean(Map<String, String> environment) {
         /* create backup */
         Map<String, String> backup = new HashMap<>();
@@ -25,12 +33,22 @@ public class PDSScriptEnvironmentCleaner {
         while (variableNameIt.hasNext()) {
             String variableName = variableNameIt.next();
             if (isWhitelistedEnvironmentVariable(variableName)) {
-                environment.put(variableName, backup.get(variableName));
+                String backupValue = backup.get(variableName);
+                environment.put(variableName, backupValue);
             }
         }
 
     }
 
+    /**
+     * Sets the white list as a comma separated list of variable names to exclude
+     * from cleaning. If a variable name ends with an asterisk every variable which
+     * begins with such prefix will be accepted. For example: PDS_STORAGE_* will
+     * white list any kind of environment variable which starts with PDS_STORAGE_
+     * (e.g. PDS_STORAGE_S3_USER).
+     *
+     * @param commaSeparatedWhiteList comma separated list of white list entries.
+     */
     public void setWhiteListCommaSeparated(String commaSeparatedWhiteList) {
         whiteList.clear();
 
@@ -40,28 +58,28 @@ public class PDSScriptEnvironmentCleaner {
 
         String[] splitted = commaSeparatedWhiteList.split(",");
         for (String whiteListEntry : splitted) {
-            String trimmed = whiteListEntry.trim();
-            if (trimmed.isBlank()) {
+            String trimmedWhiteListEntry = whiteListEntry.trim();
+            if (trimmedWhiteListEntry.isBlank()) {
                 continue;
             }
-            whiteList.add(trimmed);
+            whiteList.add(trimmedWhiteListEntry);
         }
     }
 
-    private boolean isWhitelistedEnvironmentVariable(String key) {
-        if (key == null) {
+    private boolean isWhitelistedEnvironmentVariable(String variableName) {
+        if (variableName == null) {
             return false;
         }
 
         /* handle default white list entries */
-        for (PDSScriptEnvironmentVariableWhitelistDefault defaultKey : PDSScriptEnvironmentVariableWhitelistDefault.values()) {
-            if (defaultKey.name().equals(key)) {
+        for (PDSDefaulScriptEnvironmentVariableWhitelist defaultWhitelistVariable : PDSDefaulScriptEnvironmentVariableWhitelist.values()) {
+            if (defaultWhitelistVariable.name().equals(variableName)) {
                 return true;
             }
         }
 
         /* handle explicit white list entries */
-        if (whiteList.contains(key)) {
+        if (whiteList.contains(variableName)) {
             return true;
         }
 
@@ -71,7 +89,7 @@ public class PDSScriptEnvironmentCleaner {
 
             if (whiteListEntry.endsWith("*") && length > 2) {
                 String prefix = whiteListEntry.substring(0, length - 1);
-                if (key.startsWith(prefix)) {
+                if (variableName.startsWith(prefix)) {
                     return true;
                 }
             }

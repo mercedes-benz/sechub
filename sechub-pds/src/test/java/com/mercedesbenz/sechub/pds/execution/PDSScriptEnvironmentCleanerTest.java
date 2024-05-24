@@ -39,9 +39,10 @@ class PDSScriptEnvironmentCleanerTest {
     }
 
     @ParameterizedTest
-    @EnumSource(PDSScriptEnvironmentVariableWhitelistDefault.class)
-    void a_key_which_was_in_environment_and_is_whitelisted_per_default_will_not_be_removed(PDSScriptEnvironmentVariableWhitelistDefault whitelistDefault) {
-        String key = whitelistDefault.name();
+    @EnumSource(PDSDefaulScriptEnvironmentVariableWhitelist.class)
+    void a_key_which_was_in_environment_and_is_whitelisted_per_default_will_not_be_removed(
+            PDSDefaulScriptEnvironmentVariableWhitelist defaultWhiteListedVariable) {
+        String key = defaultWhiteListedVariable.name();
         String value = "value-" + key;
         /* prepare */
         environment.put(key, value);
@@ -115,7 +116,7 @@ class PDSScriptEnvironmentCleanerTest {
 
         /* prepare */
         String key1 = "PDS_STORAGE_S3_1";
-        String key2 = "PDS_STORAGE_S3_1";
+        String key2 = "PDS_STORAGE_S3_2";
         String key3 = "PDS_OTHER";
         String key4 = "PDS_STORAGEHOLDER";
 
