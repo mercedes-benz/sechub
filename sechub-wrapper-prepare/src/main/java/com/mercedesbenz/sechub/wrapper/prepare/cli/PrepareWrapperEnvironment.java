@@ -3,7 +3,6 @@ package com.mercedesbenz.sechub.wrapper.prepare.cli;
 
 import static com.mercedesbenz.sechub.commons.pds.PDSDefaultParameterKeyConstants.*;
 import static com.mercedesbenz.sechub.commons.pds.PDSDefaultRuntimeKeyConstants.*;
-import static com.mercedesbenz.sechub.wrapper.prepare.cli.PrepareWrapperKeyConstants.*;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -34,8 +33,8 @@ public class PrepareWrapperEnvironment {
     /* PDS prepare environment setup */
     /*********************************/
 
-    @Value("${" + KEY_PDS_PREPARE_UPLOAD_DIRECTORY + "}")
-    private String pdsPrepareUploadFolderDirectory;
+    @Value("${" + RT_KEY_PDS_JOB_WORKSPACE_LOCATION + "}")
+    private String pdsJobWorkspaceLocation;
 
     public String getSechubConfigurationModelAsJson() {
         return sechubConfigurationModelAsJson;
@@ -49,8 +48,8 @@ public class PrepareWrapperEnvironment {
         return pdsUserMessagesFolder;
     }
 
-    public String getPdsPrepareUploadFolderDirectory() {
-        return pdsPrepareUploadFolderDirectory;
+    public String getPdsJobWorkspaceLocation() {
+        return pdsJobWorkspaceLocation;
     }
 
     public String getSechubStoragePath() {
@@ -60,4 +59,5 @@ public class PrepareWrapperEnvironment {
     public String getSechubJobUUID() {
         return sechubJobUUID;
     }
+
 }

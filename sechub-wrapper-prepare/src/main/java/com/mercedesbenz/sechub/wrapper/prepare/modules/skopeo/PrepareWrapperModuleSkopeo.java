@@ -3,13 +3,11 @@ package com.mercedesbenz.sechub.wrapper.prepare.modules.skopeo;
 import static com.mercedesbenz.sechub.wrapper.prepare.cli.PrepareWrapperKeyConstants.KEY_PDS_PREPARE_MODULE_SKOPEO_ENABLED;
 
 import java.io.IOException;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Stream;
 
 import javax.crypto.SealedObject;
 
@@ -23,6 +21,8 @@ import com.mercedesbenz.sechub.commons.model.*;
 import com.mercedesbenz.sechub.wrapper.prepare.modules.PrepareWrapperInputValidatorException;
 import com.mercedesbenz.sechub.wrapper.prepare.modules.PrepareWrapperModule;
 import com.mercedesbenz.sechub.wrapper.prepare.prepare.PrepareWrapperContext;
+import com.mercedesbenz.sechub.wrapper.prepare.upload.FileNameSupport;
+import com.mercedesbenz.sechub.wrapper.prepare.upload.PrepareWrapperUploadService;
 
 @Service
 public class PrepareWrapperModuleSkopeo implements PrepareWrapperModule {
@@ -37,6 +37,12 @@ public class PrepareWrapperModuleSkopeo implements PrepareWrapperModule {
 
     @Autowired
     WrapperSkopeo skopeo;
+
+    @Autowired
+    FileNameSupport filesSupport;
+
+    @Autowired
+    PrepareWrapperUploadService uploadService;
 
     @Override
     public boolean prepare(PrepareWrapperContext context) throws IOException {
@@ -55,85 +61,64 @@ public class PrepareWrapperModuleSkopeo implements PrepareWrapperModule {
         }
 
         SecHubRemoteDataConfiguration secHubRemoteDataConfiguration = context.getRemoteDataConfiguration();
-        prepareRemoteConfiguration(context, secHubRemoteDataConfiguration);
+        SkopeoContext skopeoContext = initializeSkopeoContext(context, secHubRemoteDataConfiguration);
+        prepareRemoteConfiguration(skopeoContext, secHubRemoteDataConfiguration);
 
-        if (!isDownloadSuccessful(context)) {
-            LOG.error("Download of git repository was not successful.");
+        if (!isDownloadSuccessful(skopeoContext)) {
+            LOG.error("Download of docker image was not successful.");
             throw new IOException("Download of docker image was not successful.");
         }
-        cleanup(context);
+        cleanup(skopeoContext);
+
+        uploadService.upload(context, skopeoContext);
         return true;
     }
 
-    protected boolean isDownloadSuccessful(PrepareWrapperContext context) {
+    protected boolean isDownloadSuccessful(SkopeoContext skopeoContext) {
         // check if download folder contains a .tar archive
-        Path path = Paths.get(context.getEnvironment().getPdsPrepareUploadFolderDirectory());
-        if (Files.isDirectory(path)) {
-            try (Stream<Path> walk = Files.walk(path)) {
-                List<String> result = walk.filter(p -> !Files.isDirectory(p)) // not a directory
-                        .map(p -> p.toString().toLowerCase()) // convert path to string
-                        .filter(f -> f.endsWith(".tar")) // check end with
-                        .toList(); // collect all matched to a List
-                return !result.isEmpty();
-            } catch (IOException e) {
-                return false;
-            }
-        }
-        return false;
+        Path path = skopeoContext.getToolDownloadDirectory();
+        List<Path> tarFiles = filesSupport.getTarFilesFromDirectory(path);
+
+        return !tarFiles.isEmpty();
     }
 
-    private void cleanup(PrepareWrapperContext context) throws IOException {
-        skopeo.cleanUploadDirectory(context.getEnvironment().getPdsPrepareUploadFolderDirectory());
+    private SkopeoContext initializeSkopeoContext(PrepareWrapperContext context, SecHubRemoteDataConfiguration secHubRemoteDataConfiguration) {
+        Path workingDirectory = Paths.get(context.getEnvironment().getPdsJobWorkspaceLocation());
+
+        SkopeoContext skopeoContext = new SkopeoContext();
+        skopeoContext.setLocation(secHubRemoteDataConfiguration.getLocation());
+        skopeoContext.setWorkingDirectory(workingDirectory);
+
+        createDownloadDirectory(skopeoContext.getToolDownloadDirectory());
+
+        return skopeoContext;
     }
 
-    private void prepareRemoteConfiguration(PrepareWrapperContext context, SecHubRemoteDataConfiguration secHubRemoteDataConfiguration) throws IOException {
+    private void cleanup(SkopeoContext skopeoContext) throws IOException {
+        skopeo.cleanUploadDirectory(skopeoContext.getToolDownloadDirectory());
+    }
+
+    private void prepareRemoteConfiguration(SkopeoContext skopeoContext, SecHubRemoteDataConfiguration secHubRemoteDataConfiguration) throws IOException {
         String location = secHubRemoteDataConfiguration.getLocation();
         Optional<SecHubRemoteCredentialConfiguration> credentials = secHubRemoteDataConfiguration.getCredentials();
 
-        if (credentials.isEmpty()) {
-            downloadPublicImage(context, location);
-            return;
+        if (credentials.isPresent()) {
+            Optional<SecHubRemoteCredentialUserData> optUser = credentials.get().getUser();
+            if (optUser.isEmpty()) {
+                throw new IllegalStateException("Defined credentials have no credential user data for location: " + location);
+            }
+
+            SecHubRemoteCredentialUserData user = optUser.get();
+            addCredentialsToContext(skopeoContext, user, location);
         }
 
-        Optional<SecHubRemoteCredentialUserData> optUser = credentials.get().getUser();
-        if (optUser.isEmpty()) {
-            throw new IllegalStateException("Defined credentials have no credential user data for location: " + location);
-        }
-
-        SecHubRemoteCredentialUserData user = optUser.get();
-        downloadPrivateImage(context, user, location);
+        skopeo.download(skopeoContext);
     }
 
-    private void downloadPrivateImage(PrepareWrapperContext context, SecHubRemoteCredentialUserData user, String location) throws IOException {
-
+    private void addCredentialsToContext(SkopeoContext skopeoContext, SecHubRemoteCredentialUserData user, String location) throws IOException {
         HashMap<String, SealedObject> credentialMap = new HashMap<>();
         addSealedUserCredentials(user, credentialMap);
 
-        /* @formatter:off */
-        SkopeoContext skopeoContext = (SkopeoContext) new SkopeoContext.SkopeoContextBuilder().
-                setLocation(location).
-                setCredentialMap(credentialMap).
-                setUploadDirectory(context.getEnvironment().getPdsPrepareUploadFolderDirectory()).
-                build();
-        /* @formatter:on */
-
-        skopeo.download(skopeoContext);
-
-        SecHubMessage message = new SecHubMessage(SecHubMessageType.INFO, "Download private image: " + location);
-        context.getUserMessages().add(message);
-    }
-
-    private void downloadPublicImage(PrepareWrapperContext context, String location) throws IOException {
-        /* @formatter:off */
-        SkopeoContext skopeoContext = (SkopeoContext) new SkopeoContext.SkopeoContextBuilder().
-                setLocation(location).
-                setUploadDirectory(context.getEnvironment().getPdsPrepareUploadFolderDirectory()).
-                build();
-        /* @formatter:on */
-
-        skopeo.download(skopeoContext);
-
-        SecHubMessage message = new SecHubMessage(SecHubMessageType.INFO, "Download public image: " + location);
-        context.getUserMessages().add(message);
+        skopeoContext.setCredentialMap(credentialMap);
     }
 }

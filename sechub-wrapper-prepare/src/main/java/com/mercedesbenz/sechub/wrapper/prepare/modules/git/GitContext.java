@@ -1,44 +1,34 @@
 package com.mercedesbenz.sechub.wrapper.prepare.modules.git;
 
+import java.nio.file.Path;
+
 import com.mercedesbenz.sechub.wrapper.prepare.modules.ToolContext;
 
 public class GitContext extends ToolContext {
+
+    static final String DOWNLOAD_DIRECTORY_NAME = "git-download";
     private boolean cloneWithoutHistory;
+    private String repositoryName = "git-repository";
 
-    private String filename;
+    public void setCloneWithoutHistory(boolean cloneWithoutHistory) {
+        this.cloneWithoutHistory = cloneWithoutHistory;
+    }
 
-    private GitContext(GitContextBuilder builder) {
-        super(builder);
-        this.cloneWithoutHistory = builder.cloneWithoutHistory;
-        this.filename = builder.filename;
+    public void setWorkingDirectory(Path workingDirectory) {
+        super.workingDirectory(workingDirectory);
+        toolDownloadDirectory = workingDirectory.resolve(DOWNLOAD_DIRECTORY_NAME);
+    }
+
+    public String getRepositoryName() {
+        return repositoryName;
+    }
+
+    public void setRepositoryName(String repositoryName) {
+        this.repositoryName = repositoryName;
     }
 
     public boolean isCloneWithoutHistory() {
         return cloneWithoutHistory;
     }
 
-    public String getFilename() {
-        return filename;
-    }
-
-    public static class GitContextBuilder extends ToolContextBuilder {
-        private boolean cloneWithoutHistory = true;
-
-        private String filename = "GitDownloadDirectory";
-
-        public GitContextBuilder setCloneWithoutHistory(boolean cloneWithoutHistory) {
-            this.cloneWithoutHistory = cloneWithoutHistory;
-            return this;
-        }
-
-        public GitContextBuilder setFilename(String filename) {
-            this.filename = filename;
-            return this;
-        }
-
-        @Override
-        public GitContext build() {
-            return new GitContext(this);
-        }
-    }
 }

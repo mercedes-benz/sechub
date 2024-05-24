@@ -5,7 +5,7 @@ import static com.mercedesbenz.sechub.wrapper.prepare.cli.PrepareWrapperKeyConst
 
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.Paths;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -45,7 +45,7 @@ public class WrapperSkopeo extends WrapperTool {
     }
 
     @Override
-    public void cleanUploadDirectory(String uploadDirectory) throws IOException {
+    public void cleanUploadDirectory(Path uploadDirectory) throws IOException {
         ProcessBuilder builder = buildProcessClean(uploadDirectory);
         ProcessAdapter process = null;
 
@@ -75,7 +75,7 @@ public class WrapperSkopeo extends WrapperTool {
         List<String> commands = new ArrayList<>();
 
         String location = transformLocationForLogin(context.getLocation());
-        File uploadDir = Paths.get(context.getUploadDirectory()).toAbsolutePath().toFile();
+        File downloadDirectory = context.getToolDownloadDirectory().toFile();
 
         commands.add("skopeo");
         commands.add("login");
@@ -88,7 +88,7 @@ public class WrapperSkopeo extends WrapperTool {
         commands.add(pdsPrepareAuthenticationFileSkopeo);
 
         ProcessBuilder builder = new ProcessBuilder(commands);
-        builder.directory(uploadDir);
+        builder.directory(downloadDirectory);
         builder.inheritIO();
 
         return builder;
@@ -98,36 +98,34 @@ public class WrapperSkopeo extends WrapperTool {
         List<String> commands = new ArrayList<>();
 
         String location = transformLocationForDownload(context.getLocation());
-        File uploadDir = Paths.get(context.getUploadDirectory()).toAbsolutePath().toFile();
+        File downloadDirectory = context.getToolDownloadDirectory().toFile();
 
         commands.add("skopeo");
         commands.add("copy");
         commands.add(location);
-        commands.add("docker-archive:" + context.getFilename());
+        commands.add("docker-archive:" + context.getDownloadTarFilename());
         if (!context.getCredentialMap().isEmpty()) {
             commands.add("--authfile");
             commands.add(pdsPrepareAuthenticationFileSkopeo);
         }
 
         ProcessBuilder builder = new ProcessBuilder(commands);
-        builder.directory(uploadDir);
+        builder.directory(downloadDirectory);
         builder.inheritIO();
 
         return builder;
     }
 
-    private ProcessBuilder buildProcessClean(String pdsPrepareUploadFolderDirectory) {
+    private ProcessBuilder buildProcessClean(Path skopeoDownloadDirectory) {
         // removes authentication file
         List<String> commands = new ArrayList<>();
-
-        File uploadDir = Paths.get(pdsPrepareUploadFolderDirectory).toAbsolutePath().toFile();
 
         commands.add("rm");
         commands.add("-rf");
         commands.add(pdsPrepareAuthenticationFileSkopeo);
 
         ProcessBuilder builder = new ProcessBuilder(commands);
-        builder.directory(uploadDir);
+        builder.directory(skopeoDownloadDirectory.toFile());
         builder.inheritIO();
         return builder;
     }

@@ -8,6 +8,8 @@ import static org.mockito.Mockito.*;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.List;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -21,6 +23,8 @@ import com.mercedesbenz.sechub.wrapper.prepare.cli.PrepareWrapperEnvironment;
 import com.mercedesbenz.sechub.wrapper.prepare.modules.InputValidatorExitcode;
 import com.mercedesbenz.sechub.wrapper.prepare.modules.PrepareWrapperInputValidatorException;
 import com.mercedesbenz.sechub.wrapper.prepare.prepare.PrepareWrapperContext;
+import com.mercedesbenz.sechub.wrapper.prepare.upload.FileNameSupport;
+import com.mercedesbenz.sechub.wrapper.prepare.upload.PrepareWrapperUploadService;
 
 class PrepareWrapperModuleSkopeoTest {
 
@@ -28,6 +32,9 @@ class PrepareWrapperModuleSkopeoTest {
     SkopeoInputValidator skopeoInputValidator;
     WrapperSkopeo skopeo;
     TestFileWriter writer;
+    FileNameSupport fileNameSupport;
+    PrepareWrapperUploadService uploadService;
+    private Path skopeDownloadFolder = Path.of(SkopeoContext.DOWNLOAD_DIRECTORY_NAME);
 
     @BeforeEach
     void beforeEach() {
@@ -35,11 +42,15 @@ class PrepareWrapperModuleSkopeoTest {
         skopeoInputValidator = mock(SkopeoInputValidator.class);
         writer = new TestFileWriter();
         skopeo = mock(WrapperSkopeo.class);
+        fileNameSupport = mock(FileNameSupport.class);
+        uploadService = mock(PrepareWrapperUploadService.class);
 
         ReflectionTestUtils.setField(moduleToTest, "pdsPrepareModuleSkopeoEnabled", true);
 
         moduleToTest.skopeoInputValidator = skopeoInputValidator;
         moduleToTest.skopeo = skopeo;
+        moduleToTest.filesSupport = fileNameSupport;
+        moduleToTest.uploadService = uploadService;
     }
 
     @Test
@@ -71,11 +82,13 @@ class PrepareWrapperModuleSkopeoTest {
         /* prepare */
         File tempDir = Files.createTempDirectory("upload-folder").toFile();
         tempDir.deleteOnExit();
-        String filename = "testimage.tar";
-        writer.save(new File(tempDir, filename), "some text", true);
+
+        Path testFile = Path.of("testimage.tar");
+        Path downloadDirectory = tempDir.toPath().resolve(skopeDownloadFolder);
+        writer.save(downloadDirectory.resolve(testFile).toFile(), "some text", true);
 
         PrepareWrapperEnvironment environment = mock(PrepareWrapperEnvironment.class);
-        when(environment.getPdsPrepareUploadFolderDirectory()).thenReturn(tempDir.toString());
+        when(environment.getPdsJobWorkspaceLocation()).thenReturn(tempDir.toString());
         PrepareWrapperContext context = new PrepareWrapperContext(createFromJSON("{}"), environment);
 
         SecHubRemoteDataConfiguration remoteDataConfiguration = new SecHubRemoteDataConfiguration();
@@ -89,12 +102,14 @@ class PrepareWrapperModuleSkopeoTest {
         remoteDataConfiguration.setType("docker");
         context.setRemoteDataConfiguration(remoteDataConfiguration);
 
+        when(fileNameSupport.getTarFilesFromDirectory(downloadDirectory)).thenReturn(List.of(testFile));
+
         /* execute */
         moduleToTest.prepare(context);
 
         /* test */
         verify(skopeo).download(any(SkopeoContext.class));
-        verify(skopeo).cleanUploadDirectory(tempDir.toString());
+        verify(skopeo).cleanUploadDirectory(tempDir.toPath().resolve(skopeDownloadFolder));
     }
 
     @Test
@@ -102,23 +117,28 @@ class PrepareWrapperModuleSkopeoTest {
         /* prepare */
         File tempDir = Files.createTempDirectory("upload-folder").toFile();
         tempDir.deleteOnExit();
-        String filename = "testimage.tar";
-        writer.save(new File(tempDir, filename), "some text", true);
+
+        Path testFile = Path.of("testimage.tar");
+        Path downloadDirectory = tempDir.toPath().resolve(skopeDownloadFolder);
+        writer.save(downloadDirectory.resolve(testFile).toFile(), "some text", true);
 
         PrepareWrapperEnvironment environment = mock(PrepareWrapperEnvironment.class);
-        when(environment.getPdsPrepareUploadFolderDirectory()).thenReturn(tempDir.toString());
+        when(environment.getPdsJobWorkspaceLocation()).thenReturn(tempDir.toString());
         PrepareWrapperContext context = new PrepareWrapperContext(createFromJSON("{}"), environment);
 
         SecHubRemoteDataConfiguration remoteDataConfiguration = new SecHubRemoteDataConfiguration();
         remoteDataConfiguration.setLocation("my-example-location");
         remoteDataConfiguration.setType("docker");
         context.setRemoteDataConfiguration(remoteDataConfiguration);
+
+        when(fileNameSupport.getTarFilesFromDirectory(downloadDirectory)).thenReturn(List.of(testFile));
+
         /* execute */
         moduleToTest.prepare(context);
 
         /* test */
         verify(skopeo).download(any(SkopeoContext.class));
-        verify(skopeo).cleanUploadDirectory(tempDir.toString());
+        verify(skopeo).cleanUploadDirectory(tempDir.toPath().resolve(skopeDownloadFolder));
     }
 
     @Test
@@ -126,7 +146,7 @@ class PrepareWrapperModuleSkopeoTest {
         /* prepare */
 
         PrepareWrapperEnvironment environment = mock(PrepareWrapperEnvironment.class);
-        when(environment.getPdsPrepareUploadFolderDirectory()).thenReturn("temp");
+        when(environment.getPdsJobWorkspaceLocation()).thenReturn("temp");
         PrepareWrapperContext context = new PrepareWrapperContext(createFromJSON("{}"), environment);
 
         SecHubRemoteDataConfiguration remoteDataConfiguration = new SecHubRemoteDataConfiguration();
@@ -143,44 +163,9 @@ class PrepareWrapperModuleSkopeoTest {
         assertFalse(result);
     }
 
-    @Test
-    void isDownloadSuccessful_returns_true_when_tar_file_in_directory() throws IOException {
-        /* prepare */
-        File tempDir = Files.createTempDirectory("upload-folder").toFile();
-        tempDir.deleteOnExit();
-        String filename = "testimage.tar";
-        PrepareWrapperContext context = mock(PrepareWrapperContext.class);
-        when(context.getEnvironment()).thenReturn(mock(PrepareWrapperEnvironment.class));
-        writer.save(new File(tempDir, filename), "some text", true);
-        when(context.getEnvironment().getPdsPrepareUploadFolderDirectory()).thenReturn(tempDir.toString());
-
-        /* execute */
-        boolean result = moduleToTest.isDownloadSuccessful(context);
-
-        /* test */
-        assertTrue(result);
-    }
-
-    @Test
-    void isDownloadSuccessful_returns_false_when_no_tar_file_in_directory() throws IOException {
-        /* prepare */
-        File tempDir = Files.createTempDirectory("upload-folder").toFile();
-        tempDir.deleteOnExit();
-        writer.save(tempDir, "some text", true);
-        PrepareWrapperContext context = mock(PrepareWrapperContext.class);
-        when(context.getEnvironment()).thenReturn(mock(PrepareWrapperEnvironment.class));
-        when(context.getEnvironment().getPdsPrepareUploadFolderDirectory()).thenReturn(tempDir.toString());
-
-        /* execute */
-        boolean result = moduleToTest.isDownloadSuccessful(context);
-
-        /* test */
-        assertFalse(result);
-    }
-
     private PrepareWrapperContext createContext() {
         PrepareWrapperEnvironment environment = mock(PrepareWrapperEnvironment.class);
-        when(environment.getPdsPrepareUploadFolderDirectory()).thenReturn("test-upload-folder");
+        when(environment.getPdsJobWorkspaceLocation()).thenReturn("test-upload-folder");
         return new PrepareWrapperContext(createFromJSON("{}"), environment);
     }
 

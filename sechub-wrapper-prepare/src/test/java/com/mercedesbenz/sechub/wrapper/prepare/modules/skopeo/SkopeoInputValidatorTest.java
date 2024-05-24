@@ -160,7 +160,7 @@ class SkopeoInputValidatorTest {
         writer.save(new File(tempDir, filename), "some text", true);
 
         PrepareWrapperEnvironment environment = mock(PrepareWrapperEnvironment.class);
-        when(environment.getPdsPrepareUploadFolderDirectory()).thenReturn(tempDir.toString());
+        when(environment.getPdsJobWorkspaceLocation()).thenReturn(tempDir.toString());
         PrepareWrapperContext context = new PrepareWrapperContext(createFromJSON("{}"), environment);
 
         SecHubRemoteDataConfiguration remoteDataConfiguration = new SecHubRemoteDataConfiguration();
@@ -187,7 +187,7 @@ class SkopeoInputValidatorTest {
         writer.save(new File(tempDir, filename), "some text", true);
 
         PrepareWrapperEnvironment environment = mock(PrepareWrapperEnvironment.class);
-        when(environment.getPdsPrepareUploadFolderDirectory()).thenReturn(tempDir.toString());
+        when(environment.getPdsJobWorkspaceLocation()).thenReturn(tempDir.toString());
         PrepareWrapperContext context = new PrepareWrapperContext(createFromJSON("{}"), environment);
 
         SecHubRemoteDataConfiguration remoteDataConfiguration = new SecHubRemoteDataConfiguration();
@@ -202,7 +202,7 @@ class SkopeoInputValidatorTest {
 
     private PrepareWrapperContext createContextEmptyConfig() {
         PrepareWrapperEnvironment environment = mock(PrepareWrapperEnvironment.class);
-        when(environment.getPdsPrepareUploadFolderDirectory()).thenReturn("test-upload-folder");
+        when(environment.getPdsJobWorkspaceLocation()).thenReturn("test-upload-folder");
         return new PrepareWrapperContext(createFromJSON("{}"), environment);
     }
 }

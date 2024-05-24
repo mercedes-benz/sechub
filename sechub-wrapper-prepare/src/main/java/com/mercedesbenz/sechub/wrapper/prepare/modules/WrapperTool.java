@@ -4,6 +4,7 @@ import static com.mercedesbenz.sechub.commons.pds.PDSDefaultParameterKeyConstant
 import static com.mercedesbenz.sechub.wrapper.prepare.cli.PrepareWrapperKeyConstants.KEY_PDS_PREPARE_PROCESS_TIMEOUT_SECONDS;
 
 import java.io.IOException;
+import java.nio.file.Path;
 import java.util.concurrent.TimeUnit;
 
 import org.slf4j.Logger;
@@ -26,7 +27,7 @@ public abstract class WrapperTool {
     @Value("${" + KEY_PDS_PREPARE_PROCESS_TIMEOUT_SECONDS + ":-1}")
     private int pdsPrepareProcessTimeoutSeconds;
 
-    protected abstract void cleanUploadDirectory(String uploadDirectory) throws IOException;
+    protected abstract void cleanUploadDirectory(Path directory) throws IOException;
 
     protected void waitForProcessToFinish(ProcessAdapter process) {
 

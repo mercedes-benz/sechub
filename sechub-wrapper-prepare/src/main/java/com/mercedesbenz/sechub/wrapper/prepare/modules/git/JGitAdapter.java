@@ -3,7 +3,7 @@ package com.mercedesbenz.sechub.wrapper.prepare.modules.git;
 import static com.mercedesbenz.sechub.wrapper.prepare.cli.PrepareWrapperEnvironmentVariables.PDS_PREPARE_CREDENTIAL_PASSWORD;
 import static com.mercedesbenz.sechub.wrapper.prepare.cli.PrepareWrapperEnvironmentVariables.PDS_PREPARE_CREDENTIAL_USERNAME;
 
-import java.nio.file.Paths;
+import java.nio.file.Path;
 import java.util.List;
 import java.util.Map;
 
@@ -26,19 +26,23 @@ public class JGitAdapter {
 
     public void clone(GitContext gitContext) {
         String location = transformLocationToURL(gitContext.getLocation());
-        String uploadDirectory = gitContext.getUploadDirectory() + "/" + gitContext.getFilename();
+        Path downloadDirectory = gitContext.getToolDownloadDirectory();
         Map<String, SealedObject> credentialMap = gitContext.getCredentialMap();
 
         String username = getUserNameFromMap(credentialMap);
         String password = getPasswordFromMap(credentialMap);
 
-        CloneCommand command = Git.cloneRepository().setURI(location).setDirectory(Paths.get(uploadDirectory).toFile());
+        /*@formatter:off*/
+        CloneCommand command = Git.cloneRepository()
+                .setURI(location).
+                setDirectory(downloadDirectory.resolve(Path.of(gitContext.getRepositoryName())).toFile());
+        /*@formatter:on*/
 
         if (username != null && password != null) {
-            LOG.debug("Cloning private repository: " + location + " with username and password to: " + uploadDirectory);
+            LOG.debug("Cloning private repository: " + location + " with username and password to: " + downloadDirectory);
             command = command.setCredentialsProvider(new UsernamePasswordCredentialsProvider(username, password));
         } else {
-            LOG.debug("Cloning public repository: " + location + " to: " + uploadDirectory);
+            LOG.debug("Cloning public repository: " + location + " to: " + downloadDirectory);
         }
 
         if (gitContext.isCloneWithoutHistory()) {

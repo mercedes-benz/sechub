@@ -7,6 +7,8 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
@@ -48,19 +50,23 @@ class WrapperGitTest {
 
     @ParameterizedTest
     @ValueSource(strings = { "https://host.xz/path/to/repo/.git", "http://myrepo/here/.git", "example.org.git" })
-    void when_cloneRepository_is_executed_the_processAdapterFactory_starts_JGit_clone(String location) {
+    void when_cloneRepository_is_executed_the_processAdapterFactory_starts_JGit_clone(String location) throws IOException {
         /* prepare */
+        Path tempDir = Files.createTempDirectory("test");
         Map<String, SealedObject> credentialMap = new HashMap<>();
         credentialMap.put(PDS_PREPARE_CREDENTIAL_USERNAME, CryptoAccess.CRYPTO_STRING.seal("user"));
         credentialMap.put(PDS_PREPARE_CREDENTIAL_PASSWORD, CryptoAccess.CRYPTO_STRING.seal("password"));
-        GitContext contextGit = (GitContext) new GitContext.GitContextBuilder().setCloneWithoutHistory(true).setLocation(location)
-                .setCredentialMap(credentialMap).setUploadDirectory("folder").build();
+        GitContext gitContext = new GitContext();
+        gitContext.setCloneWithoutHistory(true);
+        gitContext.setLocation(location);
+        gitContext.setCredentialMap(credentialMap);
+        gitContext.setWorkingDirectory(tempDir);
 
         /* execute */
-        gitToTest.downloadRemoteData(contextGit);
+        gitToTest.downloadRemoteData(gitContext);
 
         /* test */
-        verify(jGitAdapter, times(1)).clone(contextGit);
+        verify(jGitAdapter, times(1)).clone(gitContext);
     }
 
     @ParameterizedTest
@@ -83,7 +89,7 @@ class WrapperGitTest {
         String directory = "test-upload-folder";
 
         /* execute */
-        gitToTest.cleanUploadDirectory(directory);
+        gitToTest.cleanUploadDirectory(Path.of(directory));
 
         /* test */
         verify(processAdapterFactory, times(1)).startProcess(any());
@@ -97,7 +103,7 @@ class WrapperGitTest {
         String directory = "test-upload-folder";
 
         /* execute */
-        Exception exception = assertThrows(Exception.class, () -> gitToTest.cleanUploadDirectory(directory));
+        Exception exception = assertThrows(Exception.class, () -> gitToTest.cleanUploadDirectory(Path.of(directory)));
 
         /* test */
         assertTrue(exception.getMessage().contains("Error while cleaning git directory: test-upload-folder"));

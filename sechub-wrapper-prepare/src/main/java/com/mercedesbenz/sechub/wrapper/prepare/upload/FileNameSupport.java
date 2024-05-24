@@ -1,60 +1,42 @@
 package com.mercedesbenz.sechub.wrapper.prepare.upload;
 
 import java.io.File;
-import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.List;
-import java.util.Objects;
-import java.util.Set;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
+import java.util.*;
 
 import org.springframework.stereotype.Component;
 
 @Component
 public class FileNameSupport {
-    public String getTarFileNameFromDirectory(String folder) {
-        // TODO: 22.05.24 laura we will use this method in skopeo modul for download
-        // check
-        Path path = Path.of(folder);
+    public List<Path> getTarFilesFromDirectory(Path path) {
         if (Files.isDirectory(path)) {
-            try (Stream<Path> walk = Files.walk(path)) {
-                List<String> result = walk.filter(p -> !Files.isDirectory(p)) // not a directory
-                        .map(p -> p.toString().toLowerCase()) // convert path to string
-                        .filter(f -> f.endsWith(".tar")) // check end with
-                        .toList(); // collect all matched to a List
-                if (result.size() == 1) {
-                    return result.get(0);
-                } else {
-                    throw new RuntimeException("Error while try to find .tar file.");
+            List<Path> result = new ArrayList<>();
+            File[] files = path.toFile().listFiles();
+            for (File file : files) {
+                if (file.getName().endsWith(".tar")) {
+                    result.add(file.toPath());
                 }
-            } catch (IOException e) {
-                throw new RuntimeException("Error while try to find .tar file.", e);
             }
+            return result;
         } else {
-            throw new IllegalArgumentException("Parameter " + folder + " is not a directory");
+            throw new IllegalArgumentException("Parameter " + " is not a directory");
         }
     }
 
-    public String getSubfolderFileNameFromDirectory(String folder) {
-        Set<String> files = listFilesUsingJavaIO(new File(folder).getAbsolutePath());
-        if (files.size() == 1) {
-            return files.iterator().next();
-        } else if (files.isEmpty()) {
-            throw new IllegalArgumentException("Download directory is empty: " + folder);
-        } else {
-            throw new IllegalArgumentException("Download directory contains more than one subfolder: " + folder);
+    public List<Path> getRepositoriesFromDirectory(Path path) {
+        List<Path> repositories = new ArrayList<>();
+
+        if (path == null) {
+            throw new IllegalArgumentException("File may not be null!");
         }
-    }
 
-    private Set<String> listFilesUsingJavaIO(String dir) {
-        /* @formatter:off */
-        return Stream.of(Objects.requireNonNull(new File(dir).listFiles())).
-                filter(File::isDirectory).
-                map(File::getName).
-                collect(Collectors.toSet());
-        /* @formatter:on */
+        File[] files = path.toFile().listFiles();
+        for (File f : files) {
+            if (f.isDirectory()) {
+                repositories.add(f.toPath());
+            }
+        }
+        return repositories;
     }
-
 }

@@ -7,6 +7,9 @@ import static org.mockito.Mockito.*;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -37,7 +40,9 @@ class PrepareWrapperModuleGitTest {
 
     FileNameSupport filesSupport;
 
-    String subfolder = "subfolder";
+    Path gitDownloadFolder = Path.of(GitContext.DOWNLOAD_DIRECTORY_NAME);
+
+    private Path testRepo = Path.of("test-repo");
 
     @BeforeEach
     void beforeEach() {
@@ -49,8 +54,6 @@ class PrepareWrapperModuleGitTest {
         filesSupport = mock(FileNameSupport.class);
 
         ReflectionTestUtils.setField(moduleToTest, "pdsPrepareModuleGitEnabled", true);
-
-        when(filesSupport.getSubfolderFileNameFromDirectory(anyString())).thenReturn(subfolder);
 
         moduleToTest.uploadService = uploadService;
         moduleToTest.filesSupport = filesSupport;
@@ -85,13 +88,19 @@ class PrepareWrapperModuleGitTest {
     @Test
     void prepare_successful_with_user_credentials_configured() throws IOException {
         /* prepare */
-        File tempDir = Files.createTempDirectory("upload-folder").toFile();
+        File tempDir = Files.createTempDirectory("download-folder").toFile();
         tempDir.deleteOnExit();
-        String filename = "/" + subfolder + "/.git";
-        writer.save(new File(tempDir, filename), "some text", true);
+
+        Path repository = tempDir.toPath().resolve(gitDownloadFolder).resolve(testRepo);
+        Path gitFile = repository.resolve(".git");
+        writer.save(gitFile.toFile(), "some text", true);
+
+        List<Path> subfolder = new ArrayList<>();
+        subfolder.add(repository);
+        when(filesSupport.getRepositoriesFromDirectory(any())).thenReturn(subfolder);
 
         PrepareWrapperEnvironment environment = mock(PrepareWrapperEnvironment.class);
-        when(environment.getPdsPrepareUploadFolderDirectory()).thenReturn(tempDir.toString());
+        when(environment.getPdsJobWorkspaceLocation()).thenReturn(tempDir.toString());
         PrepareWrapperContext context = new PrepareWrapperContext(createFromJSON("{}"), environment);
 
         SecHubRemoteDataConfiguration remoteDataConfiguration = new SecHubRemoteDataConfiguration();
@@ -118,13 +127,19 @@ class PrepareWrapperModuleGitTest {
     @Test
     void prepare_successful_when_no_credentials_are_configured() throws IOException {
         /* prepare */
-        File tempDir = Files.createTempDirectory("upload-folder").toFile();
+        File tempDir = Files.createTempDirectory("download-folder").toFile();
         tempDir.deleteOnExit();
-        String filename = "/" + subfolder + "/.git";
-        writer.save(new File(tempDir, filename), "some text", true);
+
+        Path repository = tempDir.toPath().resolve(gitDownloadFolder).resolve(testRepo);
+        Path gitFile = repository.resolve(".git");
+        writer.save(gitFile.toFile(), "some text", true);
+
+        List<Path> subfolder = new ArrayList<>();
+        subfolder.add(repository);
+        when(filesSupport.getRepositoriesFromDirectory(any())).thenReturn(subfolder);
 
         PrepareWrapperEnvironment environment = mock(PrepareWrapperEnvironment.class);
-        when(environment.getPdsPrepareUploadFolderDirectory()).thenReturn(tempDir.toString());
+        when(environment.getPdsJobWorkspaceLocation()).thenReturn(tempDir.toString());
         PrepareWrapperContext context = new PrepareWrapperContext(createFromJSON("{}"), environment);
 
         SecHubRemoteDataConfiguration remoteDataConfiguration = new SecHubRemoteDataConfiguration();
@@ -143,7 +158,7 @@ class PrepareWrapperModuleGitTest {
     void prepare_returns_false_when_modul_is_disabled() throws IOException {
         /* prepare */
         PrepareWrapperEnvironment environment = mock(PrepareWrapperEnvironment.class);
-        when(environment.getPdsPrepareUploadFolderDirectory()).thenReturn("temp");
+        when(environment.getPdsJobWorkspaceLocation()).thenReturn("temp");
         PrepareWrapperContext context = new PrepareWrapperContext(createFromJSON("{}"), environment);
 
         SecHubRemoteDataConfiguration remoteDataConfiguration = new SecHubRemoteDataConfiguration();
@@ -163,41 +178,51 @@ class PrepareWrapperModuleGitTest {
     @Test
     void isDownloadSuccessful_returns_true_when_git_file_in_directory() throws IOException {
         /* prepare */
-        File tempDir = Files.createTempDirectory("upload-folder").toFile();
+        File tempDir = Files.createTempDirectory("download-folder").toFile();
         tempDir.deleteOnExit();
-        String filename = "/" + subfolder + "/.git";
-        PrepareWrapperContext context = mock(PrepareWrapperContext.class);
-        when(context.getEnvironment()).thenReturn(mock(PrepareWrapperEnvironment.class));
-        writer.save(new File(tempDir, filename), "some text", true);
-        when(context.getEnvironment().getPdsPrepareUploadFolderDirectory()).thenReturn(tempDir.toString());
 
-        /* execute */
-        boolean result = moduleToTest.isDownloadSuccessful(context);
+        List<Path> subfolder = new ArrayList<>();
+        subfolder.add(tempDir.toPath().resolve(testRepo));
+        when(filesSupport.getRepositoriesFromDirectory(any())).thenReturn(subfolder);
 
-        /* test */
-        assertTrue(result);
+        Path repository = tempDir.toPath().resolve(testRepo);
+        Path gitFile = repository.resolve(".git");
+        writer.save(gitFile.toFile(), "some text", true);
+
+        GitContext context = mock(GitContext.class);
+        when(context.getToolDownloadDirectory()).thenReturn(tempDir.toPath());
+
+        /* execute + test */
+        assertDoesNotThrow(() -> moduleToTest.assertDownloadSuccessful(context));
     }
 
     @Test
     void isDownloadSuccessful_returns_false_when_no_git_file_in_directory() throws IOException {
         /* prepare */
+        List<Path> subfolder = new ArrayList<>();
+        subfolder.add(testRepo);
+        when(filesSupport.getRepositoriesFromDirectory(any())).thenReturn(subfolder);
+
         File tempDir = Files.createTempDirectory("upload-folder").toFile();
         tempDir.deleteOnExit();
-        writer.save(tempDir, "some text", true);
-        PrepareWrapperContext context = mock(PrepareWrapperContext.class);
-        when(context.getEnvironment()).thenReturn(mock(PrepareWrapperEnvironment.class));
-        when(context.getEnvironment().getPdsPrepareUploadFolderDirectory()).thenReturn(tempDir.toString());
+
+        Path repository = tempDir.toPath().resolve(testRepo);
+        Path javaFile = repository.resolve("class.java");
+
+        writer.save(javaFile.toFile(), "some text", true);
+        GitContext context = mock(GitContext.class);
+        when(context.getToolDownloadDirectory()).thenReturn(tempDir.toPath());
 
         /* execute */
-        boolean result = moduleToTest.isDownloadSuccessful(context);
+        IllegalStateException exception = assertThrows(IllegalStateException.class, () -> moduleToTest.assertDownloadSuccessful(context));
 
         /* test */
-        assertFalse(result);
+        assertEquals("Download of git repository: " + repository.getFileName() + " was not successful. Git folder not found.", exception.getMessage());
     }
 
     private PrepareWrapperContext createContext() {
         PrepareWrapperEnvironment environment = mock(PrepareWrapperEnvironment.class);
-        when(environment.getPdsPrepareUploadFolderDirectory()).thenReturn("test-upload-folder");
+        when(environment.getPdsJobWorkspaceLocation()).thenReturn("test-upload-folder");
         return new PrepareWrapperContext(createFromJSON("{}"), environment);
     }
 

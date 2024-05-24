@@ -1,8 +1,7 @@
 package com.mercedesbenz.sechub.wrapper.prepare.modules.git;
 
-import java.io.File;
 import java.io.IOException;
-import java.nio.file.Paths;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -31,33 +30,32 @@ public class WrapperGit extends WrapperTool {
         jGitAdapter.clone(gitContext);
     }
 
-    public void cleanUploadDirectory(String uploadDirectory) throws IOException {
-        final ProcessBuilder builder = buildProcessClean(uploadDirectory);
+    @Override
+    public void cleanUploadDirectory(Path gitDownloadDirectory) throws IOException {
+        final ProcessBuilder builder = buildProcessClean(gitDownloadDirectory);
         ProcessAdapter process = null;
 
         try {
             process = processAdapterFactory.startProcess(builder);
         } catch (IOException e) {
-            throw new IOException("Error while cleaning git directory: " + uploadDirectory, e);
+            throw new IOException("Error while cleaning git directory: " + gitDownloadDirectory, e);
         }
 
         waitForProcessToFinish(process);
     }
 
-    private ProcessBuilder buildProcessClean(String pdsPrepareUploadFolderDirectory) {
+    private ProcessBuilder buildProcessClean(Path gitDownloadDirectory) {
         List<String> commands = new ArrayList<>();
         // removes recursively all git files from a directory
         // ( find . -type d -name ".git" && find . -name ".gitignore" && find . -name
         // ".gitmodules" ) | xargs rm -rf
-
-        File uploadDir = Paths.get(pdsPrepareUploadFolderDirectory).toAbsolutePath().toFile();
 
         commands.add("/bin/bash");
         commands.add("-c");
         commands.add("( find . -type d -name .git && find . -name .gitignore && find . -name .gitattributes ) | xargs rm -rf");
 
         ProcessBuilder builder = new ProcessBuilder(commands);
-        builder.directory(uploadDir);
+        builder.directory(gitDownloadDirectory.toFile());
         builder.inheritIO();
         return builder;
     }

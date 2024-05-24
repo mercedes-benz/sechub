@@ -3,14 +3,6 @@ package com.mercedesbenz.sechub.wrapper.prepare.cli;
 public class PrepareWrapperKeyConstants {
 
     /**
-     * Folder for PDS prepare where remote data gets downloaded to be uploaded to
-     * the shared storage
-     */
-    // TODO: 23.05.24 laura diese variable weg -> ersetzen durch WORKSPACE_DIRECTORY
-    // + xxx
-    public static final String KEY_PDS_PREPARE_UPLOAD_DIRECTORY = "pds.prepare.upload.directory";
-
-    /**
      * Prepare process timeout in seconds for prepare processes started with process
      * builder, default is -1 prepare process timeout can not be higher than the pds
      * product timeout

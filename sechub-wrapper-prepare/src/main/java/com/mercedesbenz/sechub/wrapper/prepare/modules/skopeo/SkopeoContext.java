@@ -1,38 +1,36 @@
 package com.mercedesbenz.sechub.wrapper.prepare.modules.skopeo;
 
+import java.io.File;
+import java.nio.file.Path;
+
 import com.mercedesbenz.sechub.wrapper.prepare.modules.ToolContext;
 
 public class SkopeoContext extends ToolContext {
 
-    private final String filename;
+    static final String DOWNLOAD_DIRECTORY_NAME = "skopeo-download";
+    private File downloadTarFilename = new File("skopeo-download.tar");
 
-    private SkopeoContext(SkopeoContextBuilder builder) {
-        super(builder);
-        this.filename = builder.filename;
+    public void setWorkingDirectory(Path workingDirectory) {
+        super.workingDirectory(workingDirectory);
+        toolDownloadDirectory = workingDirectory.resolve(DOWNLOAD_DIRECTORY_NAME);
     }
 
-    public String getFilename() {
-        return filename;
-    }
-
-    public static class SkopeoContextBuilder extends ToolContextBuilder {
-
-        private String filename = "SkopeoDownloadFile.tar";
-
-        @Override
-        public SkopeoContext build() {
-            return new SkopeoContext(this);
+    public void setDownloadTarFilename(File downloadTarFilename) {
+        if (downloadTarFilename == null) {
+            throw new IllegalArgumentException("Download filename may not be null!");
         }
-
-        public SkopeoContextBuilder setFilename(String filename) {
-            if (filename == null || filename.isBlank()) {
-                return this;
-            }
-            if (!filename.endsWith(".tar")) {
-                throw new IllegalArgumentException("Filename must end with .tar");
-            }
-            this.filename = filename;
-            return this;
+        if (!downloadTarFilename.getName().endsWith(".tar")) {
+            throw new IllegalArgumentException("Download filename may not contain slashes!");
         }
+        this.downloadTarFilename = downloadTarFilename;
     }
+
+    public File getDownloadTarFilename() {
+        return downloadTarFilename;
+    }
+
+    public Path getToolDownloadDirectory() {
+        return toolDownloadDirectory;
+    }
+
 }

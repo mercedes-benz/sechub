@@ -5,6 +5,8 @@ import static com.mercedesbenz.sechub.wrapper.prepare.cli.PrepareWrapperEnvironm
 import static com.mercedesbenz.sechub.wrapper.prepare.cli.PrepareWrapperEnvironmentVariables.PDS_PREPARE_CREDENTIAL_USERNAME;
 
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.HashMap;
 
 import javax.crypto.SealedObject;
@@ -25,5 +27,16 @@ public interface PrepareWrapperModule {
         SealedObject sealedPassword = CryptoAccess.CRYPTO_STRING.seal(user.getPassword());
         credentialMap.put(PDS_PREPARE_CREDENTIAL_USERNAME, sealedUsername);
         credentialMap.put(PDS_PREPARE_CREDENTIAL_PASSWORD, sealedPassword);
+    }
+
+    default void createDownloadDirectory(Path path) {
+        if (Files.exists(path)) {
+            return;
+        }
+        try {
+            Files.createDirectories(path);
+        } catch (IOException e) {
+            throw new RuntimeException("Error while creating download directory: " + path.toString(), e);
+        }
     }
 }
