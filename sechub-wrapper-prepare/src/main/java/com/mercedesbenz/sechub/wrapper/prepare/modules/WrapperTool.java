@@ -4,24 +4,18 @@ import static com.mercedesbenz.sechub.commons.pds.PDSDefaultParameterKeyConstant
 import static com.mercedesbenz.sechub.wrapper.prepare.cli.PrepareWrapperKeyConstants.KEY_PDS_PREPARE_PROCESS_TIMEOUT_SECONDS;
 
 import java.io.IOException;
-import java.util.Map;
 import java.util.concurrent.TimeUnit;
-
-import javax.crypto.SealedObject;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
-import com.mercedesbenz.sechub.commons.core.security.CryptoAccess;
 import com.mercedesbenz.sechub.commons.pds.PDSDefaultParameterValueConstants;
-import com.mercedesbenz.sechub.commons.pds.PDSProcessAdapterFactory;
 import com.mercedesbenz.sechub.commons.pds.ProcessAdapter;
 
 @Component
-abstract class WrapperTool {
+public abstract class WrapperTool {
 
     private static final Logger LOG = LoggerFactory.getLogger(WrapperTool.class);
     private static final int defaultMinutesToWaitForProduct = PDSDefaultParameterValueConstants.DEFAULT_MINUTES_TO_WAIT_FOR_PRODUCT;
@@ -32,12 +26,9 @@ abstract class WrapperTool {
     @Value("${" + KEY_PDS_PREPARE_PROCESS_TIMEOUT_SECONDS + ":-1}")
     private int pdsPrepareProcessTimeoutSeconds;
 
-    @Autowired
-    PDSProcessAdapterFactory processAdapterFactory;
+    protected abstract void cleanUploadDirectory(String uploadDirectory) throws IOException;
 
-    abstract void cleanUploadDirectory(String uploadDirectory) throws IOException;
-
-    void waitForProcessToFinish(ProcessAdapter process) {
+    protected void waitForProcessToFinish(ProcessAdapter process) {
 
         LOG.debug("Wait for wrapper to finish process.");
         int seconds = calculateTimeoutSeconds();
@@ -46,28 +37,17 @@ abstract class WrapperTool {
         try {
             exitDoneInTime = process.waitFor(seconds, TimeUnit.SECONDS);
         } catch (InterruptedException e) {
-            throw new RuntimeException("GIT wrapper could not finish process.", e);
+            throw new RuntimeException("Wrapper for executed modul " + this.getClass().getSimpleName() + " could not finish process.", e);
         }
 
         if (!exitDoneInTime) {
-            throw new RuntimeException("GIT wrapper could not finish process. Waited " + pdsPrepareProcessTimeoutSeconds + " seconds.");
+            throw new RuntimeException("Wrapper for executed modul " + this.getClass().getSimpleName() + " could not finish process. Waited "
+                    + pdsPrepareProcessTimeoutSeconds + " seconds.");
         }
 
         if (process.exitValue() != 0) {
-            throw new RuntimeException("GIT wrapper process failed with exit code: " + process.exitValue());
-        }
-    }
-
-    void exportEnvironmentVariables(ProcessBuilder builder, Map<String, SealedObject> credentialMap) throws IOException {
-        Map<String, String> environment = builder.environment();
-        if (credentialMap != null && !credentialMap.isEmpty()) {
-            for (Map.Entry<String, SealedObject> entry : credentialMap.entrySet()) {
-                try {
-                    environment.put(entry.getKey(), CryptoAccess.CRYPTO_STRING.unseal(entry.getValue()));
-                } catch (Exception e) {
-                    throw new IOException("Error while unsealing credential: " + entry.getKey(), e);
-                }
-            }
+            throw new RuntimeException(
+                    "Wrapper for executed modul " + this.getClass().getSimpleName() + " process failed with exit code: " + process.exitValue());
         }
     }
 
