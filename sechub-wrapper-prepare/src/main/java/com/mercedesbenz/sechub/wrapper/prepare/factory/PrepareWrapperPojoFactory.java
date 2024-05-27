@@ -8,6 +8,7 @@ import com.mercedesbenz.sechub.commons.TextFileWriter;
 import com.mercedesbenz.sechub.commons.archive.ArchiveSupport;
 import com.mercedesbenz.sechub.commons.core.security.CheckSumSupport;
 import com.mercedesbenz.sechub.commons.pds.PDSProcessAdapterFactory;
+import com.mercedesbenz.sechub.pds.commons.core.PDSLogSanitizer;
 
 @Component
 public class PrepareWrapperPojoFactory {
@@ -30,6 +31,11 @@ public class PrepareWrapperPojoFactory {
     @Bean
     CheckSumSupport createCheckSumSupport() {
         return new CheckSumSupport();
+    }
+
+    @Bean
+    PDSLogSanitizer createPDSLogSanitizer() {
+        return new PDSLogSanitizer();
     }
 
 }

@@ -1,20 +1,17 @@
-// SPDX-License-Identifier: MIT
-package com.mercedesbenz.sechub.pds;
+package com.mercedesbenz.sechub.pds.commons.core;
 
 import java.util.regex.Pattern;
 
-import org.springframework.stereotype.Component;
+public class PDSLogSanitizer {
 
-/**
- * This log sanitizer component handles -
- * https://cwe.mitre.org/data/definitions/93.html -
- * https://cwe.mitre.org/data/definitions/117.html
- *
- * @author Albert Tregnaghi
- *
- */
-@Component
-public class LogSanitizer {
+    /**
+     * This log sanitizer component handles -
+     * https://cwe.mitre.org/data/definitions/93.html -
+     * https://cwe.mitre.org/data/definitions/117.html
+     *
+     * @author Albert Tregnaghi
+     *
+     */
 
     private static final Pattern FORGERY_PATTERN = Pattern.compile("[\t\n\r]");
 
@@ -64,5 +61,4 @@ public class LogSanitizer {
         }
         return result;
     }
-
 }

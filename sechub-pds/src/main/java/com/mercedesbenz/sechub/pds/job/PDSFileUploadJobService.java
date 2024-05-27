@@ -31,9 +31,9 @@ import com.mercedesbenz.sechub.commons.core.security.CheckSumSupport;
 import com.mercedesbenz.sechub.commons.core.security.CheckSumSupport.CheckSumValidationResult;
 import com.mercedesbenz.sechub.commons.model.SecHubRuntimeException;
 import com.mercedesbenz.sechub.commons.pds.data.PDSJobStatusState;
-import com.mercedesbenz.sechub.pds.LogSanitizer;
 import com.mercedesbenz.sechub.pds.PDSBadRequestException;
 import com.mercedesbenz.sechub.pds.UploadSizeConfiguration;
+import com.mercedesbenz.sechub.pds.commons.core.PDSLogSanitizer;
 import com.mercedesbenz.sechub.pds.security.PDSRoleConstants;
 import com.mercedesbenz.sechub.pds.storage.PDSMultiStorageService;
 import com.mercedesbenz.sechub.pds.usecase.PDSStep;
@@ -71,7 +71,7 @@ public class PDSFileUploadJobService {
     UploadSizeConfiguration configuration;
 
     @Autowired
-    LogSanitizer logSanitizer;
+    PDSLogSanitizer PDSLogSanitizer;
 
     @Autowired
     PDSServletFileUploadFactory servletFileUploadFactory;
@@ -222,7 +222,7 @@ public class PDSFileUploadJobService {
                 fileDefinedByUser = true;
                 break;
             default:
-                LOG.warn("Given field '{}' is not supported while uploading job data to project {}, {}", logSanitizer.sanitize(fieldName, 30), jobUUID);
+                LOG.warn("Given field '{}' is not supported while uploading job data to project {}, {}", PDSLogSanitizer.sanitize(fieldName, 30), jobUUID);
             }
         }
 

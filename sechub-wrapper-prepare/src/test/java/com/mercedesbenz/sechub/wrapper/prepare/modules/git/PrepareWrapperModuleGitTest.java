@@ -210,7 +210,7 @@ class PrepareWrapperModuleGitTest {
         IllegalStateException exception = assertThrows(IllegalStateException.class, () -> moduleToTest.assertDownloadSuccessful(context));
 
         /* test */
-        assertEquals("Download of git repository: " + repository.getFileName() + " was not successful. Git folder not found.", exception.getMessage());
+        assertEquals("Download of git repository was not successful. Git folder (.git) not found.", exception.getMessage());
     }
 
     private PrepareWrapperContext createContext() {

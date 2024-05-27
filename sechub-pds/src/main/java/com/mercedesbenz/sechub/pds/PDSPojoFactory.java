@@ -13,6 +13,7 @@ import com.mercedesbenz.sechub.commons.core.security.CheckSumSupport;
 import com.mercedesbenz.sechub.commons.model.CodeScanPathCollector;
 import com.mercedesbenz.sechub.commons.model.SecHubConfigurationModelSupport;
 import com.mercedesbenz.sechub.commons.model.SecHubDataConfigurationTypeListParser;
+import com.mercedesbenz.sechub.pds.commons.core.PDSLogSanitizer;
 
 /**
  * This factory creates some "plain old java" objects and inject them into
@@ -63,5 +64,10 @@ public class PDSPojoFactory {
     @Bean
     SecHubConfigurationModelSupport createSecHubConfigurationModelSupport() {
         return new SecHubConfigurationModelSupport();
+    }
+
+    @Bean
+    PDSLogSanitizer createLogSanitizer() {
+        return new PDSLogSanitizer();
     }
 }

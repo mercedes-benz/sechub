@@ -1,7 +1,6 @@
 package com.mercedesbenz.sechub.wrapper.prepare.upload;
 
 import java.io.IOException;
-import java.nio.file.Path;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
