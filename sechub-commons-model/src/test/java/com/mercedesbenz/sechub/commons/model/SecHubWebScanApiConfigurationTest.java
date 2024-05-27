@@ -40,6 +40,7 @@ class SecHubWebScanApiConfigurationTest {
      */
     @Test
     void json_attribute_use_is_handled_correctly_by_to_json() {
+        /* prepare */
         SecHubWebScanApiConfiguration config = new SecHubWebScanApiConfiguration();
         config.getNamesOfUsedDataConfigurationObjects().add("ref1");
         config.getNamesOfUsedDataConfigurationObjects().add("ref2");
@@ -54,18 +55,38 @@ class SecHubWebScanApiConfigurationTest {
 
     @Test
     void api_definition_url_is_handled_correctly() throws MalformedURLException {
-        SecHubWebScanApiConfiguration config = new SecHubWebScanApiConfiguration();
+        /* prepare */
+        SecHubWebScanApiConfiguration expectedConfig = new SecHubWebScanApiConfiguration();
         URL apiDefinitionUrl = new URL("https://example.com/api/v1/swagger/");
-        config.setApiDefinitionUrl(apiDefinitionUrl);
+        expectedConfig.setApiDefinitionUrl(apiDefinitionUrl);
 
         /* execute */
-        String json = JSONConverter.get().toJSON(config);
-        SecHubWebScanApiConfiguration apiConfig = JSONConverter.get().fromJSON(SecHubWebScanApiConfiguration.class, json);
+        String json = JSONConverter.get().toJSON(expectedConfig);
+        SecHubWebScanApiConfiguration loadedConfig = JSONConverter.get().fromJSON(SecHubWebScanApiConfiguration.class, json);
 
         /* test */
         String expected = "{\"apiDefinitionUrl\":\"https://example.com/api/v1/swagger/\",\"use\":[]}";
         assertEquals(expected, json);
-        assertEquals(config.getApiDefinitionUrl(), apiConfig.getApiDefinitionUrl());
+        assertEquals(expectedConfig.getApiDefinitionUrl(), loadedConfig.getApiDefinitionUrl());
+    }
+
+    @Test
+    void full_openapi_definition_is_handled_correctly() throws MalformedURLException {
+        /* prepare */
+        SecHubWebScanApiConfiguration expectedConfig = new SecHubWebScanApiConfiguration();
+        URL apiDefinitionUrl = new URL("https://example.com/api/v1/swagger/");
+        expectedConfig.setApiDefinitionUrl(apiDefinitionUrl);
+        expectedConfig.setType(SecHubWebScanApiType.OPEN_API);
+        expectedConfig.getNamesOfUsedDataConfigurationObjects().add("open-api-file-reference");
+
+        /* execute */
+        String json = JSONConverter.get().toJSON(expectedConfig);
+        SecHubWebScanApiConfiguration loadedConfig = JSONConverter.get().fromJSON(SecHubWebScanApiConfiguration.class, json);
+
+        /* test */
+        String expected = "{\"type\":\"OPEN_API\",\"apiDefinitionUrl\":\"https://example.com/api/v1/swagger/\",\"use\":[\"open-api-file-reference\"]}";
+        assertEquals(expected, json);
+        assertEquals(expectedConfig.getApiDefinitionUrl(), loadedConfig.getApiDefinitionUrl());
     }
 
 }
