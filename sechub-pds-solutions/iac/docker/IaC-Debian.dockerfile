@@ -6,6 +6,7 @@
 
 # The image argument needs to be placed on top
 ARG BASE_IMAGE
+ARG KICS_VERSION
 
 # Build args
 ARG GO="go1.21.6.linux-amd64.tar.gz"
@@ -23,7 +24,7 @@ FROM ${BASE_IMAGE} AS builder
 ARG GO
 ARG PDS_ARTIFACT_FOLDER
 ARG BUILD_FOLDER="/build"
-ARG KICS_VERSION="2.0.1"
+ARG KICS_VERSION
 
 # Environment variables in container
 ENV DOWNLOAD_FOLDER="/downloads"
@@ -66,7 +67,7 @@ RUN mkdir --parent "$BUILD_FOLDER" && \
     # Downloads Go packages
     go mod vendor && \
     # Build kics
-    go build -o ./bin/kics cmd/console/main.go && \
+    CGO_ENABLED=0 go build -ldflags "-s -w -X github.com/Checkmarx/kics/internal/constants.Version=${KICS_VERSION}" -a -installsuffix cgo -o bin/kics cmd/console/main.go && \
     # copy kics binary
     mkdir --parents "$PDS_ARTIFACT_FOLDER/kics/" && \
     cp bin/kics --target-directory "$PDS_ARTIFACT_FOLDER/kics/" && \
