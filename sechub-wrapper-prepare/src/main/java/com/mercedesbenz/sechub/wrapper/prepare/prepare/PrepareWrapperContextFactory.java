@@ -26,13 +26,13 @@ public class PrepareWrapperContextFactory {
 
     private SecHubConfigurationModel createSecHubConfigModel(String json) {
         if (json == null || json.isEmpty()) {
-            throw new IllegalStateException("No SecHub model JSON found, cannot create model");
+            throw new IllegalStateException("No SecHub model JSON found, cannot create model.");
         }
         try {
             return JSONConverter.get().fromJSON(SecHubConfigurationModel.class, json);
         } catch (JSONConverterException e) {
-            LOG.error("Cannot convert given sechub configuration model", e);
-            throw new IllegalStateException("SecHub model JSON found, but invalid", e);
+            LOG.error("Cannot convert given sechub configuration model.", e);
+            throw new IllegalStateException("SecHub model JSON found, but is invalid.", e);
         }
     }
 

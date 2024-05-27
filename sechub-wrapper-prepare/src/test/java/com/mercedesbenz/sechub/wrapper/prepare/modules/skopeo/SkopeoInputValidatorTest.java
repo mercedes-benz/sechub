@@ -23,9 +23,8 @@ import com.mercedesbenz.sechub.wrapper.prepare.prepare.PrepareWrapperContext;
 
 class SkopeoInputValidatorTest {
 
-    SkopeoInputValidator validatorToTest;
-
-    TestFileWriter writer;
+    private SkopeoInputValidator validatorToTest;
+    private TestFileWriter writer;
 
     @BeforeEach
     void beforeEach() {

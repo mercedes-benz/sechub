@@ -23,27 +23,19 @@ import com.mercedesbenz.sechub.wrapper.prepare.prepare.PrepareWrapperContext;
 
 class PrepareWrapperUploadServiceTest {
 
-    PrepareWrapperUploadService uploadServiceToTest;
-
-    PrepareWrapperArchiveCreator archiveCreator;
-
-    PrepareWrapperFileUploadService fileUploadService;
-
-    PrepareWrapperSechubConfigurationSupport sechubConfigurationSupport;
-
-    FileNameSupport fileNameSupport;
-
-    CheckSumSupport checkSumSupport;
+    private PrepareWrapperUploadService uploadServiceToTest;
+    private PrepareWrapperFileUploadService fileUploadService;
+    private PrepareWrapperSechubConfigurationSupport sechubConfigurationSupport;
 
     @BeforeEach
     void beforeEach() {
         uploadServiceToTest = new PrepareWrapperUploadService();
 
-        archiveCreator = mock(PrepareWrapperArchiveCreator.class);
         fileUploadService = mock(PrepareWrapperFileUploadService.class);
         sechubConfigurationSupport = mock(PrepareWrapperSechubConfigurationSupport.class);
-        fileNameSupport = mock(FileNameSupport.class);
-        checkSumSupport = mock(CheckSumSupport.class);
+        PrepareWrapperArchiveCreator archiveCreator = mock(PrepareWrapperArchiveCreator.class);
+        FileNameSupport fileNameSupport = mock(FileNameSupport.class);
+        CheckSumSupport checkSumSupport = mock(CheckSumSupport.class);
 
         uploadServiceToTest.archiveCreator = archiveCreator;
         uploadServiceToTest.fileUploadService = fileUploadService;

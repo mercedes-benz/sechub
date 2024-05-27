@@ -48,7 +48,7 @@ public class AbstractInputValidator implements InputValidator {
         String type = secHubRemoteDataConfiguration.getType();
 
         if (isTypeNullOrEmpty(type)) {
-            LOG.debug("No type defined. Location is: {}", location);
+            LOG.debug("No type was defined for location {}.", location);
             validateLocation(location);
             return;
         } else if (isMatchingType(type)) {

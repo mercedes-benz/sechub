@@ -9,34 +9,39 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class FileNameSupport {
-    public List<Path> getTarFilesFromDirectory(Path path) {
-        if (Files.isDirectory(path)) {
-            List<Path> result = new ArrayList<>();
-            File[] files = path.toFile().listFiles();
-            for (File file : files) {
-                if (file.getName().endsWith(".tar")) {
-                    result.add(file.toPath());
-                }
+    public List<Path> getTarFilesFromDirectory(Path directory) {
+        assertDirectory(directory);
+
+        List<Path> result = new ArrayList<>();
+        File[] files = directory.toFile().listFiles();
+        for (File file : files) {
+            if (file.getName().endsWith(".tar")) {
+                result.add(file.toPath());
             }
-            return result;
-        } else {
-            throw new IllegalArgumentException("Parameter " + " is not a directory");
         }
+        return result;
     }
 
-    public List<Path> getRepositoriesFromDirectory(Path path) {
+    public List<Path> getRepositoriesFromDirectory(Path directory) {
+        assertDirectory(directory);
+
         List<Path> repositories = new ArrayList<>();
-
-        if (path == null) {
-            throw new IllegalArgumentException("File may not be null!");
-        }
-
-        File[] files = path.toFile().listFiles();
+        File[] files = directory.toFile().listFiles();
         for (File f : files) {
             if (f.isDirectory()) {
                 repositories.add(f.toPath());
             }
         }
         return repositories;
+    }
+
+    private void assertDirectory(Path directory) {
+        if (directory == null) {
+            throw new IllegalArgumentException("Directory parameter may not be null.");
+        }
+
+        if (!Files.isDirectory(directory)) {
+            throw new IllegalArgumentException("Directory parameter '" + directory + "' is not a directory");
+        }
     }
 }

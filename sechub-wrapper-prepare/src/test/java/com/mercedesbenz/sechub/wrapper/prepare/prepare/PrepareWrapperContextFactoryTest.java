@@ -15,11 +15,8 @@ import com.mercedesbenz.sechub.wrapper.prepare.cli.PrepareWrapperEnvironment;
 class PrepareWrapperContextFactoryTest {
 
     private static final String PROJECT1 = "project1";
-
     private PrepareWrapperContextFactory factoryToTest;
-
     private PrepareWrapperEnvironment environment;
-
     private PrepareWrapperRemoteConfigurationExtractor extractor;
 
     @BeforeEach

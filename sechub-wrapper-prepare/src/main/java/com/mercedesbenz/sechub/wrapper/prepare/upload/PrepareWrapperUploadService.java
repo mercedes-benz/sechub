@@ -57,7 +57,7 @@ public class PrepareWrapperUploadService {
             fileUploadService.uploadFile(storagePath, sechubJobUUID, file, checkSum);
         }
 
-        if (!model.getData().get().getBinaries().isEmpty()) {
+        if (!data.getBinaries().isEmpty()) {
             File file = new File(toolContext.getUploadDirectory() + "/" + FILENAME_BINARIES_TAR);
             String checkSum = checkSumSupport.createSha256Checksum(file.getPath());
 

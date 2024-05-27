@@ -17,18 +17,15 @@ import com.mercedesbenz.sechub.test.TestFileWriter;
 
 class PrepareWrapperFileUploadServiceTest {
 
-    PrepareWrapperFileUploadService uploadServiceToTest;
-
-    PrepareWrapperStorageService storageService;
-
-    JobStorage jobStorage;
-    TestFileWriter writer;
+    private PrepareWrapperFileUploadService uploadServiceToTest;
+    private JobStorage jobStorage;
+    private TestFileWriter writer;
 
     @BeforeEach
     void beforeEach() {
         uploadServiceToTest = new PrepareWrapperFileUploadService();
-        storageService = mock(PrepareWrapperStorageService.class);
         jobStorage = mock(JobStorage.class);
+        PrepareWrapperStorageService storageService = mock(PrepareWrapperStorageService.class);
         when(storageService.getJobStorage(anyString(), any(UUID.class))).thenReturn(jobStorage);
 
         uploadServiceToTest.storageService = storageService;

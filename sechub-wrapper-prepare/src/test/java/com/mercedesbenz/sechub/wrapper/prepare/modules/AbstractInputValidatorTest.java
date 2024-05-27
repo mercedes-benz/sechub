@@ -8,7 +8,7 @@ import org.junit.jupiter.api.Test;
 
 class AbstractInputValidatorTest {
 
-    TestInputValidator validatorToTest;
+    private TestInputValidator validatorToTest;
 
     @Test
     void constructor_throws_exception_when_type_is_null() {

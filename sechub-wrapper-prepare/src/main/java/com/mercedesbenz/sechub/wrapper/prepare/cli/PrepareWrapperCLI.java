@@ -31,7 +31,7 @@ public class PrepareWrapperCLI implements CommandLineRunner {
 
     @Override
     public void run(String... args) {
-        LOG.debug("Prepare wrapper starting");
+        LOG.debug("Prepare wrapper is starting.");
         AdapterExecutionResult result;
         try {
             result = preparationService.startPreparation();

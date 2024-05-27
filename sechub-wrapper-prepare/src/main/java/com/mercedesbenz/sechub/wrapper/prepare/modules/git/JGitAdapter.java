@@ -29,20 +29,19 @@ public class JGitAdapter {
         Path downloadDirectory = gitContext.getToolDownloadDirectory();
         Map<String, SealedObject> credentialMap = gitContext.getCredentialMap();
 
-        String username = getUserNameFromMap(credentialMap);
-        String password = getPasswordFromMap(credentialMap);
-
         /*@formatter:off*/
         CloneCommand command = Git.cloneRepository()
                 .setURI(location).
                 setDirectory(downloadDirectory.resolve(Path.of(gitContext.getRepositoryName())).toFile());
         /*@formatter:on*/
 
+        String username = getUserNameFromMap(credentialMap);
+        String password = getPasswordFromMap(credentialMap);
         if (username != null && password != null) {
-            LOG.debug("Cloning private repository: " + location + " with username and password to: " + downloadDirectory);
+            LOG.debug("Cloning private repository: {} with username and password to: {} ", location, downloadDirectory);
             command = command.setCredentialsProvider(new UsernamePasswordCredentialsProvider(username, password));
         } else {
-            LOG.debug("Cloning public repository: " + location + " to: " + downloadDirectory);
+            LOG.debug("Cloning public repository: {} with username and password to: {} ", location, downloadDirectory);
         }
 
         if (gitContext.isCloneWithoutHistory()) {

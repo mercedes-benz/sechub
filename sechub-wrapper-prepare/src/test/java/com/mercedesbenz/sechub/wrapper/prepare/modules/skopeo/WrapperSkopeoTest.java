@@ -22,17 +22,15 @@ import com.mercedesbenz.sechub.commons.pds.ProcessAdapter;
 
 class WrapperSkopeoTest {
 
-    WrapperSkopeo wrapperToTest;
-    PDSProcessAdapterFactory processAdapterFactory;
-    ProcessAdapter processAdapter;
-
-    private Path testPath = Path.of("folder");
+    private WrapperSkopeo wrapperToTest;
+    private PDSProcessAdapterFactory processAdapterFactory;
+    private final Path skopeoDownloadPath = Path.of(SkopeoContext.DOWNLOAD_DIRECTORY_NAME);
 
     @BeforeEach
     void beforeEach() throws IOException, InterruptedException {
         wrapperToTest = new WrapperSkopeo();
         processAdapterFactory = mock(PDSProcessAdapterFactory.class);
-        processAdapter = mock(ProcessAdapter.class);
+        ProcessAdapter processAdapter = mock(ProcessAdapter.class);
         when(processAdapterFactory.startProcess(any())).thenReturn(processAdapter);
         when(processAdapter.waitFor(any(Long.class), any(TimeUnit.class))).thenReturn(true);
 
@@ -44,7 +42,7 @@ class WrapperSkopeoTest {
         /* prepare */
         SkopeoContext context = new SkopeoContext();
         context.setLocation("docker://ubuntu:22.04");
-        context.setWorkingDirectory(testPath);
+        context.setWorkingDirectory(skopeoDownloadPath);
 
         /* execute */
         assertDoesNotThrow(() -> wrapperToTest.download(context));
@@ -61,7 +59,7 @@ class WrapperSkopeoTest {
         credentialMap.put(PDS_PREPARE_CREDENTIAL_PASSWORD, CryptoAccess.CRYPTO_STRING.seal("password"));
         SkopeoContext context = new SkopeoContext();
         context.setLocation("docker://ubuntu:22.04");
-        context.setWorkingDirectory(testPath);
+        context.setWorkingDirectory(skopeoDownloadPath);
         context.setCredentialMap(credentialMap);
 
         /* execute */
@@ -77,7 +75,7 @@ class WrapperSkopeoTest {
         String location = "docker://ubuntu:22.04";
         SkopeoContext context = new SkopeoContext();
         context.setLocation(location);
-        context.setWorkingDirectory(testPath);
+        context.setWorkingDirectory(skopeoDownloadPath);
         when(processAdapterFactory.startProcess(any())).thenThrow(new IOException());
 
         /* execute */
@@ -91,7 +89,7 @@ class WrapperSkopeoTest {
     @Test
     void when_cleanUploadDirectory_is_executed_clean_process_is_executed() throws IOException {
         /* execute */
-        assertDoesNotThrow(() -> wrapperToTest.cleanUploadDirectory(testPath));
+        assertDoesNotThrow(() -> wrapperToTest.cleanUploadDirectory(skopeoDownloadPath));
 
         /* test */
         verify(processAdapterFactory, times(1)).startProcess(any());

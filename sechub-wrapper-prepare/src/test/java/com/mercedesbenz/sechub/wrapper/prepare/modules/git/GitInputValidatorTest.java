@@ -25,9 +25,9 @@ import com.mercedesbenz.sechub.wrapper.prepare.prepare.PrepareWrapperContext;
 
 class GitInputValidatorTest {
 
-    GitInputValidator gitInputValidatorToTest;
+    private GitInputValidator gitInputValidatorToTest;
 
-    TestFileWriter writer;
+    private TestFileWriter writer;
 
     @BeforeEach
     void beforeEach() {

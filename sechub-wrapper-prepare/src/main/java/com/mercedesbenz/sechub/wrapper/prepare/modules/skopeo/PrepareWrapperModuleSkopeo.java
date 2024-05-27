@@ -46,10 +46,9 @@ public class PrepareWrapperModuleSkopeo implements PrepareWrapperModule {
 
     @Override
     public boolean prepare(PrepareWrapperContext context) throws IOException {
-        LOG.debug("Start remote data preparation for Docker repository");
 
         if (!pdsPrepareModuleSkopeoEnabled) {
-            LOG.debug("Skopeo module is disabled");
+            LOG.debug("Skopeo module is disabled.");
             return false;
         }
 
@@ -59,6 +58,7 @@ public class PrepareWrapperModuleSkopeo implements PrepareWrapperModule {
             LOG.warn("Module {} could not resolve remote configuration.", getClass().getSimpleName(), e);
             return false;
         }
+        LOG.debug("Module {} resolved remote configuration and will prepare.", getClass().getSimpleName());
 
         SecHubRemoteDataConfiguration secHubRemoteDataConfiguration = context.getRemoteDataConfiguration();
         SkopeoContext skopeoContext = initializeSkopeoContext(context, secHubRemoteDataConfiguration);

@@ -11,7 +11,7 @@ import com.mercedesbenz.sechub.commons.model.SecHubRemoteDataConfiguration;
 
 class PrepareWrapperRemoteConfigurationExtractorTest {
 
-    PrepareWrapperRemoteConfigurationExtractor extractorToTest;
+    private PrepareWrapperRemoteConfigurationExtractor extractorToTest;
 
     @BeforeEach
     void beforeEach() {

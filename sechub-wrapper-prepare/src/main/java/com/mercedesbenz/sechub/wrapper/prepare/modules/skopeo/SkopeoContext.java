@@ -17,20 +17,16 @@ public class SkopeoContext extends ToolContext {
 
     public void setDownloadTarFilename(File downloadTarFilename) {
         if (downloadTarFilename == null) {
-            throw new IllegalArgumentException("Download filename may not be null!");
+            throw new IllegalArgumentException("Download filename may not be null.");
         }
         if (!downloadTarFilename.getName().endsWith(".tar")) {
-            throw new IllegalArgumentException("Download filename may not contain slashes!");
+            throw new IllegalArgumentException("Download filename must end with .tar.");
         }
         this.downloadTarFilename = downloadTarFilename;
     }
 
     public File getDownloadTarFilename() {
         return downloadTarFilename;
-    }
-
-    public Path getToolDownloadDirectory() {
-        return toolDownloadDirectory;
     }
 
 }

@@ -15,9 +15,9 @@ import com.mercedesbenz.sechub.test.TestFileWriter;
 
 class FileNameSupportTest {
 
-    FileNameSupport fileNameSupportToTest;
+    private FileNameSupport fileNameSupportToTest;
 
-    TestFileWriter writer;
+    private TestFileWriter writer;
 
     @BeforeEach
     void beforeEach() {

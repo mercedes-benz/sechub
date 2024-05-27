@@ -28,21 +28,13 @@ import com.mercedesbenz.sechub.wrapper.prepare.upload.PrepareWrapperUploadServic
 
 class PrepareWrapperModuleGitTest {
 
-    PrepareWrapperModuleGit moduleToTest;
-
-    WrapperGit git;
-
-    TestFileWriter writer;
-
-    GitInputValidator gitInputValidator;
-
-    PrepareWrapperUploadService uploadService;
-
-    FileNameSupport filesSupport;
-
-    Path gitDownloadFolder = Path.of(GitContext.DOWNLOAD_DIRECTORY_NAME);
-
-    private Path testRepo = Path.of("test-repo");
+    private PrepareWrapperModuleGit moduleToTest;
+    private WrapperGit git;
+    private TestFileWriter writer;
+    private GitInputValidator gitInputValidator;
+    private FileNameSupport filesSupport;
+    private final Path gitDownloadFolder = Path.of(GitContext.DOWNLOAD_DIRECTORY_NAME);
+    private final Path testRepo = Path.of("test-repo");
 
     @BeforeEach
     void beforeEach() {
@@ -50,8 +42,9 @@ class PrepareWrapperModuleGitTest {
         writer = new TestFileWriter();
         gitInputValidator = mock(GitInputValidator.class);
         git = mock(WrapperGit.class);
-        uploadService = mock(PrepareWrapperUploadService.class);
         filesSupport = mock(FileNameSupport.class);
+
+        PrepareWrapperUploadService uploadService = mock(PrepareWrapperUploadService.class);
 
         ReflectionTestUtils.setField(moduleToTest, "pdsPrepareModuleGitEnabled", true);
 
@@ -62,7 +55,7 @@ class PrepareWrapperModuleGitTest {
     }
 
     @Test
-    void when_inputValidator_throws_InputValidatorException_prepare_return_false() throws IOException, PrepareWrapperInputValidatorException {
+    void when_inputValidator_throws_InputValidatorException_prepare_return_false() throws Exception {
         /* prepare */
         PrepareWrapperContext context = createContext();
         doThrow(new PrepareWrapperInputValidatorException("test", InputValidatorExitcode.LOCATION_NOT_MATCHING_PATTERN)).when(gitInputValidator)

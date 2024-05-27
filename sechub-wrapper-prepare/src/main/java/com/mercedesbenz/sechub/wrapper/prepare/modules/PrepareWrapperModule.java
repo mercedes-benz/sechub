@@ -36,7 +36,7 @@ public interface PrepareWrapperModule {
         try {
             Files.createDirectories(path);
         } catch (IOException e) {
-            throw new RuntimeException("Error while creating download directory: " + path.toString(), e);
+            throw new RuntimeException("Error while creating download directory: " + path, e);
         }
     }
 }

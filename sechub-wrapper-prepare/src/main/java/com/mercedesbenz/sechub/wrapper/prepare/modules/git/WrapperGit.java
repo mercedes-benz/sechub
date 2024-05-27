@@ -26,7 +26,6 @@ public class WrapperGit extends WrapperTool {
     PDSProcessAdapterFactory processAdapterFactory;
 
     public void downloadRemoteData(GitContext gitContext) {
-        LOG.debug("Start cloning with JGit.");
         jGitAdapter.clone(gitContext);
     }
 

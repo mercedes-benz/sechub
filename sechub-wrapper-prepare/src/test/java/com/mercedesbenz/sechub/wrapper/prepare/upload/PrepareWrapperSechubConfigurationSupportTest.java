@@ -23,9 +23,8 @@ import com.mercedesbenz.sechub.wrapper.prepare.prepare.PrepareWrapperContext;
 
 class PrepareWrapperSechubConfigurationSupportTest {
 
-    PrepareWrapperSechubConfigurationSupport supportToTest;
-
-    TestFileWriter writer;
+    private PrepareWrapperSechubConfigurationSupport supportToTest;
+    private TestFileWriter writer;
 
     @BeforeEach
     void beforeEach() {

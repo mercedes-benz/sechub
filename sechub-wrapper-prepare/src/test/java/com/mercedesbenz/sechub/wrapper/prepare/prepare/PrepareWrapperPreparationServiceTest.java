@@ -18,18 +18,13 @@ import com.mercedesbenz.sechub.wrapper.prepare.modules.git.PrepareWrapperModuleG
 class PrepareWrapperPreparationServiceTest {
 
     private PrepareWrapperPreparationService serviceToTest;
-
-    PrepareWrapperEnvironment environment;
-
-    PrepareWrapperContextFactory factory;
-
-    PrepareWrapperContext context;
+    private PrepareWrapperContext context;
 
     @BeforeEach
     void beforeEach() {
-        environment = mock(PrepareWrapperEnvironment.class);
-        factory = mock(PrepareWrapperContextFactory.class);
         context = mock(PrepareWrapperContext.class);
+        PrepareWrapperEnvironment environment = mock(PrepareWrapperEnvironment.class);
+        PrepareWrapperContextFactory factory = mock(PrepareWrapperContextFactory.class);
         when(factory.create(environment)).thenReturn(context);
 
         serviceToTest = new PrepareWrapperPreparationService();

@@ -26,19 +26,15 @@ import com.mercedesbenz.sechub.commons.pds.ProcessAdapter;
 
 class WrapperGitTest {
 
-    WrapperGit gitToTest;
-
-    PDSProcessAdapterFactory processAdapterFactory;
-
-    ProcessAdapter processAdapter;
-
-    JGitAdapter jGitAdapter;
+    private WrapperGit gitToTest;
+    private PDSProcessAdapterFactory processAdapterFactory;
+    private JGitAdapter jGitAdapter;
 
     @BeforeEach
     void beforeEach() throws IOException, InterruptedException {
         gitToTest = new WrapperGit();
         processAdapterFactory = mock(PDSProcessAdapterFactory.class);
-        processAdapter = mock(ProcessAdapter.class);
+        ProcessAdapter processAdapter = mock(ProcessAdapter.class);
         jGitAdapter = mock(JGitAdapter.class);
         when(processAdapterFactory.startProcess(any())).thenReturn(processAdapter);
         when(processAdapter.waitFor(any(Long.class), any(TimeUnit.class))).thenReturn(true);

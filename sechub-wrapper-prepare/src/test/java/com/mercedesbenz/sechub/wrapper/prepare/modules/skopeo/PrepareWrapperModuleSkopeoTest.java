@@ -28,13 +28,12 @@ import com.mercedesbenz.sechub.wrapper.prepare.upload.PrepareWrapperUploadServic
 
 class PrepareWrapperModuleSkopeoTest {
 
-    PrepareWrapperModuleSkopeo moduleToTest;
-    SkopeoInputValidator skopeoInputValidator;
-    WrapperSkopeo skopeo;
-    TestFileWriter writer;
-    FileNameSupport fileNameSupport;
-    PrepareWrapperUploadService uploadService;
-    private Path skopeDownloadFolder = Path.of(SkopeoContext.DOWNLOAD_DIRECTORY_NAME);
+    private PrepareWrapperModuleSkopeo moduleToTest;
+    private SkopeoInputValidator skopeoInputValidator;
+    private WrapperSkopeo skopeo;
+    private TestFileWriter writer;
+    private FileNameSupport fileNameSupport;
+    private final Path skopeoDownloadFolder = Path.of(SkopeoContext.DOWNLOAD_DIRECTORY_NAME);
 
     @BeforeEach
     void beforeEach() {
@@ -43,7 +42,7 @@ class PrepareWrapperModuleSkopeoTest {
         writer = new TestFileWriter();
         skopeo = mock(WrapperSkopeo.class);
         fileNameSupport = mock(FileNameSupport.class);
-        uploadService = mock(PrepareWrapperUploadService.class);
+        PrepareWrapperUploadService uploadService = mock(PrepareWrapperUploadService.class);
 
         ReflectionTestUtils.setField(moduleToTest, "pdsPrepareModuleSkopeoEnabled", true);
 
@@ -84,7 +83,7 @@ class PrepareWrapperModuleSkopeoTest {
         tempDir.deleteOnExit();
 
         Path testFile = Path.of("testimage.tar");
-        Path downloadDirectory = tempDir.toPath().resolve(skopeDownloadFolder);
+        Path downloadDirectory = tempDir.toPath().resolve(skopeoDownloadFolder);
         writer.save(downloadDirectory.resolve(testFile).toFile(), "some text", true);
 
         PrepareWrapperEnvironment environment = mock(PrepareWrapperEnvironment.class);
@@ -109,7 +108,7 @@ class PrepareWrapperModuleSkopeoTest {
 
         /* test */
         verify(skopeo).download(any(SkopeoContext.class));
-        verify(skopeo).cleanUploadDirectory(tempDir.toPath().resolve(skopeDownloadFolder));
+        verify(skopeo).cleanUploadDirectory(tempDir.toPath().resolve(skopeoDownloadFolder));
     }
 
     @Test
@@ -119,7 +118,7 @@ class PrepareWrapperModuleSkopeoTest {
         tempDir.deleteOnExit();
 
         Path testFile = Path.of("testimage.tar");
-        Path downloadDirectory = tempDir.toPath().resolve(skopeDownloadFolder);
+        Path downloadDirectory = tempDir.toPath().resolve(skopeoDownloadFolder);
         writer.save(downloadDirectory.resolve(testFile).toFile(), "some text", true);
 
         PrepareWrapperEnvironment environment = mock(PrepareWrapperEnvironment.class);
@@ -138,7 +137,7 @@ class PrepareWrapperModuleSkopeoTest {
 
         /* test */
         verify(skopeo).download(any(SkopeoContext.class));
-        verify(skopeo).cleanUploadDirectory(tempDir.toPath().resolve(skopeDownloadFolder));
+        verify(skopeo).cleanUploadDirectory(tempDir.toPath().resolve(skopeoDownloadFolder));
     }
 
     @Test

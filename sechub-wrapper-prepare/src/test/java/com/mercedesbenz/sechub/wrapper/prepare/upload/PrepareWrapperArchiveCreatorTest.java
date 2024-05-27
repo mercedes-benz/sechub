@@ -26,21 +26,16 @@ import com.mercedesbenz.sechub.wrapper.prepare.prepare.PrepareWrapperContext;
 
 class PrepareWrapperArchiveCreatorTest {
 
-    PrepareWrapperArchiveCreator creatorToTest;
-
-    ArchiveSupport archiveSupport;
-
-    FileNameSupport fileNameSupport;
-
-    PrepareWrapperSechubConfigurationSupport sechubConfigurationSupport;
-    TestFileWriter writer;
+    private PrepareWrapperArchiveCreator creatorToTest;
+    private FileNameSupport fileNameSupport;
+    private TestFileWriter writer;
 
     @BeforeEach
     void beforeEach() {
         creatorToTest = new PrepareWrapperArchiveCreator();
-        archiveSupport = new ArchiveSupport();
         fileNameSupport = mock(FileNameSupport.class);
-        sechubConfigurationSupport = new PrepareWrapperSechubConfigurationSupport();
+        ArchiveSupport archiveSupport = new ArchiveSupport();
+        PrepareWrapperSechubConfigurationSupport sechubConfigurationSupport = new PrepareWrapperSechubConfigurationSupport();
         writer = new TestFileWriter();
 
         sechubConfigurationSupport.fileNameSupport = fileNameSupport;
