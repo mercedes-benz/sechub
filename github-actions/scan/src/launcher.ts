@@ -1,18 +1,19 @@
 // SPDX-License-Identifier: MIT
 
 import * as core from '@actions/core';
-import { failAction } from './action-helper';
-import { downloadClientRelease } from './client-download';
-import { SecHubConfigurationModelBuilderData } from './configuration-builder';
-import { ContentType, ScanType } from './configuration-model';
-import { initEnvironmentVariables } from './environment';
-import { logExitCode } from './exitcode';
-import { getFiles, getWorkspaceDir } from './fs-helper';
-import { GitHubInputData, INPUT_DATA_DEFAULTS, resolveGitHubInputData } from './github-input';
-import { initReportFormats, initSecHubJson } from './init-scan';
-import { collectReportData, reportOutputs, uploadArtifact } from './post-scan';
+import {failAction} from './action-helper';
+import {downloadClientRelease} from './client-download';
+import {SecHubConfigurationModelBuilderData} from './configuration-builder';
+import {ContentType, ScanType} from './configuration-model';
+import {initEnvironmentVariables} from './environment';
+import {logExitCode} from './exitcode';
+import {getFiles, getWorkspaceDir} from './fs-helper';
+import {GitHubInputData, INPUT_DATA_DEFAULTS, resolveGitHubInputData} from './github-input';
+import {initReportFormats, initSecHubJson} from './init-scan';
+import {collectReportData, reportOutputs, uploadArtifact} from './post-scan';
 import * as projectNameResolver from './projectname-resolver';
-import { scan } from './sechub-cli';
+import {scan} from './sechub-cli';
+import {split} from "./input-helper";
 
 /**
  * Starts the launch process
@@ -134,10 +135,10 @@ function createContext(): LaunchContext {
 function createSafeBuilderData(gitHubInputData: GitHubInputData) {
     const builderData = new SecHubConfigurationModelBuilderData();
 
-    builderData.includeFolders = gitHubInputData.includeFolders?.split(',');
-    builderData.excludeFolders = gitHubInputData.excludeFolders?.split(',');
+    builderData.includeFolders = split(gitHubInputData.includeFolders);
+    builderData.excludeFolders = split(gitHubInputData.excludeFolders);
 
-    builderData.scanTypes = ScanType.ensureAccepted(gitHubInputData.scanTypes?.split(','));
+    builderData.scanTypes = ScanType.ensureAccepted(split(gitHubInputData.scanTypes));
     builderData.contentType = ContentType.ensureAccepted(gitHubInputData.contentType);
     return builderData;
 }
@@ -178,11 +179,9 @@ async function postScan(context: LaunchContext): Promise<void> {
     await uploadArtifact(context, 'sechub scan-report', getFiles(`${context.workspaceFolder}/sechub_report_*.*`));
 
     core.debug(`postScan(2): context.lastExitCode=${context.lastClientExitCode}, context.trafficLight='${context.trafficLight}', context.inputData.failJobOnFindings='${context.inputData.failJobOnFindings}'`);
-    if (context.trafficLight =='RED' || context.trafficLight == 'OFF') {
-        if (context.inputData.failJobOnFindings == 'true' || context.inputData.failJobOnFindings == '' ) {
+    if (context.trafficLight == 'RED' || context.trafficLight == 'OFF') {
+        if (context.inputData.failJobOnFindings == 'true' || context.inputData.failJobOnFindings == '') {
             failAction(1);
         }
     }
 }
-
-
