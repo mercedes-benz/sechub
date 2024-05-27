@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+#!/bin/bash
 # SPDX-License-Identifier: MIT
 
 cd `dirname $0`
@@ -44,7 +44,7 @@ fi
 BUILD_ARGS="--build-arg BASE_IMAGE=$BASE_IMAGE"
 echo ">> Base image: $BASE_IMAGE"
 
-if [[ ! -z "$KICS_VERSION" ]] ; then
+if [ -n "$KICS_VERSION" ] ; then
     echo ">> KICS version: $KICS_VERSION"
     BUILD_ARGS="$BUILD_ARGS --build-arg KICS_VERSION=$KICS_VERSION"
 fi
