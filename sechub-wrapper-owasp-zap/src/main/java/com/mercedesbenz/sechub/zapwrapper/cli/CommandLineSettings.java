@@ -6,6 +6,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 
 import com.beust.jcommander.Parameter;
+import com.mercedesbenz.sechub.zapwrapper.config.ZAPAcceptedBrowserId;
 import com.mercedesbenz.sechub.zapwrapper.util.EnvironmentVariableConstants;
 import com.mercedesbenz.sechub.zapwrapper.util.FileUtilities;
 
@@ -55,8 +56,8 @@ public class CommandLineSettings {
 
     @Parameter(names = { "--ajaxSpiderBrowserId" }, description = "Set the browser id you want to use for the AjaxSpider module. "
             + "Make sure the browser you want to use is installed on the system the scan is running. "
-            + "Supported browser are: [firefox-headless, firefox, chrome-headless, chrome, htmlunit, safari].", required = false)
-    private String ajaxSpiderBrowserId = "firefox-headless";
+            + "Supported browser are: [firefox-headless, firefox, chrome-headless, chrome, htmlunit, safari].", required = false, validateWith = ZAPAcceptedBrowserIdValidator.class)
+    private String ajaxSpiderBrowserId = ZAPAcceptedBrowserId.FIREFOX_HEADLESS.getBrowserId();
 
     public String getAjaxSpiderBrowserId() {
         return ajaxSpiderBrowserId;
