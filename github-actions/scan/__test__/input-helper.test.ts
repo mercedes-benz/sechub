@@ -2,8 +2,6 @@
 
 import {split} from '../src/input-helper';
 
-jest.mock('@actions/core');
-
 describe('split', function () {
     it('input undefined - returns empty array', function () {
         /* prepare */
