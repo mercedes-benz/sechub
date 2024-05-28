@@ -18,6 +18,7 @@ import org.springframework.test.util.ReflectionTestUtils;
 import com.mercedesbenz.sechub.commons.model.SecHubRemoteCredentialConfiguration;
 import com.mercedesbenz.sechub.commons.model.SecHubRemoteCredentialUserData;
 import com.mercedesbenz.sechub.commons.model.SecHubRemoteDataConfiguration;
+import com.mercedesbenz.sechub.pds.commons.core.PDSLogSanitizer;
 import com.mercedesbenz.sechub.test.TestFileWriter;
 import com.mercedesbenz.sechub.wrapper.prepare.cli.PrepareWrapperEnvironment;
 import com.mercedesbenz.sechub.wrapper.prepare.modules.InputValidatorExitcode;
@@ -43,6 +44,7 @@ class PrepareWrapperModuleGitTest {
         gitInputValidator = mock(GitInputValidator.class);
         git = mock(WrapperGit.class);
         filesSupport = mock(FileNameSupport.class);
+        PDSLogSanitizer pdsLogSanitizer = mock(PDSLogSanitizer.class);
 
         PrepareWrapperUploadService uploadService = mock(PrepareWrapperUploadService.class);
 
@@ -52,6 +54,7 @@ class PrepareWrapperModuleGitTest {
         moduleToTest.filesSupport = filesSupport;
         moduleToTest.git = git;
         moduleToTest.gitInputValidator = gitInputValidator;
+        moduleToTest.pdsLogSanitizer = pdsLogSanitizer;
     }
 
     @Test

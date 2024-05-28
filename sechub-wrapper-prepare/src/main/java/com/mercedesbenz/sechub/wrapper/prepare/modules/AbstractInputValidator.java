@@ -9,8 +9,10 @@ import java.util.regex.Pattern;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import com.mercedesbenz.sechub.commons.model.*;
+import com.mercedesbenz.sechub.pds.commons.core.PDSLogSanitizer;
 import com.mercedesbenz.sechub.wrapper.prepare.prepare.PrepareWrapperContext;
 
 public class AbstractInputValidator implements InputValidator {
@@ -22,6 +24,9 @@ public class AbstractInputValidator implements InputValidator {
     private final Pattern PASSWORD_PATTERN;
     private final List<String> forbiddenCharacters = Collections
             .unmodifiableList(Arrays.asList(">", "<", "!", "?", "*", "'", "\"", ";", "&", "|", "`", "$", "{", "}"));
+
+    @Autowired
+    public PDSLogSanitizer pdsLogSanitizer;
 
     public AbstractInputValidator(String type, Pattern locationPattern, Pattern usernamePattern, Pattern passwordPattern) {
         assertPatternNotNull(locationPattern);
@@ -48,11 +53,11 @@ public class AbstractInputValidator implements InputValidator {
         String type = secHubRemoteDataConfiguration.getType();
 
         if (isTypeNullOrEmpty(type)) {
-            LOG.debug("No type was defined for location {}.", location);
+            LOG.debug("No type was defined for location {}.", pdsLogSanitizer.sanitize(location, 1024));
             validateLocation(location);
             return;
         } else if (isMatchingType(type)) {
-            LOG.debug("Type is matching type {}. Location is: {}", TYPE, location);
+            LOG.debug("Type is matching type {}. Location is: {}", TYPE, pdsLogSanitizer.sanitize(location, 1024));
             validateLocation(location);
             return;
         }

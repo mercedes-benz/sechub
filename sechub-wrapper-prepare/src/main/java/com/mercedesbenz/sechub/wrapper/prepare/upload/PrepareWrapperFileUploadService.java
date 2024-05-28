@@ -1,6 +1,7 @@
 package com.mercedesbenz.sechub.wrapper.prepare.upload;
 
 import static com.mercedesbenz.sechub.commons.core.CommonConstants.*;
+import static com.mercedesbenz.sechub.wrapper.prepare.upload.UploadExceptionExitCode.UNABLE_TO_STORE_FILE;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -82,7 +83,7 @@ public class PrepareWrapperFileUploadService {
 
         } catch (IOException e) {
             LOG.error("Was not able to store file: " + uploadFileNameData.fileFilename, e);
-            throw new RuntimeException("Was not able to upload sources");
+            throw new PrepareWrapperUploadException("Was not able to upload data", UNABLE_TO_STORE_FILE);
         }
     }
 

@@ -1,6 +1,7 @@
 package com.mercedesbenz.sechub.wrapper.prepare.modules.skopeo;
 
 import static com.mercedesbenz.sechub.wrapper.prepare.cli.PrepareWrapperKeyConstants.KEY_PDS_PREPARE_MODULE_SKOPEO_ENABLED;
+import static com.mercedesbenz.sechub.wrapper.prepare.upload.UploadExceptionExitCode.SKOPEO_BINARY_UPLOAD_FAILED;
 
 import java.io.IOException;
 import java.nio.file.Path;
@@ -18,10 +19,12 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import com.mercedesbenz.sechub.commons.model.*;
+import com.mercedesbenz.sechub.pds.commons.core.PDSLogSanitizer;
 import com.mercedesbenz.sechub.wrapper.prepare.modules.PrepareWrapperInputValidatorException;
 import com.mercedesbenz.sechub.wrapper.prepare.modules.PrepareWrapperModule;
 import com.mercedesbenz.sechub.wrapper.prepare.prepare.PrepareWrapperContext;
 import com.mercedesbenz.sechub.wrapper.prepare.upload.FileNameSupport;
+import com.mercedesbenz.sechub.wrapper.prepare.upload.PrepareWrapperUploadException;
 import com.mercedesbenz.sechub.wrapper.prepare.upload.PrepareWrapperUploadService;
 
 @Service
@@ -43,6 +46,9 @@ public class PrepareWrapperModuleSkopeo implements PrepareWrapperModule {
 
     @Autowired
     PrepareWrapperUploadService uploadService;
+
+    @Autowired
+    PDSLogSanitizer pdsLogSanitizer;
 
     @Override
     public boolean prepare(PrepareWrapperContext context) throws IOException {
@@ -70,7 +76,12 @@ public class PrepareWrapperModuleSkopeo implements PrepareWrapperModule {
         }
         cleanup(skopeoContext);
 
-        uploadService.upload(context, skopeoContext);
+        try {
+            uploadService.upload(context, skopeoContext);
+        } catch (Exception e) {
+            LOG.error("Upload of docker image failed.", e);
+            throw new PrepareWrapperUploadException("Upload of docker image failed.", e, SKOPEO_BINARY_UPLOAD_FAILED);
+        }
         return true;
     }
 
@@ -105,17 +116,17 @@ public class PrepareWrapperModuleSkopeo implements PrepareWrapperModule {
         if (credentials.isPresent()) {
             Optional<SecHubRemoteCredentialUserData> optUser = credentials.get().getUser();
             if (optUser.isEmpty()) {
-                throw new IllegalStateException("Defined credentials have no credential user data for location: " + location);
+                throw new IllegalStateException("Defined credentials have no credential user data for location: " + pdsLogSanitizer.sanitize(location, 1024));
             }
 
             SecHubRemoteCredentialUserData user = optUser.get();
-            addCredentialsToContext(skopeoContext, user, location);
+            addCredentialsToContext(skopeoContext, user);
         }
 
         skopeo.download(skopeoContext);
     }
 
-    private void addCredentialsToContext(SkopeoContext skopeoContext, SecHubRemoteCredentialUserData user, String location) throws IOException {
+    private void addCredentialsToContext(SkopeoContext skopeoContext, SecHubRemoteCredentialUserData user) {
         HashMap<String, SealedObject> credentialMap = new HashMap<>();
         addSealedUserCredentials(user, credentialMap);
 

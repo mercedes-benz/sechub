@@ -16,6 +16,7 @@ import org.junit.jupiter.params.provider.ValueSource;
 import com.mercedesbenz.sechub.commons.model.SecHubRemoteCredentialConfiguration;
 import com.mercedesbenz.sechub.commons.model.SecHubRemoteCredentialUserData;
 import com.mercedesbenz.sechub.commons.model.SecHubRemoteDataConfiguration;
+import com.mercedesbenz.sechub.pds.commons.core.PDSLogSanitizer;
 import com.mercedesbenz.sechub.test.TestFileWriter;
 import com.mercedesbenz.sechub.wrapper.prepare.cli.PrepareWrapperEnvironment;
 import com.mercedesbenz.sechub.wrapper.prepare.modules.PrepareWrapperInputValidatorException;
@@ -30,6 +31,8 @@ class SkopeoInputValidatorTest {
     void beforeEach() {
         writer = new TestFileWriter();
         validatorToTest = new SkopeoInputValidator();
+
+        validatorToTest.pdsLogSanitizer = mock(PDSLogSanitizer.class);
     }
 
     @ParameterizedTest

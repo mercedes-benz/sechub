@@ -15,12 +15,17 @@ import org.eclipse.jgit.api.errors.GitAPIException;
 import org.eclipse.jgit.transport.UsernamePasswordCredentialsProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.mercedesbenz.sechub.commons.core.security.CryptoAccess;
+import com.mercedesbenz.sechub.pds.commons.core.PDSLogSanitizer;
 
 @Component
 public class JGitAdapter {
+
+    @Autowired
+    PDSLogSanitizer pdsLogSanitizer;
 
     private static final Logger LOG = LoggerFactory.getLogger(JGitAdapter.class);
 
@@ -38,10 +43,10 @@ public class JGitAdapter {
         String username = getUserNameFromMap(credentialMap);
         String password = getPasswordFromMap(credentialMap);
         if (username != null && password != null) {
-            LOG.debug("Cloning private repository: {} with username and password to: {} ", location, downloadDirectory);
+            LOG.debug("Cloning private repository: {} with username and password to: {} ", pdsLogSanitizer.sanitize(location, 1024), downloadDirectory);
             command = command.setCredentialsProvider(new UsernamePasswordCredentialsProvider(username, password));
         } else {
-            LOG.debug("Cloning public repository: {} with username and password to: {} ", location, downloadDirectory);
+            LOG.debug("Cloning public repository: {} with username and password to: {} ", pdsLogSanitizer.sanitize(location, 1024), downloadDirectory);
         }
 
         if (gitContext.isCloneWithoutHistory()) {
@@ -51,7 +56,7 @@ public class JGitAdapter {
 
         try (Git git = command.call()) {
         } catch (GitAPIException e) {
-            throw new RuntimeException("Error while cloning from repository: " + location, e);
+            throw new RuntimeException("Error while cloning from repository: " + pdsLogSanitizer.sanitize(location, 1024), e);
         }
     }
 
@@ -84,7 +89,7 @@ public class JGitAdapter {
         try {
             new java.net.URL(location);
         } catch (java.net.MalformedURLException e) {
-            throw new IllegalArgumentException("Location is not a valid URL: " + location);
+            throw new IllegalArgumentException("Location is not a valid URL: " + pdsLogSanitizer.sanitize(location, 1024));
         }
         return location;
     }

@@ -17,6 +17,7 @@ import com.mercedesbenz.sechub.commons.model.SecHubMessage;
 import com.mercedesbenz.sechub.commons.model.SecHubMessageType;
 import com.mercedesbenz.sechub.wrapper.prepare.prepare.PrepareWrapperPreparationService;
 import com.mercedesbenz.sechub.wrapper.prepare.prepare.PrepareWrapperResultStorageService;
+import com.mercedesbenz.sechub.wrapper.prepare.upload.PrepareWrapperUploadException;
 
 @Component
 public class PrepareWrapperCLI implements CommandLineRunner {
@@ -33,19 +34,26 @@ public class PrepareWrapperCLI implements CommandLineRunner {
     public void run(String... args) {
         LOG.debug("Prepare wrapper is starting.");
         AdapterExecutionResult result;
+
         try {
             result = preparationService.startPreparation();
+
+        } catch (PrepareWrapperUploadException e) {
+            LOG.error("Preparation of remote data has failed. Could not upload data to shared storage. ExitCode: {}", e.getExitCode(), e);
+            result = getAdapterExecutionResultFailed("Could not prepare remote data, because of an internal storage error.");
+
         } catch (Exception e) {
-            result = getAdapterExecutionResultFailed(e);
+            result = getAdapterExecutionResultFailed(e.getMessage());
             LOG.error("Preparation of remote data has failed.", e);
         }
+
         storeResultOrFail(result);
     }
 
-    private static AdapterExecutionResult getAdapterExecutionResultFailed(Exception e) {
+    private static AdapterExecutionResult getAdapterExecutionResultFailed(String message) {
         PrepareResult prepareResult = new PrepareResult(PrepareStatus.FAILED);
         Collection<SecHubMessage> messages = new ArrayList<>();
-        messages.add(new SecHubMessage(SecHubMessageType.ERROR, e.getMessage()));
+        messages.add(new SecHubMessage(SecHubMessageType.ERROR, message));
         return new AdapterExecutionResult(prepareResult.toString(), messages);
     }
 
