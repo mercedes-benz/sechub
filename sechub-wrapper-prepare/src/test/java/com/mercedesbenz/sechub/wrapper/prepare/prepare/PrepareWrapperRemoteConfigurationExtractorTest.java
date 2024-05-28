@@ -8,6 +8,7 @@ import org.junit.jupiter.api.Test;
 
 import com.mercedesbenz.sechub.commons.model.SecHubConfigurationModel;
 import com.mercedesbenz.sechub.commons.model.SecHubRemoteDataConfiguration;
+import com.mercedesbenz.sechub.wrapper.prepare.modules.PrepareWrapperUsageException;
 
 class PrepareWrapperRemoteConfigurationExtractorTest {
 
@@ -74,7 +75,7 @@ class PrepareWrapperRemoteConfigurationExtractorTest {
     }
 
     @Test
-    void extractor_returns_list_with_three_elements_when_three_remote_sections_are_configured() {
+    void extractor_returns_throws_exception_when_multiple_remote_sections_are_configured() {
         /* prepare */
         String json = """
                 {
@@ -111,7 +112,7 @@ class PrepareWrapperRemoteConfigurationExtractorTest {
         SecHubConfigurationModel model = createFromJSON(json);
 
         /* execute */
-        IllegalStateException exception = assertThrows(IllegalStateException.class, () -> extractorToTest.extract(model));
+        PrepareWrapperUsageException exception = assertThrows(PrepareWrapperUsageException.class, () -> extractorToTest.extract(model));
 
         /* test */
         assertTrue(exception.getMessage().contains("Only one remote data configuration is allowed."));

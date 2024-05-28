@@ -2,6 +2,8 @@ package com.mercedesbenz.sechub.wrapper.prepare.modules.git;
 
 import static com.mercedesbenz.sechub.wrapper.prepare.cli.PrepareWrapperEnvironmentVariables.PDS_PREPARE_CREDENTIAL_PASSWORD;
 import static com.mercedesbenz.sechub.wrapper.prepare.cli.PrepareWrapperEnvironmentVariables.PDS_PREPARE_CREDENTIAL_USERNAME;
+import static com.mercedesbenz.sechub.wrapper.prepare.modules.UsageExceptionExitCode.GIT_CLONING_FAILED;
+import static com.mercedesbenz.sechub.wrapper.prepare.modules.UsageExceptionExitCode.LOCATION_URL_NOT_VALID_URL;
 
 import java.nio.file.Path;
 import java.util.List;
@@ -20,6 +22,7 @@ import org.springframework.stereotype.Component;
 
 import com.mercedesbenz.sechub.commons.core.security.CryptoAccess;
 import com.mercedesbenz.sechub.pds.commons.core.PDSLogSanitizer;
+import com.mercedesbenz.sechub.wrapper.prepare.modules.PrepareWrapperUsageException;
 
 @Component
 public class JGitAdapter {
@@ -56,7 +59,8 @@ public class JGitAdapter {
 
         try (Git git = command.call()) {
         } catch (GitAPIException e) {
-            throw new RuntimeException("Error while cloning from repository: " + pdsLogSanitizer.sanitize(location, 1024), e);
+            LOG.error("Could not clone defined repository: {}", pdsLogSanitizer.sanitize(location, 1024), e);
+            throw new PrepareWrapperUsageException("Could not clone defined repository: " + pdsLogSanitizer.sanitize(location, 1024), e, GIT_CLONING_FAILED);
         }
     }
 
@@ -89,7 +93,8 @@ public class JGitAdapter {
         try {
             new java.net.URL(location);
         } catch (java.net.MalformedURLException e) {
-            throw new IllegalArgumentException("Location is not a valid URL: " + pdsLogSanitizer.sanitize(location, 1024));
+            throw new PrepareWrapperUsageException("Location could not be transferred into a valid URL: " + pdsLogSanitizer.sanitize(location, 1024),
+                    LOCATION_URL_NOT_VALID_URL);
         }
         return location;
     }

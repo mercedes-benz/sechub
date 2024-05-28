@@ -47,6 +47,7 @@ public abstract class WrapperTool {
         }
 
         if (process.exitValue() != 0) {
+            LOG.error("Wrapper for executed modul {} process failed with exit code: {}", this.getClass().getSimpleName(), process.exitValue());
             throw new RuntimeException(
                     "Wrapper for executed modul " + this.getClass().getSimpleName() + " process failed with exit code: " + process.exitValue());
         }

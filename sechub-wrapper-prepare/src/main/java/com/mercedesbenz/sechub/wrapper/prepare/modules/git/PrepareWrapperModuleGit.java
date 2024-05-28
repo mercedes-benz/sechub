@@ -2,6 +2,8 @@ package com.mercedesbenz.sechub.wrapper.prepare.modules.git;
 
 import static com.mercedesbenz.sechub.wrapper.prepare.cli.PrepareWrapperKeyConstants.KEY_PDS_PREPARE_AUTO_CLEANUP_GIT_FOLDER;
 import static com.mercedesbenz.sechub.wrapper.prepare.cli.PrepareWrapperKeyConstants.KEY_PDS_PREPARE_MODULE_GIT_ENABLED;
+import static com.mercedesbenz.sechub.wrapper.prepare.modules.UsageExceptionExitCode.CREDENTIALS_NOT_DEFINED;
+import static com.mercedesbenz.sechub.wrapper.prepare.modules.UsageExceptionExitCode.DOWNLOAD_NOT_SUCCESSFUL;
 import static com.mercedesbenz.sechub.wrapper.prepare.upload.UploadExceptionExitCode.GIT_REPOSITORY_UPLOAD_FAILED;
 
 import java.io.IOException;
@@ -22,6 +24,7 @@ import com.mercedesbenz.sechub.commons.model.*;
 import com.mercedesbenz.sechub.pds.commons.core.PDSLogSanitizer;
 import com.mercedesbenz.sechub.wrapper.prepare.modules.PrepareWrapperInputValidatorException;
 import com.mercedesbenz.sechub.wrapper.prepare.modules.PrepareWrapperModule;
+import com.mercedesbenz.sechub.wrapper.prepare.modules.PrepareWrapperUsageException;
 import com.mercedesbenz.sechub.wrapper.prepare.prepare.PrepareWrapperContext;
 import com.mercedesbenz.sechub.wrapper.prepare.upload.FileNameSupport;
 import com.mercedesbenz.sechub.wrapper.prepare.upload.PrepareWrapperUploadException;
@@ -119,7 +122,8 @@ public class PrepareWrapperModuleGit implements PrepareWrapperModule {
                 Path gitPath = repository.resolve(git);
                 if (!Files.exists(gitPath)) {
                     LOG.error("Download of git repository: {} was not successful.", pdsLogSanitizer.sanitize(repository, 1024));
-                    throw new IllegalStateException("Download of git repository was not successful. Git folder (.git) not found.");
+                    throw new PrepareWrapperUsageException("Download of git repository was not successful. Git folder (.git) not found.",
+                            DOWNLOAD_NOT_SUCCESSFUL);
                 }
             }
 
@@ -129,7 +133,7 @@ public class PrepareWrapperModuleGit implements PrepareWrapperModule {
         }
     }
 
-    private void prepareRemoteConfiguration(GitContext gitContext, SecHubRemoteDataConfiguration secHubRemoteDataConfiguration) throws IOException {
+    private void prepareRemoteConfiguration(GitContext gitContext, SecHubRemoteDataConfiguration secHubRemoteDataConfiguration) {
         String location = secHubRemoteDataConfiguration.getLocation();
         Optional<SecHubRemoteCredentialConfiguration> credentials = secHubRemoteDataConfiguration.getCredentials();
 
@@ -140,7 +144,8 @@ public class PrepareWrapperModuleGit implements PrepareWrapperModule {
 
         Optional<SecHubRemoteCredentialUserData> optUser = credentials.get().getUser();
         if (optUser.isEmpty()) {
-            throw new IllegalStateException("Defined credentials have no credential user data for location: " + pdsLogSanitizer.sanitize(location, 1024));
+            throw new PrepareWrapperUsageException("Defined credentials have no credential user data for location: " + pdsLogSanitizer.sanitize(location, 1024),
+                    CREDENTIALS_NOT_DEFINED);
         }
 
         SecHubRemoteCredentialUserData user = optUser.get();

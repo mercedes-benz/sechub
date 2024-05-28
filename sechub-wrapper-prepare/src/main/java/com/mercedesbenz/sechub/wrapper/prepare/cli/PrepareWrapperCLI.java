@@ -15,6 +15,7 @@ import com.mercedesbenz.sechub.commons.core.prepare.PrepareResult;
 import com.mercedesbenz.sechub.commons.core.prepare.PrepareStatus;
 import com.mercedesbenz.sechub.commons.model.SecHubMessage;
 import com.mercedesbenz.sechub.commons.model.SecHubMessageType;
+import com.mercedesbenz.sechub.wrapper.prepare.modules.PrepareWrapperUsageException;
 import com.mercedesbenz.sechub.wrapper.prepare.prepare.PrepareWrapperPreparationService;
 import com.mercedesbenz.sechub.wrapper.prepare.prepare.PrepareWrapperResultStorageService;
 import com.mercedesbenz.sechub.wrapper.prepare.upload.PrepareWrapperUploadException;
@@ -42,9 +43,14 @@ public class PrepareWrapperCLI implements CommandLineRunner {
             LOG.error("Preparation of remote data has failed. Could not upload data to shared storage. ExitCode: {}", e.getExitCode(), e);
             result = getAdapterExecutionResultFailed("Could not prepare remote data, because of an internal storage error.");
 
-        } catch (Exception e) {
+        } catch (PrepareWrapperUsageException e) {
+            /* Usage exception messages will be added to sechub messages */
+            LOG.error("Preparation of remote data has failed, because of wrong usage. ExitCode: {}", e.getExitCode(), e);
             result = getAdapterExecutionResultFailed(e.getMessage());
+
+        } catch (Exception e) {
             LOG.error("Preparation of remote data has failed.", e);
+            result = getAdapterExecutionResultFailed("Could not prepare remote data, because of an internal error.");
         }
 
         storeResultOrFail(result);

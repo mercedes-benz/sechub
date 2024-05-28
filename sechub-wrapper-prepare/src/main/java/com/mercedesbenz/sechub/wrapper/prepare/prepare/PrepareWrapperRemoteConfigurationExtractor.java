@@ -1,5 +1,7 @@
 package com.mercedesbenz.sechub.wrapper.prepare.prepare;
 
+import static com.mercedesbenz.sechub.wrapper.prepare.modules.UsageExceptionExitCode.ONLY_ONE_REMOTE_DATA_CONFIGURATION_ALLOWED;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -9,6 +11,7 @@ import com.mercedesbenz.sechub.commons.model.SecHubBinaryDataConfiguration;
 import com.mercedesbenz.sechub.commons.model.SecHubConfigurationModel;
 import com.mercedesbenz.sechub.commons.model.SecHubRemoteDataConfiguration;
 import com.mercedesbenz.sechub.commons.model.SecHubSourceDataConfiguration;
+import com.mercedesbenz.sechub.wrapper.prepare.modules.PrepareWrapperUsageException;
 
 @Component
 public class PrepareWrapperRemoteConfigurationExtractor {
@@ -44,7 +47,7 @@ public class PrepareWrapperRemoteConfigurationExtractor {
         if (remoteDataConfigurationList.isEmpty()) {
             return null;
         } else if (remoteDataConfigurationList.size() > 1) {
-            throw new IllegalStateException("Only one remote data configuration is allowed.");
+            throw new PrepareWrapperUsageException("Only one remote data configuration is allowed.", ONLY_ONE_REMOTE_DATA_CONFIGURATION_ALLOWED);
         } else {
             return remoteDataConfigurationList.get(0);
         }

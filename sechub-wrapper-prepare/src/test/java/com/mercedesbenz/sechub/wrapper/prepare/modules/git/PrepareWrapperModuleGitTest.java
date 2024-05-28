@@ -23,6 +23,7 @@ import com.mercedesbenz.sechub.test.TestFileWriter;
 import com.mercedesbenz.sechub.wrapper.prepare.cli.PrepareWrapperEnvironment;
 import com.mercedesbenz.sechub.wrapper.prepare.modules.InputValidatorExitcode;
 import com.mercedesbenz.sechub.wrapper.prepare.modules.PrepareWrapperInputValidatorException;
+import com.mercedesbenz.sechub.wrapper.prepare.modules.PrepareWrapperUsageException;
 import com.mercedesbenz.sechub.wrapper.prepare.prepare.PrepareWrapperContext;
 import com.mercedesbenz.sechub.wrapper.prepare.upload.FileNameSupport;
 import com.mercedesbenz.sechub.wrapper.prepare.upload.PrepareWrapperUploadService;
@@ -210,7 +211,7 @@ class PrepareWrapperModuleGitTest {
         when(context.getToolDownloadDirectory()).thenReturn(tempDir.toPath());
 
         /* execute */
-        IllegalStateException exception = assertThrows(IllegalStateException.class, () -> moduleToTest.assertDownloadSuccessful(context));
+        PrepareWrapperUsageException exception = assertThrows(PrepareWrapperUsageException.class, () -> moduleToTest.assertDownloadSuccessful(context));
 
         /* test */
         assertEquals("Download of git repository was not successful. Git folder (.git) not found.", exception.getMessage());

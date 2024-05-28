@@ -20,6 +20,7 @@ import com.mercedesbenz.sechub.pds.commons.core.PDSLogSanitizer;
 import com.mercedesbenz.sechub.test.TestFileWriter;
 import com.mercedesbenz.sechub.wrapper.prepare.cli.PrepareWrapperEnvironment;
 import com.mercedesbenz.sechub.wrapper.prepare.modules.PrepareWrapperInputValidatorException;
+import com.mercedesbenz.sechub.wrapper.prepare.modules.PrepareWrapperUsageException;
 import com.mercedesbenz.sechub.wrapper.prepare.prepare.PrepareWrapperContext;
 
 class SkopeoInputValidatorTest {
@@ -49,7 +50,7 @@ class SkopeoInputValidatorTest {
             "docker://ubuntu:tag|maliciousCode", "my-registry/oci:busybox_ocilayout;latest", })
     void validateLocation_throws_IllegalArgumentException_for_invalid_docker_urls(String location) {
         /* execute + test */
-        assertThrows(IllegalArgumentException.class, () -> validatorToTest.validateLocation(location));
+        assertThrows(PrepareWrapperUsageException.class, () -> validatorToTest.validateLocation(location));
     }
 
     @ParameterizedTest
@@ -104,7 +105,7 @@ class SkopeoInputValidatorTest {
         context.setRemoteDataConfiguration(remoteDataConfiguration);
 
         /* execute */
-        IllegalStateException exception = assertThrows(IllegalStateException.class, () -> validatorToTest.validate(context));
+        PrepareWrapperUsageException exception = assertThrows(PrepareWrapperUsageException.class, () -> validatorToTest.validate(context));
 
         /* test */
         assertEquals("Defined credentials must contain credential user and can not be empty.", exception.getMessage());
@@ -125,7 +126,7 @@ class SkopeoInputValidatorTest {
         context.setRemoteDataConfiguration(remoteDataConfiguration);
 
         /* execute */
-        IllegalStateException exception = assertThrows(IllegalStateException.class, () -> validatorToTest.validate(context));
+        PrepareWrapperUsageException exception = assertThrows(PrepareWrapperUsageException.class, () -> validatorToTest.validate(context));
 
         /* test */
         assertTrue(exception.getMessage().contains("Defined username must not be null or empty."));
@@ -146,7 +147,7 @@ class SkopeoInputValidatorTest {
         context.setRemoteDataConfiguration(remoteDataConfiguration);
 
         /* execute */
-        IllegalStateException exception = assertThrows(IllegalStateException.class, () -> validatorToTest.validate(context));
+        PrepareWrapperUsageException exception = assertThrows(PrepareWrapperUsageException.class, () -> validatorToTest.validate(context));
 
         /* test */
         assertEquals("Defined password must not be null or empty. Password is required for login.", exception.getMessage());
