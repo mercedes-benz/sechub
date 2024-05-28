@@ -212,16 +212,47 @@ func uploadFalsePositivesFromFile(context *Context) {
 	sechubUtil.LogDebug(context.config.debug, fmt.Sprintf("Action %q: uploading file: %s\n", context.config.action, context.config.file))
 
 	readFileIntoContext(context, DefaultSecHubFalsePositivesJSONFile)
-	processContent(context)
 
 	uploadFalsePositives(context)
 
 	sechubUtil.Log("Transfer completed", context.config.quiet)
 }
 
+func getFalsePositivesUploadChunk(list FalsePositivesConfig, chunk int) FalsePositivesConfig {
+	var result FalsePositivesConfig
+	result.APIVersion = list.APIVersion
+	result.Type = list.Type
+
+	listsize := len(list.JobData)
+	from := int(chunk * MaxChunkSizeFalsePositives)
+	to := int((chunk * MaxChunkSizeFalsePositives) + MaxChunkSizeFalsePositives)
+	if from < listsize {
+		if to > listsize {
+			to = listsize
+		}
+		result.JobData = list.JobData[from:to]
+	}
+	return result
+}
+
 func uploadFalsePositives(context *Context) {
-	// Send context.contentToSend to SecHub server
-	sendWithDefaultHeader("PUT", buildFalsePositivesAPICall(context), context)
+	// Read inputForContentProcessing into a JSON struct
+	falsePositivesList := newFalsePositivesListFromBytes(context.inputForContentProcessing)
+
+	// Upload the list in chunks of maximal MaxChunkSizeFalsePositives items
+	for i := 0; ; i++ {
+		uploadChunk := getFalsePositivesUploadChunk(falsePositivesList, i)
+		if len(uploadChunk.JobData) == 0 {
+			break
+		}
+		jsonBlob, err := json.Marshal(uploadChunk)
+		sechubUtil.HandleError(err, ExitCodeFailed)
+		context.inputForContentProcessing = jsonBlob
+		processContent(context)
+
+		// Send context.contentToSend to SecHub server
+		sendWithDefaultHeader("PUT", buildFalsePositivesAPICall(context), context)
+	}
 }
 
 func unmarkFalsePositivesFromFile(context *Context) {
@@ -336,7 +367,6 @@ func markFalsePositives(context *Context, list *FalsePositivesConfig) {
 	jsonBlob, err := json.Marshal(list)
 	sechubUtil.HandleError(err, ExitCodeFailed)
 	context.inputForContentProcessing = jsonBlob
-	processContent(context)
 	uploadFalsePositives(context)
 
 	sechubUtil.Log("Transfer completed", context.config.quiet)

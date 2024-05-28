@@ -46,6 +46,10 @@ const MinimalTimeoutInSeconds = 10
 // SizeOfJobList - Number of latest jobs to print
 const SizeOfJobList = 20
 
+// MaxChunkSizeFalsePositives - Maximum number of false-positives list items to send in one api call
+// (SecHub server limit is 500)
+var MaxChunkSizeFalsePositives = 100
+
 // DefaultSCMDirPatterns - directories containing scm (source code management) data
 var DefaultSCMDirPatterns = []string{"**/.git/**"}
 
