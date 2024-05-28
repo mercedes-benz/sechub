@@ -57,16 +57,20 @@ export function chmodSync(path: string) {
 }
 
 export async function downloadFile(url: string, dest: string) {
-    const response = await axios.get(url, { responseType: 'arraybuffer' });
-    await writeFile(dest, response.data);
+    try {
+        const response = await axios.get(url, { responseType: 'arraybuffer' });
+        await writeFile(dest, response.data);
+    } catch (err) {
+        throw new Error(`Error downloading file from url: ${url} to destination: ${dest} with error: ${err}`);
+    }
 }
 
-export async function unzipFile(zipPath: string, destDir: string) {
+export async function unzipFile(zipPath: string, dest: string) {
     try {
-        await extract(zipPath, { dir: path.resolve(destDir) });
-        core.debug(`Extracted zip file to: ${destDir}`);
+        await extract(zipPath, { dir: path.resolve(dest) });
+        core.debug(`Extracted zip file to: ${dest}`);
     } catch (err) {
-        throw new Error(`Error extracting zip file: ${err} to: ${destDir}`);
+        throw new Error(`Error extracting zip file: ${zipPath} to: ${dest} with error: ${err}`);
     }
 }
 
