@@ -5,7 +5,7 @@ package cli
 import (
 	"encoding/json"
 	"fmt"
-	"io/ioutil"
+	"io"
 	"os"
 	"path/filepath"
 
@@ -107,7 +107,7 @@ func getFalsePositivesList(context *Context) []byte {
 
 	response := sendWithDefaultHeader("GET", buildFalsePositivesAPICall(context), context)
 
-	data, err := ioutil.ReadAll(response.Body)
+	data, err := io.ReadAll(response.Body)
 	sechubUtil.HandleHTTPError(err, ExitCodeHTTPError)
 
 	sechubUtil.LogDebug(context.config.debug, fmt.Sprintf("SecHub false-positives list: %s", string(data)))
@@ -140,7 +140,7 @@ func readFileIntoContext(context *Context, fallbackFile string) {
 	defer inputFile.Close()
 
 	// read file's content into context.inputForContentProcessing
-	context.inputForContentProcessing, err = ioutil.ReadAll(inputFile)
+	context.inputForContentProcessing, err = io.ReadAll(inputFile)
 	if sechubUtil.HandleIOError(err) {
 		os.Exit(ExitCodeIOError)
 	}
