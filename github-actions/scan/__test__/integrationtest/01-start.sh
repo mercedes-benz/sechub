@@ -31,7 +31,7 @@ PDS_SERVER_PORT=$4
 DEBUG=$SECHUB_DEBUG
 
 if [ "$SERVER_VERSION" = "" ]; then
-    echo "first argument not set - is used as server verion!"
+    echo "first argument not set - is used as server version!"
     exit 1
 fi
 if [ "$SERVER_PORT" = "" ]; then
@@ -40,7 +40,7 @@ if [ "$SERVER_PORT" = "" ]; then
 fi
 
 if [ "$PDS_SERVER_VERSION" = "" ]; then
-    echo "third argument not set - is used as PDS server verion!"
+    echo "third argument not set - is used as PDS server version!"
     exit 1
 fi
 if [ "$PDS_SERVER_PORT" = "" ]; then
@@ -78,7 +78,7 @@ fi
 WORKSPACE_DIR="${GHA_SCAN_FOLDER_PATH}/../../"
 RUNTIME_DIR="${WORKSPACE_DIR}/build/sechub-runtime";
 SHARED_VOLUME="${RUNTIME_DIR}/shared-volume"
-mkdir "$SHARED_VOLUME" -p
+mkdir -p "$SHARED_VOLUME"
 
 echo "SECHUB_BASE_URL=$SECHUB_BASE_URL"
 echo "PDS_BASE_URL   =$PDS_BASE_URL"
@@ -104,7 +104,7 @@ SERVER_CERTFILE_PATH="${SERVER_FOLDER_PATH}/generated-localhost-certificate.p12"
 
 ## download server if not available
 if [ ! -f $SERVER_EXECUTABLE_PATH ]; then
-    mkdir "${SERVER_FOLDER_PATH}" -p
+    mkdir -p "${SERVER_FOLDER_PATH}"
     echo "Start download from $SERVER_DOWNLOAD_URL"
     curl -L ${SERVER_DOWNLOAD_URL} -o ${SERVER_EXECUTABLE_PATH}
 else 
@@ -113,7 +113,7 @@ fi
 
 ## generate SecHub test certificate
 if [ ! -f $SERVER_CERTFILE_PATH ]; then
-    mkdir "${SERVER_FOLDER_PATH}" -p
+    mkdir -p "${SERVER_FOLDER_PATH}"
     keytool -genkey -alias tomcat -storetype PKCS12 -keyalg RSA -keysize 2048 -keystore "${SERVER_CERTFILE_PATH}" -validity 3650 -storepass 123456 --dname "CN=localhost, OU=ID"
 fi
 
@@ -121,7 +121,7 @@ fi
 # Start SecHub async
 SECHUB_LOGFILE=$SERVER_FOLDER_PATH/server.log
 
-rm $SECHUB_LOGFILE -f # remove old log files on start
+rm -f $SECHUB_LOGFILE # remove old log files on start
 echo "./start_sechub_server.sh $SERVER_PORT $SERVER_EXECUTABLE_PATH $SERVER_CERTFILE_PATH $SECHUB_LOGFILE $SHARED_VOLUME" > $SECHUB_LOGFILE
 $SCRIPT_DIR/start_sechub_server.sh $SERVER_PORT $SERVER_EXECUTABLE_PATH $SERVER_CERTFILE_PATH $SECHUB_LOGFILE $SHARED_VOLUME
 
@@ -140,7 +140,7 @@ PDS_SERVER_CERTFILE_PATH="${PDS_SERVER_FOLDER_PATH}/generated-localhost-certific
 
 ## download PDS if not available
 if [ ! -f $PDS_SERVER_EXECUTABLE_PATH ]; then
-    mkdir "${PDS_SERVER_FOLDER_PATH}" -p
+    mkdir -p "${PDS_SERVER_FOLDER_PATH}"
     echo "Start download from $PDS_SERVER_DOWNLOAD_URL"
     curl -L ${PDS_SERVER_DOWNLOAD_URL} -o ${PDS_SERVER_EXECUTABLE_PATH}
 else 
@@ -149,7 +149,7 @@ fi
 
 ## generate PDS test certificate
 if [ ! -f $PDS_SERVER_CERTFILE_PATH ]; then
-    mkdir "${PDS_SERVER_FOLDER_PATH}" -p
+    mkdir -p "${PDS_SERVER_FOLDER_PATH}"
     keytool -genkey -alias tomcat -storetype PKCS12 -keyalg RSA -keysize 2048 -keystore "${PDS_SERVER_CERTFILE_PATH}" -validity 3650 -storepass 123456 --dname "CN=localhost, OU=ID"
 fi
 
@@ -160,7 +160,7 @@ cp $SCRIPT_DIR/test-config/gha_integrationtest_pds-config.json $PDS_CONFIG_FILE
 
 # Start PDS async
 PDS_LOGFILE=$PDS_SERVER_FOLDER_PATH/pds.log
-rm $PDS_LOGFILE -f # remove old log files on start
+rm -f $PDS_LOGFILE # remove old log files on start
 
 echo "./start_pds.sh $PDS_SERVER_PORT $PDS_SERVER_EXECUTABLE_PATH $PDS_SERVER_CERTFILE_PATH $PDS_LOGFILE $SHARED_VOLUME $PDS_CONFIG_FILE" > $PDS_LOGFILE
 $SCRIPT_DIR/start_pds.sh $PDS_SERVER_PORT $PDS_SERVER_EXECUTABLE_PATH $PDS_SERVER_CERTFILE_PATH $PDS_LOGFILE $SHARED_VOLUME $PDS_CONFIG_FILE

@@ -13,6 +13,7 @@ import { initReportFormats, initSecHubJson } from './init-scan';
 import { collectReportData, reportOutputs, uploadArtifact } from './post-scan';
 import * as projectNameResolver from './projectname-resolver';
 import { scan } from './sechub-cli';
+import { getPlatform, getPlatformDirectory } from './platform-helper';
 
 /**
  * Starts the launch process
@@ -22,7 +23,7 @@ export async function launch(): Promise<LaunchContext> {
 
     const context = createContext();
 
-    init(context);
+    await init(context);
 
     executeScan(context);
 
@@ -89,15 +90,18 @@ function createContext(): LaunchContext {
     // client
     const clientVersion = gitHubInputData.sechubCLIVersion;
 
-    if (clientVersion == null || clientVersion == '') {
+    if (!clientVersion || clientVersion.length === 0) {
         throw new Error('No SecHub client version defined!');
     }
 
     const expression = /\./gi;
     const clientVersionSubFolder = clientVersion.replace(expression, '_'); // avoid . inside path from user input
-    const workspaceFolder = `${getWorkspaceDir()}`;
+    const workspaceFolder = getWorkspaceDir();
     const clientDownloadFolder = `${workspaceFolder}/.sechub-gha/client/${clientVersionSubFolder}`;
-    const clientExecutablePath = `${clientDownloadFolder}/platform/linux-386/sechub`;
+    let clientExecutablePath = `${clientDownloadFolder}/platform/${getPlatformDirectory()}/sechub`;
+    if (getPlatform() === 'win32') {
+        clientExecutablePath = clientExecutablePath.concat('.exe');
+    }
 
     const generatedSecHubJsonFilePath = `${workspaceFolder}/generated-sechub.json`;
 
@@ -142,17 +146,16 @@ function createSafeBuilderData(gitHubInputData: GitHubInputData) {
     return builderData;
 }
 
-function init(context: LaunchContext) {
+async function init(context: LaunchContext) {
     core.debug(`Init for project : ${context.projectName}`);
     initEnvironmentVariables(context.inputData, context.projectName);
 
-    downloadClientRelease(context);
+    await downloadClientRelease(context);
 }
 
 /**
  * Executes the scan.
- * @param configParameter Parameter for the sechub.json path. Can be null if the file was created by the action.
- * @param format Report format that should be downloaded
+ * @param context launch context
  */
 function executeScan(context: LaunchContext) {
     scan(context);
