@@ -119,3 +119,29 @@ func Example_defineFalsePositivesEmptyServerList() {
 	// Add: {APIVersion:1.0 Type:falsePositiveJobDataList JobData:[{JobUUID:11111111-1111-1111-1111-111111111111 FindingID:1 Comment:test1} {JobUUID:22222222-2222-2222-2222-222222222222 FindingID:2 Comment:test2}]}
 	// Remove: {APIVersion:1.0 Type:falsePositiveJobDataList JobData:[]}
 }
+
+func Example_getFalsePositivesUploadChunk1() {
+	/* prepare */
+
+	// Override global MaxChunkSizeFalsePositives to get reproducable results
+	MaxChunkSizeFalsePositives = 2
+
+	definedFalsePositives := []FalsePositivesJobData{
+		{JobUUID: "11111111-1111-1111-1111-111111111111", FindingID: 1, Comment: "test1"},
+		{JobUUID: "22222222-2222-2222-2222-222222222222", FindingID: 2, Comment: "test2"},
+		{JobUUID: "33333333-3333-3333-3333-333333333333", FindingID: 3, Comment: "test3"},
+	}
+	falsePositivesDefinitionList := FalsePositivesConfig{APIVersion: CurrentAPIVersion, Type: falsePositivesListType, JobData: definedFalsePositives}
+
+	/* execute */
+	fmt.Printf("%+v\n", getFalsePositivesUploadChunk(falsePositivesDefinitionList, 0))
+	fmt.Printf("%+v\n", getFalsePositivesUploadChunk(falsePositivesDefinitionList, 1))
+	fmt.Printf("%+v\n", getFalsePositivesUploadChunk(falsePositivesDefinitionList, 2))
+
+	/* test */
+
+	// Output:
+	// {APIVersion:1.0 Type:falsePositiveJobDataList JobData:[{JobUUID:11111111-1111-1111-1111-111111111111 FindingID:1 Comment:test1} {JobUUID:22222222-2222-2222-2222-222222222222 FindingID:2 Comment:test2}]}
+	// {APIVersion:1.0 Type:falsePositiveJobDataList JobData:[{JobUUID:33333333-3333-3333-3333-333333333333 FindingID:3 Comment:test3}]}
+	// {APIVersion:1.0 Type:falsePositiveJobDataList JobData:[]}
+}
