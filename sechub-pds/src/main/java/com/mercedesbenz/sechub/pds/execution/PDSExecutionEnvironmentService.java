@@ -13,6 +13,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.mercedesbenz.sechub.commons.model.ScanType;
 import com.mercedesbenz.sechub.commons.pds.ExecutionPDSKey;
 import com.mercedesbenz.sechub.commons.pds.PDSConfigDataKeyProvider;
 import com.mercedesbenz.sechub.commons.pds.PDSLauncherScriptEnvironmentConstants;
@@ -33,6 +34,9 @@ public class PDSExecutionEnvironmentService {
     @Autowired
     PDSServerConfigurationService serverConfigService;
 
+    @Autowired
+    PDSExecutionEnvironmentPrepare pdsExecutionEnvironmentPrepare;
+
     public Map<String, String> buildEnvironmentMap(PDSJobConfiguration config) {
         Map<String, String> map = new LinkedHashMap<>();
 
@@ -45,6 +49,10 @@ public class PDSExecutionEnvironmentService {
             }
 
             addDefaultsForMissingParameters(productSetup, map);
+
+            if (ScanType.PREPARE.equals(productSetup.getScanType())) {
+                map.putAll(pdsExecutionEnvironmentPrepare.getPDSStorageProperties());
+            }
 
         } else {
             LOG.error("No product setup found for product id:{}", productId);

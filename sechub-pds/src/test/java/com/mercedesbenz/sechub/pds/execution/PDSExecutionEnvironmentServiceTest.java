@@ -11,6 +11,7 @@ import java.util.UUID;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import com.mercedesbenz.sechub.commons.model.ScanType;
 import com.mercedesbenz.sechub.commons.pds.PDSDefaultParameterKeyConstants;
 import com.mercedesbenz.sechub.pds.commons.core.config.PDSProductParameterDefinition;
 import com.mercedesbenz.sechub.pds.commons.core.config.PDSProductSetup;
@@ -23,14 +24,18 @@ class PDSExecutionEnvironmentServiceTest {
     private PDSServerConfigurationService serverConfigService;
     private PDSKeyToEnvConverter converter;
 
+    private PDSExecutionEnvironmentPrepare pdsExecutionEnvironmentPrepare;
+
     @BeforeEach
     void beforeEach() throws Exception {
         converter = mock(PDSKeyToEnvConverter.class);
         serverConfigService = mock(PDSServerConfigurationService.class);
+        pdsExecutionEnvironmentPrepare = mock(PDSExecutionEnvironmentPrepare.class);
 
         serviceToTest = new PDSExecutionEnvironmentService();
         serviceToTest.converter = converter;
         serviceToTest.serverConfigService = serverConfigService;
+        serviceToTest.pdsExecutionEnvironmentPrepare = pdsExecutionEnvironmentPrepare;
     }
 
     @Test
@@ -214,6 +219,27 @@ class PDSExecutionEnvironmentServiceTest {
         assertEquals("value1", result.get("KEY_A")); // value set, default is ignored
         assertEquals("p1.defaultb", result.get("KEY_B")); // default used because no value set
         assertEquals(null, result.get("KEY_UNKNOWN"));
+
+    }
+
+    @Test
+    void when_scantype_is_prepare_storage_environments_are_set() {
+        /* prepare */
+        PDSJobConfiguration config = new PDSJobConfiguration();
+        config.setProductId("productid1");
+
+        PDSProductSetup pdsProductSetup = new PDSProductSetup();
+        pdsProductSetup.setScanType(ScanType.PREPARE);
+
+        when(serverConfigService.getProductSetupOrNull("productid1")).thenReturn(pdsProductSetup);
+        when(pdsExecutionEnvironmentPrepare.getPDSStorageProperties()).thenReturn(Map.of("key1", "value1", "key2", "value2"));
+
+        /* execute */
+        Map<String, String> result = serviceToTest.buildEnvironmentMap(config);
+
+        /* test */
+        assertEquals("value1", result.get("key1"));
+        assertEquals("value2", result.get("key2"));
 
     }
 
