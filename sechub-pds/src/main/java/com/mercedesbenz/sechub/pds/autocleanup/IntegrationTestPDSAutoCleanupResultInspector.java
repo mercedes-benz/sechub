@@ -9,8 +9,8 @@ import java.util.Map;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 
-import com.mercedesbenz.sechub.pds.PDSProfiles;
 import com.mercedesbenz.sechub.pds.autocleanup.PDSAutoCleanupResult.AutoCleanupResultKey;
+import com.mercedesbenz.sechub.pds.commons.core.PDSProfiles;
 
 /**
  * This inspector implementation is used for integration tests

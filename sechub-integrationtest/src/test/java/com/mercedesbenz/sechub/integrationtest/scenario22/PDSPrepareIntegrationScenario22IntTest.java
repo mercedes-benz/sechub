@@ -5,12 +5,15 @@ import static com.mercedesbenz.sechub.integrationtest.api.IntegrationTestMockMod
 import static com.mercedesbenz.sechub.integrationtest.api.TestAPI.*;
 import static com.mercedesbenz.sechub.integrationtest.internal.IntegrationTestExampleConstants.*;
 import static com.mercedesbenz.sechub.integrationtest.scenario22.Scenario22.*;
+import static com.mercedesbenz.sechub.test.TestConstants.SOURCECODE_ZIP;
 import static org.junit.Assert.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import java.io.File;
 import java.util.*;
 
+import org.junit.Assert;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.Timeout;
@@ -40,11 +43,15 @@ public class PDSPrepareIntegrationScenario22IntTest {
      */
     @Test
     public void multi_prepare_test() {
+
         project1_sechub_calls_prepare_pds_executes_script_and_user_message_is_returned();
         project2_sechub_calls_prepare_and_checkmarx();
         project3_sechub_calls_prepare_which_fails_will_not_start_checkmarx();
         project4_sechub_calls_prepare_which_fails_because_internal_failure_will_not_start_checkmarx();
-        start_PDS_prepare_job_from_remote_code_scan_configuration_and_check_for_configuration();
+        project5_start_PDS_prepare_job_from_remote_code_scan_configuration_and_check_for_configuration();
+
+        // project6_start_pds_prepare_with_pds_wrapper_application();
+
     }
 
     // @Test
@@ -225,26 +232,16 @@ public class PDSPrepareIntegrationScenario22IntTest {
     }
 
     // @Test
-    public void start_PDS_prepare_job_from_remote_code_scan_configuration_and_check_for_configuration() {
+    public void project5_start_PDS_prepare_job_from_remote_code_scan_configuration_and_check_for_configuration() {
         /* @formatter:off */
 
         /* prepare */
         IntegrationTestJSONLocation location = IntegrationTestJSONLocation.CLIENT_JSON_REMOTE_SCAN_CONFIGURATION;
-        /*
-        String configurationAsJson = TestFileReader.loadTextFile(new File("./src/test/resources/sechub-integrationtest-remote-scan-configuration.json"));
-        SecHubScanConfiguration configuration = SecHubScanConfiguration.createFromJSON(configurationAsJson);
-        configuration.setProjectId("project5");
-        */
         TestProject project = PROJECT_5;
 
         /* execute */
         SecHubClientExecutor.ExecutionResult result = as(USER_1).withSecHubClient().startSynchronScanFor(project, location);
         UUID jobUUID = result.getSechubJobUUID();
-
-        /*
-        UUID jobUUID = as(USER_1).createJobAndReturnJobUUID(project, configuration);
-        as(USER_1).approveJob(project, jobUUID);
-        */
 
         /* test */
         waitForJobDone(project, jobUUID, 30, true);
@@ -291,4 +288,31 @@ public class PDSPrepareIntegrationScenario22IntTest {
         /* @formatter:on */
     }
 
+    public void project6_start_pds_prepare_with_pds_wrapper_application() {
+        /* @formatter:off */
+
+        /* prepare */
+        IntegrationTestJSONLocation location = IntegrationTestJSONLocation.CLIENT_JSON_REMOTE_SCAN_CONFIGURATION;
+        TestProject project = PROJECT_6;
+
+        /* execute */
+        SecHubClientExecutor.ExecutionResult result = as(USER_2).withSecHubClient().startSynchronScanFor(project, location);
+        UUID jobUUID = result.getSechubJobUUID();
+
+        /* test */
+        waitForJobDone(project, jobUUID, 30, true);
+
+        UUID pdsJobUUID = waitForFirstPDSJobOfSecHubJobAndReturnPDSJobUUID(jobUUID);
+        Map<String, String> variables = fetchPDSVariableTestOutputMap(pdsJobUUID);
+        assertEquals("e", variables.get("PDS_TEST_KEY_VARIANTNAME"));
+
+        /* check if the prepare-wrapper has uploaded the sources */
+        File downloadedFile = TestAPI.getFileUploaded(project, jobUUID, SOURCECODE_ZIP);
+        assertNotNull(downloadedFile);
+        Assert.assertTrue(downloadedFile.exists());
+
+        // TODO: 28.05.24 laura - check if the prepare-wrapper was executed correctly
+        // PDS_STORAGE_SHAREDVOLUME_UPLOAD_DIR is not taken from PDS
+
+        }
 }

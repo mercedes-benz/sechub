@@ -39,7 +39,7 @@ public class PrepareWrapperUploadService {
         // creates archives for sourcecode or binary file
         archiveCreator.create(context, toolContext);
 
-        String storagePath = context.getEnvironment().getSechubStoragePath();
+        String projectId = context.getSecHubConfiguration().getProjectId();
         UUID sechubJobUUID = UUID.fromString(context.getEnvironment().getSechubJobUUID());
 
         SecHubConfigurationModel model = sechubConfigurationSupport.replaceRemoteDataWithFilesystem(context, toolContext);
@@ -54,14 +54,14 @@ public class PrepareWrapperUploadService {
             File file = new File(toolContext.getUploadDirectory() + "/" + FILENAME_SOURCECODE_ZIP);
             String checkSum = checkSumSupport.createSha256Checksum(file.getPath());
 
-            fileUploadService.uploadFile(storagePath, sechubJobUUID, file, checkSum);
+            fileUploadService.uploadFile(projectId, sechubJobUUID, file, checkSum);
         }
 
         if (!data.getBinaries().isEmpty()) {
             File file = new File(toolContext.getUploadDirectory() + "/" + FILENAME_BINARIES_TAR);
             String checkSum = checkSumSupport.createSha256Checksum(file.getPath());
 
-            fileUploadService.uploadFile(storagePath, sechubJobUUID, file, checkSum);
+            fileUploadService.uploadFile(projectId, sechubJobUUID, file, checkSum);
         }
     }
 

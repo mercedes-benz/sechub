@@ -1,3 +1,5 @@
+import java.nio.file.Files
+
 // SPDX-License-Identifier: MIT
 /*============================================================================
 * Build file for subproject
@@ -32,3 +34,25 @@ dependencies {
 
 version = versionData.getPrepareWrapperVersion()
 
+bootJar {
+
+    doLast {
+        /* Here we copy the created wrapper jar as "sechub-wrapper-prepare.jar" into the
+         * pds-tools folder inside the sechub-integrationtest gradle subproject.
+         *
+         *  This enables integration test script to use the solution prepare.sh script
+         *  and just set as tool folder: ${project.buildDir}/pds-tools
+         */
+        File integrationTestLaunchFile = new File("${rootProject.projectDir}/sechub-integrationtest/build/pds-tools/sechub-wrapper-prepare.jar")
+
+        if (integrationTestLaunchFile.exists()){
+            Files.delete(integrationTestLaunchFile.toPath())
+        }else{
+            integrationTestLaunchFile.getParentFile().mkdirs();
+        }
+
+        File buildFile = new File("${project.buildDir}/libs/sechub-wrapper-prepare-${project.version}.jar")
+        Files.copy(buildFile.toPath(),integrationTestLaunchFile.toPath())
+    }
+
+}

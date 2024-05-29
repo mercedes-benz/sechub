@@ -620,6 +620,18 @@ public class IntegrationTestDefaultProfiles {
     public static final DefaultTestExecutionProfile PROFILE_31_PDS_PREPARE_SCAN_CONFIG_SUCCESS = defineProfile31();
 
     /**
+     * The profile enables a PDS prepare. PDS is tested for running pds prepare in
+     * integration test mode
+     *
+     * <h5>Used inside scenarios:</h5>
+     * <ul>
+     * <li>{@link Scenario22}</li>
+     * </ul>
+     *
+     */
+    public static final DefaultTestExecutionProfile PROFILE_32_PDS_PREPARE_SCAN_CONFIG_SUCCESS = defineProfile32();
+
+    /**
      * @return all default profiles
      */
     public static List<DefaultTestExecutionProfile> getAllDefaultProfiles() {
@@ -839,6 +851,16 @@ public class IntegrationTestDefaultProfiles {
         profile.initialConfigurationsWithoutUUID.add(IntegrationTestDefaultExecutorConfigurations.PDS_V1_PREPARE_INTEGRATIONTEST_VARIANT_D);
         profile.id = "inttest-p31-pds-prepare";
         profile.description = "Profile 31: PDS prepare, reused storage, dynamic text results, variant d - test prepare for available sechub scan configuration";
+        profile.enabled = true;
+        return profile;
+    }
+
+    private static DefaultTestExecutionProfile defineProfile32() {
+
+        DefaultTestExecutionProfile profile = new DefaultTestExecutionProfile();
+        profile.initialConfigurationsWithoutUUID.add(IntegrationTestDefaultExecutorConfigurations.PDS_V1_PREPARE_INTEGRATIONTEST_VARIANT_E);
+        profile.id = "inttest-p32-pds-prepare";
+        profile.description = "Profile 31: PDS prepare, reused storage, dynamic text results, variant e - test prepare wrapper application in integration test mode";
         profile.enabled = true;
         return profile;
     }

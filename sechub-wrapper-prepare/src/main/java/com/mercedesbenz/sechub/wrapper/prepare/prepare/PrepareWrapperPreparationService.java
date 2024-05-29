@@ -43,6 +43,8 @@ public class PrepareWrapperPreparationService {
             return createAdapterExecutionResult(PrepareStatus.OK, SecHubMessageType.WARNING, "No Remote Configuration found.");
         }
 
+        LOG.warn(modules.toString());
+
         for (PrepareWrapperModule module : modules) {
 
             if (module.prepare(context)) {

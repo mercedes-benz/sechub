@@ -50,7 +50,6 @@ class PrepareWrapperUploadServiceTest {
         PrepareWrapperContext context = mock(PrepareWrapperContext.class);
         when(context.getEnvironment()).thenReturn(mock(PrepareWrapperEnvironment.class));
         when(context.getEnvironment().getPdsJobWorkspaceLocation()).thenReturn("path");
-        when(context.getEnvironment().getSechubStoragePath()).thenReturn("path");
         UUID uuid = UUID.randomUUID();
         when(context.getEnvironment().getSechubJobUUID()).thenReturn(uuid.toString());
         when(context.getEnvironment().getSechubJobUUID()).thenReturn(uuid.toString());
@@ -62,6 +61,9 @@ class PrepareWrapperUploadServiceTest {
 
         SecHubConfigurationModel model = mock(SecHubConfigurationModel.class);
         when(sechubConfigurationSupport.replaceRemoteDataWithFilesystem(context, toolContext)).thenReturn(model);
+        when(model.getProjectId()).thenReturn("projectId");
+
+        when(context.getSecHubConfiguration()).thenReturn(model);
 
         /* execute */
         IllegalStateException exception = assertThrows(IllegalStateException.class, () -> uploadServiceToTest.upload(context, toolContext));
@@ -74,16 +76,18 @@ class PrepareWrapperUploadServiceTest {
     void upload_calls_uploadService_when_sources_are_not_empty() throws Exception {
         /* prepare */
         PrepareWrapperContext context = mock(PrepareWrapperContext.class);
+
         when(context.getEnvironment()).thenReturn(mock(PrepareWrapperEnvironment.class));
         when(context.getEnvironment().getPdsJobWorkspaceLocation()).thenReturn("path");
-        when(context.getEnvironment().getSechubStoragePath()).thenReturn("path");
         UUID uuid = UUID.randomUUID();
-        when(context.getEnvironment().getSechubJobUUID()).thenReturn(uuid.toString());
         when(context.getEnvironment().getSechubJobUUID()).thenReturn(uuid.toString());
 
         SecHubConfigurationModel model = mock(SecHubConfigurationModel.class);
         SecHubDataConfiguration dataConfiguration = mock(SecHubDataConfiguration.class);
         when(model.getData()).thenReturn(Optional.of(dataConfiguration));
+        when(model.getProjectId()).thenReturn("projectId");
+
+        when(context.getSecHubConfiguration()).thenReturn(model);
 
         ToolContext toolContext = mock(ToolContext.class);
         Path testPath = Path.of("path");
@@ -108,7 +112,6 @@ class PrepareWrapperUploadServiceTest {
         PrepareWrapperContext context = mock(PrepareWrapperContext.class);
         when(context.getEnvironment()).thenReturn(mock(PrepareWrapperEnvironment.class));
         when(context.getEnvironment().getPdsJobWorkspaceLocation()).thenReturn("path");
-        when(context.getEnvironment().getSechubStoragePath()).thenReturn("path");
         UUID uuid = UUID.randomUUID();
         when(context.getEnvironment().getSechubJobUUID()).thenReturn(uuid.toString());
         when(context.getEnvironment().getSechubJobUUID()).thenReturn(uuid.toString());
@@ -116,6 +119,9 @@ class PrepareWrapperUploadServiceTest {
         SecHubConfigurationModel model = mock(SecHubConfigurationModel.class);
         SecHubDataConfiguration dataConfiguration = mock(SecHubDataConfiguration.class);
         when(model.getData()).thenReturn(Optional.of(dataConfiguration));
+        when(model.getProjectId()).thenReturn("projectId");
+
+        when(context.getSecHubConfiguration()).thenReturn(model);
 
         ToolContext toolContext = mock(ToolContext.class);
         Path testPath = Path.of("path");

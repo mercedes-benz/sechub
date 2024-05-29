@@ -23,9 +23,6 @@ public class PrepareWrapperEnvironment {
     @Value("${" + RT_KEY_PDS_JOB_USER_MESSAGES_FOLDER + "}")
     private String pdsUserMessagesFolder;
 
-    @Value("${" + PARAM_KEY_PDS_CONFIG_SECHUB_STORAGE_PATH + "}")
-    private String sechubStoragePath;
-
     @Value("${" + PARAM_KEY_SECHUB_JOB_UUID + "}")
     private String sechubJobUUID;
 
@@ -50,10 +47,6 @@ public class PrepareWrapperEnvironment {
 
     public String getPdsJobWorkspaceLocation() {
         return pdsJobWorkspaceLocation;
-    }
-
-    public String getSechubStoragePath() {
-        return sechubStoragePath;
     }
 
     public String getSechubJobUUID() {
