@@ -60,7 +60,7 @@ if [ "$SCRIPT_DIR" = "." ]; then
     pwd
     SCRIPT_DIR="$(pwd)"
 fi
-cd ${SCRIPT_DIR}
+cd "${SCRIPT_DIR}"
 
 cd ../.. #github action scan folder
 GHA_SCAN_FOLDER_PATH="$(pwd)"
@@ -103,27 +103,27 @@ SERVER_CERTFILE_PATH="${SERVER_FOLDER_PATH}/generated-localhost-certificate.p12"
 
 
 ## download server if not available
-if [ ! -f $SERVER_EXECUTABLE_PATH ]; then
+if [ ! -f "$SERVER_EXECUTABLE_PATH" ]; then
     mkdir -p "${SERVER_FOLDER_PATH}"
     echo "Start download from $SERVER_DOWNLOAD_URL"
-    curl -L ${SERVER_DOWNLOAD_URL} -o ${SERVER_EXECUTABLE_PATH}
+    curl -L "${SERVER_DOWNLOAD_URL}" -o "${SERVER_EXECUTABLE_PATH}"
 else 
     echo "$SERVER_EXECUTABLE_NAME exists already - skip download"
 fi
 
 ## generate SecHub test certificate
-if [ ! -f $SERVER_CERTFILE_PATH ]; then
+if [ ! -f "$SERVER_CERTFILE_PATH" ]; then
     mkdir -p "${SERVER_FOLDER_PATH}"
     keytool -genkey -alias tomcat -storetype PKCS12 -keyalg RSA -keysize 2048 -keystore "${SERVER_CERTFILE_PATH}" -validity 3650 -storepass 123456 --dname "CN=localhost, OU=ID"
 fi
 
 
 # Start SecHub async
-SECHUB_LOGFILE=$SERVER_FOLDER_PATH/server.log
+SECHUB_LOGFILE="$SERVER_FOLDER_PATH/server.log"
 
-rm -f $SECHUB_LOGFILE # remove old log files on start
-echo "./start_sechub_server.sh $SERVER_PORT $SERVER_EXECUTABLE_PATH $SERVER_CERTFILE_PATH $SECHUB_LOGFILE $SHARED_VOLUME" > $SECHUB_LOGFILE
-$SCRIPT_DIR/start_sechub_server.sh $SERVER_PORT $SERVER_EXECUTABLE_PATH $SERVER_CERTFILE_PATH $SECHUB_LOGFILE $SHARED_VOLUME
+rm -f "$SECHUB_LOGFILE" # remove old log files on start
+echo "./start_sechub_server.sh $SERVER_PORT $SERVER_EXECUTABLE_PATH $SERVER_CERTFILE_PATH $SECHUB_LOGFILE $SHARED_VOLUME" > "$SECHUB_LOGFILE"
+"$SCRIPT_DIR/start_sechub_server.sh" "$SERVER_PORT" "$SERVER_EXECUTABLE_PATH" "$SERVER_CERTFILE_PATH" "$SECHUB_LOGFILE" "$SHARED_VOLUME"
 
 ## ----------------------------------
 ##             PDS
@@ -139,32 +139,32 @@ PDS_SERVER_CERTFILE_PATH="${PDS_SERVER_FOLDER_PATH}/generated-localhost-certific
 #echo "PDS_SERVER_FOLDER_PATH=$PDS_SERVER_FOLDER_PATH"
 
 ## download PDS if not available
-if [ ! -f $PDS_SERVER_EXECUTABLE_PATH ]; then
+if [ ! -f "$PDS_SERVER_EXECUTABLE_PATH" ]; then
     mkdir -p "${PDS_SERVER_FOLDER_PATH}"
     echo "Start download from $PDS_SERVER_DOWNLOAD_URL"
-    curl -L ${PDS_SERVER_DOWNLOAD_URL} -o ${PDS_SERVER_EXECUTABLE_PATH}
+    curl -L "${PDS_SERVER_DOWNLOAD_URL}" -o "${PDS_SERVER_EXECUTABLE_PATH}"
 else 
     echo "$PDS_SERVER_EXECUTABLE_NAME exists already - skip download"
 fi
 
 ## generate PDS test certificate
-if [ ! -f $PDS_SERVER_CERTFILE_PATH ]; then
+if [ ! -f "$PDS_SERVER_CERTFILE_PATH" ]; then
     mkdir -p "${PDS_SERVER_FOLDER_PATH}"
     keytool -genkey -alias tomcat -storetype PKCS12 -keyalg RSA -keysize 2048 -keystore "${PDS_SERVER_CERTFILE_PATH}" -validity 3650 -storepass 123456 --dname "CN=localhost, OU=ID"
 fi
 
 ## create config file for pds
 PDS_CONFIG_FILE="$PDS_SERVER_FOLDER_PATH/pds-config.json"
-cp $SCRIPT_DIR/test-config/gha_integrationtest_pds-config.json $PDS_CONFIG_FILE
+cp "$SCRIPT_DIR/test-config/gha_integrationtest_pds-config.json" "$PDS_CONFIG_FILE"
 
 
 # Start PDS async
-PDS_LOGFILE=$PDS_SERVER_FOLDER_PATH/pds.log
-rm -f $PDS_LOGFILE # remove old log files on start
+PDS_LOGFILE="$PDS_SERVER_FOLDER_PATH/pds.log"
+rm -f "$PDS_LOGFILE" # remove old log files on start
 
-echo "./start_pds.sh $PDS_SERVER_PORT $PDS_SERVER_EXECUTABLE_PATH $PDS_SERVER_CERTFILE_PATH $PDS_LOGFILE $SHARED_VOLUME $PDS_CONFIG_FILE" > $PDS_LOGFILE
-$SCRIPT_DIR/start_pds.sh $PDS_SERVER_PORT $PDS_SERVER_EXECUTABLE_PATH $PDS_SERVER_CERTFILE_PATH $PDS_LOGFILE $SHARED_VOLUME $PDS_CONFIG_FILE
+echo "./start_pds.sh $PDS_SERVER_PORT $PDS_SERVER_EXECUTABLE_PATH $PDS_SERVER_CERTFILE_PATH $PDS_LOGFILE $SHARED_VOLUME $PDS_CONFIG_FILE" > "$PDS_LOGFILE"
+"$SCRIPT_DIR/start_pds.sh" "$PDS_SERVER_PORT" "$PDS_SERVER_EXECUTABLE_PATH" "$PDS_SERVER_CERTFILE_PATH" "$PDS_LOGFILE" "$SHARED_VOLUME" "$PDS_CONFIG_FILE"
 
 echo "> Wait for SecHub and PDS"
-$SCRIPT_DIR/wait_server_alive.sh "SecHub Server" $SECHUB_BASE_URL/api/anonymous/check/alive
-$SCRIPT_DIR/wait_server_alive.sh "PDS" $PDS_BASE_URL/api/anonymous/check/alive
+"$SCRIPT_DIR/wait_server_alive.sh" "SecHub Server" "$SECHUB_BASE_URL/api/anonymous/check/alive"
+"$SCRIPT_DIR/wait_server_alive.sh" "PDS" "$PDS_BASE_URL/api/anonymous/check/alive"
