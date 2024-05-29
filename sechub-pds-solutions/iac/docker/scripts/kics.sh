@@ -87,4 +87,3 @@ mv $scan_results_folder/results-fixedcwe.sarif $scan_results_folder/results.sari
 
 echo "Copy result file"
 cp "$scan_results_folder/results.sarif" "$PDS_JOB_RESULT_FILE"
-cp "$scan_results_folder/results.sarif" /tmp/results.sarif
