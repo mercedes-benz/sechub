@@ -31,10 +31,10 @@ cd "$PDS_JOB_SOURCECODE_UNZIPPED_FOLDER"
 ln -s "$TOOL_FOLDER/kics/assets" .
 kics scan --ci --exclude-categories "Best practices" --disable-full-descriptions --report-formats "sarif" --output-path "$scan_results_folder" --path .
 
-#######################################################################################################################
-# Workaround: Since there are no CWEs we add a fixed CWE taxonomy to the SARIF report for false-positive handling     #
-# This won't be needed anymore once Checkmarx adds CWEs to their reports                                              #
-#######################################################################################################################
+#############################################################################################################################################
+# Workaround: Since there are only a few CWEs added by KICS we add a fixed CWE taxonomy to the SARIF report for false-positive handling     #
+# This won't be needed anymore once Checkmarx adds CWEs to their reports                                                                    #
+#############################################################################################################################################
 
 cat $scan_results_folder/results.sarif | jq '.runs[].taxonomies += [{
 					"name": "CWE",
