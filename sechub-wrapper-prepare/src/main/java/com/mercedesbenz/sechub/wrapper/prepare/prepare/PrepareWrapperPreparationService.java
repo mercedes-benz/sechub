@@ -34,32 +34,25 @@ public class PrepareWrapperPreparationService {
 
     public AdapterExecutionResult startPreparation() throws IOException {
 
-        boolean atLeastOneModuleExecuted = false;
-
         LOG.debug("Start preparation");
         PrepareWrapperContext context = factory.create(environment);
-        List<SecHubRemoteDataConfiguration> remoteDataConfigurationList = context.getRemoteDataConfigurationList();
+        SecHubRemoteDataConfiguration remoteDataConfiguration = context.getRemoteDataConfiguration();
 
-        if (remoteDataConfigurationList.isEmpty()) {
+        if (remoteDataConfiguration == null) {
             LOG.warn("No Remote configuration was found");
             return createAdapterExecutionResult(PrepareStatus.OK, SecHubMessageType.WARNING, "No Remote Configuration found.");
         }
 
         for (PrepareWrapperModule module : modules) {
-            if (!module.isAbleToPrepare(context)) {
-                continue;
+
+            if (module.prepare(context)) {
+                context.getUserMessages().add(new SecHubMessage(SecHubMessageType.INFO, "Executed prepare module: " + module.getClass().getSimpleName()));
+                PrepareResult result = new PrepareResult(PrepareStatus.OK);
+                return new AdapterExecutionResult(result.toString(), context.getUserMessages());
             }
-            atLeastOneModuleExecuted = true;
-            context.getUserMessages().add(new SecHubMessage(SecHubMessageType.INFO, "Execute prepare module: " + module.getClass().getSimpleName()));
-            module.prepare(context);
         }
 
-        if (!atLeastOneModuleExecuted) {
-            return createAdapterExecutionResult(PrepareStatus.FAILED, SecHubMessageType.ERROR, "No module was able to prepare the defined remote data.");
-        }
-
-        PrepareResult result = new PrepareResult(PrepareStatus.OK);
-        return new AdapterExecutionResult(result.toString(), context.getUserMessages());
+        return createAdapterExecutionResult(PrepareStatus.FAILED, SecHubMessageType.ERROR, "No module was able to prepare the defined remote data.");
     }
 
     private AdapterExecutionResult createAdapterExecutionResult(PrepareStatus status, SecHubMessageType type, String message) {

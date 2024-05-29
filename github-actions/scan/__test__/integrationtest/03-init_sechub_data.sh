@@ -4,7 +4,7 @@
 set -e
 SCRIPT_DIR="$( cd -- "$(dirname "$0")" >/dev/null 2>&1 ; pwd -P )" # absolute directory of this script
 
-cd $(dirname "$0")
+cd "$(dirname "$0")"
 SECHUB_SERVER_PORT=$1
 PDS_PORT=$2 # currently not really used, reserved for later access
 
@@ -52,17 +52,17 @@ function createData(){
    executor="executor-$type-$trafficLight"
    
    echo "> Create test project:$project for user:$user"
-   ./sechub-api.sh project_create $project $user "Testproject $number for integration tests"
-   ./sechub-api.sh project_assign_user $project $user # assign user to project
+   ./sechub-api.sh project_create "$project" "$user" "Testproject $number for integration tests"
+   ./sechub-api.sh project_assign_user "$project" "$user" # assign user to project
 
    echo "> Create executor config: '${executor}'"
    ./sechub-api.sh executor_create "$SCRIPT_DIR/test-config/${executor}.json"
 
    echo "> Create profile: '$profile'"
-   ./sechub-api.sh profile_create $profile $executor
+   ./sechub-api.sh profile_create "$profile" "$executor"
 
    echo "> Assign profile: '$profile' to project: '$project'"
-   ./sechub-api.sh project_assign_profile $project $profile
+   ./sechub-api.sh project_assign_profile "$project" "$profile"
 }
 
 echo "> Prepare sechub api script usage"
