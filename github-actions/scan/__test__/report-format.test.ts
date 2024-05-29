@@ -27,6 +27,18 @@ describe('getValidFormatsFromInput', function() {
         expect(validFormats).toEqual(expectedFormats);
     });
 
+    it('correctly returns report formats for json, html', function () {
+        /* prepare */
+        const inputFormats = 'json, html';
+        const expectedFormats = ['json', 'html'];
+
+        /* execute */
+        const validFormats = getValidFormatsFromInput(inputFormats);
+
+        /* test */
+        expect(validFormats).toEqual(expectedFormats);
+    });
+
     it('correctly filter invalid report formats', function () {
         /* prepare */
         const inputFormats = 'json,xml,yml';
