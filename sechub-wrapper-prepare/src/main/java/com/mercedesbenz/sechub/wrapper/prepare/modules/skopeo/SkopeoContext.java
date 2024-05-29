@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.wrapper.prepare.modules.skopeo;
 
 import com.mercedesbenz.sechub.wrapper.prepare.modules.ToolContext;
