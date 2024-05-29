@@ -46,6 +46,9 @@ projectType = [
                        to have dependency injection and access to some other spring boot parts */
                     project(':sechub-wrapper-checkmarx'),
                     project(':sechub-wrapper-prepare'),
+                    
+                    /* special application to validate and categorize results of secret scans */
+                    project(':sechub-wrapper-secret-validator'),
                      
                        
             ],

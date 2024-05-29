@@ -1,0 +1,24 @@
+{
+  "validatorConfigList" : [ {
+    "ruleId" : "rule-id",
+    "categorization" : {
+      "defaultSeverity" : "high",
+      "validationFailedSeverity" : "medium",
+      "validationSuccessSeverity" : "critical"
+    },
+    "requests" : [ {
+      "url" : "https://api.example.com",
+      "headers" : [ {
+        "name" : "Authorization",
+        "valuePrefix" : "Bearer"
+      } ],
+      "expectedResponse" : {
+        "httpStatus" : 200,
+        "contains" : {
+          "allOf" : [ "is", "there" ],
+          "oneOf" : [ "success" ]
+        }
+      }
+    } ]
+  } ]
+}
