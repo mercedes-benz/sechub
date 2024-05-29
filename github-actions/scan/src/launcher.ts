@@ -14,6 +14,7 @@ import { collectReportData, reportOutputs, uploadArtifact } from './post-scan';
 import * as projectNameResolver from './projectname-resolver';
 import { scan } from './sechub-cli';
 import { getPlatform, getPlatformDirectory } from './platform-helper';
+import {split} from "./input-helper";
 
 /**
  * Starts the launch process
@@ -138,10 +139,10 @@ function createContext(): LaunchContext {
 function createSafeBuilderData(gitHubInputData: GitHubInputData) {
     const builderData = new SecHubConfigurationModelBuilderData();
 
-    builderData.includeFolders = gitHubInputData.includeFolders?.split(',');
-    builderData.excludeFolders = gitHubInputData.excludeFolders?.split(',');
+    builderData.includeFolders = split(gitHubInputData.includeFolders);
+    builderData.excludeFolders = split(gitHubInputData.excludeFolders);
 
-    builderData.scanTypes = ScanType.ensureAccepted(gitHubInputData.scanTypes?.split(','));
+    builderData.scanTypes = ScanType.ensureAccepted(split(gitHubInputData.scanTypes));
     builderData.contentType = ContentType.ensureAccepted(gitHubInputData.contentType);
     return builderData;
 }
@@ -181,11 +182,9 @@ async function postScan(context: LaunchContext): Promise<void> {
     await uploadArtifact(context, 'sechub scan-report', getFiles(`${context.workspaceFolder}/sechub_report_*.*`));
 
     core.debug(`postScan(2): context.lastExitCode=${context.lastClientExitCode}, context.trafficLight='${context.trafficLight}', context.inputData.failJobOnFindings='${context.inputData.failJobOnFindings}'`);
-    if (context.trafficLight =='RED' || context.trafficLight == 'OFF') {
-        if (context.inputData.failJobOnFindings == 'true' || context.inputData.failJobOnFindings == '' ) {
+    if (context.trafficLight == 'RED' || context.trafficLight == 'OFF') {
+        if (context.inputData.failJobOnFindings == 'true' || context.inputData.failJobOnFindings == '') {
             failAction(1);
         }
     }
 }
-
-
