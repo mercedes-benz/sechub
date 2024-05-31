@@ -5,7 +5,7 @@ package cli
 import (
 	"encoding/json"
 	"fmt"
-	"io/ioutil"
+	"io"
 	"os"
 	"strings"
 	"time"
@@ -20,7 +20,7 @@ import (
 func createNewSecHubJob(context *Context) {
 	response := sendWithDefaultHeader("POST", buildCreateNewSecHubJobAPICall(context), context)
 
-	data, err := ioutil.ReadAll(response.Body)
+	data, err := io.ReadAll(response.Body)
 	sechubUtil.HandleError(err, ExitCodeFailed)
 
 	var result jobScheduleResult
@@ -36,7 +36,7 @@ func approveSecHubJob(context *Context) {
 	sechubUtil.Log("Approve sechub job", context.config.quiet)
 	response := sendWithDefaultHeader("PUT", buildApproveSecHubJobAPICall(context), context)
 
-	_, err := ioutil.ReadAll(response.Body)
+	_, err := io.ReadAll(response.Body)
 	sechubUtil.HandleError(err, ExitCodeFailed)
 }
 
@@ -103,7 +103,7 @@ func getSecHubJobStatus(context *Context) (jsonData string) {
 	// request SecHub job state from server
 	response := sendWithDefaultHeader("GET", buildGetSecHubJobStatusAPICall(context), context)
 
-	data, err := ioutil.ReadAll(response.Body)
+	data, err := io.ReadAll(response.Body)
 	sechubUtil.HandleHTTPError(err, ExitCodeHTTPError)
 	if context.config.debug {
 		sechubUtil.LogDebug(context.config.debug, fmt.Sprintf("Get job status :%s", string(data)))
@@ -167,7 +167,7 @@ func getSecHubJobList(context *Context, size int) {
 	// request SecHub job state from server
 	response := sendWithDefaultHeader("GET", buildGetSecHubJobListAPICall(context, size), context)
 
-	data, err := ioutil.ReadAll(response.Body)
+	data, err := io.ReadAll(response.Body)
 	sechubUtil.HandleHTTPError(err, ExitCodeHTTPError)
 	if context.config.debug {
 		sechubUtil.LogDebug(context.config.debug, fmt.Sprintf("Get job list: %s", string(data)))

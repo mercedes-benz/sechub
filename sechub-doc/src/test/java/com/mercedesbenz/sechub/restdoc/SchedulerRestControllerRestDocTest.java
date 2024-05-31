@@ -18,6 +18,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import java.io.InputStream;
 import java.lang.annotation.Annotation;
+import java.net.URL;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -570,6 +571,8 @@ public class SchedulerRestControllerRestDocTest implements TestIsNecessaryForDoc
         SecHubWebScanApiConfiguration apiConfig = new SecHubWebScanApiConfiguration();
         apiConfig.setType(SecHubWebScanApiType.OPEN_API);
         apiConfig.getNamesOfUsedDataConfigurationObjects().add("openApi-file-reference");
+        URL apiDefinitionUrl = new URL("https://www.example.org/api/v1/swagger/");
+        apiConfig.setApiDefinitionUrl(apiDefinitionUrl);
 
         when(mockedScheduleCreateJobService.createJob(any(), any(SecHubConfiguration.class))).thenReturn(mockResult);
 
@@ -580,7 +583,7 @@ public class SchedulerRestControllerRestDocTest implements TestIsNecessaryForDoc
                     content(configureSecHub().
                             api("1.0").
                             webConfig().
-                                addURI("https://localhost/mywebapp/login").
+                                addURI("https://www.example.org/").
                                 addApiConfig(apiConfig).
                             build().
                             toJSON())
@@ -606,7 +609,8 @@ public class SchedulerRestControllerRestDocTest implements TestIsNecessaryForDoc
                                                 fieldWithPath(PROPERTY_WEB_SCAN).description("Webscan configuration block").optional(),
                                                 fieldWithPath(PROPERTY_WEB_SCAN+"."+SecHubWebScanConfiguration.PROPERTY_URL).description("Webscan URI to scan for").optional(),
                                                 fieldWithPath(PROPERTY_WEB_SCAN+"."+SecHubWebScanConfiguration.PROPERTY_API+"."+SecHubWebScanApiConfiguration.PROPERTY_TYPE).description("Type of the API definition files that will be provided").optional(),
-                                                fieldWithPath(PROPERTY_WEB_SCAN+"."+SecHubWebScanConfiguration.PROPERTY_API+"."+SecHubDataConfigurationUsageByName.PROPERTY_USE).description("Reference to the data section containing the API definition files. Always use 'sources' with 'files' instead 'folders'.").optional()
+                                                fieldWithPath(PROPERTY_WEB_SCAN+"."+SecHubWebScanConfiguration.PROPERTY_API+"."+SecHubDataConfigurationUsageByName.PROPERTY_USE).description("Reference to the data section containing the API definition files. Always use 'sources' with 'files' instead 'folders'.").optional(),
+                                                fieldWithPath(PROPERTY_WEB_SCAN+"."+SecHubWebScanConfiguration.PROPERTY_API+"."+SecHubWebScanApiConfiguration.PROPERTY_API_DEFINITION_URL).description("Specifies an URL to read the API definition from.").optional()
                                         ),
                                         responseFields(
                                                 fieldWithPath(SchedulerResult.PROPERTY_JOBID).description("A unique job id")

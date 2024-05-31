@@ -4,7 +4,7 @@ package util
 
 import (
 	"fmt"
-	"io/ioutil"
+	"io"
 	"net/http"
 	"os"
 )
@@ -28,7 +28,7 @@ func HandleHTTPError(err error, exitCode int) {
 // HandleHTTPResponse - handler method for http response. when not 200 an error log entry will be created and sechub client does exit
 func HandleHTTPResponse(response *http.Response, exitCode int) {
 	if response.StatusCode >= 400 { // StatusCode is 4xx or 5xx
-		bodytext, _ := ioutil.ReadAll(response.Body)
+		bodytext, _ := io.ReadAll(response.Body)
 		LogError(fmt.Sprintf("The SecHub server responded with HTTP status code '%d'\nbody=%s", response.StatusCode, string(bodytext)))
 		switch response.StatusCode {
 		case 401:

@@ -67,7 +67,7 @@ jobs:
           exit 1
 
       - name: Checkout master
-        uses: actions/checkout@0ad4b8fadaa221de15dcec353f45205ec38ea70b
+        uses: actions/checkout@a5ac7e51b41094c92402da3b24376905380afc29
         with:
           ref: master
           fetch-tags: true
@@ -97,12 +97,12 @@ jobs:
           distribution: temurin
 
       - name: Set up Gradle
-        uses: gradle/gradle-build-action@4c39dd82cd5e1ec7c6fa0173bb41b4b6bb3b86ff
+        uses: gradle/actions/setup-gradle@500e0ee5b346833ab02b5209b7c997380cb5d684
         with:
           cache-read-only: false
 
       - name: Set up Go
-        uses: actions/setup-go@0c52d547c9bc32b1aa3301fd7a9cb496313a4491
+        uses: actions/setup-go@cdcb36043654635271a94b9a6d1392de5bb323a7
         with:
           go-version: 1.21.6
 

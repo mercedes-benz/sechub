@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.wrapper.prepare.prepare;
 
 import static com.mercedesbenz.sechub.wrapper.prepare.modules.UsageExceptionExitCode.ONLY_ONE_REMOTE_DATA_CONFIGURATION_ALLOWED;

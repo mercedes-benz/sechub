@@ -531,7 +531,7 @@ table.CodeRay td.code{padding:0 0 0 .75em}
 <div id="header">
 <h1><span class="image"><a class="image" href="https://mercedes-benz.github.io/sechub"><img src="images/sechub-logo.png" alt="sechub logo"></a></span> SecHub Client Documentation</h1>
 <div class="details">
-<span id="revnumber"> Client 1.5.0</span>
+<span id="revnumber"> Client 1.6.0</span>
 </div>
 <div id="toc" class="toc2">
 <div id="toctitle">Table of contents</div>
@@ -762,7 +762,7 @@ build pipeline / contionus integration (CI) and helps to provide
 </tbody>
 </table>
 <div class="paragraph">
-<p>Documentation version: <code>Client 1.5.0 - Build date: 20240430152944</code></p>
+<p>Documentation version: <code>Client 1.6.0 - Build date: 20240529135301</code></p>
 </div>
 <hr>
 <div style="page-break-after: always;"></div>
@@ -2806,7 +2806,8 @@ The unit can be: <code>millisecond</code>, <code>second</code>, <code>minute</co
     <span class="key"><span class="delimiter">&quot;</span><span class="content">url</span><span class="delimiter">&quot;</span></span> : <span class="string"><span class="delimiter">&quot;</span><span class="content">https://productfailure.demo.example.org</span><span class="delimiter">&quot;</span></span>,
     <span class="key"><span class="delimiter">&quot;</span><span class="content">api</span><span class="delimiter">&quot;</span></span> : {
       <span class="key"><span class="delimiter">&quot;</span><span class="content">type</span><span class="delimiter">&quot;</span></span> : <span class="string"><span class="delimiter">&quot;</span><span class="content">openApi</span><span class="delimiter">&quot;</span></span>, <i class="conum" data-value="2"></i><b>(2)</b>
-      <span class="key"><span class="delimiter">&quot;</span><span class="content">use</span><span class="delimiter">&quot;</span></span> : [ <span class="string"><span class="delimiter">&quot;</span><span class="content">open-api-file-reference</span><span class="delimiter">&quot;</span></span> ] <i class="conum" data-value="3"></i><b>(3)</b>
+      <span class="key"><span class="delimiter">&quot;</span><span class="content">use</span><span class="delimiter">&quot;</span></span> : [ <span class="string"><span class="delimiter">&quot;</span><span class="content">open-api-file-reference</span><span class="delimiter">&quot;</span></span> ], <i class="conum" data-value="3"></i><b>(3)</b>
+      <span class="key"><span class="delimiter">&quot;</span><span class="content">apiDefinitionUrl</span><span class="delimiter">&quot;</span></span> : <span class="string"><span class="delimiter">&quot;</span><span class="content">https://productfailure.demo.example.org/api/v1/swagger/?format=openapi</span><span class="delimiter">&quot;</span></span> <i class="conum" data-value="4"></i><b>(4)</b>
     }
   }
 }</code></pre>
@@ -2826,6 +2827,11 @@ The unit can be: <code>millisecond</code>, <code>second</code>, <code>minute</co
 <td><i class="conum" data-value="3"></i><b>3</b></td>
 <td>web scan uses the referenced <a href="#sechub-config-data-section">data</a> configuration "open-api-file-reference"
 to obtain the open api configuration file</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="4"></i><b>4</b></td>
+<td>you can also use <code>apiDefinitionUrl</code> to specify an URL to read the API definition from.
+Currently you can combine importing openApi definitions from files and URLs, but most of the time it does not make sense to combine this two options.</td>
 </tr>
 </table>
 </div>
@@ -4050,7 +4056,7 @@ configure the client to do this on color YELLOW.
 </div>
 <div id="footer">
 <div id="footer-text">
- Client 1.5.0<br>
+ Client 1.6.0<br>
 </div>
 </div>
 </body>

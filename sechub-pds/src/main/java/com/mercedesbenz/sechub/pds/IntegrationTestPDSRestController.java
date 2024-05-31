@@ -99,6 +99,15 @@ public class IntegrationTestPDSRestController {
         return uploadFolder;
     }
 
+    @RequestMapping(path = PDSAPIConstants.API_ANONYMOUS + "integrationtest/env/{envVariable}", method = RequestMethod.GET, produces = {
+            MediaType.TEXT_PLAIN_VALUE })
+    public String getEnvironmentVariableValue(@PathVariable("envVariable") String envVariable) {
+        String value = System.getenv(envVariable);
+
+        LOG.info("Integration test checks environment variable:{} - value:{}", envVariable, value);
+        return value;
+    }
+
     @RequestMapping(path = PDSAPIConstants.API_ANONYMOUS + "integrationtest/last/started/job/uuid", method = RequestMethod.GET, produces = {
             MediaType.APPLICATION_JSON_VALUE })
     public String fetchLastStartedPDSJobUUID() {

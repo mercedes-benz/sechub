@@ -4,12 +4,16 @@ package com.mercedesbenz.sechub.pds.execution;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.NullSource;
+import org.junit.jupiter.params.provider.ValueSource;
 
 import com.mercedesbenz.sechub.commons.model.ScanType;
 import com.mercedesbenz.sechub.commons.pds.PDSDefaultParameterKeyConstants;
@@ -23,18 +27,20 @@ class PDSExecutionEnvironmentServiceTest {
     private PDSExecutionEnvironmentService serviceToTest;
     private PDSServerConfigurationService serverConfigService;
     private PDSKeyToEnvConverter converter;
-
+    private PDSScriptEnvironmentCleaner cleaner;
     private PDSExecutionEnvironmentPrepare pdsExecutionEnvironmentPrepare;
 
     @BeforeEach
     void beforeEach() throws Exception {
         converter = mock(PDSKeyToEnvConverter.class);
         serverConfigService = mock(PDSServerConfigurationService.class);
+        cleaner = mock(PDSScriptEnvironmentCleaner.class);
         pdsExecutionEnvironmentPrepare = mock(PDSExecutionEnvironmentPrepare.class);
 
         serviceToTest = new PDSExecutionEnvironmentService();
         serviceToTest.converter = converter;
         serviceToTest.serverConfigService = serverConfigService;
+        serviceToTest.cleaner = cleaner;
         serviceToTest.pdsExecutionEnvironmentPrepare = pdsExecutionEnvironmentPrepare;
     }
 
@@ -220,6 +226,32 @@ class PDSExecutionEnvironmentServiceTest {
         assertEquals("p1.defaultb", result.get("KEY_B")); // default used because no value set
         assertEquals(null, result.get("KEY_UNKNOWN"));
 
+    }
+
+    @Test
+    void removeAllNonWhitelistedEnvironmentVariables_calls_env_cleaner() {
+        /* prepare */
+        Map<String, String> map = Collections.emptyMap();
+
+        /* execute */
+        serviceToTest.removeAllNonWhitelistedEnvironmentVariables(map);
+
+        /* test */
+        verify(cleaner).clean(map);
+    }
+
+    @ParameterizedTest
+    @NullSource
+    @ValueSource(strings = { "a,b,c", "", "a" })
+    void env_cleaner_is_setup_with_spring_value_via_post_construct_method(String whiteList) {
+        /* prepare */
+        serviceToTest.pdsScriptEnvWhitelist = whiteList;
+
+        /* execute */
+        serviceToTest.postConstruct();
+
+        /* test */
+        verify(cleaner).setWhiteListCommaSeparated(whiteList);
     }
 
     @Test

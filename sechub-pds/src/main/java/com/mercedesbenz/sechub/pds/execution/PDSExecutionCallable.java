@@ -436,9 +436,12 @@ class PDSExecutionCallable implements Callable<PDSExecutionResult> {
          * job was marked as ready to start
          */
 
-        PDSExecutionEnvironmentService environmentService = serviceCollection.getEnvironmentService();
-        Map<String, String> buildEnvironmentMap = environmentService.buildEnvironmentMap(config);
+        PDSExecutionEnvironmentService environmentService = getEnvironmentService();
+
         Map<String, String> environment = builder.environment();
+        environmentService.removeAllNonWhitelistedEnvironmentVariables(environment);
+
+        Map<String, String> buildEnvironmentMap = environmentService.buildEnvironmentMap(config);
         environment.putAll(buildEnvironmentMap);
 
         WorkspaceLocationData locationData = workspaceService.createLocationData(jobUUID);
@@ -578,6 +581,10 @@ class PDSExecutionCallable implements Callable<PDSExecutionResult> {
 
     private PDSJobTransactionService getJobTransactionService() {
         return serviceCollection.getJobTransactionService();
+    }
+
+    private PDSExecutionEnvironmentService getEnvironmentService() {
+        return serviceCollection.getEnvironmentService();
     }
 
     private PDSCheckJobStatusService getJobStatusService() {
