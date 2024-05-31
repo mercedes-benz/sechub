@@ -171,12 +171,9 @@ func adjustSourceFilterPatterns(context *Context) {
 			// Clear upload filter for secrets scans
 			context.sechubConfig.Data.Sources[i].SourceCodePatterns =
 				adjustSourceFilterPatternsWhitelistAll(item.SourceCodePatterns, true)
-		} else if slices.Contains(context.sechubConfig.CodeScan.Use, item.Name) {
+		} else if slices.Contains(context.sechubConfig.CodeScan.Use, item.Name) ||
+			slices.Contains(context.sechubConfig.LicenseScan.Use, item.Name) {
 			// Append default source code patterns for code scans
-			context.sechubConfig.Data.Sources[i].SourceCodePatterns =
-				adjustSourceFilterPatternsWhitelistAll(item.SourceCodePatterns, context.config.whitelistAll)
-		} else if slices.Contains(context.sechubConfig.LicenseScan.Use, item.Name) {
-			// Append default source code patterns for license scans
 			context.sechubConfig.Data.Sources[i].SourceCodePatterns =
 				adjustSourceFilterPatternsWhitelistAll(item.SourceCodePatterns, context.config.whitelistAll)
 		}
