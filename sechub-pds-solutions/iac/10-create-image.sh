@@ -36,6 +36,12 @@ if [[ -z "$BASE_IMAGE" ]]; then
   FAILED=true
 fi
 
+# If "KICS_VERSION" is not set file "env" should be sourced
+if [[ -z "$KICS_VERSION" ]] && [[ -f env ]]; then
+  echo "KICS_VERSION is not set, sourcing 'env' file"
+  source ./env
+fi
+
 if $FAILED ; then
   usage
   exit 1
