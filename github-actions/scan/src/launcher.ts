@@ -14,7 +14,8 @@ import { collectReportData, reportOutputs, uploadArtifact } from './post-scan';
 import * as projectNameResolver from './projectname-resolver';
 import { scan } from './sechub-cli';
 import { getPlatform, getPlatformDirectory } from './platform-helper';
-import {split} from "./input-helper";
+import { split } from './input-helper';
+import { getClientVersion } from './client-version-helper';
 
 /**
  * Starts the launch process
@@ -22,7 +23,7 @@ import {split} from "./input-helper";
  */
 export async function launch(): Promise<LaunchContext> {
 
-    const context = createContext();
+    const context = await createContext();
 
     await init(context);
 
@@ -47,6 +48,7 @@ export interface LaunchContext {
     /* json, html, spdx */
     reportFormats: string[];
 
+    clientVersion: string;
     clientDownloadFolder: string;
     clientExecutablePath: string;
 
@@ -66,6 +68,7 @@ export const LAUNCHER_CONTEXT_DEFAULTS: LaunchContext = {
 
     inputData: INPUT_DATA_DEFAULTS,
     reportFormats: ['json'],
+    clientVersion: '1.6.1',
     clientDownloadFolder: '',
     configFileLocation: null,
     clientExecutablePath: '',
@@ -84,17 +87,11 @@ export const LAUNCHER_CONTEXT_DEFAULTS: LaunchContext = {
  * Creates the initial launch context
  * @returns launch context
  */
-function createContext(): LaunchContext {
+async function createContext(): Promise<LaunchContext> {
 
     const gitHubInputData = resolveGitHubInputData();
 
-    // client
-    const clientVersion = gitHubInputData.sechubCLIVersion;
-
-    if (!clientVersion || clientVersion.length === 0) {
-        throw new Error('No SecHub client version defined!');
-    }
-
+    const clientVersion = await getClientVersion(gitHubInputData.sechubCLIVersion);
     const expression = /\./gi;
     const clientVersionSubFolder = clientVersion.replace(expression, '_'); // avoid . inside path from user input
     const workspaceFolder = getWorkspaceDir();
@@ -122,6 +119,7 @@ function createContext(): LaunchContext {
         configFileLocation: configFileLocation,
         reportFormats: reportFormats,
         inputData: gitHubInputData,
+        clientVersion: clientVersion,
         clientDownloadFolder: clientDownloadFolder,
         clientExecutablePath: clientExecutablePath,
 
@@ -132,7 +130,7 @@ function createContext(): LaunchContext {
         secHubJsonFilePath: generatedSecHubJsonFilePath,
         workspaceFolder: workspaceFolder,
         trafficLight: LAUNCHER_CONTEXT_DEFAULTS.trafficLight,
-        debug: gitHubInputData.debug == 'true',
+        debug: gitHubInputData.debug == 'true'
     };
 }
 

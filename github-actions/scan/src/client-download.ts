@@ -11,7 +11,7 @@ import { LaunchContext } from './launcher';
  * @param context launch context
  */
 export async function downloadClientRelease(context: LaunchContext): Promise<void> {
-    const clientVersion = context.inputData.sechubCLIVersion;
+    const clientVersion = context.clientVersion;
 
     if (fs.existsSync(context.clientExecutablePath)) {
         core.debug(`Client already downloaded - skip download. Path:${context.clientExecutablePath}`);
