@@ -435,6 +435,41 @@ for details. The excludes work for sources and binaries the same way.
 for details about default behaviour for sources.
 <9> `sources`: Inside this array multiple binary data definitions can be listed.
 
+===== Define Remote Data Section to scan Data from remote locations
+
+Instead of configure the filesystem and upload local data, you can also define a remote data section to scan data from remote locations.
+Sechub will download the data from the remote location and provide it to the PDS for scanning.
+
+[[sechub-config-example-remote-data-section-sources-codescan]]
+====== Example source remote data scan
+[source, json, title="Codescan scan configuration for remote git sources without credentials"]
+----
+include::sechub_config_example18_remote_data_without_credentials_sources_codescan.json[]
+----
+<1> `location`: The URL to your remote data. (for example to a git repository or a docker registry)
+<2> `type`: Describe your remote data. Can currently be `git` or `docker`.
+
+[[sechub-config-example-remote-data-section-sources-codescan-credentials]]
+====== Example source remote data scan with credentials
+[source, json, title="Codescan scan configuration for remote git sources with credentials"]
+----
+include::sechub_config_example19_remote_data_with_credentials_sources_codescan.json[]
+----
+<1> `location`: The URL to your remote data.
+<2> `type`: Describe your remote data. Can currently be `git` or `docker`.
+<3> `user`: Defines user credentials
+<4> `name`: The username you wish to use to access your remote data
+<5> `password`: The API token that grant your username access to your remote data
+
+[[sechub-config-example-remote-data-section-binaries-codescan-credentials]]
+====== Example binaries remote data scan with credentials
+[source, json, title="Codescan scan configuration for remote git sources with credentials"]
+----
+include::sechub_config_example20_remote_data_with_credentials_binaries_licensescan.json[]
+----
+<1> `location`: The URL to your remote data
+<2> `type`: Describe your remote data. Can currently be `git` or `docker`.
+
 
 [[sechub-config-metadata-section]]
 ==== MetaData
