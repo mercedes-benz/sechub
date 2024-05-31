@@ -12,10 +12,6 @@ else
   VERSION_TAG="`date +%Y-%m-%d`"
 fi
 
-if [[ -n "$KICS_VERSION" ]] ; then
-    VERSION_TAG+="_$KICS_VERSION"
-fi
-
 # Use date of build, because there are multiple tools contained
 VERSION_TAG+="_`date +%Y-%m-%d`"
 
