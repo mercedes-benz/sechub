@@ -15,7 +15,7 @@ describe('getClientVersion', function () {
         const clientVersion: any = param;
 
         /* execute */
-        let result = getClientVersion(clientVersion);
+        const result = getClientVersion(clientVersion);
 
         /* test */
         await expect(result).rejects.toThrow('No SecHub client version defined!');
@@ -32,7 +32,7 @@ describe('getClientVersion', function () {
         const clientVersion = param;
 
         /* execute  */
-        let result = getClientVersion(clientVersion);
+        const result = getClientVersion(clientVersion);
 
         /* test */
         await expect(result).rejects.toThrow(`Invalid SecHub client version: ${clientVersion}`);
@@ -44,7 +44,7 @@ describe('getClientVersion', function () {
         const axiosMock = new MockAdapter(axios);
 
         /* execute  */
-        let result = await getClientVersion(clientVersion);
+        const result = await getClientVersion(clientVersion);
 
         /* test */
         expect(result).toEqual('1.0.0');
@@ -66,7 +66,7 @@ describe('getClientVersion', function () {
         axiosMock.onGet('https://mercedes-benz.github.io/sechub/latest/client-download.html').reply(200, axiosMockResponse);
 
         /* execute  */
-        let result = await getClientVersion(clientVersion);
+        const result = await getClientVersion(clientVersion);
 
         /* test */
         expect(result).toEqual('1.5.0');
