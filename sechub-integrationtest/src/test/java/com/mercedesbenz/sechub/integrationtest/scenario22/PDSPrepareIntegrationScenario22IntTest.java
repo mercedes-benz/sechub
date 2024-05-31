@@ -5,15 +5,12 @@ import static com.mercedesbenz.sechub.integrationtest.api.IntegrationTestMockMod
 import static com.mercedesbenz.sechub.integrationtest.api.TestAPI.*;
 import static com.mercedesbenz.sechub.integrationtest.internal.IntegrationTestExampleConstants.*;
 import static com.mercedesbenz.sechub.integrationtest.scenario22.Scenario22.*;
-import static com.mercedesbenz.sechub.test.TestConstants.SOURCECODE_ZIP;
 import static org.junit.Assert.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import java.io.File;
 import java.util.*;
 
-import org.junit.Assert;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.Timeout;
@@ -49,8 +46,7 @@ public class PDSPrepareIntegrationScenario22IntTest {
         project3_sechub_calls_prepare_which_fails_will_not_start_checkmarx();
         project4_sechub_calls_prepare_which_fails_because_internal_failure_will_not_start_checkmarx();
         project5_start_PDS_prepare_job_from_remote_code_scan_configuration_and_check_for_configuration();
-
-        // project6_start_pds_prepare_with_pds_wrapper_application();
+        project6_start_pds_prepare_with_pds_wrapper_application();
 
     }
 
@@ -275,7 +271,7 @@ public class PDSPrepareIntegrationScenario22IntTest {
         String remoteLocation = remote.get().getLocation();
         assertEquals("remote_example_location", remoteLocation);
         String type = remote.get().getType();
-        assertEquals("docker", type);
+        assertEquals("none", type);
 
         Optional<SecHubRemoteCredentialConfiguration> credentials = remote.get().getCredentials();
         assertTrue(credentials.isPresent());
@@ -306,13 +302,15 @@ public class PDSPrepareIntegrationScenario22IntTest {
         Map<String, String> variables = fetchPDSVariableTestOutputMap(pdsJobUUID);
         assertEquals("e", variables.get("PDS_TEST_KEY_VARIANTNAME"));
 
-        /* check if the prepare-wrapper has uploaded the sources */
-        File downloadedFile = TestAPI.getFileUploaded(project, jobUUID, SOURCECODE_ZIP);
-        assertNotNull(downloadedFile);
-        Assert.assertTrue(downloadedFile.exists());
+        /* check if the prepare-wrapper was executed correctly */
+        String report = as(USER_2).getJobReport(project, jobUUID);
+        assertNotNull(report);
+        assertTrue(report.contains("SUCCESS"));
+        assertTrue(report.contains("Executed prepare module: IntegrationTestModule"));
 
-        // TODO: 28.05.24 laura - check if the prepare-wrapper was executed correctly
-        // PDS_STORAGE_SHAREDVOLUME_UPLOAD_DIR is not taken from PDS
+        // TODO: 31.05.24 laura for Albert: check if uploaded SOURCECODE_ZIP is available in shared storage projectID/JobUUID/sourcecode.zip
+        // upload path is /home/<user>/.sechub/sharedvolume/s22_0001project6/<5a244a6d-3c37-482b-8058-exampleUUID>/sourcecode.zip
+        // Does not work: File downloadedFile = TestAPI.getFileUploaded(project, jobUUID, SOURCECODE_ZIP);
 
         }
 }

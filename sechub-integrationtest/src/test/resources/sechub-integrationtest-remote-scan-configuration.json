@@ -6,7 +6,7 @@
         "name": "remote_example_name",
         "remote": {
           "location": "remote_example_location",
-          "type": "docker",
+          "type": "none",
           "credentials": {
             "user": {
               "name": "remote_example_user",

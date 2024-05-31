@@ -60,9 +60,9 @@ public class IntegrationTestModule implements PrepareWrapperModule {
                 if (Files.exists(repository)) {
                     return;
                 }
-                Files.createDirectory(repository);
-                Files.createFile(repository.resolve("integration-test-file_01.java"));
-                Files.createFile(repository.resolve("integration-test-file_02.java"));
+                Path tempDir = Files.createTempDirectory(downloadPath, repository.getFileName().toString());
+                Files.createTempFile(tempDir, "integration-test-file_01", ".java");
+                Files.createTempFile(tempDir, "integration-test-file_02", ".java");
             } catch (IOException e) {
                 throw new RuntimeException("Error while files in directory: " + downloadPath, e);
             }

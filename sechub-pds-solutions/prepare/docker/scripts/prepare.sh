@@ -16,6 +16,7 @@ options="-Dspring.profiles.active=default"
 
 # check if the Prepare Wrapper exists
 if [[ ! -f "$prepare_wrapper" ]]; then
+	echo "$pwd" 1>&2
     echo "ERROR: The Prepare wrapper file $prepare_wrapper does not exist." 1>&2
     exit 1
 fi
