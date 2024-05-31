@@ -1,12 +1,15 @@
 // SPDX-License-Identifier: MIT
 [[section-infrastructure-setup-security-products-prepare]]
-==== Prepare
+==== Prepare (Remote Data Preparation)
 
-`Prepare` is not a scan product, but a developed wrapper to download remote sources.
+`Prepare` is not a scan product, but a developed wrapper application to prepare remote sources for scans.
 It is used to download remote sources and upload them to the shared storage make them available to the scan products.
-The prepare-wrapper application can be run with the PDS prepare solution and implements the PREPARE phase.
+This enables the user to scan remote data without the need to store them local on a machine an upload it with the client.
 
-Please note the PDS prepare can only be executed with a shared storage setup.
+The `remote` section can be defined in the sechub configuration instead of the `filesystem`.
+
+Please note the PDS prepare can only be executed with a **shared storage setup**.
 These limitations are due to the fact, that the sechub server can not download sources from a PDS and copy them to another.
 
 image::remote_data_preparation.png[Remote data preparation]
+
