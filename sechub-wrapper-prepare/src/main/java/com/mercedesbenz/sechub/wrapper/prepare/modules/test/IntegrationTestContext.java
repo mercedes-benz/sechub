@@ -8,8 +8,9 @@ public class IntegrationTestContext extends ToolContext {
     static final String DOWNLOAD_DIRECTORY_NAME = "integration-test-download";
     private String repositoryName = "integration-test-repository";
 
-    public void setWorkingDirectory(Path workingDirectory) {
-        super.workingDirectory(workingDirectory);
+    @Override
+    public void setupRequiredToolDirectories(Path workingDirectory) {
+        super.setupRequiredToolDirectories(workingDirectory);
         toolDownloadDirectory = workingDirectory.resolve(DOWNLOAD_DIRECTORY_NAME);
     }
 

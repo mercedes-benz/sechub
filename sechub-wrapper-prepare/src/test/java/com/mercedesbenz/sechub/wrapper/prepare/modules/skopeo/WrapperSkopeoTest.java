@@ -42,7 +42,7 @@ class WrapperSkopeoTest {
         /* prepare */
         SkopeoContext context = new SkopeoContext();
         context.setLocation("docker://ubuntu:22.04");
-        context.setWorkingDirectory(skopeoDownloadPath);
+        context.setupRequiredToolDirectories(skopeoDownloadPath);
 
         /* execute */
         assertDoesNotThrow(() -> wrapperToTest.download(context));
@@ -59,7 +59,7 @@ class WrapperSkopeoTest {
         credentialMap.put(PDS_PREPARE_CREDENTIAL_PASSWORD, CryptoAccess.CRYPTO_STRING.seal("password"));
         SkopeoContext context = new SkopeoContext();
         context.setLocation("docker://ubuntu:22.04");
-        context.setWorkingDirectory(skopeoDownloadPath);
+        context.setupRequiredToolDirectories(skopeoDownloadPath);
         context.setCredentialMap(credentialMap);
 
         /* execute */
@@ -75,7 +75,7 @@ class WrapperSkopeoTest {
         String location = "docker://ubuntu:22.04";
         SkopeoContext context = new SkopeoContext();
         context.setLocation(location);
-        context.setWorkingDirectory(skopeoDownloadPath);
+        context.setupRequiredToolDirectories(skopeoDownloadPath);
         when(processAdapterFactory.startProcess(any())).thenThrow(new IOException());
 
         /* execute */

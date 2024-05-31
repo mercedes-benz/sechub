@@ -71,6 +71,7 @@ public class PrepareWrapperModuleSkopeo implements PrepareWrapperModule {
 
         SecHubRemoteDataConfiguration secHubRemoteDataConfiguration = context.getRemoteDataConfiguration();
         SkopeoContext skopeoContext = initializeSkopeoContext(context, secHubRemoteDataConfiguration);
+        createDownloadDirectory(skopeoContext.getToolDownloadDirectory());
         prepareRemoteConfiguration(skopeoContext, secHubRemoteDataConfiguration);
 
         if (!isDownloadSuccessful(skopeoContext)) {
@@ -101,9 +102,7 @@ public class PrepareWrapperModuleSkopeo implements PrepareWrapperModule {
 
         SkopeoContext skopeoContext = new SkopeoContext();
         skopeoContext.setLocation(secHubRemoteDataConfiguration.getLocation());
-        skopeoContext.setWorkingDirectory(workingDirectory);
-
-        createDownloadDirectory(skopeoContext.getToolDownloadDirectory());
+        skopeoContext.setupRequiredToolDirectories(workingDirectory);
 
         return skopeoContext;
     }

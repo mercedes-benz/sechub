@@ -71,7 +71,7 @@ public class PDSFileUploadJobService {
     UploadSizeConfiguration configuration;
 
     @Autowired
-    PDSLogSanitizer PDSLogSanitizer;
+    PDSLogSanitizer pdsLogSanitizer;
 
     @Autowired
     PDSServletFileUploadFactory servletFileUploadFactory;
@@ -222,7 +222,7 @@ public class PDSFileUploadJobService {
                 fileDefinedByUser = true;
                 break;
             default:
-                LOG.warn("Given field '{}' is not supported while uploading job data to project {}, {}", PDSLogSanitizer.sanitize(fieldName, 30), jobUUID);
+                LOG.warn("Given field '{}' is not supported while uploading job data to project {}, {}", pdsLogSanitizer.sanitize(fieldName, 30), jobUUID);
             }
         }
 

@@ -26,6 +26,7 @@ public class IntegrationTestModule implements PrepareWrapperModule {
 
         SecHubRemoteDataConfiguration secHubRemoteDataConfiguration = context.getRemoteDataConfiguration();
         IntegrationTestContext integrationTestContext = initializeIntegrationTestContext(context, secHubRemoteDataConfiguration);
+        createDownloadDirectory(integrationTestContext.getToolDownloadDirectory());
         prepareRemoteConfiguration(integrationTestContext, secHubRemoteDataConfiguration);
 
         uploadService.upload(context, integrationTestContext);
@@ -39,9 +40,7 @@ public class IntegrationTestModule implements PrepareWrapperModule {
 
         IntegrationTestContext integrationTestContext = new IntegrationTestContext();
         integrationTestContext.setLocation(secHubRemoteDataConfiguration.getLocation());
-        integrationTestContext.setWorkingDirectory(workingDirectory);
-
-        createDownloadDirectory(integrationTestContext.getToolDownloadDirectory());
+        integrationTestContext.setupRequiredToolDirectories(workingDirectory);
 
         return integrationTestContext;
     }

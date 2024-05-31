@@ -11,7 +11,6 @@ public abstract class ToolContext {
 
     private static final String UPLOAD_DIRECTORY_NAME = "upload";
     private String location;
-    private Path workingDirectory;
     protected Path uploadDirectory;
     protected Path toolDownloadDirectory;
 
@@ -21,11 +20,10 @@ public abstract class ToolContext {
         this.location = location;
     }
 
-    public void workingDirectory(Path workingDirectory) {
+    public void setupRequiredToolDirectories(Path workingDirectory) {
         if (workingDirectory == null) {
             throw new IllegalArgumentException("Upload directory may not be null!");
         }
-        this.workingDirectory = workingDirectory;
         this.uploadDirectory = workingDirectory.resolve(UPLOAD_DIRECTORY_NAME);
     }
 

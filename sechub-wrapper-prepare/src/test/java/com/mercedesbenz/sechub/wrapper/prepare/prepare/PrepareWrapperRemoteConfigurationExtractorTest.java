@@ -75,7 +75,7 @@ class PrepareWrapperRemoteConfigurationExtractorTest {
     }
 
     @Test
-    void extractor_returns_throws_exception_when_multiple_remote_sections_are_configured() {
+    void extractor_throws_exception_when_multiple_remote_sections_are_configured() {
         /* prepare */
         String json = """
                 {

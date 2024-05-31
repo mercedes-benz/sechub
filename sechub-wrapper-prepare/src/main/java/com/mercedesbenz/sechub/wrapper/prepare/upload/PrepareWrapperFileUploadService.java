@@ -82,8 +82,9 @@ public class PrepareWrapperFileUploadService {
             jobStorage.store(uploadFileNameData.checksumFilename, new StringInputStream(checkSum), checksumSizeInBytes);
 
         } catch (IOException e) {
-            LOG.error("Was not able to store file: " + uploadFileNameData.fileFilename, e);
-            throw new PrepareWrapperUploadException("Was not able to upload data", UNABLE_TO_STORE_FILE);
+            LOG.error("Was not able to store files: {}, {} and {}", uploadFileNameData.fileFilename, uploadFileNameData.checksumFilename,
+                    uploadFileNameData.filesizeFilename, e);
+            throw new PrepareWrapperUploadException("Was not able to upload data to the storage!", UNABLE_TO_STORE_FILE);
         }
     }
 

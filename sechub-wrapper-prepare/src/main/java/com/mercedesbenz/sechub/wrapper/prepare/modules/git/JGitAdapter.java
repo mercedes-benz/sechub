@@ -37,11 +37,13 @@ public class JGitAdapter {
         Path downloadDirectory = gitContext.getToolDownloadDirectory();
         Map<String, SealedObject> credentialMap = gitContext.getCredentialMap();
 
-        /*@formatter:off*/
-        CloneCommand command = Git.cloneRepository()
-                .setURI(location).
-                setDirectory(downloadDirectory.resolve(Path.of(gitContext.getRepositoryName())).toFile());
-        /*@formatter:on*/
+        Path repository = Path.of(gitContext.getRepositoryName());
+
+        /* @formatter:off */
+        CloneCommand command = Git.cloneRepository().
+                setURI(location).
+                setDirectory(downloadDirectory.resolve(repository).toFile());
+        /* @formatter:on */
 
         String username = getUserNameFromMap(credentialMap);
         String password = getPasswordFromMap(credentialMap);

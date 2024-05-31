@@ -74,6 +74,7 @@ public class PrepareWrapperModuleGit implements PrepareWrapperModule {
 
         SecHubRemoteDataConfiguration secHubRemoteDataConfiguration = context.getRemoteDataConfiguration();
         GitContext gitContext = initializeGitContext(context, secHubRemoteDataConfiguration);
+        createDownloadDirectory(gitContext.getToolDownloadDirectory());
 
         SecHubMessage message = new SecHubMessage(SecHubMessageType.INFO, "Preparing git repository.");
         context.getUserMessages().add(message);
@@ -98,9 +99,7 @@ public class PrepareWrapperModuleGit implements PrepareWrapperModule {
         GitContext gitContext = new GitContext();
         gitContext.setCloneWithoutHistory(pdsPrepareAutoCleanupGitFolder);
         gitContext.setLocation(secHubRemoteDataConfiguration.getLocation());
-        gitContext.setWorkingDirectory(workingDirectory);
-
-        createDownloadDirectory(gitContext.getToolDownloadDirectory());
+        gitContext.setupRequiredToolDirectories(workingDirectory);
 
         return gitContext;
     }

@@ -51,14 +51,14 @@ public class PrepareWrapperUploadService {
         SecHubDataConfiguration data = model.getData().get();
 
         if (!data.getSources().isEmpty()) {
-            File file = new File(toolContext.getUploadDirectory() + "/" + FILENAME_SOURCECODE_ZIP);
+            File file = new File(toolContext.getUploadDirectory() + File.separator + FILENAME_SOURCECODE_ZIP);
             String checkSum = checkSumSupport.createSha256Checksum(file.getPath());
 
             fileUploadService.uploadFile(projectId, sechubJobUUID, file, checkSum);
         }
 
         if (!data.getBinaries().isEmpty()) {
-            File file = new File(toolContext.getUploadDirectory() + "/" + FILENAME_BINARIES_TAR);
+            File file = new File(toolContext.getUploadDirectory() + File.separator + FILENAME_BINARIES_TAR);
             String checkSum = checkSumSupport.createSha256Checksum(file.getPath());
 
             fileUploadService.uploadFile(projectId, sechubJobUUID, file, checkSum);

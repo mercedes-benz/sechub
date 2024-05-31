@@ -41,7 +41,7 @@ class PDSConfigServiceTest {
         serviceToTest.repository = repository;
         serviceToTest.transactionService = transactionService;
         serviceToTest.calculator = calculator;
-        serviceToTest.PDSLogSanitizer = PDSLogSanitizer;
+        serviceToTest.pdsLogSanitizer = PDSLogSanitizer;
     }
 
     @Test

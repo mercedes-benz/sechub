@@ -56,7 +56,7 @@ class WrapperGitTest {
         gitContext.setCloneWithoutHistory(true);
         gitContext.setLocation(location);
         gitContext.setCredentialMap(credentialMap);
-        gitContext.setWorkingDirectory(tempDir);
+        gitContext.setupRequiredToolDirectories(tempDir);
 
         /* execute */
         gitToTest.downloadRemoteData(gitContext);

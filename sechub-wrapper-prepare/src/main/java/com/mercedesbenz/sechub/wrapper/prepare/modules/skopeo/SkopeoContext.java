@@ -10,8 +10,9 @@ public class SkopeoContext extends ToolContext {
     static final String DOWNLOAD_DIRECTORY_NAME = "skopeo-download";
     private File downloadTarFilename = new File("skopeo-download.tar");
 
-    public void setWorkingDirectory(Path workingDirectory) {
-        super.workingDirectory(workingDirectory);
+    @Override
+    public void setupRequiredToolDirectories(Path workingDirectory) {
+        super.setupRequiredToolDirectories(workingDirectory);
         toolDownloadDirectory = workingDirectory.resolve(DOWNLOAD_DIRECTORY_NAME);
     }
 

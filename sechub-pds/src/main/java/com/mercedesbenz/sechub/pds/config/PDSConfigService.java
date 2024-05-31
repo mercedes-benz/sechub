@@ -26,7 +26,7 @@ public class PDSConfigService {
     private static final Logger LOG = LoggerFactory.getLogger(PDSConfigService.class);
 
     @Autowired
-    PDSLogSanitizer PDSLogSanitizer;
+    PDSLogSanitizer pdsLogSanitizer;
 
     @Autowired
     PDSConfigRepository repository;
@@ -49,7 +49,7 @@ public class PDSConfigService {
 
         String configurationAsJson = configuration.toJSON();
 
-        LOG.info("Admin updates auto cleanup configuration to: {}", PDSLogSanitizer.sanitize(configurationAsJson, 8192));
+        LOG.info("Admin updates auto cleanup configuration to: {}", pdsLogSanitizer.sanitize(configurationAsJson, 8192));
 
         PDSConfig config = getOrCreateConfig();
         config.autoCleanupConfiguration = configurationAsJson;

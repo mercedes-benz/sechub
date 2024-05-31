@@ -14,8 +14,9 @@ public class GitContext extends ToolContext {
         this.cloneWithoutHistory = cloneWithoutHistory;
     }
 
-    public void setWorkingDirectory(Path workingDirectory) {
-        super.workingDirectory(workingDirectory);
+    @Override
+    public void setupRequiredToolDirectories(Path workingDirectory) {
+        super.setupRequiredToolDirectories(workingDirectory);
         toolDownloadDirectory = workingDirectory.resolve(DOWNLOAD_DIRECTORY_NAME);
     }
 
