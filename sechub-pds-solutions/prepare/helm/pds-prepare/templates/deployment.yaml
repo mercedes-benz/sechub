@@ -28,10 +28,10 @@ spec:
         - name: {{ .Chart.Name }}
           image: "{{ .Values.image.registry }}:{{ .Values.image.tag }}"
           resources:
-              requests:
-                  memory: "{{ .Values.resources.requests.memory }}"
-              limits:
-                  memory: "{{ .Values.resources.limits.memory }}"
+            requests:
+              memory: "{{ .Values.resources.requests.memory }}"
+            limits:
+              memory: "{{ .Values.resources.limits.memory }}"
           env:
             - name: PDS_START_MODE
               value: "{{ .Values.pds.startMode }}"
@@ -60,10 +60,6 @@ spec:
 {{- if .Values.pds.logging.type.enabled }}
             - name: LOGGING_TYPE
               value: {{ .Values.pds.logging.type.appenderName }}
-{{- end }}
-{{- if .Values.pds.debug.keepReportsInWorkspace }}
-            - name: PDS_WORKSPACE_AUTOCLEAN_DISABLED
-              value: "true"
 {{- end }}
 {{- if .Values.pds.javaDebug.enabled }}
             - name: JAVA_ENABLE_DEBUG

@@ -20,6 +20,3 @@ PDS_PREPARE_SECONDS_TO_WAIT_PREPARE_PROCESSES=-1
 PDS_PREPARE_MODULE_ENABLED_GIT="true"
 # Remove git related files and folder after download (clones without history)
 PDS_PREPARE_AUTO_CLEANUP_GIT_FOLDER="true"
-
-PDS_STORAGE_SHAREDVOLUME_UPLOAD_DIR=/shared_volumes/uploads
-
