@@ -24,7 +24,7 @@ FROM ${BASE_IMAGE} AS builder
 ARG GO
 ARG PDS_ARTIFACT_FOLDER
 ARG BUILD_FOLDER="/build"
-ARG KICS_VERSION="2.0.1"
+ARG KICS_VERSION
 
 # Environment variables in container
 ENV DOWNLOAD_FOLDER="/downloads"
