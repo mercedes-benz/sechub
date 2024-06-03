@@ -68,7 +68,7 @@ export const LAUNCHER_CONTEXT_DEFAULTS: LaunchContext = {
 
     inputData: INPUT_DATA_DEFAULTS,
     reportFormats: ['json'],
-    clientVersion: '1.6.1',
+    clientVersion: '',
     clientDownloadFolder: '',
     configFileLocation: null,
     clientExecutablePath: '',
