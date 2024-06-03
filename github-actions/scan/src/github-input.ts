@@ -42,7 +42,7 @@ export const INPUT_DATA_DEFAULTS: GitHubInputData = {
     apiToken: '',
     user: '',
     projectName: '',
-    sechubCLIVersion: '',
+    sechubCLIVersion: 'latest',
     debug: '',
     includeFolders: '',
     excludeFolders: '',
