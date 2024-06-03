@@ -1,6 +1,6 @@
 package com.mercedesbenz.sechub.wrapper.prepare.upload;
 
-import static com.mercedesbenz.sechub.commons.model.SecHubScanConfiguration.createFromJSON;
+import static com.mercedesbenz.sechub.commons.model.SecHubScanConfiguration.*;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
@@ -14,39 +14,70 @@ import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import com.mercedesbenz.sechub.commons.model.*;
+import com.mercedesbenz.sechub.commons.model.JSONConverter;
+import com.mercedesbenz.sechub.commons.model.SecHubBinaryDataConfiguration;
+import com.mercedesbenz.sechub.commons.model.SecHubConfigurationModel;
+import com.mercedesbenz.sechub.commons.model.SecHubDataConfiguration;
+import com.mercedesbenz.sechub.commons.model.SecHubFileSystemConfiguration;
+import com.mercedesbenz.sechub.commons.model.SecHubSourceDataConfiguration;
 import com.mercedesbenz.sechub.test.TestFileReader;
 import com.mercedesbenz.sechub.test.TestFileWriter;
+import com.mercedesbenz.sechub.wrapper.prepare.PrepareWrapperContext;
 import com.mercedesbenz.sechub.wrapper.prepare.cli.PrepareWrapperEnvironment;
-import com.mercedesbenz.sechub.wrapper.prepare.modules.ToolContext;
-import com.mercedesbenz.sechub.wrapper.prepare.prepare.PrepareWrapperContext;
+import com.mercedesbenz.sechub.wrapper.prepare.modules.PrepareToolContext;
 
 class PrepareWrapperSechubConfigurationSupportTest {
 
     private PrepareWrapperSechubConfigurationSupport supportToTest;
     private TestFileWriter writer;
+    private PrepareWrapperContext prepareContext;
+    private PrepareToolContext toolContext;
+    private PrepareWrapperEnvironment environment;
+    private Path uploadDirectory;
+    private Path testDownload;
+    private Path testTarFilename;
+    private Path testRepoName;
+    private File workspaceDirectory;
 
     @BeforeEach
-    void beforeEach() {
+    void beforeEach() throws Exception{
         supportToTest = new PrepareWrapperSechubConfigurationSupport();
         supportToTest.fileNameSupport = new FileNameSupport();
         writer = new TestFileWriter();
+        
+        prepareContext = mock(PrepareWrapperContext.class);
+        toolContext = mock(PrepareToolContext.class);
+        environment = mock(PrepareWrapperEnvironment.class);
+        
+        workspaceDirectory = Files.createTempDirectory("test-sechub-prepare_sechubConfigurationSupport").toFile();
+        workspaceDirectory.deleteOnExit();
+
+        uploadDirectory = workspaceDirectory.toPath().resolve(Path.of("upload"));
+        testDownload = workspaceDirectory.toPath().resolve(Path.of("test-download"));
+        testTarFilename = Path.of("test-tar.tar");
+        testRepoName = Path.of("git-repo-name");
+        
+        when(environment.getPdsJobWorkspaceLocation()).thenReturn(workspaceDirectory.getAbsolutePath());
+        when(prepareContext.getEnvironment()).thenReturn(environment);
+        
+        when(toolContext.getUploadDirectory()).thenReturn(uploadDirectory);
+        when(toolContext.getToolDownloadDirectory()).thenReturn(testDownload);
     }
 
     @Test
     void replaceRemoteDataWithFilesystem_throws_IllegalArgumentException_when_SecHubConfigurationModel_is_null() {
         /* prepare */
-        PrepareWrapperContext context = mock(PrepareWrapperContext.class);
-        when(context.getSecHubConfiguration()).thenReturn(null);
+       
+        when(prepareContext.getSecHubConfiguration()).thenReturn(null);
 
-        ToolContext toolContext = mock(ToolContext.class);
+       
         Path testPath = Path.of("path");
         when(toolContext.getUploadDirectory()).thenReturn(testPath);
         when(toolContext.getToolDownloadDirectory()).thenReturn(testPath);
 
         /* execute */
         IllegalArgumentException exception = assertThrows(IllegalArgumentException.class,
-                () -> supportToTest.replaceRemoteDataWithFilesystem(context, toolContext));
+                () -> supportToTest.replaceRemoteDataWithFilesystem(prepareContext, toolContext));
 
         /* test */
         assertEquals("SecHubConfigurationModel cannot be null", exception.getMessage());
@@ -55,20 +86,20 @@ class PrepareWrapperSechubConfigurationSupportTest {
     @Test
     void replaceRemoteDataWithFilesystem_returns_SecHubConfigurationModel_when_SecHubConfigurationModel_data_is_empty() {
         /* prepare */
-        PrepareWrapperContext context = mock(PrepareWrapperContext.class);
+       
         SecHubConfigurationModel model = new SecHubConfigurationModel();
-        when(context.getSecHubConfiguration()).thenReturn(model);
+        when(prepareContext.getSecHubConfiguration()).thenReturn(model);
         SecHubDataConfiguration data = new SecHubDataConfiguration();
         model.setData(data);
-        when(context.getSecHubConfiguration()).thenReturn(model);
+        when(prepareContext.getSecHubConfiguration()).thenReturn(model);
 
-        ToolContext toolContext = mock(ToolContext.class);
+       
         Path testPath = Path.of("path");
         when(toolContext.getUploadDirectory()).thenReturn(testPath);
         when(toolContext.getToolDownloadDirectory()).thenReturn(testPath);
 
         /* execute */
-        SecHubConfigurationModel result = supportToTest.replaceRemoteDataWithFilesystem(context, toolContext);
+        SecHubConfigurationModel result = supportToTest.replaceRemoteDataWithFilesystem(prepareContext, toolContext);
 
         /* test */
         assertEquals(model, result);
@@ -77,29 +108,14 @@ class PrepareWrapperSechubConfigurationSupportTest {
     @Test
     void replaceRemoteDataWithFilesystem_returns_SecHubConfigurationModel_when_SecHubConfigurationModel_data_binaries_is_not_empty() throws IOException {
         /* prepare */
-        File tempDir = Files.createTempDirectory("test-sechub-prepare_sechubConfigurationSupport").toFile();
-        tempDir.deleteOnExit();
-
-        Path uploadDirectory = tempDir.toPath().resolve(Path.of("upload"));
-        Path testDownload = tempDir.toPath().resolve(Path.of("test-download"));
-        Path testTarFilename = Path.of("test-tar.tar");
         writer.save(testDownload.resolve(testTarFilename).toFile(), "testText", true);
 
-        String json = TestFileReader.loadTextFile(new File("./src/test/resources/sechub_remote_data_config_binary_code_scan_example.json"));
-
-        PrepareWrapperContext context = mock(PrepareWrapperContext.class);
-        PrepareWrapperEnvironment environment = mock(PrepareWrapperEnvironment.class);
-        SecHubConfigurationModel model = createFromJSON(json);
-        when(environment.getPdsJobWorkspaceLocation()).thenReturn(tempDir.getAbsolutePath());
-        when(context.getSecHubConfiguration()).thenReturn(model);
-        when(context.getEnvironment()).thenReturn(environment);
-
-        ToolContext toolContext = mock(ToolContext.class);
-        when(toolContext.getUploadDirectory()).thenReturn(uploadDirectory);
-        when(toolContext.getToolDownloadDirectory()).thenReturn(testDownload);
+        SecHubConfigurationModel model = loadModelFromTestFile("sechub_remote_data_config_binary_code_scan_example.json");
+       
+        when(prepareContext.getSecHubConfiguration()).thenReturn(model);
 
         /* execute */
-        SecHubConfigurationModel result = supportToTest.replaceRemoteDataWithFilesystem(context, toolContext);
+        SecHubConfigurationModel result = supportToTest.replaceRemoteDataWithFilesystem(prepareContext, toolContext);
 
         /* test */
         assertNotNull(result);
@@ -120,29 +136,14 @@ class PrepareWrapperSechubConfigurationSupportTest {
     @Test
     void replaceRemoteDataWithFilesystem_returns_SecHubConfigurationModel_when_SecHubConfigurationModel_data_sources_is_not_empty() throws IOException {
         /* prepare */
-        File tempDir = Files.createTempDirectory("test-sechub-prepare_sechubConfigurationSupport").toFile();
-        tempDir.deleteOnExit();
-
-        Path uploadDirectory = tempDir.toPath().resolve(Path.of("upload"));
-        Path testDownload = tempDir.toPath().resolve(Path.of("test-download"));
-        Path testRepoName = Path.of("git-repo-name");
         writer.save(testDownload.resolve(testRepoName).resolve(Path.of(".git")).toFile(), "testText", true);
 
-        String json = TestFileReader.loadTextFile(new File("./src/test/resources/sechub_remote_data_config_source_code_scan_example.json"));
-
-        PrepareWrapperContext context = mock(PrepareWrapperContext.class);
-        PrepareWrapperEnvironment environment = mock(PrepareWrapperEnvironment.class);
-        SecHubConfigurationModel model = createFromJSON(json);
-        when(environment.getPdsJobWorkspaceLocation()).thenReturn(tempDir.getAbsolutePath());
-        when(context.getSecHubConfiguration()).thenReturn(model);
-        when(context.getEnvironment()).thenReturn(environment);
-
-        ToolContext toolContext = mock(ToolContext.class);
-        when(toolContext.getUploadDirectory()).thenReturn(uploadDirectory);
-        when(toolContext.getToolDownloadDirectory()).thenReturn(testDownload);
+        SecHubConfigurationModel model = loadModelFromTestFile("sechub_remote_data_config_source_code_scan_example.json");
+       
+        when(prepareContext.getSecHubConfiguration()).thenReturn(model);
 
         /* execute */
-        SecHubConfigurationModel result = supportToTest.replaceRemoteDataWithFilesystem(context, toolContext);
+        SecHubConfigurationModel result = supportToTest.replaceRemoteDataWithFilesystem(prepareContext, toolContext);
 
         /* test */
         assertNotNull(result);
@@ -163,22 +164,11 @@ class PrepareWrapperSechubConfigurationSupportTest {
     @Test
     void replaceRemoteDataWithFilesystem_returns_expected_SecHubConfigurationModel_for_remote_binaries() throws IOException {
         /* prepare */
-        File tempDir = Files.createTempDirectory("test-sechub-prepare_sechubConfigurationSupport").toFile();
-        tempDir.deleteOnExit();
-
-        Path uploadDirectory = tempDir.toPath().resolve(Path.of("upload"));
-        Path testDownload = tempDir.toPath().resolve(Path.of("test-download"));
-        Path testTarFilename = Path.of("test-tar.tar");
         writer.save(testDownload.resolve(testTarFilename).toFile(), "testText", true);
 
-        String json = TestFileReader.loadTextFile(new File("./src/test/resources/sechub_remote_data_config_binary_code_scan_example.json"));
-
-        PrepareWrapperContext context = mock(PrepareWrapperContext.class);
-        PrepareWrapperEnvironment environment = mock(PrepareWrapperEnvironment.class);
-        SecHubConfigurationModel model = createFromJSON(json);
-        when(environment.getPdsJobWorkspaceLocation()).thenReturn(tempDir.getAbsolutePath());
-        when(context.getSecHubConfiguration()).thenReturn(model);
-        when(context.getEnvironment()).thenReturn(environment);
+        SecHubConfigurationModel model = loadModelFromTestFile("sechub_remote_data_config_binary_code_scan_example.json");
+       
+        when(prepareContext.getSecHubConfiguration()).thenReturn(model);
 
         SecHubConfigurationModel expectedModel = new SecHubConfigurationModel();
         expectedModel.setApiVersion(model.getApiVersion());
@@ -192,12 +182,8 @@ class PrepareWrapperSechubConfigurationSupportTest {
         data.getBinaries().add(binary);
         expectedModel.setData(data);
 
-        ToolContext toolContext = mock(ToolContext.class);
-        when(toolContext.getUploadDirectory()).thenReturn(uploadDirectory);
-        when(toolContext.getToolDownloadDirectory()).thenReturn(testDownload);
-
         /* execute */
-        SecHubConfigurationModel result = supportToTest.replaceRemoteDataWithFilesystem(context, toolContext);
+        SecHubConfigurationModel result = supportToTest.replaceRemoteDataWithFilesystem(prepareContext, toolContext);
 
         /* test */
         String stringResult = JSONConverter.get().toJSON(result);
@@ -208,22 +194,10 @@ class PrepareWrapperSechubConfigurationSupportTest {
     @Test
     void replaceRemoteDataWithFilesystem_returns_expected_SecHubConfigurationModel_for_remote_sources() throws IOException {
         /* prepare */
-        File tempDir = Files.createTempDirectory("test-sechub-prepare_sechubConfigurationSupport").toFile();
-        tempDir.deleteOnExit();
-
-        Path uploadDirectory = tempDir.toPath().resolve(Path.of("upload"));
-        Path testDownload = tempDir.toPath().resolve(Path.of("test-download"));
-        Path testRepoName = Path.of("git-repo-name");
         writer.save(testDownload.resolve(testRepoName).resolve(Path.of(".git")).toFile(), "testText", true);
 
-        String json = TestFileReader.loadTextFile(new File("./src/test/resources/sechub_remote_data_config_source_code_scan_example.json"));
-
-        PrepareWrapperContext context = mock(PrepareWrapperContext.class);
-        PrepareWrapperEnvironment environment = mock(PrepareWrapperEnvironment.class);
-        SecHubConfigurationModel model = createFromJSON(json);
-        when(environment.getPdsJobWorkspaceLocation()).thenReturn(tempDir.getAbsolutePath());
-        when(context.getSecHubConfiguration()).thenReturn(model);
-        when(context.getEnvironment()).thenReturn(environment);
+        SecHubConfigurationModel model = loadModelFromTestFile("sechub_remote_data_config_source_code_scan_example.json");
+        when(prepareContext.getSecHubConfiguration()).thenReturn(model);
 
         SecHubConfigurationModel expectedModel = new SecHubConfigurationModel();
         expectedModel.setApiVersion(model.getApiVersion());
@@ -236,17 +210,19 @@ class PrepareWrapperSechubConfigurationSupportTest {
         source.setUniqueName("remote_example_name");
         data.getSources().add(source);
         expectedModel.setData(data);
-
-        ToolContext toolContext = mock(ToolContext.class);
-        when(toolContext.getUploadDirectory()).thenReturn(uploadDirectory);
-        when(toolContext.getToolDownloadDirectory()).thenReturn(testDownload);
+        
 
         /* execute */
-        SecHubConfigurationModel result = supportToTest.replaceRemoteDataWithFilesystem(context, toolContext);
+        SecHubConfigurationModel result = supportToTest.replaceRemoteDataWithFilesystem(prepareContext, toolContext);
 
         /* test */
         String stringResult = JSONConverter.get().toJSON(result);
         String stringExpected = JSONConverter.get().toJSON(expectedModel);
         assertEquals(stringExpected, stringResult);
+    }
+
+    private SecHubConfigurationModel loadModelFromTestFile(String fileName) {
+        String json = TestFileReader.loadTextFile(new File("./src/test/resources/"+fileName));
+        return createFromJSON(json);
     }
 }

@@ -1,50 +1,115 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.wrapper.prepare;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.*;
 
 import java.io.IOException;
+import java.nio.file.Path;
+import java.util.UUID;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import com.mercedesbenz.sechub.adapter.AdapterExecutionResult;
 import com.mercedesbenz.sechub.commons.archive.ArchiveSupport;
+import com.mercedesbenz.sechub.test.TestUtil;
 import com.mercedesbenz.sechub.wrapper.prepare.cli.PrepareWrapperEnvironment;
-import com.mercedesbenz.sechub.wrapper.prepare.factory.PrepareWrapperPDSUserMessageSupportPojoFactory;
-import com.mercedesbenz.sechub.wrapper.prepare.factory.PrepareWrapperPojoFactory;
-import com.mercedesbenz.sechub.wrapper.prepare.modules.*;
-import com.mercedesbenz.sechub.wrapper.prepare.modules.git.GitInputValidator;
+import com.mercedesbenz.sechub.wrapper.prepare.modules.PrepareWrapperModule;
+import com.mercedesbenz.sechub.wrapper.prepare.modules.git.GitPrepareInputValidator;
+import com.mercedesbenz.sechub.wrapper.prepare.modules.git.GitPrepareWrapperModule;
+import com.mercedesbenz.sechub.wrapper.prepare.modules.git.GitWrapper;
 import com.mercedesbenz.sechub.wrapper.prepare.modules.git.JGitAdapter;
-import com.mercedesbenz.sechub.wrapper.prepare.modules.git.PrepareWrapperModuleGit;
-import com.mercedesbenz.sechub.wrapper.prepare.modules.git.WrapperGit;
-import com.mercedesbenz.sechub.wrapper.prepare.modules.skopeo.PrepareWrapperModuleSkopeo;
-import com.mercedesbenz.sechub.wrapper.prepare.modules.skopeo.SkopeoInputValidator;
-import com.mercedesbenz.sechub.wrapper.prepare.modules.skopeo.WrapperSkopeo;
-import com.mercedesbenz.sechub.wrapper.prepare.prepare.PrepareWrapperContextFactory;
-import com.mercedesbenz.sechub.wrapper.prepare.prepare.PrepareWrapperPreparationService;
-import com.mercedesbenz.sechub.wrapper.prepare.prepare.PrepareWrapperRemoteConfigurationExtractor;
-import com.mercedesbenz.sechub.wrapper.prepare.upload.*;
+import com.mercedesbenz.sechub.wrapper.prepare.modules.skopeo.SkopeoPrepareInputValidator;
+import com.mercedesbenz.sechub.wrapper.prepare.modules.skopeo.SkopeoPrepareWrapperModule;
+import com.mercedesbenz.sechub.wrapper.prepare.modules.skopeo.SkopeoWrapper;
+import com.mercedesbenz.sechub.wrapper.prepare.upload.FileNameSupport;
+import com.mercedesbenz.sechub.wrapper.prepare.upload.PrepareWrapperArchiveCreator;
+import com.mercedesbenz.sechub.wrapper.prepare.upload.PrepareWrapperFileUploadService;
+import com.mercedesbenz.sechub.wrapper.prepare.upload.PrepareWrapperS3PropertiesSetup;
+import com.mercedesbenz.sechub.wrapper.prepare.upload.PrepareWrapperSechubConfigurationSupport;
+import com.mercedesbenz.sechub.wrapper.prepare.upload.PrepareWrapperSharedVolumePropertiesSetup;
+import com.mercedesbenz.sechub.wrapper.prepare.upload.PrepareWrapperStorageService;
+import com.mercedesbenz.sechub.wrapper.prepare.upload.PrepareWrapperUploadService;
 
-@SpringBootTest(classes = { PrepareWrapperContextFactory.class, PrepareWrapperPreparationService.class, PrepareWrapperPojoFactory.class,
-        PrepareWrapperEnvironment.class, PrepareWrapperPDSUserMessageSupportPojoFactory.class, PrepareWrapperRemoteConfigurationExtractor.class,
-        PrepareWrapperModuleGit.class, PrepareWrapperModule.class, WrapperGit.class, GitInputValidator.class, JGitAdapter.class,
-        PrepareWrapperModuleSkopeo.class, WrapperSkopeo.class, SkopeoInputValidator.class, PrepareWrapperStorageService.class,
-        PrepareWrapperUploadService.class, PrepareWrapperFileUploadService.class, PrepareWrapperSechubConfigurationSupport.class, FileNameSupport.class,
-        PrepareWrapperArchiveCreator.class, ArchiveSupport.class, PrepareWrapperSharedVolumePropertiesSetup.class, PrepareWrapperS3PropertiesSetup.class })
+/* @formatter:off */
+@SpringBootTest(classes = { PrepareWrapperContextFactory.class,
+        PrepareWrapperPreparationService.class,
+        PrepareWrapperPojoFactory.class,
+        PrepareWrapperPDSUserMessageSupportFactory.class,
+        PrepareWrapperRemoteConfigurationExtractor.class,
+        GitPrepareWrapperModule.class,
+        PrepareWrapperModule.class,
+        GitPrepareInputValidator.class,
+        JGitAdapter.class,
+        SkopeoPrepareWrapperModule.class,
+        SkopeoWrapper.class,
+        SkopeoPrepareInputValidator.class,
+        PrepareWrapperStorageService.class,
+        PrepareWrapperUploadService.class,
+        PrepareWrapperFileUploadService.class,
+        PrepareWrapperSechubConfigurationSupport.class,
+        PrepareWrapperArchiveCreator.class,
+        ArchiveSupport.class,
+        FileNameSupport.class,
+        PrepareWrapperSharedVolumePropertiesSetup.class,
+        PrepareWrapperS3PropertiesSetup.class })
+/* @formatter:on */
 @ExtendWith(SpringExtension.class)
-@TestPropertySource(locations = "classpath:application-test-fail.properties")
+@TestPropertySource(locations = "classpath:init-testdata-prepare-wrapper-spring-boot.properties")
 class PrepareWrapperApplicationSpringBootTest {
 
     @Autowired
     PrepareWrapperPreparationService preparationService;
 
+    @MockBean
+    PrepareWrapperEnvironment environment;
+
+    @MockBean
+    GitWrapper gitWrapper;
+
+    private UUID sechubJobUUID;
+
+    @BeforeEach
+    void beforeEach() throws Exception {
+        Path testFolder = TestUtil.createTempDirectoryInBuildFolder("prepare-wrapper-sb");
+
+        sechubJobUUID = UUID.randomUUID();
+        when(environment.getSechubJobUUID()).thenReturn(sechubJobUUID.toString());
+        when(environment.getPdsUserMessagesFolder()).thenReturn(testFolder.resolve("/messages").toString());
+        when(environment.getPdsJobWorkspaceLocation()).thenReturn(testFolder.resolve("workspace").toString());
+    }
+
     @Test
-    void start_preparation_with_remote_test_properties_and_empty_prepare_service_list_fails() throws IOException {
+    void start_preparation_remote_data_but_cannot_handled__results_in_failed() throws IOException {
+        /* prepare */
+        when(environment.getSechubConfigurationModelAsJson()).thenReturn(
+                """
+                {
+                  "projectId" : "project1",
+                  "data" : {
+                    "binaries" : [ {
+                      "name" : "remote_example_name",
+                      "remote" : {
+                        "location" : "https://not-any.repo/",
+                        "type" : "not-git"
+                      }
+                    } ]
+                  },
+                  "codeScan" : {
+                    "use" : [ "remote_example_name" ]
+                  }
+                }
+                """
+                );
+
+
         /* execute */
         AdapterExecutionResult result = preparationService.startPreparation();
 
@@ -52,6 +117,71 @@ class PrepareWrapperApplicationSpringBootTest {
         assertEquals("SECHUB_PREPARE_RESULT;status=FAILED", result.getProductResult());
         assertEquals(1, result.getProductMessages().size());
         assertEquals("No module was able to prepare the defined remote data.", result.getProductMessages().get(0).getText());
+    }
+
+    @Test
+    void start_preparation_remote_data_handled_by_git_but_location_not_correct_results_in_failed() throws IOException {
+        /* prepare */
+        when(environment.getSechubConfigurationModelAsJson()).thenReturn(
+                """
+                {
+                  "projectId" : "project1",
+                  "data" : {
+                    "binaries" : [ {
+                      "name" : "remote_example_name",
+                      "remote" : {
+                        "location" : "https://not-any.repo/",
+                        "type" : "git"
+                      }
+                    } ]
+                  },
+                  "codeScan" : {
+                    "use" : [ "remote_example_name" ]
+                  }
+                }
+                """
+                );
+
+
+        /* execute + test */
+        assertThrows(PrepareWrapperInputValidatorException.class, ()-> preparationService.startPreparation());
+
+    }
+
+    @Test
+    void start_preparation_remote_data_handled_by_git_and_location_correct_results_in_success() throws IOException {
+        /* prepare */
+        when(environment.getSechubConfigurationModelAsJson()).thenReturn(
+                """
+                {
+                  "projectId" : "project1",
+                  "data" : {
+                    "binaries" : [ {
+                      "name" : "remote_example_name",
+                      "remote" : {
+                        "location" : "https://somewhere.example.com/testrepository.git",
+                        "type" : "git"
+                      }
+                    } ]
+                  },
+                  "codeScan" : {
+                    "use" : [ "remote_example_name" ]
+                  }
+                }
+                """
+                );
+
+
+        /* execute + test */
+        IllegalStateException exception = assertThrows(IllegalStateException.class, ()-> preparationService.startPreparation());
+
+        /* test */
+        String message = exception.getMessage();
+        String expected = "Download of git repository was not successful"; // the mocked git wrapper does not download
+        if(!message.contains(expected)) {
+            assertEquals(expected, message);
+        }
+
     }
 
 }

@@ -1,16 +1,10 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.wrapper.prepare.modules.git;
 
-import static com.mercedesbenz.sechub.wrapper.prepare.cli.PrepareWrapperEnvironmentVariables.PDS_PREPARE_CREDENTIAL_PASSWORD;
-import static com.mercedesbenz.sechub.wrapper.prepare.cli.PrepareWrapperEnvironmentVariables.PDS_PREPARE_CREDENTIAL_USERNAME;
-import static com.mercedesbenz.sechub.wrapper.prepare.modules.UsageExceptionExitCode.GIT_CLONING_FAILED;
-import static com.mercedesbenz.sechub.wrapper.prepare.modules.UsageExceptionExitCode.LOCATION_URL_NOT_VALID_URL;
+import static com.mercedesbenz.sechub.wrapper.prepare.modules.UsageExceptionExitCode.*;
 
 import java.nio.file.Path;
 import java.util.List;
-import java.util.Map;
-
-import javax.crypto.SealedObject;
 
 import org.eclipse.jgit.api.CloneCommand;
 import org.eclipse.jgit.api.Git;
@@ -21,9 +15,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.mercedesbenz.sechub.commons.core.security.CryptoAccess;
 import com.mercedesbenz.sechub.pds.commons.core.PDSLogSanitizer;
-import com.mercedesbenz.sechub.wrapper.prepare.modules.PrepareWrapperUsageException;
+import com.mercedesbenz.sechub.wrapper.prepare.PrepareWrapperUsageException;
 
 @Component
 public class JGitAdapter {
@@ -36,7 +29,6 @@ public class JGitAdapter {
     public void clone(GitContext gitContext) {
         String location = transformLocationToURL(gitContext.getLocation());
         Path downloadDirectory = gitContext.getToolDownloadDirectory();
-        Map<String, SealedObject> credentialMap = gitContext.getCredentialMap();
 
         Path repository = Path.of(gitContext.getRepositoryName());
 
@@ -46,8 +38,9 @@ public class JGitAdapter {
                 setDirectory(downloadDirectory.resolve(repository).toFile());
         /* @formatter:on */
 
-        String username = getUserNameFromMap(credentialMap);
-        String password = getPasswordFromMap(credentialMap);
+        String username = gitContext.getUnsealedUsername();
+        String password = gitContext.getUnsealedPassword();
+
         if (username != null && password != null) {
             LOG.debug("Cloning private repository: {} with username and password to: {} ", pdsLogSanitizer.sanitize(location, 1024), downloadDirectory);
             command = command.setCredentialsProvider(new UsernamePasswordCredentialsProvider(username, password));
@@ -65,14 +58,6 @@ public class JGitAdapter {
             LOG.error("Could not clone defined repository: {}", pdsLogSanitizer.sanitize(location, 1024), e);
             throw new PrepareWrapperUsageException("Could not clone defined repository: " + pdsLogSanitizer.sanitize(location, 1024), e, GIT_CLONING_FAILED);
         }
-    }
-
-    private String getUserNameFromMap(Map<String, SealedObject> credentialMap) {
-        return CryptoAccess.CRYPTO_STRING.unseal(credentialMap.get(PDS_PREPARE_CREDENTIAL_USERNAME));
-    }
-
-    private String getPasswordFromMap(Map<String, SealedObject> credentialMap) {
-        return CryptoAccess.CRYPTO_STRING.unseal(credentialMap.get(PDS_PREPARE_CREDENTIAL_PASSWORD));
     }
 
     private String transformLocationToURL(String location) {

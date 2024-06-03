@@ -15,9 +15,9 @@ import com.mercedesbenz.sechub.commons.core.prepare.PrepareResult;
 import com.mercedesbenz.sechub.commons.core.prepare.PrepareStatus;
 import com.mercedesbenz.sechub.commons.model.SecHubMessage;
 import com.mercedesbenz.sechub.commons.model.SecHubMessageType;
-import com.mercedesbenz.sechub.wrapper.prepare.modules.PrepareWrapperUsageException;
-import com.mercedesbenz.sechub.wrapper.prepare.prepare.PrepareWrapperPreparationService;
-import com.mercedesbenz.sechub.wrapper.prepare.prepare.PrepareWrapperResultStorageService;
+import com.mercedesbenz.sechub.wrapper.prepare.PrepareWrapperPreparationService;
+import com.mercedesbenz.sechub.wrapper.prepare.PrepareWrapperResultStorageService;
+import com.mercedesbenz.sechub.wrapper.prepare.PrepareWrapperUsageException;
 import com.mercedesbenz.sechub.wrapper.prepare.upload.PrepareWrapperUploadException;
 
 @Component

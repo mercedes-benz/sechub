@@ -1,10 +1,9 @@
 package com.mercedesbenz.sechub.wrapper.prepare.upload;
 
-import static com.mercedesbenz.sechub.commons.model.SecHubScanConfiguration.createFromJSON;
+import static com.mercedesbenz.sechub.commons.model.SecHubScanConfiguration.*;
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.Mockito.*;
 
 import java.io.File;
 import java.io.IOException;
@@ -20,9 +19,10 @@ import com.mercedesbenz.sechub.commons.archive.ArchiveSupport;
 import com.mercedesbenz.sechub.commons.model.SecHubConfigurationModel;
 import com.mercedesbenz.sechub.test.TestFileReader;
 import com.mercedesbenz.sechub.test.TestFileWriter;
+import com.mercedesbenz.sechub.wrapper.prepare.PrepareWrapperContext;
 import com.mercedesbenz.sechub.wrapper.prepare.cli.PrepareWrapperEnvironment;
-import com.mercedesbenz.sechub.wrapper.prepare.modules.ToolContext;
-import com.mercedesbenz.sechub.wrapper.prepare.prepare.PrepareWrapperContext;
+import com.mercedesbenz.sechub.wrapper.prepare.modules.AbstractPrepareToolContext;
+import com.mercedesbenz.sechub.wrapper.prepare.modules.PrepareToolContext;
 
 class PrepareWrapperArchiveCreatorTest {
 
@@ -63,16 +63,16 @@ class PrepareWrapperArchiveCreatorTest {
         when(context.getSecHubConfiguration()).thenReturn(model);
         when(context.getEnvironment()).thenReturn(environment);
 
-        ToolContext toolContext = mock(ToolContext.class);
-        when(toolContext.getUploadDirectory()).thenReturn(uploadDirectory);
-        when(toolContext.getToolDownloadDirectory()).thenReturn(tempDir.toPath().resolve(testDownload));
+        PrepareToolContext abstractToolContext = mock(AbstractPrepareToolContext.class);
+        when(abstractToolContext.getUploadDirectory()).thenReturn(uploadDirectory);
+        when(abstractToolContext.getToolDownloadDirectory()).thenReturn(tempDir.toPath().resolve(testDownload));
 
         List<Path> pathList = new ArrayList<>();
         pathList.add(testDownload.resolve(testTarFilename));
         when(fileNameSupport.getTarFilesFromDirectory(any())).thenReturn(pathList);
 
         /* execute */
-        assertDoesNotThrow(() -> creatorToTest.create(context, toolContext));
+        assertDoesNotThrow(() -> creatorToTest.create(context, abstractToolContext));
 
         /* test */
         assertTrue(new File(uploadDirectory + "/binaries.tar").exists());
@@ -102,12 +102,12 @@ class PrepareWrapperArchiveCreatorTest {
         pathList.add(testRepoName.getFileName());
         when(fileNameSupport.getRepositoriesFromDirectory(any())).thenReturn(pathList);
 
-        ToolContext toolContext = mock(ToolContext.class);
-        when(toolContext.getUploadDirectory()).thenReturn(uploadDirectory);
-        when(toolContext.getToolDownloadDirectory()).thenReturn(testDownload);
+        PrepareToolContext abstractToolContext = mock(AbstractPrepareToolContext.class);
+        when(abstractToolContext.getUploadDirectory()).thenReturn(uploadDirectory);
+        when(abstractToolContext.getToolDownloadDirectory()).thenReturn(testDownload);
 
         /* execute */
-        assertDoesNotThrow(() -> creatorToTest.create(context, toolContext));
+        assertDoesNotThrow(() -> creatorToTest.create(context, abstractToolContext));
 
         /* test */
         assertTrue(new File(uploadDirectory + "/sourcecode.zip").exists());

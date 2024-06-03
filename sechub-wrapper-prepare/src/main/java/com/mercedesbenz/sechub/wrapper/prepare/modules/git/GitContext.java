@@ -3,21 +3,22 @@ package com.mercedesbenz.sechub.wrapper.prepare.modules.git;
 
 import java.nio.file.Path;
 
-import com.mercedesbenz.sechub.wrapper.prepare.modules.ToolContext;
+import com.mercedesbenz.sechub.wrapper.prepare.modules.AbstractPrepareToolContext;
 
-public class GitContext extends ToolContext {
+public class GitContext extends AbstractPrepareToolContext {
 
     static final String DOWNLOAD_DIRECTORY_NAME = "git-download";
     private boolean cloneWithoutHistory;
     private String repositoryName = "git-repository";
+    private Path toolDownloadDirectory;
 
     public void setCloneWithoutHistory(boolean cloneWithoutHistory) {
         this.cloneWithoutHistory = cloneWithoutHistory;
     }
 
     @Override
-    public void setupRequiredToolDirectories(Path workingDirectory) {
-        super.setupRequiredToolDirectories(workingDirectory);
+    public void init(Path workingDirectory) {
+        super.init(workingDirectory);
         toolDownloadDirectory = workingDirectory.resolve(DOWNLOAD_DIRECTORY_NAME);
     }
 
@@ -31,6 +32,11 @@ public class GitContext extends ToolContext {
 
     public boolean isCloneWithoutHistory() {
         return cloneWithoutHistory;
+    }
+
+    @Override
+    public Path getToolDownloadDirectory() {
+        return toolDownloadDirectory;
     }
 
 }

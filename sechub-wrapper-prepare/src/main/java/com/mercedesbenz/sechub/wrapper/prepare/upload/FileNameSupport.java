@@ -3,7 +3,8 @@ package com.mercedesbenz.sechub.wrapper.prepare.upload;
 import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.springframework.stereotype.Component;
 

@@ -284,6 +284,7 @@ public class PDSPrepareIntegrationScenario22IntTest {
         /* @formatter:on */
     }
 
+    @Test
     public void project6_start_pds_prepare_with_pds_wrapper_application() {
         /* @formatter:off */
 
@@ -300,13 +301,13 @@ public class PDSPrepareIntegrationScenario22IntTest {
 
         UUID pdsJobUUID = waitForFirstPDSJobOfSecHubJobAndReturnPDSJobUUID(jobUUID);
         Map<String, String> variables = fetchPDSVariableTestOutputMap(pdsJobUUID);
-        assertEquals("e", variables.get("PDS_TEST_KEY_VARIANTNAME"));
+        assertEquals("e", variables.get("PDS_TEST_KEY_VARIANTNAME")); // sanity check -it is really the variant we expect...
 
         /* check if the prepare-wrapper was executed correctly */
         String report = as(USER_2).getJobReport(project, jobUUID);
-        assertNotNull(report);
-        assertTrue(report.contains("SUCCESS"));
-        assertTrue(report.contains("Executed prepare module: IntegrationTestModule"));
+        
+        System.out.println(report);
+        assertReport(report).hasTrafficLight(TrafficLight.GREEN).hasMessage(SecHubMessageType.INFO, "x");
 
         // TODO: 31.05.24 laura for Albert: check if uploaded SOURCECODE_ZIP is available in shared storage projectID/JobUUID/sourcecode.zip
         // upload path is /home/<user>/.sechub/sharedvolume/s22_0001project6/<5a244a6d-3c37-482b-8058-exampleUUID>/sourcecode.zip

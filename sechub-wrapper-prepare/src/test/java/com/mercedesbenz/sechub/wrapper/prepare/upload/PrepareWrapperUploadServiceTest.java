@@ -1,7 +1,7 @@
 package com.mercedesbenz.sechub.wrapper.prepare.upload;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
 
 import java.nio.file.Path;
@@ -17,9 +17,10 @@ import com.mercedesbenz.sechub.commons.model.SecHubBinaryDataConfiguration;
 import com.mercedesbenz.sechub.commons.model.SecHubConfigurationModel;
 import com.mercedesbenz.sechub.commons.model.SecHubDataConfiguration;
 import com.mercedesbenz.sechub.commons.model.SecHubSourceDataConfiguration;
+import com.mercedesbenz.sechub.wrapper.prepare.PrepareWrapperContext;
 import com.mercedesbenz.sechub.wrapper.prepare.cli.PrepareWrapperEnvironment;
-import com.mercedesbenz.sechub.wrapper.prepare.modules.ToolContext;
-import com.mercedesbenz.sechub.wrapper.prepare.prepare.PrepareWrapperContext;
+import com.mercedesbenz.sechub.wrapper.prepare.modules.AbstractPrepareToolContext;
+import com.mercedesbenz.sechub.wrapper.prepare.modules.PrepareToolContext;
 
 class PrepareWrapperUploadServiceTest {
 
@@ -54,19 +55,19 @@ class PrepareWrapperUploadServiceTest {
         when(context.getEnvironment().getSechubJobUUID()).thenReturn(uuid.toString());
         when(context.getEnvironment().getSechubJobUUID()).thenReturn(uuid.toString());
 
-        ToolContext toolContext = mock(ToolContext.class);
+        PrepareToolContext abstractToolContext = mock(AbstractPrepareToolContext.class);
         Path testPath = Path.of("path");
-        when(toolContext.getUploadDirectory()).thenReturn(testPath);
-        when(toolContext.getToolDownloadDirectory()).thenReturn(testPath);
+        when(abstractToolContext.getUploadDirectory()).thenReturn(testPath);
+        when(abstractToolContext.getToolDownloadDirectory()).thenReturn(testPath);
 
         SecHubConfigurationModel model = mock(SecHubConfigurationModel.class);
-        when(sechubConfigurationSupport.replaceRemoteDataWithFilesystem(context, toolContext)).thenReturn(model);
+        when(sechubConfigurationSupport.replaceRemoteDataWithFilesystem(context, abstractToolContext)).thenReturn(model);
         when(model.getProjectId()).thenReturn("projectId");
 
         when(context.getSecHubConfiguration()).thenReturn(model);
 
         /* execute */
-        IllegalStateException exception = assertThrows(IllegalStateException.class, () -> uploadServiceToTest.upload(context, toolContext));
+        IllegalStateException exception = assertThrows(IllegalStateException.class, () -> uploadServiceToTest.upload(context, abstractToolContext));
 
         /* test */
         assertEquals("SecHubConfigurationModel data is not configured.", exception.getMessage());
@@ -89,18 +90,18 @@ class PrepareWrapperUploadServiceTest {
 
         when(context.getSecHubConfiguration()).thenReturn(model);
 
-        ToolContext toolContext = mock(ToolContext.class);
+        PrepareToolContext abstractToolContext = mock(AbstractPrepareToolContext.class);
         Path testPath = Path.of("path");
-        when(toolContext.getUploadDirectory()).thenReturn(testPath);
-        when(toolContext.getToolDownloadDirectory()).thenReturn(testPath);
+        when(abstractToolContext.getUploadDirectory()).thenReturn(testPath);
+        when(abstractToolContext.getToolDownloadDirectory()).thenReturn(testPath);
 
-        when(sechubConfigurationSupport.replaceRemoteDataWithFilesystem(context, toolContext)).thenReturn(model);
+        when(sechubConfigurationSupport.replaceRemoteDataWithFilesystem(context, abstractToolContext)).thenReturn(model);
 
         List<SecHubSourceDataConfiguration> list = mock(List.class);
         when(dataConfiguration.getSources()).thenReturn(list);
 
         /* execute */
-        uploadServiceToTest.upload(context, toolContext);
+        uploadServiceToTest.upload(context, abstractToolContext);
 
         /* test */
         verify(fileUploadService).uploadFile(any(), any(), any(), any());
@@ -123,18 +124,18 @@ class PrepareWrapperUploadServiceTest {
 
         when(context.getSecHubConfiguration()).thenReturn(model);
 
-        ToolContext toolContext = mock(ToolContext.class);
+        PrepareToolContext abstractToolContext = mock(AbstractPrepareToolContext.class);
         Path testPath = Path.of("path");
-        when(toolContext.getUploadDirectory()).thenReturn(testPath);
-        when(toolContext.getToolDownloadDirectory()).thenReturn(testPath);
+        when(abstractToolContext.getUploadDirectory()).thenReturn(testPath);
+        when(abstractToolContext.getToolDownloadDirectory()).thenReturn(testPath);
 
-        when(sechubConfigurationSupport.replaceRemoteDataWithFilesystem(context, toolContext)).thenReturn(model);
+        when(sechubConfigurationSupport.replaceRemoteDataWithFilesystem(context, abstractToolContext)).thenReturn(model);
 
         List<SecHubBinaryDataConfiguration> list = mock(List.class);
         when(dataConfiguration.getBinaries()).thenReturn(list);
 
         /* execute */
-        uploadServiceToTest.upload(context, toolContext);
+        uploadServiceToTest.upload(context, abstractToolContext);
 
         /* test */
         verify(fileUploadService).uploadFile(any(), any(), any(), any());

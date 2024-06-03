@@ -1,7 +1,7 @@
 package com.mercedesbenz.sechub.wrapper.prepare.upload;
 
 import static com.mercedesbenz.sechub.commons.core.CommonConstants.*;
-import static com.mercedesbenz.sechub.wrapper.prepare.upload.UploadExceptionExitCode.UNABLE_TO_STORE_FILE;
+import static com.mercedesbenz.sechub.wrapper.prepare.upload.UploadExceptionExitCode.*;
 
 import java.io.File;
 import java.io.FileInputStream;

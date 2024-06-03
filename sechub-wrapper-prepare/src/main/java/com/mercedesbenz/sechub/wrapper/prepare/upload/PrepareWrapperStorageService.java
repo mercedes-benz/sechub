@@ -5,7 +5,11 @@ import java.util.UUID;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.mercedesbenz.sechub.storage.core.*;
+import com.mercedesbenz.sechub.storage.core.JobStorage;
+import com.mercedesbenz.sechub.storage.core.JobStorageFactory;
+import com.mercedesbenz.sechub.storage.core.S3Setup;
+import com.mercedesbenz.sechub.storage.core.SharedVolumeSetup;
+import com.mercedesbenz.sechub.storage.core.StorageService;
 import com.mercedesbenz.sechub.storage.s3.AwsS3JobStorageFactory;
 import com.mercedesbenz.sechub.storage.sharevolume.spring.SharedVolumeJobStorageFactory;
 

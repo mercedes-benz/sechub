@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.wrapper.prepare.cli;
 
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
 
 import java.io.IOException;
@@ -12,8 +13,8 @@ import org.junit.jupiter.api.Test;
 import com.mercedesbenz.sechub.adapter.AdapterExecutionResult;
 import com.mercedesbenz.sechub.commons.core.prepare.PrepareResult;
 import com.mercedesbenz.sechub.commons.core.prepare.PrepareStatus;
-import com.mercedesbenz.sechub.wrapper.prepare.prepare.PrepareWrapperPreparationService;
-import com.mercedesbenz.sechub.wrapper.prepare.prepare.PrepareWrapperResultStorageService;
+import com.mercedesbenz.sechub.wrapper.prepare.PrepareWrapperPreparationService;
+import com.mercedesbenz.sechub.wrapper.prepare.PrepareWrapperResultStorageService;
 
 class PrepareWrapperCLITest {
 

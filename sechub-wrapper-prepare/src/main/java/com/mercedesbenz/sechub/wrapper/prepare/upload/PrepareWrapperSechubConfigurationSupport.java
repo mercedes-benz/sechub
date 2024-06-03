@@ -10,8 +10,8 @@ import org.springframework.stereotype.Component;
 
 import com.mercedesbenz.sechub.commons.model.SecHubConfigurationModel;
 import com.mercedesbenz.sechub.commons.model.SecHubFileSystemConfiguration;
-import com.mercedesbenz.sechub.wrapper.prepare.modules.ToolContext;
-import com.mercedesbenz.sechub.wrapper.prepare.prepare.PrepareWrapperContext;
+import com.mercedesbenz.sechub.wrapper.prepare.PrepareWrapperContext;
+import com.mercedesbenz.sechub.wrapper.prepare.modules.PrepareToolContext;
 
 @Component
 public class PrepareWrapperSechubConfigurationSupport {
@@ -21,7 +21,7 @@ public class PrepareWrapperSechubConfigurationSupport {
 
     private static Logger LOG = LoggerFactory.getLogger(PrepareWrapperSechubConfigurationSupport.class);
 
-    public SecHubConfigurationModel replaceRemoteDataWithFilesystem(PrepareWrapperContext context, ToolContext toolContext) {
+    public SecHubConfigurationModel replaceRemoteDataWithFilesystem(PrepareWrapperContext context, PrepareToolContext toolContext) {
         SecHubConfigurationModel modifiedModel = context.getSecHubConfiguration();
 
         if (modifiedModel == null) {
@@ -44,8 +44,8 @@ public class PrepareWrapperSechubConfigurationSupport {
         return modifiedModel;
     }
 
-    private SecHubConfigurationModel replaceRemoteBinariesWithFileSystem(ToolContext toolContext, SecHubConfigurationModel modifiedModel) {
-        List<Path> tarFiles = fileNameSupport.getTarFilesFromDirectory(toolContext.getToolDownloadDirectory());
+    private SecHubConfigurationModel replaceRemoteBinariesWithFileSystem(PrepareToolContext context, SecHubConfigurationModel modifiedModel) {
+        List<Path> tarFiles = fileNameSupport.getTarFilesFromDirectory(context.getToolDownloadDirectory());
         SecHubFileSystemConfiguration fileSystemConfiguration = new SecHubFileSystemConfiguration();
 
         for (Path tarFile : tarFiles) {
@@ -60,7 +60,7 @@ public class PrepareWrapperSechubConfigurationSupport {
         return modifiedModel;
     }
 
-    private SecHubConfigurationModel replaceRemoteSourcesWithFileSystem(ToolContext context, SecHubConfigurationModel modifiedModel) {
+    private SecHubConfigurationModel replaceRemoteSourcesWithFileSystem(PrepareToolContext context, SecHubConfigurationModel modifiedModel) {
         List<Path> repositories = fileNameSupport.getRepositoriesFromDirectory(context.getToolDownloadDirectory());
         SecHubFileSystemConfiguration fileSystemConfiguration = new SecHubFileSystemConfiguration();
 

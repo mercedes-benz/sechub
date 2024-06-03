@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.wrapper.prepare.upload;
 
-import static com.mercedesbenz.sechub.pds.commons.core.config.PDSStorageConstants.PDS_STORAGE_SHAREDVOLUME_UPLOAD_DIR;
+import static com.mercedesbenz.sechub.pds.commons.core.config.PDSStorageConstants.*;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;

@@ -1,42 +1,45 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.wrapper.prepare.modules;
 
-import static com.mercedesbenz.sechub.wrapper.prepare.cli.PrepareWrapperEnvironmentVariables.PDS_PREPARE_CREDENTIAL_PASSWORD;
-import static com.mercedesbenz.sechub.wrapper.prepare.cli.PrepareWrapperEnvironmentVariables.PDS_PREPARE_CREDENTIAL_USERNAME;
-
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.util.HashMap;
-
-import javax.crypto.SealedObject;
 
 import org.springframework.stereotype.Service;
 
-import com.mercedesbenz.sechub.commons.core.security.CryptoAccess;
-import com.mercedesbenz.sechub.commons.model.SecHubRemoteCredentialUserData;
-import com.mercedesbenz.sechub.wrapper.prepare.prepare.PrepareWrapperContext;
+import com.mercedesbenz.sechub.wrapper.prepare.PrepareWrapperContext;
 
 @Service
 public interface PrepareWrapperModule {
 
-    boolean prepare(PrepareWrapperContext context) throws IOException;
+    /**
+     * Checks if the module is responsible to prepare.
+     *
+     * @param context the current context with data inside to check responsibility
+     * @return <code>true</code> when responsible, <code>false</code> otherwise
+     */
+    boolean isResponsibleToPrepare(PrepareWrapperContext context);
 
-    default void addSealedUserCredentials(SecHubRemoteCredentialUserData user, HashMap<String, SealedObject> credentialMap) {
-        SealedObject sealedUsername = CryptoAccess.CRYPTO_STRING.seal(user.getName());
-        SealedObject sealedPassword = CryptoAccess.CRYPTO_STRING.seal(user.getPassword());
-        credentialMap.put(PDS_PREPARE_CREDENTIAL_USERNAME, sealedUsername);
-        credentialMap.put(PDS_PREPARE_CREDENTIAL_PASSWORD, sealedPassword);
-    }
+    /**
+     * Does prepare
+     *
+     * @param context current context
+     * @throws IOException when preparation failed
+     */
+    void prepare(PrepareWrapperContext context) throws IOException;
 
-    default void createDownloadDirectory(Path path) {
-        if (Files.exists(path)) {
-            return;
-        }
-        try {
-            Files.createDirectories(path);
-        } catch (IOException e) {
-            throw new RuntimeException("Error while creating download directory: " + path, e);
-        }
-    }
+    /**
+     * Resolves user message which is send back to user when preparation was done by
+     * module
+     *
+     * @return user message or <code>null</code> when no message shall be sent to
+     *         user
+     */
+    String getUserMessageForPreparationDone();
+
+    /**
+     * Resolves if this module is enabled or not
+     *
+     * @return <code>true</code> when enabled, otherwise <code>false</code>
+     */
+    boolean isEnabled();
+
 }

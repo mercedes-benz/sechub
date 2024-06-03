@@ -4,31 +4,28 @@ package com.mercedesbenz.sechub.wrapper.prepare.modules.skopeo;
 import java.io.File;
 import java.nio.file.Path;
 
-import com.mercedesbenz.sechub.wrapper.prepare.modules.ToolContext;
+import com.mercedesbenz.sechub.wrapper.prepare.modules.AbstractPrepareToolContext;
 
-public class SkopeoContext extends ToolContext {
+public class SkopeoContext extends AbstractPrepareToolContext {
 
-    static final String DOWNLOAD_DIRECTORY_NAME = "skopeo-download";
-    private File downloadTarFilename = new File("skopeo-download.tar");
+    private File downloadTarFilename;
+    private Path skopeoDownloadDirectory;
 
     @Override
-    public void setupRequiredToolDirectories(Path workingDirectory) {
-        super.setupRequiredToolDirectories(workingDirectory);
-        toolDownloadDirectory = workingDirectory.resolve(DOWNLOAD_DIRECTORY_NAME);
+    public void init(Path workingDirectory) {
+        super.init(workingDirectory);
+
+        skopeoDownloadDirectory = workingDirectory.resolve(SkopeoWrapperConstants.DOWNLOAD_DIRECTORY_NAME);
+        downloadTarFilename = skopeoDownloadDirectory.resolve(SkopeoWrapperConstants.DOWNLOAD_FILENAME).toFile();
     }
 
-    public void setDownloadTarFilename(File downloadTarFilename) {
-        if (downloadTarFilename == null) {
-            throw new IllegalArgumentException("Download filename may not be null.");
-        }
-        if (!downloadTarFilename.getName().endsWith(".tar")) {
-            throw new IllegalArgumentException("Download filename must end with .tar.");
-        }
-        this.downloadTarFilename = downloadTarFilename;
-    }
-
-    public File getDownloadTarFilename() {
+    public File getDownloadTarFile() {
         return downloadTarFilename;
+    }
+
+    @Override
+    public Path getToolDownloadDirectory() {
+        return skopeoDownloadDirectory;
     }
 
 }
