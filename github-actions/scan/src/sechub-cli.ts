@@ -8,7 +8,10 @@ import * as core from '@actions/core';
  * @param context launch context
  */
 export function scan(context: LaunchContext) {
-    const shellCommand = `${context.clientExecutablePath} -configfile ${context.configFileLocation} -output ${context.workspaceFolder} -addScmHistory=${context.inputData.addScmHistory} scan`;
+    const addScmHistory = context.inputData.addScmHistory === 'true' ? '-addScmHistory' : '';
+    let shellCommand = `${context.clientExecutablePath} -configfile ${context.configFileLocation} -output ${context.workspaceFolder} ${addScmHistory} scan`;
+    // remove duplicate whitespaces caused by optional arguments
+    shellCommand = shellCommand.replace(/\s+/g, ' ');
     core.debug(`scan shell command: ${shellCommand}`);
 
     const shellString =  shell.exec(shellCommand);

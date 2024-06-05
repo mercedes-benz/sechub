@@ -26,9 +26,32 @@ jest.mock('shelljs', () => ({
     }))
 }));
 
+beforeEach(() => {
+    jest.clearAllMocks();
+});
+
 describe('sechub-cli', function() {
 
-    it('scan - executes SecHub client with correct shell command & returns correct job id', function () {
+    it('scan - return correct job id', function () {
+        /* prepare */
+        const context: any = {
+            clientExecutablePath: '/path/to/sechub-cli',
+            configFileLocation: '/path/to/config.json',
+            workspaceFolder: '/path/to/workspace',
+            inputData: {
+                addScmHistory: 'false'
+            }
+        };
+
+        /* execute */
+        scan(context);
+
+        /* test */
+        expect(context.lastClientExitCode).toEqual(0);
+        expect(context.jobUUID).toEqual('6880e518-88db-406a-bc67-851933e7e5b7');
+    });
+
+    it('scan - with addScmHistory flag true - executes SecHub client with -addScmHistory', function () {
         /* prepare */
         const context: any = {
             clientExecutablePath: '/path/to/sechub-cli',
@@ -44,9 +67,26 @@ describe('sechub-cli', function() {
 
         /* test */
         expect(shell.exec).toBeCalledTimes(1);
-        expect(shell.exec).toBeCalledWith('/path/to/sechub-cli -configfile /path/to/config.json -output /path/to/workspace -addScmHistory=true scan');
-        expect(context.lastClientExitCode).toEqual(0);
-        expect(context.jobUUID).toEqual('6880e518-88db-406a-bc67-851933e7e5b7');
+        expect(shell.exec).toBeCalledWith('/path/to/sechub-cli -configfile /path/to/config.json -output /path/to/workspace -addScmHistory scan');
+    });
+
+    it('scan - with addScmHistory flag false - executes SecHub client without -addScmHistory', function () {
+        /* prepare */
+        const context: any = {
+            clientExecutablePath: '/path/to/sechub-cli',
+            configFileLocation: '/path/to/config.json',
+            workspaceFolder: '/path/to/workspace',
+            inputData: {
+                addScmHistory: 'false'
+            }
+        };
+
+        /* execute */
+        scan(context);
+
+        /* test */
+        expect(shell.exec).toBeCalledTimes(1);
+        expect(shell.exec).toBeCalledWith('/path/to/sechub-cli -configfile /path/to/config.json -output /path/to/workspace scan');
     });
 
     it('extractJobUUID - returns job uuid from sechub client output snippet', function () {
