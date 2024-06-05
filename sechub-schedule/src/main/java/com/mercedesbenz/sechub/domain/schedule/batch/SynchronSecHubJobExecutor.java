@@ -68,7 +68,7 @@ public class SynchronSecHubJobExecutor {
         try {
             String secHubConfiguration = secHubJob.getJsonConfiguration();
 
-            /* own thread so MDC.put necessary */
+            /* own thread so MDC.put necessary for logging */
             MDC.clear();
             MDC.put(LogConstants.MDC_SECHUB_JOB_UUID, uuids.getSecHubJobUUIDasString());
             MDC.put(LogConstants.MDC_SECHUB_EXECUTION_UUID, uuids.getExecutionUUIDAsString());

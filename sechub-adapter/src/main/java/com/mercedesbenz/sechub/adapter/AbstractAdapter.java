@@ -61,17 +61,18 @@ public abstract class AbstractAdapter<A extends AdapterContext<C>, C extends Ada
     @Override
     public final AdapterExecutionResult start(C config, AdapterMetaDataCallback callback) throws AdapterException {
         AdapterRuntimeContext runtimeContext = new AdapterRuntimeContext();
+        /* callback is from product executor and resolves adapter meta data for the product result (which is reused on soft restart of job*/ 
         runtimeContext.callback = callback;
         runtimeContext.metaData = callback.getMetaDataOrNull();
 
         if (runtimeContext.metaData == null) {
-
+            /* not reused, we need a complete new PDS job */
             runtimeContext.metaData = new AdapterMetaData();
             runtimeContext.metaData.adapterVersion = getAdapterVersion();
             runtimeContext.type = ExecutionType.INITIAL;
 
         } else {
-
+            /* reuse existing PDS job means we have a restart */
             runtimeContext.type = ExecutionType.RESTART;
 
         }

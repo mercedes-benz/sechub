@@ -40,6 +40,8 @@ public class PDSAdapterDataConfigurator implements PDSAdapterConfigData, PDSAdap
 
     private long resilienceTimeToWaitBeforeRetryInMilliseconds;
 
+    private UUID executorConfigurationUUID; // FIXME correct position?
+    
     public void setTargetType(String targetType) {
         if (targetType == null) {
             this.targetType = EMPTY_TARGET_TYPE;

@@ -69,6 +69,7 @@ class ScanJobExecutor {
         runnableData.setRunnableThread(executorThread);
 
         try {
+            /* start scan thread */
             executorThread.start();
 
             scanJobListener.started(sechubJobUUID, scanJobExecutionRunnable);
