@@ -181,4 +181,9 @@ public class SecHubExecutionContext {
         return prepareFailed;
     }
 
+    public void markPauseRequested() {
+        // FIXME implement
+        
+    }
+
 }

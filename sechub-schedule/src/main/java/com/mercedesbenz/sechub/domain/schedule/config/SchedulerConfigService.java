@@ -80,6 +80,10 @@ public class SchedulerConfigService {
         return repository.save(newConfig);
     }
 
+    /**
+     * Checks if job processing is globally enabled (cluster wide).
+     * @return <code>true</code> when scheduling globally enabled inside cluster, otherwise <code>false</code>
+     */
     public boolean isJobProcessingEnabled() {
         SchedulerConfig config = getOrCreateConfig();
         return config.isJobProcessingEnabled();

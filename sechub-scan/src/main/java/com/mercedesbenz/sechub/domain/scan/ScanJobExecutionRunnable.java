@@ -92,5 +92,17 @@ class ScanJobExecutionRunnable implements Runnable, CanceableScanJob {
         executorThread.interrupt();
 
     }
+    
+    public void pauseScanJob() {
+        SecHubExecutionContext executionContext = runnableData.getExecutionContext();
+        Thread executorThread = runnableData.getRunnableThread();
+
+        executionContext.markPauseRequested(); // Using this method, the pause request can be checked in multiple threads
+
+        LOG.info("Will interrupt scan job thread because of cancel operation: {}", executorThread.getName());
+
+        executorThread.interrupt();
+
+    }
 
 }

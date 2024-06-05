@@ -83,6 +83,9 @@ public class SchedulerJobBatchTriggerService {
     @Autowired
     AlertLogService alertLogService;
 
+    @Autowired
+    SchedulerTerminationService schedulerTerminationService;
+    
     @PostConstruct
     protected void postConstruct() {
         // show info about delay values in log (once)
@@ -100,11 +103,18 @@ public class SchedulerJobBatchTriggerService {
         if (LOG.isTraceEnabled()) {
             /* NOSONAR */LOG.trace("Trigger execution of next job started. Environment: {}", environmentService.getEnvironment());
         }
+        if (schedulerTerminationService.isTerminating()) {
+            LOG.trace("Terminating, stop scheduling on this instance");
+            return;
+        }
+        
+        /* check scheduling enabled cluster wide */
         if (!configService.isJobProcessingEnabled()) {
             LOG.warn("Job processing is disabled, so cancel scheduling. Environment: {}", environmentService.getEnvironment());
             return;
         }
-
+        
+        /* check scheduling possible in health situation */
         if (healthCheckEnabled) {
             if (monitorService.isCPULoadAverageMaxReached()) {
                 alertLogService.log(SCHEDULER_PROBLEM, CPU_OVERLOAD, "Job processing is skipped. {}, {}", monitorService.createCPUDescription(),
@@ -117,6 +127,7 @@ public class SchedulerJobBatchTriggerService {
                 return;
             }
         }
+        
         RetryContext retryContext = new RetryContext(markNextJobRetries);
         do {
             try {
