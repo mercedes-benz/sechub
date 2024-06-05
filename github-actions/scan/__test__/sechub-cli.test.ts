@@ -28,7 +28,7 @@ jest.mock('shelljs', () => ({
 
 describe('sechub-cli', function() {
 
-    it.only('scan - executes SecHub client with correct shell command & returns correct job id', function () {
+    it('scan - executes SecHub client with correct shell command & returns correct job id', function () {
         /* prepare */
         const context: any = {
             clientExecutablePath: '/path/to/sechub-cli',
