@@ -69,8 +69,12 @@ public class ArchiveSupport {
      *
      * @throws IOException
      */
-    public ArchiveExtractionResult extract(ArchiveType archiveType, InputStream sourceInputStream, String sourceLocation, File outputDir,
-            SecHubFileStructureDataProvider fileStructureDataProvider) throws IOException {
+    public ArchiveExtractionResult extract(ArchiveType archiveType,
+                                           InputStream sourceInputStream,
+                                           String sourceLocation,
+                                           File outputDir,
+                                           SecHubFileStructureDataProvider fileStructureDataProvider,
+                                           ) throws IOException {
         if (archiveType == null) {
             throw new IllegalArgumentException("archive type must be defined!");
         }
