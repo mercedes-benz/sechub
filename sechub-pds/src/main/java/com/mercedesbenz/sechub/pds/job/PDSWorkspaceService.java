@@ -71,7 +71,27 @@ public class PDSWorkspaceService {
 
     @PDSMustBeDocumented(value = "Set PDS workspace root folder path. Each running PDS job will have its own temporary sub directory inside this folder. ", scope = "execution")
     @Value("${pds.workspace.rootfolder:" + DEFAULT_WORKSPACE_ROOTFOLDER_PATH + "}")
-    String workspaceRootFolderPath = DEFAULT_WORKSPACE_ROOTFOLDER_PATH;
+    private String workspaceRootFolderPath = DEFAULT_WORKSPACE_ROOTFOLDER_PATH;
+
+    @PDSMustBeDocumented(value = "Defines if workspace is automatically cleaned when no longer necessary - means launcher script has been executed and finished (failed or done)", scope = "execution")
+    @Value("${pds.workspace.autoclean.disabled:false}")
+    private boolean workspaceAutoCleanDisabled;
+
+    @PDSMustBeDocumented(value = "Defines the zip file max size", scope = "execution")
+    @Value("${pds.zip.extraction.max-file-size}")
+    private String zipExtractionMaxFileSize;
+
+    @PDSMustBeDocumented(value = "Defines the zip file max size after extraction", scope = "execution")
+    @Value("${pds.zip.extraction.max-file-size-uncompressed}")
+    private String zipExtractionMaxFileSizeUncompressed;
+
+    @PDSMustBeDocumented(value = "Defines the zip file allowed compression rate", scope = "execution")
+    @Value("${pds.zip.extraction.max-compression-rate}")
+    private String zipExtractionMaxCompressionRate;
+
+    @PDSMustBeDocumented(value = "Defines the zip file extraction timeout", scope = "execution")
+    @Value("${pds.zip.extraction.timeout}")
+    private String zipExtractionTimeout;
 
     @Autowired
     PDSMultiStorageService storageService;
@@ -96,10 +116,6 @@ public class PDSWorkspaceService {
 
     @Autowired
     PDSWorkspacePreparationResultCalculator preparationResultCalculator;
-
-    @PDSMustBeDocumented(value = "Defines if workspace is automatically cleaned when no longer necessary - means launcher script has been executed and finished (failed or done)", scope = "execution")
-    @Value("${pds.workspace.autoclean.disabled:false}")
-    private boolean workspaceAutoCleanDisabled;
 
     private static final ArchiveFilter TAR_FILE_FILTER = new TarFileFilter();
 
