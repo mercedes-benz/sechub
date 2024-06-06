@@ -35,6 +35,10 @@ To be able to use this action you need a SecHub project. Check the https://merce
     # OPTIONAL: Which version of the SecHub cli to use
     # DEFAULT: latest
     version: 'latest'
+
+    # OPTIONAL: Whether scm history should be uploaded or not
+    # DEFAULT: false
+    add-scm-history: 'false'
     
     # OPTIONAL: A list of scan types that shall be used when a sechub configuration file is generated.
     #           Allowed values: codeScan, secretScan and licenseScan - If you want other scan types you 
