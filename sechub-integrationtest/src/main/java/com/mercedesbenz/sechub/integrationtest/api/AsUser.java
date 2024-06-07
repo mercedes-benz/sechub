@@ -36,7 +36,6 @@ import com.mercedesbenz.sechub.commons.model.JSONConverter;
 import com.mercedesbenz.sechub.commons.model.SecHubConfigurationModel;
 import com.mercedesbenz.sechub.integrationtest.JSONTestSupport;
 import com.mercedesbenz.sechub.integrationtest.internal.IntegrationTestContext;
-import com.mercedesbenz.sechub.integrationtest.internal.IntegrationTestDefaultExecutorConfigurations;
 import com.mercedesbenz.sechub.integrationtest.internal.IntegrationTestFileSupport;
 import com.mercedesbenz.sechub.integrationtest.internal.IntegrationTestTemplateFile;
 import com.mercedesbenz.sechub.integrationtest.internal.SecHubClientExecutor.ExecutionResult;
@@ -52,11 +51,9 @@ import com.mercedesbenz.sechub.test.executionprofile.TestExecutionProfile;
 import com.mercedesbenz.sechub.test.executionprofile.TestExecutionProfileList;
 import com.mercedesbenz.sechub.test.executorconfig.TestExecutorConfig;
 import com.mercedesbenz.sechub.test.executorconfig.TestExecutorConfigList;
-import com.mercedesbenz.sechub.test.executorconfig.TestExecutorConfigListEntry;
 import com.mercedesbenz.sechub.test.executorconfig.TestExecutorSetupJobParam;
 
 public class AsUser {
-
     private static final Logger LOG = LoggerFactory.getLogger(AsUser.class);
     private JSONTestSupport jsonTestSupport = JSONTestSupport.DEFAULT;
     private SecHubJobAutoDumper autoDumper = new SecHubJobAutoDumper();
@@ -1002,7 +999,8 @@ public class AsUser {
      * @throws IllegalStateException    when key was not found
      */
     public AsUser changeProductExecutorJobParameter(TestExecutorConfig executorConfig, String key, String newValue) {
-        ensureExecutorConfigUUIDs(executorConfig);
+        ensureExecutorConfigUUID(executorConfig);
+
         UUID executorConfigUUID = executorConfig.uuid;
         if (executorConfigUUID == null) {
             throw new IllegalArgumentException("Invalid test case: executorConfigUUID may not be null! Name was:" + executorConfig.name);
@@ -1022,27 +1020,6 @@ public class AsUser {
         }
         return this;
 
-    }
-
-    void ensureExecutorConfigUUIDs() {
-        for (TestExecutorConfig config : IntegrationTestDefaultExecutorConfigurations.getAllConfigurations()) {
-            ensureExecutorConfigUUIDs(config);
-        }
-    }
-
-    void ensureExecutorConfigUUIDs(TestExecutorConfig executorConfig) {
-        if (executorConfig.uuid != null) {
-            return;
-        }
-        LOG.warn("The executor config:" + executorConfig.name
-                + " had no UUID - this can happen when starting an integration test again when executor config already exists and not recreated. So load list of executor configurations and try to resolve the config. But be aware! Ensure names of configurations are unique here so it's really the config you wanted");
-        TestExecutorConfigList list = fetchProductExecutorConfigList();
-        for (TestExecutorConfigListEntry entry : list.executorConfigurations) {
-            if (executorConfig.name.equals(entry.name)) {
-                executorConfig.uuid = entry.uuid;
-                break;
-            }
-        }
     }
 
     ProjectFalsePositivesDefinition create(TestProject project, String json) {
