@@ -14,7 +14,7 @@ public class ZAPAcceptedBrowserIdValidator implements IParameterValidator {
         }
         boolean isValid = false;
         for (ZAPAcceptedBrowserId browserId : ZAPAcceptedBrowserId.values()) {
-            if (browserId.getBrowserId().equalsIgnoreCase(value)) {
+            if (browserId.getBrowserId().equals(value)) {
                 isValid = true;
                 break;
             }

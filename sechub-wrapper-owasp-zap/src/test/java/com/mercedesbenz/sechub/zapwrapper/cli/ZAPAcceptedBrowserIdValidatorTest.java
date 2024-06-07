@@ -17,7 +17,7 @@ class ZAPAcceptedBrowserIdValidatorTest {
 
     @ParameterizedTest
     @NullSource
-    @ValueSource(strings = { "1", "invalid", "UPPERCASE_INVALID" })
+    @ValueSource(strings = { "1", "invalid", "FIREFOX-HEADLESS" })
     void invalid_values_throw_an_parameter_exception(String browserId) {
         /* execute + test */
         assertThrows(ParameterException.class, () -> validatorToTest.validate(null, browserId));
@@ -28,16 +28,6 @@ class ZAPAcceptedBrowserIdValidatorTest {
     void all_valid_browser_ids_are_accepted(ZAPAcceptedBrowserId browserId) {
         /* execute + test */
         assertDoesNotThrow(() -> validatorToTest.validate(null, browserId.getBrowserId()));
-    }
-
-    @ParameterizedTest
-    @EnumSource(ZAPAcceptedBrowserId.class)
-    void all_valid_browser_ids_are_accepted_uppercased(ZAPAcceptedBrowserId browserId) {
-        /* prepare */
-        String browserIdUppercased = browserId.getBrowserId().toUpperCase();
-
-        /* execute + test */
-        assertDoesNotThrow(() -> validatorToTest.validate(null, browserIdUppercased));
     }
 
 }
