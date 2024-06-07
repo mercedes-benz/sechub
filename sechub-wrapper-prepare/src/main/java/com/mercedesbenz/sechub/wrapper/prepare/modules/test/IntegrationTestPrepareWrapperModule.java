@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
 
+import com.mercedesbenz.sechub.commons.TextFileWriter;
 import com.mercedesbenz.sechub.commons.model.SecHubRemoteDataConfiguration;
 import com.mercedesbenz.sechub.pds.commons.core.PDSProfiles;
 import com.mercedesbenz.sechub.wrapper.prepare.PrepareWrapperContext;
@@ -29,6 +30,9 @@ public class IntegrationTestPrepareWrapperModule extends AbstractPrepareWrapperM
     @Autowired
     PrepareWrapperUploadService uploadService;
 
+    @Autowired
+    TextFileWriter writer;
+
     @Override
     public boolean isEnabled() {
         return true;
@@ -44,7 +48,7 @@ public class IntegrationTestPrepareWrapperModule extends AbstractPrepareWrapperM
         if (type == null) {
             return false;
         }
-        return type.equals("test");
+        return type.equals("integrationtest");
     }
 
     @Override
@@ -91,6 +95,20 @@ public class IntegrationTestPrepareWrapperModule extends AbstractPrepareWrapperM
                 Path tempDir = Files.createTempDirectory(downloadPath, repository.getFileName().toString());
                 Files.createTempFile(tempDir, "integration-test-file_01", ".java");
                 Files.createTempFile(tempDir, "integration-test-file_02", ".java");
+
+                /*
+                 * store data - used by integration test code result importer + inside
+                 * integration test
+                 */
+                Path dataFile = tempDir.resolve("data.txt");
+
+                String mediumIntegrationTestData = """
+                        MEDIUM:i am a medium error from IntegrationTestPrepareWrapperModule
+                        INFO:i am just an information from IntegrationTestPrepareWrapperModule
+                                                """;
+
+                writer.save(dataFile.toFile(), mediumIntegrationTestData, false);
+
             } catch (IOException e) {
                 throw new RuntimeException("Error while files in directory: " + downloadPath, e);
             }

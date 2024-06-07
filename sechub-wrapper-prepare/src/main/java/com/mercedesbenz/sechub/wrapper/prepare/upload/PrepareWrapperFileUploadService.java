@@ -15,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.amazonaws.util.StringInputStream;
+import com.mercedesbenz.sechub.commons.core.util.SecHubStorageUtil;
 import com.mercedesbenz.sechub.storage.core.JobStorage;
 
 @Service
@@ -53,7 +54,9 @@ public class PrepareWrapperFileUploadService {
     }
 
     private void storeUploadFileAndSha256Checksum(String projectId, UUID jobUUID, File file, String checkSum) {
-        JobStorage jobStorage = storageService.getJobStorage(projectId, jobUUID);
+        String storagePath = SecHubStorageUtil.createStoragePath(projectId);
+
+        JobStorage jobStorage = storageService.getJobStorage(storagePath, jobUUID);
 
         UploadFileNameData uploadFileNameData;
 

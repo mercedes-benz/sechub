@@ -81,7 +81,7 @@ public class FullScanDataScenario3SecHubClientIntTest {
 
     @Test
     public void user_1_starts_job_but_only_admin_can_download_scanlog_or_fullscan_data() throws IOException {
-        UUID checkmarxConfigUUID = ensureExecutorConfigUUID(IntegrationTestDefaultExecutorConfigurations.NETSPARKER_V1);
+        UUID checkmarxConfigUUID = ensureExecutorConfigUUID(IntegrationTestDefaultExecutorConfigurations.CHECKMARX_V1);
 
         /* prepare - just execute a job */
         TestUser user = USER_1;

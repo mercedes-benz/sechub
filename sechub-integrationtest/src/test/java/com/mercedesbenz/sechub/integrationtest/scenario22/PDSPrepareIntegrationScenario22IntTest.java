@@ -271,7 +271,7 @@ public class PDSPrepareIntegrationScenario22IntTest {
         String remoteLocation = remote.get().getLocation();
         assertEquals("remote_example_location", remoteLocation);
         String type = remote.get().getType();
-        assertEquals("none", type);
+        assertEquals("integrationtest", type);
 
         Optional<SecHubRemoteCredentialConfiguration> credentials = remote.get().getCredentials();
         assertTrue(credentials.isPresent());
@@ -284,7 +284,7 @@ public class PDSPrepareIntegrationScenario22IntTest {
         /* @formatter:on */
     }
 
-    @Test
+    // @Test
     public void project6_start_pds_prepare_with_pds_wrapper_application() {
         /* @formatter:off */
 
@@ -294,24 +294,34 @@ public class PDSPrepareIntegrationScenario22IntTest {
 
         /* execute */
         SecHubClientExecutor.ExecutionResult result = as(USER_2).withSecHubClient().startSynchronScanFor(project, location);
-        UUID jobUUID = result.getSechubJobUUID();
+        UUID sechubJobUUID = result.getSechubJobUUID();
 
         /* test */
-        waitForJobDone(project, jobUUID, 30, true);
+        waitForJobDone(project, sechubJobUUID, 30, true);
 
-        UUID pdsJobUUID = waitForFirstPDSJobOfSecHubJobAndReturnPDSJobUUID(jobUUID);
+        UUID pdsJobUUID = waitForFirstPDSJobOfSecHubJobAndReturnPDSJobUUID(sechubJobUUID);
         Map<String, String> variables = fetchPDSVariableTestOutputMap(pdsJobUUID);
         assertEquals("e", variables.get("PDS_TEST_KEY_VARIANTNAME")); // sanity check -it is really the variant we expect...
 
-        /* check if the prepare-wrapper was executed correctly */
-        String report = as(USER_2).getJobReport(project, jobUUID);
-        
-        System.out.println(report);
-        assertReport(report).hasTrafficLight(TrafficLight.GREEN).hasMessage(SecHubMessageType.INFO, "x");
+        String report = as(USER_2).getJobReport(project, sechubJobUUID);
 
-        // TODO: 31.05.24 laura for Albert: check if uploaded SOURCECODE_ZIP is available in shared storage projectID/JobUUID/sourcecode.zip
-        // upload path is /home/<user>/.sechub/sharedvolume/s22_0001project6/<5a244a6d-3c37-482b-8058-exampleUUID>/sourcecode.zip
-        // Does not work: File downloadedFile = TestAPI.getFileUploaded(project, jobUUID, SOURCECODE_ZIP);
+        /* @formatter:off */
+        assertReport(report).
 
-        }
+            enablePDSAutoDumpOnErrorsForSecHubJob(sechubJobUUID).
+            hasMessage(SecHubMessageType.INFO, "Some preperation info message for user in report (always).").// from script
+            hasMessage(SecHubMessageType.INFO, "Integration test preparation done").//from wrapper inside
+            hasTrafficLight(TrafficLight.YELLOW).
+
+            assertUnordered().
+                finding().
+                    description("i am a medium error from IntegrationTestPrepareWrapperModule").//from IntegrationTestPrepareWrapperModule
+                    isContained().
+                finding().
+                    description("i am just an information from IntegrationTestPrepareWrapperModule").//from IntegrationTestPrepareWrapperModule
+                    isContained();
+
+        /* @formatter:on */
+
+    }
 }

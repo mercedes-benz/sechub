@@ -23,6 +23,7 @@ import com.mercedesbenz.sechub.storage.core.StorageException;
 public class SharedVolumeJobStorage implements JobStorage {
 
     private static final Logger LOG = LoggerFactory.getLogger(SharedVolumeJobStorage.class);
+
     private String storagePath;
     private UUID jobUUID;
     private Path volumePath;
@@ -40,6 +41,8 @@ public class SharedVolumeJobStorage implements JobStorage {
 
     @Override
     public InputStream fetch(String name) throws IOException {
+        LOG.debug("Fetch '{}' from volumePath: {}", name, volumePath);
+
         try {
             Path path = getPathToFile(name);
             if (path == null) {
@@ -79,7 +82,7 @@ public class SharedVolumeJobStorage implements JobStorage {
         try (InputStream inputStream = stream) {
             Files.copy(inputStream, pathToFile, StandardCopyOption.REPLACE_EXISTING);
 
-            LOG.debug("Stored:{} at {}", name, pathToFile);
+            LOG.debug("Stored: {} at {}", name, pathToFile);
         } catch (Exception e) {
             throw new IOException("Was not able to store input stream into file: " + pathToFile, e);
         }
@@ -105,12 +108,17 @@ public class SharedVolumeJobStorage implements JobStorage {
 
     @Override
     public Set<String> listNames() throws IOException {
+        LOG.debug("start listNames for volumePath: {}", volumePath);
+
         try {
             Set<String> names = new LinkedHashSet<>();
             if (Files.notExists(volumePath)) {
                 Files.createDirectories(volumePath);
             }
+
             Files.list(volumePath).forEach(child -> names.add(child.getFileName().toString()));
+
+            LOG.debug("listNames for volumePath: {} found: {}", volumePath, names);
 
             return names;
         } catch (Exception e) {

@@ -106,7 +106,9 @@ public class Scenario22 extends AbstractGrowingSecHubServerTestScenario implemen
     /**
      * Project 6 is created on startup, and has {@link #USER_1} +
      * {@link IntegrationTestDefaultProfiles#PROFILE_32_PDS_PREPARE_SCAN_CONFIG_SUCCESS
-     * profile 32 (exit 5 preparation)} assigned
+     * profile 32 (exit 5 preparation)} and also
+     * {@link IntegrationTestDefaultProfiles#PROFILE_2_PDS_CODESCAN profile2 (pds
+     * codescan) assigned
      */
     public static final TestProject PROJECT_6 = createTestProject(Scenario22.class, "project6");
 
@@ -118,31 +120,32 @@ public class Scenario22 extends AbstractGrowingSecHubServerTestScenario implemen
                 createUser(USER_2).
 
                 createProject(PROJECT_1, USER_1).
-                addProjectIdsToDefaultExecutionProfile(PROFILE_28_PDS_PREPARE_MOCKED_SUCCESS,PROJECT_1).
+                addProjectIdsToDefaultExecutionProfile(PROFILE_28_PDS_PREPARE_MOCKED_SUCCESS, PROJECT_1).
                 assignUserToProject(PROJECT_1,USER_1).
 
                 createProject(PROJECT_2, USER_1).
-                addProjectIdsToDefaultExecutionProfile(PROFILE_28_PDS_PREPARE_MOCKED_SUCCESS,PROJECT_2).
-                addProjectIdsToDefaultExecutionProfile(PROFILE_1,PROJECT_2).
+                addProjectIdsToDefaultExecutionProfile(PROFILE_28_PDS_PREPARE_MOCKED_SUCCESS, PROJECT_2).
+                addProjectIdsToDefaultExecutionProfile(PROFILE_1, PROJECT_2).
                 assignUserToProject(PROJECT_2, USER_1).
 
                 createProject(PROJECT_3, USER_1).
-                addProjectIdsToDefaultExecutionProfile(PROFILE_29_PDS_PREPARE_FAILING,PROJECT_3).
-                addProjectIdsToDefaultExecutionProfile(PROFILE_1,PROJECT_3).
+                addProjectIdsToDefaultExecutionProfile(PROFILE_29_PDS_PREPARE_FAILING, PROJECT_3).
+                addProjectIdsToDefaultExecutionProfile(PROFILE_1, PROJECT_3).
                 assignUserToProject(PROJECT_3, USER_1).
 
                 createProject(PROJECT_4, USER_1).
-                addProjectIdsToDefaultExecutionProfile(PROFILE_30_PDS_PREPARE_EXIT_5,PROJECT_4).
-                addProjectIdsToDefaultExecutionProfile(PROFILE_1,PROJECT_4).
+                addProjectIdsToDefaultExecutionProfile(PROFILE_30_PDS_PREPARE_EXIT_5, PROJECT_4).
+                addProjectIdsToDefaultExecutionProfile(PROFILE_1, PROJECT_4).
                 assignUserToProject(PROJECT_4, USER_1).
 
                 createProject(PROJECT_5, USER_1).
-                addProjectIdsToDefaultExecutionProfile(PROFILE_31_PDS_PREPARE_SCAN_CONFIG_SUCCESS,PROJECT_5).
-                assignUserToProject(PROJECT_5,USER_1).
+                addProjectIdsToDefaultExecutionProfile(PROFILE_31_PDS_PREPARE_SCAN_CONFIG_SUCCESS, PROJECT_5).
+                assignUserToProject(PROJECT_5, USER_1).
 
                 createProject(PROJECT_6, USER_2).
-                addProjectIdsToDefaultExecutionProfile(PROFILE_32_PDS_PREPARE_SCAN_CONFIG_SUCCESS,PROJECT_6).
-                assignUserToProject(PROJECT_6,USER_2);
+                addProjectIdsToDefaultExecutionProfile(PROFILE_32_PDS_PREPARE_SCAN_CONFIG_SUCCESS, PROJECT_6).
+                addProjectIdsToDefaultExecutionProfile(PROFILE_2_PDS_CODESCAN, PROJECT_6).
+                assignUserToProject(PROJECT_6, USER_2);
         ;
         /* @formatter:on */
     }

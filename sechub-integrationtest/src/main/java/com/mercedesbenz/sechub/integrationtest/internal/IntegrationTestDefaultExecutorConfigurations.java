@@ -77,6 +77,9 @@ public class IntegrationTestDefaultExecutorConfigurations {
     public static final String PDS_SECRETSCAN_VARIANT_A = "a";
 
     /* @formatter:off */
+    /**
+     * PDS code scan - with variant A.
+     */
     public static final TestExecutorConfig PDS_V1_CODE_SCAN_A = definePDSScan(
                                                 PDS_CODESCAN_VARIANT_A,false,
                                                 PDSIntTestProductIdentifier.PDS_INTTEST_CODESCAN,

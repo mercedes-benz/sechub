@@ -40,15 +40,15 @@ class PrepareWrapperSechubConfigurationSupportTest {
     private File workspaceDirectory;
 
     @BeforeEach
-    void beforeEach() throws Exception{
+    void beforeEach() throws Exception {
         supportToTest = new PrepareWrapperSechubConfigurationSupport();
         supportToTest.fileNameSupport = new FileNameSupport();
         writer = new TestFileWriter();
-        
+
         prepareContext = mock(PrepareWrapperContext.class);
         toolContext = mock(PrepareToolContext.class);
         environment = mock(PrepareWrapperEnvironment.class);
-        
+
         workspaceDirectory = Files.createTempDirectory("test-sechub-prepare_sechubConfigurationSupport").toFile();
         workspaceDirectory.deleteOnExit();
 
@@ -56,10 +56,10 @@ class PrepareWrapperSechubConfigurationSupportTest {
         testDownload = workspaceDirectory.toPath().resolve(Path.of("test-download"));
         testTarFilename = Path.of("test-tar.tar");
         testRepoName = Path.of("git-repo-name");
-        
+
         when(environment.getPdsJobWorkspaceLocation()).thenReturn(workspaceDirectory.getAbsolutePath());
         when(prepareContext.getEnvironment()).thenReturn(environment);
-        
+
         when(toolContext.getUploadDirectory()).thenReturn(uploadDirectory);
         when(toolContext.getToolDownloadDirectory()).thenReturn(testDownload);
     }
@@ -67,10 +67,10 @@ class PrepareWrapperSechubConfigurationSupportTest {
     @Test
     void replaceRemoteDataWithFilesystem_throws_IllegalArgumentException_when_SecHubConfigurationModel_is_null() {
         /* prepare */
-       
+
         when(prepareContext.getSecHubConfiguration()).thenReturn(null);
 
-       
+
         Path testPath = Path.of("path");
         when(toolContext.getUploadDirectory()).thenReturn(testPath);
         when(toolContext.getToolDownloadDirectory()).thenReturn(testPath);
@@ -86,14 +86,13 @@ class PrepareWrapperSechubConfigurationSupportTest {
     @Test
     void replaceRemoteDataWithFilesystem_returns_SecHubConfigurationModel_when_SecHubConfigurationModel_data_is_empty() {
         /* prepare */
-       
+
         SecHubConfigurationModel model = new SecHubConfigurationModel();
         when(prepareContext.getSecHubConfiguration()).thenReturn(model);
         SecHubDataConfiguration data = new SecHubDataConfiguration();
         model.setData(data);
         when(prepareContext.getSecHubConfiguration()).thenReturn(model);
 
-       
         Path testPath = Path.of("path");
         when(toolContext.getUploadDirectory()).thenReturn(testPath);
         when(toolContext.getToolDownloadDirectory()).thenReturn(testPath);
@@ -111,7 +110,7 @@ class PrepareWrapperSechubConfigurationSupportTest {
         writer.save(testDownload.resolve(testTarFilename).toFile(), "testText", true);
 
         SecHubConfigurationModel model = loadModelFromTestFile("sechub_remote_data_config_binary_code_scan_example.json");
-       
+
         when(prepareContext.getSecHubConfiguration()).thenReturn(model);
 
         /* execute */
@@ -139,7 +138,7 @@ class PrepareWrapperSechubConfigurationSupportTest {
         writer.save(testDownload.resolve(testRepoName).resolve(Path.of(".git")).toFile(), "testText", true);
 
         SecHubConfigurationModel model = loadModelFromTestFile("sechub_remote_data_config_source_code_scan_example.json");
-       
+
         when(prepareContext.getSecHubConfiguration()).thenReturn(model);
 
         /* execute */
@@ -167,7 +166,7 @@ class PrepareWrapperSechubConfigurationSupportTest {
         writer.save(testDownload.resolve(testTarFilename).toFile(), "testText", true);
 
         SecHubConfigurationModel model = loadModelFromTestFile("sechub_remote_data_config_binary_code_scan_example.json");
-       
+
         when(prepareContext.getSecHubConfiguration()).thenReturn(model);
 
         SecHubConfigurationModel expectedModel = new SecHubConfigurationModel();
@@ -210,7 +209,6 @@ class PrepareWrapperSechubConfigurationSupportTest {
         source.setUniqueName("remote_example_name");
         data.getSources().add(source);
         expectedModel.setData(data);
-        
 
         /* execute */
         SecHubConfigurationModel result = supportToTest.replaceRemoteDataWithFilesystem(prepareContext, toolContext);
@@ -222,7 +220,7 @@ class PrepareWrapperSechubConfigurationSupportTest {
     }
 
     private SecHubConfigurationModel loadModelFromTestFile(String fileName) {
-        String json = TestFileReader.loadTextFile(new File("./src/test/resources/"+fileName));
+        String json = TestFileReader.loadTextFile(new File("./src/test/resources/" + fileName));
         return createFromJSON(json);
     }
 }

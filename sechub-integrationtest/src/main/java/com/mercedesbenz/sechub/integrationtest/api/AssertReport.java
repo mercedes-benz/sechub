@@ -48,6 +48,7 @@ public class AssertReport {
     }
 
     public AssertReport enablePDSAutoDumpOnErrorsForSecHubJob(UUID sechubJobUUID) {
+        this.autoDumper.setSecHubReport(report);
         this.autoDumper.enablePDSAutoDumpOnErrorsForSecHubJob();
         this.autoDumper.setSecHubJobUUID(sechubJobUUID);
         return this;
@@ -59,7 +60,7 @@ public class AssertReport {
         return this;
     }
 
-    public AssertReportUnordered hasUnordered() {
+    public AssertReportUnordered assertUnordered() {
         return AssertReportUnordered.assertReportUnordered(report.toJSON());
     }
 
