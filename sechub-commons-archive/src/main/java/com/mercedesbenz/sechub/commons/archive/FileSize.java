@@ -1,7 +1,11 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.commons.archive;
 
+import java.util.Objects;
+
 import static java.lang.Long.parseLong;
+import static java.util.Objects.hash;
+import static java.util.Objects.requireNonNull;
 
 /**
  * The FileSize class represents a file size in a human-readable format (KB, MB, GB) and its equivalent size in bytes.
@@ -34,8 +38,8 @@ public class FileSize {
     private final String sizeStr;
     private final long sizeBytes;
 
-    public FileSize(final String sizeStr) {
-        this.sizeStr = convertSizeString(sizeStr);
+    public FileSize(String sizeStr) {
+        this.sizeStr = convertSizeString(requireNonNull(sizeStr, "sizeStr property must not be null"));
         sizeBytes = convertToBytes(this.sizeStr);
     }
 
@@ -43,17 +47,33 @@ public class FileSize {
         return sizeStr;
     }
 
-    public long getSizeBytes() {
+    public long getBytes() {
         return sizeBytes;
     }
 
-    private static String convertSizeString(final String sizeStr) {
-        return sizeStr.trim().toUpperCase();
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof FileSize fileSize)) {
+            return false;
+        }
+        return Objects.equals(sizeStr, fileSize.sizeStr) && sizeBytes == fileSize.sizeBytes;
     }
 
-    private static long convertToBytes(final String sizeStr) {
-        final long size;
-        final long multiplier;
+    @Override
+    public int hashCode() {
+        return hash(sizeStr, sizeBytes);
+    }
+
+    private static String convertSizeString(String sizeStr) {
+        return sizeStr.toUpperCase();
+    }
+
+    private static long convertToBytes(String sizeStr) {
+        long size;
+        long multiplier;
 
         if (sizeStr.endsWith(FILE_SIZE_KILOBYTES)) {
             multiplier = 1024;
@@ -62,10 +82,14 @@ public class FileSize {
         } else if (sizeStr.endsWith(FILE_SIZE_GIGABYTES)) {
             multiplier = 1024 * 1024 * 1024;
         } else {
-            throw new IllegalArgumentException("Invalid size string. Must end with KB, MB, or GB.");
+            throw new IllegalArgumentException("Invalid file size %s. Must end with KB, MB, or GB.".formatted(sizeStr));
         }
 
         size = parseLong(sizeStr.substring(0, sizeStr.length() - 2));
+
+        if (size <= 0) {
+            throw new IllegalArgumentException("File size must be greater than 0");
+        }
 
         return size * multiplier;
     }
