@@ -33,8 +33,12 @@ To be able to use this action you need a SecHub project. Check the https://merce
     project-name: ${{ secrets.SECHUB_PROJECT }}
 
     # OPTIONAL: Which version of the SecHub cli to use
-    # DEFAULT: 1.5.0
-    version: '1.5.0'
+    # DEFAULT: latest
+    version: 'latest'
+
+    # OPTIONAL: Whether scm history should be uploaded or not
+    # DEFAULT: false
+    add-scm-history: 'false'
     
     # OPTIONAL: A list of scan types that shall be used when a sechub configuration file is generated.
     #           Allowed values: codeScan, secretScan and licenseScan - If you want other scan types you 
