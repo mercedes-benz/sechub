@@ -23,6 +23,9 @@ jobs:
   release-version:
     name: Create Github Action release
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: github-actions/scan
     steps:
 
       - name: "Show Inputs"
@@ -37,24 +40,18 @@ jobs:
           echo "For Github Action release, ghaction-version and ghaction-milestone-number must be provided!"
           exit 1
 
-      # - name: Checkout master
-      #   uses: actions/checkout@a5ac7e51b41094c92402da3b24376905380afc29
-      #   with:
-      #     ref: master
+      - name: Checkout master
+        uses: actions/checkout@a5ac7e51b41094c92402da3b24376905380afc29
+        with:
+          ref: master
 
-      # # Create temporary local tag, so we build for this tag...
-      # # The final tag on git server side will be done automatically by the release when the draft is saved as "real" release
-      # - name: "Temporary tag server version: v${{ inputs.ghaction-version }}-ghaction"
-      #   run: git tag v${{ inputs.ghaction-version }}-ghaction
-
-      # # ----------------------
-      # # Setup + Caching
-      # # ----------------------
-      # # - name: Set up JDK 17
-      # #   uses: actions/setup-java@99b8673ff64fbf99d8d325f52d9a5bdedb8483e9
-      # #   with:
-      # #     java-version: 17
-      # #     distribution: temurin
+      # ----------------------
+      # Setup + Caching
+      # ----------------------
+      - name: Use Node.js
+        # We do not define a dedicated node version here, we just use the default environment
+        # which should be the default environment for the github actions runtime as well
+        uses: actions/setup-node@8f152de45cc393bb48ce5d89d36b731f54556e65
 
       # # ----------------------
       # # Create pull request if license headers are missing
@@ -89,16 +86,25 @@ jobs:
       #     echo "Pull Request Number - ${{ steps.pr_spdx_headers.outputs.pull-request-number }}"
       #     echo "Pull Request URL - ${{ steps.pr_spdx_headers.outputs.pull-request-url }}"
 
-      # # ----------------------
-      # # Build SecHub Github Action
-      # # ----------------------
-      # # - name: Build Github Action jar files
-      # #   run: ./gradlew ensureLocalhostCertificate :sechub-api-java:build :sechub-ghaction:build -Dsechub.build.stage=api-necessary --console=plain
+      # ----------------------
+      # Build SecHub Github Action
+      # ----------------------
+      - name: Clean install
+        run: npm ci
 
-      # # ----------------------
-      # # Create pull request for updated files
-      # # ----------------------
+      - name: Build
+        run: npm run build
 
+      - name: Run unit tests
+        run: npm test
+
+      # ----------------------
+      # Create pull request for updated files
+      # ----------------------
+
+      # # -----------------------------------------
+      # # Create draft release
+      # # -----------------------------------------
       # - name: Create Github Action release
       #   id: create_ghaction_release
       #   uses: actions/create-release@0cb9c9b65d5d1901c1f53e5e66eaf4afd303e70e
