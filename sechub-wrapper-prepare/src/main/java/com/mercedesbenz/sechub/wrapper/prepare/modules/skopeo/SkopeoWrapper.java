@@ -5,16 +5,19 @@ import static com.mercedesbenz.sechub.wrapper.prepare.cli.PrepareWrapperKeyConst
 
 import java.io.File;
 import java.io.IOException;
+import java.lang.ProcessBuilder.Redirect;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.io.FileUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import com.mercedesbenz.sechub.commons.pds.PDSProcessAdapterFactory;
 import com.mercedesbenz.sechub.commons.pds.ProcessAdapter;
+import com.mercedesbenz.sechub.commons.pds.ProcessBuilderFactory;
 import com.mercedesbenz.sechub.pds.commons.core.PDSLogSanitizer;
 import com.mercedesbenz.sechub.wrapper.prepare.modules.AbstractToolWrapper;
 
@@ -31,6 +34,12 @@ public class SkopeoWrapper extends AbstractToolWrapper {
 
     @Autowired
     PDSLogSanitizer logSanitizer;
+
+    @Autowired
+    ProcessBuilderFactory processBuilderFactory;
+
+    @Autowired
+    SkopeoLocationConverter locationConverter;
 
     /**
      * Downloads docker image via skopeo. If credentials are defined, a login is
@@ -58,6 +67,69 @@ public class SkopeoWrapper extends AbstractToolWrapper {
         handleLogoutIfnecessary(context);
     }
 
+    private void handleLoginIfNecessary(SkopeoContext context) throws IOException {
+        if (!context.hasCredentials()) {
+            return;
+        }
+        ProcessBuilder builder = buildProcessLogin(context);
+        ProcessAdapter process = null;
+
+        try {
+            process = processAdapterFactory.startProcess(builder);
+            process.enterInput(context.getUnsealedPassword().toCharArray());
+        } catch (IOException e) {
+            throw new IOException("Error while login with Skopeo to: " + context.getLocation(), e);
+        }
+
+        waitForProcessToFinish(process);
+    }
+
+    private ProcessBuilder buildProcessLogin(SkopeoContext context) {
+        List<String> commands = new ArrayList<>();
+
+        String location = locationConverter.convertLocationForLogin(context.getLocation());
+        File downloadDirectory = context.getToolDownloadDirectory().toFile();
+
+        commands.add("skopeo");
+        commands.add("login");
+        commands.add(location);
+        commands.add("--username");
+        commands.add(context.getUnsealedUsername());
+        commands.add("--password-stdin");
+        commands.add("--authfile");
+        commands.add(pdsPrepareAuthenticationFileSkopeo);
+
+        ProcessBuilder builder = processBuilderFactory.createForCommandList(commands);
+        builder.directory(downloadDirectory);
+        // here we do NO redirect of input!
+        builder.redirectOutput(Redirect.INHERIT);
+        builder.redirectError(Redirect.INHERIT);
+
+        return builder;
+    }
+
+    private ProcessBuilder buildProcessDownload(SkopeoContext context) {
+        List<String> commands = new ArrayList<>();
+
+        String location = locationConverter.convertLocationForDownload(context.getLocation());
+        File downloadDirectory = context.getToolDownloadDirectory().toFile();
+
+        commands.add("skopeo");
+        commands.add("copy");
+        commands.add(location);
+        commands.add("docker-archive:" + context.getDownloadTarFile());
+        if (context.hasCredentials()) {
+            commands.add("--authfile");
+            commands.add(pdsPrepareAuthenticationFileSkopeo);
+        }
+
+        ProcessBuilder builder = processBuilderFactory.createForCommandList(commands);
+        builder.directory(downloadDirectory);
+        builder.inheritIO();
+
+        return builder;
+    }
+
     private void handleLogoutIfnecessary(SkopeoContext skopeoContext) throws IOException {
         if (!skopeoContext.hasCredentials()) {
             return;
@@ -70,117 +142,8 @@ public class SkopeoWrapper extends AbstractToolWrapper {
          * describes that it also only deletes the file?
          */
 
-        /* FIXME Albert Tregnaghi, 2024-06-07: use java api instead of builder */
         Path toolDownloadFolder = skopeoContext.getToolDownloadDirectory();
-        ProcessBuilder builder = buildProcessClean(toolDownloadFolder);
-        ProcessAdapter process = null;
-
-        try {
-            process = processAdapterFactory.startProcess(builder);
-        } catch (IOException e) {
-            throw new IOException("Error while cleaning authentication file.", e);
-        }
-
-        waitForProcessToFinish(process);
+        FileUtils.deleteDirectory(toolDownloadFolder.toFile());
     }
 
-    private void handleLoginIfNecessary(SkopeoContext context) throws IOException {
-        if (!context.hasCredentials()) {
-            return;
-        }
-        ProcessBuilder builder = buildProcessLogin(context);
-        ProcessAdapter process = null;
-
-        try {
-            process = processAdapterFactory.startProcess(builder);
-        } catch (IOException e) {
-            throw new IOException("Error while login with Skopeo to: " + context.getLocation(), e);
-        }
-
-        waitForProcessToFinish(process);
-    }
-
-    private ProcessBuilder buildProcessLogin(SkopeoContext context) {
-        List<String> commands = new ArrayList<>();
-
-        String location = transformLocationForLogin(context.getLocation());
-        File downloadDirectory = context.getToolDownloadDirectory().toFile();
-
-        commands.add("skopeo");
-        commands.add("login");
-        commands.add(location);
-        commands.add("--username");
-        commands.add(context.getUnsealedUsername()); /* FIXME Albert Tregnaghi, 2024-06-07: use inputstream + "--password-stdin" */
-        commands.add("--password");
-        commands.add(context.getUnsealedPassword());
-        commands.add("--authfile");
-        commands.add(pdsPrepareAuthenticationFileSkopeo);
-
-        ProcessBuilder builder = new ProcessBuilder(commands);
-        builder.directory(downloadDirectory);
-        builder.inheritIO();
-
-        return builder;
-    }
-
-    private ProcessBuilder buildProcessDownload(SkopeoContext context) {
-        List<String> commands = new ArrayList<>();
-
-        String location = transformLocationForDownload(context.getLocation());
-        File downloadDirectory = context.getToolDownloadDirectory().toFile();
-
-        commands.add("skopeo");
-        commands.add("copy");
-        commands.add(location);
-        commands.add("docker-archive:" + context.getDownloadTarFile());
-        if (context.hasCredentials()) {
-            commands.add("--authfile");
-            commands.add(pdsPrepareAuthenticationFileSkopeo);
-        }
-
-        ProcessBuilder builder = new ProcessBuilder(commands);
-        builder.directory(downloadDirectory);
-        builder.inheritIO();
-
-        return builder;
-    }
-
-    private ProcessBuilder buildProcessClean(Path skopeoDownloadDirectory) {
-        /* FIXME Albert Tregnaghi, 2024-06-07: remove via java api */
-        // removes authentication file
-        List<String> commands = new ArrayList<>();
-        commands.add("rm"); // files could be deleted via java api
-        commands.add("-rf");
-        commands.add(pdsPrepareAuthenticationFileSkopeo);
-
-        ProcessBuilder builder = new ProcessBuilder(commands);
-        builder.directory(skopeoDownloadDirectory.toFile());
-        builder.inheritIO();
-        return builder;
-    }
-
-    private String transformLocationForDownload(String location) {
-        String dockerPrefix = "docker://";
-
-        if (location.startsWith(dockerPrefix)) {
-            return location;
-        }
-
-        if (location.startsWith("https://")) {
-            location = location.replace("https://", dockerPrefix);
-            return location;
-        }
-
-        return dockerPrefix + location;
-    }
-
-    private String transformLocationForLogin(String location) {
-        if (location.startsWith("docker://")) {
-            location = location.replace("docker://", "");
-        }
-        if (location.startsWith("https://")) {
-            location = location.replace("https://", "");
-        }
-        return location.split("/")[0];
-    }
 }

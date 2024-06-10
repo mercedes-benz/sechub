@@ -6,18 +6,18 @@ import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
 
 import java.io.IOException;
+import java.lang.ProcessBuilder.Redirect;
 import java.nio.file.Path;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.ArgumentCaptor;
 
 import com.mercedesbenz.sechub.commons.pds.PDSProcessAdapterFactory;
 import com.mercedesbenz.sechub.commons.pds.ProcessAdapter;
+import com.mercedesbenz.sechub.commons.pds.ProcessBuilderFactory;
 import com.mercedesbenz.sechub.pds.commons.core.PDSLogSanitizer;
 import com.mercedesbenz.sechub.test.TestUtil;
 
@@ -27,6 +27,12 @@ class SkopeoWrapperTest {
     private PDSProcessAdapterFactory processAdapterFactory;
     private Path workingDirectory;
     private PDSLogSanitizer logSanitizer;
+    private ProcessAdapter processAdapter1;
+    private ProcessBuilderFactory processBuilderFactory;
+    private ProcessBuilder processBuilder1;
+    private ProcessBuilder processBuilder2;
+    private ProcessAdapter processAdapter2;
+    private SkopeoLocationConverter locationConverter;
 
     @BeforeEach
     void beforeEach() throws IOException, InterruptedException {
@@ -35,13 +41,29 @@ class SkopeoWrapperTest {
 
         processAdapterFactory = mock(PDSProcessAdapterFactory.class);
         logSanitizer = mock(PDSLogSanitizer.class);
+        locationConverter = mock(SkopeoLocationConverter.class);
+        when(locationConverter.convertLocationForLogin(any())).thenReturn("login-location");
+        when(locationConverter.convertLocationForDownload(any())).thenReturn("download-location");
 
-        ProcessAdapter processAdapter = mock(ProcessAdapter.class);
-        when(processAdapterFactory.startProcess(any())).thenReturn(processAdapter);
-        when(processAdapter.waitFor(any(Long.class), any(TimeUnit.class))).thenReturn(true);
+        processAdapter1 = mock(ProcessAdapter.class);
+        processAdapter2 = mock(ProcessAdapter.class);
+
+        processBuilderFactory = mock(ProcessBuilderFactory.class);
+
+        processBuilder1 = mock(ProcessBuilder.class);
+        processBuilder2 = mock(ProcessBuilder.class);
+
+        when(processAdapterFactory.startProcess(processBuilder1)).thenReturn(processAdapter1);
+        when(processAdapterFactory.startProcess(processBuilder2)).thenReturn(processAdapter2);
+
+        when(processAdapter1.waitFor(any(Long.class), any(TimeUnit.class))).thenReturn(true);
+        when(processAdapter2.waitFor(any(Long.class), any(TimeUnit.class))).thenReturn(true);
+        when(processBuilderFactory.createForCommandList(any())).thenReturn(processBuilder1).thenReturn(processBuilder2);
 
         wrapperToTest.processAdapterFactory = processAdapterFactory;
+        wrapperToTest.processBuilderFactory = processBuilderFactory;
         wrapperToTest.logSanitizer = logSanitizer;
+        wrapperToTest.locationConverter = locationConverter;
     }
 
     @Test
@@ -57,9 +79,10 @@ class SkopeoWrapperTest {
         wrapperToTest.download(context);
 
         /* test */
-        ArgumentCaptor<ProcessBuilder> pbCaptor = ArgumentCaptor.forClass(ProcessBuilder.class);
-        verify(processAdapterFactory, times(1)).startProcess(pbCaptor.capture());
-        assertProcessBuilderCalledWithParametersForSkopeoDownload(context, location, pbCaptor.getValue(), false);
+        verify(processAdapterFactory, times(1)).startProcess(processBuilder1);
+        verify(processBuilderFactory, times(1)).createForCommandList(any());
+        verify(locationConverter).convertLocationForDownload(location);
+        assertProcessBuilderFactoryCalledWithParametersForSkopeoDownload(context, "download-location", processBuilderFactory, false);
     }
 
     @Test
@@ -77,14 +100,28 @@ class SkopeoWrapperTest {
         /* execute */
         wrapperToTest.download(context);
 
-        /* test */
-        ArgumentCaptor<ProcessBuilder> pbCaptor = ArgumentCaptor.forClass(ProcessBuilder.class);
-        verify(processAdapterFactory, times(3)).startProcess(pbCaptor.capture());
-        List<ProcessBuilder> processBuilders = pbCaptor.getAllValues();
-        Iterator<ProcessBuilder> pbIt = processBuilders.iterator();
+        /* test 1 - login */
+        verify(processBuilderFactory, times(2)).createForCommandList(any()); // for login + download
 
-        assertProcessBuilderCalledWithParametersForLogin(context, "ubuntu:22.04", username, password, pbIt.next());
-        assertProcessBuilderCalledWithParametersForSkopeoDownload(context, location, pbIt.next(), true);
+        /* test 2 - login */
+        verify(locationConverter).convertLocationForLogin(location);
+        assertProcessBuilderFactoryCalledWithParametersForLogin(context, "login-location", username, processBuilderFactory);
+
+        // check user input handling for passwords work as expected
+        verify(processBuilder1, never()).inheritIO(); // we do not want this, because enter input would not work on process adapter
+        verify(processBuilder1, never()).redirectInput();
+        verify(processBuilder1, never()).redirectInput(any(Redirect.class));
+        verify(processBuilder1).redirectError(Redirect.INHERIT);
+        verify(processBuilder1).redirectOutput(Redirect.INHERIT);
+
+        verify(processAdapter1).enterInput(password.toCharArray()); // process adapter sends the password to the stream
+
+        /* test 3 - download */
+        verify(locationConverter).convertLocationForDownload(location);
+        assertProcessBuilderFactoryCalledWithParametersForSkopeoDownload(context, "download-location", processBuilderFactory, true);
+        verify(processBuilder2).inheritIO(); // all streams shall redirect, here okay
+
+        verify(processAdapter2, never()).enterInput(any());
     }
 
     @Test
@@ -106,10 +143,8 @@ class SkopeoWrapperTest {
 
     }
 
-    private void assertProcessBuilderCalledWithParametersForLogin(SkopeoContext context, String location, String user, String password,
-            ProcessBuilder calledProcessBuilder) {
-
-        List<String> commandList = calledProcessBuilder.command();
+    private void assertProcessBuilderFactoryCalledWithParametersForLogin(SkopeoContext context, String location, String user,
+            ProcessBuilderFactory processBuilderFactory) {
 
         // skopeo, login, ubuntu:22.04, --username, username1, --password, password1,
         // --authfile, authentication.json]
@@ -119,18 +154,15 @@ class SkopeoWrapperTest {
         expectedCommands.add(location);
         expectedCommands.add("--username");
         expectedCommands.add(user);
-        expectedCommands.add("--password"); // idea: input stream?
-        expectedCommands.add(password); // "$ENV_MY_PASSWORD"
+        expectedCommands.add("--password-stdin");
         expectedCommands.add("--authfile");
         expectedCommands.add("authentication.json"); // json is from login output file...
 
-        assertCommandListAsExpected(commandList, expectedCommands);
+        verify(processBuilderFactory).createForCommandList(expectedCommands);
     }
 
-    private void assertProcessBuilderCalledWithParametersForSkopeoDownload(SkopeoContext context, String location, ProcessBuilder calledProcessBuilder,
-            boolean authorized) {
-
-        List<String> commandList = calledProcessBuilder.command();
+    private void assertProcessBuilderFactoryCalledWithParametersForSkopeoDownload(SkopeoContext context, String location,
+            ProcessBuilderFactory processBuilderFactory, boolean authorized) {
 
         List<String> expectedCommands = new ArrayList<>();
         expectedCommands.add("skopeo");
@@ -142,21 +174,7 @@ class SkopeoWrapperTest {
             expectedCommands.add("authentication.json");
         }
 
-        assertCommandListAsExpected(commandList, expectedCommands);
-    }
-
-    private void assertCommandListAsExpected(List<String> commandList, List<String> expectedCommands) {
-        if (expectedCommands.size() != commandList.size()) {
-            assertEquals(expectedCommands.toString(), commandList.toString());
-        }
-        int pos = 0;
-        for (String expectedCommand : expectedCommands) {
-            String command = commandList.get(pos++);
-            if (!command.equals(expectedCommand)) {
-                assertEquals(expectedCommand, command, "Command differs!");
-            }
-
-        }
+        verify(processBuilderFactory).createForCommandList(expectedCommands);
     }
 
 }

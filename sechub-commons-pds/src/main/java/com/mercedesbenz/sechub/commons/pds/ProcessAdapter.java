@@ -1,6 +1,10 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.commons.pds;
 
+import java.io.BufferedWriter;
+import java.io.IOException;
+import java.io.OutputStreamWriter;
+import java.nio.charset.StandardCharsets;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -15,11 +19,11 @@ public class ProcessAdapter {
         this.process = process;
     }
 
-    public boolean waitFor(long minutesToWaitForResult, TimeUnit timeUnit) throws InterruptedException {
+    public boolean waitFor(long timeOut, TimeUnit timeUnit) throws InterruptedException {
         if (process == null) {
             return false;
         }
-        return process.waitFor(minutesToWaitForResult, timeUnit);
+        return process.waitFor(timeOut, timeUnit);
     }
 
     public boolean isAlive() {
@@ -41,6 +45,22 @@ public class ProcessAdapter {
             return -1;
         }
         return process.exitValue();
+    }
+
+    /*
+     * Sends given characters as user input to process.
+     */
+    public void enterInput(char[] unsealedPassword) throws IOException {
+        if (process == null) {
+            return;
+        }
+        // we must use the output stream from the child process - see javadoc of
+        // getOutputStream()
+        try (BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(process.getOutputStream(), StandardCharsets.UTF_8))) {
+            bw.write(unsealedPassword);
+            bw.flush();
+        }
+
     }
 
 }

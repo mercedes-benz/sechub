@@ -7,7 +7,9 @@ import org.springframework.stereotype.Component;
 import com.mercedesbenz.sechub.commons.TextFileWriter;
 import com.mercedesbenz.sechub.commons.archive.ArchiveSupport;
 import com.mercedesbenz.sechub.commons.core.security.CheckSumSupport;
+import com.mercedesbenz.sechub.commons.pds.DefaultProcessBuilderFactory;
 import com.mercedesbenz.sechub.commons.pds.PDSProcessAdapterFactory;
+import com.mercedesbenz.sechub.commons.pds.ProcessBuilderFactory;
 import com.mercedesbenz.sechub.pds.commons.core.PDSLogSanitizer;
 
 @Component
@@ -36,6 +38,11 @@ public class PrepareWrapperPojoFactory {
     @Bean
     PDSLogSanitizer createPDSLogSanitizer() {
         return new PDSLogSanitizer();
+    }
+
+    @Bean
+    ProcessBuilderFactory createProcessBuilderFactory() {
+        return new DefaultProcessBuilderFactory();
     }
 
 }
