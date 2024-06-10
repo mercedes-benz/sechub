@@ -4,6 +4,7 @@ package com.mercedesbenz.sechub.wrapper.prepare.modules;
 import static com.mercedesbenz.sechub.commons.pds.PDSDefaultParameterKeyConstants.*;
 import static com.mercedesbenz.sechub.wrapper.prepare.cli.PrepareWrapperKeyConstants.*;
 
+import java.io.IOException;
 import java.util.concurrent.TimeUnit;
 
 import org.slf4j.Logger;
@@ -26,7 +27,7 @@ public abstract class AbstractToolWrapper {
     @Value("${" + KEY_PDS_PREPARE_PROCESS_TIMEOUT_SECONDS + ":-1}")
     private int pdsPrepareProcessTimeoutSeconds;
 
-    protected void waitForProcessToFinish(ProcessAdapter processAdapter) {
+    protected void waitForProcessToFinish(ProcessAdapter processAdapter) throws IOException {
 
         LOG.debug("Wait for wrapper to finish process.");
         int seconds = calculateTimeoutSeconds();
@@ -35,17 +36,17 @@ public abstract class AbstractToolWrapper {
         try {
             exitDoneInTime = processAdapter.waitFor(seconds, TimeUnit.SECONDS);
         } catch (InterruptedException e) {
-            throw new RuntimeException("Wrapper for executed modul " + this.getClass().getSimpleName() + " could not finish process.", e);
+            throw new IOException("Wrapper for executed modul " + this.getClass().getSimpleName() + " could not finish process.", e);
         }
 
         if (!exitDoneInTime) {
-            throw new RuntimeException("Wrapper for executed modul " + this.getClass().getSimpleName() + " could not finish process. Waited "
+            throw new IOException("Wrapper for executed modul " + this.getClass().getSimpleName() + " could not finish process. Waited "
                     + pdsPrepareProcessTimeoutSeconds + " seconds.");
         }
 
         if (processAdapter.exitValue() != 0) {
             LOG.error("Wrapper for executed modul {} process failed with exit code: {}", this.getClass().getSimpleName(), processAdapter.exitValue());
-            throw new RuntimeException(
+            throw new IOException(
                     "Wrapper for executed modul " + this.getClass().getSimpleName() + " process failed with exit code: " + processAdapter.exitValue());
         }
     }

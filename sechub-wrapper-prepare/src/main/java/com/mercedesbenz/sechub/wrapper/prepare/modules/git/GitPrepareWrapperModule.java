@@ -36,8 +36,11 @@ public class GitPrepareWrapperModule extends AbstractPrepareWrapperModule {
 
     private static final Logger LOG = LoggerFactory.getLogger(GitPrepareWrapperModule.class);
 
-    @Value("${" + KEY_PDS_PREPARE_AUTO_CLEANUP_GIT_FOLDER + ":true}")
-    boolean autoCleanupGitFolder;
+    @Value("${" + KEY_PDS_PREPARE_MODULE_GIT_CLONE_WITHOUT_GIT_HISTORY + ":true}")
+    boolean cloneWithoutGitHistory;
+
+    @Value("${" + KEY_PDS_PREPARE_MODULE_GIT_REMOVE_GIT_FILES_BEFORE_UPLOAD + ":true}")
+    boolean removeGitFilesBeforeUpload;
 
     @Value("${" + KEY_PDS_PREPARE_MODULE_GIT_ENABLED + ":true}")
     boolean enabled;
@@ -86,7 +89,8 @@ public class GitPrepareWrapperModule extends AbstractPrepareWrapperModule {
 
         prepareRemoteConfiguration(gitContext, secHubRemoteDataConfiguration);
         assertDownloadSuccessful(gitContext);
-        cleanup(gitContext);
+
+        autoCleanupGitFiles(gitContext);
 
         try {
             uploadService.upload(context, gitContext);
@@ -100,7 +104,7 @@ public class GitPrepareWrapperModule extends AbstractPrepareWrapperModule {
         Path workingDirectory = Paths.get(context.getEnvironment().getPdsJobWorkspaceLocation());
 
         GitContext gitContext = new GitContext();
-        gitContext.setCloneWithoutHistory(autoCleanupGitFolder);
+        gitContext.setCloneWithoutHistory(cloneWithoutGitHistory);
         gitContext.setLocation(secHubRemoteDataConfiguration.getLocation());
         gitContext.init(workingDirectory);
 
@@ -108,8 +112,6 @@ public class GitPrepareWrapperModule extends AbstractPrepareWrapperModule {
     }
 
     protected void assertDownloadSuccessful(GitContext gitContext) {
-        // check if download folder contains git
-        Path git = Path.of(".git");
         Path path = gitContext.getToolDownloadDirectory();
 
         if (Files.isDirectory(path)) {
@@ -121,7 +123,10 @@ public class GitPrepareWrapperModule extends AbstractPrepareWrapperModule {
             }
 
             for (Path repository : repositories) {
-                Path gitPath = repository.resolve(git);
+                // check if repository folder contains .git directory -> marker that it was
+                // succesful
+                Path gitPath = repository.resolve(".git");
+
                 if (!Files.exists(gitPath)) {
                     LOG.error("Download of git repository: {} was not successful.", pdsLogSanitizer.sanitize(repository, 1024));
                     throw new PrepareWrapperUsageException("Download of git repository was not successful. Git folder (.git) not found.",
@@ -156,9 +161,9 @@ public class GitPrepareWrapperModule extends AbstractPrepareWrapperModule {
         gitWrapper.downloadRemoteData(gitContext);
     }
 
-    private void cleanup(GitContext gitContext) throws IOException {
-        if (autoCleanupGitFolder) {
-            gitWrapper.cleanUploadDirectory(gitContext.getToolDownloadDirectory());
+    private void autoCleanupGitFiles(GitContext gitContext) throws IOException {
+        if (removeGitFilesBeforeUpload) {
+            gitWrapper.removeGitFiles(gitContext.getToolDownloadDirectory());
         }
     }
 

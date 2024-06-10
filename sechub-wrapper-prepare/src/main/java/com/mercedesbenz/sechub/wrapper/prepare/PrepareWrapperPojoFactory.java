@@ -6,6 +6,7 @@ import org.springframework.stereotype.Component;
 
 import com.mercedesbenz.sechub.commons.TextFileWriter;
 import com.mercedesbenz.sechub.commons.archive.ArchiveSupport;
+import com.mercedesbenz.sechub.commons.archive.DirectoryAndFileSupport;
 import com.mercedesbenz.sechub.commons.core.security.CheckSumSupport;
 import com.mercedesbenz.sechub.commons.pds.DefaultProcessBuilderFactory;
 import com.mercedesbenz.sechub.commons.pds.PDSProcessAdapterFactory;
@@ -43,6 +44,11 @@ public class PrepareWrapperPojoFactory {
     @Bean
     ProcessBuilderFactory createProcessBuilderFactory() {
         return new DefaultProcessBuilderFactory();
+    }
+
+    @Bean
+    DirectoryAndFileSupport createDirectoryAndFileSupport() {
+        return new DirectoryAndFileSupport();
     }
 
 }

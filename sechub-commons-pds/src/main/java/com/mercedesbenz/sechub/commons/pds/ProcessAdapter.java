@@ -47,15 +47,49 @@ public class ProcessAdapter {
         return process.exitValue();
     }
 
-    /*
-     * Sends given characters as user input to process.
+    /**
+     * Sends given characters as user input to process. Attention: You are NOT
+     * allowed to redirect the input stream of the process builder when you use this
+     * method - Otherwise it will not work!
+     *
+     * <h3>Correct example</h3>
+     *
+     * <pre>
+     * ProcessBuilder pb = new ProcessBuilder("bash", "script-with-userinput.sh");
+     * pb.redirectOutput(Redirect.INHERIT);
+     * pb.redirectError(Redirect.INHERIT);
+     * </pre>
+     *
+     * <h3>Wrong examples</h3> Example W1
+     *
+     * <pre>
+     * ProcessBuilder pb = new ProcessBuilder("bash", "script-with-userinput.sh");
+     * pb.inheritIO(); // does also redirect input -> will not work...
+     * </pre>
+     *
+     * Example W2
+     *
+     * <pre>
+     * ProcessBuilder pb = new ProcessBuilder("bash", "script-with-userinput.sh");
+     * pb.redirectOutput(Redirect.INHERIT);
+     * pb.redirectError(Redirect.INHERIT);
+     * pb.redirectInput(Redirect.INHERIT); // redirect input -> will not work...
+     * </pre>
+     *
+     *
+     *
      */
     public void enterInput(char[] unsealedPassword) throws IOException {
         if (process == null) {
             return;
         }
-        // we must use the output stream from the child process - see javadoc of
-        // getOutputStream()
+        /*
+         * Don't be confused: in javadoc of this method we forbid the redirect of INPUT
+         * stream when using enterInput and here we use the output stream of the
+         * process... It is correct, because the output stream is connected to the input
+         * stream of the process - see see javadoc of getOutputStream() for more
+         * details.
+         */
         try (BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(process.getOutputStream(), StandardCharsets.UTF_8))) {
             bw.write(unsealedPassword);
             bw.flush();

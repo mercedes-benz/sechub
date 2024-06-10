@@ -6,9 +6,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
 
-import java.io.File;
 import java.io.IOException;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
 
@@ -22,6 +20,7 @@ import com.mercedesbenz.sechub.commons.model.SecHubRemoteCredentialConfiguration
 import com.mercedesbenz.sechub.commons.model.SecHubRemoteCredentialUserData;
 import com.mercedesbenz.sechub.commons.model.SecHubRemoteDataConfiguration;
 import com.mercedesbenz.sechub.test.TestFileWriter;
+import com.mercedesbenz.sechub.test.TestUtil;
 import com.mercedesbenz.sechub.wrapper.prepare.InputValidatorExitcode;
 import com.mercedesbenz.sechub.wrapper.prepare.PrepareWrapperContext;
 import com.mercedesbenz.sechub.wrapper.prepare.PrepareWrapperInputValidatorException;
@@ -36,8 +35,6 @@ class SkopeoPrepareWrapperModuleTest {
     private SkopeoWrapper skopeoWrapper;
     private TestFileWriter writer;
     private FileNameSupport fileNameSupport;
-    /* FIXME Albert Tregnaghi, 2024-06-06: this should be improved: */
-    private final Path skopeoDownloadFolder = Path.of(SkopeoWrapperConstants.DOWNLOAD_DIRECTORY_NAME);
 
     @BeforeEach
     void beforeEach() {
@@ -115,11 +112,10 @@ class SkopeoPrepareWrapperModuleTest {
     @Test
     void prepare_successful_when_user_credentials_are_configured_correctly() throws IOException {
         /* prepare */
-        File tempDir = Files.createTempDirectory("upload-folder").toFile();
-        tempDir.deleteOnExit();
+        Path tempDir = TestUtil.createTempDirectoryInBuildFolder("skopeo-upload-folder");
 
         Path testFile = Path.of("testimage.tar");
-        Path downloadDirectory = tempDir.toPath().resolve(skopeoDownloadFolder);
+        Path downloadDirectory = tempDir.resolve(SkopeoWrapperConstants.DOWNLOAD_DIRECTORY_NAME);
         writer.save(downloadDirectory.resolve(testFile).toFile(), "some text", true);
 
         PrepareWrapperEnvironment environment = mock(PrepareWrapperEnvironment.class);
@@ -164,10 +160,9 @@ class SkopeoPrepareWrapperModuleTest {
     @Test
     void prepare_does_validate_download_and_cleanup_docker_image_when_no_credentials_configured() throws IOException {
         /* prepare */
-        File tempDir = Files.createTempDirectory("upload-folder").toFile();
-        tempDir.deleteOnExit();
+        Path tempDir = TestUtil.createTempDirectoryInBuildFolder("skopeo-upload-folder");
 
-        Path downloadDirectory = tempDir.toPath().resolve(skopeoDownloadFolder);
+        Path downloadDirectory = tempDir.resolve(SkopeoWrapperConstants.DOWNLOAD_DIRECTORY_NAME);
         Path testFile = downloadDirectory.resolve("testimage.tar");
         writer.save(testFile.toFile(), "some text", true);
 

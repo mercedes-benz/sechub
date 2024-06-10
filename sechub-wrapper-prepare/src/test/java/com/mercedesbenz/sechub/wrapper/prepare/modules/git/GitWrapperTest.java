@@ -15,6 +15,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 
+import com.mercedesbenz.sechub.commons.archive.DirectoryAndFileSupport;
 import com.mercedesbenz.sechub.commons.pds.PDSProcessAdapterFactory;
 import com.mercedesbenz.sechub.commons.pds.ProcessAdapter;
 
@@ -23,6 +24,7 @@ class GitWrapperTest {
     private GitWrapper wrapperToTest;
     private PDSProcessAdapterFactory processAdapterFactory;
     private JGitAdapter jGitAdapter;
+    private DirectoryAndFileSupport directoryAndFileSupport;
 
     @BeforeEach
     void beforeEach() throws IOException, InterruptedException {
@@ -30,12 +32,15 @@ class GitWrapperTest {
         processAdapterFactory = mock(PDSProcessAdapterFactory.class);
         ProcessAdapter processAdapter = mock(ProcessAdapter.class);
         jGitAdapter = mock(JGitAdapter.class);
+        directoryAndFileSupport = mock(DirectoryAndFileSupport.class);
+
         when(processAdapterFactory.startProcess(any())).thenReturn(processAdapter);
         when(processAdapter.waitFor(any(Long.class), any(TimeUnit.class))).thenReturn(true);
         doNothing().when(jGitAdapter).clone(any());
 
         wrapperToTest.processAdapterFactory = processAdapterFactory;
         wrapperToTest.jGitAdapter = jGitAdapter;
+        wrapperToTest.directoryAndFileSupport = directoryAndFileSupport;
     }
 
     @ParameterizedTest
@@ -71,29 +76,34 @@ class GitWrapperTest {
     }
 
     @Test
-    void when_cleanGitDirectory_is_executed_the_processAdapterFactory_starts_one_process() throws IOException {
+    void when_removeGitFiles_is_executed_the_clean_directories_is_called_withAutoCleanupGitFilesFilter_instance() throws IOException {
         /* prepare */
         String directory = "test-upload-folder";
 
         /* execute */
-        wrapperToTest.cleanUploadDirectory(Path.of(directory));
+        Path path = Path.of(directory);
+        wrapperToTest.removeGitFiles(path);
 
         /* test */
-        verify(processAdapterFactory, times(1)).startProcess(any());
+        verify(directoryAndFileSupport, times(1)).cleanDirectories(path.toFile(), AutoCleanupGitFilesFilter.INSTANCE);
 
     }
 
     @Test
-    void when_cleanGitDirectory_throws_exception_IOException_is_thrown() throws IOException {
+    void when_removeGitFiles_is_executed_and_clean_directories_throws_exception_it_is_rethrown() throws IOException {
         /* prepare */
-        when(processAdapterFactory.startProcess(any())).thenThrow(IOException.class);
         String directory = "test-upload-folder";
+        Path pathOfDir = Path.of(directory);
+        doThrow(new IOException("test exception")).when(directoryAndFileSupport).cleanDirectories(eq(pathOfDir.toFile()), any());
 
         /* execute */
-        Exception exception = assertThrows(Exception.class, () -> wrapperToTest.cleanUploadDirectory(Path.of(directory)));
+        Exception exception = assertThrows(Exception.class, () -> wrapperToTest.removeGitFiles(pathOfDir));
 
         /* test */
-        assertTrue(exception.getMessage().contains("Error while cleaning git directory: test-upload-folder"));
+        String message = exception.getMessage();
+        if (!message.contains("test exception")) {
+            fail("Wrong message from exception: " + message);
+        }
     }
 
 }

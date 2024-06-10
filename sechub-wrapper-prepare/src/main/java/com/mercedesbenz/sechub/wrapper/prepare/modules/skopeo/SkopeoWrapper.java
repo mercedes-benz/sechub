@@ -26,8 +26,8 @@ public class SkopeoWrapper extends AbstractToolWrapper {
 
     private static final String AUTHENTICATION_DEFAULT_FILENAME = "authentication.json";
 
-    @Value("${" + KEY_PDS_PREPARE_AUTHENTICATION_FILE_SKOPEO + ":" + AUTHENTICATION_DEFAULT_FILENAME + "}")
-    String pdsPrepareAuthenticationFileSkopeo = AUTHENTICATION_DEFAULT_FILENAME;// when not initialized by spring
+    @Value("${" + KEY_PDS_PREPARE_MODULE_SKOPEO_AUTHENTICATION_FILENAME + ":" + AUTHENTICATION_DEFAULT_FILENAME + "}")
+    String skopeoAuthenticationFilename = AUTHENTICATION_DEFAULT_FILENAME;// when not initialized by spring (e.g. in tests)
 
     @Autowired
     PDSProcessAdapterFactory processAdapterFactory;
@@ -58,13 +58,15 @@ public class SkopeoWrapper extends AbstractToolWrapper {
 
         try {
             process = processAdapterFactory.startProcess(builder);
+
+            waitForProcessToFinish(process);
+
+            handleLogoutIfnecessary(context);
+
         } catch (IOException e) {
-            throw new IOException("Error while starting Skopeo download process for: " + logSanitizer.sanitize(context.getLocation(), 512), e);
+            throw new IOException("Error while executing Skopeo download process for: " + logSanitizer.sanitize(context.getLocation(), 512), e);
         }
 
-        waitForProcessToFinish(process);
-
-        handleLogoutIfnecessary(context);
     }
 
     private void handleLoginIfNecessary(SkopeoContext context) throws IOException {
@@ -97,7 +99,7 @@ public class SkopeoWrapper extends AbstractToolWrapper {
         commands.add(context.getUnsealedUsername());
         commands.add("--password-stdin");
         commands.add("--authfile");
-        commands.add(pdsPrepareAuthenticationFileSkopeo);
+        commands.add(skopeoAuthenticationFilename);
 
         ProcessBuilder builder = processBuilderFactory.createForCommandList(commands);
         builder.directory(downloadDirectory);
@@ -120,7 +122,7 @@ public class SkopeoWrapper extends AbstractToolWrapper {
         commands.add("docker-archive:" + context.getDownloadTarFile());
         if (context.hasCredentials()) {
             commands.add("--authfile");
-            commands.add(pdsPrepareAuthenticationFileSkopeo);
+            commands.add(skopeoAuthenticationFilename);
         }
 
         ProcessBuilder builder = processBuilderFactory.createForCommandList(commands);

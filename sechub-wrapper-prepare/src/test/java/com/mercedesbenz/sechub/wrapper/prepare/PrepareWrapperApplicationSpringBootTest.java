@@ -19,6 +19,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import com.mercedesbenz.sechub.adapter.AdapterExecutionResult;
 import com.mercedesbenz.sechub.commons.archive.ArchiveSupport;
+import com.mercedesbenz.sechub.commons.archive.DirectoryAndFileSupport;
 import com.mercedesbenz.sechub.test.TestUtil;
 import com.mercedesbenz.sechub.wrapper.prepare.cli.PrepareWrapperEnvironment;
 import com.mercedesbenz.sechub.wrapper.prepare.modules.PrepareWrapperModule;
@@ -27,6 +28,7 @@ import com.mercedesbenz.sechub.wrapper.prepare.modules.git.GitPrepareInputValida
 import com.mercedesbenz.sechub.wrapper.prepare.modules.git.GitPrepareWrapperModule;
 import com.mercedesbenz.sechub.wrapper.prepare.modules.git.GitWrapper;
 import com.mercedesbenz.sechub.wrapper.prepare.modules.git.JGitAdapter;
+import com.mercedesbenz.sechub.wrapper.prepare.modules.skopeo.SkopeoLocationConverter;
 import com.mercedesbenz.sechub.wrapper.prepare.modules.skopeo.SkopeoPrepareInputValidator;
 import com.mercedesbenz.sechub.wrapper.prepare.modules.skopeo.SkopeoPrepareWrapperModule;
 import com.mercedesbenz.sechub.wrapper.prepare.modules.skopeo.SkopeoWrapper;
@@ -58,6 +60,8 @@ import com.mercedesbenz.sechub.wrapper.prepare.upload.PrepareWrapperUploadServic
         PrepareWrapperSechubConfigurationSupport.class,
         PrepareWrapperArchiveCreator.class,
         ArchiveSupport.class,
+        DirectoryAndFileSupport.class,
+        SkopeoLocationConverter.class,
         GitLocationConverter.class,
         FileNameSupport.class,
         PrepareWrapperSharedVolumePropertiesSetup.class,
@@ -215,7 +219,7 @@ class PrepareWrapperApplicationSpringBootTest {
 
         /* test */
         String message = exception.getMessage();
-        String expected = "Error while starting Skopeo download process for: https://somewhere.example.com"; // the mocked skopeo wrapper does not download
+        String expected = "Error while executing Skopeo download process for: https://somewhere.example.com"; // the mocked skopeo wrapper does not download
         if(!message.contains(expected)) {
             assertEquals(expected, message); // we use equals here to have a better comparison in IDE (fails here always)
         }

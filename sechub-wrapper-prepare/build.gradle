@@ -22,6 +22,7 @@ dependencies {
     implementation spring_boot_dependency.logback_classic
 
     implementation library.jgit_core
+    implementation library.apache_commons_io
 
     /* test */
     testImplementation project(':sechub-testframework')
