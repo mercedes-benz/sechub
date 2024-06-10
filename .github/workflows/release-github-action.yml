@@ -179,7 +179,7 @@ jobs:
           source_branch: "master"
           destination_branch: "develop"
           pr_allow_empty: true  # should allow an empty PR, but seems not to work
-          pr_title: '2 - After ghaction release: Merge master back into develop [auto-generated]'
+          pr_title: '2 - After Github Action release: Merge master back into develop [auto-generated]'
           pr_body: |
             After SecHub Github Action release
             - Github Action '${{ inputs.ghaction-version }}'
