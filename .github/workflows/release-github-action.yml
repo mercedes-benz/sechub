@@ -23,9 +23,6 @@ jobs:
   release-version:
     name: Create Github Action release
     runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: github-actions/scan
     steps:
 
       - name: "Show Inputs"
@@ -89,14 +86,16 @@ jobs:
       # ----------------------
       # Build SecHub Github Action
       # ----------------------
-      - name: Clean install
-        run: npm ci
-
-      - name: Build
-        run: npm run build
-
-      - name: Run unit tests
-        run: npm test
+      - name: Build github-actions/scan
+        run: |
+          GHACTION="github-actions/scan"
+          cd $GHACTION
+          echo "# $GHACTION - Install dependencies"
+          npm ci
+          echo "# $GHACTION - Run build"
+          npm run build
+          echo "# $GHACTION - Run unit tests"
+          npm test
 
       # ----------------------
       # Create pull request for updated files
