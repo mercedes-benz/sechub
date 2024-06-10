@@ -23,10 +23,25 @@ public class PrepareWrapperKeyConstants {
     /**
      * Flag to clean the gitWrapper folder from git files and clone without history
      */
-    public static final String KEY_PDS_PREPARE_AUTO_CLEANUP_GIT_FOLDER = "pds.prepare.auto.cleanup.git.folder";
+    /* FIXME Albert Tregnaghi, 2024-06-07: rename constant + check logic */
+//    public static final String KEY_PDS_PREPARE_AUTO_CLEANUP_GIT_FOLDER = "pds.prepare.module.git.history.wanted";
+//    public static final String KEY_PDS_PREPARE_AUTO_CLEANUP_GIT_FOLDER = "pds.prepare.module.git.autocleanup.enabled";
+    /*
+     * FIXME Albert Tregnaghi, 2024-06-07:differ between drop git files and history
+     * wanted - different usecases!
+     */
+    /* FIXME Albert Tregnaghi, 2024-06-07: do we need the drop functionality */
+    public static final String KEY_PDS_PREPARE_AUTO_CLEANUP_GIT_FOLDER = "pds.prepare.module.git.drop.gitfiles";
+
+    /* FIXME Albert Tregnaghi, 2024-06-07: implement */
+    public static final String KEY_PDS_PREPARE_MODULE_GIT_HISTORY_WANTED = "pds.prepare.module.git.history.wanted";
 
     /**
      * Filename for skopeoWrapper authentication file
+     */
+    /*
+     * FIXME Albert Tregnaghi, 2024-06-07: key correct ? what about
+     * pds.prepare.module.skopeo.... ?
      */
     public static final String KEY_PDS_PREPARE_AUTHENTICATION_FILE_SKOPEO = "pds.prepare.authentication.file.skopeo";
 }

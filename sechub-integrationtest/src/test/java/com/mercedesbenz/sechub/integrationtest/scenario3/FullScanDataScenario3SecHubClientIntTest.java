@@ -113,17 +113,16 @@ public class FullScanDataScenario3SecHubClientIntTest {
             containsFile("metadata_SERECO.json").
             containsFile("SERECO.json").
             containsFiles(5);
+        /* @formatter:on*/
 
         FullScanDataElement log = assertFullScanData.resolveFileStartingWith("log_");
         assertTrue(log.content.contains("executedBy=" + user.getUserId()));
         assertTrue(log.content.contains("projectId=" + project.getProjectId()));
 
-
-        /* execute (3) + test - user cannot donload logs or full scan data*/
+        /* execute (3) + test - user cannot donload logs or full scan data */
         expectHttpFailure(() -> as(user).getScanLogsForProject(project), HttpStatus.FORBIDDEN);
         expectHttpFailure(() -> as(user).downloadFullScanDataFor(sechubJobUUID), HttpStatus.FORBIDDEN);
 
-        /* execute */
     }
 
 }

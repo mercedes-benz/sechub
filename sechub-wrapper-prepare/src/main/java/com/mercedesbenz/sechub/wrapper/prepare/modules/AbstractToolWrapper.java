@@ -4,8 +4,6 @@ package com.mercedesbenz.sechub.wrapper.prepare.modules;
 import static com.mercedesbenz.sechub.commons.pds.PDSDefaultParameterKeyConstants.*;
 import static com.mercedesbenz.sechub.wrapper.prepare.cli.PrepareWrapperKeyConstants.*;
 
-import java.io.IOException;
-import java.nio.file.Path;
 import java.util.concurrent.TimeUnit;
 
 import org.slf4j.Logger;
@@ -17,9 +15,9 @@ import com.mercedesbenz.sechub.commons.pds.PDSDefaultParameterValueConstants;
 import com.mercedesbenz.sechub.commons.pds.ProcessAdapter;
 
 @Component
-public abstract class ToolWrapper {
+public abstract class AbstractToolWrapper {
 
-    private static final Logger LOG = LoggerFactory.getLogger(ToolWrapper.class);
+    private static final Logger LOG = LoggerFactory.getLogger(AbstractToolWrapper.class);
     private static final int defaultMinutesToWaitForProduct = PDSDefaultParameterValueConstants.DEFAULT_MINUTES_TO_WAIT_FOR_PRODUCT;
 
     @Value("${" + PARAM_KEY_PDS_CONFIG_PRODUCT_TIMEOUT_MINUTES + ":" + defaultMinutesToWaitForProduct + "}")
@@ -28,16 +26,14 @@ public abstract class ToolWrapper {
     @Value("${" + KEY_PDS_PREPARE_PROCESS_TIMEOUT_SECONDS + ":-1}")
     private int pdsPrepareProcessTimeoutSeconds;
 
-    protected abstract void cleanUploadDirectory(Path directory) throws IOException;
-
-    protected void waitForProcessToFinish(ProcessAdapter process) {
+    protected void waitForProcessToFinish(ProcessAdapter processAdapter) {
 
         LOG.debug("Wait for wrapper to finish process.");
         int seconds = calculateTimeoutSeconds();
 
         boolean exitDoneInTime = false;
         try {
-            exitDoneInTime = process.waitFor(seconds, TimeUnit.SECONDS);
+            exitDoneInTime = processAdapter.waitFor(seconds, TimeUnit.SECONDS);
         } catch (InterruptedException e) {
             throw new RuntimeException("Wrapper for executed modul " + this.getClass().getSimpleName() + " could not finish process.", e);
         }
@@ -47,10 +43,10 @@ public abstract class ToolWrapper {
                     + pdsPrepareProcessTimeoutSeconds + " seconds.");
         }
 
-        if (process.exitValue() != 0) {
-            LOG.error("Wrapper for executed modul {} process failed with exit code: {}", this.getClass().getSimpleName(), process.exitValue());
+        if (processAdapter.exitValue() != 0) {
+            LOG.error("Wrapper for executed modul {} process failed with exit code: {}", this.getClass().getSimpleName(), processAdapter.exitValue());
             throw new RuntimeException(
-                    "Wrapper for executed modul " + this.getClass().getSimpleName() + " process failed with exit code: " + process.exitValue());
+                    "Wrapper for executed modul " + this.getClass().getSimpleName() + " process failed with exit code: " + processAdapter.exitValue());
         }
     }
 

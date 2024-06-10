@@ -106,7 +106,7 @@ public class Scenario22 extends AbstractGrowingSecHubServerTestScenario implemen
     /**
      * Project 6 is created on startup, and has {@link #USER_1} +
      * {@link IntegrationTestDefaultProfiles#PROFILE_32_PDS_PREPARE_SCAN_CONFIG_SUCCESS
-     * profile 32 (exit 5 preparation)} and also
+     * profile 32 (preparation with prepare wrapper)} and also
      * {@link IntegrationTestDefaultProfiles#PROFILE_2_PDS_CODESCAN profile2 (pds
      * codescan) assigned
      */

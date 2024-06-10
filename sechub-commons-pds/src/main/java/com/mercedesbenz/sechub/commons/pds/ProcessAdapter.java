@@ -43,8 +43,4 @@ public class ProcessAdapter {
         return process.exitValue();
     }
 
-    public Process getProcess() {
-        return process;
-    }
-
 }

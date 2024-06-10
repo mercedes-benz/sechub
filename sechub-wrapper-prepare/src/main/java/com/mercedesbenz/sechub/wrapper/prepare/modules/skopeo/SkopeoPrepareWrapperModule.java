@@ -69,7 +69,10 @@ public class SkopeoPrepareWrapperModule extends AbstractPrepareWrapperModule {
     @Override
     protected void prepareImpl(PrepareWrapperContext context) throws IOException {
 
+        /* validate */
         inputValidator.validate(context);
+
+        /* prepare context */
         LOG.debug("Module {} resolved remote configuration and will prepare.", getClass().getSimpleName());
 
         SecHubRemoteDataConfiguration secHubRemoteDataConfiguration = context.getRemoteDataConfiguration();
@@ -77,12 +80,15 @@ public class SkopeoPrepareWrapperModule extends AbstractPrepareWrapperModule {
         ensureDirectoryExists(skopeoContext.getToolDownloadDirectory());
         prepareRemoteConfiguration(skopeoContext, secHubRemoteDataConfiguration);
 
+        /* download docker image */
+        skopeoWrapper.download(skopeoContext);
+
         if (!isDownloadSuccessful(skopeoContext)) {
             LOG.error("Download of docker image was not successful.");
             throw new PrepareWrapperUsageException("Download of docker image was not successful.", DOWNLOAD_NOT_SUCCESSFUL);
         }
-        cleanup(skopeoContext);
 
+        /* upload into sechub storage */
         try {
             uploadService.upload(context, skopeoContext);
         } catch (Exception e) {
@@ -109,10 +115,6 @@ public class SkopeoPrepareWrapperModule extends AbstractPrepareWrapperModule {
         return skopeoContext;
     }
 
-    private void cleanup(SkopeoContext skopeoContext) throws IOException {
-        skopeoWrapper.cleanUploadDirectory(skopeoContext.getToolDownloadDirectory());
-    }
-
     private void prepareRemoteConfiguration(SkopeoContext skopeoContext, SecHubRemoteDataConfiguration secHubRemoteDataConfiguration) throws IOException {
         String location = secHubRemoteDataConfiguration.getLocation();
         Optional<SecHubRemoteCredentialConfiguration> credentials = secHubRemoteDataConfiguration.getCredentials();
@@ -128,7 +130,6 @@ public class SkopeoPrepareWrapperModule extends AbstractPrepareWrapperModule {
             skopeoContext.setSealedCredentials(user);
         }
 
-        skopeoWrapper.download(skopeoContext);
     }
 
 }

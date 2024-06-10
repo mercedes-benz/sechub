@@ -1,11 +1,7 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.wrapper.prepare.modules;
 
-import static com.mercedesbenz.sechub.wrapper.prepare.cli.PrepareWrapperEnvironmentVariables.*;
-
 import java.nio.file.Path;
-import java.util.HashMap;
-import java.util.Map;
 
 import javax.crypto.SealedObject;
 
@@ -14,22 +10,23 @@ import com.mercedesbenz.sechub.commons.model.SecHubRemoteCredentialUserData;
 
 public abstract class AbstractPrepareToolContext implements PrepareToolContext {
 
+    private SealedObject sealedUsername;
+    private SealedObject sealedPassword;
+
     private static final String UPLOAD_DIRECTORY_NAME = "upload";
 
     private String location;
     protected Path uploadDirectory;
-
-    private Map<String, SealedObject> credentialMap = new HashMap<>();
-
-    public void setLocation(String location) {
-        this.location = location;
-    }
 
     public void init(Path workingDirectory) {
         if (workingDirectory == null) {
             throw new IllegalArgumentException("Upload directory may not be null!");
         }
         this.uploadDirectory = workingDirectory.resolve(UPLOAD_DIRECTORY_NAME);
+    }
+
+    public void setLocation(String location) {
+        this.location = location;
     }
 
     @Override
@@ -43,32 +40,43 @@ public abstract class AbstractPrepareToolContext implements PrepareToolContext {
     }
 
     public String getUnsealedUsername() {
-        return CryptoAccess.CRYPTO_STRING.unseal(credentialMap.get(PDS_PREPARE_CREDENTIAL_USERNAME));
+        if (sealedUsername == null) {
+            return null;
+        }
+        return CryptoAccess.CRYPTO_STRING.unseal(sealedUsername);
     }
 
     public String getUnsealedPassword() {
-        return CryptoAccess.CRYPTO_STRING.unseal(credentialMap.get(PDS_PREPARE_CREDENTIAL_PASSWORD));
+        if (sealedPassword == null) {
+            return null;
+        }
+        return CryptoAccess.CRYPTO_STRING.unseal(sealedPassword);
     }
 
     public boolean hasCredentials() {
-        return !credentialMap.isEmpty();
+        return sealedUsername != null && sealedPassword != null;
     }
 
-    /*
-     * TODO Albert Tregnaghi, 2024-06-06: the user data is still in memory - means
-     * context does seal, but sensitive data is still plain inside memory (caller
-     * side)! Must be fixed with config encryption!
-     */
     public void setSealedCredentials(SecHubRemoteCredentialUserData user) {
-        setSealedCredentials(user.getName(), user.getPassword());
+        if (user == null) {
+            setSealedCredentials(null, null);
+        } else {
+            setSealedCredentials(user.getName(), user.getPassword());
+        }
     }
 
     public void setSealedCredentials(String username, String password) {
 
-        SealedObject sealedUsername = CryptoAccess.CRYPTO_STRING.seal(username);
-        credentialMap.put(PDS_PREPARE_CREDENTIAL_USERNAME, sealedUsername);
+        if (username == null) {
+            sealedUsername = null;
+        } else {
+            sealedUsername = CryptoAccess.CRYPTO_STRING.seal(username);
+        }
 
-        SealedObject sealedPassword = CryptoAccess.CRYPTO_STRING.seal(password);
-        credentialMap.put(PDS_PREPARE_CREDENTIAL_PASSWORD, sealedPassword);
+        if (password == null) {
+            sealedPassword = null;
+        } else {
+            sealedPassword = CryptoAccess.CRYPTO_STRING.seal(password);
+        }
     }
 }

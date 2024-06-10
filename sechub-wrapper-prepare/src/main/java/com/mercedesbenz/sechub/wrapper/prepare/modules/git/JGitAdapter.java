@@ -3,8 +3,8 @@ package com.mercedesbenz.sechub.wrapper.prepare.modules.git;
 
 import static com.mercedesbenz.sechub.wrapper.prepare.modules.UsageExceptionExitCode.*;
 
+import java.net.URL;
 import java.nio.file.Path;
-import java.util.List;
 
 import org.eclipse.jgit.api.CloneCommand;
 import org.eclipse.jgit.api.Git;
@@ -22,68 +22,64 @@ import com.mercedesbenz.sechub.wrapper.prepare.PrepareWrapperUsageException;
 public class JGitAdapter {
 
     @Autowired
-    PDSLogSanitizer pdsLogSanitizer;
+    PDSLogSanitizer logSanitizer;
+
+    @Autowired
+    GitLocationConverter urlConverter;
 
     private static final Logger LOG = LoggerFactory.getLogger(JGitAdapter.class);
 
     public void clone(GitContext gitContext) {
-        String location = transformLocationToURL(gitContext.getLocation());
-        Path downloadDirectory = gitContext.getToolDownloadDirectory();
 
+        String location = gitContext.getLocation();
+        String sanitizedLocation = logSanitizer.sanitize(location, 1024);
+
+        LOG.debug("Start cloning location:", sanitizedLocation);
+
+        URL url = urlConverter.convertLocationToHttpsBasedURL(location);
+        Path downloadDirectory = gitContext.getToolDownloadDirectory();
         Path repository = Path.of(gitContext.getRepositoryName());
 
         /* @formatter:off */
-        CloneCommand command = Git.cloneRepository().
-                setURI(location).
+        CloneCommand cloneCommand = Git.cloneRepository().
+                setURI(url.toExternalForm()).
                 setDirectory(downloadDirectory.resolve(repository).toFile());
         /* @formatter:on */
 
-        String username = gitContext.getUnsealedUsername();
-        String password = gitContext.getUnsealedPassword();
+        handleGitCredentials(gitContext, url, downloadDirectory, cloneCommand);
+        handleGitHistory(gitContext, cloneCommand);
 
-        if (username != null && password != null) {
-            LOG.debug("Cloning private repository: {} with username and password to: {} ", pdsLogSanitizer.sanitize(location, 1024), downloadDirectory);
-            command = command.setCredentialsProvider(new UsernamePasswordCredentialsProvider(username, password));
-        } else {
-            LOG.debug("Cloning public repository: {} with username and password to: {} ", pdsLogSanitizer.sanitize(location, 1024), downloadDirectory);
+        try (Git git = cloneCommand.call()) {
+        } catch (GitAPIException e) {
+
+            throw new PrepareWrapperUsageException("Could not clone defined repository: " + url, e, GIT_CLONING_FAILED);
         }
+    }
 
+    private void handleGitHistory(GitContext gitContext, CloneCommand cloneCommand) {
         if (gitContext.isCloneWithoutHistory()) {
             LOG.debug("Cloning repository without history");
-            command = command.setDepth(1);
-        }
-
-        try (Git git = command.call()) {
-        } catch (GitAPIException e) {
-            LOG.error("Could not clone defined repository: {}", pdsLogSanitizer.sanitize(location, 1024), e);
-            throw new PrepareWrapperUsageException("Could not clone defined repository: " + pdsLogSanitizer.sanitize(location, 1024), e, GIT_CLONING_FAILED);
+            cloneCommand.setDepth(1);
         }
     }
 
-    private String transformLocationToURL(String location) {
+    private void handleGitCredentials(GitContext gitContext, URL url, Path downloadDirectory, CloneCommand cloneCommand) {
+        if (gitContext.hasCredentials()) {
 
-        if (location.startsWith("https://")) {
-            return location;
-        }
+            String username = gitContext.getUnsealedUsername();
+            String password = gitContext.getUnsealedPassword();
 
-        /* clone with password and username does only work with URL */
-        String URLPrefix = "https://";
-        List<String> prefixes = List.of("git@", "git://", "http://", "ssh://");
-        for (String prefix : prefixes) {
-            if (location.startsWith(prefix)) {
-                if (prefix.equals("git@")) {
-                    location = location.replace(":", "/");
-                }
-                location = location.replace(prefix, URLPrefix);
-                break;
+            if (LOG.isDebugEnabled()) {
+                LOG.debug("Cloning private repository: {} with username and password to: {} ", logSanitizer.sanitize(url, 1024), downloadDirectory);
+            }
+
+            cloneCommand.setCredentialsProvider(new UsernamePasswordCredentialsProvider(username, password));
+
+        } else {
+            if (LOG.isDebugEnabled()) {
+                LOG.debug("Cloning public repository: {} with username and password to: {} ", logSanitizer.sanitize(url, 1024), downloadDirectory);
             }
         }
-        try {
-            new java.net.URL(location);
-        } catch (java.net.MalformedURLException e) {
-            throw new PrepareWrapperUsageException("Location could not be transferred into a valid URL: " + pdsLogSanitizer.sanitize(location, 1024),
-                    LOCATION_URL_NOT_VALID_URL);
-        }
-        return location;
     }
+
 }

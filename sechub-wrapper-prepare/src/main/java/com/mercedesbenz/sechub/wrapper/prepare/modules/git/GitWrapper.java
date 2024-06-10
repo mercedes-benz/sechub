@@ -11,10 +11,10 @@ import org.springframework.stereotype.Component;
 
 import com.mercedesbenz.sechub.commons.pds.PDSProcessAdapterFactory;
 import com.mercedesbenz.sechub.commons.pds.ProcessAdapter;
-import com.mercedesbenz.sechub.wrapper.prepare.modules.ToolWrapper;
+import com.mercedesbenz.sechub.wrapper.prepare.modules.AbstractToolWrapper;
 
 @Component
-public class GitWrapper extends ToolWrapper {
+public class GitWrapper extends AbstractToolWrapper {
 
     @Autowired
     JGitAdapter jGitAdapter;
@@ -26,7 +26,6 @@ public class GitWrapper extends ToolWrapper {
         jGitAdapter.clone(gitContext);
     }
 
-    @Override
     public void cleanUploadDirectory(Path gitDownloadDirectory) throws IOException {
         final ProcessBuilder builder = buildProcessClean(gitDownloadDirectory);
         ProcessAdapter process = null;
@@ -40,8 +39,16 @@ public class GitWrapper extends ToolWrapper {
         waitForProcessToFinish(process);
     }
 
+    /*
+     * FIXME Albert Tregnaghi, 2024-06-07: is this really necessary - workspace is
+     * cleaned automatically, also this is process builder again?
+     */
     private ProcessBuilder buildProcessClean(Path gitDownloadDirectory) {
         List<String> commands = new ArrayList<>();
+        /*
+         * FIXME Albert Tregnaghi, 2024-06-07: either with java api or let pds clean
+         * workspace...
+         */
         // removes recursively all git files from a directory
         // ( find . -type d -name ".git" && find . -name ".gitignore" && find . -name
         // ".gitmodules" ) | xargs rm -rf
@@ -49,7 +56,7 @@ public class GitWrapper extends ToolWrapper {
         commands.add("/bin/bash");
         commands.add("-c");
         commands.add("( find . -type d -name .git && find . -name .gitignore && find . -name .gitattributes ) | xargs rm -rf");
-
+        /* FIXME Albert Tregnaghi, 2024-06-07: java impl */
         ProcessBuilder builder = new ProcessBuilder(commands);
         builder.directory(gitDownloadDirectory.toFile());
         builder.inheritIO();

@@ -15,10 +15,11 @@ import org.springframework.stereotype.Component;
 
 import com.mercedesbenz.sechub.commons.pds.PDSProcessAdapterFactory;
 import com.mercedesbenz.sechub.commons.pds.ProcessAdapter;
-import com.mercedesbenz.sechub.wrapper.prepare.modules.ToolWrapper;
+import com.mercedesbenz.sechub.pds.commons.core.PDSLogSanitizer;
+import com.mercedesbenz.sechub.wrapper.prepare.modules.AbstractToolWrapper;
 
 @Component
-public class SkopeoWrapper extends ToolWrapper {
+public class SkopeoWrapper extends AbstractToolWrapper {
 
     private static final String AUTHENTICATION_DEFAULT_FILENAME = "authentication.json";
 
@@ -28,10 +29,20 @@ public class SkopeoWrapper extends ToolWrapper {
     @Autowired
     PDSProcessAdapterFactory processAdapterFactory;
 
+    @Autowired
+    PDSLogSanitizer logSanitizer;
+
+    /**
+     * Downloads docker image via skopeo. If credentials are defined, a login is
+     * done before automatically afterwards the temp autorization data is removed as
+     * well
+     *
+     * @param context
+     * @throws IOException
+     */
     public void download(SkopeoContext context) throws IOException {
-        if (context.hasCredentials()) {
-            login(context);
-        }
+
+        handleLoginIfNecessary(context);
 
         ProcessBuilder builder = buildProcessDownload(context);
         ProcessAdapter process = null;
@@ -39,15 +50,29 @@ public class SkopeoWrapper extends ToolWrapper {
         try {
             process = processAdapterFactory.startProcess(builder);
         } catch (IOException e) {
-            throw new IOException("Error while download with Skopeo from: " + context.getLocation(), e);
+            throw new IOException("Error while starting Skopeo download process for: " + logSanitizer.sanitize(context.getLocation(), 512), e);
         }
 
         waitForProcessToFinish(process);
+
+        handleLogoutIfnecessary(context);
     }
 
-    @Override
-    public void cleanUploadDirectory(Path uploadDirectory) throws IOException {
-        ProcessBuilder builder = buildProcessClean(uploadDirectory);
+    private void handleLogoutIfnecessary(SkopeoContext skopeoContext) throws IOException {
+        if (!skopeoContext.hasCredentials()) {
+            return;
+        }
+        /*
+         * Currently we do a "logout" be removing the authorization file.
+         *
+         * We could use the login functionality in future, but
+         * https://github.com/containers/skopeo/blob/main/docs/skopeo-logout.1.md
+         * describes that it also only deletes the file?
+         */
+
+        /* FIXME Albert Tregnaghi, 2024-06-07: use java api instead of builder */
+        Path toolDownloadFolder = skopeoContext.getToolDownloadDirectory();
+        ProcessBuilder builder = buildProcessClean(toolDownloadFolder);
         ProcessAdapter process = null;
 
         try {
@@ -59,7 +84,10 @@ public class SkopeoWrapper extends ToolWrapper {
         waitForProcessToFinish(process);
     }
 
-    private void login(SkopeoContext context) throws IOException {
+    private void handleLoginIfNecessary(SkopeoContext context) throws IOException {
+        if (!context.hasCredentials()) {
+            return;
+        }
         ProcessBuilder builder = buildProcessLogin(context);
         ProcessAdapter process = null;
 
@@ -82,7 +110,7 @@ public class SkopeoWrapper extends ToolWrapper {
         commands.add("login");
         commands.add(location);
         commands.add("--username");
-        commands.add(context.getUnsealedUsername());
+        commands.add(context.getUnsealedUsername()); /* FIXME Albert Tregnaghi, 2024-06-07: use inputstream + "--password-stdin" */
         commands.add("--password");
         commands.add(context.getUnsealedPassword());
         commands.add("--authfile");
@@ -118,10 +146,10 @@ public class SkopeoWrapper extends ToolWrapper {
     }
 
     private ProcessBuilder buildProcessClean(Path skopeoDownloadDirectory) {
+        /* FIXME Albert Tregnaghi, 2024-06-07: remove via java api */
         // removes authentication file
         List<String> commands = new ArrayList<>();
-
-        commands.add("rm");
+        commands.add("rm"); // files could be deleted via java api
         commands.add("-rf");
         commands.add(pdsPrepareAuthenticationFileSkopeo);
 

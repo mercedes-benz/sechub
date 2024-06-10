@@ -137,7 +137,6 @@ class SkopeoPrepareWrapperModuleTest {
         /* test */
         verify(inputValidator).validate(context); // validator was called
         verify(skopeoWrapper).download(any(SkopeoContext.class));
-        verify(skopeoWrapper).cleanUploadDirectory(tempDir.toPath().resolve(skopeoDownloadFolder));
     }
 
     private void initRemoteDataConfigurationAnonymous(String location, PrepareWrapperContext context) {
@@ -186,7 +185,6 @@ class SkopeoPrepareWrapperModuleTest {
         /* test */
         verify(inputValidator).validate(context); // validator was called
         verify(skopeoWrapper).download(any(SkopeoContext.class));
-        verify(skopeoWrapper).cleanUploadDirectory(tempDir.toPath().resolve(skopeoDownloadFolder));
     }
 
     private PrepareWrapperContext createContext() {

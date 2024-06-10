@@ -18,6 +18,7 @@ import org.mockito.ArgumentCaptor;
 
 import com.mercedesbenz.sechub.commons.pds.PDSProcessAdapterFactory;
 import com.mercedesbenz.sechub.commons.pds.ProcessAdapter;
+import com.mercedesbenz.sechub.pds.commons.core.PDSLogSanitizer;
 import com.mercedesbenz.sechub.test.TestUtil;
 
 class SkopeoWrapperTest {
@@ -25,6 +26,7 @@ class SkopeoWrapperTest {
     private SkopeoWrapper wrapperToTest;
     private PDSProcessAdapterFactory processAdapterFactory;
     private Path workingDirectory;
+    private PDSLogSanitizer logSanitizer;
 
     @BeforeEach
     void beforeEach() throws IOException, InterruptedException {
@@ -32,12 +34,14 @@ class SkopeoWrapperTest {
         workingDirectory = TestUtil.createTempDirectoryInBuildFolder("skopeo-wrapper-test");
 
         processAdapterFactory = mock(PDSProcessAdapterFactory.class);
+        logSanitizer = mock(PDSLogSanitizer.class);
 
         ProcessAdapter processAdapter = mock(ProcessAdapter.class);
         when(processAdapterFactory.startProcess(any())).thenReturn(processAdapter);
         when(processAdapter.waitFor(any(Long.class), any(TimeUnit.class))).thenReturn(true);
 
         wrapperToTest.processAdapterFactory = processAdapterFactory;
+        wrapperToTest.logSanitizer = logSanitizer;
     }
 
     @Test
@@ -75,7 +79,7 @@ class SkopeoWrapperTest {
 
         /* test */
         ArgumentCaptor<ProcessBuilder> pbCaptor = ArgumentCaptor.forClass(ProcessBuilder.class);
-        verify(processAdapterFactory, times(2)).startProcess(pbCaptor.capture());
+        verify(processAdapterFactory, times(3)).startProcess(pbCaptor.capture());
         List<ProcessBuilder> processBuilders = pbCaptor.getAllValues();
         Iterator<ProcessBuilder> pbIt = processBuilders.iterator();
 
@@ -92,21 +96,14 @@ class SkopeoWrapperTest {
         context.init(workingDirectory);
         when(processAdapterFactory.startProcess(any())).thenThrow(new IOException());
 
+        when(logSanitizer.sanitize(eq(location), any(Integer.class))).thenReturn("sanitized-location");
+
         /* execute */
         IOException exception = assertThrows(IOException.class, () -> wrapperToTest.download(context));
 
         /* test */
-        assertEquals("Error while download with Skopeo from: " + location, exception.getMessage());
+        assertEquals("Error while starting Skopeo download process for: sanitized-location", exception.getMessage());
 
-    }
-
-    @Test
-    void when_cleanUploadDirectory_is_executed_clean_process_is_executed() throws IOException {
-        /* execute */
-        assertDoesNotThrow(() -> wrapperToTest.cleanUploadDirectory(workingDirectory));
-
-        /* test */
-        verify(processAdapterFactory, times(1)).startProcess(any());
     }
 
     private void assertProcessBuilderCalledWithParametersForLogin(SkopeoContext context, String location, String user, String password,
@@ -122,10 +119,10 @@ class SkopeoWrapperTest {
         expectedCommands.add(location);
         expectedCommands.add("--username");
         expectedCommands.add(user);
-        expectedCommands.add("--password");
-        expectedCommands.add(password);
+        expectedCommands.add("--password"); // idea: input stream?
+        expectedCommands.add(password); // "$ENV_MY_PASSWORD"
         expectedCommands.add("--authfile");
-        expectedCommands.add("authentication.json");
+        expectedCommands.add("authentication.json"); // json is from login output file...
 
         assertCommandListAsExpected(commandList, expectedCommands);
     }

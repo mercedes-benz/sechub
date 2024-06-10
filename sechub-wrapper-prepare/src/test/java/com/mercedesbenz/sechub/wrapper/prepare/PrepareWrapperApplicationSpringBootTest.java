@@ -22,6 +22,7 @@ import com.mercedesbenz.sechub.commons.archive.ArchiveSupport;
 import com.mercedesbenz.sechub.test.TestUtil;
 import com.mercedesbenz.sechub.wrapper.prepare.cli.PrepareWrapperEnvironment;
 import com.mercedesbenz.sechub.wrapper.prepare.modules.PrepareWrapperModule;
+import com.mercedesbenz.sechub.wrapper.prepare.modules.git.GitLocationConverter;
 import com.mercedesbenz.sechub.wrapper.prepare.modules.git.GitPrepareInputValidator;
 import com.mercedesbenz.sechub.wrapper.prepare.modules.git.GitPrepareWrapperModule;
 import com.mercedesbenz.sechub.wrapper.prepare.modules.git.GitWrapper;
@@ -57,6 +58,7 @@ import com.mercedesbenz.sechub.wrapper.prepare.upload.PrepareWrapperUploadServic
         PrepareWrapperSechubConfigurationSupport.class,
         PrepareWrapperArchiveCreator.class,
         ArchiveSupport.class,
+        GitLocationConverter.class,
         FileNameSupport.class,
         PrepareWrapperSharedVolumePropertiesSetup.class,
         PrepareWrapperS3PropertiesSetup.class })
@@ -120,7 +122,7 @@ class PrepareWrapperApplicationSpringBootTest {
     }
 
     @Test
-    void start_preparation_remote_data_handled_by_git_but_location_not_correct_results_in_failed() throws IOException {
+    void start_preparation_remote_data_handled_by_git_but_location_not_correct_results_validator_exception() throws IOException {
         /* prepare */
         when(environment.getSechubConfigurationModelAsJson()).thenReturn(
                 """
@@ -149,7 +151,7 @@ class PrepareWrapperApplicationSpringBootTest {
     }
 
     @Test
-    void start_preparation_remote_data_handled_by_git_and_location_correct_results_in_success() throws IOException {
+    void start_preparation_remote_data_handled_by_git_and_location_correct_results_but_failing_git_download_leads_to_illegal_state_exception() throws IOException {
         /* prepare */
         when(environment.getSechubConfigurationModelAsJson()).thenReturn(
                 """
@@ -179,7 +181,43 @@ class PrepareWrapperApplicationSpringBootTest {
         String message = exception.getMessage();
         String expected = "Download of git repository was not successful"; // the mocked git wrapper does not download
         if(!message.contains(expected)) {
-            assertEquals(expected, message);
+            assertEquals(expected, message); // we use equals here to have a better comparison in IDE (fails here always)
+        }
+
+    }
+
+    @Test
+    void start_preparation_remote_data_handled_by_skopeo_and_location_correct_results_but_failing_skopeo_download_leads_to_io_exception_with_message() throws IOException {
+        /* prepare */
+        when(environment.getSechubConfigurationModelAsJson()).thenReturn(
+                """
+                {
+                  "projectId" : "project1",
+                  "data" : {
+                    "binaries" : [ {
+                      "name" : "remote_example_name",
+                      "remote" : {
+                        "location" : "https://somewhere.example.com",
+                        "type" : "docker"
+                      }
+                    } ]
+                  },
+                  "codeScan" : {
+                    "use" : [ "remote_example_name" ]
+                  }
+                }
+                """
+                );
+
+
+        /* execute + test */
+        IOException exception = assertThrows(IOException.class, ()-> preparationService.startPreparation());
+
+        /* test */
+        String message = exception.getMessage();
+        String expected = "Error while starting Skopeo download process for: https://somewhere.example.com"; // the mocked skopeo wrapper does not download
+        if(!message.contains(expected)) {
+            assertEquals(expected, message); // we use equals here to have a better comparison in IDE (fails here always)
         }
 
     }
