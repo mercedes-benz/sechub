@@ -84,9 +84,9 @@ jobs:
       #     echo "Pull Request URL - ${{ steps.pr_spdx_headers.outputs.pull-request-url }}"
 
       # ----------------------
-      # Build SecHub Github Action
+      # Build SecHub Github Action + set package version
       # ----------------------
-      - name: Build github-actions/scan
+      - name: Build github-actions/scan and set package version to v${{ inputs.ghaction-version }}
         run: |
           GHACTION="github-actions/scan"
           cd $GHACTION
@@ -96,6 +96,9 @@ jobs:
           npm run build
           echo "# $GHACTION - Run unit tests"
           npm test
+          echo "# $GHACTION - Update package version to v${{ inputs.ghaction-version }}"
+          echo "$( jq --arg a "${{ inputs.ghaction-version }}" '.version = $a' package.json )"
+          # echo "$( jq --arg a "${{ inputs.ghaction-version }}" '.version = $a' package.json )" > package.json
 
       # ----------------------
       # Create pull request for updated files
