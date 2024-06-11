@@ -19,13 +19,14 @@ import (
 // so Webscan, InfraScan are not handled here (but still uploaded)
 // Only code scan is necessary, because determination necessary if there is an upload necessary or not.
 type SecHubConfig struct {
-	APIVersion string                `json:"apiVersion"`
-	User       string                `json:"user"`
-	ProjectID  string                `json:"project"`
-	Server     string                `json:"server"`
-	CodeScan   CodeScanConfig        `json:"codeScan"`
-	SecretScan SecretScanConfig      `json:"secretScan"`
-	Data       DataSectionScanConfig `json:"data"`
+	APIVersion  string                `json:"apiVersion"`
+	User        string                `json:"user"`
+	ProjectID   string                `json:"project"`
+	Server      string                `json:"server"`
+	CodeScan    CodeScanConfig        `json:"codeScan"`
+	LicenseScan LicenseScanConfig     `json:"licenseScan"`
+	SecretScan  SecretScanConfig      `json:"secretScan"`
+	Data        DataSectionScanConfig `json:"data"`
 }
 
 type DataSectionScanConfig struct {
@@ -58,6 +59,11 @@ type CodeScanConfig struct {
 	Excludes           []string         `json:"excludes"`
 	SourceCodePatterns []string         `json:"additionalFilenameExtensions"`
 	////////////////////////////////
+}
+
+// SecretScanConfig - definition of a secrets scan
+type LicenseScanConfig struct {
+	Use []string `json:"use"`
 }
 
 // SecretScanConfig - definition of a secrets scan
@@ -162,10 +168,11 @@ func adjustSourceFilterPatterns(context *Context) {
 	for i, item := range context.sechubConfig.Data.Sources {
 
 		if slices.Contains(context.sechubConfig.SecretScan.Use, item.Name) {
-			// Clear all source code patterns for secrets scans
+			// Clear upload filter for secrets scans
 			context.sechubConfig.Data.Sources[i].SourceCodePatterns =
 				adjustSourceFilterPatternsWhitelistAll(item.SourceCodePatterns, true)
-		} else if slices.Contains(context.sechubConfig.CodeScan.Use, item.Name) {
+		} else if slices.Contains(context.sechubConfig.CodeScan.Use, item.Name) ||
+			slices.Contains(context.sechubConfig.LicenseScan.Use, item.Name) {
 			// Append default source code patterns for code scans
 			context.sechubConfig.Data.Sources[i].SourceCodePatterns =
 				adjustSourceFilterPatternsWhitelistAll(item.SourceCodePatterns, context.config.whitelistAll)

@@ -64,12 +64,12 @@ jobs:
           distribution: temurin
 
       - name: Set up Gradle
-        uses: gradle/actions/setup-gradle@500e0ee5b346833ab02b5209b7c997380cb5d684
+        uses: gradle/actions/setup-gradle@af6e5767241073b8ab20cc8cf7e95ec63fadc160
         with:
           cache-read-only: false
 
       - name: Docker login to ghcr.io
-        uses: docker/login-action@e92390c5fb421da1463c202d546fed0ec5c39f20
+        uses: docker/login-action@0d4c9c5ea7693da7b068278f7b52bda2a190a446
         with:
           registry: ghcr.io
           username: ${{ github.repository_owner }}
