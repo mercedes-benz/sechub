@@ -76,16 +76,16 @@ class GitWrapperTest {
     }
 
     @Test
-    void when_removeGitFiles_is_executed_the_clean_directories_is_called_withAutoCleanupGitFilesFilter_instance() throws IOException {
+    void when_removeGitFiles_is_executed_the_clean_directories_is_called() throws IOException {
         /* prepare */
         String directory = "test-upload-folder";
 
         /* execute */
         Path path = Path.of(directory);
-        wrapperToTest.removeGitFiles(path);
+        wrapperToTest.removeAdditionalGitFiles(path);
 
         /* test */
-        verify(directoryAndFileSupport, times(1)).cleanDirectories(path.toFile(), AutoCleanupGitFilesFilter.INSTANCE);
+        verify(directoryAndFileSupport, times(1)).cleanDirectories(path.toFile(), AutoCleanupAdditionalGitFilesFilter.INSTANCE);
 
     }
 
@@ -97,7 +97,38 @@ class GitWrapperTest {
         doThrow(new IOException("test exception")).when(directoryAndFileSupport).cleanDirectories(eq(pathOfDir.toFile()), any());
 
         /* execute */
-        Exception exception = assertThrows(Exception.class, () -> wrapperToTest.removeGitFiles(pathOfDir));
+        Exception exception = assertThrows(Exception.class, () -> wrapperToTest.removeAdditionalGitFiles(pathOfDir));
+
+        /* test */
+        String message = exception.getMessage();
+        if (!message.contains("test exception")) {
+            fail("Wrong message from exception: " + message);
+        }
+    }
+
+    @Test
+    void when_removeGitFolder_is_executed_the_clean_directories_is_called() throws IOException {
+        /* prepare */
+        String directory = "test-upload-folder";
+
+        /* execute */
+        Path path = Path.of(directory);
+        wrapperToTest.removeGitFolders(path);
+
+        /* test */
+        verify(directoryAndFileSupport, times(1)).cleanDirectories(path.toFile(), AutoCleanupGitFoldersFilter.INSTANCE);
+
+    }
+
+    @Test
+    void when_removeGitFolder_is_executed_and_clean_directories_throws_exception_it_is_rethrown() throws IOException {
+        /* prepare */
+        String directory = "test-upload-folder";
+        Path pathOfDir = Path.of(directory);
+        doThrow(new IOException("test exception")).when(directoryAndFileSupport).cleanDirectories(eq(pathOfDir.toFile()), any());
+
+        /* execute */
+        Exception exception = assertThrows(Exception.class, () -> wrapperToTest.removeGitFolders(pathOfDir));
 
         /* test */
         String message = exception.getMessage();

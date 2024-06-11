@@ -8,15 +8,23 @@ import org.apache.commons.io.FileUtils;
 
 public class DirectoryAndFileSupport {
 
-    public void cleanDirectories(File parentFolder, FileFilter filterAcceptingFilesToDelete) throws IOException {
-        if (parentFolder == null) {
+    /**
+     * Cleans all unwanted content recursively starting with parent folder. Each
+     * file or directory which is accepted by the given filter will be deleted.
+     *
+     * @param parentDirectory              the directory to start from
+     * @param filterAcceptingFilesToDelete filter which accepts only files to delete
+     * @throws IOException
+     */
+    public void cleanDirectories(File parentDirectory, FileFilter filterAcceptingFilesToDelete) throws IOException {
+        if (parentDirectory == null) {
             throw new IllegalArgumentException("Parent folder may not be null!");
         }
-        cleanDirectoriesRecursive(parentFolder, filterAcceptingFilesToDelete);
+        cleanDirectoriesRecursive(parentDirectory, filterAcceptingFilesToDelete);
     }
 
-    private void cleanDirectoriesRecursive(File parentFolder, FileFilter filter) throws IOException {
-        File[] files = parentFolder.listFiles();
+    private void cleanDirectoriesRecursive(File parentDirectory, FileFilter filter) throws IOException {
+        File[] files = parentDirectory.listFiles();
         for (File file : files) {
             if (file.isDirectory()) {
                 if (filter.accept(file)) {

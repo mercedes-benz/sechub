@@ -5,13 +5,48 @@
     {
       "id": "PDS_PREPARE",
       "path": "/pds/scripts/prepare.sh",
-      "scanType": "codeScan",
-      "description": "Runs the prepare wrapper application to prepare remote data for SecHub scans."
+      "scanType": "prepare",
+      "description": "Runs the prepare wrapper application to prepare remote data for SecHub scans.",
+      
+      "minutesToWaitForProductResult": "60",
+      "parameters": {
+        "optional": [
+          {
+            "key": "pds.prepare.process.timeout.seconds",
+            "description": "Prepare process timeout in seconds for prepare processes started with process builder. Can not be higher than the pds product timeout",
+            "default" : -1
+          },
+          {
+            "key": "pds.prepare.module.skopeo.enabled",
+            "description": "Flag to enable the skopeo prepare module",
+            "default" : true
+          },
+          {
+            "key": "pds.prepare.module.skopeo.authentication.filename",
+            "description": "It is possible to customize the authentication file name for skopeo - but normally not necessary"
+          },
+          {
+            "key": "pds.prepare.module.git.enabled",
+            "description": "Flag to enable the git prepare module",
+            "default": true
+          },
+          {
+            "key": "pds.prepare.module.git.clone.without.git.history",
+            "description": "When set to true, a git clone will be done with depth level 1 only and the .git folder will be deleted before upload",
+            "default": true
+          },
+          {
+            "key": "pds.prepare.module.git.remove.gitfiles.before.upload",
+            "description": "When enabled, additional git files like .gitignore or .gitattributes will be automatically removed before storage upload is done",
+            "default": true
+          }
+        ]
+      }
     },
     {
       "id": "PDS_PREPARE_MOCK",
       "path": "/pds/scripts/prepare_mock.sh",
-      "scanType": "codeScan",
+      "scanType": "prepare",
       "description": "Runs the prepare mock which returns a success message."
     }
   ]

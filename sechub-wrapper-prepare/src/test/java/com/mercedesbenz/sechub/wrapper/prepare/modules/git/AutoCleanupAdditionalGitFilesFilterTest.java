@@ -11,13 +11,13 @@ import org.junit.jupiter.params.provider.EmptySource;
 import org.junit.jupiter.params.provider.NullSource;
 import org.junit.jupiter.params.provider.ValueSource;
 
-class AutoCleanupGitFilesFilterTest {
+class AutoCleanupAdditionalGitFilesFilterTest {
 
-    private AutoCleanupGitFilesFilter filterToTest;
+    private AutoCleanupAdditionalGitFilesFilter filterToTest;
 
     @BeforeEach
     void beforeEach() {
-        filterToTest = AutoCleanupGitFilesFilter.INSTANCE;
+        filterToTest = AutoCleanupAdditionalGitFilesFilter.INSTANCE;
     }
 
     @ParameterizedTest
@@ -51,21 +51,7 @@ class AutoCleanupGitFilesFilterTest {
     }
 
     @ParameterizedTest
-    @ValueSource(strings = { ".git" })
-    void directory_is_accepted(String fileName) {
-        /* prepare */
-        File file = simulateDirectory(fileName);
-
-        /* execute */
-        boolean result = filterToTest.accept(file);
-
-        /* test */
-        assertTrue(result);
-
-    }
-
-    @ParameterizedTest
-    @ValueSource(strings = { "git", "env" })
+    @ValueSource(strings = { ".git", ".gitignore", "git", "env" })
     @EmptySource
     @NullSource
     void directory_is_not_accepted(String fileName) {

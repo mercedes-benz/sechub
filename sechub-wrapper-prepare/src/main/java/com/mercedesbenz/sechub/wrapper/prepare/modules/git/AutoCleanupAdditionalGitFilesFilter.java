@@ -3,11 +3,11 @@ package com.mercedesbenz.sechub.wrapper.prepare.modules.git;
 import java.io.File;
 import java.io.FileFilter;
 
-public class AutoCleanupGitFilesFilter implements FileFilter {
+public class AutoCleanupAdditionalGitFilesFilter implements FileFilter {
 
-    public static AutoCleanupGitFilesFilter INSTANCE = new AutoCleanupGitFilesFilter();
+    public static AutoCleanupAdditionalGitFilesFilter INSTANCE = new AutoCleanupAdditionalGitFilesFilter();
 
-    private AutoCleanupGitFilesFilter() {
+    private AutoCleanupAdditionalGitFilesFilter() {
     }
 
     @Override
@@ -21,7 +21,7 @@ public class AutoCleanupGitFilesFilter implements FileFilter {
         }
 
         if (file.isDirectory()) {
-            return name.equals(".git");
+            return false;
         }
         return name.equals(".gitattributes") || name.equals(".gitignore");
     }

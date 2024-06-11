@@ -28,13 +28,22 @@ public class GitWrapper extends AbstractToolWrapper {
         jGitAdapter.clone(gitContext);
     }
 
-    public void removeGitFiles(Path gitDownloadDirectory) throws IOException {
+    public void removeAdditionalGitFiles(Path gitDownloadDirectory) throws IOException {
         if (gitDownloadDirectory == null) {
             return;
         }
         File parentDirectory = gitDownloadDirectory.toFile();
 
-        directoryAndFileSupport.cleanDirectories(parentDirectory, AutoCleanupGitFilesFilter.INSTANCE);
+        directoryAndFileSupport.cleanDirectories(parentDirectory, AutoCleanupAdditionalGitFilesFilter.INSTANCE);
+    }
+
+    public void removeGitFolders(Path gitDownloadDirectory) throws IOException {
+        if (gitDownloadDirectory == null) {
+            return;
+        }
+        File parentDirectory = gitDownloadDirectory.toFile();
+
+        directoryAndFileSupport.cleanDirectories(parentDirectory, AutoCleanupGitFoldersFilter.INSTANCE);
     }
 
 }

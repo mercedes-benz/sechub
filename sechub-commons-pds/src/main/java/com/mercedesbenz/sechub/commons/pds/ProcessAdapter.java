@@ -48,9 +48,10 @@ public class ProcessAdapter {
     }
 
     /**
-     * Sends given characters as user input to process. Attention: You are NOT
-     * allowed to redirect the input stream of the process builder when you use this
-     * method - Otherwise it will not work!
+     * Sends given characters as user input to process -uses UTF-8 as charset.
+     *
+     * Attention: You are NOT allowed to redirect the input stream of the process
+     * builder when you use this method - Otherwise it will not work!
      *
      * <h3>Correct example</h3>
      *

@@ -90,13 +90,23 @@ public class GitPrepareWrapperModule extends AbstractPrepareWrapperModule {
         prepareRemoteConfiguration(gitContext, secHubRemoteDataConfiguration);
         assertDownloadSuccessful(gitContext);
 
-        autoCleanupGitFiles(gitContext);
-
         try {
+            beforeUpload(gitContext);
+
             uploadService.upload(context, gitContext);
         } catch (Exception e) {
             LOG.error("Upload of git repository to shared storage failed.", e);
             throw new PrepareWrapperUploadException("Upload of git repository failed.", e, GIT_REPOSITORY_UPLOAD_FAILED);
+        }
+    }
+
+    private void beforeUpload(GitContext gitContext) throws IOException {
+        if (cloneWithoutGitHistory) {
+            gitWrapper.removeGitFolders(gitContext.getToolDownloadDirectory());
+        }
+
+        if (removeGitFilesBeforeUpload) {
+            gitWrapper.removeAdditionalGitFiles(gitContext.getToolDownloadDirectory());
         }
     }
 
@@ -159,12 +169,6 @@ public class GitPrepareWrapperModule extends AbstractPrepareWrapperModule {
         gitContext.setSealedCredentials(user);
 
         gitWrapper.downloadRemoteData(gitContext);
-    }
-
-    private void autoCleanupGitFiles(GitContext gitContext) throws IOException {
-        if (removeGitFilesBeforeUpload) {
-            gitWrapper.removeGitFiles(gitContext.getToolDownloadDirectory());
-        }
     }
 
 }
