@@ -1,15 +1,14 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.pds.execution;
 
-import static com.mercedesbenz.sechub.commons.pds.PDSLauncherScriptEnvironmentConstants.*;
 import static com.mercedesbenz.sechub.pds.util.PDSAssert.*;
 
 import java.io.File;
 import java.io.IOException;
+import java.lang.ProcessBuilder.Redirect;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.Objects;
 import java.util.UUID;
 import java.util.concurrent.Callable;
@@ -33,7 +32,6 @@ import com.mercedesbenz.sechub.pds.job.PDSJobConfiguration;
 import com.mercedesbenz.sechub.pds.job.PDSJobTransactionService;
 import com.mercedesbenz.sechub.pds.job.PDSWorkspacePreparationResult;
 import com.mercedesbenz.sechub.pds.job.PDSWorkspaceService;
-import com.mercedesbenz.sechub.pds.job.WorkspaceLocationData;
 import com.mercedesbenz.sechub.pds.usecase.PDSStep;
 import com.mercedesbenz.sechub.pds.usecase.UseCaseAdminFetchesJobErrorStream;
 import com.mercedesbenz.sechub.pds.usecase.UseCaseAdminFetchesJobMetaData;
@@ -413,7 +411,7 @@ class PDSExecutionCallable implements Callable<PDSExecutionResult> {
         return content.substring(0, max - 3) + "...";
     }
 
-    private void createProcess(UUID jobUUID, PDSJobConfiguration config, String path) throws IOException {
+    private void createProcess(UUID pdsJobUUID, PDSJobConfiguration config, String path) throws IOException {
         if (path == null) {
             throw new IllegalStateException("Path not defined for product id:" + config.getProductId());
         }
@@ -422,59 +420,25 @@ class PDSExecutionCallable implements Callable<PDSExecutionResult> {
         List<String> commands = new ArrayList<>();
         commands.add(path);
 
-        ProcessBuilder builder = new ProcessBuilder(commands);
-        builder.directory(currentDir);
-        builder.inheritIO();
-
         PDSWorkspaceService workspaceService = getWorkspaceService();
+        ProcessBuilder builder = new ProcessBuilder(commands);
 
-        builder.redirectOutput(workspaceService.getSystemOutFile(jobUUID));
-        builder.redirectError(workspaceService.getSystemErrorFile(jobUUID));
-
-        /*
-         * add parts from PDS job configuration - means data defined by caller before
-         * job was marked as ready to start
-         */
+        builder.directory(currentDir);
+        builder.redirectInput(Redirect.INHERIT);
+        builder.redirectOutput(workspaceService.getSystemOutFile(pdsJobUUID));
+        builder.redirectError(workspaceService.getSystemErrorFile(pdsJobUUID));
 
         PDSExecutionEnvironmentService environmentService = getEnvironmentService();
 
-        Map<String, String> environment = builder.environment();
-        environmentService.removeAllNonWhitelistedEnvironmentVariables(environment);
+        environmentService.initProcessBuilderEnvironmentMap(pdsJobUUID, config, builder);
 
-        Map<String, String> buildEnvironmentMap = environmentService.buildEnvironmentMap(config);
-        environment.putAll(buildEnvironmentMap);
-
-        WorkspaceLocationData locationData = workspaceService.createLocationData(jobUUID);
-
-        environment.put(PDS_JOB_WORKSPACE_LOCATION, locationData.getWorkspaceLocation());
-        environment.put(PDS_JOB_RESULT_FILE, locationData.getResultFileLocation());
-        environment.put(PDS_JOB_USER_MESSAGES_FOLDER, locationData.getUserMessagesLocation());
-        environment.put(PDS_JOB_EVENTS_FOLDER, locationData.getEventsLocation());
-        environment.put(PDS_JOB_METADATA_FILE, locationData.getMetaDataFileLocation());
-        environment.put(PDS_JOB_UUID, jobUUID.toString());
-        environment.put(PDS_JOB_SOURCECODE_ZIP_FILE, locationData.getSourceCodeZipFileLocation());
-        environment.put(PDS_JOB_BINARIES_TAR_FILE, locationData.getBinariesTarFileLocation());
-
-        String extractedSourcesLocation = locationData.getExtractedSourcesLocation();
-
-        environment.put(PDS_JOB_SOURCECODE_UNZIPPED_FOLDER, extractedSourcesLocation);
-        environment.put(PDS_JOB_EXTRACTED_SOURCES_FOLDER, extractedSourcesLocation);
-
-        String extractedBinariesLocation = locationData.getExtractedBinariesLocation();
-        environment.put(PDS_JOB_EXTRACTED_BINARIES_FOLDER, extractedBinariesLocation);
-
-        environment.put(PDS_JOB_HAS_EXTRACTED_SOURCES, "" + workspaceService.hasExtractedSources(jobUUID));
-        environment.put(PDS_JOB_HAS_EXTRACTED_BINARIES, "" + workspaceService.hasExtractedBinaries(jobUUID));
-
-        LOG.debug("Prepared launcher script process for job with uuid:{}, path={}, buildEnvironmentMap={}", jobUUID, path, buildEnvironmentMap);
-
-        LOG.info("Start launcher script for job {}", jobUUID);
+        LOG.info("Start launcher script for pds job: {} from path: {}", pdsJobUUID, path);
         try {
 
             process = serviceCollection.getProcessAdapterFactory().startProcess(builder);
 
         } catch (IOException e) {
-            LOG.error("Process start failed for pdsJobUUID:{}. Current directory was:{}", jobUUID, currentDir.getAbsolutePath());
+            LOG.error("Process start failed for pdsJobUUID:{}. Current directory was:{}", pdsJobUUID, currentDir.getAbsolutePath());
             throw e;
         }
     }
