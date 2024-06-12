@@ -61,6 +61,10 @@ spec:
             - name: LOGGING_TYPE
               value: {{ .Values.pds.logging.type.appenderName }}
 {{- end }}
+{{- if .Values.pds.debug.keepReportsInWorkspace }}
+            - name: PDS_WORKSPACE_AUTOCLEAN_DISABLED
+              value: "true"
+{{- end }}
 {{- if .Values.pds.javaDebug.enabled }}
             - name: JAVA_ENABLE_DEBUG
               value: "true"
