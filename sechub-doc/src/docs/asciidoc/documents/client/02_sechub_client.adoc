@@ -327,8 +327,14 @@ In below table, there is an overview of what can be defined where.
 | server url | `-server` | `SECHUB_SERVER` | server
 | stop on yellow | `-stop-on-yellow`||
 | temporary dir | `-tempdir` | `SECHUB_TEMP_DIR` |
+| trust all certificates || `SECHUB_TRUSTALL` |
 | user id | `-user` | `SECHUB_USERID` | user
 | web scan config ||| <<web-scan,webScan>>
+| DEV: debug http traffic || `SECHUB_DEBUG_HTTP` |
+| DEV: enable debugging || `SECHUB_DEBUG` |
+| DEV: ignore default excludes || `SECHUB_IGNORE_DEFAULT_EXCLUDES` |
+| DEV: initial wait interval || `SECHUB_INITIAL_WAIT_INTERVAL` |
+| DEV: keep temporary files || `SECHUB_KEEP_TEMPFILES` |
 |===
 
 

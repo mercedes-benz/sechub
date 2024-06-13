@@ -31,9 +31,6 @@ pds:
     userid: pds-inttest-admin
     apitoken: '{noop}pds-inttest-apitoken'
   
-  script:
-    env:
-       whitelist: 'PDS_STORAGE_*,INTEGRATIONTEST_SCRIPT_ENV_ACCEPTED'
 logging:
   level:
     com.mercedesbenz.sechub: DEBUG
