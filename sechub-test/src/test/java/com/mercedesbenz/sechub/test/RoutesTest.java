@@ -41,7 +41,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.mercedesbenz.sechub.domain.administration.user.UserAdministrationRestController;
 import com.mercedesbenz.sechub.domain.schedule.SchedulerRestController;
-import com.mercedesbenz.sechub.pds.PDSProfiles;
+import com.mercedesbenz.sechub.pds.commons.core.PDSProfiles;
 import com.mercedesbenz.sechub.pds.security.PDSRoleConstants;
 import com.mercedesbenz.sechub.pds.usecase.PDSUseCaseDefinition;
 import com.mercedesbenz.sechub.pds.usecase.PDSUseCaseIdentifier;

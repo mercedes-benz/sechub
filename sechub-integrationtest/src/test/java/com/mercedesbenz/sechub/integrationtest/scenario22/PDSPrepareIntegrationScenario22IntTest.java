@@ -40,11 +40,14 @@ public class PDSPrepareIntegrationScenario22IntTest {
      */
     @Test
     public void multi_prepare_test() {
+
         project1_sechub_calls_prepare_pds_executes_script_and_user_message_is_returned();
         project2_sechub_calls_prepare_and_checkmarx();
         project3_sechub_calls_prepare_which_fails_will_not_start_checkmarx();
         project4_sechub_calls_prepare_which_fails_because_internal_failure_will_not_start_checkmarx();
-        start_PDS_prepare_job_from_remote_code_scan_configuration_and_check_for_configuration();
+        project5_start_PDS_prepare_job_from_remote_code_scan_configuration_and_check_for_configuration();
+        project6_start_pds_prepare_with_pds_wrapper_application();
+
     }
 
     // @Test
@@ -225,26 +228,16 @@ public class PDSPrepareIntegrationScenario22IntTest {
     }
 
     // @Test
-    public void start_PDS_prepare_job_from_remote_code_scan_configuration_and_check_for_configuration() {
+    public void project5_start_PDS_prepare_job_from_remote_code_scan_configuration_and_check_for_configuration() {
         /* @formatter:off */
 
         /* prepare */
         IntegrationTestJSONLocation location = IntegrationTestJSONLocation.CLIENT_JSON_REMOTE_SCAN_CONFIGURATION;
-        /*
-        String configurationAsJson = TestFileReader.loadTextFile(new File("./src/test/resources/sechub-integrationtest-remote-scan-configuration.json"));
-        SecHubScanConfiguration configuration = SecHubScanConfiguration.createFromJSON(configurationAsJson);
-        configuration.setProjectId("project5");
-        */
         TestProject project = PROJECT_5;
 
         /* execute */
         SecHubClientExecutor.ExecutionResult result = as(USER_1).withSecHubClient().startSynchronScanFor(project, location);
         UUID jobUUID = result.getSechubJobUUID();
-
-        /*
-        UUID jobUUID = as(USER_1).createJobAndReturnJobUUID(project, configuration);
-        as(USER_1).approveJob(project, jobUUID);
-        */
 
         /* test */
         waitForJobDone(project, jobUUID, 30, true);
@@ -278,7 +271,7 @@ public class PDSPrepareIntegrationScenario22IntTest {
         String remoteLocation = remote.get().getLocation();
         assertEquals("remote_example_location", remoteLocation);
         String type = remote.get().getType();
-        assertEquals("docker", type);
+        assertEquals("integrationtest", type);
 
         Optional<SecHubRemoteCredentialConfiguration> credentials = remote.get().getCredentials();
         assertTrue(credentials.isPresent());
@@ -291,4 +284,44 @@ public class PDSPrepareIntegrationScenario22IntTest {
         /* @formatter:on */
     }
 
+    // @Test
+    public void project6_start_pds_prepare_with_pds_wrapper_application() {
+        /* @formatter:off */
+
+        /* prepare */
+        IntegrationTestJSONLocation location = IntegrationTestJSONLocation.CLIENT_JSON_REMOTE_SCAN_CONFIGURATION;
+        TestProject project = PROJECT_6;
+
+        /* execute */
+        SecHubClientExecutor.ExecutionResult result = as(USER_2).withSecHubClient().startSynchronScanFor(project, location);
+        UUID sechubJobUUID = result.getSechubJobUUID();
+
+        /* test */
+        waitForJobDone(project, sechubJobUUID, 30, true);
+
+        UUID pdsJobUUID = waitForFirstPDSJobOfSecHubJobAndReturnPDSJobUUID(sechubJobUUID);
+        Map<String, String> variables = fetchPDSVariableTestOutputMap(pdsJobUUID);
+        assertEquals("e", variables.get("PDS_TEST_KEY_VARIANTNAME")); // sanity check -it is really the variant we expect...
+
+        String report = as(USER_2).getJobReport(project, sechubJobUUID);
+
+        /* @formatter:off */
+        assertReport(report).
+
+            enablePDSAutoDumpOnErrorsForSecHubJob(sechubJobUUID).
+            hasMessage(SecHubMessageType.INFO, "Some preperation info message for user in report (always).").// from script
+            hasMessage(SecHubMessageType.INFO, "Integration test preparation done").//from wrapper inside
+            hasTrafficLight(TrafficLight.YELLOW).
+
+            assertUnordered().
+                finding().
+                    description("i am a medium error from IntegrationTestPrepareWrapperModule").//from IntegrationTestPrepareWrapperModule
+                    isContained().
+                finding().
+                    description("i am just an information from IntegrationTestPrepareWrapperModule").//from IntegrationTestPrepareWrapperModule
+                    isContained();
+
+        /* @formatter:on */
+
+    }
 }

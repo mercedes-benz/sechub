@@ -66,11 +66,11 @@ class PDSExecutionCallable implements Callable<PDSExecutionResult> {
 
     private PDSExecutionCallableServiceCollection serviceCollection;
 
-    public PDSExecutionCallable(UUID jobUUID, PDSExecutionCallableServiceCollection serviceCollection) {
-        notNull(jobUUID, "pdsJobUUID may not be null!");
+    public PDSExecutionCallable(UUID pdsJobUUID, PDSExecutionCallableServiceCollection serviceCollection) {
+        notNull(pdsJobUUID, "pdsJobUUID may not be null!");
         notNull(serviceCollection, "serviceCollection may not be null!");
 
-        this.pdsJobUUID = jobUUID;
+        this.pdsJobUUID = pdsJobUUID;
         this.serviceCollection = serviceCollection;
 
         messageCollector = new PDSMessageCollector();
@@ -87,7 +87,7 @@ class PDSExecutionCallable implements Callable<PDSExecutionResult> {
 
     @Override
     public PDSExecutionResult call() throws Exception {
-        LOG.info("Prepare execution of PDS job {}", pdsJobUUID);
+        LOG.info("Prepare execution of PDS job: {}", pdsJobUUID);
         PDSExecutionResult result = new PDSExecutionResult();
 
         String productPath = null;
@@ -306,98 +306,98 @@ class PDSExecutionCallable implements Callable<PDSExecutionResult> {
         return shrinkedOutputStream;
     }
 
-    private void writeProductMessagesToDatabaseWhenMessagesFound(UUID jobUUID) {
-        LOG.debug("Collect messages for job:{}", jobUUID);
-        SecHubMessagesList messages = readProductMessages(jobUUID);
+    private void writeProductMessagesToDatabaseWhenMessagesFound(UUID pdsJobUUID) {
+        LOG.debug("Collect messages for pds job: {}", pdsJobUUID);
+        SecHubMessagesList messages = readProductMessages(pdsJobUUID);
 
         if (messages.getSecHubMessages().isEmpty()) {
-            LOG.debug("No messages for job {} found. So skip database access.", jobUUID);
+            LOG.debug("No messages for pds job: {} found. So skip database access.", pdsJobUUID);
             return;
         }
 
-        LOG.debug("Writing messages to database for job:{}", jobUUID);
+        LOG.debug("Writing messages to database for job:{}", pdsJobUUID);
         PDSResilientRetryExecutor<IllegalStateException> executor = new PDSResilientRetryExecutor<>(3, pdsJobUpdateExceptionThrower,
                 OptimisticLockingFailureException.class);
         executor.execute(() -> {
-            getJobTransactionService().updateJobMessagesInOwnTransaction(jobUUID, messages);
-        }, jobUUID.toString());
+            getJobTransactionService().updateJobMessagesInOwnTransaction(pdsJobUUID, messages);
+        }, pdsJobUUID.toString());
 
     }
 
     @UseCaseAdminFetchesJobOutputStream(@PDSStep(name = "Update ouptut stream data", description = "Reads output stream data from workspace files and stores content inside database. Will also refresh update time stamp for caching mechanism.", number = 4))
     @UseCaseAdminFetchesJobErrorStream(@PDSStep(name = "Update error stream data", description = "Reads error stream data from workspace files and stores content inside database. Will also refresh update time stamp for caching mechanism.", number = 4))
     @UseCaseAdminFetchesJobMetaData(@PDSStep(name = "Update meta data", description = "Reads meta data from workspace file and stores content inside database if not null. Will also refresh update time stamp for caching mechanism.", number = 4))
-    private void writeJobExecutionDataToDatabase(UUID jobUUID) {
-        LOG.debug("Writing job execution data to database for job:{}", jobUUID);
+    private void writeJobExecutionDataToDatabase(UUID pdsJobUUID) {
+        LOG.debug("Writing job execution data to database for pds job:{}", pdsJobUUID);
 
-        final PDSExecutionData executionData = readJobExecutionData(jobUUID);
+        final PDSExecutionData executionData = readJobExecutionData(pdsJobUUID);
 
         PDSResilientRetryExecutor<IllegalStateException> executor = new PDSResilientRetryExecutor<>(3, pdsJobUpdateExceptionThrower,
                 OptimisticLockingFailureException.class);
         executor.execute(() -> {
-            getJobTransactionService().updateJobExecutionDataInOwnTransaction(jobUUID, executionData);
+            getJobTransactionService().updateJobExecutionDataInOwnTransaction(pdsJobUUID, executionData);
             return null;
-        }, jobUUID.toString());
+        }, pdsJobUUID.toString());
 
     }
 
-    private SecHubMessagesList readProductMessages(UUID jobUUID) {
-        File productMessagesFolder = getWorkspaceService().getMessagesFolder(jobUUID);
+    private SecHubMessagesList readProductMessages(UUID pdsJobUUID) {
+        File productMessagesFolder = getWorkspaceService().getMessagesFolder(pdsJobUUID);
 
         List<SecHubMessage> collected = messageCollector.collect(productMessagesFolder);
 
         return new SecHubMessagesList(collected);
     }
 
-    private PDSExecutionData readJobExecutionData(UUID jobUUID) {
-        String encoding = getWorkspaceService().getFileEncoding(jobUUID);
+    private PDSExecutionData readJobExecutionData(UUID pdsJobUUID) {
+        String encoding = getWorkspaceService().getFileEncoding(pdsJobUUID);
 
         PDSExecutionData executionData = new PDSExecutionData();
 
-        readOutputStream(jobUUID, encoding, executionData);
-        readErrorStream(jobUUID, encoding, executionData);
-        readMetaData(jobUUID, encoding, executionData);
+        readOutputStream(pdsJobUUID, encoding, executionData);
+        readErrorStream(pdsJobUUID, encoding, executionData);
+        readMetaData(pdsJobUUID, encoding, executionData);
 
         return executionData;
     }
 
-    private void readMetaData(UUID jobUUID, String encoding, PDSExecutionData executionData) {
+    private void readMetaData(UUID pdsJobUUID, String encoding, PDSExecutionData executionData) {
         /* handle meta data file */
-        File metaDataFile = getWorkspaceService().getMetaDataFile(jobUUID);
+        File metaDataFile = getWorkspaceService().getMetaDataFile(pdsJobUUID);
         if (!metaDataFile.exists()) {
             return;
         }
         try {
             executionData.metaData = FileUtils.readFileToString(metaDataFile, encoding);
         } catch (IOException e) {
-            LOG.error("Was not able to fetch meta data for PDS job:{} on path:{}!", jobUUID, metaDataFile.getAbsolutePath(), e);
+            LOG.error("Was not able to fetch meta data for PDS job:{} on path:{}!", pdsJobUUID, metaDataFile.getAbsolutePath(), e);
         }
 
     }
 
-    private void readErrorStream(UUID jobUUID, String encoding, PDSExecutionData executionData) {
+    private void readErrorStream(UUID pdsJobUUID, String encoding, PDSExecutionData executionData) {
         /* handle error stream */
-        File systemErrorFile = getWorkspaceService().getSystemErrorFile(jobUUID);
+        File systemErrorFile = getWorkspaceService().getSystemErrorFile(pdsJobUUID);
         if (!systemErrorFile.exists()) {
             return;
         }
         try {
             executionData.errorStreamData = FileUtils.readFileToString(systemErrorFile, encoding);
         } catch (IOException e) {
-            LOG.error("Was not able to fetch error stream data for PDS job:{} on path:{}!", jobUUID, systemErrorFile.getAbsolutePath(), e);
+            LOG.error("Was not able to fetch error stream data for PDS job:{} on path:{}!", pdsJobUUID, systemErrorFile.getAbsolutePath(), e);
         }
     }
 
-    private void readOutputStream(UUID jobUUID, String encoding, PDSExecutionData executionData) {
+    private void readOutputStream(UUID pdsJobUUID, String encoding, PDSExecutionData executionData) {
         /* handle output stream */
-        File systemOutFile = getWorkspaceService().getSystemOutFile(jobUUID);
+        File systemOutFile = getWorkspaceService().getSystemOutFile(pdsJobUUID);
         if (!systemOutFile.exists()) {
             return;
         }
         try {
             executionData.outputStreamData = FileUtils.readFileToString(systemOutFile, encoding);
         } catch (IOException e) {
-            LOG.error("Was not able to fetch output stream data for PDS job:{} on path:{}!", jobUUID, systemOutFile.getAbsolutePath(), e);
+            LOG.error("Was not able to fetch output stream data for PDS job:{} on path:{}!", pdsJobUUID, systemOutFile.getAbsolutePath(), e);
         }
     }
 
@@ -427,6 +427,11 @@ class PDSExecutionCallable implements Callable<PDSExecutionResult> {
         builder.redirectInput(Redirect.INHERIT);
         builder.redirectOutput(workspaceService.getSystemOutFile(pdsJobUUID));
         builder.redirectError(workspaceService.getSystemErrorFile(pdsJobUUID));
+
+        /*
+         * add parts from PDS job configuration - means data defined by caller before
+         * job was marked as ready to start
+         */
 
         PDSExecutionEnvironmentService environmentService = getEnvironmentService();
 
@@ -530,16 +535,16 @@ class PDSExecutionCallable implements Callable<PDSExecutionResult> {
         return processHandlingData.isStillWaitingForProcessAccepted();
     }
 
-    private void cleanUpWorkspace(UUID jobUUID, PDSJobConfiguration config) {
+    private void cleanUpWorkspace(UUID pdsJobUUID, PDSJobConfiguration config) {
         if (getWorkspaceService().isWorkspaceAutoCleanDisabled()) {
-            LOG.info("Auto cleanup is disabled, so keep files at {}", getWorkspaceService().getWorkspaceFolder(jobUUID));
+            LOG.info("Auto cleanup is disabled, so keep files at {}", getWorkspaceService().getWorkspaceFolder(pdsJobUUID));
             return;
         }
         try {
-            getWorkspaceService().cleanup(jobUUID, config);
-            LOG.debug("workspace cleanup done for job:{}", jobUUID);
+            getWorkspaceService().cleanup(pdsJobUUID, config);
+            LOG.debug("workspace cleanup done for job:{}", pdsJobUUID);
         } catch (IOException e) {
-            LOG.error("workspace cleanup failed for job:{}!", jobUUID);
+            LOG.error("workspace cleanup failed for job:{}!", pdsJobUUID);
         }
     }
 

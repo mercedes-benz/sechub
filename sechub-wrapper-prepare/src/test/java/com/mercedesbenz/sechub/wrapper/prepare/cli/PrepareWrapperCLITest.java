@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.wrapper.prepare.cli;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
 
 import java.io.IOException;
@@ -13,20 +13,20 @@ import org.junit.jupiter.api.Test;
 import com.mercedesbenz.sechub.adapter.AdapterExecutionResult;
 import com.mercedesbenz.sechub.commons.core.prepare.PrepareResult;
 import com.mercedesbenz.sechub.commons.core.prepare.PrepareStatus;
-import com.mercedesbenz.sechub.wrapper.prepare.prepare.PrepareWrapperPreparationService;
-import com.mercedesbenz.sechub.wrapper.prepare.prepare.PrepareWrapperStorageService;
+import com.mercedesbenz.sechub.wrapper.prepare.PrepareWrapperPreparationService;
+import com.mercedesbenz.sechub.wrapper.prepare.PrepareWrapperResultStorageService;
 
 class PrepareWrapperCLITest {
 
     PrepareWrapperCLI prepareWrapperCLIToTest;
     PrepareWrapperPreparationService preparationService;
-    PrepareWrapperStorageService storageService;
+    PrepareWrapperResultStorageService storageService;
 
     @BeforeEach
     void beforeEach() {
         prepareWrapperCLIToTest = new PrepareWrapperCLI();
         preparationService = mock(PrepareWrapperPreparationService.class);
-        storageService = mock(PrepareWrapperStorageService.class);
+        storageService = mock(PrepareWrapperResultStorageService.class);
 
         prepareWrapperCLIToTest.preparationService = preparationService;
         prepareWrapperCLIToTest.storageService = storageService;

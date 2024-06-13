@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.mercedesbenz.sechub.pds.autocleanup.IntegrationTestPDSAutoCleanupResultInspector;
 import com.mercedesbenz.sechub.pds.autocleanup.IntegrationTestPDSAutoCleanupResultInspector.JsonDeleteCount;
+import com.mercedesbenz.sechub.pds.commons.core.PDSProfiles;
 import com.mercedesbenz.sechub.pds.job.PDSJob;
 import com.mercedesbenz.sechub.pds.job.PDSJobRepository;
 import com.mercedesbenz.sechub.pds.job.PDSWorkspaceService;
