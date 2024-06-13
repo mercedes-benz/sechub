@@ -422,7 +422,7 @@ class PDSExecutionCallable implements Callable<PDSExecutionResult> {
 
         PDSWorkspaceService workspaceService = getWorkspaceService();
         ProcessBuilder builder = new ProcessBuilder(commands);
-        
+
         builder.directory(currentDir);
         builder.redirectInput(Redirect.INHERIT);
         builder.redirectOutput(workspaceService.getSystemOutFile(pdsJobUUID));

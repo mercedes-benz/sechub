@@ -25,23 +25,28 @@ public class DirectoryAndFileSupport {
 
     private void cleanDirectoriesRecursive(File parentDirectory, FileFilter filter) throws IOException {
         File[] files = parentDirectory.listFiles();
+
         for (File file : files) {
-            if (file.isDirectory()) {
-                if (filter.accept(file)) {
-                    /* delete the sub directory recursive */
-                    FileUtils.forceDelete(file);
-                } else {
-                    /* not accepted to delete, but inspect children */
-                    cleanDirectories(file, filter);
-                }
-            } else {
-                /* not directory */
-                if (filter.accept(file)) {
-                    FileUtils.forceDelete(file);
-                }
-            }
+            handleFileOrDirectoryRecursive(filter, file);
         }
 
+    }
+
+    private void handleFileOrDirectoryRecursive(FileFilter filter, File file) throws IOException {
+        if (file.isDirectory()) {
+            if (filter.accept(file)) {
+                /* delete the sub directory recursive */
+                FileUtils.forceDelete(file);
+            } else {
+                /* not accepted to delete, but inspect children */
+                cleanDirectoriesRecursive(file, filter);
+            }
+        } else {
+            /* not directory */
+            if (filter.accept(file)) {
+                FileUtils.forceDelete(file);
+            }
+        }
     }
 
 }
