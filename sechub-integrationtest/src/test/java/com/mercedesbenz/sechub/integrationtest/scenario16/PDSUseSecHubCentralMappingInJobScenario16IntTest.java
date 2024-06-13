@@ -80,10 +80,11 @@ public class PDSUseSecHubCentralMappingInJobScenario16IntTest {
         if (TRUE.equals(pdsStartedByScriptValue)) {
             Map<String, String> variables = fetchPDSVariableTestOutputMap(pdsJobUUID);
 
-            // precondition check
+            // precondition check - direct ask PDS SERVER about variables
             assertEquals(ACCEPTED, TestAPI.getPDSServerEnvironmentVariableValue(INTEGRATIONTEST_SCRIPT_ENV_ACCEPTED));
             assertEquals(FORBIDDEN, TestAPI.getPDSServerEnvironmentVariableValue(INTEGRATIONTEST_SCRIPT_ENV_FORBIDDEN));
 
+            // now test PDS script access to them
             assertEquals(ACCEPTED, variables.get(INTEGRATIONTEST_SCRIPT_ENV_ACCEPTED)); // defined + white listed
             assertEquals("", variables.get(INTEGRATIONTEST_SCRIPT_ENV_FORBIDDEN));// was defined, but not white listed, means dump returns empty
 
@@ -95,13 +96,24 @@ public class PDSUseSecHubCentralMappingInJobScenario16IntTest {
             LOG.error("#".repeat(120));
             LOG.error("The integration test usese a PDS server which is running not from script but locally (from an IDE).");
             LOG.error("Means the environment variables are not set on PDS startup process and cannot be tested!");
-            LOG.error("The test will just skip the pds script cleanup test part in this case because otherwise always failing");
+            LOG.error("The test will here always stop and throw an exception with an hint to this log output");
             LOG.error("");
-            LOG.error("If you want to test this locally,you have to set the env variables on PDS start locally:");
-            LOG.error(" {}={} ",INTEGRATIONTEST_PDS_STARTED_BY_SCRIPT, TRUE);
-            LOG.error(" {}={} ",INTEGRATIONTEST_SCRIPT_ENV_ACCEPTED, ACCEPTED);
-            LOG.error(" {}={} ",INTEGRATIONTEST_SCRIPT_ENV_FORBIDDEN, FORBIDDEN);
+            LOG.error("If you want to test this locally, you have to set the env variables!");
+            LOG.error("Environment variables for PDS server start:\n"
+                    + " {}={} (this marks that this was started by script/somebody who knows that these variables must be set)\n"
+                    + " {}={} (this is a varibale which is white listed in tested PDS product configuration) \n"
+                    + " {}={} (this is a defined variable which is not accessible because not white listed)",
+                    INTEGRATIONTEST_PDS_STARTED_BY_SCRIPT, TRUE,
+                    INTEGRATIONTEST_SCRIPT_ENV_ACCEPTED, ACCEPTED,
+                    INTEGRATIONTEST_SCRIPT_ENV_FORBIDDEN, FORBIDDEN);
             LOG.error("#".repeat(120));
+
+            throw new IllegalStateException("Integrationtest PDS server not started correctly from IDE!\n"
+                    + ">>> Please change your IDE start configuration to use next env entries:\n"+
+                    INTEGRATIONTEST_PDS_STARTED_BY_SCRIPT+"="+TRUE+"\n"+
+                    INTEGRATIONTEST_SCRIPT_ENV_ACCEPTED+"="+ACCEPTED+"\n"+
+                    INTEGRATIONTEST_SCRIPT_ENV_FORBIDDEN+"="+FORBIDDEN+"\n\n"+
+                    "(For more details please look into console output)");
         }
 
 
