@@ -15,10 +15,10 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThrows;
 
-class ArchiveSafeguardPropertiesTest {
+class SafeArchiveInputStreamPropertiesTest {
 
     @Test
-    void new_archive_safeguard_properties_object_has_expected_properties() {
+    void new_safe_archive_input_stream_properties_object_has_expected_properties() {
         /* prepare */
         FileSize maxFileSizeUncompressed = new FileSize("100MB");
         long maxEntries = 100L;
@@ -26,7 +26,7 @@ class ArchiveSafeguardPropertiesTest {
         Duration timeout = Duration.ofSeconds(10);
 
         /* execute */
-        ArchiveSafeguardProperties result = new ArchiveSafeguardProperties(maxFileSizeUncompressed, maxEntries, maxDirectoryDepth, timeout);
+        SafeArchiveInputStreamProperties result = new SafeArchiveInputStreamProperties(maxFileSizeUncompressed, maxEntries, maxDirectoryDepth, timeout);
 
         /* test */
         assertThat(result.getMaxFileSizeUncompressed(), is(maxFileSizeUncompressed));
@@ -36,34 +36,34 @@ class ArchiveSafeguardPropertiesTest {
     }
 
     @ParameterizedTest
-    @ArgumentsSource(ArchiveExtractionNullArgumentsProvider.class)
-    void new_archive_safeguard_properties_object_does_not_allow_null_arguments(FileSize maxFileSizeUncompressed,
-                                                                               Duration timeout,
-                                                                               String nullArgumentName) {
+    @ArgumentsSource(NullArgumentsProvider.class)
+    void new_safe_archive_input_stream_properties_object_does_not_allow_null_arguments(FileSize maxFileSizeUncompressed,
+                                                                                       Duration timeout,
+                                                                                       String nullArgumentName) {
         /* execute */
-        NullPointerException exception = assertThrows(NullPointerException.class, () -> new ArchiveSafeguardProperties(maxFileSizeUncompressed, 100L, 10L, timeout));
+        NullPointerException exception = assertThrows(NullPointerException.class, () -> new SafeArchiveInputStreamProperties(maxFileSizeUncompressed, 100L, 10L, timeout));
 
         /* test */
         assertThat(exception.getMessage(), is("Property %s must not be null".formatted(nullArgumentName)));
     }
 
     @ParameterizedTest
-    @ArgumentsSource(ArchiveExtractionInvalidArgumentsProvider.class)
-    void new_archive_safeguard_properties_object_does_not_allow_invalid_arguments(long maxEntries,
-                                                                                   long maxDirectoryDepth,
-                                                                                   Duration timeout,
-                                                                                   String invalidArgumentName) {
+    @ArgumentsSource(InvalidArgumentsProvider.class)
+    void new_safe_archive_input_stream_properties_object_does_not_allow_invalid_arguments(long maxEntries,
+                                                                                          long maxDirectoryDepth,
+                                                                                          Duration timeout,
+                                                                                          String invalidArgumentName) {
         /* prepare */
         FileSize maxFileSizeUncompressed = new FileSize("100MB");
 
         /* execute */
-        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> new ArchiveSafeguardProperties(maxFileSizeUncompressed, maxEntries, maxDirectoryDepth, timeout));
+        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> new SafeArchiveInputStreamProperties(maxFileSizeUncompressed, maxEntries, maxDirectoryDepth, timeout));
 
         /* test */
         assertThat(exception.getMessage(), is("Property %s must be greater than 0".formatted(invalidArgumentName)));
     }
 
-    private static class ArchiveExtractionNullArgumentsProvider implements ArgumentsProvider {
+    private static class NullArgumentsProvider implements ArgumentsProvider {
         @Override
         public Stream<? extends Arguments> provideArguments(ExtensionContext extensionContext) {
             return Stream.of(
@@ -73,7 +73,7 @@ class ArchiveSafeguardPropertiesTest {
         }
     }
 
-    private static class ArchiveExtractionInvalidArgumentsProvider implements ArgumentsProvider {
+    private static class InvalidArgumentsProvider implements ArgumentsProvider {
         @Override
         public Stream<? extends Arguments> provideArguments(ExtensionContext extensionContext) {
             return Stream.of(

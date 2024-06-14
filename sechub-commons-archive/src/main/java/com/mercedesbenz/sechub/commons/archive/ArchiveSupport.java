@@ -398,7 +398,8 @@ public class ArchiveSupport {
                 throw new IOException("Cannot extract: " + sourceLocation + " because it is not a tar tar");
             }
 
-            return extract(archiveInputStream, sourceLocation, outputDir, fileStructureProvider, null);
+            SafeArchiveInputStream safeArchiveInputStream = new SafeArchiveInputStream(archiveInputStream, null);
+            return extract(safeArchiveInputStream, sourceLocation, outputDir, fileStructureProvider);
 
         } catch (ArchiveException e) {
             throw new IOException("Was not able to extract tar:" + sourceLocation + " at " + outputDir, e);
@@ -410,7 +411,8 @@ public class ArchiveSupport {
             SecHubFileStructureDataProvider configuration) throws IOException {
         try (ArchiveInputStream archiveInputStream = new ArchiveStreamFactory().createArchiveInputStream("zip", sourceInputStream)) {
 
-            return extract(archiveInputStream, sourceLocation, outputDir, configuration, null);
+            SafeArchiveInputStream safeArchiveInputStream = new SafeArchiveInputStream(archiveInputStream, null);
+            return extract(safeArchiveInputStream, sourceLocation, outputDir, configuration);
 
         } catch (ArchiveException e) {
             throw new IOException("Was not able to extract tar:" + sourceLocation + " at " + outputDir, e);
@@ -443,16 +445,15 @@ public class ArchiveSupport {
         }
     }
 
-    private ArchiveExtractionResult extract(ArchiveInputStream<?> archiveInputStream, String sourceLocation, File outputDir,
-            SecHubFileStructureDataProvider fileStructureProvider, ArchiveSafeguardProperties properties) throws ArchiveException, IOException {
+    private ArchiveExtractionResult extract(SafeArchiveInputStream safeArchiveInputStream, String sourceLocation, File outputDir,
+            SecHubFileStructureDataProvider fileStructureProvider) throws ArchiveException, IOException {
 
         ArchiveExtractionResult result = new ArchiveExtractionResult();
         result.targetLocation = outputDir.getAbsolutePath();
         result.sourceLocation = sourceLocation;
 
         ArchiveEntry entry = null;
-        ArchiveSafeguard archiveSafeguard = new ArchiveSafeguard(archiveInputStream, properties);
-        while ((entry = archiveSafeguard.getNextEntry()) != null) {
+        while ((entry = safeArchiveInputStream.getNextEntry()) != null) {
             String name = entry.getName();
             if (name == null) {
                 throw new IllegalStateException("Entry path is null - cannot be handled!");
@@ -493,7 +494,7 @@ public class ArchiveSupport {
                     continue;
                 }
                 try (OutputStream outputFileStream = new FileOutputStream(outputFile)) {
-                    IOUtils.copy(archiveSafeguard.getArchiveInputStream(), outputFileStream);
+                    IOUtils.copy(safeArchiveInputStream, outputFileStream);
                     result.extractedFilesCount++;
                 }
             }

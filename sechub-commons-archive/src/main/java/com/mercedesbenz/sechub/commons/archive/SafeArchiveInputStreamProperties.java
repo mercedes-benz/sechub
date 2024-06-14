@@ -7,10 +7,11 @@ import java.util.Objects;
 import static java.util.Objects.requireNonNull;
 
 /**
- * The ArchiveSafeguardProperties class encapsulates the properties used to safeguard the extraction of an archive.
+ * The SafeArchiveInputStreamProperties class encapsulates the properties used to safeguard the extraction of an archive
+ * when using the {@link SafeArchiveInputStream}.
  * These properties include maximum uncompressed file size, maximum number of entries, maximum directory depth, and timeout.
  *
- * <p> Each property is validated during the creation of an ArchiveSafeguardProperties object to ensure they meet the required conditions.
+ * <p> Each property is validated during the creation of an SafeArchiveInputStreamProperties object to ensure they meet the required conditions.
  *
  * <p> Example usage:
  * <pre>
@@ -19,21 +20,21 @@ import static java.util.Objects.requireNonNull;
  *     long maxDirectoryDepth = 5;
  *     Duration timeout = Duration.ofMinutes(1);
  *
- *     ArchiveSafeguardProperties properties = new ArchiveSafeguardProperties(maxFileSize, maxFileSizeUncompressed, maxEntries, maxCompressionRate, maxDirectoryDepth, timeout);
+ *     SafeArchiveInputStreamProperties properties = new SafeArchiveInputStreamProperties(maxFileSize, maxFileSizeUncompressed, maxEntries, maxCompressionRate, maxDirectoryDepth, timeout);
  * </pre>
  *
  * @author hamidonos
  */
-public class ArchiveSafeguardProperties {
+public class SafeArchiveInputStreamProperties {
     private final FileSize maxFileSizeUncompressed;
     private final long maxEntries;
     private final long maxDirectoryDepth;
     private final Duration timeout;
 
-    public ArchiveSafeguardProperties(FileSize maxFileSizeUncompressed,
-                                      long maxEntries,
-                                      long maxDirectoryDepth,
-                                      Duration timeout) {
+    public SafeArchiveInputStreamProperties(FileSize maxFileSizeUncompressed,
+                                            long maxEntries,
+                                            long maxDirectoryDepth,
+                                            Duration timeout) {
         this.maxFileSizeUncompressed = requireNonNull(maxFileSizeUncompressed, "Property maxFileSizeUncompressed must not be null");
         this.maxEntries = maxEntries;
         if (this.maxEntries <= 0) {
@@ -70,7 +71,7 @@ public class ArchiveSafeguardProperties {
         if (this == o) {
             return true;
         }
-        if (!(o instanceof ArchiveSafeguardProperties that)) {
+        if (!(o instanceof SafeArchiveInputStreamProperties that)) {
             return false;
         }
         return Objects.equals(maxFileSizeUncompressed, that.maxFileSizeUncompressed) &&
