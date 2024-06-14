@@ -493,7 +493,7 @@ public class ArchiveSupport {
                     continue;
                 }
                 try (OutputStream outputFileStream = new FileOutputStream(outputFile)) {
-                    IOUtils.copy(archiveSafeguard.getInputStream(), outputFileStream);
+                    IOUtils.copy(archiveSafeguard.getArchiveInputStream(), outputFileStream);
                     result.extractedFilesCount++;
                 }
             }

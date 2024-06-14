@@ -12,32 +12,30 @@ import static java.util.Objects.requireNonNull;
 
 class ArchiveSafeguard {
 
-    private final ArchiveInputStream<?> inputStream;
+    private static final String DIRECTORY_DELIMITER = "/";
+
+    private final ArchiveInputStream<?> archiveInputStream;
     private final ArchiveSafeguardProperties properties;
 
     private long entriesCount;
-    private long directoryDepthCount;
+    private long bytesRead;
     private Instant startTime;
 
-    ArchiveSafeguard(ArchiveInputStream<?> inputStream, ArchiveSafeguardProperties properties) {
-        this.inputStream = requireNonNull(inputStream, "Property inputStream must not be null");
-        this.properties = requireNonNull(properties, "Property properties must not be null");
+    ArchiveSafeguard(ArchiveInputStream<?> archiveInputStream, ArchiveSafeguardProperties archiveSafeguardProperties) {
+        this.archiveInputStream = requireNonNull(archiveInputStream, "Property archiveInputStream must not be null");
+        properties = requireNonNull(archiveSafeguardProperties, "Property archiveSafeguardProperties must not be null");
     }
 
     ArchiveSafeguardProperties getProperties() {
         return properties;
     }
 
-    ArchiveInputStream<?> getInputStream() {
-        return inputStream;
+    ArchiveInputStream<?> getArchiveInputStream() {
+        return archiveInputStream;
     }
 
     long getEntriesCount() {
         return entriesCount;
-    }
-
-    long getDirectoryDepthCount() {
-        return directoryDepthCount;
     }
 
     Instant getStartTime() {
@@ -49,36 +47,33 @@ class ArchiveSafeguard {
             startTime = Instant.now();
         }
 
-        // Check if the timeout has been exceeded
-
         if (Duration.between(startTime, Instant.now()).compareTo(properties.getTimeout()) > 0) {
-            throw new IllegalStateException("Timeout exceeded");
+            //throw new IllegalStateException("Timeout exceeded");
         }
 
-        ArchiveEntry entry = inputStream.getNextEntry();
+        ArchiveEntry entry = archiveInputStream.getNextEntry();
         if (entry == null) {
             return null;
         }
 
-        // Check if the file size exceeds the maximum allowed size
-
         FileSize maxFileSizeUncompressed = properties.getMaxFileSizeUncompressed();
-        if (inputStream.getBytesRead() > maxFileSizeUncompressed.getBytes()) {
+        bytesRead += archiveInputStream.getBytesRead();
+        if (bytesRead > maxFileSizeUncompressed.getBytes()) {
             throw new IllegalArgumentException("File size exceeds the maximum allowed value of %s".formatted(maxFileSizeUncompressed.getSizeString()));
         }
 
-        // Check if the number of entries exceeds the maximum allowed number of entries
+        if (entry.isDirectory()) {
+            long maxDirectoryDepth = properties.getMaxDirectoryDepth();
+            long directoryDepth = entry.getName().split(DIRECTORY_DELIMITER).length - 1; // Subtract 1 because split includes the file name
+            if (entry.isDirectory() && directoryDepth > maxDirectoryDepth) {
+                throw new IllegalArgumentException("Directory depth exceeds the maximum allowed value of %s".formatted(maxDirectoryDepth));
+            }
+        } else {
+            long maxEntries = properties.getMaxEntries();
+            if (!entry.isDirectory() && ++entriesCount > maxEntries) {
+                throw new IllegalArgumentException("Number of entries exceeds the maximum allowed value of %s".formatted(maxEntries));
+            }
 
-        long maxEntries = properties.getMaxEntries();
-        if (++entriesCount > maxEntries) {
-            throw new IllegalArgumentException("Number of entries exceeds the maximum allowed value of %s".formatted(maxEntries));
-        }
-
-        // Check if the directory depth exceeds the maximum allowed directory depth
-
-        long maxDirectoryDepth = properties.getMaxDirectoryDepth();
-        if (entry.isDirectory() && ++directoryDepthCount > maxDirectoryDepth) {
-            throw new IllegalArgumentException("Directory depth exceeds the maximum allowed value of %s".formatted(maxDirectoryDepth));
         }
 
         return entry;
