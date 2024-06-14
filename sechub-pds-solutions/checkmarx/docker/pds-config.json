@@ -7,6 +7,7 @@
       "path": "/pds/scripts/checkmarx.sh",
       "scanType": "codeScan",
       "description": "Runs Checkmarx",
+      "envWhitelist" : [ "TOOL_FOLDER" ],
       "parameters": {
         "mandatory": [
           {
@@ -91,6 +92,7 @@
     {
       "id": "PDS_CHECKMARX_MOCK",
       "path": "/pds/scripts/checkmarx_mock.sh",
+      "envWhitelist" : [ "MOCK_FOLDER" ],
       "scanType": "codeScan",
       "description": "Runs Checkmarx Mock",
       "parameters": {
