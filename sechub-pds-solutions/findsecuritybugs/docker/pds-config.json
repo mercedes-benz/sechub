@@ -4,6 +4,7 @@
   "products" : [ {
     "id" : "PDS_FINDSECURITYBUGS",
     "path" : "/pds/scripts/findsecuritybugs.sh",
+    "envWhitelist" : [ "HELPER_FOLDER", "TOOL_FOLDER" ],
     "scanType" : "codeScan",
     "description" : "Runs FindSecurityBugs. FindSecurityBugs is a static analysis tool for Java, Kotlin, Scala and Groovy.",
     "parameters" : {
@@ -27,6 +28,7 @@
   }, {
     "id" : "PDS_FINDSECURITYBUGS_MOCK",
     "path" : "/pds/scripts/findsecuritybugs_mock.sh",
+    "envWhitelist" : [ "MOCK_FOLDER" ],
     "scanType" : "codeScan",
     "description" : "Runs FindSecurityBugs mock. It returns a fixed result file.",
     "parameters" : {

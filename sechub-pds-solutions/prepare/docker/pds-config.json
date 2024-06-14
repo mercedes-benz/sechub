@@ -5,6 +5,7 @@
     {
       "id": "PDS_PREPARE",
       "path": "/pds/scripts/prepare.sh",
+      "envWhitelist" : [ "TOOL_FOLDER" ],
       "scanType": "prepare",
       "description": "Runs the prepare wrapper application to prepare remote data for SecHub scans.",
       
@@ -46,6 +47,7 @@
     {
       "id": "PDS_PREPARE_MOCK",
       "path": "/pds/scripts/prepare_mock.sh",
+      "envWhitelist" : [ "MOCK_FOLDER" ],
       "scanType": "prepare",
       "description": "Runs the prepare mock which returns a success message."
     }
