@@ -1,12 +1,15 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.commons.core.environment;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
+import org.junit.jupiter.params.provider.EmptySource;
+import org.junit.jupiter.params.provider.NullSource;
 import org.junit.jupiter.params.provider.ValueSource;
 
 class SystemEnvironmentVariableSupportTest {
@@ -19,6 +22,41 @@ class SystemEnvironmentVariableSupportTest {
         systemEnvironment = mock(SystemEnvironment.class);
 
         supportToTest = new SystemEnvironmentVariableSupport(systemEnvironment);
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = { "VALUE", "value", "v" })
+    @NullSource
+    @EmptySource
+    void assertDefinedByEnvironment_throws_no_exception_when_value_is_defined_in_environment(String value) {
+
+        /* prepare */
+        String envVariableName = "SOME_VARIABLE";
+
+        when(systemEnvironment.getEnv(envVariableName)).thenReturn(value);
+
+        /* execute + test (just no exception thrown ) */
+        supportToTest.assertDefinedByEnvironment(envVariableName, value);
+
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = { "", "some_variable", "test" })
+    @NullSource
+    @EmptySource
+    void assertDefinedByEnvironment_throws_exception_when_value_is_different_defined_in_environment(String value) {
+
+        /* prepare */
+        String envVariableName = "SOME_VARIABLE";
+
+        when(systemEnvironment.getEnv(envVariableName)).thenReturn(value + "-other");
+
+        /* execute */
+        IllegalStateException exception = assertThrows(IllegalStateException.class, () -> supportToTest.assertDefinedByEnvironment(envVariableName, value));
+
+        /* test */
+        assertTrue(exception.getMessage().contains("variable: " + "SOME_VARIABLE"));
+
     }
 
     @ParameterizedTest

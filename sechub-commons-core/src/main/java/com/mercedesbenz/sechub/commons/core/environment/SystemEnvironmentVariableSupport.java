@@ -1,6 +1,8 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.commons.core.environment;
 
+import java.util.Objects;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -48,5 +50,34 @@ public class SystemEnvironmentVariableSupport {
             LOG.warn("No environment entry defined for variable: {}", key);
         }
         return result;
+    }
+
+    /**
+     * Checks given value is defined in environment variable.
+     *
+     * @param envVariableName the name of the environment variable
+     * @param value           the expected value to be inside the env variable
+     *
+     * @throws IllegalStateException    if the value is not null or empty but the
+     *                                  environment variable does not contain this
+     *                                  value
+     * @throws IllegalArgumentException if the environment variable name is null or
+     *                                  blank
+     */
+    public void assertDefinedByEnvironment(String envVariableName, String value) {
+        if (envVariableName == null) {
+            throw new IllegalArgumentException("Environment variable name must not be null!");
+        }
+        if (envVariableName.isBlank()) {
+            throw new IllegalArgumentException("Environment variable name must not be blank!");
+        }
+        String found = systemEnvironment.getEnv(envVariableName);
+        if (Objects.equals(value, found)) {
+            return;
+        }
+        if (value != null && value.isBlank()) {
+        }
+        throw new IllegalStateException("The found value was not defined in env variable: " + envVariableName);
+
     }
 }
