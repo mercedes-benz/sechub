@@ -5,12 +5,14 @@
     {
       "id": "PDS_GOSEC",
       "path": "/pds/scripts/gosec.sh",
+      "envWhitelist" : [ "TOOL_FOLDER" ],
       "scanType": "codeScan",
       "description": "Runs the Go-code security checker GoSec."
     },
     {
       "id": "PDS_GOSEC_MOCK",
       "path": "/pds/scripts/gosec_mock.sh",
+      "envWhitelist" : [ "MOCK_FOLDER" ],
       "scanType": "codeScan",
       "description": "Runs GoSec mock. It returns a fixed result file."
     }

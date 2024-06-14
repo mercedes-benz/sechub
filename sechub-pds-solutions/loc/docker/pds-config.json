@@ -11,6 +11,7 @@
     {
       "id": "PDS_CLOC_MOCK",
       "path": "/pds/scripts/cloc_mock.sh",
+      "envWhitelist" : [ "MOCK_FOLDER" ],
       "scanType": "analytics",
       "description": "Runs cloc mock. It returns a fixed result file."
     },
@@ -23,6 +24,7 @@
     {
       "id": "PDS_SCC_MOCK",
       "path": "/pds/scripts/scc_mock.sh",
+      "envWhitelist" : [ "MOCK_FOLDER" ],
       "scanType": "analytics",
       "description": "Runs Scc mock. It returns a fixed result file."
     }

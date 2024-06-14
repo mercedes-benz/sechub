@@ -41,6 +41,7 @@
     {
       "id": "PDS_BANDIT_MOCK",
       "path": "/pds/scripts/bandit_mock.sh",
+      "envWhitelist" : [ "MOCK_FOLDER" ],
       "scanType": "codeScan",
       "description": "Runs Bandit mock. It returns a fixed result file.",
       "parameters": {
@@ -59,18 +60,21 @@
     {
       "id": "PDS_FLAWFINDER_MOCK",
       "path": "/pds/scripts/flawfinder_mock.sh",
+      "envWhitelist" : [ "MOCK_FOLDER" ],
       "scanType": "codeScan",
       "description": "Runs Flawfinder mock. It returns a fixed result file."
     },
     {
       "id": "PDS_MOBSFSCAN_MOCK",
       "path": "/pds/scripts/mobsfscan_mock.sh",
+      "envWhitelist" : [ "MOCK_FOLDER" ],
       "scanType": "codeScan",
       "description": "Runs mobsfscan mock. It returns a fixed result file."
     },
     {
       "id": "PDS_NJSSCAN_MOCK",
       "path": "/pds/scripts/njsscan_mock.sh",
+      "envWhitelist" : [ "MOCK_FOLDER" ],
       "scanType": "codeScan",
       "description": "Runs sjsscan mock. It returns a fixed result file."
     }
