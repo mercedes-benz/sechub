@@ -24,7 +24,7 @@ jobs:
           echo "Checkmarx-wrapper '${{ inputs.checkmarx-wrapper-version }}' - Milestone '${{ inputs.checkmarx-wrapper-milestone-number }}'"
 
       - name: Checkout branch master
-        uses: actions/checkout@a5ac7e51b41094c92402da3b24376905380afc29
+        uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332
         with:
           ref: master
 
