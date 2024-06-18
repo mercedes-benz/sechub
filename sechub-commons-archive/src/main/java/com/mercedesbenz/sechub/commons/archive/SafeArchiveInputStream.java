@@ -1,14 +1,14 @@
 package com.mercedesbenz.sechub.commons.archive;
 
-import static java.util.Objects.requireNonNull;
+import org.apache.commons.compress.archivers.ArchiveEntry;
+import org.apache.commons.compress.archivers.ArchiveInputStream;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.time.Duration;
 import java.time.Instant;
 
-import org.apache.commons.compress.archivers.ArchiveEntry;
-import org.apache.commons.compress.archivers.ArchiveInputStream;
+import static java.util.Objects.requireNonNull;
 
 class SafeArchiveInputStream extends InputStream {
     private static final String DIRECTORY_DELIMITER = "/";
@@ -18,7 +18,7 @@ class SafeArchiveInputStream extends InputStream {
 
     private Instant startTime;
     private long entriesCount;
-    private long bytesRead = 0;
+    private long bytesRead;
 
     public SafeArchiveInputStream(ArchiveInputStream<?> inputStream, ArchiveExtractionContext properties) {
         this.inputStream = requireNonNull(inputStream, "Property inputStream must not be null");
@@ -86,7 +86,7 @@ class SafeArchiveInputStream extends InputStream {
 
         if (!entry.isDirectory()) {
             long maxEntries = properties.getMaxEntries();
-            if (!entry.isDirectory() && ++entriesCount > maxEntries) {
+            if (++entriesCount > maxEntries) {
                 throw new IllegalArgumentException("Number of entries exceeds the maximum allowed value of %s".formatted(maxEntries));
             }
         }

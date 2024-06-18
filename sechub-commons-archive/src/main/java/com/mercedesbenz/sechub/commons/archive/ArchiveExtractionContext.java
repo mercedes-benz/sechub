@@ -1,10 +1,10 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.commons.archive;
 
-import static java.util.Objects.requireNonNull;
-
 import java.time.Duration;
 import java.util.Objects;
+
+import static java.util.Objects.requireNonNull;
 
 /**
  * The ArchiveExtractionContext class encapsulates the properties used to
@@ -25,8 +25,7 @@ import java.util.Objects;
  * long maxDirectoryDepth = 5;
  * Duration timeout = Duration.ofMinutes(1);
  *
- * ArchiveExtractionContext properties = new ArchiveExtractionContext(maxFileSize, maxFileSizeUncompressed, maxEntries, maxCompressionRate, maxDirectoryDepth,
- *         timeout);
+ * ArchiveExtractionContext properties = new ArchiveExtractionContext(maxFileSizeUncompressed, maxEntries, maxDirectoryDepth, timeout);
  * </pre>
  *
  * @author hamidonos
