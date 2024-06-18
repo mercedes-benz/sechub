@@ -14,13 +14,13 @@ class SafeArchiveInputStream extends InputStream {
     private static final String DIRECTORY_DELIMITER = "/";
 
     private final ArchiveInputStream<?> inputStream;
-    private final SafeArchiveInputStreamProperties properties;
+    private final ArchiveExtractionContext properties;
 
     private Instant startTime;
     private long entriesCount;
     private long bytesRead = 0;
 
-    public SafeArchiveInputStream(ArchiveInputStream<?> inputStream, SafeArchiveInputStreamProperties properties) {
+    public SafeArchiveInputStream(ArchiveInputStream<?> inputStream, ArchiveExtractionContext properties) {
         this.inputStream = requireNonNull(inputStream, "Property inputStream must not be null");
         this.properties = requireNonNull(properties, "Property properties must not be null");
     }
@@ -43,7 +43,7 @@ class SafeArchiveInputStream extends InputStream {
         return result;
     }
 
-    SafeArchiveInputStreamProperties getProperties() {
+    ArchiveExtractionContext getProperties() {
         return properties;
     }
 

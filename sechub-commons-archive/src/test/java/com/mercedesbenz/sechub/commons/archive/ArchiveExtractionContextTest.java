@@ -15,10 +15,10 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThrows;
 
-class SafeArchiveInputStreamPropertiesTest {
+class ArchiveExtractionContextTest {
 
     @Test
-    void new_safe_archive_input_stream_properties_object_has_expected_properties() {
+    void new_archive_extraction_context_object_has_expected_properties() {
         /* prepare */
         FileSize maxFileSizeUncompressed = new FileSize("100MB");
         long maxEntries = 100L;
@@ -26,7 +26,7 @@ class SafeArchiveInputStreamPropertiesTest {
         Duration timeout = Duration.ofSeconds(10);
 
         /* execute */
-        SafeArchiveInputStreamProperties result = new SafeArchiveInputStreamProperties(maxFileSizeUncompressed, maxEntries, maxDirectoryDepth, timeout);
+        ArchiveExtractionContext result = new ArchiveExtractionContext(maxFileSizeUncompressed, maxEntries, maxDirectoryDepth, timeout);
 
         /* test */
         assertThat(result.getMaxFileSizeUncompressed(), is(maxFileSizeUncompressed));
@@ -37,11 +37,11 @@ class SafeArchiveInputStreamPropertiesTest {
 
     @ParameterizedTest
     @ArgumentsSource(NullArgumentsProvider.class)
-    void new_safe_archive_input_stream_properties_object_does_not_allow_null_arguments(FileSize maxFileSizeUncompressed,
+    void new_archive_extraction_context_object_does_not_allow_null_arguments(FileSize maxFileSizeUncompressed,
                                                                                        Duration timeout,
                                                                                        String nullArgumentName) {
         /* execute */
-        NullPointerException exception = assertThrows(NullPointerException.class, () -> new SafeArchiveInputStreamProperties(maxFileSizeUncompressed, 100L, 10L, timeout));
+        NullPointerException exception = assertThrows(NullPointerException.class, () -> new ArchiveExtractionContext(maxFileSizeUncompressed, 100L, 10L, timeout));
 
         /* test */
         assertThat(exception.getMessage(), is("Property %s must not be null".formatted(nullArgumentName)));
@@ -49,7 +49,7 @@ class SafeArchiveInputStreamPropertiesTest {
 
     @ParameterizedTest
     @ArgumentsSource(InvalidArgumentsProvider.class)
-    void new_safe_archive_input_stream_properties_object_does_not_allow_invalid_arguments(long maxEntries,
+    void new_archive_extraction_context_object_does_not_allow_invalid_arguments(long maxEntries,
                                                                                           long maxDirectoryDepth,
                                                                                           Duration timeout,
                                                                                           String invalidArgumentName) {
@@ -57,7 +57,7 @@ class SafeArchiveInputStreamPropertiesTest {
         FileSize maxFileSizeUncompressed = new FileSize("100MB");
 
         /* execute */
-        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> new SafeArchiveInputStreamProperties(maxFileSizeUncompressed, maxEntries, maxDirectoryDepth, timeout));
+        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> new ArchiveExtractionContext(maxFileSizeUncompressed, maxEntries, maxDirectoryDepth, timeout));
 
         /* test */
         assertThat(exception.getMessage(), is("Property %s must be greater than 0".formatted(invalidArgumentName)));

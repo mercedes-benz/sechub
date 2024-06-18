@@ -25,16 +25,16 @@ import static java.util.Objects.requireNonNull;
  *
  * @author hamidonos
  */
-public class SafeArchiveInputStreamProperties {
+public class ArchiveExtractionContext {
     private final FileSize maxFileSizeUncompressed;
     private final long maxEntries;
     private final long maxDirectoryDepth;
     private final Duration timeout;
 
-    public SafeArchiveInputStreamProperties(FileSize maxFileSizeUncompressed,
-                                            long maxEntries,
-                                            long maxDirectoryDepth,
-                                            Duration timeout) {
+    public ArchiveExtractionContext(FileSize maxFileSizeUncompressed,
+                                    long maxEntries,
+                                    long maxDirectoryDepth,
+                                    Duration timeout) {
         this.maxFileSizeUncompressed = requireNonNull(maxFileSizeUncompressed, "Property maxFileSizeUncompressed must not be null");
         this.maxEntries = maxEntries;
         if (this.maxEntries <= 0) {
@@ -71,7 +71,7 @@ public class SafeArchiveInputStreamProperties {
         if (this == o) {
             return true;
         }
-        if (!(o instanceof SafeArchiveInputStreamProperties that)) {
+        if (!(o instanceof ArchiveExtractionContext that)) {
             return false;
         }
         return Objects.equals(maxFileSizeUncompressed, that.maxFileSizeUncompressed) &&

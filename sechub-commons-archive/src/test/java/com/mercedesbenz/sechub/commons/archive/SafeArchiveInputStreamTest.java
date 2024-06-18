@@ -45,9 +45,9 @@ class SafeArchiveInputStreamTest {
         long maxEntries = 10L;
         FileSize entryFileSize = new FileSize("1KB");
         long maxDirectoryDepth = 10L;
-        Duration timeout = Duration.ofSeconds(10);
+        Duration timeout = Duration.ofSeconds(10L);
 
-        SafeArchiveInputStreamProperties properties = new SafeArchiveInputStreamProperties(maxFileSizeUncompressed, maxEntries, maxDirectoryDepth, timeout);
+        ArchiveExtractionContext properties = new ArchiveExtractionContext(maxFileSizeUncompressed, maxEntries, maxDirectoryDepth, timeout);
         ArchiveInputStream<?> archiveInputStream = createZipArchiveInputStream(maxEntries, entryFileSize, maxDirectoryDepth);
 
         /* execute */
@@ -62,7 +62,7 @@ class SafeArchiveInputStreamTest {
 
     @ParameterizedTest
     @ArgumentsSource(NullArgumentsProvider.class)
-    void new_safe_archive_input_stream_does_not_allow_null_arguments(ArchiveInputStream<?> archiveInputStream, SafeArchiveInputStreamProperties properties, String argumentName) {
+    void new_safe_archive_input_stream_does_not_allow_null_arguments(ArchiveInputStream<?> archiveInputStream, ArchiveExtractionContext properties, String argumentName) {
         /* execute */
         NullPointerException exception = assertThrows(NullPointerException.class, () -> new SafeArchiveInputStream(archiveInputStream, properties));
 
@@ -81,9 +81,9 @@ class SafeArchiveInputStreamTest {
         long maxEntries = 10L;
         FileSize entryFileSize = new FileSize("1KB");
         long maxDirectoryDepth = 10L;
-        Duration timeout = Duration.ofSeconds(10);
+        Duration timeout = Duration.ofSeconds(10L);
         ArchiveInputStream<?> zipArchiveInputStream = createZipArchiveInputStream(maxEntries, entryFileSize, maxDirectoryDepth);
-        SafeArchiveInputStreamProperties properties = new SafeArchiveInputStreamProperties(maxFileSizeUncompressed, maxEntries, maxDirectoryDepth, timeout);
+        ArchiveExtractionContext properties = new ArchiveExtractionContext(maxFileSizeUncompressed, maxEntries, maxDirectoryDepth, timeout);
         SafeArchiveInputStream safeArchiveInputStream = new SafeArchiveInputStream(zipArchiveInputStream, properties);
 
         /* execute */
@@ -107,8 +107,8 @@ class SafeArchiveInputStreamTest {
         FileSize maxFileSizeUncompressed = new FileSize("1MB");
         long maxEntries = 100L;
         long maxDirectoryDepth = 10L;
-        Duration timeout = Duration.ofMillis(10);
-        SafeArchiveInputStreamProperties properties = new SafeArchiveInputStreamProperties(maxFileSizeUncompressed, maxEntries, maxDirectoryDepth, timeout);
+        Duration timeout = Duration.ofMillis(10L);
+        ArchiveExtractionContext properties = new ArchiveExtractionContext(maxFileSizeUncompressed, maxEntries, maxDirectoryDepth, timeout);
         FileSize entryFileSize = new FileSize("1KB");
         ArchiveInputStream<?> zipArchiveInputStream = createZipArchiveInputStream(maxEntries, entryFileSize, maxDirectoryDepth);
         SafeArchiveInputStream safeArchiveInputStream = new SafeArchiveInputStream(zipArchiveInputStream, properties);
@@ -136,8 +136,8 @@ class SafeArchiveInputStreamTest {
         FileSize maxFileSizeUncompressed = new FileSize("9KB");
         long maxEntries = 10;
         long maxDirectoryDepth = 1L;
-        Duration timeout = Duration.ofSeconds(10);
-        SafeArchiveInputStreamProperties properties = new SafeArchiveInputStreamProperties(maxFileSizeUncompressed, maxEntries, maxDirectoryDepth, timeout);
+        Duration timeout = Duration.ofSeconds(10L);
+        ArchiveExtractionContext properties = new ArchiveExtractionContext(maxFileSizeUncompressed, maxEntries, maxDirectoryDepth, timeout);
         FileSize entryFileSize = new FileSize("1KB");
         ArchiveInputStream<?> zipArchiveInputStream = createZipArchiveInputStream(maxEntries, entryFileSize, maxDirectoryDepth);
         SafeArchiveInputStream safeArchiveInputStream = new SafeArchiveInputStream(zipArchiveInputStream, properties);
@@ -167,8 +167,8 @@ class SafeArchiveInputStreamTest {
         FileSize maxFileSizeUncompressed = new FileSize("1MB");
         long maxEntries = 10L;
         long maxDirectoryDepth = 1L;
-        Duration timeout = Duration.ofSeconds(10);
-        SafeArchiveInputStreamProperties properties = new SafeArchiveInputStreamProperties(maxFileSizeUncompressed, maxEntries, maxDirectoryDepth, timeout);
+        Duration timeout = Duration.ofSeconds(10L);
+        ArchiveExtractionContext properties = new ArchiveExtractionContext(maxFileSizeUncompressed, maxEntries, maxDirectoryDepth, timeout);
         FileSize entryFileSize = new FileSize("1KB");
         ArchiveInputStream<?> zipArchiveInputStream = createZipArchiveInputStream(maxEntries + 1, entryFileSize, maxDirectoryDepth);
         SafeArchiveInputStream safeguard = new SafeArchiveInputStream(zipArchiveInputStream, properties);
@@ -193,8 +193,8 @@ class SafeArchiveInputStreamTest {
         FileSize maxFileSizeUncompressed = new FileSize("1MB");
         long maxEntries = 1L;
         long maxDirectoryDepth = 10L;
-        Duration timeout = Duration.ofSeconds(10);
-        SafeArchiveInputStreamProperties properties = new SafeArchiveInputStreamProperties(maxFileSizeUncompressed, maxEntries, maxDirectoryDepth, timeout);
+        Duration timeout = Duration.ofSeconds(10L);
+        ArchiveExtractionContext properties = new ArchiveExtractionContext(maxFileSizeUncompressed, maxEntries, maxDirectoryDepth, timeout);
         FileSize entryFileSize = new FileSize("1KB");
         ArchiveInputStream<?> zipArchiveInputStream = createZipArchiveInputStream(maxEntries, entryFileSize, maxDirectoryDepth + 1);
         SafeArchiveInputStream safeguard = new SafeArchiveInputStream(zipArchiveInputStream, properties);
@@ -210,7 +210,9 @@ class SafeArchiveInputStreamTest {
     }
 
     private ZipArchiveInputStream createZipArchiveInputStream(long entriesCount, FileSize entryFileSize, long maxDirectoryDepth) throws IOException {
-        try (FileOutputStream fos = new FileOutputStream("archive.zip");
+        File file = File.createTempFile("archive", ".zip");
+        tempFiles.add(file);
+        try (FileOutputStream fos = new FileOutputStream(file);
              BufferedOutputStream bos = new BufferedOutputStream(fos);
              ZipArchiveOutputStream zaos = new ZipArchiveOutputStream(bos)) {
 
@@ -233,7 +235,7 @@ class SafeArchiveInputStreamTest {
             }
 
             zaos.close();
-            byte[] bytes = Files.readAllBytes(new File("archive.zip").toPath());
+            byte[] bytes = Files.readAllBytes(file.toPath());
             ByteArrayInputStream bais = new ByteArrayInputStream(bytes);
             return new ZipArchiveInputStream(bais);
         }
@@ -254,7 +256,7 @@ class SafeArchiveInputStreamTest {
         @Override
         public Stream<? extends Arguments> provideArguments(ExtensionContext extensionContext) throws Exception {
             return Stream.of(
-                    Arguments.of(null, new SafeArchiveInputStreamProperties(new FileSize("100MB"), 100L, 10L, Duration.ofSeconds(10)), "inputStream"),
+                    Arguments.of(null, new ArchiveExtractionContext(new FileSize("100MB"), 100L, 10L, Duration.ofSeconds(10)), "inputStream"),
                     Arguments.of(new ZipArchiveInputStream(new ByteArrayInputStream(new byte[0])), null, "properties")
             );
         }

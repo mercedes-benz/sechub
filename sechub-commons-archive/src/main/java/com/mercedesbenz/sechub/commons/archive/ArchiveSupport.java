@@ -58,16 +58,17 @@ public class ArchiveSupport {
                                            InputStream sourceInputStream,
                                            String sourceLocation,
                                            File outputDir,
-                                           SecHubFileStructureDataProvider fileStructureDataProvider
+                                           SecHubFileStructureDataProvider fileStructureDataProvider,
+                                           ArchiveExtractionContext archiveExtractionContext
                                            ) throws IOException {
         if (archiveType == null) {
             throw new IllegalArgumentException("archive type must be defined!");
         }
         switch (archiveType) {
         case TAR:
-            return extractTar(sourceInputStream, sourceLocation, outputDir, fileStructureDataProvider);
+            return extractTar(sourceInputStream, sourceLocation, outputDir, fileStructureDataProvider, archiveExtractionContext);
         case ZIP:
-            return extractZip(sourceInputStream, sourceLocation, outputDir, fileStructureDataProvider);
+            return extractZip(sourceInputStream, sourceLocation, outputDir, fileStructureDataProvider, archiveExtractionContext);
         default:
             throw new IllegalArgumentException("archive type " + archiveType + " is not supported");
 
@@ -392,13 +393,13 @@ public class ArchiveSupport {
     }
 
     private ArchiveExtractionResult extractTar(InputStream sourceInputStream, String sourceLocation, File outputDir,
-            SecHubFileStructureDataProvider fileStructureProvider) throws IOException {
+                                               SecHubFileStructureDataProvider fileStructureProvider, ArchiveExtractionContext properties) throws IOException {
         try (ArchiveInputStream archiveInputStream = new ArchiveStreamFactory().createArchiveInputStream("tar", sourceInputStream)) {
             if (!(archiveInputStream instanceof TarArchiveInputStream)) {
                 throw new IOException("Cannot extract: " + sourceLocation + " because it is not a tar tar");
             }
 
-            SafeArchiveInputStream safeArchiveInputStream = new SafeArchiveInputStream(archiveInputStream, null);
+            SafeArchiveInputStream safeArchiveInputStream = new SafeArchiveInputStream(archiveInputStream, properties);
             return extract(safeArchiveInputStream, sourceLocation, outputDir, fileStructureProvider);
 
         } catch (ArchiveException e) {
@@ -408,10 +409,10 @@ public class ArchiveSupport {
     }
 
     private ArchiveExtractionResult extractZip(InputStream sourceInputStream, String sourceLocation, File outputDir,
-            SecHubFileStructureDataProvider configuration) throws IOException {
+                                               SecHubFileStructureDataProvider configuration, ArchiveExtractionContext properties) throws IOException {
         try (ArchiveInputStream archiveInputStream = new ArchiveStreamFactory().createArchiveInputStream("zip", sourceInputStream)) {
 
-            SafeArchiveInputStream safeArchiveInputStream = new SafeArchiveInputStream(archiveInputStream, null);
+            SafeArchiveInputStream safeArchiveInputStream = new SafeArchiveInputStream(archiveInputStream, properties);
             return extract(safeArchiveInputStream, sourceLocation, outputDir, configuration);
 
         } catch (ArchiveException e) {
