@@ -45,7 +45,8 @@
                         "default" : "none" 
                     }  
                 ]
-            }
+            },
+            "envWhitelist" : [ "SOME_SPECIAL_ENV_VARIABLE"] //<13>
         }
     ]
 }

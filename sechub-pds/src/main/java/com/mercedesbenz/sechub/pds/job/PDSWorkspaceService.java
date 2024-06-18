@@ -14,6 +14,7 @@ import java.time.Duration;
 import java.util.Set;
 import java.util.UUID;
 
+import com.mercedesbenz.sechub.commons.archive.*;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.file.PathUtils;
 import org.slf4j.Logger;
@@ -24,7 +25,6 @@ import org.springframework.stereotype.Service;
 
 import com.mercedesbenz.sechub.commons.TextFileReader;
 import com.mercedesbenz.sechub.commons.TextFileWriter;
-import com.mercedesbenz.sechub.commons.archive.*;
 import com.mercedesbenz.sechub.commons.archive.ArchiveSupport.ArchiveType;
 import com.mercedesbenz.sechub.commons.model.JSONConverter;
 import com.mercedesbenz.sechub.commons.model.JSONConverterException;
@@ -174,26 +174,26 @@ public class PDSWorkspaceService {
         }
     }
 
-    private void importWantedFilesFromJobStorage(UUID jobUUID, PDSJobConfiguration config, PDSJobConfigurationSupport configurationSupport,
+    private void importWantedFilesFromJobStorage(UUID pdsJobUUID, PDSJobConfiguration config, PDSJobConfigurationSupport configurationSupport,
             PDSWorkspacePreparationContext preparationContext) throws IOException {
 
         PDSResilientRetryExecutor<IOException> resilientStorageReadExecutor = createResilientReadExecutor(preparationContext);
 
-        File jobFolder = getUploadFolder(jobUUID);
-        JobStorage storage = fetchStorage(jobUUID, config);
+        File jobFolder = getUploadFolder(pdsJobUUID);
+        JobStorage storage = fetchStorage(pdsJobUUID, config);
 
-        Set<String> names = resilientStorageReadExecutor.execute(() -> storage.listNames(), "List storage names for job: " + jobUUID.toString());
+        Set<String> names = resilientStorageReadExecutor.execute(() -> storage.listNames(), "List storage names for job: " + pdsJobUUID.toString());
 
-        LOG.debug("For jobUUID: {} following names are found in storage: {}", jobUUID, names);
+        LOG.debug("For pds jobUUID: {} following names are found in storage: {}", pdsJobUUID, names);
 
         for (String name : names) {
 
             if (isWantedStorageContent(name, configurationSupport, preparationContext)) {
-                resilientStorageReadExecutor.execute(() -> readAndCopyStorageToFileSystem(jobUUID, jobFolder, storage, name),
-                        "Read and copy storage: " + name + " for job: " + jobUUID);
+                resilientStorageReadExecutor.execute(() -> readAndCopyStorageToFileSystem(pdsJobUUID, jobFolder, storage, name),
+                        "Read and copy storage: " + name + " for job: " + pdsJobUUID.toString());
 
             } else {
-                LOG.debug("Did NOT import '{}' for job {} from storage - was not wanted", name, jobUUID);
+                LOG.debug("Did NOT import '{}' for job {} from storage - was not wanted", name, pdsJobUUID);
             }
 
         }
@@ -278,7 +278,7 @@ public class PDSWorkspaceService {
 
     private JobStorage fetchStorage(UUID pdsJobUUID, PDSJobConfiguration config) {
 
-        UUID jobUUID;
+        UUID pdsOrSecHubJobUUID;
         String storagePath;
         PDSJobConfigurationSupport configurationSupport = new PDSJobConfigurationSupport(config);
 
@@ -286,14 +286,15 @@ public class PDSWorkspaceService {
 
         if (useSecHubStorage) {
             storagePath = configurationSupport.getSecHubStoragePath();
-            jobUUID = config.getSechubJobUUID();
+            pdsOrSecHubJobUUID = config.getSechubJobUUID();
         } else {
             storagePath = null;// will force default storage path for the PDS product
-            jobUUID = pdsJobUUID;
+            pdsOrSecHubJobUUID = pdsJobUUID;
         }
 
-        LOG.debug("PDS job {}: feching storage for storagePath = {} and jobUUID:{}, useSecHubStorage={}", pdsJobUUID, storagePath, jobUUID, useSecHubStorage);
-        JobStorage storage = storageService.getJobStorage(storagePath, jobUUID);
+        LOG.debug("PDS job {}: feching storage for storagePath={}, {}-jobUUID={}, useSecHubStorage={}", pdsJobUUID, storagePath,
+                useSecHubStorage ? "sechub" : "pds", pdsOrSecHubJobUUID, useSecHubStorage);
+        JobStorage storage = storageService.getJobStorage(storagePath, pdsOrSecHubJobUUID);
 
         storageInfoCollector.informFetchedStorage(storagePath, config.getSechubJobUUID(), pdsJobUUID, storage);
 
@@ -303,11 +304,11 @@ public class PDSWorkspaceService {
     /**
      * Resolves upload folder - if not existing it will be created
      *
-     * @param jobUUID
+     * @param pdsJobUUID
      * @return upload folder
      */
-    public File getUploadFolder(UUID jobUUID) {
-        File file = new File(getWorkspaceFolder(jobUUID), UPLOAD);
+    public File getUploadFolder(UUID pdsJobUUID) {
+        File file = new File(getWorkspaceFolder(pdsJobUUID), UPLOAD);
         file.mkdirs();
         return file;
     }
@@ -321,14 +322,14 @@ public class PDSWorkspaceService {
     /**
      * Resolves upload folder - if not existing it will be created
      *
-     * @param jobUUID
+     * @param pdsJobUUID
      * @return upload folder
      * @throws IllegalStateException in case the workspace folder does not exist and
      *                               cannot be created (e.g. because of missing
      *                               permissions)
      */
-    public File getWorkspaceFolder(UUID jobUUID) {
-        Path jobWorkspacePath = Paths.get(workspaceRootFolderPath, jobUUID.toString());
+    public File getWorkspaceFolder(UUID pdsJobUUID) {
+        Path jobWorkspacePath = Paths.get(workspaceRootFolderPath, pdsJobUUID.toString());
         File jobWorkspaceFolder = jobWorkspacePath.toFile();
 
         if (!jobWorkspaceFolder.exists()) {
@@ -341,7 +342,7 @@ public class PDSWorkspaceService {
         return jobWorkspaceFolder;
     }
 
-    SecHubFileStructureDataProvider resolveFileStructureDataProviderOrNull(UUID jobUUID, PDSJobConfiguration config, ScanType scanType) throws IOException {
+    SecHubFileStructureDataProvider resolveFileStructureDataProviderOrNull(UUID pdsJobUUID, PDSJobConfiguration config, ScanType scanType) throws IOException {
 
         SecHubConfigurationModel model = resolveAndEnsureSecHubConfigurationModel(config);
         if (model == null) {
@@ -384,16 +385,16 @@ public class PDSWorkspaceService {
 
     }
 
-    private boolean extractArchives(UUID jobUUID, boolean deleteOriginFiles, SecHubFileStructureDataProvider configuration, ArchiveFilter fileFilter,
+    private boolean extractArchives(UUID pdsJobUUID, boolean deleteOriginFiles, SecHubFileStructureDataProvider configuration, ArchiveFilter fileFilter,
             String extractionSubfolder) throws IOException {
 
-        File uploadFolder = getUploadFolder(jobUUID);
+        File uploadFolder = getUploadFolder(pdsJobUUID);
         File[] archiveFiles = uploadFolder.listFiles(fileFilter);
 
         int amountOfFiles = archiveFiles.length;
-        LOG.debug("{} *{} file(s) found for job {}", amountOfFiles, fileFilter.getArchiveEnding(), jobUUID);
+        LOG.debug("{} *{} file(s) found for job {}", amountOfFiles, fileFilter.getArchiveEnding(), pdsJobUUID);
         if (amountOfFiles == 0) {
-            LOG.info("No files found to extract into {} for {} - before filtering.", extractionSubfolder, jobUUID);
+            LOG.info("No files found to extract into {} for {} - before filtering.", extractionSubfolder, pdsJobUUID);
             return false;
         }
 
@@ -424,7 +425,7 @@ public class PDSWorkspaceService {
         }
         File[] extractedFiles = extractionTargetFolder.listFiles();
         if (extractedFiles == null || extractedFiles.length == 0) {
-            LOG.info("No files found to extract into {} for {} - after filters have been applied.", extractionSubfolder, jobUUID);
+            LOG.info("No files found to extract into {} for {} - after filters have been applied.", extractionSubfolder, pdsJobUUID);
             return false;
         }
         return true;

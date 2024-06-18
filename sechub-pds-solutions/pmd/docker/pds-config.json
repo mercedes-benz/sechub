@@ -5,6 +5,7 @@
     {
       "id": "PDS_PMD",
       "path": "/pds/scripts/pmd.sh",
+      "envWhitelist" : [ "SCRIPT_FOLDER", "TOOL_FOLDER" ],
       "scanType": "codeScan",
       "description": "PMD is a static source code analyzer.",
       "parameters": {
@@ -19,6 +20,7 @@
     {
       "id": "PDS_PMD_MOCK",
       "path": "/pds/scripts/pmd_mock.sh",
+      "envWhitelist" : [ "MOCK_FOLDER" ],
       "scanType": "codeScan",
       "description": "Runs PMD mock. It returns a fixed result file.",
       "parameters": {

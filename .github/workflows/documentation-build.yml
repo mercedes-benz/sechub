@@ -31,7 +31,7 @@ jobs:
           fi
 
       - name: Git checkout
-        uses: actions/checkout@a5ac7e51b41094c92402da3b24376905380afc29
+        uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332
         with:
           fetch-tags: true
           fetch-depth: 0
@@ -43,7 +43,7 @@ jobs:
           distribution: temurin
 
       - name: Set up Gradle
-        uses: gradle/actions/setup-gradle@500e0ee5b346833ab02b5209b7c997380cb5d684
+        uses: gradle/actions/setup-gradle@dbbdc275be76ac10734476cc723d82dfe7ec6eda
         with:
           cache-read-only: false
 

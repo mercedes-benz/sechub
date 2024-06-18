@@ -1,30 +1,30 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.pds.execution;
 
+import static com.mercedesbenz.sechub.commons.pds.PDSLauncherScriptEnvironmentConstants.*;
+
 import java.util.ArrayList;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Set;
 import java.util.UUID;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import com.mercedesbenz.sechub.commons.pds.ExecutionPDSKey;
 import com.mercedesbenz.sechub.commons.pds.PDSConfigDataKeyProvider;
 import com.mercedesbenz.sechub.commons.pds.PDSLauncherScriptEnvironmentConstants;
-import com.mercedesbenz.sechub.pds.PDSMustBeDocumented;
 import com.mercedesbenz.sechub.pds.commons.core.config.PDSProductParameterDefinition;
 import com.mercedesbenz.sechub.pds.commons.core.config.PDSProductParameterSetup;
 import com.mercedesbenz.sechub.pds.commons.core.config.PDSProductSetup;
 import com.mercedesbenz.sechub.pds.config.PDSServerConfigurationService;
 import com.mercedesbenz.sechub.pds.job.PDSJobConfiguration;
-
-import jakarta.annotation.PostConstruct;
+import com.mercedesbenz.sechub.pds.job.PDSWorkspaceService;
+import com.mercedesbenz.sechub.pds.job.WorkspaceLocationData;
 
 @Service
 public class PDSExecutionEnvironmentService {
@@ -37,47 +37,96 @@ public class PDSExecutionEnvironmentService {
     @Autowired
     PDSServerConfigurationService serverConfigService;
 
-    @PDSMustBeDocumented(value = "A comma separated list of environment variable names which are white listed from PDS script environment cleanup. "
-            + "Entries can also end with an asterisk, in this case every variable name starting with this entry will be whitelisted (e.g. PDS_STORAGE_* will whitelist PDS_STORAGE_S3_USER etc.)\n\n"
-            + "The cleanup process prevents inheritage of environment variables from PDS parent process. "
-            + "There are some default whitelist entries which are automatically added (e.g. HOME, PATH, ..) "
-            + "but additional whitelist entries are added by this property/environment entry on PDS startup.", scope = "execution")
-    @Value("${pds.script.env.whitelist:}")
-    String pdsScriptEnvWhitelist;
+    @Autowired
+    PDSWorkspaceService workspaceService;
 
-    PDSScriptEnvironmentCleaner cleaner = new PDSScriptEnvironmentCleaner();
+    @Autowired
+    PDSScriptEnvironmentCleaner environmentCleaner;
 
-    @PostConstruct
-    void postConstruct() {
-        LOG.info("PDS script environment variable white list: '{}'", pdsScriptEnvWhitelist);
-        cleaner.setWhiteListCommaSeparated(pdsScriptEnvWhitelist);
-    }
-
-    public void removeAllNonWhitelistedEnvironmentVariables(Map<String, String> environment) {
-        cleaner.clean(environment);
-    }
-
-    public Map<String, String> buildEnvironmentMap(PDSJobConfiguration config) {
-        Map<String, String> map = new LinkedHashMap<>();
-
-        String productId = config.getProductId();
-        PDSProductSetup productSetup = serverConfigService.getProductSetupOrNull(productId);
-        if (productSetup != null) {
-            List<PDSExecutionParameterEntry> jobParams = config.getParameters();
-            for (PDSExecutionParameterEntry jobParam : jobParams) {
-                addJobParamDataWhenAccepted(productSetup, jobParam, map);
-            }
-
-            addDefaultsForMissingParameters(productSetup, map);
-
-        } else {
-            LOG.error("No product setup found for product id:{}", productId);
+    public void initProcessBuilderEnvironmentMap(UUID pdsJobUUID, PDSJobConfiguration config, ProcessBuilder builder) {
+        /* first assert parameters and state */
+        if (pdsJobUUID == null) {
+            throw new IllegalArgumentException("pds job uuid may not be null!");
         }
-        addSecHubJobUUIDAsEnvironmentEntry(config, map);
+        if (config == null) {
+            throw new IllegalArgumentException("pds job config may not be null!");
+        }
+        if (builder == null) {
+            throw new IllegalArgumentException("pds job config may not be null!");
+        }
+        String productId = config.getProductId();
+        if (productId == null) {
+            throw new IllegalStateException("Product id may never be null!");
+        }
+        PDSProductSetup productSetup = serverConfigService.getProductSetupOrNull(productId);
+        if (productSetup == null) {
+            throw new IllegalStateException("Product setup for product: " + productId + " may never be null!");
+        }
 
-        replaceNullValuesWithEmptyStrings(map);
+        /* now calculate */
+        calculateAndSetupEnvironment(pdsJobUUID, config, builder, productSetup);
 
-        return map;
+    }
+
+    private void calculateAndSetupEnvironment(UUID pdsJobUUID, PDSJobConfiguration config, ProcessBuilder builder, PDSProductSetup productSetup) {
+        /* now init environment map */
+        Map<String, String> environment = initCleanEnvironment(productSetup, builder);
+
+        addPdsJobRelatedVariables(pdsJobUUID, environment);
+        addPdsExecutorJobParameters(productSetup, config, environment);
+        addSecHubJobUUIDAsEnvironmentEntry(config, environment);
+
+        replaceNullValuesWithEmptyStrings(environment);
+
+        LOG.debug("Initialized environment variables for script of pds job: {} with: {}", pdsJobUUID, environment);
+    }
+
+    private Map<String, String> initCleanEnvironment(PDSProductSetup productSetup, ProcessBuilder builder) {
+        Map<String, String> environment = builder.environment();
+
+        Set<String> pdsScriptEnvWhitelist = productSetup.getEnvWhitelist();
+        LOG.debug("PDS script environment variable white list: '{}'", pdsScriptEnvWhitelist);
+
+        environmentCleaner.clean(environment, pdsScriptEnvWhitelist);
+
+        return environment;
+
+    }
+
+    private void addPdsJobRelatedVariables(UUID pdsJobUUID, Map<String, String> map) {
+        WorkspaceLocationData locationData = workspaceService.createLocationData(pdsJobUUID);
+
+        map.put(PDS_JOB_WORKSPACE_LOCATION, locationData.getWorkspaceLocation());
+        map.put(PDS_JOB_RESULT_FILE, locationData.getResultFileLocation());
+        map.put(PDS_JOB_USER_MESSAGES_FOLDER, locationData.getUserMessagesLocation());
+        map.put(PDS_JOB_EVENTS_FOLDER, locationData.getEventsLocation());
+        map.put(PDS_JOB_METADATA_FILE, locationData.getMetaDataFileLocation());
+        map.put(PDS_JOB_UUID, pdsJobUUID.toString());
+        map.put(PDS_JOB_SOURCECODE_ZIP_FILE, locationData.getSourceCodeZipFileLocation());
+        map.put(PDS_JOB_BINARIES_TAR_FILE, locationData.getBinariesTarFileLocation());
+
+        String extractedSourcesLocation = locationData.getExtractedSourcesLocation();
+
+        map.put(PDS_JOB_SOURCECODE_UNZIPPED_FOLDER, extractedSourcesLocation);
+        map.put(PDS_JOB_EXTRACTED_SOURCES_FOLDER, extractedSourcesLocation);
+
+        String extractedBinariesLocation = locationData.getExtractedBinariesLocation();
+        map.put(PDS_JOB_EXTRACTED_BINARIES_FOLDER, extractedBinariesLocation);
+
+        map.put(PDS_JOB_HAS_EXTRACTED_SOURCES, "" + workspaceService.hasExtractedSources(pdsJobUUID));
+        map.put(PDS_JOB_HAS_EXTRACTED_BINARIES, "" + workspaceService.hasExtractedBinaries(pdsJobUUID));
+
+    }
+
+    private void addPdsExecutorJobParameters(PDSProductSetup productSetup, PDSJobConfiguration config, Map<String, String> map) {
+
+        List<PDSExecutionParameterEntry> jobParams = config.getParameters();
+        for (PDSExecutionParameterEntry jobParam : jobParams) {
+            addJobParamDataWhenAccepted(productSetup, jobParam, map);
+        }
+
+        addDefaultsForMissingParameters(productSetup, map);
+
     }
 
     /*
@@ -131,8 +180,8 @@ public class PDSExecutionEnvironmentService {
         map.put(PDSLauncherScriptEnvironmentConstants.SECHUB_JOB_UUID, fetchSecHubJobUUIDasString(config));
     }
 
-    private String fetchSecHubJobUUIDasString(PDSJobConfiguration config) {
-        UUID sechubJobUUID = config.getSechubJobUUID();
+    private String fetchSecHubJobUUIDasString(PDSJobConfiguration pdsJobConfiguration) {
+        UUID sechubJobUUID = pdsJobConfiguration.getSechubJobUUID();
         if (sechubJobUUID == null) {
             LOG.error("No SecHub job UUID found, environment variable: {} will be empty", PDSLauncherScriptEnvironmentConstants.SECHUB_JOB_UUID);
             return "";

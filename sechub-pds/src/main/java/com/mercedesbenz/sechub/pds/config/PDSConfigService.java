@@ -11,11 +11,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 
-import com.mercedesbenz.sechub.pds.LogSanitizer;
 import com.mercedesbenz.sechub.pds.PDSNotAcceptableException;
 import com.mercedesbenz.sechub.pds.autocleanup.PDSAutoCleanupConfig;
 import com.mercedesbenz.sechub.pds.autocleanup.PDSAutoCleanupConfig.CleanupTime;
 import com.mercedesbenz.sechub.pds.autocleanup.PDSAutoCleanupDaysCalculator;
+import com.mercedesbenz.sechub.pds.commons.core.PDSLogSanitizer;
 import com.mercedesbenz.sechub.pds.usecase.PDSStep;
 import com.mercedesbenz.sechub.pds.usecase.UseCaseAdminFetchesAutoCleanupConfiguration;
 import com.mercedesbenz.sechub.pds.usecase.UseCaseAdminUpdatesAutoCleanupConfiguration;
@@ -26,7 +26,7 @@ public class PDSConfigService {
     private static final Logger LOG = LoggerFactory.getLogger(PDSConfigService.class);
 
     @Autowired
-    LogSanitizer logSanitizer;
+    PDSLogSanitizer pdsLogSanitizer;
 
     @Autowired
     PDSConfigRepository repository;
@@ -49,7 +49,7 @@ public class PDSConfigService {
 
         String configurationAsJson = configuration.toJSON();
 
-        LOG.info("Admin updates auto cleanup configuration to: {}", logSanitizer.sanitize(configurationAsJson, 8192));
+        LOG.info("Admin updates auto cleanup configuration to: {}", pdsLogSanitizer.sanitize(configurationAsJson, 8192));
 
         PDSConfig config = getOrCreateConfig();
         config.autoCleanupConfiguration = configurationAsJson;

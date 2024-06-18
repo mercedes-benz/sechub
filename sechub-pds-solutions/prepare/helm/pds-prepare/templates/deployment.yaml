@@ -28,10 +28,10 @@ spec:
         - name: {{ .Chart.Name }}
           image: "{{ .Values.image.registry }}:{{ .Values.image.tag }}"
           resources:
-              requests:
-                  memory: "{{ .Values.resources.requests.memory }}"
-              limits:
-                  memory: "{{ .Values.resources.limits.memory }}"
+            requests:
+              memory: "{{ .Values.resources.requests.memory }}"
+            limits:
+              memory: "{{ .Values.resources.limits.memory }}"
           env:
             - name: PDS_START_MODE
               value: "{{ .Values.pds.startMode }}"

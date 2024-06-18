@@ -67,7 +67,7 @@ jobs:
           exit 1
 
       - name: Checkout master
-        uses: actions/checkout@a5ac7e51b41094c92402da3b24376905380afc29
+        uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332
         with:
           ref: master
           fetch-tags: true
@@ -97,7 +97,7 @@ jobs:
           distribution: temurin
 
       - name: Set up Gradle
-        uses: gradle/actions/setup-gradle@500e0ee5b346833ab02b5209b7c997380cb5d684
+        uses: gradle/actions/setup-gradle@dbbdc275be76ac10734476cc723d82dfe7ec6eda
         with:
           cache-read-only: false
 
@@ -118,7 +118,7 @@ jobs:
             ${{ runner.os }}-go-
 
       - name: Docker login to ghcr.io
-        uses: docker/login-action@e92390c5fb421da1463c202d546fed0ec5c39f20
+        uses: docker/login-action@0d4c9c5ea7693da7b068278f7b52bda2a190a446
         with:
           registry: ghcr.io
           username: ${{ github.repository_owner }}
