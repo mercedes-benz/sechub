@@ -77,6 +77,21 @@ style - e.g. `{noop}unencrypted`, `{bcrypt}crypted` ...
 With `-Dpds.workspace.rootfolder` or using environment variable `PDS_WORKSPACE_ROOTFOLDER`
 workspace location can be defined
 
+=== Archive extraction configuration
+
+Following values can be used to safeguard the extraction of archives on the PDS.
+
+`pds.archive.extraction.max-file-size-uncompressed` defines the maximum file size for an uncompressed archive.
+The value has to be in a format like 10KB, 10MB or 10GB. Default is 1GB.
+
+`pds.archive.extraction.max-entries` defines the maximum number of entries an archive can contain.
+Default is 100000.
+
+`pds.archive.extraction.max-directory-depth` defines the maximum directory depth an entry inside an archive can have
+on the operating system. Default is 100.
+
+`pds.archive.extraction.timeout` defines the maximum time an archive extraction may take. Default is 1 minute.
+
 [[section-pds-server-config-file]]
 === Server configuration file
 PDS reads configuration JSON file on startup.

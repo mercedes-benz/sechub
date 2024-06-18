@@ -10,12 +10,12 @@ pds:
   security:
     diffiehellman:
       length: 2048 # JDK uses per default 1024, we set here to 2048 which is more secure
-  zip:
+  archive:
     extraction:
-      max-file-size: 100MB
       max-file-size-uncompressed: 1GB
-      max-compression-rate: 5kb
-      timeout: 10s
+      max-entries: 100000
+      max-directory-depth: 100
+      timeout: 1m
 spring:
   profiles:
     group:

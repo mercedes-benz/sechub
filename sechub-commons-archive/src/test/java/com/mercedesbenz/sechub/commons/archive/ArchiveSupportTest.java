@@ -1,20 +1,9 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.commons.archive;
 
-import com.mercedesbenz.sechub.commons.TextFileReader;
-import com.mercedesbenz.sechub.commons.TextFileWriter;
-import com.mercedesbenz.sechub.commons.archive.ArchiveSupport.ArchiveType;
-import com.mercedesbenz.sechub.commons.archive.ArchiveSupport.ArchivesCreationResult;
-import com.mercedesbenz.sechub.commons.model.JSONConverter;
-import com.mercedesbenz.sechub.commons.model.ScanType;
-import com.mercedesbenz.sechub.commons.model.SecHubConfigurationModel;
-import com.mercedesbenz.sechub.test.TestFileSupport;
-import com.mercedesbenz.sechub.test.TestUtil;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.ValueSource;
+import static com.mercedesbenz.sechub.commons.archive.ArchiveSupport.ArchiveType.TAR;
+import static com.mercedesbenz.sechub.commons.archive.ArchiveSupport.ArchiveType.ZIP;
+import static org.junit.jupiter.api.Assertions.*;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -27,9 +16,21 @@ import java.util.List;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
-import static com.mercedesbenz.sechub.commons.archive.ArchiveSupport.ArchiveType.TAR;
-import static com.mercedesbenz.sechub.commons.archive.ArchiveSupport.ArchiveType.ZIP;
-import static org.junit.jupiter.api.Assertions.*;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
+
+import com.mercedesbenz.sechub.commons.TextFileReader;
+import com.mercedesbenz.sechub.commons.TextFileWriter;
+import com.mercedesbenz.sechub.commons.archive.ArchiveSupport.ArchiveType;
+import com.mercedesbenz.sechub.commons.archive.ArchiveSupport.ArchivesCreationResult;
+import com.mercedesbenz.sechub.commons.model.JSONConverter;
+import com.mercedesbenz.sechub.commons.model.ScanType;
+import com.mercedesbenz.sechub.commons.model.SecHubConfigurationModel;
+import com.mercedesbenz.sechub.test.TestFileSupport;
+import com.mercedesbenz.sechub.test.TestUtil;
 
 class ArchiveSupportTest {
 
@@ -424,7 +425,8 @@ class ArchiveSupportTest {
         ArchiveExtractionContext extractionContext = getDefaultExtractionContext();
 
         /* execute */
-        ArchiveExtractionResult result = supportToTest.extract(ZIP, new FileInputStream(abcZipfile), abcZipfile.getAbsolutePath(), targetFolder, configuration, extractionContext);
+        ArchiveExtractionResult result = supportToTest.extract(ZIP, new FileInputStream(abcZipfile), abcZipfile.getAbsolutePath(), targetFolder, configuration,
+                extractionContext);
 
         /* test */
         assertContainsFiles(targetFolder, "abc");

@@ -1,19 +1,16 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.pds.job;
 
-import static com.mercedesbenz.sechub.commons.core.CommonConstants.*;
+import static com.mercedesbenz.sechub.commons.core.CommonConstants.FILENAME_BINARIES_TAR;
+import static com.mercedesbenz.sechub.commons.core.CommonConstants.FILENAME_SOURCECODE_ZIP;
 
-import java.io.File;
-import java.io.FileFilter;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.nio.file.attribute.FileTime;
+import java.time.Duration;
 import java.util.Set;
 import java.util.UUID;
 
@@ -27,10 +24,8 @@ import org.springframework.stereotype.Service;
 
 import com.mercedesbenz.sechub.commons.TextFileReader;
 import com.mercedesbenz.sechub.commons.TextFileWriter;
-import com.mercedesbenz.sechub.commons.archive.ArchiveExtractionResult;
-import com.mercedesbenz.sechub.commons.archive.ArchiveSupport;
+import com.mercedesbenz.sechub.commons.archive.*;
 import com.mercedesbenz.sechub.commons.archive.ArchiveSupport.ArchiveType;
-import com.mercedesbenz.sechub.commons.archive.SecHubFileStructureDataProvider;
 import com.mercedesbenz.sechub.commons.model.JSONConverter;
 import com.mercedesbenz.sechub.commons.model.JSONConverterException;
 import com.mercedesbenz.sechub.commons.model.ScanType;
@@ -71,27 +66,27 @@ public class PDSWorkspaceService {
 
     @PDSMustBeDocumented(value = "Set PDS workspace root folder path. Each running PDS job will have its own temporary sub directory inside this folder. ", scope = "execution")
     @Value("${pds.workspace.rootfolder:" + DEFAULT_WORKSPACE_ROOTFOLDER_PATH + "}")
-    private String workspaceRootFolderPath = DEFAULT_WORKSPACE_ROOTFOLDER_PATH;
+    String workspaceRootFolderPath = DEFAULT_WORKSPACE_ROOTFOLDER_PATH;
 
     @PDSMustBeDocumented(value = "Defines if workspace is automatically cleaned when no longer necessary - means launcher script has been executed and finished (failed or done)", scope = "execution")
     @Value("${pds.workspace.autoclean.disabled:false}")
     private boolean workspaceAutoCleanDisabled;
 
-    @PDSMustBeDocumented(value = "Defines the zip file max size", scope = "execution")
-    @Value("${pds.zip.extraction.max-file-size}")
-    private String zipExtractionMaxFileSize;
+    @PDSMustBeDocumented(value = "Defines the max file size of the uncompressed archive (e.g.: 10KB or 10mb)", scope = "execution")
+    @Value("${pds.archive.extraction.max-file-size-uncompressed}")
+    private FileSize archiveExtractionMaxFileSizeUncompressed;
 
-    @PDSMustBeDocumented(value = "Defines the zip file max size after extraction", scope = "execution")
-    @Value("${pds.zip.extraction.max-file-size-uncompressed}")
-    private String zipExtractionMaxFileSizeUncompressed;
+    @PDSMustBeDocumented(value = "Defines how many entries the archive may have", scope = "execution")
+    @Value("${pds.archive.extraction.max-entries}")
+    private long archiveExtractionMaxEntries;
 
-    @PDSMustBeDocumented(value = "Defines the zip file allowed compression rate", scope = "execution")
-    @Value("${pds.zip.extraction.max-compression-rate}")
-    private String zipExtractionMaxCompressionRate;
+    @PDSMustBeDocumented(value = "Defines the maximum directory depth for an entry inside the archive", scope = "execution")
+    @Value("${pds.archive.extraction.max-directory-depth}")
+    private long archiveExtractionMaxDirectoryDepth;
 
-    @PDSMustBeDocumented(value = "Defines the zip file extraction timeout", scope = "execution")
-    @Value("${pds.zip.extraction.timeout}")
-    private String zipExtractionTimeout;
+    @PDSMustBeDocumented(value = "Defines the timeout of the archive extraction process", scope = "execution")
+    @Value("${pds.archive.extraction.timeout}")
+    private Duration archiveExtractionTimeout;
 
     @Autowired
     PDSMultiStorageService storageService;
@@ -121,7 +116,7 @@ public class PDSWorkspaceService {
 
     private static final ArchiveFilter ZIP_FILE_FILTER = new SourcecodeZipFileFilter();
 
-    private ExceptionThrower<IOException> readStorageExceptionThrower;
+    private final ExceptionThrower<IOException> readStorageExceptionThrower;
 
     public PDSWorkspaceService() {
         readStorageExceptionThrower = new ExceptionThrower<IOException>() {
@@ -195,7 +190,7 @@ public class PDSWorkspaceService {
 
             if (isWantedStorageContent(name, configurationSupport, preparationContext)) {
                 resilientStorageReadExecutor.execute(() -> readAndCopyStorageToFileSystem(jobUUID, jobFolder, storage, name),
-                        "Read and copy storage: " + name + " for job: " + jobUUID.toString());
+                        "Read and copy storage: " + name + " for job: " + jobUUID);
 
             } else {
                 LOG.debug("Did NOT import '{}' for job {} from storage - was not wanted", name, jobUUID);
@@ -390,7 +385,7 @@ public class PDSWorkspaceService {
     }
 
     private boolean extractArchives(UUID jobUUID, boolean deleteOriginFiles, SecHubFileStructureDataProvider configuration, ArchiveFilter fileFilter,
-            String extractionSubfolder) throws IOException, FileNotFoundException {
+            String extractionSubfolder) throws IOException {
 
         File uploadFolder = getUploadFolder(jobUUID);
         File[] archiveFiles = uploadFolder.listFiles(fileFilter);
@@ -410,12 +405,14 @@ public class PDSWorkspaceService {
         }
 
         ArchiveSupport archiveSupport = archiveSupportProvider.getArchiveSupport();
+        ArchiveExtractionContext archiveExtractionContext = new ArchiveExtractionContext(archiveExtractionMaxFileSizeUncompressed, archiveExtractionMaxEntries,
+                archiveExtractionMaxDirectoryDepth, archiveExtractionTimeout);
 
         for (File archiveFile : archiveFiles) {
             try (FileInputStream archiveFileInputStream = new FileInputStream(archiveFile)) {
 
                 ArchiveExtractionResult extractionResult = archiveSupport.extract(archiveType, archiveFileInputStream, archiveFile.getAbsolutePath(),
-                        extractionTargetFolder, configuration);
+                        extractionTargetFolder, configuration, archiveExtractionContext);
 
                 LOG.info("Extracted {} files to {}", extractionResult.getExtractedFilesCount(), extractionResult.getTargetLocation());
 

@@ -1,6 +1,18 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.commons.archive;
 
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.*;
+import static org.junit.Assert.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+
+import java.io.*;
+import java.nio.file.Files;
+import java.time.Duration;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Stream;
+
 import org.apache.commons.compress.archivers.ArchiveEntry;
 import org.apache.commons.compress.archivers.ArchiveInputStream;
 import org.apache.commons.compress.archivers.zip.ZipArchiveEntry;
@@ -14,18 +26,6 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.ArgumentsProvider;
 import org.junit.jupiter.params.provider.ArgumentsSource;
-
-import java.io.*;
-import java.nio.file.Files;
-import java.time.Duration;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.stream.Stream;
-
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.*;
-import static org.junit.Assert.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 
 class SafeArchiveInputStreamTest {
 
@@ -62,7 +62,8 @@ class SafeArchiveInputStreamTest {
 
     @ParameterizedTest
     @ArgumentsSource(NullArgumentsProvider.class)
-    void new_safe_archive_input_stream_does_not_allow_null_arguments(ArchiveInputStream<?> archiveInputStream, ArchiveExtractionContext properties, String argumentName) {
+    void new_safe_archive_input_stream_does_not_allow_null_arguments(ArchiveInputStream<?> archiveInputStream, ArchiveExtractionContext properties,
+            String argumentName) {
         /* execute */
         NullPointerException exception = assertThrows(NullPointerException.class, () -> new SafeArchiveInputStream(archiveInputStream, properties));
 
@@ -71,8 +72,9 @@ class SafeArchiveInputStreamTest {
     }
 
     /**
-     * This test case creates an archive with 10 entries of 1KB each.
-     * The input stream allows 10 entries with a maximum uncompressed size of 1KB each. Therefore, the extraction should work without any exceptions.
+     * This test case creates an archive with 10 entries of 1KB each. The input
+     * stream allows 10 entries with a maximum uncompressed size of 1KB each.
+     * Therefore, the extraction should work without any exceptions.
      */
     @Test
     void get_next_entry_with_valid_archive_works() throws IOException {
@@ -127,8 +129,9 @@ class SafeArchiveInputStreamTest {
     }
 
     /**
-     * This test case creates an archive with 10 entries of 1KB each.
-     * The maximum allowed file size is 9KB. Therefore, the extraction of the 10th entry should throw an exception.
+     * This test case creates an archive with 10 entries of 1KB each. The maximum
+     * allowed file size is 9KB. Therefore, the extraction of the 10th entry should
+     * throw an exception.
      */
     @Test
     void get_next_entry_with_max_file_size_uncompressed_exceeded_throws_exception() throws IOException {
@@ -158,8 +161,9 @@ class SafeArchiveInputStreamTest {
     }
 
     /**
-     * This test case creates an archive with 11 entries.
-     * The maximum allowed number of entries is 10. Therefore, the extraction of the 11th entry should throw an exception.
+     * This test case creates an archive with 11 entries. The maximum allowed number
+     * of entries is 10. Therefore, the extraction of the 11th entry should throw an
+     * exception.
      */
     @Test
     void get_next_entry_with_too_many_entries_throws_exception() throws IOException {
@@ -184,8 +188,9 @@ class SafeArchiveInputStreamTest {
     }
 
     /**
-     * This test case creates an archive with a single entry. The entry has a directory depth of 11.
-     * The maximum allowed directory depth is 10. Therefore, the extraction of the entry should throw an exception.
+     * This test case creates an archive with a single entry. The entry has a
+     * directory depth of 11. The maximum allowed directory depth is 10. Therefore,
+     * the extraction of the entry should throw an exception.
      */
     @Test
     void get_next_entry_with_too_many_directories_throws_exception() throws IOException {
@@ -213,8 +218,8 @@ class SafeArchiveInputStreamTest {
         File file = File.createTempFile("archive", ".zip");
         tempFiles.add(file);
         try (FileOutputStream fos = new FileOutputStream(file);
-             BufferedOutputStream bos = new BufferedOutputStream(fos);
-             ZipArchiveOutputStream zaos = new ZipArchiveOutputStream(bos)) {
+                BufferedOutputStream bos = new BufferedOutputStream(fos);
+                ZipArchiveOutputStream zaos = new ZipArchiveOutputStream(bos)) {
 
             // Create nested directories
             String directoryPath = "";
@@ -255,10 +260,8 @@ class SafeArchiveInputStreamTest {
     private static class NullArgumentsProvider implements ArgumentsProvider {
         @Override
         public Stream<? extends Arguments> provideArguments(ExtensionContext extensionContext) throws Exception {
-            return Stream.of(
-                    Arguments.of(null, new ArchiveExtractionContext(new FileSize("100MB"), 100L, 10L, Duration.ofSeconds(10)), "inputStream"),
-                    Arguments.of(new ZipArchiveInputStream(new ByteArrayInputStream(new byte[0])), null, "properties")
-            );
+            return Stream.of(Arguments.of(null, new ArchiveExtractionContext(new FileSize("100MB"), 100L, 10L, Duration.ofSeconds(10)), "inputStream"),
+                    Arguments.of(new ZipArchiveInputStream(new ByteArrayInputStream(new byte[0])), null, "properties"));
         }
     }
 }

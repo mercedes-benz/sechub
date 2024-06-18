@@ -1,16 +1,7 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.commons.archive;
 
-import com.mercedesbenz.sechub.commons.archive.ArchiveCreationContext.CreationPathContext;
-import com.mercedesbenz.sechub.commons.model.*;
-import org.apache.commons.compress.archivers.*;
-import org.apache.commons.compress.archivers.tar.TarArchiveEntry;
-import org.apache.commons.compress.archivers.tar.TarArchiveInputStream;
-import org.apache.commons.compress.archivers.tar.TarArchiveOutputStream;
-import org.apache.commons.compress.archivers.zip.ZipArchiveEntry;
-import org.apache.commons.io.IOUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import static java.util.Objects.requireNonNull;
 
 import java.io.*;
 import java.nio.file.Files;
@@ -22,7 +13,17 @@ import java.util.Map.Entry;
 import java.util.Set;
 import java.util.zip.ZipInputStream;
 
-import static java.util.Objects.requireNonNull;
+import org.apache.commons.compress.archivers.*;
+import org.apache.commons.compress.archivers.tar.TarArchiveEntry;
+import org.apache.commons.compress.archivers.tar.TarArchiveInputStream;
+import org.apache.commons.compress.archivers.tar.TarArchiveOutputStream;
+import org.apache.commons.compress.archivers.zip.ZipArchiveEntry;
+import org.apache.commons.io.IOUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.mercedesbenz.sechub.commons.archive.ArchiveCreationContext.CreationPathContext;
+import com.mercedesbenz.sechub.commons.model.*;
 
 public class ArchiveSupport {
 
@@ -54,13 +55,8 @@ public class ArchiveSupport {
      *
      * @throws IOException
      */
-    public ArchiveExtractionResult extract(ArchiveType archiveType,
-                                           InputStream sourceInputStream,
-                                           String sourceLocation,
-                                           File outputDir,
-                                           SecHubFileStructureDataProvider fileStructureDataProvider,
-                                           ArchiveExtractionContext archiveExtractionContext
-                                           ) throws IOException {
+    public ArchiveExtractionResult extract(ArchiveType archiveType, InputStream sourceInputStream, String sourceLocation, File outputDir,
+            SecHubFileStructureDataProvider fileStructureDataProvider, ArchiveExtractionContext archiveExtractionContext) throws IOException {
         if (archiveType == null) {
             throw new IllegalArgumentException("archive type must be defined!");
         }
@@ -154,7 +150,7 @@ public class ArchiveSupport {
         try (ArchiveOutputStream outputStream = new ArchiveStreamFactory().createArchiveOutputStream(archiveType.getType(),
                 new FileOutputStream(archiveFile))) {
 
-            if (outputStream instanceof @SuppressWarnings("resource")TarArchiveOutputStream tarOutputStream) {
+            if (outputStream instanceof @SuppressWarnings("resource") TarArchiveOutputStream tarOutputStream) {
                 tarOutputStream.setLongFileMode(TarArchiveOutputStream.LONGFILE_POSIX);
                 tarOutputStream.setBigNumberMode(TarArchiveOutputStream.BIGNUMBER_POSIX);
             }
@@ -299,7 +295,7 @@ public class ArchiveSupport {
         try (ArchiveOutputStream outputStream = new ArchiveStreamFactory().createArchiveOutputStream(type.getType(), new FileOutputStream(targetArchiveFile))) {
             String basePath = folder.toPath().toRealPath().toString();
 
-            if (outputStream instanceof @SuppressWarnings("resource")TarArchiveOutputStream tarArchiveOutputStream) {
+            if (outputStream instanceof @SuppressWarnings("resource") TarArchiveOutputStream tarArchiveOutputStream) {
                 /* in this case we activate long file support */
                 tarArchiveOutputStream.setLongFileMode(TarArchiveOutputStream.LONGFILE_POSIX);
             }
@@ -393,7 +389,7 @@ public class ArchiveSupport {
     }
 
     private ArchiveExtractionResult extractTar(InputStream sourceInputStream, String sourceLocation, File outputDir,
-                                               SecHubFileStructureDataProvider fileStructureProvider, ArchiveExtractionContext properties) throws IOException {
+            SecHubFileStructureDataProvider fileStructureProvider, ArchiveExtractionContext properties) throws IOException {
         try (ArchiveInputStream archiveInputStream = new ArchiveStreamFactory().createArchiveInputStream("tar", sourceInputStream)) {
             if (!(archiveInputStream instanceof TarArchiveInputStream)) {
                 throw new IOException("Cannot extract: " + sourceLocation + " because it is not a tar tar");
@@ -409,7 +405,7 @@ public class ArchiveSupport {
     }
 
     private ArchiveExtractionResult extractZip(InputStream sourceInputStream, String sourceLocation, File outputDir,
-                                               SecHubFileStructureDataProvider configuration, ArchiveExtractionContext properties) throws IOException {
+            SecHubFileStructureDataProvider configuration, ArchiveExtractionContext properties) throws IOException {
         try (ArchiveInputStream archiveInputStream = new ArchiveStreamFactory().createArchiveInputStream("zip", sourceInputStream)) {
 
             SafeArchiveInputStream safeArchiveInputStream = new SafeArchiveInputStream(archiveInputStream, properties);
