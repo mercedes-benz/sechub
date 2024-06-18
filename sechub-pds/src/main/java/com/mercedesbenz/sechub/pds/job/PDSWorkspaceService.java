@@ -14,7 +14,6 @@ import java.time.Duration;
 import java.util.Set;
 import java.util.UUID;
 
-import com.mercedesbenz.sechub.commons.archive.*;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.file.PathUtils;
 import org.slf4j.Logger;
@@ -25,6 +24,7 @@ import org.springframework.stereotype.Service;
 
 import com.mercedesbenz.sechub.commons.TextFileReader;
 import com.mercedesbenz.sechub.commons.TextFileWriter;
+import com.mercedesbenz.sechub.commons.archive.*;
 import com.mercedesbenz.sechub.commons.archive.ArchiveSupport.ArchiveType;
 import com.mercedesbenz.sechub.commons.model.JSONConverter;
 import com.mercedesbenz.sechub.commons.model.JSONConverterException;
