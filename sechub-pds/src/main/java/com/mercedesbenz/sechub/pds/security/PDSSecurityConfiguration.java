@@ -1,10 +1,12 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.pds.security;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
+import org.springframework.core.env.Environment;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.core.userdetails.User;
@@ -12,7 +14,9 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.provisioning.UserDetailsManager;
 
+import com.mercedesbenz.sechub.commons.core.environment.SecureEnvironmentVariableKeyValueRegistry;
 import com.mercedesbenz.sechub.pds.PDSMustBeDocumented;
+import com.mercedesbenz.sechub.pds.commons.core.PDSProfiles;
 
 @Configuration
 @EnableMethodSecurity(jsr250Enabled = true)
@@ -20,33 +24,30 @@ import com.mercedesbenz.sechub.pds.PDSMustBeDocumented;
 @Order(1)
 public class PDSSecurityConfiguration {
 
-    /*
-     * TODO Albert Tregnaghi, 2020-06-18: extreme simple approach: we just allow ONE
-     * user at the moment which is a technical user only. Enough for communication
-     * at the beginning, but should be improved later
-     */
+    private static final String KEY_TECHUSER_USERID = "pds.techuser.userid";
+    private static final String KEY_TECHUSER_APITOKEN = "pds.techuser.apitoken";
 
-    @PDSMustBeDocumented(value = "Techuser user id", scope = "credentials")
-    @Value("${pds.techuser.userid}")
+    private static final String KEY_ADMIN_USERID = "pds.admin.userid";
+    private static final String KEY_ADMIN_APITOKEN = "pds.admin.apitoken";
+
+    @PDSMustBeDocumented(value = "Techuser user id", scope = "credentials.")
+    @Value("${" + KEY_TECHUSER_USERID + "}")
     String techUserId;
 
-    @PDSMustBeDocumented(value = "Techuser user api token", scope = "credentials")
-    @Value("${pds.techuser.apitoken}")
+    @PDSMustBeDocumented(value = "Techuser user api token.", scope = "credentials")
+    @Value("${" + KEY_TECHUSER_APITOKEN + "}")
     String techUserApiToken;
 
-    /*
-     * TODO Albert Tregnaghi, 2020-07-05: extreme simple approach: we just allow ONE
-     * admin at the moment Enough for communication at the beginning, but should be
-     * improved later
-     */
-
-    @PDSMustBeDocumented(value = "Administrator user id", scope = "credentials")
-    @Value("${pds.admin.userid}")
+    @PDSMustBeDocumented(value = "Administrator user id.", scope = "credentials")
+    @Value("${" + KEY_ADMIN_USERID + "}")
     String adminUserId;
 
-    @PDSMustBeDocumented(value = "Administrator api token", scope = "credentials")
-    @Value("${pds.admin.apitoken}")
+    @PDSMustBeDocumented(value = "Administrator api token.", scope = "credentials")
+    @Value("${" + KEY_ADMIN_APITOKEN + "}")
     String adminApiToken;
+
+    @Autowired
+    private Environment springEnvironment;
 
     @Bean
     public UserDetailsManager userDetailsService() {
@@ -73,5 +74,20 @@ public class PDSSecurityConfiguration {
         adminApiToken = null;
         /* @formatter:on */
         return new InMemoryUserDetailsManager(user, admin);
+    }
+
+    public void registerOnlyAllowedAsEnvironmentVariables(SecureEnvironmentVariableKeyValueRegistry registry) {
+        if (springEnvironment != null && springEnvironment.matchesProfiles(PDSProfiles.INTEGRATIONTEST)) {
+            /*
+             * on integration test we accept credentials from config file or as system
+             * properties - not marked as sensitive
+             */
+            return;
+        }
+        registry.register(registry.newEntry().key(KEY_ADMIN_USERID).value(adminUserId));
+        registry.register(registry.newEntry().key(KEY_ADMIN_APITOKEN).value(adminApiToken));
+        registry.register(registry.newEntry().key(KEY_TECHUSER_USERID).value(techUserApiToken));
+        registry.register(registry.newEntry().key(KEY_TECHUSER_APITOKEN).value(techUserApiToken));
+
     }
 }

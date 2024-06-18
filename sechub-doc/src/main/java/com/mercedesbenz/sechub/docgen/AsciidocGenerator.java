@@ -9,6 +9,7 @@ import java.util.Set;
 import org.apache.commons.io.FileUtils;
 import org.slf4j.LoggerFactory;
 
+import com.mercedesbenz.sechub.commons.core.environment.SecureEnvironmentVariableKeyValueRegistry;
 import com.mercedesbenz.sechub.docgen.messaging.DomainMessagingFilesGenerator;
 import com.mercedesbenz.sechub.docgen.messaging.DomainMessagingModel;
 import com.mercedesbenz.sechub.docgen.messaging.UseCaseEventMessageLinkAsciidocGenerator;
@@ -25,6 +26,7 @@ import com.mercedesbenz.sechub.docgen.usecase.UseCaseRestDocModel;
 import com.mercedesbenz.sechub.docgen.usecase.UseCaseRestDocModelAsciiDocGenerator;
 import com.mercedesbenz.sechub.docgen.util.ClasspathDataCollector;
 import com.mercedesbenz.sechub.docgen.util.TextFileWriter;
+import com.mercedesbenz.sechub.pds.PDSStartupAssertEnvironmentVariablesUsed;
 import com.mercedesbenz.sechub.sharedkernel.usecases.UseCaseIdentifier;
 
 import ch.qos.logback.classic.Level;
@@ -85,7 +87,7 @@ public class AsciidocGenerator implements Generator {
     }
 
     private void initLogging() {
-        /* do some logging setup stuff to avoid unnecessary logs */
+        /* do some logging s3Setup stuff to avoid unnecessary logs */
         Logger root = (Logger) LoggerFactory.getLogger(Logger.ROOT_LOGGER_NAME);
         root.setLevel(Level.INFO); // avoid warnings
         Logger reflections = (Logger) LoggerFactory.getLogger("org.reflections");
@@ -104,6 +106,8 @@ public class AsciidocGenerator implements Generator {
         File scheduleDescriptionFile;
         File specialMockValuePropertiesFile;
         File messagingFile;
+        public SecureEnvironmentVariableKeyValueRegistry sechubEnvVariableRegistry;
+        public SecureEnvironmentVariableKeyValueRegistry pdsEnvVariableRegistry;
     }
 
     private void generate(String path) throws IOException {
@@ -115,14 +119,14 @@ public class AsciidocGenerator implements Generator {
         generateExampleFiles(context);
         generateClientParts(context);
         fetchMustBeDocumentParts();
-        generateSystemPropertiesDescription(context);
-        generateJavaLaunchExample(context);
-        generateScheduleDescription(context);
-        generateMockPropertiesDescription(context);
+        generateSecHubSystemPropertiesDescription(context);
+        generateSecHubJavaLaunchExample(context);
+        generateSecHubScheduleDescription(context);
+        generateSecHubMockPropertiesDescription(context);
 
-        generateProfilesOverview(context);
+        generateSecHubProfilesOverview(context);
 
-        generateModuleAndModuleGroupFiles(context);
+        generateSecHubModuleAndModuleGroupFiles(context);
 
         /* PDS */
         generatePDSUseCaseFiles(context);
@@ -158,7 +162,7 @@ public class AsciidocGenerator implements Generator {
 
     }
 
-    private void generateModuleAndModuleGroupFiles(GenContext context) throws IOException {
+    private void generateSecHubModuleAndModuleGroupFiles(GenContext context) throws IOException {
         // module description
         String modulesTableGenData = moduleDescriptionTableGenerator.generate();
         File modulesTableGenFile = new File(context.documentsGenFolder, "gen_modules_table.adoc");
@@ -202,6 +206,16 @@ public class AsciidocGenerator implements Generator {
         context.scheduleDescriptionFile = createScheduleDescriptionTargetFile(context.documentsGenFolder);
         context.specialMockValuePropertiesFile = createSpecialMockConfigurationPropertiesTargetFile(context.documentsGenFolder);
         context.messagingFile = createMessagingTargetFile(context.documentsGenFolder);
+
+        /* env variable registry */
+        context.sechubEnvVariableRegistry = new SecureEnvironmentVariableKeyValueRegistry();
+
+        /*
+         * env variable registry for PDS - we use sanitiy check handling to create same
+         * s3Setup as on startup phase
+         */
+        context.pdsEnvVariableRegistry = new PDSStartupAssertEnvironmentVariablesUsed().createRegistryForOnlyAllowedAsEnvironmentVariables();
+
         return context;
     }
 
@@ -233,7 +247,7 @@ public class AsciidocGenerator implements Generator {
         writer.save(targetFile, content);
     }
 
-    private void generateProfilesOverview(GenContext context) throws IOException {
+    private void generateSecHubProfilesOverview(GenContext context) throws IOException {
         SpringProfilesPlantumlGenerator geno = new SpringProfilesPlantumlGenerator();
 
         /* generate overview */
@@ -332,13 +346,13 @@ public class AsciidocGenerator implements Generator {
         getCollector().fetchDomainMessagingModel();
     }
 
-    public void generateSystemPropertiesDescription(GenContext context) throws IOException {
-        String text = propertiesGenerator.generate(getCollector().fetchMustBeDocumentParts());
+    public void generateSecHubSystemPropertiesDescription(GenContext context) throws IOException {
+        String text = propertiesGenerator.generate(getCollector().fetchMustBeDocumentParts(), context.sechubEnvVariableRegistry);
         writer.save(context.systemProperitesFile, text);
     }
 
     public void generatePDSSystemPropertiesDescription(GenContext context) throws IOException {
-        String text = propertiesGenerator.generate(getCollector().fetchPDSMustBeDocumentParts());
+        String text = propertiesGenerator.generate(getCollector().fetchPDSMustBeDocumentParts(), context.pdsEnvVariableRegistry);
         writer.save(context.pdsSystemProperitesFile, text);
     }
 
@@ -347,18 +361,18 @@ public class AsciidocGenerator implements Generator {
         writer.save(context.pdsPDSExecutorConfigParametersFile, text);
     }
 
-    public void generateJavaLaunchExample(GenContext context) throws IOException {
-        String text = javaLaunchExampleGenerator.generate(getCollector().fetchMustBeDocumentParts());
+    public void generateSecHubJavaLaunchExample(GenContext context) throws IOException {
+        String text = javaLaunchExampleGenerator.generate(getCollector().fetchMustBeDocumentParts(), context.sechubEnvVariableRegistry);
         writer.save(context.javaLaunchExampleFile, text);
     }
 
-    public void generateScheduleDescription(GenContext context) throws IOException {
+    public void generateSecHubScheduleDescription(GenContext context) throws IOException {
         String text = scheduleDescriptionGenerator.generate(getCollector());
         writer.save(context.scheduleDescriptionFile, text);
     }
 
-    private void generateMockPropertiesDescription(GenContext context) throws IOException {
-        String text = propertiesGenerator.generate(getCollector().fetchMockAdapterSpringValueDocumentationParts());
+    private void generateSecHubMockPropertiesDescription(GenContext context) throws IOException {
+        String text = propertiesGenerator.generate(getCollector().fetchMockAdapterSpringValueDocumentationParts(), context.sechubEnvVariableRegistry);
         writer.save(context.specialMockValuePropertiesFile, text);
     }
 

@@ -28,15 +28,18 @@ class SystemEnvironmentVariableSupportTest {
     @ValueSource(strings = { "VALUE", "value", "v" })
     @NullSource
     @EmptySource
-    void assertDefinedByEnvironment_throws_no_exception_when_value_is_defined_in_environment(String value) {
+    void isValueLikeEnvironmentVariableValue_returns_true_when_same_value_in_environment_value(String value) {
 
         /* prepare */
         String envVariableName = "SOME_VARIABLE";
 
         when(systemEnvironment.getEnv(envVariableName)).thenReturn(value);
 
-        /* execute + test (just no exception thrown ) */
-        supportToTest.assertDefinedByEnvironment(envVariableName, value);
+        /* execute */
+        boolean result = supportToTest.isValueLikeEnvironmentVariableValue(envVariableName, value);
+
+        /* test */
+        assertTrue(result);
 
     }
 
@@ -44,7 +47,7 @@ class SystemEnvironmentVariableSupportTest {
     @ValueSource(strings = { "", "some_variable", "test" })
     @NullSource
     @EmptySource
-    void assertDefinedByEnvironment_throws_exception_when_value_is_different_defined_in_environment(String value) {
+    void isValueLikeEnvironmentVariableValue_returns_false_when_not_same_value_in_environment_value(String value) {
 
         /* prepare */
         String envVariableName = "SOME_VARIABLE";
@@ -52,10 +55,10 @@ class SystemEnvironmentVariableSupportTest {
         when(systemEnvironment.getEnv(envVariableName)).thenReturn(value + "-other");
 
         /* execute */
-        IllegalStateException exception = assertThrows(IllegalStateException.class, () -> supportToTest.assertDefinedByEnvironment(envVariableName, value));
+        boolean result = supportToTest.isValueLikeEnvironmentVariableValue(envVariableName, value);
 
         /* test */
-        assertTrue(exception.getMessage().contains("variable: " + "SOME_VARIABLE"));
+        assertFalse(result);
 
     }
 
