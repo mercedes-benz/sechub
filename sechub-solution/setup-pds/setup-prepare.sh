@@ -17,9 +17,17 @@ user="prepare-user"
 project="test-prepare"
 executor_file_name="prepare"
 profile="pds-prepare"
+echo ""
+# defining a second profile with the tool to scan
+second_profile="pds-xray"
+second_executor_filename="xray"
+echo "Second profile: $second_profile with executor $second_executor_filename"
+echo""
 
 # main setup execution
 setup_project_user_executor_profile "$project" "$user" "$executor_file_name" "$profile"
+
+setup_second_executor_profile_to_existing_project "$project" "$second_executor_filename" "$second_profile"
 
 # print sechub scan usage message
 setup_complete_message_for_tool "Prepare" "$user" "$project"

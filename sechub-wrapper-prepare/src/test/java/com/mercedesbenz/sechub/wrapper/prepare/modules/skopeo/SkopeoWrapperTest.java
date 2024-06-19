@@ -105,7 +105,7 @@ class SkopeoWrapperTest {
 
         /* test 2 - login */
         verify(locationConverter).convertLocationForLogin(location);
-        assertProcessBuilderFactoryCalledWithParametersForLogin(context, "login-location", username, processBuilderFactory);
+        assertProcessBuilderFactoryCalledWithParametersForLogin("login-location", username, processBuilderFactory);
 
         // check user input handling for passwords work as expected
         verify(processBuilder1, never()).inheritIO(); // we do not want this, because enter input would not work on process adapter
@@ -143,11 +143,10 @@ class SkopeoWrapperTest {
 
     }
 
-    private void assertProcessBuilderFactoryCalledWithParametersForLogin(SkopeoContext context, String location, String user,
-            ProcessBuilderFactory processBuilderFactory) {
+    private void assertProcessBuilderFactoryCalledWithParametersForLogin(String location, String user, ProcessBuilderFactory processBuilderFactory) {
 
         // skopeo, login, ubuntu:22.04, --username, username1, --password, password1,
-        // --authfile, authentication.json]
+        // --authfile, authentication.json
         List<String> expectedCommands = new ArrayList<>();
         expectedCommands.add("skopeo");
         expectedCommands.add("login");
@@ -167,6 +166,8 @@ class SkopeoWrapperTest {
         List<String> expectedCommands = new ArrayList<>();
         expectedCommands.add("skopeo");
         expectedCommands.add("copy");
+        expectedCommands.add("--additional-tag");
+        expectedCommands.add(locationConverter.removeProtocolPrefix(context.getLocation()));
         expectedCommands.add(location);
         expectedCommands.add("docker-archive:" + context.getDownloadTarFile().toString());
         if (authorized) {

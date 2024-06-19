@@ -16,7 +16,7 @@ public class SkopeoLocationConverter {
         return removeProtocolPrefix(location);
     }
 
-    private String removeProtocolPrefix(String location) {
+    public String removeProtocolPrefix(String location) {
         if (location == null || location.isEmpty()) {
             return location;
         }

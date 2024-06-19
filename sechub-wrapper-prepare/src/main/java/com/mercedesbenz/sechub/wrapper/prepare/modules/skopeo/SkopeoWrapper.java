@@ -114,10 +114,13 @@ public class SkopeoWrapper extends AbstractToolWrapper {
         List<String> commands = new ArrayList<>();
 
         String location = locationConverter.convertLocationForDownload(context.getLocation());
+        String additionalTag = locationConverter.removeProtocolPrefix(context.getLocation());
         File downloadDirectory = context.getToolDownloadDirectory().toFile();
 
         commands.add("skopeo");
         commands.add("copy");
+        commands.add("--additional-tag");
+        commands.add(additionalTag);
         commands.add(location);
         commands.add("docker-archive:" + context.getDownloadTarFile());
         if (context.hasCredentials()) {
