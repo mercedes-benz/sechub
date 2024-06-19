@@ -1,10 +1,10 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.commons.archive;
 
+import static java.util.Objects.requireNonNull;
+
 import java.time.Duration;
 import java.util.Objects;
-
-import static java.util.Objects.requireNonNull;
 
 /**
  * The ArchiveExtractionContext class encapsulates the properties used to

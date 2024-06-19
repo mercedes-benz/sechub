@@ -1,14 +1,14 @@
 package com.mercedesbenz.sechub.commons.archive;
 
-import org.apache.commons.compress.archivers.ArchiveEntry;
-import org.apache.commons.compress.archivers.ArchiveInputStream;
+import static java.util.Objects.requireNonNull;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.time.Duration;
 import java.time.Instant;
 
-import static java.util.Objects.requireNonNull;
+import org.apache.commons.compress.archivers.ArchiveEntry;
+import org.apache.commons.compress.archivers.ArchiveInputStream;
 
 class SafeArchiveInputStream extends InputStream {
     private static final String DIRECTORY_DELIMITER = "/";

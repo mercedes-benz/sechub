@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.time.Duration;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -22,8 +23,10 @@ import com.mercedesbenz.sechub.api.SecHubClientException;
 import com.mercedesbenz.sechub.api.SecHubReport;
 import com.mercedesbenz.sechub.commons.TextFileReader;
 import com.mercedesbenz.sechub.commons.TextFileWriter;
+import com.mercedesbenz.sechub.commons.archive.ArchiveExtractionContext;
 import com.mercedesbenz.sechub.commons.archive.ArchiveSupport;
 import com.mercedesbenz.sechub.commons.archive.ArchiveSupport.ArchiveType;
+import com.mercedesbenz.sechub.commons.archive.FileSize;
 import com.mercedesbenz.sechub.commons.core.util.SimpleStringUtils;
 import com.mercedesbenz.sechub.commons.model.JSONConverter;
 import com.mercedesbenz.sechub.commons.model.MetaDataModel;
@@ -65,12 +68,14 @@ public class SystemTestRuntimeTestEngine {
 
     private static final long MILLISECONDS_TO_WAIT_FOR_JOB_FINISHED = 30 * 60_0000;
 
-    private ExecutionSupport execSupport;
+    private final ExecutionSupport execSupport;
 
     RunSecHubJobDefinitionTransformer runSecHubJobTransformer = new RunSecHubJobDefinitionTransformer();
     SystemTestRuntimeTestAssertion testAssertion = new SystemTestRuntimeTestAssertion();
     CurrentTestVariableCalculatorFactory currentTestVariableCalculatorFactory = new DefaultCurrentTestVariableCalculatorFactory();
     ArchiveSupport archiveSupport = new ArchiveSupport();
+    ArchiveExtractionContext extractionContext = new ArchiveExtractionContext(new FileSize("100MB"), 100L, 10L, Duration.ofSeconds(10));
+
     TextFileReader textFileReader = new TextFileReader();
     TextFileWriter textFileWriter = new TextFileWriter();
 
@@ -172,7 +177,8 @@ public class SystemTestRuntimeTestEngine {
             Path jobFullScanLogFile) throws CannotProvideDebugInformationException {
         /* extract scan log zip file */
         try (BufferedFileChannelInputStream downloadInputStream = new BufferedFileChannelInputStream(jobFullScanLogFile)) {
-            archiveSupport.extract(ArchiveType.ZIP, downloadInputStream, jobFullScanLogFile.toString(), extractedScanLogFolder.toFile(), null);
+            archiveSupport.extract(ArchiveType.ZIP, downloadInputStream, jobFullScanLogFile.toString(), extractedScanLogFolder.toFile(), null,
+                    extractionContext);
         } catch (IOException e) {
             throw new CannotProvideDebugInformationException(
                     "Zip extraction of full scan log failed.\nZip file path:" + jobFullScanLogFile + "\nTarget folder:" + sechubJobFolder, e);
@@ -556,13 +562,13 @@ public class SystemTestRuntimeTestEngine {
         private SecHubRunData secHubRunData;
         SystemTestRuntimeContext runtimeContext;
         TestDefinition test;
-        private CurrentTestVariableCalculator currentTestVariableCalculator;
+        private final CurrentTestVariableCalculator currentTestVariableCalculator;
 
         TestEngineTestContext(SystemTestRuntimeTestEngine systemTestRuntimeTestEngine, TestDefinition test, SystemTestRuntimeContext runtimeContext) {
             this.systemTestRuntimeTestEngine = systemTestRuntimeTestEngine;
             this.test = test;
             this.runtimeContext = runtimeContext;
-            this.currentTestVariableCalculator = currentTestVariableCalculatorFactory.create(test, runtimeContext);
+            currentTestVariableCalculator = currentTestVariableCalculatorFactory.create(test, runtimeContext);
 
             appendSecHubRunData();
         }
@@ -602,11 +608,11 @@ public class SystemTestRuntimeTestEngine {
             }
             JSONConverter converter = JSONConverter.get();
 
-            secHubRunData = this.systemTestRuntimeTestEngine.new SecHubRunData();
+            secHubRunData = systemTestRuntimeTestEngine.new SecHubRunData();
 
             RunSecHubJobDefinition runSecHubJobDefinition = runSecHOptional.get();
 
-            SecHubConfigurationModel secHubConfiguration = this.systemTestRuntimeTestEngine.runSecHubJobTransformer
+            SecHubConfigurationModel secHubConfiguration = systemTestRuntimeTestEngine.runSecHubJobTransformer
                     .transformToSecHubConfiguration(runSecHubJobDefinition);
 
             String configurationAsJson = converter.toJSON(secHubConfiguration);
