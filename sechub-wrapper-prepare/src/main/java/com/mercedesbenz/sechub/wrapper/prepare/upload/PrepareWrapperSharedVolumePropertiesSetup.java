@@ -15,7 +15,7 @@ public class PrepareWrapperSharedVolumePropertiesSetup extends AbstractSharedVol
      * Folder location for storing files. When using "temp" a temporary folder on
      * server side will be used
      */
-    @Value("${" + PDS_STORAGE_SHAREDVOLUME_UPLOAD_DIR + ":" + UNDEFINED_UPLOAD_DIR + "}") // we use undefined here. Will be used in #isValid()
+    @Value("${" + PDS_STORAGE_SHAREDVOLUME_UPLOAD_DIR + ":" + UNDEFINED + "}") // we use undefined here. Will be used in #isValid()
     private String configuredUploadDir;
 
     @Override
