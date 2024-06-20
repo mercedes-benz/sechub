@@ -3,30 +3,34 @@ package com.mercedesbenz.sechub.pds.storage;
 
 import static com.mercedesbenz.sechub.pds.commons.core.config.PDSStorageConstants.*;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
+import com.mercedesbenz.sechub.commons.core.environment.SecureEnvironmentVariableKeyValueRegistry;
+import com.mercedesbenz.sechub.commons.core.environment.SystemEnvironmentVariableSupport;
 import com.mercedesbenz.sechub.pds.PDSMustBeDocumented;
 import com.mercedesbenz.sechub.storage.core.S3Setup;
 
 @Component
 public class PDSS3PropertiesSetup implements S3Setup {
 
-    private static final String UNDEFINED = "undefined";
+    @Autowired
+    SystemEnvironmentVariableSupport environmentVariableSupport;
 
-    @PDSMustBeDocumented(value = "Defines the access key for used s3 bucket", scope = "storage", secret = true)
+    @PDSMustBeDocumented(value = "Defines the access key for used s3 bucket.", scope = "storage", secret = true)
     @Value("${" + PDS_STORAGE_S3_ACCESSKEY + ":" + UNDEFINED + "}") // we use undefined here. Will be used in isValid
     private String accessKey;
 
-    @PDSMustBeDocumented(value = "Defines the secret key for used s3 bucket", scope = "storage", secret = true)
+    @PDSMustBeDocumented(value = "Defines the secret key for used s3 bucket.", scope = "storage", secret = true)
     @Value("${" + PDS_STORAGE_S3_SECRETKEY + ":" + UNDEFINED + "}") // we use undefined here. Will be used in isValid
     private String secretKey;
 
-    @PDSMustBeDocumented(value = "Defines the s3 bucket name", scope = "storage")
+    @PDSMustBeDocumented(value = "Defines the s3 bucket name.", scope = "storage")
     @Value("${" + PDS_STORAGE_S3_BUCKETNAME + ":" + UNDEFINED + "}") // we use undefined here. Will be used in isValid
     private String bucketName;
 
-    @PDSMustBeDocumented(value = "Defines the s3 endpoint - e.g. https://play.min.io", scope = "storage")
+    @PDSMustBeDocumented(value = "Defines the s3 endpoint.", scope = "storage")
     @Value("${" + PDS_STORAGE_S3_ENDPOINT + ":" + UNDEFINED + "}") // we use undefined here. Will be used in isValid
     private String endpoint;
 
@@ -102,6 +106,21 @@ public class PDSS3PropertiesSetup implements S3Setup {
         inValid = inValid || UNDEFINED.equals(bucketName);
 
         return !inValid;
+    }
+
+    public void registerOnlyAllowedAsEnvironmentVariables(SecureEnvironmentVariableKeyValueRegistry registry) {
+        register(registry, PDS_STORAGE_S3_ACCESSKEY, accessKey);
+        register(registry, PDS_STORAGE_S3_BUCKETNAME, bucketName);
+        register(registry, PDS_STORAGE_S3_ENDPOINT, endpoint);
+        register(registry, PDS_STORAGE_S3_SECRETKEY, secretKey);
+    }
+
+    private void register(SecureEnvironmentVariableKeyValueRegistry registry, String key, String value) {
+        if (UNDEFINED.equals(value)) {
+            // this means here not defined and will not be registered
+            return;
+        }
+        registry.register(registry.newEntry().key(key).value(value));
     }
 
     @Override

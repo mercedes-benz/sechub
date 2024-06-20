@@ -14,8 +14,6 @@ import com.mercedesbenz.sechub.storage.core.StorageException;
 
 public abstract class AbstractSharedVolumePropertiesSetup implements SharedVolumeSetup {
 
-    public static final String UNDEFINED_UPLOAD_DIR = "undefined";
-
     private static final Logger LOG = LoggerFactory.getLogger(AbstractSharedVolumePropertiesSetup.class);
 
     /**
@@ -36,7 +34,7 @@ public abstract class AbstractSharedVolumePropertiesSetup implements SharedVolum
 
     @Override
     public boolean isAvailable() {
-        return !UNDEFINED_UPLOAD_DIR.equals(getConfiguredUploadDirectory());
+        return !UNDEFINED.equals(getConfiguredUploadDirectory());
     }
 
     private String ensuredUploadDirectory() {
