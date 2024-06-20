@@ -14,8 +14,6 @@ echo ""
 
 options="-Dspring.profiles.active=default"
 
-storage_options="-Dpds.storage.sharedvolume.upload.dir=$SHARED_VOLUME_UPLOAD_DIR"
-
 # check if the Prepare Wrapper exists
 if [[ ! -f "$prepare_wrapper" ]]; then
 	echo "$pwd" 1>&2
@@ -46,7 +44,7 @@ fi
 
 
 echo ""
-java -jar $storage_options $options "$prepare_wrapper"
+java -jar $options "$prepare_wrapper"
 
 
 
