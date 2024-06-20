@@ -112,10 +112,12 @@ public class GitPrepareWrapperModule extends AbstractPrepareWrapperModule {
 
     private GitContext initializeGitContext(PrepareWrapperContext context, SecHubRemoteDataConfiguration secHubRemoteDataConfiguration) {
         Path workingDirectory = Paths.get(context.getEnvironment().getPdsJobWorkspaceLocation());
+        String location = secHubRemoteDataConfiguration.getLocation();
 
         GitContext gitContext = new GitContext();
         gitContext.setCloneWithoutHistory(cloneWithoutGitHistory);
-        gitContext.setLocation(secHubRemoteDataConfiguration.getLocation());
+        gitContext.setLocation(location);
+        gitContext.setRepositoryName(getRepositoryNameFromLocation(location));
         gitContext.init(workingDirectory);
 
         return gitContext;
@@ -169,6 +171,13 @@ public class GitPrepareWrapperModule extends AbstractPrepareWrapperModule {
         gitContext.setSealedCredentials(user);
 
         gitWrapper.downloadRemoteData(gitContext);
+    }
+
+    private String getRepositoryNameFromLocation(String location) {
+        String[] parts = location.split("/");
+        String repository = parts[parts.length - 1];
+        repository = repository.replace(".git", "");
+        return repository;
     }
 
 }
