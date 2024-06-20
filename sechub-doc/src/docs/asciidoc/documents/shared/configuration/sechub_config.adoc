@@ -437,10 +437,9 @@ for details about default behaviour for sources.
 
 ===== Remote Data
 
-Instead of configure the filesystem and upload local data, you can also define a remote data section to scan data from remote locations.
-In a PREPARE Phase the PDS prepare will download the data from the remote location and upload it to a shared storage.
-From there any other PDS solution can access the data for scanning.
-
+Instead of configuring the file system and uploading local data, it is also possible to define a remote data section to automatically retrieve the data to be scanned from remote locations.
+In a `PREPARE` phase the `PDS` prepare will download the data from the remote location and upload it to a shared storage.
+From there any other `PDS solution` can access the data for scanning.
 The `type` is not mandatory but recommended to be set to `git` or `docker` to make it clear what kind of remote data is used.
 
 Scan types (codeScan, licenseScan etc.), includes or excludes as well as false positives can be defined as usual.
@@ -449,33 +448,33 @@ Scan types (codeScan, licenseScan etc.), includes or excludes as well as false p
 
 [[sechub-config-example-remote-data-section-sources-codescan]]
 ====== Example source remote data scan
-[source, json, title="Codescan scan configuration for remote git sources without credentials"]
+[source, json, title="Codes scan configuration for remote git sources without credentials"]
 ----
 include::sechub_config_example18_remote_data_without_credentials_sources_codescan.json[]
 ----
-<1> `location`: The URL to your remote data. (for example to a git repository or a docker registry)
-<2> `type`: Describe your remote data. Can currently supported are `git` or `docker`.
+<1> `location`: The URL to remote data. (for example a git repository or a docker registry)
+<2> `type`: The type of the remote data. Currently supported are `git` or `docker`.
 
 [[sechub-config-example-remote-data-section-sources-codescan-credentials]]
 ====== Example source remote data scan with credentials
-[source, json, title="Codescan scan configuration for remote git sources with credentials"]
+[source, json, title="Code scan configuration for remote git sources with credentials"]
 ----
 include::sechub_config_example19_remote_data_with_credentials_sources_codescan.json[]
 ----
-<1> `location`: The URL to your remote data. (for example to a git repository or a docker registry)
-<2> `type`: Describe your remote data. Can currently supported are `git` or `docker`.
+<1> `location`: The URL to remote data. (for example a git repository or a docker registry)
+<2> `type`: The type of the remote data. Currently supported are `git` or `docker`.
 <3> `user`: Defines user credentials
-<4> `name`: The username you wish to use to access your remote data
-<5> `password`: The API token that grant your username access to your remote data
+<4> `name`: The username to access remote data
+<5> `password`: The API token or password that grant access to remote data
 
 [[sechub-config-example-remote-data-section-binaries-codescan-credentials]]
 ====== Example binaries remote data scan with credentials
-[source, json, title="Codescan scan configuration for remote git sources with credentials"]
+[source, json, title="Codes scan configuration for remote git sources with credentials"]
 ----
 include::sechub_config_example20_remote_data_with_credentials_binaries_licensescan.json[]
 ----
-<1> `location`: The URL to your remote docker image. (for example to a docker registry)
-<2> `type`: Describe your remote data. Can currently supported are `git` or `docker`.
+<1> `location`: The URL to remote data. (for example a git repository or a docker registry)
+<2> `type`: The type of the remote data. Currently supported are `git` or `docker`.
 
 [[sechub-config-metadata-section]]
 ==== MetaData
