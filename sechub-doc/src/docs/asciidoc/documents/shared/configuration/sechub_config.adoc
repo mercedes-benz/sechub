@@ -440,7 +440,7 @@ for details about default behaviour for sources.
 Instead of configuring the file system and uploading local data, it is also possible to define a remote data section to automatically retrieve the data to be scanned from remote locations.
 In a `PREPARE` phase the `PDS` prepare will download the data from the remote location and upload it to a shared storage.
 From there any other `PDS solution` can access the data for scanning.
-The `type` is not mandatory but recommended to be set to `git` or `docker` to make it clear what kind of remote data is used.
+The `type` is not mandatory, but it is recommended to set it to `git` or `docker` to make it clear what type of remote data is being used.
 
 Scan types (codeScan, licenseScan etc.), includes or excludes as well as false positives can be defined as usual.
 

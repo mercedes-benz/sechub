@@ -4,7 +4,7 @@
 
 `Prepare` is not a scan product, but a developed wrapper application to prepare remote sources for scans.
 It is used to download remote sources and upload them to the shared storage make them available to the scan products.
-This enables the user to scan remote data without the need to store them local on a machine an upload it with the client.
+This allows the user to scan remote data without having to store it locally on a computer and upload it with the client.
 
 The `remote` section can be defined in the sechub configuration instead of the `filesystem`.
 
