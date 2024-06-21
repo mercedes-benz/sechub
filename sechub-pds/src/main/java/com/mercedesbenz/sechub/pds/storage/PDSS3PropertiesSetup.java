@@ -120,7 +120,7 @@ public class PDSS3PropertiesSetup implements S3Setup {
             // this means here not defined and will not be registered
             return;
         }
-        registry.register(registry.newEntry().key(key).value(value));
+        registry.register(registry.newEntry().key(key).notNullValue(value));
     }
 
     @Override

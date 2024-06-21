@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.event.ApplicationStartedEvent;
 import org.springframework.context.event.EventListener;
+import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
 
 import com.mercedesbenz.sechub.commons.core.environment.SecureEnvironmentVariableKeyValueRegistry;
@@ -18,6 +19,9 @@ import com.mercedesbenz.sechub.pds.storage.PDSSharedVolumePropertiesSetup;
 @Component
 public class PDSStartupAssertEnvironmentVariablesUsed {
 
+    private static final String SPRING_DATASOURCE_PASSWORD = "spring.datasource.password";
+
+    @PDSMustBeDocumented(value = "When true, the startup assertion for forcing usage of some environment variables is disabled", scope = "startup")
     @Value("${pds.startup.assert.environment-variables-used.disabled:false}")
     boolean disabled;
 
@@ -33,13 +37,16 @@ public class PDSStartupAssertEnvironmentVariablesUsed {
     @Autowired
     PDSSecurityConfiguration securityConfiguration;
 
+    @Autowired
+    Environment environment;
+
     private SecureEnvironmentVariableKeyValueRegistry sensitiveDataRegistry;
 
     private static final Logger LOG = LoggerFactory.getLogger(PDSStartupAssertEnvironmentVariablesUsed.class);
 
     @EventListener(ApplicationStartedEvent.class)
     public void assertOnApplicationStart() {
-        this.sensitiveDataRegistry = createRegistryForOnlyAllowedAsEnvironmentVariables();
+        this.sensitiveDataRegistry = createRegistryForOnlyAllowedAsEnvironmentVariables(false);
 
         if (disabled) {
             LOG.warn("Environment variable usage assertion has been disabled! This is only allowed for tests! Do not disable in production!");
@@ -68,25 +75,28 @@ public class PDSStartupAssertEnvironmentVariablesUsed {
                 "Some PDS startup settings must be defined by environment variables, but were definded in a different way:\n" + problems);
     }
 
-    public SecureEnvironmentVariableKeyValueRegistry createRegistryForOnlyAllowedAsEnvironmentVariables() {
+    public SecureEnvironmentVariableKeyValueRegistry createRegistryForOnlyAllowedAsEnvironmentVariables(boolean createFallbacks) {
         SecureEnvironmentVariableKeyValueRegistry sensitiveDataRegistry = new SecureEnvironmentVariableKeyValueRegistry();
 
-        if (s3Setup == null) {
-            s3Setup = useFallback(new PDSS3PropertiesSetup());
+        if (createFallbacks) {
+            if (s3Setup == null) {
+                s3Setup = useFallback(new PDSS3PropertiesSetup());
+            }
+            if (sharedVolumeSetup == null) {
+                sharedVolumeSetup = useFallback(new PDSSharedVolumePropertiesSetup());
+            }
+            if (securityConfiguration == null) {
+                securityConfiguration = useFallback(new PDSSecurityConfiguration());
+            }
         }
-        if (sharedVolumeSetup == null) {
-            sharedVolumeSetup = useFallback(new PDSSharedVolumePropertiesSetup());
-        }
-        if (securityConfiguration == null) {
-            securityConfiguration = useFallback(new PDSSecurityConfiguration());
-        }
-
         s3Setup.registerOnlyAllowedAsEnvironmentVariables(sensitiveDataRegistry);
         sharedVolumeSetup.registerOnlyAllowedAsEnvironmentVariables(sensitiveDataRegistry);
         securityConfiguration.registerOnlyAllowedAsEnvironmentVariables(sensitiveDataRegistry);
 
         // some additional parts which shall only be available as environment variables
-        sensitiveDataRegistry.register(sensitiveDataRegistry.newEntry().key("spring.datasource.password"));
+        // - h2 databases allow no setup here, so not mandatory
+        sensitiveDataRegistry
+                .register(sensitiveDataRegistry.newEntry().key(SPRING_DATASOURCE_PASSWORD).nullableValue(environment.getProperty(SPRING_DATASOURCE_PASSWORD)));
 
         return sensitiveDataRegistry;
     }

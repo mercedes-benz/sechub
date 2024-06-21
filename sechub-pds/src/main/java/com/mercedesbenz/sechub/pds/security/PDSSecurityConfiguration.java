@@ -1,6 +1,8 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.pds.security;
 
+import javax.crypto.SealedObject;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -15,6 +17,7 @@ import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.provisioning.UserDetailsManager;
 
 import com.mercedesbenz.sechub.commons.core.environment.SecureEnvironmentVariableKeyValueRegistry;
+import com.mercedesbenz.sechub.commons.core.security.CryptoAccess;
 import com.mercedesbenz.sechub.pds.PDSMustBeDocumented;
 import com.mercedesbenz.sechub.pds.commons.core.PDSProfiles;
 
@@ -49,6 +52,9 @@ public class PDSSecurityConfiguration {
     @Autowired
     private Environment springEnvironment;
 
+    private SealedObject sealedTechUserApiToken;
+    private SealedObject sealedAdminApiToken;
+
     @Bean
     public UserDetailsManager userDetailsService() {
         /* @formatter:off */
@@ -61,7 +67,10 @@ public class PDSSecurityConfiguration {
                         .password(pdsPasswordTransformer.transformPassword(techUserApiToken))
                         .roles(PDSRoles.USER.getRole())
                         .build();
-        /* remove field after start */
+
+        sealedTechUserApiToken = CryptoAccess.CRYPTO_STRING.seal(techUserApiToken);
+
+        /* remove unsecured field after start */
         techUserApiToken = null;
 
         UserDetails admin =
@@ -70,8 +79,12 @@ public class PDSSecurityConfiguration {
                         .password(pdsPasswordTransformer.transformPassword(adminApiToken))
                         .roles(PDSRoles.SUPERADMIN.getRole())
                         .build();
-        /* remove field after start */
+
+        sealedAdminApiToken = CryptoAccess.CRYPTO_STRING.seal(adminApiToken);
+
+        /* remove unsecured field after start */
         adminApiToken = null;
+
         /* @formatter:on */
         return new InMemoryUserDetailsManager(user, admin);
     }
@@ -79,15 +92,16 @@ public class PDSSecurityConfiguration {
     public void registerOnlyAllowedAsEnvironmentVariables(SecureEnvironmentVariableKeyValueRegistry registry) {
         if (springEnvironment != null && springEnvironment.matchesProfiles(PDSProfiles.INTEGRATIONTEST)) {
             /*
-             * on integration test we accept credentials from config file or as system
-             * properties - not marked as sensitive
+             * on integration test we accept credentials from configuration file or as
+             * system properties - not marked as sensitive
              */
             return;
         }
-        registry.register(registry.newEntry().key(KEY_ADMIN_USERID).value(adminUserId));
-        registry.register(registry.newEntry().key(KEY_ADMIN_APITOKEN).value(adminApiToken));
-        registry.register(registry.newEntry().key(KEY_TECHUSER_USERID).value(techUserApiToken));
-        registry.register(registry.newEntry().key(KEY_TECHUSER_APITOKEN).value(techUserApiToken));
+        registry.register(registry.newEntry().key(KEY_TECHUSER_USERID).notNullValue(techUserId));
+        registry.register(registry.newEntry().key(KEY_TECHUSER_APITOKEN).notNullValue(CryptoAccess.CRYPTO_STRING.unseal(sealedTechUserApiToken)));
+
+        registry.register(registry.newEntry().key(KEY_ADMIN_USERID).notNullValue(adminUserId));
+        registry.register(registry.newEntry().key(KEY_ADMIN_APITOKEN).notNullValue(CryptoAccess.CRYPTO_STRING.unseal(sealedAdminApiToken)));
 
     }
 }

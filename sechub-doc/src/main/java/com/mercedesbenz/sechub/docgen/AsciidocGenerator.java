@@ -207,14 +207,14 @@ public class AsciidocGenerator implements Generator {
         context.specialMockValuePropertiesFile = createSpecialMockConfigurationPropertiesTargetFile(context.documentsGenFolder);
         context.messagingFile = createMessagingTargetFile(context.documentsGenFolder);
 
-        /* env variable registry */
+        /* Environment variable registry */
         context.sechubEnvVariableRegistry = new SecureEnvironmentVariableKeyValueRegistry();
 
         /*
-         * env variable registry for PDS - we use sanitiy check handling to create same
-         * s3Setup as on startup phase
+         * Environment variable registry for PDS - we use sanitiy check handling to
+         * create same s3Setup as on startup phase
          */
-        context.pdsEnvVariableRegistry = new PDSStartupAssertEnvironmentVariablesUsed().createRegistryForOnlyAllowedAsEnvironmentVariables();
+        context.pdsEnvVariableRegistry = new PDSStartupAssertEnvironmentVariablesUsed().createRegistryForOnlyAllowedAsEnvironmentVariables(true);
 
         return context;
     }
