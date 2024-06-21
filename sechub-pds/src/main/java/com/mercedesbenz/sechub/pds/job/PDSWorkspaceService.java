@@ -4,7 +4,11 @@ package com.mercedesbenz.sechub.pds.job;
 import static com.mercedesbenz.sechub.commons.core.CommonConstants.FILENAME_BINARIES_TAR;
 import static com.mercedesbenz.sechub.commons.core.CommonConstants.FILENAME_SOURCECODE_ZIP;
 
-import java.io.*;
+import java.io.File;
+import java.io.FileFilter;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -24,8 +28,12 @@ import org.springframework.stereotype.Service;
 
 import com.mercedesbenz.sechub.commons.TextFileReader;
 import com.mercedesbenz.sechub.commons.TextFileWriter;
-import com.mercedesbenz.sechub.commons.archive.*;
+import com.mercedesbenz.sechub.commons.archive.ArchiveExtractionConstraints;
+import com.mercedesbenz.sechub.commons.archive.ArchiveExtractionResult;
+import com.mercedesbenz.sechub.commons.archive.ArchiveSupport;
 import com.mercedesbenz.sechub.commons.archive.ArchiveSupport.ArchiveType;
+import com.mercedesbenz.sechub.commons.archive.FileSize;
+import com.mercedesbenz.sechub.commons.archive.SecHubFileStructureDataProvider;
 import com.mercedesbenz.sechub.commons.model.JSONConverter;
 import com.mercedesbenz.sechub.commons.model.JSONConverterException;
 import com.mercedesbenz.sechub.commons.model.ScanType;
@@ -68,7 +76,7 @@ public class PDSWorkspaceService {
     @Value("${pds.workspace.rootfolder:" + DEFAULT_WORKSPACE_ROOTFOLDER_PATH + "}")
     String workspaceRootFolderPath = DEFAULT_WORKSPACE_ROOTFOLDER_PATH;
 
-    @PDSMustBeDocumented(value = "Defines if workspace is automatically cleaned when no longer necessary - means launcher script has been executed and finished (failed or done)", scope = "execution")
+    @PDSMustBeDocumented(value = "Defines if workspace is automatically cleaned when no longer necessary - means launcher script has been executed and finished (failed or done). This is useful for debugging, but should not be used in production.", scope = "execution")
     @Value("${pds.workspace.autoclean.disabled:false}")
     private boolean workspaceAutoCleanDisabled;
 
@@ -190,7 +198,7 @@ public class PDSWorkspaceService {
 
             if (isWantedStorageContent(name, configurationSupport, preparationContext)) {
                 resilientStorageReadExecutor.execute(() -> readAndCopyStorageToFileSystem(pdsJobUUID, jobFolder, storage, name),
-                        "Read and copy storage: " + name + " for job: " + pdsJobUUID.toString());
+                        "Read and copy storage: " + name + " for job: " + pdsJobUUID);
 
             } else {
                 LOG.debug("Did NOT import '{}' for job {} from storage - was not wanted", name, pdsJobUUID);
@@ -406,14 +414,14 @@ public class PDSWorkspaceService {
         }
 
         ArchiveSupport archiveSupport = archiveSupportProvider.getArchiveSupport();
-        ArchiveExtractionContext archiveExtractionContext = new ArchiveExtractionContext(archiveExtractionMaxFileSizeUncompressed, archiveExtractionMaxEntries,
-                archiveExtractionMaxDirectoryDepth, archiveExtractionTimeout);
+        ArchiveExtractionConstraints archiveExtractionConstraints = new ArchiveExtractionConstraints(archiveExtractionMaxFileSizeUncompressed,
+                archiveExtractionMaxEntries, archiveExtractionMaxDirectoryDepth, archiveExtractionTimeout);
 
         for (File archiveFile : archiveFiles) {
             try (FileInputStream archiveFileInputStream = new FileInputStream(archiveFile)) {
 
                 ArchiveExtractionResult extractionResult = archiveSupport.extract(archiveType, archiveFileInputStream, archiveFile.getAbsolutePath(),
-                        extractionTargetFolder, configuration, archiveExtractionContext);
+                        extractionTargetFolder, configuration, archiveExtractionConstraints);
 
                 LOG.info("Extracted {} files to {}", extractionResult.getExtractedFilesCount(), extractionResult.getTargetLocation());
 

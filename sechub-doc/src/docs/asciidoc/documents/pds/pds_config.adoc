@@ -77,21 +77,6 @@ style - e.g. `{noop}unencrypted`, `{bcrypt}crypted` ...
 With `-Dpds.workspace.rootfolder` or using environment variable `PDS_WORKSPACE_ROOTFOLDER`
 workspace location can be defined
 
-=== Archive extraction configuration
-
-Following values can be used to safeguard the extraction of archives on the PDS.
-
-`pds.archive.extraction.max-file-size-uncompressed` defines the maximum file size for an uncompressed archive.
-The value has to be in a format like 10KB, 10MB or 10GB. Default is 1GB.
-
-`pds.archive.extraction.max-entries` defines the maximum number of entries an archive can contain.
-Default is 100000.
-
-`pds.archive.extraction.max-directory-depth` defines the maximum directory depth an entry inside an archive can have
-on the operating system. Default is 100.
-
-`pds.archive.extraction.timeout` defines the maximum time an archive extraction may take. Default is 1 minute.
-
 [[section-pds-server-config-file]]
 === Server configuration file
 PDS reads configuration JSON file on startup.
@@ -103,7 +88,7 @@ its is possible to set config file path ( when not defined fallback is `./pds-co
 
 
 * `product-id` +
-     Must be *unique* for this product. Allowed characters are [a-zA-Z0-9_]. Maximum length:30. If it's not inside SERECO listed it must provide general sereco report format from #283.
+Must be *unique* for this product. Allowed characters are [a-zA-Z0-9_]. Maximum length:30. If it's not inside SERECO listed it must provide general sereco report format from #283.
 
 
 [source,json]
@@ -113,54 +98,54 @@ include::product_delegation_server_config_example1.json[]
 ----
 [[section-pds-server-describe-config-file]]
 <1> `serverId` is a *unique* identifier, which will be used determine a cluster /server. will be used inside logs and
-    also to share common database and divide different pds states etc. +
-    Allowed characters are [a-zA-Z0-9_]. Maximum length:30  +
-    (e.g `FIND_SECURITY_BUGS_CLUSTER` when providing a PDS server for find-security-bugs).
-    This is *important* ! Do NOT mix up different PDS clusters with same ID.
+also to share common database and divide different pds states etc. +
+Allowed characters are [a-zA-Z0-9_]. Maximum length:30  +
+(e.g `FIND_SECURITY_BUGS_CLUSTER` when providing a PDS server for find-security-bugs).
+This is *important* ! Do NOT mix up different PDS clusters with same ID.
 
 <2> product `id` is a unique identifier, which will be used at job configuration time.
-    Defines what will be executed and is also the identifier for SERECO to check for dedicated
-    report handling +
-    Allowed characters are [a-zA-Z0-9_]. Maximum length:30
+Defines what will be executed and is also the identifier for SERECO to check for dedicated
+report handling +
+Allowed characters are [a-zA-Z0-9_]. Maximum length:30
 
 <3> `path` defines what command / script will be executed.
 
 <4> `scanType` can be either
- - codeScan
- - infraScan
- - webScan
+- codeScan
+- infraScan
+- webScan
 
 <5> `description` is a free text description
 
 <6> `parameters` area, here we can define optional and mandatory parameters. Those parameters will be available
-    in executed processes by environment variables. +
-    All other given job parameters will be IGNORED by server - reason: avoid unwanted changes on system environment variables from caller side
+in executed processes by environment variables. +
+All other given job parameters will be IGNORED by server - reason: avoid unwanted changes on system environment variables from caller side
 
 <7> `mandatory` parameters - server will not accept jobs without these parameters
 
 <8> a `key`, will be transformed to ENV variable. In the given example `product1.qualititycheck.enabled` will be available in execution process
-    as environment variable `PRODUCT1_QUALITYCHECK_ENABLED`.
-    the `value`, will be set by {sechub} job call and available in former described ENV entry at execution time.
-    {sechub} will
+as environment variable `PRODUCT1_QUALITYCHECK_ENABLED`.
+the `value`, will be set by {sechub} job call and available in former described ENV entry at execution time.
+{sechub} will
 <9> a description of the `key` or the used `default` setup. This is optional and only for information/better understanding.
 
 <10> optional parameters
 <11> By defining supported data type `source` we ensure sources are downloaded from storage and automatically extracted.
-     If the extraction target folder is empty (e.g. filtering or no source available) the launcher script will NOT be called. +
-     Valid entries are `source`, `binary`, `none` or a combination of them as a comma separated list. When not defined as a parameter, the
-     {pds} configuration default will be used. If available, the content of `zip` source files will be extracted into `$PDS_JOB_EXTRACTED_SOURCES_FOLDER`,
-     `tar` archive content containing binaries can be found at `$PDS_JOB_EXTRACTED_BINARIES_FOLDER`. +
-     The extraction will automatically filter and transform archive content as described at <<data-structure-tar-and-zip-files,data structure definition>>.
-     Also the environment variables `$PDS_JOB_HAS_EXTRACTED_SOURCES` and `$PDS_JOB_HAS_EXTRACTED_BINARIES` are automatically defined.
+If the extraction target folder is empty (e.g. filtering or no source available) the launcher script will NOT be called. +
+Valid entries are `source`, `binary`, `none` or a combination of them as a comma separated list. When not defined as a parameter, the
+{pds} configuration default will be used. If available, the content of `zip` source files will be extracted into `$PDS_JOB_EXTRACTED_SOURCES_FOLDER`,
+`tar` archive content containing binaries can be found at `$PDS_JOB_EXTRACTED_BINARIES_FOLDER`. +
+The extraction will automatically filter and transform archive content as described at <<data-structure-tar-and-zip-files,data structure definition>>.
+Also the environment variables `$PDS_JOB_HAS_EXTRACTED_SOURCES` and `$PDS_JOB_HAS_EXTRACTED_BINARIES` are automatically defined.
 
 <12> Using `none` will not try to download any ZIP or TAR from storage but does call the caller script even when no data is available.
 
 <13> An optional list of environment variable names which are additionally white listed from PDS script environment cleanup.
-     Those entries can also end with an asterisk, in this case every variable name starting with this entry will 
-     be whitelisted (e.g. `SPECIAL_VAR_*` woud white list `SPECIAL_VAR_CONNECTION_URL` etc.) +
-     The PDS script cleanup process prevents inheritage of environment variables from PDS parent process.
-     There are some also some default variable names which are automatically accepted (e.g. `HOME`, `PATH`, ..).
-     
+Those entries can also end with an asterisk, in this case every variable name starting with this entry will
+be whitelisted (e.g. `SPECIAL_VAR_*` woud white list `SPECIAL_VAR_CONNECTION_URL` etc.) +
+The PDS script cleanup process prevents inheritage of environment variables from PDS parent process.
+There are some also some default variable names which are automatically accepted (e.g. `HOME`, `PATH`, ..).
+
 
 === Launcher scripts
 
@@ -204,13 +189,13 @@ how the data is gathered.
 |PDS_JOB_EXTRACTED_BINARIES_FOLDER  | When auto extracting is enabled (default) the uploaded binaries are extracted to this folder
 |PDS_SCAN_TARGET_URL                | Target URL for current scan (e.g webscan). Will not be set in all scan types. E.g. for a code scan this environemnt variable will not be available
 |PDS_SCAN_CONFIGURATION             | Contains the SecHub configuration as JSON _(but reduced to current scan type, so e.g. a web scan will have no code scan configuration data available)_ +
-                                      +
-                                      For details about the exact format please look into https://mercedes-benz.github.io/sechub/latest/sechub-client.html[SecHub client documentation] . If you are using
-                                      a Java wrapper application inside your PDS scripts, those can use the `sechub-commons-model` java library which contains `SecHubScanConfiguration.java`
-                                      _(Usage is described in JavaDoc)_.
++
+For details about the exact format please look into https://mercedes-benz.github.io/sechub/latest/sechub-client.html[SecHub client documentation] . If you are using
+a Java wrapper application inside your PDS scripts, those can use the `sechub-commons-model` java library which contains `SecHubScanConfiguration.java`
+_(Usage is described in JavaDoc)_.
 |SECHUB_JOB_UUID                    | The corresponding {sechub} job UUID
 |PDS_SCAN_TARGET_TYPE 				| The network target type of the target URL. Possible values are: INTERNET, INTRANET. The network target type is injected by SecHub automatically.
-									  It does not need to be specified explicitly in the PDS Configuration file.
+It does not need to be specified explicitly in the PDS Configuration file.
 |===
 
 ==== Parameter variables
@@ -241,14 +226,14 @@ Automatically unzipped content is available inside +
 Following files are reserved
 
 - system-err.log _(created automatically by PDS)_ +
-  `$PDS_JOB_WORKSPACE_LOCATION/output/system-err.log`
+`$PDS_JOB_WORKSPACE_LOCATION/output/system-err.log`
 
 - `system-out.log _(created automatically by PDS)_+
-   $PDS_JOB_WORKSPACE_LOCATION/output/system-out.log`
+$PDS_JOB_WORKSPACE_LOCATION/output/system-out.log`
 
 - *result.txt* - this is the result file which *must be created by the executed script* +
-  `$PDS_JOB_WORKSPACE_LOCATION/output/result.txt`.
-  The path is represented by the variable `PDS_JOB_RESULT_FILE`
+`$PDS_JOB_WORKSPACE_LOCATION/output/result.txt`.
+The path is represented by the variable `PDS_JOB_RESULT_FILE`
 
 [[section-config-events]]
 ==== Events

@@ -2,11 +2,18 @@
 package com.mercedesbenz.sechub.commons.archive;
 
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.*;
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.notNullValue;
+import static org.hamcrest.Matchers.nullValue;
 import static org.junit.Assert.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 
-import java.io.*;
+import java.io.BufferedOutputStream;
+import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.nio.file.Files;
 import java.time.Duration;
 import java.util.ArrayList;
@@ -29,6 +36,12 @@ import org.junit.jupiter.params.provider.ArgumentsSource;
 
 class SafeArchiveInputStreamTest {
 
+    private static final FileSize DEFAULT_MAX_FILE_SIZE_UNCOMPRESSED = new FileSize("10KB");
+    private static final long DEFAULT_MAX_ENTRIES = 10L;
+    private static final FileSize DEFAULT_ENTRY_FILE_SIZE = new FileSize("1KB");
+    private static final long DEFAULT_MAX_DIRECTORY_DEPTH = 10L;
+    private static final Duration DEFAULT_TIMEOUT = Duration.ofSeconds(10L);
+
     final List<File> tempFiles = new ArrayList<>();
 
     @AfterEach
@@ -41,20 +54,21 @@ class SafeArchiveInputStreamTest {
     @Test
     void new_safe_archive_input_stream_has_expected_properties() throws IOException {
         /* prepare */
-        FileSize maxFileSizeUncompressed = new FileSize("10KB");
-        long maxEntries = 10L;
-        FileSize entryFileSize = new FileSize("1KB");
-        long maxDirectoryDepth = 10L;
-        Duration timeout = Duration.ofSeconds(10L);
-
-        ArchiveExtractionContext properties = new ArchiveExtractionContext(maxFileSizeUncompressed, maxEntries, maxDirectoryDepth, timeout);
-        ArchiveInputStream<?> archiveInputStream = createZipArchiveInputStream(maxEntries, entryFileSize, maxDirectoryDepth);
+        /* @formatter:off */
+        ArchiveExtractionConstraints archiveExtractionConstraints = new ArchiveExtractionConstraints(
+                DEFAULT_MAX_FILE_SIZE_UNCOMPRESSED,
+                DEFAULT_MAX_ENTRIES,
+                DEFAULT_MAX_DIRECTORY_DEPTH,
+                DEFAULT_TIMEOUT
+        );
+        /* @formatter:on */
+        ArchiveInputStream<?> archiveInputStream = createZipArchiveInputStream(DEFAULT_MAX_ENTRIES, DEFAULT_ENTRY_FILE_SIZE, DEFAULT_MAX_DIRECTORY_DEPTH);
 
         /* execute */
-        SafeArchiveInputStream result = new SafeArchiveInputStream(archiveInputStream, properties);
+        SafeArchiveInputStream result = new SafeArchiveInputStream(archiveInputStream, archiveExtractionConstraints);
 
         /* test */
-        assertThat(result.getProperties(), is(properties));
+        assertThat(result.getArchiveExtractionConstraints(), is(archiveExtractionConstraints));
         assertThat(result.getStartTime(), nullValue());
         assertThat(result.getEntriesCount(), is(0L));
         assertThat(result.getBytesRead(), is(0L));
@@ -62,10 +76,11 @@ class SafeArchiveInputStreamTest {
 
     @ParameterizedTest
     @ArgumentsSource(NullArgumentsProvider.class)
-    void new_safe_archive_input_stream_does_not_allow_null_arguments(ArchiveInputStream<?> archiveInputStream, ArchiveExtractionContext properties,
-            String argumentName) {
+    void new_safe_archive_input_stream_does_not_allow_null_arguments(ArchiveInputStream<?> archiveInputStream,
+            ArchiveExtractionConstraints archiveExtractionConstraints, String argumentName) {
         /* execute */
-        NullPointerException exception = assertThrows(NullPointerException.class, () -> new SafeArchiveInputStream(archiveInputStream, properties));
+        NullPointerException exception = assertThrows(NullPointerException.class,
+                () -> new SafeArchiveInputStream(archiveInputStream, archiveExtractionConstraints));
 
         /* test */
         assertThat(exception.getMessage(), is("Property %s must not be null".formatted(argumentName)));
@@ -79,52 +94,40 @@ class SafeArchiveInputStreamTest {
     @Test
     void get_next_entry_with_valid_archive_works() throws IOException {
         /* prepare */
-        FileSize maxFileSizeUncompressed = new FileSize("10KB");
-        long maxEntries = 10L;
-        FileSize entryFileSize = new FileSize("1KB");
-        long maxDirectoryDepth = 10L;
-        Duration timeout = Duration.ofSeconds(10L);
-        ArchiveInputStream<?> zipArchiveInputStream = createZipArchiveInputStream(maxEntries, entryFileSize, maxDirectoryDepth);
-        ArchiveExtractionContext properties = new ArchiveExtractionContext(maxFileSizeUncompressed, maxEntries, maxDirectoryDepth, timeout);
-        SafeArchiveInputStream safeArchiveInputStream = new SafeArchiveInputStream(zipArchiveInputStream, properties);
+        ArchiveInputStream<?> zipArchiveInputStream = createZipArchiveInputStream(DEFAULT_MAX_ENTRIES, DEFAULT_ENTRY_FILE_SIZE, DEFAULT_MAX_DIRECTORY_DEPTH);
+        /* @formatter:off */
+        ArchiveExtractionConstraints archiveExtractionConstraints = new ArchiveExtractionConstraints(
+                DEFAULT_MAX_FILE_SIZE_UNCOMPRESSED,
+                DEFAULT_MAX_ENTRIES,
+                DEFAULT_MAX_DIRECTORY_DEPTH,
+                DEFAULT_TIMEOUT
+        );
+        /* @formatter:on */
+        SafeArchiveInputStream safeArchiveInputStream = new SafeArchiveInputStream(zipArchiveInputStream, archiveExtractionConstraints);
 
-        /* execute */
-        assertDoesNotThrow(() -> {
-            ArchiveEntry entry;
-            while ((entry = safeArchiveInputStream.getNextEntry()) != null) {
-                assertThat(entry, notNullValue());
-                // simulate the extraction of the archive
-                // otherwise no bytes are read from the input stream
-                extractData(entry, safeArchiveInputStream);
-            }
-        }, "getNextEntry should not throw any exceptions");
-
-        assertThat(safeArchiveInputStream.getEntriesCount(), is(maxEntries));
-        assertThat(safeArchiveInputStream.getBytesRead(), is(maxFileSizeUncompressed.getBytes()));
+        /* execute & test */
+        assertDoesNotThrow(() -> readAllArchiveEntriesFromStream(safeArchiveInputStream), "getNextEntry should not throw any exceptions");
+        assertThat(safeArchiveInputStream.getEntriesCount(), is(DEFAULT_MAX_ENTRIES));
+        assertThat(safeArchiveInputStream.getBytesRead(), is(DEFAULT_MAX_FILE_SIZE_UNCOMPRESSED.getBytes()));
     }
 
     @Test
     void get_next_entry_with_timeout_exceeded_throws_exception() throws IOException {
         /* prepare */
-        FileSize maxFileSizeUncompressed = new FileSize("1MB");
-        long maxEntries = 100L;
-        long maxDirectoryDepth = 10L;
-        Duration timeout = Duration.ofMillis(10L);
-        ArchiveExtractionContext properties = new ArchiveExtractionContext(maxFileSizeUncompressed, maxEntries, maxDirectoryDepth, timeout);
-        FileSize entryFileSize = new FileSize("1KB");
-        ArchiveInputStream<?> zipArchiveInputStream = createZipArchiveInputStream(maxEntries, entryFileSize, maxDirectoryDepth);
-        SafeArchiveInputStream safeArchiveInputStream = new SafeArchiveInputStream(zipArchiveInputStream, properties);
+        Duration timeout = Duration.ofMillis(1L);
+        /* @formatter:off */
+        ArchiveExtractionConstraints archiveExtractionConstraints = new ArchiveExtractionConstraints(
+                DEFAULT_MAX_FILE_SIZE_UNCOMPRESSED,
+                DEFAULT_MAX_ENTRIES,
+                DEFAULT_MAX_DIRECTORY_DEPTH,
+                timeout
+        );
+        /* @formatter:on */
+        ArchiveInputStream<?> zipArchiveInputStream = createZipArchiveInputStream(DEFAULT_MAX_ENTRIES, DEFAULT_ENTRY_FILE_SIZE, DEFAULT_MAX_DIRECTORY_DEPTH);
+        SafeArchiveInputStream safeArchiveInputStream = new SafeArchiveInputStream(zipArchiveInputStream, archiveExtractionConstraints);
 
         /* execute & test */
-        IllegalStateException exception = assertThrows(IllegalStateException.class, () -> {
-            ArchiveEntry entry;
-            while ((entry = safeArchiveInputStream.getNextEntry()) != null) {
-                assertThat(entry, notNullValue());
-                // simulate the extraction of the archive
-                // otherwise no bytes are read from the input stream
-                extractData(entry, safeArchiveInputStream);
-            }
-        });
+        ArchiveExtractionException exception = assertThrows(ArchiveExtractionException.class, () -> readAllArchiveEntriesFromStream(safeArchiveInputStream));
         assertThat(exception.getMessage(), is("Timeout exceeded"));
     }
 
@@ -137,27 +140,22 @@ class SafeArchiveInputStreamTest {
     void get_next_entry_with_max_file_size_uncompressed_exceeded_throws_exception() throws IOException {
         /* prepare */
         FileSize maxFileSizeUncompressed = new FileSize("9KB");
-        long maxEntries = 10;
-        long maxDirectoryDepth = 1L;
-        Duration timeout = Duration.ofSeconds(10L);
-        ArchiveExtractionContext properties = new ArchiveExtractionContext(maxFileSizeUncompressed, maxEntries, maxDirectoryDepth, timeout);
-        FileSize entryFileSize = new FileSize("1KB");
-        ArchiveInputStream<?> zipArchiveInputStream = createZipArchiveInputStream(maxEntries, entryFileSize, maxDirectoryDepth);
-        SafeArchiveInputStream safeArchiveInputStream = new SafeArchiveInputStream(zipArchiveInputStream, properties);
+        /* @formatter:off */
+        ArchiveExtractionConstraints archiveExtractionConstraints = new ArchiveExtractionConstraints(
+                maxFileSizeUncompressed,
+                DEFAULT_MAX_ENTRIES,
+                DEFAULT_MAX_DIRECTORY_DEPTH,
+                DEFAULT_TIMEOUT
+        );
+        /* @formatter:on */
+        ArchiveInputStream<?> zipArchiveInputStream = createZipArchiveInputStream(DEFAULT_MAX_ENTRIES, DEFAULT_ENTRY_FILE_SIZE, DEFAULT_MAX_DIRECTORY_DEPTH);
+        SafeArchiveInputStream safeArchiveInputStream = new SafeArchiveInputStream(zipArchiveInputStream, archiveExtractionConstraints);
 
         /* execute & test */
-        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {
-            ArchiveEntry entry;
-            while ((entry = safeArchiveInputStream.getNextEntry()) != null) {
-                assertThat(entry, notNullValue());
-                // simulate the extraction of the archive
-                // otherwise no bytes are read from the input stream
-                extractData(entry, safeArchiveInputStream);
-            }
-        });
+        ArchiveExtractionException exception = assertThrows(ArchiveExtractionException.class, () -> readAllArchiveEntriesFromStream(safeArchiveInputStream));
         assertThat(exception.getMessage(), is("File size exceeds the maximum allowed value of %s".formatted(maxFileSizeUncompressed.getSizeString())));
-        assertThat(safeArchiveInputStream.getEntriesCount(), is(maxEntries));
-        assertThat(safeArchiveInputStream.getBytesRead(), is(maxFileSizeUncompressed.getBytes() + entryFileSize.getBytes()));
+        assertThat(safeArchiveInputStream.getEntriesCount(), is(DEFAULT_MAX_ENTRIES));
+        assertThat(safeArchiveInputStream.getBytesRead(), is(maxFileSizeUncompressed.getBytes() + DEFAULT_ENTRY_FILE_SIZE.getBytes()));
     }
 
     /**
@@ -168,23 +166,21 @@ class SafeArchiveInputStreamTest {
     @Test
     void get_next_entry_with_too_many_entries_throws_exception() throws IOException {
         /* prepare */
-        FileSize maxFileSizeUncompressed = new FileSize("1MB");
-        long maxEntries = 10L;
-        long maxDirectoryDepth = 1L;
-        Duration timeout = Duration.ofSeconds(10L);
-        ArchiveExtractionContext properties = new ArchiveExtractionContext(maxFileSizeUncompressed, maxEntries, maxDirectoryDepth, timeout);
-        FileSize entryFileSize = new FileSize("1KB");
-        ArchiveInputStream<?> zipArchiveInputStream = createZipArchiveInputStream(maxEntries + 1, entryFileSize, maxDirectoryDepth);
-        SafeArchiveInputStream safeguard = new SafeArchiveInputStream(zipArchiveInputStream, properties);
+        /* @formatter:off */
+        ArchiveExtractionConstraints archiveExtractionConstraints = new ArchiveExtractionConstraints(
+                DEFAULT_MAX_FILE_SIZE_UNCOMPRESSED,
+                DEFAULT_MAX_ENTRIES,
+                DEFAULT_MAX_DIRECTORY_DEPTH,
+                DEFAULT_TIMEOUT
+        );
+        /* @formatter:on */
+        long entriesCount = DEFAULT_MAX_ENTRIES + 1;
+        ArchiveInputStream<?> zipArchiveInputStream = createZipArchiveInputStream(entriesCount, DEFAULT_ENTRY_FILE_SIZE, DEFAULT_MAX_DIRECTORY_DEPTH);
+        SafeArchiveInputStream safeArchiveInputStream = new SafeArchiveInputStream(zipArchiveInputStream, archiveExtractionConstraints);
 
         /* execute & test */
-        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {
-            ArchiveEntry entry;
-            while ((entry = safeguard.getNextEntry()) != null) {
-                assertThat(entry, notNullValue());
-            }
-        });
-        assertThat(exception.getMessage(), is("Number of entries exceeds the maximum allowed value of %s".formatted(maxEntries)));
+        ArchiveExtractionException exception = assertThrows(ArchiveExtractionException.class, () -> readAllArchiveEntriesFromStream(safeArchiveInputStream));
+        assertThat(exception.getMessage(), is("Number of entries exceeds the maximum allowed value of %s".formatted(DEFAULT_MAX_ENTRIES)));
     }
 
     /**
@@ -195,23 +191,21 @@ class SafeArchiveInputStreamTest {
     @Test
     void get_next_entry_with_too_many_directories_throws_exception() throws IOException {
         /* prepare */
-        FileSize maxFileSizeUncompressed = new FileSize("1MB");
-        long maxEntries = 1L;
-        long maxDirectoryDepth = 10L;
-        Duration timeout = Duration.ofSeconds(10L);
-        ArchiveExtractionContext properties = new ArchiveExtractionContext(maxFileSizeUncompressed, maxEntries, maxDirectoryDepth, timeout);
-        FileSize entryFileSize = new FileSize("1KB");
-        ArchiveInputStream<?> zipArchiveInputStream = createZipArchiveInputStream(maxEntries, entryFileSize, maxDirectoryDepth + 1);
-        SafeArchiveInputStream safeguard = new SafeArchiveInputStream(zipArchiveInputStream, properties);
+        /* @formatter:off */
+        ArchiveExtractionConstraints archiveExtractionConstraints = new ArchiveExtractionConstraints(
+                DEFAULT_MAX_FILE_SIZE_UNCOMPRESSED,
+                DEFAULT_MAX_ENTRIES,
+                DEFAULT_MAX_DIRECTORY_DEPTH,
+                DEFAULT_TIMEOUT
+        );
+        /* @formatter:on */
+        long directoriesCount = DEFAULT_MAX_DIRECTORY_DEPTH + 1;
+        ArchiveInputStream<?> zipArchiveInputStream = createZipArchiveInputStream(DEFAULT_MAX_ENTRIES, DEFAULT_ENTRY_FILE_SIZE, directoriesCount);
+        SafeArchiveInputStream safeArchiveInputStream = new SafeArchiveInputStream(zipArchiveInputStream, archiveExtractionConstraints);
 
         /* execute & test */
-        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {
-            ArchiveEntry entry;
-            while ((entry = safeguard.getNextEntry()) != null) {
-                assertThat(entry, notNullValue());
-            }
-        });
-        assertThat(exception.getMessage(), is("Directory depth exceeds the maximum allowed value of %s".formatted(maxDirectoryDepth)));
+        ArchiveExtractionException exception = assertThrows(ArchiveExtractionException.class, () -> readAllArchiveEntriesFromStream(safeArchiveInputStream));
+        assertThat(exception.getMessage(), is("Directory depth exceeds the maximum allowed value of %s".formatted(DEFAULT_MAX_DIRECTORY_DEPTH)));
     }
 
     private ZipArchiveInputStream createZipArchiveInputStream(long entriesCount, FileSize entryFileSize, long maxDirectoryDepth) throws IOException {
@@ -246,6 +240,16 @@ class SafeArchiveInputStreamTest {
         }
     }
 
+    private void readAllArchiveEntriesFromStream(SafeArchiveInputStream safeArchiveInputStream) throws IOException {
+        ArchiveEntry entry;
+        while ((entry = safeArchiveInputStream.getNextEntry()) != null) {
+            assertThat(entry, notNullValue());
+            // simulate the extraction of the archive
+            // otherwise no bytes are read from the input stream
+            extractData(entry, safeArchiveInputStream);
+        }
+    }
+
     private void extractData(ArchiveEntry entry, InputStream inputStream) throws IOException {
         if (!entry.isDirectory()) {
             // If it's a file, write its contents to a new file
@@ -259,9 +263,13 @@ class SafeArchiveInputStreamTest {
 
     private static class NullArgumentsProvider implements ArgumentsProvider {
         @Override
-        public Stream<? extends Arguments> provideArguments(ExtensionContext extensionContext) throws Exception {
-            return Stream.of(Arguments.of(null, new ArchiveExtractionContext(new FileSize("100MB"), 100L, 10L, Duration.ofSeconds(10)), "inputStream"),
-                    Arguments.of(new ZipArchiveInputStream(new ByteArrayInputStream(new byte[0])), null, "properties"));
+        public Stream<? extends Arguments> provideArguments(ExtensionContext extensionContext) {
+            /* @formatter:off */
+            return Stream.of(
+                    Arguments.of(null, new ArchiveExtractionConstraints(new FileSize("100MB"), 100L, 10L, Duration.ofSeconds(10)), "archiveInputStream"),
+                    Arguments.of(new ZipArchiveInputStream(new ByteArrayInputStream(new byte[0])), null, "archiveExtractionConstraints")
+            );
+            /* @formatter:on */
         }
     }
 }

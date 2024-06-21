@@ -16,13 +16,13 @@ class FileSizeTest {
 
     @ParameterizedTest
     @ArgumentsSource(FileSizeArgumentsProvider.class)
-    void new_file_size_object_has_expected_size_str_and_size_bytes(String sizeStr, long sizeBytes) {
+    void new_file_size_object_has_expected_size_str_and_size_bytes(String sizeStr, long expectedSizeBytes) {
         /* execute */
         FileSize result = new FileSize(sizeStr);
 
         /* test */
         assertThat(result.getSizeString(), is(sizeStr.toUpperCase()));
-        assertThat(result.getBytes(), is(sizeBytes));
+        assertThat(result.getBytes(), is(expectedSizeBytes));
     }
 
     @Test
@@ -48,8 +48,16 @@ class FileSizeTest {
     private static class FileSizeArgumentsProvider implements ArgumentsProvider {
         @Override
         public Stream<? extends Arguments> provideArguments(ExtensionContext extensionContext) {
-            return Stream.of(Arguments.of("10kb", 10240L), Arguments.of("10KB", 10240L), Arguments.of("10mb", 10485760L), Arguments.of("10MB", 10485760L),
-                    Arguments.of("10gb", 10737418240L), Arguments.of("10GB", 10737418240L));
+            /* @formatter:off */
+            return Stream.of(
+                    Arguments.of("10kb", 10240L),
+                    Arguments.of("10KB", 10240L),
+                    Arguments.of("10mb", 10485760L),
+                    Arguments.of("10MB", 10485760L),
+                    Arguments.of("10gb", 10737418240L),
+                    Arguments.of("10GB", 10737418240L)
+            );
+            /* @formatter:on */
         }
     }
 }

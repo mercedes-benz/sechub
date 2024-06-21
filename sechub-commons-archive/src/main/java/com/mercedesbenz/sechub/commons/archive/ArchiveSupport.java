@@ -3,7 +3,12 @@ package com.mercedesbenz.sechub.commons.archive;
 
 import static java.util.Objects.requireNonNull;
 
-import java.io.*;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -13,7 +18,11 @@ import java.util.Map.Entry;
 import java.util.Set;
 import java.util.zip.ZipInputStream;
 
-import org.apache.commons.compress.archivers.*;
+import org.apache.commons.compress.archivers.ArchiveEntry;
+import org.apache.commons.compress.archivers.ArchiveException;
+import org.apache.commons.compress.archivers.ArchiveInputStream;
+import org.apache.commons.compress.archivers.ArchiveOutputStream;
+import org.apache.commons.compress.archivers.ArchiveStreamFactory;
 import org.apache.commons.compress.archivers.tar.TarArchiveEntry;
 import org.apache.commons.compress.archivers.tar.TarArchiveInputStream;
 import org.apache.commons.compress.archivers.tar.TarArchiveOutputStream;
@@ -23,7 +32,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.mercedesbenz.sechub.commons.archive.ArchiveCreationContext.CreationPathContext;
-import com.mercedesbenz.sechub.commons.model.*;
+import com.mercedesbenz.sechub.commons.model.SecHubCodeScanConfiguration;
+import com.mercedesbenz.sechub.commons.model.SecHubConfigurationModel;
+import com.mercedesbenz.sechub.commons.model.SecHubDataConfiguration;
+import com.mercedesbenz.sechub.commons.model.SecHubDataConfigurationObject;
+import com.mercedesbenz.sechub.commons.model.SecHubFileSystemConfiguration;
+import com.mercedesbenz.sechub.commons.model.SecHubFileSystemContainer;
 
 public class ArchiveSupport {
 
@@ -42,29 +56,33 @@ public class ArchiveSupport {
      *
      * @param archiveType
      * @param sourceInputStream
-     * @param sourceLocation            the path for the given source input stream.
-     *                                  This information is only used in case of
-     *                                  failures to print out the location - means
-     *                                  only for debugging/error handling
+     * @param sourceLocation               the path for the given source input
+     *                                     stream. This information is only used in
+     *                                     case of failures to print out the
+     *                                     location - means only for debugging/error
+     *                                     handling
      * @param outputDir
-     * @param fileStructureDataProvider used to transform/filter the extraction. If
-     *                                  <code>null</code>, a fallback will be used
-     *                                  which does no transformation or filtering
+     * @param fileStructureDataProvider    used to transform/filter the extraction.
+     *                                     If <code>null</code>, a fallback will be
+     *                                     used which does no transformation or
+     *                                     filtering
+     * @param archiveExtractionConstraints defines constraints to safeguard the
+     *                                     extraction of the archive
      *
      * @return extraction result
      *
      * @throws IOException
      */
     public ArchiveExtractionResult extract(ArchiveType archiveType, InputStream sourceInputStream, String sourceLocation, File outputDir,
-            SecHubFileStructureDataProvider fileStructureDataProvider, ArchiveExtractionContext archiveExtractionContext) throws IOException {
+            SecHubFileStructureDataProvider fileStructureDataProvider, ArchiveExtractionConstraints archiveExtractionConstraints) throws IOException {
         if (archiveType == null) {
             throw new IllegalArgumentException("archive type must be defined!");
         }
         switch (archiveType) {
         case TAR:
-            return extractTar(sourceInputStream, sourceLocation, outputDir, fileStructureDataProvider, archiveExtractionContext);
+            return extractTar(sourceInputStream, sourceLocation, outputDir, fileStructureDataProvider, archiveExtractionConstraints);
         case ZIP:
-            return extractZip(sourceInputStream, sourceLocation, outputDir, fileStructureDataProvider, archiveExtractionContext);
+            return extractZip(sourceInputStream, sourceLocation, outputDir, fileStructureDataProvider, archiveExtractionConstraints);
         default:
             throw new IllegalArgumentException("archive type " + archiveType + " is not supported");
 
@@ -389,15 +407,14 @@ public class ArchiveSupport {
     }
 
     private ArchiveExtractionResult extractTar(InputStream sourceInputStream, String sourceLocation, File outputDir,
-            SecHubFileStructureDataProvider fileStructureProvider, ArchiveExtractionContext properties) throws IOException {
-        try (ArchiveInputStream archiveInputStream = new ArchiveStreamFactory().createArchiveInputStream("tar", sourceInputStream)) {
+            SecHubFileStructureDataProvider fileStructureProvider, ArchiveExtractionConstraints archiveExtractionConstraints) throws IOException {
+        try (ArchiveInputStream archiveInputStream = new ArchiveStreamFactory().createArchiveInputStream(ArchiveType.TAR.getType(), sourceInputStream)) {
             if (!(archiveInputStream instanceof TarArchiveInputStream)) {
                 throw new IOException("Cannot extract: " + sourceLocation + " because it is not a tar tar");
             }
-
-            SafeArchiveInputStream safeArchiveInputStream = new SafeArchiveInputStream(archiveInputStream, properties);
-            return extract(safeArchiveInputStream, sourceLocation, outputDir, fileStructureProvider);
-
+            try (SafeArchiveInputStream safeArchiveInputStream = new SafeArchiveInputStream(archiveInputStream, archiveExtractionConstraints)) {
+                return extract(safeArchiveInputStream, sourceLocation, outputDir, fileStructureProvider);
+            }
         } catch (ArchiveException e) {
             throw new IOException("Was not able to extract tar:" + sourceLocation + " at " + outputDir, e);
         }
@@ -405,10 +422,10 @@ public class ArchiveSupport {
     }
 
     private ArchiveExtractionResult extractZip(InputStream sourceInputStream, String sourceLocation, File outputDir,
-            SecHubFileStructureDataProvider configuration, ArchiveExtractionContext properties) throws IOException {
-        try (ArchiveInputStream archiveInputStream = new ArchiveStreamFactory().createArchiveInputStream("zip", sourceInputStream)) {
+            SecHubFileStructureDataProvider configuration, ArchiveExtractionConstraints archiveExtractionConstraints) throws IOException {
+        try (ArchiveInputStream archiveInputStream = new ArchiveStreamFactory().createArchiveInputStream(ArchiveType.ZIP.getType(), sourceInputStream);
+                SafeArchiveInputStream safeArchiveInputStream = new SafeArchiveInputStream(archiveInputStream, archiveExtractionConstraints)) {
 
-            SafeArchiveInputStream safeArchiveInputStream = new SafeArchiveInputStream(archiveInputStream, properties);
             return extract(safeArchiveInputStream, sourceLocation, outputDir, configuration);
 
         } catch (ArchiveException e) {
@@ -496,6 +513,7 @@ public class ArchiveSupport {
                 }
             }
         }
+        result.size = safeArchiveInputStream.getBytesRead();
         return result;
     }
 

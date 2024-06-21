@@ -13,21 +13,21 @@ import org.apache.commons.compress.archivers.ArchiveInputStream;
 class SafeArchiveInputStream extends InputStream {
     private static final String DIRECTORY_DELIMITER = "/";
 
-    private final ArchiveInputStream<?> inputStream;
-    private final ArchiveExtractionContext properties;
+    private final ArchiveInputStream<?> archiveInputStream;
+    private final ArchiveExtractionConstraints archiveExtractionConstraints;
 
     private Instant startTime;
     private long entriesCount;
     private long bytesRead;
 
-    public SafeArchiveInputStream(ArchiveInputStream<?> inputStream, ArchiveExtractionContext properties) {
-        this.inputStream = requireNonNull(inputStream, "Property inputStream must not be null");
-        this.properties = requireNonNull(properties, "Property properties must not be null");
+    public SafeArchiveInputStream(ArchiveInputStream<?> archiveInputStream, ArchiveExtractionConstraints archiveExtractionConstraints) {
+        this.archiveInputStream = requireNonNull(archiveInputStream, "Property archiveInputStream must not be null");
+        this.archiveExtractionConstraints = requireNonNull(archiveExtractionConstraints, "Property archiveExtractionConstraints must not be null");
     }
 
     @Override
     public int read() throws IOException {
-        int result = inputStream.read();
+        int result = archiveInputStream.read();
         if (result != -1) {
             bytesRead++;
         }
@@ -36,15 +36,15 @@ class SafeArchiveInputStream extends InputStream {
 
     @Override
     public int read(byte[] b, int off, int len) throws IOException {
-        int result = inputStream.read(b, off, len);
+        int result = archiveInputStream.read(b, off, len);
         if (result != -1) {
             bytesRead += result;
         }
         return result;
     }
 
-    ArchiveExtractionContext getProperties() {
-        return properties;
+    ArchiveExtractionConstraints getArchiveExtractionConstraints() {
+        return archiveExtractionConstraints;
     }
 
     long getEntriesCount() {
@@ -64,30 +64,30 @@ class SafeArchiveInputStream extends InputStream {
             startTime = Instant.now();
         }
 
-        if (Duration.between(startTime, Instant.now()).compareTo(properties.getTimeout()) > 0) {
-            throw new IllegalStateException("Timeout exceeded");
+        if (Duration.between(startTime, Instant.now()).compareTo(archiveExtractionConstraints.getTimeout()) > 0) {
+            throw new ArchiveExtractionException("Timeout exceeded");
         }
 
-        FileSize maxFileSizeUncompressed = properties.getMaxFileSizeUncompressed();
+        FileSize maxFileSizeUncompressed = archiveExtractionConstraints.getMaxFileSizeUncompressed();
         if (bytesRead > maxFileSizeUncompressed.getBytes()) {
-            throw new IllegalArgumentException("File size exceeds the maximum allowed value of %s".formatted(maxFileSizeUncompressed.getSizeString()));
+            throw new ArchiveExtractionException("File size exceeds the maximum allowed value of %s".formatted(maxFileSizeUncompressed.getSizeString()));
         }
 
-        ArchiveEntry entry = inputStream.getNextEntry();
+        ArchiveEntry entry = archiveInputStream.getNextEntry();
         if (entry == null) {
             return null;
         }
 
-        long maxDirectoryDepth = properties.getMaxDirectoryDepth();
+        long maxDirectoryDepth = archiveExtractionConstraints.getMaxDirectoryDepth();
         long directoryDepth = entry.getName().split(DIRECTORY_DELIMITER).length - 1; // Subtract 1 because split includes the file name
         if (directoryDepth > maxDirectoryDepth) {
-            throw new IllegalArgumentException("Directory depth exceeds the maximum allowed value of %s".formatted(maxDirectoryDepth));
+            throw new ArchiveExtractionException("Directory depth exceeds the maximum allowed value of %s".formatted(maxDirectoryDepth));
         }
 
         if (!entry.isDirectory()) {
-            long maxEntries = properties.getMaxEntries();
+            long maxEntries = archiveExtractionConstraints.getMaxEntries();
             if (++entriesCount > maxEntries) {
-                throw new IllegalArgumentException("Number of entries exceeds the maximum allowed value of %s".formatted(maxEntries));
+                throw new ArchiveExtractionException("Number of entries exceeds the maximum allowed value of %s".formatted(maxEntries));
             }
         }
 
