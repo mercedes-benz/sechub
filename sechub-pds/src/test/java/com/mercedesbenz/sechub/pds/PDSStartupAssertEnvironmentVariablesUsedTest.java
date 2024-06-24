@@ -13,6 +13,7 @@ import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
+import org.springframework.core.env.Environment;
 
 import com.mercedesbenz.sechub.commons.core.environment.SecureEnvironmentVariableKeyValueRegistry;
 import com.mercedesbenz.sechub.commons.core.environment.SystemEnvironmentVariableSupport;
@@ -27,6 +28,7 @@ class PDSStartupAssertEnvironmentVariablesUsedTest {
     private PDSS3PropertiesSetup s3setup;
     private PDSSecurityConfiguration securityConfiguration;
     private PDSSharedVolumePropertiesSetup sharedVolumeSetup;
+    private Environment environment;
 
     @BeforeEach
     void beforeEach() {
@@ -36,11 +38,13 @@ class PDSStartupAssertEnvironmentVariablesUsedTest {
         securityConfiguration = mock(PDSSecurityConfiguration.class);
         envVariableSupport = mock(SystemEnvironmentVariableSupport.class);
         sharedVolumeSetup = mock(PDSSharedVolumePropertiesSetup.class);
+        environment = mock(Environment.class);
 
         assertionToTest.envVariableSupport = envVariableSupport;
         assertionToTest.securityConfiguration = securityConfiguration;
         assertionToTest.s3Setup = s3setup;
         assertionToTest.sharedVolumeSetup = sharedVolumeSetup;
+        assertionToTest.environment = environment;
 
     }
 
@@ -90,7 +94,7 @@ class PDSStartupAssertEnvironmentVariablesUsedTest {
             @Override
             public Void answer(InvocationOnMock invocation) throws Throwable {
                 SecureEnvironmentVariableKeyValueRegistry arg = (SecureEnvironmentVariableKeyValueRegistry) invocation.getArgument(0);
-                arg.register(arg.newEntry().key("test.key1").variable("TEST_KEY_VARIABLE").value("val1"));
+                arg.register(arg.newEntry().key("test.key1").variable("TEST_KEY_VARIABLE").notNullValue("val1"));
                 return null;
             }
 

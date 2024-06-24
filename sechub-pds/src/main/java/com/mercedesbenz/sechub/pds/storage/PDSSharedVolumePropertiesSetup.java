@@ -31,7 +31,7 @@ public class PDSSharedVolumePropertiesSetup extends AbstractSharedVolumeProperti
             // not sensitive, ignore
             return;
         }
-        registry.register(registry.newEntry().key(PDS_STORAGE_SHAREDVOLUME_UPLOAD_DIR).value(configuredUploadDir));
+        registry.register(registry.newEntry().key(PDS_STORAGE_SHAREDVOLUME_UPLOAD_DIR).notNullValue(configuredUploadDir));
     }
 
 }

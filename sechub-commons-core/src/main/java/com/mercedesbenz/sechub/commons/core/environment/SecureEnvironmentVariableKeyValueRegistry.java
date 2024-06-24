@@ -21,6 +21,8 @@ import com.mercedesbenz.sechub.commons.core.security.CryptoAccess;
  */
 public class SecureEnvironmentVariableKeyValueRegistry {
 
+    private static final CryptoAccess<String> CRYPTO_ACCESS = CryptoAccess.CRYPTO_STRING;
+
     private List<EnvironmentVariableKeyValueEntry> entries = new ArrayList<>();
 
     public void register(EnvironmentVariableKeyValueEntryBuilder entry) {
@@ -38,7 +40,8 @@ public class SecureEnvironmentVariableKeyValueRegistry {
     public static class EnvironmentVariableKeyValueEntryBuilder {
         private String key;
         private String variableName;
-        private SealedObject value;
+        private SealedObject sealedObjectForNotNullValue;
+        private SealedObject sealedObjectForNullablelValue;
 
         private EnvironmentVariableKeyValueEntryBuilder() {
 
@@ -49,8 +52,13 @@ public class SecureEnvironmentVariableKeyValueRegistry {
             return this;
         }
 
-        public EnvironmentVariableKeyValueEntryBuilder value(String value) {
-            this.value = CryptoAccess.CRYPTO_STRING.seal(value);
+        public EnvironmentVariableKeyValueEntryBuilder notNullValue(String value) {
+            this.sealedObjectForNotNullValue = CRYPTO_ACCESS.seal(value);
+            return this;
+        }
+
+        public EnvironmentVariableKeyValueEntryBuilder nullableValue(String value) {
+            this.sealedObjectForNullablelValue = CRYPTO_ACCESS.seal(value);
             return this;
         }
 
@@ -59,6 +67,14 @@ public class SecureEnvironmentVariableKeyValueRegistry {
             return this;
         }
 
+        /**
+         * Creates the configured entry
+         *
+         * @throws IllegalArgumentException if key is empty or blank, key contains
+         *                                  spaces or value is not allowed to be null,
+         *                                  but is null null
+         * @return entry
+         */
         public EnvironmentVariableKeyValueEntry build() {
             if (key == null || key.isBlank()) {
                 throw new IllegalArgumentException("key not defined");
@@ -66,9 +82,32 @@ public class SecureEnvironmentVariableKeyValueRegistry {
             if (key.contains(" ")) {
                 throw new IllegalArgumentException("spaces not allowed for key!");
             }
+
+            if (sealedObjectForNullablelValue == null && sealedObjectForNotNullValue == null) {
+                throw new IllegalArgumentException("No value defined at all, you have to use either nullableValue() or notNullValue() methods to setup!");
+            }
+            if (sealedObjectForNullablelValue != null && sealedObjectForNotNullValue != null) {
+                throw new IllegalArgumentException(
+                        "Two ways of value definition used. Please use either nullableValue() or notNullValue() method, but not both!");
+            }
+
+            SealedObject sealedObjectToUse = null;
+
+            if (sealedObjectForNotNullValue != null) {
+                boolean notDefined = CRYPTO_ACCESS.unseal(sealedObjectForNotNullValue) == null;
+                if (notDefined) {
+                    throw new IllegalArgumentException("Usage failure: the sealed object for a 'not null value' was null!");
+                }
+                sealedObjectToUse = sealedObjectForNotNullValue;
+            }
+
+            if (sealedObjectForNullablelValue != null) {
+                sealedObjectToUse = sealedObjectForNullablelValue;
+            }
+
             EnvironmentVariableKeyValueEntry entry = new EnvironmentVariableKeyValueEntry();
             entry.key = key;
-            entry.value = value;
+            entry.sealedObjectToUse = sealedObjectToUse;
             entry.variableName = variableName;
 
             if (entry.variableName == null) {
@@ -82,10 +121,9 @@ public class SecureEnvironmentVariableKeyValueRegistry {
     public static class EnvironmentVariableKeyValueEntry {
         private String key;
         private String variableName;
-        private SealedObject value;
+        private SealedObject sealedObjectToUse;
 
         private EnvironmentVariableKeyValueEntry() {
-
         }
 
         public String getKey() {
@@ -97,10 +135,10 @@ public class SecureEnvironmentVariableKeyValueRegistry {
         }
 
         public String getValue() {
-            if (value == null) {
+            if (sealedObjectToUse == null) {
                 return null;
             }
-            return CryptoAccess.CRYPTO_STRING.unseal(value);
+            return CRYPTO_ACCESS.unseal(sealedObjectToUse);
         }
     }
 }
