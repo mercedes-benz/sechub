@@ -23,7 +23,7 @@ import com.mercedesbenz.sechub.api.SecHubClientException;
 import com.mercedesbenz.sechub.api.SecHubReport;
 import com.mercedesbenz.sechub.commons.TextFileReader;
 import com.mercedesbenz.sechub.commons.TextFileWriter;
-import com.mercedesbenz.sechub.commons.archive.ArchiveExtractionContext;
+import com.mercedesbenz.sechub.commons.archive.ArchiveExtractionConstraints;
 import com.mercedesbenz.sechub.commons.archive.ArchiveSupport;
 import com.mercedesbenz.sechub.commons.archive.ArchiveSupport.ArchiveType;
 import com.mercedesbenz.sechub.commons.archive.FileSize;
@@ -74,7 +74,7 @@ public class SystemTestRuntimeTestEngine {
     SystemTestRuntimeTestAssertion testAssertion = new SystemTestRuntimeTestAssertion();
     CurrentTestVariableCalculatorFactory currentTestVariableCalculatorFactory = new DefaultCurrentTestVariableCalculatorFactory();
     ArchiveSupport archiveSupport = new ArchiveSupport();
-    ArchiveExtractionContext extractionContext = new ArchiveExtractionContext(new FileSize("100MB"), 100L, 10L, Duration.ofSeconds(10));
+    ArchiveExtractionConstraints extractionContext = new ArchiveExtractionConstraints(new FileSize("100MB"), 100L, 10L, Duration.ofSeconds(10));
 
     TextFileReader textFileReader = new TextFileReader();
     TextFileWriter textFileWriter = new TextFileWriter();
