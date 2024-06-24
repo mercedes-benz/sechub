@@ -1,15 +1,20 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.commons.archive;
 
-import static com.mercedesbenz.sechub.commons.archive.ArchiveSupport.ArchiveType.TAR;
-import static com.mercedesbenz.sechub.commons.archive.ArchiveSupport.ArchiveType.ZIP;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.is;
-import static org.junit.Assert.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.junit.jupiter.api.Assertions.fail;
+import com.mercedesbenz.sechub.commons.TextFileReader;
+import com.mercedesbenz.sechub.commons.TextFileWriter;
+import com.mercedesbenz.sechub.commons.archive.ArchiveSupport.ArchiveType;
+import com.mercedesbenz.sechub.commons.archive.ArchiveSupport.ArchivesCreationResult;
+import com.mercedesbenz.sechub.commons.model.JSONConverter;
+import com.mercedesbenz.sechub.commons.model.ScanType;
+import com.mercedesbenz.sechub.commons.model.SecHubConfigurationModel;
+import com.mercedesbenz.sechub.test.TestFileSupport;
+import com.mercedesbenz.sechub.test.TestUtil;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -22,21 +27,15 @@ import java.util.List;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.ValueSource;
-
-import com.mercedesbenz.sechub.commons.TextFileReader;
-import com.mercedesbenz.sechub.commons.TextFileWriter;
-import com.mercedesbenz.sechub.commons.archive.ArchiveSupport.ArchiveType;
-import com.mercedesbenz.sechub.commons.archive.ArchiveSupport.ArchivesCreationResult;
-import com.mercedesbenz.sechub.commons.model.JSONConverter;
-import com.mercedesbenz.sechub.commons.model.ScanType;
-import com.mercedesbenz.sechub.commons.model.SecHubConfigurationModel;
-import com.mercedesbenz.sechub.test.TestFileSupport;
-import com.mercedesbenz.sechub.test.TestUtil;
+import static com.mercedesbenz.sechub.commons.archive.ArchiveSupport.ArchiveType.TAR;
+import static com.mercedesbenz.sechub.commons.archive.ArchiveSupport.ArchiveType.ZIP;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.is;
+import static org.junit.Assert.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 
 class ArchiveSupportTest {
 
@@ -385,8 +384,8 @@ class ArchiveSupportTest {
         MutableSecHubFileStructureDataProvider configuration = new MutableSecHubFileStructureDataProvider();
         configuration.setRootFolderAccepted(true);
 
-        // set timeout to 1ms to enforce a timeout exception
-        Duration timeout = Duration.ofMillis(1);
+        // set timeout to 1ns to enforce a timeout exception
+        Duration timeout = Duration.ofNanos(1);
         ArchiveExtractionConstraints archiveExtractionConstraints = new ArchiveExtractionConstraints(maxFileSizeUncompressed, maxEntries, maxDirectoryDepth,
                 timeout);
 
