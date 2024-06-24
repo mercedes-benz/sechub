@@ -1,0 +1,32 @@
+# SPDX-License-Identifier: MIT
+
+version: "3"
+services:
+  sechub:
+    build:
+      args:
+        - BASE_IMAGE=debian:12-slim
+        - BUILD_TYPE=${BUILD_TYPE}
+        - JAVA_DISTRIBUTION=${JAVA_DISTRIBUTION}
+        - JAVA_VERSION=${JAVA_VERSION}
+        - SECHUB_VERSION=${SECHUB_VERSION}
+        - GO=${GO}
+        - TAG=${TAG}
+        - BRANCH=${BRANCH}
+      context: docker/
+      dockerfile: SecHub-Debian.dockerfile
+    container_name: sechub
+    hostname: sechub
+    env_file:
+      - .env
+      - .env-single
+    ports:
+      - "127.0.0.1:${PORT}:8443"
+      - "127.0.0.1:${JAVA_DEBUG_PORT}:15023"
+    networks:
+      - sechub
+    volumes:
+      - /home/<user>/.sechub/sharedvolume:/shared_volumes/uploads
+networks:
+  sechub:
+    name: sechub

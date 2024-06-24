@@ -60,6 +60,9 @@ public class GitPrepareWrapperModule extends AbstractPrepareWrapperModule {
     @Autowired
     PDSLogSanitizer pdsLogSanitizer;
 
+    @Autowired
+    GitLocationConverter gitLocationConverter;
+
     @Override
     public boolean isEnabled() {
         return enabled;
@@ -117,7 +120,7 @@ public class GitPrepareWrapperModule extends AbstractPrepareWrapperModule {
         GitContext gitContext = new GitContext();
         gitContext.setCloneWithoutHistory(cloneWithoutGitHistory);
         gitContext.setLocation(location);
-        gitContext.setRepositoryName(getRepositoryNameFromLocation(location));
+        gitContext.setRepositoryName(gitLocationConverter.convertLocationForRepositoryName(location));
         gitContext.init(workingDirectory);
 
         return gitContext;
@@ -171,13 +174,6 @@ public class GitPrepareWrapperModule extends AbstractPrepareWrapperModule {
         gitContext.setSealedCredentials(user);
 
         gitWrapper.downloadRemoteData(gitContext);
-    }
-
-    private String getRepositoryNameFromLocation(String location) {
-        String[] parts = location.split("/");
-        String repository = parts[parts.length - 1];
-        repository = repository.replace(".git", "");
-        return repository;
     }
 
 }

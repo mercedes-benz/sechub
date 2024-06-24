@@ -3,6 +3,7 @@ package com.mercedesbenz.sechub.wrapper.prepare.modules.skopeo;
 import static org.junit.jupiter.api.Assertions.*;
 
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EmptySource;
 import org.junit.jupiter.params.provider.NullSource;
@@ -19,7 +20,7 @@ class SkopeoLocationConverterTest {
     }
 
     @ParameterizedTest
-    @ValueSource(strings = { "https://ubuntu:22.04", "http://ubuntu:22.04", "docker://ubuntu:22.04", "http://ubuntu:22.04" })
+    @ValueSource(strings = { "https://ubuntu:22.04", "http://ubuntu:22.04", "docker://ubuntu:22.04" })
     void convertLocationForDownload_docker_prefix_always_there(String location) {
         /* execute */
         String result = converterToTest.convertLocationForDownload(location);
@@ -47,6 +48,34 @@ class SkopeoLocationConverterTest {
 
         /* test */
         assertEquals(wrongLocation, result);
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = { "https://ubuntu:22.04", "http://ubuntu:22.04", "docker://ubuntu:22.04", "http://ubuntu:22.04" })
+    void convertLocationForAdditionalTag_prefix_removed(String location) {
+        /* execute */
+        String result = converterToTest.convertLocationForAdditionalTag(location);
+
+        /* test */
+        assertEquals("ubuntu:22.04", result);
+    }
+
+    @Test
+    void convertLocationForAdditionalTag_empty_location_default_tag_prefix_used() {
+        /* execute */
+        String result = converterToTest.convertLocationForAdditionalTag("");
+
+        /* test */
+        assertTrue(result.startsWith("default-tag"));
+    }
+
+    @Test
+    void convertLocationForAdditionalTag_with_path_as_tag() {
+        /* execute */
+        String result = converterToTest.convertLocationForAdditionalTag("artifacts.mycompany.com/artifacts/myimage:tag");
+
+        /* test */
+        assertEquals("artifacts.mycompany.com/artifacts/myimage:tag", result);
     }
 
 }

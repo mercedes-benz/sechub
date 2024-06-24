@@ -40,6 +40,7 @@ class GitPrepareWrapperModuleTest {
     private TestFileWriter writer;
     private GitPrepareInputValidator gitPrepareInputValidator;
     private FileNameSupport filesSupport;
+    private GitLocationConverter gitLocationConverter;
     private final Path gitDownloadFolder = Path.of(GitContext.DOWNLOAD_DIRECTORY_NAME);
     private final Path testRepo = Path.of("test-repo");
 
@@ -50,6 +51,7 @@ class GitPrepareWrapperModuleTest {
         gitPrepareInputValidator = mock(GitPrepareInputValidator.class);
         gitWrapper = mock(GitWrapper.class);
         filesSupport = mock(FileNameSupport.class);
+        gitLocationConverter = mock(GitLocationConverter.class);
         PDSLogSanitizer pdsLogSanitizer = mock(PDSLogSanitizer.class);
 
         PrepareWrapperUploadService uploadService = mock(PrepareWrapperUploadService.class);
@@ -61,6 +63,7 @@ class GitPrepareWrapperModuleTest {
         moduleToTest.gitWrapper = gitWrapper;
         moduleToTest.gitPrepareInputValidator = gitPrepareInputValidator;
         moduleToTest.pdsLogSanitizer = pdsLogSanitizer;
+        moduleToTest.gitLocationConverter = gitLocationConverter;
     }
 
     @Test
@@ -130,6 +133,8 @@ class GitPrepareWrapperModuleTest {
         /* test */
         ArgumentCaptor<GitContext> gitContextCaptor = ArgumentCaptor.forClass(GitContext.class);
         verify(gitWrapper).downloadRemoteData(gitContextCaptor.capture());
+
+        verify(gitLocationConverter).convertLocationForRepositoryName("my-example-location");
 
         GitContext gitContext = gitContextCaptor.getValue();
         assertEquals("my-example-location", gitContext.getLocation());

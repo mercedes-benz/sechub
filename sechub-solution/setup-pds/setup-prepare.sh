@@ -19,8 +19,8 @@ executor_file_name="prepare"
 profile="pds-prepare"
 echo ""
 # defining a second profile with the tool to scan
-second_profile="pds-xray"
-second_executor_filename="xray"
+second_profile="pds-gosec"
+second_executor_filename="gosec"
 echo "Second profile: $second_profile with executor $second_executor_filename"
 echo""
 

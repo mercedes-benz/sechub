@@ -30,6 +30,13 @@ public class GitLocationConverter {
     @Autowired
     PDSLogSanitizer pdsLogSanitizer;
 
+    public String convertLocationForRepositoryName(String location) {
+        String[] parts = location.split("/");
+        String repository = parts[parts.length - 1];
+        repository = repository.replace(".git", "");
+        return repository;
+    }
+
     public URL convertLocationToHttpsBasedURL(String originLocation) {
         if (originLocation == null) {
             throw new IllegalArgumentException("Location may not be null!");

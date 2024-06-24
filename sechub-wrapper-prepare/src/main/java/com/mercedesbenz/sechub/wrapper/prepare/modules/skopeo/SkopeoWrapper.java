@@ -114,7 +114,7 @@ public class SkopeoWrapper extends AbstractToolWrapper {
         List<String> commands = new ArrayList<>();
 
         String location = locationConverter.convertLocationForDownload(context.getLocation());
-        String additionalTag = locationConverter.removeProtocolPrefix(context.getLocation());
+        String additionalTag = locationConverter.convertLocationForAdditionalTag(context.getLocation());
         File downloadDirectory = context.getToolDownloadDirectory().toFile();
 
         commands.add("skopeo");

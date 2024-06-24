@@ -167,7 +167,7 @@ class SkopeoWrapperTest {
         expectedCommands.add("skopeo");
         expectedCommands.add("copy");
         expectedCommands.add("--additional-tag");
-        expectedCommands.add(locationConverter.removeProtocolPrefix(context.getLocation()));
+        expectedCommands.add(locationConverter.convertLocationForAdditionalTag(context.getLocation()));
         expectedCommands.add(location);
         expectedCommands.add("docker-archive:" + context.getDownloadTarFile().toString());
         if (authorized) {

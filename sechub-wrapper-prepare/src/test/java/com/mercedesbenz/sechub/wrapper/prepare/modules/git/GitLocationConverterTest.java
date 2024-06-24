@@ -85,4 +85,14 @@ class GitLocationConverterTest {
         assertTrue(exception.getMessage().contains("Location may not"));
     }
 
+    @ParameterizedTest
+    @ValueSource(strings = { "https://github.com:example/example1.git", "http://github.com:example/example1.git", "git@github.com:example/example1.git",
+            "http://github.com:example/example1.git" })
+    void convertLocationForRepositoryName(String location) {
+        /* execute */
+        String result = converterToTest.convertLocationForRepositoryName(location);
+
+        /* test */
+        assertEquals("example1", result);
+    }
 }
