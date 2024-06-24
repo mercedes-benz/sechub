@@ -1,10 +1,10 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.commons.archive;
 
+import static java.util.Objects.requireNonNull;
+
 import java.time.Duration;
 import java.util.Objects;
-
-import static java.util.Objects.requireNonNull;
 
 /**
  * The ArchiveExtractionConstraints class encapsulates the properties used to
@@ -13,8 +13,9 @@ import static java.util.Objects.requireNonNull;
  * file size, maximum number of entries, maximum directory depth, and timeout.
  *
  * <p>
- * Each property is validated during the creation of an ArchiveExtractionConstraints object to ensure they meet
- * the required conditions.
+ * Each property is validated during the creation of an
+ * ArchiveExtractionConstraints object to ensure they meet the required
+ * conditions.
  *
  * <p>
  * Example usage:
