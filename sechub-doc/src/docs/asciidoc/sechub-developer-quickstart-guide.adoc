@@ -528,7 +528,8 @@ image::eclipse-run-configuration-server-main-tab.png[]
 -Dsechub.config.trigger.nextjob.initialdelay=0
 ----
 +
-NOTE: Ensure you replace the `<user>` with your own user. Additionally, set the `sechub.storage.sharedvolume.upload.dir` parameter to a folder with read and write access on the system.
+NOTE: Ensure you replace the `<user>` with your own user. The `sechub.storage.sharedvolume.upload.dir` parameter must be set to a folder with read and write access on the system. +
+(On IOS, the path should be `/Users/<user>/.sechub/sharedvolume`)
 +
 image::eclipse-run-configuration-server-arguments-tab.png[]
 
@@ -624,6 +625,15 @@ Other PDS integration tests can be run in the same way.
 
 We explain the integration test setup based on the IntelliJ IDEA IDE.
 
+First run the following commands to create the necessary certificates for the integration test servers:
+
+----
+./gradlew ensureLocalhostCertificate build generateOpenapi buildDeveloperAdminUI -x :sechub-cli:build
+----
+----
+./gradlew clean
+----
+
 ==== SecHub Server
 
 Run a SecHub server integration test.
@@ -651,7 +661,8 @@ image::intelliJ-server-application-run-configuration.png[]
 -Dsechub.config.trigger.nextjob.initialdelay=0
 ----
 +
-NOTE: Ensure you replace the `<user>` with your own user. Additionally, set the `sechub.storage.sharedvolume.upload.dir` parameter to a folder with read and write access on the system.
+NOTE: Ensure you replace the `<user>` with your own user. The `sechub.storage.sharedvolume.upload.dir` parameter must be set to a folder with read and write access on the system. +
+(On IOS, the path should be `/Users/<user>/.sechub/sharedvolume`)
 
 . Click on the `Modify options` dropdown and select `Workspace directory`, add the project module path `sechub-server`
 
@@ -685,7 +696,7 @@ Run a Product Delegation Server (PDS) integration test.
 
 . Select the `ProductDelegationServerApplication` configuration and open the `Configuration` tab
 
-. Click on the `Modify options` dropdown and select `Workspace directory`, add the project module path `sechub-server`
+. Click on the `Modify options` dropdown and select `Add VM options`, add the following VM options:
 +
 ----
 -Dspring.profiles.active=pds_integrationtest,pds_h2
