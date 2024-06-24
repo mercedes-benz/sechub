@@ -473,9 +473,9 @@ image::eclipse-dark-theme.png[]
 
 == Set up IntelliJ for SecHub
 
-Requirements: you already have IntelliJ IDE (Community or Ultimate) installed.
+Requirements: IntelliJ IDE (Community or Ultimate) is installed.
 
-. Clone the SecHub repository from GitHub
+. Fork and clone the SecHub repository from GitHub
 
 . Open the sechub project in IntelliJ (it will automatically detect the Gradle project)
 
@@ -638,6 +638,8 @@ Run a SecHub server integration test.
 image::intelliJ_run_configurations_edit.png[]
 
 . Select the `SecHubServerApplication` configuration and open the `Configuration` tab
++
+image::intelliJ-server-application-run-configuration.png[]
 
 . Click on the `Modify options` dropdown and select `Add VM options`, add the following VM options:
 +
