@@ -1,8 +1,6 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.wrapper.prepare.modules.skopeo;
 
-import java.util.Random;
-
 import org.springframework.stereotype.Component;
 
 @Component
@@ -10,13 +8,11 @@ public class SkopeoLocationConverter {
 
     private static final String PROTOCOL_SPLIT = "://";
 
-    private static final String DEFAULT_TAG_PREFIX = "default-tag";
-
-    public String convertLocationForDownload(String location) {
+    public String convertLocationToDockerDownloadURL(String location) {
         return "docker://" + removeProtocolPrefix(location);
     }
 
-    public String convertLocationForLogin(String location) {
+    public String convertLocationToLoginLocation(String location) {
         return removeProtocolPrefix(location);
     }
 
@@ -27,11 +23,11 @@ public class SkopeoLocationConverter {
      * @param location the location to convert
      * @return the location without protocol prefix or default tag
      */
-    public String convertLocationForAdditionalTag(String location) {
+    public String convertLocationToAdditionalTag(String location) {
         String withoutProtocol = removeProtocolPrefix(location);
-        if (withoutProtocol.isBlank() || withoutProtocol.isEmpty()) {
+        if (withoutProtocol.isBlank() || withoutProtocol.isEmpty() || withoutProtocol == null) {
             // we add a random number to prevent conflicts during scans
-            withoutProtocol = DEFAULT_TAG_PREFIX + ":" + new Random().nextInt(1000);
+            throw new IllegalStateException("Could not set additional tag for skopeo location.");
         }
         return withoutProtocol;
     }

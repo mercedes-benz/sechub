@@ -6,6 +6,9 @@ ENVIRONMENT_FILE=".env-single"
 resource_limits_enabled="$1"
 compose_file="docker-compose_sechub-debian-prepare"
 
+mkdir /tmp/sechub-shared-volume
+chmod -R 777 /tmp/sechub-shared-volume
+
 cd $(dirname "$0")
 source ../sechub-solutions-shared/scripts/9999-env-file-helper.sh
 

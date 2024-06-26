@@ -42,8 +42,8 @@ class SkopeoWrapperTest {
         processAdapterFactory = mock(PDSProcessAdapterFactory.class);
         logSanitizer = mock(PDSLogSanitizer.class);
         locationConverter = mock(SkopeoLocationConverter.class);
-        when(locationConverter.convertLocationForLogin(any())).thenReturn("login-location");
-        when(locationConverter.convertLocationForDownload(any())).thenReturn("download-location");
+        when(locationConverter.convertLocationToLoginLocation(any())).thenReturn("login-location");
+        when(locationConverter.convertLocationToDockerDownloadURL(any())).thenReturn("download-location");
 
         processAdapter1 = mock(ProcessAdapter.class);
         processAdapter2 = mock(ProcessAdapter.class);
@@ -81,7 +81,7 @@ class SkopeoWrapperTest {
         /* test */
         verify(processAdapterFactory, times(1)).startProcess(processBuilder1);
         verify(processBuilderFactory, times(1)).createForCommandList(any());
-        verify(locationConverter).convertLocationForDownload(location);
+        verify(locationConverter).convertLocationToDockerDownloadURL(location);
         assertProcessBuilderFactoryCalledWithParametersForSkopeoDownload(context, "download-location", processBuilderFactory, false);
     }
 
@@ -104,7 +104,7 @@ class SkopeoWrapperTest {
         verify(processBuilderFactory, times(2)).createForCommandList(any()); // for login + download
 
         /* test 2 - login */
-        verify(locationConverter).convertLocationForLogin(location);
+        verify(locationConverter).convertLocationToLoginLocation(location);
         assertProcessBuilderFactoryCalledWithParametersForLogin("login-location", username, processBuilderFactory);
 
         // check user input handling for passwords work as expected
@@ -117,7 +117,7 @@ class SkopeoWrapperTest {
         verify(processAdapter1).enterInput(password.toCharArray()); // process adapter sends the password to the stream
 
         /* test 3 - download */
-        verify(locationConverter).convertLocationForDownload(location);
+        verify(locationConverter).convertLocationToDockerDownloadURL(location);
         assertProcessBuilderFactoryCalledWithParametersForSkopeoDownload(context, "download-location", processBuilderFactory, true);
         verify(processBuilder2).inheritIO(); // all streams shall redirect, here okay
 
@@ -167,7 +167,7 @@ class SkopeoWrapperTest {
         expectedCommands.add("skopeo");
         expectedCommands.add("copy");
         expectedCommands.add("--additional-tag");
-        expectedCommands.add(locationConverter.convertLocationForAdditionalTag(context.getLocation()));
+        expectedCommands.add(locationConverter.convertLocationToAdditionalTag(context.getLocation()));
         expectedCommands.add(location);
         expectedCommands.add("docker-archive:" + context.getDownloadTarFile().toString());
         if (authorized) {

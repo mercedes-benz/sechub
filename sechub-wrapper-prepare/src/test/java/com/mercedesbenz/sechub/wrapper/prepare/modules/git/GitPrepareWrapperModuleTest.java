@@ -134,7 +134,7 @@ class GitPrepareWrapperModuleTest {
         ArgumentCaptor<GitContext> gitContextCaptor = ArgumentCaptor.forClass(GitContext.class);
         verify(gitWrapper).downloadRemoteData(gitContextCaptor.capture());
 
-        verify(gitLocationConverter).convertLocationForRepositoryName("my-example-location");
+        verify(gitLocationConverter).convertLocationToRepositoryName("my-example-location");
 
         GitContext gitContext = gitContextCaptor.getValue();
         assertEquals("my-example-location", gitContext.getLocation());

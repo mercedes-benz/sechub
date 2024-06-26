@@ -16,10 +16,6 @@ To start a single container run the script:
 
 === Single Container with Prepare (remote Data)
 
-. Adjust the `docker-compose_sechub-debiian-prepare.yml` file and replace <user> with your linux home directory. +
-Make sure the ./sechub/shared_volume folder exists and is writable for the docker. If not create the directory and execute `sudo chmod -R 777 ./sechub/sharedvolume`. +
-This mounted NFS must be the same directory as the NFS directory in the PDS prepare (/pds-solutions/prepare/docker-compose-prepare_external-network.yml.
-
 . Start the container with the script:
 
 ----

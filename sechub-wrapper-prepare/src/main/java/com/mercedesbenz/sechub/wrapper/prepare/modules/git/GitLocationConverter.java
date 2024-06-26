@@ -30,7 +30,7 @@ public class GitLocationConverter {
     @Autowired
     PDSLogSanitizer pdsLogSanitizer;
 
-    public String convertLocationForRepositoryName(String location) {
+    public String convertLocationToRepositoryName(String location) {
         String[] parts = location.split("/");
         String repository = parts[parts.length - 1];
         repository = repository.replace(".git", "");

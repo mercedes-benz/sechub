@@ -88,9 +88,9 @@ class GitLocationConverterTest {
     @ParameterizedTest
     @ValueSource(strings = { "https://github.com:example/example1.git", "http://github.com:example/example1.git", "git@github.com:example/example1.git",
             "http://github.com:example/example1.git" })
-    void convertLocationForRepositoryName(String location) {
+    void convertLocationToRepositoryName_returns_name_of_repository(String location) {
         /* execute */
-        String result = converterToTest.convertLocationForRepositoryName(location);
+        String result = converterToTest.convertLocationToRepositoryName(location);
 
         /* test */
         assertEquals("example1", result);

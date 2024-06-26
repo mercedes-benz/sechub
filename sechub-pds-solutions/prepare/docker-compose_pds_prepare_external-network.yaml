@@ -17,7 +17,7 @@ services:
             - "sechub"
         volumes:
           - ./docker/scripts:/pds/scripts
-          - /home/<user>/.sechub/sharedvolume:/shared_volumes/uploads
+          - /tmp/sechub-shared-volume:/shared_volumes/uploads
 
 networks:
     sechub:

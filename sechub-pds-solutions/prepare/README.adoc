@@ -37,11 +37,7 @@ The folder contains a start script which does the manual steps for you:
 
 The container will be started and attached to the `sechub` network.
 
-WARNING: Make sure the SecHub container is running with compose prepare and executor for Prepare is set up.
-
-. Adjust the docker-compose_pds_prepare_external-network.yml file and set the volume for the shared_volume directory to your local .sechub folder +
-You might need to create the `sharedvolume` directory in your local .sechub folder. Add read and write access to your newly created shared_volume folder `sudo chmod -R 777 shared_volume`.
-Alternatively you can also mount /tmp as your shared NFS.
+WARNING: Make sure the SecHub container is running with compose prepare and executor for Prepare is set up. (./sechub-solution/01-start-single-docker-compose-prepare.sh)
 
 . Start container in local sechub network:
 +

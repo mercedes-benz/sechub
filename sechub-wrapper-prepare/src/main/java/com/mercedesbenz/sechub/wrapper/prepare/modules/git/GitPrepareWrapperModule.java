@@ -120,7 +120,7 @@ public class GitPrepareWrapperModule extends AbstractPrepareWrapperModule {
         GitContext gitContext = new GitContext();
         gitContext.setCloneWithoutHistory(cloneWithoutGitHistory);
         gitContext.setLocation(location);
-        gitContext.setRepositoryName(gitLocationConverter.convertLocationForRepositoryName(location));
+        gitContext.setRepositoryName(gitLocationConverter.convertLocationToRepositoryName(location));
         gitContext.init(workingDirectory);
 
         return gitContext;
