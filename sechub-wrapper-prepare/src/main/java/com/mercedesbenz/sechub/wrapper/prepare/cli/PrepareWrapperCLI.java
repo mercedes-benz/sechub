@@ -52,8 +52,9 @@ public class PrepareWrapperCLI implements CommandLineRunner {
             LOG.error("Preparation of remote data has failed.", e);
             result = getAdapterExecutionResultFailed("Could not prepare remote data, because of an internal error.");
         }
-
         storeResultOrFail(result);
+        LOG.info("Prepare wrapper has finished successfully.");
+        System.exit(0);
     }
 
     private static AdapterExecutionResult getAdapterExecutionResultFailed(String message) {
