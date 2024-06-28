@@ -79,14 +79,15 @@ public class PDSStartupAssertEnvironmentVariablesUsed {
         SecureEnvironmentVariableKeyValueRegistry sensitiveDataRegistry = new SecureEnvironmentVariableKeyValueRegistry();
 
         if (createFallbacks) {
+
             if (s3Setup == null) {
-                s3Setup = useFallback(new PDSS3PropertiesSetup());
+                s3Setup = new PDSS3PropertiesSetup();
             }
             if (sharedVolumeSetup == null) {
-                sharedVolumeSetup = useFallback(new PDSSharedVolumePropertiesSetup());
+                sharedVolumeSetup = new PDSSharedVolumePropertiesSetup();
             }
             if (securityConfiguration == null) {
-                securityConfiguration = useFallback(new PDSSecurityConfiguration());
+                securityConfiguration = PDSSecurityConfiguration.create("test-user", "test-user-token", "test-admin", "test-admintoken");
             }
         }
         s3Setup.registerOnlyAllowedAsEnvironmentVariables(sensitiveDataRegistry);
@@ -95,20 +96,10 @@ public class PDSStartupAssertEnvironmentVariablesUsed {
 
         // some additional parts which shall only be available as environment variables
         // - h2 databases allow no setup here, so not mandatory
-        sensitiveDataRegistry
-                .register(sensitiveDataRegistry.newEntry().key(SPRING_DATASOURCE_PASSWORD).nullableValue(environment.getProperty(SPRING_DATASOURCE_PASSWORD)));
+        sensitiveDataRegistry.register(sensitiveDataRegistry.newEntry().key(SPRING_DATASOURCE_PASSWORD)
+                .nullableValue(environment != null ? environment.getProperty(SPRING_DATASOURCE_PASSWORD) : null));
 
         return sensitiveDataRegistry;
-    }
-
-    private <T> T useFallback(T fallbackObject) {
-        if (fallbackObject == null) {
-            throw new IllegalArgumentException("Fallback object may never be null!");
-        }
-
-        LOG.warn("Using fallback for : {} - may only happen when used outside spring container", fallbackObject.getClass());
-
-        return fallbackObject;
     }
 
 }
