@@ -8,6 +8,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
+import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.stereotype.Component;
 
 import com.mercedesbenz.sechub.adapter.AdapterExecutionResult;
@@ -30,6 +31,9 @@ public class PrepareWrapperCLI implements CommandLineRunner {
 
     @Autowired
     PrepareWrapperResultStorageService storageService;
+
+    @Autowired
+    ConfigurableApplicationContext context;
 
     @Override
     public void run(String... args) {
@@ -54,6 +58,13 @@ public class PrepareWrapperCLI implements CommandLineRunner {
         }
 
         storeResultOrFail(result);
+
+        shutdownSpringApplication();
+    }
+
+    private void shutdownSpringApplication() {
+        LOG.info("Trigger shutdown spring application");
+        context.close();
     }
 
     private static AdapterExecutionResult getAdapterExecutionResultFailed(String message) {

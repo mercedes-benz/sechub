@@ -9,6 +9,7 @@ import java.util.ArrayList;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.springframework.context.ConfigurableApplicationContext;
 
 import com.mercedesbenz.sechub.adapter.AdapterExecutionResult;
 import com.mercedesbenz.sechub.commons.core.prepare.PrepareResult;
@@ -18,18 +19,21 @@ import com.mercedesbenz.sechub.wrapper.prepare.PrepareWrapperResultStorageServic
 
 class PrepareWrapperCLITest {
 
-    PrepareWrapperCLI prepareWrapperCLIToTest;
-    PrepareWrapperPreparationService preparationService;
-    PrepareWrapperResultStorageService storageService;
+    private PrepareWrapperCLI prepareWrapperCLIToTest;
+    private PrepareWrapperPreparationService preparationService;
+    private PrepareWrapperResultStorageService storageService;
+    private ConfigurableApplicationContext context;
 
     @BeforeEach
     void beforeEach() {
         prepareWrapperCLIToTest = new PrepareWrapperCLI();
         preparationService = mock(PrepareWrapperPreparationService.class);
         storageService = mock(PrepareWrapperResultStorageService.class);
+        context = mock(ConfigurableApplicationContext.class);
 
         prepareWrapperCLIToTest.preparationService = preparationService;
         prepareWrapperCLIToTest.storageService = storageService;
+        prepareWrapperCLIToTest.context = context;
     }
 
     @Test
