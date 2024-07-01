@@ -18,7 +18,6 @@ import com.mercedesbenz.sechub.commons.model.SecHubMessageType;
 import com.mercedesbenz.sechub.wrapper.prepare.PrepareWrapperPreparationService;
 import com.mercedesbenz.sechub.wrapper.prepare.PrepareWrapperResultService;
 import com.mercedesbenz.sechub.wrapper.prepare.PrepareWrapperUsageException;
-import com.mercedesbenz.sechub.wrapper.prepare.upload.PrepareWrapperStorageService;
 import com.mercedesbenz.sechub.wrapper.prepare.upload.PrepareWrapperUploadException;
 
 @Component
@@ -31,9 +30,6 @@ public class PrepareWrapperCLI implements CommandLineRunner {
 
     @Autowired
     PrepareWrapperResultService resultService;
-
-    @Autowired
-    PrepareWrapperStorageService storageService;
 
     @Override
     public void run(String... args) {
@@ -56,8 +52,6 @@ public class PrepareWrapperCLI implements CommandLineRunner {
             LOG.error("Preparation of remote data has failed.", e);
             result = getAdapterExecutionResultFailed("Could not prepare remote data, because of an internal error.");
         }
-
-        storageService.shutdown();
 
         storeResultOrFail(result);
 

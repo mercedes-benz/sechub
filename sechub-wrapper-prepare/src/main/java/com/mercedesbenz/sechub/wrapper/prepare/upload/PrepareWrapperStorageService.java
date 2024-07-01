@@ -38,7 +38,4 @@ public class PrepareWrapperStorageService implements StorageService {
         return jobStorageFactory.createJobStorage(storagePath, jobUUID);
     }
 
-    public void shutdown() {
-        // jobStorageFactory.close();
-    }
 }
