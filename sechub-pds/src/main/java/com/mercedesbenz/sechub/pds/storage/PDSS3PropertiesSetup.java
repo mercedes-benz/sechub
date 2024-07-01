@@ -20,19 +20,19 @@ public class PDSS3PropertiesSetup implements S3Setup {
 
     @PDSMustBeDocumented(value = "Defines the access key for used s3 bucket.", scope = "storage", secret = true)
     @Value("${" + PDS_STORAGE_S3_ACCESSKEY + ":" + UNDEFINED + "}") // we use undefined here. Will be used in isValid
-    private String accessKey;
+    private String accessKey = UNDEFINED;
 
     @PDSMustBeDocumented(value = "Defines the secret key for used s3 bucket.", scope = "storage", secret = true)
     @Value("${" + PDS_STORAGE_S3_SECRETKEY + ":" + UNDEFINED + "}") // we use undefined here. Will be used in isValid
-    private String secretKey;
+    private String secretKey = UNDEFINED;
 
     @PDSMustBeDocumented(value = "Defines the s3 bucket name.", scope = "storage")
     @Value("${" + PDS_STORAGE_S3_BUCKETNAME + ":" + UNDEFINED + "}") // we use undefined here. Will be used in isValid
-    private String bucketName;
+    private String bucketName = UNDEFINED;
 
     @PDSMustBeDocumented(value = "Defines the s3 endpoint.", scope = "storage")
     @Value("${" + PDS_STORAGE_S3_ENDPOINT + ":" + UNDEFINED + "}") // we use undefined here. Will be used in isValid
-    private String endpoint;
+    private String endpoint = UNDEFINED;
 
     /* timeout */
 

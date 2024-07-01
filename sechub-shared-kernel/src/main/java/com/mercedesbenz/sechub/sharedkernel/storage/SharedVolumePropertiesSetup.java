@@ -16,7 +16,7 @@ public class SharedVolumePropertiesSetup extends AbstractSharedVolumePropertiesS
      */
     @MustBeDocumented(value = "Defines the root path for shared volume uploads - e.g. for sourcecode.zip etc. When using keyword *temp* as path, this will create a temporary directory (for testing).", scope = "storage")
     @Value("${sechub.storage.sharedvolume.upload.dir:" + UNDEFINED + "}") // we use undefined here. Will be used in #isValid()
-    private String configuredUploadDir;
+    private String configuredUploadDir = UNDEFINED;;
 
     @Override
     protected String getConfiguredUploadDirectory() {
