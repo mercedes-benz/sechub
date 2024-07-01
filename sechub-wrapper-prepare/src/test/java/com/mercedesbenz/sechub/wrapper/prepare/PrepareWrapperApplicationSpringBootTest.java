@@ -65,7 +65,9 @@ import com.mercedesbenz.sechub.wrapper.prepare.upload.PrepareWrapperUploadServic
         GitLocationConverter.class,
         FileNameSupport.class,
         PrepareWrapperSharedVolumePropertiesSetup.class,
-        PrepareWrapperS3PropertiesSetup.class })
+        PrepareWrapperS3PropertiesSetup.class,
+        PrepareWrapperProxySupport.class,
+        PrepareWrapperSystemPropertySupport.class})
 /* @formatter:on */
 @ExtendWith(SpringExtension.class)
 @TestPropertySource(locations = "classpath:init-testdata-prepare-wrapper-spring-boot.properties")

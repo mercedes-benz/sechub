@@ -34,6 +34,9 @@ public class PrepareWrapperPreparationService {
     @Autowired
     List<PrepareWrapperModule> modules = new ArrayList<>();
 
+    @Autowired
+    PrepareWrapperProxySupport proxySupport;
+
     public AdapterExecutionResult startPreparation() throws IOException {
 
         LOG.debug("Start preparation");
@@ -61,6 +64,7 @@ public class PrepareWrapperPreparationService {
             if (module.isResponsibleToPrepare(context)) {
                 LOG.debug("Module: {} is responsible and will be used to prepare", module);
 
+                setUpSystemProperties(context);
                 module.prepare(context);
 
                 PrepareResult result = new PrepareResult(PrepareStatus.OK);
@@ -80,5 +84,9 @@ public class PrepareWrapperPreparationService {
         messages.add(secHubMessage);
 
         return new AdapterExecutionResult(result.toString(), messages);
+    }
+
+    private void setUpSystemProperties(PrepareWrapperContext context) {
+        proxySupport.setUpProxy(context.getRemoteDataConfiguration().getLocation());
     }
 }
