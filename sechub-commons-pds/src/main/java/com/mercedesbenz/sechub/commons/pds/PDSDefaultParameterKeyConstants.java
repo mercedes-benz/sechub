@@ -29,6 +29,8 @@ public class PDSDefaultParameterKeyConstants {
 
     public static final String PARAM_KEY_PDS_WRAPPER_REMOTE_DEBUGGING_ENABLED = "pds.wrapper.remote.debugging.enabled";
 
+    public static final String PARAM_KEY_PDS_ADD_SCRIPTLOG_TO_PDSLOG_ENABLED = "pds.add.scriptlog.to.pdslog.enabled";
+
     /**
      * Contains the SecHub configuration model as Json
      */

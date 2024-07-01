@@ -146,6 +146,17 @@ public enum PDSConfigDataKeyProvider implements PDSKeyProvider<ExecutionPDSKey> 
             .withDefault(false).markSendToPDS().markAsAvailableInsideScript())
 
     ,
+
+    /**
+     * A marker flag for PDS - if true the logging from script and/or wrapper
+     * applications are added afterwards to the PDS log files automatically.
+     */
+    PDS_ADD_SCRIPT_LOGGING_TO_PDS_LOG_ENABLED(new ExecutionPDSKey(PDSDefaultParameterKeyConstants.PARAM_KEY_PDS_ADD_SCRIPTLOG_TO_PDSLOG_ENABLED,
+            "When 'true', the PDS instance will add the complete log output from launcher script (and wrapper calls) to PDS log after the PDS launcher script has finished.")
+            .markDefaultRecommended().withDefault(false).markSendToPDS())
+
+    ,
+
     /**
      * This is automatically given to PDS by SecHub - depending on scan type. E.g.
      * for a webscan the configuration will only contain the configuration for web
