@@ -42,6 +42,9 @@ if [[ "$PDS_DEBUG_ENABLED" = "true" ]]; then
     echo "  - Java jar OPTIONS                              : $options"
 fi
 
+if [[ "$PDS_WRAPPER_REMOTE_DEBUGGING_ENABLED" = "true" ]]; then
+    options="$options -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=8000"
+fi
 
 echo ""
 java -jar $options "$prepare_wrapper"

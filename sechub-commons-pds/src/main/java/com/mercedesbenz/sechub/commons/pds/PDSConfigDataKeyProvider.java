@@ -128,6 +128,25 @@ public enum PDSConfigDataKeyProvider implements PDSKeyProvider<ExecutionPDSKey> 
 
     ,
     /**
+     * A flag for PDS scripts which are calling a wrapper application. The script
+     * can use this information to start the wrapper application with a remote debug
+     * connection. Here an example for a java based wrapper application:
+     *
+     * <pre>
+     * <code>
+     * if [[ "$PDS_WRAPPER_REMOTE_DEBUGGING_ENABLED" = "true" ]]; then
+     *    options="$options -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=8000"
+     * fi
+     * java -jar $options "$prepare_wrapper"
+     *  <code>
+     * </pre>
+     */
+    PDS_WRAPPER_REMOTE_DEBUGGING_ENABLED(new ExecutionPDSKey(PDSDefaultParameterKeyConstants.PARAM_KEY_PDS_WRAPPER_REMOTE_DEBUGGING_ENABLED,
+            "Additional information will be always sent to launcher scripts. Interesting to debug wrapper applications remote.").markDefaultRecommended()
+            .withDefault(false).markSendToPDS().markAsAvailableInsideScript())
+
+    ,
+    /**
      * This is automatically given to PDS by SecHub - depending on scan type. E.g.
      * for a webscan the configuration will only contain the configuration for web
      * and the common parts.

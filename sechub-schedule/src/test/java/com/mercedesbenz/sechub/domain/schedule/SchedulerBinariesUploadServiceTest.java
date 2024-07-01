@@ -1,16 +1,11 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.domain.schedule;
 
-import static com.mercedesbenz.sechub.commons.core.CommonConstants.FILE_SIZE_HEADER_FIELD_NAME;
-import static com.mercedesbenz.sechub.test.JUnitAssertionAddon.assertThrowsExceptionContainingMessage;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.verifyNoInteractions;
-import static org.mockito.Mockito.when;
+import static com.mercedesbenz.sechub.commons.core.CommonConstants.*;
+import static com.mercedesbenz.sechub.test.JUnitAssertionAddon.*;
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.Mockito.*;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -71,7 +66,7 @@ public class SchedulerBinariesUploadServiceTest {
 
         ScheduleSecHubJob job = new ScheduleSecHubJob();
         when(assertService.assertJob(PROJECT1, randomUuid)).thenReturn(job);
-        when(storageService.getJobStorage(PROJECT1, randomUuid)).thenReturn(storage);
+        when(storageService.createJobStorage(PROJECT1, randomUuid)).thenReturn(storage);
 
         /* attach at service to test */
         serviceToTest = new SchedulerBinariesUploadService();

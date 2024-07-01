@@ -205,7 +205,7 @@ public class IntegrationTestServerRestController {
         }
         LOG.info("Integration test server: getJobStorage for {} {}", logSanitizer.sanitize(projectId, 30), jobUUID);
 
-        JobStorage storage = storageService.getJobStorage(projectId, jobUUID);
+        JobStorage storage = storageService.createJobStorage(projectId, jobUUID);
         if (!storage.isExisting(fileName)) {
             throw new NotFoundException("file not uploaded:" + fileName);
         }
@@ -218,10 +218,14 @@ public class IntegrationTestServerRestController {
 
         /* @formatter:off */
 		InputStreamResource resource = new InputStreamResource(inputStream);
-		return ResponseEntity.ok()
+		ResponseEntity<Resource> result = ResponseEntity.ok()
 				.headers(headers)
 				.contentType(MediaType.parseMediaType("application/octet-stream"))
 				.body(resource);
+
+		storage.close();
+
+		return result;
 		/* @formatter:on */
 
     }

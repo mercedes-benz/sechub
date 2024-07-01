@@ -135,6 +135,16 @@ public class SchedulerBinariesUploadService {
     }
 
     private void startUpload(String projectId, UUID jobUUID, HttpServletRequest request) throws FileUploadException, IOException, UnsupportedEncodingException {
+        JobStorage jobStorage = storageService.createJobStorage(projectId, jobUUID);
+        try {
+            store(projectId, jobUUID, request, jobStorage);
+        } finally {
+            jobStorage.close();
+        }
+    }
+
+    private void store(String projectId, UUID jobUUID, HttpServletRequest request, JobStorage jobStorage)
+            throws FileUploadException, IOException, UnsupportedEncodingException {
         /* prepare */
         long binaryFileSizeFromUser = getBinaryFileSize(request);
 
@@ -145,8 +155,6 @@ public class SchedulerBinariesUploadService {
         boolean checkSumDefinedByUser = false;
 
         long realContentLengthInBytes = -1;
-
-        JobStorage jobStorage = storageService.getJobStorage(projectId, jobUUID);
 
         JakartaServletFileUpload<?, ?> upload = servletFileUploadFactory.create();
 

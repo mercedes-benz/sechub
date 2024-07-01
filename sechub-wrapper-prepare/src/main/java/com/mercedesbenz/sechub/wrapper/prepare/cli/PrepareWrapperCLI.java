@@ -8,7 +8,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
-import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.stereotype.Component;
 
 import com.mercedesbenz.sechub.adapter.AdapterExecutionResult;
@@ -17,8 +16,9 @@ import com.mercedesbenz.sechub.commons.core.prepare.PrepareStatus;
 import com.mercedesbenz.sechub.commons.model.SecHubMessage;
 import com.mercedesbenz.sechub.commons.model.SecHubMessageType;
 import com.mercedesbenz.sechub.wrapper.prepare.PrepareWrapperPreparationService;
-import com.mercedesbenz.sechub.wrapper.prepare.PrepareWrapperResultStorageService;
+import com.mercedesbenz.sechub.wrapper.prepare.PrepareWrapperResultService;
 import com.mercedesbenz.sechub.wrapper.prepare.PrepareWrapperUsageException;
+import com.mercedesbenz.sechub.wrapper.prepare.upload.PrepareWrapperStorageService;
 import com.mercedesbenz.sechub.wrapper.prepare.upload.PrepareWrapperUploadException;
 
 @Component
@@ -30,10 +30,10 @@ public class PrepareWrapperCLI implements CommandLineRunner {
     PrepareWrapperPreparationService preparationService;
 
     @Autowired
-    PrepareWrapperResultStorageService storageService;
+    PrepareWrapperResultService resultService;
 
     @Autowired
-    ConfigurableApplicationContext context;
+    PrepareWrapperStorageService storageService;
 
     @Override
     public void run(String... args) {
@@ -57,14 +57,10 @@ public class PrepareWrapperCLI implements CommandLineRunner {
             result = getAdapterExecutionResultFailed("Could not prepare remote data, because of an internal error.");
         }
 
+        storageService.shutdown();
+
         storeResultOrFail(result);
 
-        shutdownSpringApplication();
-    }
-
-    private void shutdownSpringApplication() {
-        LOG.info("Trigger shutdown spring application");
-        context.close();
     }
 
     private static AdapterExecutionResult getAdapterExecutionResultFailed(String message) {
@@ -76,7 +72,7 @@ public class PrepareWrapperCLI implements CommandLineRunner {
 
     private void storeResultOrFail(AdapterExecutionResult result) {
         try {
-            storageService.store(result);
+            resultService.store(result);
         } catch (Exception e) {
             LOG.error("Storing preparation result has failed.", e);
             System.exit(1);
