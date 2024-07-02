@@ -28,7 +28,6 @@ import com.mercedesbenz.sechub.commons.model.login.BasicLoginConfiguration;
 import com.mercedesbenz.sechub.commons.model.login.WebLoginConfiguration;
 import com.mercedesbenz.sechub.zapwrapper.cli.ZapWrapperExitCode;
 import com.mercedesbenz.sechub.zapwrapper.cli.ZapWrapperRuntimeException;
-import com.mercedesbenz.sechub.zapwrapper.config.BrowserId;
 import com.mercedesbenz.sechub.zapwrapper.config.ProxyInformation;
 import com.mercedesbenz.sechub.zapwrapper.config.ZapScanContext;
 import com.mercedesbenz.sechub.zapwrapper.config.auth.SessionManagementType;
@@ -138,7 +137,7 @@ public class ZapScanner implements ZapScan {
 
         LOG.info("Set browser for ajaxSpider.");
         // use firefox in headless mode by default
-        clientApiFacade.configureAjaxSpiderBrowserId(BrowserId.FIREFOX_HEADLESS.getBrowserId());
+        clientApiFacade.configureAjaxSpiderBrowserId(scanContext.getAjaxSpiderBrowserId());
     }
 
     void deactivateRules(ZapFullRuleset fullRuleset, DeactivatedRuleReferences deactivatedRuleReferences) throws ClientApiException {

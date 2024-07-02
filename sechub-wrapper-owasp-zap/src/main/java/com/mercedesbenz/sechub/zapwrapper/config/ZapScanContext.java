@@ -61,6 +61,7 @@ public class ZapScanContext {
 
     private File clientCertificateFile;
     private Map<String, File> headerValueFiles;
+    private String ajaxSpiderBrowserId;
 
     private ZapScanContext() {
     }
@@ -176,6 +177,10 @@ public class ZapScanContext {
         return Collections.unmodifiableMap(headerValueFiles);
     }
 
+    public String getAjaxSpiderBrowserId() {
+        return ajaxSpiderBrowserId;
+    }
+
     public static ZapScanContextBuilder builder() {
         return new ZapScanContextBuilder();
     }
@@ -224,6 +229,8 @@ public class ZapScanContext {
         private File clientCertificateFile;
 
         private Map<String, File> headerValueFiles = new HashMap<>();
+
+        private String ajaxSpiderBrowserId;
 
         public ZapScanContextBuilder setServerConfig(ZapServerConfiguration serverConfig) {
             this.serverConfig = serverConfig;
@@ -340,6 +347,11 @@ public class ZapScanContext {
             return this;
         }
 
+        public ZapScanContextBuilder setAjaxSpiderBrowserId(String ajaxSpiderBrowserId) {
+            this.ajaxSpiderBrowserId = ajaxSpiderBrowserId;
+            return this;
+        }
+
         public ZapScanContext build() {
             ZapScanContext zapScanConfiguration = new ZapScanContext();
             zapScanConfiguration.serverConfig = this.serverConfig;
@@ -378,8 +390,9 @@ public class ZapScanContext {
 
             zapScanConfiguration.headerValueFiles = this.headerValueFiles;
 
+            zapScanConfiguration.ajaxSpiderBrowserId = this.ajaxSpiderBrowserId;
+
             return zapScanConfiguration;
         }
-
     }
 }
