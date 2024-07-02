@@ -1,4 +1,5 @@
 #!/bin/bash 
+# SPDX-License-Identifier: MIT
 
 #
 # Usage: inside a junit test we call this to verify the process adapter implementation works

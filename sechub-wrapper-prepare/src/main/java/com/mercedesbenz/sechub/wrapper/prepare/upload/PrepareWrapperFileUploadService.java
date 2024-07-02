@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.wrapper.prepare.upload;
 
 import static com.mercedesbenz.sechub.commons.core.CommonConstants.*;

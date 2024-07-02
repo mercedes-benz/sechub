@@ -8,12 +8,28 @@ public class SkopeoLocationConverter {
 
     private static final String PROTOCOL_SPLIT = "://";
 
-    public String convertLocationForDownload(String location) {
+    public String convertLocationToDockerDownloadURL(String location) {
         return "docker://" + removeProtocolPrefix(location);
     }
 
-    public String convertLocationForLogin(String location) {
+    public String convertLocationToLoginLocation(String location) {
         return removeProtocolPrefix(location);
+    }
+
+    /**
+     * Converts a location to an additional tag. If the location is empty or null, a
+     * default tag is created.
+     *
+     * @param location the location to convert
+     * @return the location without protocol prefix or default tag
+     */
+    public String convertLocationToAdditionalTag(String location) {
+        String withoutProtocol = removeProtocolPrefix(location);
+        if (withoutProtocol.isBlank() || withoutProtocol.isEmpty() || withoutProtocol == null) {
+            // we add a random number to prevent conflicts during scans
+            throw new IllegalStateException("Could not set additional tag for skopeo location.");
+        }
+        return withoutProtocol;
     }
 
     private String removeProtocolPrefix(String location) {

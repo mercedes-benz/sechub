@@ -1,4 +1,4 @@
-#!/usr/bin/env sh
+#!/bin/sh
 # SPDX-License-Identifier: MIT
 
 DEFAULT_PDS_MAX_FILE_UPLOAD_BYTES=52428800  # 50 MB
@@ -89,7 +89,7 @@ start_server() {
     -Dfile.encoding=UTF-8 \
     -Dserver.port=8444 \
     -Dserver.address=0.0.0.0 \
-    -jar "$PDS_FOLDER/sechub-pds-*.jar" &
+    -jar "$PDS_FOLDER/"sechub-pds-*.jar &
 
   # Get process pid and wait until it ends
   #   The pid will be needed by function trigger_shutdown() in case we receive a termination signal.

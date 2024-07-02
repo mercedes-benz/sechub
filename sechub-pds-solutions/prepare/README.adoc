@@ -37,7 +37,7 @@ The folder contains a start script which does the manual steps for you:
 
 The container will be started and attached to the `sechub` network.
 
-WARNING: Make sure the SecHub container is running and executor for Prepare is set up.
+WARNING: Make sure the SecHub container is running with compose prepare and executor for Prepare is set up. (./sechub-solution/01-start-single-docker-compose-prepare.sh)
 
 . Start container in local sechub network:
 +

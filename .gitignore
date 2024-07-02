@@ -18,6 +18,7 @@ src-gen/
 .idea/
 *.ipr
 *.iws
+out/
 
 # vscode parts
 .vscode/

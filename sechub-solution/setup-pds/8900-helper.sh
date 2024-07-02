@@ -64,3 +64,12 @@ function setup_project_user_executor_profile() {
     ./8801-create-executor-and-profile.sh "$executor_file_name" "$profile"
     ./8802-assign-profile-to-project.sh "$project" "$profile"
 }
+
+function setup_second_executor_profile_to_existing_project() {
+      local project="$1"
+      local executor_file_name="$2"
+      local profile="$3"
+
+      ./8801-create-executor-and-profile.sh "$executor_file_name" "$profile"
+      ./8802-assign-profile-to-project.sh "$project" "$profile"
+}
