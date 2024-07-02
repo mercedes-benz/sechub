@@ -43,4 +43,7 @@ include::../shared/concepts/concept_analytic.adoc[]
 === Statistics
 include::../shared/concepts/concept_statistic.adoc[]
 
+=== Data encryption
+include::../shared/concepts/concept_data_encryption.adoc[]
+
 
