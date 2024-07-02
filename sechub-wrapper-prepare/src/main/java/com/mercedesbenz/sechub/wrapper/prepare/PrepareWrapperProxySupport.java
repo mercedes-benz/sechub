@@ -11,10 +11,10 @@ public class PrepareWrapperProxySupport {
 
     private final static String UNDEFINED = "";
 
-    @Value("${" + KEY_PDS_HTTPS_PROXY + ":" + UNDEFINED +"}")
+    @Value("${" + KEY_PDS_HTTPS_PROXY + ":" + UNDEFINED + "}")
     String httpsProxy;
 
-    @Value("${" + KEY_PDS_NO_PROXY + ":" + UNDEFINED +"}")
+    @Value("${" + KEY_PDS_NO_PROXY + ":" + UNDEFINED + "}")
     String noProxy;
 
     @Value("${" + KEY_PDS_PREPARE_PROXY_ENABLED + ":false}")
@@ -23,37 +23,13 @@ public class PrepareWrapperProxySupport {
     @Autowired
     PrepareWrapperSystemPropertySupport propertySupport;
 
-    public void setUpProxy(String url) {
+    public void setUpProxy() {
         if (!proxyEnabled) {
             return;
         }
 
         assertHttpsProxy();
-
-        if (isProxyRequiredForURL(url)) {
-            setProxySystemProperty();
-        }
-    }
-
-    private boolean isProxyRequiredForURL(String url) {
-        if (noProxy == null || noProxy.isBlank()) {
-            return true;
-        }
-        String[] noProxyList = noProxy.split(",");
-
-        for (String noProxy : noProxyList) {
-            if (url.contains(noProxy)) {
-                return false;
-            }
-        }
-        return true;
-    }
-
-    private void assertHttpsProxy() {
-        if (httpsProxy == null || httpsProxy.isBlank()) {
-            throw new IllegalStateException(
-                    "No HTTPS proxy is set. Please set the environment variable: " + KEY_PDS_HTTPS_PROXY + " with the format: <hostname>:<port>");
-        }
+        setProxySystemProperty();
     }
 
     private String resolveHostname() {
@@ -61,7 +37,7 @@ public class PrepareWrapperProxySupport {
     }
 
     private String resolvePort() {
-        String [] splitProxy = httpsProxy.split(":");
+        String[] splitProxy = httpsProxy.split(":");
         if (splitProxy.length < 2) {
             throw new IllegalStateException(
                     "No port number is set. Please set the environment variable: " + KEY_PDS_HTTPS_PROXY + " with the format: <hostname>:<port>");
@@ -71,9 +47,15 @@ public class PrepareWrapperProxySupport {
         return port;
     }
 
-    private void setProxySystemProperty() {
-        propertySupport.setSystemProperty("https.proxyHost", resolveHostname());
-        propertySupport.setSystemProperty("https.proxyPort", resolvePort());
+    private String resolveNoProxy() {
+        return noProxy.replace(",", "|");
+    }
+
+    private void assertHttpsProxy() {
+        if (httpsProxy == null || httpsProxy.isBlank()) {
+            throw new IllegalStateException(
+                    "No HTTPS proxy is set. Please set the environment variable: " + KEY_PDS_HTTPS_PROXY + " with the format: <hostname>:<port>");
+        }
     }
 
     private void assertPort(String port) {
@@ -85,5 +67,11 @@ public class PrepareWrapperProxySupport {
             throw new IllegalStateException(
                     "Port number is not a number. Please set the environment variable: " + KEY_PDS_HTTPS_PROXY + " with the format: <hostname>:<port>");
         }
+    }
+
+    private void setProxySystemProperty() {
+        propertySupport.setSystemProperty("https.proxyHost", resolveHostname());
+        propertySupport.setSystemProperty("https.proxyPort", resolvePort());
+        propertySupport.setSystemProperty("https.nonProxyHosts", resolveNoProxy());
     }
 }

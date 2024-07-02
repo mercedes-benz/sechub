@@ -54,7 +54,7 @@ public class PrepareWrapperPreparationService {
         }
 
         LOG.info("Start preparation with following modules: {}", modules);
-        setUpSystemProperties(context);
+        setUpSystemProperties();
 
         for (PrepareWrapperModule module : modules) {
             if (!module.isEnabled()) {
@@ -86,7 +86,7 @@ public class PrepareWrapperPreparationService {
         return new AdapterExecutionResult(result.toString(), messages);
     }
 
-    private void setUpSystemProperties(PrepareWrapperContext context) {
-        proxySupport.setUpProxy(context.getRemoteDataConfiguration().getLocation());
+    private void setUpSystemProperties() {
+        proxySupport.setUpProxy();
     }
 }
