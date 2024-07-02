@@ -38,7 +38,7 @@ public class PDSPrepareIntegrationScenario22IntTest {
      * etc. please dont forget to comment the direct test afterwards again.
      *
      */
-    // @Test
+    @Test
     public void multi_prepare_test() {
 
         project1_sechub_calls_prepare_pds_executes_script_and_user_message_is_returned();
@@ -284,7 +284,7 @@ public class PDSPrepareIntegrationScenario22IntTest {
         /* @formatter:on */
     }
 
-    @Test
+    // @Test
     public void project6_start_pds_prepare_with_pds_wrapper_application() {
         /* @formatter:off */
 
