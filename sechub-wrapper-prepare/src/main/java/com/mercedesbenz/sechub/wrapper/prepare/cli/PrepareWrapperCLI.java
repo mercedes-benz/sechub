@@ -16,7 +16,7 @@ import com.mercedesbenz.sechub.commons.core.prepare.PrepareStatus;
 import com.mercedesbenz.sechub.commons.model.SecHubMessage;
 import com.mercedesbenz.sechub.commons.model.SecHubMessageType;
 import com.mercedesbenz.sechub.wrapper.prepare.PrepareWrapperPreparationService;
-import com.mercedesbenz.sechub.wrapper.prepare.PrepareWrapperResultStorageService;
+import com.mercedesbenz.sechub.wrapper.prepare.PrepareWrapperResultService;
 import com.mercedesbenz.sechub.wrapper.prepare.PrepareWrapperUsageException;
 import com.mercedesbenz.sechub.wrapper.prepare.upload.PrepareWrapperUploadException;
 
@@ -29,7 +29,7 @@ public class PrepareWrapperCLI implements CommandLineRunner {
     PrepareWrapperPreparationService preparationService;
 
     @Autowired
-    PrepareWrapperResultStorageService storageService;
+    PrepareWrapperResultService resultService;
 
     @Override
     public void run(String... args) {
@@ -54,6 +54,7 @@ public class PrepareWrapperCLI implements CommandLineRunner {
         }
 
         storeResultOrFail(result);
+
     }
 
     private static AdapterExecutionResult getAdapterExecutionResultFailed(String message) {
@@ -65,7 +66,7 @@ public class PrepareWrapperCLI implements CommandLineRunner {
 
     private void storeResultOrFail(AdapterExecutionResult result) {
         try {
-            storageService.store(result);
+            resultService.store(result);
         } catch (Exception e) {
             LOG.error("Storing preparation result has failed.", e);
             System.exit(1);

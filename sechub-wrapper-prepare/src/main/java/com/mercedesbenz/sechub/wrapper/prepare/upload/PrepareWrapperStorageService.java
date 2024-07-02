@@ -15,6 +15,7 @@ import com.mercedesbenz.sechub.storage.sharevolume.spring.SharedVolumeJobStorage
 
 @Service
 public class PrepareWrapperStorageService implements StorageService {
+
     private JobStorageFactory jobStorageFactory;
 
     @Autowired
@@ -33,7 +34,7 @@ public class PrepareWrapperStorageService implements StorageService {
     }
 
     @Override
-    public JobStorage getJobStorage(String storagePath, UUID jobUUID) {
+    public JobStorage createJobStorage(String storagePath, UUID jobUUID) {
         return jobStorageFactory.createJobStorage(storagePath, jobUUID);
     }
 

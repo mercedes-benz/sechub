@@ -128,6 +128,18 @@ public class PDSFileUploadJobService {
         /* prepare */
         LOG.debug("Start upload file: {} for PDS job: {}", fileName, jobUUID);
 
+        JobStorage jobStorage = storageService.createJobStorage(null, jobUUID);
+
+        try {
+            store(jobUUID, request, fileName, jobStorage);
+
+        } finally {
+            jobStorage.close();
+        }
+    }
+
+    private void store(UUID jobUUID, HttpServletRequest request, String fileName, JobStorage jobStorage)
+            throws FileUploadException, IOException, UnsupportedEncodingException {
         Long fileSizeFromUser = getFileSize(request);
 
         String checksumFromUser = null;
@@ -137,8 +149,6 @@ public class PDSFileUploadJobService {
         boolean checkSumDefinedByUser = false;
 
         long realContentLengthInBytes = -1;
-
-        JobStorage jobStorage = storageService.getJobStorage(jobUUID);
 
         JakartaServletFileUpload<?, ?> upload = servletFileUploadFactory.create();
 

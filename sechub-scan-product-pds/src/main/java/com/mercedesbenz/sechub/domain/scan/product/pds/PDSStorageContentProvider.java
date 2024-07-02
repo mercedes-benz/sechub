@@ -197,4 +197,14 @@ public class PDSStorageContentProvider {
         }
 
     }
+
+    /**
+     * Closes resources. After this the provider shall not be used anymore.
+     */
+    public void close() {
+        if (storage == null) {
+            return;
+        }
+        storage.close();
+    }
 }

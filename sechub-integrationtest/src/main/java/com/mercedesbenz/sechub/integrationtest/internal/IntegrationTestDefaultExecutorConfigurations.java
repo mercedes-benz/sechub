@@ -7,6 +7,7 @@ import static com.mercedesbenz.sechub.integrationtest.api.TestProductExecutorIde
 import static com.mercedesbenz.sechub.wrapper.checkmarx.cli.CheckmarxWrapperKeyConstants.*;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -250,11 +251,14 @@ public class IntegrationTestDefaultExecutorConfigurations {
             StorageType.REUSE_SECHUB_DATA,
             PDS_PREPARE);
 
+    /**
+     * In this prepare test executor config, the {@link PDSDefaultParameterKeyConstants#PARAM_KEY_PDS_ADD_SCRIPTLOG_TO_PDSLOG_ENABLED} is enabled!
+     */
     public static final TestExecutorConfig PDS_V1_PREPARE_INTEGRATIONTEST_VARIANT_E = definePDSScan(
             PDS_PREPARE_VARIANT_E, false,
             PDSIntTestProductIdentifier.PDS_INTTEST_PRODUCT_PREPARE,
             StorageType.REUSE_SECHUB_DATA,
-            PDS_PREPARE);
+            PDS_PREPARE, Arrays.asList(new TestExecutorSetupJobParam("pds.add.scriptlog.to.pdslog.enabled","true")));
 
 
 

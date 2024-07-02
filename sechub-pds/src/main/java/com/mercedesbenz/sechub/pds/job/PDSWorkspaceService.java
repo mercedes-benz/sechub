@@ -194,16 +194,20 @@ public class PDSWorkspaceService {
 
         LOG.debug("For pds jobUUID: {} following names are found in storage: {}", pdsJobUUID, names);
 
-        for (String name : names) {
+        try {
+            for (String name : names) {
 
-            if (isWantedStorageContent(name, configurationSupport, preparationContext)) {
-                resilientStorageReadExecutor.execute(() -> readAndCopyStorageToFileSystem(pdsJobUUID, jobFolder, storage, name),
-                        "Read and copy storage: " + name + " for job: " + pdsJobUUID);
+                if (isWantedStorageContent(name, configurationSupport, preparationContext)) {
+                    resilientStorageReadExecutor.execute(() -> readAndCopyStorageToFileSystem(pdsJobUUID, jobFolder, storage, name),
+                            "Read and copy storage: " + name + " for job: " + pdsJobUUID);
 
-            } else {
-                LOG.debug("Did NOT import '{}' for job {} from storage - was not wanted", name, pdsJobUUID);
+                } else {
+                    LOG.debug("Did NOT import '{}' for job {} from storage - was not wanted", name, pdsJobUUID);
+                }
+
             }
-
+        } finally {
+            storage.close();
         }
     }
 
@@ -302,7 +306,7 @@ public class PDSWorkspaceService {
 
         LOG.debug("PDS job {}: feching storage for storagePath={}, {}-jobUUID={}, useSecHubStorage={}", pdsJobUUID, storagePath,
                 useSecHubStorage ? "sechub" : "pds", pdsOrSecHubJobUUID, useSecHubStorage);
-        JobStorage storage = storageService.getJobStorage(storagePath, pdsOrSecHubJobUUID);
+        JobStorage storage = storageService.createJobStorage(storagePath, pdsOrSecHubJobUUID);
 
         storageInfoCollector.informFetchedStorage(storagePath, config.getSechubJobUUID(), pdsJobUUID, storage);
 
@@ -452,6 +456,7 @@ public class PDSWorkspaceService {
             JobStorage storage = fetchStorage(jobUUID, config);
             storage.deleteAll();
             LOG.info("Removed storage for job {}", jobUUID);
+            storage.close();
         }
 
     }

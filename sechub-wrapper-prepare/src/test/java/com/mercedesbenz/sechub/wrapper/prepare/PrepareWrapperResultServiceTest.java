@@ -18,8 +18,8 @@ import com.mercedesbenz.sechub.commons.pds.PDSUserMessageSupport;
 import com.mercedesbenz.sechub.test.TestUtil;
 import com.mercedesbenz.sechub.wrapper.prepare.cli.PrepareWrapperEnvironment;
 
-class PrepareWrapperResultStorageServiceTest {
-    private PrepareWrapperResultStorageService serviceToTest;
+class PrepareWrapperResultServiceTest {
+    private PrepareWrapperResultService serviceToTest;
     private PrepareWrapperEnvironment environment;
     private TextFileWriter writer;
     private File resultFile;
@@ -32,7 +32,7 @@ class PrepareWrapperResultStorageServiceTest {
         writer = mock(TextFileWriter.class);
         messageSupport = mock(PDSUserMessageSupport.class);
 
-        serviceToTest = new PrepareWrapperResultStorageService();
+        serviceToTest = new PrepareWrapperResultService();
 
         serviceToTest.environment = environment;
         serviceToTest.writer = writer;

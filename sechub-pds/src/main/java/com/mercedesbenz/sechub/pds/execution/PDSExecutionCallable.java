@@ -22,6 +22,7 @@ import org.springframework.dao.OptimisticLockingFailureException;
 
 import com.mercedesbenz.sechub.commons.model.SecHubMessage;
 import com.mercedesbenz.sechub.commons.model.SecHubMessagesList;
+import com.mercedesbenz.sechub.commons.pds.PDSDefaultParameterKeyConstants;
 import com.mercedesbenz.sechub.commons.pds.ProcessAdapter;
 import com.mercedesbenz.sechub.pds.PDSLogConstants;
 import com.mercedesbenz.sechub.pds.commons.core.PDSJSONConverterException;
@@ -29,6 +30,7 @@ import com.mercedesbenz.sechub.pds.job.JobConfigurationData;
 import com.mercedesbenz.sechub.pds.job.PDSCheckJobStatusService;
 import com.mercedesbenz.sechub.pds.job.PDSGetJobStreamService;
 import com.mercedesbenz.sechub.pds.job.PDSJobConfiguration;
+import com.mercedesbenz.sechub.pds.job.PDSJobConfigurationSupport;
 import com.mercedesbenz.sechub.pds.job.PDSJobTransactionService;
 import com.mercedesbenz.sechub.pds.job.PDSWorkspacePreparationResult;
 import com.mercedesbenz.sechub.pds.job.PDSWorkspaceService;
@@ -66,6 +68,8 @@ class PDSExecutionCallable implements Callable<PDSExecutionResult> {
 
     private PDSExecutionCallableServiceCollection serviceCollection;
 
+    private boolean addScriptLogToPDSLog;
+
     public PDSExecutionCallable(UUID pdsJobUUID, PDSExecutionCallableServiceCollection serviceCollection) {
         notNull(pdsJobUUID, "pdsJobUUID may not be null!");
         notNull(serviceCollection, "serviceCollection may not be null!");
@@ -102,6 +106,13 @@ class PDSExecutionCallable implements Callable<PDSExecutionResult> {
             config = PDSJobConfiguration.fromJSON(data.getJobConfigurationJson());
 
             MDC.put(PDSLogConstants.MDC_SECHUB_JOB_UUID, Objects.toString(config.getSechubJobUUID()));
+
+            PDSJobConfigurationSupport configSupport = new PDSJobConfigurationSupport(config);
+            addScriptLogToPDSLog = configSupport.isEnabled(PDSDefaultParameterKeyConstants.PARAM_KEY_PDS_ADD_SCRIPTLOG_TO_PDSLOG_ENABLED);
+
+            if (addScriptLogToPDSLog) {
+                LOG.info("Script log output will be added to PDS logs");
+            }
 
             long minutesToWaitForResult = calculateTimeToWaitForProductInMinutes();
 
@@ -238,7 +249,7 @@ class PDSExecutionCallable implements Callable<PDSExecutionResult> {
 
         streamDatawatcherRunnable.stop();
 
-        writeJobExecutionDataToDatabase(jobUUID);
+        writeJobExecutionDataToDatabase(jobUUID, addScriptLogToPDSLog);
         writeProductMessagesToDatabaseWhenMessagesFound(jobUUID);
 
     }
@@ -327,7 +338,7 @@ class PDSExecutionCallable implements Callable<PDSExecutionResult> {
     @UseCaseAdminFetchesJobOutputStream(@PDSStep(name = "Update ouptut stream data", description = "Reads output stream data from workspace files and stores content inside database. Will also refresh update time stamp for caching mechanism.", number = 4))
     @UseCaseAdminFetchesJobErrorStream(@PDSStep(name = "Update error stream data", description = "Reads error stream data from workspace files and stores content inside database. Will also refresh update time stamp for caching mechanism.", number = 4))
     @UseCaseAdminFetchesJobMetaData(@PDSStep(name = "Update meta data", description = "Reads meta data from workspace file and stores content inside database if not null. Will also refresh update time stamp for caching mechanism.", number = 4))
-    private void writeJobExecutionDataToDatabase(UUID pdsJobUUID) {
+    private void writeJobExecutionDataToDatabase(UUID pdsJobUUID, boolean nowAddScriptLogToPDSLog) {
         LOG.debug("Writing job execution data to database for pds job:{}", pdsJobUUID);
 
         final PDSExecutionData executionData = readJobExecutionData(pdsJobUUID);
@@ -338,6 +349,28 @@ class PDSExecutionCallable implements Callable<PDSExecutionResult> {
             getJobTransactionService().updateJobExecutionDataInOwnTransaction(pdsJobUUID, executionData);
             return null;
         }, pdsJobUUID.toString());
+
+        if (!nowAddScriptLogToPDSLog) {
+            return;
+        }
+        String output = """
+                Added launcher script log output to PDS log:\n
+                *******************************************************************************************************************
+                Script output of PDS job: {}
+                *******************************************************************************************************************
+                Output stream:
+
+                {}
+
+                Error stream:
+
+                {}
+
+                *******************************************************************************************************************
+                END OF Stream data from launcher script of pds job: {},
+                *******************************************************************************************************************
+                """;
+        LOG.info(output, pdsJobUUID, executionData.getOutputStreamData(), executionData.getErrorStreamData(), pdsJobUUID);
 
     }
 
@@ -579,7 +612,7 @@ class PDSExecutionCallable implements Callable<PDSExecutionResult> {
                 LOG.trace("start checking stream data refresh requests");
 
                 if (getJobStatusService().isJobStreamUpdateNecessary(jobUUID)) {
-                    writeJobExecutionDataToDatabase(jobUUID);
+                    writeJobExecutionDataToDatabase(jobUUID, false);
                 }
                 try {
                     Thread.sleep(300);

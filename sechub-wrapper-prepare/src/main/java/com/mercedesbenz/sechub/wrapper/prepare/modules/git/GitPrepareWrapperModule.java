@@ -88,12 +88,17 @@ public class GitPrepareWrapperModule extends AbstractPrepareWrapperModule {
         context.getUserMessages().add(message);
 
         prepareRemoteConfiguration(gitContext, secHubRemoteDataConfiguration);
+        LOG.debug("Remote configuration preparation done");
+
         assertDownloadSuccessful(gitContext);
 
         try {
             beforeUpload(gitContext);
 
+            LOG.info("Start git content upload to storage");
             uploadService.upload(context, gitContext);
+            LOG.info("Upload to storage succesful");
+
         } catch (Exception e) {
             LOG.error("Upload of git repository to shared storage failed.", e);
             throw new PrepareWrapperUploadException("Upload of git repository failed.", e, GIT_REPOSITORY_UPLOAD_FAILED);
@@ -101,6 +106,7 @@ public class GitPrepareWrapperModule extends AbstractPrepareWrapperModule {
     }
 
     private void beforeUpload(GitContext gitContext) throws IOException {
+        LOG.debug("Handle before upload: cloneWithoutGitHistory={}, removeGitFilesBeforeUpload={}", cloneWithoutGitHistory, removeGitFilesBeforeUpload);
         if (cloneWithoutGitHistory) {
             gitWrapper.removeGitFolders(gitContext.getToolDownloadDirectory());
         }

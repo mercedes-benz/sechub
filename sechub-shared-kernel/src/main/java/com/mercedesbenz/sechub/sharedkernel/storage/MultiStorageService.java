@@ -51,7 +51,7 @@ public class MultiStorageService implements StorageService {
     }
 
     @Override
-    public JobStorage getJobStorage(String projectId, UUID jobUUID) {
+    public JobStorage createJobStorage(String projectId, UUID jobUUID) {
         /*
          * we use here "jobstorage/${projectId} - so we have same job storage path as
          * before in sechub itself - for PDS own prefix (storageId) is used insdide
