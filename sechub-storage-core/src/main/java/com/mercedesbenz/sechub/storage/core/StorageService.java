@@ -6,18 +6,8 @@ import java.util.UUID;
 public interface StorageService {
 
     /**
-     * Resolves job storage for given job - same as {@link #getJobStorage(null,
-     * UUID)}
-     *
-     * @param jobUUID job UUID
-     * @return job storage
-     */
-    public default JobStorage getJobStorage(UUID jobUUID) {
-        return getJobStorage(null, jobUUID);
-    }
-
-    /**
-     * Resolves a job storage
+     * Creates a new job storage object. If you no longer need the job storage
+     * object, you have to close the storage object to save resources.
      *
      * @param storagePath - defines the storage path. Must be a convertible into a
      *                    valid path structure from storage root location. Usage
@@ -26,8 +16,8 @@ public interface StorageService {
      *                    When <code>null</code> the implementation decides default
      *                    storage path.
      * @param jobUUID     job UUID
-     * @return
+     * @return job storage object
      */
-    public JobStorage getJobStorage(String storagePath, UUID jobUUID);
+    public JobStorage createJobStorage(String storagePath, UUID jobUUID);
 
 }
