@@ -9,10 +9,12 @@ import org.springframework.stereotype.Component;
 @Component
 public class PrepareWrapperProxySupport {
 
-    @Value("${" + KEY_PDS_HTTPS_PROXY + "}")
+    private final static String UNDEFINED = "";
+
+    @Value("${" + KEY_PDS_HTTPS_PROXY + ":" + UNDEFINED +"}")
     String httpsProxy;
 
-    @Value("${" + KEY_PDS_NO_PROXY + "}")
+    @Value("${" + KEY_PDS_NO_PROXY + ":" + UNDEFINED +"}")
     String noProxy;
 
     @Value("${" + KEY_PDS_PREPARE_PROXY_ENABLED + ":false}")
@@ -59,7 +61,12 @@ public class PrepareWrapperProxySupport {
     }
 
     private String resolvePort() {
-        String port = httpsProxy.split(":")[1];
+        String [] splitProxy = httpsProxy.split(":");
+        if (splitProxy.length < 2) {
+            throw new IllegalStateException(
+                    "No port number is set. Please set the environment variable: " + KEY_PDS_HTTPS_PROXY + " with the format: <hostname>:<port>");
+        }
+        String port = splitProxy[1];
         assertPort(port);
         return port;
     }

@@ -54,6 +54,7 @@ public class PrepareWrapperPreparationService {
         }
 
         LOG.info("Start preparation with following modules: {}", modules);
+        setUpSystemProperties(context);
 
         for (PrepareWrapperModule module : modules) {
             if (!module.isEnabled()) {
@@ -64,7 +65,6 @@ public class PrepareWrapperPreparationService {
             if (module.isResponsibleToPrepare(context)) {
                 LOG.debug("Module: {} is responsible and will be used to prepare", module);
 
-                setUpSystemProperties(context);
                 module.prepare(context);
 
                 PrepareResult result = new PrepareResult(PrepareStatus.OK);
