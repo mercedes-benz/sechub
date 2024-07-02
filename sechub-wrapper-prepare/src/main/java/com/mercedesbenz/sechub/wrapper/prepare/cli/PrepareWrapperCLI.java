@@ -54,7 +54,6 @@ public class PrepareWrapperCLI implements CommandLineRunner {
         }
         storeResultOrFail(result);
         LOG.info("Prepare wrapper has finished successfully.");
-        System.exit(0);
     }
 
     private static AdapterExecutionResult getAdapterExecutionResultFailed(String message) {
