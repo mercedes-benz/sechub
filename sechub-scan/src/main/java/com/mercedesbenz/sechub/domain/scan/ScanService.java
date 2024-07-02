@@ -170,7 +170,7 @@ public class ScanService implements SynchronMessageHandler {
         }
         String projectId = configuration.getProjectId();
         UUID jobUUID = context.getSechubJobUUID();
-        JobStorage storage = storageService.getJobStorage(projectId, jobUUID);
+        JobStorage storage = storageService.createJobStorage(projectId, jobUUID);
 
         try {
             storage.deleteAll();

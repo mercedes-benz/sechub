@@ -59,7 +59,7 @@ public class SchedulerSourcecodeUploadServiceTest {
         ScheduleSecHubJob job = new ScheduleSecHubJob();
         when(mockedAssertService.assertJob(PROJECT1, randomUuid)).thenReturn(job);
         storage = mock(JobStorage.class);
-        when(mockedStorageService.getJobStorage(PROJECT1, randomUuid)).thenReturn(storage);
+        when(mockedStorageService.createJobStorage(PROJECT1, randomUuid)).thenReturn(storage);
 
         file = mock(MultipartFile.class);
         when(file.getSize()).thenReturn(1024L); // just not empty

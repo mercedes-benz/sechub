@@ -43,11 +43,19 @@ import com.mercedesbenz.sechub.integrationtest.internal.PDSTestScenario;
  * PROJECT_4
  *  - has execution {@link IntegrationTestDefaultProfiles#PROFILE_30_PDS_PREPARE_SCRIPT_EXIT_5 profile 30 (exit 5 preparation)}, {@link IntegrationTestDefaultProfiles#PROFILE_12_PDS_CHECKMARX_INTEGRATIONTEST profile 12} assigned
  *
+ * PROJECT_5
+ *  - has execution {@link IntegrationTestDefaultProfiles#PROFILE_31_PDS_PREPARE_SCAN_CONFIG_SUCCESS profile 31} assigned
+ *
+ * PROJECT_6
+ *  - has execution {@link IntegrationTestDefaultProfiles#PROFILE_32_PDS_PREPARE_SCAN_CONFIG_SUCCESS profile 32}, {@link IntegrationTestDefaultProfiles#PROFILE_2_PDS_CODESCAN profile 2} assigned
+ *  - Info: The executor configuration has `pds.add.scriptlog.to.pdslog.enabled=true` here, so log output in PDS script is given back to PDS log automatically
  *
  * USER_1, is automatically registered, created and assigned to PROJECT_1, PROJECT_2 and PROJECT_3
+ *
  * </pre>
  *
  * @author Laura Bottner
+ * @author Albert Tregnaghi
  *
  */
 public class Scenario22 extends AbstractGrowingSecHubServerTestScenario implements PDSTestScenario {

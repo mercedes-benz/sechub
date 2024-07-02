@@ -13,7 +13,9 @@ import com.mercedesbenz.sechub.integrationtest.scenario16.Scenario16;
 import com.mercedesbenz.sechub.integrationtest.scenario17.Scenario17;
 import com.mercedesbenz.sechub.integrationtest.scenario18.Scenario18;
 import com.mercedesbenz.sechub.integrationtest.scenario2.Scenario2;
+import com.mercedesbenz.sechub.integrationtest.scenario20.Scenario20;
 import com.mercedesbenz.sechub.integrationtest.scenario21.Scenario21;
+import com.mercedesbenz.sechub.integrationtest.scenario22.Scenario22;
 import com.mercedesbenz.sechub.integrationtest.scenario3.Scenario3;
 import com.mercedesbenz.sechub.integrationtest.scenario4.Scenario4;
 import com.mercedesbenz.sechub.integrationtest.scenario5.Scenario5;
@@ -620,8 +622,10 @@ public class IntegrationTestDefaultProfiles {
     public static final DefaultTestExecutionProfile PROFILE_31_PDS_PREPARE_SCAN_CONFIG_SUCCESS = defineProfile31();
 
     /**
-     * The profile enables a PDS prepare. PDS is tested for running pds prepare in
-     * integration test mode
+     * The profile enables a PDS prepare. PDS is tested for running PDS prepare in
+     * integration test mode. This profile uses
+     * {@link IntegrationTestDefaultExecutorConfigurations#PDS_PREPARE_VARIANT_E}
+     * executor configuration which has script log combination to PDS log enabled.
      *
      * <h5>Used inside scenarios:</h5>
      * <ul>

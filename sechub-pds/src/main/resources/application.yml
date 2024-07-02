@@ -9,7 +9,13 @@ sechub:
 pds:          
   security:
     diffiehellman:
-      length: 2048 # JDK uses per default 1024, we set here to 2048 which is more secure          
+      length: 2048 # JDK uses per default 1024, we set here to 2048 which is more secure
+  archive:
+    extraction:
+      max-file-size-uncompressed: 1GB
+      max-entries: 100000
+      max-directory-depth: 100
+      timeout: 1m
 spring:
   profiles:
     group:

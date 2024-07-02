@@ -34,11 +34,13 @@ public class JGitAdapter {
         String location = gitContext.getLocation();
         String sanitizedLocation = logSanitizer.sanitize(location, 1024);
 
-        LOG.debug("Start cloning location:", sanitizedLocation);
+        LOG.info("Start cloning location: {}", sanitizedLocation);
 
         URL url = urlConverter.convertLocationToHttpsBasedURL(location);
         Path downloadDirectory = gitContext.getToolDownloadDirectory();
         Path repository = Path.of(gitContext.getRepositoryName());
+
+        LOG.debug("Git clone command will use repository: {}, url: {}, downloadDirectory: {}", repository, url, downloadDirectory);
 
         /* @formatter:off */
         CloneCommand cloneCommand = Git.cloneRepository().

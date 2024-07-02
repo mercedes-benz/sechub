@@ -28,6 +28,8 @@ public class SharedVolumeJobStorage implements JobStorage {
     private UUID jobUUID;
     private Path volumePath;
 
+    private boolean closed;
+
     public SharedVolumeJobStorage(Path rootLocation, String storagePath, UUID jobUUID) {
         requireNonNull(rootLocation, "rootLocation may not be null");
         requireNonNull(storagePath, "storagePath may not be null");
@@ -42,6 +44,8 @@ public class SharedVolumeJobStorage implements JobStorage {
     @Override
     public InputStream fetch(String name) throws IOException {
         LOG.debug("Fetch '{}' from volumePath: {}", name, volumePath);
+
+        assertNotClosed();
 
         try {
             Path path = getPathToFile(name);
@@ -63,6 +67,8 @@ public class SharedVolumeJobStorage implements JobStorage {
     public void store(String name, InputStream stream, long contentLength) throws IOException {
         requireNonNull(name, "name may not be null!");
         requireNonNull(stream, "stream may not be null!");
+
+        assertNotClosed();
 
         if (name.contains("..")) {
             // This is a security check
@@ -89,6 +95,9 @@ public class SharedVolumeJobStorage implements JobStorage {
     }
 
     public void deleteAll() throws IOException {
+
+        assertNotClosed();
+
         try {
             if (Files.notExists(volumePath)) {
                 return;
@@ -103,11 +112,16 @@ public class SharedVolumeJobStorage implements JobStorage {
     }
 
     public boolean isExisting(String fileName) {
+        assertNotClosed();
+
         return getPathToFile(fileName).toFile().exists();
     }
 
     @Override
     public Set<String> listNames() throws IOException {
+
+        assertNotClosed();
+
         LOG.debug("start listNames for volumePath: {}", volumePath);
 
         try {
@@ -127,6 +141,14 @@ public class SharedVolumeJobStorage implements JobStorage {
     }
 
     @Override
+    public void close() {
+        if (closed) {
+            return;
+        }
+        this.closed = true;
+    }
+
+    @Override
     public String toString() {
         return "SharedVolumeJobStorage [projectId=" + storagePath + ", jobUUID=" + jobUUID + ", path=" + volumePath + "]";
     }
@@ -135,4 +157,12 @@ public class SharedVolumeJobStorage implements JobStorage {
         requireNonNull(fileName, "fileName may not be null!");
         return this.volumePath.resolve(fileName);
     }
+
+    private void assertNotClosed() {
+        if (closed) {
+            throw new IllegalStateException("job storage already closed!");
+        }
+
+    }
+
 }

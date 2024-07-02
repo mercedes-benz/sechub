@@ -55,8 +55,32 @@ public class PDSSecurityConfiguration {
     private SealedObject sealedTechUserApiToken;
     private SealedObject sealedAdminApiToken;
 
+    /**
+     * Creates an initialized PDS security configuration (can be used outside spring
+     * container to create such an object)
+     *
+     * @param techUserId       technical user id
+     * @param techUserApiToken technical user token
+     * @param adminUserId      administrator id
+     * @param adminApiToken    administrator token
+     *
+     * @return configuration object
+     */
+    public static PDSSecurityConfiguration create(String techUserId, String techUserApiToken, String adminUserId, String adminApiToken) {
+        PDSSecurityConfiguration config = new PDSSecurityConfiguration();
+        config.techUserId = techUserId;
+        config.techUserApiToken = techUserApiToken;
+
+        config.adminUserId = adminUserId;
+        config.adminApiToken = adminApiToken;
+
+        config.initUserDetails();
+
+        return config;
+    }
+
     @Bean
-    public UserDetailsManager userDetailsService() {
+    public UserDetailsManager initUserDetails() {
         /* @formatter:off */
 
         PDSPasswordTransformer pdsPasswordTransformer = new PDSPasswordTransformer();
@@ -104,4 +128,5 @@ public class PDSSecurityConfiguration {
         registry.register(registry.newEntry().key(KEY_ADMIN_APITOKEN).notNullValue(CryptoAccess.CRYPTO_STRING.unseal(sealedAdminApiToken)));
 
     }
+
 }

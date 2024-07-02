@@ -5,10 +5,16 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 import java.util.Collections;
+import java.util.List;
+import java.util.stream.Stream;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtensionContext;
 import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.ArgumentsProvider;
+import org.junit.jupiter.params.provider.ArgumentsSource;
 import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.ValueSource;
 
@@ -25,6 +31,25 @@ class ArchiveTransformationDataFactoryTest {
 
         factoryToTest = new ArchiveTransformationDataFactory();
         factoryToTest.includeExcludefilter = includeExcludeFilter;
+    }
+
+    @ParameterizedTest
+    @ArgumentsSource(ReferenceNameOrderingTestArgumentsProvider.class)
+    void accepted_referencename_list_element_ordering_has_no_impact_on_search(List<String> referenceNames, int indexOfReferenceToSearch, String subFolderPath) {
+        /* prepare */
+        String referenceToSearch = referenceNames.get(indexOfReferenceToSearch);
+
+        String fullPathInArchive = ArchiveConstants.DATA_SECTION_FOLDER + referenceToSearch + "/" + subFolderPath;
+
+        dataProvider.addAcceptedReferenceNames(referenceNames);
+
+        /* execute */
+        ArchiveTransformationData result = factoryToTest.create(dataProvider, fullPathInArchive);
+
+        /* test */
+        assertEquals(true, result.isAccepted());
+        assertEquals(subFolderPath, result.getChangedPath());
+
     }
 
     @Test
@@ -208,4 +233,31 @@ class ArchiveTransformationDataFactoryTest {
         assertEquals(path.substring("__data__/name-1/".length()), result.getChangedPath());
     }
 
+    private static class ReferenceNameOrderingTestArgumentsProvider implements ArgumentsProvider {
+        @Override
+        public Stream<? extends Arguments> provideArguments(ExtensionContext extensionContext) {
+            /* @formatter:off */
+            return Stream.of(
+                    Arguments.of(List.of("go"),0, "subfolder1/something.tx"),
+
+                    Arguments.of(List.of("go", "go2"),0, "subfolder1/something.tx"),
+                    Arguments.of(List.of("go", "go2"),1,"subfolder1/something.tx"),
+                    Arguments.of(List.of("go2", "go"),0,"subfolder1/something.tx"),
+                    Arguments.of(List.of("go2", "go"),1,"subfolder1/something.tx"),
+
+                    Arguments.of(List.of("go", "go2"),0, "something.tx"),
+                    Arguments.of(List.of("go", "go2"),1,"something.tx"),
+                    Arguments.of(List.of("go2", "go"),0,"something.tx"),
+                    Arguments.of(List.of("go2", "go"),1,"something.tx"),
+
+                    Arguments.of(List.of("go", "go2", "go3"),0, "subfolder1/something.tx"),
+                    Arguments.of(List.of("go", "go2", "go3"),1, "subfolder1/something.tx"),
+                    Arguments.of(List.of("go", "go2", "go3"),2, "subfolder1/something.tx"),
+                    Arguments.of(List.of("go2", "go", "go3"),1, "subfolder1/something.tx"),
+
+                    Arguments.of(List.of("go3", "go2", "go"),2, "subfolder1/something.tx")
+            );
+            /* @formatter:on */
+        }
+    }
 }

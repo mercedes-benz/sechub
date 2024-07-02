@@ -13,7 +13,7 @@ import com.mercedesbenz.sechub.commons.pds.PDSUserMessageSupport;
 import com.mercedesbenz.sechub.wrapper.prepare.cli.PrepareWrapperEnvironment;
 
 @Service
-public class PrepareWrapperResultStorageService {
+public class PrepareWrapperResultService {
 
     @Autowired
     PrepareWrapperEnvironment environment;

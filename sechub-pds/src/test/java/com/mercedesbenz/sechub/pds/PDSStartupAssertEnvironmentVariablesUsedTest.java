@@ -48,6 +48,21 @@ class PDSStartupAssertEnvironmentVariablesUsedTest {
 
     }
 
+    /**
+     * With this test we ensure that fallback creation works on a new assertion
+     * object (which is used in asciidoc generation process)
+     */
+    @Test
+    void initial_created_createRegistryForOnlyAllowedAsEnvironmentVariables_with_fallbacks_work() {
+        assertionToTest = new PDSStartupAssertEnvironmentVariablesUsed(); // no mocks, nothing defined
+
+        /* execute */
+        SecureEnvironmentVariableKeyValueRegistry registry = assertionToTest.createRegistryForOnlyAllowedAsEnvironmentVariables(true);
+
+        /* test */
+        assertFalse(registry.getEntries().isEmpty());
+    }
+
     @Test
     void assertOnApplicationStart_when_value_support_says_environment_variable_has_same_value_no_exception() {
         /* prepare */

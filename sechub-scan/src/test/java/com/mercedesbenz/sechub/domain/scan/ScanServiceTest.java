@@ -79,7 +79,7 @@ public class ScanServiceTest {
         ProgressMonitor monitor = mock(ProgressMonitor.class);
         when(monitor.getId()).thenReturn("monitor-test-id");
 
-        when(storageService.getJobStorage(any(), any())).thenReturn(jobStorage);
+        when(storageService.createJobStorage(any(), any())).thenReturn(jobStorage);
         when(monitorFactory.createProgressMonitor(any())).thenReturn(monitor);
 
         webScanProductExecutionService = mock(WebScanProductExecutionService.class);

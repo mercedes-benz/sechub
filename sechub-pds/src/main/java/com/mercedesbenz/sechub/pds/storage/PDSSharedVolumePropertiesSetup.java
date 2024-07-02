@@ -19,7 +19,7 @@ public class PDSSharedVolumePropertiesSetup extends AbstractSharedVolumeProperti
      */
     @PDSMustBeDocumented(value = "Defines the root path for shared volume uploads - e.g. for sourcecode.zip etc. When using keyword *temp* as path, this will create a temporary directory (for testing).", scope = "storage", secret = true)
     @Value("${" + PDS_STORAGE_SHAREDVOLUME_UPLOAD_DIR + ":" + UNDEFINED + "}") // we use undefined here. Will be used in #isValid()
-    private String configuredUploadDir;
+    private String configuredUploadDir = UNDEFINED;
 
     @Override
     protected String getConfiguredUploadDirectory() {
