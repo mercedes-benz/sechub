@@ -14,6 +14,14 @@ To start a single container run the script:
 ./01-start-single-docker-compose.sh
 ----
 
+=== Single Container with Prepare (remote Data)
+
+. Start the container with the script:
+
+----
+./01-start-single-docker-compose-prepare.sh
+----
+
 === SecHub with PDS Solution
 
 . First start a SecHub container.

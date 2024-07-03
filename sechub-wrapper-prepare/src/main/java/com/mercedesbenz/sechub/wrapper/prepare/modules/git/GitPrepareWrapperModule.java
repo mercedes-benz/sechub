@@ -60,6 +60,9 @@ public class GitPrepareWrapperModule extends AbstractPrepareWrapperModule {
     @Autowired
     PDSLogSanitizer pdsLogSanitizer;
 
+    @Autowired
+    GitLocationConverter gitLocationConverter;
+
     @Override
     public boolean isEnabled() {
         return enabled;
@@ -118,10 +121,12 @@ public class GitPrepareWrapperModule extends AbstractPrepareWrapperModule {
 
     private GitContext initializeGitContext(PrepareWrapperContext context, SecHubRemoteDataConfiguration secHubRemoteDataConfiguration) {
         Path workingDirectory = Paths.get(context.getEnvironment().getPdsJobWorkspaceLocation());
+        String location = secHubRemoteDataConfiguration.getLocation();
 
         GitContext gitContext = new GitContext();
         gitContext.setCloneWithoutHistory(cloneWithoutGitHistory);
-        gitContext.setLocation(secHubRemoteDataConfiguration.getLocation());
+        gitContext.setLocation(location);
+        gitContext.setRepositoryName(gitLocationConverter.convertLocationToRepositoryName(location));
         gitContext.init(workingDirectory);
 
         return gitContext;

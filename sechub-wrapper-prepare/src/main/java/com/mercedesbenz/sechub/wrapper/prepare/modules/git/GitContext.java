@@ -8,8 +8,9 @@ import com.mercedesbenz.sechub.wrapper.prepare.modules.AbstractPrepareToolContex
 public class GitContext extends AbstractPrepareToolContext {
 
     static final String DOWNLOAD_DIRECTORY_NAME = "git-download";
+    static final String DEFAULT_REPOSITORY_NAME = "git-repository";
     private boolean cloneWithoutHistory;
-    private String repositoryName = "git-repository";
+    private String repositoryName = DEFAULT_REPOSITORY_NAME;
     private Path toolDownloadDirectory;
 
     public void setCloneWithoutHistory(boolean cloneWithoutHistory) {
@@ -27,7 +28,9 @@ public class GitContext extends AbstractPrepareToolContext {
     }
 
     public void setRepositoryName(String repositoryName) {
-        this.repositoryName = repositoryName;
+        if (!(repositoryName == null || repositoryName.isBlank())) {
+            this.repositoryName = repositoryName;
+        }
     }
 
     public boolean isCloneWithoutHistory() {

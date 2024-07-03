@@ -5,7 +5,7 @@
     {
       "id": "PDS_PREPARE",
       "path": "/pds/scripts/prepare.sh",
-      "envWhitelist" : [ "TOOL_FOLDER" ],
+      "envWhitelist" : [ "TOOL_FOLDER","PDS_STORAGE_*","HTTPS_PROXY","NO_PROXY"],
       "scanType": "prepare",
       "description": "Runs the prepare wrapper application to prepare remote data for SecHub scans.",
       

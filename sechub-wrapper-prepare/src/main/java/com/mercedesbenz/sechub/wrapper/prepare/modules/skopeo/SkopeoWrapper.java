@@ -89,7 +89,7 @@ public class SkopeoWrapper extends AbstractToolWrapper {
     private ProcessBuilder buildProcessLogin(SkopeoContext context) {
         List<String> commands = new ArrayList<>();
 
-        String location = locationConverter.convertLocationForLogin(context.getLocation());
+        String location = locationConverter.convertLocationToLoginLocation(context.getLocation());
         File downloadDirectory = context.getToolDownloadDirectory().toFile();
 
         commands.add("skopeo");
@@ -113,11 +113,14 @@ public class SkopeoWrapper extends AbstractToolWrapper {
     private ProcessBuilder buildProcessDownload(SkopeoContext context) {
         List<String> commands = new ArrayList<>();
 
-        String location = locationConverter.convertLocationForDownload(context.getLocation());
+        String location = locationConverter.convertLocationToDockerDownloadURL(context.getLocation());
+        String additionalTag = locationConverter.convertLocationToAdditionalTag(context.getLocation());
         File downloadDirectory = context.getToolDownloadDirectory().toFile();
 
         commands.add("skopeo");
         commands.add("copy");
+        commands.add("--additional-tag");
+        commands.add(additionalTag);
         commands.add(location);
         commands.add("docker-archive:" + context.getDownloadTarFile());
         if (context.hasCredentials()) {
