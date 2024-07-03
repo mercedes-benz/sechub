@@ -21,6 +21,11 @@ if [[ ! -f "$prepare_wrapper" ]]; then
     exit 1
 fi
 
+if [[ "$PDS_PREPARE_PROXY_ENABLED" = "true" ]]; then
+  export HTTPS_PROXY="$PDS_HTTPS_PROXY"
+  export NO_PROXY="$PDS_NO_PROXY"
+fi
+
 if [[ "$PDS_INTEGRATIONTEST_ENABLED" = "true" ]]; then
     options="-Dspring.profiles.active=pds_integrationtest"
 fi
