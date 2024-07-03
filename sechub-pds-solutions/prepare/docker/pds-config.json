@@ -40,6 +40,21 @@
             "key": "pds.prepare.module.git.remove.gitfiles.before.upload",
             "description": "When enabled, additional git files like .gitignore or .gitattributes will be automatically removed before storage upload is done",
             "default": true
+          },
+          {
+            "key": "pds.prepare.proxy.enabled",
+            "description": "Flag to enable the proxy settings for prepare",
+            "default": false
+          },
+          {
+            "key": "https.proxy",
+            "description": "The https proxy to use for prepare",
+            "default": ""
+          },
+          {
+            "key": "no.proxy",
+            "description": "The no proxy settings to use for prepare as comma seperated list",
+            "default": ""
           }
         ]
       }
