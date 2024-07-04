@@ -12,6 +12,7 @@ dependencies {
     implementation(library.apache_commons_fileupload2_jakarta)
       
     implementation project(':sechub-shared-kernel')
+    implementation project(':sechub-encryption')
     
     testImplementation project(':sechub-testframework')
     testImplementation project(':sechub-commons-model-testframework')
