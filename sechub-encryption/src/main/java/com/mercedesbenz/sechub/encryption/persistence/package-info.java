@@ -77,4 +77,4 @@
  *
  * @author Jeremias Eppler
  */
-package com.mercedesbenz.sechub.commons.core.security.persistence;
+package com.mercedesbenz.sechub.encryption.persistence;

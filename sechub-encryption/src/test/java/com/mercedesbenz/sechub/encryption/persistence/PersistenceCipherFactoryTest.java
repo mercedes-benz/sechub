@@ -1,8 +1,7 @@
 // SPDX-License-Identifier: MIT
-package com.mercedesbenz.sechub.commons.core.security.persistence;
+package com.mercedesbenz.sechub.encryption.persistence;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.*;
 
 import java.security.InvalidKeyException;
 
