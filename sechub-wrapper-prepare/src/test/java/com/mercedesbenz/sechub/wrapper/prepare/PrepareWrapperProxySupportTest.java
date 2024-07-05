@@ -60,7 +60,7 @@ class PrepareWrapperProxySupportTest {
         IllegalStateException exception = assertThrows(IllegalStateException.class, () -> supportToTest.setUpProxy());
 
         /* test */
-        assertTrue(exception.getMessage().contains("Port number is not a number. Please set the environment variable: "));
+        assertTrue(exception.getMessage().contains("Port number invalidPort is not a number. Please set the environment variable: "));
     }
 
     @Test

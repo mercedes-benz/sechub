@@ -35,7 +35,7 @@ PDS_PREPARE_PROXY_ENABLED=false
 # Enable/Disable git module
 PDS_PREPARE_MODULE_ENABLED_GIT="true"
 # Remove git related files and folder after download
-PDS_PREPARE_MODULE_GIT_REMOVE_GIT_FILES_BEFORE_UPLOAD="ture"
+PDS_PREPARE_MODULE_GIT_REMOVE_GIT_FILES_BEFORE_UPLOAD="true"
 # Clone git without history, if history should be scanned, set PDS_PREPARE_MODULE_GIT_REMOVE_GIT_FILES_BEFORE_UPLOAD to false
 PDS_PREPARE_MODULE_GIT_CLONE_WITHOUT_GIT_HISTORY="true"
 # SKOPEO
