@@ -5,7 +5,7 @@
     {
       "id": "PDS_PREPARE",
       "path": "/pds/scripts/prepare.sh",
-      "envWhitelist" : [ "TOOL_FOLDER","PDS_STORAGE_*","HTTPS_PROXY","NO_PROXY"],
+      "envWhitelist" : [ "TOOL_FOLDER","PDS_STORAGE_*","PDS_HTTPS_PROXY","PDS_NO_PROXY"],
       "scanType": "prepare",
       "description": "Runs the prepare wrapper application to prepare remote data for SecHub scans.",
       
@@ -40,6 +40,11 @@
             "key": "pds.prepare.module.git.remove.gitfiles.before.upload",
             "description": "When enabled, additional git files like .gitignore or .gitattributes will be automatically removed before storage upload is done",
             "default": true
+          },
+          {
+            "key": "pds.prepare.proxy.enabled",
+            "description": "Flag to enable the proxy settings for prepare",
+            "default": false
           }
         ]
       }

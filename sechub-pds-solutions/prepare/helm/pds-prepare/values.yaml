@@ -42,6 +42,10 @@ pds:
     enabled: false
   keepContainerAliveAfterPDSCrashed: false
 
+proxy:
+  httpsHost:  "<https proxy>"
+  noProxy:  "<no proxy>"
+
 users:
   technical:
     id: "techuser"

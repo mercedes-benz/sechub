@@ -34,12 +34,14 @@ class PrepareWrapperPreparationServiceTest {
         context = mock(PrepareWrapperContext.class);
         PrepareWrapperEnvironment environment = mock(PrepareWrapperEnvironment.class);
         PrepareWrapperContextFactory contextFactory = mock(PrepareWrapperContextFactory.class);
+        PrepareWrapperProxySupport proxySupport = mock(PrepareWrapperProxySupport.class);
         when(contextFactory.create(environment)).thenReturn(context);
 
         serviceToTest = new PrepareWrapperPreparationService();
         serviceToTest.environment = environment;
         serviceToTest.contextFactory = contextFactory;
         serviceToTest.modules = new ArrayList<>();
+        serviceToTest.proxySupport = proxySupport;
     }
 
     @Test
