@@ -2,8 +2,10 @@
 dependencies {
     
     implementation library.bouncy_castle_bcprov_jdk8
+    
     testImplementation spring_boot_dependency.junit_jupiter
     testImplementation spring_boot_dependency.mockito_core
+    testImplementation spring_boot_dependency.assertj_core
     
 }
  

@@ -1,0 +1,5 @@
+== About
+`sechub-commons-encryption` is a library without any dependency to Spring or SecHub.
+
+It has only a dependency to bouncy castle library to provide security.
+

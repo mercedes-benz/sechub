@@ -2,9 +2,6 @@
 /**
  * This package contains classes to protect data at-rest.
  *
- * The package is named persistence, because the persistence layer is used to
- * help store data in a database or other data storage systems.
- *
  * The requirements for the cryptographic algorithms for data at rest are:
  *
  * <ul>
@@ -77,4 +74,4 @@
  *
  * @author Jeremias Eppler
  */
-package com.mercedesbenz.sechub.encryption.persistence;
+package com.mercedesbenz.sechub.commons.encryption;
