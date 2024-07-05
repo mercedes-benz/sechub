@@ -38,7 +38,7 @@ public class PrepareWrapperProxySupport {
 
     private String resolvePort() {
         String[] splitProxy = httpsProxy.split(":");
-        if (splitProxy.length < 2) {
+        if (splitProxy.length != 2) {
             throw new IllegalStateException(
                     "No port number is set. Please set the environment variable: " + KEY_PDS_HTTPS_PROXY + " with the format: <hostname>:<port>");
         }
@@ -64,8 +64,8 @@ public class PrepareWrapperProxySupport {
                     "No port number is set. Please set the environment variable: " + KEY_PDS_HTTPS_PROXY + " with the format: <hostname>:<port>");
         }
         if (port.chars().noneMatch(Character::isDigit)) {
-            throw new IllegalStateException(
-                    "Port number is not a number. Please set the environment variable: " + KEY_PDS_HTTPS_PROXY + " with the format: <hostname>:<port>");
+            throw new IllegalStateException("Port number " + port + " is not a number. Please set the environment variable: " + KEY_PDS_HTTPS_PROXY
+                    + " with the format: <hostname>:<port>");
         }
     }
 
