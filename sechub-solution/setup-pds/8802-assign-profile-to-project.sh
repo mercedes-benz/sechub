@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+#!/usr/bin/bash
 # SPDX-License-Identifier: MIT
 
 # uses the sechub-api.sh script to assign an existing profile to an existing project

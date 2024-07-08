@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+#!/usr/bin/bash
 # SPDX-License-Identifier: MIT
 
 source ./../common-containerscript.sh

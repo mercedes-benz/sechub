@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+#!/usr/bin/bash
 # SPDX-License-Identifier: MIT
 
 # checks if a string is a json array
