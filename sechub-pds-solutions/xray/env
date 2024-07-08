@@ -6,6 +6,9 @@ XRAY_DOCKER_REGISTRY=change-me
 XRAY_USERNAME=change-me
 XRAY_PASSWORD=change-me
 
+# Enable/ disable remote debugging (do not enable in production)
+PDS_WRAPPER_REMOTE_DEBUGGING_ENABLED=false
+
 # The build type of the Xray-Wrapper
 # Possible values are:
 # - copy (copies jar into container)
