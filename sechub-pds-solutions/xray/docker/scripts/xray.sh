@@ -14,6 +14,8 @@ SKOPEO_AUTH="auth.json"
 UPLOAD_DIR=$PDS_JOB_EXTRACTED_BINARIES_FOLDER
 REGISTRY=$XRAY_DOCKER_REGISTRY
 
+options=""
+
 check_valid_upload () {
   # count number of files/ folders uploaded and checks number of uploads greater equals 2
   if [ $(ls $UPLOAD_DIR | wc --lines) -ge 2 ]
@@ -38,6 +40,10 @@ check_valid_upload
 login_into_artifactory
 cd "$PDS_JOB_WORKSPACE_LOCATION"
 
+if [[ "$PDS_WRAPPER_REMOTE_DEBUGGING_ENABLED" = "true" ]]; then
+    options="$options -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=8000"
+fi
+
 # Get docker archives from binary upload folder
 TAR_FILES=$(find $UPLOAD_DIR -type f -name "*.tar")
 
@@ -59,7 +65,7 @@ skopeo copy "docker-archive:${UPLOAD_FILE}" "docker://${XRAY_ARTIFACTORY}/${REGI
 skopeo inspect "docker://${XRAY_ARTIFACTORY}/${REGISTRY}/${IMAGE}" --authfile "$PDS_JOB_WORKSPACE_LOCATION/auth.json" > "$PDS_JOB_WORKSPACE_LOCATION/inspect.json"
 SHA256=$(jq '.Digest' "$PDS_JOB_WORKSPACE_LOCATION/inspect.json" | tr --delete \")
 
-java -jar "$TOOL_FOLDER/wrapper-xray.jar" "--name" "$IMAGE" "--checksum" "$SHA256" "--scantype" "docker" "--outputfile" "$PDS_JOB_RESULT_FILE" "--workspace" "$PDS_JOB_WORKSPACE_LOCATION"
+java -jar $options "$TOOL_FOLDER/wrapper-xray.jar" "--name" "$IMAGE" "--checksum" "$SHA256" "--scantype" "docker" "--outputfile" "$PDS_JOB_RESULT_FILE" "--workspace" "$PDS_JOB_WORKSPACE_LOCATION"
 
 # SPDX report can be returned as followed - SPDX does not contain vulnerabilities
 cp "$PDS_JOB_WORKSPACE_LOCATION/XrayArtifactoryReports/"*SPDX.json "$PDS_JOB_RESULT_FILE"
