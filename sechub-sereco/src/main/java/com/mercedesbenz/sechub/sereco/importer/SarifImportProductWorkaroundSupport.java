@@ -58,6 +58,16 @@ public class SarifImportProductWorkaroundSupport {
         return null;
     }
 
+    public String resolveCustomSechubSeverity(Result result, Run run) {
+        return visitAllWorkaroundsAndUseFirstResultNotNull(result, run, new WorkaroundVisitor<String, Result>() {
+
+            @Override
+            public String visit(Result element, Run run, SarifImportProductWorkaround workaround) {
+                return workaround.resolveCustomSechubSeverity(result, run);
+            }
+        });
+    }
+
     public interface WorkaroundVisitor<R, E> {
 
         public R visit(E element, Run run, SarifImportProductWorkaround workaround);

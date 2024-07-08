@@ -22,4 +22,8 @@ public interface SarifImportProductWorkaround {
     public default String resolveFindingRevisionId(Result result, Run run) {
         return null;
     }
+
+    public default String resolveCustomSechubSeverity(Result result, Run run) {
+        return null;
+    }
 }

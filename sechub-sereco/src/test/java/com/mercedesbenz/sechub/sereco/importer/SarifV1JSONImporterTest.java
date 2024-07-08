@@ -36,6 +36,8 @@ class SarifV1JSONImporterTest {
     private static String sarif_2_1_0_gosec2_9_5_example5_cosdescan;
     private static String sarif_2_1_0_sarif_2_1_0_gitleaks_8_0;
     private static String sarif_2_1_0_sarif_2_1_0_gitleaks_8_0_one_finding_with_revision_id;
+    private static String sarif_2_1_0_gitleaks_8_0_with_validator_severity_properties;
+    private static String sarif_2_1_0_gitleaks_8_0_with_invalid_validator_severity_properties;
 
     private SarifV1JSONImporter importerToTest;
 
@@ -51,6 +53,9 @@ class SarifV1JSONImporterTest {
         sarif_2_1_0_owasp_zap = loadSarifTestFile("sarif_2.1.0_owasp_zap.json");
         sarif_2_1_0_sarif_2_1_0_gitleaks_8_0 = loadSarifTestFile("sarif_2.1.0_gitleaks_8.0.json");
         sarif_2_1_0_sarif_2_1_0_gitleaks_8_0_one_finding_with_revision_id = loadSarifTestFile("sarif_2.1.0_gitleaks_8.0-one-finding-with-revision.json");
+        sarif_2_1_0_gitleaks_8_0_with_validator_severity_properties = loadSarifTestFile("sarif_2.1.0_gitleaks_8.0-with-validator-severity-properties.json");
+        sarif_2_1_0_gitleaks_8_0_with_invalid_validator_severity_properties = loadSarifTestFile(
+                "sarif_2.1.0_gitleaks_8.0-with-invalid-validator-severity-properties.json");
     }
 
     @BeforeEach
@@ -316,6 +321,86 @@ class SarifV1JSONImporterTest {
                 done().
             isContained();
 
+        /* @formatter:on */
+    }
+
+    @Test
+    void sarif_2_1_0_gitleaks_8_0_with_validator_severity_properties__can_be_imported_and_severities_are_available() throws Exception {
+        /* prepare */
+        importerToTest.workaroundSupport.workarounds.add(new GitleaksSarifImportWorkaround());
+        SerecoMetaData result = importerToTest.importResult(sarif_2_1_0_gitleaks_8_0_with_validator_severity_properties, ScanType.SECRET_SCAN);
+
+        /* execute */
+        List<SerecoVulnerability> vulnerabilities = result.getVulnerabilities();
+
+        /* test */
+        /* @formatter:off */
+        assertVulnerabilities(vulnerabilities).
+            hasVulnerabilities(6).
+            verifyVulnerability().
+                withSeverity(SerecoSeverity.INFO).
+                withCodeLocation("UnSAFE_Bank/Backend/docker-compose.yml", 12, 14).
+                containingSource("531486b2bf646636a6a1bba61e78ec4a4a54efbd").
+                done().
+            isContained().
+            verifyVulnerability().
+                withSeverity(SerecoSeverity.UNCLASSIFIED).
+                withCodeLocation("UnSAFE_Bank/Backend/src/api/application/config/database.php", 80, 7).
+                containingSource("531486b2bf646636a6a1bba61e78ec4a4a54efbd").
+                done().
+            isContained().
+            verifyVulnerability().
+                withSeverity(SerecoSeverity.LOW).
+                withCodeLocation("UnSAFE_Bank/Backend/web/src/app/thunks/Authentication/ForgotPassword/handleForgotPasswordGetOTPThunk.tsx", 32, 14).
+                containingSource("9bbc0d79e686e847bc305c9bd4cc2ea6").
+                done().
+            isContained().
+            verifyVulnerability().
+                withSeverity(SerecoSeverity.MEDIUM).
+                withCodeLocation("UnSAFE_Bank/Backend/web/src/app/thunks/OTP/handleGetOTPThunk.tsx", 31, 14).
+                containingSource("9bbc0d79e686e847bc305c9bd4cc2ea6").
+                done().
+            isContained().
+            verifyVulnerability().
+                withSeverity(SerecoSeverity.HIGH).
+                withCodeLocation("UnSAFE_Bank/iOS/Source Code/Podfile.lock", 23, 4).
+                containingSource("b3816fddcf28aa29d94b10ec305cd52be14c472b").
+                done().
+            isContained().
+            verifyVulnerability().
+                withSeverity(SerecoSeverity.CRITICAL).
+                withCodeLocation("UnSAFE_Bank/iOS/Source Code/Pods/Manifest.lock", 23, 4).
+                containingSource("b3816fddcf28aa29d94b10ec305cd52be14c472b").
+                done().
+            isContained();
+        /* @formatter:on */
+    }
+
+    @Test
+    void sarif_2_1_0_gitleaks_8_0_with_invalid_validator_severity_properties__can_be_imported_and_severities_are_set_to_sarif_default() throws Exception {
+        /* prepare */
+        importerToTest.workaroundSupport.workarounds.add(new GitleaksSarifImportWorkaround());
+        SerecoMetaData result = importerToTest.importResult(sarif_2_1_0_gitleaks_8_0_with_invalid_validator_severity_properties, ScanType.SECRET_SCAN);
+
+        /* execute */
+        List<SerecoVulnerability> vulnerabilities = result.getVulnerabilities();
+
+        /* test */
+        /* @formatter:off */
+        assertVulnerabilities(vulnerabilities).
+            hasVulnerabilities(2).
+            verifyVulnerability().
+                withSeverity(SerecoSeverity.MEDIUM).
+                withCodeLocation("UnSAFE_Bank/Backend/docker-compose.yml", 12, 14).
+                containingSource("531486b2bf646636a6a1bba61e78ec4a4a54efbd").
+                done().
+            isContained().
+            verifyVulnerability().
+                withSeverity(SerecoSeverity.MEDIUM).
+                withCodeLocation("UnSAFE_Bank/Backend/src/api/application/config/database.php", 80, 7).
+                containingSource("531486b2bf646636a6a1bba61e78ec4a4a54efbd").
+                done().
+            isContained();
         /* @formatter:on */
     }
 

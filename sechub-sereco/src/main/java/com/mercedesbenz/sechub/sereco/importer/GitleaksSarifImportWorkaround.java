@@ -1,16 +1,12 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.sereco.importer;
 
+import java.util.List;
 import java.util.Map;
 
 import org.springframework.stereotype.Component;
 
-import de.jcup.sarif_2_1_0.model.PartialFingerprints;
-import de.jcup.sarif_2_1_0.model.ReportingDescriptor;
-import de.jcup.sarif_2_1_0.model.Result;
-import de.jcup.sarif_2_1_0.model.Run;
-import de.jcup.sarif_2_1_0.model.Tool;
-import de.jcup.sarif_2_1_0.model.ToolComponent;
+import de.jcup.sarif_2_1_0.model.*;
 
 @Component
 public class GitleaksSarifImportWorkaround implements SarifImportProductWorkaround {
@@ -40,6 +36,38 @@ public class GitleaksSarifImportWorkaround implements SarifImportProductWorkarou
             }
         }
         return null;
+    }
+
+    @Override
+    public String resolveCustomSechubSeverity(Result result, Run run) {
+        if (result == null) {
+            return null;
+        }
+        if (!isGitleaksRun(run)) {
+            return null;
+        }
+        List<Location> locations = result.getLocations();
+        if (locations == null || locations.isEmpty()) {
+            return null;
+        }
+        PhysicalLocation physicalLocation = locations.get(0).getPhysicalLocation();
+        if (physicalLocation == null) {
+            return null;
+        }
+        Region region = physicalLocation.getRegion();
+        if (region == null) {
+            return null;
+        }
+        PropertyBag properties = region.getProperties();
+        if (properties == null) {
+            return null;
+        }
+        Map<String, Object> additionalProperties = properties.getAdditionalProperties();
+        if (additionalProperties == null) {
+            return null;
+        }
+        String severityKey = SarifImporterKeys.SECRETSCAN_SECHUB_SEVERITY.getKey();
+        return (String) additionalProperties.get(severityKey);
     }
 
     private boolean isGitleaksRun(Run run) {

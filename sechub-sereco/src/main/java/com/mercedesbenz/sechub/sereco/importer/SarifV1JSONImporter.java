@@ -285,8 +285,13 @@ public class SarifV1JSONImporter extends AbstractProductResultImporter {
     }
 
     private SerecoSeverity resolveSeverity(Result result, Run run) {
-        Level level = sarifSchema210LogicSupport.resolveLevel(result, run);
-        return mapToSeverity(level);
+        String customSecHubSeverity = workaroundSupport.resolveCustomSechubSeverity(result, run);
+        SerecoSeverity serecoSeverity = severityFromString(customSecHubSeverity);
+        if (serecoSeverity == null) {
+            Level level = sarifSchema210LogicSupport.resolveLevel(result, run);
+            return mapToSeverity(level);
+        }
+        return serecoSeverity;
     }
 
     private class ResultData {
@@ -521,6 +526,10 @@ public class SarifV1JSONImporter extends AbstractProductResultImporter {
         default:
             return SerecoSeverity.UNCLASSIFIED;
         }
+    }
+
+    private SerecoSeverity severityFromString(String customSecHubSeverity) {
+        return SerecoSeverity.fromString(customSecHubSeverity);
     }
 
     @Override
