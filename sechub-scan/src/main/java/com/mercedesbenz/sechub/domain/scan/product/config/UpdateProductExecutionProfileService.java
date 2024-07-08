@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.domain.scan.product.config;
 
-import static com.mercedesbenz.sechub.sharedkernel.validation.AssertValidation.*;
+import static com.mercedesbenz.sechub.sharedkernel.validation.AssertValidation.assertValid;
 
 import java.util.Optional;
 import java.util.Set;
@@ -65,7 +65,7 @@ public class UpdateProductExecutionProfileService {
         auditLogService.log("Wants to update product execution configuration setup for executor:{}", profileId);
 
         Optional<ProductExecutionProfile> opt = repository.findById(profileId);
-        if (!opt.isPresent()) {
+        if (opt.isEmpty()) {
             throw new NotFoundException("No profile found with id:" + profileId);
         }
         profileFromUser.id = profileId;
@@ -94,7 +94,7 @@ public class UpdateProductExecutionProfileService {
         for (ProductExecutorConfig configFromUser : configurationsFromUser) {
             UUID uuid = configFromUser.getUUID();
             Optional<ProductExecutorConfig> found = configRepository.findById(uuid);
-            if (!found.isPresent()) {
+            if (found.isEmpty()) {
                 LOG.warn("Found no configuration with uuid:{}, so cannot add to profile:{}", uuid, profileId);
                 continue;
             }

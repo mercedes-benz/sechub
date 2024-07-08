@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.domain.scan.product.config;
 
-import static com.mercedesbenz.sechub.sharedkernel.validation.AssertValidation.*;
+import static com.mercedesbenz.sechub.sharedkernel.validation.AssertValidation.assertValid;
 
 import java.util.Optional;
 import java.util.UUID;
@@ -48,7 +48,7 @@ public class UpdateProductExecutorConfigService {
 
         auditLogService.log("Wants to update product execution configuration setup for executor:{}", uuid);
         Optional<ProductExecutorConfig> opt = repository.findById(uuid);
-        if (!opt.isPresent()) {
+        if (opt.isEmpty()) {
             throw new NotFoundException("No config found with uuid:" + uuid);
         }
 

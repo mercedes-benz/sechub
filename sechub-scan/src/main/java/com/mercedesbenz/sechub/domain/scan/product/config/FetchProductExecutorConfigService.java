@@ -38,7 +38,7 @@ public class FetchProductExecutorConfigService {
         auditLogService.log("Reads setup for executor configuration:{}", uuid);
 
         Optional<ProductExecutorConfig> config = repository.findById(uuid);
-        if (!config.isPresent()) {
+        if (config.isEmpty()) {
             throw new NotFoundException("Product executor config not found for uuid:" + uuid);
         }
 

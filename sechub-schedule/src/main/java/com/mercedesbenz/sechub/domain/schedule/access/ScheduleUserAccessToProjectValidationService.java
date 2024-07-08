@@ -48,10 +48,11 @@ public class ScheduleUserAccessToProjectValidationService {
 
         ProjectAccessCompositeKey key = new ProjectAccessCompositeKey(userId, projectId);
         Optional<ScheduleAccess> scheduleAccess = accessRepository.findById(key);
-        if (!scheduleAccess.isPresent()) {
+        if (scheduleAccess.isEmpty()) {
             securityLogService.log(SecurityLogType.POTENTIAL_INTRUSION, "Denied user access in domain 'schedule'. userId={},projectId={}", userId,
                     logSanitizer.sanitize(projectId, 30));
-            // we say "... or you have no access - just to obfuscate... so it's not clear to
+            // we say "... or you have no access - just to obfuscate..." so it's not clear
+            // to
             // bad guys they got a target...
             throw new NotFoundException("Project " + projectId + " does not exist, or you have no access.");
         }
