@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.domain.administration.project;
 
-import static com.mercedesbenz.sechub.sharedkernel.util.Assert.*;
+import static com.mercedesbenz.sechub.sharedkernel.util.Assert.notNull;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -19,7 +19,7 @@ import com.mercedesbenz.sechub.sharedkernel.messaging.MessageDataKeys;
 import com.mercedesbenz.sechub.sharedkernel.messaging.MessageID;
 import com.mercedesbenz.sechub.sharedkernel.messaging.ProjectMessage;
 import com.mercedesbenz.sechub.sharedkernel.project.ProjectAccessLevel;
-import com.mercedesbenz.sechub.sharedkernel.usecases.admin.project.UseCaseAdministratorChangesProjectAccessLevel;
+import com.mercedesbenz.sechub.sharedkernel.usecases.admin.project.UseCaseAdminChangesProjectAccessLevel;
 import com.mercedesbenz.sechub.sharedkernel.validation.UserInputAssertion;
 
 import jakarta.annotation.security.RolesAllowed;
@@ -49,7 +49,7 @@ public class ProjectChangeAccessLevelService {
     AuditLogService auditLogService;
 
     /* @formatter:off */
-    @UseCaseAdministratorChangesProjectAccessLevel(
+    @UseCaseAdminChangesProjectAccessLevel(
 			@Step(
 					number = 2,
 					name = "Change access level",

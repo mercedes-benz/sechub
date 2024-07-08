@@ -21,7 +21,7 @@ public class SecHubRemoteCredentialUserData {
     }
 
     public void setName(String name) {
-        this.sealedName = CryptoAccess.CRYPTO_STRING.seal(name);
+        sealedName = CryptoAccess.CRYPTO_STRING.seal(name);
     }
 
     public String getPassword() {
@@ -29,6 +29,6 @@ public class SecHubRemoteCredentialUserData {
     }
 
     public void setPassword(String password) {
-        this.sealedPassword = CryptoAccess.CRYPTO_STRING.seal(password);
+        sealedPassword = CryptoAccess.CRYPTO_STRING.seal(password);
     }
 }

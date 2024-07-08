@@ -42,8 +42,8 @@ public class DeleteProductExecutorConfigService {
         auditLogService.log("Wants to removed product execution {}",uuid);
 
         Optional<ProductExecutorConfig> opt = repository.findById(uuid);
-        if (!opt.isPresent()) {
-            LOG.info("Delete canceled, because executor config with uuid {} did not exist",uuid);;
+        if (opt.isEmpty()) {
+            LOG.info("Delete canceled, because executor config with uuid {} did not exist",uuid);
             return;
         }
         ProductExecutorConfig found = opt.get();

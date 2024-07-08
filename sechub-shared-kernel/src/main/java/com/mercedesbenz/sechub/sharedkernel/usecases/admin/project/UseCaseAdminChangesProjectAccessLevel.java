@@ -20,7 +20,7 @@ import com.mercedesbenz.sechub.sharedkernel.usecases.UseCaseIdentifier;
 		title="Admin changes project access level",
 		apiName = "adminChangesProjectAccessLevel",
 		description="admin/changeProjectAccessLevel.adoc")
-public @interface UseCaseAdministratorChangesProjectAccessLevel {
+public @interface UseCaseAdminChangesProjectAccessLevel {
 
 	Step value();
 }
