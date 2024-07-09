@@ -13,6 +13,11 @@ pds:
       sharedvolume:
          upload:
             dir: temp
+   startup:
+      assert:
+          environment-variables-used:
+             disabled: true #we must disable this in our unit tests to use test setup config files etc.
+             
 # security credentials for tests
    techuser:
       userid: test-techuser

@@ -100,7 +100,7 @@ public class CheckmarxProductExecutorMockTest {
     public void before() throws Exception {
         JobStorage storage = Mockito.mock(JobStorage.class);
         when(storage.fetch(any())).thenReturn(new StringInputStream("something as a code..."));
-        when(storageService.getJobStorage(any(), any())).thenReturn(storage);
+        when(storageService.createJobStorage(any(), any())).thenReturn(storage);
 
         when(systemEnvironmentVariableSupport.getValueOrVariableContent("user")).thenReturn("checkmarx-user");
         when(systemEnvironmentVariableSupport.getValueOrVariableContent("pwd")).thenReturn("checkmarx-password");

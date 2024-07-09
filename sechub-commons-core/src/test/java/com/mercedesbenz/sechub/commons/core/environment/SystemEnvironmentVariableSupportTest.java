@@ -1,12 +1,15 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.commons.core.environment;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
+import org.junit.jupiter.params.provider.EmptySource;
+import org.junit.jupiter.params.provider.NullSource;
 import org.junit.jupiter.params.provider.ValueSource;
 
 class SystemEnvironmentVariableSupportTest {
@@ -19,6 +22,44 @@ class SystemEnvironmentVariableSupportTest {
         systemEnvironment = mock(SystemEnvironment.class);
 
         supportToTest = new SystemEnvironmentVariableSupport(systemEnvironment);
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = { "VALUE", "value", "v" })
+    @NullSource
+    @EmptySource
+    void isValueLikeEnvironmentVariableValue_returns_true_when_same_value_in_environment_value(String value) {
+
+        /* prepare */
+        String envVariableName = "SOME_VARIABLE";
+
+        when(systemEnvironment.getEnv(envVariableName)).thenReturn(value);
+
+        /* execute */
+        boolean result = supportToTest.isValueLikeEnvironmentVariableValue(envVariableName, value);
+
+        /* test */
+        assertTrue(result);
+
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = { "", "some_variable", "test" })
+    @NullSource
+    @EmptySource
+    void isValueLikeEnvironmentVariableValue_returns_false_when_not_same_value_in_environment_value(String value) {
+
+        /* prepare */
+        String envVariableName = "SOME_VARIABLE";
+
+        when(systemEnvironment.getEnv(envVariableName)).thenReturn(value + "-other");
+
+        /* execute */
+        boolean result = supportToTest.isValueLikeEnvironmentVariableValue(envVariableName, value);
+
+        /* test */
+        assertFalse(result);
+
     }
 
     @ParameterizedTest

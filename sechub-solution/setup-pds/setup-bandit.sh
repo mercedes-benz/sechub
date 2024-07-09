@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+#!/usr/bin/bash
 # SPDX-License-Identifier: MIT
 
 declare -r SCRIPT_PARAMETERS="<project-id> <user>"

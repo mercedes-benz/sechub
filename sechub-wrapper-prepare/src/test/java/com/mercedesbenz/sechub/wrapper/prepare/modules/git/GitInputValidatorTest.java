@@ -1,15 +1,11 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.wrapper.prepare.modules.git;
 
-import static com.mercedesbenz.sechub.commons.model.SecHubScanConfiguration.createFromJSON;
-import static com.mercedesbenz.sechub.wrapper.prepare.modules.InputValidatorExitcode.LOCATION_NOT_MATCHING_PATTERN;
+import static com.mercedesbenz.sechub.wrapper.prepare.InputValidatorExitcode.*;
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
-import java.io.File;
 import java.io.IOException;
-import java.nio.file.Files;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -19,28 +15,41 @@ import org.junit.jupiter.params.provider.ValueSource;
 import com.mercedesbenz.sechub.commons.model.SecHubRemoteCredentialConfiguration;
 import com.mercedesbenz.sechub.commons.model.SecHubRemoteCredentialUserData;
 import com.mercedesbenz.sechub.commons.model.SecHubRemoteDataConfiguration;
-import com.mercedesbenz.sechub.test.TestFileWriter;
-import com.mercedesbenz.sechub.wrapper.prepare.cli.PrepareWrapperEnvironment;
-import com.mercedesbenz.sechub.wrapper.prepare.modules.PrepareWrapperInputValidatorException;
-import com.mercedesbenz.sechub.wrapper.prepare.prepare.PrepareWrapperContext;
+import com.mercedesbenz.sechub.pds.commons.core.PDSLogSanitizer;
+import com.mercedesbenz.sechub.wrapper.prepare.PrepareWrapperContext;
+import com.mercedesbenz.sechub.wrapper.prepare.PrepareWrapperInputValidatorException;
+import com.mercedesbenz.sechub.wrapper.prepare.PrepareWrapperUsageException;
 
 class GitInputValidatorTest {
 
-    GitInputValidator gitInputValidatorToTest;
+    private static final String VALID_USERNAME = "user1";
+    private static final String VALID_PWD = "ghp_123456789012345678901234567890123456";
+    private static final String VALID_REPO_URL = "https://my-repo.com.git";
 
-    TestFileWriter writer;
+    private GitPrepareInputValidator gitInputValidatorToTest;
+    private PrepareWrapperContext context;
+    private SecHubRemoteDataConfiguration remoteDataConfiguration;
 
     @BeforeEach
     void beforeEach() {
-        writer = new TestFileWriter();
-        gitInputValidatorToTest = new GitInputValidator();
+        gitInputValidatorToTest = new GitPrepareInputValidator();
+
+        gitInputValidatorToTest.logSanitizer = mock(PDSLogSanitizer.class);
+
+        context = mock(PrepareWrapperContext.class);
+        remoteDataConfiguration = new SecHubRemoteDataConfiguration();
+        when(context.getRemoteDataConfiguration()).thenReturn(remoteDataConfiguration);
     }
 
     @ParameterizedTest
     @ValueSource(strings = { "https://example.com;echoMalicious", "https://example.com.git>text.txt", "https://example.com/some-git-repo.git&&cd.." })
-    void validateLocation_throws_exception_when_url_does_contain_forbidden_characters(String repositoryUrl) {
+    void validate_throws_exception_when_url_does_contain_forbidden_characters(String repositoryUrl) {
+
+        /* prepare */
+        initRemoteDataWithOutCredentials(repositoryUrl);
+
         /* execute */
-        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> gitInputValidatorToTest.validateLocation(repositoryUrl));
+        PrepareWrapperUsageException exception = assertThrows(PrepareWrapperUsageException.class, () -> gitInputValidatorToTest.validate(context));
 
         /* test */
         assertTrue(exception.getMessage().contains("Defined location URL must not contain forbidden characters: "));
@@ -48,26 +57,35 @@ class GitInputValidatorTest {
 
     @ParameterizedTest
     @ValueSource(strings = { "https://y-git-host/my-git-user/my-git-repo.git", "https://example.org/some-git-repo.git", "git@gitrepo:my-repo.git" })
-    void validateLocation_does_not_throw_exception_when_url_is_valid(String repositoryUrl) {
+    void validate_does_not_throw_exception_when_url_is_valid_and_no_credentials(String repositoryUrl) {
+        /* prepare */
+        initRemoteDataWithOutCredentials(repositoryUrl);
+
         /* execute + test */
-        assertDoesNotThrow(() -> gitInputValidatorToTest.validateLocation(repositoryUrl));
+        assertDoesNotThrow(() -> gitInputValidatorToTest.validate(context));
     }
 
     @ParameterizedTest
-    @ValueSource(strings = { "https://my-repo.com.git", "http://my-repo.com.git", "git://host.xz/~user/path/to/repo.git", "git@github.com:my/repo.git",
+    @ValueSource(strings = { VALID_REPO_URL, "http://my-repo.com.git", "git://host.xz/~user/path/to/repo.git", "git@github.com:my/repo.git",
             "https://host.xz/path/to/repo.git/", "http://host.xz/path/to/repo.git/", "git://host.xz/path/to/repo.git/", "git@host.com:my-repo/example.git" })
-    void validateLocation_does_not_throw_exception_when_git_pattern_is_configured(String location) {
+    void validate_does_not_throw_exception_when_git_pattern_is_configured_and_no_credentials(String repositoryUrl) {
+        /* prepare */
+        initRemoteDataWithOutCredentials(repositoryUrl);
+        remoteDataConfiguration.setType("git");
+
         /* execute + test */
-        assertDoesNotThrow(() -> gitInputValidatorToTest.validateLocation(location));
+        assertDoesNotThrow(() -> gitInputValidatorToTest.validate(context));
     }
 
     @ParameterizedTest
     @ValueSource(strings = { "https://my-repo.com.notAgit_repo", "http://my-repo.com.git./bin/bash", "git://host.xz/~user/path/to/repo.gitsomeevalexecution",
             "git@github.com:my/repo.git\nexecuteMalicious" })
-    void validateLocation_throws_exception_when_invalid_git_location_is_configured(String location) {
+    void validate_throws_exception_when_invalid_git_location_is_configured(String repositoryUrl) {
+        /* prepare */
+        initRemoteDataWithOutCredentials(repositoryUrl);
+
         /* execute */
-        PrepareWrapperInputValidatorException e = assertThrows(PrepareWrapperInputValidatorException.class,
-                () -> gitInputValidatorToTest.validateLocation(location));
+        PrepareWrapperInputValidatorException e = assertThrows(PrepareWrapperInputValidatorException.class, () -> gitInputValidatorToTest.validate(context));
 
         /* test */
         assertEquals(LOCATION_NOT_MATCHING_PATTERN, e.getExitCode());
@@ -75,51 +93,58 @@ class GitInputValidatorTest {
 
     @ParameterizedTest
     @ValueSource(strings = { "user", "user-name", "user_name", "user-name-123", "user-name-123-456", "user-name_23" })
-    void validateUsername_does_not_throw_exception_when_username_is_valid(String username) {
+    void validate_does_not_throw_exception_when_username_is_valid(String username) {
+        /* prepare */
+        initRemoteDataWithCredentials(VALID_REPO_URL, username, VALID_PWD);
+
         /* execute + test */
-        assertDoesNotThrow(() -> gitInputValidatorToTest.validateUsername(username));
+        assertDoesNotThrow(() -> gitInputValidatorToTest.validate(context));
     }
 
     @ParameterizedTest
     @ValueSource(strings = { "user name", "user name 123", "./bin/bash" })
-    void validateUsername_throws_exception_when_username_is_invalid(String username) {
+    void validate_throws_exception_when_username_is_invalid(String username) {
+        /* prepare */
+        initRemoteDataWithCredentials(VALID_REPO_URL, username, VALID_PWD);
+
         /* execute + test */
         PrepareWrapperInputValidatorException exception = assertThrows(PrepareWrapperInputValidatorException.class,
-                () -> gitInputValidatorToTest.validateUsername(username));
+                () -> gitInputValidatorToTest.validate(context));
         assertEquals("Defined username must match the git pattern.", exception.getMessage());
     }
 
     @ParameterizedTest
     @ValueSource(strings = { "ghp_123456789012345678901234567890123456", "ghs_123456789012345678901234567890123456",
             "github_pat_1234567890123456789012_1234567890123456789012345678901234567890123456789012example" })
-    void validatePassword_does_not_throw_exception_when_password_is_valid(String password) {
+    void validate_does_not_throw_exception_when_password_is_valid(String password) {
+        /* prepare */
+        initRemoteDataWithCredentials(VALID_REPO_URL, VALID_USERNAME, password);
+
         /* execute + test */
-        assertDoesNotThrow(() -> gitInputValidatorToTest.validatePassword(password));
+        assertDoesNotThrow(() -> gitInputValidatorToTest.validate(context));
     }
 
     @ParameterizedTest
     @ValueSource(strings = { "./bin/bash", "ghp_1234567890123456789012345678901234567", "ghs_1234567890123456789012345678901234567",
             "github_pat_123456789012345678901234567890123456_;echo 'malicious'" })
-    void validatePassword_throws_exception_when_password_is_invalid(String password) {
+    void validate_throws_exception_when_password_is_invalid(String password) {
+        /* prepare */
+        initRemoteDataWithCredentials(VALID_REPO_URL, VALID_USERNAME, password);
+
         /* execute + test */
         PrepareWrapperInputValidatorException exception = assertThrows(PrepareWrapperInputValidatorException.class,
-                () -> gitInputValidatorToTest.validatePassword(password));
+                () -> gitInputValidatorToTest.validate(context));
         assertEquals("Defined password must match the git Api token pattern.", exception.getMessage());
     }
 
     @Test
-    void validate_throws_exception_when_credentials_are_empty() {
+    void validate_throws_exception_when_credentials_not_null_but_user_is_null() {
         /* prepare */
-        PrepareWrapperContext context = createContextEmptyConfig();
-        SecHubRemoteDataConfiguration remoteDataConfiguration = new SecHubRemoteDataConfiguration();
-        SecHubRemoteCredentialConfiguration credentials = new SecHubRemoteCredentialConfiguration();
-        remoteDataConfiguration.setCredentials(credentials);
-        remoteDataConfiguration.setLocation("https://example.com/my-repo.git");
-        remoteDataConfiguration.setType("git");
-        context.setRemoteDataConfiguration(remoteDataConfiguration);
+        initRemoteDataWithCredentials(VALID_REPO_URL, "", "");
+        remoteDataConfiguration.getCredentials().get().setUser(null); // set user to null
 
         /* execute */
-        IllegalStateException exception = assertThrows(IllegalStateException.class, () -> gitInputValidatorToTest.validate(context));
+        PrepareWrapperUsageException exception = assertThrows(PrepareWrapperUsageException.class, () -> gitInputValidatorToTest.validate(context));
 
         /* test */
         assertEquals("Defined credentials must contain credential user and can not be empty.", exception.getMessage());
@@ -128,19 +153,10 @@ class GitInputValidatorTest {
     @Test
     void validate_throws_exception_when_no_username_found() {
         /* prepare */
-        PrepareWrapperContext context = createContextEmptyConfig();
-        SecHubRemoteDataConfiguration remoteDataConfiguration = new SecHubRemoteDataConfiguration();
-        SecHubRemoteCredentialConfiguration credentials = new SecHubRemoteCredentialConfiguration();
-        SecHubRemoteCredentialUserData user = new SecHubRemoteCredentialUserData();
-        user.setPassword("password");
-        credentials.setUser(user);
-        remoteDataConfiguration.setCredentials(credentials);
-        remoteDataConfiguration.setLocation("https://example.com/my-repo.git");
-        remoteDataConfiguration.setType("git");
-        context.setRemoteDataConfiguration(remoteDataConfiguration);
+        initRemoteDataWithCredentials(VALID_REPO_URL, null, "pwd1");
 
         /* execute */
-        IllegalStateException exception = assertThrows(IllegalStateException.class, () -> gitInputValidatorToTest.validate(context));
+        PrepareWrapperUsageException exception = assertThrows(PrepareWrapperUsageException.class, () -> gitInputValidatorToTest.validate(context));
 
         /* test */
         assertTrue(exception.getMessage().contains("Defined username must not be null or empty."));
@@ -149,19 +165,10 @@ class GitInputValidatorTest {
     @Test
     void validate_throws_exception_when_no_password_found() {
         /* prepare */
-        PrepareWrapperContext context = createContextEmptyConfig();
-        SecHubRemoteDataConfiguration remoteDataConfiguration = new SecHubRemoteDataConfiguration();
-        SecHubRemoteCredentialConfiguration credentials = new SecHubRemoteCredentialConfiguration();
-        SecHubRemoteCredentialUserData user = new SecHubRemoteCredentialUserData();
-        user.setName("my-example-name");
-        credentials.setUser(user);
-        remoteDataConfiguration.setCredentials(credentials);
-        remoteDataConfiguration.setLocation("https://example.com/my-repo.git");
-        remoteDataConfiguration.setType("git");
-        context.setRemoteDataConfiguration(remoteDataConfiguration);
+        initRemoteDataWithCredentials(VALID_REPO_URL, "example-name", null);
 
         /* execute */
-        IllegalStateException exception = assertThrows(IllegalStateException.class, () -> gitInputValidatorToTest.validate(context));
+        PrepareWrapperUsageException exception = assertThrows(PrepareWrapperUsageException.class, () -> gitInputValidatorToTest.validate(context));
 
         /* test */
         assertEquals("Defined password must not be null or empty. Password is required for login.", exception.getMessage());
@@ -171,56 +178,27 @@ class GitInputValidatorTest {
     @Test
     void validate_successful_when_user_credentials_are_configured_correctly() throws IOException {
         /* prepare */
-        File tempDir = Files.createTempDirectory("upload-folder").toFile();
-        tempDir.deleteOnExit();
-        String filename = "test";
-        writer.save(new File(tempDir, filename), "some text", true);
+        /* prepare */
+        initRemoteDataWithCredentials(VALID_REPO_URL, VALID_USERNAME, VALID_PWD);
+        context.setRemoteDataConfiguration(remoteDataConfiguration);
 
-        PrepareWrapperEnvironment environment = mock(PrepareWrapperEnvironment.class);
-        when(environment.getPdsPrepareUploadFolderDirectory()).thenReturn(tempDir.toString());
-        PrepareWrapperContext context = new PrepareWrapperContext(createFromJSON("{}"), environment);
+        /* execute + test */
+        assertDoesNotThrow(() -> gitInputValidatorToTest.validate(context));
+    }
 
-        SecHubRemoteDataConfiguration remoteDataConfiguration = new SecHubRemoteDataConfiguration();
+    private void initRemoteDataWithOutCredentials(String location) {
+        remoteDataConfiguration.setLocation(location);
+    }
+
+    private void initRemoteDataWithCredentials(String location, String username, String pwd) {
+        remoteDataConfiguration.setLocation(location);
         SecHubRemoteCredentialConfiguration credentials = new SecHubRemoteCredentialConfiguration();
         SecHubRemoteCredentialUserData user = new SecHubRemoteCredentialUserData();
-        user.setName("my-example-name");
-        user.setPassword("ghp_exampleAPITOKEN8ffne3l6g9f393r8fbcsf");
+        user.setName(username);
+        user.setPassword(pwd);
+
         credentials.setUser(user);
         remoteDataConfiguration.setCredentials(credentials);
-        remoteDataConfiguration.setLocation("https://example.com/my-repo.git");
-        remoteDataConfiguration.setType("git");
-        context.setRemoteDataConfiguration(remoteDataConfiguration);
-
-        /* execute + test */
-        assertDoesNotThrow(() -> gitInputValidatorToTest.validate(context));
-    }
-
-    @Test
-    void validate_successful_when_no_credentials_are_configured() throws IOException {
-        /* prepare */
-        File tempDir = Files.createTempDirectory("upload-folder").toFile();
-        tempDir.deleteOnExit();
-        String filename = "test";
-        writer.save(new File(tempDir, filename), "some text", true);
-
-        PrepareWrapperEnvironment environment = mock(PrepareWrapperEnvironment.class);
-        when(environment.getPdsPrepareUploadFolderDirectory()).thenReturn(tempDir.toString());
-        PrepareWrapperContext context = new PrepareWrapperContext(createFromJSON("{}"), environment);
-
-        SecHubRemoteDataConfiguration remoteDataConfiguration = new SecHubRemoteDataConfiguration();
-        remoteDataConfiguration.setLocation("https://example.com/my-repo.git");
-        remoteDataConfiguration.setType("git");
-        context.setRemoteDataConfiguration(remoteDataConfiguration);
-
-        /* execute + test */
-        assertDoesNotThrow(() -> gitInputValidatorToTest.validate(context));
-
-    }
-
-    private PrepareWrapperContext createContextEmptyConfig() {
-        PrepareWrapperEnvironment environment = mock(PrepareWrapperEnvironment.class);
-        when(environment.getPdsPrepareUploadFolderDirectory()).thenReturn("test-upload-folder");
-        return new PrepareWrapperContext(createFromJSON("{}"), environment);
     }
 
 }

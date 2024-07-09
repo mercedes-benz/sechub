@@ -28,10 +28,10 @@ spec:
         - name: {{ .Chart.Name }}
           image: "{{ .Values.image.registry }}:{{ .Values.image.tag }}"
           resources:
-              requests:
-                  memory: "{{ .Values.resources.requests.memory }}"
-              limits:
-                  memory: "{{ .Values.resources.limits.memory }}"
+            requests:
+              memory: "{{ .Values.resources.requests.memory }}"
+            limits:
+              memory: "{{ .Values.resources.limits.memory }}"
           env:
             - name: PDS_START_MODE
               value: "{{ .Values.pds.startMode }}"
@@ -110,6 +110,11 @@ spec:
             - name: SHARED_VOLUME_UPLOAD_DIR
               value: "{{ .Values.storage.sharedVolume.upload.dir }}"
 {{- end}}
+            # Proxy variables
+            - name: PDS_HTTPS_PROXY
+              value: {{ .Values.proxy.httpsHost }}
+            - name: PDS_NO_PROXY
+              value: {{ .Values.proxy.noProxy }}
           ports:
             - name: pds-https-port
               containerPort: 8444

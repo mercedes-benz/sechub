@@ -14,7 +14,7 @@ public class AdministrationAutoCleanupConfig implements JSONable<AdministrationA
         return cleanupTime;
     }
 
-    public class CleanupTime {
+    public static class CleanupTime {
 
         CountableInDaysTimeUnit unit = CountableInDaysTimeUnit.MONTH;
 

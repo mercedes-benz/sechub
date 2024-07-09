@@ -4,6 +4,7 @@
   "products" : [ {
     "id" : "PDS",
     "path" : "/pds/scripts/pds.sh",
+    "envWhitelist" : [ "HELPER_FOLDER", "MOCK_FOLDER" ],
     "scanType" : "codeScan",
     "description" : "Test file for PDS"
   } ]

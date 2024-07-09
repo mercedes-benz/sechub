@@ -38,6 +38,7 @@ public class AwsS3JobStorage implements JobStorage {
     private String storagePath;
     private UUID jobUUID;
     private TransferManager transferManager;
+    private boolean closed;
 
     /**
      * Creates a new AWS S3 storage object and uses the default transfer manager
@@ -80,6 +81,7 @@ public class AwsS3JobStorage implements JobStorage {
     public void store(String name, InputStream inputStream) throws IOException {
         requireNonNull(name, "name may not be null!");
         requireNonNull(inputStream, "inputStream may not be null!");
+        assertNotClosed();
 
         storeInS3(name, inputStream, null);
     }
@@ -88,6 +90,7 @@ public class AwsS3JobStorage implements JobStorage {
     public void store(String name, InputStream inputStream, long contentLength) throws IOException {
         requireNonNull(name, "name may not be null!");
         requireNonNull(inputStream, "inputStream may not be null!");
+        assertNotClosed();
 
         if (contentLength < 0) {
             throw new IllegalArgumentException("Content length cannot be negative!");
@@ -98,6 +101,8 @@ public class AwsS3JobStorage implements JobStorage {
 
     @Override
     public Set<String> listNames() throws IOException {
+        assertNotClosed();
+
         try {
             if (!client.doesBucketExistV2(bucketName)) {
                 return Collections.emptySet();
@@ -132,6 +137,8 @@ public class AwsS3JobStorage implements JobStorage {
 
     @Override
     public InputStream fetch(String name) throws IOException {
+        assertNotClosed();
+
         try {
             String objectName = getObjectName(name);
             LOG.debug("Fetching objectName={} from bucket={}", objectName, bucketName);
@@ -144,6 +151,9 @@ public class AwsS3JobStorage implements JobStorage {
 
     @Override
     public void deleteAll() throws IOException {
+
+        assertNotClosed();
+
         String objectPrefix = getObjectPrefix();
         LOG.info("delete all job storage parts from prefix: {}", objectPrefix);
 
@@ -179,11 +189,26 @@ public class AwsS3JobStorage implements JobStorage {
 
     @Override
     public boolean isExisting(String name) throws IOException {
+        assertNotClosed();
+
         try {
             return client.doesObjectExist(bucketName, getObjectName(name));
         } catch (RuntimeException e) {
             throw new IOException("Cannot check existence of: " + name, e);
         }
+    }
+
+    @Override
+    public void close() {
+        if (closed) {
+            return;
+        }
+        this.closed = true;
+
+        if (transferManager == null) {
+            return;
+        }
+        transferManager.shutdownNow(false);
     }
 
     private void storeInS3(String name, InputStream inputStream, Long contentLength) throws IOException {
@@ -235,6 +260,12 @@ public class AwsS3JobStorage implements JobStorage {
 
     private String getObjectPrefix() {
         return storagePath + "/" + jobUUID + "/";
+    }
+
+    private void assertNotClosed() {
+        if (closed) {
+            throw new IllegalStateException("job storage already closed!");
+        }
     }
 
     private class LogS3ProgressListener implements ProgressListener {

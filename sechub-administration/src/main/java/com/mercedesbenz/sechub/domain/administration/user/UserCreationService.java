@@ -70,7 +70,7 @@ public class UserCreationService {
         assertion.assertIsValidUserId(userId);
 
         Optional<Signup> selfRegistration = selfRegistrationRepository.findById(userId);
-        if (!selfRegistration.isPresent()) {
+        if (selfRegistration.isEmpty()) {
             LOG.warn("Did not found a self registration for user with name:{}, so skipped creation", sanitizedLogUserId);
             return;
         }

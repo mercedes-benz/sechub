@@ -24,7 +24,7 @@ jobs:
           echo "Xray-wrapper '${{ inputs.xray-wrapper-version }}' - Milestone '${{ inputs.xray-wrapper-milestone-number }}'"
 
       - name: Checkout branch master
-        uses: actions/checkout@a5ac7e51b41094c92402da3b24376905380afc29
+        uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332
         with:
           ref: master
 
@@ -43,7 +43,7 @@ jobs:
           distribution: temurin
 
       - name: Set up Gradle
-        uses: gradle/actions/setup-gradle@af6e5767241073b8ab20cc8cf7e95ec63fadc160
+        uses: gradle/actions/setup-gradle@dbbdc275be76ac10734476cc723d82dfe7ec6eda
         with:
           cache-read-only: false
 

@@ -33,7 +33,7 @@ public class PDSStorageContentProviderFactory {
             String projectId = model.getProjectId();
             UUID jobUUID = context.getSechubJobUUID();
 
-            storage = storageService.getJobStorage(projectId, jobUUID);
+            storage = storageService.createJobStorage(projectId, jobUUID);
         }
 
         return new PDSStorageContentProvider(storage, reuseSecHubStorage, scanType, modelSupport, model);

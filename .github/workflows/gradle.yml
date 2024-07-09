@@ -16,7 +16,7 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@a5ac7e51b41094c92402da3b24376905380afc29
+      - uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332
 
       - name: Set up JDK 17
         uses: actions/setup-java@99b8673ff64fbf99d8d325f52d9a5bdedb8483e9
@@ -25,7 +25,7 @@ jobs:
           distribution: temurin
 
       - name: Set up Gradle
-        uses: gradle/actions/setup-gradle@af6e5767241073b8ab20cc8cf7e95ec63fadc160
+        uses: gradle/actions/setup-gradle@dbbdc275be76ac10734476cc723d82dfe7ec6eda
         with:
           cache-read-only: false
 
