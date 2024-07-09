@@ -8,7 +8,7 @@ image::intelliJ-java-formatter-import.png[]
 +
 image::intelliJ-java-formatter-activate.png[]
 
-. Before pushing please check your format by executing spotless check.
+. Before pushing your code please check your java format by executing spotless check.
 +
 ----
 ./gradlew clean spotlessCheck

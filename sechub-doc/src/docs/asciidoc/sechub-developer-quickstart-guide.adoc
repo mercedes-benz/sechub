@@ -264,7 +264,10 @@ TIP: Example: `feature-36-go-client-supports-env-variable`.
 
 . Set Up git configurations as explained here: https://mercedes-benz.github.io/sechub/latest/sechub-techdoc.html#sechub-git-configuration[Configure your git settings]
 
-. Implement your changes
+. Set up your IDE
+
+. Implement your changes +
+Please follow our coding conventions: https://mercedes-benz.github.io/sechub/latest/sechub-techdoc.html#section-coding-conventions[Coding conventions]
 +
 TIP: In case, you have any questions or need clarification ask inside the issues
 
