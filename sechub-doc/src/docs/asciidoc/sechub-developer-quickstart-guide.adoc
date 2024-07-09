@@ -256,11 +256,13 @@ Issues have labels a good way to start is to look for issues with https://github
 Issues with labels https://github.com/mercedes-benz/sechub/labels/beginner[`beginner`], https://github.com/mercedes-benz/sechub/labels/intermediate[`intermediate`], https://github.com/mercedes-benz/sechub/labels/advanced[`advanced`] indicate the level of difficulty. 
 However, not all issues are labeled. In addition, if you like an issue just comment on it, so that we can assign you to it.
 
-** In case, the issue you want to work on does not yet exists, please create an issue.
+** In case, the issue you want to work on does not yet exist, please create an issue.
 
 . Create a new branch on your local fork following the naming pattern `feature-<issue-number>-<short-description>`
 +
 TIP: Example: `feature-36-go-client-supports-env-variable`.
+
+. Set Up git configurations as explained here: https://mercedes-benz.github.io/sechub/latest/sechub-techdoc.html#sechub-git-configuration[Configure your git settings]
 
 . Implement your changes
 +

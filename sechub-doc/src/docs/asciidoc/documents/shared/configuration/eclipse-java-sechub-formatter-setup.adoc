@@ -7,3 +7,9 @@ image::eclipse-java-formatter-import.png[]
 . Ensure SecHub is your active profile. Select `SecHub` as active profile, then press apply and close.
 +
 image::eclipse-java-formatter-activate.png[]
+
+. Before pushing please check your format by executing spotless check.
++
+----
+./gradlew clean spotlessCheck
+----
