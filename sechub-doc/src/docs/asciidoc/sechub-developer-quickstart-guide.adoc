@@ -455,6 +455,10 @@ image::eclipse-import-gradle-projects-sechub-selected.png[]
 +
 image::eclipse-egradle-sechub-imported.png[]
 
+==== Add Sechub Java Code Formatter
+
+include::documents/shared/configuration/eclipse-java-sechub-formatter-setup.adoc[]
+
 ==== Switch to `Dark` theme (Optional)
 
 Needs to be done for every new workspace.
@@ -471,7 +475,7 @@ image::eclipse-dark-theme.png[]
 
 . Press the `Apply and Close` button
 
-== Set up IntelliJ for SecHub
+=== Set up IntelliJ for SecHub
 
 Requirements: IntelliJ IDE (Community or Ultimate) is installed.
 
@@ -486,6 +490,10 @@ image::intelliJ_javac_compiler.png[]
 . Click on `File` -> `settings` -> `Build, Execution, Deployment` -> `Build Tools` -> `Gradle` and set the `Build and run using` to `IntelliJ IDEA` and `Run tests using` to `IntelliJ IDEA`
 +
 image::intelliJ_switch_to_intelliJ_compiler.png[]
+
+==== Add Sechub Java Code Formatter
+
+include::documents/shared/configuration/intelliJ-java-sechub-formatter-setup.adoc[]
 
 == Run Integration Tests from IDE
 

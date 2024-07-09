@@ -1,0 +1,9 @@
+. Download the formatter xml file https://github.com/Daimler/sechub/files/4158667/sechub-eclipse-sourceformatter-setup.zip[here] and unzip it.
+
+. Open Java Formatter page in preferences (File->Settings). Then press the import button and select the former unpacked xml file.
++
+image::intelliJ-java-formatter-import.png[]
+
+. Ensure SecHub is your active profile. Select `SecHub` as active profile, then press apply and close.
++
+image::intelliJ-java-formatter-activate.png[]
