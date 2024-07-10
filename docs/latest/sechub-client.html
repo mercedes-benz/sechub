@@ -531,7 +531,7 @@ table.CodeRay td.code{padding:0 0 0 .75em}
 <div id="header">
 <h1><span class="image"><a class="image" href="https://mercedes-benz.github.io/sechub"><img src="images/sechub-logo.png" alt="sechub logo"></a></span> SecHub Client Documentation</h1>
 <div class="details">
-<span id="revnumber"> Client 1.6.1</span>
+<span id="revnumber"> Client 1.6.1 modified (commit 6c2e299)</span>
 </div>
 <div id="toc" class="toc2">
 <div id="toctitle">Table of contents</div>
@@ -632,7 +632,17 @@ table.CodeRay td.code{padding:0 0 0 .75em}
 </li>
 </ul>
 </li>
-<li><a href="#sechub-config-data-section">2.5.9. Data section</a></li>
+<li><a href="#sechub-config-data-section">2.5.9. Data section</a>
+<ul class="sectlevel4">
+<li><a href="#remote-data">2.5.9.1. Remote Data</a>
+<ul class="sectlevel5">
+<li><a href="#sechub-config-example-remote-data-section-sources-codescan">2.5.9.1.1. Example source remote data scan</a></li>
+<li><a href="#sechub-config-example-remote-data-section-sources-codescan-credentials">2.5.9.1.2. Example source remote data scan with credentials</a></li>
+<li><a href="#sechub-config-example-remote-data-section-binaries-codescan-credentials">2.5.9.1.3. Example binaries remote data scan with credentials</a></li>
+</ul>
+</li>
+</ul>
+</li>
 <li><a href="#sechub-config-metadata-section">2.5.10. MetaData</a>
 <ul class="sectlevel4">
 <li><a href="#labels">2.5.10.1. Labels</a></li>
@@ -762,7 +772,7 @@ build pipeline / contionus integration (CI) and helps to provide
 </tbody>
 </table>
 <div class="paragraph">
-<p>Documentation version: <code>Client 1.6.1 - Build date: 20240531130401</code></p>
+<p>Documentation version: <code>Client 1.6.1 modified (commit 6c2e299) - Build date: 20240710135650</code></p>
 </div>
 <hr>
 <div style="page-break-after: always;"></div>
@@ -1616,6 +1626,12 @@ action <code>unmarkFalsePositives</code></p>
 <td class="tableblock halign-left valign-top"></td>
 </tr>
 <tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">trust all certificates</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>SECHUB_TRUSTALL</code></p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">user id</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>-user</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>SECHUB_USERID</code></p></td>
@@ -1626,6 +1642,36 @@ action <code>unmarkFalsePositives</code></p>
 <td class="tableblock halign-left valign-top"></td>
 <td class="tableblock halign-left valign-top"></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><a href="#web-scan">webScan</a></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">DEV: debug http traffic</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>SECHUB_DEBUG_HTTP</code></p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">DEV: enable debugging</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>SECHUB_DEBUG</code></p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">DEV: ignore default excludes</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>SECHUB_IGNORE_DEFAULT_EXCLUDES</code></p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">DEV: initial wait interval</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>SECHUB_INITIAL_WAIT_INTERVAL</code></p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">DEV: keep temporary files</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>SECHUB_KEEP_TEMPFILES</code></p></td>
+<td class="tableblock halign-left valign-top"></td>
 </tr>
 </tbody>
 </table>
@@ -3216,6 +3262,147 @@ for details about default behaviour for sources.</td>
 </tr>
 </table>
 </div>
+<div class="sect4">
+<h5 id="remote-data">2.5.9.1. Remote Data</h5>
+<div class="paragraph">
+<p>Instead of configuring the file system and uploading local data, it is also possible to define a remote data section to automatically retrieve the data to be scanned from remote locations.
+In a <code>PREPARE</code> phase the <code>PDS</code> prepare will download the data from the remote location and upload it to a shared storage.
+From there any other <code>PDS solution</code> can access the data for scanning.
+The <code>type</code> is not mandatory, but it is recommended to set it to <code>git</code> or <code>docker</code> to make it clear what type of remote data is being used.</p>
+</div>
+<div class="paragraph">
+<p>Scan types (codeScan, licenseScan etc.), includes or excludes as well as false positives can be defined as usual.</p>
+</div>
+<div class="sect5">
+<h6 id="sechub-config-example-remote-data-section-sources-codescan">2.5.9.1.1. Example source remote data scan</h6>
+<div class="listingblock">
+<div class="title">Codes scan configuration for remote git sources without credentials</div>
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="json">{
+  <span class="key"><span class="delimiter">&quot;</span><span class="content">apiVersion</span><span class="delimiter">&quot;</span></span> : <span class="string"><span class="delimiter">&quot;</span><span class="content">1.0</span><span class="delimiter">&quot;</span></span>,
+  <span class="key"><span class="delimiter">&quot;</span><span class="content">data</span><span class="delimiter">&quot;</span></span> : {
+    <span class="key"><span class="delimiter">&quot;</span><span class="content">sources</span><span class="delimiter">&quot;</span></span> : [ {
+      <span class="key"><span class="delimiter">&quot;</span><span class="content">name</span><span class="delimiter">&quot;</span></span> : <span class="string"><span class="delimiter">&quot;</span><span class="content">firmware-images</span><span class="delimiter">&quot;</span></span>,
+      <span class="key"><span class="delimiter">&quot;</span><span class="content">remote</span><span class="delimiter">&quot;</span></span> : {
+        <span class="key"><span class="delimiter">&quot;</span><span class="content">location</span><span class="delimiter">&quot;</span></span> : <span class="string"><span class="delimiter">&quot;</span><span class="content">https://path-to-my-git-exmaple/repository.git</span><span class="delimiter">&quot;</span></span>, <i class="conum" data-value="1"></i><b>(1)</b>
+        <span class="key"><span class="delimiter">&quot;</span><span class="content">type</span><span class="delimiter">&quot;</span></span> : <span class="string"><span class="delimiter">&quot;</span><span class="content">git</span><span class="delimiter">&quot;</span></span> <i class="conum" data-value="2"></i><b>(2)</b>
+      }
+    } ]
+  },
+  <span class="key"><span class="delimiter">&quot;</span><span class="content">codeScan</span><span class="delimiter">&quot;</span></span> : {
+    <span class="key"><span class="delimiter">&quot;</span><span class="content">use</span><span class="delimiter">&quot;</span></span> : [ <span class="string"><span class="delimiter">&quot;</span><span class="content">firmware-images</span><span class="delimiter">&quot;</span></span>]
+  }
+}</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td><code>location</code>: The URL to remote data. (for example a git repository or a docker registry)</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td><code>type</code>: The type of the remote data. Currently supported are <code>git</code> or <code>docker</code>.</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect5">
+<h6 id="sechub-config-example-remote-data-section-sources-codescan-credentials">2.5.9.1.2. Example source remote data scan with credentials</h6>
+<div class="listingblock">
+<div class="title">Code scan configuration for remote git sources with credentials</div>
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="json">{
+  <span class="key"><span class="delimiter">&quot;</span><span class="content">apiVersion</span><span class="delimiter">&quot;</span></span> : <span class="string"><span class="delimiter">&quot;</span><span class="content">1.0</span><span class="delimiter">&quot;</span></span>,
+  <span class="key"><span class="delimiter">&quot;</span><span class="content">data</span><span class="delimiter">&quot;</span></span> : {
+    <span class="key"><span class="delimiter">&quot;</span><span class="content">sources</span><span class="delimiter">&quot;</span></span> : [ {
+      <span class="key"><span class="delimiter">&quot;</span><span class="content">name</span><span class="delimiter">&quot;</span></span> : <span class="string"><span class="delimiter">&quot;</span><span class="content">firmware-images</span><span class="delimiter">&quot;</span></span>,
+      <span class="key"><span class="delimiter">&quot;</span><span class="content">remote</span><span class="delimiter">&quot;</span></span> : {
+        <span class="key"><span class="delimiter">&quot;</span><span class="content">location</span><span class="delimiter">&quot;</span></span> : <span class="string"><span class="delimiter">&quot;</span><span class="content">https://path-to-my-git-exmaple/repository.git</span><span class="delimiter">&quot;</span></span>, <i class="conum" data-value="1"></i><b>(1)</b>
+        <span class="key"><span class="delimiter">&quot;</span><span class="content">type</span><span class="delimiter">&quot;</span></span> : <span class="string"><span class="delimiter">&quot;</span><span class="content">git</span><span class="delimiter">&quot;</span></span>, <i class="conum" data-value="2"></i><b>(2)</b>
+        <span class="key"><span class="delimiter">&quot;</span><span class="content">credentials</span><span class="delimiter">&quot;</span></span> : {
+          <span class="key"><span class="delimiter">&quot;</span><span class="content">user</span><span class="delimiter">&quot;</span></span> : { <i class="conum" data-value="3"></i><b>(3)</b>
+            <span class="key"><span class="delimiter">&quot;</span><span class="content">name</span><span class="delimiter">&quot;</span></span> : <span class="string"><span class="delimiter">&quot;</span><span class="content">my-username</span><span class="delimiter">&quot;</span></span>, <i class="conum" data-value="4"></i><b>(4)</b>
+            <span class="key"><span class="delimiter">&quot;</span><span class="content">password</span><span class="delimiter">&quot;</span></span> : <span class="string"><span class="delimiter">&quot;</span><span class="content">my-password</span><span class="delimiter">&quot;</span></span> <i class="conum" data-value="5"></i><b>(5)</b>
+          }
+        }
+      }
+    } ]
+  },
+  <span class="key"><span class="delimiter">&quot;</span><span class="content">codeScan</span><span class="delimiter">&quot;</span></span> : {
+    <span class="key"><span class="delimiter">&quot;</span><span class="content">use</span><span class="delimiter">&quot;</span></span> : [ <span class="string"><span class="delimiter">&quot;</span><span class="content">firmware-images</span><span class="delimiter">&quot;</span></span>]
+  }
+}</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td><code>location</code>: The URL to remote data. (for example a git repository or a docker registry)</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td><code>type</code>: The type of the remote data. Currently supported are <code>git</code> or <code>docker</code>.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td><code>user</code>: Defines user credentials</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="4"></i><b>4</b></td>
+<td><code>name</code>: The username to access remote data</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="5"></i><b>5</b></td>
+<td><code>password</code>: The API token or password that grant access to remote data</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect5">
+<h6 id="sechub-config-example-remote-data-section-binaries-codescan-credentials">2.5.9.1.3. Example binaries remote data scan with credentials</h6>
+<div class="listingblock">
+<div class="title">Codes scan configuration for remote git sources with credentials</div>
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="json">{
+  <span class="key"><span class="delimiter">&quot;</span><span class="content">apiVersion</span><span class="delimiter">&quot;</span></span> : <span class="string"><span class="delimiter">&quot;</span><span class="content">1.0</span><span class="delimiter">&quot;</span></span>,
+  <span class="key"><span class="delimiter">&quot;</span><span class="content">data</span><span class="delimiter">&quot;</span></span> : {
+    <span class="key"><span class="delimiter">&quot;</span><span class="content">binaries</span><span class="delimiter">&quot;</span></span> : [ {
+      <span class="key"><span class="delimiter">&quot;</span><span class="content">name</span><span class="delimiter">&quot;</span></span> : <span class="string"><span class="delimiter">&quot;</span><span class="content">firmware-images</span><span class="delimiter">&quot;</span></span>,
+      <span class="key"><span class="delimiter">&quot;</span><span class="content">remote</span><span class="delimiter">&quot;</span></span> : {
+        <span class="key"><span class="delimiter">&quot;</span><span class="content">location</span><span class="delimiter">&quot;</span></span> : <span class="string"><span class="delimiter">&quot;</span><span class="content">https://path-to-your-image:tag</span><span class="delimiter">&quot;</span></span>, <i class="conum" data-value="1"></i><b>(1)</b>
+        <span class="key"><span class="delimiter">&quot;</span><span class="content">type</span><span class="delimiter">&quot;</span></span> : <span class="string"><span class="delimiter">&quot;</span><span class="content">docker</span><span class="delimiter">&quot;</span></span>, <i class="conum" data-value="2"></i><b>(2)</b>
+        <span class="key"><span class="delimiter">&quot;</span><span class="content">credentials</span><span class="delimiter">&quot;</span></span> : {
+          <span class="key"><span class="delimiter">&quot;</span><span class="content">user</span><span class="delimiter">&quot;</span></span> : {
+            <span class="key"><span class="delimiter">&quot;</span><span class="content">name</span><span class="delimiter">&quot;</span></span> : <span class="string"><span class="delimiter">&quot;</span><span class="content">my-username</span><span class="delimiter">&quot;</span></span>,
+            <span class="key"><span class="delimiter">&quot;</span><span class="content">password</span><span class="delimiter">&quot;</span></span> : <span class="string"><span class="delimiter">&quot;</span><span class="content">my-password</span><span class="delimiter">&quot;</span></span>
+          }
+        }
+      }
+    } ]
+  },
+  <span class="key"><span class="delimiter">&quot;</span><span class="content">codeScan</span><span class="delimiter">&quot;</span></span> : {
+    <span class="key"><span class="delimiter">&quot;</span><span class="content">use</span><span class="delimiter">&quot;</span></span> : [ <span class="string"><span class="delimiter">&quot;</span><span class="content">firmware-images</span><span class="delimiter">&quot;</span></span>]
+  }
+}</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td><code>location</code>: The URL to remote data. (for example a git repository or a docker registry)</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td><code>type</code>: The type of the remote data. Currently supported are <code>git</code> or <code>docker</code>.</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
 </div>
 <div class="sect3">
 <h4 id="sechub-config-metadata-section">2.5.10. MetaData</h4>
@@ -4056,7 +4243,7 @@ configure the client to do this on color YELLOW.
 </div>
 <div id="footer">
 <div id="footer-text">
- Client 1.6.1<br>
+ Client 1.6.1 modified (commit 6c2e299)<br>
 </div>
 </div>
 </body>
