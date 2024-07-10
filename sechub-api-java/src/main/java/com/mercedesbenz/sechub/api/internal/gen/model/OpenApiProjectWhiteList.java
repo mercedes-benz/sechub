@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: MIT
 /*
  * SecHub API
  * SecHub API description

@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.wrapper.prepare;
 
 import org.junit.jupiter.api.BeforeAll;
