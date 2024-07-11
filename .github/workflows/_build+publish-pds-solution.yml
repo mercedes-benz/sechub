@@ -68,6 +68,7 @@ jobs:
           export OWASPZAP_VERSION
           export OWASPZAP_SHA256SUM
           export OWASPZAP_WRAPPER_VERSION
+          export PREPARE_WRAPPER_VERSION
           export PMD_VERSION
           export SCANCODE_VERSION
           export SPDX_TOOL_VERSION
