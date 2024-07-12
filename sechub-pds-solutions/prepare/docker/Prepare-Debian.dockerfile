@@ -33,11 +33,11 @@ RUN export DEBIAN_FRONTEND=noninteractive && \
 # Download the prepare Wrapper
 RUN cd "$ARTIFACT_FOLDER" && \
     # download wrapper jar
-    wget --no-verbose "https://github.com/mercedes-benz/sechub/releases/download/v$PREPARE_WRAPPER_VERSION-prepare-wrapper/sechub-pds-wrapper-prepare-$PREPARE_WRAPPER_VERSION.jar" && \
+    wget --no-verbose "https://github.com/mercedes-benz/sechub/releases/download/v$PREPARE_WRAPPER_VERSION-prepare-wrapper/sechub-wrapper-prepare-$PREPARE_WRAPPER_VERSION.jar" && \
     # download checksum file
-    wget --no-verbose "https://github.com/mercedes-benz/sechub/releases/download/v$PREPARE_WRAPPER_VERSION-prepare-wrapper/sechub-pds-wrapper-prepare-$PREPARE_WRAPPER_VERSION.jar.sha256sum" && \
+    wget --no-verbose "https://github.com/mercedes-benz/sechub/releases/download/v$PREPARE_WRAPPER_VERSION-prepare-wrapper/sechub-wrapper-prepare-$PREPARE_WRAPPER_VERSION.jar.sha256sum" && \
     # verify the checksum
-    sha256sum --check "sechub-pds-wrapper-prepare-$PREPARE_WRAPPER_VERSION.jar.sha256sum"
+    sha256sum --check "sechub-wrapper-prepare-$PREPARE_WRAPPER_VERSION.jar.sha256sum"
 
 
 #-------------------
