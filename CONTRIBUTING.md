@@ -95,8 +95,6 @@ This depends on you which kind of IDE you use for development. But we have some 
 
 Please check our [development-setup documentation](https://mercedes-benz.github.io/sechub/latest/sechub-techdoc.html#development-setup) for details.
 
-Please look into https://github.com/mercedes-benz/sechub/issues/168 for source formatter config files and description for usage.
-
 ### Coding conventions
 
 Please look at our [coding-conventions documentation](https://mercedes-benz.github.io/sechub/latest/sechub-techdoc.html#section-coding-conventions) for details.

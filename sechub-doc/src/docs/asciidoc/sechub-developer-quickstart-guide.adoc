@@ -256,13 +256,18 @@ Issues have labels a good way to start is to look for issues with https://github
 Issues with labels https://github.com/mercedes-benz/sechub/labels/beginner[`beginner`], https://github.com/mercedes-benz/sechub/labels/intermediate[`intermediate`], https://github.com/mercedes-benz/sechub/labels/advanced[`advanced`] indicate the level of difficulty. 
 However, not all issues are labeled. In addition, if you like an issue just comment on it, so that we can assign you to it.
 
-** In case, the issue you want to work on does not yet exists, please create an issue.
+** In case, the issue you want to work on does not yet exist, please create an issue.
 
 . Create a new branch on your local fork following the naming pattern `feature-<issue-number>-<short-description>`
 +
 TIP: Example: `feature-36-go-client-supports-env-variable`.
 
-. Implement your changes
+. Set Up git configurations as explained here: https://mercedes-benz.github.io/sechub/latest/sechub-techdoc.html#sechub-git-configuration[Configure your git settings]
+
+. Set up your IDE
+
+. Implement your changes +
+Please follow our coding conventions: https://mercedes-benz.github.io/sechub/latest/sechub-techdoc.html#section-coding-conventions[Coding conventions]
 +
 TIP: In case, you have any questions or need clarification ask inside the issues
 
@@ -455,6 +460,10 @@ image::eclipse-import-gradle-projects-sechub-selected.png[]
 +
 image::eclipse-egradle-sechub-imported.png[]
 
+==== Add Sechub Java Code Formatter
+
+include::documents/shared/configuration/eclipse-java-sechub-formatter-setup.adoc[]
+
 ==== Switch to `Dark` theme (Optional)
 
 Needs to be done for every new workspace.
@@ -471,7 +480,7 @@ image::eclipse-dark-theme.png[]
 
 . Press the `Apply and Close` button
 
-== Set up IntelliJ for SecHub
+=== Set up IntelliJ for SecHub
 
 Requirements: IntelliJ IDE (Community or Ultimate) is installed.
 
@@ -486,6 +495,10 @@ image::intelliJ_javac_compiler.png[]
 . Click on `File` -> `settings` -> `Build, Execution, Deployment` -> `Build Tools` -> `Gradle` and set the `Build and run using` to `IntelliJ IDEA` and `Run tests using` to `IntelliJ IDEA`
 +
 image::intelliJ_switch_to_intelliJ_compiler.png[]
+
+==== Add Sechub Java Code Formatter
+
+include::documents/shared/configuration/intelliJ-java-sechub-formatter-setup.adoc[]
 
 == Run Integration Tests from IDE
 
