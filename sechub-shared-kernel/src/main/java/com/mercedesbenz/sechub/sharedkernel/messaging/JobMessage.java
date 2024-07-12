@@ -59,14 +59,6 @@ public class JobMessage implements JSONable<JobMessage> {
         this.info = info;
     }
 
-    public String getConfiguration() {
-        return configuration;
-    }
-
-    public void setConfiguration(String configuration) {
-        this.configuration = configuration;
-    }
-
     public void setSince(LocalDateTime date) {
         this.since = date;
     }

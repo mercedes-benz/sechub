@@ -17,9 +17,9 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import com.mercedesbenz.sechub.commons.model.SecHubConfigurationMetaData;
+import com.mercedesbenz.sechub.commons.model.SecHubConfigurationModel;
 import com.mercedesbenz.sechub.commons.model.SecHubConfigurationModelValidationResult;
 import com.mercedesbenz.sechub.commons.model.SecHubConfigurationModelValidator;
-import com.mercedesbenz.sechub.commons.model.SecHubScanConfiguration;
 import com.mercedesbenz.sechub.domain.schedule.ScheduleAssertService;
 import com.mercedesbenz.sechub.sharedkernel.MustBeDocumented;
 import com.mercedesbenz.sechub.sharedkernel.Step;
@@ -54,6 +54,9 @@ public class SecHubJobInfoForUserService {
 
     @Autowired
     SecHubConfigurationModelValidator modelValidator;
+
+    @Autowired
+    SecHubConfigurationModelAccess configurationModelAccess;
 
     @Value("${sechub.project.joblist.size.max:" + DEFAULT_MAXIMUM_LIMIT + "}")
     @MustBeDocumented("Maximum limit for job information list entries per page")
@@ -189,12 +192,16 @@ public class SecHubJobInfoForUserService {
     }
 
     private void attachJobMetaData(ScheduleSecHubJob job, SecHubJobInfoForUser infoForUser) {
-        String json = job.getJsonConfiguration();
-        if (json == null) {
+
+        // we fetch the unencrypted configuration - but we do only store meta data which
+        // contains no
+        // sensitive information.
+        SecHubConfigurationModel configuration = configurationModelAccess.resolveUnencryptedConfiguration(job);
+        if (configuration == null) {
             LOG.error("No sechub configuration found for job: {}. Cannot resolve meta data!", job.getUUID());
             return;
         }
-        SecHubScanConfiguration configuration = SecHubScanConfiguration.createFromJSON(json);
+
         Optional<SecHubConfigurationMetaData> metaDataOpt = configuration.getMetaData();
         if (metaDataOpt.isPresent()) {
             infoForUser.setMetaData(metaDataOpt.get());

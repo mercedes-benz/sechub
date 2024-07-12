@@ -81,7 +81,6 @@ public class JobAdministrationRestControllerRestDocTest implements TestIsNecessa
 
         info.setStatus(JobStatus.RUNNING);
         info.setProjectId("project-name");
-        info.setConfiguration("{ config data }");
         info.setOwner("owner-userid");
         info.setSince(LocalDateTime.now());
 
@@ -119,8 +118,7 @@ public class JobAdministrationRestControllerRestDocTest implements TestIsNecessa
 	                                    fieldWithPath(inArray(JobInformation.PROPERTY_PROJECT_ID)).description("The name of the project the job is running for"),
 	                                    fieldWithPath(inArray(JobInformation.PROPERTY_OWNER)).description("Owner of the job - means user which triggered it"),
 	                                    fieldWithPath(inArray(JobInformation.PROPERTY_STATUS)).description("A status information "),
-	                                    fieldWithPath(inArray(JobInformation.PROPERTY_SINCE)).description("Timestamp since when job has been started"),
-	                                    fieldWithPath(inArray(JobInformation.PROPERTY_CONFIGURATION)).description("Configuration used for this job")
+	                                    fieldWithPath(inArray(JobInformation.PROPERTY_SINCE)).description("Timestamp since when job has been started")
 	                         )
 				));
 

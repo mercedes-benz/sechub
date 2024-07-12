@@ -8,6 +8,7 @@ import javax.crypto.AEADBadTagException;
 import org.junit.jupiter.api.Test;
 
 import com.mercedesbenz.sechub.commons.encryption.DefaultSecretKeyProvider;
+import com.mercedesbenz.sechub.commons.encryption.EncryptionResult;
 import com.mercedesbenz.sechub.commons.encryption.EncryptionRotationSetup;
 import com.mercedesbenz.sechub.commons.encryption.EncryptionRotator;
 import com.mercedesbenz.sechub.commons.encryption.EncryptionSupport;
@@ -60,13 +61,12 @@ public class EncryptionUsageTest {
         PersistentCipher cipher = factory.createCipher(new DefaultSecretKeyProvider(testSecret256bit), cipherType);
 
         EncryptionSupport support = new EncryptionSupport();
-        InitializationVector initVector = cipher.createNewInitializationVector();
 
-        byte[] encrypted = support.encryptString(plainText, cipher, initVector);
+        EncryptionResult encryptionResult = support.encryptString(plainText, cipher);
 
         // simulate storage
-        byte[] storedEncryptedDataBytes = encrypted;
-        byte[] storedInitVectorBytes = initVector.getInitializationBytes();
+        byte[] storedEncryptedDataBytes = encryptionResult.getEncryptedData();
+        byte[] storedInitVectorBytes = encryptionResult.getInitialVector().getInitializationBytes();
 
         // decrypt
         PersistentCipher anotherCipher = factory.createCipher(new DefaultSecretKeyProvider(testSecret256bit), cipherType);
@@ -86,12 +86,11 @@ public class EncryptionUsageTest {
 
         PersistentCipherFactory factory = new PersistentCipherFactory();
         PersistentCipher cipherOldPassword = factory.createCipher(new DefaultSecretKeyProvider(oldPassword), PersistentCipherType.AES_GCM_SIV_256);
-        InitializationVector initVector = cipherOldPassword.createNewInitializationVector();
 
         EncryptionSupport encryptSupport = new EncryptionSupport();
 
         // encrypt with old cipher
-        byte[] encrypted = encryptSupport.encryptString(testData, cipherOldPassword, initVector);
+        EncryptionResult encryptionResult = encryptSupport.encryptString(testData, cipherOldPassword);
 
         PersistentCipher cipherNewPassword = factory.createCipher(new DefaultSecretKeyProvider(newPassword), PersistentCipherType.AES_GCM_SIV_256);
 
@@ -103,15 +102,15 @@ public class EncryptionUsageTest {
         EncryptionRotationSetup rotateSetup = EncryptionRotationSetup.builder().
                 newCipher(cipherNewPassword).
                 oldCipher(cipherOldPassword).
-                oldInitialVector(initVector).
+                oldInitialVector(encryptionResult.getInitialVector()).
         build();
 
-        byte[] newEncrypted = rotatorToTest.rotate(encrypted, rotateSetup);
+        byte[] newEncrypted = rotatorToTest.rotate(encryptionResult.getEncryptedData(), rotateSetup);
 
         /* test */
 
         /* @formatter:on */
-        String unencryptedTestData = encryptSupport.decryptString(newEncrypted, cipherNewPassword, initVector);
+        String unencryptedTestData = encryptSupport.decryptString(newEncrypted, cipherNewPassword, rotateSetup.getNewInitialVector());
 
         assertThat(testData).isEqualTo(unencryptedTestData);
 
@@ -126,12 +125,11 @@ public class EncryptionUsageTest {
 
         PersistentCipherFactory factory = new PersistentCipherFactory();
         PersistentCipher cipherOldPassword = factory.createCipher(new DefaultSecretKeyProvider(oldPassword), PersistentCipherType.AES_GCM_SIV_256);
-        InitializationVector oldInitVector = cipherOldPassword.createNewInitializationVector();
 
         EncryptionSupport encryptSupport = new EncryptionSupport();
 
         // encrypt with old cipher
-        byte[] encrypted = encryptSupport.encryptString(testData, cipherOldPassword, oldInitVector);
+        EncryptionResult firstEncryptionResult = encryptSupport.encryptString(testData, cipherOldPassword);
 
         PersistentCipher cipherNewPassword = factory.createCipher(new DefaultSecretKeyProvider(newPassword), PersistentCipherType.AES_GCM_SIV_256);
         InitializationVector newInitVector = cipherNewPassword.createNewInitializationVector();
@@ -144,11 +142,11 @@ public class EncryptionUsageTest {
         EncryptionRotationSetup rotateSetup = EncryptionRotationSetup.builder().
                 newCipher(cipherNewPassword).
                 oldCipher(cipherOldPassword).
-                oldInitialVector(oldInitVector).
+                oldInitialVector(firstEncryptionResult.getInitialVector()).
                 newInitialVector(newInitVector).
                 build();
 
-        byte[] newEncrypted = rotatorToTest.rotate(encrypted, rotateSetup);
+        byte[] newEncrypted = rotatorToTest.rotate(firstEncryptionResult.getEncryptedData(), rotateSetup);
 
         /* test */
 
@@ -159,7 +157,7 @@ public class EncryptionUsageTest {
 
         // additional test - we check that the decryption with old init vector does not
         // work
-        assertThatThrownBy(() -> encryptSupport.decryptString(newEncrypted, cipherNewPassword, oldInitVector)).isInstanceOf(IllegalStateException.class)
-                .hasRootCauseInstanceOf(AEADBadTagException.class);
+        assertThatThrownBy(() -> encryptSupport.decryptString(newEncrypted, cipherNewPassword, firstEncryptionResult.getInitialVector()))
+                .isInstanceOf(IllegalStateException.class).hasRootCauseInstanceOf(AEADBadTagException.class);
     }
 }

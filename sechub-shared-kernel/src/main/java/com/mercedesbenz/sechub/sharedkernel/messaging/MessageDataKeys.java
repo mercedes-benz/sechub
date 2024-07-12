@@ -27,6 +27,7 @@ public class MessageDataKeys {
     private static final AnalyticMessageDataProvider ANALYTIC_MESSAGE_DATA_PROVIDER = new AnalyticMessageDataProvider();
     private static final MappingMessageDataProvider MAPPING_MESSAGE_DATA_PROVIDER = new MappingMessageDataProvider();
     private static final JobMessageDataProvider JOB_MESSAGE_DATA_PROVIDER = new JobMessageDataProvider();
+    private static final JobMessageWithUnencryptedConfigurationDataProvider JOB_MESSAGE_WITH_UNENCRYPED_CONFIG_DATA_PROVIDER = new JobMessageWithUnencryptedConfigurationDataProvider();
     private static final ProjectMessageDataProvider PROJECT_MESSAGE_DATA_PROVIDER = new ProjectMessageDataProvider();
     private static final SchedulerMessageDataProvider SCHEDULER_MESSAGE_DATA_PROVIDER = new SchedulerMessageDataProvider();
     private static final AdministrationConfigMessageDataProvider ADMIN_CONFIG_MESSAGE_DATA_PROVIDER = new AdministrationConfigMessageDataProvider();
@@ -57,7 +58,8 @@ public class MessageDataKeys {
      */
     public static final MessageDataKey<LocalDateTime> LOCAL_DATE_TIME_SINCE = createKey("localdatetime.since", LOCAL_DATE_TIME_MESSAGE_DATA_PROVIDER);
 
-    public static final MessageDataKey<SecHubConfiguration> SECHUB_CONFIG = createKey("sechub.config", SECHUB_CONFIGURATION_MESSAGE_DATA_PROVIDER);
+    public static final MessageDataKey<SecHubConfiguration> SECHUB_UNENCRYPTED_CONFIG = createKey("sechub.unencryptedconfig",
+            SECHUB_CONFIGURATION_MESSAGE_DATA_PROVIDER);
 
     public static final MessageDataKey<ClusterMemberMessage> ENVIRONMENT_CLUSTER_MEMBER_STATUS = createKey("environment.cluster.member.status",
             CLUSTER_MEMBER_MESSAGE_DATA_PROVIDER);

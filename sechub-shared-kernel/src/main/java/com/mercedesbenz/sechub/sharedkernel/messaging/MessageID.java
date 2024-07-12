@@ -13,7 +13,7 @@ public enum MessageID {
     START_SCAN( /* @formatter:off */
 	            MessageDataKeys.SECHUB_JOB_UUID,
 	            MessageDataKeys.EXECUTED_BY,
-	            MessageDataKeys.SECHUB_CONFIG),
+	            MessageDataKeys.SECHUB_UNENCRYPTED_CONFIG),
 	/* @formatter:on */
 
     /**

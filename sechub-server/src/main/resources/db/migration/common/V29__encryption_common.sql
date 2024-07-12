@@ -1,0 +1,34 @@
+-- SPDX-License-Identifier: MIT
+ALTER TABLE schedule_sechub_job ADD COLUMN encrypted_configuration bytea;
+ALTER TABLE schedule_sechub_job ADD COLUMN encrypt_initial_vector bytea;
+ALTER TABLE schedule_sechub_job ADD COLUMN encrypt_pool_data_id integer;
+
+ALTER TABLE schedule_sechub_job ALTER COLUMN configuration DROP NOT NULL; -- now we allow null
+
+ALTER TABLE schedule_sechub_job RENAME COLUMN configuration to unencrypted_configuration; -- necessary to have no old server version to be able to add accidently new sechub jobs while rolling udpdates are done (e.g. K8s deployment). We accept/force here that an old server create job would crash now...
+
+
+-- encryption parts
+CREATE TABLE schedule_cipher_pool_data
+(
+   pool_id integer not null, 
+   
+   pool_algorithm varchar(80) not null,
+   pool_pwd_src_type varchar(80) not null,
+   pool_pwd_src_data varchar(255),
+   
+   pool_test_text varchar(255) not null,
+   pool_test_initial_vector bytea not null,
+   pool_test_encrypted bytea not null,
+   
+   pool_creation_timestamp timestamp not null,
+   pool_created_from varchar(60), -- we accept 60 (3 x 20) see UserIdValidation
+   
+   version integer,
+   PRIMARY KEY (pool_id)
+);
+
+-- Only one configuration persistence shall exist inside SecHub database:
+ALTER TABLE adm_job_information DROP COLUMN configuration; -- we remove the configuration here
+ALTER TABLE scan_project_log DROP COLUMN config; -- we remove the configuration here
+ALTER TABLE scan_report DROP COLUMN config; -- we remove the configuration here

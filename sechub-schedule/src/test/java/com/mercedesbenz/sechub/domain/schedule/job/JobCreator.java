@@ -8,10 +8,15 @@ import java.time.LocalDateTime;
 
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 
+import com.mercedesbenz.sechub.commons.encryption.EncryptionConstants;
+import com.mercedesbenz.sechub.commons.encryption.EncryptionResult;
+import com.mercedesbenz.sechub.commons.encryption.InitializationVector;
 import com.mercedesbenz.sechub.commons.model.ModuleGroup;
 import com.mercedesbenz.sechub.commons.model.SecHubConfigurationModelSupport;
 import com.mercedesbenz.sechub.commons.model.job.ExecutionResult;
 import com.mercedesbenz.sechub.commons.model.job.ExecutionState;
+import com.mercedesbenz.sechub.domain.schedule.encryption.ScheduleEncryptionResult;
+import com.mercedesbenz.sechub.domain.schedule.encryption.ScheduleEncryptionService;
 import com.mercedesbenz.sechub.sharedkernel.UserContextService;
 import com.mercedesbenz.sechub.sharedkernel.configuration.SecHubConfiguration;
 import com.mercedesbenz.sechub.test.SechubTestComponent;
@@ -25,6 +30,7 @@ public class JobCreator {
     private String projectId;
     private UserContextService userContextService;
     private SecHubConfigurationModelSupport modelSupport;
+    private ScheduleEncryptionService encryptionService;
 
     private JobCreator(String projectId, TestEntityManager entityManager) {
         this.modelSupport = new SecHubConfigurationModelSupport();
@@ -33,10 +39,20 @@ public class JobCreator {
         this.jobFactory = new SecHubJobFactory();
 
         userContextService = mock(UserContextService.class);
+        encryptionService = mock(ScheduleEncryptionService.class);
 
         this.jobFactory.userContextService = userContextService;
         this.jobFactory.modelSupport = modelSupport;
+        this.jobFactory.encryptionService = encryptionService;
         when(userContextService.getUserId()).thenReturn("loggedInUser");
+        doAnswer(invocation -> {
+            String textToEncrypt = invocation.getArgument(0);
+
+            EncryptionResult encryptionResult = new EncryptionResult(textToEncrypt.getBytes(EncryptionConstants.UTF8_CHARSET_ENCODING),
+                    new InitializationVector(new byte[] {}));
+            ScheduleEncryptionResult result = new ScheduleEncryptionResult(Long.valueOf(0), encryptionResult);
+            return result;
+        }).when(encryptionService).encryptWithLatestCipher(any());
 
         newJob();
     }

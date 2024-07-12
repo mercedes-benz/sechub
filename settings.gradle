@@ -11,7 +11,7 @@ include 'sechub-cli',
 'sechub-commons-archive',
 
 /* encryption */
-'sechub-encryption',
+'sechub-commons-encryption',
 
 /* server POD area */
 'sechub-server',       // executable spring boot jar

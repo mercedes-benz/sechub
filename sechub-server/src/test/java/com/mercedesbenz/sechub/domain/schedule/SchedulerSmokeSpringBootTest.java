@@ -12,6 +12,8 @@ import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.TestPropertySource;
 
+import com.mercedesbenz.sechub.domain.schedule.encryption.ScheduleEncryptionResult;
+import com.mercedesbenz.sechub.domain.schedule.encryption.ScheduleEncryptionService;
 import com.mercedesbenz.sechub.sharedkernel.Profiles;
 import com.mercedesbenz.sechub.sharedkernel.RoleConstants;
 
@@ -37,6 +39,9 @@ public class SchedulerSmokeSpringBootTest {
     @Autowired
     SchedulerBinariesUploadConfiguration binariesUploadConfiguration;
 
+    @Autowired
+    ScheduleEncryptionService encryptionService;
+
     @Test
     public void context_loads_and_some_defaults_are_as_expected() throws Exception {
         // see https://spring.io/guides/gs/testing-web/ for details about testing with
@@ -50,6 +55,14 @@ public class SchedulerSmokeSpringBootTest {
         assertTrue(sourcecodeUploadConfiguration.isChecksumValidationEnabled());
 
         assertEquals(50 * 1024 * 1024, binariesUploadConfiguration.getMaxUploadSizeInBytes());
+
+        // test encryption service is initialized and works
+        String textToEncrypt = "i need encryption";
+        ScheduleEncryptionResult encryptResult = encryptionService.encryptWithLatestCipher(textToEncrypt);
+        String decrypted = encryptionService.decryptToString(encryptResult.getEncryptedData(), encryptResult.getCipherPoolId(),
+                encryptResult.getInitialVector());
+        assertEquals(textToEncrypt, decrypted);
+
     }
 
 }

@@ -6,7 +6,7 @@ dependencies {
     testImplementation project(':sechub-server-core')
     testImplementation project(':sechub-pds-core')
     testImplementation project(':sechub-schedule')
-    testImplementation project(':sechub-encryption')
+    testImplementation project(':sechub-commons-encryption')
     testImplementation project(':sechub-administration')
     testImplementation project(':sechub-adapter')
     testImplementation project(':sechub-testframework')

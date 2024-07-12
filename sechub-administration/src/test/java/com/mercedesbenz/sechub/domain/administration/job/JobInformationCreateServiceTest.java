@@ -39,7 +39,6 @@ class JobInformationCreateServiceTest {
     @Test
     void createByMessage_no_existing_entity_new_entry_will_be_created_and_saved() {
         /* prepare */
-        String configuration = "{ dummy }";
 
         when(repository.findById(jobUUID)).thenReturn(Optional.empty());
 
@@ -50,7 +49,6 @@ class JobInformationCreateServiceTest {
         message.setOwner("newOwner");
         message.setProjectId("newProjectId");
         message.setSince(since);
-        message.setConfiguration(configuration);
 
         JobStatus status = JobStatus.RUNNING;
 
@@ -69,7 +67,6 @@ class JobInformationCreateServiceTest {
         assertEquals("newOwner", savedJobInformation.getOwner());
         assertEquals("newProjectId", savedJobInformation.getProjectId());
         assertEquals(since, savedJobInformation.getSince());
-        assertEquals(configuration, savedJobInformation.getConfiguration());
         assertEquals(null, savedJobInformation.version);
 
         assertEquals(status, savedJobInformation.getStatus());
@@ -93,7 +90,6 @@ class JobInformationCreateServiceTest {
         message.setOwner("newOwner");
         message.setProjectId("newProjectId");
         message.setSince(since);
-        message.setConfiguration(configuration);
 
         JobStatus status = JobStatus.RUNNING;
 
@@ -113,7 +109,6 @@ class JobInformationCreateServiceTest {
         assertEquals("newOwner", savedJobInformation.getOwner());
         assertEquals("newProjectId", savedJobInformation.getProjectId());
         assertEquals(since, savedJobInformation.getSince());
-        assertEquals(configuration, savedJobInformation.getConfiguration());
         assertEquals(42, savedJobInformation.version.intValue());
 
         assertEquals(status, savedJobInformation.getStatus());

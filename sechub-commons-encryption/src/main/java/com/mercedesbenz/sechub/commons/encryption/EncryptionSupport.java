@@ -17,29 +17,33 @@ public class EncryptionSupport {
      * @param string        text to encrypt
      * @param cipher        cipher to use for encryption
      * @param initialVector initial vector for cipher
-     * @return encrypted bytes
+     * @return {@link EncryptionResult}
      */
-    public byte[] encryptString(String string, PersistentCipher cipher, InitializationVector initialVector) {
-        return encrypt(string, cipher, initialVector, stringTransformer);
+    public EncryptionResult encryptString(String string, PersistentCipher cipher) {
+        return encrypt(string, cipher, stringTransformer);
     }
 
     /**
-     * Encrypt given object
+     * Encrypt given object. Will create new initial vector automatically.
      *
-     * @param <T>           target object type
-     * @param object        object to encrypt
-     * @param cipher        cipher to use for encryption
-     * @param initialVector initial vector for cipher
-     * @param transformer   transformer used to transform object into a byte array
-     * @return encrypted bytes
+     * @param <T>         target object type
+     * @param object      object to encrypt
+     * @param cipher      cipher to use for encryption
+     * @param transformer transformer used to transform object into a byte array
+     * @return {@link EncryptionResult}
      */
-    public <T> byte[] encrypt(T object, PersistentCipher cipher, InitializationVector initialVector, ByteArrayTransformer<T> transformer) {
+    public <T> EncryptionResult encrypt(T object, PersistentCipher cipher, ByteArrayTransformer<T> transformer) {
         if (transformer == null) {
             throw new IllegalArgumentException("transformer may not be null!");
         }
         byte[] transformToBytes = transformer.transformToBytes(object);
 
-        return cipher.encrypt(transformToBytes, initialVector);
+        InitializationVector initialVector = cipher.createNewInitializationVector();
+
+        byte[] encrypted = cipher.encrypt(transformToBytes, initialVector);
+
+        EncryptionResult result = new EncryptionResult(encrypted, initialVector);
+        return result;
     }
 
     /**

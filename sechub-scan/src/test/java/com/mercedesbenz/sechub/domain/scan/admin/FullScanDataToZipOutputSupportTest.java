@@ -25,6 +25,8 @@ import com.mercedesbenz.sechub.test.TestUtil;
 
 public class FullScanDataToZipOutputSupportTest {
 
+    private static final String EXECUTOR1 = "executor1";
+    private static final String PROJECT1 = "project1";
     private FullScanDataToZipOutputSupport supportToTest;
     private UUID sechubJobUUID;
 
@@ -59,7 +61,9 @@ public class FullScanDataToZipOutputSupportTest {
 
         assertTrue(data1.content.contains("OK"));
         assertTrue(data2.content.contains("NOT-OK"));
-        assertTrue(data3.content.contains("'heavy'"));
+        assertTrue(data3.content.contains("sechubJobUUID=" + sechubJobUUID));
+        assertTrue(data3.content.contains("projectId=project1"));
+        assertTrue(data3.content.contains("executedBy=" + EXECUTOR1));
 
         assertTrue(data4.content.contains("metadata"));
         assertTrue(data4.content.contains("product1"));
@@ -126,7 +130,7 @@ public class FullScanDataToZipOutputSupportTest {
         fullScanData.allScanData.add(data1);
         fullScanData.allScanData.add(data2);
 
-        ProjectScanLog log1 = new ProjectScanLog("project1", sechubJobUUID, "executor1", "{'config':'heavy'}");
+        ProjectScanLog log1 = new ProjectScanLog(PROJECT1, sechubJobUUID, EXECUTOR1);
         fullScanData.allScanLogs.add(log1);
         return fullScanData;
     }

@@ -49,6 +49,7 @@ public class SecHubJobRepositoryDBTest {
     @BeforeEach
     void before() {
         jobCreator = jobCreator("p0", entityManager);
+
     }
 
     @Test

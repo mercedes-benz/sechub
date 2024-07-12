@@ -1,0 +1,82 @@
+package com.mercedesbenz.sechub.domain.schedule.encryption;
+
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+
+import com.mercedesbenz.sechub.commons.encryption.EncryptionSupport;
+import com.mercedesbenz.sechub.commons.encryption.InitializationVector;
+import com.mercedesbenz.sechub.commons.encryption.PersistentCipher;
+import com.mercedesbenz.sechub.commons.encryption.PersistentCipherFactory;
+import com.mercedesbenz.sechub.commons.encryption.PersistentCipherType;
+import com.mercedesbenz.sechub.commons.encryption.SecretKeyProvider;
+
+@Component
+public class EncryptionPoolFactory {
+
+    @Autowired
+    EncryptionSupport encryptionSupport;
+
+    @Autowired
+    PersistentCipherFactory cipherFactory;
+
+    @Autowired
+    SecretKeyProviderFactory secretKeyProviderFactory;
+
+    /**
+     * Creates an encryption pool for the given list of scheduler cipher pool data.
+     * The factory will create the necessary persistent cipher instances and
+     * automatically check that the encryption is possible with the current setup.
+     *
+     * If it is not possible - e.g. a cipher is created but with the wrong password
+     * - the factory will throw an EncryptionPoolException
+     *
+     * @param allPoolDataEntries - may not be <code>null</code>
+     * @return
+     */
+    public EncryptionPool createEncryptionPool(List<ScheduleCipherPoolData> allPoolDataEntries) throws EncryptionPoolException {
+        if (allPoolDataEntries == null) {
+            throw new IllegalArgumentException("allPoolDataEntries may never be null!");
+        }
+
+        Map<Long, PersistentCipher> map = new LinkedHashMap<>();
+
+        for (ScheduleCipherPoolData poolData : allPoolDataEntries) {
+
+            PersistentCipher cipher = createCipher(poolData.getAlgorithm().getType(), poolData.getPasswordSourceType(), poolData.getPasswordSourceData());
+
+            byte[] testEncrypted = poolData.getTestEncrypted();
+            InitializationVector initialVector = new InitializationVector(poolData.getTestInitialVector());
+
+            String decrypted = encryptionSupport.decryptString(testEncrypted, cipher, initialVector);
+
+            String expected = poolData.getTestText();
+
+            if (!expected.equals(decrypted)) {
+                /*
+                 * we block server start here - the server would not be able to handle
+                 * encryption here. New started servers must always provide
+                 */
+                throw new EncryptionPoolException(
+                        "The cipher pool entry with id: %d cannot be handled by the server, because origin test text: '%s' was not retrieved from encrypted test text data, but instead: '%s'"
+                                .formatted(poolData.getId(), expected, decrypted));
+            }
+
+            /* server is able to encrypt/decrypt data with given secret - register it */
+            map.put(poolData.getId(), cipher);
+
+        }
+        return new EncryptionPool(map);
+    }
+
+    private PersistentCipher createCipher(PersistentCipherType cipherType, CipherPasswordSourceType passwordSourceType, String passwordSourceData) {
+
+        SecretKeyProvider secretKeyProvider = secretKeyProviderFactory.createSecretKeyProvider(passwordSourceType, passwordSourceData);
+
+        return cipherFactory.createCipher(secretKeyProvider, cipherType);
+
+    }
+}

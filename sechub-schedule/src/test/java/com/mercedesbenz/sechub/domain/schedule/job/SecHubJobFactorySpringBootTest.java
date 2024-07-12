@@ -4,6 +4,7 @@ package com.mercedesbenz.sechub.domain.schedule.job;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
+import java.nio.charset.Charset;
 import java.util.Collections;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -12,27 +13,51 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EmptySource;
 import org.junit.jupiter.params.provider.EnumSource;
 import org.junit.jupiter.params.provider.ValueSource;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 
+import com.mercedesbenz.sechub.commons.encryption.InitializationVector;
 import com.mercedesbenz.sechub.commons.model.ModuleGroup;
 import com.mercedesbenz.sechub.commons.model.ScanType;
 import com.mercedesbenz.sechub.commons.model.SecHubConfigurationModelSupport;
+import com.mercedesbenz.sechub.domain.schedule.encryption.ScheduleEncryptionResult;
+import com.mercedesbenz.sechub.domain.schedule.encryption.ScheduleEncryptionService;
 import com.mercedesbenz.sechub.sharedkernel.UserContextService;
 import com.mercedesbenz.sechub.sharedkernel.configuration.SecHubConfiguration;
 
-class SecHubJobFactoryTest {
+@SpringBootTest(classes = SecHubJobFactory.class)
+class SecHubJobFactorySpringBootTest {
 
+    @Autowired
     private SecHubJobFactory factoryToTest;
+
+    @MockBean
     private UserContextService userContextService;
+
+    @MockBean
     private SecHubConfigurationModelSupport modelSupport;
+
+    @MockBean(name = "encryption service")
+    private ScheduleEncryptionService encryptionService;
+
+    private InitializationVector initialVector;
+
+    private byte[] encryptedData;
+
+    private Long cipherPoolId;
 
     @BeforeEach
     void beforeEach() {
-        userContextService = mock(UserContextService.class);
-        modelSupport = mock(SecHubConfigurationModelSupport.class);
+        encryptedData = "i-am-encrypted".getBytes(Charset.forName("UTF-8"));
+        cipherPoolId = Long.valueOf(0);
+        initialVector = new InitializationVector("init-vector".getBytes());
 
-        factoryToTest = new SecHubJobFactory();
-        factoryToTest.userContextService = userContextService;
-        factoryToTest.modelSupport = modelSupport;
+        ScheduleEncryptionResult result = mock(ScheduleEncryptionResult.class);
+        when(encryptionService.encryptWithLatestCipher(any())).thenReturn(result);
+        when(result.getInitialVector()).thenReturn(initialVector);
+        when(result.getEncryptedData()).thenReturn(encryptedData);
+        when(result.getCipherPoolId()).thenReturn(cipherPoolId);
     }
 
     @ParameterizedTest
@@ -78,7 +103,7 @@ class SecHubJobFactoryTest {
     }
 
     @Test
-    void createJob_sets_configuration_as_json() {
+    void createJob_sets_configuration_encrypted() {
         /* prepare */
         when(userContextService.getUserId()).thenReturn("user1");
         SecHubConfiguration configuration = mock(SecHubConfiguration.class);
@@ -89,7 +114,8 @@ class SecHubJobFactoryTest {
 
         /* test */
         assertNotNull(result);
-        assertEquals("pseudo-json", result.getJsonConfiguration());
+        assertEquals(encryptedData, result.getEncryptedConfiguration());
+        verify(encryptionService).encryptWithLatestCipher("pseudo-json");
     }
 
     @Test
