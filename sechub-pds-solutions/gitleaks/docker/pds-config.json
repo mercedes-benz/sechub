@@ -5,6 +5,7 @@
     {
       "id": "PDS_GITLEAKS",
       "path": "/pds/scripts/gitleaks.sh",
+      "envWhitelist" : [ "SCRIPT_FOLDER", "TOOL_FOLDER"],
       "scanType": "secretScan",
       "description": "Run the secret scanner Gitleaks.",
       "parameters": {
@@ -26,6 +27,7 @@
     {
       "id": "PDS_GITLEAKS_MOCK",
       "path": "/pds/scripts/gitleaks_mock.sh",
+      "envWhitelist" : [ "MOCK_FOLDER", "SCRIPT_FOLDER" ],
       "scanType": "secretScan",
       "description": "Run the secret scanner Gitleaks.",
       "parameters": {

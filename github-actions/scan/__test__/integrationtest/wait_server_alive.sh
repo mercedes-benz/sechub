@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+#!/usr/bin/bash
 # SPDX-License-Identifier: MIT
 
 SERVER_TYPE=$1
@@ -16,7 +16,8 @@ declare -i waitCount=0
 
 ## Wait until available
 printf '.'
-until $(curl --output /dev/null --silent --head --fail --insecure $CHECK_ALIVE_URL); do
+# shellcheck disable=SC2091
+until $(curl --output /dev/null --silent --head --fail --insecure "$CHECK_ALIVE_URL"); do
     printf '.'
     if [ $waitCount -gt $MAX_WAIT_SECONDS ]; then
         echo ""

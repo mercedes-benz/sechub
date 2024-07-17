@@ -325,9 +325,9 @@ public class TestRestHelper {
             } catch (Exception e) {
                 sb.append("Failed:" + e.getMessage());
             }
-            LOG.error("############################################################################");
-            LOG.error("## CLIENT RESPONSE ERROR:" + statusCode + ", response:" + sb.toString());
-            LOG.error("############################################################################");
+            LOG.error(">> HTTP ERROR");
+            LOG.error("     STATUS : {}", statusCode);
+            LOG.error("     CONTENT: {}", sb.toString());
             try {
                 super.handleError(response, statusCode);
             } catch (IOException e) {

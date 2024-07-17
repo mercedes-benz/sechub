@@ -1,38 +1,31 @@
+// SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.wrapper.prepare.modules.skopeo;
 
-import com.mercedesbenz.sechub.wrapper.prepare.modules.ToolContext;
+import java.io.File;
+import java.nio.file.Path;
 
-public class SkopeoContext extends ToolContext {
+import com.mercedesbenz.sechub.wrapper.prepare.modules.AbstractPrepareToolContext;
 
-    private final String filename;
+public class SkopeoContext extends AbstractPrepareToolContext {
 
-    private SkopeoContext(SkopeoContextBuilder builder) {
-        super(builder);
-        this.filename = builder.filename;
+    private File downloadTarFilename;
+    private Path skopeoDownloadDirectory;
+
+    @Override
+    public void init(Path workingDirectory) {
+        super.init(workingDirectory);
+
+        skopeoDownloadDirectory = workingDirectory.resolve(SkopeoWrapperConstants.DOWNLOAD_DIRECTORY_NAME);
+        downloadTarFilename = skopeoDownloadDirectory.resolve(SkopeoWrapperConstants.DOWNLOAD_FILENAME).toFile();
     }
 
-    public String getFilename() {
-        return filename;
+    public File getDownloadTarFile() {
+        return downloadTarFilename;
     }
 
-    public static class SkopeoContextBuilder extends ToolContextBuilder {
-
-        private String filename = "SkopeoDownloadFile.tar";
-
-        @Override
-        public SkopeoContext build() {
-            return new SkopeoContext(this);
-        }
-
-        public SkopeoContextBuilder setFilename(String filename) {
-            if (filename == null || filename.isBlank()) {
-                return this;
-            }
-            if (!filename.endsWith(".tar")) {
-                throw new IllegalArgumentException("Filename must end with .tar");
-            }
-            this.filename = filename;
-            return this;
-        }
+    @Override
+    public Path getToolDownloadDirectory() {
+        return skopeoDownloadDirectory;
     }
+
 }

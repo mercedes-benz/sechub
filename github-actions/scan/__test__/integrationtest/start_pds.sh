@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+#!/usr/bin/bash
 # SPDX-License-Identifier: MIT
 
 SERVER_PORT=$1
@@ -8,7 +8,7 @@ PATH_TO_LOGFILE=$4
 SHARED_VOLUME=$5
 PDS_CONFIG_FILE=$6
 
-echo "SERVER_PORT=$SERVER_PORT" >> $PATH_TO_LOGFILE
+echo "SERVER_PORT=$SERVER_PORT" >> "$PATH_TO_LOGFILE"
 
 echo "[ START ] PDS"
 
@@ -46,8 +46,8 @@ java \
  -Dfile.encoding=UTF-8 \
  -Dspring.profiles.active=pds_integrationtest,pds_h2 \
  -Dpds.config.heartbeat.verbose.logging.enabled=false \
- -Dserver.ssl.key-store=${PATH_TO_CERTIFICATE} \
- -Dserver.port=${SERVER_PORT} \
- -Dpds.storage.sharedvolume.upload.dir=$SHARED_VOLUME \
- -Dpds.config.file=$PDS_CONFIG_FILE \
- -jar ${PATH_TO_EXECUTABLE}>>${PATH_TO_LOGFILE} &
+ -Dserver.ssl.key-store="${PATH_TO_CERTIFICATE}" \
+ -Dserver.port="${SERVER_PORT}" \
+ -Dpds.storage.sharedvolume.upload.dir="$SHARED_VOLUME" \
+ -Dpds.config.file="$PDS_CONFIG_FILE" \
+ -jar "${PATH_TO_EXECUTABLE}">>"${PATH_TO_LOGFILE}" &

@@ -649,3 +649,42 @@ func Example_adjustSourceFilterPatterns_Secretscan_SCMHistory() {
 	// Output:
 	// [**/src-exclude1/** **/src-exclude2/** **/test/** **/node_modules/** *.a *.so]
 }
+
+func Example_adjustSourceFilterPatterns_licenseScan() {
+	/* prepare */
+	var context Context
+	var config Config
+	context.config = &config
+	config.whitelistAll = false
+
+	// Override global DefaultSourceCodeAllowedFilePatterns to get reproducable results
+	DefaultSourceCodeAllowedFilePatterns = []string{".a", ".b", ".c"}
+
+	sechubJSON := `
+	{
+		"data": {
+			"sources": [
+				{
+					"name": "mysources",
+					"fileSystem": { "folders": [ "." ] }
+				}
+			]
+		},
+		"licenseScan": {	"use": [ "mysources" ] }
+	}
+	`
+	sechubConfig := newSecHubConfigFromBytes([]byte(sechubJSON))
+	context.sechubConfig = &sechubConfig
+
+	/* execute */
+	adjustSourceFilterPatterns(&context)
+
+	/* test */
+	for _, i := range context.sechubConfig.Data.Sources {
+		fmt.Println(i.Name, i.SourceCodePatterns)
+	}
+	// The list must contain DefaultSourceCodeAllowedFilePatterns
+
+	// Output:
+	// mysources [.a .b .c]
+}

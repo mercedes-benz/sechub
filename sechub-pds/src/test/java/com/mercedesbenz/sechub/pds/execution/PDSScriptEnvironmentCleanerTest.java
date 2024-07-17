@@ -3,13 +3,14 @@ package com.mercedesbenz.sechub.pds.execution;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+import java.util.Collections;
 import java.util.LinkedHashMap;
+import java.util.Set;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
-import org.junit.jupiter.params.provider.NullSource;
 import org.junit.jupiter.params.provider.ValueSource;
 
 class PDSScriptEnvironmentCleanerTest {
@@ -31,7 +32,7 @@ class PDSScriptEnvironmentCleanerTest {
         environment.put(key, "value1");
 
         /* execute */
-        cleanerToTest.clean(environment);
+        cleanerToTest.clean(environment, Collections.emptySet());
 
         /* test */
         assertEquals(null, environment.get(key));
@@ -48,7 +49,7 @@ class PDSScriptEnvironmentCleanerTest {
         environment.put(key, value);
 
         /* execute */
-        cleanerToTest.clean(environment);
+        cleanerToTest.clean(environment, Collections.emptySet());
 
         /* test */
         assertEquals(value, environment.get(key));
@@ -71,10 +72,8 @@ class PDSScriptEnvironmentCleanerTest {
         environment.put(key2, value2);
         environment.put(key3, value3);
 
-        cleanerToTest.setWhiteListCommaSeparated(key1 + ", " + key2);
-
         /* execute */
-        cleanerToTest.clean(environment);
+        cleanerToTest.clean(environment, Set.of(key1, key2));
 
         /* test */
         assertEquals(value1, environment.get(key1));
@@ -99,10 +98,8 @@ class PDSScriptEnvironmentCleanerTest {
         environment.put(key2, value2);
         environment.put(key3, value3);
 
-        cleanerToTest.setWhiteListCommaSeparated(key1);
-
         /* execute */
-        cleanerToTest.clean(environment);
+        cleanerToTest.clean(environment, Set.of(key1));
 
         /* test */
         assertEquals(value1, environment.get(key1));
@@ -130,10 +127,8 @@ class PDSScriptEnvironmentCleanerTest {
         environment.put(key3, value3);
         environment.put(key4, value4);
 
-        cleanerToTest.setWhiteListCommaSeparated("PDS_STORAGE_*");
-
         /* execute */
-        cleanerToTest.clean(environment);
+        cleanerToTest.clean(environment, Set.of("PDS_STORAGE_*"));
 
         /* test */
         assertEquals(value1, environment.get(key1));
@@ -149,34 +144,10 @@ class PDSScriptEnvironmentCleanerTest {
         environment.put("HOSTNAME", "host1");
 
         /* execute */
-        cleanerToTest.clean(environment);
+        cleanerToTest.clean(environment, Collections.emptySet());
 
         /* test */
         assertEquals("host1", environment.get("HOSTNAME"));
-    }
-
-    @ParameterizedTest
-    @NullSource
-    @ValueSource(strings = { "", ",", ",," })
-    void illegal_whitelist_entries_works_cleans_former_whitelist(String commaSeparatedWhitelist) {
-        /* prepare */
-        cleanerToTest.setWhiteListCommaSeparated("X,Y");
-        environment.put("X", "value1");
-        environment.put("Y", "value2");
-
-        /* check precondition */
-        cleanerToTest.clean(environment);
-        assertEquals("value1", environment.get("X"));
-        assertEquals("value2", environment.get("Y"));
-
-        /* execute */
-        cleanerToTest.setWhiteListCommaSeparated(commaSeparatedWhitelist);
-        cleanerToTest.clean(environment);
-
-        /* test */
-        assertEquals(null, environment.get("X"));
-        assertEquals(null, environment.get("Y"));
-
     }
 
 }

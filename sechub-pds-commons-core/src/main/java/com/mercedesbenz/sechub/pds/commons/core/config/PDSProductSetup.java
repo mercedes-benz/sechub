@@ -1,6 +1,9 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.pds.commons.core.config;
 
+import java.util.LinkedHashSet;
+import java.util.Set;
+
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.mercedesbenz.sechub.commons.model.ScanType;
 
@@ -12,6 +15,8 @@ public class PDSProductSetup {
     private ScanType scanType;
 
     private String path;
+
+    private Set<String> envWhitelist = new LinkedHashSet<>();
 
     /**
      * The description. Will be available at admin UI at configuration time.
@@ -66,6 +71,14 @@ public class PDSProductSetup {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public Set<String> getEnvWhitelist() {
+        return envWhitelist;
+    }
+
+    public void setEnvWhitelist(Set<String> envWhitelist) {
+        this.envWhitelist = envWhitelist;
     }
 
 }

@@ -4,6 +4,11 @@ include 'sechub-cli',
 /* documentation */
 'sechub-doc',
 
+/* openapi */
+'sechub-openapi-java',
+'sechub-openapi-java-client',
+'sechub-api-java', // DEPRECATED
+
 /* commons */
 'sechub-commons-core',
 'sechub-commons-model',
@@ -81,40 +86,24 @@ include 'sechub-cli',
 // Wrapper checkmarx
 'sechub-wrapper-checkmarx',
 
-// Wrapper Xray
-'sechub-wrapper-xray',
-
 // Wrapper prepare
 'sechub-wrapper-prepare',
 
-/* webui */
-'sechub-webui-solution',
-
 /* secret validator */
-'sechub-wrapper-secret-validator'
+'sechub-wrapper-secret-validator',
 
-String buildStage = System.getProperty("sechub.build.stage");
+/* System Test */
+'sechub-systemtest',
 
-if (buildStage!=null) {
+/* PDS tools */
+'sechub-pds-tools',
 
-   /* build stage properrty is set */
-   if (buildStage.equals("api-necessary") || buildStage.equals("all") ){
+// Examples (are below 'sechub-examples' folder)
+'sechub-examples:example-sechub-api-java',
 
-        include 'sechub-api-java', /* needs open api file to generate */
-
-        /* system test - needs java api*/
-        'sechub-systemtest',
-
-        /* pds tools - needs java api */
-        'sechub-pds-tools',
-
-        // Examples (are below 'sechub-examples' folder)
-        'sechub-examples:example-sechub-api-java',
-
-        /* WebUI - needs the Java API */
-        'sechub-webui'
-    }
-}
+/* WebUI */
+'sechub-webui',
+'sechub-webui-solution'
 
 buildCache {
     def useTempCache = System.getenv('SECHUB_BUILD_USE_TMP_CACHE')

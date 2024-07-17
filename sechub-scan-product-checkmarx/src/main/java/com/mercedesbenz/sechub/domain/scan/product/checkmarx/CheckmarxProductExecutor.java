@@ -107,7 +107,7 @@ public class CheckmarxProductExecutor extends AbstractProductExecutor {
         UUID jobUUID = data.getSechubExecutionContext().getSechubJobUUID();
         String projectId = data.getSechubExecutionContext().getConfiguration().getProjectId();
 
-        JobStorage storage = storageService.getJobStorage(projectId, jobUUID);
+        JobStorage storage = storageService.createJobStorage(projectId, jobUUID);
 
         CheckmarxExecutorConfigSuppport configSupport = CheckmarxExecutorConfigSuppport
                 .createSupportAndAssertConfigValid(data.getProductExecutorContext().getExecutorConfig(), systemEnvironmentVariableSupport);

@@ -14,7 +14,7 @@ export function resolveProjectName(gitHubInputData: GitHubInputData,configFileLo
     let projectName = '';
     projectName = gitHubInputData.projectName;
 
-    if (projectName == '' || projectName == null) {
+    if (!projectName || projectName.length === 0) {
         const secHubConfigurationJson = fs.readFileSync(configFileLocation, 'utf8');
         const jsonObj = asJsonObject(secHubConfigurationJson);
         if (jsonObj) {
@@ -30,8 +30,7 @@ export function resolveProjectName(gitHubInputData: GitHubInputData,configFileLo
 
 function asJsonObject(text: string): object | undefined {
     try {
-        const jsonData = JSON.parse(text);
-        return jsonData;
+        return JSON.parse(text);
     } catch (error) {
         core.warning(`Error parsing JSON file: ${error}`);
         return undefined;

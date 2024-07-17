@@ -7,6 +7,7 @@ import static com.mercedesbenz.sechub.integrationtest.api.TestProductExecutorIde
 import static com.mercedesbenz.sechub.wrapper.checkmarx.cli.CheckmarxWrapperKeyConstants.*;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -70,12 +71,16 @@ public class IntegrationTestDefaultExecutorConfigurations {
     public static final String PDS_PREPARE_VARIANT_B = "b";
     public static final String PDS_PREPARE_VARIANT_C = "c";
     public static final String PDS_PREPARE_VARIANT_D = "d";
+    public static final String PDS_PREPARE_VARIANT_E = "e";
 
     public static final String PDS_LICENSESCAN_VARIANT_A = "a";
 
     public static final String PDS_SECRETSCAN_VARIANT_A = "a";
 
     /* @formatter:off */
+    /**
+     * PDS code scan - with variant A.
+     */
     public static final TestExecutorConfig PDS_V1_CODE_SCAN_A = definePDSScan(
                                                 PDS_CODESCAN_VARIANT_A,false,
                                                 PDSIntTestProductIdentifier.PDS_INTTEST_CODESCAN,
@@ -245,6 +250,16 @@ public class IntegrationTestDefaultExecutorConfigurations {
             PDSIntTestProductIdentifier.PDS_INTTEST_PRODUCT_PREPARE,
             StorageType.REUSE_SECHUB_DATA,
             PDS_PREPARE);
+
+    /**
+     * In this prepare test executor config, the {@link PDSDefaultParameterKeyConstants#PARAM_KEY_PDS_ADD_SCRIPTLOG_TO_PDSLOG_ENABLED} is enabled!
+     */
+    public static final TestExecutorConfig PDS_V1_PREPARE_INTEGRATIONTEST_VARIANT_E = definePDSScan(
+            PDS_PREPARE_VARIANT_E, false,
+            PDSIntTestProductIdentifier.PDS_INTTEST_PRODUCT_PREPARE,
+            StorageType.REUSE_SECHUB_DATA,
+            PDS_PREPARE, Arrays.asList(new TestExecutorSetupJobParam("pds.add.scriptlog.to.pdslog.enabled","true")));
+
 
 
     /* ----------------------------------------------------------------*/

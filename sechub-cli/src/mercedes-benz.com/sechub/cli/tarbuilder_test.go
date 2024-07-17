@@ -186,4 +186,5 @@ func Test_createBinariesTarFile_HandlesRemoteDataSection(t *testing.T) {
 	/* test */
 	sechubTestUtil.AssertNoError(err, t)
 	sechubTestUtil.AssertStringContains(string(out), sechubUtil.TarFileNotCreated, t)
+	sechubTestUtil.AssertFileNotExists(context.binariesTarFileName, t)
 }

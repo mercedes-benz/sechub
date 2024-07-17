@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.domain.scan.product.config;
 
-import static com.mercedesbenz.sechub.sharedkernel.validation.AssertValidation.*;
+import static com.mercedesbenz.sechub.sharedkernel.validation.AssertValidation.assertValid;
 
 import java.util.Optional;
 
@@ -45,7 +45,7 @@ public class FetchProductExecutionProfileService {
         auditLogService.log("Reads setup for executor configuration:{}", profileId);
 
         Optional<ProductExecutionProfile> config = repository.findById(profileId);
-        if (!config.isPresent()) {
+        if (config.isEmpty()) {
             throw new NotFoundException("Product execution profile not found for profileId:" + profileId);
         }
 

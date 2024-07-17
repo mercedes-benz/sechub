@@ -138,10 +138,10 @@ func prepareScan(context *Context) {
 			sechubUtil.LogError(fmt.Sprintf("%s\nExiting due to fatal error while creating sources zip file...\n", err))
 			os.Remove(context.sourceZipFileName) // cleanup zip file
 			os.Exit(ExitCodeFailed)
+		} else if context.sourceZipUploadNeeded {
+			// calculate checksum for zip file
+			context.sourceZipFileChecksum = sechubUtil.CreateChecksum(context.sourceZipFileName)
 		}
-
-		// calculate checksum for zip file
-		context.sourceZipFileChecksum = sechubUtil.CreateChecksum(context.sourceZipFileName)
 	} else {
 		context.sourceZipUploadNeeded = false
 	}
@@ -156,10 +156,10 @@ func prepareScan(context *Context) {
 			sechubUtil.LogError(fmt.Sprintf("%s\nExiting due to fatal error while creating binaries tar file...\n", err))
 			os.Remove(context.binariesTarFileName) // cleanup tar file
 			os.Exit(ExitCodeFailed)
+		} else if context.binariesTarUploadNeeded {
+			// calculate checksum for tar file
+			context.binariesTarFileChecksum = sechubUtil.CreateChecksum(context.binariesTarFileName)
 		}
-
-		// calculate checksum for tar file
-		context.binariesTarFileChecksum = sechubUtil.CreateChecksum(context.binariesTarFileName)
 	} else {
 		context.binariesTarUploadNeeded = false
 	}

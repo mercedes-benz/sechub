@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+#!/usr/bin/bash
 # SPDX-License-Identifier: MIT
 
 set -e
@@ -20,7 +20,7 @@ PDS_PORT=$2
 
 SCRIPT_DIR="$( cd -- "$(dirname "$0")" >/dev/null 2>&1 ; pwd -P )" # absolute directory of this script
 echo "SCRIPT_DIR = $SCRIPT_DIR"
-cd ${SCRIPT_DIR}
+cd "${SCRIPT_DIR}"
 
-./stop_sechub_server.sh $SERVER_PORT
-./stop_pds.sh $PDS_PORT
+./stop_sechub_server.sh "$SERVER_PORT"
+./stop_pds.sh "$PDS_PORT"

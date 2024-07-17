@@ -1,13 +1,10 @@
+// SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.wrapper.prepare.modules.git;
 
-import static com.mercedesbenz.sechub.wrapper.prepare.cli.PrepareWrapperEnvironmentVariables.PDS_PREPARE_CREDENTIAL_PASSWORD;
-import static com.mercedesbenz.sechub.wrapper.prepare.cli.PrepareWrapperEnvironmentVariables.PDS_PREPARE_CREDENTIAL_USERNAME;
+import static com.mercedesbenz.sechub.wrapper.prepare.modules.UsageExceptionExitCode.*;
 
-import java.nio.file.Paths;
-import java.util.List;
-import java.util.Map;
-
-import javax.crypto.SealedObject;
+import java.net.URL;
+import java.nio.file.Path;
 
 import org.eclipse.jgit.api.CloneCommand;
 import org.eclipse.jgit.api.Git;
@@ -15,73 +12,76 @@ import org.eclipse.jgit.api.errors.GitAPIException;
 import org.eclipse.jgit.transport.UsernamePasswordCredentialsProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.mercedesbenz.sechub.commons.core.security.CryptoAccess;
+import com.mercedesbenz.sechub.pds.commons.core.PDSLogSanitizer;
+import com.mercedesbenz.sechub.wrapper.prepare.PrepareWrapperUsageException;
 
 @Component
 public class JGitAdapter {
 
+    @Autowired
+    PDSLogSanitizer logSanitizer;
+
+    @Autowired
+    GitLocationConverter urlConverter;
+
     private static final Logger LOG = LoggerFactory.getLogger(JGitAdapter.class);
 
     public void clone(GitContext gitContext) {
-        String location = transformLocationToURL(gitContext.getLocation());
-        Map<String, SealedObject> credentialMap = gitContext.getCredentialMap();
 
-        String username = getUserNameFromMap(credentialMap);
-        String password = getPasswordFromMap(credentialMap);
+        String location = gitContext.getLocation();
+        String sanitizedLocation = logSanitizer.sanitize(location, 1024);
 
-        CloneCommand command = Git.cloneRepository().setURI(location).setDirectory(Paths.get(gitContext.getUploadDirectory()).toFile());
+        LOG.info("Start cloning location: {}", sanitizedLocation);
 
-        if (username != null && password != null) {
-            LOG.debug("Cloning private repository: " + location + " with username and password to: " + gitContext.getUploadDirectory());
-            command = command.setCredentialsProvider(new UsernamePasswordCredentialsProvider(username, password));
-        } else {
-            LOG.debug("Cloning public repository: " + location + " to: " + gitContext.getUploadDirectory());
+        URL url = urlConverter.convertLocationToHttpsBasedURL(location);
+        Path downloadDirectory = gitContext.getToolDownloadDirectory();
+        Path repository = Path.of(gitContext.getRepositoryName());
+
+        LOG.debug("Git clone command will use repository: {}, url: {}, downloadDirectory: {}", repository, url, downloadDirectory);
+
+        /* @formatter:off */
+        CloneCommand cloneCommand = Git.cloneRepository().
+                setURI(url.toExternalForm()).
+                setDirectory(downloadDirectory.resolve(repository).toFile());
+        /* @formatter:on */
+
+        handleGitCredentials(gitContext, url, downloadDirectory, cloneCommand);
+        handleGitHistory(gitContext, cloneCommand);
+
+        try (Git git = cloneCommand.call()) {
+        } catch (GitAPIException e) {
+
+            throw new PrepareWrapperUsageException("Could not clone defined repository: " + url, e, GIT_CLONING_FAILED);
         }
+    }
 
+    private void handleGitHistory(GitContext gitContext, CloneCommand cloneCommand) {
         if (gitContext.isCloneWithoutHistory()) {
             LOG.debug("Cloning repository without history");
-            command = command.setDepth(1);
-        }
-
-        try (Git git = command.call()) {
-        } catch (GitAPIException e) {
-            throw new RuntimeException("Error while cloning from repository: " + location + " with " + username + " " + password, e);
+            cloneCommand.setDepth(1);
         }
     }
 
-    private String getUserNameFromMap(Map<String, SealedObject> credentialMap) {
-        return CryptoAccess.CRYPTO_STRING.unseal(credentialMap.get(PDS_PREPARE_CREDENTIAL_USERNAME));
-    }
+    private void handleGitCredentials(GitContext gitContext, URL url, Path downloadDirectory, CloneCommand cloneCommand) {
+        if (gitContext.hasCredentials()) {
 
-    private String getPasswordFromMap(Map<String, SealedObject> credentialMap) {
-        return CryptoAccess.CRYPTO_STRING.unseal(credentialMap.get(PDS_PREPARE_CREDENTIAL_PASSWORD));
-    }
+            String username = gitContext.getUnsealedUsername();
+            String password = gitContext.getUnsealedPassword();
 
-    private String transformLocationToURL(String location) {
+            if (LOG.isDebugEnabled()) {
+                LOG.debug("Cloning private repository: {} with username and password to: {} ", logSanitizer.sanitize(url, 1024), downloadDirectory);
+            }
 
-        if (location.startsWith("https://")) {
-            return location;
-        }
+            cloneCommand.setCredentialsProvider(new UsernamePasswordCredentialsProvider(username, password));
 
-        /* clone with password and username does only work with URL */
-        String URLPrefix = "https://";
-        List<String> prefixes = List.of("git@", "git://", "http://", "ssh://");
-        for (String prefix : prefixes) {
-            if (location.startsWith(prefix)) {
-                if (prefix.equals("git@")) {
-                    location = location.replace(":", "/");
-                }
-                location = location.replace(prefix, URLPrefix);
-                break;
+        } else {
+            if (LOG.isDebugEnabled()) {
+                LOG.debug("Cloning public repository: {} with username and password to: {} ", logSanitizer.sanitize(url, 1024), downloadDirectory);
             }
         }
-        try {
-            new java.net.URL(location);
-        } catch (java.net.MalformedURLException e) {
-            throw new IllegalArgumentException("Location is not a valid URL: " + location);
-        }
-        return location;
     }
+
 }

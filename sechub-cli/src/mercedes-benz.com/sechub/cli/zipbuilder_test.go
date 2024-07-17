@@ -181,4 +181,5 @@ func Test_createSouceCodeZipFile_HandleRemoteDataSection(t *testing.T) {
 	/* test */
 	sechubTestUtil.AssertNoError(err, t)
 	sechubTestUtil.AssertStringContains(string(out), sechubUtil.ZipFileNotCreated, t)
+	sechubTestUtil.AssertFileNotExists(context.sourceZipFileName, t)
 }

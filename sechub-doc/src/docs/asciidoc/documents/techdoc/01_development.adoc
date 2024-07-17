@@ -57,6 +57,10 @@ of your choice.
 ====== Create localhost server certificate
 This is automatically done by former gradle call, so not necessary here.
 
+====== Add Sechub Java Code Formatter
+
+include::../shared/configuration/eclipse-java-sechub-formatter-setup.adoc[]
+
 ===== Others
 ====== Import projects
 Import as you would normally do in your IDE.
@@ -67,6 +71,9 @@ just call  `./gradlew ensureLocalhostCertificate`
 
 This will generate a self signed server certificate for localhost.
 
+====== Add Sechub Java Code Formatter (IntelliJ)
+
+include::../shared/configuration/intelliJ-java-sechub-formatter-setup.adoc[]
 
 ==== Special developer files
 

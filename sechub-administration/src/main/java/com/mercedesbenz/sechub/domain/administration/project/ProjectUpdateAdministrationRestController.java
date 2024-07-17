@@ -75,7 +75,7 @@ public class ProjectUpdateAdministrationRestController {
     public void updateProjectMetaData(@Validated @RequestBody ProjectJsonInput input, @PathVariable(name = "projectId") String projectId) {
         /* @formatter:on */
         Optional<ProjectMetaData> projectMetaData = input.getMetaData();
-        if (!projectMetaData.isPresent()) {
+        if (projectMetaData.isEmpty()) {
             return;
         }
 

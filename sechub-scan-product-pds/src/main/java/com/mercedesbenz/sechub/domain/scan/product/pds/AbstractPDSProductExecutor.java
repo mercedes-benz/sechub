@@ -86,7 +86,11 @@ public abstract class AbstractPDSProductExecutor extends AbstractProductExecutor
                     configSupport.getDataTypesSupportedByPDSAsString());
             return null;
         }
-        return executeByAdapter(data, configSupport, contentProvider);
+
+        List<ProductResult> result = executeByAdapter(data, configSupport, contentProvider);
+        contentProvider.close();
+
+        return result;
     }
 
     protected abstract List<ProductResult> executeByAdapter(ProductExecutorData data, PDSExecutorConfigSupport configSupport,

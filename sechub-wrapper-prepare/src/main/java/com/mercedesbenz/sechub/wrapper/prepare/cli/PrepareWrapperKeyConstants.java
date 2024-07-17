@@ -1,12 +1,11 @@
+// SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.wrapper.prepare.cli;
 
 public class PrepareWrapperKeyConstants {
 
-    /**
-     * Folder for PDS prepare where remote data gets downloaded to be uploaded to
-     * the shared storage
-     */
-    public static final String KEY_PDS_PREPARE_UPLOAD_DIRECTORY = "pds.prepare.upload.directory";
+    private static final String PREPARE_MODULE = "pds.prepare.module";
+    private static final String PREPARE_MODULE_GIT = PREPARE_MODULE + ".git";
+    private static final String PREPARE_MODULE_SKOPEO = PREPARE_MODULE + ".skopeo";
 
     /**
      * Prepare process timeout in seconds for prepare processes started with process
@@ -16,22 +15,37 @@ public class PrepareWrapperKeyConstants {
     public static final String KEY_PDS_PREPARE_PROCESS_TIMEOUT_SECONDS = "pds.prepare.process.timeout.seconds";
 
     /**
-     * Flag to enable the git prepare module
+     * Flag to enable the skopeoWrapper prepare module
      */
-    public static final String KEY_PDS_PREPARE_MODULE_GIT_ENABLED = "pds.prepare.module.git.enabled";
+    public static final String KEY_PDS_PREPARE_MODULE_SKOPEO_ENABLED = PREPARE_MODULE_SKOPEO + ".enabled";
 
     /**
-     * Flag to enable the skopeo prepare module
+     * Filename for skopeoWrapper authentication file
      */
-    public static final String KEY_PDS_PREPARE_MODULE_SKOPEO_ENABLED = "pds.prepare.module.skopeo.enabled";
+    public static final String KEY_PDS_PREPARE_MODULE_SKOPEO_AUTHENTICATION_FILENAME = PREPARE_MODULE_SKOPEO + ".authentication.filename";
 
     /**
-     * Flag to clean the git folder from git files and clone without history
+     * Flag to enable the gitWrapper prepare module
      */
-    public static final String KEY_PDS_PREPARE_AUTO_CLEANUP_GIT_FOLDER = "pds.prepare.auto.cleanup.git.folder";
+    public static final String KEY_PDS_PREPARE_MODULE_GIT_ENABLED = PREPARE_MODULE_GIT + ".enabled";
+
+    public static final String KEY_PDS_PREPARE_MODULE_GIT_REMOVE_GIT_FILES_BEFORE_UPLOAD = PREPARE_MODULE_GIT + ".remove.gitfiles.before.upload";
+
+    public static final String KEY_PDS_PREPARE_MODULE_GIT_CLONE_WITHOUT_GIT_HISTORY = PREPARE_MODULE_GIT + ".clone.without.git.history";
 
     /**
-     * Filename for skopeo authentication file
+     * Flag to enable the prepare proxy
      */
-    public static final String KEY_PDS_PREPARE_AUTHENTICATION_FILE_SKOPEO = "pds.prepare.authentication.file.skopeo";
+    public static final String KEY_PDS_PREPARE_PROXY_ENABLED = "pds.prepare.proxy.enabled";
+
+    /**
+     * HTTPS Proxy URL
+     */
+    public static final String KEY_PDS_HTTPS_PROXY = "pds.https.proxy";
+
+    /**
+     * Comma seperated list to define which hosts must be accessed without proxy
+     */
+    public static final String KEY_PDS_NO_PROXY = "pds.no.proxy";
+
 }

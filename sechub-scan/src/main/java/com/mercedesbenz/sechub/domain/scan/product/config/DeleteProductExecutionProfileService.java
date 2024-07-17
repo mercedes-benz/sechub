@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.domain.scan.product.config;
 
-import static com.mercedesbenz.sechub.sharedkernel.validation.AssertValidation.*;
+import static com.mercedesbenz.sechub.sharedkernel.validation.AssertValidation.assertValid;
 
 import java.util.Optional;
 
@@ -49,8 +49,8 @@ public class DeleteProductExecutionProfileService {
         auditLogService.log("Wants to removed product execution profile {}",profileId);
 
         Optional<ProductExecutionProfile> opt = repository.findById(profileId);
-        if (!opt.isPresent()) {
-            LOG.info("Delete canceled, because execution profile with id {} did not exist.",profileId);;
+        if (opt.isEmpty()) {
+            LOG.info("Delete canceled, because execution profile with id {} did not exist.",profileId);
             throw new NotFoundException("Profile "+profileId+" does not exist, so cannot be deleted");
         }
         ProductExecutionProfile found = opt.get();

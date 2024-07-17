@@ -5,8 +5,8 @@ ARG BASE_IMAGE
 
 # Build Args
 # Build type can be "copy" or "download"
-ARG BUILD_TYPE
-ARG PREPARE_WRAPPER_VERSION="0.0.0"
+ARG BUILD_TYPE="copy"
+ARG PREPARE_WRAPPER_VERSION="1.0.0"
 
 # The base image of the builder
 ARG BUILDER_BASE_IMAGE="debian:12-slim"
@@ -33,11 +33,11 @@ RUN export DEBIAN_FRONTEND=noninteractive && \
 # Download the prepare Wrapper
 RUN cd "$ARTIFACT_FOLDER" && \
     # download wrapper jar
-    wget --no-verbose "https://github.com/mercedes-benz/sechub/releases/download/v$PREPARE_WRAPPER_VERSION-prepare-wrapper/sechub-pds-wrapper-prepare-$PREPARE_WRAPPER_VERSION.jar" && \
+    wget --no-verbose "https://github.com/mercedes-benz/sechub/releases/download/v$PREPARE_WRAPPER_VERSION-prepare-wrapper/sechub-wrapper-prepare-$PREPARE_WRAPPER_VERSION.jar" && \
     # download checksum file
-    wget --no-verbose "https://github.com/mercedes-benz/sechub/releases/download/v$PREPARE_WRAPPER_VERSION-prepare-wrapper/sechub-pds-wrapper-prepare-$PREPARE_WRAPPER_VERSION.jar.sha256sum" && \
+    wget --no-verbose "https://github.com/mercedes-benz/sechub/releases/download/v$PREPARE_WRAPPER_VERSION-prepare-wrapper/sechub-wrapper-prepare-$PREPARE_WRAPPER_VERSION.jar.sha256sum" && \
     # verify the checksum
-    sha256sum --check "sechub-pds-wrapper-prepare-$PREPARE_WRAPPER_VERSION.jar.sha256sum"
+    sha256sum --check "sechub-wrapper-prepare-$PREPARE_WRAPPER_VERSION.jar.sha256sum"
 
 
 #-------------------

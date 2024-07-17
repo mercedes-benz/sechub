@@ -51,14 +51,16 @@ dependencies {
 
 /* END of copied part */
 
+/*
+// This will be used again after we migrate to the new sechub-openapi-java module
 sourceSets {
     main {
     	java {
     	    srcDir 'gen/src/main/java'
     	}
     }
-    
 }
+ */
 
 def specFilePath = "$projectDir/src/main/resources/reduced-openapi3.json"
 
@@ -133,7 +135,7 @@ tasks.withType(org.openapitools.generator.gradle.plugin.tasks.GenerateTask) {
     outputs.cacheIf { false }
 }
 
-ext.apiPublishNecessary = "${project.version}" != "0.0.0";
+ext.apiPublishNecessary = "${project.version}" != "0.0.0"
 
 task generateAPIJava(){
     dependsOn callOpenAPIJavaGenerator
